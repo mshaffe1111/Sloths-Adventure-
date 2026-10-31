@@ -99,7 +99,7 @@ import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
 import { SlideRun } from './w7SlideRun.ts';
 import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
-import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, warmMeecaArt, wordsBox } from './meecaArt.ts';
+import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, meecaArtReady, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { tipText } from './puzzleKit.ts';
 import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
@@ -213,6 +213,11 @@ const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
 /** how fast the shift that shows a landing across a gap eases in and out (per second), and for a landing still out of the view */
 const LAND_EASE = { rate: 4.5, fast: 10 } as const;
+/**
+ * Meeca's thin logs (5-M): a jump whose top leaves her feet this far under a log's top, her middle this far inside its ends, and rising
+ * no faster than this, lands on it (a block has its lip hoist, forgive.mantle; a 24 px log had nothing, and she fell away from it)
+ */
+const LIP_CATCH = { px: 22, inside: 10, v: 90 };
 const INTRO_ZOOM_FROM = 0.9; // a gentle dolly: the old 0.78 opened on a wide shot full of dark ground, so every stage began noticeably darker
 const INTRO_ZOOM_SECS = 1.3;
 
@@ -2307,7 +2312,10 @@ export class GameEngine {
           if (Math.max(missL, missR) > this.forgive.landPx || (missL > 0 ? p.vx : -p.vx) < 30) return false;
         }
         // Check landing from above
-        return p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y;
+        if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) return true;
+        // Meeca's stage: a thin log (no face to hoist up, LIP_CATCH) caught at the top of a jump with her feet just under its top and her
+        // middle over it. QA 2026-10-31, the blind tester sideways: "level with the top of the log, then dropped through it", twice
+        return !!this.mc && plat.height < 50 && plat.type === 'solid' && !p.climbing && p.vy >= -LIP_CATCH.v && playerFeet > plat.y && playerFeet <= plat.y + LIP_CATCH.px && p.x > plat.x + LIP_CATCH.inside && p.x < plat.x + plat.width - LIP_CATCH.inside;
       });
       // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
       // so a lift never rises without him
@@ -4904,6 +4912,8 @@ export class GameEngine {
     const descent = !!this.proto?.w4?.descent;
     for (const cp of cps) if (ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
     this.checkpoint = { x: flag.x, y: flag.y };
+    // (Meeca's stage: the trunks behind the flag were cut on that run)
+    this.mc?.resumeAt(flag.x);
     this.respawnAtCheckpoint('pit');
     const p = this.player;
     this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
@@ -5320,7 +5330,10 @@ export class GameEngine {
       return null;
     }
     const ledge = this.camLedge;
-    const route = this.proto?.w4?.route;
+    // (Meeca's trails have their way through too, step by step: on a log, the next log shows wherever on it she stands, not only near
+    // its end. QA 2026-10-31, Matt upright: "the next log is off screen", a blind hop. Off her route, the plain look across a gap below)
+    const mcRoute = this.mc?.route;
+    const route = this.proto?.w4?.route ?? (mcRoute && ledge && mcRoute.indexOf(ledge.id) >= 0 && mcRoute.indexOf(ledge.id) + 1 < mcRoute.length ? mcRoute : undefined);
     if (route && ledge) {
       const i = route.indexOf(ledge.id);
       const next = i >= 0 && i + 1 < route.length ? this.platforms.find((q) => q.id === route[i + 1]) : undefined;
@@ -6394,6 +6407,7 @@ export class GameEngine {
       },
       score: (n) => (this.runScore += n),
       stepAt: (dir) => this.stepAt(dir),
+      artReady: meecaArtReady,
       sfx: (kind) => {
         if (sound.playPuzzle(kind)) return;
         if (kind === 'scratch') sound.playTreeClimb();
@@ -6460,7 +6474,7 @@ export class GameEngine {
       drawSay(ctx, b.who, b.text, bx, by, W, H, top, a, tb);
     }
     const cardA = mc.phase === 'card' ? 1 : mc.cardOut >= 0 && mc.cardOut < 1 ? 1 - mc.cardOut : 0;
-    drawTitleCard(ctx, W, H, cardA, mc.t);
+    drawTitleCard(ctx, W, H, cardA, mc.t, mc.cardWaiting);
     if (mc.sceneLine && mc.line >= 0) drawSceneBox(ctx, W, H, mc.scene, mc.line, Math.min(1, (mc.t - mc.lineAt) / 0.25 + 0.4), mc.t);
     if (mc.fade > 0) {
       ctx.fillStyle = 'rgba(8, 6, 22, ' + mc.fade + ')';
@@ -7850,13 +7864,15 @@ export class GameEngine {
   /**
    * A soft painted dust puff where he takes off or lands (the dust strip in boss-fx.webp), bigger and slower to clear the harder he came
    * down (`speed`: how fast he was falling, px/s); a hard landing throws two more puffs out to the sides.
+   * (Sized against him, 2026-10-31: the hardest landing's puff was 84 wide, as wide as he is tall, and with its side puffs it hid him
+   * through his new land-and-recover frames. Now 54 at most, the side puffs 30.)
    */
   private spawnJumpDust(x: number, y: number, speed = 0) {
     const k = Math.max(0, Math.min(1, speed / PHYS.maxFall));
     const life = 0.36 + 0.2 * k;
-    this.emit({ x, y: y + 2, vx: 0, vy: -8, color: '', size: 40 + 44 * k, life, maxLife: life, type: 'puff' });
+    this.emit({ x, y: y + 2, vx: 0, vy: -8, color: '', size: 32 + 22 * k, life, maxLife: life, type: 'puff' });
     if (k > 0.4) {
-      for (const d of [-1, 1]) this.emit({ x: x + d * 10, y: y + 2, vx: d * (70 + 90 * k), vy: -6, color: '', size: 26 + 22 * k, life: life * 0.9, maxLife: life * 0.9, type: 'puff' });
+      for (const d of [-1, 1]) this.emit({ x: x + d * 10, y: y + 2, vx: d * (70 + 90 * k), vy: -6, color: '', size: 18 + 12 * k, life: life * 0.9, maxLife: life * 0.9, type: 'puff' });
     }
   }
 

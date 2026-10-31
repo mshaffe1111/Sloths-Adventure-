@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { clipPick, edgeClip, flipU, MOVE_ORDER, moveFrame, footfallsBetween, heroClipsLive, isCalm, IDLE_CLIPS, moveIndex, RUN_FOOTFALLS } from './heroClips.ts';
+import { clipPick, edgeClip, flipU, footfallsBetween, heroClipsLive, isCalm, IDLE_CLIPS, moveIndex, RUN_FOOTFALLS } from './heroClips.ts';
 import { HERO_CLIPS } from './heroClipsData.ts';
 import type { PlayerState } from './types.ts';
 
@@ -76,8 +76,3 @@ test('the painted flip runs through its sheet once, eased, and holds its last fr
 });
 
 
-test('the jab comes back from full reach through its own wind-up pose, and every reordered frame is on its sheet', () => {
-  assert.deepEqual([0, 0.2, 0.35, 0.55, 0.7, 0.9].map((u) => moveFrame('move-jab', HERO_CLIPS['move-jab'].n, u)), [0, 1, 2, 3, 0, 5]);
-  for (const [sheet, order] of Object.entries(MOVE_ORDER)) for (const i of order) assert.ok(i < HERO_CLIPS[sheet].n, `${sheet} frame ${i}`);
-  assert.equal(moveFrame('move-cross', 7, 0.5), moveIndex(7, 0.5), 'a sheet with no order plays in its own');
-});

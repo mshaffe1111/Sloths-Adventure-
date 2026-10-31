@@ -18,7 +18,7 @@ OUT = GAME / 'src/assets/hero/clips'
 DATA = GAME / 'src/game/heroClipsData.ts'
 STAND_H = 200
 # the standing height of Pokey in each clip's own pixels, when the first frame is not him standing (else measured from frame 0)
-STAND_PX = {'move-run': 380, 'move-walk': 330, 'move-jump': 250, 'move-flip': 300, 'move-climb': 300}
+STAND_PX = {'move-run': 380, 'move-jab': 330, 'move-walk': 330, 'move-flip': 300, 'move-climb': 300}
 # a clip where he is not standing: his height there as a share of his standing height
 STAND_RATIO = {'doze': 0.62, 'push': 0.8}
 # clips whose paws (the right edge) must touch something: the feet anchor goes this many sheet px left of the paw tips
@@ -71,7 +71,10 @@ def bbox(alpha):
 SOURCE = {
     'move-run': ('a-run-1', 29, 44),
     # the combo: a lead-arm jab, a rear-arm cross, a twisting lead-arm hook (a-punch-2)
-    'move-jab': ('a-punch-2', [4, 5, 6, 6, 8, 9], None),
+    # the jab (pokey-anim round 3, spec-anim5.json): pa-jab-s3 started from the cross's own first frame, so it faces us like the cross
+    # and hook: guard (13), the pull (14), the reach held through the jab's hit window (15, 17, 19), back through 22-23 to guard (24);
+    # timed to fight.ts jab (startup 21%, hit to 50%). It was a-punch-2 4-9 (its way back popped to a pose twisted toward the camera)
+    'move-jab': ('pa-jab-s3', [13, 14, 15, 17, 19, 22, 23, 24, 24], None),
     'move-cross': ('a-punch-2', [34, 35, 36, 37, 37, 36, 35], None),
     'move-hook': ('a-punch-2', [30, 31, 32, 32, 32, 34, 35], None),
     # two kicks that take turns: a front snap kick (a-kick-1), then a high side kick (a-kick-2)
@@ -85,19 +88,16 @@ SOURCE = {
     # wave at game size)
     'teeter': ('x14-stepback-s3', [20, 20, 21, 22, 23, 24, 24, 23, 22, 21], None),
     'step-back': ('x14-stepback-s3', list(range(15, 31)), None),
-    # the jump (pokey-anim, 2026-10-30, tools/art/pokeyanim/spec-anim1.json): pa-jump-s11's flight (12-21: 8 smears his face, 9-11 turn him toward the camera, 22 blurs his paws) from the take-off stretch through the
-    # rise, the top (one leg kicked back) and the fall with his arms up; the game picks the frame by his vertical speed (heroClips jumpU)
-    'move-jump': ('pa-jump-s11', list(range(12, 22)), None),
     # the climb (spec-anim2.json): pa-climb-s3's hand-over-hand on an invisible trunk, one full cycle (near paw up, far paw up) 12-32
     'move-climb': ('pa-climb-s3', list(range(12, 33)), None),
     # the walk (spec-anim4.json): pa-walk-s3's gentle walk on the spot, one seamless 17-frame loop (13-29; 0-8 wave an arm)
     'move-walk': ('pa-walk-s3', list(range(13, 30)), None),
 }
 # sheets whose frames are re-centred on his torso one by one (a run or walk drifts a little in the clip; in the game the body must stay put)
-RECENTER = {'move-run', 'move-walk', 'move-jump', 'move-flip', 'move-climb'}
+RECENTER = {'move-run', 'move-walk', 'move-flip', 'move-climb'}
 # sheets whose frames are lined up one by one up and down too: on his feet (a jump: the clip's own rise and fall would add to the
 # physics'), or on the middle of his body (the flip, which turns about it)
-ALIGN_Y = {'move-walk': 'feet', 'move-jump': 'feet', 'move-flip': 'middle', 'move-climb': 'middle'}
+ALIGN_Y = {'move-walk': 'feet', 'move-flip': 'middle', 'move-climb': 'middle'}
 
 
 def torso_x(alpha):

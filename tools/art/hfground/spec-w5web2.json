@@ -1,0 +1,47 @@
+{
+ "note": "W5 pieces: the billowing web, retake of the billow from a bent start (the first billow barely moved), 2026-10-31 ~1:25 AM ET",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, spider, insect, ground, grass, background scenery",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf3cb544a339ab3da10544f0233a129c2433cc8e/tools/art/hfground/starts/w5pieces/",
+ "items": [
+  {
+   "kind": "plain",
+   "name": "w5web-billow2-s23",
+   "start": "web-bent.webp",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 1024,
+   "h": 768,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, spider, insect, ground, grass, background scenery",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game, seen from the side: a large silvery spider orb web strung between two slender mossy wooden posts wrapped in silk, the web bellied far out to the right by a strong gust of wind, strands stretched taut in a deep curve, a few small leaves and petals blowing through, warm dusk golden light on the silk strands, on one flat plain pure bright magenta background, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "w5web-billow2-s31",
+   "start": "web-bent.webp",
+   "strength": 0.45,
+   "seed": 31,
+   "w": 1024,
+   "h": 768,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, spider, insect, ground, grass, background scenery",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game, seen from the side: a large silvery spider orb web strung between two slender mossy wooden posts wrapped in silk, the web bellied far out to the right by a strong gust of wind, strands stretched taut in a deep curve, a few small leaves and petals blowing through, warm dusk golden light on the silk strands, on one flat plain pure bright magenta background, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "w5web-billow2-s23",
+   "start": "web-bent.webp",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1024,
+   "h": 768,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, spider, insect, ground, grass, background scenery",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game, seen from the side: a large silvery spider orb web strung between two slender mossy wooden posts wrapped in silk, the web bellied far out to the right by a strong gust of wind, strands stretched taut in a deep curve, a few small leaves and petals blowing through, warm dusk golden light on the silk strands, on one flat plain pure bright magenta background, thin dark outline, soft cel shading, evenly lit, no text"
+  }
+ ]
+}
