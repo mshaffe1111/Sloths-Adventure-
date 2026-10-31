@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 import {defineConfig} from 'vite';
 import { execSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 
 // the time of the latest commit, shown on the start screen so you can tell which version a device has. The deploy checks out the commit,
 // so git has it; GAME_BUILD_TIME overrides it (the preview build has no git folder); the build time is the last resort.
@@ -27,7 +28,7 @@ export default defineConfig(() => {
   const buildTime = lastUpdate();
   return {
     base,
-    define: { __BUILD_TIME__: JSON.stringify(buildTime) },
+    define: { __BUILD_TIME__: JSON.stringify(buildTime), __APP_VERSION__: JSON.stringify(JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version) },
     plugins: [
       react(),
       // the published stamp an open copy of the game compares itself with (src/game/updates.ts)
