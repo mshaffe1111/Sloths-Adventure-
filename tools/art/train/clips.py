@@ -85,9 +85,9 @@ SOURCE = {
     # wave at game size)
     'teeter': ('x14-stepback-s3', [20, 20, 21, 22, 23, 24, 24, 23, 22, 21], None),
     'step-back': ('x14-stepback-s3', list(range(15, 31)), None),
-    # the jump (pokey-anim, 2026-10-30, tools/art/pokeyanim/spec-anim1.json): pa-jump-s11's flight (9-21; 8 smears his face, 22 his paws) from the take-off stretch through the
+    # the jump (pokey-anim, 2026-10-30, tools/art/pokeyanim/spec-anim1.json): pa-jump-s11's flight (12-21: 8 smears his face, 9-11 turn him toward the camera, 22 blurs his paws) from the take-off stretch through the
     # rise, the top (one leg kicked back) and the fall with his arms up; the game picks the frame by his vertical speed (heroClips jumpU)
-    'move-jump': ('pa-jump-s11', list(range(9, 22)), None),
+    'move-jump': ('pa-jump-s11', list(range(12, 22)), None),
 }
 # sheets whose frames are re-centred on his torso one by one (a run or walk drifts a little in the clip; in the game the body must stay put)
 RECENTER = {'move-run', 'move-walk', 'move-jump', 'move-flip'}

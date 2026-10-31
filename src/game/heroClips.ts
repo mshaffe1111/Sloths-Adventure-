@@ -150,8 +150,12 @@ export const MOVE_SHEETS: Record<string, string> = {
 export const CLIMB_CYCLE_PX = 110;
 /** the swing sheet runs from the back of the swing to the front; this angle (radians) or more is the end of the sheet */
 export const SWING_REACH = 1.0;
-/** the jump sheet runs from take-off to the bottom of the fall, by vertical speed from this (rising, px/s) to this (falling) */
-export const JUMP_VY: [number, number] = [-720, 620];
+/**
+ * the jump sheet runs from just after take-off to the bottom of the fall, by vertical speed from this (rising, px/s) to this (falling).
+ * Rising faster than the first, the painted take-off stretch (the standard hero's `launch`) shows instead: the clip's own take-off frames
+ * turn him toward the camera.
+ */
+export const JUMP_VY: [number, number] = [-580, 620];
 /** strides per turn of walkCycle (the same rate as the standard hero's cycle, so the feet keep pace with the ground) */
 const STRIDE_RATE = 0.6;
 const WALK_MAX = 90;
@@ -224,7 +228,7 @@ export function movePick(p: PlayerState): ClipFrame | null {
   // an ordinary jump (not a dive or a bounce, which keep their own frames): take-off, the top, the fall, by vertical speed
   if (!p.grounded && !p.hanging) {
     const sheet = MOVE_SHEETS.jump;
-    if (p.isDoubleJumping || p.diving || p.bounce || !hasClip(sheet)) return null;
+    if (p.isDoubleJumping || p.diving || p.bounce || p.vy < JUMP_VY[0] || !hasClip(sheet)) return null;
     return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, jumpU(p.vy)));
   }
   if (!p.grounded || p.climbing || p.hanging || p.isVineSwinging || p.ducking || p.pushing) return null;

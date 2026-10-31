@@ -28,14 +28,14 @@ frame. `trace-before-*.json` and `trace-after-*.json` are **byte-identical**, si
 - `moves-side-before-after.mp4` (stacked), `moves-up-before-after.mp4` (side by side): the whole run at 30 fps.
 - `<move>-side.jpg`, `<move>-up.jpg`: every frame of the turn, the run start, the skid, the hard landing and the double jump, before above, after below.
 - `flip-before-after.jpg`: the flip on a plain ground, old and new.
-- `new-painted-frames.png`, `jump-sheet-13-frames.jpg`: the new frames at game scale.
+- `new-painted-frames.png`, `jump-sheet.jpg`: the new frames at game scale.
 
 ## Polish check
 
 - Turn: the first try squeezed to 15% across; at 30 fps that frame is held whole and showed as a sliver of him (broken-looking).
   Now 55%: `turn-side.jpg`, `turn-up.jpg`.
 - Skid dust: the first try read as tan stones lying on the path. Now small, soft and lifting as it fades: `skid-side.jpg`.
-- Jump sheet: clip frame 8 smeared his face and 22 blurred his paws; both left out: `jump-sheet-13-frames.jpg`.
+- Jump sheet: clip frame 8 smeared his face and 22 blurred his paws; both left out: `jump-sheet.jpg`.
 - The skid frame holds 3 frames; the engine's own reversal is only 2 (it takes 160 px/s off in one frame), so the skid keys off the speed of the frame before.
 
 ## Hugging Face (log: `tools/art/pokeyanim/jobs.txt`)
