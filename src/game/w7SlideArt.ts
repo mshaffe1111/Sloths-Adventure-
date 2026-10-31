@@ -22,6 +22,7 @@ import { FLUME_SHEETS } from './w7SlideAtlas.ts';
 import { drawFlowerSprite, FLOWER_SIZE } from './flowerSprites.ts';
 import { AMBIENT, CAVE_ROOF, CAVE_X, GLOWS, HANGS, LIGHT_RGB, POKEY_MIN, RAIL_H, RAIL_X, buildScene, type LightKind, type Prop, type Scene } from './w7SlideScene.ts';
 import { FONT_UI } from './fonts.ts';
+import { drawFx, fxFrame } from './bossFx.ts';
 
 const U = (n: string) => new URL(`../assets/w7slide/${n}`, import.meta.url).href;
 const URLS = {
@@ -560,7 +561,9 @@ export function drawSlide(ctx: CanvasRenderingContext2D, sim: SlideSim, W: numbe
   }
   drawStreaks(ctx, v, sim);
 
-  // 4. Pokey, lit where he is
+  // 4. Pokey, lit where he is, the dust off his seat behind him
+  stepDust(sim);
+  drawDust(ctx, v, sim);
   drawPokey(ctx, v, sim, sc, ex);
 
   const vg = ctx.createRadialGradient(v.cx, v.hy + H * 0.12, Math.min(W, H) * 0.3, v.cx, v.hy + H * 0.12, Math.max(W, H) * 0.8);
@@ -745,9 +748,70 @@ function pose(sim: SlideSim): { n: string; tilt: number; shift: number } {
   if (sim.safeT > SLIDE.safe - 0.5 && sim.hits + sim.stumbles > 0) return { n: 'hurt', tilt: (sim.hits + sim.stumbles) % 2 ? 0.12 : -0.12, shift: 0 };
   if (!sim.grounded) return { n: 'jump', tilt: 0, shift: 0 };
   if (sim.ducking) return { n: 'duck', tilt: 0, shift: 0 };
-  if (sim.lean > 0.4) return { n: 'leanR', tilt: 0.17 * Math.min(1, sim.lean), shift: 0.06 };
-  if (sim.lean < -0.4) return { n: 'grip', tilt: -0.17 * Math.min(1, -sim.lean), shift: -0.06 };
-  return { n: Math.floor(sim.clock * 4) % 2 ? 'grip2' : 'grip', tilt: 0, shift: 0 };
+  // (the tip and the weight follow the lean all the way, so he rolls into a lean and out of it; they only switched on past 0.4, a small
+  // jump in angle on top of the change of picture: pokey-anim, 2026-10-31)
+  const l = Math.max(-1, Math.min(1, sim.lean));
+  const tilt = 0.17 * l, shift = 0.06 * l;
+  if (l > 0.4) return { n: 'leanR', tilt, shift };
+  if (l < -0.4) return { n: PIECE.leanL ? 'leanL' : 'grip', tilt, shift };
+  return { n: Math.floor(sim.clock * 4) % 2 ? 'grip2' : 'grip', tilt, shift };
+}
+
+/** landing from a jump on the flume: down onto his seat and back up (s, and how far down) */
+const LAND_SQUASH_T = 0.2;
+const LAND_SQUASH = 0.12;
+/** pure: his squash (scale up and down; across is its inverse, softened) this long after landing */
+export function slideSquash(since: number): number {
+  if (since < 0 || since >= LAND_SQUASH_T) return 1;
+  const u = since / LAND_SQUASH_T;
+  return 1 - LAND_SQUASH * Math.sin(Math.PI * (1 - u) * 0.5) * (1 - u * 0.3);
+}
+
+/**
+ * Dust off his seat (pokey-anim, 2026-10-31: "lean, dust, recover"): the painted dust puffs (boss-fx's dust strip) left behind on the
+ * floor where he was, so the flume carries them back past the camera; more of them, out to the side, in a hard lean, and a burst when he
+ * lands. A small fixed pool, filled on the slide's own clock.
+ */
+const DUST_N = 18;
+const DUST_LIFE = 0.45;
+const DUST_EVERY = 0.09;
+const dust: Array<{ x: number; z: number; t: number; side: number; big: number }> = Array.from({ length: DUST_N }, () => ({ x: 0, z: 0, t: -9, side: 0, big: 0 }));
+let dustNext = 0;
+let dustAt = -1;
+let dustLanded = -9;
+function puff(x: number, z: number, t: number, side: number, big: number) {
+  const d = dust[dustNext];
+  dustNext = (dustNext + 1) % DUST_N;
+  d.x = x; d.z = z; d.t = t; d.side = side; d.big = big;
+}
+function stepDust(sim: SlideSim) {
+  if (sim.clock < dustAt || sim.clock - dustAt > 1) {
+    // a new run (or a respawn): start clean
+    for (const d of dust) d.t = -9;
+    dustAt = sim.clock;
+    dustLanded = sim.landedAt;
+  }
+  if (sim.landedAt !== dustLanded) {
+    dustLanded = sim.landedAt;
+    for (const side of [-1, 0, 1]) puff(drawX(sim) + side * 0.18, sim.z, sim.clock, side, 1);
+  }
+  if (sim.outT < 0 && sim.grounded && sim.clock - dustAt >= DUST_EVERY) {
+    dustAt = sim.clock;
+    const l = sim.lean;
+    // out from under him on the side he leans away from (his weight digs in there)
+    puff(drawX(sim) - Math.sign(l) * 0.2 * Math.abs(l), sim.z, sim.clock, -Math.sign(l) * Math.min(1, Math.abs(l) * 1.4), Math.abs(l) > 0.6 ? 0.6 : 0);
+  }
+}
+function drawDust(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim) {
+  for (const d of dust) {
+    const age = sim.clock - d.t;
+    if (age < 0 || age >= DUST_LIFE) continue;
+    const u = age / DUST_LIFE;
+    const q = P(v, d.x + d.side * 0.5 * age, 0.02 + 0.25 * age, d.z);
+    if (!q) continue;
+    const w = (0.32 + 0.3 * u + 0.25 * d.big) * q[2];
+    drawFx(ctx, fxFrame('dust', Math.min(0.99, 0.2 + 0.8 * u)), q[0], q[1], w, { ay: 0.85, alpha: (1 - u) * (0.45 + 0.25 * d.big), recolor: '#c9a27a', flipX: d.side < 0 });
+  }
 }
 
 function drawPokey(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim, sc: Scene, ex: number) {
@@ -789,8 +853,10 @@ function drawPokey(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim, sc: Sc
   // (always solid: a near prop faded just before him left its fade on the canvas, and he came out see-through)
   ctx.globalAlpha = 1;
   ctx.translate(body[0], body[1] + body[2] * 0.06);
-  // (tipped about his seat, his weight shifted the way he leans)
+  // (tipped about his seat, his weight shifted the way he leans; squashed onto his seat as he lands from a jump)
   ctx.rotate(tilt);
+  const sq = slideSquash(sim.clock - sim.landedAt);
+  ctx.scale(1 + (1 - sq) * 0.5, sq);
   ctx.drawImage(pk, 0, 0, dw, dh, -dw / 2 + shift * dw, -dh, dw, dh);
   ctx.restore();
 }
