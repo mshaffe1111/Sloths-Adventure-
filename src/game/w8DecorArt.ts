@@ -17,10 +17,10 @@ import type { AnimFrame } from './creatureAnim.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { kitUrl } from './protoArt.ts';
 import type { Platform } from './types.ts';
-import { W8B, W8B_URL, W8C_A, W8C_A_URL, W8C_B, W8C_B_URL, W8VAR, W8VAR_URL } from './w8DecorData.ts';
+import { W8B, W8B_URL, W8C_A, W8C_A_URL, W8C_B, W8C_B_URL, W8GLOW, W8GLOW_URL, W8VAR, W8VAR_URL } from './w8DecorData.ts';
 
-type Sheet = 'w8b' | 'w8c' | 'w8cb' | 'w8var' | 'kit';
-const URLS: Record<Sheet, () => string> = { w8b: () => W8B_URL, w8c: () => W8C_A_URL, w8cb: () => W8C_B_URL, w8var: () => W8VAR_URL, kit: () => kitUrl(8) };
+type Sheet = 'w8b' | 'w8c' | 'w8cb' | 'w8var' | 'kit' | 'glow';
+const URLS: Record<Sheet, () => string> = { w8b: () => W8B_URL, w8c: () => W8C_A_URL, w8cb: () => W8C_B_URL, w8var: () => W8VAR_URL, kit: () => kitUrl(8), glow: () => W8GLOW_URL };
 const imgs = new Map<Sheet, HTMLImageElement>();
 const ready = new Set<Sheet>();
 function load(s: Sheet) {
@@ -68,6 +68,8 @@ function frameFor(n: string, x: number): { s: Sheet; f: AnimFrame } | null {
   if (W8B[n]) return { s: 'w8b', f: W8B[n] };
   if (W8C_A[n]) return hash01(x, 21) < 0.5 ? { s: 'w8c', f: W8C_A[n] } : { s: 'w8cb', f: W8C_B[n] ?? W8C_A[n] };
   if (W8VAR[n]) return { s: 'w8var', f: W8VAR[n] };
+  // (the glow-mushroom cluster, painted for this look: HF job hfb-w8glowcaps-g1)
+  if (W8GLOW[n]) return { s: 'glow', f: W8GLOW[n] };
   // (the kit's own: its twisted liana, its mossy post)
   const k = n === 'twist-vine' ? kit('liana') : n === 'mossy-post' ? kit('bankEnd') : undefined;
   return k ? { s: 'kit', f: k } : null;
