@@ -390,7 +390,7 @@ export const loftRoom: SectionTemplate = {
   id: 'w8r-room-loft',
   name: 'puzzle room: the roost loft (knot, ladder, lever)',
   archetypes: 'any',
-  teaches: 'w8:loft',
+  teaches: 'w8:loft-room',
   phases: ['sho', 'ten'],
   difficulty: 5,
   maxPerStage: 1,

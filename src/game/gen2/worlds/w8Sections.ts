@@ -708,9 +708,15 @@ const darkLong = section({
 /** the night theme's dark stretches (8-1): the dark sections again, for the roll that leans on the dark */
 const nightOf = (t: SectionTemplate, id: string): SectionTemplate => ({ ...t, id, name: t.name.replace('the dark', 'the night'), uses: [W8_THEME.night], weight: 3 });
 const nightSections = [nightOf(darkBoughs, 'w8-night-boughs'), nightOf(darkGap, 'w8-night-gap'), nightOf(darkClimb, 'w8-night-climb')];
-/** the loft theme's stretches (8-1, round its puzzle room): the dark trunks and a dark gap, for the roll that climbs to the roost */
+/** the loft theme's stretches (8-1, round its puzzle room) */
 const loftOf = (t: SectionTemplate, id: string): SectionTemplate => ({ ...t, id, uses: [W8_THEME.loft] });
-const loftSections = [loftOf(darkClimb, 'w8-loft-climb'), loftOf(darkGap, 'w8-loft-gap'), loftOf(darkBoughs, 'w8-loft-boughs')];
+// (the loft's roll is its room, the bats' runs and a dark trunk: apart from the night's dark and the bats' own runs on the variety measure)
+const loftSections = [
+  loftOf(darkClimb, 'w8-loft-climb'),
+  loftOf(batRunFirst, 'w8-loft-bats-first'),
+  { ...batRunPair, id: 'w8-loft-bats', uses: [BATRUN, W8_THEME.loft] },
+  { ...batRunGap, id: 'w8-loft-bats-gap', uses: [BATRUN, W8_THEME.loft] },
+];
 
 // ───────────────────────────── 8-2 Night Blooms: the harvest ─────────────────────────────
 
