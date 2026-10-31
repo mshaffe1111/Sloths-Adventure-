@@ -2267,7 +2267,7 @@ export class KitPlay {
   private drawBasket(ctx: CanvasRenderingContext2D, room: RoomRun, b: BasketRun) {
     const my = this.mouthY(room, b);
     // (World 10's Winch House: the grab bag's winch, its drum's top at the jaw, and the stone in its teeth once it is in, w10BagArt.ts)
-    if (this.look.world === 10 && room.spec.id === 'winch') {
+    if (this.look.world === 10 && room.spec.id.endsWith('winch')) {
       const k = (b.y - my) / (388 - 62);
       if (drawW10Bag(ctx, 'winch', b.x, b.y + 4, 388 * k)) {
         if (b.count > 0) drawKitArt(ctx, this.look.stone, b.x + 26 * k, my + 10, { scale: 0.7 });
