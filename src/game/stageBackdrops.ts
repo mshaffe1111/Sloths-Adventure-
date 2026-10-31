@@ -28,7 +28,9 @@ export const FAR_BY_STAGE: Record<number, Record<number, string>> = {
   7: { 1: 'w7dawn', 2: 'w7dawn', 3: 'w7dawn', 7: 'w7dusk', 8: 'w7dusk', 9: 'w7dusk' },
   8: { 1: 'w8sunset', 2: 'w8sunset', 7: 'w8night', 8: 'w8night', 9: 'w8night' },
   9: { 1: 'w9dawn', 2: 'w9dawn', 3: 'w9dawn', 7: 'w9night', 8: 'w9night', 9: 'w9night' },
-  10: { 1: 'w10dusk', 2: 'w10dusk', 3: 'w10dusk', 7: 'w10after', 8: 'w10after', 9: 'w10after' },
+  // (w10after, the sky clearing after the storm, waits for 10-7..10-9 until World 10's rain ends with the storm: rain under a clear
+  // gold sky read wrong, the lead 2026-10-31)
+  10: { 1: 'w10dusk', 2: 'w10dusk', 3: 'w10dusk' },
 };
 
 /** every far-only strip set (it has a far strip of its own, and borrows its world's middle and near strips) */

@@ -1,0 +1,158 @@
+{
+ "tag": "hfbd-w10",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "sky, clouds, fog, haze, gradient background, scenery behind, horizon, perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, people, animals, sloth, magenta objects, pink plants",
+ "items": [
+  {
+   "name": "w10dusk-mid-s60-7",
+   "start": "start-w10dusk-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, bare mountain crags before a storm: jagged dark rock spires, an old stone watchtower, iron lamp posts with chains between them, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, heavy purple storm light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w10dusk-mid-s60-23",
+   "start": "start-w10dusk-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, bare mountain crags before a storm: jagged dark rock spires, an old stone watchtower, iron lamp posts with chains between them, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, heavy purple storm light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w10dusk-mid-s66-7",
+   "start": "start-w10dusk-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, bare mountain crags before a storm: jagged dark rock spires, an old stone watchtower, iron lamp posts with chains between them, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, heavy purple storm light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w10dusk-mid-s66-23",
+   "start": "start-w10dusk-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, bare mountain crags before a storm: jagged dark rock spires, an old stone watchtower, iron lamp posts with chains between them, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, heavy purple storm light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w10dusk-near-s60-7",
+   "start": "start-w10dusk-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of dark wet rocks and stone steps along the bottom of the picture, uneven top edge, heavy purple storm light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w10dusk-near-s60-23",
+   "start": "start-w10dusk-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of dark wet rocks and stone steps along the bottom of the picture, uneven top edge, heavy purple storm light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w10dusk-near-s66-7",
+   "start": "start-w10dusk-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of dark wet rocks and stone steps along the bottom of the picture, uneven top edge, heavy purple storm light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w10dusk-near-s66-23",
+   "start": "start-w10dusk-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of dark wet rocks and stone steps along the bottom of the picture, uneven top edge, heavy purple storm light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w10after-mid-s60-7",
+   "start": "start-w10after-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, bare mountain crags after a storm: jagged dark rock spires, wet stone steps, old iron lamp posts with chains hanging between them, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, clearing gold dawn light, wet rock glinting, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w10after-mid-s60-23",
+   "start": "start-w10after-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, bare mountain crags after a storm: jagged dark rock spires, wet stone steps, old iron lamp posts with chains hanging between them, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, clearing gold dawn light, wet rock glinting, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w10after-mid-s66-7",
+   "start": "start-w10after-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, bare mountain crags after a storm: jagged dark rock spires, wet stone steps, old iron lamp posts with chains hanging between them, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, clearing gold dawn light, wet rock glinting, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w10after-mid-s66-23",
+   "start": "start-w10after-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, bare mountain crags after a storm: jagged dark rock spires, wet stone steps, old iron lamp posts with chains hanging between them, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, clearing gold dawn light, wet rock glinting, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w10after-near-s60-7",
+   "start": "start-w10after-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of wet dark rocks with puddles and stone steps along the bottom of the picture, uneven top edge, clearing gold dawn light, wet rock glinting, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w10after-near-s60-23",
+   "start": "start-w10after-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of wet dark rocks with puddles and stone steps along the bottom of the picture, uneven top edge, clearing gold dawn light, wet rock glinting, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w10after-near-s66-7",
+   "start": "start-w10after-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of wet dark rocks with puddles and stone steps along the bottom of the picture, uneven top edge, clearing gold dawn light, wet rock glinting, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w10after-near-s66-23",
+   "start": "start-w10after-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of wet dark rocks with puddles and stone steps along the bottom of the picture, uneven top edge, clearing gold dawn light, wet rock glinting, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  }
+ ],
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/319d75e67b7b3947e4199f3a9daacfe9c53644a9/reference/prop-sheets/qa-notes/hf-backdrops/starts/"
+}
