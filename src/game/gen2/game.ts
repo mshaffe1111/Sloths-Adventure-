@@ -90,7 +90,8 @@ export const isGen2Stage = (cfg: Pick<LevelConfig, 'id' | 'secret'>): boolean =>
 export function gen2Water(id: string): boolean {
   const M = GEN2_STAGES[id]?.kit('normal').manifest;
   if (!M) return false;
-  return M.pit === 'water' || M.pit === 'void' || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
+  // (a deadly chasm shows water far below, World 7; World 8's treetops have none: pipeline.ts assemble)
+  return M.pit === 'water' || (M.pit === 'void' && !id.startsWith('8-')) || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
 }
 
 /** the creature sheets a gen2 stage's world can lay (its manifest's animals, by clip-sheet name: a snake draws the golden snake's) */

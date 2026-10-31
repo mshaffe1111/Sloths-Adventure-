@@ -1341,8 +1341,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // (gone once he is past it) and a sign at the edge (proto.gen2.waterWarnings, for the world's art). Normal warns at the first water
   // only (the teaching rule); Easy at every water gap once WATER_WARN.every seconds of walking passed since the last warning.
   // (a deep chasm, a world's `void` falls on Normal, costs a life the same way: it shows the world's dirty water far below as its line,
-  // painted, and is warned the same way)
-  const wet = laid.gaps.filter((g) => budget.pit === 'water' || budget.pit === 'void' || g.water);
+  // painted, and is warned the same way; World 8's treetops have no water: its drop is warned by its own line, w8.ts)
+  const wet = laid.gaps.filter((g) => budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || g.water);
   if (wet.length) {
     const every = WATER_WARN.every * budget.walkSpeed;
     const text = M.tips?.water ?? WATER_LINE;
