@@ -23,6 +23,12 @@ export const FAR_BY_STAGE: Record<number, Record<number, string>> = {
   // (World 6, 2026-10-29: dawn over the canopy, then dusk; Worlds 7-10 have theirs painted too, src/assets/w6to10/manifest.json, to
   // set in as those worlds are built)
   6: { 1: 'w6dawn', 2: 'w6dawn', 3: 'w6dawn', 7: 'w6dusk', 8: 'w6dusk', 9: 'w6dusk' },
+  // (Worlds 7-10, 2026-10-31 hf-backdrops: their painted moods were made on 2026-10-29 and never set in, so every stage of a world
+  // played under the same sky; the order follows each world's story light, gen2/worlds/w7.ts and w8.ts)
+  7: { 1: 'w7dawn', 2: 'w7dawn', 3: 'w7dawn', 7: 'w7dusk', 8: 'w7dusk', 9: 'w7dusk' },
+  8: { 1: 'w8sunset', 2: 'w8sunset', 7: 'w8night', 8: 'w8night', 9: 'w8night' },
+  9: { 1: 'w9dawn', 2: 'w9dawn', 3: 'w9dawn', 7: 'w9night', 8: 'w9night', 9: 'w9night' },
+  10: { 1: 'w10dusk', 2: 'w10dusk', 3: 'w10dusk', 7: 'w10after', 8: 'w10after', 9: 'w10after' },
 };
 
 /** every far-only strip set (it has a far strip of its own, and borrows its world's middle and near strips) */

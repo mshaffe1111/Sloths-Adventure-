@@ -76,6 +76,13 @@ def main(out, name, world, part, grade, seed, W=2048, H=None):
         reg[..., :3] = q[:, :x1 - x, :3] * al + reg[..., :3] * (1 - al)
         reg[..., 3:4] = np.maximum(reg[..., 3:4], q[:, :x1 - x, 3:4])
         x += round(pw * rnd.uniform(0.84, 0.95))
+    # nothing may float: keep only the painted shapes joined to the ground band (pilot 2: a cut-off crown or a loose hanging piece
+    # came back from the repaint as a floating root, an upside-down palm, a creature-like plant)
+    from scipy import ndimage
+    lab, n = ndimage.label(canvas[..., 3] > 60)
+    grounded = set(np.unique(lab[-max(8, H // 12):])) - {0}
+    keep = np.isin(lab, list(grounded))
+    canvas[..., 3] *= ndimage.binary_dilation(keep, iterations=2)
     # fit the laid row to the width
     row = Image.fromarray(canvas[:, :max(x, 64)].clip(0, 255).astype(np.uint8)).resize((W, H), Image.LANCZOS)
     a = np.asarray(row).astype(np.float32)

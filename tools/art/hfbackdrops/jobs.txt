@@ -3,3 +3,9 @@ GPU rtx-pro-6000 at about $2.75 an hour. Times UTC. Bucket mshaffe111/w5-xfer un
 hfbd-pilot  6ae65aeac78863f9c62f4c64 rtx-pro-6000 21:17:30Z-~21:20:30Z (~3 min, ~$0.14, cancelled): text to image on magenta, 2048x896.
   THROWN: the key is not kept (w1kapok on a pink sky with rain and clouds, w10b a full storm sky, w7dusk on flat green) and the
   paint is flatter than the game's strips. Strips are img2img from paste-ups from now on (starts.py).
+hfbd-pilot2 6ae65c130e0338d1bb7d43aa rtx-pro-6000 21:22:27Z-~21:31Z (~9 min, ~$0.41): img2img (w6to10/img2imggpu.py) from starts.py
+  paste-ups of the world's own middle strip, 2048x1104, s60/s72, seed 7: w7dusk, w1kapok, w10after, w3cavern, w6dusk middle strips.
+  KEY KEPT clean magenta at both strengths. s60: new layouts in the game's paint (w7dusk-mid-s60-7 cut, graded with haze.py and shot
+  in 7-8: mock-7-8-before-after.jpg). s72 finishes the tree crowns (the upright fix) but turns loose pieces of the start into
+  floating junk (a hanging root, an upside-down palm, a creature-like plant): starts.py now drops every shape not joined to the ground.
+running total ~$0.55 of $28
