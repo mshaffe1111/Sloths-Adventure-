@@ -386,7 +386,9 @@ export function drawCarveRing(ctx: CanvasRenderingContext2D, tr: MeecaTrunk, t: 
   if (finger) {
     // the ghost finger: a pale fingertip on the light, its nail toward the ring's middle
     ctx.rotate(-Math.PI / 2);
-    ctx.globalAlpha = 0.85;
+    // (half as big again: on a phone it read as a white dash, QA 2026-10-31)
+    ctx.scale(1.5, 1.5);
+    ctx.globalAlpha = 0.9;
     ctx.fillStyle = 'rgba(255, 236, 222, 0.92)';
     ctx.strokeStyle = 'rgba(120, 80, 70, 0.7)';
     ctx.lineWidth = 1.5;

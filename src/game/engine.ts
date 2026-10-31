@@ -213,6 +213,11 @@ const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
 /** how fast the shift that shows a landing across a gap eases in and out (per second), and for a landing still out of the view */
 const LAND_EASE = { rate: 4.5, fast: 10 } as const;
+/**
+ * Meeca's thin logs (5-M): a jump whose top leaves her feet this far under a log's top, her middle this far inside its ends, and rising
+ * no faster than this, lands on it (a block has its lip hoist, forgive.mantle; a 24 px log had nothing, and she fell away from it)
+ */
+const LIP_CATCH = { px: 22, inside: 10, v: 90 };
 const INTRO_ZOOM_FROM = 0.9; // a gentle dolly: the old 0.78 opened on a wide shot full of dark ground, so every stage began noticeably darker
 const INTRO_ZOOM_SECS = 1.3;
 
@@ -2307,7 +2312,10 @@ export class GameEngine {
           if (Math.max(missL, missR) > this.forgive.landPx || (missL > 0 ? p.vx : -p.vx) < 30) return false;
         }
         // Check landing from above
-        return p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y;
+        if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) return true;
+        // Meeca's stage: a thin log (no face to hoist up, LIP_CATCH) caught at the top of a jump with her feet just under its top and her
+        // middle over it. QA 2026-10-31, the blind tester sideways: "level with the top of the log, then dropped through it", twice
+        return !!this.mc && plat.height < 50 && plat.type === 'solid' && !p.climbing && p.vy >= -LIP_CATCH.v && playerFeet > plat.y && playerFeet <= plat.y + LIP_CATCH.px && p.x > plat.x + LIP_CATCH.inside && p.x < plat.x + plat.width - LIP_CATCH.inside;
       });
       // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
       // so a lift never rises without him
@@ -5322,7 +5330,10 @@ export class GameEngine {
       return null;
     }
     const ledge = this.camLedge;
-    const route = this.proto?.w4?.route;
+    // (Meeca's trails have their way through too, step by step: on a log, the next log shows wherever on it she stands, not only near
+    // its end. QA 2026-10-31, Matt upright: "the next log is off screen", a blind hop. Off her route, the plain look across a gap below)
+    const mcRoute = this.mc?.route;
+    const route = this.proto?.w4?.route ?? (mcRoute && ledge && mcRoute.indexOf(ledge.id) >= 0 && mcRoute.indexOf(ledge.id) + 1 < mcRoute.length ? mcRoute : undefined);
     if (route && ledge) {
       const i = route.indexOf(ledge.id);
       const next = i >= 0 && i + 1 < route.length ? this.platforms.find((q) => q.id === route[i + 1]) : undefined;

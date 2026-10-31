@@ -154,8 +154,10 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
         // (the moment it becomes a circle, the slide it started as lets go: no walk, no jump, no kick when it lifts)
         if (!was && trace.current.circling(t.identifier)) G.cancelFinger(t.identifier, now);
         if (rad > 0) inputEngine.addCircle(rad);
-        if (trace.current.circling(t.identifier)) continue;
       }
+      // (a circling finger stays the carving's until it lifts, even once the trunk is cut: QA 2026-10-31, the circles still going round
+      // after the last stroke steered her away from the trunk)
+      if (trace.current.circling(t.identifier)) continue;
       G.move(t.identifier, t.clientX, t.clientY, now);
     }
   };

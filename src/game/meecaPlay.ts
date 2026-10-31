@@ -114,8 +114,12 @@ export const WALL_PAD = 14;
 export const WALL_STEP = 48;
 /** tries at a trunk that carved nothing (a tap, a poke, a flick) before a still finger held down carves too (the accessible way) */
 export const HOLD_AFTER_TRIES = 3;
+/** a tap at the trunk is a try once this long has passed with no jump, flick or circle after it (s) */
+const TRY_SETTLE = 0.3;
 /** how long the "done" moment shows (the M glowing, Flicker happy) */
 export const DONE_S = 1.6;
+/** at a trunk, the ring's middle stays at least this far in from the left edge of the view (world px: the ring, its glow, Flicker) */
+export const RING_MARGIN = 110;
 /** the shortest time a scene line stays before a tap moves it on */
 const LINE_MIN = 0.45;
 const FADE_OUT = 1.2;
@@ -192,6 +196,8 @@ export class MeecaPlay {
   /** at the trunk to cut now: the tries that carved nothing (a tap, a poke, a flick), and when the last was */
   tries = 0;
   private tryAt = -99;
+  /** a tap or poke at the trunk, waiting to see if it stays one (TRY_SETTLE) */
+  private pendTry = -1;
   /** the still-finger way of carving is open (after HOLD_AFTER_TRIES tries) */
   holdOk = false;
   /** the last trunk cut, and when (the "done" moment: its M glows, Flicker is glad) */
@@ -206,8 +212,12 @@ export class MeecaPlay {
   /** what the stuck watch told us (Easy's sparkle is the kit's; this keeps the room, for the hint) */
   private stuckIn = '';
 
+  /** the trails' way through, the platforms one after another (the camera shows the next one: engine.ts landingToShow) */
+  readonly route: number[];
+
   constructor(readonly st: MeecaStage, private readonly host: MeecaHost) {
     this.cut = st.trunks.map(() => 0);
+    this.route = st.trails.flatMap((tr) => tr.steps.flatMap((s) => (s.kind === 'plat' ? [s.id] : [])));
     this.home = { x: st.spawn.x, y: st.spawn.y };
     const c = st.clearing;
     this.pell = { x: c.pellFrom, y: c.y, face: -1, pose: 'idle', poseT: 0, coat: 'a' };
@@ -348,8 +358,13 @@ export class MeecaPlay {
     this.touchHold = !!s.touchHold;
     this.circle = Math.abs(s.circle ?? 0);
     s.circle = 0;
-    // (a try at the trunk that carved nothing: a tap, a poke or a flick while she stands there and nothing is being cut)
-    if (this.carveSpot && !this.carvingNow && this.circle <= 0 && (s.punchPressed || s.kickPressed || s.megaPunchPressed) && this.t - this.tryAt > 0.5) {
+    // (a try at the trunk that carved nothing: a tap or a poke while she stands there and nothing is being cut. Counted only once it has
+    // stayed one for a moment: the touch controls start every right-hand touch as a tap and take it back if it turns into a flick, a
+    // jump or a kick, which are trying the way on, not the carving)
+    if (this.carveSpot && !this.carvingNow && this.circle <= 0 && (s.punchPressed || s.megaPunchPressed) && this.pendTry < 0) this.pendTry = this.t;
+    if (s.jumpPressed || s.kickPressed || this.circle > 0 || !this.carveSpot) this.pendTry = -1;
+    if (this.pendTry >= 0 && this.t - this.pendTry >= TRY_SETTLE && this.host.player.grounded) {
+      this.pendTry = -1;
       this.tryAt = this.t;
       this.tries++;
       if (this.tries >= HOLD_AFTER_TRIES && !this.holdOk) {
@@ -832,6 +847,24 @@ export class MeecaPlay {
    * The camera in the scenes (elsewhere the engine's own, which frames the puzzle rooms): the card's opening shot of the camp, the
    * moonflower and her looking up at it, and the two of them above the story box at the end.
    */
+  /** how far the view has leaned to show the trunk she is carving (0..1) */
+  private ringLean = 0;
+  /**
+   * At a trunk to cut, the view keeps the ring on the bark and Flicker beside it well inside the screen (QA 2026-10-31, the blind tester
+   * upright: the ring and Flicker's light sat half off the left edge). Eased in and out; the engine's own framing otherwise.
+   */
+  private ringFrame(cam: { x: number; viewportWidth: number }, dt: number) {
+    const tr = this.next;
+    const on = this.carveSpot && !!tr;
+    this.ringLean = Math.max(0, Math.min(1, this.ringLean + (on ? dt : -dt) / 0.5));
+    if (!tr || this.ringLean <= 0) return;
+    const k = this.ringLean * this.ringLean * (3 - 2 * this.ringLean);
+    const vw = cam.viewportWidth;
+    // (the ring's left edge and Flicker's glow at least RING_MARGIN in; never so far that she leaves the view on the right)
+    const want = Math.max(Math.min(cam.x, tr.textX - RING_MARGIN), this.host.player.x + 40 - vw);
+    cam.x = Math.max(0, cam.x + (want - cam.x) * k);
+  }
+
   camera(cam: { x: number; y: number; viewportWidth: number; viewportHeight: number }, dt = 1 / 30) {
     const p = this.host.player;
     const vw = cam.viewportWidth;
@@ -846,6 +879,7 @@ export class MeecaPlay {
     }
     if (!want) {
       this.camX = NaN;
+      this.ringFrame(cam, dt);
       return;
     }
     this.camX = Number.isFinite(this.camX) ? this.camX + (want.x - this.camX) * ease : cam.x;

@@ -128,6 +128,13 @@ test('5-M: three tries that carve nothing open the slow way: a still finger held
   s.frame();
   for (let i = 0; i < 30; i++) s.frame({ touchHold: true });
   assert.equal(mc.cut[0], 0, 'a held finger carves nothing at first');
+  // (a flick at the wall starts as a tap in the touch controls, then jumps: trying the way on, not a try at the carving)
+  for (let k = 0; k < 4; k++) {
+    s.frame({ punch: true });
+    s.frame({ jump: true, press: true });
+    for (let i = 0; i < 30; i++) s.frame();
+  }
+  assert.equal(mc.tries, 0, 'jumps are not tries');
   for (let k = 0; k < 3; k++) {
     s.frame({ punch: true });
     for (let i = 0; i < 20; i++) s.frame();
@@ -137,7 +144,7 @@ test('5-M: three tries that carve nothing open the slow way: a still finger held
   assert.equal(mc.marked, 1, `held: ${mc.cut[0].toFixed(2)} of ${carveSeconds(tr.lines)}`);
 });
 
-test('5-M: checkpoints past the camp, past the mark and at every room door, each behind the next trunk; a run picked up at a flag', () => {
+test('5-M: checkpoints past the camp, at the mark and at every room door, each behind the next trunk; a run picked up at a flag', () => {
   for (const seed of [1, 38, 75, 112]) {
     const s = new RealPlay('5-M', seed);
     const mc = (s.e as { mc: MeecaPlay }).mc;
@@ -145,7 +152,7 @@ test('5-M: checkpoints past the camp, past the mark and at every room door, each
     assert.ok(cps.length >= 7, `${cps.length} flags`);
     const st = mc.st;
     assert.ok(cps.some((c) => c.x > st.campEnd && c.x < st.trunks[0].x), 'one past the camp');
-    assert.ok(cps.some((c) => c.x > st.trunks[0].x + st.trunks[0].w / 2 + 14 && c.x < st.trunks[1].x), 'one past the mark');
+    assert.ok(cps.some((c) => c.x > st.flickerX && c.x < st.trunks[0].x - 150), 'one by Flicker, before the mark (clear of its wall)');
     // (room 5's door is in the dark, where no flag may stand: its flag is past room 4's trunk, the last thing before it)
     const rooms = (s.e as { kit: { rooms: Array<{ box: { x0: number; x1: number } }> } }).kit.rooms;
     rooms.forEach((r, k) => {
@@ -174,4 +181,20 @@ test(`5-M: a jump of more than ${WALL_STEP} px in a frame is her being put somew
   s.stand(tr.x + 600, tr.standY);
   s.frame();
   assert.ok(s.p.x > tr.x + 500, `${s.p.x}`);
+});
+
+test('5-M: a jump that tops out with her feet just under a thin log lands on it (the blind tester: "level with it, then dropped through")', () => {
+  const { sim: s, mc } = sim(1, 844, 390, 'off');
+  mc.marked = mc.st.trunks.length;
+  const logs = s.platforms.filter((p) => p.type === 'solid' && p.height < 50 && p.y < 560 && p.width >= 80);
+  assert.ok(logs.length > 5);
+  for (const lg of logs.slice(0, 8)) {
+    for (const [under, vy, lands] of [[12, 0, true], [16, 30, true], [12, -60, true], [40, 0, false], [12, -400, false]] as const) {
+      s.stand(lg.x + lg.width / 2, lg.y);
+      Object.assign(s.p, { y: lg.y + under, vy, grounded: false });
+      s.frame();
+      if (lands) assert.ok(s.p.grounded && Math.abs(s.p.y - lg.y) < 1, `log ${lg.id}: ${under} px under, vy ${vy}: landed (y ${s.p.y.toFixed(1)})`);
+      else assert.ok(!(s.p.grounded && Math.abs(s.p.y - lg.y) < 1), `log ${lg.id}: ${under} px under, vy ${vy}: not caught`);
+    }
+  }
 });

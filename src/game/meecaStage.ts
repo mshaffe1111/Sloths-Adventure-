@@ -94,7 +94,8 @@ export interface MeecaStage {
   flickerAt: { x: number; y: number };
   trunks: MeecaTrunk[];
   /**
-   * the checkpoint flags (x, on the path's ground): past the camp, past the trail mark, at each room's door, and for room 5 (whose door
+   * the checkpoint flags (x, on the path's ground): past the camp, by Flicker before the trail mark (past it, it stood right at the
+   * trunk's wall and read as the thing stopping her; a life lost after the mark comes back here with the mark still cut), at each room's door, and for room 5 (whose door
    * is in the dark, where no flag may stand) past room 4's trunk (QA 2026-10-31: the spawn was the only flag, so any lost life sent her
    * back to her bedroll). Each stands behind the next trunk to cut, never past it.
    */
@@ -590,7 +591,7 @@ export function buildMeecaStage(seed = 1): MeecaStage {
   const st: MeecaStage = {
     seed, width, spawn: { x: spawn, y: G }, campEnd, camp, highX: trails[0].x0 + 120, forkX, flickerX, flickerAt: { x: flickerX + 150, y: G - 130 },
     trunks, darkX0: e0 - 60, clearing, beats, trails, landmarks,
-    flags: [campEnd + 60, mark.x + 100, r1 + 20, b0 - 20, c0 - 20, d0 - 20, t4.x + 120],
+    flags: [campEnd + 60, mark.x - 200, r1 + 20, b0 - 20, c0 - 20, d0 - 20, t4.x + 120],
   };
   BUILT.set(st, { platforms: P, vines, trees, kit, zones });
   return st;
