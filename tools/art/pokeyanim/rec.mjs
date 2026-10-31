@@ -27,6 +27,13 @@ if (SCENE === 'climb') {
   SCRIPT.push([10, 'down ArrowUp'], [38, 'up ArrowUp'], [48, 'down ArrowDown'], [80, 'up ArrowDown']);
   N = 125;
 }
+// SCENE=punch: the three-punch combo standing on 1-1, then a jab on the run
+if (SCENE === 'punch') {
+  SCRIPT.length = 0;
+  SCRIPT.push([10, 'down KeyJ'], [11, 'up KeyJ'], [20, 'down KeyJ'], [21, 'up KeyJ'], [30, 'down KeyJ'], [31, 'up KeyJ'],
+    [55, 'down ArrowRight'], [65, 'down KeyJ'], [66, 'up KeyJ'], [80, 'up ArrowRight']);
+  N = 95;
+}
 
 const b = await chromium.launch();
 for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) => !process.env.ORI || process.env.ORI === o)) {
