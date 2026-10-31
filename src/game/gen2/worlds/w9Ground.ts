@@ -1042,21 +1042,6 @@ const harpyGap = section({
   mirrorable: true,
 });
 
-/** boas: a boa on a flat between two geyser flats */
-const boaVents = section({
-  id: 'w9-boa-vents',
-  name: 'boa between the geysers',
-  archetypes: ['purge', 'gauntlet', 'stealth'],
-  phases: LIVE,
-  difficulty: 7,
-  uses: [GEYSER],
-  extraSeconds: GEYSER_WAIT * 2,
-  pieces: [bank('a', [300, 340]), up('k', 'a', 32, [140, 160]), down('boa', 'k', 32, [460, 500]), up('k2', 'boa', 34, [140, 160]), down('c', 'k2', 34, [300, 340])],
-  last: 'c',
-  sockets: [geyser('g1', 'a', 0.5), petals('k', 'k', 0.5, 1), watch('boa', 0.05), hideAt('h1', 'boa', 0.2), foe('boa', 'boa', [0.68, 0.75], ['boa'], 3), petals('k2', 'k2', 0.5, 1), geyser('g2', 'c', 0.5)],
-  mirrorable: true,
-});
-
 const boaK = knobs('', 'a', 2, [440, 480]);
 /** boas: boas coiled on the flats between knobs, a tayra at the end */
 const boaKnobs = section({
@@ -1319,7 +1304,6 @@ export const W9_GROUND_SECTIONS: SectionTemplate[] = [
   jaguarLeap,
   harpyField,
   harpyGap,
-  boaVents,
   boaKnobs,
   catLedges,
   prowlCrust,
@@ -1349,7 +1333,7 @@ export const W9_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = Object
   ...[...pepperGates, ventField, ventLanding, chasmChain, chasmDrop, geyserPair, geyserRow, geyserLedge, geyserChasm, lavaHop, lavaRise, restOhia].map((s) => [s.id, [1]] as const),
   [restSteps.id, [1, 3]] as const,
   ...[landing, crustGaps, lavaDrop].map((s) => [s.id, [3]] as const),
-  ...[...watchGates, spireRun, spireChasm, fernVents, fernGap, watchSteps, watchPillars, fernLong, boaVents, boaKnobs, restNook, restHollow].map((s) => [s.id, [4]] as const),
+  ...[...watchGates, spireRun, spireChasm, fernVents, fernGap, watchSteps, watchPillars, fernLong, boaKnobs, restNook, restHollow].map((s) => [s.id, [4]] as const),
   ...[...ventGates, glideTwin, glideHigh, burstLanding, burstRow, restWarm].map((s) => [s.id, [5]] as const),
   [geyserBrink.id, [1]] as const,
   ...[huntGates[0], huntGates[1], catDen, jaguarLeap, hunterRun, hunterBrink, catLedges, prowlCrust, catChasm].map((s) => [s.id, [6]] as const),

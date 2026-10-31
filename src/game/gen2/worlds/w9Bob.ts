@@ -481,6 +481,53 @@ const capChasm = section({
   mirrorable: false,
 });
 
+// ───────────────────────────── 9-4's coils: an ash cap over the coiled boa (its own beat, in place of the geysers 9-1 shares) ─────────────────────────────
+
+/** the first ash cap of a coils roll (9-4 teaches it itself: caps are 9-1's and 9-6's themes, never 9-4's neighbours'): up onto the
+ *  high rock, down past a sleeping boa, under the eagle's watch */
+const firstCoilCap = section({
+  id: 'w9-first-coil-cap',
+  name: 'the first ash cap, over the coils',
+  archetypes: ['stealth'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: CAP,
+  uses: [W9_THEME.coils],
+  maxPerStage: 1,
+  pieces: [bank('a', [340, 380]), cap('f', 'a'), high('hi', 'a', [260, 300]), down('b', 'hi', CAP_HI, [300, 340])],
+  last: 'b',
+  sockets: [tip(CAP, 'a', 0.2), W9H.watch('a', 0.05), W9H.hideAt('h1', 'a', 0.35), petals('hi', 'hi', 0.5, 2, 100), petals('b', 'b', 0.6, 1)],
+  mirrorable: false,
+});
+
+/** a boa coiled on the low flat: the cap lifts him onto the high rock over it, and he drops past it while it sleeps */
+const boaCap = section({
+  id: 'w9-boa-cap',
+  name: 'ash cap over the coiled boa',
+  archetypes: ['stealth'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.coils, CAP],
+  pieces: [bank('a', [300, 340]), cap('f', 'a'), high('hi', 'a', [300, 340]), down('m', 'hi', CAP_HI, [420, 460]), up('k', 'm', 30, [140, 160]), down('c', 'k', 30, [220, 260])],
+  last: 'c',
+  sockets: [W9H.watch('a', 0.05), W9H.hideAt('h1', 'a', 0.3), petals('hi', 'hi', 0.5, 2, 100), W9H.hideAt('h2', 'm', 0.15), foe('boa', 'm', [0.6, 0.7], ['boa'], 3), petals('k', 'k', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** two caps, a boa coiled on the flat between their high rocks */
+const boaCapPair = section({
+  id: 'w9-boa-cap-pair',
+  name: 'two ash caps, a boa between',
+  archetypes: ['stealth'],
+  phases: LIVE,
+  difficulty: 7,
+  uses: [W9_THEME.coils, CAP],
+  pieces: [bank('a', [300, 340]), cap('f1', 'a'), high('h1', 'a', [240, 280]), down('m', 'h1', CAP_HI, [440, 480]), cap('f2', 'm'), high('h2', 'm', [240, 280]), down('b', 'h2', CAP_HI, [240, 280])],
+  last: 'b',
+  sockets: [W9H.watch('a', 0.05), petals('h1', 'h1', 0.5, 2, 90), W9H.hideAt('hm', 'm', 0.2), foe('boa', 'm', [0.45, 0.55], ['boa'], 3), petals('h2', 'h2', 0.5, 2, 90)],
+  mirrorable: false,
+});
+
 // ───────────────────────────── 9-9's own: the hoard's guards with its logs and slabs ─────────────────────────────
 
 /** 9-9: two logs, a guard on the landing between them */
@@ -614,6 +661,7 @@ export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
   ropeGate3, W9_BOB_GATES.bridges8, ropeCross, ropeTwin, ropeChasm,
   sinkGate3, W9_BOB_GATES.sinkers9, W9_BOB_GATES.sinkers6, firstSink, sinkRun, sinkTwin, sinkHoard,
   W9_BOB_GATES.rafts, firstRaft, raftPair, raftRow, raftGeyser,
+  firstCoilCap, boaCap, boaCapPair,
   W9_BOB_GATES.logs5, W9_BOB_GATES.logs9, firstLog, logGlide, logHoard,
   W9_BOB_GATES.pistons, firstPiston, pistonPair, pistonChasm,
 ];
@@ -621,7 +669,7 @@ export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
 /** which stages hold which (STAGE-RULES §2 "Sameness": neighbours in play share none; GRAB-BAG.md §4) */
 export const W9_BOB_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_BOB_GATES.rafts.id]: [1], [firstRaft.id]: [1], [raftPair.id]: [1], [raftRow.id]: [1], [raftGeyser.id]: [1],
-  [W9_BOB_GATES.logs5.id]: [5], [firstLog.id]: [5, 9], [logGlide.id]: [5], [glideLog.id]: [5], [logGlideLog.id]: [5], [W9_BOB_GATES.pistons5.id]: [5], [firstPiston5.id]: [5], [pistonGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logGuards.id]: [9], 
+  [W9_BOB_GATES.logs5.id]: [5], [firstLog.id]: [5, 9], [firstCoilCap.id]: [4], [boaCap.id]: [4], [boaCapPair.id]: [4], [logGlide.id]: [5], [glideLog.id]: [5], [logGlideLog.id]: [5], [W9_BOB_GATES.pistons5.id]: [5], [firstPiston5.id]: [5], [pistonGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logGuards.id]: [9], 
   [W9_BOB_GATES.caps1.id]: [1], [W9_BOB_GATES.caps6.id]: [6], [firstCap.id]: [1, 6], [capPair.id]: [1], [capChasm.id]: [1], [capCats.id]: [6], [capCatsPair.id]: [6],
   [ropeGate3.id]: [3], [W9_BOB_GATES.bridges8.id]: [8], [ropeCross.id]: [8], [ropeTwin.id]: [8], [ropeChasm.id]: [8], [ropeChain.id]: [3], [chainRope.id]: [3],
   [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [W9_BOB_GATES.sinkers6.id]: [6], [firstSink.id]: [3, 6, 9], [sinkRun.id]: [6], [sinkTwin.id]: [6], [sinkGuards.id]: [9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [9],

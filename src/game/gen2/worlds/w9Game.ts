@@ -42,7 +42,8 @@ const bobsFor = (stage: number): SectionTemplate[] => [...W9_BOB_SECTIONS.filter
  */
 const STAGE_THEMES: Readonly<Record<number, ReadonlyArray<[W9Theme, readonly string[]]>>> = {
   1: [[W9_THEME.vents, ['w9-geyser-pair', 'w9-geyser-row', 'w9-geyser-ledge']], [W9_THEME.chasms, ['w9-lava-rise', 'w9-geyser-chasm', 'w9-geyser-brink']]],
-  4: [[W9_THEME.coils, ['w9-boa-knobs', 'w9-boa-vents']]],
+  // (9-4's coils: the coiled boas, and the ash caps over them, w9Bob.ts (the boas between geysers read as 9-1's vents: replaced))
+  4: [[W9_THEME.coils, ['w9-boa-knobs']]],
   6: [[W9_THEME.cats, ['w9-cat-den', 'w9-jaguar-leap', 'w9-cat-ledges']], [W9_THEME.prowl, ['w9-hunter-run', 'w9-hunter-brink', 'w9-prowl-crust', 'w9-cat-chasm']]],
   8: [[W9_THEME.channels, ['w9-basalt-run', 'w9-basalt-twin']]],
   // (9-9: the guards on the landings past the chasms; or the hoard's own ground, pillars and bursts over the lava)
