@@ -1,0 +1,74 @@
+{
+ "note": "World 10 grab bag round 3 (the lift pits' floor, 10-9's gear theme; the style sheet on the canvas), 2026-10-31",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/w10-pieces/tools/art/hfbatch/starts/w10bag/",
+ "neg": "perspective, three-quarter view, isometric, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+ "items": [
+  {
+   "name": "w10bag3-s50-7",
+   "start": "start-w10bag3.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game: the top is a sheet of a stormy stone fortress world's painted props (stone walls, a gatehouse, a timber post, a gutter spout block, a barrel, a winch); below it two rows of new props painted to match them, each seen exactly from the side: a rusty iron gear wheel half sunk in a heap of fallen grey stones; a flat iron gear lying on a heap of stones; a coil of heavy iron chain on a heap of stones; a squat stone block with an iron gear hub on top; a stone trough with two big iron cog wheels meshing in it, teeth showing over its rim; a single heavy iron cog wheel with sharp spikes, face on; a stone frame holding three meshed iron and rusty gears; a wooden lever on an iron toothed half-wheel on a stone base. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 1536,
+   "h": 1536
+  },
+  {
+   "name": "w10bag3-s50-23",
+   "start": "start-w10bag3.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game: the top is a sheet of a stormy stone fortress world's painted props (stone walls, a gatehouse, a timber post, a gutter spout block, a barrel, a winch); below it two rows of new props painted to match them, each seen exactly from the side: a rusty iron gear wheel half sunk in a heap of fallen grey stones; a flat iron gear lying on a heap of stones; a coil of heavy iron chain on a heap of stones; a squat stone block with an iron gear hub on top; a stone trough with two big iron cog wheels meshing in it, teeth showing over its rim; a single heavy iron cog wheel with sharp spikes, face on; a stone frame holding three meshed iron and rusty gears; a wooden lever on an iron toothed half-wheel on a stone base. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 1536,
+   "h": 1536
+  },
+  {
+   "name": "w10bag3-s50-41",
+   "start": "start-w10bag3.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game: the top is a sheet of a stormy stone fortress world's painted props (stone walls, a gatehouse, a timber post, a gutter spout block, a barrel, a winch); below it two rows of new props painted to match them, each seen exactly from the side: a rusty iron gear wheel half sunk in a heap of fallen grey stones; a flat iron gear lying on a heap of stones; a coil of heavy iron chain on a heap of stones; a squat stone block with an iron gear hub on top; a stone trough with two big iron cog wheels meshing in it, teeth showing over its rim; a single heavy iron cog wheel with sharp spikes, face on; a stone frame holding three meshed iron and rusty gears; a wooden lever on an iron toothed half-wheel on a stone base. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.5,
+   "seed": 41,
+   "w": 1536,
+   "h": 1536
+  },
+  {
+   "name": "w10bag3-s62-7",
+   "start": "start-w10bag3.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game: the top is a sheet of a stormy stone fortress world's painted props (stone walls, a gatehouse, a timber post, a gutter spout block, a barrel, a winch); below it two rows of new props painted to match them, each seen exactly from the side: a rusty iron gear wheel half sunk in a heap of fallen grey stones; a flat iron gear lying on a heap of stones; a coil of heavy iron chain on a heap of stones; a squat stone block with an iron gear hub on top; a stone trough with two big iron cog wheels meshing in it, teeth showing over its rim; a single heavy iron cog wheel with sharp spikes, face on; a stone frame holding three meshed iron and rusty gears; a wooden lever on an iron toothed half-wheel on a stone base. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1536,
+   "h": 1536
+  },
+  {
+   "name": "w10bag3-s62-23",
+   "start": "start-w10bag3.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game: the top is a sheet of a stormy stone fortress world's painted props (stone walls, a gatehouse, a timber post, a gutter spout block, a barrel, a winch); below it two rows of new props painted to match them, each seen exactly from the side: a rusty iron gear wheel half sunk in a heap of fallen grey stones; a flat iron gear lying on a heap of stones; a coil of heavy iron chain on a heap of stones; a squat stone block with an iron gear hub on top; a stone trough with two big iron cog wheels meshing in it, teeth showing over its rim; a single heavy iron cog wheel with sharp spikes, face on; a stone frame holding three meshed iron and rusty gears; a wooden lever on an iron toothed half-wheel on a stone base. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1536,
+   "h": 1536
+  },
+  {
+   "name": "w10bag3-s62-41",
+   "start": "start-w10bag3.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game: the top is a sheet of a stormy stone fortress world's painted props (stone walls, a gatehouse, a timber post, a gutter spout block, a barrel, a winch); below it two rows of new props painted to match them, each seen exactly from the side: a rusty iron gear wheel half sunk in a heap of fallen grey stones; a flat iron gear lying on a heap of stones; a coil of heavy iron chain on a heap of stones; a squat stone block with an iron gear hub on top; a stone trough with two big iron cog wheels meshing in it, teeth showing over its rim; a single heavy iron cog wheel with sharp spikes, face on; a stone frame holding three meshed iron and rusty gears; a wooden lever on an iron toothed half-wheel on a stone base. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.62,
+   "seed": 41,
+   "w": 1536,
+   "h": 1536
+  }
+ ]
+}
