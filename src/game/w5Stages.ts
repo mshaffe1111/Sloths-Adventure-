@@ -566,6 +566,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     expert += (x - x0) / RUN + 0.3 * n;
   }
   /** a humming thread strung low across the way (jump it), and `n` sleeping spiders beyond it, in the reach of its hum */
+  /** 5-2's finish: its threads and sleepers closer together (their lessons keep the spacing the hum's checks were made on) */
+  let tightThreads = false;
   function threadTrap(n: number, sleepers = true) {
     if (threads.length >= MOST[plan].threads || info.spiders.length + n > MOST[plan].spiders) {
       gap();
@@ -577,14 +579,14 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     const tw = r(R.r(60, 90));
     threads.push({ x0: t0, x1: t0 + tw, y: G - 14 });
     // (the sleepers lie well inside the hum's reach, THREAD.alert from the thread's middle)
-    run(tw + R.r(160, 220));
+    run(tw + (tightThreads ? R.r(130, 170) : R.r(160, 220)));
     const s0 = x;
     for (let i = 0; i < n; i++) {
-      run(R.r(120, 170));
+      run(tightThreads ? R.r(110, 140) : R.r(120, 170));
       // (a woken sleeper rushes from a little behind where it lay: its patch starts there, not back at the thread)
       if (sleepers) spider(x, Math.max(s0 - 120, x - 170), x + 240, true);
     }
-    run(R.r(120, 160));
+    run(tightThreads ? R.r(70, 100) : R.r(120, 160));
     lineAt(t0, 'hummed');
     if (n) chaseTo(x);
     row(s0 + 40, x - 80, G - 34, Math.max(2, n + 1), 'orchid');
@@ -598,7 +600,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     const x0 = x;
     for (let i = 0; i < n; i++) {
       // (far enough apart that a hop over one lands well before the next, with time to see it: upright the view ahead is short)
-      run(R.r(300, 360));
+      // (the stage's first cakes with room to see them coming upright, w5Order.test.ts; later ones, after the lesson, closer)
+      run(cakes.length < 3 || i ? R.r(300, 360) : R.r(190, 230));
       cakes.push({ x: r(x), y: G - 34 });
       flower(x - 85, G - 34, 'orchid');
     }
@@ -613,7 +616,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     run(R.r(260, 310));
     butlers.push({ x: r(x), y: G, dir: -1 });
     lineAt(x, 'ate');
-    run(R.r(240, 290));
+    run(R.r(180, 220));
     flower(x - 80, G - 34, 'hibiscus');
     expert += 550 / RUN + 1.2;
   }
@@ -957,6 +960,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     beat('Finish', () => {
       // (Matt, 2026-10-31: "very repetitive". The soft chairs and Pell's note come once, at a rolled place; the rest is the roll's theme,
       // a few of many pieces drawn as a deck, and one more drawn once, so the threads, sleepers and cakes are somewhere new each play)
+      tightThreads = true;
       const chairsAt = R.pick([0, 1, 2, 3]);
       let chairsTaught = false;
       /** soft chairs (only once their line has been said: until then, the guests who sat alone) */
