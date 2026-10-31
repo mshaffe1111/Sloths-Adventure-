@@ -921,8 +921,9 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
         // (a calm stretch first: a hum's or a cake's line before it has its say, then the chairs' own line well ahead of them)
         stumps(1);
         rest(R.r(220, 280), false);
-        hint(x + 60, W5_HINTS.s52chair);
         chairWalk(2, 3);
+        // (her remark after the chairs, not before: said first, it stepped aside for the chairs' own line and came back over it)
+        hint(x - 120, W5_HINTS.s52chair);
         // Pell's blanket note, in plain sight: a pink bell on top of a stump beside the path
         const note = findForStage(config.worldIndex, config.miniIndex);
         run(R.r(200, 260));
