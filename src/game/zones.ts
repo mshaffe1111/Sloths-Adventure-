@@ -55,12 +55,18 @@ export interface Zone {
   shut?: boolean;
   /** webs: a web bridge strung over a gap (painted as the silk bridge, zoneArt.ts), not a patch on the ground */
   bridge?: boolean;
-  /** a 'bolt' column drawn and felt as World 10's drop gate (a portcullis over the wall-walk, w10DropArt.ts): caught under it, he is
-   *  shoved back out the side he came in, and it costs a heart on Normal only */
-  look?: 'portcullis' | 'gush' | 'barrel';
+  /**
+   * World 9's hazards on the geyser's and the tide's rhythm, each drawn and read as its own thing (GRAB-BAG.md): a `flare` slab on the
+   * route whose cracks glow and flare (a low geyser zone, N5), a `lavafall` pouring from above (a geyser zone from the sky, N9), a lava
+   * `surge` down a cooled channel (a low geyser zone along its floor, N6), the hot `ash` wind (a wind zone, N7). They act and are checked as
+   * their kind; the inspector names the geyser ones by their look. World 10's: a `portcullis` (drop gate), a `gush` (gutter spout) and a
+   * `barrel` (rolling barrel lane) on the bolt column (w10DropArt.ts)
+   */
+  look?: 'flare' | 'lavafall' | 'surge' | 'ash' | 'portcullis' | 'gush' | 'barrel';
   /** ('barrel': World 10's rolling barrel, GRAB-BAG K: the zone is the barrel's lane along a wall; while it is active one barrel rolls the
-   *  lane's length, `dir` the way, and only the barrel itself hurts: barrelX) ('gush': World 10's gutter spout, GRAB-BAG E: a column of storm water that knocks him back out and down while it pours, never a
-   *  heart) a drop gate where it is taught: it shoves him out and never hurts, on either setting */
+   *  lane's length, `dir` the way, and only the barrel itself hurts: barrelX) ('gush': World 10's gutter spout, GRAB-BAG E: a column of
+   *  storm water that knocks him back out and down while it pours, never a heart) a drop gate where it is taught: it shoves him out and
+   *  never hurts, on either setting */
   gentle?: boolean;
 }
 
@@ -168,7 +174,7 @@ export const VENT_LIFT_H = 340;
 export function ventLift(zones: readonly Zone[] | undefined, x: number, y: number, t: number): boolean {
   if (!zones) return false;
   for (const z of zones) {
-    if (z.kind !== 'geyser' || x < z.x0 || x > z.x1 || y < z.top - VENT_LIFT_H || y > z.bottom) continue;
+    if (z.kind !== 'geyser' || z.look || x < z.x0 || x > z.x1 || y < z.top - VENT_LIFT_H || y > z.bottom) continue;
     if (y < z.top || zoneState(z, t).phase !== 'active') return true;
   }
   return false;

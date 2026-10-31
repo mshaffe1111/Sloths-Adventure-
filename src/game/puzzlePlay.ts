@@ -17,6 +17,8 @@ import { drawSeedPile, drawSeedPod } from './batArt.ts';
 import { drawW10Beam, drawW10Counterweight, drawW10Hoist, drawW10Piece, drawW10Plate, loadW10RoomArt } from './w10PuzzleArt.ts';
 import { drawW10Bag } from './w10BagArt.ts';
 import { KIT_ART, type KitArtName } from './puzzleAtlasData.ts';
+import { drawW9Bucket, drawW9ChainLine, drawW9Piece, drawW9Plank, drawW9Pulley, drawW9PulleyPost, drawW9Shelf, loadW9RoomArt } from './w9RoomArt.ts';
+import { drawW9Beam, drawW9Post } from './w9SwingArt.ts';
 import { drawWallArt } from './protoArt.ts';
 import { boxFits, fitZoom, heroBox, ROOM_CAM, roomZoom, unionBox, type CamBox } from './puzzleCamera.ts';
 import { NOISE, prune, type Noise } from './noise.ts';
@@ -340,6 +342,12 @@ export class KitPlay {
     if (w === 8) loadW8RoomArt();
     // (World 10: its painted lever, plate, portcullis, hoist and beam, w10PuzzleArt.ts)
     if (w === 10) loadW10RoomArt();
+    // (World 9: the basalt lever, hot plates and column gate of Matt's W9 sheet, and the world's irons)
+    if (w === 9) {
+      loadW9RoomArt();
+      // (a thin shelf a plate sits on is the room's to draw: the ember slab on its basalt posts, w9ShelvesOf)
+      for (const r of kit.rooms) for (const pc of r.pieces) if (pc.kind === 'plate') { const q = byId.get(pc.at.on); if (q && q.height <= 30) q.art = 'kit'; }
+    }
     this.extraZones = (world.zones ?? []).filter((z) => z.kind === 'wind');
     // (stuck is back and forth with nothing changing, or two failed tries: never a clock, STAGE-RULES §3)
     this.noClock = world.noClock ?? true;
@@ -1775,11 +1783,29 @@ export class KitPlay {
 
   // ───────────────────────────── drawing ─────────────────────────────
 
+  /** World 9's shelves (a thin ledge a plate sits on): the ember slab on two basalt posts, and the ground under it (found once) */
+  private w9Shelves: Array<{ pl: Platform; ground: number }> | null = null;
+  private w9ShelvesOf(): Array<{ pl: Platform; ground: number }> {
+    if (this.w9Shelves) return this.w9Shelves;
+    const out: Array<{ pl: Platform; ground: number }> = [];
+    for (const room of this.rooms) {
+      for (const pt of room.plates) {
+        const pl = this.platforms.find((q) => q.id === pt.plat);
+        if (!pl || pl.height > 30 || out.some((o) => o.pl === pl)) continue;
+        const under = this.platforms.filter((q) => q !== pl && q.y > pl.y && q.x <= pl.x + pl.width / 2 && q.x + q.width >= pl.x + pl.width / 2).sort((a, b) => a.y - b.y)[0];
+        out.push({ pl, ground: under ? under.y : pl.y + 240 });
+      }
+    }
+    this.w9Shelves = out;
+    return out;
+  }
+
   /** the pieces behind Pokey: sources, plates, levers, posts, gates, the pulley and its ropes, baskets, lifts, beetles, things lying */
   drawBack(ctx: CanvasRenderingContext2D, view: { x0: number; x1: number }) {
     for (const room of this.rooms) {
       if (room.box.x1 < view.x0 - 200 || room.box.x0 > view.x1 + 200) continue;
       this.drawNightBack(ctx, room);
+      if (this.look.world === 9) for (const sh of this.w9ShelvesOf()) if (room.plates.some((q) => q.plat === sh.pl.id)) drawW9Shelf(ctx, sh.pl, sh.ground);
       for (const r of room.resets) if (!this.night || !drawNightPiece(ctx, room === this.rooms[this.inRoom] ? 'stakeLit' : 'stake', r.x, r.y + 3)) this.drawPost(ctx, r);
       if (this.night) for (const r of room.resets) if (room === this.rooms[this.inRoom]) drawGlow(ctx, r.x + 14, r.y - 78, 60, 'rgba(255, 214, 140, A)', 0.8);
       for (const s of room.sources) this.drawSource(ctx, room, s);
@@ -1802,7 +1828,10 @@ export class KitPlay {
         // (World 7: Matt's carved stone plate, w7PuzzleArt.ts; World 8: the glow-mushroom pad of Matt's W8 sheet: held down, it sinks into
         // the bark and its glow dims, so it never reads as a bounce pad; World 10: its pressure plate, a mossy slab in a riveted iron frame,
         // sunk into the frame while held down: its slab sinks 10 px in the painting, and the whole plate 6 px more into the floor)
-        const drew = (this.look.world === 10 && drawW10Plate(ctx, pl.show > 0.5, pl.x, pl.y + 12 + pl.show * 6, pw * 1.3)) || (this.look.world === 7 && drawW7Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + pl.show * 3, pw * 1.25)
+        // (World 9: the hot plate of Matt's W9 sheet, its cracks glowing when it is pressed)
+        const drew = (this.look.world === 10 && drawW10Plate(ctx, pl.show > 0.5, pl.x, pl.y + 12 + pl.show * 6, pw * 1.3)) || (this.look.world === 9 && drawW9Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 10 + pl.show * 3, 46)
+          ? true
+          : this.look.world === 7 && drawW7Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + pl.show * 3, pw * 1.25)
           ? true
           : this.look.world === 8 && drawW8Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + 7 * pl.show, 52 - 8 * pl.show)
           ? true
@@ -1826,6 +1855,8 @@ export class KitPlay {
       }
       for (const l of room.levers) {
         if (this.look.world === 2 && this.drawWinch(ctx, room, l)) continue;
+        // (World 9: the basalt lever of Matt's W9 sheet, its stone handle pulled down while on)
+        if (this.look.world === 9 && drawW9Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 80)) continue;
         // (World 7: Matt's stone lever, w7PuzzleArt.ts)
         if (this.look.world === 7 && drawW7Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 78)) continue;
         // (World 8: the branch-lever stump of Matt's W8 sheet, its branch pulled down while on)
@@ -2031,7 +2062,10 @@ export class KitPlay {
     const lw = this.look.world;
     // (World 7: Matt's stone door, shut and open, w7PuzzleArt.ts; World 8: the bark door of Matt's W8 sheet, in its own piece of trunk;
     // World 10: the portcullis in its stone arch, down and up)
-    const drew = (!g.spec.look && lw === 10 && drawW10Piece(ctx, g.show > 0.5 ? 'portcullis-up' : 'portcullis-down', g.x, g.y + 6, KIT.doorH + 34)) || (!g.spec.look && lw === 7 && drawW7Piece(ctx, g.show > 0.5 ? 'door-open' : 'door-closed', g.x, g.y + 6, gw + 30, KIT.doorH + 16)
+    // (World 9: the basalt column gate of Matt's W9 sheet, its doorway lit open)
+    const drew = (!g.spec.look && lw === 10 && drawW10Piece(ctx, g.show > 0.5 ? 'portcullis-up' : 'portcullis-down', g.x, g.y + 6, KIT.doorH + 34)) || (lw === 9 && drawW9Piece(ctx, g.show > 0.5 ? 'gate-open' : 'gate-closed', g.x, g.y + 6, 170)
+      ? true
+      : !g.spec.look && lw === 7 && drawW7Piece(ctx, g.show > 0.5 ? 'door-open' : 'door-closed', g.x, g.y + 6, gw + 30, KIT.doorH + 16)
       ? true
       : lw === 8 && drawW8Piece(ctx, g.show > 0.5 ? 'door-open' : 'door-closed', g.x, g.y + 4, 180)
       ? true
@@ -2104,6 +2138,7 @@ export class KitPlay {
     const pl = l.plat;
     const b = room.baskets[l.basket];
     if (l.cage && b) return this.drawCageLift(ctx, room, l, b);
+    if (!b && this.look.world === 9 && this.drawW9LeverLift(ctx, l)) return;
     if (!b) {
       // a rope lift a pinwheel winds (World 4): the rope from the top of its climb to the plank, the plank on it
       const cx = pl.x + pl.width / 2;
@@ -2126,6 +2161,8 @@ export class KitPlay {
     }
     // (World 10's hoist: the grate and the counterweight each hang on their own chains from the wall's hoist overhead, w10PuzzleArt.ts)
     if (this.look.world === 10 && this.drawPlank(ctx, pl)) return;
+    // (World 9: chains over the iron pulley on its basalt post, and the chain plank)
+    if (b && this.look.world === 9 && this.drawW9BucketLift(ctx, room, l, b)) return;
     // the pulley over the two of them, and the ropes from it to the plank's ends and to the basket
     if (b) {
       const px = (b.x + pl.x + pl.width / 2) / 2;
@@ -2200,7 +2237,43 @@ export class KitPlay {
     } else drawKitArt(ctx, 'cageLifted', cx, floor + 30);
   }
 
-  /** a lift's plank: World 4's is the plank of Matt's rope lift, World 8's a leaf hammock, every other world's the plank of World 1's swing */
+  /**
+   * World 9's chain lift: the pulley on its basalt post standing on the bucket's ground (behind the bucket's side), a chain from it down to
+   * each end of the plank and one down to the bucket's bail. False until the irons have loaded.
+   */
+  private drawW9BucketLift(ctx: CanvasRenderingContext2D, room: RoomRun, l: LiftRun, b: BasketRun): boolean {
+    const pl = l.plat;
+    const px = (b.x + pl.x + pl.width / 2) / 2;
+    const py = Math.min(b.y - b.spec.mouth - 120, l.baseY - l.spec.rise) - 60;
+    const bail = this.mouthY(room, b) - 34;
+    // (the post stands on the bucket's ground, out past the bucket, so it never stands behind it)
+    if (!drawW9PulleyPost(ctx, px, py, b.y, b.x - 70)) return false;
+    drawW9ChainLine(ctx, px + 16, py + 4, pl.x + 10, pl.y - 2);
+    drawW9ChainLine(ctx, px + 20, py + 4, pl.x + pl.width - 10, pl.y - 2);
+    drawW9ChainLine(ctx, px - 20, py + 4, b.x, bail);
+        this.drawPlank(ctx, pl);
+    return true;
+  }
+
+  /**
+   * World 9's lever lift: a basalt post on the high ledge past the plank, a charred beam from it out over the plank, a chain from the beam
+   * down to each end of the plank. False until the irons have loaded.
+   */
+  private drawW9LeverLift(ctx: CanvasRenderingContext2D, l: LiftRun): boolean {
+    const pl = l.plat;
+    const topY = l.baseY - l.spec.rise;
+    const ledge = this.platforms.find((q) => Math.abs(q.y - topY) < 4 && q.x >= pl.x + pl.width - 8 && q.x <= pl.x + pl.width + 40);
+    const beamY = topY - 150;
+    const postX = (ledge ? ledge.x : pl.x + pl.width) + 26;
+    if (!drawW9Post(ctx, postX, beamY - 10, topY + 40, 48)) return false;
+    drawW9Beam(ctx, pl.x - 24, postX + 40, beamY, 34);
+    drawW9ChainLine(ctx, pl.x + 10, beamY + 8, pl.x + 10, pl.y - 2);
+    drawW9ChainLine(ctx, pl.x + pl.width - 10, beamY + 8, pl.x + pl.width - 10, pl.y - 2);
+    this.drawPlank(ctx, pl);
+    return true;
+  }
+
+  /** a lift's plank: World 4's is the plank of Matt's rope lift, World 8's a leaf hammock, World 9's its charred plank, every other world's the plank of World 1's swing */
   private drawPlank(ctx: CanvasRenderingContext2D, pl: Platform): boolean {
     const cx = pl.x + pl.width / 2;
     if (this.look.world === 4) return drawKitArt(ctx, 'ropeLift', cx, pl.y + 20, { w: pl.width + 16, h: 34 });
@@ -2208,6 +2281,7 @@ export class KitPlay {
     if (this.look.world === 8 && drawW8Hammock(ctx, cx, pl.y + 14, pl.width + 70)) return true;
     // (World 10: the hoist's iron grate on its chains)
     if (this.look.world === 10 && drawW10Hoist(ctx, cx, pl.y + 10, pl.width + 30)) return true;
+    if (this.look.world === 9 && drawW9Plank(ctx, pl)) return true;
     return drawKitArt(ctx, 'liftPlank', cx, pl.y + 16, { w: pl.width + 12, h: 30 });
   }
 
@@ -2280,6 +2354,8 @@ export class KitPlay {
     if (room.lifts.some((l) => l.cage && room.baskets[l.basket] === b) && drawKitArt(ctx, b.count > 0 ? 'basket2Full' : 'basket2', b.x, my + kitSize('basket2').h * 0.62)) return;
     // (World 4: the cliff folk's rope net, full of the broken ledge's stones once he has put them in)
     if (this.look.world === 4 && drawKitArt(ctx, b.count > 0 ? 'netFull' : 'net', b.x, my + kitSize('net').h * 0.42)) return;
+    // (World 9: the army's iron ore bucket)
+    if (this.look.world === 9 && drawW9Bucket(ctx, b.x, my)) return;
     const sz = kitSize('basket');
     const bottom = my + sz.h * 0.55;
     if (!drawKitArt(ctx, b.count > 0 ? 'basketFull' : 'basket', b.x, bottom)) {

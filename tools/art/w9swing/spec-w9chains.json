@@ -1,0 +1,53 @@
+{
+ "note": "World 9's swing chains and room irons by img2img from tools/art/w9swing/chainstart.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/480cad26593a32799dfbc0b4001d9109ff7ddf0f/tools/art/w9swing/starts/",
+ "items": [
+  {
+   "name": "w9chains-s55-11",
+   "start": "start-w9chains.webp",
+   "prompt": "slothadv style, painted storybook illustration, game props for a side-scrolling platform game in a volcanic jungle, each seen straight from the side and standing apart on the background: on the left three long iron chains hanging straight down, heavy old wrought-iron links, dark charcoal iron with worn grey edges and a little rust, each chain different; top right an old iron ore bucket with two riveted bands and a curved iron bail handle; under it a heavy iron pulley wheel with spokes in a forked iron bracket; bottom right a small iron eye bolt ring on a riveted plate. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, ground, floor, cast shadow, fire, lava, glow, people, animal, chrome, shiny metal",
+   "strength": 0.55,
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w9chains-s55-29",
+   "start": "start-w9chains.webp",
+   "prompt": "slothadv style, painted storybook illustration, game props for a side-scrolling platform game in a volcanic jungle, each seen straight from the side and standing apart on the background: on the left three long iron chains hanging straight down, heavy old wrought-iron links, dark charcoal iron with worn grey edges and a little rust, each chain different; top right an old iron ore bucket with two riveted bands and a curved iron bail handle; under it a heavy iron pulley wheel with spokes in a forked iron bracket; bottom right a small iron eye bolt ring on a riveted plate. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, ground, floor, cast shadow, fire, lava, glow, people, animal, chrome, shiny metal",
+   "strength": 0.55,
+   "seed": 29,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w9chains-s70-11",
+   "start": "start-w9chains.webp",
+   "prompt": "slothadv style, painted storybook illustration, game props for a side-scrolling platform game in a volcanic jungle, each seen straight from the side and standing apart on the background: on the left three long iron chains hanging straight down, heavy old wrought-iron links, dark charcoal iron with worn grey edges and a little rust, each chain different; top right an old iron ore bucket with two riveted bands and a curved iron bail handle; under it a heavy iron pulley wheel with spokes in a forked iron bracket; bottom right a small iron eye bolt ring on a riveted plate. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, ground, floor, cast shadow, fire, lava, glow, people, animal, chrome, shiny metal",
+   "strength": 0.7,
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w9chains-s70-29",
+   "start": "start-w9chains.webp",
+   "prompt": "slothadv style, painted storybook illustration, game props for a side-scrolling platform game in a volcanic jungle, each seen straight from the side and standing apart on the background: on the left three long iron chains hanging straight down, heavy old wrought-iron links, dark charcoal iron with worn grey edges and a little rust, each chain different; top right an old iron ore bucket with two riveted bands and a curved iron bail handle; under it a heavy iron pulley wheel with spokes in a forked iron bracket; bottom right a small iron eye bolt ring on a riveted plate. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, ground, floor, cast shadow, fire, lava, glow, people, animal, chrome, shiny metal",
+   "strength": 0.7,
+   "seed": 29,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

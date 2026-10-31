@@ -6,7 +6,7 @@ recommendation with its status in the game and what is next), and every mistake 
 for, so nobody repeats them. If a brief from the lead session disagrees with this file, ask; if you learn a new lesson the hard way,
 add it to section 6 in the same commit.
 
-Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
+Last updated 2026-10-30 (World 9 on gen2: stages apart by their own hazards, the band's jump part).
 
 ---
 
@@ -543,6 +543,39 @@ plan); never ship the rough version as finished.
   plate to gate and 80 px from gate to the floor's end pass (as World 7's room).
 - **No jump while carrying, so nothing stands between the pile and the plate** (the same room): a crate block on the floor between them
   made the room unsolvable on Normal. Put the climb to a lever before the pile, or past the plate.
+- **World 9's swings and rooms** (2026-10-29, gen2-w9-swing):
+  - *A room's high ledge is an `over` piece, never a `walk`*: a `walk` rise is clamped to a plain hop, so the chain lift's 260 px ledge came
+    out 20 px up and the room solved itself with no stone. The validator's "fails without its key piece" check is what caught it: every room
+    test runs it (`w9Rooms.test.ts`).
+  - *A counterweight lift is boarded before its last weight goes in*: with two stones the plank stopped halfway after the first, and he
+    could not climb onto it with the second in his hands (carrying, no jump). The bucket takes one stone, flicked in from the plank (Normal)
+    or set down from it (Easy); thrown from the floor, the plank leaves without him and the post resets it.
+  - *A post is whole tiles of a jointed column, never one picture stretched* (World 6's grey pipes again, in the first chain frames): the
+    hex column's shaft tiled up from the ground reads as basalt (`w9SwingArt.ts drawW9Post`).
+  - *Every theme needs its own opener*: when 9-3's shared lava drop became one theme's, the other themes' rolls had nothing for their Ki
+    slots and threw ("no section fits node n2 (ki)"). Give each theme a section that fits the early phases, and keep one plain filler
+    every roll may hold. With three themes (chain runs, wall climbs, crust runs) and the start always a gate, 9-3 went from 0.23 to 0.41.
+  - *Hugging Face results reach a cloud session through `hf_fs attach`*: huggingface.co is blocked by the session's proxy, but attach saves
+    the exact bytes in the session's tool-results folder; unpack the carrier from there (`tools/art/w5/unpack_carrier.py`).
+- **World 9 on gen2: what the volcano taught** (2026-10-29/30, gen2-w9):
+  - *A world whose stages share their sections can't ship with `--apart`*: with every stage drawing on the same geysers, chasms and
+    hunters, 9-1's 16 varied rolls covered every 20 s stretch the later stages could make (9-1 curated first: 9-3 shipped 1 of 120 rolls,
+    9-5 to 9-9 none). The look-alike measure compares what each beat is (which hazard, which animal, what is under a jump), so give each
+    stage its own: in World 9, 9-1 the geysers and the plain chasms, 9-3 the chains and the pillars (no animals), 9-4 the watcher and the
+    boas, 9-5 the glides over the vents, 9-6 the cats and tayras, 9-8 the cracked basalt and the ledges, 9-9 the harpies and the hoard's
+    pillars (`w9Ground.ts W9_STAGE_ONLY`: every section has its stages). Two stages with the same archetype need different gates and
+    rests too (9-6 and 9-9 matched on their gate and their shared rest). Curate the narrow stages first and the broadest last.
+  - *Variety counts letters, not animals*: two themes that both lean on animals (harpies, boas) read as one theme to the 200-roll measure
+    (diversity 0.21); a stage's themes must differ in the kind of action (jumps against animals against hazards).
+  - *The difficulty band's jump part reads near zero for every gen2 world* (bands.ts gives it 25%): the pipeline never lays a gap past the
+    Normal margin, so the noisy bot never misses. A gen2 world rises by lives (deadly falls), timing pressure (geysers on the landings,
+    hunters on the flats) and burst stress, and tops out about 43-46 on Normal; set band targets with that in mind (the lead, 2026-10-29).
+  - *Single-seed band scores swing 5-10 points a stage* (the first-timer is a simulation of one roll): judge a band on the average of seeds
+    1-3, and on the shipped rolls (the inspector plays seeds.ts, so a change to sections shows only after curation).
+  - *A stage plays its required room at the first slot it fits*: 9-8's room sat right after the gate, and the stage's own opening line met
+    the room's entry line. Give a required section a `phase` when its stage says something as it starts.
+  - *World 9's lava is the pipeline's water line drawn as lava* (pit 'void' on Normal, `w9Art.ts drawLava`): no wave sign at it (w9Finish
+    drops them), no words at a fall (its painted splash and steam), and Dot names it once before the first deadly chasm.
 
 ## 7. Where things are
 

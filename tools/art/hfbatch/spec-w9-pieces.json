@@ -1,0 +1,230 @@
+{
+ "note": "World 9's new pieces by img2img from tools/art/w9/piecestart.py, 2026-10-31",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal, grass, trees",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/71053c94e03fdf40413e2ea20b392cc8b66aba38/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "w9flarecool-s40-7",
+   "start": "start-w9flarecool.webp",
+   "prompt": "slothadv style, painted storybook illustration, a side-on game prop: a thick flat slab of dark volcanic basalt rock, its top crossed by cooled cracks that are dark grey-brown with only a faint dull red ember deep inside them, a cooled lava drip hardened down one side, rough rock edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.4,
+   "seed": 7,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "w9flarecool-s40-23",
+   "start": "start-w9flarecool.webp",
+   "prompt": "slothadv style, painted storybook illustration, a side-on game prop: a thick flat slab of dark volcanic basalt rock, its top crossed by cooled cracks that are dark grey-brown with only a faint dull red ember deep inside them, a cooled lava drip hardened down one side, rough rock edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.4,
+   "seed": 23,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "w9flarecool-s55-7",
+   "start": "start-w9flarecool.webp",
+   "prompt": "slothadv style, painted storybook illustration, a side-on game prop: a thick flat slab of dark volcanic basalt rock, its top crossed by cooled cracks that are dark grey-brown with only a faint dull red ember deep inside them, a cooled lava drip hardened down one side, rough rock edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "w9flarecool-s55-23",
+   "start": "start-w9flarecool.webp",
+   "prompt": "slothadv style, painted storybook illustration, a side-on game prop: a thick flat slab of dark volcanic basalt rock, its top crossed by cooled cracks that are dark grey-brown with only a faint dull red ember deep inside them, a cooled lava drip hardened down one side, rough rock edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "w9lavafall-s72-7",
+   "start": "start-w9lavafall.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game sprites side by side on magenta: a narrow fall of molten lava pouring straight down from the top edge, a bright yellow-white core and orange skin, ropes and drops of liquid lava, landing at the bottom in a glowing splash with flung drops. Liquid, glowing, flowing, not solid. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.72,
+   "seed": 7,
+   "w": 768,
+   "h": 1536
+  },
+  {
+   "name": "w9lavafall-s72-23",
+   "start": "start-w9lavafall.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game sprites side by side on magenta: a narrow fall of molten lava pouring straight down from the top edge, a bright yellow-white core and orange skin, ropes and drops of liquid lava, landing at the bottom in a glowing splash with flung drops. Liquid, glowing, flowing, not solid. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.72,
+   "seed": 23,
+   "w": 768,
+   "h": 1536
+  },
+  {
+   "name": "w9lavafall-s86-7",
+   "start": "start-w9lavafall.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game sprites side by side on magenta: a narrow fall of molten lava pouring straight down from the top edge, a bright yellow-white core and orange skin, ropes and drops of liquid lava, landing at the bottom in a glowing splash with flung drops. Liquid, glowing, flowing, not solid. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.86,
+   "seed": 7,
+   "w": 768,
+   "h": 1536
+  },
+  {
+   "name": "w9lavafall-s86-23",
+   "start": "start-w9lavafall.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game sprites side by side on magenta: a narrow fall of molten lava pouring straight down from the top edge, a bright yellow-white core and orange skin, ropes and drops of liquid lava, landing at the bottom in a glowing splash with flung drops. Liquid, glowing, flowing, not solid. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.86,
+   "seed": 23,
+   "w": 768,
+   "h": 1536
+  },
+  {
+   "name": "w9gust-s70-7",
+   "start": "start-w9gust.webp",
+   "prompt": "slothadv style, painted storybook illustration, four side-on game effect sprites in a row on magenta: a gust of hot wind streaking from left to right, pale grey ash streaks and swirls, loose dark ash flakes and a few glowing orange embers carried along, soft painted edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "w9gust-s70-23",
+   "start": "start-w9gust.webp",
+   "prompt": "slothadv style, painted storybook illustration, four side-on game effect sprites in a row on magenta: a gust of hot wind streaking from left to right, pale grey ash streaks and swirls, loose dark ash flakes and a few glowing orange embers carried along, soft painted edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "w9gust-s84-7",
+   "start": "start-w9gust.webp",
+   "prompt": "slothadv style, painted storybook illustration, four side-on game effect sprites in a row on magenta: a gust of hot wind streaking from left to right, pale grey ash streaks and swirls, loose dark ash flakes and a few glowing orange embers carried along, soft painted edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.84,
+   "seed": 7,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "w9gust-s84-23",
+   "start": "start-w9gust.webp",
+   "prompt": "slothadv style, painted storybook illustration, four side-on game effect sprites in a row on magenta: a gust of hot wind streaking from left to right, pale grey ash streaks and swirls, loose dark ash flakes and a few glowing orange embers carried along, soft painted edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.84,
+   "seed": 23,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "w9chunk-s65-7",
+   "start": "start-w9chunk.webp",
+   "prompt": "slothadv style, painted storybook illustration, two side-on game prop sprites on magenta: a chunk of black volcanic obsidian glass the size of a melon, glossy, sharp curved fractured faces, a cool purple sheen on its facets; the same chunk a little turned. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.65,
+   "seed": 7,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "w9chunk-s65-23",
+   "start": "start-w9chunk.webp",
+   "prompt": "slothadv style, painted storybook illustration, two side-on game prop sprites on magenta: a chunk of black volcanic obsidian glass the size of a melon, glossy, sharp curved fractured faces, a cool purple sheen on its facets; the same chunk a little turned. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.65,
+   "seed": 23,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "w9chunk-s80-7",
+   "start": "start-w9chunk.webp",
+   "prompt": "slothadv style, painted storybook illustration, two side-on game prop sprites on magenta: a chunk of black volcanic obsidian glass the size of a melon, glossy, sharp curved fractured faces, a cool purple sheen on its facets; the same chunk a little turned. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "w9chunk-s80-23",
+   "start": "start-w9chunk.webp",
+   "prompt": "slothadv style, painted storybook illustration, two side-on game prop sprites on magenta: a chunk of black volcanic obsidian glass the size of a melon, glossy, sharp curved fractured faces, a cool purple sheen on its facets; the same chunk a little turned. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.8,
+   "seed": 23,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "w9surge-s72-7",
+   "start": "start-w9surge.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta: the rolling front of a surge of molten lava flowing to the right, a tall bright yellow-orange curling wave head with glowing drops, darker red lava trailing behind it. Liquid, glowing. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.72,
+   "seed": 7,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "w9surge-s72-23",
+   "start": "start-w9surge.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta: the rolling front of a surge of molten lava flowing to the right, a tall bright yellow-orange curling wave head with glowing drops, darker red lava trailing behind it. Liquid, glowing. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.72,
+   "seed": 23,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "w9surge-s86-7",
+   "start": "start-w9surge.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta: the rolling front of a surge of molten lava flowing to the right, a tall bright yellow-orange curling wave head with glowing drops, darker red lava trailing behind it. Liquid, glowing. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.86,
+   "seed": 7,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "w9surge-s86-23",
+   "start": "start-w9surge.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta: the rolling front of a surge of molten lava flowing to the right, a tall bright yellow-orange curling wave head with glowing drops, darker red lava trailing behind it. Liquid, glowing. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.86,
+   "seed": 23,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "w9steam-s70-7",
+   "start": "start-w9steam.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta: a low dark volcanic vent rock puffing a jet of white steam straight up in three moments: a short puff, a tall billowing column, the column breaking up and drifting. Soft round painted billows. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w9steam-s70-23",
+   "start": "start-w9steam.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta: a low dark volcanic vent rock puffing a jet of white steam straight up in three moments: a short puff, a tall billowing column, the column breaking up and drifting. Soft round painted billows. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w9steam-s84-7",
+   "start": "start-w9steam.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta: a low dark volcanic vent rock puffing a jet of white steam straight up in three moments: a short puff, a tall billowing column, the column breaking up and drifting. Soft round painted billows. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.84,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w9steam-s84-23",
+   "start": "start-w9steam.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta: a low dark volcanic vent rock puffing a jet of white steam straight up in three moments: a short puff, a tall billowing column, the column breaking up and drifting. Soft round painted billows. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.84,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  }
+ ]
+}

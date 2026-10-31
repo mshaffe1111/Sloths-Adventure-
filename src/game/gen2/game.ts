@@ -24,6 +24,8 @@ import { W6_GAME_STAGES, w6GameKit } from './worlds/w6Game.ts';
 import { w10Finish } from './worlds/w10.ts';
 import { w10SwingLooks } from './worlds/w10Swing.ts';
 import { W10_GAME_STAGES, w10GameKit } from './worlds/w10Game.ts';
+import { w9Finish } from './worlds/w9.ts';
+import { W9_GAME_STAGES, w9GameKit } from './worlds/w9Game.ts';
 import { W7_GAME_STAGES, w7GameKit } from './worlds/w7Game.ts';
 import { w7Finish } from './worlds/w7.ts';
 import { w8Finish } from './worlds/w8.ts';
@@ -66,6 +68,8 @@ const w10Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
   ...o,
 });
 
+/** World 9's stages (w9Game.ts): the ground, the geysers and the lava in one kit, on the difficulty played */
+const w9Entry = (stage: number): Gen2Entry => ({ kit: (d) => w9GameKit(stage, d ?? 'normal'), kitName: `w9Game.ts:w9GameKit(${stage})`, finish: w9Finish });
 /** World 7's stages (w7Game.ts): its sections and the stage's room in one kit, on the difficulty played; w7Finish puts Pokey's line
  *  before 7-5's first Stone Sentry (the other animals were taught in earlier worlds) */
 const w7Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
@@ -95,6 +99,7 @@ export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
   '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', kidRuns: KID_RUNS_59, easyGoal: kidMedian(KID_RUNS_59) },
   ...Object.fromEntries(W6_GAME_STAGES.map((id) => [id, w6Entry(Number(id.split('-')[1]))])),
   ...Object.fromEntries(W10_GAME_STAGES.map((id) => [id, w10Entry(Number(id.split('-')[1]))])),
+  ...Object.fromEntries(W9_GAME_STAGES.map((id) => [id, w9Entry(Number(id.split('-')[1]))])),
   ...Object.fromEntries(W7_GAME_STAGES.map((id) => [id, w7Entry(Number(id.split('-')[1]))])),
   ...Object.fromEntries(W8_GAME_STAGES.map((id) => [id, w8Entry(Number(id.split('-')[1]))])),
 };
@@ -109,8 +114,9 @@ export const isGen2Stage = (cfg: Pick<LevelConfig, 'id' | 'secret'>): boolean =>
 export function gen2Water(id: string): boolean {
   const M = GEN2_STAGES[id]?.kit('normal').manifest;
   if (!M) return false;
-  // (a deadly chasm shows water far below, World 7; World 8's treetops have none: pipeline.ts assemble)
-  return M.pit === 'water' || (M.pit === 'void' && !id.startsWith('8-')) || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
+  // (a deadly chasm shows water far below, World 7; World 8's treetops have none: pipeline.ts assemble; World 9's chasms are lava, painted
+  // with no wave sign: w9.ts w9Finish)
+  return M.pit === 'water' || (M.pit === 'void' && !id.startsWith('8-') && !id.startsWith('9-')) || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
 }
 
 /** the creature sheets a gen2 stage's world can lay (its manifest's animals, by clip-sheet name: a snake draws the golden snake's) */

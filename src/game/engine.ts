@@ -1,7 +1,11 @@
+import { drawW9Bob } from './w9BobArt.ts';
+/** World 9's sinking slab rises back at this once he is off (px a second: gen2 pipeline BOB.sinkRise) */
+const SINK_RISE = 60;
 import { buzz } from './haptics.ts';
 import { nativeApp } from './appShell.ts';
 import { clearFlag, flagFor, saveFlag } from './flagResume.ts';
 import { SlowWatch } from './slowTip.ts';
+import { drawLavaSplash, drawW9Bush, drawW9Scenery, type W9SceneryItem } from './w9Art.ts';
 import { drawW7Chairs } from './w7ChairsArt.ts';
 import { drawSentrySprite } from './sentrySprite.ts';
 import { lastSheet } from './atlasLoader.ts';
@@ -438,6 +442,8 @@ export class GameEngine {
   private kitSteer = 0;
   private paintKit = false;
   private protoScene: ProtoSceneState = { brokeAt: new Map(), movedAt: new Map() };
+  /** World 9: where and when Pokey last fell into the lava (its painted splash and steam play there: w9Art.ts drawLavaSplash) */
+  private lavaSplashAt: { x: number; y: number; t: number } | null = null;
   /** when he came within reach of each water sign (its index), so it rattles for a moment (waterSign.ts signRattle) */
   private signNear = new Map<number, number>();
   private pushSoundT = 0;
@@ -520,6 +526,8 @@ export class GameEngine {
   private hitstopTimer: number = 0;
   private gameTime: number = 0;
   private standingOnId: number = -1;
+  /** World 9's moving logs: how far each rose this frame (lift.ts `bob`), so one rising into his feet catches them */
+  private bobRise = new Map<number, number>();
   private riverHinted = false;
   /** World 3: how drowsy the spore cloud makes him right now, 0 (awake) to 1 (in the thick of it); it follows the cloud and ends with it. And how strongly the screen shows it */
   private drowsy = 0;
@@ -1485,9 +1493,16 @@ export class GameEngine {
       if (plat.type !== 'moving' || plat.broken) continue;
       if (plat.lift) {
         // World 2's basket lift rides up and down, and carries whoever stands in it
-        const ny = liftY(plat.lift, this.gameTime);
+        // (World 9's sinking ember slab, lift.ts `sink`: down while he stands on it, back up once he is off, between its stops; its
+        // speed is its sinking, SINK_RISE its rising)
+        const on = p.grounded && this.standingOnId === plat.id;
+        const ny = plat.lift.bob === 'sink'
+          ? Math.max(plat.lift.top, Math.min(plat.lift.bottom, plat.y + (on ? plat.lift.speed : -SINK_RISE) * dt))
+          : liftY(plat.lift, this.gameTime);
         const dy = ny - plat.y;
         plat.y = ny;
+        // (World 9's moving logs: how far it rose this frame, so it catches feet it rises past, below)
+        if (plat.lift.bob) this.bobRise.set(plat.id, Math.max(0, -dy));
         if (p.grounded && this.standingOnId === plat.id) p.y += dy;
         continue;
       }
@@ -1594,10 +1609,13 @@ export class GameEngine {
       }
       // the first time a zone of each kind is close, say what it is (once a session)
       for (const z of zones) {
-        if (this.zoneHinted[z.kind] || p.x < z.x0 - 420 || p.x > z.x1) continue;
-        this.zoneHinted[z.kind] = true;
+        const hk = z.look ?? z.kind;
+        if (this.zoneHinted[hk] || p.x < z.x0 - 420 || p.x > z.x1) continue;
+        this.zoneHinted[hk] = true;
         // (World 10's storm is taught by Pokey's own thoughts, gen2 w10.ts W10_TIPS: no second line over them)
         if (this.currentStage.config.worldIndex === 10 && this.proto?.gen2) continue;
+        // (World 9's flares, lavafalls and surges, and World 10's drop gates, spouts and barrels, are their own things, taught by their stage's own tips: not the geyser's, the bolt's or the tide's line)
+        if (z.look) continue;
         // (said in Dot's bubble, or Pokey's thought when she is away, once a stage: no words floating in the world, the Dot rework
         // 2026-10-29. Tips says each the first time on a save, dotTips.ts)
         const kind = z.kind === 'dark' && z.lights?.some((l) => l.sleep) ? 'darkStill' : z.kind;
@@ -2359,6 +2377,10 @@ export class GameEngine {
         }
         // Check landing from above
         if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) return true;
+        // (World 9's moving logs, lift.ts `bob`: one rising into his feet catches them, however he is moving, as long as they were over its
+        // top before it rose (a raft overtaking him near the top of his jump let him drop through it: the adult bot's lives on 9-1)
+        const rose = plat.lift?.bob ? this.bobRise.get(plat.id) ?? 0 : 0;
+        if (rose > 0 && playerFeet >= plat.y && playerPrevFeet <= plat.y + rose + catchDrop && playerFeet - p.vy * dt <= plat.y + rose + catchDrop) return true;
         // Meeca's stage: a thin log (no face to hoist up, LIP_CATCH) caught at the top of a jump with her feet just under its top and her
         // middle over it. QA 2026-10-31, the blind tester sideways: "level with the top of the log, then dropped through it", twice
         return !!this.mc && plat.height < 50 && plat.type === 'solid' && !p.climbing && p.vy >= -LIP_CATCH.v && playerFeet > plat.y && playerFeet <= plat.y + LIP_CATCH.px && p.x > plat.x + LIP_CATCH.inside && p.x < plat.x + plat.width - LIP_CATCH.inside;
@@ -2465,9 +2487,12 @@ export class GameEngine {
         this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
-        this.spawnWaterSplash(p.x, waterY);
+        // (World 9's water line is lava: its painted splash and steam, no words in the world, w9Art.ts)
+        const lava = this.currentStage.config.worldIndex === 9;
+        if (lava) this.lavaSplashAt = { x: p.x, y: waterY, t: this.gameTime };
+        else this.spawnWaterSplash(p.x, waterY);
         sound.playSplash(0);
-        this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
+        if (!lava) this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
         if (this.lanternRun) this.lanternFall();
@@ -5134,6 +5159,8 @@ export class GameEngine {
     if (waterY !== undefined) {
       const bottom = this.camera.y + this.camera.viewportHeight + 40;
       drawWater(ctx, world.id, x0, x1, waterY, bottom, t);
+      // (World 9: the painted splash and steam where he fell into the lava)
+      if (this.lavaSplashAt) drawLavaSplash(ctx, this.lavaSplashAt.x, this.lavaSplashAt.y, this.gameTime - this.lavaSplashAt.t);
     }
     for (const cp of this.currentStage.checkpoints ?? []) {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
@@ -5982,6 +6009,12 @@ export class GameEngine {
       drawLogComing(ctx, ex, d.baseY + LOG_DROP - 10, 1 - (d.width - travelled) / lead, this.gameTime);
     }
     this.drawRivers(ctx, world, true);
+    // World 9's set dressing on gen2 (Matt's w9c sheets: w9Art.ts), behind the basalt's front lip
+    const w9x = (this.proto?.gen2 as { w9?: { decor?: W9SceneryItem[]; scenery?: W9SceneryItem[] } } | undefined)?.w9;
+    if (w9x) {
+      drawW9Scenery(ctx, w9x.decor, this.camera.x, this.camera.x + this.camera.viewportWidth);
+      drawW9Scenery(ctx, w9x.scenery, this.camera.x, this.camera.x + this.camera.viewportWidth);
+    }
     // 7-3's ring of stone chairs, behind the courtyard's floor (w7ChairsArt.ts)
     const w7chairs = (this.proto?.gen2 as { w7?: { chairs?: Array<{ x: number; b: number }> } } | undefined)?.w7?.chairs;
     if (w7chairs) drawW7Chairs(ctx, w7chairs, this.camera.x, this.camera.x + this.camera.viewportWidth);
@@ -6007,7 +6040,12 @@ export class GameEngine {
     // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
     if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
     // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
-    for (const pl of this.platforms) if (pl.lift && this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) drawW2Lift(ctx, pl, !!pl.lift.postRight);
+    // (World 9's moving logs, lift.ts `bob`: the pumice rafts, charred logs and piston columns, w9BobArt.ts)
+    for (const pl of this.platforms) {
+      if (!pl.lift || !this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) continue;
+      if (pl.lift.bob) drawW9Bob(ctx, pl, this.gameTime);
+      else drawW2Lift(ctx, pl, !!pl.lift.postRight);
+    }
     // 2-6: the village's ladders where the climbs are
     if (this.proto?.ladders) {
       for (const v of this.vines) if (v.vineType === 'tree_climb' && this.onScreen(v.x, (v.topY + v.bottomY) / 2, (v.bottomY - v.topY) / 2 + 200)) drawLadder(ctx, v.x, v.topY, v.bottomY);
@@ -7932,6 +7970,7 @@ export class GameEngine {
       if (w8look && drawW8Hide(ctx, b, w8look, inside)) continue;
       // (World 10's cover is a crate stack: w10Art.ts)
       if (this.proto?.gen2?.w10 && !b.hanging && drawW10Hide(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      if (b.look && drawW9Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // before the sheet loads: a plain green mound
       const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });

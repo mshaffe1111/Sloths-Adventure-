@@ -82,13 +82,17 @@ export function moveKind(st: Stage, s: Seg, glideHeld: boolean): Kind | null {
       return `J|${second ? 'second' : gap < 150 && Math.abs(rise) < 60 ? 'short' : 'jump'}|${height}|${underOf(st, s)}`;
     }
     case 'bounce': return `J|bounce|${height}|${underOf(st, s)}`;
-    case 'timedHop': return `J|moving|${height}|${underOf(st, s)}`;
+    // (World 9's rafts and logs, lift.ts `bob`: their own kind, apart from a drifting log's)
+    case 'timedHop': {
+      const bob = s.plat?.lift?.bob ?? s.from?.lift?.bob;
+      return `J|${bob ? `bob-${bob}` : 'moving'}|${height}|${underOf(st, s)}`;
+    }
     case 'glide': return `J|${glideHeld ? 'glide' : 'jump'}|${height}|${underOf(st, s)}`;
     case 'presumed': return `J|jump|${height}|s`;
     case 'climb': return s.note === 'grab' ? 'V|climb' : null;
     case 'swing': return `V|liana|${height}|${underOf(st, s)}`;
     case 'rope': return 'V|rope';
-    case 'lift': return 'V|lift';
+    case 'lift': return s.plat?.lift?.bob === 'piston' ? 'V|piston' : 'V|lift';
     case 'draft': return 'V|draft';
     default: return null;
   }

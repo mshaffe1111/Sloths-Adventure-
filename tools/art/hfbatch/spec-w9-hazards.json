@@ -1,0 +1,122 @@
+{
+ "note": "World 9's hazard art by img2img from tools/art/w9/lavastart.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal, grass, trees",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2b5ad8eeb836c0e5cfaf1443c78ccaa23b7d3542/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "w9lava-s62-7",
+   "start": "start-w9lava.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: the surface of a river of molten lava seen exactly from the side, a bright yellow-orange glowing surface line along the top with small rolling bubbles and a few dark cooled crust plates floating on it, glowing orange cracks in the crust, the lava deepening to dark red and almost black at the bottom, no banks, no rocks at the ends, the same all the way along so it can repeat. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w9lava-s62-23",
+   "start": "start-w9lava.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: the surface of a river of molten lava seen exactly from the side, a bright yellow-orange glowing surface line along the top with small rolling bubbles and a few dark cooled crust plates floating on it, glowing orange cracks in the crust, the lava deepening to dark red and almost black at the bottom, no banks, no rocks at the ends, the same all the way along so it can repeat. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w9lava-s78-7",
+   "start": "start-w9lava.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: the surface of a river of molten lava seen exactly from the side, a bright yellow-orange glowing surface line along the top with small rolling bubbles and a few dark cooled crust plates floating on it, glowing orange cracks in the crust, the lava deepening to dark red and almost black at the bottom, no banks, no rocks at the ends, the same all the way along so it can repeat. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.78,
+   "seed": 7,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w9lava-s78-23",
+   "start": "start-w9lava.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: the surface of a river of molten lava seen exactly from the side, a bright yellow-orange glowing surface line along the top with small rolling bubbles and a few dark cooled crust plates floating on it, glowing orange cracks in the crust, the lava deepening to dark red and almost black at the bottom, no banks, no rocks at the ends, the same all the way along so it can repeat. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.78,
+   "seed": 23,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w9geyser-s55-7",
+   "start": "start-w9geyser.webp",
+   "prompt": "slothadv style, painted storybook illustration, four side-on game sprites in a row on magenta: 1) a low mound of dark basalt rock with a dark cracked vent mouth on top and a faint red glow in the cracks; 2) the same vent rock glowing bright orange in its mouth with a puff of pale grey steam rising; 3) the same vent rock erupting, a tall narrow fountain of molten lava and fire shooting straight up, bright yellow-white at its core, orange at its edges, ragged flaming top, glowing blobs of lava flung out; 4) the same eruption a moment later, the column leaning a little, blobs falling. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w9geyser-s55-23",
+   "start": "start-w9geyser.webp",
+   "prompt": "slothadv style, painted storybook illustration, four side-on game sprites in a row on magenta: 1) a low mound of dark basalt rock with a dark cracked vent mouth on top and a faint red glow in the cracks; 2) the same vent rock glowing bright orange in its mouth with a puff of pale grey steam rising; 3) the same vent rock erupting, a tall narrow fountain of molten lava and fire shooting straight up, bright yellow-white at its core, orange at its edges, ragged flaming top, glowing blobs of lava flung out; 4) the same eruption a moment later, the column leaning a little, blobs falling. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w9geyser-s70-7",
+   "start": "start-w9geyser.webp",
+   "prompt": "slothadv style, painted storybook illustration, four side-on game sprites in a row on magenta: 1) a low mound of dark basalt rock with a dark cracked vent mouth on top and a faint red glow in the cracks; 2) the same vent rock glowing bright orange in its mouth with a puff of pale grey steam rising; 3) the same vent rock erupting, a tall narrow fountain of molten lava and fire shooting straight up, bright yellow-white at its core, orange at its edges, ragged flaming top, glowing blobs of lava flung out; 4) the same eruption a moment later, the column leaning a little, blobs falling. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w9geyser-s70-23",
+   "start": "start-w9geyser.webp",
+   "prompt": "slothadv style, painted storybook illustration, four side-on game sprites in a row on magenta: 1) a low mound of dark basalt rock with a dark cracked vent mouth on top and a faint red glow in the cracks; 2) the same vent rock glowing bright orange in its mouth with a puff of pale grey steam rising; 3) the same vent rock erupting, a tall narrow fountain of molten lava and fire shooting straight up, bright yellow-white at its core, orange at its edges, ragged flaming top, glowing blobs of lava flung out; 4) the same eruption a moment later, the column leaning a little, blobs falling. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w9haze-s60-7",
+   "start": "start-w9haze.webp",
+   "prompt": "slothadv style, painted storybook illustration, side-on game effect sprites on magenta: six soft separate columns of pale grey-pink heat haze and thin smoke rising and curling, each different, a few tiny glowing orange embers drifting among them, soft painted edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w9haze-s60-23",
+   "start": "start-w9haze.webp",
+   "prompt": "slothadv style, painted storybook illustration, side-on game effect sprites on magenta: six soft separate columns of pale grey-pink heat haze and thin smoke rising and curling, each different, a few tiny glowing orange embers drifting among them, soft painted edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w9haze-s75-7",
+   "start": "start-w9haze.webp",
+   "prompt": "slothadv style, painted storybook illustration, side-on game effect sprites on magenta: six soft separate columns of pale grey-pink heat haze and thin smoke rising and curling, each different, a few tiny glowing orange embers drifting among them, soft painted edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.75,
+   "seed": 7,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w9haze-s75-23",
+   "start": "start-w9haze.webp",
+   "prompt": "slothadv style, painted storybook illustration, side-on game effect sprites on magenta: six soft separate columns of pale grey-pink heat haze and thin smoke rising and curling, each different, a few tiny glowing orange embers drifting among them, soft painted edges. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.75,
+   "seed": 23,
+   "w": 1536,
+   "h": 416
+  }
+ ]
+}

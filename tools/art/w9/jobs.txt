@@ -1,0 +1,26 @@
+World 9 hazard art (2026-10-29, cap $10), branch gen2-w9: starts tools/art/w9/lavastart.py (round 1) and lavastart2.py (round 2), spec
+make_spec.py, cut cut.py (-> src/assets/w9/hazards.webp, src/game/w9ArtData.ts), drawn by src/game/w9Art.ts. rtx-pro-6000 at ~$2.75/h.
+Raw takes in the bucket mshaffe111/w5-xfer under hfbatch/w9/props/ (fetched with hf_fs attach).
+w9-hazards    6ae3ba1bc78863f9c62de399 21:26:51Z-21:30:05Z (3.2 min, ~$0.15): lava, geyser, haze, s(62/78, 55/70, 60/75) x seeds 7/23.
+  KEPT w9lava-s78-7 (molten surface, crust plates, the rock rim behind; strip ends cross-faded 160 px), w9geyser-s70-23 cells 1-2 (the
+  quiet vent rock; the same rock glowing with its steam). THROWN: every eruption column (kept the start's flat slab: reads as a drawn
+  pillar), every haze take (kept the start's stacked discs), lava s62 (the start's ovals show as a beat).
+w9-hazards-r2 6ae3bb09c78863f9c62de471 21:30:49Z-21:33:47Z (3.0 min, ~$0.14): burst frames from blob fountains, haze from S ribbons.
+  KEPT w9burst-s86-23 (a liquid fountain in three moments: the burst, the full fountain, falling back; each cut above its own little
+  cone so it stands in the vent rock's mouth), w9haze2-s75-7 (six soft wisps, faded at both ends). THROWN: burst s72 (the column reads as
+  a carved wooden post), burst s86-7 (a flame, not lava).
+total ~6.2 min = ~$0.28 of the $10 cap.
+w9-hazards-r3 6ae3c25cc78863f9c62deac9 started 22:02:04Z (~2.5 min, ~$0.12): the lava splash (the lead: no "TOO HOT!" words at a lava death; the
+  painted splash and steam say it), s72/s86 x seeds 7/23. KEPT w9splash-s72-23 (a liquid crown, the crown falling back under a steam puff,
+  the steam alone; each cut above the take's flat pool ellipse, the steam faded at its top). s72-7: its crown reads as candles.
+running total ~8.7 min = ~$0.40 of the $10 cap.
+
+World 9 new pieces (2026-10-31, branch w9-pieces, GRAB-BAG.md §6; cap $25 for World 9): starts tools/art/w9/piecestart.py, spec make_piece_spec.py,
+cut piececut.py (-> src/assets/w9/pieces.webp, src/game/w9PiecesData.ts), drawn by src/game/w9HeatArt.ts. Raw takes in the bucket under hfbatch/w9p/props/,
+fetched as the job's carrier PNG with hf_fs attach and tools/art/w5/unpack_carrier.py.
+w9-pieces     6ae633040e0338d1bb7d39e3 18:27Z-18:33Z (5.7 min of run, ~$0.30): flarecool, lavafall, gust, chunk, surge, steam, 2 strengths x seeds 7/23.
+  KEPT w9flarecool-s55-7 (the slab's cracks dark with a faint ember), w9lavafall-s86-23 (three liquid pours with splashes, a loop), w9surge-s86-23
+  (a curling wave head), w9steam-s84-23 (outlined billows off a vent rock), w9chunk-s80-7 (glassy faceted obsidian), w9gust-s70-23 (four streak sets).
+  THROWN: flarecool s40 (still too hot), lavafall s72 (beaded rope), s86-7 (twisted rope at the sides), surge s72 (blobs), gust s84 (one long whoosh,
+  no frames), chunk s65 (lumpy).
+World 9 running total (this branch's pass): ~$0.30 of the $25.

@@ -39,9 +39,9 @@ function played(id: string, variant: number, easy: boolean): Played {
   }
 }
 
-test('gen2 builds 5-7, 5-9, World 6 but 6-8, World 7 but its ascents (7-2, 7-4, 7-8), World 8 but 8-4, 8-7 and 8-10, and World 10 but its ascents (10-2, 10-4, 10-5, 10-8), each from the kit its 16 shipped rolls were curated on', () => {
-  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['10-1', '10-3', '10-6', '10-7', '10-9', '5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9', '7-1', '7-3', '7-5', '7-6', '7-7', '7-9', '8-1', '8-2', '8-3', '8-5', '8-6', '8-8', '8-9']);
-  for (const id of ['5-8', '6-8', '7-2', '7-4', '7-8', '7-10', '8-4', '8-7', '10-2', '10-4', '10-5', '10-8', '10-10']) assert.equal(isGen2Stage(lv(id)), false, id);
+test('gen2 builds 5-7, 5-9, World 6 but 6-8, World 7 but its ascents (7-2, 7-4, 7-8), World 8 but 8-4, 8-7 and 8-10, World 9 but its ascents (9-2, 9-7) and its boss, and World 10 but its ascents (10-2, 10-4, 10-5, 10-8), each from the kit its 16 shipped rolls were curated on', () => {
+  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['10-1', '10-3', '10-6', '10-7', '10-9', '5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9', '7-1', '7-3', '7-5', '7-6', '7-7', '7-9', '8-1', '8-2', '8-3', '8-5', '8-6', '8-8', '8-9', '9-1', '9-3', '9-4', '9-5', '9-6', '9-8', '9-9']);
+  for (const id of ['5-8', '6-8', '7-2', '7-4', '7-8', '7-10', '8-4', '8-7', '9-2', '9-7', '9-10', '10-2', '10-4', '10-5', '10-8', '10-10']) assert.equal(isGen2Stage(lv(id)), false, id);
   for (const id of Object.keys(GEN2_STAGES)) {
     const e = GEN2_SEEDS[id];
     assert.ok(e, `${id}: no curated rolls in seeds.ts`);
@@ -79,6 +79,7 @@ test('every shipped roll, Normal and Easy, as the game plays it: the checker pas
         if (st.config.worldIndex === 5) assert.ok(st.proto?.w5, `${at}: World 5's extras reach the engine`);
         if (st.config.worldIndex === 6) assert.ok((st.proto?.gen2 as { w6?: unknown } | undefined)?.w6, `${at}: World 6's extras reach the engine`);
         if (st.config.worldIndex === 10) assert.ok((st.proto?.gen2 as { w10?: unknown } | undefined)?.w10, `${at}: World 10's extras reach the engine`);
+        if (st.config.worldIndex === 9) assert.ok((st.proto?.gen2 as { w9?: unknown } | undefined)?.w9, `${at}: World 9's extras reach the engine`);
         if (st.config.worldIndex === 7) assert.ok((st.proto?.gen2 as { w7?: unknown } | undefined)?.w7, `${at}: World 7's extras reach the engine`);
         // (7-7 hides the Thorn Gate on a ledge over the start, reached by a mushroom behind him: stageGenerator addSecrets)
         if (id === '7-7') assert.ok(st.collectibles.some((c) => c.type === 'thorn_gate' && c.x < st.spawnX + 400), `${at}: the secret gate`);
@@ -176,6 +177,16 @@ test("a World 10 gen2 stage loads World 10's kit, its dressing and soldiers, and
   }
 });
 
+test("a World 9 gen2 stage loads World 9's kit and its painted lava, geysers and scenery, never the dirty water", () => {
+  const on = { hand: true, paint: true, ctest: false };
+  for (const id of Object.keys(GEN2_STAGES).filter((k) => k.startsWith('9-'))) {
+    const sheets = stageSheets(lv(id), on);
+    assert.deepEqual(sheets.slice(0, 2), ['kit:1', 'kit:9'], id);
+    assert.ok(sheets.includes('w9-art'), `${id}: the lava, geysers, haze, scenery (w9Art.ts)`);
+    assert.ok(!sheets.includes('bad-water') && !sheets.includes('water-signs'), `${id}: no dirty water, no wave signs`);
+  }
+});
+
 test("a World 7 gen2 stage loads World 7's kit, the kit pieces for its room, and its drains' signs and painted water", () => {
   const on = { hand: true, paint: true, ctest: false };
   for (const id of Object.keys(GEN2_STAGES).filter((k) => k.startsWith('7-'))) {
@@ -210,10 +221,10 @@ test('every shipped roll holds the clip-sheet animals its sheet list loads, and 
       for (const a of anims) assert.ok(st.enemies.some((e) => e.type === a), `${id} roll ${i}: no ${a} for its sheet`);
       // (World 5's pits are soft: no water. World 6's creeks: a sign at the first, Dot's line before it)
       // (a deep chasm, World 7's on Normal, shows the dirty water far below and is warned and signed like a creek)
-      // (World 8's deadly falls drop into the dark treetops: no water)
+      // (World 9's is the lava, drawn as lava with no wave sign: w9Art.ts, w9Finish; World 8's deadly falls drop into the dark treetops: no water)
       const water = (st.gen2?.falls ?? []).some((f) => f.kind === 'water' || (f.kind === 'void' && !id.startsWith('8-')));
       assert.equal(st.waterY !== undefined, water, `${id} roll ${i}: the water line`);
-      assert.equal((st.proto?.gen2?.waterWarnings?.length ?? 0) > 0, water, `${id} roll ${i}: the water signs`);
+      assert.equal((st.proto?.gen2?.waterWarnings?.length ?? 0) > 0, water && st.config.worldIndex !== 9, `${id} roll ${i}: the water signs`);
     }
   }
 });

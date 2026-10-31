@@ -41,6 +41,8 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 import { reachJump, reachJumpHeld, TIMED, vineAmp } from '../../src/game/physics.ts';
 import type { Platform } from '../../src/game/types.ts';
+import { zoneState, type Zone } from '../../src/game/zones.ts';
+import { liftRisingIn, liftTopLeft } from '../../src/game/lift.ts';
 import { findRoute } from './route.ts';
 import { buildRoll } from './eraRoll.ts';
 import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
@@ -643,6 +645,12 @@ export function freshPhone(setting: FirstTimer['setting']) {
   setDifficulty(setting);
 }
 
+/** a moving log he waits for (World 9, lift.ts `bob`): a raft, a log or a piston, never a sinking slab (a hurry: standing on it sinks it) */
+const timed = (q: Platform | null | undefined): boolean => !!q?.lift?.bob && q.lift.bob !== 'sink';
+/** a raft or a log he jumps for: resting at the top with most of its still spell left, or nearly up (he sees it arrive, so he goes as it
+ *  comes, not as it is about to sink) */
+const raftReady = (q: Platform, t: number): boolean => !!q.lift && (liftTopLeft(q.lift, t) >= q.lift.wait * 0.55 || liftRisingIn(q.lift, t) < 0.25);
+
 export class FirstTimerRun {
   readonly sim: RealPlay;
   readonly e: Eng;
@@ -675,6 +683,8 @@ export class FirstTimerRun {
   private driftPx = 0;
   /** waiting at an edge for something drifting across since (s), or -1 */
   private edgeWait = -1;
+  /** when he started waiting on or for a moving log (World 9, lift.ts `bob`) */
+  private bobWait = -1;
   /** stopped on a small pad a beat after landing on it */
   private padPause: { until: number; id: number } | null = null;
   /** turns of the steering thumb, and the s of no steer they cost */
@@ -1108,6 +1118,65 @@ export class FirstTimerRun {
     // its way threw him off halfway up, round 5 2026-10-29)
     if (p.climbing && !this.wasClimbing) this.pending = null;
     this.wasClimbing = !!p.climbing;
+    // (World 9's moving logs, lift.ts `bob`: he can see a raft, a log or a piston column rise and sink, so on the ground he waits for it as
+    // a person waits, up to 10 s, and lets go of a press he meant: riding one, until it is up at its top stop; at a bank's edge with one
+    // past the gap, until a raft or a log is up level with him, or a piston is down at his feet)
+    // (a piston column standing against the bank he is on, the way on up at its top: he walks to it, waits for it down at his feet, steps on
+    // and rides; the route's point is its top, so without this he jumped at the ledge over it again and again)
+    if (p.grounded) {
+      const on = this.floorAt(p.x, p.y, 6);
+      const pist = on && !on.lift ? this.sim.platforms.find((q) => q.lift?.bob === 'piston' && Math.abs(q.lift.bottom - on.y) < 12 && Math.abs(q.x - (on.x + on.width)) < 12 && q.x - p.x < 420 && q.x - p.x > -40) : undefined;
+      if (pist?.lift && (tgt?.y ?? p.y) < p.y - 60) {
+        const ready = pist.y >= pist.lift.bottom - 6;
+        const toEdge = pist.x - p.x;
+        this.blockedT = 0;
+        this.pending = null;
+        if (!ready && toEdge < 70) return {};
+        return { right: true };
+      }
+    }
+    // (World 9's flares, lavafalls and surges, zones.ts Zone `look`: he sees the glow, the drips, the surge's front coming, so on the ground
+    // he waits short of one that is warning or firing, or due before he could be across, as a person does; only these looks, so the bands
+    // measured on the other worlds' geysers and bolts stay as they were)
+    if (p.grounded && dir !== 0) {
+      const ahead = (e.currentStage.zones ?? []).find((z: Zone) => z.look && z.kind === 'geyser' && p.y > z.top - 160 && p.y <= z.bottom
+        && (dir > 0 ? z.x0 - p.x > 0 && z.x0 - p.x < 70 : p.x - z.x1 > 0 && p.x - z.x1 < 70));
+      if (ahead) {
+        const st = zoneState(ahead, e.gameTime ?? this.t);
+        const cross = (ahead.x1 - ahead.x0 + 60) / 250 + who.stopReact;
+        if (st.phase !== 'idle' || st.untilActive < cross) {
+          this.blockedT = 0;
+          this.pending = null;
+          return {};
+        }
+      }
+    }
+    if (p.grounded && dir !== 0) {
+      const on = this.floorAt(p.x, p.y, 6);
+      let notReady = timed(on) && on!.y > on!.lift!.top + 6;
+      if (on && !on.lift) {
+        const edgeX = dir > 0 ? on.x + on.width : on.x;
+        const toEdge = (edgeX - p.x) * dir;
+        if (toEdge < 26 + who.edgeAim + 60) {
+          const bob = this.sim.platforms.find((q) => timed(q) && !q.broken && (dir > 0 ? q.x - edgeX > -10 && q.x - edgeX < 280 : edgeX - (q.x + q.width) > -10 && edgeX - (q.x + q.width) < 280));
+          if (bob?.lift) notReady = bob.lift.bob === 'piston' ? bob.y < bob.lift.bottom - 6 : !raftReady(bob, e.gameTime ?? t);
+        }
+      }
+      if (notReady) {
+        if (this.bobWait < 0) this.bobWait = t;
+        // (standing to wait is not being stopped by a face: no plain jump for it when he moves on)
+        this.blockedT = 0;
+        if (t - this.bobWait < 10) {
+          this.pending = null;
+          return {};
+        }
+      } else if (this.bobWait >= 0) {
+        // (it is ready: he goes, a jump from where he waited at the edge, or off the log he rode up)
+        this.bobWait = -1;
+        this.blockedT = 0;
+        if (!this.pending && on && !this.floorAt(p.x + dir * 40, p.y, 40)) return this.decide(dir, 'single', false, side(dir));
+      }
+    }
     // a press he has decided on comes when his thumb gets there (the reaction noise)
     if (this.pending && t >= this.pending.at && !this.jump) {
       const q = this.pending;
@@ -1220,6 +1289,15 @@ export class FirstTimerRun {
     // on the ground
     // (the first moments of a stage: he holds the way on and takes nothing in yet)
     if (t < who.look) return side(dir || 1);
+    // (World 9's moving logs, lift.ts `bob`: riding a raft, a log or a piston, he stands still until it is up at its top stop; he can see
+    // it rise, so he waits as a person waits, up to 10 s; a press already on its way still comes)
+    {
+      const on = this.floorAt(p.x, p.y, 6);
+      if (timed(on) && on!.y > on!.lift!.top + 6 && !this.pending) {
+        if (this.bobWait < 0) this.bobWait = t;
+        if (t - this.bobWait < 10) return {};
+      }
+    }
     // (a press on its way: he keeps going until it comes)
     if (this.pending) return side(this.pending.dir);
     // (just landed: the thumb comes back down before the next flick)
@@ -1263,13 +1341,21 @@ export class FirstTimerRun {
         this.stops.push({ x: p.x, y: p.y, h: face, t });
         this.nextStop = this.stops.length - 1;
       }
+      // (World 9: standing still to wait for a raft or a surge is not being stopped by a face: with no face ahead he walks on, never a
+      // plain jump from the middle of the ground into the next gap; the other worlds keep the old habit their bands were measured with)
+      if (face === null && this.id.startsWith('9-')) return side(dir);
       return this.decide(fdir, this.mem.plan(p.x, p.y), false, side(dir));
     }
     // the way goes up right here (a ledge over him): jump for it
     if (up && dir === 0 && tgt && tgt.y < p.y - 60) return this.decide(fdir, this.mem.plan(p.x, p.y), false, {});
     if (dir !== 0) {
+      // (up at its top stop on a moving log: the wait is over)
+      const rideOn = this.floorAt(p.x, p.y, 6);
+      if (timed(rideOn) && rideOn!.y <= rideOn!.lift!.top + 6) this.bobWait = -1;
       // an edge coming: he means to jump `edgeAim` px before it (the thumb's latency moves it), unless the way on drops down
-      const ahead = this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40);
+      let ahead = this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40);
+      // (a moving log past a gap is never the floor going on: he jumps for it, or waits for it, below)
+      if (timed(ahead) && ahead !== rideOn && !(ahead!.lift!.bob === 'piston' && ahead!.y >= ahead!.lift!.bottom - 6)) ahead = null;
       if (!ahead) {
         const on = this.prog.target(p, 160);
         // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid
@@ -1278,6 +1364,20 @@ export class FirstTimerRun {
         const drops = on && on.y > p.y + 50 && !across;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
         const here = this.floorAt(p.x, p.y, 6);
+        // (a raft or a log bobbing just past the edge: he waits until it is up level with him; a piston column: until it is down at his
+        // feet, so he steps on and rides it up)
+        if (here && !here.lift) {
+          const edgeX = dir > 0 ? here.x + here.width : here.x;
+          const bob = this.sim.platforms.find((q) => timed(q) && !q.broken && (dir > 0 ? q.x - edgeX > -10 && q.x - edgeX < 280 : edgeX - (q.x + q.width) > -10 && edgeX - (q.x + q.width) < 280));
+          if (bob?.lift) {
+            const ready = bob.lift.bob === 'piston' ? bob.y >= bob.lift.bottom - 6 : raftReady(bob, e.gameTime ?? t);
+            if (!ready) {
+              if (this.bobWait < 0) this.bobWait = t;
+              if (t - this.bobWait < 10) return {};
+            }
+          }
+          if (!bob || (bob.lift?.bob === 'piston' ? bob.y >= bob.lift.bottom - 6 : raftReady(bob, e.gameTime ?? t))) this.bobWait = -1;
+        }
         if (!drops && here && here.type !== 'drift' && here.type !== 'moving') {
           const edgeX = dir > 0 ? here.x + here.width : here.x;
           const floats = this.sim.platforms.filter((q) => (q.type === 'drift' || q.type === 'moving') && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x + q.width > edgeX && q.x < edgeX + 320 : q.x < edgeX && q.x + q.width > edgeX - 320));

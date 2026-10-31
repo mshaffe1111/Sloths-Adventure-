@@ -119,7 +119,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
       case 'climb': if (s.note === 'grab') raw.push({ ...at, letter: 'V', what: 'grab a trunk or vine and climb' }); break;
       case 'swing': raw.push({ ...at, letter: 'V', what: s.note === 'added' && !s.from ? 'swing on to the next liana' : 'swing on a liana' }); break;
       case 'rope': raw.push({ ...at, letter: 'V', what: 'shimmy along a rope' }); break;
-      case 'lift': raw.push({ ...at, letter: 'V', what: 'ride the basket lift' }); break;
+      case 'lift': raw.push({ ...at, letter: 'V', what: s.plat?.lift?.bob === 'piston' ? 'ride the piston column' : 'ride the basket lift' }); break;
       case 'draft': raw.push({ ...at, letter: 'V', what: 'ride the warm air' }); break;
       default: break;
     }
@@ -299,9 +299,10 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     else {
       const every = Math.max(2, z.period);
       const wait = Math.min(TIME.zoneExtra[z.kind] ?? 0.7, idleTime(z));
-      // (World 10's drop gate is a bolt column felt and drawn as a portcullis: its own beat for the look-alike measure)
-      const what = z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : z.look === 'portcullis' ? 'drop gate' : z.look === 'gush' ? 'gutter gush' : z.look === 'barrel' ? 'rolling barrel' : `${z.kind} zone`;
-      span(b, every, 'Z', what, wait, z.look ? `${what}s` : `${z.kind} zones`);
+      // (a zone with a look is its own beat for the look-alike measure: World 9's flares, lavafalls, surges and ash, World 10's drop gates,
+      // gutter spouts and barrels)
+      const what = z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : z.look === 'portcullis' ? 'drop gate' : z.look === 'gush' ? 'gutter gush' : z.look === 'barrel' ? 'rolling barrel' : `${z.look ?? z.kind} zone`;
+      span(b, every, 'Z', what, wait, `${z.look ?? z.kind} zones`);
     }
   }
   // (World 10's trapdoor grates, trapdoor.ts: crossing one is timed, a beat on each)

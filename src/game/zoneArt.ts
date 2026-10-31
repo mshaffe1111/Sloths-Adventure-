@@ -8,6 +8,8 @@
 import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
 import { drawBadWater } from './badWaterArt.ts';
+import { drawW9Crumble, drawW9Eruption, drawW9Vent } from './w9Art.ts';
+import { drawW9AshStreak, drawW9Flare, drawW9FlareBurst, drawW9Lavafall, drawW9Surge } from './w9HeatArt.ts';
 import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
 import { drawW10Bolt, drawW10Rod, drawW10Spikes } from './w10HazardArt.ts';
 import { drawW3Piece, w3ArtReady } from './w3Art.ts';
@@ -253,10 +255,12 @@ function drawGust(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof 
     const y = band.top + 14 + sy * (h - 28) + Math.sin(t * 2 + i) * 4;
     const fade = Math.sin(Math.PI * Math.min(1, Math.max(0, (y - band.top) / h))) * Math.min(1, travel / 90, (w + 260 - travel) / 90);
     const a = level * fade * (0.45 + sy * 0.4);
+    // (World 9's hot wind: its painted ash streaks, flakes and embers carried in them)
+    if (z.look === 'ash' && drawW9AshStreak(ctx, i, x, y, len * 1.3, Math.min(1, a * 1.4), z.dir === -1)) continue;
     drawFx(ctx, 'gust', x, y, len, { h: len * 0.16, alpha: a, flipX: z.dir === -1 });
   }
   // painted leaves tumbling with it
-  const leaves = level > 0 ? Math.round(w / 90) + 2 : 0;
+  const leaves = level > 0 && z.look !== 'ash' ? Math.round(w / 90) + 2 : 0;
   for (let i = 0; i < leaves; i++) {
     const sx = hash(i * 9.9 + z.x0 * 0.02);
     const sy = hash(i * 3.7 + z.x1 * 0.02);
@@ -306,6 +310,10 @@ function glowAt(ctx: CanvasRenderingContext2D, col: string, x: number, y: number
  * cool one and the whole vent shivers; erupting, it is all hot. Nothing is drawn while the sheet loads.
  */
 function drawVent(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  // (World 9's painted vent rock: w9Art.ts; the shapes below while its sheet loads)
+  if (z.look === 'flare') return void drawW9Flare(ctx, z, st, t);
+  if (z.look === 'lavafall' || z.look === 'surge') return;
+  if (drawW9Vent(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const w = (z.x1 - z.x0) * 2.1;
   const heat = st.phase === 'warn' ? 0.35 + 0.65 * st.u : st.phase === 'active' ? 1 : 0.12 + 0.08 * Math.sin(t * 2 + cx);
@@ -321,6 +329,10 @@ function drawVent(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
  * mouth, a heat glow round it and painted sparks thrown up and out.
  */
 function drawEruption(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  if (z.look === 'flare') return void drawW9FlareBurst(ctx, z, st);
+  if (z.look === 'lavafall') return void drawW9Lavafall(ctx, z, st, t);
+  if (z.look === 'surge') return void drawW9Surge(ctx, z, st, t);
+  if (drawW9Eruption(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const w = z.x1 - z.x0;
   const full = z.baseY - z.top;
@@ -605,6 +617,11 @@ export function drawCrumbleTiles(ctx: CanvasRenderingContext2D, plats: readonly 
   for (const p of plats) {
     if (p.crumbleAfter === undefined) continue;
     if (p.x + p.width < cam.x - 40 || p.x > cam.x + cam.w + 40) continue;
+    // (World 9's cracked basalt is its kit's painted slab: w9Art.ts)
+    if (p.art === 'basalt') {
+      if (!p.broken) drawW9Crumble(ctx, p, t);
+      continue;
+    }
     painted ??= crumbleArtReady();
     // (a tile just broken: its painted pieces fall, crumbleArt.ts; the painted slab carries its own cracks, so only the dust is drawn here)
     if (p.broken) {
