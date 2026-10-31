@@ -253,9 +253,11 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
     const v = line(vx, top, G - 46);
     info.firstLine = { vine: v.id, x: r(vx) };
     arc(vx - 150, vx + 260, G - 165, 5);
-    run(R.r(620, 700));
+    run(R.r(300, 340));
     garden(vx - 300, x);
-    expert += 900 / RUN + 1.5;
+    expert += 720 / RUN + 1.5;
+    // (a plain stump past it, then on: the lesson's stretch was 6 s of plain walk for a player who walks under the line)
+    stump();
   }
 
   /**
@@ -264,7 +266,8 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
    */
   function chain(n: number, o: { easy?: boolean; /** catch ledges under the gaps (default) */ ledge?: boolean } = {}) {
     const x0 = x;
-    run(R.r(160, 240));
+    // (a full run-up of flat path before the edge, 240 px or more: a real thumb's run starts there, w5Stage54.test.ts)
+    run(R.r(240, 270));
     const edge = x;
     for (let tries = 0; tries < 14; tries++) {
       const easy = !!o.easy || tries > 7;
@@ -294,13 +297,16 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
       close();
       softPit(edge, farX);
       const ids = vs.map((v) => line(v.x, v.topY, v.bottomY).id);
+      // (the first line's swing starts where a running jump meets it coming back: from about 0.7 to 0.8 of its beat, a real thumb's
+      // jump met it swinging away and missed, w5Stage54.test.ts. The rest of the chain follows from it)
+      (V[V.length - n] as Vine & { swingPhase?: number }).swingPhase = Math.round((R.r(0.85, 1.22) % 1) * 1000) / 1000;
       const lids = ledges.map(([a, b]) => branch(a, b, CATCH_Y).id);
       for (let k = 0; k < n; k++) {
         arc(k === 0 ? edge + 10 : (xs[k - 1] + xs[k]) / 2, k === n - 1 ? farX - 10 : (xs[k] + xs[k + 1]) / 2, Math.min(G - 150, vs[k].topY + 200), 3);
       }
       info.chains.push({ vines: ids, edge: r(edge), y: G, far: farX, farY: G, high: false, ledges: lids, checked: ok });
       open(farX);
-      run(R.r(140, 200));
+      run(R.r(90, 120));
       garden(farX, x);
       expert += (edge - x0) / RUN + (farX - edge) / SWING + 0.4 * n + (x - farX) / RUN;
       return;
@@ -313,7 +319,7 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
    */
   function highBridge(n: number) {
     const x0 = x;
-    run(R.r(180, 240));
+    run(R.r(140, 180));
     const s0 = x;
     branch(s0, s0 + 150, G - STEP_UP);
     const y0 = G - HIGH_UP;
@@ -321,7 +327,8 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
     const edge = start.x + start.width;
     for (let tries = 0; tries < 14; tries++) {
       const easy = tries > 7;
-      const xs = [edge + R.r(120, 150)];
+      // (the first line a little nearer the branch's end: at 148 px a real thumb's jump from the branch missed it, w5Stage54.test.ts)
+      const xs = [edge + R.r(115, 138)];
       for (let k = 1; k < n; k++) xs.push(xs[k - 1] + (easy ? R.r(250, 270) : R.r(260, 290)));
       const tops = xs.map(() => r(R.r(110, 160)));
       const vs = xs.map((vx, k) => silkLine(-1 - k, r(vx), tops[k], Math.min(y0 + 120, tops[k] + 330)));
@@ -346,6 +353,9 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
       close();
       softPit(pitEdge, farX);
       const ids = vs.map((v) => line(v.x, v.topY, v.bottomY).id);
+      // (the first line's swing starts where a jump from the branch meets it coming back: from about 0.8 of its beat on, a real
+      // thumb's jump from the branch met it swinging away and missed, w5Stage54.test.ts. The rest of the chain follows from it)
+      (V[V.length - n] as Vine & { swingPhase?: number }).swingPhase = Math.round(R.r(0.12, 0.5) * 1000) / 1000;
       const lids = ledges.map(([a, b]) => branch(a, b, CATCH_Y).id);
       const eb = branch(endB.x, endB.x + endB.width, endB.y);
       // (and down again: a step at the far end of the landing branch)
@@ -357,7 +367,7 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
       row(eb.x + 50, eb.x + eb.width - 60, eb.y - 34, 2, 'hibiscus');
       info.chains.push({ vines: ids, edge: r(edge), y: y0, far: eb.x, farY: eb.y, high: true, ledges: lids, start: start.id, land: eb.id, checked: ok });
       open(farX);
-      x = r(eb.x + eb.width + 110 + R.r(140, 200));
+      x = r(eb.x + eb.width + 110 + R.r(80, 120));
       garden(farX, x);
       expert += (edge - x0) / RUN + 1 + (endB.x - edge) / SWING + 0.4 * n + (x - endB.x) / RUN;
       return;
@@ -367,7 +377,8 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
   /** a shimmering silk sheet by the path, to be walked straight past (`seam`: the Seamstress at its far end, knitting it) */
   function sheetWalk(seam = false) {
     const x0 = x;
-    run(R.r(240, 300));
+    // (300 px or more from a chain's far bank: the sheet never by a take-off or a landing)
+    run(R.r(220, 260));
     const s0 = x;
     const w = r(R.r(300, 380));
     sheets.push({ x0: s0, x1: s0 + w, top: G - r(R.r(240, 270)), bottom: G });
@@ -378,8 +389,8 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
       info.seamSheet = sheets.length - 1;
       run(110);
     }
-    run(R.r(260, 320));
-    row(x - 200, x - 80, G - 34, 2, 'hibiscus');
+    run(R.r(150, 190));
+    row(x - 170, x - 70, G - 34, 2, 'hibiscus');
     garden(x - 180, x);
     expert += (x - x0) / RUN;
   }
@@ -403,66 +414,131 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
     expert += len / RUN + 1.4;
   }
 
+  /** a plain soft pit to hop (one jump: 130-160 px), petals over it: a thing already known, with no line of its own */
+  function hopPit() {
+    run(R.r(120, 170));
+    const edge = x;
+    const far = r(edge + R.r(130, 160));
+    close();
+    softPit(edge, far);
+    arc(edge + 10, far - 10, G - 128, 3);
+    open(far);
+    run(R.r(110, 150));
+    expert += (far - edge + 260) / RUN + 0.35;
+  }
+  /** a plain stump to hop up and over (one jump high), a petal on top */
+  function stump() {
+    run(R.r(100, 150));
+    const w = R.r(130, 180), h = R.r(55, 80);
+    P.push({ id: pid++, x: r(x), y: r(G - h), width: r(w), height: r(h), type: 'solid', style: 'moss_stone' });
+    flower(x + w / 2, G - h - 34, 'hibiscus');
+    run(w + R.r(80, 130));
+    expert += (w + 230) / RUN + 0.4;
+  }
+  /** room for a line, `len` px, filled with plain pits and stumps (never a long plain walk: the 4 s quiet rule, 2026-10-31) */
+  function room(len: number) {
+    const end = x + len;
+    while (end - x > 420) {
+      if (R.chance(0.5)) hopPit();
+      else stump();
+    }
+    if (end - x > 0) rest(end - x, false);
+  }
+  /**
+   * A finish's pieces, drawn as a shuffled deck: the roll's theme (`keep` of them come back) and `once` more drawn a single time, so two
+   * plays hold different pieces and one play still holds several (Matt, 2026-10-31: "very repetitive")
+   */
+  function deck(all: Array<() => void>, keep: number, once: number) {
+    const order = R.shuffle(all.map((_, i) => i));
+    const theme = order.slice(0, keep), guests = order.slice(keep, keep + once);
+    let left: number[] = [];
+    let last = -1;
+    let drawn = 0;
+    return () => {
+      drawn++;
+      if (guests.length && drawn % 3 === 2) {
+        all[guests.shift()!]();
+        return;
+      }
+      if (!left.length) {
+        left = R.shuffle([...theme]);
+        if (theme.length > 1 && left[left.length - 1] === last) [left[0], left[left.length - 1]] = [left[left.length - 1], left[0]];
+      }
+      last = left.pop()!;
+      all[last]();
+    };
+  }
+
   // ───────────────────────────── 5-4 Silk Bridges ─────────────────────────────
   beat('Start: the light going', () => {
     hint(60, W5_HINTS.s54start);
-    // (room for the goal card and her line before the first silk line comes into view, for a player who runs from the first moment)
-    rest(R.r(2150, 2300));
+    // (room for the goal card and her line before the first silk line comes into view, for a player who runs from the first moment;
+    // plain pits and stumps in it, which carry no line: it was 11 s of plain walk)
+    rest(R.r(480, 520));
+    room(R.r(1500, 1550));
   });
   beat('Learn: the first silk line, over solid ground; then one over a pit', () => {
     firstLine();
     flag();
-    rest(R.r(300, 380));
+    rest(R.r(140, 180));
     chain(1, { easy: true });
-    rest(R.r(260, 320));
+    rest(R.r(120, 160));
   });
   beat("Develop: Dot's fifth rule and the first sheet; two lines in a row; the Seamstress", () => {
     // (the rule well before the sheet; the sheet's own tip comes as it comes into view, w5Play.ts)
     hint(x + 40, W5_HINTS.s54admire);
-    rest(R.r(1700, 1800));
+    rest(R.r(140, 180), false);
+    room(R.r(1400, 1440));
     sheetWalk();
     flag();
     hint(x + 40, W5_HINTS.s54chain);
-    rest(R.r(800, 900), false);
+    room(R.r(800, 900));
     chain(2, { easy: true });
-    rest(R.r(360, 440));
+    rest(R.r(160, 200));
     sheetWalk(true);
     flag();
   });
   beat('Twist: three in a row, then the high bridge', () => {
-    rest(R.r(240, 300));
+    rest(R.r(120, 160));
     chain(3, { ledge: true });
-    rest(R.r(260, 320));
+    rest(R.r(120, 160));
     flag();
     hint(x + 40, W5_HINTS.s54high);
-    rest(R.r(480, 560), false);
+    room(R.r(480, 560));
     highBridge(R.chance(0.5) ? 2 : 3);
-    rest(R.r(260, 320));
+    rest(R.r(120, 160));
     flag();
   });
   beat('Finish', () => {
+    // (the roll's theme: two of these come back, two more come once; each uses only what this stage has taught)
+    const next = deck([
+      () => { spiderRun(R.r(480, 540)); chain(R.chance(0.5) ? 2 : 3, { ledge: true }); },
+      () => { sheetWalk(); highBridge(R.chance(0.5) ? 2 : 3); },
+      () => { chain(3, { ledge: true }); spiderRun(R.r(480, 540)); },
+      () => { sheetWalk(); chain(2); },
+      // two spiders, a soft pit between
+      () => { spiderRun(R.r(480, 530)); hopPit(); spiderRun(R.r(480, 530)); },
+      // the high bridge, then a spider beyond it
+      () => { highBridge(R.chance(0.5) ? 2 : 3); spiderRun(R.r(480, 530)); },
+      // two silk lines over a pit, then a sheet
+      () => { chain(2, { easy: true }); sheetWalk(); },
+      // stumps, then a long chain
+      () => { stump(); stump(); chain(R.chance(0.5) ? 3 : 4, { ledge: true }); },
+      // stumps, then the high bridge
+      () => { stump(); stump(); highBridge(3); },
+      // a spider, then a sheet, then a soft pit
+      () => { spiderRun(R.r(480, 530)); rest(R.r(120, 160)); sheetWalk(); hopPit(); },
+    ], 2, 2);
     let n = 0;
-    while (expert < stageSeconds('5-4') - 14 && n < 30) {
-      const k = n % 4;
-      if (k === 0) {
-        spiderRun(R.r(800, 950));
-        chain(R.chance(0.5) ? 2 : 3, { ledge: true });
-      } else if (k === 1) {
-        sheetWalk();
-        highBridge(R.chance(0.5) ? 2 : 3);
-      } else if (k === 2) {
-        chain(3, { ledge: true });
-        spiderRun(R.r(800, 950));
-      } else {
-        sheetWalk();
-        chain(2);
-      }
-      rest(R.r(200, 260));
+    while (expert < stageSeconds('5-4') - 6 && n < 30) {
+      next();
       if (n % 2 === 1) flag();
       n++;
     }
+    // (whatever the theme drew, three sheets at least: Dot's fifth rule is this stage's)
+    while (sheets.length < 3) sheetWalk();
     hint(x + 40, W5_HINTS.s54end);
-    rest(R.r(700, 820));
+    rest(R.r(480, 560));
     if (expert < stageSeconds('5-4')) rest((stageSeconds('5-4') - expert) * RUN + 60);
   });
 

@@ -619,6 +619,104 @@ export function drawCarving(ctx: CanvasRenderingContext2D, c: Carving, seed: num
 
 // ───────────────────────────── orchids ─────────────────────────────
 
+/** 5-3's swaying orchid, painted on Hugging Face from the kit's orchid (tools/art/hfground/spec-w5sway.json, take s11 at 0.60): one bloom on
+ * its stem, keyed, the stem cut where it meets the pit floor */
+const SWAY_URL = new URL('../assets/props/w5-sway.webp', import.meta.url).href;
+let swayImg: HTMLImageElement | null = null;
+const swayArt = (): HTMLImageElement | null => {
+  if (typeof Image === 'undefined') return null;
+  if (!swayImg) {
+    swayImg = new Image();
+    swayImg.src = SWAY_URL;
+  }
+  return swayImg.complete && swayImg.naturalWidth ? swayImg : null;
+};
+/** the painted piece's bloom across the sheet (its width in the art's own pixels) and its bloom's middle (share of the width) */
+const SWAY_ART = { bloom: 488, mid: 0.5 } as const;
+
+/**
+ * A swaying orchid (5-3): the bloom's top petals are the ledge at (hx, hy), its stem down to the root (rx, ry) in the pit floor, the
+ * whole plant leaning the way the head has swung. Painted (w5-sway.webp), rotated about the bloom and clipped at the floor; until the
+ * picture has loaded, a stem drawn in code under the kit's open orchid.
+ */
+export function drawSwayOrchid(ctx: CanvasRenderingContext2D, rx: number, ry: number, hx: number, hy: number, w: number, t: number, swing = 0) {
+  const img = swayArt();
+  const L = Math.max(40, ry - hy);
+  const lean = Math.max(-0.9, Math.min(0.9, (hx - rx) / L));
+  // (a faint arc of motion at the ends of the swing: `swing` is where the head is in its beat, -1 to 1; it shows near either end)
+  const end = Math.max(0, Math.abs(swing) - 0.6) / 0.4;
+  if (end > 0) {
+    ctx.save();
+    ctx.globalAlpha = 0.45 * end;
+    ctx.strokeStyle = '#fff6e0';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    const dir = -Math.sign(swing);
+    for (let k = 0; k < 2; k++) {
+      ctx.beginPath();
+      ctx.arc(rx, ry, L - 6 + k * 12, -Math.PI / 2 + Math.asin(lean) + dir * 0.02, -Math.PI / 2 + Math.asin(lean) + dir * 0.16, dir < 0);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  if (img) {
+    // (the bloom about as wide as the ledge: its head a shade over Pokey's body, no more)
+    const s = (w * 1.05) / SWAY_ART.bloom;
+    const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(hx - dw * 2, hy - dh, dw * 4, ry - (hy - dh));
+    ctx.clip();
+    // (the stem bends: drawn in three bands, each leaning further than the one below it, so the plant curves as the head swings)
+    const ang = Math.asin(lean) * 1.25;
+    ctx.translate(hx, hy - 6);
+    ctx.rotate(ang);
+    ctx.drawImage(img, -dw * SWAY_ART.mid, 0, dw, dh);
+    ctx.restore();
+    // (the stem's lower part, from the painted stem's foot down to the root in the floor, a green line bowing the other way)
+    const fx = hx - Math.sin(ang) * dh * 0.98, fy = hy - 6 + Math.cos(ang) * dh * 0.98;
+    if (fy < ry) {
+      ctx.save();
+      ctx.lineCap = 'round';
+      for (const [col, lw] of [['#2a4f24', 9], ['#58884a', 5]] as const) {
+        ctx.strokeStyle = col;
+        ctx.lineWidth = lw;
+        ctx.beginPath();
+        ctx.moveTo(fx, fy);
+        ctx.quadraticCurveTo((fx + rx) / 2 - (hx - rx) * 0.3, (fy + ry) / 2, rx, ry);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  } else {
+    const dx = hx - rx;
+    ctx.save();
+    ctx.lineCap = 'round';
+    for (const [col, lw] of [['#2f5a28', 11], ['#6f9e46', 6]] as const) {
+      ctx.strokeStyle = col;
+      ctx.lineWidth = lw;
+      ctx.beginPath();
+      ctx.moveTo(rx, ry);
+      ctx.quadraticCurveTo(rx - dx * 0.3, (ry + hy) / 2, hx, hy + 18);
+      ctx.stroke();
+    }
+    ctx.restore();
+    drawOrchid(ctx, hx, hy + 30, w, 1, 0, t);
+  }
+  // the standing line: no plate of its own, the top petals' edge is the ledge; a faint warm glow along it so it reads (soft ends, the
+  // petals' own tint, behind him)
+  ctx.save();
+  const g = ctx.createRadialGradient(hx, hy + 2, 0, hx, hy + 2, w * 0.5);
+  g.addColorStop(0, 'rgba(255, 226, 170, 0.38)');
+  g.addColorStop(1, 'rgba(255, 226, 170, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.ellipse(hx, hy + 2, w * 0.5, 7, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+
 /** a big orchid, its bloom's top at (x, y), `w` wide; `open` 1 open (a ledge), 0 shut (a bud); `shiver` while it is about to close */
 export function drawOrchid(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, open: number, shiver: number, t: number, stemTo?: number) {
   const n: W5Piece = open > 0.7 ? 'orchidOpen' : open > 0.25 ? 'orchidHalf' : 'orchidClosed';

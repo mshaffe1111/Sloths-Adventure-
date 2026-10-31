@@ -124,6 +124,7 @@ const TEACH_ROWS: DotLineRow[] = [
   ['w5.hummed', '', 'guide', 'info', T.hummed, 'It hummed! Spiders coming!', null, null, 'spider'],
   ['w5.sheet', '', 'guide', 'info', T.sheet, 'The silk sheets catch whoever looks.', null, null, 'silk sheet'],
   ['w5.orchid', '', 'guide', 'info', T.orchid, 'Orchids! They close, then open again.', null, null, 'orchid'],
+  ['w5.sway', '', 'guide', 'info', T.sway, 'This orchid sways. Jump when it swings close.', null, null, 'orchid'],
   ['w5.cocoon', '', 'guide', 'info', T.cocoon, 'Somebody\'s in there!', null, null, 'cocoon'],
   ['w5.silk', '', 'guide', 'move', T.silk, 'Flick up into the silk to swing.', 'Then flick up and forward to let go.', 'flick-up', 'vine'],
   ['w5.spider', '', 'guide', 'info', T.spider, 'Spiders! These ones are soft.', null, null, 'spider'],
@@ -141,7 +142,7 @@ export const W5_THING_TIPS: ReadonlySet<string> = new Set([
   // (the stillness rule, before the silk: "slide" is a move every player has done, so as a plain move tip a phone that had run before
   // would drop it. The silk's own line, once it is on him, is a warning and always said. QA v198)
   'w5.still',
-  'w5.chair', 'w5.cake', 'w5.ate', 'w5.butler', 'w5.pot', 'w5.thread', 'w5.sheet', 'w5.orchid', 'w5.cocoon', 'w5.silk', 'w5.spider',
+  'w5.chair', 'w5.cake', 'w5.ate', 'w5.butler', 'w5.pot', 'w5.thread', 'w5.sheet', 'w5.orchid', 'w5.sway', 'w5.cocoon', 'w5.silk', 'w5.spider',
   'w5.seamstress', 'hint.5-2.rules', 'hint.5-2.doze', 'hint.5-4.chain',
 ]);
 

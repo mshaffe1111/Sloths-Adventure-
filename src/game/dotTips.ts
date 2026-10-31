@@ -92,6 +92,7 @@ export const FIRST_OF: Readonly<Record<string, string>> = {
   'hint.5-2.doze': 'dozing',
   'w5.sheet': 'sheet',
   'w5.orchid': 'orchid',
+  'w5.sway': 'orchid',
   'w5.cocoon': 'cocoon',
   'w5.silk': 'silk',
   'hint.5-4.chain': 'silk',
