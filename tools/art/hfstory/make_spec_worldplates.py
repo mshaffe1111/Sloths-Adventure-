@@ -14,6 +14,13 @@ H = Path(__file__).resolve().parent
 STYLE = ('slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, '
          'a wide establishing background with nobody in it, ')
 TAIL = (' A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.')
+# round 3 (the floor came out as water, mist or lava on some): the bottom fifth said outright
+FLOOR = {
+    '4': ' In the foreground across the whole bottom of the picture, a broad flat mossy rock ledge in sharp focus, dry and solid, the pool and the mist behind it.',
+    '6': ' In the foreground across the whole bottom of the picture, a broad flat bank of dark mud and thick mangrove roots in sharp focus, solid ground, the water behind it.',
+    '8': ' In the foreground across the whole bottom of the picture, a broad flat mossy tree branch walkway in sharp focus. Clear readable shapes, crisp leaves, no blur, no bokeh.',
+    '9': ' In the foreground across the whole bottom of the picture, a broad flat ledge of cool dark basalt rock in sharp focus, solid and safe, the lava only far behind it.',
+}
 NEG = ('characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, '
        'hazy, washed out, foggy grey, low contrast, flat colour, vignette')
 EXTRA_NEG = {'7': ', doorway, glowing gate, target symbol, sign', '4': ', feather', '3': ', dotted lines, rows of dots, code, moths, butterflies, black slab, monolith, flat dark shape', '8': ', two moons'}
@@ -77,11 +84,12 @@ def draft(commit, keys=None):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
 
 
-def redo(commit, keys, strengths=(0.62, 0.72)):
+def redo(commit, keys, strengths=(0.62, 0.72), tag='r'):
     """round 2: the starts rendered again without the stage's foreground overlay (hanging fronds, glowworm dots), W2's flat water band
     painted out (starts2/)"""
-    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfstory/starts2/'
-    it = [{'name': f'wp-{k}-r{round(s * 100)}', 'start': f'w{k}.webp', 'prompt': STYLE + P[k] + TAIL,
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfstory/'
+    st = lambda k: f'starts2/w{k}.webp' if (H / f'starts2/w{k}.webp').exists() else f'starts/w{k}.webp'
+    it = [{'name': f'wp-{k}-{tag}{round(s * 100)}', 'start': st(k), 'prompt': STYLE + P[k] + FLOOR.get(k.split('-')[0], '') + TAIL,
            'neg': NEG + EXTRA_NEG.get(k.split('-')[0], ''), 'strength': s, 'seed': 13, 'w': 1280, 'h': 1360, 'loras': [['style', 1.0]]}
           for k in keys for s in strengths]
     return {'tag': 'wpr', 'loras': LORAS, 'base': base, 'items': it, 'q': 90,
@@ -118,8 +126,8 @@ if __name__ == '__main__':
         (H / 'spec-wp-draft.json').write_text(json.dumps(spec, indent=1))
         print(len(spec['items']), 'items')
     elif sys.argv[1] == 'redo':
-        spec = redo(sys.argv[2], sys.argv[3].split(','))
-        (H / 'spec-wp-redo.json').write_text(json.dumps(spec, indent=1))
+        spec = redo(sys.argv[2], sys.argv[3].split(','), tag=sys.argv[4] if len(sys.argv) > 4 else 'r')
+        (H / f'spec-wp-redo{sys.argv[4] if len(sys.argv) > 4 else ""}.json').write_text(json.dumps(spec, indent=1))
         print(len(spec['items']), 'items')
     elif sys.argv[1] == 'full':
         spec = full(sys.argv[2], sys.argv[3].split(','))
