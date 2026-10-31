@@ -16,6 +16,8 @@ STYLE = ('slothadv style, painted storybook illustration, soft cel shading, thin
 TAIL = (' A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.')
 # round 3 (the floor came out as water, mist or lava on some): the bottom fifth said outright
 FLOOR = {
+    '2': ' In the foreground across the whole bottom of the picture, a broad flat bank of dry warm sand and short grass in sharp focus, solid ground, the river behind it. No lily pads in the foreground.',
+    '1': ' In the foreground across the whole bottom of the picture, a broad flat mossy branch floor in sharp focus. Rich golden light, crisp detail, no flat colour.',
     '4': ' In the foreground across the whole bottom of the picture, a broad flat mossy rock ledge in sharp focus, dry and solid, the pool and the mist behind it.',
     '6': ' In the foreground across the whole bottom of the picture, a broad flat bank of dark mud and thick mangrove roots in sharp focus, solid ground, the water behind it.',
     '8': ' In the foreground across the whole bottom of the picture, a broad flat mossy tree branch walkway in sharp focus. Clear readable shapes, crisp leaves, no blur, no bokeh.',
@@ -23,7 +25,7 @@ FLOOR = {
 }
 NEG = ('characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, '
        'hazy, washed out, foggy grey, low contrast, flat colour, vignette')
-EXTRA_NEG = {'7': ', doorway, glowing gate, target symbol, sign', '4': ', feather', '3': ', dotted lines, rows of dots, code, moths, butterflies, black slab, monolith, flat dark shape', '8': ', two moons'}
+EXTRA_NEG = {'2': ', chinese characters, writing, calligraphy, lily pads in front', '1': ', big flat leaf, cyan leaf', '7': ', doorway, glowing gate, target symbol, sign', '4': ', feather', '3': ', dotted lines, rows of dots, code, moths, butterflies, black slab, monolith, flat dark shape', '8': ', two moons'}
 LORAS = {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors']}
 
 P = {
