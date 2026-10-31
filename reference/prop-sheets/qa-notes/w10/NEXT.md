@@ -4,6 +4,41 @@ Written by the W10 pieces helper, 2026-10-31. STAGE-RULES §1c order: merge up (
 below), then curate once (not started: no World 10 seeds yet, so every test that builds 10-x through the game fails "ships no curated
 rolls" until curation; that is expected).
 
+## PAUSED 2026-10-31 ~5:50 PM ET (the lead: World 10 is not in tonight's release; resume from here)
+
+### Done today (branch w10-pieces)
+- A chain lifts, B counterweights, C gear lifts on World 9's riser (one physics path; World 10's look only in w10 files). Lifts 6/6 on
+  10-1 (kid 0.91+). Counterweights on 10-3: cw-first 5/6, cw-storm 3/6; cw-row is now 10-6 only (on 10-3 its Easy way was a quiet walk on
+  the pit floor). Gear lifts faster than World 9's pistons (W10_GEAR_SPEED), fixed 210 px rise, short ledges (kid 0.95+).
+- K barrel true roll (HF r2), unused art placed (GRAB-BAG §9), brazier glow cached, Winch House, D-L as before.
+- **w9-pieces re-merged** (the lead: merge, not the patch); conflicts in engine/zones/firsttimer resolved keeping 9-5's vent.
+- **The lead's ruling on Easy pit floors:** World 9's knobs stay; under World 10's chain lifts and counterweights they are drawn as World
+  10 pieces (style 'w10_rubble', w10Game decorate on the knobs: w10var rubble, or the gear sheet's half-sunk cog, fallen gear, chain
+  heap). **The beats.ts pit-floor credit is dropped**: the moving-plank beat counts only standing on or waiting at a plank.
+- **10-9 gear theme, more beats (in progress):** the gear grinder (look 'grinder', GRIND: a low column in the walk, wait or hop) and the
+  rolling spiked cog (look 'cog', the barrel lane's mechanics); sections w10-gear-grind-first, -grind, -cog-first, -cog-run (10-9),
+  lessons grinder/cogroll, Dot's lines "The gears bite. Wait till they stop." / "A cog's broken loose! Jump it!". w10GearArt.ts.
+- HF: r1 $0.17, r2 ~$0.15, r3 ~$0.25, r3b ~$0.25 (r3b was launched 5:14 PM, before I read the pause; it finishes on its own). About
+  $0.82 of the $12 cap.
+
+### Left, in order
+1. **Gear art recut:** r3's takes are too flat (close to the sketch). r3b's (strength 0.72/0.82) are in the bucket
+   hfbatch/w10bag3b/props (carrier-w10bag3b-0.png: hf_fs attach, then tools/art/w5/unpack_carrier.py). Pick the best per cell and recut:
+   `python3 -I tools/art/w10/gearcut.py <takes> '{"*":"3b-s72-23", ...}'`. The current gear.webp is the provisional r3 cut.
+2. **The four new gear sections:** last check (stopped part-way): grind-first 2/6 (kid 0.98; Easy/Normal quiet over 4 s), grind "fits no
+   node" in 4 of 6 (it needs the GRINDER lesson: pieceCheck forces only the theme's gate, so run it with grind-first forced too, or let
+   pieceCheck add lesson sections as w10Game devForced now does). cog-first, cog-run not yet run. Then stills (grinder: cogs now 0.6 of
+   the trough, hubs over the rim; cog roll: 58 px with sparks), upright and sideways.
+3. The gate on the final state (tsc, full suite, vite build, artcheck, drawcheck). Last full run: w10 tests 33/33 and W9+W10 57/59 (the
+   two: World 9's "ships 16 rolls", expected; 10-3's quiet walk, fixed since). The full CLAUDE.md suite was not re-run after the re-merge.
+4. Curate once (not started, by the brief).
+
+### Shared-file hunks since a0897f1e (for the lead's review)
+engine.ts (bob draw hook for w10_*; grinder/cog in the column-hit branches; vent kept in the zone-hint skip), zones.ts (look adds 'vent',
+'grinder', 'cog'; cog in the lane branch), gen2/types.ts (GRIND; bolt looks), gen2/pipeline.ts (lane = barrel|cog; grinder uses GRIND),
+types.ts (styles w10_lift, w10_cw, w10_gear, w10_rubble), tools/inspect/beats.ts (moving-plank beat, plank only; grinder/cog names),
+route.ts (a bob piston's ride at its own speed), firsttimer.ts (waits at drop gates, gushes, grinders, trapdoor grates).
+
 ## Done (each checked alone: `npx tsx tools/gen2/pieceCheck.ts --stage 10-N --sections <ids> --rolls 6`)
 
 See GRAB-BAG.md §8 for the table, §9 for the art placed from unused, §10 for the lead's curation notes. In short: A chain lifts, B
