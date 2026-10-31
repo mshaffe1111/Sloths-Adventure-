@@ -7,7 +7,7 @@ export function totalKills(s: StageStats | null | undefined): number {
 }
 
 export interface FloraChip {
-  /** "Flower goal" on a gather stage, "Flowers" elsewhere */
+  /** "Petal goal" on a gather stage, "Petals" elsewhere */
   label: string;
   cur: number;
   of: number;
@@ -22,8 +22,8 @@ export interface FloraChip {
  */
 export function floraChip(s: StageStats | null | undefined): FloraChip | null {
   if (!s) return null;
-  if (s.floraGoal) return { label: 'Flower goal', cur: s.floraGoal.cur, of: s.floraGoal.target, full: s.floraGoal.cur >= s.floraGoal.target };
-  return s.floraTotal > 0 ? { label: 'Flowers', cur: s.floraCollected, of: s.floraTotal, full: s.floraCollected >= s.floraTotal } : null;
+  if (s.floraGoal) return { label: 'Petal goal', cur: s.floraGoal.cur, of: s.floraGoal.target, full: s.floraGoal.cur >= s.floraGoal.target };
+  return s.floraTotal > 0 ? { label: 'Petals', cur: s.floraCollected, of: s.floraTotal, full: s.floraCollected >= s.floraTotal } : null;
 }
 
 export interface Praise {

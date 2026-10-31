@@ -156,7 +156,9 @@ test("5-3: the closing orchids: a harvest from their cups, closing sooner as it 
       assert.ok(pl && pl.art === 'orchid' && pl.y === o.y && Math.abs(pl.x + pl.width / 2 - o.x) <= 1, `seed ${s}`);
       assert.ok(orchidAt(o, -o.offset + 0.01).solid && !orchidAt(o, -o.offset + o.open + ORCHID.tell + 0.05).solid);
       for (const id of o.petalIds!) {
-        const c = st.collectibles.find((q) => q.id === id)!;
+        const c = st.collectibles.find((q) => q.id === id);
+        // (one the petal pass thinned out of a crowded screen or a clump is gone: the engine skips it, petalPass.ts)
+        if (!c) continue;
         assert.ok(c.type === 'flower' && Math.abs(c.x - o.x) < o.w / 2 && o.y - c.y === 34, `seed ${s}: a cup flower out of its cup at ${o.x}`);
       }
       // closing earlier as the stage goes on (the lesson is the longest open, the last the shortest)
