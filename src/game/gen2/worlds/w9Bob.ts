@@ -30,6 +30,8 @@ const piston = (key: string, after: string, w: W = [100, 120]): SectionPiece => 
 /** the Drake's hoard's own guards (9-9: no other stage has the harpies; the boas coil only on 9-4's doorstep), so its moving logs and slabs
  *  never read like another stage's on the look-alike measure (curation's 1-in-5 cap dropped half of 9-9's rolls) */
 const HOARD = ['harpy', 'boa'];
+/** 9-6's hunters (the ash fields: the cats and the tayra), its versions of the slabs and the caps */
+const CATS6 = ['ocelot', 'jaguar', 'tayra'];
 const RAFT = W9_LESSON.raft;
 const PISTON = W9_LESSON.piston;
 /** the time model's wait at a moving log: about a third of its cycle (pipeline BOB: ~3 s Normal, ~4.6 s Easy) */
@@ -260,9 +262,10 @@ const sinkRun = section({
   difficulty: 5,
   uses: [W9_THEME.sinkers, SINK],
   extraSeconds: 1,
-  pieces: [bank('a', [260, 300]), slab('s1', 'a'), slab('s2', 's1'), slab('s3', 's2'), offSoft('b', 's3', [300, 340]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
+  pieces: [bank('a', [260, 300]), slab('s1', 'a'), slab('s2', 's1'), slab('s3', 's2'), offSoft('b', 's3', [360, 400]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
   last: 'c',
-  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), petals('s3', 's3', 0.5, 1), petals('k', 'k', 0.5, 1)],
+  // (9-6's: a cat on the landing, so its stretches are the ash fields', never 9-3's or 9-9's)
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), petals('s3', 's3', 0.5, 1), foe('foe', 'b', [0.55, 0.65], CATS6, 3.5, { chance: 1 }), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -277,7 +280,7 @@ const sinkTwin = section({
   extraSeconds: 2,
   pieces: [bank('a', [240, 280]), slab('s1', 'a'), slab('s2', 's1'), offSoft('m', 's2', [220, 260]), slab('t1', 'm'), slab('t2', 't1'), offSoft('b', 't2', [260, 300])],
   last: 'b',
-  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), petals('m', 'm', 0.5, 1), petals('t2', 't2', 0.5, 1)],
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), foe('foe', 'm', [0.5, 0.6], CATS6, 3.5, { chance: 1 }), petals('t2', 't2', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -518,7 +521,36 @@ const sinkGuards = section({
   mirrorable: true,
 });
 
+/** 9-6: an ash cap up to the high rock, a cat waiting on the landing down from it */
+const capCats = section({
+  id: 'w9-cap-cats',
+  name: 'ash cap over the cats',
+  archetypes: ['purge'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.caps],
+  pieces: [bank('a', [300, 340]), cap('f', 'a'), high('hi', 'a', [260, 300]), down('b', 'hi', CAP_HI, [380, 420]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
+  last: 'c',
+  sockets: [petals('hi', 'hi', 0.5, 2, 100), foe('foe', 'b', [0.55, 0.65], CATS6, 3.5, { chance: 1 }), petals('k', 'k', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** 9-6: two caps, a hunter on the flat between them */
+const capCatsPair = section({
+  id: 'w9-cap-cats-pair',
+  name: 'two ash caps over the hunters',
+  archetypes: ['purge'],
+  phases: LIVE,
+  difficulty: 7,
+  uses: [W9_THEME.caps],
+  pieces: [bank('a', [300, 340]), cap('f1', 'a'), high('h1', 'a', [220, 260]), down('m', 'h1', CAP_HI, [400, 440]), cap('f2', 'm'), high('h2', 'm', [220, 260]), down('b', 'h2', CAP_HI, [220, 260])],
+  last: 'b',
+  sockets: [petals('h1', 'h1', 0.5, 2, 90), foe('foe', 'm', [0.35, 0.45], CATS6, 3.5, { chance: 1 }), petals('h2', 'h2', 0.5, 2, 90)],
+  mirrorable: false,
+});
+
 export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
+  capCats, capCatsPair,
   logGuards, sinkGuards,
   W9_BOB_GATES.caps1, W9_BOB_GATES.caps6, firstCap, capPair, capChasm,
   ropeChain, chainRope, sinkChain, chainSink,
@@ -533,8 +565,8 @@ export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
 export const W9_BOB_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_BOB_GATES.rafts.id]: [1], [firstRaft.id]: [1], [raftPair.id]: [1], [raftRow.id]: [1], [raftGeyser.id]: [1],
   [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logGuards.id]: [9], [logBridge.id]: [5], [logPair.id]: [5],
-  [W9_BOB_GATES.caps1.id]: [1], [W9_BOB_GATES.caps6.id]: [6], [firstCap.id]: [1, 6], [capPair.id]: [1, 6], [capChasm.id]: [1, 6],
+  [W9_BOB_GATES.caps1.id]: [1], [W9_BOB_GATES.caps6.id]: [6], [firstCap.id]: [1], [capPair.id]: [1], [capChasm.id]: [1], [capCats.id]: [6], [capCatsPair.id]: [6],
   [ropeGate3.id]: [3], [W9_BOB_GATES.bridges8.id]: [8], [ropeCross.id]: [8], [ropeTwin.id]: [8], [ropeChasm.id]: [8], [ropeChain.id]: [3], [chainRope.id]: [3],
-  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [W9_BOB_GATES.sinkers6.id]: [6], [firstSink.id]: [3, 6], [sinkRun.id]: [6], [sinkTwin.id]: [6], [sinkGuards.id]: [9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [9],
+  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [W9_BOB_GATES.sinkers6.id]: [6], [firstSink.id]: [3], [sinkRun.id]: [6], [sinkTwin.id]: [6], [sinkGuards.id]: [9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [9],
   [W9_BOB_GATES.pistons.id]: [8], [firstPiston.id]: [8], [pistonPair.id]: [8], [pistonChasm.id]: [8],
 };

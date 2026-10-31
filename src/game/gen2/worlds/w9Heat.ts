@@ -413,20 +413,53 @@ const fallHoardPair = section({
   mirrorable: false,
 });
 
+// ───────────────────────────── 9-8's own flares: on the thread's high ledges ─────────────────────────────
+
+/** 9-8: two slabs on a high ledge stepped up to, a thread between them */
+const flareLedge2 = section({
+  id: 'w9-flare-ledges',
+  name: 'flares on the high ledges',
+  archetypes: ['relic_hunt'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.flares],
+  extraSeconds: WAIT * 2,
+  pieces: [bank('a', [200, 240]), up('s', 'a', 60, [140, 160]), up('t', 's', 60, [640, 700]), flat('d', 't', 60, [160, 180]), flat('c', 'd', 60, [200, 240])],
+  last: 'c',
+  sockets: [petals('s', 's', 0.5, 1), flare('fl1', 't', 0.25), thread('r', 't', 0.5), flare('fl2', 't', 0.76), petals('d', 'd', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** 9-8: a slab at the foot of the steps up to a thread ledge */
+const flareThread = section({
+  id: 'w9-flare-thread',
+  name: 'flare below the thread',
+  archetypes: ['relic_hunt'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W9_THEME.flares],
+  extraSeconds: WAIT,
+  pieces: [bank('a', [380, 420]), up('s1', 'a', 60, [140, 160]), up('s2', 's1', 60, [140, 160]), up('t', 's2', 50, [260, 300]), flat('d', 't', 170, [260, 300])],
+  last: 'd',
+  sockets: [flare('fl', 'a', 0.5), petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), thread('r', 't', 0.6)],
+  mirrorable: false,
+});
+
 export const W9_HEAT_SECTIONS: readonly SectionTemplate[] = [
+  flareLedge2, flareThread,
   fallHoard, fallHoardPair,
   W9_HEAT_GATES.lavafalls4, W9_HEAT_GATES.surges4, watchFall, watchSurge, watchFallPair,
   W9_HEAT_GATES.gusts1, W9_HEAT_GATES.gusts5, firstGust, gustGap, gustPair, gustGlide, gustTwin,
   W9_HEAT_GATES.surges6, firstSurge, surgeRun, surgeTwin, surgeChasm,
-  W9_HEAT_GATES.flares1, W9_HEAT_GATES.flares5, W9_HEAT_GATES.flares8, firstFlare, flarePair, flareChasm, flareGlide, flareLedge,
+  W9_HEAT_GATES.flares5, W9_HEAT_GATES.flares8, firstFlare, flarePair, flareChasm, flareGlide, flareLedge,
   W9_HEAT_GATES.lavafalls6, W9_HEAT_GATES.lavafalls9, firstFall, fallPair, fallGuard, fallChasm,
 ];
 
 /** which stages hold which (GRAB-BAG.md §4: neighbours in play share none) */
 export const W9_HEAT_STAGE: Readonly<Record<string, readonly number[]>> = {
-  [W9_HEAT_GATES.flares1.id]: [1], [W9_HEAT_GATES.flares5.id]: [5], [W9_HEAT_GATES.flares8.id]: [8], [firstFlare.id]: [1, 5, 8], [flarePair.id]: [1, 5, 8], [flareChasm.id]: [1, 5, 8], [flareGlide.id]: [5], [flareLedge.id]: [8],
+  [W9_HEAT_GATES.flares5.id]: [5], [W9_HEAT_GATES.flares8.id]: [8], [firstFlare.id]: [5], [flarePair.id]: [5], [flareChasm.id]: [5], [flareLedge2.id]: [8], [flareThread.id]: [8], [flareGlide.id]: [5], [flareLedge.id]: [8],
   [W9_HEAT_GATES.gusts1.id]: [1], [firstGust.id]: [1], [gustGap.id]: [1], [gustPair.id]: [1], [W9_HEAT_GATES.gusts5.id]: [5], [gustGlide.id]: [5], [gustTwin.id]: [5],
   [W9_HEAT_GATES.lavafalls4.id]: [4], [W9_HEAT_GATES.surges4.id]: [4], [watchFall.id]: [4], [watchSurge.id]: [4], [watchFallPair.id]: [4],
-  [W9_HEAT_GATES.surges6.id]: [6], [firstSurge.id]: [4, 6], [surgeRun.id]: [6], [surgeTwin.id]: [6], [surgeChasm.id]: [6],
-  [W9_HEAT_GATES.lavafalls6.id]: [6], [W9_HEAT_GATES.lavafalls9.id]: [9], [firstFall.id]: [4, 6], [fallPair.id]: [6], [fallGuard.id]: [6], [fallChasm.id]: [6], [fallHoard.id]: [9], [fallHoardPair.id]: [9],
+  [W9_HEAT_GATES.surges6.id]: [6], [firstSurge.id]: [4], [surgeRun.id]: [6], [surgeTwin.id]: [6], [surgeChasm.id]: [6],
+  [W9_HEAT_GATES.lavafalls6.id]: [6], [W9_HEAT_GATES.lavafalls9.id]: [9], [firstFall.id]: [4], [fallPair.id]: [6], [fallGuard.id]: [6], [fallChasm.id]: [6], [fallHoard.id]: [9], [fallHoardPair.id]: [9],
 };
