@@ -96,14 +96,17 @@ export function rowExtras(petals: readonly Collectible[]): Set<Collectible> {
 /** petals closer than this read as one clump: one of them goes */
 export const CLUMP_GAP = 50;
 
-/** of petals closer than CLUMP_GAP, all but one (the first along the route stays) */
+/** petals a stage lays close on purpose and keeps whole: 5-3's orchid cups (petalPass.ts fills it) */
+export const KEEP = new WeakSet<Collectible>();
+
+/** of petals closer than CLUMP_GAP, all but one (the first along the route stays; a KEEP one never goes) */
 export function clumpExtras(petals: readonly Collectible[]): Set<Collectible> {
   const out = new Set<Collectible>();
   const ps = [...petals].sort((a, b) => a.x - b.x || a.y - b.y);
   for (let i = 0; i < ps.length; i++) {
     if (out.has(ps[i])) continue;
     for (let k = i + 1; k < ps.length && ps[k].x - ps[i].x < CLUMP_GAP; k++) {
-      if (!out.has(ps[k]) && Math.hypot(ps[k].x - ps[i].x, ps[k].y - ps[i].y) < CLUMP_GAP) out.add(ps[k]);
+      if (!out.has(ps[k]) && !KEEP.has(ps[k]) && Math.hypot(ps[k].x - ps[i].x, ps[k].y - ps[i].y) < CLUMP_GAP) out.add(ps[k]);
     }
   }
   return out;
@@ -136,11 +139,13 @@ export function screenExtras(petals: readonly Collectible[]): Set<Collectible> {
     const inside = live()
       .filter((c) => c.x >= b.x && c.x <= b.x + SCREEN.w && Math.abs(c.y - b.y) <= SCREEN.h / 2)
       .sort((p, q) => p.x - q.x);
-    // (the one nearest its neighbours goes: the trail stays spread along the screen)
-    let worst = inside[1] ?? inside[0];
+    // (the one nearest its neighbours goes: the trail stays spread along the screen; of the screen's lowest ones first, so the plain
+    // stretches thin before a high line, a double jump's or a climb's, does)
+    const low = Math.max(...inside.map((c) => c.y)) - 60;
+    let worst = inside.find((c) => c.y >= low) ?? inside[1] ?? inside[0];
     let close = Infinity;
     for (let i = 1; i < inside.length - 1; i++) {
-      const d = inside[i + 1].x - inside[i - 1].x;
+      const d = inside[i + 1].x - inside[i - 1].x + (inside[i].y >= low ? 0 : 1e6);
       if (d < close) {
         close = d;
         worst = inside[i];
@@ -245,15 +250,20 @@ function rng(seed: number) {
   };
 }
 
-/** a spot is open: not inside a platform, not on another pickup, above the water */
+/** a spot is open: not inside a platform, not on another pickup, above the water, not in 4-6's mist (a pickup there would give its
+ *  hidden ledges away), not by the top of a silk line (a ledge only the line reaches is its own reward) */
 function open(stage: GeneratedStage, p: Pt): boolean {
   if (stage.waterY != null && p.y > stage.waterY - 30) return false;
+  const mist = (stage as { proto?: { w4?: { patience?: Array<{ area?: { top: number; bottom: number } }> } } }).proto?.w4?.patience ?? [];
+  if (mist.some((m) => m.area && p.y > m.area.top - 50 && p.y < m.area.bottom + 50)) return false;
+  if (stage.vines.some((v) => v.silk && Math.abs(p.x - v.x) < 420 && p.y < v.topY + 260)) return false;
   if (stage.platforms.some((q) => !q.broken && p.x > q.x - 18 && p.x < q.x + q.width + 18 && p.y > q.y - 22 && p.y < q.y + q.height + 18)) return false;
   return !stage.collectibles.some((c) => !c.collected && Math.hypot(c.x - p.x, c.y - p.y) < 70);
 }
 
 const isClimb = (v: GeneratedStage['vines'][number]) => !v.off && !v.isSwingingVine && v.vineType !== 'swing_liana' && !v.silk && v.bottomY - v.topY >= 260;
-const firm = (p: Platform) => !p.broken && (p.type === 'solid' || p.type === 'bouncy') && p.width >= 170;
+// (no special ledge: an orchid's cup, a hidden ledge in the mist, a lift, a log: they have their own pickups or none)
+const firm = (p: Platform) => !p.broken && !p.art && (p.type === 'solid' || p.type === 'bouncy') && p.width >= 170;
 const GOALISH = new Set<Collectible['type']>(['relic', 'cage', 'find', 'seed', 'heart', 'super_heart', 'powerup_speed', 'powerup_invincible', 'powerup_magnet']);
 
 /** the trails that could fill the stretch [a, b] of the route, the ones that lead somewhere first (tiers), each a few spots */
@@ -345,7 +355,10 @@ export function fillGaps(stage: GeneratedStage, tried: ReadonlySet<string> = new
         const spots = t.filter((p) => open(stage, p) && !tried.has(`${Math.round(p.x)},${Math.round(p.y)}`));
         if (spots.length < 2) continue;
         for (const p of spots) {
-          const c: Collectible = { id: id++, type: 'flower', x: Math.round(p.x), y: Math.round(p.y), collected: false, bobPhase: r() * Math.PI * 2 };
+          // (the nearest petal's look: a row never mixes species)
+          let near: Collectible | undefined;
+          for (const q of petals) if (!near || Math.hypot(q.x - p.x, q.y - p.y) < Math.hypot(near.x - p.x, near.y - p.y)) near = q;
+          const c: Collectible = { id: id++, type: 'flower', x: Math.round(p.x), y: Math.round(p.y), collected: false, bobPhase: r() * Math.PI * 2, ...(near?.botanicalVariant ? { botanicalVariant: near.botanicalVariant } : {}) };
           stage.collectibles.push(c);
           added.push(c);
           if (FLOOR.includes(t)) ON_FLOOR.add(c);

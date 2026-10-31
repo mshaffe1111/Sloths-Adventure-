@@ -89,8 +89,10 @@ test('2-2: about one and a half times the flowers the crown needs, the note on t
   for (const s of SEEDS) {
     const st = buildW2Stage(cfg('2-2'), s, '2-2');
     const flowers = st.collectibles.filter((c) => c.type === 'flower').length;
-    assert.equal(st.config.targetCount, FLOWER_GOAL_22);
-    assert.ok(flowers >= FLOWER_GOAL_22 * 1.35 && flowers <= FLOWER_GOAL_22 * 1.9, `seed ${s}: ${flowers} flowers`);
+    // (FLOWER_GOAL_22, or less where the petal pass left fewer than about one and a half times it: petalPass.ts)
+    const goal = st.config.targetCount;
+    assert.ok(goal <= FLOWER_GOAL_22 && goal >= FLOWER_GOAL_22 * 0.65, `seed ${s}: a goal of ${goal}`);
+    assert.ok(flowers >= goal * 1.35 && flowers <= goal * 1.9, `seed ${s}: ${flowers} flowers for ${goal}`);
     assert.equal(st.collectibles.filter((c) => c.type === 'find').length, 1, `seed ${s}: the note`);
     // (the lily ponds' roll is all still water; every roll has its ferry)
     if (w2Picks('2-2', s).flavour === 'ponds') assert.ok(st.rivers!.filter((r) => r.speed === 0).length >= 6, `seed ${s}: lily ponds`);

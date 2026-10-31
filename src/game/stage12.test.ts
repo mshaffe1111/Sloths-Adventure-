@@ -11,7 +11,7 @@ const cfg = {
 } as LevelConfig;
 const SEEDS = Array.from({ length: 20 }, (_, i) => 1 + i * 41);
 
-test('1-2: every roll keeps the plan (learn, test, twist, finish), asks for 80 petals and holds about half again as many, and takes two minutes', () => {
+test('1-2: every roll keeps the plan (learn, test, twist, finish), asks for 72 petals and holds about half again as many, and takes two minutes', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-2');
     assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Learn', 'Test', 'Twist', 'Finish'], `seed ${s}`);

@@ -43,7 +43,7 @@ import { buildLongDrop } from './w4LongDrop.ts';
 import { buildStiltClimb } from './w6Stages.ts';
 import { buildSlideStage } from './w7Slide.ts';
 import { buildAerie } from './w4Stage49.ts';
-import { buildW5Stage } from './w5Stages.ts';
+import { buildW5Stage, W5_HARVEST_SHARE } from './w5Stages.ts';
 import { buildW5Stage54 } from './w5Stage54.ts';
 import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
@@ -274,11 +274,13 @@ const RISE = maxRise();
 
 /**
  * 1-2 The Petal Trail asks for 80 petals, not the generated stage's 33 (Matt, 2026-10-23): the trail holds about half again as many, so he
- * has to follow most of it, high and low, to open the sanctuary.
+ * has to follow most of it, high and low, to open the sanctuary. One petal in trails, at most six on a screen (petals.ts, Matt 2026-10-29)
+ * leaves the trail 105-121 petals, so it asks for 72 (was 80), keeping it about half again as many.
  */
-export const PETAL_GOAL_12 = 80;
-/** 1-5 More Petals asks for 90 (a step up from 1-2's 80), and holds about one and a half times that */
-export const PETAL_GOAL_15 = 90;
+export const PETAL_GOAL_12 = 72;
+/** 1-5 More Petals asks for 77 (a step up from 1-2's 72; was 90 before the six-a-screen cap left it 108-122), and holds about one and
+ *  a half times that */
+export const PETAL_GOAL_15 = 77;
 /** 1-9 The Boa's Branches asks for 16 (24 to 31 to fight, the boas taking three hits each): two in three, not the generated 14 */
 export const GUARD_GOAL_19 = 16;
 /** 3-3 asks for 12 prowlers driven off (the stage holds about one and a half times that) */
@@ -339,6 +341,8 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
 export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto', easy = false): GeneratedStage & { proto: ProtoExtras } {
   // water taught before it costs a life (LV-8), the petal trail (petalPass.ts): the pickups are final before the dressing sees them
   const st = petalPass(teachWater(buildPlan(config, seed, plan, easy)));
+  // (5-3's quota is a share of the flowers it holds: of those the petal pass kept)
+  if (plan === '5-3') st.config = { ...st.config, targetCount: Math.round(st.collectibles.filter((c) => c.type === 'flower').length * W5_HARVEST_SHARE) };
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
   const w = config.worldIndex;
   if ((w === 3 || w === 4) && /^[34]-[1-9]$/.test(plan) || (w === 1 && /^1-[467]$/.test(config.id))) {
@@ -1490,10 +1494,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
    * the goal is a real test when the stage holds about one and a half times it (two in three to find, room to miss some): the
    * finish is thinned evenly, the taught parts and the hidden shelf are left whole
    */
-  function thinFinish(goal: number) {
+  /** the finish thinned to `trail` petals in all, before the petal pass (petalPass.ts) spaces them out */
+  function thinFinish(trail: number) {
     const fin = beats[beats.length - 1];
     const late = C.filter((c) => c.type === 'flower' && c.x >= fin[0]);
-    const keep = Math.max(Math.round(late.length / 3), Math.round(goal * 1.5) - (C.filter((c) => c.type === 'flower').length - late.length));
+    const keep = Math.max(Math.round(late.length / 3), trail - (C.filter((c) => c.type === 'flower').length - late.length));
     if (late.length > keep) {
       const step = late.length / (late.length - keep);
       const out = new Set<Collectible>();
@@ -1587,7 +1592,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       section('finish');
       homeRun(['dip']);
     });
-    thinFinish(PETAL_GOAL_12);
+    thinFinish(120);
   }
 
   /** branches over a soft pit with a snake on most of them: punch it or hop over it (falling only drops him to the moss) */
@@ -1836,7 +1841,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       glideLookout();
       homeRun();
     });
-    thinFinish(PETAL_GOAL_15);
+    thinFinish(135);
   }
 
   /** the bush sizes (px wide); each painting keeps its own shape */

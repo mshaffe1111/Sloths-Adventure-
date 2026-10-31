@@ -95,7 +95,10 @@ function clearFlags<S extends GeneratedStage>(st: S): S {
 
 export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
   // water taught before it costs a life (LV-8)
-  return petalPass(teachWater(buildW2Plan(config, seed, plan)));
+  const st = petalPass(teachWater(buildW2Plan(config, seed, plan)));
+  // (2-2's crown asks for FLOWER_GOAL_22, or two in three of what the petal pass left where it left fewer: about one and a half times)
+  if (plan === '2-2') st.config = { ...st.config, targetCount: Math.min(FLOWER_GOAL_22, Math.round(st.collectibles.filter((c) => c.type === 'flower').length / 1.5)) };
+  return st;
 }
 
 function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {

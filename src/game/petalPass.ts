@@ -6,7 +6,7 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import { validateStage } from './levelCheck.ts';
 import { badPickups } from './flowerReach.ts';
 import { skillHeldAt } from './skills.ts';
-import { busiestScreen, clumpExtras, fillGaps, ON_FLOOR, isPetal, offArc, PER_SCREEN, petalTrail, rowExtras, type PetalOut } from './petals.ts';
+import { busiestScreen, clumpExtras, fillGaps, KEEP, nightBlooms, ON_FLOOR, isPetal, offArc, PER_SCREEN, petalTrail, rowExtras, type PetalOut } from './petals.ts';
 
 const OUT_OF_REACH = /^(?:flower|leaf|fruit) #(\d+) at \(.*\) is out of reach$/;
 
@@ -66,11 +66,17 @@ function judgeReach(stage: GeneratedStage, raw?: Set<number>): Set<number> | nul
 /** the petal trail on a built stage (changed and returned) */
 export function petalPass<T extends GeneratedStage>(stage: T, out?: PetalOut): T {
   const o: PetalOut = out ?? ({} as PetalOut);
+  // (5-3's orchid cups hold their flowers close on purpose: no clump rule takes them)
+  const cups = new Set((stage as { w5info?: { cupFlowers?: number[] } }).w5info?.cupFlowers ?? []);
+  for (const c of stage.collectibles) if (cups.has(c.id)) KEEP.add(c);
   const far = judgeReach(stage);
   petalTrail(stage, far ?? new Set(), o);
   // the long stretches with no trail get one (petals.ts fillGaps), held to the same rules; only where the check can judge the reach
   // (where it cannot judge the whole stage, a new petal stays only where it does reach: before whatever stopped it)
-  if (stage.config.objectiveType !== 'boss_lair') {
+  // (not on World 8's harvests: a flower there is a night bloom, the goal's own)
+  // (nor on 5-3's closing orchids: its quota is meant to need the cups, so the path gets no more)
+  const orchids = (stage as { w5info?: { orchids?: unknown[] } }).w5info?.orchids?.length;
+  if (stage.config.objectiveType !== 'boss_lair' && !nightBlooms(stage) && !orchids) {
     const tried = new Set<string>();
     let kept = 0;
     for (let round = 0; round < 3; round++) {
@@ -82,6 +88,13 @@ export function petalPass<T extends GeneratedStage>(stage: T, out?: PetalOut): T
       // (and the swing checks' own reach, flowerReach.ts, which the stages' tests hold every pickup to)
       const glide = skillHeldAt('glide', (stage.config.worldIndex - 1) * 10 + stage.config.miniIndex);
       const bad = new Set(badPickups({ platforms: stage.platforms, vines: stage.vines, ropes: stage.ropes, waterY: stage.waterY, glide }, added));
+      // (and none only a silk line reaches: a ledge up a silk line is that line's own reward, its cocoons; World 5)
+      if (stage.vines.some((v) => v.silk)) {
+        for (const e of validateStage({ ...stage, vines: stage.vines.filter((v) => !v.silk) }).errors) {
+          const m = e.match(OUT_OF_REACH);
+          if (m) bad.add(added.find((c) => c.id === Number(m[1]))!);
+        }
+      }
       const gone = new Set(added.filter((c) => (out2.has(c.id) && (judged || !ON_FLOOR.has(c))) || arc.has(c) || bad.has(c)));
       for (const c of gone) tried.add(`${c.x},${c.y}`);
       if (gone.size) stage.collectibles = stage.collectibles.filter((c) => !gone.has(c));
