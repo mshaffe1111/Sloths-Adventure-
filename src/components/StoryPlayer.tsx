@@ -5,6 +5,7 @@ import { holdStep, LETGO, thunderShake, type HoldPhase } from './storyHold.ts';
 import { noticed } from '../game/storyNotice.ts';
 import { loadFinds } from '../game/finds.ts';
 import { loadBadgeStore } from '../game/badgeStore.ts';
+import { withWorldPlate } from '../game/plateData.ts';
 import { drawStoryScene, preloadSceneCards, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H, warmStoryCast } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
@@ -86,7 +87,12 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   const panels = useMemo(() => {
     // (and the world notices what this player did: the lines for what they found, the falls the General counted: storyNotice.ts)
     const heard = noticed(script, loadFinds(), loadBadgeStore().counters.falls);
-    return touchy ? heard.filter((p) => !p.narratedOnly) : heard.map((p) => (p.hold ? { ...p, hold: undefined } : p));
+    // (a panel on a world's scenery stands in that world's painted plate when there is one: plateData.ts withWorldPlate)
+    const shown = touchy ? heard.filter((p) => !p.narratedOnly) : heard.map((p) => (p.hold ? { ...p, hold: undefined } : p));
+    return shown.map((p) => {
+      const scene = withWorldPlate(p.scene);
+      return scene === p.scene ? p : { ...p, scene };
+    });
   }, [script, touchy]);
   // dev only: `?storyAt=N` opens a story on its Nth picture (for before/after screenshots)
   const [idx, setIdx] = useState(() => {

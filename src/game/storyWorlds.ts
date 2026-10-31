@@ -172,12 +172,12 @@ const W3_MID = chapter({ name: MID[3], w: 3, m: 'night', cue: 'comedy', i: 0.35,
 
 // ART HOOK: Dot hanging on to one of Pokey's claws over the gorge, pulling with everything she has (reference/ART-TO-GET.md)
 const W4_ACT = chapter({ name: 'ACT II · THE COST', w: 4, m: 'day', cue: 'dread', i: 0.4, base: { particles: 'sparkles' } }, [
-  N('The vine held. Pokey hung from the end of it, turning a little, over the long white nothing where the ledge used to be.', 'P:hurt@.5', { sting: 'cliffhanger', p: pan(1.0, 0.5, 0.2, 1.2, 0.5, 0.55, 5) }),
-  P('I\'m looking down.', 'P:worried@.5 D@.6^.3'),
-  D('Don\'t look at the down! Look at the up! The up is nice! Hold on, I\'ve got you, I\'ve got you—', 'P:worried@.5 D:yelp@.56^.36', { cue: 'chase', i: 0.5 }),
-  N('She had hold of one of his claws and was pulling with everything she had. The vine didn\'t notice.', 'P:worried@.5 D:yelp@.54^.38'),
-  P('Dot. Let go. If I fall, I\'m not taking you with me.', 'P:talk@.5 D@.54^.38', { cue: 'hush', i: 0.25 }),
-  D('Don\'t you dare say that. Don\'t you dare.', 'P:worried@.5 D:yelp@.54^.38', { cue: 'sorrow', i: 0.4 }),
+  N('The vine held. Pokey hung from the end of it, turning a little, over the long white nothing where the ledge used to be.', '', { sting: 'cliffhanger', p: { plate: 'gorge', ...pan(1.0, 0.5, 0.5, 1.08, 0.5, 0.3, 6) } }),
+  P('I\'m looking down.', '', { p: { plate: 'gorge', zoom: 1.08, focusX: 0.5, focusY: 0.3 } }),
+  D('Don\'t look at the down! Look at the up! The up is nice! Hold on, I\'ve got you, I\'ve got you—', '', { cue: 'chase', i: 0.5, p: { plate: 'gorge', zoom: 1.05, focusX: 0.48, focusY: 0.4 } }),
+  N('She had hold of one of his claws and was pulling with everything she had. The vine didn\'t notice.', '', { p: { plate: 'gorge', ...pan(1.08, 0.5, 0.45, 1.0, 0.5, 0.3, 6) } }),
+  P('Dot. Let go. If I fall, I\'m not taking you with me.', '', { cue: 'hush', i: 0.25, p: { plate: 'gorge', zoom: 1.1, focusX: 0.52, focusY: 0.3 } }),
+  D('Don\'t you dare say that. Don\'t you dare.', '', { cue: 'sorrow', i: 0.4, p: { plate: 'gorge', zoom: 1.08, focusX: 0.46, focusY: 0.38 } }),
   N('She didn\'t let go. It took Pokey the better part of an hour to climb up, and she held on to that claw the whole way, as if she was the one doing the climbing. At the top she sat down hard.',
     'P:tired@.4 D:dizzy@.64^.5', { cue: 'tender', i: 0.4 }),
   P('That wasn\'t the Prowler. That was the General. He used the Prowler like a hand.', 'P:talk@.3 D@.64^.45', { cue: 'dread', i: 0.4 }),

@@ -27,7 +27,7 @@ export const PLATES: Record<string, PlateInfo> = {
   'nest-morning': { ground: 0.86, what: "Matt's sequel card: the misty morning branch, empty, a black thorn grown out of it with the scarf hanging from it (the sequel tag)" },
   'storm-returns': { ground: 0.86, what: "Matt's sequel card: the storm comes back at night, Pokey asleep on his branch with the scarf trailing down (painted in: no actors over it)" },
   raft: { ground: 0.84, what: "World 2's riverbank village building Pokey's raft at village speed: two logs lashed, the rest still a pile (hf-art-bosses, HF row 9)" },
-  gorge: { ground: 0.9, what: "World 4's misty gorge: Pokey hanging from the vine's end over the mist, Dot pulling at his claw (no floor: he hangs; hf-art-bosses, HF row 9)" },
+  gorge: { ground: 0.78, what: "World 4's misty gorge: Pokey hanging from the vine's end over the mist, Dot pulling at his claw (no floor: he hangs; hf-art-bosses, HF row 9)" },
   council: { ground: 0.84, what: 'the clearing with the council fire and the seats of the ten' },
   gates: { ground: 0.85, what: 'the fortress from the foot of the thousand steps: the gates standing open, ten green lights along the wall tops, rain and a lightning fork' },
   'grandma-door': { ground: 0.85, what: "Grandma's round door in the hollow of the great tree at dusk: lit window, lantern, a fern in a pot, the long path" },
@@ -41,4 +41,20 @@ export const PLATES: Record<string, PlateInfo> = {
 
 export function isPlate(key: string | undefined): key is string {
   return key !== undefined && Object.prototype.hasOwnProperty.call(PLATES, key);
+}
+
+/**
+ * The world plates (hf-cutscenes, 2026-10-31): a painted plate for each world and mood the story most often stands in, repainted on Hugging
+ * Face from that world's own story scenery (so it is the place the player just played, painted like the other plates). A panel with no plate
+ * of its own, no camera following a walker, no castle and no line-up stands in its world's plate (`withWorldPlate`), its cast on the same
+ * ground line as before (0.8). Key: `${world}-${mood}`.
+ */
+export const WORLD_PLATES: Record<string, string> = {};
+
+/** the scene as drawn: its own plate, or its world's plate for this mood when there is one (the cast keep their ground line) */
+export function withWorldPlate<S extends { world: number; mood: string; plate?: string; follow?: unknown; castle?: number; lineup?: boolean; ground?: number }>(scene: S): S {
+  if (scene.plate !== undefined || scene.follow || scene.castle !== undefined || scene.lineup) return scene;
+  const key = WORLD_PLATES[`${scene.world}-${scene.mood}`];
+  if (!key || !isPlate(key)) return scene;
+  return { ...scene, plate: key, ground: scene.ground ?? 0.8 };
 }
