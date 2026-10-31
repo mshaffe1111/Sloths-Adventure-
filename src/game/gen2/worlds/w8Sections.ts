@@ -54,7 +54,7 @@ export const W8_THEME = {
   night: 'w8:night',
   /** 8-6: the night wind (GRAB-BAG.md A): its gusts carry the glides */
   gusts: 'w8:gusts',
-  /** 8-1: the sleeping-bat runs (GRAB-BAG.md E) */
+  /** 8-1 (and 8-8's hunters past them): the sleeping-bat runs (GRAB-BAG.md E) */
   bats: 'w8:bats',
   /** 8-3: knot perches (GRAB-BAG.md H): short precise hops along little perches over a gap */
   perches: 'w8:perches',
@@ -705,7 +705,9 @@ const darkLong = section({
 
 /** the night theme's dark stretches (8-1): the dark sections again, for the roll that leans on the dark */
 const nightOf = (t: SectionTemplate, id: string): SectionTemplate => ({ ...t, id, name: t.name.replace('the dark', 'the night'), uses: [W8_THEME.night], weight: 3 });
-const nightSections = [nightOf(darkBoughs, 'w8-night-boughs'), nightOf(darkGap, 'w8-night-gap'), nightOf(darkClimb, 'w8-night-climb')];
+// (the night leans on the dark trunks, 2026-10-31: as copies of the leapers' dark gaps its rolls read 0.21 from theirs on the variety measure;
+// the climbs give it a letter of its own)
+const nightSections = [{ ...nightOf(darkBoughs, 'w8-night-boughs'), weight: 1 }, { ...nightOf(darkGap, 'w8-night-gap'), weight: 1 }, { ...nightOf(darkClimb, 'w8-night-climb'), weight: 7 }];
 
 // ───────────────────────────── 8-2 Night Blooms: the harvest ─────────────────────────────
 
@@ -1185,7 +1187,7 @@ const glideGustHunter = section({
 // ───────────────────────────── 8-8 Night Hunters and 8-9 Monarch's Wood: the hunters' boughs ─────────────────────────────
 
 /** a hunt gate: Dot explains the shut shrine before any animal, and the roll's theme opens */
-const huntGate = (theme: 'cats' | 'harpies' | 'guards', line: 'hunt' | 'fight'): SectionTemplate => {
+const huntGate = (theme: 'cats' | 'harpies' | 'guards' | 'bats' | 'bounces', line: 'hunt' | 'fight'): SectionTemplate => {
   const k = knots('', 'a', 2, [170, 200]);
   return section({
     id: `w8-${line}-gate-${theme}`,
@@ -1203,7 +1205,68 @@ const huntGate = (theme: 'cats' | 'harpies' | 'guards', line: 'hunt' | 'fight'):
   });
 };
 // (8-8 hunts the harpies and the small cats, 8-9 fights the jaguars and the boa guards: w8.ts W8_STAGE_FOES)
-const huntGates = [huntGate('cats', 'hunt'), huntGate('harpies', 'hunt'), huntGate('cats', 'fight'), huntGate('guards', 'fight')];
+// (and a third theme each, 2026-10-31: 8-8's hunters past the sleeping bats, 8-9's moon flowers up to the jaguars' high boughs)
+const huntGates = [huntGate('cats', 'hunt'), huntGate('harpies', 'hunt'), huntGate('bats', 'hunt'), huntGate('cats', 'fight'), huntGate('guards', 'fight'), huntGate('bounces', 'fight')];
+
+/** 8-8's hunters past the sleeping bats (8-1's bat run, taught there): a bat run, then the hunters' bough */
+const huntBatRun = section({
+  id: 'w8-hunt-bat-run',
+  name: 'past the sleeping bats to the hunters (arena)',
+  archetypes: ['purge'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  uses: [W8_LESSON.batRun, W8_THEME.bats],
+  pieces: [bank('a', [200, 230]), down('b', 'a', 30, [480, 540]), up('c', 'b', 30, [360, 400])],
+  last: 'c',
+  sockets: [roost('b', 0.03, 'batRun1'), petals('b', 'b', 0.55, 2, 140), foe('f1', 'c', [0.45, 0.55], SMALL, 3), foe('f2', 'c', [0.8, 0.88], ['harpy', 'ocelot'], 4, { phases: HOT, chance: 0.7 })],
+  mirrorable: true,
+});
+/** two rows of bats with a hunter on the bough between */
+const huntBatPair = section({
+  id: 'w8-hunt-bat-pair',
+  name: 'bats, a hunter, bats (arena)',
+  archetypes: ['purge'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 7,
+  weight: 2,
+  uses: [W8_LESSON.batRun, W8_THEME.bats],
+  pieces: [bank('a', [180, 210]), down('b', 'a', 30, [420, 460]), up('c', 'b', 30, [300, 330]), down('d', 'c', 24, [420, 460]), up('e', 'd', 24, [180, 210])],
+  last: 'e',
+  sockets: [roost('b', 0.03, 'batRun1'), foe('f1', 'c', [0.45, 0.55], SMALL, 3), roost('d', 0.03, 'batRun2'), petals('d', 'd', 0.6, 2, 140), foe('f2', 'e', [0.5, 0.6], SMALL, 3, { phases: HOT, chance: 0.6 })],
+  mirrorable: true,
+});
+
+/** 8-9's moon flowers (8-5's, taught there): a bounce up to the high bough a jaguar or a boa holds */
+const MFLOWER_HI = 215;
+const mflower = (key: string, on: string): SectionPiece => ({ key, shape: 'bouncy', w: [80, 90], place: { kind: 'over', on, at: [0.78, 0.84], dy: [-28, -22] }, main: true });
+const mhigh = (key: string, on: string, w: W): SectionPiece => bank(key, w, { kind: 'over', on, at: 1, dy: -MFLOWER_HI }, { main: true });
+const monarchFlower = section({
+  id: 'w8-monarch-flower',
+  name: 'moon flower to the high bough, glide off it (arena)',
+  archetypes: ['gauntlet'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  uses: [W8_LESSON.bounce, W8_THEME.bounces],
+  pieces: [bank('a', [250, 280]), mflower('f', 'a'), mhigh('hi', 'a', [340, 370]), up('k', 'hi', 30, [130, 150]), down('h2', 'k', 30, [150, 170]), glide('g', 'h2', [220, 250], [0.72, 0.82]), down('b', 'g', MFLOWER_HI, [170, 200])],
+  last: 'b',
+  sockets: [foe('f1', 'a', [0.3, 0.4], ['boa'], 4), foe('f2', 'hi', [0.5, 0.6], ['jaguar', 'boa'], 5), petals('g', 'g', 0.5, 2, 80), petals('b', 'b', 0.5, 1)],
+  mirrorable: false,
+});
+const monarchFlowerPair = section({
+  id: 'w8-monarch-flower-pair',
+  name: 'moon flower, a guard up top, a gap and down (arena)',
+  archetypes: ['gauntlet'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 7,
+  weight: 2,
+  uses: [W8_LESSON.bounce, W8_THEME.bounces],
+  pieces: [bank('a', [220, 250]), mflower('f', 'a'), mhigh('hi', 'a', [340, 370]), wide('w', 'hi', [300, 330], [0.6, 0.7]), up('k', 'w', 30, [130, 150]), down('b', 'k', MFLOWER_HI + 30, [170, 200])],
+  last: 'b',
+  sockets: [petals('a', 'a', 0.3, 1), foe('f1', 'hi', [0.5, 0.6], ['jaguar', 'boa'], 5), foe('f2', 'w', [0.5, 0.6], ['boa', 'jaguar'], 5, { phases: HOT, chance: 0.7 }), petals('b', 'b', 0.5, 1)],
+  mirrorable: false,
+});
 
 const hunterK = knots('', 'a', 2, [320, 350]);
 /** any hunt: a bough over two knots with hunters along it */
@@ -1474,6 +1537,7 @@ export const W8_SECTIONS: SectionTemplate[] = [
   glideGust, glideGustPair, glideGustHunter, batRunFirst, batRunPair, batRunGap, batRunDark, perchRun, perchClimb, perchHunter, fungusBlooms, fungusTall, fungusHunter, fungusGlide,
   ...huntGates, hunterBough, sunkenFork, catBoughs, catTrunks, jaguarHigh, harpyBough, harpyGaps, harpyLeap, boaKnots, guardDark, guardNight, guardKnots,
   monarchDark, monarchCats, monarchHarpies, monarchGuards, monarchGuardPosts,
+  huntBatRun, huntBatPair, monarchFlower, monarchFlowerPair,
 ];
 
 /** the shared fillers, kept out of the themed stages (8-2, 8-4, 8-8, 8-9: there the theme carries the stage) */
@@ -1497,6 +1561,10 @@ export const W8_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   'w8-bat-run-pair': [1],
   'w8-bat-run-gap': [1],
   'w8-bat-run-dark': [1],
+  'w8-hunt-bat-run': [8],
+  'w8-hunt-bat-pair': [8],
+  'w8-monarch-flower': [9],
+  'w8-monarch-flower-pair': [9],
   // (8-3's knot perches: its own)
   'w8-perch-run': [3],
   'w8-perch-climb': [3],
