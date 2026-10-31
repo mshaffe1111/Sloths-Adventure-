@@ -12,3 +12,4 @@ Clips come back with hf_fs attach on hfpokey/clips/<name>.carrier.png, then tool
               for; nothing in the game uses a belly slide today (ducking only brakes him), so it is kept in the bucket for 7-4 or a future slide
               move. pa-skid-s3 not needed: the skid is Matt's painted brake pose (first-round slide sheet 1).
               Job ran 01:12-01:47Z (35.2 min) ~ $1.61. Tonight's total: ~$1.61 of the $20 cap.
+pokey-anim2   6ae55070c78863f9c62eea58  launched 10:20 PM ET  spec-anim2.json @ 4b04c85: climb x s3,s11, climbdown s3, rope x s3,s11, punch x s3,s11
