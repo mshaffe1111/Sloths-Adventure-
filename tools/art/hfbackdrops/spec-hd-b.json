@@ -1,0 +1,125 @@
+{
+ "note": "hf-backdrops native-resolution pass",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w4terraces-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w4terraces-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. grey cliff terraces: stepped rock ledges with small trees and ferns growing out, a thin waterfall falling down the steps, clear daylight",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4mist-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w4mist-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. tall grey rock pinnacles rising out of mist, twisted pines clinging to their tops, a broken stone bridge between two pinnacles, soft pale dawn light, mist below",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4mist-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w4mist-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. mossy grey rocks and ferns at the edge of a drop, soft pale dawn light, mist below",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6dusk-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w6dusk-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. mangrove trees on tall arching roots standing in still black water, spanish moss hanging from the branches, a broken jetty, deep blue-green dusk light, a few fireflies",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6dusk-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w6dusk-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. mangrove roots, reeds and floating leaves, deep blue-green dusk light, a few fireflies",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7dawn-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w7dawn-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. overgrown jungle temple ruins: a tall stepped tower, carved stone gateways, a row of statues wrapped in strangler fig roots, pale gold dawn light through mist",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7dawn-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w7dawn-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. fallen carved blocks, ferns, roots and moss, pale gold dawn light through mist",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7dusk-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w7dusk-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. overgrown jungle temple ruins: broken stone archways, a stepped shrine with a carved stone face wrapped in strangler fig roots, broken columns, dim green-grey dusk light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}
