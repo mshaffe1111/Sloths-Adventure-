@@ -839,6 +839,9 @@ const loftSections = [
   { ...batRunGap, id: 'w8-loft-bats-gap', uses: [BATRUN, W8_THEME.loft] },
 ];
 
+/** the dozers' dark stretch (8-1 "As the Light Goes" holds a dark on every roll, w8Game.test.ts): the dark boughs, no animal in them */
+const dozeDark: SectionTemplate = { ...darkBoughs, id: 'w8-dozers-dark', uses: [W8_THEME.dozers] };
+
 // ───────────────────────────── 8-2 Night Blooms: the harvest ─────────────────────────────
 
 /** a harvest gate: the night blooms' first bough (no animal), and the roll's theme opens */
@@ -1658,7 +1661,7 @@ export const W8_SECTIONS: SectionTemplate[] = [
   ...bloomGates, bloomClimb, bloomHigh, bloomDark, bloomGaps, bloomLeap, ...roostBlooms,
   ...roostGates, roostHollows, roostHollowGap, roostCurtains, roostCurtainGaps, roostCurtainLeap, roostProwl, roostClimb, roostTrunks, roostDark, roostLong,
   glideFirst, glidePair, glideTrunk, glideHunter, glideDark, glideLeap, glideProwl,
-  glideGust, glideGustPair, glideGustHunter, batRunFirst, batRunPair, batRunGap, batRunDark, perchRun, perchClimb, perchHunter, dozeFirst, dozePair, dozeGap, dozeRest, fungusBlooms, fungusTall, fungusHunter, fungusGlide,
+  glideGust, glideGustPair, glideGustHunter, batRunFirst, batRunPair, batRunGap, batRunDark, perchRun, perchClimb, perchHunter, dozeFirst, dozePair, dozeGap, dozeRest, dozeDark, fungusBlooms, fungusTall, fungusHunter, fungusGlide,
   ...huntGates, hunterBough, sunkenFork, catBoughs, catTrunks, jaguarHigh, harpyBough, harpyGaps, harpyLeap, boaKnots, guardDark, guardNight, guardKnots,
   monarchDark, monarchCats, monarchHarpies, monarchGuards, monarchGuardPosts,
   huntBatRun, huntBatPair, monarchFlower, monarchFlowerPair,
@@ -1694,6 +1697,7 @@ export const W8_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   'w8-doze-pair': [1],
   'w8-doze-gap': [1],
   'w8-dozers-rest': [1],
+  'w8-dozers-dark': [1],
   'w8-hunt-bat-run': [8],
   'w8-hunt-bat-pair': [8],
   'w8-monarch-flower': [9],
