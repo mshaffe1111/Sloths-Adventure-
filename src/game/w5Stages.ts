@@ -568,8 +568,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       gap();
       return;
     }
-    fresh('thread', 520 - 160);
-    run(R.r(160, 210));
+    fresh('thread', 520 - 130);
+    run(R.r(130, 170));
     const t0 = x;
     const tw = r(R.r(60, 90));
     threads.push({ x0: t0, x1: t0 + tw, y: G - 14 });
@@ -870,7 +870,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       rest(R.r(200, 260));
       gap();
       stumps(2);
-      rest(R.r(220, 300));
+      rest(R.r(120, 160), false);
       flag();
     });
     beat('Learn: the sleeping spiders, then the humming threads', () => {
