@@ -16,7 +16,7 @@ MOMENTS = {
     'runstart': range(34, 41),
     'skid': range(56, 66),
     'hardland': range(land - 1, land + 8),
-    'doublejump': range(182, 196, 1),
+    'doublejump': range(181, 201),
 }
 # a wider crop where he leaves the ground a long way (css px round him)
 WIDE = {'doublejump': 95, 'hardland': 70}

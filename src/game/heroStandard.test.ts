@@ -63,11 +63,11 @@ test('every state the hero can be in draws a frame that exists', () => {
   assert.deepEqual([soft(0), soft(0.8)], ['land', 'recover']);
 });
 
-test('the turn faces us squeezed thin and opens out, then his new side view settles; a skid faces the way he slides (AN-13)', () => {
+test('the turn faces us squeezed and opens out, then his new side view settles; a skid faces the way he slides (AN-13)', () => {
   const ev = (o: object) => ({ isHurt: () => false, isLanding: () => false, hurtUntil: 0, ...o });
   const t0 = stdPick(player(), 1, ev({ turnPhase: () => 0 }));
   assert.equal(t0?.name, 'turn');
-  assert.ok(Math.abs((t0?.sx ?? 1) - 0.15) < 1e-9, 'through 15% across');
+  assert.ok(Math.abs((t0?.sx ?? 1) - 0.55) < 1e-9, 'squeezed to 55% across (15% showed as a sliver for a whole frame)');
   assert.notEqual(stdPick(player(), 1, ev({ turnPhase: () => 0.8 }))?.name, 'turn');
   const sk = stdPick(player(), 1, ev({ isSkidding: () => true, skidDir: -1 }));
   assert.equal(sk?.name, 'skid');

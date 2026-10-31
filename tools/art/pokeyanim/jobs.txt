@@ -5,3 +5,6 @@ pokey-anim1   6ae5407cc78863f9c62ee1cf  launched 9:12 PM ET  spec-anim1.json @ 6
               a 15-frame video cycle (move-run).
 Clips come back with hf_fs attach on hfpokey/clips/<name>.carrier.png, then tools/art/w5/unpack_carrier.py into tools/art/pokeyanim/clips/<name>/
 (png copies for the cutter in tools/art/train/vids/<name>/).
+              THROWN pa-flip-s3 (mid-turn he is a faceless brown ball for 25 frames, ends facing the camera) and pa-flip-s11 (no turn: he
+              tilts upside down and back, ends in a T-pose facing the camera). Wan cannot roll him; the double jump is his own painted roll
+              (tuck, v14 somersault, first-round slide sheet 6 upside down) with the leftover turned by code (heroStandard stdFlip).

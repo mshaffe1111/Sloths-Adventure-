@@ -17,7 +17,7 @@ const SCRIPT = [
   [58, 'up ArrowRight'], [58, 'down ArrowLeft'], // reversing at a run: the skid, then the turn
   [88, 'up ArrowLeft'],
   [125, 'drop'], // a hard landing
-  [170, 'down Space'], [173, 'up Space'], [184, 'down Space'], [187, 'up Space'], // a double jump
+  [170, 'down Space'], [180, 'up Space'], [182, 'down Space'], [192, 'up Space'], // a held jump, and the flip off its top
 ];
 const N = 235;
 

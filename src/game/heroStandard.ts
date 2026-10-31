@@ -144,11 +144,16 @@ export function stdAirFrame(vy: number): string {
   if (vy <= 140) return 'apex';
   return vy < 560 ? 'fall_a' : 'fall_b';
 }
-/** the turn (AN-13): facing us, squeezed to 15% across and opening out, then his new side view settling in. u = 0..1 through TURN_TIME */
+/**
+ * the turn (AN-13): facing us, squeezed and opening out, then his new side view settling in. u = 0..1 through TURN_TIME.
+ * (The squeeze starts at 55% across, not the 15% first tried: at 30 fps the first frame of the turn is held a whole frame, and at 15% it
+ * showed as a thin sliver of him, which read as a broken frame on the phone.)
+ */
 export const TURN_FRONT = 0.6;
+export const TURN_SQUEEZE = 0.55;
 export function stdTurn(u: number): { front: boolean; sx: number } {
   const e = (t: number) => t * t * (3 - 2 * t);
-  if (u < TURN_FRONT) return { front: true, sx: 0.15 + 0.85 * e(u / TURN_FRONT) };
+  if (u < TURN_FRONT) return { front: true, sx: TURN_SQUEEZE + (1 - TURN_SQUEEZE) * e(u / TURN_FRONT) };
   return { front: false, sx: 0.88 + 0.12 * e((u - TURN_FRONT) / (1 - TURN_FRONT)) };
 }
 /** the landing (AN-13), by how far through it he is: a short drop lands and recovers; the hardest drop squashes deep first */
