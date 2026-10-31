@@ -84,6 +84,25 @@ function chain(ctx: CanvasRenderingContext2D, kit: HTMLImageElement, x: number, 
   }
 }
 
+/** a chain hung from (x, y0) down to y1 (the kit's chain links): the grab bag's chain lifts and counterweights hang on it (w10PieceArt.ts);
+ *  false until the kit has loaded */
+export function drawW10Chain(ctx: CanvasRenderingContext2D, x: number, y0: number, y1: number): boolean {
+  const kit = sheet('kit');
+  if (!kit) return false;
+  chain(ctx, kit, x, y0, y1);
+  return true;
+}
+
+/** the iron-banded plank (gemini w9w10-bridges 'plank-ring'), `w` wide, its top at y; false until its sheet has loaded */
+export function drawW10Plank(ctx: CanvasRenderingContext2D, x: number, y: number, w: number): boolean {
+  const br = sheet('br');
+  if (!br) return false;
+  // (the plank's top is 18 px down its painting, past the ring; its body 70 px deep)
+  const s = w / (PLANK.w - 40);
+  ctx.drawImage(br, PLANK.x, PLANK.y, PLANK.w, PLANK.h, x - 30 * s, y - 18 * s, PLANK.w * s, PLANK.h * s);
+  return true;
+}
+
 /** the hoist's plank: the iron grate on its two chains, `w` wide, its top at y; the chains on up off the screen */
 export function drawW10Hoist(ctx: CanvasRenderingContext2D, cx: number, y: number, w: number): boolean {
   const b = sheet('b'), kit = sheet('kit');

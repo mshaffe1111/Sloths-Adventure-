@@ -7,9 +7,11 @@
 import { trackAtlas } from './atlasLoader.ts';
 import { drawW10Bag, drawW10BagPart, W10_BAG_FRAMES } from './w10BagArt.ts';
 import type { Zone, ZoneState } from './zones.ts';
+import { w10VarSheet } from './w10PieceArt.ts';
 
 const BARS_URL = new URL('../assets/w10/dropgate.webp', import.meta.url).href;
-export const W10_DROP_URLS: readonly string[] = [BARS_URL];
+const LID_URL = new URL('../assets/w10/barrel-end.webp', import.meta.url).href;
+export const W10_DROP_URLS: readonly string[] = [BARS_URL, LID_URL];
 /** the gatehouse's drawn height over the walk (world px) and its painting's frame (w10BagArt 'gatehouse') */
 export const GATE_H = 250;
 const FRAME = W10_BAG_FRAMES.gatehouse;
@@ -27,7 +29,7 @@ function barsImg(): HTMLImageElement | null {
   }
   return barsReady ? bars : null;
 }
-export const w10DropReady = (): boolean => !!barsImg() && !!spoutImg();
+export const w10DropReady = (): boolean => !!barsImg() && !!spoutImg() && !!lidImg();
 
 /** how far down the gate is, 0 (up in the wall) .. 1 (on the walk), and its shudder (px) */
 function dropOf(st: ZoneState, t: number): { down: number; shake: number } {
@@ -69,8 +71,12 @@ export function drawW10DropBars(ctx: CanvasRenderingContext2D, z: Zone, st: Zone
 const SPOUT_URL = new URL('../assets/w6to10/props-made/w10alt.webp', import.meta.url).href;
 /** the spout block (w10alt 'spout-b'): a stone block with an iron gutter pipe pointing left, its mouth at (22, 150) of 398 x 416 */
 const SPOUT = { x: 0, y: 433, w: 398, h: 416, ax: 278, ay: 416, mouthX: 22, mouthY: 150 };
-/** the block's drawn height (world px): the mouth stands 192 px over the walk, higher than a single jump clears */
-export const SPOUT_H = 300;
+/** the spout's drawn height (world px), set on a wall stub WALL_H tall behind the walk (the lead, 2026-10-31: from architecture, not a
+ *  block standing in the street): its mouth stands about 180 px over the walk, higher than a single jump clears */
+export const SPOUT_H = 110;
+const WALL_H = 112;
+/** the wall stub: the left part of w10var's 'bank-b' wall (446 x 200: its crenellated top and dressed stones) */
+const WALL = { x: 0, y: 0, w: 230, h: 200 };
 /** each gush frame's water: its mouth's and its foot's x in the frame (bagcut's frames, measured), the water from row 84 to the foot */
 const GUSH_X: Record<string, [number, number]> = { 'gush-1': [111, 161], 'gush-2': [152, 196], 'gush-3': [107, 161] };
 const GUSH_TOP = 84;
@@ -90,19 +96,22 @@ const sb = SPOUT_H / SPOUT.h;
 /** where the gush's mouth is for a column whose water lands at cx */
 function mouthOf(z: Zone): { x: number; y: number; blockX: number } {
   const cx = (z.x0 + z.x1) / 2;
-  const mouthH = (SPOUT.h - SPOUT.mouthY) * sb;
+  const mouthH = WALL_H + (SPOUT.h - SPOUT.mouthY) * sb;
   // (the water drifts ~50 frame px off the mouth as it falls, flipped: the foot lands that much left of the mouth, scaled)
   const k = mouthH / (494 - GUSH_TOP);
   const mx = cx + 50 * k;
   return { x: mx, y: z.baseY - mouthH, blockX: mx + (SPOUT.ax - SPOUT.mouthX) * sb };
 }
 
-/** the spout block standing on the walk behind him, its pipe over the column */
+/** the wall stub behind the walk and the spout block set on its parapet, its pipe out over the column */
 export function drawW10Spout(ctx: CanvasRenderingContext2D, z: Zone): boolean {
   const im = spoutImg();
-  if (!im) return false;
+  const wall = w10VarSheet();
+  if (!im || !wall) return false;
   const m = mouthOf(z);
-  ctx.drawImage(im, SPOUT.x, SPOUT.y, SPOUT.w, SPOUT.h, m.blockX - SPOUT.ax * sb, z.baseY + 4 - SPOUT.h * sb, SPOUT.w * sb, SPOUT.h * sb);
+  const ww = (WALL.w * WALL_H) / WALL.h;
+  ctx.drawImage(wall, WALL.x, WALL.y, WALL.w, WALL.h, m.blockX - ww * 0.55, z.baseY + 4 - WALL_H, ww, WALL_H);
+  ctx.drawImage(im, SPOUT.x, SPOUT.y, SPOUT.w, SPOUT.h, m.blockX - SPOUT.ax * sb, z.baseY + 8 - WALL_H - SPOUT.h * sb, SPOUT.w * sb, SPOUT.h * sb);
   return true;
 }
 
@@ -214,17 +223,34 @@ export function drawW10BarrelStack(ctx: CanvasRenderingContext2D, z: Zone, st: Z
   return true;
 }
 
-/** the barrel rolling down its lane: it bobs on the stones and wobbles as it rolls (it is drawn on its side, as it rolls) */
+let lid: HTMLImageElement | null = null;
+let lidReady = false;
+function lidImg(): HTMLImageElement | null {
+  if (typeof Image === 'undefined') return null;
+  if (!lid) {
+    const im = new Image();
+    lid = im;
+    trackAtlas(im, LID_URL, () => (lidReady = true), () => (lid = null), () => ((lid = null), (lidReady = false)));
+  }
+  return lidReady ? lid : null;
+}
+/** the rolling barrel's size on the lane: its round end's diameter (zones.ts BARREL: 44 px wide, 40 high, the hoop just over it) */
+const LID_D = 46;
+/**
+ * the barrel rolling down its lane: knocked over on its side with its end to us (hfb-w10bag-r2's barrel end, w10/barrel-end.webp), so
+ * it truly rolls, turning the distance it has gone over its radius (the bung goes round with it), with a small hop on the stones
+ */
 export function drawW10Barrel(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState): boolean {
   if (st.phase !== 'active') return true;
+  const im = lidImg();
+  if (!im) return false;
   const bx = z.dir === 1 ? z.x0 + st.u * (z.x1 - z.x0) : z.x1 - st.u * (z.x1 - z.x0);
-  const f = W10_BAG_FRAMES.barrel;
-  const h = (BARREL_W * f.h) / f.w;
   const d = st.u * (z.x1 - z.x0);
+  const r = LID_D / 2;
   ctx.save();
-  ctx.translate(bx, z.baseY + 2 - Math.abs(Math.sin(d * 0.06)) * 3);
-  ctx.rotate(Math.sin(d * 0.045) * 0.09 * z.dir);
-  const ok = drawW10Bag(ctx, 'barrel', 0, 0, h);
+  ctx.translate(bx, z.baseY + 1 - r - Math.abs(Math.sin(d * 0.05)) * 1.5);
+  ctx.rotate(((d / r) * (z.dir ?? 1)) % (Math.PI * 2));
+  ctx.drawImage(im, -r, -r, LID_D, LID_D);
   ctx.restore();
-  return ok;
+  return true;
 }

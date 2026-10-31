@@ -103,6 +103,10 @@ export const W10_LESSON = {
   lantern: 'lantern',
   /** the rolling barrels (GRAB-BAG K: 10-7, the first gentle) */
   barrel: 'barrel',
+  /** the moving platforms (GRAB-BAG A, B, C): the chain lifts (10-1), the counterweight planks (10-3), the gear lifts (10-9) */
+  lift: 'lift',
+  cweight: 'cweight',
+  gear: 'gear',
 } as const;
 
 // ───────────────────────────── the creatures ─────────────────────────────
@@ -169,6 +173,9 @@ export const W10_TIPS: Record<string, string> = {
   [W10_LESSON.gush]: 'The gutters overflow. Wait for the gush to stop.',
   [W10_LESSON.lantern]: 'A lantern sweep. Stay behind something.',
   [W10_LESSON.barrel]: 'Barrels! Jump them, or wait up on the step.',
+  [W10_LESSON.lift]: 'That plank rides the chain. Wait for it.',
+  [W10_LESSON.cweight]: 'One goes up, the other comes down.',
+  [W10_LESSON.gear]: 'The gears lift the stones. Count with them.',
   water: 'No ledge under that one.',
 };
 export const W10_NEW_LINES: readonly string[] = [...new Set(Object.values(W10_TIPS))];
@@ -196,7 +203,7 @@ export const W10_MANIFEST: WorldManifest = {
   handBuilt: ['10-2', '10-4', '10-5', '10-8', '10-10'],
   // (the cats were met in World 3, the tayra and the harpy in World 6, the gusts in World 4 and the crumbling floors in World 7; the
   // rods, the spikes, the ramparts and the gusts are 10-1's (his line there on first meeting), the storm's watch 10-3's)
-  lessons: { ocelot: '3-9', jaguar: '3-9', tayra: '6-2', harpy: '6-5', [W10_LESSON.bolt]: '10-1', [W10_LESSON.spikes]: '10-1', [W10_LESSON.rampart]: '10-1', [W10_LESSON.wind]: '10-1', [W10_LESSON.storm]: '10-3', [W10_LESSON.dropgate]: '10-7', [W10_LESSON.trap]: '10-9', [W10_LESSON.gush]: '10-6', [W10_LESSON.barrel]: '10-7' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', tayra: '6-2', harpy: '6-5', [W10_LESSON.bolt]: '10-1', [W10_LESSON.spikes]: '10-1', [W10_LESSON.rampart]: '10-1', [W10_LESSON.wind]: '10-1', [W10_LESSON.storm]: '10-3', [W10_LESSON.dropgate]: '10-7', [W10_LESSON.trap]: '10-9', [W10_LESSON.gush]: '10-6', [W10_LESSON.barrel]: '10-7', [W10_LESSON.lift]: '10-1', [W10_LESSON.cweight]: '10-3', [W10_LESSON.gear]: '10-9' },
   tips: W10_TIPS,
 };
 
@@ -339,7 +346,7 @@ export function w10Kit(stage = 1): WorldKit {
 
 /** Pokey's lesson lines, by the thing each teaches (said once per save where the guide supports it) */
 export const W10_FIRST_OF: Readonly<Record<string, string>> = Object.fromEntries(
-  ([W10_LESSON.bolt, W10_LESSON.spikes, W10_LESSON.rampart, W10_LESSON.wind, W10_LESSON.storm, W10_LESSON.soldier, W10_LESSON.dropgate, W10_LESSON.trap, W10_LESSON.gush, W10_LESSON.barrel] as string[]).map((k) => [W10_TIPS[k], `w10.${k}`]),
+  ([W10_LESSON.bolt, W10_LESSON.spikes, W10_LESSON.rampart, W10_LESSON.wind, W10_LESSON.storm, W10_LESSON.soldier, W10_LESSON.dropgate, W10_LESSON.trap, W10_LESSON.gush, W10_LESSON.barrel, W10_LESSON.lift, W10_LESSON.cweight, W10_LESSON.gear] as string[]).map((k) => [W10_TIPS[k], `w10.${k}`]),
 );
 
 /**

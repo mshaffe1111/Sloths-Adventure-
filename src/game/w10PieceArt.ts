@@ -15,7 +15,8 @@
 import { trackAtlas } from './atlasLoader.ts';
 import type { Platform } from './types.ts';
 import { trapState } from './trapdoor.ts';
-import { drawW10Bag } from './w10BagArt.ts';
+import { drawW10Bag, W10_BAG_FRAMES } from './w10BagArt.ts';
+import { drawW10Chain, drawW10Plank, loadW10RoomArt } from './w10PuzzleArt.ts';
 
 export type W10PieceStyle = 'w10_perch' | 'w10_balcony' | 'w10_stair' | 'w10_scaffold' | 'w10_bridge' | 'w10_trap';
 export const W10_PIECE_STYLES: readonly W10PieceStyle[] = ['w10_perch', 'w10_balcony', 'w10_stair', 'w10_scaffold', 'w10_bridge', 'w10_trap'];
@@ -60,6 +61,9 @@ function sheet(n: Sheet): HTMLImageElement | null {
   }
   return ready.has(n) ? imgs.get(n)! : null;
 }
+/** the w10var sheet (the gutter spout's wall stub stands on its 'bank-b' wall: w10DropArt.ts) */
+export const w10VarSheet = (): HTMLImageElement | null => sheet('v');
+
 /** start loading every sheet (stagePreload 'w10') */
 export function w10PiecesReady(): boolean {
   return (Object.keys(URLS) as Sheet[]).map((n) => !!sheet(n)).every(Boolean);
@@ -104,6 +108,67 @@ export function drawW10PieceArt(ctx: CanvasRenderingContext2D, p: Platform, t = 
     ctx.drawImage(img, L.x + L.w - end, L.y, end, L.h, x0 + end * k + midW, y, end * k, dh);
     return true;
   }
+  if (p.style === 'w10_stair') {
+    // (the tread and its bracket, then the post under its far end: the painting's diagonal stringer below the tread is left out, so no
+    // stub of the next flight hangs under it, the lead's review)
+    const TOP = 22;
+    const TREAD = 54;
+    const POST = 115;
+    ctx.drawImage(img, L.x, L.y + TOP, L.w, TREAD - TOP, p.x - L.x0 * s, p.y - (L.top - TOP) * s, L.w * s, (TREAD - TOP) * s);
+    ctx.drawImage(img, L.x + POST, L.y + TREAD, L.w - POST, L.h - TREAD, p.x - L.x0 * s + POST * s, p.y - L.top * s + TREAD * s, (L.w - POST) * s, (L.h - TREAD) * s);
+    return true;
+  }
   ctx.drawImage(img, L.x, L.y, L.w, L.h, p.x - L.x0 * s, p.y - L.top * s, L.w * s, L.h * s);
   return true;
+}
+
+// ───────────────────────────── the moving platforms (GRAB-BAG A, B, C: World 9's riser, lift.ts `bob`) ─────────────────────────────
+
+/** the chains run this far over a lift's top stop, to the pulley block or off the screen */
+const CHAIN_UP = 320;
+
+/**
+ * World 10's risers, drawn over the engine's lift (engine.ts hands every `bob` platform of World 10 here):
+ *   'w10_lift'  A: the iron-banded plank on two chains, the chains running up to a pulley block high on the wall (bag 'pulley')
+ *   'w10_cw'    B: the same plank on one chain over a pulley wheel, the iron counterweight (bag 'weight') riding the other side
+ *   'w10_gear'  C: a stone block on a toothed rack (bag 'rack') rising out of its well, the great cog (bag 'cog') turning beside it
+ * False for anything else, or until its sheets load (the engine's own slab stands in).
+ */
+export function drawW10Bob(ctx: CanvasRenderingContext2D, p: Platform, t: number): boolean {
+  const l = p.lift;
+  if (!l || !p.style) return false;
+  loadW10RoomArt();
+  const cx = p.x + p.width / 2;
+  if (p.style === 'w10_lift' || p.style === 'w10_cw') {
+    const top = l.top - CHAIN_UP;
+    if (p.style === 'w10_lift') {
+      if (!drawW10Chain(ctx, p.x + 14, top, p.y + 4) || !drawW10Chain(ctx, p.x + p.width - 14, top, p.y + 4)) return false;
+      drawW10Bag(ctx, 'pulley', cx, top + 40, 90);
+    } else {
+      // (one chain over the wheel: the plank on this side, the counterweight on the other, so the weight is low when the plank is high)
+      const wheelR = 46;
+      if (!drawW10Chain(ctx, cx - wheelR, top, p.y + 4) || !drawW10Chain(ctx, cx + wheelR, top, top + (l.bottom - p.y) + 80)) return false;
+      const f = W10_BAG_FRAMES.weight;
+      drawW10Bag(ctx, 'weight', cx + wheelR, top + (l.bottom - p.y) + 80 + 70, 70 * (f.h / f.h));
+      ctx.save();
+      ctx.translate(cx, top);
+      ctx.rotate((p.y - l.top) / wheelR);
+      drawW10Bag(ctx, 'cog', 0, wheelR, wheelR * 2);
+      ctx.restore();
+    }
+    return drawW10Plank(ctx, p.x, p.y, p.width);
+  }
+  if (p.style === 'w10_gear') {
+    // (the block's painted top is 6 px down its painting; the rack runs down into the well past the bottom stop)
+    const f = W10_BAG_FRAMES.rack;
+    const s = (p.width + 30) / f.w;
+    drawW10Bag(ctx, 'rack', cx, p.y - 6 * s + f.h * s, f.h * s);
+    ctx.save();
+    ctx.translate(p.x - 34, l.bottom + 10);
+    ctx.rotate(-(p.y - l.bottom) / 40);
+    const ok = drawW10Bag(ctx, 'cog', 0, 45, 90);
+    ctx.restore();
+    return ok;
+  }
+  return false;
 }

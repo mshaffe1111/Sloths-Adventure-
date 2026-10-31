@@ -36,3 +36,4 @@ World 10 grab bag (2026-10-31, branch w10-pieces, helper for the lead's W10 piec
 hfb-w10bag-r1  6ae63048c78863f9c62f3cd9 rtx-pro-6000 18:15:36Z-~18:19:10Z (~3.6 min incl. load, ~$0.17): hfbatch/fungusgpu.py @8a6b525d on
   spec-w10-bag.json (bagstarts.py: canvas a 3x3 props on magenta 1536^2, canvas b beams + gush on black 1536x512; s50/s62 (b s50/s65) x
   seeds 7/23 = 8 takes). Takes in the bucket hfbatch/w10bag/props/, brought back with hf_fs attach of carrier-w10bag-0.png.
+2026-10-31 hfb-w10bag-r2 job 6ae63eaa0e0338d1bb7d3c4e: barrel ends face on (the style sheet on the canvas), 4 takes (s45/s58 x seeds 7/23), rtx-pro-6000, about $0.15. Picked s58-23, first lid: tools/art/w10/barrelcut.py -> src/assets/w10/barrel-end.webp (the rolling barrel's true roll).

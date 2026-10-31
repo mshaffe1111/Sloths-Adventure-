@@ -178,6 +178,7 @@ import { trapState } from './trapdoor.ts';
 import { drawW10Dressing, drawW10Hide, type W10Dressing } from './w10Art.ts';
 import { drawW10SkyBolt, setW10Stage } from './w10HazardArt.ts';
 import { drawW10LanternSweep } from './w10DropArt.ts';
+import { drawW10Bob } from './w10PieceArt.ts';
 import { W10_TIPS } from './gen2/worlds/w10.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -6043,7 +6044,9 @@ export class GameEngine {
     // (World 9's moving logs, lift.ts `bob`: the pumice rafts, charred logs and piston columns, w9BobArt.ts)
     for (const pl of this.platforms) {
       if (!pl.lift || !this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) continue;
-      if (pl.lift.bob) drawW9Bob(ctx, pl, this.gameTime);
+      // (World 10's chain lifts, counterweights and gear lifts: w10PieceArt.ts)
+      if (pl.lift.bob && pl.style?.startsWith('w10_')) drawW10Bob(ctx, pl, this.gameTime) || drawW9Bob(ctx, pl, this.gameTime);
+      else if (pl.lift.bob) drawW9Bob(ctx, pl, this.gameTime);
       else drawW2Lift(ctx, pl, !!pl.lift.postRight);
     }
     // 2-6: the village's ladders where the climbs are

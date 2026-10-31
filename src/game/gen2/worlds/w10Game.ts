@@ -13,6 +13,7 @@ import { W10_LESSON_SECTIONS, W10_STAGE_ONLY } from './w10Ground.ts';
 import { W10_ROOM_REQUIRED, withW10Rooms } from './w10Rooms.ts';
 import { withW10Swing } from './w10Swing.ts';
 import { TRAP } from '../../trapdoor.ts';
+import { liftCycle } from '../../lift.ts';
 
 /** the stages of World 10 the game builds with gen2 */
 export const W10_GAME_STAGES = ['10-1', '10-3', '10-6', '10-7', '10-9'] as const;
@@ -57,6 +58,13 @@ export function w10GameKit(stage: number, difficulty: Difficulty = 'normal'): Wo
     out.platforms.filter((p) => p.style === 'w10_trap').sort((a, b) => a.x - b.x).forEach((p, i) => {
       p.trap = { ...beat, offset: Math.round(((i % 2) * 0.5 + ((p.x * 0.0007) % 0.25)) * beat.period * 100) / 100 };
     });
+    // (the counterweight planks (GRAB-BAG B) ride in pairs on one chain: the second half a cycle behind the first, so one is up as the
+    // other is down)
+    const cws = out.platforms.filter((p) => p.style === 'w10_cw' && p.lift).sort((a, b) => a.x - b.x);
+    for (let i = 0; i + 1 < cws.length; i += 2) {
+      const a = cws[i].lift!, b = cws[i + 1].lift!;
+      b.phase = Math.round((a.phase + liftCycle(a) / 2) * 10) / 10;
+    }
   };
   return { ...k, decorate, manifest: { ...k.manifest, sections, required: devForced(stage, sections) ?? W10_REQUIRED } };
 }

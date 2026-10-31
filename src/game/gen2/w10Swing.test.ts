@@ -2,7 +2,7 @@
  * World 10's swings (gen2/worlds/w10Swing.ts) and rooms (w10Rooms.ts), built through buildGen2Stage on 20 rolls, Normal and Easy, on the
  * stand-in World 10 kit (w10SwingHarness.ts, until the main builder's w10.ts is merged in): each section is laid in its own space at its
  * size, never mirrored, with no climbing vine; every roll passes levelCheck (and so puzzleCheck on its room), is long enough, never
- * crumbles, holds its own room once and no other; every liana takes one of its section's looks; the quick route swings on every liana
+ * crumbles, holds one of its own rooms once and no other; every liana takes one of its section's looks; the quick route swings on every liana
  * (no walking under one through its pit: every swing is needed).
  */
 import '../headlessDom.ts';
@@ -71,7 +71,8 @@ for (const id of STAGES) {
         assert.ok(!st.platforms.some((p) => p.type === 'fragile' && mine.some((s) => p.x >= s.x0 && p.x < s.x1)), `${at}: a crumbling piece in a swing or a room`);
         const rooms = st.gen2.sections.map((s) => s.template).filter((t) => t in W10R_STAGE);
         const own = Object.entries(W10R_STAGE).filter(([, s]) => s === id).map(([t]) => t);
-        assert.deepEqual(rooms, own, `${at}: rooms ${rooms}`);
+        // (one room a roll: a stage with two, 10-7's gatehouse and Winch House, holds one of them, the roll's pick)
+        assert.ok(rooms.length === 1 && own.includes(rooms[0]), `${at}: rooms ${rooms}`);
         // (every liana is swung on the quick route, and takes one of its section's looks)
         const route = pickRoute(cfg10(id).objectiveType, st).used.route;
         assert.notEqual(route.traced, 'failed', at);
