@@ -3,3 +3,4 @@ wp-draft 6ae65df30e0338d1bb7d4424 created 21:30Z: spec-wp-draft.json, 21 world p
 live-a0 6ae65e52 + live-a1 6ae65e57 created 21:32Z with timeout "1h30m" = 1 s by mistake: died at once (~$0.00)
 live-a0 6ae65e6a0e0338d1bb7d4457 created 21:32Z: spec-live-a.json part 0 of 2 (Wan 2.2 I2V clips of 10 plates, 704x752, no motion model)
 live-a1 6ae65e6d0e0338d1bb7d4459 created 21:32Z: part 1 of 2
+wp-redo 6ae660820e0338d1bb7d44b9 created 21:41Z: spec-wp-redo.json, W2 day + W3 night/glow/storm again from clean starts (starts2/), 2 strengths
