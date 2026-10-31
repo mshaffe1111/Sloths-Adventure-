@@ -25,7 +25,7 @@ import type { SectionTemplate } from './types.ts';
 import { roomStage, RUNWAY } from './w6Harness.ts';
 import { RAFT_RISE, WATER } from './worlds/w6Rooms.ts';
 import { W8_REQUIRED } from './worlds/w8Game.ts';
-import { hammockRoom, hammockRoomEasy, MOON, moonRoom, moonRoomEasy, PADS, padsRoom, padsRoomEasy, roomFor, W8_ROOM_SECTIONS, W8_ROOM_STAGES, W8R_NEW_LINES, W8R_ROOM_HINTS, W8R_STAGE, w8RoomsFor } from './worlds/w8Rooms.ts';
+import { hammockRoom, hammockRoomEasy, LOFT, loftRoom, loftRoomEasy, MOON, moonRoom, moonRoomEasy, PADS, padsRoom, padsRoomEasy, roomFor, W8_ROOM_SECTIONS, W8_ROOM_STAGES, W8R_NEW_LINES, W8R_ROOM_HINTS, W8R_STAGE, w8RoomsFor } from './worlds/w8Rooms.ts';
 
 const words = (s: string) => s.split(/\s+/).filter(Boolean).length;
 /** each room's key pieces: without them its way on never opens */
@@ -114,15 +114,18 @@ test('the rooms: none can be walked past, each fits an upright phone, each has a
 
 test('each stage\'s kit holds its own room and no other (8-2 the hammock, 8-3 the pads, 8-5 the moonflower), Easy\'s on Easy; each required on every roll', () => {
   for (let st = 1; st <= 9; st++) {
-    const want = W8_ROOM_SECTIONS.filter((s) => W8R_STAGE[s.id] === `8-${st}`).map((s) => s.id);
+    // (8-1's roost loft is its own theme's room: in its kit, never required)
+    const want = [...W8_ROOM_SECTIONS.filter((s) => W8R_STAGE[s.id] === `8-${st}`).map((s) => s.id), ...(st === 1 ? [loftRoom.id] : [])];
     assert.deepEqual(w8RoomsFor(st).map((s) => s.id), want, `8-${st}`);
-    for (const s of w8RoomsFor(st)) assert.ok(W8_REQUIRED[`8-${st}`].some((r) => r.section === s.id), `8-${st}: ${s.id} is not required`);
+    for (const s of w8RoomsFor(st).filter((s) => s.id !== loftRoom.id)) assert.ok(W8_REQUIRED[`8-${st}`].some((r) => r.section === s.id), `8-${st}: ${s.id} is not required`);
+    assert.ok(!(W8_REQUIRED[`8-${st}`] ?? []).some((r) => r.section === loftRoom.id), 'the loft is a theme, not on every roll');
   }
   assert.deepEqual(Object.values(W8R_STAGE).sort(), [...W8_ROOM_STAGES]);
   assert.deepEqual([...W8_ROOM_STAGES], ['8-2', '8-3', '8-5']);
   assert.equal(w8RoomsFor(2, 'easy')[0], hammockRoomEasy);
   assert.equal(w8RoomsFor(3, 'easy')[0], padsRoomEasy);
   assert.equal(w8RoomsFor(5, 'easy')[0], moonRoomEasy);
+  assert.equal(w8RoomsFor(1, 'easy')[0].room, loftRoomEasy.room);
 });
 
 // ───────────────────────────── each room in the real engine ─────────────────────────────
@@ -133,6 +136,8 @@ function play(t: SectionTemplate, d: Difficulty, w: number, h: number) {
   const sim = new RealPlay('kit', 1);
   sim.bare(st.platforms);
   const e = sim.e;
+  // (a room with a ladder hangs it on the section's own vine: the loft)
+  if (st.vines?.length) e.vines = st.vines;
   const kp = new KitPlay(st.kit!, st.platforms, { world: 8, stage: 3, vines: e.vines, collectibles: e.collectibles });
   Object.assign(e, { kit: kp, enemies: [] });
   e.currentStage.kit = st.kit;
@@ -394,3 +399,67 @@ for (const d of ['normal', 'easy'] as const) {
   }
 }
 
+
+for (const d of ['normal', 'easy'] as const) {
+  for (const [name, w, h] of SCREENS) {
+    test(`the roost loft in the real engine (${d}, ${name}): a pebble at the knot, the ladder down, up it, the lever, through the bark door`, () => {
+      const { sim, kit, st } = play(loftRoom, d, w, h);
+      const lives = sim.e.lives;
+      const r = kit.rooms[0];
+      const door = r.gates[0];
+      const knot = r.knots[0];
+      const ladder = r.ladders[0];
+      const lever = r.levers[0];
+      const loft = st.platforms.find((p) => p.id === (st.room.pieces.find((p) => p.id === 's1-lever') as { at: Anchor }).at.on)!;
+      assert.equal(door.open, false, 'the bark door is shut to start with');
+      assert.equal(ladder.down, false, 'the ladder is rolled up');
+      // the loft is out of any jump's reach from the floor
+      walkTo(sim, loft.x + loft.width / 2);
+      sim.frame({ press: true });
+      for (let i = 0; i < 8; i++) sim.frame({ jump: true });
+      sim.frame({ press: true });
+      for (let i = 0; i < 30; i++) sim.frame({ jump: true });
+      sim.wait(0.5);
+      assert.notEqual(sim.standingOn, loft.id, 'no jump reaches the loft');
+      // a pebble from the pile, flicked up at the knot from under it
+      walkTo(sim, at(st, 'pile') + 40);
+      face(sim, -1);
+      tap(sim);
+      assert.ok(kit.holding, 'a tap by the pile picks a pebble up');
+      let tries = 0;
+      while (!knot.snapped && tries++ < 4) {
+        if (!kit.holding) {
+          walkTo(sim, at(st, 'pile') + 40);
+          face(sim, -1);
+          tap(sim);
+        }
+        walkTo(sim, knot.x - 6, 4);
+        sim.frame({ press: true });
+        sim.wait(1.5);
+      }
+      assert.ok(knot.snapped, `the knot snapped (${tries} throws)`);
+      sim.wait(1.5);
+      assert.ok(ladder.down, 'the ladder unrolled');
+      if (d === 'easy') assert.equal(door.open, true, 'Easy: the snapped knot opens the door (two steps)');
+      else {
+        assert.equal(door.open, false, 'the door listens to the lever');
+        // up the ladder onto the loft, the lever
+        walkTo(sim, ladder.vine!.x, 4);
+        assert.ok(!ladder.vine!.off, `the ladder's vine is there to grab (${ladder.vine!.x}, he is at ${sim.p.x.toFixed(0)})`);
+        for (let i = 0; i < 30 * 6 && sim.standingOn !== loft.id; i++) sim.frame(sim.p.y > loft.y + 4 ? { up: true } : { left: true });
+        assert.equal(sim.standingOn, loft.id, 'up the ladder onto the loft');
+        walkTo(sim, at(st, 'lever') + 30);
+        face(sim, -1);
+        tap(sim);
+        assert.equal(lever.on, true, 'the lever pulled');
+        sim.wait(0.5);
+        assert.equal(door.open, true, 'the lever opens the door');
+      }
+      // down and through
+      walkTo(sim, door.wall.x + door.wall.width + 80);
+      assert.ok(sim.p.x > door.wall.x + door.wall.width, `through the door (${sim.p.x.toFixed(0)}; the wall ${door.wall.x}+${door.wall.width}, open ${door.open})`);
+      assert.equal(sim.e.lives, lives, 'no life lost');
+      setDifficulty('normal');
+    });
+  }
+}

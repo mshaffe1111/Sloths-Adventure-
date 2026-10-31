@@ -6,7 +6,7 @@ import { addKitPlatforms, type RoomSpec } from '../puzzleKit.ts';
 import { G } from '../protoStage.ts';
 import type { Difficulty } from '../difficulty.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
-import type { LevelConfig, Platform } from '../types.ts';
+import type { LevelConfig, Platform, Vine } from '../types.ts';
 import { layLocal, placeRoom, planBudget, rngFor } from './pipeline.ts';
 import type { SectionTemplate, WorldManifest } from './types.ts';
 
@@ -28,7 +28,16 @@ export function roomStage(tpl: SectionTemplate, d: Difficulty, keep: (p: RoomSpe
   const base = G + 400;
   const plats: Platform[] = [{ id: 1, x: 0, y: G, width: RUNWAY, height: base - G, type: 'solid', style: 'log' }];
   const ids = new Map<string, number>();
+  // (a section's vine, a ladder's say: the kit's, as the pipeline makes it when a room names it)
+  const vines: Vine[] = [];
+  const vineIds = new Map<string, number>();
   for (const lp of L.pieces) {
+    if (lp.hang) {
+      const v: Vine = { id: vines.length + 1, x: RUNWAY + lp.x, topY: G + lp.y, bottomY: G + lp.y + lp.h, swaySpeed: 0, swayPhase: 0, vineType: lp.hang.kind === 'liana' ? 'swing_liana' : 'tree_climb', kit: true };
+      vines.push(v);
+      vineIds.set(lp.key, v.id);
+      continue;
+    }
     const id = plats.length + 1;
     ids.set(lp.key, id);
     const bank = lp.shape === 'bank';
@@ -36,13 +45,13 @@ export function roomStage(tpl: SectionTemplate, d: Difficulty, keep: (p: RoomSpe
   }
   const end: Platform = { id: plats.length + 1, x: RUNWAY + L.exit.x, y: G + L.exit.y, width: 600, height: base - (G + L.exit.y), type: 'solid', style: 'log' };
   plats.push(end);
-  const room = placeRoom(tpl.room!, 's1', (k) => ids.get(k)!);
+  const room = placeRoom(tpl.room!, 's1', (k) => ids.get(k)!, (k) => vineIds.get(k));
   room.pieces = room.pieces.filter(keep);
   addKitPlatforms(plats, { rooms: [room] });
   const exitX = end.x + 300;
   return {
     config: { ...cfg('6-7', 'sprint'), levelWidth: end.x + 640, levelHeight: base + 100 },
-    trees: [], platforms: plats, vines: [], ropes: [], enemies: [], boss: null,
+    trees: [], platforms: plats, vines, ropes: [], enemies: [], boss: null,
     collectibles: [{ id: 1, type: 'exit_totem', x: exitX, y: end.y - 30, collected: false, bobPhase: 0 }],
     spawnX: 140, spawnY: G, exitTotemX: exitX, exitTotemY: end.y, checkpoints: [], kit: { rooms: [room] }, room,
   } as unknown as GeneratedStage & { room: RoomSpec };

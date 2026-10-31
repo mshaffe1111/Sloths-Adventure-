@@ -347,9 +347,10 @@ export const LOFT = {
   up: 250,
   /** the vine ladder down the loft's right end (just past it, as meecaStage's hangs before its cliff) */
   ladderX: 394,
-  /** the knot: under the loft's end, high over the floor (a flick up from the floor below reaches it) */
-  knotX: 372,
-  knotUp: 236,
+  /** the knot: just past the loft's end, by the rolled ladder, high over the floor (a flick up from under it reaches it; under the loft
+   *  itself the bough would stop the pebble) */
+  knotX: 400,
+  knotUp: 238,
   pileX: 96,
   doorX: 640,
   /** the door's wall: taller than the loft, so nothing jumps it from up there */
