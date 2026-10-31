@@ -7864,13 +7864,15 @@ export class GameEngine {
   /**
    * A soft painted dust puff where he takes off or lands (the dust strip in boss-fx.webp), bigger and slower to clear the harder he came
    * down (`speed`: how fast he was falling, px/s); a hard landing throws two more puffs out to the sides.
+   * (Sized against him, 2026-10-31: the hardest landing's puff was 84 wide, as wide as he is tall, and with its side puffs it hid him
+   * through his new land-and-recover frames. Now 54 at most, the side puffs 30.)
    */
   private spawnJumpDust(x: number, y: number, speed = 0) {
     const k = Math.max(0, Math.min(1, speed / PHYS.maxFall));
     const life = 0.36 + 0.2 * k;
-    this.emit({ x, y: y + 2, vx: 0, vy: -8, color: '', size: 40 + 44 * k, life, maxLife: life, type: 'puff' });
+    this.emit({ x, y: y + 2, vx: 0, vy: -8, color: '', size: 32 + 22 * k, life, maxLife: life, type: 'puff' });
     if (k > 0.4) {
-      for (const d of [-1, 1]) this.emit({ x: x + d * 10, y: y + 2, vx: d * (70 + 90 * k), vy: -6, color: '', size: 26 + 22 * k, life: life * 0.9, maxLife: life * 0.9, type: 'puff' });
+      for (const d of [-1, 1]) this.emit({ x: x + d * 10, y: y + 2, vx: d * (70 + 90 * k), vy: -6, color: '', size: 18 + 12 * k, life: life * 0.9, maxLife: life * 0.9, type: 'puff' });
     }
   }
 

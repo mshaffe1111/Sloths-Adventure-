@@ -1,0 +1,181 @@
+{
+ "tag": "pokey-anim5",
+ "edits": [
+  {
+   "name": "tw-rope-f1f2",
+   "src": "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f1.png",
+   "refs": [
+    "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f2.png"
+   ],
+   "w": 768,
+   "h": 768,
+   "prompt": "Picture 1 and Picture 2 show the same friendly brown three-toed sloth at two moments of one smooth movement: hanging from a rope just above his head and moving along it hand over hand to the right. Draw this same sloth in the pose exactly halfway between Picture 1 and Picture 2, as the in-between drawing of a hand-drawn animation: every limb halfway along its way from where it is in Picture 1 to where it is in Picture 2, his paws at the very top, where the rope runs, at the same height as in both pictures. Keep everything else exactly as in Picture 1: the same face and eyes, the same brown fur and cream belly, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag, the same thin dark outline, the same soft painted cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, rope, vine, branch, pole, changed face, different eyes, missing wrist wraps, red stripes, background scenery, photo, 3d render, text, watermark, blurry, back view",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  },
+  {
+   "name": "tw-rope-f2f3",
+   "src": "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f2.png",
+   "refs": [
+    "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f3.png"
+   ],
+   "w": 768,
+   "h": 768,
+   "prompt": "Picture 1 and Picture 2 show the same friendly brown three-toed sloth at two moments of one smooth movement: hanging from a rope just above his head and moving along it hand over hand to the right. Draw this same sloth in the pose exactly halfway between Picture 1 and Picture 2, as the in-between drawing of a hand-drawn animation: every limb halfway along its way from where it is in Picture 1 to where it is in Picture 2, his paws at the very top, where the rope runs, at the same height as in both pictures. Keep everything else exactly as in Picture 1: the same face and eyes, the same brown fur and cream belly, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag, the same thin dark outline, the same soft painted cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, rope, vine, branch, pole, changed face, different eyes, missing wrist wraps, red stripes, background scenery, photo, 3d render, text, watermark, blurry, back view",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  },
+  {
+   "name": "tw-rope-f3f4",
+   "src": "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f3.png",
+   "refs": [
+    "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f4.png"
+   ],
+   "w": 768,
+   "h": 768,
+   "prompt": "Picture 1 and Picture 2 show the same friendly brown three-toed sloth at two moments of one smooth movement: hanging from a rope just above his head and moving along it hand over hand to the right. Draw this same sloth in the pose exactly halfway between Picture 1 and Picture 2, as the in-between drawing of a hand-drawn animation: every limb halfway along its way from where it is in Picture 1 to where it is in Picture 2, his paws at the very top, where the rope runs, at the same height as in both pictures. Keep everything else exactly as in Picture 1: the same face and eyes, the same brown fur and cream belly, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag, the same thin dark outline, the same soft painted cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, rope, vine, branch, pole, changed face, different eyes, missing wrist wraps, red stripes, background scenery, photo, 3d render, text, watermark, blurry, back view",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  },
+  {
+   "name": "tw-rope-f4f5",
+   "src": "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f4.png",
+   "refs": [
+    "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f5.png"
+   ],
+   "w": 768,
+   "h": 768,
+   "prompt": "Picture 1 and Picture 2 show the same friendly brown three-toed sloth at two moments of one smooth movement: hanging from a rope just above his head and moving along it hand over hand to the right. Draw this same sloth in the pose exactly halfway between Picture 1 and Picture 2, as the in-between drawing of a hand-drawn animation: every limb halfway along its way from where it is in Picture 1 to where it is in Picture 2, his paws at the very top, where the rope runs, at the same height as in both pictures. Keep everything else exactly as in Picture 1: the same face and eyes, the same brown fur and cream belly, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag, the same thin dark outline, the same soft painted cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, rope, vine, branch, pole, changed face, different eyes, missing wrist wraps, red stripes, background scenery, photo, 3d render, text, watermark, blurry, back view",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  },
+  {
+   "name": "tw-rope-f5f6",
+   "src": "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f5.png",
+   "refs": [
+    "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f6.png"
+   ],
+   "w": 768,
+   "h": 768,
+   "prompt": "Picture 1 and Picture 2 show the same friendly brown three-toed sloth at two moments of one smooth movement: hanging from a rope just above his head and moving along it hand over hand to the right. Draw this same sloth in the pose exactly halfway between Picture 1 and Picture 2, as the in-between drawing of a hand-drawn animation: every limb halfway along its way from where it is in Picture 1 to where it is in Picture 2, his paws at the very top, where the rope runs, at the same height as in both pictures. Keep everything else exactly as in Picture 1: the same face and eyes, the same brown fur and cream belly, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag, the same thin dark outline, the same soft painted cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, rope, vine, branch, pole, changed face, different eyes, missing wrist wraps, red stripes, background scenery, photo, 3d render, text, watermark, blurry, back view",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  },
+  {
+   "name": "tw-rope-f6f1",
+   "src": "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f6.png",
+   "refs": [
+    "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/rope_f1.png"
+   ],
+   "w": 768,
+   "h": 768,
+   "prompt": "Picture 1 and Picture 2 show the same friendly brown three-toed sloth at two moments of one smooth movement: hanging from a rope just above his head and moving along it hand over hand to the right. Draw this same sloth in the pose exactly halfway between Picture 1 and Picture 2, as the in-between drawing of a hand-drawn animation: every limb halfway along its way from where it is in Picture 1 to where it is in Picture 2, his paws at the very top, where the rope runs, at the same height as in both pictures. Keep everything else exactly as in Picture 1: the same face and eyes, the same brown fur and cream belly, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag, the same thin dark outline, the same soft painted cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, rope, vine, branch, pole, changed face, different eyes, missing wrist wraps, red stripes, background scenery, photo, 3d render, text, watermark, blurry, back view",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  },
+  {
+   "name": "tw-vine-stillforward",
+   "src": "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/vine_still.png",
+   "refs": [
+    "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/vine_forward.png"
+   ],
+   "w": 768,
+   "h": 768,
+   "prompt": "Picture 1 and Picture 2 show the same friendly brown three-toed sloth at two moments of one smooth movement: hanging by his paws from a vine and swinging on it. Draw this same sloth in the pose exactly halfway between Picture 1 and Picture 2, as the in-between drawing of a hand-drawn animation: every limb halfway along its way from where it is in Picture 1 to where it is in Picture 2, his top paw gripping at exactly the same point as in both pictures. Keep everything else exactly as in Picture 1: the same face and eyes, the same brown fur and cream belly, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag, the same thin dark outline, the same soft painted cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, rope, vine, branch, pole, changed face, different eyes, missing wrist wraps, red stripes, background scenery, photo, 3d render, text, watermark, blurry, back view",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  },
+  {
+   "name": "tw-vine-stillback",
+   "src": "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/vine_still.png",
+   "refs": [
+    "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/vine_back.png"
+   ],
+   "w": 768,
+   "h": 768,
+   "prompt": "Picture 1 and Picture 2 show the same friendly brown three-toed sloth at two moments of one smooth movement: hanging by his paws from a vine and swinging on it. Draw this same sloth in the pose exactly halfway between Picture 1 and Picture 2, as the in-between drawing of a hand-drawn animation: every limb halfway along its way from where it is in Picture 1 to where it is in Picture 2, his top paw gripping at exactly the same point as in both pictures. Keep everything else exactly as in Picture 1: the same face and eyes, the same brown fur and cream belly, the same pale bandage wrist wraps, the same thin brown satchel strap across his chest and the small brown bag, the same thin dark outline, the same soft painted cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, two sloths, rope, vine, branch, pole, changed face, different eyes, missing wrist wraps, red stripes, background scenery, photo, 3d render, text, watermark, blurry, back view",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "lora": 0.6
+  }
+ ],
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "pa-jab-s3",
+   "src": "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/punch_cross.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, stands facing right in a ready guard, throws one quick straight jab forward with his near arm, the fist shooting straight out to the right at shoulder height, then pulls it straight back into the guard; his body and face stay turned toward us the whole time, his plain cream bandage wrist wraps and brown fur exactly as in the picture, feet planted in the same spot",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, red stripes, striped wraps, back view, turning away, facing away, turning his back",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "pa-jab-s5",
+   "src": "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/punch_cross.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, stands facing right in a ready guard, throws one quick straight jab forward with his near arm, the fist shooting straight out to the right at shoulder height, then pulls it straight back into the guard; his body and face stay turned toward us the whole time, his plain cream bandage wrist wraps and brown fur exactly as in the picture, feet planted in the same spot",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, red stripes, striped wraps, back view, turning away, facing away, turning his back",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "pa-jab-s11",
+   "src": "gh:8feae0cdee0b1a0097f88de546ec771b5efbc0f5:reference/prop-sheets/qa-notes/pokey-anim/starts/punch_cross.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, stands facing right in a ready guard, throws one quick straight jab forward with his near arm, the fist shooting straight out to the right at shoulder height, then pulls it straight back into the guard; his body and face stay turned toward us the whole time, his plain cream bandage wrist wraps and brown fur exactly as in the picture, feet planted in the same spot",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, red stripes, striped wraps, back view, turning away, facing away, turning his back",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}
