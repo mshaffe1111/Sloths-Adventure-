@@ -40,10 +40,10 @@ if (SCENE === 'slide') {
     [205, 'up ArrowLeft'], [220, 'down Space'], [224, 'up Space'], [260, 'down ArrowDown'], [290, 'up ArrowDown']);
   N = 320;
 }
-// SCENE=rope: under the stage's first shimmy rope (1-3), Up to take it, then creeping along it, a pause, and on again
+// SCENE=rope: hanging from the stage's first shimmy rope (1-3), then creeping along it, a pause, and on again
 if (SCENE === 'rope') {
   SCRIPT.length = 0;
-  SCRIPT.push([1, 'down ArrowUp'], [4, 'up ArrowUp'], [10, 'down ArrowRight'], [70, 'up ArrowRight'], [85, 'down ArrowRight'], [115, 'up ArrowRight']);
+  SCRIPT.push([10, 'down ArrowRight'], [70, 'up ArrowRight'], [85, 'down ArrowRight'], [115, 'up ArrowRight']);
   N = 125;
 }
 if (SCENE === 'climb') {
@@ -91,8 +91,11 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e(); e.isRunning = false; cancelAnimationFrame(e.animFrameId); });
   // (the liana is reached in the air, so he is put there once the loop is ours: in the settle before it he would fall to the ground)
   if (SCENE === 'rope') await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e();
+    // (put on it the way the engine's grab leaves him: Up is also the jump, so a press to take it hopped him past it)
     const r = e.ropes[0];
-    Object.assign(e.player, { x: r.x0 + 70, y: r.y + 72, grounded: false, vx: 0, vy: 0 }); });
+    e.skills.add('shimmy'); // (learned on the way through World 1; a stage played on its own may not have it)
+    e.ropeId = r.id;
+    Object.assign(e.player, { x: r.x0 + 70, y: r.y + 72, grounded: false, hanging: true, vx: 0, vy: 0 }); });
   if (SCENE === 'vine') await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e();
     const v = e.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off);
     // (the lianas sway on the engine's vine clock, which ran on for however long the page took to get here: set it, or no two runs agree)
