@@ -7,7 +7,7 @@ every other plate. The ground strip stays where the cast stand (0.8 of the scene
     python3 tools/art/hfstory/make_spec_worldplates.py full <commit> <name,name...> -> spec-wp-full.json (the picks at 2560 x 2720)
     python3 tools/art/hfstory/make_spec_worldplates.py args <draft|full> <commit>
 """
-import json, sys
+import json, re, sys
 from pathlib import Path
 
 H = Path(__file__).resolve().parent
@@ -16,7 +16,7 @@ STYLE = ('slothadv style, painted storybook illustration, soft cel shading, thin
 TAIL = (' A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.')
 NEG = ('characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, '
        'hazy, washed out, foggy grey, low contrast, flat colour, vignette')
-EXTRA_NEG = {'7': ', doorway, glowing gate, target symbol, sign', '4': ', feather', '3': ', dotted lines, rows of dots, code', '8': ', two moons'}
+EXTRA_NEG = {'7': ', doorway, glowing gate, target symbol, sign', '4': ', feather', '3': ', dotted lines, rows of dots, code, moths, butterflies, black slab, monolith, flat dark shape', '8': ', two moons'}
 LORAS = {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors']}
 
 P = {
@@ -26,7 +26,7 @@ P = {
                'the great mossy trunk wet and gleaming, leaves torn loose in the air, dramatic but readable.',
     '1-dusk': 'the emerald rainforest canopy at golden dusk: the great mossy trunk lit warm orange from the side, long shadows, '
               'fireflies starting, a peach and violet sky between the leaves.',
-    '2-day': 'a sunny wide brown riverbank in warm afternoon light: tall reeds and cattails, a reed-thatched village hut on stilts '
+    '2-day': 'a sunny wide riverbank, the near bank of warm sand, mossy rocks and grass across the bottom, behind it in warm afternoon light: tall reeds and cattails, a reed-thatched village hut on stilts '
              'and a big shady tree, a slow muddy river with soft painted ripples and reflections, lily pads, a dry sandy bank in front.',
     '3-night': 'a deep mossy grotto cave at night: glowing blue-green mushrooms, glowworms hanging from the cave ceiling as soft '
                'glowing strands of light beads, damp mossy rocks, a faint teal glow, cool dark blues with warm-free shadows.',
@@ -77,12 +77,23 @@ def draft(commit, keys=None):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
 
 
+def redo(commit, keys, strengths=(0.62, 0.72)):
+    """round 2: the starts rendered again without the stage's foreground overlay (hanging fronds, glowworm dots), W2's flat water band
+    painted out (starts2/)"""
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfstory/starts2/'
+    it = [{'name': f'wp-{k}-r{round(s * 100)}', 'start': f'w{k}.webp', 'prompt': STYLE + P[k] + TAIL,
+           'neg': NEG + EXTRA_NEG.get(k.split('-')[0], ''), 'strength': s, 'seed': 13, 'w': 1280, 'h': 1360, 'loras': [['style', 1.0]]}
+          for k in keys for s in strengths]
+    return {'tag': 'wpr', 'loras': LORAS, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
 def full(commit, names):
     base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfstory/picks/'
     it = []
     for n in names:
-        k = n[3:].rsplit('-s', 1)[0]
-        it.append({'name': f'{n}-full', 'start': f'{n}.webp', 'up': [2560, 2720], 'prompt': STYLE + P[k] + TAIL, 'neg': NEG + EXTRA_NEG.get(k.split('-')[0], ''),
+        k = re.sub(r'-[sr]\d+$', '', n[3:])
+        it.append({'name': f'{n}-full', 'start': f'bucket:hfcut/out/{n}.png', 'prompt': STYLE + P[k] + TAIL, 'neg': NEG + EXTRA_NEG.get(k.split('-')[0], ''),
                    'strength': 0.28, 'seed': 5, 'w': 2560, 'h': 2720, 'tile': [1280, 256], 'loras': [['style', 1.0]]})
     return {'tag': 'wpf', 'loras': LORAS, 'base': base, 'items': it, 'q': 90,
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
@@ -105,6 +116,10 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'draft':
         spec = draft(sys.argv[2], sys.argv[3].split(',') if len(sys.argv) > 3 else None)
         (H / 'spec-wp-draft.json').write_text(json.dumps(spec, indent=1))
+        print(len(spec['items']), 'items')
+    elif sys.argv[1] == 'redo':
+        spec = redo(sys.argv[2], sys.argv[3].split(','))
+        (H / 'spec-wp-redo.json').write_text(json.dumps(spec, indent=1))
         print(len(spec['items']), 'items')
     elif sys.argv[1] == 'full':
         spec = full(sys.argv[2], sys.argv[3].split(','))
