@@ -15,6 +15,7 @@ import { drawKitArt, handOf, kitArtReady, kitSize } from './puzzleArt.ts';
 import { drawW8Hammock, drawW8Piece, loadW8RoomArt } from './w8RoomArt.ts';
 import { drawSeedPile, drawSeedPod } from './batArt.ts';
 import { drawW10Beam, drawW10Counterweight, drawW10Hoist, drawW10Piece, drawW10Plate, loadW10RoomArt } from './w10PuzzleArt.ts';
+import { drawW10Bag } from './w10BagArt.ts';
 import { KIT_ART, type KitArtName } from './puzzleAtlasData.ts';
 import { drawWallArt } from './protoArt.ts';
 import { boxFits, fitZoom, heroBox, ROOM_CAM, roomZoom, unionBox, type CamBox } from './puzzleCamera.ts';
@@ -2265,6 +2266,14 @@ export class KitPlay {
 
   private drawBasket(ctx: CanvasRenderingContext2D, room: RoomRun, b: BasketRun) {
     const my = this.mouthY(room, b);
+    // (World 10's Winch House: the grab bag's winch, its drum's top at the jaw, and the stone in its teeth once it is in, w10BagArt.ts)
+    if (this.look.world === 10 && room.spec.id === 'winch') {
+      const k = (b.y - my) / (388 - 62);
+      if (drawW10Bag(ctx, 'winch', b.x, b.y + 4, 388 * k)) {
+        if (b.count > 0) drawKitArt(ctx, this.look.stone, b.x + 26 * k, my + 10, { scale: 0.7 });
+        return;
+      }
+    }
     // (World 10: the hoist's counterweight, a cage on a chain, the rubble in it)
     if (this.look.world === 10 && drawW10Counterweight(ctx, b.x, my, b.count > 0, (x, y) => drawKitArt(ctx, this.look.stone, x, y, { scale: 0.8 }))) return;
     // (World 2's counter-basket, by a hanging cage: the rope basket of river stones)

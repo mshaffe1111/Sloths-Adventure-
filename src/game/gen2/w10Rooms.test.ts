@@ -23,13 +23,13 @@ import type { SectionTemplate } from './types.ts';
 import { roomStage, RUNWAY } from './w6Harness.ts';
 import {
   BEAM, beamRoom, GATE, gateRoom, HOIST, hoistRoom, roomFor, W10_ROOM_REQUIRED, W10_ROOM_SECTIONS, W10R_NEW_LINES, W10R_ROOM_HINTS, W10R_STAGE, w10RoomsFor,
-  withW10Rooms,
+  WINCH, winchRoom, withW10Rooms,
 } from './worlds/w10Rooms.ts';
 
 const words = (s: string) => s.split(/\s+/).filter(Boolean).length;
 
 /** each room's key pieces: without them its way on never opens */
-const KEY: Record<string, string[]> = { hoist: ['source', 'item'], beam: ['source', 'item'], gate: ['lever'] };
+const KEY: Record<string, string[]> = { hoist: ['source', 'item'], beam: ['source', 'item'], gate: ['lever'], winch: ['source', 'item'] };
 
 test('the rooms: the checker solves each, Normal and Easy; each fails without its key piece', () => {
   for (const t of W10_ROOM_SECTIONS) {
@@ -42,6 +42,10 @@ test('the rooms: the checker solves each, Normal and Easy; each fails without it
   }
   // (the hoist on Normal: no lever, the rubble stays locked in its alcove)
   assert.ok(validateStage(roomStage(hoistRoom, 'normal', (p) => p.kind !== 'lever')).errors.some((e) => e.startsWith('room s1-hoist:')), 'the hoist without its lever');
+  // (the Winch House: the stone alone, no crank, leaves it shut; the crank alone lets it slip back, on Easy too)
+  for (const d of ['normal', 'easy'] as const) {
+    assert.ok(validateStage(roomStage(roomFor(winchRoom, d), d, (p) => p.kind !== 'lever')).errors.some((e) => e.startsWith('room s1-winch:')), `${d}: the winch without its crank`);
+  }
   // (the gatehouse on Normal: no stone, the lever alone does not open it)
   assert.ok(validateStage(roomStage(gateRoom, 'normal', (p) => p.kind !== 'source' && p.kind !== 'item')).errors.some((e) => e.startsWith('room s1-gate:')), 'the gate without a stone');
   // (one stone is too light: the beam's far end tips down under him, on Easy too)
@@ -79,7 +83,7 @@ test('the rooms: none can be walked past, each fits an upright phone, each has a
   for (const [a, b] of Object.values(W10R_ROOM_HINTS)) assert.ok(words(a) < 10 && words(b) < 10, `${a} / ${b}`);
 });
 
-test('each stage\'s kit holds its own room and no other (10-1 the hoist, 10-3 the beam, 10-7 the gatehouse), once, Easy\'s on Easy', () => {
+test('each stage\'s kit holds its own rooms and no other (10-1 the hoist, 10-3 the beam, 10-7 the gatehouse or the Winch House), once, Easy\'s on Easy', () => {
   const empty = { manifest: { world: 10, name: 'x', moves: [], ground: { y: G, bankH: 90, style: 'log' as const }, pit: 'soft' as const, pitDepth: 110, corridor: { top: 0, bottom: 1000, soft: 0 }, creatures: [], props: [], pairs: [], decor: [], flowers: [], sections: [], handBuilt: [] } };
   for (let s = 1; s <= 9; s++) {
     for (const d of ['normal', 'easy'] as const) {
@@ -89,8 +93,10 @@ test('each stage\'s kit holds its own room and no other (10-1 the hoist, 10-3 th
       assert.deepEqual(w10RoomsFor(s, d), want);
     }
   }
-  assert.deepEqual(Object.values(W10R_STAGE).sort(), ['10-1', '10-3', '10-7']);
+  assert.deepEqual([...new Set(Object.values(W10R_STAGE))].sort(), ['10-1', '10-3', '10-7']);
   assert.deepEqual(Object.keys(W10_ROOM_REQUIRED).sort(), ['10-1', '10-3', '10-7']);
+  // (10-7 holds one of its two rooms a roll: the gatehouse or the Winch House)
+  assert.deepEqual(W10_ROOM_REQUIRED['10-7'], [{ section: gateRoom.id, oneOf: [gateRoom.id, winchRoom.id] }]);
 });
 
 // ───────────────────────────── each room in the real engine ─────────────────────────────
@@ -317,6 +323,45 @@ for (const d of ['normal', 'easy'] as const) {
       assert.ok(sim.p.x > at(st, 'door') + 100 && sim.standingOn === floorB.id, `through the portcullis (${sim.p.x.toFixed(0)})`);
       assert.equal(sim.e.lives, lives);
       assert.equal(sim.p.hp, hp);
+      setDifficulty('normal');
+    });
+
+    test(`the Winch House in the real engine (${d}, ${name}): the crank alone leaves the portcullis shut; a stone in the ratchet ${d === 'easy' ? 'set in' : 'thrown up'}, then the crank: up, through`, () => {
+      const { sim, kit, st } = play(winchRoom, d, w, h);
+      const lives = sim.e.lives;
+      const hp = sim.p.hp;
+      const r = kit.rooms[0];
+      const door = r.gates[0];
+      const floorB = plat(st, st.room.beyond.on);
+      assert.equal(door.open, false, 'shut to start with');
+      cantJump(sim, at(st, 'door') - 140, door.wall.x, 'the portcullis is shut to him');
+      // the crank alone: the ratchet slips, it stays shut
+      walkTo(sim, at(st, 'lever') - 30);
+      face(sim, 1);
+      tap(sim);
+      assert.equal(r.levers[0].on, true, 'the crank turned');
+      sim.wait(1);
+      assert.equal(door.open, false, 'the crank alone: still shut');
+      // a stone from the rubble into the ratchet's jaw
+      walkTo(sim, at(st, 'pile') - 40);
+      face(sim, 1);
+      tap(sim);
+      assert.ok(kit.holding, 'a stone from the rubble');
+      walkTo(sim, at(st, 'jaw') - (d === 'easy' ? 30 : 85));
+      face(sim, 1);
+      if (d === 'easy') sim.frame({ punch: true });
+      else sim.frame({ press: true });
+      sim.wait(2);
+      assert.ok(!kit.holding, 'the stone went in');
+      assert.equal(r.baskets[0].count, 1, 'the stone is in the ratchet');
+      sim.wait(1);
+      assert.equal(door.open, true, 'jammed and cranked: the portcullis is up');
+      walkTo(sim, at(st, 'door') + 120);
+      sim.wait(0.3);
+      assert.ok(sim.p.x > at(st, 'door') + 100 && sim.standingOn === floorB.id, `through the portcullis (${sim.p.x.toFixed(0)})`);
+      assert.equal(sim.e.lives, lives);
+      assert.equal(sim.p.hp, hp);
+      assert.ok(WINCH.jawHigh > 120 && WINCH.jawLow <= 120, 'Normal throws, Easy taps');
       setDifficulty('normal');
     });
   }

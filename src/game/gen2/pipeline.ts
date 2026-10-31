@@ -767,7 +767,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const aim = (opt.aim ?? 1) * Math.max(0.4, (budget.seconds.target - reserve) / budget.seconds.target);
   let slot = 0;
   const bags = new Map<string, ShuffleBag<SectionTemplate>>();
-  const must = M.required?.[budget.id] ?? [];
+  // (a `oneOf` entry holds one of its sections, the layout seed's pick: required, World 10's two rooms of 10-7)
+  const mustAll = M.required?.[budget.id] ?? [];
+  const must = mustAll.map((r) => (r.oneOf?.length ? { ...r, section: r.oneOf[Math.floor(rngFor(seed, 59)() * r.oneOf.length)] } : r));
   const placedReq = new Set<string>();
 
   const fits = (t: SectionTemplate, n: MissionNode, i: number) =>
@@ -790,7 +792,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (!placedReq.has(r.section) && (!r.phase || r.phase === n.phase) && fits(t, n, i) && endY >= M.corridor.top && endY <= M.corridor.bottom) return t;
     }
     // (a required section is never drawn by weight: it comes once, where the plan puts it)
-    const cands = M.sections.filter((t) => fits(t, n, i) && !must.some((r) => r.section === t.id));
+    const cands = M.sections.filter((t) => fits(t, n, i) && !mustAll.some((r) => r.section === t.id || r.oneOf?.includes(t.id)));
     if (!cands.length) throw new Error(`gen2 ${budget.id}: no section fits node ${n.id} (${n.phase})`);
     const want = (budget.band[0] + (budget.band[1] - budget.band[0]) * n.tension - budget.band[0]) / (budget.band[1] - budget.band[0]);
     const room = M.corridor;
@@ -1839,7 +1841,7 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const easyReq: BuildRequest = { ...req, difficulty: 'easy' };
   const easyBudget = req.difficulty === 'easy' ? budget : planBudget(req.config, M, 'easy');
   const byId = new Map(M.sections.map((t) => [t.id, t]));
-  const required = new Set((M.required?.[req.config.id] ?? []).map((r) => r.section));
+  const required = new Set((M.required?.[req.config.id] ?? []).flatMap((r) => [r.section, ...(r.oneOf ?? [])]));
   for (let rr = 0; rr <= maxRerolls; rr++) {
     const seed = rr === 0 ? req.seed : req.seed * 1009 + rr * 7919;
     const repairs: Repair[] = [];

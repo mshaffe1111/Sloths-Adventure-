@@ -41,6 +41,10 @@ export const W10R_TIPS = {
   gateEnter: 'Shut. Locks on everything here.',
   gateHold: 'Rubble. Part of a wall, once.',
   gateOpen: 'Open. Through, before it changes its mind.',
+  // (the Winch House, GRAB-BAG §4: 10-7's second room; new, need Matt's approval; Dot speaks them in 10-7)
+  winchEnter: 'The gate keeps slipping back down.',
+  winchHold: 'Heavy. That should hold it.',
+  winchOpen: 'It holds! Through, quick.',
 } as const;
 export const W10R_NEW_LINES: readonly string[] = Object.values(W10R_TIPS);
 
@@ -49,6 +53,7 @@ export const W10R_ROOM_HINTS: Record<string, readonly [string, string]> = {
   hoist: ['The cage pulls the grate up.', 'A flick up throws what I hold.'],
   beam: ['Which end goes down when I stand there?', "I'm heavier than one stone."],
   gate: ['That gate wants two things.', 'Something up on those crates.'],
+  winch: ['What stops a wheel from turning back?', 'Something heavy, in the teeth.'],
 };
 
 // ───────────────────────────── helpers ─────────────────────────────
@@ -304,22 +309,105 @@ const gate = (d: Difficulty): SectionTemplate => ({
 export const gateRoom = gate('normal');
 export const gateRoomEasy = gate('easy');
 
+// ───────────────────────────── 10-7: the Winch House (its second room) ─────────────────────────────
+
+/**
+ * The Winch House (GRAB-BAG §4; 10-7 rolls it or the gatehouse: W10_ROOM_REQUIRED's oneOf): the portcullis is wound up by a winch whose
+ * ratchet slips, so cranking it alone lets the gate run back down. A stone jammed in the ratchet's teeth holds it: the winch is the kit's
+ * basket (its jaw the mouth; the grab bag's HF winch drawn over it, the stone in its teeth once it is in), the crank is the kit's lever,
+ * the portcullis opens with both. Normal: the jaw is high on the drum (a flick up throws the stone in). Easy: low enough for a tap.
+ * Nothing here can hurt; every carry is a walk.
+ */
+export const WINCH = {
+  floor: 640,
+  /** the rubble, the crank, the winch (its jaw over its foot), the portcullis */
+  pile: 130,
+  lever: 270,
+  winch: 410,
+  door: 560,
+  doorH: 450,
+  /** the jaw's height over the floor: Normal high (thrown up into), Easy low (a tap sets it in) */
+  jawHigh: 236,
+  jawLow: 100,
+  /** floor B a step down past it */
+  step: 30,
+  floorB: 170,
+} as const;
+
+const wf = along('floor', WINCH.floor);
+const wb = along('floorB', WINCH.floorB);
+
+const winchSpec = (d: Difficulty): LocalRoomSpec => ({
+  id: 'winch',
+  left: wf(0),
+  right: wb(60),
+  above: 500,
+  below: 40,
+  pieces: [
+    { kind: 'reset', id: 'post', at: wf(24) },
+    { kind: 'source', id: 'pile', variant: 'stone', at: wf(WINCH.pile), look: 'pile' },
+    { kind: 'item', id: 'stone', variant: 'stone', source: 'pile', for: 'jaw' },
+    { kind: 'lever', id: 'lever', at: wf(WINCH.lever) },
+    // (the ratchet's jaw: a stone weighs 2, alone it jams it; it barely gives, so the drop is small)
+    { kind: 'basket', id: 'jaw', at: wf(WINCH.winch), mouth: d === 'easy' ? WINCH.jawLow : WINCH.jawHigh, need: 2, drop: 12 },
+    { kind: 'gate', id: 'door', at: wf(WINCH.door), open: { all: ['jaw', 'lever'] }, h: WINCH.doorH },
+  ],
+  exit: 'door',
+  beyond: wb(130),
+  ground: ['floor'],
+  tips: { enter: W10R_TIPS.winchEnter, hold: W10R_TIPS.winchHold, open: W10R_TIPS.winchOpen },
+});
+
+const winchPieces: SectionPiece[] = [
+  bank('floor', WINCH.floor, { kind: 'start' }),
+  bank('floorB', WINCH.floorB, { kind: 'walk', after: 'floor', dy: WINCH.step }),
+  // (a knee past the portcullis, as the gatehouse's: the room reads as one beat where it starts)
+  bank('knee', [90, 100], { kind: 'walk', after: 'floorB', dy: -40 }),
+  bank('out', [200, 240], { kind: 'walk', after: 'knee', dy: 40 }),
+];
+
+const winch = (d: Difficulty): SectionTemplate => ({
+  id: 'w10r-room-winch',
+  name: 'puzzle room: the Winch House (a stone in the ratchet and the crank)',
+  archetypes: ['purge'],
+  teaches: 'w10:winch',
+  phases: ['sho', 'ten'],
+  difficulty: 5,
+  maxPerStage: 1,
+  weight: 40,
+  // (a stone from the rubble, into the jaw, the crank, through: about 14 s for a first-timer)
+  extraSeconds: 14,
+  pieces: winchPieces,
+  entry: { piece: 'floor', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
+  exitDy: WINCH.step,
+  sockets: [{ id: 'flag', role: 'flag', on: 'out', t: 0.3 }],
+  room: winchSpec(d),
+  mirrorable: false,
+});
+export const winchRoom = winch('normal');
+export const winchRoomEasy = winch('easy');
+
 // ───────────────────────────── the set ─────────────────────────────
 
 /** World 10's puzzle-room sections (Normal's; Easy's have the same ids: roomFor) */
-export const W10_ROOM_SECTIONS: readonly SectionTemplate[] = [hoistRoom, beamRoom, gateRoom];
+export const W10_ROOM_SECTIONS: readonly SectionTemplate[] = [hoistRoom, beamRoom, gateRoom, winchRoom];
 
 /** each room's stage (STAGE-RULES §3: 2-3 puzzle moments a world): a stage's kit holds only its own */
-export const W10R_STAGE: Record<string, string> = { [hoistRoom.id]: '10-1', [beamRoom.id]: '10-3', [gateRoom.id]: '10-7' };
+export const W10R_STAGE: Record<string, string> = { [hoistRoom.id]: '10-1', [beamRoom.id]: '10-3', [gateRoom.id]: '10-7', [winchRoom.id]: '10-7' };
 export const W10_ROOM_STAGES = ['10-1', '10-3', '10-7'] as const;
 
-/** each stage's room, on every roll (WorldManifest.required: placed by the plan, never swapped or trimmed) */
+/** each stage's room, on every roll (WorldManifest.required: placed by the plan, never swapped or trimmed); a stage with two rooms (10-7:
+ *  the gatehouse or the Winch House) holds one of them, the roll's choice (`oneOf`) */
 export const W10_ROOM_REQUIRED: NonNullable<WorldManifest['required']> = Object.fromEntries(
-  W10_ROOM_SECTIONS.map((s) => [W10R_STAGE[s.id], [{ section: s.id }]]),
+  W10_ROOM_STAGES.map((id) => {
+    const rooms = W10_ROOM_SECTIONS.filter((s) => W10R_STAGE[s.id] === id).map((s) => s.id);
+    return [id, [rooms.length > 1 ? { section: rooms[0], oneOf: rooms } : { section: rooms[0] }]];
+  }),
 );
 
 /** Easy's version of each room (the same section id, so Easy lays Normal's plan) */
-const EASY: Record<string, SectionTemplate> = { [hoistRoom.id]: hoistRoomEasy, [gateRoom.id]: gateRoomEasy };
+const EASY: Record<string, SectionTemplate> = { [hoistRoom.id]: hoistRoomEasy, [gateRoom.id]: gateRoomEasy, [winchRoom.id]: winchRoomEasy };
 export const roomFor = (t: SectionTemplate, d: Difficulty): SectionTemplate => (d === 'easy' ? EASY[t.id] ?? t : t);
 
 /** the room sections of stage `stage`, Easy's version on Easy */
