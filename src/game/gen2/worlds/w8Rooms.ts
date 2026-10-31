@@ -340,22 +340,24 @@ export const moonRoomEasy: SectionTemplate = { ...moonRoom, room: moonRoomSpecEa
 /** 8-1's loft theme (w8Sections.ts W8_THEME.loft: the same key) */
 export const LOFT_THEME = 'w8:loft';
 export const LOFT = {
-  floor: 780,
+  floor: 660,
   /** the loft: a bough over the floor, its left end at `x`, `up` px over the floor (DOUBLE_RISE ~185 + the hero: out of any jump's reach) */
-  x: 150,
-  w: 230,
+  x: 60,
+  w: 200,
   up: 250,
   /** the vine ladder down the loft's right end (just past it, as meecaStage's hangs before its cliff) */
-  ladderX: 394,
+  ladderX: 274,
   /** the knot: just past the loft's end, by the rolled ladder, high over the floor (a flick up from under it reaches it; under the loft
    *  itself the bough would stop the pebble) */
-  knotX: 400,
+  knotX: 282,
   knotUp: 238,
-  pileX: 96,
-  doorX: 640,
+  /** the seed pods' pile, under the loft (he carries a pod right to the knot and throws it the way he walks), and the door: the room is
+   *  compact so the pile, the knot and the door share one view, upright too (the lead's phone check, 2026-10-31) */
+  pileX: 190,
+  doorX: 520,
   /** the door's wall: taller than the loft, so nothing jumps it from up there */
   doorH: 380,
-  floorB: 260,
+  floorB: 220,
 } as const;
 const la = along('floor', LOFT.floor);
 const lb = along('floorB', LOFT.floorB);
@@ -364,7 +366,7 @@ const ll = along('loft', LOFT.w);
 export const loftRoomSpec: LocalRoomSpec = {
   id: 'loft',
   left: la(0),
-  right: lb(120),
+  right: lb(100),
   above: 470,
   below: 90,
   pieces: [
@@ -373,11 +375,11 @@ export const loftRoomSpec: LocalRoomSpec = {
     { kind: 'item', id: 'pebble', variant: 'pebble', source: 'pile', for: 'knot' },
     { kind: 'knot', id: 'knot', at: la(LOFT.knotX, -LOFT.knotUp) },
     { kind: 'ladder', id: 'ladder', at: ll(LOFT.w), vine: 'ladderV', open: 'knot' },
-    { kind: 'lever', id: 'lever', at: ll(70) },
+    { kind: 'lever', id: 'lever', at: ll(LOFT.w * 0.55) },
     { kind: 'gate', id: 'door', at: la(LOFT.doorX), open: 'lever', latch: true, h: LOFT.doorH, look: 'woven' },
   ],
   exit: 'door',
-  beyond: lb(200),
+  beyond: lb(180),
   ground: ['floor', 'floorB', 'loft'],
   tips: {
     enter: 'Locked. And something tied up there.', // (new, needs Matt's approval)

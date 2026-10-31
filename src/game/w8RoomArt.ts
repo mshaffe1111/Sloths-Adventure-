@@ -51,5 +51,39 @@ export function drawW8Piece(ctx: CanvasRenderingContext2D, n: W8PieceName, x: nu
   const f = W8_PUZZLE_FRAMES[n];
   const s = h / f.h;
   ctx.drawImage(img, f.x, f.y, f.w, f.h, x - f.ax * s, bottom - f.ay * s, f.w * s, f.h * s);
+  if (n === 'door-closed') drawDoorBar(ctx, x, bottom, h);
   return true;
+}
+
+/**
+ * A shut bark door's lock (a small code touch, the lead's phone check 2026-10-31: the painted door alone read as a panel on the stump): a
+ * wooden bar across it, wrapped in pale silk, a dim latch knot in its middle. Gone when the door opens (its painted open frame)
+ */
+function drawDoorBar(ctx: CanvasRenderingContext2D, x: number, bottom: number, h: number) {
+  const w = h * 0.62;
+  const y = bottom - h * 0.46;
+  const bh = Math.max(8, h * 0.075);
+  ctx.save();
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = '#1e1630';
+  ctx.fillStyle = '#6b4a2e';
+  ctx.beginPath();
+  ctx.roundRect(x - w / 2, y - bh / 2, w, bh, bh / 2);
+  ctx.fill();
+  ctx.stroke();
+  // (the silk wraps)
+  ctx.fillStyle = 'rgba(232, 228, 244, 0.92)';
+  for (const u of [-0.36, 0.36]) {
+    ctx.beginPath();
+    ctx.roundRect(x + u * w - bh * 0.45, y - bh * 0.75, bh * 0.9, bh * 1.5, 3);
+    ctx.fill();
+    ctx.stroke();
+  }
+  // (the latch knot, dim)
+  ctx.fillStyle = '#b9b2d6';
+  ctx.beginPath();
+  ctx.arc(x, y, bh * 0.85, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
 }
