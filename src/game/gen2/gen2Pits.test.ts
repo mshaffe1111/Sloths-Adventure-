@@ -23,8 +23,8 @@ function pitFaults(st: Stage): string[] {
     for (const q of solid) {
       if (q === p || q.height < 40) continue;
       const touch = Math.abs(q.x + q.width - p.x) < 3 || Math.abs(q.x - (p.x + p.width)) < 3;
-      // (a gap under the bank's foot tall enough for him: he walks off the floor's end under it)
-      if (touch && q.y < p.y - 40 && q.y + q.height < p.y - 44) out.push(`floor at x ${Math.round(p.x)} runs under the bank at x ${Math.round(q.x)} (its foot ${Math.round(q.y + q.height)}, the floor ${Math.round(p.y)})`);
+      // (a gap under the bank's foot he fits through (48 px, his height): he walks off the floor's end under it)
+      if (touch && q.y < p.y - 40 && q.y + q.height < p.y - 48) out.push(`floor at x ${Math.round(p.x)} runs under the bank at x ${Math.round(q.x)} (its foot ${Math.round(q.y + q.height)}, the floor ${Math.round(p.y)})`);
     }
   }
   return out;
@@ -49,5 +49,14 @@ test('World 9\'s glide stage (where the bug was found) keeps its soft floors sta
       const st = buildGen2Stage({ config: stage.config, kit: stage.kit, seed, difficulty });
       assert.deepEqual(pitFaults(st), [], `9-5 seed ${seed} (${difficulty})`);
     }
+  }
+});
+
+test('8-6\'s dark glides (five shipped Normal rolls had a floor running under a bank\'s foot, 51-85 px): every shipped seed on Normal', async () => {
+  const e = GEN2_SEEDS['8-6'];
+  const stage = await resolveStage('8-6', e.kit);
+  for (const s of e.seeds) {
+    const st = buildGen2Stage({ config: stage.config, kit: stage.kit, seed: s.seed, difficulty: 'normal', recent: e.recent });
+    assert.deepEqual(pitFaults(st), [], `8-6 seed ${s.seed}`);
   }
 });

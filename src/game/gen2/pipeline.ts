@@ -776,7 +776,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // the banks' foot, so a jump off the floor passed under a bank's edge and fell through, 9-5's first-timer bot)
     // (every world: the lead, 2026-10-31, a bug in shared code is fixed for all; gen2Pits.test.ts scans every shipped stage for it)
     const deepen = (floor: number) => {
-      for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
+      // (World 9 fills every bank down past the floor (its lava is drawn under it); elsewhere only a bank whose foot leaves a hole he
+      // fits through (48 px, his height) is filled, so the shipped stages build as curated: gen2Pits.test.ts; a thin perch or branch beside the pit
+      // is never stretched into a column)
+      for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40 && (budget.world === 9 || floor - (q.y + q.height) > 48)) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
     };
     if (back) {
       const out = backPit(x0, x1, lipY, farY, M.pitDepth, hop);
@@ -1780,7 +1783,14 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   // (World 9's rafts and logs sink deeper than the banks' foot: the lava lies under their lowest stop, BOB, as levelCheck's waterline asks)
   // (and under the deepest soft floor: a glide's soft pit climbs back to its take-off in steps, and on low ground its floor lay under the
   // lava line, so standing on the soft floor was a death: 9-5's glides, the first-timer bot's 19 lives)
-  const bobFoot = Math.max(laid.bottom, ...laid.platforms.filter((p) => p.lift?.bob && p.lift.bob !== 'piston').map((p) => p.lift!.bottom + 26), ...laid.platforms.filter((p) => !p.lift).map((p) => p.y + 30));
+  // (every world: a floor at or under the death line (the water's 40 px under bobFoot, or the fall line 240 px under it) pulls the line
+  // down under it. World 9 keeps every floor 70 px clear (its lava is drawn there); elsewhere the line moves only for a floor it would
+  // kill on, so the shipped stages' water and views stay as curated: gen2Pits.test.ts)
+  const bobLow = Math.max(laid.bottom, ...laid.platforms.filter((p) => p.lift?.bob && p.lift.bob !== 'piston').map((p) => p.lift!.bottom + 26));
+  const floors = laid.platforms.filter((p) => !p.lift && p.type === 'solid').map((p) => p.y);
+  const watery = budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water);
+  const kills = (y: number) => (watery ? y >= bobLow + 36 : y >= Math.max(req.config.levelHeight, R(bobLow + 120)) + 116);
+  const bobFoot = Math.max(bobLow, ...floors.filter((y) => budget.world === 9 || kills(y)).map((y) => y + 30));
   const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)) };
   const meta: Gen2Meta = {
     seed,
@@ -1813,7 +1823,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     exitTotemY: laid.exit.y,
     checkpoints: filled.checkpoints,
     // (a deadly chasm shows the dirty water far below, World 7; World 8's treetops have none: its deadly falls drop into the dark)
-    ...(budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water) ? { waterY: Math.max(laid.bottom, bobFoot) + 40 } : {}),
+    ...(watery ? { waterY: Math.max(laid.bottom, bobFoot) + 40 } : {}),
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(laid.heartFalls.length ? { heartFalls: laid.heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
