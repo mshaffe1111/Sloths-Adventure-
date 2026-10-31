@@ -110,7 +110,7 @@ const flareLedge = section({
 const firstFall = section({
   id: 'w9-first-lavafall',
   name: 'the first lavafall',
-  archetypes: ['purge', 'gauntlet'],
+  archetypes: ['stealth', 'purge', 'gauntlet'],
   phases: ['ki', 'sho'],
   difficulty: 3,
   teaches: FALL,
@@ -180,7 +180,7 @@ const channel = (p: string, after: string, floor: SectionPiece['w']): SectionPie
 const firstSurge = section({
   id: 'w9-first-surge',
   name: 'the first lava surge',
-  archetypes: ['purge'],
+  archetypes: ['stealth', 'purge'],
   phases: ['ki', 'sho'],
   difficulty: 3,
   teaches: SURGE,
@@ -331,7 +331,57 @@ const gustTwin = section({
   mirrorable: false,
 });
 
+// ───────────────────────────── 9-4: lavafalls and surges on the watched doorstep ─────────────────────────────
+
+const { watch, hideAt } = W9H;
+/** 9-4: a watched bank with a spire, a lavafall on the flat past it, and a fern on the far bank (hide, wait out the pour, hide again) */
+const watchFall = section({
+  id: 'w9-watch-lavafall',
+  name: 'watched lavafall',
+  archetypes: ['stealth'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.lavafalls, FALL],
+  extraSeconds: WAIT + 3,
+  pieces: [bank('a', [340, 380]), up('k', 'a', 30, [140, 160]), down('f', 'k', 30, [440, 480]), up('k2', 'f', 30, [140, 160]), down('b', 'k2', 30, [320, 360])],
+  last: 'b',
+  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.62), petals('k', 'k', 0.5, 1), lavafall('lf', 'f', 0.5), petals('f', 'f', 0.18, 1), hideAt('h2', 'b', 0.55), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** 9-4: a watched bank, a surge channel, a watched bank past it */
+const watchSurge = section({
+  id: 'w9-watch-surge',
+  name: 'watched surge channel',
+  archetypes: ['stealth'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.surges, SURGE],
+  extraSeconds: WAIT + 3,
+  pieces: [bank('a', [340, 380]), ...channel('', 'a', [340, 380]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [320, 360])],
+  last: 'c',
+  zones: [{ kind: 'surge', on: 'ch' }],
+  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.6), petals('ch', 'ch', 0.5, 2, 100), hideAt('h2', 'c', 0.55), petals('k', 'k', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** 9-4: two lavafalls on a long flat between two watched hides */
+const watchFallPair = section({
+  id: 'w9-watch-lavafall-pair',
+  name: 'watched lavafalls',
+  archetypes: ['stealth'],
+  phases: MID,
+  difficulty: 7,
+  uses: [W9_THEME.lavafalls, FALL],
+  extraSeconds: WAIT * 2 + 3,
+  pieces: [bank('a', [320, 360]), up('k', 'a', 30, [140, 160]), down('f', 'k', 30, [640, 700]), up('k2', 'f', 30, [140, 160]), down('b', 'k2', 30, [300, 340])],
+  last: 'b',
+  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.6), lavafall('lf1', 'f', 0.27), lavafall('lf2', 'f', 0.73), petals('mid', 'f', 0.5, 1), hideAt('h2', 'b', 0.5)],
+  mirrorable: false,
+});
+
 export const W9_HEAT_SECTIONS: readonly SectionTemplate[] = [
+  W9_HEAT_GATES.lavafalls4, W9_HEAT_GATES.surges4, watchFall, watchSurge, watchFallPair,
   W9_HEAT_GATES.gusts1, W9_HEAT_GATES.gusts5, firstGust, gustGap, gustPair, gustGlide, gustTwin,
   W9_HEAT_GATES.surges6, firstSurge, surgeRun, surgeTwin, surgeChasm,
   W9_HEAT_GATES.flares5, W9_HEAT_GATES.flares8, firstFlare, flarePair, flareChasm, flareGlide, flareLedge,
@@ -342,6 +392,7 @@ export const W9_HEAT_SECTIONS: readonly SectionTemplate[] = [
 export const W9_HEAT_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_HEAT_GATES.flares5.id]: [5], [W9_HEAT_GATES.flares8.id]: [8], [firstFlare.id]: [5, 8], [flarePair.id]: [5, 8], [flareChasm.id]: [5, 8], [flareGlide.id]: [5], [flareLedge.id]: [8],
   [W9_HEAT_GATES.gusts1.id]: [1], [firstGust.id]: [1], [gustGap.id]: [1], [gustPair.id]: [1], [W9_HEAT_GATES.gusts5.id]: [5], [gustGlide.id]: [5], [gustTwin.id]: [5],
-  [W9_HEAT_GATES.surges6.id]: [6], [firstSurge.id]: [6], [surgeRun.id]: [6], [surgeTwin.id]: [6], [surgeChasm.id]: [6],
-  [W9_HEAT_GATES.lavafalls6.id]: [6], [W9_HEAT_GATES.lavafalls9.id]: [9], [firstFall.id]: [6, 9], [fallPair.id]: [6, 9], [fallGuard.id]: [6, 9], [fallChasm.id]: [6, 9],
+  [W9_HEAT_GATES.lavafalls4.id]: [4], [W9_HEAT_GATES.surges4.id]: [4], [watchFall.id]: [4], [watchSurge.id]: [4], [watchFallPair.id]: [4],
+  [W9_HEAT_GATES.surges6.id]: [6], [firstSurge.id]: [4, 6], [surgeRun.id]: [6], [surgeTwin.id]: [6], [surgeChasm.id]: [6],
+  [W9_HEAT_GATES.lavafalls6.id]: [6], [W9_HEAT_GATES.lavafalls9.id]: [9], [firstFall.id]: [4, 6, 9], [fallPair.id]: [6, 9], [fallGuard.id]: [6, 9], [fallChasm.id]: [6, 9],
 };

@@ -737,7 +737,7 @@ const basaltChasm = section({
 
 const shore = knobs('s', 'step', 2, [220, 260], [28, 32], [150, 170]);
 /** a stealth gate: Dot's line, then a long watched run with cover in reach, a long calm before the first pass, no animal */
-const watchGate = (theme: 'spires' | 'ferns' | 'coils', name: string, extra: Socket[] = []): SectionTemplate =>
+const watchGate = (theme: 'spires' | 'ferns' | 'coils' | 'lavafalls' | 'surges', name: string, extra: Socket[] = []): SectionTemplate =>
   section({
     id: `w9-watch-gate-${theme}`,
     name: `the doorstep: ${name} (cover)`,
@@ -1376,7 +1376,9 @@ export const W9_HEAT_GATES = {
   surges6: huntGate('surges', 'hunt'),
   gusts1: sprintGate('gusts', 'the hot wind', [scenery('smoke', 'a', [0.5, 0.6], 0.9)]),
   gusts5: ventGate('gusts', 'the hot wind'),
+  lavafalls4: watchGate('lavafalls', 'the lavafalls', [scenery('smoke', 'a', [0.5, 0.6], 0.8)]),
+  surges4: watchGate('surges', 'the surge channels', [scenery('log', 'a', [0.5, 0.6], 0.8)]),
 } as const;
 
 /** the helpers w9Bob.ts builds its sections with (the same as this file's) */
-export const W9H = { bank, up, down, lava, wide, glide, knobs, petals, geyser, prop, scenery, flag, tip, foe, thread, section, ALL, MID, LIVE, HOT, SHARED, ANY, SMALL, CATS, GEYSER, GEYSER_WAIT } as const;
+export const W9H = { bank, up, down, lava, wide, glide, knobs, petals, geyser, prop, scenery, watch, hideAt, flag, tip, foe, thread, section, ALL, MID, LIVE, HOT, SHARED, ANY, SMALL, CATS, GEYSER, GEYSER_WAIT } as const;
