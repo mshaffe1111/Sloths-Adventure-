@@ -80,23 +80,30 @@ export function normalGoal(st: Stage): number | null {
   return Math.max(1, Math.min(have, Math.round(have * k)));
 }
 
-/**
- * A stage's own Easy goal (a gen2 stage's, as the kid bot measured it: gen2/game.ts easyGoal) never asks under 65% of what the stage
- * holds (LV-24: 5-9's Easy asked for 5 of 18), nor more than it holds.
- */
-export function ownEasyGoal(own: number, have: number): number {
-  return Math.max(1, Math.min(have, Math.max(own, Math.round(have * EASY_SHARE))));
+/** Easy's floor where a stage sets its own: 65% of what it holds (LV-24: 5-9's Easy asked for 5 of 18), never more than it holds */
+export function easyFloor(have: number): number {
+  return Math.max(1, Math.min(have, Math.round(have * EASY_SHARE)));
 }
 
 /**
- * Set a built stage's goal: Normal's share (normalGoal), and Easy's (`easyGoal`: easyGoalFor). Changes the stage and returns it; a stage
- * whose own Easy goal is already set (gen2/game.ts easyGoal) keeps it, raised to the floor (ownEasyGoal, LV-24).
+ * A gen2 stage's Easy goal (LV-24, lead 2026-10-30): the 65% floor, but never more than the kid first-timer bot reliably reaches where it
+ * was measured (gen2/game.ts easyGoal: 5-9's kid beat 5, 5, 9, 10, 10 and 10 spiders, so 5). Hand-built stages keep LV-6's rule.
+ */
+export function gen2EasyGoal(have: number, kidReach?: number): number {
+  return Math.max(1, Math.min(easyFloor(have), kidReach ?? Infinity));
+}
+
+/**
+ * Set a built stage's goal: Normal's share (normalGoal), and Easy's (`easyGoal`: easyGoalFor; a gen2 stage built for Easy: gen2EasyGoal,
+ * its kid-measured goal arriving here as `easyGoal`). Changes the stage and returns it.
  */
 export function withGoals<T extends GeneratedStage>(st: T): T {
   if (st.boss) return st;
+  const gen2Easy = (st as Stage & { gen2?: { budget: { difficulty: string } } }).gen2?.budget.difficulty === 'easy';
   if (st.easyGoal !== undefined) {
+    // (a goal the kid bot measured: it stays the stage's own, under the floor's cap)
     const have = goalHave(st as Stage);
-    if (have) st.easyGoal = ownEasyGoal(st.easyGoal, have);
+    if (gen2Easy && have) st.easyGoal = gen2EasyGoal(have, st.easyGoal);
     return st;
   }
   const g = normalGoal(st as Stage);
@@ -107,5 +114,6 @@ export function withGoals<T extends GeneratedStage>(st: T): T {
   st.normalGoal = g;
   st.easyToday = today;
   st.config = { ...st.config, targetCount: g };
+  if (gen2Easy) st.easyGoal = gen2EasyGoal(goalHave(st as Stage) ?? g);
   return st;
 }
