@@ -1,5 +1,28 @@
 # World 9 grab bag: every piece, built before curation (2026-10-31, ~2:00 PM ET, branch w9-pieces)
 
+## Status (updated 2026-10-31 ~3:15 PM ET)
+
+| Piece | Built | Where | Art | Bots on raw rolls |
+|---|---|---|---|---|
+| N1 rafts | yes (w9Bob.ts) | 9-1 | painted (w9b pumice raft) | kid 0 lives; adult 1-5 lives near rafts on ~26 rafts a roll |
+| N2 logs | yes | 9-5, 9-9 | painted (bridges charred log) | kid 0 |
+| N3 pistons | yes (flush, soft well) | 9-8 | painted (w9b hex column) | both reach the shrine, 0 lives near pistons |
+| N4 sinking slabs | yes (engine `sink`) | 9-3, 9-9 | painted (bridges ember slab) | kid 0, adult 2 (none at the slabs) |
+| N5 flare slabs | yes (geyser zone, look) | 9-5, 9-8 | painted + HF cool frame | kid 0; adult hits 2-9 |
+| N6 lava surges | yes (SectionZone 'surge') | **9-4**, 9-6 | HF surge front + lava strip | adult lives ~ the 9-6 baseline; hits above it (being watched) |
+| N7 hot ash gusts | yes (wind zone, look 'ash') | 9-1 headwind, 9-5 tailwind | HF ash streaks | (not run yet) |
+| N8 ropes over the lava | yes (gen2 place 'rope') | 9-3, 9-8 | the game's painted rope (the scorched bridge sheet is not used: a rope reads as what he does) | both 0 lives |
+| N9 lavafalls | yes (geyser zone, look) | **9-4**, 9-6, 9-9 | HF pour loop | kid 0-1 |
+| N10 steam vents | **waiting** on the w8-merge question (needs gen2 'bouncy') | 9-1, 9-6 planned | HF steam frames cut, ready | |
+| N11 smoke cover | **deferred**: a timed hide reads as the same watcher beat as the spires (no variety), so 9-4 took N6 and N9 instead | | | |
+| N12 raft lock room | next | 9-5 (alternate) | HF obsidian chunk cut, ready | |
+
+Themes now: 9-1 4 (vents, chasms, rafts, gusts; +steam), 9-3 5 (chains, climbs, crust, sinkers, ropes), 9-4 5 (spires, ferns, coils,
+lavafalls, surges), 9-5 5 (glides, bursts, logs, flares, gusts), 9-6 4 (cats, prowl, lavafalls, surges; +steam), 9-8 5 (ledges, channels,
+pistons, flares, ropes), 9-9 5 (harpies, boas, logs, lavafalls, sinkers). Neighbour pairs share no new theme. Lessons moved: lavafalls and
+surges are taught on 9-4 (it comes before 9-6). HF spent: ~$0.30 (job 6ae633040e0338d1bb7d39e3).
+
+
 Matt, 1:20 PM ET Oct 31: "Lets make the pieces ahead of time. Be prepared since more is better anyways. Lets not go into this bare
 minimum and have to make more and do redundant rework." This is STAGE-RULES §1c step 2. Nothing below is curated until every piece
 is built and checked alone (§1c step 3). **For the lead's review before building.**

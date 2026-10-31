@@ -19,7 +19,7 @@ for (const [size, [w, h]] of Object.entries(SIZES)) {
   p.on('pageerror', (e) => { if (!/AudioParam|AudioContext/.test(e.message)) console.log('ERR', e.message); });
   await p.goto(`http://127.0.0.1:${port}/`);
   await p.waitForTimeout(2500);
-  await p.evaluate((l) => { window.__shotLook = l; }, process.env.LOOK ?? '');
+  await p.evaluate(([l, r]) => { window.__shotLook = l; window.__shotRope = r; }, [process.env.LOOK ?? '', !!process.env.ROPE]);
   await p.evaluate((s) => window.__play(s, 0), id);
   await p.waitForTimeout(3500);
   await p.mouse.click(w / 2, h / 2);
@@ -28,6 +28,13 @@ for (const [size, [w, h]] of Object.entries(SIZES)) {
     const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;
     const plats = e.platforms ?? e.currentStage.platforms;
     // (LOOK=flare|lavafall: the zone of that look instead, Pokey stood 170 px before it)
+    // (ROPE=1: the first shimmy rope (World 9's ropes over the lava), Pokey stood on its ledge)
+    if (window.__shotRope) {
+      const r = (e.currentStage.ropes ?? []).sort((a, c) => a.x0 - c.x0)[nth];
+      if (!r) return null;
+      Object.assign(e.player, { x: r.x0 - 30, y: r.g0, vx: 0, vy: 0, grounded: true, climbing: false, facing: 1 });
+      return { x: Math.round(r.x0), y: Math.round(r.g0), kind: 'rope' };
+    }
     const look = window.__shotLook;
     if (look) {
       const z = (e.currentStage.zones ?? []).filter((q) => q.look === look).sort((a, c) => a.x0 - c.x0)[nth];
