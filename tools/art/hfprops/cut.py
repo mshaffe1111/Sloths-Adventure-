@@ -15,7 +15,32 @@ from PIL import Image, ImageDraw
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 sys.path.insert(0, str(ROOT / 'tools/art/w1to4'))
-from cut import cut_piece, edge_clean, pack, MARGIN  # noqa: E402
+from cut import edge_clean, keep_blobs, pack  # noqa: E402
+import numpy as np  # noqa: E402
+from scipy import ndimage  # noqa: E402
+
+
+def key_own(img):
+    """the take's own background: the model drifts off the asked-for key (a darker pink, a soft vignette), so the key is measured
+    from the picture: a smooth background map from the border ring (row and column medians blended), alpha from each pixel's colour
+    distance to it, the background un-mixed from the edge pixels, only what is not connected to the border by background kept"""
+    a = np.asarray(img.convert('RGB')).astype(np.float32)
+    H, W, _ = a.shape
+    ring = np.concatenate([a[:12].reshape(-1, 3), a[-12:].reshape(-1, 3), a[:, :12].reshape(-1, 3), a[:, -12:].reshape(-1, 3)])
+    bg0 = np.median(ring, 0)
+    # (the vignette: the background darkens toward the corners; a heavily smoothed copy where the picture is near the key stands in)
+    near = np.linalg.norm(a - bg0, axis=-1) < 70
+    w = ndimage.gaussian_filter(near.astype(np.float32), 40)
+    bgm = np.dstack([ndimage.gaussian_filter(np.where(near, a[..., c], 0), 40) for c in range(3)]) / np.maximum(w[..., None], 1e-3)
+    bgm = np.where(w[..., None] > 0.02, bgm, bg0)
+    d = np.linalg.norm(a - bgm, axis=-1)
+    alpha = np.clip((d - 34) / 80, 0, 1)
+    al = alpha[..., None]
+    paint = np.where(al > 0.02, (a - (1 - al) * bgm) / np.maximum(al, 0.02), 0)
+    rgb = np.where(al < 0.999, paint, a).clip(0, 255)
+    al8 = keep_blobs(alpha * 255)
+    im = Image.fromarray(np.dstack([rgb, al8]).astype(np.uint8), 'RGBA')
+    return im.crop(im.getbbox()) if im.getbbox() else im
 
 PX_PER_UNIT = 4
 BACK = {1: 'w1-near', 2: 'w2-near', 3: 'w3-near', 4: 'w4-near', 5: 'w5-near', 6: 'w6-near', 7: 'w7-near'}
@@ -36,7 +61,9 @@ def review(pieces, world, path):
     bp = ROOT / f'src/assets/backdrops/{BACK[world]}.webp'
     if bp:
         back = Image.open(bp).convert('RGBA')
-        S = back.resize((tw, max(H, round(tw * back.height / back.width)))).crop((0, 0, tw, H))
+        Hs = max(H, round(tw * back.height / back.width))
+        S = Image.new('RGBA', (tw, H), (60, 70, 60, 255))
+        S.alpha_composite(back.resize((tw, Hs)).crop((0, Hs - H, tw, Hs)))
     else:
         S = Image.new('RGBA', (tw, H), (70, 80, 70, 255))
     d = ImageDraw.Draw(S)
@@ -56,8 +83,10 @@ def main():
         pieces = []
         for n, p in pp.items():
             img = Image.open(next(takes.glob(f"{p['take']}.*"))).convert('RGB')
-            im, _ = cut_piece(img, [MARGIN, MARGIN, img.width - 2 * MARGIN, img.height - 2 * MARGIN], key)
-            im = edge_clean(im)
+            im = edge_clean(key_own(img))
+            if p.get('cropBottom'):  # (a base slab the model put under it: the bottom fraction cut off)
+                im = im.crop((0, 0, im.width, round(im.height * (1 - p['cropBottom']))))
+                im = im.crop(im.getbbox())
             tw = round(p['units'] * PX_PER_UNIT)
             s = tw / im.width
             im = im.resize((tw, max(1, round(im.height * s))), Image.LANCZOS)
