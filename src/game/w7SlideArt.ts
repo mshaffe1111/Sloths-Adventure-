@@ -752,8 +752,11 @@ function pose(sim: SlideSim): { n: string; tilt: number; shift: number } {
   // jump in angle on top of the change of picture: pokey-anim, 2026-10-31)
   const l = Math.max(-1, Math.min(1, sim.lean));
   const tilt = 0.17 * l, shift = 0.06 * l;
-  if (l > 0.4) return { n: 'leanR', tilt, shift };
+  // (riding: sitting with his arms out low for balance, the seat and the lean poses made for the slide on 2026-10-31; his standing
+  // grip poses, arms hanging, read as a stretched standing pose sliding along. A small rock as the boards jolt under him)
+  if (l > 0.4) return { n: PIECE.leanR2 ? 'leanR2' : 'leanR', tilt, shift };
   if (l < -0.4) return { n: PIECE.leanL ? 'leanL' : 'grip', tilt, shift };
+  if (PIECE.ride) return { n: 'ride', tilt: tilt + 0.025 * Math.sin(sim.clock * 11), shift };
   return { n: Math.floor(sim.clock * 4) % 2 ? 'grip2' : 'grip', tilt, shift };
 }
 
