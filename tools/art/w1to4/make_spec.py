@@ -75,7 +75,7 @@ def items(world, rnd):
     return out
 
 
-if __name__ == '__main__' and sys.argv[1] == 'round2':
+if __name__ == '__main__' and sys.argv[1] in ('round2', 'round3'):
     pass
 elif __name__ == '__main__':
     world = int(sys.argv[1]); rnd = sys.argv[2] if len(sys.argv) > 2 else '1'; ref = sys.argv[3] if len(sys.argv) > 3 else 'w1-4-sheets'
@@ -159,3 +159,31 @@ def round2(ref):
 
 if __name__ == '__main__' and sys.argv[1] == 'round2':
     round2(sys.argv[2] if len(sys.argv) > 2 else 'w1-4-sheets')
+
+
+# ---------------------------------------------------------------- round 3 (2026-10-31, lead): W1 knot-steps, W3 spore burst
+IMG3 = {'w1-knots3': ('magenta #FF00FF', 'two gnarled round bark burls (tree knots) growing out of the side of a rainforest tree trunk, '
+                      'each with a flat mossy top to stand on like a little step, rough brown bark wrapping round them with growth '
+                      'rings, and a plain tree trunk. Warm bark browns, mossy yellow-green tops.', (0.58, 0.7), (1024, 512)),
+        'w3-burst': (None, 'one soft glowing burst of lavender cave spores: a round puff breaking into seven soft lobes, a bright pale '
+                     'violet glowing core, tiny glowing spore specks, soft edges.', (0.5, 0.62), (1024, 1024))}
+
+
+def round3(ref):
+    its = []
+    for name, (key, body, strengths, (w, h)) in IMG3.items():
+        prompt = STYLE + body + ' ' + (TAIL.format(key=key) if key else FX_TAIL)
+        for s in strengths:
+            for sd in (5, 17, 23):
+                its.append({'name': f'{name}-s{round(s * 100)}-{sd}', 'start': f'{name}.png', 'prompt': prompt, 'strength': s, 'seed': sd,
+                            'w': w, 'h': h, 'loras': [['style', 0.8]], 'neg': NEG if key else NEG + ', outline, solid shapes, noise, dither'})
+    spec = {'note': 'World 1-4 round 3 (W1 bark knot-steps, W3 spore burst)',
+            'base': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{ref}/reference/prop-sheets/qa-notes/w1-4-art/starts/',
+            'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors']}, 'items': its}
+    p = HERE / 'spec-w1to4-3.json'
+    p.write_text(json.dumps(spec, indent=1))
+    print(p, len(its), 'takes')
+
+
+if __name__ == '__main__' and sys.argv[1] == 'round3':
+    round3(sys.argv[2] if len(sys.argv) > 2 else 'w1-4-sheets')

@@ -352,6 +352,53 @@ def canvases2(world):
     return C
 
 
+def canvases3(world):
+    """round 3 (2026-10-31, lead): bark knot-steps (W1) and the spore burst (W3)"""
+    C = {}
+    if world == 1:
+        C['w1-knots3'] = (MAG, (1024, 512), [
+            ('knot-a', (80, 120, 300, 260), lambda w, h: _burl(w, h, 1)),
+            ('knot-b', (560, 140, 260, 220), lambda w, h: _burl(w, h, 2)),
+        ], [('trunkPlain', (900, 60, 100, 220), lambda w, h: fit(P2('trunkPlain'), w, h))])
+    if world == 3:
+        C['w3-burst'] = (BLK, (1024, 1024), [('spore-2', (162, 162, 700, 700), lambda w, h: _burst(w, h))], [])
+    return C
+
+
+def _burl(w, h, seed):
+    """a bark burl that sticks out of a trunk to the right: flat back, round front, flat mossy top, filled with the trunk's own bark
+    (turned so the grain wraps round it), darker growth rings and an ink line"""
+    bark = P2('trunkPlain').rotate(90, expand=True).resize((w * 2, h * 2))
+    mask = Image.new('L', (w, h), 0)
+    g = ImageDraw.Draw(mask)
+    top = int(h * 0.22)
+    g.pieslice((-w, top, w - 6, h * 2 - top), 270, 360, fill=255)
+    g.rectangle((0, top, w * 0.15, h - 6), fill=255)
+    c = blank(w, h)
+    c.paste(bark.crop((seed * 30, seed * 20, seed * 30 + w, seed * 20 + h)), (0, 0), mask)
+    d = ImageDraw.Draw(c)
+    for k in range(1, 4):
+        d.arc((-w + k * 26, top + k * 22, w - 6 - k * 26, h * 2 - top - k * 22), 275, 355, fill=(70, 48, 34, 255), width=5)
+    d.pieslice((-w, top, w - 6, h * 2 - top), 270, 360, outline=INK + (255,), width=6)
+    d.rectangle((0, top - 14, w - 20, top + 6), fill=(118, 146, 62, 255))
+    for x in range(10, w - 30, 24):
+        d.ellipse((x - 14, top - 24, x + 14, top + 2), fill=(132, 160, 70, 255))
+    return c
+
+
+def _burst(w, h):
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    cx, cy = w / 2, h / 2
+    a = np.exp(-(((xx - cx) ** 2 + (yy - cy) ** 2) / (0.16 * w) ** 2))
+    for k in range(7):
+        ang = k * 2 * math.pi / 7 + 0.3
+        px, py = cx + math.cos(ang) * 0.27 * w, cy + math.sin(ang) * 0.27 * h
+        a = np.maximum(a, 0.85 * np.exp(-(((xx - px) ** 2 + (yy - py) ** 2) / (0.11 * w) ** 2)))
+    core = np.exp(-(((xx - cx) ** 2 + (yy - cy) ** 2) / (0.07 * w) ** 2))
+    rgb = np.dstack([180 + 60 * core, 140 + 80 * core, 240 + 15 * core]).clip(0, 255)
+    return Image.fromarray(np.dstack([rgb, (a * 235).clip(0, 255)]).astype(np.uint8), 'RGBA')
+
+
 def _bracket(w, h, col, moss=False):
     def d(g, w, h):
         g.chord((6, -h * 0.9, w - 6, h - 6), 0, 180, fill=col + (255,), outline=INK + (255,), width=6)
@@ -546,7 +593,7 @@ def _anchor():
 def build(world, rnd=1):
     OUT.mkdir(exist_ok=True)
     meta = json.loads((OUT / 'cells.json').read_text()) if (OUT / 'cells.json').exists() else {}
-    for name, (keyc, size, cells, anchors) in (canvases if rnd == 1 else canvases2)(world).items():
+    for name, (keyc, size, cells, anchors) in {1: canvases, 2: canvases2, 3: canvases3}[rnd](world).items():
         cv = Image.new('RGBA', size, keyc + (255,))
         info = {'key': list(keyc), 'size': list(size), 'cells': {}, 'anchors': {}}
         for group, tgt in ((cells, 'cells'), (anchors, 'anchors')):
@@ -564,6 +611,6 @@ def build(world, rnd=1):
 
 
 if __name__ == '__main__':
-    rnd = 2 if '--round2' in sys.argv else 1
+    rnd = 3 if '--round3' in sys.argv else 2 if '--round2' in sys.argv else 1
     for w in [int(a) for a in sys.argv[1:] if a.isdigit()] or [1, 2, 3, 4]:
         build(w, rnd)
