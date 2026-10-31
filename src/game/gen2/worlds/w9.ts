@@ -187,7 +187,7 @@ export const W9_MANIFEST: WorldManifest = {
   sections: [],
   handBuilt: ['9-2', '9-7', '9-10'],
   // (the geysers are 9-1's, the warm air 9-5's, the doorstep's eye 9-4's; the shut shrine is said in each gate)
-  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-8', [W9_LESSON.flare]: '9-5', [W9_LESSON.lavafall]: '9-4', [W9_LESSON.surge]: '9-4', [W9_LESSON.gust]: '9-1', [W9_LESSON.sink]: '9-3' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-8', [W9_LESSON.flare]: '9-1', [W9_LESSON.lavafall]: '9-4', [W9_LESSON.surge]: '9-4', [W9_LESSON.gust]: '9-1', [W9_LESSON.sink]: '9-3' },
   tips: W9_TIPS,
 };
 

@@ -235,7 +235,7 @@ const sinkGate3: SectionTemplate = section({
 const firstSink = section({
   id: 'w9-first-sinker',
   name: 'the first sinking slabs',
-  archetypes: ['vine_runner', 'gauntlet'],
+  archetypes: ['vine_runner', 'gauntlet', 'purge'],
   phases: ['ki', 'sho'],
   difficulty: 3,
   teaches: SINK,
@@ -252,7 +252,7 @@ const firstSink = section({
 const sinkRun = section({
   id: 'w9-sinker-run',
   name: 'a run of sinking slabs',
-  archetypes: ['vine_runner', 'gauntlet'],
+  archetypes: ['vine_runner', 'gauntlet', 'purge'],
   phases: LIVE,
   difficulty: 5,
   uses: [W9_THEME.sinkers, SINK],
@@ -267,7 +267,7 @@ const sinkRun = section({
 const sinkTwin = section({
   id: 'w9-sinker-twin',
   name: 'two runs of sinking slabs',
-  archetypes: ['vine_runner', 'gauntlet'],
+  archetypes: ['vine_runner', 'gauntlet', 'purge'],
   phases: MID,
   difficulty: 6,
   uses: [W9_THEME.sinkers, SINK],
@@ -282,7 +282,7 @@ const sinkTwin = section({
 const sinkHoard = section({
   id: 'w9-sinker-hoard',
   name: 'sinking slabs to the guard',
-  archetypes: ['gauntlet'],
+  archetypes: ['gauntlet', 'purge'],
   phases: LIVE,
   difficulty: 7,
   uses: [W9_THEME.sinkers, SINK],
@@ -433,7 +433,7 @@ const chainSink = section({
 export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
   ropeChain, chainRope, sinkChain, chainSink,
   ropeGate3, W9_BOB_GATES.bridges8, ropeCross, ropeTwin, ropeChasm,
-  sinkGate3, W9_BOB_GATES.sinkers9, firstSink, sinkRun, sinkTwin, sinkHoard,
+  sinkGate3, W9_BOB_GATES.sinkers9, W9_BOB_GATES.sinkers6, firstSink, sinkRun, sinkTwin, sinkHoard,
   W9_BOB_GATES.rafts, firstRaft, raftPair, raftRow, raftGeyser,
   W9_BOB_GATES.logs5, W9_BOB_GATES.logs9, logBridge, logPair, logGlide, logHoard,
   W9_BOB_GATES.pistons, firstPiston, pistonPair, pistonChasm,
@@ -444,6 +444,6 @@ export const W9_BOB_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_BOB_GATES.rafts.id]: [1], [firstRaft.id]: [1], [raftPair.id]: [1], [raftRow.id]: [1], [raftGeyser.id]: [1],
   [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logBridge.id]: [5, 9], [logPair.id]: [5, 9],
   [ropeGate3.id]: [3], [W9_BOB_GATES.bridges8.id]: [8], [ropeCross.id]: [8], [ropeTwin.id]: [8], [ropeChasm.id]: [8], [ropeChain.id]: [3], [chainRope.id]: [3],
-  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [firstSink.id]: [3, 9], [sinkRun.id]: [9], [sinkTwin.id]: [9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [9],
+  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [W9_BOB_GATES.sinkers6.id]: [6], [firstSink.id]: [3, 6, 9], [sinkRun.id]: [6, 9], [sinkTwin.id]: [6, 9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [6, 9],
   [W9_BOB_GATES.pistons.id]: [8], [firstPiston.id]: [8], [pistonPair.id]: [8], [pistonChasm.id]: [8],
 };

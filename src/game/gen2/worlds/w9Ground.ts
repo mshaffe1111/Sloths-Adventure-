@@ -623,7 +623,7 @@ const hunterBrink = section({
 // ───────────────────────────── 9-1 Pepper Air's gates and themes ─────────────────────────────
 
 /** a sprint gate (9-1): a plain run, nothing that can hurt, and the roll's theme opens */
-const sprintGate = (theme: 'vents' | 'chasms' | 'basalt' | 'rafts' | 'gusts', name: string, extra: Socket[] = []): SectionTemplate => {
+const sprintGate = (theme: 'vents' | 'chasms' | 'basalt' | 'rafts' | 'gusts' | 'flares', name: string, extra: Socket[] = []): SectionTemplate => {
   const k = knobs('', 'a', 2, [200, 240]);
   return section({
     id: `w9-pepper-gate-${theme}`,
@@ -1368,6 +1368,7 @@ export const W9_BOB_GATES = {
   pistons: threadGate('pistons'),
   sinkers9: huntGate('sinkers', 'fight'),
   bridges8: threadGate('bridges'),
+  sinkers6: huntGate('sinkers', 'hunt'),
 } as const;
 
 /** the heat hazards' gates (w9Heat.ts): the flares on 9-5 and 9-8, the lavafalls on 9-6 and 9-9 */
@@ -1381,6 +1382,7 @@ export const W9_HEAT_GATES = {
   gusts5: ventGate('gusts', 'the hot wind'),
   lavafalls4: watchGate('lavafalls', 'the lavafalls', [scenery('smoke', 'a', [0.5, 0.6], 0.8)]),
   surges4: watchGate('surges', 'the surge channels', [scenery('log', 'a', [0.5, 0.6], 0.8)]),
+  flares1: sprintGate('flares', 'the flare slabs', [scenery('ohia', 'a', [0.5, 0.6], 0.9)]),
 } as const;
 
 /** the helpers w9Bob.ts builds its sections with (the same as this file's) */
