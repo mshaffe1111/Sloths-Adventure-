@@ -557,3 +557,5 @@ Report each finding with the stage, the moment (s), upright or sideways, Easy or
 10. Art: a prop that pops in late, a missing state (a pressed plate that doesn't look pressed, a bell that doesn't swing).
 11. Device: frame rate, freezes, and the Device column's browser part (an in-app browser, "framed", software drawing).
 12. Anything a 7-10-year-old would not understand or would find unfair.
+
+- 2026-10-31 ~7:45 AM ET: W8 Roost Loft (8-1 puzzle room) OK'd by lead. Helper does the polish before curation: painted roost branch (w8roost) for the loft, painted seed pods for the pebbles. Stills sent to Matt. Dot lines (night pieces, loft) go to Matt one at a time.
