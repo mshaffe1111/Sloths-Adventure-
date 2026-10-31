@@ -1,22 +1,25 @@
 /**
  * World 9's heat hazards on the geyser's rhythm (zones.ts Zone `look`, GRAB-BAG.md), in Matt's painted World 9 pieces:
- *   flare     the hot platform of the W9 props sheet (props-made/w9b 'hot-platform') laid on the route: resting, its cracks are dark (the
- *             cool copy, made once from the painted slab); warning, the hot slab bleeds in over it and shivers; flaring, the hazards
- *             sheet's lava fountain spits low off it. (The cool copy is the stand-in for the painted cool frame on the HF list: §6 #1)
- *   lavafall  the hazards sheet's lava fountain poured from above the frame: drips first (a thin trickle, the warning), then the column
- *             down to the ground and a splash where it lands
+ *   flare     the hot platform of the W9 props sheet (props-made/w9b 'hot-platform') laid flush in the route: resting, the painted cool
+ *             slab (Hugging Face, w9/pieces.webp 'flarecool', the same cell); warning, the hot slab bleeds in over it and shivers;
+ *             flaring, the hazards sheet's lava fountain spits low off it
+ *   lavafall  the painted pour (w9/pieces.webp 'lavafall0'..'2', a loop) from above the frame: a thin trickle first (the warning), then
+ *             the pour down to the ground, landing in its own splash
  */
 import type { Zone, ZoneState } from './zones.ts';
 import { drawW9Hazard } from './w9Art.ts';
+import { W9_PIECE_FRAMES } from './w9PiecesData.ts';
 
 const W9B_URL = new URL('../assets/w6to10/props-made/w9b.webp', import.meta.url).href;
+const W9_PIECES_URL = new URL('../assets/w9/pieces.webp', import.meta.url).href;
 /** props-made/w9b.json 'hot-platform'; laid flush in the route, `top` of its height above the ground line (its top face in the ground, its
  *  front edge down the bank's face), so he walks over it, never into it */
 const SLAB = { x: 567, y: 0, w: 434, h: 211, top: 0.19 } as const;
 
 let im: HTMLImageElement | null = null;
 let ok = false;
-let cool: HTMLCanvasElement | null = null;
+let pim: HTMLImageElement | null = null;
+let pok = false;
 function slabImg(): HTMLImageElement | null {
   if (typeof Image === 'undefined') return null;
   if (!im) {
@@ -26,35 +29,19 @@ function slabImg(): HTMLImageElement | null {
   }
   return ok ? im : null;
 }
-/** the slab with its lava cracks gone dark: the glowing pixels (hot and saturated) pulled down to cooled rock, once */
-function coolSlab(src: HTMLImageElement): HTMLCanvasElement | null {
-  if (cool || typeof document === 'undefined') return cool;
-  const c = document.createElement('canvas');
-  c.width = SLAB.w;
-  c.height = SLAB.h;
-  const g = c.getContext('2d');
-  if (!g) return null;
-  g.drawImage(src, SLAB.x, SLAB.y, SLAB.w, SLAB.h, 0, 0, SLAB.w, SLAB.h);
-  try {
-    const d = g.getImageData(0, 0, SLAB.w, SLAB.h);
-    const p = d.data;
-    for (let i = 0; i < p.length; i += 4) {
-      const r = p[i], gg = p[i + 1], b = p[i + 2];
-      const hot = Math.max(0, Math.min(1, (r - b - 40) / 120));
-      if (hot <= 0) continue;
-      // (toward the slab's own dark basalt, a faint ember left in the deepest cracks)
-      const k = hot * 0.86;
-      p[i] = r * (1 - k) + 70 * k;
-      p[i + 1] = gg * (1 - k) + 42 * k;
-      p[i + 2] = b * (1 - k) + 40 * k;
-    }
-    g.putImageData(d, 0, 0);
-  } catch {
-    /* a tainted canvas: the hot slab alone */
+/** the HF pieces sheet (w9PiecesData.ts): the cool slab, the lavafall's pours */
+function piecesImg(): HTMLImageElement | null {
+  if (typeof Image === 'undefined') return null;
+  if (!pim) {
+    pim = new Image();
+    pim.onload = () => (pok = true);
+    pim.src = W9_PIECES_URL;
   }
-  cool = c;
-  return c;
+  return pok ? pim : null;
 }
+export const W9_HEAT_URLS: readonly string[] = [W9B_URL, W9_PIECES_URL];
+type PF = { x: number; y: number; w: number; h: number };
+const PF_ = W9_PIECE_FRAMES as unknown as Record<string, PF>;
 
 /** the slab where the zone lies, its heat by the zone's phase */
 export function drawW9Flare(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number): void {
@@ -66,11 +53,12 @@ export function drawW9Flare(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneStat
   const y = z.baseY - SLAB.top * h;
   const heat = st.phase === 'warn' ? Math.min(1, st.u * 1.2) : st.phase === 'active' ? 1 : 0;
   const shiver = st.phase === 'warn' ? Math.sin(t * 55) * 1.8 * st.u : 0;
-  const c = coolSlab(src);
-  if (c) ctx.drawImage(c, x + shiver, y, w, h);
-  if (heat > 0 || !c) {
+  const pc = piecesImg();
+  const cf = PF_.flarecool;
+  if (pc && cf) ctx.drawImage(pc, cf.x, cf.y, cf.w, cf.h, x + shiver, y, w, h);
+  if (heat > 0 || !pc) {
     ctx.save();
-    ctx.globalAlpha = c ? heat : 1;
+    ctx.globalAlpha = pc ? heat : 1;
     ctx.drawImage(src, SLAB.x, SLAB.y, SLAB.w, SLAB.h, x + shiver, y, w, h);
     ctx.restore();
   }
@@ -90,24 +78,35 @@ export function drawW9FlareBurst(ctx: CanvasRenderingContext2D, z: Zone, st: Zon
   }
 }
 
-/** the lavafall: a trickle as it warns, the poured column while it is active, a splash at its foot */
+/** the lavafall: a thin trickle of the painted pour as it warns, the pour itself (its three frames looping) while it is active, its own
+ *  splash at the foot; the hazards sheet's fountain, upside down, while the pieces sheet loads */
 export function drawW9Lavafall(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number): void {
+  if (st.phase === 'idle') return;
   const cx = (z.x0 + z.x1) / 2;
   const w = z.x1 - z.x0;
   const len = z.baseY - z.top;
-  if (st.phase === 'warn') {
-    // (drips: a thin poured strand that thickens as it comes)
-    const tw = w * (0.32 + 0.3 * st.u);
+  const pc = piecesImg();
+  const f = PF_[`lavafall${Math.floor(t * 9) % 3}`];
+  const warn = st.phase === 'warn';
+  const fw = w * (warn ? 0.35 + 0.35 * st.u : 1.7);
+  if (pc && f) {
     ctx.save();
-    ctx.globalAlpha = 0.75 + 0.25 * st.u;
-    drawW9Hazard(ctx, 'burst2', cx - tw / 2, z.top, tw, len, true);
+    if (warn) ctx.globalAlpha = 0.7 + 0.3 * st.u;
+    // (a trickle hangs from the sky without reaching the ground's splash: its foot cut off; the pour lands)
+    const sh = warn ? f.h * 0.86 : f.h;
+    ctx.drawImage(pc, f.x, f.y, f.w, sh, cx - fw / 2, z.top, fw, warn ? len * 0.97 : len + 6);
     ctx.restore();
     return;
   }
-  if (st.phase !== 'active') return;
-  const frame = Math.floor(t * 10) % 2 ? 'burst1' : 'burst2';
+  if (warn) {
+    ctx.save();
+    ctx.globalAlpha = 0.75 + 0.25 * st.u;
+    drawW9Hazard(ctx, 'burst2', cx - fw / 2, z.top, fw, len, true);
+    ctx.restore();
+    return;
+  }
   const cw = w * (1.05 + 0.15 * st.strength);
-  drawW9Hazard(ctx, frame, cx - cw / 2, z.top, cw, len, true);
+  drawW9Hazard(ctx, Math.floor(t * 10) % 2 ? 'burst1' : 'burst2', cx - cw / 2, z.top, cw, len, true);
   const sw = w * 2.2;
   drawW9Hazard(ctx, `splash${Math.floor(t * 8) % 3}`, cx - sw / 2, z.baseY - sw * 0.6, sw, sw * 0.6);
 }
