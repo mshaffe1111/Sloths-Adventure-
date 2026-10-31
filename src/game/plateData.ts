@@ -41,6 +41,11 @@ export const PLATES: Record<string, PlateInfo> = {
   'w1-storm': { ground: 0.8, what: "World 1's story place, storm: the emerald canopy (hf-cutscenes, from the world's own story scenery)" },
   'w3-night': { ground: 0.8, what: "World 3's story place, night: the mossy grotto (hf-cutscenes, from the world's own story scenery)" },
   'w5-day': { ground: 0.8, what: "World 5's story place, day: the orchid sanctuary (hf-cutscenes, from the world's own story scenery)" },
+  'w1-dusk': { ground: 0.8, what: "World 1's story place, dusk: the emerald canopy (hf-cutscenes, from the world's own story scenery)" },
+  'w3-storm': { ground: 0.8, what: "World 3's story place, storm: the mossy grotto (hf-cutscenes, from the world's own story scenery)" },
+  'w4-day': { ground: 0.8, what: "World 4's story place, day: the misty cascades (hf-cutscenes, from the world's own story scenery)" },
+  'w6-dusk': { ground: 0.8, what: "World 6's story place, dusk: the deep mangrove (hf-cutscenes, from the world's own story scenery)" },
+  'w7-day': { ground: 0.8, what: "World 7's story place, day: the ancient ruins (hf-cutscenes, from the world's own story scenery)" },
 };
 
 export function isPlate(key: string | undefined): key is string {
@@ -58,6 +63,11 @@ export const WORLD_PLATES: Record<string, string> = {
   '1-storm': 'w1-storm',
   '3-night': 'w3-night',
   '5-day': 'w5-day',
+  '1-dusk': 'w1-dusk',
+  '3-storm': 'w3-storm',
+  '4-day': 'w4-day',
+  '6-dusk': 'w6-dusk',
+  '7-day': 'w7-day',
 };
 
 /** the scene as drawn: its own plate, or its world's plate for this mood when there is one (the cast keep their ground line) */
