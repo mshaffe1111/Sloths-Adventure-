@@ -1,0 +1,1792 @@
+Sloths audit two: grades and the next level
+Oct 30, 2026 · @Matt Shaffer
+Start here
+This is the second full audit of Sloths, in the same shape as the first one: every category graded against the big studios and against indies, both modes graded, each issue with its place in the code, its fix, effort and any art, then a path to the target and the builds in order. It's a review only. Nothing in the repo or on any test link was changed.
+Where the game stands. Like for like, the worlds the first audit graded plus World 7 are now B− against the big studios and B+ against indies, up from C and B−. That's a real jump in a short time. The whole game, counting Worlds 8-10 as a player meets them today, is C+ and B, because those worlds still run on the old generator.
+The biggest movers. Animation and game feel moved two steps against AAA (the death beat, dust, sparks, shake and smooth parallax all landed). Controls, story and cutscenes, and Dot each moved a step and a half. Menus, visuals and Easy each moved a step. Of the first audit's 138 issues, 94 are fixed or decided.
+The three things holding it back.
+Level pacing across worlds. Normal stops getting harder after World 2, World 5 is still padded, and Worlds 8-10 are old-generator stages with 29 to 38% dead time and pits in the first few seconds. Everything that could be fixed inside a stage moved; the shape of the game across worlds didn't.
+Sound. It's still the lowest category. The effects are set too hot, each world shares one short loop, and respawning is silent.
+The ordinary-phone experience. A 160 MB download, 16 slow seconds at the start on an older Android, no clean iPhone number, and touches that wait for slow frames on mid-range phones.
+What to do first. Build 1 (Builds in order) is two or three days of code and fixes what a new player hits in the first minute: being asked Easy or Normal, the stuck 2-3 goal card, approved Dot lines that can't silently revert, a respawn sound, and the early hits in Worlds 8-10. Then your four follow-ups as Build 2, then sound, controls, picture and levels, then Worlds 8-10 and the bosses in your order.
+Where I push back.
+I'd build the Magma Drake before the World 9 canopy, because its design and art are ready and the canopy needs a mock-up, five art pieces and a new section type.
+The hold move as drafted contradicts the vine rule every player has learned since 1-1. I recommend "freeze on the flash" instead (WIP-18).
+The world branches are hundreds of commits behind and edit the same files. Merge them one at a time, World 8 first, before any new World 8-10 work goes on them (WIP-10).
+Start the Play Store's 14-day closed test as early as you have a build you're happy for testers to see, because it sets the earliest launch date.
+Your calls are listed at the end of Builds in order, in the order the builds need them. I'll ask them one at a time.
+Scorecard
+The first audit graded Worlds 1-6 and left Worlds 7-10 and bosses 6-10 ungraded. So there are two overall lines here: one like for like (Worlds 1-7, which adds the newly finished World 7), and one for the whole game as a player meets it today.
+Category
+vs AAA now (then)
+vs indies now (then)
+Why, in one line
+Overall, Worlds 1-7
+B− (C)
+B+ (B−)
+A real step: controls, Dot, story and animation all moved; sound and pacing hold it
+Overall, whole game
+C+
+B
+Worlds 8-10 still run on the old generator and pull it down
+Visuals and art
+B− (C+)
+B+ (B)
+16 of 18 first-audit issues fixed; code-drawn thin platforms and arenas, flat depth in some worlds
+Animation and game feel
+B− (C−)
+B (C+)
+Death beat, dust, sparks, shake and smooth parallax landed; Flicker unseen, Pokey turns instantly
+Controls
+B− (C)
+B+ (B−)
+22 of the first audit's issues fixed; liana let-go and a resting thumb still misread
+Sound and music
+C+ (C−)
+B− (C+)
+Recorded effects replaced the pingy set; levels too hot, one loop per world, silent respawn
+Story and cutscenes
+C+ (C−)
+B (C+)
+HD trio and lit scenes; replies drop, Flicker isn't seen, upright framing cuts people off
+Story writing (the words)
+B+ (B)
+A (A−)
+Character voices landed, the General's arc is set
+Dot and hints
+B− (C)
+B+ (B−)
+Approved short lines, no spoilers in most rooms; old lines can silently return, no boss 6-10 coaching
+Level design and difficulty
+C+ (C+)
+B (B)
+Water taught first, fairer checkpoints and jumps; Normal's curve still flat, World 5 padded
+Easy mode
+B− (C+)
+B+ (B)
+Soft falls and a gentle ease-in; a new player never gets asked, so most never see it
+Normal mode
+C (C)
+B− (B−)
+Stages stop getting harder after World 2, and Worlds 3-5 fail the repo's own gate
+Menus and UI
+B− (C+)
+B+ (B)
+All 15 first-audit issues fixed or decided; the stuck 2-3 goal card, continuity slips
+Performance and tech
+C+ (C)
+B− (B−)
+Android holds 30 fps; the download doubled to 160 MB, no clean iPhone number
+Worlds 7-10 and bosses 6-10
+D+ (not graded)
+C (not graded)
+World 7 is real; Worlds 8-10 wait on unmerged branches; the Drake is thin
+Reference games: Super Mario Run and Rayman Adventures / Rayman Jungle Run for AAA; Leo's Fortune, Oddmar and Alto's Adventure for indies. A means it holds up next to the best of that group, B is solid and shippable there, C is noticeably behind, and D is a clear weak spot.
+Since the first audit
+Of the first audit's 138 issues, 94 are fixed or decided, 27 are partly fixed, 5 changed into something else, and 12 are still open, regressed or worse. That's a lot of finish in a short time, and it's why most categories moved a full step or more.
+How the grades moved
+Category
+vs AAA
+vs indies
+Movement
+Animation and game feel
+C− to B−
+C+ to B
+Up two steps against AAA, the biggest mover
+Controls
+C to B−
+B− to B+
+Up a step and a half
+Story and cutscenes
+C− to C+
+C+ to B
+Up a step and a half
+Dot and hints
+C to B−
+B− to B+
+Up a step and a half
+Sound and music
+C− to C+
+C+ to B−
+Up a step, still the lowest category
+Menus and UI
+C+ to B−
+B to B+
+Up a step
+Visuals and art
+C+ to B−
+B to B+
+Up a step
+Easy mode
+C+ to B−
+B to B+
+Up a step
+Performance and tech
+C to C+
+B− to B−
+Half a step against AAA only
+Level design
+C+ to C+
+B to B
+Unchanged
+Normal mode
+C to C
+B− to B−
+Unchanged
+Story writing
+B to B+
+A− to A
+Up a step
+The pattern is clear. Everything the team could fix inside a stage moved. What didn't move is the shape of the game across stages and worlds: Normal's difficulty curve, World 5's padding, and the old generator in Worlds 8-10. Those are bigger jobs, and they're now the main thing between you and the targets.
+First-audit issues by category
+Category
+Issues
+Fixed or decided
+Partly fixed
+Changed
+Still open
+Visuals (VI-1 to 18)
+18
+17
+1
+0
+0
+Animation (AN-1 to 11)
+11
+9
+2
+0
+0
+Controls (CT-1 to 29)
+29
+22
+3
+2
+2
+Sound (SN-1 to 10)
+10
+6
+3
+1
+0
+Story (ST-1 to 8)
+8
+4
+4
+0
+0
+Dot (DOT-1 to 17)
+17
+12
+4
+0
+1 regressed (DOT-3)
+Level design (LV-1 to 18)
+18
+8
+4
+1
+5
+Menus and UI (UI-1 to 15)
+15
+15
+0
+0
+0
+Performance (PF-1 to 3)
+3
+0
+2
+0
+1 worse (PF-2)
+Worlds 7-10 checklist (WIP-1 to 9)
+9
+1
+4
+1
+3
+Total
+138
+94
+27
+5
+12
+The still-open ones that matter most: LV-2 (Normal's curve), LV-10 (World 5), DOT-3 (old boss lines coming back, now DOT-18), PF-2 (the download), and WIP-2 and WIP-6 (dead time and early hits in Worlds 8-10, fixed on the branches but not on the live site).
+How this was reviewed
+This audit is against main at 949abd98 (release PR #53, merged Oct 30, 5:53 PM ET) and the live GitHub Pages site. The first audit was against 02ac7f5 on Oct 29; about 1,049 commits landed in between. Nothing in the repo was changed and nothing was pushed or published.
+Played: the title, How to Play, Worlds 1, 2, 4, 5, 7, 8, 9 and 10, the 6-10 boss from its story scene through to Game Over, and the pause menu, in a cloud browser held at landscape phone size (1024x600) with the keyboard. Portrait can't be played in that browser, so portrait is judged from code and measurements. The Stage Cleared card can't be reached there, so it's judged from code.
+Read and measured: every first-audit issue was checked against the current code, not against commit messages, with file and line. Art and sound claims come from measuring the shipped files at real phone sizes; nothing was heard.
+Real players: the Sloths control tests recorder sheet where it could be read, weighted to rows from builds after the first audit.
+Grades: two per category, against big-studio mobile platformers (Super Mario Run, Rayman Adventures / Rayman Jungle Run) and against independent ones (Leo's Fortune, Oddmar, Alto's Adventure). A holds up next to the best of that group, B is solid and shippable in it, C is noticeably behind, D is a clear weak spot. Easy and Normal are graded separately.
+Priorities: P1 is noticed in the first minutes or breaks play; P2 is noticeable over time or in one area; P3 is finish. Effort: S is under half a day, M is 1-3 days, L is a week or more. Issue ids keep the first audit's numbering; new issues continue each category's numbers.
+Worlds 7-10 and bosses 6-10 are being polished now. This time they are graded, with that marked, because they are most of what's left before launch.
+Visuals and art: B− against AAA (was C+), B+ against indies (was B)
+The verdict. This is the biggest visible change since the first audit. The backdrops are now native resolution, with no dark outline, no seams and no pop-in. Every world has painted soil, and the water, gates, flags, pickups, ropes and boss attacks are all painted. Worlds 7 and 8 at night look like an indie A. The reason it isn't higher is what sits right in front of the player:
+In World 1, about 230 of the logs, stones and bridges you stand on are still drawn by code.
+Every boss fights on code-drawn floors and ledges.
+Bank ends are cut off with a hard vertical edge.
+The back two backdrop layers merge into one busy plane in the dark worlds.
+The canvas is capped at 2x, so on most iPhones and recent Androids everything is stretched 1.5x.
+The helper who measured the art files graded this B / A−. I played it and took it down one step, because what I saw on screen (World 1's code ledges, flat teal water in 2-3, twin slabs in 4-5, code flowers in 9-3, a smeared boss sprite in 6-10) is exactly what a reviewer screenshots.
+The bar: Rayman Adventures and Oddmar hand-paint every surface you touch, boss arenas included, and separate their background layers by value. Each layer back is lighter and thinner-lined, so the play layer always pops.
+First-audit issues
+Id
+Status
+What's left
+VI-1 dark outline on backdrops
+Fixed
+None
+VI-2 blurry backdrops upright
+Fixed
+None
+VI-3 backdrops pop in
+Fixed
+None
+VI-4 mirror seams, inkblot twins
+Fixed
+None
+VI-5 white halo on W1 canopy
+Fixed
+12.3% of edge pixels to 0.2%
+VI-6 magenta on W5 dusk
+Fixed
+5.6% to 0.08%
+VI-7 grey soil seams
+Fixed
+Moot: every bank uses painted ground now
+VI-8 ground tiles repeat
+Fixed
+World 7's glyph tablets repeat every 4 tiles; World 9's soil bands at 22%
+VI-9 code pit water in W1, 3, 4, 5
+Fixed
+World 2's base water is still code-drawn, and I saw it in 2-3 (VI-28)
+VI-10 code gate and flags
+Fixed
+One checkpoint post for nine worlds; the gate's "N more" plate is code; "CHECKPOINT!" still pops up as text
+VI-11 dashed-line ropes
+Fixed
+One rope texture in every world
+VI-12 vector pickups
+Fixed
+Vector fallbacks still in vectorArt.ts; delete them (new replaces old)
+VI-13 W5 pastel stickers
+Fixed
+18 props repainted; in 5-4 the big pastel orchids still read as stickers to me
+VI-14 boss lair plates unused
+Partly fixed
+Bosses 1-5 painted. The Reaver, Golem, Monarch, Drake and General plates exist and are still unused (WIP-11)
+VI-15 vector boss attacks
+Fixed
+P3 leftovers in SWEEP.md (frog tongue, ember disc, screech rings)
+VI-16 code stand-ins
+Fixed
+Sleeping Z's are stroked text
+VI-17 W1 and W5 look the same each visit
+Fixed
+DRESS_SETS rolls dressing
+VI-18 small notes
+Fixed
+None
+Score: 16 fixed, 1 partly fixed, 1 fixed with a visible leftover.
+New issues
+VI-19. World 1's thin platforms are drawn by code (P1, M, needs art).
+Why P1: it's the first world and the first minutes, and the painted kit sits right beside the code pieces.
+Where: protoArt.ts:773-785 paintedPlatforms. For World 1, ownKit() is false, so only branches are painted. Everything else goes to the vector painters: thinArt.ts drawLog, drawStone and drawRuin, and spanArt.ts bridge and raft.
+Measured over 1-1 to 1-9: 100 logs, 54 moss stones, 69 canopy bridges, 8 ruins. That's about 231 code-drawn surfaces next to 312 painted banks.
+Fix:
+Give World 1 its own thin-kit pieces.
+Drop the ownKit() condition.
+As a same-day stopgap, send style === 'log' to the painted push-log art (drawLogArt).
+Then delete thinArt, spanArt, shelfArt, columnArt and worldLedges, and the ?paint=0 switch (protoArt.ts:25-32). Matt's rule is no on/off switches.
+Art (about 7 pieces, on flat green): log 512×128 (2 variants), mossy stone slab 384×128 (2), ruin lintel 384×128, rope-and-plank bridge segment 256×160 that tiles plus an end post 128×256, raft 384×128.
+Prompt: "Side-view platform pieces for a 2D rainforest platformer, hand-painted storybook style with clean dark ink outlines, matching the attached World 1 kit: a mossy fallen log with a cut end, a flat mossy stone slab, a carved ruin lintel, a rope-and-plank bridge segment that tiles left to right, a log raft; flat tops lit from the upper left, darker undersides, no ground, no shadows, flat green #00FF00 background, each piece separated."
+VI-20. Boss arena floors and ledges are code-drawn in all ten fights (P2, L in total, needs art).
+Where: lair*Objects.ts, 36-71 vector calls each, with no images. Examples: the Croc's mud bank (lairCrocObjects.ts:31-606) and the Queen's silk branches (lairQueenObjects.ts:28-452). Even the five painted lairs have code ledges in front.
+Why it matters: the camera zooms out in fights, so the floor is a big share of the frame.
+Fix: one arena kit per lair, drawn through the platformSprites path, with the collision boxes unchanged.
+Order: Croc and Queen first (already plated), then the rest. Bosses 9 and 10 get theirs with the redesign.
+Art per lair: a floor strip 1024×384 that tiles; ledges at 256, 384 and 512 × 128; a trunk or pillar 256×512 that tiles vertically, plus a cap; a ladder or rope 64×512.
+Prompt: "Side-view arena pieces for a 2D boss fight, [LAIR: moonlit mangrove mire / silk hollow / ...], hand-painted storybook style with clean ink outlines matching the attached lair painting's palette and light, a floor strip that tiles left to right, three wooden/stone ledges, a trunk segment that tiles vertically with a top cap, flat green background."
+VI-21. Bank ends: one per world, a hard cut below it, a smudged inner edge (P2; code S now, art M). This is Matt's "repainted bank ends" follow-up.
+Where: groundAtlasData.ts. Every world has exactly one end piece, 384×576, drawn 300 units tall (END_H, groundPaint.ts:26). The left ends are the same piece mirrored.
+What's wrong:
+Below the 300-unit piece, the soil is clipped to a wobbly line with no ink and no shadow (groundPaint.ts:214-235). Pit walls are often 400-900 units tall, so most of the face is the plain cut. I saw it live at the end of 7-3's walkway.
+The piece's inner edge is an airbrush fade that smudges over the soil.
+The lip stops 30 units short of each end (protoArt.ts:596-602) and relies on that one corner.
+The repaint has started: green-key starts for gend-w1 to w10 are committed (ca781d26). Nothing is wired yet.
+Fix:
+Code, now: after drawSoil, stroke the face path with a 2.5-unit ink line in the world's deep colour at 0.85, and a 10-unit soft shadow band inside it.
+Art, per world: 3 taller end variants (384×1152, so END_H can be 600), plus one vertically tiling face-edge strip (160×1024). Use a separate left variant, never just the mirror. The code already picks ends by hash (endFrame, groundPaint.ts:63-67).
+Replace the airbrush fade with a 24 px feather painted into the art.
+Prompt, bank end: "Side-view cliff edge for a 2D platformer, hand-painted storybook rainforest style with clean dark ink outlines matching [WORLD] soil (attach soil tile), a mossy grassy lip that rounds over the top-right corner and drapes down, the soil face below falling straight down with roots and small stones poking out of the broken edge, no background, flat pure green (#00FF00) background, the left edge of the soil cut straight so it can sit against a tiling soil texture, 384×1152, three different variations side by side."
+Prompt, face strip: "Vertical seamless tileable strip of a broken soil cliff edge seen from the side, [WORLD] palette, ink outline along the right edge, roots and pebbles in the edge, the left side plain soil matching the attached texture, flat green background, top and bottom edges must tile seamlessly, 160×1024."
+VI-22. The mid and near backdrop layers don't separate by depth in Worlds 3 and 8-10 (P2, S, no art).
+Measured (median brightness L, and the share of near-black ink):
+World 1: near 58, mid 66. This is right: the back is lighter.
+World 10: near 37 and 30% ink, mid 37 and 31% ink.
+World 3: near 34, mid 27. The mid layer is darker than the front.
+Why it happens: painted sets are marked hazed: true (scenery.ts:1536), so no veil is drawn over them.
+Fix: bake a per-world value lift into makeFit (scenery.ts:1938-1958): the world's haze colour at 12-20% on the mid layer, 0-6% on the near one. Target: mid at least 15 L brighter than near in every world. It's baked once, so it costs nothing per frame.
+VI-23. The game canvas is capped at 2x pixel density (P2, S after the GPU move).
+Where: engine.ts:974-977, cap = [2, 1.5, 1][quality]. The story player is capped at 2 too.
+On 3x phones (most iPhones, Pixel 8 and 9, Galaxy S), every frame is drawn at two-thirds size and stretched.
+Fix: after PixiJS, raise top quality to min(native, 3). The governor already steps down on slow phones.
+VI-24. Upright story framing: the zoom is undone (P1 for story upright, M, no art). This is Matt's "upright cutscene framing" follow-up.
+Where:
+StoryPlayer.tsx asks for UPRIGHT_ZOOM 1.22 (up to 1.4).
+capStoryZoom (storyFrame.ts:14-18) limits it to 1.5 device pixels per old cel pixel. But the cels were repainted at 2x (CEL_HD = 2.0), so the cap is twice as strict as it needs to be.
+Measured with the game's own functions:
+On a 412×915 phone the actual zoom is 1.00.
+Pokey is 80 css px tall, which is 9% of the screen.
+About 62% of the upright screen is the painted top of the plate.
+49 of the 469 scenes with figures put an actor outside 15-85% of the width, so a simple zoom crops them. That's why the cap was added.
+Fix:
+Measure the cap against the HD cels: room = MAX_CEL_MAG / (dev * (CEL_K / CEL_HD) * actorScale).
+Frame on heads: storyDirect.ts already knows speakerHeight and tallestHeight. Keep the tallest head at least 6% below the top of the band, and allow zoom up to 1.6.
+Aim for Pokey at 18-22% of the screen height upright.
+For wide casts, pan between speaker and listener (a 1.2-1.6 s ease, cut on each line), or squeeze positions with 0.5 + (x−0.5)·0.75.
+Run the contact-sheet tool upright on all 469 scenes before and after, counting clipped heads and overlaps.
+I also saw the sideways version of this in the 6-10 intro: Pokey was cut off at the waist by the words box (ST-13).
+VI-25. Small code-drawn leftovers (P3, S). The shared checkpoint post, the gate's plate and motes, one rope texture, the Z marks, the vector fallbacks in vectorArt.ts and SWEEP.md's open list. Delete the fallbacks now, since sheets are preloaded.
+VI-26. 11 backdrop sets have no painted sky (P3, art).
+The sets: w10after, w1kapok, w1sunrise, w3sinkhole, w5dusk2, w5twi1, w5twi2, w6dawn, w7, w7dawn and w7dusk. That's every World 7 set.
+Upright, the far strip is stretched about 1.2x to fill the space above.
+Art: one 2640×513 sky per set.
+Prompt: "Painted sky band, storybook style, [SET palette], soft clouds, no horizon objects, the bottom 5% must match the attached image's top rows, 2640×513."
+VI-27. Twin slabs in 4-5 (P3, S). Found live. The stone slab platforms are one big sprite placed side by side, so identical twins sit next to each other. Pick variants by hash, as the ground already does, or flip and shift the texture start per slab.
+VI-28. World 2's pit water is a flat teal column with hard straight edges (P2, S). Found live in 2-3, both times I played it.
+Where: the code-drawn base water in terrain.ts:1489-1526 (waterY 730, w2Stages.ts:68, 1182). It was thought to be off screen, but it isn't.
+Fix: route it through drawPitWater with a World 2 strip, as Worlds 1, 3, 4 and 5 already are.
+VI-29. Rain falls across the soil cross-section in 10-3 (P3, S, work in progress). The rain layer is drawn over everything, so it falls through the ground. Clip it to the sky and the play layer, above the ground's top edge.
+VI-30. Boss sprites in play are noisy next to their cards (P2, M, art). Found live in 6-10.
+The Marsh Reaver's arena sprite is grainy, and his spear reads as a smeared white scribble.
+His boss card shows him with a mace or club, while the cutscene shows a spear (ST-14).
+Fix: re-cut the boss 6-10 clips from clean masters with the fixed edge pipeline, and check every boss 6-10 sheet with artcheck's edge and noise tests. Re-roll the Reaver's weapon so card, cutscene and fight agree.
+Prompt for the re-roll: "The attached otter warrior character, exactly the same model, armour and colours as the attached clip sheet, holding a long wooden spear with a dark iron head in both paws, clean silhouette, hand-painted storybook style with clean ink outlines, flat magenta #FF00FF background." Attach the current Reaver clip sheet and his boss-card portrait.
+VI-31. Soil takes about 45% of the frame in landscape (P3, S-M, check on a phone). Found live.
+In 1-1 and 7-3 on a 1024×600 landscape screen, the painted ground filled nearly half the picture.
+The soil is lovely, but it's the least interesting thing on screen, and it pushes the backdrops up.
+Fix: in landscape, frame the camera so the ground's top edge sits at about 70-72% of the screen height, unless the stage needs to show a drop. Rayman keeps its play line at about the lower third.
+This is a test-on-a-phone item: the cloud browser's aspect ratio isn't a phone's.
+Path to the target for Visuals (B− / B+ now; target B+ to A / A+)
+Every surface you touch is painted. VI-19 first, because it's the first impression. Then the VI-20 arena kits, and WIP-1's code plants in Worlds 8-10 (which go away with the generator move).
+Value-separated layers (VI-22): a one-day code change that lifts every dark world at once.
+Edges and corners (VI-21): bank ends are where a painted platformer gives itself away.
+Sharp on high-density screens (VI-23), once the GPU renderer lands.
+Light that belongs to the scene, after the GPU move:
+one light direction and colour per backdrop set;
+a 1-2 px rim on Pokey and the creatures on the lit side (heroRim.ts already exists);
+a colour grade per set. That's what makes Oddmar look expensive.
+The hardest gap for one developer with AI is keeping AI art consistent across ten worlds and about 100 more pieces. What closes it:
+one style sheet per world (the kit plus three approved pieces), attached to every prompt;
+whole kits generated in one batch so they share light;
+everything on flat green or magenta, through the fixed edge pipeline and artcheck.
+Animation and game feel: B− against AAA (was C−), B against indies (was C+)
+The verdict. The layer of reactions that was missing now exists:
+a death beat with a KO pose and an iris;
+landing dust scaled by speed, and painted hit sparks;
+a smooth trauma-based shake with Full, Gentle and Off;
+an even blink;
+haptic patterns;
+Venom Fang's neck bends;
+the Queen uses her clips.
+That's two full steps.
+What keeps it at B−: Pokey himself moves the way he did a month ago. He has 8-frame cycles, flips instantly when he turns, never skids, and lands in one frame. The arcade pop-up words blink off with no fade. Flicker talks in play and is never drawn. Vibration is off by default and does nothing on iPhone. The helper graded this B− / B+. I took the indie grade one step lower, because Oddmar, the indie bar here, has a hero that turns, skids and recovers, and its companion is always on screen.
+First-audit issues
+Id
+Status
+What's left
+AN-1 no beat when a life is lost
+Fixed (5b8d9e50, 614934c7)
+The iris is a hard code circle; a 6-10 px feather or a leaf-shaped mask would match the art (P3)
+AN-2 uneven blink
+Fixed
+None
+AN-3 arcade pop-up text
+Partly fixed
+Pickups show one small number, but 54 addFloatingText calls remain: SPLASH!, CHECKPOINT!, VULNERABLE!, MEGA PUNCH!, CRACK!, CLANK!, TINK!, WHOOSH!, CLANG!, RATTLED!, STUCK!, BLOWN BACK!, HOLD ON! Every pop-up rises at a fixed 35 units/s and vanishes with no fade or scale (AN-15)
+AN-4 background stutter
+Fixed
+None
+AN-5 no landing dust
+Fixed
+None
+AN-6 hurt flash uses canvas filters
+Fixed
+ctx.filter is left only in the vector fallbacks; delete them
+AN-7 Venom's stiff lunge
+Fixed (venomRig.ts)
+None
+AN-8 Queen's clips unused
+Fixed
+The Sky Sovereign still has poses, no clips (P3)
+AN-9 haptics
+Partly fixed
+Patterns exist for hurt, hard landing, boss slam, checkpoint and clear, but they're off unless turned on and do nothing on iPhone (AN-14)
+AN-10 random shake
+Fixed
+Nit: Dot's panel shakes on wall-clock time and the world on game time, so they go out of phase in a hit pause (engine.ts:6603)
+AN-11 static win card
+Fixed
+None
+Note for the team: the polish tracker still lists AN-1, AN-2 and AN-3 as "waiting on Matt / never pushed". They're on main; the tracker is out of date.
+New issues
+AN-12. Flicker is never drawn in play (P1 for Worlds 6-10, M, no new art). This is Matt's "drawing Flicker in play" follow-up.
+Today: Flicker has a complete painted clip set (flicker-anim.webp, 13 moves: talk, blink, glow, happy, sad, doze, smug, startled, worried, shrug, turn, lead, dart). It's loaded and drawn only on Meeca's stage (stageSheets.ts:177, drawFlicker in meecaArt.ts:243-300).
+By the story's rule (wayside.ts:17-19) he's with Pokey from the Last Note scene to the end. He speaks at 6-6, 6-8, 7-6, 8-3, 8-6, 9-9, 10-3 and 10-6.
+His bubble is placed beside Pokey's head (DotGuide.tsx:621-627), so in a Dot and Flicker exchange the bubbles jump between Dot's perch and Pokey, and the speaker is never there. I saw it live in 8-3 and 10-3.
+In World 8's dark stages, the firefly whose light the lines are about is missing.
+Fix:
+Load 'anim:flicker' for every stage from 6-6 to 10-10.
+Add flickerFollow.ts:
+a spring to Pokey's head plus (−facing·34, −96);
+stiffness 7-9/s and damping 0.8;
+a figure-8 idle of ±10 at 0.6 Hz;
+a dart when he's more than 220 units behind.
+Move flickerMove() and flickerFrame() into a shared flickerClips.ts rather than copying them.
+Draw his glow with glow.ts (r 60-120). In World 8's dark stages, make his glow a light the darkness pass reads (the lights.push pattern, engine.ts:6422).
+Give DotGuide a 'flicker' bubble anchor fed by his screen point each frame.
+Reactions:
+startled when Pokey is hurt;
+happy on a find;
+doze after standing still;
+talk while his bubble is up.
+Keep him out of Dot's keep-out boxes and inside the upright safe area.
+Do it before the World 8 tuning, because 8-4's lantern stage leans on his light.
+AN-13. Pokey turns instantly, with no skid, run-start or landing recovery (P2, M, needs art).
+Where: heroStandard.ts:180-215. Turning is only ctx.scale(p.facing…) (heroSprite.ts:332, 400). The double jump is three frames rotated by code.
+Fix:
+A 90 ms turn: 2 frames of recover or a new turn_0, easing squashX through 0.15.
+A skid when he reverses at run speed: a skid frame and 2 dust puffs.
+A 60 ms run-start lean.
+A 2-frame land and recover, 3 frames on a hard landing.
+Art: turn, skid and run-start frames at the standard size (about 200 px tall, same anchors). They can come from a Wan clip of his standard poses, the way his idle clips were made.
+Record control-test touches before and after, because a turn frame can make steering feel later.
+AN-14. Haptics: off by default, and none on iPhone, although the app ships through Capacitor (P2, S).
+Where: package.json has no @capacitor/haptics.
+Fix: add it, and in haptics.ts call Haptics.impact and Haptics.notification when Capacitor.isNativePlatform(). Keep navigator.vibrate for the web.
+Decision for Matt: whether the store app starts with Vibration on. Every reference game does on iPhone. This is separate from his Oct 30 call for the web, where testers can turn it on.
+AN-15. Pop-up motion and the arcade words (P2, S). This finishes AN-3.
+Delete every word a painted effect or a sound already says. That's all of the ones listed above except "NOT YET!" and the find and secret titles.
+Give the rest an ease-out rise.
+Add a 120 ms scale pop (0.6, then 1.08, then 1.0).
+Fade over the last 40% of life. drawPopups (engine.ts:6642-6670) never reads ft.life or ft.scale today.
+Path to the target for Animation (B− / B now; target B+ / A)
+Transitions between moves (AN-13). Mario Run sells weight with a crisp turn, skid and land. Getting to A against AAA needs 12-16 frame run and jump arcs, cut to the standard anchors from Wan clips.
+Companions who are present (AN-12). Oddmar's spirit and Rayman's Murfy are always on screen. Flicker following Pokey, and Dot reacting to hits and finds with a hop or a flutter, close most of this.
+Feedback without words (AN-15). On top of it:
+a 3-frame hit-pause plus 0.85x slow motion for 120 ms on the last hit of a boss phase, the way Oddmar does it;
+painted bursts for the checkpoint and the clear.
+Haptics on every platform (AN-14).
+Bosses 6-10 animated the way the Queen and the Croc are, with clean sheets (VI-30). That's the next proof that the motion-model clips can carry a B+.
+The hardest gap for one developer with AI is honest: hand animation is the gap to an A against AAA. Curated motion-model clips get to B+ if a person checks the anchors and frame timing. Past that, it takes a hired animator for Pokey's core moves only.
+Controls: B− against AAA (was C), B+ against indies (was B−)
+The verdict. The team did almost everything the first audit asked, and did it properly. 26 of 29 items have code, a test that fails before the fix, and a before-and-after replay of the testers' own touches. All 193 control tests pass here.
+Replaying every recorded touch from Oct 23 to Oct 30 (5,291 clear gestures, 107 sessions) through today's rules:
+Misreads fall from 4.7% to 2.6%.
+On the Oct 29-30 touches alone, misreads are 1.4%.
+Portrait and landscape have nearly closed: 2.7% and 1.9% overall, 1.5% and 1.3% on the new touches.
+Straight climbs on a vine no longer let go (20% to 0%).
+The one-thumb running jump no longer loses 40% of its distance.
+It isn't higher because the misreads that are left have moved to two places:
+Letting go of a liana fails on about 1 in 8 deliberate flicks.
+A resting second thumb throws the mega punch 4 times in 10.
+And three more things:
+Touch feedback now starts off.
+Mid-range phones lag because their frame rate does.
+Tilt, one of Matt's own rules, isn't built.
+One honest caveat: 15 of the 17 sessions on the new build are Matt's, on fast phones. Sally, Steph and the small-phone testers haven't played it yet, and no one has ever recorded a Pad session. If their live numbers match the replay, B against AAA is fair.
+The bar: Super Mario Run and Rayman Jungle Run earn an A by asking the thumb for almost nothing. Leo's Fortune and Oddmar ask for more and earn their marks by never misreading.
+Matt's control rules, checked
+On a vine, straight up or down climbs and only a diagonal jumps off. Climbing is met (0% and 2.7% bad let-goes). The diagonal half is now the soft spot (CT-30).
+The controls suit every finger and grip. Much closer. Short flicks from small thumbs now jump. Sensitivity (75-135%) and Steer with Left/Right exist. A two-thumb player's resting thumb (CT-31) and a newcomer's sweeping swing strokes (CT-30) still lag.
+Special controls only in special spots. Met (CT-20).
+Tilt and slide are both selectable. Not met. Matt deferred tilt until after Worlds 7-10.
+Left-handed players can mirror. Met, for the Pad and now Screen mode.
+Every stage stays playable with any control setting. Nothing in the test gate proves it (CT-36).
+The fairness tests run Screen mode with the default Jump help only.
+The bots use direct input.
+No test plays a stage through the Pad.
+This review ran the 14 touch fairness and stage test files with Jump help set to Off and to On, and both passed 168 of 168. So the default can go to Off as Matt asked (CT-35).
+First-audit issues
+Id
+Status
+Evidence and what's left
+CT-1 running jump loses 40%
+Fixed
+No braking on take-off (engine.ts:2081-2083). Carries 170-181 px at every timing. The split comes from run speed alternating each frame (CT-32)
+CT-2 Pad can't climb a liana
+Fixed
+Pad up and down climbs; only Jump or a 45° push leaps (padControl.ts:157-176). Keys and controller climb too
+CT-3 climbing strokes leap off
+Fixed
+A leap must be a fresh flick: 34 px+, 0.44 px/ms+, 21°+ over. Taken from the players' own let-goes, which was the right call
+CT-4 trunk overshoot, side drop
+Fixed
+Overshoot 51 px to 0; drops 3 of 4 to 0 of 4
+CT-5 second thumb's flick lets go
+Fixed (Matt: climb)
+80% to 0%
+CT-6 edge back-swipe leaves the game
+Partly fixed
+Back now pauses instead of leaving. Left: the touch is still cancelled, so the run stops and the pause menu interrupts play; the bottom edge (home bar) still eats flicks; no gesture exclusion in the app
+CT-7 resting thumb fires a mega
+Partly fixed
+The eaten jump is fixed; the unwanted mega still fires 41% of rests (CT-31)
+CT-8 the halves behave differently
+Fixed
+The far half steers after 16 px, same as the near half
+CT-9 short flicks do nothing
+Fixed
+Missed short flicks 85% to 22%
+CT-10 jump near a trunk grabs it
+Fixed
+None
+CT-11 arc reverses steering
+Fixed
+None
+CT-12 jump height jitter
+Fixed
+97-98 px every time
+CT-13 Pad lesson text false
+Fixed
+A tap hops 62 px; a hold of 250 ms or more gives full height
+CT-14 no touch feedback
+Built, then defaulted off
+Show touches and Vibration start Off since Oct 30 (CT-34)
+CT-15 palm rule eats taps
+Fixed
+None
+CT-16 palm takes over steering
+Fixed
+None
+CT-17 punches wait for lift
+Partly fixed
+The Pad and a second thumb punch on press; a lone thumb still punches on lift, a median 91 ms late
+CT-18 to CT-28
+Fixed
+CT-24 note: 29.7% of second jumps still fire off a slow rise; watch it in the next replay
+CT-29 tilt
+Still open (deferred by Matt)
+Not built
+Score: 22 fixed, 3 partly fixed, 2 changed by Matt's calls.
+New issues
+CT-30. Letting go of a liana is now the least reliable gesture (P2, about 1.5 days).
+Why P2: on a timed swing, a let-go that doesn't happen, or one that happens during a climb, is a lost life. It's the largest misread left.
+Where: touchGestures.ts vineSteer (about 990-1031), the vine flick on lift (416-430, 1076), and the anti-pumping limit vineLeapMaxSlant 1.2 (151).
+Replay:
+12.2% of quick up-and-over flicks don't let go (88 of 724). By player: Sally 60%, Matt 9.3%, Steph 7.6%. 81 of the 88 were on a swinging liana.
+28% of climbs that bend over at the end do let go.
+The root cause is design, not tuning. Lianas swing themselves now, so a sideways stroke on one does nothing but set facing. The anti-pumping rule protects a stroke that no longer has a purpose, and costs real let-goes. Sally's long sweeps that end in an upward whip are read as steering.
+Fix:
+On a swinging liana only, let go on any of:
+a quick release: under 350 ms, 30 px or more, and not within 20° of straight up or down;
+a tap from a second finger;
+today's fresh flick.
+Straight up and down still climb (Matt's rule).
+Drop vineLeapMaxSlant on swinging lianas only.
+Keep the sweet-spot wait.
+Replay targets: flicks that don't let go under 3%, bend-over let-goes under 10%, Sally under 10%. Add Sally's strokes as a test case in swingSlide.test.ts.
+CT-31. A resting second thumb still throws the mega 4 times in 10 (P2, half a day).
+Why P2: two-thumb players rest the jump thumb as their normal grip. Each unwanted mega brings a heavy shake, 30% move speed and a 1 s cooldown.
+Where: touchGestures.ts:1225-1235.
+Replay: 41% of rests of half a second or more (16 of 39). Matt 53%, Sally 27%.
+Fix (recommended): charge and release. A still hold of 550 ms shows a charge glow, and the mega fires when the finger lifts without moving. A thumb resting through a run never lifts still, so it never fires. It also gives the mega the readable wind-up Rayman's charged punch has.
+Targets: under 10% in replay, with every deliberate mega in twoThumbs.test.ts still firing. The Pad is unchanged.
+Art (optional): a 4-frame charge pose. Prompt: "4-frame sprite strip, 1024x256 transparent PNG, a small cartoon three-toed sloth (Pokey, warm brown fur, cream face mask, big dark eyes) winding up a two-handed punch: frame 1 crouching slightly, frame 2 fists drawn back to the hip, frame 3 fists glowing faint gold, frame 4 leaning forward ready to strike; painted storybook style matching the existing Pokey sheet, consistent scale, feet on the same baseline."
+CT-32. Run speed alternates every frame, so the same running jump carries 170 or 181 px (P3, 1 day).
+Where: engine.ts:2070-2075. At exactly run speed the else branch bleeds 17 px/s, and the next frame accelerates back (285, 268, 285 px/s).
+The team found it and undid the one-character fix, because steady speed broke Meeca's timed sneaking tests.
+Fix: change the test to <=, then either re-time meecaReal and the kit room, or lower run speed 3% so stages keep their tuning. The lead's call.
+CT-33. The slanted standing carry can throw a careless flick off a small platform (P2, decision for Matt, 2-3 hours).
+Where: touchGestures.ts:227 (slantDeg 35), engine.ts:5708-5710.
+A standing flick at 40-45° carries 114 px, and small platforms are 60-120 px.
+Replay: 10.5% of standing jumps with nothing steering now carry. In landscape it's 24.5%, against 8.5% upright, because thumbs lean more held sideways.
+Options:
+(a) raise slantDeg to 40 in landscape;
+(b) a standing carry never takes him past his platform's edge unless the flick leans 45° or more;
+(c) keep it.
+Recommend (b): it keeps the move for players who mean it. Target under 5% in landscape.
+CT-34. Touch feedback and vibration now start off, so a first-time iPhone player gets no feedback at all (P2, decision for Matt, 15 minutes).
+Where: touchMarks.ts:24 and haptics.ts:21 (commit e3e45da3, Matt on Oct 30: "people need to turn on the special options").
+Pushback: Mario Run needs no touch markers because it has one tap. Pokey's scheme has seven moves on one surface, which is closer to a fighting game, and those teach with on-screen feedback. Auto (World 1 only, then it turns itself off) is the tutorial, not a special option.
+Recommend: Show touches on Auto for new saves, and Vibration off as Matt chose. If Matt keeps Off, then World 1's coach line should mention the setting once.
+CT-35. Jump help still starts On + forward, although Off is now proven (P2, S).
+Where: jumpHelp.ts:17 (DEFAULT_JUMP_HELP = 'forward').
+Matt asked on Oct 30 for it to start Off. The fixes that make Off playable landed (690937cc, 27ccfc07), but the default was put back (fc407f86).
+This review ran the 14 touch fairness and stage test files with the default set to Off, and to On: 168 of 168 passed both times. That covers touch only; there's no Pad run, and Worlds 8-10 have no fairness tests yet.
+Fix: switch the default to Off, as Matt asked, and add CT-36 so it stays proven.
+CT-36. Nothing in the gate proves every stage is playable with every control setting (P2, 1-2 days).
+Why P2: it's Matt's standing rule, and Worlds 8-10 and the World 1-4 generator move will add a lot of stages.
+Fix:
+Give TouchRig and RealPlay a controls setting: Screen with Jump help Off, On and On + forward; Pad; keys. Add sensitivity 0.75 and 1.35, and Steer with Right.
+Add a Pad bot driver that turns the bot's decisions into real pad presses with real hold times, including the 80 ms tap hop.
+Run the full matrix over Worlds 1-10 and every boss nightly, and one stage per world per setting on each gate.
+CT-37. The recorder can't see the Pad, or why Pokey left a vine (P2, half a day).
+Where: PadController.tsx has no recorder calls. The engine's vine, swing, rope and trunk exits log nothing.
+Fix:
+Log the Pad thumb and every Pad decision.
+Log each exit with its cause (leap, drop, step, land, hurt, lost).
+Log touch lag per 5 s next to the frame rate.
+Then ask Matt, Jen and Sally for one Pad run each.
+CT-38. On a mid-range phone, touches wait for slow frames (P2; P1 on low-end phones; shared with Performance).
+Measured from the recorder's own timestamps, on Matt's Adreno 619 phone:
+8:37 AM build: 9.8 fps, with touches waiting 43 ms median and 233 ms at the 90th percentile.
+12:25 PM build: 26.8 fps and 10/20 ms, which is a big win. It still dips to 9 fps.
+Sasa's phone reported finger moves only every 200-400 ms.
+Fix:
+Move the recogniser to Pointer Events with touch-action: none, and read getCoalescedEvents() on every move, so a busy main thread still delivers every finger sample with its own timestamp.
+Log the lag (CT-37).
+The frame rate itself is Performance's (GPU renderer).
+CT-39. The World 9 hang-under move and the World 10 hold verb have no control design, and Screen mode has no hold input at all (P1 for those worlds, 1-2 days before their stages).
+Why P1: 10-10's ending depends on the hold verb. Building stages first and fitting controls after is how CT-2 happened.
+Where: inputEngine.ts:86-94 has a hold input fed by keys, the Pad's Punch and the controller bumper. setHold('touch', ...) is never called, and a still finger in Screen mode is the mega.
+Design (mock-up first):
+Hang-under:
+reuse the rope state (p.hanging, updateRope), so every control mode inherits the rope's controls;
+duck on a thin branch to drop under it, or jump up into its underside;
+sideways to creep;
+straight up to climb back on top (Matt's vine rule);
+down, or a flick up and over, to let go;
+only on branches flagged thin.
+Hold: a special-spot input, like carving.
+At a hold spot, Screen mode is a finger down and still, with the mega switched off there. The Pad holds Punch, keys hold L or Shift, and the controller holds the bumper.
+Show a ring that fills while held.
+The finale's let-go is simply lifting.
+See WIP-18: the Worlds 7-10 review recommends "freeze on the flash" as the rule itself, which needs no new input at all. Settle that first.
+Tests before stages: a hold test and a hang test for every mode in the CT-36 matrix.
+Art: a hang-under pose set. Prompt: "6-frame sprite strip, 1536x256 transparent PNG, a small cartoon three-toed sloth (Pokey, warm brown fur, cream face mask, big dark eyes) hanging upside-down beneath a thin horizontal branch by all four long curved claws and moving hand over hand to the right; body relaxed and curved below the branch, head turned toward the viewer; branch NOT included; painted storybook style matching the existing Pokey sheet, consistent scale and grip line at the top of every frame." Plus a 2-frame idle hang.
+CT-40. A liana let go on a finger lift with no jump decided (P3, 2 hours once CT-37 lands).
+Where: session 20261030-0915-bcsl, Matt's tablet, at about 65.2 s.
+Pokey left the swing with the swing's own speed and fell. None of the three swing exits fits the numbers.
+One case only. Find it with the exit log.
+Inside the grade
+Part
+First audit
+Now
+Gesture recogniser
+B−
+B+
+Vine and trunk climbing
+C−
+B− (climbing right; letting go weak)
+The Pad
+C−
+B (no real-player data yet)
+Tilt
+F
+F (deferred)
+Screen edges and home bar
+D
+C
+Feedback in Screen mode
+D
+C (built, then defaulted off)
+Reading input at 30 fps
+A−
+B (mid-range phones lag)
+Path to the target for Controls (B− / B+ now; target B+ to A / A+)
+The common thread in the reference games is that no gesture means two things in the same spot. This game has two left: an up-and-over stroke on a liana (let go, or steer the swing), and a still finger (rest, or mega).
+To A+ against indies, in order:
+CT-30, liana let-go by quick release. This is the biggest single gain.
+CT-31, charge-and-release mega.
+CT-39, the hang and hold designs, before their stages.
+CT-36, the control-setting matrix in the gate.
+CT-29, tilt, when Matt says go. Test it on GitHub Pages, because motion events are blocked inside the Claude test link's frame.
+CT-34, Show touches on Auto.
+CT-37's logging, then a tester round: Sally, Steph, a small-phone player and a left-hander, each doing one Screen run and one Pad run. A misread rate under 1% for every player and grip on live data is A+.
+To B+ or A against AAA:
+Respond on touch-down where possible. Punch on landing when a foe is in reach (CT-17's remaining half), and show the steering ring on contact.
+Steady frames on ordinary phones (the GPU renderer). For now, use CT-38's coalesced events.
+Jump height you control by touch. Screen mode's jump is always full height. A short, light flick could be a hop of about 60 px. That's a big part of Mario Run's A, but it needs a stage audit, so it's a later, careful change.
+Make every assist work the same on every control mode. Several work for gestures only today (this.input.source === 'gesture', engine.ts:5722).
+The hardest gaps for one developer with AI, and what closes them:
+Feel only shows on a real phone. The recorder plus a fixed phone script after every controls build closes most of it.
+Testers who aren't Matt. Matt plays the way the rules were tuned. Get one run each from Sally, Steph, a small-phone player and a left-hander before each release.
+"Every stage, every setting". No person can play 100+ stages in six settings. CT-36's nightly bots can.
+Low-end phones. Keep one cheap Adreno 6xx-class Android as the standard test phone.
+Sound and music: C+ against AAA (was C−), B− against indies (was C+)
+The verdict. Real gains:
+one recorded effect family (278 CC0 takes) in place of the pingy synth;
+a splash in water;
+12 puzzle sounds;
+a tell sound for every boss, 6-10 included;
+the music ducks under speech;
+pausing keeps the same tune;
+the victory sting lands with the card;
+a slam on the boss card.
+It moved less than the commit count suggests, because two of the biggest changes traded one problem for another:
+The effect levels were set by matching each take's loudness after the master compressor. Quiet recordings were boosted 25-37 dB and slam the compressor, so the whole mix pumps when you press pause or back, or reach the exit.
+The live music engine was replaced by one recorded loop per world, 23 to 43 seconds long. Each bar sounds better than before, but a 3-minute stage hears World 1's loop six times, and World 10's eight.
+The bar: Alto's Adventure keeps every effect in a narrow band under the music, and nothing ducks the mix except on purpose. Mario Run and Rayman write 2-3 minute pieces with sections. One honest note: every number here comes from decoding and measuring the files. Nothing was heard, so a listening pass on a phone is still owed.
+First-audit issues
+Id
+Status
+What's left
+SN-1 pingy effects
+Partly fixed
+Recorded takes replaced the synth outright. The master still adds +5 dB at 3.2 kHz (core.ts:96-99); cut it to about +2 dB
+SN-2 effects swing 20 dB
+Changed, still open
+The files aren't normalised (26.6 dB spread). Gains of up to +37 dB live in TAKE_DB. Within one effect, light and heavy hits differ by up to 25.7 dB (SN-11)
+SN-3 silent or wrong sounds
+Partly fixed
+Splash, puzzle sounds and landings by fall speed are in. Respawn is still silent, and 12 puzzle and tide events still fall back to a whoosh (SN-13)
+SN-4 every boss tell is a jaguar
+Fixed
+11 distinct tells. Their levels spread 15 dB across bosses
+SN-5 victory sting in the level
+Fixed
+The exit chime is now the loudest effect in the game (SN-11)
+SN-6 pause switches tune
+Fixed
+None
+SN-7 no ducking, Dot silent
+Fixed
+−5 dB under voices; Dot chirps
+SN-8 loop clicks
+Fixed (mostly moot)
+None
+SN-9 synthesized ambience
+Partly fixed
+Ten recorded beds, but each is 20 s, mono and 40 kbps, and the one-shots never play on a phone (SN-14)
+SN-10 silent boss card
+Fixed
+None
+New issues
+SN-11. Effect levels were set through the master compressor, so many takes hit it 20-40 dB too hard (P1, S-M, needs ears).
+Why P1: the loudest takes are on things a player touches in the first minute (pause, back, the exit chime, heavy hits). When they fire, the whole mix, music included, ducks and recovers. That's the pumping sound big studios never ship.
+Where:
+tools/audio/sfxv1/calib.py, which iterates each gain until the post-compressor loudness matches the old synth effect;
+src/audio/sfxRecLevels.ts, the resulting gains;
+core.ts:80-87, one compressor on everything (threshold −18, ratio 3.5, then makeup and a soft clipper).
+Measured: 75 of 254 takes reach the compressor above 0 dBFS. The worst:
+uiBack +37.1 dBFS;
+leaf +32.1;
+pauseIn +30.7;
+hit_fur_3 +21.0;
+the exit chime +17.0;
+the Reaver's tell +15.5.
+A flower pickup and the exit chime are 34 dB apart.
+Fix:
+Normalise every take file offline: two-pass ffmpeg loudnorm to about −20 LUFS (peak-normalise short clips), true peak −1 dBTP. Drop any take that needs more than +12 dB; it's too quiet or noisy a recording.
+Re-run calibration with the compressor bypassed, so TAKE_DB stays within ±6 dB and only expresses the mix: rewards a little above moves, moves under the music, UI under everything.
+Make the master a safety limiter (−6 dBFS, ratio 10+, attack 1-3 ms). If glue is wanted, put it on the music bus only.
+Keep heavy and light hits within 6 dB, and boss tells within 3 dB of each other.
+Add a test that fails if any take's peak plus gain exceeds −3 dBFS.
+Then one listening pass.
+SN-12. Each world's stages share one 23-43 second loop (P1, M-L).
+Why P1: it's noticeable by the third stage of World 1, and a world takes 20-30 minutes.
+Where: src/assets/music/manifest.json maps each world to one piece; recordings.ts:22-27.
+Lengths:
+World 1: 29.6 s (16 bars, one A section);
+World 7: 30.7 s (8 bars);
+World 10: 23.2 s (8 bars).
+The live composer it replaced built every stage a 64-80 bar form in one of five orders.
+Matt approved the recorded sound on Oct 30, and it does fix CPU cost and quality. But the A/B was a short listen and didn't test repetition over a world.
+Fix: record the form, not a loop.
+For each world, 2-3 pieces of 64-96 bars (2-3 minutes) using form.ts's sections (A, B, A2, C on another instrument, a bridge, a quiet passage).
+Pick one per stage by seed; recordingFor already picks from a list.
+To hold the download near today's 54 MB, record bed, beat and top as one mix, and keep only drive and shine as separate stems.
+SN-13. Respawn is still silent, and six sounds are never called (P1 for respawn, S).
+Where: game/audio.ts (playRespawn, playOneUp, playUiBack, playLanding, playBossArrives, playBossAppear). engine.ts:4905 respawnAtCheckpoint plays nothing.
+Fix:
+play the respawn take as the iris opens;
+play uiBack on every menu back;
+play oneUp on an extra life;
+delete the three that nothing should use (new replaces old).
+Every lost life becomes a two-part sound story, the way Rayman's bright two-note respawn works.
+SN-14. The ambience one-shots never play on any phone (P2, S).
+Where: conductor.ts:40 and 187-188 set lite for every phone, and ambience.ts:108 skips one-shots when lite. On a phone the jungle is a 20-second bed on repeat.
+Fix:
+Let one-shots play on phones; they cost one buffer source every 2-13 s.
+Lengthen the beds to 60-90 s, or layer two beds of co-prime lengths (20 s and 27 s), so the pattern repeats every 9 minutes.
+SN-15. The music is WebM/Opus only, with no fallback (P1 until it's checked on an iPhone, S to test, M to fix).
+Where: musicFiles.ts:9.
+WebKit's own tracker lists WebM Opus as unsupported on iPhone through iOS 16, and inconsistent until Safari 17.4. An older iPhone would play the game with no music, silently.
+Fix:
+Test decode on the oldest iPhone the store listing supports.
+If it fails, ship an AAC copy of each stem and choose by canPlayType plus a decode probe, keeping the loop guards.
+SN-16. Mixed sound families remain (P3, S plus sourcing). The boss roars, the predator calls, the level start and the low-health heartbeat are still synthesized, next to recorded everything else. The roar plays on every boss entrance. Replace them with recorded CC0 roars, one per guardian, levelled as SN-11.
+Inside the grade
+Effects: B−. One believable family and a sound for every event; the levels are the problem.
+Music: C+. It was B−. Each bar is better, but the variety collapsed.
+Mix and feel: C. Ducking and pause are right. The pumping, the +5 dB shelf and the silent respawn aren't.
+Path to the target for Sound (C+ / B− now; target B / A)
+Level by numbers, then by ear (SN-11). This one change is worth the most.
+Music that lasts a world (SN-12). Record the forms form.ts already writes.
+No silent beats (SN-13).
+A living jungle (SN-14). One-shots on, longer beds.
+One family end to end (SN-16).
+A 15-minute listening session on an iPhone and a mid-range Android at middle volume: 1-2, 4-4 and a boss, with the first audit's checklist. Are flowers above the music? Is there a splash? Does the mix pump on pause?
+The hardest gap for one developer with AI is taste and the phone speaker. Measurement gets within a few dB; ears decide the last few. Matt's ears are the tool here, and this is the one category where an hour of his listening is worth more than a day of agent work.
+Story and cutscenes: C+ against AAA (was C−), B against indies (was C+). Story writing: B+ against AAA (was B), A against indies (was A−)
+The verdict on the scenes. Real progress:
+Pokey, Meeca, Dot and the guards are repainted at 2x.
+20 of 21 plates are 2560×2720.
+Figures are lit by the scene, with tinted contact shadows.
+Ten painted ground strips.
+A clue per stage, and a voice per speaker.
+The helper who read the code graded scenes B− / B+, provisional on seeing them. I saw them, in the 6-10 intro, and took it down one step:
+the supporting cast and the boss are still soft next to the sharp trio;
+Pokey was cut off at the waist by the words box;
+three different dialogue box styles appear within a minute of each other;
+the Reaver carries a mace on his card and a spear in the scene.
+Upright, Pokey is 9% of the screen (VI-24). Worst of all, in-play conversations come apart (ST-9).
+The verdict on the words. 41 of the story review's 43 items landed, nearly word for word. SR-34's payoff, "And you came back every time. I was counting.", is in. There's a story beat at least every three stages. The words are now as good as the review asked. What holds the words back is delivery, not writing.
+The bar: Oddmar's in-level banter is a tight back-and-forth, where the next bubble follows within a second. Its companion is on screen when it speaks.
+First-audit issues
+Id
+Status
+What's left
+ST-1 blurry scenes
+Mostly fixed
+The trio is at 2x and the plates at 2560 px. council.webp is still 1024×572, and the rest of the cast is at the old size (ST-11). The words-match-the-picture audit wasn't found
+ST-2 figures not lit
+Fixed in code
+Rim light and mood tint per scene; I saw the tint live
+ST-3 the carvings never pay off
+Partly fixed
+Meeca's five carvings are on World 5's Stage Cleared cards. 5-6 is still the generic relic hunt, and the player's own carvings from 5-M never appear (carvingsForPokey() is never called)
+ST-4 the clue repeats
+Fixed
+102 clues, one per stage
+ST-5 the exit's three names
+Partly fixed
+Dot's goal line still says "to open the sanctuary" in every world, the fortress included (stagePlan.ts:171, dotLinesData.ts:69, 72). Give goalLine each world's own noun
+ST-6 placeholder boss text
+Partly fixed
+The quotes are rewritten in each guardian's voice. The aim text "TOO TOUGH! HIT THE GLOW" still floats in capitals (bossDefs.ts:309, 459, 814, 1253, 1441)
+ST-7 ending card copy
+Fixed (old copy)
+New problem: it names the Thousand Steps, which were cut (UI-17)
+ST-8 placeholder stage names
+Fixed
+None
+New issues
+ST-9. In-play exchanges between characters come apart: the "dropped replies" (P1 in Worlds 8-10, P2 elsewhere; S-M, no art). This is Matt's follow-up.
+It's two problems: replies that come so late they no longer read as replies, and replies that are dropped outright.
+Late. A reply is an ordinary story line, so the queue applies every gap to it:
+the 8 s story gap (dotGuide.ts:113);
+the setting's gap from the previous start: 30 s on Tips (dotGuide.ts:153), 15 s on Help (dotSay.ts:17);
+the busy cap (dotGuide.ts:155).
+Simulated with the real queue, on Tips, 8-3's exchange plays its opener at 3 s, then replies at 33 s, 63 s and 93 s. A punchline 30 seconds after its setup isn't a joke.
+Dropped. DotGuide.tsx:880 follows the next reply only when a line ends done or read. Any other ending loses the rest:
+A warning cuts the opener after its 1.5 s minimum, counts it heard, and never queues the replies (dotGuide.ts:320-339). Simulated: an "Eagle!" 2 s into 8-3's opener, and none of the three replies is ever said.
+Walking into a puzzle room clears it (DotGuide.tsx:841-842).
+Changing the help setting or tapping Skip tips clears it (:431).
+A waiting reply expires after 60 s.
+The opener is marked shown after 1.5 s (:893-897), so a restart never replays the lost replies on that save.
+Fix: treat an exchange as one unit, like 5-5's pouch scene already is.
+Mark every line of a reply chain reply: true. Exempt replies from the story gap, the setting gap and the busy cap, and start each one 600 ms (GUIDE.breathMs) after the previous bubble is read.
+On a cut, clear or yield, push the rest of the chain back to the front of the queue, along with the cut line itself if it wasn't read in full.
+Don't start an exchange within 300 px of a room or during danger; keep it waiting instead of clearing it.
+Mark it shown only after the last reply is read.
+Add a test in wayside.test.ts that runs each talk() through a calm Tips queue. It checks that every reply starts within 1.5 s of the last, and that a warning cut re-delivers the rest.
+ST-10. Flicker speaks in play but is never seen there (P2, M). A bubble labelled Flicker with nobody under it reads as a bug. I saw it in 8-3 and 10-3. The fix is AN-12.
+ST-11. The supporting cast and one plate are still soft next to the HD trio (P2, M-L art).
+Grandma, Pell, the General, the squirrels, the mail carrier, the crier and the bosses in scenes still come from cels-0..6.webp at the old scale. In a two-shot, Pokey is drawn from a 2x source and Grandma from a 1x one. council.webp is 1024×572.
+Fix: run the same repaint pipeline (tools/art/storyart) at 2x, highest screen time first: the General, Grandma, Pell, then the bosses. Repaint council at 2560×2720.
+ST-12. Three dialogue box styles (P2, S). Found live.
+Story scenes use a green glass box, Dot's in-play bubble is a grey translucent box, and Flicker's is parchment. In the 6-10 intro and the first seconds of the fight, all three appear within a minute.
+Fix: one bubble family in the wood-and-parchment kit the menus already use, with a small speaker tab (Dot's hummingbird, Flicker's glow, Pokey's leaf for his thoughts). Keep the green glass only for story scenes if Matt likes it, but then make the in-play bubbles match each other.
+ST-13. In the 6-10 intro, Pokey is cut off at the waist by the words box (P2, S, sideways). Found live. The scene band ends where the words box starts, and Pokey's feet sit below that line. Raise the actors' floor line above the box's top, or shrink the box to a strip in landscape. VI-24's framing fix should check every shot for this, both ways up.
+ST-14. The Marsh Reaver's weapon changes between card, scene and fight (P3, S plus art). Found live. His boss card shows a mace or club, the cutscene a spear, and in the arena the spear is a smeared white scribble (VI-30). Pick the spear, since his moves are spear moves (spearSweep, spearSwipe), and re-roll the card portrait.
+Smaller leftovers: "sanctuary" in the goal line (ST-5), the capital-letter aim text (ST-6), and the carvings stage (ST-3).
+Path to the target for Story (C+ / B now for scenes, B+ / A for words; target B+ / A+)
+Make in-play conversation work (ST-9) before adding more of it.
+Put Flicker on screen (AN-12), and give 5-6 its carvings payoff (ST-3): the player finds the actual carvings their own Meeca cut, in the places they cut them. That kind of player-authored payoff lifts a story from indie-good to memorable.
+Frame upright scenes on purpose (VI-24, ST-13).
+One bubble family (ST-12).
+Finish the cast at 2x (ST-11), so no two-shot mixes sharp and soft.
+The picture-and-words audit from ST-1: a scene list of what the words say against what the plate shows, and a list of missing pictures for Matt. SR-5's broad kid gags especially: Crocus Rex upside down, Pokey taller upside down, Dot hover-sitting.
+The hardest gap for one developer with AI: keeping a large cast consistent at 2x. Use one reference sheet per character, the existing repaint pipeline, and a single review pass with Matt per character.
+Dot and hints: B− against AAA (was C), B+ against indies (was B−)
+The verdict. The rework is real:
+She speaks about half as often. In Worlds 1-4 she's down from 9.5 lines a stage to 4.4-6.6 on Help, and 1.4-3.2 on Tips.
+She never draws a ring.
+She never gives a room's answer as you walk in, except in 2-9.
+Tips are kept only once they've actually been seen.
+Death help is by cause, and stuck help watches for back-and-forth.
+Matt's "constantly nagging" complaint is answered.
+The helper graded this B / A−. I took it one step lower, because the fights, where players need her most, are where she's weakest:
+The very first boss line a player hears is the unapproved 19-word one again (DOT-18).
+Bosses 6-10 get no coaching at all (DOT-19).
+In the World 7 boss card, Dot speaks although the story says she's gone (UI-16).
+About 65 lines she says were never reviewed (DOT-20).
+The bar: Mario Run teaches almost entirely through level design. Oddmar uses a few short prompts. Dot is now close to Oddmar, outside the boss fights.
+How often she talks now (the team's inspector, brisk route, real engine)
+Setting
+Worlds 1-5
+World 6
+World 7
+World 8
+World 9
+World 10
+Help, lines a stage
+4.4-6.6
+4.2
+1.8
+1.3
+1.2
+0.9
+Tips, lines a stage
+1.4-3.2
+0.8
+0.3
+0.1
+0.1
+0.2
+On Tips, Worlds 8-10 are nearly silent. That fits the Tips rule (each new thing once). But a struggling player in a late world gets help only after two deaths in one spot. Only newcomers can tell us whether that feels calm or lonely: run two of them through World 8 on Tips and on Help.
+First-audit issues
+Id
+Status
+What's left
+DOT-1 tips used up when sent
+Fixed
+Small residue: a tip sent and then dropped stays blocked for the session
+DOT-2 rooms give the answer
+Partly fixed
+Puzzle steps now go: name the problem, nudge, then the move only on Help. 2-9 still says "Up to the gallery! Ring the bell, and come down behind the guards." as he walks in (w2Sections.ts:1150). Replace it with "Too many guards. Can we distract them?" and make the bell line the Help-only step
+DOT-3 boss lines too long
+Regressed
+See DOT-18
+DOT-4 1-9 ring unexplained
+Fixed
+None
+DOT-5 Skip tips on the first coach line
+Fixed
+None
+DOT-6 lines cut and replayed
+Fixed
+The same rule is what drops exchange replies (ST-9)
+DOT-7 reading time lost to her flight
+Fixed
+None
+DOT-8 World 5 has no calm rules
+Fixed
+None
+DOT-9 reminders drop first-time lines
+Fixed (Tips)
+None
+DOT-10 generic death help
+Fixed
+None
+DOT-11 stuck help on a clock
+Mostly fixed
+"Follow my arrow." and "Try over here." are still in the table, though the arrow was deleted. Check they're never sent, or reword to "Hmm. What haven't we tried?"
+DOT-12 long, unreviewed lines
+Partly fixed
+The table enforces 8 words for a move and 12 for anything else. Lines outside the table aren't checked (DOT-20)
+DOT-13 move lines without the thumb move
+Fixed for the table
+None
+DOT-14 Hush Fern solved every time
+Fixed
+None
+DOT-15 idol lesson points at a hidden relic
+Fixed
+None
+DOT-16 two bosses with no coaching
+Fixed for 2 and 5
+Open for 6-10 (DOT-19)
+DOT-17 small things
+Mostly fixed
+None
+New issues
+DOT-18. Approved lines are matched by the engine's old words, so any edit to the engine's text silently brings back the unapproved line (P1, S for bosses, M for every call site).
+Why P1: it's the first boss's first line, and it's the exact bug DOT-3 fixed once.
+Where: dotLines.ts:54-80 builds the lookup keyed by the old words; swapLine (:107-122) looks up the engine's words; engineGuideLine (:207-210) falls back to the raw text when nothing matches.
+Failing on main:
+Venom's start, 19 words: "When he rears back, get off the ground: the tree, the stump or the vine. Then punch his head!" (bossDefs.ts:213, against the row at dotLinesData.ts:116);
+the Prowler's start (17 words), phase 3 (14), shadow step (19) and streak (21);
+the Croc's 7 lines and the Queen's 10 (short, but never reviewed);
+2-9's head-on line.
+Fix:
+Send ids, not words. Every guide call and every guide: string in bossDefs.ts, w2Sections.ts, protoStage.ts, dotTips.ts and gen2/worlds gets an approved-row id. The words are looked up with dotText(id), and tipMemory is keyed by id.
+Add a test that runs the inspector on every stage and every boss's guide block, and fails if any line the engine can send doesn't resolve to a row.
+Add approved rows for the Croc, the Queen and the Prowler, including Build 1's four 3-10 tips.
+DOT-19. Bosses 6-10 have no coaching at all (P1 once they ship, S-M per boss).
+Where: the Reaver (bossDefs.ts:1411), Golem (:1553), Monarch (:1734), Drake (:1965) and General (:2072) have no guide block. None of their 32 moves has a line. These are the hardest fights in the game.
+Who speaks:
+Dot in Worlds 6, 8 and 9;
+Pokey's own thoughts in Worlds 7 and 10, where she's absent.
+Drafts for Matt to approve, all 8 words or fewer and naming the thumb move:
+Reaver:
+start: "Spear's long. Get close when he swings wide."
+vaultSmash: "He's jumping! Slide away from his landing!"
+spearSweep: "Low sweep! Flick up over it."
+spearSwipe: "High swipe! Slide down under it."
+mudSling: "Mud! Flick up over the waves."
+warCry: "War cry! Back off till he's done."
+Golem (as Pokey's thoughts):
+start: "Hit whatever glows. He's slow to turn."
+hammerSpin: "Spinning hammer! Flick up over it."
+crystalRift: "Crystal crack! Step off the glowing line."
+rockfall: "Rocks! Watch for the shadows."
+eyeBeam: "Eye beam! Slide down under it."
+quake: "Quake! Flick up as it lands."
+Monarch:
+start: "Low rings, jump. High rings, stay down."
+echoRings: "Rings! Low ones, flick up. High, stay."
+stalactites: "Ceiling's cracking! Watch the drips below."
+batFlock: "Bats! Tap to punch them away."
+Drake and General: write their lines from the new designs when those fights are built, not for the current fights.
+The Golem's lines need rewording into first person for Pokey ("Hit whatever glows. He's slow to turn." works as is).
+Also replace the floating capital phase banners ("THE WAR-HORNS SOUND!", "THE CEILING CRACKS!", "THE CAVE GOES DARK!", "THE FLOOR IS LAVA!", "THE PALISADE BURNS!") with the guide's phase line and the painted warning marker (WIP-12).
+DOT-20. About 65 lines Dot says never pass through the approved table (P2, M).
+Where:
+dotTips.ts (the World 6-10 hazard lines);
+waterTeach.ts ("Careful, water! Flick up and over.");
+protoStage.ts, w2Sections.ts and gen2/worlds/w6.ts and w7.ts.
+Most are short and good. But there's no single list Matt can read, and nothing tests their length or touch wording.
+Fix: move them into dotLinesData.ts as rows with ids. Matt can then approve all 65 in one sitting.
+DOT-21. One line repeats across a whole world on Help (P3, S).
+The repeats:
+"So dark. Follow the fireflies." plays in 6-6 and eight of World 8's stages;
+"Vents erupt on a beat." in seven of World 9's;
+"Lightning strikes where the rods charge." in five of World 10's.
+Fix: give each a second and third wording on Help, or say it once per world.
+Path to the target for Dot (B− / B+ now; target A− / A+)
+Ids, not words (DOT-18), with the test. This removes a whole class of regression.
+Coach every boss (DOT-19). Use one short line per move on its first tell. The tells have their own sounds now, so the words can be four to six.
+Pull every line into the table (DOT-20).
+The last spoiler (DOT-2, 2-9).
+Exchanges as one unit (ST-9). That's also Dot's credibility as a character.
+Dot reacts, not just speaks. A hop when Pokey finds something, a flutter on a hit. That's an animation item (AN-12's companion work), and it's what makes Oddmar's spirit feel present.
+The hardest gap for one developer with AI: deciding how much help is enough without real newcomers. The inspector measures pace; only Sally-type testers show whether a silent late world feels calm or lonely.
+Level design and difficulty: C+ against AAA (unchanged), B against indies (unchanged). Easy: B− / B+ (was C+ / B). Normal: C / B− (unchanged)
+The verdict. A player in Worlds 1-4, 6 and 7 has a better time than on Oct 29. A player reaching World 5 or 8 doesn't. That's why the overall grade holds still while Easy rises.
+What improved:
+Easy: soft falls everywhere; rivers at 70% speed with a log catch; the five-stage ease-in to Normal; the first thorn lash is a safe swat.
+Water is taught before it kills.
+Checkpoints are at most 4000 px apart.
+Stuck spots and impossible jumps in 2-3, 4-5, 4-8 and 5-8 are fixed.
+The bot data backs it: 2-1 Easy went from 100 lives lost to 28, and 4-7 from 71 to 0.
+What holds it:
+A new player silently starts on Normal (LV-19). I saw this live: Start Adventure went straight into 1-1 on Normal.
+Normal's curve still runs backwards after World 2 (LV-20).
+World 5 is padded and comes out the same on every roll.
+Worlds 8-10 ship on the old generator, with 25-38% dead time (WIP section).
+The look-alike pairs are unchanged.
+Three tools disagree about whether World 1's walls can be climbed (LV-22).
+The bar: Mario Run serves three skill levels from one layout (pink, purple and black coins). Rayman draws the jump arc with Lums before you try it, and has almost no dead time. Leo's Fortune checkpoints every 20-40 seconds.
+A note on numbers: Round 3 rescaled the band tool (tools/inspect/bands.ts), so band scores can't be compared one-to-one with the first audit. Bot findings are leads, and the ones that need a hand check say so.
+First-audit issues
+Id
+Status
+What's left
+LV-1 the mode is invisible
+Partly fixed, and flipped
+New Game has no default, and a mode chip shows on the goal card, pause menu and win card. But a fresh install never sees the choice, and now starts on Normal (LV-19)
+LV-2 Normal goes flat
+Still open
+Only World 4 Normal merged (LV-20)
+LV-3 Easy and the double jump
+Decided (b)
+1-6 has a practice spot and a painted rock
+LV-4 Easy kinder on new stages
+Fixed
+Soft falls everywhere; 4-7 Easy loses 0 lives
+LV-5 Easy loses more than Normal
+Partly fixed
+2-1 fixed (28 against 72). Still worse on Easy: 2-8 (16 against 7, a 167 ms jump window), 9-4, 10-6 (3.6 times). Hand-check them
+LV-6 hollow Easy targets
+Partly fixed
+Hand-built stages fine; gen2 stages bypass the floor (LV-24)
+LV-7 Easy to Normal cliff
+Fixed
+Ease-in over 5 stages
+LV-8 water kills untaught
+Fixed
+waterTeach.ts
+LV-9 checkpoints far apart
+Fixed
+capFlagSpans caps at 4000 px
+LV-10 World 5 padded and identical
+Still open
+5-1 to 5-5 have 22-32% dead time. Over 30 rolls of 5-1 the variety is 0.018 against a target of 0.35: the same stage every time. World 5 runs on three generations of code
+LV-11 dips trap players
+Fixed
+None
+LV-12 the 4-8 jump
+Fixed
+None
+LV-13 4-5 eagle cover
+Fixed
+None
+LV-14 untaught hits
+Fixed for listed stages
+New ones in 6-9, 7-9 and 1-8 (LV-25)
+LV-15 stage lengths
+Partly fixed
+2-4 is 6.2 minutes (was about 8), still three times the median. 4-7 is 104 s, under the 2-minute rule (LV-27)
+LV-16 look-alikes
+Still open
+1-1 and 1-5 at 0.98, alike on 24 of 25 rolls. 4-2 and 4-5: 23 of 25. New: 6-5 and 6-9 at 0.93. gen2 stages look alike only 0-2 times in 25
+LV-17 boss third phases repeat
+Still open
+No owner. Folded into WIP-19 for bosses 6-8
+LV-18 secrets and replay
+Still open
+No owner
+New issues
+LV-19. A first launch skips the mode choice and silently starts on Normal (P1, S, no art).
+Why P1: it's every new player's first minute, the audience is children, and Easy is the mode built for them. All the Easy work misses exactly the player it was built for.
+Where:
+TitleScreen.tsx:168-172 (Start Adventure goes to How to Play, then onStartGame);
+App.tsx:1114-1119 (straight to the story and 1-1);
+difficulty.ts:24-26 (an unset mode reads as Normal).
+Fix:
+On a save with no mode stored, show the two-choice wood card with no default, between How to Play and the story.
+Keep difficulty() reading Normal only for old saves and tests.
+Add a test that a fresh save can't reach 1-1 without a stored mode.
+Word it for a parent: "Little explorer (more help)" and "Big explorer". Use the two HeroPose portraits.
+LV-20. The Normal curve still fails the repo's own gate in Worlds 3-5, and dips again in Worlds 9-10 (P1 for Normal players, L).
+First-timer band middles:
+World
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+Normal
+27.6
+34.4
+30.1
+29.6
+25.9
+33.7
+35.0
+44.7
+40.1
+32.5
+Gate
+32
+37
+42
+World 5 misses its gate by 16 points and is the easiest world after World 1. World 4 Normal merged and still didn't clear its line, so the package is too gentle.
+Worlds 9 and 10 relax before the finale, partly because no bot can finish their old climbs (WIP-15).
+Fix:
+Make Normal its own tuning layer, gated in CI. Today the gate is checked locally only.
+Redo World 5 Normal before merging it; moving a band 0.2 isn't a fix.
+Bring the one-petal pass to main.
+For Worlds 3-5 Normal, change only Normal-side values: landing widths 10-15% tighter, one more hazard in each Test beat, and fewer hearts. Normal stages in Worlds 1-7 carry 2-10 hearts each.
+Tune the bands against Matt's own play-tests, not the other way round (see the calibration set below).
+LV-21. Worlds 8-10 are padded and dangerous in the first seconds. Covered in the Worlds 7-10 section (WIP-2, WIP-6).
+LV-22. World 1 has walls of about 240 px that the first-timer bot can't get over (P1 if it reproduces, S-M).
+Where: 1-1, 1-5, 1-6 and 1-7, at about 8-12 spots each.
+What the tools say:
+The bot falls back 7-8 times at "a 24x px wall ahead".
+The static inspector flags double-jump-only rises in 1-6 to 1-9 and 2-3, but nothing in 1-1 and 1-5.
+The reach check calls the exit unreachable in 21 of 30 rolls of 1-1.
+Three tools disagreeing is a finding either way. Either some control settings really can't climb these walls, or no one can trust the bot for World 1.
+Fix:
+Matt plays 1-1 and 1-5 on every Jump help setting and on the lowest touch sensitivity.
+If any wall needs a double jump, lower it to 160 px or less or add a step. World 1 shouldn't need a double jump before 1-6 teaches it.
+Fix the reach model.
+LV-23. 7-4, the slide, strands both bots at 99% (P2, S to check, work in progress).
+Where: x 3314-6200. Both bots loop and time out.
+Fix: check by hand. If it's real, add a painted tell before the cause, since Pokey teaches himself in World 7, and a checkpoint so a loop can't trap the player.
+LV-24. gen2 Easy goals bypass the 65% floor (P2, S).
+Where: goals.ts:28-34 skips stages that set their own easyGoal. 5-9 Easy asks for 5 of 18 (28%), 6-9 for 11 of 19, 7-5 for 9 of 15.
+Fix: max(own easyGoal, round(available × 0.65)) on every stage, with a test.
+LV-25. New hits before the tip (P2, S each).
+Where:
+6-9: a frog hit at 7 s, before its 9.4 s tip.
+7-9: a boa and a tayra with no tip. Dot's away in World 7, so the teaching has to be a safe first meeting, not a line.
+1-8: a fall at x 5750 with no tip, and a jump at x 9085 with 0% survival on Normal.
+Fix: give each creature a safe first meeting, where it appears but can't reach Pokey. Hand-check 1-8.
+LV-26. 4-2 has jumps with 0% survival on Normal (P2, S to check).
+Where: x 16940 and 23882 on Normal; x 15718 on Easy (27%).
+Fix: hand-check, then shorten the gap 10-15% or widen the landing 40 px.
+LV-27. 4-7 is under 2 minutes, and 2-4 is three times the median (P2, M).
+4-7 Long Drop: add a Twist beat after the drop, a short climb back with the wind (30-40 s).
+2-4: split it at its middle flag, or cut one river section.
+LV-28. Moving Worlds 1-4 onto the shared generator: what it takes (P2, L). This is Matt's planned step, assessed here.
+What the 30-roll run shows:
+Inside a single stage, the old stages already vary enough: 0.40-0.48 against the 0.35 target.
+What gen2 adds is a beat order that changes, and stages that stop looking like each other. 1-1 has the same order on every roll. Look-alikes drop from 14-24 of 25 rolls to 0-2 of 25.
+That matches Matt's "it just shifts".
+What it takes:
+Climbs first. gen2 can't do climbs until gen2-ascent is finished and merged. Worlds 1-4 have six (1-4, 2-6, 3-4, 4-1, 4-3, 4-6), and Worlds 7-10 need it too. Do it once.
+Keep the set pieces hand-built and slot them in, the way gen2 already handles 7-4: the 1-8 chase, the 4-7 Long Drop, the 4-3 Waterfall Steps, World 2's rivers and logs, World 3's darkness, and World 4's eagle, wind, rocks and nests.
+Replace about 13,000 lines: protoStage.ts (6,853), w2Stages, w2Sections, w1Sections, w3Sections, w4Sections, w4Play, w4Stage43, w4Stage49, w4LongDrop and puzzlePlay. Plus about 35 stage-specific test files.
+Write about 2,000-3,000 lines of new gen2 code per world, going by World 6.
+The risks:
+Teaching order. World 1 is the tutorial. Each first meeting (the 1-6 double-jump rock, waterTeach in Worlds 2-3) must be a fixed socket that never rolls, or LV-3 and LV-8 come back.
+Difficulty floor. gen2's budget starts at 10. Worlds 1-2 must stay at or below today's bands.
+Look. Worlds 1-4 are the best-looking worlds. Their painted pieces must ride along as gen2 section art, not be redrawn.
+Saves. Best times on the new layouts aren't comparable with the old ones. Decide whether to reset World 1-4 bests, and say so on the map.
+Play-test cost. 40 stages times 2 modes. Go world by world.
+No plan yet. reference/GEN2-W1-4-PLAN.md doesn't exist. Write it first: the socket list, the fixed teach beats, the band targets per world, and the tests that carry over.
+Effort: about 2-3 weeks of agent time after gen2-ascent lands, plus Matt's play-tests.
+Pushback on order: do World 5 before Worlds 1-4. World 5 is the worst world today for padding and look-alikes, and Worlds 1-4 are already the best. The best order is gen2-ascent, then Worlds 8-10, then World 5, then Worlds 1-4.
+LV-30. In the 6-10 fight, Pokey took a hit about 4 seconds in, while the arena was still near-black and letterboxed (P2, S). Found live.
+Standing at the spawn, he lost 3 lives in about 65 seconds.
+Standing still isn't a real strategy. But a boss shouldn't land a hit before the arena is readable and the letterbox has lifted.
+Fix:
+No boss attack until the intro letterbox is gone and the lair is at full light, plus 1.5 s.
+The boss's first attack is a harmless tell, the rule bosses 1-5 follow.
+Add this to bossFair.test.ts for every boss. Today it covers only 1-10 to 3-10.
+STAGE-RULES conformance
+The 2-minute minimum: fails on 4-7 only.
+Crumbling never required: no violation found in Worlds 1-7. It couldn't be proven from the data for Worlds 8-10.
+Mechanic taught first: passes in Worlds 1-5 except 1-8. Fails in 6-9, 7-9 and 7-4, and in Worlds 8-10.
+Dot explains locked exits: no violation found.
+Path to the target for Level design (C+ / B now; target B+ / A+)
+What to borrow:
+Mario Run's three rings in one layout. Flowers placed off the safe line become the "Normal" ring. One layout serves both modes, so the two curves stop drifting apart and every fix lands in both.
+Rayman's Lum arcs. At every new wall or gap type, an arc of flowers traces the jump before you try it. This also answers LV-22.
+Rayman's no-dead-time rule. Any stretch of 4 s or more with nothing to do gets a flower line or a creature.
+Oddmar's three hidden finds per stage, in fixed spots signposted by a painted tell (cracked bark, a leaf curtain). That's LV-18's replay answer.
+Alto's rotating goals: three small goals per world that cycle, like "land 5 double jumps" or "no hits on the river".
+Leo's Fortune's checkpoints: one every 30 seconds of typical play, rather than a pixel cap. 4000 px is about 30 s on the ground, and much longer on climbs.
+The hardest gaps for one developer with AI, and what closes them:
+Telling fun from valid. Bots measure reachable and lives per minute, not boring.
+Matt's fixed 10-minute play-test form per world: fun 1-5, where bored, where confused.
+Make "dead time under 15%" and "no quiet stretch over 4 s" CI gates, not reports.
+The bots and the engine disagreeing (LV-22). Check in 5 stages Matt has played by hand, with his lives and times, as a calibration set, and tune the bands to match him.
+Two modes double the tuning. The three-ring layout, or Normal as a pure overlay from the same gen2 rolls with one tuning file.
+Keeping World 1's teaching while rolling it. Fixed teach sockets in gen2, and a test that each teach beat appears before its first harm in every roll.
+Menus and UI: B− against AAA (was C+), B+ against indies (was B)
+The verdict. This is the cleanest category: every one of the first audit's 15 UI issues is fixed or decided.
+The win card shows Pokey upright, counts up, lands its stars one by one and throws confetti.
+The boss intro card is in the wood kit, with a painted portrait. It went from D+ to about B on its own.
+The fonts are down to three, with a test guarding them.
+Live, the title, How to Play, pause and Settings, the Guardian ahead card and the "Tuckered out!" Game Over card all looked strong.
+It doesn't reach A− against indies for four reasons:
+A live bug in 2-3 where the goal card never leaves the screen (UI-22). I hit it both times.
+Two story-continuity errors on the most important cards.
+A "New look coming soon" tag that would ship in the store build.
+A busy win card for a six-year-old.
+The bar: Alto's and Oddmar's menus are spare and fully animated. Mario Run's results screen is one beat and one big button.
+First-audit issues
+Id
+Status
+What's left
+UI-1 win card hides Pokey upright
+Fixed
+Nit: his size is read once, so turning the phone mid-card doesn't resize him
+UI-2 nothing counts up
+Fixed
+None
+UI-3 still confetti
+Fixed
+None
+UI-4 the clue repeats
+Fixed
+None
+UI-5 old-style boss cards
+Fixed
+New content problems (UI-16, UI-17)
+UI-6 notch safe areas
+Fixed on the web
+Not on older Android WebViews (UI-19)
+UI-7 wrong boss name, Dot over the bar
+Fixed
+None
+UI-8 power-up timers
+Fixed
+None
+UI-9 medals pop-up
+Fixed
+None
+UI-10 flowers chip
+Fixed
+None
+UI-11 the map says /300
+Fixed
+None
+UI-12 small misfits
+Fixed
+None
+UI-13 too many fonts
+Fixed
+Italic Atkinson is faked (UI-21)
+UI-14 tiny text
+Fixed
+A test enforces the minimum
+UI-15 control test in the shipped game
+Changed (Matt)
+Kept for testers on the web, off in the store build. Check that the store-build test covers it
+New issues
+UI-22. In 2-3 the goal card flips its number and then never leaves the screen (P1, S, no art). Found live, twice.
+What happens:
+The goal card opens with "free 3 animals", then changes to "free 5".
+From then on it stays up for 40 seconds and more, ignores keys, and covers Pokey and the first water pit.
+In 1-1 and 5-4 the card hid normally.
+Why: GoalCard.tsx's timer effect depends on [stageId, quick, info.line, shrink]. info comes from goalInfo with targetObjectiveCount || levelConfig.targetCount (VineHud.tsx:98-101). The engine's real count replaces the planned one a moment after the card mounts, so the line changes, the effect restarts, and its hold and shrink state resets.
+Fix:
+Mount the card only once the engine has reported its final target (or render it with the engine's count from the start).
+Key the timers on the stage, not the line, so a text change never restarts them.
+Make any touch or key always shrink it.
+Add a test that changes the count after mount and checks the card still shrinks on time.
+Also check why the plan says 3 and the engine 5 in 2-3. One of them is wrong, and the player sees both.
+UI-16. Dot speaks on the World 6 and World 7 guardian cards, where the story says she's gone (P2, S).
+Where: BossCards.tsx:20-32 (BOSS_DOT_LINE). Line 27 is World 7's: "Jump the hammer, then hit what glows." STAGE-RULES.md:30-32 says no Dot lines in World 7, and wayside.ts dotPresent() says the same for World 6's second half.
+Fix: when !dotPresent(stage), show Pokey's HeroPose and a first-person line ("Jump the hammer. Then hit what glows."). Add a test that every guardian card checks dotPresent.
+UI-17. The ending card's copy and picture are out of date (P2, S plus art).
+Where: BossCards.tsx:121-160. Line 139 reads "Pokey crossed ten realms and climbed a thousand steps…". The Thousand Steps were cut for the Clockwork Gate. Meeca shows as a small crest medallion, the same treatment as a boss, at the payoff of the whole game.
+Fix: reword it to the real route, for example "…crossed ten realms and opened the Clockwork Gate, slowly, the whole way." Replace the crest with a painted pair portrait.
+Art: 1024×640, card-sized (it shows about 300 px wide on a phone).
+Prompt: "Painted children's-storybook illustration, warm rainforest evening light, transparent background. Pokey, a small brown three-toed sloth with a cream face mask and dark eye patches, wearing a tiny explorer satchel, hugs Meeca [use Meeca's approved reference sheet: species, colours, accessory] on a mossy branch. Both smile, eyes closed in happiness. Soft gouache texture, rounded shapes, gentle rim light in gold and teal, small glowing Heartbloom flower petals drifting around them. No text, no border, centred composition with 10% empty margin on all sides, 1024x640." Attach Meeca's approved art.
+UI-18. The win card is dense (P3, M).
+It can show:
+stars;
+a count-up row;
+medals;
+a flora chip;
+a mode chip;
+praise;
+a clue card with inline colours;
+Next plus three buttons.
+That's a lot for a six-year-old, and the eye has no single next step.
+Fix (Mario Run's and Alto's pattern):
+One big NEXT.
+Stars and the count on the first beat.
+Medals and the clue slide in only if earned, one at a time.
+Replay, Map and Home become small icons under NEXT.
+Move the clue card's colours to the token CSS.
+UI-19. Notch insets are probably lost on older Android WebViews in the store build (P2 for the store, S).
+Where: capacitor.config.ts:19 says the SystemBars plugin passes --safe-area-inset-* CSS variables for WebView versions before 140, because env() doesn't reach the page there. But the CSS has 31 uses of env(safe-area-inset-*) and none of the variables.
+On Android 10-12 phones that don't update WebView, every inset is 0, so the HUD and the pause button can sit under the camera cutout.
+Fix: define --sai-top: max(env(safe-area-inset-top, 0px), var(--safe-area-inset-top, 0px)) and the same for each side. Replace the 31 uses, and test on an Android 11 emulator with a cutout.
+UI-20. "New look coming soon" would ship in the store build, and the settings tab is long (P2 for the store, S).
+Where: WorldMap.tsx:188-190 and newLookSoon.ts, which doesn't check the store build. Play's review reads "coming soon" placeholders as an unfinished app, in screenshots too.
+The game tab has 9 settings. A child flicking through can change Jump help or the controls by accident.
+Fix:
+Hide the tag in the store build. Better: don't ship a world in the store build until its rebuild is done.
+Split the settings into "Play" (the 3-4 that matter) and a "Grown-ups" section behind a press-and-hold or a simple sum, as Toca Boca and Sago Mini do.
+UI-21. Faked italic, and a possible font flash (P3, S). Atkinson Hyperlegible is loaded in normal style only, but story and clue text asks for italic, so the browser slants it. Load the italic file (about 25 KB) or drop italic. Check font-display on all three faces, so the title doesn't flash in a fallback font on first launch.
+Inside the grade
+Area
+First audit
+Now
+Menus and map
+B+
+B+
+Game Over
+B+
+B+
+Stage Cleared
+C+
+B (dense)
+Boss cards
+D+
+B− (Dot on World 7's card; old ending copy)
+In-play HUD
+B−
+B− (the stuck goal card offsets the boss-bar and timer fixes)
+Path to the target for Menus and UI (B− / B+ now; target A− / A+)
+What to borrow:
+Mario Run: a one-beat results screen (UI-18).
+Rayman Adventures: rewards that are toys, not numbers. Flowers fly from the count into Pokey's satchel on the card, reusing confetti.ts's physics.
+Oddmar: a diegetic map. Pokey idles on the current stage node (HeroPose exists), and locked nodes are vines, not grey circles.
+Alto's: almost no chrome in play. Fade score and flowers to 40% after 3 s unchanged, and bring them back on change. That shows more art upright.
+Leo's Fortune: a pause screen that's the world dimmed with three icons: resume, settings, map.
+The hardest gaps for one developer with AI, and what closes them:
+No one sees the UI on real phones in the loop. Take 6 device-frame screenshots per UI change (small upright, notch upright, landscape, tablet, foldable, old WebView), store them in the PR, and make it a merge checklist item. UI-22 is exactly what this catches.
+Story continuity across cards. Keep one storyFacts.ts (Dot's presence by stage, the final place's name, Meeca's art key) that every card reads, and a test that no copy names a cut place.
+Motion polish. One shared motion token set (enter 240 ms ease-out, exit 160 ms ease-in, stagger 60 ms), and a lint that no card uses raw transition values.
+Performance and tech: C+ against AAA (was C), B− against indies (unchanged)
+The verdict. Mid and high-end Android phones are now locked at 30 fps with few long frames, and the Play Store plumbing is mostly done. That's real progress, and it earns the step up against AAA.
+It doesn't move against indies for five reasons:
+The download doubled. The web build now precaches about 160 MB on a phone's first visit, up from 76 MB.
+The first audit's P1 device still has no clean number. The only iPhone run is a profiled one at 21 fps, and the profiler itself costs frames.
+A cheap Android's first 16 seconds run at 9 to 13 fps, with the sound lagging up to three quarters of a second. On a slow phone the first impression is the slowest part of the game.
+The speed check isn't enforced. It runs only when someone remembers, and it covers 6 scenes, none of them the ones being rebuilt now.
+The GPU renderer is still a plan.
+The bar: Rayman Adventures and Mario Run start fast on 2018 phones and stream their worlds, so the first course plays after a small download. Alto's keeps its skies as flat textures with no per-frame gradients. Oddmar checks frame budgets in CI on real devices.
+First-audit issues
+Issue
+Status
+Note
+PF-1 iPhones in portrait drop frames
+Partly fixed
+Pixel and Samsung hold 29.6 to 30 fps. The OnePlus runs 9 to 13 fps for its first 16 seconds. No clean iPhone run. The ground-chunk cache, skies, fixed step and stage-ready guard all landed
+PF-2 Heavy download
+Still open, and worse
+Main JS 3.40 MB (1.13 MB gzipped). Precache about 847 files and 160 MB: 431 WebP at 96 MB, 113 WebM at 54 MB, 273 MP3 at 5.5 MB
+PF-3 Leftovers
+Mostly fixed
+The .aistudio/ folder remains, and HANDOFF.md still says 76 MB under a header dated Oct 25, which misleads whoever reads it next
+Score: 0 fixed, 2 partly or mostly fixed, 1 worse.
+New issues
+PF-4. The speed check isn't in CI, and it covers 6 scenes. P2.
+Why P2: Matt's rule is that nothing ships without the speed checks. Today that depends on someone remembering to run them.
+Where: tools/perf/drawcheck.mjs, artcheck.mjs and limits.json run locally only. .github/workflows/deploy.yml doesn't call them. Drawcheck covers ctest, 1-4, 2-6, 3-3, 4-1 and 7-3: no World 5, 6 or 8-10 stage and no boss.
+Fix: add a perf job to deploy.yml that fails on limits.json. Add one stage per world and every boss to drawcheck. Lower the limits in steps toward the brief: fills from 1,800 to 400, clips from 19 to 6.
+Effort: S to M. Needs art: no.
+PF-5. No clean iPhone baseline. P1 for iOS.
+Why P1: the first audit's P1 can't be closed without it, and the GPU work has nothing to compare against.
+Fix: one unprofiled 3-minute run of 1-1, 4-1 and one boss, in portrait, on Matt's or a tester's iPhone, logged with the in-game ?perf overlay.
+Effort: S, but it needs a device. Needs art: no.
+PF-6. Ground-chunk cache keys and silent fallbacks. P2.
+Where: protoArt.ts:669 and :1052 key the cache on scale.toFixed(4). :704 and :1093 do if (missing) return false.
+What's wrong: a resize or a turn between portrait and landscape builds a fresh set of cached chunks without freeing the old ones, so memory climbs on rotation. The silent return sends the frame down the slow path with no log, so drawcheck can't see it.
+Fix: round the key to the nearest 1/64 and drop the old set when the scale changes. Count misses in the perf overlay and in drawcheck, and fail over a set number a minute.
+Effort: S. Needs art: no.
+PF-7. The store build is heading for Play's 200 MB limit. P2 for the store.
+Where: public/ and the precache patterns in vite.config.ts. PLAY-STORE.md still says 100 MB.
+What's wrong: the web assets are about 160 MB before the Worlds 8-10 art and the last two bosses land. They grew 84 MB in a day and a half of commits.
+Fix:
+Measure the real AAB from build-apk.yml now, and put the number in STATUS.md.
+Move the cutscene videos into a Play Asset Delivery fast-follow pack, and later worlds' sheets into on-demand packs.
+Re-encode the videos at a 720p cap.
+On the web, precache Worlds 1-2 and the menus only, and cache each later world when it's first played.
+Effort: M to L. Needs art: no, but a re-encode pass.
+PF-8. 13 sprite sheets over 4096 px. P2.
+What's wrong: many mid-range Android GPUs and older iPhones cap textures at 4096. In Canvas 2D they still work but upload slowly. Under the planned WebGL2 renderer they fail or get shrunk.
+Fix: split each into pages of 4096 or less before the GPU work, and make artcheck enforce an empty knownOver4096 list.
+Effort: M. Needs art: no, it's a repack.
+PF-9. The GPU renderer plan is ready on paper, and it's the big unknown. P2.
+Where: reference/GPU-RENDERER-PLAN.md, PixiJS v8 on WebGL2 in stages 0 to 6, waiting on Matt.
+Blockers before stage 1: PF-4, PF-5 and PF-8.
+Risks: with the 30 fps lock, the win shows as fewer long frames and more headroom, not more fps, so measure frames over 50 ms a minute. The 19 clips each become a mask. New replaces old, but keep a Canvas path behind the lost-context case, which Play's test devices do hit.
+Fix: clear the blockers, run stage 0 as a spike on one stage with drawcheck numbers, then decide.
+Effort: L. The plan says 3 to 5 days; I'd expect more.
+PF-10. The Android build doesn't use the inset variables its config promises. The tech side of UI-19. Effort S.
+PF-11. The old-phone cold start. P2.
+What's wrong: the quality governor starts at full quality and only steps down after measuring, so a slow phone gets 16 seconds of 9 to 13 fps. Sound lags 205 to 762 ms in the same window, which points at decoding on the main thread.
+Fix: start a step down when the phone reports 4 cores or 4 GB or less, and remember the last quality per device. Decode the stage's sheets during the stage-ready screen. Make trackAtlas build only the current stage's sheets.
+Effort: M. Needs art: no.
+PF-12. The 9-3 title card sat about 12 seconds while loading. P3, check on a phone.
+I saw this on the cloud browser, which is slower than a phone. If a phone shows more than 3 seconds, fold it into PF-11's decode-during-ready work.
+Play Store readiness
+Done: Capacitor 8, min SDK 24 and target SDK 36, immersive mode and audio focus, a signed AAB when the secrets exist, the back button, the privacy page, and a store build with no service worker.
+Still open: foldables and split screen, frame rate measured inside the APK, the final app ID (it can't change after the first upload), the AAB size (PF-7), the insets (UI-19), and the "coming soon" tag (UI-20).
+The one that sets your launch date is the closed test. New personal Play accounts need 12 testers for 14 days in a row before production. Start it with whatever build is ready, as early as you can, and keep building while it runs.
+Path to the next level
+Stream instead of downloading everything, the way Mario Run does. Play Asset Delivery packs per world in the app, and per-world caching on the web (PF-7).
+Pick quality by device at launch, the way Rayman does, instead of measuring the first 16 seconds (PF-11). Cap sheets at 4096 (PF-8).
+Bake the gradients, the way Alto's does. The sky work has started this.
+Put frame budgets in CI, the way Oddmar does (PF-4), plus one real-phone run per release.
+Then the GPU renderer, in its stages, each one proven on the cheap Android before the next (PF-9).
+The hardest gaps for a solo developer working with AI:
+No real-phone numbers in the loop. Every speed claim waits for your phone or a tester's. A nightly Firebase Test Lab or Play pre-launch run on a cheap, a middle and a high-end Android closes most of it. The iPhone stays a manual run once per release.
+Size creeps one asset at a time. A size budget in CI that fails the build when the download grows more than 5 MB without a written reason stops it.
+The GPU port is a big-bang risk for one person. The plan's stages only protect you if nothing merges until the previous stage shows fewer long frames on the cheap phone.
+Worlds 7-10 and bosses 6-10: D+ against AAA, C against indies today
+The first audit listed these as work in progress and didn't grade them. This time I graded what a player meets on the live site today, and projected what they become if the branches land as designed.
+The verdict. World 7 is real now: new generator, painted kit, the 7-4 slide as a true set piece, and nothing hurts Pokey before 6.6 seconds. Worlds 8, 9 and 10 still run on the old generator behind a "New look coming soon" tag. They gained painted water, vents, eruptions, lightning rods and bank faces, but the play underneath hasn't changed:
+29 to 38% dead time on every sideways stage (8-4 runs 69 seconds, 10-1 runs 63);
+a deadly pit within 1.8 to 3.7 seconds of the start on 7 of 21 sideways stages (I lost a life in 9-3 the same way);
+four near-identical climbs in World 10;
+a Normal difficulty curve that runs backwards: World 8 at 44.7, World 9 at 40.1, World 10 at 32.5.
+Bosses 6-10 each have painted attacks and their own tell sound now. All five still fight in code-drawn lairs while their painted plates sit unused, none of them gets a word of coaching, and the Drake still has 4 moves and one weak spot.
+A lot of good work is on branches: World 8, 9 and 10 on the new generator with their swings, the 8-4 Lantern Run with its art, the climbing flow (gen2-ascent), and a strong, approved design for the last two fights with most of its art already packed on main.
+The bar: in Rayman Adventures and Mario Run, every special stage and boss has one idea, taught silently, escalated twice and paid off in the art. Oddmar and Leo's Fortune do the same with fewer frames and more charm.
+Grades
+Item
+Today (AAA / indies)
+Projected (AAA / indies)
+Why
+World 7
+C+ / B
+B / A−
+New generator and painted; two old climbs and one time of day hold it
+World 8
+D+ / C−
+B− / B+
+Old generator today; gen2 plus the Lantern Run fixes it
+World 9
+D+ / C−
+B / A−
+Old generator; the canopy stage is the lift
+World 10
+D / C−
+B / A−
+Four look-alike climbs; text promises thunder and netting that aren't there
+Bosses 6, 7, 8
+C+ / B− each
+B− / B+
+Mechanically fine; code lairs, no coaching, generic third phases
+Boss 9 Magma Drake
+D+ / C
+B+ / A
+The story's best set-up gets the thinnest fight today
+Boss 10 General
+C− / C+
+B+ / A
+Complete, but a near-black arena and the strip template
+Segment
+D+ / C
+B− / B+
+Half of it is still pre-rebuild
+I didn't grade the branches themselves, because uncurated stages with no seeds can't be played.
+First-audit checklist
+Item
+Status
+Note
+WIP-1 Old code-drawn look
+Partly fixed
+Painted decor is 50, 80 and 94% code in Worlds 8, 9 and 10
+WIP-2 Dead time
+Still open on the live site
+Fixed on the branches by gen2's 400 px rule
+WIP-3 Difficulty curve
+Changed, still wrong
+Normal now runs backwards. Gates to set: World 8 at least 52, World 9 at least 55, World 10 at least 58, rising from World 7's 50 to 51
+WIP-4 Hazards taught by floating capitals
+Fixed for stages
+Bosses still use them (WIP-12)
+WIP-5 Descriptions promise missing mechanics
+Partly fixed
+10-3's thunder and 10-6's netting still don't exist
+WIP-6 Hit in the first 2 seconds
+Still open on the live site
+Kept safe on the branches
+WIP-7 Painted lair plates unused
+Partly fixed
+The plates are still unreferenced (WIP-11)
+WIP-8 The thin Drake
+Open in the game, solved in the plan
+The redesign is approved
+WIP-9 Short far layer, time-of-day sets unwired
+Partly fixed
+w10-far is 2194 px against 2640; eight painted sets unwired (WIP-14)
+New issues
+WIP-10. The world branches are far behind and collide. P1.
+Why P1: it blocks every World 8-10 item, and a bad merge can break Worlds 5-7.
+Where: gen2-w8-split is 1,008 commits behind, gen2-w9 is 394 and gen2-w10 is 400. All three edit gen2/pipeline.ts, puzzlePlay.ts, stageSheets.ts and stagePreload.ts in different places, and main has rewritten about 1,600 lines of engine.ts since World 8 forked.
+Fix: merge main into each branch, never the other way first, in the order World 8, World 10, World 9. Give the pipeline, levelCheck.ts and puzzlePlay.ts one owner for the round and merge the three pipeline changes by hand, running the World 5-7 tests after each. Re-curate after the merge, because a pipeline change changes every seed.
+Effort: M. Needs art: no.
+WIP-11. Bosses 6-10 fight in code-drawn lairs. P2.
+The painted calm and rage plates exist. The 10-10 war camp reads near-black, the worst contrast in the game for its most important fight.
+Fix: copy the Croc's plate pattern for the Reaver, Golem and Monarch. Wire the Drake's and General's plates now as an interim. Delete the code backdrops in the same commit.
+Effort: M, about half a day each. Needs art: an upscale pass only. The plates are 1664 px wide, which stretches 1.5 times on a landscape phone; run them through the same HD pass as the backdrops.
+WIP-12. Bosses 6-10 get no coaching, and their phase changes are floating capitals. P2.
+The hardest fights have the least help. Bosses 1-5 all have guide lines now.
+Fix: a guide block per boss (start, phase 2, phase 3, one line per move, 8 words or fewer). Dot speaks in Worlds 6, 8 and 9; Pokey's thoughts in Worlds 7 and 10. Replace the banners ("THE FLOOR IS LAVA!") and "TOO TOUGH! HIT THE GLOW" with guide lines in sentence case.
+Effort: S each. Needs art: no.
+WIP-13. The new Drake and Iron-Claw poses live only in a session's folder. P1 for the process.
+The nine reviewed poses were never committed. Losing them costs a re-run and your review.
+Fix: commit them now. While you're there, re-roll four that drift: Iron-Claw's throw and chair-lift (wrong shoulder armour, a different red cape, empty hands), his peek (cropped tight), and the Drake's breath-down (the head doesn't bend down, and the phase-1 tell depends on it).
+Effort: S.
+WIP-14. World 7 plays at one time of day, and eight painted time-of-day sets are wired nowhere. P2.
+Fix: dawn for 7-1 to 7-3 and dusk for 7-7 to 7-9, then each later world's sets on the day it merges. The World 10 far strip still needs a 2640 px repaint:
+"Painted storybook background, far layer only, of a storm-dark mountain range at night with a stone fortress on the highest peak, one lit tower window, rain curtains, lightning far off, cool slate blues and greys with one warm window, soft painterly edges, no characters, no foreground, wide panorama 2640x1302, matching the attached far layer's style and horizon height." Attach w10-far.webp and w9-far.webp.
+Effort: S.
+WIP-15. Nine climbs in Worlds 7-10 are old-generator stages that look alike and that no test can finish. P2.
+Where: 7-2, 7-8, 8-7, 9-2, 9-7, 10-2, 10-4, 10-5, 10-8. Pairs score up to 0.95 alike, and both first-timer bots time out on all nine.
+Fix: cut the count. Make 10-8 the Clockwork Gate and 10-4 the hold-on climb, and keep 10-5 as the short "Listen" story climb. Finish gen2-ascent on World 7's climbs first as the cheapest proof. Fix the test bot so it can finish your approved 6-8 before trusting any climb's numbers.
+Effort: L.
+WIP-16. World 10 decorates safe ground with code-drawn iron thorns. P2. It teaches the wrong thing in the world where thorns hurt. Drop them from the decor lists now. Effort S.
+WIP-17. 8-4's darkness doesn't read as dark, and its fall rule is invisible. P1 for 8-4.
+In the "jar nearly out" still, the next bough and the gap are as readable as in the opening still, so the jar is decoration. The jar meter is about 30 by 40 px under the lives badge. A fall costs a life only if the far side was lit when he jumped, and nothing shows that, so deaths look random.
+Fix: real dark outside a clearly shaped ring (baked light sprites, not per-frame gradients), with faint moonlit bough tops. A jar gauge at least 64 px tall that pulses at 35%. And my recommendation for the fall rule: make every fall in 8-4 soft (back to the last flower, jar refilled), so the cost of the dark is time and moths, the way Rayman's chases restart the stretch.
+Check speed: the stage is dark for 2 minutes 20 seconds straight. Draw the dark at half resolution and measure it on the OnePlus before merging.
+Effort: M.
+WIP-18. The hold move, as drafted, fights the vine rule and isn't defined for the pad. P1 for World 10 and the General.
+Since 1-1 an empty screen on a vine means Pokey hangs safely. The draft says an empty screen in a gust peels him off. Teaching the opposite in the last world will read as a bug. The pad also has no "any thumb down".
+Fix, recommended: freeze on the flash. Lightning flashes, the gust comes on the count, and Pokey keeps his grip if he isn't moving when it hits. On the ground, standing still braces him. It's the same "stand still and listen" World 3 already taught, it's the same on every control setting, and it matches the arrival scene's line exactly ("His hands stayed where they were").
+Effort: design S (a mock-up and your yes), build M. Needs art: brace and blown poses (prompt below).
+WIP-19. There's no plan for bosses 6-8. P2.
+Next to a redesigned Drake and General, they'll look like the old game.
+Fix: wire the lair, add the guide lines, and give each one story-born third phase. The Reaver: the tide comes in, so the dock shrinks plank by plank. The Golem: "Take your time" (his own words), so his last phase only ends if you stop attacking and stand on the chair he looks at. The Monarch: her flock carries light in the dark phase, and you follow it to her. A one-page mock-up of all three first.
+Effort: M total.
+WIP-20. 8-4's name, goal and wayside line still describe the old stage. P3. Change them in the merge, after you approve "Lantern Run" and "Carry the firefly jar through the dark treetops."
+WIP-21. Easy is harder than Normal for the kid test player in Worlds 8-9. P2. 9-5 on Easy scores 69.5 against 46 on Normal, the highest in Worlds 6-10. Don't tune the old stages; make it a merge gate that the kid's Easy stays below the adult's Normal, as it does in World 7.
+How each planned item gets to the next level
+World 8: merge the swings and the Lantern Run, then tune.
+Rayman's swings work because every swing point is the same readable object and the next one is always on screen at release. The swing builder already checks the release window (167 ms Normal, 300 ms Easy), which is good.
+Order: the WIP-10 merge; curate in play order and add two signature sections to 8-5, whose variety is 0.26; 8-4 with WIP-17 and WIP-20; give 8-7 a firefly-lit trunk until WIP-15; tune to the band gates and WIP-21; wire the sunset and night sets and drop the "coming soon" tag.
+Teach the dark on 8-1's first stretch, harmless, with Dot's "So dark. Follow the fireflies." Make 8-4 the payoff: 8-1 to 8-3 teach that light means safe, and 8-4 hands you the light. Cap the moths so they can never take the jar below the warning level.
+Art: none required.
+World 9: the canopy special stage (mock-up first).
+The "new" hang move is mostly built: it's the shimmy rope from 1-3, at 120 px a second with painted hand-over-hand frames. What's new is where you hang (under a thick branch) and why (to hide from the harpy's shadow, or because ants march along the top). That's cheaper and safer than a new verb, and it's already taught.
+Donkey Kong Country's rule makes it readable: only one painted surface can be hung from, and it looks like nothing else. Here, a mat of hanging moss and liana loops on the underside, used for nothing else in the game.
+Three layers: trunks (snakes, and woodpeckers that knock bark chips on a rhythm), branch tops (army ants, capuchins throwing fruit, snapping branches that are only ever shortcuts), and the hang underneath. Rhythm: hang with no threat, the first shadow sweep with a long warning, ants on top so the hang is the only way, a rest, shadow plus ants, then the tree crown with a last view of the volcano.
+Risks: one threat per beat until both are taught; the harpy's first strike harmless with cover within 100 px; no hang stretch over about 6 seconds; it must be one of World 9's two hardest stages. Slot: 9-3 Ember Canopy, whose name already says canopy. Then add a hang section to the generator and let 9-1, 9-5 and 9-8 roll it.
+Art, each on flat magenta #FF00FF:
+"Four long thick rainforest branches seen from the side, each with a thick mat of hanging green moss, small fern tufts and looping liana cords along its UNDERSIDE so a character could hang beneath it, the top surface thin and bare, storybook painted style with dark outlines and soft cel shading, flat magenta #FF00FF background, nothing else in the picture." 2048x1024. Attach w9-near.webp.
+"A marching column of reddish-brown army ants seen from the side on a flat line, 4 walking frames that loop seamlessly when tiled left to right, plus a separate front end of the column with bigger soldier ants with large jaws, storybook painted style, clearly a hazard, flat magenta background." 1024x256.
+"A red-crested woodpecker clinging to a vertical tree trunk side view, 6 frames: idle, head pulled back (wind-up), three fast knocking frames, and a burst of bark chips flying out, the trunk NOT drawn, storybook painted style matching the attached creatures, flat magenta background." 1536x384. Attach howler-anim.webp.
+"A thin bare branch seen from the side in three states: whole; cracked with splinters showing in the middle; snapped in two and falling, storybook painted style, flat magenta background." 1536x384.
+Only if the rope frames look wrong under a thick branch: Pokey hanging hand over hand, 6 frames, with the branch not drawn.
+World 10: the hold move in 10-3 and 10-4, and the Clockwork Gate (mock-up first).
+10-3 Thunder: replace hiding behind crates with flash, count, gust. The first gust is harmless and pushes him a step, with Pokey's thought "Lightning. Count. Then hold still." 10-4 Holding On: the first climb on the iron netting, gusts every 7 to 9 seconds, and being peeled off drops him softly to the last ledge. That's the stage the General's third phase relies on.
+The Clockwork Gate at 10-8, replacing a climb that's 0.95 alike with 10-2. One idea: the General's clockwork, beaten by patience. A big escapement wheel ticks in the background, and every door and platform moves on the tick. Three mechanisms taught alone, then combined: gear teeth that carry you up a notch per tick, counterweight pans you load with the carry move, and portcullises open for two ticks. The finale room combines all three.
+Rules: nothing crushes; a failed room resets in under 2 seconds with no life lost on Easy; every room fits one upright screen; every room fails without its key piece; 2 to 2.5 minutes for a quick player. Pokey's thoughts coach each mechanism without giving the solution, and the tick is the main teacher. Leo's Fortune's mechanism rooms and Rayman Legends' Murfy stages are the references.
+The rest: curate 10-1, 10-3, 10-6, 10-7 and 10-9, put World 10's bands above World 9's, and fix 10-6's description.
+Art:
+"The attached sloth character: 1) braced against a strong wind, low crouch, eyes squeezed shut, gripping a rock with both arms; 2) clinging flat against an iron netting wall with all four paws, fur blown sideways; 3) being blown backward off balance, arms out; 4) relieved, standing up as the wind stops. Side view facing right, satchel strap over his left shoulder and bag on his right hip, same model and colours as attached, flat magenta #FF00FF background." 1024x512. Attach hero-standard.webp.
+"A set of heavy iron and brass fortress clockwork for a side-view platformer, storybook painted style with dark outlines, cold grey iron and warm brass: three big toothed gears seen face-on (diameters 260, 420 and 640 px) with flat teeth a character can stand on; a pair of hanging scale pans on chains with a stone counterweight block; a portcullis gate in 4 states (closed, a quarter open, half open, fully open); a ratchet lever in 2 states; a huge escapement wheel with its pendulum for the background (dimmer, more distant). Each piece separate with clear space around it, evenly lit, flat magenta background, no text." 2048x2048. Attach w10-mid.webp and your World 10 set dressing.
+"Inside a dark stone fortress tower full of giant turning clockwork, gears and chains rising into shadow, a single shaft of storm light through a high slit window, cool slate and brass tones, painted storybook background, far layer only, no foreground, matching the attached." 2640x1302 plus an upright crop. Attach w10-far.webp.
+The Magma Drake, 9-10.
+The design already meets the AAA bar: each phase reuses a verb the world taught, the first strike of each attack is harmless, and the arena changes at each phase. Add Mario Run's lesson that a phone boss ends with an action you take, not a long health bar. The cup is exactly that.
+Four adjustments: set the cup down with the carry move and no "Tap to set the cup down" prompt (a glow on the mug and the Drake's eyes following it are the prompt); require the vent section on every roll of 9-5, since phase 1 depends on it; extend the boss fairness test, which today covers only bosses 1 to 3, before building phase 3; and paint the crust, pools and flame as sprites, deleting the code volcano with its 6 gradients a frame.
+Art still needed: the lava pool in 4 states and the flame in three strengths (prompts 6.2 and 6.3 in the design doc), and the breath-down re-roll with "his head and neck curved steeply DOWNWARD so his jaws point at the ground in front of his front feet".
+Build phase by phase, with your play after each, then the test link.
+The General, 10-10.
+This is the strongest design in the game: the count as the tell, the table as the shell, and the storm phase that trains the thumb the finale asks to let go.
+Four execution notes. Draw the count on a painted plaque that sits at the screen edge nearest him, readable in both orientations. On Normal, one chair plus a double jump should reach the peek, because two stacked chairs under fire with touch controls is the most input-heavy moment in the game. Settle the hold rule (WIP-18) first and use it in the storm phase. Hand off to the tower scene with no cut: preload the scene during phase 3, keep the fight's last frame as the scene's first, and test it on the OnePlus, since a hitch there is the most visible stutter in the game.
+Art still needed: the three Iron-Claw re-rolls, attaching his clip sheet and asking for "the same single spiked shoulder plate on his LEFT shoulder, the same dark red cape and scarf"; the wall break (prompt 6.8); a count plaque ("A small weathered stone plaque with an iron rim, blank face, for a number to be written on, plus a red-glowing version of the same plaque, painted storybook style, 256x160 each, flat magenta background"); and the council hall upscaled to 2640 px.
+Pushback on order. I'd build the Drake before the canopy. The Drake's design and most of its art are approved and packed, while the canopy needs a mock-up, five art pieces and a new section type. It's your call, and I've kept your order in the build plan with the Drake marked as the swap.
+Shared code to watch
+gen2/pipeline.ts: all three world branches plus the level fixes. One owner, merged by hand.
+engine.ts: every world branch and every audit fix. Merge each world branch right after a release, and keep world code in its own modules the way w8LanternRun.ts does.
+zoneArt.ts darkness: 8-4, World 3's grotto and the GPU work. Bake the light sprites first.
+puzzlePlay.ts: the world branches, the Clockwork Gate and DOT-2. Land DOT-2 first.
+heroSprite.ts: the jar frames, drawing Flicker in play, and the brace and hang poses. One owner per round.
+storyFinale.ts: fix the upright framing first, then the no-cut hand-off.
+The hardest gaps for a solo developer working with AI
+Merge debt. AI helpers branch fast and don't feel the cost of drifting. Merge main into every branch daily, and rebase any branch more than about 150 commits behind before more work goes on it.
+How the new moves feel on a phone. The test bots can't judge "fiddly". Play a one-room prototype of each move (hang, hold, carry under fire) before building a stage around it. The hold is the most urgent.
+Boss poses drifting off model. Always attach the clip sheet itself as the reference, and re-roll before animating.
+Measuring climbs. The bot can't finish any climb, so judge climbs by hand until it's fixed.
+Scope. Three special stages, two boss rebuilds, three world merges and nine climbs is several weeks of work. Finish one world completely before starting the next.
+Path to the target
+The target: at least A+ against indies, and B+ or better against the big studios, ideally an A.
+Here's my estimate of how the builds below move it. Builds 1 to 6 (the audit fixes and your four follow-ups) take Worlds 1-7 from about B− / B+ to about B / A−. Builds 7 to 12 (Worlds 8-10 and the last five bosses) stop the back half dragging the whole game down, which is the biggest single jump in the overall grade. Builds 13 and 14 (Worlds 1-4 and 5 on the shared generator, then speed and the store) are the last steps to A+ against indies and B+ against AAA.
+Category
+Now (AAA / indies)
+Target
+Builds
+What it takes
+Visuals
+B− / B+
+B+ / A+
+2, 5, 10, 14
+Painted thin platforms and bank ends, depth between layers, lair plates, painted arena surfaces, sharper canvas
+Animation
+B− / B
+B / A
+1, 2, 5
+Flicker drawn in play, a turn and skid for Pokey, haptics on in the app, quieter pop-ups
+Controls
+B− / B+
+B+ / A+
+1, 4, 14
+Reliable liana let-go, no stray megas, defaults decided, a proof that every stage plays on every setting, low input lag
+Sound
+C+ / B−
+B / A
+3
+Effects at the right level, respawn and front-door sounds, iPhone-safe music, more than one loop per world
+Story and cutscenes
+C+ / B
+B+ / A+
+1, 2, 10, 12
+Replies that never drop, upright framing, one bubble style, the no-cut finale
+Dot
+B− / B+
+A− / A+
+1, 10
+Approved lines that can't silently revert, puzzle rooms that don't give answers away, coaching for bosses 6-10
+Level design
+C+ / B
+B+ / A+
+1, 6, 7-9, 13
+Ask the mode on a fresh save, a Normal curve that rises through all ten worlds, Worlds 5 and 8-10 on the shared generator, fewer look-alike climbs
+Menus and UI
+B− / B+
+A− / A+
+1, 14
+The 2-3 goal card bug, story continuity on the cards, store-build cleanup, a calmer win card
+Performance
+C+ / B−
+B+ / A
+14
+A smaller download that streams, a device-tier start, an iPhone number, the speed check in CI, then the GPU renderer
+Worlds 7-10 and bosses 6-10
+D+ / C
+B+ / A
+7-12
+Merged worlds, three special stages, the Drake and the General as designed, bosses 6-8 brought up to match
+The hardest gaps for a solo developer working with AI
+Merge debt. This is new since the first audit, and it's now the biggest risk. Three world branches sit hundreds of commits behind and edit the same files. AI helpers branch fast and don't feel the drift. One owner per shared file per round, merging main into every branch daily, and finishing one world before starting the next closes it.
+Feel on real phones. The tester sheet and the touch recorder are a real step up, but the bots still can't hold a phone, and they can't finish a climb. Every new move (hang, hold, carry under fire) needs a one-room prototype in your hands before a stage is built around it.
+Sound taste. Levels and loudness are mechanical. Choosing effects that sound like one family and hearing the mix on a phone speaker needs ears. Plan one listening session after Build 3.
+Art consistency on new poses. The Iron-Claw re-rolls already drift off model. Always attach the clip sheet as the reference and re-roll before animating.
+Real-device speed numbers. Every speed claim waits for your phone. A nightly run on three Android test devices closes most of it; the iPhone stays a manual run each release.
+Scope. Worlds 8-10 plus five bosses plus Worlds 1-5 on the new generator plus the GPU renderer is a lot of weeks. That's fine, but it means finishing in slices, each one shippable.
+An honest read on the AAA A: Worlds 1-7 can get there with the builds below and your art. Getting all ten worlds there at once is much harder, and the deciding factors are sound and the two finale fights. Animation depth still caps out around B+ without hand animation or an animator.
+Builds in order
+This follows your order: the audit fixes with your four follow-ups, then Worlds 8-10, then the last two bosses, then Worlds 1-4, then the GPU renderer and the store. Inside each phase the builds are ordered by grade gained per day.
+Every build follows your rules: every stage stays playable on every control setting, new replaces old, and nothing ships until it passes the full tests, the speed and art checks, and your own play on its test link. Effort is rough coder time.
+Phase A: the audit fixes and your four follow-ups
+Build 1: the first minute and the quick P1s (code, about 2-3 days).
+LV-19: ask Easy or Normal on a fresh save, instead of silently starting on Normal.
+UI-22: the 2-3 goal card that never leaves the screen.
+DOT-18: key approved lines by id, so editing the engine's text can't bring an old line back, including the boss rows. Then finish DOT-2's puzzle-room tips.
+SN-13: a respawn sound, and wire the six front-door sounds that are never played.
+UI-16, UI-17 copy and UI-20: no Dot on the World 6 and 7 guardian cards, an up-to-date ending card, and no "coming soon" tag or long settings tab in the store build.
+WIP-6 stopgap (no pit, zone or patrol in the first 1,300 px of Worlds 8-10), WIP-16 (iron thorns), WIP-13 (commit the boss poses).
+LV-24 (gen2 Easy goals), ST-5 (the last "sanctuary"), ST-6 with AN-15 (aim text and pop-up motion).
+CT-35: switch Jump help's default to Off, since Off and On both passed all 168 runs. CT-34: your call on touch feedback.
+Grade gain: Level design, Menus and Dot each up about a step against indies; the first minute stops tripping new players.
+Build 2: your four follow-ups (code, about 3-4 days, plus the bank-end art).
+ST-9: replies between characters that drop or arrive late. Treat a bubble as done only when its reply has played.
+AN-12 with ST-10: draw Flicker in play, and settle ST-12's three bubble styles into one while you're there.
+VI-21: repaint the bank ends, one set per world, with no cut face and a clean inner edge.
+VI-24 with ST-13: upright cutscene framing, with no characters cut off at the waist.
+Grade gain: Story C+ to B− against AAA and B to B+ against indies; Visuals and Animation a notch.
+Build 3: sound (code and sourcing, about 3-4 days, plus one listening session).
+SN-11 first: re-level the effects before the compressor, since many hit it 20 to 40 dB too hard.
+SN-14 (ambience that never plays on phones), SN-15 (a music fallback for iPhones), SN-16 (one effect family), and the SN-1 shelf cleanup.
+Then SN-12: more than one loop per world. Two or three per world is enough; a calm and a tense version of the same tune is the cheapest way.
+Grade gain: Sound C+ to B− and B− to B+. It's the weakest category, so this lifts the overall most per day after Build 1.
+Build 4: controls (code, about 4-5 days with replay).
+CT-30 (letting go of a liana), CT-31 (the resting thumb's mega), CT-33 (the slanted carry, your call), CT-6 (back swipe from the edge), CT-17 (punches that wait for the finger to lift).
+CT-37 (let the recorder see the Pad and why Pokey left a vine), CT-38 (touches waiting for slow frames), CT-36 (a test that proves every stage plays on every control setting).
+CT-39: the control design for the hang and the hold, before Worlds 9 and 10 need them.
+Grade gain: Controls B− to B against AAA and B+ to A− against indies.
+Build 5: a cleaner picture (code, about 3-4 days, plus art).
+VI-19 (World 1's thin platforms painted, P1), VI-22 (depth between mid and near layers), VI-25 to VI-28 and VI-31 (leftovers, unpainted skies, twin slabs, flat World 2 pit water, too much soil in landscape).
+WIP-14 (time-of-day sets), AN-13 (a turn, skid, run-start and stop for Pokey), AN-14 (haptics on in the app, including iPhones).
+Grade gain: Visuals B− to B and B+ to A−; Animation a notch.
+Build 6: levels in the worlds already shipped (code, about 1-2 weeks).
+LV-22: hand-check the World 1 walls on every Jump help setting.
+LV-20: make the Normal curve pass the repo's own gate in Worlds 3-5. This is the long one.
+LV-25, LV-26, LV-27, LV-23, LV-30: hits before their tip, 4-2's impossible jumps, the extreme stage lengths, 7-4's strand, and the 6-10 hit during the dark letterbox.
+Grade gain: Level design C+ to B− and B to B+; Normal players stop hitting the flat stretch.
+Phase B: Worlds 8-10
+Build 7: World 8 (about 1 week). WIP-10's merge hygiene first, then World 8's curation, 8-4 with WIP-17 and WIP-20, the band gates (WIP-3) and the kid gate (WIP-21). Drop the "coming soon" tag for World 8.
+Build 8: World 9 and the canopy (about 1-2 weeks, plus five art pieces). Mock-up first, your yes, the art, the build, your play, then the other stages borrow the hang.
+Build 9: World 10, the hold and the Clockwork Gate (about 1-2 weeks, plus three art pieces). The hold rule (WIP-18) settled and prototyped first, then 10-3 and 10-4, then the Clockwork Gate mock-up, art and build, then WIP-15's climbs.
+Phase C: the bosses
+Build 10: bosses 6-8 (about 2-3 days). WIP-11 lairs, WIP-12 guide lines (DOT-19, with your approval of the lines), WIP-19's three story-born third phases, VI-30 (the noisy 6-10 sprite) and ST-14 (the Reaver's weapon mismatch).
+Build 11: the Magma Drake (about 1 week). Phase by phase, each with your play, then the test link. If you take my pushback, this moves ahead of Build 8.
+Build 12: the General (about 1 week). After the hold ships in 10-3 and 10-4. Phase by phase, then the no-cut hand-off tested on the OnePlus.
+Phase D: the shared generator everywhere
+Build 13: World 5, then Worlds 1-4 (about 2-3 weeks). I'd do World 5 first, because it's the weakest world and the generator work proves itself there. Then the written plan for Worlds 1-4 (LV-28), then the build: LV-10, LV-16, LV-17 and LV-18. One decision for you: whether to reset players' best times on Worlds 1-4, since the stages will change.
+Phase E: speed and the store
+Build 14: speed and launch (about 2-3 weeks).
+First the groundwork: PF-4 (speed check in CI), PF-5 (an iPhone number), PF-8 (sheets under 4096), PF-6, PF-11.
+Then the GPU renderer (PF-9) in its stages, each proven on the cheap Android, with VI-23 (the 2x canvas cap) coming free.
+PF-7 (Play Asset Delivery and a smaller web download), UI-19 (insets), CT-29 (tilt), UI-18 (a calmer win card), UI-21, and VI-20 (painted arena surfaces).
+Start the 14-day closed test as early as you have a build you're happy for testers to see, and keep building while it runs. Fix the final app ID before that first upload.
+Your calls, roughly in the order the builds need them
+LV-19: the wording of the Easy or Normal question on a fresh save.
+CT-34: whether touch feedback starts on Auto.
+CT-35: Jump help defaulting to Off.
+CT-33: the slanted carry fix (option b is my pick).
+CT-31: charge-and-release for the mega.
+AN-14: vibration on by default in the native app.
+8-4: the name "Lantern Run", and whether every fall there is soft.
+WIP-18: "freeze on the flash" as the hold rule.
+The Drake before the canopy, or your order.
+The canopy at 9-3 and the Clockwork Gate at 10-8.
+DOT-19: the boss coaching lines.
+World 5 before Worlds 1-4, and whether to reset Worlds 1-4 best times.
+CT-32: whether to even out the run speed, which re-times every jump.
+Phone test you can run yourself (about 10 minutes)
+Use the live site, upright first, then sideways. Write down the counts; they tell the coders which fixes landed. If you can, run it once on your phone and once on the oldest phone a tester has.
+Fresh start, 1 minute. Clear the site's data, or use a private tab, and start a new game. Were you asked Easy or Normal? If it just started, that's LV-19.
+The 2-3 goal card, 1 minute. Play into 2-3. Does the goal card leave the screen on its own? If it stays, that's UI-22.
+Losing a life, 1 minute. Fall in a pit twice. Is there a sound when Pokey pops back up (SN-13)? With sound at middle volume on the phone speaker, do jumps and flowers sound too loud or squashed next to the music (SN-11)?
+Liana and second thumb, 2 minutes. On a liana, let go and jump off 10 times. Count the times he didn't let go, or dropped instead of jumping (CT-30). Then rest a second thumb on the glass for about a second, 10 times, and count the megas you didn't mean (CT-31).
+Climbs on every setting, 1 minute. In World 1, try the tall walls with Jump help on Off, then On. Count any wall you can't get over (LV-22).
+Characters talking, 1 minute. In a World 6 or 7 stage where Pokey and Flicker talk, does every line get its reply, in order (ST-9)? Can you see Flicker while he talks (AN-12)?
+Upright cutscene, 1 minute. Watch one story scene upright. Is anyone cut off at the waist or pushed off the edge (VI-24, ST-13)?
+Worlds 8-10 opening, 1 minute. Start 8-2, 9-3 and 10-1 and just run right. Count the lives lost in the first 5 seconds (WIP-6).
+Old phone, 1 minute. On the oldest phone, start any stage with the ?perf overlay. Note how many seconds it takes to feel smooth, and whether sounds lag behind what you see (PF-11).
+iPhone, 3 minutes, when you can. On an iPhone with no profiler, play 1-1, 4-1 and one boss upright with ?perf on, and note the frame rate. That's the missing PF-5 number.
+Optional: film your thumb and the screen together in slow motion (240 fps) and count frames from your thumb moving to Pokey moving. More than about 20 frames (over 80 ms) feels sluggish, and on a mid-range phone that's CT-38.

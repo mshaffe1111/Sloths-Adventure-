@@ -1,3 +1,4 @@
+import { petalPass } from './petalPass.ts';
 import { w4Normal } from './w4Normal.ts';
 import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
@@ -311,6 +312,8 @@ export class Gen {
   lastFlagX = 140;
   /** the hero starts here */
   readonly spawnX = 140;
+  /** Worlds 8-10: no animal's patch or flier's sky reaches left of this (the safe start, WIP-6; 0 elsewhere) */
+  safeTo = 0;
 
   constructor(cfg: LevelConfig, attempt: number) {
     this.cfg = cfg;
@@ -625,6 +628,7 @@ export class Gen {
   /** can an eagle patrol here: clear of solid ground (its patch of sky is x ± 240) and well away from every flag? */
   skyClear(x: number, homeY: number) {
     const x0 = x - 270, x1 = x + 270, y0 = homeY - 40, y1 = homeY + 40;
+    if (x0 < this.safeTo) return false;
     // a zone (cloud, gust, column, web, tide, ruins, darkness) keeps its patch of sky clear of fliers
     if ((this.zones ?? []).some((z) => z.x1 > x0 && z.x0 < x1)) return false;
     if (this.P.some((p) => p.type !== 'bouncy' && p.x < x1 && p.x + p.width > x0 && p.y < y1 && p.y + p.height > y0)) return false;
@@ -1800,6 +1804,9 @@ type Role = 'intro' | 'shift' | 'develop' | 'side' | 'twist' | 'climax' | 'payof
 /** how a stage is timed while it is built: the seconds it should take, and the seconds per px the animals, relics and cages added afterwards are expected to cost */
 interface Timing { target: number; rho: number; /** the seconds the level list asks for: what decides how many acts and forks the stage has, whatever the clock is aimed at */ nominal?: number }
 
+/** Worlds 8-10: how far from the spawn the ground stays plain and safe (WIP-6) */
+export const SAFE_START = 1300;
+
 function buildHorizontal(gen: Gen, timing: Timing): GeneratedStage {
   const cfg = gen.cfg;
   const obj = cfg.objectiveType;
@@ -1835,6 +1842,16 @@ function buildHorizontal(gen: Gen, timing: Timing): GeneratedStage {
   gen.flat(Math.round(gen.rr(520, 700)), { safe: true });
   const spawnX = gen.spawnX;
   const spawnY = gen.g;
+  // Worlds 8-10 (this generator's last worlds): the first SAFE_START px from the spawn are plain ground, no pit, zone or patrol, so
+  // a new player who just runs right does not lose a life in the first seconds (WIP-6). A row of flowers so the run is not empty.
+  if (gen.world >= 8 && !cfg.secret && obj !== 'boss_lair') {
+    gen.safeTo = spawnX + SAFE_START;
+    const need = gen.safeTo - gen.cx;
+    if (need > 0) {
+      const s = gen.flat(need, { safe: true });
+      gen.row(s.x0 + 60, s.x1 - 60, gen.g - 32, Math.max(3, Math.round(need / 120)));
+    }
+  }
   gen.log.push('intro');
 
   // pieces the objective insists on, spread across the level
@@ -2164,13 +2181,14 @@ function decorate(gen: Gen, spawnX: number) {
   const laneFlower = new Set<number>();
   for (const f of gen.lanes) for (const r of [f.high, f.low]) { r.enemies.forEach((i) => laneEnemy.add(i)); r.flowers.forEach((i) => laneFlower.add(i)); }
   const awayFromSafe = (x: number) =>
-    Math.abs(x - spawnX) > 360 && gen.CP.every((c) => Math.abs(c.x - x) > 260) && (!gen.exitAt || Math.abs(gen.exitAt.x - x) > 420);
+    Math.abs(x - spawnX) > 360 && x > gen.safeTo + 100 && gen.CP.every((c) => Math.abs(c.x - x) > 260) && (!gen.exitAt || Math.abs(gen.exitAt.x - x) > 420);
   // every hop in the stage: an animal's patch stays 120 px clear of a take-off and of a landing
   const edges = jumpEdges(gen.P);
   const EDGE_CLEAR = 124;
   /** a patrol patch cut back so it stays 230 px from the start, every flag and the exit, and clear of every take-off and landing on its own ground (null if too little is left to patrol) */
   const clearPatch = (mid: number, pMin: number, pMax: number, y: number): [number, number] | null => {
     const spots = [spawnX, ...gen.CP.map((c) => c.x), ...(gen.exitAt ? [gen.exitAt.x] : [])];
+    pMin = Math.max(pMin, gen.safeTo);
     for (const x of spots) {
       if (x > pMin - 230 && x < pMax + 230) {
         if (x <= mid) pMin = Math.max(pMin, x + 230); else pMax = Math.min(pMax, x - 230);
@@ -2892,7 +2910,8 @@ function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[])
     { platforms: stage.platforms, vines: stage.vines, ropes: stage.ropes, waterY: stage.waterY, glide: skillHeldAt('glide', (config.worldIndex - 1) * 10 + config.miniIndex), onRoute: new Set(reachableIds) },
     stage.collectibles,
   );
-  return stage;
+  // and the petal trail: one pickup, no clutter, all of it reachable (petalPass.ts)
+  return petalPass(stage);
 }
 
 /**

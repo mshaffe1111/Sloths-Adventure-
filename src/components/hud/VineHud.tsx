@@ -100,6 +100,9 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
     [levelConfig, dotStage, targetObjectiveCount],
   );
   const target = info.kind === 'count' ? targetObjectiveCount : 0;
+  // (App sends 0 until the engine has counted what the stage holds; the plan's number can be wrong, 2-3 planned 3 of 5 cages: the goal
+  // card and the counter wait for the real one, so the card never flips its number: UI-22)
+  const counting = info.kind === 'count' && targetObjectiveCount <= 0;
   const slots = showsSlots(target) && !meeca;
 
   const vp = useViewport();
@@ -207,7 +210,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   const boss = isBoss ? bossRect(vp.w, vp.h, ins) : null;
   const underBoss = isBoss && info.kind === 'count';
   const cg = underBoss ? centreGeo('short', 320) : centreGeo(mode, vp.h);
-  const ckind = isBoss && !underBoss ? 'none' : info.kind === 'count' ? (slots ? 'slots' : 'count') : info.kind === 'distance' ? 'distance' : 'none';
+  const ckind = (isBoss && !underBoss) || counting ? 'none' : info.kind === 'count' ? (slots ? 'slots' : 'count') : info.kind === 'distance' ? 'distance' : 'none';
   const cw = counterW(cg, ckind, target, ckind === 'count' ? info.word : '');
   const place = cw > 0 ? centrePlace(vp.w, vp.h, cw, { hearts: nHearts, insets: ins, underBoss: underBoss && boss ? boss : undefined }) : null;
   const safe = hudSafeRect(vp.w, vp.h, { boss: isBoss, hearts: nHearts, counter: cw, insets: ins });
@@ -577,7 +580,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
         </div>
       )}
 
-      {showCard && (
+      {showCard && !counting && (
         <GoalCard key={`${levelConfig.id}#${props.runKey ?? 0}`} stageId={levelConfig.id} label={stageLabel} info={info} target={target} lane={safe} mode={mode} counter={counterRef} />
       )}
 

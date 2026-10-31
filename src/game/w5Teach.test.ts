@@ -57,7 +57,7 @@ for (const stage of ['5-1', '5-2'] as const) {
     const q = new GuideQueue();
     const env = { danger: false, moveCount: () => 0 };
     const ms = (t: number) => (t - t0) * 1000;
-    q.push({ key: 'lesson:fruit', text: 'Run through flowers to pick them up.', kind: 'info', who: 'Dot', source: 'lesson' }, ms(sitAt) - 1500);
+    q.push({ key: 'lesson:fruit', text: 'Run through petals to pick them up.', kind: 'info', who: 'Dot', source: 'lesson' }, ms(sitAt) - 1500);
     q.tick(ms(sitAt) - 1500, env);
     q.push({ key: 'engine:w5.chair', text: 'Slide past the chairs. Never sit.', kind: 'teach', who: 'Dot', move: 'run', source: 'engine' }, ms(sitAt) - 1000);
     q.push(sit, ms(sitAt));

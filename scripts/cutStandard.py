@@ -80,6 +80,8 @@ STAND_REF = {
     'v1': [9, 10, 11, 12], 'v2a': [1, 2, 3, 4, 5, 6, 7, 8], 'v2b': [1, 2, 5, 6], 'v3': [5, 6, 9, 11, 13, 15], 'v4': [2, 5, 6], 'v5': [1, 4, 7, 8], 'v6': [3, 4, 5, 8],
     'v13': [1, 2, 4], 'v14': [1, 2, 5, 6],
     3: [8],  # first-round jump sheet (only its climb is used)
+    1: [5, 6, 7, 8],  # first-round turnaround sheet (the front view for the turn)
+    7: [16],  # first-round slide-roll-ledge sheet (the skid and the upside-down roll)
 }
 # a sheet with no plain standing frame to measure (every pose on it is an attack, a stomp or a spring) takes another sheet's scale: the heads match
 STAND_LIKE = {'v15': 'v14'}
@@ -97,6 +99,10 @@ V2_USED = {
     'hang_a': ('v4', 1), 'hang_b': ('v4', 4), 'hang_c': ('v4', 8),
     'swing_grip': ('v4', 4), 'swing_back': ('v4', 14), 'swing_pull': ('v4', 15), 'swing_top': ('v4', 16),
     'tuck': ('v14', 13), 'tumble': ('v14', 14),
+    # the turn (pokey-anim, 2026-10-30): facing us, between facing one way and the other (first-round turnaround sheet)
+    'turn': (1, 1),
+    # the skid when he reverses at a run: leaning back, feet braced (first-round slide sheet), and the flip upside down at its middle
+    'skid': (7, 1), 'flip_inv': (7, 6),
     'duck': ('v3', 8),
     'punch_0': ('v5', 1), 'punch_1': ('v5', 4), 'punch_2': ('v5', 2), 'punch_3': ('v5', 3), 'punch_4': ('v5', 3),
     'kick_0': ('v5', 9), 'kick_1': ('v5', 11), 'kick_2': ('v5', 10), 'kick_3': ('v5', 9),

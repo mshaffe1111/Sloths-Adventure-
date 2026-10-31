@@ -21,6 +21,13 @@ import { holdScene, sceneForPanel, sceneForScreen, type Held, type PanelInfo } f
 
 type PredatorKind = 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
 
+/** a menu's back or close button: the round ✕ (ui-x), or one whose label starts "Back" or "Close" */
+export function isBackButton(btn: Element): boolean {
+  if (btn.classList?.contains('ui-x')) return true;
+  const label = (btn.getAttribute?.('aria-label') ?? '').trim().toLowerCase();
+  return label.startsWith('back') || label.startsWith('close');
+}
+
 class SoundEngine {
   private readonly c = new Conductor();
 
@@ -194,7 +201,6 @@ class SoundEngine {
 
   // ------------------------------------------------------------------ new
   playBossVictory() { this.c.sting('bossVictory'); }
-  playBossAppear() { this.c.sting('bossAppear'); }
   playLand(strength = 0.4) { this.c.fx('land', strength); }
   playStep() { this.c.fx('step'); }
   playCheckpoint() { this.c.fx('checkpoint'); }
@@ -205,17 +211,19 @@ class SoundEngine {
   playUiTap() { this.c.fx('uiTap'); }
   playUiConfirm() { this.c.fx('uiConfirm'); }
   playUiBack() { this.c.fx('uiBack'); }
+  /** a menu button pressed (outside play): a back or close button plays the back take, every other button the tap (SN-13) */
+  playUiButton(btn: Element) {
+    if (isBackButton(btn)) this.playUiBack();
+    else this.playUiTap();
+  }
   playStar(i: number) { this.c.fx('star', i); }
   playPause(on: boolean) { this.c.fx(on ? 'pauseIn' : 'pauseOut'); }
 
   // ------------------------------------------------------------------ the review's missing sounds (SN-3, audio/sfxGame.ts)
   /** into the water: 0 a full plunge, 1 a body-sized splash, 2 a small dip */
   playSplash(size: 0 | 1 | 2 = 0) { this.c.fx('splash', size); }
+  /** back at the flag, as the iris opens on him (SN-13: the second half of a lost life's two-part sound) */
   playRespawn() { this.c.fx('respawn'); }
-  /** every landing, `speed` 0..1 how fast he fell (a small hop is soft) */
-  playLanding(speed: number) { this.c.fx('landing', speed); }
-  /** a boss arriving: its roar over the orchestra's in-key sting (also the boss intro card) */
-  playBossArrives(world = 0) { this.c.fx('bossAppear', world); }
   /** a puzzle kit's action by its event name (see PUZZLE_KIND); false when it has no sound of its own */
   playPuzzle(kind: string): boolean {
     const s = PUZZLE_KIND[kind];
