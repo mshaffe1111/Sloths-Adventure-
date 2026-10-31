@@ -87,7 +87,18 @@ test("the lava's rule: deadly on Normal, soft on Easy, soft at every second-jump
     const one = maxGap(0, false, st.gen2.budget.margin) + 12;
     // (a chain over the lava is the swing's: 9-3's, the way over is the chain)
     const swung = (f: { x0: number; x1: number }) => st.vines.some((v) => v.vineType === 'swing_liana' && v.x > f.x0 - 260 && v.x < f.x1);
-    for (const f of falls) if (f.kind === 'void' && !swung(f)) assert.ok(f.x1 - f.x0 <= one, `${tag}: a ${f.x1 - f.x0} px lava gap at ${f.x0}, past one jump`);
+    // (and a row of rafts or logs, World 9's moving logs (w9Bob.ts), is crossed raft by raft: each opening between them is one jump)
+    const steps = (f: { x0: number; x1: number }) => {
+      const bobs = st.platforms.filter((p) => p.lift?.bob && p.lift.bob !== 'piston' && p.x >= f.x0 - 4 && p.x + p.width <= f.x1 + 4).sort((a, b) => a.x - b.x);
+      let at = f.x0;
+      let widest = 0;
+      for (const b of bobs) {
+        widest = Math.max(widest, b.x - at);
+        at = b.x + b.width;
+      }
+      return Math.max(widest, f.x1 - at);
+    };
+    for (const f of falls) if (f.kind === 'void' && !swung(f)) assert.ok(steps(f) <= one, `${tag}: a ${steps(f)} px opening in a ${f.x1 - f.x0} px lava gap at ${f.x0}, past one jump`);
     const gs = (st.zones ?? []).filter((z) => z.kind === 'geyser').sort((a, b) => a.x0 - b.x0);
     for (const z of gs) {
       for (const e of st.enemies) assert.ok(!(e.x > z.x0 - 30 && e.x < z.x1 + 30 && e.y > z.baseY - 150 && e.y < z.bottom + 60), `${tag}: an animal in the geyser at ${z.x0}`);
