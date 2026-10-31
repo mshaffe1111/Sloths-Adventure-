@@ -87,12 +87,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   const panels = useMemo(() => {
     // (and the world notices what this player did: the lines for what they found, the falls the General counted: storyNotice.ts)
     const heard = noticed(script, loadFinds(), loadBadgeStore().counters.falls);
-    // (a panel on a world's scenery stands in that world's painted plate when there is one: plateData.ts withWorldPlate)
-    const shown = touchy ? heard.filter((p) => !p.narratedOnly) : heard.map((p) => (p.hold ? { ...p, hold: undefined } : p));
-    return shown.map((p) => {
-      const scene = withWorldPlate(p.scene);
-      return scene === p.scene ? p : { ...p, scene };
-    });
+    return touchy ? heard.filter((p) => !p.narratedOnly) : heard.map((p) => (p.hold ? { ...p, hold: undefined } : p));
   }, [script, touchy]);
   // dev only: `?storyAt=N` opens a story on its Nth picture (for before/after screenshots)
   const [idx, setIdx] = useState(() => {
@@ -105,7 +100,9 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   useEffect(() => {
     const ahead = panels.slice(idx, idx + 3);
     preloadScenePhotos(ahead.map((p) => p.scene.photo?.key));
-    preloadScenePlates(ahead.slice(1).map((p) => p.scene.plate));
+    // (and the world plates they will stand in on this screen's shape)
+    const side = typeof window !== 'undefined' && window.innerWidth / Math.max(1, window.innerHeight) >= 1.3;
+    preloadScenePlates(ahead.slice(1).map((p) => withWorldPlate(p.scene, side).plate));
     preloadSceneCards(ahead.slice(1).map((p) => p.scene.card));
   }, [panels, idx]);
   // the cast's paintings load as the story opens, and a closed story lets its pictures go
@@ -309,7 +306,10 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   // (the picture through the direction's camera, unless the scene moves its own)
   // (upright the picture is the whole screen: a little closer in, so the cast fills it rather than the canopy above them)
   const directed = useMemo(() => {
-    const s = dir.camera ? { ...panel.scene, camera: dir.camera } : panel.scene;
+    // (a panel on a world's scenery stands in that world's painted plate when there is one, sideways only where the plate allows it:
+    // plateData.ts withWorldPlate)
+    const base = withWorldPlate(panel.scene, wide);
+    const s = dir.camera ? { ...base, camera: dir.camera } : base;
     if (wide) return s;
     // (only a wide shot is brought in, and no further than UPRIGHT_ZOOM_MAX: a shot already close, brought in again, cut the one not
     // speaking down to a sliver at the screen's edge)

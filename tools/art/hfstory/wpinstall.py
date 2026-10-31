@@ -26,7 +26,7 @@ for f in sorted(src.glob('wp-*-full.png')):
     im.save(out, 'WEBP', quality=86, method=6)
     print(key, out.stat().st_size // 1024, 'KB')
     rows.append(f"  '{key}': {{ ground: 0.8, what: \"World {w}'s story place, {mood}: {WHAT[w]} (hf-cutscenes, from the world's own story scenery)\" }},")
-    maps.append(f"  '{w}-{mood}': '{key}',")
+    maps.append(f"  '{w}-{mood}': {{ plate: '{key}', sideways: true }},")  # (set sideways by hand after the in-game check)
 s = DATA.read_text()
 for r in rows:
     k = r.split("'")[1]
@@ -34,7 +34,7 @@ for r in rows:
     s = s.replace('\n};\n\nexport function isPlate', '\n' + r + '\n};\n\nexport function isPlate', 1)
 for r in maps:
     k = r.split("'")[1]
-    s = re.sub(rf"\n  '{re.escape(k)}': '[^']*',", '', s)
-s = re.sub(r'export const WORLD_PLATES: Record<string, string> = \{([^}]*)\};',
-           lambda m: 'export const WORLD_PLATES: Record<string, string> = {' + (m.group(1).rstrip() + '\n' if m.group(1).strip() else '\n') + '\n'.join(maps) + '\n};', s)
+    s = re.sub(rf"\n  '{re.escape(k)}': \{{ plate: [^\n]*\}},", '', s)
+s = re.sub(r'export const WORLD_PLATES: Record<string, \{ plate: string; sideways: boolean \}> = \{(.*?)\n\};',
+           lambda m: 'export const WORLD_PLATES: Record<string, { plate: string; sideways: boolean }> = {' + (m.group(1).rstrip() + '\n' if m.group(1).strip() else '\n') + '\n'.join(maps) + '\n};', s, flags=re.S)
 DATA.write_text(s)

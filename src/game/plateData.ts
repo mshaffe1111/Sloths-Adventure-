@@ -62,26 +62,28 @@ export function isPlate(key: string | undefined): key is string {
  * of its own, no camera following a walker, no castle and no line-up stands in its world's plate (`withWorldPlate`), its cast on the same
  * ground line as before (0.8). Key: `${world}-${mood}`.
  */
-export const WORLD_PLATES: Record<string, string> = {
-  '1-day': 'w1-day',
-  '1-storm': 'w1-storm',
-  '3-night': 'w3-night',
-  '5-day': 'w5-day',
-  '1-dusk': 'w1-dusk',
-  '3-storm': 'w3-storm',
-  '4-day': 'w4-day',
-  '6-dusk': 'w6-dusk',
-  '7-day': 'w7-day',
-  '2-day': 'w2-day',
-  '10-storm': 'w10-storm',
-  '5-dusk': 'w5-dusk',
-  '8-night': 'w8-night',
+/** `sideways`: false where the old scenery reads as well or better on a sideways phone (the lead, 2026-10-31: W2's river and village,
+ *  W5 dusk's orchids, W10's moonlit castle, W8's moon); the plate is then only for an upright phone, where the haze was */
+export const WORLD_PLATES: Record<string, { plate: string; sideways: boolean }> = {
+  '1-day': { plate: 'w1-day', sideways: true },
+  '1-storm': { plate: 'w1-storm', sideways: true },
+  '3-night': { plate: 'w3-night', sideways: true },
+  '5-day': { plate: 'w5-day', sideways: true },
+  '1-dusk': { plate: 'w1-dusk', sideways: true },
+  '3-storm': { plate: 'w3-storm', sideways: true },
+  '4-day': { plate: 'w4-day', sideways: true },
+  '6-dusk': { plate: 'w6-dusk', sideways: true },
+  '7-day': { plate: 'w7-day', sideways: true },
+  '2-day': { plate: 'w2-day', sideways: false },
+  '10-storm': { plate: 'w10-storm', sideways: false },
+  '5-dusk': { plate: 'w5-dusk', sideways: false },
+  '8-night': { plate: 'w8-night', sideways: false },
 };
 
 /** the scene as drawn: its own plate, or its world's plate for this mood when there is one (the cast keep their ground line) */
-export function withWorldPlate<S extends { world: number; mood: string; plate?: string; follow?: unknown; castle?: number; lineup?: boolean; ground?: number }>(scene: S): S {
+export function withWorldPlate<S extends { world: number; mood: string; plate?: string; follow?: unknown; castle?: number; lineup?: boolean; ground?: number }>(scene: S, sideways = false): S {
   if (scene.plate !== undefined || scene.follow || scene.castle !== undefined || scene.lineup) return scene;
-  const key = WORLD_PLATES[`${scene.world}-${scene.mood}`];
-  if (!key || !isPlate(key)) return scene;
-  return { ...scene, plate: key, ground: scene.ground ?? 0.8 };
+  const wp = WORLD_PLATES[`${scene.world}-${scene.mood}`];
+  if (!wp || !isPlate(wp.plate) || (sideways && !wp.sideways)) return scene;
+  return { ...scene, plate: wp.plate, ground: scene.ground ?? 0.8 };
 }

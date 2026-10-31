@@ -24,7 +24,7 @@ world's painted plate. Its cast stays on the same ground line (0.8). No story te
 | w8-night | 81 | `after/compare-w8-sharp.jpg` (sharp redo, lead 6:20 PM rule) |
 | w10-storm | 55 | `after/compare-w10-w5dusk.jpg` |
 
-About 470 of the 580 scenery panels now stand in a painted plate.
+About 470 of the 580 scenery panels now stand in a painted plate upright. Sideways, w2-day, w5-dusk, w10-storm and w8-night are UPRIGHT ONLY (`sideways: false` in WORLD_PLATES, the lead 2026-10-31: the old scenery's river and village, orchids, castle and moon read better sideways; `after/compare-upright-only.jpg`); the other nine plates show both ways.
 
 **The raft plate** is repainted (the old one was flat and pale and unused) and wired to W2 mid's two raft lines (`after/compare-raft.jpg`).
 
