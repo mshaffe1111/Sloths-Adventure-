@@ -167,7 +167,82 @@ const fallChasm = section({
   mirrorable: true,
 });
 
+// ───────────────────────────── surges (9-6) ─────────────────────────────
+
+const SURGE = W9_LESSON.surge;
+/** a cooled channel after `after`: down to its floor `${p}ch` (where the surge runs), a step out `${p}s` and the basalt on, level again */
+const channel = (p: string, after: string, floor: SectionPiece['w']): SectionPiece[] => [
+  down(`${p}ch`, after, 120, floor), up(`${p}s`, `${p}ch`, 60, [100, 120]), up(`${p}b`, `${p}s`, 60, [220, 260]),
+];
+
+/** the first surge (every surges roll): one channel, a long quiet spell, Dot's line on the way in */
+const firstSurge = section({
+  id: 'w9-first-surge',
+  name: 'the first lava surge',
+  archetypes: ['purge'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: SURGE,
+  uses: [W9_THEME.surges],
+  maxPerStage: 1,
+  extraSeconds: WAIT * 2,
+  pieces: [bank('a', [300, 340]), ...channel('', 'a', [320, 360])],
+  last: 'b',
+  zones: [{ kind: 'surge', on: 'ch', lesson: true }],
+  sockets: [tip(SURGE, 'a', 0.2), petals('ch', 'ch', 0.5, 2, 90), petals('s', 's', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** a channel, then a hunter on the basalt past it */
+const surgeRun = section({
+  id: 'w9-surge-run',
+  name: 'surge channel',
+  archetypes: ['purge'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W9_THEME.surges, SURGE],
+  extraSeconds: WAIT,
+  pieces: [bank('a', [240, 280]), ...channel('', 'a', [360, 400]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [320, 360])],
+  last: 'c',
+  zones: [{ kind: 'surge', on: 'ch' }],
+  sockets: [petals('ch', 'ch', 0.5, 2, 100), foe('foe', 'c', [0.5, 0.6], ANY, 3.5, { chance: 0.9 }), petals('k', 'k', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** two channels, a guard on the basalt between them */
+const surgeTwin = section({
+  id: 'w9-surge-twin',
+  name: 'two surge channels',
+  archetypes: ['purge'],
+  phases: MID,
+  difficulty: 7,
+  uses: [W9_THEME.surges, SURGE],
+  extraSeconds: WAIT * 2,
+  pieces: [bank('a', [220, 260]), ...channel('', 'a', [300, 340]), ...channel('t', 'b', [300, 340])],
+  last: 'tb',
+  zones: [{ kind: 'surge', on: 'ch' }, { kind: 'surge', on: 'tch' }],
+  sockets: [petals('ch', 'ch', 0.5, 1), foe('foe', 'b', [0.45, 0.6], SMALL, 2.5, { chance: 0.8 }), petals('tch', 'tch', 0.5, 1), petals('tb', 'tb', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** a channel with a lava chasm on its far basalt */
+const surgeChasm = section({
+  id: 'w9-surge-chasm',
+  name: 'surge, then the chasm',
+  archetypes: ['purge'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W9_THEME.surges, SURGE],
+  extraSeconds: WAIT,
+  pieces: [bank('a', [240, 280]), ...channel('', 'a', [340, 380]), W9H.lava('c', 'b', [340, 380]), up('k', 'c', 30, [140, 160]), down('d', 'k', 30, [200, 240])],
+  last: 'd',
+  zones: [{ kind: 'surge', on: 'ch' }],
+  sockets: [petals('ch', 'ch', 0.5, 1), foe('foe', 'c', [0.5, 0.6], CATS, 3.5, { chance: 0.8 }), petals('k', 'k', 0.5, 1)],
+  mirrorable: true,
+});
+
 export const W9_HEAT_SECTIONS: readonly SectionTemplate[] = [
+  W9_HEAT_GATES.surges6, firstSurge, surgeRun, surgeTwin, surgeChasm,
   W9_HEAT_GATES.flares5, W9_HEAT_GATES.flares8, firstFlare, flarePair, flareChasm, flareGlide, flareLedge,
   W9_HEAT_GATES.lavafalls6, W9_HEAT_GATES.lavafalls9, firstFall, fallPair, fallGuard, fallChasm,
 ];
@@ -175,5 +250,6 @@ export const W9_HEAT_SECTIONS: readonly SectionTemplate[] = [
 /** which stages hold which (GRAB-BAG.md §4: neighbours in play share none) */
 export const W9_HEAT_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_HEAT_GATES.flares5.id]: [5], [W9_HEAT_GATES.flares8.id]: [8], [firstFlare.id]: [5, 8], [flarePair.id]: [5, 8], [flareChasm.id]: [5, 8], [flareGlide.id]: [5], [flareLedge.id]: [8],
+  [W9_HEAT_GATES.surges6.id]: [6], [firstSurge.id]: [6], [surgeRun.id]: [6], [surgeTwin.id]: [6], [surgeChasm.id]: [6],
   [W9_HEAT_GATES.lavafalls6.id]: [6], [W9_HEAT_GATES.lavafalls9.id]: [9], [firstFall.id]: [6, 9], [fallPair.id]: [6, 9], [fallGuard.id]: [6, 9], [fallChasm.id]: [6, 9],
 };

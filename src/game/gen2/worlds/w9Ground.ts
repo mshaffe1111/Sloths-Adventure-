@@ -65,6 +65,8 @@ export const W9_THEME = {
   flares: 'w9:t-flares',
   /** 9-6 / 9-9: the lavafalls pouring from above (N9: w9Heat.ts) */
   lavafalls: 'w9:t-lavafalls',
+  /** 9-6: the lava surges down the cooled channels (N6: w9Heat.ts) */
+  surges: 'w9:t-surges',
 } as const;
 export type W9Theme = (typeof W9_THEME)[keyof typeof W9_THEME];
 
@@ -952,7 +954,7 @@ const burstRow = section({
 // ───────────────────────────── 9-6 Ash Fields (purge), 9-9 The Drake's Hoard (gauntlet) ─────────────────────────────
 
 /** a hunt gate: Dot explains the shut shrine before any animal, and the roll's theme opens */
-const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas' | 'logs' | 'lavafalls', line: 'hunt' | 'fight'): SectionTemplate => {
+const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas' | 'logs' | 'lavafalls' | 'surges', line: 'hunt' | 'fight'): SectionTemplate => {
   const k = knobs('', 'a', 2, [220, 260]);
   // (the hoard's gate climbs a basalt stair to the Drake's door and down again, the ash fields' crosses two knobs: the two fight stages
   // never open alike)
@@ -1366,6 +1368,7 @@ export const W9_HEAT_GATES = {
   flares8: threadGate('flares'),
   lavafalls6: huntGate('lavafalls', 'hunt'),
   lavafalls9: huntGate('lavafalls', 'fight'),
+  surges6: huntGate('surges', 'hunt'),
 } as const;
 
 /** the helpers w9Bob.ts builds its sections with (the same as this file's) */

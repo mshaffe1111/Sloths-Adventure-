@@ -984,6 +984,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           const period = low + warn + active;
           zones.push({ kind: 'tide', x0: mud.x, x1: mud.x + mud.width, top: mud.y - 210, bottom: mud.y + 14, baseY: mud.y, dir: -1, period, warn, active, offset: R(srng() * period * 10) / 10, force: z.force ?? TIDE.force });
           placed.beats.push({ x: mud.x, letter: 'S' });
+        } else if (z.kind === 'surge') {
+          // (World 9: a lava surge down the channel floor `on`: a geyser zone laid along it, the walk across fitting in its quiet spell)
+          const ch = pieceOf(z.on);
+          const x0 = ch.x + SURGE.inset, x1 = ch.x + ch.width - SURGE.inset;
+          const idle = Math.max(z.lesson ? SURGE.lessonIdle : SURGE.idle, R(((x1 - x0) / SURGE.cross + 0.9) * 10) / 10);
+          const period = idle + SURGE.warn + SURGE.active;
+          zones.push({ kind: 'geyser', look: 'surge', x0, x1, top: ch.y - SURGE.h, bottom: ch.y + 14, baseY: ch.y, dir: 1, period, warn: SURGE.warn, active: SURGE.active, offset: R(srng() * period * 10) / 10, force: 0 });
+          placed.beats.push({ x: ch.x, letter: 'S' });
         } else if (z.kind === 'wind') {
           // (the gap before `on`: from the piece it is laid after to `on` itself, a pad over each lip as the old generator's gusts)
           const spec = tpl.pieces.find((pc) => pc.key === z.on);
@@ -1071,6 +1079,11 @@ export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 }
  *   rise    a piston's climb out of its well (px), past the double jump, so it is the only way up to its ledge
  *   h       the piece's thickness
  */
+/** World 9's lava surge (SectionZone 'surge', GRAB-BAG.md N6): its zone's inset from the channel's ends and height over the floor, the
+ *  geyser's warning, a firing under the check's 1.2 s, and a quiet spell of at least `idle` s and long enough to walk the floor (`cross`
+ *  px a second, a careful walk) with time to spare */
+export const SURGE = { inset: 12, h: 70, warn: 1.4, active: 1.1, idle: 2.6, lessonIdle: 4.0, cross: 220 } as const;
+
 export const BOB = {
   depth: { raft: [195, 220] as const, log: [205, 235] as const, soft: 70 },
   speed: { normal: { raft: 230, log: 170, piston: 120 }, easy: { raft: 150, log: 120, piston: 95 } },

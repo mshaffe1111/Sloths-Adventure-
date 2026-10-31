@@ -7,7 +7,7 @@
  *             the pour down to the ground, landing in its own splash
  */
 import type { Zone, ZoneState } from './zones.ts';
-import { drawW9Hazard } from './w9Art.ts';
+import { drawLava, drawW9Hazard } from './w9Art.ts';
 import { W9_PIECE_FRAMES } from './w9PiecesData.ts';
 
 const W9B_URL = new URL('../assets/w6to10/props-made/w9b.webp', import.meta.url).href;
@@ -109,4 +109,32 @@ export function drawW9Lavafall(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneS
   drawW9Hazard(ctx, Math.floor(t * 10) % 2 ? 'burst1' : 'burst2', cx - cw / 2, z.top, cw, len, true);
   const sw = w * 2.2;
   drawW9Hazard(ctx, `splash${Math.floor(t * 8) % 3}`, cx - sw / 2, z.baseY - sw * 0.6, sw, sw * 0.6);
+}
+
+/**
+ * a lava surge down a cooled channel (zones.ts look 'surge', GRAB-BAG.md N6): as it warns, the painted surge front shows small at the
+ * channel's upstream end, glowing and growing; running, the painted lava strip floods the floor behind its front, which rolls along it in
+ * the first third of the firing, then the whole floor is lava until it drains
+ */
+export function drawW9Surge(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number): void {
+  if (st.phase === 'idle') return;
+  const pc = piecesImg();
+  const f = PF_[`surge${Math.floor(t * 8) % 3}`];
+  if (st.phase === 'warn') {
+    if (!pc || !f) return;
+    const k = 0.3 + 0.4 * st.u;
+    ctx.save();
+    ctx.globalAlpha = 0.5 + 0.5 * st.u;
+    ctx.drawImage(pc, f.x, f.y, f.w, f.h, z.x0 - f.w * k * 0.6, z.baseY - f.h * k + 4, f.w * k, f.h * k);
+    ctx.restore();
+    return;
+  }
+  const front = z.x0 + (z.x1 - z.x0) * Math.min(1, st.u * 3);
+  const depth = 30 * Math.min(1, st.strength * 1.4);
+  drawLava(ctx, z.x0, front, z.baseY - depth + 4, z.baseY + 14, t);
+  if (pc && f && st.u < 0.45) {
+    const h = 90;
+    const w = (f.w * h) / f.h;
+    ctx.drawImage(pc, f.x, f.y, f.w, f.h, front - w * 0.8, z.baseY - h + 8, w, h);
+  }
 }
