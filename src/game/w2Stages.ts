@@ -11,6 +11,7 @@
  * doors, its PLEASE BE PATIENT sign and the mailman, who has been carrying the same parcel since the spring.
  */
 import { teachWater } from './waterTeach.ts';
+import { petalPass } from './petalPass.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import { findForStage } from './finds.ts';
@@ -94,7 +95,7 @@ function clearFlags<S extends GeneratedStage>(st: S): S {
 
 export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
   // water taught before it costs a life (LV-8)
-  return teachWater(buildW2Plan(config, seed, plan));
+  return petalPass(teachWater(buildW2Plan(config, seed, plan)));
 }
 
 function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
