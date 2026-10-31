@@ -1,2 +1,5 @@
 hf-backdrops (2026-10-31, Matt: "We still have 110 on hugging face... Better cut scenes, more props or redoing background"). Cap $28.
 GPU rtx-pro-6000 at about $2.75 an hour. Times UTC. Bucket mshaffe111/w5-xfer under hfbackdrops/.
+hfbd-pilot  6ae65aeac78863f9c62f4c64 rtx-pro-6000 21:17:30Z-~21:20:30Z (~3 min, ~$0.14, cancelled): text to image on magenta, 2048x896.
+  THROWN: the key is not kept (w1kapok on a pink sky with rain and clouds, w10b a full storm sky, w7dusk on flat green) and the
+  paint is flatter than the game's strips. Strips are img2img from paste-ups from now on (starts.py).
