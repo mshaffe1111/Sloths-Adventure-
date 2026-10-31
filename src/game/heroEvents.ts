@@ -13,9 +13,9 @@ const SOFT_FALL = 450;
 const HARD_FALL = 950;
 /** the turn on the ground (AN-13): how long the change of facing takes to draw. The physics turns him at once; only the picture eases round */
 export const TURN_TIME = 0.09;
-/** reversing faster than this (px/s, about 55% of a full run) skids; the skid is drawn for at least SKID_MIN seconds */
+/** reversing faster than this (px/s, about 55% of a full run) skids; the skid is drawn for at least SKID_MIN seconds (three frames: the engine's reversal itself takes two) */
 export const SKID_SPEED = 160;
-export const SKID_MIN = 0.07;
+export const SKID_MIN = 0.1;
 /** the lean as he sets off from standing (AN-13) */
 export const START_LEAN_TIME = 0.1;
 /** the dust a skid kicks up lives this long (seconds) */
@@ -138,7 +138,8 @@ export class HeroEvents {
     }
     // reversing at a run: he plants his feet and skids, still facing the way he was sliding, and kicks up two puffs
     const reversing = Math.sign(vx) === -facing && speed > 20;
-    if (reversing && speed >= SKID_SPEED && time >= this.skidUntil) {
+    // (the engine's turn bonus takes 160 px/s off in a single frame, so the speed he had the frame before is what counts)
+    if (reversing && Math.max(speed, this.lastSpeed) >= SKID_SPEED && time >= this.skidUntil) {
       this.skidDir = vx > 0 ? 1 : -1;
       this.shownFacing = this.skidDir;
       this.puffs = this.puffs.filter((f) => time - f.t0 < PUFF_LIFE);

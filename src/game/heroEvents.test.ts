@@ -77,8 +77,13 @@ test('reversing at a run skids first, then turns round; the picture never holds 
   for (let i = 0; i < 10; i++, t += dt) ev.track(st(285, 1), t);
   assert.equal(ev.isSkidding(t), false);
   // the thumb flips left: the engine turns him at once, his speed still carries him right
-  ev.track(st(130, -1), t);
-  assert.equal(ev.isSkidding(t), false, 'below skid speed: no skid');
+  ev.track(st(107, -1), t);
+  assert.ok(ev.isSkidding(t), 'the frame after a full run counts, though the engine already took 160 px/s off');
+  const slow = new HeroEvents();
+  t = 1;
+  for (let i = 0; i < 10; i++, t += dt) slow.track(st(120, 1), t);
+  slow.track(st(40, -1), t);
+  assert.equal(slow.isSkidding(t), false, 'from a walk: no skid');
   const ev2 = new HeroEvents();
   t = 1;
   for (let i = 0; i < 10; i++, t += dt) ev2.track(st(285, 1), t);
@@ -92,6 +97,8 @@ test('reversing at a run skids first, then turns round; the picture never holds 
   ev2.track(st(-120, -1), t);
   t += dt;
   ev2.track(st(-240, -1), t);
+  t += dt;
+  ev2.track(st(-285, -1), t);
   assert.equal(ev2.isSkidding(t), false, 'the skid ends once he moves the new way');
   assert.ok(ev2.turnPhase(t) >= 0, 'and the turn plays');
   t += 0.1;

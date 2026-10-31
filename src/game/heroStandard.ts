@@ -160,9 +160,22 @@ export function stdLandFrame(u: number, hard: boolean): string {
 export function stdStartLean(u: number): number {
   return u < 0 ? 0 : 0.16 * (u < 0.6 ? 1 : 1 - (u - 0.6) / 0.4);
 }
-/** the flip, by how far through it he is (0..1): stretched at launch, curled in the middle, opening as he comes round */
-export function stdFlipFrame(u: number): string {
-  return u < 0.2 ? 'rise_fast' : u < 0.78 ? 'tuck' : 'fall_a';
+/**
+ * The flip drawn from Matt's own painted roll (AN-13): curled up, then his forward somersault (tumble, painted about 140 degrees round),
+ * then upside down (flip_inv, about 190), then curled again and opening out. Each picture is turned only by what is left over between
+ * its own painted angle and where the flip is, so the code turns him at most about 85 degrees instead of a whole turn.
+ * angle: the flip's eased angle (heroSprite flipPose), signed the way he turns.
+ */
+const FLIP_PAINTED: Array<[string, number, number]> = [
+  // [frame, from (degrees through the turn), its painted angle]
+  ['tuck', 0, 0], ['tumble', 70, 140], ['flip_inv', 165, 190], ['tuck', 275, 360], ['fall_a', 320, 360],
+];
+export function stdFlip(angle: number, u: number): { name: string; rot: number } {
+  if (u < 0.12) return { name: 'rise_fast', rot: angle };
+  const deg = (Math.abs(angle) * 180) / Math.PI;
+  let pick = FLIP_PAINTED[0];
+  for (const f of FLIP_PAINTED) if (deg >= f[1]) pick = f;
+  return { name: STD_FRAMES[pick[0]] ? pick[0] : 'tuck', rot: Math.sign(angle || 1) * (((deg - pick[2]) * Math.PI) / 180) };
 }
 
 function cycle(list: string[], p: PlayerState): string {
@@ -220,7 +233,8 @@ export function stdPick(
     }
     if (p.isDoubleJumping) {
       const f = flipPose(p.somersaultAngle);
-      return out({ name: stdFlipFrame(f.u), bob: 0, rot: f.angle, centred: true });
+      const fl = stdFlip(f.angle, f.u);
+      return out({ name: fl.name, bob: 0, rot: fl.rot, centred: true });
     }
     // the painted frames already lean into the jump, so the code's lean is only a hint
     return out({ name: stdAirFrame(p.vy), bob: 0, rot: airLean(p.vy) * 0.5 });

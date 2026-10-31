@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   AIR_KICK_STAGES, AIR_PUNCH_STAGES, CLIMB_CYCLE, DEFAULT_STANDARD, KICK_STAGES, MEGA_STAGES, PUNCH_STAGES, RUN_CYCLE, WALK_CYCLE, WALK_MAX,
-  standardEnabled, stdAirFrame, stdAlias, stdBounceFrame, stdDiveFrame, stdFlipFrame, stdHangFrame, stdPick, stdPunchFrame, stdSwingFrame, stdUi,
+  standardEnabled, stdAirFrame, stdAlias, stdBounceFrame, stdDiveFrame, stdFlip, stdHangFrame, stdPick, stdPunchFrame, stdSwingFrame, stdUi,
 } from './heroStandard.ts';
 import { STD_FRAMES, STD_STAND_H } from './heroStandardData.ts';
 import { HERO_FRAMES } from './heroAtlasData.ts';
@@ -22,7 +22,7 @@ test('every frame the loops and stages name is in the atlas', () => {
     assert.ok(STD_FRAMES[n], `${n} is in the atlas`);
   }
   for (let vy = -800; vy <= 1000; vy += 20) assert.ok(STD_FRAMES[stdAirFrame(vy)], `air frame at vy ${vy}`);
-  for (let u = 0; u <= 1; u += 0.05) assert.ok(STD_FRAMES[stdFlipFrame(u)], `flip frame at ${u}`);
+  for (let u = 0; u <= 1; u += 0.05) assert.ok(STD_FRAMES[stdFlip(u * Math.PI * 2, u).name], `flip frame at ${u}`);
   for (let vy = 0; vy <= 1000; vy += 50) assert.ok(STD_FRAMES[stdDiveFrame(vy)], `dive frame at vy ${vy}`);
   for (const k of ['stomp', 'big', 'spring'] as const) {
     for (let t = 0; t < 1.7; t += 0.02) {
@@ -89,7 +89,11 @@ test('the run cycle steps through all of its frames as the stride turns', () => 
 });
 
 test('the flip tucks in the middle and the vine swing turns the body about the feet', () => {
-  assert.equal(stdFlipFrame(0.5), 'tuck');
+  // the painted roll: curled, the somersault, upside down, curled, opening out; the code only turns him what the paint leaves over
+  const names = [0.3, 1.5, 3.2, 5.0, 5.9].map((a) => stdFlip(a, 0.5).name);
+  assert.deepEqual(names, ['tuck', 'tumble', 'flip_inv', 'tuck', 'fall_a']);
+  for (let a = 0; a <= Math.PI * 2; a += 0.05) assert.ok(Math.abs(stdFlip(a, 0.5).rot) < 1.6, `at most ~90 degrees of code turn at ${a}`);
+  for (const a of [0.3, 1.5, 3.2, 5.0]) assert.equal(stdFlip(-a, 0.5).rot, -stdFlip(a, 0.5).rot, 'turned the way he turns');
   const c = stdPick(player({ grounded: false, isDoubleJumping: true, somersaultAngle: 3 }), 1, calm)!;
   assert.equal(c.centred, true);
   assert.ok(typeof c.rot === 'number' && c.rot !== 0);

@@ -52,7 +52,7 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
       e.update(1 / 30);
       e.render();
       const c = document.querySelector('canvas'); const r = c.getBoundingClientRect(); const cam = e.camera ?? {};
-      return [pl.x, pl.y, pl.vx, pl.vy, pl.facing, pl.grounded ? 1 : 0, cam.x ?? 0, cam.y ?? 0, cam.zoom ?? 1, r.width]; });
+      return [pl.x, pl.y, pl.vx, pl.vy, pl.facing, pl.grounded ? 1 : 0, cam.x ?? 0, cam.y ?? 0, e.zoom ?? 1, r.width]; });
     trace.push(s.slice(0, 6).map((v) => Math.round(v * 1000) / 1000));
     box.push(s);
     await p.screenshot({ path: join(dir, `f${String(i).padStart(5, '0')}.png`) });

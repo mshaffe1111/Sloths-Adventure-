@@ -144,7 +144,7 @@ export function isCalm(p: PlayerState, time: number, ev: ClipCalm): boolean {
  */
 export const MOVE_SHEETS: Record<string, string> = {
   run: 'move-run', walk: 'move-walk', jab: 'move-jab', cross: 'move-cross', hook: 'move-hook', kick: 'move-kick', kick2: 'move-kick2', mega: 'move-mega',
-  climb: 'move-climb', swing: 'move-swing', jump: 'move-jump',
+  climb: 'move-climb', swing: 'move-swing', jump: 'move-jump', flip: 'move-flip',
 };
 /** the climb sheet is one full hand-over-hand cycle (left reach, right reach) over this much height */
 export const CLIMB_CYCLE_PX = 110;
@@ -182,6 +182,12 @@ export function moveIndex(n: number, u: number): number {
 export function swingU(ahead: number): number {
   return Math.max(0, Math.min(1, (ahead / SWING_REACH + 1) / 2));
 }
+/** pure: how far through the flip sheet (0 take-off .. 1 opened out) the engine's somersault angle is: one turn (eased), then it stays at the end */
+export function flipU(somersaultAngle: number): number {
+  const u = Math.min(1, Math.abs(somersaultAngle) / (Math.PI * 2));
+  // eased as the code-turned flip was (heroSprite flipPose): a quick middle, a gentle start and finish
+  return Math.min(0.999, u * u * (3 - 2 * u));
+}
 /** pure: how far through the jump sheet (0 take-off .. 1 falling fast) a vertical speed is */
 export function jumpU(vy: number): number {
   return Math.max(0, Math.min(1, (vy - JUMP_VY[0]) / (JUMP_VY[1] - JUMP_VY[0])));
@@ -209,7 +215,13 @@ export function movePick(p: PlayerState): ClipFrame | null {
     const ahead = (p.swingAngle ?? 0) * p.facing;
     return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, swingU(ahead)));
   }
-  // an ordinary jump (not the flip, a dive or a bounce, which keep their own frames): take-off, the top, the fall, by vertical speed
+  // the double jump's flip, painted all the way round (AN-13): the frame follows how far through the turn he is (heroSprite flipPose)
+  if (!p.grounded && !p.hanging && p.isDoubleJumping && !p.diving && !p.bounce) {
+    const sheet = MOVE_SHEETS.flip;
+    if (!hasClip(sheet)) return null;
+    return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, flipU(p.somersaultAngle)));
+  }
+  // an ordinary jump (not a dive or a bounce, which keep their own frames): take-off, the top, the fall, by vertical speed
   if (!p.grounded && !p.hanging) {
     const sheet = MOVE_SHEETS.jump;
     if (p.isDoubleJumping || p.diving || p.bounce || !hasClip(sheet)) return null;
