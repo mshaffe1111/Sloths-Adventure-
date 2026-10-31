@@ -560,3 +560,4 @@ Report each finding with the stage, the moment (s), upright or sideways, Easy or
 
 - 2026-10-31 ~7:45 AM ET: W8 Roost Loft (8-1 puzzle room) OK'd by lead. Helper does the polish before curation: painted roost branch (w8roost) for the loft, painted seed pods for the pebbles. Stills sent to Matt. Dot lines (night pieces, loft) go to Matt one at a time.
 - 2026-10-31 ~7:50 AM ET: Matt approved all W8 Dot lines as written (Roost Loft door/pebble/open lines and both hints; night pieces: sleeping bats, moon flower, bats stirring). Helper told.
+- 2026-10-31 ~8:00 AM ET: W8 loft polish in (w8-merge 8710f5bd: roost branch, seed pods). Lead OK'd curation wiring with 3 fixes: visible lever, door that reads locked/open, portrait framing showing pile+knot+door.
