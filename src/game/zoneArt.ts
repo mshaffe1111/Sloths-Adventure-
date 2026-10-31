@@ -712,6 +712,7 @@ export function drawDarkness(
   ctx.restore();
   // the fireflies themselves: small warm points in each light (World 3's lights are glowworms, drawn by the stage)
   if (opts.fireflies === false) return;
+  const fly = glowPic('#fde047', 'fly');
   ctx.save();
   ctx.globalAlpha = level;
   for (let i = 0; i < lights.length; i++) {
@@ -721,14 +722,8 @@ export function drawDarkness(
       const a = t * (0.6 + k * 0.13) + i * 3 + k * 1.7;
       const fx = l.x + Math.cos(a) * (l.r * 0.42) * (0.5 + 0.5 * Math.sin(a * 0.7 + k));
       const fy = l.y + Math.sin(a * 1.3) * 34;
-      const glow = ctx.createRadialGradient(fx, fy, 0, fx, fy, 9);
-      glow.addColorStop(0, 'rgba(254, 249, 195, 1)');
-      glow.addColorStop(0.4, 'rgba(253, 224, 71, 0.65)');
-      glow.addColorStop(1, 'rgba(253, 224, 71, 0)');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(fx, fy, 9, 0, Math.PI * 2);
-      ctx.fill();
+      // (the baked firefly glow, glow.ts: a gradient per firefly per frame was 102 a frame on 8-4, the draw check)
+      ctx.drawImage(fly, fx - 9, fy - 9, 18, 18);
     }
   }
   ctx.restore();
