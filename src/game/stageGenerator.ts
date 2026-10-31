@@ -2857,7 +2857,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     // clear of the stumps and pickups around the flag (easyMode.ts heartBy): a rolled stage's flag can stand beside anything)
     let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
     [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
-    const done = finishStage(stage, validateStage(stage).reachableIds);
+    const done = finishStage(stage, validateStage(stage, { rooms: false }).reachableIds);
     // (World 5's dressing sets, once the pickups are all placed, so none is covered: artDress.ts dressSets)
     addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);
     return done;
@@ -2892,7 +2892,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (the secret gate's stage gets two more platforms from addSecrets, which the stored answer does not know about: it is checked afresh)
   const acceptedIds = lastAccepted && lastAccepted.key === `${config.id}@${attempt}` && config.id !== SECRET_GATE_LEVEL ? lastAccepted.ids : undefined;
   lastAccepted = null;
-  const done = finishStage(stage, acceptedIds ?? validateStage(stage).reachableIds);
+  const done = finishStage(stage, acceptedIds ?? validateStage(stage, { rooms: false }).reachableIds);
   // (Worlds 8-10's dressing sets, Matt's props-made pieces: artDress.ts dressSets)
   addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);
   return done;
@@ -2984,7 +2984,8 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
   if (!find) return;
   // (the snail is out in the open, like a note: he is just touched)
   const hidden = find.kind !== 'note' && find.kind !== 'snail';
-  const reach = new Set(reachableIds ?? validateStage(stage).reachableIds);
+  // (the reach only: levelCheck CheckOptions.rooms)
+  const reach = new Set(reachableIds ?? validateStage(stage, { rooms: false }).reachableIds);
   const cps = (stage.checkpoints ?? []).map((c) => c.x);
   // (World 5's carvings, Meeca's messages cut into trunks 124 wide, are in by now (gen2's finish runs before this): a fern never stands at one)
   const carvings = ((stage as { proto?: { w5?: { carvings?: Array<{ x: number }> } } }).proto?.w5?.carvings ?? []).map((c) => c.x);

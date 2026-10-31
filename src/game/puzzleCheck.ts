@@ -91,6 +91,9 @@ export function kitSolved(stage: GeneratedStage): GeneratedStage {
 }
 
 /** check every room of the stage; the errors (none: every room can be solved, and nothing in one can be lost for good) */
+/** how far either side of a room its check walks (px) */
+const ROOM_WINDOW = 2000;
+
 export function checkRooms(stage: GeneratedStage, graphFor: GraphFor): string[] {
   const out: string[] = [];
   (stage.kit?.rooms ?? []).forEach((room, ri) => out.push(...checkRoom(stage, ri, room, graphFor)));
@@ -397,7 +400,12 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       [0, 1].forEach((k) => endY.set(kitPlatId(ri, ss.spec.id, k), ss.y + dy[k]));
     });
     // (a trap chair's seat is never ground to stand on and go on from: it holds whoever sits, and pops them off the way they came)
-    const plats = stage.platforms.filter((p) => !kitIds.has(p.id) && !unlit.has(p.id) && !chairIds.has(p.id)).map((p) => {
+    // (only the ground about the room, ROOM_WINDOW px either side: he comes in at its left edge and is done on the ground past its way on,
+    // so the stage's far boughs never enter its walk; the whole stage made each layout's graph cost most of a room stage's build, 8-3
+    // about 0.9 s of 1.1 s, 2026-10-31)
+    // (and the ground under the spawn and the shrine, which the level check's walk needs to run at all)
+    const near = (p: Platform) => (p.x + p.width > box.x0 - ROOM_WINDOW && p.x < box.x1 + ROOM_WINDOW) || (p.x <= stage.spawnX && p.x + p.width >= stage.spawnX) || (p.x <= stage.exitTotemX && p.x + p.width >= stage.exitTotemX);
+    const plats = stage.platforms.filter((p) => near(p) && !kitIds.has(p.id) && !unlit.has(p.id) && !chairIds.has(p.id)).map((p) => {
       const li = lifts.findIndex((l) => kitPlatId(ri, l.spec.id, 0) === p.id);
       if (li >= 0) return { ...p, y: p.y - lifts[li].spec.rise * lv[li] };
       if (endY.has(p.id)) return { ...p, y: endY.get(p.id)!, broken: false };
@@ -411,7 +419,7 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       return ledges.some((l) => kitPlatId(ri, l.spec.id, 0) === p.id) ? { ...p, broken: false } : p;
     });
     const lad = new Set(ladders.filter((_, i) => down[i]).map((la) => la.spec.vine));
-    const g = graphFor(plats, walls, stage.vines.filter((v) => !v.kit || lad.has(v.id)).map((v) => (lad.has(v.id) ? { ...v, kit: false, off: false } : v)));
+    const g = graphFor(plats, walls, stage.vines.filter((v) => (!v.kit || lad.has(v.id)) && v.x > box.x0 - ROOM_WINDOW && v.x < box.x1 + ROOM_WINDOW).map((v) => (lad.has(v.id) ? { ...v, kit: false, off: false } : v)));
     const piece = (pid: number, x: number) => g.plats.find((q) => (q.id === pid) && x >= q.x - 1 && x <= q.x + q.width + 1) ?? null;
     // walking with his hands full: along a piece, up a small step, off an edge onto whatever is below it
     const carry = new Map<string, Set<string>>();
