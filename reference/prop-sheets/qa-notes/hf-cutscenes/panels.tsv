@@ -1,0 +1,800 @@
+pro	0	world1/day	sparkles		milo,bloom	Narrator: Morning came down through the canopy one branch at a time. Pokey's bra
+pro	1	world1/day	sparkles		milo,dot	Dot: I'm sorry, I'm so sorry I'm late. I have letters. Important letters. I
+pro	2	world1/day	sparkles		milo,dot	Pokey: Well. It seems to me that it's still morning.
+pro	3	world1/day	sparkles		milo,dot	Dot: Yesterday morning. I meant yesterday morning.
+pro	4	world1/day	sparkles		milo,dot	Pokey: Oh. Well, you're really late then.
+pro	5	world1/day	sparkles		milo,dot	Dot: There was a headwind over the river, I hit it head on, and then there 
+pro	6	world1/day	sparkles		milo,dot	Narrator: She stopped and looked at him properly.
+pro	7	world1/day	sparkles		milo,dot	Dot: You look thin. Have you lost weight? Have you been eating?
+pro	8	world1/day	petals		milo,daisy,bloom,dot	Meeca: Dot. If I've told you once, I've told you twice. It's fine. It's just 
+pro	9	world1/day	sparkles		milo,daisy,bloom,dot	Pokey: I'm looking. I'm looking.
+pro	10	world1/day	sparkles		milo,daisy,bloom,dot	Meeca: It's never opened for me. Not once. Not since Grandma. Everybody sit d
+pro	11	world4/day	petals		bloom	Narrator: The Heartbloom is older than the oldest tree here. While it stays open
+pro	12	world4/day	sparkles		bloom	Narrator: It opens for one keeper at a time. For fifty years that was Meeca's gr
+pro	13	world1/day	sparkles		milo,daisy,bloom,dot	Pokey: How long are we gonna sit here and watch it?
+pro	14	world1/day	sparkles		milo,daisy,bloom,dot	Meeca: All day, if it takes all day.
+pro	15	world1/day	sparkles		milo,daisy,bloom,dot	Pokey: I'm happy for you. I really am. But sitting here staring at it isn't g
+pro	16	world1/day	sparkles		milo,daisy,bloom,dot	Meeca: You once sat and watched a snail win a race.
+pro	17	world1/day	sparkles		milo,daisy,bloom,dot	Pokey: Of course I did. He trained for it.
+pro	18	world1/day	sparkles		milo,daisy,bloom,dot	Dot: Well, you can't watch a flower all day on an empty stomach. I'll go ge
+pro	19	world1/dusk	none		milo,daisy,bloom,dot	Narrator: She was already lifting off the branch when the birds went quiet. Ever
+pro	20	world1/dusk	rain		milo,daisy,bloom,dot	Narrator: Dot stopped in the air. And way off in the distance, up in the Highlan
+pro	21	world1/dusk	sparkles		milo,daisy,bloom,dot	Pokey: Did I just hear thunder? You know how I feel about thunder.
+pro	22	world1/dusk	sparkles		cel:PN,daisy,bloom,dot	Narrator: His hands were already on the branch. Both of them.
+pro	23	world1/dusk	sparkles		cel:PN,daisy,bloom,dot	Pokey: It's only weather. It's only weather.
+pro	24	world1/dusk	sparkles		cel:PN,daisy,bloom,dot	Narrator: Meeca looked at his hands. Then, to be kind, she looked at the sky. Do
+pro	25	world1/storm	rain		cel:PN,daisy,dot	Dot: That's not weather. Inside. Both of you, inside, right now. Meeca, lea
+pro	26	world1/storm	rain		milo,daisy,bloom	Narrator: The Heartbloom closed up, petal over petal, and its light went out.
+pro	27	world1/storm	sparkles		milo,daisy,boss	Narrator: Soldiers came, in two straight lines. The one in front was bigger than
+pro	28	world1/storm	sparkles		milo,daisy,boss	General Iron-Claw: The General does not knock.
+pro	29	world1/storm	sparkles		milo,daisy,boss	Meeca: It's a garden. There's no door.
+pro	30	world1/storm	sparkles		milo,daisy,boss	General Iron-Claw: That one. She's the keeper. Bring her to me.
+pro	31	world1/storm	sparkles		milo,daisy,boss	Meeca: Excuse me? You're blocking my flower.
+pro	32	world1/storm	sparkles		milo,daisy,boss	General Iron-Claw: Come, little bloom. You're coming with me.
+pro	33	world1/storm	sparkles		milo,daisy,boss	Meeca: Who told you that?
+pro	34	world1/storm	sparkles		milo,daisy,boss	General Iron-Claw: Grab her. We're leaving.
+pro	35	world1/storm	sparkles		milo,daisy,boss	Pokey: Excuse me, sir? I think there's been some kind of misunderstanding her
+pro	36	world1/storm	sparkles		milo,daisy,boss	Pokey: Are you feeling okay? You seem a little grumpy.
+pro	37	world1/storm	sparkles		milo,daisy,boss	General Iron-Claw: The General has flattened forts for less.
+pro	38	world1/storm	sparkles		milo,daisy,boss	General Iron-Claw: One.
+pro	39	world1/storm	sparkles		milo,daisy	Narrator: Pokey looked over at Meeca, and he moved faster than he had ever moved
+pro	40	world1/storm	sparkles		milo,boss	General Iron-Claw: Two.
+pro	41	world1/storm	sparkles		milo,daisy	Narrator: He threw his arms out toward her, reaching for her hand.
+pro	42	world1/storm	sparkles		milo,boss	General Iron-Claw: Three.
+pro	43	world1/storm	petals		milo,daisy_wave	Meeca: Pokey! Pokey, help me! Follow the petals! Follow the petals, Pokey!
+pro	44	world1/storm	sparkles		milo,boss	General Iron-Claw: Him? Save you? He's too slow. He was always too slow. He'll never make
+pro	45	world1/storm	sparkles		milo,dot	Dot: Pokey. Pokey, look at me. Look at me. I'm the fast one. I'll follow th
+pro	46	world1/storm	sparkles		milo	Narrator: And she was gone.
+pro	47	world1/storm	rain		milo	Narrator: Pokey ran.
+pro	48	world1/storm	rain		milo	Narrator: The soldiers weren't even hurrying, and they pulled away from him anyw
+pro	49	world1/storm	rain		milo	Narrator: He tripped over the old root he said good morning to every day, and th
+pro	50	world1/storm	rain		milo	Narrator: When he looked up, they were a line along the ridge. Then they were on
+pro	51	world1/storm	rain	mem	milo,bloom,cel:GR	Narrator: He stood there alone in the rain. And for a second, by the closed-up H
+pro	52	world1/storm	petals	mem	milo,bloom,cel:GR	Grandma: Follow the petals, Pokey.
+pro	53	world1/storm	rain		milo,bloom	Narrator: He blinked the rain out of his eyes. There was nobody there.
+pro	54	world1/storm	rain		milo	Pokey: Was that Meeca's grandma?
+pro	55	world1/dusk	petals		cel:PX	Narrator: On his wrist, the faded petal Meeca had tied there years ago began to 
+pro	56	world1/dusk	rain		milo	Pokey: Hang on, Meeca. I'm coming. I'm slow, but I'm coming.
+pro	57	world4/dusk	sparkles			Narrator: Ten realms lay between Pokey and the Highland Fortress. Each one had a
+w1	0	world1/day	petals		milo	Narrator: The squirrels who lived under the old vine had put up a sign years ago
+w1	1	world1/day	petals		milo	Narrator: They'd been watching him leave for two days now. He was almost out of 
+w1	2	world1/day	petals		milo	Squirrel: Hey! Sloth! Where are you going?
+w1	3	world1/day	petals		milo	Pokey: North.
+w1	4	world1/day	petals		milo	Squirrel: North! At that speed? See you next year!
+w1	5	world1/day	petals		milo	Narrator: Somewhere behind the squirrel, a lot of smaller squirrels laughed.
+w1	6	world1/day	petals		milo	Pokey: I'll write.
+w1	7	world1/day	petals		milo	Narrator: The first petal was stuck to the bark of a kapok tree, pressed flat, a
+w1	8	world1/day	petals		milo	Pokey: She pressed it flat. With a soldier on each arm.
+w1	9	world1/day	petals		milo,dot	Dot: Pokey! Pokey, there you are, oh, thank goodness. Don't move. Don't you
+w1	10	world1/day	petals		milo,dot	Pokey: Historically, not a problem.
+w1	11	world1/day	petals		milo,dot	Dot: Do you know how many pink things there are in this forest? Do you have
+w1	12	world1/day	petals		milo,dot	Pokey: You said you'd be straight back.
+w1	13	world1/day	petals		milo,dot	Narrator: Dot's wing went to the pouch at her side.
+w1	14	world1/day	petals		milo,dot	Dot: I know what I said, I know, and I also said don't you go anywhere with
+w1	15	world1/day	petals		milo,dot	Pokey: Not very fast.
+w1	16	world1/day	petals		milo,dot	Pokey: Did you see her? Is she okay?
+w1	17	world1/day	petals		milo,dot	Dot: She's okay. She's okay. They took her all the way up to the Highlands,
+w1	18	world1/day	petals		milo,dot	Pokey: Did they see you?
+w1	19	world1/day	petals		milo,dot	Dot: One of them looked right at me and said, "Is that a hummingbird?" And 
+w1	20	world1/day	petals		milo,dot	Dot: Okay. Now listen. They put her in a tower. And there's this netting, a
+w1	21	world1/day	petals		milo,dot	Dot: Notes go out. Nothing goes in. I tried to carry one in. Twice. Same th
+w1	22	world1/day	petals		milo,dot	Pokey: So I can't tell her I'm coming.
+w1	23	world1/day	petals		milo,dot	Dot: She knows you're coming.
+w1	24	world1/day	petals		milo,dot	Dot: She's already gotten two notes out through it. I've got both. This is 
+w1	25	world1/day	petals		milo,dot	Dot: "Pokey. If you have this, you found the petal. I put it low so you wou
+w1	26	world1/day	petals		cel:PX	Narrator: Pokey read it again himself, slowly, the part about running.
+w1	27	world1/day	petals		milo,dot	Pokey: Which way?
+w1	28	world1/day	petals		milo,dot	Dot: North. Everything's north. The petals go north.
+w1	29	world1/day	petals		milo,dot,boss	Narrator: On a branch above them, something long shifted its weight. It had been
+w2	0	world2/day	sparkles		milo	Narrator: The Sunlit Riverbank was wide, brown, and in no hurry. A village of sl
+w2	1	world2/day	sparkles		milo,dot	Pokey: Huh. I could live here.
+w2	2	world2/day	sparkles		milo,dot	Dot: Don't you dare.
+w2	3	world2/day	sparkles		milo,dot,cel:TC	Narrator: At the top of the bank, the village crier, Gruntlewick, was reading ou
+w2	4	world2/day	sparkles		milo,dot,cel:PO,cel:TC	Dot: And that's the mailman. With the package. He's been taking that packag
+w2	5	world2/day	sparkles		milo,dot,cel:PO,cel:TC	Narrator: The mailman and Pokey passed each other on the path. They nodded. It t
+w2	6	world2/day	sparkles		milo,dot,cel:TC	Gruntlewick: Young man. You've come a long way. Are your folks behind you? They'll 
+w2	7	world2/day	sparkles		milo,dot,cel:TC	Pokey: Somewhere back there. I think they stopped for lunch.
+w2	8	world2/day	sparkles		milo,dot,cel:TC	Gruntlewick: Ah. Then they'll catch up.
+w2	9	world2/day	sparkles		milo,dot,cel:TC	Pokey: Any day now.
+w2	10	world2/day	sparkles		milo,dot,cel:TC	Narrator: Dot had been in the middle of a sentence. She left it there and went a
+w2	11	world2/day	sparkles		cel:PX	Narrator: Pokey touched the petal on his wrist.
+w2	12	world2/day	sparkles		milo,dot,boss	Narrator: Out on the water, a log was drifting toward the bank, against the curr
+w3	0	world3/night	sparkles		milo	Narrator: The Mossy Grotto was lit from above by glowworms. They hung from the c
+w3	1	world3/night	sparkles		milo,dot	Dot: I don't do dark, Pokey. I do daylight. I'll do a little dusk if I have
+w3	2	world3/night	sparkles		milo,dot	Pokey: Stay close. I'm dim, but I'm steady.
+w3	3	world3/night	sparkles		milo,dot	Dot: Dim and steady. Fine. Don't let go of me.
+w3	4	world3/night	sparkles		milo,dot	Dot: Have you got everything? Petal? Satchel? Ears?
+w3	5	world3/night	sparkles		milo,dot	Narrator: Pokey stopped to listen to the glowworms, and the glowworms noticed. O
+w3	6	world3/night	sparkles		milo,dot	Narrator: Between the stalactites hung the old thorn vines that Meeca's grandma 
+w3	7	world3/night	none		milo,dot,boss	Narrator: On the floor, in the mud, were footprints. Each one was as wide as Pok
+w3	8	world3/night	sparkles		milo,dot,boss	Dot: I'm looking at them with my eyes closed.
+w3	9	world3/night	sparkles		milo,dot,boss	Pokey: That doesn't make them smaller.
+w3	10	world3/night	sparkles		milo,dot,boss	Narrator: Far back in the dark, two eyes opened, and didn't blink. Whatever it w
+w4	0	world4/day	sparkles		milo	Narrator: The vine held. Pokey hung from the end of it, turning a little, over t
+w4	1	world4/day	sparkles		milo,dot	Pokey: I'm looking down.
+w4	2	world4/day	sparkles		milo,dot	Dot: Don't look at the down! Look at the up! The up is nice! Hold on, I've 
+w4	3	world4/day	sparkles		milo,dot	Narrator: She had hold of one of his claws and was pulling with everything she h
+w4	4	world4/day	sparkles		milo,dot	Pokey: Dot. Let go. If I fall, I'm not taking you with me.
+w4	5	world4/day	sparkles		milo,dot	Dot: Don't you dare say that. Don't you dare.
+w4	6	world4/day	sparkles		milo,dot	Narrator: She didn't let go. It took Pokey the better part of an hour to climb u
+w4	7	world4/day	sparkles		milo,dot	Pokey: That wasn't the Prowler. That was the General. He used the Prowler lik
+w4	8	world4/day	sparkles		milo,dot	Dot: I know.
+w4	9	world4/day	sparkles		milo,dot	Pokey: The Prowler said sorry. He was still saying it when the ledge went.
+w4	10	world4/day	sparkles		milo,dot	Pokey: That was a loud horn.
+w4	11	world4/day	sparkles		milo,dot	Dot: It was a horn, Pokey. A horn has somebody on the other end. I always l
+w4	12	world4/day	sparkles		milo,dot	Narrator: Waterfalls as tall as the sky. The water ran cloudy, which the old slo
+w4	13	world4/day	sparkles		milo,dot	Narrator: A feather drifted down out of the mist, as long as Pokey's whole arm.
+w4	14	world4/day	sparkles		milo,dot,boss	Dot: That's Her Majesty the Sky Sovereign, so please, please be polite. She
+w4	15	world4/day	sparkles		milo,dot,boss	Pokey: I'll wait till she's done.
+w4	16	world4/day	sparkles		milo,dot,boss	Dot: She started it this morning. It's a very long way down.
+w5	0	world5/day	sparkles		milo	Narrator: The Orchid Sanctuary was the loveliest place on the whole road, and Po
+w5	1	world5/day	sparkles		milo	Narrator: It was barely afternoon, and the orchids were already closing, a few a
+w5	2	world5/day	sparkles		milo,dot	Narrator: On the trunk of the first tree, someone had carved a message with some
+w5	3	world5/day	sparkles		milo	Pokey: She got away from them.
+w5	4	world5/day	sparkles		milo,dot	Dot: She what? No. I followed that column the whole way up. She walked the 
+w5	5	world5/day	sparkles		milo,dot	Narrator: Dot stopped and looked at the letters again.
+w5	6	world5/day	sparkles		milo,dot	Dot: With a hairpin. She's so resourceful. She's the most resourceful perso
+w5	7	world5/day	sparkles		milo,dot	Dot: If she carved one, she carved more. She never leaves just one of anyth
+w5	8	world5/day	sparkles		milo,dot,boss	Narrator: A little table stood in the middle of the path, set for two: china cup
+w5	9	world5/day	sparkles		milo,dot,boss	Pokey: That's very polite.
+w5	10	world5/day	sparkles		milo,dot,boss	Dot: That's what makes it scary.
+w5	11	world5/day	sparkles		milo,dot,boss	Narrator: Pokey looked at the chairs. They looked back.
+w5	12	world5/day	sparkles		milo,dot,boss	Pokey: Dot. Be honest. How bad would it be if I just sat for one minute?
+w5	13	world5/day	sparkles		milo,dot,boss	Dot: You'd be a chair, Pokey. You'd be, forever, a very still chair.
+w6	0	world6/day	sparkles		milo	Narrator: The roots of the Deep Mangrove stood up out of the water in a maze, an
+w6	1	world6/day	sparkles		milo,dot,boss	Pokey: Water that flat has something under it.
+w6	2	world6/day	sparkles		milo,dot,boss	Narrator: Out of the black water, a spear rose, slowly. It turned to look at the
+w6	3	world6/day	sparkles		milo,dot,boss	Dot: Did the water just look at us?
+w6	4	world6/day	sparkles		milo,dot,boss	Pokey: Somebody's holding it.
+w6	5	world6/day	sparkles		milo,dot,boss	Dot: That's worse, that's so much worse, I'm fine, I've backed up about nin
+w6	6	world6/day	sparkles		milo,dot	Dot: "Pokey, the Reaver eats lunch at noon. Do NOT meet him at noon." That'
+w6	7	world6/day	sparkles		milo,dot	Pokey: What time is it?
+w6	8	world6/day	sparkles		milo,dot	Dot: Noon. It's noon. I can see the sun, right there, straight down through
+w7	0	plate:ruins	sparkles		milo,flicker	Narrator: The temple door stood slightly open. Meeca had come through here. So, 
+w7	1	plate:ruins	sparkles		milo,flicker	Narrator: The vines on the old walls hung brown. When he touched one, it didn't 
+w7	2	plate:ruins	sparkles		milo,flicker	Narrator: He turned to say something to Dot. There was only Flicker, which wasn'
+w7	3	plate:ruins	sparkles		milo,flicker	Narrator: In the first courtyard, ten stone chairs stood in a ring around a crac
+w7	4	plate:ruins	sparkles		milo,flicker	Narrator: An eleventh chair stood a little apart from the ring, plain, with no c
+w7	5	plate:ruins	sparkles		milo,flicker	Pokey: Ten, and him.
+w7	6	plate:ruins	sparkles		milo,boss,flicker	Narrator: From the shadows, something very large began to speak. It took four mi
+w8	0	world8/dusk	sparkles		milo	Narrator: Seven guardians lay behind him. No note had come since the mangrove, a
+w8	1	world8/dusk	sparkles		milo	Pokey: Seven. Two more, and then him.
+w8	2	world8/night	sparkles		milo,boss	Narrator: Flicker went on ahead, and the fireflies came out to meet him as the l
+w8	3	world8/night	sparkles		milo	Narrator: He sat down on a branch to rest his eyes. He was asleep before he'd fi
+w8	4	world8/night	sparkles	mem	milo,daisy	Narrator: Pokey dreamed of the old nest, and the stars over it.
+w8	5	world8/night	petals	mem	cel:PB	Meeca: Hold out your wrist. I'm tying a petal on it. It's off the Heartbloom,
+w8	6	world8/night	sparkles	mem	cel:PB	Pokey: A petal will wilt.
+w8	7	world8/night	sparkles	mem	cel:PA	Meeca: Not this one. Grandma says it lasts exactly as long as somebody is thi
+w8	8	world8/night	sparkles	mem	cel:PA	Pokey: Then it'll last.
+w8	9	world8/night	sparkles	mem	cel:PA	Meeca: Keep it on. Even if I go somewhere you can't follow.
+w8	10	world8/night	sparkles	mem	cel:PH	Pokey: Especially then.
+w8	11	world8/night	petals	mem	cel:PH	Narrator: In the dream, the petal began to glow. It pointed out of the dark, and
+w8	12	world8/night	sparkles		milo,dot	Dot: Wake up, wake up, wake up. You were mumbling, mostly about a petal. I'
+w8	13	world8/night	sparkles		milo,dot,flicker	Narrator: Dot stopped. There was a light on Pokey's satchel strap, and it was lo
+w8	14	world8/night	sparkles		milo,dot,flicker	Dot: Pokey. There's a bug on you. A glowing one.
+w8	15	world8/night	sparkles		milo,dot,flicker	Flicker: Flicker. Hello.
+w8	16	world8/night	sparkles		milo,dot,flicker	Dot: How long has it been glowing at you?
+w8	17	world8/night	sparkles		milo,dot,flicker	Flicker: Since the mangrove. And I'm a he.
+w8	18	world8/night	sparkles		milo,dot,flicker	Dot: Since the mangrove. That's a long time to be glowing at somebody.
+w8	19	world8/night	sparkles		milo,dot,flicker	Dot: I've been doing this his whole life. You've been doing it since a mang
+w8	20	world8/night	sparkles		milo,dot,flicker	Flicker: Then you'll know where he keeps the snacks.
+w8	21	world8/night	sparkles		milo,dot	Pokey: Dot. You came back. You're bleeding.
+w8	22	world8/night	sparkles		milo,dot	Dot: Never mind me, look at you, you've lost weight, have you been eating, 
+w8	23	world8/night	sparkles		milo,dot	Dot: And don't tell me it's the soup, I read the note, everybody's read the
+w8	24	world8/night	sparkles		milo,dot	Dot: I found a seam in the net, behind some kind of cookhouse, that was jus
+w8	25	world8/night	sparkles		milo,dot,flicker	Dot: "Pokey, I bet you're asleep right now. It's fine. I would be too. Keep
+w8	26	world8/night	sparkles		milo,dot,flicker	Pokey: She knows. Meeca knows.
+w8	27	world8/night	sparkles		milo,dot,flicker	Dot: She worked it out by herself, up there, in the dark. She said she trie
+w8	28	world8/night	sparkles		milo,dot,flicker	Pokey: Dot, sit down. I have to tell you something.
+w8	29	world8/night	sparkles		milo,dot,flicker	Dot: I'm sitting. It's hover-sitting. It takes core.
+w8	30	world8/night	sparkles		milo,dot,flicker	Pokey: The General is her grandfather. I found the photograph in the ruins.
+w8	31	world8/night	sparkles		milo,dot,flicker	Dot: I know. I've known since the morning he left. I saw which way he went.
+w8	32	world8/night	sparkles		milo,dot,flicker	Narrator: Dot landed on the branch. Pokey couldn't remember the last time he'd s
+w8	33	world8/night	sparkles		milo,dot,flicker	Pokey: You never said.
+w8	34	world8/night	sparkles		milo,dot,flicker	Dot: I can't tell you half of it. Grandma gave me a letter for him that nig
+w8	35	world8/night	sparkles		milo,dot,flicker	Pokey: She's been up there by herself with all of it.
+w8	36	world8/night	sparkles		milo,dot,flicker	Dot: Yes.
+w8	37	world8/night	sparkles		milo,dot,flicker	Pokey: Then we should go.
+w9	0	world9/dusk	embers		milo,dot,boss,flicker	Narrator: The Volcanic Jungle glowed from underneath. The air tasted like pepper
+w9	1	world9/dusk	embers		milo,dot,boss,flicker	Narrator: A voice boomed, "A visitor!" There was a pause. Then, much smaller, it
+w9	2	world9/dusk	embers		milo,dot,boss,flicker	Dot: "It's cold. I'm fine. He sent up another blanket. Please don't tell hi
+w9	3	world9/dusk	embers		milo,dot,flicker	Pokey: She said thank you to him?
+w9	4	world9/dusk	embers		milo,dot,flicker	Dot: She says thank you to everybody. She said it to a thorn once. It had b
+w9	5	world9/dusk	embers		milo,dot,flicker	Narrator: Behind the smoke, the fortress stood up out of the thunder.
+w10	0	world10/storm	rain		milo,dot,flicker	Narrator: The Stormy Highlands began where the trees stopped, and after that the
+w10	1	world10/storm	rain		milo,dot,flicker	Narrator: The netting was back at the foot of the mountain. Iron thorns, floor t
+w10	2	world10/storm	rain		milo,dot,flicker	Dot: He measured you.
+w10	3	world10/storm	rain		milo,dot,flicker	Pokey: Dot. This is where you go home.
+w10	4	world10/storm	rain		milo,dot,flicker	Dot: No.
+w10	5	world10/storm	rain		milo,dot,flicker	Pokey: The door fits one. You heard the Lieutenant. They've probably sewn the
+w10	6	world10/storm	rain		milo,dot,flicker	Dot: He said he'd sew it badly. He was a tailor's apprentice, and he was te
+w10	7	world10/storm	rain		milo,dot,flicker	Pokey: He's been practicing.
+w10	8	world10/storm	rain		milo,dot,flicker	Narrator: Thunder came down the mountain, long and low. Pokey took hold of the n
+w10	9	world10/storm	rain		milo,dot,flicker	Pokey: It's only weather.
+w10	10	world10/storm	rain		milo,dot,flicker	Narrator: The thunder came again. His hands stayed where they were.
+w10	11	world10/storm	rain		milo	Pokey: I'm afraid of thunder.
+w10	12	world10/storm	rain		milo,dot,flicker	Dot: I know. Everybody knows. You hold things. You held a teacup for forty 
+w10	13	world10/storm	rain		milo,dot,flicker	Narrator: Dot waited for him to laugh. He didn't, and neither did she. She put a
+w10	14	world10/storm	rain		milo,dot,flicker	Narrator: Flicker, on the rock beside them, didn't look away.
+w10	15	world10/storm	rain		milo,dot,flicker	Dot: Pokey. The night your parents went out. There was a warning to give. T
+w10	16	world10/storm	rain		milo,dot,flicker	Dot: They were already out on the far branches. I've never told anybody. I 
+w10	17	world10/storm	rain		milo	Narrator: Pokey didn't say anything. He looked at his hands on the rock, and the
+w10	18	world10/storm	rain		milo,dot,flicker	Dot: You don't have to answer. I need a minute. Don't wait for me.
+w10	19	world10/storm	rain		milo,dot,flicker	Pokey: Dot—
+w10	20	world10/storm	rain		milo,flicker	Narrator: Dot pushed three folded notes into the satchel with one foot, and then
+w10	21	world10/storm	rain		milo	Pokey: Dot?
+w10	22	world10/storm	rain		milo,flicker	Narrator: The thorns hummed in the wind. Pokey stood in the rain. Then he went t
+w10	23	world10/storm	rain		milo,flicker	Narrator: Flicker came and sat on his wrist, next to the petal, and lit the firs
+mid1	0	world1/day	petals		milo,dot	Dot: I've got another one. I was saving it. You looked like you needed it.
+mid1	1	world1/day	petals		milo,dot	Dot: "Pokey. I'm fine. I have a window, a chair, a blanket that smells like
+mid1	2	world10/dusk	none		cel:MS	Narrator: Far away, in a tower, a sloth sat up straight at a desk by a window. S
+mid1	3	world1/day	petals		milo,dot	Pokey: Let me see it.
+mid1	4	world1/day	petals		milo,dot	Narrator: He ran a claw under the writing. The words sat on the line, evenly, fr
+mid1	5	world1/day	petals		milo,dot	Pokey: She falls off the end of the line. Always. She runs out of room and wr
+mid1	6	world1/day	petals		milo,dot	Dot: Look, she even left margins. She had room for—
+mid1	7	world1/day	petals		milo,dot	Narrator: Dot stopped.
+mid1	8	world1/day	petals		milo,dot	Pokey: Yeah.
+mid1	9	world1/day	petals		milo,dot	Narrator: He folded the note along its own creases and put it in the satchel wit
+mid2	0	world2/day	sparkles		milo,cel:PO,cel:TC	Narrator: The village had promised Pokey a raft. They started building it the mo
+mid2	1	world2/day	sparkles		milo,dot	Narrator: Pokey sat on the bank and watched them.
+mid2	2	world2/day	sparkles		milo,dot	Dot: Pokey. Your foot's tapping.
+mid2	3	world2/day	sparkles		milo,dot	Pokey: It is not.
+mid2	4	world2/day	sparkles		milo,dot	Dot: It is. Look at it. I've known you your whole life, and I have never on
+mid2	5	world2/day	sparkles		milo,dot	Narrator: Pokey looked down at his foot. He put his hand on it.
+mid2	6	world2/day	sparkles		milo,dot	Pokey: Is this what it's like for everybody else?
+mid2	7	world2/day	sparkles		milo,dot	Dot: Every single day.
+mid2	8	world2/day	sparkles		milo,dot	Dot: I went back to the netting last night. There was a new one. It's not a
+mid2	9	world2/day	sparkles		milo,dot	Dot: "Every guardian wears an iron collar with thorns on the inside. They s
+mid2	10	world2/day	sparkles		milo,dot	Pokey: The snake kept scratching at his. I thought he had fleas.
+mid2	11	world2/day	sparkles		milo,dot	Dot: Snakes don't get fleas, Pokey.
+mid2	12	world2/day	sparkles		milo,cel:PO	Narrator: Down on the bank, a sloth carefully fitted the first log of the raft i
+mid2	13	world2/day	sparkles		milo,dot	Pokey: She wants me to be nice to the snake.
+mid2	14	world2/day	sparkles		milo,dot	Dot: She was nice to a wasp once. Now it visits. It brings friends.
+mid2	15	world2/day	sparkles		milo,dot	Pokey: What's in the pouch?
+mid2	16	world2/day	sparkles		milo,dot	Dot: It's a thing. It isn't for you.
+mid3	0	world3/night	sparkles		milo,dot	Dot: Okay. I have to tell you something, and I need you to not look at me l
+mid3	1	world3/night	sparkles		milo,dot	Pokey: Like what?
+mid3	2	world3/night	sparkles		milo,dot	Dot: Like that. Remember my bush? When they marched her past it, she emptie
+mid3	3	world3/night	sparkles		milo,dot	Dot: And then there were boots everywhere, so I hid them. In ferns. A lot o
+mid3	4	world3/night	sparkles		milo,dot	Pokey: In ferns.
+mid3	5	world3/night	sparkles		milo,dot	Dot: It was a good plan. The ferns were the problem. All ferns look alike.
+mid3	6	world3/night	sparkles		milo,dot	Pokey: Which ferns?
+mid3	7	world3/night	sparkles		milo,dot	Dot: Ferny ones. Around here, ish. If you crouch down next to the right one
+mid3	8	world3/night	sparkles		milo,dot	Narrator: So the search for Meeca's grandma's things began. A sloth crouched bes
+mid4	0	world4/day	petals		milo,dot	Dot: Okay. The note. Don't be alarmed. It's short.
+mid4	1	world4/day	petals		milo,dot	Pokey: Short.
+mid4	2	world4/day	petals		milo,dot	Narrator: Today's note said, "Still here." That was all of it.
+mid4	3	world4/day	petals		milo,dot	Narrator: Dot kept turning so Pokey would only see one side of her.
+mid4	4	world4/day	petals		milo,dot	Pokey: Dot. Turn around.
+mid4	5	world4/day	petals		milo,dot	Narrator: She didn't, and then she did. There was a bare patch on her tail the s
+mid4	6	world4/day	petals		milo,dot	Dot: It's nothing. It's the netting. It's a scratch. It's nine scratches. I
+mid4	7	world4/day	petals		milo,dot	Pokey: Why do you keep bringing them?
+mid4	8	world4/day	petals		milo,dot	Dot: Two words weigh nothing. I checked. I weighed it against a berry, and 
+mid4	9	world4/day	petals		milo,dot	Pokey: Oh, Dot.
+mid4	10	world4/day	petals		milo,dot	Dot: Don't. I'll cry, and I can't afford the water weight.
+mid5	0	world5/dusk	petals		milo,dot	Narrator: They stopped to rest on a branch where the orchids hung in rows. Pokey
+mid5	1	world5/dusk	petals		milo,dot	Pokey: You're still checking that pouch.
+mid5	2	world5/dusk	petals		milo,dot	Dot: It's a thing. It isn't for you.
+mid5	3	world5/dusk	petals		milo,dot	Pokey: Who's it for?
+mid5	4	world5/dusk	petals		milo,dot	Dot: Somebody I'm scared of.
+mid5	5	world5/dusk	petals		milo,dot	Pokey: The General?
+mid5	6	world5/dusk	petals		milo,dot	Dot: Not of him. Of what it says, and what he does when he reads it, and th
+mid5	7	world5/dusk	petals		milo,dot	Narrator: She stopped.
+mid5	8	world5/dusk	petals		milo,dot	Pokey: Then give it to him when you're ready. Not before.
+mid5	9	world5/dusk	petals		milo,dot	Dot: And what if it's too late by then?
+mid5	10	world5/dusk	petals		milo,dot	Pokey: Slow isn't stopped.
+mid5	11	world5/dusk	petals		milo,dot	Dot: Is that true, or is that just something you say?
+mid5	12	world5/dusk	petals		milo,dot	Pokey: I don't know yet. It hasn't been wrong.
+mid6	0	world6/dusk	petals		milo,dot	Dot: Pokey. I have to tell you something. I tried to make it funny the whol
+mid6	1	world6/dusk	petals		milo,dot	Pokey: Go on.
+mid6	2	world6/dusk	petals		milo,dot	Dot: That was the last note I can get out. They sewed the gap shut the nigh
+mid6	3	world6/dusk	petals		milo	Pokey: We stopped for tea.
+mid6	4	world6/dusk	petals		milo,dot	Dot: We stopped for tea.
+mid6	5	world6/dusk	petals		milo,dot	Dot: I've been all the way around twice looking for another way in. I check
+mid6	6	world6/dusk	petals		milo,dot	Dot: She gave me three at the end. The lunch one was the silly one. There's
+mid6	7	world6/dusk	petals		milo,dot	Dot: She wrote it on a really bad day, and she made me swear to give it to 
+mid6	8	world6/dusk	petals		milo,dot	Pokey: How will I know when I need it?
+mid6	9	world6/dusk	petals		milo,dot	Dot: She said, "He'll know. He'll have stopped."
+mid6	10	world6/dusk	petals		milo,dot	Narrator: Dot had three tail feathers left. The rest were in the net. Pokey saw,
+mid6	11	world6/dusk	petals		milo,dot	Narrator: Dot tucked the sealed note into the satchel with both feet, gently, as
+mid6	12	world6/dusk	petals		milo,dot	Dot: I'm going around. There's always a seam. I'll find the one that's open
+mid6	13	world6/dusk	petals		milo,dot	Pokey: We never agreed on a time.
+mid6	14	world6/dusk	petals		milo	Narrator: Dot went up through the roots. One leaf kept shivering after she was g
+mid6	15	world6/dusk	petals		milo,flicker	Narrator: The leaf kept shivering. Then a small light came down through the root
+mid6	16	world6/dusk	petals		milo,flicker	Flicker: You're Pokey.
+mid6	17	world6/dusk	petals		milo,flicker	Pokey: Most days.
+mid6	18	world6/dusk	petals		milo,flicker	Flicker: Your name's on a tree back in the orchids. I've been behind you ever s
+mid6	19	world6/dusk	petals		milo,flicker	Pokey: Can you get a note to her? Over the net?
+mid6	20	world6/dusk	petals		milo,flicker	Flicker: I tried. It hums when anything touches it. They come running.
+mid6	21	world6/dusk	petals		milo,flicker	Pokey: Who are you?
+mid6	22	world6/dusk	petals		milo,flicker	Flicker: Flicker. Just passing.
+mid6	23	world6/dusk	petals		milo,flicker	Pokey: You've been passing since the orchids.
+mid6	24	world6/dusk	petals		milo,flicker	Flicker: Somebody who owes her.
+mid6	25	world6/dusk	petals		milo,flicker	Narrator: He didn't say any more. He came and sat on the satchel strap.
+mid7	0	world7/dusk	sparkles		milo,flicker	Pokey: Excuse me. Do you know the way up?
+mid7	1	world7/dusk	sparkles		milo,flicker	Narrator: The statue said nothing.
+mid7	2	world7/dusk	sparkles		milo,flicker	Pokey: Thanks for not interrupting.
+mid7	3	world7/dusk	sparkles		milo,flicker	Narrator: Further in, he stopped to listen to the quiet.
+mid7	4	world7/dusk	sparkles		milo,flicker	Pokey: Dot would say this place is older than the river, and she'd have a num
+mid7	5	world7/dusk	sparkles		milo,flicker	Narrator: He left a gap after it, for the answer. Flicker didn't fill it.
+mid7	6	world7/dusk	sparkles		milo,flicker	Narrator: He hummed to fill it, badly.
+mid8	0	world8/night	sparkles		milo,dot,flicker	Narrator: Flicker lit the branch ahead before Dot could say which one.
+mid8	1	world8/night	sparkles		milo,dot,flicker	Dot: I was going to say that one.
+mid8	2	world8/night	sparkles		milo,dot,flicker	Flicker: You can say the next one.
+mid8	3	world8/night	sparkles		milo,dot,flicker	Pokey: Dot, you're humming.
+mid8	4	world8/night	sparkles		milo,dot,flicker	Dot: I'm not humming. I'm vibrating. Humming is on purpose.
+mid8	5	world8/night	sparkles		milo,dot,flicker	Dot: Pokey. A question. It's the middle of the night, I'm asking it out lou
+mid8	6	world8/night	sparkles		milo,dot,flicker	Pokey: Okay.
+mid8	7	world8/night	sparkles		milo,dot,flicker	Dot: It's about a bird. Not me. A bird who's nearly somewhere, and also a d
+mid8	8	world8/night	sparkles		milo,dot,flicker	Pokey: Next branch.
+mid8	9	world8/night	sparkles		milo,dot,flicker	Dot: That's it?
+mid8	10	world8/night	sparkles		milo,dot,flicker	Pokey: That's all I ever do. Then the one after.
+mid8	11	world8/night	sparkles		milo,dot,flicker	Dot: Huh.
+mid8	12	world8/night	sparkles		milo,dot,flicker	Narrator: Dot stopped vibrating somewhere around the next branch.
+mid9	0	world9/dusk	embers		milo,dot,cel:LP,flicker	Narrator: The lantern was back, held low to the ground, which hadn't fooled anyb
+mid9	1	world9/dusk	embers		milo,dot,cel:LP,flicker	Lieutenant Pell: I am so sorry. It is me again. I told the kitchen I was out buying thr
+mid9	2	world9/dusk	embers		milo,dot,cel:LP,flicker	Dot: Pell! I forgive you for the seam.
+mid9	3	world9/dusk	embers		milo,dot,cel:LP,flicker	Lieutenant Pell: Miss Meeca asked me to tell you one thing. She says, "Tell Pokey I'm k
+mid9	4	world9/dusk	embers		milo,dot,cel:LP,flicker	Pokey: Tell her I'll wear it.
+mid9	5	world9/dusk	embers		milo,dot,cel:LP,flicker	Lieutenant Pell: I shall. Sir. Everyone. I am so sorry. I really must go.
+mid9	6	world9/dusk	embers		milo,dot,flicker	Dot: Pokey, you've been quiet since the lava, which is long even for you, a
+mid9	7	world9/dusk	embers		milo,dot,flicker	Pokey: I'm thinking about Meeca's grandfather.
+mid9	8	world9/dusk	embers		milo,dot,flicker	Dot: What about him?
+mid9	9	world9/dusk	embers		milo,dot,flicker	Pokey: Do you think he sleeps?
+mid9	10	world9/dusk	embers		milo,dot,flicker	Dot: No.
+mid9	11	world9/dusk	embers		milo,dot,flicker	Pokey: He ate four bowls of the wrong soup. Somebody who does that isn't slee
+mid9	12	world9/dusk	embers		milo,dot,flicker	Dot: You're going to go up there and ask him, aren't you? Nicely. With your
+mid9	13	world9/dusk	embers		milo,dot,flicker	Pokey: I thought I'd start there.
+mid10	0	world10/storm	rain		milo,flicker	Narrator: Halfway up the mountain, the thunder stopped for a while. In the gap, 
+mid10	1	world10/storm	rain		milo	Narrator: It was a voice, singing softly, and the tune was one he knew.
+mid10	2	world10/storm	rain		cel:MF	Narrator: At a barred window at the top of the mountain, Meeca was singing with 
+mid10	3	world10/storm	rain		milo	Pokey: Meeca.
+mid10	4	world10/storm	petals		milo,flicker	Narrator: He couldn't make out the words from this far away. He took the next st
+mid10	5	world10/storm	rain		milo,dot,flicker	Narrator: Something small came down out of the rain and landed on the step in fr
+mid10	6	world10/storm	rain		milo,dot,flicker	Flicker: You said not to let you stop halfway.
+mid10	7	world10/storm	rain		milo,dot,flicker	Dot: I know what I said. I know what I said.
+mid10	8	world10/storm	rain		milo,dot,flicker	Dot: I got as far as the ridge. I sat there. I'm not doing that again. I'm 
+mid10	9	world10/storm	rain		milo,dot,flicker	Narrator: Flicker's light had gone dim in the rain. Dot moved over and held a wi
+mid10	10	world10/storm	rain		milo,dot,flicker	Pokey: Next step.
+mid10	11	world10/storm	rain		milo,dot,flicker	Dot: Next step.
+gate10	0	world10/storm	rain		milo,dot,flicker	Dot: This is where I go around. The cookhouse seam. I'm going to be at her 
+gate10	1	world10/storm	rain		milo,dot,flicker	Pokey: Dot.
+gate10	2	world10/storm	rain		milo,dot,flicker	Dot: Don't. Go in the front. Flicker, stay with him.
+gate10	3	world10/storm	rain		milo,dot,flicker	Flicker: I will.
+gate10	4	world10/storm	rain		milo,flicker	Narrator: Then she was gone along the wall. Up above, a flash, and a clang like 
+gate10	5	world10/storm	rain		milo	Pokey: Dot?
+bi1	0	world1/day	sparkles		milo,dot,boss	Venom Fang: Ssloth. What are you doing on my branch?
+bi1	1	world1/day	sparkles		milo,dot,boss	Pokey: I'm going to get Meeca back.
+bi1	2	world1/day	sparkles		milo,dot,boss	Venom Fang: You're going to take her from him? From the General. Up there. I was t
+bi1	3	world1/day	sparkles		milo,dot,boss	Venom Fang: You'll have to get through me, ssloth. Take all the time you need.
+bi1	4	world1/day	sparkles		milo,dot,boss	Pokey: I usually do.
+bd1	0	world1/day	sparkles		milo,dot,boss	Venom Fang: Beaten. By a sloth. Not even a fast one. The slowest sloth in the whol
+bd1	1	world1/day	sparkles		milo,dot,boss	Pokey: Wait till the neighbors hear.
+bd1	2	world1/day	sparkles		milo,dot,boss	Venom Fang: If anyone asks, I tied myself in this knot on purpose.
+bd1	3	world1/day	sparkles		milo,dot,boss	Pokey: Sure you did.
+bd1	4	world1/day	sparkles		milo,dot,boss	Venom Fang: Don't look at the collar. It itches. It always itches. She thanked me 
+bd1	5	world1/day	sparkles		milo,dot,boss	Pokey: May I go past now?
+bd1	6	world1/day	sparkles		milo,dot,boss	Venom Fang: You asked. Nobody asks.
+bi2	0	world2/day	sparkles		milo,dot,boss	Crocus Rex: HALT! You stand on the bank of Crocus Rex, King of the Sunlit Riverban
+bi2	1	world2/day	sparkles		milo,dot,boss	Pokey: Nice crown.
+bi2	2	world2/day	sparkles		milo,dot,boss	Crocus Rex: Don't look at it. It's crooked. The little keeper made it for me on th
+bi2	3	world2/day	sparkles		milo,dot,boss	Pokey: It suits you.
+bi2	4	world2/day	sparkles		milo,dot,boss	Crocus Rex: Does it? No. NO. Nice try. It is a matter of professional pride that I
+bd2	0	world2/day	sparkles		milo,dot,boss	Crocus Rex: Upside down! I, Crocus Rex, King of the Sunlit Riverbank, upside down 
+bd2	1	world2/day	sparkles		milo,dot,boss	Pokey: They're pretty slow. You've got a few years.
+bd2	2	world2/day	sparkles		milo,dot,boss	Crocus Rex: My crown! Where is my... oh. There. Fine. You may have the river. The 
+bd2	3	world2/day	sparkles		milo,dot,boss	Pokey: I'll tell her.
+bd2	4	world2/day	sparkles		milo,dot,boss	Crocus Rex: Now go. Before I'm ordered to be unreasonable.
+bi3	0	world3/night	sparkles		milo,dot,boss	Shadow Prowler: Word came down the river that the snake lost to a sloth. I did not bel
+bi3	1	world3/night	sparkles		milo,dot,boss	Shadow Prowler: You will not hit what you cannot find, little sloth. I am the dark bet
+bi3	2	world3/night	sparkles		milo,dot,boss	Pokey: I can wait.
+bi3	3	world3/night	sparkles		milo,dot,boss	Shadow Prowler: Everyone says that. Then they hurry. Everyone hurries. Not one has las
+bi3	4	world3/night	sparkles		milo,dot,boss	Pokey: I never learned how to hurry.
+bd3	0	world3/night	sparkles		milo,dot,boss	Shadow Prowler: Two hours, and you did not look at the sky once. I got tired first. Th
+bd3	1	world3/night	sparkles		milo,dot,boss	Pokey: Two hours? Try two days on a vine sometime.
+bd3	2	world3/night	sparkles		milo,dot,boss	Shadow Prowler: Meeca went north, toward the clouds. The thorns on our necks are calle
+bi4	0	world4/day	sparkles		milo,dot,boss	Sky Sovereign: Nothing climbs my cliffs. State your business, sloth, and keep it shor
+bi4	1	world4/day	sparkles		milo,dot,boss	Pokey: I'm going to get Meeca back.
+bi4	2	world4/day	sparkles		milo,dot,boss	Sky Sovereign: I saw her. She waved. I have orders concerning whatever follows her. Y
+bi4	3	world4/day	sparkles		milo,dot,boss	Pokey: Slowly.
+bi4	4	world4/day	sparkles		milo,dot,boss	Dot: He's very polite, he gets that from me, I mean he doesn't, I'm a bird,
+bi4	5	world4/day	sparkles		milo,dot,boss	Sky Sovereign: The cat says you outwaited him. Cats lie.
+bd4	0	world4/day	sparkles		milo,dot,boss	Sky Sovereign: Enough. I am on the ground. I am never on the ground. The owls will be
+bd4	1	world4/day	sparkles		milo,dot,boss	Pokey: I won't tell anybody.
+bd4	2	world4/day	sparkles		milo,dot,boss	Dot: I'm telling everybody.
+bd4	3	world4/day	sparkles		milo,dot,boss	Sky Sovereign: The cat did not lie, then. The cliff is yours. I am relieved, if you m
+bd4	4	world4/day	sparkles		milo,dot,boss	Pokey: I know. I heard who did.
+bd4	5	world4/day	sparkles		milo,dot,boss	Sky Sovereign: Good. Watch the next collar. The General's hand is on every one of the
+bi5	0	world5/day	sparkles		milo,dot,boss	Tarantula Queen: Welcome, darling. Do stay awhile. Everyone does. Eventually.
+bi5	1	world5/day	sparkles		milo,dot,boss	Pokey: I can't stay. My friend's in a tower.
+bi5	2	world5/day	sparkles		milo,dot,boss	Dot: There's a doily, Pokey. Nothing good has ever had a doily.
+bi5	3	world5/day	sparkles		milo,dot,boss	Tarantula Queen: The eagle sent word a sloth was coming, so I set the table. A week ago
+bi5	4	world5/day	sparkles		milo,dot,boss	Pokey: Sorry I'm late.
+bd5	0	world5/day	sparkles		milo,dot,boss	Tarantula Queen: My webs. All that silk, and a sloth walks straight through it. Well. I
+bd5	1	world5/day	sparkles		milo,dot,boss	Pokey: I'll send a thank-you note.
+bd5	2	world5/day	sparkles		milo,dot,boss	Tarantula Queen: Don't go yet. The pot's still warm. The cat told you to ask how it beg
+bi6	0	world6/dusk	sparkles		milo,flicker,boss	Marsh Reaver: Who wades into the blackwater at noon? Nobody wades at noon. It is LUN
+bi6	1	world6/dusk	sparkles		milo,flicker,boss	Pokey: I know what time it is. I'm not waiting.
+bi6	2	world6/dusk	sparkles		milo,flicker,boss	Marsh Reaver: Wait. You're the sloth. The runners talk about you when they bring my 
+bi6	3	world6/dusk	sparkles		milo,flicker,boss	Pokey: I'm taller upside down.
+bd6	0	world6/dusk	sparkles		milo,flicker,boss	Marsh Reaver: You waded in at LUNCH and won. Lunch has never lost. The runners are g
+bd6	1	world6/dusk	sparkles		milo,flicker,boss	Pokey: Your lunch is getting cold.
+bd6	2	world6/dusk	sparkles		milo,flicker,boss	Marsh Reaver: It is cold now. Hrmph. Go.
+bd6	3	world6/dusk	sparkles		milo,flicker,boss	Narrator: When Pokey looked back, the Reaver had left half his lunch on a root, 
+bi7	0	world7/day	sparkles		milo,flicker,boss	Stone Idol Golem: I... heard... you were... coming. Three... weeks... ago. You... are...
+bi7	1	world7/day	sparkles		milo,flicker,boss	Pokey: First time for everything.
+bi7	2	world7/day	sparkles		milo,flicker,boss	Stone Idol Golem: I... am... the guardian... of this... temple. None... may... pass.
+bi7	3	world7/day	sparkles		milo,flicker,boss	Pokey: Finally. Somebody I can keep up with.
+bi7	4	world7/day	sparkles		milo,flicker,boss	Stone Idol Golem: I... have... waited... a thousand... years. For...
+bd7	0	world7/day	sparkles		milo,flicker,boss	Stone Idol Golem: In... under... an hour. You are... so... fast.
+bd7	1	world7/day	sparkles		milo,flicker,boss	Pokey: Say that again. Slower. I want to enjoy it.
+bd7	2	world7/day	sparkles		milo,flicker,boss	Stone Idol Golem: The rune... is broken. The way up... is open. Behind... the rune...
+bd7	3	world7/day	sparkles		milo,flicker,boss	Pokey: Take your time.
+bd7	4	world7/day	sparkles		milo,flicker,boss	Stone Idol Golem: I... always... do.
+bd7	5	world7/day	sparkles		milo,flicker,boss	Stone Idol Golem: There is... a photograph. The General asked me... to keep it... from y
+bi8	0	world8/night	sparkles		milo,dot,flicker,boss	Night-Wing Monarch: Good evening, little climber. They say you have beaten seven of us. I 
+bi8	1	world8/night	sparkles		milo,dot,flicker,boss	Pokey: I'm going to get Meeca back.
+bi8	2	world8/night	sparkles		milo,dot,flicker,boss	Night-Wing Monarch: I am told to stop you. I will try to do it softly. You talk in your sl
+bi8	3	world8/night	sparkles		milo,dot,flicker,boss	Pokey: I hope I said something nice.
+bd8	0	world8/night	sparkles		milo,dot,flicker,boss	Night-Wing Monarch: Hm. I was asked to stop you softly. I am not sure that counts.
+bd8	1	world8/night	sparkles		milo,dot,flicker,boss	Pokey: You were very soft about it.
+bd8	2	world8/night	sparkles		milo,dot,flicker,boss	Night-Wing Monarch: Will you tell me how it ends? The dream. The bird woke you before the 
+bd8	3	world8/night	sparkles		milo,dot,flicker,boss	Pokey: It ends with me getting there.
+bd8	4	world8/night	sparkles		milo,dot,flicker,boss	Night-Wing Monarch: Ah. A good ending. The Drake is next. He is bad at visitors. Be patien
+bi9	0	world9/dusk	embers		milo,dot,flicker,boss	Magma Drake: You came. Eight of them said you would, and I did not tidy. I am to bu
+bi9	1	world9/dusk	embers		milo,dot,flicker,boss	Pokey: It starts with "I am to burn you." You did that part.
+bi9	2	world9/dusk	embers		milo,dot,flicker,boss	Magma Drake: Don't be... What is that? On your wrist. It glows. Is it for me?
+bi9	3	world9/dusk	embers		milo,dot,flicker,boss	Pokey: No.
+bi9	4	world9/dusk	embers		milo,dot,flicker,boss	Magma Drake: No. Of course not. Then we will see what it can do.
+bd9	0	world9/dusk	embers		milo,dot,flicker,boss	Magma Drake: My fire. A hundred years I kept that going, and the first visitor puts
+bd9	1	world9/dusk	embers		milo,dot,flicker,boss	Pokey: You sound terrible. Have some water. Actually, don't.
+bd9	2	world9/dusk	embers		milo,dot,flicker,boss	Magma Drake: Will you come back? After. Bring tea. Two cups.
+bd9	3	world9/dusk	embers		milo,dot,flicker,boss	Pokey: Maybe. If you tidy.
+bd9	4	world9/dusk	embers		milo,dot,flicker,boss	Magma Drake: Go. Now. Before I say something nice.
+bi10	0	world10/storm	rain		milo,flicker,boss	General Iron-Claw: Nine hundred and ninety-nine steps. One more. The General has broken s
+bi10	1	world10/storm	rain		milo,flicker,boss	Pokey: Still here, sir. I've come for Meeca. Where's Dot?
+bi10	2	world10/storm	rain		milo,flicker,boss	General Iron-Claw: I do not know where your bird is, and I find that I mind. You stopped 
+bi10	3	world10/storm	rain		milo,flicker,boss	Pokey: It was very good tea, sir.
+bi10	4	world10/storm	rain		milo,flicker,boss	General Iron-Claw: Slow gets people killed.
+bi10	5	world10/storm	rain		milo,flicker,boss	Pokey: I know it does, sir. My folks went out in a storm when I was little. T
+bi10	6	world10/storm	rain		milo,flicker,boss	General Iron-Claw: Then you know what it costs. I buried her because help was late. Not a
+bi10	7	world10/storm	rain		milo,flicker,boss	Pokey: I've had a long time to work out who to blame, sir. It was a storm.
+bi10	8	world10/storm	rain		milo,flicker,boss	General Iron-Claw: The General does not lose twice.
+bd10	0	world10/storm	rain		milo,flicker,boss	General Iron-Claw: You climbed every step. Why did you not turn back?
+bd10	1	world10/storm	rain		milo,flicker,boss	Pokey: She was at the top, sir.
+bd10	2	world10/storm	rain		milo,flicker,boss	General Iron-Claw: I left the door open. I told myself it was a trap.
+bd10	3	world10/storm	rain		milo,flicker,boss	Pokey: It was a good door, sir. It fit.
+mem-waiting	0	world1/day	sparkles	mem	milo	Narrator: Pokey remembered the day they met. He'd been crossing a single vine fo
+mem-waiting	1	world1/day	sparkles	mem	milo	Narrator: Below him, a squirrel was nailing up a sign. It said THE SLOTH.
+mem-waiting	2	world1/day	sparkles	mem	milo,daisy	Meeca: You've been on this vine two days. Is it a good vine?
+mem-waiting	3	world1/day	sparkles	mem	milo,daisy	Pokey: Very good. I'm nearly halfway.
+mem-waiting	4	world1/day	sparkles	mem	milo,daisy	Meeca: Halfway to what?
+mem-waiting	5	world1/day	sparkles	mem	milo,daisy	Pokey: The other side.
+mem-waiting	6	world1/day	sparkles	mem	milo,daisy	Meeca: And what's on the other side?
+mem-waiting	7	world1/day	sparkles	mem	milo,daisy	Pokey: I've lost track. It's still a good vine.
+mem-waiting	8	world1/day	sparkles	mem	milo,daisy	Narrator: Every other cub who came along that branch had said "Hurry up" or "Can
+mem-waiting	9	world1/day	sparkles	mem	milo,daisy	Meeca: Then I'll wait. I brought breakfast.
+mem-waiting	10	world1/day	sparkles	mem	milo,daisy	Pokey: Won't you be bored?
+mem-waiting	11	world1/day	sparkles	mem	milo,daisy	Meeca: Nobody's ever let me look at anything this long.
+mem-waiting	12	world1/day	petals	mem	milo,daisy	Narrator: She waited six hours. When he got to the end of the vine, she was stil
+mem-horn	0	world3/glow	sparkles		milo,dot	Narrator: They came out of the Grotto at dawn, the way you come out of a long sl
+mem-horn	1	world3/glow	sparkles		milo,dot	Dot: We did it. You did it. I was there, and I was loud.
+mem-horn	2	world3/glow	sparkles		milo,dot	Pokey: You were really loud. It helped.
+mem-horn	3	world3/glow	sparkles		milo,dot	Narrator: To the north, past the last of the trees, a dark point stood on the ho
+mem-horn	4	world3/glow	sparkles		milo,dot,boss	Pokey: She's up there.
+mem-horn	5	world3/glow	sparkles		milo,dot,boss	Dot: And the weather lives up there too. I've been trying not to say it.
+mem-horn	6	world3/glow	sparkles		milo,dot,boss	Shadow Prowler: North, past the falls. Follow the wind, not the path. And, sloth. When
+mem-horn	7	world3/glow	sparkles		milo,dot,boss	Pokey: What horn?
+mem-horn	8	world3/storm	none		milo,dot,boss	Narrator: The note came down out of the north. It was so low he felt it in his f
+mem-horn	9	world3/storm	sparkles		milo,dot,boss	Narrator: It rolled on and on, like thunder. Pokey grabbed the ledge.
+mem-horn	10	world3/storm	sparkles		milo,dot,boss	Narrator: The collar on the Prowler's neck turned the red of a coal. His eyes we
+mem-horn	11	world3/storm	sparkles		milo,dot,boss	Shadow Prowler: Run. Run, little one. I cannot—
+mem-horn	12	world3/storm	sparkles		milo,dot,boss	General Iron-Claw: Prowler. The ledge.
+mem-horn	13	world3/storm	sparkles		milo,dot,boss	Narrator: The Prowler's claws came down on the ledge. He fought them every inch 
+mem-horn	14	world3/storm	sparkles		milo,dot,boss	Shadow Prowler: Forgive me, little one. Forgive me.
+mem-horn	15	world3/storm	none		dot	Narrator: The ledge went the way a dropped plate goes. Dot screamed Pokey's name
+mem-map	0	plate:warroom	none			Narrator: The General had started with a box of forty pins, one for every night 
+mem-map	1	plate:warroom	none			Narrator: The pins had run out the week before. Now there were forks standing in
+mem-map	2	plate:warroom	none		cel:GN	General Iron-Claw: Forty-four.
+mem-map	3	plate:warroom	none		cel:GN,cel:LP	Lieutenant Pell: Sir, I am sorry to interrupt. I am also sorry to report that the mess 
+mem-map	4	plate:warroom	none		cel:GN,cel:LP	General Iron-Claw: Spoons.
+mem-map	5	plate:warroom	none		cel:GN,cel:LP	Lieutenant Pell: Sir, the spoons are for the soup. I am sorry. People will notice. Sir.
+mem-map	6	plate:warroom	none		cel:GN,cel:LP	Narrator: Pell went away and came back with a tray of spoons.
+mem-map	7	plate:warroom	none		cel:GN,cel:LP	Narrator: The General laid his paw flat on the map. The last fork stood four fin
+mem-map	8	plate:warroom	none		cel:GN,cel:LP	General Iron-Claw: He has not gone around anything. Not the river. Not the Grotto. He wal
+mem-map	9	plate:warroom	none		cel:GN,cel:LP	Lieutenant Pell: That is very foolish of him, sir.
+mem-map	10	plate:warroom	none		cel:GN,cel:LP	General Iron-Claw: Yes.
+mem-map	11	plate:warroom	none		cel:GN,cel:LP	General Iron-Claw: Lieutenant. The prisoner will have a blanket. That is an order. It is 
+mem-map	12	plate:warroom	none		cel:GN,cel:LP	Lieutenant Pell: Yes, sir. Not from you, sir.
+mem-map	13	plate:warroom	none		cel:GN,cel:LP	General Iron-Claw: Go to bed, Lieutenant. Leave the lantern.
+mem-map	14	plate:warroom	none		cel:GN,cel:LP	Lieutenant Pell: Yes, sir. Good night, sir. I am sorry about the spoons.
+mem-map	15	plate:warroom	none		cel:GN	Narrator: When the door had closed, the General took a spoon from the tray and d
+mem-map	16	plate:warroom	none		cel:GN	General Iron-Claw: I used to walk straight through.
+mem-map	17	plate:warroom	none		cel:GN	General Iron-Claw: Forty-five.
+mem-garden	0	world5/glow	sparkles	mem	daisy,cel:GR,bloom	Narrator: The Heartbloom garden, years ago. Meeca's grandma was teaching her how
+mem-garden	1	world5/glow	sparkles	mem	daisy,cel:GR,bloom	Grandma: Don't fuss at it, dear. Sit.
+mem-garden	2	world5/glow	sparkles	mem	daisy,cel:GR,bloom	Meeca: But how will I know it's happy?
+mem-garden	3	world5/glow	sparkles	mem	daisy,cel:GR,bloom	Grandma: When it opens. Until then, you bring a chair, and you sit with it, and
+mem-garden	4	world5+photo:s4_07	sparkles	mem		Narrator: Young Pokey, all elbows, was watering the wrong plant, very carefully.
+mem-garden	5	world5/glow	sparkles	mem	milo,daisy,bloom,cel:GR	Pokey: I think I watered the fern.
+mem-garden	6	world5/glow	sparkles	mem	milo,daisy,bloom,cel:GR	Meeca: You watered the fern, the snail, and my sandal.
+mem-garden	7	world5/glow	sparkles	mem	milo,daisy,bloom,cel:GR	Grandma: Thank you for watering it anyway, Pokey. The fern never gets any. That
+mem-garden	8	world5/glow	sparkles	mem	milo,daisy,bloom,cel:GR	Pokey: It's Monday.
+mem-garden	9	world5/glow	sparkles	mem	milo,daisy,bloom,cel:GR	Grandma: You're staying for supper, Pokey. You always are.
+mem-garden	10	world5/glow	petals	mem	milo,daisy,bloom,cel:GR	Narrator: The frond unrolled another inch while they argued about the sandal.
+mem-tea	0	plate:tea	petals		milo,dot,boss	Narrator: The Tarantula Queen didn't bow. She laid out four cups, a plate of sma
+mem-tea	1	plate:tea	petals		milo,dot,boss	Tarantula Queen: Sit. I know you're in a hurry. Sit anyway. I haven't poured for anyone
+mem-tea	2	plate:tea	petals		milo,dot,boss	Dot: Pokey, it's a trap.
+mem-tea	3	plate:tea	petals		milo,dot,boss	Pokey: It's a tea.
+mem-tea	4	plate:tea	petals		milo,dot,boss	Dot: It's a trap with cookies, which is the worst kind. I'm not drinking an
+mem-tea	5	plate:tea	petals		milo,dot,boss	Narrator: Pokey drank the whole cup, down to the leaves. The Queen watched every
+mem-tea	6	plate:tea	petals		milo,dot,boss	Dot: Sip. Don't gulp. She's watching you gulp.
+mem-tea	7	plate:tea	petals		milo,dot,boss	Tarantula Queen: You'll forgive an old queen for asking. It's a long road, and the High
+mem-tea	8	plate:tea	petals		milo	Pokey: Because she waited for me once.
+mem-tea	9	plate:tea	petals		milo,dot,boss	Tarantula Queen: Ah.
+mem-tea	10	plate:tea	petals		milo,dot,boss	Tarantula Queen: Mind that chair. I dust it every morning. He always put his feet up on
+mem-tea	11	plate:tea	petals		milo,dot,boss	Pokey: Who sat there?
+mem-tea	12	plate:tea	petals		milo,dot,boss	Tarantula Queen: Iron-Claw. Before he was anyone's General. Then came the storm. His wi
+mem-tea	13	plate:tea	petals		milo,dot,boss	Tarantula Queen: We said yes. All but one of us. That's all the Pact is. I poured him a
+mem-tea	14	plate:tea	petals		milo,dot,boss	Tarantula Queen: Her flower puts our thorns to sleep, darling. The morning it opened, h
+mem-tea	15	plate:tea	petals		milo	Pokey: In a storm.
+mem-tea	16	plate:tea	petals		milo	Narrator: Pokey held the cup until it went cold.
+mem-tea	17	plate:tea	petals		milo,dot,boss	Tarantula Queen: Have another cake, darling.
+mem-tea	18	plate:tea	petals		milo,dot,boss	Narrator: Dot had been quiet the whole time. Her wing rested on the little pouch
+mem-tea	19	plate:tea	petals		milo,boss	Narrator: When Pokey stood to leave, the cup at the head of the table was still 
+mem-sealed	0	world6/dusk	none		milo	Narrator: Past the Reaver's water, the ground went up in steps of root, and Poke
+mem-sealed	1	world6/dusk	none		milo	Narrator: He'd been walking for months. Under the satchel strap, his fur had wor
+mem-sealed	2	world6/dusk	none		milo	Narrator: A snail overtook him on the left. Pokey tipped his head to it. It didn
+mem-sealed	3	world6/dusk	none		milo	Pokey: I'm tired.
+mem-sealed	4	world6/dusk	none		milo	Narrator: Flicker had gone ahead to light the next root. He said it again anyway
+mem-sealed	5	world6/dusk	none		milo	Narrator: The petal on his wrist kept pointing north. He turned his wrist over s
+mem-sealed	6	world6/dusk	none		milo	Narrator: Then he sat down on a root and didn't look at the next one.
+mem-sealed	7	world6/dusk	none		milo	Narrator: He took the sealed note out of the satchel. The last word of every lin
+mem-sealed	8	world6/dusk	petals	mem	milo,daisy	Meeca: Pokey. If you're reading this, you've stopped. Good. Take the satchel 
+mem-sealed	9	world6/dusk	none		milo,daisy	Meeca: I'm not going to tell you to hurry. This is what I sing to the Heartbl
+mem-sealed	10	world6/dusk	none		milo,daisy	Meeca: ♪ Slow the rain, slow the thunder. Slow the thorn that holds you under
+mem-sealed	11	world6/dusk	none		milo,daisy	Meeca: That's the whole spell. I know it isn't much. I'm not counting, Pokey.
+mem-sealed	12	world6/dusk	petals		cel:PX	Narrator: Pokey read it three times. He put it back in the satchel, took the sat
+mem-storm	0	plate:nest-night	rain	mem	milo	Narrator: A storm, in the old nest. Pokey was small, and the nest was bigger tha
+mem-storm	1	plate:nest-night	rain	mem	milo,daisy	Pokey: It's only weather.
+mem-storm	2	plate:nest-night	rain	mem	milo,daisy	Meeca: You're holding the nest with both hands.
+mem-storm	3	plate:nest-night	rain	mem	milo,daisy	Pokey: It's a very good nest. I want it to stay.
+mem-storm	4	plate:nest-storm	rain	mem	milo	Narrator: It had been his parents' nest. He remembered a few small things about 
+mem-storm	5	plate:nest-storm	rain	mem	milo	Narrator: On a night like this one they'd gone out along the far branches, and a
+mem-storm	6	plate:nest-night	rain	mem	milo,daisy	Meeca: Can I sit?
+mem-storm	7	plate:nest-night	rain	mem	milo,daisy	Pokey: It's small.
+mem-storm	8	plate:nest-night	rain	mem	milo,daisy	Meeca: I'm small.
+mem-storm	9	plate:nest-night	rain	mem	cel:PA	Narrator: She put one hand over both of his on the rim of the nest. She didn't a
+mem-storm	10	plate:nest-night	petals	mem	milo,daisy	Meeca: ♪ Slow the rain... slow the thunder... ♪
+mem-storm	11	plate:nest-night	rain	mem	milo,daisy	Narrator: The thunder kept coming. After a while, he could hear her over it.
+mem-storm	12	plate:nest-night	rain	mem	milo,daisy	Pokey: Who taught you that?
+mem-storm	13	plate:nest-night	rain	mem	milo,daisy,cel:GR	Meeca: Grandma. It was her song first. She has a music box that plays it, wit
+mem-storm	14	plate:nest-night	sparkles	mem	milo,daisy,cel:GR	Narrator: Down in the house, the music box ran down. She went on without it, and
+mem-tally	0	plate:cell	none		cel:MS	Narrator: There were a hundred and twelve marks on the wall behind the bed, in b
+mem-tally	1	plate:cell	none		cel:MS	Narrator: Her handwriting was very steady. It always was when she lied.
+mem-tally	2	plate:cell	none		cel:MS	Meeca: Dear Pokey. Don't hurry. I'm not counting.
+mem-tally	3	plate:cell	none		cel:MS	Narrator: There was no way to send it now. She wrote it anyway.
+mem-tally	4	plate:cell	none		cel:MS,cel:LP	Lieutenant Pell: Miss Meeca? It is Lieutenant Pell. I am knocking. I am sorry about the
+mem-tally	5	plate:cell	none		cel:MS,cel:LP	Meeca: You don't have to knock, Pell. You're the one with the key.
+mem-tally	6	plate:cell	none		cel:MS,cel:LP	Lieutenant Pell: It is the General's key, Miss. I only carry it. I have brought a pillo
+mem-tally	7	plate:cell	none		cel:MS,cel:LP	Meeca: Thank you. It looks soft. Why am I here, Pell?
+mem-tally	8	plate:cell	none		cel:MS,cel:LP	Lieutenant Pell: For your safety, Miss. He says so every morning. I think he says it to
+mem-tally	9	plate:cell	none		cel:MS,cel:LP	Meeca: Who told him to call me that? Little bloom.
+mem-tally	10	plate:cell	none		cel:MS,cel:LP	Narrator: Pell looked at the pillow for a while.
+mem-tally	11	plate:cell	none		cel:MS,cel:LP	Lieutenant Pell: I could not say, Miss. I am sorry that I could not say. And if there i
+mem-tally	12	plate:cell	none		cel:MS,cel:LP	Meeca: It isn't finished.
+mem-tally	13	plate:cell	none		cel:MS	Narrator: Pell closed the door softly and turned the key softly. Somebody had to
+mem-tally	14	plate:cell	none		cel:MS	Narrator: Meeca finished the letter and put it under the new pillow. Then she pi
+mem-photograph	0	plate:ruins	sparkles		milo,flicker	Narrator: Behind the broken rune there was a hollow in the stone. Inside it, wra
+mem-photograph	1	plate:ruins	sparkles		milo,flicker	Pokey: A baby. And whoever's holding her. I know him. I stood at his door onc
+mem-photograph	2	plate:ruins	sparkles		milo,flicker	Narrator: He turned it over. There was pencil on the back, in a hand he'd seen o
+mem-photograph	3	plate:ruins	sparkles		milo	Pokey: Grandpa.
+mem-photograph	4	plate:ruins	sparkles		milo	Narrator: Before the cape and the club and the red eyes, General Iron-Claw had h
+mem-photograph	5	plate:ruins	sparkles		cel:PX	Narrator: Pokey sat down on the stone. He took hold of the satchel strap and did
+mem-photograph	6	plate:ruins	sparkles		milo	Pokey: She thinks he walked out on her.
+mem-photograph	7	plate:ruins	sparkles		milo	Pokey: He came and took her himself.
+mem-photograph	8	plate:ruins	sparkles		milo,flicker	Narrator: Pokey sat in the ruins until the last of the light was gone. Then he t
+mem-photograph	9	plate:ruins	petals		milo,flicker	Narrator: The petal on his wrist turned north and held there. He got up.
+mem-promise	0	world8/night	sparkles	mem	milo,daisy	Narrator: Pokey dreamed of the old nest, and the stars over it.
+mem-promise	1	world8/night	petals	mem	cel:PB	Meeca: Hold out your wrist. I'm tying a petal on it. It's off the Heartbloom,
+mem-promise	2	world8/night	sparkles	mem	cel:PB	Pokey: A petal will wilt.
+mem-promise	3	world8/night	sparkles	mem	cel:PA	Meeca: Not this one. Grandma says it lasts exactly as long as somebody is thi
+mem-promise	4	world8/night	sparkles	mem	cel:PA	Pokey: Then it'll last.
+mem-promise	5	world8/night	sparkles	mem	cel:PA	Meeca: Keep it on. Even if I go somewhere you can't follow.
+mem-promise	6	world8/night	sparkles	mem	cel:PH	Pokey: Especially then.
+mem-promise	7	world8/night	petals	mem	cel:PH	Narrator: In the dream, the petal began to glow. It pointed out of the dark, and
+mem-seam	0	world8/night	sparkles		milo,dot,cel:LP,flicker	Narrator: The Monarch was gone, and the fireflies came back one at a time. In th
+mem-seam	1	world8/night	sparkles		milo,dot,cel:LP,flicker	Lieutenant Pell: I am so sorry, but would you mind not looking at me?
+mem-seam	2	world8/night	sparkles		milo,dot,cel:LP,flicker	Dot: Soldier! Pokey, there's a soldier! I'll distract him. I'm extremely di
+mem-seam	3	world8/night	sparkles		milo,dot,cel:LP,flicker	Lieutenant Pell: I am so sorry, but please do not scream. Everyone screams. I am Lieute
+mem-seam	4	world8/night	sparkles		milo,dot,cel:LP,flicker	Pokey: Is she okay?
+mem-seam	5	world8/night	sparkles		milo,dot,cel:LP,flicker	Lieutenant Pell: She is very polite to me. I do not deserve it. I am sorry. Yes.
+mem-seam	6	world8/night	sparkles		milo,dot,cel:LP,flicker	Lieutenant Pell: I am not supposed to be here. I have come to tell you two things, and 
+mem-seam	7	world8/night	sparkles		milo,dot,cel:LP,flicker	Lieutenant Pell: The first. The General has asked the cook for the soup Miss Meeca like
+mem-seam	8	world8/night	sparkles		milo,dot,cel:LP,flicker	Lieutenant Pell: The second. There is a seam in the net behind the cookhouse. The bird 
+mem-seam	9	world8/night	sparkles		milo,dot,cel:LP,flicker	Lieutenant Pell: If I am ordered to sew it shut, I shall do it badly. I was a tailor's 
+mem-seam	10	world8/night	sparkles		milo,dot,cel:LP,flicker	Dot: On purpose? Do you know what that seam did to me?
+mem-seam	11	world8/night	sparkles		milo,dot,cel:LP,flicker	Lieutenant Pell: I am so sorry about the seam.
+mem-seam	12	world8/night	sparkles		milo,dot,cel:LP,flicker	Pokey: Thanks, Lieutenant.
+mem-seam	13	world8/night	sparkles		milo,dot,cel:LP,flicker	Lieutenant Pell: Oh, I am sorry. Please do not thank me. It is embarrassing.
+mem-seam	14	world8/night	sparkles		milo,dot,cel:LP,flicker	Narrator: The lantern bobbed away into the dark. From somewhere down the slope, 
+mem-blessing	0	plate:grandma-door	sparkles	mem	milo,cel:GY	Narrator: Ten years ago, a few weeks before the storm, Pokey knocked on a door.
+mem-blessing	1	plate:grandma-door	sparkles	mem	milo,cel:GR,cel:GY	Grandma: Don't loom in the doorway, dear. Come in. Sit. He doesn't bite. Often.
+mem-blessing	2	plate:grandma-door	sparkles	mem	milo,cel:GY	Pokey: Sir, I'd like your blessing. I'd like to walk beside Meeca for as long
+mem-blessing	3	plate:grandma-door	sparkles	mem	milo,cel:GY	Grandfather: Boy. It took you fourteen minutes to come up my path. I timed it.
+mem-blessing	4	plate:grandma-door	sparkles	mem	milo,cel:GY	Pokey: Yes, sir. I stopped to look at your fern.
+mem-blessing	5	plate:grandma-door	sparkles	mem	milo,cel:GY	Narrator: The old soldier looked at him for a long time. The kettle in the next 
+mem-blessing	6	plate:grandma-door	sparkles	mem	milo,cel:GY	Grandfather: Come back when you can protect her.
+mem-blessing	7	plate:grandma-door	sparkles	mem	milo,cel:GY	Pokey: I will. Slowly.
+mem-blessing	8	plate:grandma-door	sparkles	mem	milo	Narrator: Pokey went down the path with one hand on his satchel strap. The kettl
+mem-blessing	9	plate:grandma-door-empty	rain	mem		Narrator: Then the storm came, and took Meeca's grandma. For a year after, the o
+mem-gates	0	world9/night	embers		milo,dot,flicker	Narrator: The night before the mountain, Pokey fell asleep against a warm rock w
+mem-gates	1	world9/night	embers		milo,dot,flicker	Dot: You can turn that off, you know, I don't need it, I can see fine, I ca
+mem-gates	2	world9/night	embers		milo,dot,flicker	Flicker: You flew into a rock an hour ago.
+mem-gates	3	world9/night	embers		milo,dot,flicker	Dot: I was checking the rock.
+mem-gates	4	world9/night	embers		milo,dot,flicker	Flicker: She got out, you know. Meeca. In the orchids. She was nearly all the w
+mem-gates	5	world9/night	embers		milo,dot,flicker	Dot: I saw the carvings.
+mem-gates	6	world9/night	embers		milo,dot,flicker	Flicker: She didn't know the way, so I lit it for her. Every tree. I was the on
+mem-gates	7	world9/night	embers		milo,dot,flicker	Flicker: They followed my light.
+mem-gates	8	world9/night	embers		milo,dot,flicker	Narrator: Dot didn't say anything for a while.
+mem-gates	9	world9/night	embers		milo,dot,flicker	Dot: How far did she get?
+mem-gates	10	world9/night	embers		milo,dot,flicker	Flicker: One more tree.
+mem-gates	11	world9/night	embers		milo,dot,flicker	Dot: And now you go over it. Every night. Which tree. What if you'd been so
+mem-gates	12	world9/night	embers		milo,dot,flicker	Flicker: How do you know that?
+mem-gates	13	world9/night	embers		milo,dot,flicker	Narrator: Dot's wing went to the pouch at her side. She looked at Pokey, asleep 
+mem-gates	14	world9/night	embers		milo,dot,flicker	Dot: Lucky guess.
+mem-gates	15	world9/night	embers		milo,dot,flicker	Dot: Tomorrow, at the bottom of the mountain, I might say something to him.
+mem-gates	16	world9/night	embers		milo,dot,flicker	Flicker: I won't.
+mem-gates	17	world9/night	embers		milo,dot,flicker	Narrator: She sat down on the stone next to him. She didn't take up much room. N
+mem-gates	18	plate:gates	rain		milo,dot,flicker	Narrator: The lava road ended where the mountain began. Above him, the fortress 
+mem-gates	19	plate:gates	rain		milo,dot,flicker	Dot: Pokey. Pokey! The front door is open. The big one, up there. Wide open
+mem-gates	20	plate:gates	rain		milo,dot,flicker	Pokey: Is that bad?
+mem-gates	21	plate:gates	rain		milo,dot,flicker	Dot: Pokey. The last thing that was this nice to us had a doily.
+mem-gates	22	plate:gates	rain		milo,dot,flicker,soldier,soldier	Narrator: Two soldiers stood at the foot of the steps, the same two from the gar
+mem-gates	23	plate:gates	rain		milo,dot,flicker,soldier,soldier	Soldier: Is that a hummingbird?
+mem-gates	24	plate:gates	rain		milo,dot,flicker,soldier,soldier	Soldier: Where?
+mem-gates	25	plate:gates	rain		milo,dot,flicker,soldier,soldier	Narrator: Dot was already behind Pokey's ear.
+mem-gates	26	plate:gates	rain		milo,dot,flicker,boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Narrator: Along the great wall, one by one, the guardians took their places. The
+mem-gates	27	plate:gates	rain		milo,dot,flicker,boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Narrator: Above them, the great gates of the Highland Fortress groaned on their 
+mem-gates	28	plate:gates	rain		milo,dot,flicker,boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	General Iron-Claw: Come up, sloth. The General has counted every step you took. There are
+mem-gates	29	plate:gates	rain		milo,dot,flicker,boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Dot: He counted your steps, Pokey. That's... I don't know what that is. Tha
+mem-gates	30	plate:gates	rain		milo,flicker,boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Narrator: Pokey looked up the thousand steps. Then he looked at the petal on his
+mem-door	0	plate:cookhouse	none			Narrator: The soup was the fifth try, and it had been hot when he left the kitch
+mem-door	1	plate:door	none		cel:GN	Narrator: Her door was oak, banded in iron, with a peephole at the height of a g
+mem-door	2	plate:door	none		cel:GN	General Iron-Claw: One.
+mem-door	3	plate:door	none		cel:GN	Narrator: His paw came up as far as the wood and stayed there.
+mem-door	4	plate:door	none		cel:GN	General Iron-Claw: Two.
+mem-door	5	plate:door	none		cel:GN	Meeca: ♪ Slow the rain, slow the thunder. Slow the thorn that holds you under
+mem-door	6	plate:door	none		cel:GN	Narrator: His wife had hummed it over the kettle for forty years, always a littl
+mem-door	7	plate:door	none		cel:GN	Narrator: He didn't say three.
+mem-door	8	plate:door	none		cel:GN	Narrator: He set the bowl on the stool and moved it an inch, so it sat square to
+fin	0	plate:courtyard	rain		boss,milo	Narrator: The General lay in the rubble in the middle of the courtyard. The thun
+fin	1	plate:courtyard	rain		boss,cel:PN	Narrator: Pokey had hold of the nearest wall with both hands. He always held som
+fin	2	plate:courtyard	rain		boss,cel:PN,daisy	Narrator: The General looked at the hand. From the lit window high in the tower,
+fin	3	plate:courtyard	petals		daisy,boss	Meeca: ♪ Slow the rain, slow the thunder. Slow the thorn that holds you under
+fin	4	world10/day	petals		boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Narrator: Along the walls, the iron thorns of the Pact went still. The guardians
+fin	5	world10/day	rain		boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Venom Fang: Sso. That's the song.
+fin	6	world10/day	rain		boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Crocus Rex: Everyone look. I kept the crown.
+fin	7	world10/day	rain		boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Shadow Prowler: Again, keeper. The thorn line.
+fin	8	world10/day	rain		boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Tarantula Queen: Tea is at four, dears. Everyone is invited. Even you, General.
+fin	9	world10/day	rain		boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Stone Idol Golem: I have waited a thousand years for—
+fin	10	world10/day	rain		boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Night-Wing Monarch: Once more, please. I slept through the middle.
+fin	11	world7/night	rain		thornbark	Narrator: Far away, down in his hollow, the old tree Thornbark lifted his branch
+fin	12	world7/night	petals		boss,boss,boss,boss,boss,boss,boss,boss,boss,boss	Narrator: The iron collars cracked and fell. They rang on the stones, and kept r
+fin	13	plate:courtyard	petals		cel:PN,cel:GN	Narrator: In the courtyard, the General got to his feet. He did it slowly and wi
+fin	14	plate:courtyard	petals		cel:PN,cel:GN	Narrator: Up in the window, Meeca began the verse again. The red in his eyes wen
+fin	15	plate:courtyard	sparkles		cel:PN,cel:GN	Narrator: The club went first. Then the cape, and the spikes on his shoulder. No
+fin	16	plate:courtyard	sparkles		milo,cel:GV,cel:LP	Lieutenant Pell: The door is open, Miss. I am sorry it was ever shut.
+fin	17	plate:courtyard	sparkles		milo,cel:GV,cel:MS	Narrator: Meeca came down the steps and stopped ten paces away. Her back was ver
+fin	18	plate:courtyard	sparkles		milo,cel:GV,cel:MS	Meeca: Hello, Grandpa.
+fin	19	plate:courtyard	sparkles		milo,cel:GV,cel:MS	Grandfather: Little bloom.
+fin	20	plate:courtyard	none		milo,cel:GV,cel:MS	Meeca: No. You don't get to say that yet.
+fin	21	plate:courtyard	none		milo,cel:GV,cel:MS	Meeca: You left. You sat in her chair for a whole year, and I kept the kettle
+fin	22	plate:courtyard	none		milo,cel:GV,cel:MS	Meeca: Then you put me in a room with a lock and sent me soup. I ate all of i
+fin	23	plate:courtyard	none		milo,cel:GV,cel:MS	Meeca: And every night, somebody stood outside my door and never knocked. Ele
+fin	24	plate:courtyard	none		milo,cel:GV,cel:MS	Narrator: The General looked down at his empty hands. He had held a club in them
+fin	25	plate:courtyard	none		milo,cel:GV,cel:MS	Grandfather: She waited for help, and it came late. So I put you somewhere nobody w
+fin	26	plate:courtyard	none		milo,cel:GV,cel:MS	Grandfather: I should have knocked.
+fin	27	plate:courtyard	sparkles		milo,cel:GV,cel:MS	Narrator: Meeca didn't say it was all right. She crossed the stones and took his
+fin	28	plate:courtyard	sparkles		milo,cel:GV,cel:MS	Grandfather: One. Two.
+fin	29	plate:courtyard	sparkles		milo,cel:GV,cel:MS	Meeca: Grandpa.
+fin	30	plate:courtyard	sparkles		milo,cel:GV,cel:MS	Grandfather: I have lost count.
+fin	31	plate:courtyard	petals		milo,cel:GV,cel:MS	Grandfather: Boy.
+fin	32	plate:courtyard	petals		milo,cel:GV,cel:MS	Pokey: Sir?
+fin	33	plate:courtyard	petals		milo,cel:GV,cel:MS	Grandfather: Come back when you can protect her, I said. You protected her from me.
+fin	34	plate:courtyard	petals		milo,cel:GV,cel:MS	Grandfather: You may. Walk. With her.
+fin	35	plate:courtyard	petals		milo,cel:GV,cel:MS	Grandfather: Sometimes.
+fin	36	plate:courtyard	petals		milo,cel:GV,cel:MS	Meeca: Grandpa!
+fin	37	plate:courtyard	petals		milo,cel:GV,cel:MS	Grandfather: Mostly.
+fin	38	plate:courtyard	sparkles		milo,flicker,cel:MS	Narrator: Meeca turned around. Pokey was standing where he'd stopped, soaked, in
+fin	39	plate:courtyard	sparkles		milo,flicker,cel:MS	Meeca: You came.
+fin	40	plate:courtyard	sparkles		milo,flicker,cel:MS	Pokey: I was in the neighborhood. Slowly.
+fin	41	plate:courtyard	sparkles		milo,flicker,cel:MS	Narrator: She laughed. Then her back stopped being straight.
+fin	42	plate:courtyard	sparkles		milo,flicker,cel:MS	Pokey: You can sit down now.
+fin	43	plate:steps	petals		cel:PA	Narrator: They sat on the wet steps. Neither of them said much. It was the best 
+fin	44	plate:steps	petals		cel:PA,flicker	Meeca: There you are. I wondered where my light went.
+fin	45	plate:steps	petals		cel:PA,flicker	Flicker: I'm sorry.
+fin	46	plate:steps	petals		cel:PA,flicker	Meeca: You got me a whole night out. Come here.
+fin	47	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Narrator: The sun was just coming up over the wall when a small, white, very dus
+fin	48	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Dot: Hello! Everybody stay calm. I'm alive! I fell into the cookhouse. Into
+fin	49	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Lieutenant Pell: She has been no trouble at all, Miss. Sir. Everyone. I apologize.
+fin	50	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Pokey: Dot!
+fin	51	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Dot: I'm so sorry I'm late! I know. I know. The seam was tiny, and I went i
+fin	52	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Pokey: Seems to me it's still morning.
+fin	53	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Narrator: Dot stopped. Then she took the pouch off her side and held it out in b
+fin	54	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Dot: General. I have something I should have given you a long time ago.
+fin	55	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Narrator: It was a letter, yellow at the edges, sealed with one faded petal.
+fin	56	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Dot: She gave it to me the night she died, in the storm. "Give him this whe
+fin	57	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Grandfather: Give it here, little courier.
+fin	58	plate:courtyard	sparkles	mem		Grandma: My dearest. If you're reading this, you're sitting down, which means s
+fin	59	plate:courtyard	sparkles	mem		Grandma: It isn't anybody's fault, my love. It was only weather. Don't build an
+fin	60	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Dot: She always had the kettle on when I got there. Every time. However lat
+fin	61	plate:courtyard	sparkles		milo,cel:GV,cel:MS,dot	Grandfather: Courier. Sit.
+fin	62	plate:courtyard	sparkles		milo,cel:GV,dot	Narrator: Pokey stood very still. After a while, Dot landed on his head.
+fin	63	plate:courtyard	sparkles		milo,cel:GV,dot	Pokey: I thought you came around because you liked me.
+fin	64	plate:courtyard	sparkles		milo,cel:GV,dot	Dot: I did! I do! It was both. I came because I owed you, and I stayed beca
+fin	65	plate:courtyard	sparkles		milo,cel:GV,dot	Pokey: You were late every time, you know.
+fin	66	plate:courtyard	sparkles		milo,cel:GV,dot	Dot: I know.
+fin	67	plate:courtyard	sparkles		milo,cel:GV,dot	Pokey: And you came back every time. I was counting.
+fin	68	plate:courtyard	sparkles		milo,cel:GV,dot	Narrator: Dot's wing went to the pouch at her side, which was empty, and she lef
+fin	69	world2/day	sparkles		cel:PO,cel:TC	Narrator: Down at the Sunlit Riverbank, Gruntlewick the crier reached the end of
+fin	70	world7/dusk	sparkles			Narrator: In the ruins, the Stone Idol Golem finally finished his sentence. "...
+fin	71	plate:village	sparkles		cel:LP	Narrator: Lieutenant Pell left the army that week and opened a tailor's shop at 
+fin	72	plate:village	sparkles		daisy,dot,flicker,cel:LP	Flicker: I'm staying, if that's all right.
+fin	73	plate:village	sparkles		daisy,dot,flicker,cel:LP	Dot: He's all right. Don't tell him.
+fin	74	plate:village	sparkles		daisy,dot,flicker,cel:LP	Flicker: I'm right here.
+fin	75	world9/day	sparkles		milo	Narrator: On the first cold morning, Pokey walked the lava road with a pot of te
+fin	76	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Narrator: The Drake had tidied. Everything he owned was in one corner of the cav
+fin	77	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Magma Drake: You came.
+fin	78	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Pokey: You asked.
+fin	79	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Magma Drake: There is nothing behind the rock.
+fin	80	plate:drake-cave	sparkles		milo,cel:TS,cel:DR,dot	Dot: There's a sock behind the rock, I can see it from here, it's an enormo
+fin	81	plate:drake-cave	sparkles		milo,cel:TS,cel:DR,dot	Magma Drake: It is a tea cosy. I made it. It did not go well.
+fin	82	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Narrator: Pokey poured. The Drake held his cup in both claws and looked at it fo
+fin	83	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Magma Drake: It is too hot.
+fin	84	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Pokey: You breathe fire.
+fin	85	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Magma Drake: Not any more. A visitor put it out.
+fin	86	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Narrator: He drank it anyway, and held the cup out, very carefully, for another.
+fin	87	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Magma Drake: Wednesday?
+fin	88	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Pokey: If you tidy.
+fin	89	plate:drake-cave	sparkles		milo,cel:TS,cel:DR	Narrator: The Drake looked at the rock for a while.
+fin	90	plate:village	sparkles		milo,daisy,cel:GV,dot,boss	Narrator: On the first fine afternoon, at four o'clock exactly, the Tarantula Qu
+fin	91	plate:village	sparkles		milo,daisy,cel:GV,dot,boss	Narrator: He sat down in it, put his feet up, and finished the whole cup.
+fin	92	plate:village	sparkles		milo,daisy,cel:GV,dot,boss	Dot: It's a trap with cookies. I've had four.
+fin	93	plate:village	sparkles		milo,daisy,cel:GV,dot	Narrator: Meeca had finished the scarf. It went around Pokey four times and stil
+fin	94	plate:village	sparkles		milo,daisy,cel:GV,dot	Meeca: Was it a nice bush?
+fin	95	plate:village	sparkles		milo,daisy,cel:GV,dot	Dot: It was the best bush, it was a really excellent bush, I've been back, 
+fin	96	plate:village	sparkles		milo,daisy,cel:GV,dot	Narrator: She also gave him the letters from under her pillow, all of them, ever
+fin	97	plate:village	sparkles		milo,daisy,cel:GV,dot	Narrator: Far off in the east, the last of the storm said something. Pokey was h
+fin	98	plate:village	sparkles		milo,daisy,cel:GV,dot,cel:LP	Lieutenant Pell: Shall I tell the General, sir?
+fin	99	plate:village	sparkles		milo,daisy,cel:GV,dot,cel:LP	Grandfather: Tell him he has retired.
+fin	100	card:venom-fang	sparkles			Narrator: Pokey stops by on Thursdays. He always asks first.
+fin	101	card:crocus-rex	sparkles			Narrator: He ferries the village across, three at a time. The crown is still cro
+fin	102	card:shadow-prowler	sparkles			Narrator: He still sits on the ledge. Now somebody sits with him.
+fin	103	card:sky-sovereign	sparkles			Narrator: She lets the wind lane run where it likes.
+fin	104	card:tarantula-queen	sparkles			Narrator: Tea at four, every day. A guest always stays to the bottom of the cup.
+fin	105	card:marsh-reaver	sparkles			Narrator: Lunch at noon, on a root by the path. He leaves half.
+fin	106	card:stone-golem	sparkles			Narrator: He talks the slowest at the council now. The others wait.
+fin	107	card:night-wing-monarch	sparkles			Narrator: Pokey told her how the dream ended. She wrote it down.
+fin	108	card:magma-drake	sparkles			Narrator: Two cups. Both used.
+fin	109	card:general	sparkles			Narrator: Every spring he plants a tree by the river. He takes his time.
+fin	110	card:soldiers	sparkles			Narrator: Pell took their measurements. They didn't need new coats. They just wa
+fin	111	card:squirrels	sparkles			Narrator: They put up a new sign. It says BACK ALREADY?
+fin	112	card:gruntlewick	sparkles			Narrator: He has started a new warning. It is about Tuesday.
+fin	113	card:mailman	sparkles			Narrator: His new package says NO HURRY. He is taking it very seriously.
+fin	114	card:pell	sparkles			Narrator: The sign still hangs crooked. The shop is never empty.
+fin	115	card:flicker	sparkles			Narrator: He stays at Pell's shop. The light over the counter is steady.
+fin	116	plate:hill	petals		milo,daisy,cel:GV	Narrator: That evening, they climbed the hill to the old tree, where Meeca's gra
+fin	117	plate:hill	petals		milo,daisy,cel:GV	Grandfather: Hello, love. I'm late. I brought the whole family.
+fin	118	world10/dusk	petals		cel:PH,bloom	Narrator: Home was exactly the way they'd left it, except that the Heartbloom wa
+fin	119	world10/dusk	petals		cel:PH,bloom	Pokey: He's gonna make it. He trained for it.
+fin	120	world10/dusk	petals		cel:PH,bloom	Narrator: Meeca sat down on the garden path beside the snail. After a while, Pok
+fin	121	world10/dusk	petals		cel:PH,bloom,dot	Narrator: Dot went to get snacks. She was back before they'd finished sitting do
+tag	0	plate:storm-returns	rain			Narrator: Months later, the storm came back from the east. It came at night.
+tag	1	plate:storm-returns	rain			Narrator: Pokey was asleep on his branch. The end of the scarf hung down off it,
+tag	2	plate:nest-morning	none			Narrator: In the morning the branch was empty.
+tag	3	plate:nest-morning	none			Narrator: The scarf was still there. It hung from a black thorn that had not bee
+tag	4	plate:nest-morning	none		cel:MS,dot	Meeca: Dot. How fast can you fly?
+tag	5	plate:nest-morning	none		cel:MS,dot	Dot: Faster than him.
+tag	6	plate:nest-morning	none		cel:MS	Meeca: Good. This time, I'm the one coming.
+tag	7	plate:nest-morning	none			Narrator: To be continued.
