@@ -1,0 +1,7 @@
+pokey-anim (2026-10-30 ET, cap $20 tonight), rtx-pro-6000 ~$2.75/h, results in mshaffe111/w5-xfer under hfpokey/clips/pa-*
+pokey-anim1   6ae5407cc78863f9c62ee1cf  launched 9:12 PM ET  spec-anim1.json @ 6c1254f: Wan 2.2 + motion model, jump/run/flip x seeds 3,11, slide/skid s3
+              KEPT pa-jump-s11 frames 9-21 -> src/assets/hero/clips/move-jump.webp (tools/art/train/clips.py move-jump; 8 smears his face, 22 his paws).
+              THROWN pa-jump-s3 (he turns to face the camera, legs splayed: off his side view). pa-run-s3/s11 not used: the game's run is already
+              a 15-frame video cycle (move-run).
+Clips come back with hf_fs attach on hfpokey/clips/<name>.carrier.png, then tools/art/w5/unpack_carrier.py into tools/art/pokeyanim/clips/<name>/
+(png copies for the cutter in tools/art/train/vids/<name>/).

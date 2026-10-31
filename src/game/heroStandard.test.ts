@@ -56,8 +56,23 @@ test('every state the hero can be in draws a frame that exists', () => {
   assert.ok(hurt && STD_FRAMES[hurt.name]);
   const land = stdPick(player(), 1, { isHurt: () => false, isLanding: () => true, hurtUntil: 0 });
   assert.equal(land?.name, 'land');
-  const roll = stdPick(player(), 1, { isHurt: () => false, isLanding: () => true, isHardLanding: () => true, hurtUntil: 0 });
-  assert.equal(roll?.name, 'tumble');
+  // the hardest drop squashes deep, lands and recovers (AN-13; it used to roll out in the somersault frame)
+  const hard = (u: number) => stdPick(player(), 1, { isHurt: () => false, isLanding: () => true, isHardLanding: () => true, landPhase: () => u, hurtUntil: 0 })?.name;
+  assert.deepEqual([hard(0), hard(0.5), hard(0.9)], ['spring_squash', 'land', 'recover']);
+  const soft = (u: number) => stdPick(player(), 1, { isHurt: () => false, isLanding: () => true, landPhase: () => u, hurtUntil: 0 })?.name;
+  assert.deepEqual([soft(0), soft(0.8)], ['land', 'recover']);
+});
+
+test('the turn faces us squeezed thin and opens out, then his new side view settles; a skid faces the way he slides (AN-13)', () => {
+  const ev = (o: object) => ({ isHurt: () => false, isLanding: () => false, hurtUntil: 0, ...o });
+  const t0 = stdPick(player(), 1, ev({ turnPhase: () => 0 }));
+  assert.equal(t0?.name, 'turn');
+  assert.ok(Math.abs((t0?.sx ?? 1) - 0.15) < 1e-9, 'through 15% across');
+  assert.notEqual(stdPick(player(), 1, ev({ turnPhase: () => 0.8 }))?.name, 'turn');
+  const sk = stdPick(player(), 1, ev({ isSkidding: () => true, skidDir: -1 }));
+  assert.equal(sk?.name, 'skid');
+  assert.equal(sk?.face, -1);
+  assert.ok(STD_FRAMES.turn && STD_FRAMES.skid);
 });
 
 test('he walks slowly and runs fast, and stands still with a blink', () => {

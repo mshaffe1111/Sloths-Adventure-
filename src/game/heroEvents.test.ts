@@ -68,3 +68,54 @@ test('only a drop at nearly the hardest speed marks a hard landing (the tumble r
   soft.track({ hp: 5, grounded: true, vy: 0 }, 1.05);
   assert.equal(soft.isHardLanding(1.1), false);
 });
+
+test('reversing at a run skids first, then turns round; the picture never holds up the physics (AN-13)', () => {
+  const ev = new HeroEvents();
+  const dt = 1 / 30;
+  let t = 1;
+  const st = (vx: number, facing: 1 | -1, grounded = true) => ({ hp: 3, grounded, vy: 0, vx, x: 100, y: 200, facing });
+  for (let i = 0; i < 10; i++, t += dt) ev.track(st(285, 1), t);
+  assert.equal(ev.isSkidding(t), false);
+  // the thumb flips left: the engine turns him at once, his speed still carries him right
+  ev.track(st(130, -1), t);
+  assert.equal(ev.isSkidding(t), false, 'below skid speed: no skid');
+  const ev2 = new HeroEvents();
+  t = 1;
+  for (let i = 0; i < 10; i++, t += dt) ev2.track(st(285, 1), t);
+  ev2.track(st(200, -1), t);
+  assert.ok(ev2.isSkidding(t), 'a fast reversal skids');
+  assert.equal(ev2.skidDir, 1, 'facing the way he slides');
+  assert.equal(ev2.puffs.length, 2, 'two puffs of dust');
+  t += dt;
+  ev2.track(st(40, -1), t);
+  t += dt;
+  ev2.track(st(-120, -1), t);
+  t += dt;
+  ev2.track(st(-240, -1), t);
+  assert.equal(ev2.isSkidding(t), false, 'the skid ends once he moves the new way');
+  assert.ok(ev2.turnPhase(t) >= 0, 'and the turn plays');
+  t += 0.1;
+  ev2.track(st(-285, -1), t);
+  assert.equal(ev2.turnPhase(t), -1, 'the turn is over within 90 ms');
+});
+
+test('a turn in the air is instant, and a turn while busy (attacking, climbing) draws no turn', () => {
+  const ev = new HeroEvents();
+  ev.track({ hp: 3, grounded: false, vy: 0, vx: 100, facing: 1 }, 1);
+  ev.track({ hp: 3, grounded: false, vy: 0, vx: 100, facing: -1 }, 1.03);
+  assert.equal(ev.turnPhase(1.03), -1);
+  ev.track({ hp: 3, grounded: true, vy: 0, vx: 0, facing: 1 }, 1.06, true);
+  assert.equal(ev.turnPhase(1.06), -1);
+  ev.track({ hp: 3, grounded: true, vy: 0, vx: 0, facing: 1 }, 1.1);
+  ev.track({ hp: 3, grounded: true, vy: 0, vx: 0, facing: -1 }, 1.13);
+  assert.ok(ev.turnPhase(1.13) >= 0, 'standing, a turn plays');
+});
+
+test('the landing goes down and back up, three frames from the hardest drop', () => {
+  const ev = new HeroEvents();
+  ev.track({ hp: 3, grounded: false, vy: 1000 }, 1);
+  ev.track({ hp: 3, grounded: true, vy: 0 }, 1.03);
+  assert.ok(ev.isHardLanding(1.03));
+  assert.equal(ev.landPhase(1.03), 0);
+  assert.ok(ev.landPhase(1.03 + LAND_TIME_HARD / 2) > 0.45 && ev.landPhase(1.03 + LAND_TIME_HARD / 2) < 0.55);
+});

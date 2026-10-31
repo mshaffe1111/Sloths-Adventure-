@@ -75,6 +75,10 @@ export interface StdChoice {
   trail?: number;
   /** how much of the code's squash and stretch to add (default 1): the painted squash frames already carry it */
   squash?: number;
+  /** an extra squeeze across (the turn eases through a narrow frame) */
+  sx?: number;
+  /** the way the picture faces, when it is not p.facing (a skid faces the way he was sliding) */
+  face?: 1 | -1;
 }
 
 /** the walk and the run, in the order the stride unfolds (index = frame of the loop) */
@@ -140,6 +144,22 @@ export function stdAirFrame(vy: number): string {
   if (vy <= 140) return 'apex';
   return vy < 560 ? 'fall_a' : 'fall_b';
 }
+/** the turn (AN-13): facing us, squeezed to 15% across and opening out, then his new side view settling in. u = 0..1 through TURN_TIME */
+export const TURN_FRONT = 0.6;
+export function stdTurn(u: number): { front: boolean; sx: number } {
+  const e = (t: number) => t * t * (3 - 2 * t);
+  if (u < TURN_FRONT) return { front: true, sx: 0.15 + 0.85 * e(u / TURN_FRONT) };
+  return { front: false, sx: 0.88 + 0.12 * e((u - TURN_FRONT) / (1 - TURN_FRONT)) };
+}
+/** the landing (AN-13), by how far through it he is: a short drop lands and recovers; the hardest drop squashes deep first */
+export function stdLandFrame(u: number, hard: boolean): string {
+  if (hard) return u < 0.34 ? 'spring_squash' : u < 0.67 ? 'land' : 'recover';
+  return u < 0.55 ? 'land' : 'recover';
+}
+/** the lean forward as he sets off (radians, positive tips him forward), u = 0..1 through START_LEAN_TIME */
+export function stdStartLean(u: number): number {
+  return u < 0 ? 0 : 0.16 * (u < 0.6 ? 1 : 1 - (u - 0.6) / 0.4);
+}
 /** the flip, by how far through it he is (0..1): stretched at launch, curled in the middle, opening as he comes round */
 export function stdFlipFrame(u: number): string {
   return u < 0.2 ? 'rise_fast' : u < 0.78 ? 'tuck' : 'fall_a';
@@ -154,7 +174,12 @@ function cycle(list: string[], p: PlayerState): string {
  * the pose for this moment from the standard set, or null when a frame is missing (the main hero then draws). Every state has a frame, so with the
  * whole atlas present this never returns null.
  */
-export function stdPick(p: PlayerState, time: number, ev: Pick<HeroEvents, 'isHurt' | 'isLanding' | 'hurtUntil'> & Partial<Pick<HeroEvents, 'isHardLanding'>>): StdChoice | null {
+export function stdPick(
+  p: PlayerState,
+  time: number,
+  ev: Pick<HeroEvents, 'isHurt' | 'isLanding' | 'hurtUntil'> &
+    Partial<Pick<HeroEvents, 'isHardLanding' | 'landPhase' | 'isSkidding' | 'skidDir' | 'turnPhase' | 'startPhase'>>,
+): StdChoice | null {
   const has = (n: string) => !!STD_FRAMES[n];
   const out = (c: StdChoice): StdChoice | null => (has(c.name) ? c : null);
 
@@ -200,17 +225,27 @@ export function stdPick(p: PlayerState, time: number, ev: Pick<HeroEvents, 'isHu
     // the painted frames already lean into the jump, so the code's lean is only a hint
     return out({ name: stdAirFrame(p.vy), bob: 0, rot: airLean(p.vy) * 0.5 });
   }
-  if (ev.isHardLanding?.(time) && has('tumble')) return out({ name: 'tumble', bob: 0 }); // a drop at the hardest speed rolls out of the landing
-  if (ev.isLanding(time)) return out({ name: 'land', bob: 0 });
+  // reversing at a run: feet braced, leaning back, still facing the way he slides (AN-13)
+  if (ev.isSkidding?.(time) && has('skid')) return out({ name: 'skid', bob: 0, face: ev.skidDir });
+  // landing: down into the crouch and back up (a hard drop squashes deeper first); the turn's squeeze rides on it
+  const turn = ev.turnPhase ? ev.turnPhase(time) : -1;
+  const tw = turn >= 0 ? stdTurn(turn) : null;
+  if (ev.isLanding(time)) {
+    const name = ev.landPhase ? stdLandFrame(ev.landPhase(time), !!ev.isHardLanding?.(time)) : 'land';
+    return out({ name: has(name) ? name : 'land', bob: 0, sx: tw?.sx });
+  }
+  // turning round on the ground: facing us for a moment, squeezed and opening out (the physics already turned him)
+  if (tw?.front && has('turn')) return out({ name: 'turn', bob: 0, sx: tw.sx });
   const speed = Math.abs(p.vx);
   if (speed > 10) {
     const run = speed >= WALK_MAX;
     const u = ((((p.walkCycle * STRIDE_RATE) / (Math.PI * 2)) % 1) + 1) % 1;
-    return out({ name: cycle(run ? RUN_CYCLE : WALK_CYCLE, p), bob: -Math.abs(Math.sin(u * Math.PI * 2)) * (run ? 1.6 : 0.8), byBody: true });
+    const lean = ev.startPhase ? stdStartLean(ev.startPhase(time)) : 0;
+    return out({ name: cycle(run ? RUN_CYCLE : WALK_CYCLE, p), bob: -Math.abs(Math.sin(u * Math.PI * 2)) * (run ? 1.6 : 0.8), byBody: true, rot: lean || undefined, sx: tw?.sx });
   }
   // standing: a slow breath, and a blink every few seconds
   const blink = time % 3.6 > 3.45;
-  return out({ name: blink ? 'blink' : 'idle', bob: Math.sin(time * 3.2) * 0.5 });
+  return out({ name: blink ? 'blink' : 'idle', bob: Math.sin(time * 3.2) * 0.5, sx: tw?.sx });
 }
 
 /** the names the old atlas used (and the story scenes still ask for) -> the standard frame that stands in for them */
