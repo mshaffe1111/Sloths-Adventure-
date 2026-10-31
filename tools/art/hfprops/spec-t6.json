@@ -1,7 +1,7 @@
 {
  "note": "hf-props single-piece batch t6, 2026-10-31",
  "q": 92,
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/reference/prop-sheets/qa-notes/hf-props/starts/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/69b0fe611023f553ccd7c2b6e3d2e05ba464babc/reference/prop-sheets/qa-notes/hf-props/starts/",
  "loras": {
   "style": [
    "mshaffe111/slothadv-style-lora",
