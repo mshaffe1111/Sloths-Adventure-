@@ -27,6 +27,11 @@ const off = (key: string, after: string, w: W, share: W = [0.55, 0.7], soft = fa
 /** a piston column in its well past `after`, rising past every jump to its top stop */
 const piston = (key: string, after: string, w: W = [100, 120]): SectionPiece => ({ key, shape: 'raft', w, place: { kind: 'raft', after, bob: 'piston' } });
 
+/** the Drake's hoard's own guards (9-9: no other stage has the harpies; the boas coil only on 9-4's doorstep), so its moving logs and slabs
+ *  never read like another stage's on the look-alike measure (curation's 1-in-5 cap dropped half of 9-9's rolls) */
+const HOARD = ['harpy', 'boa'];
+/** 9-6's hunters (the ash fields: the cats and the tayra), its versions of the slabs and the caps */
+const CATS6 = ['ocelot', 'jaguar', 'tayra'];
 const RAFT = W9_LESSON.raft;
 const PISTON = W9_LESSON.piston;
 /** the time model's wait at a moving log: about a third of its cycle (pipeline BOB: ~3 s Normal, ~4.6 s Easy) */
@@ -100,34 +105,8 @@ const raftGeyser = section({
 // ───────────────────────────── 9-5 and 9-9: the charred logs ─────────────────────────────
 
 /** one long log across a wide chasm: run it while it is up */
-const logBridge = section({
-  id: 'w9-log-bridge',
-  name: 'the log bridge',
-  archetypes: ['sprint', 'gauntlet'],
-  phases: ALL,
-  difficulty: 5,
-  uses: [W9_THEME.logs],
-  extraSeconds: BOB_WAIT * 1.5,
-  pieces: [bank('a', [280, 320]), bob('l', 'a', 'log', [260, 300], [0.5, 0.62]), off('b', 'l', [300, 340], [0.5, 0.62]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [180, 220])],
-  last: 'c',
-  sockets: [petals('l', 'l', 0.5, 2, 120), petals('b', 'b', 0.5, 1), scenery('log', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
-  mirrorable: true,
-});
 
 /** two logs out of step, a knob between the banks */
-const logPair = section({
-  id: 'w9-log-pair',
-  name: 'two logs',
-  archetypes: ['sprint', 'gauntlet'],
-  phases: LIVE,
-  difficulty: 6,
-  uses: [W9_THEME.logs],
-  extraSeconds: BOB_WAIT * 3,
-  pieces: [bank('a', [260, 300]), bob('l1', 'a', 'log', [240, 270]), bob('l2', 'l1', 'log', [240, 270]), off('b', 'l2', [320, 360]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [180, 220])],
-  last: 'c',
-  sockets: [petals('l1', 'l1', 0.5, 1), petals('l2', 'l2', 0.5, 1), petals('b', 'b', 0.5, 1), thread('r', 'c', 0.5)],
-  mirrorable: true,
-});
 
 /** 9-5: ride the log up, then open the leaf over the vent's chasm (the glide's soft pit climbs back) */
 const logGlide = section({
@@ -155,7 +134,7 @@ const logHoard = section({
   extraSeconds: BOB_WAIT * 1.5,
   pieces: [bank('a', [260, 300]), bob('l', 'a', 'log', [250, 280]), off('b', 'l', [420, 460]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
   last: 'c',
-  sockets: [petals('l', 'l', 0.5, 1), foe('foe', 'b', [0.6, 0.7], ANY, 3.5, { chance: 0.9 }), petals('k', 'k', 0.5, 1)],
+  sockets: [petals('l', 'l', 0.5, 1), foe('foe', 'b', [0.6, 0.7], HOARD, 3.5, { chance: 1 }), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -235,7 +214,7 @@ const sinkGate3: SectionTemplate = section({
 const firstSink = section({
   id: 'w9-first-sinker',
   name: 'the first sinking slabs',
-  archetypes: ['vine_runner', 'gauntlet'],
+  archetypes: ['vine_runner', 'gauntlet', 'purge'],
   phases: ['ki', 'sho'],
   difficulty: 3,
   teaches: SINK,
@@ -252,14 +231,15 @@ const firstSink = section({
 const sinkRun = section({
   id: 'w9-sinker-run',
   name: 'a run of sinking slabs',
-  archetypes: ['vine_runner', 'gauntlet'],
+  archetypes: ['vine_runner', 'gauntlet', 'purge'],
   phases: LIVE,
   difficulty: 5,
   uses: [W9_THEME.sinkers, SINK],
   extraSeconds: 1,
-  pieces: [bank('a', [260, 300]), slab('s1', 'a'), slab('s2', 's1'), slab('s3', 's2'), offSoft('b', 's3', [300, 340]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
+  pieces: [bank('a', [260, 300]), slab('s1', 'a'), slab('s2', 's1'), slab('s3', 's2'), offSoft('b', 's3', [360, 400]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
   last: 'c',
-  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), petals('s3', 's3', 0.5, 1), petals('k', 'k', 0.5, 1)],
+  // (9-6's: a cat on the landing, so its stretches are the ash fields', never 9-3's or 9-9's)
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), petals('s3', 's3', 0.5, 1), foe('foe', 'b', [0.55, 0.65], CATS6, 3.5, { chance: 1 }), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -267,14 +247,14 @@ const sinkRun = section({
 const sinkTwin = section({
   id: 'w9-sinker-twin',
   name: 'two runs of sinking slabs',
-  archetypes: ['vine_runner', 'gauntlet'],
+  archetypes: ['vine_runner', 'gauntlet', 'purge'],
   phases: MID,
   difficulty: 6,
   uses: [W9_THEME.sinkers, SINK],
   extraSeconds: 2,
   pieces: [bank('a', [240, 280]), slab('s1', 'a'), slab('s2', 's1'), offSoft('m', 's2', [220, 260]), slab('t1', 'm'), slab('t2', 't1'), offSoft('b', 't2', [260, 300])],
   last: 'b',
-  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), petals('m', 'm', 0.5, 1), petals('t2', 't2', 0.5, 1)],
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), foe('foe', 'm', [0.5, 0.6], CATS6, 3.5, { chance: 1 }), petals('t2', 't2', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -282,14 +262,14 @@ const sinkTwin = section({
 const sinkHoard = section({
   id: 'w9-sinker-hoard',
   name: 'sinking slabs to the guard',
-  archetypes: ['gauntlet'],
+  archetypes: ['gauntlet', 'purge'],
   phases: LIVE,
   difficulty: 7,
   uses: [W9_THEME.sinkers, SINK],
   extraSeconds: 1,
   pieces: [bank('a', [260, 300]), slab('s1', 'a'), slab('s2', 's1'), offSoft('b', 's2', [420, 460]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
   last: 'c',
-  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), foe('foe', 'b', [0.6, 0.7], ANY, 3.5, { chance: 0.9 }), petals('k', 'k', 0.5, 1)],
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), foe('foe', 'b', [0.6, 0.7], HOARD, 3.5, { chance: 1 }), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -363,12 +343,12 @@ const ropeChasm = section({
 // ───────────────────────────── 9-3: its ropes and slabs between the chains (the vine stage swings on every roll) ─────────────────────────────
 
 /** a chain past `after` (w9Swing.ts's: its anchor 400-420 px over the ledge) and the perch it swings to, 80 px up, then a step down */
-const chainTo = (p: string, after: string, perchW: W = [220, 260]): SectionPiece[] => [
+export const chainTo = (p: string, after: string, perchW: W = [220, 260]): SectionPiece[] => [
   { key: `${p}l`, shape: 'liana', w: 0, place: { kind: 'swing', after, top: [400, 420] } },
   bank(`${p}p`, perchW, { kind: 'land', after: `${p}l`, dy: -80 }, { landing: true }),
   bank(`${p}d`, [140, 170], { kind: 'walk', after: `${p}p`, dy: 80 }),
 ];
-const CHAIN_T = 2.5;
+export const CHAIN_T = 2.5;
 
 /** a rope over the lava, then a chain */
 const ropeChain = section({
@@ -430,20 +410,202 @@ const chainSink = section({
   mirrorable: false,
 });
 
+// ───────────────────────────── 9-1 and 9-6: the ash caps (World 9's bounce plant) ─────────────────────────────
+
+const CAP = W9_LESSON.cap;
+/** an ash cap (bounceArt.ts cap-w9) standing at a bank's end, its cap a little over it (World 8's moon flower, w8Branch.ts) */
+const cap = (key: string, on: string): SectionPiece => ({ key, shape: 'bouncy', w: [80, 90], place: { kind: 'over', on, at: [0.78, 0.84], dy: [-28, -22] }, main: true });
+/** the high rock past it, inside the bounce's reach (~181): World 8's 170 */
+const CAP_HI = 170;
+const high = (key: string, on: string, w: W): SectionPiece => bank(key, w, { kind: 'over', on, at: 1, dy: -CAP_HI }, { main: true });
+
+/** the first ash cap (every caps roll): up onto the high rock and down, Dot's line on the way in */
+const firstCap = section({
+  id: 'w9-first-cap',
+  name: 'the first ash cap',
+  archetypes: ['sprint', 'purge'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: CAP,
+  uses: [W9_THEME.caps],
+  maxPerStage: 1,
+  pieces: [bank('a', [320, 360]), cap('f', 'a'), high('hi', 'a', [260, 300]), down('b', 'hi', CAP_HI, [240, 280])],
+  last: 'b',
+  sockets: [tip(CAP, 'a', 0.2), petals('a', 'a', 0.35, 1), petals('hi', 'hi', 0.5, 2, 100), petals('b', 'b', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** two caps, each up onto its own high rock, a lava chasm between */
+const capPair = section({
+  id: 'w9-cap-pair',
+  name: 'two ash caps',
+  archetypes: ['sprint', 'purge'],
+  phases: LIVE,
+  difficulty: 5,
+  uses: [W9_THEME.caps, CAP],
+  pieces: [bank('a', [300, 340]), cap('f1', 'a'), high('h1', 'a', [220, 260]), down('m', 'h1', CAP_HI, [300, 340]), cap('f2', 'm'), high('h2', 'm', [220, 260]), down('b', 'h2', CAP_HI, [220, 260])],
+  last: 'b',
+  sockets: [petals('h1', 'h1', 0.5, 2, 90), petals('m', 'm', 0.4, 1), petals('h2', 'h2', 0.5, 2, 90)],
+  mirrorable: false,
+});
+
+/** a cap up to the high rock, a lava chasm off its far end, a hunter past it (9-6) */
+const capChasm = section({
+  id: 'w9-cap-chasm',
+  name: 'ash cap, then the chasm',
+  archetypes: ['sprint', 'purge'],
+  phases: MID,
+  difficulty: 6,
+  uses: [W9_THEME.caps, CAP],
+  pieces: [bank('a', [300, 340]), cap('f', 'a'), high('hi', 'a', [260, 300]), W9H.lava('c', 'hi', [320, 360], [0.55, 0.7]), down('d', 'c', 60, [200, 240]), down('e', 'd', 110, [240, 280])],
+  last: 'e',
+  sockets: [petals('hi', 'hi', 0.5, 2, 90), petals('c', 'c', 0.5, 1), foe('foe', 'e', [0.55, 0.65], SMALL, 2.5, { phases: LIVE, chance: 0.7 })],
+  mirrorable: false,
+});
+
+// ───────────────────────────── 9-9's own: the hoard's guards with its logs and slabs ─────────────────────────────
+
+/** 9-9: two logs, a guard on the landing between them */
+const logGuards = section({
+  id: 'w9-log-guards',
+  name: 'logs between the guards',
+  archetypes: ['gauntlet'],
+  phases: W9H.ALL,
+  difficulty: 7,
+  uses: [W9_THEME.logs],
+  extraSeconds: BOB_WAIT * 3,
+  pieces: [bank('a', [260, 300]), bob('l1', 'a', 'log', [240, 270]), off('m', 'l1', [400, 440]), bob('l2', 'm', 'log', [240, 270]), off('b', 'l2', [280, 320])],
+  last: 'b',
+  sockets: [petals('l1', 'l1', 0.5, 1), foe('foe', 'm', [0.5, 0.6], HOARD, 3.5, { chance: 1 }), petals('l2', 'l2', 0.5, 1), petals('b', 'b', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** 9-9: slabs, a guard, slabs */
+const sinkGuards = section({
+  id: 'w9-sinker-guards',
+  name: 'slabs between the guards',
+  archetypes: ['gauntlet'],
+  phases: W9H.ALL,
+  difficulty: 7,
+  uses: [W9_THEME.sinkers, SINK],
+  extraSeconds: 2,
+  pieces: [bank('a', [240, 280]), slab('s1', 'a'), slab('s2', 's1'), offSoft('m', 's2', [400, 440]), slab('t1', 'm'), slab('t2', 't1'), offSoft('b', 't2', [260, 300])],
+  last: 'b',
+  sockets: [petals('s1', 's1', 0.5, 1), foe('foe', 'm', [0.5, 0.6], HOARD, 3.5, { chance: 1 }), petals('t2', 't2', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** 9-6: an ash cap up to the high rock, a cat waiting on the landing down from it */
+const capCats = section({
+  id: 'w9-cap-cats',
+  name: 'ash cap over the cats',
+  archetypes: ['purge'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.caps],
+  pieces: [bank('a', [300, 340]), cap('f', 'a'), high('hi', 'a', [260, 300]), down('b', 'hi', CAP_HI, [380, 420]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
+  last: 'c',
+  sockets: [petals('hi', 'hi', 0.5, 2, 100), foe('foe', 'b', [0.55, 0.65], CATS6, 3.5, { chance: 1 }), petals('k', 'k', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** 9-6: two caps, a hunter on the flat between them */
+const capCatsPair = section({
+  id: 'w9-cap-cats-pair',
+  name: 'two ash caps over the hunters',
+  archetypes: ['purge'],
+  phases: LIVE,
+  difficulty: 7,
+  uses: [W9_THEME.caps],
+  pieces: [bank('a', [300, 340]), cap('f1', 'a'), high('h1', 'a', [220, 260]), down('m', 'h1', CAP_HI, [400, 440]), cap('f2', 'm'), high('h2', 'm', [220, 260]), down('b', 'h2', CAP_HI, [220, 260])],
+  last: 'b',
+  sockets: [petals('h1', 'h1', 0.5, 2, 90), foe('foe', 'm', [0.35, 0.45], CATS6, 3.5, { chance: 1 }), petals('h2', 'h2', 0.5, 2, 90)],
+  mirrorable: false,
+});
+
+// ───────────────────────────── 9-5's own: the logs and the pistons always with the leaf (9-5's signature) ─────────────────────────────
+
+/** 9-5: the first piston (every pistons roll of 9-5, which teaches them): ride it up, then open the leaf off the high rock */
+const firstPiston5 = section({
+  id: 'w9-first-piston-glide',
+  name: 'the first piston, then the leaf',
+  archetypes: ['sprint'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: PISTON,
+  uses: [W9_THEME.pistons],
+  maxPerStage: 1,
+  extraSeconds: PISTON_RIDE,
+  pieces: [bank('a', [300, 340]), piston('p', 'a'), up('t', 'p', 0, [220, 260]), W9H.glide('g', 't', [300, 340], [0.55, 0.65]), down('c', 'g', 120, [220, 260])],
+  last: 'c',
+  sockets: [tip(PISTON, 'a', 0.2), petals('t', 't', 0.5, 1), petals('g', 'g', 0.5, 2, 80)],
+  mirrorable: false,
+});
+
+/** 9-5: two pistons, a glide off the second */
+const pistonGlide = section({
+  id: 'w9-piston-glide',
+  name: 'pistons, then the leaf',
+  archetypes: ['sprint'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.pistons, PISTON],
+  extraSeconds: PISTON_RIDE * 2,
+  pieces: [bank('a', [260, 300]), piston('p1', 'a'), up('t1', 'p1', 0, [200, 240]), piston('p2', 't1'), up('t2', 'p2', 0, [200, 240]), W9H.glide('g', 't2', [300, 340], [0.55, 0.65]), down('c', 'g', 120, [220, 260])],
+  last: 'c',
+  sockets: [petals('t1', 't1', 0.5, 1), petals('t2', 't2', 0.5, 1), petals('g', 'g', 0.5, 2, 80)],
+  mirrorable: false,
+});
+
+/** 9-5: a glide down onto a log's landing, the log, and on */
+const glideLog = section({
+  id: 'w9-glide-log',
+  name: 'the leaf, then a log',
+  archetypes: ['sprint'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.logs],
+  extraSeconds: BOB_WAIT * 1.5,
+  pieces: [bank('a', [280, 320]), W9H.glide('b', 'a', [260, 300], [0.55, 0.65]), bob('l', 'b', 'log', [240, 270]), off('c', 'l', [260, 300]), up('k', 'c', 30, [140, 160]), down('d', 'k', 30, [200, 240])],
+  last: 'd',
+  sockets: [petals('b', 'b', 0.5, 1), petals('l', 'l', 0.5, 1), petals('c', 'c', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** 9-5: a log, the leaf, a log */
+const logGlideLog = section({
+  id: 'w9-log-glide-log',
+  name: 'log, leaf, log',
+  archetypes: ['sprint'],
+  phases: LIVE,
+  difficulty: 7,
+  uses: [W9_THEME.logs],
+  extraSeconds: BOB_WAIT * 3,
+  pieces: [bank('a', [260, 300]), bob('l1', 'a', 'log', [240, 270]), off('b', 'l1', [260, 300]), W9H.glide('c', 'b', [260, 300], [0.55, 0.65]), bob('l2', 'c', 'log', [240, 270]), off('d', 'l2', [240, 280])],
+  last: 'd',
+  sockets: [petals('l1', 'l1', 0.5, 1), petals('c', 'c', 0.5, 1), petals('l2', 'l2', 0.5, 1)],
+  mirrorable: false,
+});
+
 export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
+  W9_BOB_GATES.pistons5, firstPiston5, pistonGlide, glideLog, logGlideLog,
+  capCats, capCatsPair,
+  logGuards, sinkGuards,
+  W9_BOB_GATES.caps1, W9_BOB_GATES.caps6, firstCap, capPair, capChasm,
   ropeChain, chainRope, sinkChain, chainSink,
   ropeGate3, W9_BOB_GATES.bridges8, ropeCross, ropeTwin, ropeChasm,
-  sinkGate3, W9_BOB_GATES.sinkers9, firstSink, sinkRun, sinkTwin, sinkHoard,
+  sinkGate3, W9_BOB_GATES.sinkers9, W9_BOB_GATES.sinkers6, firstSink, sinkRun, sinkTwin, sinkHoard,
   W9_BOB_GATES.rafts, firstRaft, raftPair, raftRow, raftGeyser,
-  W9_BOB_GATES.logs5, W9_BOB_GATES.logs9, logBridge, logPair, logGlide, logHoard,
+  W9_BOB_GATES.logs5, W9_BOB_GATES.logs9, logGlide, logHoard,
   W9_BOB_GATES.pistons, firstPiston, pistonPair, pistonChasm,
 ];
 
 /** which stages hold which (STAGE-RULES §2 "Sameness": neighbours in play share none; GRAB-BAG.md §4) */
 export const W9_BOB_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_BOB_GATES.rafts.id]: [1], [firstRaft.id]: [1], [raftPair.id]: [1], [raftRow.id]: [1], [raftGeyser.id]: [1],
-  [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logBridge.id]: [5, 9], [logPair.id]: [5, 9],
+  [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [glideLog.id]: [5], [logGlideLog.id]: [5], [W9_BOB_GATES.pistons5.id]: [5], [firstPiston5.id]: [5], [pistonGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logGuards.id]: [9], 
+  [W9_BOB_GATES.caps1.id]: [1], [W9_BOB_GATES.caps6.id]: [6], [firstCap.id]: [1], [capPair.id]: [1], [capChasm.id]: [1], [capCats.id]: [6], [capCatsPair.id]: [6],
   [ropeGate3.id]: [3], [W9_BOB_GATES.bridges8.id]: [8], [ropeCross.id]: [8], [ropeTwin.id]: [8], [ropeChasm.id]: [8], [ropeChain.id]: [3], [chainRope.id]: [3],
-  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [firstSink.id]: [3, 9], [sinkRun.id]: [9], [sinkTwin.id]: [9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [9],
+  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [W9_BOB_GATES.sinkers6.id]: [6], [firstSink.id]: [3], [sinkRun.id]: [6], [sinkTwin.id]: [6], [sinkGuards.id]: [9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [9],
   [W9_BOB_GATES.pistons.id]: [8], [firstPiston.id]: [8], [pistonPair.id]: [8], [pistonChasm.id]: [8],
 };

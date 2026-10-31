@@ -1,6 +1,6 @@
 /**
  * gen2/worlds/w9Heat — World 9's heat hazards on the geyser's rhythm (GRAB-BAG.md, reference/prop-sheets/qa-notes/w9/):
- *   flares     (9-5 teaches them, 9-8 again)   a hot slab lies on the route: its cracks glow (the warning) and it flares for a second; cross
+ *   flares     (9-3 teaches them, 9-5, 9-8 again)   a hot slab lies on the route: its cracks glow (the warning) and it flares for a second; cross
  *                                               while it is dark, or jump it (the flare is low). Two on a flat are out of step
  *   lavafalls  (9-6 teaches them, 9-9 again)   lava pours from far above onto the route: drips first, then the column; wait it out
  * Each is a `prop` socket whose emitter lays a geyser zone with its `look` (w9.ts emitters, zones.ts Zone.look): the engine burns whoever
@@ -11,8 +11,9 @@
 import type { SectionPiece, SectionTemplate, Socket } from '../types.ts';
 import { W9_LESSON } from './w9.ts';
 import { W9_HEAT_GATES, W9_THEME, W9H } from './w9Ground.ts';
+import { chainTo, CHAIN_T } from './w9Bob.ts';
 
-const { bank, up, down, petals, prop, tip, foe, thread, section, LIVE, MID, ANY, SMALL, CATS } = W9H;
+const { bank, up, down, petals, prop, tip, foe, thread, flag, section, LIVE, MID, ANY, SMALL, CATS } = W9H;
 const ALL5 = W9H.ALL;
 type T = Socket['t'];
 
@@ -31,7 +32,7 @@ const flat = (key: string, after: string, dy: number, w: SectionPiece['w']) => (
 const firstFlare = section({
   id: 'w9-first-flare',
   name: 'the first flare slab',
-  archetypes: ['sprint', 'relic_hunt'],
+  archetypes: ['sprint', 'relic_hunt', 'vine_runner'],
   phases: ['ki', 'sho'],
   difficulty: 3,
   teaches: FLARE,
@@ -40,7 +41,7 @@ const firstFlare = section({
   extraSeconds: WAIT * 2,
   pieces: [bank('a', [220, 260]), up('k', 'a', 30, [140, 160]), down('f', 'k', 30, [520, 560]), up('k2', 'f', 30, [140, 160]), down('b', 'k2', 30, [200, 240])],
   last: 'b',
-  sockets: [tip(FLARE, 'a', 0.2), petals('k', 'k', 0.5, 1), prop('flareLesson', 'f', 0.5, ['flare'], { easy: 'keep' }), petals('p1', 'f', 0.18, 1), petals('p2', 'f', 0.82, 1), thread('r', 'b', 0.5)],
+  sockets: [tip(FLARE, 'a', 0.2), petals('k', 'k', 0.5, 1), prop('flareLesson', 'f', 0.5, ['flare'], { easy: 'keep' }), petals('p1', 'f', 0.18, 1), petals('p2', 'f', 0.82, 1), thread('r', 'b', 0.5), flag('b', 0.72)],
   mirrorable: false,
 });
 
@@ -48,14 +49,14 @@ const firstFlare = section({
 const flarePair = section({
   id: 'w9-flare-pair',
   name: 'two flare slabs',
-  archetypes: ['sprint', 'relic_hunt'],
+  archetypes: ['sprint', 'relic_hunt', 'vine_runner'],
   phases: LIVE,
   difficulty: 6,
   uses: [W9_THEME.flares, FLARE],
   extraSeconds: WAIT * 2,
   pieces: [bank('a', [200, 240]), up('k', 'a', 30, [140, 160]), down('f', 'k', 30, [700, 760]), up('k2', 'f', 32, [140, 160]), down('b', 'k2', 32, [200, 240])],
   last: 'b',
-  sockets: [petals('k', 'k', 0.5, 1), flare('fl1', 'f', 0.22), flare('fl2', 'f', 0.74), petals('mid', 'f', 0.48, 1), petals('k2', 'k2', 0.5, 1), thread('r', 'b', 0.5)],
+  sockets: [petals('k', 'k', 0.5, 1), flare('fl1', 'f', 0.22), flare('fl2', 'f', 0.74), petals('mid', 'f', 0.48, 1), petals('k2', 'k2', 0.5, 1), thread('r', 'b', 0.5), flag('b', 0.72)],
   mirrorable: true,
 });
 
@@ -380,9 +381,125 @@ const watchFallPair = section({
   mirrorable: false,
 });
 
+// ───────────────────────────── 9-9's own lavafalls: the hoard's guards under them ─────────────────────────────
+
+const HOARD = ['harpy', 'boa'];
+/** 9-9: a lavafall, then one of the hoard's guards on the flat past it */
+const fallHoard = section({
+  id: 'w9-lavafall-hoard',
+  name: 'lavafall before the guard',
+  archetypes: ['gauntlet'],
+  phases: W9H.ALL,
+  difficulty: 7,
+  uses: [W9_THEME.lavafalls],
+  extraSeconds: WAIT,
+  pieces: [bank('a', [360, 400]), up('k', 'a', 40, [150, 170]), down('f', 'k', 40, [420, 460]), up('k2', 'f', 30, [140, 160]), down('b', 'k2', 30, [200, 240])],
+  last: 'b',
+  sockets: [lavafall('lf', 'a', 0.5), petals('k', 'k', 0.5, 1), foe('foe', 'f', [0.5, 0.6], HOARD, 3.5, { chance: 1 }), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** 9-9: two lavafalls on the hoard's stair, a guard at its top */
+const fallHoardPair = section({
+  id: 'w9-lavafall-hoard-stair',
+  name: 'lavafalls up the hoard stair',
+  archetypes: ['gauntlet'],
+  phases: LIVE,
+  difficulty: 8,
+  uses: [W9_THEME.lavafalls],
+  extraSeconds: WAIT * 2,
+  pieces: [bank('a', [300, 340]), up('s1', 'a', 40, [300, 340]), up('top', 's1', 40, [420, 460]), down('d', 'top', 80, [240, 280])],
+  last: 'd',
+  sockets: [lavafall('lf1', 'a', 0.5), lavafall('lf2', 's1', 0.5), foe('foe', 'top', [0.55, 0.65], HOARD, 3.5, { chance: 1 }), petals('d', 'd', 0.5, 1)],
+  mirrorable: false,
+});
+
+// ───────────────────────────── 9-8's own flares: on the thread's high ledges ─────────────────────────────
+
+/** 9-8: two slabs on a high ledge stepped up to, a thread between them */
+const flareLedge2 = section({
+  id: 'w9-flare-ledges',
+  name: 'flares on the high ledges',
+  archetypes: ['relic_hunt'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.flares],
+  extraSeconds: WAIT * 2,
+  pieces: [bank('a', [200, 240]), up('s', 'a', 60, [140, 160]), up('t', 's', 60, [640, 700]), flat('d', 't', 60, [160, 180]), flat('c', 'd', 60, [200, 240])],
+  last: 'c',
+  sockets: [petals('s', 's', 0.5, 1), flare('fl1', 't', 0.25), thread('r', 't', 0.5), flare('fl2', 't', 0.76), petals('d', 'd', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** 9-8: a slab at the foot of the steps up to a thread ledge */
+const flareThread = section({
+  id: 'w9-flare-thread',
+  name: 'flare below the thread',
+  archetypes: ['relic_hunt'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W9_THEME.flares],
+  extraSeconds: WAIT,
+  pieces: [bank('a', [380, 420]), up('s1', 'a', 60, [140, 160]), up('s2', 's1', 60, [140, 160]), up('t', 's2', 50, [260, 300]), flat('d', 't', 170, [260, 300])],
+  last: 'd',
+  sockets: [flare('fl', 'a', 0.5), petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), thread('r', 't', 0.6)],
+  mirrorable: false,
+});
+
+// ───────────────────────────── 9-3's flares: between the chains (9-3 teaches them, the first stage they meet) ─────────────────────────────
+
+const scen = (id: string, on: string, t: Socket['t']) => prop(id, on, t, ['scenery'], { chance: 0.9 });
+/** the ember canopy's gate for the flares (its own: the canopy's gates open on a ridge of knolls, w9Bob.ts sinkGate3) */
+const flareGate3: SectionTemplate = section({
+  id: 'w9s-gate-flares',
+  name: 'ember canopy: the flare slabs (gate)',
+  archetypes: ['vine_runner'],
+  phases: ['start'],
+  difficulty: 1,
+  teaches: W9_THEME.flares,
+  weight: 6,
+  pieces: [bank('a', [220, 260]), up('k1', 'a', 30, [130, 160]), down('f1', 'k1', 30, [220, 260]), up('k2', 'f1', 30, [130, 160]), down('c', 'k2', 30, [200, 240])],
+  last: 'c',
+  sockets: [petals('k1', 'k1', 0.5, 1), petals('f1', 'f1', 0.5, 2, 80), petals('k2', 'k2', 0.5, 1), scen('ohia', 'a', [0.5, 0.6])],
+  mirrorable: false,
+});
+
+/** a flare slab on a flat, then a chain over the gap after it */
+const flareChain = section({
+  id: 'w9-flare-chain',
+  name: 'a flare slab, then a chain',
+  archetypes: ['vine_runner'],
+  phases: ALL5,
+  difficulty: 6,
+  uses: [W9_THEME.flares, FLARE],
+  extraSeconds: WAIT + CHAIN_T,
+  pieces: [bank('a', [180, 220]), up('f', 'a', 30, [420, 460]), ...chainTo('c', 'f')],
+  last: 'cd',
+  sockets: [flare('fl', 'f', 0.5), petals('f1', 'f', 0.18, 1), petals('cp', 'cp', 0.4, 2, 90), flag('cp', 0.75)],
+  mirrorable: false,
+});
+
+/** a chain, then a flat with two flare slabs out of step */
+const chainFlare = section({
+  id: 'w9-chain-flare',
+  name: 'a chain, then two flare slabs',
+  archetypes: ['vine_runner'],
+  phases: ALL5,
+  difficulty: 6,
+  uses: [W9_THEME.flares, FLARE],
+  extraSeconds: WAIT * 2 + CHAIN_T,
+  pieces: [bank('a', [220, 260]), ...chainTo('c', 'a'), down('f', 'cd', 30, [700, 760]), up('k', 'f', 30, [140, 160])],
+  last: 'k',
+  sockets: [petals('cp', 'cp', 0.4, 2, 90), flag('cp', 0.75), flare('fl1', 'f', 0.24), petals('mid', 'f', 0.5, 1), flare('fl2', 'f', 0.76)],
+  mirrorable: false,
+});
+
 export const W9_HEAT_SECTIONS: readonly SectionTemplate[] = [
+  flareGate3, flareChain, chainFlare,
+  flareLedge2, flareThread,
+  fallHoard, fallHoardPair,
   W9_HEAT_GATES.lavafalls4, W9_HEAT_GATES.surges4, watchFall, watchSurge, watchFallPair,
-  W9_HEAT_GATES.gusts1, W9_HEAT_GATES.gusts5, firstGust, gustGap, gustPair, gustGlide, gustTwin,
+  W9_HEAT_GATES.gusts1, firstGust, gustGap, gustPair,
   W9_HEAT_GATES.surges6, firstSurge, surgeRun, surgeTwin, surgeChasm,
   W9_HEAT_GATES.flares5, W9_HEAT_GATES.flares8, firstFlare, flarePair, flareChasm, flareGlide, flareLedge,
   W9_HEAT_GATES.lavafalls6, W9_HEAT_GATES.lavafalls9, firstFall, fallPair, fallGuard, fallChasm,
@@ -390,9 +507,9 @@ export const W9_HEAT_SECTIONS: readonly SectionTemplate[] = [
 
 /** which stages hold which (GRAB-BAG.md §4: neighbours in play share none) */
 export const W9_HEAT_STAGE: Readonly<Record<string, readonly number[]>> = {
-  [W9_HEAT_GATES.flares5.id]: [5], [W9_HEAT_GATES.flares8.id]: [8], [firstFlare.id]: [5, 8], [flarePair.id]: [5, 8], [flareChasm.id]: [5, 8], [flareGlide.id]: [5], [flareLedge.id]: [8],
-  [W9_HEAT_GATES.gusts1.id]: [1], [firstGust.id]: [1], [gustGap.id]: [1], [gustPair.id]: [1], [W9_HEAT_GATES.gusts5.id]: [5], [gustGlide.id]: [5], [gustTwin.id]: [5],
+  [W9_HEAT_GATES.flares5.id]: [5], [W9_HEAT_GATES.flares8.id]: [8], [flareGate3.id]: [3], [flareChain.id]: [3], [chainFlare.id]: [3], [firstFlare.id]: [3], [flarePair.id]: [3, 5], [flareChasm.id]: [5], [flareLedge2.id]: [8], [flareThread.id]: [8], [flareGlide.id]: [5], [flareLedge.id]: [8],
+  [W9_HEAT_GATES.gusts1.id]: [1], [firstGust.id]: [1], [gustGap.id]: [1], [gustPair.id]: [1],
   [W9_HEAT_GATES.lavafalls4.id]: [4], [W9_HEAT_GATES.surges4.id]: [4], [watchFall.id]: [4], [watchSurge.id]: [4], [watchFallPair.id]: [4],
-  [W9_HEAT_GATES.surges6.id]: [6], [firstSurge.id]: [4, 6], [surgeRun.id]: [6], [surgeTwin.id]: [6], [surgeChasm.id]: [6],
-  [W9_HEAT_GATES.lavafalls6.id]: [6], [W9_HEAT_GATES.lavafalls9.id]: [9], [firstFall.id]: [4, 6, 9], [fallPair.id]: [6, 9], [fallGuard.id]: [6, 9], [fallChasm.id]: [6, 9],
+  [W9_HEAT_GATES.surges6.id]: [6], [firstSurge.id]: [4], [surgeRun.id]: [6], [surgeTwin.id]: [6], [surgeChasm.id]: [6],
+  [W9_HEAT_GATES.lavafalls6.id]: [6], [W9_HEAT_GATES.lavafalls9.id]: [9], [firstFall.id]: [4], [fallPair.id]: [6], [fallGuard.id]: [6], [fallChasm.id]: [6], [fallHoard.id]: [9], [fallHoardPair.id]: [9],
 };

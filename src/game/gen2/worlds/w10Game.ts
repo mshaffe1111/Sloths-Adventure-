@@ -14,6 +14,7 @@ import { W10_ROOM_REQUIRED, withW10Rooms } from './w10Rooms.ts';
 import { withW10Swing } from './w10Swing.ts';
 import { TRAP } from '../../trapdoor.ts';
 import { liftCycle } from '../../lift.ts';
+import { BOB } from '../pipeline.ts';
 
 /** the stages of World 10 the game builds with gen2 */
 export const W10_GAME_STAGES = ['10-1', '10-3', '10-6', '10-7', '10-9'] as const;
@@ -67,6 +68,13 @@ export function w10GameKit(stage: number, difficulty: Difficulty = 'normal'): Wo
     // (the gear lifts (GRAB-BAG C) are geared, quicker than World 9's pistons (pipeline BOB): the wait for one, and the ride, are the slow
     // part of a gear section, and a stone block on a rack has no reason to crawl)
     for (const p of out.platforms) if (p.style === 'w10_gear' && p.lift) p.lift.speed = difficulty === 'easy' ? W10_GEAR_SPEED.easy : W10_GEAR_SPEED.normal;
+    // (the knobs on a soft pit's floor under a row of moving planks (pipeline layStage, World 9's hook: hops, not a quiet walk under them
+    // on Easy) in World 10's look: fallen rubble (w10PieceArt 'w10_rubble'), under the chain lifts and the counterweights)
+    const rows = out.platforms.filter((p) => (p.style === 'w10_lift' || p.style === 'w10_cw') && p.lift);
+    for (const p of out.platforms) {
+      if (p.width !== BOB.knobW || p.height !== BOB.knobH || p.lift) continue;
+      if (rows.some((r) => p.x + p.width > r.x - 260 && p.x < r.x + r.width + 260 && p.y > r.lift!.bottom)) p.style = 'w10_rubble';
+    }
     // (the counterweight planks (GRAB-BAG B) ride in pairs on one chain: the second half a cycle behind the first, so one is up as the
     // other is down)
     const cws = out.platforms.filter((p) => p.style === 'w10_cw' && p.lift).sort((a, b) => a.x - b.x);

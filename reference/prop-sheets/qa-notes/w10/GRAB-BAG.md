@@ -187,7 +187,7 @@ and curation will not start tonight. I'll say so in NEXT.md rather than start cu
 |---|---|---|---|
 | A chain lifts | w10-lift-first, -pair, -row (10-1, 10-6), -rods (10-1) | BUILT on World 9's riser (gen2 place 'raft', bob 'raft'); style w10_lift: two chains up to the pulley block, the iron-banded plank | 6/6 each; kid 0.92+, adult 0.97+ |
 | B counterweights | w10-cw-first, -row (10-3, 10-6), -storm (10-3) | BUILT; w10_cw: one chain over the cog wheel, the weight on the other side; pairs ride half a cycle apart (w10Game decorate) | first 6/6, storm 4/6, row 4/6; kid 0.93+ |
-| C gear lifts | w10-gear-first, -pair (10-6, 10-9), -guard (10-9) | BUILT; w10_gear: bag 'rack' block on its toothed rack, the cog set in the bank face below the walk | guard 5/6; first/pair: see NEXT.md (waiting on the piston reads as quiet on Normal; the pair got an animal on its middle ledge) |
+| C gear lifts | w10-gear-first, -leap (10-6, 10-9), -guard (10-9) | BUILT; w10_gear: bag 'rack' block on its toothed rack, the cog in the bank face below the walk; faster than World 9's pistons (W10_GEAR_SPEED), a fixed 210 px rise | kid 0.95+; 1-2 of 6 pass when gears fill 10-9 (one beat over and over): more gear-theme pieces needed, §10 |
 | D drop gates | w10-drop-first, -row, -yard, -high (10-7) | BUILT | pass; kid 0.97+ |
 | E gutter spouts | w10-spout-first, -gap, -pair (10-6, 10-9), -guard (10-9) | BUILT; the spout now stands on a wall stub (w10var 'bank-b'), its mouth about 182 px up (the lead's review) | pass 8/8; kid 0.97+ |
 | F trapdoor grates | w10-trap-first, -row, -guard, -spikes (10-9) | BUILT (soft pit under every grate) | pass 8/8; kid 0.96+ |
@@ -203,9 +203,9 @@ Themes per stage now: 10-1 6 (rods, spikes, ramparts, gusts, perches, lifts); 10
 counterweights); 10-6 5 (chains, spouts, lifts, counterweights, gear lifts); 10-7 6 (rods, spikes, towers, bridges, drops, barrels); 10-9 7
 (rods, spikes, ramparts, gusts, trapdoors, spouts, gear lifts). Every stage clears 5.
 
-The inspector (shared, tools/inspect/beats.ts): boarding a moving plank (lift.ts `bob`, World 9's and World 10's), or passing under one on
-a soft pit's floor, is a timed beat starting a step short of it. Before, a row of planks a step apart read as plain walking on Easy: World
-9's own raft pair and raft row went from 0/4 to 4/4 with it.
+The inspector (shared, tools/inspect/beats.ts): boarding a moving plank (lift.ts `bob`, World 9's and World 10's), standing on it or
+waiting a step short of it, is a timed beat. The walk on a soft pit's floor under the planks earns nothing (the lead's ruling, 5:02 PM):
+World 9's knobs give that walk real hops, drawn in World 10 as rubble (§10).
 
 ## 9. Placed from unused (Matt: "We need to use all the art we create")
 
@@ -242,3 +242,11 @@ Still unused, with a place for each (curation pass, no new art):
   holds both, a second tower painting would keep them apart; a later HF batch, not now.
 - **10-9 first-timer falls:** 20+ falls on Normal, plus pit rescues on Easy in the swing sections. This is a band and curation item: the
   first-timer bot does not yet wait for World 10's timed hazards (NEXT.md), and 10-9's swing sections need their own look in curation.
+- **10-9 needs more pieces around the gear theme (the lead, 5:02 PM):** when gear lifts fill 10-9, a roll is one beat over and over (wait
+  for the piston, ride, step off), and 1-2 rolls of 6 pass. Not forced past the measure: 10-9 needs more gear-theme pieces with a
+  different beat (a gear lift beside a drop gate or a grate, a gear-driven turning bridge, a guard on the cog's own ledge), so the theme
+  is several beats, not one. A grab-bag item for the next pass, built before curation.
+- **The lift pits' floor (the lead's ruling, 5:02 PM):** World 9's knobs on a soft pit's floor under a row of moving planks (pipeline
+  layStage, BOB.knob*) are kept; under World 10's chain lifts and counterweights they are drawn as fallen rubble (w10var 'stump-b',
+  style 'w10_rubble', set in w10Game's decorate on the knobs themselves: no geometry of World 10's own). The inspector's moving-plank
+  beat counts only standing on a plank or waiting a step short of it, never the walk on the floor under it.

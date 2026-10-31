@@ -16,14 +16,15 @@ bridges, K rolling barrels (a true roll: the HF barrel end turning), L lantern s
 
 1. **Curate once** (neighbour order 10-1, 10-3, 10-6, 10-7, 10-9; W10-NEXT.md's command with --apart-near --apart-cap 0.2; the full
    CLAUDE.md suite green after each stage's seeds). Not started, by the brief.
-2. **The gear lifts (C) on a stage full of them**: pieceCheck forces a theme for the whole stage, so a gear roll is mostly pistons, and
-   the wait for each piston plus its ride reads as dead time on Normal. World 10's gear lifts now run faster than World 9's pistons
-   (w10Game W10_GEAR_SPEED, 170/130 px a second; World 9's own untouched), the pair became one lift and a leap with an animal on the
-   ledge. See the last pieceCheck in the progress report; if still short, weight them low in curation so 10-9 mixes them with its
-   other six themes.
-3. **First-timer bot**: it now waits for drop gates, gutter gushes and trapdoor grates (tools/inspect/firsttimer.ts, shared). Rolling
+2. **10-9 needs more gear-theme pieces** (the lead, 5:02 PM: "don't force it"): with gear lifts filling 10-9, 1-2 rolls of 6 pass (each is
+   wait, ride, step off, again). World 10's gear lifts already run faster than World 9's pistons (w10Game W10_GEAR_SPEED) with a fixed
+   210 px rise; the fix is more pieces with other beats around the theme (GRAB-BAG §10), built before curation.
+3. **For the World 9 helper (one line, the lead's ask):** tools/inspect/route.ts now times a bob piston's ride at its own lift.speed (World
+   9's Easy pistons, 95 px/s, measure slower than the old fixed 120), and firsttimer.ts waits at World 10's drop gates, gushes and grates
+   (World 9's flares, lavafalls and surges unchanged; never 9-5's vent).
+3b. **First-timer bot**: it now waits for drop gates, gutter gushes and trapdoor grates (tools/inspect/firsttimer.ts, shared). Rolling
    barrels are left out on purpose (the lane is longer than one quiet window: he would stand forever); he jumps them or takes the hit.
-4. **Unused art with a place but not yet placed** (GRAB-BAG §9): w10var stump-b, fill-b, buttress-b; bridges plank-hanging. (bag winch-jam is a duplicate of 'winch': GRAB-BAG §9.)
+4. **Unused art with a place but not yet placed** (GRAB-BAG §9): w10var fill-b, buttress-b; bridges plank-hanging (stump-b is placed: rubble on the walks and the lift pits' floor). (bag winch-jam is a duplicate of 'winch': GRAB-BAG §9.)
 
 ## Checks on the final state
 

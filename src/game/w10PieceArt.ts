@@ -69,8 +69,20 @@ export function w10PiecesReady(): boolean {
   return (Object.keys(URLS) as Sheet[]).map((n) => !!sheet(n)).every(Boolean);
 }
 
+/** the rubble heap (w10var 'stump-b', 448 x 240): a knob on a soft pit's floor under the moving planks (w10Game decorate) */
+const RUBBLE = { x: 654, y: 0, w: 448, h: 240 };
+
 /** a grab-bag piece in its painting (false: not one of them, or its sheet is still loading) */
 export function drawW10PieceArt(ctx: CanvasRenderingContext2D, p: Platform, t = 0): boolean {
+  if (p.style === 'w10_rubble') {
+    // (the heap's foot on the pit floor, the knob's foot; its crown a few px over the knob's top, so he stands in its rounded top)
+    const img = sheet('v');
+    if (!img) return false;
+    const h = (p.height ?? 30) + 6;
+    const w = (h * RUBBLE.w) / RUBBLE.h;
+    ctx.drawImage(img, RUBBLE.x, RUBBLE.y, RUBBLE.w, RUBBLE.h, p.x + p.width / 2 - w / 2, p.y + (p.height ?? 30) - h, w, h);
+    return true;
+  }
   if (!isW10Piece(p)) return false;
   const L = LOOK[p.style as W10PieceStyle];
   const img = sheet(L.sheet);

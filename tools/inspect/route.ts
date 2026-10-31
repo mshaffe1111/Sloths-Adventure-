@@ -278,6 +278,21 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
   if (a.kind === 'climb' && b.kind === 'plat') {
     const v = a.vine!, B = b.plat!;
     const lx = clamp(v.x, ...ext(B));
+    // (a block standing between the trunk and that ledge at the ledge's height, a trunk's own wall: he climbs to its top, walks across
+    // and drops down the far side; traced straight across, the route ran through the wall at its foot and the first-timer bot, told the
+    // way on was 240 px under the wall's top, turned back down the trunk again and again: 8-5, 2026-10-31)
+    const lo = Math.min(v.x, lx), hi = Math.max(v.x, lx);
+    const wall = stage.platforms.filter((q) => q !== B && q.type === 'solid' && !q.broken && q.x < hi - 2 && q.x + q.width > lo + 2 && q.y < B.y - 20 && q.y + q.height > B.y - 20);
+    if (wall.length && hi - lo > 40) {
+      const top = Math.min(...wall.map((q) => q.y));
+      const far = lx > v.x ? Math.max(...wall.map((q) => q.x + q.width)) : Math.min(...wall.map((q) => q.x));
+      const climb = Math.abs(at.y - Math.max(top, v.topY));
+      segs.push({ kind: 'climb', x0: at.x, y0: at.y, x1: v.x, y1: top, dt: climb / CLIMB + TIME.climbOverhead * K, plat: wall[0] });
+      segs.push({ kind: 'walk', x0: v.x, y0: top, x1: far, y1: top, dt: Math.abs(far - v.x) / RUN, plat: wall[0] });
+      const ex = lx > v.x ? Math.max(far + 4, lx) : Math.min(far - 4, lx);
+      segs.push({ kind: 'drop', x0: far, y0: top, x1: ex, y1: B.y, dt: Math.abs(ex - far) / RUN + Math.sqrt((2 * Math.max(0, B.y - top)) / 1800), plat: B, from: wall[0] });
+      return { segs, at: { x: ex, y: B.y }, cost: sum(segs) };
+    }
     const climb = Math.abs(at.y - clamp(B.y, v.topY, v.bottomY));
     segs.push({ kind: 'climb', x0: at.x, y0: at.y, x1: lx, y1: B.y, dt: climb / CLIMB + TIME.climbOverhead * K + Math.abs(lx - v.x) / RUN, plat: B });
     return { segs, at: { x: lx, y: B.y }, cost: sum(segs) };

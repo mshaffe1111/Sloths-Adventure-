@@ -59,10 +59,11 @@ export interface Zone {
    * World 9's hazards on the geyser's and the tide's rhythm, each drawn and read as its own thing (GRAB-BAG.md): a `flare` slab on the
    * route whose cracks glow and flare (a low geyser zone, N5), a `lavafall` pouring from above (a geyser zone from the sky, N9), a lava
    * `surge` down a cooled channel (a low geyser zone along its floor, N6), the hot `ash` wind (a wind zone, N7). They act and are checked as
-   * their kind; the inspector names the geyser ones by their look. World 10's: a `portcullis` (drop gate), a `gush` (gutter spout) and a
-   * `barrel` (rolling barrel lane) on the bolt column (w10DropArt.ts)
+   * their kind; the inspector names the geyser ones by their look. A `vent` (9-5's warm air low in a chasm) is a geyser zone too, its own
+   * kind on the look-alike measure (it lifts the leaf; it is not 9-1's geyser). World 10's: a `portcullis` (drop gate), a `gush` (gutter
+   * spout) and a `barrel` (rolling barrel lane) on the bolt column (w10DropArt.ts)
    */
-  look?: 'flare' | 'lavafall' | 'surge' | 'ash' | 'portcullis' | 'gush' | 'barrel';
+  look?: 'flare' | 'lavafall' | 'surge' | 'ash' | 'vent' | 'portcullis' | 'gush' | 'barrel';
   /** ('barrel': World 10's rolling barrel, GRAB-BAG K: the zone is the barrel's lane along a wall; while it is active one barrel rolls the
    *  lane's length, `dir` the way, and only the barrel itself hurts: barrelX) ('gush': World 10's gutter spout, GRAB-BAG E: a column of
    *  storm water that knocks him back out and down while it pours, never a heart) a drop gate where it is taught: it shoves him out and
@@ -174,7 +175,7 @@ export const VENT_LIFT_H = 340;
 export function ventLift(zones: readonly Zone[] | undefined, x: number, y: number, t: number): boolean {
   if (!zones) return false;
   for (const z of zones) {
-    if (z.kind !== 'geyser' || z.look || x < z.x0 || x > z.x1 || y < z.top - VENT_LIFT_H || y > z.bottom) continue;
+    if (z.kind !== 'geyser' || (z.look && z.look !== 'vent') || x < z.x0 || x > z.x1 || y < z.top - VENT_LIFT_H || y > z.bottom) continue;
     if (y < z.top || zoneState(z, t).phase !== 'active') return true;
   }
   return false;

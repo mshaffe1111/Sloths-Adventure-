@@ -20,13 +20,21 @@ const HAZARDS_URL = new URL('../assets/w9/hazards.webp', import.meta.url).href;
 const SCENERY_URLS = {
   'w9c': new URL('../assets/w6to10/props-made/w9c.webp', import.meta.url).href,
   'w9c-b': new URL('../assets/w6to10/props-made/w9c-b.webp', import.meta.url).href,
+  // (the W9 props sheet's three pieces no stage drew: the vent rock, the lava dome and the scorched bridge, set dressing since 2026-10-31)
+  'w9b': new URL('../assets/w6to10/props-made/w9b.webp', import.meta.url).href,
 } as const;
 type SceneSheet = keyof typeof SCENERY_URLS;
 export const W9_ART_URLS: readonly string[] = [HAZARDS_URL, ...Object.values(SCENERY_URLS)];
 
 type Frame = { x: number; y: number; w: number; h: number; ax?: number; ay?: number };
 const HZ = W9_HAZARD_FRAMES as Record<string, Frame | undefined>;
-const SC = W9_SCENERY_FRAMES as unknown as Record<SceneSheet, Record<string, Frame>>;
+/** props-made/w9b.json's cells of the pieces drawn as dressing (one look only) */
+const W9B_DRESS: Record<string, Frame> = {
+  'scorched-bridge': { x: 1005, y: 0, w: 479, h: 286, ax: 186.5, ay: 286 },
+  'lava-dome': { x: 1488, y: 0, w: 445, h: 329, ax: 203.0, ay: 329 },
+  'vent-rock': { x: 0, y: 430, w: 382, h: 204, ax: 170.5, ay: 204 },
+};
+const SC = { ...(W9_SCENERY_FRAMES as unknown as Record<string, Record<string, Frame>>), w9b: W9B_DRESS } as Record<SceneSheet, Record<string, Frame>>;
 
 const imgs = new Map<string, HTMLImageElement>();
 const ready = new Set<string>();
@@ -169,8 +177,11 @@ export interface W9SceneryItem {
 }
 
 /** one piece of set dressing standing on `b` at `x`, `w` wide, in one of the two looks (the roll of its spot picks which) */
+export function drawW9Piece(ctx: CanvasRenderingContext2D, n: string, x: number, b: number, w: number, flip: boolean, alpha = 1): boolean {
+  return drawPiece(ctx, n, x, b, w, flip, alpha);
+}
 function drawPiece(ctx: CanvasRenderingContext2D, n: string, x: number, b: number, w: number, flip: boolean, alpha = 1): boolean {
-  const sheet: SceneSheet = hash01(x, 31) < 0.5 ? 'w9c' : 'w9c-b';
+  const sheet: SceneSheet = W9B_DRESS[n] ? 'w9b' : hash01(x, 31) < 0.5 ? 'w9c' : 'w9c-b';
   const im = load(SCENERY_URLS[sheet]);
   const f = SC[sheet][n];
   if (!im || !f) return false;

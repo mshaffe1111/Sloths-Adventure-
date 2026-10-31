@@ -91,6 +91,8 @@ export const W9_LESSON = {
   gust: 'w9:gust',
   /** the sinking ember slabs (9-3 teaches them; 9-9 again) */
   sink: 'w9:sink',
+  /** the ash caps, World 9's bounce plant (bounceArt.ts cap-w9; 9-1 teaches them, 9-6 again) */
+  cap: 'w9:cap',
 } as const;
 
 // ───────────────────────────── the creatures ─────────────────────────────
@@ -136,6 +138,8 @@ export const W9_PROPS: PropDef[] = [
 export const W9_DECOR: WorldManifest['decor'] = [
   { id: 'w9-ohia', job: 'bank', items: [{ n: 'young-tree', w: [70, 100] }, { n: 'ash-fern', w: [90, 120] }], every: [260, 420] },
   { id: 'w9-cinder', job: 'bank', items: [{ n: 'obsidian', w: [60, 90] }, { n: 'smoke-crack', w: [120, 160] }], every: [300, 460] },
+  // (the W9 props sheet's vent rock, lava dome and scorched bridge: painted, and drawn nowhere until now (Matt: use all the art))
+  { id: 'w9-ruin', job: 'bank', items: [{ n: 'vent-rock', w: [100, 130] }, { n: 'scorched-bridge', w: [130, 160] }, { n: 'lava-dome', w: [90, 120] }], every: [320, 480] },
 ];
 
 // ───────────────────────────── the lines ─────────────────────────────
@@ -160,9 +164,10 @@ export const W9_TIPS: Record<string, string> = {
   [W9_LESSON.surge]: 'Lava surges down the channel. Listen!', // (new, needs Matt's approval: GRAB-BAG.md N6)
   [W9_LESSON.gust]: "Hot wind! It'll push you back.", // (new, needs Matt's approval: GRAB-BAG.md N7)
   [W9_LESSON.sink]: 'Ember slabs sink when you stand on them.', // (new, needs Matt's approval: GRAB-BAG.md N4)
+  [W9_LESSON.cap]: 'Ash caps! Bounce up to the high rock.', // (new, needs Matt's approval: GRAB-BAG.md N10)
 };
 /** the lines that are new in World 9 (the report lists them for the lead) */
-export const W9_NEW_LINES: readonly string[] = ['water', W9_LESSON.geyser, W9_LESSON.vent, W9_LESSON.basalt, W9_LESSON.watch, W9_LESSON.threads, W9_LESSON.raft, W9_LESSON.piston, W9_LESSON.flare, W9_LESSON.lavafall, W9_LESSON.surge, W9_LESSON.gust, W9_LESSON.sink].map((k) => W9_TIPS[k]);
+export const W9_NEW_LINES: readonly string[] = ['water', W9_LESSON.geyser, W9_LESSON.vent, W9_LESSON.basalt, W9_LESSON.watch, W9_LESSON.threads, W9_LESSON.raft, W9_LESSON.piston, W9_LESSON.flare, W9_LESSON.lavafall, W9_LESSON.surge, W9_LESSON.gust, W9_LESSON.sink, W9_LESSON.cap].map((k) => W9_TIPS[k]);
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -187,7 +192,7 @@ export const W9_MANIFEST: WorldManifest = {
   sections: [],
   handBuilt: ['9-2', '9-7', '9-10'],
   // (the geysers are 9-1's, the warm air 9-5's, the doorstep's eye 9-4's; the shut shrine is said in each gate)
-  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-8', [W9_LESSON.flare]: '9-5', [W9_LESSON.lavafall]: '9-4', [W9_LESSON.surge]: '9-4', [W9_LESSON.gust]: '9-1', [W9_LESSON.sink]: '9-3' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-5', [W9_LESSON.flare]: '9-3', [W9_LESSON.lavafall]: '9-4', [W9_LESSON.surge]: '9-4', [W9_LESSON.gust]: '9-1', [W9_LESSON.sink]: '9-3', [W9_LESSON.cap]: '9-1' },
   tips: W9_TIPS,
 };
 
@@ -298,7 +303,7 @@ export function w9Emitters(stage: number, easy = false): Record<W9PropId, PropEm
       const y = floor.y;
       const period = VENT.idle + VENT.warn + VENT.active;
       out.zones.push({
-        kind: 'geyser', x0: R(x - VENT.w / 2), x1: R(x + VENT.w / 2), top: y - VENT.h, bottom: y + 14, baseY: y, dir: 1,
+        kind: 'geyser', look: 'vent', x0: R(x - VENT.w / 2), x1: R(x + VENT.w / 2), top: y - VENT.h, bottom: y + 14, baseY: y, dir: 1,
         period, warn: VENT.warn, active: VENT.active, offset: Math.round(hash01(f.x, 23) * period * 10) / 10, force: 0,
       });
     },
@@ -377,7 +382,12 @@ export function w9Falls(t: SectionTemplate): SectionTemplate {
 /** World 9's base kit for one stage (the sections are added by w9Game.ts) */
 export function w9Kit(stage: number, easy = false): WorldKit {
   // (9-3 Ember Canopy's danger is the chains over the lava: no animals, so no stretch of it plays like 9-6's hunt)
-  const creatures = stage === 3 ? [] : W9_HARPY_STAGES.includes(stage) ? W9_CREATURES : W9_CREATURES.filter((c) => c.id !== W9_CREATURE.harpy);
+  // (9-6's ash fields are hunted by the cats and the tayra, 9-9's hoard is guarded by the harpies and the boas: the two fight stages never
+  // share an animal, so their stretches never read alike on the look-alike measure (13 of 16 raw 9-9 rolls matched a 9-6 roll, 2026-10-31))
+  const creatures = stage === 3 ? []
+    : stage === 6 ? W9_CREATURES.filter((c) => c.id !== W9_CREATURE.harpy && c.id !== W9_CREATURE.boa)
+    : stage === 9 ? W9_CREATURES.filter((c) => c.id === W9_CREATURE.harpy || c.id === W9_CREATURE.boa)
+    : W9_HARPY_STAGES.includes(stage) ? W9_CREATURES : W9_CREATURES.filter((c) => c.id !== W9_CREATURE.harpy);
   return { manifest: { ...W9_MANIFEST, creatures }, emit: w9Emitters(stage, easy), decorate: w9Decorate(stage), spawn: w9Spawn() };
 }
 

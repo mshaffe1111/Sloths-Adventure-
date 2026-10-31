@@ -679,6 +679,8 @@ export interface Laid {
   gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean }>;
   /** the zones the sections lay (a tide, darkness) */
   zones: Zone[];
+  /** the gaps a fall into costs a heart, not a life (WorldManifest.heartFalls: World 8 Normal's swings and glides), no pit under them */
+  heartFalls: Array<{ x0: number; x1: number }>;
   spawn: { x: number; y: number; piece: Platform };
   exit: { x: number; y: number; piece: Platform };
   /** the lianas and climbing vines the sections hang */
@@ -775,16 +777,25 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const vines: Vine[] = [];
   const ropes: Rope[] = [];
   const zones: Zone[] = [];
+  const heartFalls: Laid['heartFalls'] = [];
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
     const hop = riseLimit(false, budget.riseShare) * PIT.hop;
+    // (the banks either side of the pit reach down past its floor: a glide's back pit climbs in steps and on low ground its floor lay under
+    // the banks' foot, so a jump off the floor passed under a bank's edge and fell through, 9-5's first-timer bot)
+    // (every world: the lead, 2026-10-31, a bug in shared code is fixed for all; gen2Pits.test.ts scans every shipped stage for it)
+    const deepen = (floor: number) => {
+      for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
+    };
     if (back) {
       const out = backPit(x0, x1, lipY, farY, M.pitDepth, hop);
+      deepen(out.floor);
       mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
       for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
       return;
     }
     const out = pitSteps(x0, x1, lipY, farY, M.pitDepth, hop);
+    deepen(out.floor);
     mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
     for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
   };
@@ -988,8 +999,21 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         gaps.push(g0);
         if (g.pit && !g.water) {
           const before = platforms.length;
-          if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
+          // (a world with `heartFalls` (World 8, Matt 2026-10-31): on Normal a missed swing or glide (a gap with `back`: under a liana or a
+          // glide) costs a heart and sets him back on the ledge he left, no pit under it; Easy's stay soft pits, the dark's stay soft)
+          if (g.back && M.heartFalls && budget.pit !== 'soft' && !g.soft) heartFalls.push({ x0: R(g0.x0), x1: R(g0.x1) });
+          else if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
           else pitUnder(g0.x0, g0.x1, g0.y, g0.y, false, g.soft);
+          // (a soft pit under a row of rafts or logs (World 9, BOB; Easy's falls are soft): its crust floor gets a basalt knob in each
+          // opening between them, never under one, so the walk along the floor is hops, not a quiet stretch, 9-1's Easy rolls)
+          const floor = platforms.slice(before).find((q) => q.x <= g0.x0 + 1 && q.x + q.width >= g0.x1 - 1);
+          if (floor) {
+            // (a soft pit's raft bobs only BOB.depth.soft, so its underside at the bottom stays over the knobs' tops: they may stand under it)
+            const rafts = placed.pieces.some((pp) => !!pp.platform.lift?.bob && pp.platform.lift.bob !== 'piston' && pp.platform.x >= g0.x0 - 2 && pp.platform.x <= g0.x1);
+            const span = g0.x1 - g0.x0 - 2 * BOB.knobClear;
+            const n = rafts ? Math.floor(span / BOB.knobEvery) : 0;
+            for (let i = 0; i < n; i++) mk(R(g0.x0 + BOB.knobClear + ((i + 0.5) * span) / n - BOB.knobW / 2), floor.y - BOB.knobH, BOB.knobW, 'block', BOB.knobH, 'moss_stone');
+          }
           placed.seam.push(...platforms.slice(before));
           // (an iron spike bed: the pit's floor up to its first step bristles on Normal; Easy's falls stay soft, so its pit is plain)
           if (g.spikes && budget.difficulty !== 'easy' && platforms.length > before) {
@@ -1104,6 +1128,23 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (tpl.teaches) taught.add(tpl.teaches);
       const exitP = pieceOf(L.exit.piece);
       cur = { x: ox + L.exit.x, y: oy + L.exit.y, kind: L.exit.kind, piece: exitP };
+      // (a safe start, M.safeStart: the runway and the start section's ground, unbroken from the spawn; a plain bank after the start
+      // for what they leave short, so the next section's first gap or animal is past it)
+      if (n.phase === 'start' && M.safeStart && cur.kind === 'ground') {
+        let reach = SPAWN_X;
+        for (const p of platforms.filter((q) => q.type !== 'fragile' && q.type !== 'bouncy' && q.y >= runway.y - 400 && q.y <= runway.y + 60).sort((a, b) => a.x - b.x)) {
+          if (p.x > reach + 1) break;
+          reach = Math.max(reach, p.x + p.width);
+        }
+        const short = SPAWN_X + M.safeStart + 40 - cur.x;
+        if (reach >= cur.x - 1 && short > 0) {
+          const fill = mk(cur.x, cur.y, short, 'bank', 0);
+          placed.x1 = Math.max(placed.x1, fill.x + fill.width);
+          cur = { x: fill.x + fill.width, y: fill.y, kind: 'ground', piece: fill };
+          secs += short / budget.walkSpeed;
+          placed.seconds += short / budget.walkSpeed;
+        }
+      }
       if (n.phase === 'start' || n.phase === 'goal') break;
     }
   }
@@ -1122,6 +1163,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     vines,
     ropes,
     zones,
+    heartFalls,
     width: R(shrine.x + shrine.width + 40),
     bottom: baseline,
     nextId: pid,
@@ -1142,7 +1184,7 @@ export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 }
  * World 9's moving logs (place `raft`, GRAB-BAG.md N1-N3; Matt, 2026-10-31: "the logs that you run on actually move up and down, and it's
  * a timing"). Each rides lift.ts's cycle: a still spell at the bottom, the ride up, a still spell at the top, the ride down.
  *   depth   how far a raft or a log sinks under its top stop (px). Normal's is past the double jump's 185 (physics DOUBLE_RISE), so the jump
- *           off waits for the top; over a soft pit (Easy) it stays over the crust floor (pitDepth 110), a shallow bob
+ *           off waits for the top; over a soft pit (Easy) a shallow bob that keeps over the knobs on the crust floor (pitDepth 110)
  *   speed   px a second while it rides; wait: its still spell at each stop (s), long enough at the top for a jump's whole flight (0.65 s at
  *           a raft's 0.65 the raft sank away under the jump: 9-1's adult bot). Easy is slower with longer spells (STAGE-RULES §1b). A sinking
  *           slab's speed is how fast it sinks under him (it has no cycle: engine.ts)
@@ -1155,13 +1197,18 @@ export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 }
 export const SURGE = { inset: 12, h: 70, warn: 1.4, active: 1.1, idle: 2.6, lessonIdle: 4.0, cross: 220, easyCalm: 1.2 } as const;
 
 export const BOB = {
-  depth: { raft: [195, 220] as const, log: [205, 235] as const, sink: [70, 78] as const, soft: 70 },
+  depth: { raft: [195, 220] as const, log: [205, 235] as const, sink: [38, 42] as const, soft: 40 },
   speed: { normal: { raft: 180, log: 150, piston: 120, sink: 95 }, easy: { raft: 150, log: 120, piston: 95, sink: 65 } },
   wait: { normal: { raft: 1.0, log: 1.2, piston: 0.8, sink: 0 }, easy: { raft: 1.4, log: 1.6, piston: 1.2, sink: 0 } },
   /** a sinking slab (`sink`): it goes down at `speed` while he stands on it, comes back up at this (px a second) once he is off */
   sinkRise: 60,
   rise: [205, 240] as const,
   h: { raft: 26, log: 30, piston: 40, sink: 24 },
+  /** the knobs on a soft pit's floor between rafts (layStage): width, height, and how far they keep from the pit's ends (its steps) */
+  knobW: 70,
+  knobH: 30,
+  knobClear: 130,
+  knobEvery: 170,
 } as const;
 
 /**
@@ -1776,7 +1823,9 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   if (rooms.length) addKitPlatforms(platforms, { rooms });
   sink.collectibles.push({ id: sink.nextCollectibleId(), type: 'exit_totem', x: laid.exit.x, y: laid.exit.y - 30, collected: false, bobPhase: 0 });
   // (World 9's rafts and logs sink deeper than the banks' foot: the lava lies under their lowest stop, BOB, as levelCheck's waterline asks)
-  const bobFoot = Math.max(laid.bottom, ...laid.platforms.filter((p) => p.lift?.bob && p.lift.bob !== 'piston').map((p) => p.lift!.bottom + 26));
+  // (and under the deepest soft floor: a glide's soft pit climbs back to its take-off in steps, and on low ground its floor lay under the
+  // lava line, so standing on the soft floor was a death: 9-5's glides, the first-timer bot's 19 lives)
+  const bobFoot = Math.max(laid.bottom, ...laid.platforms.filter((p) => p.lift?.bob && p.lift.bob !== 'piston').map((p) => p.lift!.bottom + 26), ...laid.platforms.filter((p) => !p.lift).map((p) => p.y + 30));
   const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)) };
   const meta: Gen2Meta = {
     seed,
@@ -1811,6 +1860,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     // (a deadly chasm shows the dirty water far below, World 7; World 8's treetops have none: its deadly falls drop into the dark)
     ...(budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water) ? { waterY: Math.max(laid.bottom, bobFoot) + 40 } : {}),
     ...(sink.zones.length ? { zones: sink.zones } : {}),
+    ...(laid.heartFalls.length ? { heartFalls: laid.heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),
     meta: { attempt: seed, chunks: laid.sections.map((s) => s.template), width: laid.width, pieces: laid.sections.map((s) => ({ k: s.template, x0: R(s.x0), x1: R(s.x1), beat: s.phase })) },

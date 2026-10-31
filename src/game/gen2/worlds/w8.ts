@@ -26,7 +26,7 @@ import { G } from '../../protoStage.ts';
 import type { StageHint } from '../../protoStage.ts';
 import type { Enemy, Platform } from '../../types.ts';
 import type { Bush, WatchZone } from '../../watcher.ts';
-import type { CreatureDef, FilledSocket, PropDef, PropEmitter, StageSink, WorldKit, WorldManifest } from '../types.ts';
+import type { CreatureDef, Difficulty, FilledSocket, PropDef, PropEmitter, StageSink, WorldKit, WorldManifest } from '../types.ts';
 import { W6S_EMIT, W6S_PROPS } from './w6Swing.ts';
 import { watchCalm } from './w6.ts';
 
@@ -35,7 +35,7 @@ export const W8_GROUND = { y: G, bankH: 90, pitDepth: 120 } as const;
 
 // ───────────────────────────── the ids ─────────────────────────────
 
-export const W8_CREATURE = { ocelot: 'ocelot', jaguar: 'jaguar', boa: 'boa', tayra: 'tayra', harpy: 'harpy' } as const;
+export const W8_CREATURE = { ocelot: 'ocelot', jaguar: 'jaguar', boa: 'boa', tayra: 'tayra', harpy: 'harpy', boaDoze: 'boaDoze' } as const;
 export type W8CreatureId = (typeof W8_CREATURE)[keyof typeof W8_CREATURE];
 
 export const W8_PROP = {
@@ -66,6 +66,8 @@ export const W8_LESSON = {
   harpy: 'harpy',
   /** 8-5's moon flowers (GRAB-BAG.md D): bounce, then the second jump at the top, up onto a bough no jump reaches */
   bounce: 'w8:bounce',
+  /** 8-1's dozing boa: hop over it (Matt, 2026-10-31) */
+  doze: 'w8:doze',
   /** 8-1's sleeping-bat run (GRAB-BAG.md E): no hides, time the run for the doze */
   batRun: 'w8:batrun',
   /** the first deadly drop from a lit bough (Normal: w8Finish says it before the first) */
@@ -82,6 +84,9 @@ export const W8_CREATURES: CreatureDef[] = [
   // (the coiled guard: it holds its spot and strikes, 1-9's lesson; never walks)
   { id: W8_CREATURE.boa, enemy: 'boa', threat: 3, terrain: 'flat', minGround: 200, w: 58, h: 26, hp: 3, footY: 16, extra: { speed: 1 }, tags: ['boa', 'still', 'topup'] },
   { id: W8_CREATURE.tayra, enemy: 'tayra', threat: 2.5, terrain: 'flat', minGround: 200, w: 46, h: 24, hp: 1, footY: 15, tags: ['tayra', 'hunter', 'small', 'quick', 'topup'] },
+  // (8-1's dozing boa, Matt 2026-10-31: asleep until he walks right into it, a hop over never wakes it; cheap, so 8-1's gentle budget
+  // pays for it, and only the 'dozers' theme's sockets ask for it)
+  { id: W8_CREATURE.boaDoze, enemy: 'boa', threat: 0.4, terrain: 'flat', minGround: 200, w: 58, h: 26, hp: 3, footY: 16, extra: { speed: 1, asleep: true }, tags: ['dozer'] },
   // (the night harpy: crouches, slides, then leaps and stomps; 8-8 and 8-9 only: w8Manifest)
   { id: W8_CREATURE.harpy, enemy: 'harpy', threat: 4, terrain: 'flat', minGround: 260, w: 48, h: 36, hp: 2, footY: 16, tags: ['harpy', 'hunter', 'big', 'night', 'topup'] },
 ];
@@ -134,23 +139,27 @@ export const W8_DECOR: WorldManifest['decor'] = [
 // ───────────────────────────── the lines ─────────────────────────────
 
 /**
- * Dot's lines (under 10 words). New ones need Matt's approval (STAGE-RULES §1 "Story"); the glide line is World 4's (dotLinesData
- * hint.4-7.far) and the harpy's World 6's (w6.ts W6_TIPS).
+ * Dot's lines (under 10 words). New ones need Matt's approval (STAGE-RULES §1 "Story"); the harpy's is World 6's (w6.ts W6_TIPS). The
+ * glide line is World 8's own on Normal, where a glide gap needs the second jump first (Matt approved, 2026-10-31: World 4's "Flick up
+ * and hold" fell short of every Normal 8-6 gap); Easy keeps World 4's (dotLinesData hint.4-7.far), one jump being enough there (W8_EASY_TIPS).
  */
 export const W8_TIPS: Record<string, string> = {
   [W8_LESSON.dark]: 'Dark ahead. Stay near the fireflies.', // (new, needs Matt's approval)
   [W8_LESSON.roost]: "Bats! Hide while they're looking. Go when they sleep.", // (new, needs Matt's approval)
-  [W8_LESSON.glide]: 'Too far! Flick up and hold to glide.',
+  [W8_LESSON.glide]: 'Too far! Jump twice, then hold to glide.', // (Matt approved, 2026-10-31)
   [W8_LESSON.hunt]: "The shrine's shut. Drive the hunters off first!", // (new, needs Matt's approval)
   [W8_LESSON.fight]: "The shrine's shut. Fight through to open it.", // (new for World 8: World 6's line, needs Matt's approval there)
   [W8_LESSON.harpy]: 'A harpy! It slides, then stomps. Jump clear.',
   [W8_LESSON.drop]: "Careful! It's a long way down.", // (new, needs Matt's approval)
   [W8_LESSON.batRun]: 'Sleeping bats. Nowhere to hide: go while they doze.', // (new, needs Matt's approval)
-  [W8_LESSON.bounce]: 'A moon flower! Bounce, then jump again up top.', // (new, needs Matt's approval)
+  [W8_LESSON.bounce]: 'Moon flower! Bounce on it to get up high.', // (Matt approved 'A moon flower! ...', 2026-10-31; the 'A' dropped for the under-10-words rule, to confirm)
+  [W8_LESSON.doze]: 'A sleeping boa. Hop right over it!', // (new, needs Matt's approval)
 };
+/** Easy's lines: World 4's glide line, one flick and a glide crossing Easy's shorter glide gaps */
+export const W8_EASY_TIPS: Record<string, string> = { ...W8_TIPS, [W8_LESSON.glide]: 'Too far! Flick up and hold to glide.' };
 /** the lines that are new in World 8 (the report lists them for Matt) */
 // (the roosts moved from 8-4, now the hand-built Lantern Run, to 8-2's roost blooms)
-export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop], W8_TIPS[W8_LESSON.batRun], W8_TIPS[W8_LESSON.bounce]];
+export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.glide], W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop], W8_TIPS[W8_LESSON.batRun], W8_TIPS[W8_LESSON.bounce], W8_TIPS[W8_LESSON.doze]];
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -166,6 +175,10 @@ export const W8_MANIFEST: WorldManifest = {
   // pit: w8Game.ts w8Falls. Easy's falls are all soft)
   pit: 'void',
   pitDepth: W8_GROUND.pitDepth,
+  // (the first 1,300 px from the spawn one unbroken ground: safeStart.test.ts, stageGenerator SAFE_START)
+  safeStart: 1300,
+  // (on Normal a missed swing or glide costs a heart, not a life: Matt, 2026-10-31)
+  heartFalls: true,
   corridor: { top: G - 180, bottom: G + 80, soft: 60 },
   creatures: W8_CREATURES,
   props: W8_PROPS,
@@ -177,7 +190,7 @@ export const W8_MANIFEST: WorldManifest = {
   sections: [],
   handBuilt: ['8-4', '8-7', '8-10'],
   // (the dark is 8-1's, the roosts 8-2's (8-4 is hand-built now), the moonlight glides 8-6's; the shut shrine is said in each fight stage's own gate)
-  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '8-8', [W8_LESSON.dark]: '8-1', [W8_LESSON.roost]: '8-2', [W8_LESSON.glide]: '8-6', [W8_LESSON.batRun]: '8-1', [W8_LESSON.bounce]: '8-5' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '8-8', [W8_LESSON.dark]: '8-1', [W8_LESSON.roost]: '8-2', [W8_LESSON.glide]: '8-6', [W8_LESSON.batRun]: '8-1', [W8_LESSON.bounce]: '8-5', [W8_LESSON.doze]: '8-1' },
   tips: W8_TIPS,
 };
 
@@ -289,8 +302,16 @@ export function w8Decorate(stage: number): NonNullable<WorldKit['decorate']> {
 }
 
 /** every animal kept on its patch (never off a bough into a gap), facing a rolled way; each harpy noted for w8Finish */
-export function w8Spawn(stage = 1): NonNullable<WorldKit['spawn']> {
+export function w8Spawn(stage = 1, difficulty: Difficulty = 'normal'): NonNullable<WorldKit['spawn']> {
+  // (Easy's fight stages, 8-8 and 8-9: every hunter a hit softer and slower to strike again; the first-timer and kid bots scored Easy at
+  // or over Normal there, 2026-10-31. Its numbers only: the layout is Normal's)
+  const soft = difficulty === 'easy' && (stage === 8 || stage === 9);
   return (e: Enemy, c: CreatureDef, out: StageSink) => {
+    if (soft) {
+      e.hp = Math.max(1, e.hp - 1);
+      e.maxHp = e.hp;
+      e.attackCooldown = Math.max(e.attackCooldown, 2.4);
+    }
     e.edgeMinX = e.patrolMinX;
     e.edgeMaxX = e.patrolMaxX;
     e.facing = hash01(e.x, 12) < 0.5 ? -1 : 1;
@@ -302,10 +323,10 @@ export function w8Spawn(stage = 1): NonNullable<WorldKit['spawn']> {
 export const W8_MEET_LEAD = 520;
 
 /** World 8's base kit for one stage (the sections are added by w8Game.ts) */
-export function w8Kit(stage: number): WorldKit {
+export function w8Kit(stage: number, difficulty: Difficulty = 'normal'): WorldKit {
   const own = W8_STAGE_FOES[stage];
   const creatures = own ? W8_CREATURES.filter((c) => own.includes(c.id)) : W8_CREATURES.filter((c) => c.id !== W8_CREATURE.harpy);
-  return { manifest: { ...W8_MANIFEST, creatures }, emit: w8Emitters(stage), decorate: w8Decorate(stage), spawn: w8Spawn(stage) };
+  return { manifest: { ...W8_MANIFEST, creatures, ...(difficulty === 'easy' ? { tips: W8_EASY_TIPS } : {}) }, emit: w8Emitters(stage), decorate: w8Decorate(stage), spawn: w8Spawn(stage, difficulty) };
 }
 
 /** Dot's warning comes this far before the first deadly drop's lip (px), as the water's (types.ts WATER_WARN.lead) */

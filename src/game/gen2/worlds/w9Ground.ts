@@ -73,6 +73,8 @@ export const W9_THEME = {
   sinkers: 'w9:t-sinkers',
   /** 9-3 / 9-8: the shimmy ropes over the lava, the burnt bridges' ropes (N8: w9Bob.ts) */
   bridges: 'w9:t-bridges',
+  /** 9-1 / 9-6: the ash caps, bounce plants up to the high rock (N10: w9Bob.ts) */
+  caps: 'w9:t-caps',
 } as const;
 export type W9Theme = (typeof W9_THEME)[keyof typeof W9_THEME];
 
@@ -384,7 +386,8 @@ const crustGaps = section({
   weight: SHARED,
   pieces: [bank('a', [260, 300]), wide('b', 'a', [300, 340]), leap('c', 'b', [300, 340]), up('k', 'c', 32, [140, 160]), down('d', 'k', 32, [160, 200])],
   last: 'd',
-  sockets: [petals('a', 'a', 0.5, 1), geyser('gh', 'b', 0.5, { phases: HOT }), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.8 }), petals('k', 'k', 0.5, 1), thread('r', 'd', 0.5)],
+  // (no geyser: these are 9-3's alone, and a geyser is 9-1's beat: with one, 9-3's stretches read as 9-1's on the look-alike measure)
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 1), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.8 }), petals('k', 'k', 0.5, 1), thread('r', 'd', 0.5)],
   mirrorable: true,
 });
 
@@ -399,7 +402,7 @@ const lavaDrop = section({
   pieces: [bank('a', [220, 260]), down('b', 'a', 48, [200, 240]), up('k', 'b', 32, [140, 160]), down('b2', 'k', 32, [380, 420]), lava('c', 'b2', [380, 420])],
   last: 'c',
   exitDy: 48,
-  sockets: [petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), geyser('gh', 'b2', 0.25, { phases: HOT }), foe('foe', 'b2', [0.68, 0.75], SMALL, 3, { phases: LIVE, chance: 0.8 }), scenery('log', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
+  sockets: [petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), petals('b2', 'b2', 0.25, 1), foe('foe', 'b2', [0.68, 0.75], SMALL, 3, { phases: LIVE, chance: 0.8 }), scenery('log', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
   mirrorable: false,
 });
 
@@ -623,7 +626,7 @@ const hunterBrink = section({
 // ───────────────────────────── 9-1 Pepper Air's gates and themes ─────────────────────────────
 
 /** a sprint gate (9-1): a plain run, nothing that can hurt, and the roll's theme opens */
-const sprintGate = (theme: 'vents' | 'chasms' | 'basalt' | 'rafts' | 'gusts', name: string, extra: Socket[] = []): SectionTemplate => {
+const sprintGate = (theme: 'vents' | 'chasms' | 'basalt' | 'rafts' | 'gusts' | 'caps', name: string, extra: Socket[] = []): SectionTemplate => {
   const k = knobs('', 'a', 2, [200, 240]);
   return section({
     id: `w9-pepper-gate-${theme}`,
@@ -883,7 +886,7 @@ const fernLong = section({
 // ───────────────────────────── 9-5 Vent Riding (sprint) ─────────────────────────────
 
 /** a vent-riding gate (9-5): Dot's line about the warm air, a first glide over a vent (a soft chasm), and the roll's theme opens */
-const ventGate = (theme: 'glides' | 'bursts' | 'logs' | 'flares' | 'gusts', name: string): SectionTemplate =>
+const ventGate = (theme: 'glides' | 'bursts' | 'logs' | 'flares' | 'pistons', name: string): SectionTemplate =>
   section({
     id: `w9-vent-gate-${theme}`,
     name: `vent riding: ${name} (gate)`,
@@ -960,7 +963,7 @@ const burstRow = section({
 // ───────────────────────────── 9-6 Ash Fields (purge), 9-9 The Drake's Hoard (gauntlet) ─────────────────────────────
 
 /** a hunt gate: Dot explains the shut shrine before any animal, and the roll's theme opens */
-const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas' | 'logs' | 'lavafalls' | 'surges' | 'sinkers', line: 'hunt' | 'fight'): SectionTemplate => {
+const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas' | 'logs' | 'lavafalls' | 'surges' | 'sinkers' | 'caps', line: 'hunt' | 'fight'): SectionTemplate => {
   const k = knobs('', 'a', 2, [220, 260]);
   // (the hoard's gate climbs a basalt stair to the Drake's door and down again, the ash fields' crosses two knobs: the two fight stages
   // never open alike)
@@ -1366,8 +1369,12 @@ export const W9_BOB_GATES = {
   logs5: ventGate('logs', 'the logs'),
   logs9: huntGate('logs', 'fight'),
   pistons: threadGate('pistons'),
+  pistons5: ventGate('pistons', 'the piston columns'),
   sinkers9: huntGate('sinkers', 'fight'),
   bridges8: threadGate('bridges'),
+  sinkers6: huntGate('sinkers', 'hunt'),
+  caps1: sprintGate('caps', 'the ash caps', [scenery('ohia', 'a', [0.5, 0.6], 0.9)]),
+  caps6: huntGate('caps', 'hunt'),
 } as const;
 
 /** the heat hazards' gates (w9Heat.ts): the flares on 9-5 and 9-8, the lavafalls on 9-6 and 9-9 */
@@ -1378,7 +1385,6 @@ export const W9_HEAT_GATES = {
   lavafalls9: huntGate('lavafalls', 'fight'),
   surges6: huntGate('surges', 'hunt'),
   gusts1: sprintGate('gusts', 'the hot wind', [scenery('smoke', 'a', [0.5, 0.6], 0.9)]),
-  gusts5: ventGate('gusts', 'the hot wind'),
   lavafalls4: watchGate('lavafalls', 'the lavafalls', [scenery('smoke', 'a', [0.5, 0.6], 0.8)]),
   surges4: watchGate('surges', 'the surge channels', [scenery('log', 'a', [0.5, 0.6], 0.8)]),
 } as const;

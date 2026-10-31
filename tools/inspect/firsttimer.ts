@@ -1061,6 +1061,8 @@ export class FirstTimerRun {
       if (/\b(punch|tap)\b/.test(t)) this.learned.add('punch');
       if (/\bkick\b/.test(t)) this.learned.add('kick');
       if (/\b(glide|leaf)\b/.test(t)) this.learned.add('glide');
+      // (World 8's glide line, "Jump twice, then hold to glide": the second jump first, then the glide, at a gap one jump does not cross)
+      if (/\bjump twice\b/.test(t)) this.learned.add('double');
       if (/\b(stand still|stay still|keep still|wait (here|for|under|on)|stand (on|under|here))\b/.test(t)) this.learned.add('still');
     }
   }
@@ -1140,8 +1142,9 @@ export class FirstTimerRun {
     // he waits short of one that is warning or firing, or due before he could be across, as a person does; only these looks, so the bands
     // measured on the other worlds' geysers and bolts stay as they were)
     if (p.grounded && dir !== 0) {
-      // (and World 10's drop gates and gutter gushes, 'bolt' columns with a look: the gate shudders, the gutter spills first)
-      const ahead = (e.currentStage.zones ?? []).find((z: Zone) => ((z.look && z.kind === 'geyser') || (z.kind === 'bolt' && (z.look === 'portcullis' || z.look === 'gush'))) && p.y > z.top - 160 && p.y <= z.bottom
+      // (and World 10's drop gates and gutter gushes, 'bolt' columns with a look: the gate shudders, the gutter spills first; never 9-5's
+      // vent, which lifts the leaf and never hurts)
+      const ahead = (e.currentStage.zones ?? []).find((z: Zone) => (((z.look === 'flare' || z.look === 'lavafall' || z.look === 'surge') && z.kind === 'geyser') || (z.kind === 'bolt' && (z.look === 'portcullis' || z.look === 'gush'))) && p.y > z.top - 160 && p.y <= z.bottom
         && (dir > 0 ? z.x0 - p.x > 0 && z.x0 - p.x < 70 : p.x - z.x1 > 0 && p.x - z.x1 < 70));
       if (ahead) {
         const st = zoneState(ahead, e.gameTime ?? this.t);

@@ -128,6 +128,12 @@ export interface WorldManifest {
   /** the share of the sections one roll favours (its theme: pipeline THEME); default THEME.share once the world holds THEME.from
    *  sections or more, else 1 (every roll draws from them all) */
   themeShare?: Range;
+  /** px from the spawn that run as one unbroken ground before anything can hurt (Worlds 8-10's safe start, WIP-6: stageGenerator
+   *  SAFE_START): the stitcher lays a plain bank after the start section for whatever the runway and the start leave short */
+  safeStart?: number;
+  /** on Normal a fall at a swing or a glide (a gap under a liana, a glide gap) costs a heart, not a life, and sets him back on the ledge he
+   *  left (World 8, Matt 2026-10-31: "hurt, then cost a life"); no pit is laid under them. Easy's stay soft pits */
+  heartFalls?: boolean;
   /** the stages of the world gen2 must never build (the signature stage, the guardian's lair) */
   handBuilt: string[];
   /**

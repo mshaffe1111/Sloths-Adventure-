@@ -1,0 +1,717 @@
+diff --git a/src/game/engine.ts b/src/game/engine.ts
+index 6894f271..76c0e312 100644
+--- a/src/game/engine.ts
++++ b/src/game/engine.ts
+@@ -1,3 +1,6 @@
++import { drawW9Bob } from './w9BobArt.ts';
++/** World 9's sinking slab rises back at this once he is off (px a second: gen2 pipeline BOB.sinkRise) */
++const SINK_RISE = 60;
+ import { buzz } from './haptics.ts';
+ import { nativeApp } from './appShell.ts';
+ import { clearFlag, flagFor, saveFlag } from './flagResume.ts';
+@@ -517,6 +520,8 @@ export class GameEngine {
+   private hitstopTimer: number = 0;
+   private gameTime: number = 0;
+   private standingOnId: number = -1;
++  /** World 9's moving logs: how far each rose this frame (lift.ts `bob`), so one rising into his feet catches them */
++  private bobRise = new Map<number, number>();
+   private riverHinted = false;
+   /** World 3: how drowsy the spore cloud makes him right now, 0 (awake) to 1 (in the thick of it); it follows the cloud and ends with it. And how strongly the screen shows it */
+   private drowsy = 0;
+@@ -1481,9 +1486,16 @@ export class GameEngine {
+       if (plat.type !== 'moving' || plat.broken) continue;
+       if (plat.lift) {
+         // World 2's basket lift rides up and down, and carries whoever stands in it
+-        const ny = liftY(plat.lift, this.gameTime);
++        // (World 9's sinking ember slab, lift.ts `sink`: down while he stands on it, back up once he is off, between its stops; its
++        // speed is its sinking, SINK_RISE its rising)
++        const on = p.grounded && this.standingOnId === plat.id;
++        const ny = plat.lift.bob === 'sink'
++          ? Math.max(plat.lift.top, Math.min(plat.lift.bottom, plat.y + (on ? plat.lift.speed : -SINK_RISE) * dt))
++          : liftY(plat.lift, this.gameTime);
+         const dy = ny - plat.y;
+         plat.y = ny;
++        // (World 9's moving logs: how far it rose this frame, so it catches feet it rises past, below)
++        if (plat.lift.bob) this.bobRise.set(plat.id, Math.max(0, -dy));
+         if (p.grounded && this.standingOnId === plat.id) p.y += dy;
+         continue;
+       }
+@@ -1570,8 +1582,12 @@ export class GameEngine {
+       }
+       // the first time a zone of each kind is close, say what it is (once a session)
+       for (const z of zones) {
+-        if (this.zoneHinted[z.kind] || p.x < z.x0 - 420 || p.x > z.x1) continue;
+-        this.zoneHinted[z.kind] = true;
++        // (World 9's flares, lavafalls and surges are their own things, taught by their stage's own tips (gen2/worlds/w9.ts): not the
++        // geyser's or the tide's line)
++        const hk = z.look ?? z.kind;
++        if (this.zoneHinted[hk] || p.x < z.x0 - 420 || p.x > z.x1) continue;
++        this.zoneHinted[hk] = true;
++        if (z.look && z.look !== 'vent') continue;
+         // (said in Dot's bubble, or Pokey's thought when she is away, once a stage: no words floating in the world, the Dot rework
+         // 2026-10-29. Tips says each the first time on a save, dotTips.ts)
+         const kind = z.kind === 'dark' && z.lights?.some((l) => l.sleep) ? 'darkStill' : z.kind;
+@@ -2333,6 +2349,10 @@ export class GameEngine {
+         }
+         // Check landing from above
+         if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) return true;
++        // (World 9's moving logs, lift.ts `bob`: one rising into his feet catches them, however he is moving, as long as they were over its
++        // top before it rose (a raft overtaking him near the top of his jump let him drop through it: the adult bot's lives on 9-1)
++        const rose = plat.lift?.bob ? this.bobRise.get(plat.id) ?? 0 : 0;
++        if (rose > 0 && playerFeet >= plat.y && playerPrevFeet <= plat.y + rose + catchDrop && playerFeet - p.vy * dt <= plat.y + rose + catchDrop) return true;
+         // Meeca's stage: a thin log (no face to hoist up, LIP_CATCH) caught at the top of a jump with her feet just under its top and her
+         // middle over it. QA 2026-10-31, the blind tester sideways: "level with the top of the log, then dropped through it", twice
+         return !!this.mc && plat.height < 50 && plat.type === 'solid' && !p.climbing && p.vy >= -LIP_CATCH.v && playerFeet > plat.y && playerFeet <= plat.y + LIP_CATCH.px && p.x > plat.x + LIP_CATCH.inside && p.x < plat.x + plat.width - LIP_CATCH.inside;
+@@ -5990,7 +6010,12 @@ export class GameEngine {
+     // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
+     if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
+     // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
+-    for (const pl of this.platforms) if (pl.lift && this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) drawW2Lift(ctx, pl, !!pl.lift.postRight);
++    // (World 9's moving logs, lift.ts `bob`: the pumice rafts, charred logs and piston columns, w9BobArt.ts)
++    for (const pl of this.platforms) {
++      if (!pl.lift || !this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) continue;
++      if (pl.lift.bob) drawW9Bob(ctx, pl, this.gameTime);
++      else drawW2Lift(ctx, pl, !!pl.lift.postRight);
++    }
+     // 2-6: the village's ladders where the climbs are
+     if (this.proto?.ladders) {
+       for (const v of this.vines) if (v.vineType === 'tree_climb' && this.onScreen(v.x, (v.topY + v.bottomY) / 2, (v.bottomY - v.topY) / 2 + 200)) drawLadder(ctx, v.x, v.topY, v.bottomY);
+diff --git a/src/game/gen2/pipeline.ts b/src/game/gen2/pipeline.ts
+index 836e0a6d..5a2a3a57 100644
+--- a/src/game/gen2/pipeline.ts
++++ b/src/game/gen2/pipeline.ts
+@@ -23,7 +23,8 @@ import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire
+ import type { ProtoExtras, StageHint } from '../protoStage.ts';
+ import type { GeneratedStage } from '../stageGenerator.ts';
+ import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
+-import type { Collectible, Enemy, LevelConfig, Platform, Vine } from '../types.ts';
++import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
++import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
+ import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
+ import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
+ import {
+@@ -36,6 +37,7 @@ import {
+   versionKey,
+   WATER_LINE,
+   WATER_WARN,
++  type BobKind,
+   type PitKind,
+   type SectionPiece,
+   type Archetype,
+@@ -354,6 +356,10 @@ interface LocalPiece {
+   crumble?: boolean;
+   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
+   hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
++  /** a moving log (place `raft`): its stops relative to its own top (y is the top stop), its ride and the gap's start under it */
++  bob?: { kind: BobKind; depth: number; speed: number; wait: number; phase: number; from: number };
++  /** a ledge a rope crosses to (place `rope`): the piece the rope hangs from */
++  ropeFrom?: string;
+ }
+ interface LocalGap {
+   x0: number;
+@@ -472,6 +478,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
+     let y = 0;
+     let h = pc.h ?? 24;
+     let hang: LocalPiece['hang'];
++    let bob: LocalPiece['bob'];
+     const pl = pc.place;
+     const ref = (k: string) => by.get(k)!;
+     if (pl.kind === 'start') {
+@@ -493,9 +500,49 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
+       const gap = Math.max(60, R(share * (g > 0 ? g : 60)));
+       x = a.x + a.w + gap;
+       y = a.y + dy;
++      // (from a raft or a log: the gap runs from the bank before the row, under every raft of it, to here)
++      const g0 = a.bob && a.bob.kind !== 'piston' ? a.bob.from : a.x + a.w;
+       // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
+       const back = glide && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
+-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
++      gaps.push({ x0: g0, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft || !!a.bob, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
++    } else if (pl.kind === 'raft') {
++      // a moving log (World 9, BOB): a raft or a log a plain jump out at its top stop, or a piston in a narrow well rising to a ledge
++      const a = ref(pl.after);
++      if (pc.shape !== 'raft') throw new Error(`gen2 section ${tpl.id}: ${pc.key} rides up and down, so its shape is 'raft'`);
++      const ez = budget.difficulty === 'easy' ? 'easy' : 'normal';
++      // (over a soft pit, the world's or the section's (a lesson's raft): a shallow bob that stays over the crust floor)
++      const soft = budget.pit === 'soft' || !!pl.soft;
++      const speed = BOB.speed[ez][pl.bob];
++      const wait = BOB.wait[ez][pl.bob];
++      h = BOB.h[pl.bob];
++      if (pl.bob === 'piston') {
++        const rise = Math.max(DOUBLE_RISE + 15, -roll(rng, pl.dy ?? [-BOB.rise[1], -BOB.rise[0]]));
++        // (flush against the bank: at its bottom stop he walks straight on; its well is soft on every setting, so stepping off the bank
++        // while it is up is a fall to the crust and a step back out, never a life)
++        x = a.x + a.w;
++        y = a.y - rise;
++        gaps.push({ x0: x, x1: x + w, y: a.y, pit: true, soft: true });
++        const depth = rise;
++        const cycle = 2 * (depth / speed + wait);
++        bob = { kind: 'piston', depth, speed, wait, phase: R(rng() * cycle * 10) / 10, from: a.x + a.w };
++      } else {
++        const dy = pl.dy === undefined ? 0 : Math.max(-riseLimit(false, budget.riseShare) * 0.6, roll(rng, pl.dy));
++        const gap = Math.max(60, R(shareFor(pl.share) * Math.max(60, maxGap(-dy, false, budget.margin))));
++        x = a.x + a.w + gap;
++        y = a.y + dy;
++        // (a sinking slab always stops on its channel's crust: its pit is soft, the section's `off` says so)
++        const depth = pl.bob === 'sink' ? roll(rng, BOB.depth.sink) : soft ? BOB.depth.soft : roll(rng, BOB.depth[pl.bob]);
++        const cycle = 2 * (depth / speed + wait);
++        const from = a.bob && a.bob.kind !== 'piston' ? a.bob.from : a.x + a.w;
++        bob = { kind: pl.bob, depth, speed, wait, phase: R(rng() * cycle * 10) / 10, from };
++      }
++    } else if (pl.kind === 'rope') {
++      // a ledge past a gap no jump or glide clears, a shimmy rope across (rope.ts; the rope itself is hung once both are placed: layStage)
++      const a = ref(pl.after);
++      const gap = Math.max(ROPE_MIN_GAP + 90, roll(rng, pl.gap));
++      x = a.x + a.w + gap;
++      y = a.y;
++      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, pit: true });
+     } else if (pl.kind === 'swing') {
+       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
+       const a = ref(pl.after);
+@@ -578,7 +625,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
+     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
+     const p: LocalPiece = {
+       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
+-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}),
++      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(bob ? { bob } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after } : {}),
+     };
+     by.set(pc.key, p);
+     out.push(p);
+@@ -627,6 +674,8 @@ export interface Laid {
+   exit: { x: number; y: number; piece: Platform };
+   /** the lianas and climbing vines the sections hang */
+   vines: Vine[];
++  /** the shimmy ropes (place `rope`) */
++  ropes: Rope[];
+   width: number;
+   bottom: number;
+   nextId: number;
+@@ -715,17 +764,27 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+   };
+   const gaps: Laid['gaps'] = [];
+   const vines: Vine[] = [];
++  const ropes: Rope[] = [];
+   const zones: Zone[] = [];
+   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
+     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
+     const hop = riseLimit(false, budget.riseShare) * PIT.hop;
++    // (the banks either side of the pit reach down past its floor: a glide's back pit climbs in steps and on low ground its floor lay under
++    // the banks' foot, so a jump off the floor passed under a bank's edge and fell through, 9-5's first-timer bot)
++    // (World 9's for now: the curated worlds' banks stay as their seeds were checked with; the lead decides on the rest)
++    const deepen = (floor: number) => {
++      if (budget.world !== 9) return;
++      for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
++    };
+     if (back) {
+       const out = backPit(x0, x1, lipY, farY, M.pitDepth, hop);
++      deepen(out.floor);
+       mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
+       for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
+       return;
+     }
+     const out = pitSteps(x0, x1, lipY, farY, M.pitDepth, hop);
++    deepen(out.floor);
+     mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
+     for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
+   };
+@@ -900,6 +959,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+           continue;
+         }
+         const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style, !!lp.crumble);
++        if (lp.bob) {
++          // (a moving log: the engine's lift (lift.ts), its top stop where it was laid; a piston's bottom stop is its bank's top)
++          const b = lp.bob;
++          Object.assign(p, { type: 'moving', art: 'bob', height: lp.h, lift: { top: p.y, bottom: p.y + R(b.depth), speed: b.speed, wait: b.wait, phase: b.phase, bob: b.kind } });
++        }
+         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing });
+       }
+       const pieceOf = (k: string) => {
+@@ -907,6 +971,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+         if (!q) throw new Error(`gen2 section ${tpl.id}: nothing named ${k} is laid (versions ${JSON.stringify(L.versions)})`);
+         return q.platform;
+       };
++      // (each rope (place `rope`) across between its two ledges, whichever way the section lies)
++      for (const lp of L.pieces) {
++        if (!lp.ropeFrom) continue;
++        const p1 = pieceOf(lp.ropeFrom), p2 = pieceOf(lp.key);
++        const [l, r] = p1.x < p2.x ? [p1, p2] : [p2, p1];
++        ropes.push({ id: ropes.length + 1, x0: R(l.x + l.width - ROPE_OVERLAP), x1: R(r.x + ROPE_OVERLAP), y: R(Math.min(l.y, r.y) - ROPE_RISE), g0: l.y, g1: r.y, required: true });
++        placed.beats.push({ x: l.x + l.width, letter: 'V' });
++      }
+       const entryP = pieceOf(L.entry.piece);
+       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
+       for (const g of L.gaps) {
+@@ -916,6 +988,16 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+           const before = platforms.length;
+           if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
+           else pitUnder(g0.x0, g0.x1, g0.y, g0.y, false, g.soft);
++          // (a soft pit under a row of rafts or logs (World 9, BOB; Easy's falls are soft): its crust floor gets a basalt knob in each
++          // opening between them, never under one, so the walk along the floor is hops, not a quiet stretch, 9-1's Easy rolls)
++          const floor = platforms.slice(before).find((q) => q.x <= g0.x0 + 1 && q.x + q.width >= g0.x1 - 1);
++          if (floor) {
++            // (a soft pit's raft bobs only BOB.depth.soft, so its underside at the bottom stays over the knobs' tops: they may stand under it)
++            const rafts = placed.pieces.some((pp) => !!pp.platform.lift?.bob && pp.platform.lift.bob !== 'piston' && pp.platform.x >= g0.x0 - 2 && pp.platform.x <= g0.x1);
++            const span = g0.x1 - g0.x0 - 2 * BOB.knobClear;
++            const n = rafts ? Math.floor(span / BOB.knobEvery) : 0;
++            for (let i = 0; i < n; i++) mk(R(g0.x0 + BOB.knobClear + ((i + 0.5) * span) / n - BOB.knobW / 2), floor.y - BOB.knobH, BOB.knobW, 'block', BOB.knobH, 'moss_stone');
++          }
+           placed.seam.push(...platforms.slice(before));
+         }
+       }
+@@ -943,6 +1025,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+           const period = low + warn + active;
+           zones.push({ kind: 'tide', x0: mud.x, x1: mud.x + mud.width, top: mud.y - 210, bottom: mud.y + 14, baseY: mud.y, dir: -1, period, warn, active, offset: R(srng() * period * 10) / 10, force: z.force ?? TIDE.force });
+           placed.beats.push({ x: mud.x, letter: 'S' });
++        } else if (z.kind === 'surge') {
++          // (World 9: a lava surge down the channel floor `on`: a geyser zone laid along it, the walk across fitting in its quiet spell)
++          const ch = pieceOf(z.on);
++          const x0 = ch.x + SURGE.inset, x1 = ch.x + ch.width - SURGE.inset;
++          const idle = Math.max(z.lesson ? SURGE.lessonIdle : SURGE.idle, R(((x1 - x0) / SURGE.cross + 0.9) * 10) / 10) + (budget.difficulty === 'easy' ? SURGE.easyCalm : 0);
++          const period = idle + SURGE.warn + SURGE.active;
++          zones.push({ kind: 'geyser', look: 'surge', x0, x1, top: ch.y - SURGE.h, bottom: ch.y + 14, baseY: ch.y, dir: 1, period, warn: SURGE.warn, active: SURGE.active, offset: R(srng() * period * 10) / 10, force: 0 });
++          placed.beats.push({ x: ch.x, letter: 'S' });
+         } else if (z.kind === 'wind') {
+           // (the gap before `on`: from the piece it is laid after to `on` itself, a pad over each lip as the old generator's gusts)
+           const spec = tpl.pieces.find((pc) => pc.key === z.on);
+@@ -957,7 +1047,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+             const [x0, x1] = mirrored ? [land.x + land.width, after.x] : [after.x + after.width, land.x];
+             // (the way he travels, mirrored or not: a mirrored section is still played left to right)
+             const dir = z.dir ?? 1;
+-            zones.push({ kind: 'wind', x0: R(Math.min(x0, x1) - 140), x1: R(Math.max(x0, x1) + 140), top: lipY - 260, bottom: lipY + 80, baseY: lipY, dir, period, warn, active, offset: R(srng() * period * 10) / 10, force: Math.min(160, z.force ?? 110) });
++            zones.push({ kind: 'wind', ...(z.look ? { look: z.look } : {}), x0: R(Math.min(x0, x1) - 140), x1: R(Math.max(x0, x1) + 140), top: lipY - 260, bottom: lipY + 80, baseY: lipY, dir, period, warn, active, offset: R(srng() * period * 10) / 10, force: Math.min(160, z.force ?? 110) });
+           }
+         }
+       }
+@@ -1004,6 +1094,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+     spawn: { x: SPAWN_X, y: runway.y, piece: runway },
+     exit: { x: exitX, y: shrine.y, piece: shrine },
+     vines,
++    ropes,
+     zones,
+     width: R(shrine.x + shrine.width + 40),
+     bottom: baseline,
+@@ -1021,6 +1112,37 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+  */
+ export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 } as const;
+ 
++/**
++ * World 9's moving logs (place `raft`, GRAB-BAG.md N1-N3; Matt, 2026-10-31: "the logs that you run on actually move up and down, and it's
++ * a timing"). Each rides lift.ts's cycle: a still spell at the bottom, the ride up, a still spell at the top, the ride down.
++ *   depth   how far a raft or a log sinks under its top stop (px). Normal's is past the double jump's 185 (physics DOUBLE_RISE), so the jump
++ *           off waits for the top; over a soft pit (Easy) a shallow bob that keeps over the knobs on the crust floor (pitDepth 110)
++ *   speed   px a second while it rides; wait: its still spell at each stop (s), long enough at the top for a jump's whole flight (0.65 s at
++ *           a raft's 0.65 the raft sank away under the jump: 9-1's adult bot). Easy is slower with longer spells (STAGE-RULES §1b). A sinking
++ *           slab's speed is how fast it sinks under him (it has no cycle: engine.ts)
++ *   rise    a piston's climb out of its well (px), past the double jump, so it is the only way up to its ledge
++ *   h       the piece's thickness
++ */
++/** World 9's lava surge (SectionZone 'surge', GRAB-BAG.md N6): its zone's inset from the channel's ends and height over the floor, the
++ *  geyser's warning, a firing under the check's 1.2 s, and a quiet spell of at least `idle` s and long enough to walk the floor (`cross`
++ *  px a second, a careful walk) with time to spare */
++export const SURGE = { inset: 12, h: 70, warn: 1.4, active: 1.1, idle: 2.6, lessonIdle: 4.0, cross: 220, easyCalm: 1.2 } as const;
++
++export const BOB = {
++  depth: { raft: [195, 220] as const, log: [205, 235] as const, sink: [38, 42] as const, soft: 40 },
++  speed: { normal: { raft: 180, log: 150, piston: 120, sink: 95 }, easy: { raft: 150, log: 120, piston: 95, sink: 65 } },
++  wait: { normal: { raft: 1.0, log: 1.2, piston: 0.8, sink: 0 }, easy: { raft: 1.4, log: 1.6, piston: 1.2, sink: 0 } },
++  /** a sinking slab (`sink`): it goes down at `speed` while he stands on it, comes back up at this (px a second) once he is off */
++  sinkRise: 60,
++  rise: [205, 240] as const,
++  h: { raft: 26, log: 30, piston: 40, sink: 24 },
++  /** the knobs on a soft pit's floor between rafts (layStage): width, height, and how far they keep from the pit's ends (its steps) */
++  knobW: 70,
++  knobH: 30,
++  knobClear: 130,
++  knobEvery: 170,
++} as const;
++
+ /**
+  * Where a soft pit's floor and its steps go, for a gap [x0, x1] between a near lip at `lipY` and a far lip at `farY` (world y, down):
+  * the floor `depth` px under the lower lip, and steps up the far wall's foot, each rise at most `hop` px (one plain jump). A gap too
+@@ -1632,7 +1754,11 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
+   const platforms = laid.platforms;
+   if (rooms.length) addKitPlatforms(platforms, { rooms });
+   sink.collectibles.push({ id: sink.nextCollectibleId(), type: 'exit_totem', x: laid.exit.x, y: laid.exit.y - 30, collected: false, bobPhase: 0 });
+-  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(laid.bottom + 120)) };
++  // (World 9's rafts and logs sink deeper than the banks' foot: the lava lies under their lowest stop, BOB, as levelCheck's waterline asks)
++  // (and under the deepest soft floor: a glide's soft pit climbs back to its take-off in steps, and on low ground its floor lay under the
++  // lava line, so standing on the soft floor was a death: 9-5's glides, the first-timer bot's 19 lives)
++  const bobFoot = Math.max(laid.bottom, ...laid.platforms.filter((p) => p.lift?.bob && p.lift.bob !== 'piston').map((p) => p.lift!.bottom + 26), ...(budget.world === 9 ? laid.platforms.filter((p) => !p.lift).map((p) => p.y + 30) : []));
++  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)) };
+   const meta: Gen2Meta = {
+     seed,
+     plan: laid.plan,
+@@ -1654,7 +1780,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
+     trees: [],
+     platforms,
+     vines: laid.vines,
+-    ropes: [],
++    ropes: laid.ropes,
+     enemies: filled.enemies,
+     boss: null,
+     collectibles: sink.collectibles,
+@@ -1664,7 +1790,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
+     exitTotemY: laid.exit.y,
+     checkpoints: filled.checkpoints,
+     // (a deadly chasm shows the dirty water far below, World 7; World 8's treetops have none: its deadly falls drop into the dark)
+-    ...(budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water) ? { waterY: laid.bottom + 40 } : {}),
++    ...(budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water) ? { waterY: Math.max(laid.bottom, bobFoot) + 40 } : {}),
+     ...(sink.zones.length ? { zones: sink.zones } : {}),
+     ...(rooms.length ? { kit: { rooms } } : {}),
+     proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),
+diff --git a/src/game/gen2/types.ts b/src/game/gen2/types.ts
+index 6c42250b..d11ba6a0 100644
+--- a/src/game/gen2/types.ts
++++ b/src/game/gen2/types.ts
+@@ -145,7 +145,12 @@ export interface WorldManifest {
+ // ───────────────────────────── a section ─────────────────────────────
+ 
+ /** a platform, or one of the two hanging pieces: a `liana` (a swing, placed by `swing`) and a `vine` (a climb, placed by `climb`) */
+-export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine';
++export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine' | 'raft';
++
++/** what rides up and down on a beat (place `raft`, World 9: Matt's moving logs, GRAB-BAG.md N1-N3): a raft and a log bob on the lava's heat
++ * draught (time the jump off at the top), a piston column rises out of its well (ride it up to a ledge no jump reaches), an ember slab
++ * sinks while he stands on it and floats back up when he is off (a hurry over a soft channel: never needed, GRAB-BAG.md N4) */
++export type BobKind = 'raft' | 'log' | 'piston' | 'sink';
+ 
+ /**
+  * A liana's own swing (Matt, 2026-10-28): it swings by itself, `amp` radians either side of hanging straight down, one there-and-back
+@@ -179,6 +184,15 @@ export interface LianaSwing {
+  *                        ledge the swing started from. A chain of swings has a perch between every two: liana, land, liana, land
+  *                        (levelCheck follows ledge -> liana -> ledge, never liana to liana)
+  *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
++ *   raft                 a piece (shape 'raft') that rides up and down on a beat (lift.ts LiftInfo with `bob`, pipeline BOB): a `raft` or
++ *                        `log` a plain jump past `after` at its top stop (`share` of the jump, `dy` from `after`'s top), sinking deeper than
++ *                        any jump climbs out of on Normal (the jump off waits for the top; Easy's sink is shallow, over its soft floor);
++ *                        a `piston` stands in its well flush against `after`, its bottom stop level with `after`, rising `dy` px (a
++ *                        negative range: up) to its top stop, where the next piece walks on. The gap under a raft runs from the bank before
++ *                        it to the piece that jumps on from it (a row of rafts is one gap)
++ *   rope                 a ledge `gap` px past `after` at its height, a shimmy rope hung across between them (rope.ts: ROPE_RISE over the
++ *                        ledges, ROPE_OVERLAP over each): a gap past every jump and glide, so the rope is the way over (World 9's burnt
++ *                        bridges, GRAB-BAG.md N8)
+  * A gap rule (jump, double, pit, land) with `water: true` is water whatever the world's falls (World 6's creeks): nothing is laid under
+  * it, the stage has its water line, a fall costs a life on Normal and on Easy alike, and Dot warns before it (WATER_WARN, Matt's rule)
+  * A gap rule with `soft: true` has a soft pit under it whatever the world's falls (World 8: in a world whose falls cost a life, its gaps in
+@@ -193,7 +207,9 @@ export type PlaceRule =
+   | { kind: 'over'; on: string; at: Range; dy: Range }
+   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
+   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
+-  | { kind: 'climb'; on: string; at: Range; h: Range };
++  | { kind: 'climb'; on: string; at: Range; h: Range }
++  | { kind: 'raft'; after: string; bob: BobKind; share?: Range; dy?: Range; soft?: boolean }
++  | { kind: 'rope'; after: string; gap: Range };
+ 
+ export interface SectionPiece {
+   /** the piece's name inside its section (sockets and rooms point at it) */
+@@ -295,7 +311,10 @@ export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond
+  */
+ export type SectionZone =
+   | { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number }
+-  | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number };
++  | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number; look?: 'ash' }
++  // (World 9's lava surge down a cooled channel, GRAB-BAG.md N6: the piece `on` is the channel's floor; the surge burns whoever is on it
++  // while it runs (a geyser zone, look 'surge'), its quiet spell always long enough to cross the floor: pipeline SURGE)
++  | { kind: 'surge'; on: string; lesson?: boolean };
+ 
+ /** a tide zone's defaults (zones.ts tideRecipes): a long low spell, a rise you can see coming, high water */
+ export const TIDE = { low: [5.6, 7.0], warn: 1.8, active: 2.2, force: 190 } as const;
+diff --git a/src/game/lessons.ts b/src/game/lessons.ts
+index fdb31334..e788dfbb 100644
+--- a/src/game/lessons.ts
++++ b/src/game/lessons.ts
+@@ -306,7 +306,7 @@ export interface LessonScene {
+   enemies: { type: string; x: number; y: number; defeated: boolean; stompable?: boolean }[];
+   collectibles: { type: string; x: number; y: number; collected: boolean; hidden?: boolean }[];
+   vines: { x: number; topY: number; bottomY: number; vineType?: string }[];
+-  platforms: { x: number; y: number; width: number; type: string; broken?: boolean }[];
++  platforms: { x: number; y: number; width: number; type: string; broken?: boolean; lift?: { bob?: string } }[];
+   /** the flags; `reached` once he has run past one (the checkpoint card comes on the flag, not on the way to it) */
+   checkpoints: { x: number; y: number; reached?: boolean }[];
+   rivers: { x0: number; x1: number }[];
+@@ -422,7 +422,8 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
+     const cx = p.x + p.width / 2;
+     if (p.type === 'bouncy' && want('bounce') && near(cx, p.y, NEAR.thing)) return 'bounce';
+     if (p.type === 'fragile' && want('crumble') && near(cx, p.y, NEAR.thing)) return 'crumble';
+-    if (p.type === 'moving' && want('moving') && near(cx, p.y, NEAR.thing)) return 'moving';
++    // (World 9's moving logs rise and sink instead of sliding: their own line teaches them, Dot's raft and piston tips, gen2/worlds/w9.ts)
++    if (p.type === 'moving' && !p.lift?.bob && want('moving') && near(cx, p.y, NEAR.thing)) return 'moving';
+   }
+   if (want('water') && s.rivers.some((r) => (r.x0 <= s.px + NEAR.thing && r.x1 >= s.px - 40) && s.py >= 0 && Math.abs(r.x0 - s.px) <= 500)) return 'water';
+   const col = (types: string[]) => s.collectibles.find((c) => !c.collected && types.includes(c.type) && near(c.x, c.y, NEAR.thing));
+diff --git a/src/game/lift.ts b/src/game/lift.ts
+index cdc50986..f5f1e76e 100644
+--- a/src/game/lift.ts
++++ b/src/game/lift.ts
+@@ -16,6 +16,9 @@ export interface LiftInfo {
+   phase: number;
+   /** the crane stands on the right of the shaft (the upper ground is to the right: a lift going up) */
+   postRight?: boolean;
++  /** World 9's moving logs (gen2 place `raft`, GRAB-BAG.md N1-N3): a pumice raft or a charred log bobbing on the lava's heat draught, or a
++   *  hex piston column, or an ember slab that sinks while he stands on it (`sink`: its own motion, engine.ts, not this cycle); drawn by w9BobArt.ts, not as a basket lift, and read by the inspector as a timed hop (a raft, a log) or a ride (a piston) */
++  bob?: 'raft' | 'log' | 'piston' | 'sink';
+ }
+ 
+ /** seconds for one round trip: wait at the bottom, ride up, wait at the top, ride down */
+@@ -33,6 +36,23 @@ export function liftY(l: LiftInfo, t: number): number {
+   return l.top + (l.bottom - l.top) * ease((u - 2 * l.wait - ride) / ride);
+ }
+ 
++/** seconds left of its still spell at the top stop (0 when it is not resting there): a moving log a jump can still land on in time */
++export function liftTopLeft(l: LiftInfo, t: number): number {
++  const ride = (l.bottom - l.top) / l.speed;
++  const T = liftCycle(l);
++  const u = (((t + l.phase) % T) + T) % T;
++  const a = l.wait + ride;
++  return u >= a && u < a + l.wait ? a + l.wait - u : 0;
++}
++
++/** rising, and this close to its top stop (s): on its way up to where a jump lands on it */
++export function liftRisingIn(l: LiftInfo, t: number): number {
++  const ride = (l.bottom - l.top) / l.speed;
++  const T = liftCycle(l);
++  const u = (((t + l.phase) % T) + T) % T;
++  return u >= l.wait && u < l.wait + ride ? l.wait + ride - u : Infinity;
++}
++
+ /** the basket is resting at a stop (0 = moving, 1 = at the top, -1 = at the bottom) */
+ export function liftStop(l: LiftInfo, t: number): -1 | 0 | 1 {
+   const y = liftY(l, t);
+diff --git a/tools/inspect/beats.ts b/tools/inspect/beats.ts
+index 9df76aef..bc3a44ed 100644
+--- a/tools/inspect/beats.ts
++++ b/tools/inspect/beats.ts
+@@ -119,7 +119,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
+       case 'climb': if (s.note === 'grab') raw.push({ ...at, letter: 'V', what: 'grab a trunk or vine and climb' }); break;
+       case 'swing': raw.push({ ...at, letter: 'V', what: s.note === 'added' && !s.from ? 'swing on to the next liana' : 'swing on a liana' }); break;
+       case 'rope': raw.push({ ...at, letter: 'V', what: 'shimmy along a rope' }); break;
+-      case 'lift': raw.push({ ...at, letter: 'V', what: 'ride the basket lift' }); break;
++      case 'lift': raw.push({ ...at, letter: 'V', what: s.plat?.lift?.bob === 'piston' ? 'ride the piston column' : 'ride the basket lift' }); break;
+       case 'draft': raw.push({ ...at, letter: 'V', what: 'ride the warm air' }); break;
+       default: break;
+     }
+@@ -299,7 +299,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
+     else {
+       const every = Math.max(2, z.period);
+       const wait = Math.min(TIME.zoneExtra[z.kind] ?? 0.7, idleTime(z));
+-      span(b, every, 'Z', z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : `${z.kind} zone`, wait, `${z.kind} zones`);
++      span(b, every, 'Z', z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : `${z.look ?? z.kind} zone`, wait, `${z.look ?? z.kind} zones`);
+     }
+   }
+   for (const w of stage.proto?.watch ?? []) {
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index 53780d7a..dcd43358 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -41,6 +41,8 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
+ const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
+ import { reachJump, reachJumpHeld, TIMED, vineAmp } from '../../src/game/physics.ts';
+ import type { Platform } from '../../src/game/types.ts';
++import { zoneState, type Zone } from '../../src/game/zones.ts';
++import { liftRisingIn, liftTopLeft } from '../../src/game/lift.ts';
+ import { findRoute } from './route.ts';
+ import { buildRoll } from './eraRoll.ts';
+ import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
+@@ -643,6 +645,12 @@ export function freshPhone(setting: FirstTimer['setting']) {
+   setDifficulty(setting);
+ }
+ 
++/** a moving log he waits for (World 9, lift.ts `bob`): a raft, a log or a piston, never a sinking slab (a hurry: standing on it sinks it) */
++const timed = (q: Platform | null | undefined): boolean => !!q?.lift?.bob && q.lift.bob !== 'sink';
++/** a raft or a log he jumps for: resting at the top with most of its still spell left, or nearly up (he sees it arrive, so he goes as it
++ *  comes, not as it is about to sink) */
++const raftReady = (q: Platform, t: number): boolean => !!q.lift && (liftTopLeft(q.lift, t) >= q.lift.wait * 0.55 || liftRisingIn(q.lift, t) < 0.25);
++
+ export class FirstTimerRun {
+   readonly sim: RealPlay;
+   readonly e: Eng;
+@@ -675,6 +683,8 @@ export class FirstTimerRun {
+   private driftPx = 0;
+   /** waiting at an edge for something drifting across since (s), or -1 */
+   private edgeWait = -1;
++  /** when he started waiting on or for a moving log (World 9, lift.ts `bob`) */
++  private bobWait = -1;
+   /** stopped on a small pad a beat after landing on it */
+   private padPause: { until: number; id: number } | null = null;
+   /** turns of the steering thumb, and the s of no steer they cost */
+@@ -1108,6 +1118,65 @@ export class FirstTimerRun {
+     // its way threw him off halfway up, round 5 2026-10-29)
+     if (p.climbing && !this.wasClimbing) this.pending = null;
+     this.wasClimbing = !!p.climbing;
++    // (World 9's moving logs, lift.ts `bob`: he can see a raft, a log or a piston column rise and sink, so on the ground he waits for it as
++    // a person waits, up to 10 s, and lets go of a press he meant: riding one, until it is up at its top stop; at a bank's edge with one
++    // past the gap, until a raft or a log is up level with him, or a piston is down at his feet)
++    // (a piston column standing against the bank he is on, the way on up at its top: he walks to it, waits for it down at his feet, steps on
++    // and rides; the route's point is its top, so without this he jumped at the ledge over it again and again)
++    if (p.grounded) {
++      const on = this.floorAt(p.x, p.y, 6);
++      const pist = on && !on.lift ? this.sim.platforms.find((q) => q.lift?.bob === 'piston' && Math.abs(q.lift.bottom - on.y) < 12 && Math.abs(q.x - (on.x + on.width)) < 12 && q.x - p.x < 420 && q.x - p.x > -40) : undefined;
++      if (pist?.lift && (tgt?.y ?? p.y) < p.y - 60) {
++        const ready = pist.y >= pist.lift.bottom - 6;
++        const toEdge = pist.x - p.x;
++        this.blockedT = 0;
++        this.pending = null;
++        if (!ready && toEdge < 70) return {};
++        return { right: true };
++      }
++    }
++    // (World 9's flares, lavafalls and surges, zones.ts Zone `look`: he sees the glow, the drips, the surge's front coming, so on the ground
++    // he waits short of one that is warning or firing, or due before he could be across, as a person does; only these looks, so the bands
++    // measured on the other worlds' geysers and bolts stay as they were)
++    if (p.grounded && dir !== 0) {
++      const ahead = (e.currentStage.zones ?? []).find((z: Zone) => (z.look === 'flare' || z.look === 'lavafall' || z.look === 'surge') && z.kind === 'geyser' && p.y > z.top - 160 && p.y <= z.bottom
++        && (dir > 0 ? z.x0 - p.x > 0 && z.x0 - p.x < 70 : p.x - z.x1 > 0 && p.x - z.x1 < 70));
++      if (ahead) {
++        const st = zoneState(ahead, e.gameTime ?? this.t);
++        const cross = (ahead.x1 - ahead.x0 + 60) / 250 + who.stopReact;
++        if (st.phase !== 'idle' || st.untilActive < cross) {
++          this.blockedT = 0;
++          this.pending = null;
++          return {};
++        }
++      }
++    }
++    if (p.grounded && dir !== 0) {
++      const on = this.floorAt(p.x, p.y, 6);
++      let notReady = timed(on) && on!.y > on!.lift!.top + 6;
++      if (on && !on.lift) {
++        const edgeX = dir > 0 ? on.x + on.width : on.x;
++        const toEdge = (edgeX - p.x) * dir;
++        if (toEdge < 26 + who.edgeAim + 60) {
++          const bob = this.sim.platforms.find((q) => timed(q) && !q.broken && (dir > 0 ? q.x - edgeX > -10 && q.x - edgeX < 280 : edgeX - (q.x + q.width) > -10 && edgeX - (q.x + q.width) < 280));
++          if (bob?.lift) notReady = bob.lift.bob === 'piston' ? bob.y < bob.lift.bottom - 6 : !raftReady(bob, e.gameTime ?? t);
++        }
++      }
++      if (notReady) {
++        if (this.bobWait < 0) this.bobWait = t;
++        // (standing to wait is not being stopped by a face: no plain jump for it when he moves on)
++        this.blockedT = 0;
++        if (t - this.bobWait < 10) {
++          this.pending = null;
++          return {};
++        }
++      } else if (this.bobWait >= 0) {
++        // (it is ready: he goes, a jump from where he waited at the edge, or off the log he rode up)
++        this.bobWait = -1;
++        this.blockedT = 0;
++        if (!this.pending && on && !this.floorAt(p.x + dir * 40, p.y, 40)) return this.decide(dir, 'single', false, side(dir));
++      }
++    }
+     // a press he has decided on comes when his thumb gets there (the reaction noise)
+     if (this.pending && t >= this.pending.at && !this.jump) {
+       const q = this.pending;
+@@ -1220,6 +1289,15 @@ export class FirstTimerRun {
+     // on the ground
+     // (the first moments of a stage: he holds the way on and takes nothing in yet)
+     if (t < who.look) return side(dir || 1);
++    // (World 9's moving logs, lift.ts `bob`: riding a raft, a log or a piston, he stands still until it is up at its top stop; he can see
++    // it rise, so he waits as a person waits, up to 10 s; a press already on its way still comes)
++    {
++      const on = this.floorAt(p.x, p.y, 6);
++      if (timed(on) && on!.y > on!.lift!.top + 6 && !this.pending) {
++        if (this.bobWait < 0) this.bobWait = t;
++        if (t - this.bobWait < 10) return {};
++      }
++    }
+     // (a press on its way: he keeps going until it comes)
+     if (this.pending) return side(this.pending.dir);
+     // (just landed: the thumb comes back down before the next flick)
+@@ -1263,13 +1341,21 @@ export class FirstTimerRun {
+         this.stops.push({ x: p.x, y: p.y, h: face, t });
+         this.nextStop = this.stops.length - 1;
+       }
++      // (World 9: standing still to wait for a raft or a surge is not being stopped by a face: with no face ahead he walks on, never a
++      // plain jump from the middle of the ground into the next gap; the other worlds keep the old habit their bands were measured with)
++      if (face === null && this.id.startsWith('9-')) return side(dir);
+       return this.decide(fdir, this.mem.plan(p.x, p.y), false, side(dir));
+     }
+     // the way goes up right here (a ledge over him): jump for it
+     if (up && dir === 0 && tgt && tgt.y < p.y - 60) return this.decide(fdir, this.mem.plan(p.x, p.y), false, {});
+     if (dir !== 0) {
++      // (up at its top stop on a moving log: the wait is over)
++      const rideOn = this.floorAt(p.x, p.y, 6);
++      if (timed(rideOn) && rideOn!.y <= rideOn!.lift!.top + 6) this.bobWait = -1;
+       // an edge coming: he means to jump `edgeAim` px before it (the thumb's latency moves it), unless the way on drops down
+-      const ahead = this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40);
++      let ahead = this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40);
++      // (a moving log past a gap is never the floor going on: he jumps for it, or waits for it, below)
++      if (timed(ahead) && ahead !== rideOn && !(ahead!.lift!.bob === 'piston' && ahead!.y >= ahead!.lift!.bottom - 6)) ahead = null;
+       if (!ahead) {
+         const on = this.prog.target(p, 160);
+         // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid
+@@ -1278,6 +1364,20 @@ export class FirstTimerRun {
+         const drops = on && on.y > p.y + 50 && !across;
+         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
+         const here = this.floorAt(p.x, p.y, 6);
++        // (a raft or a log bobbing just past the edge: he waits until it is up level with him; a piston column: until it is down at his
++        // feet, so he steps on and rides it up)
++        if (here && !here.lift) {
++          const edgeX = dir > 0 ? here.x + here.width : here.x;
++          const bob = this.sim.platforms.find((q) => timed(q) && !q.broken && (dir > 0 ? q.x - edgeX > -10 && q.x - edgeX < 280 : edgeX - (q.x + q.width) > -10 && edgeX - (q.x + q.width) < 280));
++          if (bob?.lift) {
++            const ready = bob.lift.bob === 'piston' ? bob.y >= bob.lift.bottom - 6 : raftReady(bob, e.gameTime ?? t);
++            if (!ready) {
++              if (this.bobWait < 0) this.bobWait = t;
++              if (t - this.bobWait < 10) return {};
++            }
++          }
++          if (!bob || (bob.lift?.bob === 'piston' ? bob.y >= bob.lift.bottom - 6 : raftReady(bob, e.gameTime ?? t))) this.bobWait = -1;
++        }
+         if (!drops && here && here.type !== 'drift' && here.type !== 'moving') {
+           const edgeX = dir > 0 ? here.x + here.width : here.x;
+           const floats = this.sim.platforms.filter((q) => (q.type === 'drift' || q.type === 'moving') && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x + q.width > edgeX && q.x < edgeX + 320 : q.x < edgeX && q.x + q.width > edgeX - 320));
+diff --git a/tools/inspect/lookalike.ts b/tools/inspect/lookalike.ts
+index 5a69f3b9..ae207314 100644
+--- a/tools/inspect/lookalike.ts
++++ b/tools/inspect/lookalike.ts
+@@ -82,13 +82,17 @@ export function moveKind(st: Stage, s: Seg, glideHeld: boolean): Kind | null {
+       return `J|${second ? 'second' : gap < 150 && Math.abs(rise) < 60 ? 'short' : 'jump'}|${height}|${underOf(st, s)}`;
+     }
+     case 'bounce': return `J|bounce|${height}|${underOf(st, s)}`;
+-    case 'timedHop': return `J|moving|${height}|${underOf(st, s)}`;
++    // (World 9's rafts and logs, lift.ts `bob`: their own kind, apart from a drifting log's)
++    case 'timedHop': {
++      const bob = s.plat?.lift?.bob ?? s.from?.lift?.bob;
++      return `J|${bob ? `bob-${bob}` : 'moving'}|${height}|${underOf(st, s)}`;
++    }
+     case 'glide': return `J|${glideHeld ? 'glide' : 'jump'}|${height}|${underOf(st, s)}`;
+     case 'presumed': return `J|jump|${height}|s`;
+     case 'climb': return s.note === 'grab' ? 'V|climb' : null;
+     case 'swing': return `V|liana|${height}|${underOf(st, s)}`;
+     case 'rope': return 'V|rope';
+-    case 'lift': return 'V|lift';
++    case 'lift': return s.plat?.lift?.bob === 'piston' ? 'V|piston' : 'V|lift';
+     case 'draft': return 'V|draft';
+     default: return null;
+   }
+diff --git a/tools/inspect/route.ts b/tools/inspect/route.ts
+index 71736d9e..29111caf 100644
+--- a/tools/inspect/route.ts
++++ b/tools/inspect/route.ts
+@@ -7,6 +7,7 @@
+  * Times are for a brisk player who holds run: Pokey's top run speed (PHYS.maxRun), climbs at the engine's 220 px/s, swings at about
+  * 430 px/s, shimmies at ROPE_SPEED, with stageTime.ts's overheads scaled to its quick player.
+  */
++import { liftCycle } from '../../src/game/lift.ts';
+ import { validateStage, jumpOK, type CheckGraph } from '../../src/game/levelCheck.ts';
+ import { PHYS, JUMP_RISE } from '../../src/game/physics.ts';
+ import { ROPE_SPEED } from '../../src/game/rope.ts';
+@@ -236,6 +237,9 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step
+     if (kind === 'presumed') { k = 'presumed'; penalty = 4; }
+     else if (kind === 'rope' || byRope) k = 'rope';
+     else if (A.type === 'bouncy') k = 'bounce';
++    // (World 9's moving logs, lift.ts `bob`: onto or between rafts and logs is a timed hop; onto a piston a ride; off a piston's top a step)
++    else if (B.type === 'moving' && B.lift?.bob) k = B.lift.bob === 'piston' ? 'lift' : 'timedHop';
++    else if (A.type === 'moving' && A.lift?.bob && B.type !== 'moving') k = A.lift.bob === 'piston' ? (gap <= 10 && rise <= 16 ? 'walk' : 'hop') : 'timedHop';
+     else if (A.type === 'drift' || B.type === 'drift' || A.type === 'moving' || B.type === 'moving') k = A.lift || B.lift ? 'lift' : 'timedHop';
+     else if (gap <= 10 && rise <= 16) k = rise < -40 ? 'drop' : 'walk';
+     else if (jumpOK(A, B, false).ok || jumpOK(A, B, true).ok) {
+@@ -251,7 +255,7 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step
+     if (k === 'hop') dt += TIME.hopSec * K;
+     else if (k === 'jump' || k === 'glide' || k === 'presumed') dt += 0.5 + Math.max(0, -rise) / 900;
+     else if (k === 'bounce') dt += TIME.bounceExtra;
+-    else if (k === 'timedHop') dt += 0.4;
++    else if (k === 'timedHop') dt += 0.4 + (B.lift?.bob && B.lift.bob !== 'sink' ? liftCycle(B.lift) * 0.3 : 0);
+     else if (k === 'lift') dt += Math.abs(rise) / 120 + TIME.movingExtra;
+     else if (k === 'swing') dt = gap / SWING_PACE + 1.2;
+     else if (k === 'rope') dt = gap / ROPE_SPEED + TIME.ropeOverhead * K;

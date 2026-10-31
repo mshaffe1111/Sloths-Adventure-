@@ -100,8 +100,8 @@ test("9-3's themes: every roll starts at one of the swing builder's gates, and h
       const st = build(seed, difficulty);
       const first = st.gen2.sections[0].template;
       assert.ok(first.startsWith('w9s-gate-'), `9-3 seed ${seed} (${difficulty}) starts at ${first}`);
-      // (9-3's two more themes, w9Bob.ts: the sinking slabs and the ropes, each between chains)
-      const theme = { ...W9S_THEME, sinkers: W9_THEME.sinkers, bridges: W9_THEME.bridges }[first.slice('w9s-gate-'.length) as keyof typeof W9S_THEME];
+      // (9-3's three more themes: the sinking slabs and the ropes (w9Bob.ts) and the flares (w9Heat.ts), each between chains)
+      const theme = { ...W9S_THEME, sinkers: W9_THEME.sinkers, bridges: W9_THEME.bridges, flares: W9_THEME.flares }[first.slice('w9s-gate-'.length) as keyof typeof W9S_THEME];
       seen.add(theme);
       for (const s of st.gen2.sections) {
         const t = byTheme.get(s.template);
@@ -109,5 +109,5 @@ test("9-3's themes: every roll starts at one of the swing builder's gates, and h
       }
     }
   }
-  assert.deepEqual([...seen].sort(), [...Object.values(W9S_THEME), W9_THEME.sinkers, W9_THEME.bridges].sort());
+  assert.deepEqual([...seen].sort(), [...Object.values(W9S_THEME), W9_THEME.sinkers, W9_THEME.bridges, W9_THEME.flares].sort());
 });
