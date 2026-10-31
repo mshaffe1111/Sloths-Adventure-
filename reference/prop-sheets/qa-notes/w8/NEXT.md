@@ -22,7 +22,7 @@ Art-use: tools/art/artuse.mjs (from w1-4-sheets) lists no World 8 entry now. Dro
 
 ## Open, in order
 
-1. **The rope on Normal, for a first-timer (branch w8-rope).** Merge w8-rope back, then The bot clears 8-2 Easy (shrine twice), but on Normal it stops at the sealed door
+1. **The rope on Normal, for a first-timer (branch w8-rope).** Merge w8-rope back, then fix this: the bot clears 8-2 Easy (shrine twice), but on Normal it stops at the sealed door
    (90 and 88 of 94 blooms) and loses lives at the ropes: every rope gap is a heart fall (16 of 16), so each life is five missed grabs.
    Watch a person cross one; if they miss too, lower ROPE_RISE for World 8's ropes or teach the grab (a Dot line, Matt's approval).
 2. **Bands:** Easy reads above Normal on several stages (8-2: Easy 38.2, Normal 20.1). It's the measure (tools/inspect/bands.ts:
