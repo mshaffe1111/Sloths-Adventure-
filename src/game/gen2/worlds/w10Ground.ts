@@ -1642,7 +1642,7 @@ const cwFirst = section({
   uses: [W10_THEME.counterweights],
   maxPerStage: 1,
   extraSeconds: LIFT_WAIT * 2,
-  pieces: [bank('a', [320, 360]), chainLift('r1', 'a', [150, 170], [0.45, 0.55], true, 'w10_cw'), chainLift('r2', 'r1', [150, 170], [0.45, 0.55], true, 'w10_cw'), offLift('b', 'r2', [300, 340], [0.45, 0.55], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [180, 220])],
+  pieces: [bank('a', [270, 300]), chainLift('r1', 'a', [150, 170], [0.45, 0.55], true, 'w10_cw'), chainLift('r2', 'r1', [150, 170], [0.45, 0.55], true, 'w10_cw'), offLift('b', 'r2', [300, 340], [0.45, 0.55], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [180, 220])],
   last: 'c',
   sockets: [flag('a', 0.3), tip(CWEIGHT, 'a', 0.15), petals('r1', 'r1', 0.5, 1), petals('r2', 'r2', 0.5, 1), petals('k', 'k', 0.5, 1)],
   mirrorable: false,
@@ -1671,7 +1671,7 @@ const cwRow = section({
   difficulty: 6,
   uses: [W10_THEME.counterweights, CWEIGHT],
   extraSeconds: LIFT_WAIT * 4,
-  pieces: [bank('a', [220, 250]), chainLift('r1', 'a', [130, 150], [0.55, 0.7], false, 'w10_cw'), chainLift('r2', 'r1', [130, 150], [0.55, 0.7], false, 'w10_cw'), offLift('p', 'r2', [160, 190]), chainLift('r3', 'p', [130, 150], [0.55, 0.7], false, 'w10_cw'), chainLift('r4', 'r3', [130, 150], [0.55, 0.7], false, 'w10_cw'), offLift('b', 'r4', [220, 260])],
+  pieces: [bank('a', [200, 220]), chainLift('r1', 'a', [130, 150], [0.55, 0.7], false, 'w10_cw'), chainLift('r2', 'r1', [130, 150], [0.55, 0.7], false, 'w10_cw'), offLift('p', 'r2', [160, 190]), chainLift('r3', 'p', [130, 150], [0.55, 0.7], false, 'w10_cw'), chainLift('r4', 'r3', [130, 150], [0.55, 0.7], false, 'w10_cw'), offLift('b', 'r4', [220, 260])],
   last: 'b',
   // (its flag well back from the first gap (the section's own flag finder does not see a lift's gap); never mirrored, so it stays there)
   sockets: [flag('a', 0.25), petals('r2', 'r2', 0.5, 1), petals('p', 'p', 0.5, 1), petals('r3', 'r3', 0.5, 1)],
@@ -1817,7 +1817,10 @@ export const W10_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   // (the moving platforms: each taught in its own stage, and all three again in 10-6, the Iron Netting's own themes)
   ...Object.fromEntries([liftFirst, liftPair, liftRow].map((s) => [s.id, [1, 6]] as const)),
   [liftRods.id]: [1],
-  ...Object.fromEntries([cwFirst, cwRow].map((s) => [s.id, [3, 6]] as const)),
+  // (10-3's counterweights are the first pair and the pair to a watched wall: a plain row's Easy way is the soft floor under the planks, a
+  // walk with nothing in it on the stealth stage; the row is 10-6's)
+  [cwFirst.id]: [3, 6],
+  [cwRow.id]: [6],
   [cwStorm.id]: [3],
   ...Object.fromEntries([gearFirst, gearLeap].map((s) => [s.id, [6, 9]] as const)),
   [gearGuard.id]: [9],
