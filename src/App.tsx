@@ -775,7 +775,7 @@ export default function App() {
     setLives(startingLives());
     setScore(0);
     setCurrentCount(0);
-    setTargetCount(lvl.targetCount);
+    setTargetCount(0); // (the engine sends the real goal on its first frame: the plan's number can be wrong, UI-22)
     setGuideLine(null);
     setDistanceRatio(0);
     setScreen('playing');
