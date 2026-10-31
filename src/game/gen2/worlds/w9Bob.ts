@@ -343,12 +343,12 @@ const ropeChasm = section({
 // ───────────────────────────── 9-3: its ropes and slabs between the chains (the vine stage swings on every roll) ─────────────────────────────
 
 /** a chain past `after` (w9Swing.ts's: its anchor 400-420 px over the ledge) and the perch it swings to, 80 px up, then a step down */
-const chainTo = (p: string, after: string, perchW: W = [220, 260]): SectionPiece[] => [
+export const chainTo = (p: string, after: string, perchW: W = [220, 260]): SectionPiece[] => [
   { key: `${p}l`, shape: 'liana', w: 0, place: { kind: 'swing', after, top: [400, 420] } },
   bank(`${p}p`, perchW, { kind: 'land', after: `${p}l`, dy: -80 }, { landing: true }),
   bank(`${p}d`, [140, 170], { kind: 'walk', after: `${p}p`, dy: 80 }),
 ];
-const CHAIN_T = 2.5;
+export const CHAIN_T = 2.5;
 
 /** a rope over the lava, then a chain */
 const ropeChain = section({
