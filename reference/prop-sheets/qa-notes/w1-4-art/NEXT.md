@@ -12,7 +12,7 @@ yet. Each world's builder places it as that world moves to gen2 (`origin/plan-ge
 | The new art, one atlas per world | `src/assets/w1to4art/w<N>-new.webp` + `w<N>-new.json` (frames `{x, y, w, h}` by name) |
 | Polish check (a verdict per piece) and the phone-size stills | `reference/prop-sheets/qa-notes/w1-4-art/POLISH.md`, `w<N>-upright-*.jpg`, `w<N>-sideways-*.jpg` |
 | Game-wide unused-art list and its gate | `tools/art/artuse.mjs`, `src/game/artUse.test.ts`, `src/game/artUse.allow.json`, `reference/prop-sheets/qa-notes/art-use/UNUSED.md` |
-| Jobs and spend | `tools/art/w1to4/jobs.txt` (about $2.3 of the $10 cap, including round 3) |
+| Jobs and spend | `tools/art/w1to4/jobs.txt` (about $2.25 of the $10 cap, rounds 1-3) |
 
 ## For each builder
 
@@ -34,7 +34,7 @@ yet. Each world's builder places it as that world moves to gen2 (`origin/plan-ge
 - **The cage (W2).** `cageA` is placed as a second cage look. `cage-whole`, the HF round cage, is the candidate redraw. Which one does
   Matt want for the whole cage?
 - **The Dot lines:** all four bags, one review.
-- **W1 knot-steps:** round 3's bark burls (POLISH.md). The fallback is the trunk's own knots.
+- **W1 knot-steps:** round 3 made them bark burls (POLISH.md: pass); just a look in play.
 
 ## Making more art for these worlds (same pipeline, about $0.2-1 a job)
 

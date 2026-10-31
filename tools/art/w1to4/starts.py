@@ -361,7 +361,7 @@ def canvases3(world):
             ('knot-b', (560, 140, 260, 220), lambda w, h: _burl(w, h, 2)),
         ], [('trunkPlain', (900, 60, 100, 220), lambda w, h: fit(P2('trunkPlain'), w, h))])
     if world == 3:
-        C['w3-burst'] = (BLK, (1024, 1024), [('spore-2', (162, 162, 700, 700), lambda w, h: _burst(w, h))], [])
+        C['w3-burst'] = (BLK, (1024, 1024), [('spore-2', (162, 162, 700, 700), lambda w, h: _burst(w, h))  # cut from (24, 24, 976, 976): its glow spills past the start], [])
     return C
 
 

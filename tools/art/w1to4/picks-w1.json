@@ -38,10 +38,6 @@
    ]
   ]
  ],
- "w1-knots": {
-  "knot-a": "w1-knots-s74-5",
-  "knot-b": "w1-knots-s74-5"
- },
  "single": [
   [
    "squirrel-sit",
@@ -63,5 +59,6 @@
    "squirrel-run",
    "sq-run-2p"
   ]
- ]
+ ],
+ "w1-knots3": "w1-knots3-s70-5"
 }

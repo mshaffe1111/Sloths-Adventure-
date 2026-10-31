@@ -85,7 +85,13 @@ def cut_piece(img, box, key, boost=1.0):
         al = np.clip((lum - floor) / max(1, 255 - floor) * 255, 0, 255) * fade
         al = 255 * (al / 255) ** (1 / boost)  # boost > 1: a faint effect made stronger (the updrafts on the bright W4 sky)
         a = np.clip(a - floor * 0.9, 0, 255)
-        rgb = np.where(al[..., None] > 0, a * 255 / np.maximum(al[..., None], 1), 0)
+        # un-premultiply from smoothed colour and alpha: at the faint edge the take's own noise would otherwise be amplified into a
+        # ragged, dithered rim (spore-2, round 2); the colour of a faint pixel comes from its brighter neighbours
+        al = ndimage.gaussian_filter(al, 1.6)
+        sm = np.dstack([ndimage.gaussian_filter(a[..., c], 2.5) for c in range(3)])
+        lum_sm = np.maximum(sm.max(-1, keepdims=True), 1)
+        rgb = np.where(lum_sm > 6, sm / lum_sm * np.maximum(a.max(-1, keepdims=True), lum_sm) * 255 / np.maximum(al[..., None], 255 * 0.35), 0)
+        rgb = np.where(al[..., None] > 60, a * 255 / np.maximum(al[..., None], 1), rgb)
         im = Image.fromarray(np.dstack([rgb.clip(0, 255), np.where(al < 12, 0, al)]).astype(np.uint8), 'RGBA')
         return im.crop(im.getbbox()) if im.getbbox() else im, False
     rgb, al = key_alpha(a, key)
