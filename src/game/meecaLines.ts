@@ -71,7 +71,7 @@ export const MEECA_SAY = {
   /** a finger held still on the glass at a trunk (a hold carves nothing): Flicker shows the circle again (Matt approved, 2026-10-28) */
   carveHold: { id: 'carveHold', who: 'flicker', text: 'Not a poke. Draw circles on the bark.' },
   /**
-   * PROPOSED (QA 2026-10-31, waiting on Matt's OK): the carving's teaching and its "done". `carveDone*`: Flicker, as the last stroke
+   * Matt approved 2026-10-31 (QA that day): the carving's teaching and its "done". `carveDone*`: Flicker, as the last stroke
    * goes in; `carveHoldOk`: after three tries that carved nothing, a still finger held down carves too (the accessible way); `wallMark` /
    * `wallWarn`: she walks into a trunk she has not cut yet (said again each time, a few seconds apart).
    */

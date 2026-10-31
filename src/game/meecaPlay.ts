@@ -650,6 +650,11 @@ export class MeecaPlay {
     if (this.t - (this.saidAt.find((s) => s.id === 'flicker')?.t ?? -9) < 1.6) {
       tx = f.x;
       ty = f.y;
+    } else if (this.doneTrunk >= 0 && this.t - this.doneAt < DONE_S + 1.2 && this.st.trunks[this.doneTrunk]) {
+      // (a trunk just cut: he rises up beside the carving, glad, so his words sit above it and the new M shows)
+      const d = this.st.trunks[this.doneTrunk];
+      tx = d.textX + 70;
+      ty = d.textY - 95 + Math.sin(this.t * 3) * 4;
     } else if (nx && this.carveSpot) {
       tx = nx.textX + 52;
       ty = nx.textY - 10 + Math.sin(this.t * 3) * 4;
