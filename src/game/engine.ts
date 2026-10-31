@@ -99,7 +99,7 @@ import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
 import { SlideRun } from './w7SlideRun.ts';
 import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
-import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, warmMeecaArt, wordsBox } from './meecaArt.ts';
+import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, meecaArtReady, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { tipText } from './puzzleKit.ts';
 import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
@@ -4904,6 +4904,8 @@ export class GameEngine {
     const descent = !!this.proto?.w4?.descent;
     for (const cp of cps) if (ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
     this.checkpoint = { x: flag.x, y: flag.y };
+    // (Meeca's stage: the trunks behind the flag were cut on that run)
+    this.mc?.resumeAt(flag.x);
     this.respawnAtCheckpoint('pit');
     const p = this.player;
     this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
@@ -6394,6 +6396,7 @@ export class GameEngine {
       },
       score: (n) => (this.runScore += n),
       stepAt: (dir) => this.stepAt(dir),
+      artReady: meecaArtReady,
       sfx: (kind) => {
         if (sound.playPuzzle(kind)) return;
         if (kind === 'scratch') sound.playTreeClimb();
@@ -6460,7 +6463,7 @@ export class GameEngine {
       drawSay(ctx, b.who, b.text, bx, by, W, H, top, a, tb);
     }
     const cardA = mc.phase === 'card' ? 1 : mc.cardOut >= 0 && mc.cardOut < 1 ? 1 - mc.cardOut : 0;
-    drawTitleCard(ctx, W, H, cardA, mc.t);
+    drawTitleCard(ctx, W, H, cardA, mc.t, mc.cardWaiting);
     if (mc.sceneLine && mc.line >= 0) drawSceneBox(ctx, W, H, mc.scene, mc.line, Math.min(1, (mc.t - mc.lineAt) / 0.25 + 0.4), mc.t);
     if (mc.fade > 0) {
       ctx.fillStyle = 'rgba(8, 6, 22, ' + mc.fade + ')';

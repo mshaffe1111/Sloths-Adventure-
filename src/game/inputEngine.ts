@@ -83,6 +83,12 @@ export class InputEngine {
     this.fresh();
     this.state.circle = (this.state.circle ?? 0) + rad;
   }
+  /** a finger held still at the carving spot (state.touchHold: TouchController.tsx) */
+  public setStillFinger(on: boolean) {
+    if (!!this.state.touchHold === on) return;
+    if (on) this.fresh();
+    this.state.touchHold = on;
+  }
   /** who is holding (state.hold is any of them) */
   private holds = { touch: false, keys: false, pad: false, gamepad: false };
   /** a hold, from one of the ways of playing (a still thumb, the hold key, the Pad's button, a pad's bumper) */
@@ -257,6 +263,7 @@ export class InputEngine {
     this.carried = null;
     // (the engine's flags too: the input lives for the whole app, and a carving spot, a swing or a bush must not outlive their stage, CT-20)
     this.carveSpot = false;
+    this.state.touchHold = false;
     this.onSwing = false;
     this.inCover = false;
     this.state.left = false;

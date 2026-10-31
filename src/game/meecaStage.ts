@@ -93,6 +93,12 @@ export interface MeecaStage {
   flickerX: number;
   flickerAt: { x: number; y: number };
   trunks: MeecaTrunk[];
+  /**
+   * the checkpoint flags (x, on the path's ground): past the camp, past the trail mark, at each room's door, and for room 5 (whose door
+   * is in the dark, where no flag may stand) past room 4's trunk (QA 2026-10-31: the spawn was the only flag, so any lost life sent her
+   * back to her bedroll). Each stands behind the next trunk to cut, never past it.
+   */
+  flags: number[];
   /** the last path's dark (room 5), and the clearing past it */
   darkX0: number;
   clearing: { y: number; pellFrom: number; pellAt: number; soldiers: Array<{ x: number; coat: 'a' | 'b' }>; stakes: number[]; moonX: number };
@@ -584,6 +590,7 @@ export function buildMeecaStage(seed = 1): MeecaStage {
   const st: MeecaStage = {
     seed, width, spawn: { x: spawn, y: G }, campEnd, camp, highX: trails[0].x0 + 120, forkX, flickerX, flickerAt: { x: flickerX + 150, y: G - 130 },
     trunks, darkX0: e0 - 60, clearing, beats, trails, landmarks,
+    flags: [campEnd + 60, mark.x + 100, r1 + 20, b0 - 20, c0 - 20, d0 - 20, t4.x + 120],
   };
   BUILT.set(st, { platforms: P, vines, trees, kit, zones });
   return st;
@@ -606,7 +613,7 @@ export function meecaGeneratedStage(config: LevelConfig, seed: number): Generate
     // no shrine: the stage ends with the blanket scene (meecaPlay.ts)
     exitTotemX: 0,
     exitTotemY: 0,
-    checkpoints: [],
+    checkpoints: st.flags.map((x) => ({ x, y: st.spawn.y, reached: false })),
     zones: b.zones,
     kit: b.kit,
     proto: { hints: [], covers: [], beats: st.beats, meeca: st },

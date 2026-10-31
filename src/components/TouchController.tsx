@@ -9,6 +9,10 @@ import { CircleTrace } from '../game/circleTrace.ts';
 import { TouchMarks, touchMarksOn, showTouches, subscribeShowTouches } from '../game/touchMarks.ts';
 import { TouchFeedback } from './TouchFeedback.tsx';
 
+/** a finger that stays within this many CSS px of where it went down, for this long, is held still (the carving's slow way) */
+const STILL_PX = 14;
+const STILL_MS = 400;
+
 /**
  * The whole screen is the controller. There are no buttons.
  *
@@ -65,11 +69,17 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
   }, []);
   // a finger tracing a circle at a carving spot (Meeca's stage): once it is a circle it is the carving's, not the slide's
   const trace = useRef(new CircleTrace());
+  // fingers down at the carving spot, where each went down and when: one held still there is the carving's slow way (meecaPlay.ts)
+  const still = useRef(new Map<number, { x: number; y: number; t: number }>());
 
   // holds and undecided fingers need a clock even when the finger is perfectly still
   useEffect(() => {
     const id = window.setInterval(() => {
-      if (G.active) G.tick(performance.now());
+      const now = performance.now();
+      if (G.active) G.tick(now);
+      let held = false;
+      if (inputEngine.carveSpot) for (const f of still.current.values()) if (now - f.t >= STILL_MS) held = true;
+      inputEngine.setStillFinger(held);
     }, 30);
     return () => window.clearInterval(id);
   }, [G]);
@@ -128,6 +138,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
       recorder.touch('d', t.identifier, t.clientX, t.clientY, now, Math.max((t as unknown as { radiusX?: number }).radiusX || 0, (t as unknown as { radiusY?: number }).radiusY || 0));
       G.down(t.identifier, t.clientX, t.clientY, now);
       trace.current.down(t.identifier, t.clientX, t.clientY);
+      still.current.set(t.identifier, { x: t.clientX, y: t.clientY, t: performance.now() });
     }
   };
   const onMove = (e: React.TouchEvent) => {
@@ -135,6 +146,8 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
       recorder.touch('m', t.identifier, t.clientX, t.clientY, now);
+      const sf = still.current.get(t.identifier);
+      if (sf && Math.hypot(t.clientX - sf.x, t.clientY - sf.y) > STILL_PX) still.current.delete(t.identifier);
       if (inputEngine.carveSpot) {
         const was = trace.current.circling(t.identifier);
         const rad = trace.current.move(t.identifier, t.clientX, t.clientY);
@@ -153,6 +166,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
       recorder.touch('c', e.changedTouches[i].identifier, 0, 0, now);
       G.cancelFinger(e.changedTouches[i].identifier, now);
       trace.current.up(e.changedTouches[i].identifier);
+      still.current.delete(e.changedTouches[i].identifier);
     }
   };
   const onEnd = (e: React.TouchEvent) => {
@@ -162,6 +176,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
       recorder.touch('u', t.identifier, t.clientX, t.clientY, now);
       if (!trace.current.circling(t.identifier)) G.up(t.identifier, t.clientX, t.clientY, now);
       trace.current.up(t.identifier);
+      still.current.delete(t.identifier);
     }
   };
 

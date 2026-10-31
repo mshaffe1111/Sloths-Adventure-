@@ -524,6 +524,11 @@ export interface InputState {
   hold?: boolean;
   /** how far a finger has traced round a circle since the engine last took it (radians: Meeca carves with it, circleTrace.ts) */
   circle?: number;
+  /**
+   * a finger held still on the glass at Meeca's carving spot (TouchController.tsx): after a few tries that carved nothing, it carves too
+   * (meecaPlay.ts HOLD_AFTER_TRIES, the accessible way). Unset = not held.
+   */
+  touchHold?: boolean;
 }
 
 export interface MissionProgress {

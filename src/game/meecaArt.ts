@@ -8,7 +8,7 @@
  *
  * World pieces draw in world units; the overlays in CSS px. Every sheet draws a plain stand-in while it loads.
  */
-import { trackAtlas } from './atlasLoader.ts';
+import { pendingSheets, trackAtlas } from './atlasLoader.ts';
 import { makeCreatureAnim } from './creatureAnim.ts';
 import { PELL_ANIM, PELL_ANIM_UP, PELL_ANIM_URL, PELL_K, PELL_SEQ } from './pellAnimData.ts';
 import { SOLDIER_K, SOLDIER_SEQ } from './soldierAnimData.ts';
@@ -16,15 +16,15 @@ import { SOLDIER_CLIPS } from './soldierClips.ts';
 import { MEECA_CARVE_FPS, MEECA_CARVE_FRAMES, MEECA_CARVE_SEQ, MEECA_CARVE_URL } from './meecaCarveData.ts';
 import { MEECA_BLANKET_FRAMES, MEECA_BLANKET_UP, MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { MEECA_FRAMES, MEECA_STAND_H } from './meecaStandardData.ts';
-import { drawMeecaFrame, jennifurFrame, MEECA_UNITS } from './jennifurSprite.ts';
+import { drawMeecaFrame, jennifurFrame, jennifurSpriteReady, MEECA_UNITS } from './jennifurSprite.ts';
 import { drawScratch, drawW5, w5ArtReady } from './w5Art.ts';
 import { carvingTrunk, drawCarving } from './w5Look.ts';
 import { shakyLetters } from './w5Kit.ts';
-import { LOOK_S, type Guard, type MeecaPlay } from './meecaPlay.ts';
+import { DONE_S, LOOK_S, type Guard, type MeecaPlay } from './meecaPlay.ts';
 import { FLICKER_HINTS, MEECA_CARD, MEECA_SAY, type MeecaSceneLine, type Speaker } from './meecaLines.ts';
 import { FLICKER_ANIM_FPS, FLICKER_ANIM_H, FLICKER_ANIM_UP, FLICKER_SEQ } from './flickerAnimData.ts';
 import { FLICKER_CLIPS } from './flickerClips.ts';
-import type { MeecaStage, MeecaTrunk } from './meecaStage.ts';
+import { carveSeconds, type MeecaStage, type MeecaTrunk } from './meecaStage.ts';
 import { drawGlow, drawNightPiece, nightArtReady } from './meecaNightArt.ts';
 import type { NightArtName } from './meecaNightData.ts';
 import type { KitPlay } from './puzzlePlay.ts';
@@ -62,6 +62,15 @@ const carveSheet = sheet(MEECA_CARVE_URL);
 const blanketSheet = sheet(MEECA_BLANKET_URL);
 
 /** start loading everything the stage draws, as it starts */
+/**
+ * The pictures the stage's first view needs have all arrived: her sheet, the camp's night art and every sheet asked for so far (the
+ * ground's, the landmarks'): the card waits for this (meecaPlay.ts cardWaiting). Always true where there are no pictures (the tests).
+ */
+export function meecaArtReady(): boolean {
+  if (typeof Image === 'undefined') return true;
+  return jennifurSpriteReady() && nightArtReady() && pendingSheets().length === 0;
+}
+
 export function warmMeecaArt() {
   PELL_CLIPS.ready();
   FLICKER_CLIPS.ready();
@@ -190,13 +199,15 @@ export const FLICKER_DART_V = 260;
 const DART_S = FLICKER_SEQ.dart.length / FLICKER_ANIM_FPS;
 
 /** what he is doing now (pure: the stage's state, how long she has stood still, whether he is in a turn or a dash, how fast he flies) */
-export function flickerMove(mc: Pick<MeecaPlay, 'phase' | 'small' | 'bubble' | 'sceneLine' | 'ringOn' | 'carveSpot' | 'line' | 'lineAt' | 't'>, still: number, turning: boolean, darting = false, speed = 0): FlickerMove {
+export function flickerMove(mc: Pick<MeecaPlay, 'phase' | 'small' | 'bubble' | 'sceneLine' | 'ringOn' | 'carveSpot' | 'line' | 'lineAt' | 't'> & { doneAt?: number }, still: number, turning: boolean, darting = false, speed = 0): FlickerMove {
   if (mc.small && (mc.phase === 'endingB' || mc.phase === 'done')) return 'sad';
   if (mc.phase === 'endingA' || mc.phase === 'endingB' || mc.phase === 'done') {
     if (mc.phase === 'endingA' && mc.line === 0 && mc.t - mc.lineAt < 1.6) return 'startled';
     return mc.sceneLine?.who === 'Flicker' ? 'talk' : 'worried';
   }
   if (mc.phase === 'look') return 'happy';
+  // (a trunk just cut: he is glad, QA 2026-10-31 "show a clear done")
+  if (mc.doneAt !== undefined && mc.t - mc.doneAt < DONE_S) return 'happy';
   if (turning) return 'turn';
   if (mc.bubble?.who === 'flicker') {
     const text = mc.bubble.text;
@@ -307,10 +318,38 @@ export function drawFlicker(ctx: CanvasRenderingContext2D, mc: MeecaPlay, p: Pla
  * here"): a faint ring on the bark, a bright light running round it with a fading tail and an arrowhead the way it goes, so it reads as
  * a movement to copy; the first time, a ghost fingertip rides the light.
  */
-export function drawCarveRing(ctx: CanvasRenderingContext2D, tr: MeecaTrunk, t: number, finger = false) {
-  const cx = tr.textX;
-  const cy = tr.textY + tr.size * 0.7 * Math.max(0, tr.lines.length - 1) * 0.6;
-  const r = 36;
+const RING_R = 36;
+/** the middle of the ring on a trunk (over its words) */
+function ringCentre(tr: MeecaTrunk): { x: number; y: number } {
+  return { x: tr.textX, y: tr.textY + tr.size * 0.7 * Math.max(0, tr.lines.length - 1) * 0.6 };
+}
+
+/**
+ * A trunk just cut (`u` 0..1 of the moment): the words glow warm, and a ring of sparks opens out from them and fades (a small code
+ * touch over the painted trunk, STAGE-RULES §4).
+ */
+export function drawCarveDone(ctx: CanvasRenderingContext2D, tr: MeecaTrunk, u: number) {
+  const c = ringCentre(tr);
+  const fade = u < 0.15 ? u / 0.15 : 1 - (u - 0.15) / 0.85;
+  drawGlow(ctx, c.x, c.y, 70 + 50 * u, 'rgba(255, 214, 150, A)', 0.75 * fade);
+  ctx.save();
+  const r = RING_R + 70 * Math.sqrt(u);
+  for (let k = 0; k < 10; k++) {
+    const a = (k / 10) * Math.PI * 2 + u * 0.8;
+    drawGlow(ctx, c.x + Math.cos(a) * r, c.y + Math.sin(a) * r, 14, 'rgba(255, 236, 190, A)', 0.95 * fade);
+  }
+  ctx.globalAlpha = Math.max(0, fade);
+  ctx.strokeStyle = 'rgba(255, 226, 170, 0.9)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(c.x, c.y, r * 0.85, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+export function drawCarveRing(ctx: CanvasRenderingContext2D, tr: MeecaTrunk, t: number, finger = false, filled = 0) {
+  const { x: cx, y: cy } = ringCentre(tr);
+  const r = RING_R;
   const turn = 1.3;
   const a0 = -Math.PI / 2 + ((t * Math.PI * 2) / turn) % (Math.PI * 2);
   ctx.save();
@@ -320,6 +359,7 @@ export function drawCarveRing(ctx: CanvasRenderingContext2D, tr: MeecaTrunk, t: 
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.stroke();
+  if (filled > 0) drawCarveMeter(ctx, cx, cy, r, filled);
   // the tail: the last part of a turn, brighter toward the light
   ctx.lineCap = 'round';
   const n = 14;
@@ -422,11 +462,19 @@ export function drawMeecaBack(ctx: CanvasRenderingContext2D, mc: MeecaPlay, view
     const at = drawTrunk(ctx, tr, cut, mc.phase === 'play' || mc.phase === 'last');
     // (the trail mark: her M, and an arrow back the way she came, cut with the last stroke)
     if (tr.index < 0 && cut >= tr.lines.join('').replace(/ /g, '').length) drawArrowMark(ctx, tr.textX + tr.size * 1.3, tr.textY);
-    if (at && i === mc.marked && (mc.carvingNow || (cut > 0 && cut % 1 > 0.01))) {
-      if (mc.carvingNow) shavings(ctx, at.x - at.k * 0.15, at.y + at.k * 0.25, t);
-      drawCarveMeter(ctx, at.x, at.y, tr.size * 0.78, at.frac);
+    // the progress: the ring on the bark fills, all the way round for the whole carving, as she draws (QA 2026-10-31: nothing showed how
+    // far along she was); the letter being cut has its shavings
+    const done = mc.cut[i] ?? 0;
+    const all = carveSeconds(tr.lines);
+    if (i === mc.marked && done > 0 && done < all) {
+      if (at && mc.carvingNow) shavings(ctx, at.x - at.k * 0.15, at.y + at.k * 0.25, t);
+      const c = ringCentre(tr);
+      drawCarveMeter(ctx, c.x, c.y, RING_R, done / all);
     }
-    if (mc.ringOn === i && !mc.carvingNow) drawCarveRing(ctx, tr, t, mc.ringFinger);
+    if (mc.ringOn === i && !mc.carvingNow) drawCarveRing(ctx, tr, t, mc.ringFinger, done / all);
+    // the "done": the whole carving glows warm and a ring of sparks opens out from it, once
+    const since = mc.t - mc.doneAt;
+    if (mc.doneTrunk === i && since >= 0 && since < DONE_S) drawCarveDone(ctx, tr, since / DONE_S);
   });
   drawClearing(ctx, mc, view, t);
 }
@@ -842,7 +890,7 @@ function inked(ctx: CanvasRenderingContext2D, text: string, x: number, y: number
 }
 
 /** the "On the March North" card over the opening shot: the game's chapter card at night (upright on the top half, sideways high on the left) */
-export function drawTitleCard(ctx: CanvasRenderingContext2D, W: number, H: number, a: number, t: number) {
+export function drawTitleCard(ctx: CanvasRenderingContext2D, W: number, H: number, a: number, t: number, waiting = false) {
   if (a <= 0) return;
   const land = W > H;
   ctx.save();

@@ -71,6 +71,16 @@ export const MEECA_SAY = {
   /** a finger held still on the glass at a trunk (a hold carves nothing): Flicker shows the circle again (Matt approved, 2026-10-28) */
   carveHold: { id: 'carveHold', who: 'flicker', text: 'Not a poke. Draw circles on the bark.' },
   /**
+   * PROPOSED (QA 2026-10-31, waiting on Matt's OK): the carving's teaching and its "done". `carveDone*`: Flicker, as the last stroke
+   * goes in; `carveHoldOk`: after three tries that carved nothing, a still finger held down carves too (the accessible way); `wallMark` /
+   * `wallWarn`: she walks into a trunk she has not cut yet (said again each time, a few seconds apart).
+   */
+  carveDoneMark: { id: 'carveDoneMark', who: 'flicker', text: 'There. Your M. Now we can find the way back.' },
+  carveDone: { id: 'carveDone', who: 'flicker', text: 'Cut deep. Pokey will see that.' },
+  carveHoldOk: { id: 'carveHoldOk', who: 'flicker', text: 'Tricky? Then just hold your finger down.' },
+  wallMark: { id: 'wallMark', who: 'flicker', text: 'Mark it first. Draw circles on the bark.' },
+  wallWarn: { id: 'wallWarn', who: 'meeca', text: 'Wait. Pokey needs to know this one.' },
+  /**
    * a plain walk into a step one hop climbs (a stump, the gully's stairs) stops her, and nothing taught the hop (QA 2026-10-29: "only
    * lifted hops move her"): her own thought, the first time she pushes into one, and again if she is still pushing (Matt approved,
    * 2026-10-28)

@@ -52,7 +52,16 @@ export interface MeecaHost {
   /** a step one plain jump climbs, right against her on that side (engine.ts stepAt): a plain walk into it stops */
   stepAt?(dir: -1 | 1): boolean;
   score?(n: number): void;
+  /**
+   * every picture the stage's first view needs has arrived (her sheet, the camp's night art, the ground's): the card waits for it (QA
+   * 2026-10-31, Matt's phone: on a first visit the card was tapped away before they had come, and her thought showed over an empty
+   * forest, no Meeca, no ground, for about three seconds). Unset: ready.
+   */
+  artReady?(): boolean;
 }
+
+/** the card takes a tap even with pictures still on their way after this long (s): a phone that never gets them can still play */
+export const CARD_ART_WAIT = 12;
 
 /** what the thumbs did this frame, as the engine's input state says it */
 export interface MeecaControls {
@@ -69,6 +78,8 @@ export interface MeecaControls {
   hold?: boolean;
   /** how far a finger traced round a circle since the last frame (radians: TouchController.tsx, circleTrace.ts) */
   circle?: number;
+  /** a finger held still on the glass (TouchController.tsx): carves only after HOLD_AFTER_TRIES tries that did not */
+  touchHold?: boolean;
 }
 
 const near = (a: number, b: number, d: number) => Math.abs(a - b) <= d;
@@ -95,8 +106,16 @@ const HOLD_AGAIN_S = 12;
 const CARVE_HOLD_S = 1.0;
 /** a plain walk pushed this long into a step one hop climbs brings her words on the hop (s) */
 export const STEP_PUSH_S = 0.8;
-/** she will not go past a trunk she has not marked by more than this */
+/** she will not go past a trunk she has not marked by more than this (the old stop: the wall is now nearer, WALL_PAD) */
 export const PAST = 120;
+/** the wall at a trunk not cut yet: her middle stops this far past its far side (so she is still at its carving spot, CARVE_SIDE) */
+export const WALL_PAD = 14;
+/** more than this in one frame is her being put somewhere (a flag, a test), not a move into the wall (px; her run is ~10 a frame) */
+export const WALL_STEP = 48;
+/** tries at a trunk that carved nothing (a tap, a poke, a flick) before a still finger held down carves too (the accessible way) */
+export const HOLD_AFTER_TRIES = 3;
+/** how long the "done" moment shows (the M glowing, Flicker happy) */
+export const DONE_S = 1.6;
 /** the shortest time a scene line stays before a tap moves it on */
 const LINE_MIN = 0.45;
 const FADE_OUT = 1.2;
@@ -168,7 +187,16 @@ export class MeecaPlay {
   private won = false;
   private tapped = false;
   private hold = false;
+  private touchHold = false;
   private circle = 0;
+  /** at the trunk to cut now: the tries that carved nothing (a tap, a poke, a flick), and when the last was */
+  tries = 0;
+  private tryAt = -99;
+  /** the still-finger way of carving is open (after HOLD_AFTER_TRIES tries) */
+  holdOk = false;
+  /** the last trunk cut, and when (the "done" moment: its M glows, Flicker is glad) */
+  doneTrunk = -1;
+  doneAt = -99;
   private steer: -1 | 0 | 1 = 0;
   private camX = NaN;
   private camY = NaN;
@@ -180,6 +208,7 @@ export class MeecaPlay {
 
   constructor(readonly st: MeecaStage, private readonly host: MeecaHost) {
     this.cut = st.trunks.map(() => 0);
+    this.home = { x: st.spawn.x, y: st.spawn.y };
     const c = st.clearing;
     this.pell = { x: c.pellFrom, y: c.y, face: -1, pose: 'idle', poseT: 0, coat: 'a' };
     this.soldiers = c.soldiers.map((s, i) => ({ x: c.pellFrom + 60 + i * 70, y: c.y, face: -1, pose: 'idle', poseT: 0, coat: s.coat }));
@@ -199,6 +228,10 @@ export class MeecaPlay {
   /** a soft chair holds her: the wiggle's arrows are drawn (meecaArt.ts drawMeecaFront) */
   get wiggling(): boolean {
     return !!this.host.kit()?.chairHeld;
+  }
+  /** the card is still waiting on the stage's pictures (it says so where "tap to begin" goes, and takes no tap) */
+  get cardWaiting(): boolean {
+    return this.phase === 'card' && this.cardT < CARD_ART_WAIT && !(this.host.artReady?.() ?? true);
   }
   /** the HUD steps aside for the card and the scenes */
   get cinematic(): boolean {
@@ -312,8 +345,20 @@ export class MeecaPlay {
   filter(s: MeecaControls) {
     this.tapped = s.punchPressed || s.kickPressed || s.megaPunchPressed || s.jumpPressed;
     this.hold = !!s.hold;
+    this.touchHold = !!s.touchHold;
     this.circle = Math.abs(s.circle ?? 0);
     s.circle = 0;
+    // (a try at the trunk that carved nothing: a tap, a poke or a flick while she stands there and nothing is being cut)
+    if (this.carveSpot && !this.carvingNow && this.circle <= 0 && (s.punchPressed || s.kickPressed || s.megaPunchPressed) && this.t - this.tryAt > 0.5) {
+      this.tryAt = this.t;
+      this.tries++;
+      if (this.tries >= HOLD_AFTER_TRIES && !this.holdOk) {
+        this.holdOk = true;
+        this.saidAt.push({ id: MEECA_SAY.carveHoldOk.id, t: this.t, x: this.host.player.x });
+        this.sayNow('flicker', MEECA_SAY.carveHoldOk.text, lineSecs(MEECA_SAY.carveHoldOk.text) + 1);
+        this.pokeSaidAt = this.t;
+      }
+    }
     // (a still finger held down is the touch controls' mega: at a trunk it carves nothing, and Flicker says to trace instead)
     if (s.megaPunchPressed && this.carveSpot) this.pokeAt = this.t;
     if (this.circle > 0) this.pokeAt = -1;
@@ -334,7 +379,7 @@ export class MeecaPlay {
     const p = this.host.player;
     if (!p.grounded && !p.climbing && p.vy >= 90 && !(s.jumpPressed && p.jumpsLeft > 0)) s.jumpHeld = false;
     // at a trunk, tracing a circle (or holding the hold key) is carving: she stands still for it
-    if (this.carveSpot && (this.circle > 0 || this.hold || this.carveLeft > 0)) {
+    if (this.carveSpot && (this.circle > 0 || this.hold || (this.holdOk && this.touchHold) || this.carveLeft > 0)) {
       s.left = s.right = s.jumpPressed = false;
       s.down = false;
       this.steer = 0;
@@ -346,21 +391,69 @@ export class MeecaPlay {
   after() {
     const p = this.host.player;
     if (this.phase === 'card') {
-      Object.assign(p, { x: this.st.spawn.x, y: this.st.spawn.y, vx: 0, vy: 0, grounded: true, climbing: false, ducking: false, facing: 1 });
+      Object.assign(p, { x: this.home.x, y: this.home.y, vx: 0, vy: 0, grounded: true, climbing: false, ducking: false, facing: 1 });
+      this.lastX = p.x;
       return;
     }
     if (this.phase !== 'play' && this.phase !== 'last') {
       p.vx = 0;
+      this.lastX = p.x;
       return;
     }
-    // she does not leave a trunk behind unmarked: the trail is the point
+    // she does not leave a trunk behind unmarked: the trail is the point. The trunk is a wall from the sky to the ground until it is cut
+    // (QA 2026-10-31, Matt: "it just puts you back to where the cocoon is"): it stopped her only on the path's own ground, so a hop over
+    // the cocoon and a climb up the post took her past it, and the first time she touched the path's height again, far on, she was put
+    // back by the trunk. Now nothing gets past it, by any way or at any height, and she is only ever stopped where she meets it.
+    this.wallCheck(p);
+  }
+
+  /** where she was at the end of the last frame (NaN: nowhere yet, or just put somewhere) */
+  private lastX = NaN;
+  /** where the card holds her: her bedroll, or the flag a cut-off run is picked up from */
+  private home = { x: 0, y: 0 };
+  /** when the wall's words were last said */
+  private wallSaidAt = -99;
+  /** the far face of the next trunk to cut, which she cannot pass (her middle stops here), or +Infinity once all are cut */
+  wallX(): number {
     const nx = this.next;
-    if (nx && p.x > nx.x + PAST && p.grounded && Math.abs(p.y - nx.standY) < 20) {
-      p.x = nx.x + PAST;
-      p.vx = Math.min(0, p.vx);
-      if (nx.index < 0) this.say({ id: 'remindMark', who: 'flicker', text: 'Mark it. Then you can find your way back.' });
-      else this.say({ id: `remind${nx.index}`, who: 'meeca', text: 'Wait. Pokey needs to know this one.' });
+    return nx ? nx.x + nx.w / 2 + WALL_PAD : Infinity;
+  }
+  /** she was put somewhere (a flag, a fall, a test): the wall does not drag her back from there */
+  placed() {
+    this.lastX = NaN;
+  }
+  /**
+   * The stage starts at a flag (a run the phone cut off, flagResume.ts): every trunk behind it was cut on that run (a flag only counts
+   * once she has passed it, and she cannot pass a trunk she has not cut), and Flicker is with her past his place.
+   */
+  resumeAt(x: number) {
+    this.home = { x, y: this.st.spawn.y };
+    for (let tr = this.next; tr && tr.x < x; tr = this.next) {
+      this.cut[this.marked] = carveSeconds(tr.lines);
+      this.marked++;
     }
+    if (x >= this.st.flickerX && !this.flicker.on) Object.assign(this.flicker, { on: true, show: 1, x, y: this.st.spawn.y - 130 });
+    for (const id of ['camp', 'high', 'lost', 'flicker', 'carve']) this.said.add(id);
+    this.lastX = NaN;
+  }
+  private wallCheck(p: Player) {
+    const wall = this.wallX();
+    const was = this.lastX;
+    // (only where she walks, hops or climbs into it this frame: a jump of more than a frame's move is her being put somewhere, never
+    // something to undo)
+    if (Number.isFinite(was) && was <= wall + 0.5 && p.x > wall && p.x - was <= WALL_STEP) {
+      p.x = wall;
+      p.vx = Math.min(0, p.vx);
+      if (p.isVineSwinging) p.vx = 0;
+      if (this.t - this.wallSaidAt >= 5) {
+        this.wallSaidAt = this.t;
+        const nx = this.next!;
+        const l = nx.index < 0 ? MEECA_SAY.wallMark : MEECA_SAY.wallWarn;
+        this.saidAt.push({ id: l.id, t: this.t, x: p.x });
+        this.sayNow(l.who, l.text, lineSecs(l.text) + 0.6);
+      }
+    }
+    this.lastX = p.x;
   }
 
   // ───────────────────────────── the frame ─────────────────────────────
@@ -370,7 +463,7 @@ export class MeecaPlay {
     const p = this.host.player;
     if (this.phase === 'card') {
       this.cardT += dt;
-      if (this.tapped && this.cardT > 0.6) {
+      if (this.tapped && this.cardT > 0.6 && !this.cardWaiting) {
         this.phase = 'play';
         this.cardOut = 0;
         this.host.sfx?.('card');
@@ -450,7 +543,7 @@ export class MeecaPlay {
       this.saidAt.push({ id: 'holdAgain', t: this.t, x: p.x });
       this.queue.push({ who: typeof tip === 'string' ? 'meeca' : tip.who, text, x: p.x });
     }
-    if (this.pokeAt >= 0 && this.carveSpot && !this.carvingNow && this.t - this.pokeAt >= CARVE_HOLD_S) {
+    if (this.pokeAt >= 0 && this.carveSpot && !this.carvingNow && !this.holdOk && this.t - this.pokeAt >= CARVE_HOLD_S) {
       this.pokeAt = -1;
       if (this.t - this.pokeSaidAt >= 6) {
         this.pokeSaidAt = this.t;
@@ -570,12 +663,13 @@ export class MeecaPlay {
       return;
     }
     this.carveSpot = true;
-    // the ring that says "trace a circle" shows at every trunk; the ghost finger tracing it, the first time
+    // the ring that says "trace a circle" shows at every trunk, with the ghost finger tracing it (QA 2026-10-31: the first time only, and
+    // the blind tester never learned it), whenever she is there and not cutting: as she comes, and again after a try that carved nothing
     this.ringOn = this.marked;
-    this.ringFinger = !tipHeard(this.host.stageId, 'meeca:ring');
+    this.ringFinger = true;
     if (this.marked === 0) this.say(MEECA_SAY.carve);
     if (tr.index === MEECA_GOAL - 1) this.say(MEECA_SAY.last);
-    const add = this.circle * CIRCLE_S + (this.hold ? dt : 0);
+    const add = this.circle * CIRCLE_S + (this.hold || (this.holdOk && this.touchHold) ? dt : 0);
     if (add > 0) this.carveLeft = 0.25;
     else this.carveLeft = Math.max(0, this.carveLeft - dt);
     if (add <= 0 && this.carveLeft <= 0) return;
@@ -602,6 +696,16 @@ export class MeecaPlay {
     this.letterAt = -1;
     this.host.sfx?.('cut');
     if (!tipHeard(this.host.stageId, 'meeca:ring')) markTipHeard(this.host.stageId, 'meeca:ring');
+    // the "done": the M glows, Flicker is glad and says so (the next trunk starts with its own tries)
+    this.doneTrunk = i;
+    this.doneAt = this.t;
+    this.tries = 0;
+    this.lastX = NaN;
+    if (tr.index !== MEECA_GOAL - 1) {
+      const l = tr.index < 0 ? MEECA_SAY.carveDoneMark : MEECA_SAY.carveDone;
+      this.saidAt.push({ id: l.id, t: this.t, x: this.host.player.x });
+      this.sayNow('flicker', l.text, lineSecs(l.text) + 0.4);
+    }
     if (tr.index < 0) return;
     this.host.score?.(500);
     recordCarving({ id: tr.id, lines: [...tr.lines], along: Math.round((tr.x / this.st.width) * 1000) / 1000, high: tr.standY < MEECA_G - 100, caught: 0 });
