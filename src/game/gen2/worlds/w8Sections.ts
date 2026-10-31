@@ -261,7 +261,7 @@ const restGlide = section({
   archetypes: 'any',
   phases: ['rest', 'goal'],
   difficulty: 2,
-  pieces: [bank('a', [240, 280]), glide('b', 'a', [260, 300], [0.66, 0.74]), flat('c', 'b', [180, 220])],
+  pieces: [bank('a', [180, 210]), glide('b', 'a', [260, 300], [0.66, 0.74]), flat('c', 'b', [140, 170])],
   last: 'c',
   sockets: [petals('a', 'a', 0.4, 2, 80), flag('b', 0.5), scenery('fungus', 'c', [0.4, 0.6])],
   mirrorable: true,
@@ -272,7 +272,7 @@ const restGlideFork = section({
   archetypes: 'any',
   phases: ['rest', 'goal'],
   difficulty: 2,
-  pieces: [bank('a', [220, 250]), glide('b', 'a', [220, 260], [0.66, 0.74]), flat('c', 'b', [180, 210])],
+  pieces: [bank('a', [170, 200]), glide('b', 'a', [220, 260], [0.66, 0.74]), flat('c', 'b', [140, 170])],
   last: 'c',
   sockets: [petals('a', 'a', 0.6, 1), flag('b', 0.5), petals('c', 'c', 0.5, 1), scenery('nest', 'c', [0.5, 0.7], 0.5)],
   mirrorable: true,
@@ -1037,7 +1037,7 @@ const glideFirst = section({
   difficulty: 4,
   teaches: GLIDE,
   maxPerStage: 1,
-  pieces: [bank('a', [340, 380]), glide('b', 'a', [300, 340], [0.8, 0.88]), flat('c', 'b', [160, 200])],
+  pieces: [bank('a', [260, 290]), glide('b', 'a', [300, 340], [0.8, 0.88]), flat('c', 'b', [160, 200])],
   last: 'c',
   sockets: [tip(GLIDE, 'a', 0.3), petals('a', 'a', 0.4, 2, 80), petals('b', 'b', 0.5, 2, 80), scenery('nest', 'c', [0.5, 0.7])],
   mirrorable: false,
@@ -1051,10 +1051,8 @@ const glidePair = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [GLIDE, W8_THEME.leapers],
-  pieces: [bank('a', [220, 260]), glide('b', 'a', [180, 220]), flat('c', 'b', [140, 180]), glide('d', 'c', [260, 300])],
+  pieces: [bank('a', [220, 260]), glide('b', 'a', [180, 220]), leap('c', 'b', [160, 190]), glide('d', 'c', [260, 300])],
   last: 'd',
-  // (the night wind is 8-6's own: a tailwind over the glide, 2026-10-31)
-  zones: [{ kind: 'wind', on: 'd', idle: [3, 3.6] }],
   sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
   mirrorable: true,
 });
@@ -1084,9 +1082,7 @@ const glideHunter = section({
   uses: [GLIDE, W8_THEME.prowlers],
   pieces: [bank('a', [260, 300]), glide('c', 'a', [440, 480]), hop('d', 'c', [200, 240])],
   last: 'd',
-  // (the night wind is 8-6's own: a tailwind over the glide, 2026-10-31)
-  zones: [{ kind: 'wind', on: 'c', idle: [3, 3.6] }],
-  sockets: [petals('a', 'a', 0.4, 1), foe('foe', 'c', [0.55, 0.65], [...CATS, 'tayra'], 5, { phases: LIVE }), petals('d', 'd', 0.5, 2, 80)],
+  sockets: [foe('foe0', 'a', [0.35, 0.45], SMALL, 3, { chance: 0.8 }), foe('foe', 'c', [0.55, 0.65], [...CATS, 'tayra'], 5), petals('d', 'd', 0.5, 2, 80)],
   mirrorable: true,
 });
 
@@ -1120,10 +1116,8 @@ const glideLeap = section({
   difficulty: 7,
   needs: ['double'],
   uses: [GLIDE, W8_THEME.leapers],
-  pieces: [bank('a', [220, 260]), leap('b', 'a', [200, 240]), flat('c', 'b', [140, 180]), glide('d', 'c', [240, 280])],
+  pieces: [bank('a', [220, 260]), leap('b', 'a', [200, 240]), leap('c', 'b', [160, 190]), glide('d', 'c', [240, 280])],
   last: 'd',
-  // (the night wind is 8-6's own: a tailwind over the glide, 2026-10-31)
-  zones: [{ kind: 'wind', on: 'd' }],
   sockets: [petals('a', 'a', 0.5, 2, 80), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
   mirrorable: true,
 });
@@ -1138,9 +1132,7 @@ const glideProwl = section({
   uses: [GLIDE, W8_THEME.prowlers],
   pieces: [bank('a', [300, 340]), glide('c', 'a', [240, 280]), flat('d', 'c', [120, 150])],
   last: 'd',
-  // (the night wind is 8-6's own: a tailwind over the glide, 2026-10-31)
-  zones: [{ kind: 'wind', on: 'c' }],
-  sockets: [foe('foe', 'a', [0.5, 0.6], SMALL, 3, { phases: LIVE }), petals('c', 'c', 0.5, 2, 80), petals('d', 'd', 0.5, 1)],
+  sockets: [foe('foe', 'a', [0.5, 0.6], SMALL, 3), petals('c', 'c', 0.5, 2, 80), foe('foe2', 'c', [0.5, 0.6], ['boa', 'jaguar'], 5, { phases: LIVE, chance: 0.8 }), petals('d', 'd', 0.5, 1)],
   mirrorable: true,
 });
 
