@@ -112,7 +112,18 @@ export function heroClipsAreLive(): boolean {
   return live;
 }
 /** forget everything (a new stage, a respawn) */
+/** the fastest he has risen (px/s, negative) since he last left the ground: a hop that never rose faster than SMALL_HOP keeps the painted frames */
+let airRise = 0;
+/** a hop rising slower than this (px/s) is too small for the video jump's big arms-up leap: the vault over a trunk's top (190), a step
+ * off a ledge (0) */
+export const SMALL_HOP = 300;
+/** pure: the fastest rise of this time in the air, after this frame (0 on the ground or holding on) */
+export function nextAirRise(prev: number, p: Pick<PlayerState, 'grounded' | 'climbing' | 'hanging' | 'isVineSwinging' | 'vy'>): number {
+  return p.grounded || p.climbing || p.hanging || p.isVineSwinging ? 0 : Math.min(prev, p.vy);
+}
+
 export function resetHeroClips() {
+  airRise = 0;
   playing = null;
   stillSince = -1;
   lastTime = -1;
@@ -239,7 +250,7 @@ export function movePick(p: PlayerState): ClipFrame | null {
   // an ordinary jump (not a dive or a bounce, which keep their own frames): take-off, the top, the fall, by vertical speed
   if (!p.grounded && !p.hanging) {
     const sheet = MOVE_SHEETS.jump;
-    if (p.isDoubleJumping || p.diving || p.bounce || p.vy < JUMP_VY[0] || !hasClip(sheet)) return null;
+    if (p.isDoubleJumping || p.diving || p.bounce || p.vy < JUMP_VY[0] || airRise > -SMALL_HOP || !hasClip(sheet)) return null;
     return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, jumpU(p.vy)));
   }
   if (!p.grounded || p.climbing || p.hanging || p.isVineSwinging || p.ducking || p.pushing) return null;
@@ -261,6 +272,7 @@ export function clipPick(p: PlayerState, time: number, ev: ClipCalm): ClipFrame 
     const c = HERO_CLIPS.cheer;
     return frameOf('cheer', Math.floor((time - p.cheerAt) * c.fps), Math.min(1, (time - p.cheerAt) / CLIP_FADE));
   }
+  airRise = nextAirRise(airRise, p);
   // the redrawn run, walk and fight moves (only while hurt is not showing: the flinch keeps its own frames)
   if (!ev.isHurt(time)) {
     const mv = movePick(p);

@@ -28,3 +28,7 @@ Spend: pokey-anim2 02:20-02:53Z (32.7 min) ~ $1.50; pokey-anim3 02:53-03:03Z (10
 Tonight's total: ~$3.57 of the $20 cap (anim1 $1.61 + anim2 $1.50 + anim3 $0.46).
 pokey-anim4   6ae55c38c78863f9c62eefc0  launched 11:10 PM ET  spec-anim4.json @ 20914f6: the walk on the spot, seeds 3, 11 (the most-seen move still on painted frames)
               KEPT pa-walk-s3 frames 13-29 (a seamless 17-frame loop, outline difference 0.02 at the seam) -> move-walk.webp. 0-8 wave an arm.
+
+Round 3 (2026-10-31, the lead's list; HF budget $15, tell the lead before $10):
+pokey-anim5   6ae5f0880e0338d1bb7d2a47  launched 9:43 AM ET  spec-anim5.json @ 49c5bf7: Qwen-Edit 2511 + Pokey model 0.6 in-betweens of the 6
+              rope cell pairs and vine still->forward / still->back (3 seeds each, 24 edits), and the jab from the cross's own frame (Wan, seeds 3, 5, 11)

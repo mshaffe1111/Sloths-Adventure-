@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { clipPick, edgeClip, flipU, MOVE_ORDER, moveFrame, footfallsBetween, heroClipsLive, isCalm, IDLE_CLIPS, moveIndex, RUN_FOOTFALLS } from './heroClips.ts';
+import { clipPick, edgeClip, flipU, nextAirRise, SMALL_HOP, MOVE_ORDER, moveFrame, footfallsBetween, heroClipsLive, isCalm, IDLE_CLIPS, moveIndex, RUN_FOOTFALLS } from './heroClips.ts';
 import { HERO_CLIPS } from './heroClipsData.ts';
 import type { PlayerState } from './types.ts';
 
@@ -80,4 +80,15 @@ test('the jab comes back from full reach through its own wind-up pose, and every
   assert.deepEqual([0, 0.2, 0.35, 0.55, 0.7, 0.9].map((u) => moveFrame('move-jab', HERO_CLIPS['move-jab'].n, u)), [0, 1, 2, 3, 0, 5]);
   for (const [sheet, order] of Object.entries(MOVE_ORDER)) for (const i of order) assert.ok(i < HERO_CLIPS[sheet].n, `${sheet} frame ${i}`);
   assert.equal(moveFrame('move-cross', 7, 0.5), moveIndex(7, 0.5), 'a sheet with no order plays in its own');
+});
+
+test('a small hop (the vault over a trunk top, a step off a ledge) keeps the painted frames; a real jump gets the video leap', () => {
+  const air = { grounded: false, climbing: false, hanging: false, isVineSwinging: false };
+  let r = 0;
+  for (const vy of [-190, -60, 30, 150]) r = nextAirRise(r, { ...air, vy });
+  assert.ok(r > -SMALL_HOP, 'the vault hop stays small');
+  r = 0;
+  for (const vy of [-576, -400, 0, 300]) r = nextAirRise(r, { ...air, vy });
+  assert.ok(r <= -SMALL_HOP, 'a jump is a jump all the way down');
+  assert.equal(nextAirRise(-576, { ...air, grounded: true, vy: 0 }), 0, 'landing resets it');
 });
