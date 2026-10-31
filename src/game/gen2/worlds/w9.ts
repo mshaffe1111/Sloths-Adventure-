@@ -81,6 +81,8 @@ export const W9_LESSON = {
   threads: 'w9:threads',
   /** the moving logs: the pumice rafts (9-1 teaches them; the logs of 9-5 and 9-9 ride the same way) and the piston columns (9-8) */
   raft: 'w9:raft',
+  /** the charred logs (9-5, 9-9): they ride like the rafts, but each stage that has them teaches them (a roll of 9-1 may have had no rafts) */
+  log: 'w9:log',
   piston: 'w9:piston',
   /** the flare slabs (9-5 teaches them; 9-8 again) and the lavafalls (9-6 teaches them; 9-9 again) */
   flare: 'w9:flare',
@@ -158,6 +160,7 @@ export const W9_TIPS: Record<string, string> = {
   [W9_LESSON.fight]: "The shrine's shut. Fight through to open it.", // (World 6's line)
   [W9_LESSON.threads]: "The shrine's shut. Find Pell's threads first.", // (new, needs the lead's approval)
   [W9_LESSON.raft]: 'Those rafts rise and sink. Watch them.', // (new, needs Matt's approval: GRAB-BAG.md N1)
+  [W9_LESSON.log]: 'Those logs rise and sink. Watch them.', // (new, needs Matt's approval: GRAB-BAG.md N2)
   [W9_LESSON.piston]: 'These stone columns rise and fall.', // (new, needs Matt's approval: GRAB-BAG.md N3)
   [W9_LESSON.flare]: 'Those slabs flare up when they glow.', // (new, needs Matt's approval: GRAB-BAG.md N5)
   [W9_LESSON.lavafall]: 'Lava pours from up there. Watch the drips.', // (new, needs Matt's approval: GRAB-BAG.md N9)
@@ -192,7 +195,10 @@ export const W9_MANIFEST: WorldManifest = {
   sections: [],
   handBuilt: ['9-2', '9-7', '9-10'],
   // (the geysers are 9-1's, the warm air 9-5's, the doorstep's eye 9-4's; the shut shrine is said in each gate)
-  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-5', [W9_LESSON.flare]: '9-3', [W9_LESSON.lavafall]: '9-4', [W9_LESSON.surge]: '9-4', [W9_LESSON.gust]: '9-1', [W9_LESSON.sink]: '9-3', [W9_LESSON.cap]: '9-1' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4' },
+  // (the new pieces' lessons (rafts, logs, pistons, slabs, caps, gusts, flares, lavafalls, surges) are in no stage's list: a stage's
+  // themes come by the roll, so a piece met on a later stage may be new to him there; each stage that has one teaches it itself, its
+  // first section with Dot's line, w9Bob.ts and w9Heat.ts W9_*_STAGE)
   tips: W9_TIPS,
 };
 

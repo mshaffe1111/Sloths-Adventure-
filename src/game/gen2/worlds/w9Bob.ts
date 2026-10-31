@@ -33,6 +33,7 @@ const HOARD = ['harpy', 'boa'];
 /** 9-6's hunters (the ash fields: the cats and the tayra), its versions of the slabs and the caps */
 const CATS6 = ['ocelot', 'jaguar', 'tayra'];
 const RAFT = W9_LESSON.raft;
+const LOG = W9_LESSON.log;
 const PISTON = W9_LESSON.piston;
 /** the time model's wait at a moving log: about a third of its cycle (pipeline BOB: ~3 s Normal, ~4.6 s Easy) */
 const BOB_WAIT = 1.2;
@@ -54,6 +55,23 @@ const firstRaft = section({
   pieces: [bank('a', [320, 360]), bob('r', 'a', 'raft', [160, 180], [0.45, 0.55], true), off('b', 'r', [300, 340], [0.45, 0.55], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [180, 220])],
   last: 'c',
   sockets: [tip(RAFT, 'a', 0.2), petals('r', 'r', 0.5, 1), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** the first log (every logs roll, 9-5 and 9-9): one log in a narrow pool, soft under it on every setting, Dot's line on the way in */
+const firstLog = section({
+  id: 'w9-first-log',
+  name: 'the first charred log',
+  archetypes: ['sprint', 'gauntlet'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: LOG,
+  uses: [W9_THEME.logs],
+  maxPerStage: 1,
+  extraSeconds: BOB_WAIT * 2,
+  pieces: [bank('a', [320, 360]), bob('l', 'a', 'log', [220, 250], [0.45, 0.55], true), off('b', 'l', [300, 340], [0.45, 0.55], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [180, 220])],
+  last: 'c',
+  sockets: [tip(LOG, 'a', 0.2), petals('l', 'l', 0.5, 1), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1)],
   mirrorable: false,
 });
 
@@ -115,7 +133,7 @@ const logGlide = section({
   archetypes: ['sprint'],
   phases: MID,
   difficulty: 6,
-  uses: [W9_THEME.logs],
+  uses: [W9_THEME.logs, LOG],
   extraSeconds: BOB_WAIT * 1.5,
   pieces: [bank('a', [280, 320]), bob('l', 'a', 'log', [240, 270]), off('b', 'l', [260, 300]), W9H.glide('c', 'b', [320, 360], [0.55, 0.65]), up('k', 'c', 30, [140, 160]), down('d', 'k', 30, [180, 220])],
   last: 'd',
@@ -130,7 +148,7 @@ const logHoard = section({
   archetypes: ['gauntlet'],
   phases: LIVE,
   difficulty: 7,
-  uses: [W9_THEME.logs],
+  uses: [W9_THEME.logs, LOG],
   extraSeconds: BOB_WAIT * 1.5,
   pieces: [bank('a', [260, 300]), bob('l', 'a', 'log', [250, 280]), off('b', 'l', [420, 460]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
   last: 'c',
@@ -472,7 +490,7 @@ const logGuards = section({
   archetypes: ['gauntlet'],
   phases: W9H.ALL,
   difficulty: 7,
-  uses: [W9_THEME.logs],
+  uses: [W9_THEME.logs, LOG],
   extraSeconds: BOB_WAIT * 3,
   pieces: [bank('a', [260, 300]), bob('l1', 'a', 'log', [240, 270]), off('m', 'l1', [400, 440]), bob('l2', 'm', 'log', [240, 270]), off('b', 'l2', [280, 320])],
   last: 'b',
@@ -502,7 +520,7 @@ const capCats = section({
   archetypes: ['purge'],
   phases: W9H.ALL,
   difficulty: 6,
-  uses: [W9_THEME.caps],
+  uses: [W9_THEME.caps, CAP],
   pieces: [bank('a', [300, 340]), cap('f', 'a'), high('hi', 'a', [260, 300]), down('b', 'hi', CAP_HI, [380, 420]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
   last: 'c',
   sockets: [petals('hi', 'hi', 0.5, 2, 100), foe('foe', 'b', [0.55, 0.65], CATS6, 3.5, { chance: 1 }), petals('k', 'k', 0.5, 1)],
@@ -516,7 +534,7 @@ const capCatsPair = section({
   archetypes: ['purge'],
   phases: LIVE,
   difficulty: 7,
-  uses: [W9_THEME.caps],
+  uses: [W9_THEME.caps, CAP],
   pieces: [bank('a', [300, 340]), cap('f1', 'a'), high('h1', 'a', [220, 260]), down('m', 'h1', CAP_HI, [400, 440]), cap('f2', 'm'), high('h2', 'm', [220, 260]), down('b', 'h2', CAP_HI, [220, 260])],
   last: 'b',
   sockets: [petals('h1', 'h1', 0.5, 2, 90), foe('foe', 'm', [0.35, 0.45], CATS6, 3.5, { chance: 1 }), petals('h2', 'h2', 0.5, 2, 90)],
@@ -564,7 +582,7 @@ const glideLog = section({
   archetypes: ['sprint'],
   phases: W9H.ALL,
   difficulty: 6,
-  uses: [W9_THEME.logs],
+  uses: [W9_THEME.logs, LOG],
   extraSeconds: BOB_WAIT * 1.5,
   pieces: [bank('a', [280, 320]), W9H.glide('b', 'a', [260, 300], [0.55, 0.65]), bob('l', 'b', 'log', [240, 270]), off('c', 'l', [260, 300]), up('k', 'c', 30, [140, 160]), down('d', 'k', 30, [200, 240])],
   last: 'd',
@@ -579,7 +597,7 @@ const logGlideLog = section({
   archetypes: ['sprint'],
   phases: LIVE,
   difficulty: 7,
-  uses: [W9_THEME.logs],
+  uses: [W9_THEME.logs, LOG],
   extraSeconds: BOB_WAIT * 3,
   pieces: [bank('a', [260, 300]), bob('l1', 'a', 'log', [240, 270]), off('b', 'l1', [260, 300]), W9H.glide('c', 'b', [260, 300], [0.55, 0.65]), bob('l2', 'c', 'log', [240, 270]), off('d', 'l2', [240, 280])],
   last: 'd',
@@ -596,16 +614,16 @@ export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
   ropeGate3, W9_BOB_GATES.bridges8, ropeCross, ropeTwin, ropeChasm,
   sinkGate3, W9_BOB_GATES.sinkers9, W9_BOB_GATES.sinkers6, firstSink, sinkRun, sinkTwin, sinkHoard,
   W9_BOB_GATES.rafts, firstRaft, raftPair, raftRow, raftGeyser,
-  W9_BOB_GATES.logs5, W9_BOB_GATES.logs9, logGlide, logHoard,
+  W9_BOB_GATES.logs5, W9_BOB_GATES.logs9, firstLog, logGlide, logHoard,
   W9_BOB_GATES.pistons, firstPiston, pistonPair, pistonChasm,
 ];
 
 /** which stages hold which (STAGE-RULES §2 "Sameness": neighbours in play share none; GRAB-BAG.md §4) */
 export const W9_BOB_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_BOB_GATES.rafts.id]: [1], [firstRaft.id]: [1], [raftPair.id]: [1], [raftRow.id]: [1], [raftGeyser.id]: [1],
-  [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [glideLog.id]: [5], [logGlideLog.id]: [5], [W9_BOB_GATES.pistons5.id]: [5], [firstPiston5.id]: [5], [pistonGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logGuards.id]: [9], 
-  [W9_BOB_GATES.caps1.id]: [1], [W9_BOB_GATES.caps6.id]: [6], [firstCap.id]: [1], [capPair.id]: [1], [capChasm.id]: [1], [capCats.id]: [6], [capCatsPair.id]: [6],
+  [W9_BOB_GATES.logs5.id]: [5], [firstLog.id]: [5, 9], [logGlide.id]: [5], [glideLog.id]: [5], [logGlideLog.id]: [5], [W9_BOB_GATES.pistons5.id]: [5], [firstPiston5.id]: [5], [pistonGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logGuards.id]: [9], 
+  [W9_BOB_GATES.caps1.id]: [1], [W9_BOB_GATES.caps6.id]: [6], [firstCap.id]: [1, 6], [capPair.id]: [1], [capChasm.id]: [1], [capCats.id]: [6], [capCatsPair.id]: [6],
   [ropeGate3.id]: [3], [W9_BOB_GATES.bridges8.id]: [8], [ropeCross.id]: [8], [ropeTwin.id]: [8], [ropeChasm.id]: [8], [ropeChain.id]: [3], [chainRope.id]: [3],
-  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [W9_BOB_GATES.sinkers6.id]: [6], [firstSink.id]: [3], [sinkRun.id]: [6], [sinkTwin.id]: [6], [sinkGuards.id]: [9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [9],
+  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [W9_BOB_GATES.sinkers6.id]: [6], [firstSink.id]: [3, 6, 9], [sinkRun.id]: [6], [sinkTwin.id]: [6], [sinkGuards.id]: [9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [9],
   [W9_BOB_GATES.pistons.id]: [8], [firstPiston.id]: [8], [pistonPair.id]: [8], [pistonChasm.id]: [8],
 };
