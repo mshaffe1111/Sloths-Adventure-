@@ -118,3 +118,5 @@ Matt's weekly usage is tight. QA manages it:
 - PR #43 live (main 762ca32): carved title and menus, new Jungle Cards, variety round 2 for Worlds 1, 2, 4, the Dot punch-tip fix.
   Coders ask: title and menus on real phones (frame rate, both orientations), W1/W2/W4 replays on different rolls. The v219
   replay run (1-7, 2-6, 3-1, 4-5 x2) was on PR #42; recheck anything it finds on #43 before reporting.
+- 2026-10-31 6:15 PM ET: release 0.9.0 live (new World 8, version shown on the title). Coders ask, when there's data: read Kelsbob
+  (iPhone, Safari 17, 10/30) and Matt's tablet (Adreno 730) and old OnePlus (Adreno 619) on 0.9.0. Use tools/playtesters/fpsread.py.
