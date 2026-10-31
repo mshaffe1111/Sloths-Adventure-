@@ -1,12 +1,12 @@
 diff --git a/src/game/levelCheck.ts b/src/game/levelCheck.ts
-index 36c1e873..7edcd45d 100644
+index 36c1e873..41d998f2 100644
 --- a/src/game/levelCheck.ts
 +++ b/src/game/levelCheck.ts
 @@ -13,6 +13,7 @@ import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
  import { maxRise } from './protoCheck.ts';
  import type { Waterfall } from './waterfalls.ts';
  import { PAST_SHRINE } from './rules.ts';
-+import { busiestScreen, isPetal, offArc, PER_SCREEN, rowExtras } from './petals.ts';
++import { busiestScreen, clumpExtras, isPetal, offArc, PER_SCREEN, rowExtras } from './petals.ts';
  import { checkRooms, kitSolved, type KitWall } from './puzzleCheck.ts';
  import { hopLimit } from './river.ts';
  import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
@@ -15,7 +15,7 @@ index 36c1e873..7edcd45d 100644
  /** how the check treats a stage's falls and boulders (World 4) */
  export interface CheckOptions {
 +  /**
-+   * the shipped stage's petal rules (petals.ts, Matt 2026-10-29): at most PER_SCREEN on a screen, no solid rows, none below or just above
++   * the shipped stage's petal rules (petals.ts, Matt 2026-10-29): at most PER_SCREEN on a screen, no solid rows or clumps, none below or just above
 +   * a required jump's arc. Off while a stage is still being built (the petal pass, petalPass.ts, runs after the layout is checked);
 +   * pickupCheck (petalPass.ts) adds the out-of-reach rule over the stand-in liana bridges
 +   */
@@ -23,7 +23,7 @@ index 36c1e873..7edcd45d 100644
    /** boulders to leave where they stand (platform ids): otherwise the check rolls a fall's boulder into its slot once he can get behind it */
    frozen?: ReadonlySet<number>;
    /** handed the graph the check walked last (its pieces of ground, its links, what was reached), for tests that ask more of it */
-@@ -886,6 +893,14 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
+@@ -886,6 +893,16 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
    }
  
    if (stage.lanes?.length) errors.push(...checkLanes(stage));
@@ -32,6 +32,8 @@ index 36c1e873..7edcd45d 100644
 +    for (const c of offArc(stage, petals)) errors.push(`petal #${c.id} at (${Math.round(c.x)}, ${Math.round(c.y)}) hangs below a required jump's arc`);
 +    const rows = rowExtras(petals);
 +    if (rows.size) errors.push(`${rows.size} petals stand in solid rows`);
++    const clumps = clumpExtras(petals);
++    if (clumps.size) errors.push(`${clumps.size} petals stand in clumps`);
 +    const b = busiestScreen(petals);
 +    if (b.n > PER_SCREEN) errors.push(`${b.n} petals on one screen at x=${Math.round(b.x)} (at most ${PER_SCREEN})`);
 +  }
