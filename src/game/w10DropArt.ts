@@ -74,6 +74,7 @@ export const SPOUT_H = 300;
 /** each gush frame's water: its mouth's and its foot's x in the frame (bagcut's frames, measured), the water from row 84 to the foot */
 const GUSH_X: Record<string, [number, number]> = { 'gush-1': [111, 161], 'gush-2': [152, 196], 'gush-3': [107, 161] };
 const GUSH_TOP = 84;
+const GUSH_FRAMES = ['gush-1', 'gush-2', 'gush-3'] as const;
 let spout: HTMLImageElement | null = null;
 let spoutReady = false;
 function spoutImg(): HTMLImageElement | null {
@@ -111,7 +112,7 @@ export function drawW10Gush(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneStat
   const len = z.baseY + 6 - m.y;
   const reach = st.phase === 'active' ? 1 : st.phase === 'warn' ? 0.25 + 0.5 * st.u : 0.12;
   const alpha = st.phase === 'active' ? Math.max(0.55, st.strength) : st.phase === 'warn' ? 0.45 + 0.3 * st.u : 0.35;
-  const n = (['gush-1', 'gush-2', 'gush-3'] as const)[Math.floor(t * 10 + z.x0 * 0.01) % 3];
+  const n = GUSH_FRAMES[Math.floor(t * 10 + z.x0 * 0.01) % 3];
   const f = W10_BAG_FRAMES[n];
   const [mx0] = GUSH_X[n];
   const k = len / (f.h - GUSH_TOP);
@@ -135,6 +136,23 @@ const TOWER_H = 270;
 /** the beam's painting: its point (the lantern) at (50, 18) of the frame, the middle of its foot at (110, 404) */
 const BEAM = { px: 50, py: 18, fx: 110, fy: 404 };
 
+/** the lantern's glow, made once (PERFORMANCE-RULES §2.3: no gradient per frame): a warm radial light on a 92 px canvas */
+let glowCv: HTMLCanvasElement | null = null;
+function lanternGlow(): HTMLCanvasElement | null {
+  if (glowCv || typeof document === 'undefined') return glowCv;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = 92;
+  const c = cv.getContext('2d');
+  if (!c) return null;
+  const g = c.createRadialGradient(46, 46, 2, 46, 46, 46);
+  g.addColorStop(0, 'rgba(255, 214, 140, 1)');
+  g.addColorStop(1, 'rgba(255, 180, 90, 0)');
+  c.fillStyle = g;
+  c.fillRect(0, 0, 92, 92);
+  glowCv = cv;
+  return cv;
+}
+
 /**
  * The tower behind the watched wall, its lantern glowing on the battlement; the beam from it to `at` (world x on the wall) while it warns
  * (dim, at the stretch's edge) and sweeps (bright), drawn additively; nothing but the tower and a dim lantern while calm (`at` null).
@@ -149,11 +167,12 @@ export function drawW10LanternSweep(ctx: CanvasRenderingContext2D, z: { x0: numb
   const flick = 0.85 + 0.15 * Math.sin(t * 17) * Math.sin(t * 5.3);
   ctx.save();
   ctx.globalCompositeOperation = 'lighter';
-  const g = ctx.createRadialGradient(lx, ly, 2, lx, ly, 46);
-  g.addColorStop(0, `rgba(255, 214, 140, ${0.8 * flick})`);
-  g.addColorStop(1, 'rgba(255, 180, 90, 0)');
-  ctx.fillStyle = g;
-  ctx.fillRect(lx - 46, ly - 46, 92, 92);
+  const glow = lanternGlow();
+  if (glow) {
+    ctx.globalAlpha = 0.8 * flick;
+    ctx.drawImage(glow, lx - 46, ly - 46, 92, 92);
+    ctx.globalAlpha = 1;
+  }
   if (at !== null) {
     // (the beam's painting turned about its point so its foot lands on the wall at `at`)
     const f = W10_BAG_FRAMES['beam-1'];
