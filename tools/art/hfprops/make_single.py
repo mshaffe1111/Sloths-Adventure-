@@ -9,12 +9,13 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from starts import W, GRN  # noqa: E402
+from pieces import P as W, GRN  # noqa: E402
 
 RAW = 'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/'
 NEG = ('text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, '
        'grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, '
-       'cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand')
+       'cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, '
+       'tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object')
 
 
 ANCHOR = '--anchor' in sys.argv
@@ -25,8 +26,8 @@ sys.argv = [a for a in sys.argv if not a.startswith('--')]
 def prompt(world, desc, hang):
     spec = W[world]
     key = 'green #00FF00' if spec['key'] == GRN else 'magenta #FF00FF'
-    where = ('hanging straight down from a short broken-off stub at its top' if hang else
-             'standing on its own, nothing under it: no base, no pedestal, no ground slab')
+    where = ('one single isolated hanging piece, nothing above it, no branch, no tree, no ceiling, nothing else in the picture' if hang
+             else 'standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle')
     if ANCHOR:
         return (f"slothadv style, two separate game props side by side for a side-scrolling platform game, for {spec['look']}. On the "
                 f"left, the existing prop, kept as it is. On the right, a new prop painted in exactly the same hand-painted storybook "
@@ -44,13 +45,13 @@ seeds = [int(s) for s in (sys.argv[4] if len(sys.argv) > 4 else '5,17').split(',
 only = set(sys.argv[5].split(',')) if len(sys.argv) > 5 else None
 items = []
 for w in worlds:
-    for (n, shape, _f, _a, desc) in W[w]['pieces']:
+    for (n, job, _units, desc) in W[w]['pieces']:
         if only and n not in only:
             continue
         for sd in seeds:
             start = f'anchor-w{w}.png' if ANCHOR else 'plain-grn.png' if W[w]['key'] == GRN else 'plain-mag.png'
             items.append({'name': f'w{w}-{n}-{sd}' + ('a' if ANCHOR else ''), 'start': start,
-                          'prompt': prompt(w, desc, shape == 'hang'), 'strength': STRENGTH, 'seed': sd,
+                          'prompt': prompt(w, desc, job == 'hang'), 'strength': STRENGTH, 'seed': sd,
                           'w': 1536 if ANCHOR else 1024, 'h': 1024, 'steps': 26,
                           'loras': [['style', 0.8]], 'neg': NEG})
 spec = {'note': f'hf-props single-piece batch {tag}, 2026-10-31', 'q': 92,
