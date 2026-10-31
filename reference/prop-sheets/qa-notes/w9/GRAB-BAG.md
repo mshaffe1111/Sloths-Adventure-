@@ -1,6 +1,6 @@
 # World 9 grab bag: every piece, built before curation (2026-10-31, ~2:00 PM ET, branch w9-pieces)
 
-## Status (updated 2026-10-31 ~4:40 PM ET)
+## Status (updated 2026-10-31 ~5:10 PM ET)
 
 | Piece | Built | Where | Art | Bots on raw rolls |
 |---|---|---|---|---|
@@ -8,14 +8,14 @@
 | N2 logs | yes | 9-5 (always paired with a glide: glide-log, log-glide-log), 9-9 | painted (bridges charred log) | kid 0 |
 | N3 pistons | yes (flush, soft well) | 9-5 (taught, paired with a glide), 9-8 | painted (w9b hex column) | both reach the shrine, 0 lives near pistons |
 | N4 sinking slabs | yes (engine `sink`, shallow, knobs under) | 9-3 (between chains), 6, 9 | painted (bridges ember slab) | kid 0, adult 2 (none at the slabs) |
-| N5 flare slabs | yes (geyser zone, look) | 9-5 (taught), 9-8 | painted + HF cool frame | kid 0; adult hits 2-9 |
-| N6 lava surges | yes (SectionZone 'surge') | 9-4 (taught), 9-6 | HF surge front + lava strip | adult lives ~ the 9-6 baseline; hits above it (watched) |
+| N5 flare slabs | yes (geyser zone, look) | 9-3 (taught: its 6th theme, flare-chain and chain-flare between the chains), 9-5, 9-8 | painted + HF cool frame | kid 0 lives; adult flare hits 4-7 a roll on 9-3 |
+| N6 lava surges | yes (SectionZone 'surge'; ends taper into the wall and the front) | 9-4 (taught), 9-6 | HF surge front + lava strip | adult lives ~ the 9-6 baseline; hits above it (watched) |
 | N7 hot ash gusts | yes (wind zone, look 'ash') | 9-1 only (headwind; taken off 9-5, see look-alike below) | HF ash streaks | (not run yet) |
 | N8 ropes over the lava | yes (gen2 place 'rope') | 9-3 (between chains), 9-8 | the game's painted rope | both 0 lives |
-| N9 lavafalls | yes (geyser zone, look) | 9-4 (taught), 9-6, 9-9 | HF pour loop | kid 0-1 |
+| N9 lavafalls | yes (geyser zone, look; the w9c lava pool marks its foot, brightening as it warns) | 9-4 (taught), 9-6, 9-9 | HF pour loop + painted lava pool | kid 0-1 |
 | N10 ash caps | yes (gen2 'bouncy', World 8's pattern; the steam-vent idea became World 9's own painted ash cap) | 9-1 (taught), 9-6 | painted (bounceArt cap-w9) | kid 0, adult 0-1 |
 | N11 smoke cover | **deferred**: a timed hide reads as the same watcher beat as the spires (no variety), so 9-4 took N6 and N9 instead | | | |
-| N12 raft lock room | **waiting** on the lead (alternate vs 4th room; as built from the kit it plays close to 9-5's plates room) | | HF obsidian chunk cut, ready | |
+| N12 raft lock room | **held for the Drake pass** (the lead, 5:00 PM ET): it must be placed then; its HF obsidian chunk is on the art-use list for that pass | | HF obsidian chunk cut, ready | |
 
 Dot's new lines for Matt (all under 10 words; in the game as written, `w9.ts W9_TIPS`; each said once, the first time):
 
@@ -23,7 +23,7 @@ Dot's new lines for Matt (all under 10 words; in the game as written, `w9.ts W9_
 |---|---|---|
 | rafts | 9-1 | "Those rafts rise and sink. Watch them." |
 | hot ash wind | 9-1 | "Hot wind! It'll push you back." |
-| flare slabs | 9-5 | "Those slabs flare up when they glow." |
+| flare slabs | 9-3 | "Those slabs flare up when they glow." |
 | ash caps | 9-1 | "Ash caps! Bounce up to the high rock." |
 | sinking slabs | 9-3 | "Ember slabs sink when you stand on them." |
 | lavafalls | 9-4 | "Lava pours from up there. Watch the drips." |
@@ -32,20 +32,51 @@ Dot's new lines for Matt (all under 10 words; in the game as written, `w9.ts W9_
 (The logs ride like the rafts and the ropes are World 1's shimmy: no new line. The burnt-bridge, smoke and raft-lock lines of §3 are not in
 the game.)
 
-Themes now (gates in the game): 9-1 5 (vents, chasms, rafts, gusts, caps), 9-3 5 (chains, climbs, crust, sinkers, ropes), 9-4 5
-(spires, ferns, coils, lavafalls, surges), 9-5 5 (glides, bursts, logs-with-glides, pistons-with-glides, flares), 9-6 6 (cats, prowl,
-lavafalls, surges, sinkers, caps), 9-8 5 (ledges, channels, pistons, flares, ropes), 9-9 5 (harpies, boas, logs, lavafalls, sinkers).
-Neighbour pairs share no theme. Lessons: rafts, gusts and caps on 9-1; slabs on 9-3; lavafalls and surges on 9-4; flares and pistons on
-9-5. Creatures split: 9-6 keeps the cats (ocelot, jaguar, tayra), 9-9 keeps harpy and boa only.
+Themes now (gates in the game): 9-1 5 (vents, chasms, rafts, gusts, caps), 9-3 6 (chains, climbs, crust, sinkers, ropes, flares),
+9-4 5 (spires, ferns, coils, lavafalls, surges), 9-5 5 (glides, bursts, logs-with-glides, pistons-with-glides, flares), 9-6 6 (cats,
+prowl, lavafalls, surges, sinkers, caps), 9-8 5 (ledges, channels, pistons, flares, ropes), 9-9 5 (harpies, boas, logs, lavafalls,
+sinkers). Neighbour pairs share no theme. Lessons: rafts, gusts and caps on 9-1; slabs and flares on 9-3; lavafalls and surges on 9-4;
+pistons on 9-5. Creatures split: 9-6 keeps the cats (ocelot, jaguar, tayra), 9-9 keeps harpy and boa only.
 
 Look-alike fixes (worst stretch shared with another stage, out of 16 rolls): 9-3 vs 9-1 10 -> 2 (geysers off the 9-3 crust gaps);
-9-9 vs 9-6 13 -> 0 (creature split); 9-5 vs 9-1 11 -> 3 (gusts off 9-5, 9-5's logs and pistons always ride with a glide, so they read
-as their own beat, not as 9-1's rafts). HF spent: ~$0.30 (job 6ae633040e0338d1bb7d39e3).
+9-9 vs 9-6 13 -> 0 (creature split); 9-5 vs 9-1 11 -> 3 (gusts off 9-5, 9-5's logs and pistons always ride with a glide).
+
+Variety re-measured 5:00 PM ET (60 rolls each, current code before 9-3's flares, scratch output; shipped set in brackets): 9-1 0.44 (0.46),
+9-3 0.42 (0.44, was 0.31), 9-4 0.49 (0.39), 9-5 0.55 (0.54), 9-6 0.52 (0.56), 9-8 0.57 (0.59), 9-9 0.50 (0.50). Rolls passing every
+check: 85%, 63%, 85%, 70%, 77%, 47%, 85%. Watch at curation: 9-4 shares a 20 s stretch with 9-1 on 11 of its passing rolls (the
+look-alike cap will drop them; 51 pass, so there is room). HF spent: ~$0.30 (job 6ae633040e0338d1bb7d39e3, every frame on one canvas;
+it ran before the style-sheet note reached me, so no sheet was attached).
 
 
 Matt, 1:20 PM ET Oct 31: "Lets make the pieces ahead of time. Be prepared since more is better anyways. Lets not go into this bare
 minimum and have to make more and do redundant rework." This is STAGE-RULES §1c step 2. Nothing below is curated until every piece
 is built and checked alone (§1c step 3). **For the lead's review before building.**
+
+## Band items for curation (the lead, 2026-10-31)
+
+- **Rafts on Normal (9-1):** the adult bot lost 21 lives on raw roll 7 early on; now 1-5 a roll near ~26 rafts. Every raft row has a
+  soft floor under it (a miss is a climb back, not a life) except over the lava chasms on Normal. At curation, drop any 9-1 roll whose
+  adult lives near rafts run over 5, and check the jump-off reads (the raft at its top stop, still) on the stills.
+- **9-3's chains on Normal:** the adult bot loses 7-22 lives a roll on plain 9-3 rolls too (all at the chains, the swing builder's,
+  not the new pieces). The band check at curation should look at this before 9-3 ships.
+- **Surge hits (9-6):** about 25 a roll against plain 9-6's 15; lives at baseline.
+
+## Placed from unused (Matt, 1:40 PM ET: use all the art we create)
+
+| Art | Sheet | Where it is now |
+|---|---|---|
+| pumice raft | props-made/w9b | N1 rafts (9-1) |
+| charred log | gemini/w9w10-bridges | N2 logs (9-5, 9-9) |
+| hex column | props-made/w9b | N3 pistons (9-5, 9-8) and the swing posts |
+| ember slab | gemini/w9w10-bridges | N4 sinking slabs (9-3, 9-6, 9-9) |
+| hot platform | props-made/w9b | N5 flare slabs (bleeds in over the HF cool frame) |
+| vent rock, lava dome, scorched bridge | props-made/w9b | the 'w9-ruin' bank dressing (w9.ts W9_DECOR, rolled per stage like the other two sets) |
+| lava pool (both looks) | props-made/w9c, w9c-b | each lavafall's foot (dull at rest, bright as it warns and pours) |
+| lava strip, haze, splash, vent, burst frames | w9/hazards | the lava, rafts' draught, lavafall splash, geysers (already drawn) |
+| obsidian chunk (HF) | w9/pieces | **not yet**: the raft lock room, Drake pass |
+
+The art-use gate (tools/art/artuse.mjs, from the W1-4 helper) is not on this branch yet; when it lands it should show World 9 clean but
+for the obsidian chunk.
 
 ## 1. Where World 9 starts
 
