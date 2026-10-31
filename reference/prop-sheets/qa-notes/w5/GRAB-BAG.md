@@ -120,13 +120,22 @@ soft chairs only after 100 expert seconds with a calm stretch before (their line
 5-5 never holds more than 22 cocoons (main's most: Normal's rescue goal is every cocoon, goals.ts, so more pieces must not mean a longer
 goal; uncapped it reached 30).
 
-Variety, 40 rolls (era.ts), before -> after: **5-5 0.021 -> 0.467**, 5-2 0.018 -> 0.217, 5-1 0.019 -> 0.181, 5-3 0.032 -> 0.050.
-Spot memory (16 rolls), enemySpot before -> after: 5-1 0.98 -> 0.92, 5-2 0.99 -> 0.96, 5-3 0.96 -> 0.67, 5-5 1.00 -> 0.94; trailSpot
-5-5 0.89 -> 0.39, 5-2 0.63 -> 0.50, 5-3 0.62 -> 0.38. The fixed teaching beats (Start, Learn, Develop, Twist) still hold most of each
-stage's spiders in the same spots: that is why enemySpot stays high.
+Variety, 40 rolls (era.ts), before -> after: **5-5 0.021 -> 0.357**, 5-1 0.019 -> 0.128, 5-2 0.018 -> 0.050, 5-3 0.032 -> 0.029.
+Spot memory (16 rolls), enemySpot before -> after: 5-1 0.98 -> 0.89, 5-2 0.99 -> 0.87, 5-3 0.96 -> 0.68, 5-5 1.00 -> 0.93; trailSpot
+5-5 0.89 -> 0.43, 5-2 0.63 -> 0.47, 5-3 0.62 -> 0.32, 5-1 0.43 -> 0.41.
+Honest read: only 5-5 moved a lot, and none of the four reaches 0.45. 5-2 and 5-3 keep "core" pieces in every theme because their own
+tests hold their idea (5-2: 6+ cakes and 2+ Butlers; 5-3: 6+ orchid rows, 3+ awake spiders, and no threads, Butlers or sleepers), and
+those core pieces are all P. Inside one play, each of the four stages now holds 4 different finish pieces out of 8, in its own order;
+before, the same 4 in the same order. The fixed teaching beats (Start, Learn, Develop, Twist) still hold most of each stage's spiders in
+the same spots: that is why enemySpot stays high.
+
+Fairness: levelCheck passes on all 16 test seeds of each stage; the touch fairness tests (forgive, plainWalk, w5Fair, w5Lips, w5Order,
+w5QA5, w5QA6) pass. w5Order's 5-5 line order on 16 seeds fails only seed 186's spider, threads and silk line, which fails the same way on
+main (not this change; the default 4-seed run passes).
 
 Next, in order:
-1. 5-3 needs non-P pieces to move at all: teapot steam (8) taught in 5-3, sheets (9) not yet (taught 5-4). Then 5-1/5-2 the same way.
+1. 5-3 and 5-2 need non-P pieces that their tests allow: teapot steam (8) taught in 5-3 (a Z in an all-P stage), sheets (9) in 5-5
+   (taught 5-4). 5-2 can take more thread and spider pieces once its cakes come from fewer, longer cake pieces.
 2. Roll the Develop and Twist beats' content (a test showed 5-5's Develop swap breaks a line's order: line timing first).
 3. Dead time: shorten the start and end rests where no line needs the room (all four hand stages fail the 4 s quiet rule today).
 4. 5-8 (0.104) and 5-6: old-generator stages; the World 5 move to gen2 (W5_GEN2_STAGES) is the real fix.

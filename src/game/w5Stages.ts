@@ -319,9 +319,11 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
    * A finish's pieces, drawn as a shuffled deck: each roll lays them in its own order, never the same piece twice running, and every
    * piece comes up before any comes back (Matt, 2026-10-30: more pieces, not the same four in the same order on every play).
    */
-  const deck = (all: Array<() => void>, keep = all.length) => {
-    // (`keep`: the roll's theme, the share of the pieces it draws from, so two rolls differ in what is in them, not only in its order)
-    const pieces = keep < all.length ? R.shuffle([...all]).slice(0, keep) : all;
+  const deck = (all: Array<() => void>, keep = all.length, core: number[] = []) => {
+    // (`keep`: the roll's theme, the share of the pieces it draws from, so two rolls differ in what is in them, not only in its order;
+    // `core`: the pieces every theme keeps, the stage's own idea: 5-2's cakes and Butler, 5-3's rows of orchids and its spider)
+    const rest = R.shuffle(all.filter((_, i) => !core.includes(i)));
+    const pieces = keep < all.length ? [...core.map((i) => all[i]), ...rest.slice(0, Math.max(0, keep - core.length))] : all;
     let left: number[] = [];
     let last = -1;
     return () => {
@@ -810,7 +812,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
           threadTrap(1);
           gap(true);
         },
-      ], 4);
+      ], 4, [1, 3]);
       let n = 0;
       while (expert < stageSeconds('5-2') - 12 && n < 30) {
         next();
@@ -861,7 +863,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       flag();
     });
     beat('Finish', () => {
-      // (the roll's theme: four of these (as many as a play held before, a different four each play), drawn as a deck. The last four are new; every one holds orchids, the stage's quota)
+      // (the roll's theme: four of these (as many as a play held before, a different four each play), drawn as a deck. The last four are new; every one holds orchids, the stage's quota, and none a thread, a Butler or a sleeper)
       const next = deck([
         () => {
           orchidRow(R.chance(0.5) ? 3 : 4);
@@ -880,9 +882,9 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
           gap();
           orchidRow(4);
         },
-        // a humming thread, then the steps
+        // a soft pit, then the steps (5-3 has no threads, Butlers or sleepers: w5Stages.test.ts)
         () => {
-          threadTrap(1);
+          gap();
           orchidSteps(2);
         },
         // two spiders before a row (beat C: the stage's props all read alike, P, so its new pieces bring animals and threads)
@@ -890,17 +892,18 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
           spiderRun(2, R.r(1000, 1100));
           orchidRow(3);
         },
-        // two threads and their sleepers, then a row
+        // a spider, a soft pit, then a long row
         () => {
-          threadTrap(2);
-          orchidRow(3);
+          spiderRun(1, R.r(900, 1000));
+          gap();
+          orchidRow(4);
         },
         // stumps, then a tall flight of steps
         () => {
           stumps(2);
           orchidSteps(3);
         },
-      ], 4);
+      ], 4, [0, 1]);
       let n = 0;
       while (expert < stageSeconds('5-3') - 12 && n < 30) {
         next();
@@ -942,6 +945,11 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     /** cocoons hanging low over the path, one at a time, with room between to stop and punch */
     const cocoonRow = (n: number) => {
       n = Math.max(0, Math.min(n, COCOON_MAX_55 - cocoons55.length));
+      // (at the most: a plain stretch where it would have hung, so the next piece keeps its room, with no petals bunched in it)
+      if (!n) {
+        rest(R.r(300, 360), false);
+        return;
+      }
       const x0 = x;
       for (let i = 0; i < n; i++) {
         run(R.r(280, 340));
@@ -1092,7 +1100,13 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
             hint(x, { stage: '5-5', kind: 'move', old: W5_TEACH.chair, text: null });
             rest(R.r(1300, 1400));
           }
-          chairWalk(soft ? 2 : 0, 2);
+          if (soft) chairWalk(2, 2);
+          else {
+            // (too soon for soft chairs: the guests who sat, wrapped where they sat, along a stretch of garden)
+            const x0 = x;
+            rest(R.r(560, 640));
+            chairs.push({ x: r(x0 + (x - x0) * 0.3), y: G, face: 1, wrapped: true }, { x: r(x0 + (x - x0) * 0.7), y: G, face: -1, wrapped: true });
+          }
           cocoonRow(1);
         },
         // a humming thread and its sleeper, then the second jump
@@ -1105,6 +1119,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
           threadTrap(1);
           threadTrap(1);
           cocoonRow(1);
+          gap(R.chance(0.5));
         },
         // NEW: a spider on the narrow ground between two soft pits, then a cocoon (beat C between two J's)
         () => {
@@ -1123,6 +1138,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
           const x1 = x;
           for (const u of [0.35, 0.7]) spider(x0 + (x1 - x0) * u, Math.max(bankFrom + 30, x0), x1 - 30, true);
           rest(R.r(240, 300), false);
+          gap();
         },
         // NEW: a silk swing over a soft pit to a high branch with one cocoon on it (the way on is the second jump; ground under all of it)
         () => {
