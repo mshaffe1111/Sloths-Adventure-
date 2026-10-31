@@ -119,6 +119,13 @@ export const COCOON_UP = 18;
 const COCOON_SECONDS = 1.4;
 /** how far ahead a first-time line is said in 5-5 (its own line would come at w5Play's SEE, 560 px: too late while the scene plays) */
 const EARLY = 900;
+/**
+ * 5-5's most cocoons: Normal's goal is every one of them (goals.ts GOAL_SHARE.rescue), so the finish's new pieces never take the stage past
+ * the most it held before them (19 to 22)
+ */
+const COCOON_MAX_55 = 22;
+/** 5-5's soft chairs come only after this many expert seconds: sooner, their line waits behind the scene's, the web's or the "Still n animals" nag (about 100-112 s; w5Order.test.ts) */
+const CHAIRS_55_AFTER = 120;
 /** the rest branch: how high (one hop from its mossy stump) */
 const REST_UP = 92;
 /**
@@ -307,6 +314,24 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     const x0 = x;
     f();
     beats.push([r(x0), r(x), name]);
+  };
+  /**
+   * A finish's pieces, drawn as a shuffled deck: each roll lays them in its own order, never the same piece twice running, and every
+   * piece comes up before any comes back (Matt, 2026-10-30: more pieces, not the same four in the same order on every play).
+   */
+  const deck = (all: Array<() => void>, keep = all.length) => {
+    // (`keep`: the roll's theme, the share of the pieces it draws from, so two rolls differ in what is in them, not only in its order)
+    const pieces = keep < all.length ? R.shuffle([...all]).slice(0, keep) : all;
+    let left: number[] = [];
+    let last = -1;
+    return () => {
+      if (!left.length) {
+        left = R.shuffle(pieces.map((_, i) => i));
+        if (pieces.length > 1 && left[left.length - 1] === last) [left[0], left[left.length - 1]] = [left[left.length - 1], left[0]];
+      }
+      last = left.pop()!;
+      pieces[last]();
+    };
   };
 
   // ----- the pieces (each starts and ends on open ground at G) -----
@@ -613,22 +638,51 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < stageSeconds('5-1') - 12 && n < 30) {
-        const k = n % 4;
-        if (k === 0) {
+      // (the roll's theme: four of these (as many as a play held before, a different four each play), drawn as a deck. The last four are new; each uses only what this stage has taught)
+      const next = deck([
+        () => {
           gap(R.chance(0.5));
           stumps(2, true);
-        } else if (k === 1) {
+        },
+        () => {
           highRoad(R.r(480, 600));
           spiderRun(R.chance(0.5) ? 1 : 2, R.r(900, 1050));
-        } else if (k === 2) {
+        },
+        () => {
           chairWalk(2, 2);
           gap(true);
-        } else {
+        },
+        () => {
           spiderRun(2, R.r(1000, 1100));
           gap();
-        }
+        },
+        // stump stairs up to a high road, and down the far side
+        () => {
+          stumps(3);
+          highRoad(R.r(520, 620));
+        },
+        // a spider between two soft pits: deal with it on the narrow ground between
+        () => {
+          gap();
+          spiderRun(1, R.r(700, 800));
+          gap(true);
+        },
+        // spiders in pairs on a long stretch, then a tall stump
+        () => {
+          spiderRun(2, R.r(1000, 1100));
+          spiderRun(1, R.r(800, 900));
+          stumps(1, true);
+        },
+        // the long high road: up on it over a spider's patch
+        () => {
+          spiderRun(1, R.r(800, 900));
+          highRoad(R.r(600, 700));
+          chairWalk(1, 1);
+        },
+      ], 4);
+      let n = 0;
+      while (expert < stageSeconds('5-1') - 12 && n < 30) {
+        next();
         if (n % 2 === 1) flag();
         n++;
       }
@@ -714,24 +768,52 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < stageSeconds('5-2') - 12 && n < 30) {
-        const k = n % 4;
-        if (k === 0) {
+      // (the roll's theme: four of these (as many as a play held before, a different four each play), drawn as a deck. The last four are new; each uses only what this stage has taught)
+      const next = deck([
+        () => {
           threadTrap(R.chance(0.5) ? 1 : 2);
           gap(R.chance(0.5));
-        } else if (k === 1) {
+        },
+        () => {
           cakeRow(R.chance(0.5) ? 2 : 3);
           chairWalk(2, 1);
-        } else if (k === 2) {
+        },
+        () => {
           highRoad(R.r(480, 600), (x0, x1, y) => {
             if (R.chance(0.5)) cakes.push({ x: r((x0 + x1) / 2), y: r(y - 34) });
           });
           threadTrap(1);
-        } else {
+        },
+        () => {
           butler();
           stumps(2, true);
-        }
+        },
+        // an awake spider's patch, then a thread (beat C then Z)
+        () => {
+          spiderRun(1, R.r(900, 1000));
+          threadTrap(1);
+        },
+        // a long row of sleepers behind one thread, then a cake
+        () => {
+          threadTrap(2);
+          cakeRow(1);
+        },
+        // the Butler among the soft chairs
+        () => {
+          chairWalk(1, 1);
+          butler();
+          gap(true);
+        },
+        // threads close together, a sleeper behind each, then a soft pit
+        () => {
+          threadTrap(1);
+          threadTrap(1);
+          gap(true);
+        },
+      ], 4);
+      let n = 0;
+      while (expert < stageSeconds('5-2') - 12 && n < 30) {
+        next();
         if (n % 2 === 1) flag();
         n++;
       }
@@ -779,23 +861,49 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < stageSeconds('5-3') - 12 && n < 30) {
-        const k = n % 4;
-        if (k === 0) {
+      // (the roll's theme: four of these (as many as a play held before, a different four each play), drawn as a deck. The last four are new; every one holds orchids, the stage's quota)
+      const next = deck([
+        () => {
           orchidRow(R.chance(0.5) ? 3 : 4);
           rest(R.r(240, 300));
           cakeRow(1);
-        } else if (k === 1) {
+        },
+        () => {
           spiderRun(1, R.r(900, 1000));
           orchidSteps(3);
-        } else if (k === 2) {
+        },
+        () => {
           highRoad(R.r(480, 600));
           orchidRow(3);
-        } else {
+        },
+        () => {
           gap();
           orchidRow(4);
-        }
+        },
+        // a humming thread, then the steps
+        () => {
+          threadTrap(1);
+          orchidSteps(2);
+        },
+        // two spiders before a row (beat C: the stage's props all read alike, P, so its new pieces bring animals and threads)
+        () => {
+          spiderRun(2, R.r(1000, 1100));
+          orchidRow(3);
+        },
+        // two threads and their sleepers, then a row
+        () => {
+          threadTrap(2);
+          orchidRow(3);
+        },
+        // stumps, then a tall flight of steps
+        () => {
+          stumps(2);
+          orchidSteps(3);
+        },
+      ], 4);
+      let n = 0;
+      while (expert < stageSeconds('5-3') - 12 && n < 30) {
+        next();
         if (n % 2 === 1) flag();
         n++;
       }
@@ -833,6 +941,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     };
     /** cocoons hanging low over the path, one at a time, with room between to stop and punch */
     const cocoonRow = (n: number) => {
+      n = Math.max(0, Math.min(n, COCOON_MAX_55 - cocoons55.length));
       const x0 = x;
       for (let i = 0; i < n; i++) {
         run(R.r(280, 340));
@@ -884,7 +993,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
      * The high web: a silk line to swing on (World 5's lianas), and a branch high off the ground that only a leap from the swing reaches
      * (above any jump), with cocoons hanging over it. Ground under all of it: a miss is a step back. These are on top of the goal.
      */
-    const silkWeb = () => {
+    const silkWeb = (n = 3) => {
       run(R.r(260, 320));
       const vx = x;
       const v = silkLine(900 + V.length, vx, G - WEB_TOP, G - WEB_LOW);
@@ -898,13 +1007,17 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       info.gaps.push({ edge, far, double: true });
       open(far);
       const b0 = vx + WEB_OFF;
-      const len = r(R.r(460, 540));
+      const len = r(n > 1 ? R.r(460, 540) : R.r(340, 400));
       const br = branch(b0, b0 + len, G - WEB_UP);
-      info.web55 = { vine: v.id, branch: br.id, cocoons: [] };
-      for (let i = 0; i < 3; i++) info.web55.cocoons.push(cocoon(b0 + 110 + ((len - 220) * i) / 2, G - WEB_UP));
+      // (the first is the high web the tests read back; a later one, the finish's silk swing, hangs a single cocoon over its branch)
+      const web = (info.web55 ??= { vine: v.id, branch: br.id, cocoons: [] });
+      for (let i = 0; i < n && (web.branch === br.id || cocoons55.length < COCOON_MAX_55); i++) {
+        const k = cocoon(n > 1 ? b0 + 110 + ((len - 220) * i) / (n - 1) : b0 + len / 2, G - WEB_UP);
+        if (web.branch === br.id) web.cocoons.push(k);
+      }
       x = Math.max(x, r(b0 + len));
       run(R.r(220, 280));
-      expert += (x - vx) / RUN + 0.6 + 3 + COCOON_SECONDS * 3;
+      expert += (x - vx) / RUN + 0.6 + 3 + COCOON_SECONDS * n;
     };
 
     beat('Start: the silk', () => {
@@ -954,26 +1067,72 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < stageSeconds('5-5') - 12 && n < 30) {
-        const k = n % 4;
-        if (k === 0) {
+      const next = deck([
+        // a soft pit, then a cocoon on the far side
+        () => {
           gap(R.chance(0.5));
           cocoonRow(1);
-        } else if (k === 1) {
+        },
+        // a high road with a cocoon on it, and a spider after
+        () => {
           highRoad(R.r(480, 560), (x0, x1, y) => {
-            if (R.chance(0.5)) cocoon((x0 + x1) / 2, y);
+            if (R.chance(0.5) && cocoons55.length < COCOON_MAX_55) cocoon((x0 + x1) / 2, y);
           });
           spiderRun(1, R.r(900, 1000));
-        } else if (k === 2) {
-          // (the first soft chairs of the stage: their line well ahead, the scene may be on)
-          if (!chairs.some((c) => !c.wrapped)) hint(x - EARLY + 300, { stage: '5-5', kind: 'move', old: W5_TEACH.chair, text: null });
-          chairWalk(2, 2);
+        },
+        // soft chairs among the guests who sat, then a cocoon
+        () => {
+          // (the first soft chairs of the stage: a calm stretch first, so a spider woken by the piece before has given up and the line
+          // is up well ahead; a line waits while anything chases him)
+          // (and only once the pouch scene and the web's lines are well over, CHAIRS_55_AFTER: drawn sooner, only the guests who sat)
+          const soft = expert > CHAIRS_55_AFTER;
+          if (soft && !chairs.some((c) => !c.wrapped)) {
+            // (said as the calm begins, about 1,700 px ahead of the first chair: room for a line already up, the "Still n animals" nag
+            // or a hum's, to have its say first and the chairs' still to come well ahead of them. Petals along it)
+            hint(x, { stage: '5-5', kind: 'move', old: W5_TEACH.chair, text: null });
+            rest(R.r(1300, 1400));
+          }
+          chairWalk(soft ? 2 : 0, 2);
           cocoonRow(1);
-        } else {
+        },
+        // a humming thread and its sleeper, then the second jump
+        () => {
           threadTrap(1);
           gap(true);
-        }
+        },
+        // NEW: two threads strung close, a sleeper behind each, then a cocoon (a timed hop and a hop, beat Z; nothing that holds a line)
+        () => {
+          threadTrap(1);
+          threadTrap(1);
+          cocoonRow(1);
+        },
+        // NEW: a spider on the narrow ground between two soft pits, then a cocoon (beat C between two J's)
+        () => {
+          gap();
+          spiderRun(1, R.r(700, 800));
+          gap(true);
+          cocoonRow(1);
+        },
+        // NEW: cocoons on a high road with sleeping spiders on the grass under it (hop them, or stay up top: a walk into one wakes it).
+        // (Not 5-3's orchids: their line holds the screen until he hops onto one, and every line after it waits behind it)
+        () => {
+          const x0 = x;
+          highRoad(R.r(560, 640), (a, b, y) => {
+            for (const u of [0.3, 0.7]) if (cocoons55.length < COCOON_MAX_55) cocoon(a + (b - a) * u, y);
+          });
+          const x1 = x;
+          for (const u of [0.35, 0.7]) spider(x0 + (x1 - x0) * u, Math.max(bankFrom + 30, x0), x1 - 30, true);
+          rest(R.r(240, 300), false);
+        },
+        // NEW: a silk swing over a soft pit to a high branch with one cocoon on it (the way on is the second jump; ground under all of it)
+        () => {
+          silkWeb(1);
+          rest(R.r(240, 300), false);
+        },
+      ], 4);
+      let n = 0;
+      while (expert < stageSeconds('5-5') - 12 && n < 30) {
+        next();
         if (n % 2 === 1) flag();
         n++;
       }
