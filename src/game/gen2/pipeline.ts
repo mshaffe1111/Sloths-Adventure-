@@ -979,6 +979,16 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           const before = platforms.length;
           if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
           else pitUnder(g0.x0, g0.x1, g0.y, g0.y, false, g.soft);
+          // (a soft pit under a row of rafts or logs (World 9, BOB; Easy's falls are soft): its crust floor gets a basalt knob in each
+          // opening between them, never under one, so the walk along the floor is hops, not a quiet stretch, 9-1's Easy rolls)
+          const floor = platforms.slice(before).find((q) => q.x <= g0.x0 + 1 && q.x + q.width >= g0.x1 - 1);
+          if (floor) {
+            // (a soft pit's raft bobs only BOB.depth.soft, so its underside at the bottom stays over the knobs' tops: they may stand under it)
+            const rafts = placed.pieces.some((pp) => !!pp.platform.lift?.bob && pp.platform.lift.bob !== 'piston' && pp.platform.x >= g0.x0 - 2 && pp.platform.x <= g0.x1);
+            const span = g0.x1 - g0.x0 - 2 * BOB.knobClear;
+            const n = rafts ? Math.floor(span / BOB.knobEvery) : 0;
+            for (let i = 0; i < n; i++) mk(R(g0.x0 + BOB.knobClear + ((i + 0.5) * span) / n - BOB.knobW / 2), floor.y - BOB.knobH, BOB.knobW, 'block', BOB.knobH, 'moss_stone');
+          }
           placed.seam.push(...platforms.slice(before));
         }
       }
@@ -1097,7 +1107,7 @@ export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 }
  * World 9's moving logs (place `raft`, GRAB-BAG.md N1-N3; Matt, 2026-10-31: "the logs that you run on actually move up and down, and it's
  * a timing"). Each rides lift.ts's cycle: a still spell at the bottom, the ride up, a still spell at the top, the ride down.
  *   depth   how far a raft or a log sinks under its top stop (px). Normal's is past the double jump's 185 (physics DOUBLE_RISE), so the jump
- *           off waits for the top; over a soft pit (Easy) it stays over the crust floor (pitDepth 110), a shallow bob
+ *           off waits for the top; over a soft pit (Easy) a shallow bob that keeps over the knobs on the crust floor (pitDepth 110)
  *   speed   px a second while it rides; wait: its still spell at each stop (s), long enough at the top for a jump's whole flight (0.65 s at
  *           a raft's 0.65 the raft sank away under the jump: 9-1's adult bot). Easy is slower with longer spells (STAGE-RULES §1b). A sinking
  *           slab's speed is how fast it sinks under him (it has no cycle: engine.ts)
@@ -1110,13 +1120,18 @@ export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 }
 export const SURGE = { inset: 12, h: 70, warn: 1.4, active: 1.1, idle: 2.6, lessonIdle: 4.0, cross: 220, easyCalm: 1.2 } as const;
 
 export const BOB = {
-  depth: { raft: [195, 220] as const, log: [205, 235] as const, sink: [70, 78] as const, soft: 70 },
+  depth: { raft: [195, 220] as const, log: [205, 235] as const, sink: [38, 42] as const, soft: 40 },
   speed: { normal: { raft: 180, log: 150, piston: 120, sink: 95 }, easy: { raft: 150, log: 120, piston: 95, sink: 65 } },
   wait: { normal: { raft: 1.0, log: 1.2, piston: 0.8, sink: 0 }, easy: { raft: 1.4, log: 1.6, piston: 1.2, sink: 0 } },
   /** a sinking slab (`sink`): it goes down at `speed` while he stands on it, comes back up at this (px a second) once he is off */
   sinkRise: 60,
   rise: [205, 240] as const,
   h: { raft: 26, log: 30, piston: 40, sink: 24 },
+  /** the knobs on a soft pit's floor between rafts (layStage): width, height, and how far they keep from the pit's ends (its steps) */
+  knobW: 70,
+  knobH: 30,
+  knobClear: 130,
+  knobEvery: 170,
 } as const;
 
 /**
