@@ -6,13 +6,6 @@
   "root-gate-shut": "w1-props-s62-5",
   "root-gate-open": "w1-props-s62-5"
  },
- "w1-squirrels": {
-  "squirrel-sit": "w1-squirrels-s80-5",
-  "squirrel-wave": "w1-squirrels-s80-17",
-  "squirrel-haul": "w1-squirrels-s80-5",
-  "squirrel-tip": "w1-squirrels-s80-5",
-  "squirrel-run": "w1-squirrels-s80-5"
- },
  "extra": [
   [
    "hollowlog-moss",
@@ -43,6 +36,32 @@
     208,
     94
    ]
+  ]
+ ],
+ "w1-knots": {
+  "knot-a": "w1-knots-s74-5",
+  "knot-b": "w1-knots-s74-5"
+ },
+ "single": [
+  [
+   "squirrel-sit",
+   "sq-sit-2p"
+  ],
+  [
+   "squirrel-wave",
+   "sq-wave-2p"
+  ],
+  [
+   "squirrel-haul",
+   "sq-haul-2p"
+  ],
+  [
+   "squirrel-tip",
+   "sq-tip-2p"
+  ],
+  [
+   "squirrel-run",
+   "sq-run-2p"
   ]
  ]
 }

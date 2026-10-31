@@ -1,3 +1,27 @@
-{"w3-props": {"*": "w3-props-s74-17", "stalactite-shards": "w3-props-s74-5"},
- "w3-bats": {"bat-asleep": "w3-bats-s80-5", "bat-stir": "w3-bats-s80-5", "bat-flap1": "w3-bats-s80-5"},
- "w3-fx": "w3-fx-s70-17"}
+{
+ "w3-props": {
+  "*": "w3-props-s74-17",
+  "stalactite-shards": "w3-props-s74-5",
+  "crack-gone": null,
+  "stalactite-hang": null
+ },
+ "w3-fx": "w3-fx-s70-17",
+ "single": [
+  [
+   "bat-asleep",
+   "bat-asleep-2"
+  ],
+  [
+   "bat-stir",
+   "bat-stir-2"
+  ],
+  [
+   "bat-flap1",
+   "bat-flap1-6"
+  ],
+  [
+   "bat-flap2",
+   "bat-flap2-2"
+  ]
+ ]
+}

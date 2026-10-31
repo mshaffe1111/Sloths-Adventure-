@@ -65,8 +65,23 @@ def cut_piece(img, box, key):
     W, H = img.size
     c = img.crop((max(0, x - MARGIN), max(0, y - MARGIN), min(W, x + w + MARGIN), min(H, y + h + MARGIN)))
     a = np.asarray(c.convert('RGB')).astype(np.float32)
+    if key == [255, 255, 255]:  # a soft shadow painted on white: alpha from how dark it is, one flat shadow colour
+        al = np.clip((255 - a.mean(-1)) / 175 * 255, 0, 255) * 0.85
+        rgb = np.zeros_like(a); rgb[...] = (40, 44, 64)
+        im = Image.fromarray(np.dstack([rgb, np.where(al < 10, 0, al)]).astype(np.uint8), 'RGBA')
+        return im.crop(im.getbbox()) if im.getbbox() else im, False
     if key == [0, 0, 0]:
-        al = a.max(-1)
+        # the model often lays a faint grey box behind a soft effect: take the cell border's own level off as the floor, and fade
+        # everything out over the outer 12% of the cell so no box edge survives
+        lum = a.max(-1)
+        border = np.concatenate([lum[:6].ravel(), lum[-6:].ravel(), lum[:, :6].ravel(), lum[:, -6:].ravel()])
+        floor = np.percentile(border, 90)
+        h, w = lum.shape
+        fy = np.minimum(np.arange(h), np.arange(h)[::-1]) / (0.12 * h)
+        fx = np.minimum(np.arange(w), np.arange(w)[::-1]) / (0.12 * w)
+        fade = np.clip(np.minimum.outer(fy, fx), 0, 1)
+        al = np.clip((lum - floor) / max(1, 255 - floor) * 255, 0, 255) * fade
+        a = np.clip(a - floor * 0.9, 0, 255)
         rgb = np.where(al[..., None] > 0, a * 255 / np.maximum(al[..., None], 1), 0)
         im = Image.fromarray(np.dstack([rgb.clip(0, 255), np.where(al < 12, 0, al)]).astype(np.uint8), 'RGBA')
         return im.crop(im.getbbox()) if im.getbbox() else im, False
@@ -136,7 +151,7 @@ def main():
     picks = json.loads((HERE / f'picks-w{world}.json').read_text())
     pieces = []
     for canvas, pick in picks.items():
-        if canvas == 'extra':
+        if canvas in ('extra', 'single'):
             continue
         info = cells[canvas]
         for pname, box in info['cells'].items():
@@ -152,6 +167,14 @@ def main():
             pieces.append((pname, im))
             print(canvas, pname, im.size, take)
     # pieces cut straight from Matt's own sheets (never packed before; no HF): {"extra": [[name, sheet, [x, y, w, h]], ...]}
+    # whole-picture takes (the edit model's single figures on magenta): {"single": [[name, take], ...]}
+    for pname, take in picks.get('single', []):
+        img = Image.open(takes / f'{take}.png').convert('RGB')
+        im, _ = cut_piece(img, [MARGIN, MARGIN, img.width - 2 * MARGIN, img.height - 2 * MARGIN], [255, 0, 255])
+        im = edge_clean(im)
+        s = min(1.0, 420 / max(im.size))  # sprite size: ~6 atlas px per game unit at a 66-unit hero
+        pieces.append((pname, im.resize((round(im.width * s), round(im.height * s)), Image.LANCZOS)))
+        print('single', pname, pieces[-1][1].size, take)
     for pname, sheet, box in picks.get('extra', []) if isinstance(picks.get('extra'), list) else []:
         im, _ = cut_piece(Image.open(ROOT / sheet).convert('RGB'), box, [255, 0, 255])
         im = im.resize((im.width * 2, im.height * 2), Image.LANCZOS)  # Matt's 1024 sheets are half the props atlas's scale

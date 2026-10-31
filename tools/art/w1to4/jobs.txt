@@ -18,3 +18,5 @@ results r1: each ~4-6 min incl. model download (~$0.2-0.3 each, ~$1.0 for the fo
   (blotchy) -> r2 on black; the Sovereign shadow (a dark shadow can't be cut off black) -> r2 on white.
 w1to4-r2    6ae62bdd0e0338d1bb7d386b  17:56Z  48 takes: squirrel edits x5 poses x2 seeds + 0.32 style pass, bat edits x4 x2, knots,
   reed gate (green), veil, mist (black), Sovereign shadow (white). Spec spec-w1to4-2.json at 179710d4.
+results r2: 17:57Z-18:18Z (~22 min, ~$1.0). KEPT squirrels sq-*-2p (on the story model), bats asleep-2/stir-2/flap1-6/flap2-2 (on W8's fruit
+  bat), knots s74-5 (weakest piece, named), reed gate s74-5 (green), veil s50-17, mist s60-5, shadow s50-5. Spend so far ~$2.0 of $10.
