@@ -1,0 +1,2 @@
+hf-cutscenes jobs, 2026-10-31 (cap $28; rtx-pro-6000 ~$2.75/h). Bucket mshaffe111/w5-xfer under hfcut/.
+wp-draft 6ae65df30e0338d1bb7d4424 created 21:30Z: spec-wp-draft.json, 21 world plates x 2 strengths at 1280x1360 (storygpu.py)

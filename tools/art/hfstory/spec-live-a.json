@@ -1,0 +1,95 @@
+{
+ "tag": "live-a",
+ "clips": [
+  {
+   "name": "lv-courtyard",
+   "src": "starts/courtyard.webp",
+   "prompt": "A stormy night over a stone castle courtyard: the dark storm clouds turn and drift slowly, light rain falls, the lit window glows warmly and softly flickers, the thorn vines barely sway. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-nest-night",
+   "src": "starts/nest-night.webp",
+   "prompt": "A stormy night in the jungle: the swirling storm clouds turn slowly around the bright eye, rain falls, a soft lightning glow pulses in the clouds, the palm leaves and branches sway in the wind. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-gates",
+   "src": "starts/gates.webp",
+   "prompt": "A dark fortress at night in a storm: storm clouds roll slowly, rain falls, the ten small green lights along the walls glow and pulse gently, the light in the open gate flickers warmly, a faint lightning glow in the clouds. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-gorge",
+   "src": "starts/gorge.webp",
+   "prompt": "A misty gorge: the white mist drifts slowly and rolls between the cliffs, the waterfalls pour and shimmer, the sloth hanging from the vine and the hummingbird stay where they are, the hummingbird's wings blur. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-tea",
+   "src": "starts/tea.webp",
+   "prompt": "An enchanted forest tea party at night: the silk spider webs hung like chandeliers sway very gently, soft violet light glimmers, tiny motes of light drift. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-drake-cave",
+   "src": "starts/drake-cave.webp",
+   "prompt": "Inside a cave: the glowing lava crack pulses with warm orange light, heat shimmers, a few embers drift up, the gold glints. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-village",
+   "src": "starts/village.webp",
+   "prompt": "A misty treetop village in the morning: soft mist drifts slowly between the trees, the rope bridges sway gently, the colourful laundry flutters, the leaves rustle. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-cookhouse",
+   "src": "starts/cookhouse.webp",
+   "prompt": "A cosy cookhouse: steam curls up from the bubbling pots, the lanterns and the stove fire flicker warmly, the hanging pans sway very slightly, a little smoke drifts. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-grandma-door",
+   "src": "starts/grandma-door.webp",
+   "prompt": "A round door in a great tree at dusk: the lantern and the window glow and flicker warmly, fireflies drift, the ferns and leaves sway gently in a breeze. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-steps",
+   "src": "starts/steps.webp",
+   "prompt": "A castle courtyard after the storm at night: the storm clouds drift slowly apart, the puddles ripple softly and reflect the warm doorway light, a few last raindrops fall. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  }
+ ]
+}
