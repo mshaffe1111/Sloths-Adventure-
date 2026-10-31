@@ -989,7 +989,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
         () => { highRoad(R.r(480, 600), (x0, x1, y) => { cakes.push({ x: r(x0 + (x1 - x0) * HOP_SAFE[0]), y: r(y - 34) }); }); threadTrap(1); },
         () => { butler(); stumps(2, true); },
         // an awake spider's patch, then a thread
-        () => { spiderRun(1, R.r(720, 820)); threadTrap(1); },
+        () => { spiderRun(1, R.r(640, 700)); threadTrap(1); },
         // a long row of sleepers behind one thread, then a cake
         () => { threadTrap(2); cakeRow(1); },
         // the Butler among the soft chairs, then a wide pit
@@ -1003,7 +1003,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
         // cakes, then a high road
         () => { cakeRow(2); highRoad(R.r(480, 560)); },
         // a wide pit, then a thread, and an awake spider after
-        () => { gap(true); threadTrap(1); spiderRun(1, R.r(720, 820)); },
+        () => { gap(true); threadTrap(1); spiderRun(1, R.r(640, 700)); },
       ], 2, [], 2);
       let n = 0;
       while (expert < stageSeconds('5-2') - 6 && n < 30) {
@@ -1019,7 +1019,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       while (cakes.length < 6) cakeRow(Math.min(2, 6 - cakes.length));
       while (butlers.length < 2) butler();
       // (and some awake ones: they are a threat at every size of screen, w5SpiderView.test.ts)
-      while (spiders.filter((sp) => !sp.doze).length < 3 && info.spiders.length < MOST['5-2'].spiders) spiderRun(1, R.r(720, 820));
+      while (spiders.filter((sp) => !sp.doze).length < 3 && info.spiders.length < MOST['5-2'].spiders) spiderRun(1, R.r(640, 700));
       if (!doubleSaid) gap(true);
       hint(x + 40, W5_HINTS.s52end);
       rest(R.r(480, 560));
