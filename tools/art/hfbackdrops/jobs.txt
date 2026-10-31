@@ -21,3 +21,5 @@ batch A+B finished 21:40-21:41Z (each ~9-10 min incl. model load; 9 x ~9.5 min =
 --- native-resolution pass (striphdgpu.py, s25, Real-ESRGAN first, on grey) ---
 hfbd-hd-a 6ae66200c78863f9c62f4f04  hfbd-hd-b 6ae66203c78863f9c62f4f06  hfbd-hd-c 6ae66206c78863f9c62f4f08  started 21:47:44Z, 8 strips each
 running total ~$4.70 (before the HD pass)
+hd-a/b/c finished 21:53-21:54Z (~6.5 min each, ~20 min = ~$0.90). Cut + edges + haze: process.py finish (mix5).
+running total ~$5.60 of $40
