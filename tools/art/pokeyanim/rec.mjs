@@ -40,6 +40,12 @@ if (SCENE === 'slide') {
     [205, 'up ArrowLeft'], [220, 'down Space'], [224, 'up Space'], [260, 'down ArrowDown'], [290, 'up ArrowDown']);
   N = 320;
 }
+// SCENE=rope: under the stage's first shimmy rope (1-3), Up to take it, then creeping along it, a pause, and on again
+if (SCENE === 'rope') {
+  SCRIPT.length = 0;
+  SCRIPT.push([1, 'down ArrowUp'], [4, 'up ArrowUp'], [10, 'down ArrowRight'], [70, 'up ArrowRight'], [85, 'down ArrowRight'], [115, 'up ArrowRight']);
+  N = 125;
+}
 if (SCENE === 'climb') {
   SCRIPT.length = 0;
   SCRIPT.push([10, 'down ArrowUp'], [38, 'up ArrowUp'], [48, 'down ArrowDown'], [80, 'up ArrowDown']);
@@ -84,6 +90,9 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   // take over the loop: from here every frame is one update(1/30) and one render, then a screenshot (as hfpokey/edgeclip.mjs)
   await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e(); e.isRunning = false; cancelAnimationFrame(e.animFrameId); });
   // (the liana is reached in the air, so he is put there once the loop is ours: in the settle before it he would fall to the ground)
+  if (SCENE === 'rope') await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e();
+    const r = e.ropes[0];
+    Object.assign(e.player, { x: r.x0 + 70, y: r.y + 72, grounded: false, vx: 0, vy: 0 }); });
   if (SCENE === 'vine') await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e();
     const v = e.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off);
     // (the lianas sway on the engine's vine clock, which ran on for however long the page took to get here: set it, or no two runs agree)

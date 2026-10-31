@@ -1,3 +1,18 @@
-{"source": "Matt's Gemini rope sheet (reference/prop-sheets/gemini-batch-2026-10-29/pokey-rope-hand-over-hand.jpg), cells 1-7",
- "why": "the Hugging Face in-betweens (jobs.txt) drifted off model, so the Gemini cells alone, timed: cells 1-6 one cycle per 75 world units of travel (1.6 a second at his 120 px/s creep), cell 7 hanging still",
- "cycle": ["f1", "f2", "f3", "f4", "f5", "f6"], "still": "f7", "stride_px": 160}
+{
+ "source": "Matt's Gemini rope sheet (reference/prop-sheets/gemini-batch-2026-10-29/pokey-rope-hand-over-hand.jpg), cells 1-7, with Qwen-Edit in-betweens (pokey-anim, 2026-10-31)",
+ "why": "the Wan in-betweens drifted off model (jobs.txt, and tools/art/pokeyanim/jobs.txt: 9 failures), so the cells, with Qwen-Edit 2511 in-betweens of the cell pairs 2-3, 3-4, 4-5 and 5-6 (tools/art/pokeyanim/ropetween.py; 1-2 and 6-1 came out in a heavier-outlined style and stay direct): one cycle per 75 world units of travel as before, now 10 frames, cell 7 hanging still",
+ "cycle": [
+  "f1",
+  "f2",
+  "t23",
+  "f3",
+  "t34",
+  "f4",
+  "t45",
+  "f5",
+  "t56",
+  "f6"
+ ],
+ "still": "f7",
+ "stride_px": 160
+}
