@@ -36,8 +36,8 @@ test('the game-over line is steady for a stage and varies across stages', () => 
 });
 
 test('the flowers chip: a gather stage counts against the goal, as the HUD bar does (QA 2-2: bar 107, card "1/122"), on every card (UI-10)', () => {
-  assert.deepEqual(floraChip({ ...base, floraTotal: 122, floraCollected: 1, floraGoal: { cur: 1, target: 107 } }), { label: 'Flower goal', cur: 1, of: 107, full: false });
-  assert.deepEqual(floraChip({ ...base, win: true, floraTotal: 122, floraCollected: 110, floraGoal: { cur: 107, target: 107 } }), { label: 'Flower goal', cur: 107, of: 107, full: true });
-  assert.deepEqual(floraChip({ ...base, floraTotal: 10, floraCollected: 4 }), { label: 'Flowers', cur: 4, of: 10, full: false });
+  assert.deepEqual(floraChip({ ...base, floraTotal: 122, floraCollected: 1, floraGoal: { cur: 1, target: 107 } }), { label: 'Petal goal', cur: 1, of: 107, full: false });
+  assert.deepEqual(floraChip({ ...base, win: true, floraTotal: 122, floraCollected: 110, floraGoal: { cur: 107, target: 107 } }), { label: 'Petal goal', cur: 107, of: 107, full: true });
+  assert.deepEqual(floraChip({ ...base, floraTotal: 10, floraCollected: 4 }), { label: 'Petals', cur: 4, of: 10, full: false });
   assert.equal(floraChip({ ...base, floraTotal: 0, floraCollected: 0 }), null);
 });

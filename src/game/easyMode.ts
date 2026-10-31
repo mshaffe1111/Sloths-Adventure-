@@ -461,8 +461,9 @@ export function easyStage(stage: Stage): Stage {
     }
     for (const e of stage.enemies) e.attackCooldown = Math.max(e.attackCooldown, 0) * 1.5;
   } else if ((kind === 'purge' || kind === 'gauntlet') && stage.enemies.length) {
-    // (gen2 laid a fight's animals for its Easy bar, budget.quota.check (0.6 of the designed goal): never more is asked)
-    const target = Math.max(1, Math.min(stage.config.targetCount, stage.gen2!.budget.quota.check, stage.enemies.length));
+    // (Easy's goal as goals.ts gen2EasyGoal set it: 65% of the animals it holds, capped at what the kid bot reaches, LV-24; else gen2's
+    // own Easy bar, budget.quota.check)
+    const target = stage.easyGoal ?? Math.max(1, Math.min(stage.config.targetCount, stage.gen2!.budget.quota.check, stage.enemies.length));
     stage.config = { ...stage.config, targetCount: target };
   }
   if (gen2) {

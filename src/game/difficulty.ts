@@ -28,6 +28,15 @@ export function difficulty(): Difficulty {
 
 export const isEasy = () => difficulty() === 'easy';
 
+/** a mode was picked and kept on this device (difficulty() reads Normal without one, for old saves and the tests) */
+export const modeChosen = () => read() !== null;
+
+/**
+ * LV-19: a fresh game (no stage cleared) with no mode kept asks Little explorer (Easy) or Big explorer (Normal) before the story and 1-1,
+ * with nothing picked for them. An old save that never stored a mode keeps playing Normal, unasked.
+ */
+export const mustPickMode = (hasProgress: boolean, chosen = modeChosen()) => !hasProgress && !chosen;
+
 export function setDifficulty(d: Difficulty) {
   cached = d;
   try {

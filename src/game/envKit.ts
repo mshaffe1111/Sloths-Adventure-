@@ -940,9 +940,10 @@ ENV[9] = {
   decor: [['ohia', 2], ['steamvent', 2], ['lavafern', 2.5], ['lichenrock', 2], ['obsidian', 2], ['pplant', 1.5], ['pflower', 1.2]],
   sway: 'charvine', front: 'rock',
 };
-// the mountain above the treeline: rock, wind-bent grass, the General's broken thorns and rain (the war camp went with the old backdrop)
+// the mountain above the treeline: rock, wind-bent grass and rain (the war camp went with the old backdrop; no iron thorns on safe ground,
+// where thorns hurt: WIP-16)
 ENV[10] = {
-  near: [['slaterock', 3], ['wiregrass', 3], ['ironthorn', 1.5]],
-  decor: [['slaterock', 3], ['wiregrass', 3], ['ironthorn', 1.2], ['puddle', 1.5], ['pebbles', 1], ['pflower', 0.6]],
+  near: [['slaterock', 3], ['wiregrass', 3]],
+  decor: [['slaterock', 3], ['wiregrass', 3], ['puddle', 1.5], ['pebbles', 1], ['pflower', 0.6]],
   sway: 'chains', front: 'rock',
 };

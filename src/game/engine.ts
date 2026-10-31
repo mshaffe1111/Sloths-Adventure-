@@ -1749,7 +1749,10 @@ export class GameEngine {
     // so a jump that touches a trunk grabs it even if the thumb has already left the glass
     if (this.input.state.jumpPressed) this.upIntent = 0.35;
     else this.upIntent = Math.max(0, this.upIntent - dt);
-    let wantGrab = this.input.state.up || this.upIntent > 0 || (!p.grounded && this.input.state.down);
+    // (down grabs in the air, and standing on the branch at a trunk's very top: straight down there climbs back down it, as straight up
+    // climbed it. Until 2026-10-31 down on that branch did nothing, so once up a trunk the only way down was to jump off)
+    const downAtTop = !!nearTreeVine && p.grounded && this.input.state.down && p.y <= nearTreeVine.topY + 14 && !this.input.state.left && !this.input.state.right;
+    let wantGrab = this.input.state.up || this.upIntent > 0 || (!p.grounded && this.input.state.down) || downAtTop;
     // (only a jump straight up or toward the trunk grabs it, and not while steering away; in the air, only moving toward it or holding up
     // or down without leaning or steering away: any jump within reach grabbed it, so a leap away from beside a trunk stuck to it, CT-10)
     if (wantGrab && nearTreeVine && !p.climbing) {
@@ -1767,7 +1770,7 @@ export class GameEngine {
       // hanging from a rope: updateRope has done all the moving
     } else if (p.swim && !(nearTreeVine && wantGrab) && this.swimMove(dt)) {
       // swimming in calm water: swimMove (swim.ts) has done all the moving
-    } else if (nearTreeVine && (p.climbing || wantGrab) && (p.climbing || !(p.grounded && p.y <= nearTreeVine.topY + 14))) {
+    } else if (nearTreeVine && (p.climbing || wantGrab) && (p.climbing || downAtTop || !(p.grounded && p.y <= nearTreeVine.topY + 14))) {
       // (standing on the branch at the very top of a trunk, a jump is a jump: it used to grab the trunk and turn into the
       // little vault off its top, a 21 px hop, so nothing could be jumped to from beside a trunk's top)
       if (!p.climbing) {
@@ -2299,6 +2302,9 @@ export class GameEngine {
       // every floor his feet meet this frame (in stage order)
       const floors = (p.hanging ? [] : this.platforms).filter((plat) => {
         if (plat.broken) return false;
+        // (climbing down a trunk goes down past the branch at its top and any ledge it passes: a floor met on the way used to catch his
+        // feet each frame, so he could never climb down from the top. The trunk's foot is its own way off: Natural Exit B)
+        if (p.climbing && this.input.state.down) return false;
         // a log is only there between its banks; the part hidden under a bank is not standable
         if (plat.type === 'drift' && plat.drift && (p.x < plat.drift.x0 || p.x > plat.drift.x1)) return false;
         // Check if player is horizontally within platform (generous width tolerance)
@@ -4869,7 +4875,9 @@ export class GameEngine {
     this.maxLives = startingLives(); // picks up extra lives switched on from the Game Over card
     this.lives = this.maxLives;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
-    this.respawnAtCheckpoint('hurt');
+    // the lives coming back are the sound here, not the respawn take (SN-13)
+    this.respawnAtCheckpoint('hurt', false);
+    sound.playOneUp();
     return true;
   }
 
@@ -4920,7 +4928,7 @@ export class GameEngine {
     this.addFloatingText('Back at your flag', p.x, p.y - 74, '#fde68a', 1.6);
   }
 
-  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt') {
+  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt', respawnTake = true) {
     const p = this.player;
     // the rising rivers go back down: he comes back to water at its starting level
     this.floodAt.clear();
@@ -4964,6 +4972,8 @@ export class GameEngine {
     p.jumpsLeft = 2;
     p.invincibleTimer = 2.0;
     this.irisOpen = IRIS_OPEN_SECS;
+    // the respawn take starts with the iris opening, not before it (SN-13): the lost life's two-part sound, the hurt then this
+    if (respawnTake) sound.playRespawn();
     // what he was carrying goes back to its source
     this.kit?.onRespawn();
     this.inputGrace = 0.35;

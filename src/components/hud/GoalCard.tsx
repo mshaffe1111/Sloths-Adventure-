@@ -13,6 +13,7 @@ import { readMs, type HudMode, type LaneRect } from './hudLayout.ts';
 import { fillStyle, useHudArt } from './painted.tsx';
 import { ModeChip } from '../ModeChip.tsx';
 import { easeInLine } from '../../game/difficulty.ts';
+import { startGoalCard, type CardPhase } from './goalCardClock.ts';
 
 /** stages whose full card has been shown this session (a retry gets the short one) */
 const SEEN = new Set<string>();
@@ -37,26 +38,18 @@ interface Props {
   counter: React.RefObject<HTMLElement | null>;
 }
 
-type Phase = 'in' | 'hold' | 'shrink' | 'done';
-
 export const GoalCard: React.FC<Props> = ({ stageId, label, info, target, lane, mode, counter }) => {
   const quick = React.useMemo(() => SEEN.has(stageId), [stageId]);
-  const [phase, setPhase] = React.useState<Phase>('in');
+  const [phase, setPhase] = React.useState<CardPhase>('in');
   const [to, setTo] = React.useState<{ x: number; y: number } | null>(null);
   const ref = React.useRef<HTMLDivElement>(null);
   const art = useHudArt();
   const reduced = React.useMemo(() => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
+  // (its words are read when it starts; a later change of the words, a count arriving from the engine, only redraws it: UI-22)
+  const line = React.useRef(info.line);
+  line.current = info.line;
 
-  const going = React.useRef(false);
-  const shrink = React.useCallback(() => {
-    if (going.current) return;
-    going.current = true;
-    const me = ref.current?.getBoundingClientRect();
-    const c = counter.current?.getBoundingClientRect();
-    if (me && c) setTo({ x: c.left + c.width / 2 - (me.left + me.width / 2), y: c.top + c.height / 2 - (me.top + me.height / 2) });
-    setPhase('shrink');
-  }, [counter]);
-
+  // the clock runs once per stage run (keyed on the stage, never on the words: UI-22, goalCardClock.ts)
   React.useEffect(() => {
     SEEN.add(stageId);
     const root = document.documentElement;
@@ -64,38 +57,37 @@ export const GoalCard: React.FC<Props> = ({ stageId, label, info, target, lane, 
     // (the reading time of its main line, 1.5 s + 0.5 s a word: about 4 s, never past 4.5 s)
     // (and a moment more for the easing's line, LV-7)
     const ease = easeInLine(stageId);
-    const hold = quick ? 900 : Math.min(ease ? 6000 : 4500, readMs(ease ? `${info.line} ${ease}` : info.line, 3000));
-    const t0 = window.setTimeout(() => setPhase('hold'), 30);
-    const t1 = window.setTimeout(shrink, hold);
+    const holdMs = quick ? 900 : Math.min(ease ? 6000 : 4500, readMs(ease ? `${line.current} ${ease}` : line.current, 3000));
+    const clock = startGoalCard({
+      quick,
+      holdMs,
+      reducedMotion: reduced,
+      timers: { set: (fn, ms) => window.setTimeout(fn, ms), clear: (id) => window.clearTimeout(id) },
+      // (where the counter is, so it shrinks into it)
+      onShrink: () => {
+        const me = ref.current?.getBoundingClientRect();
+        const c = counter.current?.getBoundingClientRect();
+        if (me && c) setTo({ x: c.left + c.width / 2 - (me.left + me.width / 2), y: c.top + c.height / 2 - (me.top + me.height / 2) });
+      },
+      onPhase: (p) => {
+        setPhase(p);
+        if (p === 'done') delete root.dataset.hudCard;
+      },
+    });
     // the first move (a touch anywhere, or a key) sends it to the counter, once it has been seen for a moment
-    let armed = false;
-    const t2 = window.setTimeout(() => (armed = true), quick ? 200 : 900);
-    const onMove = () => {
-      if (armed) shrink();
-    };
+    const onMove = () => clock.poke();
     const opts = { capture: true, passive: true } as const;
     window.addEventListener('pointerdown', onMove, opts);
     window.addEventListener('touchstart', onMove, opts);
     window.addEventListener('keydown', onMove, opts);
     return () => {
-      window.clearTimeout(t0);
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
+      clock.stop();
       window.removeEventListener('pointerdown', onMove, opts);
       window.removeEventListener('touchstart', onMove, opts);
       window.removeEventListener('keydown', onMove, opts);
       delete root.dataset.hudCard;
     };
-  }, [stageId, quick, info.line, shrink]);
-
-  React.useEffect(() => {
-    if (phase !== 'shrink') return;
-    const t = window.setTimeout(() => {
-      setPhase('done');
-      delete document.documentElement.dataset.hudCard;
-    }, reduced ? 200 : 480);
-    return () => window.clearTimeout(t);
-  }, [phase, reduced]);
+  }, [stageId, quick, reduced, counter]);
 
   if (phase === 'done' || info.kind === 'none' || info.kind === 'boss') return null;
 

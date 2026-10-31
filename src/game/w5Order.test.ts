@@ -908,9 +908,9 @@ test("the goal's \"Still {n}\" line says the count as it is when it is read, not
   const cfg = levelConfig('5-3');
   const sent = goalLine('late', cfg.worldIndex, cfg.objectiveType ?? 'harvest', 68);
   const l = engineGuideLine(sent, '5-3', { dot: true })!;
-  assert.equal(l.text, 'Still 68 flowers to collect!');
+  assert.equal(l.text, 'Still 68 petals to collect!');
   assert.equal(l.counted, true);
-  assert.equal(countedText(l.text, 116 - 51), 'Still 65 flowers to collect!');
+  assert.equal(countedText(l.text, 116 - 51), 'Still 65 petals to collect!');
   // every stage with a count says it the same way, so the fix holds game-wide (DotGuide.tsx puts the count in as it shows the line)
   const seen = new Set<string>();
   for (const c of generateAllLevels()) {

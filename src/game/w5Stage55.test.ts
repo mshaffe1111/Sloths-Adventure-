@@ -47,7 +47,8 @@ test('5-5 is hand-built: a rescue, about three minutes, in the dusk (the other t
   const cfg = levelConfig('5-5');
   assert.equal(cfg.objectiveType, 'rescue');
   assert.equal(cfg.name, 'Caught in Silk');
-  assert.match(stageSpec(5, 5)!.desc!, /Free \{n\} creatures wrapped in the silk/);
+  // (no count on the map: 5-5 holds 19 to 22 on its rolls, so the line names none and the goal card gives it: UI-22)
+  assert.match(stageSpec(5, 5)!.desc!, /^Free the creatures wrapped in the silk/);
   assert.equal(build(1).config.targetCount, COCOON_GOAL_55);
   assert.equal(w5BackdropStem('5-5'), 'w5dusk1');
   assert.notEqual(w5BackdropStem('5-5'), w5BackdropStem('5-4'));

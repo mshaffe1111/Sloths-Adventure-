@@ -1,0 +1,79 @@
+{
+ "tag": "pokey-anim2",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "pa-climb-s3",
+   "src": "gh:5218a4f51c8808278319dec269eb44d61638ca90:reference/prop-sheets/qa-notes/pokey-anim/starts/climb.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, climbs straight up a tall smooth tree trunk that is right in front of him, hand over hand, one paw reaching high and gripping while the opposite foot pushes up, then the other paw and foot, a steady repeating climbing cycle; his body stays in the middle of the frame as if the camera climbs with him; the trunk is invisible, only the plain grey",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, tree, trunk, pole, rope, branch, ladder, wall",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pa-climb-s11",
+   "src": "gh:5218a4f51c8808278319dec269eb44d61638ca90:reference/prop-sheets/qa-notes/pokey-anim/starts/climb.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, climbs straight up a tall smooth tree trunk that is right in front of him, hand over hand, one paw reaching high and gripping while the opposite foot pushes up, then the other paw and foot, a steady repeating climbing cycle; his body stays in the middle of the frame as if the camera climbs with him; the trunk is invisible, only the plain grey",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, tree, trunk, pole, rope, branch, ladder, wall",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pa-climbdown-s3",
+   "src": "gh:5218a4f51c8808278319dec269eb44d61638ca90:reference/prop-sheets/qa-notes/pokey-anim/starts/climbdown.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, climbs carefully down a tall smooth tree trunk that is right in front of him, looking down past his feet, one foot reaching down and gripping, then the opposite paw letting go and gripping lower, a steady repeating climbing-down cycle; his body stays in the middle of the frame as if the camera climbs down with him; the trunk is invisible, only the plain grey",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, tree, trunk, pole, rope, branch, ladder, wall",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pa-rope-s3",
+   "src": "gh:5218a4f51c8808278319dec269eb44d61638ca90:reference/prop-sheets/qa-notes/pokey-anim/starts/rope.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, hangs by both paws from a rope stretched horizontally just above his head and moves along it to the right hand over hand, one paw letting go and reaching forward to grip the rope again further along, then the other paw, his legs swinging gently below, a smooth repeating cycle; he stays in the middle of the frame; the rope is invisible, only the plain grey",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, tree, trunk, pole, rope, branch, ladder, wall",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pa-rope-s11",
+   "src": "gh:5218a4f51c8808278319dec269eb44d61638ca90:reference/prop-sheets/qa-notes/pokey-anim/starts/rope.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, hangs by both paws from a rope stretched horizontally just above his head and moves along it to the right hand over hand, one paw letting go and reaching forward to grip the rope again further along, then the other paw, his legs swinging gently below, a smooth repeating cycle; he stays in the middle of the frame; the rope is invisible, only the plain grey",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, tree, trunk, pole, rope, branch, ladder, wall",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pa-punch-s3",
+   "src": "gh:5218a4f51c8808278319dec269eb44d61638ca90:reference/prop-sheets/qa-notes/pokey-anim/starts/punch.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, throws one strong forward punch: he winds up, turning his shoulders and pulling his far fist back by his cheek, then punches straight forward to the right with his arm fully stretched, holds it a moment, then pulls back into a ready guard, feet planted in the same spot",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, tree, trunk, pole, rope, branch, ladder, wall",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "pa-punch-s11",
+   "src": "gh:5218a4f51c8808278319dec269eb44d61638ca90:reference/prop-sheets/qa-notes/pokey-anim/starts/punch.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, throws one strong forward punch: he winds up, turning his shoulders and pulling his far fist back by his cheek, then punches straight forward to the right with his arm fully stretched, holds it a moment, then pulls back into a ready guard, feet planted in the same spot",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, tree, trunk, pole, rope, branch, ladder, wall",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}

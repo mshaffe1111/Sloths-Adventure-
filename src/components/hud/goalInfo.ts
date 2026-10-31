@@ -54,7 +54,8 @@ const DIST: Record<string, string> = {
 
 function words(world: number, type: string): { verb: string; one: string; many: string } | null {
   if (type === 'harvest') {
-    const [one, many] = world === 1 ? ['petal', 'petals'] : world === 8 ? ['night bloom', 'night blooms'] : ['flower', 'flowers'];
+    // (one pickup, Meeca's petal, but World 8's night blooms: petals.ts)
+    const [one, many] = world === 8 ? ['night bloom', 'night blooms'] : ['petal', 'petals'];
     return { verb: 'collect', one, many };
   }
   if (type === 'relic_hunt') {
@@ -97,7 +98,7 @@ export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
   let icon: GoalIcon;
   let slotIcon: (i: number) => GoalIcon;
   if (type === 'harvest') {
-    icon = w === 1 ? { kind: 'pickup', name: 'petal' } : { kind: 'flower', num: stageFlowers(w, cfg.miniIndex)[0] };
+    icon = w !== 8 ? { kind: 'pickup', name: 'petal' } : { kind: 'flower', num: stageFlowers(w, cfg.miniIndex)[0] };
     slotIcon = () => icon;
   } else if (type === 'relic_hunt') {
     const art = relicArt(w, 0);

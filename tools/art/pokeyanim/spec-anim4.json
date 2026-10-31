@@ -1,0 +1,34 @@
+{
+ "tag": "pokey-anim4",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "pa-walk-s3",
+   "src": "gh:4eae76568efc7f3b4e07dda3adbb72493424864a:reference/prop-sheets/qa-notes/pokey-anim/starts/walk.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, walks slowly and calmly on the spot, a relaxed easy-going cartoon walk cycle, gentle steps, arms swinging softly, his plain cream bandage wrist wraps and brown fur exactly as in the picture, his body staying in the same place in the middle of the frame, a smooth repeating loop",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, running, red stripes, back view, turning away, facing away",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "pa-walk-s11",
+   "src": "gh:4eae76568efc7f3b4e07dda3adbb72493424864a:reference/prop-sheets/qa-notes/pokey-anim/starts/walk.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, walks slowly and calmly on the spot, a relaxed easy-going cartoon walk cycle, gentle steps, arms swinging softly, his plain cream bandage wrist wraps and brown fur exactly as in the picture, his body staying in the same place in the middle of the frame, a smooth repeating loop",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, running, red stripes, back view, turning away, facing away",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}
