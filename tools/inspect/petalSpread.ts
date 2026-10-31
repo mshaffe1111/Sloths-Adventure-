@@ -9,7 +9,7 @@
  *   - gap: the longest petal-free stretch along the route (px, start to first petal, between petals, last petal to the shrine), along x,
  *     or along y on a climb;
  *   - trails: runs of 3+ petals each within TRAIL_LINK of the next; led: how many of them lead to something (a climb, a jump, a goal
- *     item, a heart or the shrine within LEAD of one end or along the trail); singles: petals in no trail.
+ *     item, a heart or the shrine within LEAD of one end or along the trail); singles: petals in no trail; clumps: pairs closer than CLUMP.
  * Then the per-world medians.
  */
 import '../../src/game/headlessDom.ts';
@@ -37,9 +37,11 @@ const out = get('--json');
 
 export const TRAIL_LINK = 260;
 export const LEAD = 300;
+/** two petals closer than this read as one clump */
+export const CLUMP = 50;
 const GOALS = new Set<Collectible['type']>(['relic', 'cage', 'find', 'seed', 'heart', 'super_heart', 'powerup_speed', 'powerup_invincible', 'powerup_magnet', 'thorn_gate']);
 
-export interface Spread { id: string; n: number; goal: number; screen: number; gap: number; trails: number; led: number; singles: number }
+export interface Spread { id: string; n: number; goal: number; screen: number; gap: number; trails: number; led: number; singles: number; clumps: number }
 
 /** the route's direction: a climb runs along y */
 function routeAxis(st: GeneratedStage) {
@@ -95,6 +97,7 @@ export function spread(st: GeneratedStage): Spread {
     trails: real.length,
     led: real.filter((t) => leads(st, t)).length,
     singles: tr.filter((t) => t.length < 3).reduce((s, t) => s + t.length, 0),
+    clumps: petals.reduce((n, c, i) => n + petals.slice(i + 1).filter((d) => Math.hypot(c.x - d.x, c.y - d.y) < CLUMP).length, 0),
   };
 }
 
@@ -114,15 +117,15 @@ if (process.argv[1]?.endsWith('petalSpread.ts')) {
   for (const l of levels) {
     const r = spread(build(l, ROLL, DIFF));
     rows.push(r);
-    console.log(`${r.id.padEnd(5)} n=${String(r.n).padStart(3)} goal=${String(r.goal).padStart(2)} screen=${r.screen} gap=${String(r.gap).padStart(5)} trails=${String(r.trails).padStart(2)} led=${String(r.led).padStart(2)} singles=${r.singles}`);
+    console.log(`${r.id.padEnd(5)} n=${String(r.n).padStart(3)} goal=${String(r.goal).padStart(2)} screen=${r.screen} gap=${String(r.gap).padStart(5)} trails=${String(r.trails).padStart(2)} led=${String(r.led).padStart(2)} singles=${r.singles} clumps=${r.clumps}`);
   }
   const med = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)] ?? 0;
-  console.log('\nworld  stages  n(med)  screen(max)  gap(med/max)  led/trails  singles(med)');
+  console.log('\nworld  stages  n(med)  screen(max)  gap(med/max)  led/trails  singles(med)  clumps');
   for (let w = 1; w <= 10; w++) {
     const rs = rows.filter((r) => r.id.startsWith(`${w}-`));
     if (!rs.length) continue;
     const sum = (k: keyof Spread) => rs.reduce((s, r) => s + (r[k] as number), 0);
-    console.log(`W${String(w).padEnd(5)} ${String(rs.length).padStart(6)}  ${String(med(rs.map((r) => r.n))).padStart(6)}  ${String(Math.max(...rs.map((r) => r.screen))).padStart(11)}  ${String(med(rs.map((r) => r.gap))).padStart(5)}/${String(Math.max(...rs.map((r) => r.gap))).padEnd(6)}  ${String(sum('led')).padStart(4)}/${String(sum('trails')).padEnd(6)} ${med(rs.map((r) => r.singles))}`);
+    console.log(`W${String(w).padEnd(5)} ${String(rs.length).padStart(6)}  ${String(med(rs.map((r) => r.n))).padStart(6)}  ${String(Math.max(...rs.map((r) => r.screen))).padStart(11)}  ${String(med(rs.map((r) => r.gap))).padStart(5)}/${String(Math.max(...rs.map((r) => r.gap))).padEnd(6)}  ${String(sum('led')).padStart(4)}/${String(sum('trails')).padEnd(6)} ${String(med(rs.map((r) => r.singles))).padEnd(12)}  ${sum('clumps')}`);
   }
   if (out) fs.writeFileSync(out, JSON.stringify(rows, null, 1));
 }

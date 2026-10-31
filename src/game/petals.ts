@@ -10,7 +10,7 @@
  *   - none the level check cannot reach (levelCheck.ts, the same reach model: a hard line is fine, an impossible one is not);
  *   - none hanging below a required jump's natural arc, where going for it means dipping into the gap: a petal over a jump lies on its
  *     arc or above it (a higher line, a harder one, never a worse take-off or landing);
- *   - no solid rows: of petals spaced closer than ROW_GAP on one line, every other goes;
+ *   - no solid rows: of petals spaced closer than ROW_GAP on one line, every other goes; no clumps: of petals closer than CLUMP_GAP, one stays;
  *   - at most PER_SCREEN on any one screen (SCREEN, about a phone's view held either way): the extra on the plainest stretches go first.
  * Goal items keep their own looks and counts: finds, relics, cages, seeds, the thorn gate, World 8's night blooms.
  * pickupCheck (levelCheck.ts) holds every shipped stage to the same rules; the goals are shares of what a stage holds (goals.ts), so they
@@ -93,6 +93,22 @@ export function rowExtras(petals: readonly Collectible[]): Set<Collectible> {
   return out;
 }
 
+/** petals closer than this read as one clump: one of them goes */
+export const CLUMP_GAP = 50;
+
+/** of petals closer than CLUMP_GAP, all but one (the first along the route stays) */
+export function clumpExtras(petals: readonly Collectible[]): Set<Collectible> {
+  const out = new Set<Collectible>();
+  const ps = [...petals].sort((a, b) => a.x - b.x || a.y - b.y);
+  for (let i = 0; i < ps.length; i++) {
+    if (out.has(ps[i])) continue;
+    for (let k = i + 1; k < ps.length && ps[k].x - ps[i].x < CLUMP_GAP; k++) {
+      if (!out.has(ps[k]) && Math.hypot(ps[k].x - ps[i].x, ps[k].y - ps[i].y) < CLUMP_GAP) out.add(ps[k]);
+    }
+  }
+  return out;
+}
+
 /** the most petals any one screen holds, and where (its left edge x, its middle y) */
 export function busiestScreen(petals: readonly Pick<Collectible, 'x' | 'y'>[]): { n: number; x: number; y: number } {
   const ps = [...petals].sort((p, q) => p.x - q.x);
@@ -142,6 +158,7 @@ export interface PetalOut {
   unreachable: number;
   offArc: number;
   rows: number;
+  clumps: number;
   crowded: number;
   /** the petals the spread put in (petalPass.ts) */
   filled?: number;
@@ -155,7 +172,7 @@ export function petalTrail<T extends GeneratedStage>(stage: T, unreachable: Read
   const all = stage.collectibles.filter((c) => isPetal(c, stage));
   for (const c of all) if (c.type !== 'flower') c.type = 'flower';
   const gone = new Set<Collectible>();
-  let n = { unreachable: 0, offArc: 0, rows: 0, crowded: 0 };
+  let n = { unreachable: 0, offArc: 0, rows: 0, clumps: 0, crowded: 0 };
   for (const c of all) if (unreachable.has(c.id)) gone.add(c);
   n.unreachable = gone.size;
   const live = () => all.filter((c) => !gone.has(c));
@@ -169,6 +186,9 @@ export function petalTrail<T extends GeneratedStage>(stage: T, unreachable: Read
     rows.forEach((c) => gone.add(c));
     n.rows += rows.size;
   }
+  const clump = clumpExtras(live());
+  clump.forEach((c) => gone.add(c));
+  n.clumps = clump.size;
   const crowd = screenExtras(live());
   crowd.forEach((c) => gone.add(c));
   n.crowded = crowd.size;
@@ -251,8 +271,12 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
   }
   const jumps: Pt[][] = [];
   for (const j of jumpEdges(stage)) {
-    if (j.dir !== 1 || j.gap < 70) continue;
-    const t = [0.28, 0.5, 0.72].slice(0, TRAIL_LEN).map((u) => {
+    if (j.dir !== 1) continue;
+    // (never a clump: petals on the arc at least 70 px apart, so three over a long jump, two over a shorter one, none over a hop)
+    const span = j.landX - j.takeoffX;
+    const us = span >= 320 ? [0.28, 0.5, 0.72] : span >= 210 ? [0.33, 0.67] : [];
+    if (!us.length) continue;
+    const t = us.map((u) => {
       const x = j.takeoffX + (j.landX - j.takeoffX) * u;
       return { x, y: arcFeet(j, x) - 34 };
     });

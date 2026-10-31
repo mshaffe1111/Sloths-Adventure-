@@ -337,15 +337,16 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  * (protoCheck.ts) and rolled again if a swing or a landing would not work.
  */
 export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto', easy = false): GeneratedStage & { proto: ProtoExtras } {
-  const st = buildPlan(config, seed, plan, easy);
+  // water taught before it costs a life (LV-8), the petal trail (petalPass.ts): the pickups are final before the dressing sees them
+  const st = petalPass(teachWater(buildPlan(config, seed, plan, easy)));
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
   const w = config.worldIndex;
   if ((w === 3 || w === 4) && /^[34]-[1-9]$/.test(plan) || (w === 1 && /^1-[467]$/.test(config.id))) {
     const kd = dressStage({ world: w, stage: config.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, w3decor: st.proto.w3decor });
     if (kd.length) st.proto.kitDecor = kd;
   }
-  // water taught before it costs a life (LV-8), the petal trail (petalPass.ts); then the dressing, once the stage is final
-  const out = petalPass(teachWater(st));
+  // then the dressing, once the stage is final
+  const out = st;
   addDress(out, seed);
   return out;
 }

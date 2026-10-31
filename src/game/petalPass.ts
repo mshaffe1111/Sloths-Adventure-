@@ -4,7 +4,9 @@
  */
 import type { GeneratedStage } from './stageGenerator.ts';
 import { validateStage } from './levelCheck.ts';
-import { busiestScreen, fillGaps, ON_FLOOR, isPetal, offArc, PER_SCREEN, petalTrail, rowExtras, type PetalOut } from './petals.ts';
+import { badPickups } from './flowerReach.ts';
+import { skillHeldAt } from './skills.ts';
+import { busiestScreen, clumpExtras, fillGaps, ON_FLOOR, isPetal, offArc, PER_SCREEN, petalTrail, rowExtras, type PetalOut } from './petals.ts';
 
 const OUT_OF_REACH = /^(?:flower|leaf|fruit) #(\d+) at \(.*\) is out of reach$/;
 
@@ -77,7 +79,10 @@ export function petalPass<T extends GeneratedStage>(stage: T, out?: PetalOut): T
       const out2 = new Set<number>();
       const judged = judgeReach(stage, out2) !== null;
       const arc = offArc(stage, added);
-      const gone = new Set(added.filter((c) => (out2.has(c.id) && (judged || !ON_FLOOR.has(c))) || arc.has(c)));
+      // (and the swing checks' own reach, flowerReach.ts, which the stages' tests hold every pickup to)
+      const glide = skillHeldAt('glide', (stage.config.worldIndex - 1) * 10 + stage.config.miniIndex);
+      const bad = new Set(badPickups({ platforms: stage.platforms, vines: stage.vines, ropes: stage.ropes, waterY: stage.waterY, glide }, added));
+      const gone = new Set(added.filter((c) => (out2.has(c.id) && (judged || !ON_FLOOR.has(c))) || arc.has(c) || bad.has(c)));
       for (const c of gone) tried.add(`${c.x},${c.y}`);
       if (gone.size) stage.collectibles = stage.collectibles.filter((c) => !gone.has(c));
       kept += added.length - gone.size;
@@ -99,6 +104,8 @@ export function pickupCheck(stage: GeneratedStage): string[] {
   for (const c of offArc(stage, petals)) errors.push(`petal #${c.id} at (${Math.round(c.x)}, ${Math.round(c.y)}) hangs below a required jump's arc`);
   const rows = rowExtras(petals);
   if (rows.size) errors.push(`${rows.size} petals stand in solid rows`);
+  const clumps = clumpExtras(petals);
+  if (clumps.size) errors.push(`${clumps.size} petals stand in clumps`);
   const b = busiestScreen(petals);
   if (b.n > PER_SCREEN) errors.push(`${b.n} petals on one screen at x=${Math.round(b.x)} (at most ${PER_SCREEN})`);
   return errors;
