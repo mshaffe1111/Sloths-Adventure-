@@ -48,5 +48,16 @@ export const LIVE_PLATES: Record<string, LivePlate> = {
   "y": -342.38,
   "pw": 917.82,
   "ph": 704.6
+ },
+ "steps": {
+  "n": 12,
+  "cols": 4,
+  "w": 395,
+  "h": 422,
+  "fps": 8,
+  "x": 0.0,
+  "y": -516.0,
+  "pw": 1024.0,
+  "ph": 1088.0
  }
 };

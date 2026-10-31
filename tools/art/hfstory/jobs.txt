@@ -23,3 +23,4 @@ live-a0 cancelled 21:58Z after village (grandma-door unrun: lantern detail would
 THROWN 9-night t62/t72 (muddy haze): W9 night keeps its scenery (mem-gates)
 in-game verdicts: KEPT w1-day, w1-storm, w3-night, w5-day. DROPPED w10-storm (sideways loses the painted fortress and moon the scenery had), w3-glow (muddy olive under the glow mood)
 in-game round 2: KEPT w1-dusk, w3-storm, w4-day (creature painted out with patchsky.py), w6-dusk, w7-day. DROPPED w5-dusk and w9-dusk (sideways they lose the orchids / the volcano the scenery showed)
+in-game round 3: KEPT w2-day (u62), w8-night (t72; sideways soft, redo candidate). live: steps KEPT (clouds, puddles; 8 MB)
