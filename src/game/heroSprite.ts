@@ -13,7 +13,8 @@ import { polishEnabled } from './polish.ts';
 import type { PlayerState } from './types.ts';
 import { HERO_CLIMB, HERO_FRAMES, HERO_RUN, HERO_STAND_H, type HeroFrame } from './heroAtlasData.ts';
 import { drawAuras } from './miloVariants.ts';
-import { HeroEvents } from './heroEvents.ts';
+import { HeroEvents, PUFF_LIFE } from './heroEvents.ts';
+import { drawFx, fxFrame } from './bossFx.ts';
 import { makeTintedCanvas, type Coat } from './heroTint.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { rimFor, rimOn } from './heroRim.ts';
@@ -268,11 +269,23 @@ export function heroSource(standardCanDraw: boolean, mainLoaded: boolean): HeroS
   return mainLoaded ? 'main' : 'none';
 }
 
+/** the two puffs of dust a skid kicks up (AN-13), the painted dust of his jumps and landings, behind him and drifting the way he slid */
+function drawSkidPuffs(ctx: CanvasRenderingContext2D, time: number) {
+  for (const f of events.puffs) {
+    const age = time - f.t0;
+    if (age < 0 || age >= PUFF_LIFE) continue;
+    const u = age / PUFF_LIFE;
+    // small and soft, lifting off the ground as it thins, so it reads as dust kicked up and never as a stone on the path
+    drawFx(ctx, fxFrame('dust', Math.min(0.99, 0.25 + u * 0.75)), f.x + f.dir * 80 * age, f.y + 2 - 26 * age, 20 + 16 * u, { ay: 0.9, alpha: Math.min(1, (1 - u) * 2.5) * 0.6, flipX: f.dir < 0 });
+  }
+}
+
 /** returns true if it drew the hero */
 export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, time: number): boolean {
   if (!heroSpriteEnabled()) return false;
   load();
-  events.track(p, time);
+  events.track(p, time, !!(p.climbing || p.hanging || p.isVineSwinging || p.ducking || p.punching || p.kicking || p.downed));
+  if (events.puffs.length) drawSkidPuffs(ctx, time);
   // swimming in calm water: Matt's swim sheets (heroSwim.ts)
   if (p.swim && drawSwimHero(ctx, p, time)) return true;
   // holding a vine: Matt's vine-swing pictures, his hands round the real liana (heroVine.ts)
@@ -282,8 +295,9 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   // the standard hero (heroStandard.ts), when switched on and loaded, draws every pose it has a frame for
   const stdImg = standardAtlas();
   // a moving clip (heroClips.ts, test): when one fits this moment it draws in the standard hero's place
-  const clip = stdImg ? clipPick(p, time, events) : null;
   const ch = stdImg ? stdPick(p, time, events) : null;
+  // (the turn and the skid are painted frames of their own: for their moment they take the place of the redrawn run, AN-13)
+  const clip = stdImg && !(ch && (ch.name === 'turn' || ch.name === 'skid')) ? clipPick(p, time, events) : null;
   if (clip) {
     // at each end of a clip the ordinary pose shows through, so the change of pose melts instead of popping
     if (clip.blend < 1 && ch && stdFrame(ch.name)) {
@@ -294,7 +308,9 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
     }
     ctx.save();
     ctx.globalAlpha *= clip.blend;
-    const drew = drawStandard(ctx, p, time, { name: clip.name, bob: 0 }, clip.img, clip.f);
+    // (on the ground the run start's lean and the end of a turn's squeeze ride on the redrawn run too)
+    const lean = p.grounded ? ch?.rot : undefined;
+    const drew = drawStandard(ctx, p, time, { name: clip.name, bob: 0, sx: ch?.sx, rot: lean }, clip.img, clip.f);
     ctx.restore();
     if (drew) return true;
   }
@@ -397,7 +413,7 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
   // standing right at the end of a ledge: a slow teeter out over it and back, about his feet (engine.ts edgeOffset)
   if (p.teeter && p.grounded) ctx.rotate(p.teeter * (0.03 + 0.03 * Math.sin(time * 5)));
   const q = ch.squash ?? 1;
-  ctx.scale(p.facing * (1 + (p.squashX - 1) * q), 1 + (p.squashY - 1) * q);
+  ctx.scale((ch.face ?? p.facing) * (1 + (p.squashX - 1) * q) * (ch.sx ?? 1), 1 + (p.squashY - 1) * q);
   if (ch.trail) {
     // hanging from a vine: the body trails behind the swing, turning about the hands so they stay on the vine
     const top = -f.ay * k;

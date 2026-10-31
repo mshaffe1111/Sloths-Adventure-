@@ -1,0 +1,88 @@
+{
+ "tag": "pokey-anim1",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "pa-jump-s3",
+   "src": "gh:7e63d74e52d80b8cd1e5b86d810f767d4bff90b7:reference/prop-sheets/qa-notes/pokey-anim/starts/jump.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, bends his knees into a quick crouch, then springs straight up into a big jump with both arms reaching up, rises, tucks his legs a little at the very top, then falls back down with his arms out for balance and lands on the same spot in a soft crouch, then stands up again; he stays in the middle of the frame",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pa-jump-s11",
+   "src": "gh:7e63d74e52d80b8cd1e5b86d810f767d4bff90b7:reference/prop-sheets/qa-notes/pokey-anim/starts/jump.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, bends his knees into a quick crouch, then springs straight up into a big jump with both arms reaching up, rises, tucks his legs a little at the very top, then falls back down with his arms out for balance and lands on the same spot in a soft crouch, then stands up again; he stays in the middle of the frame",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pa-run-s3",
+   "src": "gh:7e63d74e52d80b8cd1e5b86d810f767d4bff90b7:reference/prop-sheets/qa-notes/pokey-anim/starts/run.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, runs fast on the spot, a bouncy energetic cartoon run cycle with long strides, arms pumping, leaning forward, his body staying in the same place in the middle of the frame, a smooth repeating loop",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "pa-run-s11",
+   "src": "gh:7e63d74e52d80b8cd1e5b86d810f767d4bff90b7:reference/prop-sheets/qa-notes/pokey-anim/starts/run.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, runs fast on the spot, a bouncy energetic cartoon run cycle with long strides, arms pumping, leaning forward, his body staying in the same place in the middle of the frame, a smooth repeating loop",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "pa-flip-s3",
+   "src": "gh:7e63d74e52d80b8cd1e5b86d810f767d4bff90b7:reference/prop-sheets/qa-notes/pokey-anim/starts/flip.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, in mid-air, curled into a tight ball, does one full forward somersault, rolling head over heels forward one complete turn, then opens up with his arms and legs out, still in the middle of the frame",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pa-flip-s11",
+   "src": "gh:7e63d74e52d80b8cd1e5b86d810f767d4bff90b7:reference/prop-sheets/qa-notes/pokey-anim/starts/flip.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, in mid-air, curled into a tight ball, does one full forward somersault, rolling head over heels forward one complete turn, then opens up with his arms and legs out, still in the middle of the frame",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pa-slide-s3",
+   "src": "gh:7e63d74e52d80b8cd1e5b86d810f767d4bff90b7:reference/prop-sheets/qa-notes/pokey-anim/starts/slide.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, drops low and slides forward on his bottom with his feet stretched out in front of him and his arms back for balance, a quick playful slide, then gets back up onto his feet; he stays in the middle of the frame",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "pa-skid-s3",
+   "src": "gh:7e63d74e52d80b8cd1e5b86d810f767d4bff90b7:reference/prop-sheets/qa-notes/pokey-anim/starts/skid.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, running fast, he plants his feet and skids to a sudden stop, leaning far back with his feet braced out in front and arms thrown back, his body staying in the middle of the frame, then turns his head to look back over his shoulder",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}
