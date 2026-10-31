@@ -1,9 +1,9 @@
 """Cut World 10's gear works (hfb-w10bag-r3, 2026-10-31: the lift pits' floor and 10-9's gear theme, the style sheet on the canvas) into
 src/assets/w10/gear.webp + gear.json, and a review sheet (reference/prop-sheets/qa-notes/w10/gear-cut.jpg).
-    python3 -I tools/art/w10/gearcut.py <takes dir>
+    python3 -I tools/art/w10/gearcut.py <takes dir> ['{"*": "3b-s72-23", "grinder": "3-s62-23"}']   (picks by take, 'w10bag<take>.webp')
 The canvas (bagstarts3.py): the style sheet over two rows of four 384 px cells. Each pick names its take; the anchor of every frame is the
 middle of its foot, except the cogs' (their hub, the frame's middle) and the trough's (its rim: the walk line).
-The grinder's cell is cut in two: its cog (the left one, a circle around its hub, to turn in code) and the trough's front (from the rim down).
+The grinder's cell gives the trough's front (from its rim down); its cogs are the spiked cog, turned in code.
 """
 import json, sys
 from pathlib import Path
@@ -20,9 +20,9 @@ keyed: dict[str, Image.Image] = {}
 
 
 def take(n: str) -> Image.Image:
-    t = PICK.get(n, 's50-23')
+    t = PICK.get(n, PICK.get('*', '3-s62-23'))
     if t not in keyed:
-        keyed[t] = key_magenta(Image.open(T / f'w10bag3-{t}.webp').convert('RGB').resize((1536, 1536)))
+        keyed[t] = key_magenta(Image.open(T / f'w10bag{t}.webp').convert('RGB').resize((1536, 1536)))
     return keyed[t]
 
 
@@ -55,10 +55,10 @@ frames.append(('spiked-cog', sc, sc.width / 2, sc.height / 2))
 # (the grinder: in the sketch the cogs' hubs sat at (132, 230) and (252, 230) of the cell, radius 86, the trough's rim at y 230)
 g = cellOf('grinder')
 RIM = int(PICK.get('rim', 230))
-cog = circle(g, 132, 230, 88)
-frames.append(('grinder-cog', cog, cog.width / 2, cog.height / 2))
-tr, bb = trim(g.crop((0, RIM - 6, 384, 384)))
-frames.append(('grinder-trough', tr, tr.width / 2, 6 - bb[1]))
+# (its cogs are the spiked cog's painting, turned in code: the cell's own cogs are half hidden by the trough, so they cannot turn; the
+# trough's front is cut from just under its rim, clear of the cogs' teeth)
+tr, bb = trim(g.crop((0, RIM + 4, 384, 384)))
+frames.append(('grinder-trough', tr, tr.width / 2, -bb[1]))
 S, data = write(GAME / 'src/assets/w10', 'gear', frames)
 print(json.dumps({k: (v['w'], v['h']) for k, v in data.items()}))
 W = sum(f[1].width for f in frames) + 10 * len(frames)

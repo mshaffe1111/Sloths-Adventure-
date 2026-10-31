@@ -301,7 +301,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
       const wait = Math.min(TIME.zoneExtra[z.kind] ?? 0.7, idleTime(z));
       // (a zone with a look is its own beat for the look-alike measure: World 9's flares, lavafalls, surges and ash, World 10's drop gates,
       // gutter spouts and barrels)
-      const what = z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : z.look === 'portcullis' ? 'drop gate' : z.look === 'gush' ? 'gutter gush' : z.look === 'barrel' ? 'rolling barrel' : `${z.look ?? z.kind} zone`;
+      const what = z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : z.look === 'portcullis' ? 'drop gate' : z.look === 'gush' ? 'gutter gush' : z.look === 'barrel' ? 'rolling barrel' : z.look === 'grinder' ? 'gear grinder' : z.look === 'cog' ? 'rolling spiked cog' : `${z.look ?? z.kind} zone`;
       span(b, every, 'Z', what, wait, `${z.look ?? z.kind} zones`);
     }
   }

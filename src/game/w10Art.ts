@@ -11,6 +11,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import type { Bush } from './watcher.ts';
 import { W10ALT_FRAMES, W10ALT_URL, W10C_FRAMES, W10C_URL, type W10Frame } from './w10PropsData.ts';
 import { w10VarSheet } from './w10PieceArt.ts';
+import { drawW10Gear, W10_GEAR_FRAMES } from './w10GearArt.ts';
 
 export const W10_ART_URLS: readonly string[] = [W10C_URL, W10ALT_URL];
 const FRAMES: ReadonlyArray<Record<string, W10Frame>> = [W10C_FRAMES, W10ALT_FRAMES];
@@ -59,6 +60,11 @@ function brazierGlow(): HTMLCanvasElement | null {
 
 /** one piece, `w` wide, its foot's middle at (x, b); the look (0 Gemini, 1 HF) from the spot */
 function piece(ctx: CanvasRenderingContext2D, n: string, x: number, b: number, w: number, flip: boolean, look: number): boolean {
+  // (the gear works' dressing, hfb-w10bag-r3: the gear lever and the axle stub, w10GearArt.ts)
+  if (n === 'gear-lever' || n === 'axle-stub') {
+    const g = W10_GEAR_FRAMES[n];
+    return !!g && drawW10Gear(ctx, n, x, b + 2, (w * g.h) / g.w, flip);
+  }
   const name = NAME[n] ?? n;
   const rubble = n === 'rubble';
   const f = rubble ? RUBBLE : FRAMES[look][look === 1 ? `${name}-b` : name] ?? FRAMES[0][name];

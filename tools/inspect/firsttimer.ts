@@ -1144,7 +1144,7 @@ export class FirstTimerRun {
     if (p.grounded && dir !== 0) {
       // (and World 10's drop gates and gutter gushes, 'bolt' columns with a look: the gate shudders, the gutter spills first; never 9-5's
       // vent, which lifts the leaf and never hurts)
-      const ahead = (e.currentStage.zones ?? []).find((z: Zone) => (((z.look === 'flare' || z.look === 'lavafall' || z.look === 'surge') && z.kind === 'geyser') || (z.kind === 'bolt' && (z.look === 'portcullis' || z.look === 'gush'))) && p.y > z.top - 160 && p.y <= z.bottom
+      const ahead = (e.currentStage.zones ?? []).find((z: Zone) => (((z.look === 'flare' || z.look === 'lavafall' || z.look === 'surge') && z.kind === 'geyser') || (z.kind === 'bolt' && (z.look === 'portcullis' || z.look === 'gush' || z.look === 'grinder'))) && p.y > z.top - 160 && p.y <= z.bottom
         && (dir > 0 ? z.x0 - p.x > 0 && z.x0 - p.x < 70 : p.x - z.x1 > 0 && p.x - z.x1 < 70));
       if (ahead) {
         const st = zoneState(ahead, e.gameTime ?? this.t);

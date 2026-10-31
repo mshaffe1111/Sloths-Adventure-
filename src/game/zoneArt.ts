@@ -21,6 +21,7 @@ import { drawLeafBit } from './leafSprites.ts';
 import { glowPic } from './glow.ts';
 import { drawSoftShadow } from './w4Grit.ts';
 import { drawW10Barrel, drawW10BarrelStack, drawW10DropBars, drawW10Gatehouse, drawW10Gush, drawW10Spout } from './w10DropArt.ts';
+import { drawW10CogRoll, drawW10CogWall, drawW10Grinder } from './w10GearArt.ts';
 
 const hash = (n: number) => {
   const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -65,6 +66,9 @@ export function drawZoneBases(ctx: CanvasRenderingContext2D, zones: readonly Zon
     if (z.kind === 'bolt' && z.look === 'portcullis') { drawW10Gatehouse(ctx, z); continue; }
     if (z.kind === 'bolt' && z.look === 'gush') { drawW10Spout(ctx, z); continue; }
     if (z.kind === 'bolt' && z.look === 'barrel') { drawW10BarrelStack(ctx, z, zoneState(z, t), t); continue; }
+    // (10-9's gear theme, w10GearArt.ts: the grinder's cogs and trough in the walk; the gear wall a spiked cog rolls out of)
+    if (z.kind === 'bolt' && z.look === 'grinder') { drawW10Grinder(ctx, z, t); continue; }
+    if (z.kind === 'bolt' && z.look === 'cog') { drawW10CogWall(ctx, z, t); continue; }
     if (z.kind === 'bolt') { drawRod(ctx, z, zoneState(z, t), t); continue; }
     // (an iron spike bed: painted only, w10HazardArt.ts; nothing is drawn for the moment its sheet loads)
     if (z.kind === 'spikes') { drawW10Spikes(ctx, z); continue; }
@@ -169,6 +173,8 @@ export function drawZoneEffects(ctx: CanvasRenderingContext2D, zones: readonly Z
     else if (z.kind === 'bolt' && z.look === 'portcullis') drawW10DropBars(ctx, z, st, t);
     else if (z.kind === 'bolt' && z.look === 'gush') drawW10Gush(ctx, z, st, t);
     else if (z.kind === 'bolt' && z.look === 'barrel') drawW10Barrel(ctx, z, st);
+    else if (z.kind === 'bolt' && z.look === 'cog') drawW10CogRoll(ctx, z, t);
+    else if (z.kind === 'bolt' && z.look === 'grinder') continue;
     else if (z.kind === 'bolt') drawBolt(ctx, z, st, t);
     else if (z.kind === 'web') drawWeb(ctx, z, t);
     else if (z.kind === 'tide') drawTide(ctx, z, st, t);

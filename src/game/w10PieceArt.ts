@@ -17,6 +17,7 @@ import type { Platform } from './types.ts';
 import { trapState } from './trapdoor.ts';
 import { drawW10Bag, W10_BAG_FRAMES } from './w10BagArt.ts';
 import { drawW10Chain, drawW10Plank, loadW10RoomArt } from './w10PuzzleArt.ts';
+import { drawW10Gear, W10_PIT_FLOOR } from './w10GearArt.ts';
 
 export type W10PieceStyle = 'w10_perch' | 'w10_balcony' | 'w10_stair' | 'w10_scaffold' | 'w10_bridge' | 'w10_trap';
 export const W10_PIECE_STYLES: readonly W10PieceStyle[] = ['w10_perch', 'w10_balcony', 'w10_stair', 'w10_scaffold', 'w10_bridge', 'w10_trap'];
@@ -75,7 +76,10 @@ const RUBBLE = { x: 654, y: 0, w: 448, h: 240 };
 /** a grab-bag piece in its painting (false: not one of them, or its sheet is still loading) */
 export function drawW10PieceArt(ctx: CanvasRenderingContext2D, p: Platform, t = 0): boolean {
   if (p.style === 'w10_rubble') {
-    // (the heap's foot on the pit floor, the knob's foot; its crown a few px over the knob's top, so he stands in its rounded top)
+    // (the heap's foot on the pit floor, the knob's foot; its crown a few px over the knob's top, so he stands in its rounded top. Which
+    // heap, by the spot: w10var's plain rubble, or one of the gear sheet's (a half-sunk cog, a fallen gear, a coil of chain))
+    const pick = Math.floor(Math.abs(Math.sin(p.x * 12.9898) * 43758.5453) % 1 * (W10_PIT_FLOOR.length + 1));
+    if (pick < W10_PIT_FLOOR.length && drawW10Gear(ctx, W10_PIT_FLOOR[pick], p.x + p.width / 2, p.y + (p.height ?? 30), (p.height ?? 30) + 10)) return true;
     const img = sheet('v');
     if (!img) return false;
     const h = (p.height ?? 30) + 6;

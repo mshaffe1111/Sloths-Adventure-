@@ -1587,14 +1587,14 @@ export class GameEngine {
       }
       // lava geysers and lightning (Worlds 9 and 10): a firing column burns whoever stands in it
       const hot = columnHit(zones, p.x - 14, p.y - 64, 28, 64, this.gameTime);
-      if (hot?.look === 'barrel') {
-        // (World 10's rolling barrel, GRAB-BAG K: it bowls him over the way it rolls; a heart on Normal, a push on Easy)
+      if (hot?.look === 'barrel' || hot?.look === 'cog') {
+        // (World 10's rolling barrel, GRAB-BAG K, and 10-9's spiked cog: it bowls him over the way it rolls; a heart on Normal, a push on Easy)
         p.vx = hot.dir * 260;
         p.vy = Math.min(p.vy, -260);
         this.camera.trauma = Math.min(1, this.camera.trauma + 0.25);
         this.input.triggerHaptic(80);
         if (!hot.gentle && !isEasy() && p.invincibleTimer <= 0) this.damagePlayer(1);
-      } else if (hot?.look === 'portcullis' || hot?.look === 'gush') {
+      } else if (hot?.look === 'portcullis' || hot?.look === 'gush' || hot?.look === 'grinder') {
         // (World 10's drop gate, GRAB-BAG D: caught under it, he is shoved back out the side he came in; a heart on Normal only, and
         // never where it is taught. Its gutter spout's gush, E: the same shove, never a heart, and in the air it knocks him down)
         const back = p.x < (hot.x0 + hot.x1) / 2 ? -1 : 1;
@@ -1603,7 +1603,8 @@ export class GameEngine {
         if (hot.look === 'gush' && !p.grounded) p.vy = Math.max(p.vy, 320);
         this.camera.trauma = Math.min(1, this.camera.trauma + 0.25);
         this.input.triggerHaptic(80);
-        if (hot.look === 'portcullis' && !hot.gentle && !isEasy() && p.invincibleTimer <= 0) this.damagePlayer(1);
+        // (10-9's gear grinder: the drop gate's shove and its heart on Normal)
+        if ((hot.look === 'portcullis' || hot.look === 'grinder') && !hot.gentle && !isEasy() && p.invincibleTimer <= 0) this.damagePlayer(1);
       } else if (hot && p.invincibleTimer <= 0) {
         this.damagePlayer(1);
         this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);

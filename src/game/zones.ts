@@ -61,9 +61,10 @@ export interface Zone {
    * `surge` down a cooled channel (a low geyser zone along its floor, N6), the hot `ash` wind (a wind zone, N7). They act and are checked as
    * their kind; the inspector names the geyser ones by their look. A `vent` (9-5's warm air low in a chasm) is a geyser zone too, its own
    * kind on the look-alike measure (it lifts the leaf; it is not 9-1's geyser). World 10's: a `portcullis` (drop gate), a `gush` (gutter
-   * spout) and a `barrel` (rolling barrel lane) on the bolt column (w10DropArt.ts)
+   * spout), a `barrel` (rolling barrel lane), and 10-9's gear theme's `grinder` (two cogs in a trough in the walk, a low column) and `cog`
+   * (a spiked cog rolling a lane, the barrel's way) on the bolt column (w10DropArt.ts, w10GearArt.ts)
    */
-  look?: 'flare' | 'lavafall' | 'surge' | 'ash' | 'vent' | 'portcullis' | 'gush' | 'barrel';
+  look?: 'flare' | 'lavafall' | 'surge' | 'ash' | 'vent' | 'portcullis' | 'gush' | 'barrel' | 'grinder' | 'cog';
   /** ('barrel': World 10's rolling barrel, GRAB-BAG K: the zone is the barrel's lane along a wall; while it is active one barrel rolls the
    *  lane's length, `dir` the way, and only the barrel itself hurts: barrelX) ('gush': World 10's gutter spout, GRAB-BAG E: a column of
    *  storm water that knocks him back out and down while it pours, never a heart) a drop gate where it is taught: it shoves him out and
@@ -155,8 +156,8 @@ export function columnHit(zones: readonly Zone[] | undefined, x: number, y: numb
   if (!zones) return null;
   for (const z of zones) {
     if (!isDamaging(z) || x + w < z.x0 || x > z.x1 || y + h < z.top || y > z.bottom) continue;
-    if (z.look === 'barrel') {
-      // (only the barrel hurts: over it, or beside it, he is fine)
+    if (z.look === 'barrel' || z.look === 'cog') {
+      // (only the barrel (or the spiked cog) hurts: over it, or beside it, he is fine)
       const bx = barrelX(z, t);
       if (bx === null || x + w < bx - BARREL.half || x > bx + BARREL.half || y + h < z.baseY - BARREL.h) continue;
       return z;

@@ -84,6 +84,8 @@ const BARREL = 'barrel';
 const LIFT = 'lift';
 const CWEIGHT = 'cweight';
 const GEAR = 'gear';
+const GRINDER = 'grinder';
+const COGROLL = 'cogroll';
 
 /** the weight of a section every roll may hold (the theme's weigh 1) */
 const SHARED = 0.3;
@@ -1728,7 +1730,75 @@ const gearGuard = section({
   sockets: [flag('a', 0.3), foe('g1', 't', [0.55, 0.65], GUARDS, 3), petals('s', 's', 0.5, 1)],
   mirrorable: false,
 });
-const W10_RISER_SECTIONS: SectionTemplate[] = [liftFirst, liftPair, liftRow, liftRods, cwFirst, cwStorm, cwRow, gearFirst, gearLeap, gearGuard];
+/**
+ * 10-9's gear theme, more than one beat (the lead, 5:02 PM: "10-9 needs more pieces around the gear theme so it isn't all one beat"): after
+ * a gear lift, a gear grinder in the walk (two cogs meshing in a stone trough: wait for them to stop, or hop it; a low 'bolt' column, look
+ * 'grinder', GRIND) or a spiked cog rolling a lane (the barrel's way, look 'cog': jump it). w10GearArt.ts paints both (hfb-w10bag-r3).
+ */
+const grinder = (on: string, at: W, gentle = false): SectionZone => ({ kind: 'bolt', on, at, look: 'grinder', ...(gentle ? { gentle: true } : {}) });
+const cogLane = (on: string, gentle = false): SectionZone => ({ kind: 'bolt', on, at: [0.5, 0.5], look: 'cog', dir: -1, ...(gentle ? { gentle: true } : {}) });
+const gearGrindFirst = section({
+  id: 'w10-gear-grind-first',
+  name: 'the first gear grinder',
+  archetypes: ['gauntlet'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: GRINDER,
+  uses: [W10_THEME.gearlifts, GEAR],
+  maxPerStage: 1,
+  extraSeconds: GEAR_RIDE + 1.5,
+  pieces: [bank('a', [240, 280]), gearLift('g', 'a'), up('t', 'g', 0, [150, 180]), down('s', 't', 110, [140, 160]), down('c', 's', 100, [400, 440])],
+  zones: [grinder('c', [0.55, 0.6], true)],
+  last: 'c',
+  sockets: [flag('a', 0.3), tip(GRINDER, 's', 0.3), petals('t', 't', 0.5, 1)],
+  mirrorable: false,
+});
+const gearGrind = section({
+  id: 'w10-gear-grind',
+  name: 'a gear lift down to two grinders',
+  archetypes: ['gauntlet'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W10_THEME.gearlifts, GEAR, GRINDER],
+  extraSeconds: GEAR_RIDE + 3,
+  pieces: [bank('a', [240, 280]), gearLift('g', 'a'), up('t', 'g', 0, [150, 180]), down('s', 't', 110, [140, 160]), down('c', 's', 100, [560, 600])],
+  zones: [grinder('c', [0.3, 0.34]), grinder('c', [0.72, 0.76])],
+  last: 'c',
+  sockets: [flag('a', 0.3), petals('t', 't', 0.5, 1), petals('s', 's', 0.5, 1)],
+  mirrorable: false,
+});
+const gearCogFirst = section({
+  id: 'w10-gear-cog-first',
+  name: 'the first rolling cog',
+  archetypes: ['gauntlet'],
+  phases: ['ki', 'sho'],
+  difficulty: 4,
+  teaches: COGROLL,
+  uses: [W10_THEME.gearlifts, GEAR],
+  maxPerStage: 1,
+  extraSeconds: GEAR_RIDE + 1.5,
+  pieces: [bank('a', [240, 280]), gearLift('g', 'a'), up('t', 'g', 0, [150, 180]), down('s', 't', 110, [140, 160]), down('lane', 's', 70, [520, 560]), up('k2', 'lane', 30, [140, 160]), down('b', 'k2', 60, [220, 260])],
+  zones: [cogLane('lane', true)],
+  last: 'b',
+  sockets: [flag('a', 0.3), tip(COGROLL, 's', 0.3), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: false,
+});
+const gearCogRun = section({
+  id: 'w10-gear-cog-run',
+  name: 'a gear lift down to a cog lane, a guard past it',
+  archetypes: ['gauntlet'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W10_THEME.gearlifts, GEAR, COGROLL],
+  extraSeconds: GEAR_RIDE + 1.5,
+  pieces: [bank('a', [240, 280]), gearLift('g', 'a'), up('t', 'g', 0, [150, 180]), down('s', 't', 110, [140, 160]), down('lane', 's', 70, [600, 640]), up('k2', 'lane', 30, [140, 160]), down('b', 'k2', 60, [340, 380])],
+  zones: [cogLane('lane')],
+  last: 'b',
+  sockets: [flag('a', 0.3), petals('k2', 'k2', 0.5, 1), foe('f1', 'b', [0.55, 0.65], SMALL, 2)],
+  mirrorable: false,
+});
+
+const W10_RISER_SECTIONS: SectionTemplate[] = [liftFirst, liftPair, liftRow, liftRods, cwFirst, cwStorm, cwRow, gearFirst, gearLeap, gearGuard, gearGrindFirst, gearGrind, gearCogFirst, gearCogRun];
 const W10_BAG_SECTIONS: SectionTemplate[] = [...W10_RISER_SECTIONS, barrelFirst, barrelRun, barrelSteps, barrelYard, lanternWall, lanternSteps, lanternGuard, ...netGates, spoutFirst, spoutGap, spoutPair, spoutGuard, trapFirst, trapRow, trapGuard, trapSpikes, perchRun, perchClimb, perchRods, ironStair, balconyClimb, towerRun, bridgeFight, bridgePair, bridgeRods, dropFirst, dropRow, dropYard, dropHigh];
 
 // ───────────────────────────── the list ─────────────────────────────
@@ -1824,6 +1894,7 @@ export const W10_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   [cwStorm.id]: [3],
   ...Object.fromEntries([gearFirst, gearLeap].map((s) => [s.id, [6, 9]] as const)),
   [gearGuard.id]: [9],
+  ...Object.fromEntries([gearGrindFirst, gearGrind, gearCogFirst, gearCogRun].map((s) => [s.id, [9]] as const)),
   ...Object.fromEntries([trapFirst, trapRow, trapGuard, trapSpikes].map((s) => [s.id, [9]] as const)),
   // (the grab bag's themes: the perches are 10-1's, the towers and bridges 10-7's; no other stage opens them)
   ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-fight-gate-') && /-(perches|towers|bridges|drops|chains|lanterns|barrels|lifts|counterweights)$/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
