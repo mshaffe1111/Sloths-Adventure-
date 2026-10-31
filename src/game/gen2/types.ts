@@ -270,7 +270,8 @@ export interface LocalAnchor {
 }
 /** every anchor of a piece (its `at`, a sapling's `to`, a teapot's `trough` points) on the section's pieces by key */
 type LocalField<T> = T extends Anchor ? LocalAnchor : T extends readonly Anchor[] ? LocalAnchor[] : T;
-type Localize<P> = P extends unknown ? { [K in keyof P]: LocalField<P[K]> } : never;
+/** (and a piece's `vine` names the section's vine piece by key: placeRoom puts the laid vine's id in) */
+type Localize<P> = P extends unknown ? { [K in keyof P]: K extends 'vine' ? string : LocalField<P[K]> } : never;
 export type LocalPieceSpec = Localize<PieceSpec>;
 export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond' | 'ground' | 'pieces'> {
   left: LocalAnchor;

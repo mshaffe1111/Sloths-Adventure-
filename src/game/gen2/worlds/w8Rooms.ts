@@ -327,6 +327,93 @@ export const moonRoomSpecEasy: LocalRoomSpec = {
 };
 export const moonRoomEasy: SectionTemplate = { ...moonRoom, room: moonRoomSpecEasy };
 
+// ───────────────────────────── 8-1: the roost loft ─────────────────────────────
+
+/**
+ * w8r-room-loft  8-1 "As the Light Goes" (2026-10-31, Matt: "Let's give World 8 a puzzle room"; 8-1's own theme, not on every roll). A bark
+ *                door, and its branch lever up on the roost loft, a bough too high for any jump. The way up is a vine ladder rolled up under
+ *                the loft and tied with a silk knot. So: take a pebble from the pile, flick it up at the knot (it snaps, the ladder unrolls),
+ *                climb, pull the lever, drop down, through. Three steps on Normal (a throw, a climb, a lever); Easy's door opens when the
+ *                knot snaps (two: the ladder still unrolls, the lever is not needed). The kit's knot and ladder (meecaStage.ts's room 3) with
+ *                World 8's lever and door, a puzzle of its own: what holds the ladder up, and what is the ladder for.
+ */
+/** 8-1's loft theme (w8Sections.ts W8_THEME.loft: the same key) */
+export const LOFT_THEME = 'w8:loft';
+export const LOFT = {
+  floor: 780,
+  /** the loft: a bough over the floor, its left end at `x`, `up` px over the floor (DOUBLE_RISE ~185 + the hero: out of any jump's reach) */
+  x: 150,
+  w: 230,
+  up: 250,
+  /** the vine ladder down the loft's right end (just past it, as meecaStage's hangs before its cliff) */
+  ladderX: 394,
+  /** the knot: under the loft's end, high over the floor (a flick up from the floor below reaches it) */
+  knotX: 372,
+  knotUp: 236,
+  pileX: 96,
+  doorX: 640,
+  /** the door's wall: taller than the loft, so nothing jumps it from up there */
+  doorH: 380,
+  floorB: 260,
+} as const;
+const la = along('floor', LOFT.floor);
+const lb = along('floorB', LOFT.floorB);
+const ll = along('loft', LOFT.w);
+
+export const loftRoomSpec: LocalRoomSpec = {
+  id: 'loft',
+  left: la(0),
+  right: lb(120),
+  above: 470,
+  below: 90,
+  pieces: [
+    { kind: 'reset', id: 'post', at: la(24) },
+    { kind: 'source', id: 'pile', variant: 'pebble', at: la(LOFT.pileX), look: 'pile' },
+    { kind: 'item', id: 'pebble', variant: 'pebble', source: 'pile', for: 'knot' },
+    { kind: 'knot', id: 'knot', at: la(LOFT.knotX, -LOFT.knotUp) },
+    { kind: 'ladder', id: 'ladder', at: ll(LOFT.w), vine: 'ladderV', open: 'knot' },
+    { kind: 'lever', id: 'lever', at: ll(70) },
+    { kind: 'gate', id: 'door', at: la(LOFT.doorX), open: 'lever', latch: true, h: LOFT.doorH, look: 'woven' },
+  ],
+  exit: 'door',
+  beyond: lb(200),
+  ground: ['floor', 'floorB', 'loft'],
+  tips: {
+    enter: 'Locked. And something tied up there.', // (new, needs Matt's approval)
+    hold: 'A pebble. Good for throwing.', // (new, needs Matt's approval)
+    open: 'Door open. Down and through!', // (new, needs Matt's approval)
+  },
+};
+
+export const loftRoom: SectionTemplate = {
+  id: 'w8r-room-loft',
+  name: 'puzzle room: the roost loft (knot, ladder, lever)',
+  archetypes: 'any',
+  teaches: 'w8:loft',
+  phases: ['sho', 'ten'],
+  difficulty: 5,
+  maxPerStage: 1,
+  weight: 40,
+  // (a pebble, a throw or two, the climb, the lever, back down and through: about 16 s for a first-timer)
+  extraSeconds: 16,
+  pieces: [
+    bank('floor', LOFT.floor, { kind: 'start' }),
+    { key: 'loft', shape: 'branch', w: LOFT.w, place: { kind: 'over', on: 'floor', at: LOFT.x / LOFT.floor, dy: -LOFT.up }, main: false },
+    { key: 'ladderV', shape: 'vine', w: 0, place: { kind: 'climb', on: 'floor', at: LOFT.ladderX / LOFT.floor, h: LOFT.up + 6 } },
+    bank('floorB', LOFT.floorB, { kind: 'walk', after: 'floor', dy: 0 }),
+  ],
+  entry: { piece: 'floor', kind: 'ground' },
+  exit: { piece: 'floorB', kind: 'ground' },
+  exitDy: 0,
+  sockets: [],
+  room: loftRoomSpec,
+  mirrorable: false,
+};
+
+/** Easy's loft: the door opens when the knot snaps (two steps; the ladder still unrolls) */
+export const loftRoomSpecEasy: LocalRoomSpec = { ...loftRoomSpec, pieces: loftRoomSpec.pieces.map((p) => (p.kind === 'gate' ? { ...p, open: 'knot' } : p)) };
+export const loftRoomEasy: SectionTemplate = { ...loftRoom, room: loftRoomSpecEasy };
+
 // ───────────────────────────── the set ─────────────────────────────
 
 /** World 8's puzzle-room sections */
@@ -337,10 +424,12 @@ export const W8R_STAGE: Record<string, string> = { [hammockRoom.id]: '8-2', [pad
 export const W8_ROOM_STAGES = ['8-2', '8-3', '8-5'] as const;
 
 /** Easy's version of each room (the same section id, so Easy lays Normal's plan) */
-const EASY: Record<string, SectionTemplate> = { [hammockRoom.id]: hammockRoomEasy, [padsRoom.id]: padsRoomEasy, [moonRoom.id]: moonRoomEasy };
+const EASY: Record<string, SectionTemplate> = { [hammockRoom.id]: hammockRoomEasy, [padsRoom.id]: padsRoomEasy, [moonRoom.id]: moonRoomEasy, [loftRoom.id]: loftRoomEasy };
 export const roomFor = (t: SectionTemplate, d: Difficulty): SectionTemplate => (d === 'easy' ? EASY[t.id] ?? t : t);
 
 /** the room sections of stage `stage`, Easy's version on Easy */
 export function w8RoomsFor(stage: number, difficulty: Difficulty = 'normal'): SectionTemplate[] {
-  return W8_ROOM_SECTIONS.filter((s) => W8R_STAGE[s.id] === `8-${stage}`).map((s) => roomFor(s, difficulty));
+  // (8-1's roost loft is its own theme's, not on every roll: w8Sections.ts W8_THEME.loft)
+  const own = stage === 1 ? [{ ...roomFor(loftRoom, difficulty), uses: [LOFT_THEME] }] : [];
+  return [...W8_ROOM_SECTIONS.filter((s) => W8R_STAGE[s.id] === `8-${stage}`).map((s) => roomFor(s, difficulty)), ...own];
 }

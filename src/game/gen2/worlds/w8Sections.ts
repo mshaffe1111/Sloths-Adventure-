@@ -60,6 +60,8 @@ export const W8_THEME = {
   perches: 'w8:perches',
   /** 8-2 and 8-5: shelf-fungus steps (GRAB-BAG.md J): little hops up a trunk's face in place of a climb */
   fungusSteps: 'w8:fungus-steps',
+  /** 8-1: the roost loft (its puzzle room, w8Rooms.ts loftRoom) and the climbs and bat runs round it */
+  loft: 'w8:loft',
   /** 8-5: the moon flowers (GRAB-BAG.md D): a bounce in place of a climb */
   bounces: 'w8:bounces',
 } as const;
@@ -68,7 +70,7 @@ export const W8_THEME = {
 export const W8_LIT_THEMES: Readonly<Record<number, ReadonlyArray<keyof typeof W8_THEME>>> = {
   // (8-1's climbs are its dark trunks only: the lit trunks are 8-5's stretches, the look-alike measure)
   // (8-1's night wind went, 2026-10-31: its headwind gaps read as 8-6's glides on the wind; the sleeping bats are 8-1's own)
-  1: ['leapers', 'night', 'bats'],
+  1: ['leapers', 'night', 'bats', 'loft'],
   // (8-6's trunks went to 8-5: a trunk, a glide and a trunk read as 8-5's climbing on the look-alike measure)
   6: ['prowlers', 'leapers', 'gusts'],
   // (the vine stages apart, STAGE-RULES §6 "Sameness": 8-3's lianas chain over the gaps, 8-5's lead to trunks to climb)
@@ -178,7 +180,7 @@ const landingK = knots('', 'a', 2, [160, 190]);
  * The lit stages' gates (8-1, 8-3, 8-5, 8-6): the start, nothing that can hurt, which opens the roll's theme (W8_LIT_THEMES): the climbers'
  * gate has a short trunk, the leapers' a wide gap over soft moss, the prowlers' and the chains' two knots
  */
-const litGate = (theme: 'climbers' | 'prowlers' | 'leapers' | 'chains' | 'night' | 'gusts' | 'bats' | 'bounces' | 'perches' | 'fungusSteps'): SectionTemplate =>
+const litGate = (theme: 'climbers' | 'prowlers' | 'leapers' | 'chains' | 'night' | 'gusts' | 'bats' | 'bounces' | 'perches' | 'fungusSteps' | 'loft'): SectionTemplate =>
   section({
     id: `w8-gate-${theme}`,
     name: `landing bough: ${theme}`,
@@ -197,7 +199,7 @@ const litGate = (theme: 'climbers' | 'prowlers' | 'leapers' | 'chains' | 'night'
     sockets: [scenery('nest', 'a', [0.3, 0.5], 0.8), petals('a2', 'a', 0.8, 1)],
     mirrorable: false,
   });
-const litGates = (['climbers', 'prowlers', 'leapers', 'chains', 'night', 'gusts', 'bats', 'bounces', 'perches', 'fungusSteps'] as const).map(litGate);
+const litGates = (['climbers', 'prowlers', 'leapers', 'chains', 'night', 'gusts', 'bats', 'bounces', 'perches', 'fungusSteps', 'loft'] as const).map(litGate);
 
 const restK = knots('', 'a', 2, [160, 190]);
 /** a broad bough over two knots: petals, a flag, fungus on the bark */
@@ -705,9 +707,10 @@ const darkLong = section({
 
 /** the night theme's dark stretches (8-1): the dark sections again, for the roll that leans on the dark */
 const nightOf = (t: SectionTemplate, id: string): SectionTemplate => ({ ...t, id, name: t.name.replace('the dark', 'the night'), uses: [W8_THEME.night], weight: 3 });
-// (the night leans on the dark trunks, 2026-10-31: as copies of the leapers' dark gaps its rolls read 0.21 from theirs on the variety measure;
-// the climbs give it a letter of its own)
-const nightSections = [{ ...nightOf(darkBoughs, 'w8-night-boughs'), weight: 1 }, { ...nightOf(darkGap, 'w8-night-gap'), weight: 1 }, { ...nightOf(darkClimb, 'w8-night-climb'), weight: 7 }];
+const nightSections = [nightOf(darkBoughs, 'w8-night-boughs'), nightOf(darkGap, 'w8-night-gap'), nightOf(darkClimb, 'w8-night-climb')];
+/** the loft theme's stretches (8-1, round its puzzle room): the dark trunks and a dark gap, for the roll that climbs to the roost */
+const loftOf = (t: SectionTemplate, id: string): SectionTemplate => ({ ...t, id, uses: [W8_THEME.loft] });
+const loftSections = [loftOf(darkClimb, 'w8-loft-climb'), loftOf(darkGap, 'w8-loft-gap'), loftOf(darkBoughs, 'w8-loft-boughs')];
 
 // ───────────────────────────── 8-2 Night Blooms: the harvest ─────────────────────────────
 
@@ -1530,7 +1533,7 @@ const monarchGuards: SectionTemplate = { ...nightOf(darkBoughs, 'w8-monarch-guar
 export const W8_SECTIONS: SectionTemplate[] = [
   ...litGates, restBough, restFork, restTrunk, restTrunkKnot, restGlide, restGlideFork,
   knotHops, boughGap, doubleGap, trunkClimb, rise, drop, climbRun, prowlBough,
-  darkBoughs, darkGap, darkClimb, darkLong, ...nightSections,
+  darkBoughs, darkGap, darkClimb, darkLong, ...nightSections, ...loftSections,
   ...bloomGates, bloomClimb, bloomHigh, bloomDark, bloomGaps, bloomLeap, ...roostBlooms,
   ...roostGates, roostHollows, roostHollowGap, roostCurtains, roostCurtainGaps, roostCurtainLeap, roostProwl, roostClimb, roostTrunks, roostDark, roostLong,
   glideFirst, glidePair, glideTrunk, glideHunter, glideDark, glideLeap, glideProwl,
@@ -1598,5 +1601,6 @@ export const W8_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   // (the moonlight glides are 8-6's: Glide by Moonlight)
   ...Object.fromEntries(['w8-glide-first', 'w8-glide-pair', 'w8-glide-trunk', 'w8-glide-hunter', 'w8-glide-dark', 'w8-glide-leap', 'w8-glide-prowl', 'w8-glide-gust', 'w8-glide-gust-pair', 'w8-glide-gust-hunter'].map((id) => [id, [6]])),
   ...Object.fromEntries(nightSections.map((t) => [t.id, [1]])),
-  ...Object.fromEntries((['climbers', 'prowlers', 'leapers', 'chains', 'night', 'gusts', 'bats', 'bounces', 'perches', 'fungusSteps'] as const).map((t) => [`w8-gate-${t}`, Object.keys(W8_LIT_THEMES).map(Number).filter((st) => W8_LIT_THEMES[st].includes(t))])),
+  ...Object.fromEntries(loftSections.map((t) => [t.id, [1]])),
+  ...Object.fromEntries((['climbers', 'prowlers', 'leapers', 'chains', 'night', 'gusts', 'bats', 'bounces', 'perches', 'fungusSteps', 'loft'] as const).map((t) => [`w8-gate-${t}`, Object.keys(W8_LIT_THEMES).map(Number).filter((st) => W8_LIT_THEMES[st].includes(t))])),
 };

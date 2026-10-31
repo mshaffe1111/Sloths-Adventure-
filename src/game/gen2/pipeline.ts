@@ -926,7 +926,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const t = mirrored ? 1 - t0 : t0;
         placed.sockets.push({ socket: s, x: R(p.x + t * p.width), y: R(p.y - (s.dn ?? 0)), piece: p });
       }
-      if (tpl.room) placed.room = placeRoom(tpl.room, placed.uid, (k) => pieceOf(k).id);
+      if (tpl.room) placed.room = placeRoom(tpl.room, placed.uid, (k) => pieceOf(k).id, (k) => {
+        // (a vine a room's piece names is the kit's: a ladder rolled up, a sapling, a silk line; levelCheck leaves it to the room's check)
+        const v = placed.vines.find((q) => q.key === k)?.vine;
+        if (v) Object.assign(v, { kit: true, swaySpeed: 0 });
+        return v?.id;
+      });
       // its zones, over its placed pieces (their numbers from the slot's stream, after everything else it rolls)
       for (const z of tpl.zones ?? []) {
         if (z.kind === 'tide') {
@@ -1081,7 +1086,7 @@ const stageOrder = (id: string) => {
 };
 
 /** a section's puzzle room in the world: its anchors on the placed platforms' ids, its piece ids (and their wires) made unique */
-export function placeRoom(room: LocalRoomSpec, uid: string, idOf: (key: string) => number): RoomSpec {
+export function placeRoom(room: LocalRoomSpec, uid: string, idOf: (key: string) => number, vineOf?: (key: string) => number | undefined): RoomSpec {
   const a = (l: LocalAnchor): Anchor => ({ ...l, on: idOf(l.on) });
   const name = (id: string) => `${uid}-${id}`;
   const wire = (w: Wire): Wire => (typeof w === 'string' ? name(w) : 'all' in w ? { all: w.all.map(wire) } : 'any' in w ? { any: w.any.map(wire) } : { not: wire(w.not) });
@@ -1094,6 +1099,8 @@ export function placeRoom(room: LocalRoomSpec, uid: string, idOf: (key: string) 
     if (Array.isArray(q.trough)) q.trough = (q.trough as LocalAnchor[]).map(a);
     for (const k of REFS) if (typeof q[k] === 'string') q[k] = name(q[k] as string);
     if ('open' in p && p.open !== undefined) q.open = wire(p.open);
+    // (a ladder's, sapling's or silk line's vine: the section's vine piece, by key)
+    if (typeof q.vine === 'string') q.vine = vineOf?.(q.vine as string) ?? q.vine;
     return q as unknown as PieceSpec;
   });
   return { ...room, id: name(room.id), left: a(room.left), right: a(room.right), beyond: a(room.beyond), ground: room.ground.map(idOf), pieces, exit: name(room.exit) };
