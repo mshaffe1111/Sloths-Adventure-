@@ -26,20 +26,27 @@ MARGIN = 14
 
 
 def key_alpha(a, key):
+    """alpha from how far each pixel is toward the key colour, then the key un-mixed from every part-see-through pixel
+    (observed = alpha * paint + (1 - alpha) * key), so thin grass tips and holes in a lattice keep their own colour, not purple"""
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    K = np.array(key, np.float32)
     if key == [255, 0, 255]:
-        d = (r - g) + (b - g) - np.abs(r - b)
+        d = np.minimum(r, b) - g
     else:
-        d = (g - r) + (g - b) - np.abs(r - b)
-    alpha = np.clip(255 - (d - 120) * 2.2, 0, 255)
-    out = a.copy()
-    edge = (alpha > 0) & (alpha < 255)
+        d = g - np.maximum(r, b)
+    alpha = np.clip(1 - (d - 40) / 140, 0, 1)
+    al = alpha[..., None]
+    paint = np.where(al > 0.02, (a - (1 - al) * K) / np.maximum(al, 0.02), 0)
+    out = np.where(al < 0.999, paint, a)
+    # what is left of the key's hue in the paint itself near the cut (a magenta cast on pale water): pulled to neutral
+    near = ndimage.binary_dilation(alpha < 0.98, iterations=4)
     if key == [255, 0, 255]:
-        out[..., 0] = np.where(edge, np.minimum(r, g + 40), r)
-        out[..., 2] = np.where(edge, np.minimum(b, g + 60), b)
+        cast = np.clip(np.minimum(out[..., 0], out[..., 2]) - out[..., 1], 0, None)
+        out[..., 0] -= np.where(near, cast * 0.8, 0); out[..., 2] -= np.where(near, cast * 0.8, 0)
     else:
-        out[..., 1] = np.where(edge, np.minimum(g, np.maximum(r, b) + 30), g)
-    return out, alpha
+        cast = np.clip(out[..., 1] - np.maximum(out[..., 0], out[..., 2]), 0, None)
+        out[..., 1] -= np.where(near, cast * 0.8, 0)
+    return out.clip(0, 255), alpha * 255
 
 
 def keep_blobs(alpha):

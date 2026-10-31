@@ -27,7 +27,7 @@ sys.path.insert(0, str(HERE))
 from stylesheet import SRC, frames, kit_frames  # noqa: E402
 
 OUT = HERE.parents[2] / 'reference' / 'prop-sheets' / 'qa-notes' / 'w1-4-art' / 'starts'
-MAG, GRN, BLK = (255, 0, 255), (0, 255, 0), (0, 0, 0)
+MAG, GRN, BLK, WHT = (255, 0, 255), (0, 255, 0), (0, 0, 0), (255, 255, 255)
 INK = (46, 30, 24)
 _atlas = {}
 
@@ -35,7 +35,11 @@ _atlas = {}
 def piece(atlas, ff, key):
     if atlas not in _atlas:
         _atlas[atlas] = Image.open(SRC / atlas).convert('RGBA')
-    x, y, w, h = (kit_frames(int(ff[3:])) if ff.startswith('kit') else frames(ff))[key]
+    if ff is None:  # a JSON atlas beside the picture
+        j = json.loads((SRC / atlas).with_suffix('.json').read_text())['frames'][key]
+        x, y, w, h = j['x'], j['y'], j['w'], j['h']
+    else:
+        x, y, w, h = (kit_frames(int(ff[3:])) if ff.startswith('kit') else frames(ff))[key]
     return _atlas[atlas].crop((x, y, x + w, y + h))
 
 
@@ -317,6 +321,75 @@ def canvases(world):
     return C
 
 
+def canvases2(world):
+    """round 2 (2026-10-31): the pieces round 1 missed"""
+    C = {}
+    if world == 1:
+        C['w1-knots'] = (MAG, (1024, 512), [
+            ('knot-a', (60, 140, 400, 240), lambda w, h: _bracket(w, h, (150, 104, 70))),
+            ('knot-b', (560, 160, 400, 200), lambda w, h: _bracket(w, h, (176, 136, 96), True)),
+        ], [('stump', (20, 330, 200, 170), lambda w, h: fit(P1('stump'), w, h))])
+        C['w1-squirrel-ref'] = (MAG, (1024, 1024), [
+            ('ref', (212, 162, 600, 700), lambda w, h: fit(piece('assets/w6to10/gemini/story18-squirrels.webp', None, 'laughing'), w, h))], [])
+    if world == 2:
+        C['w2-gate'] = (GRN, (1024, 768), [
+            ('reed-gate-shut', (80, 120, 380, 560), lambda w, h: _reedgate(w, h, True)),
+            ('reed-gate-open', (560, 120, 380, 560), lambda w, h: _reedgate(w, h, False)),
+        ], [('reedTall', (20, 560, 120, 200), lambda w, h: fit(W2('reedTall'), w, h))])
+    if world == 4:
+        C['w4-veil'] = (BLK, (1024, 1024), [
+            ('veil-closed', (120, 60, 320, 900), lambda w, h: _veil(w, h, False)),
+            ('veil-parting', (580, 60, 320, 900), lambda w, h: _veil(w, h, True)),
+        ], [])
+        C['w4-mist'] = (BLK, (1536, 1024), [
+            ('mist-1', (40, 60, 700, 300), lambda w, h: _mist(w, h, 1)),
+            ('mist-2', (800, 60, 700, 300), lambda w, h: _mist(w, h, 2)),
+            ('mist-3', (400, 560, 700, 300), lambda w, h: _mist(w, h, 3)),
+        ], [])
+        C['w4-shadow'] = (WHT, (1536, 640), [
+            ('sov-shadow', (80, 80, 1376, 480), lambda w, h: _eagleshadow(w, h)),
+        ], [])
+    return C
+
+
+def _bracket(w, h, col, moss=False):
+    def d(g, w, h):
+        g.chord((6, -h * 0.9, w - 6, h - 6), 0, 180, fill=col + (255,), outline=INK + (255,), width=6)
+        for k in range(1, 4):
+            g.arc((6 + k * 18, -h * 0.9 + k * 12, w - 6 - k * 18, h - 6 - k * 16), 20, 160, fill=(110, 76, 52, 255), width=4)
+        g.rectangle((6, 0, w - 6, 14), fill=(120, 150, 60, 255) if moss else col + (255,))
+    return shape(w, h, d)
+
+
+def _mist(w, h, seed):
+    rng = np.random.default_rng(seed)
+    a = np.zeros((h, w), np.float32)
+    yy, xx = np.mgrid[0:h, 0:w]
+    for _ in range(40):
+        cx, cy = rng.uniform(0.12, 0.88) * w, rng.uniform(0.35, 0.65) * h
+        rx, ry = rng.uniform(0.08, 0.16) * w, rng.uniform(0.18, 0.3) * h
+        a = np.maximum(a, np.exp(-(((xx - cx) / rx) ** 2 + ((yy - cy) / ry) ** 2)))
+    a = (a * 230).clip(0, 230).astype(np.uint8)
+    rgb = np.dstack([np.full_like(a, 236), np.full_like(a, 240), np.full_like(a, 246)])
+    return Image.fromarray(np.dstack([rgb, a]), 'RGBA')
+
+
+def _eagleshadow(w, h):
+    s = piece('assets/enemies/sovereign-atlas.webp', 'sovereignAtlasData.ts', _sov_key())
+    a = np.asarray(s)[..., 3]
+    sil = Image.fromarray(np.dstack([np.full_like(a, 40), np.full_like(a, 44), np.full_like(a, 64), (a * 0.8).astype(np.uint8)]), 'RGBA')
+    return fit(sil.filter(ImageFilter.GaussianBlur(4)), w, h, 'mid')
+
+
+def _sov_key():
+    fr = frames('sovereignAtlasData.ts')
+    for k in ('glide', 'soar', 'fly', 'spread'):
+        for n in fr:
+            if k in n.lower():
+                return n
+    return max(fr, key=lambda n: fr[n][2] / max(1, fr[n][3]))
+
+
 def _slope():
     b = rotate(P1('branch'), 14)
     pile = PZ('acornPile').resize((180, 112), Image.LANCZOS)
@@ -470,10 +543,10 @@ def _anchor():
     return shape(160, 220, d)
 
 
-def build(world):
+def build(world, rnd=1):
     OUT.mkdir(exist_ok=True)
     meta = json.loads((OUT / 'cells.json').read_text()) if (OUT / 'cells.json').exists() else {}
-    for name, (keyc, size, cells, anchors) in canvases(world).items():
+    for name, (keyc, size, cells, anchors) in (canvases if rnd == 1 else canvases2)(world).items():
         cv = Image.new('RGBA', size, keyc + (255,))
         info = {'key': list(keyc), 'size': list(size), 'cells': {}, 'anchors': {}}
         for group, tgt in ((cells, 'cells'), (anchors, 'anchors')):
@@ -491,5 +564,6 @@ def build(world):
 
 
 if __name__ == '__main__':
-    for w in [int(a) for a in sys.argv[1:]] or [1, 2, 3, 4]:
-        build(w)
+    rnd = 2 if '--round2' in sys.argv else 1
+    for w in [int(a) for a in sys.argv[1:] if a.isdigit()] or [1, 2, 3, 4]:
+        build(w, rnd)

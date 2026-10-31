@@ -75,7 +75,9 @@ def items(world, rnd):
     return out
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' and sys.argv[1] == 'round2':
+    pass
+elif __name__ == '__main__':
     world = int(sys.argv[1]); rnd = sys.argv[2] if len(sys.argv) > 2 else '1'; ref = sys.argv[3] if len(sys.argv) > 3 else 'w1-4-sheets'
     its = items(world, rnd)
     for it in its:
@@ -87,3 +89,73 @@ if __name__ == '__main__':
     p = HERE / f'spec-w{world}-{rnd}.json'
     p.write_text(json.dumps(spec, indent=1))
     print(p, len(its), 'takes')
+
+
+# ---------------------------------------------------------------- round 2 (2026-10-31): what round 1 missed, all four worlds in one job
+END = ' The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.'
+SQ = ('Keep this exact same squirrel character: the same chubby red-brown squirrel with a cream belly, big fluffy tail, round head, '
+      'small ears and friendly face, same colours and proportions, drawn as a clean game sprite seen from the side. ')
+SQPOSE = {'sit': 'Change only his pose: sitting calmly upright on his haunches, paws together at his chest, tail curled up behind.',
+          'wave': 'Change only his pose: standing on his hind legs, waving one front paw high above his head, smiling.',
+          'haul': 'Change only his pose: pulling down hard with both front paws on a thick vertical rope that hangs from above, leaning back.',
+          'tip': 'Change only his pose: pushing a big brown acorn forward with both front paws, leaning into it.',
+          'run': 'Change only his pose: running fast on all four legs, side view, tail streaming out behind.'}
+BAT = ('Keep this exact same small brown fruit bat, same fur colours, leathery dark brown wings, big ears and short fox-like snout, same '
+       'painted style. ')
+BATPOSE = {'asleep': 'Show it hanging upside down by its feet, asleep, wings wrapped round its body, eyes shut.',
+           'stir': 'Show it hanging upside down by its feet, just woken, eyes wide open, wings starting to unfold.',
+           'flap1': 'Show it flying, seen from the side, both wings raised high.',
+           'flap2': 'Show it flying, seen from the side, both wings swept down.'}
+IMG2 = {'w1-knots': ('magenta #FF00FF', 'two bark shelf fungi that stick out of a rainforest tree trunk like little steps, flat mossy tops, '
+                     'warm browns, and a mossy tree stump.', (0.62, 0.74)),
+        'w2-gate': ('green #00FF00', 'a gate of lashed tan dry reeds tied with rope in a weathered wooden frame, shut, and the same wooden '
+                    'frame open and empty, and a cattail reed clump. Riverside fishing village.', (0.62, 0.74)),
+        'w4-veil': (None, 'two thin falling waterfall curtains of white and pale aqua water, the second one parted in the middle so you can '
+                    'see through it.', (0.5, 0.62)),
+        'w4-mist': (None, 'three soft drifting banks of white mountain mist, thick in the middle and feathered at the edges.', (0.45, 0.6)),
+        'w4-shadow': ('white #FFFFFF', 'the soft blurred dark blue-grey shadow of a huge eagle with spread wings, seen from below, a shadow '
+                      'only, no bird.', (0.35, 0.5))}
+
+
+def items2(world):
+    out = []
+    if world == 1:
+        for p, txt in SQPOSE.items():
+            for sd in (2, 6):
+                out.append({'name': f'sq-{p}-{sd}', 'start': 'w1-squirrel-ref.png', 'edit': True, 'prompt': SQ + txt + END, 'seed': sd,
+                            'w': 1024, 'h': 1024, 'neg': 'text, watermark, two squirrels, extra limbs, scenery, background'})
+                out.append({'name': f'sq-{p}-{sd}p', 'then': f'sq-{p}-{sd}', 'strength': 0.32, 'seed': 7, 'w': 1024, 'h': 1024,
+                            'loras': [['style', 0.8]], 'prompt': 'slothadv style, a chubby red-brown squirrel with a cream belly and a big '
+                            'fluffy tail, game sprite, thin dark ink outline, soft cel shading, on a flat magenta background.'})
+    if world == 3:
+        for p, txt in BATPOSE.items():
+            for sd in (2, 6):
+                out.append({'name': f'bat-{p}-{sd}', 'start': 'w3-bat-ref.png', 'edit': True, 'prompt': BAT + txt + END, 'seed': sd,
+                            'w': 1024, 'h': 1024, 'neg': 'text, watermark, two bats, sloth, mask, scenery, background'})
+    for name, (key, body, strengths) in IMG2.items():
+        if not name.startswith(f'w{world}-'):
+            continue
+        prompt = STYLE + body + ' ' + (TAIL.format(key=key) if key else FX_TAIL)
+        if key and key.startswith('white'):
+            prompt = 'slothadv style, ' + body + ' Soft painted shadow on a plain pure white background, no text.'
+        w, h = {'w1-knots': (1024, 512), 'w2-gate': (1024, 768), 'w4-veil': (1024, 1024), 'w4-mist': (1536, 1024),
+                'w4-shadow': (1536, 640)}[name]
+        for s in strengths:
+            for sd in (5, 17):
+                out.append({'name': f'{name}-s{round(s * 100)}-{sd}', 'start': f'{name}.png', 'prompt': prompt, 'strength': s, 'seed': sd,
+                            'w': w, 'h': h, 'loras': [['style', 0.8]], 'neg': NEG if key else NEG + ', outline, solid shapes'})
+    return out
+
+
+def round2(ref):
+    its = [it for w in (1, 2, 3, 4) for it in items2(w)]
+    spec = {'note': 'World 1-4 round 2 (squirrels on the story model, cave bats on the W8 bat, knots, reed gate, veil, mist, shadow)',
+            'base': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{ref}/reference/prop-sheets/qa-notes/w1-4-art/starts/',
+            'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors']}, 'items': its}
+    p = HERE / 'spec-w1to4-2.json'
+    p.write_text(json.dumps(spec, indent=1))
+    print(p, len(its), 'takes')
+
+
+if __name__ == '__main__' and sys.argv[1] == 'round2':
+    round2(sys.argv[2] if len(sys.argv) > 2 else 'w1-4-sheets')
