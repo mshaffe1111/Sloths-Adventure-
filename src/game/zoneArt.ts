@@ -9,6 +9,7 @@ import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
 import { drawBadWater } from './badWaterArt.ts';
 import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
+import { drawW10Bolt, drawW10Rod, drawW10Spikes } from './w10HazardArt.ts';
 import { drawW3Piece, w3ArtReady } from './w3Art.ts';
 import { drawW5Box, w5ArtReady } from './w5Art.ts';
 import { dotPropsReady, drawPiece } from './dotFlightArt.ts';
@@ -58,6 +59,8 @@ export function drawZoneBases(ctx: CanvasRenderingContext2D, zones: readonly Zon
     if (!visible(z, cam)) continue;
     if (z.kind === 'geyser') { drawVent(ctx, z, zoneState(z, t), t); continue; }
     if (z.kind === 'bolt') { drawRod(ctx, z, zoneState(z, t), t); continue; }
+    // (an iron spike bed: painted only, w10HazardArt.ts; nothing is drawn for the moment its sheet loads)
+    if (z.kind === 'spikes') { drawW10Spikes(ctx, z); continue; }
     if (z.kind === 'web') { drawWebBack(ctx, z); continue; }
     if (z.kind !== 'spore' || !z.emit) continue;
     const st = zoneState(z, t);
@@ -351,6 +354,8 @@ const ROD_H = 66;
 
 /** World 10's lightning rod (painted, boss-fx 'rodDark' / 'rodLit' on a 'scorch' mark): its orb charges up as it warns, lit when it strikes */
 function drawRod(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  // (World 10's painted rods, w10HazardArt.ts; the shapes below are the stand-in while the sheet loads)
+  if (drawW10Rod(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const charge = st.phase === 'warn' ? 0.25 + 0.75 * st.u : st.phase === 'active' ? 1 : 0.1;
   drawFx(ctx, 'scorch', cx, z.baseY + 4, (z.x1 - z.x0) * 1.6, { ay: 0.6, alpha: 0.8 });
@@ -371,6 +376,7 @@ function drawRod(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numbe
  * where it lands.
  */
 function drawBolt(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  if (drawW10Bolt(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const top = z.top;
   const len = z.baseY - 60 - top;

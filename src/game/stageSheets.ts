@@ -23,6 +23,8 @@
  *                  the minions its boss calls in (BOSS_MINIONS)
  *   dress          Worlds 1, 2 and 5's dressing sets (dressArt.ts, artDress.ts dressSets), for a built stage
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water and every other stage's first water
+ *   w10-hazards    World 10's painted rods, bolts, spike beds and rampart slabs (w10HazardArt.ts), every stage but the lair
+ *   w10            World 10's gen2 dressing and cover (w10Art.ts) and the General's soldiers (soldierSprite.ts)
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
  *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
  *   sentry         World 7's Stone Sentry (sentrySprite.ts), for 7-5 Stone Sentries
@@ -145,6 +147,9 @@ export function genFoes(world: number): string[] {
   return [...out];
 }
 
+/** the hunters World 10's gen2 stages lay besides the soldiers (gen2/worlds/w10.ts W10_CREATURES; the soldiers are the 'w10' sheets) */
+const W10_FOES: readonly string[] = ['ocelot', 'jaguar', 'tayra', 'harpy'];
+
 /** the minions a world's boss calls into its lair mid-fight (bossDefs.ts spawnMinion / dropMinion) */
 const BOSS_MINIONS: Record<number, readonly string[]> = { 1: ['goldsnake'], 5: ['spider'], 6: ['tayra'], 10: ['ocelot'] };
 
@@ -200,6 +205,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // the creatures it can draw, and their sheets (see foe: above)
   if (cfg.objectiveType === 'boss_lair') for (const f of BOSS_MINIONS[w] ?? []) out.push(`foe:${f}`);
   else if (!built) for (const f of genFoes(w)) out.push(`foe:${f}`);
+  // (World 10 on gen2: its own animals, the hunters met before and the General's soldiers, its dressing and its cover: w10Art.ts)
+  else if (isGen2Stage(cfg) && w === 10) out.push(...W10_FOES.map((f) => `foe:${f}`), 'w10');
   // (World 6 on gen2 on: a stage's animals, the eagle and the bushes change from roll to roll, so it asks for the world's whole set:
   // the old generator's, and every animal the gen2 world's manifest can lay, World 7's frog among them)
   else if (isGen2Stage(cfg) && w >= 6) out.push(...[...new Set([...genFoes(w), ...gen2Creatures(cfg.id)])].map((f) => `foe:${f}`), 'props2');
@@ -229,6 +236,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && cfg.id === '6-8') out.push('bad-water', 'w6-stilt');
   // (and the calm, clean water he swims in, with his swim sheets: swim.ts)
   if (isGen2Stage(cfg) && W6_SWIM_STAGES.includes(cfg.id)) out.push('swim');
+  // (World 10's storm: its painted rods, bolts, spike beds and rampart slabs, every stage but the General's lair: w10HazardArt.ts)
+  if (w === 10 && cfg.objectiveType !== 'boss_lair') out.push('w10-hazards');
   // Dot's perched poses: she perches in every stage (not her own flight, nor Meeca's stage, which has no Dot)
   out.push('perch');
   out.push(...everyStage(w));

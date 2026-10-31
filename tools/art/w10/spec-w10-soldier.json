@@ -1,0 +1,70 @@
+{
+ "tag": "w10-soldier",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 0.5
+ },
+ "clips": [
+  {
+   "name": "w10-soldiera-idle-s5",
+   "src": "../../stills/w5-soldiera-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump dark chocolate brown sloth soldier in an olive uniform and a soft field cap, holding a small lantern in his hand, stands at ease on the spot, breathing slowly, his lantern swaying gently from side to side in his hand, he blinks once, side view facing right the whole time, he stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "w10-soldiera-idle-s17",
+   "src": "../../stills/w5-soldiera-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump dark chocolate brown sloth soldier in an olive uniform and a soft field cap, holding a small lantern in his hand, stands at ease on the spot, breathing slowly, his lantern swaying gently from side to side in his hand, he blinks once, side view facing right the whole time, he stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "w10-soldiera-walk-s5",
+   "src": "../../stills/w5-soldiera-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump dark chocolate brown sloth soldier in an olive uniform and a soft field cap, holding a small lantern in his hand, walks in place on the spot with a slow, steady, plodding walking cycle, left foot then right foot, his lantern swinging gently with each step, a smooth looping walk, side view facing right the whole time, he stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "w10-soldiera-walk-s17",
+   "src": "../../stills/w5-soldiera-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump dark chocolate brown sloth soldier in an olive uniform and a soft field cap, holding a small lantern in his hand, walks in place on the spot with a slow, steady, plodding walking cycle, left foot then right foot, his lantern swinging gently with each step, a smooth looping walk, side view facing right the whole time, he stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "w10-soldierb-idle-s5",
+   "src": "../../stills/w5-soldierb-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump cinnamon brown sloth soldier in an olive uniform and a soft field cap with a rolled grey blanket on his back, holding a small lantern in his hand, stands at ease on the spot, breathing slowly, his lantern swaying gently from side to side in his hand, he blinks once, side view facing right the whole time, he stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "w10-soldierb-walk-s5",
+   "src": "../../stills/w5-soldierb-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump cinnamon brown sloth soldier in an olive uniform and a soft field cap with a rolled grey blanket on his back, holding a small lantern in his hand, walks in place on the spot with a slow, steady, plodding walking cycle, left foot then right foot, his lantern swinging gently with each step, a smooth looping walk, side view facing right the whole time, he stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  }
+ ]
+}

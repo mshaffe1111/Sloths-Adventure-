@@ -187,8 +187,8 @@ export interface LianaSwing {
 export type PlaceRule =
   | { kind: 'start' }
   | { kind: 'walk'; after: string; dy?: Range }
-  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
-  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; water?: boolean; soft?: boolean }
+  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean; spikes?: boolean }
+  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; water?: boolean; soft?: boolean; spikes?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
@@ -295,7 +295,16 @@ export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond
  */
 export type SectionZone =
   | { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number }
-  | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number };
+  | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number }
+  /** World 10: a lightning rod standing on `on`, `at` along it; its bolt strikes the column on a beat (BOLT) */
+  | { kind: 'bolt'; on: string; at: Range; period?: Range }
+  /** World 10: a gust lane over the gap between `from` and `to`, blowing `dir` (+1 right) on a beat (WIND); mirrored with the section */
+  | { kind: 'gust'; from: string; to: string; dir: 1 | -1 };
+
+/** a lightning rod's column (World 10): 56 px wide, its strike from high above; Easy warns longer and strikes less often */
+export const BOLT = { w: 56, height: 560, warn: 1.4, warnEasy: 1.9, active: 0.9, period: [4.4, 5.4], easySlower: 1.2 } as const;
+/** a gust lane (World 10's storm): under levelCheck's 160 px/s, long quiet spells to jump in */
+export const WIND = { pad: 170, warn: 1.4, active: 2.4, period: [6.2, 7.4], force: 130, forceEasy: 90 } as const;
 
 /** a tide zone's defaults (zones.ts tideRecipes): a long low spell, a rise you can see coming, high water */
 export const TIDE = { low: [5.6, 7.0], warn: 1.8, active: 2.2, force: 190 } as const;

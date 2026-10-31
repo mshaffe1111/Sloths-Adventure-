@@ -39,9 +39,9 @@ function played(id: string, variant: number, easy: boolean): Played {
   }
 }
 
-test('gen2 builds 5-7, 5-9, World 6 but 6-8, World 7 but its ascents (7-2, 7-4, 7-8), and World 8 but 8-4, 8-7 and 8-10, each from the kit its 16 shipped rolls were curated on', () => {
-  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9', '7-1', '7-3', '7-5', '7-6', '7-7', '7-9', '8-1', '8-2', '8-3', '8-5', '8-6', '8-8', '8-9']);
-  for (const id of ['5-8', '6-8', '7-2', '7-4', '7-8', '7-10', '8-4', '8-7']) assert.equal(isGen2Stage(lv(id)), false, id);
+test('gen2 builds 5-7, 5-9, World 6 but 6-8, World 7 but its ascents (7-2, 7-4, 7-8), World 8 but 8-4, 8-7 and 8-10, and World 10 but its ascents (10-2, 10-4, 10-5, 10-8), each from the kit its 16 shipped rolls were curated on', () => {
+  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['10-1', '10-3', '10-6', '10-7', '10-9', '5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9', '7-1', '7-3', '7-5', '7-6', '7-7', '7-9', '8-1', '8-2', '8-3', '8-5', '8-6', '8-8', '8-9']);
+  for (const id of ['5-8', '6-8', '7-2', '7-4', '7-8', '7-10', '8-4', '8-7', '10-2', '10-4', '10-5', '10-8', '10-10']) assert.equal(isGen2Stage(lv(id)), false, id);
   for (const id of Object.keys(GEN2_STAGES)) {
     const e = GEN2_SEEDS[id];
     assert.ok(e, `${id}: no curated rolls in seeds.ts`);
@@ -78,6 +78,7 @@ test('every shipped roll, Normal and Easy, as the game plays it: the checker pas
         if (easy) assert.deepEqual(easyHoldCheck(st), [], `${at}: a ~70% hold finishes it`);
         if (st.config.worldIndex === 5) assert.ok(st.proto?.w5, `${at}: World 5's extras reach the engine`);
         if (st.config.worldIndex === 6) assert.ok((st.proto?.gen2 as { w6?: unknown } | undefined)?.w6, `${at}: World 6's extras reach the engine`);
+        if (st.config.worldIndex === 10) assert.ok((st.proto?.gen2 as { w10?: unknown } | undefined)?.w10, `${at}: World 10's extras reach the engine`);
         if (st.config.worldIndex === 7) assert.ok((st.proto?.gen2 as { w7?: unknown } | undefined)?.w7, `${at}: World 7's extras reach the engine`);
         // (7-7 hides the Thorn Gate on a ledge over the start, reached by a mushroom behind him: stageGenerator addSecrets)
         if (id === '7-7') assert.ok(st.collectibles.some((c) => c.type === 'thorn_gate' && c.x < st.spawnX + 400), `${at}: the secret gate`);
@@ -159,6 +160,18 @@ test("a World 6 gen2 stage loads World 6's kit, the kit pieces for its room, and
     // (the water signs and the dirty, fast water have sheets of their own: stageSheets.ts water-signs, bad-water)
     assert.equal(sheets.includes('water-signs'), gen2Water(id), `${id}: the water signs exactly when it has water`);
     assert.ok(sheets.includes('bad-water'), `${id}: the dirty, fast water (its creeks and its tide)`);
+    assert.deepEqual(stageSheets(lv(id), { ...on, hand: false }), sheets, `${id}: whatever the hand-built switch`);
+  }
+});
+
+test("a World 10 gen2 stage loads World 10's kit, its dressing and soldiers, and its hunters' sheets", () => {
+  const on = { hand: true, paint: true, ctest: false };
+  for (const id of Object.keys(GEN2_STAGES).filter((k) => k.startsWith('10-'))) {
+    const sheets = stageSheets(lv(id), on);
+    assert.deepEqual(sheets.slice(0, 2), ['kit:1', 'kit:10'], id);
+    assert.ok(sheets.includes('w10'), `${id}: the dressing, the cover and the soldiers (w10Art.ts, soldierSprite.ts)`);
+    for (const f of ['ocelot', 'jaguar', 'tayra', 'harpy']) assert.ok(sheets.includes(`foe:${f}`), `${id}: ${f}`);
+    assert.ok(!sheets.includes('props2'), `${id}: no jungle bushes (its cover is crates)`);
     assert.deepEqual(stageSheets(lv(id), { ...on, hand: false }), sheets, `${id}: whatever the hand-built switch`);
   }
 });

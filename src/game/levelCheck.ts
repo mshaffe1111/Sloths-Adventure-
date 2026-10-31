@@ -846,7 +846,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
         if (t.width !== CRUMBLE_TILE_W) errors.push(`${at}: tile of unexpected width ${t.width}`);
       }
     }
-    if (isDamaging(z)) {
+    if (isDamaging(z) && !isStatic(z)) {
       if (z.warn < 1.1) errors.push(`${at}: a damaging zone needs at least 1.1s of warning`);
       if (z.active > 1.2) errors.push(`${at}: a damaging zone fires for ${z.active}s, too long to dodge`);
       // a safe pocket between neighbours: room to stand between two columns while one of them fires

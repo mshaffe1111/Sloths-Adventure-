@@ -33,6 +33,8 @@ import {
   MARGIN,
   QUIET,
   TIDE,
+  BOLT,
+  WIND,
   versionKey,
   WATER_LINE,
   WATER_WARN,
@@ -368,6 +370,8 @@ interface LocalGap {
   /** a gap under a liana (a `land` perch past it), or a glide gap: its soft pit climbs back to the take-off ledge (`lips`: that ledge's top, the
    *  perch's), never forward to the perch */
   back?: { lips: [number, number] };
+  /** an iron spike bed (the rule's `spikes`, World 10): a soft pit whose floor is spikes on Normal (zones.ts 'spikes') */
+  spikes?: boolean;
 }
 /** a section laid out in its own space: its entry anchor at (0, 0) */
 export interface LocalLayout {
@@ -495,7 +499,9 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y + dy;
       // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
       const back = glide && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
+      // (an iron spike bed, World 10: a soft pit whose floor bristles with spikes on Normal, a plain soft pit on Easy)
+      const spikes = !!pl.spikes && !pl.water;
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft || spikes, ...(pl.water ? { water: true } : {}), ...((pl.soft || spikes) && !pl.water ? { soft: true } : {}), ...(spikes ? { spikes } : {}), ...back });
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -917,6 +923,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
           else pitUnder(g0.x0, g0.x1, g0.y, g0.y, false, g.soft);
           placed.seam.push(...platforms.slice(before));
+          // (an iron spike bed: the pit's floor up to its first step bristles on Normal; Easy's falls stay soft, so its pit is plain)
+          if (g.spikes && budget.difficulty !== 'easy' && platforms.length > before) {
+            const [floor, ...steps] = platforms.slice(before);
+            const end = Math.min(floor.x + floor.width, ...steps.map((st) => st.x));
+            if (end - floor.x > 40) zones.push({ kind: 'spikes', x0: floor.x + 6, x1: R(end - 6), top: floor.y - 60, bottom: floor.y + 14, baseY: floor.y, dir: 1, period: 1, warn: 0, active: 1, offset: 0, force: 0 });
+          }
         }
       }
       // the sockets, bound to their piece (t along its top, dn above it)
@@ -959,6 +971,29 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
             const dir = z.dir ?? 1;
             zones.push({ kind: 'wind', x0: R(Math.min(x0, x1) - 140), x1: R(Math.max(x0, x1) + 140), top: lipY - 260, bottom: lipY + 80, baseY: lipY, dir, period, warn, active, offset: R(srng() * period * 10) / 10, force: Math.min(160, z.force ?? 110) });
           }
+        } else if (z.kind === 'bolt') {
+          // a lightning rod on the piece `on` (World 10): it charges for `warn` s, then the bolt strikes its column for `active` s, on its
+          // own beat (levelCheck: >= 1.1 s warning, <= 1.2 s strike, >= 2 s quiet, 110 px to the next column)
+          const p = pieceOf(z.on);
+          const t0 = Math.max(0, Math.min(1, roll(srng, z.at)));
+          const cx = p.x + (mirrored ? 1 - t0 : t0) * p.width;
+          const easy = budget.difficulty === 'easy';
+          const warn = easy ? BOLT.warnEasy : BOLT.warn;
+          const period = roll(srng, z.period ?? BOLT.period) + (easy ? BOLT.easySlower : 0);
+          zones.push({ kind: 'bolt', x0: R(cx - BOLT.w / 2), x1: R(cx + BOLT.w / 2), top: p.y - BOLT.height, bottom: p.y + 14, baseY: p.y, dir: 1, period, warn, active: BOLT.active, offset: R(srng() * period * 10) / 10, force: 0 });
+          placed.beats.push({ x: R(cx), letter: 'S' });
+        } else if (z.kind === 'gust') {
+          // a gust lane over the gap from `from` to `to` (World 10's storm, World 4's gusts): it blows on a beat, helping or hindering the jump
+          const a = pieceOf(z.from);
+          const b = pieceOf(z.to);
+          const lo = Math.min(a.x + a.width, b.x + b.width) === a.x + a.width ? a : b;
+          const hi = lo === a ? b : a;
+          const easy = budget.difficulty === 'easy';
+          const warn = WIND.warn;
+          const period = roll(srng, WIND.period);
+          const dir = (mirrored ? -z.dir : z.dir) as 1 | -1;
+          zones.push({ kind: 'wind', x0: R(lo.x + lo.width - WIND.pad), x1: R(hi.x + WIND.pad), top: Math.min(lo.y, hi.y) - 230, bottom: Math.max(lo.y, hi.y) + 70, baseY: Math.max(lo.y, hi.y), dir, period, warn, active: WIND.active, offset: R(srng() * period * 10) / 10, force: easy ? WIND.forceEasy : WIND.force });
+          placed.beats.push({ x: R(lo.x + lo.width), letter: 'S' });
         }
       }
       // (its crumbling tiles, one crumble zone over them: levelCheck's tile rules hold inside it, and nothing stands in it; it ends at

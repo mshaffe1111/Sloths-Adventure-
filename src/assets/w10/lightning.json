@@ -1,0 +1,66 @@
+{
+ "image": "lightning.webp",
+ "size": [
+  1083,
+  704
+ ],
+ "frames": {
+  "bolt0": {
+   "x": 0,
+   "y": 0,
+   "w": 130,
+   "h": 704,
+   "ax": 79.0,
+   "ay": 704
+  },
+  "bolt1": {
+   "x": 134,
+   "y": 0,
+   "w": 126,
+   "h": 704,
+   "ax": 15.0,
+   "ay": 704
+  },
+  "bolt2": {
+   "x": 264,
+   "y": 0,
+   "w": 124,
+   "h": 704,
+   "ax": 84.0,
+   "ay": 704
+  },
+  "bolt3": {
+   "x": 392,
+   "y": 0,
+   "w": 132,
+   "h": 704,
+   "ax": 71.0,
+   "ay": 704
+  },
+  "burst-flash": {
+   "x": 528,
+   "y": 0,
+   "w": 232,
+   "h": 138,
+   "ax": 110,
+   "ay": 120
+  },
+  "burst-crackle": {
+   "x": 764,
+   "y": 0,
+   "w": 190,
+   "h": 122,
+   "ax": 94,
+   "ay": 110
+  },
+  "burst-fade": {
+   "x": 958,
+   "y": 0,
+   "w": 125,
+   "h": 138,
+   "ax": 64,
+   "ay": 120
+  }
+ },
+ "note": "World 10 lightning (HF img2img, tools/art/w10/cut1.py): bolt0-3 tall strikes, anchor = strike point at the bottom; burst-flash/crackle/fade at the foot, anchor = ground contact. Painted on black, alpha from brightness: draw with globalCompositeOperation \"lighter\"."
+}

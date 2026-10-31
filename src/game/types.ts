@@ -234,9 +234,9 @@ export interface Enemy {
   /** 2-9: a snapper of the river king's guard: stands upright with a spear, jabs further, blocks a blow to the front instead of hiding,
    *  and is staggered back by a kick (it shares the snapper's brain, predatorAI.ts) */
   royal?: boolean;
-  /** drawn as another creature than its kind: World 7's Stone Sentry fights as a prowler (an ocelot's brain, score and checks) and only
-   *  looks like a sentry (sentrySprite.ts) */
-  look?: 'sentry';
+  /** drawn as another creature than its kind: World 7's Stone Sentry and World 10's soldier fight as a prowler (an ocelot's brain, score
+   *  and checks) and only look like a sentry (sentrySprite.ts) or the General's soldier (soldierSprite.ts) */
+  look?: 'sentry' | 'soldier';
   /** a snapper listening to the puzzle kit's noise (noise.ts): where the noise is; it walks there along its ground and notices nobody */
   lureX?: number;
   /** predator AI: where it started this move, and where it is going */
@@ -396,6 +396,8 @@ export interface Vine {
   kit?: boolean;
   /** not there now (a ladder still rolled up, a sapling bent over): it cannot be grabbed */
   off?: boolean;
+  /** how a swinging liana is drawn where the world has more than one look (World 10: 'chain', 'banner', 'cage', 'rope', w10SwingArt.ts) */
+  hangLook?: string;
 }
 
 /** A rope stretched across a gap. Pokey can hang from it and shimmy along it once he has learned the skill (see rope.ts). */
