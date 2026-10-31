@@ -33,6 +33,13 @@ if (SCENE === 'vine') {
   SCRIPT.push([1, 'down ArrowUp'], [4, 'up ArrowUp'], [6, 'down ArrowRight'], [40, 'up ArrowRight'], [55, 'down ArrowRight'], [75, 'up ArrowRight'], [100, 'down Space'], [103, 'up Space']);
   N = 125;
 }
+// SCENE=slide: 7-4, put just short of the crumbling floor; the floor goes, and on the flume he leans right, leans left, jumps and ducks
+if (SCENE === 'slide') {
+  SCRIPT.length = 0;
+  SCRIPT.push([10, 'down ArrowRight'], [20, 'up ArrowRight'], [110, 'down ArrowRight'], [150, 'up ArrowRight'], [165, 'down ArrowLeft'],
+    [205, 'up ArrowLeft'], [220, 'down Space'], [224, 'up Space'], [260, 'down ArrowDown'], [290, 'up ArrowDown']);
+  N = 320;
+}
 if (SCENE === 'climb') {
   SCRIPT.length = 0;
   SCRIPT.push([10, 'down ArrowUp'], [38, 'up ArrowUp'], [48, 'down ArrowDown'], [80, 'up ArrowDown']);
@@ -58,6 +65,7 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   // a flat open stretch of 1-1's first ground, Pokey stood still facing right
   await p.evaluate((sc) => { let e = window.__engine; if (typeof e === 'function') e = e(); const pl = e.player;
     Object.assign(pl, { vx: 0, vy: 0, facing: 1 });
+    if (sc === 'slide') Object.assign(pl, { x: e.slideRun.st.crumbleX - 90 });
     if (sc === 'vine') {
       const v = e.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off);
       Object.assign(pl, { x: v.x - 200 });
@@ -78,6 +86,8 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   // (the liana is reached in the air, so he is put there once the loop is ours: in the settle before it he would fall to the ground)
   if (SCENE === 'vine') await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e();
     const v = e.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off);
+    // (the lianas sway on the engine's vine clock, which ran on for however long the page took to get here: set it, or no two runs agree)
+    e.vineClock = 0;
     Object.assign(e.player, { x: v.x, y: v.topY + 90, grounded: false, vx: 0, vy: 0 }); });
   const trace = [];
   const box = [];
