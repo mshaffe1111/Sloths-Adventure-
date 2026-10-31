@@ -1,0 +1,121 @@
+{
+ "tag": "wpf",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/X/tools/art/hfstory/picks/",
+ "items": [
+  {
+   "name": "wp-1-day-s64-full",
+   "start": "bucket:hfcut/out/wp-1-day-s64.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a lush emerald rainforest canopy in clear morning light: a great mossy old tree trunk, hanging lianas, big ferns and bromeliads, pink petals on the moss, warm sunbeams slanting through green leaves, a sweep of jungle hills far behind. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, big flat leaf, cyan leaf",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-1-storm-s64-full",
+   "start": "bucket:hfcut/out/wp-1-storm-s64.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, the same emerald rainforest canopy as a storm breaks: a dark green-blue sky, wind tossing the leaves, slanting rain, the great mossy trunk wet and gleaming, leaves torn loose in the air, dramatic but readable. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, big flat leaf, cyan leaf",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-5-day-s64-full",
+   "start": "bucket:hfcut/out/wp-5-day-s64.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, an orchid sanctuary in bright warm light: giant pink and white orchids, huge glossy leaves, golden light through the canopy, a mossy forest floor with small flowers. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-5-dusk-s64-full",
+   "start": "bucket:hfcut/out/wp-5-dusk-s64.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, an orchid sanctuary at amber dusk: giant orchids glowing in low golden light, huge leaves in silhouette, warm haze of pollen sparkles, long soft shadows. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-7-day-s64-full",
+   "start": "bucket:hfcut/out/wp-7-day-s64.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, ancient jungle ruins in warm daylight: mossy carved stone pillars and an archway, roots growing over old steps, sun shafts through tall trees. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, doorway, glowing gate, target symbol, sign",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/X/",
+ "keep": [
+  "wp-1-day-s64-full",
+  "wp-1-storm-s64-full",
+  "wp-5-day-s64-full",
+  "wp-5-dusk-s64-full",
+  "wp-7-day-s64-full"
+ ]
+}

@@ -4,3 +4,9 @@ live-a0 6ae65e52 + live-a1 6ae65e57 created 21:32Z with timeout "1h30m" = 1 s by
 live-a0 6ae65e6a0e0338d1bb7d4457 created 21:32Z: spec-live-a.json part 0 of 2 (Wan 2.2 I2V clips of 10 plates, 704x752, no motion model)
 live-a1 6ae65e6d0e0338d1bb7d4459 created 21:32Z: part 1 of 2
 wp-redo 6ae660820e0338d1bb7d44b9 created 21:41Z: spec-wp-redo.json, W2 day + W3 night/glow/storm again from clean starts (starts2/), 2 strengths
+wp-redot 6ae662d60e0338d1bb7d44f6 created 21:51Z: spec-wp-redot.json, W4 day, W6 dusk/day, W8 night, W9 dusk/night with the floor said outright
+wp-redou 6ae662fcc78863f9c62f4f4f created 21:52Z: spec-wp-redou.json, W2 day (sand bank), W1 dusk
+draft verdicts: KEPT 1-day s64, 1-storm s64, 5-day s64, 5-dusk s64, 7-day s64, 10-storm s64, 3-night r72, 3-glow r72, 3-storm r72.
+  THROWN: 2-day s64 (game's water band, teal frond kept), 2-day r72 (garbled lettering), 2-day r62 (lily pond where the cast stand),
+  3-night s64 (moths, a flat dark slab), 6-dusk s64 (floor is water), 8-night s64 (blotchy bokeh), 9-dusk s64 (floor is lava),
+  1-dusk s64 (flat, muddy), 4-day s64 (sideways the cast stand over the mist pool: redone with a rock ledge)
