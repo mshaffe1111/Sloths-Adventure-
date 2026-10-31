@@ -172,6 +172,8 @@ export const W8_MANIFEST: WorldManifest = {
   // pit: w8Game.ts w8Falls. Easy's falls are all soft)
   pit: 'void',
   pitDepth: W8_GROUND.pitDepth,
+  // (the first 1,300 px from the spawn one unbroken ground: safeStart.test.ts, stageGenerator SAFE_START)
+  safeStart: 1300,
   corridor: { top: G - 180, bottom: G + 80, soft: 60 },
   creatures: W8_CREATURES,
   props: W8_PROPS,

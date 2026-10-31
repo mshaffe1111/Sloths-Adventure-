@@ -988,6 +988,23 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (tpl.teaches) taught.add(tpl.teaches);
       const exitP = pieceOf(L.exit.piece);
       cur = { x: ox + L.exit.x, y: oy + L.exit.y, kind: L.exit.kind, piece: exitP };
+      // (a safe start, M.safeStart: the runway and the start section's ground, unbroken from the spawn; a plain bank after the start
+      // for what they leave short, so the next section's first gap or animal is past it)
+      if (n.phase === 'start' && M.safeStart && cur.kind === 'ground') {
+        let reach = SPAWN_X;
+        for (const p of platforms.filter((q) => q.type !== 'fragile' && q.type !== 'bouncy' && q.y >= runway.y - 400 && q.y <= runway.y + 60).sort((a, b) => a.x - b.x)) {
+          if (p.x > reach + 1) break;
+          reach = Math.max(reach, p.x + p.width);
+        }
+        const short = SPAWN_X + M.safeStart + 40 - cur.x;
+        if (reach >= cur.x - 1 && short > 0) {
+          const fill = mk(cur.x, cur.y, short, 'bank', 0);
+          placed.x1 = Math.max(placed.x1, fill.x + fill.width);
+          cur = { x: fill.x + fill.width, y: fill.y, kind: 'ground', piece: fill };
+          secs += short / budget.walkSpeed;
+          placed.seconds += short / budget.walkSpeed;
+        }
+      }
       if (n.phase === 'start' || n.phase === 'goal') break;
     }
   }

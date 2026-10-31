@@ -196,10 +196,11 @@ const litGate = (theme: 'climbers' | 'prowlers' | 'leapers' | 'chains' | 'night'
       theme === 'climbers'
         ? [bank('a', [220, 250]), ...climbWall('v', 'a', 'wall', 150, [200, 230]), down('b', 'wall', 150, [180, 210])]
         : theme === 'leapers'
-          ? [bank('a', [240, 270]), wide('b', 'a', [200, 230], [0.6, 0.7]), up('k', 'b', 30, [130, 150]), down('c', 'k', 30, [160, 190])]
+          ? // (its gap past the safe start, 1,300 px from the spawn: safeStart.test.ts; the runway is 640 px, the spawn at 140)
+            [bank('a', [820, 850]), wide('b', 'a', [200, 230], [0.6, 0.7]), up('k', 'b', 30, [130, 150]), down('c', 'k', 30, [160, 190])]
           : [bank('a', [200, 230]), ...landingK.pieces],
     last: theme === 'climbers' ? 'b' : theme === 'leapers' ? 'c' : landingK.last,
-    sockets: [scenery('nest', 'a', [0.3, 0.5], 0.8), petals('a2', 'a', 0.8, 1)],
+    sockets: [scenery('nest', 'a', [0.3, 0.5], 0.8), petals('a2', 'a', 0.8, 1), ...(theme === 'leapers' ? [petals('a1', 'a', 0.35, 3, 110)] : [])],
     mirrorable: false,
   });
 const litGates = (['climbers', 'prowlers', 'leapers', 'chains', 'night', 'gusts', 'bats', 'bounces', 'perches', 'fungusSteps', 'loft', 'dozers'] as const).map(litGate);
@@ -424,7 +425,9 @@ const batRunDark = section({
  * 8-3's knot perches (GRAB-BAG.md H, its own theme): little knots on the bough's side, a run of short precise hops across a gap (each over a
  * soft floor: a slip costs a climb back, never a life). Up, down, up: the hops are their own rhythm between 8-3's swings
  */
-const perch = (key: string, after: string, dy: number, share: W = [0.4, 0.55]): SectionPiece => ({ key, shape: 'branch', style: 'fungus_shelf', w: [70, 86], place: { kind: 'jump', after, dy, share, soft: true } });
+// (the painted fungus on one perch of a run, the middle one, plain branch stubs either side: no look over 40% of a stage's thin
+// platforms, platformPlan.test.ts; with every perch a bracket 8-3's perch rolls were 95% shelf)
+const perch = (key: string, after: string, dy: number, share: W = [0.4, 0.55]): SectionPiece => ({ key, shape: 'branch', ...(key === 'p2' ? { style: 'fungus_shelf' as const } : {}), w: [70, 86], place: { kind: 'jump', after, dy, share, soft: true } });
 const perchLand = (key: string, after: string, dy: number, w: W): SectionPiece => bank(key, w, { kind: 'jump', after, dy, share: [0.4, 0.55], soft: true }, { landing: true });
 const perchRun = section({
   id: 'w8-perch-run',
@@ -471,14 +474,16 @@ const perchHunter = section({
  * Shelf-fungus steps (GRAB-BAG.md J, 8-2's and 8-5's own theme): brackets of fungus up a trunk's face, short hops up them in place of a climb
  * (hop, hop, hop up the trunk), the top bough past them and a step back down. 8-2's have blooms on the brackets, 8-5's a hunter at the foot
  */
-const step = (key: string, after: string, dy: number): SectionPiece => ({ key, shape: 'branch', style: 'fungus_shelf', w: [76, 92], place: { kind: 'jump', after, dy, share: [0.34, 0.44], soft: true } });
+// (the painted fungus on the first step of a stair, plain branch stubs above it: a stage's thin platforms keep a mix of looks, no
+// look over 40% of them, platformPlan.test.ts; with every step a bracket 8-2's fungus rolls were 97% shelf)
+const step = (key: string, after: string, dy: number, fungus = true): SectionPiece => ({ key, shape: 'branch', ...(fungus ? { style: 'fungus_shelf' as const } : {}), w: [76, 92], place: { kind: 'jump', after, dy, share: [0.34, 0.44], soft: true } });
 const stepTop = (key: string, after: string, dy: number, w: W): SectionPiece => bank(key, w, { kind: 'jump', after, dy, share: [0.34, 0.44], soft: true }, { landing: true });
 const stair = (p: string, after: string, n: number, rise: number[]): { pieces: SectionPiece[]; last: string; total: number } => {
   const out: SectionPiece[] = [];
   let prev = after;
   let total = 0;
   for (let i = 1; i <= n; i++) {
-    out.push(step(`${p}${i}`, prev, -rise[(i - 1) % rise.length]));
+    out.push(step(`${p}${i}`, prev, -rise[(i - 1) % rise.length], i === 1));
     total += rise[(i - 1) % rise.length];
     prev = `${p}${i}`;
   }
