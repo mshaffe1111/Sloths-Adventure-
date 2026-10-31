@@ -18,3 +18,7 @@ live verdicts: courtyard, nest-night, gates KEPT (8 MB decoded cap, 12-frame cro
 round 3/4 verdicts: KEPT 4-day t62 (a creature grew from the start's feather: painted out by hand after the full pass), 6-dusk t62, 8-night t72, 2-day u62. THROWN: 4-day t72 (creature), 6-dusk t72 (flat), 9-dusk t62 (abstract texture), 6-day t62/t72 (floor is water; W6 day keeps its scenery, 9 panels)
 wp-full3 6ae6641c0e0338d1bb7d4565 created 21:56Z: full pass for 4-day t62, 6-dusk t62, 8-night t72, 2-day u62
 KEPT 9-dusk t72, 1-dusk u72
+wp-full4 6ae66436c78863f9c62f4feb created 21:57Z: full pass for 9-dusk t72, 1-dusk u72
+live-a0 cancelled 21:58Z after village (grandma-door unrun: lantern detail would blur like tea and village); ~26 min ~$1.2
+THROWN 9-night t62/t72 (muddy haze): W9 night keeps its scenery (mem-gates)
+in-game verdicts: KEPT w1-day, w1-storm, w3-night, w5-day. DROPPED w10-storm (sideways loses the painted fortress and moon the scenery had), w3-glow (muddy olive under the glow mood)

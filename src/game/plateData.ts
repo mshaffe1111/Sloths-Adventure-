@@ -37,6 +37,10 @@ export const PLATES: Record<string, PlateInfo> = {
   ruins: { ground: 0.85, what: 'the council ruins: ten mossy stone seats in a ring round a cracked floor with a faint sigil, an eleventh plain chair apart with leaves on it' },
   village: { ground: 0.86, what: "the village the morning after the storm, with Lieutenant Pell's tailor shop and a tea table" },
   'drake-cave': { ground: 0.85, what: "the Magma Drake's cave from inside: lava light through a crack, everything he owns heaped behind a big boulder at the left with his gold, a huge lumpy red knitted tea cosy slumped against it" },
+  'w1-day': { ground: 0.8, what: "World 1's story place, day: the emerald canopy (hf-cutscenes, from the world's own story scenery)" },
+  'w1-storm': { ground: 0.8, what: "World 1's story place, storm: the emerald canopy (hf-cutscenes, from the world's own story scenery)" },
+  'w3-night': { ground: 0.8, what: "World 3's story place, night: the mossy grotto (hf-cutscenes, from the world's own story scenery)" },
+  'w5-day': { ground: 0.8, what: "World 5's story place, day: the orchid sanctuary (hf-cutscenes, from the world's own story scenery)" },
 };
 
 export function isPlate(key: string | undefined): key is string {
@@ -49,7 +53,12 @@ export function isPlate(key: string | undefined): key is string {
  * of its own, no camera following a walker, no castle and no line-up stands in its world's plate (`withWorldPlate`), its cast on the same
  * ground line as before (0.8). Key: `${world}-${mood}`.
  */
-export const WORLD_PLATES: Record<string, string> = {};
+export const WORLD_PLATES: Record<string, string> = {
+  '1-day': 'w1-day',
+  '1-storm': 'w1-storm',
+  '3-night': 'w3-night',
+  '5-day': 'w5-day',
+};
 
 /** the scene as drawn: its own plate, or its world's plate for this mood when there is one (the cast keep their ground line) */
 export function withWorldPlate<S extends { world: number; mood: string; plate?: string; follow?: unknown; castle?: number; lineup?: boolean; ground?: number }>(scene: S): S {

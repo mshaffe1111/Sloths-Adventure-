@@ -17,7 +17,7 @@ WHAT = {
 src = Path(sys.argv[1])
 rows, maps = [], []
 for f in sorted(src.glob('wp-*-full.png')):
-    m = re.match(r'wp-(\d+)-([a-z]+)-s\d+-full\.png', f.name)
+    m = re.match(r'wp-(\d+)-([a-z]+)-[srtu]\d+-full\.png', f.name)
     w, mood = m.group(1), m.group(2)
     key = f'w{w}-{mood}'
     im = Image.open(f).convert('RGB')
