@@ -12,7 +12,7 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
 
 ## Rules that are easy to break
 
-- **Pushing**: push only when Matt says "push". Then open the PR with `gh api …/pulls` (GraphQL is blocked) and give him the PR link. He merges it himself. Then check the deploy run succeeded (HANDOFF §7).
+- **Pushing**: push only when Matt says "push". Then open the PR with `gh api …/pulls` (GraphQL is blocked) and give him the PR link. He merges it himself. Then check the deploy run succeeded (HANDOFF §7), and tag the merged main commit `vYYYY.MM.DD-x` and push the tag, so the APK workflow puts the APK on the repo's Releases page (Matt, 2026-10-30: "going forward, put the APK on the release page").
 - **Helper effort (Matt, 2026-10-28):** the lead sets each helper's effort to balance Matt's tokens: low for following written steps, medium for measuring and small fixes, high for building stages, engine work and reviews; never xhigh or max unless Matt asks (`reference/LEAD-PLAYBOOK.md` §7).
 - **Safe-keeping pushes (Matt, 2026-10-28):** push the work branch whenever it holds work worth keeping (the container is temporary); that is not a release. A release (PR, merge, live site) still waits for Matt's "push".
 - **Test link**: after every round of changes, rebuild and republish Matt's test link in place (`python3 tools/testlink/build.py`, then the Artifact tool; HANDOFF §6).
