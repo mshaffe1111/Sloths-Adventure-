@@ -114,6 +114,34 @@ def spec5(commit):
     print(len(ed), 'edit items,', len(cl), 'clips')
 
 
+SLIDE_KEEP = ('Keep him seen exactly from behind as in Picture 1, sitting on his bottom with his legs stretched out in front of him so '
+              'only the soles of his feet show below him, the same brown fur seen from the back, the same pale bandage wrist wraps, the '
+              'same thin brown satchel strap running from his left shoulder down to the small brown bag on his right hip, the same thin '
+              'dark outline, the same soft painted cartoon style, the same size and the same flat plain grey background. Nothing else in '
+              'the picture.')
+SLIDE_NEG = ('face, front view, side view, standing, extra limbs, extra arms, extra sloth, chute, floor, background scenery, photo, '
+             '3d render, text, watermark, blurry, bag on the left hip, two bags')
+
+
+def spec6(commit):
+    """7-4's slide from behind: his grip pose (arms hanging) given a real slide's balance and lean (Qwen-Edit, Pokey model 0.4)"""
+    st = f'gh:{commit}:reference/prop-sheets/qa-notes/pokey-anim/starts/'
+    poses = {
+        'slide': 'The sloth in Picture 1 is sliding fast down a smooth chute away from us, sitting the way the sloth in Picture 2 sits: '
+                 'he leans back a little and holds both arms out low to the sides for balance, paws open, elbows slightly bent.',
+        'leanR': 'The sloth in Picture 1 is sliding fast down a smooth chute away from us and leaning his whole body over to the right into '
+                 'a curve: his head and back tip to the right, his right arm reaches out low to the right for balance, his left arm is '
+                 'raised up and out to the left.',
+        'leanL': 'The sloth in Picture 1 is sliding fast down a smooth chute away from us and leaning his whole body over to the left into '
+                 'a curve: his head and back tip to the left, his left arm reaches out low to the left for balance, his right arm is '
+                 'raised up and out to the right.',
+    }
+    ed = [{'name': f'slide-{n}', 'src': st + 'slide_grip.png', 'refs': [st + 'slide_ref9.png'] if n == 'slide' else [], 'w': 768, 'h': 768,
+           'prompt': t + ' ' + SLIDE_KEEP, 'neg': SLIDE_NEG, 'seeds': [1, 2, 3], 'lora': 0.4} for n, t in poses.items()]
+    (H / 'spec-anim6.json').write_text(json.dumps({'tag': 'pokey-anim6', 'edits': ed}, indent=1))
+    print(len(ed), 'edit items')
+
+
 def spec2(commit):
     cl = []
     for mv, (what, w, h) in CLIPS2.items():
@@ -125,4 +153,4 @@ def spec2(commit):
 
 
 if __name__ == '__main__':
-    {'spec2': spec2, 'spec3': spec3, 'spec4': spec4, 'spec5': spec5}.get(sys.argv[1], spec)(sys.argv[2])
+    {'spec2': spec2, 'spec3': spec3, 'spec4': spec4, 'spec5': spec5, 'spec6': spec6}.get(sys.argv[1], spec)(sys.argv[2])
