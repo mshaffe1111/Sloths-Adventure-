@@ -9,3 +9,7 @@ hfbd-pilot2 6ae65c130e0338d1bb7d43aa rtx-pro-6000 21:22:27Z-~21:31Z (~9 min, ~$0
   in 7-8: mock-7-8-before-after.jpg). s72 finishes the tree crowns (the upright fix) but turns loose pieces of the start into
   floating junk (a hanging root, an upside-down palm, a creature-like plant): starts.py now drops every shape not joined to the ground.
 running total ~$0.55 of $28
+--- batch A+B (lead's OK 6:30 PM ET; cap now $40): one job per world, 16 takes each (mid + near x 2 moods x s60/s66 x seeds 7/23) ---
+hfbd-w1  6ae65e0b0e0338d1bb7d442e  hfbd-w2 6ae65e0ec78863f9c62f4dec  hfbd-w3 6ae65e120e0338d1bb7d4430  hfbd-w4 6ae65e16c78863f9c62f4dee
+hfbd-w6  6ae65e19c78863f9c62f4df0  hfbd-w7 6ae65e1dc78863f9c62f4df4  hfbd-w8 6ae65e200e0338d1bb7d4437  hfbd-w9 6ae65e240e0338d1bb7d443a
+hfbd-w10 6ae65e26c78863f9c62f4dfa   all rtx-pro-6000, started 21:30:51Z-21:31:19Z

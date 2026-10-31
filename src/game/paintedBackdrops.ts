@@ -55,7 +55,8 @@ const PARTS: Part[] = ['far', 'mid', 'near', 'sky'];
 function urlFor(stem: string, part: Part): string | null {
   const own = FILES[`../assets/backdrops/${stem}-${part}.webp`];
   if (own || part === 'sky') return own ?? null; // (the sky goes with its own far strip, never borrowed)
-  // a far-only set (Worlds 1-4 through the day, stageBackdrops.ts) borrows its world's middle and near strips
+  // a far-only set (Worlds 1-4 and 6-10 through the day, stageBackdrops.ts) uses its own middle and near strips where it has them
+  // (<stem>-mid / -near: hf-backdrops 2026-10-31, painted in that set's light) and borrows its world's for any it has not
   if (part !== 'far' && FAR_ONLY.includes(stem)) return FILES[`../assets/backdrops/w${worldOf(stem)}-${part}.webp`] ?? null;
   return null;
 }
