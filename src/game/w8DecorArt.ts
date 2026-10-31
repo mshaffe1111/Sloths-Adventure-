@@ -137,3 +137,45 @@ export function drawW8Decor(ctx: CanvasRenderingContext2D, set: W8DecorSet, plat
     }
   }
 }
+
+/**
+ * 8-5's second bounce plant (and 8-9's moon flowers): the bouncy leaf of Matt's w8b sheet, a broad springy leaf on a stalk, standing for
+ * every other moon flower so a run of them is not one plant repeated (bounceArt.ts drawBounce asks it for World 8's odd platforms).
+ * Its leaf's top on the platform's top (the collision line), squashing a little about its rim as the flower's cap does; 'plant' draws the
+ * stalk down from under the leaf to bottomY (darkening as it goes), 'cap' the leaf again over the painted ground. False until w8b loads.
+ */
+const LEAF = { top: 140, rim: 200, pole: { x: 177, y: 216, w: 26 }, span: 1.2 } as const;
+export function drawW8BounceLeaf(ctx: CanvasRenderingContext2D, p: Platform, time: number, part: 'plant' | 'cap', bottomY: number): boolean {
+  loadW8Decor();
+  if (!ready.has('w8b')) return false;
+  const img = imgs.get('w8b')!;
+  const f = W8B['bouncy-leaf'];
+  const k = (p.width * LEAF.span) / f.w;
+  const cx = p.x + p.width / 2;
+  const x0 = cx - (f.w * k) / 2;
+  const y0 = p.y - LEAF.top * k;
+  if (part === 'plant') {
+    // the stalk: the frame's own, then its last stretch drawn on down, fading into the dark
+    const sx = x0 + LEAF.pole.x * k;
+    const top = y0 + LEAF.pole.y * k;
+    const end = Math.min(bottomY, top + 700);
+    if (end > top) {
+      ctx.drawImage(img, f.x + LEAF.pole.x, f.y + LEAF.pole.y, LEAF.pole.w, f.h - LEAF.pole.y, sx, top, LEAF.pole.w * k, end - top);
+      const g = ctx.createLinearGradient(0, top, 0, end);
+      g.addColorStop(0, 'rgba(8,10,14,0)');
+      g.addColorStop(1, 'rgba(8,10,14,0.7)');
+      ctx.fillStyle = g;
+      ctx.fillRect(sx, top, LEAF.pole.w * k, end - top);
+    }
+  }
+  // the leaf (the frame down to its rim), squashing about the rim
+  const rimY = y0 + LEAF.rim * k;
+  const squash = 1 + Math.sin(time * 3 + p.id) * 0.05;
+  ctx.save();
+  ctx.translate(cx, rimY);
+  ctx.scale(p.id % 4 === 1 ? -1 : 1, squash);
+  ctx.translate(-cx, -rimY);
+  ctx.drawImage(img, f.x, f.y, f.w, LEAF.pole.y, x0, y0, f.w * k, LEAF.pole.y * k);
+  ctx.restore();
+  return true;
+}
