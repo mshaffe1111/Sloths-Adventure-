@@ -1,0 +1,58 @@
+{
+ "note": "W5 moving bloom for 5-3 (Matt, 2026-10-31 10:15 AM ET): a swaying orchid on its stem, rotated in code about its root",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, spider, insect, ground, grass, pot, vase, background scenery, second flower",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1e8849f19cd4177d1dd581ccf7b47df3187bc51b/tools/art/hfground/starts/w5pieces/",
+ "items": [
+  {
+   "kind": "plain",
+   "name": "w5sway-s11-45",
+   "start": "sway-orchid.webp",
+   "strength": 0.45,
+   "seed": 11,
+   "w": 768,
+   "h": 1024,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, spider, insect, ground, grass, pot, vase, background scenery, second flower",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game, seen from the side: one tall slender orchid plant, a single long gently curving green flower stem rising from two small leaves at its foot, topped by one big open white orchid bloom with a soft peach and gold throat, the bloom's broad top petals flat enough to stand on, warm golden afternoon light, on one flat plain pure bright magenta background, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "w5sway-s23-45",
+   "start": "sway-orchid.webp",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 768,
+   "h": 1024,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, spider, insect, ground, grass, pot, vase, background scenery, second flower",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game, seen from the side: one tall slender orchid plant, a single long gently curving green flower stem rising from two small leaves at its foot, topped by one big open white orchid bloom with a soft peach and gold throat, the bloom's broad top petals flat enough to stand on, warm golden afternoon light, on one flat plain pure bright magenta background, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "w5sway-s11-60",
+   "start": "sway-orchid.webp",
+   "strength": 0.6,
+   "seed": 11,
+   "w": 768,
+   "h": 1024,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, spider, insect, ground, grass, pot, vase, background scenery, second flower",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game, seen from the side: one tall slender orchid plant, a single long gently curving green flower stem rising from two small leaves at its foot, topped by one big open white orchid bloom with a soft peach and gold throat, the bloom's broad top petals flat enough to stand on, warm golden afternoon light, on one flat plain pure bright magenta background, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "w5sway-s23-60",
+   "start": "sway-orchid.webp",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 768,
+   "h": 1024,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, spider, insect, ground, grass, pot, vase, background scenery, second flower",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game, seen from the side: one tall slender orchid plant, a single long gently curving green flower stem rising from two small leaves at its foot, topped by one big open white orchid bloom with a soft peach and gold throat, the bloom's broad top petals flat enough to stand on, warm golden afternoon light, on one flat plain pure bright magenta background, thin dark outline, soft cel shading, evenly lit, no text"
+  }
+ ]
+}

@@ -90,7 +90,7 @@ test('the run cycle steps through all of its frames as the stride turns', () => 
 
 test('the flip tucks in the middle and the vine swing turns the body about the feet', () => {
   // the painted roll: curled, the somersault, upside down, curled, opening out; the code only turns him what the paint leaves over
-  const names = [0.3, 1.5, 3.2, 5.0, 5.9].map((a) => stdFlip(a, 0.5).name);
+  const names = [0.3, 1.5, 3.2, 5.2, 5.9].map((a) => stdFlip(a, 0.5).name);
   assert.deepEqual(names, ['tuck', 'tumble', 'flip_inv', 'tuck', 'fall_a']);
   for (let a = 0; a <= Math.PI * 2; a += 0.05) assert.ok(Math.abs(stdFlip(a, 0.5).rot) < 1.6, `at most ~90 degrees of code turn at ${a}`);
   for (const a of [0.3, 1.5, 3.2, 5.0]) assert.equal(stdFlip(-a, 0.5).rot, -stdFlip(a, 0.5).rot, 'turned the way he turns');
@@ -146,3 +146,4 @@ test('the air attacks, the stomp dive and the bounces each get their own poses',
   assert.equal(pick({ vy: 400, diving: true, bounce: { kind: 'stomp', t: 0.4 } }), 'stomp_plunge');
   assert.ok((stdPick(player({ grounded: false, vy: -500, bounce: { kind: 'stomp', t: 0.2 } }), 1, calm)?.squash ?? 1) < 1);
 });
+

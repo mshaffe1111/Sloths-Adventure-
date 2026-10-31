@@ -27,6 +27,25 @@ if (SCENE === 'climbtop') {
   SCRIPT.push([10, 'down ArrowUp'], [70, 'up ArrowUp']);
   N = 90;
 }
+// SCENE=vine: in the air at the stage's first swinging liana (1-6), up to grab it, steering right to pump it, swinging, then a jump off (STAGE= a stage with one)
+if (SCENE === 'vine') {
+  SCRIPT.length = 0;
+  SCRIPT.push([1, 'down ArrowUp'], [4, 'up ArrowUp'], [6, 'down ArrowRight'], [40, 'up ArrowRight'], [55, 'down ArrowRight'], [75, 'up ArrowRight'], [100, 'down Space'], [103, 'up Space']);
+  N = 125;
+}
+// SCENE=slide: 7-4, put just short of the crumbling floor; the floor goes, and on the flume he leans right, leans left, jumps and ducks
+if (SCENE === 'slide') {
+  SCRIPT.length = 0;
+  SCRIPT.push([10, 'down ArrowRight'], [20, 'up ArrowRight'], [110, 'down ArrowRight'], [150, 'up ArrowRight'], [165, 'down ArrowLeft'],
+    [205, 'up ArrowLeft'], [220, 'down Space'], [224, 'up Space'], [260, 'down ArrowDown'], [290, 'up ArrowDown']);
+  N = 320;
+}
+// SCENE=rope: hanging from the stage's first shimmy rope (1-3), then creeping along it, a pause, and on again
+if (SCENE === 'rope') {
+  SCRIPT.length = 0;
+  SCRIPT.push([10, 'down ArrowRight'], [70, 'up ArrowRight'], [85, 'down ArrowRight'], [115, 'up ArrowRight']);
+  N = 125;
+}
 if (SCENE === 'climb') {
   SCRIPT.length = 0;
   SCRIPT.push([10, 'down ArrowUp'], [38, 'up ArrowUp'], [48, 'down ArrowDown'], [80, 'up ArrowDown']);
@@ -52,6 +71,11 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   // a flat open stretch of 1-1's first ground, Pokey stood still facing right
   await p.evaluate((sc) => { let e = window.__engine; if (typeof e === 'function') e = e(); const pl = e.player;
     Object.assign(pl, { vx: 0, vy: 0, facing: 1 });
+    if (sc === 'slide') Object.assign(pl, { x: e.slideRun.st.crumbleX - 90 });
+    if (sc === 'vine') {
+      const v = e.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off);
+      Object.assign(pl, { x: v.x - 200 });
+    }
     if (sc === 'climb' || sc === 'climbtop') {
       const v = e.vines.find((q) => q.vineType === 'tree_climb' && !q.off);
       Object.assign(pl, { x: v.x, y: v.bottomY - 30 });
@@ -65,6 +89,18 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   mkdirSync(dir);
   // take over the loop: from here every frame is one update(1/30) and one render, then a screenshot (as hfpokey/edgeclip.mjs)
   await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e(); e.isRunning = false; cancelAnimationFrame(e.animFrameId); });
+  // (the liana is reached in the air, so he is put there once the loop is ours: in the settle before it he would fall to the ground)
+  if (SCENE === 'rope') await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e();
+    // (put on it the way the engine's grab leaves him: Up is also the jump, so a press to take it hopped him past it)
+    const r = e.ropes[0];
+    e.skills.add('shimmy'); // (learned on the way through World 1; a stage played on its own may not have it)
+    e.ropeId = r.id;
+    Object.assign(e.player, { x: r.x0 + 70, y: r.y + 72, grounded: false, hanging: true, vx: 0, vy: 0 }); });
+  if (SCENE === 'vine') await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e();
+    const v = e.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off);
+    // (the lianas sway on the engine's vine clock, which ran on for however long the page took to get here: set it, or no two runs agree)
+    e.vineClock = 0;
+    Object.assign(e.player, { x: v.x, y: v.topY + 90, grounded: false, vx: 0, vy: 0 }); });
   const trace = [];
   const box = [];
   for (let i = 0; i < N; i++) {
@@ -78,8 +114,11 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
       e.update(1 / 30);
       e.render();
       const c = document.querySelector('canvas'); const r = c.getBoundingClientRect(); const cam = e.camera ?? {};
-      return [pl.x, pl.y, pl.vx, pl.vy, pl.facing, pl.grounded ? 1 : 0, cam.x ?? 0, cam.y ?? 0, e.zoom ?? 1, r.width]; });
-    trace.push(s.slice(0, 6).map((v) => Math.round(v * 1000) / 1000));
+      const sm = e.slideRun?.sim;
+      return [pl.x, pl.y, pl.vx, pl.vy, pl.facing, pl.grounded ? 1 : 0, cam.x ?? 0, cam.y ?? 0, e.zoom ?? 1, r.width,
+        // (on 7-4's flume his body is the slide's own: how far down, across, up, his speed up and his lean)
+        ...(sm ? [sm.z, sm.x, sm.y, sm.vy, sm.lean, sm.hits] : [])]; });
+    trace.push([...s.slice(0, 6), ...s.slice(10)].map((v) => Math.round(v * 1000) / 1000));
     box.push(s);
     await p.screenshot({ path: join(dir, `f${String(i).padStart(5, '0')}.png`) });
   }

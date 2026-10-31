@@ -12,11 +12,14 @@
  */
 export const TRACE = {
   /** a bit of the path shorter than this (CSS px) is not measured (a shaking finger) */
-  step: 6,
-  /** turning this far, one way, makes it a circle (radians) */
-  turnOn: (120 * Math.PI) / 180,
-  /** a single change of direction bigger than this is a corner (a zigzag), not a curve: it does not count, and turning restarts */
-  corner: (75 * Math.PI) / 180,
+  step: 5,
+  /**
+   * turning this far, one way, makes it a circle (radians). (QA 2026-10-31: made more forgiving for a real phone, small and uneven
+   * circles with either thumb: was 120 degrees, 6 px bits and a 75 degree corner that started the count again)
+   */
+  turnOn: (100 * Math.PI) / 180,
+  /** a single change of direction bigger than this is a corner (a zigzag's point, a flick turning back), not a curve: it does not count */
+  corner: (100 * Math.PI) / 180,
 } as const;
 
 interface Finger {
@@ -54,8 +57,8 @@ export class CircleTrace {
     while (d < -Math.PI) d += Math.PI * 2;
     f.dir = dir;
     if (Math.abs(d) > TRACE.corner) {
-      // a corner: a zigzag or a flick turning back, never a circle
-      if (!f.circling) f.turn = 0;
+      // a corner: a zigzag or a flick turning back, never part of a circle (it adds nothing; a tight bit of a wobbly circle is skipped
+      // over, and the turning either side of it still counts)
       return 0;
     }
     if (!f.circling) {

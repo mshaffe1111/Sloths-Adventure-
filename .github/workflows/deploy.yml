@@ -18,7 +18,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Every test, split across 6 runners at once (one runner took about an hour once
+  # the gen2 tests joined). Nothing is skipped: the site publishes only when all 6 pass.
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --legacy-peer-deps
+      - run: npx tsx --test --test-shard=${{ matrix.shard }}/6 src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts
+
   publish:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +44,6 @@ jobs:
           node-version: 22
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       - run: npx tsc --noEmit
-      - run: npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts
       - run: npm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/

@@ -83,12 +83,12 @@ export const HERO_CLIPS: Record<string, HeroClip> = {
   "fps": 16
  },
  "move-jab": {
-  "n": 6,
+  "n": 9,
   "cols": 8,
-  "w": 238,
-  "h": 208,
-  "ax": 71.0,
-  "ay": 205.2,
+  "w": 225,
+  "h": 209,
+  "ax": 62.0,
+  "ay": 204.4,
   "fps": 16
  },
  "move-cross": {
@@ -152,15 +152,6 @@ export const HERO_CLIPS: Record<string, HeroClip> = {
   "h": 205,
   "ax": 99.9,
   "ay": 200.1,
-  "fps": 16
- },
- "move-jump": {
-  "n": 10,
-  "cols": 8,
-  "w": 235,
-  "h": 301,
-  "ax": 111.6,
-  "ay": 294.8,
   "fps": 16
  },
  "move-climb": {

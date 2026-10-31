@@ -256,6 +256,10 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     else if (k === 'swing') dt = gap / SWING_PACE + 1.2;
     else if (k === 'rope') dt = gap / ROPE_SPEED + TIME.ropeOverhead * K;
     else if (k === 'drop') dt += Math.sqrt((2 * Math.max(0, -rise)) / 1800);
+    // (down into a soft pit that has lianas or silk lines hung over it: that pit is the miss, and a player takes the swing. Only the
+    // route's choice is weighed, not its time: 5-4's quick route dropped through every pit under its silk lines, 2026-10-31)
+    if ((k === 'drop' || k === 'hop' || k === 'jump' || k === 'swing') && rise < -60 && (B.style === 'moss_stone' || B.style === 'branch')
+      && stage.vines.some((v) => isLiana(v) && v.x > lx - 300 && v.x < lx + 420 && v.bottomY < B.y - 60)) penalty += 6;
     segs.push({ kind: k, x0: tx, y0: A.y, x1: lx, y1: B.y, dt, plat: B, from: A, note: kind === 'graph' ? undefined : 'added' });
     return { segs, at: { x: lx, y: B.y }, cost: sum(segs) + penalty };
   }
@@ -290,7 +294,9 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     const v = a.vine!, B = b.plat!;
     const lx = clamp(v.x, ...ext(B));
     segs.push({ kind: 'swing', x0: v.x, y0: at.y, x1: lx, y1: B.y, dt: Math.abs(lx - v.x) / SWING_PACE + 1.2, plat: B, note: 'added' });
-    return { segs, at: { x: lx, y: B.y }, cost: sum(segs) };
+    // (letting go down onto a catch ledge with the next line hung just ahead is the miss, not the way: a player swings on)
+    const miss = B.y > v.bottomY + 100 && stage.vines.some((w) => w !== v && isLiana(w) && w.x > v.x + 60 && w.x < v.x + 420);
+    return { segs, at: { x: lx, y: B.y }, cost: sum(segs) + (miss ? 6 : 0) };
   }
   if (a.kind === 'plat' && b.kind === 'draft') {
     const A = a.plat!, u = b.draft!;

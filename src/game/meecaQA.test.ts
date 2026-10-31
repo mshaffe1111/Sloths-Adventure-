@@ -233,12 +233,12 @@ test('4. the carving spot is the whole trunk and a step either side, the ring sh
   sim.stand(tr.x, tr.standY);
   for (let i = 0; i < 30 * 8 && mc.marked < 1; i++) sim.frame({ circle: 0.3 });
   assert.equal(mc.marked, 1, 'carved from the middle of the trunk');
-  // the next trunk: the ring again (the ghost finger only the first time)
+  // the next trunk: the ring again, and the ghost finger with it (QA 2026-10-31: every trunk, not only the first)
   const t1 = mc.st.trunks[1];
   sim.stand(t1.x, t1.standY);
   sim.frame();
   assert.equal(mc.ringOn, 1, 'the ring at the second trunk too');
-  assert.equal(mc.ringFinger, false);
+  assert.equal(mc.ringFinger, true);
   // a finger held still (the touch controls' hold, a mega: the real input keeps it a few frames, the test pad clears it, so it is set
   // after the pad's update)
   const inp = (sim as unknown as { input: { update(dt: number): void; state: { megaPunchPressed: boolean } } }).input;

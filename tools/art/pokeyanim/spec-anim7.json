@@ -1,0 +1,52 @@
+{
+ "tag": "pokey-anim7",
+ "edits": [
+  {
+   "name": "slide2-slide",
+   "src": "gh:38818530a4a6d3ef1d7e768b1dfdc97efb4f405c:reference/prop-sheets/qa-notes/pokey-anim/starts/slide_grip.png",
+   "refs": [
+    "gh:38818530a4a6d3ef1d7e768b1dfdc97efb4f405c:reference/prop-sheets/qa-notes/pokey-anim/starts/slide_ref9.png"
+   ],
+   "w": 768,
+   "h": 768,
+   "prompt": "The sloth in Picture 1, still seen exactly from behind, leans back a little and holds both arms out low to the sides for balance, paws open, elbows slightly bent, as if riding fast. Keep him seen exactly from behind as in Picture 1, sitting on his bottom with his legs stretched out in front of him so only the soles of his feet show below him, the same brown fur seen from the back, the same pale bandage wrist wraps, the same thin brown satchel strap running from his left shoulder down to the small brown bag on his right hip, the same thin dark outline, the same soft painted cartoon style, the same size and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "face, front view, side view, standing, extra limbs, extra arms, extra sloth, chute, floor, background scenery, photo, 3d render, text, watermark, blurry, bag on the left hip, two bags, slide, chute, ramp, track, rails, slope, diagonal view, three-quarter view, motion lines",
+   "seeds": [
+    4,
+    5,
+    6
+   ],
+   "lora": 0.4
+  },
+  {
+   "name": "slide2-leanR",
+   "src": "gh:38818530a4a6d3ef1d7e768b1dfdc97efb4f405c:reference/prop-sheets/qa-notes/pokey-anim/starts/slide_grip.png",
+   "refs": [],
+   "w": 768,
+   "h": 768,
+   "prompt": "The sloth in Picture 1, still seen exactly from behind and still sitting, leans his whole body over to the right: his head and back tip about fifteen degrees to the right, his right arm reaches out low to the right for balance, his left arm is raised up and out to the left. Keep him seen exactly from behind as in Picture 1, sitting on his bottom with his legs stretched out in front of him so only the soles of his feet show below him, the same brown fur seen from the back, the same pale bandage wrist wraps, the same thin brown satchel strap running from his left shoulder down to the small brown bag on his right hip, the same thin dark outline, the same soft painted cartoon style, the same size and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "face, front view, side view, standing, extra limbs, extra arms, extra sloth, chute, floor, background scenery, photo, 3d render, text, watermark, blurry, bag on the left hip, two bags, slide, chute, ramp, track, rails, slope, diagonal view, three-quarter view, motion lines",
+   "seeds": [
+    4,
+    5,
+    6
+   ],
+   "lora": 0.4
+  },
+  {
+   "name": "slide2-leanL",
+   "src": "gh:38818530a4a6d3ef1d7e768b1dfdc97efb4f405c:reference/prop-sheets/qa-notes/pokey-anim/starts/slide_grip.png",
+   "refs": [],
+   "w": 768,
+   "h": 768,
+   "prompt": "The sloth in Picture 1, still seen exactly from behind and still sitting, leans his whole body over to the left: his head and back tip about fifteen degrees to the left, his left arm reaches out low to the left for balance, his right arm is raised up and out to the right. Keep him seen exactly from behind as in Picture 1, sitting on his bottom with his legs stretched out in front of him so only the soles of his feet show below him, the same brown fur seen from the back, the same pale bandage wrist wraps, the same thin brown satchel strap running from his left shoulder down to the small brown bag on his right hip, the same thin dark outline, the same soft painted cartoon style, the same size and the same flat plain grey background. Nothing else in the picture.",
+   "neg": "face, front view, side view, standing, extra limbs, extra arms, extra sloth, chute, floor, background scenery, photo, 3d render, text, watermark, blurry, bag on the left hip, two bags, slide, chute, ramp, track, rails, slope, diagonal view, three-quarter view, motion lines",
+   "seeds": [
+    4,
+    5,
+    6
+   ],
+   "lora": 0.4
+  }
+ ]
+}

@@ -29,6 +29,17 @@ test('two turns round, either way, carve about two turns less the first third (t
   // a small circle counts too, and a big one
   assert.ok(trace(circle(1.5, 22)).circling);
   assert.ok(trace(circle(1.5, 110, 1, 60)).circling);
+  // QA 2026-10-31, a real phone: a tiny circle, a squashed and uneven one, either way round
+  for (const dir of [1, -1]) {
+    assert.ok(trace(circle(1.5, 9, dir)).circling, 'tiny');
+    const wobbly = Array.from({ length: 60 }, (_, i) => {
+      const a = (dir * i * Math.PI * 2) / 36;
+      const r = 30 + 9 * Math.sin(i * 1.3);
+      return [200 + Math.cos(a) * r * 1.6, 300 + Math.sin(a) * r * 0.6] as [number, number];
+    });
+    const w = trace(wobbly);
+    assert.ok(w.circling && w.rad > Math.PI * 1.5, `squashed and wobbly: ${w.rad.toFixed(2)}`);
+  }
 });
 
 test('a slide, a flick, a zigzag and a shaky held finger are never a circle', () => {
