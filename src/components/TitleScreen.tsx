@@ -246,7 +246,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
             </button>
           </div>
         </div>
-        {creditMsg && (
+        {creditMsg && !menuOpen && (
           <span className="fixed left-1/2 top-14 z-[70] -translate-x-1/2 whitespace-nowrap rounded-full bg-black/70 px-4 py-1.5 text-sm text-amber-200" role="status">
             {creditMsg}
           </span>
@@ -286,6 +286,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           onInstallDesktop={onInstallDesktop}
           isInstalled={isInstalled}
           onTapShaffer={tapShaffer}
+          creditMsg={creditMsg}
         />
       )}
       {howOpen && <HowToPlay onClose={() => setHowOpen(false)} />}

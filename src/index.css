@@ -70,6 +70,7 @@
 
 /* the credit line under the title: a generous tap target without changing how the line looks */
 .title-credit { margin-top: 2px; line-height: 1; }
+.st-credit-msg { display: block; margin-top: 4px; font-weight: 700; color: #b45309; }
 .title-credit-btn { display: inline-block; padding: 10px 6px; margin: -10px -6px; font: inherit; color: inherit; font-weight: 600; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
