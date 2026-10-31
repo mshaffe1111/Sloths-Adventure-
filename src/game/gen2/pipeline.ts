@@ -23,7 +23,8 @@ import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire 
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
-import type { Collectible, Enemy, LevelConfig, Platform, Vine } from '../types.ts';
+import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
+import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import {
@@ -353,7 +354,7 @@ interface LocalPiece {
   /** a crumbling ruin tile (SectionPiece.crumble) */
   crumble?: boolean;
   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
-  hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
+  hang?: { kind: 'liana' | 'vine' | 'rope'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
 }
 interface LocalGap {
   x0: number;
@@ -552,6 +553,23 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, { x, y, w }, budget.difficulty);
       lv.hang.gap = [a.x + a.w, x];
       gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}) });
+    } else if (pl.kind === 'rope') {
+      // a shimmy rope from `after`'s end: as wide as `span` (never under ROPE_MIN_GAP, so it is the way over), ROPE_RISE over the ledge
+      const a = ref(pl.after);
+      if (pc.shape !== 'rope') throw new Error(`gen2 section ${tpl.id}: ${pc.key} is a rope, so its shape is 'rope'`);
+      x = a.x + a.w;
+      y = a.y - ROPE_RISE;
+      w = Math.max(ROPE_MIN_GAP + 10, roll(rng, pl.span));
+      h = 0;
+      hang = { kind: 'rope', from: pl.after };
+    } else if (pl.kind === 'cross') {
+      // the ledge at a rope's far end, level with the one it starts from; the gap under the rope is a liana's (it climbs back)
+      const r = ref(pl.after);
+      if (r.hang?.kind !== 'rope') throw new Error(`gen2 section ${tpl.id}: ${pc.key} crosses from ${pl.after}, which is not a rope`);
+      const a = ref(r.hang.from!);
+      x = r.x + r.w;
+      y = a.y;
+      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, pit: true, back: { lips: [a.y, y] }, ...(pl.soft ? { soft: true } : {}) });
     } else if (pl.kind === 'climb') {
       const a = ref(pl.on);
       if (pc.shape !== 'vine') throw new Error(`gen2 section ${tpl.id}: ${pc.key} climbs, so its shape is 'vine'`);
@@ -629,6 +647,8 @@ export interface Laid {
   exit: { x: number; y: number; piece: Platform };
   /** the lianas and climbing vines the sections hang */
   vines: Vine[];
+  /** the shimmy ropes (shape 'rope') */
+  ropes: Rope[];
   width: number;
   bottom: number;
   nextId: number;
@@ -719,6 +739,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const vines: Vine[] = [];
   const zones: Zone[] = [];
   const heartFalls: Laid['heartFalls'] = [];
+  const ropes: Rope[] = [];
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
     const hop = riseLimit(false, budget.riseShare) * PIT.hop;
@@ -887,6 +908,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         placed.seam.push(...platforms.slice(before));
       }
       for (const lp of L.pieces) {
+        if (lp.hang?.kind === 'rope') {
+          // (a shimmy rope: the engine's Rope, its ends ROPE_OVERLAP over the two ledges, required: the gap is wider than any jump)
+          const gy = R(oy + lp.y + ROPE_RISE);
+          ropes.push({ id: ropes.length + 1, x0: R(ox + lp.x - ROPE_OVERLAP), x1: R(ox + lp.x + lp.w + ROPE_OVERLAP), y: R(oy + lp.y), g0: gy, g1: gy, required: true });
+          continue;
+        }
         if (lp.hang) {
           // (a liana or a climbing vine: the engine's Vine; a liana's own swing goes with it, for the engine's self-swinging vines)
           const liana = lp.hang.kind === 'liana';
@@ -1027,6 +1054,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     spawn: { x: SPAWN_X, y: runway.y, piece: runway },
     exit: { x: exitX, y: shrine.y, piece: shrine },
     vines,
+    ropes,
     zones,
     heartFalls,
     width: R(shrine.x + shrine.width + 40),
@@ -1072,7 +1100,7 @@ export function pitSteps(x0: number, x1: number, lipY: number, farY: number, dep
 /** the moves a section's hanging pieces ask for (its own pieces and every sub-block version's): a liana swings, a vine climbs */
 function hangsNeed(t: SectionTemplate): Move[] {
   const shapes = new Set([...t.pieces, ...(t.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))].map((p) => p.shape));
-  return [...(shapes.has('liana') ? (['swing'] as const) : []), ...(shapes.has('vine') ? (['climb'] as const) : [])];
+  return [...(shapes.has('liana') ? (['swing'] as const) : []), ...(shapes.has('vine') ? (['climb'] as const) : []), ...(shapes.has('rope') ? (['rope'] as const) : [])];
 }
 
 /**
@@ -1677,7 +1705,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     trees: [],
     platforms,
     vines: laid.vines,
-    ropes: [],
+    ropes: laid.ropes,
     enemies: filled.enemies,
     boss: null,
     collectibles: sink.collectibles,

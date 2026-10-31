@@ -151,7 +151,7 @@ export interface WorldManifest {
 // ───────────────────────────── a section ─────────────────────────────
 
 /** a platform, or one of the two hanging pieces: a `liana` (a swing, placed by `swing`) and a `vine` (a climb, placed by `climb`) */
-export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine';
+export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine' | 'rope';
 
 /**
  * A liana's own swing (Matt, 2026-10-28): it swings by itself, `amp` radians either side of hanging straight down, one there-and-back
@@ -199,7 +199,12 @@ export type PlaceRule =
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
-  | { kind: 'climb'; on: string; at: Range; h: Range };
+  | { kind: 'climb'; on: string; at: Range; h: Range }
+  // (a shimmy rope (shape 'rope') from `after`'s end, `span` px across (at least rope.ts ROPE_MIN_GAP: wider than any jump, so it is the
+  // way over), hung ROPE_RISE over the ledge; and `cross`, the ledge at its far end, level with `after`. The gap under it is a liana's:
+  // a soft pit climbing back to `after`, or World 8 Normal's heart fall. Needs the 'rope' move; never mirrored)
+  | { kind: 'rope'; after: string; span: Range }
+  | { kind: 'cross'; after: string; soft?: boolean };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */
