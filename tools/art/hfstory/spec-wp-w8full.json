@@ -1,0 +1,37 @@
+{
+ "tag": "wpy7",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dcb58b94db79d9dd03f76567be58c30b741ced0c/tools/art/hfstory/",
+ "items": [
+  {
+   "name": "wp-8-night-y70-full",
+   "start": "bucket:hfcut/out/wp-8-night-y70-31.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, crisp thin dark outlines, sharp clean detail, high contrast, a wide establishing background with nobody in it, twilight treetops at night: a high wide mossy branch walk among giant crisp leaves with clean outlines, a big bright moon behind thin clouds, deep blue and violet sky, a few glowing fireflies and pale night flowers, silver moonlight rim on every leaf. In the foreground across the whole bottom a broad flat mossy branch walkway in sharp focus. No characters, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, soft focus, bokeh, depth of field, blurry leaves, muddy",
+   "strength": 0.26,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "tile": [
+    1280,
+    256
+   ]
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dcb58b94db79d9dd03f76567be58c30b741ced0c/tools/art/hfstory/",
+ "keep": [
+  "wp-8-night-y70-full"
+ ]
+}

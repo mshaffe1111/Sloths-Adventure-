@@ -1,0 +1,220 @@
+{
+ "tag": "wpr",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9b1de6ada00ec656e1b0598b6e8752560f478c24/tools/art/hfstory/",
+ "items": [
+  {
+   "name": "wp-4-day-t62",
+   "start": "starts2/w4-day.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, misty cascades: tall grey-green cliffs, a big white waterfall pouring down into soft mist, mossy rock ledges, twisted cliff trees, cool clear daylight, layered mist between the cliffs. In the foreground across the whole bottom of the picture, a broad flat mossy rock ledge in sharp focus, dry and solid, the pool and the mist behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, feather",
+   "strength": 0.62,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-4-day-t72",
+   "start": "starts2/w4-day.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, misty cascades: tall grey-green cliffs, a big white waterfall pouring down into soft mist, mossy rock ledges, twisted cliff trees, cool clear daylight, layered mist between the cliffs. In the foreground across the whole bottom of the picture, a broad flat mossy rock ledge in sharp focus, dry and solid, the pool and the mist behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, feather",
+   "strength": 0.72,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-6-dusk-t62",
+   "start": "starts2/w6-dusk.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a deep mangrove swamp at dusk: arching mangrove roots over dark still water, hanging moss, fireflies, a low copper sunset through the trees, green-brown shadows with warm rim light. In the foreground across the whole bottom of the picture, a broad flat bank of dark mud and thick mangrove roots in sharp focus, solid ground, the water behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.62,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-6-dusk-t72",
+   "start": "starts2/w6-dusk.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a deep mangrove swamp at dusk: arching mangrove roots over dark still water, hanging moss, fireflies, a low copper sunset through the trees, green-brown shadows with warm rim light. In the foreground across the whole bottom of the picture, a broad flat bank of dark mud and thick mangrove roots in sharp focus, solid ground, the water behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.72,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-6-day-t62",
+   "start": "starts/w6-day.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a deep mangrove swamp by day: arching mangrove roots, still green water with lily pads, hanging moss, soft green light. In the foreground across the whole bottom of the picture, a broad flat bank of dark mud and thick mangrove roots in sharp focus, solid ground, the water behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.62,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-6-day-t72",
+   "start": "starts/w6-day.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a deep mangrove swamp by day: arching mangrove roots, still green water with lily pads, hanging moss, soft green light. In the foreground across the whole bottom of the picture, a broad flat bank of dark mud and thick mangrove roots in sharp focus, solid ground, the water behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.72,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-8-night-t62",
+   "start": "starts2/w8-night.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, twilight treetops at night: a high wide branch walk among giant leaves, a big soft moon behind thin clouds, deep blue and violet sky, glowing fireflies and pale night flowers, silver moonlight on the leaves. In the foreground across the whole bottom of the picture, a broad flat mossy tree branch walkway in sharp focus. Clear readable shapes, crisp leaves, no blur, no bokeh. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, two moons",
+   "strength": 0.62,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-8-night-t72",
+   "start": "starts2/w8-night.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, twilight treetops at night: a high wide branch walk among giant leaves, a big soft moon behind thin clouds, deep blue and violet sky, glowing fireflies and pale night flowers, silver moonlight on the leaves. In the foreground across the whole bottom of the picture, a broad flat mossy tree branch walkway in sharp focus. Clear readable shapes, crisp leaves, no blur, no bokeh. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, two moons",
+   "strength": 0.72,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-9-dusk-t62",
+   "start": "starts/w9-dusk.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a volcanic jungle at dusk: a smoking volcano behind charred trees, glowing orange lava cracks in dark rock, embers drifting, red-orange sky, warm firelight on dark stone. In the foreground across the whole bottom of the picture, a broad flat ledge of cool dark basalt rock in sharp focus, solid and safe, the lava only far behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.62,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-9-dusk-t72",
+   "start": "starts/w9-dusk.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a volcanic jungle at dusk: a smoking volcano behind charred trees, glowing orange lava cracks in dark rock, embers drifting, red-orange sky, warm firelight on dark stone. In the foreground across the whole bottom of the picture, a broad flat ledge of cool dark basalt rock in sharp focus, solid and safe, the lava only far behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.72,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-9-night-t62",
+   "start": "starts/w9-night.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a volcanic jungle at night: a sheltered hollow of warm dark rock, a dull red glow from far lava, embers in the air, dark trees, a deep night sky with a few stars. In the foreground across the whole bottom of the picture, a broad flat ledge of cool dark basalt rock in sharp focus, solid and safe, the lava only far behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.62,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-9-night-t72",
+   "start": "starts/w9-night.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a volcanic jungle at night: a sheltered hollow of warm dark rock, a dull red glow from far lava, embers in the air, dark trees, a deep night sky with a few stars. In the foreground across the whole bottom of the picture, a broad flat ledge of cool dark basalt rock in sharp focus, solid and safe, the lava only far behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.72,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9b1de6ada00ec656e1b0598b6e8752560f478c24/",
+ "keep": [
+  "wp-4-day-t62",
+  "wp-4-day-t72",
+  "wp-6-dusk-t62",
+  "wp-6-dusk-t72",
+  "wp-6-day-t62",
+  "wp-6-day-t72",
+  "wp-8-night-t62",
+  "wp-8-night-t72",
+  "wp-9-dusk-t62",
+  "wp-9-dusk-t72",
+  "wp-9-night-t62",
+  "wp-9-night-t72"
+ ]
+}
