@@ -8,6 +8,8 @@ export const ROPE_SAG = 12;
 export const ROPE_SPEED = 120;
 /** from the rope down to his feet while hanging (his arms are raised: the painted jump_up pose is 94 px tall) */
 export const HANG_DROP = 86;
+/** while he hangs, what he picks up is measured from this far above his feet (his middle: a bloom just under the rope is at his arms) */
+export const HANG_PICK = 50;
 /** how far above his feet his hands reach when he jumps (px) */
 export const HAND_REACH = 70;
 /** how high above the ledges a rope is hung: a normal jump (rise 88 at the least) puts his hands on it with room to spare */
