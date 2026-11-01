@@ -1,3 +1,4 @@
+import { handleBack } from './components/nav/backStack.ts';
 import { PerfReadout } from './components/PerfReadout.tsx';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import type { GameScreen, LevelConfig, BossEntity } from './game/types.ts';
@@ -508,6 +509,8 @@ export default function App() {
   const [askLeave, setAskLeave] = useState(false);
   const androidBack = useRef<() => void>(() => {});
   androidBack.current = () => {
+    // whatever is newest on screen owns Back: an open pop-up closes, a screen's Back button goes back (nav/backStack.ts)
+    if (handleBack()) return;
     const xs = Array.from(document.querySelectorAll<HTMLElement>('.ui-x')).filter((el) => el.offsetParent !== null);
     if (xs.length) {
       xs[xs.length - 1].click();
@@ -570,6 +573,11 @@ export default function App() {
   // Global Key listeners for Pause (Esc / P) and Title start (Space / Enter)
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
+      // Escape is the keyboard's Back: the newest pop-up or screen Back takes it first (nav/backStack.ts)
+      if (e.code === 'Escape' && !e.repeat && handleBack()) {
+        e.preventDefault();
+        return;
+      }
       if (e.code === 'KeyM' && !e.repeat && !document.querySelector('.ui-scrim') && (screen === 'playing' || screen === 'paused' || screen === 'title')) {
         handleToggleMute();
         return;
