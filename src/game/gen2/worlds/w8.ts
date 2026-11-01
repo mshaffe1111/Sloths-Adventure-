@@ -24,7 +24,7 @@
  */
 import { G } from '../../protoStage.ts';
 import type { StageHint } from '../../protoStage.ts';
-import type { Enemy, Platform } from '../../types.ts';
+import type { Collectible, Enemy, Platform } from '../../types.ts';
 import type { Bush, WatchZone } from '../../watcher.ts';
 import type { CreatureDef, Difficulty, FilledSocket, PropDef, PropEmitter, StageSink, WorldKit, WorldManifest } from '../types.ts';
 import { W6S_EMIT, W6S_PROPS } from './w6Swing.ts';
@@ -341,8 +341,10 @@ export const W8_HARPY_LESSON = 8;
  * The stage as the engine plays it: the pits' blocks drawn as boughs (below); in 8-8, Dot's harpy line W8_MEET_LEAD px before the first night harpy (fillSockets writes
  * proto.hints after the spawn hook runs, so the line is added here). Calling it twice changes nothing.
  */
-export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; gen2?: { falls?: Array<{ x0: number; x1: number; kind: string }> }; config?: { miniIndex: number }; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
+export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; collectibles?: Collectible[]; gen2?: { falls?: Array<{ x0: number; x1: number; kind: string }> }; config?: { miniIndex: number; objectiveType?: string }; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
   const w8 = st.proto?.gen2?.w8 as W8Extras | undefined;
+  // (the night blooms float at his head, not his middle: BLOOM_FLOAT)
+  if (st.config?.objectiveType === 'harvest') liftBlooms(st.collectibles ?? [], st.platforms ?? []);
   // (the first deadly drop from a lit bough: Dot's line DROP_LEAD px before its lip, once a stage (Normal; Easy's falls are soft))
   const drops = (st.gen2?.falls ?? []).filter((f) => f.kind === 'void').sort((a, b) => a.x0 - b.x0);
   if (st.proto && drops.length) {
@@ -366,6 +368,25 @@ export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; ge
     hints.sort((a, b) => a.x - b.x);
   }
   return st;
+}
+
+/** how far a bough's pickups float over it (sections.ts petals: the pipeline's dn) */
+export const BLOOM_DN = 34;
+/**
+ * How high a night bloom on a bough floats over it (px): a walker still takes it (his reach, engine.ts, is 34 px about a point 20 px
+ * over his feet: 32 px off), and so does the hop a first-timer makes over it. At BLOOM_DN, his middle, every natural hop passed 16-35 px
+ * too high: a jump over a gap carried him past the blooms on the bough he landed on, a hop down a 20-40 px step past those under it, and
+ * a Normal first-timer left 7-15 of 107 blooms on every run, the door asking 94 (w8-rope2, the lead: the sealed door, live in 0.9.2)
+ */
+export const BLOOM_FLOAT = 52;
+
+/** lift every pickup lying BLOOM_DN over a bough to BLOOM_FLOAT (a bloom in the air, an arc's or under a rope, stays); twice changes nothing */
+export function liftBlooms(cs: Collectible[], platforms: readonly Platform[]): void {
+  for (const c of cs) {
+    if (c.type !== 'flower' || c.collected) continue;
+    const on = platforms.some((p) => c.x >= p.x - 2 && c.x <= p.x + p.width + 2 && Math.abs(p.y - BLOOM_DN - c.y) < 1);
+    if (on) c.y -= BLOOM_FLOAT - BLOOM_DN;
+  }
 }
 
 export const fillsOf8 = (fills: FilledSocket[], what: string) => fills.filter((f) => f.what === what);
