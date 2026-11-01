@@ -921,6 +921,8 @@
 .tr-plat-parts li { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #c9b089; }
 .tr-plat-parts li.done { color: #86efac; }
 @media (max-width: 360px) { .tr-grid { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; } .tr-plat { gap: 10px; padding: 10px; } }
+/* (the Satchel's find and creature cards stay two across on a 360 phone: three left their 14 px tips and footers no room, 2026-11-01) */
+@media (max-width: 360px) { .tr-grid.tr-grid-j { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; } }
 .tr-bt { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; min-width: 0; }
 /* short sideways screens: each medal is a row (the medal beside its words), two to four across */
 @media (max-height: 430px) {
@@ -1411,7 +1413,7 @@
   font-family: var(--font-fun); font-size: 14px; color: #fff4d8; background: radial-gradient(circle at 40% 35%, #c99256, #74461f); border: 2px solid #2a1608; box-shadow: 0 2px 0 rgba(0, 0, 0, .35); }
 .tr-cn { font-family: var(--font-fun); font-weight: 400; font-size: 15px; line-height: 1.15; color: #4a2a10; padding: 0 2px; }
 .tr-card.lock .tr-cn { color: #6b5333; letter-spacing: .1em; }
-.tr-ct { font-family: var(--font-ui); font-weight: 500; font-size: 12px; line-height: 1.32; color: var(--gx-ink); min-height: 48px; padding: 0 2px; }
+.tr-ct { font-family: var(--font-ui); font-weight: 500; font-size: 14px; line-height: 1.3; color: var(--gx-ink); min-height: 48px; padding: 0 2px; }
 .tr-card.lock .tr-ct { color: #6b5333; }
 .tr-cf { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 5px 2px 0; border-top: 1.5px solid rgba(120, 80, 30, .25);
   font-family: var(--font-ui); font-weight: 700; font-size: 12px; color: #6b4a22; }
