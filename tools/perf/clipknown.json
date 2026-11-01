@@ -184,13 +184,6 @@
    "seen": "world map: World 1 of 10 @ up/old"
   },
   {
-   "kind": "small",
-   "sel": ".wm.fixed > .relative.z-10 > .map-node.done",
-   "text": "3",
-   "why": "35x35 px tap area",
-   "seen": "world map: World 1 of 10 @ up/old"
-  },
-  {
    "kind": "cut",
    "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
    "text": "Crocus Rex's Lair",
@@ -220,20 +213,6 @@
   },
   {
    "kind": "small",
-   "sel": ".wm.fixed > .relative.z-10 > .map-node.ready",
-   "text": "1",
-   "why": "42x42 px tap area",
-   "seen": "world map: World 4 of 10 @ up/old"
-  },
-  {
-   "kind": "small",
-   "sel": ".wm.fixed > .relative.z-10 > .map-node.locked",
-   "text": "Stage 4-2: First Glide, Sprint, locked",
-   "why": "17x17 px tap area",
-   "seen": "world map: World 4 of 10 @ up/old"
-  },
-  {
-   "kind": "small",
    "sel": ".fr-card.fr-note > .fr-foot > .fr-btn.fr-close",
    "text": "Close",
    "why": "71x33 px tap area",
@@ -245,13 +224,6 @@
    "text": "What it looks like",
    "why": "138x26 px tap area",
    "seen": "satchel: keepsake story @ up/old"
-  },
-  {
-   "kind": "small",
-   "sel": ".nv-card.nv-confirm > .nv-body > .pm-go.nv-confirm-stay",
-   "text": "Keep my game",
-   "why": "330x43 px tap area",
-   "seen": "settings: New Game question @ side/old"
   },
   {
    "kind": "inset",

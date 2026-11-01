@@ -27,7 +27,7 @@
  *              so only the insets across the box's scroll axis count (a vertical list in the sideways notch band still fails)
  * Each breach prints with the screen, the size, the save, a selector and the text. Breaches listed in clipknown.json (the debt on main
  * when the check was built) print as "known" and don't fail; that list only shrinks: fix one, delete its line. A contact sheet of every
- * screen with a breach (outlined red, numbered) is written to <out>/contact.png.
+ * screen with a breach (outlined red, numbered) is written to <out>/contact.jpg.
  */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -523,7 +523,7 @@ figure{margin:0;background:#333;padding:4px;width:260px}figure.side{width:420px}
   const b2 = await chromium.launch();
   const p = await b2.newPage({ viewport: { width: 1400, height: 900 } });
   await p.setContent(html);
-  await p.screenshot({ path: path.join(out, 'contact.png'), fullPage: true });
+  await p.screenshot({ path: path.join(out, 'contact.jpg'), fullPage: true, type: 'jpeg', quality: 70 });
   await b2.close();
 }
 const secs = Math.round((Date.now() - t0) / 1000);
