@@ -666,3 +666,4 @@ Report each finding with the stage, the moment (s), upright or sideways, Easy or
   3. Matt's quick calls: 45 Dot lines; council story beat; W10 rain ends with the storm (w10after)?
   AFTER TUE 2 AM RESET: W9 + W10 resume (NEXT.md each), HF art round 2 (backdrops ~$34, cutscenes ~$20, props ~$8; balance $93), validateStage graph caching (stage-build speed), then next week's difficulty tuning + checkpoint audit.
 - 2026-10-31 10:17 PM ET, MATT: weekly usage 77% (not 80). With the wiggle room, tomorrow can add ONE art helper next to the menu pass: backdrops round 2 (most visible; plan in qa-notes/hf-backdrops/NEXT.md) at medium effort, and the 8-2 rope fix. Watch usage at midday; W9/W10 still after the reset.
+- 2026-10-31 10:20 PM ET: RELEASE 0.9.1 LIVE. Deploy run 41262853361 success, pages build success 10:07 PM ET; APK v0.9.1-28 on Releases (https://github.com/mshaffe1111/Sloths-Adventure-/releases/tag/v0.9.1-28). Day closed; lead idle until Matt wakes it.
