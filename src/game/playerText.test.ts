@@ -12,8 +12,8 @@
  * A generated journal page (every world, on an old save with no play records and on a save with records) must not repeat a line
  * either, after the same masking.
  *
- * KNOWN lists what fails on main today, so the suite stays green while the owners fix them. It only shrinks: when a fix lands, the
- * "known failure now passes" test tells you to delete its line. A new failure fails the suite at once.
+ * KNOWN (playerText.known.json) lists what failed on main when the test was built, each with an owner. It only shrinks: when a fix
+ * lands, the "known failure now passes" test says which entry to delete; knowncheck.mjs fails if one is added. A new failure fails at once.
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -28,6 +28,7 @@ import { INTRO_PANELS, WORLD_STORIES, WORLD_MID, WORLD_GATE, BOSS_STORIES } from
 import { MEMORIES } from './storyChapters.ts';
 import { KEEPSAKE_LINES, finalePanels } from './storyFinale.ts';
 import { WORLDS_DATA, generateAllLevels } from './worldsData.ts';
+import known from './playerText.known.json' with { type: 'json' };
 
 /** filler that says nothing: never on screen. Add to it freely. */
 export const BANNED: readonly string[] = [
@@ -38,47 +39,11 @@ export const BANNED: readonly string[] = [
 ];
 
 /**
- * Failing on main when this test was written (2026-11-01). Keys are "<list>: <rule>". The lead assigns each; delete the line when fixed.
+ * Failing on main when this test was written (2026-11-01): playerText.known.json, keys "<list>: <rule>", each with its kind and owner.
+ * Shrink-only (LAWS.md law 5): a listed check that passes fails here until its entry is deleted, and tools/perf/knowncheck.mjs fails
+ * when an entry is added.
  */
-const KNOWN: ReadonlySet<string> = new Set([
-  'Dot lines: exact duplicates',
-  'find hints: exact duplicates',
-  'find hints: differ only in a number or name',
-  'find titles: exact duplicates',
-  'medal descriptions: differ only in a number or name',
-  'journal lines: banned filler',
-  'story beats: exact duplicates',
-  'journal page World 1 (old save): repeated lines',
-  'journal page World 1 (old save): banned filler',
-  'journal page World 2 (old save): repeated lines',
-  'journal page World 2 (old save): banned filler',
-  'journal page World 3 (old save): repeated lines',
-  'journal page World 3 (old save): banned filler',
-  'journal page World 4 (old save): repeated lines',
-  'journal page World 4 (old save): banned filler',
-  'journal page World 5 (old save): repeated lines',
-  'journal page World 5 (old save): banned filler',
-  'journal page World 6 (old save): repeated lines',
-  'journal page World 6 (old save): banned filler',
-  'journal page World 7 (old save): repeated lines',
-  'journal page World 7 (old save): banned filler',
-  'journal page World 8 (old save): repeated lines',
-  'journal page World 8 (old save): banned filler',
-  'journal page World 9 (old save): repeated lines',
-  'journal page World 9 (old save): banned filler',
-  'journal page World 10 (old save): repeated lines',
-  'journal page World 10 (old save): banned filler',
-  'journal page World 1 (save with records): repeated lines',
-  'journal page World 2 (save with records): repeated lines',
-  'journal page World 3 (save with records): repeated lines',
-  'journal page World 4 (save with records): repeated lines',
-  'journal page World 5 (save with records): repeated lines',
-  'journal page World 6 (save with records): repeated lines',
-  'journal page World 7 (save with records): repeated lines',
-  'journal page World 8 (save with records): repeated lines',
-  'journal page World 9 (save with records): repeated lines',
-  'journal page World 10 (save with records): repeated lines',
-]);
+const KNOWN: ReadonlySet<string> = new Set(known.known.map((k) => k.key));
 
 // ---- the lists ------------------------------------------------------------------------------------------------------------------
 interface Item {
@@ -199,6 +164,11 @@ for (const [save, recs] of [['old save', false], ['save with records', true]] as
 // (PLAYERTEXT_DUMP=1: print every failure in full, known or not)
 if (process.env.PLAYERTEXT_DUMP) for (const [k, f] of results) if (f.length) console.log(`\n## ${k}\n  ${f.join('\n  ')}`);
 
+test('player text: every known entry names a real check (a renamed list must not hide one)', () => {
+  const missing = [...KNOWN].filter((k) => !results.has(k));
+  assert.deepEqual(missing, [], `entries in playerText.known.json that match no check: delete them:\n  ${missing.join('\n  ')}`);
+});
+
 test('player text: every list has lines in it', () => {
   for (const [name, list] of Object.entries(LISTS)) assert.ok(list.length > 0, `${name} is empty: the import broke`);
 });
@@ -206,7 +176,7 @@ test('player text: every list has lines in it', () => {
 for (const [key, fails] of results) {
   if (KNOWN.has(key)) {
     test(`player text (known, to fix): ${key}`, () => {
-      assert.ok(fails.length > 0, `known failure now passes: delete "${key}" from KNOWN in playerText.test.ts`);
+      assert.ok(fails.length > 0, `stale known entry: "${key}" passes now, delete it from src/game/playerText.known.json (the list only shrinks)`);
     });
   } else {
     test(`player text: ${key}`, () => {

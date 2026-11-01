@@ -1,411 +1,527 @@
 {
- "about": "Breaches on main when the clip check was built (2026-11-01). They print as known and do not fail. This list only shrinks: fix one, delete its entry (the check names entries that no longer show up).",
+ "about": "Breaches on main when the clip check was built (2026-11-01), each in a defect group with an owner. Shrink-only (LAWS.md law 5): clipcheck fails when an entry no longer shows up (delete it), and tools/perf/knowncheck.mjs fails when an entry is added. Groups are ranked by how visible they are on a phone (G1 most).",
  "known": [
-  {
-   "kind": "small",
-   "sel": ".pm-sound > .pm-sound-h > .pm-mute",
-   "text": "Mute all",
-   "why": "84x36 px tap area",
-   "seen": "settings: Sound @ up/fresh"
-  },
-  {
-   "kind": "small",
-   "sel": ".pm-sound > .pm-sound-h > .pm-mute.pm-polish",
-   "text": "Off",
-   "why": "57x36 px tap area",
-   "seen": "settings: Game @ up/fresh"
-  },
-  {
-   "kind": "small",
-   "sel": ".pm-sound-h > .pm-seg > button",
-   "text": "Easy",
-   "why": "55x33 px tap area",
-   "seen": "settings: Game @ up/fresh"
-  },
-  {
-   "kind": "small",
-   "sel": ".pm-sound-h > .flex.items-center > input",
-   "text": "Touch sensitivity",
-   "why": "120x16 px tap area",
-   "seen": "settings: Game @ up/fresh"
-  },
-  {
-   "kind": "overflow",
-   "sel": ".st-rows > .st-row > .st-row-t",
-   "text": "Sloths Rainforest Adventures",
-   "why": "10px taller than its box",
-   "seen": "settings: About @ up/fresh"
-  },
-  {
-   "kind": "overflow",
-   "sel": ".st-row > .st-row-t > small",
-   "text": "Created and made by Matt",
-   "why": "10px taller than its box",
-   "seen": "settings: About @ up/fresh"
-  },
-  {
-   "kind": "overflow",
-   "sel": ".st-rows > .st-row > .st-row-t",
-   "text": "This version",
-   "why": "10px taller than its box",
-   "seen": "settings: About @ up/fresh"
-  },
-  {
-   "kind": "small",
-   "sel": ".st-row-t > small > .title-credit-btn",
-   "text": "Shaffer",
-   "why": "63x38 px tap area",
-   "seen": "settings: About @ up/fresh"
-  },
-  {
-   "kind": "small",
-   "sel": ".jr-split > .jr-chapters > .jr-ch",
-   "text": "Dangers 0/5",
-   "why": "131x40 px tap area",
-   "seen": "how to play (scrolled to the end) @ up/fresh"
-  },
-  {
-   "kind": "small",
-   "sel": ".jr-split > .jr-chapters > .jr-ch.jr-ch-extra",
-   "text": "Stars, lives & saving",
-   "why": "167x40 px tap area",
-   "seen": "how to play (scrolled to the end) @ up/fresh"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
-   "text": "Run the high branches of the kapok trees and reach the shrine.",
-   "why": "bottom cut by its own box (overflow hidden)",
-   "seen": "world map: World 1 of 10 @ up/fresh"
-  },
-  {
-   "kind": "small",
-   "sel": ".ttl-ver > .ttl-ver-row > .ttl-ver-b",
-   "text": "Check for updates",
-   "why": "162x40 px tap area",
-   "seen": "start screen @ side/fresh"
-  },
-  {
-   "kind": "small",
-   "sel": ".pm-sound > .pm-row > .pm-vol",
-   "text": "",
-   "why": "356x34 px tap area",
-   "seen": "settings: Sound @ side/fresh"
-  },
-  {
-   "kind": "small",
-   "sel": ".ui-panel.ui-saveload > .ui-tabs > button",
-   "text": "Save",
-   "why": "198x39 px tap area",
-   "seen": "settings: Save / Load @ side/fresh"
-  },
-  {
-   "kind": "inset",
-   "sel": ".ui-panel.jr > .jr-head > .nv-x.nv-inline",
-   "text": "Close",
-   "why": "inside the right inset",
-   "seen": "how to play @ side/fresh"
-  },
-  {
-   "kind": "inset",
-   "sel": ".jr-split > .jr-chapters > .jr-ch",
-   "text": "Moving 3/6",
-   "why": "inside the left inset",
-   "seen": "how to play @ side/fresh"
-  },
-  {
-   "kind": "inset",
-   "sel": ".jr-split > .jr-chapters > .jr-ch.jr-ch-extra",
-   "text": "Stars, lives & saving",
-   "why": "inside the left inset",
-   "seen": "how to play @ side/fresh"
-  },
-  {
-   "kind": "inset",
-   "sel": ".jr-main > .jr-grid > .jr-tile",
-   "text": "Duck",
-   "why": "inside the right inset",
-   "seen": "how to play @ side/fresh"
-  },
-  {
-   "kind": "inset",
-   "sel": ".wm.fixed > .relative.z-10 > .map-node.ready",
-   "text": "1",
-   "why": "inside the left inset",
-   "seen": "world map: World 1 of 10 @ side/fresh"
-  },
-  {
-   "kind": "inset",
-   "sel": ".wm.fixed > .relative.z-10 > .map-node.locked",
-   "text": "Stage 1-10: Venom Fang's Lair, Boss, locked",
-   "why": "inside the right inset",
-   "seen": "world map: World 1 of 10 @ side/fresh"
-  },
-  {
-   "kind": "inset",
-   "sel": ".tr-inner.sh-inner > .tr-head.sh-head > .nv-back",
-   "text": "Start Screen",
-   "why": "inside the left inset",
-   "seen": "satchel: Finds @ side/fresh"
-  },
-  {
-   "kind": "inset",
-   "sel": ".tr-inner.sh-inner > .sh-tabs > .sh-tab",
-   "text": "Finds",
-   "why": "inside the left inset",
-   "seen": "satchel: Finds @ side/fresh"
-  },
-  {
-   "kind": "inset",
-   "sel": ".tr-inner.sh-inner > .st-grid > .tr-badge.st-medal",
-   "text": "Hot Streak I",
-   "why": "inside the left inset",
-   "seen": "satchel: Trophies @ side/fresh"
-  },
-  {
-   "kind": "cut",
-   "sel": ".nv-card.nv-confirm > .kit-plaque.nv-plaque > span",
-   "text": "Start a new game?",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "settings: New Game question @ up/old"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
-   "text": "Venom Fang's Lair",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "world map: World 1 of 10 @ up/old"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
-   "text": "Face Venom Fang. Watch for the warning before each attack, then hit ba",
-   "why": "bottom cut by its own box (overflow hidden)",
-   "seen": "world map: World 1 of 10 @ up/old"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
-   "text": "Crocus Rex's Lair",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "world map: World 2 of 10 @ up/old"
-  },
   {
    "kind": "cut",
    "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
    "text": "Face Crocus Rex. Watch for the warning before each attack, then hit ba",
    "why": "bottom cut by its own box (overflow hidden)",
-   "seen": "world map: World 2 of 10 @ up/old"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
-   "text": "Shadow Prowler's Lair",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "world map: World 3 of 10 @ up/old"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
-   "text": "Face Shadow Prowler. Watch for the warning before each attack, then hi",
-   "why": "bottom cut by its own box (overflow hidden)",
-   "seen": "world map: World 3 of 10 @ up/old"
-  },
-  {
-   "kind": "small",
-   "sel": ".fr-card.fr-note > .fr-foot > .fr-btn.fr-close",
-   "text": "Close",
-   "why": "71x33 px tap area",
-   "seen": "satchel: find reader @ up/old"
-  },
-  {
-   "kind": "small",
-   "sel": ".sc-page > .sc-words > .sc-read",
-   "text": "What it looks like",
-   "why": "138x26 px tap area",
-   "seen": "satchel: keepsake story @ up/old"
-  },
-  {
-   "kind": "inset",
-   "sel": ".wm.fixed > .relative.z-10 > .map-node.done",
-   "text": "1",
-   "why": "inside the left inset",
-   "seen": "world map: World 2 of 10 @ side/old"
-  },
-  {
-   "kind": "inset",
-   "sel": ".tr-inner.sh-inner > .tr-grid.tr-grid-j > .tr-card.tr-find",
-   "text": "A small iron key World 1",
-   "why": "inside the left inset",
-   "seen": "satchel: Finds @ side/old"
-  },
-  {
-   "kind": "inset",
-   "sel": ".jb > .jb-nav > .jb-arrow",
-   "text": "Turn back a page",
-   "why": "inside the left inset",
-   "seen": "satchel: Journal @ side/old"
-  },
-  {
-   "kind": "inset",
-   "sel": ".tr-inner.sh-inner > .ss-top > .ss-all",
-   "text": "Play all in order",
-   "why": "inside the right inset",
-   "seen": "satchel: Scenes @ side/old"
-  },
-  {
-   "kind": "inset",
-   "sel": ".tr-inner.sh-inner > .ss-list > .ss-row.ss-prologue",
-   "text": "The Prologue Prologue",
-   "why": "inside the left inset",
-   "seen": "satchel: Scenes @ side/old"
-  },
-  {
-   "kind": "inset",
-   "sel": ".tr-inner.sh-inner > .ss-list > .ss-row.ss-opener",
-   "text": "The First Note A new world",
-   "why": "inside the left inset",
-   "seen": "satchel: Scenes @ side/old"
-  },
-  {
-   "kind": "inset",
-   "sel": ".tr-inner.sh-inner > .ss-list > .ss-row.ss-beaten",
-   "text": "Venom Fang Falls Victory",
-   "why": "inside the right inset",
-   "seen": "satchel: Scenes @ side/old"
-  },
-  {
-   "kind": "inset",
-   "sel": ".tr-inner.sh-inner > .tr-grid.tr-grid-j > .tr-card.sc-tap",
-   "text": "Venom Fang Guardian of World 1. World 1",
-   "why": "inside the left inset",
-   "seen": "satchel: Creatures @ side/old"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
-   "text": "Fly Meeca's note through the General's iron netting, to the one gap as",
-   "why": "bottom cut by its own box (overflow hidden)",
-   "seen": "world map: World 4 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-name > .kit-plaque.wm-plaque > span",
-   "text": "Orchid Sanctuary",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "world map: World 5 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
-   "text": "The night Meeca got away. Learn each rule the hard way, and carve it o",
-   "why": "bottom cut by its own box (overflow hidden)",
-   "seen": "world map: World 5 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
-   "text": "Marsh Reaver's Lair",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "world map: World 6 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
-   "text": "Face Marsh Reaver. Watch for the warning before each attack, then hit ",
-   "why": "bottom cut by its own box (overflow hidden)",
-   "seen": "world map: World 6 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
-   "text": "Stone Idol Golem's Lair",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "world map: World 7 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
-   "text": "Face Stone Idol Golem. Watch for the warning before each attack, then ",
-   "why": "bottom cut by its own box (overflow hidden)",
-   "seen": "world map: World 7 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-name > .kit-plaque.wm-plaque > span",
-   "text": "Twilight Treetops",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "world map: World 8 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
-   "text": "Night-Wing Monarch's Lair",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "world map: World 8 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
-   "text": "Face Night-Wing Monarch. Watch for the warning before each attack, the",
-   "why": "bottom cut by its own box (overflow hidden)",
-   "seen": "world map: World 8 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
-   "text": "Magma Drake's Lair",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "world map: World 9 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
-   "text": "Face Magma Drake. Watch for the warning before each attack, then hit b",
-   "why": "bottom cut by its own box (overflow hidden)",
-   "seen": "world map: World 9 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-name > .kit-plaque.wm-plaque > span",
-   "text": "Stormy Highlands Fortress",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "world map: World 10 of 10 @ up/done"
-  },
-  {
-   "kind": "cut",
-   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
-   "text": "General Iron-Claw's Lair",
-   "why": "right cut by its own box (overflow hidden)",
-   "seen": "world map: World 10 of 10 @ up/done"
+   "seen": "world map: World 2 of 10 @ up/old",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
   },
   {
    "kind": "cut",
    "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
    "text": "Face General Iron-Claw. Watch for the warning before each attack, then",
    "why": "bottom cut by its own box (overflow hidden)",
-   "seen": "world map: World 10 of 10 @ up/done"
+   "seen": "world map: World 10 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
+   "text": "Face Magma Drake. Watch for the warning before each attack, then hit b",
+   "why": "bottom cut by its own box (overflow hidden)",
+   "seen": "world map: World 9 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
+   "text": "Face Marsh Reaver. Watch for the warning before each attack, then hit ",
+   "why": "bottom cut by its own box (overflow hidden)",
+   "seen": "world map: World 6 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
+   "text": "Face Night-Wing Monarch. Watch for the warning before each attack, the",
+   "why": "bottom cut by its own box (overflow hidden)",
+   "seen": "world map: World 8 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
+   "text": "Face Shadow Prowler. Watch for the warning before each attack, then hi",
+   "why": "bottom cut by its own box (overflow hidden)",
+   "seen": "world map: World 3 of 10 @ up/old",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
+   "text": "Face Stone Idol Golem. Watch for the warning before each attack, then ",
+   "why": "bottom cut by its own box (overflow hidden)",
+   "seen": "world map: World 7 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
+   "text": "Face Venom Fang. Watch for the warning before each attack, then hit ba",
+   "why": "bottom cut by its own box (overflow hidden)",
+   "seen": "world map: World 1 of 10 @ up/old",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
+   "text": "Fly Meeca's note through the General's iron netting, to the one gap as",
+   "why": "bottom cut by its own box (overflow hidden)",
+   "seen": "world map: World 4 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
+   "text": "Run the high branches of the kapok trees and reach the shrine.",
+   "why": "bottom cut by its own box (overflow hidden)",
+   "seen": "world map: World 1 of 10 @ up/fresh",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-desc",
+   "text": "The night Meeca got away. Learn each rule the hard way, and carve it o",
+   "why": "bottom cut by its own box (overflow hidden)",
+   "seen": "world map: World 5 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
+   "text": "Crocus Rex's Lair",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "world map: World 2 of 10 @ up/old",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
+   "text": "General Iron-Claw's Lair",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "world map: World 10 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
+   "text": "Magma Drake's Lair",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "world map: World 9 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
+   "text": "Marsh Reaver's Lair",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "world map: World 6 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
+   "text": "Night-Wing Monarch's Lair",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "world map: World 8 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
+   "text": "Shadow Prowler's Lair",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "world map: World 3 of 10 @ up/old",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
+   "text": "Stone Idol Golem's Lair",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "world map: World 7 of 10 @ up/done",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-card > .min-w-0.flex-1 > .wm-card-name",
+   "text": "Venom Fang's Lair",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "world map: World 1 of 10 @ up/old",
+   "group": "G1 World Map stage card: long stage/boss names cut off, descriptions clamped (every map visit, both ways up)",
+   "owner": "lead to assign (World Map)"
   },
   {
    "kind": "inset",
-   "sel": ".tr-inner.sh-inner > .ss-list > .ss-row.ss-memory",
-   "text": "The Blessing Flashback",
+   "sel": ".wm.fixed > .relative.z-10 > .map-node.done",
+   "text": "1",
    "why": "inside the left inset",
-   "seen": "satchel: Scenes (scrolled to the end) @ side/done"
+   "seen": "world map: World 2 of 10 @ side/old",
+   "group": "G2 World Map sideways: first and last stage nodes under the notch bands",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".wm.fixed > .relative.z-10 > .map-node.locked",
+   "text": "Stage 1-10: Venom Fang's Lair, Boss, locked",
+   "why": "inside the right inset",
+   "seen": "world map: World 1 of 10 @ side/fresh",
+   "group": "G2 World Map sideways: first and last stage nodes under the notch bands",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".wm.fixed > .relative.z-10 > .map-node.ready",
+   "text": "1",
+   "why": "inside the left inset",
+   "seen": "world map: World 1 of 10 @ side/fresh",
+   "group": "G2 World Map sideways: first and last stage nodes under the notch bands",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".jb > .jb-nav > .jb-arrow",
+   "text": "Turn back a page",
+   "why": "inside the left inset",
+   "seen": "satchel: Journal @ side/old",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".tr-inner.sh-inner > .sh-tabs > .sh-tab",
+   "text": "Finds",
+   "why": "inside the left inset",
+   "seen": "satchel: Finds @ side/fresh",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".tr-inner.sh-inner > .ss-list > .ss-row.ss-beaten",
+   "text": "Venom Fang Falls Victory",
+   "why": "inside the right inset",
+   "seen": "satchel: Scenes @ side/old",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
   },
   {
    "kind": "inset",
    "sel": ".tr-inner.sh-inner > .ss-list > .ss-row.ss-boss",
    "text": "General Iron-Claw The guardian appears",
    "why": "inside the right inset",
-   "seen": "satchel: Scenes (scrolled to the end) @ side/done"
+   "seen": "satchel: Scenes (scrolled to the end) @ side/done",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
   },
   {
    "kind": "inset",
    "sel": ".tr-inner.sh-inner > .ss-list > .ss-row.ss-ending",
    "text": "Tea at Four Ending",
    "why": "inside the left inset",
-   "seen": "satchel: Scenes (scrolled to the end) @ side/done"
+   "seen": "satchel: Scenes (scrolled to the end) @ side/done",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".tr-inner.sh-inner > .ss-list > .ss-row.ss-memory",
+   "text": "The Blessing Flashback",
+   "why": "inside the left inset",
+   "seen": "satchel: Scenes (scrolled to the end) @ side/done",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".tr-inner.sh-inner > .ss-list > .ss-row.ss-opener",
+   "text": "The First Note A new world",
+   "why": "inside the left inset",
+   "seen": "satchel: Scenes @ side/old",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".tr-inner.sh-inner > .ss-list > .ss-row.ss-prologue",
+   "text": "The Prologue Prologue",
+   "why": "inside the left inset",
+   "seen": "satchel: Scenes @ side/old",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".tr-inner.sh-inner > .ss-top > .ss-all",
+   "text": "Play all in order",
+   "why": "inside the right inset",
+   "seen": "satchel: Scenes @ side/old",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".tr-inner.sh-inner > .st-grid > .tr-badge.st-medal",
+   "text": "Hot Streak I",
+   "why": "inside the left inset",
+   "seen": "satchel: Trophies @ side/fresh",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".tr-inner.sh-inner > .tr-grid.tr-grid-j > .tr-card.sc-tap",
+   "text": "Venom Fang Guardian of World 1. World 1",
+   "why": "inside the left inset",
+   "seen": "satchel: Creatures @ side/old",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".tr-inner.sh-inner > .tr-grid.tr-grid-j > .tr-card.tr-find",
+   "text": "A small iron key World 1",
+   "why": "inside the left inset",
+   "seen": "satchel: Finds @ side/old",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".tr-inner.sh-inner > .tr-head.sh-head > .nv-back",
+   "text": "Start Screen",
+   "why": "inside the left inset",
+   "seen": "satchel: Finds @ side/fresh",
+   "group": "G3 Satchel and Journal sideways: back button, tabs, grid edges, scene rows, page arrows under the notch (no left/right safe-area padding)",
+   "owner": "whatsnew (Satchel), journal-voice (Journal arrows)"
+  },
+  {
+   "kind": "small",
+   "sel": ".pm-sound > .pm-row > .pm-vol",
+   "text": "",
+   "why": "356x34 px tap area",
+   "seen": "settings: Sound @ side/fresh",
+   "group": "G4 Settings tap targets under 44 px (Game segmented buttons, sliders, Mute, Save/Load tabs)",
+   "owner": "lead to assign (Settings)"
+  },
+  {
+   "kind": "small",
+   "sel": ".pm-sound > .pm-sound-h > .pm-mute",
+   "text": "Mute all",
+   "why": "84x36 px tap area",
+   "seen": "settings: Sound @ up/fresh",
+   "group": "G4 Settings tap targets under 44 px (Game segmented buttons, sliders, Mute, Save/Load tabs)",
+   "owner": "lead to assign (Settings)"
+  },
+  {
+   "kind": "small",
+   "sel": ".pm-sound > .pm-sound-h > .pm-mute.pm-polish",
+   "text": "Off",
+   "why": "57x36 px tap area",
+   "seen": "settings: Game @ up/fresh",
+   "group": "G4 Settings tap targets under 44 px (Game segmented buttons, sliders, Mute, Save/Load tabs)",
+   "owner": "lead to assign (Settings)"
+  },
+  {
+   "kind": "small",
+   "sel": ".pm-sound-h > .flex.items-center > input",
+   "text": "Touch sensitivity",
+   "why": "120x16 px tap area",
+   "seen": "settings: Game @ up/fresh",
+   "group": "G4 Settings tap targets under 44 px (Game segmented buttons, sliders, Mute, Save/Load tabs)",
+   "owner": "lead to assign (Settings)"
+  },
+  {
+   "kind": "small",
+   "sel": ".pm-sound-h > .pm-seg > button",
+   "text": "Easy",
+   "why": "55x33 px tap area",
+   "seen": "settings: Game @ up/fresh",
+   "group": "G4 Settings tap targets under 44 px (Game segmented buttons, sliders, Mute, Save/Load tabs)",
+   "owner": "lead to assign (Settings)"
+  },
+  {
+   "kind": "small",
+   "sel": ".ui-panel.ui-saveload > .ui-tabs > button",
+   "text": "Save",
+   "why": "198x39 px tap area",
+   "seen": "settings: Save / Load @ side/fresh",
+   "group": "G4 Settings tap targets under 44 px (Game segmented buttons, sliders, Mute, Save/Load tabs)",
+   "owner": "lead to assign (Settings)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-name > .kit-plaque.wm-plaque > span",
+   "text": "Orchid Sanctuary",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "world map: World 5 of 10 @ up/done",
+   "group": "G5 World Map plaque: long world names cut (upright)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-name > .kit-plaque.wm-plaque > span",
+   "text": "Stormy Highlands Fortress",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "world map: World 10 of 10 @ up/done",
+   "group": "G5 World Map plaque: long world names cut (upright)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".wm-name > .kit-plaque.wm-plaque > span",
+   "text": "Twilight Treetops",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "world map: World 8 of 10 @ up/done",
+   "group": "G5 World Map plaque: long world names cut (upright)",
+   "owner": "lead to assign (World Map)"
+  },
+  {
+   "kind": "small",
+   "sel": ".ttl-ver > .ttl-ver-row > .ttl-ver-b",
+   "text": "Check for updates",
+   "why": "162x40 px tap area",
+   "seen": "start screen @ side/fresh",
+   "group": "G6 Start screen and Pause sideways: Check for updates / Refresh game buttons 40 px",
+   "owner": "lead to assign (start screen)"
+  },
+  {
+   "kind": "small",
+   "sel": ".fr-card.fr-note > .fr-foot > .fr-btn.fr-close",
+   "text": "Close",
+   "why": "71x33 px tap area",
+   "seen": "satchel: find reader @ up/old",
+   "group": "G7 Satchel find reader Close 33 px, keepsake \"What it looks like\" 26 px",
+   "owner": "whatsnew (Satchel)"
+  },
+  {
+   "kind": "small",
+   "sel": ".sc-page > .sc-words > .sc-read",
+   "text": "What it looks like",
+   "why": "138x26 px tap area",
+   "seen": "satchel: keepsake story @ up/old",
+   "group": "G7 Satchel find reader Close 33 px, keepsake \"What it looks like\" 26 px",
+   "owner": "whatsnew (Satchel)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".jr-main > .jr-grid > .jr-tile",
+   "text": "Duck",
+   "why": "inside the right inset",
+   "seen": "how to play @ side/fresh",
+   "group": "G8 How to Play sideways: chapter tabs 30-32 px and under the left notch, X and right tiles under the right notch",
+   "owner": "lead to assign (How to Play)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".jr-split > .jr-chapters > .jr-ch",
+   "text": "Moving 3/6",
+   "why": "inside the left inset",
+   "seen": "how to play @ side/fresh",
+   "group": "G8 How to Play sideways: chapter tabs 30-32 px and under the left notch, X and right tiles under the right notch",
+   "owner": "lead to assign (How to Play)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".jr-split > .jr-chapters > .jr-ch.jr-ch-extra",
+   "text": "Stars, lives & saving",
+   "why": "inside the left inset",
+   "seen": "how to play @ side/fresh",
+   "group": "G8 How to Play sideways: chapter tabs 30-32 px and under the left notch, X and right tiles under the right notch",
+   "owner": "lead to assign (How to Play)"
+  },
+  {
+   "kind": "inset",
+   "sel": ".ui-panel.jr > .jr-head > .nv-x.nv-inline",
+   "text": "Close",
+   "why": "inside the right inset",
+   "seen": "how to play @ side/fresh",
+   "group": "G8 How to Play sideways: chapter tabs 30-32 px and under the left notch, X and right tiles under the right notch",
+   "owner": "lead to assign (How to Play)"
+  },
+  {
+   "kind": "small",
+   "sel": ".jr-split > .jr-chapters > .jr-ch",
+   "text": "Dangers 0/5",
+   "why": "131x40 px tap area",
+   "seen": "how to play (scrolled to the end) @ up/fresh",
+   "group": "G8 How to Play sideways: chapter tabs 30-32 px and under the left notch, X and right tiles under the right notch",
+   "owner": "lead to assign (How to Play)"
+  },
+  {
+   "kind": "small",
+   "sel": ".jr-split > .jr-chapters > .jr-ch.jr-ch-extra",
+   "text": "Stars, lives & saving",
+   "why": "167x40 px tap area",
+   "seen": "how to play (scrolled to the end) @ up/fresh",
+   "group": "G8 How to Play sideways: chapter tabs 30-32 px and under the left notch, X and right tiles under the right notch",
+   "owner": "lead to assign (How to Play)"
+  },
+  {
+   "kind": "cut",
+   "sel": ".nv-card.nv-confirm > .kit-plaque.nv-plaque > span",
+   "text": "Start a new game?",
+   "why": "right cut by its own box (overflow hidden)",
+   "seen": "settings: New Game question @ up/old",
+   "group": "G9 New Game question: plaque \"Start a new game?\" cut (upright)",
+   "owner": "lead to assign (Settings)"
+  },
+  {
+   "kind": "overflow",
+   "sel": ".st-row > .st-row-t > small",
+   "text": "Created and made by Matt",
+   "why": "10px taller than its box",
+   "seen": "settings: About @ up/fresh",
+   "group": "G10 Settings About: rows taller than their box; Shaffer and Check for updates text buttons 38 px",
+   "owner": "whatsnew (About)"
+  },
+  {
+   "kind": "overflow",
+   "sel": ".st-rows > .st-row > .st-row-t",
+   "text": "Sloths Rainforest Adventures",
+   "why": "10px taller than its box",
+   "seen": "settings: About @ up/fresh",
+   "group": "G10 Settings About: rows taller than their box; Shaffer and Check for updates text buttons 38 px",
+   "owner": "whatsnew (About)"
+  },
+  {
+   "kind": "overflow",
+   "sel": ".st-rows > .st-row > .st-row-t",
+   "text": "This version",
+   "why": "10px taller than its box",
+   "seen": "settings: About @ up/fresh",
+   "group": "G10 Settings About: rows taller than their box; Shaffer and Check for updates text buttons 38 px",
+   "owner": "whatsnew (About)"
+  },
+  {
+   "kind": "small",
+   "sel": ".st-row-t > small > .title-credit-btn",
+   "text": "Shaffer",
+   "why": "63x38 px tap area",
+   "seen": "settings: About @ up/fresh",
+   "group": "G10 Settings About: rows taller than their box; Shaffer and Check for updates text buttons 38 px",
+   "owner": "whatsnew (About)"
   }
  ]
 }

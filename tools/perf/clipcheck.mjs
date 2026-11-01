@@ -26,7 +26,8 @@
  *   inset      a tappable thing inside the unsafe insets (notch, status bar, gesture bar); inside a scroll box it can scroll clear,
  *              so only the insets across the box's scroll axis count (a vertical list in the sideways notch band still fails)
  * Each breach prints with the screen, the size, the save, a selector and the text. Breaches listed in clipknown.json (the debt on main
- * when the check was built) print as "known" and don't fail; that list only shrinks: fix one, delete its line. A contact sheet of every
+ * when the check was built, each with a group and an owner) print as "known" and don't fail. The list only shrinks (LAWS.md law 5): an
+ * entry that no longer shows up fails the check until it is deleted, and knowncheck.mjs fails when one is added. A contact sheet of every
  * screen with a breach (outlined red, numbered) is written to <out>/contact.jpg.
  */
 import { spawn } from 'node:child_process';
@@ -505,7 +506,10 @@ if (errs.length) console.log(`\npage errors:\n  ${errs.slice(0, 6).join('\n  ')}
 // known entries that no longer show up: delete them from clipknown.json
 const live = new Set([...groups.values()].map(({ b }) => knownKey(b)));
 const stale = KNOWN.known.filter((k) => !live.has(knownKey(k)));
-if (stale.length && !ONLY) console.log(`\nfixed (delete from clipknown.json): ${stale.map((k) => `${k.kind} ${k.sel} "${k.text}"`).join('; ')}`);
+// (only a full walk can say an entry is gone: CLIPCHECK_ONLY / CLIPCHECK_WALKS runs skip this)
+const fullRun = !ONLY && !process.env.CLIPCHECK_WALKS;
+if (stale.length && fullRun) console.log(`\n✗ stale known entries: fixed, so delete them from tools/perf/clipknown.json (the list only shrinks):\n  ${stale.map((k) => `${k.kind} ${k.sel} "${k.text}"`).join('\n  ')}`);
+const staleN = fullRun ? stale.length : 0;
 fs.writeFileSync(path.join(out, 'breaches.json'), JSON.stringify([...groups.values()].map(({ b, where }) => ({ kind: b.kind, sel: b.sel, text: b.text, detail: b.detail, where: [...new Set(where)] })), null, 1));
 
 // the contact sheet: every screen with a breach, the breaches listed under it
@@ -527,5 +531,6 @@ figure{margin:0;background:#333;padding:4px;width:260px}figure.side{width:420px}
   await b2.close();
 }
 const secs = Math.round((Date.now() - t0) / 1000);
-console.log(`\n${fresh ? `FAIL: ${fresh} new breach(es)` : missed.length ? 'FAIL: some screens could not be opened' : 'PASS'}${known ? ` (${known} known)` : ''} (${secs} s; contact sheet and breaches.json in ${out})`);
-process.exit(fresh ? 1 : missed.length ? 2 : 0);
+const verdict = fresh ? `FAIL: ${fresh} new breach(es)` : staleN ? `FAIL: ${staleN} stale known entr${staleN === 1 ? 'y' : 'ies'}` : missed.length ? 'FAIL: some screens could not be opened' : 'PASS';
+console.log(`\n${verdict}${known ? ` (${known} known)` : ''} (${secs} s; contact sheet and breaches.json in ${out})`);
+process.exit(fresh || staleN ? 1 : missed.length ? 2 : 0);
