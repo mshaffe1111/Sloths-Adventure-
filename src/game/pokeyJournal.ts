@@ -352,9 +352,9 @@ function candidates(stage: EntryStage, rec: PlayRecord, f: FirstClear, names: En
     else if (kind === 'fewFalls' && f.ll >= 1 && f.ll <= 2) add({ n: times(f.ll) });
     else if (kind === 'find' && fd.length) add({ x: `“${fd[0]}”` });
     else if (kind === 'medal' && md.length) add({ x: md[0] });
-    else if (kind === 'allFlowers' && f.ft >= 2 && share >= 1) add({ ft: f.ft, p });
-    else if (kind === 'mostFlowers' && f.ft > 0 && f.fl >= 2 && share >= 0.6 && share < 1) add({ f: f.fl, ft: f.ft, p });
-    else if (kind === 'fewFlowers' && f.ft > 0 && f.fl >= 2 && share < 0.6) add({ f: f.fl, ft: f.ft, p });
+    else if (kind === 'allFlowers' && f.ft >= 2 && share >= 1) add({ ft: num(f.ft), p });
+    else if (kind === 'mostFlowers' && f.ft > 0 && f.fl >= 2 && share >= 0.6 && share < 1) add({ f: num(f.fl), ft: num(f.ft), p });
+    else if (kind === 'fewFlowers' && f.ft > 0 && f.fl >= 2 && share < 0.6) add({ f: num(f.fl), ft: num(f.ft), p });
     else if (kind === 'freed' && f.fr > 0) add({ n: num(f.fr) });
     else if (kind === 'quick' && f.t > 0 && f.t < 100) add({ t: sayTime(f.t) });
     else if (kind === 'long' && f.t >= 240) add({ t: sayTime(f.t) });
@@ -443,10 +443,12 @@ export function worldReview(
     if (f.ll === 0 && f.hl === 0) clean.push(l.name);
   }
   const best: string[] = [];
-  if (clean.length) best.push(clean.length === 1 ? `Not a scratch in ${clean[0]}.` : `Not a scratch in ${clean.length} stages.`);
+  if (clean.length) best.push(clean.length === 1 ? `Not a scratch in ${clean[0]}.` : `Not a scratch in ${num(clean.length)} stages.`);
   if (fastest) best.push(`Quickest: ${fastest.name}, in ${fmtTime(fastest.t)}.`);
-  if (flowers && flowers.f > 0) best.push(flowers.f === flowers.ft ? `Every flower in ${flowers.name}.` : `Most flowers: ${flowers.f} of ${flowers.ft} in ${flowers.name}.`);
-  if (extra.finds) best.push(`${extra.finds} of Meeca's things found here.`);
+  // (Meeca's petals are every stage's pickup but World 8's harvest, whose night blooms are its own: stagePlan isPetalStage)
+  const fw = world === 8 ? 'flower' : 'petal';
+  if (flowers && flowers.f > 0) best.push(flowers.f === flowers.ft ? `Every ${fw} in ${flowers.name}.` : `Most ${fw}s: ${flowers.f} of ${flowers.ft} in ${flowers.name}.`);
+  if (extra.finds) best.push(`${num(extra.finds).replace(/^./, (c) => c.toUpperCase())} of Meeca's things found here.`);
   const story: string[] = [];
   if (extra.teaser) story.push(extra.teaser);
   if (done && POKEY_JOURNAL[world]) story.push(POKEY_JOURNAL[world]);

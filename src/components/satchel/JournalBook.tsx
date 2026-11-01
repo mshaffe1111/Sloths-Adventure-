@@ -127,7 +127,7 @@ export const JournalBook: React.FC<{
         <span><b>{rev.stats.stars}</b> stars</span>
         {rev.stats.time > 0 && <span><b>{fmtTime(rev.stats.time)}</b> walking</span>}
         {rev.stats.time > 0 && <span><b>{rev.stats.falls}</b> falls</span>}
-        {rev.stats.flowerTotal > 0 && <span><b>{rev.stats.flowers}</b> flowers</span>}
+        {rev.stats.flowerTotal > 0 && <span><b>{rev.stats.flowers}</b> {world === 8 ? 'flowers' : 'petals'}</span>}
         <span><b>{rev.stats.finds}/{rev.stats.findTotal}</b> finds</span>
       </div>
     </div>

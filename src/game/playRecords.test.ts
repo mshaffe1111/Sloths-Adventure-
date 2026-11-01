@@ -85,6 +85,6 @@ test("a world's review sums the stages and finds the best moments", () => {
   assert.equal(r.stats.stars, 9);
   assert.equal(r.stats.falls, 1);
   assert.ok(r.best.some((b) => b.includes('S1')));
-  assert.ok(r.best.some((b) => b.includes('Every flower in S2')));
+  assert.ok(r.best.some((b) => b.includes('Every petal in S2')));
   assert.equal(r.done, false);
 });
