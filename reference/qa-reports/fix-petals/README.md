@@ -23,7 +23,9 @@ Also found and fixed:
 `p.x - this.lastX`, but lastX is already p.x, so the "stopped dead" rule fires after every 0.3 s of walking. The bot hops about every
 0.35 s on flat ground and takes off about 110 px before an edge (its edgeAim is 22). That is where the "bough petals flown over" in
 Worlds 1/3/5 came from: with the one-line fix (`Math.abs(this.moveX)`) the flown-over bough petals fall to 0-2 a run on main (1-9 aside,
-which has a guard goal). Bug 2 was dropped on the lead's call: no float change without real evidence.
+which has a guard goal). With origin/bot-fix 877a819b, bough petals flown over (passed above, or within 34-70 px above) per run, seeds
+1-3: 3-2 Normal 0 0 0 / Easy 0 0 0; 5-2 Normal 0 0 0 / Easy 0 0 0; 1-2 on main Normal 0-1 / Easy 0-2 (9 runs each). Bug 2 was dropped on
+the lead's call: no float change without real evidence, and there is none. Nothing in petals.ts changed.
 
 ## The fix (`src/game/protoStage.ts`, 1-2 only)
 
@@ -35,19 +37,27 @@ which has a guard goal). Bug 2 was dropped on the lead's call: no float change w
 
 ## Numbers: first-timer bot, 1-2, goal got / needed
 
-The fixed bot is the one-line fix applied in a local copy only (`_firsttimerFixed.ts`, not committed), as the lead asked.
+The bot is origin/bot-fix 877a819b (merged into this branch on the lead's word: the stuck-rule fix plus its puzzle-room, fall-loop and
+rescue fixes). Seeds 1-3 x 3 trials. Main measured with the same bot (its firsttimer.ts checked out over main).
 
-| | main, current bot | branch, current bot | branch, fixed bot |
-|---|---|---|---|
-| Normal s1 | 70/95, 77/95 (sealed) | 92, 92, 93 /98 (sealed) | 99, 102, 104 /98 |
-| Normal s2 | 71/99, 76/99 (sealed) | 88, 86, 89 /102 (sealed) | 108, 108, 106 /102 |
-| Normal s3 | 70/92, 74/92 (sealed) | 88, 90, 94 /95 (sealed) | 102, 98, 101 /95 |
-| Easy s1 | 73/72, 72/72 | 93, 100, 90 /72 | 93, 96, 95 /72 |
-| Easy s2 | 79/72, 74/72 | 91, 91, 77 /72 | 105, 104, 105 /72 |
-| Easy s3 | 69/72, 67/72 (sealed) | 90, 90, 88 /72 | 92, 95, 94 /72 |
+| | main | fix-petals |
+|---|---|---|
+| Normal s1 | 74, 76, 76 /95 (sealed x3) | 102, 101, 101 /98 |
+| Normal s2 | 76, 77, 81 /99 (sealed x3) | 107, 108, 107 /102 |
+| Normal s3 | 71, 66, 70 /92 (sealed x3) | 96, 95, 99 /95 |
+| Easy s1 | 70 (sealed), 74, 65 (sealed) /72 | 95, 97, 99 /72 |
+| Easy s2 | 71 (sealed), 74, 71 (sealed) /72 | 100, 105, 100 /72 |
+| Easy s3 | 65, 63, 67 /72 (sealed x3) | 92, 92, 92 /72 |
 
-Fixed bot: the door opens on all 18 runs (seeds 1-3 x 3 trials x 2 settings). Normal's margin is 1-8 petals (thin on seed 1 trial 0,
-+1). The current, buggy bot still seals Normal on every run: its early hops miss the teaching gaps' arcs and fly over branch petals.
+Main: the door opens on 2 of 18 runs. Branch: 18 of 18. **Normal's margin is thin: 0 to +6** (seed 3 trial 1 is exactly 95/95). What
+the branch's Normal runs still leave, 13-ish a run: the arcs over the teaching gaps (the bot drops into the moss on the first gaps) and
+the arc at the end of each stair run, shaped for a hop off the end, which a walk off passes under (1 a run each). That bot follows the
+level check's route and never goes for a petal on purpose, so a person following the petals should do better. A wider margin would be
+a design call (reshape the descent arcs for a walk off, at the cost of a hop off, or count the goal from an adult first-timer the way
+Easy's gen2 goal counts the kid: the method's "To try").
+
+(The first measurements, with only the one-line stuck-rule fix applied in a scratch copy, gave the same picture: 18 of 18, Normal 1-8
+over.)
 
 Other numbers, branch against main:
 - 200-roll tool (era.ts, 1-2): 0 rolls break the §2 numbers (main: 0 dead-time, 1 kid hot spot; branch: none). Dead time median 13.1 s
@@ -110,3 +120,14 @@ Other numbers, branch against main:
 - **Exact edit:** add to Steps after step 2: "2b. Classify what the run leaves (petalLeft.ts) and read one frame log against the bot's own
   parameters before deciding it is the stage." Add to step 6: "`npx tsx tools/inspect/stageHash.mts > out.txt` on base and branch, then
   diff the sorted files."
+
+## Checks (on the final commit, after merging origin/bot-fix 877a819b)
+
+- `npx tsc --noEmit -p .`: clean.
+- The full test globs, 3 shards: 735/735, 770/771 (1 todo), 651/652 (1 todo); 0 failures. Plus `src/game/firstTimerBot.test.ts` (from the
+  merge) 8/8.
+- `npx vite build`: clean, no asset over 4 MiB. `node tools/perf/artcheck.mjs`: PASS.
+- `node tools/perf/drawcheck.mjs`: PASS (407 s). A first run beside the 3 test shards failed to load 1-4 ("__play is not a function", a
+  page-load timeout under load; 1-4 is untouched); re-run on an idle machine, every scenario passed.
+- `era.ts --worlds 1 --stages 1-2 --rolls 200`, the stage inspector seeds 1-3, the first-timer bot seeds 1-3 x 3 trials both settings,
+  stageHash on every stage: above.
