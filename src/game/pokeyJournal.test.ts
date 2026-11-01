@@ -11,8 +11,8 @@ import { THORNBARK_LEVEL } from './secret.ts';
 import { dotPresent } from './wayside.ts';
 import type { PlayRecord, FirstClear } from './playRecords.ts';
 
-/** the released worlds (9 and 10 are not out yet) */
-const RELEASED = 8;
+/** every world is live (Worlds 9 and 10 too: the lead, 2026-11-01) */
+const RELEASED = 10;
 const stages = [...withExtraStages(generateAllLevels(), true), THORNBARK_LEVEL].filter((l) => l.worldIndex <= RELEASED);
 const words = (s: string) => s.trim().split(/\s+/).length;
 const names: EntryNames = {

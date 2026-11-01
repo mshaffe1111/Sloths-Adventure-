@@ -51,7 +51,7 @@ export const STAGE_LINES: Record<string, string> = {
   '1-5': "More petals, but further apart now. She's running out of them. I'm not catching up fast enough.",
   '1-6': "First lianas. You have to let go of one before you've got the next. Nobody mentioned that part.",
   '1-7': "Tossed an acorn so the eagle would look the other way. Dot called it cunning. I'd call it throwing.",
-  '1-8': 'The long branch broke apart as I went, so I ran. Meeca says I can. Apparently she was right.',
+  '1-8': "The branch came apart behind me, so I ran. Meeca always said I could. I'd never checked.",
   '1-9': "Fought the boa's guards all the way along his branches. They were only doing their job. So was I.",
   '1-10': "He pictured a soldier, or a hawk. He got me. He's still working out how that happened.",
   // World 2 · Sunlit Riverbank
@@ -71,7 +71,7 @@ export const STAGE_LINES: Record<string, string> = {
   '3-3': 'The footprints went round us in a circle. Then the ocelots went round too. I went straight through.',
   '3-4': "Climbed the sinkhole toward the moonlight. It didn't come down any closer to help. I didn't expect it to.",
   '3-5': 'Grandma always said these vines were asleep. Most of them were. I threw a pebble for the one that wasn\'t.',
-  '3-6': "Grandma's things, hidden in the ferns by Dot, very fast. I crouched and said hello to a great many ferns.",
+  '3-6': "Grandma's things, tucked in among the ferns. I crouched and said hello to a great many ferns.",
   '3-7': "All ferns look alike. Dot has apologized to twelve of them so far. I've only bothered eleven.",
   '3-8': "Swung past the thorns without touching one. Hanging still is the thing I'm best at. It finally paid off.",
   '3-9': 'They closed a ring around me, ocelots and a jaguar. I broke out of it. Slowly, but out.',
@@ -128,12 +128,34 @@ export const STAGE_LINES: Record<string, string> = {
   '8-2': 'Picked night blooms by firefly light. They only open after dark. I respect a flower that keeps my hours.',
   '8-3': "Long swings through the dark. I couldn't see the next vine until I had it. That's faith, or bad planning.",
   '8-4': 'Carried a jar of fireflies through the dark. It kept going dim. The flowers helped. So did not dawdling, for once.',
-  '8-5': "A flower threw me up into the next tree. I hadn't asked it to. Next branch, then the one after.",
+  '8-5': "A flower threw me up into the next tree. I hadn't asked it to. It seemed very pleased with itself.",
   '8-6': 'Glided tree to tree by moonlight. The night wind had other plans. I had a leaf.',
   '8-7': 'Climbed the tallest tree to see the way ahead. I could see the fortress. It could probably see me.',
   '8-8': "Night hunters, a harpy and all. They're quick in the dark. I'm slow in any light, which confused them.",
   '8-9': "The Monarch's wood is darker than the grotto. Dot didn't say a word about it. She was being brave for me.",
   '8-10': "The Monarch says the night is hers. I've been up through most of it lately. We came to an arrangement.",
+  // World 9 · Volcanic Jungle
+  '9-1': 'The air tastes like pepper out here. I sneezed twice and kept going. Sneezing is the fastest thing I do.',
+  '9-2': 'Climbed the warm ledges up the volcano. Warm is the polite word. The rocks were not being polite.',
+  '9-3': "Swung over rock that glowed from underneath. I've never been so keen to get to the next vine.",
+  '9-4': 'He said visitor, then he said intruder. I stayed out of sight and tried to be the first one.',
+  '9-5': 'Opened my leaf over the vents and the hot air carried me up. Nice to be carried, for once.',
+  '9-6': 'Cleared the hunters off the ash fields. Everything here is gray, including them, and eventually me.',
+  '9-7': 'Climbed the lava steps. Cooled, they told me. I checked every one with a claw first. That took a while.',
+  '9-8': "Picked up the thread Pell keeps dropping. He's sewing the seam shut, very badly. I think it's on purpose.",
+  '9-9': "Fought through the Drake's hoard. Gold everywhere, and not one teacup. I think that's what he's missing.",
+  '9-10': 'He lost his place in his own speech. I helped him find it. Then I put his fire out.',
+  // World 10 · Stormy Highlands Fortress
+  '10-1': 'The door in the netting was exactly my width. Somebody measured me. I went through it anyway.',
+  '10-2': "I didn't count the steps on the way up. Somebody at the top already is.",
+  '10-3': 'It thundered the whole way up. I held on with both hands. I am afraid of thunder. I always was.',
+  '10-4': 'Kept climbing between the thunderclaps. It\'s only weather. I said it a lot. It almost worked.',
+  '10-5': 'Halfway up, the thunder stopped, and somebody was singing. I know that song. I hummed the rest.',
+  '10-6': 'Swung along the iron netting. Dot flew through this for two words. I owe her a lot more than two.',
+  '10-7': "Cleared the guards off the walls. They'd been told I was slow. Nobody told them I'd still be coming.",
+  '10-8': 'The last of the thousand steps. Nine hundred and ninety-nine of them were slow. So was the last.',
+  '10-9': 'The gate stood wide open, with every guard he had behind it. Welcoming, Dot called it. She was being kind.',
+  '10-10': "I climbed every step. He asked me why I didn't turn back. She was at the top.",
 };
 
 // ───────────────────────────── the record lines (Matt, 2026-11-01) ─────────────────────────────
@@ -267,10 +289,11 @@ export const RECORD_MAX = 2;
 
 /**
  * The real moments (VOICE.md: "When something real happens, the joke doesn't come"): Meeca running out of petals, the General's hand
- * on the ledge, Dot's flight through the thorns, Meeca's own night, the things in the ruins wrapped by big hands. Their entries carry
+ * on the ledge, Dot's flight through the thorns, Meeca's own night, the things in the ruins wrapped by big hands, and World 10's door,
+ * thunder, song and the General. Their entries carry
  * one plain note, the first sentence of its line, with no joke after it.
  */
-export const QUIET_STAGES: ReadonlySet<string> = new Set(['1-5', '4-1', '4-D', '5-M', '7-7']);
+export const QUIET_STAGES: ReadonlySet<string> = new Set(['1-5', '4-1', '4-D', '5-M', '7-7', '10-1', '10-3', '10-5', '10-10']);
 /** a line's first sentence: "Fell three times." of "Fell three times. Every one of them was educational." */
 export const plainOf = (line: string) => line.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? line;
 
@@ -283,7 +306,7 @@ export const BEATS: Record<number, Partial<Record<number, string>>> = {
   5: { 1: 'Orchids everywhere. Cobwebs too. The Butler offered cake. I said no.', 5: 'The Queen\'s house is quiet. Too quiet. I like quiet, but not this quiet.' },
   6: { 1: 'Black water. A spear. A very strict lunch.', 5: "No Dot. I keep turning to tell her things." },
   7: { 1: 'Ten stone chairs in a ring, and an eleventh with a dent in it.', 5: 'Flicker lights the way. He doesn\'t say much. Neither do I.' },
-  8: { 1: 'Fireflies. Moonlight. I dreamt of a petal.', 5: 'Dot is back. She brought a note and an apology. Mostly the note.' },
+  8: { 1: 'Fireflies. Moonlight. I dreamt of a petal.', 5: "Dot asked what I'd tell a bird who's a day behind. Next branch." },
   9: { 1: 'Lava rivers. A dragon who is bad at visitors. So am I.', 5: 'Hot. Very hot. Meeca was here. The rocks are still warm.' },
   10: { 1: 'A thousand steps. One lit window. No hummingbird.', 5: 'Halfway up. I can see the window now.', 9: 'The fortress gate. Dot went around the back. Flicker stayed.' },
 };
