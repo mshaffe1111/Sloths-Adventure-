@@ -1,5 +1,5 @@
 import React, { useState, useSyncExternalStore } from 'react';
-import { Icon } from './icons/index.tsx';
+import { TextGlyph } from './icons/TextGlyph.tsx';
 import { PaintedIcon } from './icons/PaintedIcon.tsx';
 import { applyUpdate, checkForUpdate, hardRefresh, subscribeUpdate, updateAvailable } from '../game/updates.ts';
 import { storeBuild } from '../game/appShell.ts';
@@ -35,7 +35,7 @@ export const UpdateLink: React.FC = () => {
     <button type="button" className="title-credit-btn" onClick={() => void run()} disabled={state === 'checking'}>
       {state === 'checking' ? 'Checking…' : state === 'same' ? (
           <>
-            You have the latest <Icon name="check" size={12} />
+            You have the latest <TextGlyph name="check" size={12} />
           </>
         ) : state === 'unknown' ? 'Could not check (offline?)' : 'Check for updates'}
     </button>
@@ -91,7 +91,7 @@ export const TitleUpdate: React.FC<{ version?: string; day?: string }> = ({ vers
               {state !== 'same' && <PaintedIcon name="spyglass" size={26} />}
               {state === 'checking' ? 'Checking…' : state === 'same' ? (
                 <>
-                  Up to date <Icon name="check" size={16} />
+                  Up to date <TextGlyph name="check" size={16} />
                 </>
               ) : state === 'unknown' ? 'Offline? Try again' : 'Check for updates'}
             </button>

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { GameScreen } from '../game/types.ts';
-import { Icon } from './icons/index.tsx';
+import { PaintedIcon } from './icons/PaintedIcon.tsx';
 
 /** App.tsx sends this once a stage's first frames are drawing (the iris opens on it) */
 export const STAGE_LIVE_EVENT = 'sloth-stage-live';
@@ -60,7 +60,7 @@ export const ScreenVeil: React.FC<{ screen: GameScreen; stage: { kicker: string;
     <div key={veil.n} className={`sv-iris${veil.open ? ' open' : ''}`} aria-hidden="true" onAnimationEnd={(e) => e.target === e.currentTarget && veil.open && end()}>
       <div className="sv-card">
         <span className="sv-leaf">
-          <Icon name="leaf" size={26} />
+          <PaintedIcon name="leaf" size={28} />
         </span>
         <div className="sv-kicker">{veil.kicker}</div>
         <div className="sv-name">{veil.name}</div>

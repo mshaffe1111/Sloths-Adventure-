@@ -3,17 +3,17 @@ import { Sliders, COARSE } from './PauseMenu.tsx';
 import { ControlsSetting, ShakeSetting, FullscreenSetting, AssistSetting, WaysideToggle, HapticsToggle, PerfToggle, DifficultySetting } from './menuParts.tsx';
 import { MenuTile, SoundSetting } from './MenuFrame.tsx';
 import { UpdateLink } from './UpdateControls.tsx';
-import { Icon, type IconName } from './icons/index.tsx';
+import { PaintedIcon, paint, type AnyIcon } from './icons/PaintedIcon.tsx';
 import { ConfirmDialog, useBack } from './nav/Nav.tsx';
 import { browserStore, buildSave } from '../game/saveFile.ts';
 
 type Tab = 'sound' | 'game' | 'saves' | 'trophies' | 'about';
-const TABS: { id: Tab; icon: IconName; name: string }[] = [
+const TABS: { id: Tab; icon: AnyIcon; name: string }[] = [
   { id: 'sound', icon: 'speaker', name: 'Sound' },
   { id: 'game', icon: 'gear', name: 'Game' },
   { id: 'saves', icon: 'save', name: 'Saves' },
   { id: 'trophies', icon: 'trophy', name: 'Trophies' },
-  { id: 'about', icon: 'sloth', name: 'About' },
+  { id: 'about', icon: 'about', name: 'About' },
 ];
 
 interface TitleSettingsProps {
@@ -84,7 +84,7 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
         return (
           <div className="st-rows">
             <div className="st-row">
-              <Icon name="save" size={28} />
+              <PaintedIcon name="save" size={40} />
               <span className="st-row-t">
                 Save / Load
                 <small>A file or a save code, to keep your game safe</small>
@@ -95,7 +95,7 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
             </div>
             {p.onNewGame && (
             <div className="st-row">
-              <Icon name="leaf" size={28} />
+              <PaintedIcon name="leaf" size={40} />
               <span className="st-row-t">
                 New Game
                 <small>Start again from Stage 1-1</small>
@@ -118,7 +118,7 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
         return (
           <div className="st-rows">
             <div className="st-row">
-              <Icon name="sloth" size={28} />
+              <PaintedIcon name="about" size={40} />
               <span className="st-row-t">
                 Sloths Rainforest Adventures
                 <small>
@@ -139,14 +139,14 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
               </span>
             </div>
             <div className="st-row">
-              <Icon name="heart" size={28} />
+              <PaintedIcon name="heart" size={40} />
               <span className="st-row-t">
                 Special thanks
                 <small>Stephanie Roberts, Jen Shaffer and Sally Rotolo</small>
               </span>
             </div>
             <div className="st-row">
-              <Icon name="restart" size={28} />
+              <PaintedIcon name="restart" size={40} />
               <span className="st-row-t">
                 This version
                 <small>
@@ -157,7 +157,7 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
             </div>
             {!p.isInstalled && p.onInstallDesktop && (
               <div className="st-row">
-                <Icon name="expand" size={28} />
+                <PaintedIcon name="expand" size={40} />
                 <span className="st-row-t">
                   Install the game
                   <small>Play it from its own icon</small>
@@ -179,12 +179,12 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
           <span>Settings</span>
         </h2>
         <button type="button" className="st-x" onClick={onClose} aria-label="Close" title={COARSE ? undefined : 'Esc'}>
-          <Icon name="cross" size={24} />
+          <PaintedIcon name="close" size={26} />
         </button>
         <div className="st-tabs" role="tablist" aria-label="Settings sections">
           {tabs.map((t) => (
             <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} aria-label={t.name} className={`st-tab${tab === t.id ? ' on' : ''}`} onClick={() => setTab(t.id)}>
-              <Icon name={t.icon} size={24} />
+              <PaintedIcon name={paint(t.icon)} size={28} />
               <span>{t.name}</span>
             </button>
           ))}
@@ -195,12 +195,12 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
         <div className="st-foot">
           {p.onStartScreen && (
             <button type="button" className="st-btn st-home" onClick={p.onStartScreen}>
-              <Icon name="sloth" size={22} />
+              <PaintedIcon name="about" size={26} />
               Start Screen
             </button>
           )}
           <button type="button" className="pm-go st-done" onClick={onClose}>
-            <Icon name="check" size={22} />
+            <PaintedIcon name="checkmark" size={24} />
             Done
           </button>
         </div>

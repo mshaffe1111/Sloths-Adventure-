@@ -4,7 +4,7 @@ import { GhostOnExit } from './fx/exitGhost.ts';
 import type { FindDef, KeepsakeIcon } from '../game/finds.ts';
 import { photoUrl } from '../game/photos.ts';
 import { itemUrl } from '../game/items.ts';
-import { Icon } from './icons/index.tsx';
+import { PaintedIcon } from './icons/PaintedIcon.tsx';
 import { DotPerched } from './KitParts.tsx';
 import { CloseX, useBack } from './nav/Nav.tsx';
 
@@ -125,13 +125,13 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
           {last > 0 ? (
             <>
               <button type="button" className="fr-btn" onClick={() => setPage(Math.max(0, page - 1))} disabled={page === 0} aria-label="Previous page">
-                <Icon name="arrow" size={18} rotate={180} />
+                <PaintedIcon name="back" size={24} />
               </button>
               <span className="fr-count">
                 {page + 1} / {find.pages.length}
               </span>
               <button type="button" className="fr-btn" onClick={() => setPage(Math.min(last, page + 1))} disabled={page === last} aria-label="Next page">
-                <Icon name="arrow" size={18} />
+                <PaintedIcon name="back" size={24} className="pic-flip" />
               </button>
             </>
           ) : (

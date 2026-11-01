@@ -3,7 +3,8 @@ import React from 'react';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { GestureGlyph } from './GestureGlyph.tsx';
-import { Icon } from './icons/index.tsx';
+import { TextGlyph } from './icons/TextGlyph.tsx';
+import { PaintedIcon } from './icons/PaintedIcon.tsx';
 import { JournalDemo } from './JournalDemo.tsx';
 import { warmJournalArt } from '../game/journalScenes.ts';
 import { CHAPTERS, PAGES, PAGE_BY_ID, chapterPages, isNew, markLooked, openPages, type ChapterId, type JournalPage, type PoseId } from '../game/movesJournal.ts';
@@ -67,7 +68,7 @@ const Line: React.FC<{ l: LessonLine; mode: InputMode }> = ({ l, mode }) => (
       </span>
     ) : (
       <span className="jr-glyph jr-glyph-txt" aria-hidden="true">
-        <Icon name="arrow" size={18} />
+        <TextGlyph name="arrow" size={18} />
       </span>
     )}
     <span className="jr-line-txt">
@@ -123,7 +124,7 @@ const LockedView: React.FC<{ p: JournalPage; nav: React.ReactNode }> = ({ p, nav
         <b>{p.where}.</b> Keep going and this page fills in by itself.
       </p>
       <div className="jr-riddle">
-        <Icon name="bulb" size={22} />
+        <PaintedIcon name="howto" size={28} />
         <span>
           <b>Dot's hint:</b> {p.riddle}
         </span>
@@ -292,7 +293,7 @@ export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
         <div className="jr-head">
           {page && !short ? (
             <button type="button" className="jr-back" onClick={() => setView({ kind: 'chapter', ch: page.chapter })}>
-              <Icon name="arrow" size={14} rotate={180} /> {CHAPTERS.find((c) => c.id === page.chapter)?.name}
+              <TextGlyph name="arrow" size={14} rotate={180} /> {CHAPTERS.find((c) => c.id === page.chapter)?.name}
             </button>
           ) : (
             <span className="htp-face">

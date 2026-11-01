@@ -2,7 +2,7 @@ import React from 'react';
 import { PeekPokey, Plaque } from './KitParts.tsx';
 import { SKILLS, type SkillId } from '../game/skills.ts';
 import { SkillIcon } from './SkillIcon.tsx';
-import { Icon, type IconName } from './icons/index.tsx';
+import { PaintedIcon, paint, type AnyIcon } from './icons/PaintedIcon.tsx';
 import { useExitGhost } from './fx/exitGhost.ts';
 import { CloseX, useBack } from './nav/Nav.tsx';
 
@@ -36,10 +36,10 @@ export const MenuFrame: React.FC<{
   const ref = React.useRef<HTMLDivElement>(null);
   // the options under the quick tiles, one section at a time behind the same painted tab chips as the title's Settings
   const [tab, setTab] = React.useState<'sound' | 'game' | 'trophies'>('sound');
-  const tabs: { id: typeof tab; icon: IconName; name: string }[] = [
+  const tabs: { id: typeof tab; icon: AnyIcon; name: string }[] = [
     { id: 'sound', icon: 'speaker', name: 'Sound' },
     { id: 'game', icon: 'gear', name: 'Game' },
-    ...(trophies ? [{ id: 'trophies' as const, icon: 'trophy' as IconName, name: 'Trophies' }] : []),
+    ...(trophies ? [{ id: 'trophies' as const, icon: 'trophy' as AnyIcon, name: 'Trophies' }] : []),
   ];
   useExitGhost(ref);
   useBack(onClose);
@@ -60,7 +60,7 @@ export const MenuFrame: React.FC<{
           <div className="pm-main">
             {notice}
             <button type="button" className="pm-go" onClick={go.onClick} title={go.title} data-start={go.start ? 'true' : undefined}>
-              <Icon name="play" size={22} />
+              <PaintedIcon name="play" size={24} />
               {go.label}
             </button>
             <div className="pm-tiles">{tiles}</div>
@@ -83,7 +83,7 @@ export const MenuFrame: React.FC<{
             <div className="st-tabs pm-tabs" role="tablist" aria-label="Options" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
               {tabs.map((t) => (
                 <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} aria-label={t.name} className={`st-tab${tab === t.id ? ' on' : ''}`} onClick={() => setTab(t.id)}>
-                  <Icon name={t.icon} size={24} />
+                  <PaintedIcon name={paint(t.icon)} size={28} />
                   <span>{t.name}</span>
                 </button>
               ))}
@@ -102,7 +102,7 @@ export const MenuFrame: React.FC<{
 };
 
 /** one picture tile: a painted icon in a coloured medallion, a name on one line, a short line under it */
-export const MenuTile: React.FC<{ icon: IconName; name: string; line: React.ReactNode; onClick: () => void; title?: string; className?: string; badge?: React.ReactNode }> = ({
+export const MenuTile: React.FC<{ icon: AnyIcon; name: string; line: React.ReactNode; onClick: () => void; title?: string; className?: string; badge?: React.ReactNode }> = ({
   icon,
   name,
   line,
@@ -113,7 +113,7 @@ export const MenuTile: React.FC<{ icon: IconName; name: string; line: React.Reac
 }) => (
   <button type="button" className={`pm-tile${className ? ` ${className}` : ''}`} onClick={onClick} title={title}>
     <span className="pm-tile-ic">
-      <Icon name={icon} size={28} />
+      <PaintedIcon name={paint(icon)} size={40} />
     </span>
     <span className="pm-tile-t">
       <b>{name}</b>
@@ -129,7 +129,7 @@ export const SoundSetting: React.FC<{ isMuted: boolean; onToggleMute: () => void
     <div className="pm-sound-h">
       <span className="flex items-center gap-2">
         <span className="pm-set-ic" aria-hidden="true">
-          <Icon name={isMuted ? 'mute' : 'speaker'} size={20} />
+          <PaintedIcon name={isMuted ? 'mute' : 'sound'} size={26} />
         </span>
         Sound
       </span>

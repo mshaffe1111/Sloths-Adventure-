@@ -10,7 +10,7 @@ export const HowToTile: React.FC = () => {
   return (
     <>
       <MenuTile
-        icon="book"
+        icon="howto"
         name="How to Play"
         line="Every move and control"
         onClick={() => setOpen(true)}

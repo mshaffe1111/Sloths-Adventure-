@@ -1,3 +1,4 @@
+import { TextGlyph } from './TextGlyph.tsx';
 import React from 'react';
 import { Icon } from './index.tsx';
 
@@ -27,5 +28,5 @@ export function splitArrows(text: string): ArrowPiece[] {
 export function arrowText(text: string, size: number | string = '0.95em'): React.ReactNode {
   const parts = splitArrows(text);
   if (parts.length === 1 && 'text' in parts[0]) return text;
-  return parts.map((p, i) => ('arrow' in p ? <Icon key={i} name="arrow" size={size} rotate={TURN[p.arrow]} className="ic-arrow" /> : <React.Fragment key={i}>{p.text}</React.Fragment>));
+  return parts.map((p, i) => ('arrow' in p ? <TextGlyph key={i} name="arrow" size={size} rotate={TURN[p.arrow]} className="ic-arrow" /> : <React.Fragment key={i}>{p.text}</React.Fragment>));
 }

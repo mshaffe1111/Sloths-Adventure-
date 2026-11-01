@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Icon, type IconName } from './icons/index.tsx';
+import { PaintedIcon, paint, type AnyIcon } from './icons/PaintedIcon.tsx';
 import { FINDS, ALL_FINDS } from '../game/finds.ts';
 import { BADGES, type BadgeStore, type EvalContext } from '../game/badges.ts';
 import type { CosmeticChoice } from '../game/badgeStore.ts';
@@ -30,11 +30,11 @@ import { JournalBook } from './satchel/JournalBook.tsx';
  */
 export type SatchelTab = 'finds' | 'trophies' | 'journal' | 'scenes' | 'creatures';
 
-const TABS: { id: SatchelTab; name: string; icon: IconName }[] = [
+const TABS: { id: SatchelTab; name: string; icon: AnyIcon }[] = [
   { id: 'finds', name: 'Finds', icon: 'key' },
-  { id: 'trophies', name: 'Trophies', icon: 'medal' },
-  { id: 'journal', name: 'Journal', icon: 'book' },
-  { id: 'scenes', name: 'Scenes', icon: 'play' },
+  { id: 'trophies', name: 'Trophies', icon: 'trophy' },
+  { id: 'journal', name: 'Journal', icon: 'journal' },
+  { id: 'scenes', name: 'Scenes', icon: 'scenes' },
   { id: 'creatures', name: 'Creatures', icon: 'paw' },
 ];
 
@@ -112,7 +112,7 @@ export const Satchel: React.FC<Props> = (p) => {
           {TABS.map((t) => (
             <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`sh-tab ${tab === t.id ? 'on' : ''}`} onClick={() => setTab(t.id)}>
               <span className="sh-tab-ic">
-                <Icon name={t.icon} size={22} />
+                <PaintedIcon name={paint(t.icon)} size="104%" />
               </span>
               {t.name}
             </button>

@@ -2,7 +2,6 @@ import { CloseX, useBack } from './nav/Nav.tsx';
 import React, { useRef, useState } from 'react';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import { browserStore, buildSave, parseSave, applySave, saveFileName, type SaveFile } from '../game/saveFile.ts';
-import { Icon } from './icons/index.tsx';
 import { nativeApp } from '../game/appShell.ts';
 
 /**

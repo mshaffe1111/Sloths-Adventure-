@@ -183,7 +183,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
             <MenuTile icon="restart" name="Restart" line="Start this stage over" onClick={() => setAsk('restart')} title={COARSE ? undefined : 'R'} />
             <MenuTile icon="map" name="World Map" line="Leave this stage" onClick={() => setAsk('map')} />
             <MenuTile icon="sloth" name="Start Screen" line="Back to the title" onClick={() => setAsk('title')} />
-            <MenuTile icon="book" name="Satchel" line="Finds, journal, trophies" onClick={onOpenSatchel} />
+            <MenuTile icon="satchel" name="Satchel" line="Finds, journal, trophies" onClick={onOpenSatchel} />
             <HowToTile />
           </>
         }

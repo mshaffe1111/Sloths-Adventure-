@@ -4,7 +4,7 @@ import type { CosmeticChoice } from '../../game/badgeStore.ts';
 import type { Coat } from '../../game/heroTint.ts';
 import { BadgeMedal } from '../BadgeMedal.tsx';
 import { CoatPreview } from '../CoatPreview.tsx';
-import { Icon } from '../icons/index.tsx';
+import { PaintedIcon, paint } from '../icons/PaintedIcon.tsx';
 import { SatchelPopup } from './SatchelPopup.tsx';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
@@ -40,7 +40,7 @@ export const MedalCloseup: React.FC<{ b: BadgeDef; got: boolean; ctx: EvalContex
           <span>{unitLabel(b, p.have, p.need)}</span>
         </div>
       )}
-      <div className={`st-state ${got ? 'got' : ''}`}>{got ? <><Icon name="check" size={14} /> Earned</> : <><Icon name="lock" size={13} /> Not earned yet</>}</div>
+      <div className={`st-state ${got ? 'got' : ''}`}>{got ? <><PaintedIcon name="checkmark" size={16} /> Earned</> : <><PaintedIcon name="lock" size={15} /> Not earned yet</>}</div>
     </SatchelPopup>
   );
 };
@@ -71,7 +71,7 @@ export const TrophiesTab: React.FC<{ ctx: EvalContext; choice: CosmeticChoice; o
           <ul className="tr-plat-parts">
             {plat.parts!(ctx).map((q) => (
               <li key={q.label} className={q.done || platGot ? 'done' : ''}>
-                <Icon name={q.done || platGot ? 'check' : 'lock'} size={12} />
+                <PaintedIcon name={paint(q.done || platGot ? 'check' : 'lock')} size={14} />
                 {q.label}
               </li>
             ))}
@@ -94,8 +94,8 @@ export const TrophiesTab: React.FC<{ ctx: EvalContext; choice: CosmeticChoice; o
               aria-pressed={worn}
             >
               <div className="tr-reward-pic">
-                {r.kind === 'color' ? <CoatPreview coat={r.id as Coat} size={58} /> : <span className="tr-sparkle"><Icon name="sparkle" size={40} /></span>}
-                {!got && <span className="tr-lockmark"><Icon name="lock" size={18} /></span>}
+                {r.kind === 'color' ? <CoatPreview coat={r.id as Coat} size={58} /> : <span className="tr-sparkle"><PaintedIcon name="sparkle" size={42} /></span>}
+                {!got && <span className="tr-lockmark"><PaintedIcon name="lock" size={20} /></span>}
               </div>
               <b>{r.name}</b>
               <small>{got ? (worn ? 'Wearing' : 'Tap to wear') : `${fmt(r.need)} points`}</small>

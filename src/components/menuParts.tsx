@@ -14,7 +14,8 @@ import { DOT_HELP_LABEL, dotHelp, setDotHelp, type DotHelp } from '../game/dotGu
 import { dotSaid } from '../game/dotGuide.ts';
 import { hearTipsAgain } from '../game/dotMemory.ts';
 import { DotFace } from './DotFace.tsx';
-import { Icon as Glyph, type IconName } from './icons/index.tsx';
+import { type IconName } from './icons/index.tsx';
+import { PaintedIcon, paint } from './icons/PaintedIcon.tsx';
 
 /** "Dot's help" (the new look): Help / Tips / Quiet, "Hear Dot's tips again", and her last three lines under it */
 export const DotHelpSetting: React.FC = () => {
@@ -75,7 +76,7 @@ export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(p
 /** a setting's picture, from the game's own painted icon set, in a small round well */
 export const SetIcon: React.FC<{ name: IconName }> = ({ name }) => (
   <span className="pm-set-ic" aria-hidden="true">
-    <Glyph name={name} size={20} />
+    <PaintedIcon name={paint(name)} size={26} />
   </span>
 );
 
