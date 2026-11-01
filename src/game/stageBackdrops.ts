@@ -24,9 +24,10 @@ export const FAR_BY_STAGE: Record<number, Record<number, string>> = {
   7: { 1: 'w7dawn', 2: 'w7court', 3: 'w7dawn', 5: 'w7court', 7: 'w7dusk', 8: 'w7court', 9: 'w7dusk' },
   8: { 1: 'w8dawn', 2: 'w8sunset', 3: 'w8dawn', 5: 'w8sunset', 7: 'w8night', 8: 'w8dawn', 9: 'w8night' },
   9: { 1: 'w9dawn', 2: 'w9ash', 3: 'w9dawn', 5: 'w9ash', 7: 'w9night', 8: 'w9ash', 9: 'w9night' },
-  // (w10after, the sky clearing after the storm, and w10night, the summit under the stars (painted 2026-11-01), wait until World 10's
+  // (World 10's rain falls on every stage, so its new sets are storms too: a grey gale over the pass, then the night thunderstorm at the
+  // summit. w10after, the sky clearing after the storm, and w10night, the summit under clear stars (painted 2026-11-01), wait until the
   // rain ends with the storm: rain under a clear sky read wrong, the lead 2026-10-31)
-  10: { 1: 'w10dusk', 3: 'w10dusk', 5: 'w10dusk', 7: 'w10dusk', 9: 'w10dusk' },
+  10: { 1: 'w10dusk', 2: 'w10gale', 3: 'w10dusk', 4: 'w10gale', 6: 'w10gale', 7: 'w10storm', 8: 'w10dusk', 9: 'w10storm' },
 };
 
 /** every far-only strip set (it has a far strip of its own, and borrows its world's middle and near strips) */
