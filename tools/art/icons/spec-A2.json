@@ -1,0 +1,125 @@
+{
+ "tag": "icA2",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects",
+ "items": [
+  {
+   "name": "map-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small parchment jungle map half unrolled, a dotted trail winding past a tiny tree to a little red X, the rolled ends tied with a green vine cord, a jungle leaf tucked under the cord, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, book, bag"
+  },
+  {
+   "name": "map-b23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a folded old parchment map opened out, wrinkled and stained, a dotted path and a little red X drawn on it, a green vine wrapped round one corner with a small leaf, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, book, bag"
+  },
+  {
+   "name": "story-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of Grandma's thick old storybook, closed, a worn green cloth cover with brass corners and a carved leaf on the front, a red ribbon bookmark and a pink pressed flower peeking out of the pages, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, open book, map"
+  },
+  {
+   "name": "story-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of Grandma's thick old storybook, closed, a worn green cloth cover with brass corners and a carved leaf on the front, a red ribbon bookmark and a pink pressed flower peeking out of the pages, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, open book, map"
+  },
+  {
+   "name": "story-b37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a thick old storybook lying slightly open, cream pages fanned, a worn warm brown leather cover with brass corners, a pink pressed flower lying on the pages, a red ribbon bookmark, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, map"
+  },
+  {
+   "name": "howto-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a little glass jar lantern with a glowing yellow firefly inside, a carved wooden lid, a twine handle looped over the top, warm golden glow, a green leaf tied to the handle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, light bulb"
+  },
+  {
+   "name": "howto-b11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round seed-pod lantern of woven brown fibres with warm golden light glowing through its gaps, a twine loop on top, a green leaf hanging from it, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, light bulb"
+  },
+  {
+   "name": "howto-b53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round seed-pod lantern of woven brown fibres with warm golden light glowing through its gaps, a twine loop on top, a green leaf hanging from it, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, light bulb"
+  },
+  {
+   "name": "sound-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a little wooden hand drum with a pale stretched leather top laced down with green vine cords, a carved wooden body, a green leaf tucked in the lacing, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, speaker"
+  },
+  {
+   "name": "sound-b23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a dried seed-pod rattle shaker on a short carved wooden handle, brown and orange pod, bound with green vine, a small leaf on the handle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, speaker, microphone"
+  },
+  {
+   "name": "gear-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky carved wooden cog wheel with eight round teeth and a hole in the middle with a brass bolt, wood grain, a green vine curled round one tooth with a small leaf, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, sun, flower"
+  },
+  {
+   "name": "gear-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky carved wooden cog wheel with eight round teeth and a hole in the middle with a brass bolt, wood grain, a green vine curled round one tooth with a small leaf, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, sun, flower"
+  },
+  {
+   "name": "gear-b37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky carved wooden cog wheel with fat teeth, a brass ring in the middle, wood grain and little nicks, a small green leaf tucked behind it, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, sun, flower"
+  },
+  {
+   "name": "play-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky carved wooden triangle arrow pointing to the right, rounded corners, warm wood grain, a thin brass edge, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, leaf, flower"
+  }
+ ]
+}
