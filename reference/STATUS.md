@@ -665,3 +665,4 @@ Report each finding with the stage, the moment (s), upright or sideways, Easy or
   2. Small, cheap: 8-2 rope first-timer fix (W8 NEXT.md item 1) if tokens allow.
   3. Matt's quick calls: 45 Dot lines; council story beat; W10 rain ends with the storm (w10after)?
   AFTER TUE 2 AM RESET: W9 + W10 resume (NEXT.md each), HF art round 2 (backdrops ~$34, cutscenes ~$20, props ~$8; balance $93), validateStage graph caching (stage-build speed), then next week's difficulty tuning + checkpoint audit.
+- 2026-10-31 10:17 PM ET, MATT: weekly usage 77% (not 80). With the wiggle room, tomorrow can add ONE art helper next to the menu pass: backdrops round 2 (most visible; plan in qa-notes/hf-backdrops/NEXT.md) at medium effort, and the 8-2 rope fix. Watch usage at midday; W9/W10 still after the reset.
