@@ -108,7 +108,8 @@ import { SlideRun } from './w7SlideRun.ts';
 import { drawJarMeter, jarFrame, jarHeroImage, LanternRun } from './w8LanternRun.ts';
 import { LANTERN_LINES, LANTERN_NIGHT, LANTERN_VIEW, TREE_CROWN } from './w8Lantern.ts';
 import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
-import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, meecaArtReady, warmMeecaArt, wordsBox } from './meecaArt.ts';
+import { meecaFaceShift } from './meecaFaceDraw.ts';
+import { drawMeecaBack, drawMeecaFront, drawMeecaHero, meecaReachNow, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, meecaArtReady, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { tipText } from './puzzleKit.ts';
 import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
@@ -2292,6 +2293,11 @@ export class GameEngine {
       }
       // (eased, so meeting a wall and leaving it never pops the drawing sideways)
       this.wallOff += (-wallSide * WALL_OFF - this.wallOff) * Math.min(1, dt * 18);
+      // (Meeca: her frames reach past her body, so beside a wall face she is drawn out of it, never half in the dirt: meecaFaceDraw.ts)
+      if (this.mc) {
+        const want = p.climbing ? 0 : meecaFaceShift(p.x, p.y, p.height, p.facing, meecaReachNow(p, this.mc, this.kit, this.gameTime), this.platforms);
+        this.meecaOff += (want - this.meecaOff) * Math.min(1, dt * 24);
+      }
 
       // Mushrooms spring you up when you run into them, not only when you land on them
       if (!p.climbing && !p.isVineSwinging && !p.hanging) {
@@ -4461,6 +4467,8 @@ export class GameEngine {
   private stepWasAhead = false;
   /** how far (px, signed) his drawing stands off a wall he is sliding down in the air (WALL_OFF): it never moves his body */
   private wallOff = 0;
+  /** Meeca drawn this far sideways, out of a wall face beside her (meecaFaceDraw.ts) */
+  meecaOff = 0;
   private watchForStuck() {
     if (this.mc) return;
     const p = this.player;
@@ -6216,7 +6224,7 @@ export class GameEngine {
     // Render Hero Sloth
     heroClipsLive(true);
     // (and in World 5 a wobble while he pulls against the silk on him: w5Play.ts wobble)
-    const drawOff = this.wallOff + (this.w5?.wobble(this.gameTime) ?? 0);
+    const drawOff = (this.mc ? this.meecaOff : this.wallOff) + (this.w5?.wobble(this.gameTime) ?? 0);
     const shiftOff = Math.abs(drawOff) > 0.3;
     if (shiftOff) {
       ctx.save();
