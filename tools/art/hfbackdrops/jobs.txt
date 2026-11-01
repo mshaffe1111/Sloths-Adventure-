@@ -32,3 +32,10 @@ hfbd2-M0 6ae76519c78863f9c62fb2e8  hfbd2-M1 6ae7651d0e0338d1bb7d83ed  hfbd2-M2 6
   img2img middle + near strips (18 strips x s68/s76 or s62/s68 x seeds 7/23 = 72 takes), started 16:13Z
 hfbd2-F0 6ae76528c78863f9c62fb2ed  hfbd2-F1 6ae7652b0e0338d1bb7d83f5
   text to image (stillsgpu.py, style model 0.8) of far strip + sky in one tall 1792x1200 picture, 9 moods x 3 seeds = 27, started 16:13Z
+  R0-R3 finished 16:19-16:20Z (~9-10 min each incl. load: ~$1.75). M0-M3 finished 16:24-16:25Z (~11-12 min each: ~$2.10).
+  F0/F1 finished 16:25/16:27Z (~12-14 min each: ~$1.20). Picks: picks2-R.txt, picks2-M.txt; far picks w1rain-23 w2mist-41
+  w3crystal-7 w4storm-7 w6moon-41 w7court-23 w8dawn-7 w9ash-7 w10night-7 (joined end to end: process.py tallkey).
+--- native-resolution passes (striphdgpu.py s25, Real-ESRGAN first) ---
+hfbd2-hd-R0 6ae767b0c78863f9c62fb3d5  hfbd2-hd-R1 6ae767b4c78863f9c62fb3d7  (16 round R strips) started 16:24Z
+hfbd2-hd-T0 6ae768dfc78863f9c62fb439  hfbd2-hd-T1 6ae768e3c78863f9c62fb43b  (9 far + sky, 1760 tall, on black) started 16:29Z
+hfbd2-hd-M0 6ae7693e0e0338d1bb7d851c  hfbd2-hd-M1 6ae76943c78863f9c62fb47c  hfbd2-hd-M2 6ae769460e0338d1bb7d851e  (18 round M strips) 16:31Z
