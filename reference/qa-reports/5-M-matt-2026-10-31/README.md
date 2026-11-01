@@ -27,3 +27,10 @@ Lead's read of the frames (4 fps sheet):
 - ~2.5-5 s: Meeca leaves the camp, walks down the stairs to the first log pit; "Too far to jump. The high way, then." shows while she stands on the low step beside the tall post, BELOW the top ledge.
 - ~6.2 s on: the bubble fades and MEECA IS GONE for the rest of the clip (to ~11.5 s). The camera holds on the post, the pit wall and the dirt face; no Meeca anywhere in frame, no fall animation, no restart.
 Leads for the fix helper (not proven): she is inside the pit at the post's foot, i.e. down where the QA rerun saw her "half into the dirt face on the little post" (room 5's wall foot): likely DRAWN BEHIND the dirt/wall face or the post (draw order) or the camera not following her down into the pit; "falling through things" may be the same thing seen from outside. Reproduce at the first pit (x ~4.5-5k), walk off the low step toward the post, and log her position, her layer and the camera.
+
+## Matt, 11:40 PM ET: "She goes in and out the whole level. Even if you look at the post, she disappears and you only see her words. In the whole camp scene, she's almost missing. But she goes in and out the whole mission."
+So it is NOT only the pit: she flickers or vanishes across the whole stage on Matt's phone (recording 1344x2992), while QA's headless runs (q0, desktop GPU) drew her every frame. Strong leads, in order:
+1. The night darkness / Flicker light pass drawn OVER her (the camp is the darkest scene): check draw order and her light cut-out, and whether the cut-out depends on a composite mode or filter that differs by GPU.
+2. The quality governor: on a phone it steps q0 -> q1/q2 (QA saw it on the Pixel and OnePlus); a lite path may skip her light or her layer. Reproduce with forced q1 and q2 and reduced motion, upright, at 1344x2992-ish.
+3. Her sheet being released or re-decoded mid-stage (the memory work releases world art when play leaves it).
+The QA per-frame watch checks only that drawMeecaHero ran with alpha > 0; it does not check what is drawn ON TOP of her. Add a pixel check: sample the canvas at her box after the full frame and compare to the frame without her.
