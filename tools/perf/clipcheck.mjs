@@ -317,10 +317,11 @@ async function walk(browser, base, save, size) {
     }
   };
   const back = async () => { await page.keyboard.press('Escape'); await settle(450); };
+  // (20 s: on a busy machine the title's leaves can arrive well after the Play board)
   // navigation taps go straight to the element (the check judges what is on screen, not Playwright's hit-testing; a toast over an
   // arrow must not stall the walk)
   const click = async (selector) => {
-    await page.locator(selector).first().waitFor({ state: 'attached', timeout: 8000 });
+    await page.locator(selector).first().waitFor({ state: 'attached', timeout: 20000 });
     await page.locator(selector).first().evaluate((e) => e.click());
     await settle();
   };
