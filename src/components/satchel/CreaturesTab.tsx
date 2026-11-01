@@ -85,7 +85,7 @@ export const CreaturesTab: React.FC<{ store: BadgeStore; levels: LevelRecord[] }
       {section('Met on the road', road, () => 'Not met yet. Keep exploring.')}
       {section('Guardians', guards, (c) => `Guardian of World ${c.world}. Beat the 10th stage to meet it.`)}
       {open && (
-        <SatchelPopup label={open.name} onClose={() => setOpen(null)} className="cr-pop">
+        <SatchelPopup title="Creature" label={open.name} onClose={() => setOpen(null)} className="cr-pop">
           <div className="cr-pic" style={cardWorld(open.world)}>
             <CreaturePic id={open.art} w={300} h={180} />
           </div>

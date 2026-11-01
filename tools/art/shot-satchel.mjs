@@ -27,7 +27,7 @@ for (const [w, h, tag] of sizes) {
   await p.click('.st-medal.got >> nth=0').catch(() => p.click('.st-medal >> nth=0'));
   await p.waitForTimeout(900);
   await shot('04-medal-closeup');
-  await p.click('.sp-x');
+  await p.click('.nv-x');
   await p.waitForTimeout(400);
   await tab('Journal');
   await shot('05-journal');
@@ -47,10 +47,10 @@ for (const [w, h, tag] of sizes) {
   await p.click('.tr-card.sc-tap >> nth=0');
   await p.waitForTimeout(900);
   await shot('09-creature-story');
-  await p.click('.sp-x');
+  await p.click('.nv-x');
   await p.waitForTimeout(300);
   // the in-game medal pop, over a stage
-  await p.click('.ui-x');
+  await p.click('.nv-back');
   await p.waitForTimeout(800);
   await p.evaluate(() => window.__play && window.__play('1-2'));
   await p.waitForTimeout(9000);

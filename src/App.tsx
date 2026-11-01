@@ -1408,6 +1408,7 @@ export default function App() {
           }}
           onOpenFind={(id) => { setReadingCompletes(false); setReading(id); }}
           onBack={() => setScreen(trophyFrom)}
+          backTo={trophyFrom === 'title' ? 'Start Screen' : trophyFrom === 'world_map' ? 'World Map' : 'Pause menu'}
           onHome={trophyFrom === 'title' ? undefined : () => {
             engineRef.current?.stop();
             setScreen('title');

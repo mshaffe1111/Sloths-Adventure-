@@ -23,7 +23,7 @@ const MedalCell: React.FC<{ b: BadgeDef; got: boolean; onOpen: () => void }> = (
 export const MedalCloseup: React.FC<{ b: BadgeDef; got: boolean; ctx: EvalContext; onClose: () => void }> = ({ b, got, ctx, onClose }) => {
   const p = !got ? b.progress?.(ctx) : undefined;
   return (
-    <SatchelPopup label={b.name} onClose={onClose} className={`st-close st-${b.tier}`}>
+    <SatchelPopup title="Medal" label={b.name} onClose={onClose} className={`st-close st-${b.tier}`}>
       <div className="st-big">
         <BadgeMedal badge={b} earned={got} size={168} />
       </div>

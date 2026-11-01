@@ -12,6 +12,7 @@ import { WORLD_STORIES } from '../game/storyWorlds.ts';
 import type { EntryNames } from '../game/pokeyJournal.ts';
 import { SceneBackdrop } from './title/TitleScene.tsx';
 import { DotPerched, Plaque } from './KitParts.tsx';
+import { BackButton, CornerToken } from './nav/Nav.tsx';
 import { FindsTab } from './satchel/FindsTab.tsx';
 import { TrophiesTab } from './satchel/TrophiesTab.tsx';
 import { CreaturesTab } from './satchel/CreaturesTab.tsx';
@@ -52,6 +53,8 @@ interface Props {
   onOpenFind: (id: string) => void;
   onPlayScenes: (queue: SceneEntry[]) => void;
   onBack: () => void;
+  /** where Back goes, on its tag: "Start Screen", "World Map", "Pause menu" */
+  backTo: string;
   /** straight to the start screen (shown when the satchel was opened from somewhere else) */
   onHome?: () => void;
 }
@@ -91,19 +94,17 @@ export const Satchel: React.FC<Props> = (p) => {
       <SceneBackdrop world={world} />
       <div className="tr-inner sh-inner">
         <DotPerched size={74} className="tr-dot" />
-        <div className="tr-head">
-          <button type="button" className="ui-x" onClick={p.onBack} aria-label="Back">
-            <Icon name="arrow" size={16} rotate={180} />
-          </button>
+        <div className="tr-head sh-head">
+          <BackButton to={p.backTo} onBack={p.onBack} />
           <div className="tr-titles">
             <Plaque as="h1" className="tr-h1">
               Pokey&apos;s Satchel
             </Plaque>
           </div>
           {p.onHome && (
-            <button type="button" className="sh-home" onClick={p.onHome} aria-label="Start screen">
-              <Icon name="sloth" size={20} />
-            </button>
+            <span className="sh-home">
+              <CornerToken icon="sloth" label="Start Screen" onClick={p.onHome} />
+            </span>
           )}
         </div>
 
