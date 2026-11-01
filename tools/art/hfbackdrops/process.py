@@ -134,6 +134,9 @@ def finish(stem, part, hd, mode='mix5', haze=None):
         args += ['--topfade', '0.07']
     subprocess.run(args, check=True)
     far = ROOT / f'src/assets/backdrops/{stem}-far.webp'
+    if not far.exists():  # (w1c, the canopy set, has no far strip of its own: its world's)
+        import re
+        far = ROOT / f"src/assets/backdrops/w{re.match(r'w(\d+)', stem).group(1)}-far.webp"
     subprocess.run([PY, '-I', str(H / 'haze.py'), str(tmp / 'edge.webp'), str(far), str(ROOT / f'src/assets/backdrops/{n}.webp'),
                     haze or ('0.18' if part == 'mid' else '0.08'), '0.6' if part == 'mid' else '0.45'], check=True)
 
