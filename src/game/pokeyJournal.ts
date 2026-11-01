@@ -110,7 +110,7 @@ export const STAGE_LINES: Record<string, string> = {
   '6-7': 'Raised the water, lowered it, and found a note Dot left me by accident. On purpose. She is terrible at accidents.',
   '6-8': "The tide came in under me the whole climb, fast and dirty. I didn't look down. I didn't have time.",
   '6-9': "Caimans that look like roots, and frogs you mustn't touch. I touched nothing. Nothing is my best event.",
-  '6-10': 'Met the Reaver at noon, which the note said not to do. He thought I'd be taller. I get that a lot.',
+  '6-10': "Met the Reaver at noon, which the note said not to do. He thought I'd be taller. I get that a lot.",
   // World 7 · Ancient Ruins
   '7-1': 'The temple door was standing open, so I went in. I knocked anyway. Habit.',
   '7-2': "The vines on these walls have gone brown and stiff. I climbed them gently. They've had a long century.",
