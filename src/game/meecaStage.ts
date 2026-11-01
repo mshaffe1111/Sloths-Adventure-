@@ -270,7 +270,7 @@ export function buildMeecaStage(seed = 1): MeecaStage {
     // logs jammed across a gully, hop to hop (they do not reach the floor: under them is the gully's floor, and the stairs back). Three
     // shapes, dealt in turn so no two log crossings in a play look alike (Matt, 2026-10-31: "Repetitive"; QA: four precise hops of
     // 94-110 px over the same pit before every room, a bot fell ~15 times): a level row of wide logs, logs stepping up toward a high far
-    // bank, and two long logs sagging to a low middle. Every hop is a short one (60-85 px, at most 30 px up), on a log wide enough to land on
+    // bank, and two long logs set low. Every hop is a short one (60-85 px, at most 30 px up), on a log wide enough to land on
     logs: (x, steps) => {
       const shape = logShapes[logTurn++ % logShapes.length];
       lastShape = shape;
@@ -283,7 +283,7 @@ export function buildMeecaStage(seed = 1): MeecaStage {
         for (let i = 0; i < 3; i++) {
           const lx = ex + hop();
           y = Math.max(G - 40, Math.min(G + 15, y + R.i(-25, 20)));
-          const l = log(lx, lx + R.i(150, 180), y);
+          const l = log(lx, lx + R.i(150, 170), y);
           steps.push({ kind: 'plat', id: l.id });
           ex = l.x + l.width;
         }
@@ -291,16 +291,17 @@ export function buildMeecaStage(seed = 1): MeecaStage {
         for (let i = 0; i < 3; i++) {
           const lx = ex + hop();
           y -= R.i(20, 30);
-          const l = log(lx, lx + R.i(140, 165), y);
+          const l = log(lx, lx + R.i(140, 160), y);
           steps.push({ kind: 'plat', id: l.id });
           ex = l.x + l.width;
         }
       } else {
-        // (two long logs, each sagging lower toward the middle: a walk down one, a hop, a walk up the other)
+        // (two long logs, lower than the path: a walk along one, a hop, a walk along the other. Not so long that the next is off an
+        // upright screen from its near end: meecaCamera.test.ts)
         for (let i = 0; i < 2; i++) {
           const lx = ex + hop();
           y = G + R.i(10, 20);
-          const l = log(lx, lx + R.i(210, 240), y);
+          const l = log(lx, lx + R.i(175, 195), y);
           steps.push({ kind: 'plat', id: l.id });
           ex = l.x + l.width;
         }
@@ -407,6 +408,11 @@ export function buildMeecaStage(seed = 1): MeecaStage {
       if (k === last && bag.length) {
         bag.unshift(k);
         k = bag.pop()!;
+      }
+      // (three log crossings a play at most, one of each shape: a fourth or fifth repeated a shape already crossed)
+      if (k === 'logs' && logTurn >= logShapes.length) {
+        const others = (['canopy', 'hollow', 'fallen', 'double'] as TrailKind[]).filter((q) => q !== last);
+        k = others[R.i(0, others.length - 1)];
       }
       last = k;
       const sx = x;

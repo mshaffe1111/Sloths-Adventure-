@@ -6478,7 +6478,7 @@ export class GameEngine {
   }
 
   /** where Meeca's stage's view was last frame (meecaCamCap) */
-  private mcCam: { x: number; y: number; px: number; py: number } | null = null;
+  private mcCam: { x: number; y: number; px: number; py: number; free: number } | null = null;
   /**
    * Meeca's stage: the view never whips. Coming into a room, a sapling's fling, a trunk's lean and the scenes' own framing each moved it
    * 40 to 93 px in a frame for several frames (QA 2026-10-31: "Meeca at the edge, then a 300 px jump" in rooms 2-3), so it moves at most
@@ -6488,8 +6488,10 @@ export class GameEngine {
     const c = this.camera;
     const last = this.mcCam;
     const p = this.player;
-    // (not when she was put somewhere: back at a flag, a room started again: the view goes straight there)
-    if (last && Math.abs(p.x - last.px) < 200 && Math.abs(p.y - last.py) < 200) {
+    // (not when she was put somewhere: back at a flag, a room started again: the view goes there as it always has, for a second)
+    const put = !last || Math.abs(p.x - last.px) >= 200 || Math.abs(p.y - last.py) >= 200;
+    const free = put ? 1 : Math.max(0, (last?.free ?? 0) - dt);
+    if (last && free <= 0) {
       const mx = MEECA_CAM_V.x * dt, my = MEECA_CAM_V.y * dt;
       const x = Math.max(last.x - mx, Math.min(last.x + mx, c.x));
       const y = Math.max(last.y - my, Math.min(last.y + my, c.y));
@@ -6500,7 +6502,7 @@ export class GameEngine {
       c.x = kx;
       c.y = ky;
     }
-    this.mcCam = { x: c.x, y: c.y, px: p.x, py: p.y };
+    this.mcCam = { x: c.x, y: c.y, px: p.x, py: p.y, free };
   }
 
   /** Meeca's stage: a hint from Flicker, asked for from the pause menu (null when he cannot be asked now) */

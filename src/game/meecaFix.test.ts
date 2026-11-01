@@ -128,7 +128,7 @@ test("5-M room 5: the step she leaps to is lit when she lands, with Flicker's li
   }
 });
 
-test('5-M log crossings: no two in a play look alike, every hop is a short one onto a wide log, and the high-way line comes at the top', () => {
+test('5-M log crossings: at most three a play, no two alike, every hop is a short one onto a wide log, and the high-way line comes at the top', () => {
   for (let seed = 1; seed <= 40; seed++) {
     const g = meecaGeneratedStage(meecaStageConfig(), seed);
     const st = g.proto.meeca!;
@@ -150,7 +150,7 @@ test('5-M log crossings: no two in a play look alike, every hop is a short one o
         for (const l of logs) assert.ok(l.width >= 140, `seed ${seed}: a ${l.width} px log`);
       }
     }
-    for (let i = 1; i < shapes.length; i++) assert.notEqual(shapes[i], shapes[i - 1], `seed ${seed}: two ${shapes[i]} crossings running (${shapes.join(' ')})`);
+    assert.ok(shapes.length <= 3 && new Set(shapes).size === shapes.length, `seed ${seed}: log crossings ${shapes.join(' ')} (at most three, each its own shape)`);
     // ("Too far to jump. The high way, then." as she comes onto the bank, before the stairs: QA saw it only once she was down them)
     const first = st.trails[0].sections[0];
     assert.ok(st.highX <= first.x0 + 40, `seed ${seed}: the high-way line at ${st.highX}, the bank at ${first.x0}`);
