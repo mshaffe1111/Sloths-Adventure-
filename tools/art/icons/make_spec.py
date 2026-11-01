@@ -119,6 +119,15 @@ GROUPS = {
                     ('b', 'a small curled piece of bark with a pale carved M scratched into it, a tiny green leaf stuck to one corner',
                      'bag, many letters, words')],
     },
+    'J': {
+        'shimmy': [('a', 'a round gold-rimmed emerald-green medallion badge, inside it a coil of thick braided vine rope with a knot, '
+                         'painted, glossy', 'bag, text, letters, numbers'),
+                   ('b', 'a coil of thick braided jungle vine rope tied with a knot, a small green leaf on it', 'bag, snake, text')],
+        'glide': [('a', 'a round gold-rimmed emerald-green medallion badge, inside it a big green leaf held like a parachute with a '
+                        'little twig handle, painted, glossy', 'bag, text, letters, numbers, person'),
+                  ('b', 'a big curved green jungle leaf used as a parachute, a little twig handle hanging under it, floating', 'bag, '
+                        'text, person, sloth')],
+    },
     'E': {
         'playc': [('a', 'a chunky rounded triangle play button shape pointing right, carved from pale cream birch wood, a warm golden '
                         'brass rim round its edge, smooth and glossy', 'bag, leaf, flower, arrow shaft'),

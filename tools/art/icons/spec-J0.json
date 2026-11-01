@@ -1,0 +1,141 @@
+{
+ "tag": "icJ0",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects",
+ "items": [
+  {
+   "name": "shimmy-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round gold-rimmed emerald-green medallion badge, inside it a coil of thick braided vine rope with a knot, painted, glossy, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letters, numbers"
+  },
+  {
+   "name": "shimmy-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round gold-rimmed emerald-green medallion badge, inside it a coil of thick braided vine rope with a knot, painted, glossy, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letters, numbers"
+  },
+  {
+   "name": "shimmy-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round gold-rimmed emerald-green medallion badge, inside it a coil of thick braided vine rope with a knot, painted, glossy, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letters, numbers"
+  },
+  {
+   "name": "shimmy-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round gold-rimmed emerald-green medallion badge, inside it a coil of thick braided vine rope with a knot, painted, glossy, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letters, numbers"
+  },
+  {
+   "name": "shimmy-b11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a coil of thick braided jungle vine rope tied with a knot, a small green leaf on it, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, snake, text"
+  },
+  {
+   "name": "shimmy-b23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a coil of thick braided jungle vine rope tied with a knot, a small green leaf on it, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, snake, text"
+  },
+  {
+   "name": "shimmy-b37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a coil of thick braided jungle vine rope tied with a knot, a small green leaf on it, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, snake, text"
+  },
+  {
+   "name": "shimmy-b53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a coil of thick braided jungle vine rope tied with a knot, a small green leaf on it, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, snake, text"
+  },
+  {
+   "name": "glide-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round gold-rimmed emerald-green medallion badge, inside it a big green leaf held like a parachute with a little twig handle, painted, glossy, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letters, numbers, person"
+  },
+  {
+   "name": "glide-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round gold-rimmed emerald-green medallion badge, inside it a big green leaf held like a parachute with a little twig handle, painted, glossy, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letters, numbers, person"
+  },
+  {
+   "name": "glide-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round gold-rimmed emerald-green medallion badge, inside it a big green leaf held like a parachute with a little twig handle, painted, glossy, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letters, numbers, person"
+  },
+  {
+   "name": "glide-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round gold-rimmed emerald-green medallion badge, inside it a big green leaf held like a parachute with a little twig handle, painted, glossy, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letters, numbers, person"
+  },
+  {
+   "name": "glide-b11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a big curved green jungle leaf used as a parachute, a little twig handle hanging under it, floating, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, person, sloth"
+  },
+  {
+   "name": "glide-b23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a big curved green jungle leaf used as a parachute, a little twig handle hanging under it, floating, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, person, sloth"
+  },
+  {
+   "name": "glide-b37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a big curved green jungle leaf used as a parachute, a little twig handle hanging under it, floating, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, person, sloth"
+  },
+  {
+   "name": "glide-b53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a big curved green jungle leaf used as a parachute, a little twig handle hanging under it, floating, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, person, sloth"
+  }
+ ]
+}
