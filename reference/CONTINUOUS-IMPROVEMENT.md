@@ -55,6 +55,9 @@ countermeasure are written and assigned (the fix itself can run in parallel).
 - which defect categories repeated (the Pareto below);
 - the ONE countermeasure for the top category before the next release.
 
+**6b. Keep what works (yokoten):** in the same retro, promote every proven improvement from the helpers' "Method update" sections
+into reference/methods/, and note which method files changed. A method that saved a redo is kept; one that failed is fixed or retired.
+
 **7. Quality check-ins (PARTNER.md first rule):** every 30 minutes, judge what helpers have pushed, on the real screens, and send rough
 work back then.
 

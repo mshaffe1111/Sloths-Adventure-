@@ -176,3 +176,6 @@ Matt found it on his phone. Rules from now on:
    states the helper must screenshot (old save included). A helper's "polish check" that only shows the happy path is sent back.
 5. **Check the fact before you brief on it** (2026-11-01, defect D7): a brief or edit that rests on a fact about the game (what is live,
    what a screen shows, how a rule works) names the file or screen where the lead checked it. Memory and summaries are not a source.
+6. **Briefs name the method; reports update it** (Matt, 2026-11-01): every brief has a "Method:" line pointing at reference/methods/,
+   and every report has a "Method update" section (what worked better, what failed, the proposed edit). The lead merges proven updates
+   into the method file at merge time. See reference/methods/README.md.
