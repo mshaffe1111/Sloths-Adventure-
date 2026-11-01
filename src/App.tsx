@@ -42,8 +42,10 @@ import { warmHeroAtlas } from './game/heroSprite.ts';
 import { BADGES, award, evaluate, type BadgeDef, type BadgeStore, type StageStats, recordStage } from './game/badges.ts';
 import { anyCakeEaten } from './game/w5Kit.ts';
 import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type CosmeticChoice } from './game/badgeStore.ts';
-import { TrophyRoom } from './components/TrophyRoom.tsx';
 import { Satchel, type SatchelTab } from './components/Satchel.tsx';
+import { scenePanels, type SceneEntry } from './game/sceneList.ts';
+import { loadPlayRecords, savePlayRecord, withRun, type PlayRecord } from './game/playRecords.ts';
+import { ALL_FINDS, findStage } from './game/finds.ts';
 import { inAppOf } from './game/deviceInfo.ts';
 import { markSlowTipShown, slowTipShown, slowTipText } from './game/slowTip.ts';
 import { BadgeToast } from './components/BadgeToast.tsx';
@@ -329,9 +331,17 @@ export default function App() {
     setSlowTip(null);
   };
   const [trophyFrom, setTrophyFrom] = useState<'title' | 'world_map' | 'paused'>('title');
-  /** which tab the Trophy Room opens on (the pause menu's Jungle Cards go straight to the creature journal) */
-  const [trophyTab, setTrophyTab] = useState<'badges' | 'journal'>('badges');
-  const [satchelTab, setSatchelTab] = useState<SatchelTab>('satchel');
+  const [satchelTab, setSatchelTab] = useState<SatchelTab>('finds');
+  /** open the satchel on a tab, from the start screen, the map or the pause menu */
+  const openSatchel = (from: 'title' | 'world_map' | 'paused', tab: SatchelTab) => {
+    setTrophyFrom(from);
+    setSatchelTab(tab);
+    setScreen('satchel');
+  };
+  /** how each stage was played, for Pokey's journal (playRecords.ts) */
+  const [playRecords, setPlayRecords] = useState<Record<string, PlayRecord>>(() => loadPlayRecords());
+  /** the scenes playing from the satchel's Scenes page, one after another ("Play all in order") */
+  const [replay, setReplay] = useState<{ queue: SceneEntry[]; i: number } | null>(null);
   // ---- story finds: the notes, books and keepsakes picked up, and the one being read ----
   const [foundIds, setFoundIds] = useState<string[]>(() => loadFinds());
   // ---- flashbacks: the ones seen so far, and the one playing ----
@@ -380,14 +390,44 @@ export default function App() {
     if (!changed) return;
     setBadgeStore(r.store);
     saveBadgeStore(r.store);
+    // the journal's record of how this stage went (its first clear is kept as it happened)
+    if (stats?.id) {
+      const [w, m] = stats.id.split('-').map(Number);
+      const here = ALL_FINDS.filter((f) => f.world === w && findStage(w, f.kind) === m && foundIds.includes(f.id)).map((f) => f.id);
+      const rec = withRun(playRecords[stats.id] ?? null, stats, { finds: here, medals: r.fresh.map((b) => b.id), now: Date.now() });
+      savePlayRecord(stats.id, rec);
+      setPlayRecords((cur) => ({ ...cur, [stats.id as string]: rec }));
+    }
     // a stage just ended: celebrate. Badges found when a save loads or the game opens are filed quietly.
     // (on the stage-cleared card they get a row of their own, with the medal chime when it comes in: UI-9)
     if (stats && r.fresh.length) {
-      setFreshBadges(r.fresh);
+      // (the stage-cleared card lists every medal of the run; anywhere else, the ones already popped in play don't pop again)
+      setFreshBadges(screen === 'victory' ? r.fresh : r.fresh.filter((b) => !poppedInRun.current.has(b.id)));
       if (screen !== 'victory') sound.playShrineUnlocked();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, allLevels, secretFound, thornHeart]);
+  // a medal earned in the middle of a stage pops in at the top right away (Matt, 2026-10-31). Every 2 s while playing (not per frame) the
+  // run so far is checked as if it ended now; nothing is saved here: the stage's end files the medals as before (and its card lists them).
+  const poppedInRun = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    poppedInRun.current = new Set();
+  }, [runId]);
+  useEffect(() => {
+    if (screen !== 'playing') return;
+    const t = window.setInterval(() => {
+      const live = (engineRef.current as { liveStats?: () => StageStats } | null)?.liveStats?.();
+      if (!live) return;
+      const r = award(recordStage(badgeStore, live), { levels: allLevels, gateFound: secretFound, thornHeart, finds: foundIds, stage: live, cakeFree: !anyCakeEaten() }, Date.now());
+      const fresh = r.fresh.filter((b) => !poppedInRun.current.has(b.id));
+      if (!fresh.length) return;
+      for (const b of fresh) poppedInRun.current.add(b.id);
+      setFreshBadges(fresh);
+      sound.playShrineUnlocked();
+    }, 2000);
+    return () => window.clearInterval(t);
+  }, [screen, badgeStore, allLevels, secretFound, thornHeart, foundIds]);
+
   // the guardian's card belongs to this one visit to its scene
   useEffect(() => {
     if (screen !== 'boss_intro') setBossCard(false);
@@ -431,7 +471,7 @@ export default function App() {
   // from the pause menu's Trophy Room plays over the paused stage instead (screenFlow.ts: freeing it froze Resume, Matt 2026-10-26)
   const stageReleased = useRef(false);
   useEffect(() => {
-    if (releasesStage(screen, { trophyFrom, memoryBack: memoryPlay?.back ?? null })) {
+    if (releasesStage(screen, { trophyFrom, memoryBack: replay ? 'satchel' : memoryPlay?.back ?? null })) {
       engineRef.current?.stop();
       engineRef.current = null;
       launchSeq.current++;
@@ -1131,19 +1171,12 @@ export default function App() {
             setSelectedWorldId(resumeLevel.worldIndex);
             setScreen('world_map');
           }}
-          onOpenTrophies={() => {
-            setTrophyFrom('title');
-            setTrophyTab('badges');
-            setScreen('trophy');
-          }}
+          onOpenTrophies={() => openSatchel('title', 'trophies')}
+          onOpenSatchel={() => openSatchel('title', 'finds')}
           badgeCount={badgeCount}
           trophyTotal={BADGES.length}
           skills={skills}
-          onOpenCards={() => {
-            setTrophyFrom('title');
-            setTrophyTab('journal');
-            setScreen('trophy');
-          }}
+          onOpenCards={() => openSatchel('title', 'creatures')}
           onViewStory={() => {
             setStoryFrom('title');
             setScreen('story_cutscene');
@@ -1264,7 +1297,27 @@ export default function App() {
       )}
 
       {/* A flashback (after a guardian falls, or replayed from the Library) */}
-      {screen === 'memory' && memoryPlay && (
+      {/* a scene (or several in a row) replayed from the satchel's Scenes page */}
+      {screen === 'memory' && replay && replay.queue[replay.i] && (
+        <StoryPlayer
+          key={`replay${replay.i}${replay.queue[replay.i].id}`}
+          panels={scenePanels(replay.queue[replay.i], { finds: foundIds, thornHeart, bossName: (w) => (WORLDS_DATA[w - 1] || WORLDS_DATA[0]).bossName })}
+          finishLabel={replay.i + 1 < replay.queue.length ? 'Next scene' : 'Back'}
+          skipLabel={replay.queue.length > 1 ? 'Skip scene' : 'Back'}
+          onFinish={() => {
+            const e = replay.queue[replay.i];
+            if (e.memory) markMemorySeen(e.memory);
+            if (replay.i + 1 < replay.queue.length) setReplay({ ...replay, i: replay.i + 1 });
+            else {
+              setReplay(null);
+              setSatchelTab('scenes');
+              setScreen('satchel');
+            }
+          }}
+        />
+      )}
+
+      {screen === 'memory' && !replay && memoryPlay && (
         <StoryPlayer
           key={memoryPlay.id}
           panels={MEMORIES[memoryPlay.id].panels}
@@ -1324,55 +1377,44 @@ export default function App() {
           onPlaySecret={() => startLevel(THORNBARK_LEVEL)}
           resumeId={resumeLevel.id}
           onSaveLoaded={onSaveLoaded}
-          onOpenTrophies={() => {
-            setTrophyFrom('world_map');
-            setTrophyTab('badges');
-            setScreen('trophy');
-          }}
-          onOpenSatchel={() => {
-            setTrophyFrom('world_map');
-            setSatchelTab('satchel');
-            setScreen('satchel');
-          }}
+          onOpenTrophies={() => openSatchel('world_map', 'trophies')}
+          onOpenSatchel={() => openSatchel('world_map', 'finds')}
         />
       )}
 
-      {screen === 'trophy' && (
-        <TrophyRoom
-          world={activeLevel.worldIndex}
-          store={badgeStore}
-          levels={allLevels}
-          gateFound={secretFound}
-          thornHeart={thornHeart}
-          choice={cosmetic}
-          onChoice={changeCosmetic}
-          initialTab={trophyTab}
-          finds={foundIds}
-          onBack={() => setScreen(trophyFrom)}
-        />
-      )}
-
-      {/* Pokey's satchel: the finds, his journal, the story scenes (from the pause menu and the map) */}
+      {/* Pokey's satchel: the hub for finds, medals, the journal, every scene and the creatures (from the start screen, the map and the pause menu) */}
       {screen === 'satchel' && (
         <Satchel
           world={activeLevel.worldIndex}
           finds={foundIds}
           levels={allLevels}
           memories={memoriesSeen}
+          store={badgeStore}
+          gateFound={secretFound}
+          thornHeart={thornHeart}
+          choice={cosmetic}
+          onChoice={changeCosmetic}
+          records={playRecords}
           initialTab={satchelTab}
-          onReplayMemory={(id) => {
-            setMemoryPlay({ id, back: 'satchel' });
+          onPlayScenes={(queue) => {
+            if (!queue.length) return;
+            setReplay({ queue, i: 0 });
             setScreen('memory');
           }}
           onOpenFind={(id) => { setReadingCompletes(false); setReading(id); }}
           onBack={() => setScreen(trophyFrom)}
+          backTo={trophyFrom === 'title' ? 'Start Screen' : trophyFrom === 'world_map' ? 'World Map' : 'Pause menu'}
+          onHome={trophyFrom === 'title' ? undefined : () => {
+            engineRef.current?.stop();
+            setScreen('title');
+          }}
         />
       )}
 
       {reading && FIND_BY_ID[reading] && <FindReader find={FIND_BY_ID[reading]} onClose={closeReader} completes={readingCompletes} />}
 
       {/* held back while the stage-cleared and new-skill cards are up: it covered their title ribbons and buttons */}
-      {freshBadges.length > 0 && screen !== 'victory' && <BadgeToast badges={freshBadges} onDone={() => setFreshBadges([])} />}
+      {freshBadges.length > 0 && screen !== 'victory' && <BadgeToast badges={freshBadges} inPlay={screen === 'playing' || screen === 'paused'} onDone={() => setFreshBadges([])} />}
 
       {slowTip && (
         <div className="tr-toast slow-tip" role="status" aria-live="polite">
@@ -1487,21 +1529,9 @@ export default function App() {
           }}
           onNextStage={handleNextStage}
           onPrevStage={handlePrevStage}
-          onOpenTrophies={() => {
-            setTrophyFrom('paused');
-            setTrophyTab('badges');
-            setScreen('trophy');
-          }}
-          onOpenCards={() => {
-            setTrophyFrom('paused');
-            setTrophyTab('journal');
-            setScreen('trophy');
-          }}
-          onOpenSatchel={() => {
-            setTrophyFrom('paused');
-            setSatchelTab('satchel');
-            setScreen('satchel');
-          }}
+          onOpenTrophies={() => openSatchel('paused', 'trophies')}
+          onOpenCards={() => openSatchel('paused', 'creatures')}
+          onOpenSatchel={() => openSatchel('paused', 'finds')}
           onOpenMap={() => {
             engineRef.current?.stop();
             setScreen('world_map');
