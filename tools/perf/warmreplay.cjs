@@ -30,6 +30,6 @@ const [base, stage] = process.argv.slice(2);
     if (n === 1) await pg.evaluate((s) => window.__play(s, 1), stage);
   }
   const runs = await pg.evaluate(() => window.__runs.map((r) => r.gaps));
-  runs.forEach((g, i) => { const big = g.slice(1).filter((x) => x[1] > 100); const qs = [...new Set(g.map((x) => x[2]))]; console.log(stage, i ? 'warm (2nd play)' : 'cold (1st play)', 'frames', g.length, 'worst', Math.max(...g.slice(1).map((x) => x[1])), '>100:', JSON.stringify(big), 'quality seen', JSON.stringify(qs)); });
+  runs.forEach((g, i) => { const qi = g.findIndex((x, j) => j > 0 && x[2] !== g[j - 1][2]); if (!i) console.log('around first q change', JSON.stringify(g.slice(Math.max(0, qi - 4), qi + 6)), 'worst 0.3-3.4 s', Math.max(...g.filter((x) => x[0] > 300 && x[0] < 3400).map((x) => x[1]))); const big = g.slice(1).filter((x) => x[1] > 100); const qs = [...new Set(g.map((x) => x[2]))]; console.log(stage, i ? 'warm (2nd play)' : 'cold (1st play)', 'frames', g.length, 'worst', Math.max(...g.slice(1).map((x) => x[1])), '>100:', JSON.stringify(big), 'quality seen', JSON.stringify(qs)); });
   await b.close();
 })();

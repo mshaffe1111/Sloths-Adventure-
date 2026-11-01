@@ -102,9 +102,19 @@ under-50-ms bar can't be shown in this container (its ordinary q0 frames are 67-
 On the dev server, stepping by hand (`tools/perf/qstep.cjs`): before, 150 ms on 1-1 and 183 ms on 8-1; now 83-117 on 1-1 (ordinary
 frames 67-83) and 50-67 on 8-1.
 
-\* 5-M: no clear change, and one 233 ms run. I didn't find the cause in the time. Meeca's stage draws through other paths (the night,
-her sheets) that may still re-bake at a new scale. The pit water and checkpoint flags also re-bake at a new scale (`stageArt.ts`, single
-slot, small), as do the ground chunks. Named for a follow-up.
+\* 5-M, followed up (lead's check, 12:32 PM).
+- **Is the backdrop re-fitted in play there?** No. With a temporary log in `makeFit`, 5-M makes its three fits per strip under the card
+  (k 0.916, 1.375, 1.833) and none at the step: the pre-fit works there as on 1-1.
+- **The step frame, logged with the quality per frame** (dev, the governor's own step, 3 runs, `tools/perf/warmreplay.cjs`): the frames
+  around q0 to q1 are 33-83 ms, against ordinary frames whose worst in 0.3-3.4 s is 100-117. The step is no worse than an ordinary
+  frame, 3 of 3.
+- **Stepped by hand** (`qstep.cjs`, 4 runs): 67, 67, 83, 67 ms after the step, against 100, 83, 83, 67 in the second before.
+- **Production** (6 runs, no quality log possible there): the worst frame 3.4-6 s in was 83, 83, 200, 83, 67, 117, against ordinary
+  frames 0.3-3.4 s of 133, 433, 133, 133, 150, 117. Five of six are no worse than ordinary. One run had a 200 ms and a 183 ms frame at
+  4.0-4.2 s, which I can't attribute without the quality log. It didn't recur in the 3 dev runs or the 3 later production runs. Named,
+  not hidden.
+- Still re-baked by scale (small, and not seen as a cost in the 5-M profile): the pit water and checkpoint flags (`stageArt.ts`, single
+  slot) and the ground chunks.
 
 **Load time, cumulative:** the step fix adds about 0.1-0.4 s more behind the card (medians: 1-1 4643 to 4754, 8-1 5937 to 6419, 5-M
 4978 to 5141). Against release-0.9.2, 8-1 now opens about 0.6-0.7 s later behind its title card, with no frozen first frame and no
@@ -137,7 +147,13 @@ far wall, and the picture's edge must be on her side of the face and within 4 px
 all four fail, "her picture reaches 16.6 px into the face (reach 35.6, shift 0.0)". After: all pass.
 
 **The other rooms and the ending:** all 13 `meeca*.test.ts` files pass (68 tests, including the full playthroughs upright and sideways,
-Easy and Normal). `tools/qa/meecaVisible.cjs` results are below.
+Easy and Normal). `tools/qa/meecaVisible.cjs` (final build) gave 0 misses in every run:
+
+| Run | Samples | Misses | Worst |
+|---|---|---|---|
+| Upright 448x998 dpr 3 | 102 | 0 | 38% |
+| Sideways 844x390 dpr 3 | 105 | 0 | 23% |
+| Upright, forced q0 | 63 | 0 | 36% |
 
 ### Stills
 
@@ -179,3 +195,18 @@ New method file: `reference/methods/perf-measure.md` (it didn't exist). Proposed
   - a deadline guard on the warm-up frame;
   - judging a 50 ms bar on the dev server;
   - timing while the gate runs.
+
+## Gate (efa3f4ef: the last code commit; the commits after it are docs and tools only)
+
+- `npx tsc --noEmit -p .`: clean.
+- The full test globs, sharded 3 ways: 680 + 794 + 681 pass, 0 fail (two TODOs that were already there).
+- `npx vite build`: no asset over 4 MiB.
+- `node tools/perf/artcheck.mjs`: PASS.
+- `node tools/perf/drawcheck.mjs`: PASS (650 s).
+
+**Shared drawing files touched** (PERFORMANCE-RULES §8.3, the lead reviews them):
+- `engine.ts`: the Meeca draw offset; `resizeDue`; `stepKs`.
+- `scenery.ts`: 3 fit sizes; `stampSceneryFits`.
+- `protoArt.ts`: the World 5 trunk clip.
+- `sheetBake.ts`: `warmSheetMips`.
+- `stageReady.ts`.
