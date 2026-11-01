@@ -1,3 +1,4 @@
+import { TextGlyph } from '../icons/TextGlyph.tsx';
 import React, { useMemo, useState } from 'react';
 import { BADGES, REWARDS, TIER_NAME, TIER_POINTS, TOTAL_POINTS, evaluate, pointsOf, rewardsUnlocked, type BadgeDef, type EvalContext } from '../../game/badges.ts';
 import type { CosmeticChoice } from '../../game/badgeStore.ts';
@@ -40,7 +41,7 @@ export const MedalCloseup: React.FC<{ b: BadgeDef; got: boolean; ctx: EvalContex
           <span>{unitLabel(b, p.have, p.need)}</span>
         </div>
       )}
-      <div className={`st-state ${got ? 'got' : ''}`}>{got ? <><PaintedIcon name="checkmark" size={16} /> Earned</> : <><PaintedIcon name="lock" size={15} /> Not earned yet</>}</div>
+      <div className={`st-state ${got ? 'got' : ''}`}>{got ? <><TextGlyph name="check" size={16} /> Earned</> : <><PaintedIcon name="lock" size={15} /> Not earned yet</>}</div>
     </SatchelPopup>
   );
 };
@@ -71,7 +72,7 @@ export const TrophiesTab: React.FC<{ ctx: EvalContext; choice: CosmeticChoice; o
           <ul className="tr-plat-parts">
             {plat.parts!(ctx).map((q) => (
               <li key={q.label} className={q.done || platGot ? 'done' : ''}>
-                <PaintedIcon name={paint(q.done || platGot ? 'check' : 'lock')} size={14} />
+                {q.done || platGot ? <TextGlyph name="check" size={14} /> : <PaintedIcon name="lock" size={14} />}
                 {q.label}
               </li>
             ))}

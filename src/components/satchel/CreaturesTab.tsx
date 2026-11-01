@@ -1,3 +1,4 @@
+import { TextGlyph } from '../icons/TextGlyph.tsx';
 import React, { useState } from 'react';
 import type { BadgeStore, LevelRecord } from '../../game/badges.ts';
 import { GUARDIAN_ENTRIES, PREDATOR_ENTRIES, PREDATOR_ORDER, ROAD_ENTRIES, predatorMet, roadMet } from '../../game/journal.ts';
@@ -42,11 +43,11 @@ export const CreaturesTab: React.FC<{ store: BadgeStore; levels: LevelRecord[] }
   });
   const road: Card[] = ROAD_ENTRIES.map((r) => {
     const met = roadMet(r, levels, store.seen);
-    return { id: r.id, art: r.id, name: r.name, tip: r.tip, world: r.first, met, foot: met ? <PaintedIcon name="checkmark" size={16} label="Met" /> : <PaintedIcon name="lock" size={15} label="Not met yet" /> };
+    return { id: r.id, art: r.id, name: r.name, tip: r.tip, world: r.first, met, foot: met ? <TextGlyph name="check" size={16} label="Met" /> : <PaintedIcon name="lock" size={15} label="Not met yet" /> };
   });
   const guards: Card[] = GUARDIAN_ENTRIES.map((g) => {
     const met = bossDone(g.world);
-    return { id: g.art, art: g.art, name: g.name, tip: `Guardian of World ${g.world}.`, world: g.world, met, foot: met ? <PaintedIcon name="checkmark" size={16} label="Defeated" /> : <PaintedIcon name="lock" size={15} label="Locked" /> };
+    return { id: g.art, art: g.art, name: g.name, tip: `Guardian of World ${g.world}.`, world: g.world, met, foot: met ? <TextGlyph name="check" size={16} label="Defeated" /> : <PaintedIcon name="lock" size={15} label="Locked" /> };
   });
   const metCount = preds.filter((c) => c.met).length;
   const section = (title: string, list: Card[], locked: (c: Card) => string) => (

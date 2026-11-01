@@ -1,3 +1,4 @@
+import { TextGlyph } from './icons/TextGlyph.tsx';
 import { starsPossible } from './mapStars.ts';
 import { newLookSoon } from '../game/newLookSoon.ts';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -228,7 +229,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
           <span className="wm-prog">
             <span className="wm-prog-w">World {curWorld.id} of {WORLDS_DATA.length}</span>
             <span>
-              <PaintedIcon name="checkmark" size={16} /> {cleared} of {worldLevels.length} cleared
+              <TextGlyph name="check" size={16} /> {cleared} of {worldLevels.length} cleared
             </span>
             <span>
               <PaintedIcon name="star" size={17} /> {worldStars}/{worldLevels.length * 3}
