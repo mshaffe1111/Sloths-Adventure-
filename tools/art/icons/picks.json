@@ -115,5 +115,65 @@
  "medal": {
   "take": "medal-a11",
   "px": 104
+ },
+ "journal": {
+  "take": "journal-a23",
+  "px": 104
+ },
+ "scenes": {
+  "take": "scenes-a37",
+  "px": 104
+ },
+ "sparkle": {
+  "take": "sparkle-a23",
+  "px": 80
+ },
+ "flower": {
+  "take": "flower-a11",
+  "px": 64
+ },
+ "shield": {
+  "take": "shield-a11",
+  "px": 64
+ },
+ "pouch": {
+  "take": "pouch-a37",
+  "px": 84
+ },
+ "about": {
+  "take": "about-a23",
+  "px": 80
+ },
+ "sprint": {
+  "take": "sprint-a53",
+  "px": 64
+ },
+ "petal": {
+  "take": "petal-a23",
+  "px": 64
+ },
+ "bramble": {
+  "take": "bramble-a23",
+  "px": 64
+ },
+ "ascent": {
+  "take": "ascent-a53",
+  "px": 64
+ },
+ "fern": {
+  "take": "fern-a53",
+  "px": 64
+ },
+ "liana": {
+  "take": "liana-a53",
+  "px": 64
+ },
+ "idol": {
+  "take": "idol-a53",
+  "px": 64
+ },
+ "cage": {
+  "take": "cage-a23",
+  "px": 64
  }
 }

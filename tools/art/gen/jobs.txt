@@ -119,3 +119,5 @@ icBCD0 6ae7827cc78863f9c62fc13a  icBCD1 6ae7827f0e0338d1bb7d8e73  icBCD2 6ae7828
 icBCD4 6ae7828bc78863f9c62fc14b  icBCD5 6ae7828dc78863f9c62fc14f  started 18:18Z at 615bd861: groups B-D, 30 objects x 6 seeds = 180 takes
 icF0 6ae78353c78863f9c62fc21e  started 18:22Z at c77201e6: full screen (expand x2 prompts, shrink) and a vine tick, 16 takes
   icF0 finished 18:28Z (~6 min, ~$0.28). Picks expand-a37, shrink-a53, checkmark-a23.
+  icBCD0-5 finished 18:30Z (~12 min each incl. load, ~$3.30 for the six). Picks in tools/art/icons/picks.json. Running total
+  icons-painted ~$5.3 of $25. Rough: every cards take paints an "A" on a card (letters); the ascent and liana s37 takes have corner specks.
