@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 const { chromium } = await import(process.env.PW ?? 'playwright');
-const { lawRects } = await import('../../src/game/dotGuidePerch.ts');
+const { lawRects, aheadZone } = await import('../../src/game/dotGuidePerch.ts');
 const { FINDS } = await import('../../src/game/finds.ts');
 const FOUND = JSON.stringify({ v: 1, found: FINDS.map((f) => f.id) });
 const [port = '4301', out = '.', tag = 'after', only = ''] = process.argv.slice(2);
@@ -20,7 +20,7 @@ const MOMENTS = [
   { id: '8-2-rope0', stage: '8-2', layout: 1, text: 'long way down', say: 'long way down', from: 10, stop: 'lip' },
   { id: '1-7-eagle', stage: '1-7', layout: 0, text: 'eagle is watching', say: 'bush to hide', from: 10, stop: 1400 },
   { id: '5-1-gap', stage: '5-1', layout: 0, text: 'A wide gap', say: 'Wide gap', from: 10, stop: 'lip' },
-  { id: '4-2-leaf', stage: '4-2', layout: 0, text: 'Your leaf', say: 'thumb on the glass', from: 10, stop: 'lip' },
+  { id: '4-2-leaf', stage: '4-2', layout: 0, text: 'Your leaf', say: 'thumb on the glass', from: 10, stop: 'lip', move: 'glide' },
 ];
 const SIZES = (process.env.SIZES ?? 'upright:412x915,sideways:915x412').split(',').map((q) => { const [n, d] = q.split(':'); const [w, h] = d.split('x'); return [n, +w, +h]; });
 
@@ -86,8 +86,8 @@ for (const m of MOMENTS) {
       if (process.env.DEBUG) console.log(i, await p.evaluate(() => { const r = window.__dotRun; const q = r?.plan; return JSON.stringify({ q: r?.queue?.items?.map?.((l) => l.text.slice(0, 20)) ?? Object.keys(r?.queue ?? {}), show: r?.show?.line?.text?.slice(0, 20), help: r?.help, applies: r?.applies, st: r?.state, mode: q?.mode, sx: q?.sx | 0, sy: q?.sy | 0, bub: q?.bub && [q.bub.x | 0, q.bub.y | 0, q.bub.cost | 0], noPerch: q?.noPerch, dsx: r?.dsx | 0 }); }));
       if (process.env.DEBUG && i % 10 === 0) console.log(i, JSON.stringify(s), await p.evaluate(() => [...document.querySelectorAll('.dg-bub')].map((b) => b.className + ' ' + getComputedStyle(b).opacity + ' ' + b.innerText.slice(0, 30)).join(' / ')));
       if (s.up && upAt < 0) upAt = Date.now();
-      // (the bubble's first moments, to see whether it settles or hops: +0.3 s and +1.5 s)
-      for (const [k, ms] of [['t1', 300], ['t2', 1500]]) {
+      // (the bubble's first moments, to see whether it settles or hops: as it opens, +0.3 s and +1.5 s)
+      for (const [k, ms] of [['t0', 0], ['t1', 300], ['t2', 1500]]) {
         if (upAt > 0 && !seq[k] && Date.now() - upAt >= ms) {
           seq[k] = true;
           await p.screenshot({ path: path.join(out, `${m.id}-${tag}-${ori}-${k}.png`) });
@@ -114,7 +114,10 @@ for (const m of MOMENTS) {
       for (const k of ['platforms', 'ropes', 'vines', 'enemies', 'hazards', 'bushes']) view[k] = JSON.parse(JSON.stringify(v[k] ?? []));
       return { text: bb?.innerText.split('\n').filter((q) => q && q !== 'Dot' && q !== 'Skip tips').join(' ') ?? null, bub: br && { x0: br.left, y0: br.top - 14, x1: br.right, y1: br.bottom }, hud, view };
     });
-    const law = r.view.live ? lawRects({ ...r.view, popups: [] }, [], 0) : [];
+    // (the way ahead in the shape of the move the tip is about: a glide's cone for 4-2's leaf; the whole of it, the high arc too)
+    const gv = { ...r.view, popups: [], collectibles: [] };
+    const law = r.view.live ? lawRects(gv, [], 0, m.move ?? 'jump') : [];
+    if (law.length) law[1] = aheadZone(gv, undefined, undefined, m.move ?? 'jump');
     const hit = (a, b) => a && b && a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0;
     const pk = law[0];
     r.checks = r.bub ? { pokey: !hit(r.bub, pk), ahead: !hit(r.bub, law[1]), action: !law.slice(2).some((q) => hit(r.bub, q)), hud: !r.hud.some((q) => hit(r.bub, q)) } : null;

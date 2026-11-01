@@ -334,6 +334,8 @@ export function placeBubble(
    * width): the high arc of a double jump far ahead (aheadZone above a single jump's reach). Before the thumbs, the law, the HUD, him
    */
   soft: readonly Rect[] = [],
+  /** the pickups on screen (pickupRects): kept clear when another spot is free (8e4 each, under the floor and the soft way ahead) */
+  pick: readonly Rect[] = [],
 ): BubblePlace {
   const r = safe.rect;
   const gap = Math.max(34, me + 12);
@@ -361,7 +363,7 @@ export function placeBubble(
   }
   // (with the law in force and no spot of the usual ones clear: a sweep over the whole safe area, so a clear spot is never missed)
   const sweep = () => {
-    const step = 24;
+    const step = 8;
     for (let yy = r.y0 + tag; yy <= r.y1 - h; yy += step) for (let xx = r.x0; xx <= r.x1 - w; xx += step) spots.push(['above', yy, xx]);
   };
   let swept = false;
@@ -382,11 +384,14 @@ export function placeBubble(
     for (const k of safe.never ?? []) if (overlap(box, k) > 0) cost += 1e7 + overlap(box, k) * 100;
     for (const a of law) if (overlap(box, a) > 0) cost += 1e6 + overlap(box, a) * 100;
     for (const a of soft) if (overlap(box, a) > 0) cost += 3e5 + overlap(box, a) * 50;
+    for (const a of pick) if (overlap(box, a) > 0) cost += 8e4 + overlap(box, a) * 20;
     // (with the law in force: behind him, or the band under the HUD, before the ground under his feet, where the thumbs are and the
     // words read as part of the floor, 1-7 upright)
     if (law.length && body && box.y0 > body.y1) cost += 1.5e5;
     // (on Pokey: worse than anything else it could do)
-    const onHim = body ? overlap(box, body) : 0;
+    // (with the law in force the room round him is one of the law's keep-outs, weighed by how much is covered; "on him" is his own body,
+    // 4 px out: 2 px of the room grazed by the band under the HUD lost to a box in the middle of a glide's way down, 4-2 on 360x740)
+    const onHim = body ? overlap(box, law.length ? { x0: body.x0 + 20, y0: body.y0 + 20, x1: body.x1 - 20, y1: body.y1 - 20 } : body) : 0;
     if (onHim > 0) cost += 1e8 + onHim * 100;
     // she must not end up under her own bubble (it was pushed over her by the edge)
     cost += overlap(box, { x0: sx - me, y0: sy - meH, x1: sx + me, y1: sy + meH }) * 20;
@@ -404,7 +409,7 @@ export function placeBubble(
       best = { x, y, tail, at, cost };
       if (cost === 0) break;
     }
-    if (i === spots.length - 1 && !swept && law.length && bestCost >= 1.5e5) {
+    if (i === spots.length - 1 && !swept && law.length && bestCost >= 8e4) {
       swept = true;
       sweep();
     }
@@ -531,7 +536,21 @@ export const AHEAD_JUMPS = 1.5;
  */
 export type AheadProbe = Pick<GuideView, 'px' | 'py' | 'pw' | 'ph' | 'zoom' | 'camX' | 'camY' | 'cssW' | 'cssH' | 'facing' | 'climbing' | 'grounded' | 'vy' | 'gliding'>;
 /** (`out`: filled in place, for a caller in the frame loop that may not allocate: Meeca's thought cloud) */
-export function aheadZone(v: AheadProbe, out: Rect = { x0: 0, y0: 0, x1: 0, y1: 0 }, rise = JUMP_RISE): Rect {
+/**
+ * the move the words are about, which sets the shape of the way ahead (the lead's check, 4-2 upright: a glide tip's box sat where the
+ * glide goes, down and forward): 'jump' the arc of a jump or two; 'glide' (or falling) a cone down and forward to the bottom of the
+ * screen; 'climb' the trunk or vine above him; 'swing' the arc of a swing, ahead and down then up
+ */
+export type AheadMove = 'jump' | 'glide' | 'climb' | 'swing';
+/** the move a line teaches, from its move or its topic (dotGuide.ts GuideLine) */
+export function aheadMoveOf(l: { move?: string; topic?: string } | null | undefined): AheadMove {
+  if (!l) return 'jump';
+  if (l.move === 'glide') return 'glide';
+  if (l.move === 'climb' || l.topic === 'trunk') return 'climb';
+  if (l.move === 'grab' || l.move === 'leap' || l.topic === 'vine') return 'swing';
+  return 'jump';
+}
+export function aheadZone(v: AheadProbe, out: Rect = { x0: 0, y0: 0, x1: 0, y1: 0 }, rise = JUMP_RISE, move: AheadMove = 'jump'): Rect {
   const z = v.zoom;
   const x0 = (v.px - v.camX) * z;
   const x1 = (v.px + v.pw - v.camX) * z;
@@ -539,15 +558,31 @@ export function aheadZone(v: AheadProbe, out: Rect = { x0: 0, y0: 0, x1: 0, y1: 
   const head = (v.py - v.ph - v.camY) * z;
   const len = JUMP_LEN * AHEAD_JUMPS * z;
   let a: number, b: number, c: number, d: number;
-  if (v.climbing) {
+  // (what he is doing now wins over what the words are about: on the vine it is the climb, in the air falling it is the way down)
+  const m: AheadMove = v.climbing ? 'climb' : !v.grounded && (v.gliding || v.vy > 120) ? 'glide' : move;
+  if (m === 'climb') {
     // up the vine: the stretch above him, and the leap off it either side of his hands
     a = x0 - 70 * z;
     b = head - JUMP_RISE * AHEAD_JUMPS * z;
     c = x1 + 70 * z;
     d = head + 20 * z;
+  } else if (m === 'glide') {
+    // down and forward, to the bottom of the screen (a glide from a high branch falls a screen or more)
+    const mid = (x0 + x1) / 2;
+    a = v.facing > 0 ? mid : mid - len * 1.2;
+    b = head - 30 * z;
+    c = v.facing > 0 ? mid + len * 1.2 : mid;
+    d = v.cssH;
+  } else if (m === 'swing') {
+    // the swing's arc: out ahead, down under the liana's grab and up again
+    const mid = (x0 + x1) / 2;
+    a = v.facing > 0 ? mid : mid - len * 1.2;
+    b = head - rise * z - 12;
+    c = v.facing > 0 ? mid + len * 1.2 : mid;
+    d = feet + len * 0.5;
   } else {
     const mid = (x0 + x1) / 2;
-    const down = !v.grounded && (v.gliding || v.vy > 120) ? len * 0.7 : 34 * z;
+    const down = 34 * z;
     a = v.facing > 0 ? mid : mid - len;
     b = head - rise * z - 12;
     c = v.facing > 0 ? mid + len : mid;
@@ -629,16 +664,29 @@ export function actionRects(v: GuideView, out: Rect[]): Rect[] {
 }
 
 /** everything in-play words may never cover (the law, D10), but the HUD (SafeArea.never): Pokey with room, the way ahead, the spots he acts on next */
-export function lawRects(v: GuideView, out: Rect[], room = 24): Rect[] {
+export function lawRects(v: GuideView, out: Rect[], room = 24, move: AheadMove = 'jump'): Rect[] {
   out.push(pokeyRect(v, room));
   // (the way ahead up to a single jump's reach; the high arc of a double jump above it is softAhead: it gives way first when no spot
   // on the screen is clear of everything)
-  out.push(aheadZone(v, undefined, JUMP_RISE_1));
+  out.push(aheadZone(v, undefined, JUMP_RISE_1, move));
   return actionRects(v, out);
 }
 /** the high arc of the way ahead (a double jump's, above a single jump's reach): the first thing to give way on a cramped screen */
-export function softAhead(v: GuideView, out: Rect[]): Rect[] {
-  out.push(aheadZone(v));
+export function softAhead(v: GuideView, out: Rect[], move: AheadMove = 'jump'): Rect[] {
+  out.push(aheadZone(v, undefined, JUMP_RISE, move));
+  return out;
+}
+/** the pickups on screen (petals, blooms, hearts, finds): words keep off them when another spot is free (the lead's check, 4-2) */
+export function pickupRects(v: GuideView, out: Rect[]): Rect[] {
+  for (let i = 0; i < v.collectibles.length; i++) {
+    const c = v.collectibles[i];
+    if (c.collected || c.hidden) continue;
+    const x = toScreenX(v, c.x);
+    const y = toScreenY(v, c.y);
+    if (x < -40 || x > v.cssW + 40 || y < -40 || y > v.cssH + 40) continue;
+    const r = 26 * v.zoom + 6;
+    out.push({ x0: x - r, y0: y - r, x1: x + r, y1: y + r });
+  }
   return out;
 }
 

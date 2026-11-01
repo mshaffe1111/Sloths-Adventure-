@@ -26,6 +26,8 @@ import {
   landingRects,
   lawRects,
   softAhead,
+  pickupRects,
+  aheadMoveOf,
   perchPoseFor,
   placeBubble,
   popupRects,
@@ -225,6 +227,8 @@ class GuideRun {
   law: Rect[] = [];
   /** the high arc of the way ahead (dotGuidePerch.ts softAhead): gives way first on a cramped screen */
   soft: Rect[] = [];
+  /** the pickups on screen (dotGuidePerch.ts pickupRects): kept clear when another spot is free */
+  pick: Rect[] = [];
   touching = 0;
   coachWas: CoachStep = null;
   goalDone = false;
@@ -691,10 +695,14 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
 
     /** what her bubble must cover least of all: Pokey, and a boss's open weak spot with its NOW! marker */
     const hardNow = (p?: Plan) => {
+      // (the way ahead has the shape of the move the line is about: a glide's cone, a climb, a swing's arc)
+      const mv = aheadMoveOf(run.show?.line);
       run.law.length = 0;
-      lawRects(v, run.law, POKEY_ROOM);
+      lawRects(v, run.law, POKEY_ROOM, mv);
       run.soft.length = 0;
-      softAhead(v, run.soft);
+      softAhead(v, run.soft, mv);
+      run.pick.length = 0;
+      pickupRects(v, run.pick);
       run.hard.length = 0;
       run.hard.push(pokeyRect(v, POKEY_ROOM));
       safeNow();
@@ -754,7 +762,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       const order = p.mode === 'perch' ? (['above', 'left', 'right', 'below'] as const) : hoverOrder(v);
       hardNow(p);
       // (Pokey himself, never under it while anywhere else is free: QA v200 upright)
-      p.bub = placeBubble(spot.x, my, run.bw, run.bh, safe, rects, order, frame ? frame.w / 2 + 6 : 28, run.hard, frame ? frame.h / 2 : 18, pokeyRect(v, POKEY_ROOM), run.law, run.soft);
+      p.bub = placeBubble(spot.x, my, run.bw, run.bh, safe, rects, order, frame ? frame.w / 2 + 6 : 28, run.hard, frame ? frame.h / 2 : 18, pokeyRect(v, POKEY_ROOM), run.law, run.soft, run.pick);
       // (once it is up, it moves and she stays: flying off her perch took it down and put it up again elsewhere, a blink in the reading,
       // 8-2 sideways as he walked up to the rope post)
       if (p.mode === 'perch' && (p.bub.cost ?? 0) > 0 && !moving) {
@@ -1113,7 +1121,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const order: Parameters<typeof placeBubble>[6] = held ? ['below', side, 'above'] : ['above', side, 'below'];
         // (held, the bubble hangs from his feet: measured from his head, every spot under him lies on him)
         const ay = held ? pokeyRect(v, 0).y1 - 10 : p.sy;
-        p.bub = placeBubble(p.sx, ay, run.bw, run.bh, safe, rects, order, 26, run.hard, 26, pokeyRect(v, POKEY_ROOM), run.law, run.soft);
+        p.bub = placeBubble(p.sx, ay, run.bw, run.bh, safe, rects, order, 26, run.hard, 26, pokeyRect(v, POKEY_ROOM), run.law, run.soft, run.pick);
         p.bubHeld = held;
         p.bubAt = now;
       }
@@ -1130,7 +1138,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           run.awayAt = now;
           const far = awayHalf(v, safeNow(), pr);
           hardNow();
-          const nb = placeBubble((far.rect.x0 + far.rect.x1) / 2, (far.rect.y0 + far.rect.y1) / 2, run.bw, run.bh, far, [], ['above', 'below', 'left', 'right'], 0, [pr], 0, pr, run.law, run.soft);
+          const nb = placeBubble((far.rect.x0 + far.rect.x1) / 2, (far.rect.y0 + far.rect.y1) / 2, run.bw, run.bh, far, [], ['above', 'below', 'left', 'right'], 0, [pr], 0, pr, run.law, run.soft, run.pick);
           bx = nb.x;
           by = nb.y;
           if (p.mode === 'perch') {
