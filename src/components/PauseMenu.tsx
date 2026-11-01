@@ -9,6 +9,7 @@ export { COARSE };
 import type { LevelConfig } from '../game/types.ts';
 import type { SkillId } from '../game/skills.ts';
 import { UpdateRow } from './UpdateControls.tsx';
+import { ConfirmDialog } from './nav/Nav.tsx';
 
 interface PauseMenuProps {
   levelConfig: LevelConfig;
@@ -151,46 +152,81 @@ export const Sliders: React.FC = () => {
   );
 };
 
-/** Settings, the pause card: opens when the player taps Settings (the game is paused behind it). */
-export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenSatchel, onOpenMap, onOpenTitle, trophyCount, trophyTotal, skills, onAskHint }) => (
-  <MenuFrame
-    label="Settings"
-    title="Settings"
-    sub={`${levelConfig.secret ? 'Secret stage' : `Stage ${levelConfig.id}`} · ${levelConfig.name}`}
-    subChip={<ModeChip />}
-    notice={<UpdateRow />}
-    go={{ label: 'Resume', onClick: onResume, title: COARSE ? undefined : 'Esc', start: true }}
-    skills={skills}
-    tiles={
-      <>
-        {onAskHint && <HintTile ask={onAskHint} />}
-        <MenuTile icon="restart" name="Restart" line="Start this stage over" onClick={onRestart} title={COARSE ? undefined : 'R'} />
-        <MenuTile icon="book" name="Satchel" line="His finds and his journal" onClick={onOpenSatchel} />
-        <MenuTile icon="map" name="World Map" line="Leave this stage" onClick={onOpenMap} />
-        <MenuTile icon="sloth" name="Start Screen" line="Back to the title" onClick={onOpenTitle} />
-        <HowToTile />
-      </>
-    }
-    trophies={
-      <>
-        <MenuTile icon="trophy" name="Trophies" line={`${trophyCount} of ${trophyTotal} earned`} onClick={onOpenTrophies} />
-        <MenuTile icon="cards" name="Jungle Cards" line="Meet every creature" onClick={onOpenCards} />
-      </>
-    }
-    sound={<SoundSetting isMuted={isMuted} onToggleMute={onToggleMute} keyTitle={COARSE ? undefined : 'M'} sliders={<Sliders />} />}
-    settings={
-      <>
-        <FullscreenSetting />
-        <DifficultySetting />
-        <ControlsSetting />
-        <ShakeSetting />
-        <AssistSetting />
-        {/* Dot's help and what she said */}
-        <DotHelpSetting />
-        <WaysideToggle />
-        <HapticsToggle />
-        <PerfToggle />
-      </>
-    }
-  />
-);
+type Leave = 'restart' | 'map' | 'title';
+const LEAVE: Record<Leave, { title: string; go: string }> = {
+  restart: { title: 'Start over?', go: 'Yes, start over' },
+  map: { title: 'Leave for the map?', go: 'Yes, go to the map' },
+  title: { title: 'Leave for the start?', go: 'Yes, go to the start' },
+};
+
+/**
+ * The pause card (menus-nav, Matt's rule 3): Resume, Restart, World Map and Start Screen always, the last three asking first because
+ * the run so far (checkpoints, what is picked up in it) would be lost. The X, a tap on Resume, Android's Back and Escape all resume.
+ */
+export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenSatchel, onOpenMap, onOpenTitle, trophyCount, trophyTotal, skills, onAskHint }) => {
+  const [ask, setAsk] = React.useState<Leave | null>(null);
+  const doLeave = { restart: onRestart, map: onOpenMap, title: onOpenTitle };
+  return (
+    <>
+      <MenuFrame
+        label="Paused"
+        title="Paused"
+        sub={`${levelConfig.secret ? 'Secret stage' : `Stage ${levelConfig.id}`} · ${levelConfig.name}`}
+        subChip={<ModeChip />}
+        notice={<UpdateRow />}
+        onClose={onResume}
+        go={{ label: 'Resume', onClick: onResume, title: COARSE ? undefined : 'Esc', start: true }}
+        skills={skills}
+        tiles={
+          <>
+            {onAskHint && <HintTile ask={onAskHint} />}
+            <MenuTile icon="restart" name="Restart" line="Start this stage over" onClick={() => setAsk('restart')} title={COARSE ? undefined : 'R'} />
+            <MenuTile icon="map" name="World Map" line="Leave this stage" onClick={() => setAsk('map')} />
+            <MenuTile icon="sloth" name="Start Screen" line="Back to the title" onClick={() => setAsk('title')} />
+            <MenuTile icon="book" name="Satchel" line="Finds, journal, trophies" onClick={onOpenSatchel} />
+            <HowToTile />
+          </>
+        }
+        trophies={
+          <>
+            <MenuTile icon="trophy" name="Trophies" line={`${trophyCount} of ${trophyTotal} earned`} onClick={onOpenTrophies} />
+            <MenuTile icon="cards" name="Jungle Cards" line="Meet every creature" onClick={onOpenCards} />
+          </>
+        }
+        sound={<SoundSetting isMuted={isMuted} onToggleMute={onToggleMute} keyTitle={COARSE ? undefined : 'M'} sliders={<Sliders />} />}
+        settings={
+          <>
+            <FullscreenSetting />
+            <DifficultySetting />
+            <ControlsSetting />
+            <ShakeSetting />
+            <AssistSetting />
+            {/* Dot's help and what she said */}
+            <DotHelpSetting />
+            <WaysideToggle />
+            <HapticsToggle />
+            <PerfToggle />
+          </>
+        }
+      />
+      {ask && (
+        <ConfirmDialog
+          title={LEAVE[ask].title}
+          body={
+            <>
+              Your run in this stage ends here. <b>Your stars, finds and trophies are kept.</b>
+            </>
+          }
+          stay="Keep playing"
+          go={LEAVE[ask].go}
+          onStay={() => setAsk(null)}
+          onGo={() => {
+            const fn = doLeave[ask];
+            setAsk(null);
+            fn();
+          }}
+        />
+      )}
+    </>
+  );
+};

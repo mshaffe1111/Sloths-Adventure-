@@ -15,6 +15,10 @@ import { stageTypeInfo } from './icons/stageTypes.ts';
 import { MEECA_STAGE_ID } from '../game/extraStages.ts';
 import { TRAILS, TRAILS_SIZE } from '../game/trailsData.ts';
 import { trailStamps, type TrailStamp } from './mapTrail.ts';
+import { BackButton, CornerToken, LeafButton, Popup } from './nav/Nav.tsx';
+import { HowToPlay } from './HowToPlay.tsx';
+import { TitleSettings } from './TitleSettings.tsx';
+import './nav/worldMap.css';
 
 const TRAILS_URL = new URL('../assets/ui/trails.webp', import.meta.url).href;
 
@@ -36,6 +40,8 @@ interface WorldMapProps {
   onOpenSatchel?: () => void;
   /** the card has rested on a stage that can be played: its picture sheets can be got ready (stagePreload.ts) */
   onPick?: (level: LevelConfig) => void;
+  isMuted: boolean;
+  onToggleMute: () => void;
 }
 
 const fmtTime = (s: number) => (s > 0 ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '—');
@@ -54,9 +60,14 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   onOpenTrophies,
   onOpenSatchel,
   onPick,
+  isMuted,
+  onToggleMute,
 }) => {
   const [activeWorldId, setActiveWorldId] = useState<number>(selectedWorldId);
   const [saveOpen, setSaveOpen] = useState(false);
+  const [worldsOpen, setWorldsOpen] = useState(false);
+  const [howOpen, setHowOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   // a locked world says why when tapped (a disabled button gives no feedback on a phone)
   const [lockedMsg, setLockedMsg] = useState<string | null>(null);
   useEffect(() => {
@@ -64,10 +75,6 @@ export const WorldMap: React.FC<WorldMapProps> = ({
     const t = window.setTimeout(() => setLockedMsg(null), 2200);
     return () => window.clearTimeout(t);
   }, [lockedMsg]);
-  // the medallion strip scrolls sideways: bring the current world into view when the map opens or the world changes
-  useEffect(() => {
-    document.querySelector('.map-med.on')?.scrollIntoView?.({ inline: 'center', block: 'nearest' });
-  }, [activeWorldId]);
   const curWorld = WORLDS_DATA.find((w) => w.id === activeWorldId) || WORLDS_DATA[0];
   const worldLevels = useMemo(() => levels.filter((l) => l.worldIndex === activeWorldId), [levels, activeWorldId]);
   // a world's first stage is open once the world is: its first in the list (World 5's is Meeca's own, 5-M, before 5-1: required)
@@ -128,7 +135,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
     if (wide) {
       for (let i = 0; i < n; i++) {
         const t = i / (n - 1);
-        pts.push({ x: padX + t * (w - padX * 2), y: h * 0.52 + Math.sin(i * 0.95 + 0.5) * h * 0.2 });
+        pts.push({ x: padX + t * (w - padX * 2), y: h * 0.56 + Math.sin(i * 0.95 + 0.5) * h * 0.17 });
       }
     } else {
       const perRow = Math.ceil(n / 2);
@@ -169,58 +176,68 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   // the next stage to play in this world: it gets the pulse ring (and the boss a glow)
   const nextIdx = worldLevels.findIndex((l) => (l.unlocked || firstOf(l)) && !l.completed);
 
+  const go = (dir: -1 | 1) => {
+    // the arrows step to the next open world, or say why the next one is shut
+    const id = activeWorldId + dir;
+    if (id < 1 || id > WORLDS_DATA.length) return;
+    pickWorld(id);
+  };
+  const pickWorld = (id: number) => {
+    if (!worldUnlocked(id)) {
+      setLockedMsg(`Beat World ${id - 1}'s boss to open World ${id}`);
+      return;
+    }
+    setActiveWorldId(id);
+    onSelectWorld(id);
+  };
+  const cleared = worldLevels.filter((l) => l.completed).length;
+  const worldStars = worldLevels.reduce((a, l) => a + (l.stars || 0), 0);
+
   return (
-    <div className="fixed inset-0 z-40 bg-[#10241a] flex flex-col select-none font-game text-white overflow-hidden">
+    <div className="wm fixed inset-0 z-40 bg-[#10241a] flex flex-col select-none font-game text-white overflow-hidden">
       <div key={activeWorldId} className="absolute inset-0 map-fade">
         <SceneBackdrop world={activeWorldId} />
       </div>
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(8,20,13,.78) 0%, rgba(8,20,13,.12) 24%, rgba(8,20,13,.1) 52%, rgba(8,20,13,.82) 100%)' }} />
+      <div className="absolute inset-0 pointer-events-none wm-shade" />
 
-      {/* header */}
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 px-3 sm:px-6 pt-2.5 sm:pt-4">
-        <button type="button" onClick={onBackToTitle} className="ui-chip ui-chip-btn" aria-label="Back to the start screen">
-          <Icon name="arrow" size={13} rotate={180} />
-          Start
+      {/* the screen's way back, always top-left (nav/Nav.tsx); Settings top-right, as on the title */}
+      <BackButton to="Start Screen" onBack={onBackToTitle} />
+      <div className="wm-corner">
+        <CornerToken icon="gear" label="Settings" onClick={() => setSettingsOpen(true)} />
+      </div>
+
+      {/* the world: its carved name between two big leaf arrows, and how far Pokey has got in it */}
+      <header className="wm-head">
+        <button type="button" className="wm-arrow" onClick={() => go(-1)} disabled={activeWorldId <= 1} aria-label="Previous world">
+          <Icon name="arrow" size={26} rotate={180} />
         </button>
-        <div className="text-center min-w-0 order-3 basis-full sm:order-none sm:basis-auto">
-          <div className="ui-kicker">
-            World {curWorld.id} of 10
-            {/* (a world still waiting on its rebuild: it plays as it is, and says its new look is on the way, newLookSoon.ts; on the kicker's
-                line, where there is room both ways, so the header keeps its shape) */}
+        <button type="button" className="wm-name" onClick={() => setWorldsOpen(true)} aria-label={`World ${curWorld.id}, ${curWorld.name}. Choose a world`}>
+          <span className="wm-kick">
+            World {curWorld.id} of {WORLDS_DATA.length}
             {newLookSoon(curWorld.id) && <span className="map-soon">New look coming soon</span>}
-          </div>
-          {/* (a long name, World 10's, steps its lettering down so it is never cut on a phone) */}
-          <Plaque as="h1" className={`map-title${curWorld.name.length > 18 ? ' long' : ''}`}>
+          </span>
+          <Plaque as="h1" className={`wm-plaque${curWorld.name.length > 18 ? ' long' : ''}`}>
             {curWorld.name}
           </Plaque>
-        </div>
-        <div className="flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
-          {thornHeart && (
-            <span className="ui-chip" title="Thorn Heart: +1 max heart">
-              <Icon name="thornHeart" size={15} />
-              +1
+          <span className="wm-prog">
+            <span className="wm-prog-w">World {curWorld.id} of {WORLDS_DATA.length}</span>
+            <span>
+              <Icon name="check" size={14} /> {cleared} of {worldLevels.length} cleared
             </span>
-          )}
-          {onOpenTrophies && (
-            <button type="button" className="ui-chip ui-chip-btn" onClick={onOpenTrophies} aria-label="Trophy Room">
-              <Icon name="trophy" size={17} />
-            </button>
-          )}
-          {onOpenSatchel && (
-            <button type="button" className="ui-chip ui-chip-btn" onClick={onOpenSatchel} aria-label="Pokey's satchel">
-              <Icon name="book" size={17} />
-            </button>
-          )}
-          <span className="ui-chip" aria-label={`${totalStars} of ${allStars} stars`}>
-            <Icon name="star" size={15} />
-            <span className="tabular-nums">{totalStars}/{allStars}</span>
+            <span>
+              <Icon name="star" size={15} /> {worldStars}/{worldLevels.length * 3}
+            </span>
+            {thornHeart && (
+              <span title="Thorn Heart: +1 max heart">
+                <Icon name="thornHeart" size={15} /> +1
+              </span>
+            )}
           </span>
-          <button type="button" onClick={() => setSaveOpen(true)} className="ui-chip ui-chip-btn">
-            Save / Load
-          </button>
-        </div>
-      </div>
-      <p className="relative z-10 text-center font-sans text-xs text-emerald-50/80 [text-shadow:0_1px_3px_rgba(0,0,0,.7)] px-4 truncate">{curWorld.subtitle}</p>
+        </button>
+        <button type="button" className="wm-arrow" onClick={() => go(1)} disabled={activeWorldId >= WORLDS_DATA.length} aria-label="Next world" data-locked={worldUnlocked(activeWorldId + 1) ? undefined : 'true'}>
+          {worldUnlocked(activeWorldId + 1) || activeWorldId >= WORLDS_DATA.length ? <Icon name="arrow" size={26} /> : <Icon name="lock" size={22} />}
+        </button>
+      </header>
 
       {/* the trail */}
       <div ref={trailRef} className="relative z-10 flex-1 min-h-0">
@@ -233,12 +250,6 @@ export const WorldMap: React.FC<WorldMapProps> = ({
           <g className="map-road">{stamps.filter((t) => worldLevels[t.seg]?.completed).map(drawPiece)}</g>
         </svg>
 
-        {secretFound && activeWorldId === 7 && onPlaySecret && (
-          <button type="button" onClick={onPlaySecret} className="ui-chip ui-chip-btn absolute right-3 top-1 z-20" style={{ borderColor: 'rgba(196,160,255,.7)' }}>
-            <Icon name="leaf" size={15} />
-            Thornbark's Hollow
-          </button>
-        )}
 
         {worldLevels.map((lvl, i) => {
           const p = nodes.pts[i];
@@ -295,84 +306,108 @@ export const WorldMap: React.FC<WorldMapProps> = ({
         })}
       </div>
 
-      {/* footer: world medallions + the card for the picked stage */}
-      <div className="relative z-10 flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-4 px-3 sm:px-6 pb-2.5 sm:pb-4">
-        {lockedMsg && (
-          <div className="fixed inset-x-0 bottom-6 z-50 flex justify-center pointer-events-none">
-            <span className="ui-chip">
-              <Icon name="lock" size={15} />
-              {lockedMsg}
-            </span>
-          </div>
-        )}
-        <div className="map-meds flex-1 min-w-0" role="tablist" aria-label="Worlds">
-          {WORLDS_DATA.map((w) => {
-            const open = worldUnlocked(w.id);
-            const on = w.id === activeWorldId;
-            const cleared = levels.filter((l) => l.worldIndex === w.id && l.completed).length;
-            const mastered = cleared >= 10;
-            return (
-              <button
-                key={w.id}
-                type="button"
-                role="tab"
-                aria-selected={on}
-                aria-disabled={!open}
-                onClick={() => {
-                  if (!open) {
-                    setLockedMsg(`Beat World ${w.id - 1}'s boss to open this world`);
-                    return;
-                  }
-                  setActiveWorldId(w.id);
-                  onSelectWorld(w.id);
-                }}
-                className={`map-med ${on ? 'on' : ''} ${open ? '' : 'locked'} ${mastered ? 'mastered' : ''}`}
-                title={open ? `${w.name} · ${cleared}/10${mastered ? ' · all cleared' : ''}` : 'Clear the previous world to open'}
-              >
-                <WorldThumb world={w.id} size={on ? 52 : 42} className="map-med-pic" />
-                <span className="map-med-n">{open ? w.id : <Icon name="lock" size={11} />}</span>
-                {open && cleared > 0 && <span className="map-med-bar" style={{ ['--p' as string]: `${cleared * 10}%` }} />}
-              </button>
-            );
-          })}
-        </div>
-
+      {/* the foot: the picked stage's card, and the big labelled ways on (the title's leaf tokens) */}
+      <div className="wm-foot">
         {picked && (
-          <div className="map-card">
-            {picked.miniIndex === 10 ? (
-              <Crest world={picked.worldIndex} size={44} locked={!picked.unlocked} className="map-card-crest" />
-            ) : null}
+          <div className="wm-card">
+            {picked.miniIndex === 10 && <Crest world={picked.worldIndex} size={50} locked={!pickedOpen} className="map-card-crest" />}
             <div className="min-w-0 flex-1">
-              <div className="ui-kicker map-kicker">
-                {picked.miniIndex !== 10 && <Icon name={stageTypeInfo(picked.objectiveType).icon} size={16} />}
+              <div className="wm-card-k">
+                {picked.miniIndex !== 10 && <Icon name={stageTypeInfo(picked.objectiveType).icon} size={18} />}
                 <span>
                   Stage {picked.id} &middot; {stageTypeInfo(picked.objectiveType).label}
                 </span>
               </div>
-              <div className="map-card-name">{picked.name}</div>
-              <div className="map-card-desc">{picked.description}</div>
-              <div className="map-card-meta">
-                <span className="map-cstars" role="img" aria-label={`${picked.stars} of 3 stars`}>
-                  {[1, 2, 3].map((n) => (
-                    <Icon key={n} name="star" size={14} className={n <= picked.stars ? 'on' : ''} />
-                  ))}
-                </span>
-                {picked.completed && <span>Best {fmtTime(picked.bestTime)}</span>}
-                {picked.completed && picked.highScore > 0 && <span>{picked.highScore.toLocaleString()} pts</span>}
-              </div>
+              <div className="wm-card-name">{picked.name}</div>
+              {pickedOpen && <div className="wm-card-desc">{picked.description}</div>}
+              {pickedOpen ? (
+                <div className="wm-card-meta">
+                  <span className="map-cstars" role="img" aria-label={`${picked.stars} of 3 stars`}>
+                    {[1, 2, 3].map((n) => (
+                      <Icon key={n} name="star" size={17} className={n <= picked.stars ? 'on' : ''} />
+                    ))}
+                  </span>
+                  {picked.completed && <span>Best {fmtTime(picked.bestTime)}</span>}
+                  {picked.completed && picked.highScore > 0 && <span>{picked.highScore.toLocaleString()} pts</span>}
+                </div>
+              ) : (
+                <div className="wm-card-lock">
+                  <Icon name="lock" size={15} /> Clear the stage before it to open this one
+                </div>
+              )}
             </div>
-            {picked.unlocked || firstOf(picked) ? (
-              <button type="button" className="gx-plank gx-plank-gold map-play" onClick={() => onSelectLevel(picked)} data-start="true">
-                <Icon name="play" size={18} />
-                {picked.completed ? 'REPLAY' : 'PLAY'}
+            {pickedOpen && (
+              <button type="button" className="gx-plank gx-plank-gold wm-play" onClick={() => onSelectLevel(picked)} data-start="true">
+                <Icon name="play" size={22} />
+                {picked.completed ? 'Replay' : 'Play'}
               </button>
-            ) : (
-              <div className="map-locked">Clear the stage before it to open this one</div>
             )}
           </div>
         )}
+        <nav className="wm-leaves" aria-label="More">
+          <LeafButton icon="compass" name="Worlds" onClick={() => setWorldsOpen(true)} />
+          {onOpenSatchel && <LeafButton icon="book" name="Satchel" onClick={onOpenSatchel} />}
+          <LeafButton icon="bulb" name="How to Play" onClick={() => setHowOpen(true)} />
+        </nav>
       </div>
 
+      {lockedMsg && (
+        <div className="wm-toast" role="status">
+          <Icon name="lock" size={17} />
+          {lockedMsg}
+        </div>
+      )}
+
+      {worldsOpen && (
+        <Popup title="Worlds" label="Choose a world" onClose={() => setWorldsOpen(false)} wide kicker={`${totalStars} of ${allStars} stars in all`}>
+          <div className="wm-worlds">
+            {WORLDS_DATA.map((w) => {
+              const open = worldUnlocked(w.id);
+              const done = levels.filter((l) => l.worldIndex === w.id && l.completed).length;
+              const all = levels.filter((l) => l.worldIndex === w.id).length || 10;
+              return (
+                <button
+                  key={w.id}
+                  type="button"
+                  className={`wm-world${w.id === activeWorldId ? ' on' : ''}${open ? '' : ' locked'}`}
+                  aria-current={w.id === activeWorldId ? 'true' : undefined}
+                  onClick={() => {
+                    if (!open) return pickWorld(w.id);
+                    pickWorld(w.id);
+                    setWorldsOpen(false);
+                  }}
+                >
+                  <Crest world={w.id} size={62} locked={!open} className="wm-world-pic" />
+                  <span className="wm-world-t">
+                    <small>World {w.id}</small>
+                    <b>{w.name}</b>
+                    <i>{open ? (done >= all ? 'All cleared!' : `${done} of ${all} cleared`) : `Beat World ${w.id - 1}'s boss`}</i>
+                  </span>
+                  {!open && <Icon name="lock" size={22} />}
+                  {open && done >= all && <Icon name="crown" size={22} />}
+                </button>
+              );
+            })}
+          </div>
+          {secretFound && onPlaySecret && (
+            <button type="button" className="st-btn wm-secret" onClick={onPlaySecret}>
+              <Icon name="leaf" size={20} /> Thornbark's Hollow
+            </button>
+          )}
+        </Popup>
+      )}
+      {howOpen && <HowToPlay onClose={() => setHowOpen(false)} />}
+      {settingsOpen && (
+        <TitleSettings
+          isMuted={isMuted}
+          onToggleMute={onToggleMute}
+          onClose={() => setSettingsOpen(false)}
+          onSaveLoad={() => setSaveOpen(true)}
+          onStartScreen={onBackToTitle}
+          onOpenTrophies={onOpenTrophies}
+          updated={null}
+        />
+      )}
       {saveOpen && <SaveLoadDialog onClose={() => setSaveOpen(false)} onLoaded={onSaveLoaded} />}
     </div>
   );

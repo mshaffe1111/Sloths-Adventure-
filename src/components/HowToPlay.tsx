@@ -1,3 +1,4 @@
+import { CloseX, useBack } from './nav/Nav.tsx';
 import React from 'react';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
@@ -252,18 +253,19 @@ export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
 
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.code === 'Escape') {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!short && view.kind === 'page') setView({ kind: 'chapter', ch: PAGE_BY_ID[view.id].chapter });
-        else onClose();
-      } else if (!short && view.kind === 'page' && (e.code === 'ArrowRight' || e.code === 'ArrowLeft')) {
+      if (!short && view.kind === 'page' && (e.code === 'ArrowRight' || e.code === 'ArrowLeft')) {
         e.preventDefault();
         step(e.code === 'ArrowRight' ? 1 : -1);
       }
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
+  });
+
+  // Back (Android, Escape): a page goes back to its chapter first, then the book closes, like its X and a tap outside (nav/backStack.ts)
+  useBack(() => {
+    if (!short && view.kind === 'page') setView({ kind: 'chapter', ch: PAGE_BY_ID[view.id].chapter });
+    else onClose();
   });
 
   const total = PAGES.length;
@@ -312,9 +314,7 @@ export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
             </div>
           )}
           <span className="jr-mode">For your {MODE_LABEL[mode]}</span>
-          <button type="button" className="ui-x" onClick={onClose} aria-label="Close">
-            <Icon name="cross" size={14} />
-          </button>
+          <CloseX onClose={onClose} className="jr-x" />
         </div>
 
         {short ? (

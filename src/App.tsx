@@ -1322,6 +1322,8 @@ export default function App() {
           onSelectLevel={(lvl) => startLevel(lvl)}
           onPick={(lvl) => void preloadStage(lvl, canvasRef.current, inPlay)}
           onBackToTitle={() => setScreen('title')}
+          isMuted={isMuted}
+          onToggleMute={handleToggleMute}
           secretFound={secretFound}
           thornHeart={thornHeart}
           onPlaySecret={() => startLevel(THORNBARK_LEVEL)}
