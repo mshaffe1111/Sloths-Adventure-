@@ -52,7 +52,7 @@ import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
 import { ASSIST, DOUBLE_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
-import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
+import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
@@ -410,6 +410,8 @@ export class GameEngine {
   private ropeCooldown = 0;
   private ropeGrace = 0;
   private ropeId = -1;
+  /** where he last stood on the ground (updateRope: a required rope jumped for from its own ledge is caught falling) */
+  private ropeFrom: { x: number; y: number } | null = null;
   /** his weight on a rope, for the drawing: the rope gives under his hands, easing in as he grabs and out as he lets go (ropeArt.ts) */
   private ropeLoad: RopeLoad = { id: -1, x: 0, amt: 0 };
   private enemies: Enemy[];
@@ -2898,7 +2900,9 @@ export class GameEngine {
         continue;
       }
 
-      const dist = distance2D(p.x, p.y - 20, c.x, c.y);
+      // (hanging from a rope he reaches from his middle, not his feet: a bloom just under the rope is at his head and arms, and from
+      // his feet, 86 px under the rope, it was out of reach on every rope of 8-2: w8-rope2)
+      const dist = distance2D(p.x, p.y - (p.hanging ? HANG_PICK : 20), c.x, c.y);
       // swinging, he cannot steer to a flower the way he can running, so the reach is wider (the control test: flowers along the
       // vines were the hardest thing to line up, 2026-10-23); and in World 5 an open orchid's cup gives up its petals to a hop that lands
       // anywhere in it (w5Play.ts inCup)
@@ -4714,6 +4718,8 @@ export class GameEngine {
   private updateRope(dt: number): boolean {
     const p = this.player;
     this.ropeCooldown = Math.max(0, this.ropeCooldown - dt);
+    // (where he last stood: a rope jumped for from its own ledge is caught falling, below)
+    if (p.grounded) this.ropeFrom = { x: p.x, y: p.y };
     if (!this.ropes.length || !this.skills.has('shimmy')) {
       if (p.hanging) p.hanging = false;
       return false;
@@ -4725,20 +4731,25 @@ export class GameEngine {
       p.hanging = false;
       if (this.ropeCooldown > 0 || p.grounded || p.climbing || p.isVineSwinging || this.isGameOver || this.kit?.holding) return false;
       const handY = p.y - HAND_REACH;
+      const from = this.ropeFrom;
       for (const r of this.ropes) {
         // (from beside a post, over the ledge it stands on, counts: a jump straight up next to the post catches the rope's end, and he
         // is slid onto it. Play-testers jumped up beside the post and missed, by a body's width)
         if (p.x < r.x0 - ROPE_GRAB || p.x > r.x1 + ROPE_GRAB) continue;
         const ry = ropeYAt(r, p.x);
-        // his hands are on the rope: rising through it, or falling past it with Up held
-        if (handY > ry - 12 && handY < ry + 30 && (p.vy < 40 || inp.up || this.upIntent > 0)) {
+        // his hands are on the rope: rising through it, or falling past it with Up held. A rope over a gap (`required`) that he jumped
+        // for from its own ledge is caught falling too: a flick a little early tops out short of the rope's end, and on the way down his
+        // hands passed back through the rope he was drawn reaching for (8-2's first-timer, w8-rope2: every heart fall at its ropes). Only
+        // from its own ledge: a fall from a shelf above, in a climb (1-4, 2-6, 3-4, 4-1), lands on the shelf below as before
+        const ownJump = r.required && !!from && (Math.abs(from.y - r.g0) < 12 || Math.abs(from.y - r.g1) < 12) && from.x > r.x0 - ROPE_FROM && from.x < r.x1 + ROPE_FROM;
+        if (handY > ry - 12 && handY < ry + 30 && (p.vy < 40 || inp.up || this.upIntent > 0 || ownJump)) {
           rope = r;
           break;
         }
       }
       if (!rope) return false;
-      // grab
-      p.x = Math.max(rope.x0, Math.min(rope.x1, p.x));
+      // grab (caught past the rope's end, over its post's ledge, he slides onto it over a few frames below: set there at once, it was a
+      // 30-40 px jump in one frame, w8-rope2's polish check)
       this.ropeId = rope.id;
       p.hanging = true;
       p.climbing = false;
@@ -4772,7 +4783,9 @@ export class GameEngine {
     if (dir !== 0) this.statShimmySec += dt;
     p.walkCycle += Math.abs(p.vx) * dt * 0.08;
     const atEnd = p.x <= rope.x0 || p.x >= rope.x1;
-    p.x = Math.max(rope.x0, Math.min(rope.x1, p.x));
+    // (onto the rope from past its end: at ROPE_SLIDE px/s, never a jump)
+    const lo = rope.x0, hi = rope.x1, step = ROPE_SLIDE * dt;
+    p.x = p.x < lo ? Math.min(lo, p.x + step) : p.x > hi ? Math.max(hi, p.x - step) : p.x;
     p.y = ropeYAt(rope, p.x) + HANG_DROP;
 
     // let go
