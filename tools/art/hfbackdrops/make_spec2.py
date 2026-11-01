@@ -68,10 +68,13 @@ def starts(out, rows):
 
 
 def args(spec, sha):
-    raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{sha}/tools/art/w6to10/img2imggpu.py'
+    # (the job fetches the script and the spec from the repo at a pushed commit, so nothing has to be written to the bucket first)
+    gh = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{sha}/tools/art/'
+    raw = gh + 'w6to10/img2imggpu.py'
     tag = json.loads(Path(spec).read_text())['tag']
+    fetch = f'mkdir -p /out/hfbackdrops2 && curl -sSfL {gh}hfbackdrops/{Path(spec).name} -o /out/hfbackdrops2/{Path(spec).name} && '
     print(json.dumps({'image': 'ostris/aitoolkit:latest', 'flavor': 'rtx-pro-6000', 'timeout': '1h', 'detach': True,
-                      'command': ['bash', '-lc', f'curl -sSfL {raw} -o /tmp/g.py && SPEC=hfbackdrops2/{Path(spec).name} '
+                      'command': ['bash', '-lc', fetch + f'curl -sSfL {raw} -o /tmp/g.py && SPEC=hfbackdrops2/{Path(spec).name} '
                                   f'SUB=hfbackdrops2/{tag} TAG={tag} python /tmp/g.py'],
                       'secrets': {'HF_TOKEN': '$HF_TOKEN'}, 'volumes': ['hf://buckets/mshaffe111/w5-xfer:/out:rw'], 'name': tag}))
 
