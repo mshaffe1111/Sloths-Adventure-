@@ -34,20 +34,33 @@ if dist.exists():
 subprocess.run(['npx', 'vite', 'build', '-c', 'tools/testlink/vite.testlink.config.ts'], cwd=REPO, check=True)
 # the music samples (260-odd small mp3s) go into one pack file, served to the game's fetch() by a few lines in index.html, so the
 # artifact stays under its 511-file limit (test link only: the real game and its offline cache are untouched)
-mp3s = sorted((dist / 'assets').glob('*.mp3'))
-if mp3s:
-    blob, index = bytearray(), {}
-    for p in mp3s:
+# (2026-11-01: the music .webm files too, one pack per type: the new art pushed the build past the artifact's 511 files)
+index = {}
+for ext, mime in (('mp3', 'audio/mpeg'), ('webm', 'audio/webm')):
+    files = sorted((dist / 'assets').glob(f'*.{ext}'))
+    if not files:
+        continue
+    # (packs of at most 15 MB: the artifact takes no single file over 16 MB)
+    def flush(blob, part):
+        pack = f'audio-pack-{hashlib.md5(blob).hexdigest()[:8]}.{ext}'  # (a joined file of one type keeps a type the artifact accepts)
+        (dist / 'assets' / pack).write_bytes(blob)
+        for name, (off, ln) in part.items():
+            index[name] = [pack, off, ln, mime]
+    blob, part = bytearray(), {}
+    for p in files:
         data = p.read_bytes()
-        index[p.name] = [len(blob), len(data)]
+        if blob and len(blob) + len(data) > 15_000_000:
+            flush(blob, part)
+            blob, part = bytearray(), {}
+        part[p.name] = [len(blob), len(data)]
         blob += data
         p.unlink()
-    pack = f'audio-pack-{hashlib.md5(blob).hexdigest()[:8]}.mp3'  # (joined mp3s are still an mp3: a type the artifact accepts)
-    (dist / 'assets' / pack).write_bytes(blob)
-    shim = ('<script>(function(){var I=' + json.dumps(index, separators=(',', ':')) + ',P=null,F=window.fetch.bind(window);'
+    flush(blob, part)
+if index:
+    shim = ('<script>(function(){var I=' + json.dumps(index, separators=(',', ':')) + ',P={},F=window.fetch.bind(window);'
             'window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"",n=s.split("?")[0].split("/").pop(),e=I[n];'
-            'if(!e)return F(u,o);P=P||F("./assets/' + pack + '").then(function(r){return r.arrayBuffer()});'
-            'return P.then(function(b){return new Response(b.slice(e[0],e[0]+e[1]),{status:200,headers:{"content-type":"audio/mpeg"}})})};})();</script>')
+            'if(!e)return F(u,o);P[e[0]]=P[e[0]]||F("./assets/"+e[0]).then(function(r){return r.arrayBuffer()});'
+            'return P[e[0]].then(function(b){return new Response(b.slice(e[1],e[1]+e[2]),{status:200,headers:{"content-type":e[3]}})})};})();</script>')
     html = (dist / 'index.html').read_text()
     (dist / 'index.html').write_text(html.replace('<head>', '<head>\n    ' + shim, 1))
 with open(dist / 'index.html', 'a') as f:
