@@ -157,7 +157,7 @@ export const LINES = {
     "Didn't fall once. Slow and careful, Meeca would say. She'd be right.",
   ],
   fewFalls: [
-    "Fell {n}. Got back up {n}. I'm keeping score, and I'm ahead.",
+    "Fell {n}. Got back up {n}. It's a tie, and I'll take it.",
     'Fell off {n}. The ground was nice about it.',
     "Slipped {n}. Dot pretended not to see. She's bad at pretending.",
     "Went down {n}. Didn't stay down. That's the trick, mostly.",
