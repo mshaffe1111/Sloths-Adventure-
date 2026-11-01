@@ -45,3 +45,7 @@ running total ~$7.30 of $35 at 16:45Z
 hfbd2-X0 6ae76cfd0e0338d1bb7d864f  hfbd2-X1 6ae76d010e0338d1bb7d8653: W10 storm + gale middle/near (img2img), W1 sunrise/kapok crown tops (24 takes)
 hfbd2-F3 6ae76d050e0338d1bb7d8655: far + sky for w10storm, w10gale x 4 seeds (stillsgpu.py)
 hfbd2-S0 6ae76d0a0e0338d1bb7d8659  hfbd2-S1 6ae76d0c0e0338d1bb7d865b: upright skies for 10 far sets (tallstart starts, s48/s58, striphdgpu.py)
+  X0/X1 ~7 min each, F3 ~7 min, S0/S1 ~12-14 min each, hd-X ~6 min (~$2.40 for the 6).
+GPU time total today ~$9.70 of the $35 cap (estimate: ~212 min of rtx-pro-6000 at ~$2.75/h incl. model loads).
+Skies (S0/S1): only w5twi2 s58 passed; the other 9 keep a straight line or a flat smoke slab where the sky meets the strip
+  (the tallstart starts carry it; more img2img strength did not remove it). Held, as before: they keep the cover fit.
