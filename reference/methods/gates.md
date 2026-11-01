@@ -14,8 +14,8 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 | 3 | `npx vite build` | build errors, any asset over 4 MiB | about 10 s |
 | 4 | `node tools/perf/artcheck.mjs` | an image over 4096 px on a side | seconds |
 | 5 | `node tools/perf/knowncheck.mjs` | a known-defect list that GREW (clipknown, playerText.known, limits.json, artUse.allow) compared with main | seconds |
-| 6 | `node tools/perf/clipcheck.mjs` | menu text that overflows or is cut off, tap targets under 44 px, tap targets inside the phone's insets, on every menu screen and pop-up, 412x915 and 915x412, fresh/old/finished saves | 270-290 s here; CI to be measured |
-| 7 | `node tools/perf/drawcheck.mjs` | per-frame canvas work over `limits.json` (gradients, shadows, blends, readbacks, full-screen layers, shrunk sheets) | about 6 min / own CI job |
+| 6 | `node tools/perf/clipcheck.mjs` | menu text that overflows or is cut off, tap targets under 44 px, tap targets inside the phone's insets, on every menu screen and pop-up, 412x915 and 915x412, fresh/old/finished saves | 270-290 s here / 179 s in CI (gates job about 4.5 min with setup) |
+| 7 | `node tools/perf/drawcheck.mjs` | per-frame canvas work over `limits.json` (gradients, shadows, blends, readbacks, full-screen layers, shrunk sheets) | about 6 min / own CI job, about 6.5 min with setup |
 
 In CI (`.github/workflows/deploy.yml`): the test shards and `gates.yml` (artcheck, knowncheck and clipcheck on one runner; drawcheck on its own runner) run side by side. `publish` needs all of them, so a failing gate blocks the live site.
 
