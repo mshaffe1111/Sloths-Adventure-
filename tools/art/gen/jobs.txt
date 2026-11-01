@@ -103,3 +103,7 @@ medals-0 6adfa3143fb22a235dd20425
 medals2-0 6adfab1a41e90535df758ca6
 satchel-icon 6ae73fd90e0338d1bb7d7886 (via MCP hf_jobs, 9 stills)
 satchel-icon2 6ae74071c78863f9c62fa252 (MCP hf_jobs, bucket w5-xfer/satchel/, 9 stills ~6 min GPU ~$0.30; first try cancelled at upload: the job token can't write the model repo; total spend about $0.60). Picked a37 -> src/assets/ui/satchel.webp (tools/art/satchelcut.py)
+── icons-painted (2026-11-01, Matt: "Same for all icons in the game. Polish."; cap $25). Times UTC. Satchel recipe (spec-satchel.json),
+   tools/art/icons/make_spec.py, job tools/art/w6to10/stillsgpu.py fetched from GitHub, bucket w5-xfer under icons/<tag>/stills/ ──
+icA0 6ae77a97c78863f9c62fbcd2  icA1 6ae77a9b0e0338d1bb7d8b3b  icA2 6ae77a9e0e0338d1bb7d8b3d  rtx-pro-6000, started 17:45Z at bdb496bd:
+  group A (start screen): map, story, howto, sound, gear x 2 prompts x 4 seeds, play x 4 seeds = 44 takes
