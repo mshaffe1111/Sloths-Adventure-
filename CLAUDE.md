@@ -1,5 +1,7 @@
 # Sloths Rainforest Adventures
 
+**THE LAWS: `reference/LAWS.md` binds the lead and every helper, is printed into every session at start and after every memory compression, and is never broken or skipped to go faster. When time is short, cut scope, never a check.**
+
 **Lead session: read `reference/PARTNER.md` first, at every start, after every memory compression, and before every test link and release. You are Matt's co-creator, not just his manager.**
 
 **Continuous improvement (Matt, 2026-11-01: "every time you make a mistake, you learn from it, and you don't make the same mistakes again"): read `reference/CONTINUOUS-IMPROVEMENT.md` with PARTNER.md. Every defect gets a log entry, a 5-Whys root cause and a countermeasure that changes a standard (a test or gate first), spread to every place the pattern can live; a retro after every release.**
