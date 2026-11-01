@@ -30,7 +30,7 @@ export const WHATS_NEW: Release[] = [
       'Every hidden find now has its own hint.',
       'Painted icons on the start screen.',
       'The ropes are back in 8-2, and they are fairer.',
-      'In 1-2, miss a high branch and a mushroom bounces you back up.',
+      'In 1-2, slip off a high bough and a mushroom bounces you back up.',
       'Dot’s tips stay out of your way, and older phones run smoother.',
       'This What’s New page!',
     ],
