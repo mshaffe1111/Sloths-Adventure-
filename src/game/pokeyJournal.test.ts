@@ -4,7 +4,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { BANNED_FILLER, BEATS, LINES, POKEY_JOURNAL, RECORD_MAX, STAGE_LINES, worldEntries, type EntryNames } from './pokeyJournal.ts';
+import { BANNED_FILLER, BEATS, LINES, POKEY_JOURNAL, QUIET_STAGES, RECORD_MAX, STAGE_LINES, plainOf, worldEntries, type EntryNames } from './pokeyJournal.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { withExtraStages } from './extraStages.ts';
 import { THORNBARK_LEVEL } from './secret.ts';
@@ -121,4 +121,22 @@ test('a record gives the most notable lines: a clean run, a find, a medal come b
   const old = page.find((x) => x.id === '1-2')!;
   assert.deepEqual(old.lines, [STAGE_LINES['1-2']]);
   assert.equal(old.plain, true);
+});
+
+test("at a real moment the joke doesn't come: a quiet stage gets one plain note, its line's first sentence", () => {
+  assert.equal(plainOf('Fell three times. Every one of them was educational.'), 'Fell three times.');
+  assert.equal(plainOf('Found “A note”, right where I\'d have missed it.'), 'Found “A note”, right where I\'d have missed it.');
+  const recs = mixed();
+  for (let w = 1; w <= RELEASED; w++) {
+    for (const e of worldEntries(w, cleared, recs, names)) {
+      if (!QUIET_STAGES.has(e.id)) continue;
+      assert.ok(e.notes.length <= 1, `${e.id}: ${e.notes.length} notes`);
+      for (const n of e.notes) assert.equal(n, plainOf(n), `${e.id}: ${n}`);
+    }
+  }
+  for (const id of QUIET_STAGES) assert.ok(stages.some((l) => l.id === id), id);
+});
+
+test('no flower line opens on a bare number (times and small counts read as words)', () => {
+  for (const [k, v] of Object.entries(LINES)) for (const t of v) if (!['manyFalls', 'freed', 'foes'].includes(k)) assert.doesNotMatch(t, /^\{(f|ft)\}/, `${k}: ${t}`);
 });

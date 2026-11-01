@@ -182,7 +182,7 @@ export const LINES = {
     "All done in {t}. Don't tell anyone. They'll expect it again.",
     "Took {t}. For me, that's practically a blur.",
     'Through in {t}. Meeca always said I could hurry if it mattered. It mattered.',
-    'Just {t}. I think the place was as surprised as I was.',
+    'Done in just {t}. I think the place was as surprised as I was.',
   ],
   long: [
     'Took {t}. Some of that was looking at things.',
@@ -198,24 +198,24 @@ export const LINES = {
     'Picked up all {ft} {p}. The satchel smells lovely.',
     'Got every one of the {p}, all {ft}. Somebody had to.',
     'All {ft} {p}, the high ones too. I looked up. Twice.',
-    '{ft} {p} out of {ft}. I counted slowly, to be sure.',
+    'All {p} accounted for, {ft} of {ft}. I counted slowly, to be sure.',
     'All {ft} {p}. Meeca would have found one more. She always does.',
   ],
   mostFlowers: [
-    '{f} of {ft} {p}. The rest can keep a while.',
+    'Came away with {f} of {ft} {p}. The rest can keep a while.',
     'Picked {f} {p}. Left a few for the bees.',
-    "{f} {p} of {ft}. The ones I missed were very well hidden, I'm told.",
-    '{f} out of {ft} {p}. Close. Close is good.',
-    'Got {f} of the {ft} {p}. Not all. Most is a fine word.',
-    "{f} {p} of {ft}. I'll pick up the others on the way back.",
+    "Picked up {f} {p} of {ft}. The ones I missed were very well hidden, I'm told.",
+    'Got {f} out of {ft} {p}. Close. Close is good.',
+    'Most of the {p}, {f} of {ft}. Not all. Most is a fine word.',
+    "Left a few {p} behind. I'll pick them up on the way back.",
   ],
   fewFlowers: [
     "Only {f} {p}. The rest are still there. That's fine.",
-    '{f} {p}. I was busy not falling.',
+    'A few {p}, {f} in all. I was busy not falling.',
     'Picked {f} {p}. Dot says that\'s "a start".',
     'Just {f} {p}. I had my eyes on other things. Mostly the ground.',
-    '{f} {p} of {ft}. I had other things on my mind.',
-    '{f} of {ft} {p}. Not my best. Not my worst. Somewhere in between, like me.',
+    'Picked up {f} {p} of {ft}. I had other things on my mind.',
+    'Got {f} of {ft} {p}. Not my best. Not my worst. Somewhere in between, like me.',
   ],
   foes: [
     '{n} {c} in the way. Not anymore.',
@@ -264,6 +264,15 @@ export type LineKind = keyof typeof LINES;
 /** the record lines an entry may carry, most notable first: the first two that apply (and have a line left on the page) are used */
 export const RECORD_ORDER: readonly LineKind[] = ['clean', 'manyFalls', 'find', 'medal', 'allFlowers', 'freed', 'fewFalls', 'quick', 'long', 'foes', 'mostFlowers', 'fewFlowers', 'replayed'];
 export const RECORD_MAX = 2;
+
+/**
+ * The real moments (VOICE.md: "When something real happens, the joke doesn't come"): Meeca running out of petals, the General's hand
+ * on the ledge, Dot's flight through the thorns, Meeca's own night, the things in the ruins wrapped by big hands. Their entries carry
+ * one plain note, the first sentence of its line, with no joke after it.
+ */
+export const QUIET_STAGES: ReadonlySet<string> = new Set(['1-5', '4-1', '4-D', '5-M', '7-7']);
+/** a line's first sentence: "Fell three times." of "Fell three times. Every one of them was educational." */
+export const plainOf = (line: string) => line.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? line;
 
 /** the stage the story is known for in each world: the opener (1), halfway (5), the guardian's door (9) and the guardian (10) */
 export const BEATS: Record<number, Partial<Record<number, string>>> = {
@@ -379,14 +388,16 @@ export function stageEntry(stage: EntryStage, rec: PlayRecord | null, names: Ent
   const f: FirstClear | undefined = rec?.first;
   if (rec && f) {
     const dot = dotPresent(stage.worldIndex, stage.miniIndex);
+    const quiet = QUIET_STAGES.has(id);
     let n = 0;
     for (const c of candidates(stage, rec, f, names)) {
-      if (n >= RECORD_MAX) break;
+      if (n >= (quiet ? 1 : RECORD_MAX)) break;
       const list = (LINES[c.kind] as readonly string[]).filter((t) => (dot || !/\bDot\b/.test(t)) && !used.has(t));
       if (!list.length) continue;
       const t = list[(seedOf(id) + c.kind.length * 7) % list.length];
       used.add(t);
-      notes.push(fill(t, c.v));
+      const line = fill(t, c.v);
+      notes.push(quiet ? plainOf(line) : line);
       n++;
     }
   }
