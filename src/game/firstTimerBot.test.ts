@@ -12,9 +12,10 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FirstTimerRun, firstTimer, FT_ADULT, FT_KID, type FirstTimer } from '../../tools/inspect/firsttimer.ts';
+import { FirstTimerRun, firstTimer, freshPhone, FT_ADULT, FT_KID, type FirstTimer } from '../../tools/inspect/firsttimer.ts';
 import type { Pad } from './realPlay.ts';
 import type { Platform } from './types.ts';
+import { GEN2_STAGES, KID_RUNS_59 } from './gen2/game.ts';
 
 const Y = 580;
 const ground = (id: number, x: number, width: number): Platform => ({ id, x, y: Y, width, height: 90, type: 'solid' }) as Platform;
@@ -112,11 +113,76 @@ test('a climb he keeps falling back down: after the third fall from the same spo
   }
 });
 
-test("put past a puzzle room he goes on from there: 6-3's seesaw and 1-4's lift reach the shrine (the kid, every roll)", () => {
-  for (const id of ['6-3', '1-4']) {
+test("put past a puzzle room he goes on from there, not back into it: 6-3's seesaw reaches the shrine (the kid, every roll)", () => {
+  // (the route runs through the room's far wall there: placed at the nearest point, he walked back into the room until the cap)
+  for (const seed of [1, 2, 3]) {
+    const r = firstTimer('6-3', seed, FT_KID);
+    assert.equal(r.end, 'shrine', `6-3 seed ${seed}: ${r.end} at ${r.time} s, x ${r.x}`);
+  }
+});
+
+test("a room starts again only when he has fallen back down into it, never while he stands on its top (1-4's lift)", () => {
+  // (1-4's lift puts him on its own top, inside its box, and the way on crosses back over it: standing there 12 s later started the
+  // room again, every 12 s until the cap)
+  type Room = { box: { x0: number; x1: number; y0: number; y1: number }; beyond?: { x: number; y: number } };
+  for (const who of [FT_KID, FT_ADULT]) {
     for (const seed of [1, 2, 3]) {
-      const r = firstTimer(id, seed, FT_KID);
-      assert.equal(r.end, 'shrine', `${id} seed ${seed}: ${r.end} at ${r.time} s, x ${r.x}`);
+      freshPhone(who.setting);
+      const r = new FirstTimerRun('1-4', seed, who, { cap: 200 });
+      const rooms = ((r.e as unknown as { kit?: { rooms: Room[] } }).kit?.rooms ?? []).filter((q) => q.beyond);
+      assert.ok(rooms.length > 0, '1-4 has its lift rooms');
+      const bad: string[] = [];
+      const seen = new Set<number>();
+      let starts = 0;
+      // (judged where he stands as the room starts: a lift can carry him up during the moment he waits there)
+      const host = r as unknown as { puzzleWait: { room: number } | null };
+      const frame = r.sim.frame.bind(r.sim);
+      let was: unknown = null;
+      r.sim.frame = (pad?: Pad) => {
+        frame(pad);
+        const w = host.puzzleWait;
+        if (w && w !== was) {
+          starts++;
+          const room = ((r.e as unknown as { kit: { rooms: Room[] } }).kit.rooms)[w.room];
+          // (a room's first start is judged by nothing here: only its starting again)
+          const again = seen.has(w.room);
+          seen.add(w.room);
+          if (again && room.beyond && r.sim.p.y < room.beyond.y + 40) bad.push(`at ${Math.round(r.sim.t)} s from y ${Math.round(r.sim.p.y)} (its top ${room.beyond.y})`);
+        }
+        was = w;
+      };
+      r.play();
+      assert.ok(starts >= 1, `${who.name} seed ${seed}: never worked a room`);
+      assert.deepEqual(bad, [], `${who.name} seed ${seed}: the room started again while he stood on it`);
     }
+  }
+});
+
+test('a rescue from no further on than the last one puts him further on, never back on the spot he just failed', () => {
+  const route = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: Y }));
+  const r = new FirstTimerRun('1-1', 1, FT_ADULT, { route, cap: 1 });
+  r.sim.bare([ground(1, 0, 8000)]);
+  const at: number[] = [];
+  for (let k = 0; k < 3; k++) {
+    // (back where he was, no further on: as after a fall)
+    r.sim.stand(300, Y);
+    r.prog.relocate(r.sim.p);
+    (r as unknown as { rescue(): boolean }).rescue();
+    at.push(Math.round(r.sim.p.x));
+  }
+  assert.ok(at[1] > at[0] && at[2] > at[1], `put at x ${at.join(', ')}`);
+});
+
+test("5-9's Easy goal rests on the kid's runs: re-measured, they are still the ones recorded (gen2/game.ts KID_RUNS_59)", () => {
+  // (as they were measured: Easy's goal at the 65% floor, so the shrine does not stop him before he has beaten what he will beat)
+  const entry = GEN2_STAGES['5-9'] as { easyGoal?: number };
+  const kept = entry.easyGoal;
+  entry.easyGoal = undefined;
+  try {
+    const runs: number[] = [];
+    for (const seed of [1, 2, 3]) for (const trial of [0, 1]) runs.push(firstTimer('5-9', seed, FT_KID, { trial }).goal?.got ?? -1);
+    assert.deepEqual(runs, [...KID_RUNS_59], 'the kid bot or 5-9 changed: re-measure, and set the goal from the new runs (goals.ts kidMedian)');
+  } finally {
+    entry.easyGoal = kept;
   }
 });

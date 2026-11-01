@@ -2,7 +2,7 @@
  * The first-timer re-baseline (bot-fix, 2026-11-01): every non-boss stage of the worlds asked, kid (Easy) and adult (Normal), seeds asked,
  * one JSON line a run: how it ended, the goal, lives, hits, rescues, game overs.
  *   npx tsx tools/inspect/botBaseline.ts --worlds 1-3 --seeds 1-3 [--stages 1-3,1-5] [--who kid,adult] [--detail] > out.jsonl
- * (--detail adds every stuck spot, with what was in front of him, and where each life was lost)
+ * (--detail adds every stuck spot, with what was in front of him, where each life was lost, and the run's flags against STAGE-RULES §1b)
  */
 import { firstTimer, FT_ADULT, FT_KID } from './firsttimer.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
@@ -18,7 +18,7 @@ const ids = generateAllLevels().filter((c) => worlds.includes(c.worldIndex) && c
 for (const id of ids) for (const w of who) for (const seed of seeds) {
   try {
     const r = firstTimer(id, seed, w);
-    console.log(JSON.stringify({ id, who: r.who, seed, end: r.end, time: r.time, progress: r.progress, goal: r.goal, lives: r.harms.filter((h) => h.kind === 'life').length, hits: r.harms.filter((h) => h.kind === 'hit').length, livesPerMin: r.perMin.lives, rescues: r.rescues, gameOvers: r.gameOvers, stops: r.stops.n, tries: r.tries.length, noRoute: r.noRoute, causes: r.harms.filter((h) => h.kind === 'life').map((h) => h.cause), ms: r.ms, x: r.x, ...(detail ? { stuck: r.stuck.map((q) => ({ x: q.x, y: q.y, t: q.t, what: q.what, puzzle: q.puzzle, rescued: q.rescued })), lifeAt: r.harms.filter((h) => h.kind === 'life').map((h) => [h.x, h.y, h.cause]) } : {}) }));
+    console.log(JSON.stringify({ id, who: r.who, seed, end: r.end, time: r.time, progress: r.progress, goal: r.goal, lives: r.harms.filter((h) => h.kind === 'life').length, hits: r.harms.filter((h) => h.kind === 'hit').length, livesPerMin: r.perMin.lives, rescues: r.rescues, gameOvers: r.gameOvers, stops: r.stops.n, tries: r.tries.length, noRoute: r.noRoute, causes: r.harms.filter((h) => h.kind === 'life').map((h) => h.cause), ms: r.ms, x: r.x, ...(detail ? { stuck: r.stuck.map((q) => ({ x: q.x, y: q.y, t: q.t, what: q.what, puzzle: q.puzzle, rescued: q.rescued })), lifeAt: r.harms.filter((h) => h.kind === 'life').map((h) => [h.x, h.y, h.cause]), flags: r.flags.filter((g) => !g.kind.startsWith('dot-')) } : {}) }));
   } catch (err) {
     console.log(JSON.stringify({ id, who: w.name, seed, error: String(err).slice(0, 300) }));
   }
