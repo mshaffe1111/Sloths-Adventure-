@@ -9,7 +9,7 @@ import { backdropStem } from './paintedBackdrops.ts';
 
 test('backdrops: every world alternates three or four painted sets, its early light first and its late light last, and no two neighbouring stages share a set (hf-backdrops2)', () => {
   const want: Record<string, string | null> = {
-    '1-1': 'w1sunrise', '1-2': 'w1rain', '1-4': null, '1-9': 'w1kapok', '1-10': null,
+    '1-1': 'w1sunrise', '1-2': 'w1rain', '1-4': null, '1-6': 'w1b', '1-9': 'w1kapok', '1-10': null,
     '2-1': 'w2mist', '2-2': null, '2-4': 'w2rapids', '2-9': 'w2evening',
     '3-1': null, '3-2': 'w3crystal', '3-4': 'w3sinkhole', '3-9': 'w3cavern',
     '4-1': 'w4terraces', '4-2': 'w4storm', '4-4': null, '4-9': 'w4mist',
@@ -32,7 +32,7 @@ test('backdrops: every world alternates three or four painted sets, its early li
 });
 
 test('backdrops: each new far strip is there at the far layers\' height (1302, native resolution: X-16; seamless: VI-4), well under the size limit; and the sinkhole is Matt\'s redo', () => {
-  assert.deepEqual([...FAR_ONLY].sort(), ['w10dusk', 'w10gale', 'w10storm', 'w1kapok', 'w1rain', 'w1sunrise', 'w2evening', 'w2mist', 'w2rapids', 'w3cavern', 'w3crystal', 'w3sinkhole', 'w4mist', 'w4storm', 'w4terraces', 'w6dawn', 'w6dusk', 'w6moon', 'w7court', 'w7dawn', 'w7dusk', 'w8dawn', 'w8night', 'w8sunset', 'w9ash', 'w9dawn', 'w9night']);
+  assert.deepEqual([...FAR_ONLY].sort(), ['w10dusk', 'w10gale', 'w10storm', 'w1b', 'w1kapok', 'w1rain', 'w1sunrise', 'w2evening', 'w2mist', 'w2rapids', 'w3cavern', 'w3crystal', 'w3sinkhole', 'w4mist', 'w4storm', 'w4terraces', 'w6dawn', 'w6dusk', 'w6moon', 'w7court', 'w7dawn', 'w7dusk', 'w8dawn', 'w8night', 'w8sunset', 'w9ash', 'w9dawn', 'w9night']);
   for (const stem of FAR_ONLY) {
     const f = new URL(`../assets/backdrops/${stem}-far.webp`, import.meta.url);
     const buf = fs.readFileSync(f);
