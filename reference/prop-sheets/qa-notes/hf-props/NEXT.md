@@ -27,20 +27,21 @@
 
 ## Spend
 
-About $5.3 of the $14 cap (log: `tools/art/hfprops/jobs.txt`):
+About $5.7 of the $14 cap (log: `tools/art/hfprops/jobs.txt`):
 - probes: $0.45
 - round 1: $3.2
 - round 2: $1.65
+- round 3: $0.4, none kept: a white sticker outline on every take
 
-## Left, and the plan for the remaining ~$8.7 tomorrow
+## Left, and the plan for the remaining ~$8.3 tomorrow
 
 1. **Round 3, ~$2:** more bank pieces for the worlds that run out first in a long stage.
    - W6 has only 9 bank pieces kept and W7 has 12. Aim for 15+ each.
    - Same `make_single.py --set2` flow with a `P3` list.
-   - Prompt fix that worked: "no water, no puddle, no scenery". Round 2 still came back with puddles: crop more, or say "isolated sticker".
+   - Prompt fix that worked: "no water, no puddle, no scenery". Round 2 still came back with puddles: crop more. Never say "sticker": round 3 came back as white-rimmed stickers, and the word is already out of `make_single.py`. The P3 list is ready: `make_single.py r3b <commit> 4,6,7 5,17 --set3`.
 2. **Remakes, ~$1:** remake the pieces thrown for a painted sloth or a scene that wouldn't key: cave snail, goat kid, lichen stones, salamander, kingfisher (W6).
 3. **Hanging pieces, ~$1:** W4 lost its two big hanging pieces (they read as floating rocks). Paint ivy curtains and moss beards for W4 and W7.
 4. **Small fixes, ~$0:**
    - A cutter pass that takes the key colour from the full picture before a crop box, so a box crop never keys against scenery.
    - 5-6's short banks: let the dressing use 140-unit banks in W5 if the stills read well.
-5. **Remaining ~$4.5:** hold it, or give it to the lead for cutscenes or backdrops (Matt's other uses).
+5. **Remaining ~$4:** hold it, or give it to the lead for cutscenes or backdrops (Matt's other uses).

@@ -27,3 +27,8 @@ r2b   6ae666e7c78863f9c62f5143  22:08Z  round 2, W5-7 (48 takes)
      sloth face, a lantern string), oar and river pebble (odd), the cave snail, goat kid, lichen stones (painted inside a scene that
      would not key), salamander. Kept 38 more.
 SPEND: probes w6p+t6+t6a ~$0.45, b1-b7 ~$3.2, r2a+r2b ~$1.65 = ~$5.3 of the $14 cap.
+r3    6ae67edb0e0338d1bb7d4ba2  23:50Z  round 3: W4 2 hanging, W6 6 bank, W7 6 bank x seeds 5,17 (28 takes), spec at 89ae308d
+     RESULT r3 (done 00:00Z, ~9 min, ~$0.4): every take has a white sticker outline (the word "sticker" in the prompt) and the W4 moss
+     beard has a sloth face: NONE KEPT. Lesson: never say "sticker"; keep "one single game prop ... no water, no puddle, no scenery".
+     Round 3 is re-run tomorrow without that word (NEXT.md).
+SPEND TOTAL: ~$5.7 of the $14 cap.

@@ -36,7 +36,7 @@ def prompt(world, desc, hang):
                 f"style, same ink line, same painted texture, same light from the upper left: {desc}, {where}. Seen exactly from the "
                 f"side, each prop whole with space all round, on one flat plain pure {key} background, nothing else, no cast shadow, "
                 f"no ground, no text, no {key.split()[0]} on the props.")
-    return (f"slothadv style, one single isolated game prop sticker for a side-scrolling platform game: {desc}, {where}, for {spec['look']}. Hand-painted "
+    return (f"slothadv style, one single game prop for a side-scrolling platform game: {desc}, {where}, for {spec['look']}. Hand-painted "
             f"storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the "
             f"whole object fully in the picture with space all round, on one flat plain pure {key} background, nothing else, no cast "
             f"shadow, no ground, no water, no puddle, no scenery, no text.")
