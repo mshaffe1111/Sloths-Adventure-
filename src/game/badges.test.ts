@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  BADGES, BADGE_BY_ID, REWARDS, TIER_POINTS, TOTAL_POINTS, WORLD_NAMES, award, emptyStore, evaluate, pointsOf, recordStage, rewardsUnlocked,
+  BADGES, BADGE_BY_ID, REWARDS, RELEASED_FINDS, SHOWN_BADGES, TIER_POINTS, journeyStages, TOTAL_POINTS, WORLD_NAMES, award, emptyStore, evaluate, pointsOf, recordStage, rewardsUnlocked,
   type EvalContext, type LevelRecord, type StageStats,
 } from './badges.ts';
 import { parseBadgeStore } from './badgeStore.ts';
@@ -174,7 +174,9 @@ test('a perfect save earns every record-based medal; world medals follow their w
   const all = levels(() => 3);
   const got = evaluate({ store: emptyStore(), levels: all, gateFound: true, thornHeart: true, finds: allFinds });
   const derived = ['first_steps', 'cleared_10', 'cleared_50', 'cleared_all', 'stars_300', 'perfect_100', 'guardians_10', 'finds_all', 'thorn_finder', 'thorn_heart', 'journeys_end',
-    ...WORLD_NAMES.flatMap((_, i) => [`world_${i + 1}`, `world_finds_${i + 1}`])];
+    ...WORLD_NAMES.flatMap((_, i) => [`world_${i + 1}`, `world_finds_${i + 1}`])]
+    // (the medals that wait for a world that isn't out yet are hidden and count only the worlds that are out: released.ts)
+    .filter((id) => SHOWN_BADGES.some((b) => b.id === id));
   for (const id of derived) assert.ok(got.includes(id), `${id} should come from a perfect save`);
   assert.ok(!got.includes('jungle_hero'), 'finishing on Normal is only known once it is played (or was earned before)');
   const w1 = levels((w) => (w === 1 ? 3 : 1)).map((l) => (l.worldIndex === 1 ? l : { ...l, completed: false }));
@@ -190,7 +192,10 @@ test('the extra stages (4-D, 5-M) are part of "every stage", the secret Hollow i
   const c = { store: emptyStore(), levels: lv, gateFound: false, thornHeart: false };
   assert.ok(!has(c, 'cleared_all') && !has(c, 'world_5'), 'Meeca\'s stage is still to clear');
   assert.ok(has(c, 'world_4'));
-  assert.deepEqual(BADGE_BY_ID.cleared_all.progress!(c), { have: 101, need: 102 });
+  // (every stage of the worlds that are out: released.ts; the secret Hollow never counts)
+  const n = journeyStages(lv).length;
+  assert.ok(!journeyStages(lv).some((x) => x.id === 'S-1'));
+  assert.deepEqual(BADGE_BY_ID.cleared_all.progress!(c), { have: n - 1, need: n });
   lv[101] = { ...lv[101], completed: true, stars: 3 };
   assert.ok(has(c, 'cleared_all') && has(c, 'world_5'));
 });
@@ -228,7 +233,7 @@ test('platinum needs all three: Normal finished, 3 stars everywhere, every find'
   const fin = withCounters({ finished: 1, finishedNormal: 1 });
   assert.ok(has({ store: fin, levels: all, gateFound: false, thornHeart: false, finds: allFinds }, 'rainforest_legend'));
   assert.ok(!has({ store: fin, levels: all, gateFound: false, thornHeart: false, finds: allFinds.slice(1) }, 'rainforest_legend'));
-  assert.ok(!has({ store: fin, levels: levels((w, m) => (w === 9 && m === 9 ? 2 : 3)), gateFound: false, thornHeart: false, finds: allFinds }, 'rainforest_legend'));
+  assert.ok(!has({ store: fin, levels: levels((w, m) => (w === 1 && m === 9 ? 2 : 3)), gateFound: false, thornHeart: false, finds: allFinds }, 'rainforest_legend'));
   assert.ok(!has({ store: withCounters({ finished: 1 }), levels: all, gateFound: false, thornHeart: false, finds: allFinds }, 'rainforest_legend'), 'Easy is not enough');
   // a Jungle Hero earned before this set (any difficulty then) still counts
   const old = { ...emptyStore(), earned: { jungle_hero: 5 } };
@@ -256,7 +261,7 @@ test('coats unlock by points: 250, 750, 1,500 and 2,500', () => {
 test('progress is reported for count-based medals', () => {
   const s = recordStage(emptyStore(), stage({ kills: { snake: 62 } }));
   assert.deepEqual(BADGE_BY_ID.predators_300.progress?.({ store: s, ...base }), { have: 62, need: 300 });
-  assert.deepEqual(BADGE_BY_ID.finds_all.progress?.({ store: s, ...base, finds: allFinds.slice(0, 4) }), { have: 4, need: FINDS.length });
+  assert.deepEqual(BADGE_BY_ID.finds_all.progress?.({ store: s, ...base, finds: allFinds.slice(0, 4) }), { have: 4, need: RELEASED_FINDS.length });
 });
 
 test('the stored record is validated', () => {

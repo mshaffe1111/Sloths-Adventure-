@@ -1,4 +1,5 @@
 import { starsPossible } from './mapStars.ts';
+import { isReleasedWorld } from '../game/released.ts';
 import { newLookSoon } from '../game/newLookSoon.ts';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { testUnlockOn } from '../game/testUnlock.ts';
@@ -79,8 +80,10 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   const worldLevels = useMemo(() => levels.filter((l) => l.worldIndex === activeWorldId), [levels, activeWorldId]);
   // a world's first stage is open once the world is: its first in the list (World 5's is Meeca's own, 5-M, before 5-1: required)
   const firstOf = (l: LevelConfig) => l.id === worldLevels[0]?.id;
-  const totalStars = levels.reduce((a, l) => a + (l.stars || 0), 0);
-  const allStars = starsPossible(levels);
+  // the worlds that are out only (released.ts): the "of all" total never counts a world that isn't out
+  const shownLevels = useMemo(() => levels.filter((l) => isReleasedWorld(l.worldIndex)), [levels]);
+  const totalStars = shownLevels.reduce((a, l) => a + (l.stars || 0), 0);
+  const allStars = starsPossible(shownLevels);
 
   const worldUnlocked = (id: number) => id === 1 || testUnlockOn() || levels.some((l) => l.worldIndex === id - 1 && l.miniIndex === 10 && l.completed);
 

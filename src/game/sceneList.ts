@@ -14,6 +14,9 @@ import { AFTER_BOSS, MEMORIES, type MemoryId } from './storyChapters.ts';
 import { endTagPanels, finalePanels } from './storyFinale.ts';
 import { GUARDIANS, WORLD_NAMES } from './badges.ts';
 import type { StoryPanel } from './story.ts';
+import { isReleasedWorld } from './released.ts';
+/** the world whose stage 7-7 hides the Thorn Gate (secret.ts SECRET_GATE_LEVEL) */
+const SECRET_WORLD = 7;
 
 export type SceneKind = 'prologue' | 'opener' | 'mid' | 'gate' | 'boss' | 'beaten' | 'memory' | 'tower' | 'turn' | 'ending' | 'secret';
 
@@ -49,6 +52,11 @@ export interface SceneContext {
 const TOWER: ReadonlySet<MemoryId> = new Set(['map', 'tally', 'door']);
 
 /** the whole list, in the order the story plays it */
+/** the scenes of the worlds that are out (released.ts): the ending waits for World 10; the Thorn Gate is in World 7 (secret.ts) */
+export function releasedScenes(): SceneEntry[] {
+  return sceneList().filter((e) => isReleasedWorld(e.kind === 'secret' ? SECRET_WORLD : e.world));
+}
+
 export function sceneList(): SceneEntry[] {
   const out: SceneEntry[] = [{ id: 'prologue', world: 0, kind: 'prologue', title: 'The Prologue', hint: '' }];
   for (let w = 1; w <= 10; w++) {

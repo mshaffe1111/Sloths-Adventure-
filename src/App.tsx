@@ -39,7 +39,7 @@ import { FindReader } from './components/FindReader.tsx';
 import { FIND_BY_ID, allFound, loadFinds, saveFinds, withFind } from './game/finds.ts';
 import { THORNBARK_LEVEL, gateFound, hasThornHeart, markGateFound, markThornHeart, maxHearts } from './game/secret.ts';
 import { warmHeroAtlas } from './game/heroSprite.ts';
-import { BADGES, award, evaluate, type BadgeDef, type BadgeStore, type StageStats, recordStage } from './game/badges.ts';
+import { BADGES, SHOWN_BADGES, award, shownOnly, evaluate, type BadgeDef, type BadgeStore, type StageStats, recordStage } from './game/badges.ts';
 import { anyCakeEaten } from './game/w5Kit.ts';
 import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type CosmeticChoice } from './game/badgeStore.ts';
 import { Satchel, type SatchelTab } from './components/Satchel.tsx';
@@ -376,7 +376,7 @@ export default function App() {
   const failsRef = useRef<Record<string, number>>({});
   const [, bumpFails] = useState(0);
   const badgeCount = React.useMemo(
-    () => evaluate({ store: badgeStore, levels: allLevels, gateFound: secretFound, thornHeart, finds: foundIds }).length,
+    () => shownOnly(evaluate({ store: badgeStore, levels: allLevels, gateFound: secretFound, thornHeart, finds: foundIds })).length,
     [badgeStore, allLevels, secretFound, thornHeart, foundIds],
   );
   useEffect(() => {
@@ -1174,7 +1174,7 @@ export default function App() {
           onOpenTrophies={() => openSatchel('title', 'trophies')}
           onOpenSatchel={() => openSatchel('title', 'finds')}
           badgeCount={badgeCount}
-          trophyTotal={BADGES.length}
+          trophyTotal={SHOWN_BADGES.length}
           skills={skills}
           onOpenCards={() => openSatchel('title', 'creatures')}
           onViewStory={() => {
@@ -1515,7 +1515,7 @@ export default function App() {
           nextId={activeLevel.secret ? null : nextStage?.id ?? null}
           isMuted={isMuted}
           trophyCount={badgeCount}
-          trophyTotal={BADGES.length}
+          trophyTotal={SHOWN_BADGES.length}
           skills={skills}
           onAskHint={activeLevel.id === MEECA_STAGE_ID ? () => engineRef.current?.meecaHint() ?? null : undefined}
           onToggleMute={handleToggleMute}

@@ -13,6 +13,7 @@
  */
 import { FINDS, allFound } from './finds.ts';
 import { cardMet, ROAD_IDS, roadCardsIn } from './journalMet.ts';
+import { RELEASED_WORLDS, isReleasedStage, releasedOnly } from './released.ts';
 
 export type Tier = 'bronze' | 'silver' | 'gold' | 'platinum';
 export const TIERS: Tier[] = ['platinum', 'gold', 'silver', 'bronze'];
@@ -169,6 +170,8 @@ export interface BadgeDef {
   icon: string;
   /** a world medal: its number shows on the medal */
   world?: number;
+  /** the last world it needs (finishing the game, all ten guardians, World 9's own medal): hidden until that world is out (released.ts) */
+  needsWorld?: number;
   /** earned right now? */
   test: (c: EvalContext) => boolean;
   /** progress toward it, in the units it is counted in (`unit`: "min" or "h" for time) */
@@ -194,7 +197,7 @@ export const GUARDIANS = [
 /** the extra stages that are part of the journey (Dot's netting flight, Meeca's stage); the secret Hollow is not */
 const EXTRA_IDS = new Set(['4-D', '5-M']);
 /** the stages every medal about "every stage" counts: the hundred numbered ones and the extra stages */
-export const journeyStages = (l: LevelRecord[]) => l.filter((x) => (x.miniIndex >= 1 && x.miniIndex <= 10) || EXTRA_IDS.has(x.id));
+export const journeyStages = (l: LevelRecord[]) => l.filter((x) => ((x.miniIndex >= 1 && x.miniIndex <= 10) || EXTRA_IDS.has(x.id)) && isReleasedStage(x.id));
 const journeyCount = (l: LevelRecord[]) => Math.max(1, journeyStages(l).length);
 const totalKills = (s: BadgeStore) => Object.values(s.kills).reduce((a, b) => a + b, 0);
 const totalStars = (l: LevelRecord[]) => journeyStages(l).reduce((a, x) => a + (x.stars || 0), 0);
@@ -205,7 +208,9 @@ const bossDone = (l: LevelRecord[], w: number) => l.some((x) => x.worldIndex ===
 const guardiansBeaten = (l: LevelRecord[]) => GUARDIANS.filter((_, i) => bossDone(l, i + 1)).length;
 const worldStages = (l: LevelRecord[], w: number) => journeyStages(l).filter((x) => x.worldIndex === w);
 const worldCleared = (l: LevelRecord[], w: number) => worldStages(l, w).length > 0 && worldStages(l, w).every((x) => x.completed);
-const foundCount = (f: string[] = []) => FINDS.filter((x) => f.includes(x.id)).length;
+/** Meeca's notes, albums and keepsakes in the worlds that are out (released.ts) */
+export const RELEASED_FINDS = releasedOnly(FINDS);
+const foundCount = (f: string[] = []) => RELEASED_FINDS.filter((x) => f.includes(x.id)).length;
 const worldFinds = (w: number) => FINDS.filter((x) => x.world === w);
 const worldFound = (f: string[] = [], w: number) => worldFinds(w).every((x) => f.includes(x.id));
 /** a world whose ten numbered stages were all cleared with Dot's help on Quiet */
@@ -328,8 +333,8 @@ export const BADGES: BadgeDef[] = [
   ...tiered('finds', 'Keepsake Hunter', 'locket', 'key', [
     ['bronze', 3, "Find 3 of Meeca's notes, albums and keepsakes"],
     ['silver', 15, "Find 15 of Meeca's notes, albums and keepsakes"],
-    ['gold', 0, "Find all 30 of Meeca's notes, albums and keepsakes"],
-  ], (c) => foundCount(c.finds), { all: () => FINDS.length }),
+    ['gold', 0, `Find all ${RELEASED_FINDS.length} of Meeca's notes, albums and keepsakes`],
+  ], (c) => foundCount(c.finds), { all: () => RELEASED_FINDS.length }),
   ...tiered('freed', 'Friends Freed', 'cage', 'cage', [
     ['bronze', 10, 'Free 10 friends from cages, nests and cocoons'],
     ['silver', 75, 'Free 75 friends from cages, nests and cocoons'],
@@ -434,6 +439,23 @@ export const BADGES: BadgeDef[] = [
 ];
 
 export const BADGE_BY_ID: Record<string, BadgeDef> = Object.fromEntries(BADGES.map((b) => [b.id, b]));
+
+/**
+ * The medals that wait for a world that isn't out yet (released.ts), by the last world each needs: finishing the game (10-10), all ten
+ * guardians, 300 stars and 3 stars on 100 stages (only World 10 brings that many stages), and each world's own two medals.
+ * released.test.ts checks every medal left showing can really be earned with the worlds that are out.
+ */
+const NEEDS_WORLD: Record<string, number> = {
+  rainforest_legend: 10, journeys_end: 10, jungle_hero: 10, guardians_10: 10, stars_300: 10, perfect_100: 10,
+};
+for (const b of BADGES) b.needsWorld = NEEDS_WORLD[b.id] ?? b.world;
+/** the medals a player can see and earn today: none that waits for a world that isn't out */
+export const SHOWN_BADGES: BadgeDef[] = BADGES.filter((b) => (b.needsWorld ?? 0) <= RELEASED_WORLDS);
+/** what the shown medals add up to (TOTAL_POINTS once every world is out) */
+export const SHOWN_POINTS = SHOWN_BADGES.reduce((n, b) => n + TIER_POINTS[b.tier], 0);
+const SHOWN_IDS = new Set(SHOWN_BADGES.map((b) => b.id));
+/** of these medal ids, the ones that show today */
+export const shownOnly = (ids: Iterable<string>): string[] => [...ids].filter((id) => SHOWN_IDS.has(id));
 
 /** the points a list of medal ids is worth (ids of medals no longer in the set count nothing) */
 export const pointsOf = (ids: Iterable<string>): number => {

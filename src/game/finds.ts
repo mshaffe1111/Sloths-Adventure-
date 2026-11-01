@@ -398,3 +398,51 @@ export function saveFinds(found: string[]) {
     /* storage full or blocked: the find still shows for this session */
   }
 }
+
+/**
+ * Dot's hints on the locked cards, one per find in the worlds that are out (lead, 2026-11-01: every card said the same "Crouch beside a
+ * fern"). Each names its stage and says only what is true on every layout: a fixed landmark where the stage always puts the find there,
+ * otherwise just the stage (most finds land in a different spot each play). Checked against the stage code and 8-40 built layouts
+ * per stage (2026-11-01). Under 12 words, warm, and never the answer. A world's hints are added here when it ships.
+ */
+export const DOT_HINTS: Record<string, string> = {
+  w1_note: 'Bounce the mushroom on the petal stairs. Leaves hide a shelf.',
+  w1_keepsake: 'Climb the lone tree in Where She Walked. Check its branch.',
+  w1_book: 'On The Long Branch, check by the first knot. Early!',
+  w1_notch: 'Up the Kapok, somewhere on a ledge. Keep your eyes open.',
+  w1_snail: 'In Branch Snakes he stays on the ground. Snails hate heights.',
+  w2_note: 'Petals for the Crown: past the second flag, by the water.',
+  w2_keepsake: 'Somewhere along the bank in River Snappers. Watch your toes!',
+  w2_book: 'Look along the banks in Before the Water Rises. Hurry!',
+  w2_snail: 'Stuck in the Reeds? So is a certain slow friend.',
+  w3_note: 'Glowworm Path: past the third flag, before the watching eyes.',
+  w3_keepsake: 'Sleeping Vines: after a log, just before the bell room.',
+  w3_book: 'Between the thorn-vine swings, past the third flag. Rest there.',
+  w3_snail: 'Footprints in a Circle? Some of those prints are very slow.',
+  w4_note: 'First Glide. Look down while you float. Pink bells!',
+  w4_keepsake: 'Wait in the cave behind the first falls. Check the back.',
+  w4_book: 'Nests on the Cliff hide more than eggs. Peek everywhere.',
+  w4_pocket: 'Above the Mist. I dropped it flying, it could be anywhere!',
+  w4_snail: "Early in The Aerie. He can't have got far.",
+  w5_note: "A mossy stump, right after the soft chairs. Don't sit!",
+  w5_keepsake: 'Nearly at the shrine, between two blossom trees. Slow down.',
+  w5_book: 'Up the Bloom Trees. Try the high branches first.',
+  w5_pocket: 'Where She Ran, somewhere on the ground. My pin! Look low.',
+  w5_snail: "The Queen's Garden. He's not here for the tea.",
+  w6_note: "Somewhere in Flat Water there's a pink bell. Keep looking!",
+  w6_keepsake: 'The Spear. Crouch by every fern, even the boring ones.',
+  w6_book: 'Stilt Climb: the wide rest shelf, far from its flag.',
+  w6_pocket: "Lights in the Roots. My feather's down there. Don't laugh.",
+  w6_snail: "Root to Root, he's taking his time. Check the start too.",
+  w7_note: 'Brown Vines: look along the bottom before you start climbing.',
+  w7_keepsake: 'Past the Stone Sentries, a fern is keeping a secret.',
+  w7_book: 'The Upper Temple. Climb high, an album likes a view.',
+  w7_pocket: 'Falling Floors. My ribbon fell too. Find it for me?',
+  w7_snail: 'Ten Chairs, and not one of them is for him.',
+  w8_note: 'Among the Night Blooms, one flower is a pink bell.',
+  w8_keepsake: 'Next Branch. Crouch by the ferns. Then the next one.',
+  w8_book: 'Night Hunters. Not near the start, so keep going.',
+  w8_pocket: 'Glide by Moonlight. My map! Land and look around.',
+  w8_snail: "Long Swings. He doesn't swing. He's somewhere you can stand.",
+};
+for (const f of ALL_FINDS) if (DOT_HINTS[f.id]) f.hint = DOT_HINTS[f.id];

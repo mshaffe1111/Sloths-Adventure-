@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { BADGES, REWARDS, TIER_NAME, TIER_POINTS, TOTAL_POINTS, evaluate, pointsOf, rewardsUnlocked, type BadgeDef, type EvalContext } from '../../game/badges.ts';
+import { REWARDS, SHOWN_BADGES, SHOWN_POINTS, TIER_NAME, TIER_POINTS, evaluate, pointsOf, rewardsUnlocked, shownOnly, type BadgeDef, type EvalContext } from '../../game/badges.ts';
 import type { CosmeticChoice } from '../../game/badgeStore.ts';
 import type { Coat } from '../../game/heroTint.ts';
 import { BadgeMedal } from '../BadgeMedal.tsx';
@@ -48,21 +48,24 @@ export const MedalCloseup: React.FC<{ b: BadgeDef; got: boolean; ctx: EvalContex
 export const TrophiesTab: React.FC<{ ctx: EvalContext; choice: CosmeticChoice; onChoice: (c: CosmeticChoice) => void }> = ({ ctx, choice, onChoice }) => {
   const [open, setOpen] = useState<string | null>(null);
   const earnedIds = useMemo(() => new Set(evaluate(ctx)), [ctx]);
-  const points = pointsOf(earnedIds);
-  const unlockedIds = new Set(rewardsUnlocked(points).map((r) => r.id));
-  const plat = BADGES.find((b) => b.tier === 'platinum')!;
-  const platGot = earnedIds.has(plat.id);
+  // the medals of the worlds that are out only (badges.ts SHOWN_BADGES, released.ts); a coat once unlocked stays, whatever earned it
+  const shownEarned = shownOnly(earnedIds);
+  const points = pointsOf(shownEarned);
+  const unlockedIds = new Set(rewardsUnlocked(pointsOf(earnedIds)).map((r) => r.id));
+  const plat = SHOWN_BADGES.find((b) => b.tier === 'platinum');
+  const platGot = !!plat && earnedIds.has(plat.id);
   const wear = (coat: Coat) => onChoice({ ...choice, coat: choice.coat === coat ? 'none' : coat });
-  const openB = open ? BADGES.find((b) => b.id === open) : undefined;
+  const openB = open ? SHOWN_BADGES.find((b) => b.id === open) : undefined;
 
   return (
     <>
       <div className="tr-sub tr-jsub">
-        <b className="tr-points">{fmt(points)}</b> of {fmt(TOTAL_POINTS)} points · {earnedIds.size} of {BADGES.length} medals · tap a medal to see it
+        <b className="tr-points">{fmt(points)}</b> of {fmt(SHOWN_POINTS)} points · {shownEarned.length} of {SHOWN_BADGES.length} medals · tap a medal to see it
       </div>
-      <div className="tr-bar" role="progressbar" aria-valuemin={0} aria-valuemax={TOTAL_POINTS} aria-valuenow={points} aria-label="Medal points">
-        <i style={{ width: `${(points / TOTAL_POINTS) * 100}%` }} />
+      <div className="tr-bar" role="progressbar" aria-valuemin={0} aria-valuemax={SHOWN_POINTS} aria-valuenow={points} aria-label="Medal points">
+        <i style={{ width: `${(points / SHOWN_POINTS) * 100}%` }} />
       </div>
+      {plat && (
       <button type="button" className={`tr-plat st-platbtn ${platGot ? 'got' : ''}`} onClick={() => setOpen(plat.id)}>
         <BadgeMedal badge={plat} earned={platGot} size={96} />
         <div className="tr-plat-t">
@@ -78,6 +81,7 @@ export const TrophiesTab: React.FC<{ ctx: EvalContext; choice: CosmeticChoice; o
           </ul>
         </div>
       </button>
+      )}
 
       <div className="tr-sec">Rewards for Pokey</div>
       <div className="tr-rewards">
@@ -105,7 +109,7 @@ export const TrophiesTab: React.FC<{ ctx: EvalContext; choice: CosmeticChoice; o
       </div>
 
       {(['gold', 'silver', 'bronze'] as const).map((tier) => {
-        const list = BADGES.filter((b) => b.tier === tier);
+        const list = SHOWN_BADGES.filter((b) => b.tier === tier);
         const got = list.filter((b) => earnedIds.has(b.id)).length;
         return (
           <React.Fragment key={tier}>
