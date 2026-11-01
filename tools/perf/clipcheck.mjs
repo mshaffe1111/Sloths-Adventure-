@@ -6,6 +6,7 @@
  *   CLIPCHECK_URL=http://127.0.0.1:4301 node tools/perf/clipcheck.mjs   (use a server that is already running)
  *   CLIPCHECK_ONLY=journal node tools/perf/clipcheck.mjs                 (only judge screens whose name contains "journal")
  *   CLIPCHECK_WALKS=fresh:up,done:side node tools/perf/clipcheck.mjs     (only these walks)
+ *   CLIPCHECK_OUT=<dir> node tools/perf/clipcheck.mjs                    (results there instead of a temp folder)
  *
  * It builds the game into a temp folder and serves it with vite preview on a free port, then walks the menus at 412x915 (upright) and 915x412 (sideways) on three
  * seeded saves, six walks side by side:
@@ -44,8 +45,9 @@ const require = createRequire(import.meta.url);
 // (playwright is installed globally in the container: require() finds it through NODE_PATH, an ESM import does not)
 const { chromium } = require('playwright');
 const KNOWN = JSON.parse(fs.readFileSync(path.join(here, 'clipknown.json'), 'utf8'));
-const out = fs.mkdtempSync(path.join(os.tmpdir(), 'clipcheck-'));
-fs.mkdirSync(path.join(out, 'shots'));
+// (CLIPCHECK_OUT=<dir>: write the results there, e.g. for CI to keep; else a fresh temp folder)
+const out = process.env.CLIPCHECK_OUT ? path.resolve(process.env.CLIPCHECK_OUT) : fs.mkdtempSync(path.join(os.tmpdir(), 'clipcheck-'));
+fs.mkdirSync(path.join(out, 'shots'), { recursive: true });
 const ONLY = process.env.CLIPCHECK_ONLY || '';
 const MIN_TAP = 44;
 const SIZES = [

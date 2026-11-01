@@ -20,6 +20,7 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const LISTS = [
   { file: 'tools/perf/clipknown.json', ids: (j) => j.known.map((k) => (k.kind === 'small' || k.kind === 'inset' ? `${k.kind}|${k.sel}` : `${k.kind}|${k.sel}|${k.text.replace(/\d+/g, '#').slice(0, 40)}`)) },
   { file: 'src/game/playerText.known.json', ids: (j) => j.known.map((k) => k.key) },
+  { file: 'tools/perf/limits.json', ids: (j) => [...(j.art?.knownOver4096 ?? []).map((f) => `art>4096|${f}`), ...(j.blends?.allowlist ?? []).map((a) => `blend|${a.site}|${a.mode}`)] },
   { file: 'src/game/artUse.allow.json', ids: (j) => (Array.isArray(j) ? j : Object.keys(j)).map((x) => (typeof x === 'string' ? x : x.id ?? JSON.stringify(x))) },
 ];
 
