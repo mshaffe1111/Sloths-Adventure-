@@ -492,7 +492,7 @@ const stair = (p: string, after: string, n: number, rise: number[]): { pieces: S
   }
   return { pieces: out, last: prev, total };
 };
-// (the bough at a stair's foot, 110-160 px under its top, and a knot past it: a running jump off the top carries him about 330 px, and
+// (8-2's stairs (fungus-blooms, fungus-tall; 8-5's fungus-hunter and fungus-glide keep their own): the bough at a stair's foot, 110-160 px under its top, and a knot past it: a running jump off the top carries him about 330 px, and
 // whatever is past his landing is a step up, never the deep gap to the next section. With the foot at 180-280 px and nothing past it,
 // the jump carried a Normal first-timer over the foot into that gap (5 lives at one spot); with the foot widened to 400-440, he landed
 // with 100 px to go and his next flick fell short into it: w8-rope2)
@@ -538,9 +538,9 @@ const fungusHunter = section({
   difficulty: 5,
   weight: 2,
   uses: [W8_THEME.fungusSteps],
-  pieces: [bank('a', [250, 280]), ...fs3.pieces, stepTop('hi', fs3.last, -36, [200, 230]), down('b', 'hi', fs3.total + 36, FUNGUS_FOOT), ...footKnot('b')],
-  last: 'fc',
-  sockets: [petals('fk', 'fk', 0.5, 1), foe('foe', 'a', [0.35, 0.45], ['tayra', 'jaguar'], 5, { phases: LIVE }), petals('s2', 's2', 0.5, 1, 0), petals('hi', 'hi', 0.5, 2, 90), petals('b', 'b', 0.5, 1)],
+  pieces: [bank('a', [250, 280]), ...fs3.pieces, stepTop('hi', fs3.last, -36, [200, 230]), down('b', 'hi', fs3.total + 36, [180, 210])],
+  last: 'b',
+  sockets: [foe('foe', 'a', [0.35, 0.45], ['tayra', 'jaguar'], 5, { phases: LIVE }), petals('s2', 's2', 0.5, 1, 0), petals('hi', 'hi', 0.5, 2, 90), petals('b', 'b', 0.5, 1)],
   mirrorable: true,
 });
 const fs4 = stair('s', 'a', 3, [38, 44, 40]);
