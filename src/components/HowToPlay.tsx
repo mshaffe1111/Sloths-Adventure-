@@ -314,7 +314,7 @@ export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
             </div>
           )}
           <span className="jr-mode">For your {MODE_LABEL[mode]}</span>
-          <CloseX onClose={onClose} className="jr-x" />
+          <CloseX onClose={onClose} className="nv-inline" />
         </div>
 
         {short ? (

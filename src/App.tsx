@@ -60,7 +60,7 @@ import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
 import { keepScreenOn, nativeApp } from './game/appShell.ts';
-import { LeaveDialog } from './components/LeaveDialog.tsx';
+import { ConfirmDialog } from './components/nav/Nav.tsx';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
@@ -526,7 +526,7 @@ export default function App() {
         setScreen('world_map');
       }
     } else if (screen === 'world_map') setScreen('title');
-    else if (screen === 'title' && !document.querySelector('.pm-scrim, .ui-scrim')) setAskLeave(true);
+    else if (screen === 'title' && !document.querySelector('.pm-scrim, .ui-scrim, .nv-scrim')) setAskLeave(true);
     else esc();
   };
   // the Android app keeps the screen on only while a stage is played; a menu, the map or a story lets the phone sleep (KeepAwakePlugin.java)
@@ -584,7 +584,7 @@ export default function App() {
       }
       if (screen === 'title') {
         // a dialog (Save & Load, New Game, the Menu) owns the keyboard while it is open
-        if (document.querySelector('.ui-scrim, .pm-scrim')) return;
+        if (document.querySelector('.ui-scrim, .pm-scrim, .nv-scrim')) return;
         if (e.code === 'Space' || e.code === 'Enter') {
           e.preventDefault();
           startLevel(resumeLevel);
@@ -1450,7 +1450,14 @@ export default function App() {
       )}
 
       {askLeave && screen === 'title' && (
-        <LeaveDialog onStay={() => setAskLeave(false)} onLeave={() => void import('@capacitor/app').then((m) => m.App.exitApp())} />
+        <ConfirmDialog
+          title="Leave the game?"
+          body="Your progress is saved."
+          stay="Keep playing"
+          go="Leave"
+          onStay={() => setAskLeave(false)}
+          onGo={() => void import('@capacitor/app').then((m) => m.App.exitApp())}
+        />
       )}
       {/* Status Modals: Paused, Victory, Game Over, Boss Intro, Story Ending */}
       {(screen === 'paused' ||

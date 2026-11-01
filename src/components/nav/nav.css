@@ -32,6 +32,9 @@
 .nv-foot { flex: none; display: flex; gap: 10px; }
 .nv-foot > * { flex: 1; }
 
+/* an X that sits in its pop-up's own header row (Save & Load, New Game, How to Play) */
+.nv-x.nv-inline { position: relative; right: auto; top: auto; flex: none; margin-left: auto; }
+
 /* "are you sure?" */
 .nv-confirm { max-width: 400px; text-align: center; }
 .nv-confirm-p { margin: 0; font: 600 17px var(--font-ui); line-height: 1.4; }
