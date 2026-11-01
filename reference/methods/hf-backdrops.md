@@ -80,7 +80,8 @@ The strips must look right both upright (412x915) and sideways (915x412).
 
 ## Tried and didn't work
 - Text to image for middle/near strips (no key).
-- Upright skies from tallstart at s30-s58 (the join survives). Use a painted sky donor.
+- Upright skies for old far strips whose scenery runs off the top: tallstart at s30-s58 and painted sky donors (spec-K + skydonor.py,
+  s30) both left cut trunks under a soft band (2026-11-01, `hfbd2-S0/S1/S2` in the bucket). Paint far and sky together.
 
 ## To try
-- spec-K sky donors for the 9 sets still without an upright sky (hf-backdrops2/NEXT.md).
+- Repaint those 9 far sets far + sky together (hf-backdrops2/NEXT.md).

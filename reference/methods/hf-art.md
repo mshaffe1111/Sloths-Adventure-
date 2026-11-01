@@ -93,5 +93,10 @@ Contact sheets of every take next to its start, before picking. Then the game sh
 - Upright skies from tallstart starts at s30-s58: the start's straight join or smoke slab survives every strength. The sky needs a new
   painted donor (spec-K, 2026-11-01).
 
+- Sky-only text-to-image donors (spec-K, 2026-11-01) stacked above the old far strips, then s30: still failed. Those far strips have
+  trunks and crowns running off their top edge, so any sky above shows them cut off under a soft band. No sky can fix it: the far
+  strip itself must be repainted with its own sky (the far + sky in one picture way, hf-backdrops.md step 2).
+
 ## To try
-- Sky-only text-to-image donors (spec-K) recoloured into tallstart, then s30. In progress 2026-11-01; see hf-backdrops2/NEXT.md.
+- Repaint the 9 old far sets without an upright sky the far + sky way (text to image from a prompt matching the old strip, or img2img
+  of the old strip with sky room added above at s60+).

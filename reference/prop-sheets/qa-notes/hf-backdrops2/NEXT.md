@@ -26,10 +26,29 @@ Contact sheets: `w<N>-before-after.jpg` here (upright 412x915 before/after rows,
 
 ## Exact next step
 
-The skies need a new start, not more img2img over the old one. For each of the 9, paint the sky **text to image** in the strip's
-light, the same way the new far + sky pictures were made today (`make_spec2.py F`: 1792x1200, style model 0.8, the upper third
-open sky). Take its top rows as the donor sky in `tools/art/hfbatch/tallstart.py` (DONOR), then run one native pass at s30
-(`process.py hdspec`) and cut with `skycut.py --tall`. Estimate about $2.
+Upright skies for the 9 old far sets: two more tries failed today. First tallstart s48/s58 (S0/S1), then painted sky-only donors
+(spec-K, `skydonor.py`, s30, S2). The real cause is the old far strips themselves: their trunks and crowns run off the top edge, so any
+sky above them shows those cut off under a soft band. The fix is to repaint each of those far strips with its own sky, the way today's
+11 new sets were made (`make_spec2.py F`-style text to image matching the old strip's scene, then `tallkey`, `hdspec`, `tallsplit`).
+About $0.50 a set, about $5 for all 9, plus a check that the middle strips still sit right on the new far.
+
+## Lead's review (2 PM ET), done
+- W8 dawn, W10 gale and W2 misty dawn: far + sky repainted (round F4, 5 seeds each) with dark silhouettes and rich colour; middle strips
+  at half haze (0.09) and darkened 15% for a value step.
+- W1 sunrise far: contrast up (depth.py 1.3).
+- W4 storm and W3 sinkhole: depth pass too.
+- W1 middle repeat at 1-6: re-finished without the flat 7% top fade (TOPFADE=0), so its crowns are separate shapes again.
+  The strip is still one 2113 px tile, so the same 3 trees repeat once per screen width sideways. A second crown variant needs a new
+  take: not done.
+- Luminance spread, top 60% upright, after/before (pass >= 0.8):
+  - 1-1 1.16, 1-3 1.04, 1-4 1.03, 1-6 1.01;
+  - 2-1 0.93, 2-3 0.90;
+  - 3-4 0.85, 3-6 1.02;
+  - 4-2 1.04, 4-5 0.83;
+  - 8-1 1.48, 8-3 1.01, 8-8 0.99;
+  - 10-2 1.23, 10-4 1.27, 10-6 2.08.
+  - Still under 0.8: 3-8 (W3 crystal, a darker cave on purpose; the lead passed it) and 8-4. 8-4 is NOT a changed set: it plays the
+    world's own set before and after. Its number moves with the lantern light around Pokey.
 
 ## Checks (2026-11-01, 2:05 PM ET)
 

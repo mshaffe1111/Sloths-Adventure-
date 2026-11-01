@@ -49,3 +49,9 @@ hfbd2-S0 6ae76d0a0e0338d1bb7d8659  hfbd2-S1 6ae76d0c0e0338d1bb7d865b: upright sk
 GPU time total today ~$9.70 of the $35 cap (estimate: ~212 min of rtx-pro-6000 at ~$2.75/h incl. model loads).
 Skies (S0/S1): only w5twi2 s58 passed; the other 9 keep a straight line or a flat smoke slab where the sky meets the strip
   (the tallstart starts carry it; more img2img strength did not remove it). Held, as before: they keep the cover fit.
+--- after the lead's review (14:00 ET) ---
+hfbd2-F4a 6ae77efd0e0338d1bb7d8ca3  hfbd2-F4b 6ae77f01c78863f9c62fbee6  (15 far+sky takes, W8 dawn / W10 gale / W2 mist) 18:03Z, ~7 min each
+hfbd2-hd-F4 6ae781400e0338d1bb7d8da0 (3) 18:13Z ~3 min
+hfbd2-K0 6ae78153c78863f9c62fc051  hfbd2-K1 6ae781570e0338d1bb7d8db8  (27 sky-only donors) 18:13Z ~6 min each
+hfbd2-S2 6ae783230e0338d1bb7d8f16 (7 skies from donors, s30) 18:21Z ~6 min. FAILED review (cut trunks under a band): held.
+running total ~$12.50 of $35 (GPU estimate)
