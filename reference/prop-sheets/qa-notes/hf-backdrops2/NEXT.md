@@ -24,13 +24,20 @@ Contact sheets: `w<N>-before-after.jpg` here (upright 412x915 before/after rows,
   Round S (tallstart starts at s48/s58) still left a straight line or a flat smoke slab where the sky meets the strip. They keep the
   cover fit, as before. The takes are in the bucket `hfbackdrops2/hfbd2-S0|S1/`.
 
-## Exact next step
+## Upright skies: done (2:55 PM ET)
 
-Upright skies for the 9 old far sets: two more tries failed today. First tallstart s48/s58 (S0/S1), then painted sky-only donors
-(spec-K, `skydonor.py`, s30, S2). The real cause is the old far strips themselves: their trunks and crowns run off the top edge, so any
-sky above them shows those cut off under a soft band. The fix is to repaint each of those far strips with its own sky, the way today's
-11 new sets were made (`make_spec2.py F`-style text to image matching the old strip's scene, then `tallkey`, `hdspec`, `tallsplit`).
-About $0.50 a set, about $5 for all 9, plus a check that the middle strips still sit right on the new far.
+The 9 old far sets without an upright sky (w1kapok, w1sunrise, w3sinkhole, w5dusk2, w5twi1, w6dawn, w7, w7dawn, w7dusk) are
+repainted far + sky together (round F5: text to image matching each old scene, 3 seeds; tallkey; native pass; tallsplit). No cut
+line: the sky and the far strip come from one painting. Each far strip was widened from 1972 to 2160 px (a 9% horizontal stretch) to
+keep the 2100 px minimum the test checks.
+Depth, after/before: 1-1 1.26, 1-7 1.14, 3-4 0.89, 3-5 0.98, 6-1 0.99, 7-1 1.04, 7-4 0.88, 7-7 1.54, 5-4 1.14, 5-7 1.21.
+Only w10after still has no upright sky. It is held anyway.
+
+## Exact next step
+- W1 middle (the world's own set, 1-4/1-6): the same 3 trees repeat once per screen width sideways, and the crowns are broad and
+  flat-topped. Paint a second W1 middle variant with starts2.py remix (s68/s76) and use it on one of the two stages.
+- The middle strips of the 9 repainted far sets were graded to the OLD far strips. Re-run `process.py finish ... <stem> mid` against
+  the new far strips. That needs last night's hd files from the bucket, `hfbackdrops/hd/`.
 
 ## Lead's review (2 PM ET), done
 - W8 dawn, W10 gale and W2 misty dawn: far + sky repainted (round F4, 5 seeds each) with dark silhouettes and rich colour; middle strips

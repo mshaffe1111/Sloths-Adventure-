@@ -55,3 +55,6 @@ hfbd2-hd-F4 6ae781400e0338d1bb7d8da0 (3) 18:13Z ~3 min
 hfbd2-K0 6ae78153c78863f9c62fc051  hfbd2-K1 6ae781570e0338d1bb7d8db8  (27 sky-only donors) 18:13Z ~6 min each
 hfbd2-S2 6ae783230e0338d1bb7d8f16 (7 skies from donors, s30) 18:21Z ~6 min. FAILED review (cut trunks under a band): held.
 running total ~$12.50 of $35 (GPU estimate)
+hfbd2-F5a/b/c 6ae785d10e0338d1bb7d8fd5 6ae785d5c78863f9c62fc329 6ae785d80e0338d1bb7d8fd9 (27 far+sky takes, 9 old sets) 18:33Z ~8 min each
+hfbd2-hd-F50/51/52 6ae7885d0e0338d1bb7d9073 6ae788610e0338d1bb7d9079 6ae78865c78863f9c62fc3e7 (9) 18:44Z ~3 min each
+running total ~$14 of $35 (GPU estimate)
