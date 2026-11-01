@@ -16,11 +16,11 @@
  */
 import { pendingSheets, unwarmedSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { drawPaintedCardBoss } from './bossArt.ts';
-import { warmScenery } from './scenery.ts';
+import { stampSceneryFits, warmScenery } from './scenery.ts';
 import { warmStageArt } from './stageArt.ts';
 import { warmBadWater } from './badWaterArt.ts';
 import { creatureAnimsReady, settleCreatureBakes } from './creatureAnim.ts';
-import { settleSheetBakes } from './sheetBake.ts';
+import { settleSheetBakes, warmSheetMips } from './sheetBake.ts';
 import { releaseDecorPics, settleDecorBakes } from './envKit.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, revealSet, stageUsesCanopy } from './paintedBackdrops.ts';
@@ -34,6 +34,8 @@ export interface ReadyEngine {
   render(): void;
   builtStage(): BuiltStage;
   viewNow(): { x: number; y: number; vw: number; vh: number; k: number };
+  /** the device scale at each lighter quality step still to come (engine.ts) */
+  stepKs(): number[];
 }
 
 /**
@@ -107,6 +109,8 @@ export async function readyBuiltStage(
   let drawn = warm(ctx, plains, deadline);
   if (reveal) drawn += warmReveal(reveal, ctx);
   fitScenery(cfg.worldIndex, engine);
+  // (each fit stamped once on the game's canvas: its upload now, not on the frame it is first drawn, a quality step's included)
+  const fitMB = ctx ? Math.round(stampSceneryFits(ctx) / 1e5) / 10 : 0;
   // (the checkpoint flags and the pit water, and World 6-10's dirty water, baked at this view's scale and stamped once: stageArt.ts,
   // badWaterArt.ts; each skips a sheet not in yet)
   const k = engine.viewNow().k;
@@ -122,6 +126,8 @@ export async function readyBuiltStage(
   }
   // (the painted sprites drawn through sheetBake.ts bake their sheets at the size the frames above drew them at: only here, never in play)
   if (!live()) settleSheetBakes();
+  // (and their mipmaps built, for the quality steps' smaller draws: sheetBake.ts warmSheetMips)
+  const mips = !live() && ctx ? warmSheetMips(ctx) : 0;
   // (and the ground plants those frames met become pictures, stamped from the first frame of play: envKit.ts)
   if (!live()) settleDecorBakes();
   // and the first frame of play drawn once more, still under the card, from everything just baked and fitted: the sprite copies, the
@@ -134,7 +140,7 @@ export async function readyBuiltStage(
     await nextFrames(2, 1500);
   }
   const late = pendingSheets();
-  const line = `ready ${cfg.id}: ${keys.length} keys, ${drawn} sheets drawn once, ${late.length} still loading, ${Math.round(performance.now() - t0)} ms`;
+  const line = `ready ${cfg.id}: ${keys.length} keys, ${drawn} sheets drawn once, backdrop fits ${fitMB} MB, ${mips} sheets' mipmaps, ${late.length} still loading, ${Math.round(performance.now() - t0)} ms`;
   perfNote(line);
   // (the dev server's console too, for the headless checks)
   if (import.meta.env?.DEV) console.info(line);
@@ -148,7 +154,11 @@ function fitScenery(world: number, engine: ReadyEngine) {
   const v = engine.viewNow();
   // (upright, the strips are drawn at the height sideways uses for the same width of world: engine.ts WORLD_VIEW_H 540 over
   // PORTRAIT_VIEW_W 440)
-  warmScenery(world, v.x, v.y, v.vw, v.vh, v.k, v.vh > v.vw ? (540 * v.vw) / 440 : v.vh);
+  const stripVh = v.vh > v.vw ? (540 * v.vw) / 440 : v.vh;
+  // (and at each lighter quality step the frame governor may take: a step mid-play was a 130 ms re-fit, every time an old phone stepped
+  // down. Fitted after this step's, so this step's stays newest of the three a strip keeps: warmup-5m, 2026-11-01)
+  for (const k of [...engine.stepKs()].reverse()) warmScenery(world, v.x, v.y, v.vw, v.vh, k, stripVh);
+  warmScenery(world, v.x, v.y, v.vw, v.vh, v.k, stripVh);
 }
 
 /** the revealed strips decoded (revealSet starts them and is null until they are in), or `deadline` */

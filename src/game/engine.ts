@@ -1012,9 +1012,10 @@ export class GameEngine {
       if (recorder.on) recorder.glitch('quality', `q${this.quality}→${this.quality + 1} slow ${avg}`);
       this.quality++;
       noteStepDown(this.quality, performance.now());
-      this.resizeCanvas();
-      // (drawn again at once: resizing clears the canvas, and this runs after the frame was drawn, so the screen showed one black frame)
-      this.render();
+      // (the canvas is resized at the start of the next frame, just before it is drawn: resizing here, after this frame was drawn, cleared
+      // it, and the extra render that covered that doubled the frame. The backdrop was fitted for this step under the title card, so the
+      // step itself is a swap: stageReady.ts, warmup-5m 2026-11-01)
+      this.resizeDue = true;
     }
     perfNote(`slow: stepped down (quality ${this.quality}, polish ${polishEnabled() ? polishTier() : 'off'})`);
   }
@@ -1075,6 +1076,23 @@ export class GameEngine {
   }
 
   /** where the next frame draws: the camera and the device pixels per scene unit (stageReady.ts fits the backdrop strips to them) */
+  /** a quality step waits for the next frame's draw to resize the canvas */
+  private resizeDue = false;
+
+  /** the device scale (as viewNow's k) at each lighter quality step the governor could still take, where it differs from now's */
+  public stepKs(): number[] {
+    const now = this.renderDpr();
+    const q = this.quality;
+    const out: number[] = [];
+    for (let n = q + 1; n <= 2; n++) {
+      this.quality = n;
+      const d = this.renderDpr();
+      if (Math.abs(d - now) > 1e-6 && !out.some((k) => Math.abs(k - d * this.zoom) < 1e-6)) out.push(d * this.zoom);
+    }
+    this.quality = q;
+    return out;
+  }
+
   public viewNow(): { x: number; y: number; vw: number; vh: number; k: number } {
     return { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight, k: this.renderDpr() * this.zoom };
   }
@@ -1241,6 +1259,11 @@ export class GameEngine {
       }
       if (!this.isPaused && this.hitstopTimer <= 0 && recorder.on) this.watchGlitches(now);
 
+      // (a quality step from the last frame: the canvas takes its new size now, then this frame draws it)
+      if (this.resizeDue) {
+        this.resizeDue = false;
+        this.resizeCanvas();
+      }
       const r0 = timed ? performance.now() : 0;
       this.render();
       const tDraw = timed ? performance.now() - r0 : 0;
@@ -1260,8 +1283,7 @@ export class GameEngine {
         if (recorder.on) recorder.glitch('quality', `q${this.quality}→${this.quality - 1} steady avg ${Math.round(this.gov.lastAvg)}ms`);
         this.quality--;
         noteStepUp(this.quality, performance.now());
-        this.resizeCanvas();
-        this.render();
+        this.resizeDue = true;
         perfNote(`steady: stepped up (quality ${this.quality})`);
       }
       this.failStreak = 0;
