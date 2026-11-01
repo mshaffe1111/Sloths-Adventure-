@@ -11,7 +11,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateAllLevels } from '../../worldsData.ts';
 import { buildGen2ForGame } from '../game.ts';
-import { BLOOM_DN, BLOOM_FLOAT, TRUNK_ID } from './w8.ts';
+import { BLOOM_DN, BLOOM_FLOAT, TRUNK_ID, TRUNK_UNDER } from './w8.ts';
 import type { Platform } from '../../types.ts';
 
 const cfg = generateAllLevels().find((c) => c.id === '8-2')!;
@@ -35,7 +35,7 @@ test('8-2: no fungus step floats over the void: each stands on a trunk to the gr
       const steps = st.platforms.filter((p) => p.id < TRUNK_ID && p.height <= 30 && p.x >= s.x0 - 2 && p.x + p.width <= s.x1 + 2);
       for (const p of steps) {
         stairs++;
-        const under = st.platforms.find((q) => q.id >= TRUNK_ID && Math.abs(q.x - p.x) < 1 && Math.abs(q.y - (p.y + p.height)) < 1);
+        const under = st.platforms.find((q) => q.id >= TRUNK_ID && Math.abs(q.x - p.x) < 1 && Math.abs(q.y - (p.y + TRUNK_UNDER)) < 1);
         assert.ok(under && under.height > 150, `layout ${v}, ${s.template}: the step at x ${p.x} has a trunk under it`);
       }
     }

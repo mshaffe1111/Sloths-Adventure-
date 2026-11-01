@@ -376,6 +376,8 @@ export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; co
 const FUNGUS_STAIR = /^w8-fungus-/;
 /** the trunk under a fungus step is laid in this id range (above every pipeline id) */
 export const TRUNK_ID = 70000;
+/** how far under a fungus step's top its trunk's top lies (px): the step's art covers the seam */
+export const TRUNK_UNDER = 8;
 
 /**
  * The trunk under each fungus step (w8-rope2, the lead: layout 2 of 8-2 cost a Normal first-timer 5-15 lives). The steps are thin
@@ -394,7 +396,9 @@ export function fungusTrunks(platforms: Platform[], sections: ReadonlyArray<{ te
     const foot = Math.max(...inSec.map((p) => p.y + p.height));
     for (const p of inSec) {
       if (p.height > 30 || p.y + p.height >= foot) continue;
-      platforms.push({ id: id++, x: p.x, y: p.y + p.height, width: p.width, height: foot - (p.y + p.height), type: 'solid', style: 'log' } as Platform);
+      // (its top just under the step's: the step's bracket or stub is drawn after it, lying on the trunk's moss, flush)
+      const top = p.y + TRUNK_UNDER;
+      platforms.splice(platforms.indexOf(p), 0, { id: id++, x: p.x, y: top, width: p.width, height: foot - top, type: 'solid', style: 'log' } as Platform);
     }
   }
 }

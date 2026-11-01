@@ -14,6 +14,11 @@ for (const [tag, w, h] of [['sideways', 844, 390], ['upright', 390, 844]]) {
   await p.waitForTimeout(3000);
   await p.evaluate((l) => window.__play('8-2', Number(l)), layout);
   await p.waitForTimeout(9000);
+  // (the stage's card goes on the first input)
+  await p.keyboard.down('ArrowRight');
+  await p.waitForTimeout(600);
+  await p.keyboard.up('ArrowRight');
+  await p.waitForTimeout(3500);
   for (const [name, which] of [['stair', 'stair'], ['foot', 'foot']]) {
     const ok = await p.evaluate((which) => {
       const e = window.__engine();
