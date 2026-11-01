@@ -18,6 +18,12 @@ export const cardWorld = (w: number): React.CSSProperties | undefined => {
   return u ? ({ ['--cw' as string]: `url("${u}")` } as React.CSSProperties) : undefined;
 };
 
+/**
+ * A met predator's corner: how many Pokey has beaten, once there is at least one. Before that (and for the ones you dodge more than
+ * fight, like the Harpy Eagle) a "Defeated ×0" reads like a failure, so it shows the same "met" tick as the others (lead, 2026-11-01).
+ */
+export const predatorFoot = (kills: number): React.ReactNode => (kills > 0 ? `Defeated ×${kills}` : <Icon name="check" size={14} label="Met" />);
+
 interface Card {
   id: string;
   art: string;
@@ -38,7 +44,7 @@ export const CreaturesTab: React.FC<{ store: BadgeStore; levels: LevelRecord[] }
   const preds: Card[] = PREDATOR_ORDER.map((id) => {
     const e = PREDATOR_ENTRIES[id];
     const met = predatorMet(id, store.seen, levels);
-    return { id, art: id, name: e.name, tip: e.tip, world: e.first, met, foot: met ? `Defeated ×${store.kills[id] ?? 0}` : <Icon name="lock" size={13} label="Not met yet" /> };
+    return { id, art: id, name: e.name, tip: e.tip, world: e.first, met, foot: met ? predatorFoot(store.kills[id] ?? 0) : <Icon name="lock" size={13} label="Not met yet" /> };
   });
   const road: Card[] = ROAD_ENTRIES.map((r) => {
     const met = roadMet(r, levels, store.seen);

@@ -986,7 +986,19 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // (a World 7 high ledge: its foot, the floor beside it, and whether no bank touches it at all)
     const high = kitWorld === 7 ? highLedge(p, banks) : undefined;
     // (World 7's high ledges are faced with the temple wall: no root wall beside it)
-    if (isWall && !high) drawWallArt(ctx, p.x, p.y, banks.find((q) => Math.abs(q.x + q.width - p.x) < 2)!.y + 6, 230);
+    // (World 5: the bank's soil covers the trunk piece, all but the 14 units it starts left of the face, which showed as a pale sliver of
+    // root flare against the dirt edge, right where Meeca stands at room 5's far wall: warmup-5m, 2026-11-01. Cut to the face there)
+    if (isWall && !high) {
+      const wallBottom = banks.find((q) => Math.abs(q.x + q.width - p.x) < 2)!.y + 6;
+      if (kitWorld === 5) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(p.x, p.y - 20, 260, wallBottom - p.y + 60);
+        ctx.clip();
+        drawWallArt(ctx, p.x, p.y, wallBottom, 230);
+        ctx.restore();
+      } else drawWallArt(ctx, p.x, p.y, wallBottom, 230);
+    }
     // (a side whose neighbour is lower is a step down to it, not a drop)
     // (a low step standing on a pit's floor steps down to the floor it stands on, its end faded out into the floor's soil)
     const floor = p.soil ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;

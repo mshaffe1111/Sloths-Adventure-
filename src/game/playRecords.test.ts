@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parsePlayRecord, withRun } from './playRecords.ts';
-import { stageEntry, worldReview, LINES, seedOf } from './pokeyJournal.ts';
+import { stageEntry, worldReview, STAGE_LINES, BANNED_FILLER } from './pokeyJournal.ts';
 import { isSaveKey, parseSave, buildSave, checksum, SAVE_FORMAT, SAVE_VERSION } from './saveFile.ts';
 import type { StageStats } from './badges.ts';
 
@@ -57,8 +57,8 @@ test("a stage's entry is built from how it was played, and reads the same each t
   const r = withRun(null, run(), { finds: ['w1_note'], medals: ['first_steps'], now: 1e12 });
   const e = stageEntry(stage, r, names);
   const text = e.lines.join(' ');
-  assert.ok(text.includes('Mossy Steps'));
-  assert.ok(/30|flowers/.test(text));
+  assert.equal(e.lines[0], STAGE_LINES['1-3'], "the stage's own line comes first");
+  assert.ok(!text.includes('Mossy Steps'), 'the name is in the heading, not the lines');
   assert.ok(text.includes('The first petal'));
   assert.ok(text.includes('First Steps'));
   assert.ok(!/\{\w+\}/.test(text), 'every slot filled');
@@ -69,13 +69,9 @@ test("a stage's entry is built from how it was played, and reads the same each t
 test('a stage cleared before the journal kept records gets a plain entry, and a guardian ends with the approved world line', () => {
   const e = stageEntry({ ...stage, id: '2-10', worldIndex: 2, miniIndex: 10 }, null, names);
   assert.equal(e.plain, true);
+  assert.equal(e.lines[0], STAGE_LINES['2-10']);
   assert.ok(e.lines.some((l) => l.includes('raft')));
-});
-
-test('the variants spread across stages (no one line for every stage)', () => {
-  const used = new Set<string>();
-  for (let w = 1; w <= 10; w++) for (let m = 1; m <= 10; m++) used.add(LINES.clean[(seedOf(`${w}-${m}`) + 7) % LINES.clean.length]);
-  assert.equal(used.size, LINES.clean.length);
+  for (const l of e.lines) assert.doesNotMatch(l, BANNED_FILLER);
 });
 
 test("a world's review sums the stages and finds the best moments", () => {
@@ -89,6 +85,6 @@ test("a world's review sums the stages and finds the best moments", () => {
   assert.equal(r.stats.stars, 9);
   assert.equal(r.stats.falls, 1);
   assert.ok(r.best.some((b) => b.includes('S1')));
-  assert.ok(r.best.some((b) => b.includes('Every flower in S2')));
+  assert.ok(r.best.some((b) => b.includes('Every petal in S2')));
   assert.equal(r.done, false);
 });

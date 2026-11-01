@@ -16,6 +16,7 @@ import { SOLDIER_CLIPS } from './soldierClips.ts';
 import { MEECA_CARVE_FPS, MEECA_CARVE_FRAMES, MEECA_CARVE_SEQ, MEECA_CARVE_URL } from './meecaCarveData.ts';
 import { MEECA_BLANKET_FRAMES, MEECA_BLANKET_UP, MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { MEECA_FRAMES, MEECA_STAND_H } from './meecaStandardData.ts';
+import { meecaReach } from './meecaFaceDraw.ts';
 import { drawMeecaFrame, jennifurFrame, jennifurSpriteReady, MEECA_UNITS } from './jennifurSprite.ts';
 import { drawScratch, drawW5, w5ArtReady } from './w5Art.ts';
 import { carvingTrunk, drawCarving } from './w5Look.ts';
@@ -121,6 +122,12 @@ export function meecaPose(p: Player, mc: MeecaPlay, kit: KitPlay | null, t: numb
   if (v > 150) return std(`run_${Math.floor(p.walkCycle / 1.7) % 7}`);
   if (v > 8) return std(`walk_${Math.floor(p.walkCycle / 1.05) % 8}`);
   return std(jennifurFrame('idle', t));
+}
+
+/** how far the frame she is drawn with now reaches ahead of her and behind her (meecaFaceDraw.ts) */
+export function meecaReachNow(p: Player, mc: MeecaPlay, kit: KitPlay | null, t: number): { front: number; back: number } {
+  const pose = meecaPose(p, mc, kit, t);
+  return meecaReach(pose.sheet, pose.name);
 }
 
 /** Meeca, the player, with her feet at (p.x, p.y) */

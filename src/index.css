@@ -921,6 +921,8 @@
 .tr-plat-parts li { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #c9b089; }
 .tr-plat-parts li.done { color: #86efac; }
 @media (max-width: 360px) { .tr-grid { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; } .tr-plat { gap: 10px; padding: 10px; } }
+/* (the Satchel's find and creature cards stay two across on a 360 phone: three left their 14 px tips and footers no room, 2026-11-01) */
+@media (max-width: 360px) { .tr-grid.tr-grid-j { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; } }
 .tr-bt { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; min-width: 0; }
 /* short sideways screens: each medal is a row (the medal beside its words), two to four across */
 @media (max-height: 430px) {
@@ -1411,7 +1413,7 @@
   font-family: var(--font-fun); font-size: 14px; color: #fff4d8; background: radial-gradient(circle at 40% 35%, #c99256, #74461f); border: 2px solid #2a1608; box-shadow: 0 2px 0 rgba(0, 0, 0, .35); }
 .tr-cn { font-family: var(--font-fun); font-weight: 400; font-size: 15px; line-height: 1.15; color: #4a2a10; padding: 0 2px; }
 .tr-card.lock .tr-cn { color: #6b5333; letter-spacing: .1em; }
-.tr-ct { font-family: var(--font-ui); font-weight: 500; font-size: 12px; line-height: 1.32; color: var(--gx-ink); min-height: 48px; padding: 0 2px; }
+.tr-ct { font-family: var(--font-ui); font-weight: 500; font-size: 14px; line-height: 1.3; color: var(--gx-ink); min-height: 48px; padding: 0 2px; }
 .tr-card.lock .tr-ct { color: #6b5333; }
 .tr-cf { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 5px 2px 0; border-top: 1.5px solid rgba(120, 80, 30, .25);
   font-family: var(--font-ui); font-weight: 700; font-size: 12px; color: #6b4a22; }
@@ -1682,7 +1684,14 @@
 .jb-whead span { font: 800 12px var(--font-ui); letter-spacing: .1em; text-transform: uppercase; color: #8b6a44; }
 .jb-whead b { font-family: var(--font-fun); font-weight: 400; font-size: 21px; color: #6b3d12; }
 .jb-entry { margin: 0 0 10px; }
-.jb-eh { display: flex; align-items: center; gap: 8px; font: 800 13px var(--font-ui); color: #8a4b18; }
+.jb-eh { display: flex; align-items: baseline; gap: 8px; font: 800 13px var(--font-ui); color: #8a4b18; }
+.jb-eh span { min-width: 0; }
+.jb-eh span b { font-weight: 800; color: #5a3210; }
+.jb-eh i { flex: none; }
+/* how it was played, under the story: the same hand, a little smaller and lighter, like a note added after */
+.jb-note { margin-top: 3px; font-size: 14px; color: #6b5538; }
+/* a guardian's entry closes the world with Pokey's line for it */
+.jb-close { margin-top: 4px; font-weight: 600; color: #6a3a10; }
 .jb-eh i { font-style: normal; color: #d08a10; letter-spacing: 1px; }
 .jb-hand { margin: 2px 0 0; font-family: var(--font-read); font-style: italic; font-size: 15.5px; line-height: 1.45; color: #2e2010; text-wrap: pretty; }
 .jb-empty { opacity: .7; }
@@ -1691,8 +1700,13 @@
 .jb-sign::after { content: ' — P.'; font-style: normal; color: #8b6a44; }
 .jb-sub { margin: 10px 0 4px; font: 800 12px var(--font-ui); letter-spacing: .1em; text-transform: uppercase; color: #8b6a44; }
 .jb-met { display: flex; flex-wrap: wrap; gap: 6px; }
-.jb-crit { display: flex; flex-direction: column; align-items: center; width: 70px; padding: 4px 2px; border-radius: 10px; background: rgba(120, 80, 30, .12); }
-.jb-crit small { font-size: 12px; line-height: 1.1; text-align: center; color: #5c4630; }
+.jb-crit { display: flex; flex-direction: column; align-items: center; width: 76px; padding: 4px 3px 6px; border-radius: 10px; background: rgba(120, 80, 30, .12); }
+.jb-crit small { font-size: 12px; line-height: 1.15; text-align: center; color: #5c4630; overflow-wrap: anywhere; hyphens: auto; }
+.jb-list { margin: 0; padding: 0; list-style: none; font-family: var(--font-read); font-size: 14px; line-height: 1.5; color: #3a2510; }
+.jb-list li span { display: inline-block; min-width: 2.6em; font: 800 12px var(--font-ui); color: #8a4b18; }
+.jb-list li i { font-style: normal; color: #d08a10; letter-spacing: 1px; font-size: 12px; white-space: nowrap; }
+.jb-found li::before { content: '✦ '; color: #b07a2a; }
+.jb-closing { margin-top: 12px; }
 .jb-best { margin: 0; padding-left: 18px; font-family: var(--font-read); font-size: 14.5px; line-height: 1.4; color: #3a2510; }
 .jb-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .jb-stats span { display: flex; flex-direction: column; align-items: center; padding: 6px 2px; border-radius: 10px; background: rgba(120, 80, 30, .12); font-size: 12px; color: #6b5333; }
@@ -1703,7 +1717,7 @@
 .jb-arrow:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #24130a; }
 .jb-pn { font-family: var(--font-fun); font-size: 15px; color: #fff4d8; text-shadow: 0 2px 0 #2a1608; text-align: center; }
 /* sideways the book takes the short screen: shorter pages */
-@media (orientation: landscape) and (max-height: 500px) { .jb-book, .jb-page { min-height: 0; max-height: calc(100vh - 170px); } .sh-tabs { margin-top: 6px; } .sh-tab { min-height: 56px; } .sh-tab-ic { width: 40px; height: 40px; } }
+@media (orientation: landscape) and (max-height: 500px) { .jb-book { min-height: 0; max-height: calc(100vh - 170px); } .jb-page { min-height: 0; max-height: calc(100vh - 190px); } .sh-tabs { margin-top: 6px; } .sh-tab { min-height: 56px; } .sh-tab-ic { width: 40px; height: 40px; } }
 
 /* the medal pop in play (BadgeToast inPlay): small, top centre, under the HUD row upright and in it sideways; never over the thumbs.
    No blur, no shadowBlur in the canvas: plain DOM over the stage, a box-shadow and one transform animation (PERFORMANCE-RULES §2). */
@@ -1721,6 +1735,35 @@
 .sh-head .nv-back { position: static; flex: none; }
 .sh-head { gap: 8px; } .sh-head .tr-titles { min-width: 0; flex: 1 1 auto; display: flex; justify-content: center; }
 @media (max-width: 440px) { .sh-head .tr-h1 { font-size: 16px; padding-inline: 12px; } .sh-head .nv-back-tag { font-size: 14px; } }
+/* the Satchel keeps clear of the notch and the rounded corners on a phone on its side (lead, 2026-11-01: the clip check found the
+   Creatures tab in the right 48 px notch band): the screen pads by the phone's own safe-area insets, like the nav kit's Back and pop-ups.
+   Upright the side insets are 0, so nothing moves. */
+.sh-screen { box-sizing: border-box; padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+/* the tab leaves sit in the header (Satchel.tsx): upright they wrap to their own full row under Back and the title, as before */
+.sh-head { flex-wrap: wrap; row-gap: 0; margin-bottom: 6px; }
+.sh-head .sh-tabs { order: 5; flex: 1 0 100%; margin-bottom: 0; }
+/* sideways (lead, 2026-11-01: the header took half the screen): one compact row, Back at its usual left, the tabs beside it, the
+   Start Screen token at the right; the title log goes (its name stays for screen readers) and Dot's perch with it, so every tab's
+   page gets about 80% of the height */
+@media (orientation: landscape) and (max-height: 500px) {
+  .sh-inner { margin-top: max(8px, env(safe-area-inset-top, 0px)); padding-top: 8px; }
+  .sh-screen .tr-dot { display: none; }
+  .sh-head { flex-wrap: nowrap; }
+  .sh-head .tr-titles { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .sh-head .sh-tabs { order: 0; flex: 1 1 auto; min-width: 0; margin: 0; }
+  .sh-tab { flex-direction: row; justify-content: center; gap: 4px; min-height: 52px; font-size: 14px; }
+  .sh-tab-ic { width: 38px; height: 38px; flex: none; }
+  .sh-tab.on .sh-tab-ic { transform: scale(1.1); }
+  .jb-book, .jb-page { max-height: calc(100vh - 150px); }
+}
+/* (a short phone on its side: the page turns stay clear of the screen's bottom fade) */
+@media (orientation: landscape) and (max-height: 380px) { .jb-book, .jb-page { max-height: calc(100vh - 172px); } }
+/* a narrow phone on its side: the leaves keep their names under them, smaller */
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 799px) {
+  .sh-tab { flex-direction: column; gap: 0; font-size: 12px; }
+  .sh-tab-ic { width: 32px; height: 32px; }
+  .sh-head .nv-back-tag { font-size: 14px; padding-inline: 16px 10px; }
+}
 /* the find reader on the shared nav X (2026-11-01): top-right of its paper, the label clear of it */
 .fr-card .fr-x { position: absolute; top: 6px; right: 6px; z-index: 2; }
 .fr-card .fr-label, .fr-card .fr-title { padding-right: 44px; }

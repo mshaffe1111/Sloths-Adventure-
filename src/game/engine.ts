@@ -108,7 +108,8 @@ import { SlideRun } from './w7SlideRun.ts';
 import { drawJarMeter, jarFrame, jarHeroImage, LanternRun } from './w8LanternRun.ts';
 import { LANTERN_LINES, LANTERN_NIGHT, LANTERN_VIEW, TREE_CROWN } from './w8Lantern.ts';
 import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
-import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, meecaArtReady, warmMeecaArt, wordsBox } from './meecaArt.ts';
+import { meecaFaceShift } from './meecaFaceDraw.ts';
+import { drawMeecaBack, drawMeecaFront, drawMeecaHero, meecaReachNow, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, meecaArtReady, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { tipText } from './puzzleKit.ts';
 import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
@@ -1011,9 +1012,10 @@ export class GameEngine {
       if (recorder.on) recorder.glitch('quality', `q${this.quality}→${this.quality + 1} slow ${avg}`);
       this.quality++;
       noteStepDown(this.quality, performance.now());
-      this.resizeCanvas();
-      // (drawn again at once: resizing clears the canvas, and this runs after the frame was drawn, so the screen showed one black frame)
-      this.render();
+      // (the canvas is resized at the start of the next frame, just before it is drawn: resizing here, after this frame was drawn, cleared
+      // it, and the extra render that covered that doubled the frame. The backdrop was fitted for this step under the title card, so the
+      // step itself is a swap: stageReady.ts, warmup-5m 2026-11-01)
+      this.resizeDue = true;
     }
     perfNote(`slow: stepped down (quality ${this.quality}, polish ${polishEnabled() ? polishTier() : 'off'})`);
   }
@@ -1074,6 +1076,23 @@ export class GameEngine {
   }
 
   /** where the next frame draws: the camera and the device pixels per scene unit (stageReady.ts fits the backdrop strips to them) */
+  /** a quality step waits for the next frame's draw to resize the canvas */
+  private resizeDue = false;
+
+  /** the device scale (as viewNow's k) at each lighter quality step the governor could still take, where it differs from now's */
+  public stepKs(): number[] {
+    const now = this.renderDpr();
+    const q = this.quality;
+    const out: number[] = [];
+    for (let n = q + 1; n <= 2; n++) {
+      this.quality = n;
+      const d = this.renderDpr();
+      if (Math.abs(d - now) > 1e-6 && !out.some((k) => Math.abs(k - d * this.zoom) < 1e-6)) out.push(d * this.zoom);
+    }
+    this.quality = q;
+    return out;
+  }
+
   public viewNow(): { x: number; y: number; vw: number; vh: number; k: number } {
     return { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight, k: this.renderDpr() * this.zoom };
   }
@@ -1240,6 +1259,11 @@ export class GameEngine {
       }
       if (!this.isPaused && this.hitstopTimer <= 0 && recorder.on) this.watchGlitches(now);
 
+      // (a quality step from the last frame: the canvas takes its new size now, then this frame draws it)
+      if (this.resizeDue) {
+        this.resizeDue = false;
+        this.resizeCanvas();
+      }
       const r0 = timed ? performance.now() : 0;
       this.render();
       const tDraw = timed ? performance.now() - r0 : 0;
@@ -1259,8 +1283,7 @@ export class GameEngine {
         if (recorder.on) recorder.glitch('quality', `q${this.quality}→${this.quality - 1} steady avg ${Math.round(this.gov.lastAvg)}ms`);
         this.quality--;
         noteStepUp(this.quality, performance.now());
-        this.resizeCanvas();
-        this.render();
+        this.resizeDue = true;
         perfNote(`steady: stepped up (quality ${this.quality})`);
       }
       this.failStreak = 0;
@@ -2292,6 +2315,11 @@ export class GameEngine {
       }
       // (eased, so meeting a wall and leaving it never pops the drawing sideways)
       this.wallOff += (-wallSide * WALL_OFF - this.wallOff) * Math.min(1, dt * 18);
+      // (Meeca: her frames reach past her body, so beside a wall face she is drawn out of it, never half in the dirt: meecaFaceDraw.ts)
+      if (this.mc) {
+        const want = p.climbing ? 0 : meecaFaceShift(p.x, p.y, p.height, p.facing, meecaReachNow(p, this.mc, this.kit, this.gameTime), this.platforms);
+        this.meecaOff += (want - this.meecaOff) * Math.min(1, dt * 24);
+      }
 
       // Mushrooms spring you up when you run into them, not only when you land on them
       if (!p.climbing && !p.isVineSwinging && !p.hanging) {
@@ -4461,6 +4489,8 @@ export class GameEngine {
   private stepWasAhead = false;
   /** how far (px, signed) his drawing stands off a wall he is sliding down in the air (WALL_OFF): it never moves his body */
   private wallOff = 0;
+  /** Meeca drawn this far sideways, out of a wall face beside her (meecaFaceDraw.ts) */
+  meecaOff = 0;
   private watchForStuck() {
     if (this.mc) return;
     const p = this.player;
@@ -6216,7 +6246,7 @@ export class GameEngine {
     // Render Hero Sloth
     heroClipsLive(true);
     // (and in World 5 a wobble while he pulls against the silk on him: w5Play.ts wobble)
-    const drawOff = this.wallOff + (this.w5?.wobble(this.gameTime) ?? 0);
+    const drawOff = (this.mc ? this.meecaOff : this.wallOff) + (this.w5?.wobble(this.gameTime) ?? 0);
     const shiftOff = Math.abs(drawOff) > 0.3;
     if (shiftOff) {
       ctx.save();
