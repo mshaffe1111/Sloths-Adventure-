@@ -83,6 +83,15 @@ In-play words never cover:
   no clear spot, never him or the HUD, and prints each case. That is a decision for the lead and Matt (camera framing on narrow
   phones, or a shorter line), not a pass.
 
+- 2026-11-01 (the lead, from a fix-petals still): a petal flying to the counter drew over "flowers" in Dot's 1-2 tip. The fly layer
+  was inside the HUD's own layer (`.vh`, z 35), so its z-index only counted inside the HUD. It is now beside the HUD at z 33: above
+  the world (the canvas), under Dot's words (34) and the HUD (35). Proof: a red marker in the fly layer at the box's middle paints
+  red before and parchment after (`1-2-flowers-zorder-*.jpg`). Check the paint order with a pixel, not `elementFromPoint` (it skips
+  layers that take no touches).
+- Open (2026-11-01): a long two-line line (1-2's "smell the flowers", 403 px wide sideways) has no clear spot while Pokey is at the
+  left of the screen: the way ahead spans x 120-510. It grazes the way ahead by 14 px and sits over a petal. Fix to try: when nothing
+  is clear, measure it again narrower (three lines) and place that.
+
 ## Tried and didn't work
 - Playwright's `recordVideo` with `isMobile`: the page is drawn at 60% inside a padded frame. Use timed screenshots.
 - A small penalty (6e4) for the floor under his feet: the quadratic distance cost outweighed it; distance had to go linear.
