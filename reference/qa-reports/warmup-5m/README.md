@@ -56,6 +56,24 @@ in every build, so frame pacing means nothing there. The 4x runs still show the 
 (At 4x the whole stage start runs past the 6.5 s ready deadline. The first after-build skipped the warm frame there, so it now runs past
 the deadline too; the table is from that build.)
 
+### What the remaining 100-270 ms frames are (lead's check, 12:15 PM)
+
+- **About 4 s in: the frame governor.** It starts judging at 4 s (`GOV_WARMUP_MS`), finds headless frames over 40 ms and steps the
+  picture down, q0 to q1 (then q2). The step resizes the canvas and re-fits the backdrop strips (`stepQuality`, `resizeCanvas`,
+  `drawFitted`: about 130 ms of the profile). The quality per frame was logged alongside the gaps: the hitch lands on the change from 0
+  to 1.
+- **The others (117-217 ms, in the first 2 s):** these are the container, not first draws. On the dev build, the same page played the
+  same stage a second time, forced to q0 (everything already decoded, uploaded and baked):
+
+| Stage | First play (cold), frames over 100 ms | Second play (warm, q0), frames over 100 ms |
+|---|---|---|
+| 1-1 | 133 at 1.6 s | 133 at 0.4 s |
+| 8-1 | 433, 117, 117 in the first 0.9 s | 150, 133 at 2.6-2.8 s |
+| 5-M | 217, 250, 200 in the first 0.7 s | 117 (x7), 217, 133 through the first 1.7 s |
+
+  The warm play has frames over 100 ms too, so this container's software raster can't draw q0 under 100 ms every frame. That is the
+  container, not the game. (8-1's 433 ms cold frame was on the dev build only; the production runs' worst on 8-1 was 100-200 ms.)
+
 ### Left over, named plainly
 
 - **A 100-270 ms hitch about 4 s into every stage here.** The profile shows `stepQuality` (engine.ts 981), `resizeCanvas` and a
@@ -101,7 +119,10 @@ Easy and Normal). `tools/qa/meecaVisible.cjs` results are below.
   and goes back to zero when she leaves. Pass.
 - **She doesn't look pushed off the wall.** The shift is only as much as her picture overlapped; the test allows at most 4 px of gap, and
   the still shows her touching the post. Pass.
-- **Named, not fixed:** with her no longer covering it, the pale wooden post at the foot of room 5's bank face shows its full height
-  (`room5-upright-zoom.jpg`, right of her). It is the stage's existing art, and it reads as a post at the wall's foot, but it is lighter
-  than the dirt around it. Matt may want to look at it.
+- **The pale sliver beside her, fixed** (lead's check, 12:15 PM). What it was: World 5's kit tree trunk (`kits/w5.webp` 'wall'),
+  which `protoArt.ts` draws behind every bank face that rises from a floor more than 150 below (`isWall`), starting 14 units left of the
+  face. The bank's soil covers all of the trunk except those 14 units, so only a thin pale strip of its root flare showed, glued to her
+  side once she stood clear of the face. In World 5 the trunk piece is now cut to the face (one rectangle clip), so the face is clean
+  soil (`room5-upright-zoom.jpg`, `room5-sideways-zoom.jpg`). The same sliver logic exists in the other worlds' kits; I didn't change
+  those.
 - **First frames:** the table above. No frozen first frame on 1-1 or 8-1. The start can be up to 0.4 s later, behind the title card.
