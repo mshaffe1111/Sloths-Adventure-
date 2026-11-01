@@ -1,0 +1,174 @@
+{
+ "tag": "hfbd2-S1",
+ "note": "upright skies, tallstart starts",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1sunrise-tall-s58",
+   "pre": "none",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5ee9de30e0726309bc4cee13f7f15c7d9096be55/tools/art/hfbatch/starts/sky/w1sunrise-tall.webp",
+   "h": 1750,
+   "strength": 0.58,
+   "seed": 7,
+   "steps": 26,
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a sunrise open sky with a few soft painted clouds, pale gold and blue above, the far distance of the scene below, one continuous picture",
+   "neg": "second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry"
+  },
+  {
+   "name": "w1kapok-tall-s58",
+   "pre": "none",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5ee9de30e0726309bc4cee13f7f15c7d9096be55/tools/art/hfbatch/starts/sky/w1kapok-tall.webp",
+   "h": 1750,
+   "strength": 0.58,
+   "seed": 7,
+   "steps": 26,
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. the great kapok tree's leafy green canopy overhead with lilac orchids, patches of blue sky between the leaves above, the far distance of the scene below, one continuous picture",
+   "neg": "second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry"
+  },
+  {
+   "name": "w3sinkhole-tall-s58",
+   "pre": "none",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5ee9de30e0726309bc4cee13f7f15c7d9096be55/tools/art/hfbatch/starts/sky/w3sinkhole-tall.webp",
+   "h": 1750,
+   "strength": 0.58,
+   "seed": 7,
+   "steps": 26,
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. the grey-green rock wall of the sinkhole rising overhead with hanging vines, misty above, the far distance of the scene below, one continuous picture",
+   "neg": "second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry"
+  },
+  {
+   "name": "w6dawn-tall-s58",
+   "pre": "none",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5ee9de30e0726309bc4cee13f7f15c7d9096be55/tools/art/hfbatch/starts/sky/w6dawn-tall.webp",
+   "h": 1750,
+   "strength": 0.58,
+   "seed": 7,
+   "steps": 26,
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a pale pink dawn sky over the swamp, the dark mangrove trees and hanging moss rising out of the top above, the far distance of the scene below, one continuous picture",
+   "neg": "second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry"
+  },
+  {
+   "name": "w7-tall-s58",
+   "pre": "none",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5ee9de30e0726309bc4cee13f7f15c7d9096be55/tools/art/hfbatch/starts/sky/w7-tall.webp",
+   "h": 1750,
+   "strength": 0.58,
+   "seed": 7,
+   "steps": 26,
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a grey-green overcast sky over the jungle ruins, soft clouds above, the far distance of the scene below, one continuous picture",
+   "neg": "second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry"
+  },
+  {
+   "name": "w7dawn-tall-s58",
+   "pre": "none",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5ee9de30e0726309bc4cee13f7f15c7d9096be55/tools/art/hfbatch/starts/sky/w7dawn-tall.webp",
+   "h": 1750,
+   "strength": 0.58,
+   "seed": 7,
+   "steps": 26,
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a warm pale dawn sky over the ruins, the great carved tree and its leaves rising out of the top above, the far distance of the scene below, one continuous picture",
+   "neg": "second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry"
+  },
+  {
+   "name": "w7dusk-tall-s58",
+   "pre": "none",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5ee9de30e0726309bc4cee13f7f15c7d9096be55/tools/art/hfbatch/starts/sky/w7dusk-tall.webp",
+   "h": 1750,
+   "strength": 0.58,
+   "seed": 7,
+   "steps": 26,
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a dim green-gold dusk sky over the ruins, soft clouds above, the far distance of the scene below, one continuous picture",
+   "neg": "second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry"
+  },
+  {
+   "name": "w5dusk2-tall-s58",
+   "pre": "none",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5ee9de30e0726309bc4cee13f7f15c7d9096be55/tools/art/hfbatch/starts/sky/w5dusk2-tall.webp",
+   "h": 1750,
+   "strength": 0.58,
+   "seed": 7,
+   "steps": 26,
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a pink and lilac dusk open sky with a few soft painted clouds, orchid branches at the edges above, the far distance of the scene below, one continuous picture",
+   "neg": "second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry"
+  },
+  {
+   "name": "w5twi1-tall-s58",
+   "pre": "none",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5ee9de30e0726309bc4cee13f7f15c7d9096be55/tools/art/hfbatch/starts/sky/w5twi1-tall.webp",
+   "h": 1750,
+   "strength": 0.58,
+   "seed": 7,
+   "steps": 26,
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a lilac and violet twilight sky with soft clouds, dark tree tops at the edges above, the far distance of the scene below, one continuous picture",
+   "neg": "second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry"
+  },
+  {
+   "name": "w5twi2-tall-s58",
+   "pre": "none",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5ee9de30e0726309bc4cee13f7f15c7d9096be55/tools/art/hfbatch/starts/sky/w5twi2-tall.webp",
+   "h": 1750,
+   "strength": 0.58,
+   "seed": 7,
+   "steps": 26,
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a lilac and violet twilight sky with soft clouds, dark tree tops at the edges above, the far distance of the scene below, one continuous picture",
+   "neg": "second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry"
+  }
+ ]
+}

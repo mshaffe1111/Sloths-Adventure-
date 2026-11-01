@@ -1,0 +1,58 @@
+{
+ "tag": "hfbd2-hd-F51",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1sunrise-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/736d8758890c898e41e0bb5a57df15d36a47f569/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1sunrise-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over a sea of rainforest canopy seen from a high branch, layered green tree crowns and misty valleys, a flowering branch with white orchids at the edges, warm gold and pink sunrise light, rich colour, strong contrast. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w5twi1-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/736d8758890c898e41e0bb5a57df15d36a47f569/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w5twi1-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a lilac twilight over rolling orchid hills: dark tree silhouettes at the edges, white orchids in the foreground, violet twilight, dark silhouettes, rich colour. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w7dawn-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/736d8758890c898e41e0bb5a57df15d36a47f569/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w7dawn-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: jungle temple ruins at dawn: a giant carved tree with a stone face, tall stepped towers rising from mist, warm pale gold dawn light, strong contrast. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  }
+ ]
+}

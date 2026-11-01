@@ -1,0 +1,85 @@
+{
+ "tag": "hfbd2-F3",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+ "items": [
+  {
+   "name": "w10storm-tall-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: the mountain summit at night in a thunderstorm: jagged dark peaks under churning storm clouds lit from inside by lightning, grey rain curtains sweeping across, a cold blue glow, cold blue-violet storm light, wet rock gleaming. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w10storm-tall-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: the mountain summit at night in a thunderstorm: jagged dark peaks under churning storm clouds lit from inside by lightning, grey rain curtains sweeping across, a cold blue glow, cold blue-violet storm light, wet rock gleaming. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w10storm-tall-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: the mountain summit at night in a thunderstorm: jagged dark peaks under churning storm clouds lit from inside by lightning, grey rain curtains sweeping across, a cold blue glow, cold blue-violet storm light, wet rock gleaming. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w10storm-tall-59",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: the mountain summit at night in a thunderstorm: jagged dark peaks under churning storm clouds lit from inside by lightning, grey rain curtains sweeping across, a cold blue glow, cold blue-violet storm light, wet rock gleaming. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 59,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w10gale-tall-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a grey gale over the high mountain pass: steep grey cliffs and peaks half hidden in blowing cloud and slanting rain, a far rope bridge between two peaks, flat grey gale light, cold and wet. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w10gale-tall-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a grey gale over the high mountain pass: steep grey cliffs and peaks half hidden in blowing cloud and slanting rain, a far rope bridge between two peaks, flat grey gale light, cold and wet. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w10gale-tall-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a grey gale over the high mountain pass: steep grey cliffs and peaks half hidden in blowing cloud and slanting rain, a far rope bridge between two peaks, flat grey gale light, cold and wet. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w10gale-tall-59",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a grey gale over the high mountain pass: steep grey cliffs and peaks half hidden in blowing cloud and slanting rain, a far rope bridge between two peaks, flat grey gale light, cold and wet. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 59,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  }
+ ]
+}

@@ -43,14 +43,16 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 
 | Method | File | Status | Writes/updates it next |
 |---|---|---|---|
-| Hugging Face art, all kinds (models, starts, img2img settings, seeds, keying, edges, sizes, budget log, getting files back without the token) | `hf-art.md` | to write from today's work | hf-backdrops2 (11-01) |
-| Painted backdrop strips (far/sky/middle/near, both orientations, FAR_BY_STAGE) | `hf-backdrops.md` | to write; source: reference/prop-sheets/qa-notes/hf-backdrops/NEXT.md, tools/art/hfbackdrops/ | hf-backdrops2 (11-01) |
+| Hugging Face art, all kinds (models, starts, img2img settings, seeds, keying, edges, sizes, budget log, getting files back without the token) | `hf-art.md` | written 11-01 (hf-backdrops2) | next HF helper |
+| Painted backdrop strips (far/sky/middle/near, both orientations, FAR_BY_STAGE, floor.py depth floor) | `hf-backdrops.md` | written 11-01 (hf-backdrops2) | next backdrop helper |
 | Building a stage or a world (generator sections, variety, teaching, curation) | `stage-build.md` | the rules are in STAGE-RULES.md; the method (order of work, tools) to write | next stage helper |
-| Fixing an unfair spot (first-timer bots, real-engine repro, fail-before/pass-after test) | `stage-fix.md` | to write | w8-rope2 (11-01) |
-| A menu screen or pop-up (nav kit, Back, safe areas, save states to shoot, clipcheck) | `menu-screen.md` | written 11-01 (whatsnew) | whatsnew (11-01) |
-| Player-facing words (Pokey/Dot voice, per-item lines not templates, no repeats, approval) | `player-text.md` | written 11-01 (journal-voice) | journal-voice (11-01) |
-| Measuring performance (frame times, first frames, throttling, what this container can't measure) | `perf-measure.md` | written 11-01 (warmup-5m) | warmup-5m (11-01) |
-| Gates (artcheck, drawcheck, clipcheck, playerText, art-use) | `gates.md` | to write | kaizen-gates (11-01) |
+| Fixing an unfair spot (check the ruler first, first-timer bots, real-engine repro, fail-before/pass-after test, stage hashes) | `stage-fix.md` | written 11-01 (w8-rope2 + bot-fix + fix-petals) | next stage-fix helper |
+| A menu screen or pop-up (nav kit, Back, safe areas, save states to shoot, clipcheck) | `menu-screen.md` | written 11-01 (whatsnew) | next menu helper |
+| Player-facing words (Pokey/Dot voice, per-item lines not templates, no repeats, approval) | `player-text.md` | written 11-01 (journal-voice) | next writing job |
+| Measuring performance (frame times, first frames, throttling, what this container can't measure) | `perf-measure.md` | written 11-01 (warmup-5m) | next perf job |
+| In-play words on screen (Dot's box, thought bubbles: keep-outs, draw order) | `in-play-text.md` | written 11-01 (dot-box) | next in-play UI job |
+| Painted icons (satchel recipe, one object per meaning, sizes, icon register) | `icons.md` | written 11-01 (icons-painted) | icons-painted (B-E) |
+| Gates (artcheck, drawcheck, clipcheck, playerText, art-use, knowncheck) | `gates.md` | written 11-01 (kaizen-gates) | whoever adds a gate |
 | Test link and release (build.py, Artifact publish limits, release branch, PR, deploy and APK check) | `test-link-and-release.md` | to write; source: HANDOFF §6-7 | the lead (11-01) |
 | Cutscene art and clips | `hf-cutscenes.md` | to write; source: tools/art/hfstory, the hf-cutscenes branch notes | next cutscene helper |
 | Props and sprite sheets (cutting, atlases, art-use) | `hf-props.md` | to write; source: tools/art/hfbatch, prop-sheets | next props helper |

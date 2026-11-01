@@ -1,0 +1,58 @@
+{
+ "tag": "hfbd2-F6",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+ "items": [
+  {
+   "name": "w1sunrise-tall6-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over the rainforest seen from a high branch: big dark silhouetted rainforest trees and emergent crowns in the middle distance, layered ridges of green canopy behind, a blazing gold and pink sunrise sky with bold coloured clouds, a flowering branch with white orchids at one edge, rich saturated sunrise colour, strong contrast, deep green shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w1sunrise-tall6-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over the rainforest seen from a high branch: big dark silhouetted rainforest trees and emergent crowns in the middle distance, layered ridges of green canopy behind, a blazing gold and pink sunrise sky with bold coloured clouds, a flowering branch with white orchids at one edge, rich saturated sunrise colour, strong contrast, deep green shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w1sunrise-tall6-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over the rainforest seen from a high branch: big dark silhouetted rainforest trees and emergent crowns in the middle distance, layered ridges of green canopy behind, a blazing gold and pink sunrise sky with bold coloured clouds, a flowering branch with white orchids at one edge, rich saturated sunrise colour, strong contrast, deep green shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w1sunrise-tall6-59",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over the rainforest seen from a high branch: big dark silhouetted rainforest trees and emergent crowns in the middle distance, layered ridges of green canopy behind, a blazing gold and pink sunrise sky with bold coloured clouds, a flowering branch with white orchids at one edge, rich saturated sunrise colour, strong contrast, deep green shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 59,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w1sunrise-tall6-71",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over the rainforest seen from a high branch: big dark silhouetted rainforest trees and emergent crowns in the middle distance, layered ridges of green canopy behind, a blazing gold and pink sunrise sky with bold coloured clouds, a flowering branch with white orchids at one edge, rich saturated sunrise colour, strong contrast, deep green shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 71,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  }
+ ]
+}

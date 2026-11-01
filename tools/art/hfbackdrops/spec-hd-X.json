@@ -1,0 +1,128 @@
+{
+ "tag": "hfbd2-hd-X",
+ "note": "hf-backdrops native-resolution pass",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w10gale-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e7d83a1c2c013d2157b5a813b4489309f98aa360/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w10gale-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a windswept mountain pass: leaning rock pillars, broken stone stairs, tattered prayer flags on poles, a crooked bent pine, flat grey gale light, cold and wet",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10gale-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e7d83a1c2c013d2157b5a813b4489309f98aa360/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w10gale-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. grey rocks, wind-flattened grass and loose stones, flat grey gale light, cold and wet",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10storm-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e7d83a1c2c013d2157b5a813b4489309f98aa360/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w10storm-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. bare mountain crags in a night storm: jagged wet rock spires, an old stone watchtower with one lit window, iron lamp posts with chains swinging, rain streaming off the rocks, cold blue-violet storm light, wet rock gleaming",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10storm-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e7d83a1c2c013d2157b5a813b4489309f98aa360/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w10storm-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. wet dark rocks with puddles and stone steps, cold blue-violet storm light, wet rock gleaming",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w1kapok-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e7d83a1c2c013d2157b5a813b4489309f98aa360/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1kapok-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. rainforest giants: a huge kapok tree with tall flared buttress roots and a broad rounded crown, a strangler fig with bromeliads, palms, fresh green morning light from the upper left",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w1sunrise-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e7d83a1c2c013d2157b5a813b4489309f98aa360/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1sunrise-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. rainforest trees at sunrise: a tall emergent tree with a flat-topped crown, a strangler fig, slim palms, a tree fern, low warm pink-gold sunrise light from the left",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10gale-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e7d83a1c2c013d2157b5a813b4489309f98aa360/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w10gale-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a grey gale over the high mountain pass: steep grey cliffs and peaks half hidden in blowing cloud and slanting rain, a far rope bridge between two peaks, flat grey gale light, cold and wet, open sky above, the far scenery below",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w10storm-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e7d83a1c2c013d2157b5a813b4489309f98aa360/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w10storm-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. the mountain summit at night in a thunderstorm: jagged dark peaks under churning storm clouds lit from inside by lightning, grey rain curtains sweeping across, a cold blue glow, cold blue-violet storm light, wet rock gleaming, open sky above, the far scenery below",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  }
+ ]
+}
