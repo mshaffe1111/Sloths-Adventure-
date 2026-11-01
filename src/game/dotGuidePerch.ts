@@ -329,6 +329,11 @@ export function placeBubble(
    * however far from her it is (D10, 8-2 sideways: near her, it sat on the take-off post)
    */
   law: readonly Rect[] = [],
+  /**
+   * what gives way first when nothing on the screen is clear of everything (Fold 4 open, upright, zoomed in: 1.5 jumps is the whole
+   * width): the high arc of a double jump far ahead (aheadZone above a single jump's reach). Before the thumbs, the law, the HUD, him
+   */
+  soft: readonly Rect[] = [],
 ): BubblePlace {
   const r = safe.rect;
   const gap = Math.max(34, me + 12);
@@ -354,21 +359,29 @@ export function placeBubble(
     spots.push(['above', r.y0, r.x0], ['above', r.y0, r.x1 - w], ['above', r.y0, (r.x0 + r.x1 - w) / 2]);
     if (body) spots.push(['above', body.y1 - h, back === 'l' ? body.x0 - 10 - w : body.x1 + 10], ['above', r.y0, back === 'l' ? body.x0 - 10 - w : body.x1 + 10]);
   }
+  // (with the law in force and no spot of the usual ones clear: a sweep over the whole safe area, so a clear spot is never missed)
+  const sweep = () => {
+    const step = 24;
+    for (let yy = r.y0 + tag; yy <= r.y1 - h; yy += step) for (let xx = r.x0; xx <= r.x1 - w; xx += step) spots.push(['above', yy, xx]);
+  };
+  let swept = false;
   for (let i = 0; i < spots.length; i++) {
     const [side, fixY, fixX] = spots[i];
     let x = fixX ?? (fixY !== null ? sx - w / 2 : side === 'left' ? sx - gap - w : side === 'right' ? sx + gap : sx - w / 2);
     let y = fixY ?? (side === 'above' ? sy - gap - h : side === 'below' ? sy + gap + tag : sy - h / 2);
     x = Math.max(r.x0, Math.min(r.x1 - w, x));
-    // (her name tag stands up above it: it stays under the HUD's band too, D10)
-    y = Math.max(r.y0 + tag, Math.min(r.y1 - h, y));
+    // (her name tag stands up above it: with the law in force it stays under the HUD's band too, D10)
+    y = Math.max(r.y0 + (law.length ? tag : 0), Math.min(r.y1 - h, y));
     const box = { x0: x, y0: y - tag, x1: x + w, y1: y + h };
     let cost = 0;
     // (the thumb corners and the HUD count most: nothing to read under a thumb, nothing over the hearts)
-    for (const k of safe.keepOut) cost += overlap(box, k) * 3;
+    // (with the law in force, a thumb corner loses to any spot out of them: nothing can be read under a thumb, Fold 4 open upright)
+    for (const k of safe.keepOut) if (overlap(box, k) > 0) cost += (law.length ? 5e5 : 0) + overlap(box, k) * 3;
     for (const a of avoid) cost += overlap(box, a) * 2;
     for (const a of hard) cost += overlap(box, a) * 12;
     for (const k of safe.never ?? []) if (overlap(box, k) > 0) cost += 1e7 + overlap(box, k) * 100;
     for (const a of law) if (overlap(box, a) > 0) cost += 1e6 + overlap(box, a) * 100;
+    for (const a of soft) if (overlap(box, a) > 0) cost += 3e5 + overlap(box, a) * 50;
     // (with the law in force: behind him, or the band under the HUD, before the ground under his feet, where the thumbs are and the
     // words read as part of the floor, 1-7 upright)
     if (law.length && body && box.y0 > body.y1) cost += 1.5e5;
@@ -390,6 +403,10 @@ export function placeBubble(
       bestCost = cost;
       best = { x, y, tail, at, cost };
       if (cost === 0) break;
+    }
+    if (i === spots.length - 1 && !swept && law.length && bestCost >= 1.5e5) {
+      swept = true;
+      sweep();
     }
   }
   return best!;
@@ -502,6 +519,8 @@ export function landingRects(v: GuideView, out: Rect[]): Rect[] {
  */
 export const JUMP_LEN = 290;
 export const JUMP_RISE = 190;
+/** a single jump's rise (jumpV 640 at gravUp 1900: about 108): the core of the way ahead, which words never cover even when cramped */
+export const JUMP_RISE_1 = 110;
 export const AHEAD_JUMPS = 1.5;
 
 /**
@@ -512,7 +531,7 @@ export const AHEAD_JUMPS = 1.5;
  */
 export type AheadProbe = Pick<GuideView, 'px' | 'py' | 'pw' | 'ph' | 'zoom' | 'camX' | 'camY' | 'cssW' | 'cssH' | 'facing' | 'climbing' | 'grounded' | 'vy' | 'gliding'>;
 /** (`out`: filled in place, for a caller in the frame loop that may not allocate: Meeca's thought cloud) */
-export function aheadZone(v: AheadProbe, out: Rect = { x0: 0, y0: 0, x1: 0, y1: 0 }): Rect {
+export function aheadZone(v: AheadProbe, out: Rect = { x0: 0, y0: 0, x1: 0, y1: 0 }, rise = JUMP_RISE): Rect {
   const z = v.zoom;
   const x0 = (v.px - v.camX) * z;
   const x1 = (v.px + v.pw - v.camX) * z;
@@ -530,7 +549,7 @@ export function aheadZone(v: AheadProbe, out: Rect = { x0: 0, y0: 0, x1: 0, y1: 
     const mid = (x0 + x1) / 2;
     const down = !v.grounded && (v.gliding || v.vy > 120) ? len * 0.7 : 34 * z;
     a = v.facing > 0 ? mid : mid - len;
-    b = head - JUMP_RISE * z - 12;
+    b = head - rise * z - 12;
     c = v.facing > 0 ? mid + len : mid;
     d = feet + down;
   }
@@ -612,8 +631,15 @@ export function actionRects(v: GuideView, out: Rect[]): Rect[] {
 /** everything in-play words may never cover (the law, D10), but the HUD (SafeArea.never): Pokey with room, the way ahead, the spots he acts on next */
 export function lawRects(v: GuideView, out: Rect[], room = 24): Rect[] {
   out.push(pokeyRect(v, room));
-  out.push(aheadZone(v));
+  // (the way ahead up to a single jump's reach; the high arc of a double jump above it is softAhead: it gives way first when no spot
+  // on the screen is clear of everything)
+  out.push(aheadZone(v, undefined, JUMP_RISE_1));
   return actionRects(v, out);
+}
+/** the high arc of the way ahead (a double jump's, above a single jump's reach): the first thing to give way on a cramped screen */
+export function softAhead(v: GuideView, out: Rect[]): Rect[] {
+  out.push(aheadZone(v));
+  return out;
 }
 
 /** a boss's open weak spot on screen, grown by `m` (its NOW! marker sits just above it), or null while it is closed */

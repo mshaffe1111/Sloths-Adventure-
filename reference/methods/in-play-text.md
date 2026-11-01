@@ -20,10 +20,15 @@ In-play words never cover:
 1. **Keep-outs come from one place**: `src/game/dotGuidePerch.ts` `lawRects(v, out, room)` = Pokey + `aheadZone(v)` +
    `actionRects(v)`. A new kind of "next action" (a new prop he must use) is added to `actionRects`, nowhere else. Canvas-drawn words
    (Meeca's stage) use `aheadZone(probe, out)` with a reused `out` (no allocation in the frame loop, PERFORMANCE-RULES §3 rule 1).
-2. **Placement**: `placeBubble(..., body, law)`. Law keep-outs cost 1e6 each, so any spot clear of them beats any spot that is not,
+2. **Placement**: `placeBubble(..., body, law, soft)`. Law keep-outs cost 1e6 each, so any spot clear of them beats any spot that is not,
    however far from the speaker; distance is linear (150/px) once the law is in force; a spot under his feet costs 1.5e5 (behind him,
    then the top band under the HUD, before the floor). Candidate spots: the sides of the speaker, beside Pokey, behind him at his
-   height, the top band at both ends and the middle.
+   height, the top band at both ends and the middle; and when none of those is clear, a 24 px sweep of the whole safe area, so a
+   clear spot is never missed. **When nothing on the screen is clear of everything** (Fold 4 open upright, zoomed in: 1.5 jumps is
+   the whole width), what gives way, first to last: the high arc of a double jump far ahead (`softAhead`, above a single jump's
+   reach, 3e5), the edge of a thumb corner (5e5), then nothing else: the core way ahead (to a single jump's reach) and the action
+   points (1e6), the HUD (1e7) and Pokey (1e8) never. The test proves the soft ones give way only when a brute-force search finds no
+   fully clear spot.
 3. **Once up, it moves, it never blinks**: a re-check (every 250 ms, at most every 0.8 s) moves the box off whatever has come under it
    without the speaker leaving (`placeBub(p, true)`); while Dot flies after him the box stays where it is (`Plan.follow`). Only a box
    that was clear and now is not moves (a box with nowhere clear does not hop about).
@@ -53,6 +58,10 @@ In-play words never cover:
   went down and up again elsewhere (a blink). Move the box, keep the speaker.
 - 2026-11-01: hanging from the rope, the box behind him (correct by "away from travel") sat on the take-off post: the post he left is
   still his to fall back to. Both posts while he hangs.
+- 2026-11-01: the test's copy of the placement must pass exactly what DotGuide passes (it missed `soft` once and "found" a bug
+  that wasn't in the game). Keep `placeAt` in dotBox.test.ts in step with DotGuide.tsx placeBub/hardNow.
+- 2026-11-01: the name tag clamp (box top >= safe top + tag) only with the law in force: without it, dotGuide.test.ts's old thumb
+  test moved into a thumb corner (the box was pushed onto the speaker).
 - 2026-11-01: the name tag stands 14 px above the box: clamp the box's top to the safe area plus the tag, or the tag sits in the HUD.
 - The shooter: teleporting skips the stage's opening lines but not their queue (wait for Dot to be quiet first); story asides and
   zone lines ("So dark...") queue ahead (mark them heard); a note pickup opens over the stage (mark finds found); on Help, standing

@@ -26,6 +26,9 @@ import {
   hoverSpot,
   landingRects,
   lawRects,
+  softAhead,
+  aheadRect,
+  JUMP_RISE_1,
   placeBubble,
   pokeyRect,
   setGuideSafeArea,
@@ -81,36 +84,76 @@ function bubbleSize(text: string, w: number, h: number): { bw: number; bh: numbe
 
 const hit = (a: Rect, b: Rect) => a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0;
 
-/** where her bubble goes for this line at this moment, as DotGuide.tsx does it */
+/** where her bubble goes for this line at this moment, as DotGuide.tsx does it (placeBub, hardNow) */
 function placeAt(v: GuideView, text: string, topic: Parameters<typeof findTarget>[0], safe: SafeArea): Rect {
   const { bw, bh } = bubbleSize(text, v.cssW, v.cssH);
   const law = lawRects(v, [], 24);
-  const hard = [pokeyRect(v, 24), ...landingRects(v, [])];
-  const avoid = dangerRects(v, []);
-  avoid.push(pokeyRect(v));
-  landingRects(v, avoid);
-  const body = pokeyRect(v, 24);
+  const soft = softAhead(v, []);
   const target = findTarget(topic, v);
+  // (hardNow: him with room, the landings, the thing she points at)
+  const hard = [pokeyRect(v, 24), ...landingRects(v, [])];
+  if (target) {
+    const tx = (target.x - v.camX) * v.zoom;
+    const ty = (target.y - v.camY) * v.zoom;
+    const r = Math.max(18, Math.min(40, target.r * v.zoom)) + 22;
+    hard.push({ x0: tx - r, y0: ty - r - 16, x1: tx + r, y1: ty + r });
+  }
+  const body = pokeyRect(v, 24);
+  const rects = (hover: boolean) => {
+    const a = dangerRects(v, []);
+    a.push(pokeyRect(v));
+    if (hover) a.push(aheadRect(v));
+    return landingRects(v, a);
+  };
   const perch = target && topic !== 'controls' ? choosePerch(v, target, safe) : null;
   if (perch) {
     const sx = (perch.x - v.camX) * v.zoom;
     const sy = (perch.y - v.camY) * v.zoom - 22;
-    const b = placeBubble(sx, sy, bw, bh, safe, avoid, ['above', 'left', 'right', 'below'], 36, hard, 30, body, law);
+    const b = placeBubble(sx, sy, bw, bh, safe, rects(false), ['above', 'left', 'right', 'below'], 36, hard, 30, body, law, soft);
     if ((b.cost ?? 0) === 0) return { x0: b.x, y0: b.y - BUBBLE_TAG_H, x1: b.x + bw, y1: b.y + bh };
   }
   const h = hoverSpot(v);
-  const b = placeBubble(h.x, h.y, bw, bh, safe, [...avoid, aheadZone(v)], hoverOrder(v), 36, hard, 30, body, law);
+  const b = placeBubble(h.x, h.y, bw, bh, safe, rects(true), hoverOrder(v), 36, hard, 30, body, law, soft);
   return { x0: b.x, y0: b.y - BUBBLE_TAG_H, x1: b.x + bw, y1: b.y + bh };
 }
 
-/** checks a placed bubble against the law at this moment: Pokey, the way ahead, the spot he acts on next, the HUD */
-function lawBroken(v: GuideView, box: Rect, band: number): string | null {
+/**
+ * is there any spot on the screen (8 px steps) where a bubble this size covers none of it: him (with room), the whole way ahead, the
+ * spots he acts on next, the HUD's band, the thumb corners?
+ */
+function clearSpotExists(v: GuideView, bw: number, bh: number, band: number): boolean {
+  const all = [...lawRects(v, [], 24), aheadZone(v), ...fallbackSafeArea(v.cssW, v.cssH).keepOut];
+  for (let y = band; y + bh + BUBBLE_TAG_H <= v.cssH - 10; y += 8) {
+    for (let x = 16; x + bw <= v.cssW - 16; x += 8) {
+      const b = { x0: x, y0: y, x1: x + bw, y1: y + bh + BUBBLE_TAG_H };
+      if (!all.some((k) => hit(b, k))) return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * checks a placed bubble against the law at this moment: Pokey, the way ahead, the spot he acts on next, the HUD, the thumbs. The way
+ * ahead up to a single jump's reach always; its high arc (a double jump's, above that) unless no spot on the screen is clear of
+ * everything (then it is the first to give way, and the test says so)
+ */
+function lawBroken(v: GuideView, box: Rect, band: number, cramped: { n: number }): string | null {
   if (hit(box, pokeyRect(v, 0))) return 'covers Pokey';
-  if (hit(box, aheadZone(v))) return 'covers the way ahead (1.5 jumps)';
+  if (hit(box, aheadZone(v, undefined, JUMP_RISE_1))) return 'covers the way ahead (1.5 jumps, a single jump high)';
+  if (hit(box, aheadZone(v))) {
+    if (clearSpotExists(v, box.x1 - box.x0, box.y1 - box.y0 - BUBBLE_TAG_H, band)) return 'covers the high arc of the way ahead, with a clear spot on the screen';
+    cramped.n++;
+  }
   const act = actionRects(v, []);
   const i = act.findIndex((a) => hit(box, a));
   if (i >= 0) return `covers the spot he acts on next (${JSON.stringify(act[i])})`;
   if (box.y0 < band) return `under the HUD (top ${Math.round(box.y0)}, the HUD to ${Math.round(band)})`;
+  // (and out of the thumb corners: nothing can be read under a thumb)
+  const k = fallbackSafeArea(v.cssW, v.cssH).keepOut.find((q) => hit(box, q));
+  if (k) {
+    if (clearSpotExists(v, box.x1 - box.x0, box.y1 - box.y0 - BUBBLE_TAG_H, band)) return `in a thumb corner (${JSON.stringify(k)}), with a clear spot on the screen`;
+    cramped.n++;
+  }
   return null;
 }
 
@@ -135,6 +178,8 @@ const MOMENTS: readonly Moment[] = [
 for (const m of MOMENTS) {
   test(`${m.stage}: Dot's tip "${m.hint}" keeps off Pokey, the way ahead, the spot he acts on next and the HUD, on every screen`, () => {
     let checked = 0;
+    // (screens where nothing was clear of everything, and the high arc or a thumb corner's edge gave way: named, never more than two)
+    const cramped = { n: 0 };
     for (const [name, w, h] of SCREENS) {
       const sim = new RealPlay(m.stage, m.layout);
       const e = sim.e as unknown as Record<string, any>;
@@ -153,7 +198,7 @@ for (const m of MOMENTS) {
       setGuideSafeArea(() => safe);
       try {
         const box = placeAt(v, line.text, line.topic, safe);
-        const why = lawBroken(v, box, safe.band);
+        const why = lawBroken(v, box, safe.band, cramped);
         assert.equal(why, null, `${m.stage} ${name} ${w}x${h}: "${line.text}" ${why}; bubble ${JSON.stringify(box)}, Pokey ${JSON.stringify(pokeyRect(v, 0))}`);
         // (and it is on the screen, to read)
         assert.ok(box.x0 >= 0 && box.x1 <= w && box.y1 <= h, `${m.stage} ${name}: off the screen ${JSON.stringify(box)}`);
@@ -163,6 +208,8 @@ for (const m of MOMENTS) {
       }
     }
     assert.equal(checked, SCREENS.length);
+    assert.ok(cramped.n <= 2, `${m.stage}: the high arc or a thumb corner gave way on ${cramped.n} screens`);
+    if (cramped.n) console.log(`${m.stage}: on ${cramped.n} screen(s) nothing was clear of everything; the high arc of a double jump or a thumb corner's edge gave way`);
   });
 }
 
