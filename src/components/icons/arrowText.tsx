@@ -1,6 +1,5 @@
 import { TextGlyph } from './TextGlyph.tsx';
 import React from 'react';
-import { Icon } from './index.tsx';
 
 export type ArrowDir = 'l' | 'r' | 'u' | 'd';
 export type ArrowPiece = { text: string } | { arrow: ArrowDir };
