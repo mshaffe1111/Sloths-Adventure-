@@ -7,9 +7,17 @@ const out = process.argv[2]; fs.mkdirSync(out, { recursive: true });
 const tabs = (process.argv[3] || 'Finds,Trophies,Creatures,Scenes').split(',');
 const b = await chromium.launch();
 const errs = [];
-for (const save of (process.env.SAVES || 'old,fresh').split(',')) for (const [tag, w, h] of [['up', 412, 915], ['side', 915, 412]]) {
+// SIZES=side:915x412,side844:844x390 picks the sizes; INSETS=48 sets a sideways notch of that many px on both sides (Chrome's own
+// safe-area override, so env(safe-area-inset-*) gets real numbers, like tools/perf/clipcheck.mjs) plus a 21 px gesture bar
+const SIZES = (process.env.SIZES || 'up:412x915,side:915x412').split(',').map((t) => { const [tag, wh] = t.split(':'); const [w, h] = wh.split('x').map(Number); return [tag, w, h]; });
+const NOTCH = Number(process.env.INSETS || 0);
+for (const save of (process.env.SAVES || 'old,fresh').split(',')) for (const [tag, w, h] of SIZES) {
   const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 2, hasTouch: true, isMobile: true, reducedMotion: 'reduce' });
   p.on('pageerror', (e) => errs.push(String(e)));
+  if (NOTCH && w > h) {
+    const cdp = await p.context().newCDPSession(p);
+    await cdp.send('Emulation.setSafeAreaInsetsOverride', { insets: { top: 0, bottom: 21, left: NOTCH, right: NOTCH } });
+  }
   await p.addInitScript((save) => {
     localStorage.setItem('sloth_mode_picked', '1');
     if (save !== 'old') return;
@@ -33,6 +41,10 @@ for (const save of (process.env.SAVES || 'old,fresh').split(',')) for (const [ta
     });
     const subs = await p.evaluate(() => [...document.querySelectorAll('.tr-sub')].map((e) => e.textContent.trim()).join(' | '));
     console.log('   ', subs);
+    if (NOTCH && w > h) {
+      const inBand = await p.evaluate((n) => [...document.querySelectorAll('.sh-head button, .tr-card, .ss-row, .ss-all, .jb-arrow, .st-medal')].filter((e) => { const q = e.getBoundingClientRect(); return q.width && q.top < innerHeight && q.bottom > 0 && (q.left < n - 1 || q.right > innerWidth - n + 1); }).map((e) => (e.textContent || e.getAttribute('aria-label') || '').trim().slice(0, 20)), NOTCH);
+      console.log('    in the notch band:', inBand.length ? JSON.stringify(inBand) : 'none');
+    }
     console.log(save, tag, t, bad.length ? 'CLIPPED ' + JSON.stringify(bad.slice(0, 6)) : 'ok');
   }
   await p.close();
