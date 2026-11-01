@@ -46,6 +46,9 @@ badge. Matt, 2026-11-01: "The satchel looks great but look at the other art. Gen
 - `groupA/picks.jpg`: every cut on green and on dark wood, with no fringe.
 
 ## Checks before reporting
+- Every shot script (tools/art/icons/shot*.mjs, mock-title.mjs) refuses to run unless HEAD contains origin/main (base.mjs, D23:
+  sheets shot on a stale base showed text Matt had already rejected), stamps the base on every screenshot and writes BASE.txt beside
+  them. Merge main before shooting; never pass ICON_SHOTS_OFFLINE=1 for evidence.
 - Shots: `node tools/art/icons/shots.mjs <dir> [screens]` covers every screen with icons, upright 412x915 and sideways 915x412, on a
   fresh and an old save.
 - Gates: `iconRegister.test.ts` (no new `<Icon>`; files under 60 KB and 4096 px), tsc, the three test shards, the build, artcheck,

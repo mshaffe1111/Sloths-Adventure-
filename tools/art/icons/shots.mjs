@@ -1,8 +1,10 @@
 // Every screen with icons, upright 412x915 and sideways 915x412, on a fresh save and an old one (tools/art/satchel-seed.js):
 //   node tools/art/icons/shots.mjs <out dir> [screen,...]     (dev server on port 4301, PORT= for another)
 import { chromium } from '/opt/node-tools/node_modules/playwright/index.mjs';
+import { requireLiveBase, stampBase, writeBase } from './base.mjs';
 import fs from 'fs';
 const out = process.argv[2]; fs.mkdirSync(out, { recursive: true });
+const BASE = requireLiveBase(); writeBase(out, BASE);
 const only = process.argv[3] ? process.argv[3].split(',') : null;
 const PORT = process.env.PORT || 4301;
 import { spawn } from 'child_process';
