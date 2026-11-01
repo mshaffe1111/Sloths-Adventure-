@@ -130,8 +130,9 @@ def finish(stem, part, hd, mode='mix5', haze=None):
               str(hd / f'pre-{n}-hd.webp'), mode)
     args = [PY, '-I', str(ROOT / 'tools/art/edges/defringe.py'), str(tmp / 'cut.webp'), str(tmp / 'edge.webp'), '--scale', '1',
             '--ink', '--px', '1.5' if part == 'mid' else '2']
-    if part == 'mid':
-        args += ['--topfade', '0.07']
+    import os
+    if part == 'mid' and os.environ.get('TOPFADE', '0.07') != '0':  # (TOPFADE=0 for a strip whose crowns are whole: the fade flattened them into one row)
+        args += ['--topfade', os.environ.get('TOPFADE', '0.07')]
     subprocess.run(args, check=True)
     far = ROOT / f'src/assets/backdrops/{stem}-far.webp'
     if not far.exists():  # (w1c, the canopy set, has no far strip of its own: its world's)
