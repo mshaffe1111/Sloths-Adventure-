@@ -16,6 +16,8 @@ export const ROPE_RISE = 146;
 export const ROPE_OVERLAP = 44;
 /** how far past a rope's end (over the ledge, beside its post) a jump still catches it (px); he is slid onto the rope's end */
 export const ROPE_GRAB = 40;
+/** how fast he slides onto a rope caught past its end (px/s): 40 px in about 3 frames, not one jump */
+export const ROPE_SLIDE = 420;
 /** the shortest gap worth a rope: wider than a double jump can clear (313 px at best), with margin */
 export const ROPE_MIN_GAP = 370;
 

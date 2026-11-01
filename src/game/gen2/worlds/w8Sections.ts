@@ -66,6 +66,9 @@ export const W8_THEME = {
   loft: 'w8:loft',
   /** 8-5: the moon flowers (GRAB-BAG.md D): a bounce in place of a climb */
   bounces: 'w8:bounces',
+  /** 8-2: blooms along the shimmy ropes (wave 2, 2026-10-31): gaps no jump crosses, hand over hand under a rope, a move 8-1 and 8-3 never
+   *  ask (their hops and jumps, their swings) */
+  ropeBlooms: 'w8:rope-blooms',
 } as const;
 
 /** the themes each lit stage's gate may open (the themed stages' gates are their own: blooms, roosts, hunts) */
@@ -845,7 +848,7 @@ const dozeDark: SectionTemplate = { ...darkBoughs, id: 'w8-dozers-dark', uses: [
 // ───────────────────────────── 8-2 Night Blooms: the harvest ─────────────────────────────
 
 /** a harvest gate: the night blooms' first bough (no animal), and the roll's theme opens */
-const bloomGate = (theme: 'highBlooms' | 'gapBlooms' | 'fungusSteps', name: string, extra: Socket[] = []): SectionTemplate =>
+const bloomGate = (theme: 'highBlooms' | 'gapBlooms' | 'fungusSteps' | 'ropeBlooms', name: string, extra: Socket[] = []): SectionTemplate =>
   section({
     id: `w8-bloom-gate-${theme}`,
     name: `night blooms: ${name} (pickups)`,
@@ -863,6 +866,7 @@ const bloomGate = (theme: 'highBlooms' | 'gapBlooms' | 'fungusSteps', name: stri
 const bloomGates = [
   bloomGate('highBlooms', 'the high boughs', [scenery('nest', 'c', [0.5, 0.7], 0.8)]),
   bloomGate('gapBlooms', 'over the gaps', [scenery('fungus', 'c', [0.5, 0.7], 0.8)]),
+  bloomGate('ropeBlooms', 'along the ropes', [scenery('nest', 'c', [0.5, 0.7], 0.8)]),
   bloomGate('fungusSteps', 'up the fungus steps', [scenery('fungus', 'c', [0.4, 0.6], 0.9)]),
 ];
 
@@ -956,6 +960,57 @@ const bloomLeap = section({
   sockets: [petals('a', 'a', 0.8, 1), foe('foe', 'b', [0.55, 0.65], [...CATS, 'tayra'], 5, { phases: LIVE }), petals('b', 'b', 0.2, 2, 80), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
   mirrorable: true,
 });
+
+/** the ledge `gap` px past `after`, a shimmy rope hung across between them (pipeline 'rope', World 9's: a gap past every jump and glide) */
+const roped = (key: string, after: string, gap: W, w: W): SectionPiece => bank(key, w, { kind: 'rope', after, gap }, { landing: true });
+
+/** rope blooms (8-2's fifth theme, wave 2): one rope over a gap no jump crosses, blooms on the far bough and a knot past it */
+const bloomRope = section({
+  id: 'w8-bloom-rope',
+  name: 'blooms past the rope (pickups)',
+  archetypes: ['harvest'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 4,
+  weight: 2,
+  uses: [W8_THEME.ropeBlooms],
+  pieces: [bank('a', [240, 280]), roped('b', 'a', [470, 510], [260, 300]), up('k', 'b', 30, [130, 150]), down('c', 'k', 30, [180, 220])],
+  last: 'c',
+  sockets: [petals('a', 'a', 0.5, 2, 90), petals('b', 'b', 0.5, 3, 70), petals('k', 'k', 0.5, 1), scenery('fungus', 'c', [0.4, 0.6], 0.6)],
+  mirrorable: false,
+});
+
+/** rope blooms: two ropes, a short bough of blooms between them */
+const bloomRopePair = section({
+  id: 'w8-bloom-rope-pair',
+  name: 'two ropes, blooms between (pickups)',
+  archetypes: ['harvest'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 5,
+  weight: 2,
+  uses: [W8_THEME.ropeBlooms],
+  pieces: [bank('a', [220, 260]), roped('b', 'a', [470, 500], [220, 260]), roped('c', 'b', [470, 510], [240, 280])],
+  last: 'c',
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 3, 60), petals('c', 'c', 0.5, 2, 80)],
+  mirrorable: false,
+});
+
+/** rope blooms: a long rope, a hunter on the far bough among the blooms */
+const bloomRopeHunter = section({
+  id: 'w8-bloom-rope-hunter',
+  name: 'the long rope, a hunter past it (pickups)',
+  archetypes: ['harvest'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  uses: [W8_THEME.ropeBlooms],
+  pieces: [bank('a', [220, 260]), roped('b', 'a', [510, 550], [320, 360]), flat('c', 'b', [180, 220])],
+  last: 'c',
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.25, 2, 70), foe('foe', 'b', [0.6, 0.7], SMALL, 3, { phases: LIVE }), petals('c', 'c', 0.5, 2, 80)],
+  mirrorable: false,
+});
+
+/** rope blooms' rest: a glade, its quiet bough */
+const ropeRest = { ...bloomRest, id: 'w8-bloom-rope-rest', weight: 3, uses: [W8_THEME.ropeBlooms] };
 
 // ───────────────────────────── 8-4 Bat Roosts: creep past the roosts ─────────────────────────────
 
@@ -1658,7 +1713,7 @@ export const W8_SECTIONS: SectionTemplate[] = [
   ...litGates, restBough, restFork, restTrunk, restTrunkKnot, restGlide, restGlideFork, ...themedRests, bloomRest,
   knotHops, boughGap, doubleGap, trunkClimb, rise, drop, climbRun, prowlBough,
   darkBoughs, darkGap, darkClimb, darkLong, ...nightSections, ...loftSections,
-  ...bloomGates, bloomClimb, bloomHigh, bloomDark, bloomGaps, bloomLeap, ...roostBlooms,
+  ...bloomGates, bloomClimb, bloomHigh, bloomDark, bloomGaps, bloomLeap, ...roostBlooms, bloomRope, bloomRopePair, bloomRopeHunter, ropeRest,
   ...roostGates, roostHollows, roostHollowGap, roostCurtains, roostCurtainGaps, roostCurtainLeap, roostProwl, roostClimb, roostTrunks, roostDark, roostLong,
   glideFirst, glidePair, glideTrunk, glideHunter, glideDark, glideLeap, glideProwl,
   glideGust, glideGustPair, glideGustHunter, batRunFirst, batRunPair, batRunGap, batRunDark, perchRun, perchClimb, perchHunter, dozeFirst, dozePair, dozeGap, dozeRest, dozeDark, fungusBlooms, fungusTall, fungusHunter, fungusGlide,
@@ -1682,6 +1737,10 @@ export const W8_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   'w8-rest-bough': [1, 3, 8, 9],
   'w8-rest-fork': [1, 3, 8, 9],
   'w8-bloom-rest': [2],
+  'w8-bloom-rope': [2],
+  'w8-bloom-rope-pair': [2],
+  'w8-bloom-rope-hunter': [2],
+  'w8-bloom-rope-rest': [2],
   'w8-rest-trunk': [5],
   'w8-night-rest': [1],
   'w8-bats-rest': [1],
