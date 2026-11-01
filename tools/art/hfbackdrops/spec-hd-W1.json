@@ -1,0 +1,27 @@
+{
+ "tag": "hfbd2-hd-W1",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1b-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/41dadfa9a0fc67c88434bccc96e98c86855e05ef/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1b-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. rainforest trees of many different shapes, soft green morning light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}
