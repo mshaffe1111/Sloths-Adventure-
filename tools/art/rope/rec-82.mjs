@@ -13,7 +13,7 @@ const b = await chromium.launch();
 for (const [tag, w, h] of [['sideways', 844, 390], ['upright', 390, 844]]) {
   for (const lead of [0, 150]) {
     const name = `8-2-rope-${tag}-${lead ? 'early' : 'edge'}`;
-    const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2, recordVideo: { dir: out, size: { width: w, height: h } } });
+    const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, recordVideo: { dir: out, size: { width: w, height: h } } });
     const p = await ctx.newPage();
     p.on('pageerror', (e) => console.log('ERR', e.message));
     await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
