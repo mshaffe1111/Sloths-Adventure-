@@ -14,6 +14,8 @@ for (const [w, h, tag] of sizes.filter((o) => !process.env.ORIENT || o[2] === pr
   await p.goto(`http://127.0.0.1:${process.env.PORT ?? 4301}/?lessons=off`);
   await p.waitForTimeout(3000);
   for (const id of stages) {
+    // (a dev server can reload the page mid-run, as it optimizes a dependency: wait for the game to be back)
+    await p.waitForFunction(() => typeof window.__play === 'function', null, { timeout: 90000 });
     await p.evaluate((id) => window.__play(id), id);
     await p.waitForTimeout(7500);
     await p.screenshot({ path: `${out}/${id}-${tag}-a.png` });
