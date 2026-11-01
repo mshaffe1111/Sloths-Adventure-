@@ -257,7 +257,7 @@ Earlier read of the same log, kept for the details:
   (target step may be unlit on landing), Easy corridor log gap before room 1 looks like the route, pit hint too late, hearts not
   picked up on Easy, chair hold inconsistent, Meeca half in the wall in room 5. Ending never reached.
 
-# Next batch (not sent yet)
+# Batch sent 2026-11-01 (G, on Matt's "send")
 
 ## G. Matt's own 5-M run, 10/31 11:35 PM ET (session 20261031-2335-bijv, rows 3034-3053, 0.9.0 build 21:52:15, Pixel, Edge, Normal)
 Finished in 5:14 (finish 314). Survey: "Missing Meeca. Falling thru floor. Repetitive. May be worst level in game. Good thought but
