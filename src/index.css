@@ -168,9 +168,6 @@
 .map-node.boss.next .map-crest { animation: crest-glow 2.6s ease-in-out infinite; }
 @keyframes crest-glow { 0%, 100% { box-shadow: 0 0 6px 0 rgba(255, 196, 70, .35); } 50% { box-shadow: 0 0 20px 5px rgba(255, 196, 70, .65); } }
 /* the stage type, as a small badge on the node's corner */
-.map-tbadge { position: absolute; right: -7px; top: -7px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #0f3b27; border: 1.5px solid #fff3c4; box-shadow: 0 2px 3px rgba(0,0,0,.5); pointer-events: none; }
-.map-node.locked .map-tbadge { opacity: .72; filter: saturate(.55); border-color: #aab6ad; }
-.map-node.done .map-tbadge { border-color: #d9ffe6; }
 /* a soft pulse ring on the stage to play next */
 .map-ring { position: absolute; z-index: 1; border-radius: 50%; border: 3px solid rgba(255, 214, 110, .85); pointer-events: none; animation: map-ring 2.4s ease-out infinite; }
 @keyframes map-ring { 0% { transform: scale(1); opacity: .85; } 100% { transform: scale(1.7); opacity: 0; } }
@@ -1754,3 +1751,6 @@
 /* How to Play: a locked move shows the painted padlock over its silhouette */
 .jr-q .pic { width: 40%; height: auto; }
 .pic.pic-rim { filter: drop-shadow(0 0 1.2px rgba(255, 240, 205, .95)) drop-shadow(0 0 1px rgba(255, 240, 205, .8)) drop-shadow(0 1.5px 1px rgba(40, 20, 5, .55)); }
+/* a locked stage on the map: the painted brass padlock on the round wood token (lead, 2026-11-01; the old kit badge was a flat padlock) */
+.map-lockdisc { display: grid; place-items: center; background: url(./assets/ui/token.webp) center / contain no-repeat; }
+.map-lockdisc .pic { filter: drop-shadow(0 1px 1px rgba(30, 15, 5, .6)); }

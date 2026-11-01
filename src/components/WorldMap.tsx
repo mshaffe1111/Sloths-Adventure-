@@ -162,7 +162,6 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   const gap = nodes.pts.length > 1 ? Math.min(...nodes.pts.slice(1).map((p, i) => Math.hypot(p.x - nodes.pts[i].x, p.y - nodes.pts[i].y))) : 80;
   const nodeSize = nodes.wide ? Math.max(34, Math.min(46, box.w / 17)) : Math.max(36, Math.min(46, gap * 0.56));
   const bossSize = Math.round(nodeSize * 1.5);
-  const badgePx = Math.max(18, Math.round(nodeSize * 0.42));
   // (each piece a little longer than the gap between them, so a rope or a chain reads as one line and stones as a row of steps)
   const trailPieces = TRAILS[activeWorldId] ?? TRAILS[1];
   const pieceLen = nodeSize * 1.15;
@@ -289,10 +288,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 ) : (
                   <>
                     {/* an extra stage between the world's own (extraStages.ts) shows whose it is, not a number: Dot's flier, Meeca's face */}
-                    {!open ? <KitPiece piece="lockBadge" width={size} className="map-lockbadge" /> : lvl.id === MEECA_STAGE_ID ? <Crest world="meeca" size={Math.round(size * 0.74)} bare /> : lvl.miniIndex > 10 ? <PaintedIcon name="pouch" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
-                    <span className="map-tbadge" style={{ width: badgePx, height: badgePx }} title={type.label}>
-                      <PaintedIcon name={paint(type.icon)} size={Math.round(badgePx * 0.95)} />
-                    </span>
+                    {!open ? <span className="map-lockbadge map-lockdisc" style={{ width: size, height: size }}><PaintedIcon name="lock" size="60%" label="Locked" /></span> : lvl.id === MEECA_STAGE_ID ? <Crest world="meeca" size={Math.round(size * 0.74)} bare /> : lvl.miniIndex > 10 ? <PaintedIcon name="pouch" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
                   </>
                 )}
               </button>
