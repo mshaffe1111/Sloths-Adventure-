@@ -110,7 +110,7 @@ Matt's weekly usage is tight. QA manages it:
   pulley, 4-6 wind shutter, 4-8 capuchin trade), against the checklist.
 - Retest when promoted: batch A items, and the earlier fixes (pause-menu memory freeze, no touch damage in boss tells, push-log wall,
   Skip tips 1.2 s, ducks, 4-7 rock glide, Meeca :line/:caught tags, camera easing, no 'blank wait').
-- Sheet last read through row 2950 (2026-10-31: Matt tyw0 on build 10-31 13:38, Pixel: 29.8 fps, 1 stall, no governor step, back to pre-v7; Kelsbob 10-30 rows ~2826-2835 and Kelsinator 2687-2694 not read; gpuprof sessions never arrived).
+- Sheet last read through row 3033 (2026-11-01: Matt 0.9.0 evaluation sent: Pixel and Samsung Fold 4 (Adreno 730, was "tablet") at 30 fps; OnePlus 24.5 fps with first-draw stalls; vines feel off per Matt; Kelsbob and Kelsinator not read).
 - 2026-10-28 evening: release PR #42 open (test link v219): Worlds 1-4 replay differently (2-4 versions per section), World 3 roots,
   stone-plate rooms, one-jump soft pits, new Jungle Cards, Dot's punch tip fixed. Coders ask: random Worlds 1-4 stages, 2-3 plays
   each, once live. Known, skip: 4-2 Easy tight jump in some versions, 1-8 dull stretch, long World 2 walks, difficulty not yet
