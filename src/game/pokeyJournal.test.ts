@@ -99,7 +99,7 @@ for (const [label, recs] of [
           assert.doesNotMatch(l, /\{\w+\}|undefined|NaN/, `${e.id}: ${l}`);
         }
         const s = stage(e.id);
-        if (!dotPresent(s.worldIndex, s.miniIndex)) {
+        if (!dotPresent(s.worldIndex, s.miniIndex) || /\bno Dot\b/i.test(e.story.join(' '))) {
           for (const l of e.notes) assert.doesNotMatch(l, /\bDot\b/, `${e.id}: a record line about Dot while she is away`);
         }
       }

@@ -387,7 +387,8 @@ export function stageEntry(stage: EntryStage, rec: PlayRecord | null, names: Ent
   if (beat) story.push(beat);
   const f: FirstClear | undefined = rec?.first;
   if (rec && f) {
-    const dot = dotPresent(stage.worldIndex, stage.miniIndex);
+    // (Dot is away from 6-6 to the end of World 7, and 6-5's own beat already says "No Dot")
+    const dot = dotPresent(stage.worldIndex, stage.miniIndex) && !/\bno Dot\b/i.test(story.join(' '));
     const quiet = QUIET_STAGES.has(id);
     let n = 0;
     for (const c of candidates(stage, rec, f, names)) {
