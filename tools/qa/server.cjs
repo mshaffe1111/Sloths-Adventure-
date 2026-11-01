@@ -22,7 +22,7 @@ fs.writeFileSync(path.join(outDir, 'server.pid'), String(process.pid));
 
 const KEYS = { left: 'ArrowLeft', right: 'ArrowRight', up: 'ArrowUp', down: 'ArrowDown', jump: 'Space', punch: 'KeyJ', kick: 'KeyK', mega: 'KeyL' };
 // short: a squat sideways screen (about 640x320) for HUD and layout checks (Matt's standing rule, 2026-10-26)
-const VIEWS = { land: { width: 844, height: 390 }, port: { width: 400, height: 720 }, short: { width: 640, height: 320 } };
+const VIEWS = { land: { width: 844, height: 390 }, port: { width: 400, height: 720 }, short: { width: 640, height: 320 }, fold: { width: 690, height: 829 } };
 let browser, page, cdp, shotN = 0, view = 'land';
 /** the steering thumb (left side) while it is down: where it went down, and where it is now */
 let steer = null;
@@ -46,7 +46,7 @@ function personaViews(p) {
   const m = dev.match(/(\d+)x(\d+)/);
   if (!m) return VIEWS;
   const w = Number(m[1]), h = Number(m[2]);
-  return { port: { width: w, height: h }, land: { width: h, height: Math.round(w * 0.9) }, short: VIEWS.short };
+  return { port: { width: w, height: h }, land: { width: h, height: Math.round(w * 0.9) }, short: VIEWS.short, fold: VIEWS.fold };
 }
 let views = VIEWS;
 // the game's dev handle: App's getter, or (while a stage starts) the engine itself, as engine.ts also sets it
@@ -55,6 +55,36 @@ const ENGINE = "(typeof __engine === 'function' ? __engine() : __engine)";
 // one phone for a run of stages: what the game saved (lessons seen, Dot's help, the beta switch) carries from stage to stage, as for
 // a real player. `fresh` (and `persona`) start a new phone with nothing saved.
 let ctx = null;
+
+// QA_WATCH=1: a per-tick watch in the page for Meeca's stage (2026-11-01, the coders' ask): (a) her hero not drawn for 100 ms+,
+// drawn at alpha < 0.05, or off the camera while play is live (needs the instrumented scratch build's window.__mh); (b) her feet passing
+// down through the top of a solid platform she was over. Hits go to window.__qa; `qahits` reads them; a still is taken after any `do`
+// that added hits.
+const WATCH = process.env.QA_WATCH === '1' ? () => {
+  window.__qa = []; let prev = null, lastHit = {};
+  setInterval(() => {
+    const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;
+    if (!e || !e.mc || !e.player || e.mc.phase !== 'play' || e.paused) { prev = null; return; }
+    const p = e.player, c = e.camera, t = Math.round((e.gameTime || 0) * 1000);
+    const ctx = { t, x: Math.round(p.x), y: Math.round(p.y), vy: Math.round(p.vy || 0), room: e.kit ? e.kit.inRoom : null, held: e.kit && e.kit.held ? String(e.kit.held.kind || e.kit.held) : null, hurt: !!(p.invuln || p.hurtTimer), climbing: !!p.climbing, cam: c ? [Math.round(c.x), Math.round(c.y)] : null };
+    const hit = (kind, more) => { if (t - (lastHit[kind] || -9999) < 400) return; lastHit[kind] = t; window.__qa.push({ kind, ...ctx, ...more }); };
+    const mh = window.__mh, last = mh && mh[mh.length - 1];
+    if (mh) {
+      if (!last || t - last[0] > 100) hit('not drawn', { lastDraw: last ? last[0] : null });
+      else if (last[4] < 0.05) hit('alpha 0', { pose: last[1] });
+      else if (last[3] === false) hit('no sprite (pink stand-in)', { pose: last[1], sheet: last[2] });
+    }
+    if (c && (p.x < c.x - 10 || p.x > c.x + c.viewportWidth + 10 || p.y < c.y - 10 || p.y - 90 > c.y + c.viewportHeight)) hit('off camera', {});
+    if (prev && !p.climbing) {
+      for (const pl of e.platforms || []) {
+        if (pl.type && pl.type !== 'solid') continue;
+        if (p.x < pl.x || p.x > pl.x + pl.width) continue;
+        if (prev.y <= pl.y + 2 && p.y > pl.y + 12 && Math.abs(p.x - prev.x) < 60) hit('fell through', { plat: [Math.round(pl.x), Math.round(pl.x + pl.width), Math.round(pl.y)], fromY: Math.round(prev.y) });
+      }
+    }
+    prev = { x: p.x, y: p.y };
+  }, 33);
+} : null;
 // the "New HUD and Dot (beta)" switch: null leaves the build's default, true/false sets it the way the pause menu does
 let beta = null;
 // Easy or Normal (the game's own setting, sloth_difficulty): null leaves what the phone has saved
@@ -76,6 +106,7 @@ async function open(stage, v, flag = 0, layout = 1) {
   const T0 = Date.UTC(2026, 9, 25, 12);
   await page.clock.install({ time: T0 });
   await page.clock.pauseAt(T0 + 1000);
+  if (WATCH) await page.addInitScript(WATCH);
   if (difficulty) await page.addInitScript((d) => localStorage.setItem('sloth_difficulty', d), difficulty);
   await page.goto(url + (url.includes('?') ? '&' : '?') + `layout=${layout}`);
   await page.clock.runFor(3500);
@@ -260,11 +291,18 @@ async function handle(cmd) {
       if (!room || !m) return 'warp works in 5-M only, rooms 2-5';
       for (let i = 0; i < n; i++) m.cut[i] = 999;
       m.marked = n;
-      const p = e.player; p.x = room.box.x0 - 260; p.y = 560; p.vx = 0; p.vy = 0;
+      const p = e.player; p.x = room.box.x0 + 60;
+      // (on whatever floor is under that spot, not the pit in front of the room: QA lead, 2026-11-01)
+      const under = (e.platforms || []).filter((q) => p.x >= q.x && p.x <= q.x + q.width).sort((a, b) => a.y - b.y)[0];
+      p.y = (under ? under.y : 580) - 20; p.vx = 0; p.vy = 0;
       return `before room ${n} (${room.spec.id}), ${n - 1} warnings carved`;
     }, Number(cmd.room));
     await page.clock.runFor(1000);
     return { shot: await shot('warp'), text: r + ' | ' + (await screenText()) };
+  }
+  if (cmd.cmd === 'qahits') {
+    if (!page) throw new Error('no stage open');
+    return { text: JSON.stringify(await page.evaluate(() => window.__qa || [])) };
   }
   if (cmd.cmd === 'difficulty') {
     difficulty = cmd.level === 'easy' || cmd.level === 'normal' ? cmd.level : null;
@@ -276,7 +314,9 @@ async function handle(cmd) {
   }
   if (!page) throw new Error('no stage open: start one first');
   if (cmd.cmd === 'do') {
+    const before = WATCH ? await page.evaluate(() => (window.__qa || []).length) : 0;
     for (const s of cmd.steps) await step(s);
+    if (WATCH && (await page.evaluate(() => (window.__qa || []).length)) > before) await shot('hit');
     return { shot: await shot(), text: await screenText() };
   }
   if (cmd.cmd === 'click') {
