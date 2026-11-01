@@ -3,7 +3,7 @@ const out = process.argv[2];
 const b = await chromium.launch();
 for (const [tag, w, h] of [['up', 412, 915], ['side', 915, 412]]) {
   const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 2, hasTouch: true, isMobile: true });
-  await p.goto('http://127.0.0.1:4302/?lessons=off'); await p.waitForTimeout(8000);
+  await p.goto(`http://127.0.0.1:${process.env.PORT || 4302}/?lessons=off`); await p.waitForTimeout(8000);
   const t = p.locator('.ttl-token').first();
   const box = await t.boundingBox(); const g = await p.locator('.ttl-token').nth(1).boundingBox();
   console.log(tag, 'drum', box.width, box.height, 'cog', g.width, g.height, await t.getAttribute('aria-label'));
