@@ -14,14 +14,25 @@ history; the release cut 83fbade8 had taken the sections and the rope curation o
   bloom the petal pass lays 26 px under the rope (drawn at his arms) was never picked up hanging: 5-11 a rope roll, all counted in the
   94-bloom goal. Hanging, he now reaches from his middle (`rope.ts HANG_PICK`, 50 px).
 - **No snap at the grab:** a rope caught past its end slid him 30-40 px onto it in one frame; now over 3 frames (`rope.ts ROPE_SLIDE`).
+- **The catch, narrowed** (the lead's World 3 check): game-wide, the falling catch also caught Pokey on a lower rope in 1-4/2-6/3-4/4-1's
+  zigzag climbs (first-timer rescues 0-2 -> 5-10). A falling Pokey is now caught only by a required rope whose own ledge he last stood on
+  (`rope.ts ROPE_FROM`); those stages are back in base's noise. `src/game/ropeCatch.test.ts` (3 of 5 fail on release-0.9.2; the climb
+  guard fails on the broad rule).
+- **The sealed door (live in 0.9.2):** every natural hop (a gap jump onto the landing bough, a hop down a step, a flick) passed 16-35 px
+  over blooms floating 34 px over their bough, so a Normal first-timer left 7-15 of 107 on every run (the door asks 94). World 8's harvest
+  blooms on a bough now float at 52 px (`w8.ts BLOOM_FLOAT`, after the build: 8-2 only); a walker still takes them.
+- **The fungus steps (layout 2: 5-15 lives on Normal):** each step stood over the void (a short hop went under the next bracket); now each
+  stands on a bough trunk to the ground (`w8.ts fungusTrunks`). A stair's foot was shorter than a running jump off the top with the deep
+  gap after it; now 340-370 px (fungus-tall 250-270, inside the 1800 px rule) with a knot past it (`FUNGUS_FOOT`, `footKnot`;
+  fungus-glide unchanged). 8-2 and 8-5 re-curated. `w8Fair.test.ts` (all 3 fail on release-0.9.2).
 - **8-2's mix:** `curate --theme-cap w8:rope-blooms=0.5` (a per-theme quota, checked before the bots like the look-alike cap). Re-curated
-  (300 rolls, `--apart-near`): 8 of 16 rope rolls (layouts 1, 5-11), variety 0.620 (rule 0.35). World 8's other stages build
+  (300 rolls, `--apart-near`; again after the fungus change): 8 of 16 rope rolls (layouts 1, 5-8, 10, 12, 13), variety 0.620 (rule 0.35). World 8's other stages build
   byte-identical (8-1, 8-3..8-10, layouts 1-16, Normal and Easy).
 - **No new Dot line.** The rope is not new in World 8 (Shimmy Rope is learned at 1-3 and required from 1-4); on 8-2
   the engine's own rope lesson ("Slide your thumb to creep along.") still comes up on the first rope.
-- **The first-timer after the fix** (3 trials a roll on Normal, 1 on Easy): 0 heart falls at the ropes on every run. Easy reaches the shrine
-  on every roll tested. Normal: the rope rolls reach the shrine with the blooms 21 of 24 runs (roll 10 short twice, 89 and 92 of 94;
-  roll 9 once, 93); seed 1 99/98/96. The blooms left are on low knots the bot's flick carries him over, not at the ropes.
+- **The first-timer, final build** (`reference/qa-reports/w8-rope2/bots-final.txt`): 0 heart falls at a rope on every run; Easy reaches the
+  shrine on all 16 layouts. Normal: the rope, fungus and high-bloom layouts reach the shrine with the blooms on every run tried (0-8
+  lives); the gap and roost layouts lose 10-18 lives at their wide gaps (Open, item 0).
 - **Stills and clips:** `reference/qa-reports/w8-rope2/` (`tools/art/rope/rec-82.mjs`).
 
 Art-use: tools/art/artuse.mjs (from w1-4-sheets) lists no World 8 entry now. Drop these from the allow-list: kitAtlasData#8.buttress,
@@ -29,12 +40,16 @@ Art-use: tools/art/artuse.mjs (from w1-4-sheets) lists no World 8 entry now. Dro
 
 ## Open, in order
 
-1. **The bloom goal on Normal, 8-2, every theme (not the rope).** The first-timer never turns back for a bloom, and on low knots its short
-   flick carries him over the bloom (43 px over it, reach 34). So it falls 1-5 short of 94 on some runs: roll 3 (high blooms) 2 of 3
-   runs, roll 10 (ropes) 2 of 3, roll 9 1 of 3. The shipped pre-rope 8-2 did the same on seeds 1-3 (91, 85, 88 of 94). A person turns
-   back when Dot says "Still N night blooms"; decide with Matt whether the goal (87.5%) or the bot's knot hop is the thing to change.
-2. **Roll 2 (8-2's fungus steps, layout 2) on Normal:** the first-timer lost 5, 15 and 15 lives (two runs over 5 minutes, one at the
-   sealed door), in the 60 px pits between fungus steps across the whole stage. Not a rope roll; it shipped in the w8-rope set too.
+0. **8-2's gap and roost themes on Normal** (layouts 4, 9, 14-16 of the w8-rope2 set): a first-timer loses 10-18 lives at their wide
+   gaps over deep pits (a single flick first, the double jump only after a death there); release-0.9.2's own roost rolls lose
+   10 each (two tried). Not the rope or the blooms. Next: no second-jump gaps over a deadly fall (STAGE-RULES §6's water lesson) on World 8's lit gaps,
+   or a soft fall there on Normal; then re-curate 8-2.
+
+1. **1-2 on Normal ends at the sealed door** (seeds 1-3: 70/95, 71/99, 70/92 petals; found by w8-rope2's classifier, handed to the
+   lead): most of what is left is high petals on upper boughs the first-timer never climbs to. The goal counts petals off the natural
+   path, or the bot never takes upper routes: check with a person's run.
+2. **Petals flown over in Worlds 1, 3, 5** (the classifier on x-2: 5-2 19, 1-2 and 3-2 5 each; every other world 0-2): petals.ts, every
+   hand stage; not changed (score only outside harvests). The fix would be World 8's (a petal on a bough floats at his head).
 3. **Bands:** Easy reads above Normal on several stages (8-2: Easy 38.2, Normal 20.1). It's the measure (tools/inspect/bands.ts:
    Easy's dead time always 0, Easy's windows judged against its own stricter gate), and it goes to next week's game-wide tuning.
 4. **Draw cost:** drawcheck passes, but its notes show 400 px paintings drawn at about 100 px (shrunk over 2.5x). Pre-scaled copies

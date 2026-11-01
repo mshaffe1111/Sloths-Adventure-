@@ -81,6 +81,6 @@ The CLAUDE.md checks (tsc, the full test globs in 3 shards, vite build, artcheck
 ## To try
 - An "adult first-timer" goal measure, as Easy's kid bot sets gen2's Easy goal (goals.ts gen2EasyGoal), for harvest stages on Normal.
 - Petals on a bough floating at his head in Worlds 1, 3 and 5 too (the classifier: 5-2 19 flown over, 1-2 and 3-2 5 each).
-- 8-2's gap and roost themes: Normal first-timers lose 8-22 lives at their wide gaps over deep pits (single jump first, the double only
-  after a death there); release-0.9.2's own gap and roost rolls lose 5-10. STAGE-RULES §6's water lesson (no second-jump gaps over a
+- 8-2's gap and roost themes: Normal first-timers lose 10-18 lives at their wide gaps over deep pits (single jump first, the double only
+  after a death there); release-0.9.2's own roost rolls lose 10 each (two tried). STAGE-RULES §6's water lesson (no second-jump gaps over a
   deadly fall) may apply.
