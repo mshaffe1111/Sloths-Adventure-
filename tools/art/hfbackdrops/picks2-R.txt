@@ -1,0 +1,16 @@
+w1-mid s60-23
+w1c-mid s60-7
+w2evening-near s62-7
+w2rapids-near s62-23
+w3-mid s60-7
+w3sinkhole-mid s70-7
+w3sinkhole-near s62-23
+w4terraces-near s68-23
+w5-mid s72-7
+w6-mid s60-7
+w6dawn-mid s64-23
+w6dawn-near s68-23
+w7-mid s52-23
+w8night-mid s76-7
+w8sunset-mid s76-7
+w9dawn-mid s64-23

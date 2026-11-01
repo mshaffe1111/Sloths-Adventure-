@@ -114,7 +114,9 @@ def starts(out, rows):
 def args(spec, sha):
     # (the job fetches the script and the spec from the repo at a pushed commit, so nothing has to be written to the bucket first)
     gh = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{sha}/tools/art/'
-    raw = gh + ('w6to10/stillsgpu.py' if 'spec-F' in spec else 'w6to10/img2imggpu.py')
+    n = Path(spec).name
+    raw = gh + ('w6to10/stillsgpu.py' if n.startswith('spec-F') else 'hfbatch/striphdgpu.py' if n.startswith('spec-hd') else
+                'w6to10/img2imggpu.py')
     tag = json.loads(Path(spec).read_text())['tag']
     fetch = f'mkdir -p /out/hfbackdrops2 && curl -sSfL {gh}hfbackdrops/{Path(spec).name} -o /out/hfbackdrops2/{Path(spec).name} && '
     print(json.dumps({'image': 'ostris/aitoolkit:latest', 'flavor': 'rtx-pro-6000', 'timeout': '1h', 'detach': True,
