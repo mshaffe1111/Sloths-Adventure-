@@ -792,14 +792,14 @@
 .jr-back .ic { color: #ffcf5a; }
 .jr-split { display: flex; gap: 12px; flex: 1; min-height: 0; margin-top: 10px; }
 .jr-chapters { width: 192px; flex: none; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; }
-.jr-ch { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 10px; border: 0; border-radius: 12px; background: rgba(0,0,0,.25); color: #e6efe2; font: 600 15px var(--font-ui); text-align: left; cursor: pointer; flex: none; }
+.jr-ch { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 10px; border: 0; border-radius: 12px; background: rgba(0,0,0,.25); color: #e6efe2; font: 600 15px var(--font-ui); text-align: left; cursor: pointer; flex: none; }
 .jr-ch svg { color: #ffcf5a; flex: none; }
 .jr-ch.on { background: linear-gradient(#ffd36a, #ffb02e); color: #3b2200; font-weight: 700; }
 .jr-ch.on svg { color: #3b2200; }
 .jr-ch-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .jr-ch-n { font: 700 12px var(--font-ui); color: #b9cdb6; }
 .jr-ch.on .jr-ch-n { color: #3b2200; }
-.jr-ch-extra { margin-top: auto; background: transparent; border: 1px solid rgba(255,226,150,.35); font: 700 13px var(--font-ui); min-height: 38px; border-color: rgba(120, 80, 30, .4); }
+.jr-ch-extra { margin-top: auto; background: transparent; border: 1px solid rgba(255,226,150,.35); font: 700 13px var(--font-ui); min-height: 44px; border-color: rgba(120, 80, 30, .4); }
 .jr-new { font: 900 11px var(--font-ui); letter-spacing: .08em; color: #0f2a1b; background: #7ee2a8; padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
 .jr-new-s { font-size: 12px; padding: 2px 6px; }
 .jr-dot { width: 10px; height: 10px; flex: none; border-radius: 50%; background: #2fbf6c; box-shadow: 0 0 0 2px #e9fff1, 0 0 8px rgba(47, 191, 108, .8); }

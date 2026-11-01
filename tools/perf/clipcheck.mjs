@@ -23,7 +23,8 @@
  *              box does not scroll that way
  *   cut        a line of text runs past an ancestor whose overflow is hidden or clip, or off the side of the screen
  *   small      a tappable thing (button, link, tab, input, role=button...) under 44 px on a side (a pseudo-element hit area counts)
- *   inset      a tappable thing inside the unsafe insets (notch, status bar, gesture bar)
+ *   inset      a tappable thing inside the unsafe insets (notch, status bar, gesture bar); inside a scroll box it can scroll clear,
+ *              so only the insets across the box's scroll axis count (a vertical list in the sideways notch band still fails)
  * Each breach prints with the screen, the size, the save, a selector and the text. Breaches listed in clipknown.json (the debt on main
  * when the check was built) print as "known" and don't fail; that list only shrinks: fix one, delete its line. A contact sheet of every
  * screen with a breach (outlined red, numbered) is written to <out>/contact.png.
@@ -219,13 +220,24 @@ function audit({ minTap, insets }) {
       if (!isNaN(pr)) R = Math.max(R, r.right - pr);
       if (!isNaN(pb)) B = Math.max(B, r.bottom - pb);
     }
-    const w = R - L, h = B - T;
+    // the layout size, so a pop-in scale doesn't count (offsetWidth ignores transforms; SVG has none, so its box is used)
+    const w = Math.max(R - L, el.offsetWidth || 0), h = Math.max(B - T, el.offsetHeight || 0);
     if (w < minTap - 0.5 || h < minTap - 0.5) add('small', el, label(el), `${Math.round(w)}x${Math.round(h)} px tap area`);
-    const inT = r.top < insets.top - TOL && insets.top > 0, inB = r.bottom > H - insets.bottom + TOL && insets.bottom > 0;
-    const inL = r.left < insets.left - TOL && insets.left > 0, inR = r.right > W - insets.right + TOL && insets.right > 0;
+    // inside a scroll box it scrolls clear of the insets on that box's axis (a list that scrolls up and down still sits in the
+    // notch band at the side)
+    let sx = false, sy = false;
+    for (let a = el.parentElement; a && a !== document.documentElement; a = a.parentElement) {
+      const acs = getComputedStyle(a);
+      if (/auto|scroll/.test(acs.overflowY) && a.scrollHeight > a.clientHeight + 4) sy = true;
+      if (/auto|scroll/.test(acs.overflowX) && a.scrollWidth > a.clientWidth + 4) sx = true;
+    }
+    const inT = !sy && r.top < insets.top - TOL && insets.top > 0, inB = !sy && r.bottom > H - insets.bottom + TOL && insets.bottom > 0;
+    const inL = !sx && r.left < insets.left - TOL && insets.left > 0, inR = !sx && r.right > W - insets.right + TOL && insets.right > 0;
     if ((inT || inB || inL || inR) && r.top < H && r.bottom > 0) add('inset', el, label(el), `inside the ${[inT && 'top', inB && 'bottom', inL && 'left', inR && 'right'].filter(Boolean).join('+')} inset`);
   }
-  return out;
+  // text both overflowing and cut: report the cut only
+  const cuts = new Set(out.filter((x) => x.kind === 'cut').map((x) => `${x.sel}|${x.text}`));
+  return out.filter((x) => x.kind !== 'overflow' || !cuts.has(`${x.sel}|${x.text}`));
 }
 
 // scroll every scroll box (and the page) to its end; returns how many moved
@@ -256,11 +268,16 @@ async function walk(browser, base, save, size) {
   const found = [];
   const missed = [];
   let shotN = 0;
-  const settle = (ms = 650) => page.waitForTimeout(ms);
+  const settle = (ms = 550) => page.waitForTimeout(ms);
 
   const judge = async (screen) => {
     if (ONLY && !screen.includes(ONLY)) return;
     const take = async (name) => {
+      // let the pictures load and every finite animation and transition end (a card popping in, the map panning), at most 2.5 s
+      await page.evaluate(() => Promise.race([
+        Promise.all([...document.images].filter((i) => !i.complete).map((i) => new Promise((r) => { i.onload = i.onerror = r; }))).then(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished.catch(() => {})))),
+        new Promise((r) => setTimeout(r, 2500)),
+      ]));
       const b = await page.evaluate(audit, { minTap: MIN_TAP, insets: size.insets });
       if (!b.length) return;
       // the contact sheet: outline each breach, number it, shoot the screen
@@ -297,7 +314,13 @@ async function walk(browser, base, save, size) {
     }
   };
   const back = async () => { await page.keyboard.press('Escape'); await settle(450); };
-  const click = async (selector, opts = {}) => { await page.locator(selector).first().click({ timeout: 8000, ...opts }); await settle(); };
+  // navigation taps go straight to the element (the check judges what is on screen, not Playwright's hit-testing; a toast over an
+  // arrow must not stall the walk)
+  const click = async (selector) => {
+    await page.locator(selector).first().waitFor({ state: 'attached', timeout: 8000 });
+    await page.locator(selector).first().evaluate((e) => e.click());
+    await settle();
+  };
   const home = async () => {
     await page.goto(`${base}/?lessons=off`);
     await page.locator('.ttl-play').waitFor({ state: 'visible', timeout: 30000 });
@@ -327,7 +350,7 @@ async function walk(browser, base, save, size) {
           await tryStep(`about pop-up ${i + 1}`, async () => {
             const b = page.locator('.st-page button:not(.title-credit-btn):not(:has-text("Install")):not(:has-text("update"))').nth(i);
             const name = (await b.innerText()).trim().slice(0, 30);
-            await b.click({ timeout: 4000 });
+            await b.evaluate((e) => e.click());
             await settle();
             await judge(`about: ${name}`);
             await scrollAll(page);
@@ -346,7 +369,7 @@ async function walk(browser, base, save, size) {
     await judge('how to play');
     const tabs = page.locator('[role=dialog] [role=tab], .jr-intro-tabs [role=tab]');
     const n = await tabs.count();
-    for (let i = 1; i < n; i++) { await tabs.nth(i).click({ timeout: 4000 }); await settle(); await judge(`how to play: tab ${i + 1}`); }
+    for (let i = 1; i < n; i++) { await tabs.nth(i).evaluate((e) => e.click()); await settle(); await judge(`how to play: tab ${i + 1}`); }
   });
 
   // the World Map: every world, then the Worlds pop-up
@@ -362,11 +385,12 @@ async function walk(browser, base, save, size) {
     await settle(900);
     // start from World 1
     for (let i = 0; i < 12 && (await page.locator('.wm-arrow[aria-label="Previous world"]:not([disabled])').count()); i++) await click('.wm-arrow[aria-label="Previous world"]');
+    const NEXT = '.wm-arrow[aria-label="Next world"]:not([disabled]):not([data-locked])';
     for (let w = 1; w <= 12; w++) {
       const name = (await page.locator('.wm-prog-w').first().innerText().catch(() => `world ${w}`)).trim();
       await judge(`world map: ${name}`);
-      if (!(await page.locator('.wm-arrow[aria-label="Next world"]:not([disabled])').count())) break;
-      await click('.wm-arrow[aria-label="Next world"]');
+      if (!(await page.locator(NEXT).count())) break;
+      await click(NEXT);
     }
     await click('.wm-name');
     await judge('world map: Worlds pop-up');
@@ -379,8 +403,7 @@ async function walk(browser, base, save, size) {
     await click('.ttl-leaf-satchel');
     const tabs = await page.locator('.sh-tab').evaluateAll((els) => els.map((e) => e.innerText.trim()));
     for (const t of tabs) {
-      await page.locator(`.sh-tab:has-text("${t}")`).first().click({ timeout: 4000 });
-      await settle(900);
+      await click(`.sh-tab:has-text("${t}")`);
       await judge(`satchel: ${t}`);
       if (t === 'Finds') {
         await tryStep('find reader', async () => {
@@ -454,7 +477,10 @@ try {
 // ---- report: one line per distinct breach, with every place it was seen ------------------------------------------------------------
 const norm = (s) => s.replace(/\d+/g, '#').slice(0, 40);
 const keyOf = (b) => `${b.kind}|${b.sel}|${norm(b.text)}`;
-const knownKeys = new Set(KNOWN.known.map((k) => `${k.kind}|${k.sel}|${norm(k.text)}`));
+// a known tap-size or inset breach matches by its element type (selector) alone: the same kind of map node or tab, whichever one the
+// walk happened to land on; text breaches match by their text too
+const knownKey = (b) => (b.kind === 'small' || b.kind === 'inset' ? `${b.kind}|${b.sel}` : keyOf(b));
+const knownKeys = new Set(KNOWN.known.map(knownKey));
 const groups = new Map();
 for (const r of results) for (const b of r.found) {
   const k = keyOf(b);
@@ -465,7 +491,7 @@ let fresh = 0, known = 0;
 const lines = [];
 const order = { cut: 0, overflow: 1, small: 2, inset: 3 };
 for (const [k, { b, where }] of [...groups].sort((a, z) => order[a[1].b.kind] - order[z[1].b.kind] || a[0].localeCompare(z[0]))) {
-  const isKnown = knownKeys.has(k);
+  const isKnown = knownKeys.has(knownKey(b));
   isKnown ? known++ : fresh++;
   const uniq = [...new Set(where)];
   lines.push(`${isKnown ? '  known' : '✗'} ${b.kind} ${b.sel}  "${b.text}"  (${b.detail})`);
@@ -477,8 +503,8 @@ console.log('\n' + (lines.join('\n') || '✓ no breaches'));
 if (missed.length) console.log(`\ncould not open:\n  ${missed.join('\n  ')}`);
 if (errs.length) console.log(`\npage errors:\n  ${errs.slice(0, 6).join('\n  ')}`);
 // known entries that no longer show up: delete them from clipknown.json
-const live = new Set(groups.keys());
-const stale = KNOWN.known.filter((k) => !live.has(`${k.kind}|${k.sel}|${norm(k.text)}`));
+const live = new Set([...groups.values()].map(({ b }) => knownKey(b)));
+const stale = KNOWN.known.filter((k) => !live.has(knownKey(k)));
 if (stale.length && !ONLY) console.log(`\nfixed (delete from clipknown.json): ${stale.map((k) => `${k.kind} ${k.sel} "${k.text}"`).join('; ')}`);
 fs.writeFileSync(path.join(out, 'breaches.json'), JSON.stringify([...groups.values()].map(({ b, where }) => ({ kind: b.kind, sel: b.sel, text: b.text, detail: b.detail, where: [...new Set(where)] })), null, 1));
 
@@ -486,7 +512,7 @@ fs.writeFileSync(path.join(out, 'breaches.json'), JSON.stringify([...groups.valu
 const shots = new Map();
 for (const r of results) for (const b of r.found) {
   if (!shots.has(b.shot)) shots.set(b.shot, { name: `${b.screen} @ ${b.size}/${b.save}`, size: b.size, items: [] });
-  shots.get(b.shot).items.push(`${b.n}. ${knownKeys.has(keyOf(b)) ? '(known) ' : ''}${b.kind}: ${b.text || b.sel} (${b.detail})`);
+  shots.get(b.shot).items.push(`${b.n}. ${knownKeys.has(knownKey(b)) ? '(known) ' : ''}${b.kind}: ${b.text || b.sel} (${b.detail})`);
 }
 if (shots.size) {
   const esc = (s) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
