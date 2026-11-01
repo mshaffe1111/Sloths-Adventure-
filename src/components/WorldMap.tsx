@@ -290,7 +290,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                     {/* an extra stage between the world's own (extraStages.ts) shows whose it is, not a number: Dot's flier, Meeca's face */}
                     {!open ? <KitPiece piece="lockBadge" width={size} className="map-lockbadge" /> : lvl.id === MEECA_STAGE_ID ? <Crest world="meeca" size={Math.round(size * 0.74)} bare /> : lvl.miniIndex > 10 ? <PaintedIcon name="pouch" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
                     <span className="map-tbadge" style={{ width: badgePx, height: badgePx }} title={type.label}>
-                      <PaintedIcon name={paint(type.icon)} size={Math.round(badgePx * 0.78)} />
+                      <PaintedIcon name={paint(type.icon)} size={Math.round(badgePx * 0.95)} />
                     </span>
                   </>
                 )}
