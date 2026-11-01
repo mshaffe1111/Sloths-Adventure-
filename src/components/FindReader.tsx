@@ -6,6 +6,7 @@ import { photoUrl } from '../game/photos.ts';
 import { itemUrl } from '../game/items.ts';
 import { Icon } from './icons/index.tsx';
 import { DotPerched } from './KitParts.tsx';
+import { CloseX, useBack } from './nav/Nav.tsx';
 
 /** the Notch's painted cut-out (story-art, src/assets/story/finds/notch.webp): none until it is painted, and then the card shows it */
 const NOTCH_URL: string | null =
@@ -43,12 +44,13 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
   const [page, setPage] = useState(0);
   const last = find.pages.length - 1;
   const pg = find.pages[Math.min(page, last)];
+  // Matt's exit rule: the X, a tap outside and Android Back (and Escape, through the back stack) all close it (nav/Nav.tsx)
+  useBack(onClose);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.code === 'ArrowRight' && last > 0) setPage((p) => Math.min(last, p + 1));
       else if (e.code === 'ArrowLeft' && last > 0) setPage((p) => Math.max(0, p - 1));
-      else if (e.code === 'Escape') onClose();
       else if (e.code === 'Enter' || e.code === 'Space') {
         if (page < last) setPage(page + 1);
         else onClose();
@@ -68,6 +70,7 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
     <div className="ui-scrim fr-scrim" role="dialog" aria-modal="true" aria-label={find.title} onClick={onClose}>
       <GhostOnExit />
       <div className={`fr-card fr-${find.kind === 'pocket' || find.kind === 'notch' || find.kind === 'snail' ? 'keepsake' : find.kind} ${find.kind === 'note' ? `fr-paper-${find.paper ?? 'leaf'}` : ''}`} onClick={(e) => e.stopPropagation()}>
+        <CloseX onClose={onClose} className="fr-x" />
         <div className="fr-label">{label} · {find.world > 0 ? `World ${find.world}` : 'Quest bonus'}</div>
         <h2 className="fr-title">{find.title}</h2>
 

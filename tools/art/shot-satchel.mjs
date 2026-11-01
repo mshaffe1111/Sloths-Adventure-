@@ -21,6 +21,12 @@ for (const [w, h, tag] of sizes) {
   await p.click('.ttl-leaf-satchel');
   await p.waitForTimeout(1500);
   await shot('02-finds');
+  // a note opens in the find reader (the shared X, a tap outside, Back)
+  await p.click('.tr-sec:has-text("Notes from Meeca") + .tr-grid .tr-find.open >> nth=0');
+  await p.waitForTimeout(900);
+  await shot('02b-find-reader');
+  await p.click('.fr-x');
+  await p.waitForTimeout(400);
   const tab = async (name) => { await p.click(`.sh-tab:has-text("${name}")`); await p.waitForTimeout(900); };
   await tab('Trophies');
   await shot('03-trophies');

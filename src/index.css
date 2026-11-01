@@ -1721,3 +1721,6 @@
 .sh-head .nv-back { position: static; flex: none; }
 .sh-head { gap: 8px; } .sh-head .tr-titles { min-width: 0; flex: 1 1 auto; display: flex; justify-content: center; }
 @media (max-width: 440px) { .sh-head .tr-h1 { font-size: 16px; padding-inline: 12px; } .sh-head .nv-back-tag { font-size: 14px; } }
+/* the find reader on the shared nav X (2026-11-01): top-right of its paper, the label clear of it */
+.fr-card .fr-x { position: absolute; top: 6px; right: 6px; z-index: 2; }
+.fr-card .fr-label, .fr-card .fr-title { padding-right: 44px; }
