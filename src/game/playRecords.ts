@@ -4,7 +4,7 @@
  *
  * It keeps the FIRST clear as it happened (the journal is written that day and does not change), plus how many times the stage was
  * played and cleared, the best time, and the most stars. Saves from before this existed simply have no entries: the journal then
- * writes a plainer line for those stages (pokeyJournal.ts), so nothing breaks and nothing is lost.
+ * writes only the stage's own line and its story beat for those stages (pokeyJournal.ts STAGE_LINES), so nothing breaks and nothing is lost.
  */
 import type { StageStats } from './badges.ts';
 

@@ -1684,7 +1684,14 @@
 .jb-whead span { font: 800 12px var(--font-ui); letter-spacing: .1em; text-transform: uppercase; color: #8b6a44; }
 .jb-whead b { font-family: var(--font-fun); font-weight: 400; font-size: 21px; color: #6b3d12; }
 .jb-entry { margin: 0 0 10px; }
-.jb-eh { display: flex; align-items: center; gap: 8px; font: 800 13px var(--font-ui); color: #8a4b18; }
+.jb-eh { display: flex; align-items: baseline; gap: 8px; font: 800 13px var(--font-ui); color: #8a4b18; }
+.jb-eh span { min-width: 0; }
+.jb-eh span b { font-weight: 800; color: #5a3210; }
+.jb-eh i { flex: none; }
+/* how it was played, under the story: the same hand, a little smaller and lighter, like a note added after */
+.jb-note { margin-top: 3px; font-size: 14px; color: #6b5538; }
+/* a guardian's entry closes the world with Pokey's line for it */
+.jb-close { margin-top: 4px; font-weight: 600; color: #6a3a10; }
 .jb-eh i { font-style: normal; color: #d08a10; letter-spacing: 1px; }
 .jb-hand { margin: 2px 0 0; font-family: var(--font-read); font-style: italic; font-size: 15.5px; line-height: 1.45; color: #2e2010; text-wrap: pretty; }
 .jb-empty { opacity: .7; }
@@ -1693,8 +1700,13 @@
 .jb-sign::after { content: ' — P.'; font-style: normal; color: #8b6a44; }
 .jb-sub { margin: 10px 0 4px; font: 800 12px var(--font-ui); letter-spacing: .1em; text-transform: uppercase; color: #8b6a44; }
 .jb-met { display: flex; flex-wrap: wrap; gap: 6px; }
-.jb-crit { display: flex; flex-direction: column; align-items: center; width: 70px; padding: 4px 2px; border-radius: 10px; background: rgba(120, 80, 30, .12); }
-.jb-crit small { font-size: 12px; line-height: 1.1; text-align: center; color: #5c4630; }
+.jb-crit { display: flex; flex-direction: column; align-items: center; width: 76px; padding: 4px 3px 6px; border-radius: 10px; background: rgba(120, 80, 30, .12); }
+.jb-crit small { font-size: 12px; line-height: 1.15; text-align: center; color: #5c4630; overflow-wrap: anywhere; hyphens: auto; }
+.jb-list { margin: 0; padding: 0; list-style: none; font-family: var(--font-read); font-size: 14px; line-height: 1.5; color: #3a2510; }
+.jb-list li span { display: inline-block; min-width: 2.6em; font: 800 12px var(--font-ui); color: #8a4b18; }
+.jb-list li i { font-style: normal; color: #d08a10; letter-spacing: 1px; font-size: 12px; white-space: nowrap; }
+.jb-found li::before { content: '✦ '; color: #b07a2a; }
+.jb-closing { margin-top: 12px; }
 .jb-best { margin: 0; padding-left: 18px; font-family: var(--font-read); font-size: 14.5px; line-height: 1.4; color: #3a2510; }
 .jb-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .jb-stats span { display: flex; flex-direction: column; align-items: center; padding: 6px 2px; border-radius: 10px; background: rgba(120, 80, 30, .12); font-size: 12px; color: #6b5333; }
@@ -1705,7 +1717,7 @@
 .jb-arrow:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #24130a; }
 .jb-pn { font-family: var(--font-fun); font-size: 15px; color: #fff4d8; text-shadow: 0 2px 0 #2a1608; text-align: center; }
 /* sideways the book takes the short screen: shorter pages */
-@media (orientation: landscape) and (max-height: 500px) { .jb-book, .jb-page { min-height: 0; max-height: calc(100vh - 170px); } .sh-tabs { margin-top: 6px; } .sh-tab { min-height: 56px; } .sh-tab-ic { width: 40px; height: 40px; } }
+@media (orientation: landscape) and (max-height: 500px) { .jb-book { min-height: 0; max-height: calc(100vh - 170px); } .jb-page { min-height: 0; max-height: calc(100vh - 190px); } .sh-tabs { margin-top: 6px; } .sh-tab { min-height: 56px; } .sh-tab-ic { width: 40px; height: 40px; } }
 
 /* the medal pop in play (BadgeToast inPlay): small, top centre, under the HUD row upright and in it sideways; never over the thumbs.
    No blur, no shadowBlur in the canvas: plain DOM over the stage, a box-shadow and one transform animation (PERFORMANCE-RULES §2). */
