@@ -17,7 +17,7 @@ const URLS: Record<string, string> = Object.fromEntries(
   Object.entries(FILES).map(([k, v]) => [k.slice(k.lastIndexOf('/') + 1, -5), v]),
 );
 
-export const PAINTED_NAMES = ['map', 'story', 'howto', 'sound', 'mute', 'gear', 'play', 'restart', 'close', 'lock', 'star', 'back'] as const;
+export const PAINTED_NAMES = ['map', 'story', 'howto', 'sound', 'mute', 'gear', 'play', 'restart', 'close', 'lock', 'star', 'back', 'spyglass'] as const;
 export type PaintedName = (typeof PAINTED_NAMES)[number];
 
 export const paintedUrl = (name: string): string | undefined => URLS[name];

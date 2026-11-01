@@ -43,5 +43,9 @@
  "back": {
   "take": "back-a23",
   "px": 56
+ },
+ "spyglass": {
+  "take": "spyglass-a37",
+  "px": 56
  }
 }
