@@ -13,7 +13,13 @@
 import React from 'react';
 import type { IconName } from './index.tsx';
 
-const FILES = import.meta.glob('../../assets/icons/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+// (Vite's glob; under plain Node tests there is none, and the icons are just not drawn there)
+let FILES: Record<string, string> = {};
+try {
+  FILES = import.meta.glob('../../assets/icons/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+} catch {
+  FILES = {};
+}
 const URLS: Record<string, string> = {
   ...Object.fromEntries(Object.entries(FILES).map(([k, v]) => [k.slice(k.lastIndexOf('/') + 1, -5), v])),
   // the satchel is the bar itself (src/assets/ui/satchel.webp): wherever "Satchel" is meant, it is drawn, never a book
