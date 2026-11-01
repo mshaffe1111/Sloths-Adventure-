@@ -82,6 +82,8 @@ Every gate in the table, in order. Run the full unit suite in the background (it
 - 2026-11-01: a fresh save opens "Who's exploring?" before the World Map. The walk judges that screen and picks a mode.
 - 2026-11-01: the lead's two sightings (find hints, journal numbers sideways) didn't reproduce as cut text: the journal's right page is a small scroll box inside the scrolling Satchel, so the numbers sit below an inner fold. The check treats text you can scroll to as not cut, so a nested scroll box needs a human look (or a future check).
 
+- 2026-11-01: the first CI run showed clipcheck green while it had crashed. Two causes: GitHub's default `run:` shell is `bash -e` with no pipefail, so `| tee` hid the exit code; and vite colours its "Local:" line in CI, so the readiness match never fired. Any step that pipes a gate's output sets `shell: bash` (pipefail), and logs are matched with ANSI codes stripped. Open a new gate's CI log once and read its last line; never trust the green tick alone.
+
 ## Tried and didn't work
 - Hard-coding unsafe-inset bands and ignoring CSS: headless Chrome's `env(safe-area-inset-*)` is 0, so the game placed things in the bands and every screen "failed". Chrome's CDP `Emulation.setSafeAreaInsetsOverride` (Chromium 153 here) makes `env()` real; use it.
 - Counting every text line past an overflow-hidden ancestor: every scrolled list "failed". Stop the ancestor walk at a scroll box on that axis.
