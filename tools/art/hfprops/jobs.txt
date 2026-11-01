@@ -1,0 +1,34 @@
+hf-props jobs (2026-10-31, branch hf-props; HF cap $14). Each job: tools/art/hfdrake/storygpu.py (unchanged) + the spec, fetched from
+GitHub raw at a pinned commit; Qwen-Image img2img + the style model (0.8); starts reference/prop-sheets/qa-notes/hf-props/starts/.
+Bucket mshaffe111/w5-xfer under hfprops/<tag>/out/. rtx-pro-6000 ~$2.75/h.
+w6p   6ae65b200e0338d1bb7d436f  21:18Z  W6 probe, 2 takes (s82, s90, seed 5), spec at c589fcbd
+     RESULT: the rough boxes stayed boxes at 0.82 (and the anchors moved cells). Grid-canvas approach dropped.
+t6    6ae65ba50e0338d1bb7d4386  21:20Z  W6 single pieces from plain magenta at strength 1.0, 10 takes, spec at 29f19269
+     RESULT: clean single pieces, but flatter and more cartoon than the game; key drifts to a darker pink and bleeds into the
+     subject (the crab's legs); a stone base under some pieces.
+t6a   6ae65c590e0338d1bb7d43b7  21:23Z  probe: 3 W6 pieces x (anchor canvas: an approved piece beside, 0.88 | plain, 0.88), spec at 80530e93
+     RESULT t6a: the anchor canvas brought junk (a "#New" text, the anchor repainted see-through); plain key at 0.88 paints nothing.
+     DECISION: one piece per picture from plain key at strength 1.0; the cutter measures each take's own background (key_own).
+b6    6ae65d2fc78863f9c62f4d6f  21:27Z  W6 15 pieces x seeds 5,17 (30 takes), spec at 97862527
+b7    6ae65da7c78863f9c62f4d94  21:29Z  W7 30 takes, spec at f39a4243
+b2    6ae65dabc78863f9c62f4d96  21:29Z  W2 30 takes
+b1    6ae65dafc78863f9c62f4d98  21:29Z  W1 30 takes
+b3    6ae65db2c78863f9c62f4d9a  21:29Z  W3 30 takes
+b4    6ae65db60e0338d1bb7d4411  21:29Z  W4 30 takes
+b5    6ae65db9c78863f9c62f4d9c  21:29Z  W5 30 takes (green key)
+     RESULTS b1-b7 (all done 21:39Z, ~10 min each, ~$3.2 for the seven): painted well; most standing pieces came on a puddle or slab
+     (cropped off at the cut), most hanging pieces inside a tree or cave scene (cut by a box); light beams in the key's hue (taken
+     out by hue at the cut). Thrown: takes with a sloth in them (a rope coil, shells, pebbles, a caterpillar, the flower vine), the
+     isometric tiles, floating rocks that would read as ledges (W4 ivy, drip roots), the kingfisher on a purple moon, the W3
+     salamander in its cave. Kept 96 pieces across W1-7.
+r2a   6ae666e50e0338d1bb7d4654  22:08Z  round 2, W1-4, 8 more pieces each x seeds 5,17 (64 takes), spec at f6c80a4d
+r2b   6ae666e7c78863f9c62f5143  22:08Z  round 2, W5-7 (48 takes)
+     RESULTS r2a/r2b (done 22:24Z / 22:29Z, ~16 and ~20 min): ~$1.65. Thrown: takes with a sloth (twigs, pinecones, a turtle with a
+     sloth face, a lantern string), oar and river pebble (odd), the cave snail, goat kid, lichen stones (painted inside a scene that
+     would not key), salamander. Kept 38 more.
+SPEND: probes w6p+t6+t6a ~$0.45, b1-b7 ~$3.2, r2a+r2b ~$1.65 = ~$5.3 of the $14 cap.
+r3    6ae67edb0e0338d1bb7d4ba2  23:50Z  round 3: W4 2 hanging, W6 6 bank, W7 6 bank x seeds 5,17 (28 takes), spec at 89ae308d
+     RESULT r3 (done 00:00Z, ~9 min, ~$0.4): every take has a white sticker outline (the word "sticker" in the prompt) and the W4 moss
+     beard has a sloth face: NONE KEPT. Lesson: never say "sticker"; keep "one single game prop ... no water, no puddle, no scenery".
+     Round 3 is re-run tomorrow without that word (NEXT.md).
+SPEND TOTAL: ~$5.7 of the $14 cap.

@@ -1,0 +1,523 @@
+{
+ "note": "hf-props single-piece batch b5, 2026-10-31",
+ "q": 92,
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/978625279cba862d6f4c415065c5f63011ac0b73/reference/prop-sheets/qa-notes/hf-props/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "w5-wateringCan-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: an old tin watering can, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-wateringCan-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: an old tin watering can, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-pots-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: stacked clay plant pots with a pink orchid, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-pots-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: stacked clay plant pots with a pink orchid, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-bench-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a tiny wooden garden bench, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-bench-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a tiny wooden garden bench, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-fernPot-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: an old china teapot with a fern growing out of it, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-fernPot-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: an old china teapot with a fern growing out of it, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-spool-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a wooden spool wound with white silk thread, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-spool-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a wooden spool wound with white silk thread, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-caterpillar-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a sleepy caterpillar on a big leaf, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-caterpillar-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a sleepy caterpillar on a big leaf, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-cocoons-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: three silk cocoons hanging on threads, one single isolated hanging piece, nothing above it, no branch, no tree, no ceiling, nothing else in the picture, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-cocoons-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: three silk cocoons hanging on threads, one single isolated hanging piece, nothing above it, no branch, no tree, no ceiling, nothing else in the picture, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-lanterns-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a short string of little paper lanterns, one single isolated hanging piece, nothing above it, no branch, no tree, no ceiling, nothing else in the picture, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-lanterns-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a short string of little paper lanterns, one single isolated hanging piece, nothing above it, no branch, no tree, no ceiling, nothing else in the picture, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-cupChime-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: little china teacups hanging on strings as a wind chime, one single isolated hanging piece, nothing above it, no branch, no tree, no ceiling, nothing else in the picture, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-cupChime-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: little china teacups hanging on strings as a wind chime, one single isolated hanging piece, nothing above it, no branch, no tree, no ceiling, nothing else in the picture, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-orchidBasket-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a hanging basket of pink orchids, one single isolated hanging piece, nothing above it, no branch, no tree, no ceiling, nothing else in the picture, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-orchidBasket-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a hanging basket of pink orchids, one single isolated hanging piece, nothing above it, no branch, no tree, no ceiling, nothing else in the picture, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-teacups-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: two china teacups and a saucer with pink roses, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-teacups-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: two china teacups and a saucer with pink roses, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-sugar-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: sugar cubes and a silver teaspoon, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-sugar-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: sugar cubes and a silver teaspoon, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-petals-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a drift of fallen pink orchid petals, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-petals-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a drift of fallen pink orchid petals, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-thimbles-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: three little silver thimbles, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-thimbles-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: three little silver thimbles, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-teaTin-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small painted tea tin with its lid off, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-teaTin-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small painted tea tin with its lid off, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  }
+ ]
+}

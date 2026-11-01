@@ -1,0 +1,829 @@
+{
+ "note": "hf-props single-piece batch r2b, 2026-10-31",
+ "q": 92,
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dc641ea19d2c9a103652d3cc98db3b8c06190bcc/reference/prop-sheets/qa-notes/hf-props/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "w5-bookStack-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a stack of old books with a teacup on top, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-bookStack-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a stack of old books with a teacup on top, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-birdbath-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small stone birdbath with petals floating in it, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-birdbath-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small stone birdbath with petals floating in it, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-wheelbarrow-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a little wooden wheelbarrow full of flowers, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-wheelbarrow-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a little wooden wheelbarrow full of flowers, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-teaChest-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small wooden tea chest, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-teaChest-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small wooden tea chest, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-butterflyBush-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a lilac bush with little butterflies, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-butterflyBush-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a lilac bush with little butterflies, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-ladybug-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a ladybug on a rose leaf, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-ladybug-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a ladybug on a rose leaf, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-ribbon-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a dropped pink silk ribbon, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-ribbon-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a dropped pink silk ribbon, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-buttons-5",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a few big sewing buttons, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w5-buttons-17",
+   "start": "plain-grn.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a few big sewing buttons, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for an orchid garden with a tea party, soft pinks, lilac, cream china, mossy greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure green #00FF00 background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-snapper-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a snapping turtle resting on a root, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-snapper-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a snapping turtle resting on a root, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-crabPots-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: stacked woven crab traps, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-crabPots-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: stacked woven crab traps, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-bromeliadRoot-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: red bromeliads growing on a mangrove root, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-bromeliadRoot-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: red bromeliads growing on a mangrove root, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-frogLog-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small green frog on a mossy log, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-frogLog-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small green frog on a mossy log, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-ibis-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a scarlet ibis standing, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-ibis-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a scarlet ibis standing, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-swampFerns-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a clump of swamp ferns, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-swampFerns-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a clump of swamp ferns, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-driftRoot-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a piece of twisted driftwood root, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-driftRoot-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a piece of twisted driftwood root, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-wetLeaves-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: wet fallen mangrove leaves, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w6-wetLeaves-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: wet fallen mangrove leaves, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-monkeyStatue-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small mossy stone monkey statue, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-monkeyStatue-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small mossy stone monkey statue, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-brokenArch-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a short broken stone arch piece wrapped in roots, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-brokenArch-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a short broken stone arch piece wrapped in roots, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-urnTall-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a tall cracked clay urn with vines, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-urnTall-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a tall cracked clay urn with vines, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-jaguarHead-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a carved stone jaguar head lying on its side, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-jaguarHead-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a carved stone jaguar head lying on its side, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-capuchin-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a capuchin monkey sitting on a stone block, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-capuchin-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a capuchin monkey sitting on a stone block, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-altar-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small stone altar with candles, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-altar-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small stone altar with candles, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-scroll-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: an old rolled up parchment scroll, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-scroll-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: an old rolled up parchment scroll, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-idolHead-5",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small fallen stone idol head, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  },
+  {
+   "name": "w7-idolHead-17",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a small fallen stone idol head, standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle, for ancient jungle temple ruins, mossy grey-green stone, worn sandstone, deep greens. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no water, no puddle, no scenery, no text.",
+   "strength": 1.0,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand, ground patch, puddle, shadow under it, tree branch, ceiling, hanging scenery, background trees, pink on the object, magenta on the object"
+  }
+ ]
+}

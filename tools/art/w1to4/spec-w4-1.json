@@ -1,0 +1,140 @@
+{
+ "note": "World 4 kit batch, round 1, 2026-10-31 (w1-4-sheets)",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1dbb0f77da33e72aafef850838c44ed9eb0f573b/reference/prop-sheets/qa-notes/w1-4-art/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "w4-props-s62-5",
+   "start": "w4-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, high misty waterfall cliffs: a mossy cliff with a waterfall and bamboo wind chimes (top left), a thick green vine tied in a fat knot round a wooden peg, the bare wooden peg, a thin falling waterfall curtain, the curtain parted in the middle, a log hung on two ropes as a swinging bridge, a wooden rope anchor post, a blue-grey slate ledge with grass on top whole, the same ledge cracking, the same ledge broken. Slate blue-greys, moss greens, pale aqua water, slightly warm light. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w4-props-s62-17",
+   "start": "w4-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, high misty waterfall cliffs: a mossy cliff with a waterfall and bamboo wind chimes (top left), a thick green vine tied in a fat knot round a wooden peg, the bare wooden peg, a thin falling waterfall curtain, the curtain parted in the middle, a log hung on two ropes as a swinging bridge, a wooden rope anchor post, a blue-grey slate ledge with grass on top whole, the same ledge cracking, the same ledge broken. Slate blue-greys, moss greens, pale aqua water, slightly warm light. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w4-props-s74-5",
+   "start": "w4-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, high misty waterfall cliffs: a mossy cliff with a waterfall and bamboo wind chimes (top left), a thick green vine tied in a fat knot round a wooden peg, the bare wooden peg, a thin falling waterfall curtain, the curtain parted in the middle, a log hung on two ropes as a swinging bridge, a wooden rope anchor post, a blue-grey slate ledge with grass on top whole, the same ledge cracking, the same ledge broken. Slate blue-greys, moss greens, pale aqua water, slightly warm light. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w4-props-s74-17",
+   "start": "w4-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, high misty waterfall cliffs: a mossy cliff with a waterfall and bamboo wind chimes (top left), a thick green vine tied in a fat knot round a wooden peg, the bare wooden peg, a thin falling waterfall curtain, the curtain parted in the middle, a log hung on two ropes as a swinging bridge, a wooden rope anchor post, a blue-grey slate ledge with grass on top whole, the same ledge cracking, the same ledge broken. Slate blue-greys, moss greens, pale aqua water, slightly warm light. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w4-fx-s55-5",
+   "start": "w4-fx.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three tall columns of rising warm air with leaves and petals swirling up, three soft white mist banks, and the soft dark shadow of a huge eagle with spread wings seen from below. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  },
+  {
+   "name": "w4-fx-s55-17",
+   "start": "w4-fx.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three tall columns of rising warm air with leaves and petals swirling up, three soft white mist banks, and the soft dark shadow of a huge eagle with spread wings seen from below. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  },
+  {
+   "name": "w4-fx-s70-5",
+   "start": "w4-fx.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three tall columns of rising warm air with leaves and petals swirling up, three soft white mist banks, and the soft dark shadow of a huge eagle with spread wings seen from below. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  },
+  {
+   "name": "w4-fx-s70-17",
+   "start": "w4-fx.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three tall columns of rising warm air with leaves and petals swirling up, three soft white mist banks, and the soft dark shadow of a huge eagle with spread wings seen from below. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.7,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  }
+ ]
+}

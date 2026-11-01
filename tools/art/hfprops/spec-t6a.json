@@ -1,0 +1,115 @@
+{
+ "note": "hf-props single-piece batch t6a, 2026-10-31",
+ "q": 92,
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/cffcd5a3c94401d9930c3085746b5c50898ddebb/reference/prop-sheets/qa-notes/hf-props/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "w6-fiddler-5a",
+   "start": "anchor-w6.png",
+   "prompt": "slothadv style, two separate game props side by side for a side-scrolling platform game, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. On the left, the existing prop, kept as it is. On the right, a new prop painted in exactly the same hand-painted storybook style, same ink line, same painted texture, same light from the upper left: a fiddler crab with one big orange claw, standing on its own, nothing under it: no base, no pedestal, no ground slab. Seen exactly from the side, each prop whole with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no text, no magenta on the props.",
+   "strength": 0.88,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand"
+  },
+  {
+   "name": "w6-pitchers-5a",
+   "start": "anchor-w6.png",
+   "prompt": "slothadv style, two separate game props side by side for a side-scrolling platform game, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. On the left, the existing prop, kept as it is. On the right, a new prop painted in exactly the same hand-painted storybook style, same ink line, same painted texture, same light from the upper left: a clump of pitcher plants, standing on its own, nothing under it: no base, no pedestal, no ground slab. Seen exactly from the side, each prop whole with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no text, no magenta on the props.",
+   "strength": 0.88,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand"
+  },
+  {
+   "name": "w6-kingfisher-5a",
+   "start": "anchor-w6.png",
+   "prompt": "slothadv style, two separate game props side by side for a side-scrolling platform game, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. On the left, the existing prop, kept as it is. On the right, a new prop painted in exactly the same hand-painted storybook style, same ink line, same painted texture, same light from the upper left: a kingfisher perched on a root post, standing on its own, nothing under it: no base, no pedestal, no ground slab. Seen exactly from the side, each prop whole with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no text, no magenta on the props.",
+   "strength": 0.88,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand"
+  },
+  {
+   "name": "w6-fiddler-5p",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a fiddler crab with one big orange claw, standing on its own, nothing under it: no base, no pedestal, no ground slab, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 0.88,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand"
+  },
+  {
+   "name": "w6-pitchers-5p",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a clump of pitcher plants, standing on its own, nothing under it: no base, no pedestal, no ground slab, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 0.88,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand"
+  },
+  {
+   "name": "w6-kingfisher-5p",
+   "start": "plain-mag.png",
+   "prompt": "slothadv style, one single game prop for a side-scrolling platform game: a kingfisher perched on a root post, standing on its own, nothing under it: no base, no pedestal, no ground slab, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Hand-painted storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the whole object fully in the picture with space all round, on one flat plain pure magenta #FF00FF background, nothing else, no cast shadow, no ground, no text.",
+   "strength": 0.88,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "steps": 26,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand"
+  }
+ ]
+}
