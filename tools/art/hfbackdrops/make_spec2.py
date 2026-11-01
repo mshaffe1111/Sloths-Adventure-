@@ -42,6 +42,50 @@ R = [
 ]
 
 
+# ---- round M: the third and fourth moods. (stem, world, grade, far + sky, middle, near, light, mid trim) ----
+MOODS2 = [
+    ('w1rain', 1, 'storm', 'a rain-soaked rainforest afternoon: layers of misty jungle hills and giant emergent trees fading into soft grey rain, low rain clouds',
+     'rainforest trees in the rain: a giant tree with a broad dripping crown, palms bent under rain, a tree fern, a waterfall of rain off the leaves',
+     'wet ferns, dripping broad leaves, puddles and mossy stones', 'soft grey-green rainy light, everything wet and glistening', 0),
+    ('w2mist', 2, 'dawn', 'a misty dawn on a wide jungle river: still pale water, far banks of palms and big trees fading into morning mist, a pale pink-gold sun low over the river',
+     'a misty riverbank at dawn: big mossy boulders, palms and a leaning tree over the water, a little wooden fishing jetty on posts, reeds',
+     'reeds, cattails, wet river stones and lily pads', 'pale pink-gold dawn light through river mist', 0),
+    ('w3crystal', 3, 'cave', 'a vast crystal grotto: far cave walls lined with huge glowing blue and violet crystal clusters, an underground lake reflecting them, a high dark cave roof',
+     'a crystal grotto seen from the side: rock pillars studded with big glowing violet and blue crystals, a natural rock arch, crystal clusters on mossy boulders',
+     'cave rocks with small glowing crystals and puddles', 'deep blue-violet cave light, glowing crystals', 0),
+    ('w4storm', 4, 'storm', 'a thunderstorm over grey cliffs: tall grey rock cliffs and pinnacles under dark rolling storm clouds, a far lightning bolt, grey rain curtains',
+     'grey cliff pinnacles in a storm: wind-bent pines clinging to the rocks, a rope bridge between two rocks, rocks wet with rain',
+     'wet grey rocks, wind-bent grass and ferns', 'dark blue-grey storm light, wet rock with pale highlights', 0),
+    ('w6moon', 6, 'night', 'a moonlit swamp: a big full moon over still black water, far mangrove trees and hanging moss in silhouette, silver reflections, a starry sky',
+     'mangrove trees at night on tall arching roots in still black water, hanging spanish moss, a few fireflies, pale glowing swamp flowers',
+     'mangrove roots, reeds and lily pads with pale glowing flowers', 'silver blue moonlight', 0),
+    ('w7court', 7, 'day', 'a sunlit jungle temple courtyard at noon: tall stepped stone temples and carved towers, jungle trees behind, a bright blue sky with white clouds',
+     'a temple courtyard at noon: carved stone pillars, a stone stairway, big stone statues and flower urns, palms and jungle vines',
+     'carved paving stones, broken pillars, ferns and flowers', 'bright warm noon sunlight, clear shadows', 0),
+    ('w8dawn', 8, 'dawn', 'dawn over the high jungle canopy: a sea of round treetops seen from above, mist between them, a soft pink-gold sun rising, a few birds far away',
+     'the high jungle canopy at dawn: great round treetops on huge branches, hanging lianas, a giant flowering tree, mist in the gaps',
+     'broad leaves, branch ends and morning flowers with dew', 'soft pink and gold dawn light', 0.25),
+    ('w9ash', 9, 'storm', 'an ash storm in a volcanic valley: a smoking volcano far away, grey ash clouds rolling across the sky, black basalt ridges, dim orange glow under the ash',
+     'a volcanic valley in an ash storm: black basalt columns and rock spires, charred dead trees, ash drifting',
+     'black rocks covered in grey ash, embers', 'dim grey-orange light through falling ash', 0),
+    ('w10night', 10, 'night', 'the mountain summit at night: snowy jagged peaks under a huge starry night sky with a band of the milky way and a crescent moon',
+     'bare mountain crags at night: jagged dark rock spires with snow on the ledges, an old stone watchtower with a lit window, iron lamp posts',
+     'dark rocks with snow and frost, stone steps', 'cold blue night light, starlight on the snow', 0),
+]
+FAR = ('a very wide side-scrolling game background, the far distance seen straight from the side: {d}. The upper third of the picture is '
+       'open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth')
+FARNEG = ('foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, '
+          'creature, character, blurry, photo, 3d render')
+M = [r for st, w, g, far, mid, near, l, trim in MOODS2 for r in (
+    (f'{st}-mid', f'w{w}', 'mid', g, 300 + 2 * w, 'remix', trim, mid, l, (0.68, 0.76)),
+    (f'{st}-near', f'w{w}', 'near', g, 301 + 2 * w, 'remix', 0, near, l, (0.62, 0.68)))]
+
+
+def fars(seeds=(7, 23, 41)):
+    return [{'name': f'{st}-tall-{sd}', 'prompt': S + FAR.format(d=far + ', ' + l), 'neg': FARNEG, 'seed': sd, 'w': 1792, 'h': 1200,
+             'steps': 30} for st, w, g, far, mid, near, l, trim in MOODS2 for sd in seeds]
+
+
 def what(name, d, l):
     if d:
         return d, l
@@ -70,7 +114,7 @@ def starts(out, rows):
 def args(spec, sha):
     # (the job fetches the script and the spec from the repo at a pushed commit, so nothing has to be written to the bucket first)
     gh = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{sha}/tools/art/'
-    raw = gh + 'w6to10/img2imggpu.py'
+    raw = gh + ('w6to10/stillsgpu.py' if 'spec-F' in spec else 'w6to10/img2imggpu.py')
     tag = json.loads(Path(spec).read_text())['tag']
     fetch = f'mkdir -p /out/hfbackdrops2 && curl -sSfL {gh}hfbackdrops/{Path(spec).name} -o /out/hfbackdrops2/{Path(spec).name} && '
     print(json.dumps({'image': 'ostris/aitoolkit:latest', 'flavor': 'rtx-pro-6000', 'timeout': '1h', 'detach': True,
@@ -82,11 +126,17 @@ def args(spec, sha):
 if __name__ == '__main__':
     c = sys.argv[1]
     if c == 'starts':
-        starts(sys.argv[2], R)
+        starts(sys.argv[2], {'R': R, 'M': M}[sys.argv[3] if len(sys.argv) > 3 else 'R'])
     elif c == 'args':
         args(sys.argv[2], sys.argv[3])
+    elif c == 'F':  # the far + sky pictures, text to image (tools/art/w6to10/stillsgpu.py)
+        it = fars()
+        spec = {'tag': 'hfbd2-F', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 0.8]},
+                'neg': FARNEG, 'items': it}
+        (H / 'spec-F.json').write_text(json.dumps(spec, indent=1))
+        print('spec-F.json', len(it))
     else:
-        rows = {'R': R}[c]
+        rows = {'R': R, 'M': M}[c]
         commit, k, n = sys.argv[2], int(sys.argv[3]), int(sys.argv[4])
         it = items(rows)
         part = it[k::n]

@@ -23,3 +23,7 @@ hfbd-hd-a 6ae66200c78863f9c62f4f04  hfbd-hd-b 6ae66203c78863f9c62f4f06  hfbd-hd-
 running total ~$4.70 (before the HD pass)
 hd-a/b/c finished 21:53-21:54Z (~6.5 min each, ~20 min = ~$0.90). Cut + edges + haze: process.py finish (mix5).
 running total ~$5.60 of $40
+=== hf-backdrops2 (2026-11-01, lead's brief: round 2 for the 6 PM ET release, cap $35, balance ~$93). Times UTC. ===
+--- round R (redo the rejects with starts2.py, crown-top fixes for w1/w1c/w3/w6/w7 middles, new W5 gold middle w5-mid): 64 takes ---
+hfbd2-R0 6ae764630e0338d1bb7d837e  hfbd2-R1 6ae764660e0338d1bb7d8380  hfbd2-R2 6ae7646a0e0338d1bb7d8382  hfbd2-R3 6ae7646d0e0338d1bb7d8384
+  all rtx-pro-6000, started 16:10Z; job fetches script + spec from GitHub at 31e45349, writes to bucket hfbackdrops2/hfbd2-R<k>/props/
