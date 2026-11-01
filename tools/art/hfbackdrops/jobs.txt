@@ -39,3 +39,9 @@ hfbd2-F0 6ae76528c78863f9c62fb2ed  hfbd2-F1 6ae7652b0e0338d1bb7d83f5
 hfbd2-hd-R0 6ae767b0c78863f9c62fb3d5  hfbd2-hd-R1 6ae767b4c78863f9c62fb3d7  (16 round R strips) started 16:24Z
 hfbd2-hd-T0 6ae768dfc78863f9c62fb439  hfbd2-hd-T1 6ae768e3c78863f9c62fb43b  (9 far + sky, 1760 tall, on black) started 16:29Z
 hfbd2-hd-M0 6ae7693e0e0338d1bb7d851c  hfbd2-hd-M1 6ae76943c78863f9c62fb47c  hfbd2-hd-M2 6ae769460e0338d1bb7d851e  (18 round M strips) 16:31Z
+  hd-R0/R1 finished ~16:29-16:30Z (~6 min each), hd-T0/T1 ~16:32-16:33Z (~4 min), hd-M0..M2 ~16:35Z (~5 min). (~$1.50 for the 7)
+running total ~$7.30 of $35 at 16:45Z
+--- round X (the day's third round, 16:47Z, at af341134) ---
+hfbd2-X0 6ae76cfd0e0338d1bb7d864f  hfbd2-X1 6ae76d010e0338d1bb7d8653: W10 storm + gale middle/near (img2img), W1 sunrise/kapok crown tops (24 takes)
+hfbd2-F3 6ae76d050e0338d1bb7d8655: far + sky for w10storm, w10gale x 4 seeds (stillsgpu.py)
+hfbd2-S0 6ae76d0a0e0338d1bb7d8659  hfbd2-S1 6ae76d0c0e0338d1bb7d865b: upright skies for 10 far sets (tallstart starts, s48/s58, striphdgpu.py)
