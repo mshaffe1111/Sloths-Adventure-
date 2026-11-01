@@ -19,7 +19,7 @@ fs.mkdirSync(out, { recursive: true });
 const MOMENTS = [
   { id: '8-2-rope0', stage: '8-2', layout: 1, text: 'long way down', say: 'long way down', from: 10, stop: 'lip' },
   { id: '1-7-eagle', stage: '1-7', layout: 0, text: 'eagle is watching', say: 'bush to hide', from: 10, stop: 1400 },
-  { id: '5-2-spiders', stage: '5-2', layout: 0, text: 'Spiders, asleep', say: 'Sleeping spiders', from: 10, stop: 'enemy' },
+  { id: '5-1-gap', stage: '5-1', layout: 0, text: 'A wide gap', say: 'Wide gap', from: 10, stop: 'lip' },
   { id: '4-2-leaf', stage: '4-2', layout: 0, text: 'Your leaf', say: 'thumb on the glass', from: 10, stop: 'lip' },
 ];
 const SIZES = (process.env.SIZES ?? 'upright:412x915,sideways:915x412').split(',').map((q) => { const [n, d] = q.split(':'); const [w, h] = d.split('x'); return [n, +w, +h]; });
@@ -34,12 +34,17 @@ for (const m of MOMENTS) {
     // (a player mid-way through the game: the Skip tips offer made long ago, and each stage's story asides heard, so the tip under test is
     // the line up, not a story aside queued ahead of it)
     // (and every note found: picking one up opens it over the stage)
-    await p.addInitScript(([stage, found]) => { try { localStorage.setItem('sloth_dot_skip_offered', '1'); localStorage.setItem('sloth_dot_help', 'teach'); localStorage.setItem(`sloth_way_${stage}`, 'LHF'); localStorage.setItem('sloth_finds', found); } catch {} }, [m.stage, FOUND]);
+    await p.addInitScript(([stage, found, help]) => { try { localStorage.setItem('sloth_dot_skip_offered', '1'); localStorage.setItem('sloth_dot_help', help); localStorage.setItem(`sloth_way_${stage}`, 'LHF'); localStorage.setItem('sloth_finds', found); } catch {} }, [m.stage, FOUND, m.help ?? 'reminders']);
     await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
     await p.waitForFunction(() => typeof window.__play === 'function', null, { timeout: 90000 });
     await p.evaluate(([s, l]) => window.__play(s, l), [m.stage, m.layout]);
     await p.waitForFunction(() => typeof window.__engine === 'function' && !!window.__engine(), null, { timeout: 90000 });
-    await p.waitForTimeout(5000);
+    await p.waitForTimeout(3000);
+    // (the stage's opening lines first: Dot quiet for 1.5 s, so the tip under test is not queued behind them)
+    for (let i = 0, quiet = 0; i < 100 && quiet < 6; i++) {
+      await p.waitForTimeout(250);
+      quiet = (await p.evaluate(() => !document.querySelector('.dg-bub.in'))) ? quiet + 1 : 0;
+    }
     const set = await p.evaluate(({ text, from }) => {
       const e = window.__engine();
       const hints = e.proto?.hints ?? [];

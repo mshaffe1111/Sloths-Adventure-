@@ -359,7 +359,8 @@ export function placeBubble(
     let x = fixX ?? (fixY !== null ? sx - w / 2 : side === 'left' ? sx - gap - w : side === 'right' ? sx + gap : sx - w / 2);
     let y = fixY ?? (side === 'above' ? sy - gap - h : side === 'below' ? sy + gap + tag : sy - h / 2);
     x = Math.max(r.x0, Math.min(r.x1 - w, x));
-    y = Math.max(r.y0, Math.min(r.y1 - h, y));
+    // (her name tag stands up above it: it stays under the HUD's band too, D10)
+    y = Math.max(r.y0 + tag, Math.min(r.y1 - h, y));
     const box = { x0: x, y0: y - tag, x1: x + w, y1: y + h };
     let cost = 0;
     // (the thumb corners and the HUD count most: nothing to read under a thumb, nothing over the hearts)
@@ -509,28 +510,40 @@ export const AHEAD_JUMPS = 1.5;
  * feet (the lip, the ledge) up to the top of a double jump over his head. Climbing, it is the vine above him; falling or gliding, it
  * reaches down ahead of him too. Clipped to the screen.
  */
-export function aheadZone(v: Pick<GuideView, 'px' | 'py' | 'pw' | 'ph' | 'zoom' | 'camX' | 'camY' | 'cssW' | 'cssH' | 'facing' | 'climbing' | 'grounded' | 'vy' | 'gliding'>): Rect {
+export type AheadProbe = Pick<GuideView, 'px' | 'py' | 'pw' | 'ph' | 'zoom' | 'camX' | 'camY' | 'cssW' | 'cssH' | 'facing' | 'climbing' | 'grounded' | 'vy' | 'gliding'>;
+/** (`out`: filled in place, for a caller in the frame loop that may not allocate: Meeca's thought cloud) */
+export function aheadZone(v: AheadProbe, out: Rect = { x0: 0, y0: 0, x1: 0, y1: 0 }): Rect {
   const z = v.zoom;
   const x0 = (v.px - v.camX) * z;
   const x1 = (v.px + v.pw - v.camX) * z;
   const feet = (v.py - v.camY) * z;
   const head = (v.py - v.ph - v.camY) * z;
   const len = JUMP_LEN * AHEAD_JUMPS * z;
-  let r: Rect;
+  let a: number, b: number, c: number, d: number;
   if (v.climbing) {
     // up the vine: the stretch above him, and the leap off it either side of his hands
-    r = { x0: x0 - 70 * z, y0: head - JUMP_RISE * AHEAD_JUMPS * z, x1: x1 + 70 * z, y1: head + 20 * z };
+    a = x0 - 70 * z;
+    b = head - JUMP_RISE * AHEAD_JUMPS * z;
+    c = x1 + 70 * z;
+    d = head + 20 * z;
   } else {
     const mid = (x0 + x1) / 2;
     const down = !v.grounded && (v.gliding || v.vy > 120) ? len * 0.7 : 34 * z;
-    r = { x0: v.facing > 0 ? mid : mid - len, y0: head - JUMP_RISE * z - 12, x1: v.facing > 0 ? mid + len : mid, y1: feet + down };
+    a = v.facing > 0 ? mid : mid - len;
+    b = head - JUMP_RISE * z - 12;
+    c = v.facing > 0 ? mid + len : mid;
+    d = feet + down;
   }
-  return { x0: Math.max(0, r.x0), y0: Math.max(0, r.y0), x1: Math.min(v.cssW, r.x1), y1: Math.min(v.cssH, r.y1) };
+  out.x0 = Math.max(0, a);
+  out.y0 = Math.max(0, b);
+  out.x1 = Math.min(v.cssW, c);
+  out.y1 = Math.min(v.cssH, d);
+  return out;
 }
 
 /**
  * The spots he must act on next (screen px), pushed onto `out`: the take-off lip at the end of the ledge he stands on, the rope or liana
- * he must grab (its near post or its hanging end) and, hanging from a rope, the post he lets go at; an animal or a hazard ahead (its
+ * he must grab (its near post or its hanging end) and, hanging from a rope, both its posts; an animal or a hazard ahead (its
  * tell); and the landings ahead (landingRects). Within 1.5 jumps of him, or the whole rope he is on.
  */
 export function actionRects(v: GuideView, out: Rect[]): Rect[] {
@@ -557,7 +570,9 @@ export function actionRects(v: GuideView, out: Rect[]): Rect[] {
     const on = v.hanging && v.px + v.pw > r.x0 && v.px < r.x1 && Math.abs(v.py - v.ph - r.y) < 120;
     const near = f > 0 ? r.x0 : r.x1;
     const far = f > 0 ? r.x1 : r.x0;
-    const ends = on ? [far] : ahead(near) > -60 && ahead(near) < reach ? [near] : [];
+    // (hanging from it: both posts, the far one he lets go at and the one he took off from, which is still his to fall back to: D10's
+    // own frame, 8-2 sideways at the grab, had the box over the take-off post)
+    const ends = on ? [far, near] : ahead(near) > -60 && ahead(near) < reach ? [near] : [];
     for (const x of ends) {
       const g = x === r.x0 ? r.g0 : r.g1;
       out.push({ x0: sx(x) - 60 * z, y0: sy(r.y) - 70 * z, x1: sx(x) + 60 * z, y1: sy(g) + 24 * z });

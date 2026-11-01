@@ -1,0 +1,60 @@
+{
+ "moment": "5-M-thought",
+ "tag": "after",
+ "shots": [
+  {
+   "ori": "upright",
+   "file": "reference/qa-reports/dot-box/5-M-thought-after-upright.jpg",
+   "text": "All asleep. Soft feet. Go.",
+   "box": {
+    "x0": 10,
+    "y0": 96,
+    "x1": 230.08120727539062,
+    "y1": 148.75
+   },
+   "her": {
+    "x0": 121.1316869394422,
+    "y0": 458.30947043596854,
+    "x1": 162.33168693944222,
+    "y1": 503.2549249814231
+   },
+   "ahead": {
+    "x0": 141.73168693944223,
+    "y0": 268.4003795268776,
+    "x1": 412,
+    "y1": 535.0912886177867
+   },
+   "checks": {
+    "meeca": true,
+    "ahead": true
+   }
+  },
+  {
+   "ori": "sideways",
+   "file": "reference/qa-reports/dot-box/5-M-thought-after-sideways.jpg",
+   "text": "All asleep. Soft feet. Go.",
+   "box": {
+    "x0": 10,
+    "y0": 66,
+    "x1": 230.08120727539062,
+    "y1": 118.75
+   },
+   "her": {
+    "x0": 251.67502653247652,
+    "y0": 189.98946774954163,
+    "x1": 285.2453969028469,
+    "y1": 226.61168997176387
+   },
+   "ahead": {
+    "x0": 268.4602117176617,
+    "y0": 33.02650478657867,
+    "x1": 600.3491006065506,
+    "y1": 252.55243071250462
+   },
+   "checks": {
+    "meeca": true,
+    "ahead": true
+   }
+  }
+ ]
+}
