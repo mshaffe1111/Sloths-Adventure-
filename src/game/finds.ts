@@ -450,7 +450,7 @@ export const DOT_HINTS: Record<string, string> = {
   w9_pocket: "Ash Fields. My envelope corner's out there. Don't read it!",
   w9_snail: 'Ember Canopy. He stays on the ground. Hot feet!',
   w10_note: 'The Thousand Steps. Often down by the bottom step.',
-  w10_keepsake: 'Halfway Up, a fern is usually halfway up. Fancy that.',
+  w10_keepsake: 'Halfway Up. Usually on a ledge near the middle. Look up.',
   w10_book: 'The Last Steps. Look on the ledges as you climb.',
   w10_snail: "Thunder? He hasn't noticed. Somewhere along the way.",
 };
