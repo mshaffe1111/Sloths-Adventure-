@@ -294,6 +294,10 @@ export const RECORD_MAX = 2;
  * one plain note, the first sentence of its line, with no joke after it.
  */
 export const QUIET_STAGES: ReadonlySet<string> = new Set(['1-5', '4-1', '4-D', '5-M', '7-7', '10-1', '10-3', '10-5', '10-10']);
+/** a line with its numbers and counts masked: "Fell twice." and "Fell three times." read as the same line on a page */
+export const mask = (line: string) =>
+  line.toLowerCase().replace(/[“”"]/g, '').replace(/\b(\d+|no|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|once|twice|a minute|seconds?|minutes?|times?)\b/g, '#');
+
 /** how a line opens, as a reader hears it: its first word ("Fell", "Found"), or its first two after a small word ("The ground", "I held") */
 export function opener(line: string): string {
   const w = line.toLowerCase().replace(/[“"]/g, '').match(/[a-z0-9']+/g) ?? [];
@@ -454,10 +458,12 @@ export function stageEntry(
       for (let k = 0; k < list.length && !pick; k++) {
         const t = list[(start + k) % list.length];
         const line = quiet ? plainOf(fill(t, c.v)) : fill(t, c.v);
-        if (opener(line) !== before && opener(line) !== after) pick = { t, line };
+        // (the page's used set holds the templates and the lines as written: two templates cut to one plain sentence are one line)
+        if (opener(line) !== before && opener(line) !== after && !used.has(`=${mask(line)}`)) pick = { t, line };
       }
       if (!pick) continue;
       used.add(pick.t);
+      used.add(`=${mask(pick.line)}`);
       notes.push(pick.line);
       n++;
     }
@@ -465,7 +471,10 @@ export function stageEntry(
   return { id, stage: stage.name, story, notes, close, lines: [...story, ...notes, ...(close ? [close] : [])], plain: !f, stars: stage.stars };
 }
 
-/** every cleared stage's entry on one world's page, in the order they're played, with no record line used twice on the page */
+/**
+ * every cleared stage's entry on one world's page, in the order they're played, with no record line used twice on the page. This is
+ * how a page is built (the Satchel's JournalBook does): stageEntry alone knows one stage, so only a page can keep its lines apart.
+ */
 export function worldEntries(
   world: number,
   stages: readonly (EntryStage & { completed: boolean })[],

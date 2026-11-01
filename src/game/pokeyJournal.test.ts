@@ -4,7 +4,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { BANNED_FILLER, BEATS, LINES, POKEY_JOURNAL, QUIET_STAGES, RECORD_MAX, STAGE_LINES, WORLD_CLOSE, opener, plainOf, worldEntries, worldReview, type EntryNames } from './pokeyJournal.ts';
+import { BANNED_FILLER, BEATS, LINES, POKEY_JOURNAL, QUIET_STAGES, RECORD_MAX, STAGE_LINES, WORLD_CLOSE, mask, opener, plainOf, worldEntries, worldReview, type EntryNames } from './pokeyJournal.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { withExtraStages } from './extraStages.ts';
 import { THORNBARK_LEVEL } from './secret.ts';
@@ -189,4 +189,57 @@ test("Thornbark's hollow reads on World 7's page after 7-10", () => {
   const page = worldEntries(7, cleared, {}, names);
   assert.equal(page.at(-1)!.id, 'S-1');
   assert.equal(page.at(-2)!.id, '7-10');
+});
+
+/** a small seeded random (mulberry32), so a failing record set can be named and rebuilt */
+function rng(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function randomRecords(seed: number): Record<string, PlayRecord> {
+  const r = rng(seed);
+  const pick = <T,>(xs: readonly T[]) => xs[Math.floor(r() * xs.length)];
+  const out: Record<string, PlayRecord> = {};
+  for (const l of stages) {
+    if (r() < 0.15) continue; // some stages cleared before records were kept
+    const ft = r() < 0.2 ? 0 : 20 + Math.floor(r() * 70);
+    const ll = pick([0, 0, 0, 1, 1, 2, 3, 4, 6, 9]);
+    out[l.id] = full(
+      {
+        t: 30 + Math.floor(r() * 400),
+        ll,
+        hl: ll + (r() < 0.5 ? 0 : 1 + Math.floor(r() * 3)),
+        ft,
+        fl: ft ? Math.min(ft, Math.floor(r() * (ft + 8))) : 0,
+        k: Math.floor(r() * 20),
+        kt: pick(['snake', 'boa', 'jaguar', 'caiman']),
+        fr: r() < 0.3 ? 1 + Math.floor(r() * 6) : 0,
+        fd: r() < 0.25 ? [pick(['w1_note', 'w1_key'])] : [],
+        md: r() < 0.25 ? [pick(['flawless', 'first_steps'])] : [],
+      },
+      1 + Math.floor(r() * 4),
+    );
+  }
+  return out;
+}
+test('property: for 50 random record sets per world, no page repeats a line (numbers masked), no two lines in a row open alike', () => {
+  for (let w = 1; w <= RELEASED; w++) {
+    for (let k = 0; k < 50; k++) {
+      const seed = w * 1000 + k;
+      const lines = worldEntries(w, cleared, randomRecords(seed), names).flatMap((e) => e.lines);
+      const seen = new Map<string, string>();
+      for (const l of lines) {
+        const m = mask(l);
+        assert.ok(!seen.has(m), `World ${w}, seed ${seed}: "${seen.get(m)}" and "${l}"`);
+        seen.set(m, l);
+      }
+      for (let i = 1; i < lines.length; i++) assert.notEqual(opener(lines[i]), opener(lines[i - 1]), `World ${w}, seed ${seed}: "${lines[i - 1]}" then "${lines[i]}"`);
+      for (const l of lines) assert.doesNotMatch(l, BANNED_FILLER);
+    }
+  }
 });
