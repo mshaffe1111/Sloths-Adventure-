@@ -74,6 +74,42 @@ the deadline too; the table is from that build.)
   The warm play has frames over 100 ms too, so this container's software raster can't draw q0 under 100 ms every frame. That is the
   container, not the game. (8-1's 433 ms cold frame was on the dev build only; the production runs' worst on 8-1 was 100-200 ms.)
 
+### The quality-step hitch, fixed (lead's check, 1:35 PM)
+
+The governor's step down (q0 to q1, then q2) cost a 117-183 ms frame on a slow phone, once per step. Three causes, three fixes:
+- **The resize, plus an extra full frame.** `stepQuality` resized the canvas after the frame was drawn and then drew again at once.
+  Now it marks the resize, and the next frame resizes just before it draws (engine.ts `resizeDue`; the step back up works the same way).
+- **The backdrop re-fit at the new scale.** Under the title card, `stageReady` now fits the strips for every lighter step the governor
+  could still take (engine.ts `stepKs`), as well as for this one. A strip keeps three sizes (was two), and every fit is stamped once on
+  the game canvas there (scenery.ts `stampSceneryFits`). Memory: backdrop fits are 49-70 MB a stage with all three sizes (1-1 48.8, 8-1
+  52.9, 5-M 70.2), about 22-31 MB more than one size alone; that is inside PERFORMANCE-RULES §2.13's 300 MB stage budget. Only the
+  stage's own strips, released as before.
+- **Mipmaps.** At q0 Pokey's sheet copy is drawn near 1:1. At 3/4 with smoothing 'high', the browser built its mipmaps on the step's
+  frame (about 140 ms in the profile). Each sheet drawn through sheetBake is now drawn shrunk once under the card (sheetBake.ts
+  `warmSheetMips`).
+
+Measured on production builds, the worst frame 3.4-6 s into play (where the governor steps here), 3 runs each, ms. "Previous" = this
+branch before the step fix:
+
+| Stage | Previous | Now | Ordinary frames 0.3-3.4 s, now |
+|---|---|---|---|
+| 1-1 | 167, 133, 167 | 83, 100, 83 | 100, 100, 117 |
+| 8-1 | 117, 167, 183 | 83, 50, 67 | 83, 133, 67 |
+| 5-M | 117, 117, 117 | 117, 100, 233* | 133, 117, 117 |
+
+On 1-1 and 8-1 the step frame is now no worse than the container's ordinary frames, so the step no longer shows as a hitch here. The
+under-50-ms bar can't be shown in this container (its ordinary q0 frames are 67-117 ms, software raster); the phone has to confirm it.
+On the dev server, stepping by hand (`tools/perf/qstep.cjs`): before, 150 ms on 1-1 and 183 ms on 8-1; now 83-117 on 1-1 (ordinary
+frames 67-83) and 50-67 on 8-1.
+
+\* 5-M: no clear change, and one 233 ms run. I didn't find the cause in the time. Meeca's stage draws through other paths (the night,
+her sheets) that may still re-bake at a new scale. The pit water and checkpoint flags also re-bake at a new scale (`stageArt.ts`, single
+slot, small), as do the ground chunks. Named for a follow-up.
+
+**Load time, cumulative:** the step fix adds about 0.1-0.4 s more behind the card (medians: 1-1 4643 to 4754, 8-1 5937 to 6419, 5-M
+4978 to 5141). Against release-0.9.2, 8-1 now opens about 0.6-0.7 s later behind its title card, with no frozen first frame and no
+step hitch. If that is too long, the cheapest cut is fitting only the next step (q1), not q2: about half the extra time and memory.
+
 ### Left over, named plainly
 
 - **A 100-270 ms hitch about 4 s into every stage here.** The profile shows `stepQuality` (engine.ts 981), `resizeCanvas` and a
@@ -126,3 +162,20 @@ Easy and Normal). `tools/qa/meecaVisible.cjs` results are below.
   soil (`room5-upright-zoom.jpg`, `room5-sideways-zoom.jpg`). The same sliver logic exists in the other worlds' kits; I didn't change
   those.
 - **First frames:** the table above. No frozen first frame on 1-1 or 8-1. The start can be up to 0.4 s later, behind the title card.
+
+## Method update
+
+New method file: `reference/methods/perf-measure.md` (it didn't exist). Proposed as written. In short:
+- **What worked:**
+  - production builds side by side at CPU throttle 1x with `tools/perf/firstframes.cjs`;
+  - profiling the bad frame on the dev server with a live-moment marker (`frameprof.cjs` and `frameprof.py`);
+  - the drawImage-at-a-point trace to name a thing on screen;
+  - a warm replay forced to q0 (`warmreplay.cjs`) to tell the game from the container;
+  - per-frame quality logging, to tell a governor step from a late sheet;
+  - `qstep.cjs` to step the quality on demand.
+- **What failed:**
+  - CPU throttle 4x/6x: it swamps this container (220-500 ms every frame) and pushes the stage start past its ready deadline;
+  - a warm replay without forcing q0 (it starts at the learned q2);
+  - a deadline guard on the warm-up frame;
+  - judging a 50 ms bar on the dev server;
+  - timing while the gate runs.

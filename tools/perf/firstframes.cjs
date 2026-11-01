@@ -1,4 +1,3 @@
-// node tools/perf/firstframes.cjs <built game url (vite preview)> <stage> [WxH] [cpu throttle] [runs]: per run, nav-to-stage-live ms and the frame gaps (rAF) of the first 10 s of play, walking right and hopping (warmup-5m, 2026-11-01)
 const { chromium } = require('playwright');
 const [base, stage, size = '448x998', thr = '6', runs = '3'] = process.argv.slice(2);
 const [W, H] = size.split('x').map(Number);
@@ -40,7 +39,7 @@ const [W, H] = size.split('x').map(Number);
     const ft = await pg.evaluate(() => window.__ft);
     const g = ft.gaps.slice(1);
     const s = [...g].sort((a, b) => a - b);
-    out.push({ run: r, loadMs, frames: g.length, avg: +(g.reduce((a, b) => a + b, 0) / g.length).toFixed(1), p95: Math.round(s[Math.floor(s.length * 0.95)]), max: Math.round(s[s.length - 1]), over50: g.filter((x) => x > 50).length, over100: g.filter((x) => x > 100).length, first2sMax: Math.round(Math.max(...(() => { let t = 0; const a = []; for (const x of g) { t += x; if (t > 2000) break; a.push(x); } return a; })())), long: ft.long, big: (() => { let t = 0; const a = []; for (const x of g) { t += x; if (x > 100) a.push([Math.round(t), Math.round(x)]); } return a; })() });
+    out.push({ run: r, loadMs, frames: g.length, avg: +(g.reduce((a, b) => a + b, 0) / g.length).toFixed(1), p95: Math.round(s[Math.floor(s.length * 0.95)]), max: Math.round(s[s.length - 1]), over50: g.filter((x) => x > 50).length, over100: g.filter((x) => x > 100).length, first2sMax: Math.round(Math.max(...(() => { let t = 0; const a = []; for (const x of g) { t += x; if (t > 2000) break; a.push(x); } return a; })())), stepWin: (() => { let t = 0, m = 0; for (const x of g) { t += x; if (t > 3400 && t < 6000) m = Math.max(m, x); } return Math.round(m); })(), early: (() => { let t = 0, m = 0; for (const x of g) { t += x; if (t > 300 && t < 3400) m = Math.max(m, x); } return Math.round(m); })(), long: ft.long, big: (() => { let t = 0; const a = []; for (const x of g) { t += x; if (x > 100) a.push([Math.round(t), Math.round(x)]); } return a; })() });
     await ctx.close();
   }
   console.log(JSON.stringify({ stage, size, thr, out }));
