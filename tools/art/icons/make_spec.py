@@ -113,6 +113,12 @@ GROUPS = {
                         'plain picture cards with no corner marks, tied with a twine bow', 'text, letters, numbers, A, K, Q, playing '
                         'card symbols, spades, hearts, bag')],
     },
+    'I': {
+        'carving': [('a', "a small flat scrap of brown tree bark with a big letter M and a dot scratched deep into it in pale wood, "
+                          "Meeca's secret sign, rough torn edges", 'bag, many letters, words, text other than M'),
+                    ('b', 'a small curled piece of bark with a pale carved M scratched into it, a tiny green leaf stuck to one corner',
+                     'bag, many letters, words')],
+    },
     'E': {
         'playc': [('a', 'a chunky rounded triangle play button shape pointing right, carved from pale cream birch wood, a warm golden '
                         'brass rim round its edge, smooth and glossy', 'bag, leaf, flower, arrow shaft'),

@@ -1,0 +1,77 @@
+{
+ "tag": "icI0",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects",
+ "items": [
+  {
+   "name": "carving-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small flat scrap of brown tree bark with a big letter M and a dot scratched deep into it in pale wood, Meeca's secret sign, rough torn edges, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, many letters, words, text other than M"
+  },
+  {
+   "name": "carving-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small flat scrap of brown tree bark with a big letter M and a dot scratched deep into it in pale wood, Meeca's secret sign, rough torn edges, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, many letters, words, text other than M"
+  },
+  {
+   "name": "carving-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small flat scrap of brown tree bark with a big letter M and a dot scratched deep into it in pale wood, Meeca's secret sign, rough torn edges, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, many letters, words, text other than M"
+  },
+  {
+   "name": "carving-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small flat scrap of brown tree bark with a big letter M and a dot scratched deep into it in pale wood, Meeca's secret sign, rough torn edges, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, many letters, words, text other than M"
+  },
+  {
+   "name": "carving-b11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small curled piece of bark with a pale carved M scratched into it, a tiny green leaf stuck to one corner, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, many letters, words"
+  },
+  {
+   "name": "carving-b23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small curled piece of bark with a pale carved M scratched into it, a tiny green leaf stuck to one corner, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, many letters, words"
+  },
+  {
+   "name": "carving-b37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small curled piece of bark with a pale carved M scratched into it, a tiny green leaf stuck to one corner, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, many letters, words"
+  },
+  {
+   "name": "carving-b53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small curled piece of bark with a pale carved M scratched into it, a tiny green leaf stuck to one corner, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, many letters, words"
+  }
+ ]
+}
