@@ -50,7 +50,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
+import { ASSIST, DOUBLE_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -229,6 +229,8 @@ const LAND_EASE = { rate: 4.5, fast: 10 } as const;
 const LIP_CATCH = { px: 22, inside: 10, v: 90 };
 const INTRO_ZOOM_FROM = 0.9; // a gentle dolly: the old 0.78 opened on a wide shot full of dark ground, so every stage began noticeably darker
 const INTRO_ZOOM_SECS = 1.3;
+/** the fastest Meeca's stage's view moves (world px a second, across and up and down): meecaCamCap */
+export const MEECA_CAM_V = { x: 900, y: 700 } as const;
 
 export interface GameEngineCallbacks {
   onProgressUpdate: (
@@ -534,6 +536,8 @@ export class GameEngine {
   private dragJump = 1;
   /** World 8: how dark it is on screen, 0..1 */
   private darkShow = 0;
+  /** the QA visibility check (tools/qa/meecaVisible.cjs): leave Meeca out of the next frames drawn */
+  qaHideHero = false;
   /** World 3's glowworms (zones.ts): how long he has stood still in the dark, and when each sleeping light woke (game time, by id) */
   private glowStill = 0;
   private glowWake = new Map<number, number>();
@@ -2235,7 +2239,10 @@ export class GameEngine {
           const lipL = this.stepHelp && !fromLeft && !fromRight && p.x + half - plat.x <= LIP_IN && p.x < plat.x + plat.width / 2;
           const lipR = this.stepHelp && !fromLeft && !fromRight && plat.x + plat.width - (p.x - half) <= LIP_IN && p.x >= plat.x + plat.width / 2;
           if (!fromLeft && !fromRight && !lipL && !lipR) continue;
-          if (p.y <= plat.y + this.forgive.mantle && p.vy >= -120) {
+          // (only a lip with room above it to stand: a gate's door has its wall standing on it, and hoisted onto the door's top she was
+          // pushed back off by the wall, dropped and hoisted again, frame after frame, held in the air beside the Butler's arch in 5-M's
+          // tea room till she slid into the floor: Matt, 2026-10-31. Such a lip is part of one wall)
+          if (p.y <= plat.y + this.forgive.mantle && p.vy >= -120 && lipHasRoom(this.platforms, plat, fromLeft || lipL ? -1 : 1, p.height)) {
             // caught the lip of the ledge: hoist up onto it
             p.y = plat.y;
             p.vy = 0;
@@ -3133,7 +3140,10 @@ export class GameEngine {
       }
     }
     this.updateCamera(dt);
-    this.mc?.camera(this.camera, dt);
+    if (this.mc) {
+      this.mc.camera(this.camera, dt);
+      this.meecaCamCap(dt);
+    }
 
     // Calculate progress ratio across the level (a climbing stage counts how high he has got, not how far along: its door is at the top)
     let distanceRatio: number;
@@ -4330,6 +4340,12 @@ export class GameEngine {
 
   /** an animal is beaten: it is launched away in its own style instead of vanishing */
   /** what happened this stage, for the Trophy Room */
+  /** this run so far, as if it ended now without a win: App checks it every 2 s (never per frame) to pop a medal the moment it is
+   * earned in play (Matt, 2026-10-31: "pop the medal at the top so the person knows that they just unlocked something") */
+  liveStats(): StageStats {
+    return this.buildStats(false, 0);
+  }
+
   private buildStats(win: boolean, stars: number): StageStats {
     let floraTotal = 0;
     let floraCollected = 0;
@@ -6210,7 +6226,8 @@ export class GameEngine {
     // (Meeca's stage: her own sheet draws her carrying, in the chair and on the silk: meecaArt.ts meecaPose)
     // (7-4's crumble: the floor's painted break and Matt's falling poses, w7SlideRun.ts)
     const kitPose = !!this.mc || (!!this.slideRun && this.slideRun.drawHero(ctx, this.player)) || (!!this.kit && this.kit.drawPokey(ctx, this.player));
-    if (this.mc) drawMeecaHero(ctx, this.player, this.mc, this.kit, this.gameTime);
+    // (qaHideHero: the visibility check draws a frame without her to compare, tools/qa/meecaVisible.cjs)
+    if (this.mc && !this.qaHideHero) drawMeecaHero(ctx, this.player, this.mc, this.kit, this.gameTime);
     else if (kitPose) { /* drawn */ }
     else if (rig) {
       const hp = this.player;
@@ -6466,6 +6483,34 @@ export class GameEngine {
     });
   }
 
+  /** where Meeca's stage's view was last frame (meecaCamCap) */
+  private mcCam: { x: number; y: number; px: number; py: number; free: number } | null = null;
+  /**
+   * Meeca's stage: the view never whips. Coming into a room, a sapling's fling, a trunk's lean and the scenes' own framing each moved it
+   * 40 to 93 px in a frame for several frames (QA 2026-10-31: "Meeca at the edge, then a 300 px jump" in rooms 2-3), so it moves at most
+   * MEECA_CAM_V a second, unless that would leave her out of the view.
+   */
+  private meecaCamCap(dt: number) {
+    const c = this.camera;
+    const last = this.mcCam;
+    const p = this.player;
+    // (not when she was put somewhere: back at a flag, a room started again: the view goes there as it always has, for a second)
+    const put = !last || Math.abs(p.x - last.px) >= 200 || Math.abs(p.y - last.py) >= 200;
+    const free = put ? 1 : Math.max(0, (last?.free ?? 0) - dt);
+    if (last && free <= 0) {
+      const mx = MEECA_CAM_V.x * dt, my = MEECA_CAM_V.y * dt;
+      const x = Math.max(last.x - mx, Math.min(last.x + mx, c.x));
+      const y = Math.max(last.y - my, Math.min(last.y + my, c.y));
+      // (she stays inside it: past the cap, it moves only as far as keeps her that far from its edge)
+      const m = 60;
+      const kx = Math.max(p.x + m - c.viewportWidth, Math.min(p.x - m, x));
+      const ky = Math.max(p.y + 20 - c.viewportHeight, Math.min(p.y - 110, y));
+      c.x = kx;
+      c.y = ky;
+    }
+    this.mcCam = { x: c.x, y: c.y, px: p.x, py: p.y, free };
+  }
+
   /** Meeca's stage: a hint from Flicker, asked for from the pause menu (null when he cannot be asked now) */
   meecaHint(): string | null {
     return this.mc?.canAsk ? this.mc.askHint() : null;
@@ -6490,6 +6535,12 @@ export class GameEngine {
     const st = mc.st;
     const lights: Array<{ x: number; y: number; r: number; c: string; a: number }> = [];
     if (mc.flicker.on) lights.push({ x: sx(mc.flicker.x), y: sy(mc.flicker.y), r: 120 * z, c: 'rgba(220, 255, 170, A)', a: 0.45 * mc.flicker.show });
+    // her own soft moonlight: in the camp she is one brown sloth among the sleeping soldiers, and on the trail she stood on dark dirt,
+    // "almost missing" (Matt, 2026-10-31); a pale glow round her keeps her the one that reads
+    lights.push({ x: sx(this.player.x), y: sy(this.player.y - 46), r: 78 * z, c: 'rgba(205, 215, 255, A)', a: 0.32 });
+    // and what she carries glows a little at her hands while she holds it (QA 2026-10-31: at night the cake or pinecone in her arms
+    // was hard to see, nothing said she still had it)
+    if (this.kit?.heldThing()) lights.push({ x: sx(this.player.x + this.player.facing * 10), y: sy(this.player.y - 50), r: 44 * z, c: 'rgba(255, 228, 160, A)', a: 0.5 });
     for (const c of st.camp) if (c.n === 'fire' || c.n === 'stakeLit') lights.push({ x: sx(c.x), y: sy(c.y - 40), r: 170 * z, c: 'rgba(255, 170, 90, A)', a: 0.4 });
     if (mc.phase !== 'play') for (const x of st.clearing.stakes) lights.push({ x: sx(x + 14), y: sy(st.clearing.y - 78), r: 130 * z, c: 'rgba(255, 200, 120, A)', a: 0.35 });
     for (const l of this.kit?.lights() ?? []) if (l.r > 400) lights.push({ x: sx(l.x), y: sy(l.y), r: Math.min(420, l.r * 0.4) * z, c: 'rgba(225, 232, 255, A)', a: 0.35 });

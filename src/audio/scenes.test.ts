@@ -27,7 +27,7 @@ test("the title screen plays the game's signature, whatever world is behind it (
   for (let w = 1; w <= 10; w++) {
     assert.equal(sceneForScreen('title', w, false)?.id, 'signature');
     assert.equal(sceneForScreen('world_map', w, false)?.id, `map-${w}`);
-    assert.equal(sceneForScreen('trophy', w, false)?.id, 'menu');
+    assert.equal(sceneForScreen('satchel', w, false)?.id, 'menu');
     assert.equal(sceneForScreen('paused', w, false), null, 'paused: the tune in play goes on');
     assert.equal(sceneForScreen('paused', w, true, 'lvl', 3), null);
     assert.notEqual(sceneForScreen('playing', w, false, 'lvl', 3)?.id, 'world1', 'a stage in play has its own music');

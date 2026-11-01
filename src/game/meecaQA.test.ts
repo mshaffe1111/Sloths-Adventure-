@@ -76,12 +76,14 @@ const view = (sim: RealPlay) => {
   return { x0: c.x, x1: c.x + c.viewportWidth, y0: c.y, y1: c.y + c.viewportHeight };
 };
 
-test('1. Flicker nudges in every room: ~20 s with nothing new done, then a stronger one at ~40 s; short, his, and never before', () => {
+test('1. Flicker nudges in every room: ~20 s after she comes in, then a stronger one at ~40 s; short, his, and never before', () => {
   for (const [name, w, h] of [['sideways', 844, 390], ['upright', 390, 844]] as const) {
     for (const id of ORDER) {
       const { sim, mc, r } = atRoom(id, 1, w, h);
       // (room 2: the dozer by the door eats its cake and falls asleep as she comes in, something new; the clock starts after)
       // (room 5: Flicker's light finds the first step a moment after she stands there, something new too: its clock starts a little late)
+      // (the first nudge counts from coming in, however busy she was: 2026-11-01, room 4's teapot nudge never came for Matt)
+      const entered = mc.t;
       if (id === 'eat') for (let i = 0; i < 30 * 10 && r.beetles[0].st.mode !== 'sleep'; i++) sim.frame();
       const start = mc.t;
       const shown = new Set<string>();
@@ -89,7 +91,7 @@ test('1. Flicker nudges in every room: ~20 s with nothing new done, then a stron
         sim.frame();
         if (mc.bubble?.who === 'flicker') shown.add(mc.bubble.text);
       }
-      const at = (n: number) => (mc.saidAt.find((s) => s.id === `nudge:${id}:${n}`)?.t ?? Infinity) - start;
+      const at = (n: number) => (mc.saidAt.find((s) => s.id === `nudge:${id}:${n}`)?.t ?? Infinity) - (n === 0 ? entered : start);
       assert.ok(at(0) >= NUDGE_S[0] - 0.5 && at(0) <= NUDGE_S[0] + 3, `${name} ${id}: the first nudge at ${at(0).toFixed(1)} s`);
       assert.ok(at(1) >= NUDGE_S[1] - 0.5 && at(1) <= NUDGE_S[1] + 3, `${name} ${id}: the second nudge at ${at(1).toFixed(1)} s`);
       assert.ok(shown.has(FLICKER_NUDGES[id][0]) && shown.has(FLICKER_NUDGES[id][1]), `${name} ${id}: both in Flicker's bubble`);

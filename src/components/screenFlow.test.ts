@@ -21,8 +21,7 @@ test("Matt's freeze: Menu → Satchel → watch a memory → Back → Back keeps
     { screen: 'paused', hold: fromPause },
   ];
   assert.equal(walk(steps), true, 'the stage must still be there for Resume');
-  // the Trophy Room (and its Jungle Cards tab) from the pause menu keeps it too
-  assert.equal(releasesStage('trophy', fromPause), false);
+  // the satchel (its Trophies and Creatures pages took over the Trophy Room) from the pause menu keeps it too
   assert.equal(releasesStage('satchel', fromPause), false);
 });
 

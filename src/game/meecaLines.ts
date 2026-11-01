@@ -68,6 +68,9 @@ export const MEECA_SAY = {
   /** by the pinecone at the top of room 1's ledge, the first thing she can carry: picking up taught before room 2 needs it (new, needs
    * Matt's approval) */
   pick: { id: 'pick', who: 'meeca', text: 'A pinecone. Tap it to pick it up.', teach: true },
+  /** at the foot of room 1's high wall, the first time (QA 2026-10-31, Easy: the logs over the way in looked like the way on, and nothing
+   * said this wall is the room's puzzle). PLACEHOLDER: needs Matt's approval */
+  wall: { id: 'wall', who: 'meeca', text: "Too high. There's a way up in here." },
   /** a finger held still on the glass at a trunk (a hold carves nothing): Flicker shows the circle again (Matt approved, 2026-10-28) */
   carveHold: { id: 'carveHold', who: 'flicker', text: 'Not a poke. Draw circles on the bark.' },
   /**
@@ -122,6 +125,8 @@ export const ROOM_LINES = {
     enter: 'Two plates. One of me.',
     slept: 'One bite and out cold. Noted!',
     hold: 'Tap to set it down.',
+    /** the gate opening (QA 2026-10-31: it opened with nothing said, and away from her it went unseen). PLACEHOLDER: needs Matt's approval */
+    open: "The gate's open! Sleep tight, beetles.",
   },
   silk: {
     enter: 'A rope. Test it first, Grandma says. Testing.',

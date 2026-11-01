@@ -4,6 +4,7 @@ import { SKILLS, type SkillId } from '../game/skills.ts';
 import { SkillIcon } from './SkillIcon.tsx';
 import { Icon, type IconName } from './icons/index.tsx';
 import { useExitGhost } from './fx/exitGhost.ts';
+import { CloseX, useBack } from './nav/Nav.tsx';
 
 /**
  * The in-game Settings card (the pause card, 2026-10-28; option A, Matt 2026-10-30): the painted card. Upright, one column: the header
@@ -29,7 +30,9 @@ export const MenuFrame: React.FC<{
   settings: React.ReactNode;
   /** the Trophies tab's tiles (trophies, jungle cards) */
   trophies?: React.ReactNode;
-}> = ({ label, title, sub, subChip, onScrim, go, notice, tiles, skills, sound, settings, trophies }) => {
+  /** the X at the top-right corner, Android's Back and Escape (the pause card: Resume) */
+  onClose: () => void;
+}> = ({ label, title, sub, subChip, onScrim, go, notice, tiles, skills, sound, settings, trophies, onClose }) => {
   const ref = React.useRef<HTMLDivElement>(null);
   // the options under the quick tiles, one section at a time behind the same painted tab chips as the title's Settings
   const [tab, setTab] = React.useState<'sound' | 'game' | 'trophies'>('sound');
@@ -39,11 +42,13 @@ export const MenuFrame: React.FC<{
     ...(trophies ? [{ id: 'trophies' as const, icon: 'trophy' as IconName, name: 'Trophies' }] : []),
   ];
   useExitGhost(ref);
+  useBack(onClose);
   return (
     <div ref={ref} className="pm-scrim select-none" onClick={onScrim}>
       <div className="pm-wrap">
       {/* Pokey looks over the top of the panel */}
       <PeekPokey className="pm-peek" />
+      <CloseX onClose={onClose} className="pm-x" label="Close and resume" />
       <div className="pm-card" role="dialog" aria-label={label} onClick={(e) => e.stopPropagation()}>
         <div className="pm-head">
           <div className="pm-head-t">
