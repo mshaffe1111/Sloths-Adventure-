@@ -104,6 +104,15 @@ GROUPS = {
                      ('b', 'a small spiral-free pocket notebook of worn tan leather with a short yellow pencil lying across it, a few '
                            'loose paper scraps sticking out', 'book with brass corners, big book, satchel, text')],
     },
+    'H': {
+        'shake': [('a', 'a short leafy jungle branch shaking hard, three green leaves flying off it, little curved motion lines on '
+                        'both sides of the branch showing it wobble', 'bag, text, bird'),
+                  ('b', 'a round brown nut bouncing off a short wooden branch, the branch bent and wobbling, a small leaf falling, '
+                        'little curved motion lines', 'bag, text, face')],
+        'cards': [('a', 'a small fanned stack of three picture cards with painted jungle animals on them (a sloth, a snake, a toucan), '
+                        'plain picture cards with no corner marks, tied with a twine bow', 'text, letters, numbers, A, K, Q, playing '
+                        'card symbols, spades, hearts, bag')],
+    },
     'E': {
         'playc': [('a', 'a chunky rounded triangle play button shape pointing right, carved from pale cream birch wood, a warm golden '
                         'brass rim round its edge, smooth and glossy', 'bag, leaf, flower, arrow shaft'),

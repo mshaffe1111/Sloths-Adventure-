@@ -1,0 +1,109 @@
+{
+ "tag": "icH0",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects",
+ "items": [
+  {
+   "name": "shake-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a short leafy jungle branch shaking hard, three green leaves flying off it, little curved motion lines on both sides of the branch showing it wobble, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, bird"
+  },
+  {
+   "name": "shake-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a short leafy jungle branch shaking hard, three green leaves flying off it, little curved motion lines on both sides of the branch showing it wobble, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, bird"
+  },
+  {
+   "name": "shake-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a short leafy jungle branch shaking hard, three green leaves flying off it, little curved motion lines on both sides of the branch showing it wobble, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, bird"
+  },
+  {
+   "name": "shake-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a short leafy jungle branch shaking hard, three green leaves flying off it, little curved motion lines on both sides of the branch showing it wobble, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, bird"
+  },
+  {
+   "name": "shake-b11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round brown nut bouncing off a short wooden branch, the branch bent and wobbling, a small leaf falling, little curved motion lines, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, face"
+  },
+  {
+   "name": "shake-b23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round brown nut bouncing off a short wooden branch, the branch bent and wobbling, a small leaf falling, little curved motion lines, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, face"
+  },
+  {
+   "name": "shake-b37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round brown nut bouncing off a short wooden branch, the branch bent and wobbling, a small leaf falling, little curved motion lines, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, face"
+  },
+  {
+   "name": "shake-b53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round brown nut bouncing off a short wooden branch, the branch bent and wobbling, a small leaf falling, little curved motion lines, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, face"
+  },
+  {
+   "name": "cards-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small fanned stack of three picture cards with painted jungle animals on them (a sloth, a snake, a toucan), plain picture cards with no corner marks, tied with a twine bow, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, text, letters, numbers, A, K, Q, playing card symbols, spades, hearts, bag"
+  },
+  {
+   "name": "cards-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small fanned stack of three picture cards with painted jungle animals on them (a sloth, a snake, a toucan), plain picture cards with no corner marks, tied with a twine bow, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, text, letters, numbers, A, K, Q, playing card symbols, spades, hearts, bag"
+  },
+  {
+   "name": "cards-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small fanned stack of three picture cards with painted jungle animals on them (a sloth, a snake, a toucan), plain picture cards with no corner marks, tied with a twine bow, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, text, letters, numbers, A, K, Q, playing card symbols, spades, hearts, bag"
+  },
+  {
+   "name": "cards-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small fanned stack of three picture cards with painted jungle animals on them (a sloth, a snake, a toucan), plain picture cards with no corner marks, tied with a twine bow, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, text, letters, numbers, A, K, Q, playing card symbols, spades, hearts, bag"
+  }
+ ]
+}
