@@ -15,6 +15,7 @@ TAIL = (', bold simple readable shape, chunky and clear, thick dark outline, ric
         'no numbers, no circle, no badge, no frame')
 NEG = 'text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects'
 SEEDS = (11, 23, 37, 53)
+SEEDS6 = (11, 23, 37, 53, 71, 89)
 
 # name -> list of (variant, object description, extra negative)
 GROUPS = {
@@ -41,6 +42,47 @@ GROUPS = {
                        'small green leaf tucked behind it', 'bag, sun, flower')],
         'play': [('a', 'a chunky carved wooden triangle arrow pointing to the right, rounded corners, warm wood grain, a thin brass edge',
                   'bag, leaf, flower')],
+    },
+    # groups B, C, D: one strong prompt each, six seeds (SEEDS6)
+    'BCD': {
+        'home': [('a', 'a cosy little round wooden door set in the base of a mossy tree trunk, warm light in a tiny round window, a '
+                       'green leaf over the door', 'bag, house, castle')],
+        'trophy': [('a', 'a small golden trophy cup with two curled handles on a carved wooden base, a green vine with a leaf wound '
+                         'round its stem', 'bag, text')],
+        'cards': [('a', 'a small fanned stack of three playing cards with painted jungle animals on them, tied with a twine bow',
+                   'bag, text, letters, numbers')],
+        'heart': [('a', 'a glossy plump red heart shaped berry with a tiny green leaf stem on top, a soft white shine', 'bag, face')],
+        'heartEmpty': [('a', 'an empty dry pale brown heart shaped seed husk, hollow and papery, a tiny dry stem', 'bag, face')],
+        'thornHeart': [('a', 'a glossy plump red heart shaped berry wrapped in a dark green thorny bramble vine with sharp thorns',
+                        'bag, face')],
+        'seed': [('a', 'a glowing golden seed with little bright sparks around it, warm magical glow', 'bag, face, sun')],
+        'leaf': [('a', 'a single big glossy green jungle leaf with a curled tip and clear veins', 'bag, flower')],
+        'paw': [('a', 'a sloth paw print pressed into a round flat disc of brown clay, three long claw marks', 'bag, dog, cat')],
+        'save': [('a', 'a small wooden keepsake box with a rounded lid and a shiny brass clasp, a green leaf on the lid', 'bag, book')],
+        'compass': [('a', 'an old brass explorer compass, round, with a red and white needle, a green vine strap', 'bag, clock, text')],
+        'crown': [('a', 'a little crown woven of green leaves and small golden flowers', 'bag, face, text')],
+        'clubs': [('a', 'two short carved wooden clubs crossed in an X, lashed together with green vine', 'bag, sword, metal')],
+        'key': [('a', 'an old iron key with a round bow, a little paper tag tied on with twine', 'bag, text, lock')],
+        'medal': [('a', 'a round gold medal with a carved leaf on it, hanging from a short green vine ribbon', 'bag, text, numbers')],
+        'journal': [('a', 'a small worn brown leather journal, closed, tied round with a twine cord, a feather tucked under the cord',
+                     'bag, satchel, strap, text')],
+        'scenes': [('a', 'a little wooden toy puppet theatre stage with red curtains drawn open, a painted jungle scene inside',
+                    'bag, text, people')],
+        'sparkle': [('a', 'a glowing firefly with a bright golden light and little four pointed sparkles around it', 'bag, star, face')],
+        'flower': [('a', 'a single pink jungle flower with five round petals and a yellow middle', 'bag, face')],
+        'shield': [('a', 'a small round shield made of a big tough green leaf over a wooden frame, lashed with vine', 'bag, metal, text')],
+        'pouch': [('a', 'a small embroidered green cloth drawstring pouch with a shiny emerald hummingbird feather tucked in it',
+                   'bag, satchel, bird')],
+        'about': [('a', 'a little blank carved wooden plaque hanging from a vine, a small green leaf on its corner', 'bag, text, letters')],
+        'sprint': [('a', 'a green leaf with small swept back wings, fast, speed lines', 'bag, text, bird')],
+        'petal': [('a', 'a single big curled pink flower petal with a dew drop', 'bag, face')],
+        'bramble': [('a', 'a round tangled ball of dark green thorny bramble with sharp thorns', 'bag, face')],
+        'ascent': [('a', 'a green vine climbing straight up, curling at the top with a leaf, with a small upward arrow shape of leaves',
+                    'bag, text')],
+        'fern': [('a', 'a single curled green fern frond', 'bag, face')],
+        'liana': [('a', 'a thick brown jungle liana vine hanging in a loop, a few leaves', 'bag, snake')],
+        'idol': [('a', 'a small carved grey stone idol with a round friendly face, moss on its head', 'bag, text')],
+        'cage': [('a', 'a small cage made of tied wooden sticks with a little door, empty', 'bag, bird, metal')],
     },
     'E': {
         'playc': [('a', 'a chunky rounded triangle play button shape pointing right, carved from pale cream birch wood, a warm golden '
@@ -69,7 +111,7 @@ def items(group):
     out = []
     for name, vs in GROUPS[group].items():
         for v, desc, neg in vs:
-            for sd in SEEDS:
+            for sd in (SEEDS6 if group == 'BCD' else SEEDS):
                 out.append({'name': f'{name}-{v}{sd}', 'prompt': HEAD + desc + TAIL, 'seed': sd, 'w': 1024, 'h': 1024,
                             'neg': NEG + ', ' + neg})
     return out
