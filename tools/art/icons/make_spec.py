@@ -93,6 +93,17 @@ GROUPS = {
                          'wood grain, a small green leaf in the middle', 'bag, text, star, flower')],
         'checkmark': [('a', 'a chunky tick check mark shape made of a bent green vine stem with a small leaf, bold', 'bag, text, letter v')],
     },
+    'G': {
+        'spyglass': [('a', "a small brass explorer's spyglass telescope, extended, with a wrapped leather grip and a little green leaf "
+                           'tied on with twine', 'bag, gun, text'),
+                     ('b', 'a short brass spyglass lying slightly diagonal, glinting lens, a twine strap and a small green leaf',
+                      'bag, gun, text')],
+        'notebook': [('a', "Pokey's own small pocket notebook of soft tan leather, held shut with an elastic band, a stubby yellow pencil "
+                           'tucked under the band, a little doodle of a leaf scratched on the cover', 'book with brass corners, big book, '
+                           'satchel, text'),
+                     ('b', 'a small spiral-free pocket notebook of worn tan leather with a short yellow pencil lying across it, a few '
+                           'loose paper scraps sticking out', 'book with brass corners, big book, satchel, text')],
+    },
     'E': {
         'playc': [('a', 'a chunky rounded triangle play button shape pointing right, carved from pale cream birch wood, a warm golden '
                         'brass rim round its edge, smooth and glossy', 'bag, leaf, flower, arrow shaft'),
