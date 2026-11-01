@@ -45,3 +45,21 @@ About $5.7 of the $14 cap (log: `tools/art/hfprops/jobs.txt`):
    - A cutter pass that takes the key colour from the full picture before a crop box, so a box crop never keys against scenery.
    - 5-6's short banks: let the dressing use 140-unit banks in W5 if the stills read well.
 5. **Remaining ~$4:** hold it, or give it to the lead for cutscenes or backdrops (Matt's other uses).
+
+## Checks at the stop (2026-10-31, ~9 PM ET)
+
+- **Passed:**
+  - `npx tsc --noEmit -p .`
+  - `artDress`, `artUse` (art-use gate) and `stageSheets` tests
+  - the gen2 sheet-loading test
+  - `npx vite build` (no asset over 4 MiB)
+  - `artcheck`
+- **Full CLAUDE.md test globs:** ~1,666 tests ran before the run hit the session's background time limit. Three failed, and the same
+  three fail on this branch's merge base (8e15aaa2) without any hf-props change, so they are not from this work:
+  - `platformPlan.test.ts` "variety targets"
+  - `safeStart.test.ts` "Worlds 8-10 first 1,300 px"
+  - `stageQuality.test.ts` "animals stand clear"
+- **Draw check:** see the report to the lead.
+  - First run: no limit breach on 1-4, 2-6, 3-3, 4-1, 7-3, 8-4. The control-test mix could not load ("execution context destroyed"
+    while the full suite was running beside it).
+  - Second run: alone.
