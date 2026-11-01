@@ -689,3 +689,4 @@ Report each finding with the stage, the moment (s), upright or sideways, Easy or
   - w8-rope2 session_01FhBbYMTQ1zFtXBWtxzkoxn (high): merge w8-rope f48a2e2f, make the rope fair for a Normal first-timer, cap rope share ~half. No fair fix by 2:45 -> 8-2 ships without rope. Done by 3:15 PM.
   - warmup-5m session_01FhBbYLYP8Hu1LT843p3UmE (high): warm the stage's sheets before play (old OnePlus first-draw stutter, measured), Meeca room 5 bank-face overlap. Done by 3:00 PM.
   Plan: test link ~3:30 PM, Matt reviews 4 PM, gate 4:15-5:15, PR ~5:30, deploy 6 PM.
+- 2026-11-01 11:35 AM ET: RELEASE 0.9.2 PR #60 (release-0.9.2 d1d68b33): gate PASS (tsc; 3 shards 2151/0 + known TODO; build; artcheck; drawcheck 356 s). B done at b8dcbb2c (its own gate 2136/0). Waiting on Matt's merge, then deploy + APK check. Helpers A and B idle (archive after merge).
