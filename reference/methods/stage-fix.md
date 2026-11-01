@@ -1,5 +1,5 @@
 # Method: fixing an unfair spot in a stage
-Last proven: 2026-11-01, branch w8-rope2 (57c8bf51..3bcfc1dc), 8-2's ropes: 0 heart falls at a rope in 40 first-timer runs (was 6 on one
+Last proven: 2026-11-01, branch w8-rope2 (57c8bf51..c0d59a75), 8-2's ropes: 0 heart falls at a rope in 40 first-timer runs (was 6 on one
 roll), the rope rolls reaching the shrine 21 of 24 Normal runs. Owner of the last update: w8-rope2.
 
 ## When to use it
@@ -58,13 +58,29 @@ The CLAUDE.md checks (tsc, the full test globs in 3 shards, vite build, artcheck
   takes off and lands (36-55 px under the flight, reach 34). Count what each run leaves and classify it (on a knot / bough / arc; passed
   over / under / never near) before blaming the bot.
 - 2026-11-01: one bot trial per roll said "fixed"; three trials showed the same roll failing 2 of 3.
+- 2026-11-01: **a guess at the cause has to survive the numbers.** "Blooms sit beside take-off and landing edges" looked right on two
+  runs; the histogram over 8 runs showed misses at 8-19% at every distance from an edge, even on boughs with no gap. Asking *why he was
+  in the air over each missed bloom* (a gap jump onto the landing bough, a hop down a step, a flick) gave the real cause: every natural
+  hop passed 16-35 px too high over blooms floating 34 px up. The fix was their height (52 px: a walker still takes them).
+- 2026-11-01: **classify the deaths before fixing a stage**: section, the bough he left (its width, how far along), jump or walk-off, how
+  far he got. 8-2's fungus layout had two different traps in one theme (the void under each bracket; a foot bough shorter than a running
+  jump off the top, with a deep gap after it), and fixing the first only moved the deaths.
+- 2026-11-01: **a section change re-curates every stage that uses the section.** Widening a shared fungus foot cost 8-5 its curation
+  (4 of 16 rolls passed). Check which stages draw the section (`gen2.sections` over all 16 layouts) before changing it; scope the change
+  to the stage's own sections, or put it after the build (`w8Finish`), which changes builds but not what curation measured.
 - 2026-11-01: the headless browser lags the game, so screenshots taken "at the grab" land seconds later; step the engine instead.
 
 ## Tried and didn't work
 - Lowering ROPE_RISE or widening the grab window for the rope: not needed (the sweep showed the window was fine); would have changed how
   every rope looks and plays for nothing.
 - The broad falling catch (every required rope): see Pitfalls.
+- Moving blooms away from edges (the first guess at the sealed door): the misses were not at the edges.
+- A wider stair foot alone (400-440 px): he landed with 100 px to go and his next flick fell into the gap after it; a knot past the foot
+  (a step up, never a gap, after the landing) is what worked.
 
 ## To try
 - An "adult first-timer" goal measure, as Easy's kid bot sets gen2's Easy goal (goals.ts gen2EasyGoal), for harvest stages on Normal.
-- Blooms on short boughs placed along the hop's arc (8-2; the petal pass for every gen2 world).
+- Petals on a bough floating at his head in Worlds 1, 3 and 5 too (the classifier: 5-2 19 flown over, 1-2 and 3-2 5 each).
+- 8-2's gap and roost themes: Normal first-timers lose 8-22 lives at their wide gaps over deep pits (single jump first, the double only
+  after a death there); release-0.9.2's own gap and roost rolls lose 5-10. STAGE-RULES §6's water lesson (no second-jump gaps over a
+  deadly fall) may apply.
