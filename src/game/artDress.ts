@@ -244,13 +244,14 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
   };
   const pick = (job: 'bank' | 'hang' | 'clutter', salt: number): DressName[] => (sets[job].length ? rollLook(sets[job], d.stage, d.seed, salt + d.world * 11) : []);
   // (hf-props, 2026-10-31: one look per job for a whole stage put the same three pieces at every bank, AUDIT.md. The roll picks the
-  // stage's first look; each set after it takes the next of the world's looks (all of them in Worlds 1-7, up to three in 8-10), so neighbouring banks differ
+  // stage's first look; each set after it takes the next of the world's looks (all of them in Worlds 1-7; Worlds 8-10 keep one look a stage), so neighbouring banks differ
   // and the next stage, starting elsewhere, still looks different)
   const cycle = (job: 'bank' | 'hang' | 'clutter', salt: number) => {
     const all = sets[job];
     const first = pick(job, salt);
     const i0 = Math.max(0, all.indexOf(first));
-    const run = Array.from({ length: Math.min(d.world <= 7 ? all.length : 3, all.length) }, (_, k) => all[(i0 + k) % all.length]);
+    // (Worlds 8-10 keep one look a stage, as before: their own helpers own their dressing)
+    const run = d.world <= 7 ? Array.from({ length: all.length }, (_, k) => all[(i0 + k) % all.length]) : [first];
     return (k: number): DressName[] => run[k % run.length] ?? [];
   };
   // (each set laid in a turned order, so the same three in the same order do not come round bank after bank)
