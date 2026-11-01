@@ -159,3 +159,16 @@ Story scene lines (cutscenes, the journal, the finale): the lead approves these 
 
 ## Releases come from a frozen branch (2026-10-29)
 Open the release PR from a branch cut at the checked commit (e.g. `release-YYYY-MM-DD`), never from the work branch: later merges onto the work branch silently join an open PR (PR #47 picked up four unreleased merges and was replaced by #48).
+
+## The lead's own bar before anything reaches Matt (Matt, 2026-11-01: "Is this the polish we expect? ... You are 50% ownership of this game")
+What slipped: the 0.9.2 Journal. The lead approved the line templates one by one, in a list, and never looked at the page a real player
+with an OLD save sees: every entry fell to 3 filler lines ("I didn't write it down... I remember it was green"), repeated down the page.
+Matt found it on his phone. Rules from now on:
+1. **Judge the screen, not the list.** Lines, templates and art are approved only as they appear in the game, on a full page, in every state:
+   an old save (from before the feature), a fresh save, a half-played one and a finished one. The lead opens each state itself.
+2. **Filler is a fail.** A line that could sit under any stage, or that apologises for missing data, is not shipped. Generated text gets a
+   no-repeat-on-a-page test and a banned-filler test.
+3. **Voice bar:** Pokey is "a slow smart-ass" (Matt). Every Pokey line has to sound like him read aloud; at least every other line should
+   earn a smile. Rewrite until it does.
+4. **Briefs carry the bar:** every brief that produces player-facing words or looks includes 2-3 example lines/shots at the bar and the
+   states the helper must screenshot (old save included). A helper's "polish check" that only shows the happy path is sent back.
