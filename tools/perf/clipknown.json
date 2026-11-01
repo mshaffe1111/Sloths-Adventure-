@@ -282,15 +282,6 @@
   },
   {
    "kind": "small",
-   "sel": ".ttl-ver > .ttl-ver-row > .ttl-ver-b",
-   "text": "Check for updates",
-   "why": "162x40 px tap area",
-   "seen": "start screen @ side/fresh",
-   "group": "G6 Start screen and Pause sideways: Check for updates / Refresh game buttons 40 px",
-   "owner": "menu-polish job (next week, lead)"
-  },
-  {
-   "kind": "small",
    "sel": ".fr-card.fr-note > .fr-foot > .fr-btn.fr-close",
    "text": "Close",
    "why": "71x33 px tap area",
