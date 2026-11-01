@@ -39,3 +39,22 @@ test("What's New: dates read in words", () => {
   assert.equal(releaseLine({ version: '1.0.0', date: '2026-10-28', part: 'evening', title: 't', items: [] }), 'Version 1.0.0  ·  Oct 28, 2026, evening');
   assert.equal(releaseLine({ date: '2026-10-28', title: 't', items: [] }), 'Oct 28, 2026');
 });
+
+/**
+ * Worlds not out yet: no What's New line may name them. When a world ships, the lead deletes its patterns from this list.
+ * (Lead, 2026-11-01: Worlds 9 and 10 are not released.)
+ */
+const NOT_RELEASED_YET: { world: number; patterns: RegExp[] }[] = [
+  { world: 9, patterns: [/\bWorlds? 9\b/i, /\bto 9\b/i, /\b9-\d+\b/] },
+  { world: 10, patterns: [/\bWorlds? 10\b/i, /\bto 10\b/i, /\b10-\d+\b/] },
+];
+
+test("What's New: no line names a world that isn't out yet", () => {
+  for (const r of WHATS_NEW) {
+    for (const line of [r.title, ...r.items]) {
+      for (const w of NOT_RELEASED_YET) {
+        for (const re of w.patterns) assert.ok(!re.test(line), `"${line}" mentions World ${w.world}, which isn't out yet`);
+      }
+    }
+  }
+});

@@ -56,7 +56,7 @@ export const WHATS_NEW: Release[] = [
       'Stages get ready much faster.',
       'World 2 cages: flick a stone up near a high basket and it drops right in.',
       'New painted pictures in the story scenes, and some scenes now move.',
-      'Worlds 7 to 10 get dawn, dusk, sunset and night skies.',
+      'Worlds 7 and 8 get dawn, dusk, sunset and night skies.',
       'Lots of new painted plants and props in Worlds 1 to 7.',
       'A hidden hole in 8-6 is fixed.',
     ],
@@ -85,7 +85,7 @@ export const WHATS_NEW: Release[] = [
       'Meeca’s petals now light the way in every world.',
       'Meeca’s stage: no more snapping back, and a finger shows how to carve.',
       'World 5 stages play differently each time.',
-      'Worlds 8 to 10 start on safe ground.',
+      'World 8 starts on safe ground.',
     ],
   },
   {
