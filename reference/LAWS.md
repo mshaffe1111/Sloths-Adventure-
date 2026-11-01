@@ -51,7 +51,8 @@ have.
 ## Continuous improvement: the same standard, the right way, always
 
 15. **The standard only moves up.** Once something is done well (a method, a gate, a bar), it is the floor for every job after it. No
-    helper and no release goes back below it.
+    helper and no release goes back below it. When one element raises the bar on a screen (a painted satchel among flat icons), the
+    same job brings every element beside it up to that bar, or names each one that is left (added 2026-11-01, defect D13).
 16. **Check-ins follow the standard every time** (law 9): every running helper, every 30 minutes; open the real work; judge it against the
     bar and its method file; send rough work back with exactly what to redo; log what was found. Never a status-only check-in.
 17. **What Matt expects from the lead, every time:**
