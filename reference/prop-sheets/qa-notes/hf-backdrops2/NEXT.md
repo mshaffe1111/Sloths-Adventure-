@@ -30,3 +30,30 @@ The skies need a new start, not more img2img over the old one. For each of the 9
 light, the same way the new far + sky pictures were made today (`make_spec2.py F`: 1792x1200, style model 0.8, the upper third
 open sky). Take its top rows as the donor sky in `tools/art/hfbatch/tallstart.py` (DONOR), then run one native pass at s30
 (`process.py hdspec`) and cut with `skycut.py --tall`. Estimate about $2.
+
+## Checks (2026-11-01, 2:05 PM ET)
+
+- `npx tsc --noEmit -p .`: clean
+- full test suite: 2153 tests, 2151 pass, 0 fail (+1 known `# TODO`, 4-3's boulder wall)
+- `npx vite build`: OK, no asset over 4 MiB
+- `artcheck`: PASS
+- `drawcheck`: PASS (650 s)
+
+Every changed strip is under 250 KB.
+
+## Polish check (sheets `w<N>-before-after.jpg` here)
+
+- **Seams:** none seen. The ends were joined at full width and the floating pieces dropped.
+- **Bands:** the W8 canopy band is gone (w8 sheet, 8-1/8-3/8-5).
+- **Notches:** none on the W4/W6 near strips (w4 4-1, w6 6-1). The W3 sinkhole cut is gone (w3 3-4).
+- **Odd colours:**
+  - fixed: W3 crystal had a day sky in a dark cave world, now graded to night-cave blue (w3 3-2/3-5/3-8);
+  - fixed: no pink water on W2 (w2 2-4/2-6).
+- **Flat or washed-out:**
+  - fixed: W10 gale was pale grey, now graded into the storm light (w10 10-2/4/6);
+  - fixed: W2 evening haze is down to 0.1;
+  - still soft: W1 rain (1-2/1-5/1-8) is soft and misty on purpose, middle haze cut to 0.07; it still reads paler than its neighbours.
+- **Pokey's readability:** he reads clearly in every after shot. The darkest stages (3-2, 3-5, 6-4, 8-4) keep the world's own darkness.
+- **Known rough spots, not fixed:**
+  - 9 sets still have no painted upright sky, as before (see Held back);
+  - 1-4/1-6 crowns on the old W1 middle now read as broad flat-topped canopies (round, no cut).
