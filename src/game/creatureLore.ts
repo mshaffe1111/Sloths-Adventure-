@@ -2,7 +2,7 @@
  * A short backstory for every creature card in the satchel (Matt, 2026-10-31: "If you click on them, it tells you a little brief
  * backstory"). Two or three sentences each, in the narrator's plain voice, with a line from Pokey or Dot where it helps.
  *
- * PLACEHOLDERS until Matt approves them (sent to the lead as a list, 2026-11-01). Keep each under about 45 words: it is read on a phone.
+ * Approved by Matt, 2026-11-01. Change them only with his OK. Keep each under about 45 words: it is read on a phone.
  */
 export const CREATURE_LORE: Record<string, string> = {
   // ── predators ──

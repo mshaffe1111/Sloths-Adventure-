@@ -1,4 +1,4 @@
-# Satchel: new lines for Matt's approval (placeholders in the game until approved)
+# Satchel: the journal lines, story beats and creature backstories (approved by Matt, 2026-11-01)
 
 In the journal, {s} is the stage name, {n} a count, {t} a time, {f}/{ft} flowers, {c} a creature, {x} a find or medal. Each stage picks one variant per kind, the same one every time.
 

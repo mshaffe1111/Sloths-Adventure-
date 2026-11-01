@@ -7,8 +7,8 @@
  *   - At a world's end, its review page: the story so far, the creatures met, the best moments, the numbers.
  *
  * Every line comes from a template with several variants, picked by the stage's id, so the entries don't repeat and a page reads the
- * same each time it is opened. The world lines (POKEY_JOURNAL) are Matt's approved words (2026-10-29 story report); the templates are
- * PLACEHOLDERS until Matt approves them (sent to the lead, 2026-11-01).
+ * same each time it is opened. The world lines (POKEY_JOURNAL) are Matt's approved words (2026-10-29 story report); the templates and
+ * story beats were approved by Matt on 2026-11-01. Change them only with his OK.
  */
 import type { FirstClear, PlayRecord } from './playRecords.ts';
 
@@ -30,7 +30,7 @@ export function journalWritten(levels: readonly { worldIndex: number; miniIndex:
   return levels.filter((l) => l.miniIndex === 10 && l.completed).map((l) => l.worldIndex).sort((a, b) => a - b);
 }
 
-// ───────────────────────────── the line templates (placeholders: see the header) ─────────────────────────────
+// ───────────────────────────── the line templates (Matt-approved, 2026-11-01) ─────────────────────────────
 
 /** {s} the stage's name, {n} a number, {t} a time, {f}/{ft} flowers, {c} a creature, {x} a find or medal */
 export const LINES = {
