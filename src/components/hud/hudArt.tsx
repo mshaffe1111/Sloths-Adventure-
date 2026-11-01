@@ -70,7 +70,7 @@ export const Bolt: React.FC<{ size: number; color: string }> = ({ size }) => <Pa
 export const MenuLines: React.FC<{ size: number }> = ({ size }) => <PaintedIcon name="gear" size={size} />;
 
 /** goal met: the painted vine tick, lifted off the wooden plate by the warm rim */
-export const Tick: React.FC<{ size: number }> = ({ size }) => <PaintedIcon name="checkmark" size={size} className="pic-rim" />;
+export const Tick: React.FC<{ size: number }> = ({ size }) => <PaintedIcon name="checkmark" size={size} />;
 
 /** the goals with no painted pickup (icons-painted, 2026-11-01): the stone idol, a defeated foe (the clubs), the stick cage, the
  * sanctuary door (the stump door) and Meeca's carved bark scrap */

@@ -67,7 +67,9 @@ export interface PaintedIconProps {
 }
 
 export const PaintedIcon: React.FC<PaintedIconProps> = ({ name, size = 24, label, className, style }) => {
-  const cls = className ? `pic ${className}` : 'pic';
+  // the vine tick is olive and thin: it always gets the warm rim and a brighter green (lead, 2026-11-01: it vanished on wood and leaf)
+  const base = name === 'checkmark' ? 'pic pic-tick' : 'pic';
+  const cls = className ? `${base} ${className}` : base;
   const box: React.CSSProperties = { width: size, height: size, ...style };
   const aria = label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true as const };
   if (name === 'mute') {
