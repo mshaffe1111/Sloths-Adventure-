@@ -1,0 +1,6 @@
+w10gale-mid s68-7
+w10gale-near s62-23
+w10storm-mid s76-7
+w10storm-near s62-7
+w1kapok-mid s60-7
+w1sunrise-mid s60-7

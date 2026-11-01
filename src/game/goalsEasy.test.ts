@@ -10,9 +10,12 @@ test("LV-24: a gen2 stage's Easy goal is 65% of what it holds, capped at the kid
   assert.equal(gen2EasyGoal(19), 12, '65% of 19');
   assert.equal(kidMedian([5, 5, 9, 10, 10, 10]), 9);
   assert.equal(kidMedian([4, 7, 8]), 7);
-  assert.equal(gen2EasyGoal(18, kidMedian([5, 5, 9, 10, 10, 10])), 9, "5-9: 9 of 18");
+  assert.equal(gen2EasyGoal(18, kidMedian([5, 6, 4, 6, 6, 5])), 5, "5-9: 5 of 18 (bot-fix 2026-11-01; 9 came from the hopping bot)");
   assert.equal(gen2EasyGoal(6, 9), 4, 'the floor when the kid reaches more');
   assert.equal(gen2EasyGoal(1), 1);
+  // (5-9's own record: the fixed kid bot's six runs, and the goal they give; firstTimerBot.test.ts re-measures the runs)
+  assert.deepEqual([...GEN2_STAGES['5-9'].kidRuns!], [5, 6, 4, 6, 6, 5]);
+  assert.equal(GEN2_STAGES['5-9'].easyGoal, 5);
 });
 
 test('LV-24: every gen2 stage on Easy asks min(65% of what it holds, the kid bot\'s median)', () => {

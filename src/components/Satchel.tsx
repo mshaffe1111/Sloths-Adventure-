@@ -10,6 +10,7 @@ import type { PlayRecord } from '../game/playRecords.ts';
 import { GUARDIAN_ENTRIES, PREDATOR_ENTRIES, PREDATOR_ORDER, ROAD_ENTRIES, predatorMet, roadMet } from '../game/journal.ts';
 import { WORLD_STORIES } from '../game/storyWorlds.ts';
 import type { EntryNames } from '../game/pokeyJournal.ts';
+import { THORNBARK_LEVEL } from '../game/secret.ts';
 import { SceneBackdrop } from './title/TitleScene.tsx';
 import { DotPerched, Plaque } from './KitParts.tsx';
 import { BackButton, CornerToken } from './nav/Nav.tsx';
@@ -79,6 +80,17 @@ export const Satchel: React.FC<Props> = (p) => {
     }),
     [],
   );
+  // the journal's stages: the game's list, and Thornbark's secret hollow on World 7's page after 7-10 once he is beaten (never a tease)
+  const journalStages = useMemo(() => {
+    if (!thornHeart) return levels;
+    let stars = 3;
+    try {
+      stars = JSON.parse(localStorage.getItem(`sloth_lvl_${THORNBARK_LEVEL.id}`) || 'null')?.stars || 3;
+    } catch {
+      /* no storage: three stars, he was beaten */
+    }
+    return [...levels, { ...THORNBARK_LEVEL, completed: true, stars }];
+  }, [levels, thornHeart]);
   const extra = (w: number) => {
     const creatures = [
       ...PREDATOR_ORDER.filter((id) => PREDATOR_ENTRIES[id].first === w && predatorMet(id, store.seen, levels)).map((id) => ({ id, name: PREDATOR_ENTRIES[id].name })),
@@ -86,7 +98,8 @@ export const Satchel: React.FC<Props> = (p) => {
       ...GUARDIAN_ENTRIES.filter((g) => g.world === w && levels.some((l) => l.worldIndex === w && l.miniIndex === 10 && l.completed)).map((g) => ({ id: g.art, name: g.name })),
     ];
     const mine = FINDS.filter((f) => f.world === w);
-    return { teaser: WORLD_STORIES[w]?.teaser, creatures, finds: mine.filter((f) => finds.includes(f.id)).length, findTotal: mine.length };
+    const have = mine.filter((f) => finds.includes(f.id));
+    return { teaser: WORLD_STORIES[w]?.teaser, creatures, finds: have.length, findTotal: mine.length, found: have.map((f) => f.title) };
   };
 
   return (
@@ -101,6 +114,17 @@ export const Satchel: React.FC<Props> = (p) => {
               Pokey&apos;s Satchel
             </Plaque>
           </div>
+          {/* (one row with Back and the Start Screen token sideways; their own row under the title upright: index.css .sh-head) */}
+          <div className="sh-tabs" role="tablist">
+            {TABS.map((t) => (
+              <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`sh-tab ${tab === t.id ? 'on' : ''}`} onClick={() => setTab(t.id)}>
+                <span className="sh-tab-ic">
+                  <PaintedIcon name={paint(t.icon)} size="104%" />
+                </span>
+                {t.name}
+              </button>
+            ))}
+          </div>
           {p.onHome && (
             <span className="sh-home">
               <CornerToken icon="sloth" label="Start Screen" onClick={p.onHome} />
@@ -108,20 +132,9 @@ export const Satchel: React.FC<Props> = (p) => {
           )}
         </div>
 
-        <div className="sh-tabs" role="tablist">
-          {TABS.map((t) => (
-            <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`sh-tab ${tab === t.id ? 'on' : ''}`} onClick={() => setTab(t.id)}>
-              <span className="sh-tab-ic">
-                <PaintedIcon name={paint(t.icon)} size="104%" />
-              </span>
-              {t.name}
-            </button>
-          ))}
-        </div>
-
         {tab === 'finds' && <FindsTab finds={finds} onOpenFind={p.onOpenFind} />}
         {tab === 'trophies' && <TrophiesTab ctx={ctx} choice={p.choice} onChoice={p.onChoice} />}
-        {tab === 'journal' && <JournalBook stages={levels} records={p.records} names={names} extra={extra} />}
+        {tab === 'journal' && <JournalBook stages={journalStages} records={p.records} names={names} extra={extra} />}
         {tab === 'scenes' && <ScenesTab progress={progress} onPlay={p.onPlayScenes} />}
         {tab === 'creatures' && <CreaturesTab store={store} levels={levels} />}
       </div>
