@@ -84,6 +84,15 @@ GROUPS = {
         'idol': [('a', 'a small carved grey stone idol with a round friendly face, moss on its head', 'bag, text')],
         'cage': [('a', 'a small cage made of tied wooden sticks with a little door, empty', 'bag, bird, metal')],
     },
+    'F': {
+        'expand': [('a', 'four chunky carved wooden corner brackets arranged at the four corners of an empty square, each an L shape '
+                         'pointing outward, warm wood with a brass edge', 'bag, frame, picture, text'),
+                   ('b', 'four short chunky carved wooden arrows pointing out diagonally to the four corners from the middle, warm wood '
+                         'grain, a small green leaf in the middle', 'bag, text, star, flower')],
+        'shrink': [('a', 'four short chunky carved wooden arrows pointing in diagonally from the four corners toward the middle, warm '
+                         'wood grain, a small green leaf in the middle', 'bag, text, star, flower')],
+        'checkmark': [('a', 'a chunky tick check mark shape made of a bent green vine stem with a small leaf, bold', 'bag, text, letter v')],
+    },
     'E': {
         'playc': [('a', 'a chunky rounded triangle play button shape pointing right, carved from pale cream birch wood, a warm golden '
                         'brass rim round its edge, smooth and glossy', 'bag, leaf, flower, arrow shaft'),
