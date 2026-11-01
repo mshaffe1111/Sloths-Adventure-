@@ -239,7 +239,7 @@ The rules above say how to draw well; this section keeps them holding (Duet's se
    - a tappable thing is under 44 px on a side;
    - a tappable thing sits inside the unsafe insets.
 
-   Each breach prints with the screen, size, save, selector and text, and a contact sheet of the breaches (outlined, numbered) is written next to the results. `tools/perf/clipknown.json` holds the breaches on main when the check was built: they print as "known" and don't fail, and the list only shrinks (the check names the ones that are fixed). A new screen or pop-up gets a step in the check's walk in the same change that adds it.
+   Each breach prints with the screen, size, save, selector and text, and a contact sheet of the breaches (outlined, numbered) is written next to the results. `tools/perf/clipknown.json` holds the breaches on main when the check was built: they print as "known" and don't fail. The list only shrinks (LAWS.md law 5): an entry that no longer shows up fails the check until it is deleted, and `node tools/perf/knowncheck.mjs` fails if one is added. Each entry has a group and an owner. It runs in CI before every publish (`.github/workflows/gates.yml`); how to read a breach: `reference/methods/gates.md`. A new screen or pop-up gets a step in the check's walk in the same change that adds it.
 
 ## Where the evidence is thin
 
