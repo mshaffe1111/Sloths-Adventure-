@@ -1,3 +1,4 @@
+import { TextGlyph } from './icons/TextGlyph.tsx';
 import React from 'react';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import { sound } from '../game/audio.ts';
@@ -133,9 +134,7 @@ export const SkillLearned: React.FC<{ skill: SkillDef; onContinue: () => void }>
           </div>
           <button type="button" className="pm-go" data-start="true" onClick={onContinue}>
             Continue
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#022c22" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
+            <TextGlyph name="arrow" size={24} />
           </button>
         </div>
       </div>

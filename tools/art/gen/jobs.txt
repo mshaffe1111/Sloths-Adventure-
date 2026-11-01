@@ -116,3 +116,6 @@ icE0 6ae77e58c78863f9c62fbebb  icE1 6ae77e5cc78863f9c62fbebd  icE2 6ae77e5f0e033
   brown sign), restart-b23, close-b53 (birch: the brown X vanished on wood), lock-a23, star-a11, back-a23 (back-a53's take had a
   gradient grey that the key left as bands). Running total icons-painted ~$1.75 of $25.
 icG0 6ae78722c78863f9c62fc389  icG1 6ae787250e0338d1bb7d9035  started 18:38Z at d45b4f8c: spyglass (Check for updates, lead 1:40 PM) x2 prompts x4, Pokey's pencil notebook (Journal, lead 1:05 PM) x2 prompts x4
+icH0 6ae79b3f0e0338d1bb7d9c56 (shake x2 prompts, cards without letters) 20:04Z; icI0 6ae79badc78863f9c62fd2c8 (Meeca's carved bark) 20:06Z;
+icJ0 6ae79bc90e0338d1bb7d9c81 (Shimmy Rope, Leaf Glide medallions) 20:06Z: ~4-6 min each, ~$0.75 for the three.
+  Picks: shake-a37, cards-a23 (no letters), carving-a11, shimmy-a37, glide-a23. Running total icons-painted ~$6.8 of $25.

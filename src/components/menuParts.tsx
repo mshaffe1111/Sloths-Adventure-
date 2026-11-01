@@ -14,8 +14,7 @@ import { DOT_HELP_LABEL, dotHelp, setDotHelp, type DotHelp } from '../game/dotGu
 import { dotSaid } from '../game/dotGuide.ts';
 import { hearTipsAgain } from '../game/dotMemory.ts';
 import { DotFace } from './DotFace.tsx';
-import { type IconName } from './icons/index.tsx';
-import { PaintedIcon, paint } from './icons/PaintedIcon.tsx';
+import { PaintedIcon, paint, type AnyIcon } from './icons/PaintedIcon.tsx';
 
 /** "Dot's help" (the new look): Help / Tips / Quiet, "Hear Dot's tips again", and her last three lines under it */
 export const DotHelpSetting: React.FC = () => {
@@ -74,7 +73,7 @@ export const DotHelpSetting: React.FC = () => {
 export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
 
 /** a setting's picture, from the game's own painted icon set, in a small round well */
-export const SetIcon: React.FC<{ name: IconName }> = ({ name }) => (
+export const SetIcon: React.FC<{ name: AnyIcon }> = ({ name }) => (
   <span className="pm-set-ic" aria-hidden="true">
     <PaintedIcon name={paint(name)} size={34} />
   </span>
@@ -145,7 +144,7 @@ export const ShakeSetting: React.FC = () => {
     <div className="pm-sound">
       <div className="pm-sound-h">
         <span className="flex items-center gap-2">
-          <SetIcon name="burst" />
+          <SetIcon name="shake" />
           Screen shake
         </span>
         <Seg<ShakeLevel>
@@ -172,7 +171,7 @@ export const HapticsToggle: React.FC = () => {
     <div className="pm-sound">
       <div className="pm-sound-h">
         <span className="flex items-center gap-2">
-          <SetIcon name="bolt" />
+          <SetIcon name="shake" />
           Vibration
         </span>
         <button

@@ -34,6 +34,8 @@ export const PAINTED_NAMES = [
   'medal', 'journal', 'scenes', 'sparkle', 'flower', 'shield', 'pouch', 'about', 'expand', 'shrink', 'checkmark',
   // the stage types
   'sprint', 'petal', 'bramble', 'ascent', 'fern', 'liana', 'idol', 'cage',
+  // HUD goals, the screen-shake setting, the two skills
+  'carving', 'shake', 'shimmy', 'glide',
 ] as const;
 export type PaintedName = (typeof PAINTED_NAMES)[number];
 

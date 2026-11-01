@@ -4,7 +4,7 @@ import { GhostOnExit } from './fx/exitGhost.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { GestureGlyph } from './GestureGlyph.tsx';
 import { TextGlyph } from './icons/TextGlyph.tsx';
-import { PaintedIcon } from './icons/PaintedIcon.tsx';
+import { PaintedIcon, type PaintedName } from './icons/PaintedIcon.tsx';
 import { JournalDemo } from './JournalDemo.tsx';
 import { warmJournalArt } from '../game/journalScenes.ts';
 import { CHAPTERS, PAGES, PAGE_BY_ID, chapterPages, isNew, markLooked, openPages, type ChapterId, type JournalPage, type PoseId } from '../game/movesJournal.ts';
@@ -42,22 +42,12 @@ const Pose: React.FC<{ pose: PoseId; dark?: boolean }> = ({ pose, dark }) => {
   );
 };
 
-const ChapterIcon: React.FC<{ id: ChapterId | 'extras' }> = ({ id }) => {
-  const d: Record<string, React.ReactNode> = {
-    moving: <><circle cx="14" cy="4.5" r="2" /><path d="M8 21l3-6 3 2v5M6 12l4-4 4 2 3 3M11 15l-1-6" /></>,
-    fighting: <path d="M6 13V8a2 2 0 014 0v4M10 11V6a2 2 0 014 0v6M14 11V8a2 2 0 014 0v6a6 6 0 01-6 6H11a5 5 0 01-5-5" />,
-    climbing: <path d="M7 2v20M17 2c0 6-6 6-6 12v8" />,
-    sneaking: <path d="M3 20c2-6 5-9 9-9s7 3 9 9M7 14c-1-3 0-6 2-8M17 14c1-3 0-6-2-8M12 11V4" />,
-    dangers: <path d="M12 3l10 18H2zM12 10v5M12 18v.5" />,
-    finding: <><circle cx="11" cy="11" r="6" /><path d="M16 16l5 5" /></>,
-    extras: <path d="M12 3l2.8 5.8 6.2.9-4.5 4.3 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.7l6.2-.9z" />,
-  };
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      {d[id]}
-    </svg>
-  );
+/** each chapter's painted object (icons-painted): moving the winged leaf, fighting the clubs, climbing the vine, sneaking the fern,
+ * dangers the bramble, finding the spyglass, extras the star */
+const CHAPTER_ART: Record<ChapterId | 'extras', PaintedName> = {
+  moving: 'sprint', fighting: 'clubs', climbing: 'ascent', sneaking: 'fern', dangers: 'bramble', finding: 'spyglass', extras: 'star',
 };
+const ChapterIcon: React.FC<{ id: ChapterId | 'extras' }> = ({ id }) => <PaintedIcon name={CHAPTER_ART[id]} size={24} />;
 
 /** one way of doing the move: the thumb picture (touch), how, and what it does */
 const Line: React.FC<{ l: LessonLine; mode: InputMode }> = ({ l, mode }) => (
@@ -113,7 +103,7 @@ const LockedView: React.FC<{ p: JournalPage; nav: React.ReactNode }> = ({ p, nav
     <div className="jr-left">
       <div className="jr-demo-wrap jr-locked-art">
         <Pose pose={p.pose} dark />
-        <span className="jr-q">?</span>
+        <span className="jr-q"><PaintedIcon name="lock" size="40%" label="Not learned yet" /></span>
       </div>
       {nav}
     </div>
@@ -364,7 +354,7 @@ export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
                       >
                         <span className="jr-tile-art" style={has ? { backgroundImage: `linear-gradient(rgba(10,30,18,.38), rgba(10,30,18,.38)), url(${FOREST_URL})` } : undefined}>
                           <Pose pose={p.pose} dark={!has} />
-                          {!has && <span className="jr-q">?</span>}
+                          {!has && <span className="jr-q"><PaintedIcon name="lock" size="40%" label="Not learned yet" /></span>}
                           {isFresh && <NewBadge />}
                         </span>
                         <span className="jr-tile-name">{has ? p.title : p.where}</span>

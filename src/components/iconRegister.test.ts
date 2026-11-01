@@ -103,3 +103,24 @@ test('one object per meaning on every screen: Satchel is always the satchel, How
   const wrong = Object.entries(must).flatMap(([k, want]) => [...(seen.get(k) ?? [])].filter((x) => x.split(' ')[0] !== want).map((x) => `${k} -> ${x}, want ${want}`));
   assert.deepEqual(wrong, [], wrong.join('\n'));
 });
+
+/**
+ * Hand-drawn glyphs hide from the <Icon> check (How to Play's chapter tabs, the HUD's goal stand-ins and the boss hearts were inline
+ * <svg> with a 24-unit box; lead, 2026-11-01: "the icon register test must cover them"). Any inline <svg> with a square literal
+ * viewBox in a player-facing component fails, except these, each with its reason. A new entry needs the lead's yes.
+ */
+const SVG_OK: Record<string, string> = {
+  'src/components/icons/TextGlyph.tsx': 'the crisp arrow, tick and note that sit inside a line of words (method icons.md, step 8)',
+  'src/components/StageCleared.tsx': "the falling confetti: a small code-drawn touch (STAGE-RULES §4), not an icon",
+};
+
+test('no hand-drawn icon <svg> in a player-facing component (square literal viewBox), outside the reasoned list', () => {
+  const bad: string[] = [];
+  for (const f of walk(SRC)) {
+    const rel = relative(ROOT, f);
+    if (SVG_OK[rel]) continue;
+    const n = (readFileSync(f, 'utf8').match(/<svg\b[^>]*?viewBox="0 0 (\d+) \1"/gs) ?? []).length;
+    if (n) bad.push(`${rel}: ${n} hand-drawn glyph svg`);
+  }
+  assert.deepEqual(bad, [], `draw these as painted icons (<PaintedIcon>, reference/methods/icons.md):\n${bad.join('\n')}`);
+});

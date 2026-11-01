@@ -21,7 +21,7 @@ import { bloomUpdate, bloomView, newBloom, nextBloomEdge, showsSlots, type HudVa
 import { bossRect, centreGeo, centrePlace, counterW, heartsShown, hudGeo, hudMode, hudSafeRect, type Insets } from './hudLayout.ts';
 import { goalInfo } from './goalInfo.ts';
 import { fallbackSafeArea, setGuideSafeArea } from '../../game/dotGuidePerch.ts';
-import { Bolt, GoalPic, Heart, HudDefs, Leaf, MenuLines, Star, Tick, Vine, vineY } from './hudArt.tsx';
+import { Bolt, GoalPic, Heart, Leaf, MenuLines, Star, Tick, Vine, vineY } from './hudArt.tsx';
 import { GoalCard } from './GoalCard.tsx';
 import { PaintedVine, PlateArt, Piece, Tendril, fillStyle, useHudArt } from './painted.tsx';
 import './hud.css';
@@ -434,7 +434,6 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   return (
     <div className={`vh vh-${mode}${props.bossEntering ? ' entering' : ''}`} data-testid="vine-hud">
       <div ref={probe} className="vh-probe" aria-hidden="true" />
-      <HudDefs />
       <div className="vh-left">
         <div className="vh-shade" style={{ width: vineEnd + 70, height: tiny ? 58 : 78 }} />
         {art ? (

@@ -113,7 +113,7 @@ export const MenuTile: React.FC<{ icon: AnyIcon; name: string; line: React.React
 }) => (
   <button type="button" className={`pm-tile${className ? ` ${className}` : ''}`} onClick={onClick} title={title}>
     <span className="pm-tile-ic">
-      <PaintedIcon name={paint(icon)} size={40} />
+      <PaintedIcon name={paint(icon)} size="100%" />
     </span>
     <span className="pm-tile-t">
       <b>{name}</b>

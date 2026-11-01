@@ -65,8 +65,8 @@
   "px": 96
  },
  "cards": {
-  "take": "cards-a71",
-  "px": 96
+  "take": "cards-a23",
+  "px": 124
  },
  "heart": {
   "take": "heart-a23",
@@ -179,5 +179,21 @@
  "spyglass": {
   "take": "spyglass-a37",
   "px": 64
+ },
+ "shake": {
+  "take": "shake-a37",
+  "px": 72
+ },
+ "carving": {
+  "take": "carving-a11",
+  "px": 96
+ },
+ "shimmy": {
+  "take": "shimmy-a37",
+  "px": 192
+ },
+ "glide": {
+  "take": "glide-a23",
+  "px": 192
  }
 }

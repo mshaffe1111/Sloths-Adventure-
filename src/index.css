@@ -1747,3 +1747,10 @@
 /* a painted wooden object on a dark wooden button (restart, back, map on the card buttons and the Back token) gets a thin warm rim so
    it lifts off the wood instead of sinking into it (brown on brown, method icons.md) */
 .clr-btn2 .pic, .nv-back-tok .pic, .nv-x .pic { filter: drop-shadow(0 0 1.2px rgba(255, 240, 205, .95)) drop-shadow(0 0 1px rgba(255, 240, 205, .8)) drop-shadow(0 1.5px 1px rgba(40, 20, 5, .55)); }
+/* the pause and settings tiles: the painted object carries the tile (lead 2026-11-01: ~30 px in a ~100 px tile read as a sticker) */
+.pm-tile-ic { width: 62px; height: 62px; }
+.pm-tile-ic .pic { filter: drop-shadow(0 2px 1px rgba(40, 20, 5, .35)); }
+@media (orientation: landscape) and (max-height: 500px) { .pm-tile-ic { width: 46px; height: 46px; } }
+/* How to Play: a locked move shows the painted padlock over its silhouette */
+.jr-q .pic { width: 40%; height: auto; }
+.pic.pic-rim { filter: drop-shadow(0 0 1.2px rgba(255, 240, 205, .95)) drop-shadow(0 0 1px rgba(255, 240, 205, .8)) drop-shadow(0 1.5px 1px rgba(40, 20, 5, .55)); }
