@@ -256,3 +256,19 @@ Earlier read of the same log, kept for the details:
   fall-through: not reproduced (no hits in play). Found: room 4 has no nudge (checked: butler lines only), room 5 shy steps drop her
   (target step may be unlit on landing), Easy corridor log gap before room 1 looks like the route, pit hint too late, hearts not
   picked up on Easy, chair hold inconsistent, Meeca half in the wall in room 5. Ending never reached.
+
+# Next batch (not sent yet)
+
+## G. Matt's own 5-M run, 10/31 11:35 PM ET (session 20261031-2335-bijv, rows 3034-3053, 0.9.0 build 21:52:15, Pixel, Edge, Normal)
+Finished in 5:14 (finish 314). Survey: "Missing Meeca. Falling thru floor. Repetitive. May be worst level in game. Good thought but
+horrible execution." 29.8 fps, 4 stalls, no governor steps.
+1. [blocker, UNFAIR, rule 7] Room 4 (tea) killed him twice (lostLife 'pit' at 233.6 s and 244.3 s; rooms are meant to cost no life).
+   Both times: he drops into the trough (lands x 24864, y 640, 60 px below the 580 floor), jumps to get out right, and is held at
+   x 24869 while airborne at y 450-560 (steering right, vx 0: something blocks the way up and out), then slides right low along
+   y 630-640 to x ~24930, and from there drops past 694, 714 straight down to y 1316 (pit) at x 25225. That drop out of the trough's
+   level is very likely his "falling thru floor". Respawn at the 24363 flag both times. QA's own build rolled a different room-4
+   layout (trough at x 25350-25460 with a plank), so his exact layout couldn't be replayed.
+2. [lead, "Missing Meeca"] Room 5: at x 30411, y 330 the "stop to look" scene starts (her state 'g:look', input ignored ~27 s to the
+   finish) and the camera jumps dy 266 px in one frame (camjump at 301.5 s). A sudden 266 px pan is a candidate for her vanishing
+   from view; no other camera jumps in the run.
+3. [rule 6] "Repetitive": matches the bots' look-alike log rows before every room.
