@@ -18,10 +18,13 @@ import { testUnlockOn, setTestUnlock, nextTapRun, UNLOCK_TAPS } from '../game/te
 import { bootDone, bootProgress, bootShowing, fontsReady, waitForAll } from '../game/boot.ts';
 
 /** the painted pieces the title draws (layout B): decoded before it shows, so nothing pops in after the logo */
+/** the painted satchel on its leaf (HF, 2026-11-01: tools/art/satchelcut.py) */
+const SATCHEL_ART = new URL('../assets/ui/satchel.webp', import.meta.url).href;
 const TITLE_ART = [
   UI_KIT_URL,
   new URL('../assets/ui/sign-big.webp', import.meta.url).href,
   new URL('../assets/ui/leaf-token.webp', import.meta.url).href,
+  new URL('../assets/ui/satchel.webp', import.meta.url).href,
   new URL('../assets/ui/token.webp', import.meta.url).href,
 ];
 const decodeArt = (url: string): Promise<void> => {
@@ -58,6 +61,8 @@ interface TitleScreenProps {
   onNewGame: (skipStory: boolean) => void;
   onOpenTrophies: () => void;
   onOpenCards: () => void;
+  /** Pokey's satchel: finds, medals, the journal, every scene, the creatures (its own leaf, Matt 2026-10-31) */
+  onOpenSatchel: () => void;
   /** how many trophies there are in all, and the skills learned (the menu shows both) */
   trophyTotal: number;
   skills: Set<SkillId>;
@@ -88,6 +93,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   onNewGame,
   onOpenTrophies,
   onOpenCards,
+  onOpenSatchel,
   trophyTotal,
   skills,
   onUnlockToggled,
@@ -247,7 +253,13 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               </span>
               Story
             </button>
-            <button type="button" onClick={() => setHowOpen(true)} className="ttl-leaf" style={{ ['--i' as string]: 3 }}>
+            <button type="button" onClick={() => leave(onOpenSatchel)} className="ttl-leaf ttl-leaf-satchel" style={{ ['--i' as string]: 3 }}>
+              <span className="ttl-leaf-ic">
+                <img src={SATCHEL_ART} alt="" className="ttl-satchel" />
+              </span>
+              Satchel
+            </button>
+            <button type="button" onClick={() => setHowOpen(true)} className="ttl-leaf" style={{ ['--i' as string]: 4 }}>
               <span className="ttl-leaf-ic">
                 <Icon name="bulb" size={30} />
               </span>

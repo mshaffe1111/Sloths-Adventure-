@@ -1,184 +1,128 @@
-import React, { useState } from 'react';
-import { Icon } from './icons/index.tsx';
-import { BONUS_FIND, FINDS, NOTCH_FIND, POCKET_FINDS, SNAIL_FINDS, SNAIL_PAINTED, allFound, type FindDef } from '../game/finds.ts';
-import { photoUrl } from '../game/photos.ts';
-import { itemUrl } from '../game/items.ts';
-import { MEMORIES, MEMORY_ORDER, type MemoryId } from '../game/storyChapters.ts';
-import { KEEPSAKE_LINES } from '../game/storyFinale.ts';
-import { POKEY_JOURNAL, journalWritten } from '../game/pokeyJournal.ts';
+import React, { useMemo, useState } from 'react';
+import { Icon, type IconName } from './icons/index.tsx';
+import { FINDS, ALL_FINDS } from '../game/finds.ts';
+import { BADGES, type BadgeStore, type EvalContext } from '../game/badges.ts';
+import type { CosmeticChoice } from '../game/badgeStore.ts';
+import type { MemoryId } from '../game/storyChapters.ts';
 import type { LevelConfig } from '../game/types.ts';
+import type { SceneEntry } from '../game/sceneList.ts';
+import type { PlayRecord } from '../game/playRecords.ts';
+import { GUARDIAN_ENTRIES, PREDATOR_ENTRIES, PREDATOR_ORDER, ROAD_ENTRIES, predatorMet, roadMet } from '../game/journal.ts';
+import { WORLD_STORIES } from '../game/storyWorlds.ts';
+import type { EntryNames } from '../game/pokeyJournal.ts';
 import { SceneBackdrop } from './title/TitleScene.tsx';
 import { DotPerched, Plaque } from './KitParts.tsx';
-import { snailUrl } from '../game/findArt.ts';
+import { FindsTab } from './satchel/FindsTab.tsx';
+import { TrophiesTab } from './satchel/TrophiesTab.tsx';
+import { CreaturesTab } from './satchel/CreaturesTab.tsx';
+import { ScenesTab } from './satchel/ScenesTab.tsx';
+import { JournalBook } from './satchel/JournalBook.tsx';
 
 /**
- * Pokey's satchel (2026-10-29 story report, step 6): everything he picked up on the way, his journal, and the story scenes to watch
- * again. It took the Trophy Room's Library over whole (new replaces old), opened from the pause menu and the world map.
- *   Satchel   the finds, by kind. A keepsake opens its page here: the painted thing and its lines from the tea table, the six the finale
- *             leaves out included (storyFinale.ts KEEPSAKE_LINES). Notes, albums and Dot's things open in the reader.
- *   Journal   a line a world in Pokey's own hand (pokeyJournal.ts), written when its guardian falls.
- *   Scenes    the flashbacks and Tower scenes seen so far.
+ * Pokey's satchel: THE hub for everything kept (Matt, 2026-10-31: "put a satchel on the menu page as a new leaf and have the trophies,
+ * the medals, and collectibles in there"). It opens from its own leaf on the start screen, from the pause menu and from the map.
+ *   Finds      the notes, albums, keepsakes and Dot's things (FindsTab)
+ *   Trophies   the medals (tap one to see it big) and Pokey's rewards: the old Trophy Room, moved in whole (TrophiesTab)
+ *   Journal    a book, a page-turn a world: an entry for every stage as it was played, and a review at each world's end (JournalBook)
+ *   Scenes     every cutscene in story order, from the prologue, each playable, and "Play all in order" (ScenesTab)
+ *   Creatures  the creature cards; tap one for its backstory (CreaturesTab)
  */
-export type SatchelTab = 'satchel' | 'journal' | 'scenes';
+export type SatchelTab = 'finds' | 'trophies' | 'journal' | 'scenes' | 'creatures';
+
+const TABS: { id: SatchelTab; name: string; icon: IconName }[] = [
+  { id: 'finds', name: 'Finds', icon: 'key' },
+  { id: 'trophies', name: 'Trophies', icon: 'medal' },
+  { id: 'journal', name: 'Journal', icon: 'book' },
+  { id: 'scenes', name: 'Scenes', icon: 'play' },
+  { id: 'creatures', name: 'Creatures', icon: 'paw' },
+];
 
 interface Props {
   finds: string[];
   levels: LevelConfig[];
   memories: MemoryId[];
+  store: BadgeStore;
+  gateFound: boolean;
+  thornHeart: boolean;
+  choice: CosmeticChoice;
+  onChoice: (c: CosmeticChoice) => void;
+  records: Record<string, PlayRecord>;
   world?: number;
   initialTab?: SatchelTab;
   onOpenFind: (id: string) => void;
-  onReplayMemory: (id: MemoryId) => void;
+  onPlayScenes: (queue: SceneEntry[]) => void;
   onBack: () => void;
+  /** straight to the start screen (shown when the satchel was opened from somewhere else) */
+  onHome?: () => void;
 }
 
-/** who a keepsake line belongs to, as the card shows it (the narrator's lines have no name) */
-const SPEAKER: Record<string, string> = { Pokey: 'Pokey', Meeca: 'Meeca', Grandfather: 'Grandfather', Dot: 'Dot' };
-
-export const Satchel: React.FC<Props> = ({ finds, levels, memories, world = 1, initialTab = 'satchel', onOpenFind, onReplayMemory, onBack }) => {
+export const Satchel: React.FC<Props> = (p) => {
+  const { finds, levels, memories, store, gateFound, thornHeart, world = 1, initialTab = 'finds' } = p;
   const [tab, setTab] = useState<SatchelTab>(initialTab);
-  const [open, setOpen] = useState<string | null>(null);
-  const got = (id: string) => finds.includes(id);
-  const written = journalWritten(levels);
-  const openKeep = open ? FINDS.find((f) => f.id === open) : undefined;
-  const lines = openKeep ? KEEPSAKE_LINES[openKeep.id] ?? [] : [];
-
-  const card = (f: FindDef, onTap: () => void, pic: React.ReactNode) => {
-    const has = got(f.id);
-    return (
-      <div
-        key={f.id}
-        className={`tr-card tr-find ${has ? 'open' : 'lock'} ${open === f.id ? 'sc-sel' : ''}`}
-        role={has ? 'button' : undefined}
-        tabIndex={has ? 0 : undefined}
-        onClick={has ? onTap : undefined}
-        onKeyDown={has ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onTap(); } } : undefined}
-      >
-        <div className="tr-cpic">{has ? pic : <Icon name="lock" size={34} />}</div>
-        <div className="tr-cn">{has ? f.title : '???'}</div>
-        <div className="tr-ct">{has ? `World ${f.world}` : f.hint}</div>
-      </div>
-    );
-  };
-  const group = (title: string, set: FindDef[], pic: (f: FindDef) => React.ReactNode, tap: (f: FindDef) => void = (f) => onOpenFind(f.id)) => (
-    <>
-      <div className="tr-sec">{title}</div>
-      <div className="tr-grid tr-grid-j">{set.map((f) => card(f, () => tap(f), pic(f)))}</div>
-    </>
+  const ctx = useMemo<EvalContext>(() => ({ store, levels, gateFound, thornHeart, finds }), [store, levels, gateFound, thornHeart, finds]);
+  const progress = useMemo(
+    () => ({ cleared: new Set(levels.filter((l) => l.completed).map((l) => l.id)), memories, gateFound, thornHeart }),
+    [levels, memories, gateFound, thornHeart],
   );
+  const names: EntryNames = useMemo(
+    () => ({
+      creature: (id, n) => {
+        const e = (PREDATOR_ENTRIES as Record<string, { name: string }>)[id];
+        const base = e ? e.name.toLowerCase() : id.replace(/_/g, ' ');
+        return n === 1 ? base : /s$/.test(base) ? base : `${base}s`;
+      },
+      find: (id) => ALL_FINDS.find((f) => f.id === id)?.title,
+      medal: (id) => BADGES.find((b) => b.id === id)?.name,
+    }),
+    [],
+  );
+  const extra = (w: number) => {
+    const creatures = [
+      ...PREDATOR_ORDER.filter((id) => PREDATOR_ENTRIES[id].first === w && predatorMet(id, store.seen, levels)).map((id) => ({ id, name: PREDATOR_ENTRIES[id].name })),
+      ...ROAD_ENTRIES.filter((r) => r.first === w && roadMet(r, levels, store.seen)).map((r) => ({ id: r.id, name: r.name })),
+      ...GUARDIAN_ENTRIES.filter((g) => g.world === w && levels.some((l) => l.worldIndex === w && l.miniIndex === 10 && l.completed)).map((g) => ({ id: g.art, name: g.name })),
+    ];
+    const mine = FINDS.filter((f) => f.world === w);
+    return { teaser: WORLD_STORIES[w]?.teaser, creatures, finds: mine.filter((f) => finds.includes(f.id)).length, findTotal: mine.length };
+  };
 
   return (
-    <div className="tr-screen" role="dialog" aria-label="Pokey's satchel">
+    <div className="tr-screen sh-screen" role="dialog" aria-label="Pokey's satchel">
       <SceneBackdrop world={world} />
-      <div className="tr-inner">
+      <div className="tr-inner sh-inner">
         <DotPerched size={74} className="tr-dot" />
         <div className="tr-head">
-          <button type="button" className="ui-x" onClick={onBack} aria-label="Back">
+          <button type="button" className="ui-x" onClick={p.onBack} aria-label="Back">
             <Icon name="arrow" size={16} rotate={180} />
           </button>
           <div className="tr-titles">
             <Plaque as="h1" className="tr-h1">
               Pokey&apos;s Satchel
             </Plaque>
-            <div className="tr-sub">Everything he picked up on the way</div>
           </div>
+          {p.onHome && (
+            <button type="button" className="sh-home" onClick={p.onHome} aria-label="Start screen">
+              <Icon name="sloth" size={20} />
+            </button>
+          )}
         </div>
 
-        <div className="tr-tabs" role="tablist">
-          {([['satchel', 'Satchel'], ['journal', 'Journal'], ['scenes', 'Story scenes']] as const).map(([id, name]) => (
-            <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}>
-              {name}
+        <div className="sh-tabs" role="tablist">
+          {TABS.map((t) => (
+            <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`sh-tab ${tab === t.id ? 'on' : ''}`} onClick={() => setTab(t.id)}>
+              <span className="sh-tab-ic">
+                <Icon name={t.icon} size={22} />
+              </span>
+              {t.name}
             </button>
           ))}
         </div>
 
-        {tab === 'satchel' && (
-          <>
-            <div className="tr-sub tr-jsub">
-              {FINDS.filter((f) => got(f.id)).length} of Meeca&apos;s and Grandma&apos;s {FINDS.length} things found · tap one to look again
-            </div>
-            {openKeep && (
-              <div className="sc-page" aria-live="polite">
-                <img className="sc-pic" src={itemUrl(openKeep.icon ?? 'petal') ?? ''} alt="" />
-                <div className="sc-words">
-                  <div className="sc-t">
-                    {openKeep.title} <span>World {openKeep.world}</span>
-                  </div>
-                  {lines.map((b, i) => (
-                    <p key={i} className={`sc-l ${SPEAKER[b.s] ? '' : 'sc-n'}`}>
-                      {SPEAKER[b.s] && <b>{SPEAKER[b.s]}</b>}
-                      {b.t}
-                    </p>
-                  ))}
-                  <button type="button" className="sc-read" onClick={() => onOpenFind(openKeep.id)}>
-                    <Icon name="book" size={14} /> What it looks like
-                  </button>
-                </div>
-              </div>
-            )}
-            {group('Keepsakes', FINDS.filter((f) => f.kind === 'keepsake'), (f) => <img className="tr-thumb tr-item" src={itemUrl(f.icon ?? 'petal') ?? ''} alt="" />, (f) => setOpen(open === f.id ? null : f.id))}
-            {group("Dot's lost pocket", POCKET_FINDS, () => <Icon name="hummingbird" size={42} />)}
-            {group('From the old nest', [NOTCH_FIND], () => <Icon name="leaf" size={42} />)}
-            {SNAIL_PAINTED && group('The snail', SNAIL_FINDS, () => <span className="sc-snail" style={{ backgroundImage: `url(${snailUrl() ?? ''})` }} />)}
-            {group('Notes from Meeca', FINDS.filter((f) => f.kind === 'note'), () => <img className="tr-thumb tr-item" src={itemUrl('scroll') ?? ''} alt="" />)}
-            {group('Photo albums', FINDS.filter((f) => f.kind === 'book'), (f) => {
-              const url = photoUrl(f.pages[0]?.photo);
-              return url ? <img className="tr-thumb" src={url} alt="" /> : <Icon name="book" size={42} />;
-            })}
-            <div className="tr-sec">Quest bonus</div>
-            <div className="tr-grid tr-grid-j">
-              {(() => {
-                const opened = allFound(finds);
-                return (
-                  <div
-                    className={`tr-card tr-find ${opened ? 'open' : 'lock'}`}
-                    role={opened ? 'button' : undefined}
-                    tabIndex={opened ? 0 : undefined}
-                    onClick={opened ? () => onOpenFind(BONUS_FIND.id) : undefined}
-                    onKeyDown={opened ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenFind(BONUS_FIND.id); } } : undefined}
-                  >
-                    <div className="tr-cpic">{opened ? <img className="tr-thumb tr-item" src={itemUrl('token') ?? ''} alt="" /> : <Icon name="lock" size={34} />}</div>
-                    <div className="tr-cn">{opened ? BONUS_FIND.title : '???'}</div>
-                    <div className="tr-ct">{opened ? 'Quest bonus' : BONUS_FIND.hint}</div>
-                  </div>
-                );
-              })()}
-            </div>
-          </>
-        )}
-
-        {tab === 'journal' && (
-          <div className="sc-journal" aria-label="Pokey's journal">
-            {Array.from({ length: 10 }, (_, i) => i + 1).map((w) => (
-              <div key={w} className={`sc-entry ${written.includes(w) ? '' : 'sc-blank'}`}>
-                <span className="sc-w">World {w}</span>
-                <span className="sc-hand">{written.includes(w) ? POKEY_JOURNAL[w] : ''}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {tab === 'scenes' && (
-          <div className="tr-grid tr-grid-j">
-            {MEMORY_ORDER.map((id) => {
-              const seen = memories.includes(id);
-              return (
-                <div
-                  key={id}
-                  className={`tr-card tr-find tr-memory ${seen ? 'open' : 'lock'}`}
-                  role={seen ? 'button' : undefined}
-                  tabIndex={seen ? 0 : undefined}
-                  onClick={seen ? () => onReplayMemory(id) : undefined}
-                  onKeyDown={seen ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onReplayMemory(id); } } : undefined}
-                >
-                  <div className="tr-cpic">{seen ? <Icon name={MEMORIES[id].kind === 'memory' ? 'heart' : 'scroll'} size={42} /> : <Icon name="lock" size={34} />}</div>
-                  <div className="tr-cn">{seen ? MEMORIES[id].title : '???'}</div>
-                  <div className="tr-ct">{seen ? 'Tap to watch again' : MEMORIES[id].hint}</div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+        {tab === 'finds' && <FindsTab finds={finds} onOpenFind={p.onOpenFind} />}
+        {tab === 'trophies' && <TrophiesTab ctx={ctx} choice={p.choice} onChoice={p.onChoice} />}
+        {tab === 'journal' && <JournalBook stages={levels} records={p.records} names={names} extra={extra} />}
+        {tab === 'scenes' && <ScenesTab progress={progress} onPlay={p.onPlayScenes} />}
+        {tab === 'creatures' && <CreaturesTab store={store} levels={levels} />}
       </div>
     </div>
   );

@@ -4330,6 +4330,12 @@ export class GameEngine {
 
   /** an animal is beaten: it is launched away in its own style instead of vanishing */
   /** what happened this stage, for the Trophy Room */
+  /** this run so far, as if it ended now without a win: App checks it every 2 s (never per frame) to pop a medal the moment it is
+   * earned in play (Matt, 2026-10-31: "pop the medal at the top so the person knows that they just unlocked something") */
+  liveStats(): StageStats {
+    return this.buildStats(false, 0);
+  }
+
   private buildStats(win: boolean, stars: number): StageStats {
     let floraTotal = 0;
     let floraCollected = 0;

@@ -18,11 +18,14 @@ export const MAX_SAVE_BYTES = 200_000;
 /** one stage result or flag is tiny; the Trophy Room record grows with every trophy (about 30 characters each), so it gets more room */
 const MAX_ENTRY_CHARS = 400;
 const MAX_BADGE_ENTRY_CHARS = 12_000;
-const entryLimit = (k: string) => (k === 'sloth_badges' ? MAX_BADGE_ENTRY_CHARS : MAX_ENTRY_CHARS);
+/** how a stage was played, for Pokey's journal (playRecords.ts): its first clear with a few find and medal ids */
+const MAX_PLAY_ENTRY_CHARS = 1_000;
+const entryLimit = (k: string) => (k === 'sloth_badges' ? MAX_BADGE_ENTRY_CHARS : k.startsWith('sloth_play_') ? MAX_PLAY_ENTRY_CHARS : MAX_ENTRY_CHARS);
 
 /** the entries that make up a game */
 const ALLOWED: RegExp[] = [
   /^sloth_lvl_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // per-stage result (and the extra stages, extraStages.ts: Dot's flight 4-D, Meeca's 5-M)
+  /^sloth_play_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // how a stage was played, for Pokey's journal (playRecords.ts; older games drop it unread)
   /^sloth_layout_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // the layout a stage was first played with (it stays the same)
   /^sloth_story_[wmng]\d{1,2}$/, // world intro seen (w), the scene halfway through the world (m), World 1's first note after 1-1 (n), a guardian's card (g, 11 = Thornbark)
   /^sloth_way_\d{1,2}-\d{1,2}$/, // which in-stage asides have been heard (so a new game hears them again; the on/off switch is a device setting, not here)

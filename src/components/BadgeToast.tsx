@@ -7,9 +7,10 @@ import { useBlinkWatch } from './blinkWatch.ts';
  * "New medal!" slides in over whatever screen is showing, then goes away by itself, with the medal's tier and points.
  * One or two medals come one after the other; a bigger haul arrives together as a single card with the points it is worth.
  */
-export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void }> = ({ badges, onDone }) => {
+export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void; inPlay?: boolean }> = ({ badges, onDone, inPlay = false }) => {
   const [i, setI] = useState(0);
-  const group = badges.length >= 3;
+  // (in play, every medal gets its own short pop: a group card would be too big over the stage)
+  const group = badges.length >= 3 && !inPlay;
   // the parent hands over a new onDone on every render (each frame of play), so the timer reads it from a ref; with it in the effect's
   // list the timer restarted every render and the toast sat over Menu and Dot for a whole stage
   const done = useRef(onDone);
@@ -24,10 +25,10 @@ export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void }> = 
         if (!group && i + 1 < badges.length) setI(i + 1);
         else done.current();
       },
-      group ? 4200 : 2600,
+      group ? 4200 : inPlay ? 2400 : 2600,
     );
     return () => window.clearTimeout(t);
-  }, [badges, i, group]);
+  }, [badges, i, group, inPlay]);
 
   useBlinkWatch('badge', group ? 'group' : badges[i]?.id);
   if (group) {
@@ -51,6 +52,17 @@ export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void }> = 
   }
   const b = badges[i];
   if (!b) return null;
+  // in play: a small pop at the top centre, between the hearts and the menu, clear of Pokey and the thumbs (MedalPop, 2026-11-01)
+  if (inPlay)
+    return (
+      <div className={`mp-pop mp-${b.tier}`} key={b.id} role="status" aria-live="polite">
+        <BadgeMedal badge={b} earned size={44} />
+        <div className="mp-t">
+          <div className="mp-k">New {TIER_NAME[b.tier].toLowerCase()} medal!</div>
+          <div className="mp-n">{b.name}</div>
+        </div>
+      </div>
+    );
   return (
     <div className="tr-toast" key={b.id} role="status" aria-live="polite">
       <BadgeMedal badge={b} earned size={60} />
