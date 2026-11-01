@@ -5,6 +5,7 @@ import { MenuTile, SoundSetting } from './MenuFrame.tsx';
 import { UpdateLink } from './UpdateControls.tsx';
 import { Icon, type IconName } from './icons/index.tsx';
 import { ConfirmDialog, useBack } from './nav/Nav.tsx';
+import { WhatsNew } from './WhatsNew.tsx';
 import { browserStore, buildSave } from '../game/saveFile.ts';
 
 type Tab = 'sound' | 'game' | 'saves' | 'trophies' | 'about';
@@ -58,6 +59,7 @@ function hasProgress(): boolean {
 export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
   const [tab, setTab] = React.useState<Tab>('sound');
   const [confirm, setConfirm] = React.useState(false);
+  const [news, setNews] = React.useState(false);
   const { onClose } = p;
   // Android's Back and Esc close it, like its X and a tap outside (nav/backStack.ts; the confirm over it takes Back first)
   useBack(onClose);
@@ -154,6 +156,9 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
                   <UpdateLink />
                 </small>
               </span>
+              <button type="button" className="st-btn" onClick={() => setNews(true)}>
+                What’s New
+              </button>
             </div>
             {!p.isInstalled && p.onInstallDesktop && (
               <div className="st-row">
@@ -204,6 +209,7 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
             Done
           </button>
         </div>
+        {news && <WhatsNew onClose={() => setNews(false)} />}
         {confirm && (
           <ConfirmDialog
             title="Start a new game?"
