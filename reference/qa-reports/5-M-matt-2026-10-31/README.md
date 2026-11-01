@@ -34,3 +34,10 @@ So it is NOT only the pit: she flickers or vanishes across the whole stage on Ma
 2. The quality governor: on a phone it steps q0 -> q1/q2 (QA saw it on the Pixel and OnePlus); a lite path may skip her light or her layer. Reproduce with forced q1 and q2 and reduced motion, upright, at 1344x2992-ish.
 3. Her sheet being released or re-decoded mid-stage (the memory work releases world art when play leaves it).
 The QA per-frame watch checks only that drawMeecaHero ran with alpha > 0; it does not check what is drawn ON TOP of her. Add a pixel check: sample the canvas at her box after the full frame and compare to the frame without her.
+
+## QA read of Matt's own run (session 20261031-2335-bijv, 11:35 PM ET, Pixel, Normal, portrait; build stamp 2026-10-31T21:52:15 = a 0.9.0 build, NOT 0.9.1)
+Finished in 5:14; survey: "Missing Meeca. Falling thru floor. Repetitive. May be worst level in game. Good thought but horrible execution."
+1. BLOCKER room 4 (tea) killed him twice (lostLife 'pit' 233.6 s, 244.3 s): drops into the trough (x 24864, y 640, 60 px below the 580 floor); jumping out right he is HELD at x 24869 airborne (vx 0, five jumps): something blocks up-and-right; then slides right low (y 630-640) to x ~24930 and drops straight to y 1316 (pit) at x ~25225. = his "falling thru floor": the trough floor ends over an open pit, or he passes through it. His room-4 roll differs from QA's (trough at 25350-25460 with a 580 plank): find the roll that puts a lethal pit beside the trough. Rooms must cost no life.
+2. Room 5: at x 30411 y 330 the 'look' scene (g:look, input ignored ~27 s) starts and the camera jumps 266 px in one frame (the run's only camjump): a likely 'Missing Meeca' moment.
+3. "Repetitive" = the same log-row-over-a-pit stretch before every room (rule 6).
+NOTE: his phone ran a 0.9.0 build at 11:35 PM although 0.9.1 went live at 10:07 PM: check the update path (cached copy / which link he used).
