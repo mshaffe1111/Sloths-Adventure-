@@ -110,8 +110,8 @@ def hdspec(out, commit, names):
     style = ('slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark '
              'outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain '
              'grey background, no text')
-    H = {'near': 1736, 'mid': 1302, 'tall': 1760}
-    items = [{'name': f'{n}-hd', 'pre': 'esrgan', 'h': H[n.rsplit('-', 1)[1]], 'strength': 0.25, 'seed': 7,
+    HT = {'near': 1736, 'mid': 1302, 'tall': 1760}
+    items = [{'name': f'{n}-hd', 'pre': 'esrgan', 'h': HT[n.rsplit('-', 1)[1]], 'strength': 0.25, 'seed': 7,
               'src': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/reference/prop-sheets/qa-notes/hf-backdrops/keyed/{n}.webp',
               'prompt': f'{style}. {what[n]}', 'bg': [128, 128, 128]} for n in names]
     spec = {'tag': Path(out).stem.replace('spec-', 'hfbd2-'), 'note': 'hf-backdrops native-resolution pass', 'loras': {'style': ['mshaffe111/slothadv-style-lora',
