@@ -342,114 +342,6 @@
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
-  "id": "src/game/kitAtlasData.ts#2.buttress",
-  "owner": "w1-4 builders (W2 grab bag)",
-  "world": "W2",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#2.bankEnd",
-  "owner": "w1-4 builders (W2 grab bag)",
-  "world": "W2",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#3.bankEnd",
-  "owner": "w1-4 builders (W3 grab bag)",
-  "world": "W3",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#3.buttress",
-  "owner": "w1-4 builders (W3 grab bag)",
-  "world": "W3",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#4.buttress",
-  "owner": "w1-4 builders (W4 grab bag)",
-  "world": "W4",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#4.bankEnd",
-  "owner": "w1-4 builders (W4 grab bag)",
-  "world": "W4",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#5.bankEnd",
-  "owner": "w5-pieces helper",
-  "world": "W5",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#5.buttress",
-  "owner": "w5-pieces helper",
-  "world": "W5",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#6.buttress",
-  "owner": "lead (W6)",
-  "world": "W6",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#6.bankEnd",
-  "owner": "lead (W6)",
-  "world": "W6",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#7.buttress",
-  "owner": "lead (W7)",
-  "world": "W7",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#7.bankEnd",
-  "owner": "lead (W7)",
-  "world": "W7",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#8.buttress",
-  "owner": "w8-merge helper",
-  "world": "W8",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#8.bankEnd",
-  "owner": "w8-merge helper",
-  "world": "W8",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#9.bankEnd",
-  "owner": "w9-pieces helper",
-  "world": "W9",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#9.buttress",
-  "owner": "w9-pieces helper",
-  "world": "W9",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#10.buttress",
-  "owner": "w10-pieces helper",
-  "world": "W10",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/kitAtlasData.ts#10.bankEnd",
-  "owner": "w10-pieces helper",
-  "world": "W10",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
   "id": "src/game/leafAtlasData.ts#green_A03_0",
   "owner": "lead (shared art)",
   "world": "shared",
@@ -547,18 +439,6 @@
  },
  {
   "id": "src/game/proto3AtlasData.ts#chaseDebris",
-  "owner": "w1-4 builders (W1 grab bag)",
-  "world": "W1",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/protoAtlasData.ts#bankEnd",
-  "owner": "w1-4 builders (W1 grab bag)",
-  "world": "W1",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/protoAtlasData.ts#buttress",
   "owner": "w1-4 builders (W1 grab bag)",
   "world": "W1",
   "why": "unused on 2026-10-31 (start of the gate)"
@@ -1224,24 +1104,6 @@
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
-  "id": "src/assets/w6to10/props-made/w10var.json#bank-b",
-  "owner": "w10-pieces helper",
-  "world": "W10",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w10var.json#perch-b",
-  "owner": "w10-pieces helper",
-  "world": "W10",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w10var.json#fill-b",
-  "owner": "w10-pieces helper",
-  "world": "W10",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
   "id": "src/assets/w6to10/props-made/w5a-b.json#mossy-log",
   "owner": "w5-pieces helper",
   "world": "W5",
@@ -1261,18 +1123,6 @@
  },
  {
   "id": "src/assets/w6to10/props-made/w5a.json#bromeliad",
-  "owner": "w5-pieces helper",
-  "world": "W5",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w5var.json#bank-b",
-  "owner": "w5-pieces helper",
-  "world": "W5",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w5var.json#fill-b",
   "owner": "w5-pieces helper",
   "world": "W5",
   "why": "unused on 2026-10-31 (start of the gate)"
@@ -1315,18 +1165,6 @@
  },
  {
   "id": "src/assets/w6to10/props-made/w6var.json#snapL-b",
-  "owner": "lead (W6)",
-  "world": "W6",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w6var.json#bank-b",
-  "owner": "lead (W6)",
-  "world": "W6",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w6var.json#perch-b",
   "owner": "lead (W6)",
   "world": "W6",
   "why": "unused on 2026-10-31 (start of the gate)"
@@ -1398,45 +1236,9 @@
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
-  "id": "src/assets/w6to10/props-made/w7var.json#bank-b",
-  "owner": "lead (W7)",
-  "world": "W7",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w7var.json#perch-b",
-  "owner": "lead (W7)",
-  "world": "W7",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
   "id": "src/assets/w6to10/props-made/w7var.json#snapL-b",
   "owner": "lead (W7)",
   "world": "W7",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w8b.json#bouncy-leaf",
-  "owner": "w8-merge helper",
-  "world": "W8",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w8var.json#bank-b",
-  "owner": "w8-merge helper",
-  "world": "W8",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w8var.json#perch-b",
-  "owner": "w8-merge helper",
-  "world": "W8",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w8var.json#fill-b",
-  "owner": "w8-merge helper",
-  "world": "W8",
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
@@ -1518,25 +1320,7 @@
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
-  "id": "src/assets/w6to10/props-made/w9var.json#bank-b",
-  "owner": "w9-pieces helper",
-  "world": "W9",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
   "id": "src/assets/w6to10/props-made/w9var.json#snapL-b",
-  "owner": "w9-pieces helper",
-  "world": "W9",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w9var.json#perch-b",
-  "owner": "w9-pieces helper",
-  "world": "W9",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w9var.json#fill-b",
   "owner": "w9-pieces helper",
   "world": "W9",
   "why": "unused on 2026-10-31 (start of the gate)"
