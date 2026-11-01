@@ -1,0 +1,9 @@
+{
+ "_note": "icons-painted picks (take names in the bucket w5-xfer icons/<tag>/stills/); px = 2x the largest on-screen size",
+ "map": {"take": "map-a53", "px": 192},
+ "story": {"take": "story-a11", "px": 192},
+ "howto": {"take": "howto-a37", "px": 192},
+ "sound": {"take": "sound-a53", "px": 192},
+ "gear": {"take": "gear-a37", "px": 192},
+ "play": {"take": "play-a11", "px": 128}
+}

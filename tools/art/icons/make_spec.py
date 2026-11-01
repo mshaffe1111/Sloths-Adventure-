@@ -42,6 +42,26 @@ GROUPS = {
         'play': [('a', 'a chunky carved wooden triangle arrow pointing to the right, rounded corners, warm wood grain, a thin brass edge',
                   'bag, leaf, flower')],
     },
+    'E': {
+        'playc': [('a', 'a chunky rounded triangle play button shape pointing right, carved from pale cream birch wood, a warm golden '
+                        'brass rim round its edge, smooth and glossy', 'bag, leaf, flower, arrow shaft'),
+                  ('b', 'a chunky rounded triangle pointing right, polished bright golden brass with a soft shine, a thin dark outline',
+                   'bag, leaf, flower, arrow shaft')],
+        'restart': [('a', 'a chunky circular arrow made of a curled green vine stem, the arrow head a pointed leaf, curling round in a '
+                          'nearly full circle', 'bag, snake, flower'),
+                    ('b', 'a chunky circular arrow carved from warm wood, curling round in a nearly full circle, a pointed arrow head, '
+                          'a small green leaf on it', 'bag, snake, flower')],
+        'close': [('a', 'a chunky X cross made of two crossed carved wooden sticks lashed in the middle with green vine', 'bag, sword, flower'),
+                  ('b', 'a chunky X cross made of two rounded cream birch sticks crossed, tied in the middle with a twine knot',
+                   'bag, sword, flower')],
+        'lock': [('a', 'a chunky old brass padlock with a rounded body and a thick shackle, a dark keyhole, a little green leaf tucked at '
+                       'the shackle', 'bag, key, heart'),
+                 ('b', 'a chunky round padlock of dark iron and brass with a thick shackle, a dark keyhole, a tiny vine wrapped on the shackle',
+                  'bag, key, heart')],
+        'star': [('a', 'a chunky five pointed star of shining gold, rounded points, a soft highlight, a thick dark outline', 'bag, flower, face'),
+                 ('b', 'a chunky five pointed star carved from golden amber, glowing warmly, rounded points', 'bag, flower, face')],
+        'back': [('a', 'a chunky carved wooden arrow pointing left, rounded, warm wood grain, a thin brass edge', 'bag, leaf, flower')],
+    },
 }
 
 
