@@ -29,7 +29,7 @@ which has a guard goal). Bug 2 was dropped on the lead's call: no float change w
 
 - `catchUp`: a mushroom on the floor at each high branch's near end (the stair top and every gap of trailUp, splitTrail's high runs,
   highLeaps' gaps). A miss is one bounce back up. `proto.catchUps` lists them.
-- splitTrail: no branch over the low stretch; the two petals that lead down sit 50 px over the floor.
+- splitTrail: no branch over the low stretch; the two petals that lead down sit 50 px over the floor; three dips where there were two.
 - trailUp: the steps stand down into the ground, the bank broken around them (as lowStumps' do).
 - No petal behind the spawn.
 
@@ -39,15 +39,21 @@ The fixed bot is the one-line fix applied in a local copy only (`_firsttimerFixe
 
 | | main, current bot | branch, current bot | branch, fixed bot |
 |---|---|---|---|
-| Normal s1 | 70/95, 77/95 | 92, 92, 93 /98 | 99, 102, 104 /98 |
-| Normal s2 | 71/99, 76/99 | 90, 86, 81 /98 | 103, 106, 101 /98 |
-| Normal s3 | 70/92, 74/92 | 88, 90, 94 /95 | 102, 98, 101 /95 |
+| Normal s1 | 70/95, 77/95 (sealed) | 92, 92, 93 /98 (sealed) | 99, 102, 104 /98 |
+| Normal s2 | 71/99, 76/99 (sealed) | 88, 86, 89 /102 (sealed) | 108, 108, 106 /102 |
+| Normal s3 | 70/92, 74/92 (sealed) | 88, 90, 94 /95 (sealed) | 102, 98, 101 /95 |
 | Easy s1 | 73/72, 72/72 | 93, 100, 90 /72 | 93, 96, 95 /72 |
-| Easy s2 | 79/72, 74/72 | 86, 85, 80 /72 | 102, 101, 103 /72 |
+| Easy s2 | 79/72, 74/72 | 91, 91, 77 /72 | 105, 104, 105 /72 |
 | Easy s3 | 69/72, 67/72 (sealed) | 90, 90, 88 /72 | 92, 95, 94 /72 |
 
-Fixed bot: the door opens on all 18 runs (seeds 1-3 x 3 trials x 2 settings). Normal's margin is thin on one run (+1, seed 1 trial 0).
-The current, buggy bot still seals Normal on every run: its early hops miss the teaching gaps' arcs and fly over branch petals.
+Fixed bot: the door opens on all 18 runs (seeds 1-3 x 3 trials x 2 settings). Normal's margin is 1-8 petals (thin on seed 1 trial 0,
++1). The current, buggy bot still seals Normal on every run: its early hops miss the teaching gaps' arcs and fly over branch petals.
+
+Other numbers, branch against main:
+- 200-roll tool (era.ts, 1-2): 0 rolls break the §2 numbers (main: 0 dead-time, 1 kid hot spot; branch: none). Dead time median 13.1 s
+  (main 17.4), worst 29.4 s (35.6). Quick route median 158 s (158). Variety 0.357 (0.366), still over 0.35. A first version without the
+  third low dip put 6 of 200 split-trail rolls over a fifth dead; the third dip fixed it.
+- Inspector seed 1/2/3: length 154/156/158 s (main 155/157/158), dead 15/27/16 s at the time of the first run (main 18/24/18).
 
 ## Proof
 
@@ -69,3 +75,38 @@ The current, buggy bot still seals Normal on every run: its early hops miss the 
 - `*-miss-caught.mp4` (+ `-quarter.mp4`): walking off branch after branch, each catch bounces him back up (engine stepped frame by
   frame at 30 fps). `*-hop.mp4`: the route as meant, a hop near the edge.
 - Recorder: `tools/art/petals/rec-12.mjs`.
+
+## Polish check (judged at phone size, upright and sideways)
+
+- **Is it obvious where to go?** Sideways, yes: the stairs carry a petal on each step up to the branches (`sideways-1-stairs.jpg`),
+  the high run's petals sit one or two to a branch (`sideways-2-branch-run.jpg`), and the split trail's petals step down off the high
+  road to the floor and across the dips (`sideways-4-split-low.jpg`). Upright shows less of the route at once (the camera's narrow view;
+  `upright-1-stairs.jpg` shows only the first step and its petal), which is the game's upright camera, not this change.
+- **Do the petals read as a trail?** Yes on the branch runs and the low stretch. The teaching gaps' arcs are unchanged.
+- **The catch mushrooms:** they read at once as "bounce back up" (`*-3-missed-floor.jpg`, the clip). But under a high run there are now
+  3-4 glowing mushrooms in a row on the floor (`sideways-2-branch-run.jpg`), busier than before. They are World 1's own painted
+  mushroom with its existing glow; no new art. Named, not hidden: if Matt finds the row busy, the next step is fewer, bigger catches.
+- **The sealed door:** the shrine's own sign says "28 more" and the counter "70/98" (`*-5-sealed-door.jpg`); in play Dot says "It's
+  sealed. Collect N more petals first." (first-timer log) and, earlier, "Still 40 petals to collect!".
+- **Capture artifact, not the game:** Dot's opening story line ("She said don't stop to smell the flowers...") shows in several stills
+  and the clip because the recorder pauses and steps the engine by hand. She says it once at the stage start.
+- **The clip** (`*-miss-caught.mp4`): walking off branch after branch, each mushroom springs him back up level with the branches; no
+  jitter or popping seen frame by frame (quarter speed).
+
+## Method update (for reference/methods/stage-fix.md on w8-rope2)
+
+- **Worked better, with proof:** classify every leftover pickup before blaming the stage or the bot (`tools/inspect/petalLeft.ts`:
+  floor / bough / air x passed over / under / near / never). It split 1-2's leftovers into "never went up" (bot) and "fell off with no way
+  back" (stage) in one run. Hash every stage's build before and after (`tools/inspect/stageHash.mts`, 8 min, 3,264 builds): proved 1-2
+  was the only stage touched.
+- **Failed, and why:** "bough petals flown over" (a float raise) was measured with a bot whose stuck rule fired every 0.3 s
+  (firsttimer.ts:1259), so its hops were not a person's. A float lift written and measured against it looked like a fix; with the bot
+  fixed the problem was gone (0-2 a run). Lesson: before changing the stage for a bot behaviour, trace one frame log and check the bot
+  does what its own parameters say (edgeAim 22 px, observed 110 px).
+- **Pitfall:** a real-engine test that holds right through a mushroom bounce and its second flick overshoots short branches; a thumb
+  steers to land. Steer toward the target in the test, or the test fails a fair spot.
+- **Pitfall:** removing a piece the quick route walked on (the empty overhead branch) can push rolls over the dead-time limit: run
+  era.ts --rolls 200 on the stage after any layout change, not only the bot.
+- **Exact edit:** add to Steps after step 2: "2b. Classify what the run leaves (petalLeft.ts) and read one frame log against the bot's own
+  parameters before deciding it is the stage." Add to step 6: "`npx tsx tools/inspect/stageHash.mts > out.txt` on base and branch, then
+  diff the sorted files."

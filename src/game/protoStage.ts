@@ -1525,7 +1525,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       // (the two that lead down sit low, 50 px over the floor where the drop lands: at the high road's height + 80 they hung where
       // neither the drop nor the floor passes, fix-petals)
       arc(bx - 40, bx + 120, G - 70, 2, 'orchid');
-      for (const u of [0.3, 0.7]) {
+      // (three dips: with no branch overhead the quick route walks this floor, and two left 6 of 200 rolls over a fifth dead, era.ts)
+      for (const u of [0.2, 0.5, 0.8]) {
         x = Math.max(x + 120, bx + Math.round(lowLen * u));
         const e0 = x;
         dip(R.r(0.5, 0.6));
