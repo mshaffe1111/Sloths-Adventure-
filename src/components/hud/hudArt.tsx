@@ -4,6 +4,7 @@
  * Pokey's face is his portrait (HeroFaceIcon). The rest is drawn here as clean stand-ins, in the sprites' dark-brown ink:
  *   the hearts, the vine and its threads, the Menu's three lines, the power-up pod, and the foe, cage, idol and door goal icons.
  */
+import { PaintedIcon, preloadPainted } from '../icons/PaintedIcon.tsx';
 import React from 'react';
 import { LEAF_ATLAS_SIZE, LEAF_FRAMES } from '../../game/leafAtlasData.ts';
 import { FLOWER_ATLAS_SIZE, FLOWER_FRAMES } from '../../game/flowerAtlasData.ts';
@@ -65,35 +66,20 @@ export const HudDefs: React.FC = () => (
   </svg>
 );
 
-/** a heart: full (painted red, ink outline, a shine), empty (a dark hollow), lost (a white flash with a crack), thorn (gold) */
-export const Heart: React.FC<{ size: number; state: 'full' | 'empty' | 'lost' | 'thorn' }> = ({ size, state }) => {
-  if (state === 'empty')
-    return (
-      <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-        <path d={HEART} fill="rgba(52,26,18,.62)" stroke={INK} strokeWidth="2.3" strokeLinejoin="round" />
-        <path d={HEART} fill="none" stroke="rgba(255,214,200,.45)" strokeWidth="1" transform="translate(2.4 2.6) scale(.8)" />
-      </svg>
-    );
-  if (state === 'lost')
-    return (
-      <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" className="vh-heart-lost">
-        <path d={HEART} fill="#fff" stroke={INK} strokeWidth="2.3" strokeLinejoin="round" />
-        <path d="M12 6 L10.4 10 L13 12.4 L11 16.5" fill="none" stroke={INK} strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    );
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-      <path d={HEART} fill={state === 'thorn' ? 'url(#vh-tg)' : 'url(#vh-hg)'} stroke={INK} strokeWidth="2.3" strokeLinejoin="round" />
-      <ellipse cx="7.6" cy="8" rx="2.6" ry="1.6" fill="#fff" opacity=".8" transform="rotate(-35 7.6 8)" />
-    </svg>
-  );
-};
+preloadPainted(['heart', 'heartEmpty', 'thornHeart', 'star']);
 
-export const Star: React.FC<{ size: number }> = ({ size }) => (
-  <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" style={{ flex: 'none' }}>
-    <path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z" fill="url(#vh-tg)" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
-  </svg>
+/** a heart (icons-painted, 2026-11-01): the painted heart berry (full), its dry husk (empty), the berry in its bramble (thorn), and
+ * the husk flashing white as it is lost */
+export const Heart: React.FC<{ size: number; state: 'full' | 'empty' | 'lost' | 'thorn' }> = ({ size, state }) => (
+  <PaintedIcon
+    name={state === 'full' ? 'heart' : state === 'thorn' ? 'thornHeart' : 'heartEmpty'}
+    size={size}
+    className={state === 'lost' ? 'vh-heart-lost' : undefined}
+  />
 );
+
+/** the score's star: the painted gold star */
+export const Star: React.FC<{ size: number }> = ({ size }) => <PaintedIcon name="star" size={size} />;
 
 export const Bolt: React.FC<{ size: number; color: string }> = ({ size, color }) => (
   <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">

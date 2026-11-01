@@ -29,7 +29,7 @@
 .vh-hearts .vh-heart { --s: 1; }
 .vh-hearts.bloom .vh-heart { --s: 1.32; }
 .vh-heart-lost { filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 8px #ff8a8a); }
-.vh-heart.won svg { filter: drop-shadow(0 0 6px #ffe0e0) drop-shadow(0 0 3px #fff); }
+.vh-heart.won svg, .vh-heart.won .pic { filter: drop-shadow(0 0 6px #ffe0e0) drop-shadow(0 0 3px #fff); }
 
 /* the goal counter: top centre, the biggest piece. Always on; it blooms when a pickup lands, glows once at the milestones, and
    turns gold (with a tick) when met */

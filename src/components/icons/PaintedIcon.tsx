@@ -72,3 +72,15 @@ export const PaintedIcon: React.FC<PaintedIconProps> = ({ name, size = 24, label
   }
   return <img src={URLS[name]} alt={label ?? ''} draggable={false} decoding="async" className={cls} style={box} {...(label ? {} : { 'aria-hidden': true })} />;
 };
+
+/** start loading and decoding some painted icons ahead of the screen that shows them (the HUD's hearts and star), so nothing pops in */
+export function preloadPainted(names: readonly PaintedName[]): void {
+  if (typeof Image === 'undefined') return;
+  for (const n of names) {
+    const url = URLS[n];
+    if (!url) continue;
+    const im = new Image();
+    im.src = url;
+    void im.decode?.().catch(() => undefined);
+  }
+}

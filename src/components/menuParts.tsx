@@ -76,7 +76,7 @@ export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(p
 /** a setting's picture, from the game's own painted icon set, in a small round well */
 export const SetIcon: React.FC<{ name: IconName }> = ({ name }) => (
   <span className="pm-set-ic" aria-hidden="true">
-    <PaintedIcon name={paint(name)} size={26} />
+    <PaintedIcon name={paint(name)} size={34} />
   </span>
 );
 
