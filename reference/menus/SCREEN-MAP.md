@@ -55,3 +55,9 @@ Kind: **S** = a screen (gets a top-left Back), **P** = a pop-up (X, tap outside,
 ## Android Back, screen by screen (after this job)
 
 pop-up open → it closes · playing → pause · paused → resume · results / game over → map · Satchel / Trophies → where they were opened · map → Start Screen · story → skip · title → "Leave the game?"
+
+## Status (2026-11-01, helper A, branch menus-nav)
+
+Done: rows 1-8, 11-16 (Leave dialog, Settings, New Game confirm, Save / Load, New Game, Mode pick, How to Play, the map, stage card, Worlds pop-up, locked toast, pause and its confirm). Rows 17-22 keep their own big buttons; Back on them already does the sensible step through App.tsx's fallback.
+Still on the old `.ui-x` hack in App.tsx's Android Back (until helper B moves them onto the kit): Trophy Room, Satchel, find reader. Once they use `BackButton` / `Popup`, the hack can be deleted.
+Checked by a click-through (Escape drives the same back stack as Android Back): 17 of 17 paths pass, no page errors.
