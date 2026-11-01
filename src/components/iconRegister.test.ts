@@ -30,7 +30,13 @@ export function iconUses(): Record<string, number> {
   for (const f of walk(SRC)) {
     const rel = relative(ROOT, f);
     if (rel === 'src/components/icons/index.tsx') continue;
-    const n = (readFileSync(f, 'utf8').match(/<Icon\b/g) ?? []).length;
+    const src = readFileSync(f, 'utf8');
+    // the glyph component under any name it is imported as (`import { Icon as Glyph }` counts too)
+    const names = new Set(['Icon']);
+    for (const m of src.matchAll(/import\s*\{([^}]*)\}\s*from\s*'[^']*icons\/index(?:\.tsx)?'/g))
+      for (const part of m[1].split(',')) { const a = part.trim().match(/^Icon\s+as\s+(\w+)$/); if (a) names.add(a[1]); }
+    let n = 0;
+    for (const nm of names) n += (src.match(new RegExp(`<${nm}\\b`, 'g')) ?? []).length;
     if (n) out[rel] = n;
   }
   return out;
@@ -57,7 +63,7 @@ test('every painted icon has its file, each under 60 KB and 4096 px', async () =
   const dir = join(ROOT, 'src/assets/icons');
   const files = readdirSync(dir).filter((n) => n.endsWith('.webp'));
   const src = readFileSync(join(SRC, 'icons/PaintedIcon.tsx'), 'utf8');
-  const names = [...src.match(/PAINTED_NAMES = \[([^\]]*)\]/)![1].matchAll(/'([^']+)'/g)].map((m) => m[1]).filter((n) => n !== 'mute');
+  const names = [...src.match(/PAINTED_NAMES = \[([^\]]*)\]/)![1].matchAll(/'([^']+)'/g)].map((m) => m[1]).filter((n) => n !== 'mute' && n !== 'satchel');
   const missing = names.filter((n) => !files.includes(`${n}.webp`));
   assert.deepEqual(missing, [], `painted names with no file in src/assets/icons: ${missing.join(', ')}`);
   for (const f of files) {

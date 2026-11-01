@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '../icons/index.tsx';
+import { PaintedIcon } from '../icons/PaintedIcon.tsx';
 import { KIND_LABEL, sceneList, sceneUnlocked, type SceneEntry, type SceneProgress } from '../../game/sceneList.ts';
 import { WORLD_NAMES } from '../../game/badges.ts';
 
@@ -25,7 +25,7 @@ export const ScenesTab: React.FC<{ progress: SceneProgress; onPlay: (queue: Scen
           {open.length} of {list.length} scenes open · in story order
         </div>
         <button type="button" className="ss-all" onClick={() => onPlay(open)} disabled={!open.length}>
-          <Icon name="play" size={18} /> Play all in order
+          <PaintedIcon name="play" size={20} /> Play all in order
         </button>
       </div>
       {groups.map((g) => {
@@ -40,7 +40,7 @@ export const ScenesTab: React.FC<{ progress: SceneProgress; onPlay: (queue: Scen
                   const ok = sceneUnlocked(e, progress);
                   return (
                     <button key={e.id} type="button" className={`ss-row ss-${e.kind} ${ok ? '' : 'lock'}`} disabled={!ok} onClick={() => onPlay([e])}>
-                      <span className="ss-ic">{ok ? <Icon name="play" size={16} /> : <Icon name="lock" size={14} />}</span>
+                      <span className="ss-ic">{ok ? <PaintedIcon name="play" size={18} /> : <PaintedIcon name="lock" size={16} />}</span>
                       <span className="ss-t">
                         <b>{ok ? e.title : '???'}</b>
                         <small>{ok ? KIND_LABEL[e.kind] : e.hint}</small>
@@ -51,7 +51,7 @@ export const ScenesTab: React.FC<{ progress: SceneProgress; onPlay: (queue: Scen
               </div>
             ) : (
               <div className="ss-row lock ss-world">
-                <span className="ss-ic"><Icon name="lock" size={14} /></span>
+                <span className="ss-ic"><PaintedIcon name="lock" size={16} /></span>
                 <span className="ss-t">
                   <b>{g.items.length} scenes</b>
                   <small>{g.items[0].hint}</small>

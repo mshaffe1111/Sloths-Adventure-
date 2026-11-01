@@ -12,7 +12,9 @@ import { stingDue } from '../audio/scenes.ts';
 import { typeSchedule } from '../game/storyTyping.ts';
 import { directScene } from '../game/storyDirect.ts';
 import { Plaque } from './KitParts.tsx';
-import { Icon, type IconName } from './icons/index.tsx';
+import { type IconName } from './icons/index.tsx';
+import { TextGlyph } from './icons/TextGlyph.tsx';
+import { PaintedIcon, paint } from './icons/PaintedIcon.tsx';
 import { SpeakerMark } from './SpeakerMark.tsx';
 
 interface StoryPlayerProps {
@@ -52,7 +54,7 @@ const SPEAKERS: Record<string, { dot: string }> = {
 /** a lullaby line is marked with music notes in the script: show them as the game's own note icon instead of a font glyph */
 function lyrics(text: string): React.ReactNode {
   if (!text.includes('♪')) return text;
-  return text.split('♪').flatMap((part, i, all) => (i < all.length - 1 ? [part, <Icon key={i} name="note" size="0.95em" className="sp-note" />] : [part]));
+  return text.split('♪').flatMap((part, i, all) => (i < all.length - 1 ? [part, <TextGlyph key={i} name="note" size="0.95em" className="sp-note" />] : [part]));
 }
 
 /** "WORLD 3 · MOSSY GROTTO" -> the small line and the big line of the title card */
@@ -432,7 +434,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       </p>
       {panel.tip && done && lastPage && (
         <p className="sp-tip">
-          <Icon name="bulb" size={16} /> {panel.tip}
+          <PaintedIcon name="howto" size={20} /> {panel.tip}
         </p>
       )}
       <div className="sp-foot">
@@ -451,17 +453,17 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
         <div className="flex gap-2">
           {idx > 0 && (
             <button type="button" className="sp-back" onClick={(e) => { e.stopPropagation(); back(); }}>
-              <Icon name="arrow" size={13} rotate={180} /> Back
+              <TextGlyph name="arrow" size={13} rotate={180} /> Back
             </button>
           )}
           {!hold && <button type="button" className="sp-next" onClick={(e) => { e.stopPropagation(); next(); }}>
             {last && done && lastPage ? (
               <>
-                {finishLabel} <Icon name={finishIcon} size={15} />
+                {finishLabel} {finishIcon === 'arrow' ? <TextGlyph name="arrow" size={15} /> : <PaintedIcon name={paint(finishIcon)} size={20} />}
               </>
             ) : (
               <>
-                Next <Icon name="arrow" size={15} />
+                Next <TextGlyph name="arrow" size={15} />
               </>
             )}
           </button>}
@@ -483,7 +485,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2 px-3 sm:px-5 pt-2.5">
         <span className={`ui-chip transition-opacity duration-300 ${cardUp ? 'opacity-0' : 'opacity-100'}`}>{panel.chapter}</span>
         <button type="button" onClick={onFinish} className="ui-chip ui-chip-btn">
-          {skipLabel} <Icon name="arrow" size={13} />
+          {skipLabel} <TextGlyph name="arrow" size={13} />
         </button>
       </div>
 
@@ -496,8 +498,8 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       {hold && (
         <div className={`sp-hold ${wide ? 'sp-hold-wide' : ''} ${showPrompt ? '' : 'sp-hold-off'}`} aria-live="polite" style={wide ? undefined : { top: Math.round(view.h * 0.32) }}>
           <div className="sp-hold-thumbs" aria-hidden="true">
-            <span className={`sp-thumb gx-token ${thumbs >= 1 ? 'on' : ''}`}><Icon name="paw" size={17} /></span>
-            <span className={`sp-thumb gx-token ${thumbs >= 2 ? 'on' : ''} ${phase === 'lift' ? 'lift' : ''}`}><Icon name="paw" size={17} /></span>
+            <span className={`sp-thumb gx-token ${thumbs >= 1 ? 'on' : ''}`}><PaintedIcon name="paw" size={20} /></span>
+            <span className={`sp-thumb gx-token ${thumbs >= 2 ? 'on' : ''} ${phase === 'lift' ? 'lift' : ''}`}><PaintedIcon name="paw" size={20} /></span>
           </div>
           <div className="sp-hold-say kit-plaque"><span>{phase === 'lift' || phase === 'reach' ? hold.lift : hold.both}</span></div>
         </div>

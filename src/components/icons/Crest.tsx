@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from './index.tsx';
+import { PaintedIcon } from './PaintedIcon.tsx';
 import { crestFor, crestName, type CrestKey } from './crests.ts';
 
 interface CrestProps {
@@ -50,13 +50,13 @@ export const Crest: React.FC<CrestProps> = ({ world, size = 48, locked = false, 
             }}
           />
         ) : (
-          <Icon name="boss" size={inner * 0.82} />
+          <PaintedIcon name="clubs" size={inner * 0.82} />
         )}
       </span>
       {!bare && <span className="crest-ring" />}
       {locked && (
         <span className="crest-lock">
-          <Icon name="lock" size={Math.max(12, Math.round(size * 0.42))} />
+          <PaintedIcon name="lock" size={Math.max(12, Math.round(size * 0.42))} />
         </span>
       )}
     </span>

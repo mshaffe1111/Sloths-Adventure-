@@ -9,7 +9,8 @@ import { SceneBackdrop } from './title/TitleScene.tsx';
 import { Plaque } from './KitParts.tsx';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { HeroPose } from './HeroPose.tsx';
-import { Icon, KitPiece } from './icons/index.tsx';
+import { KitPiece } from './icons/index.tsx';
+import { PaintedIcon, paint } from './icons/PaintedIcon.tsx';
 import { Crest } from './icons/Crest.tsx';
 import { stageTypeInfo } from './icons/stageTypes.ts';
 import { MEECA_STAGE_ID } from '../game/extraStages.ts';
@@ -214,7 +215,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
       {/* the world: its carved name between two big leaf arrows, and how far Pokey has got in it */}
       <header className="wm-head">
         <button type="button" className="wm-arrow" onClick={() => go(-1)} disabled={activeWorldId <= 1} aria-label="Previous world">
-          <Icon name="arrow" size={26} rotate={180} />
+          <PaintedIcon name="back" size={28} />
         </button>
         <button type="button" className="wm-name" onClick={() => setWorldsOpen(true)} aria-label={`World ${curWorld.id}, ${curWorld.name}. Choose a world`}>
           <span className="wm-kick">
@@ -227,20 +228,20 @@ export const WorldMap: React.FC<WorldMapProps> = ({
           <span className="wm-prog">
             <span className="wm-prog-w">World {curWorld.id} of {WORLDS_DATA.length}</span>
             <span>
-              <Icon name="check" size={14} /> {cleared} of {worldLevels.length} cleared
+              <PaintedIcon name="checkmark" size={16} /> {cleared} of {worldLevels.length} cleared
             </span>
             <span>
-              <Icon name="star" size={15} /> {worldStars}/{worldLevels.length * 3}
+              <PaintedIcon name="star" size={17} /> {worldStars}/{worldLevels.length * 3}
             </span>
             {thornHeart && (
               <span title="Thorn Heart: +1 max heart">
-                <Icon name="thornHeart" size={15} /> +1
+                <PaintedIcon name="thornHeart" size={17} /> +1
               </span>
             )}
           </span>
         </button>
         <button type="button" className="wm-arrow" onClick={() => go(1)} disabled={activeWorldId >= WORLDS_DATA.length} aria-label="Next world" data-locked={worldUnlocked(activeWorldId + 1) ? undefined : 'true'}>
-          {worldUnlocked(activeWorldId + 1) || activeWorldId >= WORLDS_DATA.length ? <Icon name="arrow" size={26} /> : <Icon name="lock" size={22} />}
+          {worldUnlocked(activeWorldId + 1) || activeWorldId >= WORLDS_DATA.length ? <PaintedIcon name="back" size={28} className="pic-flip" /> : <PaintedIcon name="lock" size={24} />}
         </button>
       </header>
 
@@ -287,9 +288,9 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 ) : (
                   <>
                     {/* an extra stage between the world's own (extraStages.ts) shows whose it is, not a number: Dot's flier, Meeca's face */}
-                    {!open ? <KitPiece piece="lockBadge" width={size} className="map-lockbadge" /> : lvl.id === MEECA_STAGE_ID ? <Crest world="meeca" size={Math.round(size * 0.74)} bare /> : lvl.miniIndex > 10 ? <Icon name="hummingbird" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
+                    {!open ? <KitPiece piece="lockBadge" width={size} className="map-lockbadge" /> : lvl.id === MEECA_STAGE_ID ? <Crest world="meeca" size={Math.round(size * 0.74)} bare /> : lvl.miniIndex > 10 ? <PaintedIcon name="pouch" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
                     <span className="map-tbadge" style={{ width: badgePx, height: badgePx }} title={type.label}>
-                      <Icon name={type.icon} size={Math.round(badgePx * 0.78)} />
+                      <PaintedIcon name={paint(type.icon)} size={Math.round(badgePx * 0.78)} />
                     </span>
                   </>
                 )}
@@ -318,7 +319,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
             {picked.miniIndex === 10 && <Crest world={picked.worldIndex} size={50} locked={!pickedOpen} className="map-card-crest" />}
             <div className="min-w-0 flex-1">
               <div className="wm-card-k">
-                {picked.miniIndex !== 10 && <Icon name={stageTypeInfo(picked.objectiveType).icon} size={18} />}
+                {picked.miniIndex !== 10 && <PaintedIcon name={paint(stageTypeInfo(picked.objectiveType).icon)} size={20} />}
                 <span>
                   Stage {picked.id} &middot; {stageTypeInfo(picked.objectiveType).label}
                 </span>
@@ -329,7 +330,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 <div className="wm-card-meta">
                   <span className="map-cstars" role="img" aria-label={`${picked.stars} of 3 stars`}>
                     {[1, 2, 3].map((n) => (
-                      <Icon key={n} name="star" size={17} className={n <= picked.stars ? 'on' : ''} />
+                      <PaintedIcon key={n} name="star" size={19} className={n <= picked.stars ? 'on' : 'pic-off'} />
                     ))}
                   </span>
                   {picked.completed && <span>Best {fmtTime(picked.bestTime)}</span>}
@@ -337,13 +338,13 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 </div>
               ) : (
                 <div className="wm-card-lock">
-                  <Icon name="lock" size={15} /> Clear the stage before it to open this one
+                  <PaintedIcon name="lock" size={17} /> Clear the stage before it to open this one
                 </div>
               )}
             </div>
             {pickedOpen && (
               <button type="button" className="gx-plank gx-plank-gold wm-play" onClick={() => onSelectLevel(picked)} data-start="true">
-                <Icon name="play" size={22} />
+                <PaintedIcon name="play" size={24} />
                 {picked.completed ? 'Replay' : 'Play'}
               </button>
             )}
@@ -351,14 +352,14 @@ export const WorldMap: React.FC<WorldMapProps> = ({
         )}
         <nav className="wm-leaves" aria-label="More">
           <LeafButton icon="compass" name="Worlds" onClick={() => setWorldsOpen(true)} />
-          {onOpenSatchel && <LeafButton icon="book" name="Satchel" onClick={onOpenSatchel} />}
+          {onOpenSatchel && <LeafButton icon="satchel" name="Satchel" onClick={onOpenSatchel} />}
           <LeafButton icon="bulb" name="How to Play" onClick={() => setHowOpen(true)} />
         </nav>
       </div>
 
       {lockedMsg && (
         <div className="wm-toast" role="status">
-          <Icon name="lock" size={17} />
+          <PaintedIcon name="lock" size={19} />
           {lockedMsg}
         </div>
       )}
@@ -388,15 +389,15 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                     <b>{w.name}</b>
                     <i>{open ? (done >= all ? 'All cleared!' : `${done} of ${all} cleared`) : `Beat World ${w.id - 1}'s boss`}</i>
                   </span>
-                  {!open && <Icon name="lock" size={22} />}
-                  {open && done >= all && <Icon name="crown" size={22} />}
+                  {!open && <PaintedIcon name="lock" size={24} />}
+                  {open && done >= all && <PaintedIcon name="crown" size={24} />}
                 </button>
               );
             })}
           </div>
           {secretFound && onPlaySecret && (
             <button type="button" className="st-btn wm-secret" onClick={onPlaySecret}>
-              <Icon name="leaf" size={20} /> Thornbark's Hollow
+              <PaintedIcon name="leaf" size={22} /> Thornbark's Hollow
             </button>
           )}
         </Popup>

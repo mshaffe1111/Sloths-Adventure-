@@ -43,5 +43,77 @@
  "back": {
   "take": "back-a23",
   "px": 56
+ },
+ "expand": {
+  "take": "expand-a37",
+  "px": 80
+ },
+ "shrink": {
+  "take": "shrink-a53",
+  "px": 80
+ },
+ "checkmark": {
+  "take": "checkmark-a23",
+  "px": 56
+ },
+ "home": {
+  "take": "home-a11",
+  "px": 120
+ },
+ "trophy": {
+  "take": "trophy-a23",
+  "px": 96
+ },
+ "cards": {
+  "take": "cards-a71",
+  "px": 96
+ },
+ "heart": {
+  "take": "heart-a23",
+  "px": 160
+ },
+ "heartEmpty": {
+  "take": "heartEmpty-a71",
+  "px": 64
+ },
+ "thornHeart": {
+  "take": "thornHeart-a23",
+  "px": 64
+ },
+ "seed": {
+  "take": "seed-a23",
+  "px": 64
+ },
+ "leaf": {
+  "take": "leaf-a11",
+  "px": 96
+ },
+ "paw": {
+  "take": "paw-a23",
+  "px": 104
+ },
+ "save": {
+  "take": "save-a53",
+  "px": 96
+ },
+ "compass": {
+  "take": "compass-a23",
+  "px": 144
+ },
+ "crown": {
+  "take": "crown-a37",
+  "px": 64
+ },
+ "clubs": {
+  "take": "clubs-a23",
+  "px": 96
+ },
+ "key": {
+  "take": "key-a23",
+  "px": 104
+ },
+ "medal": {
+  "take": "medal-a11",
+  "px": 104
  }
 }

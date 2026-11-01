@@ -115,3 +115,7 @@ icE0 6ae77e58c78863f9c62fbebb  icE1 6ae77e5cc78863f9c62fbebd  icE2 6ae77e5f0e033
   icE0-2 finished ~18:07Z (~6 min each, ~$0.85 for the three). Picks: playc-b11 (gold triangle: the brown carved arrow vanished on the
   brown sign), restart-b23, close-b53 (birch: the brown X vanished on wood), lock-a23, star-a11, back-a23 (back-a53's take had a
   gradient grey that the key left as bands). Running total icons-painted ~$1.75 of $25.
+icBCD0 6ae7827cc78863f9c62fc13a  icBCD1 6ae7827f0e0338d1bb7d8e73  icBCD2 6ae78283c78863f9c62fc13e  icBCD3 6ae782860e0338d1bb7d8e75
+icBCD4 6ae7828bc78863f9c62fc14b  icBCD5 6ae7828dc78863f9c62fc14f  started 18:18Z at 615bd861: groups B-D, 30 objects x 6 seeds = 180 takes
+icF0 6ae78353c78863f9c62fc21e  started 18:22Z at c77201e6: full screen (expand x2 prompts, shrink) and a vine tick, 16 takes
+  icF0 finished 18:28Z (~6 min, ~$0.28). Picks expand-a37, shrink-a53, checkmark-a23.

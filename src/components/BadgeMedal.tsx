@@ -1,7 +1,7 @@
 import React, { useSyncExternalStore } from 'react';
 import type { BadgeDef, Tier } from '../game/badges.ts';
 import { EMBLEM_FRAMES, MEDAL_ATLAS_SIZE, MEDALLION_FRAMES, type MedalFrame } from '../game/medalAtlasData.ts';
-import { Icon } from './icons/index.tsx';
+import { PaintedIcon, paint } from './icons/PaintedIcon.tsx';
 import { badgeIconName } from './icons/badgeIcons.ts';
 
 /** the painted medals: four tier medallions and the emblems that sit on them, in one sheet (tools/art/medals/pack.py) */
@@ -66,7 +66,7 @@ export const BadgeMedal: React.FC<{ badge: Pick<BadgeDef, 'tier' | 'emblem' | 'i
         </>
       ) : (
         <span className="tr-inlay">
-          <Icon name={badgeIconName(badge.icon)} size={Math.round(size * 0.5)} />
+          <PaintedIcon name={paint(badgeIconName(badge.icon))} size={Math.round(size * 0.5)} />
         </span>
       )}
       {badge.world && <span className="tr-wnum" style={{ fontSize: Math.max(9, Math.round(size * 0.22)) }}>{badge.world}</span>}

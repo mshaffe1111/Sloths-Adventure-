@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Icon } from '../icons/index.tsx';
+import { PaintedIcon } from '../icons/PaintedIcon.tsx';
 import { WORLD_NAMES } from '../../game/badges.ts';
 import { fmtTime, stageEntry, worldReview, type EntryNames } from '../../game/pokeyJournal.ts';
 import type { PlayRecord } from '../../game/playRecords.ts';
@@ -149,13 +149,13 @@ export const JournalBook: React.FC<{
       </div>
       <div className="jb-nav">
         <button type="button" className="jb-arrow" onClick={() => go(-1)} disabled={page === 0} aria-label="Turn back a page">
-          <Icon name="arrow" size={18} rotate={180} />
+          <PaintedIcon name="back" size={24} />
         </button>
         <span className="jb-pn">
           {wide ? `World ${world}` : `World ${world} · ${side === 'entries' ? 'the stages' : 'looking back'}`}
         </span>
         <button type="button" className="jb-arrow" onClick={() => go(1)} disabled={page >= total - 1} aria-label="Turn the page">
-          <Icon name="arrow" size={18} />
+          <PaintedIcon name="back" size={24} className="pic-flip" />
         </button>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, type IconName } from '../icons/index.tsx';
+import { PaintedIcon, paint, type AnyIcon } from '../icons/PaintedIcon.tsx';
 import { Plaque } from '../KitParts.tsx';
 import { backStack } from './backStack.ts';
 import './nav.css';
@@ -24,12 +24,12 @@ export function useBack(onBack: () => void, enabled = true): void {
  * A screen's Back: the round painted token with an arrow, and the place it goes on a wooden tag beside it ("Start Screen",
  * "World Map"), always at the top-left, clear of the notch. Android's Back does the same.
  */
-export const BackButton: React.FC<{ to: string; onBack: () => void; className?: string; icon?: IconName }> = ({ to, onBack, className, icon }) => {
+export const BackButton: React.FC<{ to: string; onBack: () => void; className?: string; icon?: AnyIcon }> = ({ to, onBack, className, icon }) => {
   useBack(onBack);
   return (
     <button type="button" className={`nv-back${className ? ` ${className}` : ''}`} onClick={onBack} aria-label={`Back to ${to}`}>
       <span className="nv-back-tok" aria-hidden="true">
-        <Icon name={icon ?? 'arrow'} size={24} rotate={icon ? 0 : 180} />
+        <PaintedIcon name={icon ? paint(icon) : 'back'} size={26} />
       </span>
       <span className="nv-back-tag">{to}</span>
     </button>
@@ -39,7 +39,7 @@ export const BackButton: React.FC<{ to: string; onBack: () => void; className?: 
 /** the round painted X at a pop-up's top-right corner (also usable alone, e.g. on a full-screen card) */
 export const CloseX: React.FC<{ onClose: () => void; className?: string; label?: string }> = ({ onClose, className, label = 'Close' }) => (
   <button type="button" className={`nv-x${className ? ` ${className}` : ''}`} onClick={onClose} aria-label={label}>
-    <Icon name="cross" size={22} />
+    <PaintedIcon name="close" size={24} />
   </button>
 );
 
@@ -93,7 +93,7 @@ export const ConfirmDialog: React.FC<{
   <Popup title={title} label={title} onClose={onStay} top className="nv-confirm">
     <p className="nv-confirm-p">{body}</p>
     <button type="button" className="pm-go nv-confirm-stay" autoFocus onClick={onStay}>
-      <Icon name="play" size={20} />
+      <PaintedIcon name="play" size={22} />
       {stay}
     </button>
     <button type="button" className="st-btn nv-confirm-go" onClick={onGo}>
@@ -106,10 +106,10 @@ export const ConfirmDialog: React.FC<{
  * A big round leaf button with its name under it: the title's own leaf tokens (World Map, Story, How to Play), for the bottom row of
  * the map and any screen that needs a few labelled ways on.
  */
-export const LeafButton: React.FC<{ icon: IconName; name: string; onClick: () => void; badge?: React.ReactNode; className?: string }> = ({ icon, name, onClick, badge, className }) => (
+export const LeafButton: React.FC<{ icon: AnyIcon; name: string; onClick: () => void; badge?: React.ReactNode; className?: string }> = ({ icon, name, onClick, badge, className }) => (
   <button type="button" onClick={onClick} className={`ttl-leaf nv-leaf${className ? ` ${className}` : ''}`}>
     <span className="ttl-leaf-ic">
-      <Icon name={icon} size={30} />
+      <PaintedIcon name={paint(icon)} size="118%" className="ttl-obj" />
       {badge}
     </span>
     {name}
@@ -117,8 +117,8 @@ export const LeafButton: React.FC<{ icon: IconName; name: string; onClick: () =>
 );
 
 /** the round painted token for a screen's top-right corner (Settings, sound): the title's own */
-export const CornerToken: React.FC<{ icon: IconName; label: string; onClick: () => void; pressed?: boolean }> = ({ icon, label, onClick, pressed }) => (
-  <button type="button" className="ttl-token" onClick={onClick} aria-label={label} title={label} aria-pressed={pressed}>
-    <Icon name={icon} size={28} />
+export const CornerToken: React.FC<{ icon: AnyIcon; label: string; onClick: () => void; pressed?: boolean }> = ({ icon, label, onClick, pressed }) => (
+  <button type="button" className="ttl-token bare" onClick={onClick} aria-label={label} title={label} aria-pressed={pressed}>
+    <PaintedIcon name={paint(icon)} size="100%" />
   </button>
 );
