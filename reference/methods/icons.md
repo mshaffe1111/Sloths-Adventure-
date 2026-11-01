@@ -1,6 +1,6 @@
 # Method: painted icons (any icon a player sees)
-Last proven: 2026-11-01, branch icons-painted, the start screen's map, storybook, lantern, drum, cog and play (group A) and the small
-glyphs (E). Owner of the last update: icons-painted helper.
+Last proven: 2026-11-01, branch icons-painted: group A (start screen, Matt approved, at 7d338bce) and groups B-E (every menu, the
+HUD, the map, the satchel; 47 painted icons, 2-16 KB each, ~$6 of GPU). Owner of the last update: icons-painted helper.
 
 ## When to use it
 Any icon, button glyph or menu symbol a player sees. The bar is the painted satchel (`src/assets/ui/satchel.webp`): one real object
@@ -32,7 +32,13 @@ badge. Matt, 2026-11-01: "The satchel looks great but look at the other art. Gen
    2-16 KB.
 7. **Judge on the real screen before wiring**: `tools/art/icons/mock-title.mjs` swaps the art into the running page. For another
    screen, copy its approach. Contact sheet before | after, upright and sideways, plus a real-size crop.
-8. **Wire**: `<PaintedIcon name size>` (`src/components/icons/PaintedIcon.tsx`, a plain `<img>`). Add the name to `PAINTED_NAMES`,
+8. **Text glyphs**: an arrow, tick or note that sits inside a line of words ("Next →", "✓ 3 of 11 cleared", ♪) is a
+   `<TextGlyph>` (crisp, the text's colour, the painted family's dark outline), never a painted object: at 12-16 px beside words a
+   painted tick vanished on wood and green (`groupE/glyphs-real-size.png`).
+9. **One object per meaning**: Satchel is always the satchel, How to Play always the lantern, Trophies always the trophy. The icon test
+   checks every `icon=`/`name=` pair; give two things that mean different things two objects that read apart at 48 px (Grandma's big
+   green storybook vs Pokey's small tan pencil notebook).
+10. **Wire**: `<PaintedIcon name size>` (`src/components/icons/PaintedIcon.tsx`, a plain `<img>`). Add the name to `PAINTED_NAMES`,
    preload it where the screen preloads its art, and lower the file's count in `src/components/iconRegister.allow.json`.
 
 ## The bar
@@ -48,6 +54,14 @@ badge. Matt, 2026-11-01: "The satchel looks great but look at the other art. Gen
   or brown on brown?
 
 ## Pitfalls we already paid for
+- 2026-11-01: a painted object inside a small round "well" (the settings rows) shrank and the full-screen brackets read as a blob. Let
+  the object stand free like the rest of the set, a size larger.
+- 2026-11-01: painted wood on a dark wood button (restart, back on the card buttons and the Back token) sank into the wood. A thin warm
+  rim (`drop-shadow(0 0 1.2px rgba(255,240,205,.95))`, index.css) lifts it; check every object on every background it meets with
+  `tools/art/icons/glyphsheet.py`.
+- 2026-11-01: adding an icon to a button widens it: the start screen's version pair wrapped to two rows upright. Measure the row at
+  360/390/412 (`shot-verrow.mjs`) after any icon goes into a button.
+- 2026-11-01: an aliased import (`import { Icon as Glyph }`) slipped past a `<Icon` text check; the register test follows aliases.
 - 2026-10-30 (hfui1): the old kit icons were img2img at 0.40 from the vector glyphs at 128 px. They kept the app-icon shapes (a
   speaker with blue waves, a flat cog), and Matt called them generic. Paint the object from text at 1024, never a light repaint of
   a symbol.
@@ -63,5 +77,7 @@ badge. Matt, 2026-11-01: "The satchel looks great but look at the other art. Gen
 - A green leaf disc behind the corner tokens: the "tap for sound" pulse drew a square glow, and the leaf crowded the object.
 
 ## To try
+- Repaint the jungle-cards icon with a negative for letters on the cards (every take painted an "A").
+- A clearer "screen shake" object than the firefly (a rattling seed pod mid-shake?).
 - Painted "pressed" or dimmed states made in paint rather than by CSS filter, if Matt wants more than the dimmed drum with the X for
   sound off.
