@@ -22,12 +22,13 @@ import { FINDS, POCKET_FINDS, NOTCH_FIND, SNAIL_FINDS } from './finds.ts';
 import { PREDATOR_ENTRIES, ROAD_ENTRIES } from './journal.ts';
 import { CREATURE_LORE } from './creatureLore.ts';
 import { BADGES, WORLD_NAMES } from './badges.ts';
-import { LINES, BEATS, POKEY_JOURNAL, stageEntry, type EntryNames } from './pokeyJournal.ts';
+import { LINES, BEATS, POKEY_JOURNAL, worldEntries, type EntryNames } from './pokeyJournal.ts';
 import type { PlayRecord } from './playRecords.ts';
 import { INTRO_PANELS, WORLD_STORIES, WORLD_MID, WORLD_GATE, BOSS_STORIES } from './story.ts';
 import { MEMORIES } from './storyChapters.ts';
 import { KEEPSAKE_LINES, finalePanels } from './storyFinale.ts';
 import { WORLDS_DATA, generateAllLevels } from './worldsData.ts';
+import { WHATS_NEW } from './whatsNew.ts';
 import known from './playerText.known.json' with { type: 'json' };
 
 /** filler that says nothing: never on screen. Add to it freely. */
@@ -66,7 +67,9 @@ const ALL_FINDS = [...FINDS, ...POCKET_FINDS, NOTCH_FIND, ...SNAIL_FINDS];
 const family = (id: string) => id.replace(/_(\d+|all)$/, '');
 
 const LISTS: Record<string, Item[]> = {
-  'Dot lines': ALL_DOT_LINES.flatMap((l) => [
+  // (the control test's copies, ctest.*, are left out: they show only with ?ctest=1 in the address and never in the store build
+  // (ctestEnabled, playRecorder.ts), so they are Matt's tester copy of a lesson, not a second line a player meets)
+  'Dot lines': ALL_DOT_LINES.filter((l) => !l.id.startsWith('ctest.')).flatMap((l) => [
     ...(l.text ? [{ text: l.text, where: l.id }] : []),
     ...(l.then ? [{ text: l.then, where: `${l.id} (then)` }] : []),
   ]),
@@ -92,7 +95,7 @@ const LISTS: Record<string, Item[]> = {
     ...Object.entries(KEEPSAKE_LINES).flatMap(([id, bs]) => (bs ?? []).map((b, i) => ({ text: b.t, where: `keepsake ${id}#${i}`, replay: true }))),
     ...panelsText(finalePanels(ALL_FINDS.map((f) => f.id)), 'finale'),
   ],
-  // What's New: add its items here when the list lands on main (the whatsnew branch)
+  "What's New items": WHATS_NEW.flatMap((r) => [{ text: r.title, where: `${r.version} title` }, ...r.items.map((t, i) => ({ text: t, where: `${r.version}#${i}` }))]),
 };
 
 // ---- the rules ------------------------------------------------------------------------------------------------------------------
@@ -125,7 +128,7 @@ const dupes = (list: Item[], key: (t: string) => string, sameFamilyOk: boolean, 
 const banned = (list: Item[]): string[] =>
   list.flatMap((it) => BANNED.filter((b) => clean(it.text).includes(clean(b))).map((b) => `${it.where}: "${b}"`));
 
-// ---- the journal's pages, built the way the Satchel builds them ------------------------------------------------------------------
+// ---- the journal's pages, built by the Satchel's own page builder ------------------------------------------------------------------
 const NAMES: EntryNames = {
   creature: (id, n) => `${id}${n === 1 ? '' : 's'}`,
   find: (id) => ALL_FINDS.find((f) => f.id === id)?.title,
@@ -139,9 +142,11 @@ function journalPages(withRecords: boolean): Record<string, Item[]> {
   const pages: Record<string, Item[]> = {};
   for (const w of WORLDS_DATA.map((x) => x.id)) {
     const stages = LEVELS.filter((l) => l.worldIndex === w && l.miniIndex <= 10).sort((a, b) => a.miniIndex - b.miniIndex);
-    pages[`World ${w}`] = stages.flatMap((l, i) =>
-      stageEntry({ id: l.id, name: l.name, worldIndex: l.worldIndex, miniIndex: l.miniIndex, stars: 3 }, withRecords ? record(w * 10 + i) : null, NAMES).lines.map((t, j) => ({ text: t, where: `${l.id}#${j}` })),
-    );
+    const recs: Record<string, PlayRecord> = {};
+    stages.forEach((l, i) => withRecords && (recs[l.id] = record(w * 10 + i)));
+    // the same builder the Satchel's Journal calls (JournalBook: worldEntries), so the gate judges the page the player sees
+    pages[`World ${w}`] = worldEntries(w, stages.map((l) => ({ id: l.id, name: l.name, worldIndex: l.worldIndex, miniIndex: l.miniIndex, stars: 3, completed: true })), recs, NAMES)
+      .flatMap((e) => e.lines.map((t, j) => ({ text: t, where: `${e.id}#${j}` })));
   }
   return pages;
 }

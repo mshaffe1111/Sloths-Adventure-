@@ -84,6 +84,9 @@ Every gate in the table, in order. Run the full unit suite in the background (it
 
 - 2026-11-01: the first CI run showed clipcheck green while it had crashed. Two causes: GitHub's default `run:` shell is `bash -e` with no pipefail, so `| tee` hid the exit code; and vite colours its "Local:" line in CI, so the readiness match never fired. Any step that pipes a gate's output sets `shell: bash` (pipefail), and logs are matched with ANSI codes stripped. Open a new gate's CI log once and read its last line; never trust the green tick alone.
 
+- 2026-11-01: playerText first built each Journal page by calling stageEntry() once per stage. The Satchel builds the page with worldEntries(), which shares one used-lines set across the page, so the gate was judging a page no player sees. **A gate calls the same function the player's screen calls** (find it from the component: JournalBook → worldEntries).
+- 2026-11-01: the merge rule for shrink-only lists: a known entry is deleted in the same commit that fixes it. Deleting it on a branch where the defect is still there fails that branch's own gate.
+
 ## Tried and didn't work
 - Hard-coding unsafe-inset bands and ignoring CSS: headless Chrome's `env(safe-area-inset-*)` is 0, so the game placed things in the bands and every screen "failed". Chrome's CDP `Emulation.setSafeAreaInsetsOverride` (Chromium 153 here) makes `env()` real; use it.
 - Counting every text line past an overflow-hidden ancestor: every scrolled list "failed". Stop the ancestor walk at a scroll box on that axis.

@@ -4,187 +4,22 @@
   {
    "key": "Dot lines: exact duplicates",
    "kind": "duplicate Dot line (lesson vs control-test copy, repeated hints)",
-   "owner": "lead to assign (Dot lines)"
-  },
-  {
-   "key": "find hints: exact duplicates",
-   "kind": "duplicate find hint (D2)",
-   "owner": "whatsnew (fixed on its branch)"
-  },
-  {
-   "key": "find hints: differ only in a number or name",
-   "kind": "duplicate find hint (D2)",
-   "owner": "whatsnew (fixed on its branch)"
+   "owner": "menu-polish job (next week, lead)"
   },
   {
    "key": "find titles: exact duplicates",
    "kind": "duplicate find title (\"The snail\" x10)",
-   "owner": "lead to assign (finds)"
+   "owner": "menu-polish job (next week, lead)"
   },
   {
    "key": "medal descriptions: differ only in a number or name",
    "kind": "two medals with the same description",
-   "owner": "lead to assign (medals)"
-  },
-  {
-   "key": "journal lines: banned filler",
-   "kind": "filler in the journal templates (D1)",
-   "owner": "journal-voice"
+   "owner": "menu-polish job (next week, lead)"
   },
   {
    "key": "story beats: exact duplicates",
    "kind": "repeated story line (\"I'm going to get Meeca back.\" x3)",
-   "owner": "lead to assign (story)"
-  },
-  {
-   "key": "journal page World 1 (old save): repeated lines",
-   "kind": "repeated line on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 1 (old save): banned filler",
-   "kind": "filler on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 2 (old save): repeated lines",
-   "kind": "repeated line on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 2 (old save): banned filler",
-   "kind": "filler on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 3 (old save): repeated lines",
-   "kind": "repeated line on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 3 (old save): banned filler",
-   "kind": "filler on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 4 (old save): repeated lines",
-   "kind": "repeated line on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 4 (old save): banned filler",
-   "kind": "filler on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 5 (old save): repeated lines",
-   "kind": "repeated line on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 5 (old save): banned filler",
-   "kind": "filler on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 6 (old save): repeated lines",
-   "kind": "repeated line on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 6 (old save): banned filler",
-   "kind": "filler on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 7 (old save): repeated lines",
-   "kind": "repeated line on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 7 (old save): banned filler",
-   "kind": "filler on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 8 (old save): repeated lines",
-   "kind": "repeated line on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 8 (old save): banned filler",
-   "kind": "filler on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 9 (old save): repeated lines",
-   "kind": "repeated line on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 9 (old save): banned filler",
-   "kind": "filler on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 10 (old save): repeated lines",
-   "kind": "repeated line on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 10 (old save): banned filler",
-   "kind": "filler on a journal page, old save (D1)",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 1 (save with records): repeated lines",
-   "kind": "repeated line on a journal page, save with records",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 2 (save with records): repeated lines",
-   "kind": "repeated line on a journal page, save with records",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 3 (save with records): repeated lines",
-   "kind": "repeated line on a journal page, save with records",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 4 (save with records): repeated lines",
-   "kind": "repeated line on a journal page, save with records",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 5 (save with records): repeated lines",
-   "kind": "repeated line on a journal page, save with records",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 6 (save with records): repeated lines",
-   "kind": "repeated line on a journal page, save with records",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 7 (save with records): repeated lines",
-   "kind": "repeated line on a journal page, save with records",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 8 (save with records): repeated lines",
-   "kind": "repeated line on a journal page, save with records",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 9 (save with records): repeated lines",
-   "kind": "repeated line on a journal page, save with records",
-   "owner": "journal-voice"
-  },
-  {
-   "key": "journal page World 10 (save with records): repeated lines",
-   "kind": "repeated line on a journal page, save with records",
-   "owner": "journal-voice"
+   "owner": "menu-polish job (next week, lead)"
   }
  ]
 }
