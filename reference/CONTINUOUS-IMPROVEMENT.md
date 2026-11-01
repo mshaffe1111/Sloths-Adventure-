@@ -68,7 +68,6 @@ work back then.
 | Art made but never drawn | 17 | artUse.test + allow-list that only shrinks | L3 | none |
 | Something invisible or missing on a real phone | 12 | canvasLost.test, meecaVisible | L3 | test on old saves and a lost canvas for every new screen |
 | Mechanic not taught | 8 | STAGE-RULES teaching rule, per-stage teaching check | L3 | none |
-| Counts or content including unreleased worlds | new (11-01) | -> one released-worlds source + a test over every total | L3 | being built (whatsnew helper) |
 
 ## Defect log
 
@@ -76,7 +75,8 @@ work back then.
 |---|---|---|---|---|---|---|---|
 | 1 | 11-01 | Matt (escape) | Journal on an old save: the same 3 filler lines down the page | Old saves have no play records -> fell to 3 generic lines. The lead approved lines as a list, never the page; the helper only shot a save with records. No standard asked for old-save screens; no test for repeats. | A unique line per stage + banned-filler and no-repeat tests (L3); briefs name the save states to screenshot, and the lead walks old/fresh/finished saves (L2) | Find hints (D2), Dot tips, creature cards, medal text, What's New | next release walk |
 | 2 | 11-01 | Lead (after D1) | Every locked find hint "Crouch beside a fern." | Same as D1: a template copied, never read on the page | Unique hints + duplicate test (L3) | as D1 | next release walk |
-| 3 | 11-01 | Lead | "X of Y" totals count Worlds 9-10, which aren't out (the top medal can't be earned) | Totals were counted from all data, with no single "released" source | One released-worlds source + a test over every total (L3) | Scenes, Creatures, Finds, World Map, What's New | next release walk |
+| 3 | 11-01 | Lead | WITHDRAWN: "totals count Worlds 9-10, which aren't out". Worlds 9-10 ARE live; the totals were right. See D7. | - | - | - | - |
 | 4 | 11-01 | Lead | Sideways: find hint and the journal's numbers row cut off | No automatic overflow check; screenshots only of chosen screens | clipcheck gate (L3, to build) | every menu screen | - |
 | 5 | 11-01 | Lead | Eagle card "Defeated x0" | A field shown for every creature without asking if it applies | Card shows only stats that apply + test (L3) | medal and coat cards | - |
 | 6 | 11-01 | Matt (escape) | 5-M: Meeca invisible, fell through things | A baked canvas copy emptied after a lost canvas; bots don't lose canvases | canvasLost.test, re-bake on restore (L3) | every baked/cached canvas (done game-wide) | Matt: "plays much better" |
+| 7 | 11-01 | Helper (whatsnew), before shipping | The lead briefed two helpers and edited What's New on the belief that Worlds 9-10 weren't released; they are live and playable | The lead acted on memory (the earlier "wait until curated" talk was about the NEW W9/W10 builds) and a guess from a number, without opening the game or the code. Why no check? No standard says "verify a fact in the code before acting on it". | Before a brief or an edit rests on a fact about the game (what is live, what a screen shows, how a rule works), the lead checks it in the code or the running game and names the file in the brief (L2, LEAD-PLAYBOOK) | every brief today | helper caught it; edits reverted |

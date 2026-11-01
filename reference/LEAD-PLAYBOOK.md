@@ -174,3 +174,5 @@ Matt found it on his phone. Rules from now on:
    earn a smile. Rewrite until it does.
 4. **Briefs carry the bar:** every brief that produces player-facing words or looks includes 2-3 example lines/shots at the bar and the
    states the helper must screenshot (old save included). A helper's "polish check" that only shows the happy path is sent back.
+5. **Check the fact before you brief on it** (2026-11-01, defect D7): a brief or edit that rests on a fact about the game (what is live,
+   what a screen shows, how a rule works) names the file or screen where the lead checked it. Memory and summaries are not a source.
