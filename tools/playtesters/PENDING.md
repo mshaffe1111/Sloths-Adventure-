@@ -244,3 +244,11 @@ Earlier read of the same log, kept for the details:
    leak. The slow-phone tip fired at 432 s. She quit at 1074 s: "Too slow this time, made it almost impossible." Not the
    software-drawing problem (her phone has a graphics chip), and the main thread is what's stuck. Either something in that
    replay costs ~300 ms a frame, or the phone throttled hard mid-run. Worth replaying seed 56672 into Short hops on a slow phone.
+
+# Batch sent 2026-11-01 (F, on Matt's ask): 5-M on 0.9.0 (main 19308400), Matt bot + QA state checks
+1. Log "high way" over a pit before every room: possible by state (clean hops land every time; log 4 to ledge 7/7) but four precise
+   hops over a pit with a 10 s climb back on any miss; the bot fell ~15 times. Suggested an exit from the pit near the far wall.
+2. Room 2 gate: no feedback (C11 still). 3. Room 3 knot under the HUD sideways. 4. Room 3 knot hint ~35 s late. 5. Room camera
+   leaves Meeca at the edge, jumps ~300 px. 6. Steering ignored briefly by a web at room 3. 7. Opening card needs 2 taps; pick-up cue.
+- Rig note: `warp 5` puts Meeca inside the pit before room 5 (box x0 - 260 lands in it); move the warp clear before the next run.
+- Not covered: rooms 1, 4, 5 and the ending.

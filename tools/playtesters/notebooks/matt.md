@@ -70,3 +70,16 @@
 - A wall taller than a double jump with Dot saying "This way": the way up is usually back the way you came. Go back up the step you dropped from, then double hop right off it.
 - Sneak stages: the bird or eagle hits you every few seconds in the open. Steer down inside a bush or behind a waterfall, wait 1500, then go. Upright you often can't see the next bush in time.
 - Pictures: blew past 40 again, about 85 this time. Ladder stages and caves are where they go. Budget 5 per play and spend the first one on a sideways look.
+
+## 2026-11-01 (release 0.9.0, Meeca night stage start to finish, upright plus long sideways stretches, session 8)
+- Meeca's opening card can need two taps: tap, wait half a second, tap again.
+- Stairs cut into a slope: one lifted double hop (`flick up-left`, wait 250, `flick up-left`) per step, then a short steer. It doesn't always climb the full step, so check where you are before jumping off the top.
+- Jumping from the top of a slope onto a log above a pit: lifted double hop (`flick up-right`, wait 250, `flick up-right`) then steer 250-400. A running `flickhold up` falls short.
+- Log to log: lifted double hop and a 250 ms steer works most of the time; a single `flick up` while steering sometimes works and sometimes drops you. Pick one recipe and stick to it. A miss costs about 10 seconds climbing back up the stairs, not a life.
+- A wall a bit higher than the log you're on, with a gap before it, beat me every time. Don't sink 20 goes into it: note it and move on.
+- Climbing a vine-wrapped stump: stand on the side you walked in from, step into it (200 ms), lift, `flick up`, `steer up` 4-5 s. Starting from the wrong side often does nothing.
+- Picking things up: you only get "Tap to set it down" the first time. After that, step 100-150 ms and tap, and spend a picture to check whether she's holding it.
+- Throws go a long way and arc high: `flick up` from right under a ledge sends the thing up onto it; `flick right` sends it a whole screen.
+- A puzzle can open with no sign it has. If nothing seems to happen, walk on: you may already be through.
+- Turning sideways: remember to turn back. I stayed sideways for two rooms without noticing. The words don't tell you which way up you are; the picture name (-land/-port) does.
+- Pictures: about 130 this run, far too many. Hopping logs over a pit eats them, because every miss looks the same from the words. Ration hard: one picture after each landing, none in between.
