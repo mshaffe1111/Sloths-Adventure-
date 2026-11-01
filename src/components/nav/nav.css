@@ -1,0 +1,50 @@
+/* ───────── The shared way out (nav/Nav.tsx): a screen's Back at the top-left, a pop-up's painted card with its X ───────── */
+
+/* a screen's Back: the title's round painted token with an arrow, and where it goes on a wooden tag; always the same spot */
+.nv-back { position: absolute; z-index: 30; left: max(10px, env(safe-area-inset-left, 0px)); top: max(10px, env(safe-area-inset-top, 0px));
+  display: flex; align-items: center; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; color: #fff4d8; }
+.nv-back:active { transform: translateY(2px) scale(.97); }
+.nv-back:focus-visible { outline: 3px solid #fff6c8; outline-offset: 3px; border-radius: 14px; }
+.nv-back-tok { position: relative; z-index: 1; flex: none; width: 52px; height: 52px; display: grid; place-items: center;
+  background: url(../../assets/ui/token.webp) center / contain no-repeat; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .45)); }
+.nv-back-tok .ic { filter: drop-shadow(0 1.5px 0 rgba(40, 20, 5, .7)); }
+.nv-back-tag { margin-left: -12px; padding: 7px 14px 6px 20px; font-family: var(--font-fun); font-size: 17px; line-height: 1; white-space: nowrap;
+  text-shadow: 0 2px 0 #3a200c, 1px 0 0 #3a200c, -1px 0 0 #3a200c; border: 3px solid #3a200c; border-left: 0; border-radius: 0 14px 12px 0;
+  background: var(--gx-wood-grain), linear-gradient(180deg, #c99256, #9b6331 52%, #74461f); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .45), 0 3px 0 #24130a, 0 4px 8px rgba(0, 0, 0, .35); }
+
+/* a pop-up: the dimmed screen and the painted card (the title's Settings card), its plaque over the top edge and the X at its corner */
+.nv-scrim { position: fixed; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center; box-sizing: border-box;
+  padding: max(40px, calc(env(safe-area-inset-top, 0px) + 34px)) max(18px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-left, 0px));
+  background: radial-gradient(ellipse at 50% 42%, rgba(10, 24, 14, .52), rgba(4, 10, 6, .8)); color: var(--gx-ink); font-family: var(--font-fun); animation: fx-scrim-in .22s ease both; }
+.nv-scrim.nv-top { z-index: 95; }
+.nv-card { position: relative; width: 100%; max-width: 520px; max-height: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; color: var(--gx-ink);
+  border: 22px solid transparent; border-image: url(../../assets/ui/card.webp) 70 fill / 22px stretch; padding: 26px 6px 6px; filter: drop-shadow(0 16px 30px rgba(0, 0, 0, .5));
+  animation: fx-card-in .42s cubic-bezier(.2, 1.25, .4, 1) both; }
+.nv-card.nv-wide { max-width: 760px; }
+.nv-plaque { position: absolute; left: 50%; top: -48px; transform: translateX(-50%); font-size: 26px; z-index: 2; max-width: calc(100% - 40px); }
+.nv-x { position: absolute; right: -32px; top: -36px; z-index: 3; width: 52px; height: 52px; padding: 0; border: 0; display: grid; place-items: center; cursor: pointer;
+  background: url(../../assets/ui/token.webp) center / contain no-repeat; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .45)); color: #fff4d8; -webkit-tap-highlight-color: transparent; }
+.nv-x .ic { filter: drop-shadow(0 1.5px 0 rgba(40, 20, 5, .7)); }
+.nv-x:active { transform: scale(.94); }
+.nv-x:focus-visible { outline: 3px solid #fff6c8; outline-offset: 2px; border-radius: 50%; }
+.nv-kicker { text-align: center; font: 700 14px var(--font-ui); color: var(--gx-ink-soft); }
+.nv-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 4px; display: flex; flex-direction: column; gap: 12px; scrollbar-color: #a86d38 transparent; }
+.nv-foot { flex: none; display: flex; gap: 10px; }
+.nv-foot > * { flex: 1; }
+
+/* an X that sits in its pop-up's own header row (Save & Load, New Game, How to Play) */
+.nv-x.nv-inline { position: relative; right: auto; top: auto; flex: none; margin-left: auto; }
+
+/* "are you sure?" */
+.nv-confirm { max-width: 400px; text-align: center; }
+.nv-confirm-p { margin: 0; font: 600 17px var(--font-ui); line-height: 1.4; }
+.nv-confirm-stay { flex: none; }
+.nv-confirm-go { width: 82%; margin: 0 auto; }
+
+@media (max-height: 430px) and (orientation: landscape) {
+  .nv-scrim { padding-top: max(12px, env(safe-area-inset-top, 0px)); }
+  .nv-card { padding-top: 34px; gap: 8px; }
+  .nv-plaque { top: -14px; font-size: 22px; }
+  .nv-x { right: -16px; top: -16px; width: 48px; height: 48px; }
+  .nv-back-tok { width: 48px; height: 48px; }
+}

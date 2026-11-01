@@ -1,3 +1,4 @@
+import { CloseX, useBack } from './nav/Nav.tsx';
 import React from 'react';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import { browserStore, buildSave, resetProgress } from '../game/saveFile.ts';
@@ -18,6 +19,8 @@ interface Props {
 }
 
 export const NewGameDialog: React.FC<Props> = ({ onClose, onStarted, onBackup }) => {
+  // the X, a tap outside and Android Back all close it (nav/Nav.tsx)
+  useBack(onClose);
   const current = (() => {
     try {
       return buildSave(browserStore());
@@ -51,9 +54,7 @@ export const NewGameDialog: React.FC<Props> = ({ onClose, onStarted, onBackup })
             <div className="ui-kicker">{hasProgress ? 'Start over' : 'Before you begin'}</div>
             <h2 className="ui-h2">New Game</h2>
           </div>
-          <button type="button" className="ui-x" onClick={onClose} aria-label="Close">
-            <Icon name="cross" size={14} />
-          </button>
+          <CloseX onClose={onClose} className="nv-inline" />
         </div>
         <div className="ui-body">
           {hasProgress && current && (
