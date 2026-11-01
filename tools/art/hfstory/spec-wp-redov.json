@@ -1,0 +1,153 @@
+{
+ "tag": "wpr",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/cfa09fbb9a2d30b2655134da36eac04d608fb88d/tools/art/hfstory/",
+ "items": [
+  {
+   "name": "wp-10-storm-v62",
+   "start": "starts3/w10-storm.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, stormy highlands: a dark spired fortress on a crag far behind, heavy grey-violet storm clouds, slanting rain, wet heather and rocks, a lightning glow in the clouds, dramatic but readable. A broad flat mossy floor across the bottom where characters will stand, kept clear. The landmark sits low in the middle of the picture, just above the floor, with open sky above it. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.66,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-10-storm-v72",
+   "start": "starts3/w10-storm.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, stormy highlands: a dark spired fortress on a crag far behind, heavy grey-violet storm clouds, slanting rain, wet heather and rocks, a lightning glow in the clouds, dramatic but readable. A broad flat mossy floor across the bottom where characters will stand, kept clear. The landmark sits low in the middle of the picture, just above the floor, with open sky above it. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.76,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-9-dusk-v62",
+   "start": "starts3/w9-dusk.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a volcanic jungle at dusk: a smoking volcano behind charred trees, glowing orange lava cracks in dark rock, embers drifting, red-orange sky, warm firelight on dark stone. In the foreground across the whole bottom of the picture, a broad flat ledge of cool dark basalt rock in sharp focus, solid and safe, the lava only far behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. The landmark sits low in the middle of the picture, just above the floor, with open sky above it. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.66,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-9-dusk-v72",
+   "start": "starts3/w9-dusk.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a volcanic jungle at dusk: a smoking volcano behind charred trees, glowing orange lava cracks in dark rock, embers drifting, red-orange sky, warm firelight on dark stone. In the foreground across the whole bottom of the picture, a broad flat ledge of cool dark basalt rock in sharp focus, solid and safe, the lava only far behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. The landmark sits low in the middle of the picture, just above the floor, with open sky above it. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.76,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-9-night-v62",
+   "start": "starts3/w9-night.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a volcanic jungle at night: a sheltered hollow of warm dark rock, a dull red glow from far lava, embers in the air, dark trees, a deep night sky with a few stars. In the foreground across the whole bottom of the picture, a broad flat ledge of cool dark basalt rock in sharp focus, solid and safe, the lava only far behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. The landmark sits low in the middle of the picture, just above the floor, with open sky above it. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.66,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-9-night-v72",
+   "start": "starts3/w9-night.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a volcanic jungle at night: a sheltered hollow of warm dark rock, a dull red glow from far lava, embers in the air, dark trees, a deep night sky with a few stars. In the foreground across the whole bottom of the picture, a broad flat ledge of cool dark basalt rock in sharp focus, solid and safe, the lava only far behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. The landmark sits low in the middle of the picture, just above the floor, with open sky above it. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.76,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-5-dusk-v62",
+   "start": "starts3/w5-dusk.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, an orchid sanctuary at amber dusk: giant orchids glowing in low golden light, huge leaves in silhouette, warm haze of pollen sparkles, long soft shadows. A broad flat mossy floor across the bottom where characters will stand, kept clear. The landmark sits low in the middle of the picture, just above the floor, with open sky above it. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.66,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-5-dusk-v72",
+   "start": "starts3/w5-dusk.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, an orchid sanctuary at amber dusk: giant orchids glowing in low golden light, huge leaves in silhouette, warm haze of pollen sparkles, long soft shadows. A broad flat mossy floor across the bottom where characters will stand, kept clear. The landmark sits low in the middle of the picture, just above the floor, with open sky above it. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.76,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/cfa09fbb9a2d30b2655134da36eac04d608fb88d/",
+ "keep": [
+  "wp-10-storm-v62",
+  "wp-10-storm-v72",
+  "wp-9-dusk-v62",
+  "wp-9-dusk-v72",
+  "wp-9-night-v62",
+  "wp-9-night-v72",
+  "wp-5-dusk-v62",
+  "wp-5-dusk-v72"
+ ],
+ "note": "round 5: starts3 (the scene pushed into the lower 70% so sideways phones see the landmark)"
+}

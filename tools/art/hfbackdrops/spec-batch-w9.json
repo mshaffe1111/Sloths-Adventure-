@@ -1,0 +1,158 @@
+{
+ "tag": "hfbd-w9",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "sky, clouds, fog, haze, gradient background, scenery behind, horizon, perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, people, animals, sloth, magenta objects, pink plants",
+ "items": [
+  {
+   "name": "w9dawn-mid-s60-7",
+   "start": "start-w9dawn-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, a scorched volcanic valley: black basalt columns, charred trees with young green shoots, cooled lava rocks, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, pink-grey ash dawn light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w9dawn-mid-s60-23",
+   "start": "start-w9dawn-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, a scorched volcanic valley: black basalt columns, charred trees with young green shoots, cooled lava rocks, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, pink-grey ash dawn light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w9dawn-mid-s66-7",
+   "start": "start-w9dawn-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, a scorched volcanic valley: black basalt columns, charred trees with young green shoots, cooled lava rocks, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, pink-grey ash dawn light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w9dawn-mid-s66-23",
+   "start": "start-w9dawn-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, a scorched volcanic valley: black basalt columns, charred trees with young green shoots, cooled lava rocks, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, pink-grey ash dawn light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w9dawn-near-s60-7",
+   "start": "start-w9dawn-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of black lava rock, ash, small green shoots and red flowers along the bottom of the picture, uneven top edge, pink-grey ash dawn light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w9dawn-near-s60-23",
+   "start": "start-w9dawn-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of black lava rock, ash, small green shoots and red flowers along the bottom of the picture, uneven top edge, pink-grey ash dawn light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w9dawn-near-s66-7",
+   "start": "start-w9dawn-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of black lava rock, ash, small green shoots and red flowers along the bottom of the picture, uneven top edge, pink-grey ash dawn light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w9dawn-near-s66-23",
+   "start": "start-w9dawn-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of black lava rock, ash, small green shoots and red flowers along the bottom of the picture, uneven top edge, pink-grey ash dawn light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w9night-mid-s60-7",
+   "start": "start-w9night-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, a volcanic valley at night: black basalt columns and rock spires, charred trees, glowing lava cracks in the rocks, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, red-orange lava glow from below, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w9night-mid-s60-23",
+   "start": "start-w9night-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, a volcanic valley at night: black basalt columns and rock spires, charred trees, glowing lava cracks in the rocks, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, red-orange lava glow from below, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w9night-mid-s66-7",
+   "start": "start-w9night-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, a volcanic valley at night: black basalt columns and rock spires, charred trees, glowing lava cracks in the rocks, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, red-orange lava glow from below, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w9night-mid-s66-23",
+   "start": "start-w9night-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, a volcanic valley at night: black basalt columns and rock spires, charred trees, glowing lava cracks in the rocks, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, red-orange lava glow from below, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w9night-near-s60-7",
+   "start": "start-w9night-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of black rocks with glowing orange lava cracks, embers along the bottom of the picture, uneven top edge, red-orange lava glow from below, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w9night-near-s60-23",
+   "start": "start-w9night-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of black rocks with glowing orange lava cracks, embers along the bottom of the picture, uneven top edge, red-orange lava glow from below, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w9night-near-s66-7",
+   "start": "start-w9night-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of black rocks with glowing orange lava cracks, embers along the bottom of the picture, uneven top edge, red-orange lava glow from below, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w9night-near-s66-23",
+   "start": "start-w9night-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of black rocks with glowing orange lava cracks, embers along the bottom of the picture, uneven top edge, red-orange lava glow from below, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  }
+ ],
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/319d75e67b7b3947e4199f3a9daacfe9c53644a9/reference/prop-sheets/qa-notes/hf-backdrops/starts/"
+}

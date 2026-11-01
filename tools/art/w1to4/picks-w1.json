@@ -1,0 +1,64 @@
+{
+ "w1-props": {
+  "acorn-slope": "w1-props-s62-5",
+  "vine-rope": "w1-props-s62-5",
+  "log-hide": "w1-props-s62-5",
+  "root-gate-shut": "w1-props-s62-5",
+  "root-gate-open": "w1-props-s62-5"
+ },
+ "extra": [
+  [
+   "hollowlog-moss",
+   "reference/prop-sheets/w1-props-1-puzzle-and-secrets.jpg",
+   [
+    74,
+    509,
+    219,
+    106
+   ]
+  ],
+  [
+   "hollowlog-plain",
+   "reference/prop-sheets/w1-props-1-puzzle-and-secrets.jpg",
+   [
+    406,
+    523,
+    213,
+    92
+   ]
+  ],
+  [
+   "log-moss-shut",
+   "reference/prop-sheets/w1-props-1-puzzle-and-secrets.jpg",
+   [
+    740,
+    521,
+    208,
+    94
+   ]
+  ]
+ ],
+ "single": [
+  [
+   "squirrel-sit",
+   "sq-sit-2p"
+  ],
+  [
+   "squirrel-wave",
+   "sq-wave-2p"
+  ],
+  [
+   "squirrel-haul",
+   "sq-haul-2p"
+  ],
+  [
+   "squirrel-tip",
+   "sq-tip-2p"
+  ],
+  [
+   "squirrel-run",
+   "sq-run-2p"
+  ]
+ ],
+ "w1-knots3": "w1-knots3-s70-5"
+}

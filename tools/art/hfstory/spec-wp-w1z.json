@@ -1,0 +1,50 @@
+{
+ "tag": "wpz",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dcb58b94db79d9dd03f76567be58c30b741ced0c/tools/art/hfstory/",
+ "items": [
+  {
+   "name": "wp-1-day-z64-5",
+   "start": "starts2/w1-day.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a lush emerald rainforest canopy in clear bright morning light: great mossy old trees framing both sides, hanging lianas, big ferns, pink petals on the moss. In the middle of the picture a wide open gap between the trees with a deep bright view far away to sunlit misty green jungle hills and a pale blue sky, light pouring through. A broad flat mossy floor across the bottom where characters will stand, kept clear and lit. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, dark, gloomy",
+   "strength": 0.64,
+   "seed": 5,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-1-day-z64-17",
+   "start": "starts2/w1-day.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a lush emerald rainforest canopy in clear bright morning light: great mossy old trees framing both sides, hanging lianas, big ferns, pink petals on the moss. In the middle of the picture a wide open gap between the trees with a deep bright view far away to sunlit misty green jungle hills and a pale blue sky, light pouring through. A broad flat mossy floor across the bottom where characters will stand, kept clear and lit. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, dark, gloomy",
+   "strength": 0.64,
+   "seed": 17,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dcb58b94db79d9dd03f76567be58c30b741ced0c/tools/art/hfstory/",
+ "keep": [
+  "wp-1-day-z64-5",
+  "wp-1-day-z64-17"
+ ]
+}

@@ -23,8 +23,8 @@ import type { KitArtName } from './puzzleAtlasData.ts';
 import type { W3Decor } from './w3Art.ts';
 import type { Collectible, Platform } from './types.ts';
 import type { RoomSpec } from './puzzleKit.ts';
-import { dressSize, type DressPiece } from './dressArt.ts';
-import type { DressName } from './dressAtlasData.ts';
+import { dressSize, type AnyDress as DressName, type DressPiece } from './dressArt.ts';
+import { DRESS_NEW_LOOKS } from './dressNewLooks.ts';
 
 export interface DressInput {
   world: number;
@@ -177,7 +177,7 @@ function bridges(d: DressInput, out: KitDecor[], inRoom: (x: number, pad: number
  *   clutter  small things lying along the long floors
  * Pictures only, like the rest of this file: never a platform or a pickup, and no draw from the stage's own random stream.
  */
-export const DRESS_SETS: Record<1 | 2 | 5 | 8 | 9 | 10, Record<'bank' | 'hang' | 'clutter', DressName[][]>> = {
+const FIRST_SETS: Partial<Record<DressWorld, Record<'bank' | 'hang' | 'clutter', DressName[][]>>> = {
   1: {
     bank: [['w1Fern', 'w1Mushroom', 'w1Pebble'], ['w1Stump', 'w1Acorns', 'w1Sprig']],
     hang: [['w1Hang1', 'w1Hang2'], ['w1Hang2', 'w1Hang1']],
@@ -211,12 +211,26 @@ export const DRESS_SETS: Record<1 | 2 | 5 | 8 | 9 | 10, Record<'bank' | 'hang' |
     clutter: [['w10Crates', 'w10Banner', 'w10Crate'], ['w10Cage', 'w10Brazier', 'w10Rack']],
   },
 };
-/** the worlds dressed this way */
-export const DRESS_WORLDS = [1, 2, 5, 8, 9, 10] as const;
+/**
+ * hf-props (2026-10-31; reference/prop-sheets/qa-notes/hf-props/AUDIT.md: "one 3-piece set per job, so 2-3 pieces repeat bank after
+ * bank"): Worlds 1-7 each get three new looks per job from their own new sheet (dressNewData.ts DRESS_NEW_LOOKS), added after the first
+ * sheet's looks; Worlds 3, 4, 6 and 7 are dressed this way for the first time.
+ */
+export const DRESS_SETS = Object.fromEntries(
+  Array.from({ length: 10 }, (_, i) => i + 1).map((w) => {
+    const a = FIRST_SETS[w as DressWorld];
+    const b = DRESS_NEW_LOOKS[w] ?? {};
+    const job = (j: 'bank' | 'hang' | 'clutter'): DressName[][] => [...(a?.[j] ?? []), ...(b[j] ?? [])];
+    return [w, { bank: job('bank'), hang: job('hang'), clutter: job('clutter') }];
+  }),
+) as Record<DressWorld, Record<'bank' | 'hang' | 'clutter', DressName[][]>>;
+/** the worlds dressed this way (Worlds 3, 4, 6 and 7 from hf-props, 2026-10-31: their new sheets only) */
+export const DRESS_WORLDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
+export type DressWorld = (typeof DRESS_WORLDS)[number];
 
 /** the dressing sets laid in a stage of World 1, 2 or 5 (empty for any other world) */
 export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }[] }): DressPiece[] {
-  const sets = DRESS_SETS[d.world as 1 | 2 | 5 | 8 | 9 | 10];
+  const sets = DRESS_SETS[d.world as DressWorld];
   if (!sets) return [];
   const out: DressPiece[] = [];
   const boxes: Box[] = d.rooms.map((r) => roomBox(r, d.platforms));
@@ -228,7 +242,18 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
     const { w, h } = dressSize(n);
     return !d.platforms.some((q) => q !== on && q.x < x + w / 2 + 12 && q.x + q.width > x - w / 2 - 12 && q.y < b - 4 && q.y + q.height > b - h - 12);
   };
-  const pick = (job: 'bank' | 'hang' | 'clutter', salt: number) => rollLook(sets[job], d.stage, d.seed, salt + d.world * 11);
+  const pick = (job: 'bank' | 'hang' | 'clutter', salt: number): DressName[] => (sets[job].length ? rollLook(sets[job], d.stage, d.seed, salt + d.world * 11) : []);
+  // (hf-props, 2026-10-31: one look per job for a whole stage put the same three pieces at every bank, AUDIT.md. The roll picks the
+  // stage's first look; each set after it takes the next of the world's looks (all of them in Worlds 1-7; Worlds 8-10 keep one look a stage), so neighbouring banks differ
+  // and the next stage, starting elsewhere, still looks different)
+  const cycle = (job: 'bank' | 'hang' | 'clutter', salt: number) => {
+    const all = sets[job];
+    const first = pick(job, salt);
+    const i0 = Math.max(0, all.indexOf(first));
+    // (Worlds 8-10 keep one look a stage, as before: their own helpers own their dressing)
+    const run = d.world <= 7 ? Array.from({ length: all.length }, (_, k) => all[(i0 + k) % all.length]) : [first];
+    return (k: number): DressName[] => run[k % run.length] ?? [];
+  };
   // (each set laid in a turned order, so the same three in the same order do not come round bank after bank)
   const turn = (set: DressName[], k: number) => {
     const i = Math.floor(lookHash(d.seed + k, 41) * set.length);
@@ -237,22 +262,39 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
   const banks = d.platforms.filter((p) => p.type === 'solid' && p.height >= 90 && !p.art && !p.push).sort((a, b) => a.x - b.x);
   const touches = (p: Platform, right: boolean) =>
     banks.some((q) => q !== p && q.y <= p.y + 2 && (right ? Math.abs(p.x + p.width - q.x) < 2 : Math.abs(q.x + q.width - p.x) < 2));
+  // (hf-props, 2026-10-31: Worlds 1-7 are dressed denser, AUDIT.md "the ground at Pokey's feet is mostly bare": sets closer together,
+  // on narrower banks and shorter floors, more of them, and a set of two where a third does not fit; Worlds 8-10 as they were)
+  const dense = d.world <= 7;
+  const K = dense
+    ? { bankW: 180, cap: 42, edgeGap: 420, setGap: 360, floorW: 300, off: 140, endPad: 180, step: 520, clutCap: 16, back: 300, ahead: 460 }
+    : { bankW: 240, cap: 18, edgeGap: 700, setGap: 600, floorW: 420, off: 200, endPad: 260, step: 820, clutCap: 8, back: 440, ahead: 700 };
+  // (and no piece over-used in one stage: a creature, which the eye picks out, at most 3 times; anything else at most 8)
+  const used = new Map<string, number>();
+  const CREATURE = /Macaw|Heron|Toucan|Lizard|Mudskipper|Frog|Crab|Fiddler|Kingfisher|Salamander|Snail|Morpho|Caterpillar/;
+  const over = (n: string) => dense && (used.get(n) ?? 0) >= (CREATURE.test(n) ? 3 : 8);
+  const count = (laid: DressPiece[]) => {
+    for (const q of laid) used.set(q.n, (used.get(q.n) ?? 0) + 1);
+  };
+  const enough = (laid: unknown[], set: unknown[]) => laid.length > 0 && (laid.length === set.length || (dense && laid.length >= 2));
   // bank: a set of three along the lip by each end that drops away, laid inward from the edge
-  const bankSet = pick('bank', 51);
+  const bankAt = cycle('bank', 51);
+  let bankK = 0;
   let lastBank = -Infinity;
   let lastSet = -Infinity;
   for (const p of banks) {
-    if (p.width < 240) continue;
+    if (p.width < K.bankW) continue;
     for (const right of [false, true]) {
-      if (touches(p, right) || out.length >= 18) continue;
+      if (touches(p, right) || out.length >= K.cap) continue;
       const edge = right ? p.x + p.width : p.x;
-      if (Math.abs(edge - lastBank) < 700) continue;
+      if (Math.abs(edge - lastBank) < K.edgeGap) continue;
       // (none at the stage's start, where he stands as it opens: a set there piled up round him, W8-10's first screens)
       if (edge < 300) continue;
       const dir = right ? -1 : 1;
       let at = edge + dir * 34;
       const laid: DressPiece[] = [];
+      const bankSet = bankAt(bankK);
       for (const n of turn(bankSet, out.length + Math.round(edge))) {
+        if (over(n)) continue;
         const w = dressSize(n).w;
         const x = at + (dir * w) / 2;
         if (!clear(x, w) || !free(n, x, p.y + 5, p)) break;
@@ -262,15 +304,18 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
       // (and 600 or more clear of the last set: sets laid inward from two edges facing each other met in the middle, the same piece
       // twice side by side)
       const near = Math.min(...laid.map((q) => q.x));
-      if (laid.length === bankSet.length && near - lastSet >= 600) {
+      if (enough(laid, bankSet) && near - lastSet >= K.setGap) {
         out.push(...laid);
+        count(laid);
+        bankK++;
         lastBank = edge;
         lastSet = Math.max(...laid.map((q) => q.x));
       }
     }
   }
   // hang: under a thin ledge with clear air below it (the nearest ground at least 230 units down)
-  const hangSet = pick('hang', 53);
+  const hangAt = cycle('hang', 53);
+  const hangSet = [...new Set([0, 1, 2].flatMap((k) => hangAt(k)))];
   let lastHang = -Infinity;
   let hangs = 0;
   const ledges = d.platforms
@@ -297,24 +342,27 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
     hangs++;
   }
   // clutter: a small set lying along each long floor, every 820 or so, away from its ends and the bank sets
-  const clutSet = pick('clutter', 57);
+  const clutAt = cycle('clutter', 57);
   const bankXs = out.map((q) => q.x);
   let sets3 = 0;
   for (const p of banks) {
-    if (p.width < 420) continue;
-    for (let x = p.x + 200 + lookHash(d.seed + Math.round(p.x), 29) * 200; x < p.x + p.width - 260 && sets3 < 8; x += 820) {
-      if (bankXs.some((bx) => bx > x - 440 && bx < x + 700)) continue;
+    if (p.width < K.floorW) continue;
+    for (let x = p.x + K.off + lookHash(d.seed + Math.round(p.x), 29) * 200; x < p.x + p.width - K.endPad && sets3 < K.clutCap; x += K.step) {
+      if (bankXs.some((bx) => bx > x - K.back && bx < x + K.ahead)) continue;
       let at = x;
       const laid: DressPiece[] = [];
+      const clutSet = clutAt(sets3);
       for (const n of turn(clutSet, sets3 + Math.round(x))) {
+        if (over(n)) continue;
         const w = dressSize(n).w;
         const cx = at + w / 2;
         if (!clear(cx, w) || !free(n, cx, p.y + 6, p)) break;
         laid.push({ n, x: cx, b: p.y + 6, flip: lookHash(d.seed + Math.round(cx), 31) < 0.5 });
         at += w + 26 + lookHash(d.seed + Math.round(cx), 37) * 40;
       }
-      if (laid.length === clutSet.length) {
+      if (enough(laid, clutSet)) {
         out.push(...laid);
+        count(laid);
         sets3++;
       }
     }

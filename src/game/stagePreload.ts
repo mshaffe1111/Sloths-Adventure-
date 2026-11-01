@@ -15,6 +15,8 @@ import { w810FaceReady } from './w810FaceArt.ts';
 import { FACE810_URL } from './w810FaceData.ts';
 import { w8FungusReady } from './w8FungusArt.ts';
 import { W8_FUNGUS_URL } from './w8FungusData.ts';
+import { loadW8Decor } from './w8DecorArt.ts';
+import { W8B_URL, W8C_A_URL, W8C_B_URL, W8GLOW_URL, W8VAR_URL } from './w8DecorData.ts';
 import { W7_PUZZLE_URLS, w7PuzzleReady } from './w7PuzzleArt.ts';
 import { SENTRY_URLS, sentryReady } from './sentrySprite.ts';
 import { W7_CHAIRS_URL, w7ChairsReady } from './w7ChairsArt.ts';
@@ -63,7 +65,7 @@ import { BOSS_FX_URL, warmBossFx } from './bossFx.ts';
 import { BOSS_ATK_URL, bossAtkReady } from './bossAtk.ts';
 import { perfNote } from './perfLog.ts';
 import { groundUrl, hasGround, warmGround } from './groundPaint.ts';
-import { DRESS_URL, dressReady } from './dressArt.ts';
+import { DRESS_URL, dressNewReady, dressNewUrl, dressReady } from './dressArt.ts';
 import { gateArtReady, gateUrl, pitWaterReady, pitWaterUrl, STAGE_ART_URL, stageArtReady } from './stageArt.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -104,12 +106,22 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'dress') {
       dressReady();
       urls.push(DRESS_URL);
+    } else if (k.startsWith('dress:')) {
+      const w = Number(k.slice(6));
+      const url = dressNewUrl(w);
+      if (url) {
+        dressNewReady(w);
+        urls.push(url);
+      }
     } else if (k === 'faces810') {
       w810FaceReady();
       urls.push(FACE810_URL);
     } else if (k === 'w8-fungus') {
       w8FungusReady();
       urls.push(W8_FUNGUS_URL);
+    } else if (k === 'w8-decor') {
+      loadW8Decor();
+      urls.push(W8B_URL, W8C_A_URL, W8C_B_URL, W8VAR_URL, W8GLOW_URL);
     } else if (k === 'water-signs') {
       warmWaterSigns();
       urls.push(WATER_SIGN_URL);

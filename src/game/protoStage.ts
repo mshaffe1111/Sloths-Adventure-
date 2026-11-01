@@ -367,8 +367,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
  */
 export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { rooms: RoomSpec[] } }, seed: number) {
   const c = st.config;
-  if (!DRESS_WORLDS.includes(c.worldIndex as 1 | 2 | 5 | 8 | 9 | 10) || c.objectiveType === 'boss_lair') return;
-  if (!st.proto && c.worldIndex < 8) return;
+  if (!DRESS_WORLDS.includes(c.worldIndex as (typeof DRESS_WORLDS)[number]) || c.objectiveType === 'boss_lair') return;
+  // (Worlds 1-7's old-generator stages, 5-6, 5-8, 7-2, 7-8: dressed too since hf-props, 2026-10-31; theirs go on the stage's own `dress`)
+  if (!st.proto && c.worldIndex < 8 && c.secret) return;
   const ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
   if (!ds.length) return;
   if (st.proto) st.proto.dress = ds;

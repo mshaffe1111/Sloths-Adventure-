@@ -5,6 +5,7 @@ import { holdStep, LETGO, thunderShake, type HoldPhase } from './storyHold.ts';
 import { noticed } from '../game/storyNotice.ts';
 import { loadFinds } from '../game/finds.ts';
 import { loadBadgeStore } from '../game/badgeStore.ts';
+import { withWorldPlate } from '../game/plateData.ts';
 import { drawStoryScene, preloadSceneCards, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H, warmStoryCast } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
@@ -99,7 +100,9 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   useEffect(() => {
     const ahead = panels.slice(idx, idx + 3);
     preloadScenePhotos(ahead.map((p) => p.scene.photo?.key));
-    preloadScenePlates(ahead.slice(1).map((p) => p.scene.plate));
+    // (and the world plates they will stand in on this screen's shape)
+    const side = typeof window !== 'undefined' && window.innerWidth / Math.max(1, window.innerHeight) >= 1.3;
+    preloadScenePlates(ahead.slice(1).map((p) => withWorldPlate(p.scene, side).plate));
     preloadSceneCards(ahead.slice(1).map((p) => p.scene.card));
   }, [panels, idx]);
   // the cast's paintings load as the story opens, and a closed story lets its pictures go
@@ -303,7 +306,10 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   // (the picture through the direction's camera, unless the scene moves its own)
   // (upright the picture is the whole screen: a little closer in, so the cast fills it rather than the canopy above them)
   const directed = useMemo(() => {
-    const s = dir.camera ? { ...panel.scene, camera: dir.camera } : panel.scene;
+    // (a panel on a world's scenery stands in that world's painted plate when there is one, sideways only where the plate allows it:
+    // plateData.ts withWorldPlate)
+    const base = withWorldPlate(panel.scene, wide);
+    const s = dir.camera ? { ...base, camera: dir.camera } : base;
     if (wide) return s;
     // (only a wide shot is brought in, and no further than UPRIGHT_ZOOM_MAX: a shot already close, brought in again, cut the one not
     // speaking down to a sliver at the screen's edge)

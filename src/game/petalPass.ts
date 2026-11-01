@@ -28,7 +28,8 @@ export function unreachablePickups(stage: GeneratedStage): Set<number> {
  * collects every pickup the check does not reach for certain (none forgiven along a swing): the test a new petal has to pass.
  */
 function judgeReach(stage: GeneratedStage, raw?: Set<number>): Set<number> | null {
-  let errors = validateStage(stage).errors;
+  // (the reach only: the rooms are walked solved, never each solved again, levelCheck CheckOptions.rooms)
+  let errors = validateStage(stage, { rooms: false }).errors;
   let spans: Array<[number, number]> = [];
   if (!reachesExit(errors)) {
     const xs = stage.vines.filter(isLiana).map((v) => v.x).sort((a, b) => a - b);
@@ -40,7 +41,7 @@ function judgeReach(stage: GeneratedStage, raw?: Set<number>): Set<number> | nul
     const floor = stage.spawnY ?? 580;
     const bridges = spans.map((sp, i) => ({ id: 90000 + i, x: sp[0] - 260, y: floor, width: sp[1] - sp[0] + 520, height: 20, type: 'solid' as const }));
     if (bridges.length) {
-      const bridged = validateStage({ ...stage, platforms: [...stage.platforms, ...bridges] } as GeneratedStage).errors;
+      const bridged = validateStage({ ...stage, platforms: [...stage.platforms, ...bridges] } as GeneratedStage, { rooms: false }).errors;
       if (reachesExit(bridged) || !raw) errors = bridged;
     }
     if (!reachesExit(errors)) {
@@ -90,7 +91,7 @@ export function petalPass<T extends GeneratedStage>(stage: T, out?: PetalOut): T
       const bad = new Set(badPickups({ platforms: stage.platforms, vines: stage.vines, ropes: stage.ropes, waterY: stage.waterY, glide }, added));
       // (and none only a silk line reaches: a ledge up a silk line is that line's own reward, its cocoons; World 5)
       if (stage.vines.some((v) => v.silk)) {
-        for (const e of validateStage({ ...stage, vines: stage.vines.filter((v) => !v.silk) }).errors) {
+        for (const e of validateStage({ ...stage, vines: stage.vines.filter((v) => !v.silk) }, { rooms: false }).errors) {
           const m = e.match(OUT_OF_REACH);
           if (m) bad.add(added.find((c) => c.id === Number(m[1]))!);
         }

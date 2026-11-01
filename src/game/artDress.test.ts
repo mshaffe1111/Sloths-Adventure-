@@ -8,7 +8,11 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { buildProtoStage, HAND_STAGES, type StagePlan } from './protoStage.ts';
 import { DRESS_SETS, dressStage, RIDDLE_FERNS } from './artDress.ts';
-import { DRESS_FRAMES, type DressName } from './dressAtlasData.ts';
+import { DRESS_FRAMES as FIRST_FRAMES } from './dressAtlasData.ts';
+import { DRESS_NEW_FRAMES } from './dressNewData.ts';
+import type { AnyDress as DressName } from './dressArt.ts';
+// (both sheets: the first, and hf-props' new one per world)
+const DRESS_FRAMES: Record<string, unknown> = { ...FIRST_FRAMES, ...DRESS_NEW_FRAMES };
 import { KIT_ART } from './puzzleAtlasData.ts';
 import { generateAllLevels } from './worldsData.ts';
 import type { LevelConfig } from './types.ts';
@@ -99,11 +103,11 @@ test("World 1's rooms: the squirrels' nest door on 1-4's lifts, the branch gate 
 });
 
 // (hf-art-ground, 2026-10-29; polish report VI-17) Worlds 1, 2 and 5's dressing sets
-test('the dressing sheet for Worlds 1, 2 and 5: every piece is in a set, every set piece is on the sheet', () => {
+test('the dressing sheets: every piece is in a set, every set piece is on the sheet', () => {
   const used = new Set(Object.values(DRESS_SETS).flatMap((jobs) => Object.values(jobs).flat(2)));
   for (const n of Object.keys(DRESS_FRAMES)) assert.ok(used.has(n as DressName), `${n} is packed but in no set`);
   for (const n of used) assert.ok(DRESS_FRAMES[n], `${n} is in a set but not on the sheet`);
-  for (const [w, jobs] of Object.entries(DRESS_SETS)) for (const [job, sets] of Object.entries(jobs)) assert.ok(sets.length >= 2, `World ${w} ${job}: two sets or more`);
+  for (const [w, jobs] of Object.entries(DRESS_SETS)) for (const [job, sets] of Object.entries(jobs)) if (sets.length || job !== 'hang') assert.ok(sets.length >= 2, `World ${w} ${job}: two sets or more`);
 });
 
 test('Worlds 1 and 5: their stages wear dressing sets, two stages in a row never the same bank set, and only pictures are added', () => {
@@ -116,7 +120,9 @@ test('Worlds 1 and 5: their stages wear dressing sets, two stages in a row never
       const plain = buildProtoStage(cfg(id), 1, HAND_STAGES[id]);
       assert.deepEqual(plain.platforms, st.platforms, `${id}: platforms unchanged`);
       for (const d of ds) assert.ok(DRESS_FRAMES[d.n], `${id}: ${d.n}`);
-      return ds.filter((d) => /Bank|Fern$|Stump|Reed|Log/.test(d.n)).map((d) => d.n).sort().join();
+      // (the stage's first bank set: within a stage the looks now take turns, hf-props 2026-10-31, so two stages differ by where they start)
+      const bank = new Set(DRESS_SETS[+id[0] as 1 | 5].bank.flat());
+      return ds.filter((d) => bank.has(d.n)).slice(0, 3).map((d) => d.n).sort().join();
     });
     assert.notEqual(looks[0], looks[1], `${ids.join(' and ')} wear different bank sets`);
   }

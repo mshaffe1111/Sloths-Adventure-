@@ -1,0 +1,25 @@
+World 1-4 kit batches (2026-10-31, branch w1-4-sheets; lead's go ~1:45 PM ET, cap $10 of $30). Each job: hfdrake/storygpu.py (unchanged)
+fetched with its spec from GitHub raw at 8edfc6b3, Qwen-Image img2img + the style model (0.8), one canvas per world kit, 2 strengths x
+2 seeds. Results in the bucket mshaffe111/w5-xfer under w1to4/w<N>r1/out/ (PNGs, sheet-*.jpg, carrier-*.png). rtx-pro-6000 ~$2.75/h.
+w1to4-w1r1  6ae628e60e0338d1bb7d37f6  17:44Z  8 takes (w1-props, w1-squirrels)
+w1to4-w2r1  6ae62906c78863f9c62f3a65  17:44Z  12 takes (w2-props, w2-net on green, w2-water on black)
+w1to4-w3r1  6ae6290a0e0338d1bb7d3801  17:44Z  12 takes (w3-props, w3-bats, w3-fx on black)
+w1to4-w4r1  6ae6290cc78863f9c62f3a67  17:44Z  8 takes (w4-props, w4-fx on black)
+results r1: each ~4-6 min incl. model download (~$0.2-0.3 each, ~$1.0 for the four). Picks: tools/art/w1to4/picks-w<N>.json.
+  W1 KEPT acorn slope, vine rope, log hide, root gate shut/open (s62-5); squirrels s80-5 kept for now but OFF MODEL against the
+  story squirrels (story18-squirrels.webp) -> redone in r2 as edits of the story squirrel. THROWN: boughs and stumps (softer than
+  Matt's own branch/stump, which are used instead), knots (flat half domes).
+  W2 KEPT stones, reed islands, sandbar, mooring post (s74-5), barrels (s74-17), crates (s74-5), round cage (s74-17), net (green,
+  s74-17: the rose cords kept), foam (s55-5). THROWN: sinking lily frames (violet ripples; code sinks the existing pad), reed gate
+  (pink tint, magenta) -> r2 on green.
+  W3 KEPT stones, shelves, glowing-crack shelf (s74-17), shards (s74-5), stalactite, root basket, counterweight, spores (s70-17).
+  THROWN: bats (sloth faces) -> r2 as edits of W8's fruit bat; the "gone" shelf (bricks).
+  W4 KEPT knot, peg, slung log, rope anchor, cracked slate ledges, updrafts. THROWN: veils (lavender: water on magenta) and mist
+  (blotchy) -> r2 on black; the Sovereign shadow (a dark shadow can't be cut off black) -> r2 on white.
+w1to4-r2    6ae62bdd0e0338d1bb7d386b  17:56Z  48 takes: squirrel edits x5 poses x2 seeds + 0.32 style pass, bat edits x4 x2, knots,
+  reed gate (green), veil, mist (black), Sovereign shadow (white). Spec spec-w1to4-2.json at 179710d4.
+results r2: 17:57Z-18:18Z (~22 min, ~$1.0). KEPT squirrels sq-*-2p (on the story model), bats asleep-2/stir-2/flap1-6/flap2-2 (on W8's fruit
+  bat), knots s74-5 (weakest piece, named), reed gate s74-5 (green), veil s50-17, mist s60-5, shadow s50-5. Spend so far ~$2.0 of $10.
+w1to4-r3    6ae63378c78863f9c62f3dbf  18:29Z-~18:34Z (~5 min, ~$0.25)  12 takes: W1 bark knot-steps, W3 spore burst (lead's round 3, cap $1.50).
+  KEPT w1-knots3-s70-5 (gnarled burls), w3-burst-s50-23 (soft lobes, glowing core). Cutter-only fixes: W2 reed gate green cast, W4 updrafts
+  x2.2 alpha, soft-effect edges un-premultiplied from smoothed colour. TOTAL SPEND ~$2.25 of $10.

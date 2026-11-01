@@ -1,0 +1,19 @@
+{
+ "w4-props": {
+  "knot": "w4-props-s74-5",
+  "peg": "w4-props-s74-5",
+  "slung-log": "w4-props-s74-17",
+  "rope-anchor": "w4-props-s74-17",
+  "ledge-whole": "w4-props-s62-5",
+  "ledge-cracking": "w4-props-s62-5",
+  "ledge-gone": "w4-props-s62-5"
+ },
+ "w4-fx": {
+  "updraft-1": "w4-fx-s70-5",
+  "updraft-2": "w4-fx-s70-5",
+  "updraft-3": "w4-fx-s70-5"
+ },
+ "w4-veil": "w4-veil-s50-17",
+ "w4-mist": "w4-mist-s60-5",
+ "w4-shadow": "w4-shadow-s50-5"
+}

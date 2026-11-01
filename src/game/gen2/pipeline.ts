@@ -23,7 +23,8 @@ import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire 
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
-import type { Collectible, Enemy, LevelConfig, Platform, Vine } from '../types.ts';
+import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
+import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import {
@@ -354,6 +355,8 @@ interface LocalPiece {
   crumble?: boolean;
   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
   hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
+  /** a ledge a rope crosses to (place `rope`): the piece the rope hangs from */
+  ropeFrom?: string;
 }
 interface LocalGap {
   x0: number;
@@ -496,6 +499,14 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
       const back = glide && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
       gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
+    } else if (pl.kind === 'rope') {
+      // a ledge past a gap no jump or glide clears, a shimmy rope across (rope.ts; the rope itself is hung once both are placed: layStage)
+      // (its gap is a liana's, `back` (World 8, 2026-10-31): a soft pit climbing back to `after`, or World 8 Normal's heart fall)
+      const a = ref(pl.after);
+      const gap = Math.max(ROPE_MIN_GAP + 90, roll(rng, pl.gap));
+      x = a.x + a.w + gap;
+      y = a.y;
+      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, pit: true, back: { lips: [a.y, y] }, ...(pl.soft ? { soft: true } : {}) });
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -578,7 +589,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -629,6 +640,8 @@ export interface Laid {
   exit: { x: number; y: number; piece: Platform };
   /** the lianas and climbing vines the sections hang */
   vines: Vine[];
+  /** the shimmy ropes (place `rope`) */
+  ropes: Rope[];
   width: number;
   bottom: number;
   nextId: number;
@@ -717,18 +730,30 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   };
   const gaps: Laid['gaps'] = [];
   const vines: Vine[] = [];
+  const ropes: Rope[] = [];
   const zones: Zone[] = [];
   const heartFalls: Laid['heartFalls'] = [];
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
     const hop = riseLimit(false, budget.riseShare) * PIT.hop;
+    // (the banks either side of the pit reach down past its floor: a glide's back pit climbs in steps and on low ground its floor lay under
+    // the banks' foot, so a jump off the floor passed under a bank's edge and fell through, 9-5's first-timer bot; World 9's fix,
+    // w9-pieces 621554b8, the lead 2026-10-31: every world, a bug in shared code is fixed for all; gen2Pits.test.ts scans every shipped stage)
+    const deepen = (floor: number) => {
+      // (World 9 fills every bank down past the floor (its lava is drawn under it); elsewhere only a bank whose foot leaves a hole he
+      // fits through (48 px, his height) is filled, so the shipped stages build as curated (five 8-6 Normal rolls change: their dark
+      // glide floors ran 51-85 px under a bank's foot); a thin perch or branch beside the pit is never stretched into a column)
+      for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40 && (budget.world === 9 || floor - (q.y + q.height) > 48)) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
+    };
     if (back) {
       const out = backPit(x0, x1, lipY, farY, M.pitDepth, hop);
+      deepen(out.floor);
       mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
       for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
       return;
     }
     const out = pitSteps(x0, x1, lipY, farY, M.pitDepth, hop);
+    deepen(out.floor);
     mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
     for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
   };
@@ -910,6 +935,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (!q) throw new Error(`gen2 section ${tpl.id}: nothing named ${k} is laid (versions ${JSON.stringify(L.versions)})`);
         return q.platform;
       };
+      // (each rope (place `rope`) across between its two ledges, whichever way the section lies)
+      for (const lp of L.pieces) {
+        if (!lp.ropeFrom) continue;
+        const p1 = pieceOf(lp.ropeFrom), p2 = pieceOf(lp.key);
+        const [l, r] = p1.x < p2.x ? [p1, p2] : [p2, p1];
+        ropes.push({ id: ropes.length + 1, x0: R(l.x + l.width - ROPE_OVERLAP), x1: R(r.x + ROPE_OVERLAP), y: R(Math.min(l.y, r.y) - ROPE_RISE), g0: l.y, g1: r.y, required: true });
+        placed.beats.push({ x: l.x + l.width, letter: 'V' });
+      }
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
       for (const g of L.gaps) {
@@ -1027,6 +1060,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     spawn: { x: SPAWN_X, y: runway.y, piece: runway },
     exit: { x: exitX, y: shrine.y, piece: shrine },
     vines,
+    ropes,
     zones,
     heartFalls,
     width: R(shrine.x + shrine.width + 40),
@@ -1655,7 +1689,14 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   const platforms = laid.platforms;
   if (rooms.length) addKitPlatforms(platforms, { rooms });
   sink.collectibles.push({ id: sink.nextCollectibleId(), type: 'exit_totem', x: laid.exit.x, y: laid.exit.y - 30, collected: false, bobPhase: 0 });
-  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(laid.bottom + 120)) };
+  // (a floor at or under the death line (the water's 40 px under bobFoot, or the fall line 240 px under it) pulls the line down under it,
+  // only for a floor it would kill on, so the shipped stages' water and views stay as curated: World 9's fix, gen2Pits.test.ts)
+  const bobLow = laid.bottom;
+  const floors = laid.platforms.filter((p) => !p.lift && p.type === 'solid').map((p) => p.y);
+  const watery = budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water);
+  const kills = (y: number) => (watery ? y >= bobLow + 36 : y >= Math.max(req.config.levelHeight, R(bobLow + 120)) + 116);
+  const bobFoot = Math.max(bobLow, ...floors.filter((y) => budget.world === 9 || kills(y)).map((y) => y + 30));
+  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)) };
   const meta: Gen2Meta = {
     seed,
     plan: laid.plan,
@@ -1677,7 +1718,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     trees: [],
     platforms,
     vines: laid.vines,
-    ropes: [],
+    ropes: laid.ropes,
     enemies: filled.enemies,
     boss: null,
     collectibles: sink.collectibles,
@@ -1687,7 +1728,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     exitTotemY: laid.exit.y,
     checkpoints: filled.checkpoints,
     // (a deadly chasm shows the dirty water far below, World 7; World 8's treetops have none: its deadly falls drop into the dark)
-    ...(budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water) ? { waterY: laid.bottom + 40 } : {}),
+    ...(watery ? { waterY: Math.max(laid.bottom, bobFoot) + 40 } : {}),
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(laid.heartFalls.length ? { heartFalls: laid.heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),

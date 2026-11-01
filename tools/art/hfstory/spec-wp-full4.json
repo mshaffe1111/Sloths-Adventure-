@@ -1,0 +1,58 @@
+{
+ "tag": "wpf",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/X/tools/art/hfstory/picks/",
+ "items": [
+  {
+   "name": "wp-9-dusk-t72-full",
+   "start": "bucket:hfcut/out/wp-9-dusk-t72.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a volcanic jungle at dusk: a smoking volcano behind charred trees, glowing orange lava cracks in dark rock, embers drifting, red-orange sky, warm firelight on dark stone. In the foreground across the whole bottom of the picture, a broad flat ledge of cool dark basalt rock in sharp focus, solid and safe, the lava only far behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-1-dusk-u72-full",
+   "start": "bucket:hfcut/out/wp-1-dusk-u72.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, the emerald rainforest canopy at golden dusk: the great mossy trunk lit warm orange from the side, long shadows, fireflies starting, a peach and violet sky between the leaves. In the foreground across the whole bottom of the picture, a broad flat mossy branch floor in sharp focus. Rich golden light, crisp detail, no flat colour. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, big flat leaf, cyan leaf",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/X/",
+ "keep": [
+  "wp-9-dusk-t72-full",
+  "wp-1-dusk-u72-full"
+ ]
+}

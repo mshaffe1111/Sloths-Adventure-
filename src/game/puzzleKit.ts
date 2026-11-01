@@ -408,8 +408,8 @@ export interface FlightWorld {
   platforms: readonly Platform[];
   /** the room's box: out of it, it is lost */
   box: { x0: number; x1: number; y0: number; y1: number };
-  /** baskets' mouths (world): falling into one, it is caught */
-  baskets: ReadonlyArray<{ x: number; y: number; half: number }>;
+  /** baskets' mouths (world): falling into one, it is caught. `aim`: a throw up near it goes into it (aimUp) */
+  baskets: ReadonlyArray<{ x: number; y: number; half: number; aim?: boolean }>;
   /** levers' handles (world boxes): knocked as it flies through */
   levers: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }>;
 }
@@ -424,6 +424,31 @@ export type FlightEnd =
 export function throwStart(kind: ThrowKind, px: number, feetY: number, facing: 1 | -1): Body {
   const v = THROW[kind];
   return { x: px + facing * THROW.handX, y: feetY - THROW.handY, vx: facing * v.vx, vy: v.vy };
+}
+
+/** World 2's high counter-basket by a hanging cage: a throw up within this far (px, either side) of it goes into its mouth */
+export const BASKET_AIM = 150;
+
+/**
+ * A throw up near an `aim` basket hanging over him (World 2's cage baskets) is steered into its mouth: its sideways speed is set so the
+ * arc comes down through the mouth. Matt, 2-3, 2026-10-31: "2 cages won't open". Unaimed, the throw up carries ~95 px forward, so it
+ * only landed from a 50 px strip 75-130 px back from the basket; standing under it (where anyone stands) it flew over the pool and was
+ * lost, every time. The game and the check both call this, so they fly the same arc. Returns whether it aimed.
+ */
+export function aimUp(b: Body, w: FlightWorld): boolean {
+  let best: { x: number; y: number } | null = null;
+  for (const m of w.baskets) {
+    if (!m.aim || m.y >= b.y || Math.abs(m.x - b.x) > BASKET_AIM) continue;
+    if (!best || Math.abs(m.x - b.x) < Math.abs(best.x - b.x)) best = m;
+  }
+  if (!best) return false;
+  // the time it comes down through the mouth's height: y + vy t + g t^2 / 2 = mouth
+  const g = THROW.gravity;
+  const disc = b.vy * b.vy + 2 * g * (best.y - b.y);
+  if (disc < 0) return false;
+  const t = (-b.vy + Math.sqrt(disc)) / g;
+  b.vx = Math.max(-260, Math.min(260, (best.x - b.x) / t));
+  return true;
 }
 
 /**

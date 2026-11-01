@@ -22,6 +22,7 @@
  *                  stage's are rolled with it, so it gets every creature its world's generator can place (GEN_FOES), and a boss lair
  *                  the minions its boss calls in (BOSS_MINIONS)
  *   dress          Worlds 1, 2 and 5's dressing sets (dressArt.ts, artDress.ts dressSets), for a built stage
+ *   dress:N        World N's (1-7) new dressing sheet (hf-props: dressNewData.ts), for a built stage
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water and every other stage's first water
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
  *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
@@ -43,6 +44,7 @@
  * stage on rolls 1-3 and fails when a sheet it draws is not in its list.) The engine still asks for the built stage's own creatures
  * as it starts (sheetWarm.ts warmStageSheets), for a roll that holds something these lists did not foresee.
  */
+import { DRESS_NEW_URLS } from './dressNewData.ts';
 import { buildProtoStage, HAND_STAGES, W3_PUZZLES } from './protoStage.ts';
 import { stageAnims, stageExtras } from './sheetWarm.ts';
 import { builtStageKeys } from './stageManifest.ts';
@@ -194,6 +196,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (w >= 8 && cfg.objectiveType !== 'boss_lair') out.push('faces810');
   // (World 8's fungus steps and knot perches: 8-2's and 8-5's steps, 8-3's perches)
   if (w === 8 && isGen2Stage(cfg) && ['8-2', '8-3', '8-5'].includes(cfg.id)) out.push('w8-fungus');
+  // (World 8's generated stages: their set dressing, w8DecorArt.ts)
+  if (w === 8 && isGen2Stage(cfg)) out.push('w8-decor');
   if (built && W4_FALL_STAGES.has(cfg.id)) out.push('w4-falls');
   // (the control test's water stretches, River logs and Lily pads, are drawn with World 2's river; every mix has one of them)
   if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
@@ -229,6 +233,12 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && cfg.id === '6-8') out.push('bad-water', 'w6-stilt');
   // (and the calm, clean water he swims in, with his swim sheets: swim.ts)
   if (isGen2Stage(cfg) && W6_SWIM_STAGES.includes(cfg.id)) out.push('swim');
+  // (hf-props, 2026-10-31: Worlds 1-7 on every stage but a lair or a secret: the world's new dressing sheet, and on an old-generator
+  // stage of World 1, 2 or 5 the first dressing sheet too, artDress.ts dressSets)
+  if (w <= 7 && DRESS_NEW_URLS[w] !== undefined && cfg.objectiveType !== 'boss_lair' && !cfg.secret) {
+    if (!built && (w === 1 || w === 2 || w === 5)) out.push('dress');
+    out.push(`dress:${w}`);
+  }
   // Dot's perched poses: she perches in every stage (not her own flight, nor Meeca's stage, which has no Dot)
   out.push('perch');
   out.push(...everyStage(w));

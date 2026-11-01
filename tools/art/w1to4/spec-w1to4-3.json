@@ -1,0 +1,204 @@
+{
+ "note": "World 1-4 round 3 (W1 bark knot-steps, W3 spore burst)",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/3ef7f030def2a1307022951cd642c5ce6d5e3857/reference/prop-sheets/qa-notes/w1-4-art/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "w1-knots3-s58-5",
+   "start": "w1-knots3.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two gnarled round bark burls (tree knots) growing out of the side of a rainforest tree trunk, each with a flat mossy top to stand on like a little step, rough brown bark wrapping round them with growth rings, and a plain tree trunk. Warm bark browns, mossy yellow-green tops. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.58,
+   "seed": 5,
+   "w": 1024,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-knots3-s58-17",
+   "start": "w1-knots3.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two gnarled round bark burls (tree knots) growing out of the side of a rainforest tree trunk, each with a flat mossy top to stand on like a little step, rough brown bark wrapping round them with growth rings, and a plain tree trunk. Warm bark browns, mossy yellow-green tops. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.58,
+   "seed": 17,
+   "w": 1024,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-knots3-s58-23",
+   "start": "w1-knots3.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two gnarled round bark burls (tree knots) growing out of the side of a rainforest tree trunk, each with a flat mossy top to stand on like a little step, rough brown bark wrapping round them with growth rings, and a plain tree trunk. Warm bark browns, mossy yellow-green tops. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.58,
+   "seed": 23,
+   "w": 1024,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-knots3-s70-5",
+   "start": "w1-knots3.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two gnarled round bark burls (tree knots) growing out of the side of a rainforest tree trunk, each with a flat mossy top to stand on like a little step, rough brown bark wrapping round them with growth rings, and a plain tree trunk. Warm bark browns, mossy yellow-green tops. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 1024,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-knots3-s70-17",
+   "start": "w1-knots3.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two gnarled round bark burls (tree knots) growing out of the side of a rainforest tree trunk, each with a flat mossy top to stand on like a little step, rough brown bark wrapping round them with growth rings, and a plain tree trunk. Warm bark browns, mossy yellow-green tops. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.7,
+   "seed": 17,
+   "w": 1024,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-knots3-s70-23",
+   "start": "w1-knots3.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two gnarled round bark burls (tree knots) growing out of the side of a rainforest tree trunk, each with a flat mossy top to stand on like a little step, rough brown bark wrapping round them with growth rings, and a plain tree trunk. Warm bark browns, mossy yellow-green tops. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1024,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w3-burst-s50-5",
+   "start": "w3-burst.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, one soft glowing burst of lavender cave spores: a round puff breaking into seven soft lobes, a bright pale violet glowing core, tiny glowing spore specks, soft edges. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes, noise, dither"
+  },
+  {
+   "name": "w3-burst-s50-17",
+   "start": "w3-burst.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, one soft glowing burst of lavender cave spores: a round puff breaking into seven soft lobes, a bright pale violet glowing core, tiny glowing spore specks, soft edges. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.5,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes, noise, dither"
+  },
+  {
+   "name": "w3-burst-s50-23",
+   "start": "w3-burst.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, one soft glowing burst of lavender cave spores: a round puff breaking into seven soft lobes, a bright pale violet glowing core, tiny glowing spore specks, soft edges. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes, noise, dither"
+  },
+  {
+   "name": "w3-burst-s62-5",
+   "start": "w3-burst.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, one soft glowing burst of lavender cave spores: a round puff breaking into seven soft lobes, a bright pale violet glowing core, tiny glowing spore specks, soft edges. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes, noise, dither"
+  },
+  {
+   "name": "w3-burst-s62-17",
+   "start": "w3-burst.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, one soft glowing burst of lavender cave spores: a round puff breaking into seven soft lobes, a bright pale violet glowing core, tiny glowing spore specks, soft edges. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes, noise, dither"
+  },
+  {
+   "name": "w3-burst-s62-23",
+   "start": "w3-burst.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, one soft glowing burst of lavender cave spores: a round puff breaking into seven soft lobes, a bright pale violet glowing core, tiny glowing spore specks, soft edges. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes, noise, dither"
+  }
+ ]
+}

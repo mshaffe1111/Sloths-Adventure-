@@ -26,8 +26,8 @@ export const PLATES: Record<string, PlateInfo> = {
   steps: { ground: 0.86, what: "the courtyard after the storm turns, the wet stone steps down from the tower's door (Pokey and Meeca sit on them)" },
   'nest-morning': { ground: 0.86, what: "Matt's sequel card: the misty morning branch, empty, a black thorn grown out of it with the scarf hanging from it (the sequel tag)" },
   'storm-returns': { ground: 0.86, what: "Matt's sequel card: the storm comes back at night, Pokey asleep on his branch with the scarf trailing down (painted in: no actors over it)" },
-  raft: { ground: 0.84, what: "World 2's riverbank village building Pokey's raft at village speed: two logs lashed, the rest still a pile (hf-art-bosses, HF row 9)" },
-  gorge: { ground: 0.9, what: "World 4's misty gorge: Pokey hanging from the vine's end over the mist, Dot pulling at his claw (no floor: he hangs; hf-art-bosses, HF row 9)" },
+  raft: { ground: 0.86, what: "World 2's riverbank village building Pokey's raft at village speed: logs lashed and waiting, rope, the stone hammer (repainted, hf-cutscenes)" },
+  gorge: { ground: 0.78, what: "World 4's misty gorge: Pokey hanging from the vine's end over the mist, Dot pulling at his claw (no floor: he hangs; hf-art-bosses, HF row 9)" },
   council: { ground: 0.84, what: 'the clearing with the council fire and the seats of the ten' },
   gates: { ground: 0.85, what: 'the fortress from the foot of the thousand steps: the gates standing open, ten green lights along the wall tops, rain and a lightning fork' },
   'grandma-door': { ground: 0.85, what: "Grandma's round door in the hollow of the great tree at dusk: lit window, lantern, a fern in a pot, the long path" },
@@ -37,8 +37,53 @@ export const PLATES: Record<string, PlateInfo> = {
   ruins: { ground: 0.85, what: 'the council ruins: ten mossy stone seats in a ring round a cracked floor with a faint sigil, an eleventh plain chair apart with leaves on it' },
   village: { ground: 0.86, what: "the village the morning after the storm, with Lieutenant Pell's tailor shop and a tea table" },
   'drake-cave': { ground: 0.85, what: "the Magma Drake's cave from inside: lava light through a crack, everything he owns heaped behind a big boulder at the left with his gold, a huge lumpy red knitted tea cosy slumped against it" },
+  'w1-day': { ground: 0.8, what: "World 1's story place, day: the emerald canopy (hf-cutscenes, from the world's own story scenery)" },
+  'w1-storm': { ground: 0.8, what: "World 1's story place, storm: the emerald canopy (hf-cutscenes, from the world's own story scenery)" },
+  'w3-night': { ground: 0.8, what: "World 3's story place, night: the mossy grotto (hf-cutscenes, from the world's own story scenery)" },
+  'w5-day': { ground: 0.8, what: "World 5's story place, day: the orchid sanctuary (hf-cutscenes, from the world's own story scenery)" },
+  'w1-dusk': { ground: 0.8, what: "World 1's story place, dusk: the emerald canopy (hf-cutscenes, from the world's own story scenery)" },
+  'w3-storm': { ground: 0.8, what: "World 3's story place, storm: the mossy grotto (hf-cutscenes, from the world's own story scenery)" },
+  'w4-day': { ground: 0.8, what: "World 4's story place, day: the misty cascades (hf-cutscenes, from the world's own story scenery)" },
+  'w6-dusk': { ground: 0.8, what: "World 6's story place, dusk: the deep mangrove (hf-cutscenes, from the world's own story scenery)" },
+  'w7-day': { ground: 0.8, what: "World 7's story place, day: the ancient ruins (hf-cutscenes, from the world's own story scenery)" },
+  'w2-day': { ground: 0.8, what: "World 2's story place, day: the sunlit riverbank and its village (hf-cutscenes, from the world's own story scenery)" },
+  'w10-storm': { ground: 0.8, what: "World 10's story place, storm: the stormy highlands and the fortress (hf-cutscenes, from the world's own story scenery)" },
+  'w5-dusk': { ground: 0.8, what: "World 5's story place, dusk: the orchid sanctuary (hf-cutscenes, from the world's own story scenery)" },
+  'w8-night': { ground: 0.8, what: "World 8's story place, night: the twilight treetops (hf-cutscenes, from the world's own story scenery)" },
 };
 
 export function isPlate(key: string | undefined): key is string {
   return key !== undefined && Object.prototype.hasOwnProperty.call(PLATES, key);
+}
+
+/**
+ * The world plates (hf-cutscenes, 2026-10-31): a painted plate for each world and mood the story most often stands in, repainted on Hugging
+ * Face from that world's own story scenery (so it is the place the player just played, painted like the other plates). A panel with no plate
+ * of its own, no camera following a walker, no castle and no line-up stands in its world's plate (`withWorldPlate`), its cast on the same
+ * ground line as before (0.8). Key: `${world}-${mood}`.
+ */
+/** `sideways`: false where the old scenery reads as well or better on a sideways phone (the lead, 2026-10-31: W2's river and village,
+ *  W5 dusk's orchids, W10's moonlit castle, W8's moon); the plate is then only for an upright phone, where the haze was */
+export const WORLD_PLATES: Record<string, { plate: string; sideways: boolean }> = {
+  '1-day': { plate: 'w1-day', sideways: true },
+  '1-storm': { plate: 'w1-storm', sideways: true },
+  '3-night': { plate: 'w3-night', sideways: true },
+  '5-day': { plate: 'w5-day', sideways: true },
+  '1-dusk': { plate: 'w1-dusk', sideways: true },
+  '3-storm': { plate: 'w3-storm', sideways: true },
+  '4-day': { plate: 'w4-day', sideways: true },
+  '6-dusk': { plate: 'w6-dusk', sideways: true },
+  '7-day': { plate: 'w7-day', sideways: true },
+  '2-day': { plate: 'w2-day', sideways: false },
+  '10-storm': { plate: 'w10-storm', sideways: false },
+  '5-dusk': { plate: 'w5-dusk', sideways: false },
+  '8-night': { plate: 'w8-night', sideways: false },
+};
+
+/** the scene as drawn: its own plate, or its world's plate for this mood when there is one (the cast keep their ground line) */
+export function withWorldPlate<S extends { world: number; mood: string; plate?: string; follow?: unknown; castle?: number; lineup?: boolean; ground?: number }>(scene: S, sideways = false): S {
+  if (scene.plate !== undefined || scene.follow || scene.castle !== undefined || scene.lineup) return scene;
+  const wp = WORLD_PLATES[`${scene.world}-${scene.mood}`];
+  if (!wp || !isPlate(wp.plate) || (sideways && !wp.sideways)) return scene;
+  return { ...scene, plate: wp.plate, ground: scene.ground ?? 0.8 };
 }
