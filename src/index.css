@@ -1735,6 +1735,10 @@
 .sh-head .nv-back { position: static; flex: none; }
 .sh-head { gap: 8px; } .sh-head .tr-titles { min-width: 0; flex: 1 1 auto; display: flex; justify-content: center; }
 @media (max-width: 440px) { .sh-head .tr-h1 { font-size: 16px; padding-inline: 12px; } .sh-head .nv-back-tag { font-size: 14px; } }
+/* the Satchel keeps clear of the notch and the rounded corners on a phone on its side (lead, 2026-11-01: the clip check found the
+   Creatures tab in the right 48 px notch band): the screen pads by the phone's own safe-area insets, like the nav kit's Back and pop-ups.
+   Upright the side insets are 0, so nothing moves. */
+.sh-screen { box-sizing: border-box; padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
 /* the tab leaves sit in the header (Satchel.tsx): upright they wrap to their own full row under Back and the title, as before */
 .sh-head { flex-wrap: wrap; row-gap: 0; margin-bottom: 6px; }
 .sh-head .sh-tabs { order: 5; flex: 1 0 100%; margin-bottom: 0; }

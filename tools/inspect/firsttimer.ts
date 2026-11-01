@@ -201,6 +201,8 @@ export class Progress {
   cur = 0;
   hi = 0;
   best = 0;
+  /** the way back he can be followed no further than (set when he is put past a puzzle room; a respawn or rescue clears it) */
+  floor = 0;
   constructor(readonly pts: Pt[]) {}
   private d(i: number, p: Pt) {
     const q = this.pts[i];
@@ -210,7 +212,7 @@ export class Progress {
   step(p: Pt): boolean {
     if (!this.pts.length) return false;
     let bi = this.cur, bd = this.d(this.cur, p);
-    const lo = Math.max(0, this.cur - 25), hi = Math.min(this.pts.length - 1, this.cur + 40);
+    const lo = Math.max(this.floor, this.cur - 25), hi = Math.min(this.pts.length - 1, this.cur + 40);
     for (let i = lo; i <= hi; i++) {
       const d = this.d(i, p);
       if (d < bd - 1e-6 || (Math.abs(d - bd) < 1e-6 && i > bi)) {
@@ -244,6 +246,7 @@ export class Progress {
     }
     this.cur = bi;
     this.hi = bi;
+    this.floor = 0;
   }
   /** the point he heads for: the first one ahead that is more than `far` px from him */
   target(p: Pt, far = 90): Pt | null {
@@ -706,6 +709,11 @@ export class FirstTimerRun {
   private swingT = 0;
   private ropeStill = 0;
   private climbStill = 0;
+  /** falls back down the way from the same best point, and that point */
+  private fallBacks = 0;
+  private fallTop = -1;
+  /** the route point the last rescue put him at */
+  private lastRescue = -1;
   /** s he has stood far off the way (after a fall) */
   private offRoute = 0;
   /** he was on a trunk last frame */
@@ -1087,15 +1095,21 @@ export class FirstTimerRun {
       if (t < this.puzzleWait.until) return {};
       const room = e.kit.rooms[this.puzzleWait.room];
       this.puzzleWait = null;
-      if (room.beyond) this.placeAt(room.beyond.x, room.beyond.y);
+      if (room.beyond) {
+        this.placeAt(room.beyond.x, room.beyond.y);
+        this.pastRoom(room.box, room.beyond);
+      }
       return {};
     }
     for (const room of e.kit?.rooms ?? []) {
       // (a room he comes back to after a fall, its lift wound back down: worked again, as a person works it again, round 5 2026-10-29;
       // counted once)
       const again = this.visited.has(room.ri);
-      if (again && t - (this.roomAt.get(room.ri) ?? -Infinity) < 12) continue;
       const b = room.box;
+      // (and only fallen back down into it, under the spot he is put at: 1-4's lift puts him on its own top, inside its box, and the way
+      // on crosses back over it; standing there 12 s later started the room again, every 12 s until the cap, with his stuck clock wound
+      // back each time, bot-fix 2026-11-01)
+      if (again && (t - (this.roomAt.get(room.ri) ?? -Infinity) < 12 || (room.beyond && p.y < room.beyond.y + 40))) continue;
       if (p.x > b.x0 - 40 && p.x < b.x1 && p.y > b.y0 - 40 && p.y < b.y1 + 40 && p.grounded) {
         this.visited.add(room.ri);
         this.roomAt.set(room.ri, t);
@@ -1417,18 +1431,46 @@ export class FirstTimerRun {
   private rescue(): boolean {
     const pts = this.prog.pts;
     const p = this.sim.p;
-    for (let i = this.prog.hi + 4; i < pts.length; i++) {
+    // (not back to where the last rescue put him when he is no further on than that: he failed the same way from there, and was put
+    // there again, four times running on 1-4's climb; each time a little further on, bot-fix 2026-11-01)
+    const from = this.lastRescue >= this.prog.hi ? this.lastRescue + 8 : this.prog.hi + 4;
+    for (let i = from; i < pts.length; i++) {
       const q = pts[i];
       if (Math.hypot(q.x - p.x, q.y - p.y) < 160) continue;
       const f = this.floorAt(q.x, q.y - 2, 8);
       if (!f || f.type === 'fragile') continue;
       this.rescues++;
+      this.lastRescue = i;
       if (this.stuckOpen) this.stuckOpen.rescued = true;
       this.closeStuck(true);
       this.placeAt(q.x, f.y);
       return true;
     }
     return false;
+  }
+
+  /**
+   * Put past a puzzle room: his place along the way is the first point past the room on the side he was put (bot-fix 2026-11-01: the
+   * nearest point could be one the route traced through the room's far wall, behind him, and he walked straight back into the room; on
+   * 6-3's seesaw he did that until the cap)
+   */
+  private pastRoom(box: { x0: number; x1: number; y0: number; y1: number }, beyond: { x: number; y: number }) {
+    const pts = this.prog.pts;
+    const right = beyond.x >= (box.x0 + box.x1) / 2;
+    // (and not one inside a solid piece: the route is traced on the stage as built, and through a room's far wall it can run inside it)
+    const inside = (q: Pt) => this.sim.platforms.some((b) => !b.broken && q.x > b.x && q.x < b.x + b.width && q.y > b.y + 8 && q.y < b.y + (b.height ?? 0));
+    let bi = -1;
+    for (let i = 0; i < pts.length; i++) {
+      if ((right ? pts[i].x > box.x1 : pts[i].x < box.x0) && !inside(pts[i])) {
+        bi = i;
+        break;
+      }
+    }
+    if (bi < 0 || bi <= this.prog.cur) return;
+    this.prog.cur = bi;
+    this.prog.hi = bi;
+    this.prog.floor = bi;
+    this.prog.best = Math.max(this.prog.best, bi);
   }
 
   private closeStuck(_rescued: boolean) {
@@ -1476,8 +1518,24 @@ export class FirstTimerRun {
     if (this.prog.off(p) > 260 && !held) {
       this.offRoute += DT;
       if (this.offRoute > 0.5 && p.grounded) {
+        const top = this.prog.best;
         this.prog.relocate(p, true);
         this.offRoute = 0;
+        // (the same fall three times, never getting higher: noted as a loop and he is put past it, as the same death three times is.
+        // bot-fix 2026-11-01: each fall moved his place back down the way, so the climb back up counted as progress and the 20 s clock
+        // never ran out: on 1-4 he climbed and fell from the same branch every 24 s until the cap, and the run read "time")
+        if (top === this.fallTop) this.fallBacks++;
+        else {
+          this.fallTop = top;
+          this.fallBacks = 1;
+        }
+        if (this.fallBacks >= 3 && this.prog.best <= top) {
+          this.fallBacks = 0;
+          const at = this.prog.pts[top];
+          this.stuck.push({ x: Math.round(at.x), y: Math.round(at.y), t: +t.toFixed(1), dur: 0, what: 'fell back down from here 3 times', step: null, dip: null, puzzle: false, rescued: true });
+          this.prog.hi = Math.max(this.prog.hi, top);
+          if (!this.rescue()) this.end = 'stranded';
+        }
       }
     } else this.offRoute = 0;
     // stuck: no progress for 8 s (not while standing at a puzzle)

@@ -5,10 +5,14 @@
  * The defect this guards: "stopped dead against something" measured his movement against lastX, which the end of the frame had already
  * set to where he is, so it read 0 every frame. Every 0.3 s of walking counted as a stop, and he hopped along flat ground (9 hops in
  * 10 s) and took off for a ledge up to ~1100 px before its end instead of edgeAim's 22-44 px.
+ *
+ * And the gaps those hops had been hiding (the same day): a fall back down a climb never led to a rescue (each fall moved his place back
+ * down the way, so climbing back counted as progress); put past a puzzle room, he walked back into it, or stood on its top and it
+ * "started again"; and a rescue put him back on the spot he had just failed. On main 6-3 and 1-4 ran out the clock on every roll.
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FirstTimerRun, FT_ADULT, FT_KID, type FirstTimer } from '../../tools/inspect/firsttimer.ts';
+import { FirstTimerRun, firstTimer, FT_ADULT, FT_KID, type FirstTimer } from '../../tools/inspect/firsttimer.ts';
 import type { Pad } from './realPlay.ts';
 import type { Platform } from './types.ts';
 
@@ -78,3 +82,41 @@ for (const [name, who] of WHO) {
     }
   });
 }
+
+test('a climb he keeps falling back down: after the third fall from the same spot he is put past it, not left looping to the cap', () => {
+  const P = (id: number, x: number, y: number, width: number, height = 30): Platform => ({ id, x, y, width, height, type: 'solid' }) as Platform;
+  // (five 90 px steps up to a gap no jump crosses (580 px); a miss drops him to the ground, back near the start of the way)
+  const steps = [[800, 490], [950, 400], [1100, 310], [1250, 220], [1400, 130]];
+  const plats = [P(1, 0, Y, 3200, 90), ...steps.map(([x, y], i) => P(10 + i, x, y, 120)), P(20, 2100, 130, 900)];
+  const route: Array<{ x: number; y: number }> = [];
+  for (let x = 100; x < 800; x += 24) route.push({ x, y: Y });
+  for (const [x, y] of steps) for (let k = 0; k < 120; k += 24) route.push({ x: x + k, y });
+  for (let x = 1520; x < 3000; x += 24) route.push({ x, y: 130 });
+  for (const [name, who] of WHO) {
+    for (const seed of [1, 2, 3]) {
+      const r = new FirstTimerRun('1-1', seed, who, { route, cap: 150 });
+      r.sim.bare(plats);
+      r.sim.stand(100, Y);
+      r.prog.relocate(r.sim.p);
+      let across = -1;
+      const frame = r.sim.frame.bind(r.sim);
+      r.sim.frame = (pad?: Pad) => {
+        frame(pad);
+        const p = r.sim.p;
+        if (across < 0 && p.grounded && p.x > 2100 && Math.abs(p.y - 130) < 4) across = r.sim.t;
+      };
+      r.play();
+      assert.ok(across > 0 && across < 100, `${name}, seed ${seed}: never put across the gap (at x ${Math.round(r.sim.p.x)}, ${r.rescues} rescues)`);
+      assert.ok(r.stuck.some((q) => q.what === 'fell back down from here 3 times'), `${name}, seed ${seed}: the loop is not reported`);
+    }
+  }
+});
+
+test("put past a puzzle room he goes on from there: 6-3's seesaw and 1-4's lift reach the shrine (the kid, every roll)", () => {
+  for (const id of ['6-3', '1-4']) {
+    for (const seed of [1, 2, 3]) {
+      const r = firstTimer(id, seed, FT_KID);
+      assert.equal(r.end, 'shrine', `${id} seed ${seed}: ${r.end} at ${r.time} s, x ${r.x}`);
+    }
+  }
+});
