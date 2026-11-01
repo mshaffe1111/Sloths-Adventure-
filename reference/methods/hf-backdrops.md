@@ -54,6 +54,8 @@ The strips must look right both upright (412x915) and sideways (915x412).
 - `stageBackdrops.test.ts` checks the neighbours and the FAR_ONLY list: update it.
 
 ## The bar
+- **Every set, new or changed, passes `floor.py` upright** (std >= 31 and the darkest 10% <= 73 on the top 60% of the 412x915
+  frame; night and cave sets by p10 alone). The lead adopted this as the standard on 2026-11-01. A set that fails it does not ship.
 - No seams (look at the join: tile the strip twice), no bands, no notches, no floating pieces.
 - Crowns whole; colours in the world's light; not paler or emptier than what it replaces (lumspread).
 - Pokey clear in every shot.
@@ -69,6 +71,8 @@ The strips must look right both upright (412x915) and sideways (915x412).
 6. Then the CLAUDE.md gates. drawcheck takes about 11 min; the full test suite about 20 min.
 
 ## Pitfalls we already paid for
+- **Rain streaks in a text-to-image far** (W1 sunrise, 11-01): `destreak.py` replaces thin bright lines with their 7x7 median and leaves
+  broad light alone. Better: add "rain" to the negative prompt for any dry mood.
 - **Pink keyed water (W2 near, 10-31):** the start's half-transparent river let magenta through. starts2.py drops alpha < 235 on
   near strips.
 - **Squared notches (W4/W6 near, 10-31)** where paste-up pieces met edge to edge. starts2.py overlaps the pieces with ragged joins
