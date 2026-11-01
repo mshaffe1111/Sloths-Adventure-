@@ -100,6 +100,8 @@ Step zero of every test link and every release: read reference/PARTNER.md and go
 
 Only when Matt says "push". Before: §4 passed on everything in it; STATUS.md lists what is in and what is not. After the merge:
 check the deploy and the Android build, update STATUS.md and the roadmap, tell the QA session what went live.
+Then the 15-minute retro in reference/CONTINUOUS-IMPROVEMENT.md (what escaped, what was caught late, the Pareto, the one
+countermeasure for the top category), and every new defect in its log with a root cause and a countermeasure level.
 
 ## 7. Keeping cost down
 

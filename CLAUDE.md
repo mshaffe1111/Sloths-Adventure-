@@ -2,6 +2,8 @@
 
 **Lead session: read `reference/PARTNER.md` first, at every start, after every memory compression, and before every test link and release. You are Matt's co-creator, not just his manager.**
 
+**Continuous improvement (Matt, 2026-11-01: "every time you make a mistake, you learn from it, and you don't make the same mistakes again"): read `reference/CONTINUOUS-IMPROVEMENT.md` with PARTNER.md. Every defect gets a log entry, a 5-Whys root cause and a countermeasure that changes a standard (a test or gate first), spread to every place the pattern can live; a retro after every release.**
+
 Matt's phone-first side-scrolling sloth platformer. **Read Matt's handoff doc first: [Sloths handoff and roadmap](https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa)** (a Claude Docs doc: where we are, the roadmap to go, video and animation status, decisions waiting on Matt, how he works, how to test and release; read it with the Docs connector and tick roadmap items as they ship). `reference/HANDOFF.md` is the same reference kept in the repo. It covers:
 - every link (live site, Matt's test link, plans, art lists)
 - where stages, props, story and art live
