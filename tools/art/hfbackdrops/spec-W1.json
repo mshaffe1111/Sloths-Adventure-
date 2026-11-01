@@ -8,7 +8,7 @@
   ]
  },
  "neg": "sky, clouds, fog, haze, gradient background, scenery behind, horizon, perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, people, animals, sloth, magenta objects, pink plants",
- "base": "BASE",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2c61aab61d897dee82093a82d5f00b7b005e4993/reference/prop-sheets/qa-notes/hf-backdrops2/starts/",
  "items": [
   {
    "name": "w1b-mid-s70-7",
