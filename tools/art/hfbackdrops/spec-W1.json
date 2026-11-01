@@ -1,0 +1,122 @@
+{
+ "tag": "hfbd2-W1",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "sky, clouds, fog, haze, gradient background, scenery behind, horizon, perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, people, animals, sloth, magenta objects, pink plants",
+ "base": "BASE",
+ "items": [
+  {
+   "name": "w1b-mid-s70-7",
+   "start": "start-w1b-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1b-mid-s70-23",
+   "start": "start-w1b-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1b-mid-s70-41",
+   "start": "start-w1b-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.7,
+   "seed": 41,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1b-mid-s78-7",
+   "start": "start-w1b-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.78,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1b-mid-s78-23",
+   "start": "start-w1b-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.78,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1b-mid-s78-41",
+   "start": "start-w1b-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.78,
+   "seed": 41,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1c2-mid-s70-7",
+   "start": "start-w1c2-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1c2-mid-s70-23",
+   "start": "start-w1c2-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1c2-mid-s70-41",
+   "start": "start-w1c2-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.7,
+   "seed": 41,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1c2-mid-s78-7",
+   "start": "start-w1c2-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.78,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1c2-mid-s78-23",
+   "start": "start-w1c2-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.78,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1c2-mid-s78-41",
+   "start": "start-w1c2-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees of many different shapes: a tall emergent tree with a round crown, a strangler fig with aerial roots, a slim palm, a tree fern, a mossy dead snag with orchids, a buttressed giant, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.78,
+   "seed": 41,
+   "w": 2048,
+   "h": 1104
+  }
+ ]
+}
