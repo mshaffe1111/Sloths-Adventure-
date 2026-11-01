@@ -1682,7 +1682,10 @@
 .jb-whead span { font: 800 12px var(--font-ui); letter-spacing: .1em; text-transform: uppercase; color: #8b6a44; }
 .jb-whead b { font-family: var(--font-fun); font-weight: 400; font-size: 21px; color: #6b3d12; }
 .jb-entry { margin: 0 0 10px; }
-.jb-eh { display: flex; align-items: center; gap: 8px; font: 800 13px var(--font-ui); color: #8a4b18; }
+.jb-eh { display: flex; align-items: baseline; gap: 8px; font: 800 13px var(--font-ui); color: #8a4b18; }
+.jb-eh span { min-width: 0; }
+.jb-eh span b { font-weight: 800; color: #5a3210; }
+.jb-eh i { flex: none; }
 .jb-eh i { font-style: normal; color: #d08a10; letter-spacing: 1px; }
 .jb-hand { margin: 2px 0 0; font-family: var(--font-read); font-style: italic; font-size: 15.5px; line-height: 1.45; color: #2e2010; text-wrap: pretty; }
 .jb-empty { opacity: .7; }

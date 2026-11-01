@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from '../icons/index.tsx';
 import { WORLD_NAMES } from '../../game/badges.ts';
-import { fmtTime, stageEntry, worldReview, type EntryNames } from '../../game/pokeyJournal.ts';
+import { fmtTime, worldEntries, worldReview, type EntryNames } from '../../game/pokeyJournal.ts';
 import type { PlayRecord } from '../../game/playRecords.ts';
 import { CreaturePic } from '../CreaturePic.tsx';
 
@@ -62,10 +62,8 @@ export const JournalBook: React.FC<{
   const world = worlds[Math.floor(page / per)] ?? 1;
   const side = wide ? 'both' : page % 2 === 0 ? 'entries' : 'review';
 
-  const entries = stages
-    .filter((l) => l.worldIndex === world && l.completed)
-    .sort((a, b) => a.miniIndex - b.miniIndex)
-    .map((l) => stageEntry(l, records[l.id] ?? null, names));
+  // (in the game's order: Dot's flight after 4-5, Meeca's night first in World 5; no record line twice on the page)
+  const entries = worldEntries(world, stages, records, names);
   const ex = extra(world);
   const rev = worldReview(world, stages, records, { teaser: ex.teaser, creatures: ex.creatures.map((c) => c.name), finds: ex.finds, findTotal: ex.findTotal });
 
@@ -79,7 +77,9 @@ export const JournalBook: React.FC<{
       {entries.map((e) => (
         <div key={e.id} className="jb-entry">
           <div className="jb-eh">
-            <span>{e.id}</span>
+            <span>
+              {e.id} <b>{e.stage}</b>
+            </span>
             <i>{'★'.repeat(e.stars)}{'☆'.repeat(Math.max(0, 3 - e.stars))}</i>
           </div>
           <p className="jb-hand">{e.lines.join(' ')}</p>
