@@ -138,15 +138,20 @@ export const WorldMap: React.FC<WorldMapProps> = ({
         pts.push({ x: padX + t * (w - padX * 2), y: h * 0.56 + Math.sin(i * 0.95 + 0.5) * h * 0.17 });
       }
     } else {
-      const perRow = Math.ceil(n / 2);
-      const rows = 2;
-      for (let i = 0; i < n; i++) {
-        const row = Math.floor(i / perRow);
-        const col = i % perRow;
-        const x = padX + ((row % 2 === 0 ? col : perRow - 1 - col) / (perRow - 1)) * (w - padX * 2);
-        const y = h * (rows === 2 ? (row === 0 ? 0.3 : 0.74) : 0.5) + Math.sin(col * 1.4 + row) * h * 0.05;
-        pts.push({ x, y });
-      }
+      // upright: three rows (4/3/3 for ten stages, Matt 2026-11-01), winding back and forth so the trail fills the screen
+      const rows = 3;
+      const sizes = Array.from({ length: rows }, (_, r) => Math.floor(n / rows) + (r < n % rows ? 1 : 0));
+      const ys = [0.17, 0.5, 0.83];
+      let i = 0;
+      sizes.forEach((k, row) => {
+        // a shorter row sits a little in from the edges, so the turns between rows stay gentle
+        const inset = k < sizes[0] ? (w - padX * 2) / (sizes[0] - 1) / 2 : 0;
+        for (let col = 0; col < k; col++, i++) {
+          const c = row % 2 === 0 ? col : k - 1 - col;
+          const x = padX + inset + (k > 1 ? (c / (k - 1)) * (w - padX * 2 - inset * 2) : (w - padX * 2) / 2);
+          pts.push({ x, y: h * ys[row] + Math.sin(col * 1.3 + row) * h * 0.035 });
+        }
+      });
     }
     return { pts, wide };
   }, [box, worldLevels.length]);
