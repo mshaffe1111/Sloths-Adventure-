@@ -5,14 +5,6 @@ import { photoUrl } from '../../game/photos.ts';
 import { itemUrl } from '../../game/items.ts';
 import { KEEPSAKE_LINES } from '../../game/storyFinale.ts';
 import { snailUrl } from '../../game/findArt.ts';
-import { RELEASED_WORLDS, releasedOnly } from '../../game/released.ts';
-
-// the worlds that are out only (released.ts): a later world's finds don't show, not even locked
-const SHOWN = releasedOnly(FINDS);
-const SHOWN_POCKET = releasedOnly(POCKET_FINDS);
-const SHOWN_SNAILS = releasedOnly(SNAIL_FINDS);
-/** the quest bonus opens only once every world's finds are in: it waits until all ten worlds are out */
-const BONUS_SHOWN = RELEASED_WORLDS >= 10;
 
 /** who a keepsake line belongs to, as the card shows it (the narrator's lines have no name) */
 const SPEAKER: Record<string, string> = { Pokey: 'Pokey', Meeca: 'Meeca', Grandfather: 'Grandfather', Dot: 'Dot' };
@@ -25,7 +17,7 @@ const SPEAKER: Record<string, string> = { Pokey: 'Pokey', Meeca: 'Meeca', Grandf
 export const FindsTab: React.FC<{ finds: string[]; onOpenFind: (id: string) => void }> = ({ finds, onOpenFind }) => {
   const [open, setOpen] = useState<string | null>(null);
   const got = (id: string) => finds.includes(id);
-  const openKeep = open ? SHOWN.find((f) => f.id === open) : undefined;
+  const openKeep = open ? FINDS.find((f) => f.id === open) : undefined;
   const lines = openKeep ? KEEPSAKE_LINES[openKeep.id] ?? [] : [];
 
   const card = (f: FindDef, onTap: () => void, pic: React.ReactNode) => {
@@ -55,7 +47,7 @@ export const FindsTab: React.FC<{ finds: string[]; onOpenFind: (id: string) => v
   return (
     <>
       <div className="tr-sub tr-jsub">
-        {SHOWN.filter((f) => got(f.id)).length} of Meeca&apos;s and Grandma&apos;s {SHOWN.length} things found · tap one to look again
+        {FINDS.filter((f) => got(f.id)).length} of Meeca&apos;s and Grandma&apos;s {FINDS.length} things found · tap one to look again
       </div>
       {openKeep && (
         <div className="sc-page" aria-live="polite">
@@ -76,16 +68,15 @@ export const FindsTab: React.FC<{ finds: string[]; onOpenFind: (id: string) => v
           </div>
         </div>
       )}
-      {group('Keepsakes', SHOWN.filter((f) => f.kind === 'keepsake'), (f) => <img className="tr-thumb tr-item" src={itemUrl(f.icon ?? 'petal') ?? ''} alt="" />, (f) => setOpen(open === f.id ? null : f.id))}
-      {group("Dot's lost pocket", SHOWN_POCKET, () => <Icon name="hummingbird" size={42} />)}
+      {group('Keepsakes', FINDS.filter((f) => f.kind === 'keepsake'), (f) => <img className="tr-thumb tr-item" src={itemUrl(f.icon ?? 'petal') ?? ''} alt="" />, (f) => setOpen(open === f.id ? null : f.id))}
+      {group("Dot's lost pocket", POCKET_FINDS, () => <Icon name="hummingbird" size={42} />)}
       {group('From the old nest', [NOTCH_FIND], () => <Icon name="leaf" size={42} />)}
-      {SNAIL_PAINTED && group('The snail', SHOWN_SNAILS, () => <span className="sc-snail" style={{ backgroundImage: `url(${snailUrl() ?? ''})` }} />)}
-      {group('Notes from Meeca', SHOWN.filter((f) => f.kind === 'note'), () => <img className="tr-thumb tr-item" src={itemUrl('scroll') ?? ''} alt="" />)}
-      {group('Photo albums', SHOWN.filter((f) => f.kind === 'book'), (f) => {
+      {SNAIL_PAINTED && group('The snail', SNAIL_FINDS, () => <span className="sc-snail" style={{ backgroundImage: `url(${snailUrl() ?? ''})` }} />)}
+      {group('Notes from Meeca', FINDS.filter((f) => f.kind === 'note'), () => <img className="tr-thumb tr-item" src={itemUrl('scroll') ?? ''} alt="" />)}
+      {group('Photo albums', FINDS.filter((f) => f.kind === 'book'), (f) => {
         const url = photoUrl(f.pages[0]?.photo);
         return url ? <img className="tr-thumb" src={url} alt="" /> : <Icon name="book" size={42} />;
       })}
-      {BONUS_SHOWN && (<>
       <div className="tr-sec">Quest bonus</div>
       <div className="tr-grid tr-grid-j">
         <div
@@ -100,7 +91,6 @@ export const FindsTab: React.FC<{ finds: string[]; onOpenFind: (id: string) => v
           <div className="tr-ct">{opened ? 'Quest bonus' : BONUS_FIND.hint}</div>
         </div>
       </div>
-      </>)}
     </>
   );
 };

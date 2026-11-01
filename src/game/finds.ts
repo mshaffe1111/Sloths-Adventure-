@@ -400,10 +400,10 @@ export function saveFinds(found: string[]) {
 }
 
 /**
- * Dot's hints on the locked cards, one per find in the worlds that are out (lead, 2026-11-01: every card said the same "Crouch beside a
+ * Dot's hints on the locked cards, one per find in every world (lead, 2026-11-01: every card said the same "Crouch beside a
  * fern"). Each names its stage and says only what is true on every layout: a fixed landmark where the stage always puts the find there,
  * otherwise just the stage (most finds land in a different spot each play). Checked against the stage code and 8-40 built layouts
- * per stage (2026-11-01). Under 12 words, warm, and never the answer. A world's hints are added here when it ships.
+ * per stage (2026-11-01). Under 12 words, warm, and never the answer.
  */
 export const DOT_HINTS: Record<string, string> = {
   w1_note: 'Bounce the mushroom on the petal stairs. Leaves hide a shelf.',

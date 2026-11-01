@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from '../icons/index.tsx';
-import { KIND_LABEL, releasedScenes, sceneUnlocked, type SceneEntry, type SceneProgress } from '../../game/sceneList.ts';
+import { KIND_LABEL, sceneList, sceneUnlocked, type SceneEntry, type SceneProgress } from '../../game/sceneList.ts';
 import { WORLD_NAMES } from '../../game/badges.ts';
 
 /**
@@ -9,8 +9,7 @@ import { WORLD_NAMES } from '../../game/badges.ts';
  * them at once.
  */
 export const ScenesTab: React.FC<{ progress: SceneProgress; onPlay: (queue: SceneEntry[]) => void }> = ({ progress, onPlay }) => {
-  // the worlds that are out only (released.ts): nothing from a later world shows, not even locked
-  const list = releasedScenes();
+  const list = sceneList();
   const open = list.filter((e) => sceneUnlocked(e, progress));
   const groups: { world: number; items: SceneEntry[] }[] = [];
   for (const e of list) {

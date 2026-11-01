@@ -1,12 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { ALL_FINDS, DOT_HINTS, FIND_BY_ID } from './finds.ts';
-import { RELEASED_WORLDS } from './released.ts';
 
-/** lead, 2026-11-01: every locked card in a released world has its own hint, in Dot's voice, under 12 words, naming the place */
-const shown = ALL_FINDS.filter((f) => f.world >= 1 && f.world <= RELEASED_WORLDS);
+/** lead, 2026-11-01: every locked card, in all ten worlds, has its own hint, in Dot's voice, under 12 words, naming the place */
+const shown = ALL_FINDS.filter((f) => f.world >= 1);
 
-test('find hints: every released find has its own hint, no two alike', () => {
+test('find hints: every find has its own hint, no two alike', () => {
   for (const f of shown) assert.ok(DOT_HINTS[f.id], `${f.id} has no hint of its own`);
   const hints = shown.map((f) => f.hint);
   assert.equal(new Set(hints).size, hints.length, 'two cards say the same thing');

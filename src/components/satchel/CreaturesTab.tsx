@@ -5,7 +5,6 @@ import { loreFor } from '../../game/creatureLore.ts';
 import { CreaturePic } from '../CreaturePic.tsx';
 import { Icon } from '../icons/index.tsx';
 import { SatchelPopup } from './SatchelPopup.tsx';
-import { isReleasedWorld, releasedOnly } from '../../game/released.ts';
 
 /** each card's window shows the far painting of the world the creature lives in (2026-10-28), behind its picture or its shadow */
 let FAR: Record<string, string> = {};
@@ -42,17 +41,16 @@ interface Card {
 export const CreaturesTab: React.FC<{ store: BadgeStore; levels: LevelRecord[] }> = ({ store, levels }) => {
   const [open, setOpen] = useState<Card | null>(null);
   const bossDone = (w: number) => levels.some((l) => l.worldIndex === w && l.miniIndex === 10 && l.completed);
-  // the worlds that are out only (released.ts): a later world's creatures don't show, not even locked
-  const preds: Card[] = PREDATOR_ORDER.filter((id) => isReleasedWorld(PREDATOR_ENTRIES[id].first)).map((id) => {
+  const preds: Card[] = PREDATOR_ORDER.map((id) => {
     const e = PREDATOR_ENTRIES[id];
     const met = predatorMet(id, store.seen, levels);
     return { id, art: id, name: e.name, tip: e.tip, world: e.first, met, foot: met ? predatorFoot(store.kills[id] ?? 0) : <Icon name="lock" size={13} label="Not met yet" /> };
   });
-  const road: Card[] = ROAD_ENTRIES.filter((r) => isReleasedWorld(r.first)).map((r) => {
+  const road: Card[] = ROAD_ENTRIES.map((r) => {
     const met = roadMet(r, levels, store.seen);
     return { id: r.id, art: r.id, name: r.name, tip: r.tip, world: r.first, met, foot: met ? <Icon name="check" size={14} label="Met" /> : <Icon name="lock" size={13} label="Not met yet" /> };
   });
-  const guards: Card[] = releasedOnly(GUARDIAN_ENTRIES).map((g) => {
+  const guards: Card[] = GUARDIAN_ENTRIES.map((g) => {
     const met = bossDone(g.world);
     return { id: g.art, art: g.art, name: g.name, tip: `Guardian of World ${g.world}.`, world: g.world, met, foot: met ? <Icon name="check" size={14} label="Defeated" /> : <Icon name="lock" size={13} label="Locked" /> };
   });
