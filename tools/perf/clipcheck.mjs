@@ -73,7 +73,7 @@ async function startServer() {
   p.stdout.on('data', (d) => (log += d));
   p.stderr.on('data', (d) => (log += d));
   for (let i = 0; i < 120; i++) {
-    if (/Local:/.test(log)) return { url: `http://127.0.0.1:${port}`, stop: () => { try { process.kill(-p.pid); } catch { /* gone */ } } };
+    if (/Local:/.test(log.replace(/\x1b\[[0-9;]*m/g, ''))) return { url: `http://127.0.0.1:${port}`, stop: () => { try { process.kill(-p.pid); } catch { /* gone */ } } };
     await sleep(500);
   }
   throw new Error(`vite preview did not start:\n${log}`);

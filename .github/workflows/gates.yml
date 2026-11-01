@@ -29,7 +29,10 @@ jobs:
       - run: node tools/perf/knowncheck.mjs
       # the browser the clip check drives (Chrome's safe-area override needs a recent one); not a project dependency
       - run: npm install --no-save --no-audit --no-fund --legacy-peer-deps playwright@1.63.0 && npx playwright install --with-deps chromium
+      # shell: bash runs with pipefail, so the check's exit code survives the tee (the default shell here has no pipefail: a crash
+      # showed green on the first run)
       - run: node tools/perf/clipcheck.mjs | tee clipcheck.log
+        shell: bash
         env:
           CLIPCHECK_OUT: clipcheck-out
       - name: Keep the clip check's contact sheet and breaches
