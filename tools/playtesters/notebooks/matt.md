@@ -94,3 +94,16 @@
 - Hops from a standstill carry about 150-200 px upright. Short steers (100-150 ms) go further than you think on a slope; you slide into whatever is next.
 - Lights-out stretches: things you can stand on only show near the firefly. Wait about a second after each landing so the light catches up before the next hop. Moving fast drops you back to the bottom (no life lost, just time).
 - Pictures: about 65 this run against a budget of 30. Puzzle rooms with no thought lines are where they go. Next time, turn sideways once on entering a room and then go by words for ten commands before the next picture.
+
+## 2026-11-01, later (release 0.9.0, Meeca night stage on Easy, fold phone, upright plus sideways stretches, session 8)
+- On the fold, a sideways `turn` and back can leave you on the narrow phone view instead of the fold. If the picture width changes, restart the stage before going on.
+- Falling off a log row costs no life on Easy: you go back to the last flag you touched (or camp, if you have none yet). Touch every flag; it makes misses cheap.
+- Log row: lifted double hop (`flick up-right`, wait 250, `flick up-right`) plus a 300-600 ms steer clears a log-to-log gap. Don't walk along a log for more than about 400 ms first; she covers more ground on a log than you'd think and walks off the end.
+- A gap as wide as a log is beyond any double hop, standing or running. If two tries fall short the same way, it's not the way: look for something to climb instead.
+- Hearts on the ground don't always get picked up just by walking through them.
+- A comfy-looking seat is a trap: she sits and gets tied in. Fast short wiggles (left/right 120 ms, a dozen times), then `flick left`/`flick right` a few times, free her.
+- When Meeca names something she can climb ("slide up to climb"), that's usually the way over the wall: stand at it, `flick up`, `steer up` 5 s, then steer toward the far side.
+- "Pokey needs to know this one" means you're at a warning tree: `circle 3 2000` right there carves it.
+- Don't tap next to someone offering food or drink; tapping accepts it and she gets drowsy.
+- Sticky lines grab you if you jump into them. Wiggle off, and throw things at them instead of touching them.
+- Pictures: 30 went by the first puzzle room, mostly on the log row and a wrong turn. In puzzle rooms the words alone aren't enough; save at least 4 pictures per room or you end up guessing.

@@ -252,3 +252,7 @@ Earlier read of the same log, kept for the details:
    leaves Meeca at the edge, jumps ~300 px. 6. Steering ignored briefly by a web at room 3. 7. Opening card needs 2 taps; pick-up cue.
 - Rig note: `warp 5` puts Meeca inside the pit before room 5 (box x0 - 260 lands in it); move the warp clear before the next run.
 - Not covered: rooms 1, 4, 5 and the ending.
+- 2026-11-01 later (sent): 5-M rerun, rooms 1/4/5 Normal + whole stage Easy at Fold size, with the QA_WATCH monitor. Invisible and
+  fall-through: not reproduced (no hits in play). Found: room 4 has no nudge (checked: butler lines only), room 5 shy steps drop her
+  (target step may be unlit on landing), Easy corridor log gap before room 1 looks like the route, pit hint too late, hearts not
+  picked up on Easy, chair hold inconsistent, Meeca half in the wall in room 5. Ending never reached.
