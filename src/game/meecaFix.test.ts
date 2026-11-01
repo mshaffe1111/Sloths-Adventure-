@@ -244,3 +244,38 @@ test('5-M on Easy: no hearts by the flags (nothing hurts her, so a heart there w
     setDifficulty('normal');
   }
 });
+
+test('5-M full playthrough, upright and sideways: the view never jumps (at most 40 px a frame) and she never pops across the screen', () => {
+  for (const [w, h] of [[448, 998], [844, 390]] as const) {
+    for (const seed of [1, 38]) {
+      try {
+        localStorage.removeItem('sloth_tips_5-M');
+        localStorage.removeItem(CARVED_KEY);
+      } catch {
+        /* no storage */
+      }
+      const sim = new RealPlay('5-M', seed);
+      sim.e.viewCssW = w;
+      sim.e.viewCssH = h;
+      sim.e.introT = 99;
+      sim.e.applyZoom();
+      const mc = (sim.e as unknown as { mc: MeecaPlay }).mc;
+      const frame = sim.frame.bind(sim);
+      let lx = NaN, ly = NaN;
+      const jumps: string[] = [];
+      sim.frame = (pad = {}) => {
+        const px = sim.p.x;
+        frame(pad);
+        const c = sim.e.camera;
+        const dx = c.x - lx, dy = c.y - ly;
+        lx = c.x;
+        ly = c.y;
+        if (Math.abs(dx) > 40 || Math.abs(dy) > 40) jumps.push(`view ${Math.round(dx)},${Math.round(dy)} at t${mc.t.toFixed(1)} ${mc.phase}`);
+        if (Math.abs(sim.p.x - px) > 120) jumps.push(`her ${Math.round(sim.p.x - px)} at t${mc.t.toFixed(1)}`);
+      };
+      new MeecaBot(sim).play();
+      assert.equal(mc.phase, 'done');
+      assert.deepEqual(jumps, [], `${w}x${h} seed ${seed}`);
+    }
+  }
+});

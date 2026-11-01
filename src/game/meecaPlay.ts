@@ -904,7 +904,9 @@ export class MeecaPlay {
       want = { x: mid - vw / 2, y: c.y + 40 - vh * (vh > vw ? 0.6 : 0.72) };
     }
     if (!want) {
+      // (both: a y kept from the card's shot made the moonflower scene start from it, a 289 px jump in one frame, QA 2026-10-31)
       this.camX = NaN;
+      this.camY = NaN;
       this.ringFrame(cam, dt);
       return;
     }

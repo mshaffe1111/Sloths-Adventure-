@@ -1468,7 +1468,8 @@ export class KitPlay {
         const top = saplingTop(sp, e);
         // (he rides its top over: the climb goes with it, so the engine keeps him on it)
         Object.assign(v, { x: top.x, topY: top.y - 6, bottomY: top.y + 40 });
-        Object.assign(p, { y: top.y + 2, vx: 0, vy: 0, climbing: true, grounded: false });
+        // (and across with it: she stayed at its root and was put on the ledge 429 px away in one frame at the end, QA 2026-10-31)
+        Object.assign(p, { x: top.x, y: top.y + 2, vx: 0, vy: 0, climbing: true, grounded: false });
         if (u >= 1) {
           sp.bendT = -1;
           sp.bent = true;
