@@ -1738,3 +1738,7 @@
 .pic.pic-flip { transform: scaleX(-1); }
 .pic.pic-off { filter: grayscale(1) brightness(.75); opacity: .5; }
 .tg { display: inline-block; flex: none; vertical-align: middle; overflow: visible; }
+/* the pair under the version tag both carry a painted icon now (spyglass, restart): a little less padding keeps them on one row on a
+   360-412 px phone, as before */
+.ttl-ver-row .ttl-ver-b { padding: 8px 13px 8px 11px; gap: 5px; }
+@media (max-width: 370px) { .ttl-ver-row { gap: 6px; } .ttl-ver-row .ttl-ver-b { font-size: 14.5px; padding: 7px 10px 7px 8px; gap: 4px; } }

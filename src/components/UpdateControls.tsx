@@ -88,7 +88,7 @@ export const TitleUpdate: React.FC<{ version?: string; day?: string }> = ({ vers
         ) : (
           <div className="ttl-ver-row">
             <button type="button" className="ttl-ver-b" onClick={() => void run()} disabled={state === 'checking'}>
-              {state !== 'same' && <PaintedIcon name="spyglass" size={22} />}
+              {state !== 'same' && <PaintedIcon name="spyglass" size={26} />}
               {state === 'checking' ? 'Checking…' : state === 'same' ? (
                 <>
                   Up to date <Icon name="check" size={16} />
