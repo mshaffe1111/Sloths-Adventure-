@@ -180,3 +180,4 @@ Matt found it on his phone. Rules from now on:
    and every report has a "Method update" section (what worked better, what failed, the proposed edit). The lead merges proven updates
    into the method file at merge time. See reference/methods/README.md.
 7. **Time comes from the machine** (defect D20): briefs and check-ins read the time with `TZ=America/New_York date`, never worked out from UTC by hand; deadlines in a brief are given in ET and in UTC.
+8. **Check the base before judging a sheet** (defect D23): at every check-in, before opening a helper's sheets, run `git merge-base --is-ancestor <release or main> <helper branch>`. A sheet shot on a stale branch shows fixed problems as current and hides merge conflicts: send it back to merge and re-shoot first. Every sheet and report names its base commit.
