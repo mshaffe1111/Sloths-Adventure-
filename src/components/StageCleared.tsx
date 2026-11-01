@@ -1,3 +1,5 @@
+import { PaintedIcon } from './icons/PaintedIcon.tsx';
+import { TextGlyph } from './icons/TextGlyph.tsx';
 import React from 'react';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import { DotPerched } from './KitParts.tsx';
@@ -272,9 +274,7 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
 
           {secret ? (
             <div className="clr-clue" style={{ background: '#ede9fe', borderColor: '#7c3aed', color: '#2e1065' }}>
-              <svg className="shrink-0 mt-0.5" width="26" height="26" viewBox="0 0 24 24" fill="#a78bfa" stroke="#5b21b6" strokeWidth="1.4" aria-hidden="true">
-                <path d="M12 21C3 14 1 9 1 6a5.5 5.5 0 0 1 11-1.5A5.5 5.5 0 0 1 23 6c0 3-2 8-11 15z" />
-              </svg>
+              <PaintedIcon name="thornHeart" size={32} className="shrink-0 mt-0.5" />
               <div>
                 <h3 style={{ color: '#5b21b6' }}>Thorn Heart earned!</h3>
                 <p>The thorns fall away and the Jungle Guardian is himself again. His gift: one extra heart, for every stage from now on.</p>
@@ -282,9 +282,7 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
             </div>
           ) : (
             <div className="clr-clue">
-              <svg className="shrink-0 mt-0.5" width="26" height="26" viewBox="0 0 24 24" fill="#f472b6" stroke="#9d174d" strokeWidth="1.4" aria-hidden="true">
-                <path d="M12 21C3 14 1 9 1 6a5.5 5.5 0 0 1 11-1.5A5.5 5.5 0 0 1 23 6c0 3-2 8-11 15z" />
-              </svg>
+              <PaintedIcon name="heart" size={30} className="shrink-0 mt-0.5" />
               <div>
                 <h3>Meeca's trail: {clue.title}</h3>
                 <p>{clue.text}</p>
@@ -294,31 +292,21 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
 
           <button type="button" className="pm-go" data-start="true" onClick={onNext}>
             {nextId ? `Next stage ${nextId}` : 'Back to the map'}
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#022c22" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
+            <TextGlyph name="arrow" size={24} />
           </button>
           {!COARSE && <p className="clr-note">Space or Enter for the next stage</p>}
 
           <div className="clr-sec">
             <button type="button" className="clr-btn2" onClick={onPrev} disabled={!prevId} aria-label={prevId ? `Play previous stage ${prevId}` : 'No previous stage'}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M19 12H5M11 6l-6 6 6 6" />
-              </svg>
+              <PaintedIcon name="back" size={22} />
               Previous
             </button>
             <button type="button" className="clr-btn2" onClick={onReplay}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
-                <path d="M3 3v5h5" />
-              </svg>
+              <PaintedIcon name="restart" size={22} />
               Play again
             </button>
             <button type="button" className="clr-btn2" onClick={onOpenMap}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z" />
-                <path d="M9 4v14M15 6v14" />
-              </svg>
+              <PaintedIcon name="map" size={24} />
               World map
             </button>
           </div>

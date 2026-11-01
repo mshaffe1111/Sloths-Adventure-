@@ -1744,3 +1744,6 @@
 @media (max-width: 370px) { .ttl-ver-row { gap: 6px; } .ttl-ver-row .ttl-ver-b { font-size: 14.5px; padding: 7px 10px 7px 8px; gap: 4px; } }
 /* a setting's painted object stands free like the rest of the set (in the old round well the full-screen brackets read as a blob) */
 .pm-set-ic { width: 36px; height: 36px; border-radius: 0; overflow: visible; background: none; border: 0; box-shadow: none; filter: drop-shadow(0 1px 1px rgba(40, 20, 5, .35)); }
+/* a painted wooden object on a dark wooden button (restart, back, map on the card buttons and the Back token) gets a thin warm rim so
+   it lifts off the wood instead of sinking into it (brown on brown, method icons.md) */
+.clr-btn2 .pic, .nv-back-tok .pic, .nv-x .pic { filter: drop-shadow(0 0 1.2px rgba(255, 240, 205, .95)) drop-shadow(0 0 1px rgba(255, 240, 205, .8)) drop-shadow(0 1.5px 1px rgba(40, 20, 5, .55)); }
