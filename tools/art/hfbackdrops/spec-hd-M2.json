@@ -1,0 +1,98 @@
+{
+ "tag": "hfbd2-hd-M2",
+ "note": "hf-backdrops native-resolution pass",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w8dawn-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w8dawn-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. the high jungle canopy at dawn: great round treetops on huge branches, hanging lianas, a giant flowering tree, mist in the gaps, soft pink and gold dawn light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w8dawn-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w8dawn-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. broad leaves, branch ends and morning flowers with dew, soft pink and gold dawn light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w9ash-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w9ash-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a volcanic valley in an ash storm: black basalt columns and rock spires, charred dead trees, ash drifting, dim grey-orange light through falling ash",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w9ash-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w9ash-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. black rocks covered in grey ash, embers, dim grey-orange light through falling ash",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10night-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w10night-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. bare mountain crags at night: jagged dark rock spires with snow on the ledges, an old stone watchtower with a lit window, iron lamp posts, cold blue night light, starlight on the snow",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10night-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w10night-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. dark rocks with snow and frost, stone steps, cold blue night light, starlight on the snow",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}

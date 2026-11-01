@@ -1,0 +1,158 @@
+{
+ "tag": "hfbd2-R0",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "sky, clouds, fog, haze, gradient background, scenery behind, horizon, perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, people, animals, sloth, magenta objects, pink plants",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/99e87cb944a789d50c0d69a30054f4cf2b4c3aff/reference/prop-sheets/qa-notes/hf-backdrops2/starts/",
+ "items": [
+  {
+   "name": "w8sunset-mid-s70-7",
+   "start": "start-w8sunset-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, the high jungle canopy: great round treetops on huge branches, hanging lianas, a giant flowering tree, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, violet and orange sunset light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w8night-mid-s70-7",
+   "start": "start-w8night-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, the high jungle canopy at night: great dark treetops on huge branches, hanging lianas, pale glowing night flowers, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, silver moonlight, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w2rapids-near-s62-7",
+   "start": "start-w2rapids-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of wet river stones, reeds and cattails, splashes of white water along the bottom of the picture, uneven top edge, bright misty daylight, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w2evening-near-s62-7",
+   "start": "start-w2evening-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of reeds, a little jetty post, baskets and lanterns along the bottom of the picture, uneven top edge, warm orange evening light, glowing windows, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w4terraces-near-s62-7",
+   "start": "start-w4terraces-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of grey rocks, ferns and a little stream along the bottom of the picture, uneven top edge, clear daylight, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w6dawn-near-s62-7",
+   "start": "start-w6dawn-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of mangrove roots in shallow water, reeds, lily pads along the bottom of the picture, uneven top edge, pale pink-grey misty dawn light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w3sinkhole-mid-s64-7",
+   "start": "start-w3sinkhole-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, the bottom of a moonlit sinkhole: tall rock walls with hanging roots and vines, a big mossy boulder pile, ferns, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, cool blue moonlight from above, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.64,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w3sinkhole-near-s62-7",
+   "start": "start-w3sinkhole-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of mossy rocks, ferns and roots, a few pale glowing mushrooms along the bottom of the picture, uneven top edge, cool blue moonlight from above, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w6dawn-mid-s64-7",
+   "start": "start-w6dawn-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, mangrove trees on tall arching roots standing in still water, spanish moss, an old wooden stilt hut on posts, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, pale pink-grey misty dawn light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.64,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w9dawn-mid-s64-7",
+   "start": "start-w9dawn-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, a scorched volcanic valley: black basalt columns, charred trees with young green shoots, cooled lava rocks, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, pink-grey ash dawn light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.64,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w5-mid-s66-7",
+   "start": "start-w5-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, an orchid forest: big old trees of different shapes with broad rounded leafy crowns, white and pink orchids blooming on the trunks, ferns and mossy roots, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, warm golden afternoon light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1-mid-s52-7",
+   "start": "start-w1-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees: a great buttressed tree, tall straight trunks with lianas, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.52,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1c-mid-s52-7",
+   "start": "start-w1c-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, high rainforest canopy trees: broad branches, tall straight trunks, lianas and bromeliads, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft green morning light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.52,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w3-mid-s52-7",
+   "start": "start-w3-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, a mossy jungle grotto: rock arches overgrown with ferns and vines, glowing drops of water, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, cool green-teal shade, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.52,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w6-mid-s52-7",
+   "start": "start-w6-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, mangrove trees on tall arching roots standing in still water, spanish moss, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft grey-green swamp light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.52,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w7-mid-s52-7",
+   "start": "start-w7-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, overgrown jungle temple ruins: a stepped shrine with a carved stone face, stone archways and broken columns, every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, soft grey-green jungle light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.52,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  }
+ ]
+}

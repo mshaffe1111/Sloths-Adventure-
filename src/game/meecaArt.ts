@@ -16,6 +16,7 @@ import { SOLDIER_CLIPS } from './soldierClips.ts';
 import { MEECA_CARVE_FPS, MEECA_CARVE_FRAMES, MEECA_CARVE_SEQ, MEECA_CARVE_URL } from './meecaCarveData.ts';
 import { MEECA_BLANKET_FRAMES, MEECA_BLANKET_UP, MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { MEECA_FRAMES, MEECA_STAND_H } from './meecaStandardData.ts';
+import { meecaReach } from './meecaFaceDraw.ts';
 import { drawMeecaFrame, jennifurFrame, jennifurSpriteReady, MEECA_UNITS } from './jennifurSprite.ts';
 import { drawScratch, drawW5, w5ArtReady } from './w5Art.ts';
 import { carvingTrunk, drawCarving } from './w5Look.ts';
@@ -121,6 +122,12 @@ export function meecaPose(p: Player, mc: MeecaPlay, kit: KitPlay | null, t: numb
   if (v > 150) return std(`run_${Math.floor(p.walkCycle / 1.7) % 7}`);
   if (v > 8) return std(`walk_${Math.floor(p.walkCycle / 1.05) % 8}`);
   return std(jennifurFrame('idle', t));
+}
+
+/** how far the frame she is drawn with now reaches ahead of her and behind her (meecaFaceDraw.ts) */
+export function meecaReachNow(p: Player, mc: MeecaPlay, kit: KitPlay | null, t: number): { front: number; back: number } {
+  const pose = meecaPose(p, mc, kit, t);
+  return meecaReach(pose.sheet, pose.name);
 }
 
 /** Meeca, the player, with her feet at (p.x, p.y) */
@@ -771,11 +778,25 @@ function cloud(ctx: CanvasRenderingContext2D, cx: number, cy: number, rx: number
   ctx.closePath();
 }
 
+const boxHit = (x: number, y: number, w: number, h: number, k: Box | null | undefined) => !!k && x < k.x1 && x + w > k.x0 && y < k.y1 && y + h > k.y0;
+/** the thought cloud's spots in order (drawThought): where it was, over her head behind her, beside her behind, the top band behind, either end, then under the way ahead at either end */
+function thoughtTryX(i: number, bx: number, headX: number, w: number, W: number, f: 1 | -1): number {
+  if (i === 0) return bx;
+  if (i === 1) return f > 0 ? Math.min(bx, headX + 6 - w) : Math.max(bx, headX - 6);
+  if (i === 2 || i === 3) return f > 0 ? headX - 34 - w : headX + 34;
+  if (i === 4 || i === 6) return f > 0 ? 10 : W - w - 10;
+  return f > 0 ? W - w - 10 : 10;
+}
+
 /**
  * Her thought: a soft pink cloud with a trail of puffs down to her head, over her (or beside, when there is no room above). Kept on
  * screen and under the HUD's band (`top`). Returns the box it took, for the tests.
  */
-export function drawThought(ctx: CanvasRenderingContext2D, text: string, headX: number, headY: number, W: number, H: number, top: number, a: number, avoid?: Box | null) {
+export function drawThought(
+  ctx: CanvasRenderingContext2D, text: string, headX: number, headY: number, W: number, H: number, top: number, a: number, avoid?: Box | null,
+  /** the law (D10): her own box and the way ahead of her (dotGuidePerch.ts aheadZone), which the cloud never covers, and her facing */
+  law?: { body: Box; ahead: Box; facing: 1 | -1 } | null,
+) {
   const fs = W < 360 ? 14 : 15;
   ctx.save();
   ctx.font = `600 ${fs}px ${FONT_UI}`;
@@ -803,6 +824,21 @@ export function drawThought(ctx: CanvasRenderingContext2D, text: string, headX: 
     // no room over her (the view pulled back, upright): beside her head, the side with more room, never over her
     by = Math.max(top, Math.min(H - h - 10, headY - h / 2));
     bx = headX + 34 + w <= W - 8 ? headX + 34 : Math.max(8, headX - 34 - w);
+  }
+  if (law) {
+    // never over her, the words she is cutting, or the way ahead of her (her next jump or two): over her head on the side behind her,
+    // then beside her head behind her, then the band under the HUD on the side behind her, then the other end of that band (no
+    // arrays or closures: it is drawn every frame)
+    for (let i = 0; i < 8; i++) {
+      const x = thoughtTryX(i, bx, headX, w, W, law.facing);
+      // (the last two: under the way ahead, behind her and then ahead, when the top band has no room for it: 740x360 sideways)
+      const y = i === 0 ? by : i === 1 ? headY - 46 - h : i === 2 ? headY - h / 2 : i < 6 ? top : law.ahead.y1 + 8;
+      if (x >= 8 && x + w <= W - 8 && y >= top && y + h <= H - 10 && !boxHit(x, y, w, h, law.body) && !boxHit(x, y, w, h, law.ahead) && !boxHit(x, y, w, h, avoid)) {
+        bx = x;
+        by = y;
+        break;
+      }
+    }
   }
   ctx.globalAlpha = a;
   const cx = bx + w / 2, cy = by + h / 2;

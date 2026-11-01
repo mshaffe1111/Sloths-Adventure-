@@ -1,0 +1,141 @@
+{
+ "tag": "icF0",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects",
+ "items": [
+  {
+   "name": "expand-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four chunky carved wooden corner brackets arranged at the four corners of an empty square, each an L shape pointing outward, warm wood with a brass edge, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, frame, picture, text"
+  },
+  {
+   "name": "expand-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four chunky carved wooden corner brackets arranged at the four corners of an empty square, each an L shape pointing outward, warm wood with a brass edge, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, frame, picture, text"
+  },
+  {
+   "name": "expand-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four chunky carved wooden corner brackets arranged at the four corners of an empty square, each an L shape pointing outward, warm wood with a brass edge, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, frame, picture, text"
+  },
+  {
+   "name": "expand-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four chunky carved wooden corner brackets arranged at the four corners of an empty square, each an L shape pointing outward, warm wood with a brass edge, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, frame, picture, text"
+  },
+  {
+   "name": "expand-b11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four short chunky carved wooden arrows pointing out diagonally to the four corners from the middle, warm wood grain, a small green leaf in the middle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, star, flower"
+  },
+  {
+   "name": "expand-b23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four short chunky carved wooden arrows pointing out diagonally to the four corners from the middle, warm wood grain, a small green leaf in the middle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, star, flower"
+  },
+  {
+   "name": "expand-b37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four short chunky carved wooden arrows pointing out diagonally to the four corners from the middle, warm wood grain, a small green leaf in the middle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, star, flower"
+  },
+  {
+   "name": "expand-b53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four short chunky carved wooden arrows pointing out diagonally to the four corners from the middle, warm wood grain, a small green leaf in the middle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, star, flower"
+  },
+  {
+   "name": "shrink-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four short chunky carved wooden arrows pointing in diagonally from the four corners toward the middle, warm wood grain, a small green leaf in the middle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, star, flower"
+  },
+  {
+   "name": "shrink-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four short chunky carved wooden arrows pointing in diagonally from the four corners toward the middle, warm wood grain, a small green leaf in the middle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, star, flower"
+  },
+  {
+   "name": "shrink-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four short chunky carved wooden arrows pointing in diagonally from the four corners toward the middle, warm wood grain, a small green leaf in the middle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, star, flower"
+  },
+  {
+   "name": "shrink-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of four short chunky carved wooden arrows pointing in diagonally from the four corners toward the middle, warm wood grain, a small green leaf in the middle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, star, flower"
+  },
+  {
+   "name": "checkmark-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky tick check mark shape made of a bent green vine stem with a small leaf, bold, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letter v"
+  },
+  {
+   "name": "checkmark-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky tick check mark shape made of a bent green vine stem with a small leaf, bold, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letter v"
+  },
+  {
+   "name": "checkmark-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky tick check mark shape made of a bent green vine stem with a small leaf, bold, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letter v"
+  },
+  {
+   "name": "checkmark-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky tick check mark shape made of a bent green vine stem with a small leaf, bold, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letter v"
+  }
+ ]
+}

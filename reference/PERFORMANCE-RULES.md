@@ -233,6 +233,14 @@ The rules above say how to draw well; this section keeps them holding (Duet's se
 
    This doesn't mean asking Matt for numbers on every change. Matt's own control runs, and testers on other phones, supply the device numbers; the headless draw check covers each change in between.
 
+7. **An automatic clip check on every gate (built 2026-11-01: `node tools/perf/clipcheck.mjs`, about 4 minutes; CONTINUOUS-IMPROVEMENT.md defect 4).** Pass/fail, like the draw check. It builds the game and opens every menu screen and pop-up (start screen, Settings and every tab, About and its pop-ups, How to Play, the World Map and every world, the Worlds pop-up, Pause, every Satchel tab and its pop-ups, every Journal page) at 412x915 and 915x412, on a fresh, an old (no play records) and a finished save, with the phone's safe-area insets set (upright 48 px top and 24 px bottom, sideways 48 px each side and 21 px bottom). Every scroll box is also judged scrolled to its end. It fails when:
+   - text overflows its box (scrollWidth/scrollHeight past clientWidth/clientHeight, in a box that does not scroll);
+   - text is cut off by an ancestor with overflow hidden, or runs off the side of the screen;
+   - a tappable thing is under 44 px on a side;
+   - a tappable thing sits inside the unsafe insets.
+
+   Each breach prints with the screen, size, save, selector and text, and a contact sheet of the breaches (outlined, numbered) is written next to the results. `tools/perf/clipknown.json` holds the breaches on main when the check was built: they print as "known" and don't fail. The list only shrinks (LAWS.md law 5): an entry that no longer shows up fails the check until it is deleted, and `node tools/perf/knowncheck.mjs` fails if one is added. Each entry has a group and an owner. It runs in CI before every publish (`.github/workflows/gates.yml`); how to read a breach: `reference/methods/gates.md`. A new screen or pop-up gets a step in the check's walk in the same change that adds it.
+
 ## Where the evidence is thin
 
 - Chrome's rule for moving a canvas to the CPU has changed over the years.

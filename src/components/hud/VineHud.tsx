@@ -432,6 +432,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   const mbh = Math.max(g.menuHit + 6, lh + 2);
 
   return (
+    <>
     <div className={`vh vh-${mode}${props.bossEntering ? ' entering' : ''}`} data-testid="vine-hud">
       <div ref={probe} className="vh-probe" aria-hidden="true" />
       <HudDefs />
@@ -584,7 +585,10 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
         <GoalCard key={`${levelConfig.id}#${props.runKey ?? 0}`} stageId={levelConfig.id} label={stageLabel} info={info} target={target} lane={safe} mode={mode} counter={counterRef} />
       )}
 
-      <div ref={flyLayer} className="vh-fly-layer" aria-hidden="true" />
     </div>
+    {/* (a pickup on its way to the counter: beside the HUD, not in it, so it passes under Dot's words (z 33 under her 34) and the HUD
+        (35) rather than over both; inside the HUD's own layer it drew over "flowers" in her 1-2 tip, the lead, 2026-11-01, D10) */}
+    <div ref={flyLayer} className="vh-fly-layer" aria-hidden="true" />
+    </>
   );
 };

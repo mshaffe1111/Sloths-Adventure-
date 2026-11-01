@@ -2986,25 +2986,37 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
   const hidden = find.kind !== 'note' && find.kind !== 'snail';
   // (the reach only: levelCheck CheckOptions.rooms)
   const reach = new Set(reachableIds ?? validateStage(stage, { rooms: false }).reachableIds);
-  const cps = (stage.checkpoints ?? []).map((c) => c.x);
+  const cpts = stage.checkpoints ?? [];
+  const cps = cpts.map((c) => c.x);
   // (World 5's carvings, Meeca's messages cut into trunks 124 wide, are in by now (gen2's finish runs before this): a fern never stands at one)
   const carvings = ((stage as { proto?: { w5?: { carvings?: Array<{ x: number }> } } }).proto?.w5?.carvings ?? []).map((c) => c.x);
   type P = GeneratedStage['platforms'][number];
-  const clearOf = (x: number, p: P) =>
+  /**
+   * How far a find keeps from the flags, the start and the exit. Tier 0 is the rule every stage was built with (the flags by x alone),
+   * so every stage that found a spot that way keeps exactly the same find. On a narrow climbing stage the flags stack up the trunk and
+   * their x alone ruled out every spot (1-4's Notch on 5 of 40 layouts, 4-6's pocket on 6 of 40, 2026-11-01), so a stage with no spot
+   * tries again with the flags by true distance (tier 1), then with smaller gaps (tier 2): a find is always placed.
+   */
+  const TIERS = [{ trueFlag: false, flag: 220, ends: 320 }, { trueFlag: true, flag: 220, ends: 320 }, { trueFlag: true, flag: 150, ends: 200 }];
+  const clearOf = (x: number, p: P, t: (typeof TIERS)[number]) =>
     carvings.every((cx) => Math.abs(cx - x) >= 120) &&
     stage.collectibles.every((c) => c.type !== 'relic' || Math.abs(c.x - x) >= 120) &&
-    Math.abs(x - stage.spawnX) > 320 &&
-    Math.abs(x - stage.exitTotemX) > 320 &&
-    cps.every((c) => Math.abs(c - x) > 220) &&
+    Math.abs(x - stage.spawnX) > t.ends &&
+    Math.abs(x - stage.exitTotemX) > t.ends &&
+    (t.trueFlag ? cpts.every((c) => Math.hypot(c.x - x, c.y - (p.y - 26)) > t.flag) : cps.every((c) => Math.abs(c - x) > t.flag)) &&
     stage.enemies.every((e) => Math.abs(e.x - x) > 190 || Math.abs(e.y - p.y) > 220) &&
     stage.collectibles.every((c) => c.type === 'exit_totem' || Math.hypot(c.x - x, c.y - (p.y - 26)) > 110);
-  const cands: Array<{ p: P; x: number }> = [];
-  for (const p of stage.platforms) {
-    if (p.broken || p.type !== 'solid' || p.width < 140 || !reach.has(p.id)) continue;
-    // every spot along the platform that is clear (a long ground has many; a small ledge has one or two)
-    // (never where another block stands in the way: a stump or a hurdle on the same ground is taller than the find hangs)
-    const open = (x: number) => !stage.platforms.some((q) => !q.broken && q !== p && q.type !== 'drift' && q.type !== 'moving' && x >= q.x - 16 && x <= q.x + q.width + 16 && q.y < p.y - 26 + 16 && q.y + q.height > p.y - 26 - 16);
-    for (let x = p.x + 70; x <= p.x + p.width - 70; x += 80) if (open(x) && clearOf(x, p)) cands.push({ p, x });
+  let cands: Array<{ p: P; x: number }> = [];
+  for (const t of TIERS) {
+    for (const p of stage.platforms) {
+      if (p.broken || p.type !== 'solid' || p.width < 140 || !reach.has(p.id)) continue;
+      // every spot along the platform that is clear (a long ground has many; a small ledge has one or two)
+      // (never where another block stands in the way: a stump or a hurdle on the same ground is taller than the find hangs)
+      const open = (x: number) => !stage.platforms.some((q) => !q.broken && q !== p && q.type !== 'drift' && q.type !== 'moving' && x >= q.x - 16 && x <= q.x + q.width + 16 && q.y < p.y - 26 + 16 && q.y + q.height > p.y - 26 - 16);
+      for (let x = p.x + 70; x <= p.x + p.width - 70; x += 80) if (open(x) && clearOf(x, p, t)) cands.push({ p, x });
+    }
+    if (cands.length) break;
+    cands = [];
   }
   if (!cands.length) return;
   const ys = cands.map((c) => c.p.y).sort((m, n) => m - n);

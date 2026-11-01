@@ -1,0 +1,51 @@
+{
+ "_note": "icons-painted picks (take names in the bucket w5-xfer icons/<tag>/stills/); px = 2x the largest on-screen size",
+ "map": {
+  "take": "map-a53",
+  "px": 192
+ },
+ "story": {
+  "take": "story-a11",
+  "px": 192
+ },
+ "howto": {
+  "take": "howto-a37",
+  "px": 192
+ },
+ "sound": {
+  "take": "sound-a53",
+  "px": 192
+ },
+ "gear": {
+  "take": "gear-a37",
+  "px": 192
+ },
+ "play": {
+  "take": "playc-b11",
+  "px": 80
+ },
+ "restart": {
+  "take": "restart-b23",
+  "px": 64
+ },
+ "close": {
+  "take": "close-b53",
+  "px": 64
+ },
+ "lock": {
+  "take": "lock-a23",
+  "px": 72
+ },
+ "star": {
+  "take": "star-a11",
+  "px": 48
+ },
+ "back": {
+  "take": "back-a23",
+  "px": 56
+ },
+ "spyglass": {
+  "take": "spyglass-a37",
+  "px": 64
+ }
+}
