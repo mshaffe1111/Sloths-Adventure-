@@ -279,3 +279,23 @@ test('5-M full playthrough, upright and sideways: the view never jumps (at most 
     }
   }
 });
+
+test('5-M room 3: steering at the silk line counts: caught, she struggles loose sooner and is on her way in about a second', () => {
+  const free = (steer: boolean): number => {
+    const { sim, mc, kit } = sim5(1);
+    mc.marked = 3;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const r = kit.rooms.find((q) => q.spec.id === 'silk') as any;
+    const sl = r.silks[0];
+    sim.climb(sl.vine, sl.vine.bottomY - 10);
+    let f = 0;
+    for (; f < 30 * 6 && sl.state === 'free'; f++) sim.frame({ up: true });
+    assert.equal(sl.state, 'held', 'caught');
+    const t0 = f;
+    for (; f < 30 * 8 && sl.state !== 'free'; f++) sim.frame({ right: steer });
+    return (f - t0) / 30;
+  };
+  const still = free(false), steered = free(true);
+  assert.ok(steered < 1.3, `steering: free in ${steered.toFixed(2)} s`);
+  assert.ok(steered < still - 0.6, `sooner than holding still (${still.toFixed(2)} s)`);
+});

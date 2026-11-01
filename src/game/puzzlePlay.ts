@@ -164,6 +164,8 @@ const PEG_KNOT = { x: 0.6, y: 0.32 };
 /** a bell's box a thrown thing knocks (world) */
 /** Meeca's night: a throw up within this far (px, either side) of a silk knot goes to the knot */
 export const KNOT_AIM = 170;
+/** the most sideways speed a throw up steered to a knot takes (px/s): enough to reach it from KNOT_AIM away by the time it is that high */
+export const KNOT_THROW_V = 560;
 const bellBox = (b: { x: number; y: number }) => ({ x0: b.x - 26, x1: b.x + 26, y0: b.y - 110, y1: b.y - 20 });
 
 
@@ -864,8 +866,12 @@ export class KitPlay {
     if (this.night && kind === 'up') {
       const k = room.knots.find((q) => !q.snapped && Math.abs(q.x - p.x) <= KNOT_AIM);
       if (k) {
+        // (over the knot as it comes up to the knot's height, or at its top if the knot is higher than that)
         const tTop = -it.body.vy / THROW.gravity;
-        it.body.vx = Math.max(-260, Math.min(260, (k.x - it.body.x) / tTop));
+        const rise = it.body.y - (k.y - 16);
+        const disc = it.body.vy * it.body.vy - 2 * THROW.gravity * rise;
+        const tAt = rise > 0 && disc > 0 ? (-it.body.vy - Math.sqrt(disc)) / THROW.gravity : tTop;
+        it.body.vx = Math.max(-KNOT_THROW_V, Math.min(KNOT_THROW_V, (k.x - it.body.x) / Math.max(0.12, Math.min(tTop, tAt))));
       }
     }
     // (World 2: thrown up near a hanging cage's counter-basket, it goes into the basket, whichever way he faces)
@@ -1492,6 +1498,8 @@ export class KitPlay {
         this.told(room, 'silk', h, 3);
       } else if (sl.state === 'held') {
         Object.assign(p, { x: v.x, vx: 0, vy: 0, climbing: true, grounded: false });
+        // (steering is her struggling: it shakes her loose twice as fast. QA 2026-10-31: steering at the web did nothing at all)
+        if ((h.steer ?? 0) !== 0) sl.t += dt;
         if (sl.t >= SILK.hold) {
           // it lets go of him: down he drops, and it cannot be caught again until he has shaken it off
           sl.state = 'drop';
@@ -1506,7 +1514,7 @@ export class KitPlay {
         }
       } else if (sl.state === 'shake') {
         Object.assign(p, { vx: 0 });
-        if (sl.t >= SILK.shake) {
+        if (sl.t >= SILK.shake || ((h.steer ?? 0) !== 0 && sl.t >= SILK.shakeSteer)) {
           sl.state = 'free';
           // (it hangs out of reach until she has stepped away from it: QA 2026-10-29, a thumb sliding a little up as she walked on
           // caught her on it again the moment she was free, over and over, "stuck at room 3's entrance")

@@ -251,6 +251,8 @@ export const SILK = {
   hold: 1.25,
   /** and shakes it off this long (s), standing */
   shake: 0.8,
+  /** or this long, steering away (s) */
+  shakeSteer: 0.35,
   /** shaken off, it hangs out of reach until she is this far from it (px) */
   away: 70,
 } as const;
