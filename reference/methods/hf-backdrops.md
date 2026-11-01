@@ -41,6 +41,10 @@ The strips must look right both upright (412x915) and sideways (915x412).
 - Darken the middle strip (`mid <stem> 0.85`) so there is a clear value step far -> middle -> near.
 - Measure: `lumspread.py <before> <after> <stages>`. The std dev of the top 60% of the upright frame must be at least 0.8x the
   before. (The lead's bar, 2026-11-01.)
+- Then `floor.py <after dir> <stages>`, the absolute floor. Std >= 31 and the darkest 10% <= 73. A hazy set can pass the ratio when
+  the old set was hazy too (7-1, 2026-11-01). Night and cave sets: judge by p10 alone.
+- Repainting a far + sky with "dark silhouetted ... in the middle distance, rich saturated colour, strong contrast" is what clears the
+  floor (W8 dawn, W10 gale, W7 dawn, W5 dusk2). Raising contrast with depth.py helps borderline sets only.
 
 **5. Wiring.**
 - A set is used by naming it in `src/game/stageBackdrops.ts` `FAR_BY_STAGE`. It plays its own mid/near where they exist, else its

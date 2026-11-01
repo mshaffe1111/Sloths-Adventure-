@@ -61,3 +61,7 @@ running total ~$14 of $35 (GPU estimate)
 hfbd2-W1 6ae78b9e0e0338d1bb7d9223 (12 takes, a second W1 middle variant) 18:57Z ~10 min. Not set in (missed 3:15 PM ET); takes in the bucket.
 hfbd2-F6 6ae78ba20e0338d1bb7d9225 (5 W1 sunrise far+sky takes) 18:57Z ~6 min; hfbd2-hd-F6 6ae78d060e0338d1bb7d92ee 19:03Z ~2 min
 running total ~$15.50 of $35 (GPU estimate)
+(Times above written as "ET" by this helper used UTC-4; DST ended Nov 1, so ET = UTC-5.)
+hfbd2-F7a/b 6ae78eb00e0338d1bb7d93c6 6ae78eb4c78863f9c62fc7fb (8 far+sky takes, W7 dawn / W5 dusk2) 19:10Z ~4 min
+hfbd2-hd-W1 6ae78eddc78863f9c62fc806 (w1b-mid) 19:11Z ~1.5 min; hfbd2-hd-F7 6ae7902ec78863f9c62fc886 (2) 19:17Z ~2 min
+total for the day ~$16.50 of $35 (GPU estimate)

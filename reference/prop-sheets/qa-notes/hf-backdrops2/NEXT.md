@@ -33,53 +33,28 @@ keep the 2100 px minimum the test checks.
 Depth, after/before: 1-1 1.26, 1-7 1.14, 3-4 0.89, 3-5 0.98, 6-1 0.99, 7-1 1.04, 7-4 0.88, 7-7 1.54, 5-4 1.14, 5-7 1.21.
 Only w10after still has no upright sky. It is held anyway.
 
+## Last round (2:10-2:45 PM ET, the lead's 2:03 review)
+
+Times in this file before this section were written as UTC-4. Daylight saving ended on Nov 1, so subtract one more hour.
+
+- **New absolute floor** (`tools/art/hfbackdrops/floor.py`), on the top 60% of the upright 412x915 frame:
+  - luminance std >= 31: the lowest approved set, 8-8 (W8 dawn);
+  - darkest 10% (p10) <= 73: the brightest approved set, the W7 courtyard.
+  - The p10 check catches pale haze, which keeps its spread but has no dark shapes. 7-1 passed the ratio (1.04) but had p10 89.
+  - Night and cave sets pass p10 easily but fail the std floor, and the lead approved them (8-7, 10-9). Judge those by p10 alone.
+- **W7 dawn:** repainted (F7, 5 seeds; a dark carved-face tree and temple towers against a gold and rose sunrise).
+  - 7-1: std 43.6, p10 52, ratio 1.26.
+  - 7-3: std 42.9, p10 50, ratio 1.14.
+- **W5 dusk2:** repainted (F7; dark trees and orchids under an orange and pink sunset). 5-4: std 44.2, p10 69, ratio 1.31.
+- **Contrast pass** (depth.py far 1.22) on the light sets that failed p10:
+  - now PASS: 1-2, 1-5, 1-7, 1-8, 1-9, 2-9, 4-2, 4-5, 7-7, 7-9.
+  - still FAIL p10: 2-1 (86), 2-3 (80), 2-4 (79), 2-6 (64, but std 17), 2-7 (92), 4-8 (75).
+    W2's upright frames are mostly its own pale water and sky. Passing them needs the W2 sets repainted with dark silhouettes, as F7 did.
+- **W1 second middle variant** (`w1b-mid`, starts2.py remix, s78 seed 41) plays at 1-6 as its own set `w1b`: W1's far and sky, the new
+  middle. 1-4 and 1-6 now show different trees. 1-4: std 44.0, p10 62. 1-6: std 45.7, p10 59.
+- Unchanged sets failing the floor, not touched today: 5-1..5-3 (W5 gold), 5-5 (W5 dusk1).
+
 ## Exact next step
-- W1 sunrise far: repainted again at 3:10 PM ET with the new standard (F6 seed 41): 1-1 1.30, 1-3 1.12. Its middle and near
-  strips, and those of the other 8 repainted sets, are re-graded to the new far light.
-- W1 middle (the world's own set, 1-4/1-6): the same 3 trees repeat once per screen width sideways, and the crowns are broad and
-  flat-topped. The second variant's 12 takes are painted (bucket `hfbackdrops2/hfbd2-W1/`, starts `start-w1b-mid`, `start-w1c2-mid`). Next: pick one, keyfull, native pass, finish. Then set it in as its own set (`w1b`, with a copy of `w1-far`) at 1-6.
-
-## Lead's review (2 PM ET), done
-- W8 dawn, W10 gale and W2 misty dawn: far + sky repainted (round F4, 5 seeds each) with dark silhouettes and rich colour; middle strips
-  at half haze (0.09) and darkened 15% for a value step.
-- W1 sunrise far: contrast up (depth.py 1.3).
-- W4 storm and W3 sinkhole: depth pass too.
-- W1 middle repeat at 1-6: re-finished without the flat 7% top fade (TOPFADE=0), so its crowns are separate shapes again.
-  The strip is still one 2113 px tile, so the same 3 trees repeat once per screen width sideways. A second crown variant needs a new
-  take: not done.
-- Luminance spread, top 60% upright, after/before (pass >= 0.8):
-  - 1-1 1.16, 1-3 1.04, 1-4 1.03, 1-6 1.01;
-  - 2-1 0.93, 2-3 0.90;
-  - 3-4 0.85, 3-6 1.02;
-  - 4-2 1.04, 4-5 0.83;
-  - 8-1 1.48, 8-3 1.01, 8-8 0.99;
-  - 10-2 1.23, 10-4 1.27, 10-6 2.08.
-  - Still under 0.8: 3-8 (W3 crystal, a darker cave on purpose; the lead passed it) and 8-4. 8-4 is NOT a changed set: it plays the
-    world's own set before and after. Its number moves with the lantern light around Pokey.
-
-## Checks (2026-11-01, 2:05 PM ET)
-
-- `npx tsc --noEmit -p .`: clean
-- full test suite: 2153 tests, 2151 pass, 0 fail (+1 known `# TODO`, 4-3's boulder wall)
-- `npx vite build`: OK, no asset over 4 MiB
-- `artcheck`: PASS
-- `drawcheck`: PASS (650 s)
-
-Every changed strip is under 250 KB.
-
-## Polish check (sheets `w<N>-before-after.jpg` here)
-
-- **Seams:** none seen. The ends were joined at full width and the floating pieces dropped.
-- **Bands:** the W8 canopy band is gone (w8 sheet, 8-1/8-3/8-5).
-- **Notches:** none on the W4/W6 near strips (w4 4-1, w6 6-1). The W3 sinkhole cut is gone (w3 3-4).
-- **Odd colours:**
-  - fixed: W3 crystal had a day sky in a dark cave world, now graded to night-cave blue (w3 3-2/3-5/3-8);
-  - fixed: no pink water on W2 (w2 2-4/2-6).
-- **Flat or washed-out:**
-  - fixed: W10 gale was pale grey, now graded into the storm light (w10 10-2/4/6);
-  - fixed: W2 evening haze is down to 0.1;
-  - still soft: W1 rain (1-2/1-5/1-8) is soft and misty on purpose, middle haze cut to 0.07; it still reads paler than its neighbours.
-- **Pokey's readability:** he reads clearly in every after shot. The darkest stages (3-2, 3-5, 6-4, 8-4) keep the world's own darkness.
-- **Known rough spots, not fixed:**
-  - 9 sets still have no painted upright sky, as before (see Held back);
-  - 1-4/1-6 crowns on the old W1 middle now read as broad flat-topped canopies (round, no cut).
+1. Repaint W2 mist, rapids and evening far + sky to the F7 standard (dark silhouettes, rich colour), then check floor.py on 2-1..2-9.
+2. Hold the W5 gold and dusk1 far sets to the floor the same way.
+3. w10night and w10after stay held until Matt answers on World 10's rain.
