@@ -1,10 +1,16 @@
 # The first-timer bot fixed, and an honest re-baseline (2026-11-01, branch bot-fix)
 
-Branch `bot-fix`, from `main` (a8b1f244). Bot and test only: no game code, stage or shipped data changed.
+Branch `bot-fix`, from `main` (a8b1f244). The bot and its test, plus one data change the lead asked for (5-9's Easy goal).
 
 - `75ee59f7`: the defect the fix-petals helper found (the "stopped dead" check read 0 every frame).
 - `877a819b`: three bot gaps that the hopping had been hiding, plus the re-baseline runner.
-- Self-test: `src/game/firstTimerBot.test.ts`, 8 cases, in the gate's `src/game/*.test.ts` glob.
+- `7b9b9bcc`: 5-9 Easy goal 9 → 5 of 18, from the fixed kid's runs (the lead's decision, 2026-11-01 1:42 PM ET; section 4).
+- `d9a8e640`: one self-test case per gap fix.
+- Self-test: `src/game/firstTimerBot.test.ts`, 11 cases, in the gate's `src/game/*.test.ts` glob.
+
+The gap fixes are in one commit (`877a819b`), not one commit each as the lead later asked. It was already pushed and named to the
+w8-rope2 and fix-petals helpers as the bot to measure with, so rewriting it would have left them on a commit that no longer exists. The
+separation is in the tests instead: each gap fix has its own case, and taking out that fix alone fails that case (section 3).
 
 **Use `877a819b` (or later) for every first-timer number from now on.**
 
@@ -54,30 +60,61 @@ The hops had been carrying the bot past three gaps of its own. With the fix alon
 
 ## 3. The self-test (new in the gate)
 
-`src/game/firstTimerBot.test.ts`, in the real engine on bare worlds unless named, about 6 s in all:
+`src/game/firstTimerBot.test.ts`, in the real engine on bare worlds unless named, about 18 s in all:
 
-| case | main (a8b1f244) | 75ee59f7 | 877a819b |
-|---|---|---|---|
-| flat ground: no hops, no "stops", walks on (adult, kid; seeds 1-3) | fail | pass | pass |
-| a ledge: the press is within edgeAim of the end, no hops on the way, across unhurt (gaps 140/200) | fail | pass | pass |
-| a 60 px step: the only stop is at its face, its height read right, then over | fail | pass | pass |
-| a climb with an uncrossable gap: put past after the third fall, the loop reported | fail | fail | pass |
-| 6-3's seesaw and 1-4's lift (kid, seeds 1-3): reach the shrine | fail | fail | pass |
+| case | main (a8b1f244) | 75ee59f7 | now | fails with only this fix taken out |
+|---|---|---|---|---|
+| flat ground: no hops, no "stops", walks on (adult, kid; seeds 1-3) | fail | pass | pass | the lastX fix |
+| a ledge: the press is within edgeAim of the end, no hops on the way, across unhurt (gaps 140/200) | fail | pass | pass | the lastX fix |
+| a 60 px step: the only stop is at its face, its height read right, then over | fail | pass | pass | the lastX fix |
+| a climb with an uncrossable gap: put past after the third fall, the loop reported | fail | fail | pass | the fall loop |
+| put past a room, not back into it: 6-3's seesaw reaches the shrine (kid, seeds 1-3) | fail | fail | pass | the room put-past (also the fall loop) |
+| a room starts again only when he has fallen back into it: 1-4's lifts, kid and adult, seeds 1-3 | — | — | pass | the re-entry rule (also the fall loop) |
+| three rescues from the same spot land further on each time | — | — | pass | the rescue step-on |
+| 5-9's kid runs re-measured equal `KID_RUNS_59` | — | — | pass | any change to the bot or 5-9 that moves them |
+
+The lastX cases come in an adult and a kid version each, so there are 11 cases. "Taken out" was checked by editing the one fix out and
+running the file: only the named case failed.
 
 ## 4. Where the bot's numbers feed the game (step 3)
 
-Nothing was re-run or changed for this; the lead decides.
+Nothing here was changed on my own call. The lead decided the 5-9 goal (changed in `7b9b9bcc`); the rest is listed for the lead.
 
 | what | where | from the first-timer bot? | would the fix change a shipped stage if re-run? |
 |---|---|---|---|
-| 5-9 Easy goal: 9 of 18 spiders | `src/game/gen2/game.ts:78,83` (`KID_RUNS_59 = [5,5,9,10,10,10]`); applied in `src/game/stageGenerator.ts:2853-2855`, `goals.ts:88-100`; pinned by `src/game/goalsEasy.test.ts:11-13` | yes, the kid's recorded runs | **Yes.** The fixed kid (877a819b, seeds 1-3, trials 0-1) beats 4, 5, 5, 6, 6, 6, median **5**. The buggy bot today gets 6, 7, 8, 10, 10, 11: the hops were landing stomps. Re-run, 5-9 Easy would ask 5 of 18, not 9. Caveat: the bot walks to the shrine and never hunts, so this is "what a kid passing through beats", the same thing the 9 measured. |
+| 5-9 Easy goal: was 9 of 18 spiders, **now 5** | `src/game/gen2/game.ts:78-86` (`KID_RUNS_59`); applied in `src/game/stageGenerator.ts:2853-2855`, `goals.ts:88-100` | yes, the kid's recorded runs | **Yes, and changed** (`7b9b9bcc`, the lead's call). Same rule as before: `kidMedian`, the lower middle of the kid's six runs (seeds 1-3, trials 0-1, Easy's goal at the 65% floor so the shrine does not stop him early), capped by the 65% floor in `gen2EasyGoal`. The fixed kid, through `firstTimer()`, beats 5, 6, 4, 6, 6, 5 → sorted 4 5 5 6 6 6 → **5**. The old 5, 5, 9, 10, 10, 10 came from the hopping bot's stomps (re-measured on main today: 6-11). Pinned in `goalsEasy.test.ts`, and re-measured live in `firstTimerBot.test.ts`. Caveat: the bot never hunts, so this is "what a kid passing through beats", the same thing the 9 measured. One of the six runs (seed 2, trial 0) gets 4, so the bot still meets the sealed door there. |
 | Curation picks and seeds (`seeds.ts`) | `tools/gen2/curate.ts:42-48, 255-280` | **no**: `jumps.ts` (the noisy jump bots) and `stageScore` with the first-timer parts set to null | No. `jumps.ts` has no lastX pattern. |
-| Difficulty bands | `tools/inspect/bands.ts:40-88` (lives, stress, window, pressure parts), `inspect.ts --firsttimer --gate` | yes | Not shipped data, but every band and band flag from a first-timer pass before today is suspect. Lives a minute fell about 30% overall (adult 1.57 → 1.19, kid 0.89 → 0.69). Re-run the band pass on 877a819b before using any band. |
+| Difficulty bands | `tools/inspect/bands.ts:40-88` (lives, stress, window, pressure parts), `inspect.ts --firsttimer --gate` | yes | Not shipped data, but every band and band flag from a first-timer pass before today is suspect: see "Bands to re-run" below. |
 | A gate test on the bot | `src/game/w6Stages.test.ts:299-305` (6-8: no harm before 10 s, at most 3 lives a minute) | yes | It passes on 877a819b (see checks). |
 | Tunings made from first-timer findings (comments) | `src/game/w8Lantern.ts:131-133` (hop cap 165 px, hops up 130 px); `gen2/worlds/w8Branch.ts:46`; `gen2/worlds/w8.ts:308` (Easy fights softer); `gen2/worlds/w7.ts:22` and `w4Normal.ts:3` (bands); `easyMode.ts:246`; `w2Sections.ts:871,1126,1134`; `waterTeach.ts:3`; `gen2/worlds/w6Ground.ts:129` | yes, all from the bot before today | Mostly no. Spot check of the biggest one, World 8's 165 px cap: the fixed adult's first try onto a 120 px pad after a 1400 px walk-up lands 11/12 at 140 px, 5/12 at 165 px, 1/12 at 185 px, and 6/12 at 140 px rising 50. The cap still holds. The tip-timing and respawn fixes (`waterTeach.ts`, `w2Sections.ts:1126,1134`, `w6Ground.ts:129`) fixed real engine or stage faults the bot only pointed at; they stand. The band-based ones (`w7.ts:22`, `w4Normal.ts`) move with the bands (row above). |
 
 The bot came into this repo whole (commit 4e20d06c, 2026-10-31) with the bug already in it, so every first-timer number before today was
 made with the buggy bot.
+
+### Bands to re-run
+
+**All 20** (10 worlds × Easy and Normal). Four of a band score's seven parts come from the first-timer: lives a minute (weight 0.3), peak
+stress, the narrowest input window, and timing pressure. So no world's band survives the fix unchanged. Lives a minute by world, seeds
+1-3, main's bot → 877a819b:
+
+| world | Easy (kid) | Normal (adult) |
+|---|---|---|
+| 1 | 0.41 → 0.29 (−30%) | 0.57 → 0.48 (−16%) |
+| 2 | 2.33 → 2.92 (**+25%**) | 2.66 → 2.14 (−19%) |
+| 3 | 0.64 → 0.34 (**−48%**) | 1.67 → 1.02 (**−39%**) |
+| 4 | 0.57 → 0.49 (−14%) | 1.22 → 1.30 (+7%) |
+| 5 | 0.09 → 0.05 (−42%) | 0.21 → 0.22 (+6%) |
+| 6 | 1.30 → 1.17 (−10%) | 2.43 → 1.85 (−24%) |
+| 7 | 0.72 → 0.31 (**−57%**) | 2.26 → 1.45 (**−36%**) |
+| 8 | 0.03 → 0.05 | 1.10 → 0.59 (**−47%**) |
+| 9 | 2.01 → 1.05 (**−48%**) | 2.54 → 1.69 (**−33%**) |
+| 10 | 1.22 → 0.72 (−41%) | 1.49 → 1.35 (−9%) |
+
+- Re-run first: World 7 and World 8 Normal. Their tunings were made against bands: `w7.ts:22` (chasms set from "World 7 below World 6"),
+  and `w8Lantern.ts` / `w8.ts:308` (World 8's band).
+- Then: World 3, World 9, and World 2 Easy, the only one that rose.
+- On lives alone, the honest Normal numbers don't climb world by world: World 2 at 2.14 is above Worlds 3-5, 7, 8 and 10. That is the
+  thing for the band pass to confirm or refute, not a verdict from this table.
 
 ## 5. The re-baseline (step 4)
 
@@ -180,32 +217,33 @@ Not on the list: the sealed doors and timeouts in section 5. They are the bot's 
 
 ## 7. Bot gaps that remain (the ruler's known blind spots)
 
-Until these are closed, read the bot's ends on these stage types as "the bot can't", not "a player can't".
+Until these are closed, a sealed door or a timeout on these stage types is **not evidence** that a stage is unfair. Read it as "the bot
+can't", not "a player can't". For each blind spot, the tool or bot mode that would measure it (each could be a job):
 
-1. **No crouch-search.** World 3's fern keepsakes (3-6, 3-7: 0 every run).
-2. **No puzzles, so no cages.** Rescue stages (2-3, 2-8, 4-8, 5-5) end 0/N. On 2-8 Easy the kid drowns at each cage in the flooding river
-   (x ≈ 3820 and 4210, every seed): a person who knows the cage lift may not. Check with the method before calling it unfair.
-3. **Never hunts.** Fight goals (purge, gauntlet) and harvest counts measure what passing through gets.
-4. **Walks under a step to the face beyond it.** 1-1 and 1-7's 230-245 px pillars are reached from a step before them (a full double jump
-   rises about 186 px). He never backs up to the step, so each pillar costs a rescue: 1-1 about 14 a run, 1-7 about 16.
-5. **No pushing.** 4-3 times out on every run with 70+ rescues: 138 of its stuck spots are "a thing to push".
-6. **Climbs still time out sometimes.** 6-8, 7-4 (stranded), 8-7, 10-5. Before trusting a climb's numbers, look at its stuck spots
-   (`botBaseline.ts --detail`).
-7. **4-D and 5-M** (Dot's flight and the Meeca stage) strand him at once: they are not walk-to-the-shrine stages.
+| blind spot | stages | what the bot does now | what would measure it |
+|---|---|---|---|
+| **Cages and other puzzles** | rescue: 2-3, 2-8, 4-8, 5-5 (0/N every run); every puzzle room | stands at a room 3 s, is put past; never works a cage | A **puzzle mode** that plays each room with its own solver: the real-engine room tests already solve many (e.g. the tea room in `gen2/w5Arena.test.ts`, the seesaw room in `gen2/w6Rooms.test.ts`), so a table of room id → solver steps the first-timer can call, with its thumb noise and reaction lag. It reports time per room and whether it was solved, instead of putting him past. On 2-8 Easy the kid drowns at each cage in the flooding river (x ≈ 3820 and 4210, every seed); a person who knows the cage lift may not. |
+| **Fights: it never hunts** | purge and gauntlet (1-3, 1-9, 2-5, 2-9, 3-3, 3-9, 4-9, 5-9, 6-5, 6-9, 7-5, 7-9, 8-8, 8-9, 9-6, 9-9, 10-7, 10-9) | beats only what walks into it on the way to the shrine | A **hunter mode**: when the goal is short and an animal is on screen (or was passed), turn and go to it, punch or stomp as Dot taught, then carry on. Report animals beaten and time and lives per animal. The goal check becomes "a hunting first-timer meets it in N of 6 runs". Easy goals like 5-9's could then be set from a kid who tries, not one passing through. |
+| **Harvest counts** | 1-2, 1-5, 2-2, 5-3, 8-2 | grabs what is on its line; rescues skip pickups | A **collector mode**: aim for the nearest unpicked petal within a reach budget (the inspector's goal stops already give a reachable order: `inspect.ts` stops asked/skipped), and backtrack once at the end if short. |
+| **Fern keepsakes** | World 3 relic hunts 3-6, 3-7 (0 every run) | never crouches by a fern | Teach the bot the fern search: crouch beside a fern for `FIND_SEARCH_SECONDS` once Dot has said so (`engine.ts:2836`). Small; could go in the collector mode. |
+| **Climbs** | 18 ascents: on main 17 never reached the shrine; now 2 never do (4-3, 6-8), and 7-4 strands, 8-7 and 10-5 time out on some runs | climbs straight up a trunk, flicks off at the top; loops are now caught | A **climb probe** in the style of `ropeProbe.ts`: stand him at each climb step and sweep the thumb (press distance × hold) to get each step's success window, as the stage-fix method does for jumps. That tells "the step is unfair" from "the bot's flick is odd". |
+| **Backing up to a step** | 1-1, 1-7 (and 1-5, 1-6): the 220-259 px pillars and "the way on is 240 px up" | walks under the step to the face beyond (a full double jump rises about 186 px) and needs a rescue at each: 1-1 about 14 a run, 1-7 about 16 | Let him back up: when stopped at a face taller than his double jump and the route's next point is over a step behind him, walk back to that step and jump from it. |
+| **Pushing** | 4-3 (T every run, 70+ rescues; 138 stuck spots "a thing to push") | doesn't push | Push when stopped at a pushable block and the route goes on past it. |
+| **Not walk-to-the-shrine stages** | 4-D (Dot's flight), 5-M (Meeca) | strands at once | Their own bots: `meecaBot.ts` exists for 5-M; 4-D would need a flapping first-timer. |
 
 ## 8. Checks
 
-On 877a819b plus this report (bot and test only):
+Re-run on d9a8e640 (the bot, its 11-case test, the 5-9 goal), 2:57 PM ET:
 
 | check | result |
 |---|---|
 | `npx tsc --noEmit -p .` | clean |
-| full test globs, 3 shards in parallel | 679 + 706 + 776 = 2161 tests, **0 failures**. The 2 "not ok" are main's existing `todo` tests (the boulder wall check, 4-3 and 4-8), not failures. |
-| `src/game/firstTimerBot.test.ts` alone | 8/8 pass (on main all 8 fail; on 75ee59f7 the last 2 fail) |
+| full test globs, 3 shards in parallel | 679 + 709 + 776 = 2164 tests, **0 failures**. The 2 "not ok" are main's existing `todo` tests (the boulder wall check, 4-3 and 4-8), not failures. |
+| `src/game/firstTimerBot.test.ts` alone | 11/11 pass (on main the 8 bot cases fail; on 75ee59f7 the gap cases fail) |
 | `tools/inspect/*.test.ts` (the bot's own older tests, not in the gate globs) | 42/42 |
 | `npx vite build` | built; no file in `dist` over 4 MiB |
 | `node tools/perf/artcheck.mjs` | PASS |
-| `node tools/perf/drawcheck.mjs` | PASS (337 s) |
+| `node tools/perf/drawcheck.mjs` | PASS (311 s) |
 
 No game code changed, so no screens to film; the polish bar for this job is the table's honesty. The known blind spots are named in
 section 7, not hidden.
@@ -215,9 +253,9 @@ section 7, not hidden.
 - **The ruler is checked first.** Before step 1 ("Reproduce with the first-timer"), run the bot's own self-test:
   `npx tsx --test src/game/firstTimerBot.test.ts` (about 6 s). Whenever the bot changes, it must pass, and a fix to the bot gets a case
   that fails before it.
-- **Read the bot's ends by stage type.** A sealed door on a cage, fern-keepsake, fight or harvest stage, or a timeout on a climb, is often
-  the bot's own blind spot (section 7). Class it before calling a stage unfair. The proof is the run flags (opening, before-tip, eagle) and
-  the frames, never the end alone.
+- **Read the bot's ends by stage type.** A sealed door on a cage, fern-keepsake, fight or harvest stage, or a timeout on a climb, is
+  **not evidence**: it is the bot's own blind spot (section 7's table, which also names the tool that would measure each). Class it
+  before calling a stage unfair. The proof is the run flags (opening, before-tip, eagle) and the frames, never the end alone.
 - Proof it matters: today's buggy-bot list of 16 "sealed or timed out" stages had **0** proven unfair once the ruler was fixed and the
   ends were classed. The real ones (section 6) came from the flags.
 - Pitfall (2026-11-01): **a value the end of the frame has already overwritten reads 0 in the next frame's choices.** It bit `lastY`
