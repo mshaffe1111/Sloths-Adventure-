@@ -1,0 +1,74 @@
+{
+ "tag": "hfbd2-hd-T1",
+ "note": "hf-backdrops native-resolution pass",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w7court-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5aa7029614183db1a1caa9be8cb8476f5ead49ea/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w7court-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a sunlit jungle temple courtyard at noon: tall stepped stone temples and carved towers, jungle trees behind, a bright blue sky with white clouds, bright warm noon sunlight, clear shadows, open sky above, the far scenery below",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w8dawn-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5aa7029614183db1a1caa9be8cb8476f5ead49ea/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w8dawn-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. dawn over the high jungle canopy: a sea of round treetops seen from above, mist between them, a soft pink-gold sun rising, a few birds far away, soft pink and gold dawn light, open sky above, the far scenery below",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w9ash-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5aa7029614183db1a1caa9be8cb8476f5ead49ea/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w9ash-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. an ash storm in a volcanic valley: a smoking volcano far away, grey ash clouds rolling across the sky, black basalt ridges, dim orange glow under the ash, dim grey-orange light through falling ash, open sky above, the far scenery below",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w10night-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5aa7029614183db1a1caa9be8cb8476f5ead49ea/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w10night-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. the mountain summit at night: snowy jagged peaks under a huge starry night sky with a band of the milky way and a crescent moon, cold blue night light, starlight on the snow, open sky above, the far scenery below",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  }
+ ]
+}
