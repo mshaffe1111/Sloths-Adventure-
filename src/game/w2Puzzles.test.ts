@@ -10,7 +10,8 @@ import { validateStage } from './levelCheck.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
 import { driftX, logClock } from './river.ts';
-import { kitPlatId, type RoomSpec } from './puzzleKit.ts';
+import { KIT, kitPlatId, type RoomSpec } from './puzzleKit.ts';
+import { setDifficulty } from './difficulty.ts';
 import { heard } from './noise.ts';
 import { RealPlay } from './realPlay.ts';
 import type { Collectible, LevelConfig, PlayerState } from './types.ts';
@@ -212,3 +213,50 @@ test('2-8 in play: the water rises while he is in a basin, and drains away once 
 function roomErrors(st: ReturnType<typeof buildW2Stage>): string[] {
   return validateStage(st).errors.filter((e) => e.startsWith('room '));
 }
+
+// Matt, 2-3, 2026-10-31: "2 cages won't open so you can't solve the level" (the two high-basket cages). A throw up carried ~95 px
+// forward, so from under the high basket, where anyone stands, the stone flew over the pool and was lost every time; it only went in
+// from a 50 px strip well back from the post (puzzleKit.ts aimUp). Every cage, in play: each stone carried to the basket and, standing
+// under it, flicked up (a high basket) or tapped in (a bank's basket), opens it, on Normal and Easy.
+test('every cage in 2-3 and 2-8 opens in play: each stone carried to its basket and flicked up (or tapped) in from under it', () => {
+  try {
+    for (const mode of ['normal', 'easy'] as const) {
+      setDifficulty(mode);
+      for (const plan of ['2-3', '2-8'] as const) for (const seed of [1, 2, 3, 38, 75, 112]) {
+        const r = new RealPlay(plan, seed);
+        const kit = r.e.kit as KitPlay;
+        let rooms = 0;
+        kit.rooms.forEach((room) => {
+          const l = room.lifts.find((q) => q.cage);
+          if (!l) return;
+          rooms++;
+          const b = room.baskets[l.basket];
+          const high = b.spec.mouth > KIT.up;
+          for (const stone of room.items) {
+            if (l.cage!.collected) break;
+            // (picked up where it lies, close by it: a step back on 2-8's islands is the room's reset post, nearer than the stone)
+            r.stand(stone.x - 12, stone.y);
+            r.frame({ right: true });
+            r.frame();
+            r.frame({ punch: true });
+            r.frame();
+            assert.equal(stone.mode, 'held', `${mode} ${plan} seed ${seed} ${room.spec.id}: picked up`);
+            // under the basket, facing it, then flick up (a high basket) or tap (a bank's)
+            r.stand(b.x - 16, b.y);
+            r.frame({ right: true });
+            r.frame();
+            r.frame(high ? { up: true, jump: true, press: true } : { punch: true });
+            r.frame();
+            r.wait(2.5);
+            assert.equal(stone.mode, 'basket', `${mode} ${plan} seed ${seed} ${room.spec.id} (${high ? 'high' : 'bank'} basket): the stone goes in, not ${stone.mode}`);
+          }
+          assert.ok(l.cage!.collected, `${mode} ${plan} seed ${seed} ${room.spec.id}: the cage comes all the way up and opens`);
+        });
+        assert.ok(rooms >= (plan === '2-3' ? 5 : 7), `${plan} seed ${seed}: its cages (${rooms})`);
+        assert.ok(r.p.crittersRescued >= rooms, `${mode} ${plan} seed ${seed}: every little one freed (${r.p.crittersRescued} of ${rooms})`);
+      }
+    }
+  } finally {
+    setDifficulty('normal');
+  }
+});

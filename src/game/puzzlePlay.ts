@@ -8,7 +8,7 @@
 import { drawW7Piece } from './w7PuzzleArt.ts';
 import {
   anchorAt, BEETLE, CHAIR, evalWire, knotBox, GLOW, SAPLING, SILK, TEA, tipText, type TipLine, falseLeaves, flowRate, flyStep, ITEM, KIT, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox,
-  seesawDy, seesawTilt, setDownX, sluiceFlow, stepBeetle, stepFlow, throwStart, THROW, tradeTakes, useReach, isLit, type BeetleState, type Body,
+  aimUp, seesawDy, seesawTilt, setDownX, sluiceFlow, stepBeetle, stepFlow, throwStart, THROW, tradeTakes, useReach, isLit, type BeetleState, type Body,
   type FlightWorld, type ItemVariant, type KitExtras, type PieceSpec, type RoomSpec, type ThrowKind, type Wire, wireIds,
 } from './puzzleKit.ts';
 import { drawKitArt, handOf, kitArtReady, kitSize } from './puzzleArt.ts';
@@ -636,7 +636,7 @@ export class KitPlay {
     return {
       platforms,
       box: room.box,
-      baskets: room.baskets.map((b) => ({ x: b.x, y: this.mouthY(room, b), half: KIT.mouthHalf })),
+      baskets: room.baskets.map((b) => ({ x: b.x, y: this.mouthY(room, b), half: KIT.mouthHalf, aim: room.lifts.some((l) => l.cage && l.spec.by === b.spec.id) })),
       // (a bell is knocked like a lever's handle: its index comes after the levers')
       levers: [...room.levers.map((l) => ({ x0: l.x - 18, x1: l.x + 18, y0: l.y - 60, y1: l.y })), ...room.bells.map((b) => bellBox(b)), ...room.knots.map((k) => knotBox(k))],
     };
@@ -663,11 +663,11 @@ export class KitPlay {
       const room = this.rooms[this.held.room];
       const it = room.items[this.held.item];
       if (inp.up) {
-        this.throwIt(room, it, 'up', f, h);
+        this.throwIt(room, it, 'up', f, h, platforms);
         took.up = true;
       } else if (inp.side) {
         const d: 1 | -1 = inp.sideDir < 0 ? -1 : inp.sideDir > 0 ? 1 : f;
-        this.throwIt(room, it, 'fwd', d, h);
+        this.throwIt(room, it, 'fwd', d, h, platforms);
         took.side = true;
       } else if (inp.tap) {
         const tr = room.traders.find((t) => !t.done && Math.abs(t.x - p.x) <= KIT.tradeReach && Math.abs(t.y - p.y) <= KIT.up);
@@ -846,7 +846,7 @@ export class KitPlay {
     }
   }
 
-  private throwIt(room: RoomRun, it: ItemRun, kind: ThrowKind, f: 1 | -1, h: KitHost) {
+  private throwIt(room: RoomRun, it: ItemRun, kind: ThrowKind, f: 1 | -1, h: KitHost, platforms: readonly Platform[]) {
     const p = h.player;
     this.lastVariant = it.variant;
     it.body = throwStart(kind, p.x, p.y, f);
@@ -859,6 +859,8 @@ export class KitPlay {
         it.body.vx = Math.max(-260, Math.min(260, (k.x - it.body.x) / tTop));
       }
     }
+    // (World 2: thrown up near a hanging cage's counter-basket, it goes into the basket, whichever way he faces)
+    if (kind === 'up') aimUp(it.body, this.flightWorld(room, platforms));
     it.thrown = true;
     it.mode = 'fly';
     it.acc = 0;

@@ -18,7 +18,7 @@
  */
 import {
   anchorAt, beetleSleepX, BEETLE, evalWire, flyAll, GLOW, ITEM, KIT, knotBox, TEA, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox, seesawDy,
-  seesawTilt, THROW, throwStart, tradeTakes, useReach, type FlightWorld, type PieceSpec, type RoomSpec,
+  seesawTilt, THROW, throwStart, aimUp, tradeTakes, useReach, type FlightWorld, type PieceSpec, type RoomSpec,
 } from './puzzleKit.ts';
 import { NOISE } from './noise.ts';
 import { hopLimit } from './river.ts';
@@ -441,7 +441,7 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     const mouths = baskets.map((b) => {
       const li = lifts.findIndex((l) => l.spec.by === b.spec.id);
       const drop = (b.spec.drop ?? 0) * (li >= 0 ? lv[li] : 0);
-      return { x: b.x, y: b.y - b.spec.mouth + drop, half: KIT.mouthHalf };
+      return { x: b.x, y: b.y - b.spec.mouth + drop, half: KIT.mouthHalf, aim: lifts.some((l) => l.spec.cage !== undefined && l.spec.by === b.spec.id) };
     });
     const flight: FlightWorld = {
       platforms: [...plats, ...flightPlats],
@@ -738,6 +738,7 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
         if (inGate(x)) continue;
         for (const f of [1, -1] as const) for (const kind of ['up', 'fwd'] as const) {
           const b = throwStart(kind, x, here.y, f);
+          if (kind === 'up') aimUp(b, L.flight);
           const { end, knocked } = flyAll(b, L.flight, r);
           const rest = end.kind === 'ground' ? (ground.has(end.plat) ? { plat: end.plat, x: end.x } : { lost: true as const }) : end.kind === 'basket' ? { basket: end.idx } : { lost: true as const };
           outs.push(knocked.length ? { knocked, rest } : rest);
