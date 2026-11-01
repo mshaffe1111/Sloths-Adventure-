@@ -179,6 +179,7 @@ import { gpuProfOn, profBegin, profEnd, profMark } from './gpuProf.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp, seenSkills } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
+import { aheadZone, type AheadProbe } from './dotGuidePerch.ts';
 import { FONT_UI } from './fonts.ts';
 import { withHurtFlash } from './hurtFlash.ts';
 import { shakeOffset } from './screenShake.ts';
@@ -604,6 +605,10 @@ export class GameEngine {
   private dotRun: DotRun | null = null;
   /** 7-4's slide (w7SlideRun.ts): side-on until the crumble, then it runs the stage until he comes out in the chamber */
   private slideRun: SlideRun | null = null;
+  /** Meeca's thought cloud: her box and the way ahead of her it keeps off (the law, D10), reused every frame; and where it was drawn last (for the tests) */
+  private mcLaw = { body: { x0: 0, y0: 0, x1: 0, y1: 0 }, ahead: { x0: 0, y0: 0, x1: 0, y1: 0 }, facing: 1 as 1 | -1 };
+  private mcProbe: AheadProbe = { px: 0, py: 0, pw: 0, ph: 0, zoom: 1, camX: 0, camY: 0, cssW: 0, cssH: 0, facing: 1, climbing: false, grounded: true, vy: 0, gliding: false };
+  mcThoughtBox: { x: number; y: number; w: number; h: number } | null = null;
   /** Meeca's stage (5-M, meecaPlay.ts): she is the player, on his physics, with no fighting and no Dot */
   private mc: MeecaPlay | null = null;
   private mcCinematic: boolean | null = null;
@@ -6592,11 +6597,35 @@ export class GameEngine {
     const top = H > W ? 96 : H <= 430 ? 66 : 84;
     const p = this.player;
     let tb: { x: number; y: number; w: number; h: number } | null = null;
+    this.mcThoughtBox = null;
     if (mc.thought && mc.phase !== 'card') {
       const a = Math.min(1, (mc.t - mc.thought.at) / 0.2, (mc.thought.until - mc.t) / 0.3);
       const tr = mc.next;
       const wb = tr ? wordsBox(tr) : null;
-      tb = drawThought(ctx, mc.thought.text, sx(p.x), sy(p.y - 92), W, H, top, Math.max(0, a), wb && { x0: sx(wb.x0), y0: sy(wb.y0), x1: sx(wb.x1), y1: sy(wb.y1) });
+      // (never over her or the way ahead of her: the law, D10)
+      const law = this.mcLaw;
+      const pv = this.mcProbe;
+      law.body.x0 = sx(p.x) - 10;
+      law.body.y0 = sy(p.y - p.height) - 10;
+      law.body.x1 = sx(p.x + p.width) + 10;
+      law.body.y1 = sy(p.y) + 6;
+      pv.px = p.x;
+      pv.py = p.y;
+      pv.pw = p.width;
+      pv.ph = p.height;
+      pv.zoom = z;
+      pv.camX = this.camera.x;
+      pv.camY = this.camera.y;
+      pv.cssW = W;
+      pv.cssH = H;
+      pv.facing = p.facing;
+      pv.climbing = p.climbing;
+      pv.grounded = p.grounded;
+      pv.vy = p.vy;
+      aheadZone(pv, law.ahead);
+      law.facing = p.facing;
+      tb = drawThought(ctx, mc.thought.text, sx(p.x), sy(p.y - 92), W, H, top, Math.max(0, a), wb && { x0: sx(wb.x0), y0: sy(wb.y0), x1: sx(wb.x1), y1: sy(wb.y1) }, law);
+      this.mcThoughtBox = tb;
     }
     if (mc.bubble) {
       const b = mc.bubble;
