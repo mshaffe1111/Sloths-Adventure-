@@ -89,12 +89,14 @@ Easy and Normal). `tools/qa/meecaVisible.cjs` results are below.
 
 - `room5-upright-zoom.jpg`: before and after, upright 448x998 at dpr 3.
 - `room5-sideways-zoom.jpg`: before and after, sideways 844x390 at dpr 3 (2x zoom).
+- `room5-jump-against-face-after.jpg`: jumping into the face from the pit (upright, after): her raised hand touches the face's edge and goes no further. Before, the jump frame reached 40 px past her body, into the dirt.
 - `room5-upright-before-after.jpg`, `room5-sideways-before-after.jpg`: the whole screens.
 
 ## Polish check
 
 - **She stands against the face, not in it** (`room5-upright-zoom.jpg`, `room5-sideways-zoom.jpg`). Before, her right arm and side
   covered the post and went into the dirt. After, her hand rests on the post at the foot of the face. Pass.
+- **Not inside the dirt in the air either** (`room5-jump-against-face-after.jpg`): jumping up the face, her hand meets its edge. Pass.
 - **She doesn't drift or wobble while standing at the wall.** The idle frames share one reach, and the test checks that the shift settles
   and goes back to zero when she leaves. Pass.
 - **She doesn't look pushed off the wall.** The shift is only as much as her picture overlapped; the test allows at most 4 px of gap, and
