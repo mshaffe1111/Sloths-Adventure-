@@ -25,7 +25,7 @@ test('the prologue comes first and is always open; nothing else is open on a new
 test('progress unlocks scenes the player passed before the list existed', () => {
   const cleared = ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9', '1-10', '2-1'];
   const ids = unlockedScenes(prog(cleared)).map((e) => e.id);
-  for (const id of ['prologue', 'open1', 'mid1', 'boss1', 'fall1', 'open2']) assert.ok(ids.includes(id), id);
+  for (const id of ['prologue', 'open1', 'mid1', 'boss1', 'beaten1', 'open2']) assert.ok(ids.includes(id), id);
   assert.ok(!ids.includes('mid2'));
   assert.ok(!ids.includes('mem_waiting'));
 });
@@ -39,5 +39,5 @@ test('the order follows the story: worlds ascend, the ending is last of the main
   const list = sceneList();
   for (let i = 1; i < list.length; i++) assert.ok(list[i].world >= list[i - 1].world, list[i].id);
   const iEnd = list.findIndex((e) => e.id === 'ending');
-  assert.ok(list.findIndex((e) => e.id === 'fall10') < iEnd);
+  assert.ok(list.findIndex((e) => e.id === 'beaten10') < iEnd);
 });

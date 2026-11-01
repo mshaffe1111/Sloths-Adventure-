@@ -1657,7 +1657,7 @@
 .ss-row.lock .ss-ic { background: #8b7656; }
 .ss-memory .ss-ic { background: radial-gradient(circle at 40% 35%, #f2b6c8, #b85c7a); }
 .ss-tower .ss-ic { background: radial-gradient(circle at 40% 35%, #a2a9b8, #4f5868); }
-.ss-boss .ss-ic, .ss-fall .ss-ic { background: radial-gradient(circle at 40% 35%, #f0b04a, #a85a17); }
+.ss-boss .ss-ic, .ss-beaten .ss-ic { background: radial-gradient(circle at 40% 35%, #f0b04a, #a85a17); }
 .ss-t { display: flex; flex-direction: column; min-width: 0; }
 .ss-t b { font-family: var(--font-ui); font-weight: 800; font-size: 15px; line-height: 1.15; color: #3a2510; }
 .ss-t small { font-size: 12.5px; color: #7a5a34; }

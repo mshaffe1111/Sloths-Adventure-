@@ -15,7 +15,7 @@ import { endTagPanels, finalePanels } from './storyFinale.ts';
 import { GUARDIANS, WORLD_NAMES } from './badges.ts';
 import type { StoryPanel } from './story.ts';
 
-export type SceneKind = 'prologue' | 'opener' | 'mid' | 'gate' | 'boss' | 'fall' | 'memory' | 'tower' | 'turn' | 'ending' | 'secret';
+export type SceneKind = 'prologue' | 'opener' | 'mid' | 'gate' | 'boss' | 'beaten' | 'memory' | 'tower' | 'turn' | 'ending' | 'secret';
 
 export interface SceneEntry {
   id: string;
@@ -57,7 +57,7 @@ export function sceneList(): SceneEntry[] {
     if (WORLD_MID[w]) out.push({ id: `mid${w}`, world: w, kind: 'mid', title: `Halfway through ${name.replace(/ Fortress$/, '')}`, hint: `Clear stage ${w}-5.` });
     if (WORLD_GATE[w]) out.push({ id: `gate${w}`, world: w, kind: 'gate', title: 'The Fortress Gate', hint: `Clear stage ${w}-9.` });
     out.push({ id: `boss${w}`, world: w, kind: 'boss', title: GUARDIANS[w - 1], hint: `Reach the guardian of World ${w}.` });
-    out.push({ id: `fall${w}`, world: w, kind: 'fall', title: `${GUARDIANS[w - 1]} Falls`, hint: `Beat the guardian of World ${w}.` });
+    out.push({ id: `beaten${w}`, world: w, kind: 'beaten', title: `${GUARDIANS[w - 1]} Falls`, hint: `Beat the guardian of World ${w}.` });
     for (const m of AFTER_BOSS[w] ?? []) {
       const def = MEMORIES[m];
       out.push({ id: `mem_${m}`, world: w, kind: def.kind === 'memory' ? 'memory' : TOWER.has(m) ? 'tower' : 'turn', title: def.title, hint: def.hint, memory: m });
@@ -91,7 +91,7 @@ export function sceneUnlocked(e: SceneEntry, p: SceneProgress): boolean {
       return has(p, `${w}-9`);
     case 'boss':
       return has(p, `${w}-9`) || has(p, `${w}-10`);
-    case 'fall':
+    case 'beaten':
     case 'tower':
     case 'turn':
       return has(p, `${w}-10`);
@@ -129,7 +129,7 @@ export function scenePanels(e: SceneEntry, c: SceneContext): StoryPanel[] {
       return WORLD_GATE[w] ?? [];
     case 'boss':
       return bossPanels(w, 'intro', c.bossName(w), false);
-    case 'fall':
+    case 'beaten':
       return victoryPanels(w, c.bossName(w)) ?? bossPanels(w, 'defeat', c.bossName(w));
     default:
       return [];
@@ -148,7 +148,7 @@ export const KIND_LABEL: Record<SceneKind, string> = {
   mid: 'A note from Meeca',
   gate: 'Before the guardian',
   boss: 'The guardian appears',
-  fall: 'Victory',
+  beaten: 'Victory',
   memory: 'Flashback',
   tower: 'The Tower',
   turn: 'Story',
