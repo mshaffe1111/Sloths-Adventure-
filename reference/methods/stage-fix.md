@@ -8,6 +8,9 @@ there and fix it. (Building a new stage is `stage-build.md`; the rules every sta
 first: it is the bar for "fix it" against "hard but fair, keep it".)
 
 ## Steps
+0. **Check the ruler first.** `npx tsx --test src/game/firstTimerBot.test.ts` (about 18 s) must pass before any first-timer number is
+   trusted. Any change to the bot adds a case that fails before it (bot-fix, 2026-11-01: the bot had hopped every 0.3 s since it arrived,
+   and every first-timer number before then was made with it).
 1. **Reproduce with the first-timer, on several rolls.** `npx tsx tools/inspect/inspect.ts --worlds N --stages N-M --firsttimer --seed S`
    (12 s for one stage; `--json` for the runs). Seeds 1-3 at least, Easy and Normal; layout seed S plays shipped roll `S % 16`. Run the
    same thing on the base branch (a `git worktree add /tmp/base origin/<base>` with node_modules symlinked) so you know what is new.
@@ -38,6 +41,10 @@ first: it is the bar for "fix it" against "hard but fair, keep it".)
    real speed and quarter speed). Playwright's own video at deviceScaleFactor 2 switches frame scale mid-clip; record at 1.
 
 ## The bar
+- **Bot ends are sorted by stage type before a stage is blamed.** A sealed door on a cage, fern-keepsake, fight or harvest stage, or a
+  timeout on a climb, is **not evidence**: it is the bot's own blind spot (`reference/qa-reports/bot-fix/README.md` §7, which names the
+  tool that would measure each). Proof of unfairness is the run flags (opening, before-tip, eagle), lives at a concentrated spot, and the
+  frames; never the end alone. Proof: the buggy bot's list of 16 sealed or timed-out stages had 0 proven unfair once sorted (bot-fix).
 - 0 losses at the spot for the first-timer on every roll and trial tested, Easy and Normal; the stage's other numbers no worse than base.
 - The fix's test fails on base and passes now; the guard test passes.
 - Every other stage byte-identical; the full CLAUDE.md checks green.
@@ -45,7 +52,7 @@ first: it is the bar for "fix it" against "hard but fair, keep it".)
   `reference/qa-reports/w8-rope2/8-2-grab-slide-sideways-quarter-speed.mp4`, the README there).
 
 ## Checks before reporting
-The CLAUDE.md checks (tsc, the full test globs in 3 shards, vite build, artcheck, drawcheck), the stage's build time (time
+The bot's self-test (step 0), the CLAUDE.md checks (tsc, the full test globs in 3 shards, vite build, artcheck, drawcheck), the stage's build time (time
 `buildGen2ForGame` over 16 layouts x 2 settings when the machine is idle: tests running beside it doubled the numbers), the bot table
 (before/after, per roll and trial), the polish check against the clip.
 
@@ -58,6 +65,11 @@ The CLAUDE.md checks (tsc, the full test globs in 3 shards, vite build, artcheck
   takes off and lands (36-55 px under the flight, reach 34). Count what each run leaves and classify it (on a knot / bough / arc; passed
   over / under / never near) before blaming the bot.
 - 2026-11-01: one bot trial per roll said "fixed"; three trials showed the same roll failing 2 of 3.
+- 2026-11-01: **a value the end of the frame has already overwritten reads 0 in the next frame's choices.** It bit the first-timer's
+  `lastY` on trunks (round 5) and `lastX` in "stopped dead" (bot-fix): he hopped along flat ground and took off ~110 px before every
+  ledge's end. Use `moveX` / `moveY`; the self-test's flat-ground case catches it coming back.
+- 2026-11-01: **one bug can hide others.** The hops carried the bot past its own puzzle-room and climb gaps (6-3 and 1-4 timed out
+  once they stopped). After fixing the bot, re-run every stage and look at what got worse, not only what got better.
 - 2026-11-01: **a guess at the cause has to survive the numbers.** "Blooms sit beside take-off and landing edges" looked right on two
   runs; the histogram over 8 runs showed misses at 8-19% at every distance from an edge, even on boughs with no gap. Asking *why he was
   in the air over each missed bloom* (a gap jump onto the landing bough, a hop down a step, a flick) gave the real cause: every natural
@@ -86,3 +98,8 @@ The CLAUDE.md checks (tsc, the full test globs in 3 shards, vite build, artcheck
 ## To try
 - An "adult first-timer" goal measure, as Easy's kid bot sets gen2's Easy goal (goals.ts gen2EasyGoal), for harvest stages on Normal.
 - Petals on a bough floating at his head in Worlds 1, 3 and 5 too (the classifier: 5-2 19 flown over, 1-2 and 3-2 5 each).
+
+## Tools
+- `tools/inspect/botBaseline.ts --worlds 1-10 [--stages ...] [--who kid,adult] [--detail]`: one JSON line a first-timer run (end, goal,
+  lives, rescues; with `--detail` every stuck spot with what was in front of him, where each life was lost, and the run's flags). All 10
+  worlds, seeds 1-3, both settings: about 35 min on 4 processes (bot-fix).
