@@ -492,6 +492,15 @@ const stair = (p: string, after: string, n: number, rise: number[]): { pieces: S
   }
   return { pieces: out, last: prev, total };
 };
+// (the bough at a stair's foot, 110-160 px under its top, and a knot past it: a running jump off the top carries him about 330 px, and
+// whatever is past his landing is a step up, never the deep gap to the next section. With the foot at 180-280 px and nothing past it,
+// the jump carried a Normal first-timer over the foot into that gap (5 lives at one spot); with the foot widened to 400-440, he landed
+// with 100 px to go and his next flick fell short into it: w8-rope2)
+const FUNGUS_FOOT: W = [340, 370];
+const footKnot = (after: string, knot: W = [130, 150], end: W = [180, 210]): SectionPiece[] => [up('fk', after, 30, knot), down('fc', 'fk', 30, end)];
+// (the tall stair's wide gap at the top leaves it less room in the section's 1800 px: its foot, knot and end are trimmed, still 450-490 px (a jump off the top lands at the knot: a step up)
+// of ground past the landing)
+const TALL_FOOT: W = [250, 270];
 const fs1 = stair('s', 'a', 3, [40, 44, 38]);
 const fungusBlooms = section({
   id: 'w8-fungus-blooms',
@@ -501,9 +510,9 @@ const fungusBlooms = section({
   difficulty: 4,
   weight: 2,
   uses: [W8_THEME.fungusSteps],
-  pieces: [bank('a', [240, 280]), ...fs1.pieces, stepTop('hi', fs1.last, -40, [220, 260]), down('b', 'hi', fs1.total + 40, [240, 280])],
-  last: 'b',
-  sockets: [petals('s1', 's1', 0.5, 1, 0), petals('s2', 's2', 0.5, 1, 0), petals('s3', 's3', 0.5, 1, 0), petals('hi', 'hi', 0.5, 2, 90), petals('b', 'b', 0.5, 1)],
+  pieces: [bank('a', [240, 280]), ...fs1.pieces, stepTop('hi', fs1.last, -40, [220, 260]), down('b', 'hi', fs1.total + 40, FUNGUS_FOOT), ...footKnot('b')],
+  last: 'fc',
+  sockets: [petals('fk', 'fk', 0.5, 1), petals('s1', 's1', 0.5, 1, 0), petals('s2', 's2', 0.5, 1, 0), petals('s3', 's3', 0.5, 1, 0), petals('hi', 'hi', 0.5, 2, 90), petals('b', 'b', 0.5, 1)],
   mirrorable: true,
 });
 const fs2 = stair('s', 'a', 3, [40, 36, 44]);
@@ -515,9 +524,9 @@ const fungusTall = section({
   difficulty: 5,
   weight: 2,
   uses: [W8_THEME.fungusSteps],
-  pieces: [bank('a', [190, 220]), ...fs2.pieces, stepTop('hi', fs2.last, -30, [210, 240]), wide('g', 'hi', [190, 220], [0.6, 0.7]), down('b', 'g', fs2.total + 30, [190, 220])],
-  last: 'b',
-  sockets: [petals('s1', 's1', 0.5, 1, 0), petals('s3', 's3', 0.5, 1, 0), petals('hi', 'hi', 0.5, 2, 90), petals('g', 'g', 0.5, 2, 80), roost('hi', 0.03, 'roostHere1'), hideAt('h1', 'hi', 0.55)],
+  pieces: [bank('a', [190, 220]), ...fs2.pieces, stepTop('hi', fs2.last, -30, [210, 240]), wide('g', 'hi', [190, 220], [0.6, 0.7]), down('b', 'g', fs2.total + 30, TALL_FOOT), ...footKnot('b', [100, 110], [100, 110])],
+  last: 'fc',
+  sockets: [petals('fk', 'fk', 0.5, 1), petals('s1', 's1', 0.5, 1, 0), petals('s3', 's3', 0.5, 1, 0), petals('hi', 'hi', 0.5, 2, 90), petals('g', 'g', 0.5, 2, 80), roost('hi', 0.03, 'roostHere1'), hideAt('h1', 'hi', 0.55)],
   mirrorable: true,
 });
 const fs3 = stair('s', 'a', 3, [40, 36, 40]);
@@ -529,9 +538,9 @@ const fungusHunter = section({
   difficulty: 5,
   weight: 2,
   uses: [W8_THEME.fungusSteps],
-  pieces: [bank('a', [250, 280]), ...fs3.pieces, stepTop('hi', fs3.last, -36, [200, 230]), down('b', 'hi', fs3.total + 36, [180, 210])],
-  last: 'b',
-  sockets: [foe('foe', 'a', [0.35, 0.45], ['tayra', 'jaguar'], 5, { phases: LIVE }), petals('s2', 's2', 0.5, 1, 0), petals('hi', 'hi', 0.5, 2, 90), petals('b', 'b', 0.5, 1)],
+  pieces: [bank('a', [250, 280]), ...fs3.pieces, stepTop('hi', fs3.last, -36, [200, 230]), down('b', 'hi', fs3.total + 36, FUNGUS_FOOT), ...footKnot('b')],
+  last: 'fc',
+  sockets: [petals('fk', 'fk', 0.5, 1), foe('foe', 'a', [0.35, 0.45], ['tayra', 'jaguar'], 5, { phases: LIVE }), petals('s2', 's2', 0.5, 1, 0), petals('hi', 'hi', 0.5, 2, 90), petals('b', 'b', 0.5, 1)],
   mirrorable: true,
 });
 const fs4 = stair('s', 'a', 3, [38, 44, 40]);
