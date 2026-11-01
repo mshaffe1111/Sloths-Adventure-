@@ -1,0 +1,69 @@
+# Method: in-play text (Dot's tip box, thought clouds, any in-play label)
+Last proven: 2026-11-01, branch dot-box, D10 fixed (8-2's first rope sideways: Dot's box over the take-off post). Owner of the last
+update: the dot-box helper.
+
+## When to use it
+Any job that puts words on the screen while the player is playing: Dot's bubble (`src/components/dot/DotGuide.tsx`), Pokey's own
+thoughts (same file, `mode: 'pokey'`), Meeca's thought cloud and the others' bubbles in 5-M (`src/game/meecaArt.ts` drawThought /
+drawSay), a new in-play label or callout. Also any change to where or when those appear.
+
+## The law (Matt, 2026-11-01; D10)
+In-play words never cover:
+- Pokey (or Meeca, when she is the player);
+- the spot he must act on next: the take-off lip, the rope, liana or trunk he must grab (a rope's near post; hanging from one, both
+  posts), a hazard's or animal's tell, the bush he hides in, the landing;
+- the way ahead of him within ~1.5 jumps (`aheadZone`: from his middle forward 1.5 double jumps, from under his feet to the top of a
+  double jump; climbing, the vine above; falling or gliding, ahead and down);
+- the HUD (its band, the name tag included).
+
+## Steps (exact)
+1. **Keep-outs come from one place**: `src/game/dotGuidePerch.ts` `lawRects(v, out, room)` = Pokey + `aheadZone(v)` +
+   `actionRects(v)`. A new kind of "next action" (a new prop he must use) is added to `actionRects`, nowhere else. Canvas-drawn words
+   (Meeca's stage) use `aheadZone(probe, out)` with a reused `out` (no allocation in the frame loop, PERFORMANCE-RULES §3 rule 1).
+2. **Placement**: `placeBubble(..., body, law)`. Law keep-outs cost 1e6 each, so any spot clear of them beats any spot that is not,
+   however far from the speaker; distance is linear (150/px) once the law is in force; a spot under his feet costs 1.5e5 (behind him,
+   then the top band under the HUD, before the floor). Candidate spots: the sides of the speaker, beside Pokey, behind him at his
+   height, the top band at both ends and the middle.
+3. **Once up, it moves, it never blinks**: a re-check (every 250 ms, at most every 0.8 s) moves the box off whatever has come under it
+   without the speaker leaving (`placeBub(p, true)`); while Dot flies after him the box stays where it is (`Plan.follow`). Only a box
+   that was clear and now is not moves (a box with nowhere clear does not hop about).
+4. **Prove it on real stages**: `src/game/dotBox.test.ts` (RealPlay, the real hint, Pokey stood where the tip comes, the HUD's own
+   `hudSafeRect`): 412x915, 915x412, 360x740, 740x360, Fold 4 cover 344x882 and open 673x841, both ways. Add the new moment there.
+   Check it fails without the change (the dot-box run: with `law = []` all four Dot moments fail).
+5. **Shoot the running game**: three dev servers (before = origin/main worktree, after = the work tree; for a stage only on another
+   branch, a worktree of that branch with `git diff origin/main -- src` applied), then
+   `PW=/opt/node-tools/node_modules/playwright/index.mjs npx tsx tools/dotbox/shoot.mjs <port> <out> <before|after> [moment]` and
+   `tools/dotbox/meeca.mjs`. Each shot writes the still, the bubble at +0.3 s and +1.5 s (`-t1`, `-t2`: does it hop?) and a JSON with
+   the law check (pokey / ahead / action / hud). A clip: `tools/dotbox/clip82.mjs` (timed screenshots joined by ffmpeg concat).
+
+## The bar (examples)
+- `reference/qa-reports/dot-box/compare-sideways-before-left-after-right.jpg` and `compare-upright-before-after-pairs.jpg`: every
+  after is clear of Pokey, the way ahead, the next action point and the HUD; text one or two lines, painted bubble, high contrast.
+- `8-2-rope0-after-sideways-clip.mp4`: behind him while he walks up and flicks; one move, at the grab, to the open space under the rope.
+
+## Checks before reporting
+- The shooter's JSON: every after `checks` all true, both orientations; the -t1/-t2/final stills: no blink, no more than one move.
+- tsc, the full tests (3 shards), vite build, artcheck, drawcheck (a placement change runs only at placement and on the 250 ms re-check,
+  never per frame; Meeca's cloud reuses its boxes).
+
+## Pitfalls we already paid for
+- 2026-11-01 (D10): one score for "covers the way ahead" and "far from Dot" let near-Dot win; and the lip, the rope post and the way
+  ahead were not keep-outs at all. Law first, distance second.
+- 2026-11-01: a perch whose box was clear when placed got covered as he walked up; the re-check flew Dot off her perch and the box
+  went down and up again elsewhere (a blink). Move the box, keep the speaker.
+- 2026-11-01: hanging from the rope, the box behind him (correct by "away from travel") sat on the take-off post: the post he left is
+  still his to fall back to. Both posts while he hangs.
+- 2026-11-01: the name tag stands 14 px above the box: clamp the box's top to the safe area plus the tag, or the tag sits in the HUD.
+- The shooter: teleporting skips the stage's opening lines but not their queue (wait for Dot to be quiet first); story asides and
+  zone lines ("So dark...") queue ahead (mark them heard); a note pickup opens over the stage (mark finds found); on Help, standing
+  at a lip brings "Slide left and right..." over the tip (shoot on Tips, the default); the bubble shows Dot's own short version of a
+  hint (match `say`, not the hint's words); some hints show nothing on touch (1-3's "Hop up beside the sleeping snake": engineGuideLine
+  returns null), so pick moments a phone really shows.
+
+## Tried and didn't work
+- Playwright's `recordVideo` with `isMobile`: the page is drawn at 60% inside a padded frame. Use timed screenshots.
+- A small penalty (6e4) for the floor under his feet: the quadratic distance cost outweighed it; distance had to go linear.
+
+## To try
+- Dot herself flying beside the box when the clear spot is far from her (today the name tag says who is speaking; she ends behind him).
+- A clipcheck-style automatic sweep over every stage hint (L3 countermeasure for D10): stand at each hint, place, assert the law.
