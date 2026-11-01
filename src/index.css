@@ -1686,6 +1686,10 @@
 .jb-eh span { min-width: 0; }
 .jb-eh span b { font-weight: 800; color: #5a3210; }
 .jb-eh i { flex: none; }
+/* how it was played, under the story: the same hand, a little smaller and lighter, like a note added after */
+.jb-note { margin-top: 3px; font-size: 14px; color: #5b4630; }
+/* a guardian's entry closes the world with Pokey's line for it */
+.jb-close { margin-top: 4px; font-weight: 600; color: #6a3a10; }
 .jb-eh i { font-style: normal; color: #d08a10; letter-spacing: 1px; }
 .jb-hand { margin: 2px 0 0; font-family: var(--font-read); font-style: italic; font-size: 15.5px; line-height: 1.45; color: #2e2010; text-wrap: pretty; }
 .jb-empty { opacity: .7; }

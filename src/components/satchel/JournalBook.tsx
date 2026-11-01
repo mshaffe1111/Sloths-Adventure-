@@ -82,7 +82,9 @@ export const JournalBook: React.FC<{
             </span>
             <i>{'★'.repeat(e.stars)}{'☆'.repeat(Math.max(0, 3 - e.stars))}</i>
           </div>
-          <p className="jb-hand">{e.lines.join(' ')}</p>
+          <p className="jb-hand">{e.story.join(' ')}</p>
+          {e.notes.length > 0 && <p className="jb-hand jb-note">{e.notes.join(' ')}</p>}
+          {e.close && <p className="jb-hand jb-close">{e.close}</p>}
         </div>
       ))}
     </div>

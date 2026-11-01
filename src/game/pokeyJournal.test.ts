@@ -89,7 +89,9 @@ for (const [label, recs] of [
       for (const e of page) {
         assert.equal(e.lines[0], STAGE_LINES[e.id], `${e.id} opens with its own line`);
         assert.ok(e.lines.length >= 1);
-        const extra = e.lines.length - 1 - (BEATS[w]?.[stage(e.id).miniIndex] && stage(e.id).miniIndex <= 10 ? 1 : 0) - (stage(e.id).miniIndex === 10 ? 1 : 0);
+        const extra = e.notes.length;
+        assert.deepEqual(e.lines, [...e.story, ...e.notes, ...(e.close ? [e.close] : [])]);
+        assert.equal(e.close, stage(e.id).miniIndex === 10 ? POKEY_JOURNAL[w] : undefined);
         assert.ok(extra <= RECORD_MAX, `${e.id}: ${extra} record lines`);
         if (!Object.keys(recs).length) assert.equal(extra, 0, `${e.id}: an old save gets no record lines`);
         for (const l of e.lines) {
@@ -97,9 +99,8 @@ for (const [label, recs] of [
           assert.doesNotMatch(l, /\{\w+\}|undefined|NaN/, `${e.id}: ${l}`);
         }
         const s = stage(e.id);
-        const story = new Set([STAGE_LINES[e.id], BEATS[w]?.[s.miniIndex], POKEY_JOURNAL[w]]);
         if (!dotPresent(s.worldIndex, s.miniIndex)) {
-          for (const l of e.lines.filter((x) => !story.has(x))) assert.doesNotMatch(l, /\bDot\b/, `${e.id}: a record line about Dot while she is away`);
+          for (const l of e.notes) assert.doesNotMatch(l, /\bDot\b/, `${e.id}: a record line about Dot while she is away`);
         }
       }
       // the same page reads the same each time it is opened

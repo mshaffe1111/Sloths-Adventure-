@@ -179,17 +179,17 @@ export const LINES = {
   quick: [
     'Done in {t}. Dot called it a sprint. It was not a sprint.',
     "Only {t}. I'm not sure what came over me.",
-    "{t}, start to finish. Don't tell anyone. They'll expect it again.",
+    "All done in {t}. Don't tell anyone. They'll expect it again.",
     "Took {t}. For me, that's practically a blur.",
     'Through in {t}. Meeca always said I could hurry if it mattered. It mattered.',
     'Just {t}. I think the place was as surprised as I was.',
   ],
   long: [
     'Took {t}. Some of that was looking at things.',
-    "{t}, start to finish. I wasn't lost. I was thorough.",
+    "{t} out there. I wasn't lost. I was thorough.",
     'Took {t}. Every minute of it on purpose. Most of them.',
     'Took {t}. A snail passed me once. We nodded.',
-    "{t}. Long, I know. I'd like to see anyone do it slower.",
+    "Took {t}. Long, I know. I'd like to see anyone do it slower.",
     "Took {t}. I was being careful. I was also being me.",
   ],
   allFlowers: [
@@ -236,7 +236,7 @@ export const LINES = {
   find: [
     'Found {x}. Put it in the satchel, on top.',
     'Found {x}. Meeca left it for me. I know she did.',
-    '{x}. In the satchel now, next to the others.',
+    '{x} is in the satchel now, next to the others.',
     "Found {x}, right where I'd have missed it if I were faster.",
     'Turned up {x}. Being low to the ground has its uses.',
     'Found {x}. I held it a while before I put it away.',
@@ -302,7 +302,16 @@ export function fmtTime(sec: number): string {
   const s = sec % 60;
   return `${m}:${String(s).padStart(2, '0')}`;
 }
-const times = (n: number) => (n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`);
+/** small counts read as words in a journal ("Fell four times"), big ones as numbers */
+const NUM_WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
+export const num = (n: number) => NUM_WORDS[n] ?? String(n);
+/** a time the way he'd say it: "45 seconds", "a minute", "four minutes" */
+export function sayTime(sec: number): string {
+  if (sec < 60) return `${num(Math.max(1, Math.round(sec)))} seconds`;
+  const m = Math.round(sec / 60);
+  return m === 1 ? 'a minute' : `${num(m)} minutes`;
+}
+const times = (n: number) => (n === 1 ? 'once' : n === 2 ? 'twice' : `${num(n)} times`);
 
 export interface EntryNames {
   /** a creature id to its plural name, for "3 golden tree snakes" */
@@ -314,7 +323,13 @@ export interface EntryNames {
 export interface StageEntry {
   id: string;
   stage: string;
-  /** the lines of the entry, in order: the stage's line, the world's beat, up to two record lines, the world line at a guardian */
+  /** the story: the stage's own line and the world's beat */
+  story: string[];
+  /** how it was played: at most two record lines (none for a save from before the journal kept records) */
+  notes: string[];
+  /** at a guardian, the world's line (POKEY_JOURNAL), closing the entry and the world */
+  close?: string;
+  /** all of it, in order: story, notes, close */
   lines: string[];
   /** the record had nothing to go on (a save from before the journal kept records) */
   plain: boolean;
@@ -333,17 +348,17 @@ function candidates(stage: EntryStage, rec: PlayRecord, f: FirstClear, names: En
   for (const kind of RECORD_ORDER) {
     const add = (v: Record<string, string | number> = {}) => out.push({ kind, v, salt: '' });
     if (kind === 'clean' && f.ll === 0 && f.hl === 0) add();
-    else if (kind === 'manyFalls' && f.ll >= 3) add({ n: f.ll });
+    else if (kind === 'manyFalls' && f.ll >= 3) add({ n: num(f.ll) });
     else if (kind === 'fewFalls' && f.ll >= 1 && f.ll <= 2) add({ n: times(f.ll) });
     else if (kind === 'find' && fd.length) add({ x: `“${fd[0]}”` });
     else if (kind === 'medal' && md.length) add({ x: md[0] });
     else if (kind === 'allFlowers' && f.ft >= 2 && share >= 1) add({ ft: f.ft, p });
     else if (kind === 'mostFlowers' && f.ft > 0 && f.fl >= 2 && share >= 0.6 && share < 1) add({ f: f.fl, ft: f.ft, p });
     else if (kind === 'fewFlowers' && f.ft > 0 && f.fl >= 2 && share < 0.6) add({ f: f.fl, ft: f.ft, p });
-    else if (kind === 'freed' && f.fr > 0) add({ n: f.fr });
-    else if (kind === 'quick' && f.t > 0 && f.t < 100) add({ t: fmtTime(f.t) });
-    else if (kind === 'long' && f.t >= 240) add({ t: fmtTime(f.t) });
-    else if (kind === 'foes' && f.kt && f.k >= 3) add({ n: f.k, c: names.creature(f.kt, f.k) });
+    else if (kind === 'freed' && f.fr > 0) add({ n: num(f.fr) });
+    else if (kind === 'quick' && f.t > 0 && f.t < 100) add({ t: sayTime(f.t) });
+    else if (kind === 'long' && f.t >= 240) add({ t: sayTime(f.t) });
+    else if (kind === 'foes' && f.kt && f.k >= 3) add({ n: num(f.k), c: names.creature(f.kt, f.k) });
     else if (kind === 'replayed' && rec.w > 1) add({ n: times(rec.w - 1) });
   }
   return out;
@@ -355,11 +370,12 @@ function candidates(stage: EntryStage, rec: PlayRecord, f: FirstClear, names: En
  */
 export function stageEntry(stage: EntryStage, rec: PlayRecord | null, names: EntryNames, used: Set<string> = new Set()): StageEntry {
   const id = stage.id;
-  const lines: string[] = [];
+  const story: string[] = [];
+  const notes: string[] = [];
   const own = STAGE_LINES[id];
-  if (own) lines.push(own);
+  if (own) story.push(own);
   const beat = stage.miniIndex <= 10 ? BEATS[stage.worldIndex]?.[stage.miniIndex] : undefined;
-  if (beat) lines.push(beat);
+  if (beat) story.push(beat);
   const f: FirstClear | undefined = rec?.first;
   if (rec && f) {
     const dot = dotPresent(stage.worldIndex, stage.miniIndex);
@@ -370,12 +386,12 @@ export function stageEntry(stage: EntryStage, rec: PlayRecord | null, names: Ent
       if (!list.length) continue;
       const t = list[(seedOf(id) + c.kind.length * 7) % list.length];
       used.add(t);
-      lines.push(fill(t, c.v));
+      notes.push(fill(t, c.v));
       n++;
     }
   }
-  if (stage.miniIndex === 10 && POKEY_JOURNAL[stage.worldIndex]) lines.push(POKEY_JOURNAL[stage.worldIndex]);
-  return { id, stage: stage.name, lines, plain: !f, stars: stage.stars };
+  const close = stage.miniIndex === 10 ? POKEY_JOURNAL[stage.worldIndex] : undefined;
+  return { id, stage: stage.name, story, notes, close, lines: [...story, ...notes, ...(close ? [close] : [])], plain: !f, stars: stage.stars };
 }
 
 /** every cleared stage's entry on one world's page, in the order they're played, with no record line used twice on the page */
