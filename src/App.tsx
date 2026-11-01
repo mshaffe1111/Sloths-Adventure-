@@ -544,18 +544,13 @@ export default function App() {
   // when the Game Over card came up (its tap guard)
   const gameOverAt = useRef(0);
   // The Android app (reference/PLAY-STORE.md): the phone's Back button, and the app going to the background or a call coming in.
-  // Back closes the open window first (its X), then: play pauses, the pause menu resumes, the end cards go to the map, the map goes to the
+  // Back closes the open window first (the back stack, nav/backStack.ts), then: play pauses, the pause menu resumes, the end cards go to the map, the map goes to the
   // title, the title asks "Leave the game?", and every other screen gets an Escape (a story skips, the start menu closes).
   const [askLeave, setAskLeave] = useState(false);
   const androidBack = useRef<() => void>(() => {});
   androidBack.current = () => {
     // whatever is newest on screen owns Back: an open pop-up closes, a screen's Back button goes back (nav/backStack.ts)
     if (handleBack()) return;
-    const xs = Array.from(document.querySelectorAll<HTMLElement>('.ui-x')).filter((el) => el.offsetParent !== null);
-    if (xs.length) {
-      xs[xs.length - 1].click();
-      return;
-    }
     const esc = () => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
     if (screen === 'playing') pauseGame();
     else if (screen === 'paused') resumeGame();
