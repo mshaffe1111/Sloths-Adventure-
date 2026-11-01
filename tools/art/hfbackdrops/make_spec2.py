@@ -81,9 +81,54 @@ M = [r for st, w, g, far, mid, near, l, trim in MOODS2 for r in (
     (f'{st}-near', f'w{w}', 'near', g, 301 + 2 * w, 'remix', 0, near, l, (0.62, 0.68)))]
 
 
-def fars(seeds=(7, 23, 41)):
+# ---- round X (the third round of the day): World 10 moods that keep its rain (a clear sky over World 10's storm read wrong, so its
+# new skies are storms), and the W1 sunrise and kapok middle strips' crown tops (their soft faded tops, NEXT.md polish notes) ----
+MOODS3 = [
+    ('w10storm', 10, 'storm', 'the mountain summit at night in a thunderstorm: jagged dark peaks under churning storm clouds lit from inside by lightning, grey rain curtains sweeping across, a cold blue glow',
+     'bare mountain crags in a night storm: jagged wet rock spires, an old stone watchtower with one lit window, iron lamp posts with chains swinging, rain streaming off the rocks',
+     'wet dark rocks with puddles and stone steps', 'cold blue-violet storm light, wet rock gleaming', 0),
+    ('w10gale', 10, 'storm', 'a grey gale over the high mountain pass: steep grey cliffs and peaks half hidden in blowing cloud and slanting rain, a far rope bridge between two peaks',
+     'a windswept mountain pass: leaning rock pillars, broken stone stairs, tattered prayer flags on poles, a crooked bent pine',
+     'grey rocks, wind-flattened grass and loose stones', 'flat grey gale light, cold and wet', 0),
+]
+M3 = [r for st, w, g, far, mid, near, l, trim in MOODS3 for r in (
+    (f'{st}-mid', f'w{w}', 'mid', g, 340 + 2 * w + len(st), 'remix', trim, mid, l, (0.68, 0.76)),
+    (f'{st}-near', f'w{w}', 'near', g, 341 + 2 * w + len(st), 'remix', 0, near, l, (0.62, 0.68)))]
+X = M3 + [
+    ('w1sunrise-mid', 'w1sunrise', 'mid', 'day', 251, 'crown', 0, MOODS[0][3], MOODS[0][5], (0.52, 0.6)),
+    ('w1kapok-mid', 'w1kapok', 'mid', 'day', 252, 'crown', 0, MOODS[1][3], MOODS[1][5], (0.52, 0.6)),
+]
+
+
+def fars(seeds=(7, 23, 41), moods=None):
     return [{'name': f'{st}-tall-{sd}', 'prompt': S + FAR.format(d=far + ', ' + l), 'neg': FARNEG, 'seed': sd, 'w': 1792, 'h': 1200,
-             'steps': 30} for st, w, g, far, mid, near, l, trim in MOODS2 for sd in seeds]
+             'steps': 30} for st, w, g, far, mid, near, l, trim in (moods or MOODS2) for sd in seeds]
+
+
+# ---- the painted upright skies for the 10 far sets that lack one (w10after waits with its set): the X-16 tallstart way
+# (tools/art/hfbatch/tallstart.py starts), stronger than round 4's s30/s38, which barely changed the start ----
+SKIES = ['w1sunrise', 'w1kapok', 'w3sinkhole', 'w6dawn', 'w7', 'w7dawn', 'w7dusk', 'w5dusk2', 'w5twi1', 'w5twi2']
+
+
+def skies(commit):
+    from PIL import Image
+    hb = H.parent / 'hfbatch'
+    sys.path.insert(0, str(hb))
+    from make_sky_spec import WHAT
+    st = ('slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark '
+          'outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left')
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/sky/'
+    items = []
+    for s_ in SKIES:
+        im = Image.open(hb / 'starts/sky' / f'{s_}-tall.webp')
+        for k in (0.48, 0.58):
+            items.append({'name': f'{s_}-tall-s{round(k * 100)}', 'pre': 'none', 'src': f'{base}{s_}-tall.webp', 'h': im.height,
+                          'strength': k, 'seed': 7, 'steps': 26, 'bg': [128, 128, 128],
+                          'prompt': f'{st}. {WHAT[s_]} above, the far distance of the scene below, one continuous picture',
+                          'neg': 'second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, '
+                                 'horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry'})
+    return {'tag': 'hfbd2-S', 'note': 'upright skies, tallstart starts', 'loras': {'style': ['mshaffe111/slothadv-style-lora',
+            'slothadv_style_v1.safetensors', 0.8]}, 'tw': 1024, 'items': items}
 
 
 def what(name, d, l):
@@ -128,17 +173,21 @@ def args(spec, sha):
 if __name__ == '__main__':
     c = sys.argv[1]
     if c == 'starts':
-        starts(sys.argv[2], {'R': R, 'M': M}[sys.argv[3] if len(sys.argv) > 3 else 'R'])
+        starts(sys.argv[2], {'R': R, 'M': M, 'X': X}[sys.argv[3] if len(sys.argv) > 3 else 'R'])
     elif c == 'args':
         args(sys.argv[2], sys.argv[3])
-    elif c == 'F':  # the far + sky pictures, text to image (tools/art/w6to10/stillsgpu.py)
-        it = fars()
-        spec = {'tag': 'hfbd2-F', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 0.8]},
+    elif c == 'S':
+        spec = skies(sys.argv[2])
+        (H / 'spec-hd-S.json').write_text(json.dumps(spec, indent=1))
+        print('spec-hd-S.json', len(spec['items']))
+    elif c in ('F', 'F3'):  # the far + sky pictures, text to image (tools/art/w6to10/stillsgpu.py)
+        it = fars() if c == 'F' else fars((7, 23, 41, 59), MOODS3)
+        spec = {'tag': f'hfbd2-{c}', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 0.8]},
                 'neg': FARNEG, 'items': it}
-        (H / 'spec-F.json').write_text(json.dumps(spec, indent=1))
-        print('spec-F.json', len(it))
+        (H / f'spec-{c}.json').write_text(json.dumps(spec, indent=1))
+        print(f'spec-{c}.json', len(it))
     else:
-        rows = {'R': R, 'M': M}[c]
+        rows = {'R': R, 'M': M, 'X': X}[c]
         commit, k, n = sys.argv[2], int(sys.argv[3]), int(sys.argv[4])
         it = items(rows)
         part = it[k::n]

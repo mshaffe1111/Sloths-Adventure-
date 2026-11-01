@@ -102,10 +102,10 @@ def hdspec(out, commit, names):
         what[f'{stem}-mid'] = f'{mid}, {l}'
         what[f'{stem}-near'] = f'{near}, {l}'
     import make_spec2  # (hf-backdrops2: round R's and round M's strips, and the far + sky pictures)
-    for r in make_spec2.R + make_spec2.M:
+    for r in make_spec2.R + make_spec2.M + make_spec2.X:
         d, l = make_spec2.what(r[0], r[7], r[8])
         what[r[0]] = f'{d}, {l}'
-    for st, w, g, far, *_r, l, trim in make_spec2.MOODS2:
+    for st, w, g, far, *_r, l, trim in make_spec2.MOODS2 + make_spec2.MOODS3:
         what[f'{st}-tall'] = f'{far}, {l}, open sky above, the far scenery below'
     style = ('slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark '
              'outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain '
