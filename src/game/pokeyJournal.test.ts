@@ -4,7 +4,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { BANNED_FILLER, BEATS, LINES, POKEY_JOURNAL, QUIET_STAGES, RECORD_MAX, STAGE_LINES, plainOf, worldEntries, type EntryNames } from './pokeyJournal.ts';
+import { BANNED_FILLER, BEATS, LINES, POKEY_JOURNAL, QUIET_STAGES, RECORD_MAX, STAGE_LINES, WORLD_CLOSE, opener, plainOf, worldEntries, worldReview, type EntryNames } from './pokeyJournal.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { withExtraStages } from './extraStages.ts';
 import { THORNBARK_LEVEL } from './secret.ts';
@@ -139,4 +139,54 @@ test("at a real moment the joke doesn't come: a quiet stage gets one plain note,
 
 test('no flower line opens on a bare number (times and small counts read as words)', () => {
   for (const [k, v] of Object.entries(LINES)) for (const t of v) if (!['manyFalls', 'freed', 'foes'].includes(k)) assert.doesNotMatch(t, /^\{(f|ft)\}/, `${k}: ${t}`);
+});
+
+for (const [label, recs] of [
+  ['an old save', {} as Record<string, PlayRecord>],
+  ['a full set of records', mixed()],
+  ['every stage a clean run', Object.fromEntries(stages.map((l) => [l.id, full({}, 4)]))],
+] as const) {
+  test(`no two lines in a row start the same way, read top to bottom, for ${label}`, () => {
+    for (let w = 1; w <= RELEASED; w++) {
+      const lines = worldEntries(w, cleared, recs, names).flatMap((e) => e.lines);
+      for (let i = 1; i < lines.length; i++) assert.notEqual(opener(lines[i]), opener(lines[i - 1]), `World ${w}: "${lines[i - 1]}" then "${lines[i]}"`);
+    }
+  });
+}
+
+test('every world has a closing line for its review page, and none repeats the world line or a filler phrase', () => {
+  for (let w = 1; w <= 10; w++) {
+    const c = WORLD_CLOSE[w];
+    assert.ok(c, `World ${w}`);
+    assert.notEqual(c, POKEY_JOURNAL[w]);
+    assert.doesNotMatch(c, BANNED_FILLER);
+  }
+  assert.equal(new Set(Object.values(WORLD_CLOSE)).size, 10);
+});
+
+test("an old save's review page is full: its stages, its finds, and once the guardian is down the world line and the closing", () => {
+  const r = worldReview(1, cleared, {}, { teaser: 'A petal.', creatures: ['Snake'], finds: 1, findTotal: 3, found: ['The first petal'] });
+  assert.equal(r.stages.length, cleared.filter((l) => l.worldIndex === 1).length);
+  assert.deepEqual(r.found, ['The first petal']);
+  assert.equal(r.closing, WORLD_CLOSE[1]);
+  assert.ok(r.story.includes(POKEY_JOURNAL[1]));
+  const half = worldReview(1, cleared.map((l) => ({ ...l, completed: l.worldIndex === 1 && l.miniIndex <= 4 })), {}, { creatures: [], finds: 0, findTotal: 3 });
+  assert.equal(half.closing, undefined);
+  assert.equal(half.stages.length, 4);
+});
+
+test("a guardian's entry, world line and all, stays under five lines", () => {
+  for (let w = 1; w <= RELEASED; w++) {
+    for (const recs of [{}, mixed()]) {
+      const g = worldEntries(w, cleared, recs, names).find((e) => stage(e.id).miniIndex === 10)!;
+      assert.ok(g.lines.length <= 4, `${g.id}: ${g.lines.length} lines`);
+      assert.equal(g.lines.at(-1), POKEY_JOURNAL[w]);
+    }
+  }
+});
+
+test("Thornbark's hollow reads on World 7's page after 7-10", () => {
+  const page = worldEntries(7, cleared, {}, names);
+  assert.equal(page.at(-1)!.id, 'S-1');
+  assert.equal(page.at(-2)!.id, '7-10');
 });

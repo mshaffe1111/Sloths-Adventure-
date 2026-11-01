@@ -19,6 +19,8 @@ export interface JournalWorldExtra {
   creatures: { id: string; name: string }[];
   finds: number;
   findTotal: number;
+  /** the world's finds the satchel holds, by title */
+  found: string[];
 }
 
 /**
@@ -65,7 +67,7 @@ export const JournalBook: React.FC<{
   // (in the game's order: Dot's flight after 4-5, Meeca's night first in World 5; no record line twice on the page)
   const entries = worldEntries(world, stages, records, names);
   const ex = extra(world);
-  const rev = worldReview(world, stages, records, { teaser: ex.teaser, creatures: ex.creatures.map((c) => c.name), finds: ex.finds, findTotal: ex.findTotal });
+  const rev = worldReview(world, stages, records, { teaser: ex.teaser, creatures: ex.creatures.map((c) => c.name), finds: ex.finds, findTotal: ex.findTotal, found: ex.found });
 
   const entriesPage = (
     <div className="jb-page jb-left">
@@ -96,7 +98,7 @@ export const JournalBook: React.FC<{
         <b>{rev.done ? 'Looking back' : 'So far'}</b>
       </div>
       {rev.story.map((s, i) => (
-        <p key={i} className={i === 0 ? 'jb-story' : 'jb-hand jb-sign'}>{s}</p>
+        <p key={i} className={i === 0 ? 'jb-story' : 'jb-hand'}>{s}</p>
       ))}
       {ex.creatures.length > 0 && (
         <>
@@ -109,6 +111,28 @@ export const JournalBook: React.FC<{
               </span>
             ))}
           </div>
+        </>
+      )}
+      {rev.stages.length > 0 && (
+        <>
+          <div className="jb-sub">{rev.done ? 'The stages' : 'Stages so far'}</div>
+          <ul className="jb-list">
+            {rev.stages.map((l) => (
+              <li key={l.id}>
+                <span>{l.id}</span> {l.name} <i>{'★'.repeat(l.stars)}{'☆'.repeat(Math.max(0, 3 - l.stars))}</i>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {rev.found.length > 0 && (
+        <>
+          <div className="jb-sub">Found here</div>
+          <ul className="jb-list jb-found">
+            {rev.found.map((t) => (
+              <li key={t}>{t}</li>
+            ))}
+          </ul>
         </>
       )}
       {rev.best.length > 0 && (
@@ -130,6 +154,7 @@ export const JournalBook: React.FC<{
         {rev.stats.flowerTotal > 0 && <span><b>{rev.stats.flowers}</b> {world === 8 ? 'flowers' : 'petals'}</span>}
         <span><b>{rev.stats.finds}/{rev.stats.findTotal}</b> finds</span>
       </div>
+      {rev.closing && <p className="jb-hand jb-sign jb-closing">{rev.closing}</p>}
     </div>
   );
 

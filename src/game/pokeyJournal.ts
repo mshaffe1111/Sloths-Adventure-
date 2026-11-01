@@ -150,7 +150,7 @@ export const STAGE_LINES: Record<string, string> = {
   '10-2': "I didn't count the steps on the way up. Somebody at the top already is.",
   '10-3': 'It thundered the whole way up. I held on with both hands. I am afraid of thunder. I always was.',
   '10-4': 'Kept climbing between the thunderclaps. It\'s only weather. I said it a lot. It almost worked.',
-  '10-5': 'Halfway up, the thunder stopped, and somebody was singing. I know that song. I hummed the rest.',
+  '10-5': 'The thunder stopped for a while, and somebody up there was singing. I know that song. I hummed the rest.',
   '10-6': 'Swung along the iron netting. Dot flew through this for two words. I owe her a lot more than two.',
   '10-7': "Cleared the guards off the walls. They'd been told I was slow. Nobody told them I'd still be coming.",
   '10-8': 'The last of the thousand steps. Nine hundred and ninety-nine of them were slow. So was the last.',
@@ -294,6 +294,11 @@ export const RECORD_MAX = 2;
  * one plain note, the first sentence of its line, with no joke after it.
  */
 export const QUIET_STAGES: ReadonlySet<string> = new Set(['1-5', '4-1', '4-D', '5-M', '7-7', '10-1', '10-3', '10-5', '10-10']);
+/** how a line opens, as a reader hears it: its first word ("Fell", "Found"), or its first two after a small word ("The ground", "I held") */
+export function opener(line: string): string {
+  const w = line.toLowerCase().replace(/[“"]/g, '').match(/[a-z0-9']+/g) ?? [];
+  return /^(the|a|an|i|i'd|i'm|i've|he|she|it|it's|they|we|my|his|her|no|not|got|took)$/.test(w[0] ?? '') ? w.slice(0, 2).join(' ') : (w[0] ?? '');
+}
 /** a line's first sentence: "Fell three times." of "Fell three times. Every one of them was educational." */
 export const plainOf = (line: string) => line.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? line;
 
@@ -312,6 +317,23 @@ export const BEATS: Record<number, Partial<Record<number, string>>> = {
 };
 
 /** filler that must never be written (Matt, 2026-11-01: "Too many 'I didn't write it down, the ending was good.'") */
+/**
+ * Pokey's last word on each world, at the foot of its review page once the guardian is down (approved by the lead, 2026-11-01). It sits
+ * beside the world's approved line (POKEY_JOURNAL), so it never repeats it.
+ */
+export const WORLD_CLOSE: Record<number, string> = {
+  1: 'Furthest I\'ve ever been from my branch. The petals keep going north. So do I.',
+  2: "A whole village that tells people to wait, and I couldn't stay. Meeca would have liked them.",
+  3: "The Prowler said sorry before the ledge went. He meant it. I'm keeping that.",
+  4: 'Nothing climbs out of that gorge, they said. Somebody should tell the gorge.',
+  5: 'The loveliest place on the road, and I never sat down once. Meeca carved me the rules. I kept every one.',
+  6: "The water was flat, the lunch was strict, and the satchel's lighter by one hummingbird.",
+  7: 'A quiet place, with ten chairs and one more. I know whose the eleventh is now.',
+  8: "One more guardian, then him. I counted on my claws. I didn't need many.",
+  9: 'The Drake asked me back for tea. Two cups. I said maybe. I meant yes.',
+  10: "Every step of the thousand, and she was at the top. Grandma always said slow isn't stopped. She was right.",
+};
+
 export const BANNED_FILLER = /write it down|wrote it down|the details are fuzzy|fuzzy|I remember it was|remembers more of it|don't remember|can't remember|the ending was good|cleared it\b|^\s*done\./i;
 
 // ───────────────────────────── building the entries ─────────────────────────────
@@ -400,7 +422,13 @@ function candidates(stage: EntryStage, rec: PlayRecord, f: FirstClear, names: En
  * the journal entry for one cleared stage. `used` holds the record lines already on this world's page: a line is never used twice
  * on a page, so a kind that has run out gives way to the next notable one. The same page always reads the same (worldEntries).
  */
-export function stageEntry(stage: EntryStage, rec: PlayRecord | null, names: EntryNames, used: Set<string> = new Set()): StageEntry {
+export function stageEntry(
+  stage: EntryStage,
+  rec: PlayRecord | null,
+  names: EntryNames,
+  used: Set<string> = new Set(),
+  page: { last?: string; next?: string } = {},
+): StageEntry {
   const id = stage.id;
   const story: string[] = [];
   const notes: string[] = [];
@@ -408,6 +436,7 @@ export function stageEntry(stage: EntryStage, rec: PlayRecord | null, names: Ent
   if (own) story.push(own);
   const beat = stage.miniIndex <= 10 ? BEATS[stage.worldIndex]?.[stage.miniIndex] : undefined;
   if (beat) story.push(beat);
+  const close = stage.miniIndex === 10 ? POKEY_JOURNAL[stage.worldIndex] : undefined;
   const f: FirstClear | undefined = rec?.first;
   if (rec && f) {
     // (Dot is away from 6-6 to the end of World 7, and 6-5's own beat already says "No Dot")
@@ -417,15 +446,22 @@ export function stageEntry(stage: EntryStage, rec: PlayRecord | null, names: Ent
     for (const c of candidates(stage, rec, f, names)) {
       if (n >= (quiet ? 1 : RECORD_MAX)) break;
       const list = (LINES[c.kind] as readonly string[]).filter((t) => (dot || !/\bDot\b/.test(t)) && !used.has(t));
-      if (!list.length) continue;
-      const t = list[(seedOf(id) + c.kind.length * 7) % list.length];
-      used.add(t);
-      const line = fill(t, c.v);
-      notes.push(quiet ? plainOf(line) : line);
+      // read top to bottom, no two lines in a row open the same way: not like the line before, nor the one after the notes
+      const before = opener([...story, ...notes].at(-1) ?? page.last ?? '');
+      const after = opener(close ?? page.next ?? '');
+      const start = seedOf(id) + c.kind.length * 7;
+      let pick: { t: string; line: string } | null = null;
+      for (let k = 0; k < list.length && !pick; k++) {
+        const t = list[(start + k) % list.length];
+        const line = quiet ? plainOf(fill(t, c.v)) : fill(t, c.v);
+        if (opener(line) !== before && opener(line) !== after) pick = { t, line };
+      }
+      if (!pick) continue;
+      used.add(pick.t);
+      notes.push(pick.line);
       n++;
     }
   }
-  const close = stage.miniIndex === 10 ? POKEY_JOURNAL[stage.worldIndex] : undefined;
   return { id, stage: stage.name, story, notes, close, lines: [...story, ...notes, ...(close ? [close] : [])], plain: !f, stars: stage.stars };
 }
 
@@ -438,7 +474,13 @@ export function worldEntries(
 ): StageEntry[] {
   const used = new Set<string>();
   // (in the game's own order, so Dot's flight sits after 4-5 and Meeca's night opens World 5)
-  return stages.filter((l) => l.worldIndex === world && l.completed).map((l) => stageEntry(l, records[l.id] ?? null, names, used));
+  const mine = stages.filter((l) => l.worldIndex === world && l.completed);
+  const out: StageEntry[] = [];
+  mine.forEach((l, i) => {
+    const next = mine[i + 1] ? STAGE_LINES[mine[i + 1].id] : undefined;
+    out.push(stageEntry(l, records[l.id] ?? null, names, used, { last: out.at(-1)?.lines.at(-1), next }));
+  });
+  return out;
 }
 
 export interface WorldReview {
@@ -446,7 +488,13 @@ export interface WorldReview {
   /** the story so far: the world's teaser and, once its guardian is down, Pokey's line for it */
   story: string[];
   creatures: string[];
+  /** every stage cleared in the world, in the game's order (Dot's flight, Meeca's night and the secret hollow too) */
+  stages: { id: string; name: string; stars: number }[];
+  /** the world's finds the satchel holds, by title */
+  found: string[];
   best: string[];
+  /** Pokey's last word on the world, once its guardian is down (WORLD_CLOSE) */
+  closing?: string;
   stats: { cleared: number; total: number; stars: number; time: number; falls: number; flowers: number; flowerTotal: number; finds: number; findTotal: number };
   done: boolean;
 }
@@ -456,7 +504,7 @@ export function worldReview(
   world: number,
   stages: readonly { id: string; name: string; worldIndex: number; miniIndex: number; completed: boolean; stars: number }[],
   records: Record<string, PlayRecord>,
-  extra: { teaser?: string; creatures: string[]; finds: number; findTotal: number },
+  extra: { teaser?: string; creatures: string[]; finds: number; findTotal: number; found?: string[] },
 ): WorldReview {
   const mine = stages.filter((l) => l.worldIndex === world && l.miniIndex <= 10);
   const cleared = mine.filter((l) => l.completed);
@@ -487,5 +535,6 @@ export function worldReview(
   const story: string[] = [];
   if (extra.teaser) story.push(extra.teaser);
   if (done && POKEY_JOURNAL[world]) story.push(POKEY_JOURNAL[world]);
-  return { world, story, creatures: extra.creatures, best, stats, done };
+  const list = stages.filter((l) => l.worldIndex === world && l.completed).map((l) => ({ id: l.id, name: l.name, stars: l.stars }));
+  return { world, story, creatures: extra.creatures, stages: list, found: extra.found ?? [], best, stats, done, closing: done ? WORLD_CLOSE[world] : undefined };
 }
