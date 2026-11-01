@@ -59,7 +59,6 @@ About $5.7 of the $14 cap (log: `tools/art/hfprops/jobs.txt`):
   - `platformPlan.test.ts` "variety targets"
   - `safeStart.test.ts` "Worlds 8-10 first 1,300 px"
   - `stageQuality.test.ts` "animals stand clear"
-- **Draw check:** see the report to the lead.
+- **Draw check:** **PASS**, all 14 scenarios, on the second run (alone, 490 s).
   - First run: no limit breach on 1-4, 2-6, 3-3, 4-1, 7-3, 8-4. The control-test mix could not load ("execution context destroyed"
     while the full suite was running beside it).
-  - Second run: alone.
