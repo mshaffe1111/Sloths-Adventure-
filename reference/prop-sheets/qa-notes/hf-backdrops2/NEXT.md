@@ -34,10 +34,10 @@ Depth, after/before: 1-1 1.26, 1-7 1.14, 3-4 0.89, 3-5 0.98, 6-1 0.99, 7-1 1.04,
 Only w10after still has no upright sky. It is held anyway.
 
 ## Exact next step
+- W1 sunrise far: repainted again at 3:10 PM ET with the new standard (F6 seed 41): 1-1 1.30, 1-3 1.12. Its middle and near
+  strips, and those of the other 8 repainted sets, are re-graded to the new far light.
 - W1 middle (the world's own set, 1-4/1-6): the same 3 trees repeat once per screen width sideways, and the crowns are broad and
-  flat-topped. Paint a second W1 middle variant with starts2.py remix (s68/s76) and use it on one of the two stages.
-- The middle strips of the 9 repainted far sets were graded to the OLD far strips. Re-run `process.py finish ... <stem> mid` against
-  the new far strips. That needs last night's hd files from the bucket, `hfbackdrops/hd/`.
+  flat-topped. The second variant's 12 takes are painted (bucket `hfbackdrops2/hfbd2-W1/`, starts `start-w1b-mid`, `start-w1c2-mid`). Next: pick one, keyfull, native pass, finish. Then set it in as its own set (`w1b`, with a copy of `w1-far`) at 1-6.
 
 ## Lead's review (2 PM ET), done
 - W8 dawn, W10 gale and W2 misty dawn: far + sky repainted (round F4, 5 seeds each) with dark silhouettes and rich colour; middle strips
