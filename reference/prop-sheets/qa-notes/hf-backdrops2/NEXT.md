@@ -54,7 +54,16 @@ Times in this file before this section were written as UTC-4. Daylight saving en
   middle. 1-4 and 1-6 now show different trees. 1-4: std 44.0, p10 62. 1-6: std 45.7, p10 59.
 - Unchanged sets failing the floor, not touched today: 5-1..5-3 (W5 gold), 5-5 (W5 dusk1).
 
+## W2 (3:00 PM ET)
+- W2 mist, rapids and evening are repainted far + sky together (F8): a dawn river framed by dark palms, rapids under dark trees with a far
+  waterfall, and stilt huts with glowing windows against a violet sunset. Their middle and near strips are re-graded.
+- Floor: 2-3 PASS (std 40.7, p10 52), 2-4 PASS (49.3/61), 2-8 PASS (61.8/29).
+  - 2-7 (27.8/38) and 2-9 (27.3/54): evening sets, which pass by p10 under the dark-set rule.
+  - 2-1 still FAILS p10 (93). Upright, the dark palms sit under the HUD, leaving the bright dawn sky and clouds; it reads far richer
+    than before (sheet).
+  - 2-6 is a village interior (a dirt wall fills the frame), so no backdrop shows there.
+
 ## Exact next step
-1. Repaint W2 mist, rapids and evening far + sky to the F7 standard (dark silhouettes, rich colour), then check floor.py on 2-1..2-9.
+1. 2-1: move w2mist from 2-1 to a stage whose camera shows more of the far strip, or crop the W2 mist sky darker at the top.
 2. Hold the W5 gold and dusk1 far sets to the floor the same way.
 3. w10night and w10after stay held until Matt answers on World 10's rain.
