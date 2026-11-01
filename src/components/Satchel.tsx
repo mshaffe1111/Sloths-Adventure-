@@ -101,22 +101,22 @@ export const Satchel: React.FC<Props> = (p) => {
               Pokey&apos;s Satchel
             </Plaque>
           </div>
+          {/* (one row with Back and the Start Screen token sideways; their own row under the title upright: index.css .sh-head) */}
+          <div className="sh-tabs" role="tablist">
+            {TABS.map((t) => (
+              <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`sh-tab ${tab === t.id ? 'on' : ''}`} onClick={() => setTab(t.id)}>
+                <span className="sh-tab-ic">
+                  <Icon name={t.icon} size={22} />
+                </span>
+                {t.name}
+              </button>
+            ))}
+          </div>
           {p.onHome && (
             <span className="sh-home">
               <CornerToken icon="sloth" label="Start Screen" onClick={p.onHome} />
             </span>
           )}
-        </div>
-
-        <div className="sh-tabs" role="tablist">
-          {TABS.map((t) => (
-            <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`sh-tab ${tab === t.id ? 'on' : ''}`} onClick={() => setTab(t.id)}>
-              <span className="sh-tab-ic">
-                <Icon name={t.icon} size={22} />
-              </span>
-              {t.name}
-            </button>
-          ))}
         </div>
 
         {tab === 'finds' && <FindsTab finds={finds} onOpenFind={p.onOpenFind} />}

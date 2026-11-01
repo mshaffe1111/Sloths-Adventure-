@@ -444,5 +444,14 @@ export const DOT_HINTS: Record<string, string> = {
   w8_book: 'Night Hunters. Not near the start, so keep going.',
   w8_pocket: 'Glide by Moonlight. My map! Land and look around.',
   w8_snail: "Long Swings. He doesn't swing. He's somewhere you can stand.",
+  w9_note: 'Rising Heat. Often near the bottom, before you start climbing.',
+  w9_keepsake: 'Vent Riding. Every fern counts, so crouch by them all.',
+  w9_book: "Pell's Thread. Follow it, and check the ledges too.",
+  w9_pocket: "Ash Fields. My envelope corner's out there. Don't read it!",
+  w9_snail: 'Ember Canopy. He stays on the ground. Hot feet!',
+  w10_note: 'The Thousand Steps. Often down by the bottom step.',
+  w10_keepsake: 'Halfway Up, a fern is usually halfway up. Fancy that.',
+  w10_book: 'The Last Steps. Look on the ledges as you climb.',
+  w10_snail: "Thunder? He hasn't noticed. Somewhere along the way.",
 };
 for (const f of ALL_FINDS) if (DOT_HINTS[f.id]) f.hint = DOT_HINTS[f.id];

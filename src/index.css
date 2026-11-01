@@ -1721,6 +1721,31 @@
 .sh-head .nv-back { position: static; flex: none; }
 .sh-head { gap: 8px; } .sh-head .tr-titles { min-width: 0; flex: 1 1 auto; display: flex; justify-content: center; }
 @media (max-width: 440px) { .sh-head .tr-h1 { font-size: 16px; padding-inline: 12px; } .sh-head .nv-back-tag { font-size: 14px; } }
+/* the tab leaves sit in the header (Satchel.tsx): upright they wrap to their own full row under Back and the title, as before */
+.sh-head { flex-wrap: wrap; row-gap: 0; margin-bottom: 6px; }
+.sh-head .sh-tabs { order: 5; flex: 1 0 100%; margin-bottom: 0; }
+/* sideways (lead, 2026-11-01: the header took half the screen): one compact row, Back at its usual left, the tabs beside it, the
+   Start Screen token at the right; the title log goes (its name stays for screen readers) and Dot's perch with it, so every tab's
+   page gets about 80% of the height */
+@media (orientation: landscape) and (max-height: 500px) {
+  .sh-inner { margin-top: max(8px, env(safe-area-inset-top, 0px)); padding-top: 8px; }
+  .sh-screen .tr-dot { display: none; }
+  .sh-head { flex-wrap: nowrap; }
+  .sh-head .tr-titles { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .sh-head .sh-tabs { order: 0; flex: 1 1 auto; min-width: 0; margin: 0; }
+  .sh-tab { flex-direction: row; justify-content: center; gap: 4px; min-height: 52px; font-size: 14px; }
+  .sh-tab-ic { width: 38px; height: 38px; flex: none; }
+  .sh-tab.on .sh-tab-ic { transform: scale(1.1); }
+  .jb-book, .jb-page { max-height: calc(100vh - 150px); }
+}
+/* (a short phone on its side: the page turns stay clear of the screen's bottom fade) */
+@media (orientation: landscape) and (max-height: 380px) { .jb-book, .jb-page { max-height: calc(100vh - 172px); } }
+/* a narrow phone on its side: the leaves keep their names under them, smaller */
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 799px) {
+  .sh-tab { flex-direction: column; gap: 0; font-size: 12px; }
+  .sh-tab-ic { width: 32px; height: 32px; }
+  .sh-head .nv-back-tag { font-size: 14px; padding-inline: 16px 10px; }
+}
 /* the find reader on the shared nav X (2026-11-01): top-right of its paper, the label clear of it */
 .fr-card .fr-x { position: absolute; top: 6px; right: 6px; z-index: 2; }
 .fr-card .fr-label, .fr-card .fr-title { padding-right: 44px; }
