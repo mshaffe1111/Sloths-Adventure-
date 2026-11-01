@@ -45,7 +45,8 @@ have.
     (a note alone is not a fix), spread to every place the pattern can live. An escape to Matt stops new work until it is logged and
     assigned.
 11. **Every brief carries the bar:** the method file, 2-3 examples at the bar, the save states and orientations to shoot, and the checks.
-12. **After every release, the retro**, and proven improvements go into reference/methods/.
+12. **After every build, the debrief Matt asks for** (what went right, what went wrong, what we STOP, what we CONTINUE; reference/debriefs/),
+    written before he asks; proven improvements go into reference/methods/, and every STOP becomes a law, gate or method edit.
 13. **Releases only through a PR Matt merges, only on his word**, after the full gate and PLAY-STORE-RULES §6; then check the deploy and the
     APK.
 14. **Anything rough that reaches Matt is the lead's miss.** Own it, log it, fix the cause.

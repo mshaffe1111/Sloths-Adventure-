@@ -179,3 +179,4 @@ Matt found it on his phone. Rules from now on:
 6. **Briefs name the method; reports update it** (Matt, 2026-11-01): every brief has a "Method:" line pointing at reference/methods/,
    and every report has a "Method update" section (what worked better, what failed, the proposed edit). The lead merges proven updates
    into the method file at merge time. See reference/methods/README.md.
+7. **Time comes from the machine** (defect D20): briefs and check-ins read the time with `TZ=America/New_York date`, never worked out from UTC by hand; deadlines in a brief are given in ET and in UTC.
