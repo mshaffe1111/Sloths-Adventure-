@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { Icon } from './icons/index.tsx';
+import { PaintedIcon } from './icons/PaintedIcon.tsx';
 import { Popup } from './nav/Nav.tsx';
 import { WHATS_NEW, releaseLine } from '../game/whatsNew.ts';
 import './whatsNew.css';
@@ -34,7 +34,7 @@ export const WhatsNew: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                   <small>{releaseLine(r)}</small>
                 </span>
                 <span className="wn-chev" aria-hidden="true">
-                  <Icon name="arrow" size={22} rotate={on ? 90 : 0} />
+                  <PaintedIcon name="back" size={22} style={{ transform: `rotate(${on ? 270 : 180}deg)`, transition: 'transform 0.15s' }} />
                 </span>
               </button>
               {on && (
