@@ -49,7 +49,14 @@ failed: go one level deeper.
 **5. Stop the line on an escape:** when Matt finds something, the lead stops starting new work until the log entry, the root cause and the
 countermeasure are written and assigned (the fix itself can run in parallel).
 
-**6. Retro after every release (15 minutes, the lead, written here):**
+**6. Debrief after every build (Matt, 2026-11-01: "At the end of each build, I will ask for a debrief... What went right, what went wrong, what are we going to stop doing and what will we continue").** The lead has it written BEFORE Matt asks, in reference/debriefs/<date>-<version>.md, and gives it to him in plain words. Four headings, always:
+- **What went right** (keep doing it on purpose, and which method or gate it came from);
+- **What went wrong** (each with its defect-log number, root cause and countermeasure);
+- **What we will STOP doing** (named habits, not wishes; each becomes a law, gate or method edit);
+- **What we will CONTINUE doing** (the practices that paid off, promoted into methods/).
+Plus the numbers: escapes to Matt, things caught by gates or check-ins, redos sent back, HF spend, tokens.
+
+**6a. Retro detail (feeds the debrief, 15 minutes, the lead, written here):**
 - what escaped to Matt;
 - what we caught late (at the gate or the test link instead of at the check-in);
 - which defect categories repeated (the Pareto below);
