@@ -122,19 +122,28 @@ interface PlateRun { spec: Extract<PieceSpec, { kind: 'plate' }>; x: number; y: 
 interface GateRun { spec: Extract<PieceSpec, { kind: 'gate' }>; x: number; y: number; door: Platform; wall: Platform; open: boolean; latched: boolean; show: number; panned: boolean; opened: boolean; openAt: number }
 interface LeverRun { spec: Extract<PieceSpec, { kind: 'lever' }>; x: number; y: number; plat: number; on: boolean; show: number }
 interface BasketRun { spec: Extract<PieceSpec, { kind: 'basket' }>; x: number; y: number; weight: number; count: number }
+/** a lift's plank is over someone: they stand under it, within its width (half a body either side), below its top and above the
+ * bottom of its travel. A lift waits rather than come down on them (5-M's tea room, 2026-10-31) */
+export function liftOver(plat: { x: number; y: number; width: number }, baseY: number, px: number, py: number): boolean {
+  return px + 18 > plat.x && px - 18 < plat.x + plat.width && py > plat.y + 2 && py < baseY + 100;
+}
 interface LiftRun { spec: Extract<PieceSpec, { kind: 'lift' }>; plat: Platform; baseY: number; level: number; basket: number; unwind?: boolean; cage?: Collectible }
 interface BeetleRun { spec: Extract<PieceSpec, { kind: 'beetle' }>; st: BeetleState; home: number; span: { x0: number; x1: number }; told: boolean }
 interface SourceRun { spec: Extract<PieceSpec, { kind: 'source' }>; x: number; y: number; plat: number }
 interface ResetRun { spec: Extract<PieceSpec, { kind: 'reset' }>; x: number; y: number; plat: number }
 interface SeesawRun { spec: Extract<PieceSpec, { kind: 'seesaw' }>; x: number; y: number; foot: number; w: number; rise: number; rest: -1 | 0 | 1; ends: [Platform, Platform]; tilt: -1 | 0 | 1; show: number }
 interface BellRun { spec: Extract<PieceSpec, { kind: 'bell' }>; x: number; y: number; plat: number; rung: number }
-interface LedgeRun { spec: Extract<PieceSpec, { kind: 'ledge' }>; plat: Platform; lit: boolean; show: number }
+/** a leap carries a walking glow's light ahead of her (s of her flight, px below her feet, its reach), and how long a step stays lit after */
+export const LEDGE_LEAD = { s: 0.35, dy: 30, r: 120, after: 1.2 } as const;
+interface LedgeRun { spec: Extract<PieceSpec, { kind: 'ledge' }>; plat: Platform; lit: boolean; show: number; /** s since the light last found it */ dark?: number }
 interface MarkRun { spec: Extract<PieceSpec, { kind: 'mark' }>; x: number; y: number; show: number }
 interface ShutterRun { spec: Extract<PieceSpec, { kind: 'shutter' }>; x: number; y: number; zone: Zone | undefined; open: boolean }
 interface PinwheelRun { spec: Extract<PieceSpec, { kind: 'pinwheel' }>; x: number; y: number; spin: boolean; ang: number }
 interface SluiceRun { spec: Extract<PieceSpec, { kind: 'sluice' }>; x: number; y: number; river: RiverZone | undefined; open: boolean; rate: number; rafts: Platform[] }
 interface TraderRun { spec: Extract<PieceSpec, { kind: 'trader' }>; x: number; y: number; plat: number; done: boolean; t: number }
-interface ChairRun { spec: Extract<PieceSpec, { kind: 'chair' }>; x: number; y: number; seat: Platform; state: 'empty' | 'sink' | 'held' | 'pop'; t: number; wig: number; push: number; lastDir: number; armed: boolean; back: -1 | 1; times: number }
+/** a thumb still this long (s) before sliding the same way again counts as a new wiggle in a trap chair */
+export const CHAIR_STILL = 0.15;
+interface ChairRun { spec: Extract<PieceSpec, { kind: 'chair' }>; x: number; y: number; seat: Platform; state: 'empty' | 'sink' | 'held' | 'pop'; t: number; wig: number; push: number; lastDir: number; /** the last way the thumb slid, and how long it has been still */ dir?: number; still?: number; armed: boolean; back: -1 | 1; times: number }
 interface SaplingRun { spec: Extract<PieceSpec, { kind: 'sapling' }>; x: number; y: number; to: { x: number; y: number; plat: number }; vine: Vine | undefined; home: Vine | null; bent: boolean; bendT: number; told: boolean }
 interface SilkRun { spec: Extract<PieceSpec, { kind: 'silk' }>; x: number; y: number; vine: Vine | undefined; t: number; state: 'free' | 'held' | 'drop' | 'shake'; times: number; armed: boolean }
 interface KnotRun { spec: Extract<PieceSpec, { kind: 'knot' }>; x: number; y: number; snapped: boolean; at: number }
@@ -1172,7 +1181,11 @@ export class KitPlay {
       // (a ratchet lift winds only with him on its plank: wound up empty it would leave him below; puzzleCheck.ts counts it so too)
       const on = !b && evalWire(l.spec.by, (id) => this.output(room, id)) && (!l.spec.hold || (p.grounded && h.standingOn === l.plat.id));
       if (on || l.level <= 0) l.unwind = false;
-      const want = b ? liftLevel(b.weight, b.spec.need ?? 1) : on ? 1 : l.spec.hold && !l.unwind ? l.level : 0;
+      let want = b ? liftLevel(b.weight, b.spec.need ?? 1) : on ? 1 : l.spec.hold && !l.unwind ? l.level : 0;
+      // (never down onto someone under it: in 5-M's tea room the lift went up without Meeca, she dropped into its well, the table was
+      // set again and the plank came down on her head, shut her in under it and pushed her into the floor, where she fell through:
+      // Matt lost two lives there, 2026-10-31. It waits up there till she is out from under it)
+      if (want < l.level && liftOver(l.plat, l.baseY, p.x, p.y)) want = l.level;
       const before = l.level;
       const step = ((b ? KIT.liftSpeed : KIT.windSpeed) / Math.max(1, l.spec.rise)) * dt;
       l.level = Math.abs(want - l.level) <= step ? want : l.level + Math.sign(want - l.level) * step;
@@ -1305,8 +1318,14 @@ export class KitPlay {
       s.show += (s.tilt - s.show) * Math.min(1, dt * 10);
     }
     const lights = this.lights();
+    // (a glow that walks with her, Flicker's in 5-M, trails her: leaping, she carries its light ahead to where she is going, so the
+    // step she jumps to is lit when she lands on it. QA 2026-10-31: it was still dark, and she dropped to the foot of the wall)
+    const leap = room.glows.length && !p.grounded && !p.climbing ? [...lights, { x: p.x + p.vx * LEDGE_LEAD.s, y: p.y + LEDGE_LEAD.dy, r: LEDGE_LEAD.r }] : lights;
     for (const l of room.ledges) {
-      const lit = ledgeLit(l.plat.x, l.plat.x + l.plat.width, l.plat.y, lights);
+      const now = ledgeLit(l.plat.x, l.plat.x + l.plat.width, l.plat.y, leap);
+      // (and a step the light has just left keeps it a moment: his light drifting as he bobs no longer blinks a step out)
+      l.dark = now ? 0 : (l.dark ?? LEDGE_LEAD.after) + dt;
+      const lit = now || l.dark < LEDGE_LEAD.after;
       if (lit !== l.lit) {
         // (it never goes out from under his feet: it fades only once he is off it)
         if (!lit && p.grounded && h.standingOn === l.plat.id) continue;
@@ -1374,6 +1393,8 @@ export class KitPlay {
           c.wig = 0;
           c.push = 0;
           c.lastDir = 0;
+          c.dir = 0;
+          c.still = 1;
           c.times++;
           c.back = p.x < c.x || p.facing > 0 ? -1 : 1;
           room.changes++;
@@ -1396,7 +1417,12 @@ export class KitPlay {
           c.push = steer !== 0 && steer === c.lastDir ? c.push + dt : 0;
           const strain = c.push >= CHAIR.strain;
           if (strain) c.push = 0;
-          const fresh = (steer !== 0 && steer !== c.lastDir) || !!h.poke || strain;
+          // (a slide the same way again counts only after the thumb was really still: one short steer whose touch flickered on and off
+          // the dead zone counted as four slides and popped her straight out, QA 2026-10-31. The other way always counts)
+          const again = steer !== 0 && c.lastDir === 0 && (steer !== c.dir || (c.still ?? 1) >= CHAIR_STILL);
+          const fresh = (steer !== 0 && c.lastDir !== 0 && steer !== c.lastDir) || again || !!h.poke || strain;
+          c.still = steer === 0 ? (c.still ?? 0) + dt : 0;
+          if (steer !== 0) c.dir = steer;
           if (fresh) {
             c.wig++;
             h.sfx('wiggle');

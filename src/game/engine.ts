@@ -50,7 +50,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
+import { ASSIST, DOUBLE_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -534,6 +534,8 @@ export class GameEngine {
   private dragJump = 1;
   /** World 8: how dark it is on screen, 0..1 */
   private darkShow = 0;
+  /** the QA visibility check (tools/qa/meecaVisible.cjs): leave Meeca out of the next frames drawn */
+  qaHideHero = false;
   /** World 3's glowworms (zones.ts): how long he has stood still in the dark, and when each sleeping light woke (game time, by id) */
   private glowStill = 0;
   private glowWake = new Map<number, number>();
@@ -2235,7 +2237,10 @@ export class GameEngine {
           const lipL = this.stepHelp && !fromLeft && !fromRight && p.x + half - plat.x <= LIP_IN && p.x < plat.x + plat.width / 2;
           const lipR = this.stepHelp && !fromLeft && !fromRight && plat.x + plat.width - (p.x - half) <= LIP_IN && p.x >= plat.x + plat.width / 2;
           if (!fromLeft && !fromRight && !lipL && !lipR) continue;
-          if (p.y <= plat.y + this.forgive.mantle && p.vy >= -120) {
+          // (only a lip with room above it to stand: a gate's door has its wall standing on it, and hoisted onto the door's top she was
+          // pushed back off by the wall, dropped and hoisted again, frame after frame, held in the air beside the Butler's arch in 5-M's
+          // tea room till she slid into the floor: Matt, 2026-10-31. Such a lip is part of one wall)
+          if (p.y <= plat.y + this.forgive.mantle && p.vy >= -120 && lipHasRoom(this.platforms, plat, fromLeft || lipL ? -1 : 1, p.height)) {
             // caught the lip of the ledge: hoist up onto it
             p.y = plat.y;
             p.vy = 0;
@@ -6210,7 +6215,8 @@ export class GameEngine {
     // (Meeca's stage: her own sheet draws her carrying, in the chair and on the silk: meecaArt.ts meecaPose)
     // (7-4's crumble: the floor's painted break and Matt's falling poses, w7SlideRun.ts)
     const kitPose = !!this.mc || (!!this.slideRun && this.slideRun.drawHero(ctx, this.player)) || (!!this.kit && this.kit.drawPokey(ctx, this.player));
-    if (this.mc) drawMeecaHero(ctx, this.player, this.mc, this.kit, this.gameTime);
+    // (qaHideHero: the visibility check draws a frame without her to compare, tools/qa/meecaVisible.cjs)
+    if (this.mc && !this.qaHideHero) drawMeecaHero(ctx, this.player, this.mc, this.kit, this.gameTime);
     else if (kitPose) { /* drawn */ }
     else if (rig) {
       const hp = this.player;
@@ -6490,6 +6496,12 @@ export class GameEngine {
     const st = mc.st;
     const lights: Array<{ x: number; y: number; r: number; c: string; a: number }> = [];
     if (mc.flicker.on) lights.push({ x: sx(mc.flicker.x), y: sy(mc.flicker.y), r: 120 * z, c: 'rgba(220, 255, 170, A)', a: 0.45 * mc.flicker.show });
+    // her own soft moonlight: in the camp she is one brown sloth among the sleeping soldiers, and on the trail she stood on dark dirt,
+    // "almost missing" (Matt, 2026-10-31); a pale glow round her keeps her the one that reads
+    lights.push({ x: sx(this.player.x), y: sy(this.player.y - 46), r: 78 * z, c: 'rgba(205, 215, 255, A)', a: 0.32 });
+    // and what she carries glows a little at her hands while she holds it (QA 2026-10-31: at night the cake or pinecone in her arms
+    // was hard to see, nothing said she still had it)
+    if (this.kit?.heldThing()) lights.push({ x: sx(this.player.x + this.player.facing * 10), y: sy(this.player.y - 50), r: 44 * z, c: 'rgba(255, 228, 160, A)', a: 0.5 });
     for (const c of st.camp) if (c.n === 'fire' || c.n === 'stakeLit') lights.push({ x: sx(c.x), y: sy(c.y - 40), r: 170 * z, c: 'rgba(255, 170, 90, A)', a: 0.4 });
     if (mc.phase !== 'play') for (const x of st.clearing.stakes) lights.push({ x: sx(x + 14), y: sy(st.clearing.y - 78), r: 130 * z, c: 'rgba(255, 200, 120, A)', a: 0.35 });
     for (const l of this.kit?.lights() ?? []) if (l.r > 400) lights.push({ x: sx(l.x), y: sy(l.y), r: Math.min(420, l.r * 0.4) * z, c: 'rgba(225, 232, 255, A)', a: 0.35 });

@@ -512,6 +512,8 @@ export function easyStage(stage: Stage): Stage {
     }
     cps.sort((a, b) => a.x - b.x);
   }
-  for (const cp of cps) heartBy(stage, cp, next);
+  // (no hearts on Meeca's stage: nothing there hurts her, and a heart is only picked up when hurt, so Easy's hearts by the flags just
+  // sat there, QA 2026-10-31 "not picked up")
+  if (!(stage as Stage & { proto?: { meeca?: unknown } }).proto?.meeca) for (const cp of cps) heartBy(stage, cp, next);
   return stage;
 }

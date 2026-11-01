@@ -62,6 +62,8 @@ export interface MeecaHost {
 
 /** the card takes a tap even with pictures still on their way after this long (s): a phone that never gets them can still play */
 export const CARD_ART_WAIT = 12;
+/** a tap on the card counts from this long after it comes up (s): the one that opened the stage does not */
+export const CARD_TAP_FROM = 0.2;
 
 /** what the thumbs did this frame, as the engine's input state says it */
 export interface MeecaControls {
@@ -160,6 +162,8 @@ export class MeecaPlay {
   private nudgeIdle = 0;
   private readonly nudgeSeen = new Map<string, Set<string>>();
   private readonly nudged = new Map<string, number>();
+  /** how long she has been in each room (or at each trunk) with its way on still shut, all told */
+  private readonly nudgeIn = new Map<string, number>();
   /** her hands full and her stood still: how long; when the hold line came again */
   private holdIdle = 0;
   private holdAgainAt = -99;
@@ -192,6 +196,8 @@ export class MeecaPlay {
   private endT = 0;
   private won = false;
   private tapped = false;
+  /** the card was tapped (kept until it can go) */
+  private cardTapped = false;
   private hold = false;
   private touchHold = false;
   private circle = 0;
@@ -483,7 +489,10 @@ export class MeecaPlay {
     const p = this.host.player;
     if (this.phase === 'card') {
       this.cardT += dt;
-      if (this.tapped && this.cardT > 0.6 && !this.cardWaiting) {
+      // (a tap is kept: one made while the card settled or the art was still coming used to be dropped, so the card took two taps,
+      // QA 2026-10-31. The tap that started the stage, in its first moment, is not one)
+      if (this.tapped && this.cardT > CARD_TAP_FROM) this.cardTapped = true;
+      if (this.cardTapped && this.cardT > 0.6 && !this.cardWaiting) {
         this.phase = 'play';
         this.cardOut = 0;
         this.host.sfx?.('card');
@@ -536,6 +545,7 @@ export class MeecaPlay {
       this.say(MEECA_SAY.flicker);
     }
     if (p.x >= this.st.darkX0 + 40) this.say(MEECA_SAY.shy);
+    if (p.grounded && p.y >= MEECA_G - 1 && p.x >= this.st.wallX - 70 && p.x < this.st.wallX && !this.host.kit()?.chairHeld) this.say(MEECA_SAY.wall);
   }
 
   /**
@@ -628,9 +638,15 @@ export class MeecaPlay {
       this.nudgeIdle = 0;
     }
     // (a chair holding her has its own words up)
-    if (!kit?.chairHeld) this.nudgeIdle += dt;
+    if (!kit?.chairHeld) {
+      this.nudgeIdle += dt;
+      this.nudgeIn.set(at, (this.nudgeIn.get(at) ?? 0) + dt);
+    }
     const n = this.nudged.get(at) ?? 0;
-    if (n >= lines.length || this.nudgeIdle < NUDGE_S[n]) return;
+    // (the first comes NUDGE_S[0] after she came in, however busy she was: in room 4 every cup, tip and reset was "something new", so
+    // "His teapot, though... very full" never came and Matt fell in the well twice; in room 3 the knot's came ~35 s late, QA 2026-10-31.
+    // The second still waits for her to run out of new things to try)
+    if (n >= lines.length || (n === 0 && !at.startsWith('carve:') ? (this.nudgeIn.get(at) ?? 0) : this.nudgeIdle) < NUDGE_S[n]) return;
     this.nudged.set(at, n + 1);
     const id = `nudge:${at}:${n}`;
     this.saidAt.push({ id, t: this.t, x: this.host.player.x });

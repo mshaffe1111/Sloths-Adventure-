@@ -87,6 +87,8 @@ export interface MeecaStage {
   camp: CampProp[];
   /** the first gully past the camp (her thought: the way on is the high way) */
   highX: number;
+  /** room 1's high wall (the face of its ledge): she says it is the way up to find, at its foot */
+  wallX: number;
   /** the two paths that look the same (her thought, "Which way is back?") */
   forkX: number;
   /** where Flicker's light blinks on, as she reaches flickerX */
@@ -140,7 +142,8 @@ export interface MeecaTrail {
   name: string;
   steps: TrailStep[];
   /** its sections, in order: the kind, and where each starts and ends (on the path, G) */
-  sections: Array<{ kind: TrailKind; x0: number; x1: number }>;
+  /** each section, and a log crossing's shape (a level row, steps up, two sagging logs) */
+  sections: Array<{ kind: TrailKind; x0: number; x1: number; shape?: 'row' | 'steps' | 'sag' }>;
 }
 /** how many sections each trail has: out of the camp, after the mark, then before rooms 2 to 5 (tuned to the stage's length) */
 export const TRAIL_SECTIONS: readonly number[] = [2, 4, 4, 4, 4, 4];
@@ -264,24 +267,56 @@ export function buildMeecaStage(seed = 1): MeecaStage {
       steps.push({ kind: 'plat', id: g1.id });
       return g1.x + g1.width;
     },
-    // logs jammed across a gully, hop to hop (they do not reach the floor: under them is the gully's floor, and the stairs back)
+    // logs jammed across a gully, hop to hop (they do not reach the floor: under them is the gully's floor, and the stairs back). Three
+    // shapes, dealt in turn so no two log crossings in a play look alike (Matt, 2026-10-31: "Repetitive"; QA: four precise hops of
+    // 94-110 px over the same pit before every room, a bot fell ~15 times): a level row of wide logs, logs stepping up toward a high far
+    // bank, and two long logs sagging to a low middle. Every hop is a short one (60-85 px, at most 30 px up), on a log wide enough to land on
     logs: (x, steps) => {
+      const shape = logShapes[logTurn++ % logShapes.length];
+      lastShape = shape;
       const g0 = gbank(x, x + 200);
       steps.push({ kind: 'plat', id: g0.id });
-      const n = R.i(3, 4);
       let ex = g0.x + g0.width;
       let y = G;
-      for (let i = 0; i < n; i++) {
-        const lx = ex + R.i(85, 115);
-        y = Math.max(G - 70, Math.min(G + 20, y + R.i(-40, 30)));
-        const l = log(lx, lx + R.i(110, 140), y);
-        steps.push({ kind: 'plat', id: l.id });
-        ex = l.x + l.width;
+      const hop = () => R.i(60, 85);
+      if (shape === 'row') {
+        for (let i = 0; i < 3; i++) {
+          const lx = ex + hop();
+          y = Math.max(G - 40, Math.min(G + 15, y + R.i(-25, 20)));
+          const l = log(lx, lx + R.i(150, 180), y);
+          steps.push({ kind: 'plat', id: l.id });
+          ex = l.x + l.width;
+        }
+      } else if (shape === 'steps') {
+        for (let i = 0; i < 3; i++) {
+          const lx = ex + hop();
+          y -= R.i(20, 30);
+          const l = log(lx, lx + R.i(140, 165), y);
+          steps.push({ kind: 'plat', id: l.id });
+          ex = l.x + l.width;
+        }
+      } else {
+        // (two long logs, each sagging lower toward the middle: a walk down one, a hop, a walk up the other)
+        for (let i = 0; i < 2; i++) {
+          const lx = ex + hop();
+          y = G + R.i(10, 20);
+          const l = log(lx, lx + R.i(210, 240), y);
+          steps.push({ kind: 'plat', id: l.id });
+          ex = l.x + l.width;
+        }
       }
-      const gx = ex + R.i(85, 110);
+      const gx = ex + R.i(60, 80);
       gully(g0.x + g0.width, gx);
-      const g1 = gbank(gx, gx + R.i(170, 210));
+      // (the far bank of the steps is a stump's height above the last log; the others are level with the path)
+      const g1 = shape === 'steps' ? block(gx, gx + R.i(170, 210), Math.max(y - 20, G - 100)) : gbank(gx, gx + R.i(170, 210));
+      if (shape === 'steps') g1.height = G + GULLY + BANK - g1.y;
       steps.push({ kind: 'plat', id: g1.id });
+      if (shape === 'steps') {
+        // (and down off it to the path again)
+        const g2 = gbank(g1.x + g1.width, g1.x + g1.width + R.i(220, 260));
+        steps.push({ kind: 'plat', id: g2.id });
+        return g2.x + g2.width;
+      }
       return g1.x + g1.width;
     },
     // down the stairs into a hollow; its far side is a wall, and a trunk against it is the only way up and out
@@ -345,7 +380,17 @@ export function buildMeecaStage(seed = 1): MeecaStage {
       return g1.x + g1.width;
     },
   };
-  /** a trail `n` sections long from x (on the ground), the kinds dealt from a shuffled bag so no kind comes twice running */
+  /**
+   * the kinds, dealt from one shuffled bag for the whole stage (it used to be a new bag for each trail, so the log pit came on nearly
+   * every trail, before every room: Matt, 2026-10-31 "Repetitive"), so no kind comes twice running and each comes once in five
+   */
+  let bag: TrailKind[] = [];
+  let last: TrailKind | null = null;
+  /** the log crossings' shapes, in a rolled order, one after another */
+  const logShapes = R.shuffle(['row', 'steps', 'sag'] as const);
+  let logTurn = 0;
+  let lastShape: 'row' | 'steps' | 'sag' | undefined;
+  /** a trail `n` sections long from x (on the ground), the kinds dealt from the stage's bag so no kind comes twice running */
   const trail = (x: number, n: number, name: string, lead = 0): number => {
     const steps: TrailStep[] = [];
     // (down off a room's high exit: a little path first, so the first branches are not a jump from the room's top)
@@ -356,8 +401,6 @@ export function buildMeecaStage(seed = 1): MeecaStage {
     }
     const sections: MeecaTrail['sections'] = [];
     const x0 = x;
-    let bag: TrailKind[] = [];
-    let last: TrailKind | null = null;
     for (let i = 0; i < n; i++) {
       if (!bag.length) bag = R.shuffle(['canopy', 'logs', 'hollow', 'fallen', 'double'] as TrailKind[]);
       let k = bag.pop()!;
@@ -368,7 +411,7 @@ export function buildMeecaStage(seed = 1): MeecaStage {
       last = k;
       const sx = x;
       x = SECTIONS[k](x, steps);
-      sections.push({ kind: k, x0: sx, x1: x });
+      sections.push({ kind: k, x0: sx, x1: x, ...(k === 'logs' ? { shape: lastShape } : {}) });
     }
     trails.push({ x0, x1: x, steps, sections, name });
     beats.push([x0, x, `Trail: ${name}`]);
@@ -480,7 +523,8 @@ export function buildMeecaStage(seed = 1): MeecaStage {
       { kind: 'source', id: 'cones3', variant: 'pinecone', at: on(floorC, c0 + 100), look: 'pile' },
       { kind: 'item', id: 'cone3', variant: 'pinecone', source: 'cones3', for: 'knot3' },
       { kind: 'silk', id: 'silk3', at: on(floorC, silk.x), vine: silk.id },
-      { kind: 'knot', id: 'knot3', at: on(floorC, cliffX - 25, -268) },
+      // (on the cliff's face, low enough to clear the HUD's sign on a phone held sideways: QA 2026-10-31 saw it under 'Warnings')
+      { kind: 'knot', id: 'knot3', at: on(floorC, cliffX - 25, -220) },
       { kind: 'ladder', id: 'ladder3', at: on(cliff, cliffX + 4), vine: ladderV.id, open: 'knot3' },
     ],
     exit: 'ladder3',
@@ -589,7 +633,7 @@ export function buildMeecaStage(seed = 1): MeecaStage {
     }
   }
   const st: MeecaStage = {
-    seed, width, spawn: { x: spawn, y: G }, campEnd, camp, highX: trails[0].x0 + 120, forkX, flickerX, flickerAt: { x: flickerX + 150, y: G - 130 },
+    seed, width, spawn: { x: spawn, y: G }, campEnd, camp, highX: trails[0].x0 + 20, wallX: ledge1.x, forkX, flickerX, flickerAt: { x: flickerX + 150, y: G - 130 },
     trunks, darkX0: e0 - 60, clearing, beats, trails, landmarks,
     flags: [campEnd + 60, mark.x - 200, r1 + 20, b0 - 20, c0 - 20, d0 - 20, t4.x + 120],
   };
