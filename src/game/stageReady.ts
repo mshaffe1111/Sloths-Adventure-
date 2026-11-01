@@ -43,6 +43,17 @@ export interface ReadyEngine {
 export const READY_MS = 6500;
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, Math.max(0, ms)));
+/** `n` animation frames (or `ms`, whichever first: a hidden tab gets none) */
+function nextFrames(n: number, ms: number): Promise<void> {
+  if (typeof requestAnimationFrame !== 'function') return Promise.resolve();
+  return Promise.race([
+    new Promise<void>((r) => {
+      const step = () => (--n <= 0 ? r() : requestAnimationFrame(step));
+      requestAnimationFrame(step);
+    }),
+    sleep(ms),
+  ]);
+}
 
 /**
  * Get the built stage's sheets in before its first frame. `engine` has built it; `canvas` is the game's own (the title card
@@ -113,6 +124,15 @@ export async function readyBuiltStage(
   if (!live()) settleSheetBakes();
   // (and the ground plants those frames met become pictures, stamped from the first frame of play: envKit.ts)
   if (!live()) settleDecorBakes();
+  // and the first frame of play drawn once more, still under the card, from everything just baked and fitted: the sprite copies, the
+  // fitted backdrop strips and the plant pictures are new canvases, and the first draw of each is the browser's upload of it. Left to
+  // play, that upload was the first frame: 1.2-1.9 s of frozen first frame entering 1-1 and 8-1 on a slow CPU (warmup-5m, 2026-11-01).
+  // Two animation frames let the browser carry that work out (it does it as the frame is shown, behind the card), not on play's first.
+  // (past the deadline too: on a phone slow enough to miss it, this frame costs the same here as it would frozen at the start of play)
+  if (!live()) {
+    frame();
+    await nextFrames(2, 1500);
+  }
   const late = pendingSheets();
   const line = `ready ${cfg.id}: ${keys.length} keys, ${drawn} sheets drawn once, ${late.length} still loading, ${Math.round(performance.now() - t0)} ms`;
   perfNote(line);
