@@ -222,9 +222,13 @@ test('every cage in 2-3 and 2-8 opens in play: each stone carried to its basket 
   try {
     for (const mode of ['normal', 'easy'] as const) {
       setDifficulty(mode);
-      for (const plan of ['2-3', '2-8'] as const) for (const seed of [1, 2, 3, 38, 75, 112]) {
+      // (every critter in every mode, not just the rolls: Matt, "it feels like one of the animals won't work". The critter is only its
+      // look in the engine, but each seed is also played with every cage holding a capybara, then a duckling, then an otter)
+      const runs = (['2-3', '2-8'] as const).flatMap((plan) => [1, 2, 3, 38, 75, 112].flatMap((seed) => [undefined, ...(seed <= 2 ? (['capy', 'duck', 'otter'] as const) : [])].map((force) => ({ plan, seed, force }))));
+      for (const { plan, seed, force } of runs) {
         const r = new RealPlay(plan, seed);
         const kit = r.e.kit as KitPlay;
+        if (force) for (const room of kit.rooms) for (const l of room.lifts) if (l.cage) l.cage.critter = force;
         let rooms = 0;
         kit.rooms.forEach((room) => {
           const l = room.lifts.find((q) => q.cage);
@@ -248,7 +252,7 @@ test('every cage in 2-3 and 2-8 opens in play: each stone carried to its basket 
             r.frame(high ? { up: true, jump: true, press: true } : { punch: true });
             r.frame();
             r.wait(2.5);
-            assert.equal(stone.mode, 'basket', `${mode} ${plan} seed ${seed} ${room.spec.id} (${high ? 'high' : 'bank'} basket): the stone goes in, not ${stone.mode}`);
+            assert.equal(stone.mode, 'basket', `${mode} ${plan} seed ${seed} ${room.spec.id} ${l.cage!.critter} (${high ? 'high' : 'bank'} basket): the stone goes in, not ${stone.mode}`);
           }
           assert.ok(l.cage!.collected, `${mode} ${plan} seed ${seed} ${room.spec.id}: the cage comes all the way up and opens`);
         });
