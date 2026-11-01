@@ -29,7 +29,9 @@ have.
    worked better, with proof; what failed, and why; the exact edit). A job with no method file gets one.
 5. **Every gate runs, every time.** tsc, the full tests, the build, artcheck, drawcheck, and every gate added since (gates.md). Never skip,
    disable, loosen or "expected-fail" a check to get green, and never weaken a test to pass it. A failing gate is fixed, or the work
-   doesn't ship.
+   doesn't ship. The one exception: a NEW gate may start with a list of the defects that already exist, only if that list can only
+   shrink (a test fails when an entry is added or a fixed one is left on it) and every entry is in the defect log with an owner
+   (added 2026-11-01, clipcheck).
 6. **No filler, no repeats.** Player-facing words are written per item, in the character's voice. No line that could sit anywhere, no line
    that apologises for missing data, no repeats on a page.
 7. **Nothing untested or half-finished reaches main.** New replaces old outright once it passes; no switches, no half-fixes.
