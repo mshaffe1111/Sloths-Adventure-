@@ -100,6 +100,15 @@ X = M3 + [
 ]
 
 
+# ---- round F4 (lead's review, 2 PM ET: W8 dawn, W10 gale and W2 mist read pale and empty upright): richer far + sky, dark defined
+# silhouettes in the middle distance, strong colour, no fog over everything ----
+MOODS4 = [
+    ('w8dawn', 8, 'dawn', 'dawn over the high jungle canopy seen from a treetop: big dark silhouetted rainforest crowns and giant emergent trees in the middle distance, layered ridges of canopy fading behind them, a blazing orange and magenta sunrise sky with bold coloured clouds, birds', '', '', 'rich saturated sunrise colour, strong contrast, deep violet shadows', 0),
+    ('w10gale', 10, 'storm', 'a fierce gale over the high mountain pass: dark jagged slate-blue cliffs and peaks with strong shadows, a long rope bridge between two dark peaks, heavy dark storm clouds racing across, slanting rain', '', '', 'cold blue storm light, deep shadows, strong contrast', 0),
+    ('w2mist', 2, 'dawn', 'dawn on a wide jungle river: dark silhouetted palms and big riverbank trees framing the river, a golden sun low over the water with bright reflections, wisps of mist only on the water, colourful pink and gold sky with clouds', '', '', 'rich warm dawn colour, strong contrast, dark green silhouettes', 0),
+]
+
+
 def fars(seeds=(7, 23, 41), moods=None):
     return [{'name': f'{st}-tall-{sd}', 'prompt': S + FAR.format(d=far + ', ' + l), 'neg': FARNEG, 'seed': sd, 'w': 1792, 'h': 1200,
              'steps': 30} for st, w, g, far, mid, near, l, trim in (moods or MOODS2) for sd in seeds]
@@ -180,8 +189,9 @@ if __name__ == '__main__':
         spec = skies(sys.argv[2])
         (H / 'spec-hd-S.json').write_text(json.dumps(spec, indent=1))
         print('spec-hd-S.json', len(spec['items']))
-    elif c in ('F', 'F3'):  # the far + sky pictures, text to image (tools/art/w6to10/stillsgpu.py)
-        it = fars() if c == 'F' else fars((7, 23, 41, 59), MOODS3)
+    elif c in ('F', 'F3', 'F4'):  # the far + sky pictures, text to image (tools/art/w6to10/stillsgpu.py)
+        it = fars() if c == 'F' else fars((7, 23, 41, 59), MOODS3) if c == 'F3' else [
+            dict(i, name=i['name'].replace('-tall-', '-tall4-')) for i in fars((7, 23, 41, 59, 71), MOODS4)]
         spec = {'tag': f'hfbd2-{c}', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 0.8]},
                 'neg': FARNEG, 'items': it}
         (H / f'spec-{c}.json').write_text(json.dumps(spec, indent=1))
