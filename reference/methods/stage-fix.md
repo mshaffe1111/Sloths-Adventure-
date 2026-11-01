@@ -70,17 +70,19 @@ The CLAUDE.md checks (tsc, the full test globs in 3 shards, vite build, artcheck
   to the stage's own sections, or put it after the build (`w8Finish`), which changes builds but not what curation measured.
 - 2026-11-01: the headless browser lags the game, so screenshots taken "at the grab" land seconds later; step the engine instead.
 
+- 2026-11-01: **check the bot before trusting it.** The first-timer had a bug (firsttimer.ts `moved` always 0: it hopped on flat ground
+  every ~0.35 s and took off ~110 px before ledge ends). The sealed door's "every natural hop passes over the blooms" and 8-2's gap and
+  roost "10-18 lives" were mostly that bug; with the fixed bot (bot-fix 877a819b) both went away, and the 52 px bloom float was reverted.
+  Before fixing a stage for the bot's misses, watch the bot in a clip on flat ground and at one ledge: does it move like a person?
+
 ## Tried and didn't work
 - Lowering ROPE_RISE or widening the grab window for the rope: not needed (the sweep showed the window was fine); would have changed how
   every rope looks and plays for nothing.
 - The broad falling catch (every required rope): see Pitfalls.
-- Moving blooms away from edges (the first guess at the sealed door): the misses were not at the edges.
+- Moving blooms away from edges, and floating them at 52 px (the sealed door): the misses were the old bot's hops.
 - A wider stair foot alone (400-440 px): he landed with 100 px to go and his next flick fell into the gap after it; a knot past the foot
   (a step up, never a gap, after the landing) is what worked.
 
 ## To try
 - An "adult first-timer" goal measure, as Easy's kid bot sets gen2's Easy goal (goals.ts gen2EasyGoal), for harvest stages on Normal.
 - Petals on a bough floating at his head in Worlds 1, 3 and 5 too (the classifier: 5-2 19 flown over, 1-2 and 3-2 5 each).
-- 8-2's gap and roost themes: Normal first-timers lose 10-18 lives at their wide gaps over deep pits (single jump first, the double only
-  after a death there); release-0.9.2's own roost rolls lose 10 each (two tried). STAGE-RULES §6's water lesson (no second-jump gaps over a
-  deadly fall) may apply.

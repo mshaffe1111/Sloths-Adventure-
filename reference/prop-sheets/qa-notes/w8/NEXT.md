@@ -18,9 +18,9 @@ history; the release cut 83fbade8 had taken the sections and the rope curation o
   zigzag climbs (first-timer rescues 0-2 -> 5-10). A falling Pokey is now caught only by a required rope whose own ledge he last stood on
   (`rope.ts ROPE_FROM`); those stages are back in base's noise. `src/game/ropeCatch.test.ts` (3 of 5 fail on release-0.9.2; the climb
   guard fails on the broad rule).
-- **The sealed door (live in 0.9.2):** every natural hop (a gap jump onto the landing bough, a hop down a step, a flick) passed 16-35 px
-  over blooms floating 34 px over their bough, so a Normal first-timer left 7-15 of 107 on every run (the door asks 94). World 8's harvest
-  blooms on a bough now float at 52 px (`w8.ts BLOOM_FLOAT`, after the build: 8-2 only); a walker still takes them.
+- **The sealed door (live in 0.9.2):** measured again with the fixed first-timer (bot-fix 877a819b, merged): 25 of 25 runs reach the
+  shrine with the blooms, at their shipped 34 px. The old bot's flat-ground hops caused the misses; the 52 px float tried this afternoon
+  is reverted (it added 0-7 blooms a run, not needed).
 - **The fungus steps (layout 2: 5-15 lives on Normal):** each step stood over the void (a short hop went under the next bracket); now each
   stands on a bough trunk to the ground (`w8.ts fungusTrunks`). A stair's foot was shorter than a running jump off the top with the deep
   gap after it; now 340-370 px (fungus-tall 250-270, inside the 1800 px rule) with a knot past it (`FUNGUS_FOOT`, `footKnot`;
@@ -30,20 +30,15 @@ history; the release cut 83fbade8 had taken the sections and the rope curation o
   byte-identical (8-1, 8-3..8-10, layouts 1-16, Normal and Easy).
 - **No new Dot line.** The rope is not new in World 8 (Shimmy Rope is learned at 1-3 and required from 1-4); on 8-2
   the engine's own rope lesson ("Slide your thumb to creep along.") still comes up on the first rope.
-- **The first-timer, final build** (`reference/qa-reports/w8-rope2/bots-final.txt`): 0 heart falls at a rope on every run; Easy reaches the
-  shrine on all 16 layouts. Normal: the rope, fungus and high-bloom layouts reach the shrine with the blooms on every run tried (0-8
-  lives); the gap and roost layouts lose 10-18 lives at their wide gaps (Open, item 0).
+- **The first-timer, final build** (`reference/qa-reports/w8-rope2/bots-fixedbot-no-float.txt`): 0 heart falls at a rope on every run; Easy reaches the
+  shrine on all 16 layouts. Normal, with the fixed bot: every layout reaches the shrine with the blooms
+  (0-3 lives; the old bot's 10-18 on the gap and roost layouts were its own flat-ground hops).
 - **Stills and clips:** `reference/qa-reports/w8-rope2/` (`tools/art/rope/rec-82.mjs`).
 
 Art-use: tools/art/artuse.mjs (from w1-4-sheets) lists no World 8 entry now. Drop these from the allow-list: kitAtlasData#8.buttress,
 #8.bankEnd, w8b#bouncy-leaf, w8var#bank-b, #perch-b, #fill-b.
 
 ## Open, in order
-
-0. **8-2's gap and roost themes on Normal** (layouts 4, 9, 14-16 of the w8-rope2 set): a first-timer loses 10-18 lives at their wide
-   gaps over deep pits (a single flick first, the double jump only after a death there); release-0.9.2's own roost rolls lose
-   10 each (two tried). Not the rope or the blooms. Next: no second-jump gaps over a deadly fall (STAGE-RULES §6's water lesson) on World 8's lit gaps,
-   or a soft fall there on Normal; then re-curate 8-2.
 
 1. **1-2 on Normal ends at the sealed door** (seeds 1-3: 70/95, 71/99, 70/92 petals; found by w8-rope2's classifier, handed to the
    lead): most of what is left is high petals on upper boughs the first-timer never climbs to. The goal counts petals off the natural

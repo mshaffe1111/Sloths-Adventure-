@@ -224,9 +224,8 @@ export function heartBy(stage: Stage, cp: { x: number; y: number }, next: () => 
   if (stage.collectibles.some((c) => (c.type === 'heart' || c.type === 'super_heart') && Math.abs(c.x - cp.x) < 260 && Math.abs(c.y - cp.y) < 260)) return;
   const p = under(stage, cp);
   if (!p) return;
-  // on the ledge beside the flag, or a little hop above it when a row of pickups already runs along the ledge, or a jump above it when
-  // pickups float at both (World 8's night blooms at 52 px, w8.ts BLOOM_FLOAT, crowded both out of a short ledge: 8-2, w8-rope2)
-  for (const y of [p.y - 34, p.y - 90, p.y - 130]) {
+  // on the ledge beside the flag, or a little hop above it when a row of pickups already runs along the ledge
+  for (const y of [p.y - 34, p.y - 90]) {
     for (const dx of [70, -70, 120, -120, 40, -40, 160, -160, 20, -20, 0]) {
       const x = cp.x + dx;
       if (x < p.x + 18 || x > p.x + p.width - 18) continue;

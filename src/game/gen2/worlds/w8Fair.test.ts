@@ -1,7 +1,5 @@
 /**
  * 8-2 Night Blooms, fair for a Normal first-timer (w8-rope2, 2026-11-01). Each rule here failed on release-0.9.2's 8-2:
- *   - the night blooms on a bough floated BLOOM_DN (34 px) over it, so every natural hop passed over them (the first-timer left 7-15 of
- *     107 on every run, and the door asks 94);
  *   - the fungus stairs' steps were thin brackets with nothing under them (a hop that fell short went under the next step and into the
  *     void: 5-15 lives on layout 2);
  *   - a stair's foot bough was shorter than a running jump off the top, with the deep gap to the next section right after it.
@@ -11,21 +9,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateAllLevels } from '../../worldsData.ts';
 import { buildGen2ForGame } from '../game.ts';
-import { BLOOM_DN, BLOOM_FLOAT, TRUNK_ID, TRUNK_UNDER } from './w8.ts';
-import type { Platform } from '../../types.ts';
+import { TRUNK_ID, TRUNK_UNDER } from './w8.ts';
 
 const cfg = generateAllLevels().find((c) => c.id === '8-2')!;
 const rolls = (difficulty: 'normal' | 'easy') => Array.from({ length: 16 }, (_, v) => buildGen2ForGame(cfg, difficulty, v));
 const normal = rolls('normal');
-const onTop = (c: { x: number; y: number }, ps: readonly Platform[], dn: number) => ps.some((p) => c.x >= p.x - 2 && c.x <= p.x + p.width + 2 && Math.abs(p.y - dn - c.y) < 1);
-
-test('8-2: every night bloom on a bough floats at his head (BLOOM_FLOAT), none at his middle', () => {
-  for (const [v, st] of normal.entries()) {
-    const fl = st.collectibles.filter((c) => c.type === 'flower');
-    assert.equal(fl.filter((c) => onTop(c, st.platforms, BLOOM_DN)).length, 0, `layout ${v}: a bloom at ${BLOOM_DN} px over a bough`);
-    assert.ok(fl.filter((c) => onTop(c, st.platforms, BLOOM_FLOAT)).length > 30, `layout ${v}: the bough blooms float at ${BLOOM_FLOAT} px`);
-  }
-});
 
 test('8-2: no fungus step floats over the void: each stands on a trunk to the ground', () => {
   let stairs = 0;

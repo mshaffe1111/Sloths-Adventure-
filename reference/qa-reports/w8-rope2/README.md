@@ -45,7 +45,7 @@ misses the same way (seeds 1-3: 91, 85, 88 of 94). Layout 2's lives are the fung
   moss, nothing floats); a stair's foot is wide enough to land a running jump off the top, with a knot past it
   (`8-2-fungus-foot-{sideways,upright}.jpg`).
 
-### First-timer, final build (`bots-final.txt`: 8-2 layouts 1-16, Normal and Easy; 8-5's fungus layouts)
+### First-timer, final build (`bots-oldbot.txt`: 8-2 layouts 1-16, Normal and Easy; 8-5's fungus layouts)
 
 | 8-2 theme (layouts) | Easy | Normal (lives a run) |
 |---|---|---|
@@ -61,6 +61,20 @@ misses the same way (seeds 1-3: 91, 85, 88 of 94). Layout 2's lives are the fung
 single jump first and doubles only after dying there. release-0.9.2's own roost rolls lose 10 each (two tried; no gap roll tried), and 3 of the 4 release-0.9.2
 rolls tried end at the sealed door. It is World 8's lit wide gaps, not the rope or the blooms; next: STAGE-RULES §6's water lesson (no second-jump gaps
 over a deadly fall) for World 8's lit gaps, or a soft fall there on Normal.
+
+## Round 3: the fixed first-timer bot (origin/bot-fix 877a819b, merged), 2:15 PM ET
+
+The old bot hopped on flat ground every ~0.35 s and took off ~110 px before ledge ends (firsttimer.ts `moved` was always 0). Every
+number above it is the old bot's (`bots-oldbot.txt`). With the fixed bot, 8-2 (final seeds), Normal trials 0-2 on layouts 1-3, trial
+0 on all 16, Easy on 1-3:
+
+- **Without the bloom float** (blooms at 34 px, as shipped; `bots-fixedbot-no-float.txt`): 25 of 25 runs reach the shrine with the
+  blooms, 95-106 of 94 on Normal; lives 0-3 (the gap and roost layouts too: their 10-18 lives were the old bot's bogus hops).
+- **With the float** (52 px; `bots-fixedbot-with-float.txt`): 25 of 25, 100-107; the float added 0-7 blooms, mostly on the fungus layouts.
+
+So the fixed bot does not need the float, and it is **reverted** (with the Easy heart height it made necessary). The rope catch, the
+hanging pickup, the slide, the fungus trunks and foot, and the rope quota stand. The "every natural hop passes over them" finding was
+the old bot's; the gap and roost "not fixed" item above is withdrawn.
 
 ## Polish check (at phone size)
 
@@ -81,5 +95,4 @@ over a deadly fall) for World 8's lit gaps, or a soft fall there on Normal.
 6. **Nothing floats** (fixed): the fungus steps hung over the void; now each stands on its trunk, the plank flush on the moss
    (`8-2-fungus-stair-sideways.jpg`). Named: only the first step of each stair carries the painted fungus bracket (by design, the 40%
    look cap), so a stair reads as stepped mossy columns more than as fungus.
-7. **Blooms at his head** (pass): they float at head height over the bough and read as the same glowing blooms
-   (`8-2-fungus-foot-sideways.jpg`).
+7. **Blooms** (unchanged from release-0.9.2: the float was reverted, round 3).
