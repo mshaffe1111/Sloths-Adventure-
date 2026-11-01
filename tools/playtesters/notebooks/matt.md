@@ -83,3 +83,14 @@
 - A puzzle can open with no sign it has. If nothing seems to happen, walk on: you may already be through.
 - Turning sideways: remember to turn back. I stayed sideways for two rooms without noticing. The words don't tell you which way up you are; the picture name (-land/-port) does.
 - Pictures: about 130 this run, far too many. Hopping logs over a pit eats them, because every miss looks the same from the words. Ration hard: one picture after each landing, none in between.
+
+## 2026-11-01, later (release 0.9.0, Meeca rooms 1, 4, 5 by warp, upright with short sideways looks, session 8)
+- After `warp`, the title card can still be up. Tap until Meeca's first thought shows, then warp again, or the warp is lost.
+- The screen words can lag the picture: Flicker's real line showed in the picture while the words still gave an older one. When the words don't change after you move, trust a picture over them.
+- Something that grabs you (she sits and gets wrapped up): six alternating 200 ms steers left/right shakes her loose. One steer is sometimes enough.
+- "Keep sliding and flick up" means just that: steer 300, `flick up` while the thumb is still down, steer 300 more. Lifted hops don't do it there.
+- A shallow pit with webs in it: lifted hops get eaten. Steer 300 toward the low side, `flick up` with the thumb down, keep steering 500. That climbs out.
+- `steer up` straight after `steer left` keeps the thumb sliding up-left and she walks a long way left. Lift between a sideways steer and an up steer.
+- Hops from a standstill carry about 150-200 px upright. Short steers (100-150 ms) go further than you think on a slope; you slide into whatever is next.
+- Lights-out stretches: things you can stand on only show near the firefly. Wait about a second after each landing so the light catches up before the next hop. Moving fast drops you back to the bottom (no life lost, just time).
+- Pictures: about 65 this run against a budget of 30. Puzzle rooms with no thought lines are where they go. Next time, turn sideways once on entering a room and then go by words for ten commands before the next picture.
