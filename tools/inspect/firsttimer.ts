@@ -1256,7 +1256,10 @@ export class FirstTimerRun {
     if (this.trunkUpT > 0.6) this.trunkIgnoreUntil = t + 2;
     if (e.nearTreeVine && t >= this.trunkIgnoreUntil && (up || this.blockedT > who.stopReact)) return { up: true };
     // stopped dead against something: a plain jump
-    const moved = Math.abs(p.x - this.lastX);
+    // (bot-fix, 2026-11-01: measured against lastX, which after() has already moved to where he is, this read 0 every frame, as the
+    // trunk's lastY did in round 5: every 0.3 s of walking was a "stop", so he hopped along flat ground and took off ~110 px before a
+    // ledge's end instead of edgeAim's 22-44. The frame's own movement, moveX, is what it means)
+    const moved = Math.abs(this.moveX);
     this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing ? this.blockedT + DT : 0;
     if (this.blockedT >= who.stopReact) {
       this.blockedT = 0;
