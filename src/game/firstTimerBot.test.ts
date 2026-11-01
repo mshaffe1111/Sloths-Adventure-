@@ -15,6 +15,7 @@ import assert from 'node:assert/strict';
 import { FirstTimerRun, firstTimer, FT_ADULT, FT_KID, type FirstTimer } from '../../tools/inspect/firsttimer.ts';
 import type { Pad } from './realPlay.ts';
 import type { Platform } from './types.ts';
+import { GEN2_STAGES, KID_RUNS_59 } from './gen2/game.ts';
 
 const Y = 580;
 const ground = (id: number, x: number, width: number): Platform => ({ id, x, y: Y, width, height: 90, type: 'solid' }) as Platform;
@@ -118,5 +119,19 @@ test("put past a puzzle room he goes on from there: 6-3's seesaw and 1-4's lift 
       const r = firstTimer(id, seed, FT_KID);
       assert.equal(r.end, 'shrine', `${id} seed ${seed}: ${r.end} at ${r.time} s, x ${r.x}`);
     }
+  }
+});
+
+test("5-9's Easy goal rests on the kid's runs: re-measured, they are still the ones recorded (gen2/game.ts KID_RUNS_59)", () => {
+  // (as they were measured: Easy's goal at the 65% floor, so the shrine does not stop him before he has beaten what he will beat)
+  const entry = GEN2_STAGES['5-9'] as { easyGoal?: number };
+  const kept = entry.easyGoal;
+  entry.easyGoal = undefined;
+  try {
+    const runs: number[] = [];
+    for (const seed of [1, 2, 3]) for (const trial of [0, 1]) runs.push(firstTimer('5-9', seed, FT_KID, { trial }).goal?.got ?? -1);
+    assert.deepEqual(runs, [...KID_RUNS_59], 'the kid bot or 5-9 changed: re-measure, and set the goal from the new runs (goals.ts kidMedian)');
+  } finally {
+    entry.easyGoal = kept;
   }
 });
