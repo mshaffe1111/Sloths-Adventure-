@@ -11,7 +11,7 @@ Matt, 2026-11-01:
 - Decided: **five helpers at a time** (engine/WebGL, story, menus, World 9/10, tuning/fairness), files never shared; Worlds 1-5 onto the
   new generator is Parking lot.
 
-Written by the roadmap keeper, 2026-11-01 10:01 PM ET (time from `TZ=America/New_York date`), from reference/ROADMAP.md. The lead decides
+Written by the roadmap keeper, 2026-11-01 10:25 PM ET (R-149.9: closed test on the 80% trigger) (time from `TZ=America/New_York date`), from reference/ROADMAP.md. The lead decides
 who starts.
 
 ## How the times were measured (R-12)
@@ -39,21 +39,21 @@ change, so the app runs smooth on your three phones; and the Play Store gates. E
 | | What | How long |
 |---|---|---|
 | (a) Building | Day 1 about 170 helper hours (roadmapcheck prints 178.5: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 53 h = about 222 h over five lanes. The busiest lane carries about 50 h (tuning and fairness); World 9/10 about 49 h | **about 6-8 working days** at 6-8 h a lane a day |
-| (b) Fixed calendar | Your phone checks: a test link at the end of each 2-day wave, five GPU checks on the three phones, then your final passes of Worlds 7-10 and every boss (about 9 h of your play) and one fix round after them (not measured yet; budget about a day). The Play closed test: 14 days with 12 testers, once your developer account, app ID and signing are set (R-149.9) | about 3-4 days after the build for the passes and fixes; **14 days** for the closed test |
-| (c) Critical path | The closed test, if it starts in the first 3 days (it can start on today's build and take our updates as they come; check in Play Console that an update doesn't restart the 14 days). Otherwise building + your passes. Google's review of the production release comes after both; its length is not measured here | **about 2.5-3 weeks** from the day your Play account is set up |
+| (b) Fixed calendar | Your phone checks: a test link at the end of each 2-day wave, five GPU checks on the three phones, then your final passes of Worlds 7-10 and every boss (about 9 h of your play) and one fix round after them (not measured yet; budget about a day). The Play closed test: 14 days with 12 testers. You decided (2026-11-01) the account, app ID, signing and test start later: when Day 1 lane work is about 80% done (R-149.9, R-147.1) | about 3-4 days after the build for the passes and fixes; **14 days** for the closed test |
+| (c) Critical path | The closed test. It starts when Day 1 lane work is about 80% done (about day 5-6.5 of building), so your passes and the fix round run inside its 14 days. If it waits until after your passes, it is building + passes + 14 days (6-8 + 3-4 + 14 = 23-26 days). Not measured, so not counted: Google's checks on a new developer account before the first upload, and Google's review of the production release after the test | **about 3 weeks** from now with the 80% trigger; about 3.5 weeks if the test waits for your passes |
 
 So: about 3 weeks, matching how fast the last 3 weeks went. +about 1-2 days of building if you say yes to the canopy, the Clockwork Gate,
 the ledger/Wanted posters and the bosses' third phases (R-149.15..R-149.17, about 26 h spread over three lanes). Parking lot after launch: about 110 h, roughly 3
 more days of five lanes, plus art round 2's money.
 
-**The one thing that would make it slower:** the Play account. Every day the closed test starts later is a day later at the end.
+**The one thing that would make it slower:** the closed test's start. It waits for the 80% trigger (your call, 2026-11-01); every day it starts after that is a day later at the end. Google's checks on a new developer account aren't measured, so opening the account a few days before the trigger keeps them off the path.
 
 **Five lanes, three waves to start** (a wave is about 2 days; at the end of each the lead merges, runs the full gate once, you get one
 test link):
 
 | Wave | 1 Engine/WebGL | 2 Story | 3 Menus + art | 4 World 9/10 | 5 Tuning/fairness | Your call before it |
 |---|---|---|---|---|---|---|
-| 1 | GPU stage 0 (R-3.1), then the 3-9 / 1-9 exits (R-6.1, R-6.2) | Story plumbing (R-4.1) | Menus A: clipped menus and small buttons (R-6.6..R-6.13), win card (R-6.21) | gen2-ascent's World 9 commits (R-143.5), then World 9 (R-2.1) | Bands measure and re-run (R-5.1, R-5.2), then unfair spots Worlds 1-2 | Play account (R-149.9); icons B-E (R-149.1); Crocus picture (R-149.6) |
+| 1 | GPU stage 0 (R-3.1), then the 3-9 / 1-9 exits (R-6.1, R-6.2) | Story plumbing (R-4.1) | Menus A: clipped menus and small buttons (R-6.6..R-6.13), win card (R-6.21) | gen2-ascent's World 9 commits (R-143.5), then World 9 (R-2.1) | Bands measure and re-run (R-5.1, R-5.2), then unfair spots Worlds 1-2 | Icons B-E (R-149.1); Crocus picture (R-149.6). The Play account waits for the 80% trigger (R-149.9) |
 | 2 | GPU stages 1, 2 and 4 side by side after your phone check | Review fixes, then story text Act I (R-4.10, R-4.2) | Menus B: Satchel repeats and buttons (R-6.10, R-6.14..R-6.16); icons-painted: the Crocus panel (R-1.1) | World 9 finishes; hold prototype for you (R-146.5, R-2.7) | Unfair spots Worlds 4, 6, 7; the goal gate (R-5.7) | Hold rule (R-149.10); 45 Dot lines (R-149.2); R-149.15..17 |
 | 3 | GPU stage 3, big sheets split (R-3.4, R-3.12) | Story text Acts II-III, framing, replies (R-4.12, R-4.13) | The Drake (R-1.9) | World 10 (R-2.6), 10-3/10-4/10-6 (R-2.10) | Difficulty curve (R-5.4) | World 10 rain (R-149.4); Act II/III pictures |
 
