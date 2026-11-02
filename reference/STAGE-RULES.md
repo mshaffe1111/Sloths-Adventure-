@@ -14,7 +14,7 @@ Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
 
 - **Phone only.** Touch controls only. Every stage plays upright and sideways. The loop is locked at 30 fps on purpose.
 - **Length.** Every stage takes at least 2 minutes for a quick player, **on every roll** (5+ minutes is fine). Climbs count 20 s short.
-- **Crumbling platforms** are never needed to finish. A broken one grows back after 30-35 s, only when it is off screen.
+- **Crumbling platforms** (Matt, 2026-11-02, "required anywhere"; replaces "never needed to finish"): once taught, a stage may require them anywhere, over pits too. A required run must be crossable at normal speed by a first-timer, and every crumble on the way is whole again when he respawns. A broken one grows back after 30-35 s, only when it is off screen. The old rule lives on in the generators and levelCheck (`never main`): R-150.5 removes it there.
 - **Climbing.** On a vine or trunk, straight up or down always climbs; only a diagonal slide jumps off.
 - **Teaching.** The first appearance of every mechanic is taught, in a safe spot, before it can hurt.
 - **Locked exits.** Dot (or Flicker while Dot is away) explains any locked exit; the stage shows what it requires.
