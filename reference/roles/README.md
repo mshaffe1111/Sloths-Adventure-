@@ -12,3 +12,5 @@ brief and every check-in message say "re-read your role file first". A role file
 
 All three: you report to the lead, never to Matt directly; you never merge to main, open a release PR, or spend Hugging Face money;
 you are scored on reference/GAMEPLAN-2026-11-02.md §2 and retired on §3, the same as every helper.
+
+- QUALITY-SUPERVISOR.md: judges fun, variety, challenge and use of the toolbox, in sequence like a player (Matt, 2026-11-02). Works beside the process supervisor; both talk to the helpers.
