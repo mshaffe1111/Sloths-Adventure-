@@ -40,7 +40,7 @@ the five you put in on 2026-11-01 (B: R-2.4, R-2.8, R-4.3, R-1.15, R-6.25).
 
 | | What | How long |
 |---|---|---|
-| (a) Building | Day 1 about 203 helper hours (roadmapcheck prints 211: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 51.5 h = about 254.5 h over five lanes. Your 2026-11-01 calls added 27.5 h (9-2, 10-8, the ledger and posters, bosses 6-8's third phases, icons B-E), the 4-3 waterfall cave (R-6.27) 2.5 h and the poorly-reading defeat panels (R-1.16) 2.5 h. The busiest lane carries about 56.5 h (menus, art and the bosses); World 9/10 about 55 h | **about 7-9 working days** at 6-8 h a lane a day |
+| (a) Building | Day 1 about 201.5 helper hours (roadmapcheck prints 209.5: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 51.5 h = about 253 h over five lanes (R-1.1, the Crocus panel, done pending the merge). Your 2026-11-01 calls added 27.5 h (9-2, 10-8, the ledger and posters, bosses 6-8's third phases, icons B-E), the 4-3 waterfall cave (R-6.27) 2.5 h and the poorly-reading defeat panels (R-1.16) 2.5 h. The busiest lane carries about 56.5 h (menus, art and the bosses); World 9/10 about 55 h | **about 7-9 working days** at 6-8 h a lane a day |
 | (b) Fixed calendar | Your phone checks: a test link at the end of each 2-day wave, five GPU checks on the three phones, then your final passes of Worlds 7-10 and every boss (about 9 h of your play) and one fix round after them (not measured yet; budget about a day). The Play closed test: 14 days with 12 testers. You decided (2026-11-01) the account, app ID, signing and test start later: when Day 1 lane work is about 80% done (R-149.9, R-147.1) | about 3-4 days after the build for the passes and fixes; **14 days** for the closed test |
 | (c) Critical path | The closed test. It starts when Day 1 lane work is about 80% done (about day 5.5-7 of building), so your passes and the fix round run inside its 14 days. If it waits until after your passes, it is building + passes + 14 days (7-9 + 3-4 + 14 = 24-27 days). Not measured, so not counted: Google's checks on a new developer account before the first upload, and Google's review of the production release after the test | **about 3 weeks** from now with the 80% trigger; about 3.5-4 weeks if the test waits for your passes |
 
@@ -129,7 +129,6 @@ plumbing (R-4.1) before any text (R-4.2); GPU stage 0 before 1-6; World 9 before
 |---|---|---|---|---|
 | Day 1 | R-4.11 | Two stage cards match the new story | B | 0.5 h (like qa-fix-meeca (20 min)) |
 | Day 1 | R-4.9 | Matt's story calls show up in the game | A | 1 h (like journal-voice (about 2 h)) |
-| Day 1 | R-1.1 | Crocus Rex's defeat looks painted like the rest of the scene | A | 1.5 h (like hf-art-bosses (30 min) + wiring and review) |
 | Day 1 | R-1.7 | No cheap hit in the dark before the World 6 fight starts | A | 1.5 h (like fix-petals (about 2 h start to accept)) |
 | Day 1 | R-1.2 | No broken frame left in any boss ending | A | 2 h (like dot-box shots across 8 screens (1.7 h)) |
 | Day 1 | R-1.6 | Players learn each late boss's tells instead of guessing | A | 2 h (like journal-voice (about 2 h) for the lines, plus banners) |
