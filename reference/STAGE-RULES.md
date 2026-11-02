@@ -29,6 +29,10 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
    sloppiness has a consequence (a fall, a lost life) in any world, World 2 included. Every time we ask the player to do the same thing
    again (run, jump, climb), it is a little harder than last time: tighter gaps, less time, a hazard added. Fair, never cruel: every
    danger reads before it bites and the checkpoint is close. The exact per-world numbers are a later talk with Matt.
+   **Easy vs Normal (Matt, 2026-11-02):** "Normal should be different than easy. Easy should be just a casual play where you can just
+   kind of cruise through... easy would be kind of the difficulty that we have most of the game right now." The arc above is NORMAL.
+   Easy stays a cruise (about today's level or gentler; src/game/difficulty.ts already softens gaps, enemies, hearts, flags and vines).
+   Every tuning job tunes both and shows both.
 
 ---
 
