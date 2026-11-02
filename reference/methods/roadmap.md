@@ -21,10 +21,14 @@ when they differ, the repo wins and the doc is fixed the same day. No other file
    fairness and difficulty, Tools/process). One area per item; split an item that spans two.
 4. **Size** (one helper's working time, not Matt's review): S under half a day, M 1-2 days, L 3+ days. An item that would be bigger than
    L is split. When unsure, size up.
-5. **State:** `open`, `in progress`, `blocked (by R-n or a person)`, `held (by money or Matt)`, `verify` (a fact must be checked in the
+5. **Tier** (Matt's R-10): `T1: why` (launch can't happen without it: PARTNER.md's goal and PLAY-STORE-RULES §1 hard gates and §4
+   bars), `T2: why` (high value before launch: players feel it, cheap for what it gives), `T3` (1.1+), or `Matt` (asked as an R-149
+   question). The reason quotes its source or says what was measured and when; it never claims more than the source says (2026-11-01:
+   five reasons had to be softened, e.g. "every upright scene" when the audit said upright scenes cut people off).
+6. **State:** `open`, `in progress`, `blocked (by R-n or a person)`, `held (by money or Matt)`, `verify` (a fact must be checked in the
    code first), `done (date, PR #n or commit)`.
-6. **Owner:** a helper's job name, `lead`, `Matt`, `roadmap-keeper`, or `unassigned`.
-7. **Source:** where it came from: a file path, a doc link, a defect number (D#), a known-list group (e.g. `clipknown G4`), a NEXT.md.
+7. **Owner:** a helper's job name, `lead`, `Matt`, `roadmap-keeper`, or `unassigned`.
+8. **Source:** where it came from: a file path, a doc link, a defect number (D#), a known-list group (e.g. `clipknown G4`), a NEXT.md.
    The gate reads this column.
 
 ## Reports
