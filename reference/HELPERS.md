@@ -18,7 +18,7 @@ own usage figure (list price), for comparison between helpers only.
 | whatsnew (01FhBbYNcWV8i8BavX8QQfQW) | menus | 11-01 | pass | 1 (notch) | $21 | STRONG |
 | warmup-5m (01FhBbYLYP8Hu1LT843p3UmE) | perf, 5-M | 11-01 | pass | 1 (wedge/hitch) | $15 | STRONG |
 | w8-rope2 (01FhBbYMTQ1zFtXBWtxzkoxn) | stage fixes | 11-01 | pass | 1 (re-measure) | $28 | STRONG: proved its own float not needed and reverted it |
-| icons-painted (01FhBbYNb5urBcaMjg7yH8FS) | HF icons | 11-01 | pass | 2 (stale base D23, small notes) | $50 | STRONG art; keep for icon follow-ons (still alive) |
+| icons-painted (01FhBbYNb5urBcaMjg7yH8FS) | HF icons; Crocus defeat (R-1.1) | 11-01/02 | pass | 2 (stale base D23, small notes); R-1.1: 1 (boss hidden by speech box, holey death clip) | $50 + $0.25 HF | STRONG: found R-1.1's cause in code, audited all 10 bosses unasked |
 | dot-box (01FhBbYMQVPjC5isVutMRn19) | in-play UI | 11-01 | pass | 2 (glide path, petal) | $25 | OK |
 | journal-voice (01FhBbYMSoYpk53bJALanKUY) | player text | 11-01 | pass | 1 after acceptance (D18) | $13 | OK: tighter brief (gate must call the screen's builder) |
 | hf-backdrops2 (01FhBbYNDgYUmrxFZccufR5z) | HF backdrops | 11-01 | pass | 4 (washed out x2, skies, budget) | $59 | OK/weakest: most art, most redos; method now has the absolute floor |
