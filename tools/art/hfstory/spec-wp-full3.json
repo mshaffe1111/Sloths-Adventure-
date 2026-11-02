@@ -1,0 +1,100 @@
+{
+ "tag": "wpf",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/X/tools/art/hfstory/picks/",
+ "items": [
+  {
+   "name": "wp-4-day-t62-full",
+   "start": "bucket:hfcut/out/wp-4-day-t62.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, misty cascades: tall grey-green cliffs, a big white waterfall pouring down into soft mist, mossy rock ledges, twisted cliff trees, cool clear daylight, layered mist between the cliffs. In the foreground across the whole bottom of the picture, a broad flat mossy rock ledge in sharp focus, dry and solid, the pool and the mist behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, feather",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-6-dusk-t62-full",
+   "start": "bucket:hfcut/out/wp-6-dusk-t62.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a deep mangrove swamp at dusk: arching mangrove roots over dark still water, hanging moss, fireflies, a low copper sunset through the trees, green-brown shadows with warm rim light. In the foreground across the whole bottom of the picture, a broad flat bank of dark mud and thick mangrove roots in sharp focus, solid ground, the water behind it. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-8-night-t72-full",
+   "start": "bucket:hfcut/out/wp-8-night-t72.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, twilight treetops at night: a high wide branch walk among giant leaves, a big soft moon behind thin clouds, deep blue and violet sky, glowing fireflies and pale night flowers, silver moonlight on the leaves. In the foreground across the whole bottom of the picture, a broad flat mossy tree branch walkway in sharp focus. Clear readable shapes, crisp leaves, no blur, no bokeh. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, two moons",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-2-day-u62-full",
+   "start": "bucket:hfcut/out/wp-2-day-u62.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a sunny wide riverbank, the near bank of warm sand, mossy rocks and grass across the bottom, behind it in warm afternoon light: tall reeds and cattails, a reed-thatched village hut on stilts and a big shady tree, a slow muddy river with soft painted ripples and reflections, lily pads, a dry sandy bank in front. In the foreground across the whole bottom of the picture, a broad flat bank of dry warm sand and short grass in sharp focus, solid ground, the river behind it. No lily pads in the foreground. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, chinese characters, writing, calligraphy, lily pads in front",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/X/",
+ "keep": [
+  "wp-4-day-t62-full",
+  "wp-6-dusk-t62-full",
+  "wp-8-night-t72-full",
+  "wp-2-day-u62-full"
+ ]
+}

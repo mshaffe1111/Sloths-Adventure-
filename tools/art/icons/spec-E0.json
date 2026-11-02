@@ -1,0 +1,133 @@
+{
+ "tag": "icE0",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects",
+ "items": [
+  {
+   "name": "playc-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky rounded triangle play button shape pointing right, carved from pale cream birch wood, a warm golden brass rim round its edge, smooth and glossy, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, leaf, flower, arrow shaft"
+  },
+  {
+   "name": "playc-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky rounded triangle play button shape pointing right, carved from pale cream birch wood, a warm golden brass rim round its edge, smooth and glossy, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, leaf, flower, arrow shaft"
+  },
+  {
+   "name": "playc-b37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky rounded triangle pointing right, polished bright golden brass with a soft shine, a thin dark outline, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, leaf, flower, arrow shaft"
+  },
+  {
+   "name": "restart-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky circular arrow made of a curled green vine stem, the arrow head a pointed leaf, curling round in a nearly full circle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, snake, flower"
+  },
+  {
+   "name": "restart-b11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky circular arrow carved from warm wood, curling round in a nearly full circle, a pointed arrow head, a small green leaf on it, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, snake, flower"
+  },
+  {
+   "name": "restart-b53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky circular arrow carved from warm wood, curling round in a nearly full circle, a pointed arrow head, a small green leaf on it, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, snake, flower"
+  },
+  {
+   "name": "close-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky X cross made of two crossed carved wooden sticks lashed in the middle with green vine, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, sword, flower"
+  },
+  {
+   "name": "close-b23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky X cross made of two rounded cream birch sticks crossed, tied in the middle with a twine knot, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, sword, flower"
+  },
+  {
+   "name": "lock-a11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky old brass padlock with a rounded body and a thick shackle, a dark keyhole, a little green leaf tucked at the shackle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, key, heart"
+  },
+  {
+   "name": "lock-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky old brass padlock with a rounded body and a thick shackle, a dark keyhole, a little green leaf tucked at the shackle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, key, heart"
+  },
+  {
+   "name": "lock-b37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky round padlock of dark iron and brass with a thick shackle, a dark keyhole, a tiny vine wrapped on the shackle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, key, heart"
+  },
+  {
+   "name": "star-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky five pointed star of shining gold, rounded points, a soft highlight, a thick dark outline, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, flower, face"
+  },
+  {
+   "name": "star-b11",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky five pointed star carved from golden amber, glowing warmly, rounded points, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, flower, face"
+  },
+  {
+   "name": "star-b53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky five pointed star carved from golden amber, glowing warmly, rounded points, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, flower, face"
+  },
+  {
+   "name": "back-a37",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a chunky carved wooden arrow pointing left, rounded, warm wood grain, a thin brass edge, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 37,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, leaf, flower"
+  }
+ ]
+}

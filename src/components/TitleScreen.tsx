@@ -12,18 +12,23 @@ import { nextStartStep } from './startFlow.ts';
 import { modeChosen } from '../game/difficulty.ts';
 import { APP_VERSION, BUILD_TIME, formatBuildDay, formatBuildTime } from '../game/version.ts';
 import { sound } from '../game/audio.ts';
-import { Icon, UI_KIT_URL } from './icons/index.tsx';
+import { UI_KIT_URL } from './icons/index.tsx';
+import { PaintedIcon, paintedUrl } from './icons/PaintedIcon.tsx';
 import type { SkillId } from '../game/skills.ts';
 import { testUnlockOn, setTestUnlock, nextTapRun, UNLOCK_TAPS } from '../game/testUnlock.ts';
 import { bootDone, bootProgress, bootShowing, fontsReady, waitForAll } from '../game/boot.ts';
 
 /** the painted pieces the title draws (layout B): decoded before it shows, so nothing pops in after the logo */
+/** the painted satchel on its leaf (HF, 2026-11-01: tools/art/satchelcut.py) */
+const SATCHEL_ART = new URL('../assets/ui/satchel.webp', import.meta.url).href;
 const TITLE_ART = [
   UI_KIT_URL,
   new URL('../assets/ui/sign-big.webp', import.meta.url).href,
   new URL('../assets/ui/leaf-token.webp', import.meta.url).href,
-  new URL('../assets/ui/token.webp', import.meta.url).href,
-];
+  new URL('../assets/ui/satchel.webp', import.meta.url).href,
+  // the painted objects on the leaves, the corner and the sign (icons-painted, 2026-11-01)
+  ...(['map', 'story', 'howto', 'sound', 'gear', 'play', 'star', 'close', 'restart'] as const).map((n) => paintedUrl(n) ?? ''),
+].filter(Boolean);
 const decodeArt = (url: string): Promise<void> => {
   if (typeof Image === 'undefined') return Promise.resolve();
   const im = new Image();
@@ -58,6 +63,8 @@ interface TitleScreenProps {
   onNewGame: (skipStory: boolean) => void;
   onOpenTrophies: () => void;
   onOpenCards: () => void;
+  /** Pokey's satchel: finds, medals, the journal, every scene, the creatures (its own leaf, Matt 2026-10-31) */
+  onOpenSatchel: () => void;
   /** how many trophies there are in all, and the skills learned (the menu shows both) */
   trophyTotal: number;
   skills: Set<SkillId>;
@@ -88,6 +95,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   onNewGame,
   onOpenTrophies,
   onOpenCards,
+  onOpenSatchel,
   trophyTotal,
   skills,
   onUnlockToggled,
@@ -193,15 +201,15 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           <button
             type="button"
             onClick={onToggleMute}
-            className={`ttl-token${waiting ? ' wait' : ''}`}
+            className={`ttl-token bare${waiting ? ' wait' : ''}`}
             aria-pressed={isMuted}
             aria-label={isMuted ? 'Sound off' : waiting ? 'Tap for sound' : 'Sound on'}
             title={isMuted ? 'Sound off' : waiting ? 'Tap for sound' : 'Sound on'}
           >
-            <Icon name={isMuted ? 'mute' : 'speaker'} size={28} />
+            <PaintedIcon name={isMuted ? 'mute' : 'sound'} size="100%" />
           </button>
-          <button type="button" onClick={() => setMenuOpen(true)} className="ttl-token" aria-label="Settings" data-menu="true">
-            <Icon name="gear" size={28} />
+          <button type="button" onClick={() => setMenuOpen(true)} className="ttl-token bare" aria-label="Settings" data-menu="true">
+            <PaintedIcon name="gear" size="100%" />
           </button>
         </div>
 
@@ -225,31 +233,37 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           </div>
           <button type="button" data-start="true" onClick={start} className="ttl-play" style={{ ['--i' as string]: 0 }}>
             <span className="ttl-play-t">
-              <Icon name="play" size={30} />
+              <PaintedIcon name="play" size={34} />
               {resume ? 'CONTINUE' : 'START ADVENTURE'}
             </span>
             {resume && (
               <span className="ttl-play-s">
-                {resume.stage} <i>·</i> {resume.stars} <Icon name="star" size={14} />
+                {resume.stage} <i>·</i> {resume.stars} <PaintedIcon name="star" size={16} className="ttl-star" />
               </span>
             )}
           </button>
           <div className="ttl-leaves">
             <button type="button" onClick={() => goOn(onOpenMap, true)} className="ttl-leaf" style={{ ['--i' as string]: 1 }}>
               <span className="ttl-leaf-ic">
-                <Icon name="map" size={30} />
+                <PaintedIcon name="map" size="118%" className="ttl-obj" />
               </span>
               World Map
             </button>
             <button type="button" onClick={() => leave(onViewStory)} className="ttl-leaf" style={{ ['--i' as string]: 2 }}>
               <span className="ttl-leaf-ic">
-                <Icon name="scroll" size={30} />
+                <PaintedIcon name="story" size="118%" className="ttl-obj" />
               </span>
               Story
             </button>
-            <button type="button" onClick={() => setHowOpen(true)} className="ttl-leaf" style={{ ['--i' as string]: 3 }}>
+            <button type="button" onClick={() => leave(onOpenSatchel)} className="ttl-leaf ttl-leaf-satchel" style={{ ['--i' as string]: 3 }}>
               <span className="ttl-leaf-ic">
-                <Icon name="bulb" size={30} />
+                <img src={SATCHEL_ART} alt="" className="ttl-satchel" />
+              </span>
+              Satchel
+            </button>
+            <button type="button" onClick={() => setHowOpen(true)} className="ttl-leaf" style={{ ['--i' as string]: 4 }}>
+              <span className="ttl-leaf-ic">
+                <PaintedIcon name="howto" size="118%" className="ttl-obj" />
               </span>
               How to Play
             </button>

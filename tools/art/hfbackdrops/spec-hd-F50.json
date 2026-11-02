@@ -1,0 +1,58 @@
+{
+ "tag": "hfbd2-hd-F50",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1kapok-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/736d8758890c898e41e0bb5a57df15d36a47f569/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1kapok-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: the great kapok tree view: a giant kapok tree with lilac orchids framing a wide view over green rainforest hills and a river, fresh bright morning light, rich green, strong contrast. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w5dusk2-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/736d8758890c898e41e0bb5a57df15d36a47f569/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w5dusk2-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: an orchid meadow at dusk: rolling hills with giant pink and white orchids, a setting sun, pink and lilac dusk light, rich colour. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w7-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/736d8758890c898e41e0bb5a57df15d36a47f569/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w7-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: overgrown jungle temple ruins under a grey-green overcast sky: tall stepped temples, a great strangler fig with a carved stone face, soft grey-green light, dark silhouettes. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  }
+ ]
+}

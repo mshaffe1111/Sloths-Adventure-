@@ -799,3 +799,23 @@ export function knockDir(px: number, facing: -1 | 1, fromX?: number): -1 | 1 {
 export function blockBeside(feetY: number, height: number, block: { y: number; height: number }): boolean {
   return feetY > block.y + 6 && feetY - height < block.y + block.height;
 }
+
+/**
+ * Is there room to stand on a block's top at the edge she comes over (`side` -1: its left edge, 1: its right)? Not when another solid
+ * sits on that top there (a gate's wall on its door): that lip is part of one wall, and hoisting onto it put her in the wall (engine.ts,
+ * 5-M's tea room, 2026-10-31)
+ */
+export function lipHasRoom(
+  platforms: ReadonlyArray<{ x: number; y: number; width: number; height: number; type: string; broken?: boolean }>,
+  block: { x: number; y: number; width: number },
+  side: -1 | 1,
+  height: number,
+): boolean {
+  const x0 = side < 0 ? block.x : block.x + block.width - 24;
+  const x1 = x0 + 24;
+  for (const q of platforms) {
+    if (q === block || q.broken || q.type !== 'solid') continue;
+    if (q.x < x1 && q.x + q.width > x0 && q.y < block.y - 1 && q.y + q.height > block.y - height * 0.5) return false;
+  }
+  return true;
+}

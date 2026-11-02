@@ -5,11 +5,12 @@
  *
  * On with the same switch as Pokey's new clips (heroClips.ts): on since 2026-10-24, `?clips=0` turns both off.
  *
- * A sheet is 3120 x 1800, 21 MB decoded, so only KEEP sheets are held at once (the plate showing and the next one), and a story that
+ * A sheet is kept at 8 MB decoded or less (tools/art/hfstory/livecut.py), and only KEEP sheets are held at once (the plate showing and the next one), and a story that
  * closes lets them all go (memory audit, 2026-10-25: all thirteen came to 278 MB, kept for good).
  */
 import { LIVE_PLATES } from './livePlateData.ts';
 import { heroClipsEnabled } from './heroClips.ts';
+import { learned } from './frameGovernor.ts';
 
 const imgs = new Map<string, HTMLImageElement>();
 const KEEP = 2;
@@ -56,7 +57,8 @@ export function liveFrameAt(n: number, fps: number, t: number): { a: number; b: 
  */
 export function drawLivePlate(ctx: CanvasRenderingContext2D, key: string, px: number, py: number, s: number, t: number): boolean {
   const L = LIVE_PLATES[key];
-  if (!L || !heroClipsEnabled()) return false;
+  // (a phone the frame governor has stepped down shows the still painting: the moving parts are the first thing to go)
+  if (!L || !heroClipsEnabled() || learned.quality > 0) return false;
   const im = sheet(key);
   if (!im) return false;
   const { a, b, u } = liveFrameAt(L.n, L.fps, t);

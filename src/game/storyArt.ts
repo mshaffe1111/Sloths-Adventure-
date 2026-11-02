@@ -1550,6 +1550,27 @@ const STORY_BAKE = 0.55;
  * phone shows above the scene (scene units above y = 0, the canvas already moved down by it): the plates are painted tall enough to
  * fill it and the backdrops are laid over the whole height, so the picture fills the screen instead of a band across its middle.
  */
+/** the cinematic vignette, baked once for a picture of this size (a radial gradient made every frame is a new shader each time) */
+let vignette: { c: HTMLCanvasElement; w: number; h: number } | null = null;
+function vignetteFor(w: number, h: number): HTMLCanvasElement | null {
+  if (typeof document === 'undefined') return null;
+  const rw = Math.round(w), rh = Math.round(h);
+  if (vignette && vignette.w === rw && vignette.h === rh) return vignette.c;
+  // (a quarter size is plenty for so soft a gradient; it is stretched over the picture)
+  const c = vignette?.c ?? document.createElement('canvas');
+  c.width = Math.max(8, Math.round(rw / 4));
+  c.height = Math.max(8, Math.round(rh / 4));
+  const g = c.getContext('2d')!;
+  g.setTransform(c.width / rw, 0, 0, c.height / rh, 0, 0);
+  const vg = g.createRadialGradient(rw / 2, rh / 2, Math.min(rw, rh) * 0.45, rw / 2, rh / 2, Math.max(rw, rh) * 0.7);
+  vg.addColorStop(0, 'rgba(0, 0, 0, 0)');
+  vg.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
+  g.fillStyle = vg;
+  g.fillRect(0, 0, rw, rh);
+  vignette = { c, w: rw, h: rh };
+  return c;
+}
+
 export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene, t: number, w = SCENE_W, h = SCENE_H, lift = 0, feetMax = 1, top = 0) {
   ctx.save();
   const vh = h + top;
@@ -1617,12 +1638,9 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   if (scene.photo) drawPhotoCard(ctx, scene.photo, w, vh, t);
   if (scene.card) drawEndCard(ctx, scene.card, w, vh, feetMax, t);
   paintFinish(ctx, w, vh, scene.mood);
-  // cinematic vignette
-  const vg = ctx.createRadialGradient(w / 2, vh / 2, Math.min(w, vh) * 0.45, w / 2, vh / 2, Math.max(w, vh) * 0.7);
-  vg.addColorStop(0, 'rgba(0, 0, 0, 0)');
-  vg.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
-  ctx.fillStyle = vg;
-  ctx.fillRect(0, 0, w, vh);
+  // cinematic vignette (baked once per size: PERFORMANCE-RULES §2.3)
+  const vgn = vignetteFor(w, vh);
+  if (vgn) ctx.drawImage(vgn, 0, 0, w, vh);
   const fl = flashAt(scene.fx, t);
   if (fl > 0) {
     ctx.fillStyle = `rgba(255,250,235,${fl})`;

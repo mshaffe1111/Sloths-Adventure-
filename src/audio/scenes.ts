@@ -184,7 +184,7 @@ export function sceneForScreen(screen: string, world: number, isBoss: boolean, l
   switch (screen) {
     case 'title':
       return { id: MENU_THEME, intensity: 0.7 };
-    case 'trophy':
+    case 'satchel':
       // the journal, badges and library: the signature's lighter loop, which does not tire however long it plays
       return { id: 'menu', intensity: 0.45 };
     case 'world_map':

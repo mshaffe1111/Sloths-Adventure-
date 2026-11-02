@@ -1,0 +1,207 @@
+"""hf-backdrops2 (2026-11-01) specs: the redo of last night's rejects, the crown-top fixes, a new W5 gold middle strip (round R), then
+the third and fourth moods (round M). img2img from starts2.py's paste-ups with the style model (tools/art/w6to10/img2imggpu.py).
+    python3 tools/art/hfbackdrops/make_spec2.py starts <out dir>              the round R starts
+    python3 tools/art/hfbackdrops/make_spec2.py R <commit> <k> <n>           part k of n of round R -> spec-R<k>.json
+    python3 tools/art/hfbackdrops/make_spec2.py args <spec> <commit>         the hf_jobs run args
+"""
+import json, subprocess, sys
+from pathlib import Path
+
+H = Path(__file__).resolve().parent
+sys.path.insert(0, str(H))
+from make_spec import LORAS, MOODS, NEG, R2, R2N, S  # noqa: E402
+
+BASE = 'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{c}/reference/prop-sheets/qa-notes/hf-backdrops2/starts/'
+MOOD = {m[0]: m for m in MOODS}
+CROWN = 'every tree with its whole broad rounded leafy crown inside the picture, nothing cut flat at the top'
+# (name, src stem, part, grade, seed, mode, trim, description, light, strengths)
+R = [
+    ('w8sunset-mid', 'w8', 'mid', 'dusk', 201, 'remix', 0.25, None, None, (0.7, 0.76)),
+    ('w8night-mid', 'w8', 'mid', 'night', 202, 'remix', 0.25, None, None, (0.7, 0.76)),
+    ('w2rapids-near', 'w2', 'near', 'day', 203, 'remix', 0, None, None, (0.62, 0.68)),
+    ('w2evening-near', 'w2', 'near', 'dusk', 204, 'remix', 0, None, None, (0.62, 0.68)),
+    ('w4terraces-near', 'w4', 'near', 'day', 205, 'remix', 0, None, None, (0.62, 0.68)),
+    ('w6dawn-near', 'w6', 'near', 'dawn', 206, 'remix', 0, None, None, (0.62, 0.68)),
+    ('w3sinkhole-mid', 'w3', 'mid', 'night', 207, 'remix', 0, None, None, (0.64, 0.7)),
+    ('w3sinkhole-near', 'w3', 'near', 'night', 208, 'remix', 0, None, None, (0.62, 0.68)),
+    ('w6dawn-mid', 'w6', 'mid', 'dawn', 209, 'remix', 0, None, None, (0.64, 0.7)),
+    ('w9dawn-mid', 'w9', 'mid', 'dawn', 210, 'remix', 0, None, None, (0.64, 0.7)),
+    ('w5-mid', 'w5gold2', 'mid', 'day', 211, 'remix', 0,
+     'an orchid forest: big old trees of different shapes with broad rounded leafy crowns, white and pink orchids blooming on the trunks, '
+     'ferns and mossy roots', 'warm golden afternoon light', (0.66, 0.72)),
+    ('w1-mid', 'w1', 'mid', 'day', 212, 'crown', 0, 'rainforest trees: a great buttressed tree, tall straight trunks with lianas',
+     'soft green morning light', (0.52, 0.6)),
+    ('w1c-mid', 'w1c', 'mid', 'day', 213, 'crown', 0, 'high rainforest canopy trees: broad branches, tall straight trunks, lianas and bromeliads',
+     'soft green morning light', (0.52, 0.6)),
+    ('w3-mid', 'w3', 'mid', 'day', 214, 'crown', 0, 'a mossy jungle grotto: rock arches overgrown with ferns and vines, glowing drops of water',
+     'cool green-teal shade', (0.52, 0.6)),
+    ('w6-mid', 'w6', 'mid', 'day', 215, 'crown', 0, 'mangrove trees on tall arching roots standing in still water, spanish moss',
+     'soft grey-green swamp light', (0.52, 0.6)),
+    ('w7-mid', 'w7', 'mid', 'day', 216, 'crown', 0, 'overgrown jungle temple ruins: a stepped shrine with a carved stone face, stone archways and broken columns',
+     'soft grey-green jungle light', (0.52, 0.6)),
+]
+
+
+# ---- round M: the third and fourth moods. (stem, world, grade, far + sky, middle, near, light, mid trim) ----
+MOODS2 = [
+    ('w1rain', 1, 'storm', 'a rain-soaked rainforest afternoon: layers of misty jungle hills and giant emergent trees fading into soft grey rain, low rain clouds',
+     'rainforest trees in the rain: a giant tree with a broad dripping crown, palms bent under rain, a tree fern, a waterfall of rain off the leaves',
+     'wet ferns, dripping broad leaves, puddles and mossy stones', 'soft grey-green rainy light, everything wet and glistening', 0),
+    ('w2mist', 2, 'dawn', 'a misty dawn on a wide jungle river: still pale water, far banks of palms and big trees fading into morning mist, a pale pink-gold sun low over the river',
+     'a misty riverbank at dawn: big mossy boulders, palms and a leaning tree over the water, a little wooden fishing jetty on posts, reeds',
+     'reeds, cattails, wet river stones and lily pads', 'pale pink-gold dawn light through river mist', 0),
+    ('w3crystal', 3, 'cave', 'a vast crystal grotto: far cave walls lined with huge glowing blue and violet crystal clusters, an underground lake reflecting them, a high dark cave roof',
+     'a crystal grotto seen from the side: rock pillars studded with big glowing violet and blue crystals, a natural rock arch, crystal clusters on mossy boulders',
+     'cave rocks with small glowing crystals and puddles', 'deep blue-violet cave light, glowing crystals', 0),
+    ('w4storm', 4, 'storm', 'a thunderstorm over grey cliffs: tall grey rock cliffs and pinnacles under dark rolling storm clouds, a far lightning bolt, grey rain curtains',
+     'grey cliff pinnacles in a storm: wind-bent pines clinging to the rocks, a rope bridge between two rocks, rocks wet with rain',
+     'wet grey rocks, wind-bent grass and ferns', 'dark blue-grey storm light, wet rock with pale highlights', 0),
+    ('w6moon', 6, 'night', 'a moonlit swamp: a big full moon over still black water, far mangrove trees and hanging moss in silhouette, silver reflections, a starry sky',
+     'mangrove trees at night on tall arching roots in still black water, hanging spanish moss, a few fireflies, pale glowing swamp flowers',
+     'mangrove roots, reeds and lily pads with pale glowing flowers', 'silver blue moonlight', 0),
+    ('w7court', 7, 'day', 'a sunlit jungle temple courtyard at noon: tall stepped stone temples and carved towers, jungle trees behind, a bright blue sky with white clouds',
+     'a temple courtyard at noon: carved stone pillars, a stone stairway, big stone statues and flower urns, palms and jungle vines',
+     'carved paving stones, broken pillars, ferns and flowers', 'bright warm noon sunlight, clear shadows', 0),
+    ('w8dawn', 8, 'dawn', 'dawn over the high jungle canopy: a sea of round treetops seen from above, mist between them, a soft pink-gold sun rising, a few birds far away',
+     'the high jungle canopy at dawn: great round treetops on huge branches, hanging lianas, a giant flowering tree, mist in the gaps',
+     'broad leaves, branch ends and morning flowers with dew', 'soft pink and gold dawn light', 0.25),
+    ('w9ash', 9, 'storm', 'an ash storm in a volcanic valley: a smoking volcano far away, grey ash clouds rolling across the sky, black basalt ridges, dim orange glow under the ash',
+     'a volcanic valley in an ash storm: black basalt columns and rock spires, charred dead trees, ash drifting',
+     'black rocks covered in grey ash, embers', 'dim grey-orange light through falling ash', 0),
+    ('w10night', 10, 'night', 'the mountain summit at night: snowy jagged peaks under a huge starry night sky with a band of the milky way and a crescent moon',
+     'bare mountain crags at night: jagged dark rock spires with snow on the ledges, an old stone watchtower with a lit window, iron lamp posts',
+     'dark rocks with snow and frost, stone steps', 'cold blue night light, starlight on the snow', 0),
+]
+FAR = ('a very wide side-scrolling game background, the far distance seen straight from the side: {d}. The upper third of the picture is '
+       'open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth')
+FARNEG = ('foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, '
+          'creature, character, blurry, photo, 3d render')
+M = [r for st, w, g, far, mid, near, l, trim in MOODS2 for r in (
+    (f'{st}-mid', f'w{w}', 'mid', g, 300 + 2 * w, 'remix', trim, mid, l, (0.68, 0.76)),
+    (f'{st}-near', f'w{w}', 'near', g, 301 + 2 * w, 'remix', 0, near, l, (0.62, 0.68)))]
+
+
+# ---- round X (the third round of the day): World 10 moods that keep its rain (a clear sky over World 10's storm read wrong, so its
+# new skies are storms), and the W1 sunrise and kapok middle strips' crown tops (their soft faded tops, NEXT.md polish notes) ----
+MOODS3 = [
+    ('w10storm', 10, 'storm', 'the mountain summit at night in a thunderstorm: jagged dark peaks under churning storm clouds lit from inside by lightning, grey rain curtains sweeping across, a cold blue glow',
+     'bare mountain crags in a night storm: jagged wet rock spires, an old stone watchtower with one lit window, iron lamp posts with chains swinging, rain streaming off the rocks',
+     'wet dark rocks with puddles and stone steps', 'cold blue-violet storm light, wet rock gleaming', 0),
+    ('w10gale', 10, 'storm', 'a grey gale over the high mountain pass: steep grey cliffs and peaks half hidden in blowing cloud and slanting rain, a far rope bridge between two peaks',
+     'a windswept mountain pass: leaning rock pillars, broken stone stairs, tattered prayer flags on poles, a crooked bent pine',
+     'grey rocks, wind-flattened grass and loose stones', 'flat grey gale light, cold and wet', 0),
+]
+M3 = [r for st, w, g, far, mid, near, l, trim in MOODS3 for r in (
+    (f'{st}-mid', f'w{w}', 'mid', g, 340 + 2 * w + len(st), 'remix', trim, mid, l, (0.68, 0.76)),
+    (f'{st}-near', f'w{w}', 'near', g, 341 + 2 * w + len(st), 'remix', 0, near, l, (0.62, 0.68)))]
+X = M3 + [
+    ('w1sunrise-mid', 'w1sunrise', 'mid', 'day', 251, 'crown', 0, MOODS[0][3], MOODS[0][5], (0.52, 0.6)),
+    ('w1kapok-mid', 'w1kapok', 'mid', 'day', 252, 'crown', 0, MOODS[1][3], MOODS[1][5], (0.52, 0.6)),
+]
+
+
+# ---- round F4 (lead's review, 2 PM ET: W8 dawn, W10 gale and W2 mist read pale and empty upright): richer far + sky, dark defined
+# silhouettes in the middle distance, strong colour, no fog over everything ----
+MOODS4 = [
+    ('w8dawn', 8, 'dawn', 'dawn over the high jungle canopy seen from a treetop: big dark silhouetted rainforest crowns and giant emergent trees in the middle distance, layered ridges of canopy fading behind them, a blazing orange and magenta sunrise sky with bold coloured clouds, birds', '', '', 'rich saturated sunrise colour, strong contrast, deep violet shadows', 0),
+    ('w10gale', 10, 'storm', 'a fierce gale over the high mountain pass: dark jagged slate-blue cliffs and peaks with strong shadows, a long rope bridge between two dark peaks, heavy dark storm clouds racing across, slanting rain', '', '', 'cold blue storm light, deep shadows, strong contrast', 0),
+    ('w2mist', 2, 'dawn', 'dawn on a wide jungle river: dark silhouetted palms and big riverbank trees framing the river, a golden sun low over the water with bright reflections, wisps of mist only on the water, colourful pink and gold sky with clouds', '', '', 'rich warm dawn colour, strong contrast, dark green silhouettes', 0),
+]
+
+
+def fars(seeds=(7, 23, 41), moods=None):
+    return [{'name': f'{st}-tall-{sd}', 'prompt': S + FAR.format(d=far + ', ' + l), 'neg': FARNEG, 'seed': sd, 'w': 1792, 'h': 1200,
+             'steps': 30} for st, w, g, far, mid, near, l, trim in (moods or MOODS2) for sd in seeds]
+
+
+# ---- the painted upright skies for the 10 far sets that lack one (w10after waits with its set): the X-16 tallstart way
+# (tools/art/hfbatch/tallstart.py starts), stronger than round 4's s30/s38, which barely changed the start ----
+SKIES = ['w1sunrise', 'w1kapok', 'w3sinkhole', 'w6dawn', 'w7', 'w7dawn', 'w7dusk', 'w5dusk2', 'w5twi1', 'w5twi2']
+
+
+def skies(commit):
+    from PIL import Image
+    hb = H.parent / 'hfbatch'
+    sys.path.insert(0, str(hb))
+    from make_sky_spec import WHAT
+    st = ('slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark '
+          'outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left')
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/sky/'
+    items = []
+    for s_ in SKIES:
+        im = Image.open(hb / 'starts/sky' / f'{s_}-tall.webp')
+        for k in (0.48, 0.58):
+            items.append({'name': f'{s_}-tall-s{round(k * 100)}', 'pre': 'none', 'src': f'{base}{s_}-tall.webp', 'h': im.height,
+                          'strength': k, 'seed': 7, 'steps': 26, 'bg': [128, 128, 128],
+                          'prompt': f'{st}. {WHAT[s_]} above, the far distance of the scene below, one continuous picture',
+                          'neg': 'second landscape, stacked scenes, horizon line in the sky, frame, border, panel, picture in picture, '
+                                 'horizontal band, seam, text, letters, watermark, people, animal, sloth, face, blurry'})
+    return {'tag': 'hfbd2-S', 'note': 'upright skies, tallstart starts', 'loras': {'style': ['mshaffe111/slothadv-style-lora',
+            'slothadv_style_v1.safetensors', 0.8]}, 'tw': 1024, 'items': items}
+
+
+def what(name, d, l):
+    if d:
+        return d, l
+    m = MOOD[name.rsplit('-', 1)[0]]
+    return (m[3], m[5]) if name.endswith('-mid') else (m[4], m[5])
+
+
+def items(rows, seeds=(7, 23)):
+    it = []
+    for name, src, part, g, sd0, mode, trim, d, l, sts in rows:
+        d, l = what(name, d, l)
+        t = R2 if part == 'mid' else R2N
+        p = S + t.format(d=d + (', ' + CROWN if part == 'mid' else ''), l=l)
+        for st in sts:
+            for sd in seeds:
+                it.append({'name': f'{name}-s{round(st * 100)}-{sd}', 'start': f'start-{name}.webp', 'prompt': p, 'strength': st,
+                           'seed': sd, 'w': 2048, 'h': 1104 if part == 'mid' else 1072})
+    return it
+
+
+def starts(out, rows):
+    for name, src, part, g, sd, mode, trim, *_ in rows:
+        subprocess.run([sys.executable, '-I', str(H / 'starts2.py'), out, name, src, part, g, str(sd), mode, str(trim)], check=True)
+
+
+def args(spec, sha):
+    # (the job fetches the script and the spec from the repo at a pushed commit, so nothing has to be written to the bucket first)
+    gh = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{sha}/tools/art/'
+    n = Path(spec).name
+    raw = gh + ('w6to10/stillsgpu.py' if n.startswith('spec-F') else 'hfbatch/striphdgpu.py' if n.startswith('spec-hd') else
+                'w6to10/img2imggpu.py')
+    tag = json.loads(Path(spec).read_text())['tag']
+    fetch = f'mkdir -p /out/hfbackdrops2 && curl -sSfL {gh}hfbackdrops/{Path(spec).name} -o /out/hfbackdrops2/{Path(spec).name} && '
+    print(json.dumps({'image': 'ostris/aitoolkit:latest', 'flavor': 'rtx-pro-6000', 'timeout': '1h', 'detach': True,
+                      'command': ['bash', '-lc', fetch + f'curl -sSfL {raw} -o /tmp/g.py && SPEC=hfbackdrops2/{Path(spec).name} '
+                                  f'SUB=hfbackdrops2/{tag} TAG={tag} python /tmp/g.py'],
+                      'secrets': {'HF_TOKEN': '$HF_TOKEN'}, 'volumes': ['hf://buckets/mshaffe111/w5-xfer:/out:rw'], 'name': tag}))
+
+
+if __name__ == '__main__':
+    c = sys.argv[1]
+    if c == 'starts':
+        starts(sys.argv[2], {'R': R, 'M': M, 'X': X}[sys.argv[3] if len(sys.argv) > 3 else 'R'])
+    elif c == 'args':
+        args(sys.argv[2], sys.argv[3])
+    elif c == 'S':
+        spec = skies(sys.argv[2])
+        (H / 'spec-hd-S.json').write_text(json.dumps(spec, indent=1))
+        print('spec-hd-S.json', len(spec['items']))
+    elif c in ('F', 'F3', 'F4'):  # the far + sky pictures, text to image (tools/art/w6to10/stillsgpu.py)
+        it = fars() if c == 'F' else fars((7, 23, 41, 59), MOODS3) if c == 'F3' else [
+            dict(i, name=i['name'].replace('-tall-', '-tall4-')) for i in fars((7, 23, 41, 59, 71), MOODS4)]
+        spec = {'tag': f'hfbd2-{c}', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 0.8]},
+                'neg': FARNEG, 'items': it}
+        (H / f'spec-{c}.json').write_text(json.dumps(spec, indent=1))
+        print(f'spec-{c}.json', len(it))
+    else:
+        rows = {'R': R, 'M': M, 'X': X}[c]
+        commit, k, n = sys.argv[2], int(sys.argv[3]), int(sys.argv[4])
+        it = items(rows)
+        part = it[k::n]
+        spec = {'tag': f'hfbd2-{c}{k}', 'loras': LORAS, 'neg': NEG, 'base': BASE.format(c=commit), 'items': part}
+        out = H / f'spec-{c}{k}.json'
+        out.write_text(json.dumps(spec, indent=1))
+        print(out, len(part))

@@ -1908,6 +1908,26 @@ interface Fitted {
   sky0: number;
 }
 const fits = new WeakMap<Layer, Fitted[]>();
+/** the fits made while warming, for stampSceneryFits */
+const warmMade: HTMLCanvasElement[] = [];
+/**
+ * Each fit made while warming stamped once, a pixel, into a corner of `ctx` (the game's canvas, under the title card) and the corner
+ * cleared: its upload to the GPU happens now, not on its first frame of play (PERFORMANCE-RULES §2.12). How many bytes they hold.
+ */
+export function stampSceneryFits(ctx: CanvasRenderingContext2D): number {
+  let bytes = 0;
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  for (const cv of warmMade) {
+    if (!cv.width) continue;
+    bytes += cv.width * cv.height * 4;
+    ctx.drawImage(cv, 0, 0, 1, 1, 0, 0, 1, 1);
+  }
+  ctx.clearRect(0, 0, 2, 2);
+  ctx.restore();
+  warmMade.length = 0;
+  return bytes;
+}
 
 /**
  * How a frame draws its painted strips (renderScenery): 'plan' only checks that every strip has its fit, making at most one new fit a
@@ -1953,7 +1973,9 @@ function makeFit(img: HTMLImageElement, sky: Layer | null, pitch: number, dh: nu
   c.fillRect(0, 0, cv.width, cv.height);
   const f: Fitted = { key, cv, grade: fitGrade, sky: !!sky, oy, d, sky0: sky ? Math.ceil(oy + skyY) : 0 };
   // (the oldest size goes: its pixels are freed now, not whenever the collector gets to them)
-  if (list.length >= 2) list.shift()!.cv.width = 0;
+  // (three: this quality step's and the two lighter ones', all fitted under the title card, so a step down mid-play is a swap)
+  if (list.length >= 3) list.shift()!.cv.width = 0;
+  if (warming) warmMade.push(cv);
   list.push(f);
   fits.set(img, list);
   return f;

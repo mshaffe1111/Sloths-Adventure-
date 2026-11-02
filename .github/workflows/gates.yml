@@ -1,0 +1,58 @@
+name: Gates (art, known lists, clip, draw)
+
+# The gates that are not unit tests (reference/methods/gates.md, LAWS.md law 5). deploy.yml calls this before it publishes, so a
+# failing gate blocks the live site. The unit tests (playerText.test.ts among them) run in deploy.yml's own test shards.
+#   gates      artcheck (1 s) + knowncheck (1 s) + clipcheck (about 3 min): about 4.5 min with setup (measured 2026-11-01)
+#   drawcheck  its own runner, side by side: about 6.5 min with setup (measured 2026-11-01)
+# Both run alongside deploy.yml's test shards, so they add to the deploy only if they outlast the slowest shard.
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # knowncheck compares the known lists with main before this change
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --legacy-peer-deps
+      - run: node tools/perf/artcheck.mjs
+      - run: node tools/perf/knowncheck.mjs
+      # the browser the clip check drives (Chrome's safe-area override needs a recent one); not a project dependency
+      - run: npm install --no-save --no-audit --no-fund --legacy-peer-deps playwright@1.63.0 && npx playwright install --with-deps chromium
+      # shell: bash runs with pipefail, so the check's exit code survives the tee (the default shell here has no pipefail: a crash
+      # showed green on the first run)
+      - run: node tools/perf/clipcheck.mjs | tee clipcheck.log
+        shell: bash
+        env:
+          CLIPCHECK_OUT: clipcheck-out
+      - name: Keep the clip check's contact sheet and breaches
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clipcheck
+          path: |
+            clipcheck.log
+            clipcheck-out/contact.jpg
+            clipcheck-out/breaches.json
+          if-no-files-found: ignore
+
+  drawcheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --legacy-peer-deps
+      - run: npm install --no-save --no-audit --no-fund --legacy-peer-deps playwright@1.63.0 && npx playwright install --with-deps chromium
+      - run: node tools/perf/drawcheck.mjs

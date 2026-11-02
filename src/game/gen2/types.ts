@@ -128,6 +128,12 @@ export interface WorldManifest {
   /** the share of the sections one roll favours (its theme: pipeline THEME); default THEME.share once the world holds THEME.from
    *  sections or more, else 1 (every roll draws from them all) */
   themeShare?: Range;
+  /** px from the spawn that run as one unbroken ground before anything can hurt (Worlds 8-10's safe start, WIP-6: stageGenerator
+   *  SAFE_START): the stitcher lays a plain bank after the start section for whatever the runway and the start leave short */
+  safeStart?: number;
+  /** on Normal a fall at a swing or a glide (a gap under a liana, a glide gap) costs a heart, not a life, and sets him back on the ledge he
+   *  left (World 8, Matt 2026-10-31: "hurt, then cost a life"); no pit is laid under them. Easy's stay soft pits */
+  heartFalls?: boolean;
   /** the stages of the world gen2 must never build (the signature stage, the guardian's lair) */
   handBuilt: string[];
   /**
@@ -179,6 +185,10 @@ export interface LianaSwing {
  *                        ledge the swing started from. A chain of swings has a perch between every two: liana, land, liana, land
  *                        (levelCheck follows ledge -> liana -> ledge, never liana to liana)
  *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
+ *   rope                 a ledge `gap` px past `after` at its height, a shimmy rope hung across between them (rope.ts: ROPE_RISE over the
+ *                        ledges, ROPE_OVERLAP over each): a gap past every jump and glide, so the rope is the way over (World 9's burnt
+ *                        bridges, GRAB-BAG.md N8; World 8's rope blooms). Its gap is a liana's: a soft pit climbing back to `after` where
+ *                        the world's falls are soft or `soft` says so, World 8 Normal's heart fall where the world asks for them
  * A gap rule (jump, double, pit, land) with `water: true` is water whatever the world's falls (World 6's creeks): nothing is laid under
  * it, the stage has its water line, a fall costs a life on Normal and on Easy alike, and Dot warns before it (WATER_WARN, Matt's rule)
  * A gap rule with `soft: true` has a soft pit under it whatever the world's falls (World 8: in a world whose falls cost a life, its gaps in
@@ -193,7 +203,8 @@ export type PlaceRule =
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
-  | { kind: 'climb'; on: string; at: Range; h: Range };
+  | { kind: 'climb'; on: string; at: Range; h: Range }
+  | { kind: 'rope'; after: string; gap: Range; soft?: boolean };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */

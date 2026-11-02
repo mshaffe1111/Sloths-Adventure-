@@ -13,10 +13,13 @@
  */
 import { makeCreatureAnim } from './creatureAnim.ts';
 import { FRUITBAT_ANIM, FRUITBAT_ANIM_UP, FRUITBAT_ANIM_URL, FRUITBAT_FLY, FRUITBAT_FLY_SEQ, FRUITBAT_FLY_URL, FRUITBAT_SEQ, W8C, W8C_URL, W8ROOST, W8ROOST_URL } from './fruitbatAnimData.ts';
+import { W8ROOST_B, W8ROOST_B_URL } from './w8DecorData.ts';
 
 const ANIM = makeCreatureAnim(FRUITBAT_ANIM_URL, FRUITBAT_ANIM, FRUITBAT_SEQ, FRUITBAT_ANIM_UP);
 const FLY = makeCreatureAnim(FRUITBAT_FLY_URL, FRUITBAT_FLY, FRUITBAT_FLY_SEQ, 1);
 const BRANCH = makeCreatureAnim(W8ROOST_URL, W8ROOST, {}, 1);
+/** the roost sheet's second painting (props-made/w8roost-b): every other roost branch, and the loft's pile and open pod beside the first's */
+const BRANCH_B = makeCreatureAnim(W8ROOST_B_URL, W8ROOST_B, {}, 1);
 const DRESS = makeCreatureAnim(W8C_URL, W8C, {}, 1);
 /** the roost clip's frames: the wings open (flapping in), and hanging still */
 const FLAP = ['roost_00', 'roost_01', 'roost_02', 'roost_03', 'roost_04'];
@@ -35,7 +38,7 @@ const hash01 = (x: number, salt: number): number => {
 };
 
 /** start loading the sheets (a World 8 stage with roosts, as it starts) */
-export const warmBats = (): boolean => [ANIM.ready(), FLY.ready(), BRANCH.ready()].every(Boolean);
+export const warmBats = (): boolean => [ANIM.ready(), FLY.ready(), BRANCH.ready(), BRANCH_B.ready()].every(Boolean);
 
 /**
  * One roost over (x, ground y): `waking` 0 calm .. 1 sweeping (the watcher's phase). False while the sheets load (nothing drawn: the
@@ -50,7 +53,9 @@ export function drawRoost(ctx: CanvasRenderingContext2D, x: number, groundY: num
   ctx.save();
   ctx.translate(mid, y + 6);
   if (hash01(x, 2) < 0.5) ctx.scale(-1, 1);
-  BRANCH.draw(ctx, hash01(x, 3) < 0.5 ? 'roost-branch' : 'roost-branch-b', ROOST.branch / 477);
+  // (two branch paintings on each of two sheets: one of the four by place)
+  const sheet = hash01(x, 4) < 0.5 || !BRANCH_B.ready() ? BRANCH : BRANCH_B;
+  sheet.draw(ctx, hash01(x, 3) < 0.5 ? 'roost-branch' : 'roost-branch-b', ROOST.branch / 477);
   ctx.restore();
   for (let i = 0; i < n; i++) {
     const bx = x + 30 + i * ROOST.apart + (hash01(x, 10 + i) - 0.5) * 16;
@@ -65,21 +70,27 @@ export function drawRoost(ctx: CanvasRenderingContext2D, x: number, groundY: num
     ctx.restore();
   }
   // (asleep: a slow "z" drifting up from the roost, one at a time, fading out)
-  if (waking <= 0) {
-    const u = (t * 0.45 + hash01(x, 40)) % 1;
-    const zx = mid + 20 + 18 * Math.sin(u * 5);
-    const zy = y - 20 - 60 * u;
-    ctx.save();
-    ctx.globalAlpha = Math.sin(u * Math.PI) * 0.85;
-    ctx.fillStyle = '#e9e3ff';
-    ctx.strokeStyle = 'rgba(30, 20, 60, 0.9)';
-    ctx.lineWidth = 3;
-    ctx.font = `bold ${Math.round(16 + 10 * u)}px sans-serif`;
+  if (waking <= 0) drawDozeZ(ctx, mid + 20, y - 20, t, hash01(x, 40));
+  return true;
+}
+
+/** a sleeper's tell: a slow "z" drifting up from (x, y), one at a time, fading out (the roost's, 8-1's dozing boa) */
+export function drawDozeZ(ctx: CanvasRenderingContext2D, x: number, y: number, t: number, phase = 0): void {
+  // (two z's half a drift apart, so one always reads clearly on a phone: a single fading z was easy to miss in the stills)
+  ctx.save();
+  ctx.fillStyle = '#e9e3ff';
+  ctx.strokeStyle = 'rgba(30, 20, 60, 0.9)';
+  ctx.lineWidth = 3;
+  for (const k of [0, 0.5]) {
+    const u = (t * 0.45 + phase + k) % 1;
+    ctx.globalAlpha = Math.min(1, Math.sin(u * Math.PI) * 1.3);
+    ctx.font = `bold ${Math.round(20 + 12 * u)}px sans-serif`;
+    const zx = x + 18 * Math.sin(u * 5);
+    const zy = y - 60 * u;
     ctx.strokeText('z', zx, zy);
     ctx.fillText('z', zx, zy);
-    ctx.restore();
   }
-  return true;
+  ctx.restore();
 }
 
 /** the roost branch's walkable top, as a share of its frame's height (the moss on the log's top: 8-1's roost loft stands on it) */
@@ -93,7 +104,7 @@ export function drawRoostBough(ctx: CanvasRenderingContext2D, p: { x: number; y:
   ctx.save();
   ctx.translate(Math.round(p.x + p.width / 2), Math.round(p.y + f.h * k * (1 - BOUGH_TOP)));
   if (p.id % 2) ctx.scale(-1, 1);
-  BRANCH.draw(ctx, 'roost-branch', k);
+  (p.id % 3 === 1 && BRANCH_B.ready() ? BRANCH_B : BRANCH).draw(ctx, 'roost-branch', k);
   ctx.restore();
   return true;
 }
@@ -109,12 +120,24 @@ export function drawSeedPod(ctx: CanvasRenderingContext2D, x: number, y: number,
   return true;
 }
 
-/** the pile they come from (the roost sheet's small seed pile), its foot on the ground at (x, y) */
+/**
+ * the pile they come from, its foot on the ground at (x, y): the roost sheet's big seed pile behind, the second painting's small pile in
+ * front of it, and a split-open pod leaning at its side (the seeds he throws are what spilled out of it)
+ */
 export function drawSeedPile(ctx: CanvasRenderingContext2D, x: number, y: number): boolean {
   if (!BRANCH.ready()) return false;
   ctx.save();
-  ctx.translate(x - 30, y + 3);
-  BRANCH.draw(ctx, 'seed-pile-small', 0.24);
+  ctx.translate(x - 22, y + 4);
+  BRANCH.draw(ctx, 'seed-pile', 0.2);
+  ctx.restore();
+  ctx.save();
+  ctx.translate(x + 30, y + 4);
+  ctx.rotate(0.35);
+  BRANCH.draw(ctx, 'seed-pod-open', 0.13);
+  ctx.restore();
+  ctx.save();
+  ctx.translate(x - 40, y + 5);
+  (BRANCH_B.ready() ? BRANCH_B : BRANCH).draw(ctx, 'seed-pile-small', 0.2);
   ctx.restore();
   return true;
 }

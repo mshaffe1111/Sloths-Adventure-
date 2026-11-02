@@ -1,0 +1,44 @@
+{
+ "note": "hf-props batch w6p, 2026-10-31",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bdbc3f4b590163f411702fcc1a49fbcfe73e1825/reference/prop-sheets/qa-notes/hf-props/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "w6-s82-5",
+   "start": "w6.png",
+   "prompt": "slothadv style, a sheet of twelve separate game props in a 4 by 3 grid, painted in one consistent storybook style, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Top row: two existing props, then a mangrove root crusted with pale oysters, then a fiddler crab with one big orange claw. Middle row: a clump of pitcher plants, a spray of pale swamp orchids hanging from a root, a dripping vine with aerial roots hanging down, long green mangrove seed pods. Bottom row: a few shells and snails on the mud, old net floats tied on a frayed rope, a kingfisher perched on a root post, a mudskipper on a lump of mud. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate in its own space with room round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.82,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, rounded rectangle, plain box, blank shape"
+  },
+  {
+   "name": "w6-s90-5",
+   "start": "w6.png",
+   "prompt": "slothadv style, a sheet of twelve separate game props in a 4 by 3 grid, painted in one consistent storybook style, for a deep dim mangrove swamp, dark wet roots, olive greens, misty light. Top row: two existing props, then a mangrove root crusted with pale oysters, then a fiddler crab with one big orange claw. Middle row: a clump of pitcher plants, a spray of pale swamp orchids hanging from a root, a dripping vine with aerial roots hanging down, long green mangrove seed pods. Bottom row: a few shells and snails on the mud, old net floats tied on a frayed rope, a kingfisher perched on a root post, a mudskipper on a lump of mud. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate in its own space with room round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.9,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, rounded rectangle, plain box, blank shape"
+  }
+ ]
+}

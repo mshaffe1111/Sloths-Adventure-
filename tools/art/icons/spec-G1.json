@@ -1,0 +1,77 @@
+{
+ "tag": "icG1",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects",
+ "items": [
+  {
+   "name": "spyglass-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small brass explorer's spyglass telescope, extended, with a wrapped leather grip and a little green leaf tied on with twine, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, gun, text"
+  },
+  {
+   "name": "spyglass-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small brass explorer's spyglass telescope, extended, with a wrapped leather grip and a little green leaf tied on with twine, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, gun, text"
+  },
+  {
+   "name": "spyglass-b23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a short brass spyglass lying slightly diagonal, glinting lens, a twine strap and a small green leaf, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, gun, text"
+  },
+  {
+   "name": "spyglass-b53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a short brass spyglass lying slightly diagonal, glinting lens, a twine strap and a small green leaf, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, gun, text"
+  },
+  {
+   "name": "notebook-a23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of Pokey's own small pocket notebook of soft tan leather, held shut with an elastic band, a stubby yellow pencil tucked under the band, a little doodle of a leaf scratched on the cover, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, book with brass corners, big book, satchel, text"
+  },
+  {
+   "name": "notebook-a53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of Pokey's own small pocket notebook of soft tan leather, held shut with an elastic band, a stubby yellow pencil tucked under the band, a little doodle of a leaf scratched on the cover, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, book with brass corners, big book, satchel, text"
+  },
+  {
+   "name": "notebook-b23",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small spiral-free pocket notebook of worn tan leather with a short yellow pencil lying across it, a few loose paper scraps sticking out, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 23,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, book with brass corners, big book, satchel, text"
+  },
+  {
+   "name": "notebook-b53",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small spiral-free pocket notebook of worn tan leather with a short yellow pencil lying across it, a few loose paper scraps sticking out, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 53,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, book with brass corners, big book, satchel, text"
+  }
+ ]
+}

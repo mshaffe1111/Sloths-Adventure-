@@ -132,3 +132,33 @@ export function dropSheetBake(im: object) {
   if (b) ALL.delete(b);
   BAKED.delete(im);
 }
+
+/**
+ * Each sheet drawn through here (its baked copy where it has one) drawn once shrunk, smoothing 'high', into a corner of `ctx` (the game's
+ * canvas, under the title card), and the corner cleared: the browser builds the copy's mipmaps now. Drawn near its own size at q0 a copy
+ * needs none, so the frame governor's first step down (q0 to q1, everything drawn at 3/4) built them on a frame of play: Pokey's sheet
+ * alone cost about 140 ms there (warmup-5m, 2026-11-01). How many.
+ */
+export function warmSheetMips(ctx: CanvasRenderingContext2D): number {
+  let n = 0;
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  for (const b of ALL) {
+    const src: CanvasImageSource | null = b.cv ?? (b.im.complete && b.im.naturalWidth ? b.im : null);
+    if (!src) continue;
+    const w = b.cv ? b.cv.width : b.im.naturalWidth;
+    const h = b.cv ? b.cv.height : b.im.naturalHeight;
+    if (w < 8 || h < 8) continue;
+    try {
+      ctx.drawImage(src, 0, 0, w, h, 0, 0, 2, 2);
+      n++;
+    } catch {
+      /* not drawable: play draws it as before */
+    }
+  }
+  ctx.clearRect(0, 0, 2, 2);
+  ctx.restore();
+  return n;
+}

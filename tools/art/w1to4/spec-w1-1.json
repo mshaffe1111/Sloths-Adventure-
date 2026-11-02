@@ -1,0 +1,140 @@
+{
+ "note": "World 1 kit batch, round 1, 2026-10-31 (w1-4-sheets)",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1dbb0f77da33e72aafef850838c44ed9eb0f573b/reference/prop-sheets/qa-notes/w1-4-art/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "w1-props-s62-5",
+   "start": "w1-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a sunny rainforest canopy trail: a hollow log and a monstera leaf bush (top left), a long springy tree bough with moss and a red bromeliad, the same bough dipped under weight, a sloping bough with a pile of acorns at its high end, a twisted green vine rope, two bark knots that stick out of a trunk like steps, three short mossy tree stumps with flat tops, a big fallen hollow log lying on monstera leaves with a dark gap under it to crouch in, a gate of living tangled roots in a mossy wooden frame shut, and the same root frame open. Warm bark browns, mossy yellow-greens. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-props-s62-17",
+   "start": "w1-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a sunny rainforest canopy trail: a hollow log and a monstera leaf bush (top left), a long springy tree bough with moss and a red bromeliad, the same bough dipped under weight, a sloping bough with a pile of acorns at its high end, a twisted green vine rope, two bark knots that stick out of a trunk like steps, three short mossy tree stumps with flat tops, a big fallen hollow log lying on monstera leaves with a dark gap under it to crouch in, a gate of living tangled roots in a mossy wooden frame shut, and the same root frame open. Warm bark browns, mossy yellow-greens. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-props-s74-5",
+   "start": "w1-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a sunny rainforest canopy trail: a hollow log and a monstera leaf bush (top left), a long springy tree bough with moss and a red bromeliad, the same bough dipped under weight, a sloping bough with a pile of acorns at its high end, a twisted green vine rope, two bark knots that stick out of a trunk like steps, three short mossy tree stumps with flat tops, a big fallen hollow log lying on monstera leaves with a dark gap under it to crouch in, a gate of living tangled roots in a mossy wooden frame shut, and the same root frame open. Warm bark browns, mossy yellow-greens. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-props-s74-17",
+   "start": "w1-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a sunny rainforest canopy trail: a hollow log and a monstera leaf bush (top left), a long springy tree bough with moss and a red bromeliad, the same bough dipped under weight, a sloping bough with a pile of acorns at its high end, a twisted green vine rope, two bark knots that stick out of a trunk like steps, three short mossy tree stumps with flat tops, a big fallen hollow log lying on monstera leaves with a dark gap under it to crouch in, a gate of living tangled roots in a mossy wooden frame shut, and the same root frame open. Warm bark browns, mossy yellow-greens. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-squirrels-s80-5",
+   "start": "w1-squirrels.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, the same cute cartoon red squirrel character drawn six times in different poses: sitting, waving, pulling down on a rope with both paws, tipping an acorn forward, running on all fours, sitting; reddish brown fur, cream white belly, big fluffy curled tail, small ears, big friendly dark eyes; a mossy tree stump and a hollow log also on the sheet. Storybook animal design, consistent character. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.8,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-squirrels-s80-17",
+   "start": "w1-squirrels.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, the same cute cartoon red squirrel character drawn six times in different poses: sitting, waving, pulling down on a rope with both paws, tipping an acorn forward, running on all fours, sitting; reddish brown fur, cream white belly, big fluffy curled tail, small ears, big friendly dark eyes; a mossy tree stump and a hollow log also on the sheet. Storybook animal design, consistent character. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.8,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-squirrels-s88-5",
+   "start": "w1-squirrels.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, the same cute cartoon red squirrel character drawn six times in different poses: sitting, waving, pulling down on a rope with both paws, tipping an acorn forward, running on all fours, sitting; reddish brown fur, cream white belly, big fluffy curled tail, small ears, big friendly dark eyes; a mossy tree stump and a hollow log also on the sheet. Storybook animal design, consistent character. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.88,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-squirrels-s88-17",
+   "start": "w1-squirrels.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, the same cute cartoon red squirrel character drawn six times in different poses: sitting, waving, pulling down on a rope with both paws, tipping an acorn forward, running on all fours, sitting; reddish brown fur, cream white belly, big fluffy curled tail, small ears, big friendly dark eyes; a mossy tree stump and a hollow log also on the sheet. Storybook animal design, consistent character. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.88,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  }
+ ]
+}

@@ -21,9 +21,9 @@ import { holdScene, sceneForPanel, sceneForScreen, type Held, type PanelInfo } f
 
 type PredatorKind = 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
 
-/** a menu's back or close button: the round ✕ (ui-x), or one whose label starts "Back" or "Close" */
+/** a menu's back or close button: the round ✕ (ui-x, or the painted nv-x), or one whose label starts "Back" or "Close" */
 export function isBackButton(btn: Element): boolean {
-  if (btn.classList?.contains('ui-x')) return true;
+  if (btn.classList?.contains('ui-x') || btn.classList?.contains('nv-x')) return true;
   const label = (btn.getAttribute?.('aria-label') ?? '').trim().toLowerCase();
   return label.startsWith('back') || label.startsWith('close');
 }

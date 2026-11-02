@@ -4,6 +4,8 @@ import { ControlsSetting, ShakeSetting, FullscreenSetting, AssistSetting, Waysid
 import { MenuTile, SoundSetting } from './MenuFrame.tsx';
 import { UpdateLink } from './UpdateControls.tsx';
 import { Icon, type IconName } from './icons/index.tsx';
+import { ConfirmDialog, useBack } from './nav/Nav.tsx';
+import { WhatsNew } from './WhatsNew.tsx';
 import { browserStore, buildSave } from '../game/saveFile.ts';
 
 type Tab = 'sound' | 'game' | 'saves' | 'trophies' | 'about';
@@ -19,19 +21,21 @@ interface TitleSettingsProps {
   isMuted: boolean;
   onToggleMute: () => void;
   onClose: () => void;
-  onOpenTrophies: () => void;
-  onOpenCards: () => void;
+  onOpenTrophies?: () => void;
+  onOpenCards?: () => void;
   onSaveLoad: () => void;
-  /** go on to choosing how to begin again (NewGameDialog); asked first here when there is a game to lose */
-  onNewGame: () => void;
-  trophyCount: number;
-  trophyTotal: number;
+  /** go on to choosing how to begin again (NewGameDialog); asked first here when there is a game to lose (the title only) */
+  onNewGame?: () => void;
+  /** opened away from the title (the World Map): a way to the Start Screen (Matt's rule 4) */
+  onStartScreen?: () => void;
+  trophyCount?: number;
+  trophyTotal?: number;
   /** "Oct 30, 2026, 5:38 PM" */
   updated: string | null;
   onInstallDesktop?: () => void;
   isInstalled?: boolean;
-  /** the credit's tester switch (ten taps on the name) */
-  onTapShaffer: () => void;
+  /** the credit's tester switch (ten taps on the name; the title only) */
+  onTapShaffer?: () => void;
   /** what the ten taps just did ("4 more…", "All stages and worlds unlocked"): shown on the credit itself, inside this card,
    * because a message behind the card can't be seen (Matt, 2026-10-31: the unlock "got lost" when the menu was redone) */
   creditMsg?: string | null;
@@ -55,18 +59,11 @@ function hasProgress(): boolean {
 export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
   const [tab, setTab] = React.useState<Tab>('sound');
   const [confirm, setConfirm] = React.useState(false);
+  const [news, setNews] = React.useState(false);
   const { onClose } = p;
-  // Esc closes the confirm first, then Settings
-  React.useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.code !== 'Escape') return;
-      e.preventDefault();
-      if (confirm) setConfirm(false);
-      else onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [confirm, onClose]);
+  // Android's Back and Esc close it, like its X and a tap outside (nav/backStack.ts; the confirm over it takes Back first)
+  useBack(onClose);
+  const tabs = TABS.filter((t) => (t.id === 'trophies' ? !!p.onOpenTrophies : true));
 
   const page = (() => {
     switch (tab) {
@@ -98,23 +95,25 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
                 Open
               </button>
             </div>
+            {p.onNewGame && (
             <div className="st-row">
               <Icon name="leaf" size={28} />
               <span className="st-row-t">
                 New Game
                 <small>Start again from Stage 1-1</small>
               </span>
-              <button type="button" className="st-btn" onClick={() => (hasProgress() ? setConfirm(true) : p.onNewGame())}>
+              <button type="button" className="st-btn" onClick={() => (hasProgress() ? setConfirm(true) : p.onNewGame?.())}>
                 New
               </button>
             </div>
+            )}
           </div>
         );
       case 'trophies':
         return (
           <div className="pm-tiles">
-            <MenuTile icon="trophy" name="Trophies" line={`${p.trophyCount} of ${p.trophyTotal} earned`} onClick={p.onOpenTrophies} />
-            <MenuTile icon="cards" name="Jungle Cards" line="Meet every creature" onClick={p.onOpenCards} />
+            {p.onOpenTrophies && <MenuTile icon="trophy" name="Trophies" line={p.trophyTotal ? `${p.trophyCount ?? 0} of ${p.trophyTotal} earned` : 'Every medal and trophy'} onClick={p.onOpenTrophies} />}
+            {p.onOpenCards && <MenuTile icon="cards" name="Jungle Cards" line="Meet every creature" onClick={p.onOpenCards} />}
           </div>
         );
       case 'about':
@@ -126,9 +125,13 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
                 Sloths Rainforest Adventures
                 <small>
                   Created and made by Matt{' '}
-                  <button type="button" onClick={p.onTapShaffer} className="title-credit-btn" aria-label="Shaffer">
-                    Shaffer
-                  </button>
+                  {p.onTapShaffer ? (
+                    <button type="button" onClick={p.onTapShaffer} className="title-credit-btn" aria-label="Shaffer">
+                      Shaffer
+                    </button>
+                  ) : (
+                    'Shaffer'
+                  )}
                   {p.creditMsg && (
                     <span className="st-credit-msg" role="status">
                       {p.creditMsg}
@@ -153,6 +156,9 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
                   <UpdateLink />
                 </small>
               </span>
+              <button type="button" className="st-btn" onClick={() => setNews(true)}>
+                What’s New
+              </button>
             </div>
             {!p.isInstalled && p.onInstallDesktop && (
               <div className="st-row">
@@ -181,7 +187,7 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
           <Icon name="cross" size={24} />
         </button>
         <div className="st-tabs" role="tablist" aria-label="Settings sections">
-          {TABS.map((t) => (
+          {tabs.map((t) => (
             <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} aria-label={t.name} className={`st-tab${tab === t.id ? ' on' : ''}`} onClick={() => setTab(t.id)}>
               <Icon name={t.icon} size={24} />
               <span>{t.name}</span>
@@ -191,30 +197,31 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
         <div className="st-page" role="tabpanel" aria-label={TABS.find((t) => t.id === tab)?.name}>
           {page}
         </div>
-        <button type="button" className="pm-go st-done" onClick={onClose}>
-          <Icon name="check" size={22} />
-          Done
-        </button>
+        <div className="st-foot">
+          {p.onStartScreen && (
+            <button type="button" className="st-btn st-home" onClick={p.onStartScreen}>
+              <Icon name="sloth" size={22} />
+              Start Screen
+            </button>
+          )}
+          <button type="button" className="pm-go st-done" onClick={onClose}>
+            <Icon name="check" size={22} />
+            Done
+          </button>
+        </div>
+        {news && <WhatsNew onClose={() => setNews(false)} />}
         {confirm && (
-          <div className="st-confirm" role="alertdialog" aria-modal="true" aria-label="Start a new game?">
-            <div className="st-confirm-card">
-              <h3>Start a new game?</h3>
-              <p>This wipes your stages, stars and trophies on this phone. A backup file can bring them back.</p>
-              <button type="button" className="pm-go" autoFocus onClick={() => setConfirm(false)}>
-                Keep my game
-              </button>
-              <button
-                type="button"
-                className="st-btn st-btn-wide"
-                onClick={() => {
-                  setConfirm(false);
-                  p.onNewGame();
-                }}
-              >
-                Yes, start over
-              </button>
-            </div>
-          </div>
+          <ConfirmDialog
+            title="Start a new game?"
+            body="This wipes your stages, stars and trophies on this phone. A backup file can bring them back."
+            stay="Keep my game"
+            go="Yes, start over"
+            onStay={() => setConfirm(false)}
+            onGo={() => {
+              setConfirm(false);
+              p.onNewGame?.();
+            }}
+          />
         )}
       </div>
     </div>

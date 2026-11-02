@@ -24,6 +24,10 @@ import {
   hoverOrder,
   hoverSpot,
   landingRects,
+  lawRects,
+  softAhead,
+  pickupRects,
+  aheadMoveOf,
   perchPoseFor,
   placeBubble,
   popupRects,
@@ -136,6 +140,8 @@ interface Plan {
   bubDy: number;
   placedAt: number;
   /** a perch was tried for this line and left no room for the bubble: she stays hovering */
+  /** she is flying after him with her bubble up (hovering, he walked on): it stays where it is, clear, and is not put up again on landing */
+  follow?: boolean;
   noPerch?: boolean;
   /** how much of the keep-outs (the HUD, the thumbs, a carving) the bubble covered when it was placed */
   ko?: number;
@@ -217,6 +223,12 @@ class GuideRun {
   lastReplan = -1e9;
   rects: Rect[] = [];
   hard: Rect[] = [];
+  /** the law's keep-outs (dotGuidePerch.ts lawRects, D10): Pokey, the way ahead within 1.5 jumps, the spot he acts on next */
+  law: Rect[] = [];
+  /** the high arc of the way ahead (dotGuidePerch.ts softAhead): gives way first on a cramped screen */
+  soft: Rect[] = [];
+  /** the pickups on screen (dotGuidePerch.ts pickupRects): kept clear when another spot is free */
+  pick: Rect[] = [];
   touching = 0;
   coachWas: CoachStep = null;
   goalDone = false;
@@ -369,6 +381,8 @@ const QUOTA = new Set(['harvest', 'relic_hunt', 'purge', 'gauntlet', 'rescue']);
 export const DotGuide: React.FC<DotGuideProps> = (props) => {
   const { level, guide, coachStep, lessonId } = props;
   const [run] = useState(() => new GuideRun(level, guide?.n ?? 0));
+  // (dev only: the guide's state, for the placement shooter tools/dotbox/shoot.mjs)
+  if (import.meta.env.DEV && typeof window !== 'undefined') (window as unknown as { __dotRun?: unknown }).__dotRun = run;
   // (the dev build lets the screenshot tools look inside: window.__dotGuide())
   useEffect(() => {
     if (import.meta.env?.DEV) (window as unknown as { __dotGuide?: () => GuideRun }).__dotGuide = () => run;
@@ -681,6 +695,14 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
 
     /** what her bubble must cover least of all: Pokey, and a boss's open weak spot with its NOW! marker */
     const hardNow = (p?: Plan) => {
+      // (the way ahead has the shape of the move the line is about: a glide's cone, a climb, a swing's arc)
+      const mv = aheadMoveOf(run.show?.line);
+      run.law.length = 0;
+      lawRects(v, run.law, POKEY_ROOM, mv);
+      run.soft.length = 0;
+      softAhead(v, run.soft, mv);
+      run.pick.length = 0;
+      pickupRects(v, run.pick);
       run.hard.length = 0;
       run.hard.push(pokeyRect(v, POKEY_ROOM));
       safeNow();
@@ -720,7 +742,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       p.placedAt = run.clock;
     };
 
-    const placeBub = (p: Plan) => {
+    /** `moving`: the bubble is up already and only moves off something that has come under it (it never goes away and back meanwhile) */
+    const placeBub = (p: Plan, moving = false) => {
       if (!run.bw) return;
       if (p.mode === 'corner') {
         placeCorner(p);
@@ -739,8 +762,10 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       const order = p.mode === 'perch' ? (['above', 'left', 'right', 'below'] as const) : hoverOrder(v);
       hardNow(p);
       // (Pokey himself, never under it while anywhere else is free: QA v200 upright)
-      p.bub = placeBubble(spot.x, my, run.bw, run.bh, safe, rects, order, frame ? frame.w / 2 + 6 : 28, run.hard, frame ? frame.h / 2 : 18, pokeyRect(v, POKEY_ROOM));
-      if (p.mode === 'perch' && (p.bub.cost ?? 0) > 0) {
+      p.bub = placeBubble(spot.x, my, run.bw, run.bh, safe, rects, order, frame ? frame.w / 2 + 6 : 28, run.hard, frame ? frame.h / 2 : 18, pokeyRect(v, POKEY_ROOM), run.law, run.soft, run.pick);
+      // (once it is up, it moves and she stays: flying off her perch took it down and put it up again elsewhere, a blink in the reading,
+      // 8-2 sideways as he walked up to the rope post)
+      if (p.mode === 'perch' && (p.bub.cost ?? 0) > 0 && !moving) {
         // no room for her bubble beside this perch without covering Pokey, an animal or the HUD: she hovers beside him instead
         const h = hoverSpot(v);
         p.mode = 'hover';
@@ -922,7 +947,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         if (u >= 1) {
           run.state = 'there';
           run.landedAt = run.clock;
-          placeBub(p);
+          if (p.follow && p.bub) p.follow = false;
+          else placeBub(p);
         }
       } else if (run.state === 'leaving') {
         const u = Math.min(1, (now - run.flyT0) / FLY_MS);
@@ -963,6 +989,9 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
               const ty = by - BUBBLE_TAG_H;
               hardNow(p);
               for (const h of run.hard) if (bx < h.x1 && bx + run.bw > h.x0 && ty < h.y1 && by + run.bh > h.y0) covered = true;
+              // (the way ahead and the spot he acts on next: only news when the spot it has was clear of them, so a bubble with nowhere
+              // clear to go does not hop about)
+              if (!covered && (b.cost ?? 0) < 1e6) for (const h of run.law) if (bx < h.x1 && bx + run.bw > h.x0 && ty < h.y1 && by + run.bh > h.y0) covered = true;
               if (!covered && pr && bx < pr.x1 && bx + run.bw > pr.x0 && ty < pr.y1 && by + run.bh > pr.y0) covered = true;
               // (a carving has scrolled in under it since it was placed: QA v194, 5-1's first tree)
               if (!covered && p.ko !== undefined && koCover(bx, by) > p.ko + 400) covered = true;
@@ -986,7 +1015,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
               run.fromY = run.dsy;
             } else if (covered) {
               run.lastReplan = run.clock;
-              placeBub(p);
+              placeBub(p, true);
             }
           }
         }
@@ -997,6 +1026,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         if (Math.abs(h.x - p.sx) > v.cssW * 0.22 || Math.abs(h.y - p.sy) > v.cssH * 0.2) {
           p.sx = h.x;
           p.sy = h.y;
+          // (her bubble stays up while she flies to him: it went down and came up again, a blink in the reading, 8-2 at the rope post)
+          p.follow = true;
           run.state = 'flying';
           run.flyT0 = now;
           run.fromX = run.dsx;
@@ -1062,7 +1093,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       // the bubble: placed once she has landed, beside her
       const bub = bubRef.current;
       if (p?.mode === 'corner' && cur && !p.bub && run.measuredN === cur.n) placeCorner(p);
-      const there = run.state === 'there' || ((p?.mode === 'pokey' || p?.mode === 'corner') && !!cur);
+      const there = run.state === 'there' || ((p?.mode === 'pokey' || p?.mode === 'corner') && !!cur) || (run.state === 'flying' && !!p?.follow);
       if (p?.mode === 'pokey' && cur && !p.bub && run.measuredN === cur.n && v.flight) {
         p.bub = { x: Math.max(16, (v.cssW - run.bw) / 2), y: p.sy, tail: 'b', at: 0 };
       }
@@ -1090,7 +1121,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const order: Parameters<typeof placeBubble>[6] = held ? ['below', side, 'above'] : ['above', side, 'below'];
         // (held, the bubble hangs from his feet: measured from his head, every spot under him lies on him)
         const ay = held ? pokeyRect(v, 0).y1 - 10 : p.sy;
-        p.bub = placeBubble(p.sx, ay, run.bw, run.bh, safe, rects, order, 26, run.hard, 26, pokeyRect(v, POKEY_ROOM));
+        p.bub = placeBubble(p.sx, ay, run.bw, run.bh, safe, rects, order, 26, run.hard, 26, pokeyRect(v, POKEY_ROOM), run.law, run.soft, run.pick);
         p.bubHeld = held;
         p.bubAt = now;
       }
@@ -1106,7 +1137,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         if (bx < pr.x1 && bx + run.bw > pr.x0 && by - BUBBLE_TAG_H < pr.y1 && by + run.bh > pr.y0 && now - run.awayAt > 500) {
           run.awayAt = now;
           const far = awayHalf(v, safeNow(), pr);
-          const nb = placeBubble((far.rect.x0 + far.rect.x1) / 2, (far.rect.y0 + far.rect.y1) / 2, run.bw, run.bh, far, [], ['above', 'below', 'left', 'right'], 0, [pr], 0, pr);
+          hardNow();
+          const nb = placeBubble((far.rect.x0 + far.rect.x1) / 2, (far.rect.y0 + far.rect.y1) / 2, run.bw, run.bh, far, [], ['above', 'below', 'left', 'right'], 0, [pr], 0, pr, run.law, run.soft, run.pick);
           bx = nb.x;
           by = nb.y;
           if (p.mode === 'perch') {

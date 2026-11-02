@@ -1,0 +1,41 @@
+{
+ "tag": "live-b",
+ "clips": [
+  {
+   "name": "lv-w4-day",
+   "src": "starts/w4-day.webp",
+   "prompt": "Misty cascades: the waterfalls pour and shimmer steadily, white mist rolls slowly at their feet and drifts between the cliffs, the pool ripples. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-w1-storm",
+   "src": "starts/w1-storm.webp",
+   "prompt": "A rainforest in a storm: heavy rain slants down steadily, the dark green-grey clouds churn slowly through the gaps in the canopy. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-w3-storm",
+   "src": "starts/w3-storm.webp",
+   "prompt": "A grotto mouth in the rain at night: rain falls steadily, drops splash on the rocks, the glowing blue mushrooms pulse softly. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  },
+  {
+   "name": "lv-w6-dusk",
+   "src": "starts/w6-dusk.webp",
+   "prompt": "A mangrove swamp at dusk: soft mist drifts slowly over the still water, the water ripples gently, the light glimmers. Static locked-off camera, the painting itself does not change, only the gentle natural motion; seamless calm loop, painted storybook style.",
+   "neg": "camera movement, zoom, pan, tilt, dolly, shake, scene change, cut, new objects appearing, characters moving, morphing, melting, changing art style, text, watermark, blurry, flicker, strobe, fast motion",
+   "seed": 11,
+   "w": 704,
+   "h": 752
+  }
+ ]
+}

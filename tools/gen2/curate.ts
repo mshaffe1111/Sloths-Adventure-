@@ -4,7 +4,7 @@
  *
  *   npx tsx tools/gen2/curate.ts --stages 5-7,5-9 [--rolls 400] [--keep 16] [--out src/game/gen2/seeds.ts] [--waive quiet,dead]
  *     [--band 50-65] [--max-shared 0.7] [--rooms 8] [--apart | --apart-near [--apart-cap 0.2]] [--json out.json] [--report out.md]
- *     [--salt 20261028]
+ *     [--salt 20261028] [--theme-cap w8:rope-blooms=0.5]
  *   npx tsx tools/gen2/curate.ts --stages toy-3,toy-4,toy-7 --rolls 400 --keep 16 --waive quiet,dead   (the toy world: tools/gen2/toySeeds.ts)
  *
  * For each stage: `--rolls` layout seeds (era.ts's rollVariants) are built through `buildGen2Stage` on Normal and on Easy (the same
@@ -132,6 +132,10 @@ export interface CurateOptions {
   /** `--apart-near`: drop a roll that shares a 20 s stretch with a neighbour's (`others` marked near) shipped rolls, and ship at most this
    *  share of the set sharing one with any other stage's */
   apartCap?: number;
+  /** `--theme-cap theme=share`: ship at most this share of the set from rolls of one theme (a roll is a theme's when a section of its
+   *  plan uses the theme). The greedy pick favours a far-off theme, so one new theme can take most of a set (8-2's ropes took 11 of 16,
+   *  w8-rope2): the cap keeps the stage's other themes seen */
+  themeCaps?: Array<{ theme: string; share: number }>;
   log: (s: string) => void;
 }
 
@@ -356,6 +360,24 @@ export function apartCapper(alikeOf: ReadonlyMap<RollMeasure, readonly string[]>
   };
 }
 
+/**
+ * The theme cap (`--theme-cap`): of the `keep` rolls shipped, at most `share` of them from rolls of each capped theme. `over` names the
+ * theme a roll would go over (null: it fits), `take` counts a picked one.
+ */
+export function themeCapper(stage: Pick<CurateStage, 'kit'>, caps: ReadonlyArray<{ theme: string; share: number }>, keep: number) {
+  const ids = caps.map((c) => {
+    const set = new Set(stage.kit.manifest.sections.filter((t) => (t.uses ?? []).includes(c.theme)).map((t) => t.id));
+    if (!set.size) throw new Error(`curate: --theme-cap ${c.theme}: no section of the kit uses that theme`);
+    return { theme: c.theme, most: Math.floor(c.share * keep + 1e-9), set };
+  });
+  const have = new Map<string, number>();
+  const of = (m: Pick<RollMeasure, 'plan'>) => ids.filter((c) => m.plan.some((t) => c.set.has(t.replace(/~$/, ''))));
+  return {
+    over: (m: Pick<RollMeasure, 'plan'>): string | null => of(m).find((c) => (have.get(c.theme) ?? 0) >= c.most)?.theme ?? null,
+    take: (m: Pick<RollMeasure, 'plan'>) => { for (const c of of(m)) have.set(c.theme, (have.get(c.theme) ?? 0) + 1); },
+  };
+}
+
 /** the closing sections a stage ships most (its picks' last four sections before the shrine, most often first): the next stage's `recent` */
 export function closingSections(picks: RollMeasure[], n = 4): string[] {
   const count = new Map<string, number>();
@@ -387,6 +409,7 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
     else if (opt.apartCap !== undefined) for (const k of keys) if (opt.others!.find((o) => o.key === k)?.near) m.fails.push(`shares a 20 s stretch with ${k} (a neighbour)`);
   }
   const capped = opt.apartCap !== undefined && !opt.apart ? apartCapper(alikeOf, opt.apartCap, opt.keep) : null;
+  const themed = themeCapper(stage, opt.themeCaps ?? [], opt.keep);
   const dropped: Record<string, number> = {};
   for (const m of measures) for (const f of m.fails) dropped[f] = (dropped[f] ?? 0) + 1;
   const pool = measures.filter((m) => !m.fails.length);
@@ -399,6 +422,11 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
   const { picks, spread, refused } = pickSpread(pool, opt.keep, (m) => {
     if (capped && !capped.fits(m)) {
       dropped['over the 1-in-5 look-alike cap'] = (dropped['over the 1-in-5 look-alike cap'] ?? 0) + 1;
+      return false;
+    }
+    const over = themed.over(m);
+    if (over) {
+      dropped[`over the ${over} theme cap`] = (dropped[`over the ${over} theme cap`] ?? 0) + 1;
       return false;
     }
     const b = botCheck(stage, m, opt.recent);
@@ -414,6 +442,7 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
       const worst = Math.min(b.worstKid ?? 1, b.worstAdult ?? 1);
       m.quality = Math.round((m.quality * 0.85 + 0.15 * worst) * 1000) / 1000;
       capped?.take(m);
+      themed.take(m);
     }
     return !why.length;
   }, quota);
@@ -565,6 +594,11 @@ function args(argv: string[]) {
     rooms: get('--rooms') === undefined ? undefined : Math.max(0, Number(get('--rooms'))),
     apart: argv.includes('--apart'),
     apartCap: argv.includes('--apart-near') ? Number(get('--apart-cap') ?? 0.2) : undefined,
+    themeCaps: (get('--theme-cap')?.split(',').filter(Boolean) ?? []).map((c) => {
+      const [theme, share] = c.split('=');
+      if (!theme || !(Number(share) > 0 && Number(share) <= 1)) throw new Error(`curate: --theme-cap theme=share (0..1), not ${c}`);
+      return { theme, share: Number(share) };
+    }),
     kit: get('--kit'),
     out: get('--out') ?? (toy ? path.join(here, 'toySeeds.ts') : path.join(root, 'src', 'game', 'gen2', 'seeds.ts')),
     json: get('--json'),

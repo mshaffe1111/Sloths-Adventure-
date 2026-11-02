@@ -114,7 +114,7 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
   if (e.state === undefined) {
     e.groundY = e.y;
     e.speed = Math.abs(e.vx) || 40;
-    e.state = type === 'boa' ? 'coil' : type === 'snake' && e.asleep ? 'sleep' : 'patrol';
+    e.state = type === 'boa' ? (e.asleep ? 'sleep' : 'coil') : type === 'snake' && e.asleep ? 'sleep' : 'patrol';
     e.stateT = 0;
     e.fromX = e.x;
     e.toX = e.x;
@@ -280,7 +280,17 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
     // ---------------------------------------------------------------- boa: ambush from a coil
     case 'boa': {
       e.vx = 0;
-      if (e.state === 'coil') {
+      if (e.state === 'sleep') {
+        // (World 8's dozing boa, 8-1: asleep until he walks right into it at its own level; a hop over it never wakes it. Woken, it
+        // coils and takes a moment before it can strike)
+        if (dist < 40 && Math.abs(p.y - feet) < 40) {
+          e.asleep = false;
+          enter(e, 'coil');
+          e.attackCooldown = Math.max(e.attackCooldown, 1.1);
+          e.facing = toward;
+          ev.notice = true;
+        }
+      } else if (e.state === 'coil') {
         // it never moves, but it watches: its head follows him once it has noticed
         if (roam(e, p, dt, feet, PERSONALITY.boa, ready, 0, ev)) {
           e.facing = toward;

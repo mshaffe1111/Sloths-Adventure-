@@ -29,7 +29,7 @@ test('the manifest: ids unique, every socket asks for something the world has, e
   assert.ok(ids(W8_PROPS) && ids(W8_CREATURES) && ids(ALL));
   assert.deepEqual([...W8_GEN2_STAGES], [...W8_GAME_STAGES]);
   assert.deepEqual(W8_MANIFEST.handBuilt, ['8-4', '8-7', '8-10']);
-  // (a fall from a lit bough costs a life on Normal: the world's pit is 'void'; the dark's, second-jump, glide and start gaps stay soft)
+  // (a fall from a lit bough costs a life on Normal: the world's pit is 'void'; the dark's, second-jump and start gaps stay soft; a glide's is a heart fall)
   assert.equal(W8_MANIFEST.pit, 'void');
   for (const t of ALL.map(w8Falls)) {
     const keys = t.pieces.map((p) => p.key);
@@ -39,7 +39,9 @@ test('the manifest: ids unique, every socket asks for something the world has, e
       const pl = p.place as { kind: string; soft?: boolean; jump?: string };
       if (!['jump', 'double', 'pit', 'land'].includes(pl.kind)) return;
       if (from >= 0 && to >= 0 && i > from && i <= to) assert.equal(pl.soft, true, `${t.id}.${p.key}: a gap in the dark is soft`);
-      if (pl.kind === 'double' || pl.jump === 'double' || pl.jump === 'glide') assert.equal(pl.soft, true, `${t.id}.${p.key}: a second-jump or glide gap is soft`);
+      if (pl.kind === 'double' || pl.jump === 'double') assert.equal(pl.soft, true, `${t.id}.${p.key}: a second-jump gap is soft`);
+      // (a glide's gap is a heart fall on Normal, outside the dark and the start: w8Heart.test.ts)
+      if (pl.jump === 'glide' && !(from >= 0 && to >= 0 && i > from && i <= to) && !t.phases.includes('start')) assert.notEqual(pl.soft, true, `${t.id}.${p.key}: a glide gap is a heart fall, not a soft pit`);
       if (t.phases.includes('start')) assert.equal(pl.soft, true, `${t.id}.${p.key}: a start's gap is soft`);
     });
   }
@@ -69,7 +71,7 @@ test('the manifest: ids unique, every socket asks for something the world has, e
   for (const l of [...Object.values(W8_TIPS), ...W8_NEW_LINES, ...W8R_NEW_LINES]) assert.ok(words(l) < 10, l);
 });
 
-test('the sections lay in their own space, 600-1800 px (+370 a liana), level at their ends, on Normal and Easy', () => {
+test('the sections lay in their own space, 600-1800 px (+370 a liana, +300 a rope), level at their ends, on Normal and Easy', () => {
   for (const d of ['normal', 'easy'] as const) {
     const budget = planBudget(cfgOf('8-5'), W8_MANIFEST, d);
     for (const s of ALL) {
@@ -79,7 +81,9 @@ test('the sections lay in their own space, 600-1800 px (+370 a liana), level at 
         // (a liana's gap lies past the glide, 370 px more; a moonlight glide's past the double jump, 250 px more)
         const lianas = L.pieces.filter((p) => p.shape === 'liana').length;
         const glides = s.pieces.filter((p) => p.place.kind === 'pit' && p.place.jump === 'glide').length;
-        assert.ok(L.width >= 600 && L.width <= 1800 + 370 * lianas + 250 * glides, `${s.id} ${d}: ${L.width} px`);
+        // (and a rope's past every jump and glide, 460 px or more: 300 px more)
+        const ropes = s.pieces.filter((p) => p.place.kind === 'rope').length;
+        assert.ok(L.width >= 600 && L.width <= 1800 + 370 * lianas + 250 * glides + 300 * ropes, `${s.id} ${d}: ${L.width} px`);
         assert.ok(Math.abs(L.exit.y - s.exitDy) <= 25, `${s.id}: exitDy ${s.exitDy}, laid ${L.exit.y}`);
       }
     }

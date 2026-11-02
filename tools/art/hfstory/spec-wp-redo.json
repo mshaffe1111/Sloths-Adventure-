@@ -1,0 +1,152 @@
+{
+ "tag": "wpr",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9b1de6ada00ec656e1b0598b6e8752560f478c24/tools/art/hfstory/starts2/",
+ "items": [
+  {
+   "name": "wp-2-day-r62",
+   "start": "w2-day.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a sunny wide riverbank, the near bank of warm sand, mossy rocks and grass across the bottom, behind it in warm afternoon light: tall reeds and cattails, a reed-thatched village hut on stilts and a big shady tree, a slow muddy river with soft painted ripples and reflections, lily pads, a dry sandy bank in front. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.62,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-2-day-r72",
+   "start": "w2-day.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a sunny wide riverbank, the near bank of warm sand, mossy rocks and grass across the bottom, behind it in warm afternoon light: tall reeds and cattails, a reed-thatched village hut on stilts and a big shady tree, a slow muddy river with soft painted ripples and reflections, lily pads, a dry sandy bank in front. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.72,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-3-night-r62",
+   "start": "w3-night.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a deep mossy grotto cave at night: glowing blue-green mushrooms, glowworms hanging from the cave ceiling as soft glowing strands of light beads, damp mossy rocks, a faint teal glow, cool dark blues with warm-free shadows. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, dotted lines, rows of dots, code, moths, butterflies, black slab, monolith, flat dark shape",
+   "strength": 0.62,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-3-night-r72",
+   "start": "w3-night.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a deep mossy grotto cave at night: glowing blue-green mushrooms, glowworms hanging from the cave ceiling as soft glowing strands of light beads, damp mossy rocks, a faint teal glow, cool dark blues with warm-free shadows. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, dotted lines, rows of dots, code, moths, butterflies, black slab, monolith, flat dark shape",
+   "strength": 0.72,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-3-glow-r62",
+   "start": "w3-glow.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a mossy grotto cave glowing softly: luminous blue and violet mushrooms, glowworm strands, a still pool reflecting the glow, mossy stones, magical and calm. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, dotted lines, rows of dots, code, moths, butterflies, black slab, monolith, flat dark shape",
+   "strength": 0.62,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-3-glow-r72",
+   "start": "w3-glow.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a mossy grotto cave glowing softly: luminous blue and violet mushrooms, glowworm strands, a still pool reflecting the glow, mossy stones, magical and calm. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, dotted lines, rows of dots, code, moths, butterflies, black slab, monolith, flat dark shape",
+   "strength": 0.72,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-3-storm-r62",
+   "start": "w3-storm.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a mossy grotto cave mouth in a storm: rain pouring past the opening, wet glistening rocks, glowing mushrooms in the dark, cold blue light. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, dotted lines, rows of dots, code, moths, butterflies, black slab, monolith, flat dark shape",
+   "strength": 0.62,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "wp-3-storm-r72",
+   "start": "w3-storm.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a mossy grotto cave mouth in a storm: rain pouring past the opening, wet glistening rocks, glowing mushrooms in the dark, cold blue light. A broad flat mossy floor across the bottom where characters will stand, kept clear. No characters, no animals, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, dotted lines, rows of dots, code, moths, butterflies, black slab, monolith, flat dark shape",
+   "strength": 0.72,
+   "seed": 13,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9b1de6ada00ec656e1b0598b6e8752560f478c24/",
+ "keep": [
+  "wp-2-day-r62",
+  "wp-2-day-r72",
+  "wp-3-night-r62",
+  "wp-3-night-r72",
+  "wp-3-glow-r62",
+  "wp-3-glow-r72",
+  "wp-3-storm-r62",
+  "wp-3-storm-r72"
+ ]
+}

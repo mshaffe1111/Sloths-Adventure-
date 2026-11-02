@@ -106,8 +106,9 @@ export function easyHoldSoften(stage: Stage, frozen?: ReadonlySet<number>, out?:
   const allowDbl = doubleAllowed(stage.config);
   let full: CheckGraph | null = null;
   let held: CheckGraph | null = null;
-  const fullRes = validateStage(stage, { frozen, inspect: (g) => (full = g) });
-  validateStage(stage, { frozen, hold: EASY_HOLD, inspect: (g) => (held = g) });
+  // (the reach only: a stage's rooms are walked solved, not solved again, levelCheck CheckOptions.rooms)
+  const fullRes = validateStage(stage, { frozen, inspect: (g) => (full = g), rooms: false });
+  validateStage(stage, { frozen, hold: EASY_HOLD, inspect: (g) => (held = g), rooms: false });
   const F = full as CheckGraph | null;
   const H = held as CheckGraph | null;
   if (!F || !H) return 0;
@@ -270,7 +271,7 @@ export function capFlagSpans(stage: Stage, max = FLAG_SPAN_MAX, reached?: readon
   if (m.every((x, i) => i === 0 || x - m[i - 1] <= max)) return 0;
   // (reached with the double jump: the early World 1 stages teach it now, hint.1-1.double, while the validator still keeps it from
   // them, levelCheck.ts doubleAllowed, and 1-1 read as unfinishable past its first double-jump wall)
-  const reach = new Set(reached ?? validateStage({ ...stage, config: { ...stage.config, miniIndex: Math.max(stage.config.miniIndex, 6) } }).reachableIds);
+  const reach = new Set(reached ?? validateStage({ ...stage, config: { ...stage.config, miniIndex: Math.max(stage.config.miniIndex, 6) } }, { rooms: false }).reachableIds);
   // (and past where the check stops, the trail's own banks: the check never follows a swing from vine to vine, so a liana chain reads
   // as the end of the stage, STAGE-RULES §6. A bank at the trail's ground level, or a knee on it, never a pit floor or a plank above)
   const byY = new Map<number, number>();
@@ -493,7 +494,7 @@ export function easyStage(stage: Stage): Stage {
   const next = () => cid++;
   const cps = (stage.checkpoints ??= []);
   if (!climb && !chase) {
-    const reach = new Set(reached ?? validateStage(stage).reachableIds);
+    const reach = new Set(reached ?? validateStage(stage, { rooms: false }).reachableIds);
     const marks = [stage.spawnX, ...cps.map((c) => c.x), stage.exitTotemX].sort((a, b) => a - b);
     for (let i = 0; i + 1 < marks.length; i++) {
       const [x0, x1] = [marks[i], marks[i + 1]];
@@ -511,6 +512,8 @@ export function easyStage(stage: Stage): Stage {
     }
     cps.sort((a, b) => a.x - b.x);
   }
-  for (const cp of cps) heartBy(stage, cp, next);
+  // (no hearts on Meeca's stage: nothing there hurts her, and a heart is only picked up when hurt, so Easy's hearts by the flags just
+  // sat there, QA 2026-10-31 "not picked up")
+  if (!(stage as Stage & { proto?: { meeca?: unknown } }).proto?.meeca) for (const cp of cps) heartBy(stage, cp, next);
   return stage;
 }

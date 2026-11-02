@@ -1,0 +1,125 @@
+{
+ "note": "hf-backdrops native-resolution pass",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1sunrise-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1sunrise-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. rainforest trees at sunrise: a tall emergent tree with a flat-topped crown, a strangler fig, slim palms, a tree fern, low warm pink-gold sunrise light from the left",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w1sunrise-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1sunrise-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. ferns, fallen logs with moss and small mushrooms, broad leaves, low warm pink-gold sunrise light from the left",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w1kapok-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1kapok-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. rainforest giants: a huge kapok tree with tall flared buttress roots and a broad rounded crown, a strangler fig with bromeliads, palms, fresh green morning light from the upper left",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w1kapok-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1kapok-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. buttress roots, ferns, red heliconia flowers, mossy stones, fresh green morning light from the upper left",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2rapids-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w2rapids-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a jungle riverbank by rapids: big wet boulders, a fallen tree trunk bridging rocks, palms and reeds, a small waterfall step, bright misty daylight",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2evening-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w2evening-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a sloth riverside village in the evening: stilt huts with thatched roofs and lit round windows, rope bridges between palms, lanterns, warm orange evening light, glowing windows",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3cavern-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w3cavern-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a dark cave interior: a natural rock arch, stalagmites and mossy boulders, curtains of glowing blue-green glowworm threads, glowing teal mushrooms, very dark blue-teal, lit only by the glowing threads and mushrooms",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3cavern-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/358c1a13826eb6ce64e4cb4939189a682a3d8518/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w3cavern-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. cave rocks and puddles, small glowing teal mushrooms, very dark blue-teal, lit only by the glowing threads and mushrooms",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}

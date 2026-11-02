@@ -1,3 +1,4 @@
+import { CloseX, useBack } from './nav/Nav.tsx';
 import React, { useRef, useState } from 'react';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import { browserStore, buildSave, parseSave, applySave, saveFileName, type SaveFile } from '../game/saveFile.ts';
@@ -20,6 +21,8 @@ const when = (iso: string) => {
 };
 
 export const SaveLoadDialog: React.FC<Props> = ({ onClose, onLoaded }) => {
+  // the X, a tap outside and Android Back all close it (nav/Nav.tsx)
+  useBack(onClose);
   const [tab, setTab] = useState<'save' | 'load'>('save');
   const [note, setNote] = useState<{ kind: 'ok' | 'bad'; text: string } | null>(null);
   const [pending, setPending] = useState<SaveFile | null>(null);
@@ -130,9 +133,7 @@ export const SaveLoadDialog: React.FC<Props> = ({ onClose, onLoaded }) => {
             <div className="ui-kicker">Your adventure</div>
             <h2 className="ui-h2">Save &amp; Load</h2>
           </div>
-          <button type="button" className="ui-x" onClick={onClose} aria-label="Close">
-            <Icon name="cross" size={14} />
-          </button>
+          <CloseX onClose={onClose} className="nv-inline" />
         </div>
 
         <div className="ui-tabs">

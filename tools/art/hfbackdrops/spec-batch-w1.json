@@ -1,0 +1,158 @@
+{
+ "tag": "hfbd-w1",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "sky, clouds, fog, haze, gradient background, scenery behind, horizon, perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, people, animals, sloth, magenta objects, pink plants",
+ "items": [
+  {
+   "name": "w1sunrise-mid-s60-7",
+   "start": "start-w1sunrise-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees at sunrise: a tall emergent tree with a flat-topped crown, a strangler fig, slim palms, a tree fern, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1sunrise-mid-s60-23",
+   "start": "start-w1sunrise-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees at sunrise: a tall emergent tree with a flat-topped crown, a strangler fig, slim palms, a tree fern, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1sunrise-mid-s66-7",
+   "start": "start-w1sunrise-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees at sunrise: a tall emergent tree with a flat-topped crown, a strangler fig, slim palms, a tree fern, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1sunrise-mid-s66-23",
+   "start": "start-w1sunrise-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees at sunrise: a tall emergent tree with a flat-topped crown, a strangler fig, slim palms, a tree fern, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1sunrise-near-s60-7",
+   "start": "start-w1sunrise-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of ferns, fallen logs with moss and small mushrooms, broad leaves along the bottom of the picture, uneven top edge, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w1sunrise-near-s60-23",
+   "start": "start-w1sunrise-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of ferns, fallen logs with moss and small mushrooms, broad leaves along the bottom of the picture, uneven top edge, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w1sunrise-near-s66-7",
+   "start": "start-w1sunrise-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of ferns, fallen logs with moss and small mushrooms, broad leaves along the bottom of the picture, uneven top edge, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w1sunrise-near-s66-23",
+   "start": "start-w1sunrise-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of ferns, fallen logs with moss and small mushrooms, broad leaves along the bottom of the picture, uneven top edge, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w1kapok-mid-s60-7",
+   "start": "start-w1kapok-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest giants: a huge kapok tree with tall flared buttress roots and a broad rounded crown, a strangler fig with bromeliads, palms, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, fresh green morning light from the upper left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1kapok-mid-s60-23",
+   "start": "start-w1kapok-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest giants: a huge kapok tree with tall flared buttress roots and a broad rounded crown, a strangler fig with bromeliads, palms, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, fresh green morning light from the upper left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1kapok-mid-s66-7",
+   "start": "start-w1kapok-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest giants: a huge kapok tree with tall flared buttress roots and a broad rounded crown, a strangler fig with bromeliads, palms, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, fresh green morning light from the upper left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1kapok-mid-s66-23",
+   "start": "start-w1kapok-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest giants: a huge kapok tree with tall flared buttress roots and a broad rounded crown, a strangler fig with bromeliads, palms, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, fresh green morning light from the upper left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1kapok-near-s60-7",
+   "start": "start-w1kapok-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of buttress roots, ferns, red heliconia flowers, mossy stones along the bottom of the picture, uneven top edge, fresh green morning light from the upper left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w1kapok-near-s60-23",
+   "start": "start-w1kapok-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of buttress roots, ferns, red heliconia flowers, mossy stones along the bottom of the picture, uneven top edge, fresh green morning light from the upper left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w1kapok-near-s66-7",
+   "start": "start-w1kapok-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of buttress roots, ferns, red heliconia flowers, mossy stones along the bottom of the picture, uneven top edge, fresh green morning light from the upper left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w1kapok-near-s66-23",
+   "start": "start-w1kapok-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of buttress roots, ferns, red heliconia flowers, mossy stones along the bottom of the picture, uneven top edge, fresh green morning light from the upper left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  }
+ ],
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/319d75e67b7b3947e4199f3a9daacfe9c53644a9/reference/prop-sheets/qa-notes/hf-backdrops/starts/"
+}

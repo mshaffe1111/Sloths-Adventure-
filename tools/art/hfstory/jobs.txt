@@ -1,0 +1,49 @@
+hf-cutscenes jobs, 2026-10-31 (cap $28; rtx-pro-6000 ~$2.75/h). Bucket mshaffe111/w5-xfer under hfcut/.
+wp-draft 6ae65df30e0338d1bb7d4424 created 21:30Z: spec-wp-draft.json, 21 world plates x 2 strengths at 1280x1360 (storygpu.py)
+live-a0 6ae65e52 + live-a1 6ae65e57 created 21:32Z with timeout "1h30m" = 1 s by mistake: died at once (~$0.00)
+live-a0 6ae65e6a0e0338d1bb7d4457 created 21:32Z: spec-live-a.json part 0 of 2 (Wan 2.2 I2V clips of 10 plates, 704x752, no motion model)
+live-a1 6ae65e6d0e0338d1bb7d4459 created 21:32Z: part 1 of 2
+wp-redo 6ae660820e0338d1bb7d44b9 created 21:41Z: spec-wp-redo.json, W2 day + W3 night/glow/storm again from clean starts (starts2/), 2 strengths
+wp-redot 6ae662d60e0338d1bb7d44f6 created 21:51Z: spec-wp-redot.json, W4 day, W6 dusk/day, W8 night, W9 dusk/night with the floor said outright
+wp-redou 6ae662fcc78863f9c62f4f4f created 21:52Z: spec-wp-redou.json, W2 day (sand bank), W1 dusk
+draft verdicts: KEPT 1-day s64, 1-storm s64, 5-day s64, 5-dusk s64, 7-day s64, 10-storm s64, 3-night r72, 3-glow r72, 3-storm r72.
+  THROWN: 2-day s64 (game's water band, teal frond kept), 2-day r72 (garbled lettering), 2-day r62 (lily pond where the cast stand),
+  3-night s64 (moths, a flat dark slab), 6-dusk s64 (floor is water), 8-night s64 (blotchy bokeh), 9-dusk s64 (floor is lava),
+  1-dusk s64 (flat, muddy), 4-day s64 (sideways the cast stand over the mist pool: redone with a rock ledge)
+wp-full1 6ae66312c78863f9c62f4f59 + wp-full2 6ae66316c78863f9c62f4f5d created 21:52Z: the 9 kept drafts painted again tile by tile at 2560x2720 (strength 0.28)
+live verdicts: courtyard, nest-night, gates KEPT (8 MB decoded cap, 12-frame crossfade loop). gorge THROWN: with Pokey and Dot kept sharp only a vine ghost and small falls moved
+  drake-cave THROWN: the lava crack stays still, only the gold shimmered
+  tea THROWN: the moving parts are fine web threads and the table, which the soft loop would blur
+  village THROWN: motion fell on the rope bridges and huts (detail the soft loop would blur). Rule learned: whole-plate clips only for skies, weather, mist
+round 3/4 verdicts: KEPT 4-day t62 (a creature grew from the start's feather: painted out by hand after the full pass), 6-dusk t62, 8-night t72, 2-day u62. THROWN: 4-day t72 (creature), 6-dusk t72 (flat), 9-dusk t62 (abstract texture), 6-day t62/t72 (floor is water; W6 day keeps its scenery, 9 panels)
+wp-full3 6ae6641c0e0338d1bb7d4565 created 21:56Z: full pass for 4-day t62, 6-dusk t62, 8-night t72, 2-day u62
+KEPT 9-dusk t72, 1-dusk u72
+wp-full4 6ae66436c78863f9c62f4feb created 21:57Z: full pass for 9-dusk t72, 1-dusk u72
+live-a0 cancelled 21:58Z after village (grandma-door unrun: lantern detail would blur like tea and village); ~26 min ~$1.2
+THROWN 9-night t62/t72 (muddy haze): W9 night keeps its scenery (mem-gates)
+in-game verdicts: KEPT w1-day, w1-storm, w3-night, w5-day. DROPPED w10-storm (sideways loses the painted fortress and moon the scenery had), w3-glow (muddy olive under the glow mood)
+in-game round 2: KEPT w1-dusk, w3-storm, w4-day (creature painted out with patchsky.py), w6-dusk, w7-day. DROPPED w5-dusk and w9-dusk (sideways they lose the orchids / the volcano the scenery showed)
+in-game round 3: KEPT w2-day (u62), w8-night (t72; sideways soft, redo candidate). live: steps KEPT (clouds, puddles; 8 MB)
+live-a1 6ae65e6d finished ~21:59Z (cookhouse, grandma-door, steps... ~27 min ~$1.25). cookhouse, grandma-door not cut: lantern/pot detail would blur like tea and village
+GPU so far (22:09Z): ~112 min on rtx-pro-6000 = ~$5.1
+wp-redov 6ae667010e0338d1bb7d4678 created 22:09Z: W10 storm, W9 dusk/night, W5 dusk from starts3 (landmark pushed low for sideways), 0.66/0.76
+live-b 6ae667040e0338d1bb7d467c created 22:09Z: spec-live-b.json, clips of the new w4-day, w1-storm, w3-storm, w6-dusk plates
+wp-redov 6ae66701 FAILED at once: spec written with a placeholder commit (404); ~$0.03
+wp-redov2 6ae667e5c78863f9c62f51dc created 22:12Z: the same round 5, fixed urls
+round 5 verdicts: KEPT 10-storm v62 (castle on its crag low in the frame; the stretched top sky patched after), 5-dusk v62. THROWN 9-dusk v62/v72 (floor all lava), 5-dusk v72 (no floor), 10-storm v72 (a white streak in the sky); 9-night not used (W9 keeps its scenery)
+wp-full5 6ae6692ac78863f9c62f525b created 22:18Z: full pass 10-storm v62, 5-dusk v62
+  live w4-day THROWN: Wan barely moved it (stray blobs only)
+  live w1-storm THROWN: barely moved (5%)
+in-game round 4: KEPT w10-storm (v62, top-sky streak painted out; upright shows the castle, sideways it sits behind the words box), w5-dusk (v62)
+  live w3-storm THROWN: rain moved only in blotches
+tier3 6ae66b01c78863f9c62f52da created 22:26Z: raft repaint, W9 dusk/night third try, W6 day
+tier3 verdicts: KEPT raft x62 (repaint of the unused raft plate), 9-dusk x62 (volcano behind, basalt ground). THROWN 6-day x60/x70 (water floor again: W6 day keeps its scenery), 9-night (not reviewed further: mem-gates keeps its scenery)
+wp-full6 6ae66d290e0338d1bb7d47bc created 22:35Z: full pass raft x62, 9-dusk x62
+  live w6-dusk THROWN: 3% moved, one corner. live-b total ~22 min ~$1.0
+KEPT raft x62 full: replaces the unused flat raft plate; wired to W2 mid beats 1 and 13 (the raft lines)
+  9-dusk x62 full: DROPPED in-game (sideways the lava volcano the line describes is lost again; upright was better). W9 keeps its scenery.
+TOTAL (22:47Z): 16 GPU jobs, ~160 min on rtx-pro-6000 = ~$7.5 of the $28 cap
+wp-w8 6ae66f190e0338d1bb7d4800 created 22:43Z: W8 night sharp redo (2 strengths x 2 seeds); W8 unwired until it passes
+wp-w8 verdicts: KEPT y70-31 (crisp outlines, moon, flower bank). y60s soft/muddy.
+w8 full y70: KEPT and rewired (sharp both ways; the moon only shows upright). w1z takes THROWN (fog/rain, petals painted in): W1 day keeps the regrade.
+TOTAL (22:55Z): 19 GPU jobs, ~170 min = ~$7.9 of $28
