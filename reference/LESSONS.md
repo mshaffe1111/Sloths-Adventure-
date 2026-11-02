@@ -30,7 +30,7 @@ that do the best job get the follow-on work.
 - Anything placed once (finds, notes, snails) has an always-place fallback and a test on every layout. (D9)
 - In-play words draw above every world thing, below the HUD, and never cover where the player must act. (D10, D22)
 - Every prop stands on something. (D16)
-- Check cutscene frames, not just that the scene plays. (D17)
+- Check cutscene frames, not just that the scene plays; the subject of a picture must read, upright and sideways, never hidden behind a text box. (D17)
 - Quality steps never do heavy work on the play frame. (D11)
 - Anything drawn into a cached canvas must survive the phone losing its canvas: re-bake on restore, and test it. (D6)
 

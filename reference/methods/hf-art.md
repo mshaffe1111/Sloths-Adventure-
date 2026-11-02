@@ -100,3 +100,7 @@ Contact sheets of every take next to its start, before picking. Then the game sh
 ## To try
 - Repaint the 9 old far sets without an upright sky the far + sky way (text to image from a prompt matching the old strip, or img2img
   of the old strip with sky room added above at s60+).
+
+## Pitfalls added 2026-11-02 (icons-painted, Crocus Rex defeat, R-1.1)
+- Never key a creature on a grey (or any colour) close to its own skin: grey-green Crocus lost 15-35% of his body to a grey key. Key on magenta, and run tools/art/crocdefeat/holes.py on every packed frame (more than about 10% inner holes is a fail).
+- A character model alone at img2img paints flatter than the game; follow it with a style-model repaint in place at about s40.
