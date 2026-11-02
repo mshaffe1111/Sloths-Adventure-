@@ -6,7 +6,7 @@ Gate: `node tools/roadmapcheck.mjs` fails when open work in the repo has no numb
 
 **The goal (PARTNER.md):** all 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.
 
-Last swept: 2026-11-01 9:49 PM ET (rebuild 2: Matt's R-1..R-12, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
+Last swept: 2026-11-01 10:30 PM ET (Matt's calls R-149.1, .9, .15-.17 and R-4.8 recorded); rebuild 2 at 2026-11-01 9:49 PM ET (Matt's R-1..R-12, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
 Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 94, 2026-11-01 10:27 PM ET (R-12 times, five lanes; R-149.9 closed test on the 80% trigger); the old sections moved word for word to "Roadmap archive" at its bottom.
 
 ## How to read it
@@ -29,7 +29,7 @@ Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664
 
 ## Next up
 
-The build plan (R-7) is in `reference/BUILD-PLAN.md`: waves of three that don't share files, ordered by value per day, with the helper
+The build plan (R-7) is in `reference/BUILD-PLAN.md`: five lanes that never edit the same files, Day 1 first, then value per hour, with the helper
 effort and the Hugging Face spend for each wave.
 
 ## R-1 Bosses (Matt: "I believe, from 7 through 10 need to be completed")
@@ -207,7 +207,6 @@ Test link world by world; nothing goes live until all of it is done (decision 1)
 
 | ID | What | Tier | What we get | Time | Value | Size | State | Owner | Source |
 |---|---|---|---|---|---|---|---|---|---|
-| R-149.1 | Ship icons B-E (painted and paid, ~$6.8; icons-painted 6d9a5984, not on main; clears 88 vector Icon uses)? Lead recommends yes | Important: unblocks R-6.25 and the store screenshots | Painted icons go live; store shots can be taken | 0.25 h (Matt's own time, not a helper's) | B | S | open | Matt | inv Decisions 1; STATUS NOTE 2026-11-01 |
 | R-149.2 | The 45 new Dot lines (Worlds 1-4, 9, 10) | Day 1: unblocks World 9 and 10 teaching lines | Worlds 1-4, 9, 10 get their Dot lines | 0.5 h (Matt's own time, not a helper's) | A | S | open | Matt | inv Decisions 2; reference/DOT-LINES-2026-10-31.md |
 | R-149.3 | A council story beat so the painted council plate (council.webp) is used, or drop it | Important: a painted plate waiting on a story beat | A painted council scene used or dropped | 0.25 h (Matt's own time, not a helper's) | D | S | open | Matt | inv Decisions 3; hf-cutscenes/NEXT.md |
 | R-149.4 | Does World 10's rain end? (w10night and w10after are painted and unused until then); and what "harder but fun" means per world (feeds R-5.4) | Day 1: unblocks the difficulty curve and World 10's sky | World 10's sky settled; what hard-but-fun means | 0.25 h (Matt's own time, not a helper's) | A | S | open | Matt | inv Decisions 4; reference/prop-sheets/qa-notes/hf-backdrops2/NEXT.md |
@@ -220,9 +219,6 @@ Test link world by world; nothing goes live until all of it is done (decision 1)
 | R-149.12 | 4-D rethink (R-141.1) and the whole swimming stage (R-5.22): still wanted? | Parking lot: both are 1.1 candidates | 4-D and the swim stage settled | 0.25 h (Matt's own time, not a helper's) | D | S | open | Matt | inv Decisions 11 |
 | R-149.13 | Motion model v2 has no record after Oct 25: drop it? (the other stale doc decisions were settled by what shipped: A-27) | Parking lot: housekeeping | A stale decision closed | 0.25 h (Matt's own time, not a helper's) | F | S | open | Matt | roadmap doc "Decisions waiting on Matt" |
 | R-149.14 | Controls decided 10-30/31 with no implementing commit found: charge-and-release mega (CT-31), slanted carry option b (CT-33), even run speed (CT-32, re-times every jump), vibration on in the app (AN-14): confirm each is still wanted | Important: unblocks R-146.6 | Control changes confirmed or dropped | 0.5 h (the lead asks Matt) | C | S | verify | lead | inv Controls; audit-2 calls |
-| R-149.15 | 9-2 The Last Trees canopy (R-2.4) and 10-8 Clockwork Gate (R-2.8): at launch (about 13 helper hours and about $5), or 1.1 with today's stages in their place? | Day 1: decides the size of Worlds 9-10 | The size of Worlds 9-10 at launch settled | 0.25 h (Matt's own time, not a helper's) | A | S | open | Matt | R-10 tiers; audit-2 Builds 8-9 |
-| R-149.16 | The ledger and Wanted posters (R-4.3): in the story's launch release, or 1.1? If 1.1, the story text must not mention them | Day 1: decides whether the story text may mention them | The story text can be finished | 0.25 h (Matt's own time, not a helper's) | A | S | open | Matt | R-10 tiers; story hand-off |
-| R-149.17 | Bosses 6-8: a story-born third phase each (R-1.15, about 8 helper hours) at launch, or in 1.1? Coaching lines (R-1.6) are Day 1 either way | Day 1: decides how much boss work comes before launch | The boss work before launch settled | 0.25 h (Matt's own time, not a helper's) | A | S | open | Matt | R-10 tiers; audit-2 Build 10 |
 
 ## R-141 Worlds 1-8 (not bugs, not tuning)
 
@@ -314,7 +310,7 @@ Audit-2 rates sound the weakest category (C+ vs AAA). Needs a listening session 
 
 | ID | What | Tier | What we get | Time | Value | Size | State | Owner | Source |
 |---|---|---|---|---|---|---|---|---|---|
-| R-147.1 | Start the 14-day closed test (12+ testers); it sets the earliest launch date. The final app ID is fixed before the first upload. TRIGGER (Matt, 2026-11-01): start when Day 1 lane work is about 80% done (about 140 of the about 170 Day 1 helper hours closed; the keeper flags it at each sweep) | Day 1: Play's gate for a new personal account; it sets the launch date | Google lets us publish | 1 h (Matt's own time, not a helper's to set up; then 14 calendar days) | A | S | held (by R-149.9: until Day 1 lane work is about 80% done) | Matt | PLAY-STORE.md §4.9; audit-2 Build 14; lead 2026-11-01 10:24 PM |
+| R-147.1 | Start the 14-day closed test (12+ testers); it sets the earliest launch date. The final app ID is fixed before the first upload. TRIGGER (Matt, 2026-11-01): start when Day 1 lane work is about 80% done (about 160 of the about 198 Day 1 helper hours closed; the keeper flags it at each sweep) | Day 1: Play's gate for a new personal account; it sets the launch date | Google lets us publish | 1 h (Matt's own time, not a helper's to set up; then 14 calendar days) | A | S | held (by R-149.9: until Day 1 lane work is about 80% done) | Matt | PLAY-STORE.md §4.9; audit-2 Build 14; lead 2026-11-01 10:24 PM |
 | R-147.2 | Signing secrets, so the workflow makes the signed .aab | Day 1: Play refuses an unsigned upload (§1) | Google accepts the upload | 0.5 h (Matt's own time, not a helper's) | A | S | held (by R-149.9: until Day 1 lane work is about 80% done) | Matt | build-apk.yml; PLAY-STORE.md §3b |
 | R-147.3 | 16 KB page check; foldables, split screen, resize; older-WebView insets (UI-19) | Day 1: 16 KB pages and resizing are Play gates/bars (§1, §4) | The app passes Play's device checks | 3 h (no history for 16 KB and resizing: range 2-4 h) | A | M | open | unassigned | PLAY-STORE-RULES §1/§4; UI-19 |
 | R-147.4 | Store listing: icon, feature graphic, screenshots (24 exist in reference/store from 10-30 but predate the new menus and icons), descriptions, category, email | Day 1: required to publish (§5) | A store page that sells the game | 2.5 h (like polish-a2 (2.3 h, store pieces)) | A | M | blocked (by R-6.25: icons B-E merged) | unassigned + Matt approves | reference/store; PLAY-STORE.md §5 |
@@ -376,6 +372,10 @@ Each closed item names its proof (a merged PR, or a commit). Worlds 4-8 are buil
 | A-29 | (R-9, Matt: "make sure that our lessons learned, what works and what doesn't work, are all being used by our workers and helpers"; the keeper held to the lead's bar): reference/LESSONS.md printed with the laws at every session start; reports carry Method used / Lessons applied / Method update (LEAD-PLAYBOOK 8c); roadmapcheck fails a defect with no lesson line | 2026-11-01 | f5e299b6, 25407677 |
 | A-30 | (R-149.7) Matt decided: Worlds 1-5 onto the new generator waits until after launch; before launch Worlds 1-5 get only their unfair spots and bugs fixed (R-142 is Parking lot) | 2026-11-01 | 36d61623 |
 | A-31 | (R-148.12) The lesson lines for D4, D5 and D6 are in reference/LESSONS.md (the roadmap gate caught them missing) | 2026-11-01 | bf3fc52e |
+| A-32 | (R-149.1) Matt decided: icons B-E (icons-painted 6d9a5984) ship in the next release, via his test link first; the work is R-6.25 | 2026-11-01 | ef346427 |
+| A-33 | (R-149.15) Matt decided: 9-2 The Last Trees (R-2.4) and 10-8 The Clockwork Gate (R-2.8) are in for launch | 2026-11-01 | ef346427 |
+| A-34 | (R-149.16) Matt decided: the ledger pages and the Wanted posters (R-4.3) are in for launch, owned by menus B | 2026-11-01 | ef346427 |
+| A-35 | (R-149.17) Matt decided: bosses 6-8's story-born third phases (R-1.15) are in for launch | 2026-11-01 | ef346427 |
 
 ## Draft numbers retired (sent to the lead in drafts 1 and 2; never reused)
 
@@ -413,4 +413,4 @@ draft meanings are gone; every other draft number points at its live home here a
 
 See the totals the gate prints (`node tools/roadmapcheck.mjs`) and the estimate in `reference/BUILD-PLAN.md`.
 
-Launch (Matt decided 2026-11-01: the Play account and closed test start later, R-149.9): building about 6-8 working days + Matt's phone passes and a fix round about 3-4 days + the 14-day closed test after. The closed test starts when Day 1 lane work is about 80% done (R-147.1), so the passes run inside its 14 days: about 3 weeks from now if the trigger is kept (80% of 6-8 days is about 5-6.5 days, + 14), about 3.5 weeks if the test waits for the passes (6-8 + 3-4 + 14 = 23-26 days). Not measured, so not counted: Google's checks on a new developer account before the first upload (opening the account a few days before the trigger would keep that off the path: for the lead to raise with Matt) and Google's production review after the test.
+Launch (Matt decided 2026-11-01: the Play account and closed test start later, R-149.9): building about 7-9 working days (Day 1 about 198 helper hours + recommended Important about 51.5 h; busiest lane about 55 h) + Matt's phone passes and a fix round about 3-4 days + the 14-day closed test after. The closed test starts when Day 1 lane work is about 80% done (R-147.1), so the passes run inside its 14 days: about 3 weeks from now if the trigger is kept (80% of 7-9 days is about 5.5-7 days, + 14), about 3.5-4 weeks if the test waits for the passes (7-9 + 3-4 + 14 = 24-27 days). Not measured, so not counted: Google's checks on a new developer account before the first upload (opening the account a few days before the trigger would keep that off the path: for the lead to raise with Matt) and Google's production review after the test.
