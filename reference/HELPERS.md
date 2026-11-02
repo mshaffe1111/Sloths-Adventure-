@@ -22,5 +22,5 @@ own usage figure (list price), for comparison between helpers only.
 | dot-box (01FhBbYMQVPjC5isVutMRn19) | in-play UI | 11-01 | pass | 2 (glide path, petal) | $25 | OK |
 | journal-voice (01FhBbYMSoYpk53bJALanKUY) | player text | 11-01 | pass | 1 after acceptance (D18) | $13 | OK: tighter brief (gate must call the screen's builder) |
 | hf-backdrops2 (01FhBbYNDgYUmrxFZccufR5z) | HF backdrops | 11-01 | pass | 4 (washed out x2, skies, budget) | $59 | OK/weakest: most art, most redos; method now has the absolute floor |
-| roadmap-keeper (01FhBbYP1yNSfRRofd3CkPwq) | roadmap | 11-01 | n/a | 1 (numbering, inventory merge) | running | running |
+| roadmap-keeper (01FhBbYP1yNSfRRofd3CkPwq) | roadmap | 11-01 | pass (draft 2) | 2 (draft 1: unchecked sound fact, built before inventory; draft 2: D20 self-caught) | running | OK, rising: draft 2 passed the lead's 5 spot-checks; held to the lead's bar (Matt) |
 | story reviewers x3 (in-session) | script review | 11-01 | n/a | 0 | n/a | STRONG: one caught the lead's own fact errors (D24) |

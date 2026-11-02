@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat \"$CLAUDE_PROJECT_DIR/reference/LAWS.md\""
+            "command": "cat \"$CLAUDE_PROJECT_DIR/reference/LAWS.md\" \"$CLAUDE_PROJECT_DIR/reference/LESSONS.md\""
           }
         ]
       }
