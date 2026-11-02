@@ -10,6 +10,8 @@ own usage figure (list price), for comparison between helpers only.
 
 | Helper (session) | Area | Date | First-time gate | Redos sent back | Cost | Verdict and why |
 |---|---|---|---|---|---|---|
+| menus A (01FhBbYKJALSX3wkm52jNTou) | menus: World Map, pause, Settings, How to Play, nav kit | 11-01 | pass | 0 | $7 | STRONG, TOP PICK (Matt: "that menu was amazing"): mock-ups first, approved in one round, cheapest. Unarchived 11-01 for menu follow-ons (26% context used) |
+| menus B (01FhBbYNfUZz9xEL3Hx55rs3) | Satchel hub, Journal, Scenes, Trophies, Creatures | 11-01 | pass | 1 (sideways header D12) | $14 | STRONG, TOP PICK (Matt: "that menu was amazing"). Unarchived 11-01 for Satchel/story-UI follow-ons (37% context used) |
 | bot-fix (01FhBbYMRX9oghoTKPdqrnL9) | test bot, fairness | 11-01 | pass | 0 | $16 | STRONG: found its own ruler's bug (D15), self-test, honest re-baseline |
 | kaizen-gates (01FhBbYLQLBzxjL4zXFnnnTa) | gates, CI | 11-01 | pass | 0 | $15 | STRONG: clipcheck/playerText caught real breaches on day one |
 | fix-petals (01FhBbYNRctndrKCxzfkJ8KU) | stage fixes | 11-01 | pass | 0 | $20 | STRONG |
