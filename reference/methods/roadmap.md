@@ -17,8 +17,7 @@ when they differ, the repo wins and the doc is fixed the same day. No other file
    Never reuse a number, never renumber one Matt has heard (2026-11-01: draft numbers clashed with the ones the lead had given Matt;
    the clash cost a rebuild and is why the retired table exists).
 2. **What:** plain words, what a player or Matt would notice, then the fix. Matt's own words in quotes with the date when he gave them.
-3. **Area:** the table it sits in (Matt's R-1..R-7 and R-10 topics first, then R-141..R-149: Worlds 1-8, gen2 W1-5, stranded branches, Art, Sound, Controls, Play Store, Tools, Decisions; was: World 1-3, World 4-8, World 9-10, Bosses, Story, Art, Perf/GPU, Play Store, Menus/UI, Sound, Stage
-   fairness and difficulty, Tools/process). One area per item; split an item that spans two.
+3. **Area:** the table it sits in (Matt's R-1..R-7 and R-10 topics first, then R-141..R-149: Worlds 1-8, gen2 W1-5, stranded branches, Art, Sound, Controls, Play Store, Tools, Decisions). One area per item; split an item that spans two.
 4. **Size** (one helper's working time, not Matt's review): S under half a day, M 1-2 days, L 3+ days. An item that would be bigger than
    L is split. When unsure, size up.
 5. **Tier** (Matt's R-10): `T1: why` (launch can't happen without it: PARTNER.md's goal and PLAY-STORE-RULES §1 hard gates and §4
