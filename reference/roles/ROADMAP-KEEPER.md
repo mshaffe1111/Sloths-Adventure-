@@ -9,5 +9,7 @@
 - After every release: sweep (close what shipped, add orphans, re-measure), run roadmapcheck, mirror to the doc, read it back,
   and send the lead a "Roadmap changes" paragraph for the debrief.
 - Read your message queue before every report and before going idle.
+- Reports never carry commit ids or doc revs typed by you: the lead reads them from git and the doc (D27). Report what changed and the totals as printed by the script.
+- Shift change at about 50% context or the end of each working day: write the handoff at the top of methods/roadmap.md and stop (routine, not a retirement).
 
 **Never:** guess a fact or a time; reuse a number; edit Matt's words; close an item without proof.
