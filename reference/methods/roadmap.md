@@ -12,7 +12,7 @@ roadmap-keeper helper.
 when they differ, the repo wins and the doc is fixed the same day. No other file keeps its own to-do list without an R-id that cites it.
 
 ## Writing an item
-1. **Number:** Matt's own list is R-1..R-8 (pieces R-1.1, R-1.2, ...). A piece of an existing topic is its next free R-n.m; a new topic
+1. **Number:** Matt's own list is R-1..R-9 (pieces R-1.1, R-1.2, ...). A piece of an existing topic is its next free R-n.m; a new topic
    is the next free R-n (above every number ever used, including the "Draft numbers retired" table). Done work is archived as A-n.
    Never reuse a number, never renumber one Matt has heard (2026-11-01: draft numbers clashed with the ones the lead had given Matt;
    the clash cost a rebuild and is why the retired table exists).
@@ -26,6 +26,10 @@ when they differ, the repo wins and the doc is fixed the same day. No other file
 6. **Owner:** a helper's job name, `lead`, `Matt`, `roadmap-keeper`, or `unassigned`.
 7. **Source:** where it came from: a file path, a doc link, a defect number (D#), a known-list group (e.g. `clipknown G4`), a NEXT.md.
    The gate reads this column.
+
+## Reports
+Every keeper report carries "Method used" (this file), "Lessons applied" (the reference/LESSONS.md lines that touched the job) and
+"Method update" (LESSONS.md, the lead 2026-11-01).
 
 ## Law 3 for the roadmap
 Every state is checked before it is written: a "done" names a PR or commit that `git cat-file` finds and that is in main (`git merge-base
@@ -44,7 +48,9 @@ no traceable PR: R-137).
 1. `git log --first-parent <last release merge>..origin/main`: for every merged branch, close the items it finished (proof: the PR).
 2. Run `node tools/roadmapcheck.mjs`: it lists orphans (a defect, known-list group or NEXT.md with no R-id) and done items with
    a bad proof. Add or fix each.
-3. Read the new defect-log rows and every NEXT.md changed since the last sweep; file what is open.
+3. Read the new defect-log rows and every NEXT.md changed since the last sweep; file what is open. The gate also fails when a defect has
+   no line in reference/LESSONS.md or a method file is missing from reference/methods/README.md: the lead writes those (helpers only
+   propose), so each gap becomes an R-item owned by the lead (e.g. R-148.12).
 4. Re-rank "Next up (the trio)" with the lead: Matt's order first, then what unblocks most items.
 5. Recount the totals and the estimate (the table at the end of ROADMAP.md).
 6. Write a "Roadmap changes" paragraph for the debrief (closed, added, re-ranked, estimate moved by how much and why) and send the lead
@@ -57,6 +63,11 @@ no traceable PR: R-137).
 - Example: R-3 (World 4 built): archived with PR #30, checked with `git merge-base`.
 
 ## Pitfalls we already paid for
+- 2026-11-01: "no open sound item is written anywhere" was written after searching only the files already open; audit-2 Build 3 had
+  five. Before writing that something does not exist, grep the whole tree (`git grep -n -i <words>`) and the inventory (D24).
+- 2026-11-01: draft 1 was built before the lead's inventory arrived and had to be rebuilt. When an inventory is on its way, gather and
+  check facts while waiting, but send nothing as "the list" until it is merged.
+- 2026-11-01: a retired-numbers table pointed at numbers that no longer existed. The gate now fails any number that isn't defined.
 - 2026-11-01: the old roadmap kept "Now (in flight)" items from Oct 25 (PR #27, #28) for a week after they merged, and never marked
   Worlds 4-8 done. Cause: nobody owned closing items. Fix: the sweep after every release, and the gate's done-proof check.
 - 2026-11-01: the lead's working branch (ccr-...) is far behind main and diverges; reading STATUS there and code on main is right, but

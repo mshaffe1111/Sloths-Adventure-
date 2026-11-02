@@ -6,7 +6,7 @@ Gate: `node tools/roadmapcheck.mjs` fails when open work in the repo has no numb
 
 **The goal (PARTNER.md):** all 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.
 
-Last swept: 2026-11-01 9:27 PM ET (rebuild 2: Matt's R-1..R-8, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
+Last swept: 2026-11-01 9:27 PM ET (rebuild 2: Matt's R-1..R-9, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
 DRAFT for the lead; the Claude Doc mirrors it after the lead's go.
 
 ## How to read it
@@ -265,7 +265,7 @@ Audit-2 rates sound the weakest category (C+ vs AAA). Needs a listening session 
 | R-145.3 | A music fallback for iPhones (SN-15) | S | open | unassigned | audit-2 Build 3 |
 | R-145.4 | One effect family (SN-16) and the SN-1 shelf cleanup | M | open | unassigned | audit-2 Build 3 |
 | R-145.5 | More than one loop per world: a calm and a tense version of each tune (SN-12) | M | open | unassigned | audit-2 Build 3; finish plan SN-9, X-9 |
-| R-145.6 | Listening session with Matt after R-145.1..R-14.5 | S | blocked (by R-145.1..R-14.5) | Matt | audit-2 Build 3 |
+| R-145.6 | Listening session with Matt after R-145.1..R-145.5 | S | blocked (by R-145.1..R-145.5) | Matt | audit-2 Build 3 |
 
 ## R-146 Controls and feel (audit Build 4)
 
@@ -305,6 +305,7 @@ Audit-2 rates sound the weakest category (C+ vs AAA). Needs a listening session 
 | R-148.9 | Doc ticks with no commit traced: sticky vines, no tall double jumps in 1-1 to 1-3; audit items marked done with no commit found: WIP-14, WIP-20, PF-4, PF-8. Find the commit or reopen | S | verify | roadmap-keeper | roadmap doc; inv "Done but still looks open" |
 | R-148.10 | Older asks from the Oct 21-28 doc (empty stretches, stages feel the same, puzzle kit, special gestures, carrying rule, stuck sparkle, accessibility menu, best times): check each, close with proof or re-file | S | verify | roadmap-keeper | roadmap doc "Next when tokens allow", "Always", "Later: polish" |
 | R-148.11 | Stale docs: TRACKER.md (10-29), HANDOFF.md (10-25), the finish plan's Phase 2-4 boxes, STATUS "Open decisions for Matt": point each at this list | S | open | roadmap-keeper | inv "Done but still looks open" |
+| R-148.12 | Lessons missing from reference/LESSONS.md for three logged defects: D4 (sideways text cut off with no automatic check), D5 (a stat shown where it doesn't apply: the eagle's "Defeated x0"), D6 (a baked canvas copy emptied after a lost canvas: Meeca invisible). The lead adds the lines (helpers only propose) | S | open | lead | reference/LESSONS.md D4 D5 D6; reference/CONTINUOUS-IMPROVEMENT.md |
 
 ## Done (archive)
 
@@ -339,28 +340,41 @@ Each closed item names its proof (a merged PR, or a commit). Worlds 4-8 are buil
 | A-25 | Swimming in clean, calm water (6-7's root well) | 2026-10-29 | 87f1e2f6 |
 | A-26 | Helper roster (R-8, Matt: "start keeping helpers that do the best job into the mix... the better they do, the more they get used"): reference/HELPERS.md and LEAD-PLAYBOOK 8b | 2026-11-01 | 4da30adf |
 | A-27 | Stale doc decisions settled by what shipped: the leaf glide (parachute), the soldiers (drawn; creatureLore.ts:26), the new creatures (capuchin, mantis, crab, piranha, sentry, owl, lizard, beetle), Meeca's stage and creatures both in, the promo video (brief handed to Matt's own agent) | 2026-10-30 | PR #30, PR #58 |
+| A-29 | (R-9, Matt: "make sure that our lessons learned, what works and what doesn't work, are all being used by our workers and helpers"; the keeper held to the lead's bar): reference/LESSONS.md printed with the laws at every session start; reports carry Method used / Lessons applied / Method update (LEAD-PLAYBOOK 8c); roadmapcheck fails a defect with no lesson line | 2026-11-01 | f5e299b6, 25407677 |
 | A-28 | Old roadmap-doc items closed: "8-2 gap/roost lives" (the broken bot's numbers, withdrawn 11-01) | 2026-11-01 | 877a819b |
 
-## Draft numbers retired (sent to the lead in draft 1; never reused)
+## Draft numbers retired (sent to the lead in drafts 1 and 2; never reused)
+
+Drafts 1 and 2 went only to the lead. R-1..R-9 were then given to Matt's own list on the lead's order (Matt had heard them), so those
+draft meanings are gone; every other draft number points at its live home here and is never given out again.
 
 | Draft | Now |
 |---|---|
-| R-9..R-17 (rebuild-2 draft parents, never shown) | R-149, R-141..R-148 |
-| R-1..R-19 (done) | A-1..A-17 (R-1..R-8 now name Matt's own list, by the lead's order) |
+| R-1..R-9 (draft 1, done) | A-1..A-9 |
+| R-13..R-19 (draft 1, done) | A-11..A-17 |
+| R-140 (draft 1, done) | A-10 |
 | R-10, R-11, R-12 | R-2.1, R-2.6, R-2.2 |
 | R-20, R-21, R-22, R-23 | R-6.1, R-6.4, R-6.5, A-18 |
-| R-24, R-25, R-26 | R-10.1, R-10.2, R-3.13 |
-| R-30..R-36 | R-1.1, R-1.2, R-1.9, R-1.10, R-1.12, R-1.5, (R-36 dropped: the redesigns were approved 10-30, inv) |
-| R-40..R-49 | R-4.1..R-4.14, R-9.3 |
-| R-50..R-59 | R-5.8..R-5.21, R-5.3 |
-| R-60, R-71..R-78 | R-3.1..R-3.7, R-6.19, R-3.12 |
-| R-61..R-70 | R-13.x, R-9.1, R-9.4, R-6.3 |
-| R-80..R-86 | R-9.9, R-16.x |
-| R-90..R-100 | R-6.6..R-6.18, R-6.25 |
-| R-110 | R-14.x |
-| R-120..R-125 | R-5.2, R-5.4, R-9.4, R-5.5, R-5.6, R-5.22 |
-| R-130..R-140 | R-17.x, R-9.13, A-10 |
+| R-24, R-25, R-26 | R-141.1, R-141.2, R-3.13 |
+| R-30, R-31, R-32, R-33, R-34, R-35 | R-1.1, R-1.2, R-1.9, R-1.10, R-1.12, R-1.5 |
+| R-36 | dropped: the redesigns were approved on 10-30 (inventory) |
+| R-40, R-41, R-42, R-43, R-44 | R-4.1, R-4.2, R-4.3, R-4.6, R-4.7 |
+| R-45, R-46, R-47, R-48, R-49 | R-4.8, R-4.9, R-4.10, R-149.3, R-4.14 |
+| R-50, R-51, R-52, R-53, R-54 | R-5.9, R-5.10, R-5.11, R-5.13, R-5.18 |
+| R-55, R-56, R-57, R-58, R-59 | R-5.19, R-5.20, R-5.15 + R-5.16 + R-5.21, R-5.8, R-5.3 |
+| R-60, R-71..R-76, R-77, R-78 | R-3.1, R-3.2..R-3.7, R-6.19, R-3.12 |
+| R-61, R-62, R-63, R-64, R-65 | R-144.1, R-149.1, R-144.2, R-144.3, R-149.4 |
+| R-66, R-67, R-68, R-69, R-70 | R-144.4, R-144.5, R-6.3, R-144.6, R-144.8 |
+| R-80, R-81, R-82, R-83, R-84, R-85, R-86 | R-149.9, R-147.1, R-147.4, R-147.5, R-147.6, R-147.2, R-147.7 |
+| R-90..R-97 | R-6.6..R-6.13 |
+| R-98, R-99, R-100 | R-6.14..R-6.17, R-6.25, R-6.18 |
+| R-110 | R-145.1..R-145.6 |
+| R-120, R-121, R-122, R-123, R-124, R-125 | R-5.2, R-5.4, R-149.4, R-5.5, R-5.6, R-5.22 |
+| R-130, R-131, R-132, R-133, R-134 | R-148.1, R-148.2, R-5.7, R-148.3, R-148.4 |
+| R-135, R-136, R-137, R-138, R-139 | R-148.5, R-148.6, R-148.9, R-148.10, R-149.13 |
+| R-10..R-17 (draft 2 topic numbers) | R-141..R-148 |
 
 ## Estimate
+
 
 See the totals the gate prints (`node tools/roadmapcheck.mjs`) and the estimate in `reference/BUILD-PLAN.md`.

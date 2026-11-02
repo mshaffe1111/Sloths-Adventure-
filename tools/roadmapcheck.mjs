@@ -13,6 +13,9 @@
  *   4. a reference/ NEXT.md file is not cited by any R-item (open or archived);
  *   5. a done item (A-n in the archive, or a state "done (...)") names no proof, or a proof that does not exist: a commit must be in
  *      HEAD's history or on a branch of this clone, a PR must have its "Merge pull request #n from" commit in HEAD's history.
+ *   6. a number the roadmap or reference/BUILD-PLAN.md points at is not defined in ROADMAP.md;
+ *   7. a defect in the log has no line in reference/LESSONS.md (and no open R-item to add it); a method file is missing from
+ *      reference/methods/README.md.
  * Numbers: R-n and R-n.m are open items, A-n archived ones; the "Draft numbers retired" table is skipped (never reused).
  * It needs the full history (CI: gates.yml checks out with fetch-depth 0).
  */
@@ -56,6 +59,32 @@ if (fs.existsSync(path.join(root, RM))) {
   const seen = new Map();
   for (const it of items) seen.set(it.id, (seen.get(it.id) ?? 0) + 1);
   for (const [id, n] of seen) if (n > 1) fail(`${id} is listed ${n} times (an id is never reused)`);
+
+  // 1b. every number the file points at is defined in it: an item row, a "## R-n" topic heading, or a closed Matt item named in an
+  // archive row ("(R-8, ...)"). The left column of the retired-drafts table is the one place an old number may stand alone.
+  const defined = new Set(items.map((i) => i.id));
+  let area2 = '';
+  for (const line of read(RM).split('\n')) {
+    const h = line.match(/^## (R-\d+)\b/);
+    if (h) defined.add(h[1]);
+    if (/^## /.test(line)) area2 = line;
+    if (/^## Done/.test(area2) && /^\| A-\d+ \|/.test(line)) for (const m of line.matchAll(/\((R-\d+)\b/g)) defined.add(m[1]);
+  }
+  area2 = '';
+  read(RM).split('\n').forEach((line, n) => {
+    if (/^## /.test(line)) area2 = line;
+    let text = line;
+    if (/^## Draft numbers retired/.test(area2) && /^\| /.test(line)) text = line.split(' | ').slice(1).join(' | ');
+    if (/^## Draft numbers retired/.test(area2) && !/^\| /.test(line)) return;
+    for (const m of text.matchAll(/\b([RA]-\d+(?:\.\d+)?)(?![\d.]*\d)/g)) {
+      if (!defined.has(m[1])) fail(`${RM}:${n + 1} points at ${m[1]}, which is not defined in the file`);
+    }
+  });
+  // the build plan points at the same numbers
+  const BP = 'reference/BUILD-PLAN.md';
+  if (fs.existsSync(path.join(root, BP))) read(BP).split('\n').forEach((line, n) => {
+    for (const m of line.matchAll(/\b([RA]-\d+(?:\.\d+)?)(?![\d.]*\d)/g)) if (!defined.has(m[1])) fail(`${BP}:${n + 1} points at ${m[1]}, which ${RM} does not define`);
+  });
 }
 const open = items.filter((i) => !i.done);
 const citedBy = (needle, pool) => pool.filter((i) => (i.source ?? '').includes(needle) || (i.what ?? '').includes(needle));
@@ -71,6 +100,27 @@ for (const line of read(CI).split('\n')) {
   if (!/roadmap|next week|\blater\b/i.test(later)) continue;
   const d = `D${m[1]}`;
   if (!wordCited(new RegExp(`\\b${d}\\b`), items).length) fail(`defect ${d} is left for "${later.match(/roadmap|next week|later/i)[0]}" but no R-item cites ${d} in its Source`);
+}
+
+// ---- 2b. every defect has its lesson in reference/LESSONS.md (printed at every session start), or an open R-item to add it
+const lessons = fs.existsSync(path.join(root, 'reference/LESSONS.md')) ? read('reference/LESSONS.md') : null;
+if (lessons === null) fail('reference/LESSONS.md is missing (the lessons sheet printed with the laws)');
+else for (const line of read(CI).split('\n')) {
+  const m = line.match(/^\| (\d+) \|/);
+  if (!m || /WITHDRAWN/.test(line)) continue;
+  const d = `D${m[1]}`;
+  if (new RegExp(`\\b${d}\\b`).test(lessons)) continue;
+  if (open.some((i) => /LESSONS\.md/.test(i.source ?? '') && new RegExp(`\\b${d}\\b`).test(i.source ?? ''))) continue;
+  fail(`defect ${d} has no line in reference/LESSONS.md and no open R-item to add one (Source: "reference/LESSONS.md ${d}")`);
+}
+
+// ---- 2c. every method file is in the methods index, or an open R-item says it must be added
+const methodsIndex = read('reference/methods/README.md');
+for (const f of fs.readdirSync(path.join(root, 'reference/methods'))) {
+  if (!f.endsWith('.md') || f === 'README.md') continue;
+  if (methodsIndex.includes(`\`${f}\``) || methodsIndex.includes(`(${f})`)) continue;
+  if (citedBy(`reference/methods/${f}`, open).some((i) => /README/.test(i.source ?? ''))) continue;
+  fail(`reference/methods/${f} is not listed in reference/methods/README.md`);
 }
 
 // ---- 3. known and allow lists
