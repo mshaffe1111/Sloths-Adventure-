@@ -100,3 +100,11 @@ Contact sheets of every take next to its start, before picking. Then the game sh
 ## To try
 - Repaint the 9 old far sets without an upright sky the far + sky way (text to image from a prompt matching the old strip, or img2img
   of the old strip with sky room added above at s60+).
+
+## Pitfalls added 2026-11-02 (icons-painted, Crocus Rex defeat, R-1.1)
+- Never key a creature on a grey (or any colour) close to its own skin: grey-green Crocus lost 15-35% of his body to a grey key. Key on magenta, and run tools/art/crocdefeat/holes.py on every packed frame (more than about 10% inner holes is a fail).
+- A character model alone at img2img paints flatter than the game; follow it with a style-model repaint in place at about s40.
+- After keying off magenta, check the colours left at the edge (a pink-red rim on Crocus): repaint them in the ground's colour at the same lightness (tools/art/crocdefeat/pack.py does this).
+- A creature's defeat in a fight: a boss with no ending fades out from 1.0 s (bossArt.ts drawBossFighter), so any new defeat art must be fully on screen by about 0.6 s. Shoot the fight with the engine paused at set death times (tools/art/crocdefeat/shot-death.mjs); wall-clock shots drift past the end.
+- Defeat cards are shot in the real game for EVERY boss, both ways up (tools/art/crocdefeat/shot-defeats.mjs), never one boss: a layout change for one moves them all.
+- Before reporting, run `node tools/art/icons/checkbase.mjs reference/qa-reports/<job>`: it fails any "after" sheet whose BASE is +wip or older than the code at HEAD (D23, twice).

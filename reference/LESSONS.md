@@ -14,6 +14,7 @@ that do the best job get the follow-on work.
 - Every menu screen and pop-up must pass clipcheck: no cut-off text, nothing under the notch, taps 44 px or more. (D4)
 - Show only what applies: a stat, field or line that means nothing for this item ("Defeated x0") is left out. (D5)
 - Acceptance waits on the shared gate, not on your own test. (D18)
+- Read your message queue (ReadNotifications) before every report and before going idle: a message that crossed with your work is still yours. (roadmap-keeper, R-6.27, 11-01)
 - Merge the latest main or release into your branch BEFORE you shoot or judge anything, and stamp the base commit on every sheet. (D23)
 
 **Facts and measuring**
@@ -21,14 +22,15 @@ that do the best job get the follow-on work.
 - Test the measuring tool before trusting its numbers. Our first-timer bot was wrong for days. (D15)
 - Spread every fix to its pair: x and y, up and down, left and right, every world with the same pattern. (D21)
 - Prove a change is needed with the fixed tool; revert what isn't needed (w8-rope2, Nov 1).
-- Time comes from `TZ=America/New_York date`, never worked out by hand. (D20)
+- Time comes from `TZ=America/New_York date`, never worked out by hand: a time written into a file or report is pasted from a `date` call made in the same command. (D20, twice on 11-01)
+- Estimates come from measured history (how long the same kind of job really took, from git and STATUS), never from a guess; say the source. (D25)
 
 **Stages and play**
 - A first-timer's natural run must collect enough for the goal; pickups sit on the natural path. (D8, D14)
 - Anything placed once (finds, notes, snails) has an always-place fallback and a test on every layout. (D9)
 - In-play words draw above every world thing, below the HUD, and never cover where the player must act. (D10, D22)
 - Every prop stands on something. (D16)
-- Check cutscene frames, not just that the scene plays. (D17)
+- Check cutscene frames, not just that the scene plays; the subject of a picture must read, upright and sideways, never hidden behind a text box. (D17)
 - Quality steps never do heavy work on the play frame. (D11)
 - Anything drawn into a cached canvas must survive the phone losing its canvas: re-bake on restore, and test it. (D6)
 

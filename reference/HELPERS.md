@@ -18,9 +18,9 @@ own usage figure (list price), for comparison between helpers only.
 | whatsnew (01FhBbYNcWV8i8BavX8QQfQW) | menus | 11-01 | pass | 1 (notch) | $21 | STRONG |
 | warmup-5m (01FhBbYLYP8Hu1LT843p3UmE) | perf, 5-M | 11-01 | pass | 1 (wedge/hitch) | $15 | STRONG |
 | w8-rope2 (01FhBbYMTQ1zFtXBWtxzkoxn) | stage fixes | 11-01 | pass | 1 (re-measure) | $28 | STRONG: proved its own float not needed and reverted it |
-| icons-painted (01FhBbYNb5urBcaMjg7yH8FS) | HF icons | 11-01 | pass | 2 (stale base D23, small notes) | $50 | STRONG art; keep for icon follow-ons (still alive) |
+| icons-painted (01FhBbYNb5urBcaMjg7yH8FS) | HF icons; Crocus defeat (R-1.1) | 11-01/02 | pass | 2 (stale base D23, small notes); R-1.1: 2 (boss hidden by speech box + holey death clip; stale after-sheet D23 again, now gated by checkbase.mjs) | $50 + $0.25 HF | STRONG: R-1.1 accepted (full gate green, $0.25 HF); found the cause in code, audited all 10 bosses unasked, built checkbase.mjs after its own D23 slip; idle, branch ready to merge |
 | dot-box (01FhBbYMQVPjC5isVutMRn19) | in-play UI | 11-01 | pass | 2 (glide path, petal) | $25 | OK |
 | journal-voice (01FhBbYMSoYpk53bJALanKUY) | player text | 11-01 | pass | 1 after acceptance (D18) | $13 | OK: tighter brief (gate must call the screen's builder) |
 | hf-backdrops2 (01FhBbYNDgYUmrxFZccufR5z) | HF backdrops | 11-01 | pass | 4 (washed out x2, skies, budget) | $59 | OK/weakest: most art, most redos; method now has the absolute floor |
-| roadmap-keeper (01FhBbYP1yNSfRRofd3CkPwq) | roadmap | 11-01 | pass (draft 2) | 2 (draft 1: unchecked sound fact, built before inventory; draft 2: D20 self-caught) | running | OK, rising: draft 2 passed the lead's 5 spot-checks; held to the lead's bar (Matt) |
+| roadmap-keeper (01FhBbYP1yNSfRRofd3CkPwq) | roadmap | 11-01 | pass (draft 2) | 2 (draft 1: unchecked sound fact, built before inventory; draft 2: D20 self-caught) | running | STRONG: rebuilds 2-4 passed every lead spot-check (8 of 8), 1 miss since draft 1 (R-6.27 dropped: queue not read before reporting; self-reported, fixed in minutes); D20 slips twice (lesson tightened) |
 | story reviewers x3 (in-session) | script review | 11-01 | n/a | 0 | n/a | STRONG: one caught the lead's own fact errors (D24) |
