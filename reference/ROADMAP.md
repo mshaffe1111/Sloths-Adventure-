@@ -172,7 +172,7 @@ Each clipcheck group and playerText key below is a shrink-only known list entry 
 | R-122 | Decision with Matt: what "harder but fun" means per world (timing beats and combinations, fewer cheap hits) | S | open | Matt + lead | same |
 | R-123 | Checkpoints (Matt, 2026-10-31: "laid out in weird areas and when not needed"): audit every stage's flags, move them to natural spots, drop the unneeded ones, make placement a generator rule | M | open | unassigned | same |
 | R-124 | The fall rule ("hurt, then cost a life": ~2 screens = a heart plus dazed, ~3+ = a life, more room on Easy), tuned alongside R-121 | S | blocked (by R-121) | unassigned | same |
-| R-125 | A swimming stage (Matt's idea, 2026-10-26: Pokey suddenly fast in water). heroSwim.ts and 6-4 Low Tide's plan exist: check whether it is built before planning | S | verify | roadmap-keeper | roadmap doc "Next when tokens allow" |
+| R-125 | A swimming stage (Matt's idea, 2026-10-26: real sloths swim fast, so a water stage where Pokey is suddenly fast). Swimming is in the game (heroSwim.ts, waterTeach.ts) but no stage built around it was found (6-4 Low Tide is a mudflat sprint, stagePlan.ts:93). Ask Matt if it is still wanted | S | verify | roadmap-keeper | roadmap doc "Next when tokens allow" |
 
 ## Tools/process
 
@@ -185,7 +185,7 @@ Each clipcheck group and playerText key below is a shrink-only known list entry 
 | R-134 | Every shot tool refuses to run on a branch without origin/main (done for tools/art/icons/shots.mjs; the rest to follow) | S | open | unassigned | D23 yokoten |
 | R-135 | Methods still to write: stage-build.md, test-link-and-release.md, hf-cutscenes.md, hf-props.md (the next helper of each kind writes it) | M | open | next helper of each kind | reference/methods/README.md index |
 | R-136 | In-play text overlap check (clipcheck-style, Dot's box vs the take-off post and the next landing) | M | open | unassigned | D10 (L3 "later") |
-| R-137 | Five items ticked in the old doc with no PR on record (Normal collection targets, rescue all animals, predator goals, sticky vines, broken logs back after 30-35 s, no tall double jumps early in World 1): find the commit for each, or reopen | S | verify | roadmap-keeper | roadmap doc "Next when tokens allow" ticks |
+| R-137 | Two items ticked in the old doc with no commit traced yet: sticky vines (a few vines leave Pokey stuck: up, down and flicking all fail) and no tall double jumps in 1-1 to about 1-3. Find the commit, or reopen | S | verify | roadmap-keeper | roadmap doc "Next when tokens allow" ticks |
 | R-138 | Older open asks from the Oct 21-28 doc sections (empty stretches, stages feel the same, puzzle kit, special gestures, carrying rule, stuck sparkle, accessibility menu, best times): check each against the code, close with proof or re-file | S | verify | roadmap-keeper | roadmap doc "Next when tokens allow", "Always", "Later: polish" |
 
 ## Decisions waiting on Matt
@@ -223,6 +223,7 @@ Each closed item names its proof. Worlds 4-8 are built and live; Worlds 9-10 are
 | R-16 | Journal and find hints: a unique line per stage and per find; playerText gate (D1, D2, D18) | 2026-11-01 | PR #61 |
 | R-17 | Dot's tip box keeps out of the way and draws above pickups (D10, D22) | 2026-11-01 | e9f4dee2 (PR #61) |
 | R-18 | Painted icons group A (start screen) beside the satchel (D13, first part) | 2026-11-01 | PR #61 |
+| R-140 | Normal goals: 87.5% of reachable petals and flowers, every animal freed, 75% of predators; crumbled platforms come back only after 30-35 s and off screen (four doc ticks, Oct 26-27) | 2026-10-28 | 58dba44e (PR #39) |
 | R-19 | 2-3 stuck cages (Matt, 2026-10-31) | 2026-11-01 | 33fd7b4c (PR #59) |
 
 ## Estimate
