@@ -794,3 +794,4 @@ Report each finding with the stage, the moment (s), upright or sideways, Easy or
 - 2026-11-02 11:08 AM ET: Matt: the lead is in the weeds; set up a support team. GAMEPLAN §6: supervisor (check-ins, digest), release clerk, roadmap keeper; the lead keeps laws, judging screens, briefs, strategy.
 - 2026-11-02 11:12 AM ET, MATT CHOSE: kaizen-gates = release clerk, bot-fix = supervisor, fix-petals = lane 4 (bands + W9). Start tomorrow per GAMEPLAN §6.
 - 2026-11-02 11:15 AM ET: role files written (reference/roles/: README, SUPERVISOR, RELEASE-CLERK, ROADMAP-KEEPER); read at start, before every build/check-in round, after compaction; briefs + every check-in message say re-read.
+- 2026-11-02 11:23 AM ET: R-13 (Matt): research great management; reference/LEADER-STANDARD-WORK.md (Grove leverage + paired indicators, Project Oxygen, gemba, leader standard work, coaching kata, Hoshin catchball) + LEAD-PLAYBOOK 7b + CLAUDE.md pointer.
