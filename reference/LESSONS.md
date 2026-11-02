@@ -11,6 +11,8 @@ that do the best job get the follow-on work.
 - Judge the real screen, in every save state (fresh, old, half-played, finished) and both orientations. Never from a list or one happy shot. (D1, D2, D12)
 - When one thing on a screen is raised to the bar, bring everything beside it up too, or name what's left. (D13)
 - A gate must call the same code the screen calls, or it proves nothing. (D19)
+- Every menu screen and pop-up must pass clipcheck: no cut-off text, nothing under the notch, taps 44 px or more. (D4)
+- Show only what applies: a stat, field or line that means nothing for this item ("Defeated x0") is left out. (D5)
 - Acceptance waits on the shared gate, not on your own test. (D18)
 - Merge the latest main or release into your branch BEFORE you shoot or judge anything, and stamp the base commit on every sheet. (D23)
 
@@ -28,6 +30,7 @@ that do the best job get the follow-on work.
 - Every prop stands on something. (D16)
 - Check cutscene frames, not just that the scene plays. (D17)
 - Quality steps never do heavy work on the play frame. (D11)
+- Anything drawn into a cached canvas must survive the phone losing its canvas: re-bake on restore, and test it. (D6)
 
 **Words**
 - Player-facing words are written per item, in the character's voice. No filler, no repeats on a page, no apology for missing data. (D1, law 6)
