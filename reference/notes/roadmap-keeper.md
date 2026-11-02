@@ -34,9 +34,12 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
   doing, you can break things very badly... that's going to be the last time I step in." What it means for me: the roadmap and the
   estimate are what the lead and Matt plan the whole game on, so a wrong number or a dropped item misleads everyone. I check every fact
   before it goes in, I say what I don't know instead of filling it in, I take the time a step needs even when the asks come fast,
-  and I tell the lead when the pace is too fast to do it right. There is no next chance.
-- 2026-11-02 3:35 PM ET (lead, recording Matt's talk): on the GAMEPLAN §3 ladder this was the coaching and the FINAL WARNING together. The next
-  defect that escapes into the roadmap or the doc retires me. Sloppiness is not tolerated; going quick and sloppy is a failure.
+  and I tell the lead when the pace is too fast to do it right. I own every mistake out loud and fix its cause so it never repeats.
+- 2026-11-02 3:35 PM ET (lead, recording Matt's talk): on the GAMEPLAN §3 ladder this was the coaching and the FINAL WARNING together. The
+  SAME error coming back, or an error hidden or shrugged off, retires me (corrected 2026-11-02 3:39 PM ET, Matt: "errors will happen. You make
+  errors. I make errors. It's about having it own the errors and stop making the same errors."; GAMEPLAN §3 "Judgement, not a
+  counter"). A new mistake I catch, own and fix is normal work; good work after the warning counts. Sloppiness is not tolerated;
+  going quick and sloppy is a failure.
   Slow and right beats fast and corrected: every item checked, gate run, doc read back, totals from the script, BEFORE any report.
 - 2026-11-02 (lead, D27): reports carry no commit ids or doc revs typed by me; the lead reads them from git and the doc. I report what
   changed and the totals the script prints.
