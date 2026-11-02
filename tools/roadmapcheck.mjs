@@ -1,0 +1,144 @@
+/**
+ * The roadmap check (reference/methods/roadmap.md, LAWS.md law 5): open work that lives in the repo must be on reference/ROADMAP.md.
+ *
+ *   node tools/roadmapcheck.mjs          (seconds; exit 1 on an orphan or a bad proof, 2 when it can't run)
+ *
+ * It fails when:
+ *   1. ROADMAP.md is missing, or an R-id appears twice as an item (ids are never reused);
+ *   2. a defect in reference/CONTINUOUS-IMPROVEMENT.md whose countermeasure, yokoten or "Held?" column says roadmap / next week / later
+ *      has no R-item whose Source cites it (D16 -> "D16");
+ *   3. a known-defect or allow list (every *.known.json, *.allow.json, tools/perf/clipknown.json, tools/perf/limits.json's known lists)
+ *      that still has entries is not cited by an open R-item; every clipknown group (G1, G2, ...) and every playerText.known key must be
+ *      cited by an open R-item too ("clipknown G4", the key's text);
+ *   4. a reference/ NEXT.md file is not cited by any R-item (open or archived);
+ *   5. an R-item marked done (in the archive, or a state "done (...)") names no proof, or a proof that does not exist: a commit must be
+ *      an ancestor of HEAD, a PR must have its "Merge pull request #n from" commit in HEAD's history.
+ * It needs the full history (CI: gates.yml checks out with fetch-depth 0).
+ */
+import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
+const rel = (p) => path.relative(root, p).split(path.sep).join('/');
+const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
+const git = (...a) => execFileSync('git', a, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+const tryGit = (...a) => { try { return git(...a); } catch { return null; } };
+
+const fails = [];
+const fail = (m) => fails.push(m);
+
+// ---- 1. the list itself
+const RM = 'reference/ROADMAP.md';
+if (!fs.existsSync(path.join(root, RM))) {
+  fail(`${RM} is missing: every piece of open work needs an R-id on it (reference/methods/roadmap.md)`);
+}
+const items = []; // { id, what, size, state, owner, source, done, proof, area }
+if (fs.existsSync(path.join(root, RM))) {
+  let area = '';
+  for (const line of read(RM).split('\n')) {
+    const h = line.match(/^## (.+)/);
+    if (h) area = h[1].trim();
+    if (!/^\| R-\d+ \|/.test(line)) continue;
+    const c = line.trim().replace(/^\||\|$/g, '').split(' | ').map((x) => x.trim());
+    const id = c[0];
+    if (/^Decisions/.test(area)) continue; // decision rows point at items listed in their area
+    if (/^Done/.test(area)) items.push({ id, what: c[1], done: true, proof: c[3] ?? '', source: c[3] ?? '', area });
+    else if (c.length >= 6) {
+      const [, what, size, state, owner, source] = c;
+      items.push({ id, what, size, state, owner, source, done: /^done\b/.test(state), proof: state, area });
+      if (!['S', 'M', 'L'].includes(size)) fail(`${id}: size "${size}" is not S, M or L`);
+      if (!/^(open|in progress|blocked \(.+\)|held \(.+\)|verify|done \(.+\))/.test(state)) fail(`${id}: state "${state}" is not one of open / in progress / blocked (by ...) / held (by ...) / verify / done (date, proof)`);
+    } else fail(`${id}: an item row needs 6 columns (ID | What | Size | State | Owner | Source), has ${c.length}`);
+  }
+  const seen = new Map();
+  for (const it of items) seen.set(it.id, (seen.get(it.id) ?? 0) + 1);
+  for (const [id, n] of seen) if (n > 1) fail(`${id} is listed ${n} times (an id is never reused)`);
+}
+const open = items.filter((i) => !i.done);
+const citedBy = (needle, pool) => pool.filter((i) => (i.source ?? '').includes(needle) || (i.what ?? '').includes(needle));
+const wordCited = (re, pool) => pool.filter((i) => re.test(i.source ?? ''));
+
+// ---- 2. the defect log
+const CI = 'reference/CONTINUOUS-IMPROVEMENT.md';
+for (const line of read(CI).split('\n')) {
+  const m = line.match(/^\| (\d+) \|/);
+  if (!m) continue;
+  const c = line.trim().replace(/^\||\|$/g, '').split(' | ').map((x) => x.trim());
+  const later = [c[5], c[6], c[7]].join(' ');
+  if (!/roadmap|next week|\blater\b/i.test(later)) continue;
+  const d = `D${m[1]}`;
+  if (!wordCited(new RegExp(`\\b${d}\\b`), items).length) fail(`defect ${d} is left for "${later.match(/roadmap|next week|later/i)[0]}" but no R-item cites ${d} in its Source`);
+}
+
+// ---- 3. known and allow lists
+const listFiles = [];
+(function walk(dir) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (['node_modules', '.git', 'dist'].includes(e.name)) continue;
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) walk(p);
+    else if (/\.(known|allow)\.json$/.test(e.name)) listFiles.push(rel(p));
+  }
+})(path.join(root, 'src'));
+listFiles.push('tools/perf/clipknown.json');
+const size = (j) => (Array.isArray(j) ? j.length : Array.isArray(j.known) ? j.known.length : Object.keys(j).length);
+for (const f of listFiles) {
+  const j = JSON.parse(read(f));
+  if (!size(j)) continue;
+  if (!citedBy(f, open).length) fail(`${f} still lists ${size(j)} known defects, but no open R-item cites it in its Source`);
+}
+const limits = JSON.parse(read('tools/perf/limits.json'));
+if ((limits.art?.knownOver4096?.length || limits.blends?.allowlist?.length) && !citedBy('tools/perf/limits.json', open).length)
+  fail('tools/perf/limits.json has known breaches (art.knownOver4096 / blends.allowlist), but no open R-item cites it');
+for (const g of new Set(JSON.parse(read('tools/perf/clipknown.json')).known.map((k) => k.group.match(/^G\d+/)?.[0] ?? k.group))) {
+  if (!wordCited(new RegExp(`clipknown ${g}\\b`), open).length) fail(`clipknown group ${g} has no open R-item (cite it as "clipknown ${g}")`);
+}
+for (const k of JSON.parse(read('src/game/playerText.known.json')).known) {
+  if (!citedBy(k.key, open).length) fail(`playerText.known "${k.key}" has no open R-item citing that key`);
+}
+
+// ---- 4. NEXT.md files
+(function walk(dir) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) walk(p);
+    else if (e.name === 'NEXT.md' && !citedBy(rel(p).replace(/^reference\/(prop-sheets\/qa-notes\/|qa-reports\/)?/, ''), items).length)
+      fail(`${rel(p)} has no R-item that cites it`);
+  }
+})(path.join(root, 'reference'));
+
+// ---- 5. done items name real proof
+const head = tryGit('rev-parse', 'HEAD');
+if (!head) { console.log('roadmap check: not a git checkout: FAIL'); process.exit(2); }
+if (tryGit('rev-parse', '--is-shallow-repository') === 'true') { console.log('roadmap check: shallow clone, proofs cannot be checked (fetch-depth 0): FAIL'); process.exit(2); }
+const merged = new Set((tryGit('log', '--format=%s', 'HEAD') ?? '').split('\n').map((s) => s.match(/^Merge pull request #(\d+) from/)?.[1]).filter(Boolean));
+for (const it of items.filter((i) => i.done)) {
+  const prs = [...it.proof.matchAll(/PR #(\d+)/g)].map((m) => m[1]);
+  const shas = [...it.proof.matchAll(/\b([0-9a-f]{7,40})\b/g)].map((m) => m[1]);
+  if (!prs.length && !shas.length) { fail(`${it.id} is done but names no PR or commit`); continue; }
+  for (const n of prs) if (!merged.has(n)) fail(`${it.id}: PR #${n} has no merge commit in this history (never merged?)`);
+  for (const s of shas) if (tryGit('merge-base', '--is-ancestor', s, 'HEAD') === null) fail(`${it.id}: commit ${s} is not in this history`);
+}
+
+// ---- totals (the estimate's table comes from these)
+const days = { S: 0.5, M: 1.5, L: 4 };
+const by = new Map();
+for (const i of open) {
+  const a = by.get(i.area) ?? { S: 0, M: 0, L: 0 };
+  a[i.size] = (a[i.size] ?? 0) + 1;
+  by.set(i.area, a);
+}
+let tot = 0;
+console.log(`roadmap: ${open.length} open, ${items.length - open.length} done`);
+for (const [a, c] of by) {
+  const d = c.S * days.S + c.M * days.M + c.L * days.L;
+  tot += d;
+  console.log(`  ${a}: S${c.S} M${c.M} L${c.L} = ${d} helper-days`);
+}
+console.log(`  all: ${tot} helper-days`);
+
+for (const f of fails) console.log(`✗ ${f}`);
+console.log(fails.length ? `FAIL (${fails.length})` : 'PASS');
+process.exit(fails.length ? 1 : 0);

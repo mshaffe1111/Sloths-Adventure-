@@ -92,7 +92,7 @@ Art round 2 (~$62) is held. Matt approves every picture list, one at a time, bef
 
 | ID | What | Size | State | Owner | Source |
 |---|---|---|---|---|---|
-| R-61 | Art round 2: backdrops and cutscene art (~$62) | L | held (by Matt: money) | Matt | STATUS 2026-11-01 ~9 PM |
+| R-61 | Art round 2: backdrops and cutscene art (~$62) | L | held (by Matt: money) | Matt | STATUS 2026-11-01 ~9 PM; the older plan for third and fourth moods (~$18): reference/prop-sheets/qa-notes/hf-backdrops/NEXT.md |
 | R-62 | Icons B-E (painted and paid, ~$6.8; branch icons-painted 6d9a5984, not on main): ship in the next release. The roadmap doc wrongly lists them as held; holding saves no money | S | blocked (by Matt's yes) | lead | STATUS NOTE after 2026-11-01 ~9 PM; reference/qa-reports/icons-painted/ |
 | R-63 | Backdrops at $0: move w2mist off 2-1 (or crop its sky); hold W5 gold and dusk1 far sets to the floor (floor.py) | S | open | unassigned | reference/prop-sheets/qa-notes/hf-backdrops2/NEXT.md "Exact next step" |
 | R-64 | World 1's second middle strip (the 3 trees repeat each screen width sideways) | S | held (by HF money) | unassigned | hf-backdrops2/NEXT.md; roadmap doc |
@@ -100,7 +100,7 @@ Art round 2 (~$62) is held. Matt approves every picture list, one at a time, bef
 | R-66 | Cutscene leftovers: W9 dusk/night plates (48 panels, ~$1), W8 moon falls outside the frame sideways ($0), fine motion (lanterns, fire, steam, webs, ~$3), sky and water motion (~$2) | M | held (by HF money; the W8 moon fix is $0 and can go now) | unassigned | reference/prop-sheets/qa-notes/hf-cutscenes/NEXT.md |
 | R-67 | Props round 3 (W6 has 9 bank pieces, W7 12; aim 15+), remakes, W4/W7 hanging pieces (~$4); cutter key-colour pass ($0) | M | held (by HF money; the $0 cutter pass can go now) | unassigned | reference/prop-sheets/qa-notes/hf-props/NEXT.md |
 | R-68 | Floating props (Matt, 2026-11-01): balcony planters on W2 stone faces with nothing under them, reeds drawn into the soil, a frond over the HUD. A prop-grounding test over all stages, then a walk of every world's props | M | open | unassigned | D16; reference/qa-reports/props-matt-2026-11-01/ |
-| R-69 | Art made but never drawn (artUse.allow.json, 276 entries): bosses 70, shared 41, W4 35, W1 15, W3 16, W2 13, W9 17, W5 14, story 14, W7 12, W10 11, creatures 9, W6 8, UI 1. Use it as worlds are touched; the list only shrinks | L | open | lead (per owner in the file) | src/game/artUse.allow.json |
+| R-69 | Art made but never drawn (artUse.allow.json, 276 entries): bosses 70, shared 41, W4 35, W1 15, W3 16, W2 13, W9 17, W5 14, story 14, W7 12, W10 11, creatures 9, W6 8, UI 1. Use it as worlds are touched; the list only shrinks | L | open | lead (per owner in the file) | src/game/artUse.allow.json; the W1-4 handover: reference/prop-sheets/qa-notes/w1-4-art/NEXT.md |
 | R-70 | Old art asks: ART-TO-GET #2, #3, #4, #11, #16, #18-22; moving cutscene acting; the ten new creatures; frog/spider/tayra/caiman/harpy clips; the 45-second promo video. Check each in the code and close or re-file | S | verify | roadmap-keeper | reference/ART-TO-GET.md; roadmap doc "Alongside" and "Videos" |
 
 ## Perf/GPU
@@ -135,15 +135,15 @@ Each clipcheck group and playerText key below is a shrink-only known list entry 
 
 | ID | What | Size | State | Owner | Source |
 |---|---|---|---|---|---|
-| R-90 | World Map stage card: long stage and boss names cut, descriptions clamped (19 entries). Never truncate: names wrap to two lines, descriptions show in full | S | open | menu-polish job | clipknown G1 |
-| R-91 | World Map sideways: first and last stage nodes under the notch bands (3) | S | open | menu-polish job | clipknown G2 |
-| R-92 | Settings tap targets under 44 px: Game segmented buttons, sliders, Mute, Save/Load tabs (6) | S | open | menu-polish job | clipknown G4 |
-| R-93 | World Map plaque: long world names cut upright (3) | S | open | menu-polish job | clipknown G5 |
-| R-94 | Satchel find reader Close 33 px; keepsake "What it looks like" 26 px (2) | S | open | menu-polish job | clipknown G7 |
-| R-95 | How to Play sideways: chapter tabs 30-32 px and under the left notch; X and right tiles under the right notch (6) | S | open | menu-polish job | clipknown G8 |
-| R-96 | New Game question: plaque "Start a new game?" cut upright (1) | S | open | menu-polish job | clipknown G9 |
-| R-97 | Settings About: rows taller than their box; Shaffer and Check for updates buttons 38 px (4) | S | open | menu-polish job | clipknown G10 |
-| R-98 | Repeated player text: Dot lines duplicated (lesson vs control-test copy, repeated hints); "The snail" find title x10; two medals with the same description; "I'm going to get Meeca back." x3 | S | open | menu-polish job | playerText.known: "Dot lines: exact duplicates", "find titles: exact duplicates", "medal descriptions: differ only in a number or name", "story beats: exact duplicates" |
+| R-90 | World Map stage card: long stage and boss names cut, descriptions clamped (19 entries). Never truncate: names wrap to two lines, descriptions show in full | S | open | menu-polish job | tools/perf/clipknown.json; clipknown G1 |
+| R-91 | World Map sideways: first and last stage nodes under the notch bands (3) | S | open | menu-polish job | tools/perf/clipknown.json; clipknown G2 |
+| R-92 | Settings tap targets under 44 px: Game segmented buttons, sliders, Mute, Save/Load tabs (6) | S | open | menu-polish job | tools/perf/clipknown.json; clipknown G4 |
+| R-93 | World Map plaque: long world names cut upright (3) | S | open | menu-polish job | tools/perf/clipknown.json; clipknown G5 |
+| R-94 | Satchel find reader Close 33 px; keepsake "What it looks like" 26 px (2) | S | open | menu-polish job | tools/perf/clipknown.json; clipknown G7 |
+| R-95 | How to Play sideways: chapter tabs 30-32 px and under the left notch; X and right tiles under the right notch (6) | S | open | menu-polish job | tools/perf/clipknown.json; clipknown G8 |
+| R-96 | New Game question: plaque "Start a new game?" cut upright (1) | S | open | menu-polish job | tools/perf/clipknown.json; clipknown G9 |
+| R-97 | Settings About: rows taller than their box; Shaffer and Check for updates buttons 38 px (4) | S | open | menu-polish job | tools/perf/clipknown.json; clipknown G10 |
+| R-98 | Repeated player text: Dot lines duplicated (lesson vs control-test copy, repeated hints); "The snail" find title x10; two medals with the same description; "I'm going to get Meeca back." x3 | S | open | menu-polish job | src/game/playerText.known.json: "Dot lines: exact duplicates", "find titles: exact duplicates", "medal descriptions: differ only in a number or name", "story beats: exact duplicates" |
 | R-99 | Vector icons still allowed in player-facing components (iconRegister.allow.json, ~20 files); painted icons replace them as icons B-E land, the list only shrinks | M | blocked (by R-62) | icons-painted | src/components/iconRegister.allow.json; D13 |
 | R-100 | Dot's tips, next steps: re-measure the box narrower (3 lines) before grazing (1-2 sideways grazes the way ahead and the score plate); Dot flies beside a far box; Dot's sprite keeps out of the way ahead | M | open | unassigned | roadmap doc; dot-box 2026-11-01 |
 
