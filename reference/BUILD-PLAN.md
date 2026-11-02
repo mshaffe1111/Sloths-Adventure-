@@ -4,7 +4,7 @@ Matt, 2026-11-01: "figure out how to get the most out of our builds... using our
 efficient with tokens... trying to match things that work in tandem... start marking off some small WebGL stuff, some small story
 pieces, and working towards finishing the levels in ways that are the most efficient and we get the bang for the buck."
 
-Written by the roadmap keeper, 2026-11-01 ~10:30 PM ET, from reference/ROADMAP.md (item numbers below). The lead decides who starts.
+Written by the roadmap keeper, 2026-11-01 9:27 PM ET (time from `TZ=America/New_York date`), from reference/ROADMAP.md (item numbers below). The lead decides who starts.
 
 ## One page for Matt
 
