@@ -50,15 +50,18 @@ if (fs.existsSync(path.join(root, RM))) {
     if (/^Draft numbers retired/.test(area)) continue; // old draft numbers, kept so they are never reused
     if (/^Done/.test(area)) items.push({ id, what: c[1], done: true, proof: c[3] ?? '', source: c[3] ?? '', area });
     else if (c.length >= 10) {
-      const [, what, tier, get, daysTxt, value, size, state, owner, source] = c;
-      items.push({ id, what, tier, get, days: Number(daysTxt), value, size, state, owner, source, done: /^done\b/.test(state), proof: state, area });
+      const [, what, tier, get, timeTxt, value, size, state, owner, source] = c;
+      const hours = Number((timeTxt.match(/^(\d+(?:\.\d+)?) h \((.+)\)$/) ?? [])[1]);
+      items.push({ id, what, tier, get, hours, value, size, state, owner, source, done: /^done\b/.test(state), proof: state, area });
       if (!['S', 'M', 'L'].includes(size)) fail(`${id}: size "${size}" is not S, M or L`);
       if (!/^(open|in progress|blocked \(.+\)|held \(.+\)|verify|done \(.+\))/.test(state)) fail(`${id}: state "${state}" is not one of open / in progress / blocked (by ...) / held (by ...) / verify / done (date, proof)`);
       // Matt's R-10 (his names, 2026-11-01): every open item says whether launch needs it, and why
       if (!/^(Day 1|Important): \S/.test(tier) && !/^Parking lot\b/.test(tier) && !/^Matt\b/.test(tier)) fail(`${id}: tier "${tier}" must be "Day 1: why", "Important: why", "Parking lot" or "Matt" (R-10)`);
       // Matt's R-11: what we get, helper-days, value A-F; a Day 1 item is A or B unless the tier says why not
       if (!get || get === what) fail(`${id}: "What we get" is empty or repeats the task (R-11)`);
-      if (!(Number(daysTxt) > 0)) fail(`${id}: Days "${daysTxt}" is not a number of helper-days (R-11)`);
+      // Matt's R-12: time in hours from a measured past job, named beside it ("like whatsnew (2.5 h)"), or "no history" with a range
+      if (!(hours > 0)) fail(`${id}: Time "${timeTxt}" must be "N h (the past job it is measured from, or no history: a range)" (R-12)`);
+      else if (size !== (hours <= 2 ? 'S' : hours <= 6 ? 'M' : 'L')) fail(`${id}: size ${size} doesn't match ${hours} h (S up to 2 h, M up to 6 h, L over 6 h)`);
       if (!/^[A-F]$/.test(value)) fail(`${id}: Value "${value}" is not A-F (R-11)`);
       else if (/^Day 1/.test(tier) && !/^[AB]$/.test(value) && !/graded [C-F] because/.test(tier)) fail(`${id}: a Day 1 item graded ${value}: grade it A/B or say "graded ${value} because ..." in the tier (R-11)`);
     } else fail(`${id}: an item row needs 10 columns (ID | What | Tier | What we get | Days | Value | Size | State | Owner | Source), has ${c.length}`);
@@ -192,7 +195,7 @@ const helperWork = (i) => !/^Matt\b/.test(i.owner ?? '') && !/^R-149 /.test(i.ar
 for (const i of open.filter(helperWork)) {
   const a = by.get(i.area) ?? { S: 0, M: 0, L: 0, days: 0 };
   a[i.size] = (a[i.size] ?? 0) + 1;
-  a.days += i.days || 0;
+  a.days += i.hours || 0;
   by.set(i.area, a);
 }
 let tot = 0;
@@ -200,12 +203,12 @@ console.log(`roadmap: ${open.length} open, ${items.length - open.length} done`);
 for (const [a, c] of by) {
   const d = c.days;
   tot += d;
-  console.log(`  ${a}: S${c.S} M${c.M} L${c.L} = ${d} helper-days`);
+  console.log(`  ${a}: S${c.S} M${c.M} L${c.L} = ${d} helper hours`);
 }
 const byTier = { 'Day 1': 0, Important: 0, 'Parking lot': 0, Matt: 0 };
-for (const i of open.filter(helperWork)) byTier[(i.tier ?? '').match(/^(Day 1|Important|Parking lot|Matt)/)?.[1] ?? 'Matt'] += i.days || 0;
-console.log(`  by tier (estimated helper-days, R-11): Day 1 ${byTier['Day 1']}, Important ${byTier.Important}, Parking lot ${byTier['Parking lot']}, Matt's call ${byTier.Matt}`);
-console.log(`  all: ${tot} helper-days (Matt's own items and the decisions left out: ${open.filter((i) => !helperWork(i)).length})`);
+for (const i of open.filter(helperWork)) byTier[(i.tier ?? '').match(/^(Day 1|Important|Parking lot|Matt)/)?.[1] ?? 'Matt'] += i.hours || 0;
+console.log(`  by tier (helper hours, measured, R-12): Day 1 ${byTier['Day 1']}, Important ${byTier.Important}, Parking lot ${byTier['Parking lot']}, Matt's call ${byTier.Matt}`);
+console.log(`  all: ${tot} helper hours (Matt's own items and the decisions left out: ${open.filter((i) => !helperWork(i)).length})`);
 
 for (const f of fails) console.log(`✗ ${f}`);
 console.log(fails.length ? `FAIL (${fails.length})` : 'PASS');

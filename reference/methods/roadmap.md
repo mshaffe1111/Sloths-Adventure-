@@ -18,8 +18,14 @@ when they differ, the repo wins and the doc is fixed the same day. No other file
    the clash cost a rebuild and is why the retired table exists).
 2. **What:** plain words, what a player or Matt would notice, then the fix. Matt's own words in quotes with the date when he gave them.
 3. **Area:** the table it sits in (Matt's R-1..R-7 and R-10 topics first, then R-141..R-149: Worlds 1-8, gen2 W1-5, stranded branches, Art, Sound, Controls, Play Store, Tools, Decisions). One area per item; split an item that spans two.
-4. **Size** (one helper's working time, not Matt's review): S under half a day, M 1-2 days, L 3+ days. An item that would be bigger than
-   L is split. When unsure, size up.
+4. **Time and size: estimates come from measured history, not guesses** (Matt, 2026-11-01, R-12: "We've done everything we've done so
+   far was within 3 weeks. And it's talking about 3 months of work."). Time is helper hours, written `N h (like <past job> (<its
+   measured time>))`. Measure the past job from git (the branch's first own commit to the merge that took it: `git rev-list
+   <merge>^1..<merge>^2`, first and last author times) and from STATUS (start line to accept line; git under-counts a helper merged more
+   than once). With no similar past job, write `no history: range A-B h` and the nearest job. Size follows the hours: S up to 2 h, M up
+   to 6 h, L over 6 h. Plan a lane at about 6-8 helper hours a day. Pitfall we paid for: on 2026-11-01 sizes were set as "half a day /
+   1-2 days / 3+ days" by feel and came out 2-4x too long (helpers measured 1.5-2.5 h for jobs sized at a day), so the estimate read 3
+   months when history said about 3 weeks.
 5. **Tier** (Matt's R-10): `T1: why` (launch can't happen without it: PARTNER.md's goal and PLAY-STORE-RULES §1 hard gates and §4
    bars), `T2: why` (high value before launch: players feel it, cheap for what it gives), `T3` (1.1+), or `Matt` (asked as an R-149
    question). The reason quotes its source or says what was measured and when; it never claims more than the source says (2026-11-01:
@@ -49,7 +55,9 @@ no traceable PR: R-137).
 
 ## The sweep (after every release; also before each debrief)
 1. `git log --first-parent <last release merge>..origin/main`: for every merged branch, close the items it finished (proof: the PR).
-2. Run `node tools/roadmapcheck.mjs`: it lists orphans (a defect, known-list group or NEXT.md with no R-id) and done items with
+2. Re-measure: add the jobs merged since the last sweep to the calibration list in BUILD-PLAN.md ("How the times were measured"),
+   and correct any item whose calibration a new job contradicts.
+2b. Run `node tools/roadmapcheck.mjs`: it lists orphans (a defect, known-list group or NEXT.md with no R-id) and done items with
    a bad proof. Add or fix each.
 3. Read the new defect-log rows and every NEXT.md changed since the last sweep; file what is open. The gate also fails when a defect has
    no line in reference/LESSONS.md or a method file is missing from reference/methods/README.md: the lead writes those (helpers only
