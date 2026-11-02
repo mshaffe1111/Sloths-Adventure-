@@ -49,14 +49,19 @@ if (fs.existsSync(path.join(root, RM))) {
     const id = c[0];
     if (/^Draft numbers retired/.test(area)) continue; // old draft numbers, kept so they are never reused
     if (/^Done/.test(area)) items.push({ id, what: c[1], done: true, proof: c[3] ?? '', source: c[3] ?? '', area });
-    else if (c.length >= 7) {
-      const [, what, tier, size, state, owner, source] = c;
-      items.push({ id, what, tier, size, state, owner, source, done: /^done\b/.test(state), proof: state, area });
-      // Matt's R-10: every open item says whether launch needs it, and why
-      if (!/^(T1|T2): \S/.test(tier) && !/^T3\b/.test(tier) && !/^Matt\b/.test(tier)) fail(`${id}: tier "${tier}" must be "T1: why", "T2: why", "T3" or "Matt" (R-10)`);
+    else if (c.length >= 10) {
+      const [, what, tier, get, daysTxt, value, size, state, owner, source] = c;
+      items.push({ id, what, tier, get, days: Number(daysTxt), value, size, state, owner, source, done: /^done\b/.test(state), proof: state, area });
       if (!['S', 'M', 'L'].includes(size)) fail(`${id}: size "${size}" is not S, M or L`);
       if (!/^(open|in progress|blocked \(.+\)|held \(.+\)|verify|done \(.+\))/.test(state)) fail(`${id}: state "${state}" is not one of open / in progress / blocked (by ...) / held (by ...) / verify / done (date, proof)`);
-    } else fail(`${id}: an item row needs 7 columns (ID | What | Tier | Size | State | Owner | Source), has ${c.length}`);
+      // Matt's R-10 (his names, 2026-11-01): every open item says whether launch needs it, and why
+      if (!/^(Day 1|Important): \S/.test(tier) && !/^Parking lot\b/.test(tier) && !/^Matt\b/.test(tier)) fail(`${id}: tier "${tier}" must be "Day 1: why", "Important: why", "Parking lot" or "Matt" (R-10)`);
+      // Matt's R-11: what we get, helper-days, value A-F; a Day 1 item is A or B unless the tier says why not
+      if (!get || get === what) fail(`${id}: "What we get" is empty or repeats the task (R-11)`);
+      if (!(Number(daysTxt) > 0)) fail(`${id}: Days "${daysTxt}" is not a number of helper-days (R-11)`);
+      if (!/^[A-F]$/.test(value)) fail(`${id}: Value "${value}" is not A-F (R-11)`);
+      else if (/^Day 1/.test(tier) && !/^[AB]$/.test(value) && !/graded [C-F] because/.test(tier)) fail(`${id}: a Day 1 item graded ${value}: grade it A/B or say "graded ${value} because ..." in the tier (R-11)`);
+    } else fail(`${id}: an item row needs 10 columns (ID | What | Tier | What we get | Days | Value | Size | State | Owner | Source), has ${c.length}`);
   }
   const seen = new Map();
   for (const it of items) seen.set(it.id, (seen.get(it.id) ?? 0) + 1);
@@ -70,7 +75,7 @@ if (fs.existsSync(path.join(root, RM))) {
     const h = line.match(/^## (R-\d+)\b/);
     if (h) defined.add(h[1]);
     if (/^## /.test(line)) area2 = line;
-    if (/^## Done/.test(area2) && /^\| A-\d+ \|/.test(line)) for (const m of line.matchAll(/\((R-\d+)\b/g)) defined.add(m[1]);
+    if (/^## Done/.test(area2) && /^\| A-\d+ \|/.test(line)) for (const m of line.matchAll(/\((R-\d+(?:\.\d+)?)(?![\d.]*\d)/g)) defined.add(m[1]);
   }
   area2 = '';
   read(RM).split('\n').forEach((line, n) => {
@@ -185,20 +190,21 @@ const days = { S: 0.5, M: 1.5, L: 4 };
 const by = new Map();
 const helperWork = (i) => !/^Matt\b/.test(i.owner ?? '') && !/^R-149 /.test(i.area);
 for (const i of open.filter(helperWork)) {
-  const a = by.get(i.area) ?? { S: 0, M: 0, L: 0 };
+  const a = by.get(i.area) ?? { S: 0, M: 0, L: 0, days: 0 };
   a[i.size] = (a[i.size] ?? 0) + 1;
+  a.days += i.days || 0;
   by.set(i.area, a);
 }
 let tot = 0;
 console.log(`roadmap: ${open.length} open, ${items.length - open.length} done`);
 for (const [a, c] of by) {
-  const d = c.S * days.S + c.M * days.M + c.L * days.L;
+  const d = c.days;
   tot += d;
   console.log(`  ${a}: S${c.S} M${c.M} L${c.L} = ${d} helper-days`);
 }
-const byTier = { T1: 0, T2: 0, T3: 0, Matt: 0 };
-for (const i of open.filter(helperWork)) byTier[(i.tier ?? '').match(/^(T1|T2|T3|Matt)/)?.[1] ?? 'Matt'] += days[i.size];
-console.log(`  by tier (helper-days): T1 ${byTier.T1}, T2 ${byTier.T2}, T3 ${byTier.T3}, Matt's call ${byTier.Matt}`);
+const byTier = { 'Day 1': 0, Important: 0, 'Parking lot': 0, Matt: 0 };
+for (const i of open.filter(helperWork)) byTier[(i.tier ?? '').match(/^(Day 1|Important|Parking lot|Matt)/)?.[1] ?? 'Matt'] += i.days || 0;
+console.log(`  by tier (estimated helper-days, R-11): Day 1 ${byTier['Day 1']}, Important ${byTier.Important}, Parking lot ${byTier['Parking lot']}, Matt's call ${byTier.Matt}`);
 console.log(`  all: ${tot} helper-days (Matt's own items and the decisions left out: ${open.filter((i) => !helperWork(i)).length})`);
 
 for (const f of fails) console.log(`✗ ${f}`);
