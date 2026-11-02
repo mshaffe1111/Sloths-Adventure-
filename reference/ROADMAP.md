@@ -6,7 +6,7 @@ Gate: `node tools/roadmapcheck.mjs` fails when open work in the repo has no numb
 
 **The goal (PARTNER.md):** all 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.
 
-Last swept: 2026-11-01 9:49 PM ET (rebuild 2: Matt's R-1..R-9, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
+Last swept: 2026-11-01 9:49 PM ET (rebuild 2: Matt's R-1..R-11, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
 Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 87, 2026-11-01; the old sections moved word for word to "Roadmap archive" at its bottom.
 
 ## How to read it
