@@ -7,6 +7,8 @@ you write one. Your report MUST have "Method used", "Lessons applied" (which lin
 A report without them is sent back unread. You do not edit this sheet or a method file yourself: you PROPOSE the change in "Method update" (what worked better with proof, what failed and why, a lesson that is wrong or out of date), and the lead merges proven changes when it accepts your work. The one exception: a job with no method file gets one written by you. Your first-time gate result and redo count go on reference/HELPERS.md; the helpers
 that do the best job get the follow-on work.
 
+**Quality sets the date (Matt, 2026-11-02: "even if it takes longer... we can't do it half-assed. It has to still be quality. And if that pushes the timetable, pushes the timetable.")** No estimate, schedule or token budget is a reason to ship something dull, easy-by-accident or rough. Cut scope or take longer; never cut the bar.
+
 **Judging your own work**
 - Judge the real screen, in every save state (fresh, old, half-played, finished) and both orientations. Never from a list or one happy shot. (D1, D2, D12)
 - When one thing on a screen is raised to the bar, bring everything beside it up too, or name what's left. (D13)
