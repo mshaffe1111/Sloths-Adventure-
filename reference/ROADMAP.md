@@ -93,7 +93,7 @@ No pixi in package.json yet: stage 0 not started. Plan: `reference/GPU-RENDERER-
 | R-3.9 | 160 MB download and ~16 s to start on an old Android (PF-7 Play Asset Delivery, PF-11) | T2: 16 s to start on an old phone loses players; check Play's size limits before upload | L | open | unassigned | PF-7, PF-11 |
 | R-3.10 | Art size gate rules 2 and 3 | T3: a gate for later art | S | open | unassigned | reference/PERFORMANCE-RULES.md §8.2 |
 | R-3.11 | Re-bakes by scale left: pit water, flags, ground chunks | T2: cheap, smoother on slow phones | S | open | unassigned | inv Performance |
-| R-3.12 | 13 animation sheets over 4096 px and the w5Look drawW5Light blend: split or shrink (the lists only shrink) | T1: many phones can't take a WebGL texture over 4096 px, so the GPU move needs these split | M | open | unassigned | tools/perf/limits.json |
+| R-3.12 | 13 animation sheets over 4096 px and the w5Look drawW5Light blend: split or shrink (the lists only shrink) | T1: a phone whose GPU texture limit is 4096 px can't load these as WebGL textures; check the limit on Matt's three phones | M | open | unassigned | tools/perf/limits.json |
 | R-3.13 | World 8: 400 px paintings drawn at ~100 px; pre-scaled copies of w8b/w8c/w8var | T3: only if a phone stutters | S | open | unassigned | reference/prop-sheets/qa-notes/w8/NEXT.md "Open" 4 |
 
 ## R-4 The story rewrite (one release when all worlds and the ending are built)
@@ -115,7 +115,7 @@ Test link world by world; nothing goes live until all of it is done (decision 1)
 | R-4.10 | The review's fixes: contradictions with live 5-M / carvings / pocket finds / ending cards / photo caption / cookhouse seam; double plays; reveal leaks (knot strikeout, forks, 7-7, ledger "my"); the clock math | T1: contradictions and leaks would ship otherwise | M | open | unassigned | https://claude.ai/artifact/5MNwnuNu2SeqHcvFPxWnS5 |
 | R-4.11 | 3-6 and 3-7 stage-card wording | T1: part of the text | S | blocked (by R-4.2) | unassigned | hand-off |
 | R-4.12 | Replies between characters that drop or arrive late (ST-9); Flicker drawn in play (AN-12, ST-10); one bubble style instead of three (ST-12). Audit Build 2 | T1: replies that drop break the story; Flicker talking unseen | M | open | unassigned | audit-2 Build 2 |
-| R-4.13 | Upright cutscene framing: nobody cut off at the waist (VI-24, ST-13) | T1: characters cut off in every upright scene | M | open | unassigned | audit-2 Build 2 |
+| R-4.13 | Upright cutscene framing: nobody cut off at the waist (VI-24, ST-13) | T1: upright scenes cut characters off at the waist (VI-24, audit-2) | M | open | unassigned | audit-2 Build 2 |
 | R-4.14 | The Oct 26-27 story asks (story logic per world, "Follow the petals" early, Flicker's arc, Dot's jealousy): check what the rewrite covers; fold the rest into R-4.2 or close | T2: a check; folds into R-4.2 | S | verify | roadmap-keeper | roadmap doc "Next when tokens allow" |
 
 ## R-5 Tuning (difficulty, fairness, checkpoints)
@@ -167,7 +167,7 @@ Test link world by world; nothing goes live until all of it is done (decision 1)
 | R-6.16 | Two medals with the same description | T2: repeats, cheap to fix | S | open | menus B | src/game/playerText.known.json: "medal descriptions: differ only in a number or name" |
 | R-6.17 | "I'm going to get Meeca back." x3 in the story beats | T1: fixed by the story text (R-4.2) | S | open | menus B | src/game/playerText.known.json: "story beats: exact duplicates" |
 | R-6.18 | Dot's tip box next steps: narrower box (3 lines) before grazing (1-2 sideways grazes the way ahead and the score plate); Dot flies beside a far box; Dot's sprite keeps out of the way ahead | T2: the box sometimes grazes the way ahead | M | open | unassigned | dot-box 2026-11-01; D10 |
-| R-6.19 | Narrow phones (< 380 px): on 360x740 upright Pokey's head sits ~77 px under the HUD, so Dot's box has no clear spot at times (4-2) | T2: 360 px phones are common and cheap Androids are our buyers | S | open | unassigned | dot-box 2026-11-01 |
+| R-6.19 | Narrow phones (< 380 px): on 360x740 upright Pokey's head sits ~77 px under the HUD, so Dot's box has no clear spot at times (4-2) | T2: 360 px wide is a common Android width | S | open | unassigned | dot-box 2026-11-01 |
 | R-6.20 | 5-M: Meeca overlaps the room 5 far-wall bank face; the gully stairs look alike | T2: one overlap in one stage | S | open | unassigned | reference/qa-reports/5-M-fix-2026-11-01/ |
 | R-6.21 | A calmer win card; the faked italic font (UI-18, UI-21) | T2: polish | S | open | menus A | UI-18, UI-21 |
 | R-6.22 | Pokey's slide puffs come in a row; flip gaps | T3: small animation nit | S | open | unassigned | pokey-anim README; inv Controls |
@@ -243,7 +243,7 @@ First-pass triage with a recommendation per branch: `reference/qa-reports/strand
 
 | ID | What | Tier | Size | State | Owner | Source |
 |---|---|---|---|---|---|---|
-| R-143.1 | w5-rebuild (afd0d02b, 18 ahead, ~1,200 behind): 5-6 on gen2, 5-8 hand-built | T2: paid World 5 work; 5-6 is 80 of 80 rolls over its dead-time budget live | M | open | unassigned | inv; origin/w5-rebuild |
+| R-143.1 | w5-rebuild (afd0d02b, 18 ahead, ~1,200 behind): 5-6 on gen2, 5-8 hand-built | T2: paid World 5 work; 5-6 measured 80 of 80 rolls over its dead-time budget on 10-31 (w5 NEXT.md, before PR #56) | M | open | unassigned | inv; origin/w5-rebuild |
 | R-143.2 | hazard-anim (9b10460e, 5 ahead): painted deep water for W2 and W6-10 | T2: paid art already made | S | open | unassigned | inv; origin/hazard-anim |
 | R-143.3 | polish-clean (a3193bf1, 11 ahead): key spill, 6-8 stilts | T2: cheap fixes already made | S | open | unassigned | inv; origin/polish-clean |
 | R-143.4 | polish-pf1 (138041ae, 4 ahead): no flat backdrop at start, creature fade-in, PF-1b ground-decor stamps; check if superseded | T2: may already be covered | S | open | unassigned | inv; origin/polish-pf1 |
@@ -301,7 +301,7 @@ Audit-2 rates sound the weakest category (C+ vs AAA). Needs a listening session 
 | R-147.3 | 16 KB page check; foldables, split screen, resize; older-WebView insets (UI-19) | T1: 16 KB pages and resizing are Play gates/bars (§1, §4) | M | open | unassigned | PLAY-STORE-RULES §1/§4; UI-19 |
 | R-147.4 | Store listing: icon, feature graphic, screenshots (24 exist in reference/store from 10-30 but predate the new menus and icons), descriptions, category, email | T1: required to publish (§5) | M | blocked (by R-149.1 icons) | unassigned + Matt approves | reference/store; PLAY-STORE.md §5 |
 | R-147.5 | Privacy text, data safety form, content rating (IARC), target audience (Families) | T1: required at submit (§1) | S | open | Matt | PLAY-STORE.md §5.1-5.2 |
-| R-147.6 | Accessibility basics: 48 dp hit areas, labels on icon buttons, the screen-shake setting (AN-10) | T1: tap areas and labels; the Families policy | M | verify | unassigned | PLAY-STORE.md §5.3 |
+| R-147.6 | Accessibility basics: 48 dp hit areas, labels on icon buttons, the screen-shake setting (AN-10) | T1: tap areas and labels on icon buttons (PLAY-STORE.md §5.3) | M | verify | unassigned | PLAY-STORE.md §5.3 |
 | R-147.7 | Offline and low-memory Android test of the store build before submitting | T1: the store build must survive a low-memory phone | M | blocked (by R-3.7) | unassigned | roadmap doc "Later: the Google Play Store app" |
 
 ## R-148 Tools and process
