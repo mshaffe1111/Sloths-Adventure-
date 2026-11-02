@@ -200,7 +200,7 @@ Ask one at a time, multiple choice.
 | R-48 | A council beat for the painted council plate, or drop it? | - |
 | R-122 | What "harder but fun" means per world | R-121 |
 | R-80 | Paid or free (decided before launch, can't go free-to-paid) | the store listing |
-| R-139 | Close the stale doc decisions: motion model v2 vs v1 (job from Oct 25), which creature designs to keep, the General's soldiers' animal, what goes in first (Meeca/creatures/acting), the 45-second promo video. Most look settled by what shipped; the keeper confirms in code and asks only what is still open | - |
+| R-139 | Close the stale doc decisions. Checked 2026-11-01: settled by what shipped are the leaf glide (parachute, PR #30), the soldiers (drawn: journal card "soldier", creatureLore.ts:26), the new creatures (capuchin, mantis, crab, piranha, sentry, owl, lizard, beetle are in src/game), what goes in first (Meeca's stage and the creatures both shipped), and the promo video (brief handed to Matt for his own agent, STATUS). Still open: motion model v2 has no record after Oct 25: drop it? | - |
 
 ## Done (archive)
 
