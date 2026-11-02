@@ -6,7 +6,25 @@ recommendation with its status in the game and what is next), and every mistake 
 for, so nobody repeats them. If a brief from the lead session disagrees with this file, ask; if you learn a new lesson the hard way,
 add it to section 6 in the same commit.
 
-Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
+Last updated 2026-11-02 (§0 Matt's design direction).
+
+---
+
+## §0 Matt's design direction (2026-11-02, after playing Worlds 1-5 in one sitting): BINDS EVERY STAGE AND GENERATOR
+
+Matt: "The first stage, we brought in some variation. And then we just stopped the imagination. And all the new elements, we don't bring
+it back again. I thought everything was supposed to build on top of everything that we did... right now, it's basically just run and jump...
+as somebody gets through World 5 and on... not supposed to be where it's going to make somebody quit, but it has to be somewhat challenging."
+
+1. **Everything builds on everything.** A mechanic taught in World N comes back in every later world, harder or combined with that world's
+   new one. A world that only uses its own new thing (or nothing) fails. The mechanics-in-use table (R-150.4) checks it per stage.
+2. **Every hazard must matter.** Wind pushes Pokey (it changes where a jump lands). Sleepy mushrooms keep a real timing window: mistime it
+   and he falls. Anything the player can ignore or jump straight through is decoration, not a beat, and does not count toward variety.
+3. **No beat repeated to fill time.** The same obstacle (e.g. waiting for monkeys on a log) at most a few times a stage, and each repeat
+   adds a twist (a second monkey, a moving log, a timer, a punch). Fifteen of the same wait fails.
+4. **Moving platforms early** (from World 2), then back in every world.
+5. **Real risk from World 5 on.** Falls into pits are allowed and expected; crumbling may be required anywhere once taught. Fair, never
+   cruel: every danger is readable before it bites and the checkpoint is close, but a careless player falls.
 
 ---
 
