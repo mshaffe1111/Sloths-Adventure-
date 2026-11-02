@@ -75,6 +75,8 @@ no traceable PR: R-137).
 
 ## Pitfalls we already paid for
 
+- **A commit id or doc rev written before the command returned** (2026-11-02, twice: "0c..." and "2c..." sent to the lead). Send a report only after the push; paste the id from `git log --oneline -1` and the rev from the doc's ack in that same turn, never from memory or a guess.
+
 - **Lane loads summed by hand drift** (2026-11-02): moving R-6.26 to lane 1 without taking it out of lane 5's sum, and closing R-1.1 without taking it out of lane 2's, made the reported busiest lane 2-6 h wrong for two reports. Sum lane loads from BUILD-PLAN §2's tables by script every time an item moves, closes or is added.
 - 2026-11-01: "no open sound item is written anywhere" was written after searching only the files already open; audit-2 Build 3 had
   five. Before writing that something does not exist, grep the whole tree (`git grep -n -i <words>`) and the inventory (D24).
