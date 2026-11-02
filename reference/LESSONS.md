@@ -24,7 +24,7 @@ that do the best job get the follow-on work.
 - Test the measuring tool before trusting its numbers. Our first-timer bot was wrong for days. (D15)
 - Spread every fix to its pair: x and y, up and down, left and right, every world with the same pattern. (D21)
 - Prove a change is needed with the fixed tool; revert what isn't needed (w8-rope2, Nov 1).
-- Time comes from `TZ=America/New_York date`, never worked out by hand: a time written into a file or report is pasted from a `date` call made in the same command. (D20, twice on 11-01)
+- Time comes from `TZ=America/New_York date`, never worked out by hand: a time written into a file or report is pasted from a `date` call made in the same command. The same for commit ids and doc revs: pasted from the command's own output after the push, never typed ahead. (D20, twice on 11-01; roadmap-keeper ids, twice on 11-02)
 - Estimates come from measured history (how long the same kind of job really took, from git and STATUS), never from a guess; say the source. (D25)
 
 **Stages and play**
