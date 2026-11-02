@@ -42,7 +42,7 @@ the ones graded B for polish (R-2.4, R-2.8, R-4.3, R-1.15, R-6.25, R-6.27, R-1.1
 
 | | What | How long |
 |---|---|---|
-| (a) Building | Day 1 about 292 helper hours (roadmapcheck prints 300: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 55.5 h = about 347.5 h over five lanes. Since 2026-11-01's 222 h: your 11-01 calls 27.5 h; R-6.27 and R-1.16 2.5 h each; your 11-02 bugs R-6.28, R-6.29, R-5.23, R-6.30 8 h; R-150 (all stages and the generators, Day 1, 11-02) 58.5 h with the mechanics audit and crumbling (R-150.5), plus vine polish R-150.6 4 h (Important); R-152 (hazards that matter, mechanics that build, STAGE-RULES §0) 23.5 h; R-151 the quality supervisor's set-up 0.5 h (its running time is overhead, like the process supervisor's); R-1.1 done. Lane loads, summed from §2's tables: 69 / 68.5 / 70.5 / 70 / 68.5 h | **about 9-12 working days** at 6-8 h a lane a day |
+| (a) Building | Day 1 about 300 helper hours (roadmapcheck prints 308: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 55.5 h = about 355.5 h over five lanes. Since 2026-11-01's 222 h: your 11-01 calls 27.5 h; R-6.27 and R-1.16 2.5 h each; your 11-02 bugs R-6.28, R-6.29, R-5.23, R-6.30 8 h; R-150 (all stages and the generators, Day 1, 11-02) 58.5 h with the mechanics audit and crumbling (R-150.5), plus vine polish R-150.6 4 h (Important); R-152 (hazards that matter, mechanics that build, STAGE-RULES §0) 25 h with swimming's bring-backs; the swimming stage R-5.22 6.5 h (Matt put it in launch 11-02); R-151 the quality supervisor's set-up 0.5 h (its running time is overhead, like the process supervisor's); R-1.1 done. Lane loads, summed from §2's tables: 69 / 71.5 / 72 / 70 / 72 h | **about 9-12 working days** at 6-8 h a lane a day |
 | (b) Fixed calendar | Your phone checks: a test link at the end of each 2-day wave, five GPU checks on the three phones, then your final passes of Worlds 7-10 and every boss (about 9 h of your play) and one fix round after them (not measured yet; budget about a day). The Play closed test: 14 days with 12 testers. You decided (2026-11-01) the account, app ID, signing and test start later: when Day 1 lane work is about 80% done (R-149.9, R-147.1) | about 3-4 days after the build for the passes and fixes; **14 days** for the closed test |
 | (c) Critical path | The closed test. It starts when Day 1 lane work is about 80% done (about day 7-9.5 of building), so your passes and the fix round run inside its 14 days. If it waits until after your passes, it is building + passes + 14 days (9-12 + 3-4 + 14 = 26-30 days). Not measured, so not counted: Google's checks on a new developer account before the first upload, and Google's review of the production release after the test | **about 3-3.5 weeks** from now with the 80% trigger; about 3.5-4 weeks if the test waits for your passes |
 
@@ -152,6 +152,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-150.5 | Crumbling ruins become a real route, not a side trap | A | 3.5 h (like vine-fix (2 h) + one 300-roll curation (about 1.5 h)); after R-150.4 |
 | Day 1 | R-152.2 | Mistiming a sleepy mushroom costs a fall | A | 1.5 h (like swim (1.5 h)); after R-150.4 |
 | Day 1 | R-152.3 | No stage makes him wait out the same monkeys fifteen times | A | 2 h (like fix-petals (about 2 h)); after R-150.4 |
+| Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 3 h of R-150.3's 20 h (moved from lane 5 on 11-02 to balance) |
 | Important (if time) | R-4.14 | Old story asks either covered or closed | E | 0.5 h (a keeper check (about 30 min)) |
 | Important (if time) | R-4.5 | Characters talk during play at key stages | C | 3 h (like story-delivery (3 h)) |
 | Parking lot | R-144.4 | Small motion in cutscenes; the W8 moon in frame | D | 3 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
@@ -181,7 +182,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-1.15 | Bosses 6-8 each end with a fresh story-born phase | B | 8 h (no history: range 5-10 h for three phases; nearest w7-slide (5.5 h)) |
 | Day 1 | R-1.16 | Every boss's defeat shows the boss he just beat | B | 2.5 h (like hf-art-bosses (30 min) per panel, plus wiring and review) |
 | Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 6 h of R-150.3's 20 h |
-| Day 1 | R-152.4 | Each world builds on the last instead of starting over | A | 8 h (like bot-fix + self-test (about 2 h) + about 2 h a hand-built world W2-W4; range 6-14 h); after R-150.4 |
+| Day 1 | R-152.4 | Each world builds on the last instead of starting over | A | 9.5 h (like bot-fix + self-test (about 2 h) + about 2 h a hand-built world W2-W4 + swim (1.5 h) for swimming's bring-backs; range 7.5-15.5 h); after R-150.4 |
 | Important (recommended) | R-6.14 | Dot never repeats herself word for word | C | 0.5 h (like journal-voice (about 2 h)) |
 | Important (recommended) | R-6.15 | Every find has its own name | C | 0.5 h (like journal-voice (about 2 h)) |
 | Important (recommended) | R-144.2 | Two backdrops no longer too bright | C | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
@@ -252,8 +253,8 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-6.30 | The mist fades in and out softly, no stripes | B | 1.5 h (like polish-a1 (1.7 h)) |
 | Day 1 | R-150.4 | A table of every mechanic built and where it is actually used | A | 2 h (like the art-use audit (artuse.mjs + gate, 10-31), plus reading mechanics across stages: range 1-3 h); first, with R-150.1 it blocks R-150.2 and R-150.3 |
 | Day 1 | R-150.1 | A ruler that flags a boring stage before Matt plays it | A | 3 h (like bot-fix + self-test (about 2 h), plus proving it flags 5-4); first, it blocks R-150.2 and R-150.3 |
-| Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 3 h of R-150.3's 20 h (the flagged stages in its tuning worlds) |
 | Day 1 | R-152.6 | From World 5 on the game is a fair challenge, measured | A | 4 h (like polish-levels (3.4 h)); after R-150.4; the target number waits on Matt |
+| Day 1 | R-5.22 | A stage where slow Pokey is suddenly fast | A | 6.5 h (like w7-slide (5.5 h) + its art (w7-slide-art 1 h)); Matt put swimming in launch 2026-11-02 |
 | Important (recommended) | R-143.8 | World 5's Normal work feeds the tuning | C | 0.5 h (a keeper check (about 30 min)) |
 | Important (recommended) | R-5.6 | Falls hurt fairly: short ones sting, long ones cost a life | B | 1 h (like fix-petals (about 2 h start to accept)) |
 | Important (recommended) | R-143.2 | Paid deep-water art used | C | 1 h (like w8-merge (2.6 h for a big merge)) |
@@ -274,7 +275,6 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Parking lot | R-141.4 | 8-1 replays a little more differently | D | 2 h (like gen2-curate (2 h)) |
 | Parking lot | R-142.6 | 6-5 and 6-9 stop looking alike | D | 2 h (like gen2-lookalike (6.5 h for all worlds)) |
 | Parking lot | R-141.3 | One more puzzle room in World 5 | D | 3 h (like gen2-w5-arena (2 h) plus art) |
-| Parking lot | R-5.22 | A stage where slow Pokey is suddenly fast | C | 5.5 h (like w7-slide (5.5 h) + its art (w7-slide-art 1 h)) |
 | Parking lot | R-142.1 | World 5 on the new builder: more variety, less padding | C | 6 h (like w5-rebuild (5 h on 10-29, then a review round)) |
 | Parking lot | R-141.1 | Dot's flight becomes a showpiece | C | 6.5 h (like w7-slide (5.5 h) + its art (w7-slide-art 1 h)) |
 | Parking lot | R-142.2 | World 1 replays differently each time | C | 10 h (like gen2-w7 (9 h) + one 300-roll curation (about 1.5 h, w9 NEXT.md)) |
