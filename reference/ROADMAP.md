@@ -7,7 +7,7 @@ Gate: `node tools/roadmapcheck.mjs` fails when open work in the repo has no numb
 **The goal (PARTNER.md):** all 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.
 
 Last swept: 2026-11-01 10:30 PM ET (Matt's calls R-149.1, .9, .15-.17 and R-4.8 recorded); rebuild 2 at 2026-11-01 9:49 PM ET (Matt's R-1..R-12, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
-Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 111, 2026-11-02 2:44 PM ET (R-12 times, five lanes; Matt's calls; R-6.27; R-1.16; R-1.1 done pending the merge; R-13 archived, R-148.14; Matt's 4-7 bugs R-6.28, R-6.29, R-5.23; R-5.23 rule decided; R-6.30, R-150; R-150 all stages and the generators, Day 1; 4-7 shots are files; R-150.4; A-37 crumbling, R-150.5, R-150.6; R-151, D26; R-150.5 to lane 2; R-152); the old sections moved word for word to "Roadmap archive" at its bottom.
+Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 115, 2026-11-02 2:54 PM ET (R-12 times, five lanes; Matt's calls; R-6.27; R-1.16; R-1.1 done pending the merge; R-13 archived, R-148.14; Matt's 4-7 bugs R-6.28, R-6.29, R-5.23; R-5.23 rule decided; R-6.30, R-150; R-150 all stages and the generators, Day 1; 4-7 shots are files; R-150.4; A-37 crumbling, R-150.5, R-150.6; R-151, D26; R-150.5 to lane 2; R-152; swimming in launch, A-38); the old sections moved word for word to "Roadmap archive" at its bottom.
 
 ## How to read it
 
@@ -222,7 +222,7 @@ Test link world by world; nothing goes live until all of it is done (decision 1)
 | R-149.9 | Play Store: final app ID, paid or free and the price, payments profile, account type (closed test of 12 testers x 14 days?). Matt decided 2026-11-01 (via the lead): the Play account, app ID, signing and closed test start later, "when the game is closer": asked when Day 1 lane work is about 80% done (R-147.1) | Day 1: unblocks the closed test and signing | The store path is set | 1 h (Matt's own time, not a helper's) | A | S | held (by Matt: until Day 1 lane work is about 80% done) | Matt | inv Decisions 9; reference/PLAY-STORE.md §4; lead 2026-11-01 10:24 PM |
 | R-149.10 | The hold rule "freeze on the flash" (WIP-18) | Day 1: unblocks the General | The hold rule settled | 0.5 h (Matt's own time, not a helper's) | A | S | open | Matt | audit-2 calls |
 | R-149.11 | Release art round 2 (~$62: backdrops ~$34, cutscenes ~$20, props ~$8)? Held | Parking lot: held | Art round 2 settled | 0.25 h (Matt's own time, not a helper's) | D | S | open | Matt | inv Decisions 10 |
-| R-149.12 | 4-D rethink (R-141.1): still wanted? (The swimming half was answered 2026-11-02: the swimming stage is in launch, R-5.22) | Parking lot: both are 1.1 candidates | 4-D settled | 0.25 h (Matt's own time, not a helper's) | D | S | open | Matt | inv Decisions 11 |
+| R-149.12 | 4-D rethink (R-141.1): still wanted? (The swimming half was answered 2026-11-02: the swimming stage is in launch, R-5.22) | Parking lot: a 1.1 candidate | 4-D settled | 0.25 h (Matt's own time, not a helper's) | D | S | open | Matt | inv Decisions 11 |
 | R-149.13 | Motion model v2 has no record after Oct 25: drop it? (the other stale doc decisions were settled by what shipped: A-27) | Parking lot: housekeeping | A stale decision closed | 0.25 h (Matt's own time, not a helper's) | F | S | open | Matt | roadmap doc "Decisions waiting on Matt" |
 | R-149.14 | Controls decided 10-30/31 with no implementing commit found: charge-and-release mega (CT-31), slanted carry option b (CT-33), even run speed (CT-32, re-times every jump), vibration on in the app (AN-14): confirm each is still wanted | Important: unblocks R-146.6 | Control changes confirmed or dropped | 0.5 h (the lead asks Matt) | C | S | verify | lead | inv Controls; audit-2 calls |
 
@@ -421,6 +421,7 @@ Each closed item names its proof (a merged PR, or a commit). Worlds 4-8 are buil
 | A-35 | (R-149.17) Matt decided: bosses 6-8's story-born third phases (R-1.15) are in for launch | 2026-11-01 | ef346427 |
 | A-36 | (R-13) Matt: "do some research on what makes a great manager using continuous improvement... and tell me how you're going to incorporate that." Done: reference/LEADER-STANDARD-WORK.md (leverage, paired indicators, gemba, coaching kata, Hoshin), LEAD-PLAYBOOK 7b and the CLAUDE.md pointer | 2026-11-02 | 48da6e33 |
 | A-37 | (R-149.18) Matt decided: crumbling may be required anywhere once taught, pits included; a required crumbling platform is whole again when he respawns (CLAUDE.md and STAGE-RULES §1); the code change is R-150.5 | 2026-11-02 | 854fac16 |
+| A-38 | (R-149.12, the swimming half) Matt decided: the whole swimming stage is in launch (R-5.22, Day 1), and swimming comes back in later worlds (R-152.4); R-149.12 stays open for the 4-D rethink | 2026-11-02 | 2e939d2f |
 
 ## Draft numbers retired (sent to the lead in drafts 1 and 2; never reused)
 
