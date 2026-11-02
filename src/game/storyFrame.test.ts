@@ -29,7 +29,7 @@ import { clearOfBox } from './storyFrame.ts';
 test('a beaten guardian whose bottom would sit under the words box is raised just clear of it; nothing else moves', () => {
   const h = 540, ground = 0.86, z = 1.2, vh = 540, lift = 0;
   const fy = 0.62 * h;
-  const boss = { kind: 'boss', beaten: true, scale: 1, x: 0.72 };
+  const boss: { kind: string; beaten?: boolean; scale?: number; x: number; y?: number; seq?: string[] } = { kind: 'boss', beaten: true, scale: 1, x: 0.72 };
   // the box's top at 60% of the view: the boss's feet line is far under it
   const up = clearOfBox(boss, ground, h, fy, z, vh, lift, 0.6);
   const visible = fy + ((0.6 + lift) * vh - vh / 2) / z;
