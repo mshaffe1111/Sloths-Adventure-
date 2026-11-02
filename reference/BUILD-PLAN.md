@@ -36,6 +36,8 @@ ledger and Wanted posters; the unfair spots fixed (Worlds 1-5 included) and Norm
 icons B-E; stages and generators that stop repeating (R-150); the GPU change, so the app runs smooth on your three phones; and the Play Store gates. Every Day 1 item is graded A, except
 the ones graded B for polish (R-2.4, R-2.8, R-4.3, R-1.15, R-6.25, R-6.27, R-1.16, R-6.28, R-5.23, R-6.30; each says why).
 
+**Quality sets the date, not the other way round** (Matt, 2026-11-02 to the keeper: "even if it takes longer to get this thing pushed to a Google quality, we can't do it half-assed. It has to still be quality. And if that pushes the timetable, pushes the timetable. But right now, it would be a disaster. Because it just isn't fun."). The hours below are a plan, not a deadline: when a job needs more to be fun and polished, it gets more, and the date moves.
+
 **The estimate, in three parts:**
 
 | | What | How long |
