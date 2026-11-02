@@ -12,7 +12,10 @@ roadmap-keeper helper.
 when they differ, the repo wins and the doc is fixed the same day. No other file keeps its own to-do list without an R-id that cites it.
 
 ## Writing an item
-1. **Id:** the next free R-number (the highest in the file plus one). Never reuse an id, never renumber.
+1. **Number:** Matt's own list is R-1..R-8 (pieces R-1.1, R-1.2, ...). A piece of an existing topic is its next free R-n.m; a new topic
+   is the next free R-n (above every number ever used, including the "Draft numbers retired" table). Done work is archived as A-n.
+   Never reuse a number, never renumber one Matt has heard (2026-11-01: draft numbers clashed with the ones the lead had given Matt;
+   the clash cost a rebuild and is why the retired table exists).
 2. **What:** plain words, what a player or Matt would notice, then the fix. Matt's own words in quotes with the date when he gave them.
 3. **Area:** the table it sits in (World 1-3, World 4-8, World 9-10, Bosses, Story, Art, Perf/GPU, Play Store, Menus/UI, Sound, Stage
    fairness and difficulty, Tools/process). One area per item; split an item that spans two.
@@ -31,13 +34,15 @@ A tick in an old doc is not proof. When no proof is found, the item is `verify`,
 no traceable PR: R-137).
 
 ## Closing an item
-- The work is on main (merged by Matt's release PR). Move the row to "Done (archive)" with the date and the proof (PR number, commit).
+- The work is on main (merged by Matt's release PR), or is process work on the lead's branch. Move it to "Done (archive)" as the next
+  A-n with the date and the proof (PR number, commit). The gate checks the PR's merge commit and that the commit is in the history or
+  on a branch.
 - Partly done: split it. The done half is archived with proof, the rest keeps the old id.
 - No longer wanted (Matt dropped it, or a later decision replaced it): archive it with "dropped (date, who, why)". Matt's words stay.
 
 ## The sweep (after every release; also before each debrief)
 1. `git log --first-parent <last release merge>..origin/main`: for every merged branch, close the items it finished (proof: the PR).
-2. Run `npx tsx --test src/game/roadmap.test.ts`: it lists orphans (a defect, known-list group or NEXT.md with no R-id) and done items with
+2. Run `node tools/roadmapcheck.mjs`: it lists orphans (a defect, known-list group or NEXT.md with no R-id) and done items with
    a bad proof. Add or fix each.
 3. Read the new defect-log rows and every NEXT.md changed since the last sweep; file what is open.
 4. Re-rank "Next up (the trio)" with the lead: Matt's order first, then what unblocks most items.
@@ -58,7 +63,8 @@ no traceable PR: R-137).
   never merge it into the keeper branch (four conflicts in shared docs).
 
 ## Tried and didn't work
-- (none yet)
+- 2026-11-01: numbering a fresh draft from R-1 while the lead had already given Matt R-1..R-6. Ask the lead which numbers Matt has
+  heard before numbering anything.
 
 ## To try
 - Let the gate print the totals table so the estimate can't drift from the rows.

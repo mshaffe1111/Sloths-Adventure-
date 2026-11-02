@@ -11,8 +11,9 @@
  *      that still has entries is not cited by an open R-item; every clipknown group (G1, G2, ...) and every playerText.known key must be
  *      cited by an open R-item too ("clipknown G4", the key's text);
  *   4. a reference/ NEXT.md file is not cited by any R-item (open or archived);
- *   5. an R-item marked done (in the archive, or a state "done (...)") names no proof, or a proof that does not exist: a commit must be
- *      an ancestor of HEAD, a PR must have its "Merge pull request #n from" commit in HEAD's history.
+ *   5. a done item (A-n in the archive, or a state "done (...)") names no proof, or a proof that does not exist: a commit must be in
+ *      HEAD's history or on a branch of this clone, a PR must have its "Merge pull request #n from" commit in HEAD's history.
+ * Numbers: R-n and R-n.m are open items, A-n archived ones; the "Draft numbers retired" table is skipped (never reused).
  * It needs the full history (CI: gates.yml checks out with fetch-depth 0).
  */
 import { execFileSync } from 'node:child_process';
@@ -40,10 +41,10 @@ if (fs.existsSync(path.join(root, RM))) {
   for (const line of read(RM).split('\n')) {
     const h = line.match(/^## (.+)/);
     if (h) area = h[1].trim();
-    if (!/^\| R-\d+ \|/.test(line)) continue;
+    if (!/^\| (R-\d+(\.\d+)?|A-\d+) \|/.test(line)) continue;
     const c = line.trim().replace(/^\||\|$/g, '').split(' | ').map((x) => x.trim());
     const id = c[0];
-    if (/^Decisions/.test(area)) continue; // decision rows point at items listed in their area
+    if (/^Draft numbers retired/.test(area)) continue; // old draft numbers, kept so they are never reused
     if (/^Done/.test(area)) items.push({ id, what: c[1], done: true, proof: c[3] ?? '', source: c[3] ?? '', area });
     else if (c.length >= 6) {
       const [, what, size, state, owner, source] = c;
@@ -119,13 +120,19 @@ for (const it of items.filter((i) => i.done)) {
   const shas = [...it.proof.matchAll(/\b([0-9a-f]{7,40})\b/g)].map((m) => m[1]);
   if (!prs.length && !shas.length) { fail(`${it.id} is done but names no PR or commit`); continue; }
   for (const n of prs) if (!merged.has(n)) fail(`${it.id}: PR #${n} has no merge commit in this history (never merged?)`);
-  for (const s of shas) if (tryGit('merge-base', '--is-ancestor', s, 'HEAD') === null) fail(`${it.id}: commit ${s} is not in this history`);
+  for (const s of shas) {
+    // a commit counts when it is in this history, or on a branch this clone knows (work merged on the lead's branch first)
+    if (tryGit('merge-base', '--is-ancestor', s, 'HEAD') !== null) continue;
+    if (tryGit('cat-file', '-e', `${s}^{commit}`) !== null && (tryGit('for-each-ref', '--contains', s, '--count=1', 'refs/remotes', 'refs/heads') ?? '') !== '') continue;
+    fail(`${it.id}: commit ${s} is not in this history or on any branch`);
+  }
 }
 
 // ---- totals (the estimate's table comes from these)
 const days = { S: 0.5, M: 1.5, L: 4 };
 const by = new Map();
-for (const i of open) {
+const helperWork = (i) => !/^Matt\b/.test(i.owner ?? '') && !/^R-149 /.test(i.area);
+for (const i of open.filter(helperWork)) {
   const a = by.get(i.area) ?? { S: 0, M: 0, L: 0 };
   a[i.size] = (a[i.size] ?? 0) + 1;
   by.set(i.area, a);
@@ -137,7 +144,7 @@ for (const [a, c] of by) {
   tot += d;
   console.log(`  ${a}: S${c.S} M${c.M} L${c.L} = ${d} helper-days`);
 }
-console.log(`  all: ${tot} helper-days`);
+console.log(`  all: ${tot} helper-days (Matt's own items and the decisions left out: ${open.filter((i) => !helperWork(i)).length})`);
 
 for (const f of fails) console.log(`✗ ${f}`);
 console.log(fails.length ? `FAIL (${fails.length})` : 'PASS');
