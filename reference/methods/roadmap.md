@@ -12,7 +12,7 @@ roadmap-keeper helper.
 when they differ, the repo wins and the doc is fixed the same day. No other file keeps its own to-do list without an R-id that cites it.
 
 ## Writing an item
-1. **Number:** Matt's own list is R-1..R-10 (pieces R-1.1, R-1.2, ...). A piece of an existing topic is its next free R-n.m; a new topic
+1. **Number:** Matt's own list is R-1..R-12 (pieces R-1.1, R-1.2, ...). A piece of an existing topic is its next free R-n.m; a new topic
    is the next free R-n (above every number ever used, including the "Draft numbers retired" table). Done work is archived as A-n.
    Never reuse a number, never renumber one Matt has heard (2026-11-01: draft numbers clashed with the ones the lead had given Matt;
    the clash cost a rebuild and is why the retired table exists).

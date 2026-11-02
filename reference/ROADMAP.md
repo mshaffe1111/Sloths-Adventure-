@@ -7,7 +7,7 @@ Gate: `node tools/roadmapcheck.mjs` fails when open work in the repo has no numb
 **The goal (PARTNER.md):** all 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.
 
 Last swept: 2026-11-01 9:49 PM ET (rebuild 2: Matt's R-1..R-12, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
-Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 87, 2026-11-01; the old sections moved word for word to "Roadmap archive" at its bottom.
+Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 93, 2026-11-01 10:10 PM ET (R-12 times, five lanes); the old sections moved word for word to "Roadmap archive" at its bottom.
 
 ## How to read it
 
@@ -195,7 +195,7 @@ Test link world by world; nothing goes live until all of it is done (decision 1)
 
 | ID | What | Tier | What we get | Time | Value | Size | State | Owner | Source |
 |---|---|---|---|---|---|---|---|---|---|
-| R-11 | "mark what we get out of it, how long it would take estimated, and the value it brings A to F." Every open item carries What we get, Days (helper-days) and Value A-F (A: missed at launch or fails a store/finish gate; B: big lift in fun, feel or polish; C: solid improvement; D: small or rarely seen; E: cosmetic or for us only; F: no player value now) | Day 1: Matt's way to judge what goes first | Each item shows what it gives, how long, and how much it matters | 2 h (the keeper) | B | S | in progress | roadmap-keeper | lead 2026-11-01; 8234eccf |
+| R-11 | "mark what we get out of it, how long it would take estimated, and the value it brings A to F." Every open item carries What we get, Time (helper hours, measured from past jobs) and Value A-F (A: missed at launch or fails a store/finish gate; B: big lift in fun, feel or polish; C: solid improvement; D: small or rarely seen; E: cosmetic or for us only; F: no player value now) | Day 1: Matt's way to judge what goes first | Each item shows what it gives, how long, and how much it matters | 2 h (the keeper) | B | S | in progress | roadmap-keeper | lead 2026-11-01; 8234eccf |
 
 ## R-12 Estimates from measured history (Matt, 2026-11-01)
 
@@ -220,9 +220,9 @@ Test link world by world; nothing goes live until all of it is done (decision 1)
 | R-149.12 | 4-D rethink (R-141.1) and the whole swimming stage (R-5.22): still wanted? | Parking lot: both are 1.1 candidates | 4-D and the swim stage settled | 0.25 h (Matt's own time, not a helper's) | D | S | open | Matt | inv Decisions 11 |
 | R-149.13 | Motion model v2 has no record after Oct 25: drop it? (the other stale doc decisions were settled by what shipped: A-27) | Parking lot: housekeeping | A stale decision closed | 0.25 h (Matt's own time, not a helper's) | F | S | open | Matt | roadmap doc "Decisions waiting on Matt" |
 | R-149.14 | Controls decided 10-30/31 with no implementing commit found: charge-and-release mega (CT-31), slanted carry option b (CT-33), even run speed (CT-32, re-times every jump), vibration on in the app (AN-14): confirm each is still wanted | Important: unblocks R-146.6 | Control changes confirmed or dropped | 0.5 h (the lead asks Matt) | C | S | verify | lead | inv Controls; audit-2 calls |
-| R-149.15 | 9-2 The Last Trees canopy (R-2.4) and 10-8 Clockwork Gate (R-2.8): at launch (about 8 days and about $5), or 1.1 with today's stages in their place? | Day 1: decides the size of Worlds 9-10 | The size of Worlds 9-10 at launch settled | 0.25 h (Matt's own time, not a helper's) | A | S | open | Matt | R-10 tiers; audit-2 Builds 8-9 |
+| R-149.15 | 9-2 The Last Trees canopy (R-2.4) and 10-8 Clockwork Gate (R-2.8): at launch (about 13 helper hours and about $5), or 1.1 with today's stages in their place? | Day 1: decides the size of Worlds 9-10 | The size of Worlds 9-10 at launch settled | 0.25 h (Matt's own time, not a helper's) | A | S | open | Matt | R-10 tiers; audit-2 Builds 8-9 |
 | R-149.16 | The ledger and Wanted posters (R-4.3): in the story's launch release, or 1.1? If 1.1, the story text must not mention them | Day 1: decides whether the story text may mention them | The story text can be finished | 0.25 h (Matt's own time, not a helper's) | A | S | open | Matt | R-10 tiers; story hand-off |
-| R-149.17 | Bosses 6-8: a story-born third phase each (R-1.15, about 4 days) at launch, or in 1.1? Coaching lines (R-1.6) are Day 1 either way | Day 1: decides how much boss work comes before launch | The boss work before launch settled | 0.25 h (Matt's own time, not a helper's) | A | S | open | Matt | R-10 tiers; audit-2 Build 10 |
+| R-149.17 | Bosses 6-8: a story-born third phase each (R-1.15, about 8 helper hours) at launch, or in 1.1? Coaching lines (R-1.6) are Day 1 either way | Day 1: decides how much boss work comes before launch | The boss work before launch settled | 0.25 h (Matt's own time, not a helper's) | A | S | open | Matt | R-10 tiers; audit-2 Build 10 |
 
 ## R-141 Worlds 1-8 (not bugs, not tuning)
 

@@ -38,7 +38,7 @@ change, so the app runs smooth on your three phones; and the Play Store gates. E
 
 | | What | How long |
 |---|---|---|
-| (a) Building | Day 1 about 170 helper hours + the Important I recommend about 53 h = about 222 h over five lanes. The busiest lane carries about 50 h (tuning and fairness); World 9/10 about 49 h | **about 6-8 working days** at 6-8 h a lane a day |
+| (a) Building | Day 1 about 170 helper hours (roadmapcheck prints 178.5: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 53 h = about 222 h over five lanes. The busiest lane carries about 50 h (tuning and fairness); World 9/10 about 49 h | **about 6-8 working days** at 6-8 h a lane a day |
 | (b) Fixed calendar | Your phone checks: a test link at the end of each 2-day wave, five GPU checks on the three phones, then your final passes of Worlds 7-10 and every boss (about 9 h of your play) and one fix round after them (not measured yet; budget about a day). The Play closed test: 14 days with 12 testers, once your developer account, app ID and signing are set (R-149.9) | about 3-4 days after the build for the passes and fixes; **14 days** for the closed test |
 | (c) Critical path | The closed test, if it starts in the first 3 days (it can start on today's build and take our updates as they come; check in Play Console that an update doesn't restart the 14 days). Otherwise building + your passes. Google's review of the production release comes after both; its length is not measured here | **about 2.5-3 weeks** from the day your Play account is set up |
 

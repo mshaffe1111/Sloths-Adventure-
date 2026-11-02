@@ -191,7 +191,7 @@ for (const it of items.filter((i) => i.done)) {
 // ---- totals (the estimate's table comes from these)
 const days = { S: 0.5, M: 1.5, L: 4 };
 const by = new Map();
-const helperWork = (i) => !/^Matt\b/.test(i.owner ?? '') && !/^R-149 /.test(i.area);
+const helperWork = (i) => !/^Matt$/.test((i.owner ?? '').trim()) && !/^R-149 /.test(i.area);
 for (const i of open.filter(helperWork)) {
   const a = by.get(i.area) ?? { S: 0, M: 0, L: 0, days: 0 };
   a[i.size] = (a[i.size] ?? 0) + 1;
