@@ -193,5 +193,6 @@ Matt found it on his phone. Rules from now on:
   fact; the step that invites the slip is removed). A rule that says "be careful" is not a countermeasure.
 - **Ask only for what you'll use.** Don't ask a helper to type facts the lead reads anyway (commit ids, revs: the lead reads git).
   Every needless step is a chance to get it wrong.
-- **Planned shift changes.** A long-running helper (keeper, supervisors) hands off to a fresh one at about 50% context or at the end of
-  each working day, with a handoff note. That is routine, not a retirement. Long contexts get sloppy; rotate before they do.
+- **Notes, not rotation (Matt, 2026-11-02).** Every helper keeps reference/notes/<name>.md like the lead's STATUS.md and reads it after
+  every compression (the start-up print reminds it). Long-running helpers carry on; we do not rotate or retire for memory. The lead checks
+  a helper's notes file at each check-in: stale notes are a send-back.
