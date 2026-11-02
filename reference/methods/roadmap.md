@@ -74,6 +74,8 @@ no traceable PR: R-137).
 - Example: R-3 (World 4 built): archived with PR #30, checked with `git merge-base`.
 
 ## Pitfalls we already paid for
+
+- **Lane loads summed by hand drift** (2026-11-02): moving R-6.26 to lane 1 without taking it out of lane 5's sum, and closing R-1.1 without taking it out of lane 2's, made the reported busiest lane 2-6 h wrong for two reports. Sum lane loads from BUILD-PLAN §2's tables by script every time an item moves, closes or is added.
 - 2026-11-01: "no open sound item is written anywhere" was written after searching only the files already open; audit-2 Build 3 had
   five. Before writing that something does not exist, grep the whole tree (`git grep -n -i <words>`) and the inventory (D24).
 - 2026-11-01: draft 1 was built before the lead's inventory arrived and had to be rebuilt. When an inventory is on its way, gather and

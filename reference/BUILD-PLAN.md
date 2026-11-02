@@ -33,16 +33,16 @@ with the lead's checks between jobs).
 **What launch needs (Day 1):** Worlds 9 and 10 built and fair, with the 9-2 canopy and 10-8 Clockwork Gate showpieces; the Drake and the
 General finished, every boss fair and coached, bosses 6-8 with their story-born third phases; the new story start to finish, with the
 ledger and Wanted posters; the unfair spots fixed (Worlds 1-5 included) and Normal rising world by world; the blocking bugs; painted
-icons B-E; the GPU change, so the app runs smooth on your three phones; and the Play Store gates. Every Day 1 item is graded A, except
-the five you put in on 2026-11-01 (B: R-2.4, R-2.8, R-4.3, R-1.15, R-6.25).
+icons B-E; stages and generators that stop repeating (R-150); the GPU change, so the app runs smooth on your three phones; and the Play Store gates. Every Day 1 item is graded A, except
+the ones graded B for polish (R-2.4, R-2.8, R-4.3, R-1.15, R-6.25, R-6.27, R-1.16, R-6.28, R-5.23, R-6.30; each says why).
 
 **The estimate, in three parts:**
 
 | | What | How long |
 |---|---|---|
-| (a) Building | Day 1 about 209.5 helper hours (roadmapcheck prints 217.5: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 54.5 h = about 264 h over five lanes (R-1.1, the Crocus panel, done pending the merge; Matt's 4-7 bugs R-6.28, R-6.29, R-5.23 added 6.5 h on 11-02; the mist edges R-6.30 1.5 h and the rhythm check R-150.1 3 h). Your 2026-11-01 calls added 27.5 h (9-2, 10-8, the ledger and posters, bosses 6-8's third phases, icons B-E), the 4-3 waterfall cave (R-6.27) 2.5 h and the poorly-reading defeat panels (R-1.16) 2.5 h. The busiest lane carries about 61.5 h (tuning and fairness); menus, art and the bosses about 56.5 h; World 9/10 about 55 h | **about 8-10 working days** at 6-8 h a lane a day |
+| (a) Building | Day 1 about 262.5 helper hours (roadmapcheck prints 270.5: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 51.5 h = about 314 h over five lanes. Since 2026-11-01's 222 h: your 11-01 calls 27.5 h; R-6.27 and R-1.16 2.5 h each; your 11-02 bugs R-6.28, R-6.29, R-5.23, R-6.30 8 h; R-150 (all stages and the generators, Day 1, 11-02) 53 h; R-1.1 done. Lane loads, summed from §2's tables: 63 / 61.5 / 62.5 / 64 / 62.5 h | **about 8-11 working days** at 6-8 h a lane a day |
 | (b) Fixed calendar | Your phone checks: a test link at the end of each 2-day wave, five GPU checks on the three phones, then your final passes of Worlds 7-10 and every boss (about 9 h of your play) and one fix round after them (not measured yet; budget about a day). The Play closed test: 14 days with 12 testers. You decided (2026-11-01) the account, app ID, signing and test start later: when Day 1 lane work is about 80% done (R-149.9, R-147.1) | about 3-4 days after the build for the passes and fixes; **14 days** for the closed test |
-| (c) Critical path | The closed test. It starts when Day 1 lane work is about 80% done (about day 6.5-8 of building), so your passes and the fix round run inside its 14 days. If it waits until after your passes, it is building + passes + 14 days (8-10 + 3-4 + 14 = 25-28 days). Not measured, so not counted: Google's checks on a new developer account before the first upload, and Google's review of the production release after the test | **about 3 weeks** from now with the 80% trigger; about 3.5-4 weeks if the test waits for your passes |
+| (c) Critical path | The closed test. It starts when Day 1 lane work is about 80% done (about day 6.5-9 of building), so your passes and the fix round run inside its 14 days. If it waits until after your passes, it is building + passes + 14 days (8-11 + 3-4 + 14 = 25-29 days). Not measured, so not counted: Google's checks on a new developer account before the first upload, and Google's review of the production release after the test | **about 3-3.5 weeks** from now with the 80% trigger; about 3.5-4 weeks if the test waits for your passes |
 
 So: about 3 weeks, matching how fast the last 3 weeks went. Your four launch calls (R-149.15..R-149.17, and icons B-E) added about a day of
 building; with the 80% trigger most of that day lands inside the closed test. Parking lot after launch: about 110 h, roughly 3 more days of
@@ -83,6 +83,8 @@ Dependencies come first, whatever the value: the bands measure (R-5.1) before th
 plumbing (R-4.1) before any text (R-4.2); GPU stage 0 before 1-6; World 9 before World 10; the hold (R-146.5, R-2.7) before the General
 (R-1.10). Inside those limits each lane takes its next item by value per hour (A=6 ... F=1, over hours). Generated from ROADMAP.md.
 
+R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as shares (rows marked "share"), so no lane carries all 50 h; R-150.1 (lane 5) goes first because it blocks both. Lane loads are summed from these tables by script, never by hand (2026-11-02: hand tallies drifted 2 h in lane 5 and 1.5 h in lane 2).
+
 ### Lane 1: engine and WebGL (GPU, engine fixes, sound, controls)
 
 | Group | Item | What we get | Value | Time |
@@ -100,6 +102,8 @@ plumbing (R-4.1) before any text (R-4.2); GPU stage 0 before 1-6; World 9 before
 | Day 1 | R-3.5 | Props and particles stop dragging the frame rate | A | 4 h (no history: range 3-8 h; the plan says a day) |
 | Day 1 | R-6.26 | No player stranded in 4-3 | A | 2 h (no history: reproduce first (range 1-4 h)) |
 | Day 1 | R-6.27 | The cave under the falls looks like shelter, as it plays | B | 2.5 h (like fix-petals (about 2 h start to accept), plus a check of every waterfall shelter) |
+| Day 1 | R-150.2 (W8 share) | Every generated stage plays differently, not run, jump, climb, repeat | A | 6 h of R-150.2's 30 h |
+| Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 8 h of R-150.3's 20 h |
 | Important (recommended) | R-145.2 | Phones hear the jungle around them | B | 1 h (like polish-audio (3.6 h) / polish-sfx (4.7 h)) |
 | Important (recommended) | R-6.19 | Dot's tips fit on narrow phones | B | 1 h (like fix-petals (about 2 h start to accept)) |
 | Important (recommended) | R-145.3 | iPhone players hear the music | C | 1 h (like polish-audio (3.6 h) / polish-sfx (4.7 h)) |
@@ -140,6 +144,7 @@ plumbing (R-4.1) before any text (R-4.2); GPU stage 0 before 1-6; World 9 before
 | Day 1 | R-4.1 | The new story can be wired in at all | A | 6 h (no history for the slot plumbing: range 4-8 h; nearest story-delivery (3 h)) |
 | Day 1 | R-2.8 | A showpiece clockwork stage in World 10 | B | 6.5 h (like w7-slide (5.5 h) + its art (w7-slide-art 1 h)) |
 | Day 1 | R-4.2 | The story stops being skipped: the new words in every world | A | 9 h (like journal-voice (about 2 h), three acts at about 3 h each (story-delivery 3 h)) |
+| Day 1 | R-150.2 (W5-W7 share) | Every generated stage plays differently, not run, jump, climb, repeat | A | 18 h of R-150.2's 30 h (about 6 h a world: two new section types like gen2-w6-swing (2.3 h) + one curation (about 1.5 h)) |
 | Important (if time) | R-4.14 | Old story asks either covered or closed | E | 0.5 h (a keeper check (about 30 min)) |
 | Important (if time) | R-4.5 | Characters talk during play at key stages | C | 3 h (like story-delivery (3 h)) |
 | Parking lot | R-144.4 | Small motion in cutscenes; the W8 moon in frame | D | 3 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
@@ -168,6 +173,7 @@ plumbing (R-4.1) before any text (R-4.2); GPU stage 0 before 1-6; World 9 before
 | Day 1 | R-1.9 | World 9's boss becomes a real climax fight | A | 9 h (no history for a boss rebuild: range 6-12 h; nearest w7-slide (5.5 h) and the 5-M rebuild rounds) |
 | Day 1 | R-1.15 | Bosses 6-8 each end with a fresh story-born phase | B | 8 h (no history: range 5-10 h for three phases; nearest w7-slide (5.5 h)) |
 | Day 1 | R-1.16 | Every boss's defeat shows the boss he just beat | B | 2.5 h (like hf-art-bosses (30 min) per panel, plus wiring and review) |
+| Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 6 h of R-150.3's 20 h |
 | Important (recommended) | R-6.14 | Dot never repeats herself word for word | C | 0.5 h (like journal-voice (about 2 h)) |
 | Important (recommended) | R-6.15 | Every find has its own name | C | 0.5 h (like journal-voice (about 2 h)) |
 | Important (recommended) | R-144.2 | Two backdrops no longer too bright | C | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
@@ -202,6 +208,8 @@ plumbing (R-4.1) before any text (R-4.2); GPU stage 0 before 1-6; World 9 before
 | Day 1 | R-1.10 | The last fight flows straight into the ending | A | 10 h (no history for a boss rebuild: range 7-14 h (it also hands off to the finale); nearest w7-slide (5.5 h)) |
 | Day 1 | R-2.1 | World 9 plays fair, varied, and on the new builder | A | 10 h (like gen2-w7 (9 h) + one 300-roll curation (about 1.5 h, w9 NEXT.md)) |
 | Day 1 | R-2.6 | World 10 plays fair, varied, and on the new builder | A | 10 h (like gen2-w7 (9 h) + one 300-roll curation (about 1.5 h, w9 NEXT.md)) |
+| Day 1 | R-150.2 (W9/W10 share) | Every generated stage plays differently, not run, jump, climb, repeat | A | 6 h of R-150.2's 30 h (about 3 h each on top of their builds) |
+| Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 3 h of R-150.3's 20 h |
 | Important (if time) | R-2.11 | World 10's far sky isn't stretched | D | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
 | Important (if time) | R-2.5 | 9-7's climb matches the rebuilt world | C | 2.5 h (like gen2-w6-swing (2.3 h)) |
 | Important (if time) | R-2.9 | World 10's climbs match the rebuilt world | C | 4 h (like gen2-ascent (3.4 h on 10-29, not finished)) |
@@ -233,6 +241,8 @@ plumbing (R-4.1) before any text (R-4.2); GPU stage 0 before 1-6; World 9 before
 | Day 1 | R-6.28 | Standing still on the glow always settles the mist | B | 2 h (like building 4-6 Above the Mist (about 1.9 h: 02109a34 to 4b2c8f93, 10-25)) |
 | Day 1 | R-5.23 | Stars that match how the stage went | B | 1.5 h (like qa-fix-meeca (20 min), plus tests, the continue count through three callers and an old-save check) |
 | Day 1 | R-6.30 | The mist fades in and out softly, no stripes | B | 1.5 h (like polish-a1 (1.7 h)) |
+| Day 1 | R-150.1 | A ruler that flags a boring stage before Matt plays it | A | 3 h (like bot-fix + self-test (about 2 h), plus proving it flags 5-4); first, it blocks R-150.2 and R-150.3 |
+| Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 3 h of R-150.3's 20 h (the flagged stages in its tuning worlds) |
 | Important (recommended) | R-143.8 | World 5's Normal work feeds the tuning | C | 0.5 h (a keeper check (about 30 min)) |
 | Important (recommended) | R-5.6 | Falls hurt fairly: short ones sting, long ones cost a life | B | 1 h (like fix-petals (about 2 h start to accept)) |
 | Important (recommended) | R-143.2 | Paid deep-water art used | C | 1 h (like w8-merge (2.6 h for a big merge)) |
@@ -244,12 +254,10 @@ plumbing (R-4.1) before any text (R-4.2); GPU stage 0 before 1-6; World 9 before
 | Important (recommended) | R-141.2 | World 5 less padded | B | 2.5 h (like gen2-w5 (2 h)) |
 | Important (recommended) | R-143.1 | Paid World 5 work not thrown away | B | 2.5 h (like w8-merge (2.6 h for a big merge)) |
 | Important (recommended) | R-5.5 | Checkpoints where a player expects them | B | 3 h (like polish-levels (3.4 h)) |
-| Important (recommended) | R-150.1 | A ruler that flags a boring stage before Matt plays it | A | 3 h (like bot-fix + self-test (about 2 h), plus proving it flags 5-4) |
 | Important (if time) | R-1.5 | Proof the Queen's council table shows; the Sovereign's screech looks right | D | 0.5 h (a keeper check (about 30 min)) |
 | Important (if time) | R-5.17 | 2-4 stops dragging on | C | 2 h (like fix-petals (about 2 h start to accept)) |
 | Important (if time) | R-141.5 | 7-2, 7-8 and 8-7's climbs match the new builder | C | 6 h (like gen2-ascent (3.4 h on 10-29, not finished)) |
 | Important (if time) | R-5.3 | We can measure puzzle and fight stages too | C | 6 h (like bot-fix + self-test (about 2 h), for six bot modes) |
-| Matt's call | R-150.2 | Stages that stop feeling like run, jump, climb, repeat | A | 20 h (no history for a game-wide variety pass: range 15-30 h; nearest gen2-lookalike (6.5 h, all worlds) and gen2-curate (2 h a world)) |
 | Parking lot | R-144.8 | Old art asks checked and closed | E | 0.5 h (a keeper check (about 30 min)) |
 | Parking lot | R-148.7 | Dead stretches can't creep back | E | 1 h (like bot-fix + self-test (about 2 h)) |
 | Parking lot | R-141.4 | 8-1 replays a little more differently | D | 2 h (like gen2-curate (2 h)) |
