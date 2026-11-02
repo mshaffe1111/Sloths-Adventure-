@@ -26,6 +26,7 @@ that do the best job get the follow-on work.
 - Estimates come from measured history (how long the same kind of job really took, from git and STATUS), never from a guess; say the source. (D25)
 
 **Stages and play**
+- Judge a stage inside its world, played in order after the ones before it: passing alone is not passing. Use what we built; "run, jump, collect, vine" with nothing else is not done. (D26)
 - A first-timer's natural run must collect enough for the goal; pickups sit on the natural path. (D8, D14)
 - Anything placed once (finds, notes, snails) has an always-place fallback and a test on every layout. (D9)
 - In-play words draw above every world thing, below the HUD, and never cover where the player must act. (D10, D22)
