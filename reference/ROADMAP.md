@@ -7,11 +7,11 @@ Gate: `node tools/roadmapcheck.mjs` fails when open work in the repo has no numb
 **The goal (PARTNER.md):** all 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.
 
 Last swept: 2026-11-01 10:30 PM ET (Matt's calls R-149.1, .9, .15-.17 and R-4.8 recorded); rebuild 2 at 2026-11-01 9:49 PM ET (Matt's R-1..R-12, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
-Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 99, 2026-11-02 12:35 AM ET (R-12 times, five lanes; Matt's calls R-149.1, .9, .15-.17, R-4.8; R-6.27; R-1.16; R-1.1 done pending the merge); the old sections moved word for word to "Roadmap archive" at its bottom.
+Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 101, 2026-11-02 11:29 AM ET (R-12 times, five lanes; Matt's calls; R-6.27; R-1.16; R-1.1 done pending the merge; R-13 archived, R-148.14); the old sections moved word for word to "Roadmap archive" at its bottom.
 
 ## How to read it
 
-- **Numbers:** Matt's own list is R-1 to R-12 (R-8 and R-9 are done: A-26, A-29); their pieces are R-1.1, R-1.2, ... Everything else is
+- **Numbers:** Matt's own list is R-1 to R-13 (R-8, R-9 and R-13 are done: A-26, A-29, A-36); their pieces are R-1.1, R-1.2, ... Everything else is
   R-141 and up. A number is never reused.
   Done work is archived as A-1, A-2, ... with its proof.
 - **Tier** (Matt's R-10, his names): **Day 1** (must be in at launch: PARTNER.md's goal and the Play Store hard gates), **Important**
@@ -203,7 +203,7 @@ Test link world by world; nothing goes live until all of it is done (decision 1)
 
 | ID | What | Tier | What we get | Time | Value | Size | State | Owner | Source |
 |---|---|---|---|---|---|---|---|---|---|
-| R-12 | "Some of the estimated time frame seems way off. We've done everything we've done so far was within 3 weeks. And it's talking about 3 months of work." Every item's time comes from a measured past job (git: first branch commit to merge; STATUS: start to accept), named beside it; five lanes, not three (Matt decided 2026-11-01) | Day 1: the launch date Matt plans around | An estimate Matt can trust | 2 h (the keeper) | A | S | in progress | roadmap-keeper | lead 2026-11-01; reference/BUILD-PLAN.md |
+| R-12 | "Some of the estimated time frame seems way off. We've done everything we've done so far was within 3 weeks. And it's talking about 3 months of work." Every item's time comes from a measured past job (git: first branch commit to merge; STATUS: start to accept), named beside it; five lanes, not three (Matt decided 2026-11-01) | Day 1: the launch date Matt plans around | An estimate Matt can trust | 2 h (the keeper) | A | S | in progress | roadmap-keeper | lead 2026-11-01; reference/BUILD-PLAN.md; D25 |
 
 ## R-149 Decisions waiting on Matt (one at a time, multiple choice)
 
@@ -336,6 +336,7 @@ Audit-2 rates sound the weakest category (C+ vs AAA). Needs a listening session 
 | R-148.10 | Older asks from the Oct 21-28 doc (empty stretches, stages feel the same, puzzle kit, special gestures, carrying rule, stuck sparkle, accessibility menu, best times): check each, close with proof or re-file | Parking lot: a check | Old asks proven or reopened | 0.5 h (a keeper check (about 30 min)) | E | S | verify | roadmap-keeper | roadmap doc "Next when tokens allow", "Always", "Later: polish" |
 | R-148.11 | Stale docs: TRACKER.md (10-29), HANDOFF.md (10-25), the finish plan's Phase 2-4 boxes, STATUS "Open decisions for Matt": point each at this list. (The roadmap doc's own "Where we are" and old "Decisions waiting on Matt" were moved to its archive with pointers on 2026-11-01, doc rev 79.) | Important: stale docs mislead helpers | No stale doc misleads a helper | 0.5 h (a keeper check (about 30 min)) | E | S | open | roadmap-keeper | inv "Done but still looks open" |
 | R-148.13 | drawcheck in a container can't play 1-4 / 8-4 / ctest-mix14 ("Execution context was destroyed", "__play is not a function"); which scenarios fail changes from run to run. The cause is unproven (a service worker in vite preview?). Don't dig until it's scheduled | Important: every helper's gate trips on it | Helpers can run drawcheck themselves instead of waiting for CI | 2 h (no history for a harness fix: range 1-4 h) | B | S | open | unassigned | tools/perf/drawcheck.mjs; roadmap-keeper runs 2026-11-01 |
+| R-148.14 | The lead's support team (Matt, 2026-11-01 late: "you need a supervisor... a support team, something that doesn't cost a lot of tokens but does all the check-ins, reports back to you"): supervisor (bot-fix), release clerk (kaizen-gates), roadmap keeper; a role file each in reference/roles/, read before every build | Important: the lead's time goes to the finish line, not check-ins | Check-ins and releases run on written steps; the lead judges the screens | 0.5 h (the lead wrote the role files: 82897258) | B | S | done (82897258; pending start: the supervisor and the release clerk start on Nov 2) | lead | reference/GAMEPLAN-2026-11-02.md §6; reference/roles/README.md; lead 2026-11-02 11:24 AM ET |
 
 ## Done (archive)
 
@@ -378,6 +379,7 @@ Each closed item names its proof (a merged PR, or a commit). Worlds 4-8 are buil
 | A-33 | (R-149.15) Matt decided: 9-2 The Last Trees (R-2.4) and 10-8 The Clockwork Gate (R-2.8) are in for launch | 2026-11-01 | ef346427 |
 | A-34 | (R-149.16) Matt decided: the ledger pages and the Wanted posters (R-4.3) are in for launch, owned by menus B | 2026-11-01 | ef346427 |
 | A-35 | (R-149.17) Matt decided: bosses 6-8's story-born third phases (R-1.15) are in for launch | 2026-11-01 | ef346427 |
+| A-36 | (R-13) Matt: "do some research on what makes a great manager using continuous improvement... and tell me how you're going to incorporate that." Done: reference/LEADER-STANDARD-WORK.md (leverage, paired indicators, gemba, coaching kata, Hoshin), LEAD-PLAYBOOK 7b and the CLAUDE.md pointer | 2026-11-02 | 48da6e33 |
 
 ## Draft numbers retired (sent to the lead in drafts 1 and 2; never reused)
 
