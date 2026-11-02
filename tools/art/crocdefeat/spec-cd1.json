@@ -1,0 +1,86 @@
+{
+ "tag": "cd1",
+ "loras": {
+  "style": [
+   "mshaffe111/croc-qwen-lora",
+   "croc_qwen_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "see-through, transparent, holes, sketch, unfinished, pencil lines, white scratches, grey wash, ghost, two crocodiles, background scenery, grass, water, text, letters, frame, border, photo, 3d render, blurry, cast shadow",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/8847a14b63296814f394a9d6a40ae59838a966ce/reference/prop-sheets/qa-notes/croc-defeat/starts/",
+ "items": [
+  {
+   "name": "back-from-idle-s62-7",
+   "start": "back-from-idle.png",
+   "prompt": "crocusrex, the crocodile king, a huge dark olive-green crocodile with rows of spiked scales, knocked out and lying flat on his back in the mud, upside down, his pale cream striped belly facing up, his four short legs sticking up in the air, his long tail flopped out, his head tipped back with his eyes shut and a dizzy little smile, his crooked crown of pink petals fallen on the ground beside his snout, one whole solid body, side view, painted storybook illustration, thick dark outline, rich colour, soft light from the upper left, on a flat plain magenta background",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "back-from-idle-s62-23",
+   "start": "back-from-idle.png",
+   "prompt": "crocusrex, the crocodile king, a huge dark olive-green crocodile with rows of spiked scales, knocked out and lying flat on his back in the mud, upside down, his pale cream striped belly facing up, his four short legs sticking up in the air, his long tail flopped out, his head tipped back with his eyes shut and a dizzy little smile, his crooked crown of pink petals fallen on the ground beside his snout, one whole solid body, side view, painted storybook illustration, thick dark outline, rich colour, soft light from the upper left, on a flat plain magenta background",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "back-from-idle-s74-7",
+   "start": "back-from-idle.png",
+   "prompt": "crocusrex, the crocodile king, a huge dark olive-green crocodile with rows of spiked scales, knocked out and lying flat on his back in the mud, upside down, his pale cream striped belly facing up, his four short legs sticking up in the air, his long tail flopped out, his head tipped back with his eyes shut and a dizzy little smile, his crooked crown of pink petals fallen on the ground beside his snout, one whole solid body, side view, painted storybook illustration, thick dark outline, rich colour, soft light from the upper left, on a flat plain magenta background",
+   "strength": 0.74,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "back-from-idle-s74-23",
+   "start": "back-from-idle.png",
+   "prompt": "crocusrex, the crocodile king, a huge dark olive-green crocodile with rows of spiked scales, knocked out and lying flat on his back in the mud, upside down, his pale cream striped belly facing up, his four short legs sticking up in the air, his long tail flopped out, his head tipped back with his eyes shut and a dizzy little smile, his crooked crown of pink petals fallen on the ground beside his snout, one whole solid body, side view, painted storybook illustration, thick dark outline, rich colour, soft light from the upper left, on a flat plain magenta background",
+   "strength": 0.74,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "side-from-defeat-s62-7",
+   "start": "side-from-defeat.png",
+   "prompt": "crocusrex, the crocodile king, a huge dark olive-green crocodile with rows of spiked scales, knocked out and lying flat on his back in the mud, upside down, his pale cream striped belly facing up, his four short legs sticking up in the air, his long tail flopped out, his head tipped back with his eyes shut and a dizzy little smile, his crooked crown of pink petals fallen on the ground beside his snout, one whole solid body, side view, painted storybook illustration, thick dark outline, rich colour, soft light from the upper left, on a flat plain magenta background",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "side-from-defeat-s62-23",
+   "start": "side-from-defeat.png",
+   "prompt": "crocusrex, the crocodile king, a huge dark olive-green crocodile with rows of spiked scales, knocked out and lying flat on his back in the mud, upside down, his pale cream striped belly facing up, his four short legs sticking up in the air, his long tail flopped out, his head tipped back with his eyes shut and a dizzy little smile, his crooked crown of pink petals fallen on the ground beside his snout, one whole solid body, side view, painted storybook illustration, thick dark outline, rich colour, soft light from the upper left, on a flat plain magenta background",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "side-from-defeat-s74-7",
+   "start": "side-from-defeat.png",
+   "prompt": "crocusrex, the crocodile king, a huge dark olive-green crocodile with rows of spiked scales, knocked out and lying flat on his back in the mud, upside down, his pale cream striped belly facing up, his four short legs sticking up in the air, his long tail flopped out, his head tipped back with his eyes shut and a dizzy little smile, his crooked crown of pink petals fallen on the ground beside his snout, one whole solid body, side view, painted storybook illustration, thick dark outline, rich colour, soft light from the upper left, on a flat plain magenta background",
+   "strength": 0.74,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "side-from-defeat-s74-23",
+   "start": "side-from-defeat.png",
+   "prompt": "crocusrex, the crocodile king, a huge dark olive-green crocodile with rows of spiked scales, knocked out and lying flat on his back in the mud, upside down, his pale cream striped belly facing up, his four short legs sticking up in the air, his long tail flopped out, his head tipped back with his eyes shut and a dizzy little smile, his crooked crown of pink petals fallen on the ground beside his snout, one whole solid body, side view, painted storybook illustration, thick dark outline, rich colour, soft light from the upper left, on a flat plain magenta background",
+   "strength": 0.74,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  }
+ ]
+}
