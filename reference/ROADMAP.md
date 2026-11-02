@@ -7,11 +7,12 @@ Gate: `node tools/roadmapcheck.mjs` fails when open work in the repo has no numb
 **The goal (PARTNER.md):** all 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.
 
 Last swept: 2026-11-01 9:27 PM ET (rebuild 2: Matt's R-1..R-9, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
-DRAFT for the lead; the Claude Doc mirrors it after the lead's go.
+Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 70, 2026-11-01; the old sections moved word for word to "Roadmap archive" at its bottom.
 
 ## How to read it
 
-- **Numbers:** Matt's own list is R-1 to R-8; their pieces are R-1.1, R-1.2, ... Everything else is R-149 and up. A number is never reused.
+- **Numbers:** Matt's own list is R-1 to R-9 (R-8 and R-9 are done: A-26, A-29); their pieces are R-1.1, R-1.2, ... Everything else is
+  R-141 and up. A number is never reused.
   Done work is archived as A-1, A-2, ... with its proof.
 - **Size** (one helper's working time, not Matt's review): S under half a day, M 1-2 days, L 3+ days.
 - **State:** `open`, `in progress`, `blocked (by ...)`, `held (by ...)`, `verify` (a fact must be checked in the code first),
@@ -304,7 +305,7 @@ Audit-2 rates sound the weakest category (C+ vs AAA). Needs a listening session 
 | R-148.8 | World 8 merge hygiene leftovers from audit Build 7: band gates (WIP-3), the kid gate (WIP-21); WIP-10's merge-one-branch-at-a-time rule for W9/W10 | M | verify | unassigned | audit-2 Build 7 |
 | R-148.9 | Doc ticks with no commit traced: sticky vines, no tall double jumps in 1-1 to 1-3; audit items marked done with no commit found: WIP-14, WIP-20, PF-4, PF-8. Find the commit or reopen | S | verify | roadmap-keeper | roadmap doc; inv "Done but still looks open" |
 | R-148.10 | Older asks from the Oct 21-28 doc (empty stretches, stages feel the same, puzzle kit, special gestures, carrying rule, stuck sparkle, accessibility menu, best times): check each, close with proof or re-file | S | verify | roadmap-keeper | roadmap doc "Next when tokens allow", "Always", "Later: polish" |
-| R-148.11 | Stale docs: TRACKER.md (10-29), HANDOFF.md (10-25), the finish plan's Phase 2-4 boxes, STATUS "Open decisions for Matt": point each at this list | S | open | roadmap-keeper | inv "Done but still looks open" |
+| R-148.11 | Stale docs: TRACKER.md (10-29), HANDOFF.md (10-25), the finish plan's Phase 2-4 boxes, STATUS "Open decisions for Matt", and the roadmap doc's own "Where we are" (still says "Next: World 4") and old "Decisions waiting on Matt" sections: point each at this list | S | open | roadmap-keeper | inv "Done but still looks open" |
 | R-148.12 | Lessons missing from reference/LESSONS.md for three logged defects: D4 (sideways text cut off with no automatic check), D5 (a stat shown where it doesn't apply: the eagle's "Defeated x0"), D6 (a baked canvas copy emptied after a lost canvas: Meeca invisible). The lead adds the lines (helpers only propose) | S | open | lead | reference/LESSONS.md D4 D5 D6; reference/CONTINUOUS-IMPROVEMENT.md |
 
 ## Done (archive)
@@ -340,8 +341,8 @@ Each closed item names its proof (a merged PR, or a commit). Worlds 4-8 are buil
 | A-25 | Swimming in clean, calm water (6-7's root well) | 2026-10-29 | 87f1e2f6 |
 | A-26 | Helper roster (R-8, Matt: "start keeping helpers that do the best job into the mix... the better they do, the more they get used"): reference/HELPERS.md and LEAD-PLAYBOOK 8b | 2026-11-01 | 4da30adf |
 | A-27 | Stale doc decisions settled by what shipped: the leaf glide (parachute), the soldiers (drawn; creatureLore.ts:26), the new creatures (capuchin, mantis, crab, piranha, sentry, owl, lizard, beetle), Meeca's stage and creatures both in, the promo video (brief handed to Matt's own agent) | 2026-10-30 | PR #30, PR #58 |
-| A-29 | (R-9, Matt: "make sure that our lessons learned, what works and what doesn't work, are all being used by our workers and helpers"; the keeper held to the lead's bar): reference/LESSONS.md printed with the laws at every session start; reports carry Method used / Lessons applied / Method update (LEAD-PLAYBOOK 8c); roadmapcheck fails a defect with no lesson line | 2026-11-01 | f5e299b6, 25407677 |
 | A-28 | Old roadmap-doc items closed: "8-2 gap/roost lives" (the broken bot's numbers, withdrawn 11-01) | 2026-11-01 | 877a819b |
+| A-29 | (R-9, Matt: "make sure that our lessons learned, what works and what doesn't work, are all being used by our workers and helpers"; the keeper held to the lead's bar): reference/LESSONS.md printed with the laws at every session start; reports carry Method used / Lessons applied / Method update (LEAD-PLAYBOOK 8c); roadmapcheck fails a defect with no lesson line | 2026-11-01 | f5e299b6, 25407677 |
 
 ## Draft numbers retired (sent to the lead in drafts 1 and 2; never reused)
 
