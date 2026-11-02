@@ -26,10 +26,10 @@ when they differ, the repo wins and the doc is fixed the same day. No other file
    to 6 h, L over 6 h. Plan a lane at about 6-8 helper hours a day. Pitfall we paid for: on 2026-11-01 sizes were set as "half a day /
    1-2 days / 3+ days" by feel and came out 2-4x too long (helpers measured 1.5-2.5 h for jobs sized at a day), so the estimate read 3
    months when history said about 3 weeks.
-5. **Tier** (Matt's R-10): `T1: why` (launch can't happen without it: PARTNER.md's goal and PLAY-STORE-RULES §1 hard gates and §4
-   bars), `T2: why` (high value before launch: players feel it, cheap for what it gives), `T3` (1.1+), or `Matt` (asked as an R-149
-   question). The reason quotes its source or says what was measured and when; it never claims more than the source says (2026-11-01:
-   five reasons had to be softened, e.g. "every upright scene" when the audit said upright scenes cut people off).
+5. **Tier** (Matt's R-10, his names): `Day 1: why` (in at launch: PARTNER.md's goal, PLAY-STORE-RULES §1 hard gates and §4 bars),
+   `Important: why` (wanted, not required for launch), `Parking lot` (after launch), or `Matt` (asked as an R-149 question). The reason
+   quotes its source or says what was measured and when; it never claims more than the source (2026-11-01: five reasons had to be
+   softened). Value A-F (R-11) must agree: a Day 1 item is A or B, or its tier says "graded X because".
 6. **State:** `open`, `in progress`, `blocked (by R-n or a person)`, `held (by money or Matt)`, `verify` (a fact must be checked in the
    code first), `done (date, PR #n or commit)`.
 7. **Owner:** a helper's job name, `lead`, `Matt`, `roadmap-keeper`, or `unassigned`.
