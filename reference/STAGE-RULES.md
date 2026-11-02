@@ -23,8 +23,12 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
 3. **No beat repeated to fill time.** The same obstacle (e.g. waiting for monkeys on a log) at most a few times a stage, and each repeat
    adds a twist (a second monkey, a moving log, a timer, a punch). Fifteen of the same wait fails.
 4. **Moving platforms early** (from World 2), then back in every world.
-5. **Real risk from World 5 on.** Falls into pits are allowed and expected; crumbling may be required anywhere once taught. Fair, never
-   cruel: every danger is readable before it bites and the checkpoint is close, but a careless player falls.
+5. **A gradual difficulty arc, from the start (Matt, 2026-11-02, replaces "real risk from World 5 on"):** "It's not about when levels
+   start getting hard. It's about the gradual arc of the difficulty based upon how often we get people to do the same things."
+   World 1 is easy and forgiving; World 2 brings new elements in subtly; by Worlds 8-9 it is clearly harder. Once something is taught,
+   sloppiness has a consequence (a fall, a lost life) in any world, World 2 included. Every time we ask the player to do the same thing
+   again (run, jump, climb), it is a little harder than last time: tighter gaps, less time, a hazard added. Fair, never cruel: every
+   danger reads before it bites and the checkpoint is close. The exact per-world numbers are a later talk with Matt.
 
 ---
 
