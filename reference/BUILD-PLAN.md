@@ -40,9 +40,9 @@ the ones graded B for polish (R-2.4, R-2.8, R-4.3, R-1.15, R-6.25, R-6.27, R-1.1
 
 | | What | How long |
 |---|---|---|
-| (a) Building | Day 1 about 264.5 helper hours (roadmapcheck prints 272.5: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 51.5 h = about 316 h over five lanes. Since 2026-11-01's 222 h: your 11-01 calls 27.5 h; R-6.27 and R-1.16 2.5 h each; your 11-02 bugs R-6.28, R-6.29, R-5.23, R-6.30 8 h; R-150 (all stages and the generators, Day 1, 11-02) 55 h with the mechanics audit; R-1.1 done. Lane loads, summed from §2's tables: 63 / 61.5 / 62.5 / 64 / 64.5 h | **about 8-11 working days** at 6-8 h a lane a day |
+| (a) Building | Day 1 about 268 helper hours (roadmapcheck prints 276: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 55.5 h = about 323.5 h over five lanes. Since 2026-11-01's 222 h: your 11-01 calls 27.5 h; R-6.27 and R-1.16 2.5 h each; your 11-02 bugs R-6.28, R-6.29, R-5.23, R-6.30 8 h; R-150 (all stages and the generators, Day 1, 11-02) 58.5 h with the mechanics audit and crumbling (R-150.5), plus vine polish R-150.6 4 h (Important); R-1.1 done. Lane loads, summed from §2's tables: 67 / 61.5 / 62.5 / 64 / 68 h | **about 9-11 working days** at 6-8 h a lane a day |
 | (b) Fixed calendar | Your phone checks: a test link at the end of each 2-day wave, five GPU checks on the three phones, then your final passes of Worlds 7-10 and every boss (about 9 h of your play) and one fix round after them (not measured yet; budget about a day). The Play closed test: 14 days with 12 testers. You decided (2026-11-01) the account, app ID, signing and test start later: when Day 1 lane work is about 80% done (R-149.9, R-147.1) | about 3-4 days after the build for the passes and fixes; **14 days** for the closed test |
-| (c) Critical path | The closed test. It starts when Day 1 lane work is about 80% done (about day 6.5-9 of building), so your passes and the fix round run inside its 14 days. If it waits until after your passes, it is building + passes + 14 days (8-11 + 3-4 + 14 = 25-29 days). Not measured, so not counted: Google's checks on a new developer account before the first upload, and Google's review of the production release after the test | **about 3-3.5 weeks** from now with the 80% trigger; about 3.5-4 weeks if the test waits for your passes |
+| (c) Critical path | The closed test. It starts when Day 1 lane work is about 80% done (about day 7-9 of building), so your passes and the fix round run inside its 14 days. If it waits until after your passes, it is building + passes + 14 days (9-11 + 3-4 + 14 = 26-29 days). Not measured, so not counted: Google's checks on a new developer account before the first upload, and Google's review of the production release after the test | **about 3-3.5 weeks** from now with the 80% trigger; about 3.5-4 weeks if the test waits for your passes |
 
 So: about 3 weeks, matching how fast the last 3 weeks went. Your four launch calls (R-149.15..R-149.17, and icons B-E) added about a day of
 building; with the 80% trigger most of that day lands inside the closed test. Parking lot after launch: about 110 h, roughly 3 more days of
@@ -115,6 +115,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Important (recommended) | R-6.18 | Dot's tips never cover the way ahead | B | 2 h (like dot-box (1.7 h)) |
 | Important (recommended) | R-146.2 | Touches respond on mid-range phones | B | 3 h (no history for input latency: range 2-5 h) |
 | Important (recommended) | R-145.5 | Music changes with the moment, not one loop a world | B | 4 h (like polish-audio (3.6 h) / polish-sfx (4.7 h)) |
+| Important (recommended) | R-150.6 | Vines that feel as good as they look | A | 4 h (like vine-fix (2 h) + pokey-anim (about 2 h); range 3-8 h); after R-150.4 |
 | Important (if time) | R-146.4 | Proof every stage plays on every control setting | C | 2 h (like bot-fix + self-test (about 2 h)) |
 | Important (if time) | R-148.6 | Dot's box can't cover the jump again | C | 2 h (like bot-fix + self-test (about 2 h)) |
 | Important (if time) | R-6.23 | Approved Dot lines can't silently revert | C | 2 h (like fix-petals (about 2 h start to accept)) |
@@ -243,6 +244,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-6.30 | The mist fades in and out softly, no stripes | B | 1.5 h (like polish-a1 (1.7 h)) |
 | Day 1 | R-150.4 | A table of every mechanic built and where it is actually used | A | 2 h (like the art-use audit (artuse.mjs + gate, 10-31), plus reading mechanics across stages: range 1-3 h); first, with R-150.1 it blocks R-150.2 and R-150.3 |
 | Day 1 | R-150.1 | A ruler that flags a boring stage before Matt plays it | A | 3 h (like bot-fix + self-test (about 2 h), plus proving it flags 5-4); first, it blocks R-150.2 and R-150.3 |
+| Day 1 | R-150.5 | Crumbling ruins become a real route, not a side trap | A | 3.5 h (like vine-fix (2 h) + one 300-roll curation (about 1.5 h)); after R-150.4 |
 | Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 3 h of R-150.3's 20 h (the flagged stages in its tuning worlds) |
 | Important (recommended) | R-143.8 | World 5's Normal work feeds the tuning | C | 0.5 h (a keeper check (about 30 min)) |
 | Important (recommended) | R-5.6 | Falls hurt fairly: short ones sting, long ones cost a life | B | 1 h (like fix-petals (about 2 h start to accept)) |
