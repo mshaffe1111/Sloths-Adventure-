@@ -9,7 +9,8 @@ reminder given as a fix, a report asking for facts the lead reads itself, and no
 The fix is never "the helper should try harder"; it is changing the system so the right thing is the easy thing. Before sending work back
 or retiring anyone, ask: what did I set up that made this mistake likely, and what do I change so it can't happen again?
 And the other half (Matt, same day): "sometimes you just will have bad employees, and they're the ones that you cut loose". Once the setup
-is right, the helper has been coached plainly and given time to adjust, and it still falls short, cut ties without guilt (GAMEPLAN §3 ladder).
+is right, the helper has been coached plainly and given time to adjust, and it still falls short, cut ties without guilt (GAMEPLAN §3 ladder). But retire for the right reason, "because it's just not a fit": everyone makes errors;
+what matters is owning them and not repeating them. Retraining someone new often costs more than working with someone you believe in.
 
 ## What the research says (and the rule each one becomes)
 1. **A manager's output is the team's output** (Andy Grove, High Output Management). The lead is judged by what the team ships at
