@@ -27,8 +27,6 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
     roadmap"; a defect that really is left for the roadmap still needs an R-item citing it.
   - drawcheck can't run in this container (R-148.13): say "not run here, CI at merge".
 
-Last proven: 2026-11-01, branch roadmap-keeper, the first build of reference/ROADMAP.md (90 open, 16 archived). Owner of the last update:
-roadmap-keeper helper.
 
 ## Decisions that change how I work (dated)
 - 2026-11-02 (lead, D27): reports carry no commit ids or doc revs typed by me; the lead reads them from git and the doc. I report what

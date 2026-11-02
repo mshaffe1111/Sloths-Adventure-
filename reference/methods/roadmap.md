@@ -1,5 +1,8 @@
 # Method: keeping the roadmap (one list, always true)
 
+Last proven: 2026-11-01, branch roadmap-keeper, the first build of reference/ROADMAP.md (90 open, 16 archived). Owner of the last update:
+roadmap-keeper helper.
+
 Handoff and live notes: `reference/notes/roadmap-keeper.md` (read it first, and after every memory compression).
 
 ## When to use it
