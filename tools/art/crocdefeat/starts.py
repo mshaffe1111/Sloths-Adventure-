@@ -58,5 +58,33 @@ def make(name, src, flip):
     c.save(OUT / f'{name}.png')
     print(name, c.size)
 
-make('back-from-idle', 'idle_005', True)     # rolled onto his back: his clean idle, upside down
-make('side-from-defeat', 'defeated_000', False)  # the defeat clip's first frame (least cut), holes filled
+def round2(take):
+    """round 2: the keyed round-1 take (his body only) with his real painted crown from idle_005 laid on the ground by his snout, on
+    magenta, for a low-strength repaint in place with the style model"""
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from cut import key
+    k = key(take)
+    a = np.asarray(k)[..., 3] > 128
+    lab, n = ndimage.label(a)
+    s = ndimage.sum(np.ones_like(lab), lab, range(1, n + 1))
+    keep = lab == (np.argmax(s) + 1)
+    arr = np.asarray(k).copy(); arr[~keep, 3] = 0
+    body = Image.fromarray(arr); body = body.crop(body.getbbox())
+    _, crown = crown_split(frame('idle_005'))
+    W, H = 1536, 768
+    c = Image.new('RGB', (W, H), MAG)
+    sc = 1250 / body.width
+    body = body.resize((round(body.width * sc), round(body.height * sc)), Image.LANCZOS)
+    x, y = 60, H - 70 - body.height
+    c.paste(body, (x, y), body)
+    cr = crown.resize((round(crown.width * 4.6), round(crown.height * 4.6)), Image.LANCZOS).rotate(-20, expand=True)
+    c.paste(cr, (x + body.width + 10, H - 75 - cr.height), cr)
+    c.save(OUT / 'round2.png'); print('round2', c.size)
+
+
+if __name__ == '__main__' and len(__import__('sys').argv) > 1:
+    round2(__import__('sys').argv[1])
+elif __name__ == '__main__':
+  make('back-from-idle', 'idle_005', True)     # rolled onto his back: his clean idle, upside down
+  make('side-from-defeat', 'defeated_000', False)  # the defeat clip's first frame (least cut), holes filled

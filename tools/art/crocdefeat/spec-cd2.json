@@ -1,0 +1,50 @@
+{
+ "tag": "cd2",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "see-through, transparent, holes, sketch, unfinished, pencil lines, white scratches, grey wash, ghost, two crocodiles, background scenery, grass, water, text, letters, frame, border, photo, 3d render, blurry, cast shadow",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/d5359abf4ac43369495cf7dcec14f2ff8c556672/reference/prop-sheets/qa-notes/croc-defeat/starts/",
+ "items": [
+  {
+   "name": "round2-s40-7",
+   "start": "round2.png",
+   "prompt": "slothadv style, painted storybook illustration, a big dark olive-green crocodile king knocked out, lying on his back with his pale cream striped belly up and his short legs in the air, eyes shut with a dizzy little smile, his crown of pink petals fallen on the ground by his snout, lying in a small patch of dark brown mud, rich painterly texture on every scale, thick dark outline, soft light from the upper left, one solid body, side view, on a flat plain magenta background",
+   "strength": 0.4,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "round2-s40-23",
+   "start": "round2.png",
+   "prompt": "slothadv style, painted storybook illustration, a big dark olive-green crocodile king knocked out, lying on his back with his pale cream striped belly up and his short legs in the air, eyes shut with a dizzy little smile, his crown of pink petals fallen on the ground by his snout, lying in a small patch of dark brown mud, rich painterly texture on every scale, thick dark outline, soft light from the upper left, one solid body, side view, on a flat plain magenta background",
+   "strength": 0.4,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "round2-s52-7",
+   "start": "round2.png",
+   "prompt": "slothadv style, painted storybook illustration, a big dark olive-green crocodile king knocked out, lying on his back with his pale cream striped belly up and his short legs in the air, eyes shut with a dizzy little smile, his crown of pink petals fallen on the ground by his snout, lying in a small patch of dark brown mud, rich painterly texture on every scale, thick dark outline, soft light from the upper left, one solid body, side view, on a flat plain magenta background",
+   "strength": 0.52,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "round2-s52-23",
+   "start": "round2.png",
+   "prompt": "slothadv style, painted storybook illustration, a big dark olive-green crocodile king knocked out, lying on his back with his pale cream striped belly up and his short legs in the air, eyes shut with a dizzy little smile, his crown of pink petals fallen on the ground by his snout, lying in a small patch of dark brown mud, rich painterly texture on every scale, thick dark outline, soft light from the upper left, one solid body, side view, on a flat plain magenta background",
+   "strength": 0.52,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  }
+ ]
+}

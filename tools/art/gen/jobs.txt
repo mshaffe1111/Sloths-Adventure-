@@ -119,3 +119,6 @@ icG0 6ae78722c78863f9c62fc389  icG1 6ae787250e0338d1bb7d9035  started 18:38Z at 
 icH0 6ae79b3f0e0338d1bb7d9c56 (shake x2 prompts, cards without letters) 20:04Z; icI0 6ae79badc78863f9c62fd2c8 (Meeca's carved bark) 20:06Z;
 icJ0 6ae79bc90e0338d1bb7d9c81 (Shimmy Rope, Leaf Glide medallions) 20:06Z: ~4-6 min each, ~$0.75 for the three.
   Picks: shake-a37, cards-a23 (no letters), carving-a11, shimmy-a37, glide-a23. Running total icons-painted ~$6.8 of $25.
+── R-1.1 Crocus Rex's defeat still (2026-11-02, lead; cap $1). Times UTC. Starts: tools/art/crocdefeat/starts.py (his own frames, holes
+   filled, on magenta), spec make_spec.py, job w6to10/img2imggpu.py with croc-qwen-lora 1.0, bucket w5-xfer crocdefeat/cd1 ──
+cd1 6ae8037ac78863f9c630037d rtx-pro-6000 03:28Z at d5359abf: 2 starts x s62/s74 x seeds 7/23 = 8 takes 1536x768
