@@ -122,3 +122,8 @@ icJ0 6ae79bc90e0338d1bb7d9c81 (Shimmy Rope, Leaf Glide medallions) 20:06Z: ~4-6 
 ── R-1.1 Crocus Rex's defeat still (2026-11-02, lead; cap $1). Times UTC. Starts: tools/art/crocdefeat/starts.py (his own frames, holes
    filled, on magenta), spec make_spec.py, job w6to10/img2imggpu.py with croc-qwen-lora 1.0, bucket w5-xfer crocdefeat/cd1 ──
 cd1 6ae8037ac78863f9c630037d rtx-pro-6000 03:28Z at d5359abf: 2 starts x s62/s74 x seeds 7/23 = 8 takes 1536x768
+  cd1 finished 03:32Z (~3.5 min incl. model load, ~$0.16). All 8 solid (no holes); croc model alone paints flatter than the game,
+  magenta spill on the s74 side takes, crown a blob. Kept back-from-idle-s74-23 (on his back, belly up) as the round-2 start.
+cd2 6ae804990e0338d1bb7dbf56 03:33:45Z-03:35:21Z (~1.6 min, ~$0.08) at 300b934c: round2.png (cd1 take keyed + his real crown) x style
+  model s40/s52 x seeds 7/23. PICK round2-s40-23 (painted, solid, crown whole). s52 takes cut the crown at the edge.
+  R-1.1 total ~$0.25 of the $1 cap (estimate from job times at $2.75/h).

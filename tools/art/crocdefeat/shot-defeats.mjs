@@ -13,6 +13,7 @@ for (let w = a; w <= (z || a); w++) for (const tag of ways) {
   const ctx = await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 2, hasTouch: true, isMobile: true, reducedMotion: 'reduce' });
   await ctx.addInitScript(seed);
   const p = await ctx.newPage();
+  try {
   await p.goto(`http://127.0.0.1:${process.env.PORT || 4301}/?lessons=off`); await p.waitForTimeout(6000);
   await p.evaluate((id) => window.__story(id, 'boss_defeat'), `${w}-10`); await p.waitForTimeout(3500);
   for (let k = 1; k <= 8; k++) {
@@ -20,9 +21,9 @@ for (let w = a; w <= (z || a); w++) for (const tag of ways) {
     await stampBase(p, BASE); await p.screenshot({ path: `${out}/w${w}-p${k}-${tag}.png` });
     const next = p.locator('button:has-text("Next")').first();
     if (!(await next.count())) break;
-    await next.click(); await p.waitForTimeout(400);
-    if (!(await p.locator('button:has-text("Next"), button:has-text("Continue")').count())) break;
+    await next.click({ timeout: 5000 }); await p.waitForTimeout(400);
   }
+  } catch (e) { console.log('FAIL', w, tag, String(e).split('\n')[0].slice(0, 140)); }
   await ctx.close();
 }
 await b.close();
