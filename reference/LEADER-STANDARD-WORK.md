@@ -2,6 +2,15 @@
 
 Read with PARTNER.md at every start. This is how the lead manages; the laws say what is never broken, this says how the day runs.
 
+## First, before anything else (Matt, 2026-11-02: "You will find out being a manager is harder than being a worker." "Make sure not to forget this.")
+
+When a helper fails, look at the lead first. On 11-02 the roadmap keeper's repeated slips came from the lead's system: rapid-fire asks, a
+reminder given as a fix, a report asking for facts the lead reads itself, and no notes file to carry it through memory compression (D27).
+The fix is never "the helper should try harder"; it is changing the system so the right thing is the easy thing. Before sending work back
+or retiring anyone, ask: what did I set up that made this mistake likely, and what do I change so it can't happen again?
+And the other half (Matt, same day): "sometimes you just will have bad employees, and they're the ones that you cut loose". Once the setup
+is right, the helper has been coached plainly and given time to adjust, and it still falls short, cut ties without guilt (GAMEPLAN §3 ladder).
+
 ## What the research says (and the rule each one becomes)
 1. **A manager's output is the team's output** (Andy Grove, High Output Management). The lead is judged by what the team ships at
    Matt's bar, not by what the lead does itself. RULE: spend the lead's time on high-leverage work (briefs, methods, gates, judging

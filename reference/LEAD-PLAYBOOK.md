@@ -185,3 +185,14 @@ Matt found it on his phone. Rules from now on:
 8c. **Lessons reach every helper by themselves** (Matt, 2026-11-01; R-9): reference/LESSONS.md prints with the laws at every session start and compaction (SessionStart hook). Every report needs "Method used", "Lessons applied" and "Method update"; the lead sends back a report without them. Every new defect adds its line to LESSONS.md the same day (law 10), and the roadmap-keeper's release sweep checks that every defect has its line.
 8b. **Use the helpers that do the best job** (Matt, 2026-11-01; R-8): keep reference/HELPERS.md current at every acceptance (first-time gate, redos, cost, verdict). Give follow-on work in an area to a STRONG helper that is still alive before starting a fresh one; retire a helper whose context is near full or whose work is done, after its lessons are in its method file. Every brief says what goes on the roster.
 8. **Check the base before judging a sheet** (defect D23): at every check-in, before opening a helper's sheets, run `git merge-base --is-ancestor <release or main> <helper branch>`. A sheet shot on a stale branch shows fixed problems as current and hides merge conflicts: send it back to merge and re-shoot first. Every sheet and report names its base commit.
+
+## 8d. Managing so helpers can succeed (D27, 2026-11-02: the roadmap keeper retired; the lead's system was the root cause)
+- **Batch the asks.** Never feed a helper one item every few minutes with "report totals" each time. Collect items, send one batch,
+  get one report. Rapid-fire asks make a helper race to report, and racing is where slips happen.
+- **Mechanisms, not reminders.** When a slip repeats, change the tool or the process so the slip cannot happen (a script prints the
+  fact; the step that invites the slip is removed). A rule that says "be careful" is not a countermeasure.
+- **Ask only for what you'll use.** Don't ask a helper to type facts the lead reads anyway (commit ids, revs: the lead reads git).
+  Every needless step is a chance to get it wrong.
+- **Notes, not rotation (Matt, 2026-11-02).** Every helper keeps reference/notes/<name>.md like the lead's STATUS.md and reads it after
+  every compression (the start-up print reminds it). Long-running helpers carry on; we do not rotate or retire for memory. The lead checks
+  a helper's notes file at each check-in: stale notes are a send-back.
