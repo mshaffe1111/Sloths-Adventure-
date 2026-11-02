@@ -775,3 +775,4 @@ Report each finding with the stage, the moment (s), upright or sideways, Easy or
 - 2026-11-01 9:36 PM ET: R-10 (Matt): prioritize by bang for the buck; not everything is needed to launch; niceties after launch. Keeper JOB 5: tier every item T1 launch / T2 high value pre-launch / T3 after launch, re-order BUILD-PLAN T1 first, estimate weeks to launch separately.
 - 2026-11-01 9:37 PM ET, MATT DECIDED (R-10): Worlds 1-5 onto gen2 (R-142) goes AFTER launch (T3). Before launch W1-5 get only unfair spots and bugs fixed.
 - 2026-11-01 9:37 PM ET, MATT: tier names are Day 1 (must be in at launch, listed first) / Important (wanted, not required) / Parking lot (after launch).
+- 2026-11-01 9:38 PM ET: R-11 (Matt): every item gets 'what we get out of it', estimated time (helper-days) and value A-F; plan ordered by value per day; mismatches (Day 1 graded C-, Parking lot graded A/B) go to Matt. Sent to keeper (JOB 5).
