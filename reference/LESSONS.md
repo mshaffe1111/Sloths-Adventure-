@@ -14,6 +14,7 @@ that do the best job get the follow-on work.
 - Every menu screen and pop-up must pass clipcheck: no cut-off text, nothing under the notch, taps 44 px or more. (D4)
 - Show only what applies: a stat, field or line that means nothing for this item ("Defeated x0") is left out. (D5)
 - Acceptance waits on the shared gate, not on your own test. (D18)
+- Read your message queue (ReadNotifications) before every report and before going idle: a message that crossed with your work is still yours. (roadmap-keeper, R-6.27, 11-01)
 - Merge the latest main or release into your branch BEFORE you shoot or judge anything, and stamp the base commit on every sheet. (D23)
 
 **Facts and measuring**
