@@ -65,3 +65,6 @@ badge. Matt, 2026-11-01: "The satchel looks great but look at the other art. Gen
 ## To try
 - Painted "pressed" or dimmed states made in paint rather than by CSS filter, if Matt wants more than the dimmed drum with the X for
   sound off.
+
+## Checks before reporting (added 2026-11-02, R-1.1)
+- `node tools/art/icons/checkbase.mjs reference/qa-reports/<job>` must pass: every sheet named "after" is shot on the final commit (no +wip, not older than src at HEAD).
