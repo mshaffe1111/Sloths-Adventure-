@@ -6,8 +6,8 @@ Gate: `node tools/roadmapcheck.mjs` fails when open work in the repo has no numb
 
 **The goal (PARTNER.md):** all 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.
 
-Last swept: 2026-11-01 9:27 PM ET (rebuild 2: Matt's R-1..R-9, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
-Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 70, 2026-11-01; the old sections moved word for word to "Roadmap archive" at its bottom.
+Last swept: 2026-11-01 9:49 PM ET (rebuild 2: Matt's R-1..R-9, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
+Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 87, 2026-11-01; the old sections moved word for word to "Roadmap archive" at its bottom.
 
 ## How to read it
 
@@ -329,7 +329,7 @@ Audit-2 rates sound the weakest category (C+ vs AAA). Needs a listening session 
 | R-148.8 | World 8 merge hygiene leftovers from audit Build 7: band gates (WIP-3), the kid gate (WIP-21); WIP-10's merge-one-branch-at-a-time rule for W9/W10 | Important: a check | World 8's gates checked | 1 | E | M | verify | unassigned | audit-2 Build 7 |
 | R-148.9 | Doc ticks with no commit traced: sticky vines, no tall double jumps in 1-1 to 1-3; audit items marked done with no commit found: WIP-14, WIP-20, PF-4, PF-8. Find the commit or reopen | Important: a check | Old ticks proven or reopened | 0.5 | E | S | verify | roadmap-keeper | roadmap doc; inv "Done but still looks open" |
 | R-148.10 | Older asks from the Oct 21-28 doc (empty stretches, stages feel the same, puzzle kit, special gestures, carrying rule, stuck sparkle, accessibility menu, best times): check each, close with proof or re-file | Parking lot: a check | Old asks proven or reopened | 0.5 | E | S | verify | roadmap-keeper | roadmap doc "Next when tokens allow", "Always", "Later: polish" |
-| R-148.11 | Stale docs: TRACKER.md (10-29), HANDOFF.md (10-25), the finish plan's Phase 2-4 boxes, STATUS "Open decisions for Matt", and the roadmap doc's own "Where we are" (still says "Next: World 4") and old "Decisions waiting on Matt" sections: point each at this list | Important: stale docs mislead helpers | No stale doc misleads a helper | 0.5 | E | S | open | roadmap-keeper | inv "Done but still looks open" |
+| R-148.11 | Stale docs: TRACKER.md (10-29), HANDOFF.md (10-25), the finish plan's Phase 2-4 boxes, STATUS "Open decisions for Matt": point each at this list. (The roadmap doc's own "Where we are" and old "Decisions waiting on Matt" were moved to its archive with pointers on 2026-11-01, doc rev 79.) | Important: stale docs mislead helpers | No stale doc misleads a helper | 0.5 | E | S | open | roadmap-keeper | inv "Done but still looks open" |
 
 ## Done (archive)
 
