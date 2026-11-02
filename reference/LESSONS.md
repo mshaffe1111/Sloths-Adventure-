@@ -4,7 +4,7 @@ Matt, 2026-11-01: "make sure that our lessons learned, what works and what doesn
 helpers." Each line is a mistake we made once, with its defect number in reference/CONTINUOUS-IMPROVEMENT.md, and what we do now.
 Before you start: open your job's method in reference/methods/ (index: reference/methods/README.md). If your job has none,
 you write one. Your report MUST have "Method used", "Lessons applied" (which lines below touched your job) and "Method update".
-A report without them is sent back unread. Your first-time gate result and redo count go on reference/HELPERS.md; the helpers
+A report without them is sent back unread. You do not edit this sheet or a method file yourself: you PROPOSE the change in "Method update" (what worked better with proof, what failed and why, a lesson that is wrong or out of date), and the lead merges proven changes when he accepts your work. The one exception: a job with no method file gets one written by you. Your first-time gate result and redo count go on reference/HELPERS.md; the helpers
 that do the best job get the follow-on work.
 
 **Judging your own work**
