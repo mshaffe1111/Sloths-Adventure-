@@ -225,6 +225,8 @@ look-alikes (LV-16: 1-1/1-5 0.98, 4-2/4-5, 6-5/6-9 0.93) and LV-10, LV-17, LV-18
 
 ## R-143 Branches stranded since 10-30 (triage each: merge, cherry-pick, or close with a reason)
 
+First-pass triage with a recommendation per branch: `reference/qa-reports/stranded-branches-2026-11-01.md`.
+
 | ID | What | Size | State | Owner | Source |
 |---|---|---|---|---|---|
 | R-143.1 | w5-rebuild (afd0d02b, 18 ahead, ~1,200 behind): 5-6 on gen2, 5-8 hand-built | M | open | unassigned | inv; origin/w5-rebuild |
