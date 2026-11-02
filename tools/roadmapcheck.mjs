@@ -48,6 +48,8 @@ if (fs.existsSync(path.join(root, RM))) {
     const c = line.trim().replace(/^\||\|$/g, '').split(' | ').map((x) => x.trim());
     const id = c[0];
     if (/^Draft numbers retired/.test(area)) continue; // old draft numbers, kept so they are never reused
+    // a bare | inside a cell (e.g. "|vx|") splits the row when the table renders: every pipe must be a column edge (2026-11-02)
+    if ((line.match(/\|/g) ?? []).length !== c.length + 1) fail(`${id}: a "|" inside a cell breaks the table (write it without the pipe)`);
     if (/^Done/.test(area)) items.push({ id, what: c[1], done: true, proof: c[3] ?? '', source: c[3] ?? '', area });
     else if (c.length >= 10) {
       const [, what, tier, get, timeTxt, value, size, state, owner, source] = c;
