@@ -49,12 +49,14 @@ if (fs.existsSync(path.join(root, RM))) {
     const id = c[0];
     if (/^Draft numbers retired/.test(area)) continue; // old draft numbers, kept so they are never reused
     if (/^Done/.test(area)) items.push({ id, what: c[1], done: true, proof: c[3] ?? '', source: c[3] ?? '', area });
-    else if (c.length >= 6) {
-      const [, what, size, state, owner, source] = c;
-      items.push({ id, what, size, state, owner, source, done: /^done\b/.test(state), proof: state, area });
+    else if (c.length >= 7) {
+      const [, what, tier, size, state, owner, source] = c;
+      items.push({ id, what, tier, size, state, owner, source, done: /^done\b/.test(state), proof: state, area });
+      // Matt's R-10: every open item says whether launch needs it, and why
+      if (!/^(T1|T2): \S/.test(tier) && !/^T3\b/.test(tier) && !/^Matt\b/.test(tier)) fail(`${id}: tier "${tier}" must be "T1: why", "T2: why", "T3" or "Matt" (R-10)`);
       if (!['S', 'M', 'L'].includes(size)) fail(`${id}: size "${size}" is not S, M or L`);
       if (!/^(open|in progress|blocked \(.+\)|held \(.+\)|verify|done \(.+\))/.test(state)) fail(`${id}: state "${state}" is not one of open / in progress / blocked (by ...) / held (by ...) / verify / done (date, proof)`);
-    } else fail(`${id}: an item row needs 6 columns (ID | What | Size | State | Owner | Source), has ${c.length}`);
+    } else fail(`${id}: an item row needs 7 columns (ID | What | Tier | Size | State | Owner | Source), has ${c.length}`);
   }
   const seen = new Map();
   for (const it of items) seen.set(it.id, (seen.get(it.id) ?? 0) + 1);
@@ -194,6 +196,9 @@ for (const [a, c] of by) {
   tot += d;
   console.log(`  ${a}: S${c.S} M${c.M} L${c.L} = ${d} helper-days`);
 }
+const byTier = { T1: 0, T2: 0, T3: 0, Matt: 0 };
+for (const i of open.filter(helperWork)) byTier[(i.tier ?? '').match(/^(T1|T2|T3|Matt)/)?.[1] ?? 'Matt'] += days[i.size];
+console.log(`  by tier (helper-days): T1 ${byTier.T1}, T2 ${byTier.T2}, T3 ${byTier.T3}, Matt's call ${byTier.Matt}`);
 console.log(`  all: ${tot} helper-days (Matt's own items and the decisions left out: ${open.filter((i) => !helperWork(i)).length})`);
 
 for (const f of fails) console.log(`✗ ${f}`);
