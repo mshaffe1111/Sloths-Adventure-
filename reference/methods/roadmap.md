@@ -1,32 +1,6 @@
 # Method: keeping the roadmap (one list, always true)
 
-## Handoff to the next keeper (written 2026-11-02 3:01 PM ET by the retiring roadmap-keeper)
-
-Retired under GAMEPLAN §3 (the same printed lesson broken twice: report ids typed before the push output existed). Read the last
-two pitfalls below before your first report.
-
-- **State now:** ROADMAP.md 199 open, 40 done; roadmapcheck PASS. Day 1 about 303 helper hours (the gate prints 311: it adds the
-  keeper's own 8 h), recommended Important 55.5 h, launch about 358.5 h; building about 9-12 working days; the doc ("Roadmap to go")
-  mirrors it at rev 123. Branch roadmap-keeper (the lead merges it); the last commit is this handoff (`git log -1 origin/roadmap-keeper`).
-- **In flight / waiting:**
-  - R-1.1 is done pending the release merge (proof 5f25029a on icons-painted): archive it with the merge commit when the release lands.
-  - R-6.25 (icons B-E) ships in the same release.
-  - R-149.12 is still open for the 4-D rethink only; its swimming half is A-38.
-  - R-152.6 proposes the arc; Matt gives the per-world numbers later. R-150.4 (the mechanics table) blocks R-150.2/.3/.5/.6 and R-152.x.
-  - The closed test (R-147.1) starts at about 80% of Day 1 hours (about 242 of 303): flag it at each sweep.
-- **Every round:**
-  - Merge the lead's branch first (ccr-0d59a91c-oy3imz). New defects (D#) and rules arrive there; the gate reads the local copies.
-  - Re-sum lane loads by script from BUILD-PLAN §2, never by hand.
-  - Mirror to the doc and read it back. The docs tools are now mcp__Claude_Docs__* (read is deferred: load it with ToolSearch).
-  - A bare "|" inside a cell fails the gate.
-- **Watch for:**
-  - Reports: push, read the printed id, THEN write the report in a separate step.
-  - The gate counts the word "roadmap" in a file path as "left for the roadmap" (D25 came in that way); the lead was asked
-    whether to ignore paths.
-  - drawcheck can't run in this container (R-148.13): say "not run here, CI at merge".
-
-Last proven: 2026-11-01, branch roadmap-keeper, the first build of reference/ROADMAP.md (90 open, 16 archived). Owner of the last update:
-roadmap-keeper helper.
+Handoff and live notes: `reference/notes/roadmap-keeper.md` (read it first, and after every memory compression).
 
 ## When to use it
 - When the lead forwards something Matt raised ("R-new: ...").

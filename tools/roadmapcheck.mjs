@@ -109,9 +109,11 @@ for (const line of read(CI).split('\n')) {
   if (!m) continue;
   const c = line.trim().replace(/^\||\|$/g, '').split(' | ').map((x) => x.trim());
   const later = [c[5], c[6], c[7]].join(' ');
-  if (!/roadmap|next week|\blater\b/i.test(later)) continue;
+  // "roadmap" counts only as a word, not inside a path or a name (methods/roadmap.md, ROADMAP-KEEPER: D25 and D27 tripped it, 2026-11-02)
+  const LATER = /(?<![\w/.-])roadmap(?![\w/-]|\.\w)|next week|\blater\b/i;
+  if (!LATER.test(later)) continue;
   const d = `D${m[1]}`;
-  if (!wordCited(new RegExp(`\\b${d}\\b`), items).length) fail(`defect ${d} is left for "${later.match(/roadmap|next week|later/i)[0]}" but no R-item cites ${d} in its Source`);
+  if (!wordCited(new RegExp(`\\b${d}\\b`), items).length) fail(`defect ${d} is left for "${later.match(LATER)[0]}" but no R-item cites ${d} in its Source`);
 }
 
 // ---- 2b. every defect has its lesson in reference/LESSONS.md (printed at every session start), or an open R-item to add it
