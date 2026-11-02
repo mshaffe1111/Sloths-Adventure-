@@ -7,7 +7,7 @@ Gate: `node tools/roadmapcheck.mjs` fails when open work in the repo has no numb
 **The goal (PARTNER.md):** all 10 worlds and their bosses passed by Matt on the phone, the story start to finish, then the Play Store app.
 
 Last swept: 2026-11-01 10:30 PM ET (Matt's calls R-149.1, .9, .15-.17 and R-4.8 recorded); rebuild 2 at 2026-11-01 9:49 PM ET (Matt's R-1..R-12, the inventory `reference/roadmap-inventory-2026-11-01.md` merged).
-Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 124, 2026-11-02 2:58 PM ET (R-12 times, five lanes; Matt's calls; R-6.27; R-1.16; R-1.1 done pending the merge; R-13 archived, R-148.14; Matt's 4-7 bugs R-6.28, R-6.29, R-5.23; R-5.23 rule decided; R-6.30, R-150; R-150 all stages and the generators, Day 1; 4-7 shots are files; R-150.4; A-37 crumbling, R-150.5, R-150.6; R-151, D26; R-150.5 to lane 2; R-152; swimming in launch, A-38; R-152.6 difficulty arc across all worlds; Easy vs Normal); the old sections moved word for word to "Roadmap archive" at its bottom.
+Mirrored into the roadmap doc's "Roadmap to go" (https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa) at rev 123, 2026-11-02 2:58 PM ET (R-12 times, five lanes; Matt's calls; R-6.27; R-1.16; R-1.1 done pending the merge; R-13 archived, R-148.14; Matt's 4-7 bugs R-6.28, R-6.29, R-5.23; R-5.23 rule decided; R-6.30, R-150; R-150 all stages and the generators, Day 1; 4-7 shots are files; R-150.4; A-37 crumbling, R-150.5, R-150.6; R-151, D26; R-150.5 to lane 2; R-152; swimming in launch, A-38; R-152.6 difficulty arc across all worlds; Easy vs Normal); the old sections moved word for word to "Roadmap archive" at its bottom.
 
 ## How to read it
 
