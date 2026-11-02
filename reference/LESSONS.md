@@ -22,6 +22,7 @@ that do the best job get the follow-on work.
 - Spread every fix to its pair: x and y, up and down, left and right, every world with the same pattern. (D21)
 - Prove a change is needed with the fixed tool; revert what isn't needed (w8-rope2, Nov 1).
 - Time comes from `TZ=America/New_York date`, never worked out by hand. (D20)
+- Estimates come from measured history (how long the same kind of job really took, from git and STATUS), never from a guess; say the source. (D25)
 
 **Stages and play**
 - A first-timer's natural run must collect enough for the goal; pickups sit on the natural path. (D8, D14)
