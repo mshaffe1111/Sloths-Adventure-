@@ -355,7 +355,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       // (while the player holds on, every roll of thunder shakes the picture a little, and the one that breaks shakes it hard)
       const sk = hold ? thunderShake(now - t0, breakAt.current ? now - breakAt.current : null) : { dx: 0, dy: 0, flash: 0 };
       ctx.setTransform(sc, 0, 0, sc, sk.dx * sc, (top + sk.dy) * sc);
-      drawStoryScene(ctx, scene, (now - t0) / 1000, sw, sh, lift, chestUp ? 1.5 : feetRef.current, top);
+      drawStoryScene(ctx, scene, (now - t0) / 1000, sw, sh, lift, chestUp ? 1.5 : feetRef.current, top, feetRef.current);
       if (sk.flash > 0) {
         ctx.fillStyle = `rgba(235,240,255,${sk.flash})`;
         ctx.fillRect(-20, -top - 20, sw + 40, sh + top + 40);

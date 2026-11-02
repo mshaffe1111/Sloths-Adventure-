@@ -21,7 +21,7 @@ import { photoUrl } from './photos.ts';
 import { plateImage, preloadPlates, releasePlates } from './plates.ts';
 import { drawLivePlate, preloadLivePlates, releaseLivePlates } from './livePlates.ts';
 import { CEL_HD, CEL_K, CELS, drawCel, releaseCels, warmCels } from './storyCels.ts';
-import { capStoryZoom, liftForFeet } from './storyFrame.ts';
+import { capStoryZoom, clearOfBox, liftForFeet } from './storyFrame.ts';
 import { GROUND_LINE, groundImage } from './storyGround.ts';
 import { isPlate, PLATES } from './plateData.ts';
 import { FONT_READ } from './fonts.ts';
@@ -1571,7 +1571,7 @@ function vignetteFor(w: number, h: number): HTMLCanvasElement | null {
   return c;
 }
 
-export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene, t: number, w = SCENE_W, h = SCENE_H, lift = 0, feetMax = 1, top = 0) {
+export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene, t: number, w = SCENE_W, h = SCENE_H, lift = 0, feetMax = 1, top = 0, boxTop = feetMax) {
   ctx.save();
   const vh = h + top;
   ctx.clearRect(0, -top, w, vh);
@@ -1621,7 +1621,7 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
     drawLineup(ctx, w, h, t, ground);
   } else {
     if (!plated) drawGround(ctx, scene, h * ground, w, h, scroll, lift);
-    drawFigures(ctx, scene, (c) => scene.actors.forEach((a) => drawActor(c, pin(a, w, h), w, h, t, ground, scroll)));
+    drawFigures(ctx, scene, (c) => scene.actors.forEach((a) => drawActor(c, clearOfBox(pin(a, w, h), ground, h, fy, z, vh, lift, boxTop, SINK), w, h, t, ground, scroll)));
   }
 
   drawFx(ctx, scene.fx, t, w, h);

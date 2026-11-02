@@ -22,3 +22,25 @@ export function capStoryZoom(z: number, dev: number, actorScale = 1): number {
 export function liftForFeet(gy: number, h: number, feetMax: number, lift: number): number {
   return Math.min(0.32, Math.max(lift, (gy - feetMax * h) / h));
 }
+
+/**
+ * A beaten guardian lies low, and its painted card frame is drawn 24 units under the ground line (the old vector drawings' shadow
+ * offset): on a defeat card it sank behind the words box, half of it upright and nearly all of it sideways, where the camera may lift
+ * the picture only so far (R-1.1, 2026-11-02; Crocus Rex, "he must read"). It moves back up the scene just far enough that its bottom
+ * clears the box (`boxTop`, the line the box's top sets, also in a close shot that does not lift the picture), as if lying a little
+ * further off; a guardian that already shows is untouched.
+ */
+/** how far below its feet a painted guardian's card frame reaches, per unit of actor scale (the boss case: 0.62 x the 24-unit drop, and
+ * a little for the frame's own shadow) */
+const BEATEN_DROP = 0.62 * 24 + 6;
+
+export function clearOfBox<A extends { kind: string; beaten?: boolean; seq?: unknown; y?: number; scale?: number }>(
+  a: A, ground: number, h: number, fy: number, z: number, vh: number, lift: number, feetMax: number, sink = 5,
+): A {
+  if (a.kind !== 'boss' || !a.beaten || a.seq || feetMax >= 1) return a;
+  const footY = (a.y ?? ground) * h;
+  const bottom = footY + sink + BEATEN_DROP * 3 * (a.scale ?? 1);
+  const visible = fy + ((feetMax + lift) * vh - vh / 2) / z;
+  const raise = bottom - visible;
+  return raise > 0 ? { ...a, y: (footY - raise) / h } : a;
+}

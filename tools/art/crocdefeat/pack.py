@@ -14,6 +14,16 @@ fr = json.loads(re.search(r'CROC_ANIM_FRAMES: Record<string, BossFrameRect> = (\
 f = fr['defeated_024']
 sheet = Image.open(R / 'src/assets/enemies/croc-anim.webp').convert('RGBA')
 art = key(take)                                   # body, crown and mud, trimmed
+# the magenta spill left the mud under him (and his tail tip) pinkish red: repaint those pixels as brown mud at the same lightness,
+# everywhere but the crown (the right end of the picture, past his snout)
+a = np.asarray(art).astype(np.float32)
+r, g, b = a[..., 0], a[..., 1], a[..., 2]
+xs = np.arange(a.shape[1])[None, :].repeat(a.shape[0], 0)
+pink = (r > g + 22) & (r > b - 30) & (a[..., 3] > 0) & (xs < 0.86 * a.shape[1])
+lum = (0.3 * r + 0.59 * g + 0.11 * b) / 255
+mud = np.array([104, 74, 48], np.float32)
+a[pink, :3] = np.clip(mud[None, :] * (0.55 + 0.9 * lum[pink, None]), 0, 255)
+art = Image.fromarray(a.astype(np.uint8))
 k = min(f['w'] / art.width, f['h'] / art.height)
 art = art.resize((max(1, round(art.width * k)), max(1, round(art.height * k))), Image.LANCZOS)
 box = Image.new('RGBA', (f['w'], f['h']), (0, 0, 0, 0))
