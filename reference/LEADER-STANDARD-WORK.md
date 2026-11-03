@@ -29,7 +29,7 @@ what matters is owning them and not repeating them. Retraining someone new often
 6. **Coaching kata** (Toyota Kata, Rother): five questions that drive improvement: What is the target? Where are we now? What is in
    the way? What is the next step? When can we see what we learned? RULE: every check-in and every send-back uses them.
 7. **Plan with a few breakthrough goals, cascaded, with catchball** (Hoshin Kanri). The top sets few goals; each level proposes how and
-   pushes back with facts until both agree. RULE: one breakthrough goal (launch: Day 1 done, polished, in about 3 weeks); lanes and
+   pushes back with facts until both agree. RULE: one breakthrough goal (launch: Day 1 done, polished, in about 3.5-4 weeks as of 11-02 evening, per reference/BUILD-PLAN.md; quality sets the date); lanes and
    helpers propose their plans and estimates from measured history; the lead accepts or argues with facts.
 Sources: Google Project Oxygen (O'Reilly, Leading Effective Engineering ch. 4; Parabol summary); Grove, High Output Management
 (summaries); Toyota gemba / leader development (Industrial Management; iObeya); Liker on Hoshin Kanri and Toyota Kata (Gray).
