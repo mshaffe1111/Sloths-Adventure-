@@ -78,6 +78,8 @@ no traceable PR: R-137).
 
 ## Pitfalls we already paid for
 
+- **A summary went stale under an updated table** (2026-11-02): BUILD-PLAN's "So: about 3 weeks" line and the same paragraph in the doc stayed wrong for about five hours while the totals above them changed. Mechanism: roadmapcheck fails when BUILD-PLAN's "roadmapcheck prints N" is not today's Day 1. Step: after any total changes, grep BUILD-PLAN, ROADMAP and the doc for the old numbers and dates, and re-read the prose under each table, before reporting.
+
 - **A commit id or doc rev written before the command returned** (2026-11-02, twice: "0c..." and "2c..." sent to the lead). Countermeasure (lead, 2026-11-02, like the date rule D20): push and print the id in ONE command, `git push -q -u origin roadmap-keeper && git log -1 --format=%h origin/roadmap-keeper`, and paste only that output into the report; the doc rev only from the doc's own ack. Never an id or rev from memory or typed ahead. Root cause of the third slip (same day): the report message was sent in the SAME parallel batch as the push, so it was written before the output existed. The report is always its own later step, sent only after reading the push's printed id.
 
 - **Lane loads summed by hand drift** (2026-11-02): moving R-6.26 to lane 1 without taking it out of lane 5's sum, and closing R-1.1 without taking it out of lane 2's, made the reported busiest lane 2-6 h wrong for two reports. Sum lane loads from BUILD-PLAN §2's tables by script every time an item moves, closes or is added.

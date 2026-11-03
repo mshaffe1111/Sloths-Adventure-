@@ -214,6 +214,12 @@ for (const i of open.filter(helperWork)) byTier[(i.tier ?? '').match(/^(Day 1|Im
 console.log(`  by tier (helper hours, measured, R-12): Day 1 ${byTier['Day 1']}, Important ${byTier.Important}, Parking lot ${byTier['Parking lot']}, Matt's call ${byTier.Matt}`);
 console.log(`  all: ${tot} helper hours (Matt's own items and the decisions left out: ${open.filter((i) => !helperWork(i)).length})`);
 
+// the plan's headline total must be today's: a stale "roadmapcheck prints N" means BUILD-PLAN (and its prose) was not re-done (2026-11-02)
+if (fs.existsSync(path.join(root, 'reference/BUILD-PLAN.md'))) {
+  const said = (read('reference/BUILD-PLAN.md').match(/roadmapcheck prints (\d+(?:\.\d+)?)/) ?? [])[1];
+  if (said !== undefined && Number(said) !== byTier['Day 1']) fail(`BUILD-PLAN says "roadmapcheck prints ${said}" but Day 1 is ${byTier['Day 1']} now: re-do its estimate and the prose under it`);
+}
+
 for (const f of fails) console.log(`✗ ${f}`);
 console.log(fails.length ? `FAIL (${fails.length})` : 'PASS');
 process.exit(fails.length ? 1 : 0);
