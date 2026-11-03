@@ -34,6 +34,32 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
    Easy stays a cruise (about today's level or gentler; src/game/difficulty.ts already softens gaps, enemies, hearts, flags and vines).
    Every tuning job tunes both and shows both.
 
+
+## §0b How a stage is put together (Matt, 2026-11-02: "take it serious... it gives us good methods of how to introduce the nodes, the tempos, the rhythms"; source reference/research/GEMINI-VARIETY-2026-11-02-full.txt, cited research)
+
+1. **Rhythm groups and rests.** A stage is built from rhythm groups: one pattern of moves (run, jump, wait) lasting 5, 10, 15 or 20 s at
+   low, medium or high density. Groups never run into each other: a rest platform (no hard input) sits between every two.
+2. **Four parts per stage (introduce, develop, twist, master).** Part 1: the stage's mechanic shown safely (a miss lands on solid ground),
+   5-10 s groups. Part 2: the safety removed, 10-15 s groups, a pattern repeated to build the feel. Part 3: the twist, an unexpected
+   second mechanic or a new use of the first, and the place for the optional hard branch with the big collectible. Part 4: a 15-20 s
+   dense finale that uses everything the stage taught, ending at the exit. Checkpoints sit on the rests before parts 3 and 4.
+3. **Fast and slow (tempo inversion).** Every mechanic has a hurry version and a patience version (branches that snap if you stop vs.
+   things that only work if you stand still). Worlds alternate between them; a stage that only ever asks for one tempo is flat.
+4. **Variants before new mechanics.** Make sub-types by tuning what exists: breaking branches as snap twigs (~0.15 s, keep running),
+   creaking limbs (~0.6 s, time to recover) and tipping roots (tip by where he stands); vines as ladder, swing-catapult, sinking line,
+   and the thorn vine that strikes if climbed fast; wind as headwind, tailwind (brake or overshoot), gusts that swing vines, updrafts.
+5. **Pairs, then triples.** The six things (run, jump, branches, vines, wind, slow-downs) make 15 pairs. Each world shows its own pairs
+   and brings back earlier ones; Worlds 8-10 use three and four at once (see §0.1). The mechanics-in-use table (R-150.4) counts pairs.
+6. **The world's ten slots have roles.** X-1 arrival, X-2 teach the world's thing, X-3 tight terrain, X-4 wide gaps / vines / wind,
+   X-5 mid-world spike, X-6 change of pace (slow, dark, puzzle), X-7 exploring with branches, X-8 everything layered, X-9 the run-up to
+   the boss, X-10 the boss. Neighbouring stages must not share a tempo and camera direction.
+7. **Read by shape.** Every hazard reads by its outline and a small motion, whatever the world's colours: breaking things share a
+   notched underside and a short shake when stepped on; thorn vines show barbs and a slow pulse; wind shows particles moving at its speed;
+   sticky traps look different from slow-wading fields.
+8. **Feel.** Coyote time and the jump buffer exist (engine.ts; physics FORGIVE). To check and tune: a softer fall at the top of a held
+   jump, a cut jump on release, a faster fall than rise, and platform speed carried into the jump (R-152.7). Tighter checkpoints as
+   stages get harder: respawn within about 2 s of the hard part.
+
 ---
 
 ## 1. Matt's fixed rules (never break these)
