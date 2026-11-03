@@ -1,6 +1,8 @@
 # Gemini research: variety, moving platforms, water, puzzles, nodes (Matt pasted it 2026-11-02 evening)
 
-**Read this caution first.** Gemini said its Deep Research tool did NOT run; this is a model-written report, cut off mid-sentence in
+**UPDATE 2026-11-02 evening (Matt): the full report is GEMINI-VARIETY-2026-11-02-full.docx / -full.txt (31 cited sources: Smith's rhythm groups at UCSC, Hayashida's four-step structure, Thorson's Celeste forgiveness, Swink's game feel). Matt spot-checked the data and found it good: "we need to take it serious because it's using real research." The caution below applies to the earlier pasted summary, not to the cited method. Where it states facts about OUR game, check them in code (it says W10 has a grip input; we have none).**
+
+**Earlier caution (the pasted summary).** Gemini said its Deep Research tool did NOT run; this is a model-written report, cut off mid-sentence in
 "Section 5, Step 3". Citations (e.g. a "Sept 2026" graph-and-chunk paper) and exact numbers are unverified. Use it as a source of ideas
 that we prove on our own game with our own tools (LESSONS: check facts; prove with the fixed tool), never as fact. It describes other
 games' design principles; we take principles, never copy a specific game's stages, characters or structure one-to-one.
