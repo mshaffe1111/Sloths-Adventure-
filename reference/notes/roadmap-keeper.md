@@ -1,21 +1,23 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-02 3:26 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-02 7:25 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
 ## Status
 - Reinstated 2026-11-02 by the lead at Matt's ask (D27: the slips came from the setup; GAMEPLAN §3 is now a ladder; self-caught slips
   don't count). New items come in batches when Matt says go (LEAD-PLAYBOOK 8d).
-- **State now:** ROADMAP.md 199 open, 40 done; roadmapcheck PASS. Day 1 about 303 helper hours (the gate prints 311: it adds the
-  keeper's own 8 h), recommended Important 55.5 h, launch about 358.5 h; building about 9-12 working days; the doc ("Roadmap to go")
-  mirrors it at rev 123.
+- **State now:** roadmapcheck PASS. Day 1 about 390 helper hours (the gate prints 398: it adds the keeper's own 8 h), recommended
+  Important 55.5 h, launch about 445.5 h; lane loads 89 / 88.5 / 89 / 89 / 89 (script); building about 11-15 working days; about
+  3.5-4 weeks with the 80% trigger. The doc mirrors it (the lead reads the rev). Last batch (11-02 evening): the research batch
+  (pacing tags, split paths, five new platform kinds, R-152.7 platform carry, water rules) and R-153 stage types (65 h, the widest).
 - **In flight / waiting:**
   - R-1.1 is done pending the release merge (proof 5f25029a on icons-painted): archive it with the merge commit when the release lands.
   - R-6.25 (icons B-E) ships in the same release.
   - R-149.12 is still open for the 4-D rethink only; its swimming half is A-38.
   - R-152.6 proposes the arc; Matt gives the per-world numbers later. R-150.4 (the mechanics table) blocks R-150.2/.3/.5/.6 and R-152.x.
-  - The closed test (R-147.1) starts at about 80% of Day 1 hours (about 242 of 303): flag it at each sweep.
+  - The closed test (R-147.1) starts at about 80% of Day 1 hours (about 312 of 390): flag it at each sweep.
+  - Told the lead: LEADER-STANDARD-WORK.md line 32 still says launch "in about 3 weeks" (their file).
 - **Every round:**
   - Merge the lead's branch first (ccr-0d59a91c-oy3imz). New defects (D#) and rules arrive there; the gate reads the local copies.
   - Re-sum lane loads by script from BUILD-PLAN §2, never by hand.
@@ -52,3 +54,5 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
 - Hand-summed lane loads drifted (11-02): script only.
 - A bare "|" inside a cell broke a table (R-6.28, 11-02): roadmapcheck fails on it.
 - Missed a queued ask before going idle (R-6.27, 11-01): read the queue before every report and before idle.
+- A summary sentence went stale while I updated the table above it (BUILD-PLAN "So: about 3 weeks", stale since R-150 on 11-02;
+  caught 11-02 evening): after any total changes, grep BUILD-PLAN, ROADMAP and the doc for the old numbers and dates before reporting.

@@ -42,13 +42,14 @@ the ones graded B for polish (R-2.4, R-2.8, R-4.3, R-1.15, R-6.25, R-6.27, R-1.1
 
 | | What | How long |
 |---|---|---|
-| (a) Building | Day 1 about 303 helper hours (roadmapcheck prints 311: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 55.5 h = about 358.5 h over five lanes. Since 2026-11-01's 222 h: your 11-01 calls 27.5 h; R-6.27 and R-1.16 2.5 h each; your 11-02 bugs R-6.28, R-6.29, R-5.23, R-6.30 8 h; R-150 (all stages and the generators, Day 1, 11-02) 58.5 h with the mechanics audit and crumbling (R-150.5), plus vine polish R-150.6 4 h (Important); R-152 (hazards that matter, mechanics that build, STAGE-RULES §0) 25 h with swimming's bring-backs; the swimming stage R-5.22 6.5 h (Matt put it in launch 11-02); R-5.4 widened to the difficulty arc across all worlds (+3 h, §0.5); R-151 the quality supervisor's set-up 0.5 h (its running time is overhead, like the process supervisor's); R-1.1 done. Lane loads, summed from §2's tables: 73 / 71.5 / 72 / 70 / 71 h | **about 9-12 working days** at 6-8 h a lane a day |
+| (a) Building | Day 1 about 390 helper hours (roadmapcheck prints 398: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 55.5 h = about 445.5 h over five lanes. Since 2026-11-01's 222 h: your 11-01 calls 27.5 h; R-6.27 and R-1.16 2.5 h each; your 11-02 bugs R-6.28, R-6.29, R-5.23, R-6.30 8 h; R-150 (all stages and the generators, Day 1, 11-02) 58.5 h with the mechanics audit and crumbling (R-150.5), plus vine polish R-150.6 4 h (Important); R-152 (hazards that matter, mechanics that build, STAGE-RULES §0) 25 h with swimming's bring-backs; the swimming stage R-5.22 6.5 h (Matt put it in launch 11-02); R-5.4 widened to the difficulty arc across all worlds (+3 h, §0.5); the research batch 11-02 (pacing tags, split paths, five new platform kinds, platform carry R-152.7, water rules) 22 h; R-153 stage types (Matt decided 11-02) 65 h; R-151 the quality supervisor's set-up 0.5 h (its running time is overhead, like the process supervisor's); R-1.1 done. Lane loads, summed from §2's tables: 89 / 88.5 / 89 / 89 / 89 h | **about 11-15 working days** at 6-8 h a lane a day |
 | (b) Fixed calendar | Your phone checks: a test link at the end of each 2-day wave, five GPU checks on the three phones, then your final passes of Worlds 7-10 and every boss (about 9 h of your play) and one fix round after them (not measured yet; budget about a day). The Play closed test: 14 days with 12 testers. You decided (2026-11-01) the account, app ID, signing and test start later: when Day 1 lane work is about 80% done (R-149.9, R-147.1) | about 3-4 days after the build for the passes and fixes; **14 days** for the closed test |
-| (c) Critical path | The closed test. It starts when Day 1 lane work is about 80% done (about day 7-9.5 of building), so your passes and the fix round run inside its 14 days. If it waits until after your passes, it is building + passes + 14 days (9-12 + 3-4 + 14 = 26-30 days). Not measured, so not counted: Google's checks on a new developer account before the first upload, and Google's review of the production release after the test | **about 3-3.5 weeks** from now with the 80% trigger; about 3.5-4 weeks if the test waits for your passes |
+| (c) Critical path | The closed test. It starts when Day 1 lane work is about 80% done (about day 9-12 of building), so your passes and the fix round run inside its 14 days. If it waits until after your passes, it is building + passes + 14 days (11-15 + 3-4 + 14 = 28-33 days). Not measured, so not counted: Google's checks on a new developer account before the first upload, and Google's review of the production release after the test | **about 3.5-4 weeks** from now with the 80% trigger; about 4-5 weeks if the test waits for your passes |
 
-So: about 3 weeks, matching how fast the last 3 weeks went. Your four launch calls (R-149.15..R-149.17, and icons B-E) added about a day of
-building; with the 80% trigger most of that day lands inside the closed test. Parking lot after launch: about 110 h, roughly 3 more days of
-five lanes, plus art round 2's money.
+So: about 3.5-4 weeks from now with the 80% trigger. It was about 3 weeks on 2026-11-01; since then you put the fun work in launch
+(R-150 variety, R-152 hazards and mechanics, R-153 stage types, the swimming stage), which is most of the growth, and quality sets the date.
+The widest number is R-153 (65 h, range 45-90): how many stages it reshapes is the lever. Parking lot after launch: about 104 h, roughly
+3 more days of five lanes, plus art round 2's money.
 
 **The one thing that would make it slower:** the closed test's start. It waits for the 80% trigger (your call, 2026-11-01); every day it starts after that is a day later at the end. Google's checks on a new developer account aren't measured, so opening the account a few days before the trigger keeps them off the path.
 
@@ -104,10 +105,13 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-3.5 | Props and particles stop dragging the frame rate | A | 4 h (no history: range 3-8 h; the plan says a day) |
 | Day 1 | R-6.26 | No player stranded in 4-3 | A | 2 h (no history: reproduce first (range 1-4 h)) |
 | Day 1 | R-6.27 | The cave under the falls looks like shelter, as it plays | B | 2.5 h (like fix-petals (about 2 h start to accept), plus a check of every waterfall shelter) |
-| Day 1 | R-150.2 (W8 share) | Every generated stage plays differently, not run, jump, climb, repeat | A | 6 h of R-150.2's 30 h |
+| Day 1 | R-150.2 (W8 share) | Every generated stage plays differently, not run, jump, climb, repeat | A | 6 h of R-150.2's 34 h |
 | Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 8 h of R-150.3's 20 h |
 | Day 1 | R-152.1 | Wind changes where a jump lands | A | 2 h (like vine-fix (2 h)); after R-150.4 |
 | Day 1 | R-152.6 | A difficulty arc Matt can review, measured world by world | A | 4 h (like the bot-fix re-baseline (inside its 2 h) + bot-fix + self-test (about 2 h)); after R-150.4; R-5.4 tunes to it |
+| Day 1 | R-152.5 (new kinds share) | Moving platforms from World 2 on, in every world | A | 12.5 h of R-152.5's 18.5 h (five new kinds, about 2.5 h each: like swim (1.5 h) + art (30 min) + a teaching placement); after R-150.4 and R-152.7 |
+| Day 1 | R-152.7 | Jumping off a moving platform feels natural | A | 2 h (like vine-fix (2 h)) |
+| Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 1.5 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Important (recommended) | R-145.2 | Phones hear the jungle around them | B | 1 h (like polish-audio (3.6 h) / polish-sfx (4.7 h)) |
 | Important (recommended) | R-6.19 | Dot's tips fit on narrow phones | B | 1 h (like fix-petals (about 2 h start to accept)) |
 | Important (recommended) | R-145.3 | iPhone players hear the music | C | 1 h (like polish-audio (3.6 h) / polish-sfx (4.7 h)) |
@@ -149,11 +153,12 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-4.1 | The new story can be wired in at all | A | 6 h (no history for the slot plumbing: range 4-8 h; nearest story-delivery (3 h)) |
 | Day 1 | R-2.8 | A showpiece clockwork stage in World 10 | B | 6.5 h (like w7-slide (5.5 h) + its art (w7-slide-art 1 h)) |
 | Day 1 | R-4.2 | The story stops being skipped: the new words in every world | A | 9 h (like journal-voice (about 2 h), three acts at about 3 h each (story-delivery 3 h)) |
-| Day 1 | R-150.2 (W5-W7 share) | Every generated stage plays differently, not run, jump, climb, repeat | A | 18 h of R-150.2's 30 h (about 6 h a world: two new section types like gen2-w6-swing (2.3 h) + one curation (about 1.5 h)) |
+| Day 1 | R-150.2 (W5-W7 share) | Every generated stage plays differently, not run, jump, climb, repeat | A | 22 h of R-150.2's 34 h (the split path like gen2-ascent (3.4 h), plus about 6 h a world: two new section types like gen2-w6-swing (2.3 h) + one curation (about 1.5 h)) |
 | Day 1 | R-150.5 | Crumbling ruins become a real route, not a side trap | A | 3.5 h (like vine-fix (2 h) + one 300-roll curation (about 1.5 h)); after R-150.4 |
 | Day 1 | R-152.2 | Mistiming a sleepy mushroom costs a fall | A | 1.5 h (like swim (1.5 h)); after R-150.4 |
 | Day 1 | R-152.3 | No stage makes him wait out the same monkeys fifteen times | A | 2 h (like fix-petals (about 2 h)); after R-150.4 |
 | Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 3 h of R-150.3's 20 h (moved from lane 5 on 11-02 to balance) |
+| Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 13 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Important (if time) | R-4.14 | Old story asks either covered or closed | E | 0.5 h (a keeper check (about 30 min)) |
 | Important (if time) | R-4.5 | Characters talk during play at key stages | C | 3 h (like story-delivery (3 h)) |
 | Parking lot | R-144.4 | Small motion in cutscenes; the W8 moon in frame | D | 3 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
@@ -184,6 +189,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-1.16 | Every boss's defeat shows the boss he just beat | B | 2.5 h (like hf-art-bosses (30 min) per panel, plus wiring and review) |
 | Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 6 h of R-150.3's 20 h |
 | Day 1 | R-152.4 | Each world builds on the last instead of starting over | A | 9.5 h (like bot-fix + self-test (about 2 h) + about 2 h a hand-built world W2-W4 + swim (1.5 h) for swimming's bring-backs; range 7.5-15.5 h); after R-150.4 |
+| Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 17 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Important (recommended) | R-6.14 | Dot never repeats herself word for word | C | 0.5 h (like journal-voice (about 2 h)) |
 | Important (recommended) | R-6.15 | Every find has its own name | C | 0.5 h (like journal-voice (about 2 h)) |
 | Important (recommended) | R-144.2 | Two backdrops no longer too bright | C | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
@@ -218,9 +224,10 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-1.10 | The last fight flows straight into the ending | A | 10 h (no history for a boss rebuild: range 7-14 h (it also hands off to the finale); nearest w7-slide (5.5 h)) |
 | Day 1 | R-2.1 | World 9 plays fair, varied, and on the new builder | A | 10 h (like gen2-w7 (9 h) + one 300-roll curation (about 1.5 h, w9 NEXT.md)) |
 | Day 1 | R-2.6 | World 10 plays fair, varied, and on the new builder | A | 10 h (like gen2-w7 (9 h) + one 300-roll curation (about 1.5 h, w9 NEXT.md)) |
-| Day 1 | R-150.2 (W9/W10 share) | Every generated stage plays differently, not run, jump, climb, repeat | A | 6 h of R-150.2's 30 h (about 3 h each on top of their builds) |
+| Day 1 | R-150.2 (W9/W10 share) | Every generated stage plays differently, not run, jump, climb, repeat | A | 6 h of R-150.2's 34 h (about 3 h each on top of their builds) |
 | Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 3 h of R-150.3's 20 h |
-| Day 1 | R-152.5 | Moving platforms from World 2 on, in every world | A | 6 h (like gen2-w6-swing (2.3 h) + about 1 h a hand-built world W2-W4); after R-150.4 |
+| Day 1 | R-152.5 (today's kinds) | Moving platforms from World 2 on, in every world | A | 6 h of R-152.5's 18.5 h (like gen2-w6-swing (2.3 h) + about 1 h a hand-built world W2-W4); after R-150.4 |
+| Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 19 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Important (if time) | R-2.11 | World 10's far sky isn't stretched | D | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
 | Important (if time) | R-2.5 | 9-7's climb matches the rebuilt world | C | 2.5 h (like gen2-w6-swing (2.3 h)) |
 | Important (if time) | R-2.9 | World 10's climbs match the rebuilt world | C | 4 h (like gen2-ascent (3.4 h on 10-29, not finished)) |
@@ -253,8 +260,9 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-5.23 | Stars that match how the stage went | B | 1.5 h (like qa-fix-meeca (20 min), plus tests, the continue count through three callers and an old-save check) |
 | Day 1 | R-6.30 | The mist fades in and out softly, no stripes | B | 1.5 h (like polish-a1 (1.7 h)) |
 | Day 1 | R-150.4 | A table of every mechanic built and where it is actually used | A | 2 h (like the art-use audit (artuse.mjs + gate, 10-31), plus reading mechanics across stages: range 1-3 h); first, with R-150.1 it blocks R-150.2 and R-150.3 |
-| Day 1 | R-150.1 | A ruler that flags a boring stage before Matt plays it | A | 3 h (like bot-fix + self-test (about 2 h), plus proving it flags 5-4); first, it blocks R-150.2 and R-150.3 |
-| Day 1 | R-5.22 | A stage where slow Pokey is suddenly fast | A | 6.5 h (like w7-slide (5.5 h) + its art (w7-slide-art 1 h)); Matt put swimming in launch 2026-11-02 |
+| Day 1 | R-150.1 | A ruler that flags a boring stage before Matt plays it | A | 5 h (like bot-fix + self-test (about 2 h), plus proving it flags 5-4, plus tagging each generated section type: about 1-3 h); first, it blocks R-150.2 and R-150.3 |
+| Day 1 | R-5.22 | A stage where slow Pokey is suddenly fast | A | 8 h (like w7-slide (5.5 h) + its art (1 h), plus currents and bubbles like swim (1.5 h)); Matt put swimming in launch 2026-11-02 |
+| Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 14.5 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Important (recommended) | R-143.8 | World 5's Normal work feeds the tuning | C | 0.5 h (a keeper check (about 30 min)) |
 | Important (recommended) | R-5.6 | Falls hurt fairly: short ones sting, long ones cost a life | B | 1 h (like fix-petals (about 2 h start to accept)) |
 | Important (recommended) | R-143.2 | Paid deep-water art used | C | 1 h (like w8-merge (2.6 h for a big merge)) |
