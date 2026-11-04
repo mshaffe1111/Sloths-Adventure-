@@ -1,11 +1,11 @@
 # fix-petals: helper notes
 
-## Now (2026-11-04 9:02 AM ET): round 2 done, pushed (6103af1b = work addfefff + ccr 0f1b6c0c), reported to the lead
-Bot bounce fix (firsttimer.ts bounceJump/aim, bounceUp miss, DOUBLE_TAUGHT; route.ts double), fixtures fail-before/pass-after;
-World 1 rescues 418 -> 194; KID_RUNS_59 re-measured (goal unchanged, 5), flagged to the lead. All 5 supervisor REDOs + overview back to
-her (9:02 AM ET). WAITING: her verdict; the lead's word on KID_RUNS_59. NEXT: the validator as a gate (flags may only shrink).
-Named limits: the bot's step-down miss rule (1-1 x1380, 1-2 x15435 clumsy flags); 1-1 kid seed 1 misses a double and can't go back to
-the mushroom; 1-2 sunk step shows a pale rectangle edge (game art). My miss this round: 70 min unpushed; push as soon as fixtures pass.
+## Now (2026-11-04 9:18 AM ET): fun-validator ACCEPTED by the quality supervisor (7909cf11, PASS)
+She will use its flags as the checklist for every World 1 rebuild ("looks like"/"moves like", "nothing bites", padding, "one tempo").
+Done and pushed: the bot's bounce fix (World 1 rescues 418 -> 194), all REDOs, variety = the more alike of moves and look, 1-8's chase
+art measured. Open with the lead: KID_RUNS_59 (re-measured, goal unchanged at 5); the 1-2 sunk-step pale edge (defect log, via the QS).
+NEXT, unless the lead says otherwise: the validator as a gate (a world's flags may only shrink). Named limits: the bot's step-down miss
+rule (1-1 x1380, 1-2 x15435); 1-1 kid seed 1 can't go back to the mushroom after a missed double.
 
 ## The job, as briefed
 1. R-150.4 mechanics-in-use table, 1-1..1-9 and the boss: what the player meets (stage data + a bot run) against what the engine has.
