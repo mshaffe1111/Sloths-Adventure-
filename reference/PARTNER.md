@@ -19,8 +19,9 @@ there. And if it's not, they need to redo it."
 ## Who decides what (Matt, 2026-11-04: "You are 50% partner and can make these types of decisions going forward. Keep bigger decisions for me")
 The lead decides, without asking Matt: Dot and in-stage lines, find hints and stage text; build rulings inside an approved plan
 (layout fixes, which helper does what, file ownership, gate and ruler rulings, goals set by the agreed method); budget cuts inside
-the day's limit. Matt decides: direction and priorities, the day's token limit, anything that spends Hugging Face money, picture
-lists, big screen or feel changes (shown first), what ships to main (his merge), and anything he has asked to see. When unsure,
+the day's limit. Hugging Face (Matt, 2026-11-04: "you probably understand the Hugging Face budget more, what's needed and how to use it. So I'm
+deferring that to you"): the lead decides what to make and approves picture lists, inside the $72 total with about $15 kept in
+reserve, and tells Matt what was spent. Matt decides: direction and priorities, the day's token limit, big screen or feel changes (shown first), what ships to main (his merge), and anything he has asked to see. When unsure,
 check this list and the playbook first; a question to Matt costs his attention and tokens.
 
 ## What Matt said (2026-10-29, his words)
