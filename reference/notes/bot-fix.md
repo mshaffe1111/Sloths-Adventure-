@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 10:21 AM ET
+Last updated: 2026-11-04 10:34 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -24,6 +24,10 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 10:34 AM ET: day-2 round 5 digest sent. Round-4 items closed (w8-rope2 HF verified; fix-petals report verified, merged 15aa4de7).
+  YELLOW warmup-5m (GPU stage 1 R-3.2 started 10:05; notes stale 8:54: sent 10:34). YELLOW-light w8-rope2 (game code started 10:16,
+  allowed per STATUS 850; 7 files +485 vs ccr incl. w1TricksPlay.test; notes 10:02 predate code: sent). YELLOW quality supervisor (quiet
+  since 9:32: asked 10:34). GREEN fix-petals (R-150.8, re-merged ccr 10:23). Round 6 armed: trig_01SmRgaodoM2E2sVBzURLjjr, 11:05.
 - 2026-11-04 10:21 AM ET: fix-petals GREEN: reference/qa-reports/validator/README.md (c5fff14c) has the full gate on 3495372a (no src/tools change since,
   diffed), CI 41848331105, all report sections. Told it and the lead; ready for the lead's merge.
 - 2026-11-04 10:03 AM ET: w8-rope2 GREEN, hold lifted (lead). Both approvals were in ccr STATUS (lines 848 R-159.1 ~$2.32 cap $4; 852 R-6.38 pits ~$0.88
