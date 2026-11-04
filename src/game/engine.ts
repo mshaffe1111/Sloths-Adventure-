@@ -109,6 +109,7 @@ import { drawJarMeter, jarFrame, jarHeroImage, LanternRun } from './w8LanternRun
 import { LANTERN_LINES, LANTERN_NIGHT, LANTERN_VIEW, TREE_CROWN } from './w8Lantern.ts';
 import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
 import { meecaFaceShift } from './meecaFaceDraw.ts';
+import { drawGpuFrame, resizeGpuLayer } from './gpuLayer.ts';
 import { drawMeecaBack, drawMeecaFront, drawMeecaHero, meecaReachNow, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, meecaArtReady, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { tipText } from './puzzleKit.ts';
 import { DotLog } from './dotRecord.ts';
@@ -1040,6 +1041,8 @@ export class GameEngine {
     this.ctx.imageSmoothingQuality = 'high';
     this.viewCssW = w;
     this.viewCssH = h;
+    // (the GPU layer under it takes the same size and pixel ratio)
+    resizeGpuLayer(w, h, dpr);
     this.viewCssX = rect.left || 0;
     this.viewCssY = rect.top || 0;
     this.applyZoom();
@@ -1083,6 +1086,10 @@ export class GameEngine {
   }
 
   /** where the next frame draws: the camera and the device pixels per scene unit (stageReady.ts fits the backdrop strips to them) */
+  /** where the last frame put the world (the 2D canvas's translate, world units), for the GPU layer: gpuLayer.ts */
+  private gpuTx = 0;
+  private gpuTy = 0;
+
   /** a quality step waits for the next frame's draw to resize the canvas */
   private resizeDue = false;
 
@@ -1273,6 +1280,8 @@ export class GameEngine {
       }
       const r0 = timed ? performance.now() : 0;
       this.render();
+      // (and the GPU layer under the canvas, by the same camera, in the same frame: gpuLayer.ts)
+      drawGpuFrame(this.gpuTx, this.gpuTy, this.zoom);
       const tDraw = timed ? performance.now() - r0 : 0;
       if (pl) pl.record(elapsed, tUpd, tDraw, now, () => this.perfInfo());
       if (recorder.on) this.recordFrames(elapsed, now);
@@ -5964,7 +5973,10 @@ export class GameEngine {
     ctx.save();
     // (snapped to whole device pixels: whole CSS pixels moved the world in steps of three on a phone while he moved smoothly)
     const snap = dpr * this.zoom;
-    ctx.translate(-snapCam(this.camera.x, snap) + shakeX, -snapCam(this.camera.y, snap) + shakeY);
+    // (the GPU layer under this canvas is moved to the same place after the frame: gpuLayer.ts)
+    this.gpuTx = -snapCam(this.camera.x, snap) + shakeX;
+    this.gpuTy = -snapCam(this.camera.y, snap) + shakeY;
+    ctx.translate(this.gpuTx, this.gpuTy);
 
     this.drawWaterAndFlags(ctx, world);
     // 6-8: the root wall and the hides and arches behind the climb
