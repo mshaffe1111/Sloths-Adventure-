@@ -1,6 +1,6 @@
 # w8-rope2 notes (helper; branch w8-rope2 only)
 
-Updated: 2026-11-04 07:56 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
+Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
 
 ## The job now: R-159.1, the combat triangle for World 1 (lead brief, 2026-11-04)
 - Stomp vaults and bounces higher (hold jump) over pits; punch stuns (~1.5 s) and knocks back shots; kick breaks shields/armour and sends
@@ -11,7 +11,8 @@ Updated: 2026-11-04 07:56 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
 - Plan (one page) goes to the quality supervisor (session_01FhBbYNn4i5tFfFZiFroKoi) AND the lead. Show-first: a mock-up clip or stills of
   the new moves before building them in. HF art: a picture list for Matt with cost; no spend without his approval ($72 left in all).
 - Method: none exists for enemies. I write reference/methods/enemies.md.
-- Status: onboarding reply sent; waiting for the lead's OK.
+- Status: lead OK'd the onboarding (2026-11-04 08:00 ET); plan written (reference/plans/R-159.1-combat-triangle.md) and sent to the lead and the quality supervisor. No game code yet.
+- Lead, 11-04: put a "Polish check" section in every report; World 1 bot runs with rescues don't count until R-150.7 (mushroom walls).
 
 ## Facts checked in code (2026-11-04)
 - engine.ts ~4170-4178: a kick doubles the score (`* (kick ? 2 : 1)`) and the burst; `airKick` sets vy -420 (bounces him up). Melee
