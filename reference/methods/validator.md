@@ -7,7 +7,7 @@ Judging whether a world's stages are varied, paced and biting (STAGE-RULES §0, 
 change to them; and as a gate later. Not for "is this spot fair" (that is stage-fix.md) or "can it be finished" (levelCheck, the tests).
 
 ## Steps
-1. **Check the ruler first (D15).** `npx tsx --test tools/validate/validate.test.ts`: every check has a world built to fail it and one
+1. **Check the ruler first (D15).** `npx tsx --test tools/validate/validate.test.ts` (and `tools/validate/world1.test.ts`: the stick scores today's World 1 where Matt felt it): every check has a world built to fail it and one
    built to pass it, in the real engine. A new check gets its two fixtures before it scores a real stage. A fixture that fails is fixed in
    the probe, never by loosening the fixture (the walled-chase fixture caught the hold-right runner skipping past the wall it was stuck at).
 2. **Run the world:** `npx tsx tools/validate/world1.ts [--stages 1-1] [--layouts 16] [--play 3] [--clumsy 20] [--out <dir>]`
