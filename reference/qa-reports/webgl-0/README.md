@@ -136,3 +136,21 @@ Plainly:
   - 8-1's frames over 100 were slightly higher after (14-16 against 8-14).
 - **Not done here (by the plan):** nothing moves to the GPU until stage 1. The 2D canvas is still `alpha: false`, opaque. Stage 1 must
   make it see-through where the backdrop moved, with its own look proof (webgl.md step 1).
+
+## Gate (run on the code of f334d63b; the commits after it are docs only)
+
+Pasted from each command's own output, as of 04:15 AM ET:
+
+- `npx tsc --noEmit -p .`: `TSC: clean` (no errors).
+- Tests:
+  - shard 2/3: `# tests 708 # pass 707 # fail 0 # todo 1 `;
+  - shard 3/3: `# tests 788 # pass 788 # fail 0 # todo 0 `;
+  - shard 1/3: **not finished** at the time of pasting (still running in this slow container).
+- `npx vite build`: `BUILD EXIT 0`. Files over 4 MiB listed after it: none (the next lines are the build's own file list).
+- `node tools/perf/artcheck.mjs`: `PASS`.
+- `node tools/perf/knowncheck.mjs`: `PASS`.
+- `node tools/perf/drawcheck.mjs`: `PASS (859 s; raw results in /tmp/drawcheck-bcIupu)`. This is a container run; CI at merge is the binding one.
+- `node tools/perf/clipcheck.mjs`, first run: `FAIL: some screens could not be opened (83 known) (842 s; contact sheet and breaches.json in /tmp/clipcheck-jeDCZV)`.
+  - It ran beside the 3 test shards. Its one miss was "fresh up: world map: locator.waitFor: Timeout 10000ms exceeded" waiting for
+    `.wm-head`, and its own screenshot shows the World Map open (it opened after the 10 s wait).
+  - The rerun alone is **not finished** at the time of pasting.
