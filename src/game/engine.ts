@@ -118,7 +118,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, climbLook, feetAtNow, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -726,6 +726,8 @@ export class GameEngine {
   private softOn = false;
   /** the height of the ground he last stood on, on a stage with fallZones (a fall that far under it, in a zone, is a fall) */
   private fallFromY = Infinity;
+  /** how far the view has turned to look up a climb, sideways (0..1: cameraFollow.ts climbLook) */
+  private camClimbK = 0;
   private softAt: { x: number; y: number } | null = null;
   private checkpoint = { x: 0, y: 0 };
   /** the dark circle opening on him at the flag after a respawn (s left): it replaced a white flash (AN-1) */
@@ -5456,7 +5458,9 @@ export class GameEngine {
     this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
     this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * FRAME.across + this.camLookX + runX;
-    this.camera.targetY = this.camAnchorY - vh * fr.feetAt;
+    // (sideways, on a climb, the view looks up: cameraFollow.ts climbLook)
+    this.camClimbK = climbLook(this.camClimbK, !!p.climbing, this.viewCssW > this.viewCssH, dt);
+    this.camera.targetY = this.camAnchorY - vh * feetAtNow(fr, this.camClimbK);
     // World 1's kicked boa (w1Tricks.ts): while it rolls the view runs ahead with it, so what it hits is in view (the lead's call, upright
     // above all, where the view is narrow), never so far that he leaves the screen's near edge
     // (and a bowl gate that has just opened is kept in view a moment: the roll is short, and the view eases over more slowly than it rolls)
