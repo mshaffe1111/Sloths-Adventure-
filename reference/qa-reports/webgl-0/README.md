@@ -139,7 +139,7 @@ Plainly:
 
 ## Gate (run on the code of f334d63b; the commits after it are docs only)
 
-Pasted from each command's own output, as of 04:15 AM ET:
+Pasted from each command's own output (last updated 04:36 AM ET); first lines as of 04:15 AM ET:
 
 - `npx tsc --noEmit -p .`: `TSC: clean` (no errors).
 - Tests:
@@ -154,4 +154,14 @@ Pasted from each command's own output, as of 04:15 AM ET:
 - `node tools/perf/clipcheck.mjs`, first run: `FAIL: some screens could not be opened (83 known) (842 s; contact sheet and breaches.json in /tmp/clipcheck-jeDCZV)`.
   - It ran beside the 3 test shards. Its one miss was "fresh up: world map: locator.waitFor: Timeout 10000ms exceeded" waiting for
     `.wm-head`, and its own screenshot shows the World Map open (it opened after the 10 s wait).
-  - The rerun alone is **not finished** at the time of pasting.
+  - Rerun alone: `FAIL: some screens could not be opened (82 known) (371 s; contact sheet and breaches.json in /tmp/clipcheck-DFBGo9)`. Could not open: "fresh side: world map", the same `.wm-head` wait timeout.
+  - Third run alone: `FAIL: 1 stale known entry (81 known) (399 s; contact sheet and breaches.json in /tmp/clipcheck-Q2tvwI)`. Could not open: "fresh up: world map" again; the stale entry follows from that missed walk.
+  - **The lead branch (b8c4a7c5), same container, alone: `PASS (83 known) (412 s; contact sheet and breaches.json in /tmp/clipcheck-pdOada)`.**
+  - **So clipcheck is FAILING on this branch** (3 of 3), on a World Map wait on a fresh save, and the base passes (1 of 1). I treat it
+    as caused by this change until proved otherwise.
+  - Suspects, unproven: the App.tsx canvas change (the GPU canvas added, and the game canvas made `relative`), or the gpuLayer import
+    on the app's path.
+  - Not investigated: it was found at 4:36 AM ET, against the 4:40 cut-off.
+
+**The gate is not green. Stage 0 is not ready to merge.** First step next session: time when `.wm-head` shows on a fresh save, before
+vs after, then bisect the App.tsx change from the engine change.

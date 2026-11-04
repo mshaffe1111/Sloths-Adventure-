@@ -1,6 +1,6 @@
 # warmup-5m notes
 
-Last updated: Wed Nov 04 03:25 AM ET
+Last updated: Wed Nov 04 04:36 AM ET
 
 ## The job
 - **R-3.1, GPU plan stage 0** (lead, 2026-11-04):
@@ -49,11 +49,21 @@ Done! Checked 605 packages (no changes) [12.00ms].
   - bundle: main +2.3 KB, Pixi chunks 435 KB raw / 125 KB gzip, lazy;
   - report reference/qa-reports/webgl-0/README.md and methods/webgl.md.
 
-## In flight
-- The full gate (started 03:21 AM ET): tests in 3 shards, build OK, artcheck, knowncheck, clipcheck, drawcheck. Then paste the last
-  lines into the report, commit and push, and send the state message to the lead.
-- Team stop at 5:00 AM ET (Matt's token budget): no new step after 4:40.
-- Next after the lead's OK: stage 1 (skies) per webgl.md. The first step is making the 2D canvas see-through where the backdrop moves.
+## In flight (stopped at the 5:00 AM ET team stop)
+- **Gate, NOT GREEN:**
+  - tsc clean;
+  - tests 2,291 pass, 0 fail;
+  - build OK, nothing over 4 MiB;
+  - artcheck and knowncheck PASS;
+  - drawcheck PASS (container run);
+  - **clipcheck FAILS 3 of 3 on this branch** ("could not open: fresh up/side: world map", a `.wm-head` waitFor timeout), while the
+    lead branch PASSES 1 of 1 in the same container.
+- **First step next session:**
+  1. time `.wm-head` on a fresh save, before vs after;
+  2. bisect the App.tsx canvas change (added canvas, `relative` class) and the gpuLayer import from the engine change;
+  3. fix;
+  4. re-run clipcheck 2x alone, then report to the lead.
+- Then stage 1 (skies) once the lead merges stage 0.
 
 ## Pitfalls (mine)
 - Look comparisons:
