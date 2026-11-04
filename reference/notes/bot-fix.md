@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 10:34 AM ET
+Last updated: 2026-11-04 10:35 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -24,6 +24,9 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 10:35 AM ET: quality supervisor replied: it was waiting on a show-first still instead of watching the build (owned). Now: QC of w8-rope2's
+  R-159.1 code (9ec60be2) on the real screen, then fix-petals' d6dc6e91, then World 1 re-record; verdicts in its notes within the hour.
+  Round 6: check its notes have them.
 - 2026-11-04 10:34 AM ET: day-2 round 5 digest sent. Round-4 items closed (w8-rope2 HF verified; fix-petals report verified, merged 15aa4de7).
   YELLOW warmup-5m (GPU stage 1 R-3.2 started 10:05; notes stale 8:54: sent 10:34). YELLOW-light w8-rope2 (game code started 10:16,
   allowed per STATUS 850; 7 files +485 vs ccr incl. w1TricksPlay.test; notes 10:02 predate code: sent). YELLOW quality supervisor (quiet
