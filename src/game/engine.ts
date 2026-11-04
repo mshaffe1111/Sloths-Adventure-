@@ -6124,7 +6124,9 @@ export class GameEngine {
     const lair = this.currentStage.arena && this.bossDef?.lair ? this.bossDef.lair : null;
     const ownScene = !!lair && lairOwnsScene(lair);
     // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
-    setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
+    // (and 1-1's climb from the forest floor into the trees: proto.rise, the heights it turns over between)
+    const rise = this.proto?.rise;
+    setCanopy(this.proto?.chase ? 1 : rise ? (rise.y0 - this.player.y) / (rise.y0 - rise.y1) : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
     // (the backdrop shakes with the world, each layer by its own depth, so the layers never slide against each other)
     // (upright, the painted strips are drawn at the size sideways uses for the same width of world, so they are as sharp and as close
     // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
