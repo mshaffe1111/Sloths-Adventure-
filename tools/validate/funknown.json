@@ -102,27 +102,6 @@
   {
    "stage": "1-2",
    "setting": "easy",
-   "rule": "looks like the stage before",
-   "layouts": 15,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-2",
-   "setting": "easy",
-   "rule": "nothing bites",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-2",
-   "setting": "easy",
-   "rule": "nothing new",
-   "layouts": 10,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-2",
-   "setting": "easy",
    "rule": "one tempo",
    "layouts": 16,
    "owner": "World 1 rebuild (D26)"
@@ -131,13 +110,6 @@
    "stage": "1-2",
    "setting": "easy",
    "rule": "pacing",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-2",
-   "setting": "easy",
-   "rule": "padding",
    "layouts": 16,
    "owner": "World 1 rebuild (D26)"
   },
@@ -165,27 +137,6 @@
   {
    "stage": "1-2",
    "setting": "normal",
-   "rule": "looks like the stage before",
-   "layouts": 15,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-2",
-   "setting": "normal",
-   "rule": "nothing bites",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-2",
-   "setting": "normal",
-   "rule": "nothing new",
-   "layouts": 10,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-2",
-   "setting": "normal",
    "rule": "one tempo",
    "layouts": 16,
    "owner": "World 1 rebuild (D26)"
@@ -194,13 +145,6 @@
    "stage": "1-2",
    "setting": "normal",
    "rule": "pacing",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-2",
-   "setting": "normal",
-   "rule": "padding",
    "layouts": 16,
    "owner": "World 1 rebuild (D26)"
   },
@@ -459,48 +403,6 @@
   {
    "stage": "1-5",
    "setting": "easy",
-   "rule": "enemy by a landing",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "easy",
-   "rule": "like an earlier stage",
-   "layouts": 14,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "easy",
-   "rule": "like the stage before",
-   "layouts": 4,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "easy",
-   "rule": "looks like an earlier stage",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "easy",
-   "rule": "looks like the stage before",
-   "layouts": 4,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "easy",
-   "rule": "nothing bites",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "easy",
    "rule": "one tempo",
    "layouts": 16,
    "owner": "World 1 rebuild (D26)"
@@ -509,13 +411,6 @@
    "stage": "1-5",
    "setting": "easy",
    "rule": "pacing",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "easy",
-   "rule": "padding",
    "layouts": 16,
    "owner": "World 1 rebuild (D26)"
   },
@@ -536,48 +431,6 @@
   {
    "stage": "1-5",
    "setting": "normal",
-   "rule": "enemy by a landing",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "normal",
-   "rule": "like an earlier stage",
-   "layouts": 14,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "normal",
-   "rule": "like the stage before",
-   "layouts": 3,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "normal",
-   "rule": "looks like an earlier stage",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "normal",
-   "rule": "looks like the stage before",
-   "layouts": 4,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "normal",
-   "rule": "nothing bites",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "normal",
    "rule": "one tempo",
    "layouts": 16,
    "owner": "World 1 rebuild (D26)"
@@ -586,13 +439,6 @@
    "stage": "1-5",
    "setting": "normal",
    "rule": "pacing",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "normal",
-   "rule": "padding",
    "layouts": 16,
    "owner": "World 1 rebuild (D26)"
   },

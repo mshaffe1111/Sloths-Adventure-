@@ -12,7 +12,7 @@
  *   1-5: a trail that comes DOWN from the canopy to the floor at dusk (1-1 rises), on a broken beat, the fastest stage so far: snap
  *        twigs over real pits, Meeca's carvings closer and closer together into the last stretch, vines only in the counter-melody.
  */
-import { checkTrace, easyNode, hazardSpots, stageBpm, traceNode, flight, type Ledge, type Move, type NodeSpec, type Step, type Surface, type Trace } from './beatTrace.ts';
+import { APRON, checkTrace, easyNode, hazardSpots, stageBpm, traceNode, flight, type Ledge, type Move, type NodeSpec, type Step, type Surface, type Trace } from './beatTrace.ts';
 import { heartsAtFlags, type ProtoExtras, type StageHint } from './protoStage.ts';
 import { fixPickups } from './flowerReach.ts';
 import { SAFE_APPROACH, swingLandings, validateStage } from './levelCheck.ts';
@@ -118,6 +118,8 @@ export interface Palette {
   yMax: number;
   /** where the node must end (the game's y, within 30 px): its landings track a straight line from its start down (or up) to it */
   end?: number;
+  /** snap twigs in short runs (one or two) between solid pads, never two solid pads running: each run is a snap the player meets anew */
+  alternate?: boolean;
 }
 
 /** the marks' slots in order */
@@ -149,7 +151,11 @@ export function fitSteps(spec: Omit<NodeSpec, 'steps'>, pal: Palette, R: Rng, tr
         const f = flight({ move, dy, vx: PHYS.maxRun });
         return !!f && f.t + 0.012 < room && y - dy >= pal.yMin && y - dy <= pal.yMax - footroom;
       };
-      const surface = R.pick(pal.surfaces);
+      let surface = R.pick(pal.surfaces);
+      if (pal.alternate) {
+        const a = steps[steps.length - 1]?.surface, b = steps[steps.length - 2]?.surface;
+        surface = a === 'crumble' && b === 'crumble' ? 'branch' : a && a !== 'crumble' ? 'crumble' : R.chance(0.5) ? 'crumble' : 'branch';
+      }
       let pick: Step | null = null;
       // (a node with an end height: keep each landing near the line from its start to that end, a step down a tier at a time)
       const want = pal.end === undefined ? null : spec.y + (pal.end - spec.y) * ((i + 1) / ms.length);
@@ -244,6 +250,7 @@ class Lay {
     this.L = { stage, bpm, ledges: [], vines: [], nodes: [], flags: [], petals: [], snakes: [], marks: [], find: null, lines: [], spawn: { x: 0, y: 0 }, exit: { x: 0, y: 0 }, width: 0, height: 0, heartFalls: [], expert: 0, walls: [] };
   }
   begin(tag: Tag, pair: string, tier: string, dir: 1 | -1, x: number, y: number, bars: string[] = []) {
+    this.lastExit = null;
     this.node = this.L.nodes.length;
     this.L.nodes.push({ tag, pair, tier, dir, x0: x, x1: x, y, bars, density: 0, seconds: 0 });
   }
@@ -259,7 +266,13 @@ class Lay {
     this.L.ledges.push({ x0: Math.round(x0), x1: Math.round(x1), y: Math.round(y), surface, step, node: this.node });
   }
   /** a traced node, laid down (right to left when dir is -1, entering at x); its flag on the entrance apron, petals over each jump */
+  /** where the last traced node's exit apron ends (a node that starts right there shares that apron as its entrance) */
+  lastExit: { x: number; y: number } | null = null;
   traced(tag: Tag, pair: string, tier: string, dir: 1 | -1, x: number, y: number, bars: string[], pal: Palette, opts: { petals?: boolean; fit?: ReturnType<typeof fitSteps> } = {}) {
+    // (two nodes back to back share one 200 px apron, the exit of the one and the entrance of the next: research 11-04 line 600 asks for
+    // a flat safe apron at every node's seam, and two of them read as 2.8 s of walking, the validator's dead walk)
+    const shared = dir === 1 && this.lastExit && Math.abs(this.lastExit.x - x) < 1 && this.lastExit.y === y;
+    if (shared) x -= APRON;
     const spec = { bpm: this.L.bpm, bars, x: dir === 1 ? x : 0, y };
     const fit = opts.fit ?? fitSteps(spec, pal, this.R);
     let tr = this.easy ? fit.easy : fit.tr;
@@ -276,6 +289,11 @@ class Lay {
       return next ? next.t - (l.t + l.air) : 1;
     };
     for (const q of tr.ledges) {
+      // (the shared apron is the last node's: this node's entrance ledge starts where it ends)
+      if (shared && q.step === -1) {
+        if (q.x1 - (x + APRON) > 8) this.ledge(x + APRON, q.x1, q.y, q.surface, q.step);
+        continue;
+      }
       this.ledge(q.x0, q.x1, q.y, q.surface, q.step);
       if (q.surface === 'crumble') this.L.ledges[this.L.ledges.length - 1].hold = +(Math.max(0, runOn(q.step)) + (this.easy ? SNAP_EASY : SNAP_SPARE)).toFixed(2);
     }
@@ -296,7 +314,8 @@ class Lay {
     const spots = hazardSpots(tr, ['skip', 'held']).filter((s) => s.kind === 'skip');
     this.L.expert += 0;
     const out = { tr, steps: fit.steps, spots };
-    this.end(tr.x1, tr.seconds, tr.density);
+    this.end(tr.x1, tr.seconds - (shared ? APRON / PHYS.maxRun : 0), tr.density);
+    this.lastExit = dir === 1 ? { x: tr.x1, y: tr.yOut } : null;
     return out;
   }
 }
@@ -317,10 +336,10 @@ function shift(tr: Trace, dx: number): Trace {
   };
 }
 
-/** petals along a jump's arc, where his body goes (one at the top, one on the way down: at most six a screen, petals.ts) */
+/** a petal at the top of a jump's arc, where his body goes on the beat (one a jump: a goal a first-timer's natural run fills, D8) */
 function arcPetals(out: Layout['petals'], fx: number, tx: number, fy: number, ty: number, move: Move) {
   const rise = move === 'hop' ? 50 : move === 'double' ? 170 : 100;
-  for (const k of [0.45, 0.75]) {
+  for (const k of [0.5]) {
     const x = fx + (tx - fx) * k;
     const base = fy + (ty - fy) * k;
     out.push({ x: Math.round(x), y: Math.round(base - 40 - rise * Math.sin(Math.PI * k)) });
@@ -332,7 +351,7 @@ function arcPetals(out: Layout['petals'], fx: number, tx: number, fy: number, ty
  * running jump grabs the first, every vine catches the next and the last lands on the far side (protoCheck.ts, the same checks as
  * protoStage.ts chain). Returns the far ledge's start.
  */
-function vineChain(lay: Lay, edge: number, y: number, n: number, soft: boolean, farW = 400, farY = y): number {
+function vineChain(lay: Lay, edge: number, y: number, n: number, soft: boolean, farW = 400, farY = y, tops?: [number, number]): number {
   const R = lay.R;
   for (let tries = 0; tries < 16; tries++) {
     const easy = soft || tries > 8;
@@ -341,8 +360,8 @@ function vineChain(lay: Lay, edge: number, y: number, n: number, soft: boolean, 
     for (let k = 1; k < n; k++) xs.push(xs[k - 1] + (easy ? R.r(300, 330) : R.r(315, 350)));
     const farX = Math.round(xs[n - 1] + R.r(200, 240));
     // (lianas of different lengths: some hang long and low, some short)
-    const tops = xs.map(() => Math.round(y - (soft ? R.r(360, 390) : R.r(340, 460))));
-    const vs: Vine[] = xs.map((vx, k) => ({ id: -1 - k, x: Math.round(vx), topY: tops[k], bottomY: Math.min(y + 30, tops[k] + R.r(330, 410)), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true }));
+    const topYs = xs.map(() => Math.round(tops ? R.r(tops[0], tops[1]) : y - (soft ? R.r(360, 390) : R.r(340, 460))));
+    const vs: Vine[] = xs.map((vx, k) => ({ id: -1 - k, x: Math.round(vx), topY: topYs[k], bottomY: Math.min(y + 30, topYs[k] + R.r(330, 410)), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true }));
     const far: Platform = { id: -99, x: farX, y: farY, width: farW, height: 24, type: 'solid' };
     let ok = jumpGrab(edge, y, vs[0]) >= 4;
     for (let k = 0; ok && k < n - 1; k++) ok = catchWindow(vs[k], vs[k + 1]) > 0.6 && earlyCatch(vs[k], vs[k + 1]);
@@ -374,9 +393,20 @@ const swung = (R: Rng, n: number, breath = 0.3) => {
   // the stage's, how far it leans rolls)
   const [long, short] = R.pick([[6, 2], [4, 2], [10, 2], [6, 2], [4, 2]] as const);
   const g: number[] = [];
+  // (and a rest pad every five or six take-offs: a 10-eighth breath, about 1.7 s on a wide ledge, so no group runs past ~10 s,
+  // STAGE-RULES §0b.1 and §2's rest pads)
+  let since = 0;
   while (g.length < n) {
-    if (R.chance(breath)) g.push(8);
-    else g.push(long, short);
+    if (since >= 5 + (g.length % 2)) {
+      g.push(10);
+      since = 0;
+    } else if (R.chance(breath)) {
+      g.push(8);
+      since++;
+    } else {
+      g.push(long, short);
+      since += 2;
+    }
   }
   return g.slice(0, n);
 };
@@ -394,14 +424,37 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   const L = lay.L;
   const { A, B, C } = T12;
   L.spawn = { x: 140, y: A };
+  /**
+   * one swing in the middle of a stretch (the stage's pair, jump + vine, in one move: a run-up, the liana, a pad to land and hop off):
+   * so the vines run all through 1-2, not in one bunch. `tops`: where the liana hangs from (under the bough, over the floor's pits).
+   * A roll whose liana the checks refuse goes on without it.
+   */
+  const midSwing = (tag: Tag, tier: string, x0: number, yy: number, tops?: [number, number]) => {
+    lay.begin(tag, 'jump + vine swing', tier, 1, x0, yy);
+    lay.ledge(x0, x0 + 240, yy, 'apron');
+    try {
+      const far = vineChain(lay, x0 + 240, yy, 1, easy, 260, yy, tops);
+      lay.ledge(far, far + 260, yy, yy >= FLOOR_Y ? 'bank' : 'branch');
+      L.heartFalls.push({ x0: x0 + 240, x1: far });
+      lay.end(far + 260, (far + 260 - x0) / 330 + 1.2);
+      return far + 260;
+    } catch {
+      lay.end(x0 + 240, 240 / PHYS.maxRun);
+      return x0 + 240;
+    }
+  };
   // ---- A: the canopy, rightwards
   let x = 40;
-  const intro = lay.traced('intro', 'run + jump', 'A', 1, x, A, barsFrom(Array.from({ length: 6 }, () => R.pick([8, 10, 12])), 0), PAL_A(A));
-  // (the first gaps are taught safe: a catch branch under each, a hop below, so a miss is a hop back up)
-  for (const g of intro.tr.gaps) lay.ledge(g.x0 - 40, g.x1 + 40, A + 70, 'catch');
+  const intro = lay.traced('intro', 'run + jump', 'A', 1, x, A, barsFrom(Array.from({ length: 8 }, () => R.pick([6, 8, 9])), 0), PAL_A(A));
+  // (no catch branches: the jump is 1-1's, already taught; a miss here costs a heart and sets him back on his ledge, Easy a soft fall.
+  // A catch under the gap made the jump optional: the quick route walked off onto it and stepped up, 2026-11-04 validator)
+  L.heartFalls.push({ x0: intro.tr.x0, x1: intro.tr.x1 });
   L.lines.push({ x: 260, y: A, text: 'Follow the petals' });
   x = intro.tr.x1;
-  const ramp = lay.traced('ramp', 'jump + hop (swung)', 'A', 1, x, intro.tr.yOut, barsFrom(swung(R, 14, 0.45)), PAL_A(intro.tr.yOut));
+  const ramp1 = lay.traced('ramp', 'jump + hop (swung)', 'A', 1, x, intro.tr.yOut, barsFrom(swung(R, 7, 0.45)), PAL_A(intro.tr.yOut));
+  L.heartFalls.push({ x0: ramp1.tr.x0, x1: ramp1.tr.x1 });
+  x = midSwing('ramp', 'A', ramp1.tr.x1, ramp1.tr.yOut);
+  const ramp = lay.traced('ramp', 'jump + hop (swung)', 'A', 1, x, ramp1.tr.yOut, barsFrom(swung(R, 8, 0.45)), PAL_A(ramp1.tr.yOut));
   L.heartFalls.push({ x0: ramp.tr.x0, x1: ramp.tr.x1 });
   x = ramp.tr.x1;
   let y = ramp.tr.yOut;
@@ -455,7 +508,11 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
     if (q.y > B - 80) continue;
     for (let sx = q.x0 + 40; sx <= q.x1 - 40; sx += 20) {
       if (L.snakes.some((sn) => Math.abs(sn.x - sx) < 300)) continue;
-      if (clearAbove(back.tr.safe, sx, B, SNAKE_RANGE)) L.snakes.push({ x: Math.round(sx), y: B });
+      // (and never within 150 px of where a jump lands near the bough: research 11-04, "never ... within 150 pixels of where Pokey lands")
+      // (nor of where a drop off any branch's end comes down on the bough: the quick route lands there, validator mechanics.ts enemyJobs)
+      const nearLanding = back.tr.landings.some((l) => Math.abs(l.toY - B) < 100 && Math.abs(l.toX - sx) < 150 + SNAKE_RANGE)
+        || back.tr.ledges.some((q) => q.y < B - 10 && (Math.abs(q.x0 - 60 - sx) < 150 + SNAKE_RANGE || Math.abs(q.x1 + 60 - sx) < 150 + SNAKE_RANGE));
+      if (!nearLanding && clearAbove(back.tr.safe, sx, B, SNAKE_RANGE)) L.snakes.push({ x: Math.round(sx), y: B });
     }
   }
   // ---- C: the floor, rightwards from under the bough's left end (a landing pad under the drop, a trunk at its left)
@@ -465,14 +522,20 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   L.lines.push({ x: padL + 20, y: C, text: 'Under the bough now. Watch the gaps!' });
   const PAL_C: Palette = { surfaces: R.pick([['bank', 'bank', 'stump'], ['bank', 'stump', 'stump'], ['bank', 'stump', 'branch']] as Surface[][]), jumpDy: [-60, -30, 0, 30, 50], hopDy: [-40, -30, -20], doubles: 0, yMin: C - 100, yMax: C };
   x = Lx + 60;
-  const under = lay.traced('ramp', 'jump + hop (pits now)', 'C', 1, x, C, barsFrom(swung(R, 14, 0.4)), PAL_C);
+  const under1 = lay.traced('ramp', 'jump + hop (pits now)', 'C', 1, x, C, barsFrom(swung(R, 7, 0.4)), PAL_C);
+  // (a liana hung from under the bough, over the floor's pit)
+  x = midSwing('ramp', 'C', under1.tr.x1, under1.tr.yOut, [B + 50, B + 70]);
+  const under = lay.traced('ramp', 'jump + hop (pits now)', 'C', 1, x, under1.tr.yOut, barsFrom(swung(R, 8, 0.4)), { ...PAL_C, yMin: Math.min(under1.tr.yOut, C) - 100, yMax: Math.max(under1.tr.yOut, C) });
   // (under the loop the flags don't take: engine.ts keeps the furthest-right flag, so a fall here costs a heart, never a life)
   L.heartFalls.push({ x0: padL, x1: Math.max(under.tr.x1, bRight + 100) });
   // the note: on the floor right under the rest, where the view from the rest looks down on it (upright)
   L.find = { x: Math.round(Math.max(padL + 120, restX + 420)), y: C };
   x = under.tr.x1;
   y = under.tr.yOut;
-  const climax = lay.traced('climax', 'jump + hop + drop (swung, densest)', 'C', 1, x, y, barsFrom(swung(R, 17, 0.1)), { ...PAL_C, yMin: Math.min(y, C) - 100, yMax: Math.max(y, C), surfaces: ['bank', 'stump', 'branch'] });
+  const climax1 = lay.traced('climax', 'jump + hop + drop (swung, densest)', 'C', 1, x, y, barsFrom(swung(R, 9, 0.1)), { ...PAL_C, yMin: Math.min(y, C) - 100, yMax: Math.max(y, C), surfaces: ['bank', 'stump', 'branch'] });
+  x = midSwing('climax', 'C', climax1.tr.x1, climax1.tr.yOut);
+  y = climax1.tr.yOut;
+  const climax = lay.traced('climax', 'jump + hop + drop (swung, densest)', 'C', 1, x, y, barsFrom(swung(R, 9, 0.1)), { ...PAL_C, yMin: Math.min(y, C) - 100, yMax: Math.max(y, C), surfaces: ['bank', 'stump', 'branch'] });
   x = climax.tr.x1;
   y = climax.tr.yOut;
   lay.begin('climax', 'jump + vine swing (over the chasm)', 'C', 1, x, y);
@@ -522,21 +585,29 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   /** a node's palette: down from where he is to `end`, snap twigs this often */
   const down = (end: number, snap: number): Palette => ({
     surfaces: snap >= 1 ? ['crumble'] : snap > 0 ? ['crumble', 'branch', 'crumble'] : ['branch'],
+    alternate: snap > 0 && snap < 1,
     jumpDy: [-60, -50, -40, -30, -20, 0, 20], hopDy: [-30, -20], doubles: 0, yMin: Math.min(y, end) - 40, yMax: Math.max(y, end) + 30, end,
   });
-  const broken = (n: number, set: readonly number[]) => Array.from({ length: n }, () => R.pick(set));
+  // (uneven gaps, a rest pad (9 eighths, about 1.3 s on a ledge) every seven or eight take-offs)
+  const broken = (n: number, set: readonly number[]) => Array.from({ length: n }, (_, i) => (i % 8 === 7 ? 9 : R.pick(set)));
   // (each roll breaks the beat its own way, and leans on the snap twigs more or less)
   const SET = R.pick([[3, 4, 4, 5, 6], [3, 3, 5, 6, 6], [4, 4, 3, 5, 3, 6], [3, 5, 4, 6, 3]]);
   const SNAP = R.pick([0.5, 0.7, 0.85]);
   // ---- intro: the canopy, sparse jumps, the first carving on the path
-  const intro = lay.traced('intro', 'run + jump', 'canopy', 1, x, y, barsFrom(broken(6, [9, 11, 12])), { ...down(T.canopy, 0), jumpDy: [-30, -20, 0, 20, 30] });
+  const intro = lay.traced('intro', 'run + jump', 'canopy', 1, x, y, barsFrom(Array.from({ length: 8 }, () => R.pick([7, 8, 9]))), { ...down(T.canopy, 0), jumpDy: [-30, -20, 0, 20, 30] });
   mark(intro.tr.ledges[1].x0 + 60, intro.tr.ledges[1].y);
   L.lines.push({ x: 260, y, text: "Meeca's mark! Follow her trail" });
   x = intro.tr.x1;
   y = intro.tr.yOut;
   // ---- the snap twig, taught: twigs over catch branches (a miss is a hop back up)
   const teach = lay.traced('ramp', 'snap twig + jump (taught)', 'canopy', 1, x, y, barsFrom(broken(9, [4, 6, 8])), { ...down(y, 0), surfaces: ['crumble'], jumpDy: [-20, 0, 20], end: undefined });
-  for (const g of teach.tr.gaps) lay.ledge(g.x0 - 60, g.x1 + 60, Math.max(...teach.tr.ledges.map((q) => q.y)) + 80, 'catch');
+  // (taught safe: a catch branch under the far part of each gap, one hop below the far ledge: a jump that falls short lands on it, a walk
+  // off the edge falls past it (about 70 px on at a run), so the jump is still the way)
+  for (const g of teach.tr.gaps) {
+    const far = teach.tr.ledges.find((q) => q.x0 >= g.x1 - 1);
+    const cy = (far?.y ?? y) + 80;
+    if (g.x1 + 60 - (g.x0 + 80) >= 60) lay.ledge(g.x0 + 80, g.x1 + 60, cy, 'catch');
+  }
   L.lines.push({ x: x + 120, y, text: 'These ones snap! Keep moving' });
   x = teach.tr.x1;
   y = teach.tr.yOut;
@@ -550,7 +621,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   x = ramp2.tr.x1;
   y = ramp2.tr.yOut;
   // ---- spike: down another tier, all snaps, the quickest gaps
-  const spike = lay.traced('spike', 'snap twig + drop', 'four', 1, x, y, barsFrom(broken(22, SET.filter((g) => g < 6))), down(T.four, 1));
+  const spike = lay.traced('spike', 'snap twig + drop', 'four', 1, x, y, barsFrom(broken(22, SET.filter((g) => g < 6))), down(T.four, 0.9));
   mark(spike.tr.ledges[5].x0 + 40, spike.tr.ledges[5].y);
   x = spike.tr.x1;
   y = spike.tr.yOut;
@@ -645,6 +716,19 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
   const C: Collectible[] = [];
   let pid = 1, vid = 1, eid = 1, cid = 1;
   const bottom = Math.max(...L.ledges.map((q) => q.y));
+  // (World 1's own platform art, used so each stage looks its own (the validator's look-alike, tools/validate/look.ts): 1-2's canopy
+  // is rope-and-plank bridges between short branches, its great bough a log, its floor banks and mossy stumps; 1-5's trail is mossy
+  // stone ledges and short branches between the snap twigs)
+  const style = (q: LLedge): Platform['style'] => {
+    if (id === '1-2') {
+      if (q.surface === 'bough') return 'log';
+      const tier = L.nodes[q.node]?.tier;
+      if (tier === 'A' || q.surface === 'catch') return q.x1 - q.x0 >= 220 || q.surface === 'apron' ? 'canopy_bridge' : 'branch';
+      return 'branch';
+    }
+    // (a floating 'log' draws as a wooden crate: never in the canopy)
+    return q.surface === 'apron' || q.x1 - q.x0 >= 200 ? 'moss_stone' : 'branch';
+  };
   for (const q of L.ledges) {
     const w = q.x1 - q.x0;
     if (w < 8) continue;
@@ -655,7 +739,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     } else if (q.surface === 'crumble') {
       P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: 24, type: 'fragile', style: 'branch', crumbleAfter: q.hold ?? 0.6 });
     } else {
-      P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: q.surface === 'bough' ? 30 : 24, type: 'solid', style: 'branch' });
+      P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: q.surface === 'bough' ? 40 : 24, type: 'solid', style: style(q) });
     }
   }
   for (const wl of L.walls) P.push({ id: pid++, x: wl.x0, y: wl.y0, width: wl.x1 - wl.x0, height: wl.y1 - wl.y0, type: 'solid', style: 'moss_stone' });
