@@ -1,6 +1,6 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 11:48 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 12:11 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
@@ -8,9 +8,9 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
 - Reinstated 2026-11-02 by the lead at Matt's ask (D27: the slips came from the setup; GAMEPLAN §3 is now a ladder; self-caught slips
   don't count). New items come in batches when Matt says go (LEAD-PLAYBOOK 8d).
 - **State now (2026-11-04 11:34 AM ET):** roadmapcheck PASS. Phases (sums by script): WebGL 21 h; Phase A (World 1) 77 h (range about 59-106);
-  Phase B 306.5 h (a guess, about 235-420); Phase C 114 h (a guess, about 85-155); alongside 67.5 h (R-6.40 in it). Day 1 about 586
-  helper hours (gate 594), recommended Important 60 h, launch about 646 h; lanes 129 each; building about 16-22 working days (13-28
-  across the guesses); about 4-4.5 weeks with the 80% trigger (about 469 of 586 h). Doc read back.
+  Phase B 306.5 h (a guess, about 235-420); Phase C 114 h (a guess, about 85-155); alongside 67.5 h (R-6.40 in it); WebGL 24 h with
+  R-3.14. Day 1 about 589 helper hours (gate 597), recommended Important 60 h, launch about 649 h; lanes 129.5 x4 / 130; building about 16-22 working days (13-28
+  across the guesses); about 4-4.5 weeks with the 80% trigger (about 471 of 589 h). Doc read back.
   - R-6.40 (menus A, new game + 3 save slots): add to bot-fix's planned-vs-actual list when it starts (expected 5.5 h, range 4-8).
 - **Bosses in segments (Matt, 11-04):** 2 / 3 / 4 segments for Worlds 1-3 / 4-7 / 8-10, each a phase (arena and attack change).
   R-161.1 8.5 h (2 segments); R-161.2 60 h (12 new phases at R-1.15's ~2.7 h a phase, a guess); R-1.9/R-1.10 noted, hours not
@@ -77,6 +77,9 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
 - 2026-11-02: roadmapcheck counts "roadmap" only as a word, not inside a path or a name (D25 and D27 tripped it).
 
 ## My pitfalls and how I avoid them
+- A total typed before the script ran, AGAIN (11-04: "busiest lane 133.5 h" for R-6.40 and "132 h" for R-3.14, both corrected before any
+  push or report). Same pattern as the 2:55 time: from now on the estimate line is written only AFTER the lane script prints, never
+  in the same edit that adds the row.
 - A real-hours note that broke the gate (11-04, R-150.8: text between "h" and "(" dropped the row's hours; caught by the gate before
   any push): keep the shape `; real N h (...)` (methods/roadmap.md).
 - A time typed ahead of the clock (11-04: "2:55 AM" written at 2:39 AM in the Mirrored line; caught before any report): every time
