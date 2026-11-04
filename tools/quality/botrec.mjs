@@ -20,7 +20,7 @@ const events = [
 ];
 const b = await chromium.launch();
 for (const [ori, w, h] of ORIS) {
-  const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+  const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: true, isMobile: true }); // a phone: touch wording and controls
   p.on('pageerror', (er) => console.log('PAGE', er.message));
   await p.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, run.who === 'KID' ? 'easy' : 'normal');
   await p.goto(`http://127.0.0.1:${port}/?nodemo=1&lessons=off`);
