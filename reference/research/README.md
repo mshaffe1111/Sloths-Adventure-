@@ -12,6 +12,11 @@ Read the sources, not summaries. Every claim about OUR game must be checked in c
 | `reference/research/ledger/LEDGER-2026-11-04-part1.md` | Nov 4 research lines 1-389 (183 rows) |
 | `reference/research/ledger/LEDGER-2026-11-04-part2.md` | Nov 4 research lines 390-end (165 rows) |
 | `reference/research/MATT-RESEARCH-2026-11-04.md`, `GEMINI-VARIETY-2026-11-02.md` | the lead's short summaries (known to be thin: D29) |
+| `reference/research/engine-2026-11-04/GEMINI-ENGINE-ARCHITECTURE.txt` (+ .docx) | Gemini's answer on the engine (11-04 evening): architectures, formulas, data formats, plan |
+| `reference/research/engine-2026-11-04/GEMINI-CRITICAL-AGENTS.txt` (+ .docx) | Gemini's answer on setting up AI helpers to think: briefs for designer, critic, planner |
+| `reference/research/engine-2026-11-04/CARMO-thesis-2024.txt` (+ .pdf) | Pedro Carmo's 2024 senior thesis on platformer level generation |
+| `reference/research/engine-2026-11-04/TANAGRA-paper.txt` (+ .mht) | Tanagra: an intelligent level design assistant for 2D platformers (Smith et al.); text from a saved page, may be partial |
+| `reference/research/ledger/LEDGER-ENGINE-GEMINI.md`, `LEDGER-CRITICAL-AGENTS.md`, `LEDGER-ENGINE-PAPERS.md` | their line-by-line ledgers (in progress 11-04 evening) |
 | `reference/STAGE-RULES.md` | Matt's fixed rules and the numbers every stage must meet |
 | `reference/PLAN-TO-80.md` | the plan from 55/100 to 80+ |
 | `reference/W1-REBUILD-PLAN.md` | how 1-1 to 1-5 were rebuilt on 11-04 (beat-traced, by hand) |
