@@ -1,3 +1,7 @@
 R-159.1 art jobs (w8-rope2), Matt's approved list (Nov 4 ~9:05 AM ET, via the lead): about $2.32, cap $4.00 including redos.
 Cost = minutes x $2.75/60 (rtx-pro-6000). Times in UTC here, ET to Matt.
 r159-stills 6aeb45630e0338d1bb7fe9f2 created 2026-11-04T14:46:59Z (8 img2img takes: vine-hang s55/s65 x seeds 7/23, boa-ball s50/s60 x 7/23)
+  r159-stills finished 14:48:03Z (1.1 min): FAILED, every start 404 (tools/.gitignore drops *.webp: starts not in git). ~$0.05
+r159-boaclips 6aeb4594c78863f9c6329d91 created 14:47:48Z, finished 14:48:00Z: FAILED at the start's curl (same cause). ~$0.01
+  lesson: force-add starts (git add -f) and curl a start's raw URL before launching
+running total ~$0.06 of $4.00
