@@ -42,6 +42,10 @@ a node fails if the same jump gap repeats four times in a row (11-04 line 585).
 - Hazards go on the line the player avoided (research 11-04 line 59, checked by the lead): where the traced run says short-hop or
   duck, a hazard (thorn overhang, snapping snake, pit) sits on the other line, so holding right or skipping the beat costs you.
   This is the direct fix for Matt's "you can outrun them every time".
+- **Petals and goal pickups live on the way everyone takes (Matt, 2026-11-04: "make sure that too many petals arent on split
+  areas. Keep the core amount on places that the player always have to use.")**: the goal's count must be reachable from the
+  shared path alone (the parts every route crosses). Split roads (high/low, side branches, the loop's tiers a route can skip) carry
+  only a small bonus, about the same on each road. Goals are set from the fixed bot at about 75% of the total.
 - One named pair per stage, acting ON THE SAME BEAT (11-02 report lines 5, 21-54, 61): "a pair" means the two mechanics meet in
   one move (swing from a vine onto a snapping twig), not both somewhere in the stage. Neighbouring stages never share their pair.
 - The twist breaks the rhythm the player just learned (11-02 line 69): the twist node changes the note value (e.g. 1-1's steady
