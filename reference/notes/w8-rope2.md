@@ -79,3 +79,15 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
 - The lead 11-04 3:18 PM ET: 1-9 ships tonight with main's goal method (config 16; withGoals: Normal the share, Easy its floor); its
   counted goals and the three short flavours (trunks, walls, leaps) wait for tomorrow's 1-9 rework. The R-159.1 fixes on 1-9 (vault
   snake respawn, Easy soft pit) stay: stage19 and groundwork's band test green with them.
+- SLIP (2026-11-04 5:41 PM ET): I told w1-rhythm a commit id I typed from memory, and it was wrong. Corrected at once. Countermeasure
+  (the lead's D27, now mine too): no commit ids in messages at all; name the branch, the push time from `date` and the commit title.
+- DEFECT FOUND (2026-11-04, reported to the lead): the engine builds every hand-built stage with easy=false (stageGenerator.ts
+  generateStage calls buildProtoStage with no easy flag; Easy is easyStage(withGoals(the Normal build))). Every `easy ?` branch inside a
+  protoStage plan never ships (1-3's soft pit under every vault on Easy, its Easy climax with no real drops), and tests that build with
+  easy=true test a stage that doesn't ship. The fun gate's Easy is the shipped one. Countermeasure waiting on the lead's call: wire easy
+  through generateStage, or fold the Easy cases into easyStage; then the stage tests build as the engine does.
+- 1-3 vs the fun gate (the lead's (a), 11-04): pulled away from 1-1/1-2 by its own identity, not noise. Whole-bar hops each with a
+  punch-daze-stomp; a climax of three runs linked by a ledge snake and the bounce up a wall; a five- or six-branch high road; those
+  fights kept on Easy (Enemy.easyKeep). Lesson: the moves-alike cosine is dominated by "JJJ" (all jumps count alike); a stage stands apart
+  only when its own move breaks every run of jumps. And a snake must be 150 px clear of BOTH landings near it (its ledge's and the next
+  one's when at the same height), measured from the route's landing, not the trace's.

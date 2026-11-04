@@ -2838,6 +2838,10 @@ const flagsCapped = (st: GeneratedStage): GeneratedStage => {
   return st;
 };
 
+/** the rebuilt World 1 stages whose Easy is built as Easy (buildProtoStage's `easy`), not only Normal's thinned by easyStage: 1-3 (the
+ *  lead, 11-04); w1-rhythm-b's 1-1 and 1-4 join this set, and w1Rhythm.ts's RHYTHM_STAGES pass it too */
+const EASY_BUILT: ReadonlySet<string> = new Set(['1-3']);
+
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
@@ -2850,8 +2854,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) {
-    // (the beat-built stages lay out Easy's own pads: w1Rhythm.ts)
-    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && RHYTHM_STAGES.has(config.id)));
+    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && (RHYTHM_STAGES.has(config.id) || EASY_BUILT.has(config.id))));
     addMissingFind(st);
     return difficulty === 'normal' ? w4Normal(st) : st;
   }

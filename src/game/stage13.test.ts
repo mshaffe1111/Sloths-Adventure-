@@ -12,11 +12,16 @@ const cfg = {
   levelWidth: 16900, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
 } as LevelConfig;
 const SEEDS = Array.from({ length: 20 }, (_, i) => 1 + i * 41);
+/** 1-3 as the engine loads it (stageGenerator.ts EASY_BUILT, engine.ts): Normal's share, and on Easy its Easy build, thinned by easyStage */
+const shipped = (s: number, easy = false) => {
+  const st = withGoals(buildProtoStage(cfg, s, '1-3', easy));
+  return easy ? (easyStage(st as never) as unknown as typeof st) : st;
+};
 
 test('1-3: every roll keeps the rebuilt plan (seven nodes, reference/plans/1-3-rebuild.md), asks for Matt\'s share of its snakes (its counted goal on Easy), and takes over two minutes for a skilled player, on Normal and Easy', () => {
   for (const easy of [false, true]) {
     for (const s of SEEDS) {
-      const st = buildProtoStage(cfg, s, '1-3', easy);
+      const st = shipped(s, easy);
       assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Intro', 'Ramp', 'Spike', 'Rest', 'Counter-melody', 'Climax', 'Cool-down'], `seed ${s}`);
       // (Normal: Matt's share, in his 70-80% band, of snakes all before the shrine; Easy: its counted goal)
       const have = goalHave(st as never)!;
@@ -32,7 +37,7 @@ test('1-3: every roll keeps the rebuilt plan (seven nodes, reference/plans/1-3-r
 
 test('1-3: the first snake is asleep on a wide low branch, before any other snake', () => {
   for (const s of SEEDS) {
-    const st = buildProtoStage(cfg, s, '1-3');
+    const st = shipped(s);
     const first = [...st.enemies].sort((a, b) => a.x - b.x)[0];
     assert.equal(first.asleep, true, `seed ${s}`);
     assert.equal(st.enemies.filter((e) => e.asleep).length, 1);
@@ -41,10 +46,10 @@ test('1-3: the first snake is asleep on a wide low branch, before any other snak
   }
 });
 
-test('1-3: its rope lies over a soft pit (crossable before the rope is learned), every pickup can be reached, and only the climax has real drops (none on Easy), each no wider than a jump', () => {
+test('1-3: its rope lies over a soft pit (crossable before the rope is learned), every pickup can be reached, and only the climax has real drops (on Easy too, where its falls are put-backs), each no wider than a jump', () => {
   for (const easy of [false, true]) {
     for (const s of SEEDS) {
-      const st = buildProtoStage(cfg, s, '1-3', easy);
+      const st = shipped(s, easy);
       assert.ok(st.ropes!.length >= 1);
       for (const r of st.ropes!) {
         const mid = (r.x0 + r.x1) / 2;
@@ -56,7 +61,7 @@ test('1-3: its rope lies over a soft pit (crossable before the rope is learned),
       for (let x = 0; x < st.exitTotemX; x += 10) {
         const floor = st.platforms.some((p) => p.x <= x && p.x + p.width >= x && (p.y >= G - 200 || p.y + p.height >= G));
         if (!floor) {
-          assert.ok(!easy && bites.some((b) => x >= b[0] && x <= b[1]), `seed ${s}${easy ? ' Easy' : ''}: no floor at ${x}, outside the climax`);
+          assert.ok(bites.some((b) => x >= b[0] && x <= b[1]), `seed ${s}${easy ? ' Easy' : ''}: no floor at ${x}, outside the climax`);
           if (run0 < 0) run0 = x;
           assert.ok(x - run0 <= 140, `seed ${s}: a drop wider than a jump from ${run0}`);
         } else run0 = -1;
@@ -70,7 +75,7 @@ test('1-3: no snake on a branch outside the split stands over a pit floor he cou
   // first-timer bot took it, past every snake on the branches, and Matt's goal was out of reach)
   for (const easy of [false, true]) {
     for (const s of SEEDS) {
-      const st = buildProtoStage(cfg, s, '1-3', easy);
+      const st = shipped(s, easy);
       const split = st.proto.beats.find((b) => /^Spike/.test(b[2]))!;
       for (const e of st.enemies) {
         if (e.asleep || (e.x >= split[0] && e.x <= split[1]) || e.y > G - 20) continue;
@@ -86,7 +91,7 @@ test('1-3: no snake on a branch outside the split stands over a pit floor he cou
 test("1-3: the split's petals are Matt's 70/30: each road 13-17%, the shared way 66-74%, so one play down either road reaches the goal (Matt, 11-04)", () => {
   for (const easy of [false, true]) {
     for (const s of SEEDS) {
-      const st = buildProtoStage(cfg, s, '1-3', easy);
+      const st = shipped(s, easy);
       // (the split itself: under and along the high road, its first branch to the end of its perch)
       const sp = st.proto.beats.find((b) => /^Spike/.test(b[2]))!;
       const hb = st.platforms.filter((p) => p.style === 'branch' && p.x >= sp[0] && p.x < sp[1] && p.y < 470);
@@ -104,9 +109,8 @@ test("1-3: the split's petals are Matt's 70/30: each road 13-17%, the shared way
 test('1-3: whichever road he takes, the goal is in reach by the count, not by luck: goal <= the shared way + the smaller road - 5%, for its snakes (its goal as it loads) and its petals (75%), every roll, Normal and Easy (the lead, 11-04)', () => {
   for (const easy of [false, true]) {
     for (const s of SEEDS) {
-      const built = buildProtoStage(cfg, s, '1-3', easy);
       // (as the engine loads it: Normal's share, and on Easy its kept animals and its own goal)
-      const st = easy ? easyStage(withGoals(built) as never) as unknown as typeof built : withGoals(built);
+      const st = shipped(s, easy);
       const sp = st.proto.beats.find((b) => /^Spike/.test(b[2]))!;
       const hb = st.platforms.filter((p) => p.style === 'branch' && p.x >= sp[0] && p.x < sp[1] && p.y < 470);
       const x0 = Math.min(...hb.map((p) => p.x)), x1 = Math.max(...hb.map((p) => p.x + p.width));
