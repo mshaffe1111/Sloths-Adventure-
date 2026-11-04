@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 11:37 AM ET
+Last updated: 2026-11-04 11:39 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -36,6 +36,8 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 11:39 AM ET: lead corrected my R-150.8 comparison: start-to-accept 1.2 h vs 1.5 h (~20% faster), not 3x. Owned; corrections sent to the
+  keeper (record 1.2 h) and fix-petals (stage-fix.md best-result line: both numbers).
 - 2026-11-04 11:37 AM ET: R-150.8 accepted (lead merge 160b9c6e 11:35); real times sent to the roadmap keeper (start ~10:25, report 10:57, accept 11:35;
   ~32 min running vs 1.5 h). Lead added menus A (R-6.40, 5.5 h, from ~11:37, due ~5:07 PM) to the rounds; round 7 prompt updated.
 - 2026-11-04 11:35 AM ET: fix-petals R-150.8 final (7b544fe7): gate on 93450fb2 all PASS (2,299/0), sections present, stage-fix.md best result = this
@@ -121,6 +123,8 @@ Escalate at once: a law broken, a retirement trigger, a red gate on a release br
 - 2026-11-04 02:33 AM ET: bot-fix restarted from main 1dc39cd7 (the old bot-fix, 912b2fe6, is merged). Onboarding sent to the lead; waiting for its OK.
 
 ## My pitfalls
+- **Compare like with like: estimates are START-TO-ACCEPT** (the keeper's rule). Report start-to-accept vs plan AND running time
+  separately; "faster than planned" only on start-to-accept (11-04: I called R-150.8 "3x" from 32 min running vs 1.5 h; real 1.2 h vs 1.5 h).
 - **Approvals and money: check reference/STATUS.md on origin/ccr-0d59a91c-oy3imz FIRST, and read matches from the NEWEST (tail / no head
   cut) before saying "not found"** (11-04 10:04: a head -10 hid the two newest lines, a false RED on w8-rope2).
 - GPU stage 0 is merged into the lead branch (ccr), not main: compare a helper's src against ccr to see its OWN code.
