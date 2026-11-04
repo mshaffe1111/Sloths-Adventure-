@@ -59,6 +59,7 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
+import { gpuLive, gpuProbe, gpuStats, setGpuCanvas } from './game/gpuLayer.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
 import { keepScreenOn, nativeApp } from './game/appShell.ts';
@@ -288,6 +289,8 @@ export default function App() {
 
   // Canvas and Engine refs
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // the GPU layer's canvas, under the game's (gpuLayer.ts, GPU-RENDERER-PLAN stage 0)
+  const gpuCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const engineRef = useRef<GameEngine | null>(null);
   /** the short wait before a new engine is built (launchEngine): a second start inside it cancels the first, so two engines never run */
   const launchTimer = useRef(0);
@@ -694,6 +697,8 @@ export default function App() {
   // made, which replaced this function with an engine object, so a script's __engine() threw after a Play again)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __engine?: () => unknown }).__engine = () => engineRef.current;
+    // (and the GPU layer, for its checks: tools/qa/gpuLayer.cjs)
+    (window as unknown as { __gpu?: unknown }).__gpu = { stats: gpuStats, live: gpuLive, probe: gpuProbe };
   }
 
   // dev only: lose every life at once (to test Game Over and Continue)
@@ -798,6 +803,8 @@ export default function App() {
   };
 
   const launchEngine = useCallback((lvl: LevelConfig) => {
+    // (the GPU layer's canvas, for when something is first put on it: nothing is started here, gpuLayer.ts)
+    setGpuCanvas(gpuCanvasRef.current);
     enterWorld(lvl.worldIndex);
     clearTimeout(launchTimer.current);
     if (engineRef.current) {
@@ -1101,9 +1108,16 @@ export default function App() {
     >
       {/* Isolated Canvas Container */}
       <div className="absolute inset-0 w-full h-full">
+        {/* the GPU layer, under the game's canvas: shown only while it has something to draw (gpuLayer.ts) */}
+        <canvas
+          ref={gpuCanvasRef}
+          className="absolute inset-0 w-full h-full block pointer-events-none"
+          style={{ visibility: 'hidden' }}
+          aria-hidden="true"
+        />
         <canvas
           ref={canvasRef}
-          className="w-full h-full block"
+          className="relative w-full h-full block"
           style={{ touchAction: 'none' }}
         />
       </div>
