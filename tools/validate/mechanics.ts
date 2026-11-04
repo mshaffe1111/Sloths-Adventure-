@@ -85,7 +85,7 @@ export function missCost(b: Built): Beat2[] {
   const out: Beat2[] = [];
   const segs = b.route.segs;
   for (const s of b.steps) {
-    if (!'JjVBMCRXE'.includes(s.m) || /collapses behind/.test(s.what)) continue;
+    if (!'JjQVBMCRXE'.includes(s.m) || /collapses behind/.test(s.what)) continue;
     if (s.m === 'E') {
       out.push({ step: s, cost: /again/.test(s.what) ? 'setback' : 'nothing', why: /again/.test(s.what) ? 'a pass that can strike: a heart' : "the stretch's first pass only warns" });
       continue;

@@ -18,7 +18,7 @@ import { pickRoute } from '../inspect/eraRoll.ts';
 import { type Beat, type Sample } from '../inspect/beats.ts';
 import type { Stage } from '../inspect/stages.ts';
 
-export type Move = 'J' | 'j' | 'V' | 'B' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'E' | 'D' | 'X' | 'h' | 'Z';
+export type Move = 'J' | 'j' | 'Q' | 'V' | 'B' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'E' | 'D' | 'X' | 'h' | 'Z';
 export interface Step {
   m: Move;
   /** seconds from the start on the quick route's clock (the inspector's beat clock: movement plus fights and waits) */
@@ -31,7 +31,7 @@ export type Setting = 'normal' | 'easy';
 
 /** what each move letter means, for the pages */
 export const MOVE_NAMES: Record<Move, string> = {
-  J: 'jump (a real fall under it)', j: 'safe hop over a gap', V: 'vine swing', B: 'breaking branch', W: 'wind', S: 'slow-down', C: 'climb', P: 'puzzle', M: 'mushroom bounce', R: 'rope',
+  J: 'jump (a real fall under it)', j: 'safe hop over a gap', Q: "jump the level check can't confirm (usually a mushroom wall)", V: 'vine swing', B: 'breaking branch', W: 'wind', S: 'slow-down', C: 'climb', P: 'puzzle', M: 'mushroom bounce', R: 'rope',
   F: 'fight an animal', E: 'eagle / watcher', D: 'dark', X: 'river / moving logs', h: 'small hop', Z: 'other timed hazard',
 };
 
@@ -41,7 +41,8 @@ export function moveOf(b: Pick<Beat, 'letter' | 'what' | 'count'>): Move | null 
   if (b.count < 1) return null; // (an optional pickup arc off the route: not a move the stage asks for)
   if (/mushroom bounce/.test(w)) return 'M';
   if (/moving log|river/.test(w)) return 'X';
-  if (/^(jump over a gap|big jump up|long jump|leaf glide|jump the level check)/.test(w)) return 'J';
+  if (/jump the level check cannot confirm/.test(w)) return 'Q';
+  if (/^(jump over a gap|big jump up|long jump|leaf glide)/.test(w)) return 'J';
   if (/small hop/.test(w)) return 'j';
   if (/hop up a step/.test(w)) return 'h';
   if (/trunk or vine and climb/.test(w)) return 'C';
@@ -168,7 +169,7 @@ export function repeats(str: string, steps: readonly Step[]): RepeatFlag[] {
  * costs anything is the miss-cost check's job, mechanics.ts), so 1-2's safe hops and 1-1's jumps are compared as what they are.
  */
 export function grams(str0: string, n = 3): Map<string, number> {
-  const str = str0.replace(/j/g, 'J');
+  const str = str0.replace(/[jQ]/g, 'J');
   const m = new Map<string, number>();
   for (let i = 0; i + n <= str.length; i++) m.set(str.slice(i, i + n), (m.get(str.slice(i, i + n)) ?? 0) + 1);
   return m;

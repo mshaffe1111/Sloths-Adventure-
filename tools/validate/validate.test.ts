@@ -32,7 +32,7 @@ const steps = (str: string, every = 1): Step[] => [...str].map((m, i) => ({ m: m
 // ---- the move letters ----
 test('every beat the inspector names maps to its move letter', () => {
   const cases: Array<[string, string, string]> = [
-    ['J', 'jump over a gap', 'J'], ['J', 'big jump up', 'J'], ['h', 'small hop', 'j'], ['h', 'hop up a step', 'h'], ['J', 'mushroom bounce', 'M'],
+    ['J', 'jump over a gap', 'J'], ['J', 'big jump up', 'J'], ['J', 'jump the level check cannot confirm (probably a puzzle piece)', 'Q'], ['h', 'small hop', 'j'], ['h', 'hop up a step', 'h'], ['J', 'mushroom bounce', 'M'],
     ['J', 'hop onto a moving log or platform', 'X'], ['V', 'grab a trunk or vine and climb', 'C'], ['V', 'swing on a liana', 'V'], ['V', 'shimmy along a rope', 'R'],
     ['Z', 'crumbling branch', 'B'], ['Z', 'the branch collapses behind him: keep running', 'B'], ['Z', 'wind gust', 'W'], ['Z', 'sticky web slows him', 'S'],
     ['P', 'puzzle room (seesaw)', 'P'], ['C', 'snake', 'F'], ['Z', 'eagle sweep: duck into a bush', 'E'], ['Z', 'darkness: wake the glowworms, find the way', 'D'],
