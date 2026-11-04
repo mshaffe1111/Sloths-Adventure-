@@ -30,3 +30,4 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - Every W1 finish is fillTo(): a shuffle bag of 3 pieces repeated until the 2-minute clock (src/game/w1Sections.ts). Padding by design.
 - Venom Fang: boss bot wins Normal in ~20 s, 0-1 hits taken.
 - Bot: 1-4 and 1-7 time out at 360 s with 11-19 rescues (bot limits or stage problems: check clips).
+## Deadline (lead, 2026-11-04 3:02 AM ET): team stops 5:00 AM ET. No step after 4:40 AM ET that can't finish by 5. By 5: push clips + baseline (DRAFT if unfinished), notes current, one short state message to lead, idle.
