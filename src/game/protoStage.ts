@@ -1,5 +1,5 @@
 /**
- * protoStage — a hand-built 1-6 "First Lianas", the first stage designed the new way (2026-10-23 test, off by default).
+ * protoStage — a hand-built 1-6 (now "Snake Vines"), the first stage designed the new way (2026-10-23 test, off by default).
  *
  * One idea, played in four beats (learn, develop, twist, finish), with a puzzle and two secrets:
  *   1. LEARN    two swing hollows with a soft mossy floor: a missed swing costs a few seconds, never a life;

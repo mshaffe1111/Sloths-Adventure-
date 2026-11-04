@@ -48,7 +48,7 @@ test('section: jitter and swinging across a line between two stretches enter eac
 
 test('section: a straight run through the swing stage, walking or running, enters every stretch once and in order', () => {
   const cfg = {
-    worldIndex: 1, miniIndex: 6, id: '1-6', name: 'First Lianas', objectiveType: 'vine_runner', targetCount: 1, timeLimit: 270,
+    worldIndex: 1, miniIndex: 6, id: '1-6', name: 'Snake Vines', objectiveType: 'vine_runner', targetCount: 1, timeLimit: 270,
     levelWidth: 16100, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   } as LevelConfig;
   const st = buildProtoStage(cfg, 7, 'proto');

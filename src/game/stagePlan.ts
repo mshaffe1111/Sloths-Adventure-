@@ -36,7 +36,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('purge', 'Branch Snakes', 'Daze the snakes with a punch, then stomp them.'),
     S('ascent', 'Up the Kapok', 'Climb the giant kapok to the very top.'),
     S('harvest', 'Where She Walked', 'The petals go on. Gather more.'),
-    S('vine_runner', 'First Lianas', 'Swing on the hanging lianas across the gaps in the canopy.'),
+    S('vine_runner', 'Snake Vines', 'Punch the vine snake stiff, then swing on.'),
     S('stealth', 'A Very Good Bush', 'Eagles are watching. Duck under the leaves the way Dot hid from the soldiers.'),
     S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
     S('gauntlet', "The Boa's Branches", "Fight through the boa's guards and reach the shrine."),
