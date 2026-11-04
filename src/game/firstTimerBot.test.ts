@@ -304,3 +304,79 @@ for (const [name, who] of WHO) {
     assert.ok(made >= 4, notes.join('; '));
   });
 }
+
+// ---- World 1's tricks, learned only from Dot's words (w8-rope2, 2026-11-04, R-159.1) ----
+// The bot answers a dazed lunge snake and a coiled boa only once Dot's words have taught him the answer ("hop on it", "kick it"), as a real
+// first-timer does; until then he does what a first-timer does. An animal without World 1's tag is met exactly as before.
+type Foe = { id: number; type: string; x: number; trick?: string; state?: string; stagger?: number; staggerMax?: number; defeated: boolean };
+function foe(type: 'snake' | 'boa', x: number, o: Partial<Foe> = {}) {
+  const boa = type === 'boa';
+  return {
+    id: 1, type, x, y: Y - (boa ? 16 : 14), vx: 0, vy: 0, width: boa ? 58 : 38, height: boa ? 26 : 22, hp: boa ? 3 : 1, maxHp: boa ? 3 : 1,
+    facing: -1, patrolMinX: x - 6, patrolMaxX: x + 6, attackCooldown: 99, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0,
+    defeated: false, koTimer: 0, behaviorTimer: 0, edgeMinX: 0, edgeMaxX: 8000, ...o,
+  };
+}
+/** a bare-world run past one animal at x 1000 (far enough that the kid, who looks up only after his first 1.2 s, sees it coming), with
+ *  the moves he already knows; every pad he presses near it is kept */
+function foeRun(who: FirstTimer, seed: number, id: string, m: ReturnType<typeof foe>, knows: string[], cap = 12) {
+  const route = Array.from({ length: 120 }, (_, i) => ({ x: 100 + i * 24, y: Y }));
+  const r = new FirstTimerRun(id, seed, who, { route, cap, rescueAfter: 1000 });
+  r.sim.bare([ground(1, 0, 8000)]);
+  r.sim.e.enemies = [m as never];
+  r.sim.stand(300, Y);
+  r.prog.relocate(r.sim.p);
+  const learned = (r as unknown as { learned: Set<string> }).learned;
+  learned.clear();
+  for (const k of knows) learned.add(k);
+  const pads: string[] = [];
+  let punches = 0, kicks = 0, stomped = false, rolled = false;
+  const frame = r.sim.frame.bind(r.sim);
+  r.sim.frame = (pad?: Pad) => {
+    // (a dazed snake stays dazed while he comes: the case is his choice, not the daze running out)
+    if (m.trick === 'lunge' && !m.defeated) m.stagger = m.staggerMax = 4;
+    const near = Math.abs(r.sim.p.x - m.x) < 160;
+    if (near && pad?.punch) punches++;
+    if (near && pad?.kick) kicks++;
+    if (near) pads.push(JSON.stringify(pad ?? {}));
+    const vy = r.sim.p.vy;
+    frame(pad);
+    if (m.defeated && vy > 0 && r.sim.p.vy < 0) stomped = true;
+    if (m.state === 'roll') rolled = true;
+  };
+  r.play();
+  return { r, punches, kicks, stomped, rolled, pads };
+}
+for (const [name, who] of WHO) {
+  test(`${name}: a dazed snake: until Dot says "hop on it" he walks past it; once told, he hops on it (a stomp)`, () => {
+    for (const seed of [1, 2, 3]) {
+      const before = foeRun(who, seed, '1-1', foe('snake', 1000, { trick: 'lunge', state: 'patrol', stagger: 4, staggerMax: 4 }), ['punch']);
+      assert.equal(before.stomped, false, `seed ${seed}: untaught, he stomped it`);
+      assert.ok(before.r.sim.p.x > 1400, `seed ${seed}: untaught, he walks on past it (x ${Math.round(before.r.sim.p.x)})`);
+      const after = foeRun(who, seed, '1-1', foe('snake', 1000, { trick: 'lunge', state: 'patrol', stagger: 4, staggerMax: 4 }), ['punch', 'stomp']);
+      assert.ok(after.stomped, `seed ${seed}: told to hop on it, he did not stomp it`);
+    }
+  });
+  test(`${name}: a coiled boa: once told "kick", he kicks it (it rolls); told only to punch, he punches it once and no more`, () => {
+    for (const seed of [1, 2, 3]) {
+      const b = foe('boa', 1000, { trick: 'coil', state: 'coil' });
+      const kicked = foeRun(who, seed, '1-1', b, ['punch', 'kick']);
+      assert.ok(kicked.kicks >= 1, `seed ${seed}: told to kick, he never kicked`);
+      assert.equal(kicked.punches, 0, `seed ${seed}: told to kick, he punched ${kicked.punches} times`);
+      assert.ok(kicked.rolled, `seed ${seed}: the kick did not roll it (${b.state})`);
+      const punched = foeRun(who, seed, '1-1', foe('boa', 1000, { trick: 'coil', state: 'coil' }), ['punch']);
+      assert.ok(punched.punches <= 1, `seed ${seed}: he punched the coiled boa ${punched.punches} times`);
+      assert.equal(punched.kicks, 0, `seed ${seed}: untaught, he kicked it`);
+    }
+  });
+  test(`${name}: an animal without World 1's trick, outside World 1, is met exactly as before: knowing the stomp and kick changes nothing`, () => {
+    for (const type of ['snake', 'boa'] as const) {
+      for (const seed of [1, 2]) {
+        const plain = foeRun(who, seed, '3-1', foe(type, 1000), ['punch'], 8);
+        const knows = foeRun(who, seed, '3-1', foe(type, 1000), ['punch', 'stomp', 'kick'], 8);
+        assert.ok(plain.pads.length > 0, `${type} seed ${seed}: he never came near it`);
+        assert.deepEqual(knows.pads, plain.pads, `${type} seed ${seed}: knowing the stomp and kick changed how he meets an untricked ${type}`);
+      }
+    }
+  });
+}

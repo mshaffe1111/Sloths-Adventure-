@@ -1396,21 +1396,35 @@ export class FirstTimerRun {
         const dx = (m.x - p.x) * dir;
         // World 1's tricks (R-159.1): he answers each the way Dot has told him, and until told does what a first-timer does
         // - a dazed snake is harmless: told to hop on it, he walks up to it and hops straight up onto it (a stomp); else he walks past
-        if (m.trick === 'lunge' && (m.stagger ?? 0) > 0 && dx > -12 && dx < 130 && Math.abs(m.y + 12 - p.y) < 60) {
+        // (at a run he hops early, so the hop's carry lands him on it: about 0.6 s in the air, plus his thumb's lag; standing over it he
+        // hops straight up; past it, he turns back; a stomp lands within about 40 px of its middle: fight.ts stompTest)
+        if (m.trick === 'lunge' && (m.stagger ?? 0) > 0 && dx > -60 && dx < 260 && Math.abs(m.y + 12 - p.y) < 60) {
           if (!this.learned.has('stomp')) continue;
-          if (dx > 12) return side(dir);
-          if (p.grounded && !this.jump && !this.pending) return this.decide(0, 'single', false, {});
-          return {};
+          if (!p.grounded || this.jump || this.pending) return {};
+          const to: -1 | 1 = (dx > 0 ? dir : -dir) > 0 ? 1 : -1;
+          const speed = p.vx * to;
+          const carry = Math.max(0, speed) * (0.6 + who.thumb[0]);
+          if (Math.abs(dx) <= 28 && Math.abs(p.vx) < 60) return this.decide(0, 'single', false, {});
+          if (speed > 150 && Math.abs(dx) <= carry + 20 && Math.abs(dx) >= carry - 30) return this.decide(0, 'single', false, side(to));
+          return side(to);
+        }
+        // - the coiled boa, once Dot has said to kick it: he eases off, lets himself coast up to it (the thumb's release carries him on a
+        //   little), and kicks it from a kick's reach; stopped short, he steps in
+        if (this.learned.has('kick') && m.trick === 'coil' && m.state !== 'roll' && m.state !== 'rolled' && dx > 0 && dx < 170 && Math.abs(m.y + 12 - p.y) < 60) {
+          // (he decides while still walking up to it: his hesitation's walk brings him into a kick's reach)
+          // (its coil stops him about 33 px from its middle: the kick must land before he walks into it)
+          const reach = 52 + Math.max(0, p.vx * dir) * who.hesitate;
+          if (dx <= reach) {
+            this.kickAt = { at: t + who.hesitate, dir: dir > 0 ? 1 : -1 };
+            this.swapGap = between(this.r, who.swap);
+            return side(dir);
+          }
+          return side(dir);
         }
         if (dx < 20 || dx > 130 || Math.abs(m.y + 12 - p.y) > 60) continue;
         if (!this.foeSeen.has(m.id)) this.foeSeen.set(m.id, this.r() < who.hopFoe);
-        // - the coiled boa: told to kick it, he kicks it; a punch only bounces off it, so he does not keep punching after the first
+        // - the coiled boa, untaught the kick: a punch only bounces off it, so he does not keep punching after the first; then he hops it
         if (m.trick === 'coil' && m.state !== 'roll' && m.state !== 'rolled') {
-          if (this.learned.has('kick') && dx < 90) {
-            this.kickAt = { at: t + who.hesitate, dir: dir > 0 ? 1 : -1 };
-            this.swapGap = between(this.r, who.swap);
-            return {};
-          }
           if (this.learned.has('punch') && !this.toughSeen.has(m.id) && dx < 110) {
             this.toughSeen.add(m.id);
             this.punchAt = t + who.hesitate;
