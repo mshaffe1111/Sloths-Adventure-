@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated 2026-11-04 1:06 PM ET.
+Last updated 2026-11-04 1:12 PM ET.
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -36,6 +36,13 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 1:12 PM ET: the lead ACCEPTED the lift-off fix (start 12:31, report 1:04, accept 1:04 PM ET; 1 h planned) and merges it now. On bot-fix: KID_RUNS_59 -> [10, 15, 17, 16, 4, 7], 5-9 Easy goal 5 -> 10; lead branch merged; full gate running. Supervisor rounds stopped for today (lead, budget cut); the builders' planned-vs-actual waits for tomorrow.
+- **Stuck waits to file (for the roadmap keeper), found by the lift-off fix (reference/qa-reports/bot-fix/liftoff/README.md):** with the thumb no longer walking him on, an intend() wait never ends on:
+  1. **4-6**, both bots: 2 of 3 seeds time out at 720 s (was 0); 14,600-20,000 frames of meaning no steer. Waits for tomorrow (lead).
+  2. **1-1 kid**: 2 of 3 seeds time out (was 1).
+  3. **10-8 kid**: 2 of 3 seeds time out (was 0).
+  4. **10-3**: rescues + lives up, adult 38 -> 55, kid 16 -> 33.
+  Each is a bot (intend) or stage question; measure the held/idle frames with tools/inspect/liftoffHeld.mts.
 - 2026-11-04 1:06 PM ET: lift-off steps 1-3 reported to the lead (da75355d, reference/qa-reports/bot-fix/liftoff/). 33 min vs 1 h planned. 5-9 Easy 5 -> 10; funcheck unchanged; 4-6/1-1/10-8 waits that never end, to file. NOT merged; the lead merges at one planned moment.
 - 2026-11-04 12:37 PM ET: w8-rope2 reported a bot defect (the late lift-off re-armed every frame, so a wait walked him on). Confirmed; fix + self-test on bot-fix abab4dbe, NOT FOR MERGE: KID_RUNS_59 moves from median 5 to 12.5. Asked the lead to rule: (a) full baseline now, (b) hold, (c) other. Merged the lead branch (with main 0.9.4) into bot-fix cleanly; merging main straight in conflicts on doc files, so take main through ccr.
 - 2026-11-04 12:22 PM ET, round 8: digest sent. Wins: warmup-5m's service-worker precache catch and the testers-only switch (gpuDefaultOff PASS); 0.9.4 live (STATUS 12:02). At risk: menus A, R-6.40, has no branch or push 43 min in (asked); fix-petals, R-6.38 pits, start unconfirmed (asked). w8-rope2 bot self-tests still missing after a 2nd bot change (f24deb9f); sent back again, and asked it to merge main. warmup-5m notes nudged.
