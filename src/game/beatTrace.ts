@@ -37,7 +37,7 @@
  * is 0.23 s: a jump (0.65 s in the air) needs 3 eighths before the next mark, a hop (0.44 s) 2, a double (1.05 s) 5.
  * Limits measured: a flat jump's gap ~104 px, a double's ~200; a face (stump, bank) up to 70 px Normal / 42 Easy; a branch up to 90.
  */
-import { LAND_HALF, PHYS, TAKEOFF_SLACK, secondJumpV } from './physics.ts';
+import { LAND_HALF, PHYS, TAKEOFF_SLACK, reachJump, reachJumpHeld, secondJumpV } from './physics.ts';
 import { AHEAD, heroBox, landingBox } from './cameraFollow.ts';
 import { BEAT_STAGES, stageBeatBpm, stageMusic } from '../audio/scenes.ts';
 import { themeById } from '../audio/themes.ts';
@@ -164,6 +164,8 @@ export const GAP_REPEAT = 4;
 export const GAP_SAME = 12;
 /** a hazard on an avoided line keeps this far (px) from Pokey's body on every safe try (his body: heroBox, 56 x 116) */
 export const HAZARD_CLEAR = 24;
+/** the level check's margin on a jump's reach (levelCheck.ts MARGIN) */
+export const LC_MARGIN = 0.97;
 /** the narrowest ledge it places (px): a landing is never a sliver */
 export const MIN_LEDGE = 90;
 
@@ -394,7 +396,13 @@ export function traceNode(spec: NodeSpec): Trace {
       shortX = Math.min(shortX, from + tr.f.dx);
       longX = Math.max(longX, from + tr.f.dx);
     }
-    const near = Math.round(shortX - INSIDE - SLOP);
+    let near = Math.round(shortX - INSIDE - SLOP);
+    // (and never wider than the level check's own reach: its jump has no hang at the top and reaches less than the engine's, so a gap the
+    // engine makes it may still fail the shared gate; levelCheck.ts gap <= reach x 0.97 - TAKEOFF_SLACK. A nearer edge only makes it easier)
+    const wallUp = st.dy > 0 && (st.surface === 'stump' || st.surface === 'bank');
+    // (Easy: the level check's held jump, 70%: validator easyHoldCheck)
+    const lcReach = spec.easy ? reachJumpHeld(st.dy, false) : reachJump(st.dy, false);
+    if (!wallUp) near = Math.min(near, Math.floor(edge + lcReach * LC_MARGIN - TAKEOFF_SLACK - 2));
     const ny = y - st.dy;
     for (const tr of toTry) {
       const from = Number.isNaN(tr.from) ? slackX : tr.from;
@@ -409,6 +417,10 @@ export function traceNode(spec: NodeSpec): Trace {
         const from = Number.isNaN(tr.from) ? slackX : tr.from;
         if (heightAt(tr.f, near - from) < st.dy - HOIST) throw new Error(`step ${i + 1}: a try from ${Math.round(from)} meets the face of the ${st.surface} at ${near} below its top`);
       }
+    } else if (st.dy > 0 && near < edge + 20) {
+      // (a branch up over the end of the ledge he jumps from: he would stand under it, his head through it, and the level check reads
+      // it as no way up)
+      throw new Error(`step ${i + 1}: the ${st.surface} at ${near} hangs over the take-off ledge's end (${edge})`);
     } else if (st.dy <= 0 && near - edge < (st.dy === 0 ? MIN_GAP : 0)) throw new Error(`step ${i + 1}: the gap is ${near - edge} px: no jump at all (make it a drop, a rise, or a bigger move)`);
     // the landing on screen at take-off, from every take-off point (the planned one and the latest), upright and sideways
     for (const [name, v] of Object.entries(VIEWS)) {

@@ -31,7 +31,7 @@ const NODES: Array<Omit<NodeSpec, 'x' | 'y'>> = [
   { bpm: 92, bars: ['x...x...', 'x...x...'], steps: [J(60, 'stump'), J(-60), J(80, 'branch'), J(-80)] },
   { bpm: 134, bars: ['x...x...', 'h.......', 'x...x...'], steps: [J(0, 'crumble'), H(-40, 'branch'), D(60, 'branch'), J(-60), J(0, 'branch')] },
   { bpm: 96, bars: ['x...x...', 'h...x...'], steps: [J(0, 'crumble'), J(0, 'crumble'), D(40, 'branch'), J(-40)] },
-  { bpm: 96, bars: ['x..o....', 'h.......', 'x...x..o'], steps: [J(0, 'branch'), H(-30, 'branch'), D(90, 'branch'), J(-90), J(), J(30, 'stump')] },
+  { bpm: 96, bars: ['x..o....', 'h.......', 'x...x..o'], steps: [J(0, 'branch'), H(-30, 'branch'), D(60, 'branch'), J(-60), J(), J(30, 'stump')] },
   { bpm: 85, bars: ['x.......', 'x.......', 'h.......'], steps: [J(-120), J(70, 'bank'), D(-60)] },
 ];
 const traced = NODES.map((n) => ({ spec: n, tr: traceNode({ ...n, x: 1000, y: 580 }) }));
@@ -192,9 +192,9 @@ test('every landing holds the clumsy thumb: 15% less air speed, 100 ms late, fee
   assert.ok(from.x1 - TAKEOFF_SLACK + flight({ move: 'jump', dy: 0, vx: PHYS.maxRun })!.dx >= to.x0 + INSIDE, 'the take-off slack');
 });
 
-test('the clumsy check fails a layout built to fail it: each landing ledge pulled 20 px further out', () => {
+test('the clumsy check fails a layout built to fail it: each landing ledge starting just past its shortest clumsy landing', () => {
   for (const { spec, tr } of traced) {
-    const bad = { ...tr, ledges: tr.ledges.map((q) => (q.step >= 0 && tr.gaps.some((g) => g.step === q.step) ? { ...q, x0: q.x0 + 20 } : q)) };
+    const bad = { ...tr, ledges: tr.ledges.map((q) => (q.step >= 0 && tr.gaps.some((g) => g.step === q.step) ? { ...q, x0: tr.landings[q.step].shortX + 1 } : q)) };
     assert.ok(checkTrace(bad, spec.steps).some((m) => /inside/.test(m)), spec.bars.join('|'));
   }
 });
