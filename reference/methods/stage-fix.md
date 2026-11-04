@@ -2,8 +2,9 @@
 Last proven: 2026-11-04 (R-150.8, fix-petals, the best measured result above); before it 2026-11-01, branch w8-rope2 (57c8bf51..c0d59a75), 8-2's ropes: 0 heart falls at a rope in 40 first-timer runs (was 6 on one
 roll), the rope rolls reaching the shrine 21 of 24 Normal runs. Owner of the last update: w8-rope2.
 
-**Best measured result (the fastest proven way, 2026-11-04, fix-petals, R-150.8, branch fun-validator d6dc6e91..071173a2): about 32
-minutes from start (about 10:25 AM ET) to report (10:57 AM ET) against a 1.5 h estimate. 1-4's first-timer rescues 58 -> 19 (seeds 1-3,
+**Best measured result (the fastest proven way, 2026-11-04, fix-petals, R-150.8, branch fun-validator d6dc6e91..071173a2): running time
+from start (about 10:25 AM ET) to the report (10:57 AM ET) about 32 minutes; start to accept 1.2 h against 1.5 h planned (estimates are
+start to accept: compare like with like). 1-4's first-timer rescues 58 -> 19 (seeds 1-3,
 kid and adult), Worlds 1-10 2,006 -> 1,915, a side effect on 1-1 caught and fixed before the report, QS PASS.** The how, for a bot or a
 stage spot (steps 2a and 4a below):
 1. From the bot's stuck list (`botBaseline.ts --detail`), group the rescues by cause and spot; take the biggest group.

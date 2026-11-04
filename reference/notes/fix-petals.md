@@ -1,13 +1,18 @@
 # fix-petals: helper notes
 
-## Now (2026-11-04 10:58 AM ET): R-150.8 done (QS PASS), R-155 1-5 plan rev 2 sent; full gates running on 93450fb2
-fun-validator 2e61ffd8. R-150.8 (firsttimer.ts ledge-end steer, fixture in firstTimerBot.test.ts): 1-4 rescues 58 -> 19, Worlds 1-10
-2006 -> 1915; report reference/qa-reports/validator/R-150.8.md (append the gate lines when the run ends). KID_RUNS_59 unchanged.
-R-155 plan reference/plans/R-155-1-5.md rev 2 (QS changes folded): WAITING on the lead/Matt (goal a/b, backdrop w1kapok/w1sunrise, two
-Dot lines) and on w8-rope2's kick-teach piece (he adds only an exported piece to w1Sections.ts). Then build: creakDrop, snapRun, the
-snake patrol, fixtures first, and write reference/methods/stage-shape.md as I go.
-MY MISS (twice today): times typed, not read. My message to w8-rope2 said "10:58 AM ET" and my correction said "10:28": both guesses.
-Countermeasure: no time goes in a message unless it was printed by `TZ=America/New_York date` in the same step.
+## Now (2026-11-04 1:39 PM ET): R-6.38 redo pushed (a90c542f) with the pickup-ruler ruling; drawcheck and clipcheck running; then the validator items
+- R-155 1-5 moved to w1-rhythm (lead, 12:42 PM ET message). Not mine any more.
+- R-6.38 (started 11:46 AM ET, planned 3 h): src/game/w1Pits.ts + test, protoArt.ts, stageSheets/stagePreload ('pit-art:1'), types.ts
+  (Platform.pit), src/assets/props/pits (pitcut.py). Redo done to the lead's five items; report reference/qa-reports/r6-38/README.md.
+  Due on the lead branch by 4:00 PM ET.
+- Pickup ruler (the lead's ruling): funcheck.ts REBUILT (1-1 to 1-5), gatedFlags, truerBeside; evaluate.ts movesFlags (truer into flags,
+  old into oldFlags). funknown.json about + R-150.9 carry the four 1-9 rises. Tell the roadmap keeper (via the lead).
+- NEXT (by 6:30 PM ET), each with tests: template-repeat check (§0c 2-3); beatTrace BPM/beat feel (origin/w1-rhythm 3b7fe514) and
+  tempo/map-shape "like the stage before"; TIGHT_MAX (core.ts:254) allows a 15-20 s dense finale; pairs only in one move or beat
+  (mechanics.ts:43-52); tempoOf lift/moving-platform waits over 1 s count as patience; falls over 200 px or 4 s are bites.
+- Method: a stills build needs NODE_ENV=development (window.__play is dev only); after --emptyOutDir restart the static server.
+MY MISS (three times today): times typed, not read (10:58, 10:28, 1:11). Countermeasure, tightened: a time goes into a message only as
+text copied from a `TZ=America/New_York date` printed in the step just before; never composed from memory.
 
 ## The job, as briefed
 1. R-150.4 mechanics-in-use table, 1-1..1-9 and the boss: what the player meets (stage data + a bot run) against what the engine has.
