@@ -404,16 +404,30 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     p.bare = LOOK.f() < 0.67;
     p.thick = Math.round((0.82 + LOOK.f() * 0.45) * 100) / 100;
   }
-  // (a kapok trunk behind every bough: fewest trunks that cross every bough, each 40 px in from the end of the first bough it must
-  // hold, from the forest floor up into the crowns)
-  const trunks: Array<{ x: number; topY: number; bottomY: number }> = [];
-  for (const p of boughs) {
-    if (trunks.some((t) => t.x > p.x + 20 && t.x < p.x + p.width - 20)) continue;
-    const tx = Math.max(p.x + 20, p.x + p.width - 40);
-    trunks.push({ x: Math.round(tx), topY: 0, bottomY: shift + BANK_H });
+  // (the kapoks the boughs grow from, the lead's second look, 2026-11-04: few and huge, unevenly spaced; a bough grows out of a trunk at
+  // ONE end and its other end tucks into a leafy clump; a bough with no trunk at either end tucks into leaves at both)
+  const trunks: Array<{ x: number; topY: number; bottomY: number; w: number }> = [];
+  const leaves: Array<{ x: number; y: number; w: number; flip?: boolean }> = [];
+  const byX = [...boughs].sort((a, b) => a.x - b.x);
+  let every = 2 + Math.floor(LOOK.f() * 3), since = every;
+  for (const p of byX) {
+    const half = (t: { w: number }) => (84 * t.w) / 2;
+    const atL = trunks.find((t) => Math.abs(t.x - p.x) < half(t) * 0.7);
+    const atR = trunks.find((t) => Math.abs(t.x - (p.x + p.width)) < half(t) * 0.7);
+    let grows = atL ? 'L' : atR ? 'R' : '';
+    // (a new kapok every 2-4 boughs, at this bough's left or right end, never crowding the last)
+    if (!grows && ++since >= every && !trunks.some((t) => Math.abs(t.x - p.x) < 380)) {
+      const w = Math.round((1.6 + LOOK.f()) * 100) / 100;
+      const left = LOOK.f() < 0.5;
+      trunks.push({ x: Math.round(left ? p.x + 10 : p.x + p.width - 10), topY: -1200, bottomY: shift + BANK_H, w });
+      grows = left ? 'L' : 'R';
+      since = 0;
+      every = 2 + Math.floor(LOOK.f() * 3);
+    }
+    const leaf = (x: number, flip: boolean) => leaves.push({ x: Math.round(x), y: p.y + 8, w: Math.round(120 + LOOK.f() * 50), flip });
+    if (grows !== 'L') leaf(p.x - 6, true);
+    if (grows !== 'R') leaf(p.x + p.width + 6, false);
   }
-  // (each rises on out of the top of the view, into the crowns: a trunk cut off flat over its last bough read as a post)
-  for (const t of trunks) t.topY = -1200;
   const floorY = shift;
   const H0 = floorY + HOLLOW + BANK_H + 20;
   cid = heartsAtFlags(C, checkpoints, cid);
@@ -439,7 +453,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     heartFalls: guarded,
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces, timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
     proto: {
-      hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, choice, trunks,
+      hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, choice, trunks, leaves,
       // the forest floor turns to the canopy as he rises (World 1's canopy strips, as on 1-8 and the top of 1-4)
       rise: { y0: Math.round(floorY - (floorY - crown.y) * CANOPY_FROM), y1: Math.round(floorY - (floorY - crown.y) * CANOPY_FULL) },
     },

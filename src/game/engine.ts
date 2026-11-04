@@ -915,7 +915,7 @@ export class GameEngine {
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
     // (1-1's canopy: the kapok trunks its boughs grow from, scenery only)
-    setDecoTrunks(this.proto?.trunks);
+    setDecoTrunks(this.proto?.trunks, this.proto?.leaves);
     // the stage's painted backdrop (World 5's light changes through the world: w5Backdrop.ts)
     setBackdropStage(config.id);
     // a stage that hangs its vines from painted boughs (2-4) draws no leafy clump at each liana's top

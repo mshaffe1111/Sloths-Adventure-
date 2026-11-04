@@ -230,13 +230,18 @@ test('1-1 in the real engine: at the choice, walking on passes under the mushroo
   assert.ok(landedHigh, 'the mushroom put him on the high road');
 });
 
-test('1-1\'s canopy look (the lead\'s polish review, 2026-11-04): every bough crosses a kapok trunk, the trunks are scenery and not climbs, most boughs are bare bark, and the boughs vary in thickness', () => {
+test('1-1\'s canopy look (the lead\'s polish review, 2026-11-04): every bough grows from a kapok or tucks into leaves at each end, the trunks are scenery and not climbs, most boughs are bare bark, and the boughs vary in thickness', () => {
   for (const easy of [false, true]) {
     for (const s of SEEDS) {
       const st = buildProtoStage(cfg, s, '1-1', easy);
       const boughs = st.platforms.filter((p) => p.style === 'branch' && p.type !== 'bouncy' && p.height < 50);
       const trunks = st.proto.trunks!;
-      for (const b of boughs) assert.ok(trunks.some((t) => t.x > b.x && t.x < b.x + b.width), `seed ${s}: bough ${b.id} floats`);
+      // (each end grows from a kapok or tucks into a leafy clump: nothing floats; the kapoks are few, one to every 2-5 boughs)
+      const leaves = st.proto.leaves!;
+      const held = (x: number, y: number) => trunks.some((t) => Math.abs(t.x - x) < 42 * (t.w ?? 1)) || leaves.some((l) => Math.abs(l.x - x) < 12 && Math.abs(l.y - y) < 12);
+      for (const b of boughs) assert.ok(held(b.x, b.y + 8) && held(b.x + b.width, b.y + 8), `seed ${s}: bough ${b.id} has a bare end`);
+      assert.ok(trunks.length <= boughs.length / 2 && trunks.length >= boughs.length / 6, `seed ${s}: ${trunks.length} kapoks for ${boughs.length} boughs`);
+      for (const t of trunks) assert.ok(t.w! >= 1.6 && t.w! <= 2.6);
       assert.equal(st.vines.filter((v) => v.vineType === 'tree_climb').length, 0, 'no climb added');
       const bare = boughs.filter((b) => b.bare).length / boughs.length;
       assert.ok(bare > 0.5 && bare < 0.85, `seed ${s}: ${bare}`);
