@@ -1,5 +1,5 @@
 # Method: measuring a world's fun (the validator)
-Last proven: 2026-11-04, branch fun-validator, World 1 (tools/validate; pages in reference/qa-reports/validator/). Owner of the last
+Last proven: 2026-11-04 (round 2, the supervisor's REDOs and the bot's bounce fix), branch fun-validator, World 1 (tools/validate; pages in reference/qa-reports/validator/). Owner of the last
 update: fix-petals. Plan: PLAN-TO-80 Phase A.1 (R-150.1 grown into the research's validator, R-150.4 mechanics-in-use table).
 
 ## When to use it
@@ -49,11 +49,27 @@ The fixture test; the world run; open each page upright (412 wide) and wide; the
   Dot says it breaks). Measure on screen from the run's own camera, frame by frame; a still placed by hand can't show a moving hazard
   (placing Pokey froze the collapse and picked up a seed).
 
+- 2026-11-04 (the supervisor's page review): **a step marks where a move starts, not how long it lasts.** 1-4's trunk climbs and rope
+  shimmies read as 3.7-5.8 s "dead walks"; the time on a climb, rope, swing or glide is now taken off (core.ts busyBetween).
+- 2026-11-04: **a hazard that is outrun or unseen is decoration, and so is a "new" move the route doesn't need.** 1-5 scored 5 for
+  branches outrun on every run and 10 "new" for them; 1-8 5 for a chase on screen in 0-5% of frames. The rules now live in score.ts
+  with their own fixtures: hazards matter = the share of tries each kind bites; new = needed by the way to the shrine, and biting.
+- 2026-11-04: **one letter, one thing.** The chase's collapse shared B with breaking branches (1-8: 114 B's, "no breaking branches"). It
+  is K now. Same for verdicts: a run the hold-right runner never got across is "not judged", not "bites".
+- 2026-11-04: **moves alike and looks alike are two measures.** 1-7 read 10% like 1-1 by moves, 84% by pieces and art (look.ts); Matt
+  judges by what he sees. The overview shows both.
+- 2026-11-04: **"holding right alone" was not what the line measured.** It compared the goal route with the shortest way to the shrine;
+  it says that now. Name a number by what the code computes, then check it against the code.
+- 2026-11-04: **the bot's play numbers rest on the bot.** The first-timer never doubled off a mushroom's bounce and forgot 1-1's double
+  on later stages (each run starts on a fresh phone): 1-1 and 1-5 were 10-21 rescues a run. Fixed (firsttimer.ts bounceJump, the
+  double carried from 1-1's hint); re-run every play number after a bot change, and say which bot the page used.
+
 ## Tried and didn't work
 - Pacing groups split at every 1.2 s gap: World 1's moves come every 3-4 s, so every group was one move. Read pacing in 5 s windows.
 - The hold-right runner without a second flick: it fell into 1-8's first 212 px gap and judged nothing.
 
 ## To try
 - Stills per flag from the quality supervisor's bot clips (tools/quality/botrec.mjs).
+- Carry every taught move between stages (today only the double is carried; firsttimer.ts DOUBLE_TAUGHT), as a phone played in order.
 - Finer piece names in the builders' meta (today "highrun" covers several pieces), so padding repeats name the actual piece.
 - The validator as a gate (a world's flags may only shrink), once the pages are agreed.

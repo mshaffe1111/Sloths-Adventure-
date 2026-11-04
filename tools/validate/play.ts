@@ -134,7 +134,9 @@ export function branchRuns(ps: readonly Platform[]): BranchRun[] {
   return out;
 }
 
-export interface BranchVerdict { run: BranchRun; crossed: boolean; gaveWay: number; underHim: number; fell: boolean; outrun: boolean; note: string }
+/** `verdict`: bites (a piece gave way under him), outrun (across, none under him, no fall), or not judged (holding right never got across,
+ *  or he fell with nothing giving way: the quality supervisor, 11-04, 1-6 read "0 gave way under him → bites") */
+export interface BranchVerdict { run: BranchRun; crossed: boolean; gaveWay: number; underHim: number; fell: boolean; outrun: boolean; verdict: 'bites' | 'outrun' | 'not judged'; note: string }
 /**
  * Cross each run holding right from just before it (standing on the ground or ledge he would come from). A piece "gives way under him"
  * when it breaks while he stands on it or within 3 frames of stepping off; the run is outrun when he crosses it with none giving way under
@@ -174,7 +176,8 @@ export function branchOutrunWith(make: () => RealPlay): BranchVerdict[] {
     });
     if (r.falls.length) fell = true;
     const outrun = r.reached && under === 0 && !fell;
-    out.push({ run, crossed: r.reached, gaveWay: gave, underHim: under, fell, outrun, note: r.stuck ? 'the hold-right player got stuck before the end' : '' });
+    const verdict = under > 0 ? 'bites' : outrun ? 'outrun' : 'not judged';
+    out.push({ run, crossed: r.reached, gaveWay: gave, underHim: under, fell, outrun, verdict, note: r.stuck ? 'the hold-right player got stuck before the end' : !r.reached ? 'the hold-right player never got across' : fell && !under ? 'he fell with nothing giving way under him' : '' });
   }
   return out;
 }
@@ -188,6 +191,14 @@ export interface ZoneVerdict {
   ran: number; unhurt: number;
   /** eagle hits in it over all tries, and passes that warned or saw him while he was in it */
   hits: number; warned: number; seen: number;
+  /**
+   * each hit in it: seconds from the screech (the warn phase, its shadow at the view's edge) and from the shadow finding him (seen) to the
+   * hit, how long the screech and its shadow at the view's edge came before the sweep (shadowFor), and whether his spot was in the
+   * camera's view when it found him. Warned: half a second or more of screech and shadow before the sweep, half a second or more from
+   * the shadow finding him to the hit, and in view (the quality
+   * supervisor, 11-04: where the eagle hurts, check the hit was warned, half a second, with a shadow)
+   */
+  hitLeads: Array<{ warn: number; seen: number; shadowFor: number; inView: boolean; warned: boolean }>;
   /** most of the tries that ran it came through unhurt, never hiding */
   outrun: boolean;
 }
@@ -209,7 +220,7 @@ export function eagleOutrunWith(make: () => RealPlay, portrait = false): EagleVe
   const z = zones.filter((q) => q.setback === undefined).sort((p, q) => p.x0 - q.x0);
   if (!z.length) return null;
   const x0 = z[0].x0, x1 = Math.max(...z.map((q) => q.x1));
-  const zv: ZoneVerdict[] = z.map((q) => ({ x0: Math.round(q.x0), x1: Math.round(q.x1), ran: 0, unhurt: 0, hits: 0, warned: 0, seen: 0, outrun: false }));
+  const zv: ZoneVerdict[] = z.map((q) => ({ x0: Math.round(q.x0), x1: Math.round(q.x1), ran: 0, unhurt: 0, hits: 0, warned: 0, seen: 0, hitLeads: [], outrun: false }));
   let hitsAll = 0, skips = 0;
   const inZone = (x: number) => zv.findIndex((q) => x >= q.x0 && x <= q.x1);
   for (const wait of EAGLE_WAITS) {
@@ -226,23 +237,34 @@ export function eagleOutrunWith(make: () => RealPlay, portrait = false): EagleVe
     let lastX = s.p.x, hp = s.p.hp, wasSeen = false, wasPhase = e.watch?.phase;
     // (the stretch the current pass first saw him in, or that it warned in: a pass under way finishes after he leaves the stretch, and its
     // dive counts against the stretch it came over)
-    let passZone = -1;
+    let passZone = -1, warnT = -1, passT = -1, seenT = -1, seenInView = false, ft = 0;
+    const leads: Array<Array<ZoneVerdict['hitLeads'][number]>> = zv.map(() => []);
     const r = holdRight(s, x1 + 200, 240, () => {
       const x = s.p.x, k = inZone(x);
       if (k >= 0 && x > lastX && x - lastX < 40) covered[k] += x - lastX;
       const w = e.watch;
+      ft += 1 / 30;
       if (w?.phase === 'warn' && wasPhase !== 'warn') {
+        warnT = ft;
         passZone = k;
         if (k >= 0) zv[k].warned++;
       }
+      if (w?.phase === 'pass' && wasPhase !== 'pass') passT = ft;
       if (w?.seen && !wasSeen) {
+        seenT = ft;
+        const cam = e.camera as { x: number; viewportWidth: number } | undefined;
+        seenInView = !cam || (s.p.x > cam.x && s.p.x < cam.x + cam.viewportWidth);
         if (k >= 0) passZone = k;
         if (passZone >= 0) zv[passZone].seen++;
       }
       // (an eagle hit: hurt while the pass that saw him dives)
       if (s.p.hp < hp && w?.phase === 'pass' && w.seen) {
         hitsAll++;
-        if (passZone >= 0) hit[passZone]++;
+        if (passZone >= 0) {
+          hit[passZone]++;
+          const wl = +(ft - warnT).toFixed(2), sl = +(ft - seenT).toFixed(2);
+          leads[passZone].push({ warn: wl, seen: sl, inView: seenInView, shadowFor: +(passT - warnT).toFixed(2), warned: warnT >= 0 && passT >= warnT && passT - warnT >= 0.5 && sl >= 0.5 && seenInView });
+        }
       }
       wasSeen = !!w?.seen;
       wasPhase = w?.phase;
@@ -255,6 +277,7 @@ export function eagleOutrunWith(make: () => RealPlay, portrait = false): EagleVe
       if (covered[k] >= 0.7 * (q.x1 - q.x0)) {
         q.ran++;
         q.hits += hit[k];
+        q.hitLeads.push(...leads[k]);
         if (!hit[k]) q.unhurt++;
       }
     });
@@ -401,4 +424,15 @@ export function chaseOutrunWith(make: () => RealPlay): ChaseVerdict | null {
   // (not judged when holding right never gets through: falls into the gaps send him back and the chase restarts, so its pressure can't be
   // read; the page says so)
   return { start: plan.start, end: plan.end, reached: r.reached, caught, minGap: gap, skips: r.skips.length, falls: r.falls.length, outrun: r.reached && caught === 0 && gap > CHASE_CLOSE, judged: r.reached || caught > 0, endedAt: Math.round(r.x) };
+}
+
+/**
+ * The clumsy thumb's jumps toward the shrine (the quality supervisor's 1-2 REDO, 11-04: two 0% jumps on the gentlest stage). Every 0% jump
+ * on 1-2 was the bot hopping back the way it came, off a branch's near end on to the branch before it: it lands, but loses route
+ * progress, and the bot counts that as a miss (firsttimer.ts after(): "ok" is getting on along the way). A jump the stage asks for goes
+ * toward the shrine; the ones back are counted on the page, not against the floor.
+ */
+export function towardShrine<T extends { x: number; dir: number; running?: boolean }>(tries: readonly T[], exitX: number): { on: T[]; back: number } {
+  const on = tries.filter((t) => t.dir === 0 || Math.sign(exitX - t.x) === t.dir);
+  return { on, back: tries.length - on.length };
 }

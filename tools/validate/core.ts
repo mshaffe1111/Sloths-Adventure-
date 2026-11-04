@@ -19,7 +19,7 @@ import { reachJump, TAKEOFF_SLACK } from '../../src/game/physics.ts';
 import { type Beat, type Sample } from '../inspect/beats.ts';
 import type { Stage } from '../inspect/stages.ts';
 
-export type Move = 'J' | 'j' | 'U' | 'Q' | 'V' | 'B' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'E' | 'D' | 'X' | 'h' | 'Z';
+export type Move = 'J' | 'j' | 'U' | 'Q' | 'V' | 'B' | 'K' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'E' | 'D' | 'X' | 'h' | 'Z';
 export interface Step {
   m: Move;
   /** seconds from the start on the quick route's clock (the inspector's beat clock: movement plus fights and waits) */
@@ -32,7 +32,7 @@ export type Setting = 'normal' | 'easy';
 
 /** what each move letter means, for the pages */
 export const MOVE_NAMES: Record<Move, string> = {
-  J: 'jump (a real fall under it)', j: 'safe hop over a gap', U: 'jump twice (a gap or rise only the second jump covers)', Q: "jump the level check can't confirm", V: 'vine swing', B: 'breaking branch', W: 'wind', S: 'slow-down', C: 'climb', P: 'puzzle', M: 'mushroom bounce', R: 'rope',
+  J: 'jump (a real fall under it)', j: 'safe hop over a gap', U: 'jump twice (a gap or rise only the second jump covers)', Q: "jump the level check can't confirm", V: 'vine swing', B: 'breaking branch', K: 'the chase: the branch collapses behind him', W: 'wind', S: 'slow-down', C: 'climb', P: 'puzzle', M: 'mushroom bounce', R: 'rope',
   F: 'fight an animal', E: 'eagle / watcher', D: 'dark', X: 'river / moving logs', h: 'small hop', Z: 'other timed hazard',
 };
 
@@ -49,7 +49,10 @@ export function moveOf(b: Pick<Beat, 'letter' | 'what' | 'count'>): Move | null 
   if (/trunk or vine and climb/.test(w)) return 'C';
   if (/liana|basket lift|warm air/.test(w)) return 'V';
   if (/rope/.test(w)) return 'R';
-  if (/crumbling|collapses behind/.test(w)) return 'B';
+  // (the chase's collapse is its own move, not a breaking branch: the quality supervisor, 11-04, 1-8's string read 114 B's while its
+  // hazard table said "no breaking branches")
+  if (/collapses behind/.test(w)) return 'K';
+  if (/crumbling/.test(w)) return 'B';
   if (/wind/.test(w)) return 'W';
   if (/web|spore|sleep|slow/.test(w)) return 'S';
   if (/eagle sweep|watching|eaglets|sleeping bats/.test(w)) return 'E';
@@ -142,9 +145,26 @@ export const DEAD_WALK = 2.5;
  * (3 or more moves in the 6 s before it) has this many seconds taken off before it is judged
  */
 export const REST_PAD = 2.5;
-export interface DeadWalk { t0: number; t1: number; x0: number; x1: number; secs: number; pad: boolean }
+export interface DeadWalk { t0: number; t1: number; x0: number; x1: number; secs: number; pad: boolean; busy: number }
+/**
+ * the route's moves that keep the thumb working the whole way (a climb, a rope, a swing, a glide): the time on them is not walking. A step
+ * is where one starts, so without this a 3 s climb read as 3 s of walking (the quality supervisor, 2026-11-04: 1-4's 3.7 s "dead walks"
+ * 228 px apart were its trunk climbs)
+ */
+const BUSY_KINDS = new Set(['climb', 'rope', 'swing', 'glide']);
+/** seconds on the route's movement clock between t0 and t1 spent on a BUSY_KINDS move */
+function busyBetween(samples: readonly Sample[], t0: number, t1: number): number {
+  let busy = 0;
+  for (let i = 0; i + 1 < samples.length; i++) {
+    const a = samples[i], b = samples[i + 1];
+    if (!a.seg || !BUSY_KINDS.has(a.seg.kind)) continue;
+    const lo = Math.max(t0, a.base), hi = Math.min(t1, b.base);
+    if (hi > lo) busy += hi - lo;
+  }
+  return busy;
+}
 /** the stretches of the route over DEAD_WALK s with no move at all, rest pads after a group taken off (start to first move and last to
- *  the shrine count) */
+ *  the shrine count), time climbing or on a rope taken off */
 export function deadWalks(steps: readonly Step[], total: number, samples: readonly Sample[], limit = DEAD_WALK): DeadWalk[] {
   const ts = [0, ...steps.map((s) => s.t), total];
   const xAt = (t: number) => {
@@ -157,8 +177,9 @@ export function deadWalks(steps: readonly Step[], total: number, samples: readon
   for (let i = 1; i < ts.length; i++) {
     const t0 = ts[i - 1], t1 = ts[i];
     const pad = steps.filter((s) => s.m !== 'h' && s.t <= t0 && s.t > t0 - 6).length >= 3;
-    const secs = t1 - t0 - (pad ? REST_PAD : 0);
-    if (secs > limit) out.push({ t0, t1, x0: xAt(t0), x1: xAt(t1), secs: +secs.toFixed(1), pad });
+    const busy = busyBetween(samples, t0, t1);
+    const secs = t1 - t0 - busy - (pad ? REST_PAD : 0);
+    if (secs > limit) out.push({ t0, t1, x0: xAt(t0), x1: xAt(t1), secs: +secs.toFixed(1), pad, busy: +busy.toFixed(1) });
   }
   return out;
 }

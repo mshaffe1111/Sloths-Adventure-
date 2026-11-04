@@ -1,6 +1,6 @@
 # World 1 mechanics in use (R-150.4)
 
-Made 2026-11-04 3:12 AM ET by tools/validate/mechtable.ts on 1e9cc5f6 fun-validator: world1.ts (every check, every layout, one page. Every stage as the engine builds it (RealPlay: generateStage, withGoals), Normal, layouts 1-16. A cell is the count on a layout (min-max over the layouts; "(n/16)" when only n layouts have it; blank: none on any layout).
+Made 2026-11-04 9:00 AM ET by tools/validate/mechtable.ts on f89b87a5 Merge remote-tracking branch 'origin/ccr-0d59a91c-oy3imz' int. Every stage as the engine builds it (RealPlay: generateStage, withGoals), Normal, layouts 1-16. A cell is the count on a layout (min-max over the layouts; "(n/16)" when only n layouts have it; blank: none on any layout).
 
 ## What each stage holds
 
@@ -44,15 +44,15 @@ World 1 shows 6 of the 15 pairs. Wind and slow-downs are not in World 1 at all, 
 
 | stage | lianas swung | trunks climbed | ropes | mushroom bounces | branches broken | hid in a bush | logs pushed | animals beaten | eagle hits | the runs |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1-1 | 0/0/0 | 0/0/0 | 0/0/0 | 11/20/12 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | shrine 214 s, 10 rescues; shrine 319 s, 21 rescues; shrine 231 s, 11 rescues |
-| 1-2 | 0/0/0 | 0/0/0 | 0/0/0 | 7/26/8 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | shrine 184 s, 1 rescues; shrine 258 s, 9 rescues; shrine 182 s, 1 rescues |
-| 1-3 | 0/0/0 | 0/0/0 | 0/0/0 | 7/1/6 | 0/0/0 | 0/0/0 | 0/0/0 | 15/19/4 | 0/0/0 | sealed door 185 s, 7 rescues; shrine 134 s, 0 rescues; sealed door 166 s, 6 rescues |
-| 1-4 | 0/0/0 | 89/56/33 | 13/14/3 | 0/1/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/3/0 | 0/0/0 | time 360 s, 11 rescues; shrine 298 s, 12 rescues; shrine 141 s, 7 rescues |
-| 1-5 | 0/0/0 | 1/1/0 | 0/0/0 | 11/12/1 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | sealed door 209 s, 10 rescues; sealed door 216 s, 11 rescues; sealed door 181 s, 8 rescues |
-| 1-6 | 18/24/54 | 0/0/0 | 0/0/0 | 23/0/0 | 0/0/0 | 0/0/0 | 2/2/3 | 2/0/1 | 0/0/0 | shrine 335 s, 12 rescues; shrine 230 s, 5 rescues; shrine 328 s, 7 rescues |
-| 1-7 | 0/0/0 | 0/0/0 | 0/0/0 | 46/30/80 | 0/0/0 | 4/3/2 | 0/0/0 | 0/0/0 | 1/1/1 | time 360 s, 19 rescues; shrine 326 s, 18 rescues; time 360 s, 16 rescues |
-| 1-8 | 8/19/16 | 2/2/2 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | shrine 256 s, 4 rescues; shrine 231 s, 1 rescues; shrine 202 s, 2 rescues |
-| 1-9 | 0/0/0 | 0/0/0 | 0/0/0 | 4/3/1 | 0/0/0 | 0/0/0 | 0/0/0 | 15/11/9 | 0/0/0 | sealed door 132 s, 1 rescues; sealed door 116 s, 1 rescues; sealed door 117 s, 1 rescues |
+| 1-1 | 0/0/0 | 0/0/0 | 0/0/0 | 16/20/13 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | shrine 209 s, 3 rescues; shrine 241 s, 8 rescues; shrine 210 s, 4 rescues |
+| 1-2 | 0/0/0 | 0/0/0 | 0/0/0 | 5/23/8 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | sealed door 182 s, 2 rescues; shrine 189 s, 3 rescues; sealed door 190 s, 2 rescues |
+| 1-3 | 0/0/0 | 0/0/0 | 0/0/0 | 8/3/9 | 0/0/0 | 0/0/0 | 0/0/0 | 16/18/6 | 0/0/0 | shrine 132 s, 0 rescues; shrine 130 s, 0 rescues; sealed door 127 s, 0 rescues |
+| 1-4 | 0/0/0 | 89/69/93 | 11/13/11 | 0/1/1 | 0/0/0 | 0/0/0 | 0/0/0 | 0/3/1 | 0/0/0 | shrine 349 s, 11 rescues; shrine 325 s, 12 rescues; time 360 s, 13 rescues |
+| 1-5 | 0/0/0 | 2/1/0 | 0/0/0 | 18/17/1 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | sealed door 197 s, 2 rescues; sealed door 164 s, 1 rescues; sealed door 203 s, 10 rescues |
+| 1-6 | 32/39/46 | 2/0/2 | 0/0/0 | 6/2/0 | 0/0/0 | 0/0/0 | 2/2/2 | 2/2/1 | 0/0/0 | shrine 267 s, 6 rescues; shrine 268 s, 6 rescues; shrine 285 s, 7 rescues |
+| 1-7 | 0/0/0 | 0/0/0 | 1/0/1 | 22/18/21 | 0/0/0 | 4/3/2 | 0/0/0 | 0/0/0 | 1/1/1 | shrine 178 s, 0 rescues; shrine 160 s, 0 rescues; shrine 226 s, 2 rescues |
+| 1-8 | 5/13/13 | 2/2/2 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | shrine 137 s, 0 rescues; shrine 125 s, 0 rescues; shrine 128 s, 0 rescues |
+| 1-9 | 0/0/0 | 0/0/0 | 0/0/0 | 3/1/2 | 0/0/0 | 0/0/0 | 0/0/0 | 14/12/12 | 0/0/0 | sealed door 140 s, 2 rescues; sealed door 157 s, 2 rescues; sealed door 130 s, 2 rescues |
 | 1-10 | - | - | - | - | - | - | - | - | - | - |
 
 A run with more than 3 rescues was not really played by the bot (its rescues put it past spots it could not do): read its "used" numbers as a floor. A 0 under "branches broken" on a stage that holds them (1-5) means the run never stood on one: the way on goes along the floor under them (the validator's branch probe crosses them on purpose: see its pages).

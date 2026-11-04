@@ -1,10 +1,10 @@
 {
- "base": "1f6fcf63 (contains origin/main 1dc39cd7 + ccr-0d59a91c 2c1f6b46)",
+ "base": "f89b87a5 (contains origin/main 1dc39cd7 + ccr-0d59a91c 19d7ae08)",
  "layouts": 16,
  "play": 3,
  "scores": {
   "1-1": {
-   "total": 28,
+   "total": 25,
    "sc": {
     "variety": 3,
     "repeats": 8,
@@ -15,9 +15,9 @@
     "tempo": 0,
     "something new": null,
     "hazards matter": 0,
-    "fair and seen": null
+    "fair and seen": 0
    },
-   "flags": 10,
+   "flags": 17,
    "pageFlags": [
     {
      "rule": "dead walk",
@@ -70,11 +70,53 @@
      "rule": "one tempo",
      "what": "never asks to hurry or to wait: one even pace all the way",
      "source": "STAGE-RULES §0b.3 (hurry and patience)"
+    },
+    {
+     "rule": "landing unseen",
+     "what": "20 of 203 running jumps took off with the landing's near edge off screen (sideways)",
+     "x": 20596,
+     "source": "research §1 (landing in view at take-off)"
+    },
+    {
+     "rule": "landing unseen",
+     "what": "26 of 80 running jumps took off with the landing's near edge off screen (upright)",
+     "x": 11897,
+     "source": "research §1 (landing in view at take-off)"
+    },
+    {
+     "rule": "clumsy thumb",
+     "what": "a jump the clumsy thumb makes 0% of the time (0/15; floor 70%)",
+     "x": 1380,
+     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
+    },
+    {
+     "rule": "clumsy thumb",
+     "what": "a jump the clumsy thumb makes 22% of the time (2/9; floor 70%)",
+     "x": 9100,
+     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
+    },
+    {
+     "rule": "clumsy thumb",
+     "what": "a jump the clumsy thumb makes 0% of the time (0/8; floor 70%)",
+     "x": 13080,
+     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
+    },
+    {
+     "rule": "clumsy thumb",
+     "what": "a jump the clumsy thumb makes 0% of the time (0/9; floor 70%)",
+     "x": 15044,
+     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
+    },
+    {
+     "rule": "clumsy thumb",
+     "what": "a jump the clumsy thumb makes 57% of the time (4/7; floor 70%)",
+     "x": 24452,
+     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
     }
    ]
   },
   "1-2": {
-   "total": 18,
+   "total": 22,
    "sc": {
     "variety": 0.5,
     "repeats": 6,
@@ -85,9 +127,9 @@
     "tempo": 0,
     "something new": 0,
     "hazards matter": 0,
-    "fair and seen": 0
+    "fair and seen": 4
    },
-   "flags": 19,
+   "flags": 16,
    "pageFlags": [
     {
      "rule": "dead walk",
@@ -159,38 +201,20 @@
     },
     {
      "rule": "landing unseen",
-     "what": "1 of 159 running jumps took off with the landing's near edge off screen (upright)",
+     "what": "3 of 228 running jumps took off with the landing's near edge off screen (upright)",
      "x": 2059,
      "source": "research §1 (landing in view at take-off)"
     },
     {
      "rule": "clumsy thumb",
-     "what": "a jump the clumsy thumb makes 0% of the time (0/5; floor 70%)",
-     "x": 3262,
+     "what": "a jump the clumsy thumb makes 57% of the time (8/14; floor 70%)",
+     "x": 15435,
      "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
     },
     {
      "rule": "clumsy thumb",
-     "what": "a jump the clumsy thumb makes 0% of the time (0/8; floor 70%)",
-     "x": 3614,
-     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
-    },
-    {
-     "rule": "clumsy thumb",
-     "what": "a jump the clumsy thumb makes 0% of the time (0/7; floor 70%)",
-     "x": 3931,
-     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
-    },
-    {
-     "rule": "clumsy thumb",
-     "what": "a jump the clumsy thumb makes 0% of the time (0/10; floor 70%)",
-     "x": 8817,
-     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
-    },
-    {
-     "rule": "clumsy thumb",
-     "what": "a jump the clumsy thumb makes 0% of the time (0/31; floor 70%)",
-     "x": 13320,
+     "what": "a jump the clumsy thumb makes 8% of the time (1/12; floor 70%)",
+     "x": 26567,
      "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
     }
    ]
@@ -363,24 +387,24 @@
     },
     {
      "rule": "landing unseen",
-     "what": "1 of 74 running jumps took off with the landing's near edge off screen (sideways)",
-     "x": 11032,
+     "what": "9 of 181 running jumps took off with the landing's near edge off screen (sideways)",
+     "x": 21535,
      "source": "research §1 (landing in view at take-off)"
     },
     {
      "rule": "landing unseen",
-     "what": "1 of 38 running jumps took off with the landing's near edge off screen (upright)",
-     "x": 11032,
+     "what": "4 of 82 running jumps took off with the landing's near edge off screen (upright)",
+     "x": 18521,
      "source": "research §1 (landing in view at take-off)"
     }
    ]
   },
   "1-4": {
-   "total": 44,
+   "total": 53,
    "sc": {
     "variety": 10,
     "repeats": 10,
-    "dead walking": 0,
+    "dead walking": 8,
     "pacing": 5,
     "a miss costs": 0,
     "padding": 5,
@@ -389,65 +413,11 @@
     "hazards matter": 0,
     "fair and seen": null
    },
-   "flags": 17,
+   "flags": 7,
    "pageFlags": [
     {
      "rule": "dead walk",
-     "what": "3.7 s of walking with nothing to do",
-     "x": 640,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
-    {
-     "rule": "dead walk",
-     "what": "3.7 s of walking with nothing to do",
-     "x": 868,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
-    {
-     "rule": "dead walk",
-     "what": "5.8 s of walking with nothing to do",
-     "x": 1159,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
-    {
-     "rule": "dead walk",
-     "what": "3.8 s of walking with nothing to do",
-     "x": 1875,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
-    {
-     "rule": "dead walk",
-     "what": "5 s of walking with nothing to do",
-     "x": 2163,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
-    {
-     "rule": "dead walk",
-     "what": "3.4 s of walking with nothing to do",
-     "x": 2655,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
-    {
-     "rule": "dead walk",
-     "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
-     "x": 2374,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
-    {
-     "rule": "dead walk",
-     "what": "3.4 s of walking with nothing to do (after the rest pad a burst earns)",
-     "x": 1651,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
-    {
-     "rule": "dead walk",
-     "what": "3.9 s of walking with nothing to do",
-     "x": 2196,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
-    {
-     "rule": "dead walk",
-     "what": "5.8 s of walking with nothing to do",
+     "what": "2.5 s of walking with nothing to do",
      "x": 2733,
      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
     },
@@ -455,12 +425,6 @@
      "rule": "dead walk",
      "what": "4 s of walking with nothing to do",
      "x": 2185,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
-    {
-     "rule": "dead walk",
-     "what": "3.3 s of walking with nothing to do (after the rest pad a burst earns)",
-     "x": 1925,
      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
     },
     {
@@ -491,31 +455,25 @@
    ]
   },
   "1-5": {
-   "total": 44,
+   "total": 29,
    "sc": {
     "variety": 0.2,
     "repeats": 6,
-    "dead walking": 7,
+    "dead walking": 8,
     "pacing": 2.5,
     "a miss costs": 1.8,
     "padding": 2.5,
     "tempo": 5,
-    "something new": 10,
-    "hazards matter": 5,
-    "fair and seen": null
+    "something new": 3,
+    "hazards matter": 0,
+    "fair and seen": 0
    },
-   "flags": 15,
+   "flags": 19,
    "pageFlags": [
     {
      "rule": "dead walk",
      "what": "2.5 s of walking with nothing to do",
      "x": 538,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
-    {
-     "rule": "dead walk",
-     "what": "4.6 s of walking with nothing to do",
-     "x": 3634,
      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
     },
     {
@@ -584,18 +542,48 @@
     },
     {
      "rule": "branches outrun",
-     "what": "8 of 8 runs of breaking branches crossed by just holding right, none giving way under him (layouts 1-3, Normal)",
+     "what": "8 of 8 judged runs of breaking branches crossed by just holding right, none giving way under him (layouts 1-3, Normal)",
      "x": 8317,
      "source": "PLAN-TO-80 A.2, STAGE-RULES §0.2"
+    },
+    {
+     "rule": "landing unseen",
+     "what": "2 of 212 running jumps took off with the landing's near edge off screen (sideways)",
+     "x": 1391,
+     "source": "research §1 (landing in view at take-off)"
+    },
+    {
+     "rule": "landing unseen",
+     "what": "11 of 105 running jumps took off with the landing's near edge off screen (upright)",
+     "x": 1391,
+     "source": "research §1 (landing in view at take-off)"
+    },
+    {
+     "rule": "clumsy thumb",
+     "what": "a jump the clumsy thumb makes 40% of the time (2/5; floor 70%)",
+     "x": 14733,
+     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
+    },
+    {
+     "rule": "clumsy thumb",
+     "what": "a jump the clumsy thumb makes 50% of the time (3/6; floor 70%)",
+     "x": 19866,
+     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
+    },
+    {
+     "rule": "clumsy thumb",
+     "what": "a jump the clumsy thumb makes 29% of the time (2/7; floor 70%)",
+     "x": 25775,
+     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
     }
    ]
   },
   "1-6": {
-   "total": 62,
+   "total": 64,
    "sc": {
     "variety": 2.2,
     "repeats": 10,
-    "dead walking": 4,
+    "dead walking": 5,
     "pacing": 0,
     "a miss costs": 10,
     "padding": 10,
@@ -604,14 +592,8 @@
     "hazards matter": 10,
     "fair and seen": null
    },
-   "flags": 13,
+   "flags": 12,
    "pageFlags": [
-    {
-     "rule": "dead walk",
-     "what": "3 s of walking with nothing to do",
-     "x": 584,
-     "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-    },
     {
      "rule": "dead walk",
      "what": "5.2 s of walking with nothing to do",
@@ -638,7 +620,7 @@
     },
     {
      "rule": "dead walk",
-     "what": "4.2 s of walking with nothing to do",
+     "what": "2.9 s of walking with nothing to do",
      "x": 24762,
      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
     },
@@ -680,7 +662,7 @@
    ]
   },
   "1-7": {
-   "total": 34,
+   "total": 36,
    "sc": {
     "variety": 10,
     "repeats": 0,
@@ -690,10 +672,10 @@
     "padding": 0,
     "tempo": 5,
     "something new": 10,
-    "hazards matter": 5,
-    "fair and seen": null
+    "hazards matter": 3.8,
+    "fair and seen": 6
    },
-   "flags": 40,
+   "flags": 42,
    "pageFlags": [
     {
      "rule": "dead walk",
@@ -921,14 +903,26 @@
     },
     {
      "rule": "eagle outrun",
-     "what": "9 of 13 watched stretches crossed unhurt by just holding right, never hiding (layout 1, sideways, 6 starts in its rhythm)",
+     "what": "8 of 13 watched stretches crossed unhurt by just holding right, never hiding (layout 1, sideways, 6 starts in its rhythm)",
      "x": 407,
      "source": "PLAN-TO-80 A.2, research §6"
+    },
+    {
+     "rule": "landing unseen",
+     "what": "11 of 145 running jumps took off with the landing's near edge off screen (sideways)",
+     "x": 11557,
+     "source": "research §1 (landing in view at take-off)"
+    },
+    {
+     "rule": "landing unseen",
+     "what": "16 of 77 running jumps took off with the landing's near edge off screen (upright)",
+     "x": 9000,
+     "source": "research §1 (landing in view at take-off)"
     }
    ]
   },
   "1-8": {
-   "total": 55,
+   "total": 54,
    "sc": {
     "variety": 10,
     "repeats": 0,
@@ -938,10 +932,10 @@
     "padding": 10,
     "tempo": 5,
     "something new": 3,
-    "hazards matter": 5,
-    "fair and seen": 0
+    "hazards matter": 0,
+    "fair and seen": 4
    },
-   "flags": 25,
+   "flags": 20,
    "pageFlags": [
     {
      "rule": "dead walk",
@@ -951,61 +945,61 @@
     },
     {
      "rule": "repeat",
-     "what": "the same four moves \"JBBB\" 6 times",
+     "what": "the same four moves \"JKKK\" 6 times",
      "x": 2171,
      "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
     },
     {
      "rule": "repeat",
-     "what": "the same four moves \"BBBJ\" 11 times",
+     "what": "the same four moves \"KKKJ\" 11 times",
      "x": 3478,
      "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
     },
     {
      "rule": "repeat",
-     "what": "the same four moves \"BBJB\" 13 times",
+     "what": "the same four moves \"KKJK\" 13 times",
      "x": 5059,
      "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
     },
     {
      "rule": "repeat",
-     "what": "the same four moves \"BJBB\" 12 times",
+     "what": "the same four moves \"KJKK\" 12 times",
      "x": 5481,
      "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
     },
     {
      "rule": "repeat",
-     "what": "the same four moves \"JBBV\" 4 times",
+     "what": "the same four moves \"JKKV\" 4 times",
      "x": 5570,
      "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
     },
     {
      "rule": "repeat",
-     "what": "the same four moves \"BBVB\" 5 times",
+     "what": "the same four moves \"KKVK\" 5 times",
      "x": 5782,
      "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
     },
     {
      "rule": "repeat",
-     "what": "the same four moves \"BVBB\" 4 times",
+     "what": "the same four moves \"KVKK\" 4 times",
      "x": 6204,
      "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
     },
     {
      "rule": "repeat",
-     "what": "the same four moves \"VBBB\" 4 times",
+     "what": "the same four moves \"VKKK\" 4 times",
      "x": 6448,
      "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
     },
     {
      "rule": "repeat",
-     "what": "the same four moves \"BFBB\" 4 times",
+     "what": "the same four moves \"KFKK\" 4 times",
      "x": 9186,
      "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
     },
     {
      "rule": "repeat",
-     "what": "the same four moves \"JBBJ\" 6 times",
+     "what": "the same four moves \"JKKJ\" 6 times",
      "x": 10379,
      "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
     },
@@ -1030,13 +1024,8 @@
      "source": "STAGE-RULES §0b.3 (hurry and patience)"
     },
     {
-     "rule": "nothing new",
-     "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-     "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
-    },
-    {
      "rule": "hazard unseen",
-     "what": "the collapsing branch is on screen in at most 5% of the chase's frames (sideways, 6 runs, the engine's own camera): the player never sees what chases him",
+     "what": "the collapsing branch is on screen in at most 12% of the chase's frames (sideways, 6 runs, the engine's own camera): the player never sees what chases him",
      "source": "STAGE-RULES §0.2, §0b.7 (every hazard reads before it bites)"
     },
     {
@@ -1046,50 +1035,26 @@
     },
     {
      "rule": "landing unseen",
-     "what": "52 of 207 running jumps took off with the landing's near edge off screen (sideways)",
-     "x": 5546,
+     "what": "4 of 127 running jumps took off with the landing's near edge off screen (sideways)",
+     "x": 14521,
      "source": "research §1 (landing in view at take-off)"
     },
     {
      "rule": "landing unseen",
-     "what": "20 of 77 running jumps took off with the landing's near edge off screen (upright)",
-     "x": 5545,
+     "what": "1 of 62 running jumps took off with the landing's near edge off screen (upright)",
+     "x": 14521,
      "source": "research §1 (landing in view at take-off)"
     },
     {
      "rule": "clumsy thumb",
-     "what": "a jump the clumsy thumb makes 0% of the time (0/5; floor 70%)",
-     "x": 9092,
-     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
-    },
-    {
-     "rule": "clumsy thumb",
-     "what": "a jump the clumsy thumb makes 50% of the time (17/34; floor 70%)",
-     "x": 12882,
-     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
-    },
-    {
-     "rule": "clumsy thumb",
-     "what": "a jump the clumsy thumb makes 50% of the time (17/34; floor 70%)",
-     "x": 15580,
-     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
-    },
-    {
-     "rule": "clumsy thumb",
-     "what": "a jump the clumsy thumb makes 67% of the time (30/45; floor 70%)",
-     "x": 19541,
-     "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
-    },
-    {
-     "rule": "clumsy thumb",
-     "what": "a jump the clumsy thumb makes 0% of the time (0/7; floor 70%)",
-     "x": 20345,
+     "what": "a jump the clumsy thumb makes 33% of the time (10/30; floor 70%)",
+     "x": 28012,
      "source": "research §1, STAGE-RULES §1b (70% floor, Worlds 1-5)"
     }
    ]
   },
   "1-9": {
-   "total": 31,
+   "total": 29,
    "sc": {
     "variety": 6.9,
     "repeats": 10,
@@ -1100,9 +1065,9 @@
     "tempo": 0,
     "something new": 0,
     "hazards matter": 0,
-    "fair and seen": 5
+    "fair and seen": 3
    },
-   "flags": 22,
+   "flags": 23,
    "pageFlags": [
     {
      "rule": "dead walk",
@@ -1222,8 +1187,14 @@
     },
     {
      "rule": "landing unseen",
-     "what": "4 of 51 running jumps took off with the landing's near edge off screen (upright)",
-     "x": 2310,
+     "what": "1 of 110 running jumps took off with the landing's near edge off screen (sideways)",
+     "x": 9072,
+     "source": "research §1 (landing in view at take-off)"
+    },
+    {
+     "rule": "landing unseen",
+     "what": "2 of 48 running jumps took off with the landing's near edge off screen (upright)",
+     "x": 1685,
      "source": "research §1 (landing in view at take-off)"
     }
    ]
@@ -10977,61 +10948,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 868,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.8 s of walking with nothing to do",
-      "x": 1159,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 1875,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5 s of walking with nothing to do",
-      "x": 2163,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.4 s of walking with nothing to do",
-      "x": 2655,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2374,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.4 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1651,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 2196,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.8 s of walking with nothing to do",
+      "what": "2.5 s of walking with nothing to do",
       "x": 2733,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -11039,12 +10956,6 @@
       "rule": "dead walk",
       "what": "4 s of walking with nothing to do",
       "x": 2185,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1925,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -11145,92 +11056,8 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 873,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.7 s of walking with nothing to do",
-      "x": 1165,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 1851,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.8 s of walking with nothing to do",
-      "x": 2132,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 2591,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2364,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2233,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.9 s of walking with nothing to do",
-      "x": 1619,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 515,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.1 s of walking with nothing to do",
-      "x": 344,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.6 s of walking with nothing to do",
       "x": 1304,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 2153,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 2399,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3 s of walking with nothing to do",
-      "x": 835,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -11349,85 +11176,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 864,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.4 s of walking with nothing to do",
-      "x": 1153,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 1792,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.9 s of walking with nothing to do",
-      "x": 2100,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.4 s of walking with nothing to do",
-      "x": 2571,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2412,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5 s of walking with nothing to do",
-      "x": 1122,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 1674,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 1973,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 2560,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2819,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 2086,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
+      "what": "3.1 s of walking with nothing to do",
       "x": 2340,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -11535,133 +11284,31 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 886,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.6 s of walking with nothing to do",
-      "x": 1158,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 1853,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.7 s of walking with nothing to do",
-      "x": 2145,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 2603,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 2890,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.1 s of walking with nothing to do",
-      "x": 2395,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2470,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 2340,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.4 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1678,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 929,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 1230,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.8 s of walking with nothing to do",
-      "x": 1737,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 2238,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.6 s of walking with nothing to do",
+      "what": "2.5 s of walking with nothing to do",
       "x": 2797,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
+      "what": "3.5 s of walking with nothing to do",
       "x": 2124,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
+      "what": "2.6 s of walking with nothing to do",
       "x": 1247,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "5.6 s of walking with nothing to do",
-      "x": 1602,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.1 s of walking with nothing to do",
-      "x": 1303,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "9.3 s of walking with nothing to do",
+      "what": "5.2 s of walking with nothing to do",
       "x": 973,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "5.9 s of walking with nothing to do",
+      "what": "3.8 s of walking with nothing to do",
       "x": 1827,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -11761,144 +11408,6 @@
     "str": "CCRCRCCJCJCPJCRCRCJCRCRCJCRCRCJCRCPJC",
     "strip": "IIIFFFFFPFFFFFFFFFFFRFFFFRFPRFR",
     "flags": [
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 893,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.4 s of walking with nothing to do",
-      "x": 1156,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 1792,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5 s of walking with nothing to do",
-      "x": 2059,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.1 s of walking with nothing to do",
-      "x": 2550,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 2890,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.3 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2176,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 2584,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2132,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3 s of walking with nothing to do",
-      "x": 1818,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.6 s of walking with nothing to do",
-      "x": 1358,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 823,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.4 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1757,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 2289,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.8 s of walking with nothing to do",
-      "x": 2803,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 2372,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1708,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 1334,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.9 s of walking with nothing to do",
-      "x": 934,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.1 s of walking with nothing to do",
-      "x": 312,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "8.4 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1176,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 2533,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
      {
       "rule": "dead walk",
       "what": "6.8 s of walking with nothing to do",
@@ -12032,146 +11541,14 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 865,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.7 s of walking with nothing to do",
-      "x": 1132,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 1817,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5 s of walking with nothing to do",
-      "x": 2102,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 2589,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 2890,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.3 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2094,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 2496,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2057,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 1780,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.9 s of walking with nothing to do",
+      "what": "2.6 s of walking with nothing to do",
       "x": 1343,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "4.1 s of walking with nothing to do",
-      "x": 643,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.5 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1358,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3 s of walking with nothing to do",
-      "x": 1810,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 2067,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.8 s of walking with nothing to do",
-      "x": 2454,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 2870,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2143,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3 s of walking with nothing to do",
-      "x": 1689,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.9 s of walking with nothing to do",
-      "x": 1378,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 2045,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "10.4 s of walking with nothing to do",
+      "what": "2.9 s of walking with nothing to do",
       "x": 2426,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 2282,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -12294,67 +11671,13 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 842,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.7 s of walking with nothing to do",
-      "x": 1116,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 1791,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.7 s of walking with nothing to do",
-      "x": 2077,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.4 s of walking with nothing to do",
-      "x": 2529,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "2.6 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 2428,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 842,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.7 s of walking with nothing to do",
-      "x": 1340,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 1790,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "6.1 s of walking with nothing to do",
+      "what": "3.4 s of walking with nothing to do",
       "x": 2251,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -12366,19 +11689,7 @@
      },
      {
       "rule": "dead walk",
-      "what": "7.5 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1717,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do",
-      "x": 2645,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "3 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 2982,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -12480,73 +11791,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 850,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.8 s of walking with nothing to do",
-      "x": 1140,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 1862,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.8 s of walking with nothing to do",
-      "x": 2173,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.4 s of walking with nothing to do",
-      "x": 2637,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2454,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.8 s of walking with nothing to do",
-      "x": 2253,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1595,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.1 s of walking with nothing to do",
-      "x": 933,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 2438,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "6.8 s of walking with nothing to do",
+      "what": "5.5 s of walking with nothing to do",
       "x": 2948,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -12648,79 +11893,13 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 885,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.7 s of walking with nothing to do",
-      "x": 1176,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 1858,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.1 s of walking with nothing to do",
-      "x": 2173,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.1 s of walking with nothing to do",
-      "x": 2673,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 2890,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2445,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 775,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.9 s of walking with nothing to do",
-      "x": 1267,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3 s of walking with nothing to do",
       "x": 1687,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 1705,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "6.4 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "3.5 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 1273,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -12828,79 +12007,19 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 849,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.8 s of walking with nothing to do",
-      "x": 1168,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 1880,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.1 s of walking with nothing to do",
-      "x": 2197,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 2702,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.8 s of walking with nothing to do",
-      "x": 2890,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "2.7 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 2399,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
       "what": "3.7 s of walking with nothing to do",
-      "x": 999,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.8 s of walking with nothing to do",
       "x": 1335,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 2100,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 2060,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3 s of walking with nothing to do",
+      "what": "2.5 s of walking with nothing to do",
       "x": 789,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -13012,72 +12131,6 @@
     "str": "CCRCRCQCQPJQCRCRCJCQFCQJCQQCQPJC",
     "strip": "IIIFFFPFFRFFFFFFFPRFR",
     "flags": [
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 853,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.7 s of walking with nothing to do",
-      "x": 1165,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 1854,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5 s of walking with nothing to do",
-      "x": 2118,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.4 s of walking with nothing to do",
-      "x": 2612,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2376,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2252,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3 s of walking with nothing to do",
-      "x": 1932,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "6 s of walking with nothing to do",
-      "x": 1531,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 875,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
      {
       "rule": "dead walk",
       "what": "2.6 s of walking with nothing to do",
@@ -13194,97 +12247,13 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 858,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.6 s of walking with nothing to do",
-      "x": 1149,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 1834,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.9 s of walking with nothing to do",
-      "x": 2136,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 2609,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2464,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 2166,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.1 s of walking with nothing to do",
       "x": 1385,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "5.8 s of walking with nothing to do",
-      "x": 1462,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 1958,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.7 s of walking with nothing to do",
-      "x": 2526,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.1 s of walking with nothing to do",
-      "x": 1947,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1258,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.1 s of walking with nothing to do",
-      "x": 605,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.7 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "3.4 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 1747,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -13386,86 +12355,8 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 884,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.7 s of walking with nothing to do",
-      "x": 1178,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 1865,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.8 s of walking with nothing to do",
-      "x": 2136,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 2599,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2400,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2269,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 1356,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do",
-      "x": 1849,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.5 s of walking with nothing to do",
+      "what": "4.4 s of walking with nothing to do",
       "x": 2771,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 1761,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.7 s of walking with nothing to do",
-      "x": 2556,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do",
-      "x": 2716,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -13573,103 +12464,19 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 859,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.7 s of walking with nothing to do",
-      "x": 1169,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 1855,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5 s of walking with nothing to do",
-      "x": 2148,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 2636,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 2890,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2391,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "6 s of walking with nothing to do",
+      "what": "2.6 s of walking with nothing to do",
       "x": 2450,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "4.2 s of walking with nothing to do",
-      "x": 1913,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 967,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3 s of walking with nothing to do",
-      "x": 253,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "6 s of walking with nothing to do",
-      "x": 1189,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 1757,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "10.3 s of walking with nothing to do",
+      "what": "3.1 s of walking with nothing to do",
       "x": 2181,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "4.1 s of walking with nothing to do",
-      "x": 2281,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "3.1 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 2894,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -13771,85 +12578,13 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 895,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.8 s of walking with nothing to do",
-      "x": 1183,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 1897,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.9 s of walking with nothing to do",
-      "x": 2176,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.4 s of walking with nothing to do",
-      "x": 2647,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2466,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 2253,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1577,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 886,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.1 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2890,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 2337,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "7 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "2.7 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 1023,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "5.9 s of walking with nothing to do",
+      "what": "4.1 s of walking with nothing to do",
       "x": 1911,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -13951,110 +12686,14 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 640,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 878,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.5 s of walking with nothing to do",
-      "x": 1158,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
-      "x": 1818,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5 s of walking with nothing to do",
-      "x": 2129,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 2612,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 2890,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.1 s of walking with nothing to do",
-      "x": 2340,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2410,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.4 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 2244,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.8 s of walking with nothing to do",
-      "x": 1879,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "5.9 s of walking with nothing to do",
-      "x": 1458,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 834,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.1 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 1819,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 2296,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "6 s of walking with nothing to do",
+      "what": "3.2 s of walking with nothing to do",
       "x": 2788,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
+      "what": "2.8 s of walking with nothing to do",
       "x": 2235,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do",
-      "x": 2610,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -14171,12 +12810,6 @@
       "rule": "dead walk",
       "what": "2.5 s of walking with nothing to do",
       "x": 538,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.6 s of walking with nothing to do",
-      "x": 3634,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -14334,12 +12967,6 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "4.5 s of walking with nothing to do",
-      "x": 3648,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.4 s of walking with nothing to do",
       "x": 7699,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -14492,7 +13119,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "6.1 s of walking with nothing to do",
+      "what": "3.4 s of walking with nothing to do",
       "x": 1096,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -14500,12 +13127,6 @@
       "rule": "dead walk",
       "what": "2.8 s of walking with nothing to do",
       "x": 1913,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 3252,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -14522,31 +13143,25 @@
      },
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "2.9 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 16450,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 17767,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "3.2 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 19424,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
+      "what": "2.8 s of walking with nothing to do",
       "x": 20819,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "2.9 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 23133,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -14698,7 +13313,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "6.2 s of walking with nothing to do",
+      "what": "3.5 s of walking with nothing to do",
       "x": 1093,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -14706,12 +13321,6 @@
       "rule": "dead walk",
       "what": "2.8 s of walking with nothing to do",
       "x": 1937,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 3271,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -14881,7 +13490,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "6.4 s of walking with nothing to do",
+      "what": "3.7 s of walking with nothing to do",
       "x": 1013,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -14889,12 +13498,6 @@
       "rule": "dead walk",
       "what": "2.8 s of walking with nothing to do",
       "x": 1908,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 3261,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -15067,12 +13670,6 @@
     "str": "jCjjjFjUBjjjUBjjjjFjjFjFFjFUBjjjjFjjFUBjjjjjFjFFjFUBjjjjjjjj",
     "strip": "IIIFFRFRFFFFFFFFFFFFFFFFFFFFFR",
     "flags": [
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 1283,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
      {
       "rule": "dead walk",
       "what": "3.7 s of walking with nothing to do",
@@ -15283,12 +13880,6 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "4.6 s of walking with nothing to do",
-      "x": 3589,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.3 s of walking with nothing to do",
       "x": 7648,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -15436,7 +14027,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "6.1 s of walking with nothing to do",
+      "what": "3.4 s of walking with nothing to do",
       "x": 1108,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -15444,12 +14035,6 @@
       "rule": "dead walk",
       "what": "2.6 s of walking with nothing to do",
       "x": 1930,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 3178,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -15466,13 +14051,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "2.6 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 20956,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
+      "what": "3 s of walking with nothing to do",
       "x": 22174,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -15652,12 +14237,6 @@
     "str": "jCjjjFjUBjjjBjjjjFjFFjFjjFBjjjjFjFFjFUBjjjjjFjjFjFFjjjjjjj",
     "strip": "IIRRFFFFFFFFFFFFFFFFFFFFFFFFFF",
     "flags": [
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 1380,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
      {
       "rule": "dead walk",
       "what": "2.5 s of walking with nothing to do",
@@ -15899,12 +14478,6 @@
      },
      {
       "rule": "dead walk",
-      "what": "4.6 s of walking with nothing to do",
-      "x": 3590,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "2.9 s of walking with nothing to do",
       "x": 6008,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -16063,18 +14636,6 @@
     "str": "CJjjCjCJjFjjUBjjjjjUBjjjBjjjjCJjCJjCJjCjUBjjjjCUjCJjCJjCjjjjjj",
     "strip": "IIIFFFFRFFFFFFFFFFFFFFFFFFFFFFF",
     "flags": [
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 1120,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 3251,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
      {
       "rule": "dead walk",
       "what": "2.8 s of walking with nothing to do",
@@ -16240,12 +14801,6 @@
     "str": "jCjFjjjUBjjjjBjjjjFjFFjFUBjjjjjFjjFjFFjFUBjjjjFjjFUBjjjjjjjjjj",
     "strip": "IIRFFFFFFFFFFFFFFFFFFFFFFFFFFFR",
     "flags": [
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 1349,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
      {
       "rule": "dead walk",
       "what": "3.6 s of walking with nothing to do",
@@ -16472,7 +15027,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "6.2 s of walking with nothing to do",
+      "what": "3.5 s of walking with nothing to do",
       "x": 1079,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -16480,12 +15035,6 @@
       "rule": "dead walk",
       "what": "2.7 s of walking with nothing to do",
       "x": 1935,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 3247,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -16666,7 +15215,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "6.2 s of walking with nothing to do",
+      "what": "3.5 s of walking with nothing to do",
       "x": 1131,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -16678,13 +15227,7 @@
      },
      {
       "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 3307,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "2.8 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 23491,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -16853,31 +15396,19 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
-      "x": 1080,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 3093,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "2.9 s of walking with nothing to do",
       "x": 5692,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "2.6 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 16473,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
+      "what": "3 s of walking with nothing to do",
       "x": 17679,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -17035,18 +15566,6 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
-      "x": 1123,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 3221,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "2.8 s of walking with nothing to do",
       "x": 5849,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -17059,13 +15578,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do (after the rest pad a burst earns)",
+      "what": "3 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 13266,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
+      "what": "2.8 s of walking with nothing to do",
       "x": 14653,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -17232,12 +15751,6 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3 s of walking with nothing to do",
-      "x": 584,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "5.2 s of walking with nothing to do",
       "x": 1242,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -17262,7 +15775,7 @@
      },
      {
       "rule": "dead walk",
-      "what": "4.2 s of walking with nothing to do",
+      "what": "2.9 s of walking with nothing to do",
       "x": 24762,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -17378,20 +15891,8 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 655,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "2.7 s of walking with nothing to do",
       "x": 1274,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.6 s of walking with nothing to do",
-      "x": 1887,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -17422,24 +15923,6 @@
       "rule": "dead walk",
       "what": "3.1 s of walking with nothing to do",
       "x": 11788,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 24105,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 25115,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 26840,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -17592,31 +16075,13 @@
      {
       "rule": "dead walk",
       "what": "3.1 s of walking with nothing to do",
-      "x": 8003,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.1 s of walking with nothing to do",
       "x": 10244,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do",
-      "x": 17330,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.4 s of walking with nothing to do",
+      "what": "3.1 s of walking with nothing to do",
       "x": 22282,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.7 s of walking with nothing to do",
-      "x": 28865,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -17894,7 +16359,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "6.9 s of walking with nothing to do",
+      "what": "4.5 s of walking with nothing to do",
       "x": 752,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -18164,12 +16629,6 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "2.8 s of walking with nothing to do",
-      "x": 633,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "4.6 s of walking with nothing to do",
       "x": 1227,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -18188,19 +16647,7 @@
      },
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
-      "x": 16805,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.5 s of walking with nothing to do",
-      "x": 20505,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
+      "what": "2.9 s of walking with nothing to do",
       "x": 20969,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -18469,7 +16916,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "7.1 s of walking with nothing to do",
+      "what": "4.5 s of walking with nothing to do",
       "x": 823,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -18483,12 +16930,6 @@
       "rule": "dead walk",
       "what": "2.7 s of walking with nothing to do",
       "x": 6542,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3 s of walking with nothing to do",
-      "x": 7379,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -18629,12 +17070,6 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.6 s of walking with nothing to do",
-      "x": 1936,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "5.8 s of walking with nothing to do",
       "x": 2880,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -18653,32 +17088,14 @@
      },
      {
       "rule": "dead walk",
-      "what": "4.7 s of walking with nothing to do",
+      "what": "4.1 s of walking with nothing to do",
       "x": 10630,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.1 s of walking with nothing to do",
-      "x": 11392,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
       "what": "3.8 s of walking with nothing to do",
       "x": 23289,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 24206,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 25748,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -18806,18 +17223,6 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "3.1 s of walking with nothing to do",
-      "x": 641,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.6 s of walking with nothing to do",
-      "x": 1936,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.5 s of walking with nothing to do (after the rest pad a burst earns)",
       "x": 2911,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -18940,26 +17345,8 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.6 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 6821,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do",
-      "x": 8191,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.1 s of walking with nothing to do",
       "x": 10567,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
-      "x": 18404,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -19081,7 +17468,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "6.9 s of walking with nothing to do",
+      "what": "4.5 s of walking with nothing to do",
       "x": 758,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -19222,7 +17609,7 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "7 s of walking with nothing to do",
+      "what": "4.5 s of walking with nothing to do",
       "x": 851,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -19230,12 +17617,6 @@
       "rule": "dead walk",
       "what": "3.6 s of walking with nothing to do",
       "x": 2652,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.6 s of walking with nothing to do",
-      "x": 3475,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -19252,13 +17633,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "4.7 s of walking with nothing to do",
+      "what": "3.9 s of walking with nothing to do",
       "x": 10942,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
+      "what": "2.7 s of walking with nothing to do",
       "x": 11978,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -19276,7 +17657,7 @@
      },
      {
       "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
+      "what": "2.7 s of walking with nothing to do",
       "x": 23929,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -19416,24 +17797,6 @@
      },
      {
       "rule": "dead walk",
-      "what": "3.3 s of walking with nothing to do",
-      "x": 3492,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.8 s of walking with nothing to do (after the rest pad a burst earns)",
-      "x": 15581,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.2 s of walking with nothing to do",
-      "x": 16774,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.1 s of walking with nothing to do",
       "x": 22001,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -19545,20 +17908,8 @@
     "flags": [
      {
       "rule": "dead walk",
-      "what": "4.3 s of walking with nothing to do",
-      "x": 831,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "2.6 s of walking with nothing to do",
       "x": 2803,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.4 s of walking with nothing to do",
-      "x": 3606,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -19595,12 +17946,6 @@
       "rule": "dead walk",
       "what": "3.8 s of walking with nothing to do",
       "x": 22877,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.5 s of walking with nothing to do",
-      "x": 23757,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -24280,7 +22625,7 @@
   "1-8": [
    {
     "layout": 1,
-    "str": "JJBBBJFBBBJBBVBBBCBBBBJBjjBJBFBBBJBBJBBFBBJBBBJBBVBBBJBBCBBBJBBJBBBFBBJBBJBBVBBBJBBJBBBJBBJBBFBBJBBJBBBVBBBJBBBBBJBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKKJKjjKJKFKKKJKKJKKFKKJKKKJKKVKKKJKKCKKKJKKJKKKFKKJKKJKKVKKKJKKJKKKJKKJKKFKKJKKJKKKVKKKJKKKKKJKKVK",
     "strip": "RFFFFFFTFFFFTFFFFFFFFFFFFFFFFR",
     "flags": [
      {
@@ -24291,61 +22636,61 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBB\" 6 times",
+      "what": "the same four moves \"JKKK\" 6 times",
       "x": 2171,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 11 times",
+      "what": "the same four moves \"KKKJ\" 11 times",
       "x": 3478,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 13 times",
+      "what": "the same four moves \"KKJK\" 13 times",
       "x": 5059,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 12 times",
+      "what": "the same four moves \"KJKK\" 12 times",
       "x": 5481,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 4 times",
+      "what": "the same four moves \"JKKV\" 4 times",
       "x": 5570,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 5 times",
+      "what": "the same four moves \"KKVK\" 5 times",
       "x": 5782,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 4 times",
+      "what": "the same four moves \"KVKK\" 4 times",
       "x": 6204,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 4 times",
+      "what": "the same four moves \"VKKK\" 4 times",
       "x": 6448,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9186,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBJ\" 6 times",
+      "what": "the same four moves \"JKKJ\" 6 times",
       "x": 10379,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -24368,11 +22713,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -24438,7 +22778,7 @@
    },
    {
     "layout": 2,
-    "str": "JJBBBJFBBBJBBVBBBCBBBJBjBjBJBFBBBVBBBJBBVBBBFBBVBBBJBBVBBBCBBBVBBBJBBVBBBFBBVBBBJBBBVBBJBBBVBBBJBBVBBBFBBVBBBBBJBBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKJKjKjKJKFKKKVKKKJKKVKKKFKKVKKKJKKVKKKCKKKVKKKJKKVKKKFKKVKKKJKKKVKKJKKKVKKKJKKVKKKFKKVKKKKKJKKKVK",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFFFFFFFFF",
     "flags": [
      {
@@ -24449,61 +22789,61 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBB\" 4 times",
+      "what": "the same four moves \"JKKK\" 4 times",
       "x": 2189,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 9 times",
+      "what": "the same four moves \"KKKJ\" 9 times",
       "x": 3497,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 9 times",
+      "what": "the same four moves \"KKJK\" 9 times",
       "x": 5074,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 8 times",
+      "what": "the same four moves \"KJKK\" 8 times",
       "x": 5507,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 5 times",
+      "what": "the same four moves \"JKKV\" 5 times",
       "x": 5585,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 13 times",
+      "what": "the same four moves \"KKVK\" 13 times",
       "x": 5788,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 12 times",
+      "what": "the same four moves \"KVKK\" 12 times",
       "x": 6210,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 11 times",
+      "what": "the same four moves \"VKKK\" 11 times",
       "x": 6454,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9187,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBV\" 5 times",
+      "what": "the same four moves \"KKKV\" 5 times",
       "x": 9484,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -24531,11 +22871,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -24601,7 +22936,7 @@
    },
    {
     "layout": 3,
-    "str": "JJBBBJFBBBJBBVBBBCBBBJBBjjBJBFBBBVBBBJBBVBBBFBBVBBBJBBVBBBCBBBVBBBJBBVBBBFBBVBBBJBBBVBBBJBBVBBBJBBVBBBFBBVBBBBBBJBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKJKKjjKJKFKKKVKKKJKKVKKKFKKVKKKJKKVKKKCKKKVKKKJKKVKKKFKKVKKKJKKKVKKKJKKVKKKJKKVKKKFKKVKKKKKKJKKVK",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFFFFFFFFF",
     "flags": [
      {
@@ -24612,49 +22947,49 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 10 times",
+      "what": "the same four moves \"KKKJ\" 10 times",
       "x": 3475,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 9 times",
+      "what": "the same four moves \"KKJK\" 9 times",
       "x": 5057,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 9 times",
+      "what": "the same four moves \"KJKK\" 9 times",
       "x": 5488,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 7 times",
+      "what": "the same four moves \"JKKV\" 7 times",
       "x": 5555,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 13 times",
+      "what": "the same four moves \"KKVK\" 13 times",
       "x": 5771,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 12 times",
+      "what": "the same four moves \"KVKK\" 12 times",
       "x": 6193,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 12 times",
+      "what": "the same four moves \"VKKK\" 12 times",
       "x": 6415,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9167,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -24682,11 +23017,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -24752,7 +23082,7 @@
    },
    {
     "layout": 4,
-    "str": "JJBBBJFBBBJBBVBBBCBBBBJBjjBJBFBBBVBBBJBBVBBBFBBVBBBJBBVBBBCBBBVBBBJBBVBBBFBBVBBBJBBBVBBBJBBVBBBJBBVBBBFBBVBBBBBJBBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKKJKjjKJKFKKKVKKKJKKVKKKFKKVKKKJKKVKKKCKKKVKKKJKKVKKKFKKVKKKJKKKVKKKJKKVKKKJKKVKKKFKKVKKKKKJKKKVK",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFFFFFFFFF",
     "flags": [
      {
@@ -24763,55 +23093,55 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 10 times",
+      "what": "the same four moves \"KKKJ\" 10 times",
       "x": 3497,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 9 times",
+      "what": "the same four moves \"KKJK\" 9 times",
       "x": 5067,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 8 times",
+      "what": "the same four moves \"KJKK\" 8 times",
       "x": 5511,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 6 times",
+      "what": "the same four moves \"JKKV\" 6 times",
       "x": 5578,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 13 times",
+      "what": "the same four moves \"KKVK\" 13 times",
       "x": 5794,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 12 times",
+      "what": "the same four moves \"KVKK\" 12 times",
       "x": 6216,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 12 times",
+      "what": "the same four moves \"VKKK\" 12 times",
       "x": 6460,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9194,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBV\" 4 times",
+      "what": "the same four moves \"KKKV\" 4 times",
       "x": 9461,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -24839,11 +23169,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -24909,7 +23234,7 @@
    },
    {
     "layout": 5,
-    "str": "JJBBBJFBBBJBBVBBBCBBBBJjBjBJBFBBBVBBBJBBVBBBFBBVBBBJBBVBBBCBBBVBBBJBBVBBBFBBVBBBJBBVBBBJBBVBBBJBBBVBBBFBBVBBBBBJBBBV",
+    "str": "JJKKKJFKKKJKKVKKKCKKKKJjKjKJKFKKKVKKKJKKVKKKFKKVKKKJKKVKKKCKKKVKKKJKKVKKKFKKVKKKJKKVKKKJKKVKKKJKKKVKKKFKKVKKKKKJKKKV",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFTFFFFFFR",
     "flags": [
      {
@@ -24920,55 +23245,55 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 10 times",
+      "what": "the same four moves \"KKKJ\" 10 times",
       "x": 3473,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 8 times",
+      "what": "the same four moves \"KKJK\" 8 times",
       "x": 5041,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 8 times",
+      "what": "the same four moves \"KJKK\" 8 times",
       "x": 5485,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 6 times",
+      "what": "the same four moves \"JKKV\" 6 times",
       "x": 5552,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 12 times",
+      "what": "the same four moves \"KKVK\" 12 times",
       "x": 5761,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 12 times",
+      "what": "the same four moves \"KVKK\" 12 times",
       "x": 6190,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 12 times",
+      "what": "the same four moves \"VKKK\" 12 times",
       "x": 6412,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9137,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBV\" 4 times",
+      "what": "the same four moves \"KKKV\" 4 times",
       "x": 9438,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -24996,11 +23321,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -25066,7 +23386,7 @@
    },
    {
     "layout": 6,
-    "str": "JJBBBJFBBBJBBVBBBCBBBJBBjjBJBFBBCBBBBFBBJBBJBBJBBFBBJBBVBBBCBBBFBBJBBJBBBJBBFBBCBBBVBBBJBBFBBJBBCBBBJBBBFBBBBJBBBV",
+    "str": "JJKKKJFKKKJKKVKKKCKKKJKKjjKJKFKKCKKKKFKKJKKJKKJKKFKKJKKVKKKCKKKFKKJKKJKKKJKKFKKCKKKVKKKJKKFKKJKKCKKKJKKKFKKKKJKKKV",
     "strip": "RFFFFFFTFFFFTFFFFFFFFFFFFFFFFFR",
     "flags": [
      {
@@ -25077,67 +23397,67 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBB\" 4 times",
+      "what": "the same four moves \"JKKK\" 4 times",
       "x": 2171,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 7 times",
+      "what": "the same four moves \"KKKJ\" 7 times",
       "x": 3470,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 11 times",
+      "what": "the same four moves \"KKJK\" 11 times",
       "x": 5042,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 11 times",
+      "what": "the same four moves \"KJKK\" 11 times",
       "x": 5486,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBCB\" 5 times",
+      "what": "the same four moves \"KKCK\" 5 times",
       "x": 6839,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BCBB\" 5 times",
+      "what": "the same four moves \"KCKK\" 5 times",
       "x": 7261,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"CBBB\" 5 times",
+      "what": "the same four moves \"CKKK\" 5 times",
       "x": 7423,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 7 times",
+      "what": "the same four moves \"KFKK\" 7 times",
       "x": 9147,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBFB\" 6 times",
+      "what": "the same four moves \"KKFK\" 6 times",
       "x": 10478,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"FBBJ\" 4 times",
+      "what": "the same four moves \"FKKJ\" 4 times",
       "x": 10924,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "\"BBJ\" 3 times back to back",
+      "what": "\"KKJ\" 3 times back to back",
       "x": 11322,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -25160,11 +23480,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -25230,7 +23545,7 @@
    },
    {
     "layout": 7,
-    "str": "JJBBBJFBBBJBBVBBBCBBBJBBjjBJBFBBBVBBBJBBVBBBFBBVBBBJBBVBBBCBBBVBBBJBBVBBBFBBVBBBJBBBVBBBJBBVBBBJBBVBBBFBBVBBBBBBJBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKJKKjjKJKFKKKVKKKJKKVKKKFKKVKKKJKKVKKKCKKKVKKKJKKVKKKFKKVKKKJKKKVKKKJKKVKKKJKKVKKKFKKVKKKKKKJKKVK",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFFFFFFFFF",
     "flags": [
      {
@@ -25241,49 +23556,49 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 10 times",
+      "what": "the same four moves \"KKKJ\" 10 times",
       "x": 3478,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 9 times",
+      "what": "the same four moves \"KKJK\" 9 times",
       "x": 5059,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 9 times",
+      "what": "the same four moves \"KJKK\" 9 times",
       "x": 5481,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 7 times",
+      "what": "the same four moves \"JKKV\" 7 times",
       "x": 5570,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 13 times",
+      "what": "the same four moves \"KKVK\" 13 times",
       "x": 5765,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 12 times",
+      "what": "the same four moves \"KVKK\" 12 times",
       "x": 6194,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 12 times",
+      "what": "the same four moves \"VKKK\" 12 times",
       "x": 6431,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9159,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -25311,11 +23626,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -25381,7 +23691,7 @@
    },
    {
     "layout": 8,
-    "str": "JJBBBJFBBBJBBVBBBCBBBBJBjjBJBFBBCBBBBFBBJBBJBBJBBFBBJBBVBBBCBBBFBBJBBJBBBJBBFBBCBBBVBBJBBBFBBJBBJBBJBBBFBBBBJBBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKKJKjjKJKFKKCKKKKFKKJKKJKKJKKFKKJKKVKKKCKKKFKKJKKJKKKJKKFKKCKKKVKKJKKKFKKJKKJKKJKKKFKKKKJKKKVK",
     "strip": "RFFFFFFTFFFFTFFFFFFFFFFFFTFFFF",
     "flags": [
      {
@@ -25392,85 +23702,85 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBB\" 5 times",
+      "what": "the same four moves \"JKKK\" 5 times",
       "x": 2179,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 5 times",
+      "what": "the same four moves \"KKKJ\" 5 times",
       "x": 3486,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 11 times",
+      "what": "the same four moves \"KKJK\" 11 times",
       "x": 5056,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 10 times",
+      "what": "the same four moves \"KJKK\" 10 times",
       "x": 5489,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 4 times",
+      "what": "the same four moves \"KKVK\" 4 times",
       "x": 5792,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBCB\" 4 times",
+      "what": "the same four moves \"KKCK\" 4 times",
       "x": 6870,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BCBB\" 4 times",
+      "what": "the same four moves \"KCKK\" 4 times",
       "x": 7292,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"CBBB\" 4 times",
+      "what": "the same four moves \"CKKK\" 4 times",
       "x": 7476,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 7 times",
+      "what": "the same four moves \"KFKK\" 7 times",
       "x": 9192,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBF\" 4 times",
+      "what": "the same four moves \"KKKF\" 4 times",
       "x": 10325,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBFB\" 6 times",
+      "what": "the same four moves \"KKFK\" 6 times",
       "x": 10507,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"FBBJ\" 4 times",
+      "what": "the same four moves \"FKKJ\" 4 times",
       "x": 10973,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "\"BBJ\" 3 times back to back",
+      "what": "\"KKJ\" 3 times back to back",
       "x": 11373,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "\"BBJ\" 3 times back to back",
+      "what": "\"KKJ\" 3 times back to back",
       "x": 24134,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -25493,11 +23803,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -25563,7 +23868,7 @@
    },
    {
     "layout": 9,
-    "str": "JJBBBJFBBBJBBVBBBCBBBBJBjjBJBFBBBJBBJBBFBBJBBBJBBVBBBJBBCBBBJBBJBBFBBJBBBJBBVBBBJBBJBBJBBBJBBFBBJBBJBBVBBBJBBBBBJBBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKKJKjjKJKFKKKJKKJKKFKKJKKKJKKVKKKJKKCKKKJKKJKKFKKJKKKJKKVKKKJKKJKKJKKKJKKFKKJKKJKKVKKKJKKKKKJKKKVK",
     "strip": "RFFFFFFTFFFFTFFFFFFFFFFFFFFFFR",
     "flags": [
      {
@@ -25574,67 +23879,67 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBB\" 6 times",
+      "what": "the same four moves \"JKKK\" 6 times",
       "x": 2188,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 12 times",
+      "what": "the same four moves \"KKKJ\" 12 times",
       "x": 3495,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 15 times",
+      "what": "the same four moves \"KKJK\" 15 times",
       "x": 5075,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 14 times",
+      "what": "the same four moves \"KJKK\" 14 times",
       "x": 5497,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 4 times",
+      "what": "the same four moves \"JKKV\" 4 times",
       "x": 5586,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 5 times",
+      "what": "the same four moves \"KKVK\" 5 times",
       "x": 5784,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 4 times",
+      "what": "the same four moves \"KVKK\" 4 times",
       "x": 6213,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 4 times",
+      "what": "the same four moves \"VKKK\" 4 times",
       "x": 6450,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9209,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBJ\" 4 times",
+      "what": "the same four moves \"JKKJ\" 4 times",
       "x": 10417,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "\"BBJ\" 3 times back to back",
+      "what": "\"KKJ\" 3 times back to back",
       "x": 21648,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -25657,11 +23962,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (15 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -25727,7 +24027,7 @@
    },
    {
     "layout": 10,
-    "str": "JJBBBJFBBBJBBVBBBCBBBBJBjjBJBFBBBJBBJBBFBBJBBBJBBVBBBJBBCBBBJBBJBBFBBJBBBJBBVBBBJBBJBBJBBBJBBFBBJBBJBBBVBBBJBBBBJBBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKKJKjjKJKFKKKJKKJKKFKKJKKKJKKVKKKJKKCKKKJKKJKKFKKJKKKJKKVKKKJKKJKKJKKKJKKFKKJKKJKKKVKKKJKKKKJKKKVK",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFFFFFFFFR",
     "flags": [
      {
@@ -25738,61 +24038,61 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBB\" 7 times",
+      "what": "the same four moves \"JKKK\" 7 times",
       "x": 2171,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 12 times",
+      "what": "the same four moves \"KKKJ\" 12 times",
       "x": 3488,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 15 times",
+      "what": "the same four moves \"KKJK\" 15 times",
       "x": 5056,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 14 times",
+      "what": "the same four moves \"KJKK\" 14 times",
       "x": 5489,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 5 times",
+      "what": "the same four moves \"KKVK\" 5 times",
       "x": 5790,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 4 times",
+      "what": "the same four moves \"KVKK\" 4 times",
       "x": 6212,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 4 times",
+      "what": "the same four moves \"VKKK\" 4 times",
       "x": 6456,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9221,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBJ\" 4 times",
+      "what": "the same four moves \"JKKJ\" 4 times",
       "x": 10404,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "\"BBJ\" 3 times back to back",
+      "what": "\"KKJ\" 3 times back to back",
       "x": 21685,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -25820,11 +24120,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -25890,7 +24185,7 @@
    },
    {
     "layout": 11,
-    "str": "JJBBBJFBBBJBBVBBBCBBBJBjBjBJBFBBBJBBJBBFBBJBBBJBBVBBBJBBCBBBJBBJBBFBBBJBBJBBVBBBJBBJBBBJBBJBBFBBJBBJBBBVBBBJBBBBBJBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKJKjKjKJKFKKKJKKJKKFKKJKKKJKKVKKKJKKCKKKJKKJKKFKKKJKKJKKVKKKJKKJKKKJKKJKKFKKJKKJKKKVKKKJKKKKKJKKVK",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFFFFFFFFR",
     "flags": [
      {
@@ -25901,61 +24196,61 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBB\" 5 times",
+      "what": "the same four moves \"JKKK\" 5 times",
       "x": 2180,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 12 times",
+      "what": "the same four moves \"KKKJ\" 12 times",
       "x": 3494,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 13 times",
+      "what": "the same four moves \"KKJK\" 13 times",
       "x": 5063,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 12 times",
+      "what": "the same four moves \"KJKK\" 12 times",
       "x": 5496,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 4 times",
+      "what": "the same four moves \"JKKV\" 4 times",
       "x": 5585,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 5 times",
+      "what": "the same four moves \"KKVK\" 5 times",
       "x": 5787,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 4 times",
+      "what": "the same four moves \"KVKK\" 4 times",
       "x": 6216,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 4 times",
+      "what": "the same four moves \"VKKK\" 4 times",
       "x": 6453,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9198,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBJ\" 6 times",
+      "what": "the same four moves \"JKKJ\" 6 times",
       "x": 10382,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -25983,11 +24278,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -26053,7 +24343,7 @@
    },
    {
     "layout": 12,
-    "str": "JJBBBJFBBBJBBVBBBCBBBBJBjjBJBFBBBVBBBJBBVBBBFBBVBBBJBBVBBBCBBBVBBBJBBVBBBFBBVBBBJBBBVBBBJBBVBBBJBBVBBBFBBVBBBBBBJBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKKJKjjKJKFKKKVKKKJKKVKKKFKKVKKKJKKVKKKCKKKVKKKJKKVKKKFKKVKKKJKKKVKKKJKKVKKKJKKVKKKFKKVKKKKKKJKKVK",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFFFFFFFFF",
     "flags": [
      {
@@ -26064,49 +24354,49 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 10 times",
+      "what": "the same four moves \"KKKJ\" 10 times",
       "x": 3474,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 9 times",
+      "what": "the same four moves \"KKJK\" 9 times",
       "x": 5062,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 8 times",
+      "what": "the same four moves \"KJKK\" 8 times",
       "x": 5482,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 7 times",
+      "what": "the same four moves \"JKKV\" 7 times",
       "x": 5560,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 13 times",
+      "what": "the same four moves \"KKVK\" 13 times",
       "x": 5766,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 12 times",
+      "what": "the same four moves \"KVKK\" 12 times",
       "x": 6188,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 12 times",
+      "what": "the same four moves \"VKKK\" 12 times",
       "x": 6432,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9192,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -26134,11 +24424,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -26204,7 +24489,7 @@
    },
    {
     "layout": 13,
-    "str": "JJBBBJFBBBJBBVBBBCBBBBJBjjBJBFBBBJBBJBBFBBJBBBJBBVBBBJBBCBBBJBBJBBFBBJBBBJBBVBBBJBBJBBBJBBJBBFBBJBBJBBVBBBJBBBBBJBBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKKJKjjKJKFKKKJKKJKKFKKJKKKJKKVKKKJKKCKKKJKKJKKFKKJKKKJKKVKKKJKKJKKKJKKJKKFKKJKKJKKVKKKJKKKKKJKKKVK",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFFFFFFFFR",
     "flags": [
      {
@@ -26215,61 +24500,61 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBB\" 6 times",
+      "what": "the same four moves \"JKKK\" 6 times",
       "x": 2175,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 12 times",
+      "what": "the same four moves \"KKKJ\" 12 times",
       "x": 3483,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 14 times",
+      "what": "the same four moves \"KKJK\" 14 times",
       "x": 5061,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 13 times",
+      "what": "the same four moves \"KJKK\" 13 times",
       "x": 5483,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 4 times",
+      "what": "the same four moves \"JKKV\" 4 times",
       "x": 5572,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 5 times",
+      "what": "the same four moves \"KKVK\" 5 times",
       "x": 5775,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 4 times",
+      "what": "the same four moves \"KVKK\" 4 times",
       "x": 6197,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 4 times",
+      "what": "the same four moves \"VKKK\" 4 times",
       "x": 6441,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9175,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBJ\" 5 times",
+      "what": "the same four moves \"JKKJ\" 5 times",
       "x": 10368,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -26297,11 +24582,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -26367,7 +24647,7 @@
    },
    {
     "layout": 14,
-    "str": "JJBBBJFBBBJBBVBBBCBBBBJBjjBJBFBBBVBBBJBBVBBBFBBVBBBJBBVBBBCBBBVBBBJBBVBBBFBBVBBBJBBVBBBJBBBVBBBJBBVBBBFBBVBBBBBJBBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKKJKjjKJKFKKKVKKKJKKVKKKFKKVKKKJKKVKKKCKKKVKKKJKKVKKKFKKVKKKJKKVKKKJKKKVKKKJKKVKKKFKKVKKKKKJKKKVK",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFFFFFFFFF",
     "flags": [
      {
@@ -26378,55 +24658,55 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 10 times",
+      "what": "the same four moves \"KKKJ\" 10 times",
       "x": 3497,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 9 times",
+      "what": "the same four moves \"KKJK\" 9 times",
       "x": 5076,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 8 times",
+      "what": "the same four moves \"KJKK\" 8 times",
       "x": 5498,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 6 times",
+      "what": "the same four moves \"JKKV\" 6 times",
       "x": 5587,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 13 times",
+      "what": "the same four moves \"KKVK\" 13 times",
       "x": 5789,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 12 times",
+      "what": "the same four moves \"KVKK\" 12 times",
       "x": 6218,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 12 times",
+      "what": "the same four moves \"VKKK\" 12 times",
       "x": 6455,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9200,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBV\" 4 times",
+      "what": "the same four moves \"KKKV\" 4 times",
       "x": 9479,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -26454,11 +24734,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -26524,7 +24799,7 @@
    },
    {
     "layout": 15,
-    "str": "JJBBBJFBBBJBBVBBBCBBBJBBjjBJBFBBBVBBBJBBVBBBFBBVBBBJBBVBBBCBBBVBBBJBBVBBBFBBVBBBJBBVBBBJBBBVBBBJBBVBBBFBBVBBBBBJBBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKJKKjjKJKFKKKVKKKJKKVKKKFKKVKKKJKKVKKKCKKKVKKKJKKVKKKFKKVKKKJKKVKKKJKKKVKKKJKKVKKKFKKVKKKKKJKKKVK",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFFFFFFFFF",
     "flags": [
      {
@@ -26535,55 +24810,55 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 10 times",
+      "what": "the same four moves \"KKKJ\" 10 times",
       "x": 3484,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 9 times",
+      "what": "the same four moves \"KKJK\" 9 times",
       "x": 5061,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 9 times",
+      "what": "the same four moves \"KJKK\" 9 times",
       "x": 5483,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBV\" 6 times",
+      "what": "the same four moves \"JKKV\" 6 times",
       "x": 5572,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 13 times",
+      "what": "the same four moves \"KKVK\" 13 times",
       "x": 5788,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 12 times",
+      "what": "the same four moves \"KVKK\" 12 times",
       "x": 6210,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 12 times",
+      "what": "the same four moves \"VKKK\" 12 times",
       "x": 6454,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9188,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBV\" 4 times",
+      "what": "the same four moves \"KKKV\" 4 times",
       "x": 9486,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -26611,11 +24886,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -26681,7 +24951,7 @@
    },
    {
     "layout": 16,
-    "str": "JJBBBJFBBBJBBVBBBCBBBJBBjjBJBFBBBJBBJBBFBBJBBJBBBVBBBJBBCBBBJBBJBBFBBJBBBJBBVBBBJBBJBBJBBJBBBFBBJBBJBBVBBBJBBBBBJBBBVB",
+    "str": "JJKKKJFKKKJKKVKKKCKKKJKKjjKJKFKKKJKKJKKFKKJKKJKKKVKKKJKKCKKKJKKJKKFKKJKKKJKKVKKKJKKJKKJKKJKKKFKKJKKJKKVKKKJKKKKKJKKKVK",
     "strip": "RFFFFFFTFFFFFFFFFFFFFFFFFFFFFR",
     "flags": [
      {
@@ -26692,61 +24962,61 @@
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBB\" 6 times",
+      "what": "the same four moves \"JKKK\" 6 times",
       "x": 2186,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBBJ\" 10 times",
+      "what": "the same four moves \"KKKJ\" 10 times",
       "x": 3490,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBJB\" 13 times",
+      "what": "the same four moves \"KKJK\" 13 times",
       "x": 5076,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BJBB\" 13 times",
+      "what": "the same four moves \"KJKK\" 13 times",
       "x": 5496,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BBVB\" 5 times",
+      "what": "the same four moves \"KKVK\" 5 times",
       "x": 5772,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BVBB\" 4 times",
+      "what": "the same four moves \"KVKK\" 4 times",
       "x": 6216,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"VBBB\" 4 times",
+      "what": "the same four moves \"VKKK\" 4 times",
       "x": 6438,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"BFBB\" 4 times",
+      "what": "the same four moves \"KFKK\" 4 times",
       "x": 9197,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "the same four moves \"JBBJ\" 6 times",
+      "what": "the same four moves \"JKKJ\" 6 times",
       "x": 10379,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
      {
       "rule": "repeat",
-      "what": "\"BBJ\" 4 times back to back",
+      "what": "\"KKJ\" 4 times back to back",
       "x": 21659,
       "source": "STAGE-RULES §0.3, research §7 (no beat repeated to fill time)"
      },
@@ -26774,11 +25044,6 @@
       "rule": "one tempo",
       "what": "only ever asks to hurry, never to wait",
       "source": "STAGE-RULES §0b.3 (hurry and patience)"
-     },
-     {
-      "rule": "nothing new",
-      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
-      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
      }
     ],
     "costs": {
@@ -27681,12 +25946,6 @@
      },
      {
       "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 6406,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.9 s of walking with nothing to do",
       "x": 7237,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -27705,19 +25964,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.7 s of walking with nothing to do",
-      "x": 9121,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
+      "what": "2.9 s of walking with nothing to do",
       "x": 10115,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "4.5 s of walking with nothing to do",
+      "what": "3.1 s of walking with nothing to do",
       "x": 10803,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -27729,19 +25982,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.7 s of walking with nothing to do",
-      "x": 15091,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
+      "what": "3.6 s of walking with nothing to do",
       "x": 16192,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
+      "what": "3.3 s of walking with nothing to do",
       "x": 20695,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -27958,12 +26205,6 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.5 s of walking with nothing to do",
-      "x": 3179,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.3 s of walking with nothing to do",
       "x": 3553,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -27978,12 +26219,6 @@
       "rule": "dead walk",
       "what": "2.5 s of walking with nothing to do",
       "x": 4873,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 6289,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -28006,19 +26241,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.9 s of walking with nothing to do",
-      "x": 8982,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
+      "what": "3 s of walking with nothing to do",
       "x": 10148,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "4.6 s of walking with nothing to do",
+      "what": "3.1 s of walking with nothing to do",
       "x": 10846,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -28030,25 +26259,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.7 s of walking with nothing to do",
-      "x": 14970,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
+      "what": "3.4 s of walking with nothing to do",
       "x": 16023,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
-      "x": 21120,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.7 s of walking with nothing to do",
+      "what": "3.5 s of walking with nothing to do",
       "x": 22558,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -28297,12 +26514,6 @@
      },
      {
       "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 6398,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.7 s of walking with nothing to do",
       "x": 7252,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -28321,19 +26532,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.8 s of walking with nothing to do",
-      "x": 9170,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.1 s of walking with nothing to do",
+      "what": "3.3 s of walking with nothing to do",
       "x": 10224,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "4.6 s of walking with nothing to do",
+      "what": "3 s of walking with nothing to do",
       "x": 11016,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -28345,13 +26550,7 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.6 s of walking with nothing to do",
-      "x": 15260,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
+      "what": "3.7 s of walking with nothing to do",
       "x": 16345,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -28780,12 +26979,6 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.7 s of walking with nothing to do",
-      "x": 3401,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.3 s of walking with nothing to do",
       "x": 3770,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -28800,12 +26993,6 @@
       "rule": "dead walk",
       "what": "2.6 s of walking with nothing to do",
       "x": 5126,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 6518,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -28828,19 +27015,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.6 s of walking with nothing to do",
-      "x": 9289,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
+      "what": "2.9 s of walking with nothing to do",
       "x": 10249,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "4.5 s of walking with nothing to do",
+      "what": "3.2 s of walking with nothing to do",
       "x": 10918,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -28852,13 +27033,7 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.8 s of walking with nothing to do",
-      "x": 15144,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
+      "what": "3.5 s of walking with nothing to do",
       "x": 16241,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -30007,12 +28182,6 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.5 s of walking with nothing to do",
-      "x": 3326,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.3 s of walking with nothing to do",
       "x": 3687,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -30027,12 +28196,6 @@
       "rule": "dead walk",
       "what": "2.6 s of walking with nothing to do",
       "x": 5054,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
-      "x": 6534,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -30055,19 +28218,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.7 s of walking with nothing to do",
-      "x": 9291,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
+      "what": "2.9 s of walking with nothing to do",
       "x": 10312,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "4.7 s of walking with nothing to do",
+      "what": "3.3 s of walking with nothing to do",
       "x": 10985,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -30075,12 +28232,6 @@
       "rule": "dead walk",
       "what": "3.6 s of walking with nothing to do",
       "x": 11771,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "2.6 s of walking with nothing to do",
-      "x": 15208,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -30298,12 +28449,6 @@
      },
      {
       "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
-      "x": 6220,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.7 s of walking with nothing to do",
       "x": 7088,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -30322,19 +28467,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.8 s of walking with nothing to do",
-      "x": 8900,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.9 s of walking with nothing to do",
+      "what": "2.7 s of walking with nothing to do",
       "x": 9950,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "4.7 s of walking with nothing to do",
+      "what": "3.6 s of walking with nothing to do",
       "x": 10627,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -30346,13 +28485,7 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.6 s of walking with nothing to do",
-      "x": 14833,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
+      "what": "3.4 s of walking with nothing to do",
       "x": 15910,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -30568,12 +28701,6 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.6 s of walking with nothing to do",
-      "x": 3259,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
       "what": "3.3 s of walking with nothing to do",
       "x": 3630,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
@@ -30588,12 +28715,6 @@
       "rule": "dead walk",
       "what": "2.7 s of walking with nothing to do",
       "x": 4955,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "3.8 s of walking with nothing to do",
-      "x": 6439,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
@@ -30616,19 +28737,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.7 s of walking with nothing to do",
-      "x": 9221,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4.1 s of walking with nothing to do",
+      "what": "3.1 s of walking with nothing to do",
       "x": 10149,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "4.6 s of walking with nothing to do",
+      "what": "3.2 s of walking with nothing to do",
       "x": 10874,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
@@ -30640,19 +28755,13 @@
      },
      {
       "rule": "dead walk",
-      "what": "2.8 s of walking with nothing to do",
-      "x": 15083,
-      "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
-     },
-     {
-      "rule": "dead walk",
-      "what": "4 s of walking with nothing to do",
+      "what": "3.7 s of walking with nothing to do",
       "x": 16171,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },
      {
       "rule": "dead walk",
-      "what": "3.6 s of walking with nothing to do",
+      "what": "2.8 s of walking with nothing to do",
       "x": 20782,
       "source": "research 2026-11-04 §1 (no dead walk over 2.5 s)"
      },

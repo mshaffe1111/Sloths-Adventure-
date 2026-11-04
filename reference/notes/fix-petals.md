@@ -1,20 +1,13 @@
 # fix-petals: helper notes
 
-## Now (2026-11-04 3:53 AM ET): stopped for the night (the lead: team stops at 5:00 AM ET, restarts when Matt wakes)
-fun-validator (PLAN-TO-80 A.1; R-150.1 grown into the validator, R-150.4). Last commit bd33d386 on fun-validator, base contains origin/main
-1dc39cd7 + ccr-0d59a91c 2c1f6b46. The lead OK'd at 2:34 AM ET.
-Done, pushed: tools/validate/ (core, play, mechanics, evaluate, world1, mechtable, stills.mjs, chaseshot.mjs; validate.test.ts 13 fixtures
-+ world1.test.ts 6 calibration checks, 19/19 pass); reference/qa-reports/validator/ (9 stage pages, index.html, mechanics-world1.md =
-R-150.4, world1.json, 236 stills); reference/methods/validator.md (new method).
-The quality supervisor (session_01FhBbYNn4i5tFfFZiFroKoi): plan PASS with additions (all in); 1-1 page: 5 required fixes (all in);
-accepted my correction (1-1's unconfirmed jumps are double jumps, U, not mushroom walls). Asked, and done: 1-8's chase on screen (0-5%
-of its frames: "hazard unseen"; no hand-placed still, it can't show a moving collapse), the "structure, not delight" line on the overview.
-NEXT at restart: (1) ReadNotifications; re-merge origin/main + ccr before anything (D23); (2) the supervisor's full review of 1-2..1-9 and
-the overview, fix what it finds; (3) the bot's mushroom-wall / double-jump move is bot-fix's (raised by the supervisor): when it lands,
-re-run so 1-1/1-4/1-5/1-7's play checks can be judged; (4) the final report (Method used / Lessons applied / Method update / Polish check,
-ids pasted after the push); (5) later: the validator as a gate (flags may only shrink).
-Known limits (named on the pages): bot rescues on 1-1/1-4/1-5/1-7; stills placed on the ledge under the flag's x nearest the floor (Pokey
-can sit inside a bush in 1-7, Dot's story line sometimes stays up); finish piece kinds are the builder's coarse kinds.
+## Now (2026-11-04 8:16 AM ET): round 2 (the lead's restart list, 7:47 AM ET)
+(1) Re-merged ccr into fun-validator (f89b87a5). (2) The bot's mushroom bounce fixed (firsttimer.ts bounceJump + aim steer, bounceUp
+miss rule, the double carried from 1-1's hint DOUBLE_TAUGHT; route.ts findRoute double for the bot's guide route); fixtures in
+firstTimerBot.test.ts fail on the old bot (0/5 up without a rescue) and pass on the new. 5-9's KID_RUNS_59 re-measured 8,3,3,5,7,5
+(median still 5: the Easy goal is unchanged). (3) The supervisor's REDOs: dead walks less climb/rope time; the goal-route line reworded;
+K for the chase; branch verdict "not judged"; score.ts (hazards matter by share bitten; new = needed and biting); eagle "warned?";
+look.ts "looks the same" grid. NEXT: World 1 before/after bot table (Worlds 1-10 baselines in /tmp/claude-0/all-*.jsonl), re-run
+world1.ts + stills, 1-2's 0% clumsy jumps looked at on stills, gates, push, REDOs to the supervisor, final report.
 
 ## The job, as briefed
 1. R-150.4 mechanics-in-use table, 1-1..1-9 and the boss: what the player meets (stage data + a bot run) against what the engine has.

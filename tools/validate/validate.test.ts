@@ -11,7 +11,9 @@ import { newWatch } from '../../src/game/watcher.ts';
 import { newChase } from '../../src/game/chase.ts';
 import type { Platform } from '../../src/game/types.ts';
 import { cosine, deadWalks, fromStage, grams, moveOf, moveString, pacing, paceFlags, repeats, SIMILAR_MAX, type Step } from './core.ts';
-import { branchOutrunWith, cameraOn, chaseOutrunWith, eagleOutrunWith } from './play.ts';
+import { branchOutrunWith, cameraOn, chaseOutrunWith, eagleOutrunWith, towardShrine } from './play.ts';
+import { hazardsScore, newScore, newThatCounts } from './score.ts';
+import { lookAlike, lookOf } from './look.ts';
 import type { Stage } from '../inspect/stages.ts';
 
 const G = 580;
@@ -34,7 +36,7 @@ test('every beat the inspector names maps to its move letter', () => {
   const cases: Array<[string, string, string]> = [
     ['J', 'jump over a gap', 'J'], ['J', 'big jump up', 'J'], ['J', 'jump the level check cannot confirm (probably a puzzle piece)', 'Q'], ['h', 'small hop', 'j'], ['h', 'hop up a step', 'h'], ['J', 'mushroom bounce', 'M'],
     ['J', 'hop onto a moving log or platform', 'X'], ['V', 'grab a trunk or vine and climb', 'C'], ['V', 'swing on a liana', 'V'], ['V', 'shimmy along a rope', 'R'],
-    ['Z', 'crumbling branch', 'B'], ['Z', 'the branch collapses behind him: keep running', 'B'], ['Z', 'wind gust', 'W'], ['Z', 'sticky web slows him', 'S'],
+    ['Z', 'crumbling branch', 'B'], ['Z', 'the branch collapses behind him: keep running', 'K'], ['Z', 'wind gust', 'W'], ['Z', 'sticky web slows him', 'S'],
     ['P', 'puzzle room (seesaw)', 'P'], ['C', 'snake', 'F'], ['Z', 'eagle sweep: duck into a bush', 'E'], ['Z', 'darkness: wake the glowworms, find the way', 'D'],
   ];
   for (const [letter, what, want] of cases) assert.equal(moveOf({ letter: letter as never, what, count: 1 }), want, what);
@@ -48,6 +50,17 @@ test('dead walk: a 4 s stretch with no move is flagged, 2 s stretches are not', 
   const samples = [{ x: 0, y: G, base: 0 }, { x: 2000, y: G, base: 7 }] as never;
   assert.equal(deadWalks(bad, 6.5, samples).length, 1);
   assert.equal(deadWalks(good, 6, samples).length, 0);
+});
+
+test('dead walk: time climbing a trunk or on a rope is not walking (1-4: its climbs read as 3.7 s dead walks)', () => {
+  const two: Step[] = [{ m: 'C', t: 1, x: 300, y: G, what: '' }, { m: 'C', t: 5, x: 400, y: G - 300, what: '' }];
+  const seg = (kind: string) => ({ kind }) as never;
+  // (4 s between the two climbs: 3 of them up the trunk, 1 walking)
+  const climbed = [{ x: 300, y: G, base: 0, seg: seg('walk') }, { x: 300, y: G, base: 1, seg: seg('climb') }, { x: 300, y: G - 300, base: 4, seg: seg('walk') }, { x: 400, y: G - 300, base: 5, seg: seg('walk') }, { x: 500, y: G - 300, base: 6, seg: seg('walk') }] as never;
+  assert.equal(deadWalks(two, 6, climbed).filter((d) => d.t0 === 1).length, 0, 'a climb is not a dead walk');
+  // (the same 4 s all on foot)
+  const walked = [{ x: 300, y: G, base: 0, seg: seg('walk') }, { x: 1500, y: G, base: 6, seg: seg('walk') }] as never;
+  assert.equal(deadWalks(two, 6, walked).filter((d) => d.t0 === 1).length, 1, 'the same gap walked is');
 });
 
 test('dead walk, in the real engine: a 1,500 px flat walk to the shrine reads as dead; gaps every 300 px do not', () => {
@@ -93,8 +106,8 @@ test('pacing: a dense 5 s is tight, an empty 5 s a rest, a slow start an intro; 
 });
 
 // ---- breaking branches ----
-const branchWorld = (crumble: number | undefined, w: number) => () => {
-  const ps: Platform[] = [floor(0, 600, 1, 412)];
+const branchWorld = (crumble: number | undefined, w: number, more: Platform[] = []) => () => {
+  const ps: Platform[] = [floor(0, 600, 1, 412), ...more];
   for (let k = 0; k < 4; k++) ps.push({ id: 10 + k, x: 680 + k * (w + 80), y: 412, width: w, height: 24, type: 'fragile', style: 'branch', ...(crumble !== undefined ? { crumbleAfter: crumble } : {}) } as Platform);
   ps.push(floor(680 + 4 * (w + 80), 680 + 4 * (w + 80) + 800, 20, 412));
   ps.push({ ...floor(0, 6000, 30, 900), height: 50 });
@@ -107,6 +120,15 @@ test('branches: a run of today\'s 1.1 s branches is outrun by holding right; sna
   const twigs = branchOutrunWith(branchWorld(0.15, 260));
   assert.equal(twigs[0].outrun, false, JSON.stringify(twigs[0]));
   assert.ok(twigs[0].underHim > 0);
+  assert.equal(today[0].verdict, 'outrun');
+  assert.equal(twigs[0].verdict, 'bites');
+});
+
+test('branches: a run holding right never gets across, with nothing giving way, is "not judged", never "bites" (1-6\'s label)', () => {
+  // (a wall on the first branch, 400 px tall: holding right stops at it, before anything breaks under him)
+  const walled = branchOutrunWith(branchWorld(undefined, 180, [{ id: 40, x: 760, y: 12, width: 60, height: 400, type: 'solid', style: 'moss_stone' } as Platform]));
+  assert.equal(walled[0].underHim, 0, JSON.stringify(walled[0]));
+  assert.equal(walled[0].verdict, 'not judged', JSON.stringify(walled[0]));
 });
 
 // ---- the eagle ----
@@ -121,6 +143,15 @@ test('eagle: a short stretch with a long calm is outrun by holding right; a long
   const long = eagleOutrunWith(eagleWorld({ x0: 400, x1: 8000, calm: [2, 3] }));
   assert.equal(long!.zones[0].outrun, false, JSON.stringify(long!.zones[0]));
   assert.ok(long!.zones[0].hits > 0);
+});
+
+test('eagle: a hit after the 2 s screech reads as warned; a 0.1 s screech (no half second of shadow before the sweep) does not', () => {
+  const fair = eagleOutrunWith(eagleWorld({ x0: 400, x1: 8000, calm: [2, 3] }));
+  const fl = fair!.zones[0].hitLeads;
+  assert.ok(fl.length > 0 && fl.every((h) => h.warned), JSON.stringify(fl));
+  const sudden = eagleOutrunWith(eagleWorld({ x0: 400, x1: 8000, calm: [2, 3], warn: 0.1 }));
+  const sl = sudden!.zones[0].hitLeads;
+  assert.ok(sl.length > 0 && sl.some((h) => !h.warned), JSON.stringify(sl));
 });
 
 // ---- the chase ----
@@ -185,4 +216,50 @@ test('tempo: breaking branches are hurry, the eagle and waits are patience, a pl
   assert.equal(tempoOf({ m: 'E', t: 0, x: 0, y: 0, what: 'eagle sweep: duck into a bush' }), 'patience');
   assert.equal(tempoOf({ m: 'P', t: 0, x: 0, y: 0, what: 'stand still: the fern unrolls' }), 'patience');
   assert.equal(tempoOf({ m: 'J', t: 0, x: 0, y: 0, what: 'jump over a gap' }), null);
+});
+
+// ---- the score's hazard and "something new" rules (score.ts; the quality supervisor's review, 11-04) ----
+test('hazards matter: a stage whose only hazard is outrun on every run scores 0 (1-5 read 5); one that bites on all scores 10', () => {
+  assert.equal(hazardsScore(['breaking'], [{ kind: 'breaking', bite: 0 }]), 0);
+  assert.equal(hazardsScore(['breaking'], [{ kind: 'breaking', bite: 1 }]), 10);
+  // (an unseen chase, 1-8: bites on none)
+  assert.equal(hazardsScore(['chase'], [{ kind: 'chase', bite: 0 }]), 0);
+  // (no hazard at all: 0, no free points; hazards none of whose runs could be judged: left out)
+  assert.equal(hazardsScore([], []), 0);
+  assert.equal(hazardsScore(['breaking'], [{ kind: 'breaking', bite: null }]), null);
+  // (the eagle hurting on 4 of 10 stretches: 4)
+  assert.equal(hazardsScore(['eagle'], [{ kind: 'eagle', bite: 0.4 }]), 4);
+});
+
+test('something new: an outrun breaking branch the way to the shrine passes under is not new (1-5 read 10); one it needs and that bites is', () => {
+  const adds = { moves: ['B'], pairs: ['branches+vines', 'jump+branches'], grams: 2 };
+  // (outrun, and not on the shortest way to the shrine)
+  assert.equal(newScore(adds, 'MJJUjC', new Set(['breaking']), ['breaking']), 0);
+  // (outrun, though on the way)
+  assert.equal(newScore(adds, 'MJBJUjC', new Set(['breaking']), ['breaking']), 0);
+  // (on the way and biting)
+  assert.equal(newScore(adds, 'MJBJUjC', new Set(), ['breaking']), 10);
+  // (a new non-hazard move the way needs still counts beside a dead hazard)
+  assert.equal(newScore({ moves: ['B', 'R'], pairs: [], grams: 0 }, 'JRBJ', new Set(['breaking']), ['breaking']), 10);
+  assert.deepEqual(newThatCounts(adds, 'MJBJ', new Set(['breaking']), ['breaking']), { moves: [], pairs: [] });
+});
+
+// ---- looks the same (look.ts; the supervisor: 1-3 and 1-7 read 14% and 10% like 1-1 by moves while built of the same unit) ----
+test('looks the same: two stages built of the same pieces and art read alike whatever their moves; different art reads apart', () => {
+  const mk = (pieces: Array<[string, number]>, plats: Array<[string, string, number]>) => ({
+    platforms: plats.map(([type, style, width], i) => ({ id: i, x: i * 300, y: G, width, height: 40, type, style })),
+    meta: { pieces: pieces.map(([k, w], i) => ({ k, x0: i * 1000, x1: i * 1000 + w })) },
+  }) as unknown as Stage;
+  const a = lookOf(mk([['highrun', 900], ['rest', 300]], [['bouncy', '', 70], ['solid', 'branch', 200], ['solid', 'moss_stone', 600]]));
+  const b = lookOf(mk([['highrun', 800], ['rest', 400]], [['bouncy', '', 70], ['solid', 'branch', 220], ['solid', 'moss_stone', 500]]));
+  const c = lookOf(mk([['vines', 900], ['stumps', 300]], [['solid', 'log', 600], ['moving', 'raft', 200]]));
+  assert.ok(lookAlike(a, b) > 0.9, `same unit: ${lookAlike(a, b)}`);
+  assert.ok(lookAlike(a, c) < 0.2, `different: ${lookAlike(a, c)}`);
+});
+
+test('clumsy thumb: only jumps toward the shrine count against the floor (1-2\'s 0% jumps were hops back the way he came)', () => {
+  const tries = [{ x: 3262, dir: -1 }, { x: 3262, dir: -1 }, { x: 3000, dir: 1 }, { x: 5000, dir: -1 }];
+  const t = towardShrine(tries, 4000);
+  assert.deepEqual(t.on.map((q) => q.x), [3000, 5000]);
+  assert.equal(t.back, 2);
 });

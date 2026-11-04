@@ -1,6 +1,6 @@
 {
- "base": "1e9cc5f6 fun-validator: world1.ts (every check, every layout, one page",
- "made": "2026-11-04 3:12 AM ET",
+ "base": "f89b87a5 Merge remote-tracking branch 'origin/ccr-0d59a91c-oy3imz' int",
+ "made": "2026-11-04 9:00 AM ET",
  "layouts": 16,
  "rows": [
   {
@@ -219,14 +219,14 @@
     "liana": "0/0/0",
     "trunk": "0/0/0",
     "rope": "0/0/0",
-    "mushroom": "11/20/12",
+    "mushroom": "16/20/13",
     "breaking": "0/0/0",
     "bush": "0/0/0",
     "push": "0/0/0",
     "fights": "0/0/0",
     "eagleHits": "0/0/0"
    },
-   "bot": "shrine 214 s, 10 rescues; shrine 319 s, 21 rescues; shrine 231 s, 11 rescues"
+   "bot": "shrine 209 s, 3 rescues; shrine 241 s, 8 rescues; shrine 210 s, 4 rescues"
   },
   {
    "id": "1-2",
@@ -444,14 +444,14 @@
     "liana": "0/0/0",
     "trunk": "0/0/0",
     "rope": "0/0/0",
-    "mushroom": "7/26/8",
+    "mushroom": "5/23/8",
     "breaking": "0/0/0",
     "bush": "0/0/0",
     "push": "0/0/0",
     "fights": "0/0/0",
     "eagleHits": "0/0/0"
    },
-   "bot": "shrine 184 s, 1 rescues; shrine 258 s, 9 rescues; shrine 182 s, 1 rescues"
+   "bot": "sealed door 182 s, 2 rescues; shrine 189 s, 3 rescues; sealed door 190 s, 2 rescues"
   },
   {
    "id": "1-3",
@@ -669,14 +669,14 @@
     "liana": "0/0/0",
     "trunk": "0/0/0",
     "rope": "0/0/0",
-    "mushroom": "7/1/6",
+    "mushroom": "8/3/9",
     "breaking": "0/0/0",
     "bush": "0/0/0",
     "push": "0/0/0",
-    "fights": "15/19/4",
+    "fights": "16/18/6",
     "eagleHits": "0/0/0"
    },
-   "bot": "sealed door 185 s, 7 rescues; shrine 134 s, 0 rescues; sealed door 166 s, 6 rescues"
+   "bot": "shrine 132 s, 0 rescues; shrine 130 s, 0 rescues; sealed door 127 s, 0 rescues"
   },
   {
    "id": "1-4",
@@ -895,16 +895,16 @@
    ],
    "used": {
     "liana": "0/0/0",
-    "trunk": "89/56/33",
-    "rope": "13/14/3",
-    "mushroom": "0/1/0",
+    "trunk": "89/69/93",
+    "rope": "11/13/11",
+    "mushroom": "0/1/1",
     "breaking": "0/0/0",
     "bush": "0/0/0",
     "push": "0/0/0",
-    "fights": "0/3/0",
+    "fights": "0/3/1",
     "eagleHits": "0/0/0"
    },
-   "bot": "time 360 s, 11 rescues; shrine 298 s, 12 rescues; shrine 141 s, 7 rescues"
+   "bot": "shrine 349 s, 11 rescues; shrine 325 s, 12 rescues; time 360 s, 13 rescues"
   },
   {
    "id": "1-5",
@@ -1127,16 +1127,16 @@
    ],
    "used": {
     "liana": "0/0/0",
-    "trunk": "1/1/0",
+    "trunk": "2/1/0",
     "rope": "0/0/0",
-    "mushroom": "11/12/1",
+    "mushroom": "18/17/1",
     "breaking": "0/0/0",
     "bush": "0/0/0",
     "push": "0/0/0",
     "fights": "0/0/0",
     "eagleHits": "0/0/0"
    },
-   "bot": "sealed door 209 s, 10 rescues; sealed door 216 s, 11 rescues; sealed door 181 s, 8 rescues"
+   "bot": "sealed door 197 s, 2 rescues; sealed door 164 s, 1 rescues; sealed door 203 s, 10 rescues"
   },
   {
    "id": "1-6",
@@ -1358,17 +1358,17 @@
     "branches+vines"
    ],
    "used": {
-    "liana": "18/24/54",
-    "trunk": "0/0/0",
+    "liana": "32/39/46",
+    "trunk": "2/0/2",
     "rope": "0/0/0",
-    "mushroom": "23/0/0",
+    "mushroom": "6/2/0",
     "breaking": "0/0/0",
     "bush": "0/0/0",
-    "push": "2/2/3",
-    "fights": "2/0/1",
+    "push": "2/2/2",
+    "fights": "2/2/1",
     "eagleHits": "0/0/0"
    },
-   "bot": "shrine 335 s, 12 rescues; shrine 230 s, 5 rescues; shrine 328 s, 7 rescues"
+   "bot": "shrine 267 s, 6 rescues; shrine 268 s, 6 rescues; shrine 285 s, 7 rescues"
   },
   {
    "id": "1-7",
@@ -1588,15 +1588,15 @@
    "used": {
     "liana": "0/0/0",
     "trunk": "0/0/0",
-    "rope": "0/0/0",
-    "mushroom": "46/30/80",
+    "rope": "1/0/1",
+    "mushroom": "22/18/21",
     "breaking": "0/0/0",
     "bush": "4/3/2",
     "push": "0/0/0",
     "fights": "0/0/0",
     "eagleHits": "1/1/1"
    },
-   "bot": "time 360 s, 19 rescues; shrine 326 s, 18 rescues; time 360 s, 16 rescues"
+   "bot": "shrine 178 s, 0 rescues; shrine 160 s, 0 rescues; shrine 226 s, 2 rescues"
   },
   {
    "id": "1-8",
@@ -1818,7 +1818,7 @@
     "branches+vines"
    ],
    "used": {
-    "liana": "8/19/16",
+    "liana": "5/13/13",
     "trunk": "2/2/2",
     "rope": "0/0/0",
     "mushroom": "0/0/0",
@@ -1828,7 +1828,7 @@
     "fights": "0/0/0",
     "eagleHits": "0/0/0"
    },
-   "bot": "shrine 256 s, 4 rescues; shrine 231 s, 1 rescues; shrine 202 s, 2 rescues"
+   "bot": "shrine 137 s, 0 rescues; shrine 125 s, 0 rescues; shrine 128 s, 0 rescues"
   },
   {
    "id": "1-9",
@@ -2049,14 +2049,14 @@
     "liana": "0/0/0",
     "trunk": "0/0/0",
     "rope": "0/0/0",
-    "mushroom": "4/3/1",
+    "mushroom": "3/1/2",
     "breaking": "0/0/0",
     "bush": "0/0/0",
     "push": "0/0/0",
-    "fights": "15/11/9",
+    "fights": "14/12/12",
     "eagleHits": "0/0/0"
    },
-   "bot": "sealed door 132 s, 1 rescues; sealed door 116 s, 1 rescues; sealed door 117 s, 1 rescues"
+   "bot": "sealed door 140 s, 2 rescues; sealed door 157 s, 2 rescues; sealed door 130 s, 2 rescues"
   },
   {
    "id": "1-10",

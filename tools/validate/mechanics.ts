@@ -131,7 +131,7 @@ export function padding(b: Built): Padding | null {
 
 /** a move's tempo: hurry (keep going: breaking branches, the chase, a burst), patience (wait: the eagle, a still spot, a timed hazard) */
 export const tempoOf = (s: Step): 'hurry' | 'patience' | null =>
-  s.m === 'B' ? 'hurry' : s.m === 'E' || s.m === 'W' || s.m === 'Z' || /stand still|wait|time the|doze|ease/.test(s.what) ? 'patience' : null;
+  s.m === 'B' || s.m === 'K' ? 'hurry' : s.m === 'E' || s.m === 'W' || s.m === 'Z' || /stand still|wait|time the|doze|ease/.test(s.what) ? 'patience' : null;
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Enemy jobs (R-159; research §6: never within 150 px of a landing, about 35% of the stage enemy-free)
