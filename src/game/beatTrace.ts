@@ -20,9 +20,27 @@
  *   - The landing of every jump is checked to be on screen at take-off, upright and sideways (line 614), with the engine's own framing
  *     of a landing across a gap (cameraFollow.ts AHEAD, landingBox, heroBox).
  * The tracer is pure numbers: the stage builders (protoStage.ts) turn its ledges into banks, branches and stumps with World 1's art.
+ *
+ * USAGE (for every builder: w1-rhythm, w1-rhythm-b, w8-rope2):
+ *   const bpm = stageBpm(config);                     // the stage's music BPM (never type one)
+ *   const spec: NodeSpec = { bpm, x, y: G, bars: ['x...x...', 'x.....x.'], steps: [
+ *     { move: 'jump', dy: 0, surface: 'bank' }, { move: 'jump', dy: 40, surface: 'branch' }, ...] };   // one step per mark
+ *   const tr = traceNode(easy ? easyNode(spec) : spec); // throws if the pattern can't be danced (in the air at the next hit, no gap, a
+ *                                                       // face in the way, off screen, the same gap 4 times running)
+ *   tr.ledges   -> place each: 'apron' and 'bank' at ground level are banks, 'branch' a branch, 'stump' a block up from the ground,
+ *                  'crumble' a crumbling ledge (taught first); tr.gaps are the air between them (a soft or a real pit under each).
+ *   tr.checkpoint -> the node's flag (on its entrance apron). tr.x1 / tr.yOut -> where the next node starts.
+ *   hazardSpots(tr, ['skip', 'held', ...]) -> where a thorn, a snake or a pit's teeth catch the player who left the beat, and never one on
+ *                  it (checked in the real engine). deadWalks(tr) -> runs with no input over 2.5 s: fill each with a slope, a hop or a critter.
+ *   tr.density -> take-offs a second (intro 0.4, ramp ~0.8). checkTrace(tr, spec.steps) -> [] when every clumsy try holds.
+ * Marks: 'x' on the beat (even eighth), 'o' off-beat (odd eighth), 'h' a half-note (slot 0 or 4), '.' running. At ~130 BPM an eighth
+ * is 0.23 s: a jump (0.65 s in the air) needs 3 eighths before the next mark, a hop (0.44 s) 2, a double (1.05 s) 5.
+ * Limits measured: a flat jump's gap ~104 px, a double's ~200; a face (stump, bank) up to 70 px Normal / 42 Easy; a branch up to 90.
  */
 import { LAND_HALF, PHYS, TAKEOFF_SLACK, secondJumpV } from './physics.ts';
 import { AHEAD, heroBox, landingBox } from './cameraFollow.ts';
+import { stageMusic } from '../audio/scenes.ts';
+import { themeById } from '../audio/themes.ts';
 
 /** where a take-off falls in the bar */
 export type Hit = 'beat' | 'off' | 'half';
@@ -96,6 +114,29 @@ export interface Trace {
   yOut: number;
   /** a sure player's seconds through the node (on the beat) */
   seconds: number;
+  /** take-offs a second over the bars (the research's density: intro 0.4, ramp about 0.8) */
+  density: number;
+  /** the lines the player avoided by moving on the beat (research 11-04 line 59): builders put a hazard on them (see hazardSpots) */
+  avoided: Avoided[];
+  /** every try's path that the trace keeps safe (the planned one and the clumsy ones): nothing may be put on these */
+  safe: Array<Array<[number, number]>>;
+  /** runs with no input over a second (deadWalks: those over DEAD_WALK s, research 11-04 line 100, which a builder fills with a slope, a hop or a critter) */
+  walks: Array<{ x0: number; x1: number; y: number; s: number }>;
+}
+
+/**
+ * A line the beat made him avoid (research 11-04 line 59: "Wherever Ghost Pokey's timeline says Duck or Short-Hop, the generator places a
+ * hazard... along the alternate trajectory that Ghost Pokey avoided"):
+ *   early:  the jump taken a beat too soon (it comes down short, or its top is somewhere the on-beat run never goes);
+ *   skip:   the beat skipped: holding the way on with no jump, off the end of the ledge (or under the ledge above);
+ *   held:   a hop held into a full jump (its arc rises over the hop's);
+ *   tapped: a jump let go as a hop (it comes down short).
+ */
+export interface Avoided {
+  kind: 'early' | 'skip' | 'held' | 'tapped';
+  step: number;
+  /** his feet along it (px, the game's y) */
+  path: Array<[number, number]>;
 }
 
 /** the node's two flat, hazard-free aprons (research line 600) */
@@ -116,6 +157,13 @@ export const SLOP = 10;
 export const HOIST = 13;
 /** a gap narrower than this is no jump at all (px): the tracer refuses it */
 export const MIN_GAP = 40;
+/** a run with no input longer than this (s) is a dead walk (research 11-04 line 100; W1-REBUILD-PLAN.md) */
+export const DEAD_WALK = 2.5;
+/** a node fails when the same gap (move, height, width within GAP_SAME px) comes this many times in a row (research 11-04 line 585) */
+export const GAP_REPEAT = 4;
+export const GAP_SAME = 12;
+/** a hazard on an avoided line keeps this far (px) from Pokey's body on every safe try (his body: heroBox, 56 x 116) */
+export const HAZARD_CLEAR = 24;
 /** the narrowest ledge it places (px): a landing is never a sliver */
 export const MIN_LEDGE = 90;
 
@@ -306,6 +354,12 @@ export function traceNode(spec: NodeSpec): Trace {
   let cur: Ledge = { x0: spec.x, x1: gridX, y: spec.y, surface: 'apron', step: -1 };
   let x = gridX, y = spec.y, t = t0;
   let prevSlot = 0;
+  const safe: Array<Array<[number, number]>> = [];
+  const walks: Trace['walks'] = [];
+  /** what the avoided lines need, worked out once every ledge is known */
+  const later: Array<{ step: number; move: Move; from: number; y: number; edge: number; dy: number }> = [];
+  // (when and where his feet last came down: a run from there to the next take-off with no input is a walk)
+  let landT = 0, landX = spec.x;
   for (let i = 0; i < hits.length; i++) {
     const h = hits[i], st = spec.steps[i];
     // run on the ledge to the hit
@@ -313,6 +367,7 @@ export function traceNode(spec: NodeSpec): Trace {
     if (tHit < t - 1e-6) throw new Error(`step ${i + 1} (slot ${h.slot}): still in the air from the last take-off (slot ${prevSlot}), ${((t - tHit) * 1000).toFixed(0)} ms late`);
     x += runFor(PHYS.maxRun, tHit - t).dx;
     t = tHit;
+    if (tHit - landT > 1) walks.push({ x0: Math.round(landX), x1: Math.round(x), y, s: +(tHit - landT).toFixed(2) });
     const nominal = flight({ move: st.move, dy: st.dy, vx: PHYS.maxRun, hold });
     if (!nominal) throw new Error(`step ${i + 1}: a ${st.move} can't reach ${st.dy} px up`);
     // every try: take-off offsets, the slack's own early take-off, air shares, both slice sizes
@@ -341,6 +396,11 @@ export function traceNode(spec: NodeSpec): Trace {
     }
     const near = Math.round(shortX - INSIDE - SLOP);
     const ny = y - st.dy;
+    for (const tr of toTry) {
+      const from = Number.isNaN(tr.from) ? slackX : tr.from;
+      safe.push(tr.f.path.map(([px, py]) => [Math.round(from + px), Math.round(y - py)] as [number, number]));
+    }
+    later.push({ step: i, move: st.move, from: x, y, edge, dy: st.dy });
     // a rise: the late thumb's front stays short of the face, and every try's front clears its corner (a face is never bonked)
     const wall = st.surface === 'stump' || st.surface === 'bank';
     if (st.dy > 0 && wall) {
@@ -370,12 +430,20 @@ export function traceNode(spec: NodeSpec): Trace {
     }
     ledges.push(cur);
     if (near > cur.x1) gaps.push({ x0: cur.x1, x1: near, step: i });
+    // the same gap four times running is a pattern the thumb stops reading (research 11-04 line 585)
+    if (gaps.length >= GAP_REPEAT) {
+      const run = gaps.slice(-GAP_REPEAT);
+      const same = run.every((g, k) => k === 0 || (g.step === run[k - 1].step + 1 && spec.steps[g.step].move === spec.steps[run[0].step].move && spec.steps[g.step].dy === spec.steps[run[0].step].dy && Math.abs(g.x1 - g.x0 - (run[0].x1 - run[0].x0)) <= GAP_SAME));
+      if (same) throw new Error(`steps ${run[0].step + 1}-${i + 1}: the same gap (${run[0].x1 - run[0].x0} px, a ${st.move}, ${st.dy} px up) ${GAP_REPEAT} times in a row`);
+    }
     landings.push({ step: i, hit: h.hit, move: st.move, slot: h.slot, t: tHit, fromX: Math.round(x), fromY: y, toX: Math.round(x + nominal.dx), toY: ny, air: +nominal.t.toFixed(3), shortX: Math.round(shortX), longX: Math.round(longX), lateX: Math.round(lateX) });
     // on to the landing
     x += nominal.dx;
     y = ny;
     t += nominal.t;
     prevSlot = h.slot;
+    landT = t;
+    landX = x;
     cur = { x0: near, x1: Math.round(Math.max(longX, x)) + INSIDE, y, surface: st.surface, step: i };
   }
   // the exit apron: the last surface carries on flat for APRON px past where he would take off next
@@ -391,6 +459,15 @@ export function traceNode(spec: NodeSpec): Trace {
   if (cur.surface === 'bank' || cur.surface === 'branch') cur.x1 = out.x1;
   else ledges.push(out);
   t += APRON / PHYS.maxRun;
+  if (t - landT > 1) walks.push({ x0: Math.round(landX), x1: out.x1, y, s: +(t - landT).toFixed(2) });
+  const avoided: Avoided[] = [];
+  for (const a of later) {
+    // the beat taken a whole beat early; the beat skipped (off the end, holding the way on); a hop held; a jump let go
+    avoided.push({ kind: 'early', step: a.step, path: freePath(ledges, a.from - PHYS.maxRun * beat, a.y, a.move, hold) });
+    avoided.push({ kind: 'skip', step: a.step, path: freePath(ledges, a.edge, a.y, null, hold) });
+    if (a.move === 'hop') avoided.push({ kind: 'held', step: a.step, path: freePath(ledges, a.from, a.y, 'jump', hold) });
+    else avoided.push({ kind: 'tapped', step: a.step, path: freePath(ledges, a.from, a.y, 'hop', hold) });
+  }
   return {
     bpm: spec.bpm,
     beat,
@@ -402,8 +479,85 @@ export function traceNode(spec: NodeSpec): Trace {
     x1: out.x1,
     yOut: y,
     seconds: +t.toFixed(2),
+    density: +(hits.length / (spec.bars.length * 8 * eighth)).toFixed(3),
+    avoided,
+    safe,
+    walks,
   };
 }
+
+/**
+ * His feet's path from (x, y) holding the way on: a jump of `move`, or none (`null`: running off the end of the ledge he is on), until
+ * the feet come down onto a ledge or are 300 px under the lowest one (the engine's rules, as `flight`)
+ */
+function freePath(ledges: readonly Ledge[], x0: number, y0: number, move: Move | null, hold: number): Array<[number, number]> {
+  const lowest = Math.max(...ledges.map((q) => q.y));
+  let x = x0, y = y0, vx = PHYS.maxRun, vy = move ? -PHYS.jumpV * Math.sqrt(hold) : 0;
+  const held = move === 'hop' ? HOP_HOLD : move ? Infinity : 0;
+  let doubled = move !== 'double';
+  const path: Array<[number, number]> = [[Math.round(x), Math.round(y)]];
+  // (a run-off starts on the ledge: it is on the ground until past the ledge's end)
+  const start = move ? null : ledges.find((q) => x0 >= q.x0 - 1 && x0 <= q.x1 + 1 && Math.abs(q.y - y0) < 1);
+  for (let t = 0; t < 4; t += STEP) {
+    const on = Math.floor(t / FRAME + 1e-9) * FRAME < held;
+    if (!doubled && vy >= 0) {
+      vy = secondJumpV(vy, PHYS.doubleV);
+      doubled = true;
+    }
+    if (!on && vy < -PHYS.cutV) vy = -PHYS.cutV;
+    let g = vy < 0 ? PHYS.gravUp : PHYS.gravDown;
+    if (on && Math.abs(vy) < 90) g *= 0.72;
+    const prev = y;
+    if (!(start && x <= start.x1)) vy = Math.min(PHYS.maxFall, vy + g * STEP);
+    x += vx * STEP;
+    y += vy * STEP;
+    // (a face in the way stops him: he slides down it)
+    const face = ledges.find((q) => x + LAND_HALF >= q.x0 && x < q.x0 && y > q.y + 2 && prev > q.y - 200 && (q.surface === 'stump' || q.surface === 'bank' || q.surface === 'apron'));
+    if (face) x = face.x0 - LAND_HALF;
+    path.push([Math.round(x), Math.round(y)]);
+    if (vy > 0 && ledges.some((q) => x >= q.x0 && x <= q.x1 && prev <= q.y && y >= q.y && !(start && q === start && x <= start.x1))) break;
+    if (y > lowest + 300) break;
+  }
+  return path;
+}
+
+/** a place for a hazard on an avoided line: where his body's middle would be (x, y), and his feet there */
+export interface HazardSpot {
+  kind: Avoided['kind'];
+  step: number;
+  x: number;
+  y: number;
+  feetY: number;
+}
+/**
+ * Places on the avoided lines where a hazard (a thorn overhang, a snake, a pit's teeth) catches the player who took that line and never
+ * the one who moved on the beat: his body there (heroBox) is clear, by HAZARD_CLEAR px, of his body on every safe try and on every run
+ * along a ledge. Sampled every `every` px along each line.
+ */
+export function hazardSpots(tr: Trace, kinds: ReadonlyArray<Avoided['kind']> = ['early', 'skip', 'held', 'tapped'], every = 30): HazardSpot[] {
+  const C = HAZARD_CLEAR;
+  const boxes: Array<{ x0: number; x1: number; y0: number; y1: number }> = [];
+  for (const path of tr.safe) for (const [px, py] of path) { const b = heroBox(px, py); boxes.push(b); }
+  for (const q of tr.ledges) boxes.push({ x0: q.x0 - 28, x1: q.x1 + 28, y0: q.y - 116, y1: q.y + 12 });
+  const clear = (b: { x0: number; x1: number; y0: number; y1: number }) =>
+    boxes.every((o) => b.x1 + C <= o.x0 || b.x0 - C >= o.x1 || b.y1 + C <= o.y0 || b.y0 - C >= o.y1);
+  const out: HazardSpot[] = [];
+  for (const a of tr.avoided) {
+    if (!kinds.includes(a.kind)) continue;
+    let lastX = -Infinity;
+    for (const [px, py] of a.path) {
+      if (px - lastX < every) continue;
+      lastX = px;
+      // (inside a ledge is no place for anything)
+      if (tr.ledges.some((q) => px >= q.x0 && px <= q.x1 && py > q.y + 4 && py < q.y + (q.surface === 'branch' || q.surface === 'crumble' ? 24 : q.surface === 'bank' ? 90 : 2000))) continue;
+      if (clear(heroBox(px, py))) out.push({ kind: a.kind, step: a.step, x: px, y: py - 52, feetY: py });
+    }
+  }
+  return out;
+}
+
+/** the runs in a trace with no input longer than `max` s (dead walks: fill them with a slope, a hop or a critter) */
+export const deadWalks = (tr: Trace, max = DEAD_WALK) => tr.walks.filter((w) => w.s > max);
 
 // ------------------------------------------------------------------ checks ------------------------------------------------------------------
 
@@ -442,16 +596,27 @@ export function checkTrace(tr: Trace, steps: readonly Step[], easy = false): str
   return bad;
 }
 
-// ------------------------------------------------------------------ World 1's tempo ------------------------------------------------------------------
+// ------------------------------------------------------------------ the stage's tempo ------------------------------------------------------------------
 
+const bpmMemo = new Map<string, number>();
 /**
- * World 1's tempo (w1-rhythm's proposal, 2026-11-04, for the lead): home 92 BPM. Why: a full jump on the flat is in the air 0.63 s
- * (physics.ts JUMP_AIRTIME), and at 92 BPM a beat is 0.652 s, so a jump taken on a beat comes down just before the next one: the
- * landing is on the pulse, which is what makes a run feel danced. A hop (about 0.3 s) fills an eighth, and a double jump (about 1.1 s)
- * fills a half-note. The research's range is 85 (World 2, relaxed) to 130 (World 10); 92 sits in its "low 90s" for a first world. Stages
- * vary around it so neighbours never share a tempo (STAGE-RULES §0b.6).
+ * The stage's beat: the BPM of the music it plays (W1-REBUILD-PLAN.md, the lead, 2026-11-04: "the beat is the music's beat"), read from
+ * the music code exactly as the game picks it (audio/scenes.ts stageMusic, audio/themes.ts themeById(id).bpm x the stage's tempo), never
+ * typed. `salt` is the session's music salt (App.tsx musicSalt); the stage builders use 0. NOTE: the game rolls a new salt each session,
+ * and a different salt can pick a different piece at a different speed (1-2: 128-137 BPM over eight salts), so the music a player hears
+ * matches the built stage's beat only when salt 0 (or a tempo locked to this) is played: reported to the lead.
  */
-export const W1_BPM = { home: 92, '1-2': 88, '1-5': 96 } as const;
+export function stageBpm(cfg: { worldIndex: number; id: string; miniIndex: number; objectiveType?: string }, salt = 0): number {
+  const key = `${cfg.worldIndex}|${cfg.id}|${cfg.miniIndex}|${cfg.objectiveType}|${salt}`;
+  const hit = bpmMemo.get(key);
+  if (hit !== undefined) return hit;
+  const m = stageMusic(cfg.worldIndex, cfg.id, cfg.miniIndex, salt, cfg.objectiveType);
+  const th = themeById(m.id);
+  if (!th) throw new Error(`no theme ${m.id} for ${cfg.id}`);
+  const bpm = Math.round(th.bpm * (m.tempo ?? 1) * 10) / 10;
+  bpmMemo.set(key, bpm);
+  return bpm;
+}
 
 /**
  * Easy's version of a node (STAGE-RULES §0.5: "Easy should be just a casual play"; §2 "Easy jumps": no Easy jump needs a full hold):

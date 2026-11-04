@@ -12,7 +12,10 @@ import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { PHYS, TAKEOFF_SLACK } from './physics.ts';
 import type { Platform } from './types.ts';
-import { APRON, CLUMSY, INSIDE, SLOP, VIEWS, W1_BPM, checkTrace, easyNode, flight, gridHits, landingInView, traceNode, type Move, type NodeSpec, type Step } from './beatTrace.ts';
+import { APRON, CLUMSY, DEAD_WALK, GAP_REPEAT, INSIDE, SLOP, VIEWS, checkTrace, deadWalks, easyNode, flight, gridHits, hazardSpots, landingInView, stageBpm, traceNode, type Move, type NodeSpec, type Step } from './beatTrace.ts';
+import { stageMusic } from '../audio/scenes.ts';
+import { themeById } from '../audio/themes.ts';
+import { generateAllLevels } from './worldsData.ts';
 
 const J = (dy = 0, surface: Step['surface'] = 'bank'): Step => ({ move: 'jump', dy, surface });
 const H = (dy = 0, surface: Step['surface'] = 'bank'): Step => ({ move: 'hop', dy, surface });
@@ -20,11 +23,13 @@ const D = (dy = 0, surface: Step['surface'] = 'bank'): Step => ({ move: 'double'
 
 /** the patterns the proofs run over: every hit kind, every move, rises, drops, branches, stumps, crumbling ledges, three tempos */
 const NODES: Array<Omit<NodeSpec, 'x' | 'y'>> = [
-  { bpm: 92, bars: ['x...x...', 'x...x...'], steps: [J(), J(), J(), J()] },
-  { bpm: 88, bars: ['x.x.x.x.'], steps: [J(), J(), J(), J()] },
+  { bpm: 130, bars: ['x...x...', 'x...x...'], steps: [J(), J(-40), J(), J(40, 'branch')] },
+  { bpm: 127, bars: ['x.....x.', 'x.....x.'], steps: [J(0, 'branch'), H(-40, 'branch'), J(30, 'branch'), H(-30)] },
+  { bpm: 88, bars: ['x.x.x.x.'], steps: [J(), J(30, 'branch'), J(), J(-30)] },
   { bpm: 92, bars: ['x..o..x.'], steps: [J(50, 'stump'), H(-50), J()] },
   { bpm: 92, bars: ['h.......', 'h.......'], steps: [D(), D(-60)] },
   { bpm: 92, bars: ['x...x...', 'x...x...'], steps: [J(60, 'stump'), J(-60), J(80, 'branch'), J(-80)] },
+  { bpm: 134, bars: ['x...x...', 'h.......', 'x...x...'], steps: [J(0, 'crumble'), H(-40, 'branch'), D(60, 'branch'), J(-60), J(0, 'branch')] },
   { bpm: 96, bars: ['x...x...', 'h...x...'], steps: [J(0, 'crumble'), J(0, 'crumble'), D(40, 'branch'), J(-40)] },
   { bpm: 96, bars: ['x..o....', 'h.......', 'x...x..o'], steps: [J(0, 'branch'), H(-30, 'branch'), D(90, 'branch'), J(-90), J(), J(30, 'stump')] },
   { bpm: 85, bars: ['x.......', 'x.......', 'h.......'], steps: [J(-120), J(70, 'bank'), D(-60)] },
@@ -95,7 +100,7 @@ test('the tracer flies as the real engine does: a jump, a hop and a double jump 
  * jump `late` s after the planned take-off (or at the slack's point, TAKEOFF_SLACK before the ledge's end), with `air` of his air speed
  * (as tools/validate/play.ts's clumsy thumb, applied to the distance each air frame covers). Returns the step he fell at, or -1.
  */
-function engineRun(tr: ReturnType<typeof traceNode>, steps: readonly Step[], o: { late: number | 'slack'; air: number }): number {
+function engineRun(tr: ReturnType<typeof traceNode>, steps: readonly Step[], o: { late: number | 'slack'; air: number }, path?: Array<[number, number]>): number {
   const r = new RealPlay('3-5', 1);
   const plats: Platform[] = tr.ledges.map((q, i) => ({
     id: i + 1, x: q.x0, y: q.y, width: q.x1 - q.x0, height: q.surface === 'stump' ? 900 : q.surface === 'branch' ? 24 : 90, type: 'solid',
@@ -130,6 +135,7 @@ function engineRun(tr: ReturnType<typeof traceNode>, steps: readonly Step[], o: 
     const x0 = r.p.x;
     r.frame({ right: true, press: press || second, jump: !!hold });
     if (!r.p.grounded) r.p.x = x0 + (r.p.x - x0) * o.air;
+    path?.push([r.p.x, r.p.y]);
     if (r.p.y > lowest + 120) return inAir;
   }
   return r.p.x >= tr.x1 - 40 ? -1 : 99;
@@ -268,10 +274,89 @@ test('take-offs sit on the grid: each one at its slot of the BPM, beats on even 
   }
 });
 
-test("World 1's tempo: a full jump on the flat lands within the beat at the home BPM (the reason for it)", () => {
-  const f = flight({ move: 'jump', dy: 0, vx: PHYS.maxRun })!;
-  const beat = 60 / W1_BPM.home;
-  assert.ok(f.t <= beat && beat - f.t < 0.05, `air ${f.t.toFixed(3)} s, beat ${beat.toFixed(3)} s`);
-  const dbl = flight({ move: 'double', dy: 0, vx: PHYS.maxRun })!;
-  assert.ok(dbl.t <= 2 * beat, 'a double fills a half-note');
+test("the stage's BPM is read from its music, as the game picks it (stageMusic, themeById(id).bpm x tempo), never typed", () => {
+  const levels = generateAllLevels().filter((l) => l.worldIndex === 1 && l.objectiveType !== 'boss_lair');
+  assert.ok(levels.length >= 9);
+  for (const l of levels) {
+    const m = stageMusic(1, l.id, l.miniIndex, 0, l.objectiveType);
+    const want = themeById(m.id)!.bpm * (m.tempo ?? 1);
+    const got = stageBpm(l);
+    assert.ok(Math.abs(got - want) < 0.06, `${l.id}: ${got} vs the music's ${want}`);
+    // (World 1's music: styles.ts world 1 bpm [126, 134], a stage nudged up to 3%)
+    assert.ok(got >= 122 && got <= 139, `${l.id}: ${got} BPM`);
+  }
+  // and a different session's music salt is read the same way (the game rolls one per session: App.tsx musicSalt)
+  const l2 = levels.find((l) => l.id === '1-2')!;
+  const m = stageMusic(1, '1-2', l2.miniIndex, 777777, l2.objectiveType);
+  assert.ok(Math.abs(stageBpm(l2, 777777) - themeById(m.id)!.bpm * (m.tempo ?? 1)) < 0.06);
+});
+
+test("at World 1's music tempo the moves fit its notes: a jump inside a half note, a double inside a whole bar's half and a beat", () => {
+  for (const bpm of [126, 130, 136]) {
+    const beat = 60 / bpm;
+    assert.ok(flight({ move: 'jump', dy: 0, vx: PHYS.maxRun })!.t < 2 * beat, `${bpm}: a jump fits a half note`);
+    assert.ok(flight({ move: 'double', dy: 0, vx: PHYS.maxRun })!.t < 3 * beat, `${bpm}: a double fits a dotted half`);
+    assert.ok(flight({ move: 'hop', dy: -40, vx: PHYS.maxRun })!.t < 2 * beat, `${bpm}: a hop down fits a half note`);
+  }
+});
+
+test('the same gap four times running is refused (research 11-04 line 585)', () => {
+  assert.throws(() => traceNode({ bpm: 130, bars: ['x...x...', 'x...x...'], steps: [J(), J(), J(), J()], x: 0, y: 580 }), new RegExp(`${GAP_REPEAT} times in a row`));
+  // (three, then a change, is fine)
+  assert.doesNotThrow(() => traceNode({ bpm: 130, bars: ['x...x...', 'x...x...'], steps: [J(), J(), J(), J(-40)], x: 0, y: 580 }));
+});
+
+test('dead walks are found: a run with no input over 2.5 s is listed for the builder to fill', () => {
+  const tr = traceNode({ bpm: 130, bars: ['x.......', '........', '........', 'x.......'], steps: [J(), J(-40)], x: 0, y: 580 });
+  const w = deadWalks(tr);
+  assert.equal(w.length, 1);
+  assert.ok(w[0].s > DEAD_WALK && w[0].x1 > w[0].x0);
+  for (const { tr } of traced) assert.ok(tr.walks.every((q) => q.s > 1));
+});
+
+test('density: take-offs a second over the bars (the intro at 0.4, the research line 533)', () => {
+  // (one take-off every 2.5 s at 130 BPM: about one every 5.4 beats; 3 in 4 bars is 0.41 a second)
+  const tr = traceNode({ bpm: 130, bars: ['x.......', '......x.', '........', '....x...'], steps: [J(), J(-40), J(40, 'branch')], x: 0, y: 580 });
+  assert.ok(Math.abs(tr.density - 3 / (16 * 60 / 130)) < 0.01, `${tr.density}`);
+});
+
+// ------------------------------------------------------------------ the avoided lines ------------------------------------------------------------------
+
+test('every take-off has its avoided lines: a beat early, the beat skipped, a hop held or a jump let go', () => {
+  for (const { spec, tr } of traced) {
+    for (const l of tr.landings) {
+      const kinds = tr.avoided.filter((a) => a.step === l.step).map((a) => a.kind).sort();
+      assert.deepEqual(kinds, (spec.steps[l.step].move === 'hop' ? ['early', 'held', 'skip'] : ['early', 'skip', 'tapped']).sort());
+    }
+    // skipping a beat over a gap to a ledge as high or higher drops him into it: the path ends below the take-off (over a drop he may
+    // walk off onto the lower ledge, which is no hazard line)
+    for (const a of tr.avoided.filter((q) => q.kind === 'skip' && spec.steps[q.step].dy >= 0 && tr.gaps.some((g) => g.step === q.step))) {
+      const end = a.path[a.path.length - 1];
+      assert.ok(end[1] > tr.landings[a.step].fromY + 40, `skip at step ${a.step + 1} should fall: ends at ${end}`);
+    }
+  }
+});
+
+test('hazard spots on the avoided lines never touch Pokey on the beat, in the real engine, on any clumsy try', () => {
+  let n = 0;
+  for (const { spec, tr } of traced) {
+    const spots = hazardSpots(tr);
+    n += spots.length;
+    for (const o of [{ late: 0, air: 1 }, { late: CLUMSY.late, air: CLUMSY.air }, { late: -CLUMSY.late, air: 1 }, { late: 'slack' as const, air: 1 }]) {
+      const path: Array<[number, number]> = [];
+      assert.equal(engineRun(tr, spec.steps, o, path), -1);
+      for (const s of spots) {
+        // (his body in the engine: 56 x 116 around his feet; a hazard's own body is its spot)
+        const hit = path.find(([px, py]) => Math.abs(px - s.x) < 28 && s.y > py - 104 && s.y < py + 12);
+        assert.ok(!hit, `${spec.bars.join('|')} ${JSON.stringify(o)}: spot ${s.kind} at ${s.x},${s.y} meets him at ${hit}`);
+      }
+    }
+  }
+  assert.ok(n > 20, `${n} spots in all`);
+});
+
+test('a held hop has a spot over it (a thorn overhang), and an early jump one where the on-beat run never goes', () => {
+  const tr = traced.find((q) => q.spec.steps.some((s) => s.move === 'hop'))!.tr;
+  assert.ok(hazardSpots(tr, ['held']).length > 0, 'held');
+  assert.ok(traced.some(({ tr }) => hazardSpots(tr, ['early']).length > 0), 'early');
 });

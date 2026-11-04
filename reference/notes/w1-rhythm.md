@@ -30,3 +30,9 @@ Merge origin/ccr-0d59a91c-oy3imz before starting and before every push.
 - Tempo proposal: World 1 home 92 BPM; 1-2 at 88, 1-5 at 96. A full jump is in the air 0.650 s and a beat at 92 is 0.652 s: a jump on
   the beat lands on the next beat. Hop ~0.44 s (two-thirds of a beat), double ~1.05 s (fills a half-note). Note the research gives
   World 2 two tempos (85 at line 524, 90 at line 597): World 2 will need to sit above World 1 when it is rebuilt.
+- 1:00 PM ET lead scope update read (5 messages): 1-1 to 1-5 rebuilt tonight; BPM from the stage's music (stageMusic + themeById), not
+  typed; avoided lines + hazard spots + dead walks in the API; the same gap 4 times refused; plans by ~3:00, build by ~6:30.
+  W1_BPM proposal withdrawn (the lead's call: the beat is the music's beat).
+- FACT (App.tsx 275-278): musicSalt is random each session, and stageMusic(…, salt) picks a different piece: 1-2 plays at 128.2 / 132.8 /
+  137.0 / 131.4 / 128.2 / 128.3 / 133.9 / 130.8 BPM over salts 0,1,2,3,12345,99999,777777,31337; 1-5 at 136.0-138.0. stageBpm uses
+  salt 0. To make the heard beat match the built one, the music's tempo has to lock to stageBpm (audio, not my files): asked the lead.
