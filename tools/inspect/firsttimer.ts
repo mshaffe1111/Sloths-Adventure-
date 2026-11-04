@@ -1269,7 +1269,9 @@ export class FirstTimerRun {
       if (p.vy > -200) {
         const f = this.floorAt(p.x, p.y, 120);
         const on = this.prog.target(p, 160);
-        if (f && f.type !== 'drift' && f.type !== 'moving' && (fdir > 0 ? f.x + f.width - p.x : p.x - f.x) < 40 && !(on && on.y > p.y + 50)) out = side(fdir > 0 ? -1 : 1);
+        // (a ledge right under his feet and wide enough to stand on: not a dip or a sunk step he is dropping into, whose way on is ahead, nor
+        // a stump; first try fired in 1-1's 70 px dips and doubled one run's rescues)
+        if (f && f.type !== 'drift' && f.type !== 'moving' && f.width >= 150 && f.y - p.y < 60 && (fdir > 0 ? f.x + f.width - p.x : p.x - f.x) < 40 && !(on && on.y > p.y + 50)) out = side(fdir > 0 ? -1 : 1);
       }
       if (e.nearTreeVine && up) out.up = true;
       if (this.learned.has('glide') && e.skills?.has('glide') && p.vy > 150) out.jump = true;
