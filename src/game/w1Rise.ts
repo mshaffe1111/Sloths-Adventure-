@@ -130,7 +130,8 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     // what he stands on runs up to the apron (the node's own apron starts where he is)
     leave();
     const was = kind;
-    const spec: NodeSpec = { bpm, x, y, bars, steps };
+    // (Easy: easyNode lowers every rise; the drops come down with them, so Easy's climb keeps its shape, floor to canopy)
+    const spec: NodeSpec = { bpm, x, y, bars, steps: easy ? steps.map((st) => (st.dy < 0 ? { ...st, dy: Math.round(st.dy * 0.65) } : st)) : steps };
     const tr = traceNode(easy ? easyNode(spec) : spec);
     tr.ledges.forEach((l, i) => {
       const last = i === tr.ledges.length - 1;
@@ -221,13 +222,6 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     pieces.push({ k: 'bank', x0, x1: x });
   });
 
-  // ---- 3. The terrace (a rest): the bank's broad shelf, the kapoks ahead over the trees, petals
-  beat('Rest: the terrace', () => {
-    flag(x + 40);
-    stroll(Math.round(R.r(1350, 1450)), 3);
-    row(from + 60, x - 60, y, 3, 'orchid');
-  });
-
   // ---- 4. The bank's last steps (ramp): longer gaps now, down and up, and the second mushroom onto the bank's top
   beat('Ramp: the last steps', () => {
     const x0 = x;
@@ -240,11 +234,19 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   // lands him back on the path). The first kapok's boughs are in view ahead.
   beat('Rest: the bank top', () => {
     flag(x + 40);
-    hint(x + 60, 'Flick up again in the air to jump twice', 'Press Jump again in the air', 'Press Space again in the air');
-    stroll(Math.round(R.r(1150, 1250)), 3);
+    hint(x + 60, 'Flick up again in the air!', 'Press Jump again in the air!', 'Press Space again in the air!');
+    stroll(Math.round(R.r(700, 760)), 2);
     lay(x + 40, x + 210, y - 150, 'branch');
     flower(x + 125, y - 150 - 34, 'hibiscus');
     walk(260);
+  });
+
+  // ---- 5b. Down the roots (the wave dips): off the bank top down the kapok's roots, earth steps going down and across, half and whole
+  // notes, moss under every gap; the boughs the twist climbs are over the dip
+  beat('Ramp: down the roots', () => {
+    const x0 = x;
+    node(['h.......', 'h...h...', 'h.......', 'h...h...', 'h.......'], [H(-40, 'stump'), J(0, 'stump'), H(-30, 'stump'), J(30, 'stump'), H(-50, 'stump'), J(0, 'stump'), H(-40, 'stump')], () => 'soft', { earth: true, flag: false });
+    pieces.push({ k: 'roots', x0, x1: x });
   });
 
   // ---- 6. The off-beat catch (the twist: the half notes turn into a jump on the beat and the second jump on the off-beat, one move):
@@ -252,14 +254,8 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   beat('Twist: the off-beat catch', () => {
     const x0 = x;
     node(['h....o..', '....h...', 'h.......', 'h....o..', '....h...', 'h...h...'],
-      [J(40), D(110), J(-40), J(0), D(130), J(-30), J(30), H(-40), J(0)], () => 'catch');
+      [J(40), D(90), J(-40), J(0), D(100), J(-30), J(30), H(-40), J(0)], () => 'catch');
     pieces.push({ k: 'catch', x0, x1: x });
-  });
-
-  // ---- 7. The fork of the first kapok (a rest): the canopy opens above, the boughs climbing away into it
-  beat('Rest: the fork', () => {
-    flag(x + 40);
-    stroll(Math.round(R.r(1300, 1400)), 3);
   });
 
   // ---- 8. Up into the canopy (spike, the stage's moment): the second jump up bough after bough, half notes between, a run down a slope
@@ -275,7 +271,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   beat('Rest: the high bough', () => {
     flag(x + 40);
     hint(x + 60, 'Look how high we are!');
-    stroll(Math.round(R.r(1300, 1400)), 3);
+    stroll(Math.round(R.r(950, 1050)), 2);
   });
 
   // ---- 10. The high road or the low road (a choice). The low road is the counter-melody, the bounce and the hop: mushrooms up, hops
@@ -312,7 +308,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   beat('Rest: before the high branches', () => {
     flag(x + 40);
     hint(x + 60, 'No soft moss up here!');
-    stroll(Math.round(R.r(1350, 1450)), 3);
+    stroll(Math.round(R.r(950, 1050)), 2);
   });
 
   // ---- 12. The high branches (the finale, the densest, 15-20 s): half notes and off-beat catches over open air, up and down, a

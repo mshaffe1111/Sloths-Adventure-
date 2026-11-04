@@ -13,14 +13,15 @@ const cfg = {
 } as LevelConfig;
 const SEEDS = Array.from({ length: 12 }, (_, i) => 1 + i * 41);
 
-test('1-1: every roll keeps the curve (intro, ramps, the twist, the spike, the choice, the finale, rests between), one shrine, one golden seed, two minutes for a quick player', () => {
+test('1-1: every roll keeps the curve (intro, ramps up and down the bank, the twist, the spike, the choice, the finale, three short rests), one shrine, one golden seed, two minutes for a quick player', () => {
   for (const easy of [false, true]) {
     for (const s of SEEDS) {
       const st = buildProtoStage(cfg, s, '1-1', easy);
       const kinds = st.proto.beats.map((b) => b[2].split(':')[0]);
-      assert.deepEqual(kinds, ['Intro', 'Ramp', 'Rest', 'Ramp', 'Rest', 'Twist', 'Rest', 'Spike', 'Rest', 'Choice', 'Rest', 'Finale'], `seed ${s}`);
-      // never two groups of moves without a rest between them (STAGE-RULES §0b.1), past the ramps
-      kinds.slice(4).forEach((k, i, a) => { if (k !== 'Rest' && i > 0) assert.equal(a[i - 1], 'Rest', `seed ${s}: ${k} after ${a[i - 1]}`); });
+      assert.deepEqual(kinds, ['Intro', 'Ramp', 'Ramp', 'Rest', 'Ramp', 'Twist', 'Spike', 'Rest', 'Choice', 'Rest', 'Finale'], `seed ${s}`);
+      // three rests (the bank top, the high bough, before the finale), 3-4 s of walking each (the lead, 11-04: five of 5 s read slow)
+      const rests = st.proto.beats.filter((b) => b[2].startsWith('Rest'));
+      for (const r of rests) assert.ok((r[1] - r[0]) / 285 < 4.6, `seed ${s}: ${r[2]} is ${((r[1] - r[0]) / 285).toFixed(1)} s`);
       assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
       assert.equal(st.collectibles.filter((c) => c.type === 'seed').length, 1, 'one golden seed');
       assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 15, `seed ${s}: ${st.meta!.timing!.layoutSeconds.toFixed(0)} s`);
