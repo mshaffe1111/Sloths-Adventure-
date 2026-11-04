@@ -74,6 +74,27 @@ Done! Checked 605 packages (no changes) [12.00ms].
   phone (one run each way) and asks Matt plainly about the start (same / a little longer / clearly longer). Waiting on his phones.
 - Named: load +0.1 to +0.9 s here (1-1 +0.9 repeated); the average frame 0-2 ms higher here (noise or the idle context).
 
+## In flight: the measured release (Matt approved ~12:05 PM ET), R-3.14 the OnePlus draw spikes
+- The six runs Matt did on 11-04 reached the sheet, but all were live 0.9.4: build 68b31e66, no GPU code.
+  - Pixel 0 stalls, Samsung 2.
+  - OnePlus (Adreno 619, 4 GB) 33, about 25 of them the game's own draw, 150-460 ms.
+  - R-3.14 (keeper): Day 1, A, owner warmup-5m, started 12:04 PM ET.
+- Built:
+  - eb7f90d0: gpuBackdropOn() = qaBuild() || ctestEnabled() (mountGpuLayer checks it first; readout and gpuback=0 follow it; never
+    in the store app);
+  - Pixi's 4 chunks out of the SW precache (FOUND: a lazy import still had every player downloading 434 KB);
+  - drawWatch.ts: a slowdraw event for any single 2D call of 30 ms or more, testers only, not in engine.ts (lead approved);
+  - card for the live testers' link;
+  - plan "The measured release" with its fixed end.
+- Proven: gpuDefaultOff.cjs PASS, 48/48, on a production build (4674d7f6). w8-rope2: no engine.ts clash.
+- To do:
+  - drawWatchCost.cjs (lead: at most about 1 ms a frame, or cut it to drawImage/get/putImageData);
+  - the full gate;
+  - gpuLook 0 px on the default path;
+  - firstframes against main;
+  - report to the lead, then the release clerk builds it.
+  - ETA green about 3-3:30 PM ET.
+
 ## Pitfalls (mine)
 - Look comparisons:
   - judge only the canvases;

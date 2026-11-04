@@ -81,7 +81,10 @@ feature (light bridges, lightning silhouettes, waving water).
 - **Bundle noted.** The main chunk and the Pixi chunks, raw and gzipped.
 
 ## Checks before reporting
-Every gate in gates.md, in order. Add the two GPU checks above. Stamp the base commit on every sheet (D23).
+Every gate in gates.md, in order. Add the two GPU checks above.
+- Anything testers-only or lazy: build for production and open `dist/sw.js`. Every chunk the feature fetches must be absent from the
+  precache list. `tools/qa/gpuDefaultOff.cjs` does this from the real requests (lesson 2026-11-04: the PWA precached Pixi for every
+  player). Stamp the base commit on every sheet (D23).
 
 ## Pitfalls we already paid for
 - 2026-11-04: **The look comparison was noisy three ways.** Fix all three, then judge:
