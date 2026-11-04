@@ -68,7 +68,10 @@ Done! Checked 605 packages (no changes) [12.00ms].
   - Pixi trimmed (434 KB fetched at the first stage);
   - card: reference/qa-reports/webgl-1/MATT-PHONE-CHECK.md;
   - report: reference/qa-reports/webgl-1/README.md.
-- The full gate is running on e3ff9f1c (started about 11:55 AM ET). Paste the lines, then report to the lead.
+- Gate green on e3ff9f1c; report 346256a0; lead ACCEPTED it to the bar here, 11-04.
+- Phone check: its own artifact "GPU phone check" https://claude.ai/artifact/MaBaabWAKZXQGjx81NpstM (all 492 dist files,
+  published in 4 batches; NOT Matt's main test link, which holds the 0.9.4 candidate). The card now has the link, is about 5 min a
+  phone (one run each way) and asks Matt plainly about the start (same / a little longer / clearly longer). Waiting on his phones.
 - Named: load +0.1 to +0.9 s here (1-1 +0.9 repeated); the average frame 0-2 ms higher here (noise or the idle context).
 
 ## Pitfalls (mine)

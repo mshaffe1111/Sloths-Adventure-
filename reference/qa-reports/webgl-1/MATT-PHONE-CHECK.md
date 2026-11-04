@@ -1,26 +1,42 @@
 # Phone check for the GPU backdrop (GPU plan stage 1): the card for Matt
 
-**What it answers:** is the new way of drawing the backdrop faster on your phones? It looks the same either way. Nothing ships until
-this says yes.
+**What it answers:** is the new way of drawing the backdrop faster on your phones, and does it make the level slower to start? It
+looks the same either way. Nothing ships until this says yes.
 
-**What you need:** the Pixel, the Samsung and the OnePlus, charged, with no power saver. About 10 minutes a phone. The lead sends you
-the test link (`<TEST LINK>` below).
+**Test link (its own page, not your usual test link):** https://claude.ai/artifact/MaBaabWAKZXQGjx81NpstM
+
+**What you need:** your phones, charged, power saver off. **About 5 minutes a phone:** two short runs.
 
 **On each phone:**
-1. Open `<TEST LINK>#ctest`. Name the run after the phone, e.g. `Matt Pixel`, and tap Start. Play the short level the way you normally
-   play (about two minutes), then tap "I'm done" twice. Do it **twice**: every run is a new random level.
-2. Open `<TEST LINK>#ctest&gpuback=0` (the old way of drawing the backdrop). Name it after the phone plus `2D`, e.g. `Matt Pixel 2D`,
-   and play two runs the same way.
+1. Open the link with `#ctest` on the end:
+   `https://claude.ai/artifact/MaBaabWAKZXQGjx81NpstM#ctest`
+   Name the run after the phone, e.g. `Matt Pixel`. Tap Start. **Watch how long it takes from tapping Start until you can move
+   Pokey.** Play the level the way you normally play (about 2 minutes), then tap "I'm done" twice.
+2. Open it again with `#ctest&gpuback=0` on the end (the old way of drawing the backdrop):
+   `https://claude.ai/artifact/MaBaabWAKZXQGjx81NpstM#ctest&gpuback=0`
+   Name it after the phone plus `2D`, e.g. `Matt Pixel 2D`. Same thing: watch the start, play about 2 minutes, "I'm done" twice.
 3. If the recording badge says "not sending from this link", stop and tell the lead: that link can't send.
 
-**What to send back:** nothing but "done", and which phones you used. Each run sends its numbers to the testers' sheet by itself: the
-frame times, the phone's GPU, and a `backdrop` line saying which way it drew and what the copy cost.
+**What to send back, one line a phone:**
+- the phone's name;
+- **the start:** did the first run (new way) take longer to get going than the `2D` run? Pick one: **same**, **a little longer**
+  (you noticed, but it didn't bother you), or **clearly longer** (it felt like waiting);
+- anything that looked wrong or felt choppy.
+
+Example: `Pixel: start same, nothing wrong.`
+
+Everything else sends itself to the testers' sheet: the frame times, the phone's GPU, the start time in milliseconds, and a
+`backdrop` line saying which way it drew.
 
 **What we read from it** (the lead does this, not you):
-- On each phone, the runs against the `2D` runs: average frame time, the worst stretches, stalls over 100 ms, and the `ready` time
-  (how long the stage takes to start).
+- **The start.** In this container 1-1 started 0.91 s later with the new way (5.4 s against 4.5 s); 5-M and 8-1 were 0.1-0.2 s later.
+  The `ready` time in each run's `backdrop` line gives the phone's number; Matt's word says whether a person notices it.
+- Each phone's new-way run against its `2D` run: average frame time, the worst stretches, and stalls over 100 ms.
 - The `backdrop` line:
-  - `backdrop: GPU, copy X ms` means the phone used the new way;
-  - `backdrop: 2D (copy ... a readback ...)` means the phone's browser can't do it cheaply, so it quietly kept the old way. That's
-    fine, and it tells us that phone gains nothing.
-- **Ship rule:** the new way merges only if it is no slower on any of the three phones and faster on at least one.
+  - `backdrop: GPU, copy X ms ... ready Y ms` means the phone used the new way;
+  - `backdrop: 2D (...), ready Y ms` means the phone's browser can't copy it cheaply, so it quietly kept the old way. That's fine,
+    and it tells us that phone gains nothing.
+- One run each way is a first look, not proof: each run is a new random level. If a phone is close or mixed, the lead asks for one
+  more pair on that phone.
+- **Ship rule:** the new way merges only if it is no slower on any phone, faster on at least one, and Matt doesn't call the start
+  "clearly longer" on any phone.
