@@ -88,6 +88,8 @@ export interface W1Kit {
   snakeLedge: () => void;
   /** R-159.1 the stomp vault: a snake on the lip of a gap past any jump; `soft`: a soft pit under it (its first meeting) */
   snakeVault: (soft: boolean) => void;
+  /** R-159.1 the bowl gate: a coiled boa, its lane, a plate at the lane's end and a gate the rolling boa opens */
+  bowlGate: () => void;
   // ----- climbs (1-4 on), creaking branches (1-5 on)
   climbTree: (tight?: boolean) => void;
   /** a wall too tall to jump with a trunk beside it: up the trunk, across its branch onto the high ground (1-5 on) */
@@ -205,6 +207,18 @@ function fillTo(k: W1Kit, until: number, lead: Build | null, pieces: Build[], fl
     n++;
     if (n % flagEvery === 0) k.flag();
   }
+}
+
+/**
+ * 1-9's master stretch (R-159.1, the combat triangle's last part): all three moves in a row, at the end of every roll. The stomp vault
+ * over a real drop, a lunge snake to daze and stomp, then the bowl gate: the coiled boa kicked down its lane onto the plate opens the
+ * way on, the way toward Venom Fang's lair (1-10).
+ */
+function masterStretch(k: W1Kit) {
+  k.flag();
+  k.snakeVault(false);
+  k.snakeWalk(1);
+  k.bowlGate();
 }
 
 // ---------------------------------------------------------------- the versions ----------------------------------------------------------------
@@ -641,33 +655,33 @@ const SECTIONS: Record<W1Stage, Table> = {
     ],
     finish: [
       {
-        id: 'branches', beat: 'branch', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+        id: 'branches', beat: 'branch', build: (k) => { fillTo(k, k.EXPERT - 10, null, [
           (k) => k.guardBranch(true),
           (k) => { k.snakeBranches(3, k.G - 130); k.busy(1); },
           (k) => { k.guardBranch(true); k.snakeBranches(3, k.G - 140); },
-        ], 2, 12),
+        ], 2, 12); masterStretch(k); },
       },
       {
         // (climbs take longer than fights: this flavour runs a little past two minutes, so it still holds enough to fight)
-        id: 'trunks', beat: 'climb', build: (k) => fillTo(k, k.EXPERT + 8, null, [
+        id: 'trunks', beat: 'climb', build: (k) => { fillTo(k, k.EXPERT + 8, null, [
           (k) => { k.climbWall(true); k.snakeWalk(1); },
           (k) => { k.trunkGuard(); k.snakeWalk(1); },
           (k) => { k.climbWall(true); k.trunkGuard(); },
-        ], 2, 12),
+        ], 2, 12); masterStretch(k); },
       },
       {
-        id: 'leaps', beat: 'leap', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+        id: 'leaps', beat: 'leap', build: (k) => { fillTo(k, k.EXPERT - 10, null, [
           (k) => k.highLeaps(5, false, true, true),
           (k) => k.highLeaps(4, true, true, true),
           (k) => { k.bounceWall(true, false); k.guardBranch(true); },
-        ], 2, 12),
+        ], 2, 12); masterStretch(k); },
       },
       {
-        id: 'walls', beat: 'ground', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+        id: 'walls', beat: 'ground', build: (k) => { fillTo(k, k.EXPERT - 10, null, [
           (k) => { k.bounceWall(true, false); k.snakeWalk(2); },
           (k) => { k.bounceWall(true); k.snakeWalk(3); },
           (k) => { k.bounceWall(true, false); k.ropeGuard(); },
-        ], 2, 12),
+        ], 2, 12); masterStretch(k); },
       },
     ],
   },

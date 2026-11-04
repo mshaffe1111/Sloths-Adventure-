@@ -269,3 +269,50 @@ test('the stomp vault: the gap is past any jump (a run, a full jump off the edge
   assert.ok(b.s.defeated, 'he landed on the snake');
   assert.ok(b.r.p.x > b.edge + b.gap + 20 && b.r.p.y <= GROUND + 2, `the vault carried him across, with room (x ${Math.round(b.r.p.x)}, y ${Math.round(b.r.p.y)})`);
 });
+
+// ── the bowl gate (R-159.1): the kick's payoff, a switch only the rolling boa presses
+import type { BowlGate } from './w1Tricks.ts';
+
+function gateWorld() {
+  const r = new RealPlay('1-9', 1);
+  const gate = { id: 901, x: 1000, y: GROUND - 112, width: 44, height: 112, type: 'solid', art: 'hidden' } as Platform;
+  const pillar = { id: 902, x: 982, y: GROUND - 560, width: 80, height: 448, type: 'solid' } as Platform;
+  r.bare([ground(0, 2000), gate, pillar]);
+  const b = animal(1, 'boa', 480, { trick: 'coil', edgeMinX: 0, edgeMaxX: 2000 });
+  r.e.enemies = [b];
+  const g: BowlGate = { plateX: 954, groundY: GROUND, gatePlat: 901, gateX: 1022, boaId: 1, coilX: 480, coilY: GROUND - 16 };
+  (r.e.currentStage as { bowlGates?: BowlGate[] }).bowlGates = [g];
+  return { r, b, g, gate };
+}
+
+test('the bowl gate: punches and stomps never open it; the kicked boa rolls onto the plate and it opens, and he walks through', () => {
+  const { r, b, g, gate } = gateWorld();
+  mash(r, 440, 'punch', 6, 1.2);
+  r.fly(480, GROUND - 100, 0, 300);
+  r.wait(0.6);
+  assert.equal(g.open, undefined, 'still shut after punches and a stomp');
+  r.stand(1100, GROUND);
+  assert.ok(r.p.x > 950, 'set beyond');
+  r.stand(900, GROUND);
+  for (let i = 0; i < 60; i++) r.frame({ right: true });
+  assert.ok(r.p.x < gate.x, `the shut gate stops him (x ${Math.round(r.p.x)})`);
+  strike(r, 440, 'kick');
+  for (let i = 0; i < 90 && !g.open; i++) r.frame();
+  assert.ok(g.open, 'the ball on the plate opened it');
+  assert.ok(Math.abs(b.x - g.plateX) < 30, 'and stopped there');
+  r.stand(900, GROUND);
+  for (let i = 0; i < 60; i++) r.frame({ right: true });
+  assert.ok(r.p.x > gate.x + 60, `he walks through (x ${Math.round(r.p.x)})`);
+});
+
+test('the bowl gate: a boa kicked the wrong way is lost, and a fresh one coils in its place', () => {
+  const { r, b, g } = gateWorld();
+  r.stand(520, GROUND);
+  r.p.facing = -1;
+  r.frame({ kick: -1 });
+  r.wait(4.5);
+  assert.equal(g.open, undefined);
+  assert.equal(b.defeated, false, 'it is back');
+  assert.equal(b.state, 'coil');
+  assert.ok(Math.abs(b.x - g.coilX) < 2);
+});

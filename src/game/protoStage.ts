@@ -22,7 +22,7 @@ import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, reachJumpHeld, SAFE } from './physics.ts';
-import { TRICK, vaultGap } from './w1Tricks.ts';
+import { TRICK, vaultGap, type BowlGate } from './w1Tricks.ts';
 import { validateStage, type CheckGraph } from './levelCheck.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
@@ -424,6 +424,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   const hints: StageHint[] = [];
   const beats: Array<[number, number, string]> = [];
   const pieces: Array<{ k: PieceKind; x0: number; x1: number }> = [];
+  /** World 1's bowl gates built (R-159.1, bowlGate) */
+  const BOWL_GATES: BowlGate[] = [];
   /** the stomp vaults built (R-159.1): the snake, the gap's edges, and whether a soft pit is under it */
   const vaults: Array<{ x: number; edge: number; far: number; soft: boolean }> = [];
   let pid = 1, vid = 1, tid = 1, eid = 1, cid = 1, seedN = 0;
@@ -1375,7 +1377,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     mushroomCache: () => mushroomCache(), highRoadOver: () => highRoadOver(), homeRun: (kinds) => homeRun(kinds),
     trailUp: (n) => trailUp(n), petalClimb: () => petalClimb(), petalPerch: () => petalPerch(), splitTrail: () => splitTrail(),
     dipArc: () => dipArc(), doubleArcs: (t) => doubleArcs(t),
-    snakeBranches: (n, y) => snakeBranches(n, y), ropeGap: (g, b, t) => ropeGap(g, b, t), snakeWalk: (m) => snakeWalk(m), snakeLedge: () => snakeLedge(), snakeVault: (soft) => snakeVault(soft),
+    snakeBranches: (n, y) => snakeBranches(n, y), ropeGap: (g, b, t) => ropeGap(g, b, t), snakeWalk: (m) => snakeWalk(m), snakeLedge: () => snakeLedge(), snakeVault: (soft) => snakeVault(soft), bowlGate: () => bowlGate(),
     climbTree: (t) => climbTree(t), fernTree: () => fernTree(), glideLookout: () => glideLookout(), creakRun: () => creakRun(),
     chain: (n, soft, rocks) => chain(n, soft, soft ? 'hollow' : 'gorge', rocks), kapok: () => kapok(), canopy: (g) => canopy(g), highRun: () => highRun(),
     logPuzzle: (b) => logPuzzle(b), seesawRoom: (d) => seesawRoom(d), seesawTwist: () => seesawTwist(),
@@ -2148,6 +2150,31 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     } as Enemy);
   };
 
+  /**
+   * R-159.1 the bowl gate, the kick's payoff: a coiled boa near the start of a long flat stretch (its bowling lane), a plate at the
+   * stretch's end and the way on shut by a gate under a stone pillar too tall to jump. Kicked, the boa rolls down the lane onto the plate
+   * and the gate opens (engine.ts); a punch is TOUGH and a stomp bounces, so the kick is the only way on.
+   */
+  function bowlGate() {
+    const x0 = x;
+    run(R.r(280, 320));
+    const lane0 = x;
+    const coilX = Math.round(lane0 + 130);
+    boa(coilX, G, -1);
+    const boaId = eid - 1;
+    run(Math.round(R.r(560, 600)));
+    const plateX = Math.round(x - 46);
+    const gateX = Math.round(x);
+    // (the gate: a solid wall the gate's art covers, 'hidden' so the ground's look is not drawn on it; the pillar above is real stone)
+    const gate: Platform = { id: pid++, x: gateX, y: G - 112, width: 44, height: 112, type: 'solid', art: 'hidden' };
+    P.push(gate);
+    P.push({ id: pid++, x: gateX - 18, y: G - 560, width: 80, height: 560 - 112, type: 'solid', style: 'moss_stone', soil: true });
+    BOWL_GATES.push({ plateX, groundY: G, gatePlat: gate.id, gateX: gateX + 22, boaId, coilX, coilY: G - 16 });
+    run(Math.round(R.r(220, 260)));
+    expert += (x - x0) / RUN + 4;
+    pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
   /** a wide branch over soft moss with one boa coiled in the middle of it: the way on is across the branch, past the guard */
   function guardBranch(low = false) {
     const x0 = x;
@@ -2398,6 +2425,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     for (const b of BUSHES) if (b.x >= x0) b.x += dx;
     for (const z of ZONES) if (z.x0 >= x0) { z.x0 += dx; z.x1 += dx; }
     for (const r of RIVERS) if (r.x0 >= x0) { r.x0 += dx; r.x1 += dx; if (r.safe) r.safe = { ...r.safe, backX: r.safe.backX + dx }; }
+    for (const g of BOWL_GATES) if (g.plateX >= x0) { g.plateX += dx; g.gateX += dx; g.coilX += dx; }
+    for (const v of vaults) if (v.x >= x0) { v.x += dx; v.edge += dx; v.far += dx; }
     for (const e of E) if (e.x >= x0) { e.x += dx; e.patrolMinX += dx; e.patrolMaxX += dx; }
     for (const c of C) if (c.x >= x0) c.x += dx;
     for (const h of hints) if (h.x >= x0) h.x += dx;
@@ -5326,6 +5355,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     waterY: WATER,
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces: pieces.map((p) => ({ k: p.k, x0: p.x0, x1: p.x1 })), timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
     ...(RIVERS.length ? { rivers: RIVERS } : {}),
+    ...(BOWL_GATES.length ? { bowlGates: BOWL_GATES } : {}),
     ...(GZ.length ? { zones: GZ } : {}),
     proto: {
       ...(W3D.length ? { w3decor: W3D } : {}),

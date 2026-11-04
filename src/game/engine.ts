@@ -73,6 +73,7 @@ import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
 import { drawGoldSnake } from './goldSnake.ts';
+import { drawKitArt } from './puzzleArt.ts';
 import { drawTayraSprite } from './tayraSprite.ts';
 import { drawHarpyFallback, drawHarpySprite } from './harpySprite.ts';
 import { drawOcelotSprite } from './ocelotSprite.ts';
@@ -145,7 +146,7 @@ import { sound } from './audio.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
-import { TRICK, dazeFor, placeVineSnake, stepVineSnake, tagWorld1, trickHit, trickStompBounces, vineSnakeAwake, type TrickHit } from './w1Tricks.ts';
+import { BOWL, TRICK, bowlPressed, dazeFor, placeVineSnake, recoil, stepVineSnake, tagWorld1, trickHit, trickStompBounces, vineSnakeAwake, type TrickHit } from './w1Tricks.ts';
 import { drawCoilGlint, drawRollingBall, drawTrickStars, drawVineSnake, rollAngle, withCoilSqueeze } from './w1TrickDraw.ts';
 import { drawTurtle, drawTurtleSprite } from './turtleArt.ts';
 import { drawGuardSprite } from './guardArt.ts';
@@ -2760,6 +2761,34 @@ export class GameEngine {
         if (o === s || o.defeated || o.type === 'eagle' || Math.abs(o.x - s.x) > 34 || Math.abs(o.y - s.y) > 30) continue;
         o.hp = 0;
         this.knockOut(o, (s.slideDir ?? 1) as 1 | -1, 'BOWLED OVER!');
+      }
+    }
+    // World 1's bowl gates (w1Tricks.ts): the rolling boa on the plate opens the gate; a boa lost another way coils there again
+    for (const g of this.currentStage.bowlGates ?? []) {
+      if (g.open) {
+        g.openT = (g.openT ?? 0) + dt;
+        continue;
+      }
+      const b = this.enemies.find((q) => q.id === g.boaId);
+      if (!b) continue;
+      if (bowlPressed(g, b)) {
+        g.open = true;
+        g.openT = 0;
+        b.x = g.plateX;
+        b.state = 'rolled';
+        const gp = this.platforms.find((q) => q.id === g.gatePlat);
+        if (gp) gp.y += 5000;
+        this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
+        sound.playHitImpact(true, 'armor');
+        this.addFloatingText('CLICK!', g.plateX, g.groundY - 40, '#fef08a');
+        continue;
+      }
+      if (b.defeated) {
+        g.lostT = (g.lostT ?? 0) + dt;
+        if (g.lostT >= BOWL.respawn && b.koTimer > (b.koLife ?? 0)) {
+          g.lostT = 0;
+          recoil(b, g);
+        }
       }
     }
     separateHunters(this.enemies, dt);
@@ -6307,6 +6336,13 @@ export class GameEngine {
         if (e.defeated || e.type !== 'eagle' || !this.onScreen(e.x, e.y, 300)) continue;
         drawGroundShadow(ctx, rig, this.platforms, e.x, e.y + e.height * 0.5, e.width * 0.45, 0.8);
       }
+    }
+
+    // World 1's bowl gates (w1Tricks.ts): the World 1 kit's plate (pressed once the ball is on it) and its woven gate under the pillar
+    for (const g of this.currentStage.bowlGates ?? []) {
+      if (!this.onScreen(g.plateX, g.groundY, 500)) continue;
+      drawKitArt(ctx, g.open ? 'platePressed' : 'plate', g.plateX, g.groundY + 4, { scale: 1.15 });
+      drawKitArt(ctx, g.open ? 'gateOpen' : 'gateShut', g.gateX, g.groundY + 2, { w: 100, h: 120 });
     }
 
     // Render Enemies

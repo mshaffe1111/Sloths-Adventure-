@@ -82,6 +82,9 @@ export interface GeneratedStage {
   waterSigns?: Array<{ x: number; y: number }>;
   safeWater?: Array<{ x0: number; x1: number; backX: number; backY: number }>;
   waterHint?: { x: number; text: string; passX: number; shown?: boolean };
+  /** World 1's bowl gates (R-159.1, w1Tricks.ts): a coiled boa on its ground, a plate at the ground's end and a gate beyond it under a
+   *  stone pillar; the boa kicked into a roll presses the plate and the gate opens (a boa lost another way coils there again) */
+  bowlGates?: import('./w1Tricks.ts').BowlGate[];
   /** World 2: rivers with drifting logs (their water, and the surface that is fatal) */
   rivers?: import('./river.ts').RiverZone[];
   /** Worlds 3 and 4: spore clouds and wind gusts that wake on a rhythm (see zones.ts) */

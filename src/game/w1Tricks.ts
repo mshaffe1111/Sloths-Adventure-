@@ -155,3 +155,38 @@ export const vineIsStiff = (enemies: Enemy[], vineId: number) =>
 /** the vine snake awake on this liana, if any (grabbing the liana then is a bite) */
 export const vineSnakeAwake = (enemies: Enemy[], vineId: number) =>
   enemies.find((e) => e.trick === 'vine' && e.vineId === vineId && !e.defeated && !((e.stagger ?? 0) > 0));
+
+// ---------------------------------------------------------------------------------------------------
+// The bowl gate (R-159.1): the kick's payoff, a switch only the rolling boa presses
+// ---------------------------------------------------------------------------------------------------
+
+export interface BowlGate {
+  /** the plate (its middle) on the ground, where the ball stops */
+  plateX: number;
+  groundY: number;
+  /** the gate's solid platform (its id) and where it stands */
+  gatePlat: number;
+  gateX: number;
+  /** the boa that bowls it: where it lies coiled (it coils there again if it is lost without pressing the plate) */
+  boaId: number;
+  coilX: number;
+  coilY: number;
+  open?: boolean;
+  /** seconds since the boa was lost (the respawn waits a moment) */
+  lostT?: number;
+  /** seconds since it opened (the gate's swing) */
+  openT?: number;
+}
+export const BOWL = { press: 26, respawn: 2.2 } as const;
+
+/** has the rolling boa reached the plate (it stops there and the gate opens) */
+export const bowlPressed = (g: BowlGate, e: Enemy) =>
+  !g.open && e.id === g.boaId && e.trick === 'coil' && e.state === 'roll' && Math.abs(e.x - g.plateX) < BOWL.press;
+
+/** a fresh coiled boa where the lost one lay (the gate is the way on: it can always be bowled again) */
+export function recoil(e: Enemy, g: BowlGate): void {
+  Object.assign(e, {
+    x: g.coilX, y: g.coilY, vx: 0, vy: 0, hp: 3, defeated: false, koTimer: 0, koLanded: false, koVx: 0, koVy: 0, koSpin: 0, koAngle: 0,
+    recoil: 0, stagger: 0, staggerMax: 0, knockVx: 0, hitFlashTimer: 0, state: 'coil', stateT: 0, attackCooldown: 1.5, slideDir: undefined,
+  });
+}
