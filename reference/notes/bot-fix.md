@@ -36,6 +36,7 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 1:45 PM ET: bot-fix 922217f5 handed to the lead for merging. Full gate green on 6c57e035 (2304/0/2; build, art, known, fun, clip, draw PASS); roadmapcheck's one fail came from the lead branch (research-ledger.md not in backticks in the methods README), fixed here and re-run PASS. Stopped for today on the lead's word; no rounds armed. My slip: a stray `git checkout origin/main --` detached HEAD for a moment, with nothing changed; always name the branch.
 - 2026-11-04 1:12 PM ET: the lead ACCEPTED the lift-off fix (start 12:31, report 1:04, accept 1:04 PM ET; 1 h planned) and merges it now. On bot-fix: KID_RUNS_59 -> [10, 15, 17, 16, 4, 7], 5-9 Easy goal 5 -> 10; lead branch merged; full gate running. Supervisor rounds stopped for today (lead, budget cut); the builders' planned-vs-actual waits for tomorrow.
 - **Stuck waits to file (for the roadmap keeper), found by the lift-off fix (reference/qa-reports/bot-fix/liftoff/README.md):** with the thumb no longer walking him on, an intend() wait never ends on:
   1. **4-6**, both bots: 2 of 3 seeds time out at 720 s (was 0); 14,600-20,000 frames of meaning no steer. Waits for tomorrow (lead).
