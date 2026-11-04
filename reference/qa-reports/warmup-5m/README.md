@@ -210,3 +210,16 @@ New method file: `reference/methods/perf-measure.md` (it didn't exist). Proposed
 - `protoArt.ts`: the World 5 trunk clip.
 - `sheetBake.ts`: `warmSheetMips`.
 - `stageReady.ts`.
+
+## Pause, rotate, resume (lead's check, 1:45 PM)
+
+Rotating the phone never went through the deferred path: `handleResize` (engine.ts 981) still calls `resizeCanvas()` at once. The two
+deferred sites are the governor's step down and its step back up, and both run only inside the loop while it isn't paused. Checked
+anyway on the dev build:
+- **Upright to sideways** (`pause-rotate-upright-to-sideways.jpg`): paused, the canvas is 896x1996. Rotated while paused, it is
+  1996x896 at once, and the game behind the menu is drawn, not stretched or blank. Resumed, it plays sideways, and a later step to q1
+  resized cleanly to 1497x672.
+- **Sideways to upright** (`pause-rotate-sideways-to-upright.jpg`): 1497x672 paused, 672x1497 rotated while paused, plays upright on
+  resume.
+
+No change needed.
