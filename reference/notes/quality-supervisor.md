@@ -31,3 +31,9 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - Venom Fang: boss bot wins Normal in ~20 s, 0-1 hits taken.
 - Bot: 1-4 and 1-7 time out at 360 s with 11-19 rescues (bot limits or stage problems: check clips).
 ## Deadline (lead, 2026-11-04 3:02 AM ET): team stops 5:00 AM ET. No step after 4:40 AM ET that can't finish by 5. By 5: push clips + baseline (DRAFT if unfinished), notes current, one short state message to lead, idle.
+
+## State 2026-11-04 ~3:45 AM ET
+- Baseline DRAFT written: reference/qa-reports/world1-baseline.md (1-1..1-9 judged; score 38/100; 1-10 pending its clip). Method: reference/methods/quality-review.md.
+- Clips: /tmp/claude-0/qs/clips (full), review copies -> reference/qa-reports/world1-baseline/clips (compress.sh). Stills/sheets in world1-baseline/stills.
+- Validator (fix-petals, fun-validator bca329b7): 5 fixes in; my full review of the 9 pages + overview is DUE AFTER RESTART. Asked it for 1-8 chase closest-approach stills and a "structure, not delight" line (validator ranks 1-1 28; Matt called 1-1 best).
+- Open: re-record 1-1..1-3 as a phone; after the bot's bounce-wall fix (lead -> fix-petals after restart) re-judge challenge.
