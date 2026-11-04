@@ -3,8 +3,8 @@
 **Bot note (2026-11-04 11:10 AM ET):** the clips use the old first-timer bot (it couldn't climb the mushroom walls). Its play numbers
 are corrected below where the fixed bot (fun-validator 2e61ffd8, R-150.7/8) changes a claim. Fixed-bot runs, adult seed 1: 1-1 shrine (3
 rescues), 1-2 sealed 97/98, 1-3 shrine 16/16, 1-4 shrine 2:34 (2 rescues), 1-5 sealed 92/96, 1-6 shrine (11 lives to water), 1-7 shrine
-(0 rescues, 1 hit), 1-8 shrine (0 lives, 0 rescues), 1-9 sealed 13/20. Sideways clips with the fixed bot are being recorded for
-world1-baseline/clips-fixedbot/.
+(0 rescues, 1 hit), 1-8 shrine (0 lives, 0 rescues), 1-9 sealed 13/20. Sideways clips with the fixed bot (recorded 11:30 AM ET, fun-validator
+2e61ffd8, game code identical to the lead branch) are in world1-baseline/clips-fixedbot/: the like-for-like "before" for every rebuild.
 
 **Status: complete for the first pass**, all ten judged in order. The open items are under "Open". All ten are judged
 in both orientations. Started 2026-11-04 2:32 AM ET.
