@@ -316,3 +316,28 @@ test('the bowl gate: a boa kicked the wrong way is lost, and a fresh one coils i
   assert.equal(b.state, 'coil');
   assert.ok(Math.abs(b.x - g.coilX) < 2);
 });
+
+test('mashing never stacks hit words: one word at a time over the boa and over the lunge snake (QS polish, R-159.1)', () => {
+  const words = (r: RealPlay, e: Enemy) =>
+    (r.e as unknown as { floatingTexts: { x: number; owner?: number; text: string }[] }).floatingTexts.filter((f) => Math.abs(f.x - e.x) < 140);
+  for (const [type, trick, state] of [['boa', 'coil', 'coil'], ['boa', 'coil', 'rear'], ['snake', 'lunge', 'patrol']] as const) {
+    for (const move of ['punch', 'kick'] as const) {
+      if (type === 'boa' && move === 'kick') continue;
+      const a = animal(1, type, 340, { trick, state, stateT: 0, attackCooldown: type === 'boa' ? 0 : 5 });
+      const r = world([a]);
+      r.safe = true;
+      r.stand(300, GROUND);
+      r.p.facing = 1;
+      let most = 0;
+      const seen = new Set<string>();
+      for (let i = 0; i < 70; i++) {
+        r.frame(i % 7 === 0 ? (move === 'punch' ? { punch: true } : { kick: 1 }) : {});
+        const w = words(r, a);
+        for (const f of w) seen.add(f.text);
+        most = Math.max(most, w.length);
+      }
+      assert.ok(seen.size > 0, `${type} ${state} ${move}: a word shows`);
+      assert.ok(most <= 1, `${type} ${state} ${move}: at most one word over it at once (saw ${most}: ${[...seen].join(' ')})`);
+    }
+  }
+});

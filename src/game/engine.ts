@@ -4309,7 +4309,7 @@ export class GameEngine {
       this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
       p.vx -= p.facing * 60;
       if (!this.coilTold) this.guide('Too tough to punch while it is coiled. Kick it!', 3);
-      else this.addFloatingText('TOUGH!', e.x, e.y - 30, '#cbd5e1');
+      else this.hitWord(e, 'TOUGH!', e.x, e.y - 30, '#cbd5e1');
       this.coilTold = true;
       return;
     }
@@ -4321,7 +4321,7 @@ export class GameEngine {
       this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
       e.stagger = e.staggerMax = 0.35;
       staggerPredator(e);
-      this.addFloatingText('STOPPED!', e.x, e.y - 30, '#cbd5e1');
+      this.hitWord(e, 'STOPPED!', e.x, e.y - 30, '#cbd5e1');
       return;
     }
     if (th === 'nothing') {
@@ -4351,7 +4351,7 @@ export class GameEngine {
       e.stateT = 0;
       e.slideDir = dir;
       e.stagger = 0;
-      this.addFloatingText('WHOOSH!', e.x, e.y - 30, '#fef08a');
+      this.hitWord(e, 'WHOOSH!', e.x, e.y - 30, '#fef08a');
       return;
     }
     // dazed (stars) or stiff: it does nothing (the game holds it, not stepping its brain) until the time runs out
@@ -4359,7 +4359,7 @@ export class GameEngine {
     e.vx = 0;
     staggerPredator(e);
     // (the word above the stars, not on them)
-    this.addFloatingText(th === 'stiffen' ? 'STIFF!' : 'DAZED!', e.x, e.y - 100, '#fef08a');
+    this.hitWord(e, th === 'stiffen' ? 'STIFF!' : 'DAZED!', e.x, e.y - 100, '#fef08a');
   }
 
   private hitBoss(b: BossEntity, m: MoveSpec, box: Rect, hr: Rect) {
@@ -4743,7 +4743,8 @@ export class GameEngine {
         p.vy = -430;
         sound.playHitImpact(false, 'armor');
         this.spawnSparkBurst(p.x, head.y, '#cbd5e1');
-        this.addFloatingText('ARMORED!', e.x, head.y - 14, '#cbd5e1');
+        if (e.trick) this.hitWord(e, 'ARMORED!', e.x, head.y - 14, '#cbd5e1');
+        else this.addFloatingText('ARMORED!', e.x, head.y - 14, '#cbd5e1');
         return;
       }
       const dir: 1 | -1 = p.vx >= 0 ? 1 : -1;
@@ -7068,11 +7069,20 @@ export class GameEngine {
       }
       y = Math.max(cam.y + fs + 7, y);
       placed.push({ x0: x - half, x1: x + half, y });
+      // (a hit word pops in: a touch bigger for its first 0.15 s, so a replaced word still reads as a new hit)
+      const pop = ft.owner === undefined ? 1 : 1 + 0.3 * Math.max(0, 1 - (ft.maxLife - ft.life) / 0.15);
+      if (pop > 1) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(pop, pop);
+        ctx.translate(-x, -y);
+      }
       ctx.lineWidth = 3;
       ctx.strokeStyle = 'rgba(20, 14, 24, 0.7)';
       ctx.strokeText(ft.text, x, y);
       ctx.fillStyle = ft.color;
       ctx.fillText(ft.text, x, y);
+      if (pop > 1) ctx.restore();
     }
     ctx.restore();
   }
@@ -8246,6 +8256,13 @@ export class GameEngine {
     this.stageHint = null;
     this.bossGuideUp = false;
     this.callbacks.onGuide?.('', 0);
+  }
+
+  /** a hit word on one animal (World 1's tricks): it replaces that animal's last word, with a small pop, so mashing never builds a
+   *  column of TOUGH! TOUGH! STOPPED! over it (QS, R-159.1) */
+  private hitWord(e: Enemy, text: string, x: number, y: number, color: string) {
+    this.floatingTexts = this.floatingTexts.filter((ft) => ft.owner !== e.id);
+    this.floatingTexts.push({ id: Math.random(), text, x, y, color, life: 0.8, maxLife: 0.8, scale: 1, owner: e.id });
   }
 
   private addFloatingText(text: string, x: number, y: number, color: string, life = 0.8) {

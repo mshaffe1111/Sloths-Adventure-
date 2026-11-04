@@ -483,6 +483,8 @@ export interface FloatingText {
   life: number;
   maxLife: number;
   scale: number;
+  /** the animal a hit word belongs to: a new word on it replaces this one (World 1's tricks: words never stack) */
+  owner?: number;
 }
 
 export interface Camera {
