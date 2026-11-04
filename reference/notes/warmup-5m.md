@@ -87,13 +87,14 @@ Done! Checked 605 packages (no changes) [12.00ms].
   - card for the live testers' link;
   - plan "The measured release" with its fixed end.
 - Proven: gpuDefaultOff.cjs PASS, 48/48, on a production build (4674d7f6). w8-rope2: no engine.ts clash.
-- To do:
-  - drawWatchCost.cjs (lead: at most about 1 ms a frame, or cut it to drawImage/get/putImageData);
-  - the full gate;
-  - gpuLook 0 px on the default path;
-  - firstframes against main;
-  - report to the lead, then the release clerk builds it.
-  - ETA green about 3-3:30 PM ET.
+- GREEN at 1:44 PM ET, 11-04 (32c57be7; report reference/qa-reports/webgl-1m/README.md):
+  - full gate;
+  - gpuDefaultOff 48/48;
+  - drawWatch 0.1-0.2 ms a frame.
+  Sent to the lead for tonight's release with W1 1-1..1-5; the release clerk builds from warmup-5m.
+- Next, after it's live: read Matt's #ctest and #ctest&gpuback=0 pairs per phone (the card). Above all the OnePlus: its slowdraw lines
+  name the R-3.14 cause. Then the ship-or-pull decision, and delete the switch that day.
+- Dropped: playerLook.cjs (cross-load pixel noise, lesson in webgl.md). Not run: firstframes (not in tonight's bar).
 
 ## Pitfalls (mine)
 - Look comparisons:
