@@ -304,3 +304,22 @@ for (const [name, who] of WHO) {
     assert.ok(made >= 4, notes.join('; '));
   });
 }
+
+for (const [name, who] of WHO) {
+  test(`${name}: when he means to stop, his late lift-off lasts at most releaseMax frames, then the thumb is off`, () => {
+    // (bug, w8-rope2 2026-11-04: the lift-off re-armed itself every frame, so a "wait here" ({}) kept him walking until he pressed or turned)
+    for (const seed of [1, 2, 3, 4, 5]) {
+      const r = new FirstTimerRun('1-1', seed, who, { route: [{ x: 100, y: Y }], cap: 5, rescueAfter: 1000 });
+      const thumb = (want: Pad): Pad => (r as unknown as { thumbify(w: Pad): Pad }).thumbify(want);
+      for (let i = 0; i < 30; i++) thumb({ right: true });
+      let held = 0;
+      for (let i = 0; i < 60; i++) if (thumb({}).right) held++;
+      assert.ok(held <= who.releaseMax[1], `seed ${seed}: the thumb stayed on ${held} frames after he let go (most ${who.releaseMax[1]})`);
+      // and the next lift-off works again
+      for (let i = 0; i < 10; i++) thumb({ left: true });
+      let heldL = 0;
+      for (let i = 0; i < 60; i++) if (thumb({}).left) heldL++;
+      assert.ok(heldL <= who.releaseMax[1], `seed ${seed}: second lift-off held ${heldL} frames`);
+    }
+  });
+}
