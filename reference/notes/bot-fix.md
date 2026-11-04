@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 10:41 AM ET
+Last updated: 2026-11-04 10:43 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -26,8 +26,9 @@ beat and by how much, put it at the TOP of the digest, and get the how into its 
 then per helper, then the standard-work line.
 **Planned vs actual (Matt 11-04, in SUPERVISOR.md):** every round, per running job: expected (ROADMAP.md estimate or method best) vs
 actual; digest LEADS with jobs over / heading over: cause (one line, never "it's hard") + barrier-removal step (one line). Real hours at
-each job's end go to the roadmap keeper. Estimates (ROADMAP on roadmap-keeper, 11-04): R-159.1 9.5 h (7-14), R-3.2 2 h, R-150.8 1.5 h,
-R-155 30 h total (1-5 part: owner/estimate to find).
+each job's end go to the roadmap keeper. Planned times (roadmap keeper 10:42; helper running hours, review/Matt waits not counted): R-3.2 start 9:35, 2 h, end ~11:35;
+R-150.8 start 10:25, 1.5 h, end ~11:55, then R-155 1-5 plan (~0.75 h/stage); R-159.1 start 8:00, 9.5 h (7-14), end ~5:30 PM (3-10 PM);
+R-6.38 pits (w8-rope2) 3 h. At each job's end: real start + accept times to the roadmap keeper.
 Branch contains origin/main (git merge-base --is-ancestor); gates (all of gates.md; drawcheck in a container = "CI at merge", never
 "pass"); checkbase on any "after" sheets, newest stills opened myself, upright AND sideways; report has Method used / Lessons applied /
 Method update and names rough spots; notes file current; queue read; HF spend inside Matt's list; moving (quiet 60+ min: nudge).
