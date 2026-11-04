@@ -1,12 +1,12 @@
 # Ledger: GEMINI-CRITICAL-AGENTS.txt (how to set up AI helpers so they think)
 
-Helper: research dissection, 2026-11-04 evening (5:09-5:45 PM ET). Method: `reference/methods/research-ledger.md`.
+Helper: research dissection, 2026-11-04 evening (5:09-5:25 PM ET). Method: `reference/methods/research-ledger.md`.
 Source: `reference/research/engine-2026-11-04/GEMINI-CRITICAL-AGENTS.txt`, 161 lines, every line read (L1-157 body, L159-161 the
 66 works cited). "L" = line in that file.
 Compared against: `reference/LEAD-PLAYBOOK.md` (§3, §4, §7, 8a, 8d-8h), `reference/methods/` (README, quality-review, research-ledger),
 `reference/engine/LEAD-SKETCH.md`, `reference/CONTINUOUS-IMPROVEMENT.md` D30 (line 115), `reference/STATUS.md` 927-931 (tonight's three
 helpers), `reference/research/GEMINI-ENGINE-PROMPT.md` 70-86 (what Matt asked Gemini), `reference/GEMINI-LEDGER.md`.
-Grep check (5:30 PM ET): the words critic, premortem, devil, anchor(ing of helpers), bias, temperature appear in NONE of LEAD-PLAYBOOK,
+Grep check (5:19 PM ET): the words critic, premortem, devil, anchor(ing of helpers), bias, temperature appear in NONE of LEAD-PLAYBOOK,
 roles/*, LESSONS, LEADER-STANDARD-WORK, PARTNER. D30's countermeasure ("a fresh, unanchored critic attack the pick (LEAD-PLAYBOOK, to
 add)") is still not in the playbook. So almost everything below is new to our standards.
 

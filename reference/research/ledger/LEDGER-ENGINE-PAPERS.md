@@ -1,6 +1,6 @@
 # Ledger: the Carmo thesis and the Tanagra paper (engine sources, 2026-11-04)
 
-Helper: research dissection, 2026-11-04 evening (5:09-5:55 PM ET). Method: `reference/methods/research-ledger.md`.
+Helper: research dissection, 2026-11-04 evening (5:09-5:25 PM ET). Method: `reference/methods/research-ledger.md`.
 Sources, every line read:
 - `reference/research/engine-2026-11-04/CARMO-thesis-2024.txt`, 1402 lines ("C" + line). Pedro Neves Souza Carmo, "Collapsing Through
   Anxiety: a Novel Approach to 2D Side Scrolling Platformer Level Generation", Allegheny College senior thesis. The cover says "22 July
