@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProtoStage, EXPERT_SECONDS, G, GUARD_EASY_19 } from './protoStage.ts';
+import { buildProtoStage, EXPERT_SECONDS, G, GUARD_GOAL_19 } from './protoStage.ts';
 import { goalHave, withGoals } from './goals.ts';
 import { badPickups } from './flowerReach.ts';
 import type { LevelConfig } from './types.ts';
@@ -11,14 +11,17 @@ const cfg = {
 } as LevelConfig;
 const SEEDS = Array.from({ length: 20 }, (_, i) => 1 + i * 41);
 
-test("1-9: every roll keeps the plan, asks Matt's share of its animals on Normal (75%, in his 70-80% band) and its counted goal on Easy, and takes two minutes", () => {
+test('1-9: every roll keeps the plan, asks for 16 with about one and a half times that to fight, and takes two minutes', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-9');
     assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Learn', 'Test', 'Twist', 'Finish'], `seed ${s}`);
+    assert.equal(st.config.targetCount, GUARD_GOAL_19);
+    const total = st.enemies.filter((e) => e.x < st.exitTotemX).length + st.proto.ring!.waves.flat().length;
+    assert.ok(total >= GUARD_GOAL_19 * 1.4, `seed ${s}: ${total} to fight`);
+    // (and as it loads, Normal asks Matt's share, in his 70-80% band)
     const have = goalHave(st as never)!;
     const goal = withGoals(st).config.targetCount;
     assert.ok(goal >= have * 0.7 && goal <= have * 0.8, `seed ${s}: ${goal} of ${have}`);
-    assert.equal(st.easyGoal, GUARD_EASY_19);
     assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 15, `seed ${s}`);
     assert.equal(st.proto.movedPickups, 0, `seed ${s}`);
     assert.equal(badPickups({ platforms: st.platforms, vines: st.vines, ropes: st.ropes, waterY: st.waterY }, st.collectibles).length, 0, `seed ${s}`);

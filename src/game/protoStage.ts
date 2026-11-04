@@ -299,9 +299,9 @@ export const CATCH_HIGH_DX = -10;
 /** 1-5 More Petals asks for 77 (a step up from 1-2's 72; was 90 before the six-a-screen cap left it 108-122), and holds about one and
  *  a half times that */
 export const PETAL_GOAL_15 = 77;
-/** 1-9 The Boa's Branches: Normal asks Matt's share of its animals, 75% (goals.ts withGoals; the lead 11-04: his band stands, no
- *  exception); Easy asks what the fixed kid bot made on every one of five rolls, counted on Easy's own stage (easyGoalCounted) */
-export const GUARD_EASY_19 = 8;
+/** 1-9 The Boa's Branches asks for 16 (goals.ts withGoals sets Normal to Matt's share and Easy to its floor, as on main: the lead 11-04,
+ *  1-9's own counted goals wait for its rework) */
+export const GUARD_GOAL_19 = 16;
 /** 3-3 asks for 12 prowlers driven off (the stage holds about one and a half times that) */
 export const PROWLER_GOAL_33 = 12;
 /** 3-9 The Prowler's Ring: how many prowlers to drive off (the ring's own waves count too, on top of these) */
@@ -5597,7 +5597,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
   cid = heartsAtFlags(C, checkpoints, cid);
   // the puzzle rooms' own platforms (a seesaw's two ends, a gate's door): added once, here, so the game and the check see the same ground
   const kit: KitExtras | undefined = ROOMS.length ? { rooms: ROOMS } : undefined;
@@ -5607,7 +5607,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   return {
     config: cfg,
     // (1-3 sets its own goals: withGoals keeps a stage's own when it gives Easy's, goals.ts)
-    ...(plan === '1-3' ? { easyGoal: SNAKE_EASY_13, easyGoalCounted: true } : plan === '1-9' ? { easyGoal: GUARD_EASY_19, easyGoalCounted: true } : {}),
+    ...(plan === '1-3' ? { easyGoal: SNAKE_EASY_13, easyGoalCounted: true } : {}),
     ...(kit ? { kit } : {}),
     trees: T,
     platforms: P,

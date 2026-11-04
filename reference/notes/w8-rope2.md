@@ -76,3 +76,6 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
   walks into a punch's reach (72 px) unless it is rearing or striking at him. A hop onto a dazed snake at a run carried him past it; now
   his thumb steers the fall onto it, as at the vault. 5-9's kid runs moved (median still 10, goal unchanged; KID_RUNS_59 re-recorded).
 - 1-3's sleeper sat 1 s past Dot's line, so a first-timer was on it before taking the line in (heed 0.9 s); it lies further along now.
+- The lead 11-04 3:18 PM ET: 1-9 ships tonight with main's goal method (config 16; withGoals: Normal the share, Easy its floor); its
+  counted goals and the three short flavours (trunks, walls, leaps) wait for tomorrow's 1-9 rework. The R-159.1 fixes on 1-9 (vault
+  snake respawn, Easy soft pit) stay: stage19 and groundwork's band test green with them.
