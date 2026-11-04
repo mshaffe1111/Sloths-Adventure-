@@ -82,15 +82,19 @@ readback by construction. The phone check is `MATT-PHONE-CHECK.md`.
 
 | Stage | Build | Worst frame (ms) | Frames over 100 | Avg frame (ms) | Load, open to stage live (ms) |
 |---|---|---|---|---|---|
-| 1-1 | before | 83, 83, 117 | 0, 0, 3 | 23.3, 21.1, 22.5 | 4331, 4541, 3857 |
-| 1-1 | after | 67, 67, 267 | 0, 0, 1 | 21.1, 22.6, 23.1 | 4465, 5186, 5472 |
-| 5-M | before | 133, 100, 100 | 2, 0, 0 | 25.0, 23.5, 24.4 | 4649, 4837, 4632 |
-| 5-M | after | 133, 133, 100 | 4, 4, 0 | 27.9, 26.3, 27.4 | 5543, 5771, 5903 |
-| 8-1 | before | 183, 67, 83 | 11, 0, 0 | 24.1, 19.6, 20.2 | 5479, 5620, 5765 |
-| 8-1 | after | 67, 67, 117 | 0, 0, 1 | 20.3, 22.0, 20.7 | 5719, 5758, 5920 |
+| 1-1 | before | 83, 117, 83 | 0, 1, 0 | 21.2, 21.3, 20.2 | 4156, 4731, 4465 |
+| 1-1 | after | 83, 83, 67 | 0, 0, 0 | 21.9, 23.4, 22.1 | 4706, 5720, 5376 |
+| 5-M | before | 100, 100, 233 | 0, 0, 4 | 24.8, 23.9, 27.7 | 5091, 4649, 5241 |
+| 5-M | after | 133, 83, 100 | 2, 0, 1 | 25.5, 24.4, 27.9 | 5218, 5058, 5194 |
+| 8-1 | before | 67, 83, 83 | 0, 0, 0 | 20.9, 20.6, 18.5 | 5465, 5573, 5587 |
+| 8-1 | after | 100, 67, 133 | 0, 0, 2 | 22.8, 21.6, 20.8 | 5759, 5905, 5593 |
 
-- **Frames:** no consistent change (noise both ways); the drawing is the same 2D path here.
-- **Load: worse here.** Medians: 1-1 4331 → 5186 (+0.86 s), 5-M 4649 → 5771 (+1.12 s), 8-1 5620 → 5758 (+0.14 s).
+(The final build, 88c04b03's code with Pixi trimmed. Before = the lead branch f24283dd. Same session, nothing else running.)
+
+- **Frames:** the average frame reads 0-2 ms higher after on 1-1 and 8-1. The drawing is the same 2D path here (the GPU backdrop fell
+  back before play), so it's either noise or the idle WebGL context. I can't separate the two here. The worst frames are mixed.
+- **Load: worse here.** Medians: 1-1 4465 → 5376 (+0.91 s), 5-M 5091 → 5194 (+0.10 s), 8-1 5573 → 5759 (+0.19 s). 1-1's +0.9 s
+  repeated across three sessions, so I take it as real.
   - An earlier version cost +0.9 to +1.2 s. Starting the layer alongside the loads and deciding a clear readback on the first copy cut it
     to this.
   - What's left is mostly this container's software GL: Pixi's start-up, about 50 ms of JS plus its chunk loads, runs WebGL on the CPU
