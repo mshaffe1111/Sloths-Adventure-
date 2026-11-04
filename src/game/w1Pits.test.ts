@@ -44,15 +44,23 @@ test("1-8's long branch: the holes between the chase's sections are falls", () =
   assert.deepEqual(g.map((q) => [q.x0, q.x1, q.kind]), [[500, 600, 'fall'], [1100, 1300, 'fall']]);
 });
 
-test('World 1, layout 1: the vault pits are soft pits with steps; the only floorless gaps outside 1-8 are 1-6\'s water', () => {
+test('World 1, layout 1: the vault pits are soft pits with steps; the only unmarked floorless gaps outside 1-8 are 1-6\'s water', () => {
   const soft: Record<string, number> = {}, falls: Record<string, number> = {};
   for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9']) {
     const g = findW1Pits(new RealPlay(id, 1).platforms);
     soft[id] = g.filter((q) => q.kind === 'soft').length;
-    falls[id] = g.filter((q) => q.kind === 'fall').length;
+    // (unmarked floorless gaps, read as water: a builder's marked drop, `pit: 'drop'`, is a pit and is not counted here)
+    falls[id] = g.filter((q) => q.kind === 'fall' && !q.drop).length;
     for (const q of g.filter((q) => q.kind === 'soft')) assert.ok((q.steps ?? []).length >= 1, `${id} ${q.x0}: a soft pit with no step out`);
   }
   assert.ok(soft['1-3'] >= 3 && soft['1-5'] >= 3 && soft['1-9'] >= 3, JSON.stringify(soft));
   assert.ok(falls['1-8'] >= 10, JSON.stringify(falls));
   for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5', '1-7', '1-9']) assert.equal(falls[id], 0, `${id}: ${falls[id]} floorless gaps`);
+});
+
+test("a floorless gap is water unless a builder marks a bank `pit: 'drop'`: then it is a painted drop", () => {
+  const water = findW1Pits([P(1, 0, G, 600, 90), P(2, 800, G, 600, 90)]);
+  assert.equal(water[0].drop, undefined);
+  const drop = findW1Pits([P(1, 0, G, 600, 90, { pit: 'drop' }), P(2, 800, G, 600, 90)]);
+  assert.equal(drop[0].drop, true);
 });

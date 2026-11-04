@@ -6,7 +6,10 @@
  *   - a soft pit (World 1's vault pits: a floor 100-200 px down, a miss costs nothing): the drop down its walls, dark earth and roots to
  *     its floor, the torn lip at each end where the ground is a bank of earth, and the bed of big leaves on its floor: a pit, and a soft one;
  *   - 1-8's long branch (a stage with the chase): the high drop under each gap, canopy tops far below in a mist band going black;
- *   - a floorless gap anywhere else in World 1 is water (1-6's, with Dot's "Careful, water!" and its sign): it keeps its painted water.
+ *   - a floorless gap a builder marks with `pit: 'drop'` on either bank (1-9's hard vault): the drop all the way down, over the water;
+ *   - an unmarked floorless gap anywhere else in World 1 is water (1-6's, with Dot's "Careful, water!" and its sign): it keeps its water.
+ * For the builders (W1-REBUILD-PLAN): a soft pit needs nothing but a floor SOFT_FLOOR to FALL_BELOW px down and a piece standing in it as
+ * its way out; a drop needs `pit: 'drop'` on a bank beside it; 1-8's gaps need nothing.
  * Everything is found once per stage from its platforms (the gaps never move: a breaking branch over a gap is not a floor) and drawn each
  * frame for the gaps in view, behind the platforms (protoArt.ts drawProtoScene, after the ground). Nothing here touches the HUD.
  */
@@ -51,9 +54,12 @@ export const SOFT_BELOW = 50;
 export const SOFT_FLOOR = 100;
 /** where 1-8's high drop is cut from: the canopy far below shows a little, then the mist band and the dark under it */
 export const HIGH_FROM = 0.2;
+/** a marked drop is nearly black this far under its lip (px) */
+export const DROP_DARK = 200;
 
 /** `steps`: the pieces standing in a soft pit above its floor (its way out): never painted over */
-export interface PitGap { x0: number; x1: number; top: number; kind: 'fall' | 'soft'; floor?: number; lipL: boolean; lipR: boolean; steps?: Array<[number, number, number, number]> }
+/** `drop`: a fall a builder marked as a painted drop (either bank's `pit: 'drop'`); an unmarked fall is water (1-6's) */
+export interface PitGap { x0: number; x1: number; top: number; kind: 'fall' | 'soft'; floor?: number; lipL: boolean; lipR: boolean; steps?: Array<[number, number, number, number]>; drop?: boolean }
 
 const floorish = (q: Platform) => !q.broken && q.type !== 'bouncy' && q.type !== 'fragile' && q.type !== 'drift' && q.type !== 'moving';
 
@@ -92,7 +98,8 @@ export function findW1Pits(platforms: readonly Platform[]): PitGap[] {
     const fl = under.filter((q) => q.x < x1 - 4 && q.x + q.width > x0 + 4);
     const top = Math.max(topAt(x0), topAt(x1));
     const lip = { lipL: bankAt(x0), lipR: bankAt(x1) };
-    if (!fl.length) out.push({ x0, x1, top, kind: 'fall', ...lip });
+    const marked = ground.some((q) => q.pit === 'drop' && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3));
+    if (!fl.length) out.push({ x0, x1, top, kind: 'fall', ...lip, ...(marked ? { drop: true } : {}) });
     else {
       // (the floor is the piece under most of the gap: the soil steps at a soft pit's walls are its way out, not its floor)
       // (and a sunk step's own floor, under all of it, is its floor even with deeper ground below: the highest piece under most of it)
@@ -187,13 +194,13 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
   };
   /** a soft pit's inside in shadow (it covers the ground's own pit shade): darker down to its floor, darker still at its two walls */
   // (its three gradients are made once per pit and kept: a pit never moves, and a gradient a frame is what drawcheck counts)
-  const shade = (g: PitGap, to: number) => {
+  const shade = (g: PitGap, to: number, deep = false) => {
     let gr = grads.get(g);
     const wall = Math.min(46, (g.x1 - g.x0) / 3);
     if (!gr) {
       const v = ctx.createLinearGradient(0, g.top, 0, to);
-      v.addColorStop(0, 'rgba(10,7,5,0.30)');
-      v.addColorStop(1, 'rgba(10,7,5,0.72)');
+      v.addColorStop(0, deep ? 'rgba(10,7,5,0.45)' : 'rgba(10,7,5,0.30)');
+      v.addColorStop(1, deep ? 'rgba(10,7,5,0.94)' : 'rgba(10,7,5,0.72)');
       const side = (a: number, b: number) => {
         const h = ctx.createLinearGradient(a, 0, b, 0);
         h.addColorStop(0, 'rgba(10,7,5,0.55)');
@@ -223,7 +230,17 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
     if (g.kind === 'fall') {
       // (a fall off the long branch: the canopy far below, a mist band, then black; it starts a little under the branch)
       if (chase && layer === 'under') fill(g, high, PIT_SIZE.highTile, g.top, bottom, HIGH_FROM, 24);
-      // (elsewhere in World 1 a floorless gap is water, which Dot warns of by name on 1-6: it keeps its painted water)
+      // (a drop a builder marked, `pit: 'drop'` on a bank, 1-9's hard vault: the drop down to the view's bottom, over the water, and its lips)
+      else if (g.drop) {
+        if (layer === 'under') {
+          fill(g, drop, PIT_SIZE.dropTile, g.top, bottom);
+          // (darker and sooner than a soft pit's: nearly black DROP_DARK px down, so it reads as a fall and not as more earth)
+          shade(g, g.top + DROP_DARK, true);
+          ctx.fillStyle = 'rgba(10,7,5,0.94)';
+          if (bottom > g.top + DROP_DARK) ctx.fillRect(g.x0, g.top + DROP_DARK, g.x1 - g.x0, bottom - (g.top + DROP_DARK));
+        } else lips(g);
+      }
+      // (an unmarked floorless gap is water, which Dot warns of by name on 1-6: it keeps its painted water)
       continue;
     }
     if (g.floor === undefined) continue;
