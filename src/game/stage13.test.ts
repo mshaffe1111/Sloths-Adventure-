@@ -82,6 +82,21 @@ test('1-3: no snake on a branch outside the split stands over a pit floor he cou
   }
 });
 
+test("1-3: the split's petals are a small bonus, about the same on each road; the core lies on the way everyone takes (Matt, 11-04)", () => {
+  for (const easy of [false, true]) {
+    for (const s of SEEDS) {
+      const st = buildProtoStage(cfg, s, '1-3', easy);
+      const split = st.proto.beats.find((b) => /^Spike/.test(b[2]))!;
+      const pet = st.collectibles.filter((c) => c.type === 'flower' || c.type === 'leaf');
+      const inSplit = pet.filter((c) => c.x >= split[0] && c.x < split[1]);
+      const high = inSplit.filter((c) => c.y < 470).length, low = inSplit.length - high;
+      const tag = `seed ${s}${easy ? ' Easy' : ''}: ${high} high, ${low} low of ${pet.length}`;
+      assert.ok(high <= pet.length * 0.1 && low <= pet.length * 0.1, tag);
+      assert.ok(Math.abs(high - low) <= 3, tag);
+    }
+  }
+});
+
 test('a sleeping snake lies still until he is beside it, then waits a moment before it can strike', () => {
   const e = { id: 1, type: 'snake', x: 500, y: 566, vx: 28, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: 1, patrolMinX: 470, patrolMaxX: 530, attackCooldown: 0, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, asleep: true } as Enemy;
   for (let i = 0; i < 60; i++) stepPredator(e, { x: 700, y: 580 }, 1 / 30);

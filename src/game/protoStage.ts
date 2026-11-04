@@ -1901,7 +1901,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         // (two snakes on its branches and the one on the vault's lip: three, as many as the low road's, so neither road leaves more of
         // the stage's goal behind than the other, the lead 11-04)
         if (k === 1 || k === n - 3) snake(bx + w * 0.62, top, w - 150);
-        else row(bx + 40, bx + w - 40, top - 34, 2, 'hibiscus');
+        // (petals: a small bonus on each road, about the same on both, the core on the way everyone takes (Matt, 11-04: "keep the core
+        // amount on places that the player always have to use"): here one branch's pair and the perch's three; below, five)
+        else if (k === 2) row(bx + 40, bx + w - 40, top - 34, 2, 'hibiscus');
         // (gaps between the branches vary, never the same four times)
         bx += w + Math.round(reachJump(0, false) * [0.42, 0.55, 0.36, 0.6, 0.48][k % 5]);
       }
@@ -1919,7 +1921,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         run(R.r(190, 260));
         if (end - x < 200) break;
         // (three snakes on the low road, so a player on it can make the stage's goal: the high road's are the bonus, the lead 11-04)
-        if (lowSnake < 3 && x - fork > 500 + lowSnake * 650) { snake(x + 60, G, 110); lowSnake++; run(R.r(220, 260)); continue; }
+        // (a petal past each, for the punch: with its rocks' petals, the low road's bonus matches the high road's)
+        if (lowSnake < 3 && x - fork > 500 + lowSnake * 650) { const sx = x; snake(sx + 60, G, 110); lowSnake++; run(R.r(220, 260)); flower(sx + 200, G - 34, 'hibiscus'); continue; }
         logHop(R.i(30, 44));
       }
       x = Math.max(x, end) + R.r(80, 120);
