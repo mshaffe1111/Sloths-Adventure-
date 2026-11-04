@@ -316,10 +316,11 @@ export const NEST_GOAL_48 = 8;
 /** 4-8's falls: how far onto the shelf the water lands (the boulder's last stretch), and how far above the shelf it pours from */
 const FALL_LIP = 60;
 const FALL_HEAD = 280;
-/** 1-3 Branch Snakes asks for 6 (R-159.1, the lead's call: a punch now only dazes, so each snake is a punch and a stomp, and the stage
- *  holds 8-11 snakes with jobs, not 21-24 alike). Provisional: set to what the taught first-timer's route delivers once Dot's stomp line
- *  is in (counted, reference/plans/R-159.1-combat-triangle.md) */
-export const SNAKE_GOAL_13 = 6;
+/** 1-3 Branch Snakes (the rebuild, R-159.1): its goal is what the taught first-timer's route delivers (the lead's ruling, counted with
+ *  the fixed bot, 2026-11-04, five rolls each): the adult finished 10-13 snakes on Normal, the kid 4-9 on Easy; each asks what every
+ *  one of those runs made, not a share of the 17-21 snakes the stage holds */
+export const SNAKE_GOAL_13 = 10;
+export const SNAKE_EASY_13 = 4;
 
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
@@ -5560,6 +5561,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES, waterY: WATER }, C);
   return {
     config: cfg,
+    // (1-3 sets its own goals: withGoals keeps a stage's own when it gives Easy's, goals.ts)
+    ...(plan === '1-3' ? { easyGoal: SNAKE_EASY_13 } : {}),
     ...(kit ? { kit } : {}),
     trees: T,
     platforms: P,
