@@ -320,6 +320,8 @@ export interface Platform {
   /** a small piece of the ground under 90 tall (a soft pit's low step, or its walls under the banks): painted as the soil like a bank, or
    *  (a wall under a bank) left to that bank's soil, never drawn as a platform (protoArt.ts drawProtoScene, terrain.ts) */
   soil?: boolean;
+  /** World 1: a floorless gap beside this bank is a painted drop, a fall, not water (w1Pits.ts, R-6.38: a builder sets it on either bank) */
+  pit?: 'drop';
 }
 
 /**

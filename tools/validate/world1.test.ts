@@ -24,8 +24,14 @@ test('"everything feels the same": 1-1, 1-2, 1-5 and 1-6 read over 80% alike in 
   }
 });
 
-test('nothing bites: on 1-1, 1-2 and 1-7 a miss costs nothing on over 80% of the beats after the first 30 s', () => {
-  for (const id of ['1-1', '1-2', '1-7']) assert.ok(has(id, 'nothing bites'), `${id}: ${JSON.stringify(by[id].costs.nothing)} free of ${by[id].costs.nothing + by[id].costs.setback + by[id].costs.life}`);
+test('nothing bites: on 1-1, 1-2 and 1-7 a miss costs nothing on over 80% of the beats after the first 30 s (the old rule, as found)', () => {
+  for (const id of ['1-1', '1-2', '1-7']) assert.ok((by[id].oldFlags ?? []).some((f) => f.rule === 'nothing bites'), id);
+});
+
+test('nothing bites, the truer rule (a fall of over 200 px bites, the lead 11-04): 1-2 and 1-7 still cost nothing; 1-1\'s high branches bite', () => {
+  for (const id of ['1-2', '1-7']) assert.ok(has(id, 'nothing bites'), `${id}: ${by[id].costs.nothing} free of ${by[id].costs.nothing + by[id].costs.setback + by[id].costs.life}`);
+  // (1-1's finish runs its double jumps along branches at y 335, about 245 px over the ground: a miss there drops him to it)
+  assert.ok(!has('1-1', 'nothing bites') && by['1-1'].costs.setback >= 20, JSON.stringify(by['1-1'].costs.setback));
 });
 
 test('padding: 1-1\'s finish is over half the stage, its piece laid again and again (the supervisor\'s clip: about 10 times)', () => {

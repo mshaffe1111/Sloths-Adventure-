@@ -1,6 +1,6 @@
 # warmup-5m notes
 
-Last updated: Wed Nov 04 08:54 AM ET
+Last updated: Wed Nov 04 10:52 AM ET
 
 ## The job
 - **R-3.1, GPU plan stage 0** (lead, 2026-11-04):
@@ -49,25 +49,52 @@ Done! Checked 605 packages (no changes) [12.00ms].
   - bundle: main +2.3 KB, Pixi chunks 435 KB raw / 125 KB gzip, lazy;
   - report reference/qa-reports/webgl-0/README.md and methods/webgl.md.
 
-## In flight
-- Lead, 11-04 7:47 AM ET restart: fix the clipcheck failure at its cause. Then clipcheck 2x alone, the full gate once, and report.
-  Merge only on full green.
-- **Cause found (bisected):** starting the layer on every stage launch (400-650 ms of main thread) slowed clipcheck's parallel walks.
-  Off gave 2/2 green; on had given 3/3 red.
-- **Fixed (658ff7e1):**
-  - the layer starts only when something is put on it;
-  - the off-by-one buffer size at q1 is fixed too.
-- **Checks so far:**
-  - gpuLayer.cjs PASS both orientations;
-  - clipcheck alone 2/2 PASS (199 s, 206 s);
-  - gpuLook 0 px on 1-1 and 8-1, both orientations.
-- **Full gate on 658ff7e1: GREEN**, pasted in the webgl-0 README:
-  - tsc clean;
-  - tests 2,291 pass, 0 fail;
-  - build OK;
-  - artcheck, knowncheck and drawcheck PASS;
-  - clipcheck PASS (3rd in a row).
-- Reported to the lead. Waiting for the merge, then stage 1 (skies).
+## In flight: GPU stage 1 (R-3.2), skies and backdrops
+- Stage 0: ACCEPTED and merged by the lead (65b6c33a), 11-04.
+- Lead, 11-04, the design: "GPU underneath, copied in" (the see-through 2D canvas fails the look bar: lighter, screen and multiply
+  effects). Conditions:
+  - a GPU-to-GPU copy, or fall back;
+  - render and copy in the same frame;
+  - measure the net (here impossible: this container's 2D canvas is software);
+  - write it into the plan;
+  - engine.ts only a flag (it needed none).
+- Lead, 11-04, option (a): finish to the full bar here, a phone readout in QA builds only, the card for Matt. Nothing merges to main
+  until his phones show a saving.
+- Done:
+  - ac020edb, then cf2b4f65, 005866b5, 88c04b03, e3ff9f1c;
+  - look 22 of 22 within 4 levels a pixel;
+  - context loss PASS both ways;
+  - fallback before play;
+  - Pixi trimmed (434 KB fetched at the first stage);
+  - card: reference/qa-reports/webgl-1/MATT-PHONE-CHECK.md;
+  - report: reference/qa-reports/webgl-1/README.md.
+- Gate green on e3ff9f1c; report 346256a0; lead ACCEPTED it to the bar here, 11-04.
+- Phone check: its own artifact "GPU phone check" https://claude.ai/artifact/MaBaabWAKZXQGjx81NpstM (all 492 dist files,
+  published in 4 batches; NOT Matt's main test link, which holds the 0.9.4 candidate). The card now has the link, is about 5 min a
+  phone (one run each way) and asks Matt plainly about the start (same / a little longer / clearly longer). Waiting on his phones.
+- Named: load +0.1 to +0.9 s here (1-1 +0.9 repeated); the average frame 0-2 ms higher here (noise or the idle context).
+
+## In flight: the measured release (Matt approved ~12:05 PM ET), R-3.14 the OnePlus draw spikes
+- The six runs Matt did on 11-04 reached the sheet, but all were live 0.9.4: build 68b31e66, no GPU code.
+  - Pixel 0 stalls, Samsung 2.
+  - OnePlus (Adreno 619, 4 GB) 33, about 25 of them the game's own draw, 150-460 ms.
+  - R-3.14 (keeper): Day 1, A, owner warmup-5m, started 12:04 PM ET.
+- Built:
+  - eb7f90d0: gpuBackdropOn() = qaBuild() || ctestEnabled() (mountGpuLayer checks it first; readout and gpuback=0 follow it; never
+    in the store app);
+  - Pixi's 4 chunks out of the SW precache (FOUND: a lazy import still had every player downloading 434 KB);
+  - drawWatch.ts: a slowdraw event for any single 2D call of 30 ms or more, testers only, not in engine.ts (lead approved);
+  - card for the live testers' link;
+  - plan "The measured release" with its fixed end.
+- Proven: gpuDefaultOff.cjs PASS, 48/48, on a production build (4674d7f6). w8-rope2: no engine.ts clash.
+- GREEN at 1:44 PM ET, 11-04 (32c57be7; report reference/qa-reports/webgl-1m/README.md):
+  - full gate;
+  - gpuDefaultOff 48/48;
+  - drawWatch 0.1-0.2 ms a frame.
+  Sent to the lead for tonight's release with W1 1-1..1-5; the release clerk builds from warmup-5m.
+- Next, after it's live: read Matt's #ctest and #ctest&gpuback=0 pairs per phone (the card). Above all the OnePlus: its slowdraw lines
+  name the R-3.14 cause. Then the ship-or-pull decision, and delete the switch that day.
+- Dropped: playerLook.cjs (cross-load pixel noise, lesson in webgl.md). Not run: firstframes (not in tonight's bar).
 
 ## Pitfalls (mine)
 - Look comparisons:
@@ -76,4 +103,8 @@ Done! Checked 605 packages (no changes) [12.00ms].
   - mask what moves by itself between two shots;
   - give each build its own temp files: a shared noise file once faked a "0 px".
 - Never time anything while the look run or the gate runs.
-- A layer or feature that does nothing yet must cost nothing: no start-up on a hot path (stage launch) until it is used. This container is slower than on 11-01 (frames 36-127 ms).
+- A layer or feature that does nothing yet must cost nothing: no start-up on a hot path (stage launch) until it is used.
+- Never edit src while a dev-server browser check runs: the reload breaks the run.
+- Freeze the engine only after any pending resize (resizeDue); otherwise the checks see a state play never draws.
+- A plausible explanation for a difference ("GPU filtering") is not a cause: find the mechanism first. The dynamic-texture bug hid
+  behind it. This container is slower than on 11-01 (frames 36-127 ms).

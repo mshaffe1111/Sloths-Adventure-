@@ -38,6 +38,7 @@
  *   stage-art      the painted checkpoint post, hearts, power-ups, Thorn Gate, story finds and 4-8's netting (stageArt.ts): every stage
  *   gate:<w>       the world's painted exit gate, shut and open (stageArt.ts): every stage
  *   pit-water:<w>  Worlds 1, 3, 4 and 5's painted pit water (stageArt.ts): every stage in those worlds
+ *   pit-art:1      World 1's painted pits: the drop, the lip, the leaf bed and 1-8's high drop (w1Pits.ts, R-6.38): every World 1 stage
  *
  * (QA 2026-10-29, Android Chrome: 'blank wait' at 80 s and 179 s for the golden snake's heads and the snake sheet, at 201 s for the
  * eagle, at 650 s for Dot's perch: those sheets were asked for only when each first came on screen. stageSheets.test.ts builds every
@@ -245,10 +246,12 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   return out;
 }
 
-/** the painted pieces every stage shows (stageArt.ts): the shared sheet, the world's exit gate and, in Worlds 1, 3, 4 and 5, its pit water */
+/** the painted pieces every stage shows (stageArt.ts): the shared sheet, the world's exit gate and, in Worlds 1, 3, 4 and 5, its pit water;
+ *  World 1's painted pits (w1Pits.ts) */
 export function everyStage(w: number): string[] {
   const out = ['stage-art', `gate:${Math.max(1, Math.min(10, w))}`];
   if (PIT_WATER_WORLDS.includes(w)) out.push(`pit-water:${w}`);
+  if (w === 1) out.push('pit-art:1');
   return out;
 }
 /** the worlds with painted pit water of their own (World 2 has its rivers, Worlds 6-10 the dirty water) */

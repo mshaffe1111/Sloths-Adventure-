@@ -67,6 +67,7 @@ import { perfNote } from './perfLog.ts';
 import { groundUrl, hasGround, warmGround } from './groundPaint.ts';
 import { DRESS_URL, dressNewReady, dressNewUrl, dressReady } from './dressArt.ts';
 import { gateArtReady, gateUrl, pitWaterReady, pitWaterUrl, STAGE_ART_URL, stageArtReady } from './stageArt.ts';
+import { W1_PIT_URLS, w1PitsReady } from './w1Pits.ts';
 import type { LevelConfig } from './types.ts';
 
 type Cfg = Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>;
@@ -190,6 +191,9 @@ export function start(keys: readonly string[]): string[] {
         pitWaterReady(w);
         urls.push(u);
       }
+    } else if (k === 'pit-art:1') {
+      w1PitsReady();
+      urls.push(...W1_PIT_URLS);
     } else if (k === 'hud') {
       hudArtReady();
       urls.push(HUD_ATLAS_URL);
