@@ -49,6 +49,7 @@ a node fails if the same jump gap repeats four times in a row (11-04 line 585).
 - Density climbs through the stage (11-02 lines 65-69): intro groups 5-10 s low, the middle 10-15 s medium, the finale 15-20 s
   high and dense, ending AT the exit (the cool-down is a few seconds, not a walk). fix-petals lets the validator's tight-stretch
   limit (TIGHT_MAX, core.ts) allow the finale's 15-20 s.
+- **Long falls hurt (Matt, 2026-11-04: "make long fall hurt")**: landing after a free fall of more than 400 px costs a heart on Normal (a stumble, no heart, on Easy); not while gliding, swinging, on a lift or bouncing. On for 1-1 to 1-5 tonight (w1-rhythm-b, with fallZones); other worlds as they are rebuilt.
 - No dead walk over 2.5 s (11-04 line 100): fix it with a slope, a hop or a critter, never just flag it.
 - Something bites from 1-1's climax on (pits on Normal, soft on Easy where STAGE-RULES says; Easy stays a cruise).
 - Petals and pickups never count as variety (§0c.5). The goal sits on the natural path (D8).
