@@ -724,6 +724,8 @@ export class GameEngine {
    * `softAt`: that ground (null until he has stood somewhere); `softOn`: whether this stage has them.
    */
   private softOn = false;
+  /** the height of the ground he last stood on, on a stage with fallZones (a fall that far under it, in a zone, is a fall) */
+  private fallFromY = Infinity;
   private softAt: { x: number; y: number } | null = null;
   private checkpoint = { x: 0, y: 0 };
   /** the dark circle opening on him at the flag after a respawn (s left): it replaced a white flash (AN-1) */
@@ -877,6 +879,7 @@ export class GameEngine {
     setJarHero(jarImg ? { img: jarImg, frame: jarFrame } : null);
     this.revealZoom = 1;
     this.revealHeard = false;
+    this.fallFromY = Infinity;
     setReveal(0, null);
     this.tideSet = isEasy() ? TIDE.easy : TIDE.normal;
     this.tideWarned = Infinity;
@@ -2474,6 +2477,8 @@ export class GameEngine {
         const g = this.platforms.find((q) => q.id === this.standingOnId);
         if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y };
       }
+      // (open air a fall goes through, fallZones: 1-1's finale, high over the forest floor; the height of the ground he last stood on)
+      if (this.currentStage.fallZones?.length && (p.grounded || p.climbing)) this.fallFromY = p.y;
       // Pits and water: falling below the surface costs a life (Mario-style)
       const waterY = this.currentStage.waterY;
       const river = this.currentStage.rivers?.find((r) => p.x > r.x0 && p.x < r.x1);
@@ -2512,6 +2517,13 @@ export class GameEngine {
         sound.playSplash(0);
         this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
+      } else if (!this.isGameOver && this.currentStage.fallZones?.some((z) => p.x > z.x0 && p.x < z.x1 && p.y > this.fallFromY + z.depth)) {
+        // a fall into open air: at once, not after a long drop to the stage's bottom (Easy's soft fall first, as any pit)
+        this.fallFromY = Infinity;
+        if (!this.heartFall() && !this.softFall()) {
+          sound.playPlayerHurt();
+          this.loseLife('pit');
+        }
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
         if (this.lanternRun) this.lanternFall();
         else if (!this.heartFall() && !this.softFall()) {
