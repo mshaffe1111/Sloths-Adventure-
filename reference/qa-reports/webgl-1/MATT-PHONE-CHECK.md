@@ -17,7 +17,8 @@ the test link (`<TEST LINK>` below).
 frame times, the phone's GPU, and a `backdrop` line saying which way it drew and what the copy cost.
 
 **What we read from it** (the lead does this, not you):
-- On each phone, the first run against the `2D` run: average frame time, the worst stretches, and stalls over 100 ms.
+- On each phone, the runs against the `2D` runs: average frame time, the worst stretches, stalls over 100 ms, and the `ready` time
+  (how long the stage takes to start).
 - The `backdrop` line:
   - `backdrop: GPU, copy X ms` means the phone used the new way;
   - `backdrop: 2D (copy ... a readback ...)` means the phone's browser can't do it cheaply, so it quietly kept the old way. That's

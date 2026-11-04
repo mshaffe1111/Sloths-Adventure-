@@ -44,3 +44,22 @@ test('only the WebGL renderer is used: the layer never asks Pixi to auto-detect 
   assert.ok(!/autoDetectRenderer|WebGPURenderer|preference:\s*['"]webgpu/.test(src), 'and never auto-detects or asks for WebGPU');
   assert.ok(/getContext\('webgl2'/.test(src), 'its context is a webgl2 one it makes');
 });
+
+test('stage 1 backdrop: with no layer it stays on the 2D canvas and says why; the readout and gpuback=0 are QA builds only', async () => {
+  const m = await import('./gpuLayer.ts');
+  assert.equal(m.backdropGpuReady(), false, 'no layer: no GPU backdrop');
+  assert.equal(m.backdropLine(), 'backdrop: 2D (no WebGL 2 layer)');
+  // (not a QA build here: no import.meta.env from Vite, as on the live site and in the app)
+  assert.equal(m.backdropReadout(), false, 'no readout outside a QA build');
+  assert.equal(m.backdropCheck.force2d, false, 'and the address cannot switch the backdrop outside a QA build');
+  assert.equal(m.backdropFlush({} as CanvasRenderingContext2D), false, 'nothing begun: nothing copied');
+  assert.doesNotThrow(() => m.backdropIdle());
+  assert.equal(m.COPY_SLOW_MS, 2);
+});
+
+test('stage 1 backdrop: the 2D canvas is never made see-through (every glow and blend after the copy needs real pixels under it)', async () => {
+  const fs = await import('node:fs');
+  const eng = fs.readFileSync(new URL('./engine.ts', import.meta.url), 'utf8');
+  for (const m of eng.matchAll(/getContext\('2d',\s*([^)]*)\)/g)) assert.ok(!/alpha:\s*true/.test(m[1]), `engine.ts game canvas context: ${m[1]}`);
+  assert.ok(/alpha: false/.test(eng), 'the game canvas stays opaque (alpha: false)');
+});

@@ -272,17 +272,33 @@ export function backdropGpuReady(): boolean {
  * `keepGpu` keeps the GPU path even where the copy is a readback (this container: its 2D canvas is software), to judge the look there
  */
 export const backdropCheck = { force2d: urlForces2d(), keepGpu: false };
-/** `?gpuback=0` in the address: the backdrop on the 2D canvas, to compare a phone's frame times both ways (as `?preload=0` does) */
-function urlForces2d(): boolean {
+/** a QA build: the dev server or the test link (vite.testlink.config.ts), never the live site or the app (as playRecorder.ts qaBuild) */
+function qaOnly(): boolean {
   try {
-    return typeof location !== 'undefined' && /[?&]gpuback=0\b/.test(location.search);
+    return !!import.meta.env.DEV || import.meta.env.VITE_QA_BUILD === '1';
   } catch {
     return false;
   }
 }
+/**
+ * `gpuback=0` in the address (after # too: a shared Claude link passes on only that part), in a QA build only: the backdrop on the 2D
+ * canvas, so a phone's frame times can be compared both ways (the phone check, reference/qa-reports/webgl-1/MATT-PHONE-CHECK.md)
+ */
+function urlForces2d(): boolean {
+  if (!qaOnly()) return false;
+  try {
+    return typeof location !== 'undefined' && (/[?&]gpuback=0\b/.test(location.search) || /[#&]gpuback=0\b/.test(location.hash));
+  } catch {
+    return false;
+  }
+}
+/** whether the backdrop readout is reported (QA builds only) */
+export function backdropReadout(): boolean {
+  return qaOnly();
+}
 /** one line for the frame-time readout (perfLog): where the backdrop is drawn, and what its copy costs */
 export function backdropLine(): string {
-  if (backdropCheck.force2d) return 'backdrop: 2D (?gpuback=0)';
+  if (backdropCheck.force2d) return 'backdrop: 2D (gpuback=0)';
   if (!live) return 'backdrop: 2D (no WebGL 2 layer)';
   if (bd.off) return `backdrop: 2D (${bd.off})`;
   const m = bd.copyMs.length ? [...bd.copyMs].sort((a, b) => a - b)[bd.copyMs.length >> 1] : NaN;
@@ -393,7 +409,9 @@ export function backdropFlush(ctx: CanvasRenderingContext2D): boolean {
     backdropStats.copies++;
     if (bd.copyMs.length < COPY_PROBE) {
       bd.copyMs.push(ms);
-      if (bd.copyMs.length === COPY_PROBE) {
+      // (a copy ten times over the limit is a readback beyond doubt: decided at once, without timing more frames under the card)
+      if (ms > COPY_SLOW_MS * 10) bd.off = `copy ${ms.toFixed(1)} ms (a readback: the 2D canvas is not on the GPU)`;
+      else if (bd.copyMs.length === COPY_PROBE) {
         const m = [...bd.copyMs].sort((a, b) => a - b)[COPY_PROBE >> 1];
         if (m > COPY_SLOW_MS) bd.off = `copy ${m.toFixed(1)} ms (a readback: the 2D canvas is not on the GPU)`;
       }
