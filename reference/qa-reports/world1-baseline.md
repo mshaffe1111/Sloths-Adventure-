@@ -1,7 +1,7 @@
 # World 1 baseline: played in order, judged like a player (quality supervisor)
 
-**Status: DRAFT.** 1-1 to 1-8 are judged in both orientations. 1-9 and Venom Fang (1-10) are filled in below as their clips land
-(see "Open"). Started 2026-11-04 2:32 AM ET.
+**Status: complete for the first pass**, all ten judged in order. The open items are under "Open". All ten are judged
+in both orientations. Started 2026-11-04 2:32 AM ET.
 
 **Base.** Game code at b8c4a7c5 (`src/` is identical to origin/ccr-0d59a91c at 2c1f6b46 and to origin/main: `git diff --stat` on
 `src` is empty). Layout roll 1 (seed 1) for every stage. Normal for the first-timer bot ("adult" thumbs); Easy not judged here.
@@ -134,11 +134,25 @@ repetitive... a sludge."
 - **Slot role missed (§0b.6).** X-9 is the run-up to the boss, and nothing here builds toward Venom Fang (no boa set piece, no
   escalation of the guards).
 - **Goal off the path (D8).** It ends at 2:03 at a sealed shrine with 15 of 20 guards.
+- **Upright** (sheets-1-9-up-1). It reads fine; a floating rock pillar at 1:09 is the one new shape.
 - **Best moment.** Dot: "Too small to be worth chasing. Best thing about me, honestly."
 
-### 1-10 Venom Fang (boss) · boss bot: won on Normal in 20.1 s (sideways, 1 hit) and 20.0 s (upright, 0 hits)
-- *Clip recording.* The fight as the boss bot plays it lasts 20 seconds. PLAN-TO-80 §5 calls the bosses "wait for the glow": one way
-  to hurt each. Judged when the clip lands.
+### 1-10 Venom Fang (boss) · boss bot: won on Normal, 20 s after the entrance (sideways 1 heart lost, upright 0)
+- **What it is** (sheets-1-10-side-1, every 1.5 s). A good-looking arena: a huge painted boa, a tree, a stump, a vine. Dot: "When he
+  rears back, get off the ground: the tree, the stump or the vine. Then punch his head!" He rears back, Pokey hops onto the stump,
+  he lunges along the floor, his head lies "DAZED" under a target, and Pokey punches it. Little snakes come in between ("Little
+  snakes! Punch them!").
+- **One loop, three times.** His health goes 12 → 8 → 4 → 0 in three openings (bot log: at 12.8 s, 18.5 s and the end). The whole
+  fight is that one loop. It is PLAN-TO-80 §5's "wait for the glow": one way to hurt him, no phase change, no arena change. The
+  little snakes add a second thing to do, and they are punched like every other snake.
+- **Too short to be a finale.** 20 seconds to beat the world's boss, by a bot that reacts late on purpose. Nothing escalates from 1-9
+  into it.
+- **Tool note.** The replay shows the boss's own state put back each frame, so the HUD's "hits left" counter lags at the very end:
+  it reads 2 when the fight ends (the bot log has his health at 0 and "dying"). Judge the end from the log, not that counter.
+- **Upright** (sheets-1-10-up-1). The fight sits in the bottom third, and the top 60% is empty forest. The boss's name bar collides
+  with the lives badge: "VENOM FANG" reads with the "x3" badge printed into it at the top left (0:05-0:24). That is a polish defect
+  to fix.
+- **Best moment.** The first lunge-and-daze. The boss looks the part, and the target over his head is clear in both orientations.
 
 ## What feels the same (the whole world)
 1. **One unit as filler.** The mushroom + earth pillar + plank unit is the second half of 1-1, 1-3, 1-5 and 1-7 and the middle of
@@ -172,15 +186,15 @@ upward, with a puzzle and a secret.
 Its one new mechanic (creaking branches) is passed underneath. The goal is half off the path, and the bot reaches a sealed shrine
 "50 more". It sits in the world's mid-world spike slot (§0b.6).
 
-## Score: 38 / 100 for World 1 as it stands (draft until 1-9 and 1-10 are judged; checked against the clips above)
+## Score: 38 / 100 for World 1 as it stands (all ten stages judged; checked against the clips above)
 | Area (weight) | Score | Why (the proof) |
 |---|---|---|
 | Variety in sequence (25) | 7 | Four stages open on one shot; one unit fills the second half of four stages and the middle of a fifth (1-1, 1-3, 1-5, 1-6, 1-7); 84-99% alike (validator). The 7 is 1-4, 1-6's lianas and 1-8. |
 | Challenge, hazards that bite (20) | 5 | 0 lives lost in 1-1, 1-2, 1-5; soft ground under misses; branches skippable, eagle outrun, chase invisible. Credit for 1-6's water and 1-8's pits. |
 | Toolbox used, mechanics building (15) | 6 | Double jump, bounce, punch, rope, climb, puzzle, bush, liana are all taught; few come back combined (no pair beyond run+jump in 1-1; branches + vines never). |
-| Moments (15) | 7 | 1-4, 1-6 and 1-8 have one each; 1-2, 1-3 and 1-5 have none. |
+| Moments (15) | 7 | 1-4, 1-6, 1-8 and the boss's first lunge have one each; 1-2, 1-3 and 1-5 have none. The boss is one loop for 20 s. |
 | Shape and escalation (15) | 5 | No rests, no four-part arc, finish = padding (52% of 1-1); 1-5 is a dip, not a spike; 1-8 then 1-9 is the only real climb. |
-| Polish on the phone (10) | 8 | The art is good and Dot's lines are in voice. Against it: the upright dirt band (~45% of the screen), the cramped sideways climb (1-4), Dot's tip during a death (1-6), and the jumping tip box (1-7). |
+| Polish on the phone (10) | 8 | The art is good and Dot's lines are in voice. Against it: the upright dirt band (~45% of the screen), the cramped sideways climb (1-4), Dot's tip during a death (1-6), the jumping tip box (1-7), and the boss name bar over the lives badge upright (1-10). |
 | **Total** | **38** | |
 
 38 is under Matt's 55. I'm judging the world
@@ -210,7 +224,6 @@ is plain and repetitive, and its best parts (1-4, 1-6's lianas, 1-8) are short i
   toast (tool). Long "bot stuck" captions are cut off upright (tool caption, not the game). Clips are review copies (640 px, 10 fps).
 
 ## Open (before this is final)
-- 1-9 and 1-10 judged from their clips; the score revisited after them.
 - Re-record 1-1 to 1-3 with phone wording (tool fix in).
 - After the bot's bounce-wall fix: re-run, and judge challenge from a bot that plays the stages through.
 - Easy not judged (Easy should cruise, §0.5).
