@@ -13,6 +13,8 @@ that do the best job get the follow-on work.
 
 **Standard work (Matt, 2026-11-04):** start from your job's method file and its best known result; don't experiment when a known way works. If you find a faster or better way, prove it and propose it: it becomes everyone's way.
 
+**Planned vs actual (Matt, 2026-11-04):** know how long your job should take (its roadmap estimate or method best result). If you go over, say so in your next message: the cause and what you'll change so it doesn't happen again.
+
 **Judging your own work**
 - Judge the real screen, in every save state (fresh, old, half-played, finished) and both orientations. Never from a list or one happy shot. (D1, D2, D12)
 - When one thing on a screen is raised to the bar, bring everything beside it up too, or name what's left. (D13)

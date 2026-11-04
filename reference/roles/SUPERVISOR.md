@@ -33,3 +33,13 @@ processes, expectations, and procedures.")**
   new way, with its proof, becomes the method for everyone the same day (the lead merges it), and the old way is crossed out.
 - The supervisors check this every round: did the helper start from the method? Did it beat or miss the best result, and why? A miss with
   no reason is coached; a beat is written into the method.
+
+**Planned vs actual, every round (Matt, 2026-11-04: "if something took longer than they expected, that's what they tell you. And they need
+to tell you how they're going to make it better. That's removing the barriers... If things aren't getting done on time, why? That's the
+only way you can hold budgets and understand true hours of work.")**
+- Every running job has its expected time: the roadmap item's estimate (ROADMAP.md, from measured history) or its method's best result.
+- Each round, per job: started when, expected done when, on track or over? If over (or heading over): the cause, in one line, and the
+  barrier-removal step, in one line (what changes so it stops happening: a tool, a method line, a brief, a blocker cleared). "It's hard"
+  is not a cause.
+- The digest leads with the jobs that are over, with cause and fix. The real hours go to the roadmap keeper at the end of each job, so
+  the next estimate of that kind is truer.
