@@ -31,7 +31,17 @@ export const TRICK = {
   /** the kicked boa rolls this fast, for at most this long */
   rollSpeed: 360,
   rollMax: 3.2,
+  /** the stomp vault: a stomp on a lunge snake with jump held springs him like this (px/s up; a plain held stomp is 620, a jump 640),
+   *  so with the second jump after it he carries about 405 px, past any jump (a jump and a second jump reach about 313) */
+  vaultV: 960,
+  /** the vault's gap: past the best plain jump (a full run, a jump off the very edge and the second jump at its top: about 313) by this
+   *  much, and its snake this far back from the lip, so the vault clears it with room to spare (the real-engine test proves both) */
+  vaultOver: 32,
+  vaultLip: 26,
 } as const;
+
+/** the stomp vault's gap (px): past any jump, within the vault's reach */
+export const vaultGap = (reachJumpDouble: number) => Math.round(reachJumpDouble + TRICK.vaultOver);
 
 /** the boa lying in its coil (its tell, strike and bite are its attack: a punch then staggers it back into the coil) */
 const COILED = new Set(['coil', 'sleep', 'recover']);

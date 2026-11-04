@@ -224,3 +224,48 @@ test('the vine snake: grab its liana while it is awake and it bites (he does not
   assert.ok(climbed, 'he climbs the stiff liana like a trunk');
   void v;
 });
+
+// ── the stomp vault (R-159.1): a snake on the lip of a gap past any jump
+import { reachJump } from './physics.ts';
+import { vaultGap } from './w1Tricks.ts';
+
+function vaultWorld() {
+  const r = new RealPlay('1-3', 1);
+  const edge = 1000;
+  const gap = vaultGap(reachJump(0, true));
+  // (a soft pit: its floor 220 px down, so a miss lands in it, not out of the world)
+  r.bare([ground(0, edge), ground(edge, gap, GROUND + 220), ground(edge + gap, 1200)]);
+  const s = animal(1, 'snake', edge - TRICK.vaultLip, { trick: 'lunge', patrolMinX: edge - TRICK.vaultLip - 6, patrolMaxX: edge - TRICK.vaultLip + 4 });
+  r.e.enemies = [s];
+  return { r, edge, gap, s };
+}
+
+/** run at the gap and jump it as well as a person can: off the very edge at full speed, holding jump, the second jump at the top */
+function jumpAcross(r: RealPlay, edge: number, takeoff: number, after?: () => boolean) {
+  r.stand(takeoff - 400, GROUND);
+  let i = 0;
+  while (r.p.x < takeoff && i++ < 200) r.frame({ right: true });
+  r.frame({ right: true, press: true });
+  let pressed2 = false;
+  for (let k = 0; k < 120; k++) {
+    // (the second jump at the top of the arc: of the jump itself, or with `after`, of the arc after that has happened (the stomp))
+    const second = !pressed2 && r.p.vy > -40 && !r.p.grounded && (!after || after());
+    if (second) pressed2 = true;
+    r.frame(second ? { right: true, press: true } : { right: true, jump: true });
+    if (r.p.grounded && k > 4) break;
+  }
+  void edge;
+}
+
+test('the stomp vault: the gap is past any jump (a run, a full jump off the edge and the second jump fall into the pit); the snake on its lip springs him across', () => {
+  const a = vaultWorld();
+  a.s.x = -5000; // (no snake: the gap alone)
+  jumpAcross(a.r, a.edge, a.edge - 6);
+  assert.ok(a.r.p.y > GROUND + 100, `without the snake he lands in the pit (x ${Math.round(a.r.p.x)}, y ${Math.round(a.r.p.y)}, the far side at ${a.edge + a.gap})`);
+
+  const b = vaultWorld();
+  // a jump from a jump's length before the snake, onto it, jump held: the stomp vault; then the second jump at the vault's top
+  jumpAcross(b.r, b.edge, b.s.x - Math.round(reachJump(0, false)) + 10, () => b.s.defeated);
+  assert.ok(b.s.defeated, 'he landed on the snake');
+  assert.ok(b.r.p.x > b.edge + b.gap + 20 && b.r.p.y <= GROUND + 2, `the vault carried him across, with room (x ${Math.round(b.r.p.x)}, y ${Math.round(b.r.p.y)})`);
+});

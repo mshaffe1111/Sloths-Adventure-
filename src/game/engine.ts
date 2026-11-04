@@ -145,7 +145,7 @@ import { sound } from './audio.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
-import { dazeFor, placeVineSnake, stepVineSnake, tagWorld1, trickHit, trickStompBounces, vineSnakeAwake, type TrickHit } from './w1Tricks.ts';
+import { TRICK, dazeFor, placeVineSnake, stepVineSnake, tagWorld1, trickHit, trickStompBounces, vineSnakeAwake, type TrickHit } from './w1Tricks.ts';
 import { drawCoilGlint, drawRollingBall, drawTrickStars, drawVineSnake, rollAngle, withCoilSqueeze } from './w1TrickDraw.ts';
 import { drawTurtle, drawTurtleSprite } from './turtleArt.ts';
 import { drawGuardSprite } from './guardArt.ts';
@@ -4722,7 +4722,8 @@ export class GameEngine {
       const wasCommitted = isCommitted(e);
       const res = resolveMelee(e, hs, dir);
       applyHit(e, res);
-      p.vy = r.damage >= 2 ? -700 : this.input.state.jumpHeld ? -620 : -460;
+      // (World 1's lunge snake with jump held: the stomp vault, a spring past any jump, w1Tricks.ts)
+      p.vy = r.damage >= 2 ? -700 : this.input.state.jumpHeld ? (e.trick === 'lunge' ? -TRICK.vaultV : -620) : -460;
       this.stompChain++;
       this.statStomps++;
       this.statMaxStompChain = Math.max(this.statMaxStompChain, this.stompChain);
