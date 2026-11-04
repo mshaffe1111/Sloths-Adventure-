@@ -33,3 +33,26 @@ Started 12:47 PM ET on branch w1-rhythm-b (merged origin/ccr-0d59a91c-oy3imz fir
 
 ## Method used
 No stage-build method file exists (stage-fix.md points to a `stage-build.md` that is missing): I write one from this job.
+
+## Afternoon (2:30-3:10 PM ET): gate, Easy, bots
+- Took beatTrace.ts (+ test) from origin/w1-rhythm (the gap cap at levelCheck's reach). Did not merge all of w1-rhythm: it carries their
+  unreviewed 1-2/1-5 and conflicts in w1Sections.ts and validate.test.ts.
+- FOUND: the game never passed Easy to the 1-1/1-4 builders (stageGenerator generateStage called buildProtoStage without it), so my Easy
+  build (creak 1.2 s, soft-fall finale, lower rises) was never what Easy players got, and the gate measured Normal geometry on Easy.
+  Fixed: EASY_BUILT {1-1, 1-4} (w1-rhythm did the same for 1-2/1-5 with RHYTHM_STAGES; join the two at merge).
+  Lesson: a builder's `easy` flag proves nothing until the game's own entry point passes it; test through RealPlay/generateStage.
+- FOUND: on every 1-4 layout a liana hung THROUGH a bough built above it (the fork and the climax's third trunk ran back over the swing).
+  Fixed: the boughs over a liana sit at its top (overSwing), so it hangs from them. Test: no bough crosses a liana, each hangs from one.
+  Found by chasing one moved petal (seed 452): a petal row over the swing's gap ended under that bough.
+- Fun gate (truer rules, 1-1 and 1-4 in REBUILT): 1-1 and 1-4 have nothing worse; 193 fewer known flags than the base.
+  - 1-1 Normal dead walks: 14 layouts to 0. Rest strolls knot every ~330 px from 50 px in (the nodes' aprons already give run-up);
+    the intro's exit apron shortened; after a bounce the next apron starts 30 px past the landing; the high road starts by the fork.
+  - The two bank ramps were one ramp with no rest between: one piece, not "the bank template twice in a row".
+  - Easy: quarter-note hop rows play at half the pace (they merged into walk-offs); every third low-road gap and every fourth spike
+    gap is open air (Easy's soft fall). Easy "nothing bites" 16 -> 8 layouts.
+  - 14 flags worse on OTHER stages (1-2, 1-3, 1-5, 1-6, 1-7 now look like the new 1-1/1-4): sent to the lead for a ruling.
+- Bots (fixed bot, botBaseline --seeds 1-3):
+  - 1-4: kid 161-184 s, 0 lives; adult 169-266 s, 0-1 lives.
+  - 1-1 with real pits in the finale: adult 7-9 lives, 2 game overs every run (the mushroom and the finale's first gaps). Now the
+    finale falls cost a heart and set him back at the gap (heartFalls; the last heart costs a life): adult 2-3 lives, a game over
+    on 1 of 3 seeds; kid 184-202 s, 0-1 lives.
