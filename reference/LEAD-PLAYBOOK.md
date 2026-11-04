@@ -205,4 +205,6 @@ file and its best measured result; the best way found by any helper becomes ever
 work"). The measure: the same kind of job costs less each time (GAMEPLAN §5, §8); fewer helpers doing more is the goal, not more helpers.
 - **8f. Planned vs actual (Matt, 2026-11-04).** At every lead check-in: which jobs are over their expected time, why, and what removes the
   barrier. The lead acts on the barrier (a clearer brief, a tool, a decision, a blocker) the same round. Real hours feed the next estimate.
+  And when a job beats its expected time or a helper does something better than asked: say so to the helper by name, tell Matt in a
+  short line, record it on HELPERS.md, and write the how into its method (Matt: "we celebrate").
 

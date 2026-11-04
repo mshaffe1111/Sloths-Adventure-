@@ -41,5 +41,6 @@ only way you can hold budgets and understand true hours of work.")**
 - Each round, per job: started when, expected done when, on track or over? If over (or heading over): the cause, in one line, and the
   barrier-removal step, in one line (what changes so it stops happening: a tool, a method line, a brief, a blocker cleared). "It's hard"
   is not a cause.
-- The digest leads with the jobs that are over, with cause and fix. The real hours go to the roadmap keeper at the end of each job, so
+- **Quicker than expected gets celebrated (Matt, 2026-11-04: "if things are quicker, then we celebrate... people get their kudos when they're doing things better than expected, so that there's feel-good moments").** Tell the helper by name what it beat and by how much, put it in the digest's first lines, and capture HOW in its method (standard work), so the win spreads.
+- The digest leads with the jobs that are over, with cause and fix, and the wins. The real hours go to the roadmap keeper at the end of each job, so
   the next estimate of that kind is truer.
