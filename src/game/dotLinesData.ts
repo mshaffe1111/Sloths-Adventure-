@@ -122,6 +122,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["hint.1-2.rotten", "1-2", "stage hint", "info", "Rotten wood! Don't stop on it!", "Rotten wood! Don't stop on it!", null, null, "rotten branches, then the bough"],
   ["hint.1-2.under", "1-2", "stage hint", "info", "Under the bough now. Watch the gaps!", "Under the bough now. Watch the gaps!", null, null, "gaps"],
   ["hint.1-5.mark", "1-5", "stage hint", "info", "Meeca's mark! Follow her trail", "Meeca's mark! Follow her trail", null, null, "Meeca's mark"],
+  ["hint.1-5.boa", "1-5", "stage hint", "move", "A coiled boa! Punches bounce off. Kick it!", "A coiled boa! Punches bounce off. Kick it!", null, "flick-side", "coiled boa"],
   ["hint.1-5.snap", "1-5", "stage hint", "info", "These ones snap! Keep moving", "These ones snap! Keep moving", null, null, "snap twigs"],
   ["hint.1-5.look", "1-5", "stage hint", "info", "She came this way. Look up there!", "She came this way. Look up there!", null, null, "the keepsake"],
   ["hint.1-2.highlow", "1-2", "stage hint", "info", "Stay on the petals, high or low", "Stay on the petals, high or low", null, null, "petal trail"],

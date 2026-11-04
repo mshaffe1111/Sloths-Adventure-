@@ -9,7 +9,7 @@ import { generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { badPickups } from './flowerReach.ts';
 import { stageBpm } from './beatTrace.ts';
-import { SNAP_SPARE, rhythmLayout } from './w1Rhythm.ts';
+import { BOA_KICK_S, BOA_LINE, BOA_TEACH_W, SNAP_SPARE, rhythmLayout } from './w1Rhythm.ts';
 import { templateFlags, unitsOf } from '../../tools/validate/variety.ts';
 import { findW1Pits } from './w1Pits.ts';
 import { validateStage } from './levelCheck.ts';
@@ -82,6 +82,21 @@ test('1-5: every floor gap paints as a drop, never water (w1Pits.ts), and none i
         assert.ok(g.kind !== 'fall' || g.drop, `layout ${v} ${d}: the gap at x ${Math.round(g.x0)} paints as water`);
         assert.ok(g.x1 - g.x0 >= 40, `layout ${v} ${d}: a ${Math.round(g.x1 - g.x0)} px slit at x ${Math.round(g.x0)}`);
       }
+    }
+  }
+});
+
+test("1-5: the kick: a coiled boa taught on a wide stone ledge after Dot's line, then 1-2 boas on snap twigs that hold the kick's time too, 16 rolls, Normal and Easy", () => {
+  for (const v of LAYOUTS) {
+    for (const easy of [false, true]) {
+      const L = rhythmLayout('1-5', v, easy, stageBpm(cfg));
+      const teach = L.boas[0];
+      const pad = L.ledges.find((q) => q.surface !== 'crumble' && teach.x > q.x0 + 200 && teach.x < q.x1 - 100 && q.y === teach.y);
+      assert.ok(pad && pad.x1 - pad.x0 >= BOA_TEACH_W - 1, `${v} ${easy}: the teaching boa on a wide solid ledge`);
+      const line = L.lines.find((l) => l.text === BOA_LINE);
+      assert.ok(line && line.x < teach.x - 200, `${v} ${easy}: Dot's line before the first boa`);
+      const onTwig = L.boas.slice(1).map((b) => L.ledges.find((q) => q.surface === 'crumble' && b.x > q.x0 && b.x < q.x1 && q.y === b.y));
+      assert.ok(onTwig.length >= 1 && onTwig.every((q) => q && (q.hold ?? 0) >= (easy ? BOA_KICK_S.easy : BOA_KICK_S.normal)), `${v} ${easy}: boas on snap twigs that hold the kick`);
     }
   }
 });

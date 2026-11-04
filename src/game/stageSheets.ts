@@ -70,6 +70,7 @@ import type { LevelConfig } from './types.ts';
  */
 export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '1-2': ['foe:goldsnake'],
+  '1-5': ['foe:boa'],
   '1-3': ['foe:goldsnake'],
   '1-4': ['foe:goldsnake', 'props2'],
   '1-6': ['foe:goldsnake'],

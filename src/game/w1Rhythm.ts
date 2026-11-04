@@ -62,6 +62,8 @@ export interface Layout {
   petals: Array<{ x: number; y: number; road?: 'high' | 'low' }>;
   /** where a hazard sits on an avoided line (a snake on a bough or a ledge) */
   snakes: Array<{ x: number; y: number }>;
+  /** 1-5's coiled boas (R-159.1, w1Tricks.ts 'coil'): punches bounce off, a kick bowls one off its ledge */
+  boas: Array<{ x: number; y: number; facing: 1 | -1; asleep?: boolean }>;
   /** Meeca's carvings (1-5): the goal */
   marks: Array<{ x: number; y: number }>;
   /** the stage's keepsake or note, teased from a rest */
@@ -251,7 +253,7 @@ class Lay {
   L: Layout;
   node = -1;
   constructor(stage: Layout['stage'], bpm: number, readonly R: Rng, readonly easy: boolean) {
-    this.L = { stage, bpm, ledges: [], vines: [], nodes: [], flags: [], petals: [], snakes: [], marks: [], find: null, lines: [], spawn: { x: 0, y: 0 }, exit: { x: 0, y: 0 }, width: 0, height: 0, heartFalls: [], fallZones: [], expert: 0, walls: [] };
+    this.L = { stage, bpm, ledges: [], vines: [], nodes: [], flags: [], petals: [], snakes: [], boas: [], marks: [], find: null, lines: [], spawn: { x: 0, y: 0 }, exit: { x: 0, y: 0 }, width: 0, height: 0, heartFalls: [], fallZones: [], expert: 0, walls: [] };
   }
   begin(tag: Tag, pair: string, tier: string, dir: 1 | -1, x: number, y: number, bars: string[] = []) {
     this.lastExit = null;
@@ -766,6 +768,17 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   L.lines.push({ x: x + 200, y, text: 'She came this way. Look up there!' });
   x += 1180;
   lay.end(x, 1180 / PHYS.maxRun + 1);
+  // ---- the kick, taught (the lead's ruling, 2026-11-04: 1-5's new thing): a coiled boa, the first in the game, on a wide stone ledge,
+  // Dot's line before it. Punches bounce off it ("TOUGH!"), a stomp bounces; a kick (a quick flick toward it) rolls it away along the
+  // ledge and off its end. A flag at the ledge's start
+  lay.begin('counter', 'kick a coiled boa (taught)', 'three', 1, x, y);
+  lay.ledge(x, x + BOA_TEACH_W, y, 'apron');
+  L.flags.push({ x: x + 100, y });
+  L.lines.push({ x: x + 140, y, text: BOA_LINE });
+  // (asleep: it wakes only when he walks right into it, and then takes a moment before it can strike, predatorAI.ts: the safe teach)
+  L.boas.push({ x: x + Math.round(BOA_TEACH_W * 0.6), y, facing: -1, asleep: true });
+  x += BOA_TEACH_W;
+  lay.end(x, BOA_TEACH_W / PHYS.maxRun + 2);
   // ---- counter-melody: the only vines in 1-5, four swings of different lengths over the drop, down a tier on the way
   lay.begin('counter', 'jump + vine swing', 'five', 1, x, y);
   lay.ledge(x, x + 220, y, 'apron');
@@ -787,6 +800,16 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   const climax = lay.traced('climax', 'snap twig + drop + hop (the chase)', 'floor', 1, x, y, barsFrom(broken(26, SET.filter((g) => g < 6))), down(T.floor, SNAP));
   // (the carving chase: closer and closer together toward the shrine)
   climax.tr.ledges.forEach((q, i) => { const n = climax.tr.ledges.length; if (i > 0 && i < n - 1 && i % (i < n / 2 ? 3 : 2) === 0) mark((q.x0 + q.x1) / 2, q.y); });
+  // (the pair in one move: a coiled boa on a wide snap twig, kicked off it before the twig goes under him. The twig holds the kick's
+  // time too, BOA_KICK_S; never the first twig of the climax, at most two, apart)
+  const climaxN = L.nodes.length - 1;
+  const wide = L.ledges.filter((q) => q.node === climaxN && q.surface === 'crumble' && q.x1 - q.x0 >= BOA_PAD_MIN);
+  for (const q of wide.slice(1)) {
+    if (L.boas.length >= 3) break;
+    if (L.boas.some((b) => Math.abs(b.x - q.x1) < 1200)) continue;
+    L.boas.push({ x: q.x1 - 50, y: q.y, facing: -1 });
+    q.hold = +((q.hold ?? 0.6) + (easy ? BOA_KICK_S.easy : BOA_KICK_S.normal)).toFixed(2);
+  }
   x = climax.tr.x1;
   y = climax.tr.yOut;
   lay.begin('cool', 'run', 'floor', 1, x, y);
@@ -839,6 +862,12 @@ export function buildRhythmStage(config: LevelConfig, seed: number, easy: boolea
   throw new Error(`${config.id} seed ${seed}: no roll passes the level check: ${last.slice(0, 3).join('; ')}`);
 }
 
+/** 1-5's kick: the teaching ledge's width, the narrowest snap twig a boa sits on, how much longer such a twig holds (the kick's time),
+ *  and Dot's line (approved; it moves here from 1-9, where it still shows on a struggle) */
+export const BOA_TEACH_W = 760;
+export const BOA_PAD_MIN = 190;
+export const BOA_KICK_S = { normal: 0.8, easy: 1.2 } as const;
+export const BOA_LINE = 'A coiled boa! Punches bounce off. Kick it!';
 /** the first seconds of the way, at full run, in which no gap can hurt (a catch under each) */
 export const OPENING_S = 6.5;
 /** 1-2's petal goal, a share of its petals, from the first-timer bots' runs */
@@ -913,6 +942,14 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     E.push({
       asleep: false, id: eid++, type: 'snake', x: sn.x, y: sn.y - 14, vx: 28, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: sn.x % 2 ? 1 : -1,
       patrolMinX: sn.x - SNAKE_RANGE, patrolMaxX: sn.x + SNAKE_RANGE, attackCooldown: 2, telegraphTimer: 0, isAttacking: false,
+      animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
+    } as Enemy);
+  }
+  // (World 1's coiled boas: protoStage.ts boa(), tagged 'coil' as the stage loads, w1Tricks.ts tagWorld1)
+  for (const b of L.boas) {
+    E.push({
+      asleep: !!b.asleep, id: eid++, type: 'boa', x: Math.round(b.x), y: b.y - 16, vx: 0, vy: 0, width: 58, height: 26, hp: 3, maxHp: 3, facing: b.facing,
+      patrolMinX: b.x - 12, patrolMaxX: b.x + 12, attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false,
       animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
     } as Enemy);
   }

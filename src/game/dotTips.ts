@@ -30,6 +30,8 @@ export const FIRST_OF: Readonly<Record<string, string>> = {
   'hint.1-2.rotten': 'rottenWood',
   'hint.1-5.mark': 'meecaMark',
   'hint.1-5.snap': 'snapTwig',
+  // (the coiled boa is met first on 1-5 now, the kick its answer: 1-9's guard line is the reminder)
+  'hint.1-5.boa': 'guardSnake',
   'hint.1-6.log': 'pushLog',
   'eng.watch.hide.bush': 'watcher',
   'hint.1-7.hide': 'watcher',
