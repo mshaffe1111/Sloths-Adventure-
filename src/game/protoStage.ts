@@ -379,7 +379,10 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
   if (!DRESS_WORLDS.includes(c.worldIndex as (typeof DRESS_WORLDS)[number]) || c.objectiveType === 'boss_lair') return;
   // (Worlds 1-7's old-generator stages, 5-6, 5-8, 7-2, 7-8: dressed too since hf-props, 2026-10-31; theirs go on the stage's own `dress`)
   if (!st.proto && c.worldIndex < 8 && c.secret) return;
-  const ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
+  let ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
+  // (a stomp vault's run-up and lip stay bare: on the teach the snake is the only thing to read, the lead 2026-11-04 on clip-7)
+  const vaults = st.enemies.filter((e) => e.vaultHome).map((e) => e.vaultHome!.x);
+  if (vaults.length) ds = ds.filter((d) => !vaults.some((vx) => d.x > vx - 340 && d.x < vx + 30));
   if (!ds.length) return;
   if (st.proto) st.proto.dress = ds;
   else st.dress = ds;
