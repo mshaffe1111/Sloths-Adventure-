@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 04:14 AM ET
+Last updated: 2026-11-04 04:46 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -22,6 +22,13 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- **2026-11-04 04:46 AM ET: STOPPED for the night (Matt's 5:00 AM ET token stop). Nothing armed.** Wrap-up digest sent. All 5 pushed, on main 1dc39cd7,
+  notes current. warmup-5m: RED for merge (clipcheck fails 3/3 on its branch, "fresh: world map" .wm-head wait; base passes), honestly
+  named by itself (1feedb8e). kaizen-gates: 0.9.4 candidate ready, waiting on the lead and Matt. fix-petals, quality-supervisor: stopped
+  with next steps. roadmap-keeper idle.
+- **NEXT at restart:** ReadNotifications; re-read SUPERVISOR.md and this file; ask the lead which helpers are in the rounds; arm round 1.
+  Round 1 first checks: warmup-5m's clipcheck fix (proof: clipcheck PASS on its branch, alone, from output); fix-petals re-merged
+  origin/main + ccr before any work (D23); kaizen-gates' 0.9.4 state (merged or still waiting).
 - 2026-11-04 04:14 AM ET: round 3 digest sent. GREEN kaizen-gates (§6 fixed, checked against the diff), fix-petals (stopped for the night 3:53),
   quality-supervisor (W1 baseline 38/100, sections there, end-of-night 4:05), roadmap-keeper (idle). YELLOW warmup-5m: no commit since
   3:25, gate lines not pasted (gate since 3:21); nudged 4:13. Wrap-up armed: trig_016k2MAepX4yH5JuNX5vFk7j, 4:45 AM ET. Nothing after.
