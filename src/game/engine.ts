@@ -4774,6 +4774,9 @@ export class GameEngine {
     if (this.stompBoss(vyNow, prevFeet)) return;
     for (const e of this.enemies) {
       if (e.defeated) continue;
+      // (World 1's vine snake hangs on its liana in the air: it is punched stiff, never stood on; a flick out of the pit under its swing
+      // came down on it and bounced, plainWalk.test.ts)
+      if (e.trick === 'vine') continue;
       const r0 = stompTest({ x: p.x, y: p.y, vy: vyNow }, prevFeet, e, diving);
       if (!r0) continue;
       // (World 1's coiled boa, w1Tricks.ts: its coil is armour, a stomp only bounces off it)

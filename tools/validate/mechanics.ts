@@ -87,7 +87,12 @@ export function missCost(b: Built): Beat2[] {
   const out: Beat2[] = [];
   const segs = b.route.segs;
   for (const s of b.steps) {
-    if (!'JjUQVBMCRXE'.includes(s.m) || /collapses behind/.test(s.what)) continue;
+    if (!'JjUQVBMCRXEG'.includes(s.m) || /collapses behind/.test(s.what)) continue;
+    if (s.m === 'G') {
+      // (World 1's vine snake, R-159.1: a grab of its liana before punching it stiff is bitten, a heart)
+      out.push({ step: s, cost: 'setback', why: 'a vine snake bites the grab of its liana: a heart' });
+      continue;
+    }
     if (s.m === 'E') {
       out.push({ step: s, cost: /again/.test(s.what) ? 'setback' : 'nothing', why: /again/.test(s.what) ? 'a pass that can strike: a heart' : "the stretch's first pass only warns" });
       continue;
@@ -148,7 +153,8 @@ export function enemyJobs(b: Built): { jobs: EnemyJob[]; freeShare: number } {
     const lo = Math.min(m.patrolMinX ?? m.x, m.x), hi = Math.max(m.patrolMaxX ?? m.x, m.x);
     const surface = m.y + m.height;
     const near = lands.filter((l) => Math.abs(l.y - surface) < 40 && l.x > lo - LANDING_CLEAR && l.x < hi + LANDING_CLEAR);
-    const d = near.length ? Math.round(Math.min(...near.map((l) => (l.x < lo ? lo - l.x : l.x > hi ? l.x - hi : 0)))) : null;
+    // (World 1's vine snake IS what he catches: it hangs on the liana, its tell starts a jump away, R-159.1; not an ambush where he lands)
+    const d = m.trick === 'vine' ? null : near.length ? Math.round(Math.min(...near.map((l) => (l.x < lo ? lo - l.x : l.x > hi ? l.x - hi : 0)))) : null;
     const onRoute = b.samples.some((s) => s.x > lo - 20 && s.x < hi + 20 && Math.abs(s.y - surface) < 30);
     jobs.push({ type: m.type, x: Math.round(m.x), nearLanding: d, onRoute });
   }

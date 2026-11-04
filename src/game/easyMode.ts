@@ -449,7 +449,9 @@ export function easyStage(stage: Stage): Stage {
     stage.enemies = stage.enemies.filter((e) => keep.has(e));
     const ring = stage.proto?.ring;
     if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
-    if ((kind === 'purge' || kind === 'gauntlet') && before > 0) {
+    if ((kind === 'purge' || kind === 'gauntlet') && stage.easyGoalCounted && stage.easyGoal !== undefined) {
+      stage.config = { ...stage.config, targetCount: Math.max(1, Math.min(stage.enemies.length, stage.easyGoal)) };
+    } else if ((kind === 'purge' || kind === 'gauntlet') && before > 0) {
       // (LV-6: Normal's goal scaled to the animals Easy keeps, then Easy's share of that (65%), never under the goal this fight had
       // before (0.6 of the old Easy goal). Not a share of Easy's goal for the whole stage: that asked 2-5's kids for 16 of the 21
       // snappers Easy keeps)

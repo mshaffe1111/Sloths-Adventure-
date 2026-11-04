@@ -113,6 +113,9 @@ export interface GeneratedStage {
   kit?: import('./puzzleKit.ts').KitExtras;
   /** the goal Easy keeps: the stage's own quota, before goals.ts raised it to Normal's share of what the stage holds */
   easyGoal?: number;
+  /** the stage's Easy goal was counted on Easy's own stage (the kid first-timer's route after Easy's thinning, 1-3 and 1-9, R-159.1):
+   *  Easy keeps it as it is, never scaled down again (easyMode.ts), only capped at the animals Easy keeps */
+  easyGoalCounted?: boolean;
   /** Normal's goal, set with easyGoal (goals.ts withGoals): Easy scales it to the animals it keeps (easyMode.ts) */
   normalGoal?: number;
   /** Easy's goal before LV-6 (goals.ts withGoals): Easy's goal never goes under it */

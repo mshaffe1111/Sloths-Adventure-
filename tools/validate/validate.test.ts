@@ -40,7 +40,7 @@ test('every beat the inspector names maps to its move letter', () => {
     ['Z', 'crumbling branch', 'B'], ['Z', 'the branch collapses behind him: keep running', 'K'], ['Z', 'wind gust', 'W'], ['Z', 'sticky web slows him', 'S'],
     ['P', 'puzzle room (seesaw)', 'P'], ['C', 'snake', 'F'], ['Z', 'eagle sweep: duck into a bush', 'E'], ['Z', 'darkness: wake the glowworms, find the way', 'D'],
     // (World 1's tricks, R-159.1: the inspector names them, beats.ts)
-    ['C', 'snake (dazed, then stomped)', 'N'], ['C', 'boa (coiled: kicked to roll)', 'O'], ['C', 'snake (stomp vault)', 'Y'], ['C', 'boa', 'F'],
+    ['C', 'snake (dazed, then stomped)', 'N'], ['C', 'boa (coiled: kicked to roll)', 'O'], ['C', 'snake (stomp vault)', 'Y'], ['C', 'snake (vine snake: punched stiff)', 'G'], ['C', 'boa', 'F'],
   ];
   for (const [letter, what, want] of cases) assert.equal(moveOf({ letter: letter as never, what, count: 1 }), want, what);
   assert.equal(moveOf({ letter: 'h', what: 'pickup arc over a gap (optional jump)', count: 0.5 }), null, 'an optional pickup arc is not a move');
@@ -212,6 +212,11 @@ test('enemy jobs: a snake where a jump lands is flagged; one in the middle of a 
     const job = enemyJobs(b).jobs[0];
     assert.equal(job.nearLanding !== null, near, `snake at ${x}: ${JSON.stringify(job)}`);
   }
+  // (a vine snake where a jump lands is the liana he means to catch, not an ambush: never flagged)
+  const r = bare(ps, 2300);
+  (r.stage as Stage).enemies = [{ ...snake(760), trick: 'vine' } as never];
+  const vb = fromStage('fixture', 1, 'normal', r, r.stage as Stage);
+  assert.equal(enemyJobs(vb).jobs[0].nearLanding, null);
 });
 
 test('tempo: breaking branches are hurry, the eagle and waits are patience, a plain jump is neither', () => {
@@ -314,4 +319,13 @@ test('repeat on a traced stage: the same four moves on the same notes the same w
   assert.deepEqual(repeats(moveString(s2), s2, 130).filter((r) => r.kind === '4-run'), [], 'varied notes and heights are different moves to a thumb');
   // (the letters alone, as on an untraced stage, still read the varied one as the same four moves over and over)
   assert.ok(repeats(moveString(s2), s2).some((r) => r.kind === '4-run'), 'without the beat the letters repeat');
+});
+
+test('miss cost: a vine snake (G) bites a grab of its liana, a heart: a setback, never free', () => {
+  const r = bare([{ ...floor(100, 2000), height: 90 }], 1900);
+  const b = fromStage('fixture', 1, 'normal', r, r.stage as Stage);
+  b.steps = [{ m: 'G', t: 1, x: 600, y: G, what: 'snake (vine snake: punched stiff)' }];
+  const c = missCost(b);
+  assert.equal(c.length, 1);
+  assert.equal(c[0].cost, 'setback');
 });
