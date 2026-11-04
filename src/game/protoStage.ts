@@ -17,6 +17,7 @@
  */
 import { teachWater } from './waterTeach.ts';
 import { petalPass } from './petalPass.ts';
+import { dressSize } from './dressArt.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -52,7 +53,7 @@ import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
 import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { W4Roll } from './w4Sections.ts';
-import { buildIntoCanopy, splitPetals } from './w1Rise.ts';
+import { buildIntoCanopy, clearDress, splitPetals } from './w1Rise.ts';
 import { APRON, easyNode, stageBpm, traceNode, type Step } from './beatTrace.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
@@ -136,6 +137,8 @@ export interface ProtoExtras {
   /** a stage that climbs from the forest floor into the trees (1-1, w1Rise.ts): from height y0 to y1 (world y) the backdrop turns to the
    *  world's canopy strips (engine.ts setCanopy, as 1-8's and the ascents') */
   rise?: { y0: number; y1: number };
+  /** scenery trunks behind the boughs (not climbs: protoArt.ts setDecoTrunks), 1-1's canopy */
+  trunks?: Array<{ x: number; topY: number; bottomY: number }>;
   /** 1-1's choice: the petals on each road, by id (the rest are on the shared path: 70/15/15, Matt 2026-11-04) */
   roads?: { low: number[]; high: number[] };
   /** 1-1's choice: each road's ledges [x0, x1, y], for the split (w1Rise.ts splitPetals) */
@@ -375,6 +378,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   // then the dressing, once the stage is final
   const out = st;
   addDress(out, seed);
+  // (1-1: the dressing off the play line and the shrine)
+  if (plan === '1-1') clearDress(out, (n) => dressSize(n as never));
   return out;
 }
 

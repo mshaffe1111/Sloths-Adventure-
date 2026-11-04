@@ -395,6 +395,25 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   // (the roads' ledges, for the petals' split after the petal pass: splitPetals)
   const roadLedges = (r: typeof roads.low) => r.tr.flatMap((t) => t.ledges.map((l) => [Math.round(l.x0), Math.round(l.x1), Math.round(l.y + shift)] as [number, number, number]));
   const choice = { low: roadLedges(roads.low), high: roadLedges(roads.high) };
+
+  // ---- the canopy's look (the lead's polish review, 2026-11-04): no bough floats with nothing holding it, the painted bromeliad on a
+  // third of them only, and the boughs not all one thickness. Draw only: the walkable tops and the beat are unchanged.
+  const boughs = P.filter((p) => p.style === 'branch' && p.type !== 'bouncy' && p.height < 50).sort((a, b) => a.x + a.width - (b.x + b.width));
+  const LOOK = stream(seed * 104729 + 7);
+  for (const p of boughs) {
+    p.bare = LOOK.f() < 0.67;
+    p.thick = Math.round((0.82 + LOOK.f() * 0.45) * 100) / 100;
+  }
+  // (a kapok trunk behind every bough: fewest trunks that cross every bough, each 40 px in from the end of the first bough it must
+  // hold, from the forest floor up into the crowns)
+  const trunks: Array<{ x: number; topY: number; bottomY: number }> = [];
+  for (const p of boughs) {
+    if (trunks.some((t) => t.x > p.x + 20 && t.x < p.x + p.width - 20)) continue;
+    const tx = Math.max(p.x + 20, p.x + p.width - 40);
+    trunks.push({ x: Math.round(tx), topY: 0, bottomY: shift + BANK_H });
+  }
+  // (each rises on out of the top of the view, into the crowns: a trunk cut off flat over its last bough read as a post)
+  for (const t of trunks) t.topY = -1200;
   const floorY = shift;
   const H0 = floorY + HOLLOW + BANK_H + 20;
   cid = heartsAtFlags(C, checkpoints, cid);
@@ -420,7 +439,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     heartFalls: guarded,
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces, timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
     proto: {
-      hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, choice,
+      hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, choice, trunks,
       // the forest floor turns to the canopy as he rises (World 1's canopy strips, as on 1-8 and the top of 1-4)
       rise: { y0: Math.round(floorY - (floorY - crown.y) * CANOPY_FROM), y1: Math.round(floorY - (floorY - crown.y) * CANOPY_FULL) },
     },
@@ -503,4 +522,28 @@ export function splitPetals(st: GeneratedStage & { proto: { choice?: { low: Arra
     shared = shared.filter((c) => c !== drop);
   }
   st.proto.roads = { low: of('low').map((c) => c.id), high: of('high').map((c) => c.id) };
+}
+
+/**
+ * 1-1's dressing kept off the play line (the lead's polish review, 2026-11-04: a white orchid stood on Pokey at the shrine, another hung
+ * in the air in the finale): no piece over the shrine, none standing in the air he walks or jumps through over a ledge, and none
+ * hanging with nothing under or over it to grow from.
+ */
+export function clearDress(st: { platforms: Platform[]; collectibles: Collectible[]; proto: { dress?: Array<{ n: string; x: number; b: number }> } }, size: (n: string) => { w: number; h: number }) {
+  const ds = st.proto.dress;
+  if (!ds?.length) return;
+  const shrine = st.collectibles.find((c) => c.type === 'exit_totem');
+  const solid = st.platforms.filter((p) => p.type !== 'bouncy');
+  st.proto.dress = ds.filter((d) => {
+    const { w, h } = size(d.n);
+    const x0 = d.x - w / 2, x1 = d.x + w / 2, top = d.b - h;
+    if (shrine && x1 > shrine.x - 260 && x0 < shrine.x + 260 && d.b > shrine.y - 300 && top < shrine.y + 120) return false;
+    // (in the air over a ledge, where he walks and jumps: 0-170 px over its top)
+    if (solid.some((p) => x1 > p.x + 4 && x0 < p.x + p.width - 4 && d.b > p.y - 170 && top < p.y - 4)) {
+      // (standing on the ledge's top at its own end is set dressing at the edge; anything else there is in the way)
+      if (!solid.some((p) => Math.abs(d.b - p.y) < 8 && (x1 < p.x + 40 || x0 > p.x + p.width - 40))) return false;
+    }
+    // (grows from something: its foot on a top, or its head under a bough's underside)
+    return solid.some((p) => x1 > p.x && x0 < p.x + p.width && (Math.abs(d.b - p.y) < 10 || Math.abs(top - (p.y + p.height)) < 12));
+  });
 }

@@ -229,3 +229,18 @@ test('1-1 in the real engine: at the choice, walking on passes under the mushroo
   }
   assert.ok(landedHigh, 'the mushroom put him on the high road');
 });
+
+test('1-1\'s canopy look (the lead\'s polish review, 2026-11-04): every bough crosses a kapok trunk, the trunks are scenery and not climbs, most boughs are bare bark, and the boughs vary in thickness', () => {
+  for (const easy of [false, true]) {
+    for (const s of SEEDS) {
+      const st = buildProtoStage(cfg, s, '1-1', easy);
+      const boughs = st.platforms.filter((p) => p.style === 'branch' && p.type !== 'bouncy' && p.height < 50);
+      const trunks = st.proto.trunks!;
+      for (const b of boughs) assert.ok(trunks.some((t) => t.x > b.x && t.x < b.x + b.width), `seed ${s}: bough ${b.id} floats`);
+      assert.equal(st.vines.filter((v) => v.vineType === 'tree_climb').length, 0, 'no climb added');
+      const bare = boughs.filter((b) => b.bare).length / boughs.length;
+      assert.ok(bare > 0.5 && bare < 0.85, `seed ${s}: ${bare}`);
+      assert.ok(new Set(boughs.map((b) => b.thick)).size > 10, 'thicknesses vary');
+    }
+  }
+});
