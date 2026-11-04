@@ -728,7 +728,9 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   const SNAP = R.pick([0.5, 0.7, 0.85]);
   // ---- intro: the canopy, sparse jumps, the first carving on the path
   const intro = lay.traced('intro', 'run + jump', 'canopy', 1, x, y, barsFrom(Array.from({ length: 8 }, () => R.pick([7, 8, 9]))), { ...down(T.canopy, 0), jumpDy: [-30, -20, 0, 20, 30] });
-  mark(intro.tr.ledges[1].x0 + 60, intro.tr.ledges[1].y);
+  // (each mark at its ledge's far end, just before the take-off: the inspector counts a mark as a 1.5 s look, stageTime.ts relicSec, and
+  // a mark at a ledge's start left a dead walk after it)
+  mark(intro.tr.ledges[1].x1 - 40, intro.tr.ledges[1].y);
   L.lines.push({ x: 260, y, text: "Meeca's mark! Follow her trail" });
   x = intro.tr.x1;
   y = intro.tr.yOut;
@@ -746,16 +748,16 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   y = teach.tr.yOut;
   // ---- ramp: down a tier, snaps and plain branches, the broken beat; then down another, the falls real now
   const ramp = lay.traced('ramp', 'snap twig + jump (broken)', 'two', 1, x, y, barsFrom(broken(21, SET)), down(T.two, SNAP - 0.1));
-  mark(ramp.tr.ledges[4].x0 + 40, ramp.tr.ledges[4].y);
+  mark(ramp.tr.ledges[4].x1 - 40, ramp.tr.ledges[4].y);
   x = ramp.tr.x1;
   y = ramp.tr.yOut;
   const ramp2 = lay.traced('ramp', 'snap twig + jump, over the drop (broken)', 'three', 1, x, y, barsFrom(broken(21, SET)), down(T.three, SNAP));
-  mark(ramp2.tr.ledges[5].x0 + 40, ramp2.tr.ledges[5].y);
+  mark(ramp2.tr.ledges[5].x1 - 40, ramp2.tr.ledges[5].y);
   x = ramp2.tr.x1;
   y = ramp2.tr.yOut;
   // ---- spike: down another tier, all snaps, the quickest gaps
   const spike = lay.traced('spike', 'snap twig + drop', 'four', 1, x, y, barsFrom(broken(22, SET.filter((g) => g < 6))), down(T.four, 0.9));
-  mark(spike.tr.ledges[5].x0 + 40, spike.tr.ledges[5].y);
+  mark(spike.tr.ledges[5].x1 - 40, spike.tr.ledges[5].y);
   x = spike.tr.x1;
   y = spike.tr.yOut;
   // ---- rest: 4-5 s, the keepsake on a high branch across the drop (seen from here), reached up two branches
@@ -803,12 +805,30 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   // (the pair in one move: a coiled boa on a wide snap twig, kicked off it before the twig goes under him. The twig holds the kick's
   // time too, BOA_KICK_S; never the first twig of the climax, at most two, apart)
   const climaxN = L.nodes.length - 1;
-  const wide = L.ledges.filter((q) => q.node === climaxN && q.surface === 'crumble' && q.x1 - q.x0 >= BOA_PAD_MIN);
-  for (const q of wide.slice(1)) {
+  const twigs = L.ledges.filter((q) => q.node === climaxN && q.surface === 'crumble').sort((a, b) => a.x0 - b.x0);
+  const all = L.ledges.filter((q) => q.node === climaxN).sort((a, b) => a.x0 - b.x0);
+  // (each boa BOA_CLEAR past where the jump onto its twig lands (research 11-04: never within 150 px of a landing; the validator's
+  // landing sits a little further on), the twig reaching on that far if the next gap keeps 45 px, still a jump (beatTrace MIN_GAP 40); widest twigs first, never the first)
+  const land = (q: LLedge) => climax.tr.landings.find((l) => l.toX >= q.x0 - 2 && l.toX <= q.x1 + 2)?.toX ?? q.x0 + 40;
+  for (const q of [...twigs.slice(1)].sort((a, b) => (b.x1 - b.x0) - (a.x1 - a.x0))) {
     if (L.boas.length >= 3) break;
-    if (L.boas.some((b) => Math.abs(b.x - q.x1) < 1200)) continue;
-    L.boas.push({ x: q.x1 - 50, y: q.y, facing: -1 });
+    const bx = land(q) + BOA_CLEAR;
+    if (L.boas.some((b) => Math.abs(b.x - bx) < 1200)) continue;
+    const next = all[all.indexOf(q) + 1];
+    // (and the next ledge's near edge as far: the quick route's jump off the twig lands right at it)
+    if (next && next.x0 - bx < 150) continue;
+    if (bx + 30 > q.x1) {
+      if (!next || next.x0 - (bx + 30) < 45) continue;
+      q.x1 = bx + 30;
+    }
+    L.boas.push({ x: bx, y: q.y, facing: -1 });
     q.hold = +((q.hold ?? 0.6) + (easy ? BOA_KICK_S.easy : BOA_KICK_S.normal)).toFixed(2);
+  }
+  // (a roll whose twigs are all too short for one: the climax's widest solid branch has it, kicked off its ledge in the chase)
+  if (L.boas.length === 1) {
+    const q = all.slice(1, -1).filter((c) => c.surface !== 'crumble').sort((a, b) => (b.x1 - b.x0) - (a.x1 - a.x0))[0];
+    const nx = q ? all[all.indexOf(q) + 1] : undefined;
+    if (q && land(q) + BOA_CLEAR + 30 <= q.x1 && (!nx || nx.x0 - (land(q) + BOA_CLEAR) >= 150)) L.boas.push({ x: land(q) + BOA_CLEAR, y: q.y, facing: -1 });
   }
   x = climax.tr.x1;
   y = climax.tr.yOut;
@@ -865,7 +885,7 @@ export function buildRhythmStage(config: LevelConfig, seed: number, easy: boolea
 /** 1-5's kick: the teaching ledge's width, the narrowest snap twig a boa sits on, how much longer such a twig holds (the kick's time),
  *  and Dot's line (approved; it moves here from 1-9, where it still shows on a struggle) */
 export const BOA_TEACH_W = 760;
-export const BOA_PAD_MIN = 190;
+export const BOA_CLEAR = 175;
 export const BOA_KICK_S = { normal: 0.8, easy: 1.2 } as const;
 export const BOA_LINE = 'A coiled boa! Punches bounce off. Kick it!';
 /** the first seconds of the way, at full run, in which no gap can hurt (a catch under each) */
@@ -901,16 +921,17 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
   // lower lip, so a short first jump drops onto it and a hop goes back up (STAGE-RULES: nothing can hurt in the first ~3-5 s, and Dot's
   // first tip, "Flick up just before the edge", comes at about 4-5 s; the first-timer bot fell into the first gap at 1.6 s)
   const intro = L.ledges.filter((q) => q.node === 0 && q.surface !== 'catch' && q.x0 < L.spawn.x + OPENING_S * PHYS.maxRun).sort((a, b) => a.x0 - b.x0);
-  // (one low branch under the whole opening, not one under each gap: holding the way on walks off a short catch's far end. It ends
-  // under the ledge after the last gap, 60 px down, where a hop goes up; the jumps stay asked by the petals over them)
-  let lastGap = -1;
-  for (let i = 1; i < intro.length; i++) if (intro[i].x0 - intro[i - 1].x1 >= 20) lastGap = i;
-  if (lastGap > 0) {
-    const y = Math.max(...intro.slice(0, lastGap + 1).map((q) => q.y)) + 60;
-    const x0 = intro[0].x1 - 30, x1 = Math.min(intro[lastGap].x1, intro[lastGap].x0 + 160);
-    P.push({ id: pid++, x: x0, y, width: x1 - x0, height: 24, type: 'solid', style: 'branch' });
-    // (and a catch the layout already laid there, 1-5's teach catches, is under it: no two branches stacked)
-    for (const c of L.ledges) if (c.surface === 'catch' && c.x0 < x1 && c.x1 > x0) c.x1 = c.x0;
+  // (under each gap he meets in the first seconds, a catch branch 60 px under the lower lip, ending against a stone face under the far
+  // ledge's near end: holding the way on, he drops onto the catch and is stopped by the face, never hurt, and a hop goes up. Never one
+  // low branch under the whole opening: the quick route walked it, a dead walk of 5-7 s (fun gate))
+  for (let i = 1; i < intro.length; i++) {
+    const a = intro[i - 1], b = intro[i];
+    if (b.x0 - a.x1 < 20) continue;
+    const y = Math.max(a.y, b.y) + 60;
+    P.push({ id: pid++, x: a.x1 - 30, y, width: b.x0 + 50 - (a.x1 - 30), height: 24, type: 'solid', style: 'branch' });
+    P.push({ id: pid++, x: b.x0, y: b.y, width: 50, height: y - b.y, type: 'solid', style: 'moss_stone' });
+    // (a catch the layout already laid there, 1-5's teach catches: this one replaces it)
+    for (const c of L.ledges) if (c.surface === 'catch' && c.x0 < b.x0 && c.x1 > a.x1) c.x1 = c.x0;
   }
   for (const q of L.ledges) {
     const w = q.x1 - q.x0;

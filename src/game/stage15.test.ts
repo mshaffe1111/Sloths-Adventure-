@@ -87,6 +87,7 @@ test('1-5: every floor gap paints as a drop, never water (w1Pits.ts), and none i
 });
 
 test("1-5: the kick: a coiled boa taught on a wide stone ledge after Dot's line, then 1-2 boas on snap twigs that hold the kick's time too, 16 rolls, Normal and Easy", () => {
+  let twigRolls = 0;
   for (const v of LAYOUTS) {
     for (const easy of [false, true]) {
       const L = rhythmLayout('1-5', v, easy, stageBpm(cfg));
@@ -95,8 +96,12 @@ test("1-5: the kick: a coiled boa taught on a wide stone ledge after Dot's line,
       assert.ok(pad && pad.x1 - pad.x0 >= BOA_TEACH_W - 1, `${v} ${easy}: the teaching boa on a wide solid ledge`);
       const line = L.lines.find((l) => l.text === BOA_LINE);
       assert.ok(line && line.x < teach.x - 200, `${v} ${easy}: Dot's line before the first boa`);
-      const onTwig = L.boas.slice(1).map((b) => L.ledges.find((q) => q.surface === 'crumble' && b.x > q.x0 && b.x < q.x1 && q.y === b.y));
-      assert.ok(onTwig.length >= 1 && onTwig.every((q) => q && (q.hold ?? 0) >= (easy ? BOA_KICK_S.easy : BOA_KICK_S.normal)), `${v} ${easy}: boas on snap twigs that hold the kick`);
+      // (on a snap twig that holds the kick's time too; a roll whose twigs are all too short has its one on a solid branch)
+      const under = L.boas.slice(1).map((b) => L.ledges.find((q) => b.x > q.x0 && b.x < q.x1 && q.y === b.y));
+      assert.ok(under.length >= 1 && under.every((q) => q && (q.surface !== 'crumble' || (q.hold ?? 0) >= (easy ? BOA_KICK_S.easy : BOA_KICK_S.normal))), `${v} ${easy}: a boa in the climax, on a twig that holds the kick or a branch`);
+      twigRolls += under.some((q) => q?.surface === 'crumble') ? 1 : 0;
     }
   }
+  // (the pair, a boa on a snap twig, on most rolls)
+  assert.ok(twigRolls >= 24, `a boa on a snap twig on ${twigRolls} of 32 rolls`);
 });

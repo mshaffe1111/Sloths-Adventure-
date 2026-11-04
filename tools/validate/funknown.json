@@ -341,7 +341,7 @@
    "stage": "1-5",
    "setting": "easy",
    "rule": "dead walk",
-   "layouts": 4,
+   "layouts": 2,
    "owner": "World 1 rebuild (D26)"
   },
   {
@@ -362,14 +362,14 @@
    "stage": "1-5",
    "setting": "easy",
    "rule": "repeat",
-   "layouts": 11,
+   "layouts": 9,
    "owner": "World 1 rebuild (D26)"
   },
   {
    "stage": "1-5",
    "setting": "normal",
    "rule": "dead walk",
-   "layouts": 4,
+   "layouts": 2,
    "owner": "World 1 rebuild (D26)"
   },
   {
@@ -390,7 +390,7 @@
    "stage": "1-5",
    "setting": "normal",
    "rule": "repeat",
-   "layouts": 2,
+   "layouts": 1,
    "owner": "World 1 rebuild (D26)"
   },
   {
