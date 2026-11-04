@@ -61,3 +61,4 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - R-155 1-5 plan (fix-petals 6aeb229b): PASS WITH CHANGES: method file + fallbacks; goal type differs from 1-2 (recommend trail-follow, petals bonus; lead/Matt); a different backdrop; patience beat once and <3 s; name the moment; Dot line must not explain the puzzle.
 - R-155 1-5 plan rev 2 (fun-validator 93450fb2): PASS. Watch: w1kapok shared with 1-7 (check look grid + in-order clip; fallback w1sunrise). Goal (a/b) + Dot lines with lead/Matt.
 - OWN MISS 11:10 AM ET: baseline goal claims (1-3, 1-5) and 1-8 pit lives came from the old bot despite rescues>0; corrected (20f6cecd), told lead; countermeasure in method §4.
+- R-159.1 re-check 9c932427 (e7c5fc22): REDO still: boa dies to punch during its strike (clips held the strike off); stun (a) not in; stars small, glint a speck. Lesson for my method: a helper's staged clip can hide the hole; always re-run the real mashing myself.
