@@ -298,14 +298,14 @@ class Lay {
       if (q.surface === 'crumble') this.L.ledges[this.L.ledges.length - 1].hold = +(Math.max(0, runOn(q.step)) + (this.easy ? SNAP_EASY : SNAP_SPARE)).toFixed(2);
     }
     this.L.flags.push({ x: Math.round(tr.checkpoint.x), y });
-    // (a long node gets a flag about every 3,000 px too, on a solid ledge 140 px wide or more, in the way's order: no stretch between
+    // (a long node gets a flag about every 2,200 px too, on a solid ledge 140 px wide or more, in the way's order: no stretch between
     // flags over easyMode.ts FLAG_SPAN_MAX, so its pass never adds one out of order)
     const solid = tr.ledges.filter((q) => q.surface !== 'crumble' && q.x1 - q.x0 >= 140);
     const along = [...solid].sort((a, b) => dir * (a.x0 - b.x0));
     let last = dir === 1 ? tr.x0 : tr.x1;
     for (const q of along) {
       const at = dir === 1 ? q.x0 + 70 : q.x1 - 70;
-      if (Math.abs(at - last) >= 3000 && Math.abs((dir === 1 ? tr.x1 : tr.x0) - at) >= 900) {
+      if (Math.abs(at - last) >= 2200 && Math.abs((dir === 1 ? tr.x1 : tr.x0) - at) >= 600) {
         this.L.flags.push({ x: Math.round(at), y: q.y });
         last = at;
       }
@@ -432,6 +432,7 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   const midSwing = (tag: Tag, tier: string, x0: number, yy: number, tops?: [number, number]) => {
     lay.begin(tag, 'jump + vine swing', tier, 1, x0, yy);
     lay.ledge(x0, x0 + 240, yy, 'apron');
+    L.flags.push({ x: x0 + 100, y: yy });
     try {
       const far = vineChain(lay, x0 + 240, yy, 1, easy, 260, yy, tops);
       lay.ledge(far, far + 260, yy, yy >= FLOOR_Y ? 'bank' : 'branch');
@@ -600,7 +601,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   x = intro.tr.x1;
   y = intro.tr.yOut;
   // ---- the snap twig, taught: twigs over catch branches (a miss is a hop back up)
-  const teach = lay.traced('ramp', 'snap twig + jump (taught)', 'canopy', 1, x, y, barsFrom(broken(9, [4, 6, 8])), { ...down(y, 0), surfaces: ['crumble'], jumpDy: [-20, 0, 20], end: undefined });
+  const teach = lay.traced('ramp', 'snap twig + jump (taught)', 'canopy', 1, x, y, barsFrom(broken(9, [4, 6, 8])), { ...down(y, 0), surfaces: ['crumble', 'branch'], alternate: true, jumpDy: [-20, 0, 20], end: undefined });
   // (taught safe: a catch branch under the far part of each gap, one hop below the far ledge: a jump that falls short lands on it, a walk
   // off the edge falls past it (about 70 px on at a run), so the jump is still the way)
   for (const g of teach.tr.gaps) {
@@ -638,6 +639,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   // ---- counter-melody: the only vines in 1-5, four swings of different lengths over the drop, down a tier on the way
   lay.begin('counter', 'jump + vine swing', 'five', 1, x, y);
   lay.ledge(x, x + 220, y, 'apron');
+  L.flags.push({ x: x + 100, y });
   let e = x + 220;
   for (let k = 0; k < 5; k++) {
     const to = k < 2 ? y : k < 4 ? y + 40 : T.five;

@@ -10,9 +10,9 @@ import './headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
-import { PHYS, TAKEOFF_SLACK } from './physics.ts';
+import { JUMP_RISE, PHYS, TAKEOFF_SLACK } from './physics.ts';
 import type { Platform } from './types.ts';
-import { APRON, CLUMSY, DEAD_WALK, GAP_REPEAT, INSIDE, SLOP, VIEWS, checkTrace, deadWalks, easyNode, flight, gridHits, hazardSpots, landingInView, stageBpm, traceNode, type Move, type NodeSpec, type Step } from './beatTrace.ts';
+import { APRON, CLUMSY, DEAD_WALK, GAP_REPEAT, INSIDE, SHORT_HOLD, SLOP, VIEWS, checkTrace, deadWalks, easyNode, flight, gridHits, hazardSpots, landingInView, stageBpm, traceNode, type Move, type NodeSpec, type Step } from './beatTrace.ts';
 import { stageMusic } from '../audio/scenes.ts';
 import { themeById } from '../audio/themes.ts';
 import { generateAllLevels } from './worldsData.ts';
@@ -28,7 +28,7 @@ const NODES: Array<Omit<NodeSpec, 'x' | 'y'>> = [
   { bpm: 88, bars: ['x.x.x.x.'], steps: [J(), J(30, 'branch'), J(), J(-30)] },
   { bpm: 92, bars: ['x..o..x.'], steps: [J(50, 'stump'), H(-50), J()] },
   { bpm: 92, bars: ['h.......', 'h.......'], steps: [D(), D(-60)] },
-  { bpm: 92, bars: ['x...x...', 'x...x...'], steps: [J(60, 'stump'), J(-60), J(80, 'branch'), J(-80)] },
+  { bpm: 92, bars: ['x...x...', 'x...x...'], steps: [J(60, 'stump'), J(-60), J(60, 'branch'), J(-60)] },
   { bpm: 134, bars: ['x...x...', 'h.......', 'x...x...'], steps: [J(0, 'crumble'), H(-40, 'branch'), D(60, 'branch'), J(-60), J(0, 'branch')] },
   { bpm: 96, bars: ['x...x...', 'h...x...'], steps: [J(0, 'crumble'), J(0, 'crumble'), D(40, 'branch'), J(-40)] },
   { bpm: 96, bars: ['x..o....', 'h.......', 'x...x..o'], steps: [J(0, 'branch'), H(-30, 'branch'), D(60, 'branch'), J(-60), J(), J(30, 'stump')] },
@@ -100,7 +100,7 @@ test('the tracer flies as the real engine does: a jump, a hop and a double jump 
  * jump `late` s after the planned take-off (or at the slack's point, TAKEOFF_SLACK before the ledge's end), with `air` of his air speed
  * (as tools/validate/play.ts's clumsy thumb, applied to the distance each air frame covers). Returns the step he fell at, or -1.
  */
-function engineRun(tr: ReturnType<typeof traceNode>, steps: readonly Step[], o: { late: number | 'slack'; air: number }, path?: Array<[number, number]>): number {
+function engineRun(tr: ReturnType<typeof traceNode>, steps: readonly Step[], o: { late: number | 'slack'; air: number; short?: boolean }, path?: Array<[number, number]>): number {
   const r = new RealPlay('3-5', 1);
   const plats: Platform[] = tr.ledges.map((q, i) => ({
     id: i + 1, x: q.x0, y: q.y, width: q.x1 - q.x0, height: q.surface === 'stump' ? 900 : q.surface === 'branch' ? 24 : 90, type: 'solid',
@@ -109,7 +109,7 @@ function engineRun(tr: ReturnType<typeof traceNode>, steps: readonly Step[], o: 
   r.bare(plats);
   r.stand(tr.x0 + 20, tr.ledges[0].y);
   const lowest = Math.max(...tr.ledges.map((q) => q.y));
-  let i = 0, inAir = 0, doubled = true, held = 0;
+  let i = 0, inAir = 0, doubled = true, held = 0, takeY = 0;
   for (let f = 0; f < 30 * 40 && r.p.x < tr.x1 - 40; f++) {
     const l = tr.landings[i];
     let press = false;
@@ -119,6 +119,7 @@ function engineRun(tr: ReturnType<typeof traceNode>, steps: readonly Step[], o: 
       if (r.p.x >= at) {
         press = true;
         held = 0;
+        takeY = r.p.y;
         doubled = steps[i].move !== 'double';
         inAir = i;
         i++;
@@ -131,7 +132,10 @@ function engineRun(tr: ReturnType<typeof traceNode>, steps: readonly Step[], o: 
       second = true;
       doubled = true;
     }
-    const hold = press || second || (s && (s.move !== 'hop' || held < 2));
+    // (a short flick: the thumb lets go once he has risen far enough that the cut leaves him SHORT_HOLD of a full jump's height)
+    const rose = takeY - r.p.y;
+    const shortGo = o.short && s && s.move === 'jump' && rose >= SHORT_HOLD.normal * JUMP_RISE - (PHYS.cutV * PHYS.cutV) / (2 * PHYS.gravUp);
+    const hold = press || second || (s && !shortGo && (s.move !== 'hop' || held < 2));
     const x0 = r.p.x;
     r.frame({ right: true, press: press || second, jump: !!hold });
     if (!r.p.grounded) r.p.x = x0 + (r.p.x - x0) * o.air;
@@ -141,9 +145,9 @@ function engineRun(tr: ReturnType<typeof traceNode>, steps: readonly Step[], o: 
   return r.p.x >= tr.x1 - 40 ? -1 : 99;
 }
 
-test('every traced node is crossed in the real engine by the clumsy thumb: on time, 100 ms late with 15% less air, 100 ms early, at the slack', () => {
+test('every traced node is crossed in the real engine by the clumsy thumb: on time, 100 ms late with 15% less air, 100 ms early, at the slack, and a short flick', () => {
   for (const { spec, tr } of traced) {
-    for (const o of [{ late: 0, air: 1 }, { late: CLUMSY.late, air: CLUMSY.air }, { late: 0, air: CLUMSY.air }, { late: -CLUMSY.late, air: 1 }, { late: 'slack' as const, air: 1 }]) {
+    for (const o of [{ late: 0, air: 1 }, { late: CLUMSY.late, air: CLUMSY.air }, { late: 0, air: CLUMSY.air }, { late: -CLUMSY.late, air: 1 }, { late: 'slack' as const, air: 1 }, { late: 0, air: 1, short: true }]) {
       assert.equal(engineRun(tr, spec.steps, o), -1, `${spec.bars.join('|')} ${JSON.stringify(o)}: fell (step index) or stuck (99)`);
     }
   }

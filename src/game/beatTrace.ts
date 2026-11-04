@@ -321,14 +321,20 @@ export function landingInView(px: number, py: number, lx: number, ly: number, vw
  * full or 15% less air speed), an eager thumb (100 ms early, full air), and the game's own take-off slack (the last 70 px before an edge,
  * physics.ts TAKEOFF_SLACK, full air: the level check's rule). `off` is seconds late (negative early), or 'slack'.
  */
-export const TRIES: ReadonlyArray<{ off: number | 'slack'; air: number }> = [
+export const TRIES: ReadonlyArray<{ off: number | 'slack'; air: number; short?: boolean }> = [
   { off: 0, air: 1 },
   { off: CLUMSY.late, air: 1 },
   { off: 0, air: CLUMSY.air },
   { off: CLUMSY.late, air: CLUMSY.air },
   { off: -CLUMSY.late, air: 1 },
   { off: 'slack', air: 1 },
+  // (and the flick that lets go early: a first-timer's thumb is on the glass 0.06-0.25 s, tools/inspect/firsttimer.ts, so a jump is
+  // often cut short. The validator's clumsy thumb missed 1-2's and 1-5's full-hold gaps 33-100% of the time, 2026-11-04. A short
+  // jump rises SHORT_HOLD of a full one: Normal 80%, Easy 60%)
+  { off: 0, air: 1, short: true },
 ];
+/** a short flick's share of a full jump's height: Normal, Easy */
+export const SHORT_HOLD = { normal: 0.8, easy: 0.6 } as const;
 const DTS = [STEP, FRAME] as const;
 
 /** a sure player running from rest: how far he gets in `t` seconds starting at speed v (groundAcc up to maxRun) */
@@ -381,7 +387,7 @@ export function traceNode(spec: NodeSpec): Trace {
     for (const tr of TRIES) {
       for (const dt of DTS) {
         const from = tr.off === 'slack' ? NaN : x + PHYS.maxRun * tr.off;
-        const f = flight({ move: st.move, dy: st.dy, vx: PHYS.maxRun, air: tr.air, dt, hold });
+        const f = flight({ move: st.move, dy: st.dy, vx: PHYS.maxRun, air: tr.air, dt, hold: tr.short && st.move === 'jump' ? (spec.easy ? SHORT_HOLD.easy : SHORT_HOLD.normal) : hold });
         if (!f) throw new Error(`step ${i + 1}: a clumsy ${st.move} (air ${tr.air}) can't reach ${st.dy} px up`);
         toTry.push({ from, f });
         if (tr.off !== 'slack') {
@@ -601,7 +607,7 @@ export function checkTrace(tr: Trace, steps: readonly Step[], easy = false): str
     for (const tr of TRIES) {
       const sx = tr.off === 'slack' ? Math.min(l.fromX - PHYS.maxRun * CLUMSY.late, from.x1 - TAKEOFF_SLACK) : l.fromX + PHYS.maxRun * tr.off;
       for (const dt of DTS) {
-        const f = flight({ move: st.move, dy: st.dy, vx: PHYS.maxRun, air: tr.air, dt, hold });
+        const f = flight({ move: st.move, dy: st.dy, vx: PHYS.maxRun, air: tr.air, dt, hold: tr.short && st.move === 'jump' ? (easy ? SHORT_HOLD.easy : SHORT_HOLD.normal) : hold });
         if (!f) {
           bad.push(`step ${l.step + 1}: no landing (air ${tr.air}, dt ${dt.toFixed(3)})`);
           continue;
