@@ -16,6 +16,13 @@ there. And if it's not, they need to redo it."
 - Anything rough that reaches Matt is the lead's miss, not the helper's. (What slipped on 2026-11-01: the Journal's filler lines, the
   identical find hints, medal totals counting unreleased worlds. Matt found the first; the lead found the rest only after.)
 
+## Who decides what (Matt, 2026-11-04: "You are 50% partner and can make these types of decisions going forward. Keep bigger decisions for me")
+The lead decides, without asking Matt: Dot and in-stage lines, find hints and stage text; build rulings inside an approved plan
+(layout fixes, which helper does what, file ownership, gate and ruler rulings, goals set by the agreed method); budget cuts inside
+the day's limit. Matt decides: direction and priorities, the day's token limit, anything that spends Hugging Face money, picture
+lists, big screen or feel changes (shown first), what ships to main (his merge), and anything he has asked to see. When unsure,
+check this list and the playbook first; a question to Matt costs his attention and tokens.
+
 ## What Matt said (2026-10-29, his words)
 
 - "You're no longer just my manager. You're the co-creator."
