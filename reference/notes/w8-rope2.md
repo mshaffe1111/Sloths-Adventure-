@@ -35,3 +35,7 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
   - Pit list (~$0.88): "MATT APPROVED the pit list (Nov 4 ~9:50 AM ET) ... about $0.88, cap $1.40" (lead message queued 14:50:29Z);
     the list is PIT-LIST.md at 6944e22c. Combined cap $5.40.
   - Spend, measured per job from HF's created/finished times x $2.75/h (jobs.txt): $0.74 finished + the two vine-clip jobs running.
+- Build round 1 (2026-11-04 ~10:40 ET, d5763d45): w1Tricks.ts (rules) + w1TrickDraw.ts (stars, glint, coil squeeze, roll turn), hooks in engine.ts (hitEnemy trickBlow, stomp bounce, roll bowling, tagWorld1 at load) and predatorAI.ts (lunge tell 0.5/0.8, boa 'roll'/'rolled'); tests w1Tricks(.test, Play.test).
+- LESSON (self-caught): in mock-triangle.mjs Pokey's y is his FEET (RealPlay.stand puts y on the platform top); I had set y = top - height, so he fell and stomped (a "kill" on the first real stun shot, the "hop" in older kick boards). Check a stepped beat's start pose against the engine's own convention.
+- Dev builds: the PWA step errors (dev bundle > 2 MiB) after "built in"; the page files are written and serve fine. Prod `npx vite build` must still pass at the gate.
+- Next: painted ball + vine art cut-in; the vine snake (stiff liana in code); switch + 1-5 stump payoff; World 1 placements (1-3 cut); pits art; proofs; gates.
