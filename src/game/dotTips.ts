@@ -27,6 +27,7 @@ export const FIRST_OF: Readonly<Record<string, string>> = {
   'hint.1-5.shiny': 'golden',
   // (the beat-built 1-2 turns back on itself, and 1-5's trail is Meeca's marks and snap twigs: w1Rhythm.ts)
   'hint.1-2.back': 'turnBack',
+  'hint.1-2.rotten': 'rottenWood',
   'hint.1-5.mark': 'meecaMark',
   'hint.1-5.snap': 'snapTwig',
   'hint.1-6.log': 'pushLog',

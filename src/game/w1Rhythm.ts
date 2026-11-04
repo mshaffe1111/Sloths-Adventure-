@@ -73,6 +73,9 @@ export interface Layout {
   height: number;
   /** a fall from these spans costs a heart and sets him back on his ledge (Normal), not a life */
   heartFalls: Array<{ x0: number; x1: number }>;
+  /** open air over a later part of the way (1-2's rotten bough over the floor leg): a fall that deep under his last ground is a fall
+   * there and then (engine.ts fallZones), never a landing on the leg below */
+  fallZones: Array<{ x0: number; x1: number; depth: number }>;
   /** a quick, sure player's seconds */
   expert: number;
   /** faces he can't pass (a trunk at the end of a leg): x0, x1, top, bottom */
@@ -247,7 +250,7 @@ class Lay {
   L: Layout;
   node = -1;
   constructor(stage: Layout['stage'], bpm: number, readonly R: Rng, readonly easy: boolean) {
-    this.L = { stage, bpm, ledges: [], vines: [], nodes: [], flags: [], petals: [], snakes: [], marks: [], find: null, lines: [], spawn: { x: 0, y: 0 }, exit: { x: 0, y: 0 }, width: 0, height: 0, heartFalls: [], expert: 0, walls: [] };
+    this.L = { stage, bpm, ledges: [], vines: [], nodes: [], flags: [], petals: [], snakes: [], marks: [], find: null, lines: [], spawn: { x: 0, y: 0 }, exit: { x: 0, y: 0 }, width: 0, height: 0, heartFalls: [], fallZones: [], expert: 0, walls: [] };
   }
   begin(tag: Tag, pair: string, tier: string, dir: 1 | -1, x: number, y: number, bars: string[] = []) {
     this.lastExit = null;
@@ -411,6 +414,58 @@ const swung = (R: Rng, n: number, breath = 0.3) => {
   return g.slice(0, n);
 };
 
+
+/** a rotten stretch of 1-2's bough: how long it holds once he is on it (s; Easy's falls are free, a little longer still), its width, how
+ * far it keeps from where the beat's way touches the bough, and how deep under his last ground a fall through it is a fall */
+export const ROT_HOLD = { normal: 0.25, easy: 0.45 } as const;
+export const ROT_MIN = 120;
+export const ROT_MAX = 220;
+export const ROT_CLEAR = 130;
+export const ROT_DEPTH = 170;
+/**
+ * 1-2's bough leg bites the player who stays down on it (the lead's ruling, 2026-11-04; the research's line-59 rule: the hazard on the
+ * avoided line): under the high branches, where the beat's way is up in the air or on the branches, the bough is rotten for a stretch and
+ * gives way under him. The fall is a fall there and then (fallZones), a heart and back on the bough on Normal (the floor leg's heartFall
+ * span covers the bough's), free on Easy: never a landing on the floor leg below, which would skip the rest of the bough. Never near
+ * where the beat's way lands on or leaves the bough, a snake, a flag, or a liana below (lianas grab on touch).
+ */
+function rottenBough(L: Layout, tr: Trace, Lx: number, bRight: number, B: number, easy: boolean) {
+  const touch = tr.ledges.filter((q) => q.y >= B - 10).map((q) => [q.x0, q.x1] as [number, number]);
+  // (and both ends: the drop off the left end, and the landing apron where the canopy drops him on at the right)
+  touch.push([Lx - 1, Lx + 200], [bRight - 520, bRight]);
+  touch.sort((a, b) => a[0] - b[0]);
+  const bough = L.ledges.find((q) => q.surface === 'bough' && q.y === Math.round(B) && q.x0 === Math.round(Lx));
+  if (!bough) throw new Error('1-2: the bough is missing');
+  const stretches: Array<[number, number]> = [];
+  let reach = -Infinity;
+  for (const [a, b] of touch) {
+    const lo = reach + ROT_CLEAR, hi = a - ROT_CLEAR;
+    const first = reach === -Infinity;
+    reach = Math.max(reach, b);
+    if (first) continue;
+    if (hi - lo < ROT_MIN) continue;
+    const w = Math.min(ROT_MAX, hi - lo);
+    const s0 = Math.round((lo + hi - w) / 2), s1 = s0 + Math.round(w);
+    if (L.vines.some((v) => v.x > s0 - 160 && v.x < s1 + 160)) continue;
+    if (L.snakes.some((sn) => sn.y === B && sn.x > s0 - 150 - SNAKE_RANGE && sn.x < s1 + 150 + SNAKE_RANGE)) continue;
+    if (L.flags.some((f) => Math.abs(f.y - B) < 20 && f.x > s0 - 200 && f.x < s1 + 200)) continue;
+    stretches.push([s0, s1]);
+  }
+  if (!stretches.length) return;
+  // the bough in pieces, the rotten stretches between them
+  const i = L.ledges.indexOf(bough);
+  const pieces: LLedge[] = [];
+  let at = bough.x0;
+  for (const [s0, s1] of stretches) {
+    pieces.push({ ...bough, x0: at, x1: s0 });
+    pieces.push({ ...bough, x0: s0, x1: s1, surface: 'crumble', hold: easy ? ROT_HOLD.easy : ROT_HOLD.normal });
+    L.fallZones.push({ x0: s0 - 60, x1: s1 + 60, depth: ROT_DEPTH });
+    at = s1;
+  }
+  pieces.push({ ...bough, x0: at, x1: bough.x1 });
+  L.ledges.splice(i, 1, ...pieces);
+}
+
 /**
  * 1-2's layout. Swung beat (dotted half + quarter: a long jump, a quick hop: "swing... land-hop"), the pair jump + vine swing.
  * Nodes: intro (A) -> ramp (A) -> spike: the vines over the drop (A) -> rest over the loop (A; Dot; the note seen far below) ->
@@ -491,7 +546,22 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   let gapsTop = 10;
   const eighthPx = (30 / bpm) * PHYS.maxRun;
   while (gapsTop < 40 && (gapsTop * 4 + 8) * eighthPx + 400 < wB + 620 - 1180 + 300 + 200) gapsTop += 2;
-  const top = lay.traced('ramp', 'jump up + down over a bough', 'A', 1, x, y, barsFrom(swung(R, gapsTop, 0)), { surfaces: ['branch'], jumpDy: [-50, -40, 40, 50, 80, 90], hopDy: [-40, -30, -20], doubles: 0, yMin: y - 120, yMax: y });
+  // (rotten wood taught here, where it is safe: a rotten branch high over the canopy's solid base bough holds his run on the beat and a
+  // little more, and a hesitant player drops 50-120 px onto the base bough, nothing lost (STAGE-RULES: taught in a safe spot before it
+  // can hurt). The bough leg's rotten stretches come next, and bite)
+  const topNode = L.nodes.length;
+  const top = lay.traced('ramp', 'jump up + down over a bough (rotten branches, taught)', 'A', 1, x, y, barsFrom(swung(R, gapsTop, 0)), { surfaces: ['branch'], jumpDy: [-50, -40, 40, 50, 80, 90], hopDy: [-40, -30, -20], doubles: 0, yMin: y - 120, yMax: y });
+  // (every other branch 50 px or more over the base bough is rotten; each holds his run across it at full speed, the most the beat
+  // keeps him on it, and SNAP_SPARE more (Easy: SNAP_EASY))
+  let rot = true;
+  for (const q of L.ledges) {
+    if (q.node !== topNode || q.surface !== 'branch' || q.y > y - 50) continue;
+    if (rot) { q.surface = 'crumble'; q.hold = +((q.x1 - q.x0) / PHYS.maxRun + (easy ? SNAP_EASY : SNAP_SPARE)).toFixed(2); }
+    rot = !rot;
+  }
+  const rotten1 = L.ledges.find((q) => q.node === topNode && q.surface === 'crumble');
+  if (!rotten1) throw new Error('1-2: no rotten branch to teach on over the base bough');
+  L.lines.push({ x: rotten1.x0 - 260, y, text: 'Rotten wood! Don\'t stop on it!' });
   lay.ledge(x, top.tr.x1, y, 'bough');
   const Rx = top.tr.x1;
   // turn 1: off the end, down onto the bough (B), whose right end is a trunk
@@ -558,6 +628,7 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   lay.end(x + 640, 640 / PHYS.maxRun);
   L.width = x + 660;
   L.height = C + 120;
+  rottenBough(L, back.tr, Lx, bRight, B, easy);
   // (no snake within reach of a safe spot: the level check's rule, a flag or the spawn within 400 px up or down, levelCheck.ts SAFE_APPROACH)
   const safe = [L.spawn, ...L.flags, L.exit];
   L.snakes = L.snakes.filter((sn) => !safe.some((f) => Math.abs(f.y - sn.y) < 400 && Math.abs(f.x - sn.x) < SAFE_APPROACH + SNAKE_RANGE + 40));
@@ -801,6 +872,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     checkpoints: id === '1-2' ? checkpoints : checkpoints.sort((a, b) => a.x - b.x),
     ...(id === '1-2' ? { flagsInOrder: true } : {}),
     ...(easy || !L.heartFalls.length ? {} : { heartFalls: L.heartFalls }),
+    ...(L.fallZones.length ? { fallZones: L.fallZones } : {}),
     ...(L.marks.length ? { easyGoal: Math.max(1, Math.round(L.marks.length * 0.65)), normalGoal: L.marks.length } : {}),
     meta: { attempt: seed, chunks: L.nodes.map((n) => n.tag), width: L.width, pieces: L.nodes.map((n) => ({ k: `${id} ${n.tag} ${n.tier}`, x0: n.x0, x1: n.x1 })), timing: { layoutSeconds: L.expert, decorSeconds: 0, route: L.width } },
     proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, bpm, rhythm: { bpm, nodes: L.nodes, reroll: L.reroll } },

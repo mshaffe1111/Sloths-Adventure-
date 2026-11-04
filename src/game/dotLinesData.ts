@@ -118,6 +118,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   // (w1-rhythm, 2026-11-04: the beat-built 1-2 and 1-5, w1Rhythm.ts; new lines, need Matt's approval except the snap line)
   ["hint.1-2.roots", "1-2", "stage hint", "info", "There's something down by the roots...", "There's something down by the roots...", null, null, "the note"],
   ["hint.1-2.back", "1-2", "stage hint", "info", "Back the other way, up off the snakes!", "Back the other way, up off the snakes!", null, null, "snakes on the bough"],
+  ["hint.1-2.rotten", "1-2", "stage hint", "info", "Rotten wood! Don't stop on it!", "Rotten wood! Don't stop on it!", null, null, "rotten branches, then the bough"],
   ["hint.1-2.under", "1-2", "stage hint", "info", "Under the bough now. Watch the gaps!", "Under the bough now. Watch the gaps!", null, null, "gaps"],
   ["hint.1-5.mark", "1-5", "stage hint", "info", "Meeca's mark! Follow her trail", "Meeca's mark! Follow her trail", null, null, "Meeca's mark"],
   ["hint.1-5.snap", "1-5", "stage hint", "info", "These ones snap! Keep moving", "These ones snap! Keep moving", null, null, "snap twigs"],

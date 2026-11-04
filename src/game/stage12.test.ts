@@ -66,10 +66,12 @@ test('1-2: a miss never lands on a later part of the way (the canopy has nothing
       // left of the rest, under the canopy, there is nothing but its catch branches
       for (const q of L.ledges) if (L.nodes[q.node]?.tier !== 'A' && q.x0 < rest.x0) assert.fail(`${v}: a ${q.surface} of tier ${L.nodes[q.node]?.tier} at ${q.x0},${q.y} under the canopy's gaps`);
       // the canopy over the loop has its base bough the whole way, and the bough leg is one bough
-      const bough = L.ledges.filter((q) => q.surface === 'bough');
-      assert.equal(bough.length, 2, `${v}: two boughs`);
+      // (the bough leg's bough is in pieces with its rotten stretches between them: together they run the whole leg with no gap)
       const bLeg = L.nodes.find((n) => n.tier === 'B')!;
-      assert.ok(bough.some((q) => q.y === T12.B && q.x0 <= bLeg.x0 + 1 && q.x1 >= bLeg.x1 - 1), `${v}: the bough under the whole leftward leg`);
+      const leg = L.ledges.filter((q) => q.y === T12.B && L.nodes[q.node]?.tier === 'B' && (q.surface === 'bough' || q.surface === 'crumble')).sort((a, b) => a.x0 - b.x0);
+      assert.ok(leg.length >= 1 && leg[0].x0 <= bLeg.x0 + 1 && leg[leg.length - 1].x1 >= bLeg.x1 - 1, `${v}: the bough under the whole leftward leg`);
+      for (let i = 1; i < leg.length; i++) assert.equal(leg[i].x0, leg[i - 1].x1, `${v}: the bough leg is unbroken at ${leg[i].x0}`);
+      assert.ok(L.ledges.some((q) => q.surface === 'bough' && L.nodes[q.node]?.tier === 'A'), `${v}: the canopy's base bough over the loop`);
     }
   }
 });
