@@ -56,10 +56,12 @@ rows (2026-11-04 2:33 AM ET); nothing was deleted to make them fit.
 | C: Worlds 9-10 new, the story wiring | World 9 and 10 built on the method (R-2.x, R-143.5, R-146.5 and R-2.7 the hold move, R-150.2's W9/W10 share), the Drake and the General (R-1.9, R-1.10), the story (R-4.x) | 114 h on today's rows | **a guess: about 85-160 h**, the same way |
 | Alongside, any phase | Bugs, menus, the Play Store pieces, fairness outside World 1, boss endings and tips (R-6.x, R-147.x, R-5.x, R-1.2, R-1.6, R-1.7, R-1.16, R-151) | 61.5 h | measured (each row) |
 
-Phase A's calendar: the longest chain is R-150.4 then R-150.1 then the World 1 shape pass (about 18 h; R-150.4, R-159.1 then R-161.1 is
-17.5 h), so **about 3 working days of building** at 6-8 h a lane a day (range 2-5), then the quality supervisor's review, the test link
-and Matt's rating. For the lead: R-159.1 and R-160.1 change `engine.ts`, which §1 gives to lane 1 only, and PLAN-TO-80 puts lane 1 on
-WebGL; the lead decides who holds `engine.ts` during Phase A (one helper at a time).
+**engine.ts in Phase A (the lead's call, 2026-11-04, PLAN-TO-80):** lane 1 keeps its GPU stage 0 change to engine.ts small and merges
+first; then R-159.1 holds engine.ts, then R-160.1, one at a time, each merging the latest base before it starts and before it pushes.
+Overlaps run as one job: R-158.1 with R-5.10, R-155 with R-150.3, R-161.2 inside R-1.9 / R-1.10 / R-1.15.
+Phase A's calendar: the longest chains are GPU stage 0 (R-3.1, 3 h) then R-159.1 then R-160.1 or R-161.1 (about 18.5 h), and R-150.4
+then R-150.1 then the World 1 shape pass (about 18 h), so **about 3 working days of building** at 6-8 h a lane a day (range 2-5), then
+the quality supervisor's review, the test link and Matt's rating.
 
 **The estimate, in three parts** (today's rows; Phases B and C are guesses until World 1 is measured):
 
@@ -181,7 +183,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 3 h of R-150.3's 20 h (moved from lane 5 on 11-02 to balance) |
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 13 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Day 1 | R-154 (share) | More kinds of play from the mechanics we already built | A | 10.5 h of R-154's 12.5 h (variants and tempo inversion; after R-150.4) |
-| Day 1 | R-159.1 | Stomp, punch and kick each do a different job | A | 9.5 h (each move like swim (1.5 h, one new mechanic): stomp vault about 1 h, punch stun and deflect 1.5 h, kick shield-break and bowling 2 h; World 1's three species tricks about 1 h each; the placement rule in World 1 about 2 h; range 7-14 h); Phase A, after R-150.4; it changes engine.ts (see Phases) |
+| Day 1 | R-159.1 | Stomp, punch and kick each do a different job | A | 9.5 h (each move like swim (1.5 h, one new mechanic): stomp vault about 1 h, punch stun and deflect 1.5 h, kick shield-break and bowling 2 h; World 1's three species tricks about 1 h each; the placement rule in World 1 about 2 h; range 7-14 h); Phase A, after R-150.4 and lane 1's GPU stage 0 merge; it holds engine.ts first (see Phases) |
 | Day 1 | R-159.2 (share) | Every world's animals with a job | A | 10 h of R-159.2's 20 h (sized from Phase A's real hours; a guess for now); Phase B, after Matt rates World 1 |
 | Important (if time) | R-4.14 | Old story asks either covered or closed | E | 0.5 h (a keeper check (about 30 min)) |
 | Important (if time) | R-4.5 | Characters talk during play at key stages | C | 3 h (like story-delivery (3 h)) |
@@ -264,7 +266,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 19 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Day 1 | R-154 (share) | More kinds of play from the mechanics we already built | A | 2 h of R-154's 12.5 h (the wind variants; after R-150.4) |
 | Day 1 | R-155 (share) | Every stage has a beginning, a build, a twist and a finale, with places to breathe | A | 7.5 h of R-155's 30 h (part of the hand-built pass; after R-150.1) |
-| Day 1 | R-160.1 | A move only a sloth has | A | 6 h (the move like vine-fix (2 h) + swim (1.5 h); its art like hf-art-bosses (30 min) plus the list; World 1 placements about 1.5 h; range 4-9 h); Phase A, after R-150.4; it changes engine.ts (see Phases) |
+| Day 1 | R-160.1 | A move only a sloth has | A | 6 h (the move like vine-fix (2 h) + swim (1.5 h); its art like hf-art-bosses (30 min) plus the list; World 1 placements about 1.5 h; range 4-9 h); Phase A, after R-150.4; it holds engine.ts after R-159.1 lets go (see Phases) |
 | Day 1 | R-160.2 | The sloth's own move all game long | A | 9 h (sized from Phase A's real hours; a guess for now): about 1 h a world, range 5-15 h; Phase B |
 | Day 1 | R-161.2 (share) | Every boss with choices | A | 3 h of R-161.2's 28 h (sized from Phase A's real hours; a guess for now); Phase B |
 | Important (if time) | R-2.11 | World 10's far sky isn't stretched | D | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
@@ -304,7 +306,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-5.22 | A stage where slow Pokey is suddenly fast | A | 8 h (like w7-slide (5.5 h) + its art (1 h), plus currents and bubbles like swim (1.5 h)); Matt put swimming in launch 2026-11-02 |
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 14.5 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Day 1 | R-155 (share) | Every stage has a beginning, a build, a twist and a finale, with places to breathe | A | 9.5 h of R-155's 30 h (part of the hand-built pass; after R-150.1) |
-| Day 1 | R-158.1 | An eagle you have to hide from or time | A | 2 h (like fix-petals (about 2 h start to accept); watcher.ts is pure and tested); Phase A; with R-5.10 (1-7's eagle) in one job |
+| Day 1 | R-158.1 | An eagle you have to hide from or time | A | 2 h (like fix-petals (about 2 h start to accept); watcher.ts is pure and tested); Phase A; one job with R-5.10 (1-7's eagle; the lead, 2026-11-04) |
 | Day 1 | R-158.2 | The same bite in every watched stage | A | 3 h (sized from Phase A's real hours; a guess for now): range 2-6 h; Phase B |
 | Day 1 | R-161.2 (share) | Every boss with choices | A | 4 h of R-161.2's 28 h (sized from Phase A's real hours; a guess for now); Phase B |
 | Important (recommended) | R-143.8 | World 5's Normal work feeds the tuning | C | 0.5 h (a keeper check (about 30 min)) |

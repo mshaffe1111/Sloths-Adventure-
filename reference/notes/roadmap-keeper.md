@@ -1,6 +1,6 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 2:40 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 2:41 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
@@ -20,9 +20,9 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
   - R-149.12 is still open for the 4-D rethink only; its swimming half is A-38.
   - R-152.6 proposes the arc; Matt gives the per-world numbers later. R-150.4 (the mechanics table) blocks R-150.2/.3/.5/.6 and R-152.x.
   - The closed test (R-147.1) starts at about 80% of Day 1 hours (about 418 of 522): flag it at each sweep.
-  - Open for the lead (11-04): who holds engine.ts in Phase A (R-159.1, R-160.1 change it; lane 1 owns it and is on WebGL);
-    overlaps R-161.2 vs R-1.9/R-1.10/R-1.15 and R-155 vs R-150.3 (written "not twice"); R-158.1 and R-5.10 in one job;
-    BUILD-PLAN §4 still says the $72 HF budget (CLAUDE.md says about $120): re-plan it with the lead.
+  - Decided by the lead (11-04, PLAN-TO-80): GPU stage 0 merges first, then R-159.1, then R-160.1 hold engine.ts one at a time;
+    R-158.1 with R-5.10 one job, R-155 with R-150.3 not twice, R-161.2 inside R-1.9/R-1.10/R-1.15; HF stays $72 total (no top-ups,
+    Matt 11-01), so BUILD-PLAN §4 stands. All in the rows and the doc.
   - Told the lead: LEADER-STANDARD-WORK.md line 32 still says launch "in about 3 weeks" (their file).
 - **Every round:**
   - Merge the lead's branch first (ccr-0d59a91c-oy3imz). New defects (D#) and rules arrive there; the gate reads the local copies.
