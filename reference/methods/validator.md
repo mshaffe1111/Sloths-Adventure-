@@ -24,6 +24,11 @@ change to them; and as a gate later. Not for "is this spot fair" (that is stage-
 4. **Report the bot's limits beside every play number.** A run with more than 3 rescues or no shrine is not counted, and a family with no
    counted run is "not judged" (neutral, marked on the page).
 
+5. **The gate (CI, every change):** `npx tsx tools/validate/funcheck.ts` (about 45 s) judges the structure flags of every World 1 stage, 16
+   layouts, Normal and Easy, against `tools/validate/funknown.json`: a (stage, setting, rule) on more layouts than known fails; one on fewer
+   fails until it is lowered (`FUNCHECK_WRITE=1`, same commit). The play checks are not in it (minutes a stage, and they rest on the bot):
+   run the pages for those. Accepted by the quality supervisor 2026-11-04 (7909cf11) as World 1's checklist for every rebuild.
+
 ## The bar
 - Each check fails its bad fixture and passes its good one.
 - Calibrated against what we already know: 1-1 vs 1-5 0.998 (inspector 0.979), 1-3 vs 1-9 0.789 (inspector 0.78); today's World 1 flagged
@@ -72,4 +77,5 @@ The fixture test; the world run; open each page upright (412 wide) and wide; the
 - Stills per flag from the quality supervisor's bot clips (tools/quality/botrec.mjs).
 - Carry every taught move between stages (today only the double is carried; firsttimer.ts DOUBLE_TAUGHT), as a phone played in order.
 - Finer piece names in the builders' meta (today "highrun" covers several pieces), so padding repeats name the actual piece.
-- The validator as a gate (a world's flags may only shrink), once the pages are agreed.
+- Worlds 2-10 in the gate, once the validator reads them (W1 in evaluate.ts; their builders' meta pieces).
+- The play checks in the gate on one layout, once the bot's step-down miss rule is fixed (bot-fix).
