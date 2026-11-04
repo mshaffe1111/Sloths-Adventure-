@@ -44,7 +44,8 @@ when they differ, the repo wins and the doc is fixed the same day. No other file
    2026-11-04; expected 2 h)`. The keeper sends bot-fix (the supervisor) each running job's estimate and start, from the row.
 2. **A job ends** (the lead's accept line in STATUS; git for the branch's first and last commit): the Time cell keeps the estimate and
    gains the real hours after it, `2 h (like ...); real 2.5 h (9:35 AM to 12:05 PM ET, STATUS)`. The gate reads the first number,
-   so the estimate stays the plan; the real hours are the record.
+   so the estimate stays the plan; the real hours are the record. Keep the exact shape `; real N h (...)`, with every detail inside the
+   parenthesis: words between "h" and "(" break the gate's Time format and drop the row's hours from the totals (2026-11-04, R-150.8).
 3. **The calibration list grows:** the job goes into BUILD-PLAN's "How the times were measured" with its real hours, and the next item
    of that kind is sized from it. When a real time is far off its estimate (over half again, or under half), re-size the open items
    measured from the same past job, and say so in the report.

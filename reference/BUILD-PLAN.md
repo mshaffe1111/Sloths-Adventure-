@@ -21,7 +21,7 @@ Each item's Time names the past job it is measured from. Two sources, both check
   build) 9 h; w7-slide (a special stage) 5.5 h; menus-nav 2.2 h; journal-voice 1.5 h; dot-box 1.7 h; perf-fx 1.5 h; swim 1.5 h;
   polish-audio 3.6 h; polish-sfx 4.7 h; hf-art-ground 4.5 h; hf-cutscenes 2.6 h; w8-merge 2.6 h; gen2-ascent 3.4 h; w5-rebuild 5 h.
 - **STATUS start and accept lines** (git under-counts a helper merged more than once): whatsnew 11:35 AM to 1:15 PM (about 2.5 h with its
-  follow-ups); bot-fix 1:25 PM to its merge into the release at 2:50 PM (about 1.5 h); fix-petals about 2 h; menus A and B 8:32 AM to about 12:30 PM (about 4 h,
+  follow-ups); bot-fix 1:25 PM to its merge into the release at 2:50 PM (about 1.5 h); R-150.8 (fix-petals, the bot's 1-4 climbs, 2026-11-04) about 1.2 h start to accept (10:25 to 11:36 AM ET; its report at 10:57, about 0.5 h); fix-petals about 2 h; menus A and B 8:32 AM to about 12:30 PM (about 4 h,
   mock-ups and Matt's approval included); icons-painted 12:45 PM (Matt's ask) to 5:25 PM (4.5 h for groups A-E, two redo rounds).
 - **No history** (said so on the item, with a range): PixiJS stages, a boss rebuild, the story slot plumbing, Play Asset Delivery, input
   latency, 16 KB checks, a secret level, playable story moments.

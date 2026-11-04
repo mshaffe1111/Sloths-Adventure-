@@ -1,6 +1,6 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 11:34 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 11:38 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
@@ -29,7 +29,7 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
   BUILD-PLAN's calibration list; re-size items measured from the same past job if it is off by half or more.
   - R-159.1 w8-rope2, start about 8:00 AM, expected 9.5 h (7-14), end about 5:30 PM. R-6.38 w8-rope2 (3 h; pictures done 10:14).
   - R-3.2 warmup-5m, start about 9:35 AM, expected 2 h, end about 11:35 AM.
-  - R-150.8 fix-petals, start about 10:25 AM, expected 1.5 h, end about 11:55 AM.
+  - R-150.8 DONE: real 1.2 h start to accept (report at 0.5 h); recorded on the row and in BUILD-PLAN's calibration list; archive with the next release.
   - R-155 1-5 plan fix-petals next: about 0.75 h a stage (0.6-1.3).
 - **In flight / waiting:**
   - 0.9.4 is PR #62 (kaizen-gates -> main, the lead 11-04 11:30 AM ET), waiting on Matt's merge: when it lands, archive R-1.1, R-6.25
@@ -77,6 +77,8 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
 - 2026-11-02: roadmapcheck counts "roadmap" only as a word, not inside a path or a name (D25 and D27 tripped it).
 
 ## My pitfalls and how I avoid them
+- A real-hours note that broke the gate (11-04, R-150.8: text between "h" and "(" dropped the row's hours; caught by the gate before
+  any push): keep the shape `; real N h (...)` (methods/roadmap.md).
 - A time typed ahead of the clock (11-04: "2:55 AM" written at 2:39 AM in the Mirrored line; caught before any report): every time
   I write comes from `TZ=America/New_York date` run in the same command as the edit, never typed from a guess.
 - A fact in a row taken from memory, not re-checked (11-04: R-158.2 named the watched stages wrong and missed World 6; caught by
