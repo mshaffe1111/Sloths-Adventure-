@@ -403,11 +403,15 @@ for (const [name, who] of WHO) {
 }
 
 // the stomp vault (1-3's first vault, "Stomp it, thumb on the glass, and fly!"): a drop past any jump with a lunge snake on its lip
-function vaultRun(who: FirstTimer, seed: number, knows: string[]) {
-  const edge = 1500, gap = vaultGap(reachJump(0, true)), far = edge + gap;
-  const route = [...Array.from({ length: 60 }, (_, i) => ({ x: 100 + i * 24, y: Y })).filter((q) => q.x < edge), ...Array.from({ length: 60 }, (_, i) => ({ x: far + 20 + i * 24, y: Y }))];
+function vaultRun(who: FirstTimer, seed: number, knows: string[], raised = false) {
+  const edge = 1500, gap = raised ? TRICK.vaultRiseGap : vaultGap(reachJump(0, true)), far = edge + gap;
+  const top = raised ? Y - TRICK.vaultRise : Y;
+  const route = [...Array.from({ length: 60 }, (_, i) => ({ x: 100 + i * 24, y: Y })).filter((q) => q.x < edge), ...Array.from({ length: 60 }, (_, i) => ({ x: far + 20 + i * 24, y: top }))];
   const r = new FirstTimerRun('1-1', seed, who, { route, cap: 14, rescueAfter: 1000 });
-  r.sim.bare([ground(1, 0, edge), ground(2, far, 3000)]);
+  // (raised: 1-3's teaching vault, a narrow pit with a raised floor, a hop back out, and the far bank up past a jump and its double)
+  r.sim.bare(raised
+    ? [ground(1, 0, edge), { id: 3, x: edge, y: Y + 75, width: gap, height: 90, type: 'solid' } as Platform, { id: 2, x: far, y: top, width: 3000, height: TRICK.vaultRise + 90, type: 'solid' } as Platform]
+    : [ground(1, 0, edge), ground(2, far, 3000)]);
   const s = foe('snake', edge - TRICK.vaultLip, { trick: 'lunge', state: 'patrol', patrolMinX: edge - TRICK.vaultLip - 6, patrolMaxX: edge - TRICK.vaultLip + 6 });
   r.sim.e.enemies = [s as never];
   r.sim.stand(300, Y);
@@ -419,7 +423,8 @@ function vaultRun(who: FirstTimer, seed: number, knows: string[]) {
   const frame = r.sim.frame.bind(r.sim);
   r.sim.frame = (pad?: Pad) => {
     frame(pad);
-    if (across < 0 && r.sim.p.grounded && r.sim.p.x > far + 10 && Math.abs(r.sim.p.y - Y) < 4) across = r.sim.t;
+    // (on his own: a rescue that puts him past a spot he keeps failing is not a crossing)
+    if (across < 0 && r.rescues === 0 && r.sim.p.grounded && r.sim.p.x > far + 10 && Math.abs(r.sim.p.y - top) < 4) across = r.sim.t;
   };
   r.play();
   return { r, across, far };
@@ -436,6 +441,20 @@ for (const [name, who] of WHO) {
       if (after.across > 0) made++;
     }
     // (a first-timer's thumb can miss the hop now and then: most runs make it)
+    assert.ok(made >= 4, notes.join('; '));
+  });
+}
+for (const [name, who] of WHO) {
+  test(`${name}: 1-3's teaching vault: untaught he never gets onto the raised bank; told the vault, he gets there on the spring alone, not knowing any second jump`, () => {
+    let made = 0;
+    const notes: string[] = [];
+    for (const seed of [1, 2, 3, 4, 5]) {
+      const before = vaultRun(who, seed, ['punch', 'stomp', 'double'], true);
+      assert.equal(before.across, -1, `seed ${seed}: untaught, he got up at ${before.across} s`);
+      const after = vaultRun(who, seed, ['punch', 'stomp', 'vault'], true);
+      notes.push(`seed ${seed}: up at ${after.across.toFixed(1)} s, x ${Math.round(after.r.sim.p.x)} y ${Math.round(after.r.sim.p.y)}`);
+      if (after.across > 0) made++;
+    }
     assert.ok(made >= 4, notes.join('; '));
   });
 }

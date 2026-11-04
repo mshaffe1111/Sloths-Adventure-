@@ -38,6 +38,11 @@ export const TRICK = {
    *  much, and its snake this far back from the lip, so the vault clears it with room to spare (the real-engine test proves both) */
   vaultOver: 32,
   vaultLip: 26,
+  /** the teaching vault (1-3's first, the lead 2026-11-04: a mechanic's first appearance needs no untold move): its far bank stands this
+   *  high, above a jump and its second jump (~185 px) but under the vault's spring alone (~240 px from the snake's back), and this far
+   *  past the lip, so the spring with no second flick lands on its top */
+  vaultRise: 215,
+  vaultRiseGap: 96,
 } as const;
 
 /** the stomp vault's gap (px): past any jump, within the vault's reach */

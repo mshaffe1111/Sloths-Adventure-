@@ -361,3 +361,34 @@ test('the stomp vault after a lost life: its snake is back at its spot (the drop
   assert.ok(b.r.p.x > b.edge + b.gap && b.r.p.y <= GROUND + 2, `vaulted across again (x ${Math.round(b.r.p.x)}, y ${Math.round(b.r.p.y)})`);
   assert.equal(b.r.p.enemiesDefeated, counted, 'the second finish does not count toward the goal');
 });
+
+// 1-3's first vault, where it is taught (the lead, 2026-11-04): the spring alone must carry him, with no second flick
+function raisedWorld() {
+  const r = new RealPlay('1-3', 1);
+  const edge = 1000, far = edge + TRICK.vaultRiseGap;
+  r.bare([ground(0, edge), ground(edge, TRICK.vaultRiseGap, GROUND + 75), { id: 7, x: far, y: GROUND - TRICK.vaultRise, width: 260, height: TRICK.vaultRise + 90, type: 'solid' } as Platform, ground(far + 260, 1200)]);
+  const s = animal(1, 'snake', edge - TRICK.vaultLip, { trick: 'lunge', patrolMinX: edge - TRICK.vaultLip - 6, patrolMaxX: edge - TRICK.vaultLip + 4 });
+  r.e.enemies = [s];
+  return { r, edge, far, s, top: GROUND - TRICK.vaultRise };
+}
+test("1-3's teaching vault: a jump and its second jump never get on the raised bank; the vault alone, no second flick, lands on it", () => {
+  // the best a jump can do: off the very edge at a full run, thumb held, the second jump at the top
+  for (const takeoff of [-40, -20, -6]) {
+    const a = raisedWorld();
+    a.s.x = -5000;
+    jumpAcross(a.r, a.edge, a.edge + takeoff);
+    a.r.wait(0.5);
+    assert.ok(a.r.p.y > a.top + 20, `a jump and double from ${takeoff} got on top (x ${Math.round(a.r.p.x)}, y ${Math.round(a.r.p.y)})`);
+  }
+  // the vault: a run and a hop onto the snake, thumb kept down, steering on; never a second flick
+  for (const from of [0, 10, 20].map((d) => Math.round(reachJump(0, false)) - d)) {
+    const b = raisedWorld();
+    b.r.stand(b.s.x - from - 300, GROUND);
+    let i = 0;
+    while (b.r.p.x < b.s.x - from && i++ < 200) b.r.frame({ right: true });
+    b.r.frame({ right: true, press: true });
+    for (let k = 0; k < 90 && !(b.r.p.grounded && k > 4); k++) b.r.frame({ right: true, jump: true });
+    assert.ok(b.s.defeated, `from ${from}: he landed on the snake`);
+    assert.ok(Math.abs(b.r.p.y - b.top) < 3 && b.r.p.x > b.far, `from ${from}: the spring alone put him on the raised bank (x ${Math.round(b.r.p.x)}, y ${Math.round(b.r.p.y)}, top ${b.top})`);
+  }
+});

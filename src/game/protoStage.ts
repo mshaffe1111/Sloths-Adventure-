@@ -1377,7 +1377,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     mushroomCache: () => mushroomCache(), highRoadOver: () => highRoadOver(), homeRun: (kinds) => homeRun(kinds),
     trailUp: (n) => trailUp(n), petalClimb: () => petalClimb(), petalPerch: () => petalPerch(), splitTrail: () => splitTrail(),
     dipArc: () => dipArc(), doubleArcs: (t) => doubleArcs(t),
-    snakeBranches: (n, y) => snakeBranches(n, y), ropeGap: (g, b, t) => ropeGap(g, b, t), snakeWalk: (m) => snakeWalk(m), snakeLedge: () => snakeLedge(), snakeVault: (soft) => snakeVault(soft), bowlGate: () => bowlGate(),
+    snakeBranches: (n, y) => snakeBranches(n, y), ropeGap: (g, b, t) => ropeGap(g, b, t), snakeWalk: (m) => snakeWalk(m), snakeLedge: () => snakeLedge(), snakeVault: (soft) => snakeVault(soft, plan === '1-3' && vaults.length === 0), bowlGate: () => bowlGate(),
     climbTree: (t) => climbTree(t), fernTree: () => fernTree(), glideLookout: () => glideLookout(), creakRun: () => creakRun(),
     chain: (n, soft, rocks) => chain(n, soft, soft ? 'hollow' : 'gorge', rocks), kapok: () => kapok(), canopy: (g) => canopy(g), highRun: () => highRun(),
     logPuzzle: (b) => logPuzzle(b), seesawRoom: (d) => seesawRoom(d), seesawTwist: () => seesawTwist(),
@@ -1877,7 +1877,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
    * short), the petals arcing from it along the bounce; stomped with jump held it springs him across. `soft`: a soft pit under it
    * (its first meeting, 1-3: a miss is a climb back out); otherwise a real drop (the far stages).
    */
-  function snakeVault(soft: boolean) {
+  /**
+   * the stomp vault: a lunge snake on the lip of a gap past any jump. `raised` (1-3's first, where it is taught): a narrow pit with its
+   * far bank raised past a jump and its second jump, so the spring alone carries him onto it, no second flick needed; a miss drops into the
+   * pit, whose raised floor is a hop back out to the near side. Otherwise (the twist) a wide gap that needs the second flick at the
+   * vault's top. Easy always has a soft pit under it.
+   */
+  function snakeVault(soft: boolean, raised = false) {
+    soft = soft || easy;
     const x0 = x;
     // (a flat run-up, nothing else near: the snake is the only thing to read)
     run(R.r(280, 320));
@@ -1891,19 +1898,29 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     }
     snake(sx, G, 12);
     E[E.length - 1].vaultHome = { x: sx, y: G - 14 };
-    const gap = vaultGap(reachJump(0, true));
+    const gap = raised ? TRICK.vaultRiseGap : vaultGap(reachJump(0, true));
     const far = edge + gap;
-    if (soft) softPit(edge, far);
-    // the petals: an arc from the snake along the vault's own path, so the way across is drawn in the air
-    // (low enough that each can be had by a jump from the lip, the far bank or the pit floor too: the stage's reach check moved a higher
-    // arc's top petals, which only the vault itself reaches)
-    const span = far + 60 - sx;
-    for (let k = 1; k <= 6; k++) {
-      const t = k / 7;
-      flower(sx + span * t, G - 60 - 95 * Math.sin(Math.PI * t), 'orchid');
+    if (soft || raised) softPit(edge, far);
+    if (raised) {
+      // the raised bank, and the petals on its top: only the vault reaches them
+      open(far);
+      const w = R.r(240, 280);
+      block(far, far + w, TRICK.vaultRise);
+      row(far + 50, far + w - 50, G - TRICK.vaultRise - 40, 3, 'orchid');
+      run(w);
+      run(R.r(200, 240));
+    } else {
+      // the petals: an arc from the snake along the vault's own path, so the way across is drawn in the air
+      // (low enough that each can be had by a jump from the lip, the far bank or the pit floor too: the stage's reach check moved a
+      // higher arc's top petals, which only the vault itself reaches)
+      const span = far + 60 - sx;
+      for (let k = 1; k <= 6; k++) {
+        const t = k / 7;
+        flower(sx + span * t, G - 60 - 95 * Math.sin(Math.PI * t), 'orchid');
+      }
+      open(far);
+      run(R.r(240, 280));
     }
-    open(far);
-    run(R.r(240, 280));
     expert += (x - x0) / RUN + 3;
     pieces.push({ k: 'snakes', x0, x1: x });
     vaults.push({ x: sx, edge, far, soft });
