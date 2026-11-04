@@ -10,7 +10,7 @@ ledgers (reference/research/ledger/) may add to this; the lead folds them in abo
 ## The beat is the music's beat (lead, checked in code 2026-11-04)
 The player hears each stage's own music, so the beat the moves fall on IS that music's beat, not a number we invent. World 1's music
 runs at about 123-134 BPM (src/audio/styles.ts world 1 bpm [126,134]; each stage's exact tempo comes from `stageMusic()` in
-src/audio/scenes.ts and `themeById(...).bpm * tempo`: 1-1 130, 1-2 127, 1-3 130, 1-4 130, 1-5 134). At 130 BPM a quarter note is
+src/audio/scenes.ts and `themeById(...).bpm * tempo`). Never type a stage's BPM: read it from `stageBpm` / `stageBeatBpm` (beatTrace.ts, scenes.ts), the one source; the music now plays at that beat whatever the session's salt (w1-rhythm, BEAT_STAGES). At 130 BPM a quarter note is
 0.46 s, a half 0.92 s, a whole 1.85 s; Pokey's jump is in the air 0.63 s (physics.ts JUMP_AIRTIME), so a hop fits a half note with a
 step of running between. The stages differ by WHICH note values their moves fall on (the "feel" Matt calls dance / flow / rock),
 not by the music's speed. beatTrace takes the stage's real BPM from stageMusic, never a typed number. (The research's example BPMs
