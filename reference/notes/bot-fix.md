@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 04:46 AM ET
+Last updated: 2026-11-04 07:48 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -22,6 +22,9 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 07:48 AM ET: RESTART (lead, Matt 7:47 AM ET). Rounds every 30 min again. Running: warmup-5m, fix-petals, quality supervisor. Idle:
+  kaizen-gates (0.9.4 waits on Matt), roadmap-keeper (a batch coming). Round 1 armed for ~30 min: warmup-5m's clipcheck work, fix-petals'
+  re-merge of main + ccr.
 - **2026-11-04 04:46 AM ET: STOPPED for the night (Matt's 5:00 AM ET token stop). Nothing armed.** Wrap-up digest sent. All 5 pushed, on main 1dc39cd7,
   notes current. warmup-5m: RED for merge (clipcheck fails 3/3 on its branch, "fresh: world map" .wm-head wait; base passes), honestly
   named by itself (1feedb8e). kaizen-gates: 0.9.4 candidate ready, waiting on the lead and Matt. fix-petals, quality-supervisor: stopped
