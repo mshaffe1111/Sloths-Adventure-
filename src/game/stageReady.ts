@@ -25,7 +25,7 @@ import { releaseDecorPics, settleDecorBakes } from './envKit.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, revealSet, stageUsesCanopy } from './paintedBackdrops.ts';
 import { perfNote } from './perfLog.ts';
-import { backdropGpuReady, backdropLine, backdropReadout, mountGpuLayer } from './gpuLayer.ts';
+import { backdropGpuReady, backdropLine, backdropReadout, gpuBackdropOn, mountGpuLayer } from './gpuLayer.ts';
 import { recorder } from './playRecorder.ts';
 import { builtStageKeys, revealOf, type BuiltStage, type RevealStrips } from './stageManifest.ts';
 import { preloadEnabled, start } from './stagePreload.ts';
@@ -115,8 +115,11 @@ export async function readyBuiltStage(
   if (reveal) drawn += warmReveal(reveal, ctx);
   // (the GPU layer started here, under the card, before the strips are fitted: they are uploaded to it as they are stamped below.
   // GPU plan stage 1; nothing waits past the deadline for it)
-  await Promise.race([gpu, sleep(Math.max(0, left()))]);
-  if (live()) return;
+  // (only where the measurement switch is on: a player's stage gets ready exactly as before, gpuLayer.ts gpuBackdropOn)
+  if (gpuBackdropOn()) {
+    await Promise.race([gpu, sleep(Math.max(0, left()))]);
+    if (live()) return;
+  }
   fitScenery(cfg.worldIndex, engine);
   // (and the copy from it timed on frames drawn here, under the card: a phone whose 2D canvas is not on the GPU reads it back, and the
   // backdrop goes back to the 2D canvas before play, never after a slow first second: gpuLayer.ts COPY_PROBE)
@@ -155,7 +158,7 @@ export async function readyBuiltStage(
   const line = `ready ${cfg.id}: ${keys.length} keys, ${drawn} sheets drawn once, backdrop fits ${fitMB} MB, ${mips} sheets' mipmaps, ${late.length} still loading, ${Math.round(performance.now() - t0)} ms`;
   perfNote(line);
   // (the phone check reads which way the phone drew the backdrop, what the copy cost and how long the stage took to get ready: the
-  // readout and the control test's log, QA builds only; reference/qa-reports/webgl-1/MATT-PHONE-CHECK.md)
+  // readout and the control test's log, the testers' link and QA builds only; reference/qa-reports/webgl-1/MATT-PHONE-CHECK.md)
   if (backdropReadout()) {
     const bl = `${backdropLine()}, ready ${Math.round(performance.now() - t0)} ms`;
     perfNote(bl);
