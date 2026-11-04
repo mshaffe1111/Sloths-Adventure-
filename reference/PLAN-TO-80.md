@@ -43,7 +43,12 @@ Kept from our plan: PixiJS (it already batches sprites the way the research desc
 5. **Pokey's own move: hanging under branches.** Real sloths hang without effort. Hold climb under a branch and he moves along its
    underside: a second path under thorny or guarded tops. The one idea that makes this game play like no other (R-160; art via HF).
 6. **Feel:** platform speed into the jump (R-152.7); check apex hang (R-156).
-7. **Venom Fang, three ways to win:** the scripted window, an arena trap (drop a branch on him), and a skill move (dive-kick off his
+7. **Bosses in segments (Matt, 2026-11-04):** "break them down in pieces. So instead of having a huge meter over it, as the difficulties go
+   up, it may be 4 smaller meters, and they fight a little bit differently... the arena changes a little bit, so you have to fight it
+   differently. Where we don't have to redo the art, we can redo the perches and vines and other things." The health bar is split into
+   segments: Worlds 1-3 two, Worlds 4-7 three, Worlds 8-10 four. Each segment is a phase: the arena's perches, vines and platforms change
+   (existing art), and the boss adds or changes an attack. The three ways to win apply in every phase.
+8. **Venom Fang, three ways to win:** the scripted window, an arena trap (drop a branch on him), and a skill move (dive-kick off his
    tail). The template for every boss (R-161).
 **Entry criteria for every rebuilt World 1 stage (QS, 11-04):** before the quality supervisor's in-order re-recording judges it, it clears the
 validator's flags: not "looks/moves like" the stages before it, something bites, no padding, more than one tempo.

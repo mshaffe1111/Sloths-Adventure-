@@ -24,3 +24,10 @@ own usage figure (list price), for comparison between helpers only.
 | hf-backdrops2 (01FhBbYNDgYUmrxFZccufR5z) | HF backdrops | 11-01 | pass | 4 (washed out x2, skies, budget) | $59 | OK/weakest: most art, most redos; method now has the absolute floor |
 | roadmap-keeper (01FhBbYP1yNSfRRofd3CkPwq) | roadmap | 11-01 | pass (draft 2) | 2 (draft 1: unchecked sound fact, built before inventory; draft 2: D20 self-caught) | REINSTATED 11-02; MATT COACHED IT DIRECTLY ~3:30 PM ET (expectations set; "I will not be stepping in again"; sloppiness not tolerated): ladder steps 2 and 4 done, a repeat of the SAME error, or a hidden one, is retirement; new owned errors are normal work (Matt) (retired in error under the old rule; the slips were the lead's setup, D27; unarchived same day) (same printed lesson D20 broken 3x: commit ids typed before the push; self-caught each time, deeper root cause found) | STRONG: rebuilds 2-4 passed every lead spot-check (8 of 8), 1 miss since draft 1 (R-6.27 dropped: queue not read before reporting; self-reported, fixed in minutes); D20 slips twice (lesson tightened) |
 | story reviewers x3 (in-session) | script review | 11-01 | n/a | 0 | n/a | STRONG: one caught the lead's own fact errors (D24) |
+
+## Kudos (2026-11-04)
+- warmup-5m: GPU stage 0 bisected to the cause (not a raised timeout); stage 1 retracted its own wrong explanation and fixed a real pool bug, check tightened.
+- fix-petals: bot bounce-wall fix halved World 1 rescues (418 -> 194) with fixtures; the fun gate in CI the same day.
+- w8-rope2: two failed clips turned into free code tells; R-159.1 art $2.22 of a $5.40 cap; caught its own mock-tool bug.
+- roadmap-keeper: caught the lead's 41-vs-42 slip and the missing D28/webgl.md listings.
+- bot-fix: the art-approval alarm was the right instinct with Matt's money, and it owned the false red with a countermeasure.
