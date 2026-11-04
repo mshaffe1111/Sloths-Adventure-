@@ -79,12 +79,13 @@ const w8Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
 // does not stop him early. The first record, 5, 5, 9, 10, 10, 10, came from the bot that hopped every 0.3 s and landed stomps by chance;
 // firstTimerBot.test.ts re-measures these, so a change to the bot or the stage that moves them fails there. Re-measured fix-petals
 // 2026-11-04, when the bot learned to take a mushroom's bounce with the second jump: 5, 6, 4, 6, 6, 5 became 8, 3, 3, 5, 7, 5, the
-// median still 5, so the goal is unchanged)
-export const KID_RUNS_59 = [8, 3, 3, 5, 7, 5] as const;
+// median still 5, so the goal is unchanged. Re-measured bot-fix 2026-11-04, when the late lift-off stopped re-arming every frame (a wait
+// no longer walks him on into the spiders): 8, 3, 3, 5, 7, 5 became 10, 15, 17, 16, 4, 7, the median 10, so Easy's goal 5 -> 10 of 18)
+export const KID_RUNS_59 = [10, 15, 17, 16, 4, 7] as const;
 
 export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
   '5-7': { kit: () => w5Kit(7), kitName: 'w5.ts:w5Kit(7)' },
-  // (5-9 Easy: the kid beat 8, 3, 3, 5, 7 and 5 spiders on seeds 1-3 before the shrine: the median, 5)
+  // (5-9 Easy: the kid beat 10, 15, 17, 16, 4 and 7 spiders on seeds 1-3 before the shrine: the median, 10)
   '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', kidRuns: KID_RUNS_59, easyGoal: kidMedian(KID_RUNS_59) },
   ...Object.fromEntries(W6_GAME_STAGES.map((id) => [id, w6Entry(Number(id.split('-')[1]))])),
   ...Object.fromEntries(W7_GAME_STAGES.map((id) => [id, w7Entry(Number(id.split('-')[1]))])),

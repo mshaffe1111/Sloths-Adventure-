@@ -1542,16 +1542,18 @@ export class FirstTimerRun {
       this.driftPx = 0;
     }
     if (steer !== 0 && this.r() < who.slip * DT) this.driftUntil = t + Math.round(between(this.r, who.slipFrames)) * DT;
-    if (steer === 0 && this.lastSteer !== 0 && !want.press) {
+    if (steer === 0 && this.lastSteer !== 0 && this.releaseLeft === 0 && !want.press) {
       const [lo, hi] = who.releaseMax;
       this.releaseLeft = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
     }
     if (steer !== 0) this.releaseLeft = 0;
     if (t < this.travelUntil || t < this.driftUntil) drop();
-    else if (steer === 0 && this.releaseLeft > 0 && !want.down) {
+    else if (steer === 0 && this.lastSteer !== 0 && this.releaseLeft > 0 && !want.down) {
       this.releaseLeft--;
       if (this.lastSteer > 0) out.right = true;
       else out.left = true;
+      // the lift-off is armed once: when its frames run out the thumb is off (it used to re-arm every frame, so a wait walked him on)
+      if (this.releaseLeft === 0) this.lastSteer = 0;
       return out;
     }
     this.lastSteer = steer;
