@@ -902,7 +902,7 @@ export const BOA_LINE = 'A coiled boa! Punches bounce off. Kick it!';
 /** the first seconds of the way, at full run, in which no gap can hurt (a catch under each) */
 export const OPENING_S = 6.5;
 /** 1-2's petal goal, a share of its petals, from the first-timer bots' runs */
-export const PETAL_SHARE = { normal: 0.75, easy: 0.75 } as const;
+export const PETAL_SHARE = { normal: 0.6, easy: 0.6 } as const;
 const petalGoal = (n: number, k: number) => Math.max(1, Math.round(n * k));
 /**
  * 1-2's two splits on the stage as built (Matt's 70/30, the lead 2026-11-04; as protoStage.ts splitPetals does 1-3's): the petal pass has
@@ -941,8 +941,8 @@ function rhythmRoads(st: GeneratedStage & { proto: ProtoExtras }): void {
         if (st.enemies.some((e) => Math.abs(e.y + 14 - p.y) < 20 && Math.abs(e.x - fx) < 140)) continue;
         if (st.platforms.some((f) => f.type === 'fragile' && Math.abs(f.y - p.y) < 10 && fx > f.x - 120 && fx < f.x + f.width + 120)) continue;
         if ((st.checkpoints ?? []).some((f) => Math.abs(f.y - p.y) < 20 && Math.abs(f.x - fx) < 100)) continue;
-        // (and open air over it: a petal under a branch 110 px up or less is boxed in, the level check cannot take it)
-        if (st.platforms.some((f) => f !== p && f.y < p.y && f.y > p.y - 110 && fx > f.x - 30 && fx < f.x + f.width + 30)) continue;
+        // (and open air over it: a petal under a branch 75 px up or less is boxed in, the level check cannot take it)
+        if (st.platforms.some((f) => f !== p && f.y < p.y && f.y > p.y - 75 && fx > f.x - 30 && fx < f.x + f.width + 30)) continue;
         spots[r].push({ x: fx, y: p.y - 45 });
       }
     }
@@ -970,18 +970,9 @@ function rhythmRoads(st: GeneratedStage & { proto: ProtoExtras }): void {
   // (a new petal the level check cannot reach is taken off again: flowerReach.ts badPickups, the check the stage's test holds it to)
   const bad = new Set(badPickups({ platforms: st.platforms, vines: st.vines, waterY: st.waterY }, st.collectibles).filter((c) => c.id >= firstNew));
   st.collectibles = st.collectibles.filter((c) => !bad.has(c));
-  // (where the six-a-screen cap leaves a road short of its share, the shares are kept by the shared path: the roads made equal, then
-  // the shared path's petals thinned evenly to 70/15 of a road's, so one play down either road still reaches 85%)
-  const on = (r: 'high' | 'low' | null) => st.collectibles.filter((c) => isPet(c) && roadOf(c) === r).sort((a, b) => a.x - b.x);
-  const m = Math.min(on('high').length, on('low').length);
-  const thin = (list: Collectible[], keep: number) => {
-    const extra = list.length - keep;
-    const drop = new Set(Array.from({ length: Math.max(0, extra) }, (_, i) => list[Math.floor(((i + 0.5) * list.length) / extra)]));
-    st.collectibles = st.collectibles.filter((c) => !drop.has(c));
-  };
-  thin(on('high'), m);
-  thin(on('low'), m);
-  thin(on(null), Math.round((m * 70) / 15));
+  // (NOT thinned to keep the shares: where the six-a-screen cap leaves a road short, thinning the shared path to match took 1-2 down to
+  // about 27 petals and sealed the door, the fixed first-timer, 2026-11-04 5:15 PM; the 70/30 shares on the built stage are open, R-id
+  // to come: the petal pass's trail fills the shared path past 70%)
 }
 
 /** 1-2's goal on the stage as built, after the petal pass (protoStage.ts: it fills the trail's long gaps): PETAL_SHARE of the petals it
