@@ -132,6 +132,9 @@ export interface ProtoExtras {
    * to `strips` (backdrop stems) in golden light, loaded once he is above `load`; standing on the crown (`crown`, its top) the view pulls back
    */
   reveal?: { from: number; full: number; load: number; crown: number; strips: { far: string; mid: string; near: string } };
+  /** a stage that climbs from the forest floor into the trees (1-1, w1Rise.ts): from height y0 to y1 (world y) the backdrop turns to the
+   *  world's canopy strips (engine.ts setCanopy, as 1-8's and the ascents') */
+  rise?: { y0: number; y1: number };
   /** 6-8's dressing from Matt's painted World 6 pieces: hides and arches on the shelves, the root wall behind (w6StiltArt.ts) */
   stilt?: import('./w6StiltArt.ts').StiltDecor[];
   /** 6-8's ledges painted in Matt's other World 6 pieces (their platforms are art 'stilt': w6StiltArt.ts) */

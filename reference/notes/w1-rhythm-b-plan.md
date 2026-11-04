@@ -1,44 +1,82 @@
-# 1-1 and 1-4 stage plans (w1-rhythm-b, for the lead before wiring)
+# 1-1 and 1-4 stage plans, v2 (w1-rhythm-b; redone after the lead's 1:58 PM review)
 
-Heights are px above the forest floor. Times are a quick, sure player's (the validator's clock); a first-timer takes about 1.6-2x.
-Every node starts on a flat 200 px apron with a checkpoint. "Soft" means a miss lands on ground or the branch below (a retry or a
-setback); "pit" means nothing below (Normal: a life, back to the node's flag; Easy: the soft fall that puts him back).
+Beat: the music's, read by `stageBpm` (1-1: 129.7 BPM, 1-4: 125.1 BPM). Layout stills:
+- `reference/qa-reports/w1-rhythm-b/plan-1-1-layout.png`: 1-1's REAL geometry, built by `src/game/w1Rise.ts` on beatTrace, layout 1,
+  Normal, with the validator's quick route drawn on it.
+- `plan-1-4-layout.png`: a schematic, not yet built.
 
-## 1-1 Into the Canopy: 88 BPM (a beat 0.68 s, a bar 2.73 s), steady on-beat hops, a march. Rises 0 -> about 1600 px.
+## 1-1 Into the Canopy: half notes (0.92 s), a march; the twist is the off-beat catch
 
-| # | Node (tag) | Pair | Beat pattern | Pieces and art | Height | Quick s |
-|---|---|---|---|---|---|---|
-| 1 | Forest floor (intro) | run + jump | one hop every bar (4 beats, 2.7 s) | floor banks, 3 soft moss pits, low stumps; w1sunrise backdrop; tip "Jump the little gaps" (kept) | 0 | 12 |
-| 2 | Up the bank (ramp) | run + jump | a jump every 2 beats (1.36 s), climbing | 8 stepping stones (moss stone) rising 40-60 each over a raised soft floor, stumps; World 1 bank dress | 0 -> 320 | 16 |
-| 3 | The second jump (ramp, teach) | jump + double jump | jump-jump on beats 1-2, land on 3, walk on 4 | the practice shelf over the path (a miss lands on the path), then 3 ledges 130-150 up onto the first kapok's low bough; tip "Flick up again in the air" (kept wording) | 320 -> 720 | 14 |
-| 4 | Up into the canopy (spike, THE MOMENT) | double jump + hop | per bar: hop, hop, hop, DOUBLE up (1.47 moves/s: tight) | branches out from two kapok trunks, stepping up 150 a bar for 4 bars; the branch below runs under each step (a miss is a setback, never a life); the backdrop crossfades floor -> canopy crowns from 700 to 1300 up | 720 -> 1320 | 12 |
-| 5 | High bough (rest) | none | no move: a walk with root steps | a wide mossy bough in the canopy, Dot's line (new, needs Matt's approval: "Look how high we are! Almost the top."), the golden seed glinting on a shelf above, seen from here | 1320 | 7 |
-| 6 | Mushroom boughs (counter-melody) | mushroom bounce + double jump | bounce on 1, land on 3, hop on 4 (long-short, a different feel from the march) | bracket mushrooms on the boughs launching to higher boughs, a bounce + double detour to the seed shelf (the secret); soft | 1320 -> 1500 | 20 |
-| 7 | The high branches (climax) | run + jump + double jump | on every beat: hop, hop, jump, DOUBLE, densest | thin high branches between crowns over open air (real pits on Normal, Easy soft), gaps single <= 0.6 of reach, double <= 0.72 | 1500 -> 1600 | 22 |
-| 8 | The top branch (cool-down) | none | a stroll | the widest top bough: the view (the reveal's pull-back and chime when he stands on it), a gentle walk with small steps to the shrine | 1600 | 8 |
+Map: a wave that rises. It goes up the earth bank, onto the kapok boughs, up into the canopy, along a high road or a low road, and
+across the high branches to the shrine, with dips and drops to lower boughs all the way. About 1300 px of rise overall, and the
+backdrop turns from forest floor to canopy as he climbs.
+Pair, in one move: the jump and the second jump (jump on the beat, second flick on the off-beat).
+Measured now:
+- A quick player takes 140 s on layouts 1-3 (floor 125).
+- The validator's clock reads 158-160 s.
 
-Total quick about 111-130 s (tuned to at least 125 s once built; if short, node 6 and 7 get another bar each, never a repeat).
-Validator aims: strip I F F T R F T R; 4+ groups; tight in 4 and 7; something bites in 7 (Normal: 20%+ of beats after 30 s cost a
-life); no "Finish" fill. Expected to stay: "one tempo" (1-1 is the march; no hurry or patience mechanic is taught by stage 1, by the
-plan's own table). If the lead wants it gone, a creaking-limb tease belongs in 1-4, not here.
-
-## 1-4 Up the Kapok: 84 BPM (a beat 0.71 s, a half-note 1.43 s), half-note wait-and-go. The chimney kept (KAPOK_W 3200, floor full width).
-
-| # | Node (tag) | Pair | Beat pattern | Pieces and art | Quick s |
+| # | Node | Notes / feel | Moves (examples, traced) | Pieces | Under a miss |
 |---|---|---|---|---|---|
-| 1 | Up the trunk (intro, kept) | climb | a grab every 2 half-notes | the floor, two trunks; tip "Slide up on the trunk to climb" (kept) | 12 |
-| 2 | Zigzag (ramp, kept, trimmed) | climb + rope | grab, shimmy, grab on half-notes | rope, trunk, rope with the hollow side trunk and the golden seed (kept), trunk | 22 |
-| 3 | The squirrels' lift (puzzle, kept) | puzzle + climb | wait-and-go: stand, set the acorn, ride | low basket, tap (kept, its validator and tests) | 12 |
-| 4 | Creaking limbs (teach, NEW) | climb + creaking limbs | land and go on the half-note (0.6 s to leave before it drops) | fragile branches, crumbleAfter 0.6, the shared notch + shake look; the first over a short drop onto a wide branch one hop below (safe); Dot: "This limb creaks! Don't stop on it." (new, needs Matt's approval) | 10 |
-| 5 | Creak and rope (spike, NEW) | creaking limbs + rope | limb, limb, catch the rope, shimmy, limb, grab, at the half-note | the climb's densest run; a miss drops to the branch below and its trunk back up (a setback, the limbs never the only way back) | 14 |
-| 6 | The fork (rest, NEW) | none | no move | a wide fork ledge with root steps, petals, Dot's line (new: "The crown! Up there, see?"), the crown in view above (sideways look-up) | 6 |
-| 7 | The high lift and the long rope (counter-melody, kept pieces, new place) | puzzle + rope | wait for the lift, then one long slow shimmy | the squirrels' high basket (flick up to throw, kept), then the long rope across the widest gap (kept twist) | 26 |
-| 8 | Up through the crown (climax, NEW) | creaking limbs + climb + hops | half-note: limb-go, limb-go, grab, hop | creak limbs and short hops round the trunk, two short trunks | 14 |
-| 9 | The crown (cool-down) | none | a stroll | the wide crown branch, the view: the reveal pull-back and chime on the crown, the shrine | 6 |
+| 1 | Intro: the forest floor | whole notes, about 0.5 a second (the stumps are bumps) | gap, stump up 40, hop down, gap, stump up 30, hop down | floor banks, soft pits, stumps | moss |
+| 2 | Ramp: up the bank | half and whole notes, up/level/down | gap, step up 40-60, across, hop down 30, step up | earth steps; the mushroom (taught) mid-ramp, 205 px up, higher than a double jump | moss |
+| 3 | Rest: the terrace | no move | root knots, petals | the bank's broad shelf | - |
+| 4 | Ramp: the last steps | longer gaps, down and up | across, up, down 40, up 60 | earth steps; the second mushroom to the bank top | moss |
+| 5 | Rest: the bank top | no move; the second jump named | the practice shelf over the path | | - |
+| 6 | TWIST: the off-beat catch | the note value changes: jump on the beat, second jump on the off-beat | up 40, catch 110 up, down 40, catch 130 up, down 30 | first kapok boughs | a bough below |
+| 7 | Rest: the fork | no move | | | - |
+| 8 | SPIKE: up into the canopy | half and whole notes, doubles up to 150 | double up 140, down 50, a slope of twigs down, double up 150, up 20, down 30, double 150 | boughs | a bough below |
+| 9 | Rest: the high bough | no move; Dot's line; the seed seen ahead | | | - |
+| 10 | Choice: high road or low road | low road = the counter-melody (bounce + hop); high road = off-beat catches over open air, the golden seed at its end | | mushrooms, boughs | low: boughs below; high: OPEN AIR |
+| 11 | Rest: before the high branches | Dot's warning | | | - |
+| 12 | FINALE: the high branches | densest, ~18 s, half notes and off-beat catches, a mushroom in the middle, ends AT the shrine | up 20, down 30, catch 120, mushroom 190 over air, catch 130 | thin boughs | OPEN AIR (fallZones: Normal a life; Easy soft) |
+| - | The top branch | the shrine 260 px past the last landing; the view | | | |
 
-Replaced: the `while (expert < EXPERT_SECONDS - 32)` fill loop for 1-4 and w1Kapok's rhythm table (2-6, 3-4, 4-1, 4-6 keep theirs:
-byte-identical builds, checked by hash). Total quick about 120-125 s.
-Honest note: 1-4's falls cost height (a setback), but the validator prices a fall onto a lower branch as "nothing", so "nothing bites"
-may not fall for 1-4 without a validator change (pricing a drop of 250 px or more on a climb as a setback). "One tempo" falls
-(creaking limbs are hurry) only if the lift ride counts as patience (asked of the lead at 12:55).
-Sideways camera: asked of the lead (engine.ts hook: feet lower on a wide view while climbing).
+Variety:
+- No gap repeats 4 times (beatTrace refuses it).
+- Platform sizes come from the note values: whole notes give 500-600 px pads, half notes 240-300.
+- Heights go up, level and down in every node.
+
+Top-branch camera move (its own, not 6-8's): standing on the top branch, the view eases up so the canopy's crowns and the sky fill
+the screen (part of the small canopy-rise engine commit).
+
+Validator, layouts 1-4 Normal:
+- Strip: I F R F R F R F R F R F.
+- Flags gone: "nothing bites", "padding", "repeat".
+- Flags left:
+  - dead walks of 2.5-2.9 s at rest edges, to tune;
+  - one run of soft hops ("jjj" x3), to tune;
+  - one or two groups 3-5 s over 20;
+  - "never tight";
+  - "one tempo".
+- "Never tight" is the validator's clock, not the stage. It adds 0.5 s to every jump, so one jump per half note reads as about 1 move a second. Quarter-note hops can't keep a real gap once beatTrace widens the pads for a clumsy thumb.
+- The rests are ~5 s quiet walks because the validator finds rests only as empty 5-second windows on a fixed grid. If fix-petals measured "a gap of 5 s or more", the rests could be shorter.
+
+## 1-4 Up the Kapok: whole notes and whole-bar waits (1.92 s); the slowest stage
+
+Pair, in one move: climb a trunk and leap off it onto a creaking limb (0.6 s before it drops).
+
+| # | Node | Feel | What changes from the last |
+|---|---|---|---|
+| 1-3 | Kept as built: up the trunk; zigzag with the rope and the hollow seed; the squirrels' low lift | | |
+| 4 | Creaking limbs, taught (going LEFT) | whole notes | a 190 px plank, one limb over a one-hop drop onto a wide bough (safe), then two limbs 110 and 150 apart, a 180 px bough |
+| 5 | SPIKE: climb and leap | the pair, one move | a 350 px trunk; leap onto a limb, then three more, widths 90-160, gaps 90-150, uneven heights. A miss lands on a bough below, and the long way back is a rope and a short trunk: it costs time and never strands him, since a broken limb takes 30 s to regrow |
+| 6 | Rest: the fork | whole-bar wait | a 600 px fork ledge, root knots; the crown in view (sideways look-up) |
+| 7 | Counter-melody: the high lift, then back down | wait-and-go | the squirrels' high basket (throw), up 260, then DOWN and sideways: a drop to a lower bough and the long rope back across the tree |
+| 8 | CLIMAX | densest for 1-4 | a 180 px trunk, two limbs, a 420 px plank, a 360 px trunk, two limbs, a rope, a 200 px trunk |
+| 9 | The crown (cool-down) | | the wide crown branch, the view, the shrine |
+
+Replaced: the fill loop and w1Kapok's rhythm table. 2-6, 3-4, 4-1 and 4-6 stay byte-identical (checked by hash). Target: 125 s+ for a quick player.
+Sideways camera: approved hook #2 (feet lower on a wide view while climbing, eased), every sideways climb.
+
+## Dot's lines (exact words; 8 words or fewer; touch words only)
+Kept (already approved):
+- "Jump the little gaps" (1-1).
+- "Land on the mushroom to bounce up high" (1-1).
+- "Flick up again in the air to jump twice" (1-1). This one is 9 words; a shorter option is "Flick up again in the air!".
+- "Slide up on the trunk to climb" (1-4).
+New, need Matt's approval:
+- 1-1 ramp: "Up the bank! Step to step"
+- 1-1 high bough: "Look how high we are!"
+- 1-1 before the finale: "No soft moss up here!"
+- 1-4 first creaking limb: "This limb creaks. Keep moving!"
+- 1-4 the fork: "The crown! Up there, see?"
