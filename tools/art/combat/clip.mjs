@@ -20,8 +20,11 @@ const CLIPS = [
       { hold: ['ArrowRight'], until: "s.state === 'rear'", max: 90 },
       { hold: ['ArrowRight'], until: 'Math.abs(s.x - p.x) < 56', max: 30 },
       { tap: 'KeyJ', frames: 10 },
-      { until: '(s.stagger ?? 0) <= 0', max: 70 },
-      { hold: ['ArrowRight'], frames: 24 },
+      { frames: 14 },
+      // (past it while it is dazed and harmless, then the blink and its waking, seen from beyond it)
+      { hold: ['ArrowRight'], frames: 26 },
+      { until: '(s.stagger ?? 0) <= 0', max: 60 },
+      { frames: 12 },
     ],
   },
   {
@@ -38,9 +41,11 @@ const CLIPS = [
   {
     // the coiled boa's tell: it rears, the coil squeezes and darkens, the glint pulses, then it strikes (Pokey stands out of reach)
     id: 'clip-3-coil-tell', stage: '1-9',
-    pose: { px: 1600, foe: { id: 1, x: 1770, y: 468, state: 'coil' } },
+    // (it is started in its wind-up, as it is when it has noticed him: he stands just out of its bite's reach)
+    pose: { px: 1595, foe: { id: 1, x: 1770, y: 468, state: 'coil' } },
     steps: [
-      { hold: ['ArrowRight'], until: "s.state === 'rear'", max: 60 },
+      { frames: 12 },
+      { set: "s.state = 'rear'; s.stateT = 0", frames: 1 },
       { until: "s.state === 'coil'", max: 70 },
       { frames: 10 },
     ],
@@ -94,6 +99,7 @@ for (const [tag, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([t]) =>
       await page.screenshot({ path: path.join(dir, `f${String(n++).padStart(4, '0')}.png`) });
     };
     for (const st of clip.steps) {
+      if (st.set) await page.evaluate((c) => { const s = window.__foe; eval(c); }, st.set);
       for (const k of st.hold ?? []) await page.keyboard.down(k);
       if (st.tap) await page.keyboard.down(st.tap);
       const max = st.frames ?? st.max ?? 1;
