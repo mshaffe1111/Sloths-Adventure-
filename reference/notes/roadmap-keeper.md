@@ -1,28 +1,40 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 2:41 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 10:44 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
 ## Status
 - Reinstated 2026-11-02 by the lead at Matt's ask (D27: the slips came from the setup; GAMEPLAN §3 is now a ladder; self-caught slips
   don't count). New items come in batches when Matt says go (LEAD-PLAYBOOK 8d).
-- **State now (2026-11-04):** roadmapcheck PASS. Matt rated the game 55 and approved reference/PLAN-TO-80.md; the plan is in phases
-  (BUILD-PLAN "The phases"): lane 1 WebGL throughout (21 h); Phase A the World 1 slice 51.5 h (range about 39-72, sized from history);
-  Matt rates World 1; Phase B Worlds 2-8 274 h on today's rows (a guess, about 210-380); Phase C W9/W10 + story 114 h (a guess, about
-  85-160); alongside 61.5 h. Day 1 about 522 helper hours (the gate prints 530 with the keeper's 8 h), recommended Important 59.5 h,
-  launch about 581.5 h; lane loads 115.5 / 118.5 / 118.5 / 116.5 / 111.5 (script); building about 15-20 working days on today's rows
-  (12-25 across the guesses); about 4-4.5 weeks with the 80% trigger (about 418 of 522 h). The doc mirrors it (read back).
-  Phase sums: the phase script in this file's history (sets by item id; R-154 W1 branch part 2.5 h and R-155 W1 part 7 h moved from B to A).
+- **State now (2026-11-04 9:33 AM ET):** roadmapcheck PASS. Phases (BUILD-PLAN "The phases", sums by script): lane 1 WebGL 21 h;
+  Phase A (World 1) 68 h (range about 52-94), starting score World 1 38/100 (QS) and validator 18-62, average 41; Phase B 274 h
+  (a guess, about 210-375); Phase C 114 h (a guess, about 90-155); alongside 62 h. Day 1 about 539 helper hours (the gate prints
+  547), recommended Important 60 h, launch about 599 h; lane loads 120.5 / 118.5 / 120.5 / 120.5 / 118 (script); building about
+  15-20 working days (12-26 across the guesses); about 4-4.5 weeks with the 80% trigger (about 431 of 539 h). Doc read back.
+  Phase script: A = R-150.1/.4/.7/.8/.9, R-158.1, R-159.1, R-160.1, R-161.1, R-152.7, R-156, R-5.10-12, R-6.31, R-6.33 to R-6.38, plus
+  R-154 W1 2.5 h and R-155 W1 7 h moved from B.
+- **Unblocked 11-04 mid-morning:** R-150.4 and R-150.1 accepted (7909cf11, fun-validator, not merged yet). Phase B rows now read
+  "blocked (by Matt's World 1 rating)"; R-159.1 open (GPU stage 0 merged to the lead branch 65b6c33a). Archive R-3.1, R-150.1, R-150.4,
+  R-150.7 only when they reach main in a release (proof: the release PR).
+- **Planned vs actual (Matt, 11-04; methods/roadmap.md "Planned vs actual"):** running jobs sent to bot-fix at 10:44 AM ET.
+  When each ends (bot-fix or the lead sends the real start and accept), add "; real N h (start to accept)" to its Time and the job to
+  BUILD-PLAN's calibration list; re-size items measured from the same past job if it is off by half or more.
+  - R-159.1 w8-rope2, start about 8:00 AM, expected 9.5 h (7-14), end about 5:30 PM. R-6.38 w8-rope2 (3 h; pictures done 10:14).
+  - R-3.2 warmup-5m, start about 9:35 AM, expected 2 h, end about 11:35 AM.
+  - R-150.8 fix-petals, start about 10:25 AM, expected 1.5 h, end about 11:55 AM.
+  - R-155 1-5 plan fix-petals next: about 0.75 h a stage (0.6-1.3).
 - **In flight / waiting:**
   - R-1.1 is done pending the release merge (proof 5f25029a on icons-painted): archive it with the merge commit when the release lands.
   - R-6.25 (icons B-E) ships in the same release.
   - R-149.12 is still open for the 4-D rethink only; its swimming half is A-38.
   - R-152.6 proposes the arc; Matt gives the per-world numbers later. R-150.4 (the mechanics table) blocks R-150.2/.3/.5/.6 and R-152.x.
-  - The closed test (R-147.1) starts at about 80% of Day 1 hours (about 418 of 522): flag it at each sweep.
+  - The closed test (R-147.1) starts at about 80% of Day 1 hours (about 425 of 531.5): flag it at each sweep.
   - Decided by the lead (11-04, PLAN-TO-80): GPU stage 0 merges first, then R-159.1, then R-160.1 hold engine.ts one at a time;
     R-158.1 with R-5.10 one job, R-155 with R-150.3 not twice, R-161.2 inside R-1.9/R-1.10/R-1.15; HF stays $72 total (no top-ups,
     Matt 11-01), so BUILD-PLAN §4 stands. All in the rows and the doc.
+  - The clerk's and warmup-5m's method updates: the lead folded them in (no R-items). R-148.16 (D28's LESSONS line) is
+    archived as A-39 (1d668e91, on the lead branch).
   - Told the lead: LEADER-STANDARD-WORK.md line 32 still says launch "in about 3 weeks" (their file).
 - **Every round:**
   - Merge the lead's branch first (ccr-0d59a91c-oy3imz). New defects (D#) and rules arrive there; the gate reads the local copies.

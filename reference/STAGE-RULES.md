@@ -33,6 +33,9 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
    kind of cruise through... easy would be kind of the difficulty that we have most of the game right now." The arc above is NORMAL.
    Easy stays a cruise (about today's level or gentler; src/game/difficulty.ts already softens gaps, enemies, hearts, flags and vines).
    Every tuning job tunes both and shows both.
+   **Length targets (Matt, 2026-11-04, after playing the whole game: W4 64 min, W1-3 15-30, W7-8 under 30, many early stages 1-1.5 min):**
+   a FIRST-TIME player on Normal takes about 20-25 min for World 1, 35-40 for the middle worlds, 50-60 for Worlds 9-10; each stage
+   2-5 min for a first-timer, and never under 2 min for a skilled player (the old "at least 2 minutes" now names both players).
 
 
 ## §0b How a stage is put together (Matt, 2026-11-02: "take it serious... it gives us good methods of how to introduce the nodes, the tempos, the rhythms"; source reference/research/GEMINI-VARIETY-2026-11-02-full.txt, cited research)

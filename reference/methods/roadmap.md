@@ -39,6 +39,18 @@ when they differ, the repo wins and the doc is fixed the same day. No other file
 8. **Source:** where it came from: a file path, a doc link, a defect number (D#), a known-list group (e.g. `clipknown G4`), a NEXT.md.
    The gate reads this column.
 
+## Planned vs actual (Matt, 2026-11-04; LEAD-PLAYBOOK 8f, roles/SUPERVISOR.md)
+1. **A job starts:** its row's State says who, when and the expected hours: `in progress (<helper>, started about 9:35 AM ET
+   2026-11-04; expected 2 h)`. The keeper sends bot-fix (the supervisor) each running job's estimate and start, from the row.
+2. **A job ends** (the lead's accept line in STATUS; git for the branch's first and last commit): the Time cell keeps the estimate and
+   gains the real hours after it, `2 h (like ...); real 2.5 h (9:35 AM to 12:05 PM ET, STATUS)`. The gate reads the first number,
+   so the estimate stays the plan; the real hours are the record.
+3. **The calibration list grows:** the job goes into BUILD-PLAN's "How the times were measured" with its real hours, and the next item
+   of that kind is sized from it. When a real time is far off its estimate (over half again, or under half), re-size the open items
+   measured from the same past job, and say so in the report.
+4. Real hours are running time from the start line to the accept line, never guessed; when a line is missing, write "real: not
+   recorded (why)".
+
 ## Reports
 Every keeper report carries "Method used" (this file), "Lessons applied" (the reference/LESSONS.md lines that touched the job) and
 "Method update" (LESSONS.md, the lead 2026-11-01).
