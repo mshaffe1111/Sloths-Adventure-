@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 03:42 AM ET
+Last updated: 2026-11-04 03:45 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -22,6 +22,9 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 03:45 AM ET: kaizen-gates fixed §6 at 2a77d774 (+ 3dda5018 its own notes). Checked myself: diff 1dc39cd7..kaizen-gates in src adds no
+  fetch/URL/beacon/socket/XHR, no placeholder words; SaveLoadDialog only drops an unused import; no audio/lifecycle/App file. The "not
+  checked" items are named (foldable, HUD notch, airplane, background sound, leave-and-return, kill-at-worst-moment). Accepted; told it.
 - 2026-11-04 03:42 AM ET: round 2 digest sent. YELLOW kaizen-gates: sent back for PLAY-STORE §6 in reference/releases/0.9.4.md (checkbase re-run myself
   PASS on 319d8c27; map/HUD/crocus-p5 sheets + w2-p5-fresh-up opened: fine). Flagged its "drawcheck PASS (in the container)" = CI at
   merge per the role. GREEN warmup-5m (report sections all there; gate lines not yet pasted, gate started 3:21), fix-petals (notes fixed
