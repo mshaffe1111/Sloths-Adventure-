@@ -37,3 +37,6 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - Clips: /tmp/claude-0/qs/clips (full), review copies -> reference/qa-reports/world1-baseline/clips (compress.sh). Stills/sheets in world1-baseline/stills.
 - Validator (fix-petals, fun-validator bca329b7): 5 fixes in; my full review of the 9 pages + overview is DUE AFTER RESTART. Asked it for 1-8 chase closest-approach stills and a "structure, not delight" line (validator ranks 1-1 28; Matt called 1-1 best).
 - Open: re-record 1-1..1-3 as a phone; after the bot's bounce-wall fix (lead -> fix-petals after restart) re-judge challenge.
+## End of night 2026-11-04 4:05 AM ET (stopped for Matt's 5 AM token stop)
+- Baseline pushed: 4ba4c606 (report + 20 phone clips + stills). Score 38/100. 1-1..1-3 still sheets are desktop wording (re-cut later).
+- NEXT at restart: (1) review fix-petals' 9 validator pages + overview (fun-validator bd33d386); (2) review every World 1 plan before build, with bot-fix; (3) after the bot's bounce-wall fix, re-judge challenge.
