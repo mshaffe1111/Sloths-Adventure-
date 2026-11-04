@@ -65,3 +65,14 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
   the fixed bot (1-3 Normal 10, Easy 4; 1-9 Normal 11, Easy 8, the lead: one rule). The fun gate is judged on the lead's combined 1-1..1-5
   candidate, since w1-rhythm-b's levelCheck double rule re-reads 1-1/1-2/1-4/1-5.
 - To do: merge origin/w1-rhythm (flagsInOrder) before my next engine.ts push; plug 1-3 into w1-rhythm's layout-distance hook when named.
+- DEFECT (2026-11-04, found proving Matt's goal band per road): 1-3's ramp laid one long soft pit under a whole run of branches, a floor
+  to walk along under every snake on them. The route took it, the fixed adult bot followed it and left 4-8 snakes, so the 75% goal was
+  out of reach. 5 Whys: the snakes were off the way -> the way ran under the branches -> the pit floor ran the whole node -> traced()
+  laid one pit from bank to bank unless only stumps stood between -> nothing checked what lies under a snake's branch. Countermeasure
+  (a test first): stage13.test.ts "no snake on a branch ... stands over a pit floor" (fails on the old layout, seed 1 at 5144); the fix:
+  a pit under each gap alone, ground under every stump and branch. Spread: 1-9's finish had the same shape (snakeBranches over one
+  pit); its snakes moved onto the way. Other stages with snakeBranches: not changed tonight, named in the report.
+- Bot fixes found on the way (the fixed adult first-timer): he punched a waiting snake from 100 px (out of reach) for seconds; now he
+  walks into a punch's reach (72 px) unless it is rearing or striking at him. A hop onto a dazed snake at a run carried him past it; now
+  his thumb steers the fall onto it, as at the vault. 5-9's kid runs moved (median still 10, goal unchanged; KID_RUNS_59 re-recorded).
+- 1-3's sleeper sat 1 s past Dot's line, so a first-timer was on it before taking the line in (heed 0.9 s); it lies further along now.

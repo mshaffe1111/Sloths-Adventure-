@@ -299,9 +299,8 @@ export const CATCH_HIGH_DX = -10;
 /** 1-5 More Petals asks for 77 (a step up from 1-2's 72; was 90 before the six-a-screen cap left it 108-122), and holds about one and
  *  a half times that */
 export const PETAL_GOAL_15 = 77;
-/** 1-9 The Boa's Branches: its goal is what the taught first-timer's route delivers (the lead's ruling, counted with the fixed bot,
- *  2026-11-04, five rolls each): the adult finished 11-20 on Normal, the kid 8-12 on Easy; each asks what every one of those runs made */
-export const GUARD_GOAL_19 = 11;
+/** 1-9 The Boa's Branches: Normal asks Matt's share of its animals, 75% (goals.ts withGoals; the lead 11-04: his band stands, no
+ *  exception); Easy asks what the fixed kid bot made on every one of five rolls, counted on Easy's own stage (easyGoalCounted) */
 export const GUARD_EASY_19 = 8;
 /** 3-3 asks for 12 prowlers driven off (the stage holds about one and a half times that) */
 export const PROWLER_GOAL_33 = 12;
@@ -318,11 +317,10 @@ export const NEST_GOAL_48 = 8;
 /** 4-8's falls: how far onto the shelf the water lands (the boulder's last stretch), and how far above the shelf it pours from */
 const FALL_LIP = 60;
 const FALL_HEAD = 280;
-/** 1-3 Branch Snakes (the rebuild, R-159.1): its goal is what the taught first-timer's route delivers (the lead's ruling, counted with
- *  the fixed bot, 2026-11-04, five rolls each): the adult finished 10-13 snakes on Normal, the kid 4-9 on Easy; each asks what every
- *  one of those runs made, not a share of the 17-21 snakes the stage holds */
-export const SNAKE_GOAL_13 = 10;
-export const SNAKE_EASY_13 = 4;
+/** 1-3 Branch Snakes (the rebuild, R-159.1): Normal asks Matt's share of its snakes, 75% (goals.ts withGoals; the lead 11-04: his band
+ *  stands, reachable on either road, proven with the fixed adult bot on each); Easy asks what the fixed kid bot made on every roll,
+ *  counted on Easy's own stage (easyGoalCounted) */
+export const SNAKE_EASY_13 = 8;
 
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
@@ -1782,7 +1780,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
             const between = tr.ledges.filter((q) => q.x0 >= groundEnd - 1 && q.x1 <= l.x0 + 1 && q.surface !== 'apron' && q.surface !== 'bank');
             const stumpsOnly = between.length > 0 && between.every((q) => q.surface === 'stump');
             if (!air.length) bank(groundEnd, l.x0, Math.max(l.y, prevY));
-            else if (o.real && !easy) { /* (a real drop: nothing under it) */ } else if (stumpsOnly) {
+            else if (o.real && !easy) { /* (a real drop: nothing under it) */ } else if (stumpsOnly || between.length) {
+              // (a pit under each gap alone, ground under each stump and branch: one long pit under them all was a floor to walk along
+              // under every branch and past every snake on them, the route the fixed first-timer bot took, 1-3's goal out of reach)
               for (const g of air) softPit(g.x0, g.x1);
               for (const q of between) bank(q.x0, q.x1, G);
             } else softPit(groundEnd, l.x0);
@@ -1797,7 +1797,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         }
         // (a fight snake stands at least 150 px past where he lands, research §6 / R-159, and short of where he takes off again)
         const land = tr.landings.find((q) => q.step === l.step);
-        if (l.surface !== 'apron' && land && l.x1 - 60 - (land.toX + 160) >= 0) wide.push(l);
+        // (and room after it to fight before the take-off: a snake near the edge is jumped over on the way on, never met)
+        if (l.surface !== 'apron' && land && l.x1 - 150 - (land.toX + 170) >= 0) wide.push(l);
       }
       checkpoints.push({ x: tr.checkpoint.x, y: tr.checkpoint.y, reached: false });
       // the fight snakes: on the widest ledges, past where he lands, so the punch falls between the hops
@@ -1805,7 +1806,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const picks = R.shuffle([...wide]).slice(0, o.snakes ?? 0).sort((a, b) => a.x0 - b.x0);
       for (const l of picks) {
         const land = tr.landings.find((q) => q.step === l.step)!;
-        const sx = Math.min(l.x1 - 70, land.toX + 170 + R.r(0, 40));
+        const sx = Math.min(l.x1 - 150, land.toX + 170 + R.r(0, 30));
         snake(sx, l.y, 12);
       }
       for (const l of tr.ledges) if (l.surface !== 'apron' && l.x1 - l.x0 >= 120 && !picks.includes(l)) flower((l.x0 + l.x1) / 2, l.y - 34, 'orchid');
@@ -1865,7 +1866,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         : traced(['h.......', '....h...', '........', 'h.......', '....h...', '........'], [J(30), J(-30, 'bank'), J(40, 'stump'), J(-40, 'bank')]);
       // the sleeping snake on the first, widest branch, Dot's tip before it
       const b = tr.ledges.find((l) => l.surface === 'branch')!;
-      snake(b.x0 + (b.x1 - b.x0) * 0.6, b.y, 60, true);
+      // (far enough along it that her line has been up about two seconds when he reaches it: at 60% the fixed first-timer bot, taking a
+      // line in after 0.9 s, was on the snake 0.1 s after and hopped it, never punched; room past it to fight)
+      snake(Math.max(b.x0 + (b.x1 - b.x0) * 0.6, Math.min(b.x0 + (b.x1 - b.x0) * 0.8, b.x1 - 160)), b.y, 60, true);
       hint(b.x0 - 160, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
       run(R.r(160, 200));
     });
@@ -1895,7 +1898,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         const w = Math.round(R.r(200, 270));
         const top = hy + Math.round(R.r(-30, 25));
         last = branch(bx, bx + w, top);
-        if (k > 0 && k < n - 1 && k % 2 === 1) snake(bx + w * 0.62, top, w - 150);
+        // (two snakes on its branches and the one on the vault's lip: three, as many as the low road's, so neither road leaves more of
+        // the stage's goal behind than the other, the lead 11-04)
+        if (k === 1 || k === n - 3) snake(bx + w * 0.62, top, w - 150);
         else row(bx + 40, bx + w - 40, top - 34, 2, 'hibiscus');
         // (gaps between the branches vary, never the same four times)
         bx += w + Math.round(reachJump(0, false) * [0.42, 0.55, 0.36, 0.6, 0.48][k % 5]);
@@ -1909,11 +1914,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const end = perch.x + perch.width + 60;
       // the low road: the floor below, a rock a hop high every second or so, a snake on its run, a dip
       run(160);
-      let lowSnake = false;
+      let lowSnake = 0;
       while (end - x > 330) {
         run(R.r(190, 260));
         if (end - x < 200) break;
-        if (!lowSnake && x - fork > 700) { snake(x + 60, G, 110); lowSnake = true; run(R.r(220, 260)); continue; }
+        // (three snakes on the low road, so a player on it can make the stage's goal: the high road's are the bonus, the lead 11-04)
+        if (lowSnake < 3 && x - fork > 500 + lowSnake * 650) { snake(x + 60, G, 110); lowSnake++; run(R.r(220, 260)); continue; }
         logHop(R.i(30, 44));
       }
       x = Math.max(x, end) + R.r(80, 120);
@@ -1944,6 +1950,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const by = G - Math.round(R.r(140, 160));
       branch(x + 110, x + 400, by);
       row(x + 150, x + 360, by - 34, 3, 'hibiscus');
+      // (and a snake on the floor past the branch, where he comes down off it: a punch, or the hop down onto it)
+      snake(x + 400 + R.r(90, 120), G, 30);
       run(R.r(520, 560));
       // a bounce over a pit wider than a jump and its second jump (313 px), inside a bounce and its second jump (368)
       run(R.r(160, 200));
@@ -5589,7 +5597,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
   cid = heartsAtFlags(C, checkpoints, cid);
   // the puzzle rooms' own platforms (a seesaw's two ends, a gate's door): added once, here, so the game and the check see the same ground
   const kit: KitExtras | undefined = ROOMS.length ? { rooms: ROOMS } : undefined;

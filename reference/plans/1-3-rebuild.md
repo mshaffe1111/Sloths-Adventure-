@@ -59,3 +59,22 @@ The twist (rule 2): the vault's spring holds about 3 quarters in the air, so it 
   1-4 the job of teaching creaking limbs. So 1-3 can't require a crumble before it's taught. My proposal: 1-3's pair is punch-daze +
   stomp, meeting in one move (punch on the quarter, hop onto the dazed snake on the next half). The climax ends on a vault off a snake
   onto a branch. Or, if you want the crumble, it's taught first in 1-3 (a soft one over a soft pit) and 1-4 reuses it.
+
+## Goal band, proven per road (2026-11-04, the lead's ruling: Matt's 70-80% band, reachable on either road)
+Normal asks 75% of the snakes (goals.ts withGoals); Easy asks the fixed kid bot's lowest run on five rolls (8; it made 8-10).
+Each road carries three snakes of its own (high: two on its branches and the vault's lip; low: three on the floor), and the ramp's
+branches stand over ground with a pit under each gap alone (one long pit under them was a floor to walk along beneath every snake).
+The fixed adult first-timer, seeds 1-8, steered down one road (its route traced with the other shut; on the low road the high road's
+branches and snakes are out of play, the goal as loaded, so its three count as missed):
+
+| Seed | High road: snakes / goal | Low road: snakes / goal |
+|---|---|---|
+| 1 | 19 / 17 | 19 / 17 |
+| 2 | 17 / 17 | 18 / 17 |
+| 3 | 20 / 18 | 20 / 18 |
+| 4 | 18 / 17 | 18 / 17 |
+| 5 | 17 / 17 | 18 / 17 |
+| 6 | 18 / 17 | 18 / 17 |
+| 7 | 20 / 18 | 20 / 18 |
+| 8 | 19 / 17 | 19 / 17 |
+Every run reached the shrine in 135-179 s. The high road's margin is thin (two rolls at exactly the goal).

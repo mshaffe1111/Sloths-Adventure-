@@ -707,6 +707,8 @@ export class FirstTimerRun {
   /** where on the vault snake he means to land: a little past its middle, on the drop's side (the spring then has the most room) */
   private vaultAt = 0;
   private vaultY = 0;
+  /** a hop onto a dazed snake under way: where he means to come down (its middle); his thumb steers the fall onto it, as at the vault */
+  private stompAt: { x: number; y: number } | null = null;
   private swapGap = 0.15;
   private lastPress = -1;
   private lastSteer: -1 | 0 | 1 = 0;
@@ -894,6 +896,7 @@ export class FirstTimerRun {
     this.kickAt = null;
     this.vaultDir = 0;
     this.vaulted = false;
+    this.stompAt = null;
     this.jump = null;
     this.airFrom = null;
     this.blockedT = 0;
@@ -1241,6 +1244,16 @@ export class FirstTimerRun {
         j.hold = age + flickHold(this.r, who);
       }
       if (this.learned.has('glide') && e.skills?.has('glide') && !p.grounded && p.vy > 150 && age > 0.4) out.jump = true;
+      // (a hop onto a dazed snake: steered by where he will come down, so the run's carry doesn't take him past it)
+      if (this.stompAt && this.vaultDir === 0 && !p.grounded) {
+        const rise = p.vy < 0 ? (p.vy * p.vy) / (2 * PHYS.gravUp) : 0;
+        const top = p.y - rise;
+        const fall = (p.vy < 0 ? -p.vy / PHYS.gravUp : 0) + Math.sqrt(Math.max(0, 2 * (this.stompAt.y - top)) / PHYS.gravDown) - (p.vy > 0 ? p.vy / PHYS.gravDown : 0);
+        const land = p.x + p.vx * Math.max(0, fall);
+        const jump = out.jump;
+        out = land < this.stompAt.x - 10 ? { right: true } : land > this.stompAt.x + 10 ? { left: true } : {};
+        if (jump) out.jump = true;
+      }
       // (the stomp vault: the thumb kept on the glass from the hop, then the way across once the snake springs him up)
       if (this.vaultDir !== 0) {
         if (p.vy < -700) this.vaulted = true;
@@ -1474,8 +1487,9 @@ export class FirstTimerRun {
           const to: -1 | 1 = (dx > 0 ? dir : -dir) > 0 ? 1 : -1;
           const speed = p.vx * to;
           const carry = Math.max(0, speed) * (0.6 + who.thumb[0]);
-          if (Math.abs(dx) <= 28 && Math.abs(p.vx) < 60) return this.decide(0, 'single', false, {});
-          if (speed > 150 && Math.abs(dx) <= carry + 20 && Math.abs(dx) >= carry - 30) return this.decide(0, 'single', false, side(to));
+          // (once in the air his thumb steers the fall onto it, so a hop from close at a run still comes down on it)
+          if (Math.abs(dx) <= 28 && Math.abs(p.vx) < 60) { this.stompAt = { x: m.x, y: m.y - 10 }; return this.decide(0, 'single', false, {}); }
+          if (speed > 150 && Math.abs(dx) <= carry + 20) { this.stompAt = { x: m.x, y: m.y - 10 }; return this.decide(0, 'single', false, side(to)); }
           return side(to);
         }
         // - the coiled boa, once Dot has said to kick it: he eases off, lets himself coast up to it (the thumb's release carries him on a
@@ -1505,6 +1519,10 @@ export class FirstTimerRun {
           continue;
         }
         if (m.trick === 'coil') continue;
+        // (a snake that waits is punched from a punch's reach, about 64 px and the jab's lunge: from further the claw only swipes the air,
+        // the fixed bot punched 1-3's woken snake from 100 px for three seconds; one rearing or lunging at him is punched as it comes)
+        const coming = m.state === 'rear' || m.state === 'strike' || m.state === 'lunge';
+        if (this.learned.has('punch') && dx < 110 && !coming && dx >= 72) return side(dir);
         if (this.learned.has('punch') && dx < 110) {
           this.punchAt = t + who.hesitate;
           this.swapGap = between(this.r, who.swap);
@@ -1714,11 +1732,13 @@ export class FirstTimerRun {
       }
       this.airFrom = null;
       this.jump = null;
+      this.stompAt = null;
     }
     if (this.jump && !this.airFrom && t - this.jump.t0 > 0.5) {
       // (the flick never left the ground: a jump under a ceiling, or eaten)
       this.mem.result(this.jump.x, this.jump.y, this.jump.kind, false);
       this.jump = null;
+      this.stompAt = null;
     }
     // fallen off the way (a miss in a climb drops him to a branch or the floor far under where he was): once he stands there a moment,
     // he finds his place along the way again and heads back to the way up, as a person climbs back (round 5, 2026-10-29: the bot kept

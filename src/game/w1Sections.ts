@@ -656,8 +656,10 @@ const SECTIONS: Record<W1Stage, Table> = {
       {
         id: 'branches', beat: 'branch', build: (k) => { fillTo(k, k.EXPERT - 10, null, [
           (k) => k.guardBranch(true),
-          (k) => { k.snakeBranches(3, k.G - 130); k.busy(1); },
-          (k) => { k.guardBranch(true); k.snakeBranches(3, k.G - 140); },
+          // (snakes on the way rather than pairs up on branches over the moss, which the way runs under: Matt's goal, 75% of the
+          // animals, must be reachable without them, the lead 11-04; the ring's canopy snakes are the high ones)
+          (k) => { k.snakeWalk(1); k.busy(1); },
+          (k) => { k.guardBranch(true); k.snakeWalk(1); },
         ], 2, 12); masterStretch(k); },
       },
       {

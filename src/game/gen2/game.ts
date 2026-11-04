@@ -80,8 +80,10 @@ const w8Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
 // firstTimerBot.test.ts re-measures these, so a change to the bot or the stage that moves them fails there. Re-measured fix-petals
 // 2026-11-04, when the bot learned to take a mushroom's bounce with the second jump: 5, 6, 4, 6, 6, 5 became 8, 3, 3, 5, 7, 5, the
 // median still 5, so the goal is unchanged. Re-measured bot-fix 2026-11-04, when the late lift-off stopped re-arming every frame (a wait
-// no longer walks him on into the spiders): 8, 3, 3, 5, 7, 5 became 10, 15, 17, 16, 4, 7, the median 10, so Easy's goal 5 -> 10 of 18)
-export const KID_RUNS_59 = [10, 15, 17, 16, 4, 7] as const;
+// no longer walks him on into the spiders): 8, 3, 3, 5, 7, 5 became 10, 15, 17, 16, 4, 7, the median 10, so Easy's goal 5 -> 10 of 18.
+// Re-measured w8-rope2 2026-11-04, when he learned to walk into a punch's reach of an animal that waits (no punching the air from 100 px)
+// and to steer a hop onto a dazed snake: 10, 15, 17, 16, 4, 7 became 12, 10, 15, 15, 4, 7, the median still 10, the goal unchanged)
+export const KID_RUNS_59 = [12, 10, 15, 15, 4, 7] as const;
 
 export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
   '5-7': { kit: () => w5Kit(7), kitName: 'w5.ts:w5Kit(7)' },

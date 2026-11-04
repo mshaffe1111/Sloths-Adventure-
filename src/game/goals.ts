@@ -106,6 +106,15 @@ export function gen2EasyGoal(have: number, kidReach?: number): number {
 export function withGoals<T extends GeneratedStage>(st: T): T {
   if (st.boss) return st;
   const gen2Easy = (st as Stage & { gen2?: { budget: { difficulty: string } } }).gen2?.budget.difficulty === 'easy';
+  // (a stage whose Easy goal was counted on Easy's own stage, 1-3 and 1-9: Normal still takes Matt's share, Easy keeps its count)
+  if (st.easyGoal !== undefined && st.easyGoalCounted) {
+    const g = normalGoal(st as Stage);
+    if (g !== null) {
+      st.normalGoal = g;
+      st.config = { ...st.config, targetCount: g };
+    }
+    return st;
+  }
   if (st.easyGoal !== undefined) {
     // (a goal the kid bot measured: it stays the stage's own, under the floor's cap)
     const have = goalHave(st as Stage);

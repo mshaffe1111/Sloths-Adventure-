@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProtoStage, EXPERT_SECONDS, G, SNAKE_GOAL_13 } from './protoStage.ts';
+import { buildProtoStage, EXPERT_SECONDS, G, SNAKE_EASY_13 } from './protoStage.ts';
+import { goalHave, withGoals } from './goals.ts';
 import { badPickups } from './flowerReach.ts';
 import { stepPredator } from './predatorAI.ts';
 import type { Enemy, LevelConfig } from './types.ts';
@@ -11,14 +12,17 @@ const cfg = {
 } as LevelConfig;
 const SEEDS = Array.from({ length: 20 }, (_, i) => 1 + i * 41);
 
-test('1-3: every roll keeps the rebuilt plan (seven nodes, reference/plans/1-3-rebuild.md), asks for its goal of snakes out of well over that, and takes over two minutes for a skilled player, on Normal and Easy', () => {
+test('1-3: every roll keeps the rebuilt plan (seven nodes, reference/plans/1-3-rebuild.md), asks for Matt\'s share of its snakes (its counted goal on Easy), and takes over two minutes for a skilled player, on Normal and Easy', () => {
   for (const easy of [false, true]) {
     for (const s of SEEDS) {
       const st = buildProtoStage(cfg, s, '1-3', easy);
       assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Intro', 'Ramp', 'Spike', 'Rest', 'Counter-melody', 'Climax', 'Cool-down'], `seed ${s}`);
-      assert.equal(st.config.targetCount, SNAKE_GOAL_13);
-      const before = st.enemies.filter((e) => e.x < st.exitTotemX).length;
-      assert.ok(before >= SNAKE_GOAL_13 * 1.3, `seed ${s}: ${before} snakes before the exit`);
+      // (Normal: Matt's share, in his 70-80% band, of snakes all before the shrine; Easy: its counted goal)
+      const have = goalHave(st as never)!;
+      const goal = withGoals(st).config.targetCount;
+      assert.ok(goal >= have * 0.7 && goal <= have * 0.8, `seed ${s}${easy ? ' Easy' : ''}: ${goal} of ${have}`);
+      assert.equal(st.enemies.filter((e) => e.x >= st.exitTotemX).length, 0, `seed ${s}`);
+      assert.equal(st.easyGoal, SNAKE_EASY_13);
       assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 15, `seed ${s}${easy ? ' Easy' : ''}: ${Math.round(st.meta!.timing!.layoutSeconds)} s`);
       assert.equal(st.proto.movedPickups, 0, `seed ${s}${easy ? ' Easy' : ''}`);
     }
@@ -55,6 +59,24 @@ test('1-3: its rope lies over a soft pit (crossable before the rope is learned),
           if (run0 < 0) run0 = x;
           assert.ok(x - run0 <= 140, `seed ${s}: a drop wider than a jump from ${run0}`);
         } else run0 = -1;
+      }
+    }
+  }
+});
+
+test('1-3: no snake on a branch outside the split stands over a pit floor he could walk along under it: the ground under its branch is the floor at G, so the way runs over the snakes, not beneath them', () => {
+  // (w8-rope2 2026-11-04: one long soft pit under a run of branches was a floor to walk along under them all; the route and the fixed
+  // first-timer bot took it, past every snake on the branches, and Matt's goal was out of reach)
+  for (const easy of [false, true]) {
+    for (const s of SEEDS) {
+      const st = buildProtoStage(cfg, s, '1-3', easy);
+      const split = st.proto.beats.find((b) => /^Spike/.test(b[2]))!;
+      for (const e of st.enemies) {
+        if (e.asleep || (e.x >= split[0] && e.x <= split[1]) || e.y > G - 20) continue;
+        const under = st.platforms.filter((p) => p.x <= e.x && p.x + p.width >= e.x && p.y > e.y + 20);
+        if (!under.length) continue;
+        const top = Math.min(...under.map((p) => p.y));
+        assert.ok(top <= G, `seed ${s}${easy ? ' Easy' : ''}: the snake at ${Math.round(e.x)} stands over a floor ${top} deep`);
       }
     }
   }
