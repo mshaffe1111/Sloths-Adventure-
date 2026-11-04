@@ -17,7 +17,7 @@ import { heartsAtFlags, type ProtoExtras, type StageHint } from './protoStage.ts
 import { badPickups, fixPickups } from './flowerReach.ts';
 import { PICKUP_APART, SAFE_APPROACH, swingLandings, validateStage } from './levelCheck.ts';
 import { goalCounts } from './goals.ts';
-import { busiestScreen, clumpExtras, PER_SCREEN, rowExtras } from './petals.ts';
+import { busiestScreen, clumpExtras, offArc, PER_SCREEN, rowExtras } from './petals.ts';
 import { swingSetup } from './physics.ts';
 import { findForStage } from './finds.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -969,6 +969,8 @@ function rhythmRoads(st: GeneratedStage & { proto: ProtoExtras }): void {
   }
   // (a new petal the level check cannot reach is taken off again: flowerReach.ts badPickups, the check the stage's test holds it to)
   const bad = new Set(badPickups({ platforms: st.platforms, vines: st.vines, waterY: st.waterY }, st.collectibles).filter((c) => c.id >= firstNew));
+  // (nor one hanging below a required jump's arc: the petal rules, petals.ts offArc)
+  for (const c of offArc(st, st.collectibles.filter(isPet))) if (c.id >= firstNew) bad.add(c);
   st.collectibles = st.collectibles.filter((c) => !bad.has(c));
   // (NOT thinned to keep the shares: where the six-a-screen cap leaves a road short, thinning the shared path to match took 1-2 down to
   // about 27 petals and sealed the door, the fixed first-timer, 2026-11-04 5:15 PM; the 70/30 shares on the built stage are open, R-id
