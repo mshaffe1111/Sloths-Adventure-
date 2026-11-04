@@ -63,3 +63,4 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - OWN MISS 11:10 AM ET: baseline goal claims (1-3, 1-5) and 1-8 pit lives came from the old bot despite rescues>0; corrected (20f6cecd), told lead; countermeasure in method §4.
 - R-159.1 re-check 9c932427 (e7c5fc22): REDO still: boa dies to punch during its strike (clips held the strike off); stun (a) not in; stars small, glint a speck. Lesson for my method: a helper's staged clip can hide the hole; always re-run the real mashing myself.
 - Fixed-bot World 1 sideways clips done: world1-baseline/clips-fixedbot (1eca7d3f), the before for rebuilds. TODO re-record done.
+- R-159.1 redo 528994e0: rules 1+2 PASS (my re-run affbeebc); polish fix: hit words stack. Backed teaching the bot from Dot's words (on-screen only), counts cut after. Vine snake: judge on 1-6 clips.
