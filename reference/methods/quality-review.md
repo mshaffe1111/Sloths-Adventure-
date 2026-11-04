@@ -53,6 +53,8 @@ Then, for the world:
 - The bot is a tool (D15). Name its rescues and time-outs. Don't judge difficulty from a run it didn't really play.
 
 ## 4. Pitfalls already paid for
+- No play-number claim (goal reached, lives lost, "off the natural path") from a bot run with rescues > 0 (2026-11-04: my 1-3 and 1-5
+  goal claims came from the old bot that couldn't climb the mushroom walls; corrected with the fixed bot).
 - Desktop recording shows keyboard tips; record as a phone.
 - `pkill -f <pattern>` kills your own shell when the pattern is on your command line; use a small stop script.
 - Wait for `window.__engine` with a guard (`typeof ... === 'function'`); a busy machine loads the page late.
