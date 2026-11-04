@@ -1,0 +1,70 @@
+# Method: moving drawing to the GPU layer (PixiJS on WebGL 2)
+Last proven: 2026-11-04, branch warmup-5m, GPU plan stage 0 (R-3.1): the layer set up, no look change. Owner of the last update:
+warmup-5m helper. The commit ids are in the stage 0 report (reference/qa-reports/webgl-0/README.md).
+
+## When to use it
+Every GPU-RENDERER-PLAN stage (1 skies, 2 ground, 3 creatures and Pokey, 4 props and particles, 5 what's left) and any later WebGL
+feature (light bridges, lightning silhouettes, waving water).
+
+## What exists (stage 0)
+- **`src/game/gpuLayer.ts`.** One Pixi `WebGLRenderer` for the whole app, on the canvas under the game's 2D canvas (App.tsx).
+  - `mountGpuLayer(canvas)` runs on the first stage launch and is not awaited.
+  - `gpuWorld()` is the container the stages put whole layers into.
+  - `drawGpuFrame(tx, ty, zoom)` is called by engine.ts right after `render()`. tx and ty are the 2D canvas's own snapped camera
+    translate (`gpuTx`, `gpuTy`).
+  - `resizeGpuLayer` is called from `resizeCanvas`.
+- **WebGL 2 only.** The context is made with `getContext('webgl2', GL_ATTRS)` and passed to Pixi as `context`, so Pixi never falls back
+  to WebGL 1. No WebGL 2 means no layer, and the 2D canvas draws everything as before.
+  - Never `autoDetectRenderer` and never WebGPU (PowerVR, PERFORMANCE-RULES §4). The unit test scans the source for this.
+- **Pixi is pinned exactly** in package.json: 8.22.0, at least two weeks old when chosen. Update bun.lock with
+  `bun install --lockfile-only`; CI runs `npm install` with no lockfile.
+- **It costs nothing while empty.** It renders, and shows its canvas, only while `world` has a visible child. The loop still moves it
+  every frame.
+- **Context loss.** Pixi's GlContextSystem calls preventDefault and rebuilds its GPU objects on restore. The layer skips frames while
+  lost (`gpuStats.lostFrames`), and the 2D game never waits on it.
+
+## Steps for a stage that moves a layer
+1. **Move whole layers, never half of one** (the plan's layer-order rule). The 2D canvas keeps everything above the layers that moved.
+   For the GPU layer to show, the 2D canvas must become see-through where those layers were:
+   - its context is `alpha: false` today; switching that is a deliberate step with its own look proof;
+   - so is clearing it to transparent instead of painting the backdrop.
+2. **Textures from the sheets we already load.** `Texture.from(<the HTMLImageElement or baked canvas>)`. One texture per sheet, frames
+   as sub-rectangles, so sprites that share a sheet batch.
+   - Release a world's textures when play leaves the world (atlasLoader `enterWorld`, PERFORMANCE-RULES §2.13).
+3. **Upload before play.** Under the title card (stageReady.ts): `renderer.texture.initSource(texture.source)`, or one render of the
+   layer, so nothing uploads on a play frame (lesson D11, PERFORMANCE-RULES §2.12).
+4. **The camera.** Children of `world` are placed in world units. The layer applies `(p + t) * zoom` (`worldPlace`). Parallax layers
+   get their own container moved by their own factor.
+5. **Losing the context.** Anything the stage makes itself (render textures, its own buffers) must be rebuilt on
+   `webglcontextrestored`. Check it with `tools/qa/gpuLayer.cjs`, which does lose and restore (lesson D6).
+
+## The bar
+- **The same look.** `node tools/qa/gpuLook.cjs <dev url> <out> after` must print 0 differing px for every stage in all 10 worlds plus
+  5-M, upright 412x915 and sideways 915x412. Then a side-by-side sheet against the before build for Matt's eye.
+- **The layer is proven live.** `node tools/qa/gpuLayer.cjs <dev url> <out> 1-1 412x915` and `... 915x412` print PASS:
+  - it mounts as WebGL 2;
+  - the probe box tracks the camera within 2 CSS px, before and after walking;
+  - lose and restore leaves no page errors;
+  - the 2D game keeps running while the context is lost.
+- **No slower.** `tools/perf/firstframes.cjs` at 1x on a W1, a W5 (5-M) and a W8 stage: the worst frame, the frames over 100 ms and the
+  load time no worse than the before build (perf-measure.md). drawcheck PASS.
+- **Bundle noted.** The main chunk and the Pixi chunks, raw and gzipped.
+
+## Checks before reporting
+Every gate in gates.md, in order. Add the two GPU checks above. Stamp the base commit on every sheet (D23).
+
+## Pitfalls we already paid for
+- 2026-11-04: **The look comparison was noisy three ways.** Fix all three, then judge:
+  1. the DOM over the canvas (Dot's bubble, the hints) animates on its own JS clock: hide everything but the canvases;
+  2. the ground squares paint a few per frame: draw the frozen frame about 40 times first;
+  3. a pickup's ring moves on the real clock: mask the pixels that differ between two shots of the same frame, and report how many.
+- 2026-11-04: **`page.setViewportSize` failed after a tap** (the game asks for fullscreen). Stub
+  `Element.prototype.requestFullscreen` in an init script for rotation checks.
+- 2026-11-04: **Pixi's own WebGL setup falls back to WebGL 1** when webgl2 fails. Pass a context made by us so it can't.
+
+## Tried and didn't work
+- Comparing whole-page screenshots: the DOM animations gave 21,000 to 178,000 "different" pixels with nothing changed on the canvas.
+
+## To try
+- Pixi's per-feature imports (only the WebGL renderer, Container, Sprite, Texture), to cut the 435 KB of Pixi chunks.
+- A WebGL 2 capability line in the control test's GPU report (vendor, renderer, `MAX_TEXTURE_SIZE`) for QA's per-GPU sort.
