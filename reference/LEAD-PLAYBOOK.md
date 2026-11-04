@@ -207,4 +207,7 @@ work"). The measure: the same kind of job costs less each time (GAMEPLAN §5, §
   barrier. The lead acts on the barrier (a clearer brief, a tool, a decision, a blocker) the same round. Real hours feed the next estimate.
   And when a job beats its expected time or a helper does something better than asked: say so to the helper by name, tell Matt in a
   short line, record it on HELPERS.md, and write the how into its method (Matt: "we celebrate").
+- **8g. Dot lines are checked before they reach Matt (2026-11-04).** Twice today the lead put a Dot line to Matt that then failed the
+  line rules (9 words for an 8-word move tip; "hold jump", a keyboard phrase). Before asking Matt, every proposed in-play line is checked
+  against src/game/dotLines.test.ts's rules (word limits, touch words only); only lines that pass go to him.
 

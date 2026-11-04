@@ -63,6 +63,25 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
    jump, a cut jump on release, a faster fall than rise, and platform speed carried into the jump (R-152.7). Tighter checkpoints as
    stages get harder: respawn within about 2 s of the hard part.
 
+
+## §0c Variety inside the nodes (Matt, 2026-11-04: "what's the strategy to make sure that the engine knows to switch things up, use different pieces to vary the gameplay within each node? Because we're kind of doing that today, and it's not working.")
+
+Why today's way fails (checked in w1Sections.ts): a stage's finish is `fillTo()`, a shuffle bag of 2-3 pieces drawn until the clock
+reaches two minutes (up to 24 draws). The bag changes the ORDER, not the experience, so the same unit comes back 6-10 times. The
+variety checks measured geometry, not what the player does or sees. Rules from now on, for hand-built stages and generators alike:
+1. **Length comes from nodes, never from filling a clock.** A stage that is short gets another node of a different kind, never repeats
+   of a piece. `fillTo` padding is retired as each stage is rebuilt.
+2. **A node is chosen by its job:** its pacing tag (intro / flow / tight / rest / puzzle) and the mechanic pair it teaches or twists,
+   from a template library. No template twice in a row; no template more than twice in a stage.
+3. **A repeat must change something you feel:** the second use of a template changes at least one of: gap or timing, direction (up,
+   down, mirrored), a hazard added, a mechanic combined. Same piece, same numbers, twice = rejected.
+4. **The library is big enough:** each world has at least 3 templates per pacing tag (12+), each with at least 3 parameter variants,
+   and the world's signature mechanic in most of them. No template appears in more than 3 of a world's stages. Short of that, the job
+   is to build more pieces (Matt's 10-30 rule), never to reroll.
+5. **It is measured, not hoped:** the validator's move string and look grid must say a stage is not "like" the stages before it
+   (moves and looks), with no 3-4 move run repeated, and the fun gate fails a stage that gets more alike. The quality supervisor's
+   in-order recording is the final judge.
+
 ---
 
 ## 1. Matt's fixed rules (never break these)
