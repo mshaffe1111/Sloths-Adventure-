@@ -40,3 +40,7 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 ## End of night 2026-11-04 4:05 AM ET (stopped for Matt's 5 AM token stop)
 - Baseline pushed: 4ba4c606 (report + 20 phone clips + stills). Score 38/100. 1-1..1-3 still sheets are desktop wording (re-cut later).
 - NEXT at restart: (1) review fix-petals' 9 validator pages + overview (fun-validator bd33d386); (2) review every World 1 plan before build, with bot-fix; (3) after the bot's bounce-wall fix, re-judge challenge.
+## 2026-11-04 restart (lead, 7:47 AM ET)
+- Job 1 DONE: validator review sent. PASS 1-1/1-3/1-7/1-9; REDO overview (add "looks the same" piece/art similarity), 1-2 (0% clumsy jumps need stills), 1-4 (climb counted as dead walk), 1-5 (outrun branches scored as hazard 5 + new 10), 1-6 (contradicting label), 1-8 (B letter means two things; unseen chase scored 5). All pages: reword the "holding right alone" line.
+- Baseline corrected: the 1-7 eagle hurts on 4 of 10 stretches (validator table).
+- NEXT: review the R-159.1 combat-triangle plan before it is built; check fix-petals' REDOs against my clips.

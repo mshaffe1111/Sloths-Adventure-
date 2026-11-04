@@ -109,7 +109,10 @@ repetitive... a sludge."
   valley art with purple flora.
 - **The eagle doesn't threaten (§0.2, R-158).** It is a tiny dark shape at the top edge (sideways 1:00, 1:28). Upright it sits under
   the HUD's timber bar, about 60% of the screen above Pokey, with no shadow on the ground (sheets 1-7 up, 1:20-1:30). It reads as
-  scenery. The validator finds holding right outruns it on 7 of 13 stretches. Matt: "you can outrun them every time. You don't even
+  scenery. The validator's per-stretch table (fun-validator e53b5163, layout 1
+  sideways) says holding right is unhurt on 6 of 10 stretches, and the eagle does hurt on 4 (x 10086-14280, 15976-17043,
+  18929-20006, 24010-25089). Correction to my first read: it is not harmless everywhere. Where it hurts, the open question is whether
+  the hit was warned, given that it reads as scenery (asked of the validator). Matt: "you can outrun them every time. You don't even
   have to hide."
 - **Same as before.** From 0:24 to 5:30 the mushroom wall + pillar unit returns 2-3 times per 22 s still (seed 1 picks the 'rope'
   develop and finish, which are bounceWall repeats). The bushes are mostly in the first 1:30.
@@ -167,7 +170,7 @@ repetitive... a sludge."
 
 ## What's missing against STAGE-RULES §0 and §0b
 - **§0.2 hazards that matter:** no pits or water that take a life until 1-6. Creaking branches are skippable (1-5). The eagle
-  doesn't threaten (1-7). The chase isn't shown (1-8).
+  is outrun on most stretches and reads as scenery on the rest (1-7). The chase isn't shown (1-8).
 - **§0.3 no beat repeated to fill time:** the finish unit, 6-10 times a stage.
 - **§0b.1-2 rhythm and four parts:** no rests between groups. The "twist" sections are not twists: in 1-5 it can be skipped, and in
   1-1 it is the double jump on more pillars.
