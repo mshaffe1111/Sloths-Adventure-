@@ -32,6 +32,15 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
   - R-3.14 (warmup-5m, 1:45 PM ET): its measuring part (drawWatch's slowdraw events, testers only) went green in the measured
     release at 1:44 PM ET; that part started 12:04 PM ET, about 1.7 h (check 32c57be7 on the lead branch first). The fix waits on
     Matt's OnePlus runs after tonight's release: the row stays in progress; note the part's real hours on the row's Time.
+  - fix-petals (2:25 PM ET; fun-validator merged into the lead branch, per fix-petals: check the merge first):
+    (a) R-150.9's status cell was edited on fun-validator in ROADMAP.md (stages count as rebuilt when built on the beat or listed in
+    funcheck.ts REBUILT; 1-9's counts hidden by pickups, found 11-04): expect a merge conflict in ROADMAP.md, keep its line;
+    (b) R-150.12 and the other validator items done 11-04 (fa647a9e, 0b1c2a78; reference/qa-reports/validator/items-11-04.md):
+    §0c template repeats, BPM / beat feel / tempo / map shape against the stage before, 15-20 s dense finale, pairs in one move,
+    a ride counts as patience only with a wait over 1 s, a fall over 200 px or a slow pit exit bites, a rest is a 1.0 s pad (Normal)
+    or 2.0 s (Easy): find which R-items they close (R-150.12 at least) and mark done with proof, after checking the commits;
+    (c) R-6.38 done (QS PASS, lead accepted, a90c542f): mark done; record real hours if the start is known; new named debt: on 1-8 a
+    square leafy corner of the understory shows at the top of each gap (chase drawing, engine.ts): file an R-item (ask the lead's tier).
 - **D29 (lead, 2026-11-04 12:42 PM ET):** the research was never broken down line by line; three ledger helpers are writing
   reference/research/ledger/. Phase A's 88.5 h is marked "before the research ledger"; no new Phase A estimate until the lead
   sends the ledger's misses (about 2:30 PM ET) for R-ids and hours. R-155's 1-5 build was ON HOLD; corrected by the lead: 1-2 and 1-5 are R-155.1 (w1-rhythm, running), the rest of R-155 stays on hold. R-148.18 closed as A-41 (3342b2cf, lead branch). Known misses: a BPM
