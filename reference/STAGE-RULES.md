@@ -62,7 +62,15 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
 8. **Feel.** Coyote time and the jump buffer exist (engine.ts; physics FORGIVE). To check and tune: a softer fall at the top of a held
    jump, a cut jump on release, a faster fall than rise, and platform speed carried into the jump (R-152.7). Tighter checkpoints as
    stages get harder: respawn within about 2 s of the hard part.
-
+9. **Beat types (Matt, 2026-11-04: "you have like a BPM dance, a BPM flow... 120 rock"; Smith's rhythm groups, research Part 2).**
+   Every rhythm group has a beat type as well as a length and a density:
+   - **steady**: even beats, the same spacing every time (hop, hop, hop), like a march;
+   - **swung**: long-short pairs (hop-hop, pause, hop-hop), like a gallop;
+   - **broken**: uneven spacing the player must read (a short gap, a long gap, a surprise beat);
+   - **wait-and-go**: stand still or hang on, then burst (a wind lull, a crumble's timer, a dozing snake).
+   A stage uses at least 3 of the 4. No two groups in a row share both beat type and density. Each world has its own home mix
+   (World 1: mostly steady and swung, broken brought in at X-5 and X-8, wait-and-go taught at X-6); a later world's mix must differ
+   from every earlier world's. The beat type is written on every node and read back by the validator from the real moves.
 
 ## §0c Variety inside the nodes (Matt, 2026-11-04: "what's the strategy to make sure that the engine knows to switch things up, use different pieces to vary the gameplay within each node? Because we're kind of doing that today, and it's not working.")
 
@@ -85,6 +93,13 @@ variety checks measured geometry, not what the player does or sees. Rules from n
 6. **It is measured, not hoped:** the validator's move string and look grid must say a stage is not "like" the stages before it
    (moves and looks), with no 3-4 move run repeated, and the fun gate fails a stage that gets more alike. The quality supervisor's
    in-order recording is the final judge.
+7. **No world plays like an earlier world (Matt, 2026-11-04: "how are we going to solve that worlds don't just keep continuing to
+   use the same layouts as previous worlds?").** Each world owns its pieces: a template belongs to one world, and a later world may
+   bring one back only if it changes something you feel (rule 3) and pairs it with that world's own mechanic. Each world has a
+   fingerprint: its beat mix (§0b.9), camera directions, mechanic pairs and piece set. The validator compares every stage against
+   every stage of every earlier world (moves, looks and beats), and each world's fingerprint against earlier worlds'; the fun gate
+   fails a world that is too close. The quality supervisor plays the last stages of the world before and the first stages of the new
+   one back to back. This check is built before World 2 is rebuilt.
 
 ---
 
