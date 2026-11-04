@@ -1844,7 +1844,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     beat('Rest', () => {
       // a breath: plain ground, a flag, nothing to do (Dot's wayside line has its moment here)
       flag();
-      rest(R.r(420, 470));
+      // (long enough for her line, about three seconds, with petals to stroll for)
+      rest(R.r(760, 840));
     });
     beat('Counter-melody: the bounce chain', () => {
       // a different pulse: long bounces up the walls, a snake on the floor between, the last bounce from beside a soft pit
