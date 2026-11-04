@@ -39,8 +39,14 @@ print(sum(1 for v in d.get_flattened_data() if v))`, a, b, ...(noise ? [noise] :
     try {
       await pg.goto(base + `?autostart=1&level=${st}&layout=1`, { timeout: 120000 });
       await pg.waitForFunction(() => window.__live > 0, null, { timeout: 120000 });
-      await pg.touchscreen.tap(o.w / 2, o.h / 2).catch(() => {});
-      await pg.waitForTimeout(3000);
+      // (5-M opens on its own card: tapped until the stage is under way)
+      for (let i = 0; i < 8; i++) {
+        await pg.touchscreen.tap(o.w / 2, o.h / 2).catch(() => {});
+        await pg.waitForTimeout(700);
+        const ph = await pg.evaluate(() => { const g = window.__engine; const e = typeof g === 'function' ? g() : g; return e?.mc?.phase ?? 'play'; });
+        if (ph !== 'card') break;
+      }
+      await pg.waitForTimeout(2500);
       const E = `(() => { const g = window.__engine; return typeof g === 'function' ? g() : g; })()`;
       // (only the canvases are judged: the DOM over them, Dot's bubble and the hints, moves on its own clock)
       await pg.addStyleTag({ content: 'body *:not(canvas) { visibility: hidden !important; }' });
@@ -50,7 +56,7 @@ print(sum(1 for v in d.get_flattened_data() if v))`, a, b, ...(noise ? [noise] :
       await pg.waitForTimeout(250);
       const f = `${out}/${tag}-${st}-${o.id}.png`;
       await pg.screenshot({ path: f, animations: 'disabled' });
-      await pg.evaluate(`(() => { const e = ${E}; for (let i = 0; i < 5; i++) e.render(); })()`); await pg.waitForTimeout(250); await pg.screenshot({ path: `${out}/again-${st}-${o.id}.png`, animations: 'disabled' }); const noise = `${out}/again-${st}-${o.id}.png`; const self = diff(f, noise);
+      await pg.evaluate(`(() => { const e = ${E}; for (let i = 0; i < 5; i++) e.render(); })()`); await pg.waitForTimeout(250); await pg.screenshot({ path: `${out}/${tag}-again-${st}-${o.id}.png`, animations: 'disabled' }); const noise = `${out}/${tag}-again-${st}-${o.id}.png`; const self = diff(f, noise);
       let line = `${tag} ${st} ${o.id}`;
       if (tag === 'after') {
         const info = await pg.evaluate(() => ({ live: !!window.__gpu?.live(), drawn: window.__gpu?.stats.drawn }));

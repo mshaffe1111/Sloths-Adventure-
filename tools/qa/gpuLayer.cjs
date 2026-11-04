@@ -34,9 +34,13 @@ const ok = (c, msg) => { console.log(`${c ? '✓' : '✗'} ${msg}`); if (!c) fai
   console.log(JSON.stringify(st));
   ok(st.live, 'the layer is running');
   ok(st.gl2, 'its context is WebGL 2');
-  ok(st.vis === 'hidden' && st.stats.drawn === 0 && st.stats.idle > 30, `with nothing on it, hidden and idle (drawn ${st.stats.drawn}, idle ${st.stats.idle})`);
+  ok(st.vis === 'hidden' && st.stats.drawn === 0, `with nothing on it, hidden, no GPU frames (drawn ${st.stats.drawn})`);
+  // (the loop drives it: one call a frame. Over half a second, as many layer calls as the game's own frames)
+  const drive = await pg.evaluate(`new Promise((res) => { const e = ${E}; const i0 = window.__gpu.stats.idle; let n = 0; const t0 = performance.now(); let last = e.frameCount ?? 0;
+    const f = () => { n++; if (performance.now() - t0 < 600) requestAnimationFrame(f); else res({ calls: window.__gpu.stats.idle - i0, rafs: n }); }; requestAnimationFrame(f); })`);
+  ok(drive.calls > 0 && drive.calls <= drive.rafs, `the loop hands it each frame: ${drive.calls} layer calls in ${drive.rafs} animation frames (the game draws at most one frame per animation frame, 30 fps)`);
   ok(!!st.under, 'it sits under the game canvas');
-  ok(st.size[0] === st.game[0] && st.size[1] === st.game[1], `same pixel size as the game canvas (${st.size} vs ${st.game})`);
+  ok(st.size[0] === 1 && st.size[1] === 1, `with nothing on it, its drawing buffer is 1x1 (${st.size})`);
   // the probe at Pokey's box, and where the 2D canvas puts that box on screen
   const probeAt = async (tag) => {
     const want = await pg.evaluate(`(async () => { const e = ${E}; const p = e.player; await window.__gpu.probe({ x: p.x - 20, y: p.y - 60, w: 40, h: 60 }); return true; })()`);
@@ -71,6 +75,8 @@ print(f"{min(xs)} {min(ys)} {max(xs)+1} {max(ys)+1}" if xs else "none")`, file])
   };
   const near = (a, e) => a && Math.max(Math.abs(a.x0 - e.x0), Math.abs(a.y0 - e.y0), Math.abs(a.x1 - e.x1), Math.abs(a.y1 - e.y1)) <= 2;
   let r = await probeAt('start');
+  const full = await pg.evaluate(() => { const c = document.querySelectorAll('canvas'); return [c[0].width, c[0].height, c[1].width, c[1].height]; });
+  ok(full[0] === full[2] && full[1] === full[3], `with something on it, its drawing buffer is the game canvas's size (${full.slice(0, 2)} vs ${full.slice(2)})`);
   let got = bbox(r.shot);
   ok(near(got, r.exp), `probe at the start lands on Pokey's box: got ${JSON.stringify(got)}, want ${JSON.stringify(r.exp)}`);
   // walk right a second and a half: the camera moves; the probe stays with the world
@@ -101,8 +107,8 @@ print(f"{min(xs)} {min(ys)} {max(xs)+1} {max(ys)+1}" if xs else "none")`, file])
   ok(near(got, r.exp), `after the restore it draws again, in the right place: got ${JSON.stringify(got)}, want ${JSON.stringify(r.exp)}`);
   await pg.evaluate(() => window.__gpu.probe(null));
   await pg.waitForTimeout(400);
-  const end = await pg.evaluate(() => document.querySelectorAll('canvas')[0].style.visibility);
-  ok(end === 'hidden', 'probe off: the layer hides again');
+  const end = await pg.evaluate(() => { const c = document.querySelectorAll('canvas')[0]; return [c.style.visibility, c.width, c.height]; });
+  ok(end[0] === 'hidden' && end[1] === 1 && end[2] === 1, `probe off: the layer hides again and drops back to 1x1 (${end})`);
   ok(errors.length === 0, `no page errors (${errors.join(' | ')})`);
   console.log(fails.length ? `FAIL (${fails.length})` : 'PASS');
   await b.close();

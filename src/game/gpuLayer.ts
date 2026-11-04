@@ -11,8 +11,9 @@
  *  - Pixi is loaded on its own (a separate chunk, `import()`), once, for the whole app; the first stage asks for it.
  *  - A lost context (the phone took the GPU back) draws nothing and costs nothing until the browser gives it back; Pixi rebuilds its
  *    GPU objects then (its GlContextSystem), and the layer draws again. The 2D game never waits on it.
- *  - Nothing to draw: no GPU work at all. The loop still hands it the camera every frame; it renders, and shows its canvas, only while
- *    `world` holds something visible. An empty full-screen WebGL layer would still be cleared and composited every frame.
+ *  - Nothing to draw: no GPU work at all. The loop still hands it the camera every frame; it renders, shows its canvas and holds a
+ *    full-size drawing buffer only while `world` holds something visible. An empty full-screen WebGL layer would still be cleared and
+ *    composited every frame, and its buffer (about 10 MB at q0) held.
  */
 import type { Container, WebGLRenderer } from 'pixi.js';
 
@@ -86,9 +87,10 @@ export function mountGpuLayer(canvas: HTMLCanvasElement | null): Promise<boolean
         await renderer.init({
           canvas,
           context: gl,
-          width: Math.max(1, cssW || canvas.clientWidth || 1),
-          height: Math.max(1, cssH || canvas.clientHeight || 1),
-          resolution: dprNow,
+          // (1x1 until it has something to draw: resizeGpuLayer)
+          width: 1,
+          height: 1,
+          resolution: 1,
           autoDensity: false,
           backgroundAlpha: 0,
           clearBeforeRender: true,
@@ -127,6 +129,8 @@ export function resizeGpuLayer(w: number, h: number, dpr: number) {
   cssH = h;
   dprNow = dpr;
   if (!live || lost || w <= 0 || h <= 0) return;
+  // (while it has nothing to draw its drawing buffer stays 1x1: a full-screen one is about 10 MB the phone holds for nothing)
+  if (!shown) return;
   live.renderer.resolution = dpr;
   live.renderer.resize(w, h, dpr);
 }
@@ -165,6 +169,11 @@ export function drawGpuFrame(tx: number, ty: number, zoom: number) {
   if (any !== shown) {
     shown = any;
     canvas.style.visibility = any ? 'visible' : 'hidden';
+    // (the full-size drawing buffer only while it draws; back to 1x1 when it empties)
+    if (any) resizeGpuLayer(cssW, cssH, dprNow);
+    else {
+      renderer.resize(1, 1, 1);
+    }
   }
   if (!any) {
     gpuStats.idle++;
