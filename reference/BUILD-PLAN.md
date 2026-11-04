@@ -110,8 +110,8 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-152.1 | Wind changes where a jump lands | A | 2 h (like vine-fix (2 h)); after R-150.4 |
 | Day 1 | R-152.6 | A difficulty arc Matt can review, measured world by world | A | 4 h (like the bot-fix re-baseline (inside its 2 h) + bot-fix + self-test (about 2 h)); after R-150.4; R-5.4 tunes to it |
 | Day 1 | R-152.5 (new kinds share) | Moving platforms from World 2 on, in every world | A | 12.5 h of R-152.5's 18.5 h (five new kinds, about 2.5 h each: like swim (1.5 h) + art (30 min) + a teaching placement); after R-150.4 and R-152.7 |
-| Day 1 | R-152.7 | Jumping off a moving platform feels natural | A | 2 h (like vine-fix (2 h)) |
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 1.5 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
+| Day 1 | R-155 (share) | Every stage has a beginning, a build, a twist and a finale, with places to breathe | A | 7.5 h of R-155's 30 h (part of the hand-built pass, after wave 1; after R-150.1) |
 | Important (recommended) | R-145.2 | Phones hear the jungle around them | B | 1 h (like polish-audio (3.6 h) / polish-sfx (4.7 h)) |
 | Important (recommended) | R-6.19 | Dot's tips fit on narrow phones | B | 1 h (like fix-petals (about 2 h start to accept)) |
 | Important (recommended) | R-145.3 | iPhone players hear the music | C | 1 h (like polish-audio (3.6 h) / polish-sfx (4.7 h)) |
@@ -124,6 +124,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Important (recommended) | R-146.2 | Touches respond on mid-range phones | B | 3 h (no history for input latency: range 2-5 h) |
 | Important (recommended) | R-145.5 | Music changes with the moment, not one loop a world | B | 4 h (like polish-audio (3.6 h) / polish-sfx (4.7 h)) |
 | Important (recommended) | R-150.6 | Vines that feel as good as they look | A | 4 h (like vine-fix (2 h) + pokey-anim (about 2 h); range 3-8 h); after R-150.4 |
+| Important (recommended) | R-157 | Every hazard reads by its shape at a glance | B | 4 h (like polish-a1 (1.7 h) for each two of the four) |
 | Important (if time) | R-146.4 | Proof every stage plays on every control setting | C | 2 h (like bot-fix + self-test (about 2 h)) |
 | Important (if time) | R-148.6 | Dot's box can't cover the jump again | C | 2 h (like bot-fix + self-test (about 2 h)) |
 | Important (if time) | R-6.23 | Approved Dot lines can't silently revert | C | 2 h (like fix-petals (about 2 h start to accept)) |
@@ -159,6 +160,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-152.3 | No stage makes him wait out the same monkeys fifteen times | A | 2 h (like fix-petals (about 2 h)); after R-150.4 |
 | Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 3 h of R-150.3's 20 h (moved from lane 5 on 11-02 to balance) |
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 13 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
+| Day 1 | R-154 (share) | More kinds of play from the mechanics we already built | A | 10.5 h of R-154's 12.5 h (variants and tempo inversion; after R-150.4) |
 | Important (if time) | R-4.14 | Old story asks either covered or closed | E | 0.5 h (a keeper check (about 30 min)) |
 | Important (if time) | R-4.5 | Characters talk during play at key stages | C | 3 h (like story-delivery (3 h)) |
 | Parking lot | R-144.4 | Small motion in cutscenes; the W8 moon in frame | D | 3 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
@@ -190,6 +192,9 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 6 h of R-150.3's 20 h |
 | Day 1 | R-152.4 | Each world builds on the last instead of starting over | A | 9.5 h (like bot-fix + self-test (about 2 h) + about 2 h a hand-built world W2-W4 + swim (1.5 h) for swimming's bring-backs; range 7.5-15.5 h); after R-150.4 |
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 17 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
+| Day 1 | R-152.7 | Jumping off a moving platform feels natural | A | 2 h (like vine-fix (2 h)) |
+| Day 1 | R-156 | Jumps that feel springy and in control | B | 2 h (like vine-fix (2 h)); with R-152.7 |
+| Day 1 | R-155 (share) | Every stage has a beginning, a build, a twist and a finale, with places to breathe | A | 5.5 h of R-155's 30 h (the generator template (like gen2-ascent, 3.4 h) and a start on the hand-built pass; after R-150.1) |
 | Important (recommended) | R-6.14 | Dot never repeats herself word for word | C | 0.5 h (like journal-voice (about 2 h)) |
 | Important (recommended) | R-6.15 | Every find has its own name | C | 0.5 h (like journal-voice (about 2 h)) |
 | Important (recommended) | R-144.2 | Two backdrops no longer too bright | C | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
@@ -228,6 +233,8 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 3 h of R-150.3's 20 h |
 | Day 1 | R-152.5 (today's kinds) | Moving platforms from World 2 on, in every world | A | 6 h of R-152.5's 18.5 h (like gen2-w6-swing (2.3 h) + about 1 h a hand-built world W2-W4); after R-150.4 |
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 19 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
+| Day 1 | R-154 (share) | More kinds of play from the mechanics we already built | A | 2 h of R-154's 12.5 h (the wind variants; after R-150.4) |
+| Day 1 | R-155 (share) | Every stage has a beginning, a build, a twist and a finale, with places to breathe | A | 7.5 h of R-155's 30 h (part of the hand-built pass; after R-150.1) |
 | Important (if time) | R-2.11 | World 10's far sky isn't stretched | D | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
 | Important (if time) | R-2.5 | 9-7's climb matches the rebuilt world | C | 2.5 h (like gen2-w6-swing (2.3 h)) |
 | Important (if time) | R-2.9 | World 10's climbs match the rebuilt world | C | 4 h (like gen2-ascent (3.4 h on 10-29, not finished)) |
@@ -263,6 +270,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-150.1 | A ruler that flags a boring stage before Matt plays it | A | 5 h (like bot-fix + self-test (about 2 h), plus proving it flags 5-4, plus tagging each generated section type: about 1-3 h); first, it blocks R-150.2 and R-150.3 |
 | Day 1 | R-5.22 | A stage where slow Pokey is suddenly fast | A | 8 h (like w7-slide (5.5 h) + its art (1 h), plus currents and bubbles like swim (1.5 h)); Matt put swimming in launch 2026-11-02 |
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 14.5 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
+| Day 1 | R-155 (share) | Every stage has a beginning, a build, a twist and a finale, with places to breathe | A | 9.5 h of R-155's 30 h (part of the hand-built pass; after R-150.1) |
 | Important (recommended) | R-143.8 | World 5's Normal work feeds the tuning | C | 0.5 h (a keeper check (about 30 min)) |
 | Important (recommended) | R-5.6 | Falls hurt fairly: short ones sting, long ones cost a life | B | 1 h (like fix-petals (about 2 h start to accept)) |
 | Important (recommended) | R-143.2 | Paid deep-water art used | C | 1 h (like w8-merge (2.6 h for a big merge)) |
