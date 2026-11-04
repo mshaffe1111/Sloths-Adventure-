@@ -55,13 +55,48 @@ as somebody gets through World 5 and on... not supposed to be where it's going t
    and brings back earlier ones; Worlds 8-10 use three and four at once (see §0.1). The mechanics-in-use table (R-150.4) counts pairs.
 6. **The world's ten slots have roles.** X-1 arrival, X-2 teach the world's thing, X-3 tight terrain, X-4 wide gaps / vines / wind,
    X-5 mid-world spike, X-6 change of pace (slow, dark, puzzle), X-7 exploring with branches, X-8 everything layered, X-9 the run-up to
-   the boss, X-10 the boss. Neighbouring stages must not share a tempo and camera direction.
+   the boss, X-10 the boss. Neighbouring stages must not share a tempo and camera direction. UNDER REVIEW: the research (11-04 full, line 402) says never keep
+   the slots in the same order in every world; the ledger decides how this changes.
 7. **Read by shape.** Every hazard reads by its outline and a small motion, whatever the world's colours: breaking things share a
    notched underside and a short shake when stepped on; thorn vines show barbs and a slow pulse; wind shows particles moving at its speed;
    sticky traps look different from slow-wading fields.
 8. **Feel.** Coyote time and the jump buffer exist (engine.ts; physics FORGIVE). To check and tune: a softer fall at the top of a held
    jump, a cut jump on release, a faster fall than rise, and platform speed carried into the jump (R-152.7). Tighter checkpoints as
    stages get harder: respawn within about 2 s of the hard part.
+9. **Beat and tempo (Matt, 2026-11-04: "you have like a BPM dance, a BPM flow... 120 rock"). DRAFT until the research ledger
+   (reference/research/ledger/) lands; the lead's first version invented beat names and missed the research's own model.** The
+   research (MATT-RESEARCH-2026-11-04-full.txt line 522 on): every stage gets a BPM from its world's tempo (its examples: World 2
+   85 relaxed, World 5 110 staccato, World 10 130 urgent); each 10-15 s node is cut into bars of 4 beats; platforms, vines and
+   hazards sit on the beat, the off-beat or the half-note, so the player's jumps fall into a pulse. Each world's tempo differs.
+
+## §0c Variety inside the nodes (Matt, 2026-11-04: "what's the strategy to make sure that the engine knows to switch things up, use different pieces to vary the gameplay within each node? Because we're kind of doing that today, and it's not working.")
+
+Why today's way fails (checked in w1Sections.ts): a stage's finish is `fillTo()`, a shuffle bag of 2-3 pieces drawn until the clock
+reaches two minutes (up to 24 draws). The bag changes the ORDER, not the experience, so the same unit comes back 6-10 times. The
+variety checks measured geometry, not what the player does or sees. Rules from now on, for hand-built stages and generators alike:
+1. **Length comes from nodes, never from filling a clock.** A stage that is short gets another node of a different kind, never repeats
+   of a piece. `fillTo` padding is retired as each stage is rebuilt.
+2. **A node is chosen by its job:** its pacing tag (intro / flow / tight / rest / puzzle) and the mechanic pair it teaches or twists,
+   from a template library. No template twice in a row; no template more than twice in a stage.
+3. **A repeat must change something you feel:** the second use of a template changes at least one of: gap or timing, direction (up,
+   down, mirrored), a hazard added, a mechanic combined. Same piece, same numbers, twice = rejected.
+4. **The library is big enough:** each world has at least 3 templates per pacing tag (12+), each with at least 3 parameter variants,
+   and the world's signature mechanic in most of them. No template appears in more than 3 of a world's stages. Short of that, the job
+   is to build more pieces (Matt's 10-30 rule), never to reroll.
+5. **Petals and pickups never count as variety (Matt, 2026-11-04: "We can't just assume that rearranging petals that you collect is
+   going to make the game feel different. Our pieces and other things need to change along with things.").** A node only counts as
+   different when what the player stands on, faces or uses changes: the terrain and platform kinds, the hazard, the animal and its
+   trick, the mechanic, the direction of travel, the art pieces on screen. Moving petals, flowers or coins around changes nothing.
+6. **It is measured, not hoped:** the validator's move string and look grid must say a stage is not "like" the stages before it
+   (moves and looks), with no 3-4 move run repeated, and the fun gate fails a stage that gets more alike. The quality supervisor's
+   in-order recording is the final judge.
+7. **No world plays like an earlier world (Matt, 2026-11-04: "how are we going to solve that worlds don't just keep continuing to
+   use the same layouts as previous worlds?").** Each world owns its pieces: a template belongs to one world, and a later world may
+   bring one back only if it changes something you feel (rule 3) and pairs it with that world's own mechanic. Each world has a
+   fingerprint: its beat mix (§0b.9), camera directions, mechanic pairs and piece set. The validator compares every stage against
+   every stage of every earlier world (moves, looks and beats), and each world's fingerprint against earlier worlds'; the fun gate
+   fails a world that is too close. The quality supervisor plays the last stages of the world before and the first stages of the new
+   one back to back. This check is built before World 2 is rebuilt.
 
 ---
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { CelHead } from './CelHead.tsx';
 import { DotFace } from './DotFace.tsx';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
-import { Icon } from './icons/index.tsx';
+import { PaintedIcon, paint } from './icons/PaintedIcon.tsx';
 import { Crest } from './icons/Crest.tsx';
 import { speakerMark } from './icons/speakers.ts';
 
@@ -19,5 +19,5 @@ export const SpeakerMark: React.FC<{ name: string; size?: number; talking?: bool
       </span>
     );
   }
-  return <Icon name={m.icon} size={Math.round(size * 0.82)} />;
+  return <PaintedIcon name={paint(m.icon)} size={Math.round(size * 0.82)} />;
 };
