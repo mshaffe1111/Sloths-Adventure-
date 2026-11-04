@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 09:02 AM ET
+Last updated: 2026-11-04 09:29 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -24,6 +24,10 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 09:29 AM ET: day-2 round 3 digest sent. YELLOW fix-petals: validator accepted by QS, but "gates green" has no pasted lines anywhere and the
+  branch changes src (firstTimerBot.test, gen2/game.ts KID_RUNS_59 re-measured 8,3,3,5,7,5 median 5, goals.ts, goalsEasy.test); sent
+  back 9:29 for a report with the full gate on its latest commit + the three sections. GREEN warmup-5m (waits on merge), w8-rope2 (src
+  empty, waiting), quality supervisor. Idle OK: kaizen-gates, roadmap-keeper. Round 4 armed: trig_014uazqPCSZD6wFngDcBRdNJ, 9:59.
 - 2026-11-04 09:02 AM ET: fix-petals answered (9:01): pushed 6103af1b = addfefff (bounce-wall bot fix + QS REDOs) + ccr 0f1b6c0c. Checked: contains main
   and ccr 0f1b6c0c; merge changes no src/tools; notes 9:01. It owned the 70-min no-push gap. Flag closed. Round 3: look for the gate
   lines behind its "gates green".
