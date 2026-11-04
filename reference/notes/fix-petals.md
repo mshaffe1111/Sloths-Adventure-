@@ -1,11 +1,13 @@
 # fix-petals: helper notes
 
-## Now (2026-11-04 9:42 AM ET): the fun gate built and proven in CI; reported to the lead
-fun-validator 98be8f98 (gate 14777165). tools/validate/funcheck.ts (45 s here, 38 s in CI) + funknown.json (152 entries, 2072
-stage-layout flags); knowncheck counts one id per layout; wired into gates.yml, CLAUDE.md, gates.md, tools/README.md, validator.md.
-Proven: two runs identical; CI run 41848331105 green, its log "PASS (152 known, 2072 ...; 38 s)"; a raised count fails knowncheck, a lowered
-count fails the gate as "worse", a better stage fails until lowered. The validator was accepted earlier (QS PASS 7909cf11; lead OK, KID_RUNS_59 OK).
-Report with every gate line: reference/qa-reports/validator/README.md (cb8d5198, gates on 3495372a). NEXT: whatever the lead gives. Watch: the lead's merge into its branch must re-run funcheck (any World 1 change there moves the counts).
+## Now (2026-11-04 10:58 AM ET): R-150.8 done (QS PASS), R-155 1-5 plan rev 2 sent; full gates running on 93450fb2
+fun-validator 2e61ffd8. R-150.8 (firsttimer.ts ledge-end steer, fixture in firstTimerBot.test.ts): 1-4 rescues 58 -> 19, Worlds 1-10
+2006 -> 1915; report reference/qa-reports/validator/R-150.8.md (append the gate lines when the run ends). KID_RUNS_59 unchanged.
+R-155 plan reference/plans/R-155-1-5.md rev 2 (QS changes folded): WAITING on the lead/Matt (goal a/b, backdrop w1kapok/w1sunrise, two
+Dot lines) and on w8-rope2's kick-teach piece (he adds only an exported piece to w1Sections.ts). Then build: creakDrop, snapRun, the
+snake patrol, fixtures first, and write reference/methods/stage-shape.md as I go.
+MY MISS (twice today): times typed, not read. My message to w8-rope2 said "10:58 AM ET" and my correction said "10:28": both guesses.
+Countermeasure: no time goes in a message unless it was printed by `TZ=America/New_York date` in the same step.
 
 ## The job, as briefed
 1. R-150.4 mechanics-in-use table, 1-1..1-9 and the boss: what the player meets (stage data + a bot run) against what the engine has.
