@@ -1744,15 +1744,19 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       close();
       const spec: NodeSpec = { bpm, x, y, bars, steps };
       const tr = traceNode(easy ? easyNode(spec) : spec);
-      let groundEnd = -1;
+      let groundEnd = -1, prevY = G;
       const wide: Ledge[] = [];
       for (const l of tr.ledges) {
         // (a bank or apron is ground at its own height: Easy's trace lands a little lower each time, easyNode)
         const ground = l.surface === 'apron' || l.surface === 'bank';
         if (ground) {
           if (groundEnd >= 0 && l.x0 - groundEnd > 1) {
-            if (o.real && !easy) { /* (a real drop: nothing under it) */ } else softPit(groundEnd, l.x0);
+            // (a pit only where the trace jumps a gap; a stump or branch that meets the banks with no air stands on the ground)
+            const air = tr.gaps.some((g) => g.x1 > groundEnd + 1 && g.x0 < l.x0 - 1);
+            if (!air) bank(groundEnd, l.x0, Math.max(l.y, prevY));
+            else if (o.real && !easy) { /* (a real drop: nothing under it) */ } else softPit(groundEnd, l.x0);
           }
+          prevY = l.y;
           bank(l.x0, l.x1, l.y);
           groundEnd = l.x1;
         } else if (l.surface === 'stump') {
