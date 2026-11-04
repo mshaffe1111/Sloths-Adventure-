@@ -262,7 +262,9 @@ export const FLAG_SPAN_MAX = 4000;
  */
 export function capFlagSpans(stage: Stage, max = FLAG_SPAN_MAX, reached?: readonly number[]): number {
   const kind = stage.config.objectiveType;
-  if (kind === 'ascent' || kind === 'boss_lair' || stage.boss) return 0;
+  // (a stage whose way turns back on itself keeps its flags in the way's order, and lays them itself at most 3,000 px apart along the
+  // way: w1Rhythm.ts, engine.ts flagsInOrder. Sorting them by x here would scramble that order)
+  if (kind === 'ascent' || kind === 'boss_lair' || stage.boss || stage.flagsInOrder) return 0;
   // (a chase's branch is whole again at every restart from a flag, chase.ts restartAt: it may hold one)
   const chase = !!stage.proto?.chase;
   const cps = (stage.checkpoints ??= []);
@@ -493,7 +495,8 @@ export function easyStage(stage: Stage): Stage {
   let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
   const next = () => cid++;
   const cps = (stage.checkpoints ??= []);
-  if (!climb && !chase) {
+  // (a stage with its flags in the way's order lays its own: w1Rhythm.ts)
+  if (!climb && !chase && !stage.flagsInOrder) {
     const reach = new Set(reached ?? validateStage(stage, { rooms: false }).reachableIds);
     const marks = [stage.spawnX, ...cps.map((c) => c.x), stage.exitTotemX].sort((a, b) => a - b);
     for (let i = 0; i + 1 < marks.length; i++) {

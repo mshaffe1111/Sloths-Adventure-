@@ -1,0 +1,2 @@
+import { rhythmLayout } from './w1Rhythm.ts';
+for (const id of ['1-2','1-5'] as const) for (const seed of [1,2,3,4,5,6,7,8]) for (const easy of [false, true]) { try { const L = rhythmLayout(id, seed, easy, id === '1-2' ? 128.2 : 136); console.log(id, seed, easy ? 'E' : 'N', 'rr', L.reroll, 'expert', L.expert.toFixed(1), L.nodes.map(n => `${n.tag.slice(0,3)}${n.tier[0]}:${n.seconds}`).join(' '), 'marks', L.marks.length, 'snakes', L.snakes.length); } catch (e) { console.log(id, seed, easy, 'ERR', (e as Error).message.slice(0, 200)); } }

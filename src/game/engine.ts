@@ -724,6 +724,8 @@ export class GameEngine {
   private camClimbK = 0;
   private softAt: { x: number; y: number } | null = null;
   private checkpoint = { x: 0, y: 0 };
+  /** on a stage with flagsInOrder, the index of the flag he respawns at (-1: the start) */
+  private flagOrder = -1;
   /** the dark circle opening on him at the flag after a respawn (s left): it replaced a white flash (AN-1) */
   private irisOpen = 0;
   /** a life just lost: the world holds while he goes down and the dark closes in, then he comes back at the flag (AN-1; null otherwise) */
@@ -933,6 +935,7 @@ export class GameEngine {
       perfNote(`stage ${config.id} started`);
     }
     this.checkpoint = { x: this.currentStage.spawnX, y: this.currentStage.spawnY };
+    this.flagOrder = -1;
     if (this.proto?.slide) this.startSlide(this.proto.slide);
     this.camLedge = null;
     this.camLand = null;
@@ -2522,13 +2525,17 @@ export class GameEngine {
       }
 
       // Checkpoints
-      for (const cp of this.currentStage.checkpoints ?? []) {
+      const cps = this.currentStage.checkpoints ?? [];
+      for (const cp of cps) {
         if (!cp.reached && Math.abs(p.x - cp.x) < 70 && p.y > cp.y - 150 && p.y < cp.y + 40) {
           cp.reached = true;
           recorder.event('checkpoint', Math.round(cp.x));
-          // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
-          const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
+          // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down;
+          // a stage whose way turns back on itself, 1-2's loop, keeps its flags in the order the way meets them: flagsInOrder)
+          const order = this.currentStage.flagsInOrder ? cps.indexOf(cp) : -1;
+          const further = this.currentStage.flagsInOrder ? order > this.flagOrder : this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
           if (further) {
+            this.flagOrder = order;
             this.checkpoint = { x: cp.x, y: cp.y };
             // the Android app keeps it, so a run cut off by the phone comes back here (flagResume.ts)
             if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y);
@@ -5052,7 +5059,11 @@ export class GameEngine {
     if (!flag) return; // the stage changed since (a new build): start at the beginning
     const ascent = this.currentStage.config.objectiveType === 'ascent';
     const descent = !!this.proto?.w4?.descent;
-    for (const cp of cps) if (ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
+    const inOrder = !!this.currentStage.flagsInOrder;
+    cps.forEach((cp, i) => {
+      if (inOrder ? i <= cps.indexOf(flag) : ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
+    });
+    if (inOrder) this.flagOrder = cps.indexOf(flag);
     this.checkpoint = { x: flag.x, y: flag.y };
     // (Meeca's stage: the trunks behind the flag were cut on that run)
     this.mc?.resumeAt(flag.x);

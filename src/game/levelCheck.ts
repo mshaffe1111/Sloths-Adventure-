@@ -713,7 +713,8 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   for (const cp of stage.checkpoints ?? []) {
     const p = plats.find((q2) => cp.x >= ext(q2)[0] && cp.x <= ext(q2)[1] && Math.abs(q2.y - cp.y) < 6);
     if (!p || !reach(p)) errors.push(`checkpoint at x=${Math.round(cp.x)} is not on a reachable platform`);
-    if (cfg.objectiveType !== 'ascent' && cp.x <= lastX) errors.push('checkpoints are out of order');
+    // (a stage whose way turns back keeps its flags in the way's order, not by x: engine.ts flagsInOrder, 1-2's loop)
+    if (cfg.objectiveType !== 'ascent' && !stage.flagsInOrder && cp.x <= lastX) errors.push('checkpoints are out of order');
     lastX = cp.x;
   }
 
