@@ -51,3 +51,4 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - Validator REDOs (fun-validator 6103af1b): all PASS. Follow-ups sent: look-alike into the variety score (use the more alike of moves/look); 1-8 look gap (chase pieces unstyled) to be named. Bot mushroom bounce fixed: W1 rescues 418 -> 194 (1-4 still 58, climbs). Defect to lead: 1-2 sunk-step pale rectangle (game art).
 - TODO when time: re-record World 1 with the fixed bot for the baseline's play numbers.
 - Validator 7909cf11: PASS, ready as W1 measuring stick (variety = more alike of moves/look). Proposed to lead: rebuild briefs use its flags as entry criteria before my in-order re-record.
+- R-159.1 show-first round 3 (w8-rope2 c0033885): PASS + 1 change (1-5 kick teach needs a visible payoff). Told lead: 1-5's sameness needs stage-shape work, first in line.
