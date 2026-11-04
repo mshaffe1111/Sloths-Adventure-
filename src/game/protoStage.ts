@@ -1757,6 +1757,15 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const tr = traceNode(easy ? easyNode(spec) : spec);
       let groundEnd = -1, prevY = G;
       const wide: Ledge[] = [];
+      // (over a real drop, a landing BELOW the take-off reaches 28 px back toward it: on a way down his feet stay above it until he lands,
+      // so its face never catches him, and a first-timer's short jump down still lands; the fixed first-timer bot fell 13 px short of one
+      // a 70 px drop away four times on one roll)
+      if (o.real && !easy) {
+        for (let i = 1; i < tr.ledges.length; i++) {
+          const a = tr.ledges[i - 1], l = tr.ledges[i];
+          if (l.y > a.y + 10 && l.x0 - a.x1 > 60) tr.ledges[i] = { ...l, x0: l.x0 - 28 };
+        }
+      }
       for (const l of tr.ledges) {
         // (a bank or apron is ground at its own height: Easy's trace lands a little lower each time, easyNode)
         const ground = l.surface === 'apron' || l.surface === 'bank';
