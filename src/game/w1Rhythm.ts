@@ -786,7 +786,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     ...(easy || !L.heartFalls.length ? {} : { heartFalls: L.heartFalls }),
     ...(L.marks.length ? { easyGoal: Math.max(1, Math.round(L.marks.length * 0.65)), normalGoal: L.marks.length } : {}),
     meta: { attempt: seed, chunks: L.nodes.map((n) => n.tag), width: L.width, pieces: L.nodes.map((n) => ({ k: `${id} ${n.tag} ${n.tier}`, x0: n.x0, x1: n.x1 })), timing: { layoutSeconds: L.expert, decorSeconds: 0, route: L.width } },
-    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, rhythm: { bpm, nodes: L.nodes, reroll: L.reroll } },
+    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, bpm, rhythm: { bpm, nodes: L.nodes, reroll: L.reroll } },
   } as GeneratedStage & { proto: ProtoExtras };
 }
 

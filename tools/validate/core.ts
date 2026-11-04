@@ -188,26 +188,48 @@ export function deadWalks(steps: readonly Step[], total: number, samples: readon
 export const RUN4_MAX = 3;
 export const RUN3_BACK = 3;
 export interface RepeatFlag { kind: '4-run' | '3-back'; run: string; n: number; at: number[] }
-export function repeats(str: string, steps: readonly Step[]): RepeatFlag[] {
+/**
+ * a beat-traced stage's moves as tokens a thumb tells apart (the lead's ruling, 2026-11-04): each move's letter, the note value since the
+ * move before it on the stage's beat (q a quarter or less, h a half, w a whole or more) and which way it goes (u up, d down, f level, from
+ * where it is to where the next move starts). A hop down on a half note and a jump up on a whole note are not the same move to a thumb.
+ */
+export function rhythmTokens(steps: readonly Step[], bpm: number): string[] {
   const moves = steps.filter((s) => s.m !== 'h');
+  const beat = 60 / bpm;
+  return moves.map((s, i) => {
+    const dt = i ? (s.t - moves[i - 1].t) / beat : 4;
+    const nv = dt < 1.5 ? 'q' : dt < 3 ? 'h' : 'w';
+    const next = moves[i + 1];
+    const dy = next ? next.y - s.y : 0;
+    const dir = dy < -15 ? 'u' : dy > 15 ? 'd' : 'f';
+    return `${s.m}${nv}${dir}`;
+  });
+}
+
+/** `bpm`: a beat-traced stage's beat (its moves are counted as rhythm tokens, rhythmTokens); otherwise the letters alone */
+export function repeats(str: string, steps: readonly Step[], bpm?: number): RepeatFlag[] {
+  const moves = steps.filter((s) => s.m !== 'h');
+  const toks = bpm ? rhythmTokens(steps, bpm) : [...str];
+  const key = (i: number, n: number) => toks.slice(i, i + n).join(' ');
+  const shown = (i: number, n: number) => str.slice(i, i + n);
   const out: RepeatFlag[] = [];
   // the same 4-move run, anywhere in the stage, counted without overlaps
   const seen = new Map<string, number[]>();
-  for (let i = 0; i + 4 <= str.length; i++) {
-    const k = str.slice(i, i + 4);
+  for (let i = 0; i + 4 <= toks.length; i++) {
+    const k = key(i, 4);
     const at = seen.get(k) ?? [];
     if (!at.length || i >= at[at.length - 1] + 4) at.push(i);
     seen.set(k, at);
   }
-  for (const [run, at] of seen) if (at.length > RUN4_MAX && new Set(run).size > 1) out.push({ kind: '4-run', run, n: at.length, at: at.map((i) => moves[i].x) });
+  for (const [k, at] of seen) if (at.length > RUN4_MAX && new Set(k.split(' ')).size > 1) out.push({ kind: '4-run', run: bpm ? k : shown(at[0], 4), n: at.length, at: at.map((i) => moves[i].x) });
   // (a run of one move, JJJJ, is the same idea at its plainest: counted as a 3-run back to back below)
   // a 3-move run repeated back to back
-  for (let i = 0; i + 3 <= str.length; ) {
-    const k = str.slice(i, i + 3);
+  for (let i = 0; i + 3 <= toks.length; ) {
+    const k = key(i, 3);
     let n = 1;
-    while (str.slice(i + 3 * n, i + 3 * n + 3) === k) n++;
+    while (key(i + 3 * n, 3) === k && i + 3 * n + 3 <= toks.length) n++;
     if (n >= RUN3_BACK) {
-      out.push({ kind: '3-back', run: k, n, at: [moves[i].x] });
+      out.push({ kind: '3-back', run: bpm ? k : shown(i, 3), n, at: [moves[i].x] });
       i += 3 * n;
     } else i++;
   }

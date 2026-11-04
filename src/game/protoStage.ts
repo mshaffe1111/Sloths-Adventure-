@@ -115,6 +115,8 @@ export interface ProtoExtras {
   beats: Array<[number, number, string]>;
   /** a beat-built stage (w1Rhythm.ts: 1-2, 1-5): its music's BPM, its nodes on the tension curve, and how many times its dice were rolled again */
   rhythm?: { bpm: number; nodes: import('./w1Rhythm.ts').LNode[]; reroll: number };
+  /** a beat-traced stage's beat (beatTrace.ts): the validator counts its repeats as rhythm tokens (tools/validate/core.ts rhythmTokens) */
+  bpm?: number;
   /** pickups the last pass had to move to where he can get them (flowerReach.ts): a hand-built stage should need none */
   movedPickups?: number;
   /** hollows in climb trunks (1-4): drawn on the trunk at this height, glowing once he is close */

@@ -58,7 +58,7 @@ export function judge(b: Built & { quick?: { m: string }[] }, truer = true): Sta
   // dead walking
   for (const d of deadWalks(b.steps, b.total, b.samples)) flags.push({ rule: 'dead walk', what: `${d.secs} s of walking with nothing to do${d.pad ? ' (after the rest pad a burst earns)' : ''}`, x: d.x0, source: SRC.dead });
   // repeats
-  for (const r of repeats(str, b.steps)) flags.push({ rule: 'repeat', what: r.kind === '4-run' ? `the same four moves "${r.run}" ${r.n} times` : `"${r.run}" ${r.n} times back to back`, x: r.at[0], source: SRC.repeat });
+  for (const r of repeats(str, b.steps, (b.stage as { proto?: { bpm?: number } }).proto?.bpm)) flags.push({ rule: 'repeat', what: r.kind === '4-run' ? `the same four moves "${r.run}" ${r.n} times` : `"${r.run}" ${r.n} times back to back`, x: r.at[0], source: SRC.repeat });
   // pacing
   const pc = pacing(b.steps, b.total);
   for (const f of paceFlags(pc, truer)) flags.push({ rule: 'pacing', what: f.what, source: SRC.pace });
