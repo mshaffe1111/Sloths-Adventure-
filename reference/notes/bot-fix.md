@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 10:03 AM ET
+Last updated: 2026-11-04 10:21 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -24,6 +24,8 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 10:21 AM ET: fix-petals GREEN: reference/qa-reports/validator/README.md (c5fff14c) has the full gate on 3495372a (no src/tools change since,
+  diffed), CI 41848331105, all report sections. Told it and the lead; ready for the lead's merge.
 - 2026-11-04 10:03 AM ET: w8-rope2 GREEN, hold lifted (lead). Both approvals were in ccr STATUS (lines 848 R-159.1 ~$2.32 cap $4; 852 R-6.38 pits ~$0.88
   cap $1.40; combined $5.40) at 58ee7642, the version I read: MY MISS, my grep was head -10 of 22 matches (the oldest). Spend per
   tools/art/combat/jobs.txt: $0.74 done + ~$1.40 running = ~$2.14 of $5.40. PIT-LIST header fixed b71281af. Owned to the lead.
