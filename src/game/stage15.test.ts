@@ -47,7 +47,7 @@ test('1-5: snap twigs are required and never break under a player on the beat (e
     const st = built(v, 'normal');
     const snaps = st.platforms.filter((p) => p.type === 'fragile');
     assert.ok(snaps.length >= 25, `${v}: ${snaps.length} snap twigs`);
-    for (const p of snaps) assert.ok((p.crumbleAfter ?? 0) >= SNAP_SPARE, `${v}: twig at ${p.x} holds ${p.crumbleAfter}`);
+    for (const p of snaps) assert.ok((p.creak ?? 0) >= SNAP_SPARE && p.crumbleAfter === undefined, `${v}: twig at ${p.x} holds ${p.creak}`);
     // the vines are only in the counter-melody
     const counter = st.proto.rhythm.nodes.filter((n) => n.tag === 'counter');
     for (const vn of st.vines) assert.ok(counter.some((n) => vn.x >= n.x0 - 50 && vn.x <= n.x1 + 50), `${v}: a liana at ${vn.x} outside the counter-melody`);

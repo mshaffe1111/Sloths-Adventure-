@@ -1215,7 +1215,9 @@ export function drawProtoScene(
         drawBranchArt(ctx, p, 'snapped', t - st.brokeAt.get(p.id)!);
       } else {
         st.brokeAt.delete(p.id);
-        drawBranchArt(ctx, p, p.fragileTimer !== undefined ? 'creak' : 'whole', 0);
+        // (a creaking limb, World 1's: 1-2's rotten wood, 1-4's limbs, 1-5's snap twigs, shows its creaking crack before he steps on it:
+        // a kid has to see it will break, STAGE-RULES §5b item 3)
+        drawBranchArt(ctx, p, p.fragileTimer !== undefined || p.creak !== undefined ? 'creak' : 'whole', 0);
       }
       continue;
     }

@@ -52,6 +52,10 @@ test('control test: the basics every run, then six stretches (two moving, two fi
     // (and flowers on the floor the pushed log now covers are picked up on the way to it)
     const logIds = new Set(a.platforms.filter((p) => p.push).map((p) => `platform ${p.id}`));
     res.errors = res.errors.filter((e) => ![...logIds].some((id) => e.endsWith(id)));
+    // (and a pickup over the log where it starts, reached by the second jump off it before it is pushed: since 2026-11-04 the check
+    // counts the second jump on 1-2's config, which the test borrows, levelCheck doubleAllowed; either world reaching it is enough)
+    const before = new Set(validateStage({ ...a, config: { ...a.config, miniIndex: 9 } }).errors);
+    res.errors = res.errors.filter((e) => !/out of reach/.test(e) || before.has(e));
     res.ok = res.errors.length === 0;
     if (!res.ok || a.proto.movedPickups) bad.push(`${a.proto.mix} moved ${a.proto.movedPickups}: ${res.errors.join('; ')}`);
   }

@@ -816,7 +816,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     } else if (q.y >= FLOOR_Y && (q.surface === 'bank' || q.surface === 'apron')) {
       P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: 90, type: 'solid', style: 'log' });
     } else if (q.surface === 'crumble') {
-      P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: 24, type: 'fragile', style: 'branch', crumbleAfter: q.hold ?? 0.6 });
+      P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: 24, type: 'fragile', style: 'branch', creak: q.hold ?? 0.6 });
     } else {
       P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: q.surface === 'bough' ? 40 : 24, type: 'solid', style: style(q) });
     }

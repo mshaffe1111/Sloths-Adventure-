@@ -2449,7 +2449,7 @@ export class GameEngine {
           // Fragile branch interaction
           if (plat.type === 'fragile') {
             if (plat.fragileTimer === undefined) {
-              plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+              plat.fragileTimer = plat.crumbleAfter ?? plat.creak ?? 1.1; // generous 1.1s before breaking (ruin tiles and creaking limbs set their own)
               // a boss's cracking ledge: Dot says so the first time he stands on one
               if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
               if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {

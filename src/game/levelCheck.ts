@@ -111,11 +111,13 @@ export function heldMaxGap(a: Platform, b: Platform, allowDouble: boolean): numb
   return r < 0 ? -1 : r * MARGIN - TAKEOFF_SLACK;
 }
 /**
- * the validator's rule for whether a double jump may be counted on a stage: from stage 6 (1-6's practice spot), and in 1-1 to 1-5, the
- * stages rebuilt on the beat (the World 1 rebuild, 2026-11-04): 1-1 teaches the second jump on its practice shelf before any gap needs
- * it, so it is in the player's kit from then on (the lead's ruling, 11-04)
+ * the stages before 1-6 that count the double jump: the World 1 stages rebuilt on the beat whose builders have turned it on (1-1 teaches
+ * the second jump on its practice shelf before any gap needs it, so it is in the player's kit from then on; the lead's ruling, 11-04).
+ * 1-2, 1-3 and 1-5 join as their rebuilds land (their old builds' petal counts move with it: stage12/15.test.ts).
  */
-export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6 || (cfg.worldIndex === 1 && cfg.miniIndex >= 1);
+export const EARLY_DOUBLE: ReadonlySet<string> = new Set(['1-1', '1-4']);
+/** the validator's rule for whether a double jump may be counted on a stage: from stage 6 (1-6's practice spot), and EARLY_DOUBLE */
+export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6 || EARLY_DOUBLE.has(`${cfg.worldIndex}-${cfg.miniIndex}`);
 
 /** Can the player get from platform a to platform b with jumps (and a double jump)? */
 export function jumpOK(a: Platform, b: Platform, allowDouble = true): { ok: boolean; gap: number } {

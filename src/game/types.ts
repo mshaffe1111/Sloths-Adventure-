@@ -282,6 +282,9 @@ export interface Platform {
   fragileTimer?: number;
   /** World 7 ruin tiles: seconds the tile holds once stepped on (instead of the usual 1.1) */
   crumbleAfter?: number;
+  /** a creaking limb (1-4 on, World 1's own branch art): seconds it holds once stepped on (instead of the usual 1.1); unlike crumbleAfter it
+   *  keeps the branch's look (the notch and the shake), not World 7's tiles */
+  creak?: number;
   /** a boss ledge that starts cracking (becomes fragile) from this phase of the fight */
   crackFrom?: number;
   broken?: boolean;

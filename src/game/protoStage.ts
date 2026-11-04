@@ -50,10 +50,11 @@ import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
-import { w1Chase, w1Kapok, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
+import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { buildRhythmStage } from './w1Rhythm.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildIntoCanopy } from './w1Rise.ts';
+import { APRON, easyNode, stageBpm, traceNode, type Step } from './beatTrace.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
@@ -379,7 +380,7 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
 /** `easy`: built for Easy (only the control test's long jumps differ, gaps; the rest of Easy is easyMode.ts on the built stage) */
 function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = false): GeneratedStage & { proto: ProtoExtras } {
   if (plan === '1-1') return buildIntoCanopy(config, seed, easy);
-  if (plan === '1-4') return buildKapok(config, seed);
+  if (plan === '1-4') return buildKapok(config, seed, false, false, false, false, easy);
   if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
   if (plan === '4-3') return buildWaterfallSteps(config, seed);
@@ -5160,6 +5161,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
 /** the kapok's width (the engine keeps him inside it) and the margin nothing is built in */
 const KAPOK_W = 3200;
 const KAPOK_MARGIN = 90;
+/** 1-4's creaking limbs hold this long once stepped on (s): time to recover, not to stand (STAGE-RULES §0b.4) */
+const CREAK_S = 0.6;
+/** and on Easy, a cruise (STAGE-RULES §0.5): time enough to stop and go again */
+const CREAK_EASY = 1.2;
+/** 1-4's nodes, named as pieces for the validator's look (what the player climbs, swings and rides in each) */
+const PIECE14: Record<string, string> = {
+  Learn: 'trunks', Test: 'zigzag', Teach: 'limbs', Spike: 'trunk-limbs', Ramp: 'swing', Rest: 'fork', Twist: 'rope-limb', Counter: 'lift-rope', Climax: 'crown-climb', 'Cool-down': 'crown',
+};
 /**
  * 4-6's mist: the wide ledge at the foot of each hidden column (it catches every miss from the column), the three lanes the small
  * hidden ledges stand in (their middles this far apart) and how wide they are, how long standing still takes to settle the mist (s),
@@ -5216,7 +5225,7 @@ export const KNOT_PULLEY_TIPS: RoomTips = { enter: 'I knotted us a pulley!', hol
  * mist in turn; then the crown and the shrine. It is a long stage (stageSeconds('4-6'), four minutes). No glide is needed (4-7 is the
  * first stage that needs the leaf).
  */
-export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false, cliff = false, mist = false): GeneratedStage & { proto: ProtoExtras } {
+export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false, cliff = false, mist = false, easy = false): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
   const W = KAPOK_W;
   const P: Platform[] = [];
@@ -5352,10 +5361,17 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     if (group.length) hopGroups.push(group);
   };
   const flag = () => checkpoints.push({ x: Math.round(cur.x + cur.width / 2), y: cur.y, reached: false });
+  /** 1-4's pieces (the validator's look, tools/validate/look.ts): each node's kind and the span of the tree its platforms cover */
+  const pieces14: Array<{ k: string; x0: number; x1: number }> = [];
   const beat = (name: string, f: () => void) => {
     const b0 = cur ? cur.y : 0;
+    const p0 = P.length;
     f();
     beats.push([b0, cur.y, name]);
+    if (squirrels && P.length > p0) {
+      const add = P.slice(p0);
+      pieces14.push({ k: /across/.test(name) ? 'across' : PIECE14[name.split(':')[0]] ?? 'climb', x0: Math.min(...add.map((p) => p.x)), x1: Math.max(...add.map((p) => p.x + p.width)) });
+    }
   };
 
   // ---- 1-4's squirrels' lift (the shared puzzle kit, puzzleKit.ts: the counterweight basket and its lift), 2026-10-28
@@ -5493,6 +5509,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         climb(Math.round(R.r(260, 300)));
       }
       flag();
+      // (1-4 climbs on from here by its own nodes: below)
+      return;
     }
     // 4-1: Dot's knot pulley, once (the basket hangs low beside the lift: stand on it and a tap sets a stone in)
     if (cliff) {
@@ -5509,17 +5527,15 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     let n = 0;
     // (4-6 leaves room for the mist and the nests, which take a while: it is a longer stage, stageSeconds('4-6'))
     // (and since 2026-10-28 its pinwheel lift a second time: a shorter climb across the tree leaves it room, PINWHEEL_AGAIN)
-    // (1-4, the variety pass 2026-10-28: the roll's rhythm of hops and ropes, and how often a snake waits: w1Sections.ts w1Kapok)
-    const climb14 = squirrels ? w1Kapok(seed) : null;
     while (expert < (mist ? stageSeconds('4-6') - MIST_LEAVES - PINWHEEL_AGAIN : EXPERT_SECONDS - 32) && n < 30) {
       // (4-1, 2026-10-28: the cliff climbs mostly by hops up wide ledges, where its rocks come loose, and a rope now and then: 4-6's
       // climb is the tree's ropes. The stage inspector found the two alike on every measure)
-      if (climb14 ? climb14.steps[n % climb14.steps.length] === 'hops' : w4Climb ? w4Climb.hopsAt(n) : cliff ? n % 3 !== 1 : n % 3 === 2) hops(R.i(2, 3), cliff);
+      if (w4Climb ? w4Climb.hopsAt(n) : cliff ? n % 3 !== 1 : n % 3 === 2) hops(R.i(2, 3), cliff);
       else rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
       // (the sinkhole is a quiet climb toward the moonlight: nothing prowls on its shelves)
       // (the cliff has its falling rocks instead)
-      if (n >= 2 && cur.width >= 320 && R.chance(climb14?.snakes ?? 0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
+      if (n >= 2 && cur.width >= 320 && R.chance(0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
       climb(Math.round(R.r(260, 320)));
       n++;
       if (n % 2 === 0) flag();
@@ -5639,8 +5655,318 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     flag();
   });
 
+  // ---- 1-4's climb above the first lift (the World 1 rebuild, w1-rhythm-b 2026-11-04; reference/notes/w1-rhythm-b-plan.md): the old
+  // fill of trunk, plank, trunk, rope until the clock said two minutes is gone. Whole notes and whole-bar waits (the lifts, the ropes, the
+  // fork), and the creaking limbs on half notes (land and go: they hold 0.6 s). 1-4's pair, in one move: up a trunk and off it onto a
+  // creaking limb. The hops on the beat are traced (beatTrace.ts) and mirrored when the run goes left.
+  const bpm14 = squirrels ? stageBpm(config) : 0;
+  /** a run on the beat off the end of `cur` the way `d` goes; `low(gap, a, b)` puts what goes under each gap */
+  const beatRun = (bars: string[], steps: Step[], d: 1 | -1, low?: (x0: number, x1: number, y: number) => void) => {
+    const edge = d === 1 ? cur.x + cur.width : cur.x;
+    const spec = { bpm: bpm14, x: 0, y: cur.y, bars, steps };
+    const tr = traceNode(easy ? easyNode(spec) : spec);
+    // (the tracer's entrance apron is the last APRON px of the ledge he is on: x 0 of the trace sits APRON back from its end)
+    const X = (u: number) => (d === 1 ? edge - APRON + u : edge + APRON - u);
+    const span = (u0: number, u1: number) => [Math.round(Math.min(X(u0), X(u1))), Math.round(Math.max(X(u0), X(u1)))] as const;
+    const [, apEnd] = d === 1 ? span(0, tr.ledges[0].x1) : [0, 0];
+    if (d === 1) cur.width = Math.max(cur.width, apEnd - cur.x);
+    else {
+      const [a0] = span(0, tr.ledges[0].x1);
+      const right = cur.x + cur.width;
+      cur.x = Math.min(cur.x, a0);
+      cur.width = right - cur.x;
+    }
+    let last = cur;
+    tr.ledges.slice(1).forEach((l) => {
+      const [a, b] = span(l.x0, l.x1);
+      const p = ledge(a, b, l.y);
+      if (l.surface === 'crumble') {
+        p.type = 'fragile';
+        p.creak = easy ? CREAK_EASY : CREAK_S;
+      } else if (Math.abs(p.y - last.y) > 30 || p.width > 160) flower(p.x + p.width / 2, p.y - 34, 'orchid');
+      last = p;
+    });
+    if (low) for (const g of tr.gaps) {
+      const [a, b] = span(g.x0, g.x1);
+      const ys = tr.ledges.filter((l) => Math.abs(l.x1 - g.x0) < 2 || Math.abs(l.x0 - g.x1) < 2).map((l) => l.y);
+      low(a, b, Math.max(...ys));
+    }
+    expert += tr.seconds - APRON / RUN;
+    cur = last;
+    return tr;
+  };
+  /** how far a run reaches past the end of `cur` (px), traced as beatRun would */
+  const runSpan = (bars: string[], steps: Step[]) => {
+    const spec = { bpm: bpm14, x: 0, y: cur.y, bars, steps };
+    return traceNode(easy ? easyNode(spec) : spec).x1 - APRON;
+  };
+  /** the room past `cur` the way d goes */
+  const roomTo = (d: 1 | -1) => (d === 1 ? W - KAPOK_MARGIN - (cur.x + cur.width) : cur.x - KAPOK_MARGIN);
+  /** the first of these runs that fits the way d goes, else the first that fits the other way: its bars, steps and way */
+  const fitRun = (d: 1 | -1, runs: Array<[string[], Step[]]>, after = 0): [string[], Step[], 1 | -1] => {
+    // (`after`: room to leave past the run for what comes next the same way)
+    for (const dd of [d, d === 1 ? -1 : 1] as const) for (const [b, st] of runs) if (runSpan(b, st) + 60 + after <= roomTo(dd)) return [b, st, dd];
+    return [runs[runs.length - 1][0], runs[runs.length - 1][1], roomTo(1) > roomTo(-1) ? 1 : -1];
+  };
+  /** a trunk at x up from `cur` by h, topping out on a ledge from a to b (each side of the trunk it grows out on) */
+  const trunkUp = (tx: number, h: number, a: number, b: number) => {
+    const y = cur.y - h;
+    trunk(Math.round(tx), cur.y, y);
+    for (let i = 0; i < 2; i++) flower(tx, cur.y - 80 - (h - 140) * i, 'hibiscus');
+    expert += h / CLIMB + 0.8;
+    cur = ledge(a, b, y);
+  };
+  /** a quiet stretch with root knots (painted rocks on the bough: bumps in the walk) */
+  const knots14 = (n: number) => {
+    void n;
+    expert += cur.width / RUN;
+  };
+  /**
+   * 1-4's long boughs get root knots, a painted mossy rock every ~360 px, the bough broken round each (on one long piece under a rock the
+   * level check's route walked through it): a walk along one is never 2.5 s with nothing under the thumb. Not on a lift room's floor, by a
+   * rope's end or a trunk, nor on a snake's bough.
+   */
+  const knotLongBoughs = (from: number) => {
+    const roomIds = new Set(ROOMS.flatMap((r) => [...(r.ground ?? []), r.left.on, r.right.on]));
+    for (const p of P.slice(from)) {
+      // (only what meets this bough: a trunk standing on it or topping out on it, a rope tied to it)
+      const busyX = [...V.filter((v) => Math.abs(v.bottomY + 6 - p.y) < 30 || Math.abs(v.topY + 2 - p.y) < 30).map((v) => v.x), ...ROPES.filter((r) => Math.abs(r.g0 - p.y) < 30 || Math.abs(r.g1 - p.y) < 30).flatMap((r) => [r.x0, r.x1])];
+      if (p.type !== 'solid' || p.style !== 'branch' || p.width < 480 || roomIds.has(p.id)) continue;
+      if (E.some((m) => Math.abs(m.y + 14 - p.y) < 4 && m.x > p.x && m.x < p.x + p.width)) continue;
+      const near = (x: number) => busyX.some((b) => Math.abs(b - x) < 130) || P.some((q) => q !== p && Math.abs(q.y - p.y) < 30 && Math.abs(q.x + q.width / 2 - x) < q.width / 2 + 40 && q.height === 50);
+      const n = Math.max(1, Math.floor((p.width - 200) / 360));
+      const at: number[] = [];
+      for (let k = 1; k <= n; k++) {
+        // (the nearest free spot to where it would sit evenly: clear of a trunk, a rope's end and another knot)
+        const ideal = p.x + (p.width * k) / (n + 1);
+        const spots = Array.from({ length: 13 }, (_, i) => ideal + (i % 2 ? 1 : -1) * Math.ceil(i / 2) * 30).filter((kx) => kx > p.x + 110 && kx < p.x + p.width - 110 && at.every((q) => Math.abs(q - kx) > 220));
+        const kx = spots.find((q) => !near(q));
+        if (kx !== undefined) at.push(kx);
+      }
+      at.sort((u, v) => u - v);
+      if (!at.length) continue;
+      // the bough in pieces between the knots (the first piece keeps the bough's id, for everything that refers to it)
+      const x1 = p.x + p.width;
+      let a = p.x;
+      const cuts = at.map((kx) => [Math.round(kx - 45), Math.round(kx + 45)] as const);
+      p.width = cuts[0][0] - p.x;
+      for (let i = 0; i < cuts.length; i++) {
+        P.push({ id: pid++, x: cuts[i][0], y: p.y - 26, width: 90, height: 50, type: 'solid', style: 'moss_stone' });
+        // (a petal over the knot sits on its top now)
+        for (const c of C) if (c.type === 'flower' && c.x > cuts[i][0] - 20 && c.x < cuts[i][1] + 20 && Math.abs(c.y - (p.y - 34)) < 6) c.y = p.y - 26 - 34;
+        a = cuts[i][1];
+        const b = i + 1 < cuts.length ? cuts[i + 1][0] : x1;
+        if (b - a > 4) P.push({ ...p, id: pid++, x: a, width: b - a });
+      }
+    }
+  };
+  const p14 = { from: 0 };
+
+  if (squirrels) {
+    p14.from = P.length;
+    // (a flag only where it is higher than the last: on a climb the engine takes a flag only further up, checkpoint 'further')
+    const flag = () => {
+      const last = checkpoints[checkpoints.length - 1];
+      if (!last || cur.y < last.y - 10) checkpoints.push({ x: Math.round(cur.x + cur.width / 2), y: cur.y, reached: false });
+    };
+    const C_ = (dy: number): Step => ({ move: 'jump', dy, surface: 'crumble' });
+    const B_ = (dy: number): Step => ({ move: 'jump', dy, surface: 'branch' });
+    const flip = (d: 1 | -1): 1 | -1 => (d === 1 ? -1 : 1);
+    /** the bough one hop under a gap (a miss here costs a hop back up) */
+    const hopUnder = (x0: number, x1: number, y: number) => {
+      if (!blocked(x0 - 30, x1 + 30, y + 90)) ledge(x0 - 30, x1 + 30, y + 90);
+    };
+    // (the way each node goes is planned so the climb fits the tree: the teaching run goes to the side with room, the spike comes back,
+    // the swing carries on, the fork turns, across the tree is always to the left, so the high lift (built going right) has its room)
+    let way: 1 | -1 = roomTo(-1) > roomTo(1) ? -1 : 1;
+
+    // ---- 4. Creaking limbs, taught: one limb over a drop of one hop onto a wide bough, a whole bar's wait, then two limbs and a bough.
+    // A limb is left on the next half note at the latest (it holds 0.6 s); the waits are on the boughs.
+    beat('Teach: creaking limbs', () => {
+      // (the lift's ledge is the room's far end: back the other way the run would lie over its basket and plank, where the acorn is
+      // thrown and the plank rides (Matt, 2026-10-29). On to the right; with no room there, a trunk up out of the room's air first)
+      way = 1;
+      if (roomTo(1) < 1500) {
+        const tx = cur.x + cur.width - 60;
+        trunkUp(tx, Math.round(R.r(230, 250)), tx - 300, tx + 40);
+        way = -1;
+      }
+      hint('This limb creaks. Keep moving!', 'This limb creaks. Keep moving!', 'This limb creaks. Keep moving!', cur.y + 10);
+      const [bars, steps, d] = fitRun(way, [
+        [['h...h...', 'h...h...', 'h.......', 'h.......'], [C_(0), B_(-30), C_(20), C_(0), B_(-20), B_(10)]],
+        [['h...h...', 'h...h...', 'h.......'], [C_(0), B_(-30), C_(20), C_(0), B_(-20)]],
+      ]);
+      beatRun(bars, steps, d, hopUnder);
+      way = d;
+      flag();
+    });
+
+    // ---- 5. The spike: up a tall trunk and off its top straight onto the creaking limbs (the pair), four of them at uneven gaps and
+    // heights, back the way he came. A miss drops onto the teaching run, about 340 below: back along it to the trunk, and up again.
+    beat('Spike: climb and leap', () => {
+      const d = flip(way);
+      const tx = d === 1 ? cur.x + 70 : cur.x + cur.width - 70;
+      trunkUp(tx, Math.round(R.r(330, 360)), d === 1 ? tx - 40 : tx - 230, d === 1 ? tx + 230 : tx + 40);
+      const [bars, steps, dd] = fitRun(d, [
+        [['h...h...', 'h...h...', 'h.......'], [C_(10), C_(-20), C_(30), C_(0), B_(-10)]],
+        [['h...h...', 'h.......'], [C_(10), C_(-20), B_(20)]],
+      ], 820);
+      beatRun(bars, steps, dd);
+      way = dd;
+      row(cur.x + 40, cur.x + cur.width - 40, cur.y - 34, 2, 'hibiscus');
+      flag();
+    });
+
+    // ---- 5b. The swing between trunks (1-2's liana comes back): from the spike's end, a liana over the gap to the next trunk's bough
+    /** a liana from the end of `cur` over a gap to a bough, checked with the swing's own physics; the way `way` goes, else back */
+    const swingOn = (): boolean => {
+      const y = cur.y;
+      for (const d of [way, flip(way)] as const) {
+        const edge = d === 1 ? cur.x + cur.width : cur.x;
+        for (let tries = 0; tries < 16; tries++) {
+          const d0 = R.r(170, 200), d1 = tries > 9 ? R.r(190, 215) : R.r(200, 240);
+          const top = Math.round(y - R.r(360, 400));
+          const w = Math.round(R.r(300, 360));
+          // (checked going right; laid mirrored when the way on is left)
+          const v: Vine = { id: -1, x: edge + d0, topY: top, bottomY: Math.min(y + 30, top + 410), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true };
+          const far: Platform = { id: -99, x: edge + d0 + d1, y, width: w, height: 24, type: 'solid' };
+          if (!(jumpGrab(edge, y, v) >= 4 && landWindow(null, v, far) >= 8)) continue;
+          const fx0 = d === 1 ? far.x : 2 * edge - far.x - w;
+          if (fx0 < KAPOK_MARGIN || fx0 + w > W - KAPOK_MARGIN || blocked(fx0, fx0 + w, y)) continue;
+          const vx = d === 1 ? v.x : 2 * edge - v.x;
+          V.push({ ...v, id: vid++, x: Math.round(vx), swayPhase: (vx * 0.013) % 6.28 });
+          row(Math.min(edge, vx) + 20, Math.max(edge, vx) + 60, Math.min(y - 150, top + 200), 2, 'hibiscus');
+          cur = ledge(fx0, fx0 + w, y);
+          expert += (d0 + d1) / 430 + 0.8 + w / RUN;
+          way = d;
+          return true;
+        }
+      }
+      return false;
+    };
+    beat('Ramp: the swing', () => {
+      swingOn();
+      flag();
+    });
+
+    // ---- 6. The fork (a rest): a wide ledge in the fork of the tree, turned back toward the middle, root knots, the crown in view above
+    // (sideways: the climb looks up)
+    beat('Rest: the fork', () => {
+      const tx = way === 1 ? cur.x + cur.width - 60 : cur.x + 60;
+      const w = Math.round(R.r(600, 660));
+      // (the ledge grows back the way he came, over the swing's gap, toward the middle of the tree)
+      // (a tall trunk: the run across the tree from here comes down a little, and must stay out of a double jump's reach of the spike's
+      // row under it, or the second jump off the spike's trunk would skip the limbs, the swing and the fork)
+      trunkUp(tx, Math.round(R.r(340, 360)), way === 1 ? tx - w : tx - 40, way === 1 ? tx + 40 : tx + w);
+      hint('The crown! Up there, see?', 'The crown! Up there, see?', 'The crown! Up there, see?', cur.y + 10);
+      knots14(3);
+      flag();
+    });
+
+    // ---- 6b. Across the tree, to the left (sideways and down before up): whole-note hops down along the boughs, a snake on the widest
+    // (1-3's punch or a stomp), a bough one hop under each gap
+    beat('Ramp: across the tree', () => {
+      const before = P.length;
+      const [bars, steps, d] = fitRun(-1, [
+        [['h.......', 'h.......', 'h...h...', 'h.......'], [B_(-30), B_(0), B_(-20), B_(30), B_(-10)]],
+        [['h.......', 'h...h...', 'h.......'], [B_(-30), B_(-20), B_(30), B_(-10)]],
+        [['h.......', 'h.......'], [B_(-30), B_(10)]],
+      ]);
+      // (no catch boughs here: between the levels they were steps a second jump took to skip whole nodes; a miss drops to the fork)
+      beatRun(bars, steps, d);
+      way = d;
+      const wide = P.slice(before).filter((p) => p.type === 'solid' && Math.abs(p.y - cur.y) < 80).sort((a, b) => b.width - a.width)[0];
+      if (wide && wide.width >= 420) snake(wide.x + wide.width / 2, wide.y, Math.min(120, wide.width - 300));
+      flag();
+    });
+
+    // ---- 6c. The rope onto a limb (the twist on the pair: off the end of a rope onto a creaking limb, and go): up a trunk at the end of
+    // the run across, a rope over the gap, its far end a creaking limb, then a hop onto a bough
+    const twistNode = () => {
+    beat('Twist: the rope onto a limb', () => {
+        // (the rope goes the way with more room; the trunk stands at the other end of the bough he is on)
+        const tw: 1 | -1 = roomTo(1) >= roomTo(-1) ? 1 : -1;
+        const tx = tw === 1 ? cur.x + 70 : cur.x + cur.width - 70;
+        const lw = Math.round(R.r(240, 280));
+        trunkUp(tx, Math.round(R.r(300, 330)), tw === 1 ? tx - 40 : tx - lw, tw === 1 ? tx + lw : tx + 40);
+        dir = tw;
+        const gap = Math.round(R.r(400, 460));
+        if (roomTo(tw) >= gap + 160 + 300) {
+          rope(gap, 160, 3);
+          cur.type = 'fragile';
+          cur.creak = easy ? CREAK_EASY : CREAK_S;
+          // (the limb is left at once: a hop on the next half note onto a bough)
+          beatRun(['h.......'], [B_(-20)], tw);
+          way = tw;
+        }
+        flag();
+      });
+    };
+    const counterNode = () => {
+    // ---- 7. The counter-melody: the squirrels' high lift (flick up to throw), then sideways: the long rope across the tree
+      beat('Counter: the high lift and the long rope', () => {
+        for (let k = 0; k < 2 && !liftRoom(true); k++) {
+          // (no room to the right: a trunk up from the near end first, one step only)
+          dir = -1;
+          climb(Math.round(R.r(220, 260)));
+        }
+        flag();
+        // (on along the lift's ledge to the long rope, at its height: a drop back down here put its far end by the rope onto a limb, a hop
+        // that skipped the lift and the rope)
+        dir = roomTo(1) > roomTo(-1) ? 1 : -1;
+        hint('A long way across. Keep sliding', 'A long way across. Keep holding the way to go', 'A long way across. Keep holding the way to go', cur.y + 10);
+        rope(Math.max(420, Math.min(Math.round(R.r(820, 950)), Math.round(roomTo(dir) - 340))), 320, 5);
+        way = dir;
+        flag();
+      });
+    };
+    // (the high lift is built going right, come into at its left end: when the climb is on the left with room, the lift first, else the
+    // twist first, its rope going left, and the lift after)
+    if (roomTo(1) >= 900) {
+      counterNode();
+      twistNode();
+    } else {
+      twistNode();
+      counterNode();
+    }
+
+    // ---- 8. The climax: a short trunk, two limbs, a long plank, a tall trunk, two limbs, a short rope, and the crown's trunk
+    beat('Climax: up through the crown', () => {
+      // (each piece carries on away from the last, the way there is room: a piece that came back would sit by the one before it)
+      let d = flip(way);
+      let tx = d === 1 ? cur.x + 70 : cur.x + cur.width - 70;
+      // (tall enough that the climax's first bough is out of a double jump's reach of the high lift's ledge, back across the tree)
+      trunkUp(tx, Math.round(R.r(360, 380)), d === 1 ? tx - 40 : tx - 200, d === 1 ? tx + 200 : tx + 40);
+      let [bars, steps, dd] = fitRun(d, [[['h...h...'], [C_(20), B_(-10)]]], 300);
+      beatRun(bars, steps, dd);
+      way = dd;
+      // (the plank runs on, long)
+      if (dd === 1) cur.width = Math.max(cur.width, Math.min(420, W - KAPOK_MARGIN - cur.x));
+      else { const r = cur.x + cur.width; cur.x = Math.max(KAPOK_MARGIN, Math.min(cur.x, r - 420)); cur.width = r - cur.x; }
+      expert += 200 / RUN;
+      // a tall trunk at the plank's far end, and two limbs on, the same way, then a liana over the next gap
+      tx = way === 1 ? cur.x + cur.width - 70 : cur.x + 70;
+      trunkUp(tx, Math.round(R.r(320, 350)), way === 1 ? tx - 220 : tx - 40, way === 1 ? tx + 40 : tx + 220);
+      [bars, steps, dd] = fitRun(flip(way), [[['h...h...'], [C_(30), B_(-20)]], [['h...h...'], [C_(0), B_(20)]]], 700);
+      beatRun(bars, steps, dd);
+      way = dd;
+      swingOn();
+      // and once more, higher: a trunk off the swing's bough and a limb on, back across, to the crown's trunk
+      {
+        const d3 = flip(way);
+        const t3 = d3 === 1 ? cur.x + 70 : cur.x + cur.width - 70;
+        trunkUp(t3, Math.round(R.r(280, 300)), d3 === 1 ? t3 - 40 : t3 - 200, d3 === 1 ? t3 + 200 : t3 + 40);
+        const [b3, s3, e3] = fitRun(d3, [[['h...h...', 'h.......'], [C_(10), B_(-20), B_(30)]], [['h...h...'], [C_(10), B_(-20)]]], 400);
+        beatRun(b3, s3, e3);
+        way = e3;
+      }
+      flag();
+    });
+    knotLongBoughs(p14.from);
+  }
+
   // ---- Twist: the long rope across the widest gap, with the whole crown around him
-  if (!mist) beat('Twist: the long rope', () => {
+  if (!mist && !squirrels) beat('Twist: the long rope', () => {
     // set out from the side of the tree that leaves the most room
     dir = cur.x + cur.width / 2 < W / 2 ? 1 : -1;
     hint('A long way across. Keep sliding', 'A long way across. Keep holding the way to go', 'A long way across. Keep holding the way to go', cur.y + 10);
@@ -5852,7 +6178,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   });
 
   // ---- Finish: up to the crown and the shrine
-  beat('Finish: the crown', () => {
+  beat(squirrels ? 'Cool-down: the crown' : 'Finish: the crown', () => {
     if (mist) {
       // 4-6: the high mist, up past the nests: two tall columns with a ledge to stop on halfway, then the crown and the shrine.
       // (The first trunk stands at the far end of the last ledge across the tree, past its nest.)
@@ -5869,16 +6195,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       row(cur.x + 80, cur.x + 300, top - 34, 3, 'hibiscus');
       return;
     }
-    climb(Math.round(R.r(280, 320)));
-    // 1-4: the squirrels' lift again, its basket hung high now (flick up to throw the acorn in)
-    if (squirrels) {
-      for (let k = 0; k < 4 && !liftRoom(true); k++) {
-        dir = -1;
-        hops(2);
-        climb(Math.round(R.r(260, 300)));
-      }
-      flag();
-    }
+    // (1-4's crown comes straight off its climax: no climb or lift here)
+    if (!squirrels) climb(Math.round(R.r(280, 320)));
     // (4-1: up the cliff's wide ledges, where its rocks come loose)
     hops(2, cliff);
     // the crown: a wide branch with the shrine on it
@@ -5890,6 +6208,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     if (!cliff) {
       cur = ledge(tX - 40, Math.min(W - KAPOK_MARGIN, tX + 560), top);
       row(cur.x + 80, cur.x + 300, top - 34, 3, 'hibiscus');
+      // (1-4: the walk along the crown to the shrine, about 420 px, is part of a quick player's time too)
+      if (squirrels) expert += 420 / RUN;
       return;
     }
     // the cliff top: a ledge, the gap, and the fern frond at its edge that bridges it for a sloth who waits. The bridge goes toward
@@ -6297,7 +6617,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     exitTotemX: exitX,
     exitTotemY: crown.y,
     checkpoints: checkpoints.sort((a, b) => b.y - a.y),
-    meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: H } },
+    meta: { attempt: seed, chunks: pieces14.map((p) => p.k), width: W, ...(pieces14.length ? { pieces: pieces14 } : {}), timing: { layoutSeconds: expert, decorSeconds: 0, route: H } },
     ...(kit ? { kit } : {}),
     ...(gusts.length ? { zones: gusts } : {}),
     proto: {
