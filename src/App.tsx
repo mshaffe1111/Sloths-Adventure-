@@ -59,7 +59,8 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
-import { gpuLive, gpuProbe, gpuStats, setGpuCanvas } from './game/gpuLayer.ts';
+import { installDrawWatch } from './game/drawWatch.ts';
+import { backdropCheck, backdropGpuOff, backdropStats, drawGpuFrame, gpuLive, gpuProbe, gpuSizes, gpuStats, setGpuCanvas } from './game/gpuLayer.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
 import { keepScreenOn, nativeApp } from './game/appShell.ts';
@@ -698,7 +699,7 @@ export default function App() {
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __engine?: () => unknown }).__engine = () => engineRef.current;
     // (and the GPU layer, for its checks: tools/qa/gpuLayer.cjs)
-    (window as unknown as { __gpu?: unknown }).__gpu = { stats: gpuStats, live: gpuLive, probe: gpuProbe };
+    (window as unknown as { __gpu?: unknown }).__gpu = { stats: gpuStats, live: gpuLive, probe: gpuProbe, backdrop: backdropStats, check: backdropCheck, off: backdropGpuOff, sizes: gpuSizes, frame: drawGpuFrame };
   }
 
   // dev only: lose every life at once (to test Game Over and Continue)
@@ -805,6 +806,8 @@ export default function App() {
   const launchEngine = useCallback((lvl: LevelConfig) => {
     // (the GPU layer's canvas, for when something is first put on it: nothing is started here, gpuLayer.ts)
     setGpuCanvas(gpuCanvasRef.current);
+    // (the testers' link only: which single canvas call makes a long draw frame, drawWatch.ts)
+    installDrawWatch();
     enterWorld(lvl.worldIndex);
     clearTimeout(launchTimer.current);
     if (engineRef.current) {

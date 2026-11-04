@@ -25,11 +25,39 @@ feature (light bridges, lightning silhouettes, waving water).
 - **Context loss.** Pixi's GlContextSystem calls preventDefault and rebuilds its GPU objects on restore. The layer skips frames while
   lost (`gpuStats.lostFrames`), and the 2D game never waits on it.
 
+## Stage 1 (the backdrop), what exists
+- scenery.ts: in gameplay's fitted-strip mode, `gpuStrips` routes `drawFitted`'s stamps (the strip, the sky row, the gap rows) to
+  `backdropPush` in device pixels. Then `backdropFlush` renders them and copies the layer into the 2D canvas with one drawImage. Only
+  under a plain scale transform (`pureScale`); any other frame stamps on the 2D canvas, as before.
+- gpuLayer.ts:
+  - the pool of sprites, with **dynamic** textures (see Pitfalls);
+  - one texture per fitted canvas, uploaded under the title card (`backdropUpload` from `stampSceneryFits`) and destroyed with its fit
+    (`backdropForget`);
+  - the layer always at resolution 1, in device pixels (`fitBuffer`);
+  - the copy timed on 3 frames under the card (COPY_SLOW_MS 2 ms);
+  - `backdropLine()` for the readout;
+  - `?gpuback=0` to compare.
+- Checks:
+  - `tools/qa/gpuBackdrop.cjs`: GPU vs 2D backdrop, the same frozen frame, every world, both ways;
+  - `tools/qa/gpuBackdropLoss.cjs`: lose and restore in play.
+
+## The measured release (testers only), what exists
+- `gpuBackdropOn()` (gpuLayer.ts) = `qaBuild() || ctestEnabled()`.
+  - `mountGpuLayer` returns false without it, so a player never gets a WebGL context or Pixi.
+  - The readout and `gpuback=0` follow it.
+  - Never in the store app.
+- vite.config.ts `globIgnores` keeps Pixi's four chunks (gpuPixi, browserAll, webworkerAll, init) out of the service worker's
+  precache.
+  - If Pixi's chunking changes, `tools/qa/gpuDefaultOff.cjs` names the chunk that leaked.
+- Check: `node tools/qa/gpuDefaultOff.cjs <vite preview url>` on a PRODUCTION build.
+  - It blocks the collector, so nothing lands in Matt's sheet, and blocks service workers in its pages.
+- Fixed end: delete the switch the day the phone numbers decide (GPU-RENDERER-PLAN.md).
+
 ## Steps for a stage that moves a layer
-1. **Move whole layers, never half of one** (the plan's layer-order rule). The 2D canvas keeps everything above the layers that moved.
-   For the GPU layer to show, the 2D canvas must become see-through where those layers were:
-   - its context is `alpha: false` today; switching that is a deliberate step with its own look proof;
-   - so is clearing it to transparent instead of painting the backdrop.
+1. **Move whole layers, contiguous from the bottom** (the plan's layer-order rule). They render into the hidden WebGL canvas, and the
+   2D canvas (opaque, `alpha: false`, unchanged) copies it in with one drawImage where it used to paint them (the plan's design change,
+   2026-11-04). Never make the 2D canvas see-through: every `lighter`, `screen` and `multiply` effect after the copy would then blend
+   with nothing.
 2. **Textures from the sheets we already load.** `Texture.from(<the HTMLImageElement or baked canvas>)`. One texture per sheet, frames
    as sub-rectangles, so sprites that share a sheet batch.
    - Release a world's textures when play leaves the world (atlasLoader `enterWorld`, PERFORMANCE-RULES §2.13).
@@ -53,7 +81,10 @@ feature (light bridges, lightning silhouettes, waving water).
 - **Bundle noted.** The main chunk and the Pixi chunks, raw and gzipped.
 
 ## Checks before reporting
-Every gate in gates.md, in order. Add the two GPU checks above. Stamp the base commit on every sheet (D23).
+Every gate in gates.md, in order. Add the two GPU checks above.
+- Anything testers-only or lazy: build for production and open `dist/sw.js`. Every chunk the feature fetches must be absent from the
+  precache list. `tools/qa/gpuDefaultOff.cjs` does this from the real requests (lesson 2026-11-04: the PWA precached Pixi for every
+  player). Stamp the base commit on every sheet (D23).
 
 ## Pitfalls we already paid for
 - 2026-11-04: **The look comparison was noisy three ways.** Fix all three, then judge:
@@ -70,7 +101,24 @@ Every gate in gates.md, in order. Add the two GPU checks above. Stamp the base c
 - 2026-11-04: **Pixi rounds css x resolution; the game canvas floors it.** At q1 (1.5x) on an odd size the buffers differed by one
   px. Hand `renderer.resize` the floored device size divided by dpr. The gpuLayer.cjs buffer check catches it; run it at q1 too.
 
+- 2026-11-04: **A Pixi v8 Sprite follows a change to its texture's frame only if the texture is `dynamic: true`.** Pooled sprites with
+  reused textures kept the size of the first stamp they drew. The backdrop came out magnified after a quality step (19-30% of pixels off
+  by more than 32), and slightly off on outlines even at q0. I first took that for GPU sampling: it wasn't.
+- 2026-11-04: **Pixi's resolution handling didn't follow resizes reliably.** Run the layer at resolution 1 with the buffer exactly the 2D
+  canvas's device size, and place everything in device pixels.
+- 2026-11-04: **Judge the look at every quality step (q0, q1, q2), not only q0.** The look check pins each one in turn.
+- 2026-11-04: **The see-through 2D canvas** (the plan's first design) fails the look bar: see the design change in GPU-RENDERER-PLAN.md.
+
+- 2026-11-04: **The PWA precaches every chunk.** A lazy `import()` isn't enough to keep a download off players: the service worker
+  fetched Pixi (434 KB) for everyone in the background. Keep anything testers-only out of `globPatterns` (`globIgnores`).
+- 2026-11-04: **The test-link page can't send runs to the testers' sheet.** Phone numbers need the live testers' link; check each run's
+  build stamp (Matt's first six "GPU" runs were live 0.9.4).
+
 ## Tried and didn't work
+- 2026-11-04: **Pixel-comparing two builds across page loads** (tools/qa/playerLook.cjs, deleted). The same build shot twice differed by
+  2,000-59,000 px: the 3 s of play before the freeze never lands on the same frame twice. A look proof has to compare both ways inside
+  one page, on one frozen frame (gpuLook.cjs, gpuBackdrop.cjs). For the measured release, the player path was proven by its code
+  instead: with the switch off it makes the same calls as before, and drawcheck passes.
 - Comparing whole-page screenshots: the DOM animations gave 21,000 to 178,000 "different" pixels with nothing changed on the canvas.
 
 ## To try
