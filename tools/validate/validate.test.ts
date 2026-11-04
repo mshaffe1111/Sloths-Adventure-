@@ -446,8 +446,9 @@ test('rests (STAGE-RULES §2 pacing, the lead 11-04): a pause of 1.0 s with no h
   // (small hops are not hard input: a pause filled with them is still a rest)
   const hops = [...run(0, 12, 0.6), { m: 'h' as const, t: 12.6, x: 0, y: G, what: '' }, ...run(13.5, 25, 0.6)];
   assert.equal(noRest(hops, 'normal'), false);
+});
 
-// ---- w8-rope2 (R-159.1): World 1 tricks letters, rhythm-token repeats, vine snakes ----
+// ---- w8-rope2 (R-159.1): rhythm-token repeats and vine snakes ----
 // ---- repeats on a beat-traced stage (the lead, 2026-11-04): tokens carry their note value and direction ----
 const at130 = (ms: ReadonlyArray<[string, number, number]>): Step[] => {
   // (each move: its letter, beats since the last one, and the height it ends at; 130 BPM)
