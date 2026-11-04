@@ -13,7 +13,7 @@ import type { Platform } from '../../src/game/types.ts';
 import { cosine, deadWalks, fromStage, grams, moveOf, moveString, pacing, paceFlags, repeats, SIMILAR_MAX, type Step } from './core.ts';
 import { branchOutrunWith, cameraOn, chaseOutrunWith, eagleOutrunWith, towardShrine } from './play.ts';
 import { hazardsScore, newScore, newThatCounts } from './score.ts';
-import { lookAlike, lookOf } from './look.ts';
+import { artKey, lookAlike, lookOf } from './look.ts';
 import type { Stage } from '../inspect/stages.ts';
 
 const G = 580;
@@ -262,4 +262,11 @@ test('clumsy thumb: only jumps toward the shrine count against the floor (1-2\'s
   const t = towardShrine(tries, 4000);
   assert.deepEqual(t.on.map((q) => q.x), [3000, 5000]);
   assert.equal(t.back, 2);
+});
+
+test('looks the same: the chase\'s sections and crowns are keyed by the art the engine draws them with, not an empty style (1-8 read 0-4%)', () => {
+  assert.equal(artKey({ type: 'solid', chase: true }), 'chase:bough');
+  assert.equal(artKey({ type: 'solid', crown: true }), 'chase:crown');
+  assert.equal(artKey({ type: 'solid' }), 'solid:branch');
+  assert.equal(artKey({ type: 'solid', style: 'moss_stone' }), 'solid:moss_stone');
 });

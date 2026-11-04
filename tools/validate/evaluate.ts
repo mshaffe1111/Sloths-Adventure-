@@ -3,6 +3,7 @@
  * Structure checks run on any layout (cheap); play checks (play.ts) run on a few layouts and are merged in by world1.ts.
  */
 import { build, cosine, deadWalks, grams, moveString, pacing, pacingStrip, paceFlags, repeats, SIMILAR_MAX, type Built, type Setting } from './core.ts';
+import { lookAlike, lookOf } from './look.ts';
 import { enemyJobs, ENEMY_FREE_TARGET, mechRow, missCost, padding, pairsOf, sixThings, tempoOf, type Beat2 } from './mechanics.ts';
 
 export interface Flag { rule: string; what: string; x?: number; source: string }
@@ -81,9 +82,23 @@ export const W1 = ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9'
 /** World 1 on one layout and setting, in order: each stage judged, then against the ones before it (similarity, what is new) */
 export function world(layout: number, setting: Setting, ids: readonly string[] = W1): StageEval[] {
   const out: StageEval[] = [];
+  const looks: ReturnType<typeof lookOf>[] = [];
   for (const id of ids) {
     const ev = judge(build(id, layout, setting));
     const g3 = grams(ev.str);
+    // (how alike it looks: the builder's pieces and the art, look.ts. Variety reads the more alike of moves and look, so these flags
+    // feed it as the move ones do; the quality supervisor, 11-04: 1-7 read 10% alike to 1-1 by moves and 84% by look)
+    const lk = lookOf(ev.built.stage);
+    const lp = looks[looks.length - 1];
+    if (lp) {
+      const c = lookAlike(lk, lp);
+      if (c > NEIGHBOUR_MAX) ev.flags.push({ rule: 'looks like the stage before', what: `${Math.round(c * 100)}% alike in its pieces and art to ${out[out.length - 1].id} (at most 45% for the stage right before)`, source: SRC.similar });
+    }
+    let lw: { id: string; c: number } | null = null;
+    looks.forEach((q, i) => { const c = lookAlike(lk, q); if (!lw || c > lw.c) lw = { id: out[i].id, c }; });
+    const lwv = lw as { id: string; c: number } | null;
+    if (lwv && lwv.c > SIMILAR_MAX && lwv.id !== out[out.length - 1]?.id) ev.flags.push({ rule: 'looks like an earlier stage', what: `${Math.round(lwv.c * 100)}% alike in its pieces and art to ${lwv.id} (at most 55%)`, source: SRC.similar });
+    looks.push(lk);
     // against the stage right before it, and any before it
     const prev = out[out.length - 1];
     if (prev) {

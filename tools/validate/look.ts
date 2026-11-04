@@ -5,10 +5,23 @@
  *   - the builder's pieces (stage.meta.pieces: highrun, stumps, snakes, rest, ...), each weighted by the share of the stage it spans, and
  *   - the art on the ground: every platform's kind and look (type:style, a mushroom is "bouncy"), weighted by its width.
  * Each half is compared by cosine and the two averaged; a stage with no piece list (hand-built) is compared on its art alone.
+ * Variety (evaluate.ts) takes the more alike of moves and look: a stage is only as fresh as its most repeated side (the supervisor, 11-04).
  */
 import type { Stage } from '../inspect/stages.ts';
 
 export interface Look { pieces: Map<string, number>; art: Map<string, number> }
+
+/**
+ * the art a platform is drawn with. The chase's sections and the canopy crowns over them carry no style: the engine draws them with their
+ * own art (engine.ts drawChase: drawChaseSection, drawCrownArt), so they are keyed by that (the supervisor, 11-04: 1-8 read 0-4% alike to
+ * everything on an empty style, a gap in the measure, not a fact). Any other platform with no style reads as a branch (platformStyles.ts
+ * balanceStyles counts it so).
+ */
+export function artKey(q: { type: string; style?: string; chase?: boolean; crown?: boolean }): string {
+  if (q.chase) return 'chase:bough';
+  if (q.crown) return 'chase:crown';
+  return `${q.type}:${q.style ?? 'branch'}`;
+}
 
 export function lookOf(stage: Stage): Look {
   const pieces = new Map<string, number>();
@@ -16,7 +29,7 @@ export function lookOf(stage: Stage): Look {
   for (const p of list) pieces.set(p.k, (pieces.get(p.k) ?? 0) + Math.max(0, p.x1 - p.x0));
   const art = new Map<string, number>();
   for (const q of stage.platforms) {
-    const k = `${q.type}:${(q as { style?: string }).style ?? ''}`;
+    const k = artKey(q as Stage['platforms'][number] & { style?: string; chase?: boolean; crown?: boolean });
     art.set(k, (art.get(k) ?? 0) + Math.max(1, q.width));
   }
   return { pieces, art };

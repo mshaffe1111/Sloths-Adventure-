@@ -290,7 +290,7 @@ ${flags.map((f, k) => `<div class="flag"><b>${esc(f.rule)}</b>: ${esc(f.what)}${
 Finish: ${ev.padding ? `${Math.round(ev.padding.finishShare * 100)}% of the stage, pieces ${esc(ev.padding.pieces.join(', '))}` : '-'}. Tempo: ${ev.tempo.hurry} hurry, ${ev.tempo.patience} patience beats. Animal-free route: ${Math.round(ev.enemies.freeShare * 100)}%.</p></div>
 <h2>How it is scored</h2>
 <div class="card mut"><ul>
-<li>variety: 10 at 45% alike or less to the stage before or any earlier one, falling to 0 at 100% alike.</li>
+<li>variety: 10 at 45% alike or less to the stage before or any earlier one, falling to 0 at 100% alike; alike is the more alike of its moves and its look (pieces and art), so a stage is only as fresh as its most repeated side.</li>
 <li>repeats: minus 2 per repeated 3-4 move run. dead walking: minus 1 per walk over 2.5 s. pacing: minus 2.5 per pacing flag.</li>
 <li>a miss costs: 10 while at most 80% of beats are free retries, falling to 0 when all are. padding: minus 5 for a finish over half the stage, minus 2.5 per piece laid three times or more.</li>
 <li>tempo: 10 for both hurry and patience, 5 for one, 0 for neither. something new: 10 for a new move or pairing that counts (a move counts where the shortest way to the shrine needs it and, if a hazard, it bites; a pairing counts unless it is made of a hazard that never bites), 3 for only new runs of old moves, 0 for nothing.</li>
@@ -355,7 +355,7 @@ if (W1.every((id) => ONLY.includes(id))) {
 <h2>How alike the stages play (move 3-grams, layout 1; % alike)</h2>
 <div class="card">${grid}<p class="mut">Orange over 45% (too close for neighbours), red over 55% (too close for any two stages of a world): research §1, the quality supervisor.</p></div>
 <h2>How alike the stages look (the builder's pieces and the art on the ground, layout 1; % alike)</h2>
-<div class="card">${lookGrid}<p class="mut">What a player sees, beside what he does: the pieces each stage is built from (highrun, stumps, snakes, rest...), weighted by how much of the stage each spans, and every platform's kind and look (a mushroom, a branch, moss stone, a log), weighted by width; the two averaged (look.ts). 1-1, 1-5 and 1-7 are mostly the same mushroom-and-high-branches piece, whatever their move strings say. Same colours as above.</p></div>
+<div class="card">${lookGrid}<p class="mut">What a player sees, beside what he does: the pieces each stage is built from (highrun, stumps, snakes, rest...), weighted by how much of the stage each spans, and every platform's kind and look (a mushroom, a branch, moss stone, a log), weighted by width; the two averaged (look.ts). 1-1, 1-5 and 1-7 are mostly the same mushroom-and-high-branches piece, whatever their move strings say. 1-8 is measured on the art the engine draws its chase with (the bough sections and the canopy crowns, which carry no style in the data): no other World 1 stage uses that art, so it reads 0-4% alike, as it looks on screen; it is no 'most different' by a gap in the measure. Variety scores the more alike of this grid and the one above. Same colours as above.</p></div>
 <h2>Each flag: on how many of the ${LAYOUTS} layouts (Normal)</h2>
 <div class="card"><table class="grid"><tr><th>flag</th>${W1.map((id) => `<th>${id}</th>`).join('')}</tr>${ruleRows}</table></div>
 <h2>What World 1 is made of</h2>
