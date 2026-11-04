@@ -56,6 +56,14 @@ const BEATS = [
   { id: 'esc19-2-stun', stage: '1-9', pose: { px: 3060, py: 566, grounded: true, snake: { id: 4, x: 3150, y: 566, stagger: 1.5, facing: -1, hp: 9 }, marks: { stars: 'foe' } } },
   { id: 'esc19-3-bowl', stage: '1-9', pose: { cam: [3700, 470], px: 3580, py: 469, grounded: true, boa: { id: 3, x: 3635, y: 467, state: 'coil', facing: -1, hp: 9 }, key: 'KeyK', steps: 3 } },
   { id: 'esc19-4-lair', stage: '1-9', pose: { cam: [4420, 470], camUp: [4462, 470], px: 4290, py: 566, grounded: true, snake: { id: 4, x: 9000, y: 566, facing: -1 }, marks: { plate: [4440, 580], gate: [4590, 580] } } },
+
+  // ── round 4: the build itself, nothing pasted up. A real punch dazes 1-3's snake (the stars are the game's own), the coiled boa's
+  // glint, its tell (the squeeze), and a real kick rolling it
+  { id: 'real-1-stun', stage: '1-3', pose: { px: 3150, py: 566, grounded: true, snake: { id: 2, x: 3209, y: 566, state: 'rear', facing: -1 }, key: 'KeyJ', steps: 4, after: 8 } },
+  { id: 'real-2-stun-late', stage: '1-3', pose: { px: 3150, py: 566, grounded: true, snake: { id: 2, x: 3209, y: 566, state: 'rear', facing: -1 }, key: 'KeyJ', steps: 4, after: 38 } },
+  { id: 'real-3-coil', stage: '1-9', pose: { cam: [1740, 470], px: 1660, py: 468, grounded: true, boa: { id: 1, x: 1770, y: 468, state: 'coil', facing: -1 } } },
+  { id: 'real-4-tell', stage: '1-9', pose: { cam: [1740, 470], px: 1690, py: 468, grounded: true, boa: { id: 1, x: 1770, y: 468, state: 'rear', stateT: 0.5, facing: -1 } } },
+  { id: 'real-5-roll', stage: '1-9', pose: { cam: [1900, 470], px: 1715, py: 468, grounded: true, boa: { id: 1, x: 1770, y: 468, state: 'coil', facing: -1 }, key: 'KeyK', steps: 5, after: 10 } },
 ];
 const MARKS = {};
 
@@ -84,8 +92,9 @@ for (const [tag, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([t]) =>
       Object.assign(p, { x: pose.px, y: pose.py, vx: 0, vy: pose.vy ?? 0, grounded: !!pose.grounded, hanging: false, climbing: false, facing: 1, invincibleTimer: 0 });
       if (pose.key && pose.grounded) {
         // (a real move is stepped through the engine: he must truly stand on the platform under him, or the kick is an air kick)
-        const under = e.platforms.filter((q) => q.x <= p.x + p.width / 2 && q.x + q.width >= p.x + p.width / 2 && q.y >= pose.py - 40).sort((a, c) => a.y - c.y)[0];
-        if (under) p.y = under.y - p.height;
+        const under = e.platforms.filter((q) => q.x <= p.x + p.width / 2 && q.x + q.width >= p.x + p.width / 2 && q.y >= pose.py - 20).sort((a, c) => a.y - c.y)[0];
+        // (his y is his feet: on the platform's top)
+        if (under) p.y = under.y;
       }
       if (pose.marks && (pose.marks.vine1 || pose.marks.vine2)) {
         // (mock only: the lianas hang still, so the pasted vine snake sits on its liana and not beside it)
@@ -115,7 +124,7 @@ for (const [tag, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([t]) =>
         if (want.as) en.type = want.as;
         window.__mockFoe = en;
         Object.assign(en, { x: want.x, y: want.y, facing: want.facing ?? -1, asleep: !!want.asleep, defeated: false, vx: 0, stagger: want.stagger ?? 0, staggerMax: want.stagger ?? 0, recoil: want.recoil ?? 0, hitFlashTimer: 0 });
-        if (want.state) { en.state = want.state; en.stateT = 0.2; }
+        if (want.state) { en.state = want.state; en.stateT = want.stateT ?? 0.2; }
         if (want.hp) en.hp = want.hp;
         if (want.asleep) { en.state = 'sleep'; en.stateT = 0.2; }
         if (want.stagger) en.state = 'patrol';
@@ -146,6 +155,8 @@ for (const [tag, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([t]) =>
       const camY = await page.evaluate(() => window.__engine().camera.y);
       for (let i = 0; i < beat.pose.steps; i++) await page.evaluate((cy) => { const e = window.__engine(); e.update(1 / 30); const p = e.player; const c = e.camera; c.x = c.targetX = p.x + c.viewportWidth * 0.08 - c.viewportWidth * 0.5; c.y = c.targetY = cy; e.render(); }, camY);
       await page.keyboard.up(beat.pose.key);
+      // (then the game runs on a few frames: the stars turn, the ball rolls)
+      for (let i = 0; i < (beat.pose.after ?? 0); i++) await page.evaluate((cy) => { const e = window.__engine(); e.update(1 / 30); const p = e.player; const c = e.camera; c.x = c.targetX = p.x + c.viewportWidth * 0.08 - c.viewportWidth * 0.5; c.y = c.targetY = cy; e.render(); }, camY);
     }
     // the paste-up points, as screen points of the shot (CSS px x2 for the deviceScaleFactor)
     if (beat.pose.marks) {

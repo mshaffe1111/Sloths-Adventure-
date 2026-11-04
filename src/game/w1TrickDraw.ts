@@ -27,17 +27,18 @@ function star(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
 /** the stars over a dazed (or stiff) trick snake's head; drawn in world space, after the snake */
 export function drawTrickStars(ctx: CanvasRenderingContext2D, e: Enemy, t: number): void {
   if (e.defeated || !isDazed(e) || starsShown(e, t) === 0) return;
-  const cx = e.x;
-  const cy = e.y - 30;
+  // (over its head, which is at the front of its body, facing him; big enough to read on a phone, as the boards showed)
+  const cx = e.x + e.facing * 12;
+  const cy = e.y - 36;
   ctx.save();
   ctx.fillStyle = '#ffe25a';
   ctx.strokeStyle = '#784610';
-  ctx.lineWidth = 1.6;
+  ctx.lineWidth = 2;
   for (let i = 0; i < 5; i++) {
     const a = t * 4.2 + (i * 2 * Math.PI) / 5;
     // (a flat ring seen from the side: the stars behind the head are a little smaller)
     const depth = 0.8 + 0.2 * Math.sin(a);
-    star(ctx, cx + Math.cos(a) * 20, cy + Math.sin(a) * 6, 7 * depth);
+    star(ctx, cx + Math.cos(a) * 24, cy + Math.sin(a) * 7, 10.5 * depth);
   }
   ctx.restore();
 }
@@ -79,9 +80,10 @@ export function drawCoilGlint(ctx: CanvasRenderingContext2D, e: Enemy, t: number
   ctx.save();
   ctx.fillStyle = '#fffbe8';
   ctx.globalAlpha = Math.max(0.25, pulse);
-  for (const [dx, dy, r] of [[-12, -16, 7], [8, -20, 5], [16, -10, 4]] as const) {
+  // (on the coil's own body, which lies between its origin and its feet 16 px below: above it, they vanished against the sky)
+  for (const [dx, dy, r] of [[-12, 4, 7], [8, 0, 5], [17, 8, 4]] as const) {
     const x = e.x + dx * (e.facing > 0 ? 1 : -1);
-    const y = e.y + dy + 8;
+    const y = e.y + dy;
     const rr = r * (0.8 + 0.4 * pulse);
     ctx.beginPath();
     ctx.moveTo(x, y - rr);
