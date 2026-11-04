@@ -29,6 +29,9 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
     check both before filing): 4-6, both bots, 2 of 3 seeds time out at 720 s (the lead says tomorrow); 1-1 kid, 2 of 3 time out;
     10-8 kid, 2 time out; 10-3, rescues and lives up (adult 38 to 55, kid 16 to 33). Ask the lead for owners and tiers in that batch.
   - The builders' planned vs actual resumes tomorrow (the lead stopped supervisor rounds today, budget).
+  - R-3.14 (warmup-5m, 1:45 PM ET): its measuring part (drawWatch's slowdraw events, testers only) went green in the measured
+    release at 1:44 PM ET; that part started 12:04 PM ET, about 1.7 h (check 32c57be7 on the lead branch first). The fix waits on
+    Matt's OnePlus runs after tonight's release: the row stays in progress; note the part's real hours on the row's Time.
 - **D29 (lead, 2026-11-04 12:42 PM ET):** the research was never broken down line by line; three ledger helpers are writing
   reference/research/ledger/. Phase A's 88.5 h is marked "before the research ledger"; no new Phase A estimate until the lead
   sends the ledger's misses (about 2:30 PM ET) for R-ids and hours. R-155's 1-5 build was ON HOLD; corrected by the lead: 1-2 and 1-5 are R-155.1 (w1-rhythm, running), the rest of R-155 stays on hold. R-148.18 closed as A-41 (3342b2cf, lead branch). Known misses: a BPM
