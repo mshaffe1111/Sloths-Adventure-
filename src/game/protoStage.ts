@@ -299,8 +299,10 @@ export const CATCH_HIGH_DX = -10;
 /** 1-5 More Petals asks for 77 (a step up from 1-2's 72; was 90 before the six-a-screen cap left it 108-122), and holds about one and
  *  a half times that */
 export const PETAL_GOAL_15 = 77;
-/** 1-9 The Boa's Branches asks for 16 (24 to 31 to fight, the boas taking three hits each): two in three, not the generated 14 */
-export const GUARD_GOAL_19 = 16;
+/** 1-9 The Boa's Branches: its goal is what the taught first-timer's route delivers (the lead's ruling, counted with the fixed bot,
+ *  2026-11-04, five rolls each): the adult finished 11-20 on Normal, the kid 8-12 on Easy; each asks what every one of those runs made */
+export const GUARD_GOAL_19 = 11;
+export const GUARD_EASY_19 = 8;
 /** 3-3 asks for 12 prowlers driven off (the stage holds about one and a half times that) */
 export const PROWLER_GOAL_33 = 12;
 /** 3-9 The Prowler's Ring: how many prowlers to drive off (the ring's own waves count too, on top of these) */
@@ -5562,7 +5564,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   return {
     config: cfg,
     // (1-3 sets its own goals: withGoals keeps a stage's own when it gives Easy's, goals.ts)
-    ...(plan === '1-3' ? { easyGoal: SNAKE_EASY_13 } : {}),
+    ...(plan === '1-3' ? { easyGoal: SNAKE_EASY_13 } : plan === '1-9' ? { easyGoal: GUARD_EASY_19 } : {}),
     ...(kit ? { kit } : {}),
     trees: T,
     platforms: P,
