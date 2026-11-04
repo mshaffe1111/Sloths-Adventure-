@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 11:53 AM ET
+Last updated 2026-11-04 12:22 PM ET (round 8).
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -36,6 +36,7 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 12:22 PM ET, round 8: digest sent. Wins: warmup-5m's service-worker precache catch and the testers-only switch (gpuDefaultOff PASS); 0.9.4 live (STATUS 12:02). At risk: menus A, R-6.40, has no branch or push 43 min in (asked); fix-petals, R-6.38 pits, start unconfirmed (asked). w8-rope2 bot self-tests still missing after a 2nd bot change (f24deb9f); sent back again, and asked it to merge main. warmup-5m notes nudged.
 - 2026-11-04 11:53 AM ET: w8-rope2 changed the first-timer bot (cdd3ec65: firsttimer.ts +37, World 1 tricks: stomp a dazed snake / kick a coiled boa once
   Dot says so); baseline 0 of 552 runs differ outside W1. SENT BACK: no case in firstTimerBot.test.ts (stage-fix step 0): asked for
   (a) stomp/walk-past, (b) kick/punch-once, (c) untricked guard, each failing without the change. R-150.8 already on its branch.
