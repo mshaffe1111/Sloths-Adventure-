@@ -115,6 +115,10 @@ Every gate in gates.md, in order. Add the two GPU checks above.
   build stamp (Matt's first six "GPU" runs were live 0.9.4).
 
 ## Tried and didn't work
+- 2026-11-04: **Pixel-comparing two builds across page loads** (tools/qa/playerLook.cjs, deleted). The same build shot twice differed by
+  2,000-59,000 px: the 3 s of play before the freeze never lands on the same frame twice. A look proof has to compare both ways inside
+  one page, on one frozen frame (gpuLook.cjs, gpuBackdrop.cjs). For the measured release, the player path was proven by its code
+  instead: with the switch off it makes the same calls as before, and drawcheck passes.
 - Comparing whole-page screenshots: the DOM animations gave 21,000 to 178,000 "different" pixels with nothing changed on the canvas.
 
 ## To try
