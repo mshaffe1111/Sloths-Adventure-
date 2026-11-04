@@ -4,7 +4,7 @@ import { GhostOnExit } from './fx/exitGhost.ts';
 import { ClrRibbon } from './ClrParts.tsx';
 import { DotPerched } from './KitParts.tsx';
 import { HeroPose } from './HeroPose.tsx';
-import { Icon } from './icons/index.tsx';
+import { PaintedIcon } from './icons/PaintedIcon.tsx';
 import { Crest } from './icons/Crest.tsx';
 import { crestName } from './icons/crests.ts';
 import { countValue, easeOut } from './fx/countUp.ts';
@@ -89,7 +89,7 @@ export const BossIntroCard: React.FC<{ levelConfig: LevelConfig; onGo: () => voi
           </div>
           <button type="button" className="pm-go" data-start="true" onClick={onGo}>
             Let's go!
-            <Icon name="swords" size={24} />
+            <PaintedIcon name="clubs" size={26} />
           </button>
           {!COARSE && <p className="clr-note">Space or Enter to start the fight</p>}
         </div>
@@ -153,7 +153,7 @@ export const EndingCard: React.FC<{ onOpenMap: () => void; onOpenTitle: () => vo
         <ClrRibbon title="Meeca is home" />
         <div className="ending-pair" aria-hidden="true">
           <HeroPose frame="cheer_b" height={h} maxWidth={h * 0.8} className="ending-pokey" />
-          <Icon name="heart" size={Math.round(h * 0.22)} className="ending-heart" />
+          <PaintedIcon name="heart" size={Math.round(h * 0.22)} className="ending-heart" />
           <Crest world="meeca" size={Math.round(h * 0.72)} className="ending-meeca" />
         </div>
         <div className="clr-main">
@@ -169,7 +169,7 @@ export const EndingCard: React.FC<{ onOpenMap: () => void; onOpenTitle: () => vo
           </div>
           <button type="button" className="pm-go" data-start="true" onClick={onOpenMap}>
             World map
-            <Icon name="map" size={24} />
+            <PaintedIcon name="map" size={26} />
           </button>
           <div className="clr-sec one">
             <button type="button" className="clr-btn2" onClick={onOpenTitle}>

@@ -2,7 +2,7 @@ import React from 'react';
 import { HERO_ATLAS_SIZE, HERO_FRAMES } from '../game/heroAtlasData.ts';
 import { heroSpriteEnabled } from '../game/heroSprite.ts';
 import { STD_ATLAS_SIZE, STD_ATLAS_URL, stdUi } from '../game/heroStandard.ts';
-import { Icon } from './icons/index.tsx';
+import { PaintedIcon } from './icons/PaintedIcon.tsx';
 
 const ATLAS_URL = new URL('../assets/hero/hero-atlas.webp', import.meta.url).href;
 
@@ -19,7 +19,7 @@ export const HeroFaceIcon: React.FC<{ size?: number; face?: string; className?: 
   if (!heroSpriteEnabled() || !f) {
     return (
       <span className={className} style={{ display: 'inline-flex' }} aria-hidden="true">
-        <Icon name="sloth" size={size * 0.9} />
+        <PaintedIcon name="satchel" size={size * 0.9} />
       </span>
     );
   }
