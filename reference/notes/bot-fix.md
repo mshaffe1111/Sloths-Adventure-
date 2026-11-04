@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 11:35 AM ET
+Last updated: 2026-11-04 11:37 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -14,6 +14,7 @@ when every helper is idle AND the lead says so. Effort: low to medium.
 - fix-petals (World 1 validator): session_01FhBbYNRctndrKCxzfkJ8KU
 - quality supervisor: session_01FhBbYNn4i5tFfFZiFroKoi
 - roadmap-keeper: session_01FhBbYP1yNSfRRofd3CkPwq
+- menus A (R-6.40 new game + 3 save slots, added 11-04 11:37): session_01FhBbYKJALSX3wkm52jNTou; 5.5 h from ~11:37, show-first first.
 - w8-rope2 (R-159.1 combat triangle, added 11-04 7:51 AM ET): session_01FhBbYMTQ1zFtXBWtxzkoxn, branch w8-rope2. PLAN FIRST: no
   game code (src/) until its plan is approved AND GPU stage 0 is merged; check its src diff against main is empty.
 
@@ -35,6 +36,8 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 11:37 AM ET: R-150.8 accepted (lead merge 160b9c6e 11:35); real times sent to the roadmap keeper (start ~10:25, report 10:57, accept 11:35;
+  ~32 min running vs 1.5 h). Lead added menus A (R-6.40, 5.5 h, from ~11:37, due ~5:07 PM) to the rounds; round 7 prompt updated.
 - 2026-11-04 11:35 AM ET: fix-petals R-150.8 final (7b544fe7): gate on 93450fb2 all PASS (2,299/0), sections present, stage-fix.md best result = this
   run. Checked; WIN confirmed to it and the lead. Pending: lead's accept -> real start ~10:25 + accept time to the roadmap keeper.
 - 2026-11-04 11:09 AM ET: day-2 round 6 digest sent (first with wins / overs / standard work). WIN fix-petals R-150.8: plan 1.5 h, ~10:25 -> report 10:57
