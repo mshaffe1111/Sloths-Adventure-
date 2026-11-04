@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 11:39 AM ET
+Last updated: 2026-11-04 11:42 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -36,6 +36,11 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 11:42 AM ET: day-2 round 7 digest sent. main -> 68b31e66 (0.9.4 PR #62 11:30): APK on Releases v0.9.4-31 (verified), deploy run
+  41867948096 in progress at 11:44. No branch contains main yet (merge needed, D23). AT RISK: w8-rope2 holds R-159.1 (QS REDO loop) +
+  R-6.38 pits (not started) -> ~8:30 PM back to back; two fixes proposed. warmup-5m R-3.2 gate green 11:25 (1 h 50 run), accept waits
+  on the phone check; funcheck not on its branch (needed after ccr merge). fix-petals: notes stale + merge main sent 11:43. menus A: no
+  branch yet. Round 8 armed: trig_01WgAtKX4wgjAEbRdoqXfPPi, 12:13.
 - 2026-11-04 11:39 AM ET: lead corrected my R-150.8 comparison: start-to-accept 1.2 h vs 1.5 h (~20% faster), not 3x. Owned; corrections sent to the
   keeper (record 1.2 h) and fix-petals (stage-fix.md best-result line: both numbers).
 - 2026-11-04 11:37 AM ET: R-150.8 accepted (lead merge 160b9c6e 11:35); real times sent to the roadmap keeper (start ~10:25, report 10:57, accept 11:35;
