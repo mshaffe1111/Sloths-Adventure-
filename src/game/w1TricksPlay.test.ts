@@ -366,7 +366,8 @@ test('the stomp vault after a lost life: its snake is back at its spot (the drop
 function raisedWorld() {
   const r = new RealPlay('1-3', 1);
   const edge = 1000, far = edge + TRICK.vaultRiseGap;
-  r.bare([ground(0, edge), ground(edge, TRICK.vaultRiseGap, GROUND + 75), { id: 7, x: far, y: GROUND - TRICK.vaultRise, width: 260, height: TRICK.vaultRise + 90, type: 'solid' } as Platform, ground(far + 260, 1200)]);
+  // (as built: a soft pit under the gap and under the perch, the perch standing over it, ground again past it)
+  r.bare([ground(0, edge), ground(edge, TRICK.vaultRiseGap + 260, GROUND + 130), { id: 7, x: far, y: GROUND - TRICK.vaultRise, width: 260, height: 150, type: 'solid' } as Platform, ground(far + 260, 1200)]);
   const s = animal(1, 'snake', edge - TRICK.vaultLip, { trick: 'lunge', patrolMinX: edge - TRICK.vaultLip - 6, patrolMaxX: edge - TRICK.vaultLip + 4 });
   r.e.enemies = [s];
   return { r, edge, far, s, top: GROUND - TRICK.vaultRise };

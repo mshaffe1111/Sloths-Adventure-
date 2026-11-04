@@ -408,9 +408,9 @@ function vaultRun(who: FirstTimer, seed: number, knows: string[], raised = false
   const top = raised ? Y - TRICK.vaultRise : Y;
   const route = [...Array.from({ length: 60 }, (_, i) => ({ x: 100 + i * 24, y: Y })).filter((q) => q.x < edge), ...Array.from({ length: 60 }, (_, i) => ({ x: far + 20 + i * 24, y: top }))];
   const r = new FirstTimerRun('1-1', seed, who, { route, cap: 14, rescueAfter: 1000 });
-  // (raised: 1-3's teaching vault, a narrow pit with a raised floor, a hop back out, and the far bank up past a jump and its double)
+  // (raised: 1-3's teaching vault as built, a soft pit under the gap and the perch, the perch up past a jump and its double)
   r.sim.bare(raised
-    ? [ground(1, 0, edge), { id: 3, x: edge, y: Y + 75, width: gap, height: 90, type: 'solid' } as Platform, { id: 2, x: far, y: top, width: 3000, height: TRICK.vaultRise + 90, type: 'solid' } as Platform]
+    ? [ground(1, 0, edge), { id: 3, x: edge, y: Y + 130, width: gap + 3000, height: 90, type: 'solid' } as Platform, { id: 2, x: far, y: top, width: 3000, height: 150, type: 'solid' } as Platform]
     : [ground(1, 0, edge), ground(2, far, 3000)]);
   const s = foe('snake', edge - TRICK.vaultLip, { trick: 'lunge', state: 'patrol', patrolMinX: edge - TRICK.vaultLip - 6, patrolMaxX: edge - TRICK.vaultLip + 6 });
   r.sim.e.enemies = [s as never];

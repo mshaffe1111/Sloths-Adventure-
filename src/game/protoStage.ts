@@ -1900,16 +1900,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     E[E.length - 1].vaultHome = { x: sx, y: G - 14 };
     const gap = raised ? TRICK.vaultRiseGap : vaultGap(reachJump(0, true));
     const far = edge + gap;
-    if (soft || raised) softPit(edge, far);
     if (raised) {
-      // the raised bank, and the petals on its top: only the vault reaches them
-      open(far);
-      const w = R.r(240, 280);
-      block(far, far + w, TRICK.vaultRise);
+      // the raised perch over a soft pit, its petals on top: only the vault reaches them. A miss drops into the pit and walks on under
+      // the perch to the pit's step out on the far side (a soft pit is always left forward with single flicks: plainWalk.test.ts)
+      const w = Math.round(R.r(240, 280));
+      softPit(edge, far + w);
+      P.push({ id: pid++, x: far, y: G - TRICK.vaultRise, width: w, height: 150, type: 'solid', style: 'moss_stone' });
       row(far + 50, far + w - 50, G - TRICK.vaultRise - 40, 3, 'orchid');
-      run(w);
+      open(far + w);
       run(R.r(200, 240));
     } else {
+      if (soft) softPit(edge, far);
       // the petals: an arc from the snake along the vault's own path, so the way across is drawn in the air
       // (low enough that each can be had by a jump from the lip, the far bank or the pit floor too: the stage's reach check moved a
       // higher arc's top petals, which only the vault itself reaches)
