@@ -11,3 +11,10 @@ logged run each frame; the animals, the tricks and every hit are the browser eng
   first shows "TOUGH!", and by the fourth it is defeated (+600, the white ghost). Repeated punches beat the armour, so the kick isn't
   needed.
 - Bot goal counts on 9ec60be2 (botBaseline, adult seed 1): 1-3 sealed door, 10 of 16 snakes (base: 15 of 16).
+
+## Re-check on 9c932427 (2026-11-04 ~11:20 AM ET)
+- `1-9-coiled-boa-9c932427-*.jpg` (15.8-18.0 s, the same logged punches at 16.37, 16.60, 16.93 and 17.17 s): the first punch is "TOUGH!".
+  Then the boa uncoils into its strike, and a punch during the strike defeats it (+600). Mashing still beats the boa in under a second,
+  and the kick is never needed.
+- `src/game/w1Tricks.ts` header on 9c932427: "a second hit or a stomp finishes it" (the lunge snake). The lead's call (a), only a stomp
+  finishes a dazed snake, isn't in this build yet.
