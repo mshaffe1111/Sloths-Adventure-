@@ -56,3 +56,6 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - 10:34 AM ET bot-fix nudge (quiet an hour): my slip, I waited for stills instead of watching the build. Countermeasure: on every in-build check-in I record the helper's branch myself (tools/quality on a worktree; a branch with new deps needs its own npm install).
 - R-159.1 in-game check (w8-rope2 9ec60be2, reference/qa-reports/r159-check, 7ca4f6b0): REDO. Coiled boa dies to 4 punches (kick unneeded); stun = punch twice fast (stars never seen); 1-3 goal 10/16. Lean (a): only a stomp ends a stun.
 - New standard (Matt via lead): plans start from the method file; untested approach needs reason + fallback; flag better ways. Proposed botrec as the in-build check method.
+- Method §1b (in-build check with tools/quality) written as standard work: 9f9be400; lead to merge.
+- R-150.8 bot fix (fun-validator 071173a2): PASS (1-4 adult shrine s1-3, 0-2 rescues; kid seed 2 still times out).
+- R-155 1-5 plan (fix-petals 6aeb229b): PASS WITH CHANGES: method file + fallbacks; goal type differs from 1-2 (recommend trail-follow, petals bonus; lead/Matt); a different backdrop; patience beat once and <3 s; name the moment; Dot line must not explain the puzzle.
