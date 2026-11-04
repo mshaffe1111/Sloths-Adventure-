@@ -1,8 +1,9 @@
 /**
  * The GPU layer's check (GPU-RENDERER-PLAN stage 0, R-3.1): node tools/qa/gpuLayer.cjs <dev server url> <out dir> [stage] [WxH]
  *
- *  0. not started while nothing was ever put on it (no context, no Pixi);
- *  1. once something is put on it, mounted: WebGL 2 (never 1); emptied, hidden and idle (no GPU frames, 1x1 buffer), the game running;
+ *  0. started under the title card (stage 1's backdrop); where the copy is a readback (this container) the backdrop went back to the 2D
+ *     canvas before play;
+ *  1. mounted: WebGL 2 (never 1); with nothing on it, hidden and idle (no GPU frames, 1x1 buffer), the game running;
  *  2. the camera drives it: a magenta probe box on the layer at Pokey's world box lands where the 2D canvas draws him, before and after
  *     he walks (the 2D canvas hidden for the shot), within 2 CSS px;
  *  3. context loss: WEBGL_lose_context.loseContext() -> no page error, the 2D game keeps running, the layer skips its frames;
@@ -30,12 +31,11 @@ const ok = (c, msg) => { console.log(`${c ? '✓' : '✗'} ${msg}`); if (!c) fai
   await pg.touchscreen.tap(W / 2, H / 2).catch(() => {});
   await pg.waitForTimeout(2500);
   const E = `(() => { const g = window.__engine; return typeof g === 'function' ? g() : g; })()`;
-  // nothing on it yet: not started at all (no context, no Pixi)
-  const idle0 = await pg.evaluate(() => ({ live: window.__gpu.live(), stats: { ...window.__gpu.stats } }));
-  ok(!idle0.live && idle0.stats.drawn === 0 && idle0.stats.idle === 0, `with nothing ever put on it, the layer is not started (live ${idle0.live}, calls ${idle0.stats.idle})`);
-  // putting something on it starts it; take it off again for the empty-layer checks
-  await pg.evaluate(async () => { await window.__gpu.probe({ x: 0, y: 0, w: 1, h: 1 }); await window.__gpu.probe(null); });
-  await pg.waitForTimeout(800);
+  // stage 1: started under the title card for the backdrop (here the copy is a readback, so the backdrop itself went back to the 2D
+  // canvas before play: backdropGpuOff names why)
+  const idle0 = await pg.evaluate(() => ({ live: window.__gpu.live(), off: window.__gpu.off(), bd: { ...window.__gpu.backdrop } }));
+  ok(idle0.live, `started under the title card (backdrop: ${idle0.off || 'on the GPU'}, ${idle0.bd.copies} copies)`);
+  await pg.waitForTimeout(300);
   const st = await pg.evaluate(`(() => { const cvs = [...document.querySelectorAll('canvas')]; const gpu = cvs[0]; const gl = gpu.getContext('webgl2');
     return { live: window.__gpu.live(), stats: { ...window.__gpu.stats }, gl2: gl instanceof WebGL2RenderingContext, vis: gpu.style.visibility, under: cvs[0].compareDocumentPosition(cvs[1]) & Node.DOCUMENT_POSITION_FOLLOWING, size: [gpu.width, gpu.height], game: [cvs[1].width, cvs[1].height] }; })()`);
   console.log(JSON.stringify(st));
@@ -49,7 +49,7 @@ const ok = (c, msg) => { console.log(`${c ? '✓' : '✗'} ${msg}`); if (!c) fai
     const f = () => { n++; if (performance.now() - t0 < 600) requestAnimationFrame(f); else res({ calls: window.__gpu.stats.idle - i0, rafs: n }); }; requestAnimationFrame(f); })`);
   ok(drive.calls > 0 && drive.calls <= drive.rafs, `the loop hands it each frame: ${drive.calls} layer calls in ${drive.rafs} animation frames (the game draws at most one frame per animation frame, 30 fps)`);
   ok(!!st.under, 'it sits under the game canvas');
-  ok(st.size[0] === 1 && st.size[1] === 1, `with nothing on it, its drawing buffer is 1x1 (${st.size})`);
+  ok(idle0.off ? st.size[0] === 1 && st.size[1] === 1 : true, `with nothing on it and the backdrop on the 2D canvas, its drawing buffer is 1x1 (${st.size})`);
   // the probe at Pokey's box, and where the 2D canvas puts that box on screen
   const probeAt = async (tag) => {
     const want = await pg.evaluate(`(async () => { const e = ${E}; const p = e.player; await window.__gpu.probe({ x: p.x - 20, y: p.y - 60, w: 40, h: 60 }); return true; })()`);
