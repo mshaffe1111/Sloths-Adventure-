@@ -67,6 +67,9 @@ export interface NodeSpec {
   x: number;
   /** Easy: the thumb holds a jump only 70% (physics.ts EASY_HOLD) and every landing pad is wider */
   easy?: boolean;
+  /** refuse a branch up over the end of the ledge he jumps from (he'd stand under it, his head through it; the level check reads it as
+   *  no way up). Off by default, so a builder's fixed steps keep tracing as they did (w1Rise.ts); w1Rhythm.ts fitSteps turns it on */
+  noOverhang?: boolean;
 }
 
 /** a ledge the node needs, left to right (an apron, or the surface under one landing) */
@@ -417,7 +420,7 @@ export function traceNode(spec: NodeSpec): Trace {
         const from = Number.isNaN(tr.from) ? slackX : tr.from;
         if (heightAt(tr.f, near - from) < st.dy - HOIST) throw new Error(`step ${i + 1}: a try from ${Math.round(from)} meets the face of the ${st.surface} at ${near} below its top`);
       }
-    } else if (st.dy > 0 && near < edge + 20) {
+    } else if (spec.noOverhang && st.dy > 0 && near < edge + 20) {
       // (a branch up over the end of the ledge he jumps from: he would stand under it, his head through it, and the level check reads
       // it as no way up)
       throw new Error(`step ${i + 1}: the ${st.surface} at ${near} hangs over the take-off ledge's end (${edge})`);

@@ -179,8 +179,8 @@ export function fitSteps(spec: Omit<NodeSpec, 'steps'>, pal: Palette, R: Rng, tr
     if (steps.length !== ms.length) continue;
     if (pal.end !== undefined && Math.abs(y - pal.end) > 30) continue;
     try {
-      const tr = traceNode({ ...spec, steps });
-      const es = easyNode({ ...spec, steps });
+      const tr = traceNode({ ...spec, steps, noOverhang: true });
+      const es = easyNode({ ...spec, steps, noOverhang: true });
       const easy = traceNode(es);
       if (checkTrace(tr, steps).length || checkTrace(easy, es.steps, true).length) continue;
       return { steps, tr, easy };
