@@ -72,9 +72,18 @@ const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
 const dxTo = (x0: number, x1: number, x: number) => (x < x0 ? x0 - x : x > x1 ? x - x1 : 0);
 export const isLiana = (v: Vine) => v.vineType === 'swing_liana' || !!v.isSwingingVine || !!v.silk;
 
-export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }> = []): Route {
+/**
+ * `double`: link what the second jump reaches on a World 1 stage before 1-6 too. The level check allows the double jump from 1-6 on
+ * (levelCheck.ts doubleAllowed: the stages that may ask for it), but the engine gives Pokey the second jump from the start and 1-1's twist
+ * teaches it, so 1-1's finish (a mushroom up to branches 240 px over the floor, double-jump gaps between them) is only reachable with it.
+ * The first-timer bot's guiding route asks for it (fix-petals, 2026-11-04: without it the route ran along the floor and took each earth
+ * wall on trust, and the bot was rescued at the foot of every one); the bot still jumps twice only once Dot's tip has taught it.
+ */
+export function findRoute(stage: Stage, targets: Array<{ x: number; y: number }> = [], opts: { double?: boolean } = {}): Route {
   let graph: CheckGraph | null = null;
-  validateStage(stage, { inspect: (g) => (graph = g) });
+  const mission = (stage.config.worldIndex - 1) * 10 + stage.config.miniIndex;
+  const checked = opts.double && mission < 6 ? ({ ...stage, config: { ...stage.config, worldIndex: 1, miniIndex: 6 } } as Stage) : stage;
+  validateStage(checked, { inspect: (g) => (graph = g) });
   const g = graph as CheckGraph | null;
   const nodes = new Map<string, Node>();
   const edges = new Map<string, Edge[]>();

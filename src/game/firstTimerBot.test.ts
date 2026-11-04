@@ -186,3 +186,70 @@ test("5-9's Easy goal rests on the kid's runs: re-measured, they are still the o
     entry.easyGoal = kept;
   }
 });
+
+// ---- the mushroom's bounce (fix-petals, 2026-11-04) ----
+// 1-1's high runs: a mushroom on the floor up to branches 245 px over it (one bounce rises about 180), double-jump gaps between them, an
+// earth wall at the end only they reach. The bot never flicked a second time after a bounce, walked off the branches and was rescued at
+// the foot of every wall (10-21 times a run on 1-1).
+const shroomWorld = (): Platform[] => {
+  const P = (id: number, x: number, y: number, width: number, height = 24, type: Platform['type'] = 'solid'): Platform => ({ id, x, y, width, height, type }) as Platform;
+  return [
+    P(1, 0, Y, 1760, 90), // the floor, to the wall's foot
+    P(2, 900, Y - 30, 70, 30, 'bouncy'), // the mushroom
+    P(3, 940, Y - 245, 210), // branch A
+    P(4, 1360, Y - 245, 200), // branch B, 210 px on (a double)
+    P(5, 1760, Y - 245, 1600, 245), // the earth wall and the high ground past it
+  ];
+};
+const shroomRoute = (): Array<{ x: number; y: number }> => {
+  const pts: Array<{ x: number; y: number }> = [];
+  for (let x = 100; x < 940; x += 24) pts.push({ x, y: Y });
+  for (let x = 940; x < 3300; x += 24) pts.push({ x, y: Y - 245 });
+  return pts;
+};
+function shroomRun(who: FirstTimer, seed: number, taught: boolean, id = '1-1') {
+  const r = new FirstTimerRun(id, seed, who, { route: shroomRoute(), cap: 40, rescueAfter: 1000 });
+  r.sim.bare(shroomWorld());
+  r.sim.stand(300, Y);
+  r.prog.relocate(r.sim.p);
+  if (taught) (r as unknown as { learned: Set<string> }).learned.add('double');
+  let up = -1;
+  const frame = r.sim.frame.bind(r.sim);
+  r.sim.frame = (pad?: Pad) => {
+    frame(pad);
+    const p = r.sim.p;
+    if (up < 0 && p.grounded && p.x > 1800 && Math.abs(p.y - (Y - 245)) < 4) up = r.sim.t;
+  };
+  r.play();
+  return { r, up };
+}
+for (const [name, who] of WHO) {
+  test(`${name}: taught the second jump, a mushroom's bounce takes him up to the branches, across a double gap and onto the wall's top`, () => {
+    let made = 0;
+    for (const seed of [1, 2, 3, 4, 5]) {
+      const { r, up } = shroomRun(who, seed, true);
+      // (up on his own: before the fix every run got there only by a rescue, 18-33 s in)
+      if (up > 0 && r.rescues === 0) made++;
+    }
+    // (a first-timer's thumb can still miss a double now and then: most runs make it)
+    assert.ok(made >= 4, `${made} of 5 got up onto the high ground without a rescue`);
+  });
+  test(`${name}: before Dot's tip teaches the second jump, his first bounce is a plain one (a double only after it fell short)`, () => {
+    for (const seed of [1, 2]) {
+      const { r } = shroomRun(who, seed, false);
+      const first = r.tries.find((t) => Math.abs(t.y - (Y - 30)) < 6 && t.x > 860 && t.x < 1000);
+      assert.ok(first, `seed ${seed}: no bounce tried`);
+      assert.equal(first.kind, 'single', `seed ${seed}: the first bounce was a ${first.kind}, untaught`);
+    }
+  });
+  test(`${name}: on a stage after 1-1 (whose hint teaches it) he knows the second jump from the start, and the first bounce takes him up`, () => {
+    let made = 0;
+    for (const seed of [1, 2, 3]) {
+      const { r, up } = shroomRun(who, seed, false, '1-5');
+      const first = r.tries.find((t) => Math.abs(t.y - (Y - 30)) < 6 && t.x > 860 && t.x < 1000);
+      assert.equal(first?.kind, 'double', `seed ${seed}`);
+      if (up > 0 && r.rescues === 0) made++;
+    }
+    assert.ok(made >= 2, `${made} of 3 got up without a rescue`);
+  });
+}

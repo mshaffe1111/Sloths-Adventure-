@@ -7,9 +7,11 @@ you write one. Your report MUST have "Method used", "Lessons applied" (which lin
 A report without them is sent back unread. You do not edit this sheet or a method file yourself: you PROPOSE the change in "Method update" (what worked better with proof, what failed and why, a lesson that is wrong or out of date), and the lead merges proven changes when it accepts your work. The one exception: a job with no method file gets one written by you. Your first-time gate result and redo count go on reference/HELPERS.md; the helpers
 that do the best job get the follow-on work.
 
-**Quality sets the date (Matt, 2026-11-02: "even if it takes longer... we can't do it half-assed. It has to still be quality. And if that pushes the timetable, pushes the timetable.")** No estimate, schedule or token budget is a reason to ship something dull, easy-by-accident or rough. Cut scope or take longer; never cut the bar. **Going quick and sloppy is a failure** (Matt, 2026-11-02): fast work that has to be redone, corrected or caught by someone else counts as a miss, not as speed.
+**Quality sets the date (Matt, 2026-11-02: "even if it takes longer... we can't do it half-assed. It has to still be quality. And if that pushes the timetable, pushes the timetable.")** No estimate, schedule or token budget is a reason to ship something dull, easy-by-accident or rough. Cut scope or take longer; never cut the bar. **Going quick and sloppy is a failure** (Matt, 2026-11-02): fast work that has to be redone, corrected or caught by someone else counts as a miss, not as speed. **Tokens come down by learning, never by cutting checks** (Matt, 2026-11-04): write what worked into your method so the next job of its kind costs less.
 
 **For the lead: a helper's failure is the manager's first (Matt, 2026-11-02: "being a manager is harder than being a worker").** Before sending back or retiring, find what the lead's setup made likely and change the system, not the helper's effort. (D27)
+
+**Standard work (Matt, 2026-11-04):** start from your job's method file and its best known result; don't experiment when a known way works. If you find a faster or better way, prove it and propose it: it becomes everyone's way.
 
 **Judging your own work**
 - Judge the real screen, in every save state (fresh, old, half-played, finished) and both orientations. Never from a list or one happy shot. (D1, D2, D12)
@@ -41,6 +43,9 @@ that do the best job get the follow-on work.
 
 **Words**
 - Player-facing words are written per item, in the character's voice. No filler, no repeats on a page, no apology for missing data. (D1, law 6)
+
+**Reaching Matt**
+- A test link or preview reaches Matt only when it is opened for him (Artifact open) and its link is the first line of the message; a URL buried in a report is not delivered. (D28)
 
 **Art and money**
 - Hugging Face has $72 left, total, no top-ups. Matt approves every picture list, one at a time, before any spend.

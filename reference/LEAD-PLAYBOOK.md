@@ -95,6 +95,7 @@ A helper's report is not proof. Before merging:
 - Matt's current instruction: one QA bot, random levels, to keep cost down; full sweeps only when Matt asks (e.g. a world rebuilt).
 
 ## 6. Releases
+- **Test links reach Matt (D28):** after any test-link publish, the lead calls Artifact `open` on it and puts the link in the FIRST line of the message, never buried in a report.
 
 Step zero of every test link and every release: read reference/PARTNER.md and go through its "little pieces" list (Matt, 2026-10-29).
 
@@ -196,3 +197,10 @@ Matt found it on his phone. Rules from now on:
 - **Notes, not rotation (Matt, 2026-11-02).** Every helper keeps reference/notes/<name>.md like the lead's STATUS.md and reads it after
   every compression (the start-up print reminds it). Long-running helpers carry on; we do not rotate or retire for memory. The lead checks
   a helper's notes file at each check-in: stale notes are a send-back.
+
+## 8e. Standard work and yokoten (Matt, 2026-11-04)
+Matt accepts going a little over budget up front "with the understanding that smarter and more efficient gets more things done afterwards.
+And it may even be less helpers... because we're much more efficient." The lead pushes the supervisors to hold every helper to the method
+file and its best measured result; the best way found by any helper becomes everyone's way the same day (roles/SUPERVISOR.md "Standard
+work"). The measure: the same kind of job costs less each time (GAMEPLAN §5, §8); fewer helpers doing more is the goal, not more helpers.
+
