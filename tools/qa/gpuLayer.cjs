@@ -55,11 +55,11 @@ const ok = (c, msg) => { console.log(`${c ? '✓' : '✗'} ${msg}`); if (!c) fai
     const want = await pg.evaluate(`(async () => { const e = ${E}; const p = e.player; await window.__gpu.probe({ x: p.x - 20, y: p.y - 60, w: 40, h: 60 }); return true; })()`);
     await pg.waitForTimeout(400);
     // the expected box, from the very frame the layer drew: freeze the game, draw one more frame of both
-    const exp = await pg.evaluate(`(() => { const e = ${E}; e.stop(); e.render(); window.__gpuFrame && 0; const p = e.player; const z = e.zoom; const tx = e.gpuTx, ty = e.gpuTy;
+    const exp = await pg.evaluate(`(() => { const e = ${E}; e.stop(); e.resizeCanvas(); e.render(); window.__gpuFrame && 0; const p = e.player; const z = e.zoom; const tx = e.gpuTx, ty = e.gpuTy;
       return { x0: (p.x - 20 + tx) * z, y0: (p.y - 60 + ty) * z, x1: (p.x + 20 + tx) * z, y1: (p.y + ty) * z, tx, ty, z }; })()`);
     await pg.evaluate(`(() => { const e = ${E}; const g = window.__gpu; return g; })()`);
     // (one layer frame for the frozen camera, then the 2D canvas hidden for the shot)
-    await pg.evaluate(`(async () => { const m = await import('/src/game/gpuLayer.ts'); const e = ${E}; m.drawGpuFrame(e.gpuTx, e.gpuTy, e.zoom); document.querySelectorAll('canvas')[1].style.visibility = 'hidden'; })()`);
+    await pg.evaluate(`(async () => { const e = ${E}; window.__gpu.frame(e.gpuTx, e.gpuTy, e.zoom); document.querySelectorAll('canvas')[1].style.visibility = 'hidden'; })()`);
     await pg.waitForTimeout(300);
     const shot = `${out}/probe-${tag}.png`;
     await pg.screenshot({ path: shot });

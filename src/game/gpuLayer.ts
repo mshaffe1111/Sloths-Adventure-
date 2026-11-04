@@ -94,7 +94,7 @@ export function mountGpuLayer(canvas: HTMLCanvasElement | null = home): Promise<
       const gl = makeGl2(canvas);
       if (!gl) return null;
       try {
-        const pixi = await import('pixi.js');
+        const pixi = await import('./gpuPixi.ts');
         const { WebGLRenderer, Container } = pixi;
         P = { Sprite: pixi.Sprite, Texture: pixi.Texture, Rectangle: pixi.Rectangle, Container };
         const renderer = new WebGLRenderer();
@@ -221,7 +221,7 @@ export async function gpuProbe(box: { x: number; y: number; w: number; h: number
   // (putting something on the layer is what starts it)
   if (!live && (!box || !(await mountGpuLayer()))) return false;
   if (!live) return false;
-  const { Graphics } = await import('pixi.js');
+  const { Graphics } = await import('./gpuPixi.ts');
   for (const c of [...live.world.children]) if (c.label === 'probe') c.destroy();
   if (!box) return true;
   const g = new Graphics();
