@@ -1,11 +1,11 @@
 # fix-petals: helper notes
 
-## Now (2026-11-04 9:18 AM ET): fun-validator ACCEPTED by the quality supervisor (7909cf11, PASS)
-She will use its flags as the checklist for every World 1 rebuild ("looks like"/"moves like", "nothing bites", padding, "one tempo").
-Done and pushed: the bot's bounce fix (World 1 rescues 418 -> 194), all REDOs, variety = the more alike of moves and look, 1-8's chase
-art measured. Open with the lead: KID_RUNS_59 (re-measured, goal unchanged at 5); the 1-2 sunk-step pale edge (defect log, via the QS).
-NEXT, unless the lead says otherwise: the validator as a gate (a world's flags may only shrink). Named limits: the bot's step-down miss
-rule (1-1 x1380, 1-2 x15435); 1-1 kid seed 1 can't go back to the mushroom after a missed double.
+## Now (2026-11-04 9:42 AM ET): the fun gate built and proven in CI; reported to the lead
+fun-validator 98be8f98 (gate 14777165). tools/validate/funcheck.ts (45 s here, 38 s in CI) + funknown.json (152 entries, 2072
+stage-layout flags); knowncheck counts one id per layout; wired into gates.yml, CLAUDE.md, gates.md, tools/README.md, validator.md.
+Proven: two runs identical; CI run 41848331105 green, its log "PASS (152 known, 2072 ...; 38 s)"; a raised count fails knowncheck, a lowered
+count fails the gate as "worse", a better stage fails until lowered. The validator was accepted earlier (QS PASS 7909cf11; lead OK, KID_RUNS_59 OK).
+NEXT: whatever the lead gives. Watch: the lead's merge into its branch must re-run funcheck (any World 1 change there moves the counts).
 
 ## The job, as briefed
 1. R-150.4 mechanics-in-use table, 1-1..1-9 and the boss: what the player meets (stage data + a bot run) against what the engine has.
