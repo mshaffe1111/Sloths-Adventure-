@@ -2829,6 +2829,9 @@ const flagsCapped = (st: GeneratedStage): GeneratedStage => {
   return st;
 };
 
+/** the hand-built stages whose builder lays Easy itself (the rest are made gentler on the built stage alone: easyMode.ts) */
+const EASY_BUILT: ReadonlySet<string> = new Set(['1-1', '1-4']);
+
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
@@ -2841,7 +2844,9 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) {
-    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
+    // (1-1 and 1-4 are built for Easy too, on the beat: Easy's lower rises, longer creaks and soft falls are laid by the builder; w1-rhythm
+    // does the same for 1-2 and 1-5)
+    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && EASY_BUILT.has(config.id)));
     addMissingFind(st);
     return difficulty === 'normal' ? w4Normal(st) : st;
   }

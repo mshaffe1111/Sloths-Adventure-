@@ -123,8 +123,8 @@ function dipsOf(sim: RealPlay): Platform[] {
     return [Math.min(...xs) - 200, Math.max(...xs) + 200];
   });
   const wet = (x0: number, x1: number) => (st.rivers ?? []).some((r) => r.x1 > x0 && r.x0 < x1);
-  // (the stage's own floor: G on every stage built at the ground, the spawn's height where a stage is built from the floor up, 1-1)
-  const g = st.spawnY ?? G;
+  // (the stage's own floor: G on every stage built at the ground; 1-1 is built from the floor up, its floor at the spawn's height)
+  const g = st.config.id === '1-1' ? st.spawnY : G;
   return sim.platforms.filter((q) => solidish(q) && q.y > g + 30 && q.y <= g + 220 && q.width >= 40 && !wet(q.x, q.x + q.width)
     && !rooms.some(([a, b]) => q.x + q.width > a && q.x < b)
     && !sim.platforms.some((o) => o !== q && solidish(o) && o.y < q.y && o.y + o.height > q.y - 4 && o.x <= q.x + 20 && o.x + o.width >= q.x + 20));
@@ -154,7 +154,7 @@ function leaveDip(sim: RealPlay, d: Platform): number {
     sim.frame({ right: p.grounded && !face && hold <= 0, press, jump: hold > 0 });
     hold--;
     if (sim.died) return -1;
-    if (sim.p.grounded && sim.p.y <= Math.min(d.y - 20, (sim.stage.spawnY ?? G) + 2) && sim.p.x > d.x + d.width + 30) return flicks;
+    if (sim.p.grounded && sim.p.y <= Math.min(d.y - 20, (sim.stage.config.id === '1-1' ? sim.stage.spawnY : G) + 2) && sim.p.x > d.x + d.width + 30) return flicks;
     if (flicks > 6) break;
   }
   return -1;

@@ -151,7 +151,10 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     leave();
     const was = kind;
     // (Easy: easyNode lowers every rise; the drops come down with them, so Easy's climb keeps its shape, floor to canopy)
-    const spec: NodeSpec = { bpm, x, y, bars, steps: easy ? steps.map((st) => (st.dy < 0 ? { ...st, dy: Math.round(st.dy * 0.65) } : st)) : steps };
+    // (Easy: a run of quarter-note hops is played at half the pace: with Easy's wider pads and lower drops, hops a beat apart merged
+    // into walk-offs, a dead walk down a slope)
+    const easyBars = (bs: string[]) => bs.flatMap((b) => (b === 'x.x.x...' ? ['x...x...', 'x.......'] : b === 'x.x.x.x.' ? ['x...x...', 'x...x...'] : [b]));
+    const spec: NodeSpec = { bpm, x, y, bars: easy ? easyBars(bars) : bars, steps: easy ? steps.map((st) => (st.dy < 0 ? { ...st, dy: Math.round(st.dy * 0.65) } : st)) : steps };
     const tr = traceNode(easy ? easyNode(spec) : spec);
     tr.ledges.forEach((l, i) => {
       const last = i === tr.ledges.length - 1;
@@ -195,17 +198,22 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     from = edge + gapW;
     y = ny;
     kind = onto;
-    x = from + 120;
+    // (the next node's apron starts just past the landing: a bounce is 1.5-2 s of no input, so a long run-out after it is a dead walk)
+    x = from + 30;
     expert += 1.4 + gapW / RUN;
   };
 
   /** a quiet walk with root knots to step over (small hops: a bump in the walk, not a move) */
   const stroll = (len: number, knots: number) => {
     const x0 = x;
-    // (the first knot and the last close to the ends: a quiet walk is never 2.5 s without one)
-    const gap = (len - 2 * 160) / Math.max(1, knots - 1);
-    for (let k = 0; k < knots; k++) {
-      walk(k === 0 ? 160 : gap);
+    // (the first knot and the last close to the ends, since the node before ends on its exit apron and the next starts on its entrance
+    // apron, and a knot every 330 px or so: a quiet walk is never 2.5 s without one)
+    const END = 50;
+    const n = Math.max(knots, Math.ceil(len / 330));
+    // (the knots' own width is part of the length)
+    const gap = (len - 2 * END - n * 90) / Math.max(1, n - 1);
+    for (let k = 0; k < n; k++) {
+      walk(k === 0 ? END : gap);
       // (the surface breaks round each knot, as the floor's stumps do: on one long piece under it the level check walked through it)
       leave();
       const kw = Math.round(R.r(80, 100));
@@ -214,7 +222,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
       walk(kw);
       from = x;
     }
-    walk(160);
+    walk(END);
     pieces.push({ k: 'rest', x0, x1: x });
   };
 
@@ -231,7 +239,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     // every 2.5-4 s, and the walk is never 2.5 s without something under the thumb)
     node(['h.......', 'h.......', 'h.......', 'h.......', 'h.......', 'h.......'], [J(0, 'bank'), J(40, 'stump'), H(-40, 'bank'), J(0, 'bank'), J(30, 'stump'), H(-30, 'bank')], () => 'soft');
     // (the ramp's entrance apron is this one's exit apron: two in a row were 400 px of flat ground)
-    x -= 200;
+    x = Math.max(from + 200, x - 420);
     pieces.push({ k: 'floor', x0: 0, x1: x });
   });
 
@@ -249,10 +257,10 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
 
   // ---- 4. The bank's last steps (ramp): longer gaps now, down and up, and the second mushroom onto the bank's top
   beat('Ramp: the last steps', () => {
-    const x0 = x;
     node(['h.......', 'h...h...', 'h.......', 'h...h...', 'h.......'], [J(0, 'stump'), J(steps[2], 'stump'), H(-40, 'stump'), J(0, 'stump'), J(60, 'stump'), J(0, 'stump'), H(-30, 'stump')], () => 'soft', { earth: true });
     bounce(BOUNCE_UP - 10, 'earth', 'soft');
-    pieces.push({ k: 'bank', x0, x1: x });
+    // (one ramp up the bank, in two parts with no rest between: one piece, not the same piece twice)
+    pieces[pieces.length - 1].x1 = x;
   });
 
   // ---- 5. The bank top (rest): no move. Dot names the second jump; a shelf over the path only it reaches is there to try it on (a miss
@@ -263,7 +271,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     stroll(Math.round(R.r(700, 760)), 2);
     lay(x + 40, x + 210, y - 150, 'branch');
     flower(x + 125, y - 150 - 34, 'hibiscus');
-    walk(260);
+    walk(100);
   });
 
   // ---- 5b. Down the roots (the wave dips): off the bank top down the kapok's roots, earth steps going down and across, half and whole
@@ -288,7 +296,8 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   beat('Spike: up into the canopy', () => guard(() => {
     const x0 = x;
     node(['h.......', 'h...h...', 'x.x.x.x.', 'h.......', 'h...h...', 'h.......'],
-      [D(140), J(0), H(-50), H(-20), H(-35), H(-15), H(-30), D(150), J(20), J(-30), D(150)], () => 'catch');
+      // (Easy: one gap in four open air, a soft fall back to the spike's flag; on Easy the guard is no hurt, so all catches cost nothing)
+      [D(140), J(0), H(-50), H(-20), H(-35), H(-15), H(-30), D(150), J(20), J(-30), D(150)], (i) => (easy && i % 4 === 3 ? 'pit' : 'catch'));
     pieces.push({ k: 'canopy', x0, x1: x });
   }));
 
@@ -309,11 +318,14 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     const forkX = x;
     // the low road
     const lowFrom = x;
-    node(['h...h...', 'x.x.x...'], [J(0), H(-40), H(-20), H(-35), H(-25)], () => 'catch', { flag: false });
+    // (Easy: every third gap open air, Easy's soft fall back to the flag: on Easy the guard under the low road is no hurt, so a catch
+    // under every gap made the whole road cost nothing)
+    const lowU = (i: number): Under => (easy && i % 3 === 2 ? 'pit' : 'catch');
+    node(['h...h...', 'x.x.x...'], [J(0), H(-40), H(-20), H(-35), H(-25)], lowU, { flag: false });
     bounce(BOUNCE_UP - 20, 'branch', 'catch');
     // (a flag on the low road halfway: LV-9, never 4000 px without one)
     flag(x + 60);
-    node(['h.......', 'h...h...', 'x.x.x.x.'], [J(0), H(-30), J(20), H(-35), H(-20), H(-30), H(-25)], () => 'catch', { flag: false });
+    node(['h.......', 'h...h...', 'x.x.x.x.'], [J(0), H(-30), J(20), H(-35), H(-20), H(-30), H(-25)], lowU, { flag: false });
     bounce(BOUNCE_UP - 10, 'branch', 'catch');
     guarded.push({ x0: Math.round(lowFrom - 100), x1: Math.round(x + 100) });
     const sx = x, sy = y, sf = from, sk = kind;
@@ -322,7 +334,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     y = y0 - BOUNCE_UP;
     from = forkX - 30;
     kind = 'branch';
-    x = forkX + 170;
+    x = forkX - 40;
     node(['h....o..', '....h...', 'h.......', 'h....o..', '....h...'], [J(0), D(40), J(-20), J(0), D(0), J(-30), J(0)], () => 'pit', { flag: false });
     lay(from, x, y, 'branch');
     C.push({ id: cid++, type: 'seed', x: Math.round(x - 80), y: y - 40, collected: false, bobPhase: 1, findId: 'seed-1' });

@@ -87,3 +87,14 @@ test('1-4: every trunk stands on a branch (or the floor) and reaches a branch at
     assert.ok(st.collectibles.some((c) => c.type === 'seed' && Math.abs(c.x - h[0].x) < 2 && Math.abs(c.y - h[0].y) < 10), `seed ${s}: a seed in the hollow`);
   }
 });
+
+test('1-4: no bough crosses a liana; each hangs from the bough over it (a liana drawn through a branch, found 2026-11-04)', () => {
+  for (const easy of [false, true]) for (const s of SEEDS) {
+    const st = buildProtoStage(cfg, s, '1-4', easy);
+    for (const v of st.vines.filter((v) => v.isSwingingVine)) {
+      const across = st.platforms.filter((p) => p.x < v.x + 15 && p.x + p.width > v.x - 15 && p.y > v.topY + 2 && p.y < v.bottomY + 10);
+      assert.deepEqual(across.map((p) => p.id), [], `seed ${s} ${easy ? 'Easy' : 'Normal'}: liana at ${v.x}`);
+      assert.ok(st.platforms.some((p) => p.x < v.x + 15 && p.x + p.width > v.x - 15 && p.y <= v.topY + 2 && p.y > v.topY - 30), `seed ${s}: liana at ${v.x} hangs from nothing`);
+    }
+  }
+});

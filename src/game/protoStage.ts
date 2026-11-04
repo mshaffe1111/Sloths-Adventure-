@@ -5927,6 +5927,9 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
 
     // ---- 5b. The swing between trunks (1-2's liana comes back): from the spike's end, a liana over the gap to the next trunk's bough
     /** a liana from the end of `cur` over a gap to a bough, checked with the swing's own physics; the way `way` goes, else back */
+    /** the top of the last liana: a bough built over it sits above its top, so the liana hangs from it and never through it */
+    let swingTop = Infinity;
+    const overSwing = (h: number, below = 0) => (swingTop < Infinity ? Math.max(h, cur.y - swingTop + 20 + below) : h);
     const swingOn = (): boolean => {
       const y = cur.y;
       for (const d of [way, flip(way)] as const) {
@@ -5943,8 +5946,9 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
           if (fx0 < KAPOK_MARGIN || fx0 + w > W - KAPOK_MARGIN || blocked(fx0, fx0 + w, y)) continue;
           const vx = d === 1 ? v.x : 2 * edge - v.x;
           V.push({ ...v, id: vid++, x: Math.round(vx), swayPhase: (vx * 0.013) % 6.28 });
-          row(Math.min(edge, vx) + 20, Math.max(edge, vx) + 60, Math.min(y - 150, top + 200), 2, 'hibiscus');
+          row(Math.min(edge, vx) + 20, Math.max(edge, vx) - 20, Math.min(y - 150, top + 200), 2, 'hibiscus');
           cur = ledge(fx0, fx0 + w, y);
+          swingTop = top;
           expert += (d0 + d1) / 430 + 0.8 + w / RUN;
           way = d;
           return true;
@@ -5965,7 +5969,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       // (the ledge grows back the way he came, over the swing's gap, toward the middle of the tree)
       // (a tall trunk: the run across the tree from here comes down a little, and must stay out of a double jump's reach of the spike's
       // row under it, or the second jump off the spike's trunk would skip the limbs, the swing and the fork)
-      trunkUp(tx, Math.round(R.r(340, 360)), way === 1 ? tx - w : tx - 40, way === 1 ? tx + 40 : tx + w);
+      trunkUp(tx, overSwing(Math.round(R.r(340, 360))), way === 1 ? tx - w : tx - 40, way === 1 ? tx + 40 : tx + w);
       hint('The crown! Up there, see?', 'The crown! Up there, see?', 'The crown! Up there, see?', cur.y + 10);
       knots14(3);
       flag();
@@ -6065,7 +6069,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       {
         const d3 = flip(way);
         const t3 = d3 === 1 ? cur.x + 70 : cur.x + cur.width - 70;
-        trunkUp(t3, Math.round(R.r(280, 300)), d3 === 1 ? t3 - 40 : t3 - 200, d3 === 1 ? t3 + 200 : t3 + 40);
+        trunkUp(t3, overSwing(Math.round(R.r(280, 300)), 24), d3 === 1 ? t3 - 40 : t3 - 200, d3 === 1 ? t3 + 200 : t3 + 40);
         const [b3, s3, e3] = fitRun(d3, [[['h...h...', 'h.......'], [B_(-20), C_(10), B_(30)]], [['h...h...'], [B_(-20), C_(10)]]], 400);
         beatRun(b3, s3, e3);
         way = e3;
