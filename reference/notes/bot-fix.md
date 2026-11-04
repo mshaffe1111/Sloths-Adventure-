@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 11:42 AM ET
+Last updated: 2026-11-04 11:47 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -36,6 +36,8 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 11:47 AM ET: fix-petals merged main 68b31e66 + ccr (verified: contains main; gates.yml/CLAUDE.md/gates.md identical to ccr; notes 11:46).
+  Lead moved R-6.38 pits from w8-rope2 to fix-petals (STATUS 11:43): my at-risk flag acted on. New rule: no typed ids from helpers.
 - 2026-11-04 11:42 AM ET: day-2 round 7 digest sent. main -> 68b31e66 (0.9.4 PR #62 11:30): APK on Releases v0.9.4-31 (verified), deploy run
   41867948096 in progress at 11:44. No branch contains main yet (merge needed, D23). AT RISK: w8-rope2 holds R-159.1 (QS REDO loop) +
   R-6.38 pits (not started) -> ~8:30 PM back to back; two fixes proposed. warmup-5m R-3.2 gate green 11:25 (1 h 50 run), accept waits
@@ -128,6 +130,8 @@ Escalate at once: a law broken, a retirement trigger, a red gate on a release br
 - 2026-11-04 02:33 AM ET: bot-fix restarted from main 1dc39cd7 (the old bot-fix, 912b2fe6, is merged). Onboarding sent to the lead; waiting for its OK.
 
 ## My pitfalls
+- **Helpers don't type commit ids any more (lead 11-04, LESSONS):** they say what they pushed and where; I read every id from git. Never ask
+  a helper for an id, never count it down for leaving one out.
 - **Compare like with like: estimates are START-TO-ACCEPT** (the keeper's rule). Report start-to-accept vs plan AND running time
   separately; "faster than planned" only on start-to-accept (11-04: I called R-150.8 "3x" from 32 min running vs 1.5 h; real 1.2 h vs 1.5 h).
 - **Approvals and money: check reference/STATUS.md on origin/ccr-0d59a91c-oy3imz FIRST, and read matches from the NEWEST (tail / no head
