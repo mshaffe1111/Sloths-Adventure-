@@ -27,7 +27,7 @@ test('a soft pit (a floor 130 down) is found with its steps; a 75 px sunk step i
   const g = findW1Pits(ps);
   assert.equal(g.length, 2, JSON.stringify(g));
   assert.deepEqual([g[0].x0, g[0].x1, g[0].kind, g[0].floor], [1000, 1600, 'soft', G + 130]);
-  assert.deepEqual(g[0].steps, [[1530, G + 75, 70, 55]]);
+  assert.deepEqual(g[0].steps, [[1530, G + 75, 70, 55, true]]);
   assert.equal(g[0].lipL && g[0].lipR, true);
   assert.deepEqual([g[1].x0, g[1].x1, g[1].kind], [3080, 3300, 'fall']);
 });

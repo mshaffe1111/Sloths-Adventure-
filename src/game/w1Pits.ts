@@ -1,11 +1,13 @@
 /**
  * World 1's pits, painted (R-6.38, fix-petals 2026-11-04; the pictures are R-159.1's, approved by Matt on the pit list, PIT-LIST.md, and
- * accepted by the lead: the drop s52-7, the lip s55-7, the bed s60-7, the high drop s65-23; cut by tools/art/combat/pitcut.py).
+ * accepted by the lead: the drop s52-7, the lip s55-7, the bed s60-7, cut by tools/art/combat/pitcut.py; the high drop s65-23 read as a
+ * grey haze box over 1-8's gaps and is not used: 1-8's gaps darken the foliage behind them and end on 1-8's own broken-branch pieces).
  * The quality supervisor's stills: a gap Pokey falls through read as more foliage (1-8) or as a log over a muddy stream (1-3, 1-5, 1-9).
  * Now:
  *   - a soft pit (World 1's vault pits: a floor 100-200 px down, a miss costs nothing): the drop down its walls, dark earth and roots to
  *     its floor, the torn lip at each end where the ground is a bank of earth, and the bed of big leaves on its floor: a pit, and a soft one;
- *   - 1-8's long branch (a stage with the chase): the high drop under each gap, canopy tops far below in a mist band going black;
+ *   - 1-8's long branch (a stage with the chase): the foliage behind each gap going dark into black, its sides uneven, and the branch's
+ *     torn ends at both sides (1-8's own breaking-branch halves, protoArt.ts drawChaseBroken);
  *   - a floorless gap a builder marks with `pit: 'drop'` on either bank (1-9's hard vault): the drop all the way down, over the water;
  *   - an unmarked floorless gap anywhere else in World 1 is water (1-6's, with Dot's "Careful, water!" and its sign): it keeps its water.
  * For the builders (W1-REBUILD-PLAN): a soft pit needs nothing but a floor SOFT_FLOOR to FALL_BELOW px down and a piece standing in it as
@@ -20,7 +22,6 @@ const URL_OF = {
   drop: new URL('../assets/props/pits/w1-drop.webp', import.meta.url).href,
   lip: new URL('../assets/props/pits/w1-lip.webp', import.meta.url).href,
   bed: new URL('../assets/props/pits/w1-bed.webp', import.meta.url).href,
-  high: new URL('../assets/props/pits/w1-high.webp', import.meta.url).href,
 } as const;
 type Pic = keyof typeof URL_OF;
 export const W1_PIT_URLS: readonly string[] = Object.values(URL_OF);
@@ -45,21 +46,19 @@ export function w1PitsReady(): boolean {
 }
 
 /** the world px each picture is drawn at (its height follows its own proportions) */
-export const PIT_SIZE = { dropTile: 256, highTile: 512, lipW: 84, bedTile: 220 } as const;
+export const PIT_SIZE = { dropTile: 256, lipW: 84, bedTile: 220 } as const;
 /** deeper than this under the ground line and there is no floor: a fall */
 export const FALL_BELOW = 200;
 /** the ground line drops this far and it is a gap (a sunk step or a pit) */
 export const SOFT_BELOW = 50;
 /** a soft pit's floor sits this far under the ground line, or more (and under FALL_BELOW): 1-3's, 130 down; a 75 px sunk step is not one */
 export const SOFT_FLOOR = 100;
-/** where 1-8's high drop is cut from: the canopy far below shows a little, then the mist band and the dark under it */
-export const HIGH_FROM = 0.2;
 /** a marked drop is nearly black this far under its lip (px) */
 export const DROP_DARK = 200;
 
 /** `steps`: the pieces standing in a soft pit above its floor (its way out): never painted over */
 /** `drop`: a fall a builder marked as a painted drop (either bank's `pit: 'drop'`); an unmarked fall is water (1-6's) */
-export interface PitGap { x0: number; x1: number; top: number; kind: 'fall' | 'soft'; floor?: number; lipL: boolean; lipR: boolean; steps?: Array<[number, number, number, number]>; drop?: boolean }
+export interface PitGap { x0: number; x1: number; top: number; kind: 'fall' | 'soft'; floor?: number; lipL: boolean; lipR: boolean; steps?: Array<[number, number, number, number, boolean]>; drop?: boolean }
 
 const floorish = (q: Platform) => !q.broken && q.type !== 'bouncy' && q.type !== 'fragile' && q.type !== 'drift' && q.type !== 'moving';
 
@@ -107,7 +106,7 @@ export function findW1Pits(platforms: readonly Platform[]): PitGap[] {
       const most = fl.filter((q) => ov(q) >= 0.7 * (x1 - x0));
       const floor = most.length ? Math.min(...most.map((q) => q.y)) : [...fl].sort((p, q) => ov(q) - ov(p))[0].y;
       // (the steps out, and anything else standing in it: x, y, w, h)
-      const steps = platforms.filter((q) => !q.broken && q.type !== 'fragile' && q.x < x1 && q.x + q.width > x0 && q.y > top + 4 && q.y < floor - 4).map((q) => [q.x, q.y, q.width, q.height] as [number, number, number, number]);
+      const steps = platforms.filter((q) => !q.broken && q.type !== 'fragile' && q.x < x1 && q.x + q.width > x0 && q.y > top + 4 && q.y < floor - 4).map((q) => [q.x, q.y, q.width, q.height, !!q.soil] as [number, number, number, number, boolean]);
       if (floor - G >= SOFT_FLOOR) out.push({ x0, x1, top, kind: 'soft', floor, ...lip, steps });
     }
   }
@@ -135,7 +134,6 @@ function chaseGaps(platforms: readonly Platform[], chase: readonly Platform[]): 
 }
 
 const cache = new WeakMap<readonly Platform[], PitGap[]>();
-const grads = new WeakMap<PitGap, [CanvasGradient, CanvasGradient, CanvasGradient]>();
 const pitsOf = (platforms: readonly Platform[]) => {
   let v = cache.get(platforms);
   if (!v) cache.set(platforms, (v = findW1Pits(platforms)));
@@ -143,99 +141,197 @@ const pitsOf = (platforms: readonly Platform[]) => {
 };
 
 /** draw the pits in view (World 1 only: protoArt.ts calls it there); false while the pictures load */
+/** a steady pseudo-random number from a position (the same pit always looks the same) */
+const hash = (n: number) => {
+  const x = Math.sin(n * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
+/** a smooth, irregular line: the sum of three waves keyed to the world x (px of wobble, 0..1) */
+const wobble = (x: number, seed: number) => 0.5 + 0.22 * Math.sin(x / 23 + seed) + 0.16 * Math.sin(x / 9.7 + seed * 2.1) + 0.12 * Math.sin(x / 41 + seed * 0.7);
+const canvas = (w: number, h: number): HTMLCanvasElement | null => {
+  if (typeof document === 'undefined') return null;
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.ceil(w));
+  c.height = Math.max(1, Math.ceil(h));
+  return c;
+};
+
+/** how far under the lip a soft pit's darkness has fully come in (px): the backdrop shows at the top and goes dark below it */
+export const PIT_FADE = 70;
+/** the torn top line's depth (px under the lip, at most) */
+export const TORN = 16;
+/** 1-8: how far under the branch its gap is fully dark (px) */
+export const HIGH_DARK = 170;
+
+interface Baked { under: HTMLCanvasElement | null; over: HTMLCanvasElement | null; x: number; y: number; ox: number; oy: number }
+const baked = new WeakMap<PitGap, Baked>();
+
+/** a soft pit's inside, baked once: the drop and its shade, under a torn top line that fades the backdrop into the dark */
+function bakeSoft(g: PitGap, drop: HTMLImageElement): HTMLCanvasElement | null {
+  const floor = g.floor ?? g.top + 130;
+  const W = g.x1 - g.x0, H = floor + 12 - g.top;
+  const c = canvas(W, H);
+  const k = c?.getContext('2d');
+  if (!c || !k) return null;
+  const tw = PIT_SIZE.dropTile, th = (tw * drop.height) / drop.width;
+  for (let x = Math.floor(g.x0 / tw) * tw; x < g.x1; x += tw) k.drawImage(drop, x - g.x0, 0, tw, th);
+  // (darker down to the floor, darker at its walls)
+  const v = k.createLinearGradient(0, 0, 0, H);
+  v.addColorStop(0, 'rgba(10,7,5,0.35)');
+  v.addColorStop(1, 'rgba(10,7,5,0.74)');
+  k.fillStyle = v;
+  k.fillRect(0, 0, W, H);
+  const wall = Math.min(46, W / 3);
+  for (const [a, b] of [[0, wall], [W, W - wall]] as const) {
+    const hg = k.createLinearGradient(a, 0, b, 0);
+    hg.addColorStop(0, 'rgba(10,7,5,0.55)');
+    hg.addColorStop(1, 'rgba(10,7,5,0)');
+    k.fillStyle = hg;
+    k.fillRect(Math.min(a, b), 0, Math.abs(b - a), H);
+  }
+  // the torn top: a mask where each 2 px column fades in from its own torn line down over PIT_FADE, drawn whole on its own canvas and
+  // then laid on once with destination-in (which works on the whole canvas: column by column, each fill wiped all the others)
+  const mc = canvas(W, H);
+  const mk = mc?.getContext('2d');
+  if (!mc || !mk) return c;
+  for (let x = 0; x < W; x += 2) {
+    const t = TORN * wobble(g.x0 + x, g.x0 * 0.01);
+    const m = mk.createLinearGradient(0, t, 0, t + PIT_FADE);
+    // (front-loaded: soft at the torn line, most of the way dark a third of the way down, so a 130 px pit reads dark, not as its floor)
+    m.addColorStop(0, 'rgba(0,0,0,0)');
+    m.addColorStop(0.35, 'rgba(0,0,0,0.62)');
+    m.addColorStop(1, 'rgba(0,0,0,1)');
+    mk.fillStyle = m;
+    mk.fillRect(x, 0, 2, H);
+  }
+  k.globalCompositeOperation = 'destination-in';
+  k.drawImage(mc, 0, 0);
+  k.globalCompositeOperation = 'source-over';
+  return c;
+}
+
+/** a soft pit's leaf bed, baked once: the tile flipped, offset, scaled and spaced from its own seed, low on the floor */
+function bakeBed(g: PitGap, bed: HTMLImageElement): HTMLCanvasElement | null {
+  const W = g.x1 - g.x0 + 12;
+  const bw0 = PIT_SIZE.bedTile * 0.8;
+  const H = (bw0 * 1.25 * bed.height) / bed.width + 8;
+  const c = canvas(W, H);
+  const k = c?.getContext('2d');
+  if (!c || !k) return null;
+  let x = -16 - hash(g.x0) * 40;
+  let n = 0;
+  while (x < W) {
+    const r = hash(g.x0 + n * 7.3);
+    const sc = 0.75 + 0.5 * hash(g.x0 + n * 3.1);
+    const bw = bw0 * sc, bh = (bw * bed.height) / bed.width;
+    k.save();
+    k.translate(x + (r > 0.5 ? bw : 0), H - bh);
+    k.scale(r > 0.5 ? -1 : 1, 1);
+    // (a little lower or higher, never up at the lip)
+    k.drawImage(bed, 0, hash(g.x0 + n) * 6, bw, bh);
+    k.restore();
+    // (spaced on, now and then with a gap of bare floor between)
+    x += bw * (0.55 + 0.3 * hash(g.x0 + n * 5.7)) + (hash(g.x0 + n * 9.1) > 0.8 ? 26 : 0);
+    n++;
+  }
+  return c;
+}
+
+/** 1-8's gap, baked once: the foliage behind it going dark into black under the branch, its sides uneven, no band of haze */
+const HIGH_SIDE = 44;
+function bakeHigh(g: PitGap): HTMLCanvasElement | null {
+  const SIDE = HIGH_SIDE;
+  const W = g.x1 - g.x0 + 2 * SIDE, H = HIGH_DARK + 260;
+  const c = canvas(W, H);
+  const k = c?.getContext('2d');
+  if (!c || !k) return null;
+  for (let x = 0; x < W; x += 2) {
+    const wx = g.x0 - SIDE + x;
+    // (how far in from the gap's sides this column is. The understory under each section of branch is drawn after the scene and ends
+    // square at the gap, so the darkness feathers in from inside the gap, unevenly, and meets that edge as a soft fade, not a cut line)
+    const f = Math.min(SIDE, (g.x1 - g.x0) * 0.3);
+    const inL = wx - g.x0 + 6 * wobble(wx, 1.3) - 3, inR = g.x1 - wx + 6 * wobble(wx, 4.1) - 3;
+    const s0 = Math.max(0, Math.min(1, Math.min(inL, inR) / f)), side = s0 * s0 * (3 - 2 * s0);
+    if (side <= 0) continue;
+    const t = 6 + 12 * wobble(wx, 2.7);
+    const m = k.createLinearGradient(0, t, 0, t + HIGH_DARK);
+    // (front-loaded: the canopy below goes dark fast, so the hole reads as depth at once, then black)
+    m.addColorStop(0, `rgba(4,6,4,${0.12 * side})`);
+    m.addColorStop(0.2, `rgba(4,6,4,${0.5 * side})`);
+    m.addColorStop(0.55, `rgba(4,6,4,${0.84 * side})`);
+    m.addColorStop(1, `rgba(3,4,3,${0.97 * side})`);
+    k.fillStyle = m;
+    k.fillRect(x, 0, 2, t + HIGH_DARK);
+    k.fillStyle = `rgba(3,4,3,${0.97 * side})`;
+    k.fillRect(x, t + HIGH_DARK, 2, H - (t + HIGH_DARK));
+  }
+  return c;
+}
+
 /**
- * `layer`: 'under' is drawn before the ground (the drop in each pit, 1-8's high drop): the ground's own pit shade, floor, steps and bank
- * faces then draw over it as they always did, so a step out of a pit is never hidden; 'over' after it (the lips, the leaf bed).
+ * `layer`: 'under' is drawn before the ground (the drop in each pit, 1-8's darkness): the ground's own floor, soil steps and bank faces
+ * then draw over it as they always did, so a step out of a pit is never hidden; 'over' after it (the lips, the leaf bed, the soil steps'
+ * shade, 1-8's broken branch ends). Each pit's pictures are baked once into its own canvas: a frame draws one image per pit in view.
  */
-export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Platform[], view: { x0: number; x1: number; y0?: number; y1?: number }, layer: 'under' | 'over'): boolean {
+export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Platform[], view: { x0: number; x1: number; y0?: number; y1?: number }, layer: 'under' | 'over', brokenEnd?: (ctx: CanvasRenderingContext2D, right: boolean, x: number, y: number, w: number, h: number) => boolean): boolean {
   if (!w1PitsReady()) return false;
-  const drop = pic('drop')!, lip = pic('lip')!, bed = pic('bed')!, high = pic('high')!;
+  const drop = pic('drop')!, lip = pic('lip')!, bed = pic('bed')!;
   const chase = platforms.some((q) => (q as Platform & { chase?: boolean }).chase);
   const bottom = (view.y1 ?? 2000) + 40;
   const lw = PIT_SIZE.lipW, lh = (lw * lip.height) / lip.width;
   const lips = (g: PitGap) => {
-    // (the torn lip where the ground is a bank of earth: the left bank's end as painted, the right's mirrored)
-    if (g.lipL) ctx.drawImage(lip, g.x0 - lw + 10, g.top - 10, lw, lh);
+    // (the torn lip at each bank of earth, its root column hanging into the pit over the wall's top: the left as painted, the right mirrored)
+    if (g.lipL) ctx.drawImage(lip, g.x0 - lw * 0.62, g.top - 12, lw, lh);
     if (g.lipR) {
       ctx.save();
-      ctx.translate(g.x1 + lw - 10, g.top - 10);
+      ctx.translate(g.x1 + lw * 0.62, g.top - 12);
       ctx.scale(-1, 1);
       ctx.drawImage(lip, 0, 0, lw, lh);
       ctx.restore();
     }
   };
-  /** the picture tiled across the gap from `top` down to `to`, from a fixed origin (the same earth whatever the camera does) */
-  /** `sy`: the share of the picture's height its top is cut at (1-8's high drop shows its mist and the dark under it, not the canopy) */
-  const fill = (g: PitGap, img: HTMLImageElement, tw: number, top: number, to: number, sy = 0, feather = 0) => {
-    const syPx = img.height * sy;
-    const th = (tw * (img.height - syPx)) / img.width;
-    // (`feather`: the outer px each side fade in over the scene behind, in 6 px strips: 1-8's gap has no bank face to end on)
-    const parts: Array<[number, number, number]> = [];
-    const f = Math.min(feather, (g.x1 - g.x0) / 3);
-    if (f > 0) {
-      for (let u = 0; u < f; u += 6) {
-        const a = (u + 3) / f;
-        parts.push([g.x0 + u, Math.min(6, f - u), a], [g.x1 - u - Math.min(6, f - u), Math.min(6, f - u), a]);
-      }
-      parts.push([g.x0 + f, g.x1 - g.x0 - 2 * f, 1]);
-    } else parts.push([g.x0, g.x1 - g.x0, 1]);
-    for (const [cx, cw, a] of parts) {
-      if (cw <= 0) continue;
-      ctx.save();
-      ctx.globalAlpha = Math.min(1, a);
-      ctx.beginPath();
-      ctx.rect(cx, g.top, cw, to - g.top);
-      ctx.clip();
-      for (let x = Math.floor(cx / tw) * tw; x < cx + cw; x += tw) ctx.drawImage(img, 0, syPx, img.width, img.height - syPx, x, top, tw, th);
-      ctx.fillStyle = '#050403';
-      if (top + th - 2 < to) ctx.fillRect(cx, top + th - 2, cw, to - (top + th - 2));
-      ctx.restore();
-    }
-  };
-  /** a soft pit's inside in shadow (it covers the ground's own pit shade): darker down to its floor, darker still at its two walls */
-  // (its three gradients are made once per pit and kept: a pit never moves, and a gradient a frame is what drawcheck counts)
-  const shade = (g: PitGap, to: number, deep = false) => {
-    let gr = grads.get(g);
-    const wall = Math.min(46, (g.x1 - g.x0) / 3);
-    if (!gr) {
-      const v = ctx.createLinearGradient(0, g.top, 0, to);
-      v.addColorStop(0, deep ? 'rgba(10,7,5,0.45)' : 'rgba(10,7,5,0.30)');
-      v.addColorStop(1, deep ? 'rgba(10,7,5,0.94)' : 'rgba(10,7,5,0.72)');
-      const side = (a: number, b: number) => {
-        const h = ctx.createLinearGradient(a, 0, b, 0);
-        h.addColorStop(0, 'rgba(10,7,5,0.55)');
-        h.addColorStop(1, 'rgba(10,7,5,0)');
-        return h;
-      };
-      grads.set(g, (gr = [v, side(g.x0, g.x0 + wall), side(g.x1, g.x1 - wall)]));
-    }
-    ctx.save();
-    ctx.fillStyle = gr[0];
-    ctx.fillRect(g.x0, g.top, g.x1 - g.x0, to - g.top);
-    ctx.fillStyle = gr[1];
-    ctx.fillRect(g.x0, g.top, wall, to - g.top);
-    ctx.fillStyle = gr[2];
-    ctx.fillRect(g.x1 - wall, g.top, wall, to - g.top);
-    ctx.restore();
-  };
-  /** clip to the pit's box minus its steps (a step is drawn by the ground under this and must stay in view: it is the way out) */
+  /** clip out a pit's steps that are not soil: they are drawn before the ground (1-5's middle stump) and must stay in view */
   const clipOut = (g: PitGap, y0: number, y1: number) => {
     ctx.beginPath();
     ctx.rect(g.x0 - 8, y0, g.x1 - g.x0 + 16, y1 - y0);
-    for (const [sx, sy, sw, sh] of g.steps ?? []) ctx.rect(sx + sw, sy - 2, -sw, sh + 4);
+    for (const [sx, sy, sw, sh, soil] of g.steps ?? []) if (!soil) ctx.rect(sx + sw, sy - 2, -sw, sh + 4);
     ctx.clip('evenodd');
   };
   for (const g of pitsOf(platforms)) {
     if (g.x1 < view.x0 - 100 || g.x0 > view.x1 + 100) continue;
+    let b = baked.get(g);
+    if (!b) baked.set(g, (b = { under: null, over: null, x: 0, y: 0, ox: 0, oy: 0 }));
     if (g.kind === 'fall') {
-      // (a fall off the long branch: the canopy far below, a mist band, then black; it starts a little under the branch)
-      if (chase && layer === 'under') fill(g, high, PIT_SIZE.highTile, g.top, bottom, HIGH_FROM, 24);
-      // (a drop a builder marked, `pit: 'drop'` on a bank, 1-9's hard vault: the drop down to the view's bottom, over the water, and its lips)
-      else if (g.drop) {
+      if (chase) {
+        if (layer === 'over') {
+          // (over the ground: the understory under the branch is part of the ground's picture, so the darkness's feathered sides must
+          // lie on it, or the hole's sides read as hard cut lines; the branch itself is drawn after the scene and stays on top)
+          b.under ??= bakeHigh(g);
+          if (b.under) ctx.drawImage(b.under, g.x0 - HIGH_SIDE, g.top);
+          ctx.fillStyle = 'rgb(3,4,3)';
+          if (bottom > g.top + HIGH_DARK + 260) ctx.fillRect(g.x0 + 4, g.top + HIGH_DARK + 260, g.x1 - g.x0 - 8, bottom - (g.top + HIGH_DARK + 260));
+        }
+        if (layer === 'over' && brokenEnd) {
+          // (the branch's broken ends at the gap, from 1-8's own breaking-branch pieces: the left half's torn end, the right half's)
+          const k = 0.6, eh = 123 * k;
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(g.x0 - 4, g.top - 40, 40, 120);
+          ctx.clip();
+          brokenEnd(ctx, false, g.x0 - 259 * k + 24, g.top + 2 - 23 * k, 259 * k, eh);
+          ctx.restore();
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(g.x1 - 36, g.top - 40, 40, 120);
+          ctx.clip();
+          brokenEnd(ctx, true, g.x1 - 24, g.top + 2 - 29 * k, 225 * k, eh);
+          ctx.restore();
+        }
+      } else if (g.drop) {
+        // (a drop a builder marked, pit: 'drop' on a bank: the soft pit's look, then black to the view's bottom, and its lips)
         if (layer === 'under') {
-          fill(g, drop, PIT_SIZE.dropTile, g.top, bottom);
-          // (darker and sooner than a soft pit's: nearly black DROP_DARK px down, so it reads as a fall and not as more earth)
-          shade(g, g.top + DROP_DARK, true);
+          b.under ??= bakeSoft({ ...g, floor: g.top + DROP_DARK }, drop);
+          if (b.under) ctx.drawImage(b.under, g.x0, g.top);
           ctx.fillStyle = 'rgba(10,7,5,0.94)';
           if (bottom > g.top + DROP_DARK) ctx.fillRect(g.x0, g.top + DROP_DARK, g.x1 - g.x0, bottom - (g.top + DROP_DARK));
         } else lips(g);
@@ -244,22 +340,29 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
       continue;
     }
     if (g.floor === undefined) continue;
-    // a soft pit: dark earth and roots down its walls to the floor, the lips, and the bed of big leaves on its floor (it catches him)
     if (layer === 'under') {
-      // (and never over a step: some are drawn by the platforms' own pass before this one, 1-5's middle stump)
+      b.under ??= bakeSoft(g, drop);
       ctx.save();
       clipOut(g, g.top, g.floor + 12);
-      fill(g, drop, PIT_SIZE.dropTile, g.top, g.floor + 12);
-      shade(g, g.floor + 12);
+      if (b.under) ctx.drawImage(b.under, g.x0, g.top);
       ctx.restore();
       continue;
     }
+    // over the ground: the soil steps in the pit's shade (they are painted with the banks' soil, lit, and read as a pasted box), the
+    // lips, the bed
+    for (const [sx, sy, sw, sh, soil] of g.steps ?? []) {
+      if (!soil) continue;
+      ctx.fillStyle = 'rgba(10,7,5,0.5)';
+      ctx.fillRect(sx, sy + 6, sw, sh - 6);
+    }
     lips(g);
-    const bw = PIT_SIZE.bedTile, bh = (bw * bed.height) / bed.width;
-    ctx.save();
-    clipOut(g, g.floor - bh - 20, g.floor + 14);
-    for (let x = g.x0 - 20; x < g.x1; x += bw * 0.8) ctx.drawImage(bed, x, g.floor - bh + 14, bw, bh);
-    ctx.restore();
+    b.over ??= bakeBed(g, bed);
+    if (b.over) {
+      ctx.save();
+      clipOut(g, g.floor - b.over.height - 4, g.floor + 16);
+      ctx.drawImage(b.over, g.x0 - 6, g.floor + 14 - b.over.height);
+      ctx.restore();
+    }
   }
   return true;
 }

@@ -14,7 +14,9 @@ import { cosine, deadWalks, fromStage, grams, moveOf, moveString, pacing, paceFl
 import { branchOutrunWith, cameraOn, chaseOutrunWith, eagleOutrunWith, towardShrine } from './play.ts';
 import { hazardsScore, newScore, newThatCounts } from './score.ts';
 import { artKey, lookAlike, lookOf } from './look.ts';
-import { judgeAgainst, keyOf, measure } from './funcheck.ts';
+import { gatedFlags, judgeAgainst, keyOf, measure, truerBeside } from './funcheck.ts';
+import { movesAlike } from './evaluate.ts';
+import type { StageEval } from './evaluate.ts';
 import type { Stage } from '../inspect/stages.ts';
 
 const G = 580;
@@ -291,4 +293,37 @@ test('fun gate, in the real engine: World 1 layout 1 judged against its own coun
   const r = judgeAgainst(now, known.slice(1));
   assert.equal(r.worse.length, 1, JSON.stringify(r));
   assert.equal(keyOf(known[0]), [...now.keys()][0]);
+});
+
+// ---- no credit for pickups (STAGE-RULES §0c.5, Matt via the lead, 2026-11-04) ----
+test('moves alike: the same terrain with its petals moved reads as alike (the terrain route decides); new terrain reads as new', () => {
+  // (the goal routes differ only because the petals sit elsewhere; the quick routes, which no pickup moves, are the same)
+  const a = { str: 'JJUJMJJCJ', quick: 'JJCJ' }, b = { str: 'JMMVJJJCJ', quick: 'JJCJ' };
+  assert.equal(movesAlike(a, b), 1);
+  // (new terrain: both routes differ)
+  const c = { str: 'VVRRVVRR', quick: 'VRVR' };
+  assert.ok(movesAlike(a, c) < 0.3, String(movesAlike(a, c)));
+});
+
+// ---- the lead's ruling, 2026-11-04: the truer move rule gates rebuilt stages; the rest stay on the old rule, the truer count beside ----
+test('gated flags: a rebuilt stage is held to the truer move rule; one not yet rebuilt to the old rule, its other rules unchanged', () => {
+  const f = (rule: string, what = '') => ({ rule, what, source: '' });
+  // (the truer rule finds this stage like an earlier one and with nothing new; the old rule, fooled by its petals, finds neither)
+  const ev = { id: '1-9', flags: [f('dead walk'), f('like an earlier stage'), f('nothing new')], oldFlags: [] } as unknown as StageEval;
+  assert.deepEqual(gatedFlags(ev, ['1-1']).map((q) => q.rule), ['dead walk']);
+  assert.deepEqual(gatedFlags(ev, ['1-9']).map((q) => q.rule), ['dead walk', 'like an earlier stage', 'nothing new']);
+  // (and the other way: a stage the old rule flags but the truer one clears keeps its old flag until it is rebuilt)
+  const ev2 = { id: '1-7', flags: [], oldFlags: [f('like the stage before')] } as unknown as StageEval;
+  assert.deepEqual(gatedFlags(ev2, []).map((q) => q.rule), ['like the stage before']);
+  assert.deepEqual(gatedFlags(ev2, ['1-7']), []);
+});
+
+test('truer beside: for a stage on the old rule, a move rule whose truer count differs is printed; rebuilt stages and other rules are not', () => {
+  const m = (rows: Array<[string, string, number]>) => new Map(rows.map(([stage, rule, n]) => [keyOf({ stage, setting: 'normal', rule }), { stage, setting: 'normal' as const, rule, on: Array.from({ length: n }, (_, i) => i + 1), what: '' }]));
+  const gated = m([['1-9', 'like an earlier stage', 10], ['1-9', 'dead walk', 3], ['1-2', 'nothing new', 4]]);
+  const truer = m([['1-9', 'like an earlier stage', 12], ['1-9', 'nothing new', 16], ['1-9', 'dead walk', 3], ['1-2', 'nothing new', 9]]);
+  const lines = truerBeside(gated, truer, ['1-2']);
+  assert.equal(lines.length, 2, lines.join('\n'));
+  assert.ok(lines.some((l) => l.includes('1-9 normal "like an earlier stage": gated on the old rule at 10 layouts, 12 by the truer rule')));
+  assert.ok(lines.some((l) => l.includes('1-9 normal "nothing new": gated on the old rule at 0 layouts, 16 by the truer rule')));
 });

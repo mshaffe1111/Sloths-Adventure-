@@ -17,6 +17,8 @@ export interface StageEval {
   mech: Record<string, number>;
   six: string[]; pairs: string[];
   flags: Flag[];
+  /** the move rules (MOVE_RULES) by the old rule, the goal route's moves alone: what stages not yet rebuilt are gated on (funcheck.ts) */
+  oldFlags?: Flag[];
   built: Built;
 }
 
@@ -77,6 +79,50 @@ export function judge(b: Built & { quick?: { m: string }[] }): StageEval {
   };
 }
 
+/**
+ * How alike two stages are in their moves (0-1): the more alike of the goal route's moves (what a player who meets the goal does) and the
+ * terrain's own (the quick route to the shrine, which no pickup moves). Matt, STAGE-RULES §0c.5 (the lead, 2026-11-04): "We can't just
+ * assume that rearranging petals that you collect is going to make the game feel different." So a stage built on the same pieces with
+ * its petals somewhere else reads as alike, while real new terrain reads as new on both routes.
+ */
+export function movesAlike(a: { str: string; quick: string }, b: { str: string; quick: string }): number {
+  return Math.max(cosine(grams(a.str), grams(b.str)), a.quick && b.quick ? cosine(grams(a.quick), grams(b.quick)) : 0);
+}
+
+/** the rules on how a stage's moves compare with the stages before it: like the stage before, like an earlier stage, nothing new */
+export const MOVE_RULES = ['like the stage before', 'like an earlier stage', 'nothing new'] as const;
+
+/**
+ * Those rules for `ev` against `out` (the stages before it, in order). truer: by movesAlike, and "nothing new" read from the terrain's own
+ * moves (the quick route: pickups laid somewhere new add nothing; Matt, §0c.5: "Our pieces and other things need to change"); old: by the
+ * goal route's moves alone, as the gate was built.
+ */
+export function movesFlags(ev: StageEval, out: readonly StageEval[], truer: boolean): Flag[] {
+  const flags: Flag[] = [];
+  const alike = (a: StageEval, b: StageEval) => (truer ? movesAlike(a, b) : cosine(grams(a.str), grams(b.str)));
+  const prev = out[out.length - 1];
+  if (prev) {
+    const c = alike(ev, prev);
+    if (c > NEIGHBOUR_MAX) flags.push({ rule: 'like the stage before', what: `${Math.round(c * 100)}% alike in its moves to ${prev.id} (at most 45% for the stage right before)`, source: SRC.similar });
+  }
+  let worst: { id: string; c: number } | null = null;
+  for (const p of out) {
+    const c = alike(ev, p);
+    if (!worst || c > worst.c) worst = { id: p.id, c };
+  }
+  if (worst && worst.c > SIMILAR_MAX && worst.id !== prev?.id) flags.push({ rule: 'like an earlier stage', what: `${Math.round(worst.c * 100)}% alike in its moves to ${worst.id} (at most 55%)`, source: SRC.similar });
+  const mine = truer ? ev.quick : ev.str;
+  const seenMoves = new Set(out.flatMap((p) => (truer ? [...p.str, ...p.quick] : [...p.str])));
+  const seenPairs = new Set(out.flatMap((p) => p.pairs));
+  const seenGrams = new Set(out.flatMap((p) => (truer ? [...grams(p.str).keys(), ...grams(p.quick).keys()] : [...grams(p.str).keys()])));
+  const newMoves = [...new Set(mine)].filter((m) => !seenMoves.has(m));
+  const newPairs = ev.pairs.filter((p) => !seenPairs.has(p));
+  const newGrams = [...grams(mine).keys()].filter((k) => !seenGrams.has(k));
+  if (truer) (ev as StageEval & { adds?: unknown }).adds = { moves: newMoves, pairs: newPairs, grams: newGrams.length };
+  if (out.length && !newMoves.length && !newPairs.length) flags.push({ rule: 'nothing new', what: `no move or pairing an earlier World 1 stage didn't already ask (${newGrams.length} new 3-move runs of old moves)`, source: SRC.newer });
+  return flags;
+}
+
 export const W1 = ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9'] as const;
 
 /** World 1 on one layout and setting, in order: each stage judged, then against the ones before it (similarity, what is new) */
@@ -85,7 +131,6 @@ export function world(layout: number, setting: Setting, ids: readonly string[] =
   const looks: ReturnType<typeof lookOf>[] = [];
   for (const id of ids) {
     const ev = judge(build(id, layout, setting));
-    const g3 = grams(ev.str);
     // (how alike it looks: the builder's pieces and the art, look.ts. Variety reads the more alike of moves and look, so these flags
     // feed it as the move ones do; the quality supervisor, 11-04: 1-7 read 10% alike to 1-1 by moves and 84% by look)
     const lk = lookOf(ev.built.stage);
@@ -99,27 +144,12 @@ export function world(layout: number, setting: Setting, ids: readonly string[] =
     const lwv = lw as { id: string; c: number } | null;
     if (lwv && lwv.c > SIMILAR_MAX && lwv.id !== out[out.length - 1]?.id) ev.flags.push({ rule: 'looks like an earlier stage', what: `${Math.round(lwv.c * 100)}% alike in its pieces and art to ${lwv.id} (at most 55%)`, source: SRC.similar });
     looks.push(lk);
-    // against the stage right before it, and any before it
-    const prev = out[out.length - 1];
-    if (prev) {
-      const c = cosine(g3, grams(prev.str));
-      if (c > NEIGHBOUR_MAX) ev.flags.push({ rule: 'like the stage before', what: `${Math.round(c * 100)}% alike in its moves to ${prev.id} (at most 45% for the stage right before)`, source: SRC.similar });
-    }
-    let worst: { id: string; c: number } | null = null;
-    for (const p of out) {
-      const c = cosine(g3, grams(p.str));
-      if (!worst || c > worst.c) worst = { id: p.id, c };
-    }
-    if (worst && worst.c > SIMILAR_MAX && worst.id !== prev?.id) ev.flags.push({ rule: 'like an earlier stage', what: `${Math.round(worst.c * 100)}% alike in its moves to ${worst.id} (at most 55%)`, source: SRC.similar });
-    // what it adds: moves, pairs, 3-grams no earlier stage had
-    const seenMoves = new Set(out.flatMap((p) => [...p.str]));
-    const seenPairs = new Set(out.flatMap((p) => p.pairs));
-    const seenGrams = new Set(out.flatMap((p) => [...grams(p.str).keys()]));
-    const newMoves = [...new Set(ev.str)].filter((m) => !seenMoves.has(m));
-    const newPairs = ev.pairs.filter((p) => !seenPairs.has(p));
-    const newGrams = [...g3.keys()].filter((k) => !seenGrams.has(k));
-    (ev as StageEval & { adds?: unknown }).adds = { moves: newMoves, pairs: newPairs, grams: newGrams.length };
-    if (out.length && !newMoves.length && !newPairs.length) ev.flags.push({ rule: 'nothing new', what: `no move or pairing an earlier World 1 stage didn't already ask (${newGrams.length} new 3-move runs of old moves)`, source: SRC.newer });
+    // against the stage right before it and any before it, and what it adds: by the truer rule (movesAlike, the terrain's own moves) into
+    // ev.flags, and by the old rule (the goal route's moves alone) into ev.oldFlags. The lead, 2026-11-04: stages rebuilt from today are
+    // gated on the truer rule; the ones not yet rebuilt stay gated on the old rule at their listed counts, the truer count printed beside
+    // (funcheck.ts, REBUILT)
+    ev.flags.push(...movesFlags(ev, out, true));
+    ev.oldFlags = movesFlags(ev, out, false);
     out.push(ev);
   }
   return out;

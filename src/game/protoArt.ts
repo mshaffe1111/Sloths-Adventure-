@@ -1162,7 +1162,7 @@ export function drawProtoScene(
   // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
   if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'under');
   if (!drawGroundChunks(ctx, platforms, banks, view)) drawGround(ctx, platforms, banks, view);
-  if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'over');
+  if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'over', drawChaseBroken);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;
   for (const v of vines) {

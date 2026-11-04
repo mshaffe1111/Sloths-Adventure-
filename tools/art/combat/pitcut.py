@@ -1,5 +1,5 @@
 """R-6.38 (fix-petals, 2026-11-04): World 1's pit art, cut from the four takes Matt approved (PIT-LIST.md, R-159.1) and the lead accepted
-(tools/art/combat/jobs.txt 15:03Z): the drop s52-7, the lip s55-7, the bed s60-7 and the high drop s65-23. No new painting: the takes are
+(tools/art/combat/jobs.txt 15:03Z): the drop s52-7, the lip s55-7 and the bed s60-7 (the high drop s65-23 is not used: on 1-8 it read as a grey haze box). No new painting: the takes are
 made to tile (the drop and the high drop, by scripts/backdrop-strip.py's seamless join, the backdrops' own) and keyed off their magenta
 (the lip and the bed), trimmed, sized and saved as webp in src/assets/props/pits/.
   python3 -I tools/art/combat/pitcut.py <dir with drop.png lip.png bed.png high.png>
@@ -56,6 +56,5 @@ if __name__ == '__main__':
     d = sys.argv[1]
     os.makedirs(OUT, exist_ok=True)
     print('drop', tile(os.path.join(d, 'drop.png'), 'w1-drop.webp', 512, 128))
-    print('high', tile(os.path.join(d, 'high.png'), 'w1-high.webp', 1024, 128))
     print('lip', keyed(os.path.join(d, 'lip.png'), 'w1-lip.webp', 256))
     print('bed', keyed(os.path.join(d, 'bed.png'), 'w1-bed.webp', 512))
