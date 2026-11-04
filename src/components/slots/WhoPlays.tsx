@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '../icons/index.tsx';
+import { PaintedIcon, paint } from '../icons/PaintedIcon.tsx';
 import { HeroFaceIcon } from '../HeroFaceIcon.tsx';
 import { ConfirmDialog, Popup } from '../nav/Nav.tsx';
 import { browserStore, buildSave, saveFileName, type Store } from '../../game/saveFile.ts';
@@ -54,7 +54,7 @@ const SlotCard: React.FC<{ s: SlotInfo; onPlay: () => void; onRename: () => void
     return (
       <div className="sl-card sl-empty" data-tint={look.tint}>
         <span className="sl-face sl-face-empty" aria-hidden="true">
-          <Icon name="leaf" size={30} />
+          <PaintedIcon name={paint('leaf')} size={30} />
         </span>
         <span className="sl-t">
           <b>Free spot</b>
@@ -79,10 +79,10 @@ const SlotCard: React.FC<{ s: SlotInfo; onPlay: () => void; onRename: () => void
             <small>{where(s)}</small>
             <span className="sl-stats">
               <span>
-                <Icon name="star" size={15} /> {s.summary.stars}
+                <PaintedIcon name={paint('star')} size={15} /> {s.summary.stars}
               </span>
               <span>
-                <Icon name="check" size={14} /> {s.summary.stagesCleared} stages
+                <PaintedIcon name={paint('check')} size={14} /> {s.summary.stagesCleared} stages
               </span>
               {s.playing ? <span className="sl-now">Playing now</span> : s.playedAt ? <span className="sl-when">{ago(s.playedAt)}</span> : null}
             </span>
@@ -92,7 +92,7 @@ const SlotCard: React.FC<{ s: SlotInfo; onPlay: () => void; onRename: () => void
       <span className="sl-acts">
         {!s.newer && !s.playing && (
           <button type="button" className="pm-go sl-play" onClick={onPlay}>
-            <Icon name="play" size={18} />
+            <PaintedIcon name={paint('play')} size={18} />
             Play
           </button>
         )}
@@ -103,7 +103,7 @@ const SlotCard: React.FC<{ s: SlotInfo; onPlay: () => void; onRename: () => void
             </button>
             {!s.playing && (
               <button type="button" className="sl-mini sl-erase" onClick={onErase} aria-label={`Erase ${s.name}'s game`}>
-                <Icon name="cross" size={14} />
+                <PaintedIcon name={paint('cross')} size={14} />
                 Erase
               </button>
             )}
@@ -137,7 +137,7 @@ export const NameCard: React.FC<{ title: string; start: string; go: string; onGo
       />
       {children}
       <button type="button" className="pm-go" disabled={!ok} onClick={() => onGo(cleanName(name))}>
-        <Icon name="check" size={20} />
+        <PaintedIcon name={paint('check')} size={20} />
         {go}
       </button>
     </Popup>
@@ -203,7 +203,7 @@ export const WhoPlays: React.FC<{ onClose: () => void; onSwitched: () => void; s
               {erasing.name}'s {erasing.summary.stagesCleared} stages and {erasing.summary.stars} stars go for good. A backup file can bring them back.
               <span className="sl-backup">
                 <button type="button" className="sl-mini" onClick={() => downloadBackup(store, erasing.n, erasing.name)}>
-                  <Icon name="save" size={18} />
+                  <PaintedIcon name={paint('save')} size={18} />
                   Save a backup file first
                 </button>
               </span>

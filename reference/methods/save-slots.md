@@ -27,6 +27,12 @@ Any change to what is saved, which keys a New Game clears, the backup file's lis
 name and the erase question, all four saves, all four sizes.
 
 ## Pitfalls we already paid for
+- 2026-11-04: I shot the first mocks on a base older than main 0.9.4 (the supervisor caught it, D23). The merge then broke the build
+  (the vector Icon set was gone), so the first mocks showed icons that no longer exist. Merge the lead branch first:
+  `git fetch origin && git merge origin/<lead branch>`, then `npm install`, then restart vite (it reads the version at start: the
+  title said 0.9.3 until a restart), and only then shoot.
+- 2026-11-04: killing vite by matching "vite --port 8816" in the same shell command killed my own shell (exit 144). menu-screen.md
+  already warns about this. Start and stop the server in a command of its own, and kill by PID from `ps` output in a separate call.
 - A rule for a title element in a component's own CSS file loses to `index.css`, which main.tsx imports after App. Title layout
   goes in `index.css`'s title section.
 - A clip check that only looks for text past its box misses a button pushed out of its card (Erase ran off the card upright). Check
@@ -36,6 +42,10 @@ name and the erase question, all four saves, all four sizes.
 - The title's four painted leaves at a fixed 96 px each don't fit a 360-wide phone, or the right half of a 640x360 one (already on
   main before this job). clipcheck walks only 412x915 and 915x412.
 - `.nv-body` scrolls, so it clipped the bottom shadow of its last button. It now has 6 px of padding at the bottom.
+
+## The review page
+`python3 tools/qa/menushots/slotsSheet.py <out.html> "<base stamp>" [before-up.png before-side.png]` builds the page for Matt from
+the mock stills. Stamp the base commit on it.
 
 ## To try
 - Add 360x640 and 640x360 walks to clipcheck.

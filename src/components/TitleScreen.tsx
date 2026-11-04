@@ -6,7 +6,6 @@ import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { NewGameDialog } from './NewGameDialog.tsx';
 import { WhoPlays, SLOT_LOOK } from './slots/WhoPlays.tsx';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
-import { Icon } from './icons/index.tsx';
 import { Popup } from './nav/Nav.tsx';
 import { browserStore } from '../game/saveFile.ts';
 import { freeSlot, listSlots, type SlotInfo } from '../game/saveSlots.ts';
@@ -19,7 +18,7 @@ import { modeChosen } from '../game/difficulty.ts';
 import { APP_VERSION, BUILD_TIME, formatBuildDay, formatBuildTime } from '../game/version.ts';
 import { sound } from '../game/audio.ts';
 import { UI_KIT_URL } from './icons/index.tsx';
-import { PaintedIcon, paintedUrl } from './icons/PaintedIcon.tsx';
+import { PaintedIcon, paint, paintedUrl } from './icons/PaintedIcon.tsx';
 import type { SkillId } from '../game/skills.ts';
 import { testUnlockOn, setTestUnlock, nextTapRun, UNLOCK_TAPS } from '../game/testUnlock.ts';
 import { bootDone, bootProgress, bootShowing, fontsReady, waitForAll } from '../game/boot.ts';
@@ -271,7 +270,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           <div className="ttl-row">
             {resume && (
               <button type="button" className="gx-plank gx-plank-sm ttl-new" onClick={() => setNewPick(true)}>
-                <Icon name="leaf" size={22} />
+                <PaintedIcon name={paint('leaf')} size={22} />
                 New game
               </button>
             )}
@@ -400,7 +399,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
                 setWhoOpen(true);
               }}
             >
-              <Icon name="sloth" size={22} />
+              <HeroFaceIcon size={26} face="face_happy" />
               A new explorer
             </button>
           ) : null}
@@ -416,7 +415,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
                 setWhoOpen(true);
               }}
             >
-              <Icon name="sloth" size={22} />
+              <HeroFaceIcon size={26} face="face_happy" />
               Who's playing?
             </button>
           )}
@@ -429,7 +428,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
             }}
           >
             <span>Start over</span>
-            <small>Erases {who.name}'s game (a backup is offered first)</small>
+            <small>Erases {who.name}'s game</small>
           </button>
         </Popup>
       )}
