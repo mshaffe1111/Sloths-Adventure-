@@ -11,7 +11,7 @@ Matt, 2026-11-01:
 - Decided: **five helpers at a time** (engine/WebGL, story, menus, World 9/10, tuning/fairness), files never shared; Worlds 1-5 onto the
   new generator is Parking lot.
 
-Written by the roadmap keeper, 2026-11-01 10:30 PM ET (Matt's launch calls: R-149.1, .9, .15-.17, R-4.8) (time from `TZ=America/New_York date`), from reference/ROADMAP.md. The lead decides
+Written by the roadmap keeper, 2026-11-01 10:30 PM ET (Matt's launch calls: R-149.1, .9, .15-.17, R-4.8) (time from `TZ=America/New_York date`), from reference/ROADMAP.md; phases rewritten 2026-11-04 2:33 AM ET for PLAN-TO-80. The lead decides
 who starts.
 
 ## How the times were measured (R-12)
@@ -30,42 +30,57 @@ with the lead's checks between jobs).
 
 ## One page for Matt
 
-**What launch needs (Day 1):** Worlds 9 and 10 built and fair, with the 9-2 canopy and 10-8 Clockwork Gate showpieces; the Drake and the
-General finished, every boss fair and coached, bosses 6-8 with their story-born third phases; the new story start to finish, with the
-ledger and Wanted posters; the unfair spots fixed (Worlds 1-5 included) and Normal rising world by world; the blocking bugs; painted
-icons B-E; stages and generators that stop repeating (R-150); the GPU change, so the app runs smooth on your three phones; and the Play Store gates. Every Day 1 item is graded A, except
-the ones graded B for polish (R-2.4, R-2.8, R-4.3, R-1.15, R-6.25, R-6.27, R-1.16, R-6.28, R-5.23, R-6.30; each says why).
+**Where we are (Matt, 2026-11-04 2:23 AM ET):** he rated the game 55 out of 100 ("a D if I was a kid": plain, repetitive, branches
+and eagles you can outrun, enemies that don't matter, "a sludge" after five hours) and approved `reference/PLAN-TO-80.md`: rebuild World 1
+to the new bar first, he plays it and rates it, and only then the method rolls out world by world. His rating of 80-90 is the gate.
+
+**What launch needs (Day 1):** Worlds 1-10 rebuilt to that bar: hazards that bite (R-154, R-158), enemies with jobs (the stomp, punch and
+kick triangle, R-159), stages with a shape (R-155, R-150), Pokey hanging under branches (R-160), every boss with three ways to win (R-161),
+stage types and mechanics that build world to world (R-152, R-153), the swimming stage (R-5.22); Worlds 9 and 10 built and fair, with the
+9-2 canopy and 10-8 Clockwork Gate showpieces; the Drake and the General finished, bosses 6-8 with their story-born third phases; the new
+story start to finish, with the ledger and Wanted posters; the unfair spots fixed and Normal rising world by world; the blocking bugs;
+painted icons B-E; the GPU change, so the app runs smooth on your three phones; and the Play Store gates. Every Day 1 item is graded A,
+except the ones graded B for polish (R-2.4, R-2.8, R-4.3, R-1.15, R-6.25, R-6.27, R-1.16, R-6.28, R-5.23, R-6.30, R-156; each says why).
 
 **Quality sets the date, not the other way round** (Matt, 2026-11-02 to the keeper: "even if it takes longer to get this thing pushed to a Google quality, we can't do it half-assed. It has to still be quality. And if that pushes the timetable, pushes the timetable. But right now, it would be a disaster. Because it just isn't fun."). The hours below are a plan, not a deadline: when a job needs more to be fun and polished, it gets more, and the date moves.
 
-**The estimate, in three parts:**
+**The phases (PLAN-TO-80, Matt approved 2026-11-04).** Each item's lane row below says its phase. Hours are summed by script from §2's
+rows (2026-11-04 2:33 AM ET); nothing was deleted to make them fit.
+
+| Phase | What | Day 1 helper hours | How sure |
+|---|---|---|---|
+| Lane 1, all the way through | WebGL: GPU stages 0-6 and the big sheets (R-3.1 to R-3.7, R-3.12); then the gameplay it opens (Phase B and C rows in lane 1) | 21 h for the GPU stages | measured where a past job fits (perf-fx, warmup-5m), "no history" ranges for PixiJS (each row) |
+| A: the World 1 slice | The measuring stick first (R-150.4 the mechanics table, then R-150.1 grown into the validator); hazards that bite in World 1 (R-158.1 the eagle's shadow lock, with R-5.10; R-154's branch part: snap twig, creaking limb, tipping root, about 2.5 h of its 12.5 h); the combat triangle and World 1's species (R-159.1); the four-part shape on World 1's nine stages (about 7 h of R-155's 30 h, at its 0.75 h a stage); hanging under branches (R-160.1); feel (R-152.7, R-156); Venom Fang three ways (R-161.1); World 1's open fairness items ride along (R-5.11, R-5.12) | **51.5 h** (range about 39-72 h, from each item's own range) | sized for World 1 only, from measured history; every row names its past job |
+| (Matt rates World 1) | 80+ rolls the method out; under 80, World 1 is fixed before anything else | not helper hours | not measured: Matt's play time and the fix rounds |
+| B: Worlds 2-8, each rated | The same grammar in every world: R-150.2, R-150.3, R-150.5, R-152.1 to R-152.6, R-153, the rest of R-154 and R-155, R-158.2, R-159.2, R-160.2, R-161.2 (bosses 2-8 and Thornbark; R-1.15's third phases fold in), R-5.4 the difficulty climb, R-5.22 the swimming stage | 274 h on today's rows | **a guess: about 210-380 h.** Sized from Phase A's real hours: when World 1 is measured, these are re-sized by the same ratio |
+| C: Worlds 9-10 new, the story wiring | World 9 and 10 built on the method (R-2.x, R-143.5, R-146.5 and R-2.7 the hold move, R-150.2's W9/W10 share), the Drake and the General (R-1.9, R-1.10), the story (R-4.x) | 114 h on today's rows | **a guess: about 85-160 h**, the same way |
+| Alongside, any phase | Bugs, menus, the Play Store pieces, fairness outside World 1, boss endings and tips (R-6.x, R-147.x, R-5.x, R-1.2, R-1.6, R-1.7, R-1.16, R-151) | 61.5 h | measured (each row) |
+
+Phase A's calendar: the longest chain is R-150.4 then R-150.1 then the World 1 shape pass (about 18 h; R-150.4, R-159.1 then R-161.1 is
+17.5 h), so **about 3 working days of building** at 6-8 h a lane a day (range 2-5), then the quality supervisor's review, the test link
+and Matt's rating. For the lead: R-159.1 and R-160.1 change `engine.ts`, which §1 gives to lane 1 only, and PLAN-TO-80 puts lane 1 on
+WebGL; the lead decides who holds `engine.ts` during Phase A (one helper at a time).
+
+**The estimate, in three parts** (today's rows; Phases B and C are guesses until World 1 is measured):
 
 | | What | How long |
 |---|---|---|
-| (a) Building | Day 1 about 390 helper hours (roadmapcheck prints 398: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 55.5 h = about 445.5 h over five lanes. Since 2026-11-01's 222 h: your 11-01 calls 27.5 h; R-6.27 and R-1.16 2.5 h each; your 11-02 bugs R-6.28, R-6.29, R-5.23, R-6.30 8 h; R-150 (all stages and the generators, Day 1, 11-02) 58.5 h with the mechanics audit and crumbling (R-150.5), plus vine polish R-150.6 4 h (Important); R-152 (hazards that matter, mechanics that build, STAGE-RULES §0) 25 h with swimming's bring-backs; the swimming stage R-5.22 6.5 h (Matt put it in launch 11-02); R-5.4 widened to the difficulty arc across all worlds (+3 h, §0.5); the research batch 11-02 (pacing tags, split paths, five new platform kinds, platform carry R-152.7, water rules) 22 h; R-153 stage types (Matt decided 11-02) 65 h; R-151 the quality supervisor's set-up 0.5 h (its running time is overhead, like the process supervisor's); R-1.1 done. Lane loads, summed from §2's tables: 89 / 88.5 / 89 / 89 / 89 h | **about 11-15 working days** at 6-8 h a lane a day |
-| (b) Fixed calendar | Your phone checks: a test link at the end of each 2-day wave, five GPU checks on the three phones, then your final passes of Worlds 7-10 and every boss (about 9 h of your play) and one fix round after them (not measured yet; budget about a day). The Play closed test: 14 days with 12 testers. You decided (2026-11-01) the account, app ID, signing and test start later: when Day 1 lane work is about 80% done (R-149.9, R-147.1) | about 3-4 days after the build for the passes and fixes; **14 days** for the closed test |
-| (c) Critical path | The closed test. It starts when Day 1 lane work is about 80% done (about day 9-12 of building), so your passes and the fix round run inside its 14 days. If it waits until after your passes, it is building + passes + 14 days (11-15 + 3-4 + 14 = 28-33 days). Not measured, so not counted: Google's checks on a new developer account before the first upload, and Google's review of the production release after the test | **about 3.5-4 weeks** from now with the 80% trigger; about 4-5 weeks if the test waits for your passes |
+| (a) Building | Day 1 about 522 helper hours (roadmapcheck prints 530: it also counts the keeper's own 8 h on R-7, R-10..R-12 and R-148.1) + the Important I recommend about 59.5 h = about 581.5 h over five lanes. Since 2026-11-02 evening's 494 h: R-154 to R-157 (fun from what we have, 11-02) and Matt's PLAN-TO-80 (11-04): R-150.1 grown into the validator (+4 h), R-158 to R-161 (83.5 h, of which 26.5 h is Phase A and 57 h Phase B guesses). Lane loads, summed from §2's tables: 115.5 / 118.5 / 118.5 / 116.5 / 111.5 h | **about 15-20 working days** at 6-8 h a lane a day on today's rows; about 12-25 if Phases B and C land anywhere in their guessed ranges |
+| (b) Fixed calendar | Your phone checks: Matt's rating of World 1 after Phase A and of each world in Phase B, five GPU checks on the three phones, then your final passes of Worlds 7-10 and every boss (about 9 h of your play) and one fix round after them (not measured yet; budget about a day). The Play closed test: 14 days with 12 testers. You decided (2026-11-01) the account, app ID, signing and test start later: when Day 1 lane work is about 80% done (R-149.9, R-147.1) | about 3-4 days after the build for the passes and fixes, plus your ratings (not measured); **14 days** for the closed test |
+| (c) Critical path | The closed test. It starts when Day 1 lane work is about 80% done (about 418 of the 522 hours; about day 12-16 of building), so your passes and the fix round run inside its 14 days. If it waits until after your passes, it is building + passes + 14 days (15-20 + 3-4 + 14 = 32-38 days). Not measured, so not counted: the wait for your ratings between phases, Google's checks on a new developer account before the first upload, and Google's review of the production release after the test | **about 4-4.5 weeks** from now with the 80% trigger on today's rows; about 4.5-5.5 weeks if the test waits for your passes; the honest range is not known until World 1 is measured (PLAN-TO-80) |
 
-So: about 3.5-4 weeks from now with the 80% trigger. It was about 3 weeks on 2026-11-01; since then you put the fun work in launch
-(R-150 variety, R-152 hazards and mechanics, R-153 stage types, the swimming stage), which is most of the growth, and quality sets the date.
-The widest number is R-153 (65 h, range 45-90): how many stages it reshapes is the lever. Parking lot after launch: about 104 h, roughly
-3 more days of five lanes, plus art round 2's money.
+So: about 4-4.5 weeks from now on today's rows, but that is not a promise: Phases B and C are guesses until World 1's real hours are in,
+and quality sets the date. It was about 3.5-4 weeks on 2026-11-02; since then Matt rated the game 55 and approved the World 1 slice and
+its rollout (R-158 to R-161), which is most of the growth. The widest numbers are R-153 (65 h, range 45-90) and R-161.2 (28 h, a guess,
+range 20-45). Parking lot after launch: about 141 h (PLAN-TO-80's "Later" list is R-162), plus art round 2's money.
 
 **The one thing that would make it slower:** the closed test's start. It waits for the 80% trigger (your call, 2026-11-01); every day it starts after that is a day later at the end. Google's checks on a new developer account aren't measured, so opening the account a few days before the trigger keeps them off the path.
 
-**Five lanes, three waves to start** (a wave is about 2 days; at the end of each the lead merges, runs the full gate once, you get one
-test link):
-
-| Wave | 1 Engine/WebGL | 2 Story | 3 Menus + art | 4 World 9/10 | 5 Tuning/fairness | Your call before it |
-|---|---|---|---|---|---|---|
-| 1 | GPU stage 0 (R-3.1), then the 3-9 / 1-9 exits (R-6.1, R-6.2) | Story plumbing (R-4.1) | Menus A: clipped menus and small buttons (R-6.6..R-6.13), win card (R-6.21); icons B-E merge after your test link (R-6.25) | gen2-ascent's World 9 commits (R-143.5), then World 9 (R-2.1) | Bands measure and re-run (R-5.1, R-5.2), then unfair spots Worlds 1-2 | Each HF picture list (R-149.6; the Crocus panel is approved). The Play account waits for the 80% trigger (R-149.9) |
-| 2 | GPU stages 1, 2 and 4 side by side after your phone check | Review fixes, then story text Act I (R-4.10, R-4.2) | Menus B: Satchel repeats and buttons (R-6.10, R-6.14..R-6.16); icons-painted: the Crocus panel (R-1.1) | World 9 finishes; hold prototype for you (R-146.5, R-2.7) | Unfair spots Worlds 4, 6, 7; the goal gate (R-5.7) | Hold rule (R-149.10); 45 Dot lines (R-149.2) |
-| 3 | GPU stage 3, big sheets split (R-3.4, R-3.12) | Story text Acts II-III, framing, replies (R-4.12, R-4.13) | The Drake (R-1.9) | World 10 (R-2.6), 10-3/10-4/10-6 (R-2.10) | Difficulty curve (R-5.4) | World 10 rain (R-149.4); Act II/III pictures |
-
-Then: GPU 5-6 and the APK heat run; the ledger and Wanted posters (R-4.3, menus B, after the story plumbing); 9-2 The Last Trees (R-2.4)
-once World 9 is in; 10-8 The Clockwork Gate (R-2.8) in the story lane once the text is done; bosses 6-8's third phases (R-1.15) after the
-Drake; finale and Scenes list; the General; boss coaching and the defeat-scene walk; floating props; sound and controls (Important); the
-Play pieces; your passes; launch.
+**Wave 1 (the lead started it on Matt's go, 2026-11-04 2:28 AM ET; STATUS):** the release clerk (release-0.9.4), lane 1's GPU stage 0
+(R-3.1), the World 1 validator and the mechanics table (R-150.1, R-150.4) and the quality supervisor's World 1 baseline (R-151). Next after
+the first green round: Phase A's hazards and the combat triangle (R-158.1, R-154's branch part, R-159.1). The three-wave table of
+2026-11-01 is replaced by the phases above (git history keeps it). The lead merges, runs the full gate once and sends you one test link
+at the end of each wave.
 
 ## 1. The lanes and the files each owns
 
@@ -112,6 +127,8 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-152.5 (new kinds share) | Moving platforms from World 2 on, in every world | A | 12.5 h of R-152.5's 18.5 h (five new kinds, about 2.5 h each: like swim (1.5 h) + art (30 min) + a teaching placement); after R-150.4 and R-152.7 |
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 1.5 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Day 1 | R-155 (share) | Every stage has a beginning, a build, a twist and a finale, with places to breathe | A | 7.5 h of R-155's 30 h (part of the hand-built pass, after wave 1; after R-150.1) |
+| Day 1 | R-159.2 (share) | Every world's animals with a job | A | 10 h of R-159.2's 20 h (sized from Phase A's real hours; a guess for now); Phase B, after Matt rates World 1; lane 1 owns engine.ts |
+| Day 1 | R-161.2 (share) | Every boss with choices | A | 7 h of R-161.2's 28 h (sized from Phase A's real hours; a guess for now); Phase B, split by boss when briefed |
 | Important (recommended) | R-145.2 | Phones hear the jungle around them | B | 1 h (like polish-audio (3.6 h) / polish-sfx (4.7 h)) |
 | Important (recommended) | R-6.19 | Dot's tips fit on narrow phones | B | 1 h (like fix-petals (about 2 h start to accept)) |
 | Important (recommended) | R-145.3 | iPhone players hear the music | C | 1 h (like polish-audio (3.6 h) / polish-sfx (4.7 h)) |
@@ -136,6 +153,9 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Parking lot | R-146.3 | Better tester recordings | E | 1 h (like bot-fix + self-test (about 2 h)) |
 | Parking lot | R-3.10 | Oversized art can't sneak back in | E | 1 h (like bot-fix + self-test (about 2 h)) |
 | Parking lot | R-6.22 | Smoother slide and flip animation | E | 1 h (like pokey-anim (about 2 h)) |
+| Parking lot | R-162.10 | A buzz in the hand on hits and chains | C | 1 h (no history: a guess, range 0.5-2 h) |
+| Parking lot | R-162.4 | A stage that adjusts to how the player is doing | C | 4 h (no history: a guess, range 2-10 h) |
+| Parking lot | R-162.3 | Depth: paths in front of and behind the main one | C | 4 h (no history: a guess, range 2-10 h) |
 
 ### Lane 2: story (rewrite, scenes, boss coaching lines; then 10-8 The Clockwork Gate, a self-contained special stage like w7-slide)
 
@@ -161,10 +181,14 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-150.3 (share) | Hand-built stages stop repeating themselves | A | 3 h of R-150.3's 20 h (moved from lane 5 on 11-02 to balance) |
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 13 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Day 1 | R-154 (share) | More kinds of play from the mechanics we already built | A | 10.5 h of R-154's 12.5 h (variants and tempo inversion; after R-150.4) |
+| Day 1 | R-159.1 | Stomp, punch and kick each do a different job | A | 9.5 h (each move like swim (1.5 h, one new mechanic): stomp vault about 1 h, punch stun and deflect 1.5 h, kick shield-break and bowling 2 h; World 1's three species tricks about 1 h each; the placement rule in World 1 about 2 h; range 7-14 h); Phase A, after R-150.4; it changes engine.ts (see Phases) |
+| Day 1 | R-159.2 (share) | Every world's animals with a job | A | 10 h of R-159.2's 20 h (sized from Phase A's real hours; a guess for now); Phase B, after Matt rates World 1 |
 | Important (if time) | R-4.14 | Old story asks either covered or closed | E | 0.5 h (a keeper check (about 30 min)) |
 | Important (if time) | R-4.5 | Characters talk during play at key stages | C | 3 h (like story-delivery (3 h)) |
 | Parking lot | R-144.4 | Small motion in cutscenes; the W8 moon in frame | D | 3 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
 | Parking lot | R-4.8 | Story moments the player plays, not just watches | B | 12 h (no history for playable story moments: range 8-16 h; nearest w7-slide (5.5 h) each) |
+| Parking lot | R-162.2 | A second game after the ending | C | 4 h (no history: a guess, range 2-10 h) |
+| Parking lot | R-162.6 | Choices in one stage that change the next | C | 4 h (no history: a guess, range 2-10 h) |
 
 ### Lane 3: menus, art and the bosses (menus A/B first; then icons-painted for the lairs and art, and a boss builder for the Drake and bosses 6-8's third phases)
 
@@ -195,6 +219,8 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-152.7 | Jumping off a moving platform feels natural | A | 2 h (like vine-fix (2 h)) |
 | Day 1 | R-156 | Jumps that feel springy and in control | B | 2 h (like vine-fix (2 h)); with R-152.7 |
 | Day 1 | R-155 (share) | Every stage has a beginning, a build, a twist and a finale, with places to breathe | A | 5.5 h of R-155's 30 h (the generator template (like gen2-ascent, 3.4 h) and a start on the hand-built pass; after R-150.1) |
+| Day 1 | R-161.1 | A boss fight with choices | A | 6 h (no history for adding win ways; nearest w7-slide (5.5 h) and the boss-rebuild range 6-12 h for a full rebuild; range 4-9 h); Phase A, after R-159.1 |
+| Day 1 | R-161.2 (share) | Every boss with choices | A | 14 h of R-161.2's 28 h (sized from Phase A's real hours; a guess for now); Phase B, split by boss when briefed |
 | Important (recommended) | R-6.14 | Dot never repeats herself word for word | C | 0.5 h (like journal-voice (about 2 h)) |
 | Important (recommended) | R-6.15 | Every find has its own name | C | 0.5 h (like journal-voice (about 2 h)) |
 | Important (recommended) | R-144.2 | Two backdrops no longer too bright | C | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
@@ -212,6 +238,9 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Parking lot | R-1.12 | Every boss intro and defeat on its own painted arena | D | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
 | Parking lot | R-144.3 | World 1's middle trees stop repeating | D | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
 | Parking lot | R-144.5 | More varied props in W4, W6, W7 | D | 3 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
+| Parking lot | R-162.7 | Hiding as a sloth really does | C | 4 h (no history: a guess, range 2-10 h) |
+| Parking lot | R-162.8 | Plants that spring Pokey upward | C | 4 h (no history: a guess, range 2-10 h) |
+| Parking lot | R-162.9 | Bounce shots off the spider silk | C | 4 h (no history: a guess, range 2-10 h) |
 
 ### Lane 4: World 9/10 (stages, the hold move, the General)
 
@@ -235,10 +264,14 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 19 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Day 1 | R-154 (share) | More kinds of play from the mechanics we already built | A | 2 h of R-154's 12.5 h (the wind variants; after R-150.4) |
 | Day 1 | R-155 (share) | Every stage has a beginning, a build, a twist and a finale, with places to breathe | A | 7.5 h of R-155's 30 h (part of the hand-built pass; after R-150.1) |
+| Day 1 | R-160.1 | A move only a sloth has | A | 6 h (the move like vine-fix (2 h) + swim (1.5 h); its art like hf-art-bosses (30 min) plus the list; World 1 placements about 1.5 h; range 4-9 h); Phase A, after R-150.4; it changes engine.ts (see Phases) |
+| Day 1 | R-160.2 | The sloth's own move all game long | A | 9 h (sized from Phase A's real hours; a guess for now): about 1 h a world, range 5-15 h; Phase B |
+| Day 1 | R-161.2 (share) | Every boss with choices | A | 3 h of R-161.2's 28 h (sized from Phase A's real hours; a guess for now); Phase B |
 | Important (if time) | R-2.11 | World 10's far sky isn't stretched | D | 1 h (like hf-art-ground (4.5 h) / hf-cutscenes (2.6 h)) |
 | Important (if time) | R-2.5 | 9-7's climb matches the rebuilt world | C | 2.5 h (like gen2-w6-swing (2.3 h)) |
 | Important (if time) | R-2.9 | World 10's climbs match the rebuilt world | C | 4 h (like gen2-ascent (3.4 h on 10-29, not finished)) |
 | Parking lot | R-144.6 | Paid art finally on screen | C | 6 h (like w1-4-sheets (3.6 h) per batch of worlds) |
+| Parking lot | R-162.5 | A surprise stage in each world | C | 4 h (no history: a guess, range 2-10 h) |
 
 ### Lane 5: tuning and fairness (bands, unfair spots, checkpoints, stranded branches)
 
@@ -267,10 +300,13 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Day 1 | R-5.23 | Stars that match how the stage went | B | 1.5 h (like qa-fix-meeca (20 min), plus tests, the continue count through three callers and an old-save check) |
 | Day 1 | R-6.30 | The mist fades in and out softly, no stripes | B | 1.5 h (like polish-a1 (1.7 h)) |
 | Day 1 | R-150.4 | A table of every mechanic built and where it is actually used | A | 2 h (like the art-use audit (artuse.mjs + gate, 10-31), plus reading mechanics across stages: range 1-3 h); first, with R-150.1 it blocks R-150.2 and R-150.3 |
-| Day 1 | R-150.1 | A ruler that flags a boring stage before Matt plays it | A | 5 h (like bot-fix + self-test (about 2 h), plus proving it flags 5-4, plus tagging each generated section type: about 1-3 h); first, it blocks R-150.2 and R-150.3 |
+| Day 1 | R-150.1 | A ruler that flags a boring stage before Matt plays it | A | 9 h (grown into the validator, PLAN-TO-80 Phase A step 1: like bot-fix + self-test (about 2 h) for the move string, runs and dead walking; the clumsy-thumb bot like the bot-fix change (about 2 h); similarity and landing-in-view about 1 h each; pacing tags about 1-3 h; proving it on World 1 about 1 h; range 7-13 h); first, it blocks R-150.2, R-150.3 and R-155 |
 | Day 1 | R-5.22 | A stage where slow Pokey is suddenly fast | A | 8 h (like w7-slide (5.5 h) + its art (1 h), plus currents and bubbles like swim (1.5 h)); Matt put swimming in launch 2026-11-02 |
 | Day 1 | R-153 (share) | Each world has different kinds of stages, not ten start-to-goal runs | A | 14.5 h of R-153's 65 h (about 2.5 h a stage, like w5-rebuild; split by world when briefed); after R-150.4 |
 | Day 1 | R-155 (share) | Every stage has a beginning, a build, a twist and a finale, with places to breathe | A | 9.5 h of R-155's 30 h (part of the hand-built pass; after R-150.1) |
+| Day 1 | R-158.1 | An eagle you have to hide from or time | A | 2 h (like fix-petals (about 2 h start to accept); watcher.ts is pure and tested); Phase A; with R-5.10 (1-7's eagle) in one job |
+| Day 1 | R-158.2 | The same bite in every watched stage | A | 3 h (sized from Phase A's real hours; a guess for now): range 2-6 h; Phase B |
+| Day 1 | R-161.2 (share) | Every boss with choices | A | 4 h of R-161.2's 28 h (sized from Phase A's real hours; a guess for now); Phase B |
 | Important (recommended) | R-143.8 | World 5's Normal work feeds the tuning | C | 0.5 h (a keeper check (about 30 min)) |
 | Important (recommended) | R-5.6 | Falls hurt fairly: short ones sting, long ones cost a life | B | 1 h (like fix-petals (about 2 h start to accept)) |
 | Important (recommended) | R-143.2 | Paid deep-water art used | C | 1 h (like w8-merge (2.6 h for a big merge)) |
@@ -298,6 +334,7 @@ R-150.2 and R-150.3 (Day 1 since Matt's 11-02 call) are split across lanes as sh
 | Parking lot | R-142.4 | World 3 replays differently each time | C | 10 h (like gen2-w7 (9 h) + one 300-roll curation (about 1.5 h, w9 NEXT.md)) |
 | Parking lot | R-142.5 | World 4 replays differently; unused W4 art placed | C | 10 h (like gen2-w7 (9 h) + one 300-roll curation (about 1.5 h, w9 NEXT.md)) |
 | Parking lot | R-141.6 | A secret level for players who hunt | C | 12 h (no history for a secret level: range 8-16 h) |
+| Parking lot | R-162.1 | A reason to replay a friend's exact run | C | 4 h (no history: a guess, range 2-10 h) |
 
 ### Keeper and lead (no helper)
 
