@@ -119,8 +119,9 @@ repetitive... a sludge."
 - **A real change of shape.** One long branch high in the canopy, with gaps over real pits (lives lost at 2:36 and 3:56), snakes on
   the branch, a liana at 1:00 and a climb at 1:04. It is the first stage that feels like a run.
 - **The chase isn't on screen.** Dot says "It's breaking behind us! Keep moving!" (0:14-0:16). In every frame from 0:10 to 1:04
-  (every 2 s), the branch behind Pokey is whole and nothing chases him. The validator's nearest approach was 134 px on one Normal run.
-  Either way, the player doesn't see the threat, so the stage's moment is a line of text.
+  (every 2 s), the branch behind Pokey is whole and nothing chases him. The validator now reads the engine's own camera every frame:
+  the collapse front is on screen in at most 5% of the chase's frames sideways and 0% upright (fun-validator bd33d386; 3 layouts,
+  9 runs). The player doesn't see the threat, so the stage's moment is a line of text.
 - **Upright.** No collapse visible either (sheets-1-8-up-1, 0:00-3:50). The branch fills a band with sky above and canopy below,
   and gaps show only about one screen-width ahead.
 - **Best moment.** The first gap over a real pit with the branch running on: the closest World 1 comes to tension.
