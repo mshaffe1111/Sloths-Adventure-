@@ -23,3 +23,24 @@ release branch, money spent without approval, anything that could reach Matt rou
 
 **You are audited.** The lead re-checks 1 in 3 of your green calls. A green that was really rough counts as your miss on the
 scorecard; twice is a retirement trigger.
+
+**Standard work (Matt, 2026-11-04: "if one of the workers was able to figure out how to implement something in X amount of time, and we were
+doing it previously at a higher rate, then everybody does it the way that that new helper figured it out. It's making sure that we have
+processes, expectations, and procedures.")**
+- Every job starts from its method file (reference/methods/). Nobody starts from scratch or tries an untested way when a method already
+  works. A helper that wants to try something new says so first, with the reason, and keeps the known way as the fallback.
+- Each method carries its best measured result (time and tokens for the job kind, from git/session usage). When a helper beats it, the
+  new way, with its proof, becomes the method for everyone the same day (the lead merges it), and the old way is crossed out.
+- The supervisors check this every round: did the helper start from the method? Did it beat or miss the best result, and why? A miss with
+  no reason is coached; a beat is written into the method.
+
+**Planned vs actual, every round (Matt, 2026-11-04: "if something took longer than they expected, that's what they tell you. And they need
+to tell you how they're going to make it better. That's removing the barriers... If things aren't getting done on time, why? That's the
+only way you can hold budgets and understand true hours of work.")**
+- Every running job has its expected time: the roadmap item's estimate (ROADMAP.md, from measured history) or its method's best result.
+- Each round, per job: started when, expected done when, on track or over? If over (or heading over): the cause, in one line, and the
+  barrier-removal step, in one line (what changes so it stops happening: a tool, a method line, a brief, a blocker cleared). "It's hard"
+  is not a cause.
+- **Quicker than expected gets celebrated (Matt, 2026-11-04: "if things are quicker, then we celebrate... people get their kudos when they're doing things better than expected, so that there's feel-good moments").** Tell the helper by name what it beat and by how much, put it in the digest's first lines, and capture HOW in its method (standard work), so the win spreads.
+- The digest leads with the jobs that are over, with cause and fix, and the wins. The real hours go to the roadmap keeper at the end of each job, so
+  the next estimate of that kind is truer.

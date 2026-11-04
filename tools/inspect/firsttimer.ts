@@ -30,7 +30,8 @@
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { GameEngine } from '../../src/game/engine.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
-import { GuideQueue, type GuideLine, type MoveId, type TopicId } from '../../src/game/dotGuide.ts';
+import { GuideQueue, moveOf, type GuideLine, type MoveId, type TopicId } from '../../src/game/dotGuide.ts';
+import { DOT_LINES } from '../../src/game/dotLinesData.ts';
 import { engineGuideLine } from '../../src/game/dotLines.ts';
 import { lessonDotLine, type LessonId } from '../../src/game/lessons.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../src/game/dotGuideWatch.ts';
@@ -39,7 +40,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { reachJump, reachJumpHeld, TIMED, vineAmp } from '../../src/game/physics.ts';
+import { PHYS, reachJump, reachJumpHeld, TIMED, vineAmp } from '../../src/game/physics.ts';
 import type { Platform } from '../../src/game/types.ts';
 import { findRoute } from './route.ts';
 import { buildRoll } from './eraRoll.ts';
@@ -603,6 +604,10 @@ interface Jump {
   /** harms so far when it began */
   harms: number;
   running: boolean;
+  /** a mushroom's bounce with a ledge overhead (bounceJump): only getting up counts as on, not landing further along the floor */
+  bounceUp?: boolean;
+  /** the ledge overhead that bounce is for: once over it, coming down, he lets go of the side and steers back past its middle */
+  aim?: Platform;
 }
 
 /** one jump he tried */
@@ -645,6 +650,19 @@ export function freshPhone(setting: FirstTimer['setting']) {
   }
   setDifficulty(setting);
 }
+
+/** a stage's place in play order (1-5: 105), NaN for anything else */
+const playOrder = (id: string) => {
+  const m = /^(\d+)-(\d+)$/.exec(id);
+  return m ? Number(m[1]) * 100 + Number(m[2]) : NaN;
+};
+/**
+ * The first stage whose own hint teaches the second jump (dotLinesData: hint.1-1.double). A first-timer on any later stage has played it
+ * (the stages open in order), so he starts knowing the double (fix-petals, 2026-11-04: each run starts on a fresh phone, and on 1-5 he
+ * bounced to the high branches, then walked off the first one at a 190 px gap he had been taught to double on 1-1). Only the double is
+ * carried: it is the move the mushroom climbs hang on; the other moves' tips are still learned where Dot says them.
+ */
+const DOUBLE_TAUGHT = Math.min(...DOT_LINES.filter((r) => r[0].startsWith('hint.') && r[1] && moveOf(r[5] ?? r[4] ?? '')?.move === 'double').map((r) => playOrder(r[1])));
 
 export class FirstTimerRun {
   readonly sim: RealPlay;
@@ -729,6 +747,8 @@ export class FirstTimerRun {
   private climbTurned = false;
   /** he was on a trunk when the last choice was made */
   private wasOnTrunk = false;
+  /** a mushroom's bounce already seen this time in the air (bounceJump) */
+  private bounceSeen = false;
   /** how far he moved in the last frame */
   private moveX = 0;
   private moveY = 0;
@@ -760,6 +780,7 @@ export class FirstTimerRun {
     c.getBoundingClientRect = () => ({ width: vw, height: vh, left: 0, top: 0 });
     e.resizeCanvas();
     this.dot = new DotShadow(id);
+    if (playOrder(id) > DOUBLE_TAUGHT) this.learned.add('double');
     e.callbacks.onGuide = (text: string, s: number, passed?: boolean) => this.dot.engine(text, s, passed);
     e.callbacks.onLesson = (lid: LessonId) => this.dot.lesson(lid, !!(this.sim.p.climbing || this.sim.p.isVineSwinging || this.sim.p.hanging));
     e.callbacks.onProgressUpdate = (cur: number, target: number) => {
@@ -820,10 +841,11 @@ export class FirstTimerRun {
     const st = this.sim.stage as Stage;
     this.direct = Math.hypot((st.exitTotemX || this.sim.p.x) - this.sim.p.x, (st.exitTotemY ?? this.sim.p.y) - this.sim.p.y);
     if (!pts) {
-      let route = findRoute(st, []);
+      // (the second jump linked on 1-1..1-5 too: route.ts findRoute `double`)
+      let route = findRoute(st, [], { double: true });
       // (the engine's own copy of a stage with puzzle rooms or Dot's pulley is changed as it loads, and the check cannot follow it: the
       // route is then traced on the stage as built, the same roll and setting, as the inspector traces it, round 5 2026-10-29)
-      if (route.traced === 'failed') route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), []);
+      if (route.traced === 'failed') route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), [], { double: true });
       pts = route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y }));
       // (no route the inspector can trace: the straight line from the spawn to the shrine gives him a way to head, and the run is marked)
       if (!pts.length && st.exitTotemX) {
@@ -1159,6 +1181,12 @@ export class FirstTimerRun {
       return {};
     }
 
+    // a mushroom's bounce: taken as a jump of his own, so the second flick below can come near its top
+    if (p.grounded) this.bounceSeen = false;
+    else if (p.bounce && !this.bounceSeen && !this.jump && p.vy < 0) {
+      this.bounceSeen = true;
+      this.bounceJump(fdir);
+    }
     // a jump in progress: the thumb down for its hold, the steer back after a straight-up flick, a second flick near the top
     const j = this.jump;
     if (j) {
@@ -1166,7 +1194,14 @@ export class FirstTimerRun {
       // (past the middle of a small landing, a log or a pad, the thumb steers back onto it: round 2 of LV-2, 2-1's drownings were the bot
       // landing on a log's far end at a run and running off it)
       const small = age < j.upOnly ? 0 : this.overSmall(j.dir);
-      const out: Pad = age < j.upOnly || small === 1 ? {} : small === 2 ? side(j.dir === 1 ? -1 : 1) : side(j.dir);
+      let out: Pad = age < j.upOnly || small === 1 ? {} : small === 2 ? side(j.dir === 1 ? -1 : 1) : side(j.dir);
+      // (a bounce up to a ledge over the mushroom: holding on, the second jump carried him past it, fix-petals 2026-11-04 on 1-5)
+      const a = j.aim;
+      // (above it and over it, the thumb steers for its middle: past the middle, back; the air keeps his speed, so letting go is not enough)
+      if (a && !p.grounded && p.y < a.y - 10 && p.x > a.x - 10 && p.x < a.x + a.width + 40) {
+        const mid = a.x + a.width / 2;
+        if (j.dir >= 0 ? p.x > mid : p.x < mid) out = side(j.dir === -1 ? 1 : -1);
+      }
       if (age < j.hold) out.jump = true;
       if (j.kind === 'double' && !j.pressed2 && age > j.hold + DT && !p.grounded && p.vy > j.dblAt && p.jumpsLeft > 0) {
         j.pressed2 = true;
@@ -1227,7 +1262,17 @@ export class FirstTimerRun {
     }
     if (!p.grounded) {
       // in the air off a ledge he walked off: steer the way on; grab a trunk if he touches one on the way up
-      const out = this.overSmall(fdir) ? {} : side(fdir);
+      let out: Pad = this.overSmall(fdir) ? {} : side(fdir);
+      // (over a ledge with its end close ahead, the way on not dropping: he steers back to land on it and jumps from there, as a person
+      // does. fix-petals 2026-11-04, R-150.8: at 1-4's trunk tops the engine sets him off the top into the air, he held the way on, came
+      // down 12 px from the branch's end at a run and ran off it, back to the trunk's foot, three times a trunk: 55-58 rescues a run)
+      if (p.vy > -200) {
+        const f = this.floorAt(p.x, p.y, 120);
+        const on = this.prog.target(p, 160);
+        // (a ledge right under his feet and wide enough to stand on: not a dip or a sunk step he is dropping into, whose way on is ahead, nor
+        // a stump; first try fired in 1-1's 70 px dips and doubled one run's rescues)
+        if (f && f.type !== 'drift' && f.type !== 'moving' && f.width >= 150 && f.y - p.y < 60 && (fdir > 0 ? f.x + f.width - p.x : p.x - f.x) < 40 && !(on && on.y > p.y + 50)) out = side(fdir > 0 ? -1 : 1);
+      }
       if (e.nearTreeVine && up) out.up = true;
       if (this.learned.has('glide') && e.skills?.has('glide') && p.vy > 150) out.jump = true;
       return out;
@@ -1293,7 +1338,10 @@ export class FirstTimerRun {
         const on = this.prog.target(p, 160);
         // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid
         // walked off a plank into the river six times because the route dropped down past the next bank)
-        const across = this.sim.platforms.some((q) => !q.broken && q.type !== 'drift' && Math.abs(q.y - p.y) < 50 && (dir > 0 ? q.x > p.x && q.x - p.x < 150 + who.edgeAim : q.x + q.width < p.x && p.x - (q.x + q.width) < 150 + who.edgeAim) && !this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40));
+        // (once he knows the second jump, a ledge a double reaches counts as across too: fix-petals 2026-11-04, 1-1's high runs, 190-220 px
+        // gaps between the branches 240 px up; with the one-jump window he walked off the first branch and on to the wall's foot)
+        const span = (this.learned.has('double') ? 250 : 150) + who.edgeAim;
+        const across = this.sim.platforms.some((q) => !q.broken && q.type !== 'drift' && Math.abs(q.y - p.y) < 50 && (dir > 0 ? q.x > p.x && q.x - p.x < span : q.x + q.width < p.x && p.x - (q.x + q.width) < span) && !this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40));
         const drops = on && on.y > p.y + 50 && !across;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
         const here = this.floorAt(p.x, p.y, 6);
@@ -1400,6 +1448,31 @@ export class FirstTimerRun {
     return out;
   }
 
+  /**
+   * A mushroom bounced him (fix-petals, 2026-11-04). Until now the bot only ever flicked a second time in a jump it had started, so after a
+   * bounce it held the way on and fell back: on 1-1 it bounced under every high run of branches (240 px up, one bounce rises about 180),
+   * walked on to the earth wall at its end and was rescued there, 10-21 times a run. Now the bounce is taken as a jump of his own, with the
+   * thumb up (the mushroom did the launch), and it is a double, the second flick coming near its top as in any double (dblAt), where:
+   *   - a ledge ahead of him sits above the bounce's top but within the second flick's reach (PHYS.bounceV, doubleV, gravUp): what he
+   *     sees overhead, as a person does (the route itself runs along the floor to the wall and takes the wall on trust), and
+   *   - he knows the second jump (Dot's tip read: learned 'double'), or a bounce here fell short before (SpotMemory), as at any edge.
+   */
+  private bounceJump(dir: -1 | 0 | 1) {
+    const p = this.sim.p;
+    const apexY = p.y - (PHYS.bounceV * PHYS.bounceV) / (2 * PHYS.gravUp);
+    const rise2 = (PHYS.doubleV * PHYS.doubleV) / (2 * PHYS.gravUp);
+    const d = dir || 1;
+    const aim = this.sim.platforms.filter((q) => !q.broken && q.type !== 'bouncy' && q.y < apexY + 10 && q.y > apexY - rise2 + 10
+      && (d > 0 ? q.x + q.width > p.x + 20 && q.x < p.x + 420 : q.x < p.x - 20 && q.x + q.width > p.x - 420))
+      .sort((a, b) => Math.abs(a.x + a.width / 2 - p.x) - Math.abs(b.x + b.width / 2 - p.x))[0];
+    const higher = !!aim;
+    const knows = this.learned.has('double') || this.mem.plan(p.x, p.y) === 'double';
+    this.jump = {
+      t0: this.t, x: p.x, y: p.y, cur: this.prog.cur, kind: higher && knows ? 'double' : 'single', hold: 0, upOnly: 0, dir, pressed2: false,
+      dblAt: between(this.r, this.who.dblAt), left: false, stop: undefined, harms: this.harms.length, running: false, bounceUp: higher, aim: higher && knows ? aim : undefined,
+    };
+  }
+
   /** put him somewhere along the way (a puzzle passed, a rescue) */
   private placeAt(x: number, y: number) {
     const sim = this.sim;
@@ -1492,7 +1565,9 @@ export class FirstTimerRun {
         if (j) {
           // (a jump that took him on along the way but dropped him far under where he set off is a miss: he fell past the ledge,
           // round 5 2026-10-29; counted a success, the bot never tried the jump another way)
-          const ok = held || p.y < j.y - 6 || (this.prog.cur > j.cur + 2 && p.y < j.y + 60);
+          // (a bounce that had a ledge overhead and came down on the floor past it fell short, however far along: fix-petals 2026-11-04, on
+          // 1-5 the bounce carried him past the 243 px high ground and he turned back for it, the bounce counted "on" and never doubled)
+          const ok = held || p.y < j.y - 6 || (!j.bounceUp && this.prog.cur > j.cur + 2 && p.y < j.y + 60);
           this.mem.result(j.x, j.y, j.kind, ok);
           const hurt = this.harms.length > j.harms;
           this.tries.push({ x: j.x, y: j.y, dir: j.dir, t0: j.t0, t1: t, kind: j.kind, ok: ok && !hurt, hurt, running: j.running, land: ok && p.grounded ? { id: this.e.standingOnId, x: p.x, y: p.y } : undefined, hold: j.hold });

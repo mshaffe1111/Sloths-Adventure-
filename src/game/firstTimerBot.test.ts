@@ -14,7 +14,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { FirstTimerRun, firstTimer, freshPhone, FT_ADULT, FT_KID, type FirstTimer } from '../../tools/inspect/firsttimer.ts';
 import type { Pad } from './realPlay.ts';
-import type { Platform } from './types.ts';
+import type { Platform, Vine } from './types.ts';
 import { GEN2_STAGES, KID_RUNS_59 } from './gen2/game.ts';
 
 const Y = 580;
@@ -186,3 +186,121 @@ test("5-9's Easy goal rests on the kid's runs: re-measured, they are still the o
     entry.easyGoal = kept;
   }
 });
+
+// ---- the mushroom's bounce (fix-petals, 2026-11-04) ----
+// 1-1's high runs: a mushroom on the floor up to branches 245 px over it (one bounce rises about 180), double-jump gaps between them, an
+// earth wall at the end only they reach. The bot never flicked a second time after a bounce, walked off the branches and was rescued at
+// the foot of every wall (10-21 times a run on 1-1).
+const shroomWorld = (): Platform[] => {
+  const P = (id: number, x: number, y: number, width: number, height = 24, type: Platform['type'] = 'solid'): Platform => ({ id, x, y, width, height, type }) as Platform;
+  return [
+    P(1, 0, Y, 1760, 90), // the floor, to the wall's foot
+    P(2, 900, Y - 30, 70, 30, 'bouncy'), // the mushroom
+    P(3, 940, Y - 245, 210), // branch A
+    P(4, 1360, Y - 245, 200), // branch B, 210 px on (a double)
+    P(5, 1760, Y - 245, 1600, 245), // the earth wall and the high ground past it
+  ];
+};
+const shroomRoute = (): Array<{ x: number; y: number }> => {
+  const pts: Array<{ x: number; y: number }> = [];
+  for (let x = 100; x < 940; x += 24) pts.push({ x, y: Y });
+  for (let x = 940; x < 3300; x += 24) pts.push({ x, y: Y - 245 });
+  return pts;
+};
+function shroomRun(who: FirstTimer, seed: number, taught: boolean, id = '1-1') {
+  const r = new FirstTimerRun(id, seed, who, { route: shroomRoute(), cap: 40, rescueAfter: 1000 });
+  r.sim.bare(shroomWorld());
+  r.sim.stand(300, Y);
+  r.prog.relocate(r.sim.p);
+  if (taught) (r as unknown as { learned: Set<string> }).learned.add('double');
+  let up = -1;
+  const frame = r.sim.frame.bind(r.sim);
+  r.sim.frame = (pad?: Pad) => {
+    frame(pad);
+    const p = r.sim.p;
+    if (up < 0 && p.grounded && p.x > 1800 && Math.abs(p.y - (Y - 245)) < 4) up = r.sim.t;
+  };
+  r.play();
+  return { r, up };
+}
+for (const [name, who] of WHO) {
+  test(`${name}: taught the second jump, a mushroom's bounce takes him up to the branches, across a double gap and onto the wall's top`, () => {
+    let made = 0;
+    for (const seed of [1, 2, 3, 4, 5]) {
+      const { r, up } = shroomRun(who, seed, true);
+      // (up on his own: before the fix every run got there only by a rescue, 18-33 s in)
+      if (up > 0 && r.rescues === 0) made++;
+    }
+    // (a first-timer's thumb can still miss a double now and then: most runs make it)
+    assert.ok(made >= 4, `${made} of 5 got up onto the high ground without a rescue`);
+  });
+  test(`${name}: before Dot's tip teaches the second jump, his first bounce is a plain one (a double only after it fell short)`, () => {
+    for (const seed of [1, 2]) {
+      const { r } = shroomRun(who, seed, false);
+      const first = r.tries.find((t) => Math.abs(t.y - (Y - 30)) < 6 && t.x > 860 && t.x < 1000);
+      assert.ok(first, `seed ${seed}: no bounce tried`);
+      assert.equal(first.kind, 'single', `seed ${seed}: the first bounce was a ${first.kind}, untaught`);
+    }
+  });
+  test(`${name}: on a stage after 1-1 (whose hint teaches it) he knows the second jump from the start, and the first bounce takes him up`, () => {
+    let made = 0;
+    for (const seed of [1, 2, 3]) {
+      const { r, up } = shroomRun(who, seed, false, '1-5');
+      const first = r.tries.find((t) => Math.abs(t.y - (Y - 30)) < 6 && t.x > 860 && t.x < 1000);
+      assert.equal(first?.kind, 'double', `seed ${seed}`);
+      if (up > 0 && r.rescues === 0) made++;
+    }
+    assert.ok(made >= 2, `${made} of 3 got up without a rescue`);
+  });
+}
+
+// ---- off a trunk's top on to a ledge's very edge (fix-petals, 2026-11-04, R-150.8: 1-4's climbs) ----
+// 1-4 layout 1 at x 2229-2346: a trunk on a branch, the next branch 85 px to the left and 30 px up. He leapt off the trunk's top to the left,
+// came down 7 px from the branch's end at a run, and "the thumb comes back down" held the way on for 0.1 s: off the end, to the foot of
+// the trunk again, three times, then a rescue (1-4: 55-58 rescues a run on seeds 1-3). Copied from the stage, 5045 px lower.
+const trunkWorld = (): { plats: Platform[]; vines: Vine[] } => ({
+  plats: [
+    { id: 11, x: 2286, y: Y, width: 194, height: 24, type: 'solid', style: 'branch' } as Platform,
+    { id: 12, x: 2306, y: Y - 289, width: 313, height: 24, type: 'solid', style: 'branch' } as Platform,
+    { id: 13, x: 2000, y: Y - 319, width: 221, height: 24, type: 'solid', style: 'branch' } as Platform,
+    { id: 20, x: 1600, y: Y, width: 686, height: 90, type: 'solid' } as Platform, // (the ground at the trunk's foot, as on the stage: a miss is tried again)
+  ],
+  vines: [{ id: 7, x: 2346, topY: Y - 291, bottomY: Y - 6, swaySpeed: 0.9, swayPhase: 3.862, vineType: 'tree_climb', treeId: 7 } as Vine],
+});
+const trunkRoute = (): Array<{ x: number; y: number }> => {
+  const pts: Array<{ x: number; y: number }> = [];
+  for (let x = 2470; x > 2346; x -= 24) pts.push({ x, y: Y });
+  for (let y = Y; y > Y - 289; y -= 24) pts.push({ x: 2346, y });
+  for (let x = 2346; x > 2010; x -= 24) pts.push({ x, y: x > 2221 ? Y - 289 : Y - 319 });
+  return pts;
+};
+for (const [name, who] of WHO) {
+  test(`${name}: up a trunk and off its top on to a branch's edge, he stops and jumps the gap instead of running off the end`, () => {
+    let made = 0, offs = 0;
+    const notes: string[] = [];
+    for (const seed of [1, 2, 3, 4, 5]) {
+      const w = trunkWorld();
+      // (as '1-1': under the id '1-4' the stage's own puzzle rooms, a squirrel lift at x 2020, took him over in the bare world)
+      const r = new FirstTimerRun('1-1', seed, who, { route: trunkRoute(), cap: 30, rescueAfter: 1000 });
+      r.sim.bare(w.plats, w.vines);
+      r.sim.stand(2470, Y);
+      r.prog.relocate(r.sim.p);
+      let on13 = -1, off = 0, was12 = false;
+      const frame = r.sim.frame.bind(r.sim);
+      r.sim.frame = (pad?: Pad) => {
+        frame(pad);
+        const p = r.sim.p;
+        if (on13 < 0 && p.grounded && r.sim.standingOn === 13) on13 = r.sim.t;
+        // (off the branch's end with no jump pressed: what he did at every 1-4 trunk top)
+        if (on13 < 0 && was12 && !p.grounded && !pad?.jump && !pad?.press && p.x < 2306) off++;
+        was12 = p.grounded && r.sim.standingOn === 12;
+      };
+      r.play();
+      offs += off;
+      notes.push(`seed ${seed}: on the far branch at ${on13.toFixed(1)} s, ran off the end ${off} times, ${r.rescues} rescues`);
+      if (on13 > 0 && r.rescues === 0) made++;
+    }
+    assert.equal(offs, 0, notes.join('; '));
+    assert.ok(made >= 4, notes.join('; '));
+  });
+}

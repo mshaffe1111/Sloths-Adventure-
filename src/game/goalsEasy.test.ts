@@ -14,7 +14,7 @@ test("LV-24: a gen2 stage's Easy goal is 65% of what it holds, capped at the kid
   assert.equal(gen2EasyGoal(6, 9), 4, 'the floor when the kid reaches more');
   assert.equal(gen2EasyGoal(1), 1);
   // (5-9's own record: the fixed kid bot's six runs, and the goal they give; firstTimerBot.test.ts re-measures the runs)
-  assert.deepEqual([...GEN2_STAGES['5-9'].kidRuns!], [5, 6, 4, 6, 6, 5]);
+  assert.deepEqual([...GEN2_STAGES['5-9'].kidRuns!], [8, 3, 3, 5, 7, 5]); // (re-measured fix-petals 2026-11-04: the bounce's second jump; the goal stays 5)
   assert.equal(GEN2_STAGES['5-9'].easyGoal, 5);
 });
 
