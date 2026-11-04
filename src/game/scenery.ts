@@ -2267,8 +2267,9 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
       // orchids in its lower corners showed between the boughs, huge and pale, the lead's polish review 2026-11-04)
       const cFar = cano && k > 0.01 && backdropStage() === '1-1' ? revealSet({ far: 'w1-far', mid: 'w1c-mid', near: 'w1c-near' }) : null;
       if (cFar) {
-        // (in by half way up the fade: a half-faded sunrise far still showed its orchids, pale)
-        ctx.globalAlpha = Math.min(1, 2 * k) * fa;
+        // (over a short stretch of the climb, k 0.15-0.3: a half-faded sunrise far still showed its orchids, pale, and two far strips
+        // half faded showed their 1 px tile overlaps as lines in the sky, the lead's review 2026-11-04)
+        ctx.globalAlpha = Math.max(0, Math.min(1, (k - 0.15) / 0.15)) * fa;
         drawStrip(ctx, cFar.far, 'far', 0.05, camX, vw, vh, farScale(cFar.sky, vh, ps, yo * 0.3), yo * 0.3, cFar.sky ?? null, farScale(cFar.sky, vh, ps, farMax));
         ctx.globalAlpha = fa;
       }

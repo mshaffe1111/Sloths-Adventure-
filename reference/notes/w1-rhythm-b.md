@@ -71,3 +71,15 @@ No stage-build method file exists (stage-fix.md points to a `stage-build.md` tha
 - Hash (3,264 builds, layouts 1-16, both settings): only 1-1 and 1-4 differ from the lead branch.
 - Bots (fixed bot): 1-1 kid 174-184 s, 0-1 lives; adult 208-239 s, 2 lives, 0 game overs. 1-4 kid 161-184 s, 0 lives; adult
   169-266 s, 0-1 lives.
+
+## Evening (5:20-6:00 PM ET): the lead's canopy look review, and the move ruler
+- ART DEFECT (for the repaint, the lead via Hugging Face): w1sunrise-far.webp has white orchids painted in its lower corners (see
+  reference/qa-reports/w1-rhythm-b/canopy/w1sunrise-far-orchids.jpg). Up a climb the camera shows that strip's lower part, so they read as
+  huge pale flowers behind the play line. Found by hooking the canvas in the real build and source-mapping the draw (they are not
+  dressing, plant sprites, biome shrubs or the canopy strips). Tonight's fix: 1-1's canopy cross-fades the far strip to w1-far.
+- 1-1's canopy: kapoks few and huge (one to 2-5 boughs, 1.6-2.6x wide, opaque, uneven), each bough grows out of one at an end and tucks
+  into World 1's painted bush at the other; two thirds of the boughs bare bark; thickness varied 0.82-1.27x. Draw only (Platform.bare,
+  Platform.thick, proto.trunks, proto.leaves via protoArt setDecoTrunks). drawcheck on 1-1, both orientations: PASS.
+- The validator's grams() kept a hop, a jump and a double jump as one move, so every jumping stage read as alike to every other (old 1-7
+  read 93-96% like the new 1-1). Now three moves (the lead's ruling): 18 fun-gate entries lower or gone, none rose; 1-7 vs 1-1 max 50%.
+  Next (not done): label a confirmed double jump U in the move string.
