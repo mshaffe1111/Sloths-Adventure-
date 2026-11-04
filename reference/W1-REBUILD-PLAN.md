@@ -1,0 +1,47 @@
+# World 1 rebuild, stages 1-1 to 1-5 (lead's design, 2026-11-04; Matt: "get 1 through 5 so I can play through multiple... if we
+can get 5 levels to feel different and have it where the testers can actually go out there and test the new thing, where they're
+seeing the new rhythm too")
+
+Source: research 11-04 (reference/research/MATT-RESEARCH-2026-11-04-full.txt): BPM and beat map (line 522), tension curve (line 531),
+map shapes (line 596), beat-traced nodes (line 598), 200 px aprons and node checkpoints (lines 602-603); STAGE-RULES §0b and §0c;
+the quality supervisor's baseline (reference/qa-reports/world1-baseline.md: "World 1 is one stage played six times"). The research
+ledgers (reference/research/ledger/) may add to this; the lead folds them in about 2:30 PM ET.
+
+## What makes the five differ (each row must differ from every other row in at least four columns)
+
+| Stage | Job (slot) | Map shape | Tempo | Beat feel | Main pair | Look | Signature moment |
+|---|---|---|---|---|---|---|---|
+| 1-1 Into the Canopy | arrival, teach run/jump/double | linear wave that RISES from the forest floor to the high kapok branches (the name finally true) | 88 BPM | steady: hops on the beat, like a march | run + jump, then double jump | floor -> canopy; the backdrop changes with height | the first double-jump chain up into the canopy, then the view from the top branch |
+| 1-2 The Petal Trail | teach the world's thing: vines | over-under loop-back: out along the top on vines, back underneath along the roots | 92 BPM | swung: long-short (swing, swing, land... hop) | jump + vine swing | canopy vines, then the dim root level | swinging out over the drop, then seeing the root path you'll come back along |
+| 1-3 Branch Snakes | tight terrain + the combat teach | high/low split: high road with snakes and the vault, low road safer and slower | 96 BPM | off-beat: punches and stomps land between the hops | combat triangle (stomp vault, punch daze, kick) + snakes | mid-canopy, snake country | the first stomp-vault over a gap (w8-rope2's taught vault) |
+| 1-4 Up the Kapok | change of direction: the climb | vertical chimney (kept), the repeated top half rebuilt | 84 BPM | half-note, wait-and-go: slow deliberate climbs, waits for the squirrel lift and rope timing | climb + creaking limbs (taught here, 0.6 s to recover) | trunk and sky | the squirrel lift, then the crown with the view over the canopy |
+| 1-5 Where She Walked | mid-world spike | a trail: Meeca's carvings lead, closer and closer together, the fastest stage so far | 100 BPM | broken: uneven gaps you read on the run | snap twigs (required, keep running) + vines, over real pits | dusk trail, carvings glowing | the carving chase: marks closer together, the run speeding up into the last stretch |
+
+## Every stage has the research's tension curve (6-8 nodes, line 531)
+intro (1 action every 2.5 s, safe) -> ramp (1 every 1.2 s) -> spike (the stage's hardest burst) -> rest (no action; Dot's line;
+the collectible teased in sight or by sound) -> counter-melody (a different pair from the stage's main one) -> climax (everything the
+stage taught, densest) -> cool-down (a slide or easy glide to the exit). Checkpoint at every node's entrance on a 200 px safe apron.
+
+## Rules for the build (no exceptions)
+- No `fillTo()` padding. Length comes from the nodes: 2-5 min for a first-timer on Normal, never under 2 for a skilled player.
+- Platforms, vines and branches in flow and tight nodes sit where Pokey's feet land when he jumps on the stage's beat
+  (`src/game/beatTrace.ts`, w1-rhythm). A tester should be able to tap along.
+- Something bites from 1-1's climax on (pits on Normal, soft on Easy where STAGE-RULES says; Easy stays a cruise).
+- Petals and pickups never count as variety (§0c.5). The goal sits on the natural path (D8).
+- No two neighbouring stages share a map shape, tempo or beat feel; the validator's "like the stage before" flags for 1-1 to 1-5
+  must fall, and funknown.json is lowered.
+- Existing World 1 art only today; no Hugging Face spend without Matt's OK on a picture list.
+- Each builder sends the lead its stage plan (node table + a top-down layout still) BEFORE wiring, then stills upright and sideways,
+  and the quality supervisor records 1-1 -> 1-5 in order on the candidate.
+
+## Who builds what (tonight)
+- w1-rhythm: `beatTrace.ts` (pushed first, the others use it), then 1-2 and 1-5.
+- w1-rhythm-b (new): 1-1 and 1-4.
+- w8-rope2: 1-3, around its accepted R-159.1 combat teach.
+- fix-petals: pits (R-6.38) feed all five; the validator reads each node's BPM and beat feel.
+- quality supervisor: judges each plan, then the in-order recording 1-1 -> 1-5.
+- Lead: approves each plan against this table, shows Matt the five layouts before wiring, builds the release.
+
+Timeline (ET): beatTrace pushed about 2:15; all five plans to the lead about 3:00; shown to Matt about 3:15; built and gated about
+6:30; in-order recording and lead's look about 7:15; release PR to Matt about 8:00. A stage not at the polish bar by then is named
+to Matt and held back, never shipped rough.
