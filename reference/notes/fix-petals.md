@@ -5,7 +5,7 @@ fun-validator 98be8f98 (gate 14777165). tools/validate/funcheck.ts (45 s here, 3
 stage-layout flags); knowncheck counts one id per layout; wired into gates.yml, CLAUDE.md, gates.md, tools/README.md, validator.md.
 Proven: two runs identical; CI run 41848331105 green, its log "PASS (152 known, 2072 ...; 38 s)"; a raised count fails knowncheck, a lowered
 count fails the gate as "worse", a better stage fails until lowered. The validator was accepted earlier (QS PASS 7909cf11; lead OK, KID_RUNS_59 OK).
-NEXT: whatever the lead gives. Watch: the lead's merge into its branch must re-run funcheck (any World 1 change there moves the counts).
+Report with every gate line: reference/qa-reports/validator/README.md (cb8d5198, gates on 3495372a). NEXT: whatever the lead gives. Watch: the lead's merge into its branch must re-run funcheck (any World 1 change there moves the counts).
 
 ## The job, as briefed
 1. R-150.4 mechanics-in-use table, 1-1..1-9 and the boss: what the player meets (stage data + a bot run) against what the engine has.
