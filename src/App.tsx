@@ -59,7 +59,7 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
-import { gpuLive, gpuProbe, gpuStats, mountGpuLayer } from './game/gpuLayer.ts';
+import { gpuLive, gpuProbe, gpuStats, setGpuCanvas } from './game/gpuLayer.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
 import { keepScreenOn, nativeApp } from './game/appShell.ts';
@@ -803,8 +803,8 @@ export default function App() {
   };
 
   const launchEngine = useCallback((lvl: LevelConfig) => {
-    // (the GPU layer starts with the first stage, in its own time: nothing waits on it, gpuLayer.ts)
-    void mountGpuLayer(gpuCanvasRef.current);
+    // (the GPU layer's canvas, for when something is first put on it: nothing is started here, gpuLayer.ts)
+    setGpuCanvas(gpuCanvasRef.current);
     enterWorld(lvl.worldIndex);
     clearTimeout(launchTimer.current);
     if (engineRef.current) {

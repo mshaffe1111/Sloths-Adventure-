@@ -8,7 +8,8 @@
  *  - WebGL 2 only. The context is made here with getContext('webgl2') and handed to Pixi, so Pixi never falls back to WebGL 1; a phone
  *    without WebGL 2 keeps the 2D canvas alone, as before. Never WebGPU (PERFORMANCE-RULES §4: PowerVR): only Pixi's WebGL renderer is
  *    loaded, never its auto-detect.
- *  - Pixi is loaded on its own (a separate chunk, `import()`), once, for the whole app; the first stage asks for it.
+ *  - Pixi is loaded on its own (a separate chunk, `import()`), once, for the whole app, and only when something is first put on the
+ *    layer (mountGpuLayer): until then the layer costs nothing at all, not even its start-up.
  *  - A lost context (the phone took the GPU back) draws nothing and costs nothing until the browser gives it back; Pixi rebuilds its
  *    GPU objects then (its GlContextSystem), and the layer draws again. The 2D game never waits on it.
  *  - Nothing to draw: no GPU work at all. The loop still hands it the camera every frame; it renders, shows its canvas and holds a
@@ -70,11 +71,20 @@ let shown = false;
 /** frames drawn and frames skipped (nothing to draw, or the context lost): for the checks */
 export const gpuStats = { drawn: 0, idle: 0, lostFrames: 0, losses: 0, restores: 0 };
 
+/** the canvas the layer goes on (App.tsx: the one under the game's), told once the page has it; nothing is started by this */
+let home: HTMLCanvasElement | null = null;
+export function setGpuCanvas(canvas: HTMLCanvasElement | null) {
+  if (canvas) home = canvas;
+}
+
 /**
- * Put the layer on `canvas` (App.tsx: the canvas under the game's), once. Resolves with whether it is running (false: no WebGL 2, or
- * Pixi failed to start: the game draws on the 2D canvas alone, as before). Safe to call again.
+ * Start the layer on `canvas` (by default the one setGpuCanvas was given), once: the WebGL 2 context, Pixi loaded and set up. Resolves
+ * with whether it is running (false: no WebGL 2, or Pixi failed to start: the game draws on the 2D canvas alone, as before). Safe to call
+ * again. Only called by what puts something on the layer (gpuProbe now; from stage 1, under the title card): starting it costs 400-650 ms
+ * of main thread with 100-240 ms long tasks here, and with nothing to draw that bought nothing. Started on every stage launch, it slowed
+ * clipcheck's parallel walks until the World Map missed its 10 s wait (3 of 3; 2 of 2 green without it: warmup-5m, 2026-11-04).
  */
-export function mountGpuLayer(canvas: HTMLCanvasElement | null): Promise<boolean> {
+export function mountGpuLayer(canvas: HTMLCanvasElement | null = home): Promise<boolean> {
   if (live) return Promise.resolve(true);
   if (!canvas || typeof document === 'undefined') return Promise.resolve(false);
   if (!starting) {
@@ -132,7 +142,9 @@ export function resizeGpuLayer(w: number, h: number, dpr: number) {
   // (while it has nothing to draw its drawing buffer stays 1x1: a full-screen one is about 10 MB the phone holds for nothing)
   if (!shown) return;
   live.renderer.resolution = dpr;
-  live.renderer.resize(w, h, dpr);
+  // (the game canvas is floor(css * dpr) device px, engine.ts resizeCanvas; Pixi rounds css * dpr, one px more at q1's 1.5 on an odd
+  // size, so the layer would be stretched a pixel against the canvas over it: handed the floored size, it lands on the same pixels)
+  live.renderer.resize(Math.floor(w * dpr) / dpr, Math.floor(h * dpr) / dpr, dpr);
 }
 
 /** the world container (stage 1 on: the layers that move here); null when the layer is not running */
@@ -193,6 +205,8 @@ export function drawGpuFrame(tx: number, ty: number, zoom: number) {
  * moves the 2D canvas. `null` takes it off.
  */
 export async function gpuProbe(box: { x: number; y: number; w: number; h: number; color?: number } | null): Promise<boolean> {
+  // (putting something on the layer is what starts it)
+  if (!live && (!box || !(await mountGpuLayer()))) return false;
   if (!live) return false;
   const { Graphics } = await import('pixi.js');
   for (const c of [...live.world.children]) if (c.label === 'probe') c.destroy();

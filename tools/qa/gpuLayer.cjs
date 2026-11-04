@@ -1,7 +1,8 @@
 /**
  * The GPU layer's check (GPU-RENDERER-PLAN stage 0, R-3.1): node tools/qa/gpuLayer.cjs <dev server url> <out dir> [stage] [WxH]
  *
- *  1. mounted: WebGL 2 (never 1), hidden and idle with nothing to draw (no GPU frames), the game running;
+ *  0. not started while nothing was ever put on it (no context, no Pixi);
+ *  1. once something is put on it, mounted: WebGL 2 (never 1); emptied, hidden and idle (no GPU frames, 1x1 buffer), the game running;
  *  2. the camera drives it: a magenta probe box on the layer at Pokey's world box lands where the 2D canvas draws him, before and after
  *     he walks (the 2D canvas hidden for the shot), within 2 CSS px;
  *  3. context loss: WEBGL_lose_context.loseContext() -> no page error, the 2D game keeps running, the layer skips its frames;
@@ -29,12 +30,20 @@ const ok = (c, msg) => { console.log(`${c ? '✓' : '✗'} ${msg}`); if (!c) fai
   await pg.touchscreen.tap(W / 2, H / 2).catch(() => {});
   await pg.waitForTimeout(2500);
   const E = `(() => { const g = window.__engine; return typeof g === 'function' ? g() : g; })()`;
+  // nothing on it yet: not started at all (no context, no Pixi)
+  const idle0 = await pg.evaluate(() => ({ live: window.__gpu.live(), stats: { ...window.__gpu.stats } }));
+  ok(!idle0.live && idle0.stats.drawn === 0 && idle0.stats.idle === 0, `with nothing ever put on it, the layer is not started (live ${idle0.live}, calls ${idle0.stats.idle})`);
+  // putting something on it starts it; take it off again for the empty-layer checks
+  await pg.evaluate(async () => { await window.__gpu.probe({ x: 0, y: 0, w: 1, h: 1 }); await window.__gpu.probe(null); });
+  await pg.waitForTimeout(800);
   const st = await pg.evaluate(`(() => { const cvs = [...document.querySelectorAll('canvas')]; const gpu = cvs[0]; const gl = gpu.getContext('webgl2');
     return { live: window.__gpu.live(), stats: { ...window.__gpu.stats }, gl2: gl instanceof WebGL2RenderingContext, vis: gpu.style.visibility, under: cvs[0].compareDocumentPosition(cvs[1]) & Node.DOCUMENT_POSITION_FOLLOWING, size: [gpu.width, gpu.height], game: [cvs[1].width, cvs[1].height] }; })()`);
   console.log(JSON.stringify(st));
   ok(st.live, 'the layer is running');
   ok(st.gl2, 'its context is WebGL 2');
-  ok(st.vis === 'hidden' && st.stats.drawn === 0, `with nothing on it, hidden, no GPU frames (drawn ${st.stats.drawn})`);
+  await pg.waitForTimeout(600);
+  const drawnLater = await pg.evaluate(() => window.__gpu.stats.drawn);
+  ok(st.vis === 'hidden' && drawnLater === st.stats.drawn, `emptied, hidden and no GPU frames (drawn ${st.stats.drawn} then ${drawnLater} 0.6 s later)`);
   // (the loop drives it: one call a frame. Over half a second, as many layer calls as the game's own frames)
   const drive = await pg.evaluate(`new Promise((res) => { const e = ${E}; const i0 = window.__gpu.stats.idle; let n = 0; const t0 = performance.now(); let last = e.frameCount ?? 0;
     const f = () => { n++; if (performance.now() - t0 < 600) requestAnimationFrame(f); else res({ calls: window.__gpu.stats.idle - i0, rafs: n }); }; requestAnimationFrame(f); })`);
