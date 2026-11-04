@@ -44,3 +44,4 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - Job 1 DONE: validator review sent. PASS 1-1/1-3/1-7/1-9; REDO overview (add "looks the same" piece/art similarity), 1-2 (0% clumsy jumps need stills), 1-4 (climb counted as dead walk), 1-5 (outrun branches scored as hazard 5 + new 10), 1-6 (contradicting label), 1-8 (B letter means two things; unseen chase scored 5). All pages: reword the "holding right alone" line.
 - Baseline corrected: the 1-7 eagle hurts on 4 of 10 stretches (validator table).
 - NEXT: review the R-159.1 combat-triangle plan before it is built; check fix-petals' REDOs against my clips.
+- R-159.1 combat-triangle plan (w8-rope2 60a57830): PASS WITH CHANGES sent (kick earlier + 1-9 master; route-required + fails-without-move proof; vine-snake tell before commitment; cut 1-3 count/goal; armour reads by shape; escalation line per stage; done = passes my in-order re-record). Waiting for its revised page.

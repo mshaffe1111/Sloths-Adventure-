@@ -177,7 +177,8 @@ repetitive... a sludge."
 - **§0b.3 tempo:** nothing in hurry or patience form.
 - **§0b.5 pairs:** run+jump is the only pair in 1-1. Branches + vines (the research's own World 1 pairing) never happens.
 - **§0b.6 slot roles:** 1-5 (the mid-world spike) is the weakest and easiest-looking stage of the world, not a spike.
-- **Enemy jobs (R-159):** none.
+- **Enemy jobs (R-159):** none. And where they sit: measured to the nearest ledge end, all five of 1-8's snakes are within 111 px
+  of one, as are two on 1-3 and three on 1-9 (w8-rope2, R-159.1 plan 60a57830). Research §6 says none within 150 px of a landing.
 - **Memorable moments:** 1-4 (squirrel lift, golden seed), 1-6 (the first liana over the gorge) and 1-8 (the long branch). Four
   stages have no moment I can name: 1-1's finish, 1-2, 1-3 and 1-5.
 
