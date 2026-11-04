@@ -69,9 +69,9 @@ import type { LevelConfig } from './types.ts';
  * or hollows (props2, sheetWarm.ts stageExtras). stageSheets.test.ts builds each stage on rolls 1-3 and fails when this does not cover it.
  */
 export const STAGE_DRAWS: Record<string, readonly string[]> = {
+  '1-2': ['foe:goldsnake'],
   '1-3': ['foe:goldsnake'],
   '1-4': ['foe:goldsnake', 'props2'],
-  '1-5': ['foe:goldsnake'],
   '1-6': ['foe:goldsnake'],
   '1-7': ['foe:eagle', 'props2'],
   '1-8': ['foe:goldsnake'],

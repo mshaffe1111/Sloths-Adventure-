@@ -50,3 +50,18 @@ moves on the music's beat (beatTrace.ts). For fixing one unfair spot in an exist
 - The validator reads rests as empty 5-second windows on a fixed grid (being changed by fix-petals to "1.0 s of no hard input").
   Its quick clock adds 0.5 s to every jump, so "tight" is out of reach at one jump per half note.
 - Five rests of 5 s read slow (the lead): 2-3 rests of 3-4 s, each with something to look at.
+
+## Pitfalls we paid for (1-2, 1-5, w1-rhythm, 2026-11-04)
+- The tracer lands where the engine does, give or take 9.3 px at 30 fps (SLOP 10). The level check's reach is shorter still. Cap
+  every gap at `reachJump(dy, dbl) × 0.97 − 70`, or the shrine check fails while the engine run passes.
+- A branch over the take-off ledge's end blocks the jump in the level check: `noOverhang` on the node.
+- A first-timer's thumb flicks short: test jumps with a short hold too (SHORT_HOLD 0.8 Normal, 0.6 Easy), jumps only.
+- A level check that only knows ledge→liana→ledge can't confirm vine-to-vine chains: a single swing with a pad between each.
+- Checkpoints only take further right: a leftward leg needs `flagsInOrder` (engine), and easyMode's flag pass must skip it.
+- World 1's pit painter (w1Pits.ts) paints an unmarked floorless gap as WATER: mark floor pieces `pit: 'drop'`, and close slits under
+  40 px (he is 38 wide; it only paints a sliver).
+- A fall from an upper leg onto a lower leg skips the way: fallZones over the upper leg (a heart and back on Normal, free on Easy).
+  A safe teach can't sit there: teach the hazard over a solid base instead.
+- Lianas grab on touch: no hazard or open fall over a liana of a lower leg.
+- The same node template with the same bars twice is a §0c.3 flag (variety.ts): roll a second half until its bars differ.
+- Any fragile piece that looks wrong for its world: trace it to the draw path before naming it "the existing art".

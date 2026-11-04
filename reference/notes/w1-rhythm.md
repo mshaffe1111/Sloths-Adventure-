@@ -36,3 +36,26 @@ Merge origin/ccr-0d59a91c-oy3imz before starting and before every push.
 - FACT (App.tsx 275-278): musicSalt is random each session, and stageMusic(…, salt) picks a different piece: 1-2 plays at 128.2 / 132.8 /
   137.0 / 131.4 / 128.2 / 128.3 / 133.9 / 130.8 BPM over salts 0,1,2,3,12345,99999,777777,31337; 1-5 at 136.0-138.0. stageBpm uses
   salt 0. To make the heard beat match the built one, the music's tempo has to lock to stageBpm (audio, not my files): asked the lead.
+- 2:24-2:59 PM ET (lead's rulings 1-5 read at 2:24):
+  - Cherry-picked w8-rope2's validator commit (rhythm-token repeats, proto.bpm). Dropped its N/O/Y letter fixture row: that letter map
+    isn't on the lead branch yet. 1-2/1-5 pass bpm. 1-2 normal "repeat" is gone on all 16 layouts.
+  - Lead-branch merge brought w1Pits.ts: an unmarked floorless gap in World 1 paints as WATER. Every 1-2/1-5 floor gap was water, and
+    there were 27-37 px slits. Floor pieces are now pit:'drop', and slits under 40 px are closed (the lower piece reaches under). Test:
+    16 rolls, Normal and Easy.
+  - Template repeat (variety.ts): 1-2's two climax halves rolled the same bars on 3 of 32. The second half now never repeats the first.
+    Test over 16 rolls in both stages.
+  - Ruling 2, a bite on the bough leg:
+    - Thorns: none in World 1. They'd need engine.ts and HF art, so not tonight.
+    - Rotten wood, taught over the canopy's base bough. Then rotten bough stretches with fallZones (w1-rhythm-b's hook). The fall is a
+      heart and back on Normal, free on Easy, and never a landing on the floor leg.
+    - Dot: hint.1-2.rotten (needs Matt).
+  - DEFECT (mine, this morning): I called 1-5's crate-looking snap twigs "the existing crumble art". In fact any crumbleAfter piece draws
+    as World 7's ruin slab (protoArt). 5 Whys: I judged the look from a still without asking why a World 1 twig looked like a crate. The
+    art routes by crumbleAfter (a World 7 field), and nothing tests a world's art per piece.
+    Countermeasure:
+    - 1-2/1-5 use Platform.creak (merged origin/w1-rhythm-b).
+    - The creak frame shows at rest.
+    - stage15 test: twigs carry creak, never crumbleAfter.
+    - Rule for myself: any piece that looks wrong for its world gets traced to its draw path before I name it.
+  - DEFECT (mine): I typed a message time ("3:02") instead of checking it. It was about 2:50. Countermeasure: `date` in the same step as
+    every message.

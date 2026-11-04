@@ -785,6 +785,12 @@ export function buildRhythmStage(config: LevelConfig, seed: number, easy: boolea
   throw new Error(`${config.id} seed ${seed}: no roll passes the level check: ${last.slice(0, 3).join('; ')}`);
 }
 
+/** the first seconds of the way, at full run, in which no gap can hurt (a catch under each) */
+export const OPENING_S = 6.5;
+/** 1-2's petal goal, a share of its petals, from the first-timer bots' runs */
+export const PETAL_SHARE = { normal: 0.4, easy: 0.4 } as const;
+const petalGoal = (n: number, k: number) => Math.max(1, Math.round(n * k));
+
 function rhythmStage(config: LevelConfig, seed: number, easy: boolean): GeneratedStage & { proto: ProtoExtras } {
   const id = config.id as '1-2' | '1-5';
   const bpm = stageBpm(config);
@@ -808,6 +814,21 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     // (a floating 'log' draws as a wooden crate: never in the canopy)
     return q.surface === 'apron' || q.x1 - q.x0 >= 200 ? 'moss_stone' : 'branch';
   };
+  // (nothing hurts in the first seconds: a catch branch under every gap he meets in the first OPENING_S of the way, 60 px under the
+  // lower lip, so a short first jump drops onto it and a hop goes back up (STAGE-RULES: nothing can hurt in the first ~3-5 s, and Dot's
+  // first tip, "Flick up just before the edge", comes at about 4-5 s; the first-timer bot fell into the first gap at 1.6 s)
+  const intro = L.ledges.filter((q) => q.node === 0 && q.surface !== 'catch' && q.x0 < L.spawn.x + OPENING_S * PHYS.maxRun).sort((a, b) => a.x0 - b.x0);
+  // (one low branch under the whole opening, not one under each gap: holding the way on walks off a short catch's far end. It ends
+  // under the ledge after the last gap, 60 px down, where a hop goes up; the jumps stay asked by the petals over them)
+  let lastGap = -1;
+  for (let i = 1; i < intro.length; i++) if (intro[i].x0 - intro[i - 1].x1 >= 20) lastGap = i;
+  if (lastGap > 0) {
+    const y = Math.max(...intro.slice(0, lastGap + 1).map((q) => q.y)) + 60;
+    const x0 = intro[0].x1 - 30, x1 = Math.min(intro[lastGap].x1, intro[lastGap].x0 + 160);
+    P.push({ id: pid++, x: x0, y, width: x1 - x0, height: 24, type: 'solid', style: 'branch' });
+    // (and a catch the layout already laid there, 1-5's teach catches, is under it: no two branches stacked)
+    for (const c of L.ledges) if (c.surface === 'catch' && c.x0 < x1 && c.x1 > x0) c.x1 = c.x0;
+  }
   for (const q of L.ledges) {
     const w = q.x1 - q.x0;
     if (w < 8) continue;
@@ -853,7 +874,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
   cid = heartsAtFlags(C, checkpoints, cid);
   const hints: StageHint[] = L.lines.map((l) => ({ x: l.x, text: l.text, pad: l.text, keys: l.text, ...(l.y >= 600 ? { belowY: l.y - 60 } : { aboveY: l.y + 60 }) }));
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: [] }, C);
-  const cfg: LevelConfig = { ...config, levelWidth: L.width, levelHeight: L.height, ...(L.marks.length ? { targetCount: L.marks.length } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: L.width, levelHeight: L.height, ...(L.marks.length ? { targetCount: L.marks.length } : id === '1-2' ? { targetCount: petalGoal(L.petals.length, easy ? PETAL_SHARE.easy : PETAL_SHARE.normal) } : {}) };
   const beats: Array<[number, number, string]> = L.nodes.map((n) => [n.x0, n.x1, `${n.tag[0].toUpperCase()}${n.tag.slice(1)}: ${n.pair}`]);
   return {
     config: cfg,
@@ -874,6 +895,9 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     ...(easy || !L.heartFalls.length ? {} : { heartFalls: L.heartFalls }),
     ...(L.fallZones.length ? { fallZones: L.fallZones } : {}),
     ...(L.marks.length ? { easyGoal: Math.max(1, Math.round(L.marks.length * 0.65)), normalGoal: L.marks.length } : {}),
+    // (1-2's petals: the goal from the first-timer bots' counted runs, as 1-3's and 1-9's are (fixed bot, 2026-11-04, layout 1, two
+    // runs each): the adult on Normal picked 51 of 105 (49%), the kid on Easy 44-51 of 69-98 (52-64%); asked: 40% on both, Easy's layout holding more petals)
+    ...(id === '1-2' ? { normalGoal: petalGoal(L.petals.length, PETAL_SHARE.normal), easyGoal: petalGoal(L.petals.length, PETAL_SHARE.easy) } : {}),
     meta: { attempt: seed, chunks: L.nodes.map((n) => n.tag), width: L.width, pieces: L.nodes.map((n) => ({ k: `${id} ${n.tag} ${n.tier}`, x0: n.x0, x1: n.x1 })), timing: { layoutSeconds: L.expert, decorSeconds: 0, route: L.width } },
     proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, bpm, rhythm: { bpm, nodes: L.nodes, reroll: L.reroll } },
   } as GeneratedStage & { proto: ProtoExtras };
