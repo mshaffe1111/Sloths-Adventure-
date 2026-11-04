@@ -17,3 +17,5 @@ Measured (HF created -> finished, 15:01Z): r159-stills 1.1 min $0.05 | r159-boac
 Finished total $0.74 (combat $0.57, pits $0.17)
 Judged 15:05Z: pits keepers drop s52-7, lip s65-7, bed s60-7, high s65-23 (lip s65-23 rejected: a sloth painted on top; bed s50-23 yellow fuzz).
   boa-tighten s3/s11: both nearly static (the coil hardly moves in 49 frames): NOT a keeper ($0.40). vine-hang s3: a gentle sway, usable.
+Lead (15:03Z): ACCEPT drop s52-7, bed s60-7, high s65-23; LIP s55-7 (not s65-7: its grass top is a hard rectangle). Boa tighten: no redo, a code tell
+  (0.5 s squeeze + darkening, glint pulse), proven at phone size both ways. Native pass held until a seam shows. Crop the clips' pink padding.
