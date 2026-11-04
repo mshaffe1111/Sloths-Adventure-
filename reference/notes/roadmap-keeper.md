@@ -1,6 +1,6 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 12:28 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 12:42 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
@@ -14,6 +14,12 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
   read back at rev 182. STAGE-RULES §0c batch: cited on R-155 and R-150.2; R-155 +10.5 h (about 7 World 1 templates at 1.5 h,
   range 6-16; fillTo used 24 times in w1Sections.ts, retired stage by stage); R-150.12 template repeats, 1 h, fix-petals (filed as
   its own item because R-150.1 is already accepted).
+- **D29 (lead, 2026-11-04 12:42 PM ET):** the research was never broken down line by line; three ledger helpers are writing
+  reference/research/ledger/. Phase A's 88.5 h is marked "before the research ledger"; no new Phase A estimate until the lead
+  sends the ledger's misses (about 2:30 PM ET) for R-ids and hours. R-155's 1-5 build is ON HOLD until then. Known misses: a BPM
+  per world with placements on the beat, world-wide mutators, cause-and-effect stage links, a slot order per world, a check
+  against earlier worlds (STAGE-RULES §0b.9 draft, §0c.7). R-148.18 (D29's LESSONS line, lead, 0.5 h recommended): launch 661 h,
+  recommended Important 60.5 h (script).
   - R-6.40 (menus A, new game + 3 save slots): add to bot-fix's planned-vs-actual list when it starts (expected 5.5 h, range 4-8).
 - **Bosses in segments (Matt, 11-04):** 2 / 3 / 4 segments for Worlds 1-3 / 4-7 / 8-10, each a phase (arena and attack change).
   R-161.1 8.5 h (2 segments); R-161.2 60 h (12 new phases at R-1.15's ~2.7 h a phase, a guess); R-1.9/R-1.10 noted, hours not
@@ -80,6 +86,10 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
 - 2026-11-02: roadmapcheck counts "roadmap" only as a word, not inside a path or a name (D25 and D27 tripped it).
 
 ## My pitfalls and how I avoid them
+- A read-back that read only the first page (11-04, rev 182: the doc read is paginated, complete='false' with a next cursor, and I
+  checked page 1 only; caught before the 12:42 PM ET commit and before anything relied on it, then the whole doc checked by search): after every write, read back
+  with kind "search" (it covers the whole doc, complete='true') for the changed items AND the stale numbers; never call a
+  page-1 view a read-back.
 - A total typed before the script ran, AGAIN (11-04: "busiest lane 133.5 h" for R-6.40 and "132 h" for R-3.14, both corrected before any
   push or report). Same pattern as the 2:55 time: from now on the estimate line is written only AFTER the lane script prints, never
   in the same edit that adds the row.
