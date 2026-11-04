@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 10:35 AM ET
+Last updated: 2026-11-04 10:39 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -18,12 +18,16 @@ when every helper is idle AND the lead says so. Effort: low to medium.
   game code (src/) until its plan is approved AND GPU stage 0 is merged; check its src diff against main is empty.
 
 ## Per helper, every round (SUPERVISOR.md)
+**Standard work (Matt 11-04, in SUPERVISOR.md):** started from its method file? the method's best measured result (time/tokens): beaten or
+missed, and why? Miss with no reason: coach. Beat: lead writes it into the method the same day. Digest carries a "standard work" line.
+Methods now: warmup-5m -> webgl.md; fix-petals -> validator.md.
 Branch contains origin/main (git merge-base --is-ancestor); gates (all of gates.md; drawcheck in a container = "CI at merge", never
 "pass"); checkbase on any "after" sheets, newest stills opened myself, upright AND sideways; report has Method used / Lessons applied /
 Method update and names rough spots; notes file current; queue read; HF spend inside Matt's list; moving (quiet 60+ min: nudge).
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 10:39 AM ET: lead: Matt's standard-work rule added to SUPERVISOR.md; merged ccr into bot-fix; round 6 prompt carries the check.
 - 2026-11-04 10:35 AM ET: quality supervisor replied: it was waiting on a show-first still instead of watching the build (owned). Now: QC of w8-rope2's
   R-159.1 code (9ec60be2) on the real screen, then fix-petals' d6dc6e91, then World 1 re-record; verdicts in its notes within the hour.
   Round 6: check its notes have them.
