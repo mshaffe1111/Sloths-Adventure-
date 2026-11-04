@@ -21,7 +21,9 @@ The lead decides, without asking Matt: Dot and in-stage lines, find hints and st
 (layout fixes, which helper does what, file ownership, gate and ruler rulings, goals set by the agreed method); budget cuts inside
 the day's limit. Hugging Face (Matt, 2026-11-04: "you probably understand the Hugging Face budget more, what's needed and how to use it. So I'm
 deferring that to you"): the lead decides what to make and approves picture lists, inside the $72 total with about $15 kept in
-reserve, and tells Matt what was spent. Matt decides: direction and priorities, the day's token limit, big screen or feel changes (shown first), what ships to main (his merge), and anything he has asked to see. When unsure,
+reserve, and tells Matt what was spent. Where it goes first (Matt, 2026-11-04: "Use the budget we planned on fixing worlds and levels.
+The story can be patched later. This should give us enough to create pieces and new platforms and shapes"): world pieces, new
+platform kinds and shapes for the engine's section library; story art waits. Matt decides: direction and priorities, the day's token limit, big screen or feel changes (shown first), what ships to main (his merge), and anything he has asked to see. When unsure,
 check this list and the playbook first; a question to Matt costs his attention and tokens.
 
 ## What Matt said (2026-10-29, his words)
