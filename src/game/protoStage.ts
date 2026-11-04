@@ -1838,11 +1838,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       run(R.r(160, 200));
     });
     beat('Ramp: snakes on the branches, then the teaching vault', () => {
-      // (real drops from here on Normal: something bites from node 2; soft on Easy; the bars rolled, half notes with whole-bar runs)
+      // (soft pits here: the first-timer bot lost 3-7 lives a run with real drops in both the ramp and the climax; the bars rolled)
       // (two runs of it, low stumps to hop between them: one long run of the same rhythm reads as a repeat, not a dance)
-      rollNode(5, ['h...h...', 'h.......', 'h...h...', '....h...'], { snakes: 3, real: true });
+      rollNode(5, ['h...h...', 'h.......', 'h...h...', '....h...'], { snakes: 3 });
       lowStumps();
-      rollNode(5, ['h...h...', 'h.......', '....h...', 'h...h...'], { snakes: 2, real: true });
+      rollNode(5, ['h...h...', 'h.......', '....h...', 'h...h...'], { snakes: 2 });
       run(R.r(120, 160));
       flag();
       // the vault, taught on the way everyone takes: over a soft pit onto a raised bank only the spring reaches
