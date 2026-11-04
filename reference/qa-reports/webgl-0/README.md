@@ -145,8 +145,9 @@ Pasted from each command's own output, as of 04:15 AM ET:
 - Tests:
   - shard 2/3: `# tests 708 # pass 707 # fail 0 # todo 1 `;
   - shard 3/3: `# tests 788 # pass 788 # fail 0 # todo 0 `;
-  - shard 1/3: **not finished** at the time of pasting (still running in this slow container).
-- `npx vite build`: `BUILD EXIT 0`. Files over 4 MiB listed after it: none (the next lines are the build's own file list).
+  - shard 1/3: `# tests 797 # pass 796 # fail 0 # todo 1 `;
+  - the whole suite: 2,291 pass, 0 fail, 2 TODO (already there).
+- `npx vite build`: `BUILD EXIT 0`. `find dist -type f -size +4M | wc -l`: `0`.
 - `node tools/perf/artcheck.mjs`: `PASS`.
 - `node tools/perf/knowncheck.mjs`: `PASS`.
 - `node tools/perf/drawcheck.mjs`: `PASS (859 s; raw results in /tmp/drawcheck-bcIupu)`. This is a container run; CI at merge is the binding one.
