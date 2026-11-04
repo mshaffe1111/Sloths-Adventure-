@@ -533,10 +533,16 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   L.find = { x: Math.round(Math.max(padL + 120, restX + 420)), y: C };
   x = under.tr.x1;
   y = under.tr.yOut;
-  const climax1 = lay.traced('climax', 'jump + hop + drop (swung, densest)', 'C', 1, x, y, barsFrom(swung(R, 9, 0.1)), { ...PAL_C, yMin: Math.min(y, C) - 100, yMax: Math.max(y, C), surfaces: ['bank', 'stump', 'branch'] });
+  const c1bars = barsFrom(swung(R, 9, 0.1));
+  const climax1 = lay.traced('climax', 'jump + hop + drop (swung, densest)', 'C', 1, x, y, c1bars, { ...PAL_C, yMin: Math.min(y, C) - 100, yMax: Math.max(y, C), surfaces: ['bank', 'stump', 'branch'] });
   x = midSwing('climax', 'C', climax1.tr.x1, climax1.tr.yOut);
   y = climax1.tr.yOut;
-  const climax = lay.traced('climax', 'jump + hop + drop (swung, densest)', 'C', 1, x, y, barsFrom(swung(R, 9, 0.1)), { ...PAL_C, yMin: Math.min(y, C) - 100, yMax: Math.max(y, C), surfaces: ['bank', 'stump', 'branch'] });
+  // (the second half never plays the first half's bars again: the same template with the same numbers is nothing you feel change,
+  // STAGE-RULES §0c.3, tools/validate/variety.ts templateFlags; it leans denser, fewer breaths)
+  const bars1 = c1bars.join('|');
+  let bars2 = barsFrom(swung(R, 9, 0.05));
+  for (let k = 0; k < 12 && bars2.join('|') === bars1; k++) bars2 = barsFrom(swung(R, 9 + (k % 2), 0.05));
+  const climax = lay.traced('climax', 'jump + hop + drop (swung, densest)', 'C', 1, x, y, bars2, { ...PAL_C, yMin: Math.min(y, C) - 100, yMax: Math.max(y, C), surfaces: ['bank', 'stump', 'branch'] });
   x = climax.tr.x1;
   y = climax.tr.yOut;
   lay.begin('climax', 'jump + vine swing (over the chasm)', 'C', 1, x, y);
@@ -744,7 +750,18 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
       P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: q.surface === 'bough' ? 40 : 24, type: 'solid', style: style(q) });
     }
   }
+  // (the floor: a slit under 40 px between two floor pieces is no gap he can fall through (he is 38 wide), only a sliver the pit art
+  // would paint: the lower piece reaches under the higher one's edge. And every floorless gap left is a drop, painted as one (w1Pits.ts:
+  // an unmarked fall in World 1 is water, and these stages have none))
+  const floor = P.filter((q) => q.type === 'solid' && q.y >= bottom - 250).sort((a, b) => a.x - b.x);
+  for (let i = 1; i < floor.length; i++) {
+    const a = floor[i - 1], b = floor[i];
+    const gap = b.x - (a.x + a.width);
+    if (gap <= 0 || gap >= 40 || Math.abs(a.y - b.y) > 120) continue;
+    if (b.y >= a.y) { b.width += gap; b.x -= gap; } else a.width += gap;
+  }
   for (const wl of L.walls) P.push({ id: pid++, x: wl.x0, y: wl.y0, width: wl.x1 - wl.x0, height: wl.y1 - wl.y0, type: 'solid', style: 'moss_stone' });
+  for (const q of P) if (q.type === 'solid' && (q.y >= bottom - 250 || q.y + q.height >= bottom - 150)) q.pit = 'drop';
   for (const v of L.vines) V.push({ id: vid++, x: v.x, topY: v.topY, bottomY: v.bottomY, swaySpeed: 1.1, swayPhase: (v.x * 0.013) % 6.28, vineType: 'swing_liana', isSwingingVine: true });
   for (const sn of L.snakes) {
     E.push({

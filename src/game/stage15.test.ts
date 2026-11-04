@@ -10,6 +10,8 @@ import { generateAllLevels } from './worldsData.ts';
 import { badPickups } from './flowerReach.ts';
 import { stageBpm } from './beatTrace.ts';
 import { SNAP_SPARE, rhythmLayout } from './w1Rhythm.ts';
+import { templateFlags, unitsOf } from '../../tools/validate/variety.ts';
+import { findW1Pits } from './w1Pits.ts';
 import { validateStage } from './levelCheck.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 
@@ -61,4 +63,25 @@ test('1-5: every petal can be reached and the level check finds the shrine', () 
   // (and the layouts roll differently: the nodes' spans differ between rolls)
   const a = rhythmLayout('1-5', 1, false, stageBpm(cfg)), b = rhythmLayout('1-5', 2, false, stageBpm(cfg));
   assert.notDeepEqual(a.ledges.map((q) => q.x0), b.ledges.map((q) => q.x0));
+});
+
+test('1-5: no node template twice in a row, none over twice, none again with the same numbers (STAGE-RULES §0c.2-3), 16 rolls, Normal and Easy', () => {
+  for (const v of LAYOUTS) {
+    for (const d of ['normal', 'easy'] as const) {
+      const flags = templateFlags(unitsOf(built(v, d) as never));
+      assert.deepEqual(flags, [], `layout ${v} ${d}: ${flags.map((f) => f.what).join('; ')}`);
+    }
+  }
+});
+
+test('1-5: every floor gap paints as a drop, never water (w1Pits.ts), and none is a slit under 40 px, 16 rolls, Normal and Easy', () => {
+  for (const v of LAYOUTS) {
+    for (const d of ['normal', 'easy'] as const) {
+      const gaps = findW1Pits(built(v, d).platforms);
+      for (const g of gaps) {
+        assert.ok(g.kind !== 'fall' || g.drop, `layout ${v} ${d}: the gap at x ${Math.round(g.x0)} paints as water`);
+        assert.ok(g.x1 - g.x0 >= 40, `layout ${v} ${d}: a ${Math.round(g.x1 - g.x0)} px slit at x ${Math.round(g.x0)}`);
+      }
+    }
+  }
 });
