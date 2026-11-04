@@ -16,6 +16,8 @@ import { FirstTimerRun, firstTimer, freshPhone, FT_ADULT, FT_KID, type FirstTime
 import type { Pad } from './realPlay.ts';
 import type { Platform, Vine } from './types.ts';
 import { GEN2_STAGES, KID_RUNS_59 } from './gen2/game.ts';
+import { reachJump } from './physics.ts';
+import { TRICK, vaultGap } from './w1Tricks.ts';
 
 const Y = 580;
 const ground = (id: number, x: number, width: number): Platform => ({ id, x, y: Y, width, height: 90, type: 'solid' }) as Platform;
@@ -308,7 +310,7 @@ for (const [name, who] of WHO) {
 // ---- World 1's tricks, learned only from Dot's words (w8-rope2, 2026-11-04, R-159.1) ----
 // The bot answers a dazed lunge snake and a coiled boa only once Dot's words have taught him the answer ("hop on it", "kick it"), as a real
 // first-timer does; until then he does what a first-timer does. An animal without World 1's tag is met exactly as before.
-type Foe = { id: number; type: string; x: number; trick?: string; state?: string; stagger?: number; staggerMax?: number; defeated: boolean };
+type Foe = { id: number; type: string; x: number; trick?: string; state?: string; stagger?: number; staggerMax?: number; patrolMinX?: number; patrolMaxX?: number; defeated: boolean };
 function foe(type: 'snake' | 'boa', x: number, o: Partial<Foe> = {}) {
   const boa = type === 'boa';
   return {
@@ -319,7 +321,7 @@ function foe(type: 'snake' | 'boa', x: number, o: Partial<Foe> = {}) {
 }
 /** a bare-world run past one animal at x 1000 (far enough that the kid, who looks up only after his first 1.2 s, sees it coming), with
  *  the moves he already knows; every pad he presses near it is kept */
-function foeRun(who: FirstTimer, seed: number, id: string, m: ReturnType<typeof foe>, knows: string[], cap = 12) {
+function foeRun(who: FirstTimer, seed: number, id: string, m: ReturnType<typeof foe>, knows: string[] | null, cap = 12) {
   const route = Array.from({ length: 120 }, (_, i) => ({ x: 100 + i * 24, y: Y }));
   const r = new FirstTimerRun(id, seed, who, { route, cap, rescueAfter: 1000 });
   r.sim.bare([ground(1, 0, 8000)]);
@@ -327,8 +329,11 @@ function foeRun(who: FirstTimer, seed: number, id: string, m: ReturnType<typeof 
   r.sim.stand(300, Y);
   r.prog.relocate(r.sim.p);
   const learned = (r as unknown as { learned: Set<string> }).learned;
-  learned.clear();
-  for (const k of knows) learned.add(k);
+  // (null: what he knows from the stages before this one, as the stage starts)
+  if (knows) {
+    learned.clear();
+    for (const k of knows) learned.add(k);
+  }
   const pads: string[] = [];
   let punches = 0, kicks = 0, stomped = false, rolled = false;
   const frame = r.sim.frame.bind(r.sim);
@@ -378,5 +383,59 @@ for (const [name, who] of WHO) {
         assert.deepEqual(knows.pads, plain.pads, `${type} seed ${seed}: knowing the stomp and kick changed how he meets an untricked ${type}`);
       }
     }
+  });
+}
+
+for (const [name, who] of WHO) {
+  test(`${name}: on a stage after the one whose hint teaches it, he knows the stomp (after 1-3) and the kick (after 1-9) from the start`, () => {
+    const knows = (id: string) => (new FirstTimerRun(id, 1, who, { route: [{ x: 100, y: Y }], cap: 1, rescueAfter: 1000 }) as unknown as { learned: Set<string> }).learned;
+    assert.ok(!knows('1-2').has('stomp'), 'before 1-3 he does not know the stomp');
+    assert.ok(knows('1-5').has('stomp'), 'after 1-3 he knows the stomp');
+    assert.ok(!knows('1-8').has('kick'), 'before 1-9 he does not know the kick');
+    assert.ok(knows('2-1').has('kick'), 'after 1-9 he knows the kick');
+    for (const seed of [1, 2]) {
+      const s = foeRun(who, seed, '1-5', foe('snake', 1000, { trick: 'lunge', state: 'patrol', stagger: 4, staggerMax: 4 }), null);
+      assert.ok(s.stomped, `seed ${seed}: on 1-5 he did not stomp the dazed snake`);
+      const b = foeRun(who, seed, '2-1', foe('boa', 1000, { trick: 'coil', state: 'coil' }), null);
+      assert.ok(b.kicks >= 1 && b.rolled, `seed ${seed}: on 2-1 he did not kick the coiled boa (${b.kicks} kicks)`);
+    }
+  });
+}
+
+// the stomp vault (1-3's first vault, "Stomp it, thumb on the glass, and fly!"): a drop past any jump with a lunge snake on its lip
+function vaultRun(who: FirstTimer, seed: number, knows: string[]) {
+  const edge = 1500, gap = vaultGap(reachJump(0, true)), far = edge + gap;
+  const route = [...Array.from({ length: 60 }, (_, i) => ({ x: 100 + i * 24, y: Y })).filter((q) => q.x < edge), ...Array.from({ length: 60 }, (_, i) => ({ x: far + 20 + i * 24, y: Y }))];
+  const r = new FirstTimerRun('1-1', seed, who, { route, cap: 14, rescueAfter: 1000 });
+  r.sim.bare([ground(1, 0, edge), ground(2, far, 3000)]);
+  const s = foe('snake', edge - TRICK.vaultLip, { trick: 'lunge', state: 'patrol', patrolMinX: edge - TRICK.vaultLip - 6, patrolMaxX: edge - TRICK.vaultLip + 6 });
+  r.sim.e.enemies = [s as never];
+  r.sim.stand(300, Y);
+  r.prog.relocate(r.sim.p);
+  const learned = (r as unknown as { learned: Set<string> }).learned;
+  learned.clear();
+  for (const k of knows) learned.add(k);
+  let across = -1;
+  const frame = r.sim.frame.bind(r.sim);
+  r.sim.frame = (pad?: Pad) => {
+    frame(pad);
+    if (across < 0 && r.sim.p.grounded && r.sim.p.x > far + 10 && Math.abs(r.sim.p.y - Y) < 4) across = r.sim.t;
+  };
+  r.play();
+  return { r, across, far };
+}
+for (const [name, who] of WHO) {
+  test(`${name}: the stomp vault: untaught he never gets across the drop; told "stomp it, thumb on the glass, and fly", he dazes the snake on its lip and vaults over`, () => {
+    let made = 0;
+    const notes: string[] = [];
+    for (const seed of [1, 2, 3, 4, 5]) {
+      const before = vaultRun(who, seed, ['punch', 'stomp', 'double']);
+      assert.equal(before.across, -1, `seed ${seed}: untaught, he got across at ${before.across} s`);
+      const after = vaultRun(who, seed, ['punch', 'stomp', 'double', 'vault']);
+      notes.push(`seed ${seed}: across at ${after.across.toFixed(1)} s, x ${Math.round(after.r.sim.p.x)} y ${Math.round(after.r.sim.p.y)} far ${after.far} harms ${after.r.harms.map((h) => h.cause).join(",")}`);
+      if (after.across > 0) made++;
+    }
+    // (a first-timer's thumb can miss the hop now and then: most runs make it)
+    assert.ok(made >= 4, notes.join('; '));
   });
 }

@@ -99,6 +99,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["hint.1-1.gaps", "1-1", "stage hint", "move", "Jump the little gaps", null, null, "flick-up", null],
   ["hint.1-1.stones", "1-1", "stage hint", "move", "Hop from stone to stone", "Flick up to hop stone to stone.", null, "flick-up", "stepping stones"],
   ["hint.1-3.sleeper", "1-3", "stage hint", "move", "Hop up beside the sleeping snake and tap to punch it", "Punch to daze it, then hop on it!", null, "tap", "sleeping snake"],
+  ["hint.1-3.vault", "1-3", "stage hint", "move", "Stomp it, thumb on the glass, and fly!", "Stomp it, thumb on the glass, and fly!", null, "flick-hold", "snake on the pit's lip"],
   ["hint.1-3.snakes", "1-3", "stage hint", "move", "Punch the snakes or hop over them", null, null, "tap", null],
   ["skill.shimmy.controls", "1-3", "skill card", "move", "Jump: up into a rope to grab it. Left/Right: shimmy along it. Down or Jump: to let go", "Flick up to grab, slide to creep.", null, "flick-up", "the card's gesture picture"],
   ["hint.1-4.climb", "1-4", "stage hint", "move", "Slide up on the trunk to climb", null, null, "climb-up", null],

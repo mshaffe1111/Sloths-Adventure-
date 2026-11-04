@@ -1884,6 +1884,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     const edge = x;
     close();
     const sx = edge - TRICK.vaultLip;
+    // (1-3's first vault is taught, in Matt's words, 2026-11-04)
+    if (plan === '1-3' && vaults.length === 0) {
+      const v = 'Stomp it, thumb on the glass, and fly!';
+      hint(x0 + 40, v, v, v);
+    }
     snake(sx, G, 12);
     const gap = vaultGap(reachJump(0, true));
     const far = edge + gap;

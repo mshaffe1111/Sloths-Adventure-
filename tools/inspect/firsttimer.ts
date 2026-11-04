@@ -671,6 +671,9 @@ const DOUBLE_TAUGHT = Math.min(...DOT_LINES.filter((r) => r[0].startsWith('hint.
 const taughtAt = (re: RegExp) => Math.min(...DOT_LINES.filter((r) => r[0].startsWith('hint.') && r[1] && re.test(r[5] ?? r[4] ?? '')).map((r) => playOrder(r[1])));
 const STOMP_TAUGHT = taughtAt(/\b(hop on|stomp|land on)\b/i);
 const KICK_TAUGHT = taughtAt(/\bkick\b/i);
+/** the stomp vault (1-3's first vault: "Stomp it, thumb on the glass, and fly!"): a stomp with the thumb kept down springs him across */
+const VAULT_RE = /\bstomp\b.*\bfly\b/i;
+const VAULT_TAUGHT = taughtAt(VAULT_RE);
 
 export class FirstTimerRun {
   readonly sim: RealPlay;
@@ -697,6 +700,10 @@ export class FirstTimerRun {
   private kickAt: { at: number; dir: -1 | 1 } | null = null;
   /** World 1's coiled boas he has punched once (a punch is TOUGH on one: he does not punch it again) */
   private toughSeen = new Set<number>();
+  /** a stomp vault under way (World 1's lunge snake on a pit's lip, once taught): the way across; he keeps his thumb down from the hop
+   *  onto the snake, and once it springs him up steers the way across until he lands */
+  private vaultDir: -1 | 0 | 1 = 0;
+  private vaulted = false;
   private swapGap = 0.15;
   private lastPress = -1;
   private lastSteer: -1 | 0 | 1 = 0;
@@ -795,6 +802,7 @@ export class FirstTimerRun {
     if (playOrder(id) > DOUBLE_TAUGHT) this.learned.add('double');
     if (playOrder(id) > STOMP_TAUGHT) this.learned.add('stomp');
     if (playOrder(id) > KICK_TAUGHT) this.learned.add('kick');
+    if (playOrder(id) > VAULT_TAUGHT) this.learned.add('vault');
     e.callbacks.onGuide = (text: string, s: number, passed?: boolean) => this.dot.engine(text, s, passed);
     e.callbacks.onLesson = (lid: LessonId) => this.dot.lesson(lid, !!(this.sim.p.climbing || this.sim.p.isVineSwinging || this.sim.p.hanging));
     e.callbacks.onProgressUpdate = (cur: number, target: number) => {
@@ -881,6 +889,8 @@ export class FirstTimerRun {
     this.pending = null;
     this.punchAt = null;
     this.kickAt = null;
+    this.vaultDir = 0;
+    this.vaulted = false;
     this.jump = null;
     this.airFrom = null;
     this.blockedT = 0;
@@ -1095,6 +1105,7 @@ export class FirstTimerRun {
       if (/\b(punch|tap)\b/.test(t)) this.learned.add('punch');
       if (/\bkick\b/.test(t)) this.learned.add('kick');
       if (/\b(hop on|stomp|land on)\b/.test(t)) this.learned.add('stomp');
+      if (VAULT_RE.test(t)) this.learned.add('vault');
       if (/\b(glide|leaf)\b/.test(t)) this.learned.add('glide');
       // (World 8's glide line, "Jump twice, then hold to glide": the second jump first, then the glide, at a gap one jump does not cross)
       if (/\bjump twice\b/.test(t)) this.learned.add('double');
@@ -1227,6 +1238,19 @@ export class FirstTimerRun {
         j.hold = age + flickHold(this.r, who);
       }
       if (this.learned.has('glide') && e.skills?.has('glide') && !p.grounded && p.vy > 150 && age > 0.4) out.jump = true;
+      // (the stomp vault: the thumb kept on the glass from the hop, then the way across once the snake springs him up)
+      if (this.vaultDir !== 0) {
+        if (p.vy < -700) this.vaulted = true;
+        if (this.vaulted) out = { ...side(this.vaultDir), ...(out.press ? { press: true } : {}) };
+        out.jump = true;
+        // (and, knowing the second jump, the second flick at the vault's top, the moment the spring runs out: the vault is built for it,
+        // w1Tricks.ts, and the thumb feels the top of so high a spring)
+        if (this.vaulted && !j.pressed2 && this.learned.has('double') && p.vy > -40 && p.jumpsLeft > 0) {
+          j.pressed2 = true;
+          out.press = true;
+          this.lastPress = t;
+        }
+      }
       return out;
     }
 
@@ -1353,6 +1377,38 @@ export class FirstTimerRun {
     }
     // the way goes up right here (a ledge over him): jump for it
     if (up && dir === 0 && tgt && tgt.y < p.y - 60) return this.decide(fdir, this.mem.plan(p.x, p.y), false, {});
+    if (dir !== 0 && p.grounded && !this.jump && !this.pending) {
+      this.vaultDir = 0;
+      this.vaulted = false;
+    }
+    // World 1's stomp vault, once taught: a lunge snake on the lip of a drop ahead is the way across. He dazes it (a punch), then hops on
+    // it with his thumb kept down (the vault, below and in the jump above); untaught, the edge below is met as any edge
+    if (dir !== 0 && this.learned.has('vault') && p.grounded && !this.jump && !this.pending) {
+      for (const m of e.enemies as any[]) {
+        if (m.defeated || m.trick !== 'lunge') continue;
+        const dx = (m.x - p.x) * dir;
+        if (dx < -60 || dx > 260 || Math.abs(m.y + 12 - p.y) > 60) continue;
+        if (this.floorAt(m.x + dir * 70, m.y + 12, 40)) continue;
+        if ((m.stagger ?? 0) <= 0) {
+          if (this.learned.has('punch') && dx > 20 && dx < 110) {
+            this.punchAt = t + who.hesitate;
+            this.swapGap = between(this.r, who.swap);
+            return {};
+          }
+          if (dx >= 110) break;
+          return {};
+        }
+        // (dazed: the hop on, as at any dazed snake, aimed a little short so the carry never takes him past it into the drop)
+        const to: -1 | 1 = (dx > 0 ? dir : -dir) > 0 ? 1 : -1;
+        const speed = p.vx * to;
+        const carry = Math.max(0, speed) * (0.6 + who.thumb[0]) - 12;
+        this.vaultDir = dir > 0 ? 1 : -1;
+        if (Math.abs(dx) <= 28 && Math.abs(p.vx) < 60) return this.decide(0, 'single', false, {});
+        if (speed > 150 && Math.abs(dx) <= carry + 20 && Math.abs(dx) >= carry - 30) return this.decide(0, 'single', false, side(to));
+        this.vaultDir = 0;
+        return side(to);
+      }
+    }
     if (dir !== 0) {
       // an edge coming: he means to jump `edgeAim` px before it (the thumb's latency moves it), unless the way on drops down
       const ahead = this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40);
