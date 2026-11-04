@@ -22,6 +22,9 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 03:07 AM ET: lead's audit of round 1: two calls rested on stale session status lines. fix-petals and kaizen-gates were OK'd ~2:35 AM ET
+  (fix-petals did NOT start early); the clerk's 0.9.4 candidate lives on kaizen-gates (merged roadmap-keeper 3d0cf1e2, gates running),
+  not waiting. Owned. Sent fix-petals the notes item at 3:07. Round 2 prompt updated.
 - 2026-11-04 03:07 AM ET: round 1 digest sent. All 5 on origin/main 1dc39cd7 with notes files. GREEN warmup-5m, quality-supervisor, kaizen-gates
   (awaiting the lead's OK on 0.9.4; no release-0.9.4 branch yet), roadmap-keeper (idle, done). YELLOW fix-petals: committing validator
   code (db738b37) while its status read "waiting on OK"; notes stale since 2:34. Round 2 armed: trig_01NzQTXcbjWvxRbybswkePjM, 3:38 AM ET.
@@ -34,6 +37,9 @@ Escalate at once: a law broken, a retirement trigger, a red gate on a release br
 - 2026-11-04 02:33 AM ET: bot-fix restarted from main 1dc39cd7 (the old bot-fix, 912b2fe6, is merged). Onboarding sent to the lead; waiting for its OK.
 
 ## My pitfalls
+- **Judge from commits, files and the helpers' own messages, never the session status line** (it goes stale; round 1, 11-04, two wrong
+  calls). When unsure, ask the helper.
+- The clerk can only push kaizen-gates: the release candidate lives there, not on release-0.9.4.
 - Never call green what I did not open myself; never take a helper's word for a check (I am audited: 1 in 3 greens re-checked).
 - Times and ids pasted from command output, never typed.
 - Read ReadNotifications before every digest and before going idle.
