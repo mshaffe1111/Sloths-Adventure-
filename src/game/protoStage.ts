@@ -17,6 +17,7 @@
  */
 import { teachWater } from './waterTeach.ts';
 import { petalPass } from './petalPass.ts';
+import { findW1Pits } from './w1Pits.ts';
 import { busiestScreen, clumpExtras, PER_SCREEN, rowExtras } from './petals.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
@@ -365,6 +366,15 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   // water taught before it costs a life (LV-8), the petal trail (petalPass.ts): the pickups are final before the dressing sees them
   const st = petalPass(teachWater(buildPlan(config, seed, plan, easy)));
   if (plan === '1-3') splitPetals(st);
+  // (World 1's real drops a builder lays, 1-3's climax on Normal and 1-9's hard vault, are painted drops, not water: a bank beside each
+  // marked `pit: 'drop'`, w1Pits.ts; an unmarked floorless gap reads as 1-6's water)
+  if (plan === '1-3' || plan === '1-9') {
+    for (const g of findW1Pits(st.platforms)) {
+      if (g.kind !== 'fall' || g.drop) continue;
+      const bank = st.platforms.find((p) => Math.abs(p.x + p.width - g.x0) < 3 && p.y <= G + 60) ?? st.platforms.find((p) => Math.abs(p.x - g.x1) < 3 && p.y <= G + 60);
+      if (bank) bank.pit = 'drop';
+    }
+  }
   // (5-3's quota is a share of the flowers it holds: of those the petal pass kept)
   if (plan === '5-3') st.config = { ...st.config, targetCount: Math.round(st.collectibles.filter((c) => c.type === 'flower').length * W5_HARVEST_SHARE) };
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
@@ -2868,8 +2878,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     chain(2, true, 'hollow', false, 0);
     vineSnakeOn(1);
     busy(1);
-    // and a chain with no snake at all, swing to swing, a breath
-    chain(R.i(2, 3), true, 'hollow', true);
+    // and lianas with no snake at all, a breath: one alone (it swings its widest, nothing near it), then swing to swing
+    chain(1, true, 'hollow', true);
+    busy(1);
+    chain(R.i(1, 2) + 1, true, 'hollow', true);
     stumps();
     flag();
   });
