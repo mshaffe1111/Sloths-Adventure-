@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
 import { PAD, PadInput, followAnchor, clampKnob, pickButton, BUTTON_REACH, type PadButtonSpot } from '../game/padControl.ts';
 import type { PadSide } from '../game/controlPrefs.ts';
-import { Icon } from './icons/index.tsx';
+import { TextGlyph } from './icons/TextGlyph.tsx';
 
 /**
  * The drawn controller. A floating thumb pad fills one half of the screen (it appears wherever the thumb lands), and
@@ -200,8 +200,8 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
           style={{ width: PAD.radius * 2 + 28, height: PAD.radius * 2 + 28, opacity: shown ? 0 : 1 }}
         >
           <span className="inline-flex items-center gap-3" aria-hidden="true">
-            <Icon name="arrow" size={18} rotate={180} />
-            <Icon name="arrow" size={18} />
+            <TextGlyph name="arrow" size={18} rotate={180} />
+            <TextGlyph name="arrow" size={18} />
           </span>
         </div>
       </div>

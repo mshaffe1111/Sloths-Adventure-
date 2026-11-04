@@ -116,3 +116,14 @@ icE0 6ae77e58c78863f9c62fbebb  icE1 6ae77e5cc78863f9c62fbebd  icE2 6ae77e5f0e033
   brown sign), restart-b23, close-b53 (birch: the brown X vanished on wood), lock-a23, star-a11, back-a23 (back-a53's take had a
   gradient grey that the key left as bands). Running total icons-painted ~$1.75 of $25.
 icG0 6ae78722c78863f9c62fc389  icG1 6ae787250e0338d1bb7d9035  started 18:38Z at d45b4f8c: spyglass (Check for updates, lead 1:40 PM) x2 prompts x4, Pokey's pencil notebook (Journal, lead 1:05 PM) x2 prompts x4
+icH0 6ae79b3f0e0338d1bb7d9c56 (shake x2 prompts, cards without letters) 20:04Z; icI0 6ae79badc78863f9c62fd2c8 (Meeca's carved bark) 20:06Z;
+icJ0 6ae79bc90e0338d1bb7d9c81 (Shimmy Rope, Leaf Glide medallions) 20:06Z: ~4-6 min each, ~$0.75 for the three.
+  Picks: shake-a37, cards-a23 (no letters), carving-a11, shimmy-a37, glide-a23. Running total icons-painted ~$6.8 of $25.
+── R-1.1 Crocus Rex's defeat still (2026-11-02, lead; cap $1). Times UTC. Starts: tools/art/crocdefeat/starts.py (his own frames, holes
+   filled, on magenta), spec make_spec.py, job w6to10/img2imggpu.py with croc-qwen-lora 1.0, bucket w5-xfer crocdefeat/cd1 ──
+cd1 6ae8037ac78863f9c630037d rtx-pro-6000 03:28Z at d5359abf: 2 starts x s62/s74 x seeds 7/23 = 8 takes 1536x768
+  cd1 finished 03:32Z (~3.5 min incl. model load, ~$0.16). All 8 solid (no holes); croc model alone paints flatter than the game,
+  magenta spill on the s74 side takes, crown a blob. Kept back-from-idle-s74-23 (on his back, belly up) as the round-2 start.
+cd2 6ae804990e0338d1bb7dbf56 03:33:45Z-03:35:21Z (~1.6 min, ~$0.08) at 300b934c: round2.png (cd1 take keyed + his real crown) x style
+  model s40/s52 x seeds 7/23. PICK round2-s40-23 (painted, solid, crown whole). s52 takes cut the crown at the edge.
+  R-1.1 total ~$0.25 of the $1 cap (estimate from job times at $2.75/h).

@@ -104,6 +104,30 @@ GROUPS = {
                      ('b', 'a small spiral-free pocket notebook of worn tan leather with a short yellow pencil lying across it, a few '
                            'loose paper scraps sticking out', 'book with brass corners, big book, satchel, text')],
     },
+    'H': {
+        'shake': [('a', 'a short leafy jungle branch shaking hard, three green leaves flying off it, little curved motion lines on '
+                        'both sides of the branch showing it wobble', 'bag, text, bird'),
+                  ('b', 'a round brown nut bouncing off a short wooden branch, the branch bent and wobbling, a small leaf falling, '
+                        'little curved motion lines', 'bag, text, face')],
+        'cards': [('a', 'a small fanned stack of three picture cards with painted jungle animals on them (a sloth, a snake, a toucan), '
+                        'plain picture cards with no corner marks, tied with a twine bow', 'text, letters, numbers, A, K, Q, playing '
+                        'card symbols, spades, hearts, bag')],
+    },
+    'I': {
+        'carving': [('a', "a small flat scrap of brown tree bark with a big letter M and a dot scratched deep into it in pale wood, "
+                          "Meeca's secret sign, rough torn edges", 'bag, many letters, words, text other than M'),
+                    ('b', 'a small curled piece of bark with a pale carved M scratched into it, a tiny green leaf stuck to one corner',
+                     'bag, many letters, words')],
+    },
+    'J': {
+        'shimmy': [('a', 'a round gold-rimmed emerald-green medallion badge, inside it a coil of thick braided vine rope with a knot, '
+                         'painted, glossy', 'bag, text, letters, numbers'),
+                   ('b', 'a coil of thick braided jungle vine rope tied with a knot, a small green leaf on it', 'bag, snake, text')],
+        'glide': [('a', 'a round gold-rimmed emerald-green medallion badge, inside it a big green leaf held like a parachute with a '
+                        'little twig handle, painted, glossy', 'bag, text, letters, numbers, person'),
+                  ('b', 'a big curved green jungle leaf used as a parachute, a little twig handle hanging under it, floating', 'bag, '
+                        'text, person, sloth')],
+    },
     'E': {
         'playc': [('a', 'a chunky rounded triangle play button shape pointing right, carved from pale cream birch wood, a warm golden '
                         'brass rim round its edge, smooth and glossy', 'bag, leaf, flower, arrow shaft'),
