@@ -1,19 +1,22 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 7:57 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 9:31 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
 ## Status
 - Reinstated 2026-11-02 by the lead at Matt's ask (D27: the slips came from the setup; GAMEPLAN §3 is now a ladder; self-caught slips
   don't count). New items come in batches when Matt says go (LEAD-PLAYBOOK 8d).
-- **State now (2026-11-04 7:52 AM ET):** roadmapcheck PASS. Phases (BUILD-PLAN "The phases", sums by script): lane 1 WebGL 21 h;
-  Phase A (World 1) 60.5 h (range about 46-85), starting score World 1 38/100 (quality supervisor) and validator 18-62, average 41
-  (fix-petals; the lead's message said 42, the overview page says 41); Phase B 274 h (a guess, about 210-385); Phase C 114 h (a guess,
-  about 85-160); alongside 62 h. Day 1 about 531.5 helper hours (the gate prints 539.5 with the keeper's 8 h), recommended Important
-  60 h, launch about 591.5 h; lane loads 117.5 / 118.5 / 120.5 / 120.5 / 113.5 (script); building about 15-20 working days on today's
-  rows (12-26 across the guesses); about 4-4.5 weeks with the 80% trigger (about 425 of 531.5 h). The doc mirrors it (read back).
-  Phase script: sets by item id (A also holds R-150.7, R-6.31, R-6.33 to R-6.36; R-154 W1 2.5 h and R-155 W1 7 h moved from B to A).
+- **State now (2026-11-04 9:31 AM ET):** roadmapcheck PASS. Phases (BUILD-PLAN "The phases", sums by script): lane 1 WebGL 21 h;
+  Phase A (World 1) 68 h (range about 52-94), starting score World 1 38/100 (QS) and validator 18-62, average 41; Phase B 274 h
+  (a guess, about 210-375); Phase C 114 h (a guess, about 90-155); alongside 62 h. Day 1 about 539 helper hours (the gate prints
+  547), recommended Important 60.5 h, launch about 599.5 h; lane loads 120.5 / 118.5 / 120.5 / 120.5 / 118 (script); building about
+  15-20 working days (12-26 across the guesses); about 4-4.5 weeks with the 80% trigger (about 431 of 539 h). Doc read back.
+  Phase script: A = R-150.1/.4/.7/.8/.9, R-158.1, R-159.1, R-160.1, R-161.1, R-152.7, R-156, R-5.10-12, R-6.31, R-6.33 to R-6.38, plus
+  R-154 W1 2.5 h and R-155 W1 7 h moved from B.
+- **Unblocked 11-04 mid-morning:** R-150.4 and R-150.1 accepted (7909cf11, fun-validator, not merged yet). Phase B rows now read
+  "blocked (by Matt's World 1 rating)"; R-159.1 open (GPU stage 0 merged to the lead branch 65b6c33a). Archive R-3.1, R-150.1, R-150.4,
+  R-150.7 only when they reach main in a release (proof: the release PR).
 - **In flight / waiting:**
   - R-1.1 is done pending the release merge (proof 5f25029a on icons-painted): archive it with the merge commit when the release lands.
   - R-6.25 (icons B-E) ships in the same release.
