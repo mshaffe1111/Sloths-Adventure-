@@ -19,7 +19,7 @@ import { reachJump, TAKEOFF_SLACK } from '../../src/game/physics.ts';
 import { type Beat, type Sample } from '../inspect/beats.ts';
 import type { Stage } from '../inspect/stages.ts';
 
-export type Move = 'J' | 'j' | 'U' | 'Q' | 'V' | 'B' | 'K' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'E' | 'D' | 'X' | 'h' | 'Z';
+export type Move = 'J' | 'j' | 'U' | 'Q' | 'V' | 'B' | 'K' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'N' | 'O' | 'Y' | 'E' | 'D' | 'X' | 'h' | 'Z';
 export interface Step {
   m: Move;
   /** seconds from the start on the quick route's clock (the inspector's beat clock: movement plus fights and waits) */
@@ -33,7 +33,7 @@ export type Setting = 'normal' | 'easy';
 /** what each move letter means, for the pages */
 export const MOVE_NAMES: Record<Move, string> = {
   J: 'jump (a real fall under it)', j: 'safe hop over a gap', U: 'jump twice (a gap or rise only the second jump covers)', Q: "jump the level check can't confirm", V: 'vine swing', B: 'breaking branch', K: 'the chase: the branch collapses behind him', W: 'wind', S: 'slow-down', C: 'climb', P: 'puzzle', M: 'mushroom bounce', R: 'rope',
-  F: 'fight an animal', E: 'eagle / watcher', D: 'dark', X: 'river / moving logs', h: 'small hop', Z: 'other timed hazard',
+  F: 'fight an animal', N: 'daze a snake, then stomp it (World 1)', O: 'kick a coiled boa to roll it (World 1)', Y: 'stomp vault off a snake (World 1)', E: 'eagle / watcher', D: 'dark', X: 'river / moving logs', h: 'small hop', Z: 'other timed hazard',
 };
 
 /** a beat's move letter, from what the inspector says it is (beats.ts `what`), one to one */
@@ -57,6 +57,9 @@ export function moveOf(b: Pick<Beat, 'letter' | 'what' | 'count'>): Move | null 
   if (/web|spore|sleep|slow/.test(w)) return 'S';
   if (/eagle sweep|watching|eaglets|sleeping bats/.test(w)) return 'E';
   if (/dark/.test(w)) return 'D';
+  if (b.letter === 'C' && /\(stomp vault\)/.test(w)) return 'Y';
+  if (b.letter === 'C' && /\(dazed, then stomped\)/.test(w)) return 'N';
+  if (b.letter === 'C' && /\(coiled: kicked to roll\)/.test(w)) return 'O';
   if (b.letter === 'C') return 'F';
   if (b.letter === 'P') return 'P';
   if (b.letter === 'J') return 'J';

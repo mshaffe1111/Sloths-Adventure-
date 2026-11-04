@@ -346,7 +346,7 @@ export const stageSeconds = (id: string): number => STAGE_SECONDS[id] ?? EXPERT_
 /** 4-8's length (STAGE_SECONDS: about three minutes for a quick player) */
 export const W48_SECONDS = stageSeconds('4-8');
 
-export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy' | 'highrun' | 'stumps' | 'snakes' | 'river' | 'pond' | 'turtles' | 'cages';
+export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy' | 'highrun' | 'stumps' | 'snakes' | 'river' | 'pond' | 'turtles' | 'cages' | 'vault' | 'bowl';
 
 /**
  * The hand-built 1-6, planned and rolled: the stage is always the same chain of beats (learn, develop, puzzle, twist, develop again,
@@ -1764,12 +1764,19 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         } else {
           branch(l.x0, l.x1, l.y);
         }
-        if (l.surface !== 'apron' && l.x1 - l.x0 >= 230) wide.push(l);
+        // (a fight snake stands at least 150 px past where he lands, research §6 / R-159, and short of where he takes off again)
+        const land = tr.landings.find((q) => q.step === l.step);
+        if (l.surface !== 'apron' && land && l.x1 - 60 - (land.toX + 160) >= 0) wide.push(l);
       }
       checkpoints.push({ x: tr.checkpoint.x, y: tr.checkpoint.y, reached: false });
       // the fight snakes: on the widest ledges, past where he lands, so the punch falls between the hops
-      const picks = [...wide].sort((a, b) => b.x1 - b.x0 - (a.x1 - a.x0)).slice(0, o.snakes ?? 0).sort((a, b) => a.x0 - b.x0);
-      for (const l of picks) snake(l.x0 + (l.x1 - l.x0) * 0.62, l.y, Math.max(12, l.x1 - l.x0 - 150));
+      // (an uneven pick, the roll's: never every other ledge, or the fights fall into a pattern of their own)
+      const picks = R.shuffle([...wide]).slice(0, o.snakes ?? 0).sort((a, b) => a.x0 - b.x0);
+      for (const l of picks) {
+        const land = tr.landings.find((q) => q.step === l.step)!;
+        const sx = Math.min(l.x1 - 70, land.toX + 170 + R.r(0, 40));
+        snake(sx, l.y, 12);
+      }
       for (const l of tr.ledges) if (l.surface !== 'apron' && l.x1 - l.x0 >= 120 && !picks.includes(l)) flower((l.x0 + l.x1) / 2, l.y - 34, 'orchid');
       x = tr.x1;
       // (the ground on from here is at G: a node that ends a little high or low is a step down or a short hop up, Easy's within 42 px)
@@ -1777,6 +1784,45 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       expert += (tr.x1 - x0) / RUN + 0.25 * steps.length + 1.4 * picks.length;
       pieces.push({ k: 'snakes', x0, x1: x });
       return tr;
+    }
+    /**
+     * a node's bars and steps, rolled: `n` bars drawn from `kinds` (no kind three times running), a jump at each half-note mark rising or
+     * falling within a branch's reach of the ground, a hop down at each off-beat mark, the last landing back on the ground; rolled
+     * again until the tracer can dance it (it refuses a pattern in the air at the next mark, too narrow, or the same gap four times)
+     */
+    function rollNode(n: number, kinds: readonly string[], o: { real?: boolean; snakes?: number } = {}): Trace {
+      for (let tries = 0; tries < 40; tries++) {
+        const bars: string[] = [];
+        for (let k = 0; k < n; k++) {
+          let b = R.pick(kinds);
+          if (k >= 2 && bars[k - 1] === b && bars[k - 2] === b) b = kinds.find((q) => q !== b) ?? b;
+          bars.push(b);
+        }
+        const marks = bars.join('').replace(/\./g, '');
+        let h = 0;
+        const steps: Step[] = [];
+        for (let i = 0; i < marks.length; i++) {
+          const last = i === marks.length - 1;
+          if (last) { steps.push(J(-h, 'bank')); h = 0; break; }
+          if (marks[i] === 'o') {
+            const d = Math.min(h, R.pick([20, 30] as const));
+            steps.push(Hp(-d));
+            h -= d;
+            continue;
+          }
+          const lo = Math.max(-40, -h), hi = Math.min(50, 90 - h);
+          const dy = Math.round((lo + R.r(0, 1) * (hi - lo)) / 10) * 10;
+          steps.push(J(dy, h + dy > 0 ? 'branch' : 'bank'));
+          h += dy;
+        }
+        try {
+          traceNode(easy ? easyNode({ bpm, x, y: G, bars, steps }) : { bpm, x, y: G, bars, steps });
+        } catch {
+          continue;
+        }
+        return traced(bars, steps, o);
+      }
+      throw new Error('1-3: no danceable node in 40 rolls');
     }
     beat('Intro: the sleeping snake', () => {
       // (nothing can hurt in the first five seconds: the first-timer bot walked into a snake 2.5 s in, 2026-10-28)
@@ -1792,8 +1838,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       run(R.r(160, 200));
     });
     beat('Ramp: snakes on the branches, then the teaching vault', () => {
-      if (R.chance(0.5)) traced(['h...h...', 'h.......', 'h...h...', 'h.......', 'h...h...', 'h.......', 'h...h...', 'h.......', 'h...h...', 'h.......'], [J(40), J(0), J(30), J(-30), J(20), J(-20), J(40), J(10), J(-30), J(30), J(-20), J(-20), J(30), J(-40), J(-40, 'bank')], { snakes: 3 });
-      else traced(['h.......', 'h...h...', 'h.......', 'h...h...', 'h.......', 'h...h...', 'h.......', 'h...h...', 'h...h...', 'h.......'], [J(30), J(20), J(-20), J(30), J(10), J(-40), J(40), J(-10), J(-20), J(30), J(-30), J(20), J(-30), J(10), J(-40, 'bank')], { snakes: 3 });
+      // (real drops from here on Normal: something bites from node 2; soft on Easy; the bars rolled, half notes with whole-bar runs)
+      // (two runs of it, low stumps to hop between them: one long run of the same rhythm reads as a repeat, not a dance)
+      rollNode(5, ['h...h...', 'h.......', 'h...h...', '....h...'], { snakes: 3, real: true });
+      lowStumps();
+      rollNode(5, ['h...h...', 'h.......', '....h...', 'h...h...'], { snakes: 2, real: true });
       run(R.r(120, 160));
       flag();
       // the vault, taught on the way everyone takes: over a soft pit onto a raised bank only the spring reaches
@@ -1858,8 +1907,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     });
     beat('Climax', () => {
       flag();
-      if (R.chance(0.5)) traced(['h...h...', 'h..o....', 'h...h...', 'h..o....', 'h...h...', 'h..o....', 'h...h...', 'h...h...', 'h..o....', 'h.......'], [J(50), J(0), J(-10), Hp(-30), J(40), J(-10), J(10), Hp(-30), J(30), J(10), J(-10), Hp(-30), J(40), J(-10), J(-10), J(20), J(-10), Hp(-30), J(-20, 'bank')], { real: true, snakes: 5 });
-      else traced(['h..o....', 'h...h...', 'h..o....', 'h...h...', 'h..o....', 'h...h...', 'h..o....', 'h...h...', 'h..o....', 'h.......'], [J(40), Hp(-30), J(50), J(-10), J(10), Hp(-30), J(40), J(-20), J(10), Hp(-30), J(30), J(-10), J(20), Hp(-30), J(20), J(-10), J(10), Hp(-30), J(-30, 'bank')], { real: true, snakes: 5 });
+      // (the densest node: half notes with the hop down on the quarter between, rolled, ending at the run to the shrine)
+      rollNode(5, ['h...h...', 'h..o....', 'h...h..o', 'h.......'], { real: true, snakes: 4 });
+      // (a ledge snake between the two halves, a different fight from the branch ones)
+      snakeLedge();
+      rollNode(5, ['h..o....', 'h...h...', 'h.......', 'h...h..o'], { real: true, snakes: 3 });
     });
     beat('Cool-down', () => {
       // a short slope of ground to the shrine (the shrine stands near the end)
@@ -2034,7 +2086,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       run(R.r(240, 280));
     }
     expert += (x - x0) / RUN + 3;
-    pieces.push({ k: 'snakes', x0, x1: x });
+    pieces.push({ k: 'vault', x0, x1: x });
     vaults.push({ x: sx, edge, far, soft });
   }
 
@@ -2309,7 +2361,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     BOWL_GATES.push({ plateX, groundY: G, gatePlat: gate.id, gateX: gateX + 22, boaId, coilX, coilY: G - 16 });
     run(Math.round(R.r(220, 260)));
     expert += (x - x0) / RUN + 4;
-    pieces.push({ k: 'snakes', x0, x1: x });
+    pieces.push({ k: 'bowl', x0, x1: x });
   }
 
   /** a wide branch over soft moss with one boa coiled in the middle of it: the way on is across the branch, past the guard */

@@ -217,7 +217,6 @@ function fillTo(k: W1Kit, until: number, lead: Build | null, pieces: Build[], fl
 function masterStretch(k: W1Kit) {
   k.flag();
   k.snakeVault(false);
-  k.snakeWalk(1);
   k.bowlGate();
 }
 

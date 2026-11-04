@@ -140,7 +140,11 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     }
     const i = firstIn(samples, b);
     if (i < 0) { off('animals'); continue; }
-    add(i, 'C', e.type === 'eagle' ? 'eagle swoops' : `${e.type === 'turtle' ? 'snapper' : e.type}${e.asleep ? ' (asleep)' : ''}`, e.type === 'eagle' ? MODEL_FAST.fightFlier : MODEL_FAST.fightGround);
+    // (World 1's tricks, R-159.1: the game tags its snakes and boas as it loads, w1Tricks.ts tagWorld1, so they are named here by world
+    // and kind: a snake is dazed then stomped, a coiled boa is kicked to roll, a vault's snake springs him across)
+    const w1 = cfg.worldIndex === 1 && (e.type === 'snake' || e.type === 'boa') && !e.asleep;
+    const trick = !w1 ? '' : e.vaultHome ? ' (stomp vault)' : e.type === 'snake' ? ' (dazed, then stomped)' : ' (coiled: kicked to roll)';
+    add(i, 'C', e.type === 'eagle' ? 'eagle swoops' : `${e.type === 'turtle' ? 'snapper' : e.type}${e.asleep ? ' (asleep)' : ''}${trick}`, e.type === 'eagle' ? MODEL_FAST.fightFlier : MODEL_FAST.fightGround);
   }
   const ring = stage.proto?.ring;
   if (ring) {
