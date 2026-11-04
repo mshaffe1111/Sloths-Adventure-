@@ -6,7 +6,59 @@ recommendation with its status in the game and what is next), and every mistake 
 for, so nobody repeats them. If a brief from the lead session disagrees with this file, ask; if you learn a new lesson the hard way,
 add it to section 6 in the same commit.
 
-Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
+Last updated 2026-11-02 (§0 Matt's design direction).
+
+---
+
+## §0 Matt's design direction (2026-11-02, after playing Worlds 1-5 in one sitting): BINDS EVERY STAGE AND GENERATOR
+
+Matt: "The first stage, we brought in some variation. And then we just stopped the imagination. And all the new elements, we don't bring
+it back again. I thought everything was supposed to build on top of everything that we did... right now, it's basically just run and jump...
+as somebody gets through World 5 and on... not supposed to be where it's going to make somebody quit, but it has to be somewhat challenging."
+
+1. **Everything builds on everything.** A mechanic taught in World N comes back in every later world, harder or combined with that world's
+   new one. A world that only uses its own new thing (or nothing) fails. The mechanics-in-use table (R-150.4) checks it per stage.
+2. **Every hazard must matter.** Wind pushes Pokey (it changes where a jump lands). Sleepy mushrooms keep a real timing window: mistime it
+   and he falls. Anything the player can ignore or jump straight through is decoration, not a beat, and does not count toward variety.
+3. **No beat repeated to fill time.** The same obstacle (e.g. waiting for monkeys on a log) at most a few times a stage, and each repeat
+   adds a twist (a second monkey, a moving log, a timer, a punch). Fifteen of the same wait fails.
+4. **Moving platforms early** (from World 2), then back in every world.
+5. **A gradual difficulty arc, from the start (Matt, 2026-11-02, replaces "real risk from World 5 on"):** "It's not about when levels
+   start getting hard. It's about the gradual arc of the difficulty based upon how often we get people to do the same things."
+   World 1 is easy and forgiving; World 2 brings new elements in subtly; by Worlds 8-9 it is clearly harder. Once something is taught,
+   sloppiness has a consequence (a fall, a lost life) in any world, World 2 included. Every time we ask the player to do the same thing
+   again (run, jump, climb), it is a little harder than last time: tighter gaps, less time, a hazard added. Fair, never cruel: every
+   danger reads before it bites and the checkpoint is close. The exact per-world numbers are a later talk with Matt.
+   **Easy vs Normal (Matt, 2026-11-02):** "Normal should be different than easy. Easy should be just a casual play where you can just
+   kind of cruise through... easy would be kind of the difficulty that we have most of the game right now." The arc above is NORMAL.
+   Easy stays a cruise (about today's level or gentler; src/game/difficulty.ts already softens gaps, enemies, hearts, flags and vines).
+   Every tuning job tunes both and shows both.
+
+
+## §0b How a stage is put together (Matt, 2026-11-02: "take it serious... it gives us good methods of how to introduce the nodes, the tempos, the rhythms"; source reference/research/GEMINI-VARIETY-2026-11-02-full.txt, cited research)
+
+1. **Rhythm groups and rests.** A stage is built from rhythm groups: one pattern of moves (run, jump, wait) lasting 5, 10, 15 or 20 s at
+   low, medium or high density. Groups never run into each other: a rest platform (no hard input) sits between every two.
+2. **Four parts per stage (introduce, develop, twist, master).** Part 1: the stage's mechanic shown safely (a miss lands on solid ground),
+   5-10 s groups. Part 2: the safety removed, 10-15 s groups, a pattern repeated to build the feel. Part 3: the twist, an unexpected
+   second mechanic or a new use of the first, and the place for the optional hard branch with the big collectible. Part 4: a 15-20 s
+   dense finale that uses everything the stage taught, ending at the exit. Checkpoints sit on the rests before parts 3 and 4.
+3. **Fast and slow (tempo inversion).** Every mechanic has a hurry version and a patience version (branches that snap if you stop vs.
+   things that only work if you stand still). Worlds alternate between them; a stage that only ever asks for one tempo is flat.
+4. **Variants before new mechanics.** Make sub-types by tuning what exists: breaking branches as snap twigs (~0.15 s, keep running),
+   creaking limbs (~0.6 s, time to recover) and tipping roots (tip by where he stands); vines as ladder, swing-catapult, sinking line,
+   and the thorn vine that strikes if climbed fast; wind as headwind, tailwind (brake or overshoot), gusts that swing vines, updrafts.
+5. **Pairs, then triples.** The six things (run, jump, branches, vines, wind, slow-downs) make 15 pairs. Each world shows its own pairs
+   and brings back earlier ones; Worlds 8-10 use three and four at once (see §0.1). The mechanics-in-use table (R-150.4) counts pairs.
+6. **The world's ten slots have roles.** X-1 arrival, X-2 teach the world's thing, X-3 tight terrain, X-4 wide gaps / vines / wind,
+   X-5 mid-world spike, X-6 change of pace (slow, dark, puzzle), X-7 exploring with branches, X-8 everything layered, X-9 the run-up to
+   the boss, X-10 the boss. Neighbouring stages must not share a tempo and camera direction.
+7. **Read by shape.** Every hazard reads by its outline and a small motion, whatever the world's colours: breaking things share a
+   notched underside and a short shake when stepped on; thorn vines show barbs and a slow pulse; wind shows particles moving at its speed;
+   sticky traps look different from slow-wading fields.
+8. **Feel.** Coyote time and the jump buffer exist (engine.ts; physics FORGIVE). To check and tune: a softer fall at the top of a held
+   jump, a cut jump on release, a faster fall than rise, and platform speed carried into the jump (R-152.7). Tighter checkpoints as
+   stages get harder: respawn within about 2 s of the hard part.
 
 ---
 
@@ -14,7 +66,7 @@ Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
 
 - **Phone only.** Touch controls only. Every stage plays upright and sideways. The loop is locked at 30 fps on purpose.
 - **Length.** Every stage takes at least 2 minutes for a quick player, **on every roll** (5+ minutes is fine). Climbs count 20 s short.
-- **Crumbling platforms** are never needed to finish. A broken one grows back after 30-35 s, only when it is off screen.
+- **Crumbling platforms** (Matt, 2026-11-02, "required anywhere"; replaces "never needed to finish"): once taught, a stage may require them anywhere, over pits too. A required run must be crossable at normal speed by a first-timer, and every crumble on the way is whole again when he respawns. A broken one grows back after 30-35 s, only when it is off screen. The old rule lives on in the generators and levelCheck (`never main`): R-150.5 removes it there.
 - **Climbing.** On a vine or trunk, straight up or down always climbs; only a diagonal slide jumps off.
 - **Teaching.** The first appearance of every mechanic is taught, in a safe spot, before it can hurt.
 - **Locked exits.** Dot (or Flicker while Dot is away) explains any locked exit; the stage shows what it requires.

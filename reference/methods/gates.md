@@ -95,3 +95,6 @@ Every gate in the table, in order. Run the full unit suite in the background (it
 - A nested-scroll check: a scroll box inside a scroll box on the same axis, with text below the inner fold at rest.
 - clipcheck at 360x800 as well (the smallest phones).
 - Split the playerText Dot-line rule so control-test copies (`ctest.*`) of a lesson are allowed, if the lead agrees they're not player-facing.
+
+## Report gates (run by the helper before it reports, not in CI)
+- `node tools/art/icons/checkbase.mjs reference/qa-reports/<job>`: fails an "after" sheet shot on a stale or work-in-progress base (D23). Added 2026-11-02 (icons-painted, R-1.1).
