@@ -5436,6 +5436,16 @@ export class GameEngine {
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
     this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * FRAME.across + this.camLookX + runX;
     this.camera.targetY = this.camAnchorY - vh * fr.feetAt;
+    // World 1's kicked boa (w1Tricks.ts): while it rolls the view runs ahead with it, so what it hits is in view (the lead's call, upright
+    // above all, where the view is narrow), never so far that he leaves the screen's near edge
+    // (and a bowl gate that has just opened is kept in view a moment: the roll is short, and the view eases over more slowly than it rolls)
+    const ball = this.enemies.find((e) => e.trick === 'coil' && e.state === 'roll' && !e.defeated && Math.abs(e.x - p.x) < 900);
+    const opened = (this.currentStage.bowlGates ?? []).find((g) => g.open && (g.openT ?? 0) < 1.4 && Math.abs(g.gateX - p.x) < 700);
+    const lookAt = ball ? ball.x + (ball.slideDir ?? 1) * 140 : opened ? opened.gateX + 60 : null;
+    if (lookAt !== null) {
+      const want = Math.min(Math.max((p.x + lookAt) / 2 - vw / 2, p.x - vw * 0.9), p.x - vw * 0.06);
+      this.camera.targetX = want;
+    }
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
     if (look) {

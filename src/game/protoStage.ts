@@ -2162,7 +2162,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     const coilX = Math.round(lane0 + 130);
     boa(coilX, G, -1);
     const boaId = eid - 1;
-    run(Math.round(R.r(560, 600)));
+    // (the lane short enough that, upright too, the view holds him, the rolling ball and the plate at once: the plate ~290 px from
+    // where he kicks, the upright view ~415 wide)
+    run(Math.round(R.r(360, 380)));
     const plateX = Math.round(x - 46);
     const gateX = Math.round(x);
     // (the gate: a solid wall the gate's art covers, 'hidden' so the ground's look is not drawn on it; the pillar above is real stone)

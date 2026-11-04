@@ -72,6 +72,17 @@ const CLIPS = [
       { tap: 'KeyK', frames: 50 },
     ],
   },
+  {
+    // 1-9's bowl gate: the kick, the ball down its lane (the view running ahead with it), the plate, the gate open, and through
+    id: 'clip-5-bowl-gate', stage: '1-9',
+    pose: { px: 20240, foe: { id: 23, x: 20337, y: 564, state: 'coil', calm: true } },
+    steps: [
+      { hold: ['ArrowRight'], until: 'Math.abs(s.x - p.x) < 62', max: 40 },
+      { tap: 'KeyK', frames: 50 },
+      { frames: 10 },
+      { hold: ['ArrowRight'], frames: 70 },
+    ],
+  },
 ];
 
 const b = await chromium.launch();
@@ -96,6 +107,10 @@ for (const [tag, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([t]) =>
       // nothing else near to get in the way of the shot
       for (const q of e.enemies) if (q !== s && Math.abs(q.x - s.x) < 700) q.x += 4000;
       window.__foe = s;
+      // (the view starts on him where he was put, not sliding over from the stage's start)
+      const c = e.camera;
+      c.x = c.targetX = p.x - c.viewportWidth * 0.35;
+      c.y = c.targetY = p.y - c.viewportHeight * 0.6;
     }, clip.pose);
     const dir = path.join(out, `${clip.id}-${tag}`);
     fs.rmSync(dir, { recursive: true, force: true });
