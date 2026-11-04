@@ -2212,9 +2212,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     const bx = x, w = Math.round(R.r(300, 340));
     branch(bx, bx + w, G - 90);
     // (on the branch's far part: a jump up lands about 40 px onto it, and a snake stands at least 150 px past a landing, research §6 /
-    // R-159; at 45% it was 100 px from it, the fun gate's "enemy by a landing"; its patrol kept to the far part too)
+    // R-159; at 45% it was 100 px from it, the fun gate's "enemy by a landing"; its patrol kept to the far part too; its petals hang
+    // over it, where they always were)
     snake(bx + w - 110, G - 90, 40);
-    row(bx + 50, bx + w * 0.42, G - 124, 2, 'hibiscus');
+    row(bx + w * 0.7, bx + w - 30, G - 124, 2, 'hibiscus');
     x = bx + w + Math.round(R.r(60, 100));
     dipArc();
     run(R.r(190, 230));
@@ -2923,6 +2924,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     // and lianas with no snake at all, a breath: one alone (it swings its widest, nothing near it), then swing to swing
     chain(1, true, 'hollow', true);
     busy(1);
+    // (a flag here: the beat runs long enough now that it went 7000 px without one, protoStage.test.ts)
+    flag();
     chain(R.i(1, 2) + 1, true, 'hollow', true);
     stumps();
     flag();
