@@ -73,6 +73,21 @@ const CLIPS = [
     ],
   },
   {
+    // mashing punch on the coiled boa (QS polish): one hit word at a time over it, each new one popping in where the last was
+    id: 'clip-6-boa-mash-words', stage: '1-9',
+    pose: { px: 1600, foe: { id: 1, x: 1770, y: 468, state: 'coil', calm: true } },
+    steps: [
+      { hold: ['ArrowRight'], until: 'Math.abs(s.x - p.x) < 62', max: 60 },
+      { tap: 'KeyJ', frames: 5 },
+      { tap: 'KeyJ', frames: 5 },
+      { tap: 'KeyJ', frames: 5 },
+      { tap: 'KeyJ', frames: 5 },
+      { tap: 'KeyJ', frames: 5 },
+      { tap: 'KeyJ', frames: 5 },
+      { frames: 24 },
+    ],
+  },
+  {
     // 1-9's bowl gate: the kick, the ball down its lane (the view running ahead with it), the plate, the gate open, and through
     id: 'clip-5-bowl-gate', stage: '1-9',
     pose: { px: 20240, foe: { id: 23, x: 20337, y: 564, state: 'coil', calm: true } },
