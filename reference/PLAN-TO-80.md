@@ -50,8 +50,12 @@ Kept from our plan: PixiJS (it already batches sprites the way the research desc
    (existing art), and the boss adds or changes an attack. The three ways to win apply in every phase.
 8. **Venom Fang, three ways to win:** the scripted window, an arena trap (drop a branch on him), and a skill move (dive-kick off his
    tail). The template for every boss (R-161).
+9. **Beat types and no world like an earlier one (Matt, 2026-11-04, chose all three):** every World 1 node carries a beat type
+   (steady, swung, broken, wait-and-go; STAGE-RULES §0b.9) and the validator reads it back from the real moves; World 1 gets its
+   home beat mix; each world owns its pieces and its fingerprint, and a check of every stage against every earlier world's stages
+   (moves, looks, beats) is built and in the fun gate before World 2 is rebuilt (§0c.7). About half a day on the World 1 slice.
 **Entry criteria for every rebuilt World 1 stage (QS, 11-04):** before the quality supervisor's in-order re-recording judges it, it clears the
-validator's flags: not "looks/moves like" the stages before it, something bites, no padding, more than one tempo.
+validator's flags: not "looks/moves like" the stages before it, something bites, no padding, more than one tempo, at least 3 beat types.
 
 Then: test link, Matt plays World 1 start to finish and rates it. 80+ means roll out; under 80, we fix World 1 before anything else.
 
