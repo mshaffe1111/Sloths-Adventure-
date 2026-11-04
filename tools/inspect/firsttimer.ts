@@ -685,6 +685,10 @@ export class FirstTimerRun {
   /** a press he has decided on, and when the thumb gets there */
   private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean } | null = null;
   private punchAt: number | null = null;
+  /** getting ready to kick (World 1's coiled boa, once Dot has said to kick it): the same hesitation as a punch */
+  private kickAt: { at: number; dir: -1 | 1 } | null = null;
+  /** World 1's coiled boas he has punched once (a punch is TOUGH on one: he does not punch it again) */
+  private toughSeen = new Set<number>();
   private swapGap = 0.15;
   private lastPress = -1;
   private lastSteer: -1 | 0 | 1 = 0;
@@ -866,6 +870,7 @@ export class FirstTimerRun {
     this.padPause = null;
     this.pending = null;
     this.punchAt = null;
+    this.kickAt = null;
     this.jump = null;
     this.airFrom = null;
     this.blockedT = 0;
@@ -1079,6 +1084,7 @@ export class FirstTimerRun {
       if (/\b(hide|bush|fern)\b/.test(t) && /\b(down|slide|hold|duck|into|inside|behind)\b/.test(t)) this.learned.add('hide');
       if (/\b(punch|tap)\b/.test(t)) this.learned.add('punch');
       if (/\bkick\b/.test(t)) this.learned.add('kick');
+      if (/\b(hop on|stomp|land on)\b/.test(t)) this.learned.add('stomp');
       if (/\b(glide|leaf)\b/.test(t)) this.learned.add('glide');
       // (World 8's glide line, "Jump twice, then hold to glide": the second jump first, then the glide, at a gap one jump does not cross)
       if (/\bjump twice\b/.test(t)) this.learned.add('double');
@@ -1308,6 +1314,12 @@ export class FirstTimerRun {
       this.punchAt = null;
       return { punch: true };
     }
+    if (this.kickAt !== null) {
+      if (t < this.kickAt.at || t - this.lastPress < this.swapGap) return {};
+      const k = this.kickAt;
+      this.kickAt = null;
+      return { kick: k.dir };
+    }
     // a trunk he is touching, and the way goes up (or he is stopped beside it): straight up
     // (holding up at the top of the trunk he just came up takes him nowhere: after a moment he lets the trunk be and goes on as on
     // open ground, a hop up to the ledge above, round 5 2026-10-29)
@@ -1372,8 +1384,33 @@ export class FirstTimerRun {
       for (const m of e.enemies as any[]) {
         if (m.defeated) continue;
         const dx = (m.x - p.x) * dir;
+        // World 1's tricks (R-159.1): he answers each the way Dot has told him, and until told does what a first-timer does
+        // - a dazed snake is harmless: told to hop on it, he walks up to it and hops straight up onto it (a stomp); else he walks past
+        if (m.trick === 'lunge' && (m.stagger ?? 0) > 0 && dx > -12 && dx < 130 && Math.abs(m.y + 12 - p.y) < 60) {
+          if (!this.learned.has('stomp')) continue;
+          if (dx > 12) return side(dir);
+          if (p.grounded && !this.jump && !this.pending) return this.decide(0, 'single', false, {});
+          return {};
+        }
         if (dx < 20 || dx > 130 || Math.abs(m.y + 12 - p.y) > 60) continue;
         if (!this.foeSeen.has(m.id)) this.foeSeen.set(m.id, this.r() < who.hopFoe);
+        // - the coiled boa: told to kick it, he kicks it; a punch only bounces off it, so he does not keep punching after the first
+        if (m.trick === 'coil' && m.state !== 'roll' && m.state !== 'rolled') {
+          if (this.learned.has('kick') && dx < 90) {
+            this.kickAt = { at: t + who.hesitate, dir: dir > 0 ? 1 : -1 };
+            this.swapGap = between(this.r, who.swap);
+            return {};
+          }
+          if (this.learned.has('punch') && !this.toughSeen.has(m.id) && dx < 110) {
+            this.toughSeen.add(m.id);
+            this.punchAt = t + who.hesitate;
+            this.swapGap = between(this.r, who.swap);
+            return {};
+          }
+          if (dx < 90) return this.decide(dir, 'single', false, side(dir));
+          continue;
+        }
+        if (m.trick === 'coil') continue;
         if (this.learned.has('punch') && dx < 110) {
           this.punchAt = t + who.hesitate;
           this.swapGap = between(this.r, who.swap);
