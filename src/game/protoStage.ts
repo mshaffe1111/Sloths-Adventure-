@@ -19,6 +19,7 @@ import { teachWater } from './waterTeach.ts';
 import { petalPass } from './petalPass.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
+import { easyNode, stageBpm, traceNode, type Ledge, type NodeSpec, type Step, type Trace } from './beatTrace.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, reachJumpHeld, SAFE } from './physics.ts';
@@ -1724,41 +1725,143 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   }
 
   if (plan === '1-3') {
-    // 1-3 Branch Snakes: punching. One snake asleep on a wide branch to learn on, then snakes on narrow branches (punch or hop),
-    // then a snake guarding a rope: clearing the stage teaches Shimmy Rope, and a short rope near the end is there to try it on.
-    // (Rebuilt 2026-10-28: the walks between the snakes hold rocks to hop and dips, the stumps stay low, no tall double jumps.)
-    beat('Learn: the sleeping snake', () => {
+    // 1-3 Branch Snakes, rebuilt (w8-rope2, 2026-11-04; reference/plans/1-3-rebuild.md, the lead's W1-REBUILD-PLAN): a high/low split laid
+    // on 1-3's own music beat (beatTrace.ts: hops on the half note, the punch and the stomp on the quarter between). Seven nodes, each
+    // from a flag on a flat apron: the sleeping snake, a ramp of snakes on branches that ends in the teaching vault (on the shared way),
+    // the split (a high road of branches and snakes to a vault onto a raised perch, or the slower root floor under it), a rest, a
+    // bounce chain, the climax, and a short slope down to the shrine. No filler: the length is the nodes.
+    const bpm = stageBpm(config);
+    const J = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'jump', dy, surface });
+    const Hp = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'hop', dy, surface });
+    /**
+     * a traced node from the ground: its ledges where his feet land on the beat (beatTrace.ts), soft pits under the gaps between ground
+     * (a real drop where `real`, never on Easy), its flag on the entrance apron; fight snakes on its wider ledges (`snakes` of them,
+     * each met punch on the quarter, hop on the next half)
+     */
+    function traced(bars: string[], steps: Step[], o: { real?: boolean; snakes?: number; y?: number } = {}): Trace {
+      const x0 = x;
+      const y = o.y ?? G;
+      close();
+      const spec: NodeSpec = { bpm, x, y, bars, steps };
+      const tr = traceNode(easy ? easyNode(spec) : spec);
+      let groundEnd = -1;
+      const wide: Ledge[] = [];
+      for (const l of tr.ledges) {
+        // (a bank or apron is ground at its own height: Easy's trace lands a little lower each time, easyNode)
+        const ground = l.surface === 'apron' || l.surface === 'bank';
+        if (ground) {
+          if (groundEnd >= 0 && l.x0 - groundEnd > 1) {
+            if (o.real && !easy) { /* (a real drop: nothing under it) */ } else softPit(groundEnd, l.x0);
+          }
+          bank(l.x0, l.x1, l.y);
+          groundEnd = l.x1;
+        } else if (l.surface === 'stump') {
+          P.push({ id: pid++, x: Math.round(l.x0), y: l.y, width: Math.round(l.x1 - l.x0), height: HOLLOW_Y - l.y + 4, type: 'solid', style: 'moss_stone' });
+        } else {
+          branch(l.x0, l.x1, l.y);
+        }
+        if (l.surface !== 'apron' && l.x1 - l.x0 >= 230) wide.push(l);
+      }
+      checkpoints.push({ x: tr.checkpoint.x, y: tr.checkpoint.y, reached: false });
+      // the fight snakes: on the widest ledges, past where he lands, so the punch falls between the hops
+      const picks = [...wide].sort((a, b) => b.x1 - b.x0 - (a.x1 - a.x0)).slice(0, o.snakes ?? 0).sort((a, b) => a.x0 - b.x0);
+      for (const l of picks) snake(l.x0 + (l.x1 - l.x0) * 0.62, l.y, Math.max(12, l.x1 - l.x0 - 150));
+      for (const l of tr.ledges) if (l.surface !== 'apron' && l.x1 - l.x0 >= 120 && !picks.includes(l)) flower((l.x0 + l.x1) / 2, l.y - 34, 'orchid');
+      x = tr.x1;
+      // (the ground on from here is at G: a node that ends a little high or low is a step down or a short hop up, Easy's within 42 px)
+      open(x);
+      expert += (tr.x1 - x0) / RUN + 0.25 * steps.length + 1.4 * picks.length;
+      pieces.push({ k: 'snakes', x0, x1: x });
+      return tr;
+    }
+    beat('Intro: the sleeping snake', () => {
+      // (nothing can hurt in the first five seconds: the first-timer bot walked into a snake 2.5 s in, 2026-10-28)
+      rest(R.r(380, 420));
+      // (two patterns, the roll's pick: about 0.4 take-offs a second, the research's intro)
+      const tr = R.chance(0.5)
+        ? traced(['h.......', '........', 'h...h...', '........', 'h.......', '....h...'], [J(40), J(-40, 'bank'), J(30, 'stump'), J(-30, 'bank'), J(40, 'stump')])
+        : traced(['h.......', '....h...', '........', 'h.......', '....h...', '........'], [J(30), J(-30, 'bank'), J(40, 'stump'), J(-40, 'bank')]);
+      // the sleeping snake on the first, widest branch, Dot's tip before it
+      const b = tr.ledges.find((l) => l.surface === 'branch')!;
+      snake(b.x0 + (b.x1 - b.x0) * 0.6, b.y, 60, true);
+      hint(b.x0 - 160, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
+      run(R.r(160, 200));
+    });
+    beat('Ramp: snakes on the branches, then the teaching vault', () => {
+      if (R.chance(0.5)) traced(['h...h...', 'h.......', 'h...h...', 'h.......', 'h...h...', 'h.......', 'h...h...', 'h.......', 'h...h...', 'h.......'], [J(40), J(0), J(30), J(-30), J(20), J(-20), J(40), J(10), J(-30), J(30), J(-20), J(-20), J(30), J(-40), J(-40, 'bank')], { snakes: 3 });
+      else traced(['h.......', 'h...h...', 'h.......', 'h...h...', 'h.......', 'h...h...', 'h.......', 'h...h...', 'h...h...', 'h.......'], [J(30), J(20), J(-20), J(30), J(10), J(-40), J(40), J(-10), J(-20), J(30), J(-30), J(20), J(-30), J(10), J(-40, 'bank')], { snakes: 3 });
+      run(R.r(120, 160));
+      flag();
+      // the vault, taught on the way everyone takes: over a soft pit onto a raised bank only the spring reaches
+      snakeVault(true, true);
+    });
+    beat('Spike: the split', () => {
+      // HIGH: a mushroom up to a run of narrow branches with snakes, ending at a vault off the last one onto a perch (the prize)
+      // LOW: the root floor under it, rocks to hop and a snake on its run, slower but safe
+      flag();
+      run(R.r(160, 200));
+      P.push({ id: pid++, x: Math.round(x), y: G - 30, width: 70, height: 30, type: 'bouncy' });
+      const fork = x;
+      const hy = G - Math.round(R.r(170, 185));
+      let bx = x + 40;
+      const n = R.i(8, 9);
+      let last: Platform | null = null;
+      for (let k = 0; k < n; k++) {
+        const w = Math.round(R.r(200, 270));
+        const top = hy + Math.round(R.r(-30, 25));
+        last = branch(bx, bx + w, top);
+        if (k > 0 && k < n - 1 && k % 2 === 1) snake(bx + w * 0.62, top, w - 150);
+        else row(bx + 40, bx + w - 40, top - 34, 2, 'hibiscus');
+        // (gaps between the branches vary, never the same four times)
+        bx += w + Math.round(reachJump(0, false) * [0.42, 0.55, 0.36, 0.6, 0.48][k % 5]);
+      }
+      // the high road's prize: a lunge snake on the last branch's lip and a perch above it only its spring reaches
+      const lip = last!.x + last!.width - TRICK.vaultLip;
+      snake(lip, last!.y, 12);
+      E[E.length - 1].vaultHome = { x: lip, y: last!.y - 14 };
+      const perch = branch(last!.x + last!.width + TRICK.vaultRiseGap, last!.x + last!.width + TRICK.vaultRiseGap + 220, last!.y - TRICK.vaultRise);
+      row(perch.x + 40, perch.x + perch.width - 40, perch.y - 34, 3, 'orchid');
+      const end = perch.x + perch.width + 60;
+      // the low road: the floor below, a rock a hop high every second or so, a snake on its run, a dip
+      run(160);
+      let lowSnake = false;
+      while (end - x > 330) {
+        run(R.r(190, 260));
+        if (end - x < 200) break;
+        if (!lowSnake && x - fork > 700) { snake(x + 60, G, 110); lowSnake = true; run(R.r(220, 260)); continue; }
+        logHop(R.i(30, 44));
+      }
+      x = Math.max(x, end) + R.r(80, 120);
+      dip();
+      run(R.r(200, 240));
+      expert += (x - fork) / RUN + 4;
+      pieces.push({ k: 'highrun', x0: fork, x1: x });
+    });
+    beat('Rest', () => {
+      // a breath: plain ground, a flag, nothing to do (Dot's wayside line has its moment here)
+      flag();
       rest(R.r(420, 470));
-      // (stumps and a rock before the first snake: the first-timer bot walked into it 2.5 s in, before Dot's tip, on every roll; nothing
-      // can hurt in the first five seconds, 2026-10-28)
-      lowStumps();
-      busy(1, ['log'], R.r(200, 240));
-      const wx = x + 120;
-      branch(wx, wx + 420, G - 90);
-      snake(wx + 260, G - 90, 60, true);
-      row(wx + 40, wx + 160, G - 124, 2, 'orchid');
-      hint(wx - 80, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
-      run(R.r(600, 640));
-      expert += 3;
-      // (then two more snakes, awake now, in this roll's rhythm: w1Sections.ts)
-      section('start');
-      flag();
     });
-    beat('Test: snakes on the branches', () => {
-      hint(x + 60, 'Punch the snakes or hop over them', 'Punch the snakes or hop over them', 'Punch the snakes or hop over them');
-      section('develop');
+    beat('Counter-melody: the bounce chain', () => {
+      // a different pulse: long bounces up the walls, a snake on the floor between, the last bounce from beside a soft pit
       flag();
-    });
-    beat('Twist: the rope guard', () => {
-      hint(x + 60, 'A snake guards the rope', 'A snake guards the rope', 'A snake guards the rope');
-      section('twist');
-      flag();
-    });
-    beat('Finish', () => {
-      section('finish');
-      // the short rope to try the new move on (it needs the skill this stage teaches, so it is a reason to come back)
+      bounceWall(false, true);
+      snakeWalk(2);
+      bounceWall(false, false);
+      // (and the rope this stage's clear teaches, over moss, for a visit after: crossable without it)
       ropeGap(false, true, true);
-      homeRun();
+    });
+    beat('Climax', () => {
+      flag();
+      if (R.chance(0.5)) traced(['h...h...', 'h..o....', 'h...h...', 'h..o....', 'h...h...', 'h..o....', 'h...h...', 'h...h...', 'h..o....', 'h.......'], [J(50), J(0), J(-10), Hp(-30), J(40), J(-10), J(10), Hp(-30), J(30), J(10), J(-10), Hp(-30), J(40), J(-10), J(-10), J(20), J(-10), Hp(-30), J(-20, 'bank')], { real: true, snakes: 5 });
+      else traced(['h..o....', 'h...h...', 'h..o....', 'h...h...', 'h..o....', 'h...h...', 'h..o....', 'h...h...', 'h..o....', 'h.......'], [J(40), Hp(-30), J(50), J(-10), J(10), Hp(-30), J(40), J(-20), J(10), Hp(-30), J(30), J(-10), J(20), Hp(-30), J(20), J(-10), J(10), Hp(-30), J(-30, 'bank')], { real: true, snakes: 5 });
+    });
+    beat('Cool-down', () => {
+      // a short slope of ground to the shrine (the shrine stands near the end)
+      run(R.r(160, 200));
+      dip();
+      run(R.r(560, 620));
+      expert += 3;
     });
   }
 

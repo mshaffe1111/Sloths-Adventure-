@@ -11,15 +11,17 @@ const cfg = {
 } as LevelConfig;
 const SEEDS = Array.from({ length: 20 }, (_, i) => 1 + i * 41);
 
-test('1-3: every roll keeps the plan, asks for its goal of snakes out of about one and a half times that, and takes two minutes', () => {
-  for (const s of SEEDS) {
-    const st = buildProtoStage(cfg, s, '1-3');
-    assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Learn', 'Test', 'Twist', 'Finish'], `seed ${s}`);
-    assert.equal(st.config.targetCount, SNAKE_GOAL_13);
-    const before = st.enemies.filter((e) => e.x < st.exitTotemX).length;
-    assert.ok(before >= SNAKE_GOAL_13 * 1.3, `seed ${s}: ${before} snakes before the exit`);
-    assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 15, `seed ${s}`);
-    assert.equal(st.proto.movedPickups, 0, `seed ${s}`);
+test('1-3: every roll keeps the rebuilt plan (seven nodes, reference/plans/1-3-rebuild.md), asks for its goal of snakes out of well over that, and takes over two minutes for a skilled player, on Normal and Easy', () => {
+  for (const easy of [false, true]) {
+    for (const s of SEEDS) {
+      const st = buildProtoStage(cfg, s, '1-3', easy);
+      assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Intro', 'Ramp', 'Spike', 'Rest', 'Counter-melody', 'Climax', 'Cool-down'], `seed ${s}`);
+      assert.equal(st.config.targetCount, SNAKE_GOAL_13);
+      const before = st.enemies.filter((e) => e.x < st.exitTotemX).length;
+      assert.ok(before >= SNAKE_GOAL_13 * 1.3, `seed ${s}: ${before} snakes before the exit`);
+      assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 15, `seed ${s}${easy ? ' Easy' : ''}: ${Math.round(st.meta!.timing!.layoutSeconds)} s`);
+      assert.equal(st.proto.movedPickups, 0, `seed ${s}${easy ? ' Easy' : ''}`);
+    }
   }
 });
 
@@ -34,17 +36,27 @@ test('1-3: the first snake is asleep on a wide low branch, before any other snak
   }
 });
 
-test('1-3: every rope lies over a soft pit (crossable before the rope is learned), every pickup can be reached, nothing costs a life', () => {
-  for (const s of SEEDS) {
-    const st = buildProtoStage(cfg, s, '1-3');
-    assert.ok(st.ropes!.length >= 2);
-    for (const r of st.ropes!) {
-      const mid = (r.x0 + r.x1) / 2;
-      assert.ok(st.platforms.some((p) => p.x <= mid && p.x + p.width >= mid && p.y > G), `seed ${s}: moss under the rope`);
+test('1-3: its rope lies over a soft pit (crossable before the rope is learned), every pickup can be reached, and only the climax has real drops (none on Easy), each no wider than a jump', () => {
+  for (const easy of [false, true]) {
+    for (const s of SEEDS) {
+      const st = buildProtoStage(cfg, s, '1-3', easy);
+      assert.ok(st.ropes!.length >= 1);
+      for (const r of st.ropes!) {
+        const mid = (r.x0 + r.x1) / 2;
+        assert.ok(st.platforms.some((p) => p.x <= mid && p.x + p.width >= mid && p.y > G), `seed ${s}: moss under the rope`);
+      }
+      assert.deepEqual(badPickups({ platforms: st.platforms, vines: st.vines, ropes: st.ropes, waterY: st.waterY }, st.collectibles).length, 0);
+      const climax = st.proto.beats.find((b) => b[2].startsWith('Climax'))!;
+      let run0 = -1;
+      for (let x = 0; x < st.exitTotemX; x += 10) {
+        const floor = st.platforms.some((p) => p.x <= x && p.x + p.width >= x && (p.y >= G - 200 || p.y + p.height >= G));
+        if (!floor) {
+          assert.ok(!easy && x >= climax[0] && x <= climax[1], `seed ${s}${easy ? ' Easy' : ''}: no floor at ${x}, outside the climax`);
+          if (run0 < 0) run0 = x;
+          assert.ok(x - run0 <= 140, `seed ${s}: a drop wider than a jump from ${run0}`);
+        } else run0 = -1;
+      }
     }
-    assert.deepEqual(badPickups({ platforms: st.platforms, vines: st.vines, ropes: st.ropes, waterY: st.waterY }, st.collectibles).length, 0);
-    // (or a wall standing on the ground, that a mushroom bounces him up: w1Sections.ts bounceWall, highLeaps)
-    for (let x = 0; x < st.exitTotemX; x += 20) assert.ok(st.platforms.some((p) => p.x <= x && p.x + p.width >= x && (p.y >= G - 200 || p.y + p.height >= G)), `seed ${s}: no floor at ${x}`);
   }
 });
 
