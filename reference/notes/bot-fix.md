@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 03:07 AM ET
+Last updated: 2026-11-04 03:42 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -22,6 +22,11 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 03:42 AM ET: round 2 digest sent. YELLOW kaizen-gates: sent back for PLAY-STORE §6 in reference/releases/0.9.4.md (checkbase re-run myself
+  PASS on 319d8c27; map/HUD/crocus-p5 sheets + w2-p5-fresh-up opened: fine). Flagged its "drawcheck PASS (in the container)" = CI at
+  merge per the role. GREEN warmup-5m (report sections all there; gate lines not yet pasted, gate started 3:21), fix-petals (notes fixed
+  3:35), quality-supervisor (W1 baseline draft), roadmap-keeper (idle). Round 3 armed: trig_01CaYuyB3SZ3AQjd7Yeutmwd, 4:13 AM ET;
+  then wrap-up 4:45.
 - 2026-11-04 03:07 AM ET: lead's audit of round 1: two calls rested on stale session status lines. fix-petals and kaizen-gates were OK'd ~2:35 AM ET
   (fix-petals did NOT start early); the clerk's 0.9.4 candidate lives on kaizen-gates (merged roadmap-keeper 3d0cf1e2, gates running),
   not waiting. Owned. Sent fix-petals the notes item at 3:07. Round 2 prompt updated.
