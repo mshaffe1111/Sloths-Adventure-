@@ -44,7 +44,7 @@ print(sum(1 for v in d.get_flattened_data() if v))`, a, b, ...(noise ? [noise] :
       const E = `(() => { const g = window.__engine; return typeof g === 'function' ? g() : g; })()`;
       // (only the canvases are judged: the DOM over them, Dot's bubble and the hints, moves on its own clock)
       await pg.addStyleTag({ content: 'body *:not(canvas) { visibility: hidden !important; }' });
-      await pg.evaluate(() => { document.querySelectorAll('canvas')[1].style.visibility = 'visible'; });
+      await pg.evaluate(() => { const g = [...document.querySelectorAll('canvas')].find((c) => c.style.touchAction === 'none'); g.style.visibility = 'visible'; });
       const freeze = `(() => { const e = ${E}; e.stop(); e.introT = 99; e.applyZoom(); e.gameTime = 10; for (let i = 0; i < 40; i++) e.render(); return true; })()`;
       await pg.evaluate(freeze);
       await pg.waitForTimeout(250);
