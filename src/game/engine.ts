@@ -145,7 +145,8 @@ import { sound } from './audio.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
-import { dazeFor, trickHit, trickStompBounces, type TrickHit } from './w1Tricks.ts';
+import { dazeFor, tagWorld1, trickHit, trickStompBounces, type TrickHit } from './w1Tricks.ts';
+import { drawCoilGlint, drawTrickStars, rollAngle, withCoilSqueeze } from './w1TrickDraw.ts';
 import { drawTurtle, drawTurtleSprite } from './turtleArt.ts';
 import { drawGuardSprite } from './guardArt.ts';
 import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
@@ -838,6 +839,8 @@ export class GameEngine {
     this.enemies = this.currentStage.enemies;
     // hunters may chase past their own patch, but only along ground that is really there
     assignTerritories(this.enemies, this.platforms, (e) => e.y + (isPredator(e.type) ? FEET[e.type] : 0));
+    // World 1's one trick per animal (w1Tricks.ts, R-159.1)
+    tagWorld1(this.enemies, config.worldIndex);
     this.boss = this.currentStage.boss;
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.skyPillars = this.bossDef?.pillars && this.currentStage.arena ? makePillars(this.currentStage.arena.left) : null;
@@ -6266,6 +6269,8 @@ export class GameEngine {
         if (enemy.type === 'snake') {
           if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
           if (enemy.state === 'sleep') this.drawSleepZ(ctx, enemy);
+          // (World 1's dazed lunge snake, w1TrickDraw.ts: the stun's stars)
+          if (enemy.trick) drawTrickStars(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'eagle') {
           if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
@@ -6275,7 +6280,24 @@ export class GameEngine {
         } else if (enemy.type === 'jaguar') {
           if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'boa') {
-          if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
+          if (enemy.trick === 'coil' && (enemy.state === 'roll' || enemy.state === 'rolled')) {
+            // (World 1's kicked boa rolling as a ball: its coil turned as a wheel, w1TrickDraw.ts)
+            ctx.save();
+            ctx.translate(enemy.x, enemy.y + 2);
+            ctx.rotate(rollAngle(enemy));
+            ctx.translate(-enemy.x, -enemy.y - 2);
+            const st = enemy.state;
+            enemy.state = 'coil';
+            if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
+            enemy.state = st;
+            ctx.restore();
+          } else if (enemy.trick === 'coil') {
+            // (World 1's armoured coil: a glint, and its tell is the coil squeezing tight, w1TrickDraw.ts)
+            withCoilSqueeze(ctx, enemy, enemy.y + 16, () => {
+              if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
+            });
+            drawCoilGlint(ctx, enemy, this.gameTime);
+          } else if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
           // (8-1's dozing boa: a slow "z" drifting up while it sleeps, batArt's roost tell)
           if (enemy.state === 'sleep') drawDozeZ(ctx, enemy.x, enemy.y - 30, this.gameTime);
         } else if (enemy.type === 'caiman') {

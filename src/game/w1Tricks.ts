@@ -74,3 +74,14 @@ export function starsShown(e: Enemy, t: number): number {
   if (left > TRICK.flicker) return 5;
   return Math.floor(t * 12) % 2 === 0 ? 5 : 0;
 }
+
+/** World 1's animals get their tricks as the stage loads (engine.ts): every snake the lunge, every boa the armoured coil. A trick already
+ *  placed (a vine snake) is kept. Only World 1: no other world's animal is touched. */
+export function tagWorld1(enemies: Enemy[], worldIndex: number): void {
+  if (worldIndex !== 1) return;
+  for (const e of enemies) {
+    if (e.trick) continue;
+    if (e.type === 'snake') e.trick = 'lunge';
+    else if (e.type === 'boa') e.trick = 'coil';
+  }
+}
