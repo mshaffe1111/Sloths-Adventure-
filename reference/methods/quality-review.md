@@ -14,6 +14,24 @@ Role: reference/roles/QUALITY-SUPERVISOR.md. First written 2026-11-04 for the Wo
    orientations. Where a claim hangs on a moment (a twist, a hazard, a chase), go frame by frame every 2 s.
 5. Review copies for git: 640 px, 10 fps, crf 35 (about 2 MB per 3-minute clip).
 
+## 1b. In-build quality check on any helper's branch (STANDARD WORK, lead 2026-11-04: the method for every in-build check)
+Don't wait for the helper's stills. Record its branch's real play yourself, then press the buttons a kid would.
+1. `git worktree add /tmp/<dir> origin/<branch>`; copy `tools/quality/` in if the branch lacks it. Run `npm install --legacy-peer-deps`
+   in the worktree. Do it there, not with a symlinked node_modules: a branch with new deps (pixi.js) fails to load otherwise.
+2. Dev server from the worktree on a free port (`npx vite --port=4302 --host=127.0.0.1 --strictPort`). Check that the page loads
+   (`window.__play` is a function) before recording.
+3. `npx tsx tools/quality/botlog.ts <stage> 1 adult run.json` from the worktree (the branch's own engine and bot), then
+   `node tools/quality/botrec.mjs 4302 run.json <out> side 2`. Cut `frames` to the stretch you need for a quick look.
+4. Find the moment from the log (e.g. frames whose pad has `punch` or `kick`), then crop strips around it at full resolution.
+5. Also run `npx tsx tools/inspect/botBaseline.ts --worlds <w> --seeds 1 --who adult --stages ...` on the branch vs the base
+   (goal counts, lives, rescues), for regressions such as a goal the route no longer delivers.
+**Measured (2026-11-04, R-159.1 check on w8-rope2 9ec60be2):** worktree + install 40 s; botlog about 3 s a stage; two 90 s sideways clips
+(1350 shots each) about 6 min in a row on 4 cores; crops and verdict 15 min. About 25 min in all from the helper's push to a verdict
+with proof. It caught two rule failures the branch's own tests passed: the coiled boa dying to punch-mashing, and a stun killed by
+the next jab before its stars show.
+**Caveat to state in the verdict:** Pokey follows the logged run, while the animals and hits are the browser engine's own response.
+A divergence from the headless run is possible, so the proof is the frames, not the bot's numbers.
+
 ## 2. Judge each stage against the ones before it
 For every stage, write:
 - what it is, with clock times;
