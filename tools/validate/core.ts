@@ -278,6 +278,8 @@ export const INTRO_SECS = 15;
 export const GROUP_MAX = 20;
 /** a tight burst longer than this is two tight bits in a row (research: never T-T; Gemini's bursts run 10-14 s on Normal) */
 export const TIGHT_MAX = 15;
+/** the dense finale a stage may end on (the lead, 2026-11-04): its last group may run tight for up to 20 s, the climax before the shrine */
+export const FINALE_TIGHT_MAX = 20;
 
 /** the stage read in PACE_WIN-second windows, each tagged, and runs of one tag joined into stretches */
 export function pacing(steps: readonly Step[], total: number): Stretch[] {
@@ -307,14 +309,40 @@ export function pacing(steps: readonly Step[], total: number): Stretch[] {
 export const pacingStrip = (st: readonly Stretch[]) => st.map((s) => s.tag.repeat(Math.max(1, Math.round((s.t1 - s.t0) / PACE_WIN)))).join('');
 
 export interface PaceFlag { what: string; t: number }
-export function paceFlags(st: readonly Stretch[]): PaceFlag[] {
-  const out: PaceFlag[] = [];
-  for (const s of st) {
-    const len = s.t1 - s.t0;
-    if (s.tag === 'T' && len > TIGHT_MAX) out.push({ what: `a tight burst of ${Math.round(len)} s with no let-up (two tight bits in a row; research: never T-T)`, t: s.t0 });
-    if ((s.tag === 'F' || s.tag === 'T') && len > GROUP_MAX) out.push({ what: `${Math.round(len)} s of moves with no rest (§0b.1: groups of 5-20 s, a rest between)`, t: s.t0 });
+/**
+ * a rest pad (STAGE-RULES §2 "Pacing", Gemini's density table): any stretch with no hard input of 1.0-1.2 s or more on Normal, 2.0-2.5 s on
+ * Easy, wherever it falls. The lead, 2026-11-04: reading a rest only as an empty 5 s window on a fixed grid pushes builders to long dead
+ * walks. A pad from the range's floor counts.
+ */
+export const REST_PAD_SECS: Record<Setting, number> = { normal: 1.0, easy: 2.0 };
+/** the groups of moves between rest pads: [first move's t, last move's t] (small hops are not hard input) */
+export function groupsOf(steps: readonly Pick<Step, 'm' | 't'>[], setting: Setting): Array<[number, number]> {
+  const ts = steps.filter((s) => s.m !== 'h').map((s) => s.t).sort((a, b) => a - b);
+  const out: Array<[number, number]> = [];
+  for (const t of ts) {
+    const l = out[out.length - 1];
+    if (l && t - l[1] < REST_PAD_SECS[setting]) l[1] = t;
+    else out.push([t, t]);
   }
-  const groups = st.filter((s) => s.tag !== 'R');
+  return out;
+}
+
+/**
+ * pacing flags. truer with `moves` (the stage's steps and setting): a group runs from a rest pad to the next, wherever the pads fall
+ * (groupsOf); otherwise, as the gate was built, a rest is a 5 s window with no move.
+ */
+export function paceFlags(st: readonly Stretch[], truer = true, moves?: { steps: readonly Pick<Step, 'm' | 't'>[]; setting: Setting }): PaceFlag[] {
+  const out: PaceFlag[] = [];
+  const pads = truer && moves ? groupsOf(moves.steps, moves.setting) : null;
+  if (pads) for (const [a, b] of pads) if (b - a > GROUP_MAX) out.push({ what: `${Math.round(b - a)} s of moves with no rest pad of ${REST_PAD_SECS[moves!.setting]} s (§0b.1: groups of 5-20 s, a rest between)`, t: a });
+  for (const [i, s] of st.entries()) {
+    const len = s.t1 - s.t0;
+    // (the last group of moves, nothing but rest after it to the shrine)
+    const finale = truer && !st.slice(i + 1).some((q) => q.tag !== 'R');
+    if (s.tag === 'T' && len > (finale ? FINALE_TIGHT_MAX : TIGHT_MAX)) out.push({ what: `a tight burst of ${Math.round(len)} s with no let-up (two tight bits in a row; research: never T-T)`, t: s.t0 });
+    if (!pads && (s.tag === 'F' || s.tag === 'T') && len > GROUP_MAX) out.push({ what: `${Math.round(len)} s of moves with no rest (§0b.1: groups of 5-20 s, a rest between)`, t: s.t0 });
+  }
+  const groups = pads ?? st.filter((s) => s.tag !== 'R');
   if (groups.length < 4) out.push({ what: `only ${groups.length} groups of moves (§0b.2: four parts, introduce, develop, twist, master)`, t: 0 });
   if (!st.some((s) => s.tag === 'T')) out.push({ what: 'never tight: no 5 s window asks for more than about one move a second (no burst, no climax)', t: 0 });
   if (!st.some((s) => s.tag === 'I')) out.push({ what: 'no gentle intro: the first 15 s already ask for more than 0.8 moves a second', t: 0 });

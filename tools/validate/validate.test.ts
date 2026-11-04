@@ -14,7 +14,12 @@ import { cosine, deadWalks, fromStage, grams, moveOf, moveString, pacing, paceFl
 import { branchOutrunWith, cameraOn, chaseOutrunWith, eagleOutrunWith, towardShrine } from './play.ts';
 import { hazardsScore, newScore, newThatCounts } from './score.ts';
 import { artKey, lookAlike, lookOf } from './look.ts';
-import { judgeAgainst, keyOf, measure } from './funcheck.ts';
+import { gatedFlags, judgeAgainst, keyOf, measure, truerBeside } from './funcheck.ts';
+import { movesAlike } from './evaluate.ts';
+import { fallBites, FALL_BITE_PX, pairsMet, waitAt, WAIT_MIN } from './mechanics.ts';
+import { FINALE_TIGHT_MAX, groupsOf, REST_PAD_SECS, type Built, type Stretch } from './core.ts';
+import { shapeAlike, tempoAlike, rhythmOf, templateFlags, unitsOf } from './variety.ts';
+import type { StageEval } from './evaluate.ts';
 import type { Stage } from '../inspect/stages.ts';
 
 const G = 580;
@@ -300,6 +305,149 @@ test('fun gate, in the real engine: World 1 layout 1 judged against its own coun
   assert.equal(keyOf(known[0]), [...now.keys()][0]);
 });
 
+// ---- no credit for pickups (STAGE-RULES §0c.5, Matt via the lead, 2026-11-04) ----
+test('moves alike: the same terrain with its petals moved reads as alike (the terrain route decides); new terrain reads as new', () => {
+  // (the goal routes differ only because the petals sit elsewhere; the quick routes, which no pickup moves, are the same)
+  const a = { str: 'JJUJMJJCJ', quick: 'JJCJ' }, b = { str: 'JMMVJJJCJ', quick: 'JJCJ' };
+  assert.equal(movesAlike(a, b), 1);
+  // (new terrain: both routes differ)
+  const c = { str: 'VVRRVVRR', quick: 'VRVR' };
+  assert.ok(movesAlike(a, c) < 0.3, String(movesAlike(a, c)));
+});
+
+// ---- the lead's ruling, 2026-11-04: the truer rules gate rebuilt stages; the rest stay on the old rules, the truer count beside ----
+test('gated flags: a rebuilt stage (listed, or built on the beat) is held to the truer rules; one not yet rebuilt to the old rules', () => {
+  const f = (rule: string, what = '') => ({ rule, what, source: '' });
+  // (the truer rules find this stage like an earlier one and with nothing new; the old ones, fooled by its petals, find only a dead walk)
+  const ev = { id: '1-9', flags: [f('dead walk'), f('like an earlier stage'), f('nothing new')], oldFlags: [f('dead walk')], built: { stage: {} } } as unknown as StageEval;
+  assert.deepEqual(gatedFlags(ev, ['1-1']).map((q) => q.rule), ['dead walk']);
+  assert.deepEqual(gatedFlags(ev, ['1-9']).map((q) => q.rule), ['dead walk', 'like an earlier stage', 'nothing new']);
+  // (and the other way: a stage the old rules flag but the truer ones clear keeps its old flag until it is rebuilt)
+  const ev2 = { id: '1-7', flags: [], oldFlags: [f('like the stage before')], built: { stage: {} } } as unknown as StageEval;
+  assert.deepEqual(gatedFlags(ev2, []).map((q) => q.rule), ['like the stage before']);
+  assert.deepEqual(gatedFlags(ev2, ['1-7']), []);
+  // (a stage built on the music's beat, w1Rhythm.ts, is rebuilt by itself: no list entry needed)
+  const ev3 = { ...ev2, id: '1-2', built: { stage: { proto: { rhythm: { bpm: 88, nodes: [] } } } } } as unknown as StageEval;
+  assert.deepEqual(gatedFlags(ev3, []), []);
+});
+
+test('truer beside: for a stage on the old rule, a move rule whose truer count differs is printed; rebuilt stages and other rules are not', () => {
+  const m = (rows: Array<[string, string, number]>) => new Map(rows.map(([stage, rule, n]) => [keyOf({ stage, setting: 'normal', rule }), { stage, setting: 'normal' as const, rule, on: Array.from({ length: n }, (_, i) => i + 1), what: '' }]));
+  const gated = m([['1-9', 'like an earlier stage', 10], ['1-9', 'dead walk', 3], ['1-2', 'nothing new', 4]]);
+  const truer = m([['1-9', 'like an earlier stage', 12], ['1-9', 'nothing new', 16], ['1-9', 'dead walk', 3], ['1-2', 'nothing new', 9]]);
+  const lines = truerBeside(gated, truer, ['1-2']);
+  assert.equal(lines.length, 2, lines.join('\n'));
+  assert.ok(lines.some((l) => l.includes('1-9 normal "like an earlier stage": gated on the old rule at 10 layouts, 12 by the truer rule')));
+  assert.ok(lines.some((l) => l.includes('1-9 normal "nothing new": gated on the old rule at 0 layouts, 16 by the truer rule')));
+});
+
+// ---- the validator items, the lead 2026-11-04 (each a truer rule: rebuilt stages are gated on it) ----
+test('nothing bites: a fall of over 200 px bites; a missed hop back onto the ground he left does not; a long way out of a pit bites', () => {
+  const ground = { x: 0, y: 580, width: 4000 };
+  // (from a branch at 335 down to the ground: 245 px lost)
+  assert.equal(fallBites(ground, 335, 2000), true);
+  assert.equal(fallBites(ground, 580 - FALL_BITE_PX + 10, 2000), false);
+  // (a missed hop up a ledge: he lands back where he took off, however long the ground is)
+  assert.equal(fallBites(ground, 580, 2000), false);
+  // (a soft pit 130 down and 2400 wide, its banks at both ends: the way out is 1200 px off, over 4 s; with a step 60 px off it is a free
+  // retry. And 130 down onto open ground, no banks around it, is the way on, not a pit: no bite)
+  const pit = { x: 800, y: 710, width: 2400 }, banks = [{ x: 0, y: 580, width: 800 }, { x: 3200, y: 580, width: 800 }];
+  assert.equal(fallBites(pit, 580, 2000, [pit, ...banks]), true);
+  assert.equal(fallBites(pit, 580, 2000, [pit, ...banks, { x: 2060, y: 655, width: 70 }]), false);
+  assert.equal(fallBites(pit, 580, 2000, [pit]), false);
+});
+
+test('tempo: a ride or a moving hop is patience only with a real wait (over 1 s); one always in reach is not patience', () => {
+  const step: Step = { m: 'X', t: 10, x: 1000, y: 580, what: 'hop onto a moving log or platform' };
+  const seg = (plat: Partial<Platform>, x1 = 1100) => ({ kind: 'timedHop', x0: 1000, y0: 580, x1, y1: 580, dt: 0.6, plat: { id: 2, x: x1, y: 580, width: 120, height: 24, type: 'moving', style: 'log', ...plat } });
+  const B = (s: unknown) => ({ route: { segs: [s] } }) as unknown as Built;
+  // (a short hop to a platform swaying 40 px: always in reach, no wait)
+  const near = waitAt(B(seg({ moveRange: 40, moveSpeed: 1 })), step)!;
+  assert.ok(near < 0.05, String(near));
+  assert.equal(tempoOf(step, near), null);
+  // (a long hop to a platform swaying 300 px, slowly: in reach only near its closest swing)
+  const far = waitAt(B(seg({ moveRange: 300, moveSpeed: 0.5 }, 1290)), step)!;
+  assert.ok(far > WAIT_MIN, String(far));
+  assert.equal(tempoOf(step, far), 'patience');
+  // (a basket lift that waits 1 s at each stop of an 8 s cycle: he waits about 3 s on average; one that waits 3.6 s of a 7.6 s cycle,
+  // 0.1 s on its way, does not make him wait)
+  const lift = (wait: number, speed: number) => ({ kind: 'lift', x0: 1000, y0: 580, x1: 1000, y1: 300, dt: 4, plat: { id: 3, x: 990, y: 580, width: 90, height: 20, type: 'moving', style: 'log', lift: { top: 300, bottom: 580, speed, wait, phase: 0 } } });
+  const ride: Step = { m: 'V', t: 10, x: 1000, y: 580, what: 'ride the basket lift' };
+  assert.equal(tempoOf(ride, waitAt(B(lift(1, 93.3)), ride)), 'patience');
+  assert.equal(tempoOf(ride, waitAt(B(lift(3.6, 2800)), ride)), null);
+  // (and with no wait known, a ride is no tempo at all)
+  assert.equal(tempoOf(ride), null);
+});
+
+test('pacing: a dense finale may run tight for 15-20 s; the same burst mid-stage, or a 22 s finale, is flagged', () => {
+  const st = (len: number, after: boolean): Stretch[] => [
+    { tag: 'I', t0: 0, t1: 15, moves: 'JJ', perSec: 0.2 }, { tag: 'F', t0: 15, t1: 30, moves: 'JJJ', perSec: 0.3 }, { tag: 'R', t0: 30, t1: 35, moves: '', perSec: 0 },
+    { tag: 'F', t0: 35, t1: 50, moves: 'JJJ', perSec: 0.3 }, { tag: 'R', t0: 50, t1: 55, moves: '', perSec: 0 },
+    { tag: 'T', t0: 55, t1: 55 + len, moves: 'J'.repeat(len * 2), perSec: 2 },
+    ...(after ? [{ tag: 'R' as const, t0: 55 + len, t1: 60 + len, moves: '', perSec: 0 }, { tag: 'F' as const, t0: 60 + len, t1: 75 + len, moves: 'JJ', perSec: 0.2 }] : [{ tag: 'R' as const, t0: 55 + len, t1: 60 + len, moves: '', perSec: 0 }]),
+  ];
+  const tight = (x: Stretch[], truer = true) => paceFlags(x, truer).filter((f) => /tight burst/.test(f.what)).length;
+  assert.equal(tight(st(FINALE_TIGHT_MAX, false)), 0);
+  assert.equal(tight(st(FINALE_TIGHT_MAX, false), false), 1, 'the old rule flags it');
+  assert.equal(tight(st(FINALE_TIGHT_MAX, true)), 1, 'mid-stage');
+  assert.equal(tight(st(FINALE_TIGHT_MAX + 5, false)), 1, 'too long a finale');
+});
+
+test('pairs: both things in one move; a plain jump is not run+jump, a trunk climb is not vines, a crumbling floor is not slow', () => {
+  const mk = (steps: Step[], extra: Record<string, unknown> = {}, segs: unknown[] = []) => ({ steps, route: { segs }, stage: { vines: [{ x: 500, vineType: 'tree_climb' }, { x: 900, vineType: 'swing_liana' }], zones: [], ...extra } }) as unknown as Built;
+  const J = (x: number, y = 580): Step => ({ m: 'J', t: 1, x, y, what: 'jump over a gap' });
+  assert.deepEqual(pairsMet(mk([J(100), { m: 'C', t: 2, x: 500, y: 580, what: 'grab a trunk or vine and climb' }])), []);
+  // (a jump onto a breaking branch: jump, branches and run in one move)
+  const frag = { kind: 'jump', x0: 100, y0: 580, x1: 300, y1: 560, dt: 0.8, plat: { type: 'fragile' } };
+  assert.deepEqual(pairsMet(mk([J(100)], {}, [frag])), ['run+jump', 'run+branches', 'jump+branches']);
+  // (a jump in a wind zone: jump+wind; a jump on World 7's crumbling floor: jump+branches, never slow)
+  assert.deepEqual(pairsMet(mk([J(100)], { zones: [{ kind: 'wind', x0: 0, x1: 300, top: 400, bottom: 700 }] })), ['jump+wind']);
+  assert.deepEqual(pairsMet(mk([J(100)], { zones: [{ kind: 'crumble', x0: 0, x1: 300, top: 400, bottom: 700 }] })), ['jump+branches']);
+  assert.deepEqual(pairsMet(mk([J(100)], { zones: [{ kind: 'web', x0: 0, x1: 300, top: 400, bottom: 700 }] })), ['jump+slow']);
+});
+
+test('templates (§0c.2-3): twice in a row, over twice a stage, and a repeat with the same numbers are flagged; a changed repeat is not', () => {
+  const u = (template: string, params: string, x0: number) => ({ template, params, x0, x1: x0 + 500 });
+  assert.equal(templateFlags([u('stumps', 'a', 0), u('snakes', 'b', 500), u('stumps', 'c', 1000)]).length, 0);
+  assert.match(templateFlags([u('stumps', 'a', 0), u('stumps', 'b', 500)])[0].what, /twice in a row/);
+  assert.ok(templateFlags([u('a', '1', 0), u('b', '1', 500), u('a', '2', 1000), u('c', '1', 1500), u('a', '3', 2000)]).some((f) => /3 times/.test(f.what)));
+  assert.ok(templateFlags([u('a', 'same', 0), u('b', '1', 500), u('a', 'same', 1000)]).some((f) => /same numbers/.test(f.what)));
+  // (a beat-built stage's nodes are its units: tag and pair the template, the bars, direction and tier its numbers; rests left out)
+  const stage = { proto: { rhythm: { bpm: 96, nodes: [{ tag: 'F', pair: 'run+jump', tier: 'A', dir: 1, bars: ['x...x...'], x0: 0, x1: 400 }, { tag: 'R', pair: '', tier: 'A', dir: 1, bars: [], x0: 400, x1: 600 }, { tag: 'T', pair: 'jump+branches', tier: 'B', dir: -1, bars: ['x.o.x.o.'], x0: 600, x1: 1000 }] } } };
+  assert.deepEqual(unitsOf(stage).map((q) => q.template), ['F run+jump', 'T jump+branches']);
+  // (and an old stage's pieces, rests left out)
+  assert.deepEqual(unitsOf({ meta: { pieces: [{ k: 'rest', x0: 0, x1: 400 }, { k: 'stumps', x0: 400, x1: 1500 }] } }).map((q) => q.template), ['stumps']);
+});
+
+test('tempo and map shape against the stage before: the same BPM and beat feel play alike; a climb is not a flat walk', () => {
+  const r = (bpm: number, bars: string[]) => rhythmOf({ proto: { rhythm: { bpm, nodes: [{ bars }] } } });
+  assert.equal(tempoAlike(r(92, ['x...x...', 'x.x.x...']), r(94, ['x...x...', 'x...x.x.'])), true);
+  assert.equal(tempoAlike(r(92, ['x...x...']), r(110, ['x...x...'])), false, 'a different BPM');
+  assert.equal(tempoAlike(r(92, ['x...x...']), r(92, ['.o...o..'])), false, 'off the beat');
+  assert.equal(tempoAlike(r(92, ['x...']), null), false, 'an old stage has no beat to compare');
+  const flat = Array(12).fill(0), climb = Array.from({ length: 12 }, (_, i) => i * 80);
+  assert.equal(shapeAlike(flat, flat), 1);
+  assert.ok(shapeAlike(flat, climb) < 0.2, String(shapeAlike(flat, climb)));
+});
+
+test('rests (STAGE-RULES §2 pacing, the lead 11-04): a pause of 1.0 s with no hard input is a rest on Normal wherever it falls; on Easy it takes 2.0 s', () => {
+  const run = (from: number, to: number, every: number): Step[] => Array.from({ length: Math.floor((to - from) / every) + 1 }, (_, i) => ({ m: 'J' as const, t: from + i * every, x: 0, y: G, what: '' }));
+  const noRest = (steps: Step[], setting: 'normal' | 'easy') => paceFlags(pacing(steps, 30), true, { steps, setting }).some((f) => /no rest/.test(f.what));
+  // (a move every 0.6 s for 25 s, with a 1.5 s pause in the middle: no empty 5 s window, so the old grid saw no rest at all)
+  const paused = [...run(0, 12, 0.6), ...run(13.5, 25, 0.6)];
+  assert.equal(noRest(paused, 'normal'), false);
+  assert.ok(paceFlags(pacing(paused, 30), false).some((f) => /no rest/.test(f.what)), 'the old grid flags it');
+  assert.equal(groupsOf(paused, 'normal').length, 2);
+  // (the same pause on Easy is under its 2.0 s pad: still one 25 s group)
+  assert.equal(noRest(paused, 'easy'), true);
+  assert.equal(REST_PAD_SECS.easy, 2);
+  // (and a move every 0.8 s for 25 s with no pause at all is flagged on both)
+  assert.equal(noRest(run(0, 25, 0.8), 'normal'), true);
+  // (small hops are not hard input: a pause filled with them is still a rest)
+  const hops = [...run(0, 12, 0.6), { m: 'h' as const, t: 12.6, x: 0, y: G, what: '' }, ...run(13.5, 25, 0.6)];
+  assert.equal(noRest(hops, 'normal'), false);
+
+// ---- w8-rope2 (R-159.1): World 1 tricks letters, rhythm-token repeats, vine snakes ----
 // ---- repeats on a beat-traced stage (the lead, 2026-11-04): tokens carry their note value and direction ----
 const at130 = (ms: ReadonlyArray<[string, number, number]>): Step[] => {
   // (each move: its letter, beats since the last one, and the height it ends at; 130 BPM)
