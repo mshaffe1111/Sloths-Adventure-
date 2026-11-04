@@ -11,6 +11,11 @@
   tempo/map-shape "like the stage before"; TIGHT_MAX (core.ts:254) allows a 15-20 s dense finale; pairs only in one move or beat
   (mechanics.ts:43-52); tempoOf lift/moving-platform waits over 1 s count as patience; falls over 200 px or 4 s are bites.
 - Method: a stills build needs NODE_ENV=development (window.__play is dev only); after --emptyOutDir restart the static server.
+- Lead's budget cut (sent 1:01 PM ET, read 2:23 PM ET: MISSED, I didn't read notifications while working): tonight only the pits redo,
+  the ruler ruling, TIGHT_MAX finale, lift/moving waits, falls as bites, and rests as pads (1.0 s Normal / 2.0 s Easy, wherever they
+  fall). Pairs-in-one-move, BPM from beatTrace and the template check were moved to tomorrow; they were already built and pushed
+  (fa647a9e) before I read it. Told the lead; kept unless the lead says back them out. Countermeasure: ReadNotifications at every
+  commit, not only when the harness says notifications are pending.
 MY MISS (five times today): times typed, not read (10:58, 10:28, 1:11, 1:45 and 2:24 in these notes, both caught before the push). Countermeasure, tightened: a time goes into a message only as
 text copied from a `TZ=America/New_York date` printed in the step just before; never composed from memory.
 
