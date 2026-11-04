@@ -45,6 +45,9 @@ Kept from our plan: PixiJS (it already batches sprites the way the research desc
 6. **Feel:** platform speed into the jump (R-152.7); check apex hang (R-156).
 7. **Venom Fang, three ways to win:** the scripted window, an arena trap (drop a branch on him), and a skill move (dive-kick off his
    tail). The template for every boss (R-161).
+**Entry criteria for every rebuilt World 1 stage (QS, 11-04):** before the quality supervisor's in-order re-recording judges it, it clears the
+validator's flags: not "looks/moves like" the stages before it, something bites, no padding, more than one tempo.
+
 Then: test link, Matt plays World 1 start to finish and rates it. 80+ means roll out; under 80, we fix World 1 before anything else.
 
 **engine.ts in Phase A (lead's call, 2026-11-04):** lane 1 (WebGL) keeps its engine.ts change small (stage 0 adds a layer, it doesn't move
