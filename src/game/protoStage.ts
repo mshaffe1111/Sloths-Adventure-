@@ -19,7 +19,7 @@ import { teachWater } from './waterTeach.ts';
 import { petalPass } from './petalPass.ts';
 import { findW1Pits } from './w1Pits.ts';
 import { busiestScreen, clumpExtras, PER_SCREEN, rowExtras } from './petals.ts';
-import { fixPickups } from './flowerReach.ts';
+import { badPickups, fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import { easyNode, stageBpm, traceNode, type Ledge, type NodeSpec, type Step, type Trace } from './beatTrace.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -420,8 +420,10 @@ function splitPetals(st: GeneratedStage & { proto: ProtoExtras }) {
   for (let fx = s0 + 60; fx < s1 - 40; fx += 30) {
     const floor = st.platforms.some((p) => p.y === G && p.x <= fx - 20 && p.x + p.width >= fx + 20);
     const rock = st.platforms.some((p) => p.y < G && p.y > G - 130 && p.x <= fx + 45 && p.x + p.width >= fx - 45);
+    // (and clear of the high road's branch ends, where Easy adds a step up, easyMode.ts, that would hide a petal under it)
+    const end = hb.some((p) => Math.abs(p.x + p.width - fx) < 120 || Math.abs(p.x - fx) < 120);
     // (at his feet, or a hop up: petals all at one height along the floor would stand in rows)
-    if (floor && !rock) low.push({ x: fx, y: low.length % 2 ? G - 80 : G - 34 });
+    if (floor && !rock && !end) low.push({ x: fx, y: low.length % 2 ? G - 80 : G - 34 });
   }
   let id = Math.max(0, ...st.collectibles.map((c) => c.id)) + 1;
   // (the two roads share the screens' cap, six petals a screen: their petals are laid at even slots along the split, a high one then a
@@ -436,6 +438,8 @@ function splitPetals(st: GeneratedStage & { proto: ProtoExtras }) {
       const c: Collectible = { id, type: 'flower', botanicalVariant: 'hibiscus', x: q.x, y: q.y, collected: false, bobPhase: (q.x * 0.031) % 6.28 };
       const pets = [...st.collectibles.filter(isPet), c];
       if (busiestScreen(pets).n > PER_SCREEN || rowExtras(pets).size || clumpExtras(pets).size) continue;
+      // (and within reach, flowerReach.ts, as the petal pass's own fills are)
+      if (badPickups({ platforms: st.platforms, vines: st.vines, ropes: st.ropes, waterY: st.waterY }, [c]).length) continue;
       st.collectibles.push(c);
       id++;
       r.have++;
@@ -1834,13 +1838,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const y = o.y ?? G;
       close();
       const spec: NodeSpec = { bpm, x, y, bars, steps };
-      const tr = traceNode(easy ? easyNode(spec) : spec);
+      // (the climax on Normal's trace on Easy too: Easy's trace lands each ledge lower and the route lands deep in it, so no fight could
+      // stand 150 px clear of its landings; its real drops are Easy's put-backs, easyMode.ts, a setback and not a life)
+      const tr = traceNode(easy && !o.real ? easyNode(spec) : spec);
       let groundEnd = -1, prevY = G;
       const wide: Ledge[] = [];
       // (over a real drop, a landing BELOW the take-off reaches 28 px back toward it: on a way down his feet stay above it until he lands,
       // so its face never catches him, and a first-timer's short jump down still lands; the fixed first-timer bot fell 13 px short of one
       // a 70 px drop away four times on one roll)
-      if (o.real && !easy) {
+      // (Easy too: its falls are put-backs, easyMode.ts, a setback and not a life; with soft pits under every gap nothing on Easy bit,
+      // the fun gate's "nothing bites", once 1-3's Easy was built as Easy)
+      if (o.real) {
         for (let i = 1; i < tr.ledges.length; i++) {
           const a = tr.ledges[i - 1], l = tr.ledges[i];
           if (l.y > a.y + 10 && l.x0 - a.x1 > 60) tr.ledges[i] = { ...l, x0: l.x0 - 28 };
@@ -1858,7 +1866,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
             const between = tr.ledges.filter((q) => q.x0 >= groundEnd - 1 && q.x1 <= l.x0 + 1 && q.surface !== 'apron' && q.surface !== 'bank');
             const stumpsOnly = between.length > 0 && between.every((q) => q.surface === 'stump');
             if (!air.length) bank(groundEnd, l.x0, Math.max(l.y, prevY));
-            else if (o.real && !easy) { /* (a real drop: nothing under it) */ } else if (stumpsOnly || between.length) {
+            else if (o.real) { /* (a real drop: nothing under it) */ } else if (stumpsOnly || between.length) {
               // (a pit under each gap alone, ground under each stump and branch: one long pit under them all was a floor to walk along
               // under every branch and past every snake on them, the route the fixed first-timer bot took, 1-3's goal out of reach)
               for (const g of air) softPit(g.x0, g.x1);
@@ -1937,7 +1945,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
           h += dy;
         }
         try {
-          traceNode(easy ? easyNode({ bpm, x, y: G, bars, steps }) : { bpm, x, y: G, bars, steps });
+          traceNode(easy && !o.real ? easyNode({ bpm, x, y: G, bars, steps }) : { bpm, x, y: G, bars, steps });
         } catch {
           continue;
         }
@@ -1985,19 +1993,21 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       // carries more petals overall, gets longer branches, not more hops)
       const n = R.i(5, 6);
       let last: Platform | null = null;
+      const highEnds: number[] = [];
       for (let k = 0; k < n; k++) {
         // (a branch with a snake is 200 px longer: a jump can land up to 240 px in, and the snake stands 150 px clear of that landing and of
         // the next branch's)
         const w = Math.round((easy ? R.r(820, 920) : R.r(700, 800)) + (k === 2 || k === n - 2 ? 200 : 0));
         const top = hy + Math.round(R.r(-30, 25));
         last = branch(bx, bx + w, top);
+        highEnds.push(bx, bx + w);
         // (two snakes on its branches and the one on the vault's lip: three, as many as the low road's, so neither road leaves more of
         // the stage's goal behind than the other, the lead 11-04)
         // (two on its branches and the one on the vault's lip: three, as the low road's; kept on Easy, as the low road's are: the roads
         // stay even, and the fights break up the hops, 1-3's own)
         // (on its long branch's far part, its patrol short)
         // (not on the first branches: the fork's mushroom bounce can carry him far along them, landing anywhere)
-        if (k === 2 || k === n - 2) { snake(bx + w - 180, top, 20); E[E.length - 1].easyKeep = true; }
+        if (k === 2 || k === n - 2) { snake(bx + w - (easy ? 110 : 180), top, easy ? 10 : 20); E[E.length - 1].easyKeep = true; }
         // (petals: a small bonus on each road, about the same on both, the core on the way everyone takes (Matt, 11-04: "keep the core
         // amount on places that the player always have to use"): here one branch's pair and the perch's three; below, five)
         else if (k === 1) row(bx + 40, bx + w - 40, top - 34, 2, 'hibiscus');
@@ -2021,6 +2031,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         // (three snakes on the low road, so a player on it can make the stage's goal: the high road's are the bonus, the lead 11-04)
         // (a petal past each, for the punch: with its rocks' petals, the low road's bonus matches the high road's)
         if (lowSnake < 3 && x - fork > 500 + lowSnake * 650) { const sx = x; snake(sx + 60, G, 110); E[E.length - 1].easyKeep = true; lowSnake++; run(R.r(220, 260)); flower(sx + 200, G - 34, 'hibiscus'); continue; }
+        // (no rock under the high road's branch ends: Easy adds a step up there, easyMode.ts, over the rock and its petal)
+        if (highEnds.some((e) => e > x - 140 && e < x + 320)) { run(R.r(120, 160)); continue; }
         logHop(R.i(30, 44));
       }
       x = Math.max(x, end) + R.r(80, 120);

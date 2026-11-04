@@ -221,13 +221,6 @@
   {
    "stage": "1-3",
    "setting": "easy",
-   "rule": "enemy by a landing",
-   "layouts": 2,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-3",
-   "setting": "easy",
    "rule": "looks like an earlier stage",
    "layouts": 5,
    "owner": "World 1 rebuild (D26)"
