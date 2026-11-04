@@ -23,7 +23,7 @@ Escalate at once: a law broken, a retirement trigger, a red gate on a release br
 
 ## Status
 - 2026-11-04 02:34 AM ET: lead OK'd onboarding. Round 1 armed (trig_011og3phdPNcd8K2pPEW9aRF, fires 03:05 AM ET): "started and on the right base".
-  Branches to look for (helpers push only to their own session branch): warmup-5m (not webgl-0), fix-petals (not fun-validator),
+  Branches (lead, corrected): warmup-5m on warmup-5m (not webgl-0), fix-petals on fun-validator,
   quality-supervisor, release-0.9.4 (or kaizen-gates), roadmap-keeper.
 - 2026-11-04 02:33 AM ET: bot-fix restarted from main 1dc39cd7 (the old bot-fix, 912b2fe6, is merged). Onboarding sent to the lead; waiting for its OK.
 
