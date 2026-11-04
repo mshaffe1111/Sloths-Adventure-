@@ -1,0 +1,57 @@
+/* ───────── "Who's playing?": three explorers on one phone (WhoPlays.tsx), in the menus' wood and parchment ───────── */
+.sl-pop { max-width: 560px; }
+.sl-list { display: flex; flex-direction: column; gap: 10px; }
+.sl-card { --tint: #58a845; --tint-lo: #2f6e25; display: grid; grid-template-columns: auto 1fr; grid-template-areas: 'face t' 'acts acts'; align-items: center; gap: 8px 12px;
+  padding: 10px 12px; border-radius: 18px; align-content: start; border: 3px solid rgba(120, 80, 30, .45); background: rgba(255, 248, 230, .75); color: var(--gx-ink); }
+.sl-card[data-tint='sun'] { --tint: #e0a02c; --tint-lo: #9a5d10; }
+.sl-card[data-tint='sky'] { --tint: #4f9bd0; --tint-lo: #255f8a; }
+.sl-card.on { border-color: var(--tint); background: color-mix(in srgb, var(--tint) 16%, #fff8e6); box-shadow: 0 0 0 2px color-mix(in srgb, var(--tint) 35%, transparent); }
+.sl-face { grid-area: face; width: 64px; height: 64px; display: grid; place-items: center; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--tint) 55%, #fff), var(--tint) 70%, var(--tint-lo)); border: 3px solid #3a200c; box-shadow: 0 3px 0 #24130a; }
+.sl-face-empty { color: #fff4d8; opacity: .8; }
+.sl-t { grid-area: t; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.sl-t b { font-family: var(--font-fun); font-weight: 400; font-size: 22px; line-height: 1.1; color: #4a2a10; overflow-wrap: anywhere; }
+.sl-t small { font: 700 14px var(--font-ui); color: var(--gx-ink-soft); }
+.sl-stats { display: flex; flex-wrap: wrap; gap: 4px 12px; font: 800 14px var(--font-ui); color: #6b4421; }
+.sl-stats > span { display: inline-flex; align-items: center; gap: 4px; }
+.sl-now { padding: 1px 9px; border-radius: 99px; color: #fff4d8; background: var(--tint-lo); }
+.sl-when { color: var(--gx-ink-soft); font-weight: 700; }
+.sl-acts { grid-area: acts; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.sl-play { flex: 1 1 130px; min-height: 48px; font-size: 19px; }
+.sl-small { display: flex; gap: 6px; margin-left: auto; flex: 0 1 auto; }
+.sl-mini { min-height: 44px; min-width: 44px; padding: 0 12px; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border-radius: 12px;
+  font: 800 14px var(--font-ui); color: #4a2a10; background: rgba(120, 80, 30, .12); border: 2px solid rgba(120, 80, 30, .4); }
+.sl-mini:active { transform: translateY(1px); }
+.sl-erase { color: #8a2a10; }
+.sl-empty { grid-template-areas: 'face t' 'acts acts'; border-style: dashed; background: rgba(255, 248, 230, .45); }
+.sl-empty .sl-go { grid-area: acts; }
+.sl-warn { margin: 0; padding: 10px 12px; border-radius: 12px; font: 700 15px/1.35 var(--font-ui); color: #7a2a0c; background: rgba(217, 100, 43, .14); border: 2px solid rgba(168, 70, 23, .45); }
+
+/* the name card */
+.sl-name { max-width: 400px; }
+.sl-label { font: 800 13px var(--font-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--gx-ink-soft); }
+.sl-in { width: 100%; box-sizing: border-box; min-height: 54px; padding: 8px 14px; border-radius: 14px; border: 3px solid #6b4421; background: #fffaf0;
+  font-family: var(--font-fun); font-size: 24px; color: #4a2a10; }
+.sl-in:focus { outline: 3px solid #f0b04a; outline-offset: 1px; }
+.sl-note { margin: 0; font: 600 15px/1.35 var(--font-ui); color: var(--gx-ink-soft); }
+.sl-over { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 6px 12px; }
+.sl-over small { font: 700 13px var(--font-ui); color: #ffe8c4; text-shadow: none; }
+.sl-backup { display: flex; justify-content: center; margin-top: 10px; }
+.sl-link { padding: 0; border: 0; background: none; cursor: pointer; font: inherit; font-weight: 800; color: #8a3b10; text-decoration: underline; text-underline-offset: 3px; }
+.pm-go:disabled { filter: grayscale(.6) brightness(.9); cursor: default; }
+
+/* a phone on its side: the three explorers side by side */
+@media (orientation: landscape) and (max-height: 500px) {
+  .sl-pop { max-width: 860px; }
+  .sl-list { flex-direction: row; align-items: stretch; }
+  .sl-card { flex: 1; min-width: 0; grid-template-columns: 1fr; grid-template-areas: 'face' 't' 'acts'; justify-items: center; text-align: center; gap: 6px; padding: 8px; }
+  .sl-face { width: 54px; height: 54px; }
+  .sl-t { align-items: center; }
+  .sl-t b { font-size: 19px; }
+  .sl-stats { justify-content: center; }
+  .sl-acts { flex-direction: column; align-self: stretch; gap: 6px; }
+  .sl-play { width: 100%; flex: none; min-height: 44px; }
+  .sl-small { margin: 0; justify-content: center; }
+  .sl-empty .sl-go { width: 100%; }
+}
+

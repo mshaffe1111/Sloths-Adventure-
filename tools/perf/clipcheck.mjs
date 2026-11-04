@@ -13,7 +13,7 @@
  *   fresh   nothing played
  *   old     Worlds 1-3 cleared the old way: stage records only, no play records (the save that showed Matt the filler journal)
  *   done    every stage cleared with play records, every find, scene and creature, every medal
- * Screens: the start screen; Settings and every tab (Save / Load and the New Game question); About and its pop-ups; How to Play and
+ * Screens: the start screen; Who's playing? (save slots) with a new explorer's name, and New game's choice; Settings and every tab (Save / Load and the New Game question); About and its pop-ups; How to Play and
  * its tabs; the World Map, every world and the Worlds pop-up; every Satchel tab with the find reader, a keepsake, a medal close-up and
  * a creature's story; every Journal page; Pause in a stage. Every scroll box on a screen is also judged scrolled to the bottom.
  * Phone insets are set through Chrome's own safe-area override (upright: 48 px top, 24 px bottom; sideways: 48 px each side, 21 px
@@ -335,6 +335,17 @@ async function walk(browser, base, save, size) {
   await seed(page, save);
   await home();
   await judge('start screen');
+
+  // who is playing (save slots): the three explorers, a new explorer's name, and New game's choice (not on a fresh save: no New game)
+  await tryStep('who is playing', async () => {
+    await click('.ttl-whobtn');
+    await judge("who's playing");
+    await click('.sl-empty .sl-go');
+    await judge("who's playing: new explorer's name");
+    await back();
+    await back();
+  });
+  if (save !== 'fresh') await tryStep('new game choice', async () => { await click('.ttl-new'); await judge('new game: choice'); await back(); });
 
   // Settings, every tab, and the pop-ups behind its buttons
   await tryStep('settings', async () => {

@@ -1,3 +1,5 @@
+// (first: finish a change of explorer that was cut off, before anything reads the game: game/slotBoot.ts)
+import './game/slotBoot.ts';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';

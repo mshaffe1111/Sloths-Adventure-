@@ -4,6 +4,12 @@ import { CarvedLogo, carvedLogoReady } from './title/CarvedLogo.tsx';
 import { homeScreenTipDue, markHomeScreenTip } from '../game/fullscreen.ts';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { NewGameDialog } from './NewGameDialog.tsx';
+import { WhoPlays, SLOT_LOOK } from './slots/WhoPlays.tsx';
+import { HeroFaceIcon } from './HeroFaceIcon.tsx';
+import { Icon } from './icons/index.tsx';
+import { Popup } from './nav/Nav.tsx';
+import { browserStore } from '../game/saveFile.ts';
+import { freeSlot, listSlots, type SlotInfo } from '../game/saveSlots.ts';
 import { TitleSettings } from './TitleSettings.tsx';
 import { TitleUpdate } from './UpdateControls.tsx';
 import { HowToPlay, howToSeen, markHowToSeen } from './HowToPlay.tsx';
@@ -103,6 +109,25 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
 }) => {
   const [saveOpen, setSaveOpen] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
+  /** "Who's playing?" (saveSlots.ts): the explorers on this phone; `newPick` is New game's choice, `whoNew` opens it on a new explorer */
+  const [whoOpen, setWhoOpen] = useState(false);
+  const [whoNew, setWhoNew] = useState(false);
+  const [newPick, setNewPick] = useState(false);
+  const [who] = useState(() => {
+    try {
+      const s = listSlots(browserStore());
+      return s.find((x) => x.playing) ?? s[0];
+    } catch {
+      return { n: 1, name: 'Explorer 1' } as SlotInfo;
+    }
+  });
+  const free = (() => {
+    try {
+      return freeSlot(browserStore());
+    } catch {
+      return null;
+    }
+  })();
   const [menuOpen, setMenuOpen] = useState(false);
   const [howOpen, setHowOpen] = useState(false);
   /** a brand-new player gets the short how-to once, right before the first stage */
@@ -189,7 +214,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
     else leave(then);
   };
   const start = () => goOn(onStartGame);
-  const covered = saveOpen || newOpen || menuOpen || howOpen || intro || !!pickThen;
+  const covered = saveOpen || newOpen || whoOpen || newPick || menuOpen || howOpen || intro || !!pickThen;
 
   return (
     <div className={`gx2 select-none gx2-${phase}${cold ? '' : ' gx2-back'}${named ? ' gx2-named' : ''}${covered ? ' gx2-covered' : ''}`}>
@@ -242,6 +267,26 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               </span>
             )}
           </button>
+          {/* who is playing, and a new game, right under Continue (Matt, 2026-11-04: "a way to start a new game") */}
+          <div className="ttl-row">
+            {resume && (
+              <button type="button" className="gx-plank gx-plank-sm ttl-new" onClick={() => setNewPick(true)}>
+                <Icon name="leaf" size={22} />
+                New game
+              </button>
+            )}
+            <button type="button" className="gx-plank gx-plank-sm ttl-whobtn" onClick={() => setWhoOpen(true)} aria-label={`Who's playing? Now: ${who.name}`}>
+              <span className="ttl-who">
+                <span className="ttl-who-face" data-tint={SLOT_LOOK[who.n - 1].tint} aria-hidden="true">
+                  <HeroFaceIcon size={24} face={SLOT_LOOK[who.n - 1].face} />
+                </span>
+                <span className="ttl-who-t">
+                  <small>Who's playing</small>
+                  <span className="ttl-who-n">{who.name}</span>
+                </span>
+              </span>
+            </button>
+          </div>
           <div className="ttl-leaves">
             <button type="button" onClick={() => goOn(onOpenMap, true)} className="ttl-leaf" style={{ ['--i' as string]: 1 }}>
               <span className="ttl-leaf-ic">
@@ -333,6 +378,61 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
         />
       )}
       {saveOpen && <SaveLoadDialog onClose={() => setSaveOpen(false)} onLoaded={onSaveLoaded} />}
+      {whoOpen && (
+        <WhoPlays
+          startNew={whoNew}
+          onClose={() => {
+            setWhoOpen(false);
+            setWhoNew(false);
+          }}
+          onSwitched={() => window.location.reload()}
+        />
+      )}
+      {newPick && (
+        <Popup title="New game" label="Start a new game" onClose={() => setNewPick(false)} className="sl-name">
+          {free ? (
+            <button
+              type="button"
+              className="pm-go"
+              onClick={() => {
+                setNewPick(false);
+                setWhoNew(true);
+                setWhoOpen(true);
+              }}
+            >
+              <Icon name="sloth" size={22} />
+              A new explorer
+            </button>
+          ) : null}
+          <p className="sl-note">
+            {free ? `${who.name}'s game is kept, and the new explorer gets their own.` : `All three explorers' spots are taken. Erase one in Who's playing?, or start ${who.name}'s game over.`}
+          </p>
+          {!free && (
+            <button
+              type="button"
+              className="pm-go"
+              onClick={() => {
+                setNewPick(false);
+                setWhoOpen(true);
+              }}
+            >
+              <Icon name="sloth" size={22} />
+              Who's playing?
+            </button>
+          )}
+          <button
+            type="button"
+            className="st-btn sl-over"
+            onClick={() => {
+              setNewPick(false);
+              setNewOpen(true);
+            }}
+          >
+            <span>Start over</span>
+            <small>Erases {who.name}'s game (a backup is offered first)</small>
+          </button>
+        </Popup>
+      )}
       {newOpen && (
         <NewGameDialog
           onClose={() => setNewOpen(false)}

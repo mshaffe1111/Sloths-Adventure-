@@ -28,7 +28,7 @@
 .nv-x:active { transform: scale(.94); }
 .nv-x:focus-visible { outline: 3px solid #fff6c8; outline-offset: 2px; border-radius: 50%; }
 .nv-kicker { text-align: center; font: 700 14px var(--font-ui); color: var(--gx-ink-soft); }
-.nv-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 4px; display: flex; flex-direction: column; gap: 12px; scrollbar-color: #a86d38 transparent; }
+.nv-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 4px 6px; display: flex; flex-direction: column; gap: 12px; scrollbar-color: #a86d38 transparent; }
 .nv-foot { flex: none; display: flex; gap: 10px; }
 .nv-foot > * { flex: 1; }
 
