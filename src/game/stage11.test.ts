@@ -53,7 +53,7 @@ test('1-1: open air only on the high road and in the finale; every other gap has
 });
 
 /** stand on the ledge before one of the finale's open gaps and walk off its end */
-function walkOff(easy: boolean) {
+function walkOff(easy: boolean, hp?: number) {
   setDifficulty(easy ? 'easy' : 'normal');
   const sim = new RealPlay('1-1', 1);
   setDifficulty('normal');
@@ -63,6 +63,8 @@ function walkOff(easy: boolean) {
   const ledge = sim.platforms.find((p) => Math.abs(p.x + p.width - (z.x0 + 40)) < 3 && p.type === 'solid')!;
   sim.stand(ledge.x + ledge.width - 30, ledge.y);
   sim.wait(0.3);
+  if (hp !== undefined) sim.p.hp = hp;
+  const hp0 = sim.p.hp;
   let t = 0;
   const y0 = sim.p.y;
   let lowest = y0;
@@ -72,15 +74,22 @@ function walkOff(easy: boolean) {
     lowest = Math.max(lowest, sim.p.y);
     t += 1 / 30;
     if (easy && t > 0.3 && sim.p.grounded && Math.abs(sim.p.y - y0) < 2) break;
+    if (!easy && sim.p.hp < hp0 && sim.p.grounded) break;
   }
-  return { sim, t, fell: lowest - y0, z };
+  return { sim, t, fell: lowest - y0, z, hp0 };
 }
 
-test('1-1 in the real engine: off the end of a finale bough into open air costs a life at once on Normal (not a long drop to the stage floor)', () => {
+test('1-1 in the real engine: off the end of a finale bough into open air costs a heart at once on Normal and puts him back at the gap (not a long drop to the stage floor); on his last heart it costs a life', () => {
+  // (as real pits the first-timer adult bot lost 7-9 lives in the finale, two game overs a run: 2026-11-04)
   const r = walkOff(false);
-  assert.ok(r.sim.died, 'the fall costs a life');
-  assert.ok(r.t < 1.2, `after ${r.t.toFixed(2)} s`);
+  assert.ok(!r.sim.died, 'no life while he has hearts');
+  assert.equal(r.sim.p.hp, r.hp0 - 1, 'a heart');
+  assert.ok(r.sim.p.grounded, 'back on a bough');
+  assert.ok(r.t < 1.6, `after ${r.t.toFixed(2)} s`);
   assert.ok(r.fell <= r.z.depth + 60, `he fell ${r.fell} px first`);
+  const last = walkOff(false, 1);
+  assert.ok(last.sim.died, 'on the last heart the fall costs a life');
+  assert.ok(last.t < 1.2, `after ${last.t.toFixed(2)} s`);
 });
 
 test('1-1 in the real engine: a fall past the catch boughs in the spike is a heart and back on the ledge on Normal, never a life', () => {

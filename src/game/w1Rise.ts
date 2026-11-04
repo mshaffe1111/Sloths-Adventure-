@@ -354,17 +354,18 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
 
   // ---- 12. The high branches (the finale, the densest, 15-20 s): half notes and off-beat catches over open air, up and down, a
   // mushroom in the middle, ending AT the shrine on the top branch
-  beat('Finale: the high branches', () => {
+  beat('Finale: the high branches', () => (easy ? (f: () => void) => f() : guard)(() => {
     const x0 = x;
     // (open air under every other gap, a bough under the rest: it bites, but stage 1's first-timer is not sent back three times a
-    // stretch; a flag again after the mushroom)
+    // stretch; a flag again after the mushroom. On Normal a fall here costs a heart and puts him back at the gap (heartFalls), three
+    // hearts a life: as real pits the first-timer adult bot lost 7-9 lives here, two game overs a run; as heart falls, 2 lives and none)
     // (on Easy every gap is open air: Easy's soft fall puts him back, a setback and never a life, so a catch would only make it nothing)
     node(['h...h...', 'h....o..', '....h...'], [J(0), J(20), J(-30), D(120), J(-20)], (i) => (easy || i % 2 === 0 ? 'pit' : 'catch'));
     bounce(BOUNCE_UP - 15, 'branch', 'pit', 130);
     flag(x + 80);
     node(['h...h...', 'h....o..', '....h...'], [J(0), H(-40), J(20), D(130), J(0)], (i) => (easy || i % 2 ? 'pit' : 'catch'), { flag: false });
     pieces.push({ k: 'finale', x0, x1: x });
-  });
+  }));
 
   // the top branch: the shrine a few steps on from the last landing, the canopy all round
   const topY = y;
