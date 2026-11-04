@@ -8,7 +8,7 @@ second batch, MATT-RESEARCH-2026-11-04.md). Rules it became: STAGE-RULES §0 and
 
 ## Why it's a 55 (checked in code, 2026-11-04)
 1. **Hazards don't bite.** Breaking branches can be outrun; eagles can be outrun; nothing forces hiding or timing (Matt's play).
-2. **Every enemy dies the same way.** Kick only doubles the score and changes the burst (engine.ts ~4165-4171); no shields, no enemy
+2. **Every enemy dies the same way.** Kick doubles the score and changes the burst (engine.ts ~4165-4171); an air kick also bounces him up (airKick); no enemy needs one move over another; no shields, no enemy
    that needs a kick, a punch or a stomp. Enemies are roadblocks, not tools.
 3. **Stages have no shape.** No rhythm groups, rests or pacing tags (gen2 has none); no four-part arc; stages are long hallways.
 4. **Mechanics are taught and dropped.** Nothing builds on earlier worlds (D26).
@@ -46,6 +46,11 @@ Kept from our plan: PixiJS (it already batches sprites the way the research desc
 7. **Venom Fang, three ways to win:** the scripted window, an arena trap (drop a branch on him), and a skill move (dive-kick off his
    tail). The template for every boss (R-161).
 Then: test link, Matt plays World 1 start to finish and rates it. 80+ means roll out; under 80, we fix World 1 before anything else.
+
+**engine.ts in Phase A (lead's call, 2026-11-04):** lane 1 (WebGL) keeps its engine.ts change small (stage 0 adds a layer, it doesn't move
+drawing) and merges first. The gameplay jobs then hold engine.ts one at a time, in this order: R-159.1 combat triangle, then R-160.1
+under-branch hanging; each merges the latest base before it starts and before it pushes. Overlaps run as one job: R-158.1 with R-5.10
+(1-7's eagle), R-155 with R-150.3, R-161.2 inside R-1.9/R-1.10/R-1.15.
 
 ### Phase B: roll out, world by world (Worlds 2-8), each one rated
 Generators get the new grammar: map shapes (loop-back, high/low split, zig-zag climb, lock-and-key spoke), pacing tags, puzzle

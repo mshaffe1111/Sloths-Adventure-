@@ -14,6 +14,7 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 | 3 | `npx vite build` | build errors, any asset over 4 MiB | about 10 s |
 | 4 | `node tools/perf/artcheck.mjs` | an image over 4096 px on a side | seconds |
 | 5 | `node tools/perf/knowncheck.mjs` | a known-defect list that GREW (clipknown, playerText.known, limits.json, artUse.allow) compared with main | seconds |
+| 5b | `node tools/roadmapcheck.mjs` | open work with no R-id on reference/ROADMAP.md: a defect left for roadmap / next week / later, a known or allow list (and each clipknown group, each playerText.known key), a NEXT.md; a done item whose PR or commit is not in the history; a reused id | seconds / in the gates job (needs fetch-depth 0) |
 | 6 | `node tools/perf/clipcheck.mjs` | menu text that overflows or is cut off, tap targets under 44 px, tap targets inside the phone's insets, on every menu screen and pop-up, 412x915 and 915x412, fresh/old/finished saves | 270-290 s here / 179 s in CI (gates job about 4.5 min with setup) |
 | 7 | `node tools/perf/drawcheck.mjs` | per-frame canvas work over `limits.json` (gradients, shadows, blends, readbacks, full-screen layers, shrunk sheets) | about 6 min / own CI job, about 6.5 min with setup |
 
@@ -28,6 +29,7 @@ In CI (`.github/workflows/deploy.yml`): the test shards and `gates.yml` (artchec
 - **playerText.test**: the failing test is named `<list>: <rule>` or `journal page World N (<save>): ...`. `PLAYERTEXT_DUMP=1 npx tsx src/game/playerText.test.ts` prints every failure in full: the ids and the line.
   - "differ only in a number or name" means the line repeats with only the world, stage, number or number word changed. Write each line for its item.
 - **knowncheck**: `✗ <file>: N entries ADDED` lists them. Remove them and fix the defect; a known list never grows.
+- **roadmapcheck**: each `✗` names the orphan (a defect D#, a list file, a clipknown group, a NEXT.md) or the bad proof. Add the R-item (or cite the source on the right one) in reference/ROADMAP.md; never delete the source to get green. Method: reference/methods/roadmap.md.
 - **drawcheck**: see PERFORMANCE-RULES §8.1. Each breach names the call sites (file:line).
 
 ## Known lists: shrink-only (LAWS.md law 5)
