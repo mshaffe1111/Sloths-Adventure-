@@ -25,11 +25,27 @@ feature (light bridges, lightning silhouettes, waving water).
 - **Context loss.** Pixi's GlContextSystem calls preventDefault and rebuilds its GPU objects on restore. The layer skips frames while
   lost (`gpuStats.lostFrames`), and the 2D game never waits on it.
 
+## Stage 1 (the backdrop), what exists
+- scenery.ts: in gameplay's fitted-strip mode, `gpuStrips` routes `drawFitted`'s stamps (the strip, the sky row, the gap rows) to
+  `backdropPush` in device pixels. Then `backdropFlush` renders them and copies the layer into the 2D canvas with one drawImage. Only
+  under a plain scale transform (`pureScale`); any other frame stamps on the 2D canvas, as before.
+- gpuLayer.ts:
+  - the pool of sprites, with **dynamic** textures (see Pitfalls);
+  - one texture per fitted canvas, uploaded under the title card (`backdropUpload` from `stampSceneryFits`) and destroyed with its fit
+    (`backdropForget`);
+  - the layer always at resolution 1, in device pixels (`fitBuffer`);
+  - the copy timed on 3 frames under the card (COPY_SLOW_MS 2 ms);
+  - `backdropLine()` for the readout;
+  - `?gpuback=0` to compare.
+- Checks:
+  - `tools/qa/gpuBackdrop.cjs`: GPU vs 2D backdrop, the same frozen frame, every world, both ways;
+  - `tools/qa/gpuBackdropLoss.cjs`: lose and restore in play.
+
 ## Steps for a stage that moves a layer
-1. **Move whole layers, never half of one** (the plan's layer-order rule). The 2D canvas keeps everything above the layers that moved.
-   For the GPU layer to show, the 2D canvas must become see-through where those layers were:
-   - its context is `alpha: false` today; switching that is a deliberate step with its own look proof;
-   - so is clearing it to transparent instead of painting the backdrop.
+1. **Move whole layers, contiguous from the bottom** (the plan's layer-order rule). They render into the hidden WebGL canvas, and the
+   2D canvas (opaque, `alpha: false`, unchanged) copies it in with one drawImage where it used to paint them (the plan's design change,
+   2026-11-04). Never make the 2D canvas see-through: every `lighter`, `screen` and `multiply` effect after the copy would then blend
+   with nothing.
 2. **Textures from the sheets we already load.** `Texture.from(<the HTMLImageElement or baked canvas>)`. One texture per sheet, frames
    as sub-rectangles, so sprites that share a sheet batch.
    - Release a world's textures when play leaves the world (atlasLoader `enterWorld`, PERFORMANCE-RULES §2.13).
@@ -69,6 +85,14 @@ Every gate in gates.md, in order. Add the two GPU checks above. Stamp the base c
   Bisected: with only the start-up switched off it passed 2 of 2. Start it only when something goes on it, and under the card.
 - 2026-11-04: **Pixi rounds css x resolution; the game canvas floors it.** At q1 (1.5x) on an odd size the buffers differed by one
   px. Hand `renderer.resize` the floored device size divided by dpr. The gpuLayer.cjs buffer check catches it; run it at q1 too.
+
+- 2026-11-04: **A Pixi v8 Sprite follows a change to its texture's frame only if the texture is `dynamic: true`.** Pooled sprites with
+  reused textures kept the size of the first stamp they drew. The backdrop came out magnified after a quality step (19-30% of pixels off
+  by more than 32), and slightly off on outlines even at q0. I first took that for GPU sampling: it wasn't.
+- 2026-11-04: **Pixi's resolution handling didn't follow resizes reliably.** Run the layer at resolution 1 with the buffer exactly the 2D
+  canvas's device size, and place everything in device pixels.
+- 2026-11-04: **Judge the look at every quality step (q0, q1, q2), not only q0.** The look check pins each one in turn.
+- 2026-11-04: **The see-through 2D canvas** (the plan's first design) fails the look bar: see the design change in GPU-RENDERER-PLAN.md.
 
 ## Tried and didn't work
 - Comparing whole-page screenshots: the DOM animations gave 21,000 to 178,000 "different" pixels with nothing changed on the canvas.

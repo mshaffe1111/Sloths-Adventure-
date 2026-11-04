@@ -271,7 +271,23 @@ export function backdropGpuReady(): boolean {
  * checks only (dev builds: window.__gpu): `force2d` draws the backdrop on the 2D canvas, to compare the two (tools/qa/gpuLook.cjs);
  * `keepGpu` keeps the GPU path even where the copy is a readback (this container: its 2D canvas is software), to judge the look there
  */
-export const backdropCheck = { force2d: false, keepGpu: false };
+export const backdropCheck = { force2d: urlForces2d(), keepGpu: false };
+/** `?gpuback=0` in the address: the backdrop on the 2D canvas, to compare a phone's frame times both ways (as `?preload=0` does) */
+function urlForces2d(): boolean {
+  try {
+    return typeof location !== 'undefined' && /[?&]gpuback=0\b/.test(location.search);
+  } catch {
+    return false;
+  }
+}
+/** one line for the frame-time readout (perfLog): where the backdrop is drawn, and what its copy costs */
+export function backdropLine(): string {
+  if (backdropCheck.force2d) return 'backdrop: 2D (?gpuback=0)';
+  if (!live) return 'backdrop: 2D (no WebGL 2 layer)';
+  if (bd.off) return `backdrop: 2D (${bd.off})`;
+  const m = bd.copyMs.length ? [...bd.copyMs].sort((a, b) => a - b)[bd.copyMs.length >> 1] : NaN;
+  return `backdrop: GPU, copy ${Number.isFinite(m) ? m.toFixed(2) : '?'} ms (median of ${bd.copyMs.length})`;
+}
 /** why the backdrop is back on the 2D canvas for this session ('' while it is not) */
 export function backdropGpuOff(): string {
   return bd.off;

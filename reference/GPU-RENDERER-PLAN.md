@@ -37,6 +37,30 @@ Nothing half-done goes to `main` (new replaces old). The game ships only once a 
 
 **Total: about 3 to 5 working days with helpers working in parallel.** Stages 1, 2 and 4 can run side by side once stage 0 is in.
 
+## Design change, 2026-11-04 (stage 1, measured): GPU underneath, copied in
+
+The table above puts the WebGL canvas UNDER the 2D canvas and makes the 2D canvas see-through where layers moved. Measured before stage
+1 was built, that fails the look bar. The world layer draws many effects that blend with what is beneath them:
+- `lighter` glows: foxfire logs (W8), glow dots (W3, W9), weather (W3, W6, W8, W9), Meeca's glows (5-M), fx particles (W9, W10);
+- `screen` and `lighter`: World 5's light;
+- `multiply`: 5-M's full-screen night grade.
+
+Over a see-through 2D canvas they blend with nothing, then get laid over the GPU sky: every glow darkens the sky under it, and 5-M's
+night grade paints a dark layer instead of multiplying.
+
+**So each stage renders its layers into the hidden WebGL canvas, and the 2D canvas, still opaque, copies it in with ONE drawImage**, at
+the point in the frame where it used to paint those layers. Everything after the copy blends with real pixels, exactly as before. The
+layers that move must stay contiguous from the bottom (backdrop, then ground, ...). At the end, when everything is on Pixi, the 2D
+canvas and the copy go, and the glows become Pixi ADD/MULTIPLY blends inside one GPU scene.
+
+**The copy is GPU-to-GPU only while the 2D canvas is on the GPU.** A software 2D canvas (old phones, a fallback, this headless
+container: `2d_canvas: unavailable_software`) reads the GL pixels back on every copy, measured at 119-126 ms here. The copy is timed on
+3 frames under the title card. A median over 2 ms sends the backdrop back to the 2D canvas for the session, before play.
+
+**Owed before release: the phone check.** The saving can't be measured in this container. The Pixel, the Samsung and the OnePlus run
+the control test with the test link, once as is and once with `?gpuback=0` (the 2D backdrop). The frame-time readout's notes say
+`backdrop: GPU, copy X ms` or why it is 2D. Nothing merges to main until the GPU backdrop is no slower on all three.
+
 ## Risks and how they're handled
 
 - **Layer order:** the scene interleaves ground, decor, enemies, Pokey and front leaves. During the move, each GPU stage owns whole layers (backdrop, then ground, then actors) so the order never splits mid-layer, and the 2D canvas carries only what's on top.

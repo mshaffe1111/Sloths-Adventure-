@@ -25,7 +25,7 @@ import { releaseDecorPics, settleDecorBakes } from './envKit.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, revealSet, stageUsesCanopy } from './paintedBackdrops.ts';
 import { perfNote } from './perfLog.ts';
-import { backdropGpuReady, mountGpuLayer } from './gpuLayer.ts';
+import { backdropGpuReady, backdropLine, mountGpuLayer } from './gpuLayer.ts';
 import { builtStageKeys, revealOf, type BuiltStage, type RevealStrips } from './stageManifest.ts';
 import { preloadEnabled, start } from './stagePreload.ts';
 import type { LevelConfig } from './types.ts';
@@ -117,6 +117,7 @@ export async function readyBuiltStage(
   // (and the copy from it timed on frames drawn here, under the card: a phone whose 2D canvas is not on the GPU reads it back, and the
   // backdrop goes back to the 2D canvas before play, never after a slow first second: gpuLayer.ts COPY_PROBE)
   for (let i = 0; i < 3 && !live() && backdropGpuReady(); i++) frame();
+  perfNote(backdropLine());
   // (each fit stamped once on the game's canvas: its upload now, not on the frame it is first drawn, a quality step's included)
   const fitMB = ctx ? Math.round(stampSceneryFits(ctx) / 1e5) / 10 : 0;
   // (the checkpoint flags and the pit water, and World 6-10's dirty water, baked at this view's scale and stamped once: stageArt.ts,
