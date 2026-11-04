@@ -663,6 +663,14 @@ const playOrder = (id: string) => {
  * carried: it is the move the mushroom climbs hang on; the other moves' tips are still learned where Dot says them.
  */
 const DOUBLE_TAUGHT = Math.min(...DOT_LINES.filter((r) => r[0].startsWith('hint.') && r[1] && moveOf(r[5] ?? r[4] ?? '')?.move === 'double').map((r) => playOrder(r[1])));
+/**
+ * World 1's answers (R-159.1) are carried the same way: the stomp that finishes a dazed snake (taught by 1-3's hint, "hop on it") and the
+ * kick that breaks the coiled boa (its teaching stage's hint). A first-timer on a later World 1 stage has played the stage that taught
+ * them. Only these two of the fight's answers, and they act only on World 1's tricked animals.
+ */
+const taughtAt = (re: RegExp) => Math.min(...DOT_LINES.filter((r) => r[0].startsWith('hint.') && r[1] && re.test(r[5] ?? r[4] ?? '')).map((r) => playOrder(r[1])));
+const STOMP_TAUGHT = taughtAt(/\b(hop on|stomp|land on)\b/i);
+const KICK_TAUGHT = taughtAt(/\bkick\b/i);
 
 export class FirstTimerRun {
   readonly sim: RealPlay;
@@ -785,6 +793,8 @@ export class FirstTimerRun {
     e.resizeCanvas();
     this.dot = new DotShadow(id);
     if (playOrder(id) > DOUBLE_TAUGHT) this.learned.add('double');
+    if (playOrder(id) > STOMP_TAUGHT) this.learned.add('stomp');
+    if (playOrder(id) > KICK_TAUGHT) this.learned.add('kick');
     e.callbacks.onGuide = (text: string, s: number, passed?: boolean) => this.dot.engine(text, s, passed);
     e.callbacks.onLesson = (lid: LessonId) => this.dot.lesson(lid, !!(this.sim.p.climbing || this.sim.p.isVineSwinging || this.sim.p.hanging));
     e.callbacks.onProgressUpdate = (cur: number, target: number) => {
