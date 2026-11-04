@@ -1,13 +1,19 @@
 # fix-petals: helper notes
 
-## Now (2026-11-04 10:58 AM ET): R-150.8 done (QS PASS), R-155 1-5 plan rev 2 sent; full gates running on 93450fb2
-fun-validator 2e61ffd8. R-150.8 (firsttimer.ts ledge-end steer, fixture in firstTimerBot.test.ts): 1-4 rescues 58 -> 19, Worlds 1-10
-2006 -> 1915; report reference/qa-reports/validator/R-150.8.md (append the gate lines when the run ends). KID_RUNS_59 unchanged.
-R-155 plan reference/plans/R-155-1-5.md rev 2 (QS changes folded): WAITING on the lead/Matt (goal a/b, backdrop w1kapok/w1sunrise, two
-Dot lines) and on w8-rope2's kick-teach piece (he adds only an exported piece to w1Sections.ts). Then build: creakDrop, snapRun, the
-snake patrol, fixtures first, and write reference/methods/stage-shape.md as I go.
-MY MISS (twice today): times typed, not read. My message to w8-rope2 said "10:58 AM ET" and my correction said "10:28": both guesses.
-Countermeasure: no time goes in a message unless it was printed by `TZ=America/New_York date` in the same step.
+## Now (2026-11-04 11:46 AM ET): R-150.8 ACCEPTED; R-155 1-5 decided, waiting on w8-rope2's kick-teach piece
+fun-validator c03160b8: origin/main 68b31e66 (release 0.9.4) and the lead branch merged in (D23). Conflicts in gates.yml, CLAUDE.md and
+gates.md were both sides adding a gate (my funcheck, main's roadmapcheck): kept both, the lead branch's wording. tsc, artcheck,
+knowncheck, roadmapcheck, funcheck (152 known) PASS; bot and validator tests 44/44.
+- R-150.8: accepted by the lead (11:35 AM ET, bot-fix's time), QS PASS. Report reference/qa-reports/validator/R-150.8.md with the gate
+  lines. stage-fix.md opens with it as the best measured result: about 32 min running time to the report, 1.2 h start to accept against
+  1.5 h planned.
+- R-155 1-5 (reference/plans/R-155-1-5.md, QS PASS on rev 2): Matt chose goal (a), follow Meeca's trail markers to the shrine with the
+  petals as a bonus; both Dot lines approved ("These ones snap! Keep moving", "That boa's in the way... or is it?"); backdrop w1kapok
+  (the lead's call; the QS's watch-out: if 1-5 and 1-7 read alike, use w1sunrise).
+NEXT: when w8-rope2 pushes kick-teach (an exported piece in w1Sections.ts), merge it and build: fixtures first (creakDrop, snapRun, the
+snake patrol), then the stage, the goal, the backdrop, then reference/methods/stage-shape.md, the gates, funcheck with 1-5 lowered.
+MY MISS (twice today): times typed, not read. Countermeasure: no time goes in a message unless `TZ=America/New_York date` printed it
+in the same step.
 
 ## The job, as briefed
 1. R-150.4 mechanics-in-use table, 1-1..1-9 and the boss: what the player meets (stage data + a bot run) against what the engine has.
