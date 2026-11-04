@@ -82,17 +82,20 @@ test('1-3: no snake on a branch outside the split stands over a pit floor he cou
   }
 });
 
-test("1-3: the split's petals are a small bonus, about the same on each road; the core lies on the way everyone takes (Matt, 11-04)", () => {
+test("1-3: the split's petals are Matt's 70/30: each road 13-17%, the shared way 66-74%, so one play down either road reaches the goal (Matt, 11-04)", () => {
   for (const easy of [false, true]) {
     for (const s of SEEDS) {
       const st = buildProtoStage(cfg, s, '1-3', easy);
-      const split = st.proto.beats.find((b) => /^Spike/.test(b[2]))!;
+      // (the split itself: under and along the high road, its first branch to the end of its perch)
+      const sp = st.proto.beats.find((b) => /^Spike/.test(b[2]))!;
+      const hb = st.platforms.filter((p) => p.style === 'branch' && p.x >= sp[0] && p.x < sp[1] && p.y < 470);
+      const x0 = Math.min(...hb.map((p) => p.x)), x1 = Math.max(...hb.map((p) => p.x + p.width));
       const pet = st.collectibles.filter((c) => c.type === 'flower' || c.type === 'leaf');
-      const inSplit = pet.filter((c) => c.x >= split[0] && c.x < split[1]);
-      const high = inSplit.filter((c) => c.y < 470).length, low = inSplit.length - high;
-      const tag = `seed ${s}${easy ? ' Easy' : ''}: ${high} high, ${low} low of ${pet.length}`;
-      assert.ok(high <= pet.length * 0.1 && low <= pet.length * 0.1, tag);
-      assert.ok(Math.abs(high - low) <= 3, tag);
+      const inSplit = pet.filter((c) => c.x >= x0 && c.x < x1);
+      const high = inSplit.filter((c) => c.y < 470).length, low = inSplit.length - high, n = pet.length;
+      const tag = `seed ${s}${easy ? ' Easy' : ''}: ${high} high, ${low} low of ${n}`;
+      for (const road of [high, low]) assert.ok(road >= n * 0.13 && road <= n * 0.17, tag);
+      assert.ok(n - high - low >= n * 0.66 && n - high - low <= n * 0.74, tag);
     }
   }
 });

@@ -17,6 +17,7 @@
  */
 import { teachWater } from './waterTeach.ts';
 import { petalPass } from './petalPass.ts';
+import { busiestScreen, clumpExtras, PER_SCREEN, rowExtras } from './petals.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import { easyNode, stageBpm, traceNode, type Ledge, type NodeSpec, type Step, type Trace } from './beatTrace.ts';
@@ -363,6 +364,7 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
 export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto', easy = false): GeneratedStage & { proto: ProtoExtras } {
   // water taught before it costs a life (LV-8), the petal trail (petalPass.ts): the pickups are final before the dressing sees them
   const st = petalPass(teachWater(buildPlan(config, seed, plan, easy)));
+  if (plan === '1-3') splitPetals(st);
   // (5-3's quota is a share of the flowers it holds: of those the petal pass kept)
   if (plan === '5-3') st.config = { ...st.config, targetCount: Math.round(st.collectibles.filter((c) => c.type === 'flower').length * W5_HARVEST_SHARE) };
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
@@ -375,6 +377,69 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   const out = st;
   addDress(out, seed);
   return out;
+}
+
+/**
+ * 1-3's split, Matt's 70/30 (11-04, W1-REBUILD-PLAN.md): 70% of the petals on the way everyone takes and 15% on EACH road, so one play
+ * down either road reaches 85% and the goal (75%) is always in reach, and all of them takes both roads (a replay). Run after the petal
+ * pass, which lays the trail and fills the long gaps: each road is filled to 15/70 of the shared petals, from even spots along its
+ * branches (clear of their snakes) or its floor (clear of its rocks), each petal kept only where the pass's own rules still hold (six a
+ * screen, no rows, no clumps).
+ */
+function splitPetals(st: GeneratedStage & { proto: ProtoExtras }) {
+  const sp = st.proto.beats.find((b) => b[2].startsWith('Spike'));
+  if (!sp) return;
+  // (the split itself: from the high road's first branch to the end of its perch; the floor before the fork and past the perch is the
+  // way everyone takes)
+  const hb = st.platforms.filter((p) => p.style === 'branch' && p.x >= sp[0] && p.x < sp[1] && p.y < 470);
+  if (!hb.length) return;
+  const s0 = Math.min(...hb.map((p) => p.x)), s1 = Math.max(...hb.map((p) => p.x + p.width));
+  const isPet = (c: Collectible) => c.type === 'flower' || c.type === 'leaf';
+  const inSplit = (c: Collectible) => c.x >= s0 && c.x < s1;
+  const want = Math.round((st.collectibles.filter((c) => isPet(c) && !inSplit(c)).length * 15) / 70);
+  const high: Array<{ x: number; y: number }> = [];
+  for (const p of st.platforms) {
+    if (p.style !== 'branch' || p.x < s0 || p.x >= s1 || p.y >= 470) continue;
+    for (let fx = p.x + 40; fx <= p.x + p.width - 40; fx += 30) {
+      if (st.enemies.some((e) => Math.abs(e.y + 14 - p.y) < 20 && Math.abs(e.x - fx) < 70)) continue;
+      high.push({ x: fx, y: p.y - 34 });
+    }
+  }
+  const low: Array<{ x: number; y: number }> = [];
+  for (let fx = s0 + 60; fx < s1 - 40; fx += 30) {
+    const floor = st.platforms.some((p) => p.y === G && p.x <= fx - 20 && p.x + p.width >= fx + 20);
+    const rock = st.platforms.some((p) => p.y < G && p.y > G - 130 && p.x <= fx + 45 && p.x + p.width >= fx - 45);
+    // (at his feet, or a hop up: petals all at one height along the floor would stand in rows)
+    if (floor && !rock) low.push({ x: fx, y: low.length % 2 ? G - 80 : G - 34 });
+  }
+  let id = Math.max(0, ...st.collectibles.map((c) => c.id)) + 1;
+  // (the two roads share the screens' cap, six petals a screen: their petals are laid at even slots along the split, a high one then a
+  // low one, each slot taking the nearest free spot on its road, so the cap is spent evenly and each road gets its share)
+  const roads = ([[high, (c: Collectible) => c.y < 470], [low, (c: Collectible) => c.y >= 470]] as const).map(([spots, on]) => ({
+    spots,
+    have: st.collectibles.filter((c) => isPet(c) && c.x >= s0 && c.x < s1 && on(c)).length,
+  }));
+  const tryAt = (r: (typeof roads)[number], x: number, reach: number) => {
+    const near = r.spots.filter((q) => Math.abs(q.x - x) <= reach).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x));
+    for (const q of near) {
+      const c: Collectible = { id, type: 'flower', botanicalVariant: 'hibiscus', x: q.x, y: q.y, collected: false, bobPhase: (q.x * 0.031) % 6.28 };
+      const pets = [...st.collectibles.filter(isPet), c];
+      if (busiestScreen(pets).n > PER_SCREEN || rowExtras(pets).size || clumpExtras(pets).size) continue;
+      st.collectibles.push(c);
+      id++;
+      r.have++;
+      return true;
+    }
+    return false;
+  };
+  const slots = Math.max(1, 2 * want - roads[0].have - roads[1].have);
+  const step = (s1 - s0) / slots;
+  for (let i = 0; i < slots; i++) {
+    const r = roads[i % 2];
+    if (r.have < want) tryAt(r, s0 + step * (i + 0.5), step);
+  }
+  // (and any road still short takes what room is left anywhere along it)
+  for (const r of roads) for (let x = s0; x < s1 && r.have < want; x += 60) tryAt(r, x, 30);
 }
 
 /**
@@ -1784,7 +1849,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
               // (a pit under each gap alone, ground under each stump and branch: one long pit under them all was a floor to walk along
               // under every branch and past every snake on them, the route the fixed first-timer bot took, 1-3's goal out of reach)
               for (const g of air) softPit(g.x0, g.x1);
-              for (const q of between) bank(q.x0, q.x1, G);
+              // (never above the ledge it holds: Easy's trace lands a little lower each time, easyNode, so a branch can sit under G)
+              for (const q of between) bank(q.x0, q.x1, q.y > G ? q.y + (q.surface === 'branch' ? 24 : 0) : G);
             } else softPit(groundEnd, l.x0);
           }
           prevY = l.y;
@@ -1892,7 +1958,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const fork = x;
       const hy = G - Math.round(R.r(170, 185));
       let bx = x + 40;
-      const n = R.i(8, 9);
+      // (thirteen or fourteen branches: room for each road's 15% of the petals under the six-a-screen cap, Matt's 70/30, 11-04)
+      // (two more on Easy, which carries more petals overall, so its roads need more room for their share)
+      const n = R.i(13, 14) + (easy ? 2 : 0);
       let last: Platform | null = null;
       for (let k = 0; k < n; k++) {
         const w = Math.round(R.r(200, 270));
