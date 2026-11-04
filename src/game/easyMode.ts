@@ -202,7 +202,7 @@ export function easyKeep(enemies: Enemy[]): Set<Enemy> {
   for (const e of [...enemies].sort((a, b) => a.x - b.x)) {
     const n = seen.get(e.type) ?? 0;
     seen.set(e.type, n + 1);
-    if (n === 0 || n % 2 === 0) keep.add(e);
+    if (n === 0 || n % 2 === 0 || e.easyKeep) keep.add(e);
   }
   return keep;
 }

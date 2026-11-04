@@ -322,7 +322,7 @@ const FALL_HEAD = 280;
 /** 1-3 Branch Snakes (the rebuild, R-159.1): Normal asks Matt's share of its snakes, 75% (goals.ts withGoals; the lead 11-04: his band
  *  stands, reachable on either road, proven with the fixed adult bot on each); Easy asks what the fixed kid bot made on every roll,
  *  counted on Easy's own stage (easyGoalCounted) */
-export const SNAKE_EASY_13 = 8;
+export const SNAKE_EASY_13 = 18;
 
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
@@ -412,7 +412,8 @@ function splitPetals(st: GeneratedStage & { proto: ProtoExtras }) {
     if (p.style !== 'branch' || p.x < s0 || p.x >= s1 || p.y >= 470) continue;
     for (let fx = p.x + 40; fx <= p.x + p.width - 40; fx += 30) {
       if (st.enemies.some((e) => Math.abs(e.y + 14 - p.y) < 20 && Math.abs(e.x - fx) < 70)) continue;
-      high.push({ x: fx, y: p.y - 34 });
+      // (at his feet or a hop up, as along the floor)
+      high.push({ x: fx, y: p.y - (high.length % 2 ? 80 : 34) });
     }
   }
   const low: Array<{ x: number; y: number }> = [];
@@ -1876,7 +1877,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         // (a fight snake stands at least 150 px past where he lands, research §6 / R-159, and short of where he takes off again)
         const land = tr.landings.find((q) => q.step === l.step);
         // (and room after it to fight before the take-off: a snake near the edge is jumped over on the way on, never met)
-        if (l.surface !== 'apron' && land && l.x1 - 150 - (land.toX + 170) >= 0) wide.push(l);
+        // (the climax, the densest node, packs its chain closer: the rule's 150 px past the landing and 80 px before the take-off, so its
+        // whole-bar ledges, about 295 px, each hold a fight)
+        const [past, room] = o.real ? [150, 80] : [170, 150];
+        if (l.surface !== 'apron' && land && l.x1 - room - (land.toX + past) >= 0) wide.push(l);
       }
       checkpoints.push({ x: tr.checkpoint.x, y: tr.checkpoint.y, reached: false });
       // the fight snakes: on the widest ledges, past where he lands, so the punch falls between the hops
@@ -1884,8 +1888,13 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const picks = R.shuffle([...wide]).slice(0, o.snakes ?? 0).sort((a, b) => a.x0 - b.x0);
       for (const l of picks) {
         const land = tr.landings.find((q) => q.step === l.step)!;
-        const sx = Math.min(l.x1 - 150, land.toX + 170 + R.r(0, 30));
+        const [past, room] = o.real ? [150, 80] : [170, 150];
+        const sx = Math.min(l.x1 - room, land.toX + past + R.r(0, o.real ? 15 : 30));
         snake(sx, l.y, 12);
+        // (the fights between the hops stay whole on Easy, the ramp's and the climax's, their punch-daze-stomp on the quarter between
+        // half notes being 1-3's own: Easy keeps every other animal elsewhere, and without them these nodes were runs of hops like 1-1's
+        // and 1-2's, the fun gate's moves alike; Easy's longer daze and tell, R-159.1, keep them a cruise)
+        E[E.length - 1].easyKeep = true;
       }
       for (const l of tr.ledges) if (l.surface !== 'apron' && l.x1 - l.x0 >= 120 && !picks.includes(l)) flower((l.x0 + l.x1) / 2, l.y - 34, 'orchid');
       x = tr.x1;
@@ -1953,9 +1962,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     beat('Ramp: snakes on the branches, then the teaching vault', () => {
       // (soft pits here: the first-timer bot lost 3-7 lives a run with real drops in both the ramp and the climax; the bars rolled)
       // (two runs of it, low stumps to hop between them: one long run of the same rhythm reads as a repeat, not a dance)
-      rollNode(5, ['h.......', '....h...', 'h.......', 'h...h...'], { snakes: 4 });
+      rollNode(5, ['h.......', '....h...', 'h.......', 'h.......'], { snakes: 6 });
       lowStumps();
-      rollNode(5, ['h.......', 'h...h...', '....h...', 'h.......'], { snakes: 4 });
+      rollNode(5, ['h.......', 'h.......', '....h...', 'h.......'], { snakes: 6 });
       run(R.r(120, 160));
       flag();
       // the vault, taught on the way everyone takes: over a soft pit onto a raised bank only the spring reaches
@@ -1970,17 +1979,20 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const fork = x;
       const hy = G - Math.round(R.r(170, 185));
       let bx = x + 40;
-      // (thirteen or fourteen branches: room for each road's 15% of the petals under the six-a-screen cap, Matt's 70/30, 11-04)
-      // (two more on Easy, which carries more petals overall, so its roads need more room for their share)
-      const n = R.i(13, 14) + (easy ? 2 : 0);
+      // (eight or nine long branches: the split long enough for each road's 15% of the petals under the six-a-screen cap, Matt's
+      // 70/30, 11-04, without a long run of hops that reads like 1-1's and 1-2's (the fun gate's moves alike); two more on Easy, which
+      // carries more petals overall, gets longer branches, not more hops)
+      const n = R.i(8, 9);
       let last: Platform | null = null;
       for (let k = 0; k < n; k++) {
-        const w = Math.round(R.r(200, 270));
+        const w = Math.round(easy ? R.r(480, 560) : R.r(380, 460));
         const top = hy + Math.round(R.r(-30, 25));
         last = branch(bx, bx + w, top);
         // (two snakes on its branches and the one on the vault's lip: three, as many as the low road's, so neither road leaves more of
         // the stage's goal behind than the other, the lead 11-04)
-        if (k === 1 || k === n - 3) snake(bx + w * 0.62, top, w - 150);
+        // (two on its branches and the one on the vault's lip: three, as the low road's; kept on Easy, as the low road's are: the roads
+        // stay even, and the fights break up the hops, 1-3's own)
+        if (k === 1 || k === n - 3) { snake(bx + w * 0.62, top, w - 150); E[E.length - 1].easyKeep = true; }
         // (petals: a small bonus on each road, about the same on both, the core on the way everyone takes (Matt, 11-04: "keep the core
         // amount on places that the player always have to use"): here one branch's pair and the perch's three; below, five)
         else if (k === 2) row(bx + 40, bx + w - 40, top - 34, 2, 'hibiscus');
@@ -1991,6 +2003,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const lip = last!.x + last!.width - TRICK.vaultLip;
       snake(lip, last!.y, 12);
       E[E.length - 1].vaultHome = { x: lip, y: last!.y - 14 };
+      E[E.length - 1].easyKeep = true;
       const perch = branch(last!.x + last!.width + TRICK.vaultRiseGap, last!.x + last!.width + TRICK.vaultRiseGap + 220, last!.y - TRICK.vaultRise);
       row(perch.x + 40, perch.x + perch.width - 40, perch.y - 34, 3, 'orchid');
       const end = perch.x + perch.width + 60;
@@ -2002,7 +2015,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         if (end - x < 200) break;
         // (three snakes on the low road, so a player on it can make the stage's goal: the high road's are the bonus, the lead 11-04)
         // (a petal past each, for the punch: with its rocks' petals, the low road's bonus matches the high road's)
-        if (lowSnake < 3 && x - fork > 500 + lowSnake * 650) { const sx = x; snake(sx + 60, G, 110); lowSnake++; run(R.r(220, 260)); flower(sx + 200, G - 34, 'hibiscus'); continue; }
+        if (lowSnake < 3 && x - fork > 500 + lowSnake * 650) { const sx = x; snake(sx + 60, G, 110); E[E.length - 1].easyKeep = true; lowSnake++; run(R.r(220, 260)); flower(sx + 200, G - 34, 'hibiscus'); continue; }
         logHop(R.i(30, 44));
       }
       x = Math.max(x, end) + R.r(80, 120);
@@ -2055,10 +2068,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     beat('Climax', () => {
       flag();
       // (the densest node: half notes with the hop down on the quarter between, rolled, ending at the run to the shrine)
-      rollNode(5, ['h.......', 'h..o....', 'h...h..o', 'h.......'], { real: true, snakes: 5 });
+      rollNode(5, ['h.......', 'h..o....', 'h.......', 'h.......'], { real: true, snakes: 99 });
       // (a ledge snake between the two halves, a different fight from the branch ones)
       snakeLedge();
-      rollNode(5, ['h..o....', 'h.......', 'h.......', 'h...h..o'], { real: true, snakes: 5 });
+      rollNode(5, ['h..o....', 'h.......', 'h.......', 'h.......'], { real: true, snakes: 99 });
     });
     beat('Cool-down', () => {
       // a short slope of ground to the shrine (the shrine stands near the end)

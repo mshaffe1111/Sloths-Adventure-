@@ -61,28 +61,31 @@ The twist (rule 2): the vault's spring holds about 3 quarters in the air, so it 
   onto a branch. Or, if you want the crumble, it's taught first in 1-3 (a soft one over a soft pit) and 1-4 reuses it.
 
 ## Goal band, proven per road (2026-11-04, the lead's ruling: Matt's 70-80% band, reachable on either road)
-Normal asks 75% of the snakes (goals.ts withGoals); Easy asks the fixed kid bot's lowest run on five rolls.
+Normal asks 75% of the snakes (goals.ts withGoals); Easy asks the fixed kid bot's lowest run on five rolls (18; it made 18-23).
 Each road carries three snakes of its own (high: two on its branches and the vault's lip; low: three on the floor), and the ramp's
 branches stand over ground with a pit under each gap alone (one long pit under them was a floor to walk along beneath every snake).
+The ramp's and climax's fights (a snake on every whole-bar ledge, the climax packed to the rule's 150 px past a landing and 80 px
+before the take-off) and both roads' snakes stay whole on Easy (Enemy.easyKeep): without them 1-3 was runs of hops like 1-1's and
+1-2's (the fun gate's moves alike, the lead 11-04: pulled away by its own identity, the punch-daze-stomp between the hops).
 The fixed adult first-timer, seeds 1-8, steered down one road (its route traced with the other shut; on the low road the high road's
-branches and snakes are out of play, the goal as loaded, so its three count as missed). Measured on the split as it ships (13-14
-branches, 15-16 on Easy):
+branches and snakes are out of play, the goal as loaded, so its three count as missed):
 
 | Seed | High road: snakes / goal | Low road: snakes / goal |
 |---|---|---|
-| 1 | 20 / 18 | 20 / 18 |
-| 2 | 19 / 17 | 19 / 17 |
-| 3 | 19 / 17 | 19 / 17 |
-| 4 | 20 / 18 | 20 / 18 |
-| 5 | 17 / 17 | 18 / 17 |
-| 6 | 21 / 17 | 19 / 17 |
-| 7 | 17 / 17 | 18 / 17 |
-| 8 | 20 / 19 | 21 / 19 |
-Every run reached the shrine in 147-179 s. The high road's margin is thin (two rolls at exactly the goal).
+| 1 | 24 / 21 | 24 / 21 |
+| 2 | 22 / 20 | 23 / 20 |
+| 3 | 21 / 20 | 21 / 20 |
+| 4 | 24 / 21 | 24 / 21 |
+| 5 | 25 / 22 | 24 / 22 |
+| 6 | 24 / 21 | 22 / 21 |
+| 7 | 24 / 22 | 22 / 22 |
+| 8 | 24 / 21 | 24 / 21 |
+Every run reached the shrine in 146-170 s, losing 0-4 lives (the packed climax costs the most). stage13.test.ts holds every roll, both
+settings, to goal <= shared + the smaller road - 5% (snakes and petals).
 
 ## Petals on the split, Matt's 70/30 (11-04, W1-REBUILD-PLAN.md)
 70% of the petals on the shared way, 15% on EACH road, so one play down either road reaches 85%. The split is the stretch under and
 along the high road (its first branch to the end of its perch). After the petal pass lays the trail, protoStage.ts splitPetals fills
 each road to 15/70 of the shared petals, at even slots, each petal kept only where the pass's rules hold (six a screen, no rows, no
-clumps). The six-a-screen cap is why the high road is 13-14 branches (15-16 on Easy, which carries more petals): both roads share the
-screens. stage13.test.ts holds every roll, Normal and Easy, to each road 13-17% and the shared way 66-74%.
+clumps). The six-a-screen cap counts both roads together, so the high road is eight or nine long branches (longer still on Easy, which carries
+more petals). stage13.test.ts holds every roll, Normal and Easy, to each road 13-17% and the shared way 66-74%.

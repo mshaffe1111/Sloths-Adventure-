@@ -234,6 +234,8 @@ export interface Enemy {
   trick?: import('./w1Tricks.ts').Trick;
   /** a stomp vault's snake (R-159.1): the only way across its drop, so it comes back at its spot when he respawns; once back, finishing
    *  it again does not count toward the stage's goal (no farming the count at a flag) */
+  /** Easy keeps this animal too (easyMode.ts easyKeep keeps every other one): 1-3's climax chain, its punch-daze-stomp between hops */
+  easyKeep?: boolean;
   vaultHome?: { x: number; y: number; back?: boolean };
   /** World 1's vine snake: the liana it hangs on, and how far down it from the top */
   vineId?: number;
