@@ -68,9 +68,74 @@ def shot(name, tag):
     return Image.open(SHOTS / f'{src}-{tag}.png').convert('RGBA')
 
 
+MARKS = json.loads((SHOTS / 'marks.json').read_text()) if (SHOTS / 'marks.json').exists() else {}
+
+
+def draw_stars(img, cx, cy, z):
+    """the stun's circling stars (code still to write) over a dazed snake's head; cx, cy are the snake's own point"""
+    import math
+    d = ImageDraw.Draw(img)
+    k = z / 0.72
+    for i in range(5):
+        a = i * 2 * math.pi / 5 + 0.4
+        x, y = cx + 46 * k * math.cos(a) + 14 * k, cy - 64 * k + 14 * k * math.sin(a)
+        r = 17 * k
+        pts = []
+        for j in range(10):
+            rr = r if j % 2 == 0 else r * 0.42
+            aa = -math.pi / 2 + j * math.pi / 5
+            pts.append((x + rr * math.cos(aa), y + rr * math.sin(aa)))
+        d.polygon(pts, fill=(255, 226, 90, 255), outline=(120, 70, 10, 255))
+
+
+def marked(name, tag, img):
+    """the escalation boards' paste-ups, placed at the points the shot recorded"""
+    m = MARKS.get(f'{name}-{tag}')
+    if not m:
+        return img
+    W, H = img.size
+    side = tag == 'side'
+    z = m['zoom']
+    k = z / 0.72
+    sz = 26 if side else 19
+    sy = H * (0.29 if side else 0.2)
+    if 'stars' in m:
+        draw_stars(img, m['stars'][0], m['stars'][1], z)
+        stamp(img, 'PASTE-UP: the stun stars (code to write)', (W * 0.04, sy), sz)
+    if 'glint' in m:
+        d = ImageDraw.Draw(img)
+        cx, cy = m['glint'][0] + 40 * k, m['glint'][1] + 10 * k
+        for dx, dy, r in [(-20, -6, 16), (16, -16, 11), (30, 6, 8)]:
+            x, y, rr = cx + dx * k, cy + dy * k, r * k
+            d.polygon([(x, y - rr), (x + rr * 0.25, y - rr * 0.25), (x + rr, y), (x + rr * 0.25, y + rr * 0.25), (x, y + rr), (x - rr * 0.25, y + rr * 0.25), (x - rr, y), (x - rr * 0.25, y - rr * 0.25)], fill=(255, 255, 235, 240))
+        stamp(img, 'PASTE-UP: the armoured coil look (tight coil + glint)', (W * 0.04, sy), sz)
+    vines = [m[v] for v in ('vine1', 'vine2') if v in m and 0 < m[v][0] < W]
+    for vx, vy in vines:
+        # head-down on the liana, the tell's open eyes facing the take-off ledge
+        kk = 0.8 * k
+        rot = SNAKE.resize((int(SNAKE.width * kk), int(SNAKE.height * kk)), Image.LANCZOS).rotate(-90, expand=True, resample=Image.BICUBIC)
+        img.alpha_composite(rot, (int(vx - rot.width / 2), int(vy - rot.height / 2)))
+    if vines:
+        stamp(img, 'PASTE-UP: the vine snake (art to make; its look is Matt\'s choice)', (W * 0.04, sy), sz)
+    if 'plate' in m:
+        px_, py_ = m['plate']
+        plate = kit('platePressed')
+        ps = 1.55 * k
+        paste(img, plate, px_, py_ + 6, ps)
+        ball = COIL.resize((COIL.height, COIL.height), Image.LANCZOS)
+        paste(img, ball, px_, py_ - plate.height * ps * 0.45, 0.85 * k, -30)
+        gx, gy = m['gate']
+        if gx < W:
+            paste(img, kit('gateOpen'), gx, gy + 4, 1.5 * k)
+        stamp(img, 'PASTE-UP: the ball (art to make) on the kit plate; the gate to the lair opens', (W * 0.04, sy), sz - 2)
+    return img
+
+
 def pasteups(name, tag, img):
     W, H = img.size
     side = tag == 'side'
+    if name.startswith('esc'):
+        return marked(name, tag, img)
     if name == 'kick-5-switch-bg':
         # the rolled boa stops on the World 1 kit's log plate (pressed, glowing) and the woven gate beyond stands open: the way on.
         # Kit art already packed; the ball is the paste-up still to paint
@@ -166,9 +231,51 @@ BOARDS = {
     'vine-snake': [
         ('vine-1-lianas', 'The vine snake hangs among the lianas. Grab it: a bite. Punch it: it stiffens into a pole.'),
     ],
+    # ── round 3: the escalation, one board per stage (where each move is taught, then combined)
+    'stage-1-3-branch-snakes': [
+        ('esc13-1-asleep', 'TEACHES the punch: the sleeping snake is the free first punch.'),
+        ('esc13-2-stun', 'TEACHES the stun: punch the coiled lunge in its 0.5 s tell and it is dazed 1.5 s.'),
+        ('esc13-3-vault', 'TEACHES the vault: the first stomp vault, over a soft pit (a miss costs nothing).'),
+    ],
+    'stage-1-4-up-the-kapok': [
+        ('esc14-1-shelf', 'PAIRS the stun with the climb: a snake on the narrow climb shelf, the only way up.'),
+        ('esc14-2-pass', 'Punch it and climb past while the stars turn. Without the punch, its lunge knocks him off the shelf.'),
+    ],
+    'stage-1-5-where-she-walked': [
+        ('esc15-1-boa', 'TEACHES the kick: a lone coiled boa on a safe log, armoured by its look.'),
+        ('esc15-2-kick', 'A punch: "TOUGH!"; a stomp bounces off. The kick breaks the coil (nothing to bowl into yet).'),
+        ('esc15-3-branch-vault', 'Then the vault off a snake on the creaking branches, the only way over a real drop (the ground cut away in this mock).'),
+    ],
+    'stage-1-6-first-lianas': [
+        ('esc16-1-alone', 'MEETS the vine snake: one alone on a liana over a safe dip, its tell readable from the take-off ledge.'),
+        ('esc16-2-chain', 'Then two in the liana chain: punch it stiff, or swing the other liana.'),
+    ],
+    'stage-1-8-the-long-branch': [
+        ('stomp-1-approach', 'COMBINES: the long branch\'s gaps, past any jump, each with a snake on its lip.'),
+        ('stomp-3-vault', 'Two stomp vaults over its real pits.'),
+        ('esc18-1-stun', 'A stun on the way.'),
+        ('esc18-2-vine', 'A vine snake on a liana over a pit: stiffen it, or go round.'),
+    ],
+    'stage-1-9-the-boas-branches': [
+        ('esc19-1-vault', 'MASTER, all three in a row: the vault...'),
+        ('esc19-2-stun', '...the stun (the coiled boa waits on the branch just ahead)...'),
+        ('esc19-3-bowl', '...the kick that bowls the boa off its branch...'),
+        ('esc19-4-lair', '...onto the switch: the plate glows and the gate to the lair (Venom Fang, 1-10) opens.'),
+    ],
+}
+TITLES = {
+    'stage-1-3-branch-snakes': '1-3 Branch Snakes: teaches the punch, the stun and the vault',
+    'stage-1-4-up-the-kapok': '1-4 Up the Kapok: the stun paired with the climb',
+    'stage-1-5-where-she-walked': '1-5 Where She Walked: teaches the kick; the vault over a real drop',
+    'stage-1-6-first-lianas': '1-6 First Lianas: the lianas, and the vine snake met',
+    'stage-1-8-the-long-branch': '1-8 The Long Branch: vault + stun + vine snake combined',
+    'stage-1-9-the-boas-branches': "1-9 The Boa's Branches: all three in a row, the last bowl opens the lair",
 }
 
+ONLY = sys.argv[3] if len(sys.argv) > 3 else ''
 for board, beats in BOARDS.items():
+    if ONLY and not board.startswith(ONLY):
+        continue
     for tag in ('side', 'up'):
         tiles = []
         for name, cap in beats:
@@ -199,7 +306,8 @@ for board, beats in BOARDS.items():
         th = max(t.height for t in tiles)
         title_h = 54
         sheet = Image.new('RGBA', (max(cols * tw + (cols + 1) * 12, 1180), rows * th + (rows + 1) * 12 + title_h), (14, 18, 14, 255))
-        ImageDraw.Draw(sheet).text((14, 14), f'R-159.1 show-first: {board.replace("-", " ")} ({"sideways" if tag == "side" else "upright"}; real game, existing frames)', font=font(22), fill=(253, 230, 138))
+        title = TITLES.get(board, f'R-159.1 show-first: {board.replace("-", " ")}')
+        ImageDraw.Draw(sheet).text((14, 14), f'{title} ({"sideways" if tag == "side" else "upright"}; real game, existing frames)', font=font(22 if board not in TITLES or tag == 'side' else 17), fill=(253, 230, 138))
         for i, t in enumerate(tiles):
             sheet.alpha_composite(t, (12 + (i % cols) * (tw + 12), title_h + 12 + (i // cols) * (th + 12)))
         sheet.convert('RGB').save(OUT / f'{board}-{tag}.jpg', quality=88)

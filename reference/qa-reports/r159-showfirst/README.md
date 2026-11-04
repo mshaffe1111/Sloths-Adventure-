@@ -42,3 +42,19 @@ at a time. Made with `tools/art/combat/mock-triangle.mjs` (the beats) and `tools
   log plate (pressed, glowing) and the woven gate stands open beyond (kit art already packed). Upright, the 5th beat frames the
   plate and the gate.
 - **The vine snake:** look (a) vine-coloured or (b) an obvious snake: a choice for Matt, with the lead.
+
+## Round 3: the escalation, one board per stage (stage-1-{3,4,5,6,8,9}-*-{side,up}.jpg)
+Each board carries its stage's name and shows where each move is TAUGHT, PAIRED, COMBINED or used all together (MASTER).
+Real game, existing frames, the same paused-engine method; the stars, the glint, the vine snake, the ball and the kit plate are
+pasted up at the screen points the shot recorded (marks.json) and stamped PASTE-UP.
+- **1-3 Branch Snakes:** the sleeping snake (punch), the lunge punched in its tell (stars), the first stomp vault over a soft pit.
+- **1-4 Up the Kapok** (layout 2, which has the shelf snakes): the snake on the narrow climb shelf; punched, he climbs past it.
+- **1-5 Where She Walked** (the lead's call: the kick is taught here, not 1-6): a lone coiled boa on a safe log (the stage has no boa
+  today: its snake dressed as one in the mock), the real kick stepped through the engine, then the vault off a snake on the creaking
+  branches with the ground under them lowered out of sight (mock only) so it is the only way over a real drop.
+- **1-6 First Lianas:** the vine snake met alone on a liana, seen from the take-off ledge, then two in the chain (lianas held still in
+  the mock so the paste-up sits on its liana).
+- **1-8 The Long Branch:** the stomp board's two 1-8 shots (vault gaps past any jump), a stun, a vine snake on a liana over a pit.
+- **1-9 The Boa's Branches:** vault, stun, kick, then the ball on the plate with the gate to the lair open, in one stretch.
+Named: the kick frames show the engine's own "STOPPED!" (the coil counts as committed today); the build adds "TOUGH!"/the bowl.
+The pits under the vaults still read as mist or a stream bottom, not a fall: the stage-art lane (the lead's call).
