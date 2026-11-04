@@ -197,3 +197,10 @@ Matt found it on his phone. Rules from now on:
 - **Notes, not rotation (Matt, 2026-11-02).** Every helper keeps reference/notes/<name>.md like the lead's STATUS.md and reads it after
   every compression (the start-up print reminds it). Long-running helpers carry on; we do not rotate or retire for memory. The lead checks
   a helper's notes file at each check-in: stale notes are a send-back.
+
+## 8e. Standard work and yokoten (Matt, 2026-11-04)
+Matt accepts going a little over budget up front "with the understanding that smarter and more efficient gets more things done afterwards.
+And it may even be less helpers... because we're much more efficient." The lead pushes the supervisors to hold every helper to the method
+file and its best measured result; the best way found by any helper becomes everyone's way the same day (roles/SUPERVISOR.md "Standard
+work"). The measure: the same kind of job costs less each time (GAMEPLAN §5, §8); fewer helpers doing more is the goal, not more helpers.
+

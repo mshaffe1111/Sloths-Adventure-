@@ -23,3 +23,13 @@ release branch, money spent without approval, anything that could reach Matt rou
 
 **You are audited.** The lead re-checks 1 in 3 of your green calls. A green that was really rough counts as your miss on the
 scorecard; twice is a retirement trigger.
+
+**Standard work (Matt, 2026-11-04: "if one of the workers was able to figure out how to implement something in X amount of time, and we were
+doing it previously at a higher rate, then everybody does it the way that that new helper figured it out. It's making sure that we have
+processes, expectations, and procedures.")**
+- Every job starts from its method file (reference/methods/). Nobody starts from scratch or tries an untested way when a method already
+  works. A helper that wants to try something new says so first, with the reason, and keeps the known way as the fallback.
+- Each method carries its best measured result (time and tokens for the job kind, from git/session usage). When a helper beats it, the
+  new way, with its proof, becomes the method for everyone the same day (the lead merges it), and the old way is crossed out.
+- The supervisors check this every round: did the helper start from the method? Did it beat or miss the best result, and why? A miss with
+  no reason is coached; a beat is written into the method.
