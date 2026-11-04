@@ -17,7 +17,7 @@ second batch, MATT-RESEARCH-2026-11-04.md). Rules it became: STAGE-RULES §0 and
 Already there (don't rebuild): coyote time and jump buffer (FORGIVE), variable jump height (PHYS.cutV), swimming (6-7), patience/stillness
 spots (patience.ts: mist, fronds), curated layouts that change on each fresh entry (gen2 seeds `variant % n`).
 
-## The approach: prove it on World 1 first, then roll out
+## The approach: prove it on World 1 first, then roll out (MATT APPROVED 2026-11-04)
 The research's own rule 4 ("freeze the core before scaling from 1 world to 10") and our D25 lesson (estimate from measured history) say
 the same thing: rebuild ONE world to the new bar, Matt plays it and rates it, and only then roll the method out. The World 1 slice
 gives us the real hours per world, so the rollout estimate is measured, not guessed.
