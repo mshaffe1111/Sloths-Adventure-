@@ -43,3 +43,17 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
 - LESSON: botrec replays Pokey's fields only; other animals run their own AI in the browser, so a replay can drift from the logged run (1-3 27 s: snake 60 px off, no daze shown). Prove a rule with the headless log or a stepped clip; use botrec for feel, not for hit-by-hit proof.
 - Waiting on the lead: teach the first-timer bot stomp/kick from Dot's words (shared measure); 1-3 wording + counts; 1-9 goal. Then placements (1-3 cut, vault spots, 1-5 kick teach + stump cache, 1-6/1-8 vine snakes, 1-9 master + switch), pits art, proofs.
 - SLIP (2026-11-04 ~12:55 ET), a repeat of the Nov 1 lesson: two commit ids typed by hand in messages to the lead ("a7c...", then "ae8a8d7c"; the real one 0a9e74a3). Countermeasure (standard work from now): a message that names a commit carries the id copied from a `git log --oneline -1` printed in the same turn, the whole line pasted; never an id written from memory.
+- LEAD'S MECHANISM (2026-11-04, replaces my countermeasure above): no commit ids in messages at all. Say what was pushed and to which
+  branch; the lead and supervisors read ids from git.
+- Matt's lines (2026-11-04, via the lead): 1-3 tip "Punch to daze it, then hop on it!" and 1-9 opening "A coiled boa! Punches bounce
+  off. Kick it!" are in (dotLinesData new text). The vault line "Stomp it and hold jump to fly across!" FAILS dotLines.test.ts's
+  touch-words gate ("hold jump" is listed as a keyboard phrase). It's not in; touch options were sent to the lead. LESSON: run the Dot
+  line gates on a proposed line BEFORE it goes to Matt, not after he approves it.
+- Bot defect found, reported to bot-fix (theirs to fix): thumbify() re-arms "late lift-off" every frame (lastSteer is never updated on
+  the release early-return), so an intend() of {} never stops him. The kid can't stop by easing off. My trick moves time the kick and
+  hop for a walking thumb, so they hold either way.
+- Test-setup LESSON: the kid only starts looking after who.look (1.2 s). A bare-world case needs its animal far enough down the way
+  (x 1000 from a start at 300), or the kid "doesn't react" for a reason that isn't the rule under test.
+- Taught-bot counts (after the line merge, Worlds 1-10 baseline): 1-3 adult 2/5/7 of 6-8, kid 0 of 3-4 (kid 0 before too); 1-9 adult
+  19-20 of 23, kid 5-7 of 10, but 1-9 adds "water" x3 every roll: masterStretch's real-drop vault, untaught until the vault line lands.
+  Goals SNAKE_GOAL_13 / GUARD_GOAL_19 wait for the vault line + the bot's vault, then are set from its runs.
