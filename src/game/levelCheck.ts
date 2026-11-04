@@ -110,8 +110,12 @@ export function heldMaxGap(a: Platform, b: Platform, allowDouble: boolean): numb
   const r = allowDouble ? Math.max(reachJumpHeld(dyJ, false), reachJumpHeld(dyJ, true)) : reachJumpHeld(dyJ, false);
   return r < 0 ? -1 : r * MARGIN - TAKEOFF_SLACK;
 }
-/** the validator's rule for whether a double jump may be counted on a stage (it is taught by stage 6, 1-6) */
-export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6;
+/**
+ * the validator's rule for whether a double jump may be counted on a stage: from stage 6 (1-6's practice spot), and in 1-1, which
+ * teaches it on its practice shelf before any gap needs it (the World 1 rebuild, 2026-11-04: 1-1's climb into the canopy is the double
+ * jump's). 1-2 to 1-5 are still checked without it (the lead's call, asked 11-04).
+ */
+export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6 || (cfg.worldIndex === 1 && cfg.miniIndex === 1);
 
 /** Can the player get from platform a to platform b with jumps (and a double jump)? */
 export function jumpOK(a: Platform, b: Platform, allowDouble = true): { ok: boolean; gap: number } {
