@@ -115,6 +115,13 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["hint.1-9.guard", "1-9", "stage hint", "move", "A guard! Wait for it to rear and strike, then tap to punch it", null, null, "tap", "boa guard"],
   ["boss.venom.start", "1-10", "boss", "move", "When he rears back, get off the ground! Climb the tree, jump on the stump or grab the vine. Then punch his head.", "When he rears, get up high!", "Tap his head when it comes down.", "flick-up", "tree, stump and vine"],
   ["hint.1-2.follow", "1-2", "stage hint", "info", "Follow the petals", "Follow the petals", null, null, "petal trail"],
+  // (w1-rhythm, 2026-11-04: the beat-built 1-2 and 1-5, w1Rhythm.ts; new lines, need Matt's approval except the snap line)
+  ["hint.1-2.roots", "1-2", "stage hint", "info", "There's something down by the roots...", "There's something down by the roots...", null, null, "the note"],
+  ["hint.1-2.back", "1-2", "stage hint", "info", "Back the other way, up off the snakes!", "Back the other way, up off the snakes!", null, null, "snakes on the bough"],
+  ["hint.1-2.under", "1-2", "stage hint", "info", "Under the bough now. Watch the gaps!", "Under the bough now. Watch the gaps!", null, null, "gaps"],
+  ["hint.1-5.mark", "1-5", "stage hint", "info", "Meeca's mark! Follow her trail", "Meeca's mark! Follow her trail", null, null, "Meeca's mark"],
+  ["hint.1-5.snap", "1-5", "stage hint", "info", "These ones snap! Keep moving", "These ones snap! Keep moving", null, null, "snap twigs"],
+  ["hint.1-5.look", "1-5", "stage hint", "info", "She came this way. Look up there!", "She came this way. Look up there!", null, null, "the keepsake"],
   ["hint.1-2.highlow", "1-2", "stage hint", "info", "Stay on the petals, high or low", "Stay on the petals, high or low", null, null, "petal trail"],
   ["hint.1-2.up", "1-2", "stage hint", "info", "The petals go up", null, null, null, null],
   ["hint.1-3.ropeGuard", "1-3", "stage hint", "info", "A snake guards the rope", null, null, null, "snake by the rope"],

@@ -409,7 +409,6 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   lay.begin('spike', 'jump + vine swing', 'A', 1, x, y);
   lay.ledge(x, x + 320, y, 'apron');
   L.flags.push({ x: x + 100, y });
-  L.lines.push({ x: x + 60, y, text: 'Jump to the vine, let go to fly' });
   let edge = x + 320;
   const far1 = vineChain(lay, edge, y, 1, true, 360);
   lay.ledge(edge - 10, far1 + 40, y + 90, 'catch');
@@ -445,7 +444,7 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   const bRight = Rx + 300;
   lay.ledge(Rx - 180, bRight, B, 'apron');
   L.walls.push({ x0: bRight, x1: bRight + 90, y0: B - 360, y1: B + 40 });
-  L.lines.push({ x: Rx - 160, y: B, text: 'Back the other way!' });
+  L.lines.push({ x: Rx - 160, y: B, text: 'Back the other way, up off the snakes!' });
   // ---- B: the bough, leftwards. Its snakes sit on the bough under the highest branches, where the beat has him 80 px up or more:
   // a player who stays down on the bough meets them (the skip line), one on the beat passes over
   const back = lay.traced('counter', 'hop up + jump down (the bough, leftward)', 'B', -1, bRight, B, barsB, PAL_B, { fit: fitB });
@@ -463,7 +462,7 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   const padL = Lx - 480;
   lay.ledge(padL, Lx + 60, C, 'apron');
   L.walls.push({ x0: padL - 90, x1: padL, y0: C - 360, y1: C + 90 });
-  L.lines.push({ x: padL + 20, y: C, text: 'Now under the bough' });
+  L.lines.push({ x: padL + 20, y: C, text: 'Under the bough now. Watch the gaps!' });
   const PAL_C: Palette = { surfaces: R.pick([['bank', 'bank', 'stump'], ['bank', 'stump', 'stump'], ['bank', 'stump', 'branch']] as Surface[][]), jumpDy: [-60, -30, 0, 30, 50], hopDy: [-40, -30, -20], doubles: 0, yMin: C - 100, yMax: C };
   x = Lx + 60;
   const under = lay.traced('ramp', 'jump + hop (pits now)', 'C', 1, x, C, barsFrom(swung(R, 14, 0.4)), PAL_C);
