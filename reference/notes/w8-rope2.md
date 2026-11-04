@@ -57,3 +57,5 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
 - Taught-bot counts (after the line merge, Worlds 1-10 baseline): 1-3 adult 2/5/7 of 6-8, kid 0 of 3-4 (kid 0 before too); 1-9 adult
   19-20 of 23, kid 5-7 of 10, but 1-9 adds "water" x3 every roll: masterStretch's real-drop vault, untaught until the vault line lands.
   Goals SNAKE_GOAL_13 / GUARD_GOAL_19 wait for the vault line + the bot's vault, then are set from its runs.
+- DEFERRED to tomorrow (the lead, 2026-11-04 ~1:00 PM ET, budget): 1-9's master-stretch rework, the 1-5 kick-teach piece for
+  fix-petals, and the vine snakes in 1-6/1-8. Tonight it's only R-159.1 (to accepted) and the 1-3 rebuild. Keep reports short.
