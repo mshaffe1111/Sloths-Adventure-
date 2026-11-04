@@ -1,16 +1,17 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 11:28 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 11:34 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
 ## Status
 - Reinstated 2026-11-02 by the lead at Matt's ask (D27: the slips came from the setup; GAMEPLAN §3 is now a ladder; self-caught slips
   don't count). New items come in batches when Matt says go (LEAD-PLAYBOOK 8d).
-- **State now (2026-11-04 11:28 AM ET):** roadmapcheck PASS. Phases (sums by script): WebGL 21 h; Phase A (World 1) 77 h (range about 59-106);
-  Phase B 306.5 h (a guess, about 235-420); Phase C 114 h (a guess, about 85-155); alongside 62 h. Day 1 about 580.5 helper hours
-  (gate 588.5), recommended Important 60 h, launch about 640.5 h; lanes 128 / 128 / 128 / 128 / 127.5; building about 16-21 working
-  days (13-28 across the guesses); about 4-4.5 weeks with the 80% trigger (about 464 of 580.5 h). Doc read back.
+- **State now (2026-11-04 11:34 AM ET):** roadmapcheck PASS. Phases (sums by script): WebGL 21 h; Phase A (World 1) 77 h (range about 59-106);
+  Phase B 306.5 h (a guess, about 235-420); Phase C 114 h (a guess, about 85-155); alongside 67.5 h (R-6.40 in it). Day 1 about 586
+  helper hours (gate 594), recommended Important 60 h, launch about 646 h; lanes 129 each; building about 16-22 working days (13-28
+  across the guesses); about 4-4.5 weeks with the 80% trigger (about 469 of 586 h). Doc read back.
+  - R-6.40 (menus A, new game + 3 save slots): add to bot-fix's planned-vs-actual list when it starts (expected 5.5 h, range 4-8).
 - **Bosses in segments (Matt, 11-04):** 2 / 3 / 4 segments for Worlds 1-3 / 4-7 / 8-10, each a phase (arena and attack change).
   R-161.1 8.5 h (2 segments); R-161.2 60 h (12 new phases at R-1.15's ~2.7 h a phase, a guess); R-1.9/R-1.10 noted, hours not
   changed (their designs' parts vs 4: when briefed). Venom Fang's second segment is the first measured phase: re-size R-161.2 from it.
