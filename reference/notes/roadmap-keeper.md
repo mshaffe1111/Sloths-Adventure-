@@ -1,22 +1,24 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 12:42 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 12:47 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
 ## Status
 - Reinstated 2026-11-02 by the lead at Matt's ask (D27: the slips came from the setup; GAMEPLAN §3 is now a ladder; self-caught slips
   don't count). New items come in batches when Matt says go (LEAD-PLAYBOOK 8d).
-- **State now (2026-11-04 12:28 PM ET):** roadmapcheck PASS. Phases (sums by script): WebGL 21 h; Phase A (World 1) 88.5 h (range about 66-123);
-  Phase B 306.5 h (a guess, about 230-425); Phase C 114 h (a guess, about 85-160); WebGL 24 h with R-3.14. Day 1 about 600.5 helper
-  hours (gate 608.5), recommended Important 60 h, launch about 660.5 h; lanes 132 x4 / 131.5 (lane 4 had reached 140: rebalanced
-  through R-161.2's shares); building about 17-22 working days; about 4-4.5 weeks with the 80% trigger (about 480 of 600.5 h). Doc
-  read back at rev 182. STAGE-RULES §0c batch: cited on R-155 and R-150.2; R-155 +10.5 h (about 7 World 1 templates at 1.5 h,
-  range 6-16; fillTo used 24 times in w1Sections.ts, retired stage by stage); R-150.12 template repeats, 1 h, fix-petals (filed as
-  its own item because R-150.1 is already accepted).
+- **State now (2026-11-04 12:47 PM ET):** roadmapcheck PASS. Phases (sums by script, see below): WebGL 24 h; Phase A (World 1) 93.5 h (range
+  about 70-130; 88.5 before R-155.1), marked "before the research ledger"; Phase B 306.5 h (guess, about 230-425); Phase C 114 h
+  (guess, about 85-160); alongside 67.5 h. Day 1 605.5 helper hours (gate 613.5), recommended Important 60 h, launch 665.5 h; lanes
+  133 / 132 / 133 / 133.5 / 133; building about 17-22 working days; about 4-4.5 weeks with the 80% trigger (about 485 of 605.5 h).
+  Doc read back at rev 200 by whole-doc search.
+  - Phase script: lanes from BUILD-PLAN §2 Day 1 rows; strip any "(...)" suffix from the item (R-150.2 rows say "(W8 share)");
+    then move the written sub-parts B to A by hand: R-154 branch 2.5 + vine kinds 4.5 + R-155 World 1 5.5 (was 7; 1-2 and 1-5
+    left for R-155.1) = 12.5. Proof it is the same script: it reproduced 6d0b35f9's A 88.5 / B 306.5 / C 114 / WebGL 24 /
+    alongside 67.5 exactly. Kept at the scratchpad's phases_keep.py (temporary: rebuild from this note after a restart).
 - **D29 (lead, 2026-11-04 12:42 PM ET):** the research was never broken down line by line; three ledger helpers are writing
   reference/research/ledger/. Phase A's 88.5 h is marked "before the research ledger"; no new Phase A estimate until the lead
-  sends the ledger's misses (about 2:30 PM ET) for R-ids and hours. R-155's 1-5 build is ON HOLD until then. Known misses: a BPM
+  sends the ledger's misses (about 2:30 PM ET) for R-ids and hours. R-155's 1-5 build was ON HOLD; corrected by the lead: 1-2 and 1-5 are R-155.1 (w1-rhythm, running), the rest of R-155 stays on hold. R-148.18 closed as A-41 (3342b2cf, lead branch). Known misses: a BPM
   per world with placements on the beat, world-wide mutators, cause-and-effect stage links, a slot order per world, a check
   against earlier worlds (STAGE-RULES §0b.9 draft, §0c.7). R-148.18 (D29's LESSONS line, lead, 0.5 h recommended): launch 661 h,
   recommended Important 60.5 h (script).
@@ -39,7 +41,8 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
   - R-159.1 w8-rope2, start about 8:00 AM, expected 9.5 h (7-14), end about 5:30 PM. R-6.38 w8-rope2 (3 h; pictures done 10:14).
   - R-3.2 warmup-5m, start about 9:35 AM, expected 2 h, end about 11:35 AM.
   - R-150.8 DONE: real 1.2 h start to accept (report at 0.5 h); recorded on the row and in BUILD-PLAN's calibration list; archive with the next release.
-  - R-155 1-5 plan fix-petals next: about 0.75 h a stage (0.6-1.3).
+  - R-155.1 w1-rhythm (1-2 and 1-5 rebuilt to a beat), start 12:42 PM ET, expected 6.5 h (5-10), plan about 2:45, built about 5:30 PM ET.
+    Sent to bot-fix. (R-155's own 1-5 plan for fix-petals is gone: 1-5 moved to w1-rhythm.)
 - **In flight / waiting:**
   - 0.9.4 is PR #62 (kaizen-gates -> main, the lead 11-04 11:30 AM ET), waiting on Matt's merge: when it lands, archive R-1.1, R-6.25
     and the icons items with the merge commit (check git merge-base first), plus anything else merged in it.
