@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 03:45 AM ET
+Last updated: 2026-11-04 04:14 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -22,6 +22,9 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 04:14 AM ET: round 3 digest sent. GREEN kaizen-gates (§6 fixed, checked against the diff), fix-petals (stopped for the night 3:53),
+  quality-supervisor (W1 baseline 38/100, sections there, end-of-night 4:05), roadmap-keeper (idle). YELLOW warmup-5m: no commit since
+  3:25, gate lines not pasted (gate since 3:21); nudged 4:13. Wrap-up armed: trig_016k2MAepX4yH5JuNX5vFk7j, 4:45 AM ET. Nothing after.
 - 2026-11-04 03:45 AM ET: kaizen-gates fixed §6 at 2a77d774 (+ 3dda5018 its own notes). Checked myself: diff 1dc39cd7..kaizen-gates in src adds no
   fetch/URL/beacon/socket/XHR, no placeholder words; SaveLoadDialog only drops an unused import; no audio/lifecycle/App file. The "not
   checked" items are named (foldable, HUD notch, airplane, background sound, leave-and-return, kill-at-worst-moment). Accepted; told it.
