@@ -59,3 +59,4 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - Method §1b (in-build check with tools/quality) written as standard work: 9f9be400; lead to merge.
 - R-150.8 bot fix (fun-validator 071173a2): PASS (1-4 adult shrine s1-3, 0-2 rescues; kid seed 2 still times out).
 - R-155 1-5 plan (fix-petals 6aeb229b): PASS WITH CHANGES: method file + fallbacks; goal type differs from 1-2 (recommend trail-follow, petals bonus; lead/Matt); a different backdrop; patience beat once and <3 s; name the moment; Dot line must not explain the puzzle.
+- R-155 1-5 plan rev 2 (fun-validator 93450fb2): PASS. Watch: w1kapok shared with 1-7 (check look grid + in-order clip; fallback w1sunrise). Goal (a/b) + Dot lines with lead/Matt.
