@@ -42,6 +42,9 @@ that do the best job get the follow-on work.
 **Words**
 - Player-facing words are written per item, in the character's voice. No filler, no repeats on a page, no apology for missing data. (D1, law 6)
 
+**Reaching Matt**
+- A test link or preview reaches Matt only when it is opened for him (Artifact open) and its link is the first line of the message; a URL buried in a report is not delivered. (D28)
+
 **Art and money**
 - Hugging Face has $72 left, total, no top-ups. Matt approves every picture list, one at a time, before any spend.
 - Judge art against the absolute floor (floor.py in hf-backdrops.md), not against a weak "before". (backdrops, Nov 1)
