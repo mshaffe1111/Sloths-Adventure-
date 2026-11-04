@@ -27,18 +27,24 @@ function star(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
 /** the stars over a dazed (or stiff) trick snake's head; drawn in world space, after the snake */
 export function drawTrickStars(ctx: CanvasRenderingContext2D, e: Enemy, t: number): void {
   if (e.defeated || !isDazed(e) || starsShown(e, t) === 0) return;
-  // (over its head, which is at the front of its body, facing him; big enough to read on a phone, as the boards showed)
+  // (over its head, which is at the front of its body, facing him: the main signal, a clear ring of big stars, as the boards showed)
   const cx = e.x + e.facing * 12;
-  const cy = e.y - 36;
+  const cy = e.y - 52;
   ctx.save();
+  // the ring they circle on, faint, so it reads as one dizzy halo and not loose sparks
+  ctx.strokeStyle = 'rgba(255,240,170,0.55)';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, 40, 12, 0, 0, Math.PI * 2);
+  ctx.stroke();
   ctx.fillStyle = '#ffe25a';
-  ctx.strokeStyle = '#784610';
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#6b3a08';
+  ctx.lineWidth = 3;
   for (let i = 0; i < 5; i++) {
     const a = t * 4.2 + (i * 2 * Math.PI) / 5;
     // (a flat ring seen from the side: the stars behind the head are a little smaller)
-    const depth = 0.8 + 0.2 * Math.sin(a);
-    star(ctx, cx + Math.cos(a) * 24, cy + Math.sin(a) * 7, 10.5 * depth);
+    const depth = 0.82 + 0.18 * Math.sin(a);
+    star(ctx, cx + Math.cos(a) * 40, cy + Math.sin(a) * 12, 19 * depth);
   }
   ctx.restore();
 }
@@ -72,30 +78,47 @@ export function withCoilSqueeze(ctx: CanvasRenderingContext2D, e: Enemy, feetY: 
   ctx.restore();
 }
 
-/** the glints on the armoured coil (always while coiled; pulsing faster as it tightens) */
+/** the armoured coil, read at a glance: a hard pale sheen along the top of the coil (it looks plated, not soft) and big glints with a dark
+ *  edge, pulsing faster as it tightens */
 export function drawCoilGlint(ctx: CanvasRenderingContext2D, e: Enemy, t: number): void {
   if (e.defeated || !isCoiled(e)) return;
   const q = coilSqueeze(e);
   const pulse = 0.55 + 0.45 * Math.sin(t * (q > 0 ? 18 : 3) + e.id);
+  const f = e.facing > 0 ? 1 : -1;
   ctx.save();
-  ctx.fillStyle = '#fffbe8';
-  ctx.globalAlpha = Math.max(0.25, pulse);
+  // the sheen: two bright arcs along the coil's top, like light on a hard shell
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = `rgba(255,252,235,${0.55 + 0.3 * pulse})`;
+  ctx.lineWidth = 7;
+  ctx.beginPath();
+  ctx.ellipse(e.x - 4 * f, e.y + 11, 28, 13, 0, Math.PI * 1.08, Math.PI * 1.78);
+  ctx.stroke();
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.ellipse(e.x + 2 * f, e.y + 5, 17, 8, 0, Math.PI * 1.12, Math.PI * 1.72);
+  ctx.stroke();
+  // the glints, with a dark edge so they show on light leaves and dark bark alike
+  ctx.fillStyle = '#fffdf0';
+  ctx.strokeStyle = 'rgba(60,40,10,0.6)';
+  ctx.lineWidth = 2;
+  ctx.globalAlpha = Math.max(0.6, pulse);
   // (on the coil's own body, which lies between its origin and its feet 16 px below: above it, they vanished against the sky)
-  for (const [dx, dy, r] of [[-12, 4, 7], [8, 0, 5], [17, 8, 4]] as const) {
-    const x = e.x + dx * (e.facing > 0 ? 1 : -1);
+  for (const [dx, dy, r] of [[-14, 1, 17], [10, -4, 12], [21, 7, 9]] as const) {
+    const x = e.x + dx * f;
     const y = e.y + dy;
     const rr = r * (0.8 + 0.4 * pulse);
     ctx.beginPath();
     ctx.moveTo(x, y - rr);
-    ctx.lineTo(x + rr * 0.25, y - rr * 0.25);
+    ctx.lineTo(x + rr * 0.22, y - rr * 0.22);
     ctx.lineTo(x + rr, y);
-    ctx.lineTo(x + rr * 0.25, y + rr * 0.25);
+    ctx.lineTo(x + rr * 0.22, y + rr * 0.22);
     ctx.lineTo(x, y + rr);
-    ctx.lineTo(x - rr * 0.25, y + rr * 0.25);
+    ctx.lineTo(x - rr * 0.22, y + rr * 0.22);
     ctx.lineTo(x - rr, y);
-    ctx.lineTo(x - rr * 0.25, y - rr * 0.25);
+    ctx.lineTo(x - rr * 0.22, y - rr * 0.22);
     ctx.closePath();
     ctx.fill();
+    ctx.stroke();
   }
   ctx.restore();
 }

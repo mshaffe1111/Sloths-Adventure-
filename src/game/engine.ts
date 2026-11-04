@@ -4277,7 +4277,7 @@ export class GameEngine {
     e.vx = 0;
     staggerPredator(e);
     // (the word above the stars, not on them)
-    this.addFloatingText(th === 'stiffen' ? 'STIFF!' : 'DAZED!', e.x, e.y - 66, '#fef08a');
+    this.addFloatingText(th === 'stiffen' ? 'STIFF!' : 'DAZED!', e.x, e.y - 92, '#fef08a');
   }
 
   private hitBoss(b: BossEntity, m: MoveSpec, box: Rect, hr: Rect) {
