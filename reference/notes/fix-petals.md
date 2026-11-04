@@ -1,13 +1,16 @@
 # fix-petals: helper notes
 
-## Now (2026-11-04 12:55 PM ET): R-6.38 pits built and shown (103d7f47); gates running; then the validator items
+## Now (2026-11-04 1:39 PM ET): R-6.38 redo pushed (a90c542f) with the pickup-ruler ruling; drawcheck and clipcheck running; then the validator items
 - R-155 1-5 moved to w1-rhythm (lead, 12:42 PM ET message). Not mine any more.
-- R-6.38 (started 11:46 AM ET, planned 3 h): src/game/w1Pits.ts + test, protoArt.ts (2 calls), stageSheets/stagePreload ('pit-art:1'),
-  types.ts (Platform.pit), src/assets/props/pits (cut by tools/art/combat/pitcut.py from the HF bucket's r159-pits takes). Stills and
-  report: reference/qa-reports/r6-38/. Due on the lead branch by 4:00 PM ET (the lead merges; I push to fun-validator). Gate lines to add.
-- NEXT (by 6:30 PM ET): validator: no variety credit for pickups (§0c.5, fixture, say if scores move); a template-repeat check (§0c rules
-  2-3); read each node's BPM and beat feel from beatTrace.ts when it lands; a "like the stage before" on tempo and map shape. Mark bot
-  numbers "old bot" (bot-fix's thumb fix merges later).
+- R-6.38 (started 11:46 AM ET, planned 3 h): src/game/w1Pits.ts + test, protoArt.ts, stageSheets/stagePreload ('pit-art:1'), types.ts
+  (Platform.pit), src/assets/props/pits (pitcut.py). Redo done to the lead's five items; report reference/qa-reports/r6-38/README.md.
+  Due on the lead branch by 4:00 PM ET.
+- Pickup ruler (the lead's ruling): funcheck.ts REBUILT (1-1 to 1-5), gatedFlags, truerBeside; evaluate.ts movesFlags (truer into flags,
+  old into oldFlags). funknown.json about + R-150.9 carry the four 1-9 rises. Tell the roadmap keeper (via the lead).
+- NEXT (by 6:30 PM ET), each with tests: template-repeat check (§0c 2-3); beatTrace BPM/beat feel (origin/w1-rhythm 3b7fe514) and
+  tempo/map-shape "like the stage before"; TIGHT_MAX (core.ts:254) allows a 15-20 s dense finale; pairs only in one move or beat
+  (mechanics.ts:43-52); tempoOf lift/moving-platform waits over 1 s count as patience; falls over 200 px or 4 s are bites.
+- Method: a stills build needs NODE_ENV=development (window.__play is dev only); after --emptyOutDir restart the static server.
 MY MISS (three times today): times typed, not read (10:58, 10:28, 1:11). Countermeasure, tightened: a time goes into a message only as
 text copied from a `TZ=America/New_York date` printed in the step just before; never composed from memory.
 

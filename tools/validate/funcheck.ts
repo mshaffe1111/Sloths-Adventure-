@@ -16,31 +16,32 @@ import '../../src/game/headlessDom.ts';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { world, W1, MOVE_RULES } from './evaluate.ts';
+import { world, W1 } from './evaluate.ts';
 import type { StageEval } from './evaluate.ts';
-
-/**
- * The stages rebuilt from 2026-11-04 on, gated on the truer move rule (movesAlike: the terrain's own moves, so petals moved around never
- * read as a new stage). The lead's ruling, 11-04: the truer rule is the validator's rule, printed for every stage; a stage rebuilt from
- * today on is gated on it; one not yet rebuilt (1-6 to 1-9 today) is gated on the old rule (the goal route's moves alone) at its listed
- * counts, with the truer count printed beside. 1-1 to 1-5 are marked from 11-04, ahead of their rebuilds tonight (their counts are the same on
- * both rules today, so the rebuilds are held to the truer rule from their first commit); 1-6 to 1-9 join as each is rebuilt. A stage is
- * never taken off.
- */
-export const REBUILT: readonly string[] = ['1-1', '1-2', '1-3', '1-4', '1-5'];
-
-/** the flags a stage is gated on: the truer rule's if it was rebuilt, else the old rule's for the move rules and the truer for the rest */
-export function gatedFlags(ev: StageEval, rebuilt: readonly string[] = REBUILT) {
-  if (rebuilt.includes(ev.id)) return ev.flags;
-  const moves = new Set<string>(MOVE_RULES);
-  return [...ev.flags.filter((f) => !moves.has(f.rule)), ...(ev.oldFlags ?? [])];
-}
 
 export const LAYOUTS = 16;
 const FILE = path.join(path.dirname(fileURLToPath(import.meta.url)), 'funknown.json');
 
 export interface FunKnown { stage: string; setting: 'normal' | 'easy'; rule: string; layouts: number; owner: string }
 export const keyOf = (k: { stage: string; setting: string; rule: string }) => `${k.stage}|${k.setting}|${k.rule}`;
+
+/**
+ * The stages rebuilt from 2026-11-04 on, gated on the validator's truer rules (the lead's ruling, 11-04): a stage built on the music's
+ * beat (w1Rhythm.ts: its proto.rhythm) counts as rebuilt by itself, and any other rebuilt stage is listed here in the commit that lands it.
+ * The truer rules (evaluate.ts judge, truer): no credit for moved pickups (movesAlike), a long fall bites, a pair counts only when both
+ * meet in one move, a ride is patience only with a real wait, a dense finale may run 15-20 s, §0c's template checks, and not like the
+ * stage before on tempo or map shape. A stage not yet rebuilt is gated on the old rules at its listed counts, the truer count printed
+ * beside. 1-1 to 1-5 are due tonight. A stage is never taken off.
+ */
+export const REBUILT: readonly string[] = [];
+
+/** the stage is gated on the truer rules: listed, or built on the beat */
+export const isRebuilt = (ev: StageEval, rebuilt: readonly string[] = REBUILT) => rebuilt.includes(ev.id) || !!(ev.built?.stage as { proto?: { rhythm?: unknown } } | undefined)?.proto?.rhythm;
+
+/** the flags a stage is gated on: the truer rules' if it was rebuilt, else the old rules' */
+export function gatedFlags(ev: StageEval, rebuilt: readonly string[] = REBUILT) {
+  return isRebuilt(ev, rebuilt) ? ev.flags : (ev.oldFlags ?? ev.flags);
+}
 
 type Measured = Map<string, { stage: string; setting: 'normal' | 'easy'; rule: string; on: number[]; what: string; x?: number }>;
 
@@ -50,6 +51,7 @@ type Measured = Map<string, { stage: string; setting: 'normal' | 'easy'; rule: s
  */
 export function measureBoth(layouts = LAYOUTS, rebuilt: readonly string[] = REBUILT): { gated: Measured; truer: Measured } {
   const gated: Measured = new Map(), truer: Measured = new Map();
+  rebuiltSeen.clear();
   const add = (out: Measured, ev: StageEval, setting: 'normal' | 'easy', v: number, f: { rule: string; what: string; x?: number }) => {
     const k = keyOf({ stage: ev.id, setting, rule: f.rule });
     const e = out.get(k) ?? { stage: ev.id, setting, rule: f.rule, on: [], what: f.what, x: f.x };
@@ -59,6 +61,7 @@ export function measureBoth(layouts = LAYOUTS, rebuilt: readonly string[] = REBU
   for (let v = 1; v <= layouts; v++) {
     for (const setting of ['normal', 'easy'] as const) {
       for (const ev of world(v, setting, W1)) {
+        if (isRebuilt(ev, rebuilt)) rebuiltSeen.add(ev.id);
         for (const f of gatedFlags(ev, rebuilt)) add(gated, ev, setting, v, f);
         for (const f of ev.flags) add(truer, ev, setting, v, f);
       }
@@ -67,18 +70,21 @@ export function measureBoth(layouts = LAYOUTS, rebuilt: readonly string[] = REBU
   return { gated, truer };
 }
 
+/** the stages the last measure found rebuilt (for the gate's print) */
+export const rebuiltSeen = new Set<string>();
+
 /** what the gate holds World 1 to (measureBoth's `gated`) */
 export function measure(layouts = LAYOUTS, rebuilt: readonly string[] = REBUILT): Measured {
   return measureBoth(layouts, rebuilt).gated;
 }
 
-/** for the stages gated on the old rule: each move rule whose truer count differs, printed beside the gated one */
-export function truerBeside(gated: Measured, truer: Measured, rebuilt: readonly string[] = REBUILT): string[] {
+/** for the stages gated on the old rules: each rule whose truer count differs, printed beside the gated one */
+export function truerBeside(gated: Measured, truer: Measured, rebuilt: readonly string[] = [...REBUILT, ...rebuiltSeen]): string[] {
   const out: string[] = [];
   const keys = new Set([...gated.keys(), ...truer.keys()]);
   for (const k of [...keys].sort()) {
     const e = truer.get(k) ?? gated.get(k)!;
-    if (rebuilt.includes(e.stage) || !(MOVE_RULES as readonly string[]).includes(e.rule)) continue;
+    if (rebuilt.includes(e.stage)) continue;
     const a = gated.get(k)?.on.length ?? 0, b = truer.get(k)?.on.length ?? 0;
     if (a !== b) out.push(`  (truer rule) ${e.stage} ${e.setting} "${e.rule}": gated on the old rule at ${a} layouts, ${b} by the truer rule`);
   }
@@ -118,7 +124,8 @@ if (main) {
   }
   const { worse, stale } = judgeAgainst(now, file.known);
   for (const l of [...worse, ...stale]) console.log(l);
-  console.log(`the truer move rule gates: ${REBUILT.join(', ')}; the rest on the old rule, the truer count beside:`);
+  const gatedOn = [...new Set([...REBUILT, ...rebuiltSeen])].sort();
+  console.log(`the truer rules gate: ${gatedOn.length ? gatedOn.join(', ') : 'no stage yet (a stage joins when it is rebuilt: built on the beat, or listed in REBUILT)'}; the rest on the old rules, the truer count beside:`);
   for (const l of truerBeside(now, truer)) console.log(l);
   const total = file.known.reduce((a, k) => a + k.layouts, 0);
   const secs = Math.round((Date.now() - t0) / 1000);

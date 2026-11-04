@@ -5,6 +5,8 @@
  */
 import type { Platform } from '../../src/game/types.ts';
 import type { Built, Step } from './core.ts';
+import { PHYS, reachJump } from '../../src/game/physics.ts';
+import { liftCycle } from '../../src/game/lift.ts';
 
 type Eng = Record<string, any>;
 
@@ -51,12 +53,82 @@ export function sixThings(st: Eng, e: Eng): string[] {
 }
 export const pairsOf = (things: string[]) => things.flatMap((a, i) => things.slice(i + 1).map((b) => `${a}+${b}`));
 
+const SIX = ['run', 'jump', 'branches', 'vines', 'wind', 'slow'];
+/**
+ * The six things one move asks at once (the lead, 2026-11-04: a pair counts only when both meet in one move or beat). A jump is jump; a
+ * jump off or onto a breaking branch, or inside the chase, is also branches and run (he must keep going); a liana swing is vines, and a
+ * climb only when what he climbs is a vine (a trunk is not); wind and slow come from the move itself or the zone it is made in. World 7's
+ * crumbling floor is a breaking floor (branches), never slow.
+ */
+export function thingsOf(b: Built, s: Step, chase: { x0: number; x1: number } | null): string[] {
+  const st = b.stage as Eng;
+  const t = new Set<string>();
+  const seg = b.route.segs.find((g) => Math.abs(g.x0 - s.x) < 2 && Math.abs(g.y0 - s.y) < 2);
+  const fragile = !!seg && (seg.plat?.type === 'fragile' || seg.from?.type === 'fragile');
+  if ('JjUQM'.includes(s.m)) t.add('jump');
+  if (s.m === 'B' || s.m === 'K' || ('JjUQM'.includes(s.m) && fragile)) t.add('branches').add('run');
+  if (chase && s.x >= chase.x0 && s.x <= chase.x1 && 'JjUQMK'.includes(s.m)) t.add('branches').add('run');
+  if (s.m === 'V' && /liana|silk/.test(s.what)) t.add('vines');
+  if (s.m === 'V' && /warm air/.test(s.what)) t.add('wind');
+  if (s.m === 'C') {
+    const v = (st.vines as Eng[]).filter((q) => Math.abs(q.x - s.x) < 60).sort((a, c) => Math.abs(a.x - s.x) - Math.abs(c.x - s.x))[0];
+    if (v && v.vineType !== 'tree_climb') t.add('vines');
+  }
+  if (s.m === 'W') t.add('wind');
+  if (s.m === 'S') t.add('slow');
+  for (const z of (st.zones ?? []) as Eng[]) {
+    if (s.x < z.x0 || s.x > z.x1 || s.y < z.top - 40 || s.y > z.bottom + 40) continue;
+    if (z.kind === 'wind') t.add('wind');
+    if (z.kind === 'web' || z.kind === 'spore') t.add('slow');
+    if (z.kind === 'crumble') t.add('branches');
+  }
+  return SIX.filter((k) => t.has(k));
+}
+
+/** the pairs a stage's moves really ask: both things in one move (thingsOf), over the whole route */
+export function pairsMet(b: Built): string[] {
+  const ks = b.steps.filter((s) => s.m === 'K');
+  const chase = ks.length ? { x0: Math.min(...ks.map((s) => s.x)) - 10, x1: Math.max(...ks.map((s) => s.x)) + 10 } : null;
+  const out = new Set<string>();
+  for (const s of b.steps) for (const p of pairsOf(thingsOf(b, s, chase))) out.add(p);
+  return SIX.flatMap((a, i) => SIX.slice(i + 1).map((c) => `${a}+${c}`)).filter((p) => out.has(p));
+}
+
 /** a stage's row: each mechanic's count from its data */
 export function mechRow(b: Built): Record<string, number> {
   const st = b.stage as Eng, e = b.sim.e as Eng;
   const row: Record<string, number> = {};
   for (const m of MECHS) row[m.id] = m.count(st, e);
   return row;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------
+// A long fall bites (the lead, 2026-11-04): a miss that drops him more than about 200 px, or costs more than about 4 s to get back, is a
+// setback, even onto soft ground
+
+export const FALL_BITE_PX = 200;
+export const FALL_BITE_SECS = 4;
+/**
+ * a miss at height y over the middle `mid` lands on `below`: it bites when the drop is over FALL_BITE_PX, or, when he fell into a pit
+ * (over 40 px down, onto a floor with a higher bank at each end), when the walk to the way back up (the nearer bank, or the nearest step
+ * standing on the floor) and the hop take over FALL_BITE_SECS. A missed hop that drops him back on the ground he left costs nothing, and
+ * a drop onto open ground is the way on.
+ */
+export function fallBites(below: Pick<Platform, 'x' | 'y' | 'width'>, y: number, mid: number, others: ReadonlyArray<Pick<Platform, 'x' | 'y' | 'width'>> = []): boolean {
+  const drop = below.y - y;
+  if (drop > FALL_BITE_PX) return true;
+  if (drop <= 40) return false;
+  const bx1 = below.x + below.width;
+  const higher = others.filter((p) => p !== below && p.y <= below.y - 40);
+  const bankL = higher.some((p) => p.x < below.x + 20 && p.x + p.width >= below.x - 30);
+  const bankR = higher.some((p) => p.x + p.width > bx1 - 20 && p.x <= bx1 + 30);
+  if (!bankL || !bankR) return false;
+  let out = Math.min(mid - below.x, bx1 - mid);
+  for (const p of others) {
+    if (p === below || p.y >= below.y || p.y < below.y - 140 || p.x > bx1 || p.x + p.width < below.x) continue;
+    out = Math.min(out, p.x > mid ? p.x - mid : p.x + p.width < mid ? mid - (p.x + p.width) : 0);
+  }
+  return out / PHYS.maxRun + 0.6 > FALL_BITE_SECS;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -70,7 +142,7 @@ export interface Beat2 { step: Step; cost: Cost; why: string }
  * life (no ground under the gap, or water). A jump the level check cannot confirm is not priced (unknown). The chase's markers (1-8, every
  * 1.5 s of running) are its pressure, not a beat to miss: left out here, judged by the chase probe (play.ts).
  */
-export function missCost(b: Built): Beat2[] {
+export function missCost(b: Built, truer = true): Beat2[] {
   const st = b.stage as Eng;
   const ps = (st.platforms as Platform[]).filter((p) => !p.broken && p.type !== 'bouncy');
   const waterY: number = st.waterY ?? st.config.levelHeight + 100;
@@ -82,6 +154,7 @@ export function missCost(b: Built): Beat2[] {
     const below = ps.filter((p) => p.x <= mid && p.x + p.width >= mid && p.y >= y - 4).sort((a, c) => a.y - c.y)[0];
     // (Easy's falls are soft, easyMode.ts: a fall puts him back a little, a setback)
     if (!below || deadly(below.y)) return b.setting === 'easy' ? 'setback' : 'life';
+    if (truer && fallBites(below, y, mid, ps)) return 'setback';
     return 'nothing';
   };
   const out: Beat2[] = [];
@@ -105,7 +178,8 @@ export function missCost(b: Built): Beat2[] {
     const seg = segs.find((g) => Math.abs(g.x0 - s.x) < 2 && Math.abs(g.y0 - s.y) < 2) ?? segs.find((g) => Math.abs(g.x0 - s.x) < 40);
     const x1 = seg ? seg.x1 : s.x + 120;
     const cost = s.m === 'j' ? 'nothing' : under(s.x, x1, Math.max(s.y, seg?.y1 ?? s.y));
-    out.push({ step: s, cost, why: cost === 'nothing' ? 'ground or soft moss below: a free retry' : cost === 'setback' ? 'a soft fall that puts him back (Easy)' : 'nothing below, or water: a miss costs a life' });
+    const long = cost === 'setback' && b.setting !== 'easy';
+    out.push({ step: s, cost, why: cost === 'nothing' ? 'ground or soft moss below: a free retry' : long ? `a long way down: he loses over ${FALL_BITE_PX} px of height or about ${FALL_BITE_SECS} s getting back` : cost === 'setback' ? 'a soft fall that puts him back (Easy)' : 'nothing below, or water: a miss costs a life' });
   }
   return out;
 }
@@ -129,9 +203,42 @@ export function padding(b: Built): Padding | null {
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Tempo (§0b.3: every mechanic has a hurry version and a patience version; a stage that only asks one tempo is flat)
 
-/** a move's tempo: hurry (keep going: breaking branches, the chase, a burst), patience (wait: the eagle, a still spot, a timed hazard) */
-export const tempoOf = (s: Step): 'hurry' | 'patience' | null =>
-  s.m === 'B' || s.m === 'K' ? 'hurry' : s.m === 'E' || s.m === 'W' || s.m === 'Z' || /stand still|wait|time the|doze|ease/.test(s.what) ? 'patience' : null;
+/**
+ * a move's tempo: hurry (keep going: breaking branches, the chase, a burst), patience (wait: the eagle, a still spot, a timed hazard).
+ * `wait`: the seconds a ride or a hop onto something moving makes him wait on average (waitAt). The lead, 2026-11-04: a lift ride or a
+ * timed moving-platform hop is patience only with a real wait, over WAIT_MIN; one he never waits for is neither.
+ */
+export const WAIT_MIN = 1;
+export const tempoOf = (s: Step, wait?: number): 'hurry' | 'patience' | null =>
+  s.m === 'B' || s.m === 'K' ? 'hurry' : s.m === 'E' || s.m === 'W' || s.m === 'Z' || /stand still|wait|time the|doze|ease/.test(s.what) ? 'patience'
+    : wait !== undefined && wait > WAIT_MIN ? 'patience' : null;
+
+/**
+ * the average wait (s) a ride or a hop onto something moving asks, arriving at a random moment, or undefined for any other move:
+ *   - a basket lift (lift.ts) waits at each stop for `wait` s of its cycle T, so arriving at random he waits (T - wait)^2 / 2T;
+ *   - a swaying platform (engine: x = baseX + sin(t * moveSpeed + offset) * moveRange) is in reach for a share f of its period P, so he
+ *     waits (1 - f)^2 P / 2;
+ *   - a river log (drift) is not timed here (undefined).
+ */
+export function waitAt(b: Built, s: Step): number | undefined {
+  const seg = b.route.segs.find((g) => Math.abs(g.x0 - s.x) < 2 && Math.abs(g.y0 - s.y) < 2);
+  if (!seg || (seg.kind !== 'lift' && seg.kind !== 'timedHop')) return undefined;
+  const lift = seg.plat?.lift ?? seg.from?.lift;
+  if (seg.kind === 'lift' && lift) {
+    const T = liftCycle(lift);
+    return T > 0 ? ((T - lift.wait) ** 2) / (2 * T) : 0;
+  }
+  const mv = [seg.plat, seg.from].find((p) => p && p.type === 'moving' && p.moveRange);
+  if (!mv) return undefined;
+  const P = (2 * Math.PI) / (mv.moveSpeed ?? 1);
+  const range = Math.abs(mv.moveRange ?? 0);
+  // (the gap at the platform's middle sway, and how far he can jump it)
+  const gap = Math.abs(seg.x1 - seg.x0);
+  const reach = reachJump(seg.y0 - seg.y1, true);
+  const k = range > 0 ? (reach - gap) / range : 1;
+  const f = k >= 1 ? 1 : k <= -1 ? 0 : 0.5 + Math.asin(k) / Math.PI;
+  return ((1 - f) ** 2 * P) / 2;
+}
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Enemy jobs (R-159; research §6: never within 150 px of a landing, about 35% of the stage enemy-free)
