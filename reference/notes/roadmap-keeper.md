@@ -1,6 +1,6 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 9:33 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 10:44 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
@@ -17,6 +17,13 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
 - **Unblocked 11-04 mid-morning:** R-150.4 and R-150.1 accepted (7909cf11, fun-validator, not merged yet). Phase B rows now read
   "blocked (by Matt's World 1 rating)"; R-159.1 open (GPU stage 0 merged to the lead branch 65b6c33a). Archive R-3.1, R-150.1, R-150.4,
   R-150.7 only when they reach main in a release (proof: the release PR).
+- **Planned vs actual (Matt, 11-04; methods/roadmap.md "Planned vs actual"):** running jobs sent to bot-fix at 10:44 AM ET.
+  When each ends (bot-fix or the lead sends the real start and accept), add "; real N h (start to accept)" to its Time and the job to
+  BUILD-PLAN's calibration list; re-size items measured from the same past job if it is off by half or more.
+  - R-159.1 w8-rope2, start about 8:00 AM, expected 9.5 h (7-14), end about 5:30 PM. R-6.38 w8-rope2 (3 h; pictures done 10:14).
+  - R-3.2 warmup-5m, start about 9:35 AM, expected 2 h, end about 11:35 AM.
+  - R-150.8 fix-petals, start about 10:25 AM, expected 1.5 h, end about 11:55 AM.
+  - R-155 1-5 plan fix-petals next: about 0.75 h a stage (0.6-1.3).
 - **In flight / waiting:**
   - R-1.1 is done pending the release merge (proof 5f25029a on icons-painted): archive it with the merge commit when the release lands.
   - R-6.25 (icons B-E) ships in the same release.
