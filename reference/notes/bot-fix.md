@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 10:02 AM ET
+Last updated: 2026-11-04 10:03 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -24,6 +24,9 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 10:03 AM ET: w8-rope2 GREEN, hold lifted (lead). Both approvals were in ccr STATUS (lines 848 R-159.1 ~$2.32 cap $4; 852 R-6.38 pits ~$0.88
+  cap $1.40; combined $5.40) at 58ee7642, the version I read: MY MISS, my grep was head -10 of 22 matches (the oldest). Spend per
+  tools/art/combat/jobs.txt: $0.74 done + ~$1.40 running = ~$2.14 of $5.40. PIT-LIST header fixed b71281af. Owned to the lead.
 - 2026-11-04 10:02 AM ET: day-2 round 4 digest sent. RED (escalated) w8-rope2: HF takes made (49181d3a "Matt-approved pit list", b5e92ad7, 76498768,
   db520860) but PIT-LIST.md still says "for Matt's NEXT approval; nothing spent" and no approval found in notes/plan/STATUS; asked it
   (10:02) for where approval is recorded + real $ + header fix + no more HF calls until confirmed. Its src diff vs main = only stage 0 via
@@ -85,6 +88,8 @@ Escalate at once: a law broken, a retirement trigger, a red gate on a release br
 - 2026-11-04 02:33 AM ET: bot-fix restarted from main 1dc39cd7 (the old bot-fix, 912b2fe6, is merged). Onboarding sent to the lead; waiting for its OK.
 
 ## My pitfalls
+- **Approvals and money: check reference/STATUS.md on origin/ccr-0d59a91c-oy3imz FIRST, and read matches from the NEWEST (tail / no head
+  cut) before saying "not found"** (11-04 10:04: a head -10 hid the two newest lines, a false RED on w8-rope2).
 - GPU stage 0 is merged into the lead branch (ccr), not main: compare a helper's src against ccr to see its OWN code.
 - A commit message saying "approved" is not the approval: find Matt's words, date and the list version.
 - **Judge from commits, files and the helpers' own messages, never the session status line** (it goes stale; round 1, 11-04, two wrong
