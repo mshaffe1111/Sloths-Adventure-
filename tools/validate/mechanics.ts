@@ -28,7 +28,8 @@ export const MECHS: Mech[] = [
   { id: 'eagle', label: 'eagle / watcher', group: 'hazard', count: (_st, e) => n(e.proto?.watch) },
   { id: 'bush', label: 'bushes to hide in', group: 'hazard', count: (_st, e) => n(e.proto?.bushes) },
   { id: 'thorn', label: 'thorn vine', group: 'hazard', count: (_st, e) => n(e.proto?.thorns) },
-  { id: 'water', label: 'water / river', group: 'hazard', count: (st) => n(st.rivers) + (st.waterY !== undefined && plats(st, (p) => p.y > st.waterY - 200 && p.y < st.waterY) ? 1 : 0) },
+  // (water that matters: rivers and the water signs that warn of it; a hand stage's waterY under its soft moss is not a hazard)
+  { id: 'water', label: 'water / river', group: 'hazard', count: (st) => n(st.rivers) + n(st.waterSigns) },
   ...['wind', 'web', 'spore', 'dark', 'tide', 'crumble', 'geyser', 'bolt'].map((k) => ({ id: `zone:${k}`, label: k === 'crumble' ? 'crumbling floor' : k, group: 'hazard' as const, count: (st: Eng) => (st.zones ?? []).filter((z: Eng) => z.kind === k).length })),
   ...['snake', 'boa', 'turtle', 'frog', 'ocelot', 'jaguar', 'spider', 'tayra', 'eagle', 'caiman', 'harpy'].map((k) => ({ id: `animal:${k}`, label: k === 'turtle' ? 'snapper' : k === 'eagle' ? 'eagle (swooper)' : k, group: 'animal' as const, count: (st: Eng) => st.enemies.filter((m: Eng) => m.type === k).length })),
   { id: 'ring', label: 'snake ring', group: 'animal', count: (_st, e) => n(e.proto?.ring?.waves) },

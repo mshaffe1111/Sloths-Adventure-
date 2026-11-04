@@ -290,6 +290,7 @@ export function botRun(id: string, layout: number, setting: Setting, o: BotOpts 
   const chase = new Map<RealPlay, { min: number; caught: number; was: boolean }>();
   const cams = new Map<RealPlay, Array<{ t: number; x0: number; x1: number; y0: number; y1: number }>>();
   const state = new Map<RealPlay, Eng>();
+  const brokeSeen = new Set<Platform>();
   RealPlay.prototype.frame = function (this: RealPlay, pad?: unknown) {
     const p = this.p;
     const was = { vx: p.vx, air: !p.grounded, swing: !!p.isVineSwinging, climb: !!p.climbing, hang: !!p.hanging, bounce: !!p.bounce, cover: !!(this.e as Eng).input?.inCover && !!p.ducking, push: !!p.pushing };
@@ -303,6 +304,8 @@ export function botRun(id: string, layout: number, setting: Setting, o: BotOpts 
     const cover = !!(this.e as Eng).input?.inCover && !!p.ducking;
     if (!was.cover && cover) met.hid++;
     if (!was.push && p.pushing) met.pushed++;
+    // (breaking pieces broken during the run, as they break: they grow back before it ends)
+    for (const q of this.platforms as Platform[]) if (q.type === 'fragile' && q.broken && !brokeSeen.has(q)) brokeSeen.add(q);
     state.set(this, st);
     const ch = (this.e as Eng).chase;
     if (ch?.active && ch.hold <= 0) {
@@ -339,7 +342,7 @@ export function botRun(id: string, layout: number, setting: Setting, o: BotOpts 
     met.chaseCaught = ch.caught;
   }
   met.eagleHits = run.harms.filter((h) => h.kind === 'hit' && h.cause === 'watcher').length;
-  met.brokeUnder = (e.platforms as Platform[]).filter((p) => p.type === 'fragile' && (p.broken || p.regrowAt !== undefined)).length;
+  met.brokeUnder = (e.platforms as Platform[]).filter((p) => brokeSeen.has(p)).length;
   const camAt = (t: number) => {
     let best = camList[0];
     for (const c of camList) if (c.t <= t + 1e-6) best = c;
