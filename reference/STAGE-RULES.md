@@ -78,7 +78,11 @@ variety checks measured geometry, not what the player does or sees. Rules from n
 4. **The library is big enough:** each world has at least 3 templates per pacing tag (12+), each with at least 3 parameter variants,
    and the world's signature mechanic in most of them. No template appears in more than 3 of a world's stages. Short of that, the job
    is to build more pieces (Matt's 10-30 rule), never to reroll.
-5. **It is measured, not hoped:** the validator's move string and look grid must say a stage is not "like" the stages before it
+5. **Petals and pickups never count as variety (Matt, 2026-11-04: "We can't just assume that rearranging petals that you collect is
+   going to make the game feel different. Our pieces and other things need to change along with things.").** A node only counts as
+   different when what the player stands on, faces or uses changes: the terrain and platform kinds, the hazard, the animal and its
+   trick, the mechanic, the direction of travel, the art pieces on screen. Moving petals, flowers or coins around changes nothing.
+6. **It is measured, not hoped:** the validator's move string and look grid must say a stage is not "like" the stages before it
    (moves and looks), with no 3-4 move run repeated, and the fun gate fails a stage that gets more alike. The quality supervisor's
    in-order recording is the final judge.
 
