@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 07:51 AM ET
+Last updated: 2026-11-04 08:23 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -24,6 +24,10 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 08:23 AM ET: day-2 round 1 digest sent. YELLOW warmup-5m (fix 658ff7e1 8:16, no clipcheck PASS pasted yet, notes stale 4:36: sent the
+  two items 8:22). YELLOW fix-petals (no commit since 3:53, no ccr re-merge yet: asked 8:22). GREEN w8-rope2 (src diff empty, plan
+  reference/plans/R-159.1-combat-triangle.md, notes), quality supervisor (230a06d0). Idle OK: kaizen-gates, roadmap-keeper (D28 batch).
+  Round 2 armed: trig_01UaBWoEAg3cnkDceLSafqah, 8:54 AM ET.
 - 2026-11-04 07:51 AM ET: lead added w8-rope2 to the rounds (plan-first; no src until plan approved + GPU stage 0 merged). Round 1 prompt updated.
 - 2026-11-04 07:48 AM ET: RESTART (lead, Matt 7:47 AM ET). Rounds every 30 min again. Running: warmup-5m, fix-petals, quality supervisor. Idle:
   kaizen-gates (0.9.4 waits on Matt), roadmap-keeper (a batch coming). Round 1 armed for ~30 min: warmup-5m's clipcheck work, fix-petals'
