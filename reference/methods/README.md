@@ -59,5 +59,6 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Test link and release (build.py, Artifact publish limits, release branch, PR, deploy and APK check) | `test-link-and-release.md` | to write; source: HANDOFF §6-7 | the lead (11-01) |
 | Cutscene art and clips | `hf-cutscenes.md` | to write; source: tools/art/hfstory, the hf-cutscenes branch notes | next cutscene helper |
 | Props and sprite sheets (cutting, atlases, art-use) | `hf-props.md` | to write; source: tools/art/hfbatch, prop-sheets | next props helper |
+| Keeping the roadmap (numbering, sizing, closing with proof, the release sweep, roadmapcheck) | `roadmap.md` | written 11-01 (roadmap-keeper) | roadmap-keeper |
 
 **Best measured result (Matt, 2026-11-04):** every method file keeps a "Best measured result" line (time and tokens for one job of its kind, with the commit and helper). A helper that beats it updates the method with proof; the lead merges it the same day, and everyone works that way from then on.
