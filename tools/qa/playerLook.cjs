@@ -66,7 +66,7 @@ fs.mkdirSync(out, { recursive: true });
         if (ph !== 'card') break;
       }
       await pg.waitForTimeout(2500);
-      const gpu = await pg.evaluate(() => (window.__gpu ? { live: window.__gpu.live(), copies: window.__gpu.backdrop.copies } : null));
+      const gpu = await pg.evaluate(() => (window.__gpu ? { live: window.__gpu.live(), copies: window.__gpu.backdrop?.copies ?? 'n/a' } : null));
       let line = `${tag} ${st} ${o.id}${gpu ? ` (GPU layer started: ${gpu.live}, copies ${gpu.copies})` : ''}`;
       for (const q of [0, 1, 2]) {
         const shot = async (name) => {
