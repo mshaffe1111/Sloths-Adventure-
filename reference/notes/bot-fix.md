@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 02:34 AM ET
+Last updated: 2026-11-04 03:07 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -22,6 +22,9 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 03:07 AM ET: round 1 digest sent. All 5 on origin/main 1dc39cd7 with notes files. GREEN warmup-5m, quality-supervisor, kaizen-gates
+  (awaiting the lead's OK on 0.9.4; no release-0.9.4 branch yet), roadmap-keeper (idle, done). YELLOW fix-petals: committing validator
+  code (db738b37) while its status read "waiting on OK"; notes stale since 2:34. Round 2 armed: trig_01NzQTXcbjWvxRbybswkePjM, 3:38 AM ET.
 - 2026-11-04 03:02 AM ET: lead (Matt's token budget): the team stops at 5:00 AM ET today. Rounds until then; the ~4:45 AM ET round is the wrap-up (each
   helper pushed, notes current, idle by 5) with its digest to the lead. Arm NOTHING past 5:00 AM ET; then idle until the lead restarts me.
   Plan: rounds 3:05, 3:35, 4:05; then wrap-up at 4:45 (arm 40 min from the 4:05 round, not 30).
