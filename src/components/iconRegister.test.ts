@@ -63,7 +63,7 @@ test('every painted icon has its file, each under 60 KB and 4096 px', async () =
   const dir = join(ROOT, 'src/assets/icons');
   const files = readdirSync(dir).filter((n) => n.endsWith('.webp'));
   const src = readFileSync(join(SRC, 'icons/PaintedIcon.tsx'), 'utf8');
-  const names = [...src.match(/PAINTED_NAMES = \[([^\]]*)\]/)![1].matchAll(/'([^']+)'/g)].map((m) => m[1]).filter((n) => n !== 'mute');
+  const names = [...src.match(/PAINTED_NAMES = \[([^\]]*)\]/)![1].matchAll(/'([^']+)'/g)].map((m) => m[1]).filter((n) => n !== 'mute' && n !== 'satchel');
   const missing = names.filter((n) => !files.includes(`${n}.webp`));
   assert.deepEqual(missing, [], `painted names with no file in src/assets/icons: ${missing.join(', ')}`);
   for (const f of files) {
@@ -72,4 +72,55 @@ test('every painted icon has its file, each under 60 KB and 4096 px', async () =
     const [w, h] = webpSize(b);
     assert.ok(w > 0 && h > 0 && w <= 4096 && h <= 4096, `${f} is ${w}x${h}`);
   }
+});
+
+/** the painted object an icon name draws (PAINTED_FOR, read from the source: the module itself needs Vite's glob) */
+function paintMap(): Record<string, string> {
+  const src = readFileSync(join(SRC, 'icons/PaintedIcon.tsx'), 'utf8');
+  const body = src.slice(src.indexOf('PAINTED_FOR'));
+  return Object.fromEntries([...body.slice(body.indexOf('{') + 1, body.indexOf('};')).matchAll(/(\w+): '(\w+)'/g)].map((m) => [m[1], m[2]]));
+}
+
+test('one object per meaning on every screen: Satchel is always the satchel, How to Play always the lantern (lead, 2026-11-01)', () => {
+  const map = paintMap();
+  const obj = (n: string) => map[n] ?? n;
+  const seen = new Map<string, Set<string>>();
+  const add = (meaning: string, icon: string, where: string) => {
+    const k = meaning.trim();
+    if (!seen.has(k)) seen.set(k, new Set());
+    seen.get(k)!.add(`${obj(icon)} (${where})`);
+  };
+  for (const f of walk(SRC)) {
+    const s = readFileSync(f, 'utf8');
+    const rel = relative(ROOT, f);
+    // <MenuTile icon="x" name="Y" ...>, <LeafButton icon="x" name="Y">, <CornerToken icon="x" label="Y">, and the same in object lists
+    for (const m of s.matchAll(/icon[=:]\s*["'](\w+)["'][^>}]*?(?:name|label)[=:]\s*["']([^"']+)["']/g)) add(m[2], m[1], rel);
+    for (const m of s.matchAll(/(?:name|label)[=:]\s*["']([^"']+)["'][^>}]*?icon[=:]\s*["'](\w+)["']/g)) add(m[1], m[2], rel);
+  }
+  const clash = [...seen].filter(([, v]) => new Set([...v].map((x) => x.split(' ')[0])).size > 1).map(([k, v]) => `${k}: ${[...v].join(', ')}`);
+  assert.deepEqual(clash, [], `one meaning drawn as different objects:\n${clash.join('\n')}`);
+  const must: Record<string, string> = { Satchel: 'satchel', 'How to Play': 'howto', 'World Map': 'map', Settings: 'gear', 'Start Screen': 'home' };
+  const wrong = Object.entries(must).flatMap(([k, want]) => [...(seen.get(k) ?? [])].filter((x) => x.split(' ')[0] !== want).map((x) => `${k} -> ${x}, want ${want}`));
+  assert.deepEqual(wrong, [], wrong.join('\n'));
+});
+
+/**
+ * Hand-drawn glyphs hide from the <Icon> check (How to Play's chapter tabs, the HUD's goal stand-ins and the boss hearts were inline
+ * <svg> with a 24-unit box; lead, 2026-11-01: "the icon register test must cover them"). Any inline <svg> with a square literal
+ * viewBox in a player-facing component fails, except these, each with its reason. A new entry needs the lead's yes.
+ */
+const SVG_OK: Record<string, string> = {
+  'src/components/icons/TextGlyph.tsx': 'the crisp arrow, tick and note that sit inside a line of words (method icons.md, step 8)',
+  'src/components/StageCleared.tsx': "the falling confetti: a small code-drawn touch (STAGE-RULES §4), not an icon",
+};
+
+test('no hand-drawn icon <svg> in a player-facing component (square literal viewBox), outside the reasoned list', () => {
+  const bad: string[] = [];
+  for (const f of walk(SRC)) {
+    const rel = relative(ROOT, f);
+    if (SVG_OK[rel]) continue;
+    const n = (readFileSync(f, 'utf8').match(/<svg\b[^>]*?viewBox="0 0 (\d+) \1"/gs) ?? []).length;
+    if (n) bad.push(`${rel}: ${n} hand-drawn glyph svg`);
+  }
+  assert.deepEqual(bad, [], `draw these as painted icons (<PaintedIcon>, reference/methods/icons.md):\n${bad.join('\n')}`);
 });
