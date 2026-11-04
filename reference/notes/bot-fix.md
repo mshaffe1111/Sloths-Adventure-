@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 08:27 AM ET
+Last updated: 2026-11-04 08:56 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -24,6 +24,10 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 08:56 AM ET: day-2 round 2 digest sent. GREEN warmup-5m (full gate green on 658ff7e1, pasted at 5a5c5b98: ready for the lead's merge;
+  roadmapcheck absent on its branch, CI at merge). FLAG fix-petals: no push since 3:53, no reply, no ccr re-merge, session alive, context
+  ~729k/980k: 60-min nudge 8:56; RED at round 3 if nothing lands. GREEN w8-rope2 (show-first boards, src diff empty, paste-ups stamped;
+  opened stomp-vaults-up + punch-stuns-side), quality supervisor (R-159.1 PASS rev 2). Round 3 armed: trig_014qA75ve4t5GzHDgaB1UMe5, 9:27.
 - 2026-11-04 08:27 AM ET: warmup-5m answered both items at 226e5421; checked myself: cause bisected (layer start-up 400-650 ms competed with parallel
   walks), fix 658ff7e1 at the cause, clipcheck alone 2/2 PASS pasted, q1 buffer 1px catch, notes 8:26. Full gate re-running on 658ff7e1:
   check its lines at round 2.
