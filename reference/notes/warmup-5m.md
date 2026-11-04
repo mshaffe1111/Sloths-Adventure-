@@ -91,7 +91,8 @@ Done! Checked 605 packages (no changes) [12.00ms].
   - full gate;
   - gpuDefaultOff 48/48;
   - drawWatch 0.1-0.2 ms a frame.
-  Sent to the lead for tonight's release with W1 1-1..1-5; the release clerk builds from warmup-5m.
+  ACCEPTED by the lead and merged into the lead branch; it ships tonight with W1 1-1..1-5.
+- Tomorrow (lead): firstframes against main, and keep the main chunk's 242 KB headroom under 4 MiB in view.
 - Next, after it's live: read Matt's #ctest and #ctest&gpuback=0 pairs per phone (the card). Above all the OnePlus: its slowdraw lines
   name the R-3.14 cause. Then the ship-or-pull decision, and delete the switch that day.
 - Dropped: playerLook.cjs (cross-load pixel noise, lesson in webgl.md). Not run: firstframes (not in tonight's bar).
