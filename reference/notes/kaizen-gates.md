@@ -18,10 +18,11 @@ Built the gates on 2026-11-01 (clipcheck, playerText.test, knowncheck, CI gates.
   knowncheck, roadmapcheck, clipcheck (83 known, 0 new, 0 stale), drawcheck (14/14), checkbase: all pass.
 - Walk: reference/qa-reports/release-0.9.4 (190 stills, sheets, README). Two rough spots named, both checked to be on main as well.
 - Test link: version 234 of the artifact (published in two parts: 255 entries per publish is the cap).
-- Release notes + PR body: reference/releases/0.9.4.md.
+- Release notes + PR body: reference/releases/0.9.4.md, with the PLAY-STORE-RULES §6 table (added at 2a77d774 after the supervisor bot-fix caught it missing; build:store check PASS).
 - Waiting: the lead's check and Matt's word. Never open or merge the PR.
 
 ## Pitfalls
+- Every release's notes carry the PLAY-STORE-RULES §6 table (law 13): each item with its proof, or "not checked" and why. I missed it on 0.9.4's first draft.
 - roadmapcheck lives only on origin/roadmap-keeper (not in scope). Run it from the scratchpad with its root set to the candidate; never merge that branch.
 - Commit ids and times are pasted from command output after the push.
 - pkill -f with a pattern that matches its own command line kills the calling shell. Kill by PID.
