@@ -28,3 +28,4 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
 - Changing a shared section re-curates every stage that draws it (8-5). List every user of a piece before changing it.
 - Times and ids are pasted from a command, never typed (I gave the lead a wrong commit prefix on Nov 1).
 - Never force-push: w8-rope2 is reset to the lead branch only when the old work is already in it (a fast-forward), as on 11-04.
+- Lead (2026-11-04 ~09:56 ET): ACCEPTED vine-hang s65-7 and boa-ball s60-7. Watch: s65-7's straight left edge must always sit against the liana and never show (flipped too, and through every clip frame); check the clips for it. Draw the vine snake ~20% larger sideways.
