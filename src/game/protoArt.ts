@@ -5,6 +5,7 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
+import { drawW1Pits } from './w1Pits.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
 import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
 import { drawW7Face } from './w7FaceArt.ts';
@@ -40,7 +41,10 @@ let kitWorld = 1;
 /** which world's kit the painted layer draws (the engine sets it when a stage starts) */
 export function setKitWorld(w: number) {
   kitWorld = hasKit(w) ? w : 1;
+  stageWorld = w;
 }
+/** the world being played (World 1 paints its pits: w1Pits.ts) */
+let stageWorld = 1;
 /** a step down to the next bank this short (px) is a plinth's: its painted end stops at the lower bank's top with no fade */
 const SHORT_STEP = 60;
 let groundOn = false;
@@ -1155,7 +1159,10 @@ export function drawProtoScene(
   const vy0 = view.y0 ?? -Infinity, vy1 = view.y1 ?? Infinity;
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80 && p.y + p.height > vy0 - 200 && p.y < vy1 + 200;
   const banks = platforms.filter((p) => (p.height >= 90 || p.soil) && !p.push && !p.broken && !p.art);
+  // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
+  if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'under');
   if (!drawGroundChunks(ctx, platforms, banks, view)) drawGround(ctx, platforms, banks, view);
+  if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'over');
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;
   for (const v of vines) {
