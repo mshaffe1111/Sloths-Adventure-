@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 11:09 AM ET
+Last updated: 2026-11-04 11:35 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -35,6 +35,8 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 11:35 AM ET: fix-petals R-150.8 final (7b544fe7): gate on 93450fb2 all PASS (2,299/0), sections present, stage-fix.md best result = this
+  run. Checked; WIN confirmed to it and the lead. Pending: lead's accept -> real start ~10:25 + accept time to the roadmap keeper.
 - 2026-11-04 11:09 AM ET: day-2 round 6 digest sent (first with wins / overs / standard work). WIN fix-petals R-150.8: plan 1.5 h, ~10:25 -> report 10:57
   (~32 min, ~3x), 1-4 rescues 58->19, QS PASS; provisional on its gate (running on 93450fb2) + report sections; told it by name. WIN QS:
   verdicts by 11:01 vs promised 11:35. No overs: warmup-5m R-3.2 report 10:52, gate running (due 11:35); w8-rope2 R-159.1 ~3.1 h of 9.5,
