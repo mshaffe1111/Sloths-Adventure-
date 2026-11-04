@@ -17,7 +17,7 @@ import { artKey, lookAlike, lookOf } from './look.ts';
 import { gatedFlags, judgeAgainst, keyOf, measure, truerBeside } from './funcheck.ts';
 import { movesAlike } from './evaluate.ts';
 import { fallBites, FALL_BITE_PX, pairsMet, waitAt, WAIT_MIN } from './mechanics.ts';
-import { FINALE_TIGHT_MAX, type Built, type Stretch } from './core.ts';
+import { FINALE_TIGHT_MAX, groupsOf, REST_PAD_SECS, type Built, type Stretch } from './core.ts';
 import { shapeAlike, tempoAlike, rhythmOf, templateFlags, unitsOf } from './variety.ts';
 import type { StageEval } from './evaluate.ts';
 import type { Stage } from '../inspect/stages.ts';
@@ -421,4 +421,22 @@ test('tempo and map shape against the stage before: the same BPM and beat feel p
   const flat = Array(12).fill(0), climb = Array.from({ length: 12 }, (_, i) => i * 80);
   assert.equal(shapeAlike(flat, flat), 1);
   assert.ok(shapeAlike(flat, climb) < 0.2, String(shapeAlike(flat, climb)));
+});
+
+test('rests (STAGE-RULES §2 pacing, the lead 11-04): a pause of 1.0 s with no hard input is a rest on Normal wherever it falls; on Easy it takes 2.0 s', () => {
+  const run = (from: number, to: number, every: number): Step[] => Array.from({ length: Math.floor((to - from) / every) + 1 }, (_, i) => ({ m: 'J' as const, t: from + i * every, x: 0, y: G, what: '' }));
+  const noRest = (steps: Step[], setting: 'normal' | 'easy') => paceFlags(pacing(steps, 30), true, { steps, setting }).some((f) => /no rest/.test(f.what));
+  // (a move every 0.6 s for 25 s, with a 1.5 s pause in the middle: no empty 5 s window, so the old grid saw no rest at all)
+  const paused = [...run(0, 12, 0.6), ...run(13.5, 25, 0.6)];
+  assert.equal(noRest(paused, 'normal'), false);
+  assert.ok(paceFlags(pacing(paused, 30), false).some((f) => /no rest/.test(f.what)), 'the old grid flags it');
+  assert.equal(groupsOf(paused, 'normal').length, 2);
+  // (the same pause on Easy is under its 2.0 s pad: still one 25 s group)
+  assert.equal(noRest(paused, 'easy'), true);
+  assert.equal(REST_PAD_SECS.easy, 2);
+  // (and a move every 0.8 s for 25 s with no pause at all is flagged on both)
+  assert.equal(noRest(run(0, 25, 0.8), 'normal'), true);
+  // (small hops are not hard input: a pause filled with them is still a rest)
+  const hops = [...run(0, 12, 0.6), { m: 'h' as const, t: 12.6, x: 0, y: G, what: '' }, ...run(13.5, 25, 0.6)];
+  assert.equal(noRest(hops, 'normal'), false);
 });

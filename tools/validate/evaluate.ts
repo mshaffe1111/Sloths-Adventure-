@@ -61,7 +61,7 @@ export function judge(b: Built & { quick?: { m: string }[] }, truer = true): Sta
   for (const r of repeats(str, b.steps)) flags.push({ rule: 'repeat', what: r.kind === '4-run' ? `the same four moves "${r.run}" ${r.n} times` : `"${r.run}" ${r.n} times back to back`, x: r.at[0], source: SRC.repeat });
   // pacing
   const pc = pacing(b.steps, b.total);
-  for (const f of paceFlags(pc, truer)) flags.push({ rule: 'pacing', what: f.what, source: SRC.pace });
+  for (const f of paceFlags(pc, truer, { steps: b.steps, setting: b.setting })) flags.push({ rule: 'pacing', what: f.what, source: SRC.pace });
   // what a miss costs, past the teaching
   const beats = missCost(b, truer);
   const lateAll = beats.filter((x) => x.step.t > TEACH_SECS);
