@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat \"$CLAUDE_PROJECT_DIR/reference/LAWS.md\" \"$CLAUDE_PROJECT_DIR/reference/LESSONS.md\"; echo; echo \"NOTES: the lead reads reference/STATUS.md now. Every helper reads its own reference/notes/<your-name>.md now (create it in your first commit if it is missing; rules: reference/notes/README.md) and keeps it current at every report.\""
+          }
+        ]
+      }
+    ]
+  }
+}

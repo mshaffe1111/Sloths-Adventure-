@@ -43,6 +43,13 @@
   .dg-bub { padding: 11px 11px 7px 9px; gap: 8px; }
   .dg-bub p { font-size: 14.5px; }
 }
+/* narrow phones upright (360 px, the Fold 4 cover's 344 px): the sideways size, so a tip is one line and fits between the HUD and
+   Pokey's head without covering the way ahead (D10: 4-2's glide tip on 360x740 was two lines and had nowhere clear to go) */
+@media (max-width: 379px) and (orientation: portrait) {
+  .dg-bub { padding: 11px 11px 7px 9px; gap: 8px; }
+  .dg-bub p { font-size: 14.5px; }
+  .dg-bub.painted { padding: 17px 16px 11px 15px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .dg-bub.in { animation: none; opacity: 1; }
 }

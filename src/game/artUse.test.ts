@@ -2,7 +2,7 @@
  * Art use gate (Matt, 2026-10-31: "We need to use all the art we create. Its a waste otherwise."; STAGE-RULES §4).
  *
  * tools/art/artuse.mjs lists every packed piece with no draw site and every art file nothing points at. This test fails when:
- *  - a piece is unused and not on the allow-list (artUse.allow.json): place it, or add it with a reason and an owner;
+ *  - a piece is unused and not on the allow-list (artUse.allow.json): draw it before it merges (the list never grows: knowncheck.mjs, LAWS.md law 5);
  *  - an allow-list entry is used now: take it off the list. The list may only shrink.
  * The list began (2026-10-31) as everything unused that day, each entry tagged with the world helper that must place it.
  */
@@ -26,7 +26,7 @@ test('every packed piece and art file is drawn, or on the reasoned allow-list (w
   const allowed = new Set(list.map(a => a.id));
   const unused = new Set(rows.map(r => r.id));
   const fresh = rows.filter(r => !allowed.has(r.id)).map(r => `${r.world} ${r.id}`);
-  assert.deepEqual(fresh, [], `unused art not on the allow-list (draw it, or add it with an owner and a reason):\n${fresh.join('\n')}`);
+  assert.deepEqual(fresh, [], `unused art: draw it before it merges (artUse.allow.json only shrinks; knowncheck.mjs fails an added entry):\n${fresh.join('\n')}`);
   const placed = list.filter(a => !unused.has(a.id)).map(a => a.id);
   assert.deepEqual(placed, [], `these are drawn now: take them off src/game/artUse.allow.json (the list only shrinks):\n${placed.join('\n')}`);
 });

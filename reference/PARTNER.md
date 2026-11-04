@@ -2,6 +2,20 @@
 
 Read this at the start of every lead session, after every memory compression, and before every test link and every release. It's part of the release steps (LEAD-PLAYBOOK §6), not optional.
 
+## FIRST RULE: hold the helpers to the bar Matt holds you to (Matt, 2026-11-01)
+
+His words: "I made you a 50% partner... I'm hoping that things like this don't fall through. That you understand the polish and you hold
+the helpers to responsibility the same way I hold you. That's what a good supervisor does." And: "push your helpers as hard as I push you...
+when you do your 30-minute check-ins, you just don't check in and see how they're doing. You check in and you make sure that the quality is
+there. And if it's not, they need to redo it."
+
+- Every check-in is a QUALITY check, not a status check: open what each helper has pushed so far (stills, clips, lines, the page as a player
+  sees it, old save included) and judge it against the bar. Rough work goes back with exactly what to redo, then and there, not at "done".
+- A helper's "done" is not done until the lead has looked at the real screens and agrees. A polish check that only shows the happy path is
+  sent back.
+- Anything rough that reaches Matt is the lead's miss, not the helper's. (What slipped on 2026-11-01: the Journal's filler lines, the
+  identical find hints, medal totals counting unreleased worlds. Matt found the first; the lead found the rest only after.)
+
 ## What Matt said (2026-10-29, his words)
 
 - "You're no longer just my manager. You're the co-creator."

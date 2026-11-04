@@ -1,0 +1,58 @@
+{
+ "tag": "hfbd2-hd-F52",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w3sinkhole-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/736d8758890c898e41e0bb5a57df15d36a47f569/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w3sinkhole-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: looking up from the bottom of a deep jungle sinkhole: tall grey-green rock walls with hanging vines and roots, a round opening high above showing the night sky and a bright moon, cool blue moonlight from above, deep shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w6dawn-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/736d8758890c898e41e0bb5a57df15d36a47f569/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w6dawn-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a misty mangrove swamp at dawn: tall dark mangrove trees with spanish moss standing in still water, a pale sun rising, pale pink dawn light, dark silhouettes, strong contrast. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w7dusk-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/736d8758890c898e41e0bb5a57df15d36a47f569/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w7dusk-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: jungle temple ruins at dusk: broken towers and carved pillars wrapped in roots, a green-gold sky with glowing clouds, dim green-gold dusk light, dark silhouettes. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  }
+ ]
+}

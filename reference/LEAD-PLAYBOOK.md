@@ -100,6 +100,8 @@ Step zero of every test link and every release: read reference/PARTNER.md and go
 
 Only when Matt says "push". Before: §4 passed on everything in it; STATUS.md lists what is in and what is not. After the merge:
 check the deploy and the Android build, update STATUS.md and the roadmap, tell the QA session what went live.
+Then the 15-minute retro in reference/CONTINUOUS-IMPROVEMENT.md (what escaped, what was caught late, the Pareto, the one
+countermeasure for the top category), and every new defect in its log with a root cause and a countermeasure level.
 
 ## 7. Keeping cost down
 
@@ -159,3 +161,38 @@ Story scene lines (cutscenes, the journal, the finale): the lead approves these 
 
 ## Releases come from a frozen branch (2026-10-29)
 Open the release PR from a branch cut at the checked commit (e.g. `release-YYYY-MM-DD`), never from the work branch: later merges onto the work branch silently join an open PR (PR #47 picked up four unreleased merges and was replaced by #48).
+
+## The lead's own bar before anything reaches Matt (Matt, 2026-11-01: "Is this the polish we expect? ... You are 50% ownership of this game")
+What slipped: the 0.9.2 Journal. The lead approved the line templates one by one, in a list, and never looked at the page a real player
+with an OLD save sees: every entry fell to 3 filler lines ("I didn't write it down... I remember it was green"), repeated down the page.
+Matt found it on his phone. Rules from now on:
+1. **Judge the screen, not the list.** Lines, templates and art are approved only as they appear in the game, on a full page, in every state:
+   an old save (from before the feature), a fresh save, a half-played one and a finished one. The lead opens each state itself.
+2. **Filler is a fail.** A line that could sit under any stage, or that apologises for missing data, is not shipped. Generated text gets a
+   no-repeat-on-a-page test and a banned-filler test.
+3. **Voice bar:** Pokey is "a slow smart-ass" (Matt). Every Pokey line has to sound like him read aloud; at least every other line should
+   earn a smile. Rewrite until it does.
+4. **Briefs carry the bar:** every brief that produces player-facing words or looks includes 2-3 example lines/shots at the bar and the
+   states the helper must screenshot (old save included). A helper's "polish check" that only shows the happy path is sent back.
+5. **Check the fact before you brief on it** (2026-11-01, defect D7): a brief or edit that rests on a fact about the game (what is live,
+   what a screen shows, how a rule works) names the file or screen where the lead checked it. Memory and summaries are not a source.
+6. **Briefs name the method; reports update it** (Matt, 2026-11-01): every brief has a "Method:" line pointing at reference/methods/,
+   and every report has a "Method update" section (what worked better, what failed, the proposed edit). The lead merges proven updates
+   into the method file at merge time. See reference/methods/README.md.
+7. **Time comes from the machine** (defect D20): briefs and check-ins read the time with `TZ=America/New_York date`, never worked out from UTC by hand; deadlines in a brief are given in ET and in UTC.
+7b. **Leader standard work** (Matt, 2026-11-01): the lead runs reference/LEADER-STANDARD-WORK.md every day: high-leverage work only, paired indicators, gemba on real screens, coaching-kata check-ins, one breakthrough goal with catchball, a weekly review of the system itself.
+8a. **A code fact is read from the value, not a comment** (defect D24): name the file and line where the value or data was read; grep the whole tree (not one file) before saying something does not exist; every helper brief tells the helper to verify the brief's facts it relies on.
+8c. **Lessons reach every helper by themselves** (Matt, 2026-11-01; R-9): reference/LESSONS.md prints with the laws at every session start and compaction (SessionStart hook). Every report needs "Method used", "Lessons applied" and "Method update"; the lead sends back a report without them. Every new defect adds its line to LESSONS.md the same day (law 10), and the roadmap-keeper's release sweep checks that every defect has its line.
+8b. **Use the helpers that do the best job** (Matt, 2026-11-01; R-8): keep reference/HELPERS.md current at every acceptance (first-time gate, redos, cost, verdict). Give follow-on work in an area to a STRONG helper that is still alive before starting a fresh one; retire a helper whose context is near full or whose work is done, after its lessons are in its method file. Every brief says what goes on the roster.
+8. **Check the base before judging a sheet** (defect D23): at every check-in, before opening a helper's sheets, run `git merge-base --is-ancestor <release or main> <helper branch>`. A sheet shot on a stale branch shows fixed problems as current and hides merge conflicts: send it back to merge and re-shoot first. Every sheet and report names its base commit.
+
+## 8d. Managing so helpers can succeed (D27, 2026-11-02: the roadmap keeper retired; the lead's system was the root cause)
+- **Batch the asks.** Never feed a helper one item every few minutes with "report totals" each time. Collect items, send one batch,
+  get one report. Rapid-fire asks make a helper race to report, and racing is where slips happen.
+- **Mechanisms, not reminders.** When a slip repeats, change the tool or the process so the slip cannot happen (a script prints the
+  fact; the step that invites the slip is removed). A rule that says "be careful" is not a countermeasure.
+- **Ask only for what you'll use.** Don't ask a helper to type facts the lead reads anyway (commit ids, revs: the lead reads git).
+  Every needless step is a chance to get it wrong.
+- **Notes, not rotation (Matt, 2026-11-02).** Every helper keeps reference/notes/<name>.md like the lead's STATUS.md and reads it after
+  every compression (the start-up print reminds it). Long-running helpers carry on; we do not rotate or retire for memory. The lead checks
+  a helper's notes file at each check-in: stale notes are a send-back.

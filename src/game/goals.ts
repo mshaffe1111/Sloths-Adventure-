@@ -93,7 +93,7 @@ export function kidMedian(runs: readonly number[]): number {
 
 /**
  * A gen2 stage's Easy goal (LV-24, lead 2026-10-30): the 65% floor, but never more than the kid first-timer bot's median where its runs
- * were recorded (gen2/game.ts kidRuns: 5-9's kid beat 5, 5, 9, 10, 10 and 10 spiders, so 9). Hand-built stages keep LV-6's rule.
+ * were recorded (gen2/game.ts kidRuns: 5-9's kid beat 5, 6, 4, 6, 6 and 5 spiders, so 5). Hand-built stages keep LV-6's rule.
  */
 export function gen2EasyGoal(have: number, kidReach?: number): number {
   return Math.max(1, Math.min(easyFloor(have), kidReach ?? Infinity));

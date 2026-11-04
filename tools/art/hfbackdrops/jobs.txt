@@ -23,3 +23,48 @@ hfbd-hd-a 6ae66200c78863f9c62f4f04  hfbd-hd-b 6ae66203c78863f9c62f4f06  hfbd-hd-
 running total ~$4.70 (before the HD pass)
 hd-a/b/c finished 21:53-21:54Z (~6.5 min each, ~20 min = ~$0.90). Cut + edges + haze: process.py finish (mix5).
 running total ~$5.60 of $40
+=== hf-backdrops2 (2026-11-01, lead's brief: round 2 for the 6 PM ET release, cap $35, balance ~$93). Times UTC. ===
+--- round R (redo the rejects with starts2.py, crown-top fixes for w1/w1c/w3/w6/w7 middles, new W5 gold middle w5-mid): 64 takes ---
+hfbd2-R0 6ae764630e0338d1bb7d837e  hfbd2-R1 6ae764660e0338d1bb7d8380  hfbd2-R2 6ae7646a0e0338d1bb7d8382  hfbd2-R3 6ae7646d0e0338d1bb7d8384
+  all rtx-pro-6000, started 16:10Z; job fetches script + spec from GitHub at 31e45349, writes to bucket hfbackdrops2/hfbd2-R<k>/props/
+--- round M (third/fourth moods, 9 worlds: w1rain w2mist w3crystal w4storm w6moon w7court w8dawn w9ash w10night) at bd6c7683 ---
+hfbd2-M0 6ae76519c78863f9c62fb2e8  hfbd2-M1 6ae7651d0e0338d1bb7d83ed  hfbd2-M2 6ae765210e0338d1bb7d83ef  hfbd2-M3 6ae76525c78863f9c62fb2eb
+  img2img middle + near strips (18 strips x s68/s76 or s62/s68 x seeds 7/23 = 72 takes), started 16:13Z
+hfbd2-F0 6ae76528c78863f9c62fb2ed  hfbd2-F1 6ae7652b0e0338d1bb7d83f5
+  text to image (stillsgpu.py, style model 0.8) of far strip + sky in one tall 1792x1200 picture, 9 moods x 3 seeds = 27, started 16:13Z
+  R0-R3 finished 16:19-16:20Z (~9-10 min each incl. load: ~$1.75). M0-M3 finished 16:24-16:25Z (~11-12 min each: ~$2.10).
+  F0/F1 finished 16:25/16:27Z (~12-14 min each: ~$1.20). Picks: picks2-R.txt, picks2-M.txt; far picks w1rain-23 w2mist-41
+  w3crystal-7 w4storm-7 w6moon-41 w7court-23 w8dawn-7 w9ash-7 w10night-7 (joined end to end: process.py tallkey).
+--- native-resolution passes (striphdgpu.py s25, Real-ESRGAN first) ---
+hfbd2-hd-R0 6ae767b0c78863f9c62fb3d5  hfbd2-hd-R1 6ae767b4c78863f9c62fb3d7  (16 round R strips) started 16:24Z
+hfbd2-hd-T0 6ae768dfc78863f9c62fb439  hfbd2-hd-T1 6ae768e3c78863f9c62fb43b  (9 far + sky, 1760 tall, on black) started 16:29Z
+hfbd2-hd-M0 6ae7693e0e0338d1bb7d851c  hfbd2-hd-M1 6ae76943c78863f9c62fb47c  hfbd2-hd-M2 6ae769460e0338d1bb7d851e  (18 round M strips) 16:31Z
+  hd-R0/R1 finished ~16:29-16:30Z (~6 min each), hd-T0/T1 ~16:32-16:33Z (~4 min), hd-M0..M2 ~16:35Z (~5 min). (~$1.50 for the 7)
+running total ~$7.30 of $35 at 16:45Z
+--- round X (the day's third round, 16:47Z, at af341134) ---
+hfbd2-X0 6ae76cfd0e0338d1bb7d864f  hfbd2-X1 6ae76d010e0338d1bb7d8653: W10 storm + gale middle/near (img2img), W1 sunrise/kapok crown tops (24 takes)
+hfbd2-F3 6ae76d050e0338d1bb7d8655: far + sky for w10storm, w10gale x 4 seeds (stillsgpu.py)
+hfbd2-S0 6ae76d0a0e0338d1bb7d8659  hfbd2-S1 6ae76d0c0e0338d1bb7d865b: upright skies for 10 far sets (tallstart starts, s48/s58, striphdgpu.py)
+  X0/X1 ~7 min each, F3 ~7 min, S0/S1 ~12-14 min each, hd-X ~6 min (~$2.40 for the 6).
+GPU time total today ~$9.70 of the $35 cap (estimate: ~212 min of rtx-pro-6000 at ~$2.75/h incl. model loads).
+Skies (S0/S1): only w5twi2 s58 passed; the other 9 keep a straight line or a flat smoke slab where the sky meets the strip
+  (the tallstart starts carry it; more img2img strength did not remove it). Held, as before: they keep the cover fit.
+--- after the lead's review (14:00 ET) ---
+hfbd2-F4a 6ae77efd0e0338d1bb7d8ca3  hfbd2-F4b 6ae77f01c78863f9c62fbee6  (15 far+sky takes, W8 dawn / W10 gale / W2 mist) 18:03Z, ~7 min each
+hfbd2-hd-F4 6ae781400e0338d1bb7d8da0 (3) 18:13Z ~3 min
+hfbd2-K0 6ae78153c78863f9c62fc051  hfbd2-K1 6ae781570e0338d1bb7d8db8  (27 sky-only donors) 18:13Z ~6 min each
+hfbd2-S2 6ae783230e0338d1bb7d8f16 (7 skies from donors, s30) 18:21Z ~6 min. FAILED review (cut trunks under a band): held.
+running total ~$12.50 of $35 (GPU estimate)
+hfbd2-F5a/b/c 6ae785d10e0338d1bb7d8fd5 6ae785d5c78863f9c62fc329 6ae785d80e0338d1bb7d8fd9 (27 far+sky takes, 9 old sets) 18:33Z ~8 min each
+hfbd2-hd-F50/51/52 6ae7885d0e0338d1bb7d9073 6ae788610e0338d1bb7d9079 6ae78865c78863f9c62fc3e7 (9) 18:44Z ~3 min each
+running total ~$14 of $35 (GPU estimate)
+hfbd2-W1 6ae78b9e0e0338d1bb7d9223 (12 takes, a second W1 middle variant) 18:57Z ~10 min. Not set in (missed 3:15 PM ET); takes in the bucket.
+hfbd2-F6 6ae78ba20e0338d1bb7d9225 (5 W1 sunrise far+sky takes) 18:57Z ~6 min; hfbd2-hd-F6 6ae78d060e0338d1bb7d92ee 19:03Z ~2 min
+running total ~$15.50 of $35 (GPU estimate)
+(Times above written as "ET" by this helper used UTC-4; DST ended Nov 1, so ET = UTC-5.)
+hfbd2-F7a/b 6ae78eb00e0338d1bb7d93c6 6ae78eb4c78863f9c62fc7fb (8 far+sky takes, W7 dawn / W5 dusk2) 19:10Z ~4 min
+hfbd2-hd-W1 6ae78eddc78863f9c62fc806 (w1b-mid) 19:11Z ~1.5 min; hfbd2-hd-F7 6ae7902ec78863f9c62fc886 (2) 19:17Z ~2 min
+total for the day ~$16.50 of $35 (GPU estimate)
+hfbd2-F8a/b/c 6ae796e30e0338d1bb7d98fe 6ae796e8c78863f9c62fcea8 6ae796ebc78863f9c62fceaa (15 W2 far+sky takes) 19:45Z ~5 min each
+hfbd2-hd-F80/81/82 6ae798660e0338d1bb7d9a66 6ae7986c0e0338d1bb7d9a68 6ae7986ec78863f9c62fd033 (3) 19:52Z ~2 min each
+total for the day ~$18 of $35 (GPU estimate)

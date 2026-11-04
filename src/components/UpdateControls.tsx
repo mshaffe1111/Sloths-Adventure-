@@ -1,5 +1,6 @@
 import React, { useState, useSyncExternalStore } from 'react';
 import { Icon } from './icons/index.tsx';
+import { PaintedIcon } from './icons/PaintedIcon.tsx';
 import { applyUpdate, checkForUpdate, hardRefresh, subscribeUpdate, updateAvailable } from '../game/updates.ts';
 import { storeBuild } from '../game/appShell.ts';
 
@@ -81,12 +82,13 @@ export const TitleUpdate: React.FC<{ version?: string; day?: string }> = ({ vers
       {!storeBuild() &&
         (ready ? (
           <button type="button" className="ttl-ver-b ttl-ver-ready" onClick={() => void applyUpdate()}>
-            <Icon name="restart" size={20} />
+            <PaintedIcon name="restart" size={22} />
             New version ready: tap to refresh
           </button>
         ) : (
           <div className="ttl-ver-row">
             <button type="button" className="ttl-ver-b" onClick={() => void run()} disabled={state === 'checking'}>
+              {state !== 'same' && <PaintedIcon name="spyglass" size={26} />}
               {state === 'checking' ? 'Checking…' : state === 'same' ? (
                 <>
                   Up to date <Icon name="check" size={16} />
@@ -94,7 +96,7 @@ export const TitleUpdate: React.FC<{ version?: string; day?: string }> = ({ vers
               ) : state === 'unknown' ? 'Offline? Try again' : 'Check for updates'}
             </button>
             <button type="button" className="ttl-ver-b" onClick={() => void hardRefresh()}>
-              <Icon name="restart" size={18} />
+              <PaintedIcon name="restart" size={22} />
               Refresh game
             </button>
           </div>

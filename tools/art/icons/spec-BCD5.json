@@ -1,0 +1,253 @@
+{
+ "tag": "icBCD5",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects",
+ "items": [
+  {
+   "name": "home-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a cosy little round wooden door set in the base of a mossy tree trunk, warm light in a tiny round window, a green leaf over the door, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, house, castle"
+  },
+  {
+   "name": "trophy-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small golden trophy cup with two curled handles on a carved wooden base, a green vine with a leaf wound round its stem, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text"
+  },
+  {
+   "name": "cards-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small fanned stack of three playing cards with painted jungle animals on them, tied with a twine bow, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letters, numbers"
+  },
+  {
+   "name": "heart-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a glossy plump red heart shaped berry with a tiny green leaf stem on top, a soft white shine, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, face"
+  },
+  {
+   "name": "heartEmpty-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of an empty dry pale brown heart shaped seed husk, hollow and papery, a tiny dry stem, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, face"
+  },
+  {
+   "name": "thornHeart-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a glossy plump red heart shaped berry wrapped in a dark green thorny bramble vine with sharp thorns, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, face"
+  },
+  {
+   "name": "seed-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a glowing golden seed with little bright sparks around it, warm magical glow, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, face, sun"
+  },
+  {
+   "name": "leaf-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a single big glossy green jungle leaf with a curled tip and clear veins, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, flower"
+  },
+  {
+   "name": "paw-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a sloth paw print pressed into a round flat disc of brown clay, three long claw marks, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, dog, cat"
+  },
+  {
+   "name": "save-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small wooden keepsake box with a rounded lid and a shiny brass clasp, a green leaf on the lid, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, book"
+  },
+  {
+   "name": "compass-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of an old brass explorer compass, round, with a red and white needle, a green vine strap, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, clock, text"
+  },
+  {
+   "name": "crown-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a little crown woven of green leaves and small golden flowers, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, face, text"
+  },
+  {
+   "name": "clubs-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of two short carved wooden clubs crossed in an X, lashed together with green vine, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, sword, metal"
+  },
+  {
+   "name": "key-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of an old iron key with a round bow, a little paper tag tied on with twine, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, lock"
+  },
+  {
+   "name": "medal-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round gold medal with a carved leaf on it, hanging from a short green vine ribbon, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, numbers"
+  },
+  {
+   "name": "journal-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small worn brown leather journal, closed, tied round with a twine cord, a feather tucked under the cord, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, satchel, strap, text"
+  },
+  {
+   "name": "scenes-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a little wooden toy puppet theatre stage with red curtains drawn open, a painted jungle scene inside, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, people"
+  },
+  {
+   "name": "sparkle-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a glowing firefly with a bright golden light and little four pointed sparkles around it, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, star, face"
+  },
+  {
+   "name": "flower-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a single pink jungle flower with five round petals and a yellow middle, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, face"
+  },
+  {
+   "name": "shield-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small round shield made of a big tough green leaf over a wooden frame, lashed with vine, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, metal, text"
+  },
+  {
+   "name": "pouch-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small embroidered green cloth drawstring pouch with a shiny emerald hummingbird feather tucked in it, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, satchel, bird"
+  },
+  {
+   "name": "about-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a little blank carved wooden plaque hanging from a vine, a small green leaf on its corner, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, letters"
+  },
+  {
+   "name": "sprint-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a green leaf with small swept back wings, fast, speed lines, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text, bird"
+  },
+  {
+   "name": "petal-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a single big curled pink flower petal with a dew drop, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, face"
+  },
+  {
+   "name": "bramble-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a round tangled ball of dark green thorny bramble with sharp thorns, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, face"
+  },
+  {
+   "name": "ascent-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a green vine climbing straight up, curling at the top with a leaf, with a small upward arrow shape of leaves, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text"
+  },
+  {
+   "name": "fern-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a single curled green fern frond, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, face"
+  },
+  {
+   "name": "liana-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a thick brown jungle liana vine hanging in a loop, a few leaves, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, snake"
+  },
+  {
+   "name": "idol-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small carved grey stone idol with a round friendly face, moss on its head, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, text"
+  },
+  {
+   "name": "cage-a89",
+   "prompt": "slothadv style, painted storybook illustration, a game icon of a small cage made of tied wooden sticks with a little door, empty, bold simple readable shape, chunky and clear, thick dark outline, rich warm colours, soft light from the upper left, seen from the front slightly from above, centred, isolated on a flat plain mid grey background, no text, no letters, no numbers, no circle, no badge, no frame",
+   "seed": 89,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, words, numbers, watermark, frame, circle, badge, border, photo, 3d render, blurry, cropped, cut off, many objects, bag, bird, metal"
+  }
+ ]
+}

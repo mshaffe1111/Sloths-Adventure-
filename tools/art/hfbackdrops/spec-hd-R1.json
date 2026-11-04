@@ -1,0 +1,126 @@
+{
+ "tag": "hfbd2-hd-R1",
+ "note": "hf-backdrops native-resolution pass",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w5-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w5-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. an orchid forest: big old trees of different shapes with broad rounded leafy crowns, white and pink orchids blooming on the trunks, ferns and mossy roots, warm golden afternoon light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w6-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. mangrove trees on tall arching roots standing in still water, spanish moss, soft grey-green swamp light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6dawn-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w6dawn-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. mangrove trees on tall arching roots standing in still water, spanish moss, an old wooden stilt hut on posts, pale pink-grey misty dawn light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6dawn-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w6dawn-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. mangrove roots in shallow water, reeds, lily pads, pale pink-grey misty dawn light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w7-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. overgrown jungle temple ruins: a stepped shrine with a carved stone face, stone archways and broken columns, soft grey-green jungle light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w8night-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w8night-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. the high jungle canopy at night: great dark treetops on huge branches, hanging lianas, pale glowing night flowers, silver moonlight",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w8sunset-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w8sunset-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. the high jungle canopy: great round treetops on huge branches, hanging lianas, a giant flowering tree, violet and orange sunset light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w9dawn-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w9dawn-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a scorched volcanic valley: black basalt columns, charred trees with young green shoots, cooled lava rocks, pink-grey ash dawn light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}

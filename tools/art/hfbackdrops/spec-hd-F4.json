@@ -1,0 +1,59 @@
+{
+ "tag": "hfbd2-hd-F4",
+ "note": "hf-backdrops native-resolution pass",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w10gale-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ae0a170a681c6eb917d57bac5e5b54950d292c0c/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w10gale-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a grey gale over the high mountain pass: steep grey cliffs and peaks half hidden in blowing cloud and slanting rain, a far rope bridge between two peaks, flat grey gale light, cold and wet, open sky above, the far scenery below",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w2mist-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ae0a170a681c6eb917d57bac5e5b54950d292c0c/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w2mist-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a misty dawn on a wide jungle river: still pale water, far banks of palms and big trees fading into morning mist, a pale pink-gold sun low over the river, pale pink-gold dawn light through river mist, open sky above, the far scenery below",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  },
+  {
+   "name": "w8dawn-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ae0a170a681c6eb917d57bac5e5b54950d292c0c/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w8dawn-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. dawn over the high jungle canopy: a sea of round treetops seen from above, mist between them, a soft pink-gold sun rising, a few birds far away, soft pink and gold dawn light, open sky above, the far scenery below",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam"
+  }
+ ]
+}

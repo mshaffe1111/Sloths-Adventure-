@@ -49,7 +49,9 @@ test('1-2: the twist swaps the trail between the branches and the floor (three m
     const tw = st.proto.beats.find((b) => b[2].startsWith('Twist'))!;
     const v = w1Pick('1-2', s).twist!;
     seen.add(v);
-    const ups = st.platforms.filter((p) => p.type === 'bouncy' && p.x >= tw[0] && p.x <= tw[1]).length;
+    // (the trail's own mushrooms up; the catch mushrooms under the branches' near ends, which bounce a miss back up, are not counted)
+    const catches = new Set(st.proto.catchUps ?? []);
+    const ups = st.platforms.filter((p) => p.type === 'bouncy' && !catches.has(p.id) && p.x >= tw[0] && p.x <= tw[1]).length;
     const high = st.platforms.filter((p) => p.y <= G - 160 && p.x >= tw[0] && p.x <= tw[1] && p.style === 'branch').length;
     const dips = st.platforms.filter((p) => p.y > G && p.style === 'moss_stone' && p.x >= tw[0] && p.x <= tw[1]).length;
     assert.equal(ups, v === 'split' ? 3 : v === 'highLow' ? 2 : 0, `seed ${s} (${v})`);

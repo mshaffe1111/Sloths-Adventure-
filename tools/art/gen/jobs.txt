@@ -103,3 +103,16 @@ medals-0 6adfa3143fb22a235dd20425
 medals2-0 6adfab1a41e90535df758ca6
 satchel-icon 6ae73fd90e0338d1bb7d7886 (via MCP hf_jobs, 9 stills)
 satchel-icon2 6ae74071c78863f9c62fa252 (MCP hf_jobs, bucket w5-xfer/satchel/, 9 stills ~6 min GPU ~$0.30; first try cancelled at upload: the job token can't write the model repo; total spend about $0.60). Picked a37 -> src/assets/ui/satchel.webp (tools/art/satchelcut.py)
+── icons-painted (2026-11-01, Matt: "Same for all icons in the game. Polish."; cap $25). Times UTC. Satchel recipe (spec-satchel.json),
+   tools/art/icons/make_spec.py, job tools/art/w6to10/stillsgpu.py fetched from GitHub, bucket w5-xfer under icons/<tag>/stills/ ──
+icA0 6ae77a97c78863f9c62fbcd2  icA1 6ae77a9b0e0338d1bb7d8b3b  icA2 6ae77a9e0e0338d1bb7d8b3d  rtx-pro-6000, started 17:45Z at bdb496bd:
+  group A (start screen): map, story, howto, sound, gear x 2 prompts x 4 seeds, play x 4 seeds = 44 takes
+  icA0-2 finished 17:51Z (~6.5 min each incl. model load, ~$0.90 for the three). Picks tools/art/icons/picks.json: map-a53, story-a11,
+  howto-a37, sound-a53, gear-a37, play-a11 (cut: tools/art/icons/cut.py). Not used: the seed-pod rattles (read as a nut, not sound),
+  the open storybooks (thin at 60 px), the woven lanterns (read as a ball).
+icE0 6ae77e58c78863f9c62fbebb  icE1 6ae77e5cc78863f9c62fbebd  icE2 6ae77e5f0e0338d1bb7d8c78  started 18:01Z at 52d8d854: group E (light
+  play triangle, restart curl, close X, padlock, star x 2 prompts x 4 seeds, back arrow x 4) = 44 takes
+  icE0-2 finished ~18:07Z (~6 min each, ~$0.85 for the three). Picks: playc-b11 (gold triangle: the brown carved arrow vanished on the
+  brown sign), restart-b23, close-b53 (birch: the brown X vanished on wood), lock-a23, star-a11, back-a23 (back-a53's take had a
+  gradient grey that the key left as bands). Running total icons-painted ~$1.75 of $25.
+icG0 6ae78722c78863f9c62fc389  icG1 6ae787250e0338d1bb7d9035  started 18:38Z at d45b4f8c: spyglass (Check for updates, lead 1:40 PM) x2 prompts x4, Pokey's pencil notebook (Journal, lead 1:05 PM) x2 prompts x4

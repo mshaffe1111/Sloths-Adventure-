@@ -75,11 +75,14 @@ const w8Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
  * The stages gen2 builds, each with its kit (the per-stage chooser). 5-8 stays hand-built (Matt, 2026-10-28): it is still the old
  * generator's until its own build lands; 6-8 Stilt Climb is hand-built later.
  */
-const KID_RUNS_59 = [5, 5, 9, 10, 10, 10] as const;
+// (the fixed kid bot's runs, bot-fix 2026-11-01: seeds 1-3, trials 0-1, firstTimer() with Easy's goal at the 65% floor so the shrine
+// does not stop him early. The first record, 5, 5, 9, 10, 10, 10, came from the bot that hopped every 0.3 s and landed stomps by chance;
+// firstTimerBot.test.ts re-measures these, so a change to the bot or the stage that moves them fails there)
+export const KID_RUNS_59 = [5, 6, 4, 6, 6, 5] as const;
 
 export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
   '5-7': { kit: () => w5Kit(7), kitName: 'w5.ts:w5Kit(7)' },
-  // (5-9 Easy: the kid beat 5, 5, 9, 10, 10 and 10 spiders on seeds 1-3 before the shrine: the median, 9)
+  // (5-9 Easy: the kid beat 5, 6, 4, 6, 6 and 5 spiders on seeds 1-3 before the shrine: the median, 5)
   '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', kidRuns: KID_RUNS_59, easyGoal: kidMedian(KID_RUNS_59) },
   ...Object.fromEntries(W6_GAME_STAGES.map((id) => [id, w6Entry(Number(id.split('-')[1]))])),
   ...Object.fromEntries(W7_GAME_STAGES.map((id) => [id, w7Entry(Number(id.split('-')[1]))])),

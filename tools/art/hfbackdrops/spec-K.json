@@ -1,0 +1,255 @@
+{
+ "tag": "hfbd2-K",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.0001
+  ]
+ },
+ "items": [
+  {
+   "name": "w1sunrise-skyt2i-7",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a sunrise open sky with a few soft painted clouds, pale gold and blue. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 7,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w1sunrise-skyt2i-23",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a sunrise open sky with a few soft painted clouds, pale gold and blue. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 23,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w1sunrise-skyt2i-41",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a sunrise open sky with a few soft painted clouds, pale gold and blue. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 41,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w1kapok-skyt2i-7",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: the great kapok tree's leafy green canopy overhead with lilac orchids, patches of blue sky between the leaves. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 7,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w1kapok-skyt2i-23",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: the great kapok tree's leafy green canopy overhead with lilac orchids, patches of blue sky between the leaves. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 23,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w1kapok-skyt2i-41",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: the great kapok tree's leafy green canopy overhead with lilac orchids, patches of blue sky between the leaves. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 41,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w3sinkhole-skyt2i-7",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: the grey-green rock wall of the sinkhole rising overhead with hanging vines, misty. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 7,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w3sinkhole-skyt2i-23",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: the grey-green rock wall of the sinkhole rising overhead with hanging vines, misty. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 23,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w3sinkhole-skyt2i-41",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: the grey-green rock wall of the sinkhole rising overhead with hanging vines, misty. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 41,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w6dawn-skyt2i-7",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a pale pink dawn sky over the swamp, the dark mangrove trees and hanging moss rising out of the top. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 7,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w6dawn-skyt2i-23",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a pale pink dawn sky over the swamp, the dark mangrove trees and hanging moss rising out of the top. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 23,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w6dawn-skyt2i-41",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a pale pink dawn sky over the swamp, the dark mangrove trees and hanging moss rising out of the top. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 41,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w7-skyt2i-7",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a grey-green overcast sky over the jungle ruins, soft clouds. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 7,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w7-skyt2i-23",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a grey-green overcast sky over the jungle ruins, soft clouds. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 23,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w7-skyt2i-41",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a grey-green overcast sky over the jungle ruins, soft clouds. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 41,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w7dawn-skyt2i-7",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a warm pale dawn sky over the ruins, the great carved tree and its leaves rising out of the top. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 7,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w7dawn-skyt2i-23",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a warm pale dawn sky over the ruins, the great carved tree and its leaves rising out of the top. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 23,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w7dawn-skyt2i-41",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a warm pale dawn sky over the ruins, the great carved tree and its leaves rising out of the top. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 41,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w7dusk-skyt2i-7",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a dim green-gold dusk sky over the ruins, soft clouds. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 7,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w7dusk-skyt2i-23",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a dim green-gold dusk sky over the ruins, soft clouds. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 23,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w7dusk-skyt2i-41",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a dim green-gold dusk sky over the ruins, soft clouds. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 41,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w5dusk2-skyt2i-7",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a pink and lilac dusk open sky with a few soft painted clouds, orchid branches at the edges. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 7,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w5dusk2-skyt2i-23",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a pink and lilac dusk open sky with a few soft painted clouds, orchid branches at the edges. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 23,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w5dusk2-skyt2i-41",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a pink and lilac dusk open sky with a few soft painted clouds, orchid branches at the edges. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 41,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w5twi1-skyt2i-7",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a lilac and violet twilight sky with soft clouds, dark tree tops at the edges. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 7,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w5twi1-skyt2i-23",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a lilac and violet twilight sky with soft clouds, dark tree tops at the edges. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 23,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  },
+  {
+   "name": "w5twi1-skyt2i-41",
+   "prompt": "painted storybook illustration, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork. A very wide open sky, nothing but sky: a lilac and violet twilight sky with soft clouds, dark tree tops at the edges. Soft painted clouds, the colours deepen toward the top",
+   "neg": "ground, land, trees, mountains, horizon, buildings, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, blurry, photo",
+   "seed": 41,
+   "w": 1792,
+   "h": 640,
+   "steps": 28
+  }
+ ]
+}

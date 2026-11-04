@@ -341,8 +341,10 @@ export const W8_HARPY_LESSON = 8;
  * The stage as the engine plays it: the pits' blocks drawn as boughs (below); in 8-8, Dot's harpy line W8_MEET_LEAD px before the first night harpy (fillSockets writes
  * proto.hints after the spawn hook runs, so the line is added here). Calling it twice changes nothing.
  */
-export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; gen2?: { falls?: Array<{ x0: number; x1: number; kind: string }> }; config?: { miniIndex: number }; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
+export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; gen2?: { falls?: Array<{ x0: number; x1: number; kind: string }> }; config?: { miniIndex: number; objectiveType?: string }; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
   const w8 = st.proto?.gen2?.w8 as W8Extras | undefined;
+  // (the fungus brackets stand on their trunk: fungusTrunks)
+  fungusTrunks(st.platforms ?? [], (st.gen2 as { sections?: Array<{ template: string; x0: number; x1: number }> } | undefined)?.sections ?? []);
   // (the first deadly drop from a lit bough: Dot's line DROP_LEAD px before its lip, once a stage (Normal; Easy's falls are soft))
   const drops = (st.gen2?.falls ?? []).filter((f) => f.kind === 'void').sort((a, b) => a.x0 - b.x0);
   if (st.proto && drops.length) {
@@ -366,6 +368,37 @@ export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; ge
     hints.sort((a, b) => a.x - b.x);
   }
   return st;
+}
+
+/** the fungus stairs' sections (w8Sections.ts stair: 8-2's fungus steps, 8-5's fungus rolls) */
+const FUNGUS_STAIR = /^w8-fungus-/;
+/** the trunk under a fungus step is laid in this id range (above every pipeline id) */
+export const TRUNK_ID = 70000;
+/** how far under a fungus step's top its trunk's top lies (px): the step's art covers the seam */
+export const TRUNK_UNDER = 8;
+
+/**
+ * The trunk under each fungus step (w8-rope2, the lead: layout 2 of 8-2 cost a Normal first-timer 5-15 lives). The steps are thin
+ * brackets (w8Sections.ts stair, 'branch' pieces, 24 px) with 60 px slots between them, each slot a soft pit one hop under the next step;
+ * under the brackets there was nothing, so a hop up that fell short, steering on, carried him under the next bracket and down into the
+ * void (Normal's falls are deep). STAGE-RULES §6, "walls reach the ground": each step now stands on a bough column from its underside to
+ * the section's foot, so a short hop drops into the slot (the soft pit) and the next step's face is a wall. Drawn as the pits' blocks are
+ * (style 'log', a bough reaching down). Twice changes nothing.
+ */
+export function fungusTrunks(platforms: Platform[], sections: ReadonlyArray<{ template: string; x0: number; x1: number }>): void {
+  if (platforms.some((p) => p.id >= TRUNK_ID && p.id < TRUNK_ID + 10000)) return;
+  let id = TRUNK_ID;
+  for (const sec of sections) {
+    if (!FUNGUS_STAIR.test(sec.template)) continue;
+    const inSec = platforms.filter((p) => p.type === 'solid' && p.x >= sec.x0 - 2 && p.x + p.width <= sec.x1 + 2);
+    const foot = Math.max(...inSec.map((p) => p.y + p.height));
+    for (const p of inSec) {
+      if (p.height > 30 || p.y + p.height >= foot) continue;
+      // (its top just under the step's: the step's bracket or stub is drawn after it, lying on the trunk's moss, flush)
+      const top = p.y + TRUNK_UNDER;
+      platforms.splice(platforms.indexOf(p), 0, { id: id++, x: p.x, y: top, width: p.width, height: foot - top, type: 'solid', style: 'log' } as Platform);
+    }
+  }
 }
 
 export const fillsOf8 = (fills: FilledSocket[], what: string) => fills.filter((f) => f.what === what);

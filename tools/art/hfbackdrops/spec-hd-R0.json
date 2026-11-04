@@ -1,0 +1,126 @@
+{
+ "tag": "hfbd2-hd-R0",
+ "note": "hf-backdrops native-resolution pass",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. rainforest trees: a great buttressed tree, tall straight trunks with lianas, soft green morning light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w1c-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1c-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. high rainforest canopy trees: broad branches, tall straight trunks, lianas and bromeliads, soft green morning light",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2evening-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w2evening-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. reeds, a little jetty post, baskets and lanterns, warm orange evening light, glowing windows",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2rapids-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w2rapids-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. wet river stones, reeds and cattails, splashes of white water, bright misty daylight",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w3-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a mossy jungle grotto: rock arches overgrown with ferns and vines, glowing drops of water, cool green-teal shade",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3sinkhole-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w3sinkhole-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. the bottom of a moonlit sinkhole: tall rock walls with hanging roots and vines, a big mossy boulder pile, ferns, cool blue moonlight from above",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3sinkhole-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w3sinkhole-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. mossy rocks, ferns and roots, a few pale glowing mushrooms, cool blue moonlight from above",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4terraces-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf85ded018b6028931cb8ddbbcd1fabec7d7a5e7/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w4terraces-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. grey rocks, ferns and a little stream, clear daylight",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}

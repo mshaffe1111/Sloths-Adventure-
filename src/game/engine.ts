@@ -52,7 +52,7 @@ import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
 import { ASSIST, DOUBLE_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
-import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
+import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
@@ -179,6 +179,7 @@ import { gpuProfOn, profBegin, profEnd, profMark } from './gpuProf.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp, seenSkills } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
+import { aheadZone, type AheadProbe } from './dotGuidePerch.ts';
 import { FONT_UI } from './fonts.ts';
 import { withHurtFlash } from './hurtFlash.ts';
 import { shakeOffset } from './screenShake.ts';
@@ -410,6 +411,8 @@ export class GameEngine {
   private ropeCooldown = 0;
   private ropeGrace = 0;
   private ropeId = -1;
+  /** where he last stood on the ground (updateRope: a required rope jumped for from its own ledge is caught falling) */
+  private ropeFrom: { x: number; y: number } | null = null;
   /** his weight on a rope, for the drawing: the rope gives under his hands, easing in as he grabs and out as he lets go (ropeArt.ts) */
   private ropeLoad: RopeLoad = { id: -1, x: 0, amt: 0 };
   private enemies: Enemy[];
@@ -602,6 +605,10 @@ export class GameEngine {
   private dotRun: DotRun | null = null;
   /** 7-4's slide (w7SlideRun.ts): side-on until the crumble, then it runs the stage until he comes out in the chamber */
   private slideRun: SlideRun | null = null;
+  /** Meeca's thought cloud: her box and the way ahead of her it keeps off (the law, D10), reused every frame; and where it was drawn last (for the tests) */
+  private mcLaw = { body: { x0: 0, y0: 0, x1: 0, y1: 0 }, ahead: { x0: 0, y0: 0, x1: 0, y1: 0 }, facing: 1 as 1 | -1 };
+  private mcProbe: AheadProbe = { px: 0, py: 0, pw: 0, ph: 0, zoom: 1, camX: 0, camY: 0, cssW: 0, cssH: 0, facing: 1, climbing: false, grounded: true, vy: 0, gliding: false };
+  mcThoughtBox: { x: number; y: number; w: number; h: number } | null = null;
   /** Meeca's stage (5-M, meecaPlay.ts): she is the player, on his physics, with no fighting and no Dot */
   private mc: MeecaPlay | null = null;
   private mcCinematic: boolean | null = null;
@@ -2898,7 +2905,9 @@ export class GameEngine {
         continue;
       }
 
-      const dist = distance2D(p.x, p.y - 20, c.x, c.y);
+      // (hanging from a rope he reaches from his middle, not his feet: a bloom just under the rope is at his head and arms, and from
+      // his feet, 86 px under the rope, it was out of reach on every rope of 8-2: w8-rope2)
+      const dist = distance2D(p.x, p.y - (p.hanging ? HANG_PICK : 20), c.x, c.y);
       // swinging, he cannot steer to a flower the way he can running, so the reach is wider (the control test: flowers along the
       // vines were the hardest thing to line up, 2026-10-23); and in World 5 an open orchid's cup gives up its petals to a hop that lands
       // anywhere in it (w5Play.ts inCup)
@@ -4714,6 +4723,8 @@ export class GameEngine {
   private updateRope(dt: number): boolean {
     const p = this.player;
     this.ropeCooldown = Math.max(0, this.ropeCooldown - dt);
+    // (where he last stood: a rope jumped for from its own ledge is caught falling, below)
+    if (p.grounded) this.ropeFrom = { x: p.x, y: p.y };
     if (!this.ropes.length || !this.skills.has('shimmy')) {
       if (p.hanging) p.hanging = false;
       return false;
@@ -4725,20 +4736,25 @@ export class GameEngine {
       p.hanging = false;
       if (this.ropeCooldown > 0 || p.grounded || p.climbing || p.isVineSwinging || this.isGameOver || this.kit?.holding) return false;
       const handY = p.y - HAND_REACH;
+      const from = this.ropeFrom;
       for (const r of this.ropes) {
         // (from beside a post, over the ledge it stands on, counts: a jump straight up next to the post catches the rope's end, and he
         // is slid onto it. Play-testers jumped up beside the post and missed, by a body's width)
         if (p.x < r.x0 - ROPE_GRAB || p.x > r.x1 + ROPE_GRAB) continue;
         const ry = ropeYAt(r, p.x);
-        // his hands are on the rope: rising through it, or falling past it with Up held
-        if (handY > ry - 12 && handY < ry + 30 && (p.vy < 40 || inp.up || this.upIntent > 0)) {
+        // his hands are on the rope: rising through it, or falling past it with Up held. A rope over a gap (`required`) that he jumped
+        // for from its own ledge is caught falling too: a flick a little early tops out short of the rope's end, and on the way down his
+        // hands passed back through the rope he was drawn reaching for (8-2's first-timer, w8-rope2: every heart fall at its ropes). Only
+        // from its own ledge: a fall from a shelf above, in a climb (1-4, 2-6, 3-4, 4-1), lands on the shelf below as before
+        const ownJump = r.required && !!from && (Math.abs(from.y - r.g0) < 12 || Math.abs(from.y - r.g1) < 12) && from.x > r.x0 - ROPE_FROM && from.x < r.x1 + ROPE_FROM;
+        if (handY > ry - 12 && handY < ry + 30 && (p.vy < 40 || inp.up || this.upIntent > 0 || ownJump)) {
           rope = r;
           break;
         }
       }
       if (!rope) return false;
-      // grab
-      p.x = Math.max(rope.x0, Math.min(rope.x1, p.x));
+      // grab (caught past the rope's end, over its post's ledge, he slides onto it over a few frames below: set there at once, it was a
+      // 30-40 px jump in one frame, w8-rope2's polish check)
       this.ropeId = rope.id;
       p.hanging = true;
       p.climbing = false;
@@ -4772,7 +4788,9 @@ export class GameEngine {
     if (dir !== 0) this.statShimmySec += dt;
     p.walkCycle += Math.abs(p.vx) * dt * 0.08;
     const atEnd = p.x <= rope.x0 || p.x >= rope.x1;
-    p.x = Math.max(rope.x0, Math.min(rope.x1, p.x));
+    // (onto the rope from past its end: at ROPE_SLIDE px/s, never a jump)
+    const lo = rope.x0, hi = rope.x1, step = ROPE_SLIDE * dt;
+    p.x = p.x < lo ? Math.min(lo, p.x + step) : p.x > hi ? Math.max(hi, p.x - step) : p.x;
     p.y = ropeYAt(rope, p.x) + HANG_DROP;
 
     // let go
@@ -6579,11 +6597,35 @@ export class GameEngine {
     const top = H > W ? 96 : H <= 430 ? 66 : 84;
     const p = this.player;
     let tb: { x: number; y: number; w: number; h: number } | null = null;
+    this.mcThoughtBox = null;
     if (mc.thought && mc.phase !== 'card') {
       const a = Math.min(1, (mc.t - mc.thought.at) / 0.2, (mc.thought.until - mc.t) / 0.3);
       const tr = mc.next;
       const wb = tr ? wordsBox(tr) : null;
-      tb = drawThought(ctx, mc.thought.text, sx(p.x), sy(p.y - 92), W, H, top, Math.max(0, a), wb && { x0: sx(wb.x0), y0: sy(wb.y0), x1: sx(wb.x1), y1: sy(wb.y1) });
+      // (never over her or the way ahead of her: the law, D10)
+      const law = this.mcLaw;
+      const pv = this.mcProbe;
+      law.body.x0 = sx(p.x) - 10;
+      law.body.y0 = sy(p.y - p.height) - 10;
+      law.body.x1 = sx(p.x + p.width) + 10;
+      law.body.y1 = sy(p.y) + 6;
+      pv.px = p.x;
+      pv.py = p.y;
+      pv.pw = p.width;
+      pv.ph = p.height;
+      pv.zoom = z;
+      pv.camX = this.camera.x;
+      pv.camY = this.camera.y;
+      pv.cssW = W;
+      pv.cssH = H;
+      pv.facing = p.facing;
+      pv.climbing = p.climbing;
+      pv.grounded = p.grounded;
+      pv.vy = p.vy;
+      aheadZone(pv, law.ahead);
+      law.facing = p.facing;
+      tb = drawThought(ctx, mc.thought.text, sx(p.x), sy(p.y - 92), W, H, top, Math.max(0, a), wb && { x0: sx(wb.x0), y0: sy(wb.y0), x1: sx(wb.x1), y1: sy(wb.y1) }, law);
+      this.mcThoughtBox = tb;
     }
     if (mc.bubble) {
       const b = mc.bubble;

@@ -34,6 +34,8 @@ If the answer is "to be funny," "to explain the plot," or "to end the scene neat
 
 ### Pokey
 
+Matt's short version: "a slow smart-ass" (Matt, 2026-11-01, on the journal's lines). Every line of his, in a scene or in the journal, has to sound like that: slow, dry, a smart-ass about himself and the situation, and still polite.
+
 He's slow, and he's fine with it. He's sarcastic: easygoing, a little literal, with a dry sense of humor that never hurries. He teases Dot gently ("Well, you're really late then.") and doesn't rise to anything. The jokes come out flat and short, aimed at himself or the situation, one beat and then he moves on. (See the cheat sheet below for how his sarcasm works.)
 
 Why he's like that: he lost his parents in a storm when he was a cub. He remembers small things about them, not the night itself. What he knows about that night he knows from what people told him, and they didn't tell him much: "it was a storm," and then they changed the subject. A funny, easy kid gets left alone. A sad one gets questions he can't answer. So the jokes are how he keeps things light, and he's been doing it so long he doesn't know he's doing it.

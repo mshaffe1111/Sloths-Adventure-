@@ -34,8 +34,13 @@ jobs:
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       - run: npx tsx --test --test-shard=${{ matrix.shard }}/6 src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts
 
+  # The other gates (artcheck, knowncheck, clipcheck, drawcheck: reference/methods/gates.md), side by side with the tests. A failing
+  # gate blocks the publish like a failing test (LAWS.md law 5).
+  gates:
+    uses: ./.github/workflows/gates.yml
+
   publish:
-    needs: test
+    needs: [test, gates]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -1,0 +1,256 @@
+{
+ "tag": "hfbd2-F",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+ "items": [
+  {
+   "name": "w1rain-tall-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a rain-soaked rainforest afternoon: layers of misty jungle hills and giant emergent trees fading into soft grey rain, low rain clouds, soft grey-green rainy light, everything wet and glistening. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w1rain-tall-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a rain-soaked rainforest afternoon: layers of misty jungle hills and giant emergent trees fading into soft grey rain, low rain clouds, soft grey-green rainy light, everything wet and glistening. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w1rain-tall-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a rain-soaked rainforest afternoon: layers of misty jungle hills and giant emergent trees fading into soft grey rain, low rain clouds, soft grey-green rainy light, everything wet and glistening. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w2mist-tall-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a misty dawn on a wide jungle river: still pale water, far banks of palms and big trees fading into morning mist, a pale pink-gold sun low over the river, pale pink-gold dawn light through river mist. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w2mist-tall-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a misty dawn on a wide jungle river: still pale water, far banks of palms and big trees fading into morning mist, a pale pink-gold sun low over the river, pale pink-gold dawn light through river mist. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w2mist-tall-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a misty dawn on a wide jungle river: still pale water, far banks of palms and big trees fading into morning mist, a pale pink-gold sun low over the river, pale pink-gold dawn light through river mist. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w3crystal-tall-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a vast crystal grotto: far cave walls lined with huge glowing blue and violet crystal clusters, an underground lake reflecting them, a high dark cave roof, deep blue-violet cave light, glowing crystals. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w3crystal-tall-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a vast crystal grotto: far cave walls lined with huge glowing blue and violet crystal clusters, an underground lake reflecting them, a high dark cave roof, deep blue-violet cave light, glowing crystals. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w3crystal-tall-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a vast crystal grotto: far cave walls lined with huge glowing blue and violet crystal clusters, an underground lake reflecting them, a high dark cave roof, deep blue-violet cave light, glowing crystals. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w4storm-tall-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a thunderstorm over grey cliffs: tall grey rock cliffs and pinnacles under dark rolling storm clouds, a far lightning bolt, grey rain curtains, dark blue-grey storm light, wet rock with pale highlights. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w4storm-tall-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a thunderstorm over grey cliffs: tall grey rock cliffs and pinnacles under dark rolling storm clouds, a far lightning bolt, grey rain curtains, dark blue-grey storm light, wet rock with pale highlights. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w4storm-tall-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a thunderstorm over grey cliffs: tall grey rock cliffs and pinnacles under dark rolling storm clouds, a far lightning bolt, grey rain curtains, dark blue-grey storm light, wet rock with pale highlights. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w6moon-tall-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a moonlit swamp: a big full moon over still black water, far mangrove trees and hanging moss in silhouette, silver reflections, a starry sky, silver blue moonlight. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w6moon-tall-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a moonlit swamp: a big full moon over still black water, far mangrove trees and hanging moss in silhouette, silver reflections, a starry sky, silver blue moonlight. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w6moon-tall-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a moonlit swamp: a big full moon over still black water, far mangrove trees and hanging moss in silhouette, silver reflections, a starry sky, silver blue moonlight. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w7court-tall-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a sunlit jungle temple courtyard at noon: tall stepped stone temples and carved towers, jungle trees behind, a bright blue sky with white clouds, bright warm noon sunlight, clear shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w7court-tall-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a sunlit jungle temple courtyard at noon: tall stepped stone temples and carved towers, jungle trees behind, a bright blue sky with white clouds, bright warm noon sunlight, clear shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w7court-tall-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a sunlit jungle temple courtyard at noon: tall stepped stone temples and carved towers, jungle trees behind, a bright blue sky with white clouds, bright warm noon sunlight, clear shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w8dawn-tall-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: dawn over the high jungle canopy: a sea of round treetops seen from above, mist between them, a soft pink-gold sun rising, a few birds far away, soft pink and gold dawn light. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w8dawn-tall-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: dawn over the high jungle canopy: a sea of round treetops seen from above, mist between them, a soft pink-gold sun rising, a few birds far away, soft pink and gold dawn light. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w8dawn-tall-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: dawn over the high jungle canopy: a sea of round treetops seen from above, mist between them, a soft pink-gold sun rising, a few birds far away, soft pink and gold dawn light. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w9ash-tall-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: an ash storm in a volcanic valley: a smoking volcano far away, grey ash clouds rolling across the sky, black basalt ridges, dim orange glow under the ash, dim grey-orange light through falling ash. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w9ash-tall-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: an ash storm in a volcanic valley: a smoking volcano far away, grey ash clouds rolling across the sky, black basalt ridges, dim orange glow under the ash, dim grey-orange light through falling ash. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w9ash-tall-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: an ash storm in a volcanic valley: a smoking volcano far away, grey ash clouds rolling across the sky, black basalt ridges, dim orange glow under the ash, dim grey-orange light through falling ash. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w10night-tall-7",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: the mountain summit at night: snowy jagged peaks under a huge starry night sky with a band of the milky way and a crescent moon, cold blue night light, starlight on the snow. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 7,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w10night-tall-23",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: the mountain summit at night: snowy jagged peaks under a huge starry night sky with a band of the milky way and a crescent moon, cold blue night light, starlight on the snow. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 23,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  },
+  {
+   "name": "w10night-tall-41",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: the mountain summit at night: snowy jagged peaks under a huge starry night sky with a band of the milky way and a crescent moon, cold blue night light, starlight on the snow. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "neg": "foreground, ground in front, close-up plants, frame, border, panel, text, letters, watermark, people, animal, sloth, face, creature, character, blurry, photo, 3d render",
+   "seed": 41,
+   "w": 1792,
+   "h": 1200,
+   "steps": 30
+  }
+ ]
+}

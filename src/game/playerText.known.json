@@ -1,0 +1,25 @@
+{
+ "about": "playerText.test.ts failures on main when the test was built (2026-11-01). Shrink-only (LAWS.md law 5): the test fails when a listed check passes (delete its entry), and tools/perf/knowncheck.mjs fails when an entry is added. Each has a defect kind and an owner.",
+ "known": [
+  {
+   "key": "Dot lines: exact duplicates",
+   "kind": "duplicate Dot line (lesson vs control-test copy, repeated hints)",
+   "owner": "menu-polish job (next week, lead)"
+  },
+  {
+   "key": "find titles: exact duplicates",
+   "kind": "duplicate find title (\"The snail\" x10)",
+   "owner": "menu-polish job (next week, lead)"
+  },
+  {
+   "key": "medal descriptions: differ only in a number or name",
+   "kind": "two medals with the same description",
+   "owner": "menu-polish job (next week, lead)"
+  },
+  {
+   "key": "story beats: exact duplicates",
+   "kind": "repeated story line (\"I'm going to get Meeca back.\" x3)",
+   "owner": "menu-polish job (next week, lead)"
+  }
+ ]
+}

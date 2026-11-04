@@ -282,6 +282,11 @@ Only after Matt says "push".
    - the CI test command
    - `npx vite build` (all files under 4 MiB)
    - screenshots of what changed
+   - **Version (Matt, 2026-10-31):** every release bumps `"version"` in `package.json` (0.9.0 the first, then 0.9.1, 0.9.2...; a new world
+     or a big change bumps the middle number). The title shows it with the build date, and the APK release is named from it
+     (`v<version>-<run>`).
+   - **What's New (Matt, 2026-11-01):** every release adds its entry at the top of `src/game/whatsNew.ts` (player words, newest first; the
+     About screen's What's New pop-up). A test fails if the top entry isn't package.json's version. The lead approves the lines.
 3. Commit, ending the message with the attribution lines the session asks for.
 4. `git fetch origin && git rebase origin/main`, then `git push origin <branch>`.
 5. Open the PR:

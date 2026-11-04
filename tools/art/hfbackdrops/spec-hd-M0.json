@@ -1,0 +1,98 @@
+{
+ "tag": "hfbd2-hd-M0",
+ "note": "hf-backdrops native-resolution pass",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1rain-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1rain-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. rainforest trees in the rain: a giant tree with a broad dripping crown, palms bent under rain, a tree fern, a waterfall of rain off the leaves, soft grey-green rainy light, everything wet and glistening",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w1rain-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w1rain-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. wet ferns, dripping broad leaves, puddles and mossy stones, soft grey-green rainy light, everything wet and glistening",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2mist-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w2mist-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a misty riverbank at dawn: big mossy boulders, palms and a leaning tree over the water, a little wooden fishing jetty on posts, reeds, pale pink-gold dawn light through river mist",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2mist-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w2mist-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. reeds, cattails, wet river stones and lily pads, pale pink-gold dawn light through river mist",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3crystal-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w3crystal-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a crystal grotto seen from the side: rock pillars studded with big glowing violet and blue crystals, a natural rock arch, crystal clusters on mossy boulders, deep blue-violet cave light, glowing crystals",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3crystal-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w3crystal-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. cave rocks with small glowing crystals and puddles, deep blue-violet cave light, glowing crystals",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}

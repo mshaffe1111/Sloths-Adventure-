@@ -1,0 +1,25 @@
+/* ───────── What's New (WhatsNew.tsx): the kit's Popup, one wooden-ruled row per release, the newest open ───────── */
+.wn-card { max-width: 540px; }
+.wn-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.wn-rel { border-radius: 14px; border: 1.5px solid rgba(120, 80, 30, .22); background: rgba(255, 240, 205, .35); }
+.wn-rel.on { background: rgba(255, 244, 214, .7); border-color: rgba(120, 80, 30, .38); }
+.wn-head { width: 100%; min-height: 60px; display: flex; align-items: center; gap: 10px; padding: 8px 10px 8px 14px; border: 0; background: none; cursor: pointer;
+  text-align: left; color: #4a2a10; -webkit-tap-highlight-color: transparent; }
+.wn-head:active { transform: translateY(1px); }
+.wn-head:focus-visible { outline: 3px solid #a86d38; outline-offset: -3px; border-radius: 14px; }
+.wn-head-t { flex: 1; min-width: 0; font-family: var(--font-fun); font-size: 19px; line-height: 1.15; }
+.wn-head-t small { display: block; margin-top: 3px; font: 700 14px var(--font-ui); color: var(--gx-ink-soft); white-space: pre-wrap; }
+.wn-new { display: inline-block; margin-left: 8px; vertical-align: 2px; padding: 1px 8px 2px; border-radius: 9px; font: 400 13px var(--font-fun); color: #fff4d8; white-space: nowrap; text-shadow: 0 1px 0 #1d4a1b;
+  background: linear-gradient(180deg, #6cc04f, #3a8a2e); box-shadow: 0 2px 0 #1d4a1b; }
+.wn-chev { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; color: #fff4d8;
+  background: url(../assets/ui/token.webp) center / contain no-repeat; }
+.wn-chev .ic { transition: transform .18s ease; filter: drop-shadow(0 1px 0 rgba(40, 20, 5, .7)); }
+.wn-items { margin: 0; padding: 0 14px 12px 14px; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.wn-items li { position: relative; padding-left: 22px; font: 600 16px var(--font-ui); line-height: 1.35; color: #3e2410; }
+.wn-items li::before { content: ''; position: absolute; left: 3px; top: .42em; width: 11px; height: 11px; border-radius: 0 70% 0 70%;
+  background: linear-gradient(135deg, #7ccf55, #3a8a2e); box-shadow: 0 1px 0 #1d4a1b; }
+
+@media (max-height: 430px) and (orientation: landscape) {
+  .wn-head { min-height: 52px; padding-top: 6px; padding-bottom: 6px; }
+  .wn-head-t { font-size: 18px; }
+}

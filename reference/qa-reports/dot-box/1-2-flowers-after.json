@@ -1,0 +1,18 @@
+{
+ "up": true,
+ "d": 65.31257640469782,
+ "flies": 2,
+ "box": {
+  "x0": 496,
+  "y0": 88,
+  "x1": 899,
+  "y1": 153.09375
+ },
+ "file": "reference/qa-reports/dot-box/1-2-flowers-after-sideways.jpg",
+ "checks": {
+  "pokey": true,
+  "ahead": false,
+  "action": false,
+  "pickups": false
+ }
+}

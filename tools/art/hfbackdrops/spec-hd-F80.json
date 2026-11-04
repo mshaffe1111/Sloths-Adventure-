@@ -1,0 +1,28 @@
+{
+ "tag": "hfbd2-hd-F80",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w2evening-tall-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/f51500e14ad7a1ccd8ea3f1238ee380fd53fe00c/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w2evening-tall.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background, the far distance seen straight from the side: a riverside sloth village in the evening: dark silhouetted stilt huts with warm glowing windows and tall dark palms in the middle distance, rope bridges between them, a glowing orange and violet sunset sky reflected in the river, rich saturated colour, strong contrast, deep shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, blurry, seam, rain"
+  }
+ ]
+}

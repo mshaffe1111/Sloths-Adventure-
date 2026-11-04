@@ -1,0 +1,98 @@
+{
+ "tag": "hfbd2-hd-M1",
+ "note": "hf-backdrops native-resolution pass",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w4storm-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w4storm-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. grey cliff pinnacles in a storm: wind-bent pines clinging to the rocks, a rope bridge between two rocks, rocks wet with rain, dark blue-grey storm light, wet rock with pale highlights",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4storm-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w4storm-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. wet grey rocks, wind-bent grass and ferns, dark blue-grey storm light, wet rock with pale highlights",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6moon-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w6moon-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. mangrove trees at night on tall arching roots in still black water, hanging spanish moss, a few fireflies, pale glowing swamp flowers, silver blue moonlight",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6moon-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w6moon-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. mangrove roots, reeds and lily pads with pale glowing flowers, silver blue moonlight",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7court-mid-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w7court-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. a temple courtyard at noon: carved stone pillars, a stone stairway, big stone statues and flower urns, palms and jungle vines, bright warm noon sunlight, clear shadows",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7court-near-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9e649ea940a7f254a8c84a02ed94b0712c181686/reference/prop-sheets/qa-notes/hf-backdrops/keyed/w7court-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail, evenly lit, on one flat plain grey background, no text. carved paving stones, broken pillars, ferns and flowers, bright warm noon sunlight, clear shadows",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}
