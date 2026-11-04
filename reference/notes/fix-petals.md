@@ -1,6 +1,6 @@
 # fix-petals: helper notes
 
-## Now (2026-11-04 2:22 PM ET): R-6.38 redo (a90c542f) and validator items (fa647a9e) pushed, all gates PASS, reported to the lead and QS at 2:22 PM ET; waiting on their verdicts
+## Now (2026-11-04, stopped for today on the lead's word): R-6.38 QS PASS + lead ACCEPTED and merged (pits + all validator items); tomorrow: standby for the release's fun-gate questions. Debt: 1-8 gap-top understory corner (needs engine.ts). Told the roadmap keeper (R-150.9, R-6.38) and the three builders (truer rules).
 - R-155 1-5 moved to w1-rhythm (lead, 12:42 PM ET message). Not mine any more.
 - R-6.38 (started 11:46 AM ET, planned 3 h): src/game/w1Pits.ts + test, protoArt.ts, stageSheets/stagePreload ('pit-art:1'), types.ts
   (Platform.pit), src/assets/props/pits (pitcut.py). Redo done to the lead's five items; report reference/qa-reports/r6-38/README.md.
