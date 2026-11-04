@@ -135,6 +135,9 @@ export interface ProtoExtras {
    * to `strips` (backdrop stems) in golden light, loaded once he is above `load`; standing on the crown (`crown`, its top) the view pulls back
    */
   reveal?: { from: number; full: number; load: number; crown: number; strips: { far: string; mid: string; near: string } };
+  /** a stage that climbs from the forest floor into the trees (1-1, w1Rise.ts): from height y0 to y1 (world y) the backdrop turns to the
+   *  world's canopy strips (engine.ts setCanopy, as 1-8's and the ascents') */
+  rise?: { y0: number; y1: number };
   /** 6-8's dressing from Matt's painted World 6 pieces: hides and arches on the shelves, the root wall behind (w6StiltArt.ts) */
   stilt?: import('./w6StiltArt.ts').StiltDecor[];
   /** 6-8's ledges painted in Matt's other World 6 pieces (their platforms are art 'stilt': w6StiltArt.ts) */
@@ -1904,10 +1907,34 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     beat('Counter-melody: the bounce chain', () => {
       // a different pulse: long bounces up the walls, a snake on the floor between, the last bounce from beside a soft pit
       flag();
+      // (the lead, 11-04: three bounces of different heights, unlike 1-1's mushroom moment: up a wall, down onto a snake, over a pit)
+      const x0 = x;
       bounceWall(false, true);
-      snakeWalk(2);
-      bounceWall(false, false);
-      // (and the rope this stage's clear teaches, over moss, for a visit after: crossable without it)
+      // a bounce that comes down on a snake: a stomp always works on it (w1Tricks.ts), so the bounce is the attack
+      run(R.r(200, 240));
+      P.push({ id: pid++, x: Math.round(x), y: G - 30, width: 70, height: 30, type: 'bouncy' });
+      snake(x + 35 + R.r(170, 200), G, 30);
+      run(R.r(480, 540));
+      // a bounce up to a branch half as high, petals along it, and down again
+      P.push({ id: pid++, x: Math.round(x), y: G - 30, width: 70, height: 30, type: 'bouncy' });
+      const by = G - Math.round(R.r(140, 160));
+      branch(x + 110, x + 400, by);
+      row(x + 150, x + 360, by - 34, 3, 'hibiscus');
+      run(R.r(520, 560));
+      // a bounce over a pit wider than a jump and its second jump (313 px), inside a bounce and its second jump (368)
+      run(R.r(160, 200));
+      P.push({ id: pid++, x: Math.round(x - 80), y: G - 30, width: 70, height: 30, type: 'bouncy' });
+      const edge = x;
+      close();
+      const far = Math.round(edge + R.r(325, 340));
+      softPit(edge, far);
+      arc(edge - 20, far + 20, G - 230, 3, 'hibiscus');
+      open(far);
+      run(R.r(220, 260));
+      expert += (x - x0) / RUN + 3;
+      pieces.push({ k: 'highrun', x0, x1: x });
+      // (and the rope this stage's clear teaches, over moss, for a visit after: crossable without it; its petals hang along it, out of
+      // reach for now, the tell to come back)
       ropeGap(false, true, true);
     });
     beat('Climax', () => {

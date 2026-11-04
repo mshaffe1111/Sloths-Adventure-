@@ -85,6 +85,11 @@ export interface GeneratedStage {
   /** World 1's bowl gates (R-159.1, w1Tricks.ts): a coiled boa on its ground, a plate at the ground's end and a gate beyond it under a
    *  stone pillar; the boa kicked into a roll presses the plate and the gate opens (a boa lost another way coils there again) */
   bowlGates?: import('./w1Tricks.ts').BowlGate[];
+  /**
+   * open air a fall goes through (1-1's finale, w1Rise.ts): over this x span, falling more than `depth` px under the last ground he stood on
+   * is a fall at once (engine.ts: Easy's soft fall or World 8's heart fall first, else a life), not a long drop to the stage's bottom
+   */
+  fallZones?: Array<{ x0: number; x1: number; depth: number }>;
   /** World 2: rivers with drifting logs (their water, and the surface that is fatal) */
   rivers?: import('./river.ts').RiverZone[];
   /** Worlds 3 and 4: spore clouds and wind gusts that wake on a rhythm (see zones.ts) */
