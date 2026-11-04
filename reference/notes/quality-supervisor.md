@@ -52,3 +52,4 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - TODO when time: re-record World 1 with the fixed bot for the baseline's play numbers.
 - Validator 7909cf11: PASS, ready as W1 measuring stick (variety = more alike of moves/look). Proposed to lead: rebuild briefs use its flags as entry criteria before my in-order re-record.
 - R-159.1 show-first round 3 (w8-rope2 c0033885): PASS + 1 change (1-5 kick teach needs a visible payoff). Told lead: 1-5's sameness needs stage-shape work, first in line.
+- R-159.1 plan 43ecbd38: 1-5 kick payoff in (boa rolls into hollow stump -> petal cache). Judge the still when rolled-boa art lands.
