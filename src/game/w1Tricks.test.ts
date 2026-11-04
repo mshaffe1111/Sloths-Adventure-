@@ -36,7 +36,7 @@ test('the boa: no blow but a kick ever harms it, in any state', () => {
   for (const state of ['coil', 'rear', 'strike', 'bite', 'recover']) {
     const b = foe({ type: 'boa', trick: 'coil', state });
     assert.equal(trickHit(b, 'kick'), 'roll', `a kick rolls it (${state})`);
-    assert.equal(trickHit(b, 'mega'), 'roll', `the mega breaks the coil too (${state})`);
+    assert.equal(trickHit(b, 'mega'), ['coil', 'recover'].includes(state) ? 'tough' : 'stagger', `the mega is a punch: it never breaks the coil (${state})`);
     assert.ok(trickStompBounces(b), `a stomp bounces off (${state})`);
   }
   assert.equal(trickHit(foe({ type: 'boa', trick: 'coil', state: 'roll' }), 'kick'), 'tough', 'a rolling ball is not kicked again');
