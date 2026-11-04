@@ -55,5 +55,5 @@ only.
   a stall with a large `d` and no `slowdraw`, which itself narrows the cause.
 
 ## Planned vs actual
-Started 12:04 PM ET (R-3.14 / the release) and green at 1:58 PM ET: about 1.9 h, against the 3 h estimate and the 3:00 PM ETA. The
+Started 12:04 PM ET (R-3.14 / the release) and green at 1:44 PM ET: about 1.7 h, against the 3 h estimate and the 3:00 PM ETA. The
 lost time was the cross-load pixel check (about 35 min, dropped).
