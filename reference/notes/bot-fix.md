@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 10:39 AM ET
+Last updated: 2026-11-04 10:41 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -21,12 +21,17 @@ when every helper is idle AND the lead says so. Effort: low to medium.
 **Standard work (Matt 11-04, in SUPERVISOR.md):** started from its method file? the method's best measured result (time/tokens): beaten or
 missed, and why? Miss with no reason: coach. Beat: lead writes it into the method the same day. Digest carries a "standard work" line.
 Methods now: warmup-5m -> webgl.md; fix-petals -> validator.md.
+**Planned vs actual (Matt 11-04, in SUPERVISOR.md):** every round, per running job: expected (ROADMAP.md estimate or method best) vs
+actual; digest LEADS with jobs over / heading over: cause (one line, never "it's hard") + barrier-removal step (one line). Real hours at
+each job's end go to the roadmap keeper. Estimates (ROADMAP on roadmap-keeper, 11-04): R-159.1 9.5 h (7-14), R-3.2 2 h, R-150.8 1.5 h,
+R-155 30 h total (1-5 part: owner/estimate to find).
 Branch contains origin/main (git merge-base --is-ancestor); gates (all of gates.md; drawcheck in a container = "CI at merge", never
 "pass"); checkbase on any "after" sheets, newest stills opened myself, upright AND sideways; report has Method used / Lessons applied /
 Method update and names rough spots; notes file current; queue read; HF spend inside Matt's list; moving (quiet 60+ min: nudge).
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 10:41 AM ET: lead: Matt's planned-vs-actual rule added; merged ccr again; round 6 prompt carries both rules + the estimates.
 - 2026-11-04 10:39 AM ET: lead: Matt's standard-work rule added to SUPERVISOR.md; merged ccr into bot-fix; round 6 prompt carries the check.
 - 2026-11-04 10:35 AM ET: quality supervisor replied: it was waiting on a show-first still instead of watching the build (owned). Now: QC of w8-rope2's
   R-159.1 code (9ec60be2) on the real screen, then fix-petals' d6dc6e91, then World 1 re-record; verdicts in its notes within the hour.
