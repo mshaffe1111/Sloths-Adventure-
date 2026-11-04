@@ -18,3 +18,10 @@ logged run each frame; the animals, the tricks and every hit are the browser eng
   and the kick is never needed.
 - `src/game/w1Tricks.ts` header on 9c932427: "a second hit or a stomp finishes it" (the lunge snake). The lead's call (a), only a stomp
   finishes a dazed snake, isn't in this build yet.
+
+## Re-check on 528994e0 (2026-11-04 ~11:50 AM ET)
+- `1-9-boa-mash-528994e0-*.jpg` (16.0-19.3 s; the logged punches come every 0.23 s from 16.73 to 18.60 s): every punch gives "STOPPED!"
+  or "TOUGH!", the boa is never defeated, and a stomp gives "ARMORED!". Rule 1 PASSES in my own re-run. The armour rim (bright, pulsing)
+  reads at phone size.
+- Polish: the hit words stack into a column ("TOUGH! TOUGH! TOUGH! STOPPED!", 17.9-18.7 s). One word should replace the last, not
+  pile up above the boa.
