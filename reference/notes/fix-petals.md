@@ -1,18 +1,20 @@
 # fix-petals: helper notes
 
-## Now (2026-11-04 3:35 AM ET)
-fun-validator (PLAN-TO-80 A.1; R-150.1 grown into the validator, R-150.4). The lead OK'd at 2:34 AM ET ("stay on fun-validator").
-The quality supervisor (session_01FhBbYNn4i5tFfFZiFroKoi) passed the plan with additions, then reviewed 1-1's page: approach PASS,
-5 required fixes, all done (no free points, inside-variety for a world's first stage, M/U from the stage data instead of Q, the
-clumsy thumb named when it can't run, base stamp "contains origin/main + ccr"; plus the hold-right line at the top).
-Done (pushed on fun-validator): tools/validate/ (core, play, mechanics, evaluate, world1, mechtable, stills.mjs, validate.test.ts: 13
-fixtures pass); reference/qa-reports/validator/ (9 stage pages, index.html, mechanics-world1.md = R-150.4, world1.json, 236 stills);
-reference/methods/validator.md (new method file).
-Stop rule (the lead, 11-04): team stops at 5:00 AM ET; no new step after 4:40; by 5 push, notes, one state message, idle.
-Next when the team restarts: the supervisor's review of pages 1-2..1-9 and the overview; the bot's mushroom-wall move (bot-fix's
-area, raised by the supervisor) so 1-1/1-3's play checks can be judged; then the validator as a gate (flags may only shrink).
-Known limits (named on the pages): bot rescues on 1-1/1-4/1-5/1-7 (play numbers not judged there); stills are placed on the ledge under the
-flag's x nearest the floor (Pokey can sit inside a bush in 1-7); finish piece kinds are the builder's coarse kinds.
+## Now (2026-11-04 3:53 AM ET): stopped for the night (the lead: team stops at 5:00 AM ET, restarts when Matt wakes)
+fun-validator (PLAN-TO-80 A.1; R-150.1 grown into the validator, R-150.4). Last commit bd33d386 on fun-validator, base contains origin/main
+1dc39cd7 + ccr-0d59a91c 2c1f6b46. The lead OK'd at 2:34 AM ET.
+Done, pushed: tools/validate/ (core, play, mechanics, evaluate, world1, mechtable, stills.mjs, chaseshot.mjs; validate.test.ts 13 fixtures
++ world1.test.ts 6 calibration checks, 19/19 pass); reference/qa-reports/validator/ (9 stage pages, index.html, mechanics-world1.md =
+R-150.4, world1.json, 236 stills); reference/methods/validator.md (new method).
+The quality supervisor (session_01FhBbYNn4i5tFfFZiFroKoi): plan PASS with additions (all in); 1-1 page: 5 required fixes (all in);
+accepted my correction (1-1's unconfirmed jumps are double jumps, U, not mushroom walls). Asked, and done: 1-8's chase on screen (0-5%
+of its frames: "hazard unseen"; no hand-placed still, it can't show a moving collapse), the "structure, not delight" line on the overview.
+NEXT at restart: (1) ReadNotifications; re-merge origin/main + ccr before anything (D23); (2) the supervisor's full review of 1-2..1-9 and
+the overview, fix what it finds; (3) the bot's mushroom-wall / double-jump move is bot-fix's (raised by the supervisor): when it lands,
+re-run so 1-1/1-4/1-5/1-7's play checks can be judged; (4) the final report (Method used / Lessons applied / Method update / Polish check,
+ids pasted after the push); (5) later: the validator as a gate (flags may only shrink).
+Known limits (named on the pages): bot rescues on 1-1/1-4/1-5/1-7; stills placed on the ledge under the flag's x nearest the floor (Pokey
+can sit inside a bush in 1-7, Dot's story line sometimes stays up); finish piece kinds are the builder's coarse kinds.
 
 ## The job, as briefed
 1. R-150.4 mechanics-in-use table, 1-1..1-9 and the boss: what the player meets (stage data + a bot run) against what the engine has.
