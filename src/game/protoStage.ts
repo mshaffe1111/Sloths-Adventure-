@@ -938,7 +938,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       }
       const b = branch(bx, bx + w, y);
       branches.push(b);
-      if (k > 0 && k !== creakAt + 1 && R.chance(0.5)) snake(bx + w * 0.5, y, Math.min(140, w - 80));
+      // (on the branch's far part, at least 150 px past where a jump lands on it, about 40 px in: research §6 / R-159; mid-branch it was
+      // 105-155 px, the fun gate's "enemy by a landing"; none on a branch too short for that)
+      if (k > 0 && k !== creakAt + 1 && R.chance(0.5) && w >= 290) snake(bx + w - 100, y, 40);
       row(bx + 50, bx + w - 50, y - 34, Math.max(2, Math.round(w / 140)), 'hibiscus');
       bx += w + R.r(90, 140);
     }
@@ -2171,8 +2173,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     run(R.r(150, 200));
     const bx = x, w = Math.round(R.r(300, 340));
     branch(bx, bx + w, G - 90);
-    snake(bx + w * 0.45, G - 90, 80);
-    row(bx + w * 0.7, bx + w - 30, G - 124, 2, 'hibiscus');
+    // (on the branch's far part: a jump up lands about 40 px onto it, and a snake stands at least 150 px past a landing, research §6 /
+    // R-159; at 45% it was 100 px from it, the fun gate's "enemy by a landing"; its patrol kept to the far part too)
+    snake(bx + w - 110, G - 90, 40);
+    row(bx + 50, bx + w * 0.42, G - 124, 2, 'hibiscus');
     x = bx + w + Math.round(R.r(60, 100));
     dipArc();
     run(R.r(190, 230));
