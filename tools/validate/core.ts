@@ -215,11 +215,12 @@ export function repeats(str: string, steps: readonly Step[]): RepeatFlag[] {
 }
 
 /**
- * the move 3-grams of a string, counted. A safe hop and a jump read as the same move here (a player feels both as "jump"; whether a miss
- * costs anything is the miss-cost check's job, mechanics.ts), so 1-2's safe hops and 1-1's jumps are compared as what they are.
+ * the move 3-grams of a string, counted. A hop (j), a jump (J) and a double jump (U) are three moves here: a thumb feels them
+ * differently (the lead, 2026-11-04: folded into one, every jumping stage read as the same stage, and 1-1's pair, the jump and the
+ * double, was invisible). Only a move the check can't name (Q) reads as a jump.
  */
 export function grams(str0: string, n = 3): Map<string, number> {
-  const str = str0.replace(/[jQU]/g, 'J');
+  const str = str0.replace(/Q/g, 'J');
   const m = new Map<string, number>();
   for (let i = 0; i + n <= str.length; i++) m.set(str.slice(i, i + n), (m.get(str.slice(i, i + n)) ?? 0) + 1);
   return m;

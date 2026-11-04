@@ -98,6 +98,15 @@ test('similarity: the same moves in a new stage read alike; different moves do n
   assert.ok(cosine(a, grams('CRCVBWBSCMPMRV')) < SIMILAR_MAX);
 });
 
+test('similarity keeps the hop, the jump and the double jump apart (the lead, 2026-11-04: a thumb feels them differently)', () => {
+  // (each way: the same jumps read alike; a run of hops against a run of jumps, or jumps against double jumps, does not)
+  assert.ok(cosine(grams('JJJJJJJJMJJJJ'), grams('JJJJJJJJJMJJJ')) > SIMILAR_MAX, 'jumps against jumps: alike');
+  assert.ok(cosine(grams('jjjjjjjjjjjj'), grams('JJJJJJJJJJJJ')) < SIMILAR_MAX, 'hops against jumps: not alike');
+  assert.ok(cosine(grams('JUJUJUJUJUJU'), grams('JJJJJJJJJJJJ')) < SIMILAR_MAX, 'jump and double against plain jumps: not alike');
+  // (a move the check can't name still reads as a jump)
+  assert.ok(cosine(grams('JQJQJQJQ'), grams('JJJJJJJJ')) > 0.99);
+});
+
 // ---- pacing ----
 test('pacing: a dense 5 s is tight, an empty 5 s a rest, a slow start an intro; a flat stage is flagged as never tight', () => {
   const dense: Step[] = Array.from({ length: 8 }, (_, i) => ({ m: 'J', t: 10 + i * 0.6, x: 0, y: G, what: '' }));
