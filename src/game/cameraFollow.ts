@@ -137,6 +137,22 @@ export function framing(cssW: number, cssH: number, vw: number): Framing {
   };
 }
 
+/**
+ * Sideways, on a climb, the view looks up (the quality supervisor's baseline, 2026-11-04, 1-4: "only about one ledge above is in view";
+ * the lead's ruling: every sideways climb). While he climbs a trunk or vine on a wide view, his feet sit CLIMB_LOOK.feetAt down the view
+ * instead of the usual, so the next branch 260-320 px up is on screen; the change eases in and out over CLIMB_LOOK.ease s. Upright the
+ * view is tall enough already: nothing changes there.
+ */
+export const CLIMB_LOOK = { feetAt: 0.78, ease: 0.4 } as const;
+/** how far over to the climb's look-up the view is this frame (0..1), from last frame's */
+export function climbLook(prev: number, climbing: boolean, wide: boolean, dt: number): number {
+  const want = climbing && wide ? 1 : 0;
+  const step = dt / CLIMB_LOOK.ease;
+  return want > prev ? Math.min(want, prev + step) : Math.max(want, prev - step);
+}
+/** his feet's place down the view: the framing's, eased toward the climb's look-up by `k` (climbLook) */
+export const feetAtNow = (fr: Framing, k: number): number => fr.feetAt + (Math.max(fr.feetAt, CLIMB_LOOK.feetAt) - fr.feetAt) * k * k * (3 - 2 * k);
+
 /** how far behind its aim the camera trails at a steady speed (px/s), easing at RUN.follow a frame at a time */
 export const camLag = (speed: number, dt: number): number => speed * (1 / RUN.follow - dt);
 

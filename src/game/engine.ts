@@ -23,6 +23,7 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
+import { BEAT_STAGES } from '../audio/scenes.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
 import { withGoals } from './goals.ts';
@@ -117,7 +118,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, climbLook, feetAtNow, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -224,6 +225,8 @@ const WALL_OFF = 9;
 const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
 /** how fast the shift that shows a landing across a gap eases in and out (per second), and for a landing still out of the view */
+/** a free fall longer than this (px) hurts on landing, on the rebuilt stages (longFallLanding) */
+export const LONG_FALL = 400;
 const LAND_EASE = { rate: 4.5, fast: 10 } as const;
 /**
  * Meeca's thin logs (5-M): a jump whose top leaves her feet this far under a log's top, her middle this far inside its ends, and rising
@@ -715,6 +718,10 @@ export class GameEngine {
    * `softAt`: that ground (null until he has stood somewhere); `softOn`: whether this stage has them.
    */
   private softOn = false;
+  /** the height of the ground he last stood on, on a stage with fallZones (a fall that far under it, in a zone, is a fall) */
+  private fallFromY = Infinity;
+  /** how far the view has turned to look up a climb, sideways (0..1: cameraFollow.ts climbLook) */
+  private camClimbK = 0;
   private softAt: { x: number; y: number } | null = null;
   private checkpoint = { x: 0, y: 0 };
   /** the dark circle opening on him at the flag after a respawn (s left): it replaced a white flash (AN-1) */
@@ -824,6 +831,10 @@ export class GameEngine {
     this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
     // (gen2 lays real soft pits on Easy; a boss's arena and 1-8's chase keep their own rules)
     this.softOn = isEasy() && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena;
+    // long falls hurt on the stages rebuilt on the beat (Matt, 2026-11-04; the other worlds when they are rebuilt)
+    this.longFalls = BEAT_STAGES.has(config.id) && !config.secret;
+    this.longFallSoft = isEasy();
+    this.fallTop = Infinity;
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
@@ -866,6 +877,7 @@ export class GameEngine {
     setJarHero(jarImg ? { img: jarImg, frame: jarFrame } : null);
     this.revealZoom = 1;
     this.revealHeard = false;
+    this.fallFromY = Infinity;
     setReveal(0, null);
     this.tideSet = isEasy() ? TIDE.easy : TIDE.normal;
     this.tideWarned = Infinity;
@@ -2454,6 +2466,8 @@ export class GameEngine {
         const g = this.platforms.find((q) => q.id === this.standingOnId);
         if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y };
       }
+      // (open air a fall goes through, fallZones: 1-1's finale, high over the forest floor; the height of the ground he last stood on)
+      if (this.currentStage.fallZones?.length && (p.grounded || p.climbing)) this.fallFromY = p.y;
       // Pits and water: falling below the surface costs a life (Mario-style)
       const waterY = this.currentStage.waterY;
       const river = this.currentStage.rivers?.find((r) => p.x > r.x0 && p.x < r.x1);
@@ -2492,6 +2506,13 @@ export class GameEngine {
         sound.playSplash(0);
         this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
+      } else if (!this.isGameOver && this.currentStage.fallZones?.some((z) => p.x > z.x0 && p.x < z.x1 && p.y > this.fallFromY + z.depth)) {
+        // a fall into open air: at once, not after a long drop to the stage's bottom (Easy's soft fall first, as any pit)
+        this.fallFromY = Infinity;
+        if (!this.heartFall() && !this.softFall()) {
+          sound.playPlayerHurt();
+          this.loseLife('pit');
+        }
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
         if (this.lanternRun) this.lanternFall();
         else if (!this.heartFall() && !this.softFall()) {
@@ -3220,6 +3241,7 @@ export class GameEngine {
       p.powerUpTimer
     );
 
+    if (this.longFalls) this.longFallLanding(groundedBefore);
     this.updateSound(dt, groundedBefore, vyBefore, distanceRatio);
     this.markWayDodge(dt);
   }
@@ -3287,6 +3309,34 @@ export class GameEngine {
     else if (side === 'r' && sx > w * 0.62) side = 'l';
     if (root.wayBoss !== side) root.wayBoss = side;
     return true;
+  }
+
+  /**
+   * Long falls hurt (Matt, 2026-11-04: "make long fall hurt"): landing after a free fall of more than LONG_FALL px, from the fall's
+   * highest point, costs a heart on Normal (the usual hurt: flash, sound, knock) and is a stumble on Easy (a squash and a thud, nothing
+   * lost). Not while gliding, swinging, on a rope or a trunk, or off a mushroom's bounce (and a fall into a fallZone is a pit, not this).
+   */
+  private longFalls = false;
+  /** Easy, as the stage was built: a long fall is a stumble */
+  private longFallSoft = false;
+  private fallTop = Infinity;
+  private fallFree = true;
+  private longFallLanding(groundedBefore: boolean) {
+    const p = this.player;
+    if (p.grounded || p.climbing || p.isVineSwinging || p.hanging) {
+      if (p.grounded && !groundedBefore && this.fallFree && p.y - this.fallTop > LONG_FALL && !this.isGameOver) {
+        if (this.longFallSoft) {
+          p.squashX = 1.35;
+          p.squashY = 0.62;
+          sound.playLand(1);
+        } else this.damagePlayer(1, p.x);
+      }
+      this.fallTop = p.y;
+      this.fallFree = true;
+      return;
+    }
+    if (this.glide.on || this.launched) this.fallFree = false;
+    this.fallTop = Math.min(this.fallTop, p.y);
   }
 
   /** landings, footsteps and the music's intensity (calm while exploring, fuller near danger) */
@@ -5276,7 +5326,9 @@ export class GameEngine {
     this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
     this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * FRAME.across + this.camLookX + runX;
-    this.camera.targetY = this.camAnchorY - vh * fr.feetAt;
+    // (sideways, on a climb, the view looks up: cameraFollow.ts climbLook)
+    this.camClimbK = climbLook(this.camClimbK, !!p.climbing, this.viewCssW > this.viewCssH, dt);
+    this.camera.targetY = this.camAnchorY - vh * feetAtNow(fr, this.camClimbK);
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
     if (look) {
@@ -5946,7 +5998,9 @@ export class GameEngine {
     const lair = this.currentStage.arena && this.bossDef?.lair ? this.bossDef.lair : null;
     const ownScene = !!lair && lairOwnsScene(lair);
     // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
-    setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
+    // (and 1-1's climb from the forest floor into the trees: proto.rise, the heights it turns over between)
+    const rise = this.proto?.rise;
+    setCanopy(this.proto?.chase ? 1 : rise ? (rise.y0 - this.player.y) / (rise.y0 - rise.y1) : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
     // (the backdrop shakes with the world, each layer by its own depth, so the layers never slide against each other)
     // (upright, the painted strips are drawn at the size sideways uses for the same width of world, so they are as sharp and as close
     // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)

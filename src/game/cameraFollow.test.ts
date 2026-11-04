@@ -173,3 +173,22 @@ test('the camera snaps to whole device pixels', () => {
   assert.equal(snapCam(10.4, 3), 31 / 3);
   assert.equal(snapCam(10.2, 1), 10);
 });
+
+test('sideways, a climb looks up: the feet go down the view over 0.4 s, and come back once he is off; upright nothing changes', async () => {
+  const { climbLook, feetAtNow, CLIMB_LOOK, framing } = await import('./cameraFollow.ts');
+  const side = framing(915, 412, 1199), up = framing(412, 915, 405);
+  let k = 0;
+  for (let i = 0; i < 6; i++) k = climbLook(k, true, true, 1 / 30);
+  assert.ok(k > 0.4 && k < 0.6, `half way after 0.2 s (${k})`);
+  for (let i = 0; i < 12; i++) k = climbLook(k, true, true, 1 / 30);
+  assert.equal(k, 1);
+  assert.equal(feetAtNow(side, k), CLIMB_LOOK.feetAt);
+  for (let i = 0; i < 14; i++) k = climbLook(k, false, true, 1 / 30);
+  assert.equal(k, 0);
+  assert.equal(feetAtNow(side, 0), side.feetAt);
+  // upright, climbing or not, the view never turns
+  let u = 0;
+  for (let i = 0; i < 30; i++) u = climbLook(u, true, false, 1 / 30);
+  assert.equal(u, 0);
+  assert.equal(feetAtNow(up, u), up.feetAt);
+});

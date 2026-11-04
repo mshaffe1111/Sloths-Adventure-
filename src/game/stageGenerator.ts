@@ -89,6 +89,11 @@ export interface GeneratedStage {
   zones?: import('./zones.ts').Zone[];
   /** World 8 Normal's swing and glide gaps (gen2 heartFalls): a fall there costs a heart and sets him back on the ledge he left */
   heartFalls?: Array<{ x0: number; x1: number }>;
+  /**
+   * open air a fall goes through (1-1's finale, w1Rise.ts): over this x span, falling more than `depth` px under the last ground he stood on
+   * is a fall at once (engine.ts: Easy's soft fall or World 8's heart fall first, else a life), not a long drop to the stage's bottom
+   */
+  fallZones?: Array<{ x0: number; x1: number; depth: number }>;
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
   /**
