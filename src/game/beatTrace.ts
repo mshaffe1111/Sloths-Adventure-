@@ -155,6 +155,8 @@ const EASY_HOLD = 0.7;
 /** the real engine (realPlay, 30 fps) comes down up to 9.3 px shorter than the tracer's 30 Hz flight (a double jump down 100 px; measured 2026-11-04, beatTrace.test.ts):
  *  every near edge is moved back this much more, so the engine's own landing is still INSIDE px in */
 export const SLOP = 10;
+/** how far inside the level check's reach every gap stays (px): the first-timer's shortest flick (tools/inspect/firsttimer.ts) */
+export const FT_MARGIN = 15;
 /** a face's corner may be met this far under its top (px): the engine hoists him onto a lip up to FORGIVE.mantle (26) over his feet;
  *  the tracer counts only half of that */
 export const HOIST = 13;
@@ -414,7 +416,9 @@ export function traceNode(spec: NodeSpec): Trace {
     const dbl = st.move === 'double';
     const lcReach = spec.easy ? reachJumpHeld(st.dy, dbl) : reachJump(st.dy, dbl);
     if (lcReach < 0) throw new Error(`step ${i + 1}: the level check's ${st.move} can't reach ${st.dy} px up (levelCheck.ts reachJump)`);
-    if (!wallUp) near = Math.min(near, Math.floor(edge + lcReach * LC_MARGIN - TAKEOFF_SLACK - 2));
+    // (and FT_MARGIN inside it: the widest gap the check allows is one the first-timer's shortest flick misses every time, 0% at three
+    // 115 px drops on 1-2, the validator's clumsy thumb and the fixed first-timer bot, 2026-11-04)
+    if (!wallUp) near = Math.min(near, Math.floor(edge + lcReach * LC_MARGIN - TAKEOFF_SLACK - 2 - FT_MARGIN));
     else if (near - edge > lcReach * LC_MARGIN - TAKEOFF_SLACK) throw new Error(`step ${i + 1}: the ${st.surface}'s face is ${near - edge} px out, past the level check's reach (${Math.round(lcReach * LC_MARGIN - TAKEOFF_SLACK)})`);
     const ny = y - st.dy;
     for (const tr of toTry) {
