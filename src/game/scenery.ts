@@ -18,7 +18,7 @@ import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
 import { isRich } from './rainforest.ts';
-import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted, FADE_IN_MS, type PaintedSet } from './paintedBackdrops.ts';
+import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted, revealSet, FADE_IN_MS, type PaintedSet } from './paintedBackdrops.ts';
 import { w5Mood, type W5Mood } from './w5Backdrop.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
@@ -2263,6 +2263,15 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
       if (fa < 1) drawStrip(ctx, waitingSky(look), 'far', 0.05, camX, vw, vh, s, yo * 0.3);
       ctx.globalAlpha = fa;
       drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, farScale(set.sky, vh, ps, yo * 0.3), yo * 0.3, set.sky ?? null, farScale(set.sky, vh, ps, farMax));
+      // (1-1: up in its canopy the far view turns to the one over the treetops, as the canopy strips fade in; the sunrise far's painted
+      // orchids in its lower corners showed between the boughs, huge and pale, the lead's polish review 2026-11-04)
+      const cFar = cano && k > 0.01 && backdropStage() === '1-1' ? revealSet({ far: 'w1-far', mid: 'w1c-mid', near: 'w1c-near' }) : null;
+      if (cFar) {
+        // (in by half way up the fade: a half-faded sunrise far still showed its orchids, pale)
+        ctx.globalAlpha = Math.min(1, 2 * k) * fa;
+        drawStrip(ctx, cFar.far, 'far', 0.05, camX, vw, vh, farScale(cFar.sky, vh, ps, yo * 0.3), yo * 0.3, cFar.sky ?? null, farScale(cFar.sky, vh, ps, farMax));
+        ctx.globalAlpha = fa;
+      }
       if (rv) {
         ctx.globalAlpha = rk;
         drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, farScale(rv.sky, vh, ps, yo * 0.3), yo * 0.3, rv.sky, farScale(rv.sky, vh, ps, farMax));
