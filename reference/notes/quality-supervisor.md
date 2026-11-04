@@ -50,3 +50,4 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - R-159.1 show-first round 2 (w8-rope2 eabf7e88): PASS. Asked that 'pits that read as a fall' join Matt's HF picture list (Matt 10-29 rule). Next from it: escalation boards per stage.
 - Validator REDOs (fun-validator 6103af1b): all PASS. Follow-ups sent: look-alike into the variety score (use the more alike of moves/look); 1-8 look gap (chase pieces unstyled) to be named. Bot mushroom bounce fixed: W1 rescues 418 -> 194 (1-4 still 58, climbs). Defect to lead: 1-2 sunk-step pale rectangle (game art).
 - TODO when time: re-record World 1 with the fixed bot for the baseline's play numbers.
+- Validator 7909cf11: PASS, ready as W1 measuring stick (variety = more alike of moves/look). Proposed to lead: rebuild briefs use its flags as entry criteria before my in-order re-record.
