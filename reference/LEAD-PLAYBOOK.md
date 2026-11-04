@@ -211,3 +211,12 @@ work"). The measure: the same kind of job costs less each time (GAMEPLAN §5, §
   line rules (9 words for an 8-word move tip; "hold jump", a keyboard phrase). Before asking Matt, every proposed in-play line is checked
   against src/game/dotLines.test.ts's rules (word limits, touch words only); only lines that pass go to him.
 
+
+## 8h. Research gets a line-by-line ledger before it shapes a plan (D29, Matt 2026-11-04: "you didn't really read that research thoroughly enough and really dissect what needed to be done out of it")
+1. Every research paste or design doc Matt sends is saved whole in `reference/research/` the same hour (never only in the chat).
+2. Before any plan, rule or brief draws on it, helpers (high effort, split by line range so each reads every line) write a ledger in
+   `reference/research/ledger/`: one row per idea, number or example, with "in our summary / rules / plan?" and code status, plus a
+   ranked "missed or flattened" list, "where our rules contradict it" and "facts about our game it gets wrong".
+3. The lead checks the ledger against the source (every "missed" item and a sample of rows) and gives each miss a home: a rule, a
+   plan item, an R-id, or "not taken" with the reason. Only then do builds that depend on it start.
+4. An answer to Matt about what the research says quotes the research, with its line number; never a summary from memory.
