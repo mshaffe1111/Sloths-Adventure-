@@ -8,7 +8,7 @@ Matt rated Worlds 1-5 a 55/100 (11-04): plain, repetitive, "a sludge"; branches 
 Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice; nothing rolls out until Matt rates it 80+.
 
 ## Job queue
-1. Onboarding restatement sent to lead (2026-11-04 2:32 AM ET). WAITING for the lead's OK before any work.
+1. DONE: onboarding restatement sent to lead (2026-11-04 2:32 AM ET). Lead OK'd (2026-11-04 ~2:32 AM ET): (a) write methods/quality-review.md; (b) a flat PASS goes up the GAMEPLAN §3 ladder, hiding/misreporting immediate; add a 'Polish check' section to my reports; score out of 100 must have reasons checkable against the clips.
 2. After OK: World 1 baseline (1-1..1-9 + Venom Fang), in order, upright + sideways, from the bots/capture in tools/
    (tools/qa, tools/inspect). Report: reference/qa-reports/world1-baseline.md, clips/stills in reference/qa-reports/world1-baseline/.
 3. Then: review every World 1 plan before build (fix-petals validator first), every check-in during build, with bot-fix.
@@ -19,3 +19,14 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - Judging a stage alone (D26). Gates passing is not a PASS.
 - Typing commit ids/times ahead (D20): paste from output, report after push. Merge latest base and stamp base commit (D23).
 - Read ReadNotifications before every report and before going idle.
+
+## Tools I built (tools/quality/)
+- botlog.ts: logs the first-timer bot's real-engine run frame by frame (pad + Pokey's fields). botlog for 1-1..1-9 seed 1 adult (Normal).
+- bosslog.ts: the same for the boss bot (bossBot.ts TACTICS), Pokey + boss + brain fields.
+- botrec.mjs: replays a log in the real game in a browser (dev server :4301), Pokey (and boss) put back each frame, captions; mp4 + frames.
+  Kill helper: never `pkill -f` a pattern that appears in my own command line (it killed my shell 3x); use /tmp/claude-0/qs/stop.sh.
+- Working files: /tmp/claude-0/qs (logs, clips). Seed 1 picks: 1-1 stones/highLeaps/bounceRun; 1-5 bounces/creakHigh/bounces; 1-6 bounces/roadHigh/bounces.
+## Early findings (to verify on clips)
+- Every W1 finish is fillTo(): a shuffle bag of 3 pieces repeated until the 2-minute clock (src/game/w1Sections.ts). Padding by design.
+- Venom Fang: boss bot wins Normal in ~20 s, 0-1 hits taken.
+- Bot: 1-4 and 1-7 time out at 360 s with 11-19 rescues (bot limits or stage problems: check clips).
