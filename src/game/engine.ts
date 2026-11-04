@@ -23,6 +23,7 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
+import { BEAT_STAGES } from '../audio/scenes.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
 import { withGoals } from './goals.ts';
@@ -227,6 +228,8 @@ const WALL_OFF = 9;
 const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
 /** how fast the shift that shows a landing across a gap eases in and out (per second), and for a landing still out of the view */
+/** a free fall longer than this (px) hurts on landing, on the rebuilt stages (longFallLanding) */
+export const LONG_FALL = 400;
 const LAND_EASE = { rate: 4.5, fast: 10 } as const;
 /**
  * Meeca's thin logs (5-M): a jump whose top leaves her feet this far under a log's top, her middle this far inside its ends, and rising
@@ -837,6 +840,10 @@ export class GameEngine {
     this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
     // (gen2 lays real soft pits on Easy; a boss's arena and 1-8's chase keep their own rules)
     this.softOn = isEasy() && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena;
+    // long falls hurt on the stages rebuilt on the beat (Matt, 2026-11-04; the other worlds when they are rebuilt)
+    this.longFalls = BEAT_STAGES.has(config.id) && !config.secret;
+    this.longFallSoft = isEasy();
+    this.fallTop = Infinity;
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
@@ -3295,6 +3302,7 @@ export class GameEngine {
       p.powerUpTimer
     );
 
+    if (this.longFalls) this.longFallLanding(groundedBefore);
     this.updateSound(dt, groundedBefore, vyBefore, distanceRatio);
     this.markWayDodge(dt);
   }
@@ -3362,6 +3370,34 @@ export class GameEngine {
     else if (side === 'r' && sx > w * 0.62) side = 'l';
     if (root.wayBoss !== side) root.wayBoss = side;
     return true;
+  }
+
+  /**
+   * Long falls hurt (Matt, 2026-11-04: "make long fall hurt"): landing after a free fall of more than LONG_FALL px, from the fall's
+   * highest point, costs a heart on Normal (the usual hurt: flash, sound, knock) and is a stumble on Easy (a squash and a thud, nothing
+   * lost). Not while gliding, swinging, on a rope or a trunk, or off a mushroom's bounce (and a fall into a fallZone is a pit, not this).
+   */
+  private longFalls = false;
+  /** Easy, as the stage was built: a long fall is a stumble */
+  private longFallSoft = false;
+  private fallTop = Infinity;
+  private fallFree = true;
+  private longFallLanding(groundedBefore: boolean) {
+    const p = this.player;
+    if (p.grounded || p.climbing || p.isVineSwinging || p.hanging) {
+      if (p.grounded && !groundedBefore && this.fallFree && p.y - this.fallTop > LONG_FALL && !this.isGameOver) {
+        if (this.longFallSoft) {
+          p.squashX = 1.35;
+          p.squashY = 0.62;
+          sound.playLand(1);
+        } else this.damagePlayer(1, p.x);
+      }
+      this.fallTop = p.y;
+      this.fallFree = true;
+      return;
+    }
+    if (this.glide.on || this.launched) this.fallFree = false;
+    this.fallTop = Math.min(this.fallTop, p.y);
   }
 
   /** landings, footsteps and the music's intensity (calm while exploring, fuller near danger) */
