@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 02:33 AM ET
+Last updated: 2026-11-04 02:34 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -22,6 +22,9 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 02:34 AM ET: lead OK'd onboarding. Round 1 armed (trig_011og3phdPNcd8K2pPEW9aRF, fires 03:05 AM ET): "started and on the right base".
+  Branches to look for (helpers push only to their own session branch): warmup-5m (not webgl-0), fix-petals (not fun-validator),
+  quality-supervisor, release-0.9.4 (or kaizen-gates), roadmap-keeper.
 - 2026-11-04 02:33 AM ET: bot-fix restarted from main 1dc39cd7 (the old bot-fix, 912b2fe6, is merged). Onboarding sent to the lead; waiting for its OK.
 
 ## My pitfalls
