@@ -22,10 +22,11 @@ in both orientations. Started 2026-11-04 2:32 AM ET.
   put further on: 10 rescues on 1-1, 3+ on 1-3, 19 on 1-7). It can't do the squirrel lift on 1-4. It times out on 1-4 and 1-7. So
   this report judges what the stages *contain and show*, which the clips prove. It does not judge how hard they are for a person;
   that waits for the bot fix (lead: fix-petals after the restart).
-- **My own tool's slips, named.** The 1-1 to 1-3 clips were recorded as a desktop browser, so Dot's tips there read "Press Space",
-  "press J". The recorder now emulates a phone (touch, coarse pointer, `botrec.mjs`), and 1-3 sideways onward show the touch words
-  ("Flick up onto the mushroom to bounce"). The "Tips off" toast at the start of some clips comes from the tool's own click on
-  "Skip tips".
+- **My own tool's slips, named.** The first 1-1 to 1-3 recordings were made as a desktop browser, so Dot's tips read "Press Space",
+  "press J". The recorder now emulates a phone (touch, coarse pointer, `botrec.mjs`), and all 20 clips in clips/ were recorded that
+  way: 1-1 to 1-3 were re-recorded at 4:03 AM ET (proof: stills/phone-wording-check-*.jpg, "Flick up again midair to jump twice.").
+  The 1-1 to 1-3 *still sheets* are from the desktop recordings: same route, same frames, keyboard tip words, and a smaller HUD. The
+  "Tips off" toast at the start of some clips comes from the tool's own click on "Skip tips".
 
 ## The world in one paragraph
 
@@ -221,11 +222,11 @@ is plain and repetitive, and its best parts (1-4, 1-6's lianas, 1-8) are short i
 ## Polish check (this report's own screens)
 - Every time and claim above was read off a still sheet I opened (stills/), in both orientations for 1-1 to 1-8. 1-1, 1-3 and 1-5
   have an extra frame-by-frame check where a claim needed it (1-5 twist 0:36-1:06; 1-7 eagle 0:04-1:04; 1-8 chase 0:10-1:04).
-- Rough spots in my own material, named: the keyboard wording in the 1-1 to 1-3 clips (tool; fixed for later clips). The "Tips off"
+- Rough spots in my own material, named: the 1-1 to 1-3 still sheets show keyboard wording (desktop recording; their clips are re-recorded as a phone). The "Tips off"
   toast (tool). Long "bot stuck" captions are cut off upright (tool caption, not the game). Clips are review copies (640 px, 10 fps).
 
 ## Open (before this is final)
-- Re-record 1-1 to 1-3 with phone wording (tool fix in).
+- Re-cut the 1-1 to 1-3 still sheets from the phone recordings.
 - After the bot's bounce-wall fix: re-run, and judge challenge from a bot that plays the stages through.
 - Easy not judged (Easy should cruise, §0.5).
 
