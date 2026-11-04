@@ -1,6 +1,6 @@
 # fix-petals: helper notes
 
-## Now (2026-11-04 1:39 PM ET): R-6.38 redo pushed (a90c542f) with the pickup-ruler ruling; drawcheck and clipcheck running; then the validator items
+## Now (2026-11-04 2:22 PM ET): R-6.38 redo (a90c542f) and validator items (fa647a9e) pushed, all gates PASS, reported to the lead and QS at 2:22 PM ET; waiting on their verdicts
 - R-155 1-5 moved to w1-rhythm (lead, 12:42 PM ET message). Not mine any more.
 - R-6.38 (started 11:46 AM ET, planned 3 h): src/game/w1Pits.ts + test, protoArt.ts, stageSheets/stagePreload ('pit-art:1'), types.ts
   (Platform.pit), src/assets/props/pits (pitcut.py). Redo done to the lead's five items; report reference/qa-reports/r6-38/README.md.
@@ -11,7 +11,7 @@
   tempo/map-shape "like the stage before"; TIGHT_MAX (core.ts:254) allows a 15-20 s dense finale; pairs only in one move or beat
   (mechanics.ts:43-52); tempoOf lift/moving-platform waits over 1 s count as patience; falls over 200 px or 4 s are bites.
 - Method: a stills build needs NODE_ENV=development (window.__play is dev only); after --emptyOutDir restart the static server.
-MY MISS (three times today): times typed, not read (10:58, 10:28, 1:11). Countermeasure, tightened: a time goes into a message only as
+MY MISS (five times today): times typed, not read (10:58, 10:28, 1:11, 1:45 and 2:24 in these notes, both caught before the push). Countermeasure, tightened: a time goes into a message only as
 text copied from a `TZ=America/New_York date` printed in the step just before; never composed from memory.
 
 ## The job, as briefed
