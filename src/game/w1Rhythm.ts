@@ -902,85 +902,10 @@ export const BOA_LINE = 'A coiled boa! Punches bounce off. Kick it!';
 /** the first seconds of the way, at full run, in which no gap can hurt (a catch under each) */
 export const OPENING_S = 6.5;
 /** 1-2's petal goal, a share of its petals, from the first-timer bots' runs */
-export const PETAL_SHARE = { normal: 0.6, easy: 0.6 } as const;
+export const PETAL_SHARE = { normal: 0.75, easy: 0.75 } as const;
 const petalGoal = (n: number, k: number) => Math.max(1, Math.round(n * k));
-/**
- * 1-2's two splits on the stage as built (Matt's 70/30, the lead 2026-11-04; as protoStage.ts splitPetals does 1-3's): the petal pass has
- * filled the trail's long gaps, most of them on the shared path, so each road (the high branches, the bough under them) is brought to
- * 15/70 of the shared petals: extras taken off evenly, then even spots filled (clear of the snakes, the rotten wood and the flags), each
- * new petal kept only where the pass's own rules still hold (six a screen, no rows, no clumps)
- */
-function rhythmRoads(st: GeneratedStage & { proto: ProtoExtras }): void {
-  const nodes = st.proto.rhythm?.nodes ?? [];
-  const top = nodes.find((n) => n.tier === 'A' && n.pair.includes('rotten branches')), leg = nodes.find((n) => n.tier === 'B');
-  if (!top || !leg) return;
-  const splits = [{ x0: top.x0, x1: top.x1, line: top.y }, { x0: leg.x0, x1: leg.x1, line: T12.B }];
-  const isPet = (c: Collectible) => c.type === 'flower' || c.type === 'leaf';
-  // (by height too: the bough leg runs under the canopy, whose petals are the shared path's)
-  const roadOf = (c: { x: number; y: number }) => {
-    const sp = splits.find((q) => c.x > q.x0 && c.x < q.x1 && c.y >= q.line - 180 && c.y <= q.line + 10);
-    return !sp ? null : c.y <= sp.line - 80 ? 'high' : 'low';
-  };
-  const want = Math.round((st.collectibles.filter((c) => isPet(c) && !roadOf(c)).length * 15) / 70);
-  // (a road over its share gives up its extras, evenly along it)
-  for (const r of ['high', 'low'] as const) {
-    const on = st.collectibles.filter((c) => isPet(c) && roadOf(c) === r).sort((a, b) => a.x - b.x);
-    const extra = on.length - want;
-    for (let i = 0; i < extra; i++) {
-      const c = on[Math.floor(((i + 0.5) * on.length) / extra)];
-      st.collectibles.splice(st.collectibles.indexOf(c), 1);
-    }
-  }
-  const spots: Record<'high' | 'low', Array<{ x: number; y: number }>> = { high: [], low: [] };
-  for (const sp of splits) {
-    for (const p of st.platforms) {
-      if (p.type !== 'solid' || p.x + p.width < sp.x0 || p.x > sp.x1) continue;
-      const r = p.y <= sp.line - 50 && p.y >= sp.line - 135 && p.style === 'branch' ? 'high' : p.y === Math.round(sp.line) && p.style === 'log' ? 'low' : null;
-      if (!r) continue;
-      for (let fx = Math.max(p.x, sp.x0) + 50; fx <= Math.min(p.x + p.width, sp.x1) - 50; fx += 30) {
-        if (st.enemies.some((e) => Math.abs(e.y + 14 - p.y) < 20 && Math.abs(e.x - fx) < 140)) continue;
-        if (st.platforms.some((f) => f.type === 'fragile' && Math.abs(f.y - p.y) < 10 && fx > f.x - 120 && fx < f.x + f.width + 120)) continue;
-        if ((st.checkpoints ?? []).some((f) => Math.abs(f.y - p.y) < 20 && Math.abs(f.x - fx) < 100)) continue;
-        // (and open air over it: a petal under a branch 75 px up or less is boxed in, the level check cannot take it)
-        if (st.platforms.some((f) => f !== p && f.y < p.y && f.y > p.y - 75 && fx > f.x - 30 && fx < f.x + f.width + 30)) continue;
-        spots[r].push({ x: fx, y: p.y - 45 });
-      }
-    }
-  }
-  let id = Math.max(0, ...st.collectibles.map((c) => c.id)) + 1;
-  const firstNew = id;
-  for (const r of ['high', 'low'] as const) {
-    let have = st.collectibles.filter((c) => isPet(c) && roadOf(c) === r).length;
-    const list = spots[r].sort((a, b) => a.x - b.x);
-    for (let k = 0; have < want && k < 3; k++) {
-      // (three passes over the road's spots, spread out first, then closer)
-      const step = Math.max(1, Math.floor(list.length / Math.max(1, want - have)) >> k);
-      for (let i = Math.floor(step / 2); i < list.length && have < want; i += step) {
-        const q = list[i];
-        const c: Collectible = { id, type: 'flower', botanicalVariant: 'orchid', x: q.x, y: q.y, collected: false, bobPhase: (q.x * 0.031) % 6.28 };
-        const pets = [...st.collectibles.filter(isPet), c];
-        if (st.collectibles.some((o) => o.type !== 'exit_totem' && Math.hypot(o.x - c.x, o.y - c.y) < PICKUP_APART + 4)) continue;
-        if (busiestScreen(pets).n > PER_SCREEN || rowExtras(pets).size || clumpExtras(pets).size) continue;
-        st.collectibles.push(c);
-        id++;
-        have++;
-      }
-    }
-  }
-  // (a new petal the level check cannot reach is taken off again: flowerReach.ts badPickups, the check the stage's test holds it to)
-  const bad = new Set(badPickups({ platforms: st.platforms, vines: st.vines, waterY: st.waterY }, st.collectibles).filter((c) => c.id >= firstNew));
-  // (nor one hanging below a required jump's arc: the petal rules, petals.ts offArc)
-  for (const c of offArc(st, st.collectibles.filter(isPet))) if (c.id >= firstNew) bad.add(c);
-  st.collectibles = st.collectibles.filter((c) => !bad.has(c));
-  // (NOT thinned to keep the shares: where the six-a-screen cap leaves a road short, thinning the shared path to match took 1-2 down to
-  // about 27 petals and sealed the door, the fixed first-timer, 2026-11-04 5:15 PM; the 70/30 shares on the built stage are open, R-id
-  // to come: the petal pass's trail fills the shared path past 70%)
-}
-
-/** 1-2's goal on the stage as built, after the petal pass (protoStage.ts: it fills the trail's long gaps): PETAL_SHARE of the petals it
- *  holds, counted as the goal counts them (goals.ts goalCounts: none on a crumbling branch) */
+/** 1-2's goal on the stage as built (its own petals only, proto.ownPetals): PETAL_SHARE of the petals it holds, counted as the goal counts them (goals.ts goalCounts: none on a crumbling branch) */
 export function rhythmPetalGoal(st: GeneratedStage, easy: boolean): void {
-  rhythmRoads(st as GeneratedStage & { proto: ProtoExtras });
   const n = goalCounts(st as never).petals;
   st.normalGoal = petalGoal(n, PETAL_SHARE.normal);
   st.easyGoal = petalGoal(n, PETAL_SHARE.easy);
@@ -1113,7 +1038,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     // the goal is always in reach whichever road he takes (splitPetals); checked against the fixed first-timer bots' runs)
     ...(id === '1-2' ? { normalGoal: petalGoal(L.petals.length, PETAL_SHARE.normal), easyGoal: petalGoal(L.petals.length, PETAL_SHARE.easy) } : {}),
     meta: { attempt: seed, chunks: L.nodes.map((n) => n.tag), width: L.width, pieces: L.nodes.map((n) => ({ k: `${id} ${n.tag} ${n.tier}`, x0: n.x0, x1: n.x1 })), timing: { layoutSeconds: L.expert, decorSeconds: 0, route: L.width } },
-    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, bpm, rhythm: { bpm, nodes: L.nodes, reroll: L.reroll } },
+    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, bpm, ownPetals: true, rhythm: { bpm, nodes: L.nodes, reroll: L.reroll } },
   } as GeneratedStage & { proto: ProtoExtras };
 }
 

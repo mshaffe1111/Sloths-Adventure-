@@ -33,9 +33,14 @@ type Mode = 'pump' | 'pumpDown' | 'pumpLate' | 'pumpLateDown' | 'off' | 'offDown
 
 /** the first liana on a stage (1-6's first, over the soft moss) and the raised ledge left of it, where he came from */
 function firstVine(r: RealPlay): { v: Vine; ledge: Platform } {
-  const v = r.vines.find((q) => q.vineType !== 'tree_climb')!;
-  const ledge = r.platforms.filter((p) => p.x + p.width < v.x && Math.abs(p.y - 580) < 1).sort((a, b) => b.x - a.x)[0];
-  return { v, ledge };
+  // (the first liana with no vine snake on it: since R-159.1 1-6 opens on vine snakes, punched stiff before the swing, and these are
+  // the swing's own repros, on a plain liana beside its ledge as QA found them)
+  const snaked = new Set((r.e.enemies as Array<{ trick?: string; vineId?: number }>).filter((m) => m.trick === 'vine').map((m) => m.vineId));
+  const lianas = r.vines.filter((q) => q.vineType !== 'tree_climb').sort((a, b) => a.x - b.x);
+  const ledgeOf = (v: Vine) => r.platforms.filter((p) => p.x + p.width < v.x && Math.abs(p.y - 580) < 1).sort((a, b) => b.x - a.x)[0];
+  // (and the first of its chain: right beside its ledge, no other liana between)
+  const v = lianas.find((q) => !snaked.has(q.id) && ledgeOf(q) && !lianas.some((o) => o.x > ledgeOf(q).x + ledgeOf(q).width && o.x < q.x))!;
+  return { v, ledge: ledgeOf(v) };
 }
 
 const lagged = new WeakMap<RealPlay, number[]>();
@@ -107,6 +112,8 @@ test('1-6: pumping, a steer held either way, hands off or climbing down a liana 
 function grabFirst(seed: number) {
   const r = new RealPlay('1-6', seed);
   const { v, ledge } = firstVine(r);
+  // (from that liana's ledge: the vine snakes before it are their own lesson, w1TricksPlay.test.ts)
+  r.fly(ledge.x + 60, ledge.y - 2);
   for (let i = 0; i < 30 * 8 && !r.p.isVineSwinging; i++) r.frame({ right: true, press: r.p.grounded && r.p.x > ledge.x + ledge.width - 40, jump: !r.p.grounded });
   assert.ok(r.p.isVineSwinging, `seed ${seed}: he caught the first liana`);
   return { r, v, ledge };
@@ -157,7 +164,7 @@ test('1-6: holding down and toward the ledge as the swing carries him past it pu
     assert.ok(p.grounded && Math.abs(p.y - ledge.y) < 1 && p.x >= ledge.x && p.x <= ledge.x + ledge.width, `seed ${seed}: at x${Math.round(p.x)} y${Math.round(p.y)} grounded ${p.grounded}`);
     assert.ok(!r.died, `seed ${seed}: he fell`);
   }
-  assert.ok(tried >= 1, 'no roll of 1-6 hangs its first liana where the swing reaches the ledge');
+  assert.ok(tried >= 1, 'no roll of 1-6 hangs its first plain liana where the swing reaches the ledge');
 });
 
 test("the control test's swing stretch: pumping its lianas at full length never sets him down on a ledge beside them", async () => {
@@ -551,6 +558,8 @@ function firstSwing(seed: number, w: number, h: number) {
     shown.push({ id, t: e.gameTime });
   };
   const { ledge } = firstVine(r);
+  // (from that liana's ledge: the vine snakes before it are their own lesson, w1TricksPlay.test.ts)
+  r.fly(ledge.x + 60, ledge.y - 2);
   let letGoAt = -1;
   let grabAt = -1;
   for (let i = 0; i < 30 * 12 && letGoAt < 0; i++) {
