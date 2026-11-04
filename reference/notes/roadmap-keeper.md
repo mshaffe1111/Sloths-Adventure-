@@ -1,20 +1,21 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 11:19 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 11:23 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
 ## Status
 - Reinstated 2026-11-02 by the lead at Matt's ask (D27: the slips came from the setup; GAMEPLAN §3 is now a ladder; self-caught slips
   don't count). New items come in batches when Matt says go (LEAD-PLAYBOOK 8d).
-- **State now (2026-11-04 11:19 AM ET):** roadmapcheck PASS. Phases (sums by script): WebGL 21 h; Phase A (World 1) 70 h (range about 54-97),
-  starting score World 1 38/100 (QS), validator 18-62 avg 41; Phase B 277 h (a guess, about 210-380); Phase C 114 h (a guess, about
-  85-155); alongside 62 h. Day 1 about 544 helper hours (gate 552), recommended Important 60 h, launch about 604 h; lanes 120.5 / 121 /
-  120.5 / 120.5 / 120.5; building about 15-20 working days (12-26 across the guesses); about 4-4.5 weeks with the 80% trigger
-  (about 435 of 544 h). Doc read back. Phase A set now also holds R-150.10; Phase B R-150.11.
+- **State now (2026-11-04 11:23 AM ET):** roadmapcheck PASS. Phases (sums by script): WebGL 21 h; Phase A (World 1) 79.5 h (range about 61-112),
+  starting score World 1 38/100 (QS), validator 18-62 avg 41; Phase B 272.5 h (a guess, about 210-385); Phase C 114 h (a guess, about
+  85-160); alongside 64 h. Day 1 about 551 helper hours (gate 559), recommended Important 56 h, launch about 607 h; lanes 121.5 / 121 /
+  120.5 / 120.5 / 122.5; building about 15-20 working days (12-27 across the guesses); about 4-4.5 weeks with the 80% trigger (about
+  441 of 551 h). Doc read back. Phase A set also holds R-150.6, R-150.10; the moved parts are R-154 W1 2.5 h branch + 4.5 h vine kinds
+  and R-155 W1 7 h; Phase B holds R-150.11; R-6.39 is alongside.
 - **Matt's full playthrough (11-04 about 11:15 AM ET):** every stage winnable; W4 about 64 min; W1-3 15-30; W7-8 under 30; early
   stages about 1-1.5 min. Recorded on R-152.6 and R-5.4. Fact checked: the 2-minute rule is stageTime.ts's model (floors 125 s typical,
-  95 s quick), not the first-timer bot. R-150.10 waits on Matt's call (whose 2 minutes).
+  95 s quick), not the first-timer bot. Matt set the length targets (STAGE-RULES §0.5): 2-5 min a stage for a first-timer, never under 2 for a skilled player; W1 20-25 min, middle 35-40, W9-10 50-60. R-150.10 is open.
 - **Unblocked 11-04 mid-morning:** R-150.4 and R-150.1 accepted (7909cf11, fun-validator, not merged yet). Phase B rows now read
   "blocked (by Matt's World 1 rating)"; R-159.1 open (GPU stage 0 merged to the lead branch 65b6c33a). Archive R-3.1, R-150.1, R-150.4,
   R-150.7 only when they reach main in a release (proof: the release PR).
