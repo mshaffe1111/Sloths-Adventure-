@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Icon } from './icons/index.tsx';
+import { PaintedIcon, paint } from './icons/PaintedIcon.tsx';
 import { fullscreenSupported, isFullscreen, launchedAsApp, toggleFullscreen } from '../game/fullscreen.ts';
 
 /**
@@ -30,7 +30,7 @@ export const FullscreenButton: React.FC<{ className?: string }> = ({ className }
       title={full ? 'Leave full screen' : 'Full screen'}
       onClick={() => setFull(toggleFullscreen())}
     >
-      <Icon name={full ? 'shrink' : 'expand'} size={20} />
+      <PaintedIcon name={paint(full ? 'shrink' : 'expand')} size={22} />
     </button>
   );
 };

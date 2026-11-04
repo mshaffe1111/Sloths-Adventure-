@@ -4,6 +4,7 @@
  * Pokey's face is his portrait (HeroFaceIcon). The rest is drawn here as clean stand-ins, in the sprites' dark-brown ink:
  *   the hearts, the vine and its threads, the Menu's three lines, the power-up pod, and the foe, cage, idol and door goal icons.
  */
+import { PaintedIcon, preloadPainted, type PaintedName } from '../icons/PaintedIcon.tsx';
 import React from 'react';
 import { LEAF_ATLAS_SIZE, LEAF_FRAMES } from '../../game/leafAtlasData.ts';
 import { FLOWER_ATLAS_SIZE, FLOWER_FRAMES } from '../../game/flowerAtlasData.ts';
@@ -45,121 +46,36 @@ export const Leaf: React.FC<{ frame: string; w: number; style?: React.CSSPropert
   );
 };
 
-const HEART = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
 
-/** the gradients the hearts and star use, once per HUD */
-export const HudDefs: React.FC = () => (
-  <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
-    <defs>
-      <radialGradient id="vh-hg" cx=".36" cy=".3" r=".85">
-        <stop offset="0" stopColor="#ff9a96" />
-        <stop offset=".42" stopColor="#ee3d4f" />
-        <stop offset="1" stopColor="#a3132c" />
-      </radialGradient>
-      <radialGradient id="vh-tg" cx=".36" cy=".3" r=".85">
-        <stop offset="0" stopColor="#fff1a8" />
-        <stop offset=".45" stopColor="#fbbf24" />
-        <stop offset="1" stopColor="#b86a05" />
-      </radialGradient>
-    </defs>
-  </svg>
+
+preloadPainted(['heart', 'heartEmpty', 'thornHeart', 'star', 'checkmark', 'seed', 'idol', 'clubs', 'cage', 'home']);
+
+/** a heart (icons-painted, 2026-11-01): the painted heart berry (full), its dry husk (empty), the berry in its bramble (thorn), and
+ * the husk flashing white as it is lost */
+export const Heart: React.FC<{ size: number; state: 'full' | 'empty' | 'lost' | 'thorn' }> = ({ size, state }) => (
+  <PaintedIcon
+    name={state === 'full' ? 'heart' : state === 'thorn' ? 'thornHeart' : 'heartEmpty'}
+    size={size}
+    className={state === 'lost' ? 'vh-heart-lost' : undefined}
+  />
 );
 
-/** a heart: full (painted red, ink outline, a shine), empty (a dark hollow), lost (a white flash with a crack), thorn (gold) */
-export const Heart: React.FC<{ size: number; state: 'full' | 'empty' | 'lost' | 'thorn' }> = ({ size, state }) => {
-  if (state === 'empty')
-    return (
-      <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-        <path d={HEART} fill="rgba(52,26,18,.62)" stroke={INK} strokeWidth="2.3" strokeLinejoin="round" />
-        <path d={HEART} fill="none" stroke="rgba(255,214,200,.45)" strokeWidth="1" transform="translate(2.4 2.6) scale(.8)" />
-      </svg>
-    );
-  if (state === 'lost')
-    return (
-      <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" className="vh-heart-lost">
-        <path d={HEART} fill="#fff" stroke={INK} strokeWidth="2.3" strokeLinejoin="round" />
-        <path d="M12 6 L10.4 10 L13 12.4 L11 16.5" fill="none" stroke={INK} strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    );
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-      <path d={HEART} fill={state === 'thorn' ? 'url(#vh-tg)' : 'url(#vh-hg)'} stroke={INK} strokeWidth="2.3" strokeLinejoin="round" />
-      <ellipse cx="7.6" cy="8" rx="2.6" ry="1.6" fill="#fff" opacity=".8" transform="rotate(-35 7.6 8)" />
-    </svg>
-  );
-};
+/** the score's star: the painted gold star */
+export const Star: React.FC<{ size: number }> = ({ size }) => <PaintedIcon name="star" size={size} />;
 
-export const Star: React.FC<{ size: number }> = ({ size }) => (
-  <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" style={{ flex: 'none' }}>
-    <path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z" fill="url(#vh-tg)" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
-  </svg>
-);
+/** a power's timer: the glowing golden seed */
+export const Bolt: React.FC<{ size: number; color: string }> = ({ size }) => <PaintedIcon name="seed" size={size} />;
 
-export const Bolt: React.FC<{ size: number; color: string }> = ({ size, color }) => (
-  <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-    <path d="M13 2 4 14h7l-1 8 9-12h-7z" fill={color} stroke={INK} strokeWidth="2" strokeLinejoin="round" />
-  </svg>
-);
+/** the Menu button before the HUD's painted leaf has loaded: the carved cog (Settings) */
+export const MenuLines: React.FC<{ size: number }> = ({ size }) => <PaintedIcon name="gear" size={size} />;
 
-export const MenuLines: React.FC<{ size: number }> = ({ size }) => (
-  <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" style={{ overflow: 'visible' }}>
-    <path d="M5 7h14M5 12h14M5 17h14" stroke={INK} strokeWidth="5.8" strokeLinecap="round" />
-    <path d="M5 7h14M5 12h14M5 17h14" stroke="#FFF3D6" strokeWidth="2.8" strokeLinecap="round" />
-  </svg>
-);
+/** goal met: the painted vine tick, lifted off the wooden plate by the warm rim */
+export const Tick: React.FC<{ size: number }> = ({ size }) => <PaintedIcon name="checkmark" size={size} />;
 
-export const Tick: React.FC<{ size: number }> = ({ size }) => (
-  <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-    <circle cx="12" cy="12" r="10" fill="#3f8f3a" stroke={INK} strokeWidth="2.2" />
-    <path d="M7 12.5l3.2 3.2L17 8.8" fill="none" stroke="#fff3d6" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-/** the drawn goal icons, for goals with no painted pickup (stand-ins: see the report) */
-const Drawn: React.FC<{ name: 'idol' | 'foe' | 'cage' | 'door' | 'carving'; size: number }> = ({ name, size }) => {
-  if (name === 'carving')
-    // Meeca's warnings: a scrap of bark with "M." scratched into it
-    return (
-      <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-        <rect x="2.5" y="3.5" width="19" height="17" rx="5" fill="#8a6440" stroke={INK} strokeWidth="2" />
-        <path d="M5 9.5l14 .6M5 15.8l14 .5" stroke="rgba(58,36,20,.45)" strokeWidth="1" fill="none" />
-        <path d="M6.6 16.4l.6-8.4 3 4.6 3-4.8.4 8.6" fill="none" stroke="rgba(38,20,10,.85)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M6.2 16l.6-8.4 3 4.6 3-4.8.4 8.6" fill="none" stroke="#f7e6c2" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="16.8" cy="15.6" r="1.3" fill="#f7e6c2" />
-      </svg>
-    );
-  if (name === 'foe')
-    // a claw mark on a leaf-green disc: "a predator"
-    return (
-      <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-        <circle cx="12" cy="12" r="10" fill="#7c2d12" stroke={INK} strokeWidth="2" />
-        <path d="M8 6.5c1.2 3.6 1.2 7.4-.6 11M12 5.5c1 4 1 8.4-.4 13M16 6.5c1.2 3.6 1 7.4-.8 11" fill="none" stroke="#fde68a" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    );
-  if (name === 'cage')
-    return (
-      <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-        <path d="M5 20V9a7 6 0 0 1 14 0v11z" fill="#c08a4a" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
-        <path d="M9 20V6.5M12 20V5M15 20V6.5M5 13h14" stroke={INK} strokeWidth="1.6" />
-        <path d="M3.5 20.5h17" stroke={INK} strokeWidth="2.4" strokeLinecap="round" />
-      </svg>
-    );
-  if (name === 'idol')
-    return (
-      <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-        <path d="M8 21h8l-1-4h-6zM7.5 10a4.5 5 0 0 1 9 0v4a4.5 3 0 0 1-9 0z" fill="url(#vh-tg)" stroke={INK} strokeWidth="1.8" strokeLinejoin="round" />
-        <circle cx="10.4" cy="11" r="1" fill={INK} />
-        <circle cx="13.6" cy="11" r="1" fill={INK} />
-      </svg>
-    );
-  // the sanctuary door (end of the distance trail)
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-      <path d="M4 22V10a8 8 0 0 1 16 0v12z" fill="#8a6a3a" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
-      <path d="M8 22V11a4 4 0 0 1 8 0v11z" fill="#34d399" stroke={INK} strokeWidth="1.6" />
-    </svg>
-  );
-};
+/** the goals with no painted pickup (icons-painted, 2026-11-01): the stone idol, a defeated foe (the clubs), the stick cage, the
+ * sanctuary door (the stump door) and Meeca's carved bark scrap */
+const DRAWN: Record<'idol' | 'foe' | 'cage' | 'door' | 'carving', PaintedName> = { idol: 'idol', foe: 'clubs', cage: 'cage', door: 'home', carving: 'carving' };
+const Drawn: React.FC<{ name: keyof typeof DRAWN; size: number }> = ({ name, size }) => <PaintedIcon name={DRAWN[name]} size={size} />;
 
 /** the goal's icon at `size` px (its longest side) */
 export const GoalPic: React.FC<{ icon: GoalIcon; size: number; className?: string; style?: React.CSSProperties }> = ({ icon, size, className, style }) => {

@@ -20,6 +20,18 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.9.4',
+    date: '2026-11-04',
+    title: 'Painted all over',
+    items: [
+      'Painted icons on every menu, the map, the satchel and your hearts while you play.',
+      'Locked stages on the map show a little brass padlock.',
+      'How to Play has painted tabs, and moves you haven’t learned yet stay locked.',
+      'New painted badges when Pokey learns a move.',
+      'Crocus Rex looks like himself again when he is beaten.',
+    ],
+  },
+  {
     version: '0.9.3',
     date: '2026-11-01',
     part: 'evening',
