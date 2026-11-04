@@ -25,3 +25,9 @@ at a time. Made with `tools/art/combat/mock-triangle.mjs` (the beats) and `tools
 4. **The coiled boa is small** on the branch (kick board, beat 1): its armour needs a stronger look than today's coil to say "don't
    punch me"; the "coil tightens" clip on the picture list is that.
 5. **Upright, the kick board's roll** shows the ball leaving the branch, but the snake it bowls is out of the narrow view.
+
+## Added for the quality supervisor's review (revision 2)
+- **armour-by-shape-{side,up}.jpg:** today's coiled boa (looks like any boa) beside a paste-up of the look to make: a tight coil with a
+  glint, so the armour reads before Pokey touches it.
+- **The vine snake from the take-off ledge:** vine-snake-{side,up}.jpg are shot with Pokey on the take-off ledge and the snake ahead in
+  view. With the paste-up it reads as a snake hanging on a liana there; the real check waits for the painted art.

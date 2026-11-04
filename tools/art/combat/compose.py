@@ -56,7 +56,8 @@ def paste(base, sprite, cx, feet, scale, angle=0, alpha=1.0):
 
 
 def shot(name, tag):
-    return Image.open(SHOTS / f'{name}-{tag}.png').convert('RGBA')
+    src = 'kick-1-coil' if name == 'kick-1-coil-armour' else name
+    return Image.open(SHOTS / f'{src}-{tag}.png').convert('RGBA')
 
 
 def pasteups(name, tag, img):
@@ -82,6 +83,15 @@ def pasteups(name, tag, img):
         # (upright the HUD band is the top ~12%: the snake hangs from just under it, beside the liana that comes into view there)
         img.alpha_composite(rot, (int(W * (0.56 if side else 0.72) - rot.width / 2), int(H * (0.2 if side else 0.13))))
         stamp(img, 'PASTE-UP: the vine snake (art to make)', (W * 0.04, H * 0.2), 30 if side else 24)
+    if name == 'kick-1-coil-armour':
+        # the armoured coil, read by shape: glints on the boa's coil (a small code touch), stamped as a paste-up of the look to make
+        d = ImageDraw.Draw(img)
+        cx, cy = W * (0.535 if side else 0.5), H * (0.6 if side else 0.555)
+        for dx, dy, r in [(-0.03, -0.01, 16), (0.02, -0.025, 11), (0.035, 0.008, 8)]:
+            x, y = cx + W * dx, cy + H * dy
+            rr = r * (1 if side else 1.4)
+            d.polygon([(x, y - rr), (x + rr * 0.25, y - rr * 0.25), (x + rr, y), (x + rr * 0.25, y + rr * 0.25), (x, y + rr), (x - rr * 0.25, y + rr * 0.25), (x - rr, y), (x - rr * 0.25, y - rr * 0.25)], fill=(255, 255, 235, 240))
+        stamp(img, 'PASTE-UP: the armoured coil look (tight coil + glint)', (W * 0.04, H * 0.2), 28 if side else 22)
     return img
 
 
@@ -103,6 +113,10 @@ BOARDS = {
         ('kick-2-stomp-bounces', 'A stomp bounces off ("ARMORED!"); a punch: "TOUGH!"'),
         ('kick-3-kick', 'A kick breaks the coil...'),
         ('kick-4-roll-bg', '...and it rolls off the branch and bowls over the snake below (in a stage, a switch waits at the end).'),
+    ],
+    'armour-by-shape': [
+        ('kick-1-coil', 'Today: the coiled boa looks like any boa. "TOUGH!" would be the first the player learns of its armour.'),
+        ('kick-1-coil-armour', 'To make: a tight coil with a glint, so it reads as armour before he touches it.'),
     ],
     'vine-snake': [
         ('vine-1-lianas', 'The vine snake hangs among the lianas. Grab it: a bite. Punch it: it stiffens into a pole.'),
