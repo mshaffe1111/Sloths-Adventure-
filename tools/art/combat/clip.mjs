@@ -73,6 +73,22 @@ const CLIPS = [
     ],
   },
   {
+    // 1-3's teaching vault (the lead's ruling): Dot's line on the run-up, the punch that dazes the snake on the lip, a step back for a
+    // run, the hop onto it with the thumb kept down, and the spring alone carrying him up onto the raised bank, no second flick
+    id: 'clip-7-teaching-vault', stage: '1-3',
+    pose: { px: 5860, foe: { id: 4, x: 6168, y: 566, state: 'patrol' } },
+    steps: [
+      { hold: ['ArrowRight'], until: 'Math.abs(s.x - p.x) < 60', max: 90 },
+      { tap: 'KeyJ', frames: 10 },
+      { hold: ['ArrowLeft'], until: 'p.x < s.x - 150', max: 40 },
+      { hold: ['ArrowRight'], frames: 2 },
+      { hold: ['ArrowRight'], until: 'p.x > s.x - 140', max: 30 },
+      { hold: ['ArrowRight', 'Space'], until: 'p.grounded && p.y < 450', max: 60 },
+      { hold: ['ArrowRight'], frames: 16 },
+      { frames: 10 },
+    ],
+  },
+  {
     // mashing punch on the coiled boa (QS polish): one hit word at a time over it, each new one popping in where the last was
     id: 'clip-6-boa-mash-words', stage: '1-9',
     pose: { px: 1600, foe: { id: 1, x: 1770, y: 468, state: 'coil', calm: true } },
