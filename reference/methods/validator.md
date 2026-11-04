@@ -44,6 +44,11 @@ The fixture test; the world run; open each page upright (412 wide) and wide; the
   the safety in the miss-cost check, not in the letters the similarity compares.
 - 2026-11-04: **jumps the level check can't confirm** (mushroom walls) are a letter of their own (Q) and are not priced.
 
+- 2026-11-04: **a hazard can be "not outrun" and still invisible.** 1-8's collapse came within 134 px of a first-timer, but the chase camera
+  looks so far ahead that the front is on screen in 0-5% of its frames (the quality supervisor's clip: the branch behind him whole while
+  Dot says it breaks). Measure on screen from the run's own camera, frame by frame; a still placed by hand can't show a moving hazard
+  (placing Pokey froze the collapse and picked up a seed).
+
 ## Tried and didn't work
 - Pacing groups split at every 1.2 s gap: World 1's moves come every 3-4 s, so every group was one move. Read pacing in 5 s windows.
 - The hold-right runner without a second flick: it fell into 1-8's first 212 px gap and judged nothing.

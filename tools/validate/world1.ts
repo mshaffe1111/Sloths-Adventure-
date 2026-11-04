@@ -95,6 +95,14 @@ function playFlags(id: string): Flag[] {
   if (chaseRuns.length && chaseRuns.every((b) => b.r.met.chaseCaught === 0 && (b.r.met.chaseMinGap ?? 0) > CHASE_CLOSE)) {
     out.push({ rule: 'chase outrun', what: `the collapsing branch never came within ${CHASE_CLOSE} px of a first-timer who keeps going (closest ${Math.min(...chaseRuns.map((b) => b.r.met.chaseMinGap!))} px over ${chaseRuns.length} runs)`, source: 'PLAN-TO-80 A.2, STAGE-RULES §0.2' });
   }
+  // (the chase's collapse on screen: the supervisor's clip showed the branch behind him whole while Dot says it breaks)
+  for (const portrait of [false, true]) {
+    const cr = o.bots.filter((b) => b.setting === 'normal' && b.portrait === portrait && b.r.met.chaseOnScreen !== null);
+    if (cr.length) {
+      const share = Math.max(...cr.map((b) => b.r.met.chaseOnScreen!));
+      if (share < 0.2) out.push({ rule: 'hazard unseen', what: `the collapsing branch is on screen in at most ${Math.round(share * 100)}% of the chase's frames (${portrait ? 'upright' : 'sideways'}, ${cr.length} runs, the engine's own camera): the player never sees what chases him`, source: 'STAGE-RULES §0.2, §0b.7 (every hazard reads before it bites)' });
+    }
+  }
   for (const portrait of [false, true]) {
     const js = o.bots.filter((b) => b.setting === 'normal' && b.portrait === portrait && played(b.r)).flatMap((b) => b.r.jumps);
     const unseen = js.filter((j) => !j.inView);
@@ -125,7 +133,7 @@ function score(ev: StageEval, pf: Flag[]): Score {
   const late = ev.costs.nothing + ev.costs.setback + ev.costs.life;
   const nothing = late ? ev.costs.nothing / late : 1;
   const adds = (ev as StageEval & { adds?: { moves: string[]; pairs: string[]; grams: number } }).adds;
-  const haz = pf.filter((x) => /outrun/.test(x.rule)).length;
+  const haz = new Set(pf.filter((x) => /outrun|hazard unseen/.test(x.rule)).map((x) => x.rule)).size;
   const hasHaz = ev.mech.breaking + ev.mech.eagle + ev.mech.chase > 0;
   const fair = pf.filter((x) => x.rule === 'clumsy thumb').length * 2 + pf.filter((x) => x.rule === 'landing unseen').length * 2 + f('enemy by a landing');
   const judgedPlay = (play[ev.id]?.bots ?? []).some((b) => b.setting === 'normal' && played(b.r));
@@ -229,7 +237,7 @@ ${flags.map((f, k) => `<div class="flag"><b>${esc(f.rule)}</b>: ${esc(f.what)}${
 <h2>What a miss costs (after the first 30 s)</h2>
 <div class="card">${ev.costs.nothing} free retries, ${ev.costs.setback} setbacks, ${ev.costs.life} lives${ev.costs.unknown ? `; ${ev.costs.unknown} jumps the level check can't confirm, not priced` : ''}.</div>
 <h2>Does each hazard matter?</h2>
-<div class="card"><table>${branch || '<tr><td>No breaking branches.</td></tr>'}${eagle}${bots.some((b) => b.r.met.chaseMinGap !== null) ? `<tr><td>chase</td><td>closest the collapse came to the first-timer: ${bots.filter((b) => b.r.met.chaseMinGap !== null).map((b) => `${b.r.met.chaseMinGap} px (${b.setting})`).join(', ')}</td></tr>` : ''}</table></div>
+<div class="card"><table>${branch || '<tr><td>No breaking branches.</td></tr>'}${eagle}${(o?.bots ?? []).some((b) => b.r.met.chaseMinGap !== null) ? `<tr><td>chase</td><td>${(o?.bots ?? []).filter((b) => b.r.met.chaseMinGap !== null).map((b) => `layout ${b.layout} ${b.setting}${b.portrait ? ' upright' : ' sideways'}: closest ${b.r.met.chaseMinGap} px, the collapse on screen ${Math.round((b.r.met.chaseOnScreen ?? 0) * 100)}% of its frames, ${b.r.run.rescues} rescues`).join('<br>')}<div class="mut">A negative gap: the bot was put back behind the front by a rescue. No still: placing Pokey stops the collapse, so a shot can't show it; the share comes from the run's own camera, frame by frame.</div></td></tr>` : ''}</table></div>
 <h2>The first-timer bot (fixed bot; rescues beside every number)</h2>
 <div class="card">${notJudged ? `<p class="flag"><b>Not judged:</b> no Normal run ended at the shrine or the sealed door with 3 rescues or fewer, so the landing-in-view and clumsy-thumb numbers below are shown but not scored. Where the bot was put further on: ${esc([...new Set((o?.bots ?? []).flatMap((b) => (b.r.run.stuck ?? []).filter((q) => q.rescued).map((q) => `x ${q.x}`)))].slice(0, 8).join(', '))}.</p>` : ''}<table><tr><th>run</th><th>end</th><th>goal</th><th>rescues</th><th>counted</th><th>landings unseen</th></tr>${botRows}</table>
 <p class="mut">Normal runs met: swung ${met('swung')}, climbed ${met('climbed')}, roped ${met('roped')}, bounced ${met('bounced')}, hid ${met('hid')}, fought ${met('fought')}, eagle hits ${met('eagleHits')}.</p></div>
@@ -244,7 +252,7 @@ Finish: ${ev.padding ? `${Math.round(ev.padding.finishShare * 100)}% of the stag
 <li>repeats: minus 2 per repeated 3-4 move run. dead walking: minus 1 per walk over 2.5 s. pacing: minus 2.5 per pacing flag.</li>
 <li>a miss costs: 10 while at most 80% of beats are free retries, falling to 0 when all are. padding: minus 5 for a finish over half the stage, minus 2.5 per piece laid three times or more.</li>
 <li>tempo: 10 for both hurry and patience, 5 for one, 0 for neither. something new: 10 for a new move or pairing, 3 for only new runs of old moves, 0 for nothing.</li>
-<li>hazards matter: 0 with no hazard at all; else 10, minus 5 per hazard kind outrun. fair and seen: minus 2 per clumsy-thumb or unseen-landing flag, minus 1 per animal by a landing; left out when the bot never played the stage through.</li><li>variety on a world's first stage: 10 x (distinct moves / 5, at most 1) x (1 - its longest run of one move / its moves). something new: left out on a world's first stage.</li><li>The total: the judged families' points over their maximum, scaled to 100. No neutral points for an empty or unjudged family.</li>
+<li>hazards matter: 0 with no hazard at all; else 10, minus 5 per hazard kind outrun or unseen. fair and seen: minus 2 per clumsy-thumb or unseen-landing flag, minus 1 per animal by a landing; left out when the bot never played the stage through.</li><li>variety on a world's first stage: 10 x (distinct moves / 5, at most 1) x (1 - its longest run of one move / its moves). something new: left out on a world's first stage.</li><li>The total: the judged families' points over their maximum, scaled to 100. No neutral points for an empty or unjudged family.</li>
 </ul></div>
 </body></html>`;
 }
@@ -269,7 +277,8 @@ for (const id of ONLY) {
   fs.writeFileSync(path.join(OUT, `${id}.html`), page(id, base, s0, pf));
   log(`wrote ${path.join(OUT, `${id}.html`)}: ${scores[id].total}/100, ${scores[id].flags} flags`);
 }
-fs.writeFileSync(path.join(OUT, 'world1.json'), JSON.stringify({ base, layouts: LAYOUTS, play: PLAY, scores, stages: Object.fromEntries(W1.map((id) => [id, per[id].normal.map((e) => ({ layout: e.layout, str: e.str, strip: e.strip, flags: e.flags, costs: { ...e.costs, beats: undefined }, padding: e.padding, tempo: e.tempo, mech: e.mech, six: e.six }))])) }, null, 1));
+const prevScores = (() => { try { return JSON.parse(fs.readFileSync(path.join(OUT, 'world1.json'), 'utf8')).scores ?? {}; } catch { return {}; } })();
+fs.writeFileSync(path.join(OUT, 'world1.json'), JSON.stringify({ base, layouts: LAYOUTS, play: PLAY, scores: { ...prevScores, ...scores }, stages: Object.fromEntries(W1.map((id) => [id, per[id].normal.map((e) => ({ layout: e.layout, str: e.str, strip: e.strip, flags: e.flags, costs: { ...e.costs, beats: undefined }, padding: e.padding, tempo: e.tempo, mech: e.mech, six: e.six }))])) }, null, 1));
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // 5. the overview (World 1 in order), when every stage was run
@@ -292,6 +301,7 @@ if (W1.every((id) => ONLY.includes(id))) {
 <h1>World 1: the measuring stick's verdict</h1>
 <div class="card"><table class="grid"><tr><th>stage</th>${W1.map((id) => `<th><a href="${id}.html">${id}</a></th>`).join('')}</tr>
 <tr><td><b>validator score</b></td>${W1.map((id) => `<td><b>${scores[id]?.total ?? ''}</b></td>`).join('')}</tr>${famRows}</table>
+<p><b>It measures structure, not delight.</b> Matt calls 1-1 the best of World 1; the validator ranks it ${[...W1].sort((a, b) => (scores[a]?.total ?? 0) - (scores[b]?.total ?? 0)).indexOf('1-1') + 1 === 2 ? 'second lowest' : `#${[...W1].sort((a, b) => (scores[b]?.total ?? 0) - (scores[a]?.total ?? 0)).indexOf('1-1') + 1} of 9`}. That is where the stick and the player disagree: a first stage's freshness, its look and its lessons are not in these checks. Read the flags for what to fix, not the score as how much fun it is.</p>
 <p class="mut">A measuring stick, not a fun rating: ten families of checks at 10 points each (each stage's page says how). Average ${Math.round(W1.reduce((a, id) => a + (scores[id]?.total ?? 0), 0) / W1.length)}.</p></div>
 <h2>How alike the stages are (move 3-grams, layout 1; % alike)</h2>
 <div class="card">${grid}<p class="mut">Orange over 45% (too close for neighbours), red over 55% (too close for any two stages of a world): research §1, the quality supervisor.</p></div>

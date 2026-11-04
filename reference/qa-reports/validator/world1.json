@@ -1,5 +1,5 @@
 {
- "base": "73237f22 (contains origin/main 1dc39cd7 + ccr-0d59a91c 2c1f6b46)",
+ "base": "1f6fcf63 (contains origin/main 1dc39cd7 + ccr-0d59a91c 2c1f6b46)",
  "layouts": 16,
  "play": 3,
  "scores": {
@@ -921,14 +921,14 @@
     },
     {
      "rule": "eagle outrun",
-     "what": "8 of 13 watched stretches crossed unhurt by just holding right, never hiding (layout 1, sideways, 6 starts in its rhythm)",
+     "what": "9 of 13 watched stretches crossed unhurt by just holding right, never hiding (layout 1, sideways, 6 starts in its rhythm)",
      "x": 407,
      "source": "PLAN-TO-80 A.2, research §6"
     }
    ]
   },
   "1-8": {
-   "total": 60,
+   "total": 55,
    "sc": {
     "variety": 10,
     "repeats": 0,
@@ -938,10 +938,10 @@
     "padding": 10,
     "tempo": 5,
     "something new": 3,
-    "hazards matter": 10,
+    "hazards matter": 5,
     "fair and seen": 0
    },
-   "flags": 23,
+   "flags": 25,
    "pageFlags": [
     {
      "rule": "dead walk",
@@ -1033,6 +1033,16 @@
      "rule": "nothing new",
      "what": "no move or pairing an earlier World 1 stage didn't already ask (16 new 3-move runs of old moves)",
      "source": "STAGE-RULES §0.5, §0b.6 (every stage adds something)"
+    },
+    {
+     "rule": "hazard unseen",
+     "what": "the collapsing branch is on screen in at most 5% of the chase's frames (sideways, 6 runs, the engine's own camera): the player never sees what chases him",
+     "source": "STAGE-RULES §0.2, §0b.7 (every hazard reads before it bites)"
+    },
+    {
+     "rule": "hazard unseen",
+     "what": "the collapsing branch is on screen in at most 0% of the chase's frames (upright, 3 runs, the engine's own camera): the player never sees what chases him",
+     "source": "STAGE-RULES §0.2, §0b.7 (every hazard reads before it bites)"
     },
     {
      "rule": "landing unseen",

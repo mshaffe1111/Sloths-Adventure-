@@ -268,7 +268,9 @@ export function eagleOutrunWith(make: () => RealPlay, portrait = false): EagleVe
 
 export interface Met { swung: number; climbed: number; roped: number; bounced: number; brokeUnder: number; hid: number; pushed: number; fought: number; eagleHits: number;
   /** 1-8's collapse: the closest its front came to him while it ran (px; null: no chase) and how often it caught him */
-  chaseMinGap: number | null; chaseCaught: number }
+  chaseMinGap: number | null; chaseCaught: number;
+  /** the share of the chase's running frames with its collapse front inside the camera's view, and where it came closest (Pokey's x, the front) */
+  chaseOnScreen: number | null; chaseClosest: { x: number; front: number; t: number } | null }
 export interface BotRecord {
   run: FTRun;
   met: Met;
@@ -286,8 +288,8 @@ export function botRun(id: string, layout: number, setting: Setting, o: BotOpts 
   const takeIn0 = P.takeIn;
   if (o.noHide) P.takeIn = function (this: Eng) { takeIn0.call(this); this.learned.delete('hide'); };
   const frame0 = RealPlay.prototype.frame;
-  const met: Met = { swung: 0, climbed: 0, roped: 0, bounced: 0, brokeUnder: 0, hid: 0, pushed: 0, fought: 0, eagleHits: 0, chaseMinGap: null, chaseCaught: 0 };
-  const chase = new Map<RealPlay, { min: number; caught: number; was: boolean }>();
+  const met: Met = { swung: 0, climbed: 0, roped: 0, bounced: 0, brokeUnder: 0, hid: 0, pushed: 0, fought: 0, eagleHits: 0, chaseMinGap: null, chaseCaught: 0, chaseOnScreen: null, chaseClosest: null };
+  const chase = new Map<RealPlay, { min: number; caught: number; was: boolean; frames: number; seen: number; at: { x: number; front: number; t: number } | null }>();
   const cams = new Map<RealPlay, Array<{ t: number; x0: number; x1: number; y0: number; y1: number }>>();
   const state = new Map<RealPlay, Eng>();
   const brokeSeen = new Set<Platform>();
@@ -309,9 +311,14 @@ export function botRun(id: string, layout: number, setting: Setting, o: BotOpts 
     state.set(this, st);
     const ch = (this.e as Eng).chase;
     if (ch?.active && ch.hold <= 0) {
-      const c = chase.get(this) ?? { min: Infinity, caught: 0, was: false };
+      const c = chase.get(this) ?? { min: Infinity, caught: 0, was: false, frames: 0, seen: 0, at: null };
       const gap = p.x - ch.front;
+      if (gap < c.min) c.at = { x: Math.round(p.x), front: Math.round(ch.front), t: +(this.e as Eng).gameTime.toFixed(1) };
       c.min = Math.min(c.min, gap);
+      // (is the collapse front on screen? the camera's view this frame)
+      const cam = (this.e as Eng).camera;
+      c.frames++;
+      if (ch.front >= cam.x && ch.front <= cam.x + cam.viewportWidth) c.seen++;
       const now = gap <= 24;
       if (now && !c.was) c.caught++;
       c.was = now;
@@ -340,6 +347,8 @@ export function botRun(id: string, layout: number, setting: Setting, o: BotOpts 
   if (ch) {
     met.chaseMinGap = Math.round(ch.min);
     met.chaseCaught = ch.caught;
+    met.chaseOnScreen = ch.frames ? +(ch.seen / ch.frames).toFixed(2) : null;
+    met.chaseClosest = ch.at;
   }
   met.eagleHits = run.harms.filter((h) => h.kind === 'hit' && h.cause === 'watcher').length;
   met.brokeUnder = (e.platforms as Platform[]).filter((p) => brokeSeen.has(p)).length;
