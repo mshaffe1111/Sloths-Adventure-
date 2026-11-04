@@ -119,9 +119,23 @@ readback by construction. The phone check is `MATT-PHONE-CHECK.md`.
 
   No WebGPU or canvas-renderer chunk exists in the build at all now.
 
-## Gate
+## Gate (the code of e3ff9f1c; the commits after it are docs), pasted at 11:25 AM ET
 
-The lines are pasted below once the full gate ends.
+- `npx tsc --noEmit -p .`: `EXIT 0` (no output).
+- Tests:
+  - shard 1/3: `# tests 799 # pass 798 # fail 0 # todo 1 `;
+  - shard 2/3: `# tests 708 # pass 707 # fail 0 # todo 1 `;
+  - shard 3/3: `# tests 788 # pass 788 # fail 0 # todo 0 `;
+  - the whole suite: 2,293 pass, 0 fail, 2 TODO (already there).
+- `npx vite build`: `BUILD EXIT 0`; `find dist -type f -size +4M | wc -l`: `0`.
+- `node tools/perf/artcheck.mjs`: `PASS`.
+- `node tools/perf/knowncheck.mjs`: `PASS`.
+- `node tools/perf/drawcheck.mjs`: `PASS (965 s; raw results in /tmp/drawcheck-Ao0LQS)`. A container run, where the GPU backdrop falls back to the 2D canvas; CI at merge is
+  binding.
+- `node tools/perf/clipcheck.mjs`, alone after the tests: `PASS (83 known) (187 s; contact sheet and breaches.json in /tmp/clipcheck-VJ6mDg)`. Also run alone twice earlier with the layer starting under the
+  card: PASS at 199 s and 202 s.
+
+**The gate is green. Not for main until the phone check shows a saving** (lead, 11-04).
 
 ## Method used
 - `reference/methods/webgl.md` (written at stage 0, updated here);
