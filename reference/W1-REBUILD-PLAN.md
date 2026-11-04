@@ -36,7 +36,7 @@ stage before. The research's own numbers stand: the intro at 1 action every 2.5 
 a node fails if the same jump gap repeats four times in a row (11-04 line 585).
 
 ## Rules for the build (no exceptions)
-- No `fillTo()` padding. Length comes from the nodes: 2-5 min for a first-timer on Normal, never under 2 for a skilled player.
+- No `fillTo()` padding. Length comes from the nodes. **Matt, 2026-11-04: "We need to hold levels to 2 or 2.5 minimum play like i was playing"**: a skilled player playing like Matt (straight through, no deaths, the quick route) takes at least 2:00 on every stage, target 2:30, measured on the validator's quick-route clock AND the adult bot's fastest run; a first-timer on Normal 3-5 min.
 - Platforms, vines and branches in flow and tight nodes sit where Pokey's feet land when he jumps on the stage's beat
   (`src/game/beatTrace.ts`, w1-rhythm). A tester should be able to tap along.
 - Hazards go on the line the player avoided (research 11-04 line 59, checked by the lead): where the traced run says short-hop or
