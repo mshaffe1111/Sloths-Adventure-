@@ -203,4 +203,6 @@ Matt accepts going a little over budget up front "with the understanding that sm
 And it may even be less helpers... because we're much more efficient." The lead pushes the supervisors to hold every helper to the method
 file and its best measured result; the best way found by any helper becomes everyone's way the same day (roles/SUPERVISOR.md "Standard
 work"). The measure: the same kind of job costs less each time (GAMEPLAN §5, §8); fewer helpers doing more is the goal, not more helpers.
+- **8f. Planned vs actual (Matt, 2026-11-04).** At every lead check-in: which jobs are over their expected time, why, and what removes the
+  barrier. The lead acts on the barrier (a clearer brief, a tool, a decision, a blocker) the same round. Real hours feed the next estimate.
 
