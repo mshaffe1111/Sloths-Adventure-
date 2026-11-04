@@ -32,6 +32,8 @@ const CATCH_DOWN = 82;
 const BOUNCE_UP = 205;
 /** a fall this far under the last ground in the finale is a fall (fallZones) */
 const FALL_DEPTH = 420;
+/** and in the guarded stretches (the bough under a gap is 82 down): a fall this far under the last ground is a fall past it */
+const GUARD_DEPTH = 300;
 /** the backdrop's turn to the canopy: from this share of the way up to the top branch to this one (Easy's climb is lower) */
 const CANOPY_FROM = 0.35;
 const CANOPY_FULL = 0.78;
@@ -63,8 +65,21 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   const beats: Array<[number, number, string]> = [];
   const pieces: Array<{ k: string; x0: number; x1: number }> = [];
   const fallZones: Array<{ x0: number; x1: number; depth: number }> = [];
+  /**
+   * the canopy stretches before the high road (the twist, the spike, the low road): a bough catches a plain miss, and a fall past it
+   * (off a catch's end, a jump that misses everything) is a heart and back on the ledge he left (World 8's heart falls, engine.ts
+   * heartFall; Easy's soft fall), never a life: nothing costs a life before the high road and the finale
+   */
+  const guarded: Array<{ x0: number; x1: number }> = [];
+  const guard = (f: () => void) => {
+    const x0 = x;
+    f();
+    guarded.push({ x0: Math.round(x0 - 100), x1: Math.round(x + 100) });
+  };
   let pid = 1, cid = 1;
   let expert = 0;
+  /** where the next gap starts, while a node lays what goes under its gaps (catch boughs stop short of it) */
+  let nextGap = Infinity;
 
   // ---- the cursor: he stands at x on a surface at height y (0 is the forest floor, up is negative) that began at `from` and is laid
   // when he leaves it; `kind` is what it is
@@ -117,7 +132,12 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
         const fl = Math.min(HOLLOW, Math.max(a, b) + 70);
         P.push({ id: pid++, x: x0, y: fl, width: x1 - x0, height: HOLLOW + BANK_H - fl, type: 'solid', style: 'moss_stone', soil: true });
       }
-    } else if (u === 'catch') lay(x0 - 30, x1 + 30, Math.max(a, b) + CATCH_DOWN, 'branch');
+    } else if (u === 'catch') {
+      // a bough under the gap, reaching well on under the far ledge (a missed jump up comes down under it), but stopping short of the
+      // next gap (`nextGap`): a row of them joined would be a walk under the hops
+      const c1 = Math.min(x1 + 150, nextGap - 60);
+      lay(x0 - 40, Math.max(c1, x1 + 30), Math.max(a, b) + CATCH_DOWN, 'branch');
+    }
     else fallZones.push({ x0: Math.round(x0 - 40), x1: Math.round(x1 + 40), depth: FALL_DEPTH });
   };
 
@@ -145,11 +165,13 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
       }
       lay(l.x0, l.x1, l.y, k);
     });
-    for (const g of tr.gaps) {
+    for (const [gi, g] of tr.gaps.entries()) {
+      nextGap = tr.gaps[gi + 1]?.x0 ?? Infinity;
       const a = tr.ledges.find((l) => Math.abs(l.x1 - g.x0) < 2)?.y ?? y;
       const b = tr.ledges.find((l) => Math.abs(l.x0 - g.x1) < 2)?.y ?? y;
       under(g.x0, g.x1, a, b, u(g.step));
     }
+    nextGap = Infinity;
     if (opts.flag !== false) checkpoints.push({ x: Math.round(tr.checkpoint.x), y: tr.checkpoint.y, reached: false });
     x = tr.x1;
     y = tr.yOut;
@@ -166,7 +188,10 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     const edge = x;
     P.push({ id: pid++, x: edge - 75, y: y - 30, width: 70, height: 30, type: 'bouncy' });
     const ny = y - rise;
+    // (a missed bounce comes down short of the far ledge or under it: the catch reaches on under it)
+    nextGap = edge + gapW + 260;
     under(edge, edge + gapW, y, ny, u);
+    nextGap = Infinity;
     from = edge + gapW;
     y = ny;
     kind = onto;
@@ -251,21 +276,21 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
 
   // ---- 6. The off-beat catch (the twist: the half notes turn into a jump on the beat and the second jump on the off-beat, one move):
   // up off the bank onto the first kapok's boughs; a short bough under each gap
-  beat('Twist: the off-beat catch', () => {
+  beat('Twist: the off-beat catch', () => guard(() => {
     const x0 = x;
     node(['h....o..', '....h...', 'h.......', 'h....o..', '....h...', 'h...h...'],
       [J(40), D(90), J(-40), J(0), D(100), J(-30), J(30), H(-40), J(0)], () => 'catch');
     pieces.push({ k: 'catch', x0, x1: x });
-  });
+  }));
 
   // ---- 8. Up into the canopy (spike, the stage's moment): the second jump up bough after bough, half notes between, a run down a slope
   // of twigs in the middle and up again
-  beat('Spike: up into the canopy', () => {
+  beat('Spike: up into the canopy', () => guard(() => {
     const x0 = x;
     node(['h.......', 'h...h...', 'x.x.x.x.', 'h.......', 'h...h...', 'h.......'],
       [D(140), J(0), H(-50), H(-20), H(-35), H(-15), H(-30), D(150), J(20), J(-30), D(150)], () => 'catch');
     pieces.push({ k: 'canopy', x0, x1: x });
-  });
+  }));
 
   // ---- 9. The high bough (rest): no move. Dot's line; the golden seed glints on the high road ahead.
   beat('Rest: the high bough', () => {
@@ -283,10 +308,14 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     walk(160);
     const forkX = x;
     // the low road
+    const lowFrom = x;
     node(['h...h...', 'x.x.x...'], [J(0), H(-40), H(-20), H(-35), H(-25)], () => 'catch', { flag: false });
     bounce(BOUNCE_UP - 20, 'branch', 'catch');
+    // (a flag on the low road halfway: LV-9, never 4000 px without one)
+    flag(x + 60);
     node(['h.......', 'h...h...', 'x.x.x.x.'], [J(0), H(-30), J(20), H(-35), H(-20), H(-30), H(-25)], () => 'catch', { flag: false });
     bounce(BOUNCE_UP - 10, 'branch', 'catch');
+    guarded.push({ x0: Math.round(lowFrom - 100), x1: Math.round(x + 100) });
     const sx = x, sy = y, sf = from, sk = kind;
     // the high road
     P.push({ id: pid++, x: Math.round(forkX - 150), y: y0 - 30, width: 70, height: 30, type: 'bouncy' });
@@ -315,9 +344,12 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   // mushroom in the middle, ending AT the shrine on the top branch
   beat('Finale: the high branches', () => {
     const x0 = x;
-    node(['h...h...', 'h....o..', '....h...'], [J(0), J(20), J(-30), D(120), J(-20)], () => 'pit');
+    // (open air under every other gap, a bough under the rest: it bites, but stage 1's first-timer is not sent back three times a
+    // stretch; a flag again after the mushroom)
+    node(['h...h...', 'h....o..', '....h...'], [J(0), J(20), J(-30), D(120), J(-20)], (i) => (i % 2 ? 'catch' : 'pit'));
     bounce(BOUNCE_UP - 15, 'branch', 'pit', 130);
-    node(['h...h...', 'h....o..', '....h...'], [J(0), H(-40), J(20), D(130), J(0)], () => 'pit', { flag: false });
+    flag(x + 80);
+    node(['h...h...', 'h....o..', '....h...'], [J(0), H(-40), J(20), D(130), J(0)], (i) => (i % 2 ? 'pit' : 'catch'), { flag: false });
     pieces.push({ k: 'finale', x0, x1: x });
   });
 
@@ -358,7 +390,9 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     exitTotemX: exitX,
     exitTotemY: crown.y,
     checkpoints: checkpoints.sort((a, b) => a.x - b.x),
-    fallZones: mergeZones(fallZones),
+    // (open air: the finale and the high road, a life; the guarded stretches, a heart and back: their zones are heart falls too)
+    fallZones: [...mergeZones(fallZones), ...guarded.map((g) => ({ ...g, depth: GUARD_DEPTH }))],
+    heartFalls: guarded,
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces, timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
     proto: {
       hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups,

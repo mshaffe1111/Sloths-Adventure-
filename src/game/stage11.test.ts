@@ -38,7 +38,10 @@ test('1-1: open air only on the high road and in the finale; every other gap has
     const st = buildProtoStage(cfg, s, '1-1');
     const finale = st.proto.beats.find((b) => b[2].startsWith('Finale'))!;
     const choice = st.proto.beats.find((b) => b[2].startsWith('Choice'))!;
-    const zones = st.fallZones ?? [];
+    // (the guarded stretches are heart falls: a heart and back on the ledge, never a life; the rest is the open air)
+    const hf = st.heartFalls ?? [];
+    const zones = (st.fallZones ?? []).filter((z) => !hf.some((h) => h.x0 === z.x0 && h.x1 === z.x1));
+    assert.ok(hf.length >= 3, `seed ${s}: the twist, the spike and the low road are guarded`);
     assert.ok(zones.length >= 2, `seed ${s}: ${zones.length} stretches of open air`);
     for (const z of zones) assert.ok(z.x0 >= choice[0] - 60 && (z.x1 <= choice[1] + 600 || z.x0 >= finale[0] - 60), `seed ${s}: open air at ${z.x0}`);
     // before the choice, every x has something within 260 px under the surface at that x
@@ -80,6 +83,27 @@ test('1-1 in the real engine: off the end of a finale bough into open air costs 
   assert.ok(r.fell <= r.z.depth + 60, `he fell ${r.fell} px first`);
 });
 
+test('1-1 in the real engine: a fall past the catch boughs in the spike is a heart and back on the ledge on Normal, never a life', () => {
+  const sim = new RealPlay('1-1', 1);
+  sim.safe = false;
+  const st = sim.stage as unknown as { heartFalls: Array<{ x0: number; x1: number }>; proto: { beats: Array<[number, number, string]> } };
+  const sp = st.proto.beats.find((b) => b[2].startsWith('Spike'))!;
+  // stand on a ledge in the spike (the game notes it), then drop into the open air past everything there
+  const ledge = sim.platforms.filter((p) => p.type === 'solid' && p.x > sp[0] + 200 && p.x + p.width < sp[1] - 200).sort((a, b) => a.y - b.y)[0];
+  sim.stand(ledge.x + ledge.width / 2, ledge.y);
+  sim.wait(0.3);
+  let ax = sp[0];
+  while (ax < sp[1] && sim.platforms.some((p) => p.x - 40 < ax && p.x + p.width + 40 > ax && p.y > ledge.y - 40 && p.y < ledge.y + 1200)) ax += 10;
+  assert.ok(ax < sp[1], 'some open air in the spike');
+  sim.p.invincibleTimer = 0;
+  const hp = sim.p.hp;
+  sim.fly(ax, ledge.y - 20, 0, 0, 0);
+  for (let f = 0; f < 90 && !sim.died; f++) sim.frame({});
+  assert.ok(!sim.died, 'no life lost');
+  assert.equal(sim.p.hp, hp - 1, 'a heart');
+  assert.ok(sim.p.grounded, 'back on a ledge');
+});
+
 test('1-1 in the real engine: the same fall on Easy is a soft fall: back on the bough, no life lost', () => {
   const r = walkOff(true);
   assert.ok(!r.sim.died, 'no life lost on Easy');
@@ -110,7 +134,7 @@ test('fallZones in the real engine: outside a zone a long fall lands as it alway
   const flagAt = st.checkpoints.find((c) => c.x > fin[0] - 10)!;
   sim.stand(flagAt.x, flagAt.y);
   sim.wait(0.3);
-  const z = st.fallZones[st.fallZones.length - 1];
+  const z = st.fallZones.filter((q) => q.x0 > fin[0] - 300).sort((a, b) => b.x0 - a.x0)[0];
   const ledge = sim.platforms.find((p) => p.type === 'solid' && p.x + p.width > z.x0 + 30 && p.x + p.width < z.x0 + 400 && p.x < z.x0 + 30)!;
   sim.stand(ledge.x + ledge.width - 30, ledge.y);
   sim.wait(0.2);
