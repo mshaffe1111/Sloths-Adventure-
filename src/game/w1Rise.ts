@@ -259,7 +259,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   // lands him back on the path). The first kapok's boughs are in view ahead.
   beat('Rest: the bank top', () => {
     flag(x + 40);
-    hint(x + 60, 'Flick up again in the air!', 'Press Jump again in the air!', 'Press Space again in the air!');
+    hint(x + 60, 'Flick up again in the air to jump twice', 'Press Jump again in the air', 'Press Space again in the air');
     stroll(Math.round(R.r(700, 760)), 2);
     lay(x + 40, x + 210, y - 150, 'branch');
     flower(x + 125, y - 150 - 34, 'hibiscus');

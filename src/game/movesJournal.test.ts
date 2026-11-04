@@ -25,7 +25,8 @@ test('every lesson card the game can show opens a journal page', () => {
 });
 
 test('every tip a page waits for is one the game really says', () => {
-  const proto = readFileSync(new URL('./protoStage.ts', import.meta.url), 'utf8');
+  // (the stage builders' hints: protoStage.ts, and 1-1's own builder since its rebuild, w1Rise.ts)
+  const proto = readFileSync(new URL('./protoStage.ts', import.meta.url), 'utf8') + readFileSync(new URL('./w1Rise.ts', import.meta.url), 'utf8');
   const engine = readFileSync(new URL('./engine.ts', import.meta.url), 'utf8');
   for (const p of PAGES) {
     for (const [, id] of p.open.tip ?? []) {
