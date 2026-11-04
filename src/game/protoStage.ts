@@ -598,8 +598,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       for (const s of sp) xs.push(xs[xs.length - 1] + s);
       const farX = xs[n - 1] + d1;
       // long vines hung from high up: whatever height a leap carries him at, the next vine is there to grab
-      const tops = xs.map(() => (soft ? Math.round(R.r(190, 220)) : Math.round(R.r(140, 200))));
-      const vs: Vine[] = xs.map((vx, k) => ({ id: -1 - k, x: vx, topY: tops[k], bottomY: Math.min(G + 30, tops[k] + (k === snakeAt ? 280 : 410)), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true }));
+      // (a vine snake's liana hangs lower and shorter, its bottom about 100 px over the ground: the snake on it sits low enough to be seen
+      // under the sideways view's top bar, and the liana's sweep stays out of reach of the pit's way out)
+      const tops = xs.map((_, k) => (k === snakeAt ? G - 100 - 210 : soft ? Math.round(R.r(190, 220)) : Math.round(R.r(140, 200))));
+      const vs: Vine[] = xs.map((vx, k) => ({ id: -1 - k, x: vx, topY: tops[k], bottomY: Math.min(G + 30, tops[k] + (k === snakeAt ? 210 : 410)), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true }));
       const far: Platform = { id: -99, x: farX, y: G, width: 400, height: BANK_H, type: 'solid' };
       let ok = jumpGrab(edge, G, vs[0]) >= 4;
       for (let k = 0; ok && k < n - 1; k++) ok = catchWindow(vs[k], vs[k + 1]) > 0.6 && earlyCatch(vs[k], vs[k + 1]);
@@ -2775,7 +2777,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   // (Re-aimed 2026-11-04, the lead: 1-2 now teaches and owns the lianas, so 1-6 brings the vine snake (camouflaged on its liana,
   // R-159.1, Matt's approved art): taught over soft moss first, then hung in the chains, swing to swing; the map and the seesaw kept)
   /** a vine snake on the liana `back` from the newest (0: the last one built) */
-  const vineSnakeOn = (back = 0) => { const v = V[V.length - 1 - back]; if (v) E.push(makeVineSnake(eid++, v)); };
+  const vineSnakeOn = (back = 0) => { const v = V[V.length - 1 - back]; if (v) E.push(makeVineSnake(eid++, v, v.bottomY - v.topY - 60)); };
   beat('Start', () => rest(R.r(380, 430)));
   beat('Learn: the vine snake', () => {
     // one liana over soft moss with a vine snake on it: it bites a grab and Dot says why; punched stiff, it is a pole to climb and leap off
