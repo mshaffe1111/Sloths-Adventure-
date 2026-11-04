@@ -36,7 +36,7 @@ test('1-3: the first snake is asleep on a wide low branch, before any other snak
   }
 });
 
-test('1-3: its rope lies over a soft pit (crossable before the rope is learned), every pickup can be reached, and only the climax has real drops (none on Easy), each no wider than a jump', () => {
+test('1-3: its rope lies over a soft pit (crossable before the rope is learned), every pickup can be reached, and only the ramp and the climax have real drops (none on Easy), each no wider than a jump', () => {
   for (const easy of [false, true]) {
     for (const s of SEEDS) {
       const st = buildProtoStage(cfg, s, '1-3', easy);
@@ -46,12 +46,12 @@ test('1-3: its rope lies over a soft pit (crossable before the rope is learned),
         assert.ok(st.platforms.some((p) => p.x <= mid && p.x + p.width >= mid && p.y > G), `seed ${s}: moss under the rope`);
       }
       assert.deepEqual(badPickups({ platforms: st.platforms, vines: st.vines, ropes: st.ropes, waterY: st.waterY }, st.collectibles).length, 0);
-      const climax = st.proto.beats.find((b) => b[2].startsWith('Climax'))!;
+      const bites = st.proto.beats.filter((b) => /^(Ramp|Climax)/.test(b[2]));
       let run0 = -1;
       for (let x = 0; x < st.exitTotemX; x += 10) {
         const floor = st.platforms.some((p) => p.x <= x && p.x + p.width >= x && (p.y >= G - 200 || p.y + p.height >= G));
         if (!floor) {
-          assert.ok(!easy && x >= climax[0] && x <= climax[1], `seed ${s}${easy ? ' Easy' : ''}: no floor at ${x}, outside the climax`);
+          assert.ok(!easy && bites.some((b) => x >= b[0] && x <= b[1]), `seed ${s}${easy ? ' Easy' : ''}: no floor at ${x}, outside the ramp and the climax`);
           if (run0 < 0) run0 = x;
           assert.ok(x - run0 <= 140, `seed ${s}: a drop wider than a jump from ${run0}`);
         } else run0 = -1;
