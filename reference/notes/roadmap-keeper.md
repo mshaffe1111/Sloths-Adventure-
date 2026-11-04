@@ -1,16 +1,19 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 12:11 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 12:28 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
 ## Status
 - Reinstated 2026-11-02 by the lead at Matt's ask (D27: the slips came from the setup; GAMEPLAN §3 is now a ladder; self-caught slips
   don't count). New items come in batches when Matt says go (LEAD-PLAYBOOK 8d).
-- **State now (2026-11-04 11:34 AM ET):** roadmapcheck PASS. Phases (sums by script): WebGL 21 h; Phase A (World 1) 77 h (range about 59-106);
-  Phase B 306.5 h (a guess, about 235-420); Phase C 114 h (a guess, about 85-155); alongside 67.5 h (R-6.40 in it); WebGL 24 h with
-  R-3.14. Day 1 about 589 helper hours (gate 597), recommended Important 60 h, launch about 649 h; lanes 129.5 x4 / 130; building about 16-22 working days (13-28
-  across the guesses); about 4-4.5 weeks with the 80% trigger (about 471 of 589 h). Doc read back.
+- **State now (2026-11-04 12:28 PM ET):** roadmapcheck PASS. Phases (sums by script): WebGL 21 h; Phase A (World 1) 88.5 h (range about 66-123);
+  Phase B 306.5 h (a guess, about 230-425); Phase C 114 h (a guess, about 85-160); WebGL 24 h with R-3.14. Day 1 about 600.5 helper
+  hours (gate 608.5), recommended Important 60 h, launch about 660.5 h; lanes 132 x4 / 131.5 (lane 4 had reached 140: rebalanced
+  through R-161.2's shares); building about 17-22 working days; about 4-4.5 weeks with the 80% trigger (about 480 of 600.5 h). Doc
+  read back at rev 182. STAGE-RULES §0c batch: cited on R-155 and R-150.2; R-155 +10.5 h (about 7 World 1 templates at 1.5 h,
+  range 6-16; fillTo used 24 times in w1Sections.ts, retired stage by stage); R-150.12 template repeats, 1 h, fix-petals (filed as
+  its own item because R-150.1 is already accepted).
   - R-6.40 (menus A, new game + 3 save slots): add to bot-fix's planned-vs-actual list when it starts (expected 5.5 h, range 4-8).
 - **Bosses in segments (Matt, 11-04):** 2 / 3 / 4 segments for Worlds 1-3 / 4-7 / 8-10, each a phase (arena and attack change).
   R-161.1 8.5 h (2 segments); R-161.2 60 h (12 new phases at R-1.15's ~2.7 h a phase, a guess); R-1.9/R-1.10 noted, hours not
