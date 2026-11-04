@@ -146,7 +146,7 @@ import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
 import { dazeFor, tagWorld1, trickHit, trickStompBounces, type TrickHit } from './w1Tricks.ts';
-import { drawCoilGlint, drawTrickStars, rollAngle, withCoilSqueeze } from './w1TrickDraw.ts';
+import { drawCoilGlint, drawRollingBall, drawTrickStars, rollAngle, withCoilSqueeze } from './w1TrickDraw.ts';
 import { drawTurtle, drawTurtleSprite } from './turtleArt.ts';
 import { drawGuardSprite } from './guardArt.ts';
 import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
@@ -6276,7 +6276,8 @@ export class GameEngine {
     this.enemies.forEach((enemy) => {
       if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
       if (!this.onScreen(enemy.x, enemy.y, 400)) return;
-      if (!enemy.defeated) {
+      // (a kicked boa rolling away cannot hurt him: no ember rim on it, World 1's tricks)
+      if (!enemy.defeated && !(enemy.trick === 'coil' && (enemy.state === 'roll' || enemy.state === 'rolled'))) {
         // the ember rim (see readable.ts): everything that can hurt you wears it
         ctx.save();
         ctx.translate(enemy.x, enemy.y);
@@ -6298,8 +6299,10 @@ export class GameEngine {
         } else if (enemy.type === 'jaguar') {
           if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'boa') {
-          if (enemy.trick === 'coil' && (enemy.state === 'roll' || enemy.state === 'rolled')) {
-            // (World 1's kicked boa rolling as a ball: its coil turned as a wheel, w1TrickDraw.ts)
+          if (enemy.trick === 'coil' && (enemy.state === 'roll' || enemy.state === 'rolled') && drawRollingBall(ctx, enemy)) {
+            // (World 1's kicked boa rolling: the painted ball, turning, w1TrickDraw.ts)
+          } else if (enemy.trick === 'coil' && (enemy.state === 'roll' || enemy.state === 'rolled')) {
+            // (until the ball's picture has loaded: its coil turned as a wheel)
             ctx.save();
             ctx.translate(enemy.x, enemy.y + 2);
             ctx.rotate(rollAngle(enemy));

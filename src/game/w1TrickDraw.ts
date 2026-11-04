@@ -7,7 +7,40 @@
  * Each is a few paths a frame, only for the World 1 animals that carry a trick.
  */
 import type { Enemy } from './types.ts';
+import { trackAtlas } from './atlasLoader.ts';
+import { TRICK_FRAMES } from './w1TricksAtlas.ts';
 import { isCoiled, isDazed, starsShown } from './w1Tricks.ts';
+
+// the painted pictures (Matt-approved list, R-159.1): the vine snake's frames and the rolled boa's ball (tools/art/combat/cutpack.py)
+let atlas: HTMLImageElement | null = null;
+let ready = false;
+function load() {
+  if (atlas || typeof Image === 'undefined') return;
+  const img = new Image();
+  atlas = img;
+  trackAtlas(img, new URL('../assets/enemies/w1tricks.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; }, () => { atlas = null; ready = false; });
+}
+
+/** draw one of the trick pictures at (x, y) by its anchor, `h` world px tall, turned `angle` radians, mirrored when `flip` */
+function drawFrame(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, h: number, angle = 0, flip = false): boolean {
+  load();
+  const f = TRICK_FRAMES[name];
+  if (!ready || !atlas || !f) return false;
+  const k = h / f.h;
+  ctx.save();
+  ctx.translate(x, y);
+  if (angle) ctx.rotate(angle);
+  ctx.scale(flip ? -k : k, k);
+  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax, -f.ay, f.w, f.h);
+  ctx.restore();
+  return true;
+}
+
+/** the kicked boa rolling: the painted ball, turning (false while the picture loads: the caller draws the coil turned instead) */
+export function drawRollingBall(ctx: CanvasRenderingContext2D, e: Enemy): boolean {
+  // (a little bigger than the coil was, so the ball reads at phone size, resting on its ground 16 px below its origin)
+  return drawFrame(ctx, 'ball', e.x, e.y + 16 - 26, 52, rollAngle(e), (e.slideDir ?? 1) < 0);
+}
 
 function star(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
   ctx.beginPath();
