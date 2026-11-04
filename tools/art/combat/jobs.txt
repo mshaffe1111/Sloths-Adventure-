@@ -11,3 +11,4 @@ Pit list approved by Matt (Nov 4 ~9:50 AM ET, via the lead): about $0.88, cap $1
   r159-stills2 finished 14:51:08Z (2.4 min) ~$0.11: 8 takes. Keepers: vine-hang s65-7 (bark-striped, the flat belly lies along the liana), boa-ball s60-7 (head showing)
 r159-pits 6aeb46f7c78863f9c6329ea8 created 14:53:43Z (16 pit takes: drop, lip, bed, high; 2 strengths x seeds 7/23)
 running total ~$0.17 combat list (+ the boa clips, running) ; pit list $0 so far
+r159-vineclips-0/1 6aeb471e0e0338d1bb7feb2f 6aeb47210e0338d1bb7feb34 created 14:54:22Z / 14:54:25Z (8 clips, 4 each: hang, tell, stiffen, bite x seeds 3/11)
