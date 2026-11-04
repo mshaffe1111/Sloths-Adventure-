@@ -252,6 +252,8 @@ export const INTRO_SECS = 15;
 export const GROUP_MAX = 20;
 /** a tight burst longer than this is two tight bits in a row (research: never T-T; Gemini's bursts run 10-14 s on Normal) */
 export const TIGHT_MAX = 15;
+/** the dense finale a stage may end on (the lead, 2026-11-04): its last group may run tight for up to 20 s, the climax before the shrine */
+export const FINALE_TIGHT_MAX = 20;
 
 /** the stage read in PACE_WIN-second windows, each tagged, and runs of one tag joined into stretches */
 export function pacing(steps: readonly Step[], total: number): Stretch[] {
@@ -281,11 +283,13 @@ export function pacing(steps: readonly Step[], total: number): Stretch[] {
 export const pacingStrip = (st: readonly Stretch[]) => st.map((s) => s.tag.repeat(Math.max(1, Math.round((s.t1 - s.t0) / PACE_WIN)))).join('');
 
 export interface PaceFlag { what: string; t: number }
-export function paceFlags(st: readonly Stretch[]): PaceFlag[] {
+export function paceFlags(st: readonly Stretch[], truer = true): PaceFlag[] {
   const out: PaceFlag[] = [];
-  for (const s of st) {
+  for (const [i, s] of st.entries()) {
     const len = s.t1 - s.t0;
-    if (s.tag === 'T' && len > TIGHT_MAX) out.push({ what: `a tight burst of ${Math.round(len)} s with no let-up (two tight bits in a row; research: never T-T)`, t: s.t0 });
+    // (the last group of moves, nothing but rest after it to the shrine)
+    const finale = truer && !st.slice(i + 1).some((q) => q.tag !== 'R');
+    if (s.tag === 'T' && len > (finale ? FINALE_TIGHT_MAX : TIGHT_MAX)) out.push({ what: `a tight burst of ${Math.round(len)} s with no let-up (two tight bits in a row; research: never T-T)`, t: s.t0 });
     if ((s.tag === 'F' || s.tag === 'T') && len > GROUP_MAX) out.push({ what: `${Math.round(len)} s of moves with no rest (§0b.1: groups of 5-20 s, a rest between)`, t: s.t0 });
   }
   const groups = st.filter((s) => s.tag !== 'R');
