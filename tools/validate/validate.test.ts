@@ -14,6 +14,7 @@ import { cosine, deadWalks, fromStage, grams, moveOf, moveString, pacing, paceFl
 import { branchOutrunWith, cameraOn, chaseOutrunWith, eagleOutrunWith, towardShrine } from './play.ts';
 import { hazardsScore, newScore, newThatCounts } from './score.ts';
 import { artKey, lookAlike, lookOf } from './look.ts';
+import { judgeAgainst, keyOf, measure } from './funcheck.ts';
 import type { Stage } from '../inspect/stages.ts';
 
 const G = 580;
@@ -269,4 +270,25 @@ test('looks the same: the chase\'s sections and crowns are keyed by the art the 
   assert.equal(artKey({ type: 'solid', crown: true }), 'chase:crown');
   assert.equal(artKey({ type: 'solid' }), 'solid:branch');
   assert.equal(artKey({ type: 'solid', style: 'moss_stone' }), 'solid:moss_stone');
+});
+
+// ---- the fun gate (funcheck.ts: World 1's structure flags may only shrink) ----
+test('fun gate: a flag on more layouts than known, or a new one, fails as worse; fewer, or gone, fails until the entry is lowered; equal passes', () => {
+  const m = (on: number[]) => new Map([['1-1|normal|dead walk', { stage: '1-1', setting: 'normal' as const, rule: 'dead walk', on, what: '3 s of walking' }]]);
+  const known = [{ stage: '1-1', setting: 'normal' as const, rule: 'dead walk', layouts: 2, owner: 'test' }];
+  assert.deepEqual(judgeAgainst(m([1, 2]), known), { worse: [], stale: [] });
+  assert.equal(judgeAgainst(m([1, 2, 3]), known).worse.length, 1, 'worse');
+  assert.equal(judgeAgainst(m([1]), known).stale.length, 1, 'better: lower it');
+  assert.equal(judgeAgainst(new Map(), known).stale.length, 1, 'gone: delete it');
+  assert.equal(judgeAgainst(m([1, 2]), []).worse.length, 1, 'new');
+});
+
+test('fun gate, in the real engine: World 1 layout 1 judged against its own counts passes; one entry less, it fails', () => {
+  const now = measure(1);
+  const known = [...now.values()].map((e) => ({ stage: e.stage, setting: e.setting, rule: e.rule, layouts: e.on.length, owner: 'test' }));
+  assert.ok(known.length > 10);
+  assert.deepEqual(judgeAgainst(now, known), { worse: [], stale: [] });
+  const r = judgeAgainst(now, known.slice(1));
+  assert.equal(r.worse.length, 1, JSON.stringify(r));
+  assert.equal(keyOf(known[0]), [...now.keys()][0]);
 });
