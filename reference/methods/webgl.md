@@ -41,6 +41,18 @@ feature (light bridges, lightning silhouettes, waving water).
   - `tools/qa/gpuBackdrop.cjs`: GPU vs 2D backdrop, the same frozen frame, every world, both ways;
   - `tools/qa/gpuBackdropLoss.cjs`: lose and restore in play.
 
+## The measured release (testers only), what exists
+- `gpuBackdropOn()` (gpuLayer.ts) = `qaBuild() || ctestEnabled()`.
+  - `mountGpuLayer` returns false without it, so a player never gets a WebGL context or Pixi.
+  - The readout and `gpuback=0` follow it.
+  - Never in the store app.
+- vite.config.ts `globIgnores` keeps Pixi's four chunks (gpuPixi, browserAll, webworkerAll, init) out of the service worker's
+  precache.
+  - If Pixi's chunking changes, `tools/qa/gpuDefaultOff.cjs` names the chunk that leaked.
+- Check: `node tools/qa/gpuDefaultOff.cjs <vite preview url>` on a PRODUCTION build.
+  - It blocks the collector, so nothing lands in Matt's sheet, and blocks service workers in its pages.
+- Fixed end: delete the switch the day the phone numbers decide (GPU-RENDERER-PLAN.md).
+
 ## Steps for a stage that moves a layer
 1. **Move whole layers, contiguous from the bottom** (the plan's layer-order rule). They render into the hidden WebGL canvas, and the
    2D canvas (opaque, `alpha: false`, unchanged) copies it in with one drawImage where it used to paint them (the plan's design change,
@@ -93,6 +105,11 @@ Every gate in gates.md, in order. Add the two GPU checks above. Stamp the base c
   canvas's device size, and place everything in device pixels.
 - 2026-11-04: **Judge the look at every quality step (q0, q1, q2), not only q0.** The look check pins each one in turn.
 - 2026-11-04: **The see-through 2D canvas** (the plan's first design) fails the look bar: see the design change in GPU-RENDERER-PLAN.md.
+
+- 2026-11-04: **The PWA precaches every chunk.** A lazy `import()` isn't enough to keep a download off players: the service worker
+  fetched Pixi (434 KB) for everyone in the background. Keep anything testers-only out of `globPatterns` (`globIgnores`).
+- 2026-11-04: **The test-link page can't send runs to the testers' sheet.** Phone numbers need the live testers' link; check each run's
+  build stamp (Matt's first six "GPU" runs were live 0.9.4).
 
 ## Tried and didn't work
 - Comparing whole-page screenshots: the DOM animations gave 21,000 to 178,000 "different" pixels with nothing changed on the canvas.

@@ -59,6 +59,7 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
+import { installDrawWatch } from './game/drawWatch.ts';
 import { backdropCheck, backdropGpuOff, backdropStats, drawGpuFrame, gpuLive, gpuProbe, gpuSizes, gpuStats, setGpuCanvas } from './game/gpuLayer.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
@@ -805,6 +806,8 @@ export default function App() {
   const launchEngine = useCallback((lvl: LevelConfig) => {
     // (the GPU layer's canvas, for when something is first put on it: nothing is started here, gpuLayer.ts)
     setGpuCanvas(gpuCanvasRef.current);
+    // (the testers' link only: which single canvas call makes a long draw frame, drawWatch.ts)
+    installDrawWatch();
     enterWorld(lvl.worldIndex);
     clearTimeout(launchTimer.current);
     if (engineRef.current) {

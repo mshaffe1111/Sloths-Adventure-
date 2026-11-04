@@ -17,6 +17,19 @@
  *    composited every frame, and its buffer (about 10 MB at q0) held.
  */
 import type { Container, Rectangle, Sprite, Texture, WebGLRenderer } from 'pixi.js';
+import { ctestEnabled, qaBuild } from './playRecorder.ts';
+
+/**
+ * THE MEASUREMENT SWITCH (Matt, 2026-11-04, ~12:05 PM ET: a testers-only switch, with a fixed end). The GPU layer, and so the GPU
+ * backdrop, runs only in a QA build (the dev server, the test link) or with the control test on (#ctest in the address: the live
+ * testers' link); never in the Play Store app (ctestEnabled is false there). Every other player gets the 2D canvas alone, exactly as
+ * before: no WebGL context, no Pixi download, nothing uploaded. The readout and `gpuback=0` follow it, so Matt's phones send both ways
+ * to the testers' sheet. DELETE THIS SWITCH the day the phone numbers decide (GPU-RENDERER-PLAN.md, "The measured release"): either the
+ * GPU backdrop goes to everyone and this and the 2D strip route go, or stages 0 and 1 come out of main.
+ */
+export function gpuBackdropOn(): boolean {
+  return qaBuild() || ctestEnabled();
+}
 
 /** what the layer needs of the camera each frame: the same translate and scale the 2D canvas draws the world with (CSS px) */
 export interface GpuCam {
@@ -88,6 +101,8 @@ export function setGpuCanvas(canvas: HTMLCanvasElement | null) {
  */
 export function mountGpuLayer(canvas: HTMLCanvasElement | null = home): Promise<boolean> {
   if (live) return Promise.resolve(true);
+  // (players without the testers' link never start it: the measurement switch above)
+  if (!gpuBackdropOn()) return Promise.resolve(false);
   if (!canvas || typeof document === 'undefined') return Promise.resolve(false);
   if (!starting) {
     starting = (async () => {
@@ -272,29 +287,21 @@ export function backdropGpuReady(): boolean {
  * `keepGpu` keeps the GPU path even where the copy is a readback (this container: its 2D canvas is software), to judge the look there
  */
 export const backdropCheck = { force2d: urlForces2d(), keepGpu: false };
-/** a QA build: the dev server or the test link (vite.testlink.config.ts), never the live site or the app (as playRecorder.ts qaBuild) */
-function qaOnly(): boolean {
-  try {
-    return !!import.meta.env.DEV || import.meta.env.VITE_QA_BUILD === '1';
-  } catch {
-    return false;
-  }
-}
 /**
- * `gpuback=0` in the address (after # too: a shared Claude link passes on only that part), in a QA build only: the backdrop on the 2D
+ * `gpuback=0` in the address (after # too: a shared Claude link passes on only that part), wherever the switch is on: the backdrop on the 2D
  * canvas, so a phone's frame times can be compared both ways (the phone check, reference/qa-reports/webgl-1/MATT-PHONE-CHECK.md)
  */
 function urlForces2d(): boolean {
-  if (!qaOnly()) return false;
+  if (!gpuBackdropOn()) return false;
   try {
     return typeof location !== 'undefined' && (/[?&]gpuback=0\b/.test(location.search) || /[#&]gpuback=0\b/.test(location.hash));
   } catch {
     return false;
   }
 }
-/** whether the backdrop readout is reported (QA builds only) */
+/** whether the backdrop readout is reported (wherever the switch is on: QA builds and the testers' link) */
 export function backdropReadout(): boolean {
-  return qaOnly();
+  return gpuBackdropOn();
 }
 /** one line for the frame-time readout (perfLog): where the backdrop is drawn, and what its copy costs */
 export function backdropLine(): string {

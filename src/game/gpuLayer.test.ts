@@ -45,7 +45,7 @@ test('only the WebGL renderer is used: the layer never asks Pixi to auto-detect 
   assert.ok(/getContext\('webgl2'/.test(src), 'its context is a webgl2 one it makes');
 });
 
-test('stage 1 backdrop: with no layer it stays on the 2D canvas and says why; the readout and gpuback=0 are QA builds only', async () => {
+test('stage 1 backdrop: with no layer it stays on the 2D canvas and says why; no readout or gpuback=0 for a player', async () => {
   const m = await import('./gpuLayer.ts');
   assert.equal(m.backdropGpuReady(), false, 'no layer: no GPU backdrop');
   assert.equal(m.backdropLine(), 'backdrop: 2D (no WebGL 2 layer)');
@@ -62,4 +62,45 @@ test('stage 1 backdrop: the 2D canvas is never made see-through (every glow and 
   const eng = fs.readFileSync(new URL('./engine.ts', import.meta.url), 'utf8');
   for (const m of eng.matchAll(/getContext\('2d',\s*([^)]*)\)/g)) assert.ok(!/alpha:\s*true/.test(m[1]), `engine.ts game canvas context: ${m[1]}`);
   assert.ok(/alpha: false/.test(eng), 'the game canvas stays opaque (alpha: false)');
+});
+
+test('the measurement switch: players never start the GPU layer; only a QA build or the testers\' link (#ctest) does, never the app', async () => {
+  const m = await import('./gpuLayer.ts');
+  const pr = await import('./playRecorder.ts');
+  const g = globalThis as { location?: unknown; document?: unknown };
+  const had = { location: g.location, document: g.document };
+  try {
+    // (a player on the live site: no #ctest, not a QA build)
+    g.location = { hash: '', search: '' };
+    g.document = {};
+    assert.equal(m.gpuBackdropOn(), false, 'off for a player');
+    let asked = 0;
+    const cv = { getContext: () => { asked++; return null; } } as unknown as HTMLCanvasElement;
+    assert.equal(await m.mountGpuLayer(cv), false, 'and the layer is not started');
+    assert.equal(asked, 0, 'not even a WebGL context is asked for');
+    assert.equal(m.backdropReadout(), false, 'no readout for a player');
+    // (the testers' link)
+    g.location = { hash: '#ctest&gpuback=0', search: '' };
+    assert.equal(m.gpuBackdropOn(), true, 'on with #ctest');
+    assert.equal(m.backdropReadout(), true, 'with its readout');
+    g.location = { hash: '', search: '' };
+    pr.asQaBuildForTest(true);
+    assert.equal(m.gpuBackdropOn(), true, 'on in a QA build');
+  } finally {
+    pr.asQaBuildForTest(false);
+    g.location = had.location;
+    g.document = had.document;
+  }
+  const fs = await import('node:fs');
+  // (the app: ctestEnabled is false in the store build, and qaBuild is never set there)
+  const rec = fs.readFileSync(new URL('./playRecorder.ts', import.meta.url), 'utf8');
+  assert.ok(/export function ctestEnabled\(\): boolean \{\s*if \(STORE\) return false;/.test(rec), 'the store build never has the control test');
+  // (the switch is the first thing the start-up checks, and nothing else starts the layer)
+  const src = fs.readFileSync(new URL('./gpuLayer.ts', import.meta.url), 'utf8');
+  assert.ok(/export function mountGpuLayer[^{]*\{\s*if \(live\) return Promise\.resolve\(true\);\s*\/\/[^\n]*\n\s*if \(!gpuBackdropOn\(\)\) return Promise\.resolve\(false\);/.test(src), 'mountGpuLayer checks the switch first');
+  for (const f of fs.readdirSync(new URL('.', import.meta.url))) {
+    if (!/\.tsx?$/.test(f) || /\.test\.ts$/.test(f) || f === 'gpuLayer.ts') continue;
+    const s = fs.readFileSync(new URL(`./${f}`, import.meta.url), 'utf8');
+    if (/new WebGLRenderer|getContext\('webgl2'/.test(s)) assert.fail(`${f} makes a WebGL layer of its own`);
+  }
 });

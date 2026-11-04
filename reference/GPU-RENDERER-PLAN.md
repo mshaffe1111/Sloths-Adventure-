@@ -61,6 +61,40 @@ container: `2d_canvas: unavailable_software`) reads the GL pixels back on every 
 the control test with the test link, once as is and once with `?gpuback=0` (the 2D backdrop). The frame-time readout's notes say
 `backdrop: GPU, copy X ms` or why it is 2D. Nothing merges to main until the GPU backdrop is no slower on all three.
 
+## The measured release, 2026-11-04: testers only, with a fixed end
+
+Matt approved it (~12:05 PM ET): "a testers-only switch". The test-link page can't send runs to the testers' sheet. Matt's six runs
+that morning were all live 0.9.4 (build stamp 68b31e66), with no GPU code. So stages 0 and 1 go to the live site switched off for
+players, and Matt's phones send real numbers both ways through the testers' link.
+
+- **The switch:** `gpuBackdropOn()` in `src/game/gpuLayer.ts` is `qaBuild() || ctestEnabled()`.
+  - On the live site it is on only with `#ctest` in the address (the testers' link).
+  - In the Play Store app it is always off (`ctestEnabled` is false there).
+  - `mountGpuLayer` checks it first.
+- **Off for every player:**
+  - no WebGL context;
+  - no Pixi download: its four chunks are left out of the service worker's precache (vite.config.ts `globIgnores`);
+  - no uploads;
+  - the backdrop drawn on the 2D canvas exactly as 0.9.4 draws it.
+- **On the testers' link:**
+  - the backdrop readout goes to the sheet (the `backdrop` event: path, copy ms, ready ms);
+  - `#ctest&gpuback=0` gives the 2D pair on the same build.
+- **Proof:**
+  - the full gate;
+  - `gpuLayer.test.ts` (the switch);
+  - `tools/qa/gpuDefaultOff.cjs` on a production build: a player gets no WebGL, no Pixi and no precache entry; the testers' link starts
+    it and sends the line;
+  - the 0 px look on the default path;
+  - firstframes no worse than 0.9.4.
+- **The fixed end. The switch is deleted the day the phone numbers decide.** Either:
+  - the GPU backdrop goes to everyone: the switch, the `globIgnores` and the 2D strip route go; or
+  - stages 0 and 1 come out of main.
+
+  It never outlives that decision (CLAUDE.md: new replaces old, no on/off switches; this is the one exception Matt made).
+- **The question that decides it:** on each phone, the `#ctest` runs against the `#ctest&gpuback=0` runs. That means stalls over 100 ms,
+  the worst stretches, the `ready` time, and Matt's word on the start. The OnePlus (Adreno 619, 4 GB) matters most. On 0.9.4 it had 33
+  stalls in two runs, about 25 of them the game's own draw (150-460 ms).
+
 ## Risks and how they're handled
 
 - **Layer order:** the scene interleaves ground, decor, enemies, Pokey and front leaves. During the move, each GPU stage owns whole layers (backdrop, then ground, then actors) so the order never splits mid-layer, and the 2D canvas carries only what's on top.
