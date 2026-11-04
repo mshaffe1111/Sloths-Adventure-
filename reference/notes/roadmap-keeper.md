@@ -31,6 +31,8 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
   - R-150.8 fix-petals, start about 10:25 AM, expected 1.5 h, end about 11:55 AM.
   - R-155 1-5 plan fix-petals next: about 0.75 h a stage (0.6-1.3).
 - **In flight / waiting:**
+  - 0.9.4 is PR #62 (kaizen-gates -> main, the lead 11-04 11:30 AM ET), waiting on Matt's merge: when it lands, archive R-1.1, R-6.25
+    and the icons items with the merge commit (check git merge-base first), plus anything else merged in it.
   - R-1.1 is done pending the release merge (proof 5f25029a on icons-painted): archive it with the merge commit when the release lands.
   - R-6.25 (icons B-E) ships in the same release.
   - R-149.12 is still open for the 4-D rethink only; its swimming half is A-38.
