@@ -69,4 +69,6 @@ have.
 20. **The laws themselves improve.** When the retro finds a gap that no law covers, the lead adds the law, says so to Matt, and records
     the date and the reason.
 
+21. **Every request gets a number the same turn** (Matt, 2026-11-01: "when we bring up stuff, are you going to start logging it better and tracking it?"). Anything Matt raises (a bug, an idea, a decision, a screenshot, "we still have to do X") gets an R-number on the roadmap in the same turn, and the lead tells him the number. The same goes for what helpers name as "not fixed" and for every debrief "next week". If it has no number, it is not tracked. The roadmap (reference/ROADMAP.md, mirrored to the roadmap doc) is the only list of work; STATUS.md is the diary. The roadmap-keeper helper keeps the list true and sweeps it after every release; a repo gate fails when something that should be on it is not.
+
 Breaking a law is a defect: it goes in the log with its root cause like any other.

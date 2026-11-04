@@ -16,6 +16,9 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 | 5 | `node tools/perf/knowncheck.mjs` | a known-defect list that GREW (clipknown, playerText.known, limits.json, artUse.allow) compared with main | seconds |
 | 6 | `node tools/perf/clipcheck.mjs` | menu text that overflows or is cut off, tap targets under 44 px, tap targets inside the phone's insets, on every menu screen and pop-up, 412x915 and 915x412, fresh/old/finished saves | 270-290 s here / 179 s in CI (gates job about 4.5 min with setup) |
 | 7 | `node tools/perf/drawcheck.mjs` | per-frame canvas work over `limits.json` (gradients, shadows, blends, readbacks, full-screen layers, shrunk sheets) | about 6 min / own CI job, about 6.5 min with setup |
+| 8 | `node tools/roadmapcheck.mjs` | the roadmap out of step: an item without an R-number, a stale total, a broken table row, a known-defect entry with no item | seconds / in gates.yml |
+| 9 | `node tools/art/icons/checkbase.mjs <qa dir>` | an 'after' sheet shot on a stale base (D23): every still must carry the base commit stamp | seconds / report gate |
+| 10 | `npx tsx tools/validate/funcheck.ts` | World 1 made worse by the fun validator's structure checks (dead walks, repeats, pacing, nothing bites, padding, one tempo, enemies by a landing, moves-like and looks-like an earlier stage, nothing new): a (stage, setting, rule) flagged on more of the 16 layouts than `tools/validate/funknown.json` holds, or a new one; also fails a count that fell until it is lowered | about 45 s here / in gates.yml |
 
 In CI (`.github/workflows/deploy.yml`): the test shards and `gates.yml` (artcheck, knowncheck and clipcheck on one runner; drawcheck on its own runner) run side by side. `publish` needs all of them, so a failing gate blocks the live site.
 
@@ -28,6 +31,7 @@ In CI (`.github/workflows/deploy.yml`): the test shards and `gates.yml` (artchec
 - **playerText.test**: the failing test is named `<list>: <rule>` or `journal page World N (<save>): ...`. `PLAYERTEXT_DUMP=1 npx tsx src/game/playerText.test.ts` prints every failure in full: the ids and the line.
   - "differ only in a number or name" means the line repeats with only the world, stage, number or number word changed. Write each line for its item.
 - **knowncheck**: `✗ <file>: N entries ADDED` lists them. Remove them and fix the defect; a known list never grows.
+- **funcheck**: `✗ new` / `✗ worse: <stage> <setting> "<rule>" on N layouts, known M (layouts)` with the first flag's words and x: open that stage's validator page (`npx tsx tools/validate/world1.ts --stages <id>`) and fix the stage, never the count. `✗ better, lower the entry` / `✗ gone, delete the entry`: the stage improved; lower it with FUNCHECK_WRITE=1 in the same commit.
 - **drawcheck**: see PERFORMANCE-RULES §8.1. Each breach names the call sites (file:line).
 
 ## Known lists: shrink-only (LAWS.md law 5)
@@ -40,6 +44,7 @@ The lists:
 - `src/game/playerText.known.json` (`key`, `kind`, `owner`).
 - `tools/perf/limits.json` (`art.knownOver4096`, `blends.allowlist`).
 - `src/game/artUse.allow.json`.
+- `tools/validate/funknown.json` (`stage`, `setting`, `rule`, `layouts`, `owner`): World 1's fun debt behind D26, owner the World 1 rebuild. knowncheck counts one id per layout, so a raised count fails like an added entry. After a rebuild clears flags, run `FUNCHECK_WRITE=1 npx tsx tools/validate/funcheck.ts` to lower the counts in the same commit.
 
 When you fix a known defect, delete its entry in the same commit, or the gate fails.
 
@@ -95,3 +100,6 @@ Every gate in the table, in order. Run the full unit suite in the background (it
 - A nested-scroll check: a scroll box inside a scroll box on the same axis, with text below the inner fold at rest.
 - clipcheck at 360x800 as well (the smallest phones).
 - Split the playerText Dot-line rule so control-test copies (`ctest.*`) of a lesson are allowed, if the lead agrees they're not player-facing.
+
+## Report gates (run by the helper before it reports, not in CI)
+- `node tools/art/icons/checkbase.mjs reference/qa-reports/<job>`: fails an "after" sheet shot on a stale or work-in-progress base (D23). Added 2026-11-02 (icons-painted, R-1.1).
