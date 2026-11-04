@@ -32,11 +32,23 @@ const CATCH_DOWN = 82;
 const BOUNCE_UP = 205;
 /** a fall this far under the last ground in the finale is a fall (fallZones) */
 const FALL_DEPTH = 420;
-/** the backdrop's turn to the canopy: from this height over the floor to this one */
-const CANOPY_FROM = 520;
-const CANOPY_FULL = 1150;
+/** the backdrop's turn to the canopy: from this share of the way up to the top branch to this one (Easy's climb is lower) */
+const CANOPY_FROM = 0.35;
+const CANOPY_FULL = 0.78;
 
 type Under = 'soft' | 'catch' | 'pit';
+
+/** the open gaps joined into stretches of open air: a fall carries him on under the next bough, which is open air too */
+function mergeZones(zs: Array<{ x0: number; x1: number; depth: number }>): Array<{ x0: number; x1: number; depth: number }> {
+  const out: Array<{ x0: number; x1: number; depth: number }> = [];
+  for (const z of [...zs].sort((a, b) => a.x0 - b.x0)) {
+    const l = out[out.length - 1];
+    if (l && z.x0 - l.x1 < 700) l.x1 = Math.max(l.x1, z.x1);
+    else out.push({ ...z });
+  }
+  for (const z of out) z.x1 += 200;
+  return out;
+}
 const J = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'jump', dy, surface });
 const H = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'hop', dy, surface });
 const D = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'double', dy, surface });
@@ -350,12 +362,12 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     exitTotemX: exitX,
     exitTotemY: crown.y,
     checkpoints: checkpoints.sort((a, b) => a.x - b.x),
-    fallZones: fallZones.map((z) => ({ ...z })),
+    fallZones: mergeZones(fallZones),
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces, timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
     proto: {
       hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups,
       // the forest floor turns to the canopy as he rises (World 1's canopy strips, as on 1-8 and the top of 1-4)
-      rise: { y0: floorY - CANOPY_FROM, y1: floorY - CANOPY_FULL },
+      rise: { y0: Math.round(floorY - (floorY - crown.y) * CANOPY_FROM), y1: Math.round(floorY - (floorY - crown.y) * CANOPY_FULL) },
     },
   };
 }
