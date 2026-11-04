@@ -22,6 +22,13 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
     3:00, Matt 3:15, built 6:30, recording 6:45, release PR about 8:00 (the plan file says the recording and look about 7:15).
     R-6.38 pits: fix-petals, in by 4:00 (owner moved 11:43 AM ET; I missed it until this 12:52 PM ET batch: STATUS is read every batch now).
     R-6.40 held until 11-05. Then IDLE until the ledger batch (about 2:30 PM ET), the lead's ask to save Matt's tokens.
+- **Queued for the ledger batch (bot-fix, received 1:06 PM ET; held because the lead asked me to stay idle until then):**
+  - The lift-off fix (first-timer bot) is done: start 12:31 PM ET, accepted 1:04 PM ET, planned 1 h, real 33 min start to accept.
+    Find or file its row and add it to BUILD-PLAN's calibration list.
+  - Four stuck waits the fix exposed (reference/notes/bot-fix.md and reference/qa-reports/bot-fix/liftoff/README.md on bot-fix;
+    check both before filing): 4-6, both bots, 2 of 3 seeds time out at 720 s (the lead says tomorrow); 1-1 kid, 2 of 3 time out;
+    10-8 kid, 2 time out; 10-3, rescues and lives up (adult 38 to 55, kid 16 to 33). Ask the lead for owners and tiers in that batch.
+  - The builders' planned vs actual resumes tomorrow (the lead stopped supervisor rounds today, budget).
 - **D29 (lead, 2026-11-04 12:42 PM ET):** the research was never broken down line by line; three ledger helpers are writing
   reference/research/ledger/. Phase A's 88.5 h is marked "before the research ledger"; no new Phase A estimate until the lead
   sends the ledger's misses (about 2:30 PM ET) for R-ids and hours. R-155's 1-5 build was ON HOLD; corrected by the lead: 1-2 and 1-5 are R-155.1 (w1-rhythm, running), the rest of R-155 stays on hold. R-148.18 closed as A-41 (3342b2cf, lead branch). Known misses: a BPM
