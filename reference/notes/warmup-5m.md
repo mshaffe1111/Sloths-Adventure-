@@ -1,6 +1,6 @@
 # warmup-5m notes
 
-Last updated: Wed Nov 04 04:36 AM ET
+Last updated: Wed Nov 04 08:26 AM ET
 
 ## The job
 - **R-3.1, GPU plan stage 0** (lead, 2026-11-04):
@@ -49,21 +49,19 @@ Done! Checked 605 packages (no changes) [12.00ms].
   - bundle: main +2.3 KB, Pixi chunks 435 KB raw / 125 KB gzip, lazy;
   - report reference/qa-reports/webgl-0/README.md and methods/webgl.md.
 
-## In flight (stopped at the 5:00 AM ET team stop)
-- **Gate, NOT GREEN:**
-  - tsc clean;
-  - tests 2,291 pass, 0 fail;
-  - build OK, nothing over 4 MiB;
-  - artcheck and knowncheck PASS;
-  - drawcheck PASS (container run);
-  - **clipcheck FAILS 3 of 3 on this branch** ("could not open: fresh up/side: world map", a `.wm-head` waitFor timeout), while the
-    lead branch PASSES 1 of 1 in the same container.
-- **First step next session:**
-  1. time `.wm-head` on a fresh save, before vs after;
-  2. bisect the App.tsx canvas change (added canvas, `relative` class) and the gpuLayer import from the engine change;
-  3. fix;
-  4. re-run clipcheck 2x alone, then report to the lead.
-- Then stage 1 (skies) once the lead merges stage 0.
+## In flight
+- Lead, 11-04 7:47 AM ET restart: fix the clipcheck failure at its cause. Then clipcheck 2x alone, the full gate once, and report.
+  Merge only on full green.
+- **Cause found (bisected):** starting the layer on every stage launch (400-650 ms of main thread) slowed clipcheck's parallel walks.
+  Off gave 2/2 green; on had given 3/3 red.
+- **Fixed (658ff7e1):**
+  - the layer starts only when something is put on it;
+  - the off-by-one buffer size at q1 is fixed too.
+- **Checks so far:**
+  - gpuLayer.cjs PASS both orientations;
+  - clipcheck alone 2/2 PASS (199 s, 206 s);
+  - gpuLook 0 px on 1-1 and 8-1, both orientations.
+- The full gate is running on 658ff7e1 (started 08:24 AM ET). Paste its lines into the report, then report to the lead.
 
 ## Pitfalls (mine)
 - Look comparisons:
@@ -71,4 +69,5 @@ Done! Checked 605 packages (no changes) [12.00ms].
   - draw the frozen frame about 40 times first;
   - mask what moves by itself between two shots;
   - give each build its own temp files: a shared noise file once faked a "0 px".
-- Never time anything while the look run or the gate runs. This container is slower than on 11-01 (frames 36-127 ms).
+- Never time anything while the look run or the gate runs.
+- A layer or feature that does nothing yet must cost nothing: no start-up on a hot path (stage launch) until it is used. This container is slower than on 11-01 (frames 36-127 ms).

@@ -8,7 +8,9 @@ feature (light bridges, lightning silhouettes, waving water).
 
 ## What exists (stage 0)
 - **`src/game/gpuLayer.ts`.** One Pixi `WebGLRenderer` for the whole app, on the canvas under the game's 2D canvas (App.tsx).
-  - `mountGpuLayer(canvas)` runs on the first stage launch and is not awaited.
+  - App.tsx only hands over the canvas (`setGpuCanvas`). `mountGpuLayer()` starts the layer (the webgl2 context, Pixi) and is called
+    only by whatever first puts something on it. From stage 1 that happens under the title card (stageReady.ts), awaited within its
+    deadline. Starting it costs 400-650 ms of main thread here.
   - `gpuWorld()` is the container the stages put whole layers into.
   - `drawGpuFrame(tx, ty, zoom)` is called by engine.ts right after `render()`. tx and ty are the 2D canvas's own snapped camera
     translate (`gpuTx`, `gpuTy`).
@@ -61,6 +63,12 @@ Every gate in gates.md, in order. Add the two GPU checks above. Stamp the base c
 - 2026-11-04: **`page.setViewportSize` failed after a tap** (the game asks for fullscreen). Stub
   `Element.prototype.requestFullscreen` in an init script for rotation checks.
 - 2026-11-04: **Pixi's own WebGL setup falls back to WebGL 1** when webgl2 fails. Pass a context made by us so it can't.
+
+- 2026-11-04: **Starting the layer on every stage launch, with nothing on it, failed clipcheck 3 of 3.** Its 400-650 ms start-up
+  (100-240 ms long tasks, plus SwiftShader's threads) slowed the parallel walks until the fresh walk's World Map missed its 10 s wait.
+  Bisected: with only the start-up switched off it passed 2 of 2. Start it only when something goes on it, and under the card.
+- 2026-11-04: **Pixi rounds css x resolution; the game canvas floors it.** At q1 (1.5x) on an odd size the buffers differed by one
+  px. Hand `renderer.resize` the floored device size divided by dpr. The gpuLayer.cjs buffer check catches it; run it at q1 too.
 
 ## Tried and didn't work
 - Comparing whole-page screenshots: the DOM animations gave 21,000 to 178,000 "different" pixels with nothing changed on the canvas.

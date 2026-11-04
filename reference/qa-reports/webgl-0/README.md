@@ -165,3 +165,21 @@ Pasted from each command's own output (last updated 04:36 AM ET); first lines as
 
 **The gate is not green. Stage 0 is not ready to merge.** First step next session: time when `.wm-head` shows on a fresh save, before
 vs after, then bisect the App.tsx change from the engine change.
+
+## Fix for the clipcheck failure (11-04 morning)
+
+- **The cause, bisected:**
+  - Timed alone, the World Map on a fresh save opened in about 1 s on both builds (3 runs each, clipcheck's own steps).
+  - clipcheck with only the two fresh walks passed on this branch (2 of 2). So the failure needed the six walks running in parallel.
+  - The layer's start-up costs 400-650 ms of main thread with 100-240 ms long tasks here (3 timings). It ran on every stage launch, and
+    each walk opens a stage for its pause screen, so the start-up competed with the fresh walk's World Map.
+  - With only the start-up switched off (a temporary line, reverted), the full clipcheck passed 2 of 2. With it on, it had failed 3 of 3.
+- **The fix (658ff7e1), at the cause, not the timeout:** the layer starts only when something is first put on it. App.tsx just hands
+  over the canvas. In stage 0 nothing goes on it, so no start-up cost at all, on a phone either. From stage 1, the start-up runs under
+  the title card (webgl.md).
+- **Found on the way and fixed:** at q1 (1.5x) on an odd size, Pixi's buffer was one px bigger than the game canvas (1373 vs 1372), so
+  it would have been resampled. It now gets the exact floored size. gpuLayer.cjs's buffer check found it, and it now runs at q1.
+- **Re-checked after the fix:**
+  - `tools/qa/gpuLayer.cjs` PASS upright and sideways. It now also checks that the layer is not started until something is put on it;
+  - clipcheck alone, 2 runs: `PASS (83 known) (199 s; ...)` and `PASS (83 known) (206 s; ...)`.
+  - The full gate on 658ff7e1 is below.

@@ -68,8 +68,8 @@ print(sum(1 for v in d.get_flattened_data() if v))`, a, b, ...(noise ? [noise] :
         await pg.screenshot({ path: `${out}/gone-${st}-${o.id}.png`, animations: 'disabled' });
         const d1 = diff(f, `${out}/gone-${st}-${o.id}.png`, noise), d2 = diff(f, `${out}/vis-${st}-${o.id}.png`, noise);
         line += ` (moves by itself between two shots: ${self} px, left out)`;
-        line += ` layer live ${info.live}, GPU frames ${info.drawn}; px differing vs layer removed: ${d1}; vs layer forced visible: ${d2}`;
-        if (d1 !== '0' || d2 !== '0' || !info.live) bad++;
+        line += ` layer started ${info.live} (it starts only when something is put on it), GPU frames ${info.drawn}; px differing vs layer removed: ${d1}; vs layer forced visible: ${d2}`;
+        if (d1 !== '0' || d2 !== '0') bad++;
       }
       if (errs.length) { line += ` PAGE ERRORS: ${errs.join(' | ')}`; bad++; }
       console.log(line);
