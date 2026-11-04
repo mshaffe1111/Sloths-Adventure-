@@ -1,5 +1,11 @@
 # World 1 baseline: played in order, judged like a player (quality supervisor)
 
+**Bot note (2026-11-04 11:10 AM ET):** the clips use the old first-timer bot (it couldn't climb the mushroom walls). Its play numbers
+are corrected below where the fixed bot (fun-validator 2e61ffd8, R-150.7/8) changes a claim. Fixed-bot runs, adult seed 1: 1-1 shrine (3
+rescues), 1-2 sealed 97/98, 1-3 shrine 16/16, 1-4 shrine 2:34 (2 rescues), 1-5 sealed 92/96, 1-6 shrine (11 lives to water), 1-7 shrine
+(0 rescues, 1 hit), 1-8 shrine (0 lives, 0 rescues), 1-9 sealed 13/20. Sideways clips with the fixed bot are being recorded for
+world1-baseline/clips-fixedbot/.
+
 **Status: complete for the first pass**, all ten judged in order. The open items are under "Open". All ten are judged
 in both orientations. Started 2026-11-04 2:32 AM ET.
 
@@ -69,8 +75,8 @@ repetitive... a sludge."
 - **What's new.** Snakes and the punch (Dot teaches the sleeping snake at 0:10), plus ropes over dips (1:20, 1:49).
 - **Missing: enemies with no job.** Every snake is a roadblock: walk up, punch once, walk on. None does anything else. Snakes only
   ever ask for the punch, so the triangle (stomp, punch, kick) is never used (PLAN-TO-80 §3).
-- **Goal not on the natural path (D8).** The shrine is sealed "1 more" at 2:59 because the adult bot found 15 of 16 snakes (kid:
-  1 of 8, botBaseline).
+- **Goal (corrected 2026-11-04 11:10 AM ET).** In the clip the old bot ends at a sealed shrine, "1 more", 15 of 16. The fixed bot
+  (mushroom bounce, R-150.7/8, fun-validator 2e61ffd8) gets 16 of 16 and the shrine. The near-miss came from the bot, not the stage.
 - **Best moment.** The first punched snake (a burst, +100).
 
 ### 1-4 Up the Kapok (ascent) · bot: time-out at 6:00, 84% height, 11 rescues
@@ -90,8 +96,9 @@ repetitive... a sludge."
   a snake and petals (0:38-0:40) and the petal rows overhead (0:44-0:58) are all passed underneath on the ground route. In this run
   Pokey never stands on a creaking branch, and the validator says both branch runs are outrun by holding right. The world's only
   breaking-branch beat is decoration.
-- **Goal half off the path (D8).** The shrine is sealed "50 more" at 3:24 (bot 46/96, kid 42/77). Most petals sit on the planks the
-  ground route skips.
+- **Goal (corrected 2026-11-04 11:10 AM ET).** In the clip the old bot ends sealed, "50 more" (46/96). The fixed bot (it can climb the
+  mushroom walls) gets 92/96 and is still sealed, 4 short. Most of my "half off the path" was the bot's defect. A 4-petal miss on the
+  natural route is still a D8 point, but a small one.
 - **Best moment.** None I can name. This is the weakest stage of the world (see below).
 
 ### 1-6 First Lianas (vine runner) · bot: shrine 5:34, 8 lives to water, 2 game overs, 12 rescues
@@ -120,7 +127,8 @@ repetitive... a sludge."
 - **Best moment.** The first hide: Dot's "Low, like me in my bush. Meeca says she saw me, fibs." and then "PHEW".
 
 ### 1-8 The Long Branch (sprint/chase) · bot: shrine 4:16, 6 lives (pits, a snake), 2 game overs
-- **A real change of shape.** One long branch high in the canopy, with gaps over real pits (lives lost at 2:36 and 3:56), snakes on
+- **A real change of shape.** One long branch high in the canopy, with gaps over real pits (the old bot lost lives at 2:36 and 3:56; the fixed bot crosses with 0 lives lost and 0 rescues, so the pits
+  are there but don't punish a first-timer who plays the route cleanly), snakes on
   the branch, a liana at 1:00 and a climb at 1:04. It is the first stage that feels like a run.
 - **The chase isn't on screen.** Dot says "It's breaking behind us! Keep moving!" (0:14-0:16). In every frame from 0:10 to 1:04
   (every 2 s), the branch behind Pokey is whole and nothing chases him. The validator now reads the engine's own camera every frame:
@@ -189,8 +197,8 @@ upward, with a puzzle and a secret.
 
 ## The weakest stage
 **1-5 Where She Walked.** It is the second petal hunt in four stages, in the same misty backdrop as 1-2. It is 0.998 alike to 1-1.
-Its one new mechanic (creaking branches) is passed underneath. The goal is half off the path, and the bot reaches a sealed shrine
-"50 more". It sits in the world's mid-world spike slot (§0b.6).
+Its one new mechanic (creaking branches) is passed underneath. Even the fixed bot ends 4 petals short at a sealed shrine
+(the "50 more" in my clip was mostly the old bot's defect, corrected 11:10 AM ET). It sits in the world's mid-world spike slot (§0b.6).
 
 ## Score: 38 / 100 for World 1 as it stands (all ten stages judged; checked against the clips above)
 | Area (weight) | Score | Why (the proof) |
