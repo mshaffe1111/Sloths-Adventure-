@@ -220,3 +220,9 @@ work"). The measure: the same kind of job costs less each time (GAMEPLAN §5, §
 3. The lead checks the ledger against the source (every "missed" item and a sample of rows) and gives each miss a home: a rule, a
    plan item, an R-id, or "not taken" with the reason. Only then do builds that depend on it start.
 4. An answer to Matt about what the research says quotes the research, with its line number; never a summary from memory.
+
+## 8i. Deadlines are deadlines (Matt, 2026-11-04: "they need to understand that deadlines are deadlines, and they need to figure it out")
+Every brief says it in these words. A helper that hits a wall brings the lead options that still make the deadline (a smaller,
+correct version, a different route, help it needs), never "push it to tomorrow" as the first answer. The quality bar and the
+checks do not move to make a deadline (laws: cut scope, never a check); the helper finds the way. Only the lead moves a deadline,
+and says why to Matt.

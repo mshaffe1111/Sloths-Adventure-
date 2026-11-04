@@ -2838,9 +2838,9 @@ const flagsCapped = (st: GeneratedStage): GeneratedStage => {
   return st;
 };
 
-/** the rebuilt World 1 stages whose Easy is built as Easy (buildProtoStage's `easy`), not only Normal's thinned by easyStage: 1-3 (the
- *  lead, 11-04); w1-rhythm-b's 1-1 and 1-4 join this set, and w1Rhythm.ts's RHYTHM_STAGES pass it too */
-const EASY_BUILT: ReadonlySet<string> = new Set(['1-3']);
+/** the hand-built stages whose builder lays Easy itself (the rest are made gentler on the built stage alone: easyMode.ts): w1-rhythm-b's
+ *  1-1 and 1-4, w8-rope2's 1-3 (the lead, 11-04); w1Rhythm.ts's RHYTHM_STAGES (1-2, 1-5) pass it too */
+const EASY_BUILT: ReadonlySet<string> = new Set(['1-1', '1-3', '1-4']);
 
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)

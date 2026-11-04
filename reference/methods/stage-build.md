@@ -65,3 +65,16 @@ moves on the music's beat (beatTrace.ts). For fixing one unfair spot in an exist
 - Lianas grab on touch: no hazard or open fall over a liana of a lower leg.
 - The same node template with the same bars twice is a §0c.3 flag (variety.ts): roll a second half until its bars differ.
 - Any fragile piece that looks wrong for its world: trace it to the draw path before naming it "the existing art".
+
+## Pitfalls we paid for (1-1, 1-4, afternoon 2026-11-04)
+- **Easy must reach the builder through the game's own door.** generateStage did not pass Easy to buildProtoStage, so a builder's Easy
+  path ran in its tests and never in the game (and the fun gate measured Normal geometry as Easy). Add the stage to the generator's
+  set (EASY_BUILT / RHYTHM_STAGES), and measure Easy through RealPlay or the validator, never only by calling the builder.
+- **A liana needs its own air.** A later bough laid back across a swing hung the liana through it. A bough over a liana sits at its top,
+  so the liana hangs from it. Test: no bough crosses a liana's line, and each liana hangs from one.
+- **A bounce reads as no input** (1.5-2 s on Easy): start the next node's apron just past the landing, or it is a dead walk.
+- **Count a knot's width in a rest's length**, or adding knots stretches the rest past 4 s.
+- **Quarter-note hops down merge on Easy** (wider pads, lower drops): play them at half the pace on Easy.
+- **Stage 1's climax**: real pits there cost a first-timer adult 7-9 lives, with two game overs a run. Falls that cost a heart and set
+  him back at the gap (heartFalls) still bite, at 2-3 lives. Run the adult bot before calling a climax fair.
+- **Gate entries flip on borderline shares** (80% vs 80.4%): judge the 16-layout count, not one layout.

@@ -33,7 +33,7 @@ export const keyOf = (k: { stage: string; setting: string; rule: string }) => `$
  * stage before on tempo or map shape. A stage not yet rebuilt is gated on the old rules at its listed counts, the truer count printed
  * beside. 1-1 to 1-5 are due tonight. A stage is never taken off.
  */
-export const REBUILT: readonly string[] = [];
+export const REBUILT: readonly string[] = ['1-1', '1-4'];
 
 /** the stage is gated on the truer rules: listed, or built on the beat */
 export const isRebuilt = (ev: StageEval, rebuilt: readonly string[] = REBUILT) => rebuilt.includes(ev.id) || !!(ev.built?.stage as { proto?: { rhythm?: unknown } } | undefined)?.proto?.rhythm;

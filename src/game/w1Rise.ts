@@ -17,7 +17,8 @@
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, LevelConfig, Platform } from './types.ts';
 import { PHYS } from './physics.ts';
-import { fixPickups } from './flowerReach.ts';
+import { badPickups, fixPickups } from './flowerReach.ts';
+import { busiestScreen, clumpExtras, offArc, PER_SCREEN, rowExtras, SCREEN } from './petals.ts';
 import { heartsAtFlags, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
 import { easyNode, stageBpm, traceNode, type NodeSpec, type Step, type Trace } from './beatTrace.ts';
 
@@ -151,7 +152,10 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     leave();
     const was = kind;
     // (Easy: easyNode lowers every rise; the drops come down with them, so Easy's climb keeps its shape, floor to canopy)
-    const spec: NodeSpec = { bpm, x, y, bars, steps: easy ? steps.map((st) => (st.dy < 0 ? { ...st, dy: Math.round(st.dy * 0.65) } : st)) : steps };
+    // (Easy: a run of quarter-note hops is played at half the pace: with Easy's wider pads and lower drops, hops a beat apart merged
+    // into walk-offs, a dead walk down a slope)
+    const easyBars = (bs: string[]) => bs.flatMap((b) => (b === 'x.x.x...' ? ['x...x...', 'x.......'] : b === 'x.x.x.x.' ? ['x...x...', 'x...x...'] : [b]));
+    const spec: NodeSpec = { bpm, x, y, bars: easy ? easyBars(bars) : bars, steps: easy ? steps.map((st) => (st.dy < 0 ? { ...st, dy: Math.round(st.dy * 0.65) } : st)) : steps };
     const tr = traceNode(easy ? easyNode(spec) : spec);
     tr.ledges.forEach((l, i) => {
       const last = i === tr.ledges.length - 1;
@@ -195,17 +199,22 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     from = edge + gapW;
     y = ny;
     kind = onto;
-    x = from + 120;
+    // (the next node's apron starts just past the landing: a bounce is 1.5-2 s of no input, so a long run-out after it is a dead walk)
+    x = from + 30;
     expert += 1.4 + gapW / RUN;
   };
 
   /** a quiet walk with root knots to step over (small hops: a bump in the walk, not a move) */
   const stroll = (len: number, knots: number) => {
     const x0 = x;
-    // (the first knot and the last close to the ends: a quiet walk is never 2.5 s without one)
-    const gap = (len - 2 * 160) / Math.max(1, knots - 1);
-    for (let k = 0; k < knots; k++) {
-      walk(k === 0 ? 160 : gap);
+    // (the first knot and the last close to the ends, since the node before ends on its exit apron and the next starts on its entrance
+    // apron, and a knot every 330 px or so: a quiet walk is never 2.5 s without one)
+    const END = 50;
+    const n = Math.max(knots, Math.ceil(len / 330));
+    // (the knots' own width is part of the length)
+    const gap = (len - 2 * END - n * 90) / Math.max(1, n - 1);
+    for (let k = 0; k < n; k++) {
+      walk(k === 0 ? END : gap);
       // (the surface breaks round each knot, as the floor's stumps do: on one long piece under it the level check walked through it)
       leave();
       const kw = Math.round(R.r(80, 100));
@@ -214,11 +223,13 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
       walk(kw);
       from = x;
     }
-    walk(160);
+    walk(END);
     pieces.push({ k: 'rest', x0, x1: x });
   };
 
   // ======================================================================================================================== the nodes
+  /** the traces of each road of the choice (the petals' split is made on their ledges after the petal pass: splitPetals) */
+  const roads = { low: { tr: [] as Trace[] }, high: { tr: [] as Trace[] } };
   /** the bank's step heights, this roll */
   const steps = R.pick([[50, 60, 40], [60, 40, 50], [40, 60, 60]]);
 
@@ -231,7 +242,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     // every 2.5-4 s, and the walk is never 2.5 s without something under the thumb)
     node(['h.......', 'h.......', 'h.......', 'h.......', 'h.......', 'h.......'], [J(0, 'bank'), J(40, 'stump'), H(-40, 'bank'), J(0, 'bank'), J(30, 'stump'), H(-30, 'bank')], () => 'soft');
     // (the ramp's entrance apron is this one's exit apron: two in a row were 400 px of flat ground)
-    x -= 200;
+    x = Math.max(from + 200, x - 420);
     pieces.push({ k: 'floor', x0: 0, x1: x });
   });
 
@@ -249,10 +260,10 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
 
   // ---- 4. The bank's last steps (ramp): longer gaps now, down and up, and the second mushroom onto the bank's top
   beat('Ramp: the last steps', () => {
-    const x0 = x;
     node(['h.......', 'h...h...', 'h.......', 'h...h...', 'h.......'], [J(0, 'stump'), J(steps[2], 'stump'), H(-40, 'stump'), J(0, 'stump'), J(60, 'stump'), J(0, 'stump'), H(-30, 'stump')], () => 'soft', { earth: true });
     bounce(BOUNCE_UP - 10, 'earth', 'soft');
-    pieces.push({ k: 'bank', x0, x1: x });
+    // (one ramp up the bank, in two parts with no rest between: one piece, not the same piece twice)
+    pieces[pieces.length - 1].x1 = x;
   });
 
   // ---- 5. The bank top (rest): no move. Dot names the second jump; a shelf over the path only it reaches is there to try it on (a miss
@@ -263,7 +274,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     stroll(Math.round(R.r(700, 760)), 2);
     lay(x + 40, x + 210, y - 150, 'branch');
     flower(x + 125, y - 150 - 34, 'hibiscus');
-    walk(260);
+    walk(100);
   });
 
   // ---- 5b. Down the roots (the wave dips): off the bank top down the kapok's roots, earth steps going down and across, half and whole
@@ -288,7 +299,8 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   beat('Spike: up into the canopy', () => guard(() => {
     const x0 = x;
     node(['h.......', 'h...h...', 'x.x.x.x.', 'h.......', 'h...h...', 'h.......'],
-      [D(140), J(0), H(-50), H(-20), H(-35), H(-15), H(-30), D(150), J(20), J(-30), D(150)], () => 'catch');
+      // (Easy: one gap in four open air, a soft fall back to the spike's flag; on Easy the guard is no hurt, so all catches cost nothing)
+      [D(140), J(0), H(-50), H(-20), H(-35), H(-15), H(-30), D(150), J(20), J(-30), D(150)], (i) => (easy && i % 4 === 3 ? 'pit' : 'catch'));
     pieces.push({ k: 'canopy', x0, x1: x });
   }));
 
@@ -305,25 +317,32 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   beat('Choice: the high road or the low', () => {
     const x0 = x;
     const y0 = y;
-    walk(160);
+    // (room past the rest's last root knot: none under the perch, where a hop over one could land him on it)
+    walk(240);
     const forkX = x;
     // the low road
     const lowFrom = x;
-    node(['h...h...', 'x.x.x...'], [J(0), H(-40), H(-20), H(-35), H(-25)], () => 'catch', { flag: false });
+    // (every third gap open air: on Normal the guard makes a fall there a heart and back at the gap, on Easy a soft fall back; with a catch
+    // under every gap the low road cost nothing, and the two roads must both bite, whichever a player takes)
+    const lowU = (i: number): Under => (i % 3 === 2 ? 'pit' : 'catch');
+    roads.low.tr.push(node(['h...h...', 'x.x.x...'], [J(0), H(-40), H(-20), H(-35), H(-25)], lowU, { flag: false }));
     bounce(BOUNCE_UP - 20, 'branch', 'catch');
     // (a flag on the low road halfway: LV-9, never 4000 px without one)
     flag(x + 60);
-    node(['h.......', 'h...h...', 'x.x.x.x.'], [J(0), H(-30), J(20), H(-35), H(-20), H(-30), H(-25)], () => 'catch', { flag: false });
+    roads.low.tr.push(node(['h.......', 'h...h...', 'x.x.x.x.'], [J(0), H(-30), J(20), H(-35), H(-20), H(-30), H(-25)], lowU, { flag: false }));
     bounce(BOUNCE_UP - 10, 'branch', 'catch');
     guarded.push({ x0: Math.round(lowFrom - 100), x1: Math.round(x + 100) });
     const sx = x, sy = y, sf = from, sk = kind;
-    // the high road
-    P.push({ id: pid++, x: Math.round(forkX - 150), y: y0 - 30, width: 70, height: 30, type: 'bouncy' });
-    y = y0 - BOUNCE_UP;
+    // the high road: a perch one jump up over the path, a mushroom on it (on the walking line, the mushroom took every player up and the
+    // low road was only a drop through a bough, 2026-11-04): jump to the perch for the high road, walk on under it for the low road
+    const PERCH = 95;
+    lay(forkX - 200, forkX - 40, y0 - PERCH, 'branch');
+    P.push({ id: pid++, x: Math.round(forkX - 130), y: y0 - PERCH - 30, width: 70, height: 30, type: 'bouncy' });
+    y = y0 - PERCH - BOUNCE_UP;
     from = forkX - 30;
     kind = 'branch';
-    x = forkX + 170;
-    node(['h....o..', '....h...', 'h.......', 'h....o..', '....h...'], [J(0), D(40), J(-20), J(0), D(0), J(-30), J(0)], () => 'pit', { flag: false });
+    x = forkX - 40;
+    roads.high.tr.push(node(['h....o..', '....h...', 'h.......', 'h....o..', '....h...'], [J(0), D(40), J(-20), J(0), D(0), J(-30), J(0)], () => 'pit', { flag: false }));
     lay(from, x, y, 'branch');
     C.push({ id: cid++, type: 'seed', x: Math.round(x - 80), y: y - 40, collected: false, bobPhase: 1, findId: 'seed-1' });
     x = sx;
@@ -342,16 +361,19 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
 
   // ---- 12. The high branches (the finale, the densest, 15-20 s): half notes and off-beat catches over open air, up and down, a
   // mushroom in the middle, ending AT the shrine on the top branch
-  beat('Finale: the high branches', () => {
+  beat('Finale: the high branches', () => (easy ? (f: () => void) => f() : guard)(() => {
     const x0 = x;
     // (open air under every other gap, a bough under the rest: it bites, but stage 1's first-timer is not sent back three times a
-    // stretch; a flag again after the mushroom)
-    node(['h...h...', 'h....o..', '....h...'], [J(0), J(20), J(-30), D(120), J(-20)], (i) => (i % 2 ? 'catch' : 'pit'));
-    bounce(BOUNCE_UP - 15, 'branch', 'pit', 130);
+    // stretch; a flag again after the mushroom. On Normal a fall here costs a heart and puts him back at the gap (heartFalls), three
+    // hearts a life: as real pits the first-timer adult bot lost 7-9 lives here, two game overs a run; as heart falls, 2 lives and none)
+    // (on Easy every gap is open air: Easy's soft fall puts him back, a setback and never a life, so a catch would only make it nothing)
+    node(['h...h...', 'h....o..', '....h...'], [J(0), J(20), J(-30), D(120), J(-20)], (i) => (easy || i % 2 === 0 ? 'pit' : 'catch'));
+    // (a bough under the mushroom on Normal: the first-timer adult bot's third life went there on 2 of 3 runs; Easy's soft fall is a setback)
+    bounce(BOUNCE_UP - 15, 'branch', easy ? 'pit' : 'catch', 130);
     flag(x + 80);
-    node(['h...h...', 'h....o..', '....h...'], [J(0), H(-40), J(20), D(130), J(0)], (i) => (i % 2 ? 'pit' : 'catch'), { flag: false });
+    node(['h...h...', 'h....o..', '....h...'], [J(0), H(-40), J(20), D(130), J(0)], (i) => (easy || i % 2 ? 'pit' : 'catch'), { flag: false });
     pieces.push({ k: 'finale', x0, x1: x });
-  });
+  }));
 
   // the top branch: the shrine a few steps on from the last landing, the canopy all round
   const topY = y;
@@ -369,6 +391,42 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   for (const h of hints) {
     if (h.belowY !== undefined) h.belowY += shift;
     if (h.aboveY !== undefined) h.aboveY += shift;
+  }
+  // (the roads' ledges, for the petals' split after the petal pass: splitPetals)
+  const roadLedges = (r: typeof roads.low) => r.tr.flatMap((t) => t.ledges.map((l) => [Math.round(l.x0), Math.round(l.x1), Math.round(l.y + shift)] as [number, number, number]));
+  const choice = { low: roadLedges(roads.low), high: roadLedges(roads.high) };
+
+  // ---- the canopy's look (the lead's polish review, 2026-11-04): no bough floats with nothing holding it, the painted bromeliad on a
+  // third of them only, and the boughs not all one thickness. Draw only: the walkable tops and the beat are unchanged.
+  const boughs = P.filter((p) => p.style === 'branch' && p.type !== 'bouncy' && p.height < 50).sort((a, b) => a.x + a.width - (b.x + b.width));
+  const LOOK = stream(seed * 104729 + 7);
+  for (const p of boughs) {
+    p.bare = LOOK.f() < 0.67;
+    p.thick = Math.round((0.82 + LOOK.f() * 0.45) * 100) / 100;
+  }
+  // (the kapoks the boughs grow from, the lead's second look, 2026-11-04: few and huge, unevenly spaced; a bough grows out of a trunk at
+  // ONE end and its other end tucks into a leafy clump; a bough with no trunk at either end tucks into leaves at both)
+  const trunks: Array<{ x: number; topY: number; bottomY: number; w: number }> = [];
+  const leaves: Array<{ x: number; y: number; w: number; flip?: boolean }> = [];
+  const byX = [...boughs].sort((a, b) => a.x - b.x);
+  let every = 2 + Math.floor(LOOK.f() * 3), since = every;
+  for (const p of byX) {
+    const half = (t: { w: number }) => (84 * t.w) / 2;
+    const atL = trunks.find((t) => Math.abs(t.x - p.x) < half(t) * 0.7);
+    const atR = trunks.find((t) => Math.abs(t.x - (p.x + p.width)) < half(t) * 0.7);
+    let grows = atL ? 'L' : atR ? 'R' : '';
+    // (a new kapok every 2-4 boughs, at this bough's left or right end, never crowding the last)
+    if (!grows && ++since >= every && !trunks.some((t) => Math.abs(t.x - p.x) < 380)) {
+      const w = Math.round((1.6 + LOOK.f()) * 100) / 100;
+      const left = LOOK.f() < 0.5;
+      trunks.push({ x: Math.round(left ? p.x + 10 : p.x + p.width - 10), topY: -1200, bottomY: shift + BANK_H, w });
+      grows = left ? 'L' : 'R';
+      since = 0;
+      every = 2 + Math.floor(LOOK.f() * 3);
+    }
+    const leaf = (x: number, flip: boolean) => leaves.push({ x: Math.round(x), y: p.y + 8, w: Math.round(120 + LOOK.f() * 50), flip });
+    if (grows !== 'L') leaf(p.x - 6, true);
+    if (grows !== 'R') leaf(p.x + p.width + 6, false);
   }
   const floorY = shift;
   const H0 = floorY + HOLLOW + BANK_H + 20;
@@ -395,9 +453,111 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     heartFalls: guarded,
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces, timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
     proto: {
-      hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups,
+      hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, choice, trunks, leaves,
       // the forest floor turns to the canopy as he rises (World 1's canopy strips, as on 1-8 and the top of 1-4)
       rise: { y0: Math.round(floorY - (floorY - crown.y) * CANOPY_FROM), y1: Math.round(floorY - (floorY - crown.y) * CANOPY_FULL) },
     },
   };
+}
+
+/** the shared path's share of the petals, and each road's (Matt, 2026-11-04: 70/30, 15% on each road of the choice) */
+export const SPLIT = { shared: 0.7, road: 0.15 } as const;
+
+/**
+ * 1-1's petals split 70/15/15 (Matt, 2026-11-04: "keep the core amount on places that the player always have to use"): run after the
+ * petal pass, which lays most of them. A petal over the choice belongs to the road whose ledge is nearer; each road is then topped up on
+ * its own ledges (middle first, then the thirds) or trimmed from its far end, to 15/70 of the shared path's count. So either road
+ * reaches 85%, and 100% takes a replay. Records the roads' petals in proto.roads.
+ */
+export function splitPetals(st: GeneratedStage & { proto: { choice?: { low: Array<[number, number, number]>; high: Array<[number, number, number]> }; roads?: { low: number[]; high: number[] } } }) {
+  const ch = st.proto.choice;
+  if (!ch) return;
+  const C = st.collectibles;
+  const all = [...ch.low, ...ch.high];
+  const x0 = Math.min(...all.map((l) => l[0])), x1 = Math.max(...all.map((l) => l[1]));
+  const dist = (c: Collectible, ls: Array<[number, number, number]>) =>
+    Math.min(...ls.map(([a, b, y]) => Math.hypot(Math.max(0, a - c.x, c.x - b), c.y - (y - 34))));
+  const isP = (c: Collectible) => c.type === 'flower';
+  const inChoice = (c: Collectible) => c.x >= x0 && c.x <= x1;
+  const of = (k: 'low' | 'high') => C.filter((c) => isP(c) && inChoice(c) && (k === 'low' ? dist(c, ch.low) <= dist(c, ch.high) : dist(c, ch.high) < dist(c, ch.low)));
+  let cid = Math.max(0, ...C.map((c) => c.id)) + 1;
+  const want = () => Math.round((C.filter((c) => isP(c) && !inChoice(c)).length * SPLIT.road) / SPLIT.shared);
+  // (a petal may go where the petal rules hold: reachable, not tucked under a bough, not under a jump's arc, no clump or row, at most
+  // PER_SCREEN on a screen)
+  const fits = (c: Collectible, k: 'low' | 'high') => {
+    if (C.some((o) => isP(o) && Math.abs(o.x - c.x) < 45 && Math.abs(o.y - c.y) < 45)) return false;
+    // (never under the high road by the fork: a petal there pulls a player off the road he chose, and back up again)
+    if (under(c, k)) return false;
+    if (badPickups({ platforms: st.platforms, vines: st.vines }, [c]).length) return false;
+    const near = C.filter((o) => isP(o) && Math.abs(o.x - c.x) < SCREEN.w * 1.5);
+    const with_ = [...near, c];
+    // (a new petal can make a neighbour the extra one of a clump or a row: compare with and without it)
+    if (busiestScreen(with_).n > PER_SCREEN) return false;
+    if (clumpExtras(with_).size > clumpExtras(near).size) return false;
+    if (rowExtras(with_).size > rowExtras(near).size) return false;
+    return !offArc(st, [c]).size;
+  };
+  // (the petal pass's petals there go first, for the same reason)
+  // (by the fork: a petal under the high road's start drew a player straight back down off it; further on, the high road ends in a drop
+  // to the low road anyway)
+  const hx0 = Math.min(...ch.high.map((l) => l[0]));
+  const under = (c: Collectible, k: 'low' | 'high') => k === 'low' && c.x < hx0 + 700 && ch.high.some(([a, b, y]) => c.x > a - 60 && c.x < b + 60 && y < c.y && c.y - y < 420);
+  for (const k of ['low', 'high'] as const) for (const c of of(k)) if (under(c, k)) C.splice(C.indexOf(c), 1);
+  for (const k of ['low', 'high'] as const) {
+    const on = of(k).sort((a, b) => a.x - b.x);
+    const w = want();
+    while (on.length > w) C.splice(C.indexOf(on.pop()!), 1);
+    // (spread along the road: its ledges' middles, then their thirds, in passes along the road)
+    const spots: Array<[number, number]> = [];
+    for (const f of [0.5, 0.25, 0.75]) for (const [a, b, y] of [...ch[k]].sort((p, q) => p[0] - q[0])) if (b - a >= 60) spots.push([Math.round(a + (b - a) * f), y - 34]);
+    for (const [sx, sy] of spots) {
+      if (on.length >= w) break;
+      const c: Collectible = { id: cid, type: 'flower', botanicalVariant: 'orchid', x: sx, y: sy, collected: false, bobPhase: (sx * 0.031) % 6.28 };
+      if (!fits(c, k)) continue;
+      cid++;
+      C.push(c);
+      on.push(c);
+    }
+  }
+  // (where a road could not hold its share without crowding, the shared path gives up petals instead, from its busiest stretches, so the
+  // split stays 70/15/15)
+  const road = Math.min(of('low').length, of('high').length);
+  for (const k of ['low', 'high'] as const) {
+    const on = of(k).sort((a, b) => a.x - b.x);
+    while (on.length > road) C.splice(C.indexOf(on.pop()!), 1);
+  }
+  const sharedWant = Math.round((road * SPLIT.shared) / SPLIT.road);
+  let shared = C.filter((c) => isP(c) && !inChoice(c));
+  while (shared.length > sharedWant) {
+    const b = busiestScreen(shared);
+    const inWin = shared.filter((c) => c.x >= b.x && c.x <= b.x + SCREEN.w && Math.abs(c.y - b.y) <= SCREEN.h / 2);
+    const drop = inWin[Math.floor(inWin.length / 2)] ?? shared[shared.length - 1];
+    C.splice(C.indexOf(drop), 1);
+    shared = shared.filter((c) => c !== drop);
+  }
+  st.proto.roads = { low: of('low').map((c) => c.id), high: of('high').map((c) => c.id) };
+}
+
+/**
+ * 1-1's dressing kept off the play line (the lead's polish review, 2026-11-04: a white orchid stood on Pokey at the shrine, another hung
+ * in the air in the finale): no piece over the shrine, none standing in the air he walks or jumps through over a ledge, and none
+ * hanging with nothing under or over it to grow from.
+ */
+export function clearDress(st: { platforms: Platform[]; collectibles: Collectible[]; proto: { dress?: Array<{ n: string; x: number; b: number }> } }, size: (n: string) => { w: number; h: number }) {
+  const ds = st.proto.dress;
+  if (!ds?.length) return;
+  const shrine = st.collectibles.find((c) => c.type === 'exit_totem');
+  const solid = st.platforms.filter((p) => p.type !== 'bouncy');
+  st.proto.dress = ds.filter((d) => {
+    const { w, h } = size(d.n);
+    const x0 = d.x - w / 2, x1 = d.x + w / 2, top = d.b - h;
+    if (shrine && x1 > shrine.x - 260 && x0 < shrine.x + 260 && d.b > shrine.y - 300 && top < shrine.y + 120) return false;
+    // (in the air over a ledge, where he walks and jumps: 0-170 px over its top)
+    if (solid.some((p) => x1 > p.x + 4 && x0 < p.x + p.width - 4 && d.b > p.y - 170 && top < p.y - 4)) {
+      // (standing on the ledge's top at its own end is set dressing at the edge; anything else there is in the way)
+      if (!solid.some((p) => Math.abs(d.b - p.y) < 8 && (x1 < p.x + 40 || x0 > p.x + p.width - 40))) return false;
+    }
+    // (grows from something: its foot on a top, or its head under a bough's underside)
+    return solid.some((p) => x1 > p.x && x0 < p.x + p.width && (Math.abs(d.b - p.y) < 10 || Math.abs(top - (p.y + p.height)) < 12));
+  });
 }

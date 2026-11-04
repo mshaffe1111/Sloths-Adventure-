@@ -295,6 +295,11 @@ export interface Platform {
   /** a creaking limb (1-4 on, World 1's own branch art): seconds it holds once stepped on (instead of the usual 1.1); unlike crumbleAfter it
    *  keeps the branch's look (the notch and the shake), not World 7's tiles */
   creak?: number;
+  /** drawn as bare bark: the branch picture without its bromeliad and moss (1-1's canopy: one plant stamped on every bough read as
+   *  repeated; draw only) */
+  bare?: boolean;
+  /** the branch picture drawn this much thicker or thinner (0.8-1.3; draw only, the walkable top is unchanged) */
+  thick?: number;
   /** a boss ledge that starts cracking (becomes fragile) from this phase of the fight */
   crackFrom?: number;
   broken?: boolean;

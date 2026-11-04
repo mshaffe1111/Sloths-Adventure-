@@ -45,6 +45,16 @@ export function setKitWorld(w: number) {
 }
 /** the world being played (World 1 paints its pits: w1Pits.ts) */
 let stageWorld = 1;
+/** trunks drawn behind a stage's boughs that are scenery, not climbs (1-1's canopy: no bough floats with nothing holding it) */
+type DecoTrunk = { x: number; topY: number; bottomY: number; w?: number };
+type DecoLeaves = { x: number; y: number; w: number; flip?: boolean };
+let decoTrunks: ReadonlyArray<DecoTrunk> = [];
+/** the leafy clumps the boughs' free ends tuck into (1-1's canopy), drawn behind the boughs */
+let decoLeaves: ReadonlyArray<DecoLeaves> = [];
+export function setDecoTrunks(t: ReadonlyArray<DecoTrunk> | undefined, leaves?: ReadonlyArray<DecoLeaves>) {
+  decoTrunks = t ?? [];
+  decoLeaves = leaves ?? [];
+}
 /** a step down to the next bank this short (px) is a plinth's: its painted end stops at the lower bank's top with no fade */
 const SHORT_STEP = 60;
 let groundOn = false;
@@ -472,7 +482,7 @@ export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state:
   if (!protoArtReady()) return false;
   const f = frameOf('branch').f;
   // the painted branch is thicker than the walkable strip: its top lines up with the platform top
-  const h = Math.max(30, Math.min(54, (p.width * f.h) / f.w));
+  const h = Math.max(30, Math.min(54, (p.width * f.h) / f.w)) * (p.thick ?? 1);
   // the bark's top on the walkable top (2 px down, so his feet sink into the moss a touch rather than hover)
   const name: Name = state === 'creak' ? 'branchCreak' : 'branch';
   const y = p.y + 2 - solidTop(name, 0.29) * h;
@@ -496,7 +506,15 @@ export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state:
   }
   const { img, f: fr } = frameOf(name);
   // (each slice 0.5 px wider, so no hairline of background shows between them)
+  // (bare: only the bark, from just above the walkable top down; the painted plant and moss above it left out)
+  if (p.bare) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(p.x - 80, p.y + 1, p.width + 160, h + 12);
+    ctx.clip();
+  }
   for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c.sx * fr.w, fr.y, c.sw * fr.w, fr.h, c.dx, y, c.dw + 0.5, h);
+  if (p.bare) ctx.restore();
   return true;
 }
 
@@ -1191,6 +1209,41 @@ export function drawProtoScene(
       else blit(ctx, 'trunk', v.x - tw / 2, y, tw, th);
     }
     ctx.restore();
+  }
+  // the scenery trunks: the same painted kapok, set back in the shade (darker), so it reads as the tree behind and not a climb
+  for (const v of decoTrunks) {
+    if (v.x < view.x0 - 260 || v.x > view.x1 + 260 || v.bottomY < vy0 - 40 || v.topY > vy1 + 40) continue;
+    const tw = 84 * (v.w ?? 1);
+    const th = (tw * tf.h) / tf.w;
+    const y0 = Math.max(v.topY, vy0 - 40), y1 = Math.min(v.bottomY, vy1 + 40);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(v.x - tw, y0, tw * 2, y1 - y0);
+    ctx.clip();
+    // (opaque: see-through, the pieces' overlaps showed as rings; at 1.6-2.6 times a climb trunk's width it reads as a kapok, not a climb)
+    // (the pieces overlap by their painted cap, scaled with the trunk: at 2x the plain 6 px left a cut ring showing between them)
+    const lap = Math.max(6, th * 0.12);
+    for (let y = v.bottomY - th; y > v.topY - th; y -= th - lap) {
+      if (y > vy1 + 20 || y + th < vy0 - 20) continue;
+      blit(ctx, 'trunk', v.x - tw / 2, y, tw, th);
+    }
+    ctx.restore();
+  }
+  // the leafy clumps the boughs' free ends tuck into (World 1's painted bush), behind the boughs
+  if (decoLeaves.length) {
+    load2();
+    if (ready2 && img2) {
+      const b = PROTO2_FRAMES.bushWide;
+      for (const l of decoLeaves) {
+        if (l.x < view.x0 - 200 || l.x > view.x1 + 200 || l.y < vy0 - 200 || l.y > vy1 + 200) continue;
+        const bh = (l.w * b.h) / b.w;
+        ctx.save();
+        ctx.translate(l.x, l.y);
+        if (l.flip) ctx.scale(-1, 1);
+        ctx.drawImage(img2, b.x, b.y, b.w, b.h, -l.w / 2, -bh * 0.62, l.w, bh);
+        ctx.restore();
+      }
+    }
   }
   // branches (a perch where a climb trunk ends under one)
   const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope);
