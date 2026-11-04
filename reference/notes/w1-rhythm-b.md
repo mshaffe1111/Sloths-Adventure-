@@ -56,3 +56,18 @@ No stage-build method file exists (stage-fix.md points to a `stage-build.md` tha
   - 1-1 with real pits in the finale: adult 7-9 lives, 2 game overs every run (the mushroom and the finale's first gaps). Now the
     finale falls cost a heart and set him back at the gap (heartFalls; the last heart costs a life): adult 2-3 lives, a game over
     on 1 of 3 seeds; kid 184-202 s, 0-1 lives.
+
+## Late afternoon (3:20-5:00 PM ET)
+- Matt's approved Dot lines wired exactly (dotLinesData rows; the double-jump tip shows "Flick up again in the air!", the engine text
+  kept as the journal's key). Checked through engineGuideLine: all six come out word for word.
+- 1-4's creaking limbs are the climbing variant now (1-2 teaches crumbling): the beat is "Ramp: creaking limbs"; the first limb stays
+  over a bough one hop down; the lesson card is the global one-time crumble card, so 1-4 shows none once 1-2 has.
+- 1-1's petals split 70/15/15 (Matt): splitPetals runs after the petal pass, classifies by the nearer road ledge, tops each road up
+  on its own ledges inside the petal rules (reach, tucked, arc, clumps, rows, 6 a screen) and trims the shared path to match. Both
+  roads run side by side, so a road holds 6-14 petals without crowding: 1-1 now has 53-80 petals on Normal (was ~80), 73-107 on Easy.
+- FOUND: the high road's mushroom sat on the walking line, so every player bounced up and the low road was only a drop through a
+  bough (the bots' "the way on is 205 px down" stalls). Now on a perch one jump up; walking on takes the low road. Real-engine test.
+- The low road bites every third gap on Normal too (guarded: a heart and back); a bough under the finale's mushroom on Normal.
+- Hash (3,264 builds, layouts 1-16, both settings): only 1-1 and 1-4 differ from the lead branch.
+- Bots (fixed bot): 1-1 kid 174-184 s, 0-1 lives; adult 208-239 s, 2 lives, 0 game overs. 1-4 kid 161-184 s, 0 lives; adult
+  169-266 s, 0-1 lives.
