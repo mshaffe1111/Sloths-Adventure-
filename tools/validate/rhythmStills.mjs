@@ -33,7 +33,10 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
       // (1-2's rotten wood: Pokey beside the first rotten branch over the base bough, and beside each rotten stretch of the bough leg,
       // on the side he comes from: the leg runs right to left)
       e.platforms.filter((q) => q.type === 'fragile').sort((a, c) => a.y - c.y || a.x - c.x).filter((q, k, all) => q.y >= 600 || all.findIndex((o) => o.y < 600) === k)
-        .map((q, k) => ({ i: 90 + k, tag: 'rot', tier: q.y >= 600 ? 'B' : 'A', x: Math.round(q.y >= 600 ? q.x + q.width + 50 : q.x - 60), y: q.y >= 600 ? q.y : 330 })),
+        .map((q, k) => ({ i: 90 + k, tag: 'rot', tier: q.y >= 600 ? 'B' : 'A', x: Math.round(q.y >= 600 ? q.x + q.width + 50 : q.x - 60), y: q.y >= 600 ? q.y : 330 }))
+        .filter(() => e.currentStage?.config?.id === '1-2'),
+      // (1-5's coiled boas: Pokey 180 px before each, the boa in view ahead of him)
+      e.enemies.filter((m) => m.type === 'boa').map((m, k) => ({ i: 80 + k, tag: 'boa', tier: '', x: Math.round(m.x - 180), y: m.y + 16 })),
     );
   }, E);
   for (const s of spots) {

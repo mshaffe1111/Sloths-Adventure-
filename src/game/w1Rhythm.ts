@@ -929,7 +929,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     if (b.x0 - a.x1 < 20) continue;
     const y = Math.max(a.y, b.y) + 60;
     P.push({ id: pid++, x: a.x1 - 30, y, width: b.x0 + 50 - (a.x1 - 30), height: 24, type: 'solid', style: 'branch' });
-    P.push({ id: pid++, x: b.x0, y: b.y, width: 50, height: y - b.y, type: 'solid', style: 'moss_stone' });
+    P.push({ id: pid++, x: b.x0, y: b.y, width: 50, height: y - b.y, type: 'solid', style: 'moss_stone', art: 'rock' });
     // (a catch the layout already laid there, 1-5's teach catches: this one replaces it)
     for (const c of L.ledges) if (c.surface === 'catch' && c.x0 < b.x0 && c.x1 > a.x1) c.x1 = c.x0;
   }
