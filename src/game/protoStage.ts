@@ -22,6 +22,7 @@ import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, reachJumpHeld, SAFE } from './physics.ts';
+import { TRICK, vaultGap } from './w1Tricks.ts';
 import { validateStage, type CheckGraph } from './levelCheck.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
@@ -309,8 +310,10 @@ export const NEST_GOAL_48 = 8;
 /** 4-8's falls: how far onto the shelf the water lands (the boulder's last stretch), and how far above the shelf it pours from */
 const FALL_LIP = 60;
 const FALL_HEAD = 280;
-/** 1-3 Branch Snakes asks for 16 snakes, not 10: the stage holds about 25, so the punching it teaches is most of the way through */
-export const SNAKE_GOAL_13 = 16;
+/** 1-3 Branch Snakes asks for 6 (R-159.1, the lead's call: a punch now only dazes, so each snake is a punch and a stomp, and the stage
+ *  holds 8-11 snakes with jobs, not 21-24 alike). Provisional: set to what the taught first-timer's route delivers once Dot's stomp line
+ *  is in (counted, reference/plans/R-159.1-combat-triangle.md) */
+export const SNAKE_GOAL_13 = 6;
 
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
@@ -421,6 +424,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   const hints: StageHint[] = [];
   const beats: Array<[number, number, string]> = [];
   const pieces: Array<{ k: PieceKind; x0: number; x1: number }> = [];
+  /** the stomp vaults built (R-159.1): the snake, the gap's edges, and whether a soft pit is under it */
+  const vaults: Array<{ x: number; edge: number; far: number; soft: boolean }> = [];
   let pid = 1, vid = 1, tid = 1, eid = 1, cid = 1, seedN = 0;
   /** how long a quick, sure player takes (s): running at full speed, swinging at about 430 px/s, climbing at 220 px/s, pushing at 120 */
   let expert = 0;
@@ -1370,7 +1375,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     mushroomCache: () => mushroomCache(), highRoadOver: () => highRoadOver(), homeRun: (kinds) => homeRun(kinds),
     trailUp: (n) => trailUp(n), petalClimb: () => petalClimb(), petalPerch: () => petalPerch(), splitTrail: () => splitTrail(),
     dipArc: () => dipArc(), doubleArcs: (t) => doubleArcs(t),
-    snakeBranches: (n, y) => snakeBranches(n, y), ropeGap: (g, b, t) => ropeGap(g, b, t), snakeWalk: (m) => snakeWalk(m), snakeLedge: () => snakeLedge(),
+    snakeBranches: (n, y) => snakeBranches(n, y), ropeGap: (g, b, t) => ropeGap(g, b, t), snakeWalk: (m) => snakeWalk(m), snakeLedge: () => snakeLedge(), snakeVault: (soft) => snakeVault(soft),
     climbTree: (t) => climbTree(t), fernTree: () => fernTree(), glideLookout: () => glideLookout(), creakRun: () => creakRun(),
     chain: (n, soft, rocks) => chain(n, soft, soft ? 'hollow' : 'gorge', rocks), kapok: () => kapok(), canopy: (g) => canopy(g), highRun: () => highRun(),
     logPuzzle: (b) => logPuzzle(b), seesawRoom: (d) => seesawRoom(d), seesawTwist: () => seesawTwist(),
@@ -1863,6 +1868,37 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     run(R.r(190, 230));
     expert += (x - x0) / RUN + 1.6;
     pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
+  /**
+   * R-159.1 the stomp vault: a snake waits on the lip of a gap past any jump (w1Tricks.ts vaultGap: a full jump and the second jump fall
+   * short), the petals arcing from it along the bounce; stomped with jump held it springs him across. `soft`: a soft pit under it
+   * (its first meeting, 1-3: a miss is a climb back out); otherwise a real drop (the far stages).
+   */
+  function snakeVault(soft: boolean) {
+    const x0 = x;
+    // (a flat run-up, nothing else near: the snake is the only thing to read)
+    run(R.r(280, 320));
+    const edge = x;
+    close();
+    const sx = edge - TRICK.vaultLip;
+    snake(sx, G, 12);
+    const gap = vaultGap(reachJump(0, true));
+    const far = edge + gap;
+    if (soft) softPit(edge, far);
+    // the petals: an arc from the snake along the vault's own path, so the way across is drawn in the air
+    // (low enough that each can be had by a jump from the lip, the far bank or the pit floor too: the stage's reach check moved a higher
+    // arc's top petals, which only the vault itself reaches)
+    const span = far + 60 - sx;
+    for (let k = 1; k <= 6; k++) {
+      const t = k / 7;
+      flower(sx + span * t, G - 60 - 95 * Math.sin(Math.PI * t), 'orchid');
+    }
+    open(far);
+    run(R.r(240, 280));
+    expert += (x - x0) / RUN + 3;
+    pieces.push({ k: 'snakes', x0, x1: x });
+    vaults.push({ x: sx, edge, far, soft });
   }
 
   if (plan === '1-5') {
