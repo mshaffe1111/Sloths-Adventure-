@@ -50,3 +50,16 @@ moves on the music's beat (beatTrace.ts). For fixing one unfair spot in an exist
 - The validator reads rests as empty 5-second windows on a fixed grid (being changed by fix-petals to "1.0 s of no hard input").
   Its quick clock adds 0.5 s to every jump, so "tight" is out of reach at one jump per half note.
 - Five rests of 5 s read slow (the lead): 2-3 rests of 3-4 s, each with something to look at.
+
+## Pitfalls we paid for (1-1, 1-4, afternoon 2026-11-04)
+- **Easy must reach the builder through the game's own door.** generateStage did not pass Easy to buildProtoStage, so a builder's Easy
+  path ran in its tests and never in the game (and the fun gate measured Normal geometry as Easy). Add the stage to the generator's
+  set (EASY_BUILT / RHYTHM_STAGES), and measure Easy through RealPlay or the validator, never only by calling the builder.
+- **A liana needs its own air.** A later bough laid back across a swing hung the liana through it. A bough over a liana sits at its top,
+  so the liana hangs from it. Test: no bough crosses a liana's line, and each liana hangs from one.
+- **A bounce reads as no input** (1.5-2 s on Easy): start the next node's apron just past the landing, or it is a dead walk.
+- **Count a knot's width in a rest's length**, or adding knots stretches the rest past 4 s.
+- **Quarter-note hops down merge on Easy** (wider pads, lower drops): play them at half the pace on Easy.
+- **Stage 1's climax**: real pits there cost a first-timer adult 7-9 lives, with two game overs a run. Falls that cost a heart and set
+  him back at the gap (heartFalls) still bite, at 2-3 lives. Run the adult bot before calling a climax fair.
+- **Gate entries flip on borderline shares** (80% vs 80.4%): judge the 16-layout count, not one layout.

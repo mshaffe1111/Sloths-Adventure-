@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { buildProtoStage, EXPERT_SECONDS } from './protoStage.ts';
 import { RealPlay } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
+import { badPickups } from './flowerReach.ts';
+import { normalGoal } from './goals.ts';
 import type { LevelConfig } from './types.ts';
 
 // 1-1 Into the Canopy, rebuilt on the beat (w1Rise.ts, w1-rhythm-b 2026-11-04): the old plan's tests (learn, test, twist, finish; nothing
@@ -143,11 +145,15 @@ test('fallZones in the real engine: outside a zone a long fall lands as it alway
   const flagAt = st.checkpoints.find((c) => c.x > fin[0] - 10)!;
   sim.stand(flagAt.x, flagAt.y);
   sim.wait(0.3);
-  const z = st.fallZones.filter((q) => q.x0 > fin[0] - 300).sort((a, b) => b.x0 - a.x0)[0];
-  const ledge = sim.platforms.find((p) => p.type === 'solid' && p.x + p.width > z.x0 + 30 && p.x + p.width < z.x0 + 400 && p.x < z.x0 + 30)!;
+  // (a finale bough with open air past its end: nothing under the next 100 px for 450 px down)
+  const open = (p: { x: number; width: number; y: number }) => !sim.platforms.some((q) => q !== p && q.x < p.x + p.width + 100 && q.x + q.width > p.x + p.width + 10 && q.y > p.y - 10 && q.y < p.y + 450);
+  const ledge = sim.platforms.filter((p) => p.type === 'solid' && p.x > fin[0] + 300 && p.x + p.width < fin[1] - 300 && st.fallZones.some((q) => p.x + p.width > q.x0 && p.x + p.width < q.x1) && open(p)).sort((a, b) => b.x - a.x)[0]!;
   sim.stand(ledge.x + ledge.width - 30, ledge.y);
   sim.wait(0.2);
+  // (on his last heart: on Normal a finale fall is a heart and back at the gap while he has hearts, a life on the last)
+  sim.p.hp = 1;
   for (let f = 0; f < 150; f++) sim.frame({ right: f < 18 });
+  // (back at the last flag he reached: the finale's, where he stood; being put past the next flag does not take it)
   assert.ok(Math.abs(sim.p.x - flagAt.x) < 140 && Math.abs(sim.p.y - flagAt.y) < 4, `back at the finale's flag (${Math.round(sim.p.x)}, ${Math.round(sim.p.y)}) vs (${flagAt.x}, ${flagAt.y})`);
 });
 
@@ -167,4 +173,59 @@ test('in the air against a wall too tall to catch, his drawing stands off the fa
   assert.equal(Math.round(x), 1000 - 19, 'his body still stops against the face');
   for (let f = 0; f < 40; f++) sim.frame({});
   assert.ok(Math.abs(sim.e.wallOff) < 0.5, 'and comes back once he is off it');
+});
+
+test('1-1: the petals split 70/30 (Matt, 2026-11-04): the shared path 66-74%, each road of the choice 13-17%, the goal reachable either way, every petal reachable', () => {
+  for (const easy of [false, true]) {
+    for (const s of SEEDS) {
+      const st = buildProtoStage(cfg, s, '1-1', easy);
+      const petals = st.collectibles.filter((c) => c.type === 'flower');
+      const n = petals.length;
+      const { low, high } = st.proto.roads!;
+      const shared = n - low.length - high.length;
+      const tag = `seed ${s} ${easy ? 'Easy' : 'Normal'}`;
+      assert.ok(shared / n >= 0.66 && shared / n <= 0.74, `${tag}: shared ${shared}/${n}`);
+      for (const r of [low, high]) assert.ok(r.length / n >= 0.13 && r.length / n <= 0.17, `${tag}: a road ${r.length}/${n}`);
+      // (the roads' petals are petals the stage holds, and no petal is on both)
+      assert.equal(new Set([...low, ...high]).size, low.length + high.length);
+      for (const id of [...low, ...high]) assert.ok(petals.some((c) => c.id === id), `${tag}: petal ${id}`);
+      // (the lead: goal <= shared + the smaller road - 5%; 1-1 is a sprint with no petal goal today, so 0, but the rule holds by math)
+      const goal = normalGoal(st) ?? 0;
+      assert.ok(goal <= shared + Math.min(low.length, high.length) - 0.05 * n, `${tag}: goal ${goal}`);
+      assert.deepEqual(badPickups({ platforms: st.platforms, vines: st.vines }, st.collectibles), [], tag);
+    }
+  }
+});
+
+test('1-1 in the real engine: at the choice, walking on passes under the mushroom\'s perch to the low road; on the perch the mushroom puts him on the high road', () => {
+  // (the mushroom used to sit on the walking line: every player bounced up, and the low road was only a drop through a bough)
+  const sim = new RealPlay('1-1', 1);
+  sim.safe = false;
+  const st = sim.stage as unknown as { proto: { beats: Array<[number, number, string]> } };
+  const ch = st.proto.beats.find((b) => b[2].startsWith('Choice'))!;
+  const m = sim.platforms.find((p) => p.type === 'bouncy' && p.x > ch[0] - 200 && p.x < ch[0] + 600)!;
+  const perch = sim.platforms.find((p) => p.type === 'solid' && Math.abs(p.y - (m.y + 30)) < 2 && p.x <= m.x && p.x + p.width >= m.x + m.width)!;
+  assert.ok(perch, 'the mushroom stands on a perch');
+  const path = sim.platforms.filter((p) => p.type === 'solid' && p.y > perch.y + 60 && p.y < perch.y + 140 && p.x < perch.x && p.x + p.width > perch.x).sort((a, b) => a.y - b.y)[0];
+  assert.ok(path, 'the path runs on under the perch');
+  // walking on, no jump
+  // (no root knot under the perch or just before it)
+  assert.ok(!sim.platforms.some((p) => p.style === 'moss_stone' && p.x < perch.x + perch.width && p.x + p.width > perch.x - 60), 'no knot under the perch');
+  sim.stand(perch.x - 50, path.y);
+  sim.wait(0.2);
+  let topY = sim.p.y;
+  for (let f = 0; f < 75; f++) { sim.frame({ right: true }); topY = Math.min(topY, sim.p.y); }
+  assert.ok(sim.p.x > perch.x + perch.width + 60, `walked on to ${Math.round(sim.p.x)}`);
+  assert.ok(topY > perch.y, 'never up on the perch or the high road');
+  // on the perch: on along it onto the mushroom
+  const hi = new RealPlay('1-1', 1);
+  hi.safe = false;
+  hi.stand(perch.x + 10, perch.y);
+  hi.wait(0.2);
+  let landedHigh = false;
+  for (let f = 0; f < 120 && !landedHigh; f++) {
+    hi.frame({ right: true });
+    if (hi.p.grounded && hi.p.y < perch.y - 150) landedHigh = true;
+  }
+  assert.ok(landedHigh, 'the mushroom put him on the high road');
 });

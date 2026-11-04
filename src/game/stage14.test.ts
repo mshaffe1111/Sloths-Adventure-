@@ -16,7 +16,7 @@ test('1-4: every roll keeps the plan (the kept start, then creaking limbs, the c
   for (const easy of [false, true]) for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-4', easy);
     const names = st.proto.beats.map((b) => b[2]);
-    assert.deepEqual(names.slice(0, 8).map((n) => n.split(':')[0]), ['Learn', 'Test', 'Teach', 'Spike', 'Ramp', 'Rest', 'Ramp', names[7].split(':')[0]], `seed ${s}`);
+    assert.deepEqual(names.slice(0, 8).map((n) => n.split(':')[0]), ['Learn', 'Test', 'Ramp', 'Spike', 'Ramp', 'Rest', 'Ramp', names[7].split(':')[0]], `seed ${s}`);
     assert.deepEqual(names.slice(7, 9).map((n) => n.split(':')[0]).sort(), ['Counter', 'Twist'], `seed ${s}: the high lift and the rope onto a limb, in either order`);
     assert.deepEqual(names.slice(9).map((n) => n.split(':')[0]), ['Climax', 'Cool-down'], `seed ${s}`);
     // the creaking limbs: 0.6 s on Normal, longer on Easy (a cruise)

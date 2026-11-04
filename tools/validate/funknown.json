@@ -5,13 +5,6 @@
    "stage": "1-1",
    "setting": "easy",
    "rule": "dead walk",
-   "layouts": 13,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-1",
-   "setting": "easy",
-   "rule": "nothing bites",
    "layouts": 8,
    "owner": "World 1 rebuild (D26)"
   },
@@ -34,13 +27,6 @@
    "setting": "easy",
    "rule": "repeat",
    "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-1",
-   "setting": "normal",
-   "rule": "nothing bites",
-   "layouts": 7,
    "owner": "World 1 rebuild (D26)"
   },
   {

@@ -52,7 +52,7 @@ import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
 import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { W4Roll } from './w4Sections.ts';
-import { buildIntoCanopy } from './w1Rise.ts';
+import { buildIntoCanopy, splitPetals } from './w1Rise.ts';
 import { APRON, easyNode, stageBpm, traceNode, type Step } from './beatTrace.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
@@ -136,6 +136,10 @@ export interface ProtoExtras {
   /** a stage that climbs from the forest floor into the trees (1-1, w1Rise.ts): from height y0 to y1 (world y) the backdrop turns to the
    *  world's canopy strips (engine.ts setCanopy, as 1-8's and the ascents') */
   rise?: { y0: number; y1: number };
+  /** 1-1's choice: the petals on each road, by id (the rest are on the shared path: 70/15/15, Matt 2026-11-04) */
+  roads?: { low: number[]; high: number[] };
+  /** 1-1's choice: each road's ledges [x0, x1, y], for the split (w1Rise.ts splitPetals) */
+  choice?: { low: Array<[number, number, number]>; high: Array<[number, number, number]> };
   /** 6-8's dressing from Matt's painted World 6 pieces: hides and arches on the shelves, the root wall behind (w6StiltArt.ts) */
   stilt?: import('./w6StiltArt.ts').StiltDecor[];
   /** 6-8's ledges painted in Matt's other World 6 pieces (their platforms are art 'stilt': w6StiltArt.ts) */
@@ -358,6 +362,8 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
 export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto', easy = false): GeneratedStage & { proto: ProtoExtras } {
   // water taught before it costs a life (LV-8), the petal trail (petalPass.ts): the pickups are final before the dressing sees them
   const st = petalPass(teachWater(buildPlan(config, seed, plan, easy)));
+  // (1-1: the petals split 70/15/15 between the shared path and the choice's two roads, once the petal pass has laid them)
+  if (plan === '1-1') splitPetals(st);
   // (5-3's quota is a share of the flowers it holds: of those the petal pass kept)
   if (plan === '5-3') st.config = { ...st.config, targetCount: Math.round(st.collectibles.filter((c) => c.type === 'flower').length * W5_HARVEST_SHARE) };
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
@@ -5884,13 +5890,14 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     const hopUnder = (x0: number, x1: number, y: number) => {
       if (!blocked(x0 - 30, x1 + 30, y + 90)) ledge(x0 - 30, x1 + 30, y + 90);
     };
-    // (the way each node goes is planned so the climb fits the tree: the teaching run goes to the side with room, the spike comes back,
+    // (the way each node goes is planned so the climb fits the tree: the creaking run goes to the side with room, the spike comes back,
     // the swing carries on, the fork turns, across the tree is always to the left, so the high lift (built going right) has its room)
     let way: 1 | -1 = roomTo(-1) > roomTo(1) ? -1 : 1;
 
-    // ---- 4. Creaking limbs, taught: one limb over a drop of one hop onto a wide bough, a whole bar's wait, then two limbs and a bough.
+    // ---- 4. Creaking limbs, the climbing kind (1-2 teaches crumbling first, the rotten wood): one limb over a drop of one hop onto a
+    // wide bough (a miss is safe), a whole bar's wait, then two limbs and a bough.
     // A limb is left on the next half note at the latest (it holds 0.6 s); the waits are on the boughs.
-    beat('Teach: creaking limbs', () => {
+    beat('Ramp: creaking limbs', () => {
       // (the lift's ledge is the room's far end: back the other way the run would lie over its basket and plank, where the acorn is
       // thrown and the plank rides (Matt, 2026-10-29). On to the right; with no room there, a trunk up out of the room's air first)
       way = 1;
@@ -5910,7 +5917,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     });
 
     // ---- 5. The spike: up a tall trunk and off its top straight onto the creaking limbs (the pair), four of them at uneven gaps and
-    // heights, back the way he came. A miss drops onto the teaching run, about 340 below: back along it to the trunk, and up again.
+    // heights, back the way he came. A miss drops onto the creaking run, about 340 below: back along it to the trunk, and up again.
     beat('Spike: climb and leap', () => {
       const d = flip(way);
       const tx = d === 1 ? cur.x + 70 : cur.x + cur.width - 70;

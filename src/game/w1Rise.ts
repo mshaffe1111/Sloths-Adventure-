@@ -17,7 +17,8 @@
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, LevelConfig, Platform } from './types.ts';
 import { PHYS } from './physics.ts';
-import { fixPickups } from './flowerReach.ts';
+import { badPickups, fixPickups } from './flowerReach.ts';
+import { busiestScreen, clumpExtras, offArc, PER_SCREEN, rowExtras, SCREEN } from './petals.ts';
 import { heartsAtFlags, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
 import { easyNode, stageBpm, traceNode, type NodeSpec, type Step, type Trace } from './beatTrace.ts';
 
@@ -227,6 +228,8 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   };
 
   // ======================================================================================================================== the nodes
+  /** the traces of each road of the choice (the petals' split is made on their ledges after the petal pass: splitPetals) */
+  const roads = { low: { tr: [] as Trace[] }, high: { tr: [] as Trace[] } };
   /** the bank's step heights, this roll */
   const steps = R.pick([[50, 60, 40], [60, 40, 50], [40, 60, 60]]);
 
@@ -314,28 +317,32 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   beat('Choice: the high road or the low', () => {
     const x0 = x;
     const y0 = y;
-    walk(160);
+    // (room past the rest's last root knot: none under the perch, where a hop over one could land him on it)
+    walk(240);
     const forkX = x;
     // the low road
     const lowFrom = x;
-    // (Easy: every third gap open air, Easy's soft fall back to the flag: on Easy the guard under the low road is no hurt, so a catch
-    // under every gap made the whole road cost nothing)
-    const lowU = (i: number): Under => (easy && i % 3 === 2 ? 'pit' : 'catch');
-    node(['h...h...', 'x.x.x...'], [J(0), H(-40), H(-20), H(-35), H(-25)], lowU, { flag: false });
+    // (every third gap open air: on Normal the guard makes a fall there a heart and back at the gap, on Easy a soft fall back; with a catch
+    // under every gap the low road cost nothing, and the two roads must both bite, whichever a player takes)
+    const lowU = (i: number): Under => (i % 3 === 2 ? 'pit' : 'catch');
+    roads.low.tr.push(node(['h...h...', 'x.x.x...'], [J(0), H(-40), H(-20), H(-35), H(-25)], lowU, { flag: false }));
     bounce(BOUNCE_UP - 20, 'branch', 'catch');
     // (a flag on the low road halfway: LV-9, never 4000 px without one)
     flag(x + 60);
-    node(['h.......', 'h...h...', 'x.x.x.x.'], [J(0), H(-30), J(20), H(-35), H(-20), H(-30), H(-25)], lowU, { flag: false });
+    roads.low.tr.push(node(['h.......', 'h...h...', 'x.x.x.x.'], [J(0), H(-30), J(20), H(-35), H(-20), H(-30), H(-25)], lowU, { flag: false }));
     bounce(BOUNCE_UP - 10, 'branch', 'catch');
     guarded.push({ x0: Math.round(lowFrom - 100), x1: Math.round(x + 100) });
     const sx = x, sy = y, sf = from, sk = kind;
-    // the high road
-    P.push({ id: pid++, x: Math.round(forkX - 150), y: y0 - 30, width: 70, height: 30, type: 'bouncy' });
-    y = y0 - BOUNCE_UP;
+    // the high road: a perch one jump up over the path, a mushroom on it (on the walking line, the mushroom took every player up and the
+    // low road was only a drop through a bough, 2026-11-04): jump to the perch for the high road, walk on under it for the low road
+    const PERCH = 95;
+    lay(forkX - 200, forkX - 40, y0 - PERCH, 'branch');
+    P.push({ id: pid++, x: Math.round(forkX - 130), y: y0 - PERCH - 30, width: 70, height: 30, type: 'bouncy' });
+    y = y0 - PERCH - BOUNCE_UP;
     from = forkX - 30;
     kind = 'branch';
     x = forkX - 40;
-    node(['h....o..', '....h...', 'h.......', 'h....o..', '....h...'], [J(0), D(40), J(-20), J(0), D(0), J(-30), J(0)], () => 'pit', { flag: false });
+    roads.high.tr.push(node(['h....o..', '....h...', 'h.......', 'h....o..', '....h...'], [J(0), D(40), J(-20), J(0), D(0), J(-30), J(0)], () => 'pit', { flag: false }));
     lay(from, x, y, 'branch');
     C.push({ id: cid++, type: 'seed', x: Math.round(x - 80), y: y - 40, collected: false, bobPhase: 1, findId: 'seed-1' });
     x = sx;
@@ -361,7 +368,8 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     // hearts a life: as real pits the first-timer adult bot lost 7-9 lives here, two game overs a run; as heart falls, 2 lives and none)
     // (on Easy every gap is open air: Easy's soft fall puts him back, a setback and never a life, so a catch would only make it nothing)
     node(['h...h...', 'h....o..', '....h...'], [J(0), J(20), J(-30), D(120), J(-20)], (i) => (easy || i % 2 === 0 ? 'pit' : 'catch'));
-    bounce(BOUNCE_UP - 15, 'branch', 'pit', 130);
+    // (a bough under the mushroom on Normal: the first-timer adult bot's third life went there on 2 of 3 runs; Easy's soft fall is a setback)
+    bounce(BOUNCE_UP - 15, 'branch', easy ? 'pit' : 'catch', 130);
     flag(x + 80);
     node(['h...h...', 'h....o..', '....h...'], [J(0), H(-40), J(20), D(130), J(0)], (i) => (easy || i % 2 ? 'pit' : 'catch'), { flag: false });
     pieces.push({ k: 'finale', x0, x1: x });
@@ -384,6 +392,9 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     if (h.belowY !== undefined) h.belowY += shift;
     if (h.aboveY !== undefined) h.aboveY += shift;
   }
+  // (the roads' ledges, for the petals' split after the petal pass: splitPetals)
+  const roadLedges = (r: typeof roads.low) => r.tr.flatMap((t) => t.ledges.map((l) => [Math.round(l.x0), Math.round(l.x1), Math.round(l.y + shift)] as [number, number, number]));
+  const choice = { low: roadLedges(roads.low), high: roadLedges(roads.high) };
   const floorY = shift;
   const H0 = floorY + HOLLOW + BANK_H + 20;
   cid = heartsAtFlags(C, checkpoints, cid);
@@ -409,9 +420,87 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     heartFalls: guarded,
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces, timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
     proto: {
-      hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups,
+      hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, choice,
       // the forest floor turns to the canopy as he rises (World 1's canopy strips, as on 1-8 and the top of 1-4)
       rise: { y0: Math.round(floorY - (floorY - crown.y) * CANOPY_FROM), y1: Math.round(floorY - (floorY - crown.y) * CANOPY_FULL) },
     },
   };
+}
+
+/** the shared path's share of the petals, and each road's (Matt, 2026-11-04: 70/30, 15% on each road of the choice) */
+export const SPLIT = { shared: 0.7, road: 0.15 } as const;
+
+/**
+ * 1-1's petals split 70/15/15 (Matt, 2026-11-04: "keep the core amount on places that the player always have to use"): run after the
+ * petal pass, which lays most of them. A petal over the choice belongs to the road whose ledge is nearer; each road is then topped up on
+ * its own ledges (middle first, then the thirds) or trimmed from its far end, to 15/70 of the shared path's count. So either road
+ * reaches 85%, and 100% takes a replay. Records the roads' petals in proto.roads.
+ */
+export function splitPetals(st: GeneratedStage & { proto: { choice?: { low: Array<[number, number, number]>; high: Array<[number, number, number]> }; roads?: { low: number[]; high: number[] } } }) {
+  const ch = st.proto.choice;
+  if (!ch) return;
+  const C = st.collectibles;
+  const all = [...ch.low, ...ch.high];
+  const x0 = Math.min(...all.map((l) => l[0])), x1 = Math.max(...all.map((l) => l[1]));
+  const dist = (c: Collectible, ls: Array<[number, number, number]>) =>
+    Math.min(...ls.map(([a, b, y]) => Math.hypot(Math.max(0, a - c.x, c.x - b), c.y - (y - 34))));
+  const isP = (c: Collectible) => c.type === 'flower';
+  const inChoice = (c: Collectible) => c.x >= x0 && c.x <= x1;
+  const of = (k: 'low' | 'high') => C.filter((c) => isP(c) && inChoice(c) && (k === 'low' ? dist(c, ch.low) <= dist(c, ch.high) : dist(c, ch.high) < dist(c, ch.low)));
+  let cid = Math.max(0, ...C.map((c) => c.id)) + 1;
+  const want = () => Math.round((C.filter((c) => isP(c) && !inChoice(c)).length * SPLIT.road) / SPLIT.shared);
+  // (a petal may go where the petal rules hold: reachable, not tucked under a bough, not under a jump's arc, no clump or row, at most
+  // PER_SCREEN on a screen)
+  const fits = (c: Collectible, k: 'low' | 'high') => {
+    if (C.some((o) => isP(o) && Math.abs(o.x - c.x) < 45 && Math.abs(o.y - c.y) < 45)) return false;
+    // (never under the high road by the fork: a petal there pulls a player off the road he chose, and back up again)
+    if (under(c, k)) return false;
+    if (badPickups({ platforms: st.platforms, vines: st.vines }, [c]).length) return false;
+    const near = C.filter((o) => isP(o) && Math.abs(o.x - c.x) < SCREEN.w * 1.5);
+    const with_ = [...near, c];
+    // (a new petal can make a neighbour the extra one of a clump or a row: compare with and without it)
+    if (busiestScreen(with_).n > PER_SCREEN) return false;
+    if (clumpExtras(with_).size > clumpExtras(near).size) return false;
+    if (rowExtras(with_).size > rowExtras(near).size) return false;
+    return !offArc(st, [c]).size;
+  };
+  // (the petal pass's petals there go first, for the same reason)
+  // (by the fork: a petal under the high road's start drew a player straight back down off it; further on, the high road ends in a drop
+  // to the low road anyway)
+  const hx0 = Math.min(...ch.high.map((l) => l[0]));
+  const under = (c: Collectible, k: 'low' | 'high') => k === 'low' && c.x < hx0 + 700 && ch.high.some(([a, b, y]) => c.x > a - 60 && c.x < b + 60 && y < c.y && c.y - y < 420);
+  for (const k of ['low', 'high'] as const) for (const c of of(k)) if (under(c, k)) C.splice(C.indexOf(c), 1);
+  for (const k of ['low', 'high'] as const) {
+    const on = of(k).sort((a, b) => a.x - b.x);
+    const w = want();
+    while (on.length > w) C.splice(C.indexOf(on.pop()!), 1);
+    // (spread along the road: its ledges' middles, then their thirds, in passes along the road)
+    const spots: Array<[number, number]> = [];
+    for (const f of [0.5, 0.25, 0.75]) for (const [a, b, y] of [...ch[k]].sort((p, q) => p[0] - q[0])) if (b - a >= 60) spots.push([Math.round(a + (b - a) * f), y - 34]);
+    for (const [sx, sy] of spots) {
+      if (on.length >= w) break;
+      const c: Collectible = { id: cid, type: 'flower', botanicalVariant: 'orchid', x: sx, y: sy, collected: false, bobPhase: (sx * 0.031) % 6.28 };
+      if (!fits(c, k)) continue;
+      cid++;
+      C.push(c);
+      on.push(c);
+    }
+  }
+  // (where a road could not hold its share without crowding, the shared path gives up petals instead, from its busiest stretches, so the
+  // split stays 70/15/15)
+  const road = Math.min(of('low').length, of('high').length);
+  for (const k of ['low', 'high'] as const) {
+    const on = of(k).sort((a, b) => a.x - b.x);
+    while (on.length > road) C.splice(C.indexOf(on.pop()!), 1);
+  }
+  const sharedWant = Math.round((road * SPLIT.shared) / SPLIT.road);
+  let shared = C.filter((c) => isP(c) && !inChoice(c));
+  while (shared.length > sharedWant) {
+    const b = busiestScreen(shared);
+    const inWin = shared.filter((c) => c.x >= b.x && c.x <= b.x + SCREEN.w && Math.abs(c.y - b.y) <= SCREEN.h / 2);
+    const drop = inWin[Math.floor(inWin.length / 2)] ?? shared[shared.length - 1];
+    C.splice(C.indexOf(drop), 1);
+    shared = shared.filter((c) => c !== drop);
+  }
+  st.proto.roads = { low: of('low').map((c) => c.id), high: of('high').map((c) => c.id) };
 }
