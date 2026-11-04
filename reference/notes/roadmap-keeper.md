@@ -1,28 +1,30 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 2:41 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 7:52 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
 ## Status
 - Reinstated 2026-11-02 by the lead at Matt's ask (D27: the slips came from the setup; GAMEPLAN §3 is now a ladder; self-caught slips
   don't count). New items come in batches when Matt says go (LEAD-PLAYBOOK 8d).
-- **State now (2026-11-04):** roadmapcheck PASS. Matt rated the game 55 and approved reference/PLAN-TO-80.md; the plan is in phases
-  (BUILD-PLAN "The phases"): lane 1 WebGL throughout (21 h); Phase A the World 1 slice 51.5 h (range about 39-72, sized from history);
-  Matt rates World 1; Phase B Worlds 2-8 274 h on today's rows (a guess, about 210-380); Phase C W9/W10 + story 114 h (a guess, about
-  85-160); alongside 61.5 h. Day 1 about 522 helper hours (the gate prints 530 with the keeper's 8 h), recommended Important 59.5 h,
-  launch about 581.5 h; lane loads 115.5 / 118.5 / 118.5 / 116.5 / 111.5 (script); building about 15-20 working days on today's rows
-  (12-25 across the guesses); about 4-4.5 weeks with the 80% trigger (about 418 of 522 h). The doc mirrors it (read back).
-  Phase sums: the phase script in this file's history (sets by item id; R-154 W1 branch part 2.5 h and R-155 W1 part 7 h moved from B to A).
+- **State now (2026-11-04 7:52 AM ET):** roadmapcheck PASS. Phases (BUILD-PLAN "The phases", sums by script): lane 1 WebGL 21 h;
+  Phase A (World 1) 60.5 h (range about 46-85), starting score World 1 38/100 (quality supervisor) and validator 18-62, average 41
+  (fix-petals; the lead's message said 42, the overview page says 41); Phase B 274 h (a guess, about 210-385); Phase C 114 h (a guess,
+  about 85-160); alongside 62 h. Day 1 about 531.5 helper hours (the gate prints 539.5 with the keeper's 8 h), recommended Important
+  59.5 h, launch about 591 h; lane loads 117.5 / 118.5 / 120 / 120.5 / 113.5 (script); building about 15-20 working days on today's
+  rows (12-26 across the guesses); about 4-4.5 weeks with the 80% trigger (about 425 of 531.5 h). The doc mirrors it (read back).
+  Phase script: sets by item id (A also holds R-150.7, R-6.31, R-6.33 to R-6.36; R-154 W1 2.5 h and R-155 W1 7 h moved from B to A).
 - **In flight / waiting:**
   - R-1.1 is done pending the release merge (proof 5f25029a on icons-painted): archive it with the merge commit when the release lands.
   - R-6.25 (icons B-E) ships in the same release.
   - R-149.12 is still open for the 4-D rethink only; its swimming half is A-38.
   - R-152.6 proposes the arc; Matt gives the per-world numbers later. R-150.4 (the mechanics table) blocks R-150.2/.3/.5/.6 and R-152.x.
-  - The closed test (R-147.1) starts at about 80% of Day 1 hours (about 418 of 522): flag it at each sweep.
+  - The closed test (R-147.1) starts at about 80% of Day 1 hours (about 425 of 531.5): flag it at each sweep.
   - Decided by the lead (11-04, PLAN-TO-80): GPU stage 0 merges first, then R-159.1, then R-160.1 hold engine.ts one at a time;
     R-158.1 with R-5.10 one job, R-155 with R-150.3 not twice, R-161.2 inside R-1.9/R-1.10/R-1.15; HF stays $72 total (no top-ups,
     Matt 11-01), so BUILD-PLAN §4 stands. All in the rows and the doc.
+  - Not filed yet (asked the lead 11-04): STATUS's restart list also names the clerk's 4 + 1 method updates and warmup-5m's
+    perf-measure pitfalls for the keeper; the lead's batch didn't.
   - Told the lead: LEADER-STANDARD-WORK.md line 32 still says launch "in about 3 weeks" (their file).
 - **Every round:**
   - Merge the lead's branch first (ccr-0d59a91c-oy3imz). New defects (D#) and rules arrive there; the gate reads the local copies.
