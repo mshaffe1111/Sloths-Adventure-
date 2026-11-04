@@ -20,6 +20,7 @@ import { swingSetup } from './physics.ts';
 import { findForStage } from './finds.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig } from './types.ts';
+import { STAGE_PLAN } from './stagePlan.ts';
 import { PHYS } from './physics.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow } from './protoCheck.ts';
 import type { Platform, Vine } from './types.ts';
@@ -369,10 +370,13 @@ export const T12 = { A: 330, B: 630, C: 930 } as const;
 const PAL_A = (y: number): Palette => ({ surfaces: ['branch'], jumpDy: [-60, -40, -20, 0, 20, 40], hopDy: [-40, -30, -20], doubles: 0, yMin: Math.min(y, T12.A - 80), yMax: Math.max(y, T12.A + 90) });
 /** the swung beat: a dotted half and a quarter (a long jump, a quick hop), now and then a whole bar's breath */
 const swung = (R: Rng, n: number, breath = 0.3) => {
+  // (each node of each roll swings its own way: 3:1 (a dotted half and a quarter), 2:1 (the shuffle), 5:1, all long-short: the feel is
+  // the stage's, how far it leans rolls)
+  const [long, short] = R.pick([[6, 2], [4, 2], [10, 2], [6, 2], [4, 2]] as const);
   const g: number[] = [];
   while (g.length < n) {
     if (R.chance(breath)) g.push(8);
-    else g.push(6, 2);
+    else g.push(long, short);
   }
   return g.slice(0, n);
 };
@@ -460,7 +464,7 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   lay.ledge(padL, Lx + 60, C, 'apron');
   L.walls.push({ x0: padL - 90, x1: padL, y0: C - 360, y1: C + 90 });
   L.lines.push({ x: padL + 20, y: C, text: 'Now under the bough' });
-  const PAL_C: Palette = { surfaces: ['bank', 'bank', 'stump'], jumpDy: [-60, -30, 0, 30, 50], hopDy: [-40, -30, -20], doubles: 0, yMin: C - 100, yMax: C };
+  const PAL_C: Palette = { surfaces: R.pick([['bank', 'bank', 'stump'], ['bank', 'stump', 'stump'], ['bank', 'stump', 'branch']] as Surface[][]), jumpDy: [-60, -30, 0, 30, 50], hopDy: [-40, -30, -20], doubles: 0, yMin: C - 100, yMax: C };
   x = Lx + 60;
   const under = lay.traced('ramp', 'jump + hop (pits now)', 'C', 1, x, C, barsFrom(swung(R, 14, 0.4)), PAL_C);
   // (under the loop the flags don't take: engine.ts keeps the furthest-right flag, so a fall here costs a heart, never a life)
@@ -522,6 +526,9 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
     jumpDy: [-60, -50, -40, -30, -20, 0, 20], hopDy: [-30, -20], doubles: 0, yMin: Math.min(y, end) - 40, yMax: Math.max(y, end) + 30, end,
   });
   const broken = (n: number, set: readonly number[]) => Array.from({ length: n }, () => R.pick(set));
+  // (each roll breaks the beat its own way, and leans on the snap twigs more or less)
+  const SET = R.pick([[3, 4, 4, 5, 6], [3, 3, 5, 6, 6], [4, 4, 3, 5, 3, 6], [3, 5, 4, 6, 3]]);
+  const SNAP = R.pick([0.5, 0.7, 0.85]);
   // ---- intro: the canopy, sparse jumps, the first carving on the path
   const intro = lay.traced('intro', 'run + jump', 'canopy', 1, x, y, barsFrom(broken(6, [9, 11, 12])), { ...down(T.canopy, 0), jumpDy: [-30, -20, 0, 20, 30] });
   mark(intro.tr.ledges[1].x0 + 60, intro.tr.ledges[1].y);
@@ -535,16 +542,16 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   x = teach.tr.x1;
   y = teach.tr.yOut;
   // ---- ramp: down a tier, snaps and plain branches, the broken beat; then down another, the falls real now
-  const ramp = lay.traced('ramp', 'snap twig + jump (broken)', 'two', 1, x, y, barsFrom(broken(21, [3, 4, 4, 5, 6])), down(T.two, 0.6));
+  const ramp = lay.traced('ramp', 'snap twig + jump (broken)', 'two', 1, x, y, barsFrom(broken(21, SET)), down(T.two, SNAP - 0.1));
   mark(ramp.tr.ledges[4].x0 + 40, ramp.tr.ledges[4].y);
   x = ramp.tr.x1;
   y = ramp.tr.yOut;
-  const ramp2 = lay.traced('ramp', 'snap twig + jump, over the drop (broken)', 'three', 1, x, y, barsFrom(broken(21, [3, 4, 4, 5, 6])), down(T.three, 0.7));
+  const ramp2 = lay.traced('ramp', 'snap twig + jump, over the drop (broken)', 'three', 1, x, y, barsFrom(broken(21, SET)), down(T.three, SNAP));
   mark(ramp2.tr.ledges[5].x0 + 40, ramp2.tr.ledges[5].y);
   x = ramp2.tr.x1;
   y = ramp2.tr.yOut;
   // ---- spike: down another tier, all snaps, the quickest gaps
-  const spike = lay.traced('spike', 'snap twig + drop', 'four', 1, x, y, barsFrom(broken(22, [3, 3, 4, 5])), down(T.four, 1));
+  const spike = lay.traced('spike', 'snap twig + drop', 'four', 1, x, y, barsFrom(broken(22, SET.filter((g) => g < 6))), down(T.four, 1));
   mark(spike.tr.ledges[5].x0 + 40, spike.tr.ledges[5].y);
   x = spike.tr.x1;
   y = spike.tr.yOut;
@@ -575,7 +582,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   lay.end(e, (e - x) / 300 + 4);
   x = e;
   // ---- climax: the carving chase, down two tiers to the floor, a carving every second ledge
-  const climax = lay.traced('climax', 'snap twig + drop + hop (the chase)', 'floor', 1, x, y, barsFrom(broken(26, [3, 3, 4, 4, 5])), down(T.floor, 0.8));
+  const climax = lay.traced('climax', 'snap twig + drop + hop (the chase)', 'floor', 1, x, y, barsFrom(broken(26, SET.filter((g) => g < 6))), down(T.floor, SNAP));
   // (the carving chase: closer and closer together toward the shrine)
   climax.tr.ledges.forEach((q, i) => { const n = climax.tr.ledges.length; if (i > 0 && i < n - 1 && i % (i < n / 2 ? 3 : 2) === 0) mark((q.x0 + q.x1) / 2, q.y); });
   x = climax.tr.x1;
@@ -712,3 +719,63 @@ function swings(lay: Lay, edge: number, y: number, n: number, soft: boolean, pad
   }
   return e;
 }
+
+// ------------------------------------------------------------------ how far two rolls are apart ------------------------------------------------------------------
+
+const rollMemo = new Map<string, Layout>();
+/** the layout of a roll as the game builds it on Normal (memoised: a replay asks for a few) */
+function rollLayout(id: '1-2' | '1-5', seed: number): Layout {
+  const key = `${id}|${seed}`;
+  const hit = rollMemo.get(key);
+  if (hit) return hit;
+  const mini = Number(id.slice(2));
+  const spec = STAGE_PLAN[1][mini - 1];
+  const L = rhythmLayout(id, seed, false, stageBpm({ worldIndex: 1, id, miniIndex: mini, objectiveType: spec.type }));
+  if (rollMemo.size > 32) rollMemo.clear();
+  rollMemo.set(key, L);
+  return L;
+}
+
+/**
+ * How different two rolls of a beat-built stage play, 0 (the same) to 1 (nothing alike), node by node (the design, the nodes, is fixed;
+ * what rolls is inside them): the mean of how much their beat patterns differ (the take-offs' eighths, Jaccard), how far apart their
+ * landing heights are (60 px apart counts as wholly different) and how much the pieces they land on differ (surface and length). layoutMemory
+ * keeps a fresh roll at least AWAY.min (0.35) from the last one played (the lead, 2026-11-04).
+ */
+export function rhythmRollDistance(id: '1-2' | '1-5', a: number, b: number): number {
+  const A = rollLayout(id, a), B = rollLayout(id, b);
+  let beat = 0, height = 0, piece = 0, n = 0;
+  for (let i = 0; i < Math.min(A.nodes.length, B.nodes.length); i++) {
+    const na = A.nodes[i], nb = B.nodes[i];
+    if (!na.bars.length && !nb.bars.length) continue;
+    n++;
+    // (the beat: the take-offs' eighths, as sets; the share of either's take-offs the other doesn't have (Jaccard): two rolls tapped the
+    // same are 0, no take-off in common is 1)
+    const ma = new Set(marks(na.bars)), mb = new Set(marks(nb.bars));
+    const union = new Set([...ma, ...mb]).size;
+    let both = 0;
+    for (const k of ma) if (mb.has(k)) both++;
+    beat += union ? 1 - both / union : 0;
+    const la = A.ledges.filter((q) => q.node === i && q.step >= 0), lb = B.ledges.filter((q) => q.node === i && q.step >= 0);
+    const m = Math.max(la.length, lb.length);
+    let dh = 0, dp = 0;
+    for (let k = 0; k < m; k++) {
+      const qa = la[k], qb = lb[k];
+      if (!qa || !qb) {
+        dh += 1;
+        dp += 1;
+        continue;
+      }
+      dh += Math.min(1, Math.abs(qa.y - na.y - (qb.y - nb.y)) / 60);
+      // (a piece: what he lands on and how long it is to run on: short, middling, long)
+      const size = (q: LLedge) => (q.x1 - q.x0 < 160 ? 0 : q.x1 - q.x0 < 300 ? 1 : 2);
+      dp += (qa.surface === qb.surface ? 0 : 0.5) + (size(qa) === size(qb) ? 0 : 0.5);
+    }
+    height += m ? dh / m : 0;
+    piece += m ? dp / m : 0;
+  }
+  rollParts = { beat: beat / Math.max(1, n), height: height / Math.max(1, n), piece: piece / Math.max(1, n) };
+  return n ? +((beat + height + piece) / (3 * n)).toFixed(3) : 1;
+}
+/** the last distance's three parts (for the tests and the notes) */
+export let rollParts = { beat: 0, height: 0, piece: 0 };

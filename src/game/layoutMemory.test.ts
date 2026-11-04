@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { AWAY, forgetLayout, lastLayout, layoutForEntry, savedLayout, layoutKey } from './layoutMemory.ts';
 import { w1Pick, w1RollDistance } from './w1Sections.ts';
+import { rhythmRollDistance } from './w1Rhythm.ts';
 import { isSaveKey, resetProgress, type Store } from './saveFile.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
@@ -93,7 +94,8 @@ test("World 1: a cleared stage's next roll is kept away from the last one (no se
   // a fixed stream of rolls, so the test is the same every time
   let a = 7;
   const roll = () => (a = (a * 48271) % 2147483647) % 1_000_000 + 1;
-  for (const id of ['1-1', '1-2', '1-3', '1-5', '1-6', '1-7', '1-9']) {
+  // (1-2 and 1-5 are built on the beat now, with no section versions: their own distance, the next test)
+  for (const id of ['1-1', '1-3', '1-6', '1-7', '1-9']) {
     for (let round = 0; round < 12; round++) {
       const before = layoutForEntry(lv(id), mem, roll, false)!;
       assert.equal(layoutForEntry(lv(id), mem, roll, false), before, `${id}: a retry keeps the roll`);
@@ -102,6 +104,22 @@ test("World 1: a cleared stage's next roll is kept away from the last one (no se
       assert.equal(savedLayout(id, mem), null, `${id}: and the next visit rolls fresh`);
       const next = layoutForEntry(lv(id), mem, roll, false)!;
       assert.ok(w1RollDistance(id as '1-1', before, next) >= AWAY.min, `${id}: ${JSON.stringify(w1Pick(id as '1-1', before))} then ${JSON.stringify(w1Pick(id as '1-1', next))}`);
+      forgetLayout(id, mem);
+    }
+  }
+});
+
+test("1-2 and 1-5 (built on the beat): a cleared stage's next roll plays at least 0.35 away from the last (its beat, heights and pieces)", () => {
+  const mem = memory();
+  let a = 11;
+  const roll = () => (a = (a * 48271) % 2147483647) % 1_000_000 + 1;
+  for (const id of ['1-2', '1-5'] as const) {
+    for (let round = 0; round < 16; round++) {
+      const before = layoutForEntry(lv(id), mem, roll, false)!;
+      forgetLayout(id, mem);
+      const next = layoutForEntry(lv(id), mem, roll, false)!;
+      const d = rhythmRollDistance(id, before, next);
+      assert.ok(d >= AWAY.min, `${id}: rolls ${before} then ${next} only ${d} apart`);
       forgetLayout(id, mem);
     }
   }
