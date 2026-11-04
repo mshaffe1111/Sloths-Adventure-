@@ -26,14 +26,14 @@ not ours to build.
    comes when "stages lack distinct per-level identities" (L5).
    Today: §0b.5 counts pairs per world; §0c.2 picks a node by "the mechanic pair it teaches or twists". Nothing says a stage owns one pair,
    and nothing stops two neighbours sharing it. Stages are built from a stage type (stagePlan.ts:31-145) and a draw of pieces
-   (w1Sections.ts, §0c). The validator's pairs (mechanics.ts:43-61) only feed "nothing new".
+   (w1Sections.ts, §0c). The validator's pairs (mechanics.ts:43-52) only feed "nothing new".
    Proposal: ADOPT. Every stage's plan names its pair, its direction and its tempo. No two stages of a world share pair + direction. The
    validator reads the pair back from the real beats.
 
 2. **A pair is two mechanics acting on the same beat, not two mechanics somewhere in the stage.**
    Report: the table's middle column is the "Emergent Kinesthetic Interaction", e.g. "wind pushes the avatar off a crumbling branch
    before its break timer expires" (L46).
-   Today: `sixThings`/`pairsOf` (mechanics.ts:43-61) count a pair when both things appear anywhere in the stage. Run+jump is always
+   Today: `sixThings`/`pairsOf` (mechanics.ts:43-52) count a pair when both things appear anywhere in the stage. Run+jump is always
    counted (line 45). Any trunk counts as "vines" (line 47). World 7's crumbling floor counts as "slow" (line 49). So the table can read
    "five pairs" for a stage where nothing ever combines.
    Proposal: ADOPT. A pair counts only when both act inside one rhythm group (the same platform, or within about 5 s). Fix the classes:
@@ -102,7 +102,7 @@ not ours to build.
     World 7's "dual-clock timing: executing rapid micro-adjustments on decaying floors while tracking slow, macro-scale enemy attack cycles"
     (L149).
     Today: §0b.3 works at stage and world level. The validator's "one tempo" flag only asks that hurry and patience each appear once
-    somewhere (evaluate.ts, tempoOf mechanics.ts:133).
+    somewhere (evaluate.ts, tempoOf, mechanics.ts:133).
     Proposal: ADOPT as twist templates (a crumbling run that ends on a watched vine; a crumbling run under a slow sweep, watcher.ts exists).
     The validator counts hurry-to-patience switches inside 10 s.
 
@@ -117,7 +117,7 @@ not ours to build.
     Report: "differentiating surface-contact slow-downs from volumetric slow-downs" (L15); a wading field forces "the player to seek
     elevated stilt roots or aerial vines" (L15); 2-3 teaches "the value of aerial vine routes over ground wading" (L137).
     Today: §0b.4 gives variants for branches, vines and wind, none for slow-downs. Code has only the volume kind: webs (0.4 run, 0.85 jump,
-    zones.ts:205-217), tide (zones.ts:209, 218-221), spores (DROWSY_SPEED 0.5, zones.ts:158). The contact kind exists only as World 5's
+    zones.ts:205-217), tide (zones.ts:208, 218-221), spores (DROWSY_SPEED 0.5, zones.ts:159). The contact kind exists only as World 5's
     stillness wrap (w5Kit.ts:5-7). No node offers a high route over slow ground.
     Proposal: ADOPT. Add slow-down variants to §0b.4 (sticky-unless-you-hop, wading field, drowsy cloud) and a two-height node template.
 
@@ -205,7 +205,7 @@ not ours to build.
 | C4 | Part 2 may repeat a pattern "to build muscle memory and visual consistency" (L67) | §0c.3: "Same piece, same numbers, twice = rejected." The validator flags a 3-move run 3 times back to back (RUN3_BACK, core.ts repeats) and allows two | One exact repeat inside part 2; then change |
 | C5 | Breaking things include "crumbling stone floors in World 7" (L177); W9 updrafts are wind (L40, L130); W6 blackwater is a volume slow-down (L15) | Validator: World 7's crumble zone counts as "slow", not "branches" (mechanics.ts:49); tide is not "slow"; geysers are not "wind" (mechanics.ts:46-49) | Fix the classes in `sixThings` |
 | C6 | Wind has both tempos: "tailwinds require high turn-acceleration braking... headwinds demand sustained forward input" (L32) | Validator: every wind beat is "patience" (tempoOf, mechanics.ts:133-134) | Read the gust's direction against travel: with him = hurry/brake, against = push |
-| C7 | A pair is an "Emergent Kinesthetic Interaction" (L24-54) | §0b.5 / validator: a pair is two things present anywhere in the stage; run+jump always present (mechanics.ts:43-61) | See miss 2 |
+| C7 | A pair is an "Emergent Kinesthetic Interaction" (L24-54) | §0b.5 / validator: a pair is two things present anywhere in the stage; run+jump always present (mechanics.ts:43-52) | See miss 2 |
 | C8 | "Never place a before-stage cutscene at X-6" (L90, L169) | No rule needed: the game has no before-stage scenes (sceneList.ts:53-71) | Nothing to do |
 
 **Our own numbers disagree with each other (found on the way, not the report's):** dead walking is "about 4 s" (§2 Dead time), "2.0 s
@@ -241,7 +241,7 @@ That makes its wrong claims easy to believe. These are wrong:
 | F12 | 44, 84, 124, 147 | 6-3's seesaw roots tip under him on the way | The seesaw is in 6-3's puzzle room, weighed with root-stones (w6Rooms.ts:14-17) |
 | F13 | 147 | 6-5: spears rise out of the black water | The rising spear is a watcher on 6-2 Flat Water (w6.ts:6, 59; w6Ground.ts:3); 6-5 is a fight stage (stagePlan.ts:94) |
 | F14 | 126, 149 | 7-5's stone sentries are ultra-slow | Sentries fight with the ocelot's brain in a sentry's look (w7.ts:92-96) |
-| F15 | 90 | 7-6 Falling Floors is a slow pace-breaker | 7-6 is a sprint, the game's fastest crumble (stagePlan.ts:106; crumbleTime 0.85 down to 0.61 s, zones.ts:225-227). The report contradicts its own L126 and L149 |
+| F15 | 90 | 7-6 Falling Floors is a slow pace-breaker | 7-6 is a sprint, the game's fastest crumble (stagePlan.ts:106; crumbleTime 0.85 down to 0.61 s, zones.ts:231-233). The report contradicts its own L126 and L149 |
 | F16 | 108, 126 | 7-2: shortened brittle vines and stone-crack flowers | Brown vines up the old walls (w7.ts:71-72); nothing brittle or shorter found |
 | F17 | 128, 153 | 8-8: spring-loaded net traps | 8-8's danger is the night harpy (w8.ts:9, 65, 90) |
 | F18 | 128 | World 8 night tailwinds | No wind outside World 4 (zones.ts:424-433); World 8's zone is darkness (zones.ts:14, 431) |
@@ -268,7 +268,7 @@ PLAN-TO-80, the roadmap or tools/validate carry it, with "full", "flattened" or 
 |---|---|---|---|---|---|---|
 | 1 | 5 | Fatigue comes from three things: stages with no identity of their own, pacing flattened into one even difficulty, the same action rhythm repeated without a new context. More abilities is not the fix | missing | flattened: §0, §0c cover repeats and pacing; "own identity per stage" is no rule | PART: validator flags repeats, pacing, likeness (evaluate.ts), World 1 only | Adopt (miss 1) |
 | 2 | 5 | Layering: combine known pieces for new challenges with no new rules | missing | full: §0.1, §0b.5 | PART | Keep |
-| 3 | 5 | Four modifiers give 4 singles, 6 pairs, 4 triples, 1 all-four (15); with run and jump, 15 pairs of six | missing | full: §0b.5 "15 pairs" | PART: pairsOf (mechanics.ts:61) | Keep; see #40 |
+| 3 | 5 | Four modifiers give 4 singles, 6 pairs, 4 triples, 1 all-four (15); with run and jump, 15 pairs of six | missing | full: §0b.5 "15 pairs" | PART: pairsOf (mechanics.ts:52) | Keep; see #40 |
 | 4 | 5 | Each combination times direction (across, up, down) and tempo | missing | no: §0b.5 has no direction | NOT: no stage records direction; one going-down stage, 4-7 (stagePlan.ts:74) | Adopt (miss 4) |
 | 5 | 7 | Tempo inversion: every modifier has a hurry and a patience version, both weighted equally | missing | full: §0b.3 | PART: glowworms (engine.ts:7590-7630), thorn vines (thornVine.ts:5-8), don't sit (w5Kit.ts:5), patience.ts; validator "one tempo" (evaluate.ts) | Keep |
 | 6 | 7 | Hurry examples: branches need buffered jumps; sticky silk punishes lingering | missing | full: §0b.3 | PART: don't-sit wraps if still (w5Kit.ts:5-7); branches default to 1.1 s and can be outrun (engine.ts:2437; PLAN-TO-80 "why 55" #1) | R-154 snap twigs |
@@ -284,10 +284,10 @@ PLAN-TO-80, the roadmap or tools/validate carry it, with "full", "flattened" or 
 | 11 | 11 | Forgiveness windows so hard combinations don't become pixel hunts | missing | full: §0b.8, §2 | IN: FORGIVE (physics.ts:40-43) | Keep |
 | 12 | 13 | Coyote time 0.08-0.15 s (about 5 frames at 60 fps; Celeste 0.1 s), also after a support breaks away | missing | full: §2 (133 / 167 ms) | IN: 0.133 Normal, 0.167 Easy (physics.ts:41-42), early help +0.08 (physics.ts:68); refreshed every grounded frame, so a breaking branch gives it too (engine.ts:2170-2176) | Keep (Easy above the range on purpose) |
 | 13 | 13 | Snap twig: breaks in about 0.15 s, keep sprinting | missing | full: §0b.4, R-154 | NOT: default 1.1 s (engine.ts:2437) | R-154 |
-| 14 | 13 | Creaking limb: about 0.60 s, time to recover | missing | full: §0b.4, R-154 | PART: a 0.55 s creak on 1-6's canopy road (protoStage.ts:832); W7 tiles 0.85-0.61 s (zones.ts:225-227) | R-154; fix its code fact |
+| 14 | 13 | Creaking limb: about 0.60 s, time to recover | missing | full: §0b.4, R-154 | PART: a 0.55 s creak on 1-6's canopy road (protoStage.ts:832); W7 tiles 0.85-0.61 s (zones.ts:231-233) | R-154; fix its code fact |
 | 15 | 13 | Cantilever root: tips on a pivot by where he stands, doesn't vanish | missing | full: §0b.4; R-154 says it does not exist | PART: the kit seesaw (puzzleKit.ts:83, 219-222), taught in World 1 (protoStage.ts:768), 6-3's room (w6Rooms.ts:14); not a piece on the route | Adapt: the kit seesaw as a run piece |
 | 16 | 15 | Jump buffer 0.10-0.15 s, fires on the landing frame | missing | full: §2 | IN: 0.133 Normal, 0.2 Easy (physics.ts:41-42) | Keep |
-| 17 | 15 | Two kinds of slow-down: contact (sticky only while you stay on it) and volume (caps speed and jump on entry) | missing | flattened: §0b.4 has no slow-down variants; §0b.7 only says they look different | PART: volume kinds (webs zones.ts:205-217, tide 209, spores 158); contact only as the stillness wrap (w5Kit.ts:5-7) | Adopt (miss 12) |
+| 17 | 15 | Two kinds of slow-down: contact (sticky only while you stay on it) and volume (caps speed and jump on entry) | missing | flattened: §0b.4 has no slow-down variants; §0b.7 only says they look different | PART: volume kinds (webs zones.ts:205-217, tide 208, spores 159); contact only as the stillness wrap (w5Kit.ts:5-7) | Adopt (miss 12) |
 | 18 | 15 | A wading field pushes the player up to a high route (stilt roots, vines) | missing | no | NOT as a designed choice | Adopt: two-height node (miss 12) |
 | 19 | 17 | Half gravity at the top of a held jump | missing | full: §0b.8, R-156 | NOT (no apex term in physics.ts) | R-156 |
 | 20 | 17 | Cut upward speed to 30-50% on release | missing | full: §0b.8 | IN: cutV 230 of jumpV 640 = 36% (physics.ts:18-20) | Keep |
@@ -299,12 +299,12 @@ PLAN-TO-80, the roadmap or tools/validate carry it, with "full", "flattened" or 
 ### C. The 15 pairs (table L21-54)
 
 The rule for all of these is §0b.5 ("15 pairs; each world shows its own"), and the validator counts a pair when both appear anywhere
-(mechanics.ts:43-61). Each row adds: is the interaction itself built, and where.
+(mechanics.ts:43-52). Each row adds: is the interaction itself built, and where.
 
 | # | Line | What it says | Triage | Rules, plan, validator | Code | Proposal |
 |---|---|---|---|---|---|---|
 | 25 | 26 | Run+Jump: arc length from run speed, skid turns, coyote edges; W1's gaps | missing | full | IN; the validator always counts it (mechanics.ts:45), so it never tells a stage apart | Leave run+jump out of the pair count |
-| 26 | 28 | Run+Branches: stop and you fall; read the path and commit. Claims The Horn (W3) and 7-6 | missing | full | PART: 1-8's chase (chase.ts:1-8), W7 tiles (zones.ts:221-227); The Horn is a story scene (storyChapters.ts:29) | Keep |
+| 26 | 28 | Run+Branches: stop and you fall; read the path and commit. Claims The Horn (W3) and 7-6 | missing | full | PART: 1-8's chase (chase.ts:1-8), W7 tiles (zones.ts:231-233); The Horn is a story scene (storyChapters.ts:29) | Keep |
 | 27 | 30 | Run+Vines: a running leap into a vine turns speed into swing size; 2-4 | missing | full | IN: the grab takes his speed into the swing (swingGrab with vx, vy, engine.ts:1947-1951) | Keep |
 | 28 | 32 | Run+Wind: a tailwind needs braking to stop on narrow ledges, a headwind needs steady push; 4-4 and W10 | missing | full; R-152.1 | PART: gusts push either way in W4 (only 0.4 of it on the ground, R-152.1); W10 has no wind (zones.ts:432) | R-152.1 |
 | 29 | 34 | Run+Slow: stutter-step out of drag, or stop dead to light things; 3-2/3-3, 6-6 | missing | full | PART: glowworms in the dark (engine.ts:7609); 6-6's lit steps (w6Rooms.ts:18-22) | Keep |
@@ -318,7 +318,7 @@ The rule for all of these is §0b.5 ("15 pairs; each world shows its own"), and 
 | 37 | 50 | Vines+Wind: gusts change a hanging vine's angle and period, making timing gates; 8-6, 10-7 | missing | full: R-154 (listed as not built) | NOT (R-154) | R-154 |
 | 38 | 52 | Vines+Slow: thorn vines that strike if climbed fast; slow hand over hand; 3-5, 3-8 | missing | full | PART: thorn vines watch for movement beside the route (thornVine.ts:65-74); never climbed | R-154's fast-climb thorn |
 | 39 | 54 | Wind+Slow: periodic gales blow him back unless anchored in mud or roots, or gripping rock; 10-4/10-5 | missing | no | NOT (no grip, no W10 wind) | Adapt (miss 18) |
-| 40 | 21-54 | The pairs are interactions inside one beat ("Emergent Kinesthetic Interaction") | missing | flattened: presence anywhere in the stage (mechanics.ts:43-61); crumble counted as slow (line 49) | n/a | Adopt (miss 2) |
+| 40 | 21-54 | The pairs are interactions inside one beat ("Emergent Kinesthetic Interaction") | missing | flattened: presence anywhere in the stage (mechanics.ts:43-52); crumble counted as slow (line 49) | n/a | Adopt (miss 2) |
 
 ### D. Inside a stage (L59-69)
 
@@ -375,7 +375,7 @@ The rule for all of these is §0b.5 ("15 pairs; each world shows its own"), and 
 | 79 | 120 | W4 Waterfall Cliffs, Act II: wind (4-4), leaf glide (4-2), vertical branches; twist: diving hazards (4-5), freefall (4-7), 4-D; polarity headwind and lift; Sky Sovereign dives from above | missing | no | PART: name is Mist Cascades (worldsData.ts:82); W4 wind IN (zones.ts:426); 4-D IN (dotFlightStage.ts:1-15); the Sovereign hangs above (bossDefs.ts:771) | Keep |
 | 80 | 122 | W5 Orchid Sanctuary: contact slow-downs (5-4, 5-5), timed closing platforms (5-3); twist: trap rests (5-2), humming threads (5-7), 5-M; polarity impulse; Tarantula Queen's web spreads | missing | no | PART: orchids, chairs, threads, cocoons, carvings IN (w5Kit.ts:5-18); silk bridges are drag (zones.ts:217); 5-M IN (badges.ts:79) | Hop-to-skim silk (miss 19) |
 | 81 | 124 | W6 Deep Mangrove: wading and swimming slow-downs, tipping roots (6-3); twist: Dot leaves at 6-5, firefly steps (6-6), water-level puzzle (6-7); polarity hydrological; Marsh Reaver mud waves and spear | missing | no | PART: tide (zones.ts:11, 218-221), swimming and the rooms (w6Rooms.ts:6-22); Dot leaves after 6-5 (wayside.ts:15-16) | Keep |
-| 82 | 126 | W7 Ruins: brittle vines (7-2), sequential floors (7-6); twist: fastest floors against slowest sentries (7-5); polarity "temporal"; Golem's slow telegraphed smashes | missing | no | PART: crumble 0.85-0.61 s (zones.ts:225); sentries fight as ocelots (w7.ts:92-96); Golem "hits very hard and very rarely" (bossDefs.ts:1556) | Dual-clock twist (miss 10) |
+| 82 | 126 | W7 Ruins: brittle vines (7-2), sequential floors (7-6); twist: fastest floors against slowest sentries (7-5); polarity "temporal"; Golem's slow telegraphed smashes | missing | no | PART: crumble 0.85-0.61 s (zones.ts:231); sentries fight as ocelots (w7.ts:92-96); Golem "hits very hard and very rarely" (bossDefs.ts:1556) | Dual-clock twist (miss 10) |
 | 83 | 128 | W8 Twilight Treetops, Act III: momentum vines (8-3), wind glides (8-6); twist: light radius (8-4), firefly trail (8-6), net traps (8-8); polarity night tailwinds with braking in a small view | missing | no | PART: dark (zones.ts:14, 431), lantern (w8Lantern.ts), moonlight glides (w8.ts:60); no W8 wind; no nets (w8.ts:9, 65) | Keep |
 | 84 | 130 | W9 Volcanic Jungle: updrafts (9-5), ash drag (9-6); twist: rising heat (9-2), lava steps (9-7), ember branches (9-3); polarity updraft against ash | missing | no | PART: geysers and vent lift (zones.ts:9, 139-152); no ash drag (stagePlan.ts:130; zones.ts:210-221); 9-3 a vine stage (stagePlan.ts:127) | Use for W9's build (Phase C) |
 | 85 | 132 | W10 Stormy Highlands: all six together up the 1,000 steps (10-2 to 10-8); twist: squalls with grip-and-wait (10-3, 10-4); polarity lethal squalls and grip; the General's shifting weak spot | yes (the grip fact) | no; PLAN-TO-80 "Not taken" (no grip) | PART: lightning columns (zones.ts:10, 432); no wind, no grip; goal lines promise holding on (stagePlan.ts:138-139) | Adapt (miss 18) |
@@ -447,6 +447,7 @@ The rule for all of these is §0b.5 ("15 pairs; each world shows its own"), and 
 
 ---
 
-**Counts.** 140 ledger rows. Triage column: 3 "yes" (#23, #85, #120), 12 "flattened" (#60, #62-72, #122), 125 "missing" (the triage
-covers a different text; see the headline). Against our rules, plan and validator: 50 rows are fully carried, 28 are flattened (watered
-down or contradicted) and 39 are in nothing we have (the other 23 are worked examples, story or summary rows with nothing to carry).
+**Counts (counted from the table above).** 140 ledger rows. Triage column: 3 "yes" (#23, #85, #120), 13 "flattened" (#60, #62-72,
+#122), 124 "missing" (the triage covers a different text; see the headline). Against our rules, plan, roadmap and validator: 59 rows are
+fully carried and 6 are n/a; of the other 75, **53 are real gaps** (20 flattened, watered down or contradicted; 33 in nothing we have),
+and 22 need nothing new (built already in code, story-only, or optional).
