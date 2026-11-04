@@ -1,22 +1,28 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-02 7:25 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 2:40 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
 ## Status
 - Reinstated 2026-11-02 by the lead at Matt's ask (D27: the slips came from the setup; GAMEPLAN §3 is now a ladder; self-caught slips
   don't count). New items come in batches when Matt says go (LEAD-PLAYBOOK 8d).
-- **State now:** roadmapcheck PASS. Day 1 about 390 helper hours (the gate prints 398: it adds the keeper's own 8 h), recommended
-  Important 55.5 h, launch about 445.5 h; lane loads 89 / 88.5 / 89 / 89 / 89 (script); building about 11-15 working days; about
-  3.5-4 weeks with the 80% trigger. The doc mirrors it (the lead reads the rev). Last batch (11-02 evening): the research batch
-  (pacing tags, split paths, five new platform kinds, R-152.7 platform carry, water rules) and R-153 stage types (65 h, the widest).
+- **State now (2026-11-04):** roadmapcheck PASS. Matt rated the game 55 and approved reference/PLAN-TO-80.md; the plan is in phases
+  (BUILD-PLAN "The phases"): lane 1 WebGL throughout (21 h); Phase A the World 1 slice 51.5 h (range about 39-72, sized from history);
+  Matt rates World 1; Phase B Worlds 2-8 274 h on today's rows (a guess, about 210-380); Phase C W9/W10 + story 114 h (a guess, about
+  85-160); alongside 61.5 h. Day 1 about 522 helper hours (the gate prints 530 with the keeper's 8 h), recommended Important 59.5 h,
+  launch about 581.5 h; lane loads 115.5 / 118.5 / 118.5 / 116.5 / 111.5 (script); building about 15-20 working days on today's rows
+  (12-25 across the guesses); about 4-4.5 weeks with the 80% trigger (about 418 of 522 h). The doc mirrors it (read back).
+  Phase sums: the phase script in this file's history (sets by item id; R-154 W1 branch part 2.5 h and R-155 W1 part 7 h moved from B to A).
 - **In flight / waiting:**
   - R-1.1 is done pending the release merge (proof 5f25029a on icons-painted): archive it with the merge commit when the release lands.
   - R-6.25 (icons B-E) ships in the same release.
   - R-149.12 is still open for the 4-D rethink only; its swimming half is A-38.
   - R-152.6 proposes the arc; Matt gives the per-world numbers later. R-150.4 (the mechanics table) blocks R-150.2/.3/.5/.6 and R-152.x.
-  - The closed test (R-147.1) starts at about 80% of Day 1 hours (about 312 of 390): flag it at each sweep.
+  - The closed test (R-147.1) starts at about 80% of Day 1 hours (about 418 of 522): flag it at each sweep.
+  - Open for the lead (11-04): who holds engine.ts in Phase A (R-159.1, R-160.1 change it; lane 1 owns it and is on WebGL);
+    overlaps R-161.2 vs R-1.9/R-1.10/R-1.15 and R-155 vs R-150.3 (written "not twice"); R-158.1 and R-5.10 in one job;
+    BUILD-PLAN §4 still says the $72 HF budget (CLAUDE.md says about $120): re-plan it with the lead.
   - Told the lead: LEADER-STANDARD-WORK.md line 32 still says launch "in about 3 weeks" (their file).
 - **Every round:**
   - Merge the lead's branch first (ccr-0d59a91c-oy3imz). New defects (D#) and rules arrive there; the gate reads the local copies.
@@ -50,6 +56,10 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
 - 2026-11-02: roadmapcheck counts "roadmap" only as a word, not inside a path or a name (D25 and D27 tripped it).
 
 ## My pitfalls and how I avoid them
+- A time typed ahead of the clock (11-04: "2:55 AM" written at 2:39 AM in the Mirrored line; caught before any report): every time
+  I write comes from `TZ=America/New_York date` run in the same command as the edit, never typed from a guess.
+- A fact in a row taken from memory, not re-checked (11-04: R-158.2 named the watched stages wrong and missed World 6; caught by
+  grepping the imports): every "Code fact" is grepped in the same round it is written.
 - Ids typed ahead of the output (three on 11-02): no ids in reports now; never send a report in the same batch as a push.
 - Hand-summed lane loads drifted (11-02): script only.
 - A bare "|" inside a cell broke a table (R-6.28, 11-02): roadmapcheck fails on it.
