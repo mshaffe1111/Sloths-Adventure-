@@ -59,3 +59,9 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
   Goals SNAKE_GOAL_13 / GUARD_GOAL_19 wait for the vault line + the bot's vault, then are set from its runs.
 - DEFERRED to tomorrow (the lead, 2026-11-04 ~1:00 PM ET, budget): 1-9's master-stretch rework, the 1-5 kick-teach piece for
   fix-petals, and the vine snakes in 1-6/1-8. Tonight it's only R-159.1 (to accepted) and the 1-3 rebuild. Keep reports short.
+- SLIP (2026-11-04, caught by the lead): I wrote "~5:00 PM ET" to the lead from a feel of elapsed time; `date` said 2:00 PM ET.
+  Countermeasure (D20, standard work now): a message that names a time runs `TZ=America/New_York date` in the same step and pastes it.
+- 1-3 rebuild (2026-11-04): 7 nodes on beatTrace, rolled ramp/climax; the validator learned N/O/Y and rhythm-token repeats; goals from
+  the fixed bot (1-3 Normal 10, Easy 4; 1-9 Normal 11, Easy 8, the lead: one rule). The fun gate is judged on the lead's combined 1-1..1-5
+  candidate, since w1-rhythm-b's levelCheck double rule re-reads 1-1/1-2/1-4/1-5.
+- To do: merge origin/w1-rhythm (flagsInOrder) before my next engine.ts push; plug 1-3 into w1-rhythm's layout-distance hook when named.
