@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 07:48 AM ET
+Last updated: 2026-11-04 07:51 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -14,6 +14,8 @@ when every helper is idle AND the lead says so. Effort: low to medium.
 - fix-petals (World 1 validator): session_01FhBbYNRctndrKCxzfkJ8KU
 - quality supervisor: session_01FhBbYNn4i5tFfFZiFroKoi
 - roadmap-keeper: session_01FhBbYP1yNSfRRofd3CkPwq
+- w8-rope2 (R-159.1 combat triangle, added 11-04 7:51 AM ET): session_01FhBbYMTQ1zFtXBWtxzkoxn, branch w8-rope2. PLAN FIRST: no
+  game code (src/) until its plan is approved AND GPU stage 0 is merged; check its src diff against main is empty.
 
 ## Per helper, every round (SUPERVISOR.md)
 Branch contains origin/main (git merge-base --is-ancestor); gates (all of gates.md; drawcheck in a container = "CI at merge", never
@@ -22,6 +24,7 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 07:51 AM ET: lead added w8-rope2 to the rounds (plan-first; no src until plan approved + GPU stage 0 merged). Round 1 prompt updated.
 - 2026-11-04 07:48 AM ET: RESTART (lead, Matt 7:47 AM ET). Rounds every 30 min again. Running: warmup-5m, fix-petals, quality supervisor. Idle:
   kaizen-gates (0.9.4 waits on Matt), roadmap-keeper (a batch coming). Round 1 armed for ~30 min: warmup-5m's clipcheck work, fix-petals'
   re-merge of main + ccr.
