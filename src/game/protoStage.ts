@@ -54,7 +54,7 @@ import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
 import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
-import { buildRhythmStage } from './w1Rhythm.ts';
+import { buildRhythmStage, rhythmPetalGoal } from './w1Rhythm.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildIntoCanopy } from './w1Rise.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
@@ -354,6 +354,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   // water taught before it costs a life (LV-8), the petal trail (petalPass.ts): the pickups are final before the dressing sees them
   const st = petalPass(teachWater(buildPlan(config, seed, plan, easy)));
   if (plan === '1-3') splitPetals(st);
+  // (1-2's goal: 75% of the petals it holds once the petal pass has laid its trail, w1Rhythm.ts rhythmPetalGoal)
+  if (plan === '1-2') rhythmPetalGoal(st, easy);
   // (5-3's quota is a share of the flowers it holds: of those the petal pass kept)
   if (plan === '5-3') st.config = { ...st.config, targetCount: Math.round(st.collectibles.filter((c) => c.type === 'flower').length * W5_HARVEST_SHARE) };
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)

@@ -59,3 +59,23 @@ Merge origin/ccr-0d59a91c-oy3imz before starting and before every push.
     - Rule for myself: any piece that looks wrong for its world gets traced to its draw path before I name it.
   - DEFECT (mine): I typed a message time ("3:02") instead of checking it. It was about 2:50. Countermeasure: `date` in the same step as
     every message.
+- 3:00-4:23 PM ET:
+  - First-timer bots (fixed): both intros hurt at 1.6-1.7 s. Now catches under the first 6.5 s of gaps, each ending at a rock face.
+  - Validator dead walks: a continuous catch read as a walkway (fixed), and a mark at a ledge's start is a 1.5 s "search" (fixed: marks
+    sit at ledge ends).
+  - FT_MARGIN 15 px inside the level check's reach: the clumsy thumb was 0% at two 115 px drops on 1-2; both now pass.
+  - 1-2 petals 70/30 per the lead and Matt:
+    - landing petals at body height;
+    - two roads per split at 15% each;
+    - goal 75%;
+    - test: shares 66-74 / 13-17, goal ≤ shared + smaller road − 5%.
+    Bots: Normal 77-78 of 88 (was 51 of 105), Easy 90-94 of 85+.
+  - 1-5 marks 85% on Normal.
+  - Merged origin/w8-rope2 (the lead's (a)). funknown resolved per entry: kept only where both sides have it, at the lower count.
+  - 1-5's kick:
+    - a sleeping coiled boa taught on a 760 px stone ledge, with Dot's approved line;
+    - 1-2 boas on snap twigs, 175 px past the landing and 150 px before the next ledge;
+    - the climax's widest branch on rolls whose twigs are too short.
+  - Gaps still open: 1-2 dead walk (16 vs 13 known), 1-5 "like the stage before" (57% to 1-4), 1-5 Easy "nothing new" on 3 layouts,
+    1-3 "like the stage before" (to 1-2, w8-rope2's stage), the Easy kid taking 1 heart at the boa teach, and the 1-2 Normal 0% jump
+    at the stump face x 26112.

@@ -106,17 +106,21 @@ test('1-2: every floor gap paints as a drop, never water (w1Pits.ts), and none i
   }
 });
 
-test('1-2: petals 70/30 (Matt): the shared path 66-74%, each road of a split 13-17%, and the goal within shared + the smaller road - 5%, 16 rolls, Normal and Easy', () => {
+test('1-2: petals 70/30 (Matt), on the stage as built (after the petal pass): the shared path 66-74%, each road of a split 13-17%, and the goal within shared + the smaller road - 5%, 16 rolls, Normal and Easy', () => {
   for (const v of LAYOUTS) {
     for (const d of ['normal', 'easy'] as const) {
-      const L = rhythmLayout('1-2', v, d === 'easy', stageBpm(cfg));
-      const n = L.petals.length;
-      const share = (r?: 'high' | 'low') => L.petals.filter((p) => p.road === r).length / n;
-      const shared = share(undefined), high = share('high'), low = share('low');
+      const st = built(v, d);
+      const nodes = st.proto.rhythm.nodes as unknown as Array<{ tag: string; tier: string; pair: string; x0: number; x1: number; y: number }>;
+      const top = nodes.find((n) => n.tier === 'A' && n.pair.includes('rotten branches'))!, leg = nodes.find((n) => n.tier === 'B')!;
+      const splits = [{ x0: top.x0, x1: top.x1, line: top.y }, { x0: leg.x0, x1: leg.x1, line: T12.B }];
+      const petals = st.collectibles.filter((c) => c.type === 'flower');
+      const road = (c: { x: number; y: number }) => { const sp = splits.find((q) => c.x > q.x0 && c.x < q.x1 && c.y >= q.line - 180 && c.y <= q.line + 10); return !sp ? 'shared' : c.y <= sp.line - 80 ? 'high' : 'low'; };
+      const n = petals.length;
+      const share = (r: string) => petals.filter((c) => road(c) === r).length / n;
+      const shared = share('shared'), high = share('high'), low = share('low');
       const at = `layout ${v} ${d}: ${n} petals, shared ${(shared * 100).toFixed(1)}%, high ${(high * 100).toFixed(1)}%, low ${(low * 100).toFixed(1)}%`;
       assert.ok(shared >= 0.66 && shared <= 0.74, at);
       assert.ok(high >= 0.13 && high <= 0.17 && low >= 0.13 && low <= 0.17, at);
-      const st = built(v, d);
       const goal = (d === 'easy' ? st.easyGoal : st.normalGoal)!;
       assert.ok(goal / n <= shared + Math.min(high, low) - 0.05 + 1e-9, `${at}, goal ${goal}`);
     }

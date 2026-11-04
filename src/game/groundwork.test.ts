@@ -80,7 +80,10 @@ test('goals: every hand-built stage of Worlds 1-4 with a count lands in Matt\'s 
     const have = t === 'harvest' ? n.petals : t === 'rescue' ? n.rescuable : t === 'purge' || t === 'gauntlet' ? n.animals : 0;
     if (!have) continue;
     const share = st.config.targetCount / have;
-    const band = t === 'harvest' ? [0.85, 0.9] : t === 'rescue' ? [1, 1] : [0.7, 0.8];
+    // (a split stage's petals, Matt's 70/30 rule, 2026-11-04 via the lead: the goal is 75% of what it holds, always in reach down either
+    // road; 1-2's shares are held by stage12.test.ts)
+    const split = c.id === '1-2';
+    const band = split ? [0.74, 0.76] : t === 'harvest' ? [0.85, 0.9] : t === 'rescue' ? [1, 1] : [0.7, 0.8];
     // (with few things to count, the nearest whole number can sit a little outside the band)
     const slack = 0.5 / have + 0.005;
     assert.ok(share >= band[0] - slack && share <= band[1] + slack, `${c.id} ${t}: ${st.config.targetCount} of ${have}`);
