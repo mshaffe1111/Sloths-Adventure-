@@ -24,7 +24,7 @@ were for its own idea of each world; ours are set by the music, and the ledger r
 | 1-2 The Petal Trail | teach the world's thing: vines | over-under loop-back: out along the top on vines, back underneath along the roots | dotted half + quarter (long-short) | swung: swing... land-hop | jump + vine swing | canopy vines, then the dim root level | swinging out over the drop, then seeing the root path you'll come back along |
 | 1-3 Branch Snakes | tight terrain + the combat teach | high/low split: high road with snakes and the vault, low road safer and slower | half-note hops, hits on the quarter between | off-beat: punches and stomps land between the hops | combat triangle (stomp vault, punch daze, kick) + snakes | mid-canopy, snake country | the first stomp-vault over a gap (w8-rope2's taught vault) |
 | 1-4 Up the Kapok | change of direction: the climb | vertical chimney (kept), the repeated top half rebuilt | whole notes and whole-bar waits (~1.85 s) | wait-and-go, the slowest stage: slow deliberate climbs, waits for the squirrel lift and rope timing | climb + creaking limbs (taught here, 0.6 s to recover) | trunk and sky | the squirrel lift, then the crown with the view over the canopy |
-| 1-5 Where She Walked | mid-world spike | a trail: Meeca's carvings lead, closer and closer together, the fastest stage so far | quarters and half notes mixed, the busiest | broken: uneven gaps you read on the run, the fastest stage | snap twigs (required, keep running) + vines, over real pits | dusk trail, carvings glowing | the carving chase: marks closer together, the run speeding up into the last stretch |
+| 1-5 Where She Walked | mid-world spike | a trail: Meeca's carvings lead, closer and closer together, the fastest stage so far | quarters and half notes mixed, the busiest | broken: uneven gaps you read on the run, the fastest stage | snap twigs (required, keep running) over real pits; vines only as its counter-melody (1-2 owns vines) | dusk trail, carvings glowing | the carving chase: marks closer together, the run speeding up into the last stretch |
 
 ## Every stage has the research's tension curve (6-8 nodes, line 531), but not the same curve
 intro (1 action every 2.5 s, safe) -> ramp (1 every 1.2 s) -> spike (the stage's hardest burst) -> rest (no action; Dot's line;
@@ -42,6 +42,13 @@ a node fails if the same jump gap repeats four times in a row (11-04 line 585).
 - Hazards go on the line the player avoided (research 11-04 line 59, checked by the lead): where the traced run says short-hop or
   duck, a hazard (thorn overhang, snapping snake, pit) sits on the other line, so holding right or skipping the beat costs you.
   This is the direct fix for Matt's "you can outrun them every time".
+- One named pair per stage, acting ON THE SAME BEAT (11-02 report lines 5, 21-54, 61): "a pair" means the two mechanics meet in
+  one move (swing from a vine onto a snapping twig), not both somewhere in the stage. Neighbouring stages never share their pair.
+- The twist breaks the rhythm the player just learned (11-02 line 69): the twist node changes the note value (e.g. 1-1's steady
+  half notes turn into an off-beat double-jump catch).
+- Density climbs through the stage (11-02 lines 65-69): intro groups 5-10 s low, the middle 10-15 s medium, the finale 15-20 s
+  high and dense, ending AT the exit (the cool-down is a few seconds, not a walk). fix-petals lets the validator's tight-stretch
+  limit (TIGHT_MAX, core.ts) allow the finale's 15-20 s.
 - No dead walk over 2.5 s (11-04 line 100): fix it with a slope, a hop or a critter, never just flag it.
 - Something bites from 1-1's climax on (pits on Normal, soft on Easy where STAGE-RULES says; Easy stays a cruise).
 - Petals and pickups never count as variety (§0c.5). The goal sits on the natural path (D8).
@@ -59,7 +66,7 @@ a node fails if the same jump gap repeats four times in a row (11-04 line 585).
 - quality supervisor: judges each plan, then the in-order recording 1-1 -> 1-5.
 - Lead: approves each plan against this table, shows Matt the five layouts before wiring, builds the release.
 
-Ledgers: 11-04 part 1 (LEDGER-2026-11-04-part1.md) and part 2 are in (reference/research/ledger/LEDGER-2026-11-04-part2.md); part 1 and the 11-02 report follow.
+Ledgers: all three are in (11-04 part 1, 11-04 part 2, 11-02 full report) (reference/research/ledger/LEDGER-2026-11-04-part2.md); part 1 and the 11-02 report follow.
 
 Timeline (ET): beatTrace pushed about 2:15; all five plans to the lead about 3:00; shown to Matt about 3:15; built and gated about
 6:30; in-order recording and lead's look about 7:15; release PR to Matt about 8:00. A stage not at the polish bar by then is named
