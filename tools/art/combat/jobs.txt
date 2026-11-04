@@ -15,3 +15,5 @@ r159-vineclips-0/1 6aeb471e0e0338d1bb7feb2f 6aeb47210e0338d1bb7feb34 created 14:
 Measured (HF created -> finished, 15:01Z): r159-stills 1.1 min $0.05 | r159-boaclips 0.2 min $0.01 | r159-stills2 2.4 min $0.11 |
   r159-boaclips2 8.8 min $0.40 | r159-pits 3.7 min $0.17 (pit list) | vine-clips-0/1 running (7.4 min each so far)
 Finished total $0.74 (combat $0.57, pits $0.17)
+Judged 15:05Z: pits keepers drop s52-7, lip s65-7, bed s60-7, high s65-23 (lip s65-23 rejected: a sloth painted on top; bed s50-23 yellow fuzz).
+  boa-tighten s3/s11: both nearly static (the coil hardly moves in 49 frames): NOT a keeper ($0.40). vine-hang s3: a gentle sway, usable.
