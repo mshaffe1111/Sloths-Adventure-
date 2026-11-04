@@ -105,3 +105,20 @@ test('1-2: every floor gap paints as a drop, never water (w1Pits.ts), and none i
     }
   }
 });
+
+test('1-2: petals 70/30 (Matt): the shared path 66-74%, each road of a split 13-17%, and the goal within shared + the smaller road - 5%, 16 rolls, Normal and Easy', () => {
+  for (const v of LAYOUTS) {
+    for (const d of ['normal', 'easy'] as const) {
+      const L = rhythmLayout('1-2', v, d === 'easy', stageBpm(cfg));
+      const n = L.petals.length;
+      const share = (r?: 'high' | 'low') => L.petals.filter((p) => p.road === r).length / n;
+      const shared = share(undefined), high = share('high'), low = share('low');
+      const at = `layout ${v} ${d}: ${n} petals, shared ${(shared * 100).toFixed(1)}%, high ${(high * 100).toFixed(1)}%, low ${(low * 100).toFixed(1)}%`;
+      assert.ok(shared >= 0.66 && shared <= 0.74, at);
+      assert.ok(high >= 0.13 && high <= 0.17 && low >= 0.13 && low <= 0.17, at);
+      const st = built(v, d);
+      const goal = (d === 'easy' ? st.easyGoal : st.normalGoal)!;
+      assert.ok(goal / n <= shared + Math.min(high, low) - 0.05 + 1e-9, `${at}, goal ${goal}`);
+    }
+  }
+});
