@@ -40,7 +40,7 @@ test('without World 1\'s tag a snake still dies to one punch (other worlds uncha
   assert.ok(s.defeated, 'one punch, as before');
 });
 
-test('the lunge snake: a punch dazes it 1.5 s (harmless), it wakes after; a second punch while dazed finishes it', () => {
+test('the lunge snake: a punch dazes it 1.5 s (harmless), it wakes after', () => {
   const s = animal(1, 'snake', 340, { trick: 'lunge' });
   const r = world([s]);
   strike(r, 300, 'punch');
@@ -48,13 +48,44 @@ test('the lunge snake: a punch dazes it 1.5 s (harmless), it wakes after; a seco
   assert.ok((s.stagger ?? 0) > 1.0, `dazed (${s.stagger})`);
   r.wait(TRICK.daze + 0.3);
   assert.ok((s.stagger ?? 0) <= 0 && !s.defeated, 'it woke up');
+});
 
-  const s2 = animal(2, 'snake', 340, { trick: 'lunge' });
-  const r2 = world([s2]);
-  strike(r2, 300, 'punch');
-  r2.wait(0.3);
-  strike(r2, 300, 'punch');
-  assert.ok(s2.defeated, 'punched again while dazed: finished');
+/** mash a move: `n` presses spread over `seconds`, facing right from x (as a kid hammers the button) */
+function mash(r: RealPlay, x: number, move: 'punch' | 'kick', n = 5, seconds = 1) {
+  r.stand(x, GROUND);
+  r.p.facing = 1;
+  const every = Math.max(1, Math.round(seconds / n / (1 / 30)));
+  for (let i = 0; i < n * every; i++) r.frame(i % every === 0 ? (move === 'punch' ? { punch: true } : { kick: 1 }) : {});
+}
+
+test('mashing punch or kick on a lunge snake, awake or rearing: dazed, never killed, the stars up the whole time; a stomp finishes it', () => {
+  for (const move of ['punch', 'kick'] as const) {
+    for (const state of ['patrol', 'rear'] as const) {
+      const s = animal(1, 'snake', 340, { trick: 'lunge', state, stateT: 0.1, attackCooldown: 0 });
+      const r = world([s]);
+      mash(r, 300, move);
+      assert.equal(s.defeated, false, `${move} x5 on a ${state} snake: still alive`);
+      assert.ok((s.stagger ?? 0) > 0, `${move} x5: still dazed`);
+      const left = s.stagger ?? 0;
+      assert.ok(left < TRICK.daze, 'mashing did not make the daze longer (it cannot be held down)');
+      r.fly(340, GROUND - 90, 0, 300);
+      for (let i = 0; i < 20 && !s.defeated; i++) r.frame();
+      assert.ok(s.defeated, 'the stomp finished it');
+    }
+  }
+});
+
+test('Easy: the daze is longer', async () => {
+  const { setDifficulty } = await import('./difficulty.ts');
+  setDifficulty('easy');
+  try {
+    const s = animal(1, 'snake', 340, { trick: 'lunge' });
+    const r = world([s]);
+    strike(r, 300, 'punch');
+    assert.ok((s.stagger ?? 0) > TRICK.daze, `Easy daze ${s.stagger}`);
+  } finally {
+    setDifficulty('normal');
+  }
 });
 
 test('the lunge snake: a stomp always works on it', () => {
@@ -106,4 +137,25 @@ test('the coiled boa: a punch is TOUGH (no harm, Dot says kick), a stomp bounces
   assert.ok(s.defeated, 'the rolling boa bowled over the snake in its way');
   r.wait(TRICK.rollMax);
   assert.ok(b.defeated, 'and rolled to the end of its ground, out of the fight');
+});
+
+test('mashing punch on the boa through its coil, tell, strike and bite (its strike not held off): never hurt; one kick rolls it', () => {
+  for (const state of ['coil', 'rear', 'strike', 'bite'] as const) {
+    const b = animal(1, 'boa', 340, { trick: 'coil', state, stateT: 0, attackCooldown: 0 });
+    const r = world([b]);
+    r.safe = true;
+    mash(r, 300, 'punch', 10, 2.3);
+    assert.equal(b.hp, 3, `${state}: ten punches did nothing`);
+    assert.equal(b.defeated, false, `${state}: still alive`);
+    r.wait(0.6);
+    strike(r, 300, 'kick');
+    assert.ok(b.state === 'roll' || b.defeated, `${state}: one kick rolls it (${b.state})`);
+  }
+});
+
+test('mashing kick on the boa: it rolls, and mashing more at the rolling ball does nothing to it', () => {
+  const b = animal(1, 'boa', 340, { trick: 'coil' });
+  const r = world([b]);
+  mash(r, 300, 'kick');
+  assert.ok(b.state === 'roll' || b.state === 'rolled' || b.defeated, `rolled (${b.state})`);
 });

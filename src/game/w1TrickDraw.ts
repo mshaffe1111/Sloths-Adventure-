@@ -27,9 +27,10 @@ function star(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
 /** the stars over a dazed (or stiff) trick snake's head; drawn in world space, after the snake */
 export function drawTrickStars(ctx: CanvasRenderingContext2D, e: Enemy, t: number): void {
   if (e.defeated || !isDazed(e) || starsShown(e, t) === 0) return;
-  // (over its head, which is at the front of its body, facing him: the main signal, a clear ring of big stars, as the boards showed)
-  const cx = e.x + e.facing * 12;
-  const cy = e.y - 52;
+  // (the main signal: a clear ring of big stars, as the boards showed)
+  // (centred on the snake, not on the head: he stands at its head when he punches, and the ring sat on him)
+  const cx = e.x - e.facing * 6;
+  const cy = e.y - 58;
   ctx.save();
   // the ring they circle on, faint, so it reads as one dizzy halo and not loose sparks
   ctx.strokeStyle = 'rgba(255,240,170,0.55)';
@@ -81,11 +82,24 @@ export function withCoilSqueeze(ctx: CanvasRenderingContext2D, e: Enemy, feetY: 
 /** the armoured coil, read at a glance: a hard pale sheen along the top of the coil (it looks plated, not soft) and big glints with a dark
  *  edge, pulsing faster as it tightens */
 export function drawCoilGlint(ctx: CanvasRenderingContext2D, e: Enemy, t: number): void {
-  if (e.defeated || !isCoiled(e)) return;
+  // (lying coiled, and through its tell, when the glint pulses fast)
+  if (e.defeated || !(isCoiled(e) || (e.trick === 'coil' && e.state === 'rear'))) return;
   const q = coilSqueeze(e);
   const pulse = 0.55 + 0.45 * Math.sin(t * (q > 0 ? 18 : 3) + e.id);
   const f = e.facing > 0 ? 1 : -1;
   ctx.save();
+  // the rim: a hard bright edge round the whole coil, pulsing, that reads from a jump away as "this is armoured" (a dark line inside it
+  // keeps it clear on pale leaves)
+  ctx.lineWidth = 6;
+  ctx.strokeStyle = 'rgba(40,24,6,0.55)';
+  ctx.beginPath();
+  ctx.ellipse(e.x, e.y + 6, 34, 17, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.lineWidth = 3.5;
+  ctx.strokeStyle = `rgba(255,236,160,${0.6 + 0.4 * pulse})`;
+  ctx.beginPath();
+  ctx.ellipse(e.x, e.y + 6, 36, 19, 0, 0, Math.PI * 2);
+  ctx.stroke();
   // the sheen: two bright arcs along the coil's top, like light on a hard shell
   ctx.lineCap = 'round';
   ctx.strokeStyle = `rgba(255,252,235,${0.55 + 0.3 * pulse})`;

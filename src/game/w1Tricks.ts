@@ -1,9 +1,12 @@
 /**
  * World 1's combat triangle (R-159.1, plan: reference/plans/R-159.1-combat-triangle.md). Every World 1 animal has one trick, each answered
- * by one move, so the fights stop being the same:
- *   - the tree snake's coiled lunge ('lunge'): a punch dazes it (stars) instead of killing it; a second hit or a stomp finishes it;
- *   - the boa's armoured coil ('coil'): coiled, a punch is "TOUGH!" and a stomp bounces off; a kick breaks the coil and sends it rolling
- *     as a ball that bowls over what it meets and trips a switch;
+ * by one move, so the fights stop being the same; each move has one job (the lead's call, 2026-11-04, after the quality supervisor's
+ * button-mashing check): punch = get past, stomp = finish or vault, kick = armour.
+ *   - the tree snake's coiled lunge ('lunge'): a punch (or a kick) dazes it, harmless, stars over its head; while dazed, more blows do
+ *     nothing (the daze is not reset, so mashing cannot hold it down); only a stomp finishes it, or you walk past;
+ *   - the boa's armoured coil ('coil'): no blow but a kick ever harms it, in any state: coiled, a punch is "TOUGH!"; mid-attack, a punch
+ *     only staggers it back into its coil ("STOPPED!"); a stomp always bounces off; a kick (or the mega) sends it rolling as a ball that
+ *     bowls over what it meets and trips a switch, the only way it goes out;
  *   - the vine snake ('vine'): hangs among the lianas; a punch stiffens it into a pole for a moment.
  * Only animals that carry `trick` behave this way: World 1's placements set it (stage data), so no other world changes.
  * Pure functions only: the engine plays what these decide (engine.ts hitEnemy, the stomp, predatorAI.ts).
@@ -30,8 +33,8 @@ export const TRICK = {
   rollMax: 3.2,
 } as const;
 
-/** the coiled boa's armour: every state but its strike's follow-through counts as coiled */
-const COILED = new Set(['coil', 'rear', 'sleep', 'recover']);
+/** the boa lying in its coil (its tell, strike and bite are its attack: a punch then staggers it back into the coil) */
+const COILED = new Set(['coil', 'sleep', 'recover']);
 export const isCoiled = (e: Enemy) => e.trick === 'coil' && (e.state === undefined || COILED.has(e.state));
 
 /** dazed (a lunge snake) or stiff (a vine snake) right now */
@@ -44,28 +47,30 @@ export const tellFor = (easy: boolean) => (easy ? TRICK.tellEasy : TRICK.tell);
 
 /**
  * What a blow does to a trick animal, before the usual hit rules:
- *   'daze'    a punch on an awake lunge snake: no harm, dazed `dazeFor` seconds (stars)
+ *   'daze'    a punch or kick on an awake lunge snake: no harm, dazed `dazeFor` seconds (stars)
  *   'stiffen' a punch on a vine snake: no harm, a stiff pole `dazeFor` seconds
- *   'tough'   a punch on the coiled boa: no harm ("TOUGH!")
- *   'roll'    a kick on the coiled boa: the coil breaks and it rolls away as a ball
- *   null      the usual hit (fight.ts resolveMelee): a second blow on a dazed snake, a kick on a snake, a mega, an animal with no trick
+ *   'nothing' a blow on a dazed lunge snake or a stiff vine snake: no harm, the stars stay (only a stomp finishes it)
+ *   'tough'   a punch on the coiled (or rolling) boa: no harm ("TOUGH!")
+ *   'stagger' a punch on the boa mid-attack (its tell, strike or bite): no harm, it is knocked back into its coil ("STOPPED!")
+ *   'roll'    a kick or the mega on the boa: the coil breaks and it rolls away as a ball
+ *   null      the usual hit (fight.ts resolveMelee): an animal with no trick
  */
-export type TrickHit = 'daze' | 'stiffen' | 'tough' | 'roll' | null;
+export type TrickHit = 'daze' | 'stiffen' | 'nothing' | 'tough' | 'stagger' | 'roll' | null;
 
 export function trickHit(e: Enemy, kind: 'punch' | 'kick' | 'mega'): TrickHit {
-  if (!e.trick || kind === 'mega') return null;
-  if (e.trick === 'lunge') return kind === 'punch' && !isDazed(e) ? 'daze' : null;
-  if (e.trick === 'vine') return kind === 'punch' && !isDazed(e) ? 'stiffen' : null;
+  if (!e.trick) return null;
+  if (e.trick === 'lunge') return isDazed(e) ? 'nothing' : 'daze';
+  if (e.trick === 'vine') return isDazed(e) ? 'nothing' : kind === 'punch' ? 'stiffen' : 'daze';
   if (e.trick === 'coil') {
-    if (e.state === 'roll') return 'tough';
-    if (!isCoiled(e)) return null;
-    return kind === 'kick' ? 'roll' : 'tough';
+    if (e.state === 'roll' || e.state === 'rolled') return 'tough';
+    if (kind !== 'punch') return 'roll';
+    return isCoiled(e) ? 'tough' : 'stagger';
   }
   return null;
 }
 
-/** a stomp on the coiled boa bounces off ("ARMORED!"); every other trick animal takes a stomp as usual */
-export const trickStompBounces = (e: Enemy) => isCoiled(e) || (e.trick === 'coil' && e.state === 'roll');
+/** a stomp on the boa bounces off ("ARMORED!"), in every state; every other trick animal takes a stomp as usual (it finishes a dazed snake) */
+export const trickStompBounces = (e: Enemy) => e.trick === 'coil';
 
 /** the stars over a dazed snake: how many show this frame (all of them, then every other one in the last `flicker` seconds) */
 export function starsShown(e: Enemy, t: number): number {

@@ -4248,6 +4248,23 @@ export class GameEngine {
       this.coilTold = true;
       return;
     }
+    if (th === 'stagger') {
+      // a punch on the boa mid-attack: it is knocked back into its coil, unhurt (only a kick breaks it)
+      this.hitstopTimer = Math.max(this.hitstopTimer, 0.06);
+      this.camera.trauma = Math.min(1, this.camera.trauma + m.shake * 0.6);
+      sound.playHitImpact(false, 'armor');
+      this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
+      e.stagger = e.staggerMax = 0.35;
+      staggerPredator(e);
+      this.addFloatingText('STOPPED!', e.x, e.y - 30, '#cbd5e1');
+      return;
+    }
+    if (th === 'nothing') {
+      // already dazed: the blow does nothing and the daze is not made longer (only a stomp finishes it)
+      this.hitstopTimer = Math.max(this.hitstopTimer, 0.03);
+      sound.playHitImpact(false, materialFor(e.type));
+      return;
+    }
     this.hitstopTimer = Math.max(this.hitstopTimer, m.hitstop);
     this.camera.trauma = Math.min(1, this.camera.trauma + m.shake);
     sound.playHitImpact(m.heavy, materialFor(e.type));
@@ -4277,7 +4294,7 @@ export class GameEngine {
     e.vx = 0;
     staggerPredator(e);
     // (the word above the stars, not on them)
-    this.addFloatingText(th === 'stiffen' ? 'STIFF!' : 'DAZED!', e.x, e.y - 92, '#fef08a');
+    this.addFloatingText(th === 'stiffen' ? 'STIFF!' : 'DAZED!', e.x, e.y - 100, '#fef08a');
   }
 
   private hitBoss(b: BossEntity, m: MoveSpec, box: Rect, hr: Rect) {

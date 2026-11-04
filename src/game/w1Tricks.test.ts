@@ -15,33 +15,37 @@ test('an animal with no trick is untouched (every other world)', () => {
   assert.equal(trickStompBounces(foe({ type: 'boa', state: 'coil' })), false);
 });
 
-test('the lunge snake: a punch dazes it, the second blow (or a kick) is the usual hit', () => {
+test('the lunge snake: a punch or kick dazes it; while dazed every blow does nothing (only a stomp finishes it)', () => {
   const s = foe({ trick: 'lunge', state: 'rear' });
   assert.equal(trickHit(s, 'punch'), 'daze');
-  assert.equal(trickHit(s, 'kick'), null, 'a kick kills it as before');
-  assert.equal(trickHit({ ...s, stagger: 1.2 }, 'punch'), null, 'punched again while dazed: it is finished');
+  assert.equal(trickHit(s, 'kick'), 'daze', 'a kick dazes it too: mash-kicking does not skip the stomp');
+  for (const kind of ['punch', 'kick', 'mega'] as const) assert.equal(trickHit({ ...s, stagger: 1.2 }, kind), 'nothing', kind);
   assert.equal(trickStompBounces(s), false, 'a stomp always works on it');
 });
 
-test('the coiled boa: punch TOUGH, stomp bounces, kick rolls it; once out of its coil it is an ordinary boa', () => {
-  for (const state of ['coil', 'rear', 'recover', undefined]) {
+test('the boa: no blow but a kick ever harms it, in any state', () => {
+  for (const state of ['coil', 'recover', 'sleep', undefined]) {
     const b = foe({ type: 'boa', trick: 'coil', state, hp: 3, maxHp: 3 });
     assert.ok(isCoiled(b), String(state));
-    assert.equal(trickHit(b, 'punch'), 'tough');
-    assert.equal(trickHit(b, 'kick'), 'roll');
-    assert.ok(trickStompBounces(b));
+    assert.equal(trickHit(b, 'punch'), 'tough', `coiled (${state}): TOUGH`);
   }
-  const striking = foe({ type: 'boa', trick: 'coil', state: 'bite' });
-  assert.equal(trickHit(striking, 'punch'), null, 'caught mid-bite, its coil is open: the usual hit');
-  const rolling = foe({ type: 'boa', trick: 'coil', state: 'roll' });
-  assert.equal(trickHit(rolling, 'kick'), 'tough', 'a rolling ball is not kicked again');
-  assert.equal(trickHit(foe({ type: 'boa', trick: 'coil', state: 'coil' }), 'mega'), null, 'the mega still breaks anything');
+  for (const state of ['rear', 'strike', 'bite']) {
+    const b = foe({ type: 'boa', trick: 'coil', state, hp: 3, maxHp: 3 });
+    assert.equal(trickHit(b, 'punch'), 'stagger', `mid-attack (${state}): knocked back into its coil, unhurt`);
+  }
+  for (const state of ['coil', 'rear', 'strike', 'bite', 'recover']) {
+    const b = foe({ type: 'boa', trick: 'coil', state });
+    assert.equal(trickHit(b, 'kick'), 'roll', `a kick rolls it (${state})`);
+    assert.equal(trickHit(b, 'mega'), 'roll', `the mega breaks the coil too (${state})`);
+    assert.ok(trickStompBounces(b), `a stomp bounces off (${state})`);
+  }
+  assert.equal(trickHit(foe({ type: 'boa', trick: 'coil', state: 'roll' }), 'kick'), 'tough', 'a rolling ball is not kicked again');
 });
 
 test('the vine snake: a punch stiffens it, once', () => {
   const v = foe({ trick: 'vine' });
   assert.equal(trickHit(v, 'punch'), 'stiffen');
-  assert.equal(trickHit({ ...v, stagger: 1 }, 'punch'), null);
+  assert.equal(trickHit({ ...v, stagger: 1 }, 'punch'), 'nothing');
 });
 
 test('Easy: longer tells and stuns (Easy stays a cruise)', () => {
