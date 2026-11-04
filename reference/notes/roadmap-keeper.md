@@ -1,21 +1,27 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 12:47 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 12:52 PM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
 ## Status
 - Reinstated 2026-11-02 by the lead at Matt's ask (D27: the slips came from the setup; GAMEPLAN §3 is now a ladder; self-caught slips
   don't count). New items come in batches when Matt says go (LEAD-PLAYBOOK 8d).
-- **State now (2026-11-04 12:47 PM ET):** roadmapcheck PASS. Phases (sums by script, see below): WebGL 24 h; Phase A (World 1) 93.5 h (range
-  about 70-130; 88.5 before R-155.1), marked "before the research ledger"; Phase B 306.5 h (guess, about 230-425); Phase C 114 h
-  (guess, about 85-160); alongside 67.5 h. Day 1 605.5 helper hours (gate 613.5), recommended Important 60 h, launch 665.5 h; lanes
-  133 / 132 / 133 / 133.5 / 133; building about 17-22 working days; about 4-4.5 weeks with the 80% trigger (about 485 of 605.5 h).
-  Doc read back at rev 200 by whole-doc search.
+- **State now (2026-11-04 12:52 PM ET):** roadmapcheck PASS. Phases (by script): WebGL 24 h; Phase A (World 1) 98.5 h (range about
+  74-138; 88.5 before the 1-1 to 1-5 rebuild), marked "before the research ledger"; Phase B 307 h (guess, about 230-425; +0.5 from
+  R-155 re-summed from its parts, 37 h); Phase C 114 h (guess, about 85-160); alongside 67.5 h. Day 1 611 helper hours (gate 619),
+  recommended Important 60 h, launch 671 h; lanes 134 / 134.5 / 133 / 134.5 / 134; building about 17-22 working days; about 4-4.5
+  weeks with the 80% trigger (about 490 of 611 h). Doc read back at rev 217 by whole-doc search.
   - Phase script: lanes from BUILD-PLAN §2 Day 1 rows; strip any "(...)" suffix from the item (R-150.2 rows say "(W8 share)");
-    then move the written sub-parts B to A by hand: R-154 branch 2.5 + vine kinds 4.5 + R-155 World 1 5.5 (was 7; 1-2 and 1-5
-    left for R-155.1) = 12.5. Proof it is the same script: it reproduced 6d0b35f9's A 88.5 / B 306.5 / C 114 / WebGL 24 /
-    alongside 67.5 exactly. Kept at the scratchpad's phases_keep.py (temporary: rebuild from this note after a restart).
+    A = the A ids (incl. R-155.1/.2/.3) + R-155's row that says "World 1's new templates" (only that R-155 row: a note naming
+    World 1 elsewhere must not count); then move the written sub-parts B to A by hand: R-154 branch 2.5 + vine kinds 4.5 + R-155
+    World 1's 1-6 to 1-9 3 = 10. Proof: it reproduces 6d0b35f9's A 88.5 / B 306.5 / C 114 / WebGL 24 / alongside 67.5 exactly.
+    Kept at the scratchpad's phases_keep.py (temporary: rebuild from this note after a restart).
+  - World 1 rebuild tonight (W1-REBUILD-PLAN.md): R-155.1 w1-rhythm (beatTrace.ts, 1-2, 1-5; 6.5 h, start 12:42 PM ET), R-155.2
+    w1-rhythm-b (1-1, 1-4; 5 h, start 12:47 PM ET), R-155.3 w8-rope2 (1-3 after R-159.1; 2.5 h). Lead's checkpoints (ET): plans
+    3:00, Matt 3:15, built 6:30, recording 6:45, release PR about 8:00 (the plan file says the recording and look about 7:15).
+    R-6.38 pits: fix-petals, in by 4:00 (owner moved 11:43 AM ET; I missed it until this 12:52 PM ET batch: STATUS is read every batch now).
+    R-6.40 held until 11-05. Then IDLE until the ledger batch (about 2:30 PM ET), the lead's ask to save Matt's tokens.
 - **D29 (lead, 2026-11-04 12:42 PM ET):** the research was never broken down line by line; three ledger helpers are writing
   reference/research/ledger/. Phase A's 88.5 h is marked "before the research ledger"; no new Phase A estimate until the lead
   sends the ledger's misses (about 2:30 PM ET) for R-ids and hours. R-155's 1-5 build was ON HOLD; corrected by the lead: 1-2 and 1-5 are R-155.1 (w1-rhythm, running), the rest of R-155 stays on hold. R-148.18 closed as A-41 (3342b2cf, lead branch). Known misses: a BPM
@@ -41,8 +47,8 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
   - R-159.1 w8-rope2, start about 8:00 AM, expected 9.5 h (7-14), end about 5:30 PM. R-6.38 w8-rope2 (3 h; pictures done 10:14).
   - R-3.2 warmup-5m, start about 9:35 AM, expected 2 h, end about 11:35 AM.
   - R-150.8 DONE: real 1.2 h start to accept (report at 0.5 h); recorded on the row and in BUILD-PLAN's calibration list; archive with the next release.
-  - R-155.1 w1-rhythm (1-2 and 1-5 rebuilt to a beat), start 12:42 PM ET, expected 6.5 h (5-10), plan about 2:45, built about 5:30 PM ET.
-    Sent to bot-fix. (R-155's own 1-5 plan for fix-petals is gone: 1-5 moved to w1-rhythm.)
+  - R-155.1 w1-rhythm (beatTrace.ts, 1-2, 1-5), start 12:42 PM ET, expected 6.5 h (5-10). R-155.2 w1-rhythm-b (1-1, 1-4), start
+    12:47 PM ET, expected 5 h (4-8). R-155.3 w8-rope2 (1-3), starts after R-159.1, expected 2.5 h (2-4). All sent to bot-fix. (R-155's own 1-5 plan for fix-petals is gone: 1-5 moved to w1-rhythm.)
 - **In flight / waiting:**
   - 0.9.4 is PR #62 (kaizen-gates -> main, the lead 11-04 11:30 AM ET), waiting on Matt's merge: when it lands, archive R-1.1, R-6.25
     and the icons items with the merge commit (check git merge-base first), plus anything else merged in it.
@@ -89,6 +95,9 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
 - 2026-11-02: roadmapcheck counts "roadmap" only as a word, not inside a path or a name (D25 and D27 tripped it).
 
 ## My pitfalls and how I avoid them
+- An owner change I missed (11-04: R-6.38's placing moved to fix-petals at 11:43 AM ET in STATUS; my row still said w8-rope2 until
+  the lead's 12:48 message): every batch, after merging the lead branch, read STATUS's new lines since my last batch and apply every
+  owner, state or pause they record, not only the items the lead's message names.
 - A read-back that read only the first page (11-04, rev 182: the doc read is paginated, complete='false' with a next cursor, and I
   checked page 1 only; caught before the 12:42 PM ET commit and before anything relied on it, then the whole doc checked by search): after every write, read back
   with kind "search" (it covers the whole doc, complete='true') for the changed items AND the stale numbers; never call a
