@@ -17,7 +17,7 @@ import { artKey, lookAlike, lookOf } from './look.ts';
 import { gatedFlags, judgeAgainst, keyOf, measure, truerBeside } from './funcheck.ts';
 import { movesAlike } from './evaluate.ts';
 import { fallBites, FALL_BITE_PX, pairsMet, waitAt, WAIT_MIN } from './mechanics.ts';
-import { FINALE_TIGHT_MAX, type Built, type Stretch } from './core.ts';
+import { FINALE_TIGHT_MAX, groupsOf, REST_PAD_SECS, type Built, type Stretch } from './core.ts';
 import { shapeAlike, tempoAlike, rhythmOf, templateFlags, unitsOf } from './variety.ts';
 import type { StageEval } from './evaluate.ts';
 import type { Stage } from '../inspect/stages.ts';
@@ -44,6 +44,8 @@ test('every beat the inspector names maps to its move letter', () => {
     ['J', 'hop onto a moving log or platform', 'X'], ['V', 'grab a trunk or vine and climb', 'C'], ['V', 'swing on a liana', 'V'], ['V', 'shimmy along a rope', 'R'],
     ['Z', 'crumbling branch', 'B'], ['Z', 'the branch collapses behind him: keep running', 'K'], ['Z', 'wind gust', 'W'], ['Z', 'sticky web slows him', 'S'],
     ['P', 'puzzle room (seesaw)', 'P'], ['C', 'snake', 'F'], ['Z', 'eagle sweep: duck into a bush', 'E'], ['Z', 'darkness: wake the glowworms, find the way', 'D'],
+    // (World 1's tricks, R-159.1: the inspector names them, beats.ts)
+    ['C', 'snake (dazed, then stomped)', 'N'], ['C', 'boa (coiled: kicked to roll)', 'O'], ['C', 'snake (stomp vault)', 'Y'], ['C', 'snake (vine snake: punched stiff)', 'G'], ['C', 'boa', 'F'],
   ];
   for (const [letter, what, want] of cases) assert.equal(moveOf({ letter: letter as never, what, count: 1 }), want, what);
   assert.equal(moveOf({ letter: 'h', what: 'pickup arc over a gap (optional jump)', count: 0.5 }), null, 'an optional pickup arc is not a move');
@@ -215,6 +217,11 @@ test('enemy jobs: a snake where a jump lands is flagged; one in the middle of a 
     const job = enemyJobs(b).jobs[0];
     assert.equal(job.nearLanding !== null, near, `snake at ${x}: ${JSON.stringify(job)}`);
   }
+  // (a vine snake where a jump lands is the liana he means to catch, not an ambush: never flagged)
+  const r = bare(ps, 2300);
+  (r.stage as Stage).enemies = [{ ...snake(760), trick: 'vine' } as never];
+  const vb = fromStage('fixture', 1, 'normal', r, r.stage as Stage);
+  assert.equal(enemyJobs(vb).jobs[0].nearLanding, null);
 });
 
 test('tempo: breaking branches are hurry, the eagle and waits are patience, a plain jump is neither', () => {
@@ -423,6 +430,25 @@ test('tempo and map shape against the stage before: the same BPM and beat feel p
   assert.ok(shapeAlike(flat, climb) < 0.2, String(shapeAlike(flat, climb)));
 });
 
+test('rests (STAGE-RULES §2 pacing, the lead 11-04): a pause of 1.0 s with no hard input is a rest on Normal wherever it falls; on Easy it takes 2.0 s', () => {
+  const run = (from: number, to: number, every: number): Step[] => Array.from({ length: Math.floor((to - from) / every) + 1 }, (_, i) => ({ m: 'J' as const, t: from + i * every, x: 0, y: G, what: '' }));
+  const noRest = (steps: Step[], setting: 'normal' | 'easy') => paceFlags(pacing(steps, 30), true, { steps, setting }).some((f) => /no rest/.test(f.what));
+  // (a move every 0.6 s for 25 s, with a 1.5 s pause in the middle: no empty 5 s window, so the old grid saw no rest at all)
+  const paused = [...run(0, 12, 0.6), ...run(13.5, 25, 0.6)];
+  assert.equal(noRest(paused, 'normal'), false);
+  assert.ok(paceFlags(pacing(paused, 30), false).some((f) => /no rest/.test(f.what)), 'the old grid flags it');
+  assert.equal(groupsOf(paused, 'normal').length, 2);
+  // (the same pause on Easy is under its 2.0 s pad: still one 25 s group)
+  assert.equal(noRest(paused, 'easy'), true);
+  assert.equal(REST_PAD_SECS.easy, 2);
+  // (and a move every 0.8 s for 25 s with no pause at all is flagged on both)
+  assert.equal(noRest(run(0, 25, 0.8), 'normal'), true);
+  // (small hops are not hard input: a pause filled with them is still a rest)
+  const hops = [...run(0, 12, 0.6), { m: 'h' as const, t: 12.6, x: 0, y: G, what: '' }, ...run(13.5, 25, 0.6)];
+  assert.equal(noRest(hops, 'normal'), false);
+});
+
+// ---- w8-rope2 (R-159.1): rhythm-token repeats and vine snakes ----
 // ---- repeats on a beat-traced stage (the lead, 2026-11-04): tokens carry their note value and direction ----
 const at130 = (ms: ReadonlyArray<[string, number, number]>): Step[] => {
   // (each move: its letter, beats since the last one, and the height it ends at; 130 BPM)
@@ -442,4 +468,13 @@ test('repeat on a traced stage: the same four moves on the same notes the same w
   assert.deepEqual(repeats(moveString(s2), s2, 130).filter((r) => r.kind === '4-run'), [], 'varied notes and heights are different moves to a thumb');
   // (the letters alone, as on an untraced stage, still read the varied one as the same four moves over and over)
   assert.ok(repeats(moveString(s2), s2).some((r) => r.kind === '4-run'), 'without the beat the letters repeat');
+});
+
+test('miss cost: a vine snake (G) bites a grab of its liana, a heart: a setback, never free', () => {
+  const r = bare([{ ...floor(100, 2000), height: 90 }], 1900);
+  const b = fromStage('fixture', 1, 'normal', r, r.stage as Stage);
+  b.steps = [{ m: 'G', t: 1, x: 600, y: G, what: 'snake (vine snake: punched stiff)' }];
+  const c = missCost(b);
+  assert.equal(c.length, 1);
+  assert.equal(c[0].cost, 'setback');
 });

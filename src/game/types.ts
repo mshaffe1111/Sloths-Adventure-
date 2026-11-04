@@ -230,6 +230,14 @@ export interface Enemy {
   groundY?: number;
   /** a river snapper's shell, kicked: which way it slides (predatorAI.ts) */
   slideDir?: 1 | -1;
+  /** World 1's one trick per animal (w1Tricks.ts, R-159.1): set only by World 1's placements, so no other world changes */
+  trick?: import('./w1Tricks.ts').Trick;
+  /** a stomp vault's snake (R-159.1): the only way across its drop, so it comes back at its spot when he respawns; once back, finishing
+   *  it again does not count toward the stage's goal (no farming the count at a flag) */
+  vaultHome?: { x: number; y: number; back?: boolean };
+  /** World 1's vine snake: the liana it hangs on, and how far down it from the top */
+  vineId?: number;
+  hangLen?: number;
   /** 2-9: a snapper of the river king's guard: stands upright with a spear, jabs further, blocks a blow to the front instead of hiding,
    *  and is staggered back by a kick (it shares the snapper's brain, predatorAI.ts) */
   royal?: boolean;
@@ -485,6 +493,8 @@ export interface FloatingText {
   life: number;
   maxLife: number;
   scale: number;
+  /** the animal a hit word belongs to: a new word on it replaces this one (World 1's tricks: words never stack) */
+  owner?: number;
 }
 
 export interface Camera {

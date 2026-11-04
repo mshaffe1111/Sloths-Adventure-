@@ -33,11 +33,11 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
   1: [
     S('sprint', 'Into the Canopy', 'Run the high branches of the kapok trees and reach the shrine.'),
     S('harvest', 'The Petal Trail', 'Meeca left a trail of petals. Follow it and gather them.'),
-    S('purge', 'Branch Snakes', 'Clear the snakes off the branches with your Claw Punches.'),
+    S('purge', 'Branch Snakes', 'Daze the snakes with a punch, then stomp them.'),
     S('ascent', 'Up the Kapok', 'Climb the giant kapok to the very top.'),
-    // (w1-rhythm 2026-11-04, Matt's call: follow Meeca's trail markers to the shrine, petals a bonus; the line is new, needs Matt's approval)
+    // (w1-rhythm 2026-11-04, Matt's call: follow Meeca's trail markers to the shrine, petals a bonus; the line approved by Matt, 2026-11-04)
     S('relic_hunt', 'Where She Walked', 'Meeca marked the trees as she walked. Follow her marks to the shrine.'),
-    S('vine_runner', 'First Lianas', 'Swing on the hanging lianas across the gaps in the canopy.'),
+    S('vine_runner', 'Snake Vines', 'Punch the vine snake stiff, then swing on.'),
     S('stealth', 'A Very Good Bush', 'Eagles are watching. Duck under the leaves the way Dot hid from the soldiers.'),
     S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
     S('gauntlet', "The Boa's Branches", "Fight through the boa's guards and reach the shrine."),

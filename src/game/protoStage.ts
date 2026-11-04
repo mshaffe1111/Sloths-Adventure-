@@ -1,5 +1,5 @@
 /**
- * protoStage — a hand-built 1-6 "First Lianas", the first stage designed the new way (2026-10-23 test, off by default).
+ * protoStage — a hand-built 1-6 (now "Snake Vines"), the first stage designed the new way (2026-10-23 test, off by default).
  *
  * One idea, played in four beats (learn, develop, twist, finish), with a puzzle and two secrets:
  *   1. LEARN    two swing hollows with a soft mossy floor: a missed swing costs a few seconds, never a life;
@@ -17,11 +17,14 @@
  */
 import { teachWater } from './waterTeach.ts';
 import { petalPass } from './petalPass.ts';
+import { busiestScreen, clumpExtras, PER_SCREEN, rowExtras } from './petals.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
+import { APRON, easyNode, stageBpm, traceNode, type Ledge, type NodeSpec, type Step, type Trace } from './beatTrace.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, reachJumpHeld, SAFE } from './physics.ts';
+import { makeVineSnake, TRICK, vaultGap, type BowlGate } from './w1Tricks.ts';
 import { validateStage, type CheckGraph } from './levelCheck.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
@@ -54,7 +57,6 @@ import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sec
 import { buildRhythmStage } from './w1Rhythm.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildIntoCanopy } from './w1Rise.ts';
-import { APRON, easyNode, stageBpm, traceNode, type Step } from './beatTrace.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
@@ -287,7 +289,8 @@ export function plainOrder(heights: readonly number[]): number[] {
 /** how high a double jump lifts him (computed once from the physics) */
 const RISE = maxRise();
 
-/** 1-9 The Boa's Branches asks for 16 (24 to 31 to fight, the boas taking three hits each): two in three, not the generated 14 */
+/** 1-9 The Boa's Branches asks for 16 (goals.ts withGoals sets Normal to Matt's share and Easy to its floor, as on main: the lead 11-04,
+ *  1-9's own counted goals wait for its rework) */
 export const GUARD_GOAL_19 = 16;
 /** 3-3 asks for 12 prowlers driven off (the stage holds about one and a half times that) */
 export const PROWLER_GOAL_33 = 12;
@@ -304,8 +307,10 @@ export const NEST_GOAL_48 = 8;
 /** 4-8's falls: how far onto the shelf the water lands (the boulder's last stretch), and how far above the shelf it pours from */
 const FALL_LIP = 60;
 const FALL_HEAD = 280;
-/** 1-3 Branch Snakes asks for 16 snakes, not 10: the stage holds about 25, so the punching it teaches is most of the way through */
-export const SNAKE_GOAL_13 = 16;
+/** 1-3 Branch Snakes (the rebuild, R-159.1): Normal asks Matt's share of its snakes, 75% (goals.ts withGoals; the lead 11-04: his band
+ *  stands, reachable on either road, proven with the fixed adult bot on each); Easy asks what the fixed kid bot made on every roll,
+ *  counted on Easy's own stage (easyGoalCounted) */
+export const SNAKE_EASY_13 = 8;
 
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
@@ -337,7 +342,7 @@ export const stageSeconds = (id: string): number => STAGE_SECONDS[id] ?? EXPERT_
 /** 4-8's length (STAGE_SECONDS: about three minutes for a quick player) */
 export const W48_SECONDS = stageSeconds('4-8');
 
-export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy' | 'highrun' | 'stumps' | 'snakes' | 'river' | 'pond' | 'turtles' | 'cages';
+export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy' | 'highrun' | 'stumps' | 'snakes' | 'river' | 'pond' | 'turtles' | 'cages' | 'vault' | 'bowl' | 'traced';
 
 /**
  * The hand-built 1-6, planned and rolled: the stage is always the same chain of beats (learn, develop, puzzle, twist, develop again,
@@ -348,6 +353,7 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
 export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto', easy = false): GeneratedStage & { proto: ProtoExtras } {
   // water taught before it costs a life (LV-8), the petal trail (petalPass.ts): the pickups are final before the dressing sees them
   const st = petalPass(teachWater(buildPlan(config, seed, plan, easy)));
+  if (plan === '1-3') splitPetals(st);
   // (5-3's quota is a share of the flowers it holds: of those the petal pass kept)
   if (plan === '5-3') st.config = { ...st.config, targetCount: Math.round(st.collectibles.filter((c) => c.type === 'flower').length * W5_HARVEST_SHARE) };
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
@@ -363,6 +369,69 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
 }
 
 /**
+ * 1-3's split, Matt's 70/30 (11-04, W1-REBUILD-PLAN.md): 70% of the petals on the way everyone takes and 15% on EACH road, so one play
+ * down either road reaches 85% and the goal (75%) is always in reach, and all of them takes both roads (a replay). Run after the petal
+ * pass, which lays the trail and fills the long gaps: each road is filled to 15/70 of the shared petals, from even spots along its
+ * branches (clear of their snakes) or its floor (clear of its rocks), each petal kept only where the pass's own rules still hold (six a
+ * screen, no rows, no clumps).
+ */
+function splitPetals(st: GeneratedStage & { proto: ProtoExtras }) {
+  const sp = st.proto.beats.find((b) => b[2].startsWith('Spike'));
+  if (!sp) return;
+  // (the split itself: from the high road's first branch to the end of its perch; the floor before the fork and past the perch is the
+  // way everyone takes)
+  const hb = st.platforms.filter((p) => p.style === 'branch' && p.x >= sp[0] && p.x < sp[1] && p.y < 470);
+  if (!hb.length) return;
+  const s0 = Math.min(...hb.map((p) => p.x)), s1 = Math.max(...hb.map((p) => p.x + p.width));
+  const isPet = (c: Collectible) => c.type === 'flower' || c.type === 'leaf';
+  const inSplit = (c: Collectible) => c.x >= s0 && c.x < s1;
+  const want = Math.round((st.collectibles.filter((c) => isPet(c) && !inSplit(c)).length * 15) / 70);
+  const high: Array<{ x: number; y: number }> = [];
+  for (const p of st.platforms) {
+    if (p.style !== 'branch' || p.x < s0 || p.x >= s1 || p.y >= 470) continue;
+    for (let fx = p.x + 40; fx <= p.x + p.width - 40; fx += 30) {
+      if (st.enemies.some((e) => Math.abs(e.y + 14 - p.y) < 20 && Math.abs(e.x - fx) < 70)) continue;
+      high.push({ x: fx, y: p.y - 34 });
+    }
+  }
+  const low: Array<{ x: number; y: number }> = [];
+  for (let fx = s0 + 60; fx < s1 - 40; fx += 30) {
+    const floor = st.platforms.some((p) => p.y === G && p.x <= fx - 20 && p.x + p.width >= fx + 20);
+    const rock = st.platforms.some((p) => p.y < G && p.y > G - 130 && p.x <= fx + 45 && p.x + p.width >= fx - 45);
+    // (at his feet, or a hop up: petals all at one height along the floor would stand in rows)
+    if (floor && !rock) low.push({ x: fx, y: low.length % 2 ? G - 80 : G - 34 });
+  }
+  let id = Math.max(0, ...st.collectibles.map((c) => c.id)) + 1;
+  // (the two roads share the screens' cap, six petals a screen: their petals are laid at even slots along the split, a high one then a
+  // low one, each slot taking the nearest free spot on its road, so the cap is spent evenly and each road gets its share)
+  const roads = ([[high, (c: Collectible) => c.y < 470], [low, (c: Collectible) => c.y >= 470]] as const).map(([spots, on]) => ({
+    spots,
+    have: st.collectibles.filter((c) => isPet(c) && c.x >= s0 && c.x < s1 && on(c)).length,
+  }));
+  const tryAt = (r: (typeof roads)[number], x: number, reach: number) => {
+    const near = r.spots.filter((q) => Math.abs(q.x - x) <= reach).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x));
+    for (const q of near) {
+      const c: Collectible = { id, type: 'flower', botanicalVariant: 'hibiscus', x: q.x, y: q.y, collected: false, bobPhase: (q.x * 0.031) % 6.28 };
+      const pets = [...st.collectibles.filter(isPet), c];
+      if (busiestScreen(pets).n > PER_SCREEN || rowExtras(pets).size || clumpExtras(pets).size) continue;
+      st.collectibles.push(c);
+      id++;
+      r.have++;
+      return true;
+    }
+    return false;
+  };
+  const slots = Math.max(1, 2 * want - roads[0].have - roads[1].have);
+  const step = (s1 - s0) / slots;
+  for (let i = 0; i < slots; i++) {
+    const r = roads[i % 2];
+    if (r.have < want) tryAt(r, s0 + step * (i + 0.5), step);
+  }
+  // (and any road still short takes what room is left anywhere along it)
+  for (const r of roads) for (let x = s0; x < s1 && r.have < want; x += 60) tryAt(r, x, 30);
+}
+
+/**
  * Worlds 1, 2, 5 and 8-10: the dressing sets (artDress.ts dressSets), on any of their stages (hand-built, World 2's, the new
  * generator's, and Worlds 8-10's old-generator stages, which have no `proto`: theirs go on the stage's own `dress`)
  */
@@ -371,7 +440,10 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
   if (!DRESS_WORLDS.includes(c.worldIndex as (typeof DRESS_WORLDS)[number]) || c.objectiveType === 'boss_lair') return;
   // (Worlds 1-7's old-generator stages, 5-6, 5-8, 7-2, 7-8: dressed too since hf-props, 2026-10-31; theirs go on the stage's own `dress`)
   if (!st.proto && c.worldIndex < 8 && c.secret) return;
-  const ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
+  let ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
+  // (a stomp vault's run-up and lip stay bare: on the teach the snake is the only thing to read, the lead 2026-11-04 on clip-7)
+  const vaults = st.enemies.filter((e) => e.vaultHome).map((e) => e.vaultHome!.x);
+  if (vaults.length) ds = ds.filter((d) => !vaults.some((vx) => d.x > vx - 340 && d.x < vx + 30));
   if (!ds.length) return;
   if (st.proto) st.proto.dress = ds;
   else st.dress = ds;
@@ -417,9 +489,15 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   const hints: StageHint[] = [];
   const beats: Array<[number, number, string]> = [];
   const pieces: Array<{ k: PieceKind; x0: number; x1: number }> = [];
+  /** World 1's bowl gates built (R-159.1, bowlGate) */
+  const BOWL_GATES: BowlGate[] = [];
+  /** the stomp vaults built (R-159.1): the snake, the gap's edges, and whether a soft pit is under it */
+  const vaults: Array<{ x: number; edge: number; far: number; soft: boolean }> = [];
   let pid = 1, vid = 1, tid = 1, eid = 1, cid = 1, seedN = 0;
   /** how long a quick, sure player takes (s): running at full speed, swinging at about 430 px/s, climbing at 220 px/s, pushing at 120 */
   let expert = 0;
+  /** a beat-traced stage's beat, for the validator (ProtoExtras.bpm) */
+  let tracedBpm: number | undefined;
   const RUN = 285, SWING = 430, CLIMB = 220, PUSH = 120;
 
   // ----- the drawing kit -----
@@ -558,7 +636,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
    * vines over a gap. `soft`: a mossy floor below (a teaching swing). Rolled again until the jump grabs the first vine, every vine
    * catches the next, and the last one lands on the bank beyond.
    */
-  function chain(n: number, soft: boolean, kind: PieceKind, rocks = false) {
+  /** `snakeAt`: the liana (0 = the first) a vine snake will hang on: a shorter one, whose sweep stays above the pit's way out (a flick
+   *  out of the pit caught a long one's bottom, and the snake bit, plainWalk.test.ts) */
+  function chain(n: number, soft: boolean, kind: PieceKind, rocks = false, snakeAt = -1) {
     const x0 = x;
     run(R.r(150, 260));
     const edge = x;
@@ -571,8 +651,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       for (const s of sp) xs.push(xs[xs.length - 1] + s);
       const farX = xs[n - 1] + d1;
       // long vines hung from high up: whatever height a leap carries him at, the next vine is there to grab
-      const tops = xs.map(() => (soft ? Math.round(R.r(190, 220)) : Math.round(R.r(140, 200))));
-      const vs: Vine[] = xs.map((vx, k) => ({ id: -1 - k, x: vx, topY: tops[k], bottomY: Math.min(G + 30, tops[k] + 410), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true }));
+      // (a vine snake's liana hangs lower and shorter, its bottom about 100 px over the ground: the snake on it sits low enough to be seen
+      // under the sideways view's top bar, and the liana's sweep stays out of reach of the pit's way out)
+      const tops = xs.map((_, k) => (k === snakeAt ? G - 100 - 210 : soft ? Math.round(R.r(190, 220)) : Math.round(R.r(140, 200))));
+      const vs: Vine[] = xs.map((vx, k) => ({ id: -1 - k, x: vx, topY: tops[k], bottomY: Math.min(G + 30, tops[k] + (k === snakeAt ? 210 : 410)), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true }));
       const far: Platform = { id: -99, x: farX, y: G, width: 400, height: BANK_H, type: 'solid' };
       let ok = jumpGrab(edge, G, vs[0]) >= 4;
       for (let k = 0; ok && k < n - 1; k++) ok = catchWindow(vs[k], vs[k + 1]) > 0.6 && earlyCatch(vs[k], vs[k + 1]);
@@ -1365,7 +1447,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     mushroomCache: () => mushroomCache(), highRoadOver: () => highRoadOver(), homeRun: (kinds) => homeRun(kinds),
     trailUp: (n) => trailUp(n), petalClimb: () => petalClimb(), petalPerch: () => petalPerch(), splitTrail: () => splitTrail(),
     dipArc: () => dipArc(), doubleArcs: (t) => doubleArcs(t),
-    snakeBranches: (n, y) => snakeBranches(n, y), ropeGap: (g, b, t) => ropeGap(g, b, t), snakeWalk: (m) => snakeWalk(m), snakeLedge: () => snakeLedge(),
+    snakeBranches: (n, y) => snakeBranches(n, y), ropeGap: (g, b, t) => ropeGap(g, b, t), snakeWalk: (m) => snakeWalk(m), snakeLedge: () => snakeLedge(), snakeVault: (soft) => snakeVault(soft, plan === '1-3' && vaults.length === 0), bowlGate: () => bowlGate(),
     climbTree: (t) => climbTree(t), fernTree: () => fernTree(), glideLookout: () => glideLookout(), creakRun: () => creakRun(),
     chain: (n, soft, rocks) => chain(n, soft, soft ? 'hollow' : 'gorge', rocks), kapok: () => kapok(), canopy: (g) => canopy(g), highRun: () => highRun(),
     logPuzzle: (b) => logPuzzle(b), seesawRoom: (d) => seesawRoom(d), seesawTwist: () => seesawTwist(),
@@ -1598,41 +1680,258 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   }
 
   if (plan === '1-3') {
-    // 1-3 Branch Snakes: punching. One snake asleep on a wide branch to learn on, then snakes on narrow branches (punch or hop),
-    // then a snake guarding a rope: clearing the stage teaches Shimmy Rope, and a short rope near the end is there to try it on.
-    // (Rebuilt 2026-10-28: the walks between the snakes hold rocks to hop and dips, the stumps stay low, no tall double jumps.)
-    beat('Learn: the sleeping snake', () => {
-      rest(R.r(420, 470));
-      // (stumps and a rock before the first snake: the first-timer bot walked into it 2.5 s in, before Dot's tip, on every roll; nothing
-      // can hurt in the first five seconds, 2026-10-28)
+    // 1-3 Branch Snakes, rebuilt (w8-rope2, 2026-11-04; reference/plans/1-3-rebuild.md, the lead's W1-REBUILD-PLAN): a high/low split laid
+    // on 1-3's own music beat (beatTrace.ts: hops on the half note, the punch and the stomp on the quarter between). Seven nodes, each
+    // from a flag on a flat apron: the sleeping snake, a ramp of snakes on branches that ends in the teaching vault (on the shared way),
+    // the split (a high road of branches and snakes to a vault onto a raised perch, or the slower root floor under it), a rest, a
+    // bounce chain, the climax, and a short slope down to the shrine. No filler: the length is the nodes.
+    const bpm = stageBpm(config);
+    tracedBpm = bpm;
+    const J = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'jump', dy, surface });
+    const Hp = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'hop', dy, surface });
+    /**
+     * a traced node from the ground: its ledges where his feet land on the beat (beatTrace.ts), soft pits under the gaps between ground
+     * (a real drop where `real`, never on Easy), its flag on the entrance apron; fight snakes on its wider ledges (`snakes` of them,
+     * each met punch on the quarter, hop on the next half)
+     */
+    function traced(bars: string[], steps: Step[], o: { real?: boolean; snakes?: number; y?: number } = {}): Trace {
+      const x0 = x;
+      const y = o.y ?? G;
+      close();
+      const spec: NodeSpec = { bpm, x, y, bars, steps };
+      const tr = traceNode(easy ? easyNode(spec) : spec);
+      let groundEnd = -1, prevY = G;
+      const wide: Ledge[] = [];
+      // (over a real drop, a landing BELOW the take-off reaches 28 px back toward it: on a way down his feet stay above it until he lands,
+      // so its face never catches him, and a first-timer's short jump down still lands; the fixed first-timer bot fell 13 px short of one
+      // a 70 px drop away four times on one roll)
+      if (o.real && !easy) {
+        for (let i = 1; i < tr.ledges.length; i++) {
+          const a = tr.ledges[i - 1], l = tr.ledges[i];
+          if (l.y > a.y + 10 && l.x0 - a.x1 > 60) tr.ledges[i] = { ...l, x0: l.x0 - 28 };
+        }
+      }
+      for (const l of tr.ledges) {
+        // (a bank or apron is ground at its own height: Easy's trace lands a little lower each time, easyNode)
+        const ground = l.surface === 'apron' || l.surface === 'bank';
+        if (ground) {
+          if (groundEnd >= 0 && l.x0 - groundEnd > 1) {
+            // (a pit only where the trace jumps a gap; a stump or branch that meets the banks with no air stands on the ground)
+            const air = tr.gaps.filter((g) => g.x1 > groundEnd + 1 && g.x0 < l.x0 - 1);
+            // (only stumps between the banks: each stands on the ground, a pit under each gap alone, so no stump fills a pit and leaves a
+            // sliver of floor too narrow to climb out of, plainWalk.test.ts)
+            const between = tr.ledges.filter((q) => q.x0 >= groundEnd - 1 && q.x1 <= l.x0 + 1 && q.surface !== 'apron' && q.surface !== 'bank');
+            const stumpsOnly = between.length > 0 && between.every((q) => q.surface === 'stump');
+            if (!air.length) bank(groundEnd, l.x0, Math.max(l.y, prevY));
+            else if (o.real && !easy) { /* (a real drop: nothing under it) */ } else if (stumpsOnly || between.length) {
+              // (a pit under each gap alone, ground under each stump and branch: one long pit under them all was a floor to walk along
+              // under every branch and past every snake on them, the route the fixed first-timer bot took, 1-3's goal out of reach)
+              for (const g of air) softPit(g.x0, g.x1);
+              // (never above the ledge it holds: Easy's trace lands a little lower each time, easyNode, so a branch can sit under G)
+              for (const q of between) bank(q.x0, q.x1, q.y > G ? q.y + (q.surface === 'branch' ? 24 : 0) : G);
+            } else softPit(groundEnd, l.x0);
+          }
+          prevY = l.y;
+          bank(l.x0, l.x1, l.y);
+          groundEnd = l.x1;
+        } else if (l.surface === 'stump') {
+          P.push({ id: pid++, x: Math.round(l.x0), y: l.y, width: Math.round(l.x1 - l.x0), height: Math.max(24, G + BANK_H - l.y), type: 'solid', style: 'moss_stone' });
+        } else {
+          branch(l.x0, l.x1, l.y);
+        }
+        // (a fight snake stands at least 150 px past where he lands, research §6 / R-159, and short of where he takes off again)
+        const land = tr.landings.find((q) => q.step === l.step);
+        // (and room after it to fight before the take-off: a snake near the edge is jumped over on the way on, never met)
+        if (l.surface !== 'apron' && land && l.x1 - 150 - (land.toX + 170) >= 0) wide.push(l);
+      }
+      checkpoints.push({ x: tr.checkpoint.x, y: tr.checkpoint.y, reached: false });
+      // the fight snakes: on the widest ledges, past where he lands, so the punch falls between the hops
+      // (an uneven pick, the roll's: never every other ledge, or the fights fall into a pattern of their own)
+      const picks = R.shuffle([...wide]).slice(0, o.snakes ?? 0).sort((a, b) => a.x0 - b.x0);
+      for (const l of picks) {
+        const land = tr.landings.find((q) => q.step === l.step)!;
+        const sx = Math.min(l.x1 - 150, land.toX + 170 + R.r(0, 30));
+        snake(sx, l.y, 12);
+      }
+      for (const l of tr.ledges) if (l.surface !== 'apron' && l.x1 - l.x0 >= 120 && !picks.includes(l)) flower((l.x0 + l.x1) / 2, l.y - 34, 'orchid');
+      x = tr.x1;
+      // (the ground on from here is at G: a node that ends a little high or low is a step down or a short hop up, Easy's within 42 px)
+      open(x);
+      expert += (tr.x1 - x0) / RUN + 0.25 * steps.length + 1.4 * picks.length;
+      // (a piece of its own: branches laid on the beat with their fights, not the kit's snake walk)
+      pieces.push({ k: 'traced', x0, x1: x });
+      return tr;
+    }
+    /**
+     * a node's bars and steps, rolled: `n` bars drawn from `kinds` (no kind three times running), a jump at each half-note mark rising or
+     * falling within a branch's reach of the ground, a hop down at each off-beat mark, the last landing back on the ground; rolled
+     * again until the tracer can dance it (it refuses a pattern in the air at the next mark, too narrow, or the same gap four times)
+     */
+    function rollNode(n: number, kinds: readonly string[], o: { real?: boolean; snakes?: number } = {}): Trace {
+      for (let tries = 0; tries < 40; tries++) {
+        const bars: string[] = [];
+        for (let k = 0; k < n; k++) {
+          let b = R.pick(kinds);
+          if (k >= 2 && bars[k - 1] === b && bars[k - 2] === b) b = kinds.find((q) => q !== b) ?? b;
+          bars.push(b);
+        }
+        const marks = bars.join('').replace(/\./g, '');
+        let h = 0;
+        const steps: Step[] = [];
+        for (let i = 0; i < marks.length; i++) {
+          const last = i === marks.length - 1;
+          if (last) { steps.push(J(-h, 'bank')); h = 0; break; }
+          if (marks[i] === 'o') {
+            const d = Math.min(h, R.pick([20, 30] as const));
+            steps.push(Hp(-d));
+            h -= d;
+            continue;
+          }
+          const lo = Math.max(-40, -h), hi = Math.min(50, 90 - h);
+          const dy = Math.round((lo + R.r(0, 1) * (hi - lo)) / 10) * 10;
+          steps.push(J(dy, h + dy > 0 ? 'branch' : 'bank'));
+          h += dy;
+        }
+        try {
+          traceNode(easy ? easyNode({ bpm, x, y: G, bars, steps }) : { bpm, x, y: G, bars, steps });
+        } catch {
+          continue;
+        }
+        return traced(bars, steps, o);
+      }
+      throw new Error('1-3: no danceable node in 40 rolls');
+    }
+    beat('Intro: the sleeping snake', () => {
+      // (nothing can hurt in the first five seconds: the first-timer bot walked into a snake 2.5 s in, 2026-10-28)
+      rest(R.r(380, 420));
+      // (two patterns, the roll's pick: about 0.4 take-offs a second, the research's intro)
+      const tr = R.chance(0.5)
+        ? traced(['h.......', '........', 'h...h...', '........', 'h.......', '....h...'], [J(40), J(-40, 'bank'), J(30, 'stump'), J(-30, 'bank'), J(40, 'stump')])
+        : traced(['h.......', '....h...', '........', 'h.......', '....h...', '........'], [J(30), J(-30, 'bank'), J(40, 'stump'), J(-40, 'bank')]);
+      // the sleeping snake on the first, widest branch, Dot's tip before it
+      const b = tr.ledges.find((l) => l.surface === 'branch')!;
+      // (far enough along it that her line has been up about two seconds when he reaches it: at 60% the fixed first-timer bot, taking a
+      // line in after 0.9 s, was on the snake 0.1 s after and hopped it, never punched; room past it to fight)
+      snake(Math.max(b.x0 + (b.x1 - b.x0) * 0.6, Math.min(b.x0 + (b.x1 - b.x0) * 0.8, b.x1 - 160)), b.y, 60, true);
+      hint(b.x0 - 160, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
+      run(R.r(160, 200));
+    });
+    beat('Ramp: snakes on the branches, then the teaching vault', () => {
+      // (soft pits here: the first-timer bot lost 3-7 lives a run with real drops in both the ramp and the climax; the bars rolled)
+      // (two runs of it, low stumps to hop between them: one long run of the same rhythm reads as a repeat, not a dance)
+      rollNode(5, ['h.......', '....h...', 'h.......', 'h...h...'], { snakes: 4 });
       lowStumps();
-      busy(1, ['log'], R.r(200, 240));
-      const wx = x + 120;
-      branch(wx, wx + 420, G - 90);
-      snake(wx + 260, G - 90, 60, true);
-      row(wx + 40, wx + 160, G - 124, 2, 'orchid');
-      hint(wx - 80, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
-      run(R.r(600, 640));
-      expert += 3;
-      // (then two more snakes, awake now, in this roll's rhythm: w1Sections.ts)
-      section('start');
+      rollNode(5, ['h.......', 'h...h...', '....h...', 'h.......'], { snakes: 4 });
+      run(R.r(120, 160));
       flag();
+      // the vault, taught on the way everyone takes: over a soft pit onto a raised bank only the spring reaches
+      snakeVault(true, true);
     });
-    beat('Test: snakes on the branches', () => {
-      hint(x + 60, 'Punch the snakes or hop over them', 'Punch the snakes or hop over them', 'Punch the snakes or hop over them');
-      section('develop');
+    beat('Spike: the split', () => {
+      // HIGH: a mushroom up to a run of narrow branches with snakes, ending at a vault off the last one onto a perch (the prize)
+      // LOW: the root floor under it, rocks to hop and a snake on its run, slower but safe
       flag();
+      run(R.r(160, 200));
+      P.push({ id: pid++, x: Math.round(x), y: G - 30, width: 70, height: 30, type: 'bouncy' });
+      const fork = x;
+      const hy = G - Math.round(R.r(170, 185));
+      let bx = x + 40;
+      // (thirteen or fourteen branches: room for each road's 15% of the petals under the six-a-screen cap, Matt's 70/30, 11-04)
+      // (two more on Easy, which carries more petals overall, so its roads need more room for their share)
+      const n = R.i(13, 14) + (easy ? 2 : 0);
+      let last: Platform | null = null;
+      for (let k = 0; k < n; k++) {
+        const w = Math.round(R.r(200, 270));
+        const top = hy + Math.round(R.r(-30, 25));
+        last = branch(bx, bx + w, top);
+        // (two snakes on its branches and the one on the vault's lip: three, as many as the low road's, so neither road leaves more of
+        // the stage's goal behind than the other, the lead 11-04)
+        if (k === 1 || k === n - 3) snake(bx + w * 0.62, top, w - 150);
+        // (petals: a small bonus on each road, about the same on both, the core on the way everyone takes (Matt, 11-04: "keep the core
+        // amount on places that the player always have to use"): here one branch's pair and the perch's three; below, five)
+        else if (k === 2) row(bx + 40, bx + w - 40, top - 34, 2, 'hibiscus');
+        // (gaps between the branches vary, never the same four times)
+        bx += w + Math.round(reachJump(0, false) * [0.42, 0.55, 0.36, 0.6, 0.48][k % 5]);
+      }
+      // the high road's prize: a lunge snake on the last branch's lip and a perch above it only its spring reaches
+      const lip = last!.x + last!.width - TRICK.vaultLip;
+      snake(lip, last!.y, 12);
+      E[E.length - 1].vaultHome = { x: lip, y: last!.y - 14 };
+      const perch = branch(last!.x + last!.width + TRICK.vaultRiseGap, last!.x + last!.width + TRICK.vaultRiseGap + 220, last!.y - TRICK.vaultRise);
+      row(perch.x + 40, perch.x + perch.width - 40, perch.y - 34, 3, 'orchid');
+      const end = perch.x + perch.width + 60;
+      // the low road: the floor below, a rock a hop high every second or so, a snake on its run, a dip
+      run(160);
+      let lowSnake = 0;
+      while (end - x > 330) {
+        run(R.r(190, 260));
+        if (end - x < 200) break;
+        // (three snakes on the low road, so a player on it can make the stage's goal: the high road's are the bonus, the lead 11-04)
+        // (a petal past each, for the punch: with its rocks' petals, the low road's bonus matches the high road's)
+        if (lowSnake < 3 && x - fork > 500 + lowSnake * 650) { const sx = x; snake(sx + 60, G, 110); lowSnake++; run(R.r(220, 260)); flower(sx + 200, G - 34, 'hibiscus'); continue; }
+        logHop(R.i(30, 44));
+      }
+      x = Math.max(x, end) + R.r(80, 120);
+      dip();
+      run(R.r(200, 240));
+      expert += (x - fork) / RUN + 4;
+      pieces.push({ k: 'highrun', x0: fork, x1: x });
     });
-    beat('Twist: the rope guard', () => {
-      hint(x + 60, 'A snake guards the rope', 'A snake guards the rope', 'A snake guards the rope');
-      section('twist');
+    beat('Rest', () => {
+      // a breath: plain ground, a flag, nothing to do (Dot's wayside line has its moment here)
       flag();
+      // (long enough for her line, about three seconds, with petals to stroll for)
+      rest(R.r(760, 840));
     });
-    beat('Finish', () => {
-      section('finish');
-      // the short rope to try the new move on (it needs the skill this stage teaches, so it is a reason to come back)
+    beat('Counter-melody: the bounce chain', () => {
+      // a different pulse: long bounces up the walls, a snake on the floor between, the last bounce from beside a soft pit
+      flag();
+      // (the lead, 11-04: three bounces of different heights, unlike 1-1's mushroom moment: up a wall, down onto a snake, over a pit)
+      const x0 = x;
+      bounceWall(false, true);
+      // a bounce that comes down on a snake: a stomp always works on it (w1Tricks.ts), so the bounce is the attack
+      run(R.r(200, 240));
+      P.push({ id: pid++, x: Math.round(x), y: G - 30, width: 70, height: 30, type: 'bouncy' });
+      snake(x + 35 + R.r(170, 200), G, 30);
+      run(R.r(480, 540));
+      // a bounce up to a branch half as high, petals along it, and down again
+      P.push({ id: pid++, x: Math.round(x), y: G - 30, width: 70, height: 30, type: 'bouncy' });
+      const by = G - Math.round(R.r(140, 160));
+      branch(x + 110, x + 400, by);
+      row(x + 150, x + 360, by - 34, 3, 'hibiscus');
+      // (and a snake on the floor past the branch, where he comes down off it: a punch, or the hop down onto it)
+      snake(x + 400 + R.r(90, 120), G, 30);
+      run(R.r(520, 560));
+      // a bounce over a pit wider than a jump and its second jump (313 px), inside a bounce and its second jump (368)
+      run(R.r(160, 200));
+      P.push({ id: pid++, x: Math.round(x - 80), y: G - 30, width: 70, height: 30, type: 'bouncy' });
+      const edge = x;
+      close();
+      const far = Math.round(edge + R.r(325, 340));
+      softPit(edge, far);
+      arc(edge - 20, far + 20, G - 230, 3, 'hibiscus');
+      open(far);
+      run(R.r(220, 260));
+      expert += (x - x0) / RUN + 3;
+      pieces.push({ k: 'highrun', x0, x1: x });
+      // (and the rope this stage's clear teaches, over moss, for a visit after: crossable without it; its petals hang along it, out of
+      // reach for now, the tell to come back)
       ropeGap(false, true, true);
-      homeRun();
+    });
+    beat('Climax', () => {
+      flag();
+      // (the densest node: half notes with the hop down on the quarter between, rolled, ending at the run to the shrine)
+      rollNode(5, ['h.......', 'h..o....', 'h...h..o', 'h.......'], { real: true, snakes: 5 });
+      // (a ledge snake between the two halves, a different fight from the branch ones)
+      snakeLedge();
+      rollNode(5, ['h..o....', 'h.......', 'h.......', 'h...h..o'], { real: true, snakes: 5 });
+    });
+    beat('Cool-down', () => {
+      // a short slope of ground to the shrine (the shrine stands near the end)
+      run(R.r(160, 200));
+      dip();
+      run(R.r(560, 620));
+      expert += 3;
     });
   }
 
@@ -1749,6 +2048,60 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     pieces.push({ k: 'snakes', x0, x1: x });
   }
 
+  /**
+   * R-159.1 the stomp vault: a snake waits on the lip of a gap past any jump (w1Tricks.ts vaultGap: a full jump and the second jump fall
+   * short), the petals arcing from it along the bounce; stomped with jump held it springs him across. `soft`: a soft pit under it
+   * (its first meeting, 1-3: a miss is a climb back out); otherwise a real drop (the far stages).
+   */
+  /**
+   * the stomp vault: a lunge snake on the lip of a gap past any jump. `raised` (1-3's first, where it is taught): a narrow pit with its
+   * far bank raised past a jump and its second jump, so the spring alone carries him onto it, no second flick needed; a miss drops into the
+   * pit, whose raised floor is a hop back out to the near side. Otherwise (the twist) a wide gap that needs the second flick at the
+   * vault's top. Easy always has a soft pit under it.
+   */
+  function snakeVault(soft: boolean, raised = false) {
+    soft = soft || easy;
+    const x0 = x;
+    // (a flat run-up, nothing else near: the snake is the only thing to read)
+    run(R.r(280, 320));
+    const edge = x;
+    close();
+    const sx = edge - TRICK.vaultLip;
+    // (1-3's first vault is taught, in Matt's words, 2026-11-04)
+    if (plan === '1-3' && vaults.length === 0) {
+      const v = 'Stomp it, thumb on the glass, and fly!';
+      hint(x0 + 40, v, v, v);
+    }
+    snake(sx, G, 12);
+    E[E.length - 1].vaultHome = { x: sx, y: G - 14 };
+    const gap = raised ? TRICK.vaultRiseGap : vaultGap(reachJump(0, true));
+    const far = edge + gap;
+    if (raised) {
+      // the raised perch over a soft pit, its petals on top: only the vault reaches them. A miss drops into the pit and walks on under
+      // the perch to the pit's step out on the far side (a soft pit is always left forward with single flicks: plainWalk.test.ts)
+      const w = Math.round(R.r(240, 280));
+      softPit(edge, far + w);
+      P.push({ id: pid++, x: far, y: G - TRICK.vaultRise, width: w, height: 150, type: 'solid', style: 'moss_stone' });
+      row(far + 50, far + w - 50, G - TRICK.vaultRise - 40, 3, 'orchid');
+      open(far + w);
+      run(R.r(200, 240));
+    } else {
+      if (soft) softPit(edge, far);
+      // the petals: an arc from the snake along the vault's own path, so the way across is drawn in the air
+      // (low enough that each can be had by a jump from the lip, the far bank or the pit floor too: the stage's reach check moved a
+      // higher arc's top petals, which only the vault itself reaches)
+      const span = far + 60 - sx;
+      for (let k = 1; k <= 6; k++) {
+        const t = k / 7;
+        flower(sx + span * t, G - 60 - 95 * Math.sin(Math.PI * t), 'orchid');
+      }
+      open(far);
+      run(R.r(240, 280));
+    }
+    expert += (x - x0) / RUN + 3;
+    pieces.push({ k: 'vault', x0, x1: x });
+    vaults.push({ x: sx, edge, far, soft });
+  }
 
   /** the bush sizes (px wide); each painting keeps its own shape */
   const BUSH_W = { tall: 124, wide: 176, fern: 150, grotto: 170 } as const;
@@ -1966,6 +2319,33 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
     } as Enemy);
   };
+
+  /**
+   * R-159.1 the bowl gate, the kick's payoff: a coiled boa near the start of a long flat stretch (its bowling lane), a plate at the
+   * stretch's end and the way on shut by a gate under a stone pillar too tall to jump. Kicked, the boa rolls down the lane onto the plate
+   * and the gate opens (engine.ts); a punch is TOUGH and a stomp bounces, so the kick is the only way on.
+   */
+  function bowlGate() {
+    const x0 = x;
+    run(R.r(280, 320));
+    const lane0 = x;
+    const coilX = Math.round(lane0 + 130);
+    boa(coilX, G, -1);
+    const boaId = eid - 1;
+    // (the lane short enough that, upright too, the view holds him, the rolling ball and the plate at once: the plate ~290 px from
+    // where he kicks, the upright view ~415 wide)
+    run(Math.round(R.r(360, 380)));
+    const plateX = Math.round(x - 46);
+    const gateX = Math.round(x);
+    // (the gate: a solid wall the gate's art covers, 'hidden' so the ground's look is not drawn on it; the pillar above is real stone)
+    const gate: Platform = { id: pid++, x: gateX, y: G - 112, width: 44, height: 112, type: 'solid', art: 'hidden' };
+    P.push(gate);
+    P.push({ id: pid++, x: gateX - 18, y: G - 560, width: 80, height: 560 - 112, type: 'solid', style: 'moss_stone', soil: true });
+    BOWL_GATES.push({ plateX, groundY: G, gatePlat: gate.id, gateX: gateX + 22, boaId, coilX, coilY: G - 16 });
+    run(Math.round(R.r(220, 260)));
+    expert += (x - x0) / RUN + 4;
+    pieces.push({ k: 'bowl', x0, x1: x });
+  }
 
   /** a wide branch over soft moss with one boa coiled in the middle of it: the way on is across the branch, past the guard */
   function guardBranch(low = false) {
@@ -2217,6 +2597,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     for (const b of BUSHES) if (b.x >= x0) b.x += dx;
     for (const z of ZONES) if (z.x0 >= x0) { z.x0 += dx; z.x1 += dx; }
     for (const r of RIVERS) if (r.x0 >= x0) { r.x0 += dx; r.x1 += dx; if (r.safe) r.safe = { ...r.safe, backX: r.safe.backX + dx }; }
+    for (const g of BOWL_GATES) if (g.plateX >= x0) { g.plateX += dx; g.gateX += dx; g.coilX += dx; }
+    for (const v of vaults) if (v.x >= x0) { v.x += dx; v.edge += dx; v.far += dx; }
     for (const e of E) if (e.x >= x0) { e.x += dx; e.patrolMinX += dx; e.patrolMaxX += dx; }
     for (const c of C) if (c.x >= x0) c.x += dx;
     for (const h of hints) if (h.x >= x0) h.x += dx;
@@ -2319,14 +2701,22 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   if (plan === 'proto') {
   // (Rebuilt 2026-10-28: shorter rests with something to do in them, mossy rocks on the moss under the teaching swings, and the seesaw
   // after the fallen log: shown, then learned, and twisted later; see seesawRoom and seesawTwist)
+  // (Re-aimed 2026-11-04, the lead: 1-2 now teaches and owns the lianas, so 1-6 brings the vine snake (camouflaged on its liana,
+  // R-159.1, Matt's approved art): taught over soft moss first, then hung in the chains, swing to swing; the map and the seesaw kept)
+  /** a vine snake on the liana `back` from the newest (0: the last one built) */
+  const vineSnakeOn = (back = 0) => { const v = V[V.length - 1 - back]; if (v) E.push(makeVineSnake(eid++, v, v.bottomY - v.topY - 60)); };
   beat('Start', () => rest(R.r(380, 430)));
-  beat('Learn: swing over soft moss', () => {
-    hint(x + 120, 'Flick up into the vine to grab it', 'Jump into the vine to grab it', 'Jump into the vine to grab it');
-    chain(1, true, 'hollow', true);
+  beat('Learn: the vine snake', () => {
+    // one liana over soft moss with a vine snake on it: it bites a grab and Dot says why; punched stiff, it is a pole to climb and leap off
+    // (no mossy rocks under a vine snake's liana: a flick from one caught the liana, and the snake on it)
+    chain(1, true, 'hollow', false, 0);
+    vineSnakeOn(0);
     busy(1);
-    hint(x + 40, 'Flick up again as you swing forward', 'Press Jump as you swing forward', 'Press Space as you swing forward');
-    chain(2, true, 'hollow', true);
+    // then two, the snake on the first: punched stiff from the jump, climbed, and off it onto the second, swinging
+    chain(2, true, 'hollow', false, 0);
+    vineSnakeOn(1);
     busy(1);
+    // and a chain with no snake at all, swing to swing, a breath
     chain(R.i(2, 3), true, 'hollow', true);
     stumps();
     flag();
@@ -2355,7 +2745,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     // the seesaw, turned about: the log on the far side, pushed back onto the far end
     seesawTwist();
     flag();
-    chain(R.i(3, 4), false, 'gorge');
+    {
+      const n = R.i(3, 4);
+      chain(n, false, 'gorge', false, 0);
+      // (a vine snake on the first liana of the long chain: punched from the jump, or he goes round below)
+      vineSnakeOn(n - 1);
+    }
     flag();
     // then more of the world's pieces, in this roll's rhythm, until even a quick, sure player needs the stage's minimum time
     // (the finish adds about 10 s); a flag after every second piece
@@ -2363,7 +2758,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   });
   beat('Finish: the long swing home', () => {
     busy(1);
-    chain(4, false, 'gorge');
+    chain(4, false, 'gorge', false, 0);
+    vineSnakeOn(3);
     homeRun();
     // the walk to the shrine makes up any last seconds the dice left short
     if (expert < EXPERT_SECONDS) rest((EXPERT_SECONDS - expert) * RUN + 60);
@@ -5120,7 +5516,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
   cid = heartsAtFlags(C, checkpoints, cid);
   // the puzzle rooms' own platforms (a seesaw's two ends, a gate's door): added once, here, so the game and the check see the same ground
   const kit: KitExtras | undefined = ROOMS.length ? { rooms: ROOMS } : undefined;
@@ -5129,6 +5525,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES, waterY: WATER }, C);
   return {
     config: cfg,
+    // (1-3 sets its own goals: withGoals keeps a stage's own when it gives Easy's, goals.ts)
+    ...(plan === '1-3' ? { easyGoal: SNAKE_EASY_13, easyGoalCounted: true } : {}),
     ...(kit ? { kit } : {}),
     trees: T,
     platforms: P,
@@ -5145,11 +5543,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     waterY: WATER,
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces: pieces.map((p) => ({ k: p.k, x0: p.x0, x1: p.x1 })), timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
     ...(RIVERS.length ? { rivers: RIVERS } : {}),
+    ...(BOWL_GATES.length ? { bowlGates: BOWL_GATES } : {}),
     ...(GZ.length ? { zones: GZ } : {}),
     proto: {
       ...(W3D.length ? { w3decor: W3D } : {}),
       ...(THORNS.length ? { thorns: THORNS } : {}),
-      hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
+      hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(tracedBpm ? { bpm: tracedBpm } : {}), ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
       ...(MIX ? { mix: MIX, grant: ['shimmy'] as SkillId[] } : {}),
       ...(W4C.length || W4K.length || W4R.length || Object.keys(W4X).length ? { w4: { ...W4X, ...(W4C.length ? { chimes: W4C } : {}), ...(W4K.length ? { knots: W4K } : {}), ...(W4R.length ? { rocks: W4R } : {}) } } : {}),
     },
