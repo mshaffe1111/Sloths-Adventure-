@@ -39,7 +39,7 @@
  */
 import { LAND_HALF, PHYS, TAKEOFF_SLACK, secondJumpV } from './physics.ts';
 import { AHEAD, heroBox, landingBox } from './cameraFollow.ts';
-import { stageMusic } from '../audio/scenes.ts';
+import { BEAT_STAGES, stageBeatBpm, stageMusic } from '../audio/scenes.ts';
 import { themeById } from '../audio/themes.ts';
 
 /** where a take-off falls in the bar */
@@ -601,19 +601,23 @@ export function checkTrace(tr: Trace, steps: readonly Step[], easy = false): str
 const bpmMemo = new Map<string, number>();
 /**
  * The stage's beat: the BPM of the music it plays (W1-REBUILD-PLAN.md, the lead, 2026-11-04: "the beat is the music's beat"), read from
- * the music code exactly as the game picks it (audio/scenes.ts stageMusic, audio/themes.ts themeById(id).bpm x the stage's tempo), never
- * typed. `salt` is the session's music salt (App.tsx musicSalt); the stage builders use 0. NOTE: the game rolls a new salt each session,
- * and a different salt can pick a different piece at a different speed (1-2: 128-137 BPM over eight salts), so the music a player hears
- * matches the built stage's beat only when salt 0 (or a tempo locked to this) is played: reported to the lead.
+ * the music code (audio/scenes.ts stageBeatBpm: the piece and tempo salt 0 picks, themeById(id).bpm x tempo), never typed. Every
+ * session's music then plays at this beat on a beat stage, whatever piece its salt picks (scenes.ts stageMusic, BEAT_STAGES).
  */
-export function stageBpm(cfg: { worldIndex: number; id: string; miniIndex: number; objectiveType?: string }, salt = 0): number {
-  const key = `${cfg.worldIndex}|${cfg.id}|${cfg.miniIndex}|${cfg.objectiveType}|${salt}`;
+export function stageBpm(cfg: { worldIndex: number; id: string; miniIndex: number; objectiveType?: string }): number {
+  const key = `${cfg.worldIndex}|${cfg.id}|${cfg.miniIndex}|${cfg.objectiveType}`;
   const hit = bpmMemo.get(key);
   if (hit !== undefined) return hit;
-  const m = stageMusic(cfg.worldIndex, cfg.id, cfg.miniIndex, salt, cfg.objectiveType);
-  const th = themeById(m.id);
-  if (!th) throw new Error(`no theme ${m.id} for ${cfg.id}`);
-  const bpm = Math.round(th.bpm * (m.tempo ?? 1) * 10) / 10;
+  const raw = BEAT_STAGES.has(cfg.id) ? stageBeatBpm(cfg.worldIndex, cfg.id, cfg.miniIndex, cfg.objectiveType) : NaN;
+  let bpm = raw;
+  if (!(raw > 0)) {
+    // (a stage not built on the beat: the speed its music plays at with salt 0)
+    const m = stageMusic(cfg.worldIndex, cfg.id, cfg.miniIndex, 0, cfg.objectiveType);
+    const th = themeById(m.id);
+    if (!th) throw new Error(`no theme ${m.id} for ${cfg.id}`);
+    bpm = th.bpm * (m.tempo ?? 1);
+  }
+  bpm = Math.round(bpm * 10) / 10;
   bpmMemo.set(key, bpm);
   return bpm;
 }

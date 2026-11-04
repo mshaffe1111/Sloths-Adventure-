@@ -278,6 +278,7 @@ test("the stage's BPM is read from its music, as the game picks it (stageMusic, 
   const levels = generateAllLevels().filter((l) => l.worldIndex === 1 && l.objectiveType !== 'boss_lair');
   assert.ok(levels.length >= 9);
   for (const l of levels) {
+    // (salt 0: the piece and tempo the stage was built to; every other salt plays at the same beat, src/audio/beatMusic.test.ts)
     const m = stageMusic(1, l.id, l.miniIndex, 0, l.objectiveType);
     const want = themeById(m.id)!.bpm * (m.tempo ?? 1);
     const got = stageBpm(l);
@@ -285,10 +286,6 @@ test("the stage's BPM is read from its music, as the game picks it (stageMusic, 
     // (World 1's music: styles.ts world 1 bpm [126, 134], a stage nudged up to 3%)
     assert.ok(got >= 122 && got <= 139, `${l.id}: ${got} BPM`);
   }
-  // and a different session's music salt is read the same way (the game rolls one per session: App.tsx musicSalt)
-  const l2 = levels.find((l) => l.id === '1-2')!;
-  const m = stageMusic(1, '1-2', l2.miniIndex, 777777, l2.objectiveType);
-  assert.ok(Math.abs(stageBpm(l2, 777777) - themeById(m.id)!.bpm * (m.tempo ?? 1)) < 0.06);
 });
 
 test("at World 1's music tempo the moves fit its notes: a jump inside a half note, a double inside a whole bar's half and a beat", () => {
