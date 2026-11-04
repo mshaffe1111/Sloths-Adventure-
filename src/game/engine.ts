@@ -6430,8 +6430,10 @@ export class GameEngine {
       if (!enemy.defeated && !(enemy.trick === 'coil' && (enemy.state === 'roll' || enemy.state === 'rolled')) && !(enemy.trick === 'vine' && enemy.state === 'hang')) {
         // the ember rim (see readable.ts): everything that can hurt you wears it
         ctx.save();
-        ctx.translate(enemy.x, enemy.y);
-        drawAura(ctx, 'danger', world.id, enemy.width * 0.8, enemy.height * 0.8, this.gameTime, enemy.id * 1.7);
+        // (a vine snake's painted body lies beside its liana, toward its head: the rim goes on the body, not as a streak up the liana)
+        const vine = enemy.trick === 'vine';
+        ctx.translate(enemy.x + (vine ? (enemy.facing > 0 ? 1 : -1) * 38 : 0), enemy.y);
+        drawAura(ctx, 'danger', world.id, vine ? 40 : enemy.width * 0.8, vine ? 72 : enemy.height * 0.8, this.gameTime, enemy.id * 1.7);
         ctx.restore();
       }
       const draw = (ctx: CanvasRenderingContext2D) => {

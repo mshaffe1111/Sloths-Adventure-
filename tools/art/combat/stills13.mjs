@@ -1,10 +1,10 @@
 // 1-3 rebuild stills (w8-rope2, 2026-11-04): Pokey placed at each node's start in the real game, upright and sideways, one still per
 // node (and a second further into the split and the climax), then a contact sheet per orientation.
-//   PW=/opt/node-tools/node_modules/playwright/index.mjs node tools/art/combat/stills13.mjs <port> <out dir> [seed]
+//   PW=/opt/node-tools/node_modules/playwright/index.mjs node tools/art/combat/stills13.mjs <port> <out dir> [seed] [stage]
 import fs from 'node:fs';
 import path from 'node:path';
 const { chromium } = await import(process.env.PW ?? 'playwright');
-const [port = '4303', out = '.', seedS = '1'] = process.argv.slice(2);
+const [port = '4303', out = '.', seedS = '1', stage = '1-3'] = process.argv.slice(2);
 fs.mkdirSync(out, { recursive: true });
 const b = await chromium.launch();
 for (const [tag, w, h] of [['side', 844, 390], ['up', 390, 844]]) {
@@ -12,15 +12,20 @@ for (const [tag, w, h] of [['side', 844, 390], ['up', 390, 844]]) {
   page.on('pageerror', (e) => console.log('ERR', e.message));
   await page.goto(`http://127.0.0.1:${port}/?lessons=off`);
   await page.waitForTimeout(3000);
-  await page.evaluate((s) => window.__play('1-3', s), Number(seedS));
+  await page.evaluate(([st, s]) => window.__play(st, s), [stage, Number(seedS)]);
   await page.waitForTimeout(8000);
   await page.keyboard.down('ArrowRight'); await page.waitForTimeout(300); await page.keyboard.up('ArrowRight');
   await page.waitForTimeout(6000);
   const beats = await page.evaluate(() => window.__engine().proto.beats.map((b) => [b[0], b[1], b[2]]));
   const spots = [];
-  for (const [x0, x1, name] of beats) {
+  // (STILLS_AT=vine: each vine snake, from just before its liana, instead of the nodes)
+  if (process.env.STILLS_AT === 'vine') {
+    const xs = await page.evaluate(() => window.__engine().enemies.filter((e) => e.trick === 'vine').map((e) => e.x));
+    for (const vx of xs) spots.push([vx - 240, 'vine snake at ' + Math.round(vx)]);
+  }
+  for (const [x0, x1, name] of process.env.STILLS_AT === 'vine' ? [] : beats) {
     spots.push([x0 + 260, name.split(':')[0]]);
-    if (/Spike|Climax|Ramp/.test(name)) spots.push([(x0 + x1) / 2, name.split(':')[0] + ' (middle)']);
+    if (/Spike|Climax|Ramp|Learn|Develop|Twist|Finish/.test(name)) spots.push([(x0 + x1) / 2, name.split(':')[0] + ' (middle)']);
   }
   let n = 0;
   for (const [px, label] of spots) {
