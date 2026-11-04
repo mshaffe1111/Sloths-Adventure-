@@ -63,3 +63,24 @@ concrete enough that a programmer could start building tomorrow. Where you are g
 
 Please be honest where something is unproven, cite sources for facts, and prefer ideas that are simple to build and test over
 clever ones that are hard to verify.
+
+---
+
+## Addendum (paste as a follow-up, or add to the end of the prompt above)
+
+One more thing I want researched, just as deeply. We do this work with a team of AI agents (separate instances of a large language
+model, each given a written brief): a lead, plus helpers for designing, critiquing, planning, building and checking. Our problem is
+that they tunnel: each takes the first workable idea, agrees with the brief it was given, and doesn't look for better routes.
+
+8. **How to set up AI helpers so they think, not just follow.** With sources (research on LLM prompting, multi-agent debate, red
+   teaming, "devil's advocate" and pre-mortem methods, self-consistency, diverse-perspective prompting, how teams of human designers
+   avoid groupthink), tell me:
+   - What a designer's brief should say, and what it should leave out, so it explores widely before choosing (how many options to
+     demand, how to force genuinely different ones, what to hide from it so it isn't anchored on our ideas).
+   - What a critic's brief should say so it finds real holes instead of agreeing politely (how to grade it, what evidence to demand,
+     how to make it propose better alternatives, how to stop it nitpicking).
+   - What a planner's brief should say so it keeps disagreements visible and produces a plan with a measurable first step.
+   - How to give them context (research, code facts, constraints) without biasing them, and in what order.
+   - How to check, cheaply, that a helper actually thought (signs of shallow work, questions to ask it, tests of its claims).
+   - How to keep this cheap in tokens.
+   - Give me three ready-to-use brief templates (designer, critic, planner) written for an AI coding agent, which I can adapt.
