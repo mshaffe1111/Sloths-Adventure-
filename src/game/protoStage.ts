@@ -6055,7 +6055,9 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       // a tall trunk at the plank's far end, and two limbs on, the same way, then a liana over the next gap
       tx = way === 1 ? cur.x + cur.width - 70 : cur.x + 70;
       trunkUp(tx, Math.round(R.r(320, 350)), way === 1 ? tx - 220 : tx - 40, way === 1 ? tx + 40 : tx + 220);
-      [bars, steps, dd] = fitRun(flip(way), [[['h...h...'], [C_(30), B_(-20)]], [['h...h...'], [C_(0), B_(20)]]], 700);
+      // (a bough first, then the limb: the climb straight onto a limb is the spike's and the climax's first; four of them read as one
+      // unit repeated)
+      [bars, steps, dd] = fitRun(flip(way), [[['h...h...', 'h.......'], [B_(10), C_(30), B_(-20)]], [['h...h...'], [B_(0), C_(20)]]], 700);
       beatRun(bars, steps, dd);
       way = dd;
       swingOn();
@@ -6064,7 +6066,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         const d3 = flip(way);
         const t3 = d3 === 1 ? cur.x + 70 : cur.x + cur.width - 70;
         trunkUp(t3, Math.round(R.r(280, 300)), d3 === 1 ? t3 - 40 : t3 - 200, d3 === 1 ? t3 + 200 : t3 + 40);
-        const [b3, s3, e3] = fitRun(d3, [[['h...h...', 'h.......'], [C_(10), B_(-20), B_(30)]], [['h...h...'], [C_(10), B_(-20)]]], 400);
+        const [b3, s3, e3] = fitRun(d3, [[['h...h...', 'h.......'], [B_(-20), C_(10), B_(30)]], [['h...h...'], [B_(-20), C_(10)]]], 400);
         beatRun(b3, s3, e3);
         way = e3;
       }

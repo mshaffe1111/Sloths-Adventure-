@@ -346,10 +346,11 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     const x0 = x;
     // (open air under every other gap, a bough under the rest: it bites, but stage 1's first-timer is not sent back three times a
     // stretch; a flag again after the mushroom)
-    node(['h...h...', 'h....o..', '....h...'], [J(0), J(20), J(-30), D(120), J(-20)], (i) => (i % 2 ? 'catch' : 'pit'));
+    // (on Easy every gap is open air: Easy's soft fall puts him back, a setback and never a life, so a catch would only make it nothing)
+    node(['h...h...', 'h....o..', '....h...'], [J(0), J(20), J(-30), D(120), J(-20)], (i) => (easy || i % 2 === 0 ? 'pit' : 'catch'));
     bounce(BOUNCE_UP - 15, 'branch', 'pit', 130);
     flag(x + 80);
-    node(['h...h...', 'h....o..', '....h...'], [J(0), H(-40), J(20), D(130), J(0)], (i) => (i % 2 ? 'pit' : 'catch'), { flag: false });
+    node(['h...h...', 'h....o..', '....h...'], [J(0), H(-40), J(20), D(130), J(0)], (i) => (easy || i % 2 ? 'pit' : 'catch'), { flag: false });
     pieces.push({ k: 'finale', x0, x1: x });
   });
 
