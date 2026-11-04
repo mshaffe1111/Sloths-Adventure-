@@ -7,20 +7,33 @@ map shapes (line 596), beat-traced nodes (line 598), 200 px aprons and node chec
 the quality supervisor's baseline (reference/qa-reports/world1-baseline.md: "World 1 is one stage played six times"). The research
 ledgers (reference/research/ledger/) may add to this; the lead folds them in about 2:30 PM ET.
 
+## The beat is the music's beat (lead, checked in code 2026-11-04)
+The player hears each stage's own music, so the beat the moves fall on IS that music's beat, not a number we invent. World 1's music
+runs at about 123-134 BPM (src/audio/styles.ts world 1 bpm [126,134]; each stage's exact tempo comes from `stageMusic()` in
+src/audio/scenes.ts and `themeById(...).bpm * tempo`: 1-1 130, 1-2 127, 1-3 130, 1-4 130, 1-5 134). At 130 BPM a quarter note is
+0.46 s, a half 0.92 s, a whole 1.85 s; Pokey's jump is in the air 0.63 s (physics.ts JUMP_AIRTIME), so a hop fits a half note with a
+step of running between. The stages differ by WHICH note values their moves fall on (the "feel" Matt calls dance / flow / rock),
+not by the music's speed. beatTrace takes the stage's real BPM from stageMusic, never a typed number. (The research's example BPMs
+were for its own idea of each world; ours are set by the music, and the ledger records that.)
+
 ## What makes the five differ (each row must differ from every other row in at least four columns)
 
-| Stage | Job (slot) | Map shape | Tempo | Beat feel | Main pair | Look | Signature moment |
+| Stage | Job (slot) | Map shape | Moves fall on (music ~130 BPM) | Beat feel | Main pair | Look | Signature moment |
 |---|---|---|---|---|---|---|---|
-| 1-1 Into the Canopy | arrival, teach run/jump/double | linear wave that RISES from the forest floor to the high kapok branches (the name finally true) | 88 BPM | steady: hops on the beat, like a march | run + jump, then double jump | floor -> canopy; the backdrop changes with height | the first double-jump chain up into the canopy, then the view from the top branch |
-| 1-2 The Petal Trail | teach the world's thing: vines | over-under loop-back: out along the top on vines, back underneath along the roots | 92 BPM | swung: long-short (swing, swing, land... hop) | jump + vine swing | canopy vines, then the dim root level | swinging out over the drop, then seeing the root path you'll come back along |
-| 1-3 Branch Snakes | tight terrain + the combat teach | high/low split: high road with snakes and the vault, low road safer and slower | 96 BPM | off-beat: punches and stomps land between the hops | combat triangle (stomp vault, punch daze, kick) + snakes | mid-canopy, snake country | the first stomp-vault over a gap (w8-rope2's taught vault) |
-| 1-4 Up the Kapok | change of direction: the climb | vertical chimney (kept), the repeated top half rebuilt | 84 BPM | half-note, wait-and-go: slow deliberate climbs, waits for the squirrel lift and rope timing | climb + creaking limbs (taught here, 0.6 s to recover) | trunk and sky | the squirrel lift, then the crown with the view over the canopy |
-| 1-5 Where She Walked | mid-world spike | a trail: Meeca's carvings lead, closer and closer together, the fastest stage so far | 100 BPM | broken: uneven gaps you read on the run | snap twigs (required, keep running) + vines, over real pits | dusk trail, carvings glowing | the carving chase: marks closer together, the run speeding up into the last stretch |
+| 1-1 Into the Canopy | arrival, teach run/jump/double | linear wave that RISES from the forest floor to the high kapok branches (the name finally true) | half notes (a hop every ~0.92 s) | steady: on the beat, like a march (but never the same gap 4 times running) | run + jump, then double jump | floor -> canopy; the backdrop changes with height | the first double-jump chain up into the canopy, then the view from the top branch |
+| 1-2 The Petal Trail | teach the world's thing: vines | over-under loop-back: out along the top on vines, back underneath along the roots | dotted half + quarter (long-short) | swung: swing... land-hop | jump + vine swing | canopy vines, then the dim root level | swinging out over the drop, then seeing the root path you'll come back along |
+| 1-3 Branch Snakes | tight terrain + the combat teach | high/low split: high road with snakes and the vault, low road safer and slower | half-note hops, hits on the quarter between | off-beat: punches and stomps land between the hops | combat triangle (stomp vault, punch daze, kick) + snakes | mid-canopy, snake country | the first stomp-vault over a gap (w8-rope2's taught vault) |
+| 1-4 Up the Kapok | change of direction: the climb | vertical chimney (kept), the repeated top half rebuilt | whole notes and whole-bar waits (~1.85 s) | wait-and-go, the slowest stage: slow deliberate climbs, waits for the squirrel lift and rope timing | climb + creaking limbs (taught here, 0.6 s to recover) | trunk and sky | the squirrel lift, then the crown with the view over the canopy |
+| 1-5 Where She Walked | mid-world spike | a trail: Meeca's carvings lead, closer and closer together, the fastest stage so far | quarters and half notes mixed, the busiest | broken: uneven gaps you read on the run, the fastest stage | snap twigs (required, keep running) + vines, over real pits | dusk trail, carvings glowing | the carving chase: marks closer together, the run speeding up into the last stretch |
 
-## Every stage has the research's tension curve (6-8 nodes, line 531)
+## Every stage has the research's tension curve (6-8 nodes, line 531), but not the same curve
 intro (1 action every 2.5 s, safe) -> ramp (1 every 1.2 s) -> spike (the stage's hardest burst) -> rest (no action; Dot's line;
 the collectible teased in sight or by sound) -> counter-melody (a different pair from the stage's main one) -> climax (everything the
 stage taught, densest) -> cool-down (a slide or easy glide to the exit). Checkpoint at every node's entrance on a 200 px safe apron.
+Every stage has all seven parts, but no two stages place them the same way (the ledger, 11-04 part 2: a fixed curve is itself a
+pattern the player feels): where the spike sits, how long the rest is, and which pair the counter-melody brings must differ from the
+stage before. The research's own numbers stand: the intro at 1 action every 2.5 s (0.4 a second), the ramp at 1 every 1.2 s, and
+a node fails if the same jump gap repeats four times in a row (11-04 line 585).
 
 ## Rules for the build (no exceptions)
 - No `fillTo()` padding. Length comes from the nodes: 2-5 min for a first-timer on Normal, never under 2 for a skilled player.
@@ -41,6 +54,8 @@ stage taught, densest) -> cool-down (a slide or easy glide to the exit). Checkpo
 - fix-petals: pits (R-6.38) feed all five; the validator reads each node's BPM and beat feel.
 - quality supervisor: judges each plan, then the in-order recording 1-1 -> 1-5.
 - Lead: approves each plan against this table, shows Matt the five layouts before wiring, builds the release.
+
+Ledgers: 11-04 part 2 is in (reference/research/ledger/LEDGER-2026-11-04-part2.md); part 1 and the 11-02 report follow.
 
 Timeline (ET): beatTrace pushed about 2:15; all five plans to the lead about 3:00; shown to Matt about 3:15; built and gated about
 6:30; in-order recording and lead's look about 7:15; release PR to Matt about 8:00. A stage not at the polish bar by then is named
