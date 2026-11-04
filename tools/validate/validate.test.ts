@@ -39,6 +39,8 @@ test('every beat the inspector names maps to its move letter', () => {
     ['J', 'hop onto a moving log or platform', 'X'], ['V', 'grab a trunk or vine and climb', 'C'], ['V', 'swing on a liana', 'V'], ['V', 'shimmy along a rope', 'R'],
     ['Z', 'crumbling branch', 'B'], ['Z', 'the branch collapses behind him: keep running', 'K'], ['Z', 'wind gust', 'W'], ['Z', 'sticky web slows him', 'S'],
     ['P', 'puzzle room (seesaw)', 'P'], ['C', 'snake', 'F'], ['Z', 'eagle sweep: duck into a bush', 'E'], ['Z', 'darkness: wake the glowworms, find the way', 'D'],
+    // (World 1's tricks, R-159.1: the inspector names them, beats.ts)
+    ['C', 'snake (dazed, then stomped)', 'N'], ['C', 'boa (coiled: kicked to roll)', 'O'], ['C', 'snake (stomp vault)', 'Y'], ['C', 'boa', 'F'],
   ];
   for (const [letter, what, want] of cases) assert.equal(moveOf({ letter: letter as never, what, count: 1 }), want, what);
   assert.equal(moveOf({ letter: 'h', what: 'pickup arc over a gap (optional jump)', count: 0.5 }), null, 'an optional pickup arc is not a move');
@@ -291,4 +293,25 @@ test('fun gate, in the real engine: World 1 layout 1 judged against its own coun
   const r = judgeAgainst(now, known.slice(1));
   assert.equal(r.worse.length, 1, JSON.stringify(r));
   assert.equal(keyOf(known[0]), [...now.keys()][0]);
+});
+
+// ---- repeats on a beat-traced stage (the lead, 2026-11-04): tokens carry their note value and direction ----
+const at130 = (ms: ReadonlyArray<[string, number, number]>): Step[] => {
+  // (each move: its letter, beats since the last one, and the height it ends at; 130 BPM)
+  let t = 0;
+  return ms.map(([m, beats, y], i) => { t += (beats * 60) / 130; return { m: m as Step['m'], t, x: 100 + i * 200, y, what: m }; });
+};
+test('repeat on a traced stage: the same four moves on the same notes the same way 4 times fail; the same letters on varied notes and heights pass', () => {
+  const same: Array<[string, number, number]> = [];
+  for (let k = 0; k < 5; k++) same.push(['J', 2, G], ['J', 2, G - 40], ['N', 1, G - 40], ['J', 2, G]);
+  const s1 = at130(same);
+  assert.ok(repeats(moveString(s1), s1, 130).some((r) => r.kind === '4-run'), 'a truly repetitive traced stage fails');
+  const varied: Array<[string, number, number]> = [];
+  const notes = [1, 2, 4, 2, 1, 4, 2, 2, 4, 1];
+  const ys = [G, G - 40, G - 10, G - 70, G - 20, G - 60, G, G - 30, G - 80, G - 50];
+  for (let k = 0; k < 20; k++) varied.push([['J', 'J', 'N', 'J'][k % 4], notes[(k * 3) % 10], ys[(k * 7) % 10]]);
+  const s2 = at130(varied);
+  assert.deepEqual(repeats(moveString(s2), s2, 130).filter((r) => r.kind === '4-run'), [], 'varied notes and heights are different moves to a thumb');
+  // (the letters alone, as on an untraced stage, still read the varied one as the same four moves over and over)
+  assert.ok(repeats(moveString(s2), s2).some((r) => r.kind === '4-run'), 'without the beat the letters repeat');
 });

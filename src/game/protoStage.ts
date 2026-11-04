@@ -115,6 +115,8 @@ export interface ProtoExtras {
   beats: Array<[number, number, string]>;
   /** pickups the last pass had to move to where he can get them (flowerReach.ts): a hand-built stage should need none */
   movedPickups?: number;
+  /** a beat-traced stage's beat (beatTrace.ts): the validator counts its repeats as rhythm tokens (tools/validate/core.ts rhythmTokens) */
+  bpm?: number;
   /** 1-2's catch mushrooms (platform ids): one under each high branch's near end, a miss bounced back up to the trail (buildPlan catchUp) */
   catchUps?: number[];
   /** hollows in climb trunks (1-4): drawn on the trunk at this height, glowing once he is close */
@@ -435,6 +437,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   let pid = 1, vid = 1, tid = 1, eid = 1, cid = 1, seedN = 0;
   /** how long a quick, sure player takes (s): running at full speed, swinging at about 430 px/s, climbing at 220 px/s, pushing at 120 */
   let expert = 0;
+  /** a beat-traced stage's beat, for the validator (ProtoExtras.bpm) */
+  let tracedBpm: number | undefined;
   const RUN = 285, SWING = 430, CLIMB = 220, PUSH = 120;
 
   // ----- the drawing kit -----
@@ -1731,6 +1735,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     // the split (a high road of branches and snakes to a vault onto a raised perch, or the slower root floor under it), a rest, a
     // bounce chain, the climax, and a short slope down to the shrine. No filler: the length is the nodes.
     const bpm = stageBpm(config);
+    tracedBpm = bpm;
     const J = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'jump', dy, surface });
     const Hp = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'hop', dy, surface });
     /**
@@ -5549,7 +5554,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     proto: {
       ...(W3D.length ? { w3decor: W3D } : {}),
       ...(THORNS.length ? { thorns: THORNS } : {}),
-      hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(CATCH_UPS.length ? { catchUps: CATCH_UPS } : {}), ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
+      hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(tracedBpm ? { bpm: tracedBpm } : {}), ...(CATCH_UPS.length ? { catchUps: CATCH_UPS } : {}), ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
       ...(MIX ? { mix: MIX, grant: ['shimmy'] as SkillId[] } : {}),
       ...(W4C.length || W4K.length || W4R.length || Object.keys(W4X).length ? { w4: { ...W4X, ...(W4C.length ? { chimes: W4C } : {}), ...(W4K.length ? { knots: W4K } : {}), ...(W4R.length ? { rocks: W4R } : {}) } } : {}),
     },
