@@ -841,3 +841,4 @@ Report each finding with the stage, the moment (s), upright or sideways, Easy or
   6. bot-fix: round 1 checks warmup-5m's fix and fix-petals' re-merge first.
   7. roadmap-keeper: batch: the bot defect, the two pre-existing rough spots (boss name over lives badge upright; Journal 'WORLD 10' wraps), the QS polish defects (Dot tip during a death 1-6; tip box jumps 1-7; ~45% dirt upright on flat stages; cramped sideways climbs 1-4), the clerk's 4 + 1 method updates and warmup-5m's perf-measure pitfalls.
   8. Then Phase A.2: R-159.1 combat triangle (after GPU stage 0 merges).
+- 2026-11-04 7:47 AM ET, MATT RESTARTED the team. Running: warmup-5m (clipcheck fix on GPU stage 0), fix-petals (re-merge, bot bounce-wall fix, then final report), quality supervisor (validator page review), bot-fix (rounds), roadmap-keeper (one batch). Idle: kaizen-gates (0.9.4 waits on Matt's push). Lead check-in armed 30 min. Week % not yet known.
