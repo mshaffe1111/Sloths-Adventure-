@@ -10,7 +10,7 @@ ledgers (reference/research/ledger/) may add to this; the lead folds them in abo
 ## The beat is the music's beat (lead, checked in code 2026-11-04)
 The player hears each stage's own music, so the beat the moves fall on IS that music's beat, not a number we invent. World 1's music
 runs at about 123-134 BPM (src/audio/styles.ts world 1 bpm [126,134]; each stage's exact tempo comes from `stageMusic()` in
-src/audio/scenes.ts and `themeById(...).bpm * tempo`: 1-1 130, 1-2 127, 1-3 130, 1-4 130, 1-5 134). At 130 BPM a quarter note is
+src/audio/scenes.ts and `themeById(...).bpm * tempo`). Never type a stage's BPM: read it from `stageBpm` / `stageBeatBpm` (beatTrace.ts, scenes.ts), the one source; the music now plays at that beat whatever the session's salt (w1-rhythm, BEAT_STAGES). At 130 BPM a quarter note is
 0.46 s, a half 0.92 s, a whole 1.85 s; Pokey's jump is in the air 0.63 s (physics.ts JUMP_AIRTIME), so a hop fits a half note with a
 step of running between. The stages differ by WHICH note values their moves fall on (the "feel" Matt calls dance / flow / rock),
 not by the music's speed. beatTrace takes the stage's real BPM from stageMusic, never a typed number. (The research's example BPMs
@@ -36,7 +36,7 @@ stage before. The research's own numbers stand: the intro at 1 action every 2.5 
 a node fails if the same jump gap repeats four times in a row (11-04 line 585).
 
 ## Rules for the build (no exceptions)
-- No `fillTo()` padding. Length comes from the nodes: 2-5 min for a first-timer on Normal, never under 2 for a skilled player.
+- No `fillTo()` padding. Length comes from the nodes. **Matt, 2026-11-04: "We need to hold levels to 2 or 2.5 minimum play like i was playing"**: a skilled player playing like Matt (straight through, no deaths, the quick route) takes at least 2:00 on every stage, target 2:30, measured on the validator's quick-route clock AND the adult bot's fastest run; a first-timer on Normal 3-5 min.
 - Platforms, vines and branches in flow and tight nodes sit where Pokey's feet land when he jumps on the stage's beat
   (`src/game/beatTrace.ts`, w1-rhythm). A tester should be able to tap along.
 - Hazards go on the line the player avoided (research 11-04 line 59, checked by the lead): where the traced run says short-hop or
@@ -49,6 +49,7 @@ a node fails if the same jump gap repeats four times in a row (11-04 line 585).
 - Density climbs through the stage (11-02 lines 65-69): intro groups 5-10 s low, the middle 10-15 s medium, the finale 15-20 s
   high and dense, ending AT the exit (the cool-down is a few seconds, not a walk). fix-petals lets the validator's tight-stretch
   limit (TIGHT_MAX, core.ts) allow the finale's 15-20 s.
+- **Long falls hurt (Matt, 2026-11-04: "make long fall hurt")**: landing after a free fall of more than 400 px costs a heart on Normal (a stumble, no heart, on Easy); not while gliding, swinging, on a lift or bouncing. On for 1-1 to 1-5 tonight (w1-rhythm-b, with fallZones); other worlds as they are rebuilt.
 - No dead walk over 2.5 s (11-04 line 100): fix it with a slope, a hop or a critter, never just flag it.
 - Something bites from 1-1's climax on (pits on Normal, soft on Easy where STAGE-RULES says; Easy stays a cruise).
 - Petals and pickups never count as variety (§0c.5). The goal sits on the natural path (D8).
