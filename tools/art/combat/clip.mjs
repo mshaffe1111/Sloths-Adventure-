@@ -28,14 +28,21 @@ const CLIPS = [
     ],
   },
   {
-    // or a second punch while it is dazed finishes it
-    id: 'clip-2-lunge-finish', stage: '1-3',
+    // mashing punch on the dazed snake does nothing (the stars stay, the daze is not made longer); only the stomp finishes it
+    id: 'clip-2-lunge-mash-stomp', stage: '1-3',
     pose: { px: 3060, foe: { id: 2, x: 3209, y: 566, state: 'patrol' } },
     steps: [
       { hold: ['ArrowRight'], until: "s.state === 'rear'", max: 90 },
       { hold: ['ArrowRight'], until: 'Math.abs(s.x - p.x) < 56', max: 30 },
-      { tap: 'KeyJ', frames: 16 },
-      { tap: 'KeyJ', frames: 40 },
+      { tap: 'KeyJ', frames: 6 },
+      { tap: 'KeyJ', frames: 6 },
+      { tap: 'KeyJ', frames: 6 },
+      { tap: 'KeyJ', frames: 8 },
+      // (a short hop onto it, steering onto its back)
+      { tap: 'Space', frames: 1 },
+      { hold: ['ArrowRight'], until: 'p.x > s.x - 6 || s.defeated', max: 12 },
+      { until: 's.defeated || p.grounded', max: 30 },
+      { frames: 24 },
     ],
   },
   {
