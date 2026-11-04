@@ -183,3 +183,20 @@ vs after, then bisect the App.tsx change from the engine change.
   - `tools/qa/gpuLayer.cjs` PASS upright and sideways. It now also checks that the layer is not started until something is put on it;
   - clipcheck alone, 2 runs: `PASS (83 known) (199 s; ...)` and `PASS (83 known) (206 s; ...)`.
   - The full gate on 658ff7e1 is below.
+
+### Full gate on 658ff7e1 (the fix; later commits are docs and tools), pasted at 08:54 AM ET
+
+- `npx tsc --noEmit -p .`: `EXIT 0` (no output).
+- Tests:
+  - shard 1/3: `# tests 797 # pass 796 # fail 0 # todo 1 `;
+  - shard 2/3: `# tests 708 # pass 707 # fail 0 # todo 1 `;
+  - shard 3/3: `# tests 788 # pass 788 # fail 0 # todo 0 `;
+  - the whole suite: 2,291 pass, 0 fail, 2 TODO (already there).
+- `npx vite build`: `BUILD EXIT 0`; `find dist -type f -size +4M | wc -l`: `0`.
+- `node tools/perf/artcheck.mjs`: `PASS`.
+- `node tools/perf/knowncheck.mjs`: `PASS`.
+- `node tools/perf/drawcheck.mjs`: `PASS (438 s; raw results in /tmp/drawcheck-eSFTOS)`. A container run; CI at merge is binding.
+- `node tools/perf/clipcheck.mjs`, alone, after the tests: `PASS (83 known) (199 s; contact sheet and breaches.json in /tmp/clipcheck-BBMzhH)`. Its third PASS in a
+  row since the fix.
+
+**The gate is green. Stage 0 is ready for the lead's merge.**

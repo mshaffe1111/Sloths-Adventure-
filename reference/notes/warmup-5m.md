@@ -1,6 +1,6 @@
 # warmup-5m notes
 
-Last updated: Wed Nov 04 08:26 AM ET
+Last updated: Wed Nov 04 08:54 AM ET
 
 ## The job
 - **R-3.1, GPU plan stage 0** (lead, 2026-11-04):
@@ -61,7 +61,13 @@ Done! Checked 605 packages (no changes) [12.00ms].
   - gpuLayer.cjs PASS both orientations;
   - clipcheck alone 2/2 PASS (199 s, 206 s);
   - gpuLook 0 px on 1-1 and 8-1, both orientations.
-- The full gate is running on 658ff7e1 (started 08:24 AM ET). Paste its lines into the report, then report to the lead.
+- **Full gate on 658ff7e1: GREEN**, pasted in the webgl-0 README:
+  - tsc clean;
+  - tests 2,291 pass, 0 fail;
+  - build OK;
+  - artcheck, knowncheck and drawcheck PASS;
+  - clipcheck PASS (3rd in a row).
+- Reported to the lead. Waiting for the merge, then stage 1 (skies).
 
 ## Pitfalls (mine)
 - Look comparisons:
