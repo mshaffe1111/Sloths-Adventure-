@@ -29,3 +29,9 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
 - Times and ids are pasted from a command, never typed (I gave the lead a wrong commit prefix on Nov 1).
 - Never force-push: w8-rope2 is reset to the lead branch only when the old work is already in it (a fast-forward), as on 11-04.
 - Lead (2026-11-04 ~09:56 ET): ACCEPTED vine-hang s65-7 and boa-ball s60-7. Watch: s65-7's straight left edge must always sit against the liana and never show (flipped too, and through every clip frame); check the clips for it. Draw the vine snake ~20% larger sideways.
+- HF APPROVALS (both relayed by the lead, verbatim in its messages):
+  - Combat picture list (plan §Art, ~$2.32): "MATT APPROVED the R-159.1 picture list (Nov 4, ~9:05 AM ET): about $2.32, cap $4.00 including
+    redos, with the vine snake option (a)" (lead message queued 14:22:59Z). The list is the plan's Art section, revision 3 at eabf7e88.
+  - Pit list (~$0.88): "MATT APPROVED the pit list (Nov 4 ~9:50 AM ET) ... about $0.88, cap $1.40" (lead message queued 14:50:29Z);
+    the list is PIT-LIST.md at 6944e22c. Combined cap $5.40.
+  - Spend, measured per job from HF's created/finished times x $2.75/h (jobs.txt): $0.74 finished + the two vine-clip jobs running.

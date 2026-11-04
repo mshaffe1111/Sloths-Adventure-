@@ -1,4 +1,8 @@
-# R-159.1: the pits that should read as a fall (a list for Matt's NEXT approval; nothing spent)
+# R-159.1: the pits that should read as a fall
+**APPROVED by Matt, Nov 4 ~9:50 AM ET**, relayed by the lead (session_019iachLiuwNTAZUBSJWUmR3, message queued 14:50:29Z), verbatim:
+"MATT APPROVED the pit list (Nov 4 ~9:50 AM ET): the drop, the lips, 1-3's soft bed, 1-8's high drop; about $0.88, cap $1.40 with one
+redo round." The list approved is this file as pushed at 6944e22c. Spend: tools/art/combat/jobs.txt (job r159-pits, 3.7 min, $0.17).
+(Written first as "a list for Matt's next approval; nothing spent" at 6944e22c, before the approval.)
 Matt's rule (CLAUDE.md 10-29): anything that hurts Pokey is painted art made on Hugging Face. Today the vault pits read as more foliage
 (1-8), or as a log and a muddy stream bottom (1-3, 1-5, 1-9). Still: `pits-today-vs-fix.jpg` (today left, a CODE mock of the look
 right, stamped MOCK: only a brief for the painting).
