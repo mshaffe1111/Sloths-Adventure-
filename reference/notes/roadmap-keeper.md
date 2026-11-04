@@ -1,6 +1,6 @@
 # Notes: roadmap-keeper (keeps reference/ROADMAP.md and the doc's "Roadmap to go")
 
-Updated 2026-11-04 7:52 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
+Updated 2026-11-04 7:56 AM ET. Read at start and after every memory compression (reference/notes/README.md). Role: reference/roles/ROADMAP-KEEPER.md.
 Method: reference/methods/roadmap.md. Branch: roadmap-keeper (the lead merges it; a restarted container may come up on the lead's
 branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git fetch --unshallow`, then merge the lead's branch).
 
@@ -11,7 +11,7 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
   Phase A (World 1) 60.5 h (range about 46-85), starting score World 1 38/100 (quality supervisor) and validator 18-62, average 41
   (fix-petals; the lead's message said 42, the overview page says 41); Phase B 274 h (a guess, about 210-385); Phase C 114 h (a guess,
   about 85-160); alongside 62 h. Day 1 about 531.5 helper hours (the gate prints 539.5 with the keeper's 8 h), recommended Important
-  59.5 h, launch about 591 h; lane loads 117.5 / 118.5 / 120 / 120.5 / 113.5 (script); building about 15-20 working days on today's
+  60.5 h, launch about 592 h; lane loads 117.5 / 118.5 / 120.5 / 120.5 / 113.5 (script); building about 15-20 working days on today's
   rows (12-26 across the guesses); about 4-4.5 weeks with the 80% trigger (about 425 of 531.5 h). The doc mirrors it (read back).
   Phase script: sets by item id (A also holds R-150.7, R-6.31, R-6.33 to R-6.36; R-154 W1 2.5 h and R-155 W1 7 h moved from B to A).
 - **In flight / waiting:**
@@ -23,8 +23,8 @@ branch and shallow: `git checkout -B roadmap-keeper origin/roadmap-keeper`, `git
   - Decided by the lead (11-04, PLAN-TO-80): GPU stage 0 merges first, then R-159.1, then R-160.1 hold engine.ts one at a time;
     R-158.1 with R-5.10 one job, R-155 with R-150.3 not twice, R-161.2 inside R-1.9/R-1.10/R-1.15; HF stays $72 total (no top-ups,
     Matt 11-01), so BUILD-PLAN §4 stands. All in the rows and the doc.
-  - Not filed yet (asked the lead 11-04): STATUS's restart list also names the clerk's 4 + 1 method updates and warmup-5m's
-    perf-measure pitfalls for the keeper; the lead's batch didn't.
+  - The clerk's and warmup-5m's method updates: the lead folded them in (no R-items). R-148.16 (D28's LESSONS line, the lead's)
+    closes when the lead adds the line; then archive it with that commit.
   - Told the lead: LEADER-STANDARD-WORK.md line 32 still says launch "in about 3 weeks" (their file).
 - **Every round:**
   - Merge the lead's branch first (ccr-0d59a91c-oy3imz). New defects (D#) and rules arrive there; the gate reads the local copies.
