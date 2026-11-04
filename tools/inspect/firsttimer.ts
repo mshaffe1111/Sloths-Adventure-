@@ -1262,7 +1262,15 @@ export class FirstTimerRun {
     }
     if (!p.grounded) {
       // in the air off a ledge he walked off: steer the way on; grab a trunk if he touches one on the way up
-      const out = this.overSmall(fdir) ? {} : side(fdir);
+      let out: Pad = this.overSmall(fdir) ? {} : side(fdir);
+      // (over a ledge with its end close ahead, the way on not dropping: he steers back to land on it and jumps from there, as a person
+      // does. fix-petals 2026-11-04, R-150.8: at 1-4's trunk tops the engine sets him off the top into the air, he held the way on, came
+      // down 12 px from the branch's end at a run and ran off it, back to the trunk's foot, three times a trunk: 55-58 rescues a run)
+      if (p.vy > -200) {
+        const f = this.floorAt(p.x, p.y, 120);
+        const on = this.prog.target(p, 160);
+        if (f && f.type !== 'drift' && f.type !== 'moving' && (fdir > 0 ? f.x + f.width - p.x : p.x - f.x) < 40 && !(on && on.y > p.y + 50)) out = side(fdir > 0 ? -1 : 1);
+      }
       if (e.nearTreeVine && up) out.up = true;
       if (this.learned.has('glide') && e.skills?.has('glide') && p.vy > 150) out.jump = true;
       return out;
