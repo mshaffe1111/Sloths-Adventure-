@@ -53,3 +53,6 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - Validator 7909cf11: PASS, ready as W1 measuring stick (variety = more alike of moves/look). Proposed to lead: rebuild briefs use its flags as entry criteria before my in-order re-record.
 - R-159.1 show-first round 3 (w8-rope2 c0033885): PASS + 1 change (1-5 kick teach needs a visible payoff). Told lead: 1-5's sameness needs stage-shape work, first in line.
 - R-159.1 plan 43ecbd38: 1-5 kick payoff in (boa rolls into hollow stump -> petal cache). Judge the still when rolled-boa art lands.
+- 10:34 AM ET bot-fix nudge (quiet an hour): my slip, I waited for stills instead of watching the build. Countermeasure: on every in-build check-in I record the helper's branch myself (tools/quality on a worktree; a branch with new deps needs its own npm install).
+- R-159.1 in-game check (w8-rope2 9ec60be2, reference/qa-reports/r159-check, 7ca4f6b0): REDO. Coiled boa dies to 4 punches (kick unneeded); stun = punch twice fast (stars never seen); 1-3 goal 10/16. Lean (a): only a stomp ends a stun.
+- New standard (Matt via lead): plans start from the method file; untested approach needs reason + fallback; flag better ways. Proposed botrec as the in-build check method.
