@@ -11,9 +11,11 @@
    artcheck, knowncheck, clipcheck, drawcheck, roadmapcheck. Any failure: stop and report it; never loosen, skip or "expected-fail"
    a check (law 5).
 3. Walk the changed screens on fresh, old and finished saves, upright and sideways; put the stills in reference/qa-reports/<release>/
+   Before calling a rough spot 'not new', shoot the same screen on origin/main (a worktree on its own port) and put both side by side.
    and run checkbase on them.
 4. Build and publish Matt's test link (tools/testlink/build.py, then the Artifact tool; list files first if a publish is refused).
 5. Write the What's New lines and release notes in plain player words (the playerText gate must pass), and prepare the PR body.
+   Include the PLAY-STORE-RULES §6 table: each of the 8 items answered with its proof, or 'not checked' and why (D: 0.9.4, caught by the supervisor).
 6. Hand the lead "READY FOR MATT": the branch and commit, the gate table, the stills, the test link version, the notes. The lead
    checks, Matt approves, the lead opens the PR.
 7. After Matt merges: check the deploy run, the gates job, Pages, and the APK on the Releases page; send the lead the links.

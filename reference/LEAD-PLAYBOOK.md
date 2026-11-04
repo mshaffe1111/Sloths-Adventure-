@@ -95,6 +95,7 @@ A helper's report is not proof. Before merging:
 - Matt's current instruction: one QA bot, random levels, to keep cost down; full sweeps only when Matt asks (e.g. a world rebuilt).
 
 ## 6. Releases
+- **Test links reach Matt (D28):** after any test-link publish, the lead calls Artifact `open` on it and puts the link in the FIRST line of the message, never buried in a report.
 
 Step zero of every test link and every release: read reference/PARTNER.md and go through its "little pieces" list (Matt, 2026-10-29).
 
