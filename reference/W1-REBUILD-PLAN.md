@@ -39,6 +39,10 @@ a node fails if the same jump gap repeats four times in a row (11-04 line 585).
 - No `fillTo()` padding. Length comes from the nodes: 2-5 min for a first-timer on Normal, never under 2 for a skilled player.
 - Platforms, vines and branches in flow and tight nodes sit where Pokey's feet land when he jumps on the stage's beat
   (`src/game/beatTrace.ts`, w1-rhythm). A tester should be able to tap along.
+- Hazards go on the line the player avoided (research 11-04 line 59, checked by the lead): where the traced run says short-hop or
+  duck, a hazard (thorn overhang, snapping snake, pit) sits on the other line, so holding right or skipping the beat costs you.
+  This is the direct fix for Matt's "you can outrun them every time".
+- No dead walk over 2.5 s (11-04 line 100): fix it with a slope, a hop or a critter, never just flag it.
 - Something bites from 1-1's climax on (pits on Normal, soft on Easy where STAGE-RULES says; Easy stays a cruise).
 - Petals and pickups never count as variety (§0c.5). The goal sits on the natural path (D8).
 - No two neighbouring stages share a map shape, tempo or beat feel; the validator's "like the stage before" flags for 1-1 to 1-5
@@ -55,7 +59,7 @@ a node fails if the same jump gap repeats four times in a row (11-04 line 585).
 - quality supervisor: judges each plan, then the in-order recording 1-1 -> 1-5.
 - Lead: approves each plan against this table, shows Matt the five layouts before wiring, builds the release.
 
-Ledgers: 11-04 part 2 is in (reference/research/ledger/LEDGER-2026-11-04-part2.md); part 1 and the 11-02 report follow.
+Ledgers: 11-04 part 1 (LEDGER-2026-11-04-part1.md) and part 2 are in (reference/research/ledger/LEDGER-2026-11-04-part2.md); part 1 and the 11-02 report follow.
 
 Timeline (ET): beatTrace pushed about 2:15; all five plans to the lead about 3:00; shown to Matt about 3:15; built and gated about
 6:30; in-order recording and lead's look about 7:15; release PR to Matt about 8:00. A stage not at the polish bar by then is named
