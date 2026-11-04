@@ -78,7 +78,8 @@ export function missCost(b: Built): Beat2[] {
   const under = (x0: number, x1: number, y: number): Cost => {
     const lo = Math.min(x0, x1), hi = Math.max(x0, x1);
     const mid = (lo + hi) / 2;
-    const below = ps.filter((p) => p.x <= mid && p.x + p.width >= mid && p.y > y + 8).sort((a, c) => a.y - c.y)[0];
+    // (the take-off's own level counts: a missed hop straight up, or onto a higher ledge, falls back onto the ground he left)
+    const below = ps.filter((p) => p.x <= mid && p.x + p.width >= mid && p.y >= y - 4).sort((a, c) => a.y - c.y)[0];
     // (Easy's falls are soft, easyMode.ts: a fall puts him back a little, a setback)
     if (!below || deadly(below.y)) return b.setting === 'easy' ? 'setback' : 'life';
     return 'nothing';
@@ -86,12 +87,12 @@ export function missCost(b: Built): Beat2[] {
   const out: Beat2[] = [];
   const segs = b.route.segs;
   for (const s of b.steps) {
-    if (!'JjQVBMCRXE'.includes(s.m) || /collapses behind/.test(s.what)) continue;
+    if (!'JjUQVBMCRXE'.includes(s.m) || /collapses behind/.test(s.what)) continue;
     if (s.m === 'E') {
       out.push({ step: s, cost: /again/.test(s.what) ? 'setback' : 'nothing', why: /again/.test(s.what) ? 'a pass that can strike: a heart' : "the stretch's first pass only warns" });
       continue;
     }
-    if (/level check cannot confirm/.test(s.what)) {
+    if (s.m === 'Q') {
       // (the route took it on trust: a mushroom wall or a puzzle piece the check does not model; it is not priced, and the page counts it)
       out.push({ step: s, cost: 'unknown', why: 'a jump the level check cannot confirm (usually a mushroom wall): not priced' });
       continue;

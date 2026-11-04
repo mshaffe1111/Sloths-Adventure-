@@ -15,10 +15,11 @@ import { RealPlay } from '../../src/game/realPlay.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
 import { type Route } from '../inspect/route.ts';
 import { pickRoute } from '../inspect/eraRoll.ts';
+import { reachJump, TAKEOFF_SLACK } from '../../src/game/physics.ts';
 import { type Beat, type Sample } from '../inspect/beats.ts';
 import type { Stage } from '../inspect/stages.ts';
 
-export type Move = 'J' | 'j' | 'Q' | 'V' | 'B' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'E' | 'D' | 'X' | 'h' | 'Z';
+export type Move = 'J' | 'j' | 'U' | 'Q' | 'V' | 'B' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'E' | 'D' | 'X' | 'h' | 'Z';
 export interface Step {
   m: Move;
   /** seconds from the start on the quick route's clock (the inspector's beat clock: movement plus fights and waits) */
@@ -31,7 +32,7 @@ export type Setting = 'normal' | 'easy';
 
 /** what each move letter means, for the pages */
 export const MOVE_NAMES: Record<Move, string> = {
-  J: 'jump (a real fall under it)', j: 'safe hop over a gap', Q: "jump the level check can't confirm (usually a mushroom wall)", V: 'vine swing', B: 'breaking branch', W: 'wind', S: 'slow-down', C: 'climb', P: 'puzzle', M: 'mushroom bounce', R: 'rope',
+  J: 'jump (a real fall under it)', j: 'safe hop over a gap', U: 'jump twice (a gap or rise only the second jump covers)', Q: "jump the level check can't confirm", V: 'vine swing', B: 'breaking branch', W: 'wind', S: 'slow-down', C: 'climb', P: 'puzzle', M: 'mushroom bounce', R: 'rope',
   F: 'fight an animal', E: 'eagle / watcher', D: 'dark', X: 'river / moving logs', h: 'small hop', Z: 'other timed hazard',
 };
 
@@ -89,11 +90,39 @@ export function build(id: string, layout: number, setting: Setting): Built & { q
 export function fromStage(id: string, layout: number, setting: Setting, sim: RealPlay, stage: Stage): Built & { quick: Step[] } {
   const pick = pickRoute(stage.config.objectiveType, stage);
   const { route, samples, br } = pick.used;
+  // (a jump the level check can't confirm, by what the stage data shows at it: a mushroom at the take-off is a bounce (M); a gap or a rise
+  // only the second jump covers is a double jump (U: 1-1 teaches it, and the check doesn't allow it there); Q only for what is truly
+  // unknown. The quality supervisor, 11-04, asked for M from the pieces; 1-1's turned out mostly double jumps, by their geometry)
+  const shrooms = stage.platforms.filter((p) => p.type === 'bouncy' && !p.broken);
+  // (World 1's mushroom pieces put the mushroom up to a run-up before the leap the check can't confirm: highLeaps, bounceWall)
+  const mushroomAt = (x: number, y: number) => shrooms.some((p) => x >= p.x - 90 && x <= p.x + p.width + 250 && Math.abs(p.y - y) <= 60);
+  const segAt = (x: number, y: number) => route.segs.find((g) => Math.abs(g.x0 - x) < 3 && Math.abs(g.y0 - y) < 3);
+  const kindOfQ = (x: number, y: number): Move => {
+    if (mushroomAt(x, y)) return 'M';
+    const g = segAt(x, y);
+    if (!g) return 'Q';
+    // (or a mushroom under the leap's span: the route links the floor straight to the branch past it)
+    const lo = Math.min(g.x0, g.x1), hi = Math.max(g.x0, g.x1);
+    if (shrooms.some((p) => p.x + p.width >= lo - 20 && p.x <= hi + 20 && p.y >= Math.min(g.y0, g.y1) && p.y <= Math.max(g.y0, g.y1) + 40)) return 'M';
+    const gap = Math.abs(g.x1 - g.x0), rise = g.y0 - g.y1;
+    const one = reachJump(rise, false), two = reachJump(rise, true);
+    const fits = (r: number) => r >= 0 && gap <= r * 0.97 - (gap > 0 ? TAKEOFF_SLACK : 0) + 1;
+    if (!fits(one) && fits(two)) return 'U';
+    if (fits(one)) return 'J';
+    return 'Q';
+  };
   const toSteps = (beats: readonly Beat[]) => {
     const steps: Step[] = [];
     for (const b of beats) {
-      const m = moveOf(b);
-      if (m) steps.push({ m, t: b.t, x: Math.round(b.x), y: Math.round(b.y), what: b.what });
+      let m = moveOf(b);
+      let what = b.what;
+      if (m === 'Q') {
+        m = kindOfQ(b.x, b.y);
+        if (m === 'M') what = 'mushroom bounce (the level check takes it on trust)';
+        else if (m === 'U') what = 'jump twice (the level check takes it on trust)';
+        else if (m === 'J') what = 'jump (the level check takes it on trust)';
+      }
+      if (m) steps.push({ m, t: b.t, x: Math.round(b.x), y: Math.round(b.y), what });
     }
     return steps.sort((a, b) => a.t - b.t);
   };
@@ -169,7 +198,7 @@ export function repeats(str: string, steps: readonly Step[]): RepeatFlag[] {
  * costs anything is the miss-cost check's job, mechanics.ts), so 1-2's safe hops and 1-1's jumps are compared as what they are.
  */
 export function grams(str0: string, n = 3): Map<string, number> {
-  const str = str0.replace(/[jQ]/g, 'J');
+  const str = str0.replace(/[jQU]/g, 'J');
   const m = new Map<string, number>();
   for (let i = 0; i + n <= str.length; i++) m.set(str.slice(i, i + n), (m.get(str.slice(i, i + n)) ?? 0) + 1);
   return m;

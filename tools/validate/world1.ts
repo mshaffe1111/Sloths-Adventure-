@@ -111,9 +111,15 @@ function playFlags(id: string): Flag[] {
 
 const FAMILIES = ['variety', 'repeats', 'dead walking', 'pacing', 'a miss costs', 'padding', 'tempo', 'something new', 'hazards matter', 'fair and seen'] as const;
 type Family = (typeof FAMILIES)[number];
-/** the validator's score, 0-100: ten families of checks at 10 points each (a measuring stick, not a fun rating; the page says how each
- *  family is scored) */
-function score(ev: StageEval, pf: Flag[]): Record<Family, number> {
+/**
+ * the validator's score, 0-100: ten families of checks at 10 points each (a measuring stick, not a fun rating). No free points (the
+ * quality supervisor, 11-04): a stage with no hazard scores 0 on "hazards matter" (Matt's complaint is that nothing bites); a family that
+ * could not be judged (the bot never played the stage through; "something new" on a world's first stage, its baseline) is left out of the
+ * total, which is then scaled to 100, and the page names it. A world's first stage has no stage before it, so its variety is read inside
+ * it: distinct moves (5 or more for full marks) and the longest run of one move.
+ */
+interface Score { sc: Record<Family, number | null>; total: number; out: Family[] }
+function score(ev: StageEval, pf: Flag[]): Score {
   const f = (rule: string) => ev.flags.filter((x) => x.rule === rule).length;
   const sim = Math.max(0, ...[...ev.flags.filter((x) => /like the stage before|like an earlier/.test(x.rule))].map((x) => Number(/(\d+)%/.exec(x.what)?.[1] ?? 0) / 100));
   const late = ev.costs.nothing + ev.costs.setback + ev.costs.life;
@@ -122,28 +128,39 @@ function score(ev: StageEval, pf: Flag[]): Record<Family, number> {
   const haz = pf.filter((x) => /outrun/.test(x.rule)).length;
   const hasHaz = ev.mech.breaking + ev.mech.eagle + ev.mech.chase > 0;
   const fair = pf.filter((x) => x.rule === 'clumsy thumb').length * 2 + pf.filter((x) => x.rule === 'landing unseen').length * 2 + f('enemy by a landing');
-  // (the bot's checks need runs it really played: with none, the family is not judged and sits at a neutral 5, and the page says so)
   const judgedPlay = (play[ev.id]?.bots ?? []).some((b) => b.setting === 'normal' && played(b.r));
+  const first = ev.id === W1[0];
   const clamp = (v: number) => Math.max(0, Math.min(10, Math.round(v * 10) / 10));
-  return {
-    variety: clamp(sim <= 0.45 ? 10 : 10 - ((sim - 0.45) / 0.55) * 10), // (1-1 has no stage before it: 10)
+  const inside = () => {
+    // (the same alphabet the similarity reads: every kind of jump is one move to a player)
+    const str = ev.str.replace(/h/g, '').replace(/[jJUQ]/g, 'J');
+    let longest = 0, run = 0;
+    for (let i = 0; i < str.length; i++) longest = Math.max(longest, (run = i && str[i] === str[i - 1] ? run + 1 : 1));
+    return 10 * Math.min(1, new Set(str).size / 5) * (1 - longest / Math.max(1, str.length));
+  };
+  const sc: Record<Family, number | null> = {
+    variety: clamp(first ? inside() : sim <= 0.45 ? 10 : 10 - ((sim - 0.45) / 0.55) * 10),
     repeats: clamp(10 - 2 * f('repeat')),
     'dead walking': clamp(10 - f('dead walk')),
     pacing: clamp(10 - 2.5 * f('pacing')),
     'a miss costs': clamp(nothing <= 0.8 ? 10 : ((1 - nothing) / 0.2) * 10),
     padding: clamp(10 - (ev.padding && ev.padding.finishShare >= 0.5 ? 5 : 0) - 2.5 * (ev.padding?.repeats.length ?? 0)),
     tempo: clamp(ev.tempo.hurry && ev.tempo.patience ? 10 : ev.tempo.hurry || ev.tempo.patience ? 5 : 0),
-    'something new': clamp(!adds || adds.moves.length || adds.pairs.length ? 10 : adds.grams > 5 ? 3 : 0),
-    'hazards matter': clamp(!hasHaz ? 5 : 10 - 5 * haz),
-    'fair and seen': judgedPlay ? clamp(10 - fair) : clamp(5 - f('enemy by a landing')),
+    'something new': first ? null : clamp(!adds || adds.moves.length || adds.pairs.length ? 10 : adds.grams > 5 ? 3 : 0),
+    'hazards matter': clamp(!hasHaz ? 0 : 10 - 5 * haz),
+    'fair and seen': judgedPlay ? clamp(10 - fair) : null,
   };
+  const out = FAMILIES.filter((k) => sc[k] === null);
+  const judged = FAMILIES.filter((k) => sc[k] !== null);
+  const total = Math.round((judged.reduce((a, k) => a + (sc[k] as number), 0) / Math.max(1, judged.length * 10)) * 100);
+  return { sc, total, out };
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // 4. pages
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const COLORS: Record<string, string> = { J: '#c2410c', j: '#fdba74', Q: '#a8a29e', V: '#15803d', C: '#4d7c0f', R: '#65a30d', B: '#b91c1c', W: '#0369a1', S: '#7c3aed', P: '#a16207', M: '#db2777', F: '#9f1239', E: '#1e3a8a', D: '#374151', X: '#0e7490', Z: '#6b7280' };
+const COLORS: Record<string, string> = { J: '#c2410c', j: '#fdba74', Q: '#a8a29e', U: '#ea580c', V: '#15803d', C: '#4d7c0f', R: '#65a30d', B: '#b91c1c', W: '#0369a1', S: '#7c3aed', P: '#a16207', M: '#db2777', F: '#9f1239', E: '#1e3a8a', D: '#374151', X: '#0e7490', Z: '#6b7280' };
 const moveSpan = (str: string) => [...str].map((m) => `<span class="m" style="background:${COLORS[m] ?? '#999'}" title="${esc(MOVE_NAMES[m as Move] ?? m)}">${m}</span>`).join('');
 const PACE_COLOR: Record<string, string> = { I: '#93c5fd', F: '#86efac', P: '#fde68a', T: '#f87171', R: '#e5e7eb' };
 const stripSpan = (s: string) => [...s].map((t) => `<span class="p" style="background:${PACE_COLOR[t]}">${t}</span>`).join('');
@@ -159,12 +176,14 @@ h1{font-size:22px;margin:4px 0}h2{font-size:17px;margin:22px 0 6px}.mut{color:va
 table{border-collapse:collapse;width:100%;font-size:14px}td,th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}
 .flag{border-left:4px solid var(--bad);padding:4px 10px;margin:6px 0}.src{font-size:12px;color:var(--mut)}
 .grid td{text-align:center;font-variant-numeric:tabular-nums}a{color:inherit}
+.shots{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.shots img{height:220px;border-radius:6px;border:1px solid var(--line);max-width:100%;object-fit:contain}
 `;
 
-function page(id: string, base: string, sc: Record<Family, number>, pf: Flag[]): string {
+function page(id: string, base: string, score0: Score, pf: Flag[]): string {
+  const sc = score0.sc;
   const spec = stageSpec(1, Number(id.split('-')[1]));
   const ev = per[id].normal[0];
-  const total = Math.round(FAMILIES.reduce((a, k) => a + sc[k], 0));
+  const total = score0.total;
   const flags = [...ev.flags, ...pf];
   // flags across layouts
   const rules = new Map<string, { n: number; e: number }>();
@@ -180,7 +199,8 @@ function page(id: string, base: string, sc: Record<Family, number>, pf: Flag[]):
   const met = (k: keyof BotRecord['met']) => bots.filter((b) => b.setting === 'normal').map((b) => b.r.met[k]).join(' / ');
   const mechRows = MECHS.filter((m) => ev.mech[m.id] > 0).map((m) => `<tr><td>${esc(m.label)}</td><td>${ev.mech[m.id]}</td></tr>`).join('');
   const notJudged = !(o?.bots ?? []).some((b) => b.setting === 'normal' && played(b.r));
-  const fam = FAMILIES.map((k) => `<tr><td>${k}${k === 'fair and seen' && notJudged ? ' <b>(not judged: the bot never played it through)</b>' : ''}</td><td style="width:50%"><div class="bar"><i style="width:${sc[k] * 10}%;background:${sc[k] >= 7 ? 'var(--ok)' : sc[k] >= 4 ? '#d97706' : 'var(--bad)'}"></i></div></td><td>${sc[k]}</td></tr>`).join('');
+  const why: Partial<Record<Family, string>> = { 'fair and seen': 'not judged: the bot never played it through', 'something new': "the world's first stage: its baseline" };
+  const fam = FAMILIES.map((k) => { const v = sc[k]; return v === null ? `<tr><td>${k} <b>(${why[k]}, left out of the total)</b></td><td style="width:50%"></td><td>-</td></tr>` : `<tr><td>${k}${k === 'variety' && id === W1[0] ? ' (inside the stage: distinct moves, longest run of one move)' : ''}${k === 'hazards matter' && ev.mech.breaking + ev.mech.eagle + ev.mech.chase === 0 ? ' (no hazard at all)' : ''}</td><td style="width:50%"><div class="bar"><i style="width:${v * 10}%;background:${v >= 7 ? 'var(--ok)' : v >= 4 ? '#d97706' : 'var(--bad)'}"></i></div></td><td>${v}</td></tr>`; }).join('');
   const branch = (o?.branches ?? []).map((b) => `<tr><td>layout ${b.layout} ${b.setting}</td><td>${b.v.map((r) => `${Math.round(r.run.x0)}-${Math.round(r.run.x1)}: ${r.run.ids.length} pieces, ${r.underHim} gave way under him${r.fell ? ', he fell' : ''} → <b>${r.outrun ? 'outrun' : 'bites'}</b>${r.note ? ` (${esc(r.note)})` : ''}`).join('<br>')}</td></tr>`).join('');
   const eagle = (o?.eagle ?? []).filter((e) => e.setting === 'normal').map((e) => `<tr><td>layout ${e.layout} ${e.portrait ? 'upright' : 'sideways'}</td><td>${e.v.zones.map((z) => `${z.x0}-${z.x1}: ${z.unhurt}/${z.ran} unhurt, ${z.hits} hits → <b>${z.outrun ? 'outrun' : 'bites'}</b>`).join('<br>')}<div class="mut">${e.v.skips} skips past things holding right can't do</div></td></tr>`).join('');
   const botRows = (o?.bots ?? []).map((b) => `<tr><td>layout ${b.layout} ${b.setting}${b.portrait ? ' upright' : ''} t${b.trial}</td><td>${b.r.run.end} at ${b.r.run.time} s</td><td>${b.r.run.goal ? `${b.r.run.goal.got}/${b.r.run.goal.need}` : '-'}</td><td>${b.r.run.rescues}</td><td>${played(b.r) ? 'yes' : '<b>no</b>'}</td><td>${b.r.jumps.filter((j) => !j.inView).length}/${b.r.jumps.length}</td></tr>`).join('');
@@ -192,16 +212,18 @@ function page(id: string, base: string, sc: Record<Family, number>, pf: Flag[]):
   })() : '<p class="mut">not run</p>';
   const adds = (ev as StageEval & { adds?: { moves: string[]; pairs: string[]; grams: number } }).adds;
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${id} validator</title><style>${CSS}</style></head><body>
-<p class="mut"><a href="index.html">World 1 overview</a> · base ${esc(base)} · layout 1, Normal unless said</p>
+<p class="mut"><a href="index.html">World 1 overview</a> · base = ${esc(base)} · layout 1, Normal unless said</p>
 <h1>${id} ${esc(spec?.name ?? '')}</h1>
-<div class="card"><span class="score">${total}</span><span class="mut"> / 100 validator score</span>
+<div class="card"><b>Holding right alone asks ${ev.quick.length} moves</b> of the ${ev.str.length} the goal route does (${ev.total} s): ${Math.round(100 * (1 - ev.quick.length / Math.max(1, ev.str.length)))}% of the stage asks nothing of a player who only holds the way on.</div>
+${o?.clumsy && !o.clumsy.runs.some(played) ? `<div class="card flag"><b>The clumsy thumb is not running on this stage:</b> 0 of ${o.clumsy.runs.length} runs played through (the bot is put further on at spots it can't do: a measuring-tool defect, D15, raised with bot-fix). Its jump table below is empty, not passed.</div>` : ''}
+<div class="card"><span class="score">${total}</span><span class="mut"> / 100 validator score${score0.out.length ? ` (out of ${FAMILIES.length - score0.out.length} families judged, scaled to 100; left out: ${score0.out.join(', ')})` : ''}</span>
 <p class="mut">A measuring stick, not a fun rating: ten families of checks at 10 points each. Each family's rule is listed under "How it is scored".</p>
 <table>${fam}</table></div>
 <h2>What it asks, in order</h2>
 <div class="card"><div>${moveSpan(ev.str)}</div><p class="mut">${ev.str.length} moves in ${ev.total} s on the goal route (holding right alone: ${ev.quick.length} moves). Letters: ${Object.entries(MOVE_NAMES).filter(([k]) => ev.str.includes(k)).map(([k, v]) => `<b>${k}</b> ${esc(v)}`).join(', ')}.</p>
 <div>${stripSpan(ev.strip)}</div><p class="mut">Pacing, one letter per 5 s: I intro, F flow, P puzzle, T tight, R rest.</p></div>
 <h2>Flags (${flags.length})</h2>
-${flags.map((f) => `<div class="flag"><b>${esc(f.rule)}</b>: ${esc(f.what)}${f.x !== undefined ? ` <span class="mut">at x ${f.x}</span>` : ''}<div class="src">${esc(f.source)}</div></div>`).join('') || '<p>none</p>'}
+${flags.map((f, k) => `<div class="flag"><b>${esc(f.rule)}</b>: ${esc(f.what)}${f.x !== undefined ? ` <span class="mut">at x ${f.x}</span>` : ''}<div class="src">${esc(f.source)}</div>${f.x !== undefined ? `<div class="shots"><img loading="lazy" alt="upright at x ${f.x}" src="stills/${id}-f${k}-upright.jpg" onerror="this.remove()"><img loading="lazy" alt="sideways at x ${f.x}" src="stills/${id}-f${k}-sideways.jpg" onerror="this.remove()"></div>` : ''}</div>`).join('') || '<p>none</p>'}
 <h2>Across the rolls</h2>
 <div class="card"><table><tr><th>flag</th><th>Normal layouts hit (of ${LAYOUTS})</th><th>Easy layouts hit</th></tr>${[...rules].sort((a, b) => b[1].n - a[1].n).map(([r, c]) => `<tr><td>${esc(r)}</td><td>${c.n}</td><td>${c.e}</td></tr>`).join('')}</table></div>
 <h2>What a miss costs (after the first 30 s)</h2>
@@ -222,26 +244,62 @@ Finish: ${ev.padding ? `${Math.round(ev.padding.finishShare * 100)}% of the stag
 <li>repeats: minus 2 per repeated 3-4 move run. dead walking: minus 1 per walk over 2.5 s. pacing: minus 2.5 per pacing flag.</li>
 <li>a miss costs: 10 while at most 80% of beats are free retries, falling to 0 when all are. padding: minus 5 for a finish over half the stage, minus 2.5 per piece laid three times or more.</li>
 <li>tempo: 10 for both hurry and patience, 5 for one, 0 for neither. something new: 10 for a new move or pairing, 3 for only new runs of old moves, 0 for nothing.</li>
-<li>hazards matter: 5 with no hazard to read; else 10, minus 5 per hazard kind outrun. fair and seen: minus 2 per clumsy-thumb or unseen-landing flag, minus 1 per animal by a landing; when the bot never played the stage through, 5 (not judged) minus the animals.</li>
+<li>hazards matter: 0 with no hazard at all; else 10, minus 5 per hazard kind outrun. fair and seen: minus 2 per clumsy-thumb or unseen-landing flag, minus 1 per animal by a landing; left out when the bot never played the stage through.</li><li>variety on a world's first stage: 10 x (distinct moves / 5, at most 1) x (1 - its longest run of one move / its moves). something new: left out on a world's first stage.</li><li>The total: the judged families' points over their maximum, scaled to 100. No neutral points for an empty or unjudged family.</li>
 </ul></div>
 </body></html>`;
 }
 
 const base = (() => {
   try {
-    return execSync('git log --oneline -1').toString().trim().slice(0, 60);
+    const sh = (c: string) => execSync(c).toString().trim();
+    const has = (r: string) => { try { execSync(`git merge-base --is-ancestor ${r} HEAD`); return true; } catch { return false; } };
+    const parts = [['origin/main', sh('git rev-parse --short origin/main')], ['ccr-0d59a91c', sh('git rev-parse --short origin/ccr-0d59a91c-oy3imz')]].filter(([r]) => has(r === 'ccr-0d59a91c' ? 'origin/ccr-0d59a91c-oy3imz' : r));
+    return `${sh('git rev-parse --short HEAD')} (contains ${parts.map(([r, c]) => `${r} ${c}`).join(' + ')})`;
   } catch {
     return '?';
   }
 })();
 fs.mkdirSync(OUT, { recursive: true });
-const scores: Record<string, { total: number; sc: Record<Family, number>; flags: number }> = {};
+const scores: Record<string, { total: number; sc: Record<Family, number | null>; flags: number; pageFlags: Flag[] }> = {};
 for (const id of ONLY) {
   const pf = playFlags(id);
   const ev = per[id].normal[0];
-  const sc = score(ev, pf);
-  scores[id] = { total: Math.round(FAMILIES.reduce((a, k) => a + sc[k], 0)), sc, flags: ev.flags.length + pf.length };
-  fs.writeFileSync(path.join(OUT, `${id}.html`), page(id, base, sc, pf));
+  const s0 = score(ev, pf);
+  scores[id] = { total: s0.total, sc: s0.sc, flags: ev.flags.length + pf.length, pageFlags: [...ev.flags, ...pf] };
+  fs.writeFileSync(path.join(OUT, `${id}.html`), page(id, base, s0, pf));
   log(`wrote ${path.join(OUT, `${id}.html`)}: ${scores[id].total}/100, ${scores[id].flags} flags`);
 }
 fs.writeFileSync(path.join(OUT, 'world1.json'), JSON.stringify({ base, layouts: LAYOUTS, play: PLAY, scores, stages: Object.fromEntries(W1.map((id) => [id, per[id].normal.map((e) => ({ layout: e.layout, str: e.str, strip: e.strip, flags: e.flags, costs: { ...e.costs, beats: undefined }, padding: e.padding, tempo: e.tempo, mech: e.mech, six: e.six }))])) }, null, 1));
+
+// ---------------------------------------------------------------------------------------------------------------------------------
+// 5. the overview (World 1 in order), when every stage was run
+if (W1.every((id) => ONLY.includes(id))) {
+  const { cosine, grams } = await import('./core.ts');
+  const evs = W1.map((id) => per[id].normal[0]);
+  const grid = `<table class="grid"><tr><th></th>${W1.map((id) => `<th>${id}</th>`).join('')}</tr>${evs.map((a) => `<tr><th>${a.id}</th>${evs.map((b) => {
+    if (a === b) return '<td>-</td>';
+    const c = cosine(grams(a.str), grams(b.str));
+    return `<td style="background:${c > 0.55 ? 'rgba(185,28,28,.35)' : c > 0.45 ? 'rgba(217,119,6,.3)' : 'transparent'}">${Math.round(c * 100)}</td>`;
+  }).join('')}</tr>`).join('')}</table>`;
+  const allRules = [...new Set(W1.flatMap((id) => per[id].normal.flatMap((e) => e.flags.map((f) => f.rule))))];
+  const ruleRows = allRules.map((r) => `<tr><td>${esc(r)}</td>${W1.map((id) => {
+    const n = per[id].normal.filter((e) => e.flags.some((f) => f.rule === r)).length;
+    return `<td style="background:${n > LAYOUTS / 2 ? 'rgba(185,28,28,.3)' : n ? 'rgba(217,119,6,.25)' : 'transparent'}">${n || ''}</td>`;
+  }).join('')}</tr>`).join('');
+  const famRows = FAMILIES.map((k) => `<tr><td>${k}</td>${W1.map((id) => `<td>${scores[id]?.sc[k] ?? '-'}</td>`).join('')}</tr>`).join('');
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>World 1 validator</title><style>${CSS}</style></head><body>
+<p class="mut">base ${esc(base)} · Normal · structure on layouts 1-${LAYOUTS}, play on layouts 1-${PLAY}</p>
+<h1>World 1: the measuring stick's verdict</h1>
+<div class="card"><table class="grid"><tr><th>stage</th>${W1.map((id) => `<th><a href="${id}.html">${id}</a></th>`).join('')}</tr>
+<tr><td><b>validator score</b></td>${W1.map((id) => `<td><b>${scores[id]?.total ?? ''}</b></td>`).join('')}</tr>${famRows}</table>
+<p class="mut">A measuring stick, not a fun rating: ten families of checks at 10 points each (each stage's page says how). Average ${Math.round(W1.reduce((a, id) => a + (scores[id]?.total ?? 0), 0) / W1.length)}.</p></div>
+<h2>How alike the stages are (move 3-grams, layout 1; % alike)</h2>
+<div class="card">${grid}<p class="mut">Orange over 45% (too close for neighbours), red over 55% (too close for any two stages of a world): research §1, the quality supervisor.</p></div>
+<h2>Each flag: on how many of the ${LAYOUTS} layouts (Normal)</h2>
+<div class="card"><table class="grid"><tr><th>flag</th>${W1.map((id) => `<th>${id}</th>`).join('')}</tr>${ruleRows}</table></div>
+<h2>What World 1 is made of</h2>
+<div class="card"><p>The mechanics-in-use table (R-150.4): <a href="mechanics-world1.md">mechanics-world1.md</a>.</p></div>
+</body></html>`;
+  fs.writeFileSync(path.join(OUT, 'index.html'), html);
+  log(`wrote ${path.join(OUT, 'index.html')}`);
+}
