@@ -1,6 +1,6 @@
 # warmup-5m notes
 
-Last updated: Wed Nov 04 02:44 AM ET
+Last updated: Wed Nov 04 03:25 AM ET
 
 ## The job
 - **R-3.1, GPU plan stage 0** (lead, 2026-11-04):
@@ -40,19 +40,25 @@ Done! Checked 605 packages (no changes) [12.00ms].
 - `tools/qa/gpuLook.cjs` on 1-1 upright: 0 px differ with the layer removed or forced visible. It leaves out 819 px that move by
   themselves between two shots (the pickup ring's real-clock animation).
 
+- Added since:
+  - the 1x1 drawing buffer while empty (f334d63b);
+  - gpuLayer.cjs PASS upright and sideways;
+  - gpuLook 0 px in 22 of 22 (and 6 of 6 after the 1x1 change);
+  - the side-by-side sheets;
+  - firstframes before and after (noisy container, no consistent change);
+  - bundle: main +2.3 KB, Pixi chunks 435 KB raw / 125 KB gzip, lazy;
+  - report reference/qa-reports/webgl-0/README.md and methods/webgl.md.
+
 ## In flight
-- The look across all 10 worlds plus 5-M, upright and sideways, before and after builds (background run, /tmp/claude-0/look).
-- Still to do:
-  - the sideways layer check;
-  - production bundle sizes;
-  - firstframes 1x on 3 stages, before and after;
-  - the full gate (tsc, tests, build, artcheck, knowncheck, clipcheck, drawcheck);
-  - methods/webgl.md;
-  - the report.
+- The full gate (started 03:21 AM ET): tests in 3 shards, build OK, artcheck, knowncheck, clipcheck, drawcheck. Then paste the last
+  lines into the report, commit and push, and send the state message to the lead.
+- Team stop at 5:00 AM ET (Matt's token budget): no new step after 4:40.
+- Next after the lead's OK: stage 1 (skies) per webgl.md. The first step is making the 2D canvas see-through where the backdrop moves.
 
 ## Pitfalls (mine)
 - Look comparisons:
-  - judge only the canvases (hide the DOM; Dot's bubble and the hints animate in JS);
-  - draw the frozen frame about 40 times first (ground squares paint a few per frame);
-  - mask what moves by itself between two shots of the same frame.
-- Never time anything while the look run or the gate runs.
+  - judge only the canvases;
+  - draw the frozen frame about 40 times first;
+  - mask what moves by itself between two shots;
+  - give each build its own temp files: a shared noise file once faked a "0 px".
+- Never time anything while the look run or the gate runs. This container is slower than on 11-01 (frames 36-127 ms).
