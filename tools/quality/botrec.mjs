@@ -34,7 +34,7 @@ for (const [ori, w, h] of ORIS) {
     const e = window.__engine();
     if (!e) throw new Error('no engine');
     const st = { left: false, right: false, up: false, down: false, jumpPressed: false, jumpHeld: false, punchPressed: false, kickPressed: false, kickDir: 0, megaPunchPressed: false, layerSwitchPressed: false, touchJoystickAngle: null, touchJoystickMagnitude: 0 };
-    const inp = { state: st, source: 'keys', airJumpReady: false, kickNear: true, onVine: false, megaReady: true, onFocusLost: null, jumpBuffer: 0, punchBuffer: 0, kickBuffer: 0,
+    const inp = { state: st, source: 'gesture', airJumpReady: false, kickNear: true, onVine: false, megaReady: true, onFocusLost: null, jumpBuffer: 0, punchBuffer: 0, kickBuffer: 0,
       update(dt) { for (const [b, k] of [['jumpBuffer', 'jumpPressed'], ['punchBuffer', 'punchPressed'], ['kickBuffer', 'kickPressed']]) { if (this[b] > 0) { this[b] -= dt; if (this[b] <= 0) st[k] = false; } else st[k] = false; } st.megaPunchPressed = false; st.layerSwitchPressed = false; },
       triggerHaptic() {}, clearAll() {} };
     e.input = inp;
