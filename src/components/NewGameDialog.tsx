@@ -2,7 +2,6 @@ import { CloseX, useBack } from './nav/Nav.tsx';
 import React from 'react';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import { browserStore, buildSave, resetProgress } from '../game/saveFile.ts';
-import { Icon } from './icons/index.tsx';
 import { DIFFICULTY_LABEL, difficulty, setDifficulty, type Difficulty } from '../game/difficulty.ts';
 
 /**
