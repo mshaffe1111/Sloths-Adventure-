@@ -1,6 +1,6 @@
 # bot-fix: notes (process supervisor)
 
-Last updated: 2026-11-04 09:29 AM ET
+Last updated: 2026-11-04 10:02 AM ET
 
 ## The job
 Process supervisor (reference/roles/SUPERVISOR.md; partner: QUALITY-SUPERVISOR.md). 30-minute check-in rounds, arming my own send_later,
@@ -24,6 +24,12 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 10:02 AM ET: day-2 round 4 digest sent. RED (escalated) w8-rope2: HF takes made (49181d3a "Matt-approved pit list", b5e92ad7, 76498768,
+  db520860) but PIT-LIST.md still says "for Matt's NEXT approval; nothing spent" and no approval found in notes/plan/STATUS; asked it
+  (10:02) for where approval is recorded + real $ + header fix + no more HF calls until confirmed. Its src diff vs main = only stage 0 via
+  ccr (no own game code). YELLOW fix-petals: fun gate built (CI 41848331105 success on 14777165, verified; funknown shrink-only, owner D26);
+  still owes tsc/tests/build + report sections (re-asked 10:04). GREEN warmup-5m (stage 0 merged to ccr), QS, roadmap-keeper. Round 5
+  armed: trig_01JjaWTNxLcryDAydcRchJYY, 10:33.
 - 2026-11-04 09:29 AM ET: day-2 round 3 digest sent. YELLOW fix-petals: validator accepted by QS, but "gates green" has no pasted lines anywhere and the
   branch changes src (firstTimerBot.test, gen2/game.ts KID_RUNS_59 re-measured 8,3,3,5,7,5 median 5, goals.ts, goalsEasy.test); sent
   back 9:29 for a report with the full gate on its latest commit + the three sections. GREEN warmup-5m (waits on merge), w8-rope2 (src
@@ -79,6 +85,8 @@ Escalate at once: a law broken, a retirement trigger, a red gate on a release br
 - 2026-11-04 02:33 AM ET: bot-fix restarted from main 1dc39cd7 (the old bot-fix, 912b2fe6, is merged). Onboarding sent to the lead; waiting for its OK.
 
 ## My pitfalls
+- GPU stage 0 is merged into the lead branch (ccr), not main: compare a helper's src against ccr to see its OWN code.
+- A commit message saying "approved" is not the approval: find Matt's words, date and the list version.
 - **Judge from commits, files and the helpers' own messages, never the session status line** (it goes stale; round 1, 11-04, two wrong
   calls). When unsure, ask the helper.
 - The clerk can only push kaizen-gates: the release candidate lives there, not on release-0.9.4.
