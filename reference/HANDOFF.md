@@ -246,6 +246,8 @@ Everything is in `tools/README.md` and `tools/art/`. In short:
 
 ## 6. The test link (do this after every round)
 
+- **Publishing limits (release clerk, 11-04):** one publish takes at most 255 `files` entries. On a fresh container: list the artifact's files, null the stale paths, send only the new content-hashed names plus the un-hashed icons, and split into two publishes when needed (proof: v233 with 255 entries, then v234 with 207). Then the lead opens it for Matt and puts the link in the first line (D28).
+
 Matt plays every round here before anything is pushed.
 
 1. Run `python3 tools/testlink/build.py "what this round adds"`. It builds into `tools/testlink/dist` and writes `tools/testlink/filesmap.json` with the changed and removed files.
