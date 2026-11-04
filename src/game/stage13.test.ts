@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildProtoStage, EXPERT_SECONDS, G, SNAKE_EASY_13 } from './protoStage.ts';
 import { goalHave, withGoals } from './goals.ts';
+import { easyStage } from './easyMode.ts';
 import { badPickups } from './flowerReach.ts';
 import { stepPredator } from './predatorAI.ts';
 import type { Enemy, LevelConfig } from './types.ts';
@@ -96,6 +97,30 @@ test("1-3: the split's petals are Matt's 70/30: each road 13-17%, the shared way
       const tag = `seed ${s}${easy ? ' Easy' : ''}: ${high} high, ${low} low of ${n}`;
       for (const road of [high, low]) assert.ok(road >= n * 0.13 && road <= n * 0.17, tag);
       assert.ok(n - high - low >= n * 0.66 && n - high - low <= n * 0.74, tag);
+    }
+  }
+});
+
+test('1-3: whichever road he takes, the goal is in reach by the count, not by luck: goal <= the shared way + the smaller road - 5%, for its snakes (its goal as it loads) and its petals (75%), every roll, Normal and Easy (the lead, 11-04)', () => {
+  for (const easy of [false, true]) {
+    for (const s of SEEDS) {
+      const built = buildProtoStage(cfg, s, '1-3', easy);
+      // (as the engine loads it: Normal's share, and on Easy its kept animals and its own goal)
+      const st = easy ? easyStage(withGoals(built) as never) as unknown as typeof built : withGoals(built);
+      const sp = st.proto.beats.find((b) => /^Spike/.test(b[2]))!;
+      const hb = st.platforms.filter((p) => p.style === 'branch' && p.x >= sp[0] && p.x < sp[1] && p.y < 470);
+      const x0 = Math.min(...hb.map((p) => p.x)), x1 = Math.max(...hb.map((p) => p.x + p.width));
+      const roads = <T extends { x: number; y: number }>(all: T[]) => {
+        const inS = all.filter((c) => c.x >= x0 && c.x < x1);
+        const high = inS.filter((c) => c.y < 470).length;
+        return { n: all.length, shared: all.length - inS.length, small: Math.min(high, inS.length - high) };
+      };
+      const tag = `seed ${s}${easy ? ' Easy' : ''}`;
+      const sn = roads(st.enemies.filter((e) => e.x < st.exitTotemX));
+      const goal = st.config.targetCount;
+      assert.ok(goal <= sn.shared + sn.small - 0.05 * sn.n, `${tag}: snake goal ${goal}, shared ${sn.shared} + smaller road ${sn.small} of ${sn.n}`);
+      const pe = roads(st.collectibles.filter((c) => c.type === 'flower' || c.type === 'leaf'));
+      assert.ok(0.75 * pe.n <= pe.shared + pe.small - 0.05 * pe.n, `${tag}: petals, shared ${pe.shared} + smaller road ${pe.small} of ${pe.n}`);
     }
   }
 });
