@@ -12,10 +12,10 @@ fs.mkdirSync(out, { recursive: true });
 // each beat: the stage, and a function run in the page (engine `e`) that poses it; returns notes for the log
 const BEATS = [
   // ── stomp vaults: 1-8's long branch, a 212 px gap at x 5570 (ground y 580), a snake sitting on its lip
-  { id: 'stomp-1-approach', stage: '1-8', pose: { cam: [5640, 560], px: 5390, py: 580, grounded: true, snake: { x: 5536, y: 580, state: 'patrol', facing: -1 } } },
-  { id: 'stomp-2-land-on-it', stage: '1-8', pose: { cam: [5640, 560], px: 5530, py: 528, vy: 380, grounded: false, snake: { x: 5536, y: 580, state: 'patrol', facing: -1, recoil: 0.9 } } },
-  { id: 'stomp-3-vault', stage: '1-8', pose: { cam: [5640, 560], px: 5660, py: 380, vy: -260, grounded: false, snake: { x: 5536, y: 580, stagger: 1.4, facing: -1 } } },
-  { id: 'stomp-4-across', stage: '1-8', pose: { cam: [5640, 560], px: 5850, py: 580, grounded: true, snake: { x: 5536, y: 580, stagger: 1.0, facing: -1 } } },
+  { id: 'stomp-1-approach', stage: '1-8', pose: { widen: { at: 5700, dx: 220 }, arc: { x0: 5560, x1: 6010, y: 580, up: 110 }, cam: [5760, 560], px: 5390, py: 580, grounded: true, snake: { x: 5536, y: 580, state: 'patrol', facing: -1 } } },
+  { id: 'stomp-2-land-on-it', stage: '1-8', pose: { widen: { at: 5700, dx: 220 }, arc: { x0: 5560, x1: 6010, y: 580, up: 110 }, cam: [5760, 560], px: 5530, py: 528, vy: 380, grounded: false, snake: { x: 5536, y: 580, state: 'patrol', facing: -1, recoil: 0.9 } } },
+  { id: 'stomp-3-vault', stage: '1-8', pose: { widen: { at: 5700, dx: 220 }, arc: { x0: 5560, x1: 6010, y: 580, up: 110 }, cam: [5760, 560], px: 5790, py: 440, vy: -260, grounded: false, snake: { x: 5536, y: 580, stagger: 1.4, facing: -1 } } },
+  { id: 'stomp-4-across', stage: '1-8', pose: { widen: { at: 5700, dx: 220 }, arc: { x0: 5560, x1: 6010, y: 580, up: 110 }, cam: [5760, 560], px: 6080, py: 580, grounded: true, snake: { x: 5536, y: 580, stagger: 1.0, facing: -1 } } },
   // ── punch stuns: 1-3, the awake ground snake at x 3209 (y 566): its tell, the punch, dazed, walked past
   { id: 'punch-1-tell', stage: '1-3', pose: { px: 3110, py: 566, grounded: true, snake: { id: 2, x: 3209, y: 566, state: 'rear', facing: -1 } } },
   { id: 'punch-2-punch', stage: '1-3', pose: { px: 3150, py: 566, grounded: true, snake: { id: 2, x: 3209, y: 566, state: 'rear', facing: -1, hp: 9 }, key: 'KeyJ', steps: 4 } },
@@ -27,6 +27,7 @@ const BEATS = [
   { id: 'kick-3-kick', stage: '1-9', pose: { cam: [1740, 470], px: 1715, py: 468, grounded: true, boa: { id: 1, x: 1770, y: 468, state: 'coil', facing: -1, hp: 9 }, key: 'KeyK', steps: 5 } },
   // the roll itself is a paste-up (compose.py): shot of the stretch it rolls down, the boa moved out of the frame
   { id: 'kick-4-roll-bg', stage: '1-9', pose: { cam: [1990, 470], px: 1760, py: 468, grounded: true, boa: { id: 1, x: 900, y: 468, state: 'coil', facing: -1 } } },
+  { id: 'kick-5-switch-bg', stage: '1-9', pose: { cam: [2330, 470], px: 2190, py: 566, grounded: true, boa: { id: 1, x: 900, y: 468, state: 'coil', facing: -1 }, snake: { id: 2, x: 9000, y: 566, facing: -1 } } },
   // ── vine snake: 1-6's first lianas (paste-up of the snake in compose.py)
   { id: 'vine-1-lianas', stage: '1-6', pose: { px: 1900, py: 610, grounded: true } },
 ];
@@ -54,6 +55,19 @@ for (const [tag, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([t]) =>
       e.isPaused = true;
       const p = e.player;
       Object.assign(p, { x: pose.px, y: pose.py, vx: 0, vy: pose.vy ?? 0, grounded: !!pose.grounded, hanging: false, climbing: false, facing: 1, invincibleTimer: 0 });
+      if (pose.widen && !e.__widened) {
+        // (mock only: the far side of the vault's gap slid right, so the gap is past any jump; everything on it moves with it)
+        const { at, dx } = pose.widen;
+        for (const q of e.platforms) if (q.x > at && q.x < at + 1600) q.x += dx;
+        for (const q of e.collectibles) if (q.x > at && q.x < at + 1600) q.x += dx;
+        e.__widened = true;
+      }
+      if (pose.arc) {
+        // (mock only: the petals laid as an arc from the snake along the bounce)
+        const { x0, x1, y, up } = pose.arc;
+        const fl = e.collectibles.filter((q) => q.type === 'flower' && !q.collected).sort((a, b) => Math.abs(a.x - (x0 + x1) / 2) - Math.abs(b.x - (x0 + x1) / 2)).slice(0, 5);
+        fl.forEach((q, i) => { const u = (i + 1) / (fl.length + 1); q.x = x0 + (x1 - x0) * u; q.y = y - 60 - up * 4 * u * (1 - u); });
+      }
       const pick = (type, want) => {
         let en = (want.id !== undefined && e.enemies.find((q) => q.id === want.id)) || e.enemies.filter((q) => q.type === type && !q.defeated).sort((a, c) => Math.abs(a.x - want.x) - Math.abs(c.x - want.x))[0];
         if (!en) return 'none';

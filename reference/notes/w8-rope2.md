@@ -11,7 +11,7 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
 - Plan (one page) goes to the quality supervisor (session_01FhBbYNn4i5tFfFZiFroKoi) AND the lead. Show-first: a mock-up clip or stills of
   the new moves before building them in. HF art: a picture list for Matt with cost; no spend without his approval ($72 left in all).
 - Method: none exists for enemies. I write reference/methods/enemies.md.
-- Status (2026-11-04 08:42 ET): plan revision 2 (the quality supervisor's seven changes folded in) sent to the supervisor; plan approved by the lead subject to that review. Picture list with the lead. Show-first boards in reference/qa-reports/r159-showfirst/ (+ armour-by-shape). Code waits for GPU stage 0.
+- Status (2026-11-04 08:53 ET): plan revision 3 (the supervisor's board notes, the lead's star call); show-first round 2 boards done; next: one board per stage of the escalation (the supervisor's next round). Picture list and vine-snake choice with Matt. Code waits for GPU stage 0.
 - Lead, 11-04: put a "Polish check" section in every report; World 1 bot runs with rescues don't count until R-150.7 (mushroom walls).
 
 ## Facts checked in code (2026-11-04)

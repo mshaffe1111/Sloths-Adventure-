@@ -32,6 +32,14 @@ def frame(data_ts, atlas, name):
     return Image.open(ROOT / 'src/assets/enemies' / atlas).convert('RGBA').crop((r['x'], r['y'], r['x'] + r['w'], r['y'] + r['h']))
 
 
+def kit(name):
+    """one piece of the puzzle kit (puzzle-kit.webp, puzzleAtlasData.ts KIT_ART)"""
+    src = (ROOT / 'src/game/puzzleAtlasData.ts').read_text()
+    m = re.search(r'%s: \{ x: (\d+), y: (\d+), w: (\d+), h: (\d+)' % re.escape(name), src)
+    x, y, w, h = map(int, m.groups())
+    return Image.open(ROOT / 'src/assets/props/puzzle-kit.webp').convert('RGBA').crop((x, y, x + w, y + h))
+
+
 SNAKE = frame('goldsnakeAnimData.ts', 'goldsnake-anim.webp', 'prowl_10')
 COIL = frame('boaAnimData.ts', 'boa-anim.webp', 'coil_00')
 
@@ -63,6 +71,39 @@ def shot(name, tag):
 def pasteups(name, tag, img):
     W, H = img.size
     side = tag == 'side'
+    if name == 'kick-5-switch-bg':
+        # the rolled boa stops on the World 1 kit's log plate (pressed, glowing) and the woven gate beyond stands open: the way on.
+        # Kit art already packed; the ball is the paste-up still to paint
+        g, pl = (0.82, (0.62, 1.55, 0.78, 1.5, 0.85)) if side else (0.67, (0.52, 1.9, 0.84, 1.75, 1.0))
+        px_, ps, gx, gs, bk = pl
+        plate = kit('platePressed')
+        paste(img, plate, W * px_, H * g + 6, ps)
+        ball = COIL.resize((COIL.height, COIL.height), Image.LANCZOS)
+        paste(img, ball, W * px_, H * g - plate.height * ps * 0.45, bk, -30)
+        paste(img, kit('gateOpen'), W * gx, H * g + 4, gs)
+        stamp(img, 'PASTE-UP: the ball (art to make) on the kit plate; the gate opens', (W * 0.04, H * 0.2), 26 if side else 19)
+    if name in ('punch-3-dazed', 'punch-4-past'):
+        # the stun's look (the lead's call: circling stars, a small code touch), stamped as a paste-up of code still to write; beat 4 is
+        # the last 0.3 s, when they flicker
+        import math
+        flick = name == 'punch-4-past'
+        # (over the snake's head, where it lies in each beat)
+        cx, cy = (W * (0.335 if flick else 0.515), H * 0.6) if side else (W * (0.36 if flick else 0.6), H * 0.585)
+        rx, ry = (26, 8) if side else (24, 7)
+        d = ImageDraw.Draw(img)
+        for i in range(5):
+            if flick and i % 2:
+                continue
+            a = i * 2 * math.pi / 5 + 0.4
+            x, y = cx + rx * 2 * math.cos(a), cy - 62 + ry * 2 * math.sin(a)
+            r = 17 * (0.75 if flick else 1)
+            pts = []
+            for k in range(10):
+                rr = r if k % 2 == 0 else r * 0.42
+                aa = -math.pi / 2 + k * math.pi / 5
+                pts.append((x + rr * math.cos(aa), y + rr * math.sin(aa)))
+            d.polygon(pts, fill=(255, 226, 90, 150 if flick else 255), outline=(120, 70, 10, 255))
+        stamp(img, 'PASTE-UP: the stun stars (code to write)' + (' - flickering, last 0.3 s' if flick else ''), (W * 0.04, H * 0.2), 26 if side else 20)
     if name == 'kick-4-roll-bg':
         # the kicked boa rolls along the branch, off its end and down onto the snake on the ledge below: three ghosts of one ball, on
         # the ground at each point (the branch top, the drop, the lower ledge), turning as it goes. The coil frame is squeezed round.
@@ -73,8 +114,11 @@ def pasteups(name, tag, img):
         else:
             path = [(0.45, 0.575, 0, 0.4), (0.70, 0.575, -140, 0.65), (0.90, 0.70, -280, 1.0)]
             k = 0.95
-        for fx, fy, a, al in path:
-            paste(img, ball, W * fx, H * fy, k, a, al)
+        # one ball, with a short smear behind it, at the drop off the branch's end (the camera runs ahead of it)
+        fx, fy, a, al = path[1]
+        for t in range(5, 0, -1):
+            paste(img, ball, W * (fx - 0.025 * t), H * (fy - 0.012 * t), k, a + 40 * t, 0.12)
+        paste(img, ball, W * fx, H * fy, k, a, 1.0)
         stamp(img, 'PASTE-UP: the rolled boa (art to make)', (W * 0.04, H * 0.2), 30 if side else 24)
     if name == 'vine-1-lianas':
         # a vine snake hanging head-down among the lianas, its tail running up off the top of the screen as theirs do
@@ -97,22 +141,23 @@ def pasteups(name, tag, img):
 
 BOARDS = {
     'stomp-vaults': [
-        ('stomp-1-approach', 'A snake sits on the lip of a gap too wide to jump.'),
+        ('stomp-1-approach', 'A snake sits on the lip of a gap plainly wider than any jump. The petals start at the snake.'),
         ('stomp-2-land-on-it', 'Land on it: a stomp.'),
-        ('stomp-3-vault', 'Hold jump: the stomp bounces him high, over the gap.'),
+        ('stomp-3-vault', 'Hold jump: the stomp bounces him high, along the petal arc, over the gap.'),
         ('stomp-4-across', 'Across. (Easy: a soft pit under every vault.)'),
     ],
     'punch-stuns': [
         ('punch-1-tell', 'The tell: it rears and sways for half a second.'),
         ('punch-2-punch', 'Punch it in the tell...'),
-        ('punch-3-dazed', '...dazed about 1.5 s (needs a clearer look).'),
-        ('punch-4-past', 'Walk past, or finish it with a second hit.'),
+        ('punch-3-dazed', '...dazed 1.5 s: circling stars over its head the whole time.'),
+        ('punch-4-past', 'The last 0.3 s the stars flicker: it is waking. Walk past, or finish it with a second hit.'),
     ],
     'kick-breaks-and-bowls': [
-        ('kick-1-coil', 'The boa coils: armour. Its coil tightens before it strikes.'),
+        ('kick-1-coil', 'The boa coils: armour (the tight, glinting coil is on the picture list). Its coil tightens before it strikes.'),
         ('kick-2-stomp-bounces', 'A stomp bounces off ("ARMORED!"); a punch: "TOUGH!"'),
         ('kick-3-kick', 'A kick breaks the coil...'),
-        ('kick-4-roll-bg', '...and it rolls off the branch and bowls over the snake below (in a stage, a switch waits at the end).'),
+        ('kick-4-roll-bg', '...and it rolls off the branch, the camera running ahead of it, and bowls over the snake below...'),
+        ('kick-5-switch-bg', '...onto the switch: the plate glows and the gate swings open. In 1-9 that is the way toward Venom Fang.'),
     ],
     'armour-by-shape': [
         ('kick-1-coil', 'Today: the coiled boa looks like any boa. "TOUGH!" would be the first the player learns of its armour.'),

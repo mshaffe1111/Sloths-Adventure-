@@ -31,3 +31,14 @@ at a time. Made with `tools/art/combat/mock-triangle.mjs` (the beats) and `tools
   glint, so the armour reads before Pokey touches it.
 - **The vine snake from the take-off ledge:** vine-snake-{side,up}.jpg are shot with Pokey on the take-off ledge and the snake ahead in
   view. With the paste-up it reads as a snake hanging on a liana there; the real check waits for the painted art.
+
+## Round 2 (the quality supervisor's board notes and the lead's calls)
+- **Stomp vaults:** the gap widened past any jump (the far side slid 220 px right in the mock, no game code), the petals laid as an arc
+  that starts at the snake and follows the bounce, kept under the HUD. Named: the pit under it still reads as foliage, not a fall
+  (stage art: raised with the lead).
+- **Punch stuns:** the lead's call, circling stars (code-drawn, free): pasted up over the dazed snake for the whole stun, fewer and
+  fainter in the last 0.3 s (the flicker).
+- **Kick breaks and bowls:** one ball with a short trail (no longer three shapes), and a 5th beat: the ball stops on the World 1 kit's
+  log plate (pressed, glowing) and the woven gate stands open beyond (kit art already packed). Upright, the 5th beat frames the
+  plate and the gate.
+- **The vine snake:** look (a) vine-coloured or (b) an obvious snake: a choice for Matt, with the lead.
