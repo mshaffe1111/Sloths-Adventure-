@@ -1,6 +1,18 @@
 # Method: fixing an unfair spot in a stage
-Last proven: 2026-11-01, branch w8-rope2 (57c8bf51..c0d59a75), 8-2's ropes: 0 heart falls at a rope in 40 first-timer runs (was 6 on one
+Last proven: 2026-11-04 (R-150.8, fix-petals, the best measured result above); before it 2026-11-01, branch w8-rope2 (57c8bf51..c0d59a75), 8-2's ropes: 0 heart falls at a rope in 40 first-timer runs (was 6 on one
 roll), the rope rolls reaching the shrine 21 of 24 Normal runs. Owner of the last update: w8-rope2.
+
+**Best measured result (the fastest proven way, 2026-11-04, fix-petals, R-150.8, branch fun-validator d6dc6e91..071173a2): about 32
+minutes from start (about 10:25 AM ET) to report (10:57 AM ET) against a 1.5 h estimate. 1-4's first-timer rescues 58 -> 19 (seeds 1-3,
+kid and adult), Worlds 1-10 2,006 -> 1,915, a side effect on 1-1 caught and fixed before the report, QS PASS.** The how, for a bot or a
+stage spot (steps 2a and 4a below):
+1. From the bot's stuck list (`botBaseline.ts --detail`), group the rescues by cause and spot; take the biggest group.
+2. Log the frames at one spot (wrap `RealPlay.prototype.frame`, print every frame there), read the moment it goes wrong.
+3. **Copy the failing spot from the real stage into a bare-world fixture** (its own platforms and vines, numbers copied, at a fixed
+   offset), assert the defect itself, and show the fixture fails before the fix.
+4. Fix against the fixture.
+5. **`botBaseline.ts --worlds 1-10 --seeds 1-3` before and after on one base** (the "before" from a `git worktree` of the same commit),
+   and read every stage's change, not only the target's: the regression is in the stages you were not looking at.
 
 ## When to use it
 A first-timer bot, a QA tester or Matt loses lives, hearts or a goal at one kind of spot, and we have to decide whether the game is unfair
@@ -25,6 +37,10 @@ first: it is the bar for "fix it" against "hard but fair, keep it".)
    The rope case: the sweep said 94/96 thumbs catch every rope, so the grab window, ROPE_RISE and timing were fine; the frame log said the
    bot's flick ~150 px early topped out short of the rope's end and his hands fell back through it. On a phone that is "his hands went
    through the rope": the engine's fault, though the sweep looked clean. Read the frames; a sweep only covers the thumbs you put in it.
+4a. **The fixture (R-150.8):** copy the spot from the stage (`new RealPlay(id, layout).platforms/vines` near it) into
+   `RealPlay.bare`, offset to the test's ground, with a stage id that has nothing at that spot (under the stage's own id its puzzle rooms
+   and hints leak into the bare world), and a catch floor where the stage has one (a miss is retried, as in play). Assert the defect
+   itself ("ran off the end with no jump pressed"), not an outcome a fair miss can also cause.
 4. **Fix the smallest true cause**, in the engine or the stage, never by changing the bot to pass. Then ask what else the fix touches:
    find every stage with the thing (`new RealPlay(id, 1)` over all ids, count it) and run the first-timer on them before and after.
 5. **Fail-before / pass-after test** in the real engine on a bare world (`RealPlay.bare([...platforms], vines, ropes)`): the exact
