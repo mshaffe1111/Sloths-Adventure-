@@ -1,19 +1,15 @@
 # fix-petals: helper notes
 
-## Now (2026-11-04 11:46 AM ET): R-150.8 ACCEPTED; R-155 1-5 decided, waiting on w8-rope2's kick-teach piece
-fun-validator c03160b8: origin/main 68b31e66 (release 0.9.4) and the lead branch merged in (D23). Conflicts in gates.yml, CLAUDE.md and
-gates.md were both sides adding a gate (my funcheck, main's roadmapcheck): kept both, the lead branch's wording. tsc, artcheck,
-knowncheck, roadmapcheck, funcheck (152 known) PASS; bot and validator tests 44/44.
-- R-150.8: accepted by the lead (11:35 AM ET, bot-fix's time), QS PASS. Report reference/qa-reports/validator/R-150.8.md with the gate
-  lines. stage-fix.md opens with it as the best measured result: about 32 min running time to the report, 1.2 h start to accept against
-  1.5 h planned.
-- R-155 1-5 (reference/plans/R-155-1-5.md, QS PASS on rev 2): Matt chose goal (a), follow Meeca's trail markers to the shrine with the
-  petals as a bonus; both Dot lines approved ("These ones snap! Keep moving", "That boa's in the way... or is it?"); backdrop w1kapok
-  (the lead's call; the QS's watch-out: if 1-5 and 1-7 read alike, use w1sunrise).
-NEXT: when w8-rope2 pushes kick-teach (an exported piece in w1Sections.ts), merge it and build: fixtures first (creakDrop, snapRun, the
-snake patrol), then the stage, the goal, the backdrop, then reference/methods/stage-shape.md, the gates, funcheck with 1-5 lowered.
-MY MISS (twice today): times typed, not read. Countermeasure: no time goes in a message unless `TZ=America/New_York date` printed it
-in the same step.
+## Now (2026-11-04 12:55 PM ET): R-6.38 pits built and shown (103d7f47); gates running; then the validator items
+- R-155 1-5 moved to w1-rhythm (lead, 12:42 PM ET message). Not mine any more.
+- R-6.38 (started 11:46 AM ET, planned 3 h): src/game/w1Pits.ts + test, protoArt.ts (2 calls), stageSheets/stagePreload ('pit-art:1'),
+  types.ts (Platform.pit), src/assets/props/pits (cut by tools/art/combat/pitcut.py from the HF bucket's r159-pits takes). Stills and
+  report: reference/qa-reports/r6-38/. Due on the lead branch by 4:00 PM ET (the lead merges; I push to fun-validator). Gate lines to add.
+- NEXT (by 6:30 PM ET): validator: no variety credit for pickups (§0c.5, fixture, say if scores move); a template-repeat check (§0c rules
+  2-3); read each node's BPM and beat feel from beatTrace.ts when it lands; a "like the stage before" on tempo and map shape. Mark bot
+  numbers "old bot" (bot-fix's thumb fix merges later).
+MY MISS (three times today): times typed, not read (10:58, 10:28, 1:11). Countermeasure, tightened: a time goes into a message only as
+text copied from a `TZ=America/New_York date` printed in the step just before; never composed from memory.
 
 ## The job, as briefed
 1. R-150.4 mechanics-in-use table, 1-1..1-9 and the boss: what the player meets (stage data + a bot run) against what the engine has.
