@@ -159,3 +159,68 @@ test('mashing kick on the boa: it rolls, and mashing more at the rolling ball do
   mash(r, 300, 'kick');
   assert.ok(b.state === 'roll' || b.state === 'rolled' || b.defeated, `rolled (${b.state})`);
 });
+
+// ── the vine snake (Matt's option (a)): on a liana over a gap
+import type { Vine } from './types.ts';
+import { makeVineSnake, VINE_SNAKE } from './w1Tricks.ts';
+
+function lianaWorld() {
+  const r = new RealPlay('1-6', 1);
+  const v = { id: 7, x: 600, topY: 200, bottomY: 560, vineType: 'swing_liana', isSwingingVine: true, swaySpeed: 1, swayPhase: 0 } as unknown as Vine;
+  r.bare([ground(0, 480), ground(760, 800)], [v]);
+  const s = makeVineSnake(1, v);
+  r.e.enemies = [s];
+  return { r, v, s };
+}
+
+test('the vine snake: its tell starts a jump\'s length away (from the take-off ledge), and it dozes again when he is far', () => {
+  const { r, s } = lianaWorld();
+  r.stand(100, GROUND);
+  r.wait(0.3);
+  assert.equal(s.state, 'hang', 'far away: it hangs like a vine');
+  r.stand(600 - VINE_SNAKE.tellX + 30, GROUND);
+  r.wait(0.2);
+  assert.equal(s.state, 'tell', 'from the take-off ledge it gives itself away');
+});
+
+test('the vine snake: grab its liana while it is awake and it bites (he does not get the liana); punch it and the liana is a stiff pole to climb', () => {
+  const { r, v, s } = lianaWorld();
+  r.safe = false;
+  const lives0 = r.p.hp;
+  // a jump at the liana from the ledge, holding toward it
+  r.fly(560, 470, 260, -100);
+  let swung = false;
+  let bit = false;
+  for (let i = 0; i < 20; i++) {
+    r.frame({ right: true });
+    if (r.p.isVineSwinging) swung = true;
+    if (s.state === 'bite') bit = true;
+  }
+  assert.ok(bit, 'it bit');
+  assert.equal(swung, false, 'he did not get the liana');
+  assert.ok(r.p.hp < lives0, 'and it hurt');
+
+  // now punch it first (in the air beside it), then the liana holds straight and he climbs it
+  const w = lianaWorld();
+  // (it rides its liana's swing: he is put beside it where it is, and keeps beside it while the blow plays)
+  w.r.stand(100, GROUND);
+  w.r.frame();
+  w.r.fly(w.s.x - 40, w.s.y + 30, 0, 0);
+  w.r.p.facing = 1;
+  w.r.frame({ punch: true });
+  for (let i = 0; i < 6 && !((w.s.stagger ?? 0) > 0); i++) {
+    w.r.p.x = w.s.x - 40;
+    w.r.frame();
+  }
+  assert.ok((w.s.stagger ?? 0) > 0, `stiff (${w.s.stagger})`);
+  w.r.frame();
+  assert.equal(w.v.swingAngle ?? 0, 0, 'the liana hangs straight while it is stiff');
+  w.r.fly(w.v.x - 10, w.s.y + 40, 60, 0);
+  let climbed = false;
+  for (let i = 0; i < 12; i++) {
+    w.r.frame({ up: true });
+    if (w.r.p.climbing) climbed = true;
+  }
+  assert.ok(climbed, 'he climbs the stiff liana like a trunk');
+  void v;
+});

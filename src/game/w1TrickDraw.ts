@@ -62,8 +62,9 @@ export function drawTrickStars(ctx: CanvasRenderingContext2D, e: Enemy, t: numbe
   if (e.defeated || !isDazed(e) || starsShown(e, t) === 0) return;
   // (the main signal: a clear ring of big stars, as the boards showed)
   // (centred on the snake, not on the head: he stands at its head when he punches, and the ring sat on him)
-  const cx = e.x - e.facing * 6;
-  const cy = e.y - 58;
+  // (a vine snake hangs head-down: its stars go round its head, at the bottom of its body)
+  const cx = e.trick === 'vine' ? e.x + e.facing * 30 : e.x - e.facing * 6;
+  const cy = e.trick === 'vine' ? e.y + 52 : e.y - 58;
   ctx.save();
   // the ring they circle on, faint, so it reads as one dizzy halo and not loose sparks
   ctx.strokeStyle = 'rgba(255,240,170,0.55)';
@@ -172,3 +173,26 @@ export function drawCoilGlint(ctx: CanvasRenderingContext2D, e: Enemy, t: number
 
 /** the rolling boa: the turn of the ball (radians), from how far it has rolled */
 export const rollAngle = (e: Enemy) => ((e.stateT ?? 0) * 360 * (e.slideDir ?? 1)) / 18;
+
+/** the vine snake (Matt's option (a)): hanging (a slow loop), its tell (eyes open, tongue flicks), the bite, the flinch when punched,
+ *  then held stiff (stars); its straight side lies on the liana, its head toward him. False while the picture loads. */
+export function drawVineSnake(ctx: CanvasRenderingContext2D, e: Enemy, t: number): boolean {
+  const h = 170;
+  const st = e.state ?? 'hang';
+  const k = e.stateT ?? 0;
+  const pick = (move: string, i: number) => `vine_${move}_${String(i).padStart(2, '0')}`;
+  let name: string;
+  if ((e.stagger ?? 0) > 0) {
+    // punched: the flinch plays once, then it holds still (the liana hangs straight under it, a pole), the stars over it
+    const since = (e.staggerMax ?? 0) - (e.stagger ?? 0);
+    name = pick('flinch', Math.min(5, Math.floor(since * 18)));
+    if (since > 0.34) name = pick('hang', 0);
+  } else if (st === 'bite') name = pick('bite', Math.min(5, Math.floor(k * 14)));
+  else if (st === 'tell') {
+    // (the eyes open, then the tongue flicks in and out while he is near)
+    const n = 7;
+    const f = Math.floor(k * 12);
+    name = pick('tell', f < n ? f : 3 + (Math.floor(f / 2) % 4));
+  } else name = pick('hang', Math.floor(t * 6 + e.id) % 13);
+  return drawFrame(ctx, name, e.x - 5 * (e.facing > 0 ? 1 : -1), e.y - h / 2, h, 0, e.facing < 0);
+}

@@ -48,7 +48,7 @@ export const tellFor = (easy: boolean) => (easy ? TRICK.tellEasy : TRICK.tell);
 /**
  * What a blow does to a trick animal, before the usual hit rules:
  *   'daze'    a punch or kick on an awake lunge snake: no harm, dazed `dazeFor` seconds (stars)
- *   'stiffen' a punch on a vine snake: no harm, a stiff pole `dazeFor` seconds
+ *   'stiffen' a blow on a vine snake: no harm, a stiff pole `dazeFor` seconds
  *   'nothing' a blow on a dazed lunge snake or a stiff vine snake: no harm, the stars stay (only a stomp finishes it)
  *   'tough'   a punch on the coiled (or rolling) boa: no harm ("TOUGH!")
  *   'stagger' a punch on the boa mid-attack (its tell, strike or bite): no harm, it is knocked back into its coil ("STOPPED!")
@@ -60,7 +60,8 @@ export type TrickHit = 'daze' | 'stiffen' | 'nothing' | 'tough' | 'stagger' | 'r
 export function trickHit(e: Enemy, kind: 'punch' | 'kick' | 'mega'): TrickHit {
   if (!e.trick) return null;
   if (e.trick === 'lunge') return isDazed(e) ? 'nothing' : 'daze';
-  if (e.trick === 'vine') return isDazed(e) ? 'nothing' : kind === 'punch' ? 'stiffen' : 'daze';
+  // (any blow: from the take-off ledge it is mostly reached in the air, where his punch is the air kick)
+  if (e.trick === 'vine') return isDazed(e) ? 'nothing' : 'stiffen';
   if (e.trick === 'coil') {
     if (e.state === 'roll' || e.state === 'rolled') return 'tough';
     if (kind !== 'punch') return 'roll';
@@ -90,3 +91,56 @@ export function tagWorld1(enemies: Enemy[], worldIndex: number): void {
     else if (e.type === 'boa') e.trick = 'coil';
   }
 }
+
+// ---------------------------------------------------------------------------------------------------
+// The vine snake ('vine', R-159.1, Matt's option (a)): liana-coloured, hanging on a liana among the others
+// ---------------------------------------------------------------------------------------------------
+
+/** its numbers: the tell starts a jump's length away, so it reads from the take-off ledge, never only once he is in the air */
+export const VINE_SNAKE = { tellX: 230, tellY: 260, bite: 0.45, height: 170 } as const;
+
+/** a vine snake for a liana: hung `along` px down from the liana's top (its middle), on the liana's swing */
+export function makeVineSnake(id: number, v: { id: number; x: number; topY: number; bottomY: number }, along?: number): Enemy {
+  const hangLen = along ?? Math.max(60, v.bottomY - v.topY - 110);
+  return {
+    id, type: 'snake', trick: 'vine', vineId: v.id, hangLen, x: v.x, y: v.topY + hangLen, vx: 0, vy: 0, width: 30, height: 120, hp: 1,
+    maxHp: 1, facing: -1, patrolMinX: v.x, patrolMaxX: v.x, attackCooldown: 0, telegraphTimer: 0, isAttacking: false, animTimer: 0,
+    hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, state: 'hang', stateT: 0,
+  } as Enemy;
+}
+
+/** where it hangs now: on its liana's swing (angle from straight down), `hangLen` down from the top */
+export function placeVineSnake(e: Enemy, v: { x: number; topY: number; swingAngle?: number }): void {
+  const a = v.swingAngle ?? 0;
+  const len = e.hangLen ?? 100;
+  e.x = v.x + Math.sin(a) * len;
+  e.y = v.topY + Math.cos(a) * len;
+}
+
+/** one frame of its watching: it wakes (the tell: eyes open, tongue flicks) once he is within a jump's length, and dozes again after */
+export function stepVineSnake(e: Enemy, p: { x: number; y: number }, dt: number): void {
+  e.stateT = (e.stateT ?? 0) + dt;
+  if (e.state === 'bite') {
+    if (e.stateT >= VINE_SNAKE.bite) {
+      e.state = 'tell';
+      e.stateT = 0;
+    }
+    return;
+  }
+  const near = Math.abs(p.x - e.x) < VINE_SNAKE.tellX && Math.abs(p.y - e.y) < VINE_SNAKE.tellY;
+  // (it faces him: the straight side of its body stays on the liana, its head toward him)
+  if (near) e.facing = p.x >= e.x ? 1 : -1;
+  const want = near ? 'tell' : 'hang';
+  if (e.state !== want) {
+    e.state = want;
+    e.stateT = 0;
+  }
+}
+
+/** is this liana held stiff (its snake punched) right now: straight, still and climbable */
+export const vineIsStiff = (enemies: Enemy[], vineId: number) =>
+  enemies.some((e) => e.trick === 'vine' && e.vineId === vineId && !e.defeated && (e.stagger ?? 0) > 0);
+
+/** the vine snake awake on this liana, if any (grabbing the liana then is a bite) */
+export const vineSnakeAwake = (enemies: Enemy[], vineId: number) =>
+  enemies.find((e) => e.trick === 'vine' && e.vineId === vineId && !e.defeated && !((e.stagger ?? 0) > 0));

@@ -145,8 +145,8 @@ import { sound } from './audio.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
-import { dazeFor, tagWorld1, trickHit, trickStompBounces, type TrickHit } from './w1Tricks.ts';
-import { drawCoilGlint, drawRollingBall, drawTrickStars, rollAngle, withCoilSqueeze } from './w1TrickDraw.ts';
+import { dazeFor, placeVineSnake, stepVineSnake, tagWorld1, trickHit, trickStompBounces, vineSnakeAwake, type TrickHit } from './w1Tricks.ts';
+import { drawCoilGlint, drawRollingBall, drawTrickStars, drawVineSnake, rollAngle, withCoilSqueeze } from './w1TrickDraw.ts';
 import { drawTurtle, drawTurtleSprite } from './turtleArt.ts';
 import { drawGuardSprite } from './guardArt.ts';
 import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
@@ -493,8 +493,12 @@ export class GameEngine {
   private isRunning: boolean = false;
   /** the first time a snapper hides, Dot's line says what to do about it */
   private turtleTold = false;
+  /** World 1's lianas held stiff this frame (their vine snake punched, w1Tricks.ts) */
+  private stiffVines = new Set<number>();
   /** Dot has said the coiled boa is too tough to punch (World 1, w1Tricks.ts) */
   private coilTold = false;
+  /** Dot has said a liana was a snake (World 1's vine snake) */
+  private vineTold = false;
   /** the first time a guard of the river king blocks (2-9) */
   private guardTold = false;
   /** 2-8: when each rising river began to rise (game time), and whether Dot has warned about it */
@@ -1439,9 +1443,17 @@ export class GameEngine {
     this.irisOpen = Math.max(0, this.irisOpen - dt);
     this.vineClock += dt;
     // every liana swings on its own (the climbing vines hang still): it is drawn, and caught, where its swing puts it now
+    // (World 1's vine snake, w1Tricks.ts: a liana whose snake is punched stiff hangs straight and still, a pole to climb, while it is
+    // stiff, and stays stiff while he is on it)
+    this.stiffVines.clear();
+    for (const e of this.enemies) {
+      if (e.trick !== 'vine' || e.defeated || e.vineId === undefined || !((e.stagger ?? 0) > 0)) continue;
+      if (this.player.climbing && this.nearTreeVine?.id === e.vineId) e.stagger = Math.max(e.stagger ?? 0, 0.3);
+      this.stiffVines.add(e.vineId);
+    }
     for (const v of this.vines) {
       if (v.vineType === 'tree_climb') continue;
-      v.swingAngle = vineAngle(v, this.vineClock);
+      v.swingAngle = this.stiffVines.has(v.id) ? 0 : vineAngle(v, this.vineClock);
       v.isSwingingVine = true;
     }
     if (this.introT < INTRO_ZOOM_SECS) {
@@ -1777,7 +1789,7 @@ export class GameEngine {
         continue;
       }
 
-      if (v.vineType === 'tree_climb') {
+      if (v.vineType === 'tree_climb' || this.stiffVines.has(v.id)) {
         if (v.off) continue;
       if (Math.abs(p.x - v.x) < (p.climbing ? 60 : 54) && p.y >= v.topY - 12 && p.y <= v.bottomY + 25) {
           nearTreeVine = v;
@@ -1942,7 +1954,8 @@ export class GameEngine {
         !p.isVineSwinging &&
         !p.grounded &&
         (this.input.state.up || Math.abs(p.vx) > 25 || this.input.state.left || this.input.state.right) &&
-        (this.vineCooldownTimer <= 0 || nearSwingVine.id !== this.lastReleasedVineId)
+        (this.vineCooldownTimer <= 0 || nearSwingVine.id !== this.lastReleasedVineId) &&
+        !this.vineSnakeBites(nearSwingVine)
       ) {
         p.isVineSwinging = true;
         p.climbing = false;
@@ -2564,6 +2577,13 @@ export class GameEngine {
       if (e.hitFlashTimer > 0) e.hitFlashTimer -= dt;
       // a hit animal flinches, slides back and may stand dazed (no moves, no damage) for a moment
       if (this.reactToHits(e, dt)) continue;
+      // World 1's vine snake rides its liana's swing and watches for him (w1Tricks.ts); it hurts only when its liana is grabbed
+      if (e.trick === 'vine') {
+        const v = this.vines.find((q) => q.id === e.vineId);
+        if (v) placeVineSnake(e, v);
+        stepVineSnake(e, p, dt);
+        continue;
+      }
 
       // Distinct enemy movement & attack policies:
       if (e.type === 'eagle') {
@@ -4223,6 +4243,22 @@ export class GameEngine {
     if (res.interrupt && isPredator(e.type)) staggerPredator(e);
     const label = res.armored ? 'TOUGH!' : wasCommitted ? 'STOPPED!' : this.comboCount >= 3 ? `${this.comboCount} HITS!` : 'HIT!';
     this.addFloatingText(label, e.x, e.y - 24, res.armored ? '#cbd5e1' : '#fef08a');
+  }
+
+  /** grabbing a liana an awake vine snake hangs on: it bites, and he does not get the liana (w1Tricks.ts). True when it bit. */
+  private vineSnakeBites(v: Vine): boolean {
+    const e = vineSnakeAwake(this.enemies, v.id);
+    if (!e) return false;
+    const p = this.player;
+    e.state = 'bite';
+    e.stateT = 0;
+    e.facing = p.x >= e.x ? 1 : -1;
+    this.vineCooldownTimer = 0.5;
+    this.lastReleasedVineId = v.id;
+    this.damagePlayer(1, e.x);
+    if (!this.vineTold) this.guide('That vine is a snake! Punch it stiff first.', 3);
+    this.vineTold = true;
+    return true;
   }
 
   /** a blow on a World 1 trick animal (w1Tricks.ts trickHit): no harm done, but it is dazed, stiff, shrugs it off, or rolls away */
@@ -6277,7 +6313,8 @@ export class GameEngine {
       if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
       if (!this.onScreen(enemy.x, enemy.y, 400)) return;
       // (a kicked boa rolling away cannot hurt him: no ember rim on it, World 1's tricks)
-      if (!enemy.defeated && !(enemy.trick === 'coil' && (enemy.state === 'roll' || enemy.state === 'rolled'))) {
+      // (nor on a vine snake while it hides among the lianas: its tell gives it away, from a jump's length, and the rim with it)
+      if (!enemy.defeated && !(enemy.trick === 'coil' && (enemy.state === 'roll' || enemy.state === 'rolled')) && !(enemy.trick === 'vine' && enemy.state === 'hang')) {
         // the ember rim (see readable.ts): everything that can hurt you wears it
         ctx.save();
         ctx.translate(enemy.x, enemy.y);
@@ -6286,7 +6323,9 @@ export class GameEngine {
       }
       const draw = (ctx: CanvasRenderingContext2D) => {
         if (enemy.type === 'snake') {
-          if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
+          // (World 1's vine snake: its own painted frames, w1TrickDraw.ts)
+          if (enemy.trick === 'vine') drawVineSnake(ctx, enemy, this.gameTime);
+          else if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
           if (enemy.state === 'sleep') this.drawSleepZ(ctx, enemy);
           // (World 1's dazed lunge snake, w1TrickDraw.ts: the stun's stars)
           if (enemy.trick) drawTrickStars(ctx, enemy, this.gameTime);
