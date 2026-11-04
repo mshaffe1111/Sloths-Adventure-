@@ -60,6 +60,8 @@ same container.
 - `gpuprof`-style flushes or profiling runs are for ranking causes only, never for the numbers in the table (PERFORMANCE-RULES §6.2).
 
 ## Pitfalls we already paid for
+- (2026-11-04, warmup-5m) The container varies between sessions (ordinary frames 36-127 ms on 11-04 vs 23-34 ms on 11-01): run before and after in the same session, and say when the noise is bigger than the change.
+- (2026-11-04, warmup-5m) When frame times are too noisy, measure a per-frame function's own cost directly (time 20,000 calls in the page).
 - 2026-11-01: **CPU throttling swamps this container.**
   - 6x ran at about 500 ms a frame and 4x at 220-310 ms a frame in every build, so frame pacing was meaningless.
   - At 4x the stage start also ran past stageReady's 6.5 s deadline, which skipped deadline-bound warm-up and made the "after" look
@@ -80,6 +82,7 @@ same container.
   stills) runs on the dev server; frame-time tables come from production builds.
 
 ## Tried and didn't work
+- (2026-11-04, warmup-5m) Per-run temp files without a per-build name: two runs overwrote each other and produced a false 'identical'. Name temp files per build/tag.
 - CPU throttle 4x/6x for the frame-time table (above).
 - Judging a quality step on the dev server against a 50 ms bar: dev frames at steady q0 are already 50-83 ms here.
 - The first warm-up guarded by the ready deadline (`left() > -1000`): on a slow start it skipped exactly where it was needed.
