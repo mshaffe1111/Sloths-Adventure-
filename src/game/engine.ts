@@ -145,6 +145,7 @@ import { sound } from './audio.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
+import { dazeFor, trickHit, trickStompBounces, type TrickHit } from './w1Tricks.ts';
 import { drawTurtle, drawTurtleSprite } from './turtleArt.ts';
 import { drawGuardSprite } from './guardArt.ts';
 import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
@@ -491,6 +492,8 @@ export class GameEngine {
   private isRunning: boolean = false;
   /** the first time a snapper hides, Dot's line says what to do about it */
   private turtleTold = false;
+  /** Dot has said the coiled boa is too tough to punch (World 1, w1Tricks.ts) */
+  private coilTold = false;
   /** the first time a guard of the river king blocks (2-9) */
   private guardTold = false;
   /** 2-8: when each rising river began to rise (game time), and whether Dot has warned about it */
@@ -2663,6 +2666,12 @@ export class GameEngine {
           this.knockOut(e, (e.slideDir ?? 1) as 1 | -1, 'BONK!');
           continue;
         }
+        // World 1's kicked boa (w1Tricks.ts) has rolled to the end of its ground: it is out of the fight, and counts
+        if (e.trick === 'coil' && e.state === 'rolled') {
+          e.hp = 0;
+          this.knockOut(e, (e.slideDir ?? 1) as 1 | -1, 'BONK!');
+          continue;
+        }
         // the tree snake has no call of its own: it hisses like the boa
         // (the night harpy chitters and thumps like the tayra)
         const call = e.type === 'snake' ? 'boa' : e.type === 'harpy' ? 'tayra' : e.type === 'turtle' ? 'caiman' : e.type;
@@ -2723,7 +2732,7 @@ export class GameEngine {
 
     // a kicked snapper shell slides along the bank and knocks over whatever it meets
     for (const s of this.enemies) {
-      if (s.defeated || s.type !== 'turtle' || s.state !== 'slide') continue;
+      if (s.defeated || !((s.type === 'turtle' && s.state === 'slide') || (s.trick === 'coil' && s.state === 'roll'))) continue;
       for (const o of this.enemies) {
         if (o === s || o.defeated || o.type === 'eagle' || Math.abs(o.x - s.x) > 34 || Math.abs(o.y - s.y) > 30) continue;
         o.hp = 0;
@@ -4158,6 +4167,13 @@ export class GameEngine {
         return;
       }
     }
+    // World 1's one trick per animal (w1Tricks.ts): a punch dazes the lunge snake or stiffens the vine snake, the coiled boa shrugs off
+    // a punch and rolls away from a kick
+    const th = trickHit(e, m.kind);
+    if (th) {
+      this.trickBlow(e, th, m, box, hr, a, dir);
+      return;
+    }
     const wasCommitted = isCommitted(e);
     const res = resolveMelee(e, m, dir);
     applyHit(e, res);
@@ -4204,6 +4220,60 @@ export class GameEngine {
     if (res.interrupt && isPredator(e.type)) staggerPredator(e);
     const label = res.armored ? 'TOUGH!' : wasCommitted ? 'STOPPED!' : this.comboCount >= 3 ? `${this.comboCount} HITS!` : 'HIT!';
     this.addFloatingText(label, e.x, e.y - 24, res.armored ? '#cbd5e1' : '#fef08a');
+  }
+
+  /** a blow on a World 1 trick animal (w1Tricks.ts trickHit): no harm done, but it is dazed, stiff, shrugs it off, or rolls away */
+  private trickBlow(e: Enemy, th: NonNullable<TrickHit>, m: MoveSpec, box: Rect, hr: Rect, a: NonNullable<GameEngine['atk']>, dir: 1 | -1) {
+    const p = this.player;
+    a.connected = true;
+    const cp = contactPoint(box, hr);
+    const kick = m.kind === 'kick';
+    if (kick) this.statKicks++;
+    else this.statPunches++;
+    e.hitFlashTimer = 0.18;
+    e.recoil = 1;
+    e.recoilDir = dir;
+    if (th === 'tough') {
+      // the coil is armour: the blow bounces off, and he is pushed back a little
+      this.hitstopTimer = Math.max(this.hitstopTimer, 0.05);
+      this.camera.trauma = Math.min(1, this.camera.trauma + m.shake * 0.5);
+      sound.playHitImpact(false, 'armor');
+      this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
+      p.vx -= p.facing * 60;
+      if (!this.coilTold) this.guide('Too tough to punch while it is coiled. Kick it!', 3);
+      else this.addFloatingText('TOUGH!', e.x, e.y - 30, '#cbd5e1');
+      this.coilTold = true;
+      return;
+    }
+    this.hitstopTimer = Math.max(this.hitstopTimer, m.hitstop);
+    this.camera.trauma = Math.min(1, this.camera.trauma + m.shake);
+    sound.playHitImpact(m.heavy, materialFor(e.type));
+    if (kick) this.spawnKickHitBurst(cp.x, cp.y);
+    else this.spawnClawHitSparks(cp.x, cp.y, m.heavy);
+    this.comboCount++;
+    this.comboResetTimer = 2.0;
+    const pts = calculateHitScore(e.type, false, this.comboCount) * (kick ? 2 : 1);
+    this.runScore += pts;
+    if (m.id === 'airKick') {
+      p.vy = -420;
+      p.jumpsLeft = Math.max(p.jumpsLeft, 1);
+      p.isDoubleJumping = false;
+      this.launched = true;
+    }
+    if (th === 'roll') {
+      // the coil breaks: it rolls away as a ball along its ground (predatorAI.ts 'roll'), bowling over what it meets
+      e.state = 'roll';
+      e.stateT = 0;
+      e.slideDir = dir;
+      e.stagger = 0;
+      this.addFloatingText('WHOOSH!', e.x, e.y - 30, '#fef08a');
+      return;
+    }
+    // dazed (stars) or stiff: it does nothing (the game holds it, not stepping its brain) until the time runs out
+    e.stagger = e.staggerMax = dazeFor(e.trick ?? 'lunge', isEasy());
+    e.vx = 0;
+    staggerPredator(e);
+    this.addFloatingText(th === 'stiffen' ? 'STIFF!' : 'DAZED!', e.x, e.y - 30, '#fef08a');
   }
 
   private hitBoss(b: BossEntity, m: MoveSpec, box: Rect, hr: Rect) {
@@ -4568,8 +4638,10 @@ export class GameEngine {
     if (this.stompBoss(vyNow, prevFeet)) return;
     for (const e of this.enemies) {
       if (e.defeated) continue;
-      const r = stompTest({ x: p.x, y: p.y, vy: vyNow }, prevFeet, e, diving);
-      if (!r) continue;
+      const r0 = stompTest({ x: p.x, y: p.y, vy: vyNow }, prevFeet, e, diving);
+      if (!r0) continue;
+      // (World 1's coiled boa, w1Tricks.ts: its coil is armour, a stomp only bounces off it)
+      const r: NonNullable<typeof r0> = trickStompBounces(e) ? { kind: 'bounce' } : r0;
       this.fallVy = 0;
       p.grounded = false;
       recorder.event('stomp', e.type);

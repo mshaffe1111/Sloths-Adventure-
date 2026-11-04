@@ -10,6 +10,8 @@
  * The drawing side (predators.ts / creatures.ts) reads `state` and `stateT` and poses the body to match.
  */
 import type { Enemy } from './types.ts';
+import { isEasy } from './difficulty.ts';
+import { TRICK, tellFor } from './w1Tricks.ts';
 import { PERSONALITY, SPIDER, roam, speedScale, walkBounds, type BrainEvents, type PlayerRef } from './enemyBrain.ts';
 
 export type { PlayerRef } from './enemyBrain.ts';
@@ -159,8 +161,10 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
       } else if (e.state === 'rear') {
         // it rears up and sways, still tracking him; the aim locks just before the strike
         e.vx = 0;
-        if (t < 0.3) e.facing = toward;
-        if (t >= 0.38) {
+        // (World 1's lunge snake, w1Tricks.ts: a longer, readable tell, the moment to punch it; every other snake keeps 0.38 s)
+        const tell = e.trick === 'lunge' ? tellFor(isEasy()) : 0.38;
+        if (t < tell - 0.08) e.facing = toward;
+        if (t >= tell) {
           enter(e, 'strike');
           e.fromX = e.x;
           e.toX = clamp(e.x + e.facing * clamp(dist - 40, 20, 80), ...walkBounds(e));
@@ -315,8 +319,26 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
           enter(e, 'coil');
           e.attackCooldown = 1.1;
         }
+      } else if (e.state === 'roll') {
+        // World 1's coiled boa, kicked (w1Tricks.ts): it rolls along its ground as a ball, bowling over what it meets (engine.ts), to the
+        // end of the ground, where it stops (and a switch there is tripped)
+        const dir = (e.slideDir ?? 1) as 1 | -1;
+        e.vx = dir * TRICK.rollSpeed;
+        e.x += e.vx * dt;
+        const lo = e.edgeMinX ?? e.patrolMinX - 600;
+        const hi = e.edgeMaxX ?? e.patrolMaxX + 600;
+        if ((dir > 0 && e.x >= hi) || (dir < 0 && e.x <= lo) || t >= TRICK.rollMax) {
+          e.x = clamp(e.x, lo, hi);
+          e.vx = 0;
+          enter(e, 'rolled');
+          ev.impact = true;
+        }
+      } else if (e.state === 'rolled') {
+        e.vx = 0;
       }
       keepOnGround(e, dt);
+      // (a rolling ball does not bite)
+      if (e.state === 'roll' || e.state === 'rolled') break;
       hurt.push({ x: e.x - 26, y: e.y - 8, w: 52, h: 24 });
       if (e.state === 'strike' || e.state === 'bite') {
         const reach = e.state === 'strike' ? 28 + 100 * clamp(t / 0.2, 0, 1) : 128;
