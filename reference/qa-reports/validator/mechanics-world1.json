@@ -1,0 +1,3014 @@
+{
+ "base": "f89b87a5 Merge remote-tracking branch 'origin/ccr-0d59a91c-oy3imz' int",
+ "made": "2026-11-04 9:00 AM ET",
+ "layouts": 16,
+ "rows": [
+  {
+   "id": "1-1",
+   "name": "Into the Canopy",
+   "counts": {
+    "gap": {
+     "min": 174,
+     "max": 285,
+     "layouts": 16
+    },
+    "mushroom": {
+     "min": 1,
+     "max": 20,
+     "layouts": 16
+    },
+    "liana": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "trunk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "silk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "rope": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "updraft": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "moving": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "lift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "drift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "breaking": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "chase": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "bush": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "thorn": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "water": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:wind": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:web": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:spore": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:dark": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:tide": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:crumble": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:geyser": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:bolt": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:snake": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:boa": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:turtle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:frog": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:ocelot": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:jaguar": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:spider": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:tayra": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:caiman": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:harpy": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "ring": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "push": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "room": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "cage": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "find": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    }
+   },
+   "six": [
+    "run",
+    "jump"
+   ],
+   "pairs": [
+    "run+jump"
+   ],
+   "used": {
+    "liana": "0/0/0",
+    "trunk": "0/0/0",
+    "rope": "0/0/0",
+    "mushroom": "16/20/13",
+    "breaking": "0/0/0",
+    "bush": "0/0/0",
+    "push": "0/0/0",
+    "fights": "0/0/0",
+    "eagleHits": "0/0/0"
+   },
+   "bot": "shrine 209 s, 3 rescues; shrine 241 s, 8 rescues; shrine 210 s, 4 rescues"
+  },
+  {
+   "id": "1-2",
+   "name": "The Petal Trail",
+   "counts": {
+    "gap": {
+     "min": 199,
+     "max": 273,
+     "layouts": 16
+    },
+    "mushroom": {
+     "min": 17,
+     "max": 54,
+     "layouts": 16
+    },
+    "liana": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "trunk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "silk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "rope": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "updraft": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "moving": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "lift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "drift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "breaking": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "chase": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "bush": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "thorn": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "water": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:wind": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:web": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:spore": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:dark": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:tide": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:crumble": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:geyser": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:bolt": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:snake": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:boa": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:turtle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:frog": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:ocelot": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:jaguar": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:spider": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:tayra": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:caiman": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:harpy": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "ring": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "push": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "room": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "cage": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "find": {
+     "min": 1,
+     "max": 1,
+     "layouts": 16
+    }
+   },
+   "six": [
+    "run",
+    "jump"
+   ],
+   "pairs": [
+    "run+jump"
+   ],
+   "used": {
+    "liana": "0/0/0",
+    "trunk": "0/0/0",
+    "rope": "0/0/0",
+    "mushroom": "5/23/8",
+    "breaking": "0/0/0",
+    "bush": "0/0/0",
+    "push": "0/0/0",
+    "fights": "0/0/0",
+    "eagleHits": "0/0/0"
+   },
+   "bot": "sealed door 182 s, 2 rescues; shrine 189 s, 3 rescues; sealed door 190 s, 2 rescues"
+  },
+  {
+   "id": "1-3",
+   "name": "Branch Snakes",
+   "counts": {
+    "gap": {
+     "min": 108,
+     "max": 160,
+     "layouts": 16
+    },
+    "mushroom": {
+     "min": 0,
+     "max": 7,
+     "layouts": 9
+    },
+    "liana": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "trunk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "silk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "rope": {
+     "min": 3,
+     "max": 3,
+     "layouts": 16
+    },
+    "updraft": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "moving": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "lift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "drift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "breaking": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "chase": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "bush": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "thorn": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "water": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:wind": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:web": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:spore": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:dark": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:tide": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:crumble": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:geyser": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:bolt": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:snake": {
+     "min": 21,
+     "max": 29,
+     "layouts": 16
+    },
+    "animal:boa": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:turtle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:frog": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:ocelot": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:jaguar": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:spider": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:tayra": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:caiman": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:harpy": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "ring": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "push": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "room": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "cage": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "find": {
+     "min": 1,
+     "max": 1,
+     "layouts": 16
+    }
+   },
+   "six": [
+    "run",
+    "jump"
+   ],
+   "pairs": [
+    "run+jump"
+   ],
+   "used": {
+    "liana": "0/0/0",
+    "trunk": "0/0/0",
+    "rope": "0/0/0",
+    "mushroom": "8/3/9",
+    "breaking": "0/0/0",
+    "bush": "0/0/0",
+    "push": "0/0/0",
+    "fights": "16/18/6",
+    "eagleHits": "0/0/0"
+   },
+   "bot": "shrine 132 s, 0 rescues; shrine 130 s, 0 rescues; sealed door 127 s, 0 rescues"
+  },
+  {
+   "id": "1-4",
+   "name": "Up the Kapok",
+   "counts": {
+    "gap": {
+     "min": 48,
+     "max": 60,
+     "layouts": 16
+    },
+    "mushroom": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "liana": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "trunk": {
+     "min": 20,
+     "max": 22,
+     "layouts": 16
+    },
+    "silk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "rope": {
+     "min": 8,
+     "max": 9,
+     "layouts": 16
+    },
+    "updraft": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "moving": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "lift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "drift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "breaking": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "chase": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "bush": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "thorn": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "water": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:wind": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:web": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:spore": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:dark": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:tide": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:crumble": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:geyser": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:bolt": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:snake": {
+     "min": 0,
+     "max": 4,
+     "layouts": 8
+    },
+    "animal:boa": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:turtle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:frog": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:ocelot": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:jaguar": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:spider": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:tayra": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:caiman": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:harpy": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "ring": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "push": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "room": {
+     "min": 2,
+     "max": 2,
+     "layouts": 16
+    },
+    "cage": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "find": {
+     "min": 1,
+     "max": 1,
+     "layouts": 16
+    }
+   },
+   "six": [
+    "run",
+    "jump",
+    "vines"
+   ],
+   "pairs": [
+    "run+jump",
+    "run+vines",
+    "jump+vines"
+   ],
+   "used": {
+    "liana": "0/0/0",
+    "trunk": "89/69/93",
+    "rope": "11/13/11",
+    "mushroom": "0/1/1",
+    "breaking": "0/0/0",
+    "bush": "0/0/0",
+    "push": "0/0/0",
+    "fights": "0/3/1",
+    "eagleHits": "0/0/0"
+   },
+   "bot": "shrine 349 s, 11 rescues; shrine 325 s, 12 rescues; time 360 s, 13 rescues"
+  },
+  {
+   "id": "1-5",
+   "name": "Where She Walked",
+   "counts": {
+    "gap": {
+     "min": 152,
+     "max": 173,
+     "layouts": 16
+    },
+    "mushroom": {
+     "min": 1,
+     "max": 15,
+     "layouts": 16
+    },
+    "liana": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "trunk": {
+     "min": 2,
+     "max": 12,
+     "layouts": 16
+    },
+    "silk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "rope": {
+     "min": 1,
+     "max": 2,
+     "layouts": 16
+    },
+    "updraft": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "moving": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "lift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "drift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "breaking": {
+     "min": 8,
+     "max": 24,
+     "layouts": 16
+    },
+    "chase": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "bush": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "thorn": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "water": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:wind": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:web": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:spore": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:dark": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:tide": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:crumble": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:geyser": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:bolt": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:snake": {
+     "min": 1,
+     "max": 14,
+     "layouts": 16
+    },
+    "animal:boa": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:turtle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:frog": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:ocelot": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:jaguar": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:spider": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:tayra": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:caiman": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:harpy": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "ring": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "push": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "room": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "cage": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "find": {
+     "min": 1,
+     "max": 1,
+     "layouts": 16
+    }
+   },
+   "six": [
+    "run",
+    "jump",
+    "branches",
+    "vines"
+   ],
+   "pairs": [
+    "run+jump",
+    "run+branches",
+    "run+vines",
+    "jump+branches",
+    "jump+vines",
+    "branches+vines"
+   ],
+   "used": {
+    "liana": "0/0/0",
+    "trunk": "2/1/0",
+    "rope": "0/0/0",
+    "mushroom": "18/17/1",
+    "breaking": "0/0/0",
+    "bush": "0/0/0",
+    "push": "0/0/0",
+    "fights": "0/0/0",
+    "eagleHits": "0/0/0"
+   },
+   "bot": "sealed door 197 s, 2 rescues; sealed door 164 s, 1 rescues; sealed door 203 s, 10 rescues"
+  },
+  {
+   "id": "1-6",
+   "name": "First Lianas",
+   "counts": {
+    "gap": {
+     "min": 130,
+     "max": 155,
+     "layouts": 16
+    },
+    "mushroom": {
+     "min": 0,
+     "max": 4,
+     "layouts": 5
+    },
+    "liana": {
+     "min": 16,
+     "max": 32,
+     "layouts": 16
+    },
+    "trunk": {
+     "min": 4,
+     "max": 9,
+     "layouts": 16
+    },
+    "silk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "rope": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "updraft": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "moving": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "lift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "drift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "breaking": {
+     "min": 1,
+     "max": 1,
+     "layouts": 16
+    },
+    "chase": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "bush": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "thorn": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "water": {
+     "min": 1,
+     "max": 1,
+     "layouts": 16
+    },
+    "zone:wind": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:web": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:spore": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:dark": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:tide": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:crumble": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:geyser": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:bolt": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:snake": {
+     "min": 1,
+     "max": 11,
+     "layouts": 16
+    },
+    "animal:boa": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:turtle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:frog": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:ocelot": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:jaguar": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:spider": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:tayra": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:caiman": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:harpy": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "ring": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "push": {
+     "min": 4,
+     "max": 4,
+     "layouts": 16
+    },
+    "room": {
+     "min": 3,
+     "max": 3,
+     "layouts": 16
+    },
+    "cage": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "find": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    }
+   },
+   "six": [
+    "run",
+    "jump",
+    "branches",
+    "vines"
+   ],
+   "pairs": [
+    "run+jump",
+    "run+branches",
+    "run+vines",
+    "jump+branches",
+    "jump+vines",
+    "branches+vines"
+   ],
+   "used": {
+    "liana": "32/39/46",
+    "trunk": "2/0/2",
+    "rope": "0/0/0",
+    "mushroom": "6/2/0",
+    "breaking": "0/0/0",
+    "bush": "0/0/0",
+    "push": "2/2/2",
+    "fights": "2/2/1",
+    "eagleHits": "0/0/0"
+   },
+   "bot": "shrine 267 s, 6 rescues; shrine 268 s, 6 rescues; shrine 285 s, 7 rescues"
+  },
+  {
+   "id": "1-7",
+   "name": "A Very Good Bush",
+   "counts": {
+    "gap": {
+     "min": 112,
+     "max": 191,
+     "layouts": 16
+    },
+    "mushroom": {
+     "min": 0,
+     "max": 21,
+     "layouts": 13
+    },
+    "liana": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "trunk": {
+     "min": 1,
+     "max": 1,
+     "layouts": 16
+    },
+    "silk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "rope": {
+     "min": 1,
+     "max": 1,
+     "layouts": 16
+    },
+    "updraft": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "moving": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "lift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "drift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "breaking": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "chase": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "eagle": {
+     "min": 10,
+     "max": 18,
+     "layouts": 16
+    },
+    "bush": {
+     "min": 26,
+     "max": 48,
+     "layouts": 16
+    },
+    "thorn": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "water": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:wind": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:web": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:spore": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:dark": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:tide": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:crumble": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:geyser": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:bolt": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:snake": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:boa": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:turtle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:frog": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:ocelot": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:jaguar": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:spider": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:tayra": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:caiman": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:harpy": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "ring": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "push": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "room": {
+     "min": 2,
+     "max": 2,
+     "layouts": 16
+    },
+    "cage": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "find": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    }
+   },
+   "six": [
+    "run",
+    "jump",
+    "vines"
+   ],
+   "pairs": [
+    "run+jump",
+    "run+vines",
+    "jump+vines"
+   ],
+   "used": {
+    "liana": "0/0/0",
+    "trunk": "0/0/0",
+    "rope": "1/0/1",
+    "mushroom": "22/18/21",
+    "breaking": "0/0/0",
+    "bush": "4/3/2",
+    "push": "0/0/0",
+    "fights": "0/0/0",
+    "eagleHits": "1/1/1"
+   },
+   "bot": "shrine 178 s, 0 rescues; shrine 160 s, 0 rescues; shrine 226 s, 2 rescues"
+  },
+  {
+   "id": "1-8",
+   "name": "The Long Branch",
+   "counts": {
+    "gap": {
+     "min": 124,
+     "max": 130,
+     "layouts": 16
+    },
+    "mushroom": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "liana": {
+     "min": 4,
+     "max": 13,
+     "layouts": 16
+    },
+    "trunk": {
+     "min": 2,
+     "max": 5,
+     "layouts": 16
+    },
+    "silk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "rope": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "updraft": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "moving": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "lift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "drift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "breaking": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "chase": {
+     "min": 1,
+     "max": 1,
+     "layouts": 16
+    },
+    "eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "bush": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "thorn": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "water": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:wind": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:web": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:spore": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:dark": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:tide": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:crumble": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:geyser": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:bolt": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:snake": {
+     "min": 5,
+     "max": 8,
+     "layouts": 16
+    },
+    "animal:boa": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:turtle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:frog": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:ocelot": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:jaguar": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:spider": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:tayra": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:caiman": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:harpy": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "ring": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "push": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "room": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "cage": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "find": {
+     "min": 1,
+     "max": 1,
+     "layouts": 16
+    }
+   },
+   "six": [
+    "run",
+    "jump",
+    "branches",
+    "vines"
+   ],
+   "pairs": [
+    "run+jump",
+    "run+branches",
+    "run+vines",
+    "jump+branches",
+    "jump+vines",
+    "branches+vines"
+   ],
+   "used": {
+    "liana": "5/13/13",
+    "trunk": "2/2/2",
+    "rope": "0/0/0",
+    "mushroom": "0/0/0",
+    "breaking": "0/0/0",
+    "bush": "0/0/0",
+    "push": "0/0/0",
+    "fights": "0/0/0",
+    "eagleHits": "0/0/0"
+   },
+   "bot": "shrine 137 s, 0 rescues; shrine 125 s, 0 rescues; shrine 128 s, 0 rescues"
+  },
+  {
+   "id": "1-9",
+   "name": "The Boa's Branches",
+   "counts": {
+    "gap": {
+     "min": 92,
+     "max": 114,
+     "layouts": 16
+    },
+    "mushroom": {
+     "min": 1,
+     "max": 10,
+     "layouts": 16
+    },
+    "liana": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "trunk": {
+     "min": 0,
+     "max": 9,
+     "layouts": 7
+    },
+    "silk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "rope": {
+     "min": 0,
+     "max": 2,
+     "layouts": 7
+    },
+    "updraft": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "moving": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "lift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "drift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "breaking": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "chase": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "bush": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "thorn": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "water": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:wind": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:web": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:spore": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:dark": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:tide": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:crumble": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:geyser": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:bolt": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:snake": {
+     "min": 11,
+     "max": 17,
+     "layouts": 16
+    },
+    "animal:boa": {
+     "min": 2,
+     "max": 8,
+     "layouts": 16
+    },
+    "animal:turtle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:frog": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:ocelot": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:jaguar": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:spider": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:tayra": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:caiman": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:harpy": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "ring": {
+     "min": 2,
+     "max": 2,
+     "layouts": 16
+    },
+    "push": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "room": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "cage": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "find": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    }
+   },
+   "six": [
+    "run",
+    "jump",
+    "vines"
+   ],
+   "pairs": [
+    "run+jump",
+    "run+vines",
+    "jump+vines"
+   ],
+   "used": {
+    "liana": "0/0/0",
+    "trunk": "0/0/0",
+    "rope": "0/0/0",
+    "mushroom": "3/1/2",
+    "breaking": "0/0/0",
+    "bush": "0/0/0",
+    "push": "0/0/0",
+    "fights": "14/12/12",
+    "eagleHits": "0/0/0"
+   },
+   "bot": "sealed door 140 s, 2 rescues; sealed door 157 s, 2 rescues; sealed door 130 s, 2 rescues"
+  },
+  {
+   "id": "1-10",
+   "name": "the boss lair (Venom Fang)",
+   "counts": {
+    "gap": {
+     "min": 3,
+     "max": 3,
+     "layouts": 16
+    },
+    "mushroom": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "liana": {
+     "min": 1,
+     "max": 1,
+     "layouts": 16
+    },
+    "trunk": {
+     "min": 3,
+     "max": 3,
+     "layouts": 16
+    },
+    "silk": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "rope": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "updraft": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "moving": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "lift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "drift": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "breaking": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "chase": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "bush": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "thorn": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "water": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:wind": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:web": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:spore": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:dark": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:tide": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:crumble": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:geyser": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "zone:bolt": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:snake": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:boa": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:turtle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:frog": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:ocelot": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:jaguar": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:spider": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:tayra": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:eagle": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:caiman": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "animal:harpy": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "ring": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "push": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "room": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "cage": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    },
+    "find": {
+     "min": 0,
+     "max": 0,
+     "layouts": 0
+    }
+   },
+   "six": [
+    "run",
+    "jump",
+    "vines"
+   ],
+   "pairs": [
+    "run+jump",
+    "run+vines",
+    "jump+vines"
+   ],
+   "used": {},
+   "bot": "-"
+  }
+ ],
+ "inGame": {
+  "gap": [
+   "1-1",
+   "1-2",
+   "1-3",
+   "1-4",
+   "1-5",
+   "1-6",
+   "1-7",
+   "1-8",
+   "1-9",
+   "1-10",
+   "2-1",
+   "2-2",
+   "2-3",
+   "2-4",
+   "2-5",
+   "2-6",
+   "2-7",
+   "2-8",
+   "2-9",
+   "2-10",
+   "3-1",
+   "3-2",
+   "3-3",
+   "3-4",
+   "3-5",
+   "3-6",
+   "3-7",
+   "3-8",
+   "3-9",
+   "3-10",
+   "4-1",
+   "4-2",
+   "4-3",
+   "4-4",
+   "4-5",
+   "4-6",
+   "4-7",
+   "4-8",
+   "4-9",
+   "4-10",
+   "5-M",
+   "5-1",
+   "5-2",
+   "5-3",
+   "5-4",
+   "5-5",
+   "5-6",
+   "5-7",
+   "5-8",
+   "5-9",
+   "5-10",
+   "6-1",
+   "6-2",
+   "6-3",
+   "6-4",
+   "6-5",
+   "6-6",
+   "6-7",
+   "6-8",
+   "6-9",
+   "6-10",
+   "7-1",
+   "7-2",
+   "7-3",
+   "7-4",
+   "7-5",
+   "7-6",
+   "7-7",
+   "7-8",
+   "7-9",
+   "7-10",
+   "8-1",
+   "8-2",
+   "8-3",
+   "8-4",
+   "8-5",
+   "8-6",
+   "8-7",
+   "8-8",
+   "8-9",
+   "8-10",
+   "9-1",
+   "9-2",
+   "9-3",
+   "9-4",
+   "9-5",
+   "9-6",
+   "9-7",
+   "9-8",
+   "9-9",
+   "9-10",
+   "10-1",
+   "10-2",
+   "10-3",
+   "10-4",
+   "10-5",
+   "10-6",
+   "10-7",
+   "10-8",
+   "10-9",
+   "10-10"
+  ],
+  "mushroom": [
+   "1-1",
+   "1-2",
+   "1-3",
+   "1-5",
+   "1-6",
+   "1-7",
+   "1-9",
+   "4-5",
+   "5-8",
+   "7-2",
+   "7-7",
+   "7-8",
+   "8-7",
+   "9-2",
+   "9-5",
+   "9-7",
+   "9-8",
+   "9-9",
+   "10-2",
+   "10-3",
+   "10-4",
+   "10-5",
+   "10-8"
+  ],
+  "find": [
+   "1-2",
+   "1-3",
+   "1-4",
+   "1-5",
+   "1-8",
+   "2-2",
+   "2-3",
+   "2-5",
+   "2-8",
+   "3-2",
+   "3-3",
+   "3-5",
+   "3-6",
+   "3-7",
+   "3-8",
+   "4-2",
+   "4-3",
+   "4-6",
+   "4-8",
+   "4-9",
+   "5-2",
+   "5-5",
+   "5-6",
+   "5-8",
+   "5-9",
+   "6-2",
+   "6-3",
+   "6-5",
+   "6-6",
+   "6-8",
+   "7-2",
+   "7-3",
+   "7-5",
+   "7-6",
+   "7-7",
+   "7-8",
+   "8-2",
+   "8-3",
+   "8-5",
+   "8-6",
+   "8-8",
+   "9-2",
+   "9-3",
+   "9-5",
+   "9-6",
+   "9-8",
+   "10-2",
+   "10-3",
+   "10-5",
+   "10-8"
+  ],
+  "rope": [
+   "1-3",
+   "1-4",
+   "1-5",
+   "1-7",
+   "1-9",
+   "2-6",
+   "3-4",
+   "4-1",
+   "4-6",
+   "8-2",
+   "9-1",
+   "9-5",
+   "9-8",
+   "10-1"
+  ],
+  "animal:snake": [
+   "1-3",
+   "1-5",
+   "1-6",
+   "1-8",
+   "1-9",
+   "2-2",
+   "2-6",
+   "2-7",
+   "4-6",
+   "5-6",
+   "5-8",
+   "7-2",
+   "7-8",
+   "8-7",
+   "9-1",
+   "9-2",
+   "9-4",
+   "9-5",
+   "9-6",
+   "9-7",
+   "9-8",
+   "9-9",
+   "10-1",
+   "10-2",
+   "10-3",
+   "10-4",
+   "10-5",
+   "10-6",
+   "10-7",
+   "10-8",
+   "10-9"
+  ],
+  "trunk": [
+   "1-4",
+   "1-5",
+   "1-6",
+   "1-7",
+   "1-8",
+   "1-10",
+   "2-3",
+   "2-6",
+   "2-10",
+   "3-2",
+   "3-4",
+   "3-6",
+   "3-7",
+   "3-9",
+   "3-10",
+   "4-1",
+   "4-2",
+   "4-3",
+   "4-5",
+   "4-6",
+   "4-8",
+   "4-9",
+   "4-10",
+   "5-M",
+   "5-6",
+   "5-8",
+   "5-10",
+   "6-1",
+   "6-6",
+   "6-7",
+   "6-8",
+   "6-10",
+   "7-2",
+   "7-3",
+   "7-5",
+   "7-7",
+   "7-8",
+   "7-9",
+   "7-10",
+   "8-1",
+   "8-4",
+   "8-5",
+   "8-7",
+   "8-9",
+   "8-10",
+   "9-1",
+   "9-2",
+   "9-3",
+   "9-4",
+   "9-5",
+   "9-6",
+   "9-7",
+   "9-8",
+   "9-9",
+   "9-10",
+   "10-1",
+   "10-2",
+   "10-3",
+   "10-4",
+   "10-5",
+   "10-6",
+   "10-7",
+   "10-8",
+   "10-9",
+   "10-10"
+  ],
+  "room": [
+   "1-4",
+   "1-6",
+   "1-7",
+   "2-2",
+   "2-3",
+   "2-8",
+   "2-9",
+   "3-2",
+   "3-5",
+   "3-7",
+   "4-1",
+   "4-6",
+   "4-8",
+   "5-M",
+   "5-9",
+   "6-3",
+   "6-6",
+   "6-7",
+   "7-3",
+   "7-7",
+   "8-1",
+   "8-2",
+   "8-3",
+   "8-5"
+  ],
+  "breaking": [
+   "1-5",
+   "1-6",
+   "5-8",
+   "7-1",
+   "7-2",
+   "7-5",
+   "7-6",
+   "7-8",
+   "8-7",
+   "9-2",
+   "9-7",
+   "10-1",
+   "10-2",
+   "10-4",
+   "10-5",
+   "10-8"
+  ],
+  "liana": [
+   "1-6",
+   "1-8",
+   "1-10",
+   "2-4",
+   "2-7",
+   "2-10",
+   "3-2",
+   "3-6",
+   "3-8",
+   "3-9",
+   "3-10",
+   "4-4",
+   "4-10",
+   "5-4",
+   "5-5",
+   "5-6",
+   "5-8",
+   "5-10",
+   "6-1",
+   "6-3",
+   "6-6",
+   "6-7",
+   "6-8",
+   "6-10",
+   "7-2",
+   "7-5",
+   "7-8",
+   "7-9",
+   "7-10",
+   "8-3",
+   "8-4",
+   "8-5",
+   "8-7",
+   "8-10",
+   "9-1",
+   "9-2",
+   "9-3",
+   "9-4",
+   "9-5",
+   "9-6",
+   "9-7",
+   "9-8",
+   "9-9",
+   "10-1",
+   "10-2",
+   "10-3",
+   "10-4",
+   "10-5",
+   "10-6",
+   "10-7",
+   "10-8",
+   "10-9",
+   "10-10"
+  ],
+  "water": [
+   "1-6",
+   "2-1",
+   "2-2",
+   "2-3",
+   "2-4",
+   "2-5",
+   "2-7",
+   "2-8",
+   "2-9",
+   "3-1",
+   "3-2",
+   "3-3",
+   "3-5",
+   "3-6",
+   "3-7",
+   "3-8",
+   "3-9",
+   "4-4",
+   "5-6"
+  ],
+  "push": [
+   "1-6",
+   "4-3",
+   "4-8",
+   "4-9"
+  ],
+  "eagle": [
+   "1-7",
+   "3-2",
+   "3-7",
+   "4-5",
+   "6-2",
+   "6-3",
+   "6-7",
+   "8-1",
+   "8-2",
+   "8-8"
+  ],
+  "bush": [
+   "1-7",
+   "3-2",
+   "3-7",
+   "4-5",
+   "6-2",
+   "6-3",
+   "6-7",
+   "8-2"
+  ],
+  "chase": [
+   "1-8"
+  ],
+  "animal:boa": [
+   "1-9",
+   "5-6",
+   "7-3",
+   "7-6",
+   "7-9",
+   "8-6",
+   "8-9",
+   "9-1",
+   "9-3",
+   "9-4",
+   "9-5",
+   "9-6",
+   "9-8",
+   "9-9",
+   "10-3",
+   "10-6",
+   "10-7",
+   "10-9"
+  ],
+  "ring": [
+   "1-9",
+   "3-9"
+  ],
+  "drift": [
+   "2-1",
+   "2-2",
+   "2-3",
+   "2-4",
+   "2-5",
+   "2-7",
+   "2-9"
+  ],
+  "cage": [
+   "2-3",
+   "2-8",
+   "4-8"
+  ],
+  "animal:turtle": [
+   "2-5",
+   "2-9"
+  ],
+  "lift": [
+   "2-7"
+  ],
+  "moving": [
+   "2-10",
+   "5-10",
+   "6-10",
+   "7-10",
+   "8-10",
+   "9-5",
+   "9-10",
+   "10-1",
+   "10-10"
+  ],
+  "zone:spore": [
+   "3-1",
+   "3-3",
+   "3-6"
+  ],
+  "zone:dark": [
+   "3-1",
+   "3-2",
+   "3-3",
+   "3-5",
+   "3-6",
+   "3-7",
+   "5-M",
+   "6-6",
+   "8-1",
+   "8-2",
+   "8-3",
+   "8-4",
+   "8-5",
+   "8-6",
+   "8-8",
+   "8-9"
+  ],
+  "animal:ocelot": [
+   "3-3",
+   "3-9",
+   "5-6",
+   "5-8",
+   "6-5",
+   "6-9",
+   "7-3",
+   "7-5",
+   "7-6",
+   "7-7",
+   "7-8",
+   "7-9",
+   "8-2",
+   "8-3",
+   "8-7",
+   "8-8",
+   "9-1",
+   "9-2",
+   "9-3",
+   "9-4",
+   "9-6",
+   "10-7",
+   "10-9"
+  ],
+  "animal:jaguar": [
+   "3-3",
+   "3-9",
+   "7-8",
+   "8-7",
+   "8-9",
+   "9-2",
+   "9-3",
+   "9-4",
+   "9-6",
+   "9-8",
+   "9-9",
+   "10-2",
+   "10-3",
+   "10-7",
+   "10-8",
+   "10-9"
+  ],
+  "thorn": [
+   "3-4",
+   "3-5",
+   "3-7",
+   "3-8"
+  ],
+  "zone:wind": [
+   "4-2",
+   "4-4",
+   "4-6",
+   "4-8",
+   "4-9"
+  ],
+  "updraft": [
+   "4-7"
+  ],
+  "animal:spider": [
+   "5-1",
+   "5-2",
+   "5-3",
+   "5-4",
+   "5-5",
+   "5-7",
+   "5-9"
+  ],
+  "silk": [
+   "5-4",
+   "5-5"
+  ],
+  "zone:web": [
+   "5-6"
+  ],
+  "animal:tayra": [
+   "5-6",
+   "5-8",
+   "6-3",
+   "6-5",
+   "6-7",
+   "6-8",
+   "6-9",
+   "7-2",
+   "7-3",
+   "7-5",
+   "7-7",
+   "7-9",
+   "8-5",
+   "8-7",
+   "8-8",
+   "9-1",
+   "9-3",
+   "9-4",
+   "9-5",
+   "9-6",
+   "9-7",
+   "9-8",
+   "9-9",
+   "10-1",
+   "10-2",
+   "10-3",
+   "10-4",
+   "10-7",
+   "10-9"
+  ],
+  "animal:eagle": [
+   "5-6",
+   "5-8",
+   "7-2",
+   "7-8",
+   "8-7",
+   "9-1",
+   "9-2",
+   "9-3",
+   "9-4",
+   "9-5",
+   "9-6",
+   "9-7",
+   "9-8",
+   "9-9",
+   "10-1",
+   "10-2",
+   "10-3",
+   "10-4",
+   "10-5",
+   "10-6",
+   "10-7",
+   "10-8",
+   "10-9"
+  ],
+  "animal:frog": [
+   "6-1",
+   "6-3",
+   "6-4",
+   "6-5",
+   "6-6",
+   "6-7",
+   "6-8",
+   "6-9",
+   "7-1",
+   "7-5",
+   "7-6",
+   "7-7",
+   "7-9"
+  ],
+  "zone:tide": [
+   "6-4",
+   "6-5",
+   "6-9"
+  ],
+  "animal:caiman": [
+   "6-5",
+   "6-9",
+   "9-1",
+   "9-3",
+   "9-4",
+   "9-5",
+   "9-6",
+   "9-9",
+   "10-2",
+   "10-4",
+   "10-5",
+   "10-6",
+   "10-9"
+  ],
+  "zone:crumble": [
+   "7-1",
+   "7-5",
+   "7-6"
+  ],
+  "animal:harpy": [
+   "8-7",
+   "8-8",
+   "9-1",
+   "9-2",
+   "9-3",
+   "9-5",
+   "9-6",
+   "9-7",
+   "9-9",
+   "10-1",
+   "10-3",
+   "10-4",
+   "10-5",
+   "10-6",
+   "10-7",
+   "10-8",
+   "10-9"
+  ],
+  "zone:geyser": [
+   "9-1",
+   "9-3",
+   "9-4",
+   "9-5",
+   "9-6",
+   "9-8",
+   "9-9"
+  ],
+  "zone:bolt": [
+   "10-1",
+   "10-3",
+   "10-6",
+   "10-7",
+   "10-9"
+  ]
+ }
+}
