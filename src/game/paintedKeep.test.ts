@@ -21,5 +21,6 @@ test('the stage waits for its backdrop, and a late one fades in (VI-3)', () => {
   assert.ok(FADE_IN_MS >= 250 && FADE_IN_MS <= 300);
   assert.ok(stageUsesCanopy({ id: '1-8', objectiveType: 'collect' }), '1-8 runs the long branch high in the canopy');
   assert.ok(stageUsesCanopy({ id: '1-4', objectiveType: 'ascent' }));
+  assert.ok(stageUsesCanopy({ id: '1-1', objectiveType: 'sprint' }), '1-1 climbs from the forest floor into the canopy (proto.rise)');
   assert.ok(!stageUsesCanopy({ id: '1-2', objectiveType: 'collect' }));
 });

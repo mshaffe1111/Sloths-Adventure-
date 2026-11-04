@@ -163,8 +163,8 @@ export function preloadBackdrop(world: number, stageId: string): void {
   void backdropReady(world, stageId);
 }
 
-/** this stage is played high in the trees (1-8's long branch, the ascents), so its world's canopy strips are part of its backdrop */
-export const stageUsesCanopy = (cfg: { id: string; objectiveType?: string }): boolean => cfg.id === '1-8' || cfg.objectiveType === 'ascent';
+/** this stage is played high in the trees (1-8's long branch, the ascents, 1-1's climb into the canopy), so its world's canopy strips are part of its backdrop */
+export const stageUsesCanopy = (cfg: { id: string; objectiveType?: string }): boolean => cfg.id === '1-8' || cfg.id === '1-1' || cfg.objectiveType === 'ascent';
 
 /**
  * Start decoding the strips a stage plays in (and its canopy strips when `canopy`), resolving once they are all decoded, or have failed
