@@ -232,6 +232,9 @@ export interface Enemy {
   slideDir?: 1 | -1;
   /** World 1's one trick per animal (w1Tricks.ts, R-159.1): set only by World 1's placements, so no other world changes */
   trick?: import('./w1Tricks.ts').Trick;
+  /** a stomp vault's snake (R-159.1): the only way across its drop, so it comes back at its spot when he respawns; once back, finishing
+   *  it again does not count toward the stage's goal (no farming the count at a flag) */
+  vaultHome?: { x: number; y: number; back?: boolean };
   /** World 1's vine snake: the liana it hangs on, and how far down it from the top */
   vineId?: number;
   hangLen?: number;

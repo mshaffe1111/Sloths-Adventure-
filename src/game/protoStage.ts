@@ -1890,6 +1890,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       hint(x0 + 40, v, v, v);
     }
     snake(sx, G, 12);
+    E[E.length - 1].vaultHome = { x: sx, y: G - 14 };
     const gap = vaultGap(reachJump(0, true));
     const far = edge + gap;
     if (soft) softPit(edge, far);

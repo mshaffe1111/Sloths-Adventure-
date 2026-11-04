@@ -341,3 +341,23 @@ test('mashing never stacks hit words: one word at a time over the boa and over t
     }
   }
 });
+
+test('the stomp vault after a lost life: its snake is back at its spot (the drop can be crossed again), and finishing it again does not count', () => {
+  const b = vaultWorld();
+  b.s.vaultHome = { x: b.s.x, y: b.s.y };
+  const home = b.s.x;
+  jumpAcross(b.r, b.edge, b.s.x - Math.round(reachJump(0, false)) + 10, () => b.s.defeated);
+  assert.ok(b.s.defeated, 'the vault finished it');
+  const counted = b.r.p.enemiesDefeated;
+  assert.equal(counted, 1);
+  // a life lost further on: he comes back at a flag before the vault
+  const e = b.r.e as unknown as { checkpoint: { x: number; y: number }; respawnAtCheckpoint: (r: string) => void };
+  e.checkpoint = { x: b.edge - 700, y: GROUND };
+  e.respawnAtCheckpoint('hurt');
+  assert.equal(b.s.defeated, false, 'the vault snake is back');
+  assert.equal(b.s.x, home, 'at its own spot on the lip');
+  b.r.wait(2.2);
+  jumpAcross(b.r, b.edge, b.s.x - Math.round(reachJump(0, false)) + 10, () => b.s.defeated);
+  assert.ok(b.r.p.x > b.edge + b.gap && b.r.p.y <= GROUND + 2, `vaulted across again (x ${Math.round(b.r.p.x)}, y ${Math.round(b.r.p.y)})`);
+  assert.equal(b.r.p.enemiesDefeated, counted, 'the second finish does not count toward the goal');
+});

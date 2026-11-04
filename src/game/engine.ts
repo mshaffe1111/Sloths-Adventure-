@@ -4594,7 +4594,7 @@ export class GameEngine {
     e.koTimer = 0;
     e.koAngle = 0;
     e.koLanded = false;
-    p.enemiesDefeated++;
+    if (!e.vaultHome?.back) p.enemiesDefeated++;
     if (e.groundY === undefined) e.groundY = e.y;
     if (isPredator(e.type)) staggerPredator(e); // open crouch pose, then the hop and flop
     const ko = koLaunch(e, dir);
@@ -5202,6 +5202,14 @@ export class GameEngine {
     }
     // every animal loses its lock on him: whatever got him goes back to its business (it re-notices if he is still in range)
     for (const e of this.enemies) e.alertT = 0;
+    // a stomp vault's snake comes back at its spot, or the drop it springs him over could not be crossed again (R-159.1; as crumbling
+    // planks come back, above)
+    for (const e of this.enemies) {
+      const h = e.vaultHome;
+      if (!h || !e.defeated) continue;
+      Object.assign(e, { defeated: false, hp: e.maxHp, x: h.x, y: h.y, vx: 0, vy: 0, koTimer: 0, koAngle: 0, koLanded: false, stagger: 0, state: 'patrol', stateT: 0, groundY: undefined });
+      h.back = true;
+    }
     p.hp = p.maxHp;
     p.x = this.checkpoint.x;
     p.y = this.checkpoint.y;

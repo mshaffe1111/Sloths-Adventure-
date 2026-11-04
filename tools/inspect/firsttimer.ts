@@ -704,6 +704,9 @@ export class FirstTimerRun {
    *  onto the snake, and once it springs him up steers the way across until he lands */
   private vaultDir: -1 | 0 | 1 = 0;
   private vaulted = false;
+  /** where on the vault snake he means to land: a little past its middle, on the drop's side (the spring then has the most room) */
+  private vaultAt = 0;
+  private vaultY = 0;
   private swapGap = 0.15;
   private lastPress = -1;
   private lastSteer: -1 | 0 | 1 = 0;
@@ -1241,6 +1244,15 @@ export class FirstTimerRun {
       // (the stomp vault: the thumb kept on the glass from the hop, then the way across once the snake springs him up)
       if (this.vaultDir !== 0) {
         if (p.vy < -700) this.vaulted = true;
+        // (on the way down onto it, the thumb steers him over its drop-side half: a drift in the hop otherwise lands him behind it)
+        // (steered by where he will come down, as a thumb does: his speed carried on over the rest of the fall)
+        if (!this.vaulted) {
+          const rise = p.vy < 0 ? (p.vy * p.vy) / (2 * PHYS.gravUp) : 0;
+          const top = p.y - rise;
+          const fall = (p.vy < 0 ? -p.vy / PHYS.gravUp : 0) + Math.sqrt(Math.max(0, 2 * (this.vaultY - top)) / PHYS.gravDown) - (p.vy > 0 ? p.vy / PHYS.gravDown : 0);
+          const land = p.x + p.vx * Math.max(0, fall);
+          out = land < this.vaultAt - 10 ? { right: true } : land > this.vaultAt + 10 ? { left: true } : {};
+        }
         if (this.vaulted) out = { ...side(this.vaultDir), ...(out.press ? { press: true } : {}) };
         out.jump = true;
         // (and, knowing the second jump, the second flick at the vault's top, the moment the spring runs out: the vault is built for it,
@@ -1403,6 +1415,8 @@ export class FirstTimerRun {
         const speed = p.vx * to;
         const carry = Math.max(0, speed) * (0.6 + who.thumb[0]) - 12;
         this.vaultDir = dir > 0 ? 1 : -1;
+        this.vaultAt = m.x + this.vaultDir * 12;
+        this.vaultY = m.y - 10;
         if (Math.abs(dx) <= 28 && Math.abs(p.vx) < 60) return this.decide(0, 'single', false, {});
         if (speed > 150 && Math.abs(dx) <= carry + 20 && Math.abs(dx) >= carry - 30) return this.decide(0, 'single', false, side(to));
         this.vaultDir = 0;
