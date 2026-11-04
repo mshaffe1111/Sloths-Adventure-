@@ -2,6 +2,7 @@
 
 Source: reference/W1-REBUILD-PLAN.md (the lead's table, the corrections of 12:50 PM ET), research 11-04 lines 59, 100, 531, 585,
 596-603, and the accepted R-159.1 combat teach. Built in `src/game/protoStage.ts` (plan '1-3') with the World 1 kit, no `fillTo()`.
+Top-down still: reference/plans/1-3-rebuild-topdown.png (the ledges are beatTrace's real landings).
 
 ## The row (must differ from 1-2 and 1-4 in at least four columns)
 | Job | Map shape | Moves fall on (1-3's music, 130 BPM: quarter 0.46 s, half 0.92 s) | Beat feel | Main pair | Look | Signature |
@@ -41,3 +42,20 @@ About 2:15 for a first-timer on Normal; a skilled player never under 2:00 (the h
 - The fun gate's 1-3 counts down (funknown.json lowered), and 1-3's "like the stage before" flag gone against the new 1-2.
 - Stills of every node, upright and sideways, and a top-down still of the whole stage with the two roads coloured.
 - The full gate, every line pasted.
+
+## Traced (beatTrace on w1-rhythm, `stageBpm` = 132.9 BPM for 1-3, not 130: the music's tempo times its stage factor)
+| Node | Bars (8 eighths each) | x (px) | Take-offs per s | Skip-line hazard spots | Dead walks over 2.5 s | checkTrace |
+|---|---|---|---|---|---|---|
+| 1 Intro | h......./......../h......./........ | 400-2859 | 0.28 | 2 | 2 (filled: the sleeping snake, a critter) | ok |
+| 2 Ramp | h...h.../h......./h...h.../h....... | 2859-5318 | 0.83 | 9 | 0 | ok |
+| 3 High road | h...h... x3 | 5318-7262, up to 150 px high | 1.11 | 14 | 0 | ok |
+| 3 Low road | h......./....h... x2 | 5318-7777 | 0.55 | 0 (a snake set on its run) | 0 | ok |
+| 6 Climax | h...h.../h..o..../... (5 bars) | 9800-12773 | 1.11 | 14 | 0 | ok |
+Nodes 4 (rest), 5 (ropes: the kit's shimmy rope) and 7 (cool-down slope) aren't traced; ropes and rests aren't beat placements.
+The twist (rule 2): the vault's spring holds about 3 quarters in the air, so it breaks the half-note hops he has just learned.
+
+## For the lead to rule on
+- The pair "in the same move" (rule 1). Your example is a stomp-vault off a snake onto a crumbling branch, but W1-REBUILD-PLAN gives
+  1-4 the job of teaching creaking limbs. So 1-3 can't require a crumble before it's taught. My proposal: 1-3's pair is punch-daze +
+  stomp, meeting in one move (punch on the quarter, hop onto the dazed snake on the next half). The climax ends on a vault off a snake
+  onto a branch. Or, if you want the crumble, it's taught first in 1-3 (a soft one over a soft pit) and 1-4 reuses it.
