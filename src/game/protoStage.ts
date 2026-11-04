@@ -1900,6 +1900,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         const sx = Math.min(l.x1 - room, land.toX + past + R.r(0, o.real ? 10 : 30));
         // (its patrol never brings it within 150 px of a landing: 4 px either way in the packed climax)
         snake(sx, l.y, o.real ? 4 : 12);
+        // (and in the climax, where every ledge has its fight, a petal between the landing and the snake: no long run without one,
+        // petals.test.ts "spread out")
+        if (o.real) flower(Math.round((land.toX + sx) / 2), l.y - 34, 'orchid');
         // (the fights between the hops stay whole on Easy, the ramp's and the climax's, their punch-daze-stomp on the quarter between
         // half notes being 1-3's own: Easy keeps every other animal elsewhere, and without them these nodes were runs of hops like 1-1's
         // and 1-2's, the fun gate's moves alike; Easy's longer daze and tell, R-159.1, keep them a cruise)
