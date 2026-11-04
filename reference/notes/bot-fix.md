@@ -21,6 +21,9 @@ when every helper is idle AND the lead says so. Effort: low to medium.
 **Standard work (Matt 11-04, in SUPERVISOR.md):** started from its method file? the method's best measured result (time/tokens): beaten or
 missed, and why? Miss with no reason: coach. Beat: lead writes it into the method the same day. Digest carries a "standard work" line.
 Methods now: warmup-5m -> webgl.md; fix-petals -> validator.md.
+**Celebrate wins (Matt 11-04, in SUPERVISOR.md):** a job quicker than expected or better than asked: tell that helper by name what it
+beat and by how much, put it at the TOP of the digest, and get the how into its method. Digest order: WINS, then OVERS (cause + fix),
+then per helper, then the standard-work line.
 **Planned vs actual (Matt 11-04, in SUPERVISOR.md):** every round, per running job: expected (ROADMAP.md estimate or method best) vs
 actual; digest LEADS with jobs over / heading over: cause (one line, never "it's hard") + barrier-removal step (one line). Real hours at
 each job's end go to the roadmap keeper. Estimates (ROADMAP on roadmap-keeper, 11-04): R-159.1 9.5 h (7-14), R-3.2 2 h, R-150.8 1.5 h,
@@ -31,6 +34,7 @@ Method update and names rough spots; notes file current; queue read; HF spend in
 Escalate at once: a law broken, a retirement trigger, a red gate on a release branch, unapproved spend, anything rough that could reach Matt.
 
 ## Status
+- 2026-11-04 10:41 AM ET: lead: Matt's celebrate-wins rule added; merged ccr; round 6 prompt carries it (digest order: wins, overs, helpers, standard work).
 - 2026-11-04 10:41 AM ET: lead: Matt's planned-vs-actual rule added; merged ccr again; round 6 prompt carries both rules + the estimates.
 - 2026-11-04 10:39 AM ET: lead: Matt's standard-work rule added to SUPERVISOR.md; merged ccr into bot-fix; round 6 prompt carries the check.
 - 2026-11-04 10:35 AM ET: quality supervisor replied: it was waiting on a show-first still instead of watching the build (owned). Now: QC of w8-rope2's
