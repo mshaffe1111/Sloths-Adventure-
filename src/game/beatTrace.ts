@@ -403,9 +403,13 @@ export function traceNode(spec: NodeSpec): Trace {
     // (and never wider than the level check's own reach: its jump has no hang at the top and reaches less than the engine's, so a gap the
     // engine makes it may still fail the shared gate; levelCheck.ts gap <= reach x 0.97 - TAKEOFF_SLACK. A nearer edge only makes it easier)
     const wallUp = st.dy > 0 && (st.surface === 'stump' || st.surface === 'bank');
-    // (Easy: the level check's held jump, 70%: validator easyHoldCheck)
-    const lcReach = spec.easy ? reachJumpHeld(st.dy, false) : reachJump(st.dy, false);
+    // (Easy: the level check's held jump, 70%: validator easyHoldCheck; a double: its double reach. A jump the level check's model can't
+    // make at all is refused here, so a builder sees it up front: w1-rhythm-b, 2026-11-04, a double up 110 px the check read as "Q")
+    const dbl = st.move === 'double';
+    const lcReach = spec.easy ? reachJumpHeld(st.dy, dbl) : reachJump(st.dy, dbl);
+    if (lcReach < 0) throw new Error(`step ${i + 1}: the level check's ${st.move} can't reach ${st.dy} px up (levelCheck.ts reachJump)`);
     if (!wallUp) near = Math.min(near, Math.floor(edge + lcReach * LC_MARGIN - TAKEOFF_SLACK - 2));
+    else if (near - edge > lcReach * LC_MARGIN - TAKEOFF_SLACK) throw new Error(`step ${i + 1}: the ${st.surface}'s face is ${near - edge} px out, past the level check's reach (${Math.round(lcReach * LC_MARGIN - TAKEOFF_SLACK)})`);
     const ny = y - st.dy;
     for (const tr of toTry) {
       const from = Number.isNaN(tr.from) ? slackX : tr.from;
