@@ -1765,7 +1765,7 @@ A number that no source settles goes to TRIAGE.md as a run (C) or research (R) i
 | C18 | the shipped rule doc (SR §2: Easy 0.35-0.55) | Matt's yes on loosening is not recorded, so the line stands. 1-5's Easy 0.60-0.63 is a named miss, and it goes to Matt as one question through the lead |
 | C19 | Matt (MD:77-79) | No hearts in the first 30 s on either setting. The engine's Easy pass is fixed (an engine change, not a stage fix) |
 | C20 | needs a check | The level check's limit and the research's max reach may differ by a margin. Measure jumpOK's margin against the max reach (C run), then state the cap in one denominator |
-| C21 | the spec's own rule (ES 1230) | 1-1's 3 bursts in n2-n7 is an override, and its reason goes in the profile's  field: "length without a canopy" |
+| C21 | the spec's own rule (ES 1230) | 1-1's 3 bursts in n2-n7 is an override, and its reason goes in the profile's `difficulty` field: "length without a canopy" |
 | C22 | the later ruling (acf6e1e8) | The label table's "crumble slab in W1" is struck. LABELS.md supersedes it |
 | C23 | measurement (the inventory) | The worlds column comes from what ships (INVENTORY, da11cc4e), in LABELS.md. The spec's 9:59 AM worlds column is superseded |
 | C24 | Matt (MD:7; CLAUDE.md "more pieces") and SR §1c | The mix floor is at least 14 section types a world and at least 5 themes a stage, not "the old 1-1's 5 kinds" |
