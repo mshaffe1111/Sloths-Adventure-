@@ -72,3 +72,4 @@ that do the best job get the follow-on work.
 - R-164.17 (11-05): a builder never keeps module state between builds; reset per build, and the snapshot rebuilds each stage after every other to prove order doesn't matter.
 - D41 (11-05): a pause isn't done until list_sessions shows it; interrupt whoever keeps running.
 - D42 (11-05): 'all gates' means the list in .github/workflows/gates.yml, gate by gate, PASS or NOT RUN; never a copied list.
+- D43 (11-05): a story brief's 'shipped' is checked with git show origin/main:<file>, never the lead branch; art suggestions come only from that world's own kit (LABELS rule 4).
