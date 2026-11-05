@@ -3,7 +3,8 @@
 ## Standing rules I hold myself to (11-05, 11:28 AM ET)
 
 1. **Every time I write, in a message, a file or the spec, is read from `TZ=America/New_York date` in a tool call made just before
-   it.** Never estimated, never carried forward. (Defect: 11-05 I wrote times 4-120 min ahead, twice; the second time the fix covered
+   it.** Never estimated, never carried forward. **One read covers one message:** a second message needs its own read, even a minute
+   later (12:42 PM ET: two messages stamped 12:44 from a 12:40 read plus a guess). (Defect: 11-05 I wrote times 4-120 min ahead, twice; the second time the fix covered
    file writes but not messages.)
 2. **Taught-at and every "what ships" fact comes from main**, the shipped game, never from an unshipped branch (11-05: the 1-2
    teach ruling rested on 11-04's unshipped 1-2).
