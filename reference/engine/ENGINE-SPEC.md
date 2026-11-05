@@ -526,6 +526,44 @@ get hills that read and play as hills.
   floating ledges, root platforms and boulders. That makes 12 kinds.
 - **New Hugging Face art:** none needed for any of these. A real slope is the one big item, and I recommend leaving it for later.
 
+
+## The difficulty dial (designer, 11-05 ~1:15 AM ET; Matt: "as the game goes on, difficulty also increases. And that's for easy and normal")
+
+**One number per stage, d, from its world w and stage s** (s = 1..9 in a world):
+
+&nbsp;&nbsp;&nbsp;&nbsp;**d = (0.1·(w − 1) + 0.2·(s − 1)/8) / 1.1**
+
+- d is 0 at 1-1 and 1 at 10-9. Each world climbs 0.18.
+- Each new world's first stage starts at the previous world's middle, not its end. That is STAGE-RULES §1b's rule that a new world
+  eases in.
+- Examples: 1-1 0.00, 1-5 0.09, 1-9 0.18, 2-1 0.09, 2-9 0.27, 5-5 0.45, 10-1 0.82.
+
+**What d sets.** Each dial runs linearly from its d = 0 value to its d = 1 value, separately for Normal and Easy. All are estimates,
+to be tuned on Matt's play.
+
+| Dial | Normal, d 0 → 1 | Easy, d 0 → 1 | Notes |
+|---|---|---|---|
+| Gap, as a share of the level check's limit at that height (`jumpOK`, `heldMaxGap`) | 0.55 → 0.92 | 0.45 → 0.80 | the gate stays the ceiling |
+| Rise, as a share of the highest rise the gate allows | 0.50 → 0.95 | 0.40 → 0.80 | Easy's CP2 caps still apply |
+| Typical landing width (p50) | 220 → 110 px | 260 → 150 px | never under 90 px |
+| Risky pieces per burst (a miss costs a heart or a life) | 0-1 → 3-4 | 0 → 2 | rests and teach steps hold 0 |
+| Stage risk budget, E[lives] on a first run | 0.5 → 3.0 | 0.2 → 1.0 | DESIGNER §2.3; bots judge it |
+| Taught animals per stage | 0-1 → 4-5 | 0-1 → 3 | only animals already taught |
+| Crumble delay | 0.9 → 0.5 s | 1.2 → 0.8 s | |
+| Timed windows (vines, waves, moving logs) | ×1.0 → ×0.75 | ×1.15 → ×0.9 | of each piece's proven window |
+| Bursts per node | 2 → 3 | 2 → 3 | more ideas mixed later on |
+
+**What never moves with d** (the floors):
+- STAGE-RULES §1b's per-jump bot floors: Normal adult at least 70% in Worlds 1-5 and 50% in Worlds 6-10; Easy kid at least 85% everywhere.
+- Every teach step at miss chance 0.01 or less.
+- The placement rules.
+
+The stage's job can raise its own nodes inside the dial (a test node sits higher than a warm-up), but never above the dial's d = 1
+value.
+
+**1-5 now: d = 0.09.** On Normal that gives gaps at 0.58 of the gate's limit, typical landings about 210 px, 0-1 risky pieces a
+burst, and E[lives] about 0.7. This replaces the planner's fixed 70-90 px stand-in.
+
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
