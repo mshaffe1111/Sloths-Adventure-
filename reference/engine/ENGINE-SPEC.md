@@ -1033,6 +1033,33 @@ construction, not just look different.
 
 Each stage's section is signed by all three before any building starts. New helpers work inside this loop.
 
+6. **[the planner's additions, accepted by the designer, 11-05 ~9:40 AM ET]**
+   - **Every stage spec carries a feel profile,** set by the designer's node plan from the lead's brief: how much it branches, how
+     flat or hilly it is, its tempo, its petal style (a clearable trail, scattered, or a hidden group) and its art set. The stage's
+     pass lines come from its profile, not from one number for every stage, so a stage the story wants flat and single-road isn't
+     failed for being what it should be. The floors that never move (fairness, the variety lines on repeats, placement and polish)
+     stay the same for all.
+   - **A feel check across stages:** each stage's measured feel (branching share, up/down share, density, commonest kind, art kinds,
+     petal layout) is compared with its neighbours'. It fails when two neighbours come out too alike, as the variety gate fails
+     repeated pieces. Both are built before 1-2.
+
+**1-1's feel profile** (from the lead's brief):
+- **Branching:** moderate, from ground forks in the first half and canopy forks late. The split and two-road lines are set from the
+  first measured build, which the planner reports before working around anything.
+- **Shape:** hilly ground rising to the canopy, with the overall trend up.
+- **Tempo:** calm and march-like, quicker only at n9.
+- **Petals:** a low trail you can clear, at marching height.
+- **Art:** the forest edge in morning light, then the canopy. Ground pieces lead.
+
+**Also accepted:**
+- **Jumps are judged as each stage teaches them:** single jumps before the double is taught, doubles after
+  (`tools/engine/cp4-jumps11.ts`).
+- **The trunk fix:** at most 3 full trunks per 1,400 px on 16 of 16 rolls. A bough left past the cap stands on a thin post, because
+  the kit has no side-branch art. That is named here and goes on the art list.
+- **The art check for 1-1:** the hollow logs, squirrels and bootprint must exist in the World 1 kit atlas. The planner reports what is
+  missing and draws no stand-ins.
+
+
 | # | Job | Deck | Entry → exit | Markers and lines (the shipped 1-1 lines, `dotLinesData.ts`) |
 |---|---|---|---|---|
 | n1 | **teach** run | flat forest-floor walk with low banks, no gaps | floor → floor | Dot's run coach line; no heart; the start flag |
