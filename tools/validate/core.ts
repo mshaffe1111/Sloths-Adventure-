@@ -292,6 +292,19 @@ export const INTRO_SECS = 15;
 export const GROUP_MAX = 20;
 /** a tight burst longer than this is two tight bits in a row (research: never T-T; Gemini's bursts run 10-14 s on Normal) */
 export const TIGHT_MAX = 15;
+/**
+ * a burst, as the research defines it (STAGE-RULES §2 "Pacing", the lead's ruling 2026-11-05): on Normal 8-12 actions in 10-14 s, on
+ * Easy 3-4 in 6-8 s. The old rule read tight only from 1.15 moves a second, the TOP of Normal's range, and asked it of Easy too, whose
+ * whole range is 0.35-0.55 a second. `n` actions (no small step, no search) within `secs`
+ */
+export const BURST: Record<Setting, { n: number; secs: number }> = { normal: { n: 8, secs: 14 }, easy: { n: 3, secs: 8 } };
+/** the stage holds a burst on its setting (BURST): `n` hard moves within `secs` anywhere */
+export function hasBurst(steps: readonly Pick<Step, 'm' | 't'>[], setting: Setting): boolean {
+  const { n, secs } = BURST[setting];
+  const ts = steps.filter((s) => s.m !== 'h' && s.m !== 'P').map((s) => s.t).sort((a, b) => a - b);
+  for (let i = 0; i + n - 1 < ts.length; i++) if (ts[i + n - 1] - ts[i] <= secs) return true;
+  return false;
+}
 /** the dense finale a stage may end on (the lead, 2026-11-04): its last group may run tight for up to 20 s, the climax before the shrine */
 export const FINALE_TIGHT_MAX = 20;
 
@@ -358,7 +371,8 @@ export function paceFlags(st: readonly Stretch[], truer = true, moves?: { steps:
   }
   const groups = pads ?? st.filter((s) => s.tag !== 'R');
   if (groups.length < 4) out.push({ what: `only ${groups.length} groups of moves (§0b.2: four parts, introduce, develop, twist, master)`, t: 0 });
-  if (!st.some((s) => s.tag === 'T')) out.push({ what: 'never tight: no 5 s window asks for more than about one move a second (no burst, no climax)', t: 0 });
+  // (tight: a 5 s window over about one move a second, or, on the truer rule, a burst as the research defines it for the setting)
+  if (!st.some((s) => s.tag === 'T') && !(pads && hasBurst(moves!.steps, moves!.setting))) out.push({ what: pads ? `never tight: no burst (${BURST[moves!.setting].n} moves within ${BURST[moves!.setting].secs} s on ${moves!.setting}, research §2) and no 5 s window over about one move a second` : 'never tight: no 5 s window asks for more than about one move a second (no burst, no climax)', t: 0 });
   if (!st.some((s) => s.tag === 'I')) out.push({ what: 'no gentle intro: the first 15 s already ask for more than 0.8 moves a second', t: 0 });
   const rests = st.filter((s) => s.tag === 'R');
   const restSecs = rests.reduce((a, s) => a + s.t1 - s.t0, 0);

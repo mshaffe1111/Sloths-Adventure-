@@ -137,6 +137,20 @@ test('similarity reads each move with its way, up, down or flat (the lead\'s rul
 });
 
 // ---- pacing ----
+test('pacing: a burst as the research defines it is tight (the lead\'s ruling 2026-11-05: Normal 8 actions within 14 s, Easy 3 within 8 s)', () => {
+  const at = (ts: number[]): Step[] => ts.map((t) => ({ m: 'J' as const, t, x: 0, y: G, what: '' }));
+  const tight = (steps: Step[], setting: 'normal' | 'easy') => !paceFlags(pacing(steps, 120), true, { steps, setting }).some((f) => /never tight/.test(f.what));
+  // (each way: 8 jumps 1.6 s apart, 11.2 s, are a Normal burst, and 7 are not; on Easy 3 jumps 3.5 s apart are a burst, 3 jumps 4.5 s apart are not)
+  const spread = (n: number, gap: number, from = 20) => Array.from({ length: n }, (_, i) => from + i * gap);
+  const quiet = spread(10, 6, 60);
+  assert.ok(tight(at([...spread(8, 1.6), ...quiet]), 'normal'), 'Normal: 8 in 11.2 s');
+  assert.ok(!tight(at([...spread(7, 1.6), ...quiet]), 'normal'), 'Normal: 7 is not a burst');
+  assert.ok(tight(at([...spread(3, 3.5), ...quiet]), 'easy'), 'Easy: 3 in 7 s');
+  assert.ok(!tight(at([...spread(3, 4.5), ...quiet]), 'easy'), 'Easy: 3 in 9 s is not');
+  // (small steps and searches are no actions)
+  assert.ok(!tight([...at(spread(4, 1.6)), ...spread(4, 1.6, 26.4).map((t) => ({ m: 'h' as const, t, x: 0, y: G, what: '' })), ...at(quiet)], 'normal'), 'steps are not actions');
+});
+
 test('pacing: a dense 5 s is tight, an empty 5 s a rest, a slow start an intro; a flat stage is flagged as never tight', () => {
   const dense: Step[] = Array.from({ length: 8 }, (_, i) => ({ m: 'J', t: 10 + i * 0.6, x: 0, y: G, what: '' }));
   const slow: Step[] = [{ m: 'j', t: 2, x: 0, y: G, what: '' }, { m: 'j', t: 7, x: 0, y: G, what: '' }];
