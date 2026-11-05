@@ -2647,3 +2647,30 @@ at n7 (1-1's at n9).
 3. **Dressing that spans a road** (the open root gate as an arch he walks under) has no rule in the dressing pass.
 4. **The rain backdrop per stage** (`w1rain`): is it data in the spec? If not, an engine field.
 5. **A find with its own place** (the note, low road only): check that the spec can say it.
+
+## 1-1's neighbour pass line (designer, 11-05 3:24 PM ET; the lead's ask; data engine-core 5cd59a42, stage-reports/1-1.md)
+
+**The facts:**
+- stage.ts applies era's own rule: cosine < 0.78 and not looksAlike.
+- The mixer's 1-1 fails it against live 1-2 (0.87, 57/64 rolls alike), against the mixer's 1-5 (0.73, but looksAlike on 64/64)
+  and against live 1-7 (0.96, 7/64).
+- Main's old 1-1 fails the same rule against 1-2 (1.00), 1-5 (0.99) and 1-7 (0.93), and live World 1 fails it on every pair.
+
+**Ruling:**
+1. **The line does not move** (law 22). It is STAGE-RULES' variety rule, set by Matt, and the shipped World 1 breaks it. That is the
+   defect the engine exists to fix ("repetitive", Matt's 55/100), not a reference to copy. This differs from 1-1's taste lines
+   (floats, pickups, splits), which are taken from old 1-1 because Matt played and liked those. A variety rule that the old game breaks
+   can't take its value from the old game.
+2. **The pass line is judged against every engine-built stage.** Today that is the mixer's 1-5.
+   - 1-1 must pass cosine < 0.78 AND not looksAlike against it, by era's rule as stage.ts applies it.
+   - Today's 64/64 looksAlike is a real fail, and it has the same cause as R-164.11 (the two stages share one idea pool and fixed
+     shapes).
+   - This pair is the only evidence that the engine makes stages that differ from each other, which is what the test is for. So it
+     counts, even though 1-5 is parked.
+3. **Pairs with old, not-yet-rebuilt stages are reported, not judged:** live 1-2, 1-7 and the rest of World 1.
+   - Every live pair already fails against every other, so a fail there says nothing about 1-1.
+   - They go on a known list that only shrinks (law 5), owned by World 1's rebuild: an R-id from the lead.
+   - Each old stage, when rebuilt, must pass against every stage already rebuilt, 1-1 included. So the list clears pair by pair and no
+     new pair is ever let in.
+4. **The fix for today's 1-1/1-5 fail is the same work as the 4:00 diversity ruling.** It's ruled from the planner's measured
+   breakdown, never by weakening looksAlike.
