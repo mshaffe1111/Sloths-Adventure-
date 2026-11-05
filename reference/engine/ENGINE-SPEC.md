@@ -1985,3 +1985,33 @@ on every stage, the drawcheck and clipcheck gates, and stills both ways up of 2 
 **Art gaps found by the same run, for the lead's picture list:**
 - W1 rotten wood, a ground breakable (no frame named rotten, decay or punk among the 7,446 packed frames);
 - a W1 side-branch, so a further bough can hang from a shared trunk's side branch.
+
+## Pacing ruled from the research (designer, 11-05 ~11:54 AM ET; PACING.md, research-pacing 08456df6)
+
+Sources: shipped developer clocks (Tropical Freeze, DKC Returns, Rayman Legends: 15 worlds), Yacht Club's Specter of Torment deep dive
+(5 parts), Celeste Classic's code, Launchpad, the Dead Cells, Spelunky 2, Gungeon and Sure Footing write-ups, plus a run on our 82
+walk-through stages (stageTime.ts MODEL_FAST, seeds 1-3).
+
+| # | Rule | Source | Replaces |
+|---|---|---|---|
+| P1 | **Floor:** every stage ≥ 2:00 on the quick clock | MATT (MD:45-47) | unchanged |
+| P2 | **A world varies by ratio:** its longest stage ÷ its shortest ≥ **1.4**. Shipped developer clocks run 1.39-2.89, median 2.41 | PACING §2.3, §6.2 | ES 674's "spread ≥ 2.5 min" (3 of 15 shipped worlds pass it) |
+| P3 | **No flat stretch:** never 3 neighbour pairs in a row within 10% of each other. Neighbours **may** be within 20% (shipped worlds have 1-5 such pairs each) | PACING §6.3 (0 of 15 shipped worlds break it) | ES 667-668, 673's "neighbours ≥ 20% apart" (13 of 15 shipped worlds fail it) |
+| P4 | The ~2:00-~5:00 band is an outer bound, not a target | PACING §7 | ES 667 |
+| P5 | **Length comes from units,** not longer runs: a long stage gets more units | Yacht Club (26 rooms); SMBF (8 chunks); Dead Cells (graph) | confirms ES 670-671 |
+| P6 | **The climax is a choice.** Tropical-Freeze style, the world's lair or named set piece is among its 3 longest. It is never "the x-9". **OPEN** until the lairs are timed (PACING §6.4, "cannot be checked until lairs are timed") | TF 6/6; DKCR 1/4; x-9 only 5 of 15 | ES 668 |
+| P7 | **Crumble:** at its first appearance, a teaching margin (estimate, calibrated on the bots); later, Normal settles at **0.5 s** (Celeste Classic, code, 30 fps). Easy is longer (estimate, OPEN). A fallen crumbling piece **comes back after 2 s** (Celeste), and a required one is whole again on respawn (Matt). Snap twigs stay at about 0.15 s (SR §0b.4) | Celeste Classic `obj.delay=15`, `this.delay=60`; MATT (crumbling pieces whole on respawn); SR §0b.4 | C3's Normal 0.67 s and Easy 1.2 s (Gemini E151, which has no source); engine.ts:2428's 1.1 s and the ~30 s off-screen return are engine fixes |
+| P8 | **Gaps:** on Normal, intended gaps are ≤ 0.8 of the maximum reach, and **no gap sits in the ambiguous band of 0.85-1.15 of the maximum**: a gap is clearly a jump or clearly not | Yacht Club ("3 or 4 tiles" of 5; "removes ambiguity"); GP:75-76 (≤ 0.82) | ES 640's 0.92 top, and the G row's 0.75; C20's denominator check still runs |
+| P9 | **Fix rounds:** "≤ 2" is the designer's **budget**, with no source. A round is **one change to data, or one engine change, run through every gate**. Studios iterate the generator and its pieces, never one generated stage | PACING §3 (Sure Footing, Dead Cells, Spelunky 2, Gungeon, Yacht Club) | ES 1685's wording; Matt's "fix the engine" stands |
+
+**Defects the run found (engine fixes, each with a lock first):**
+- **stageTime.ts:91, STAGE_DRIFT 0-7%,** makes W6-W10 flatter than any shipped world. P2 fails in W6-W10 (ratios 1.20-1.38), and P3 fails
+  in W5, W8, W9 and W10 (up to 5 flat pairs in a row). The fix is in the engine's length targets (units per stage), not per stage.
+- **4-7 is under the 2:00 floor on every seed** (82-84 s quick). It's a shipped defect (the lead has logged it), fixed with units in
+  World 4's pass, under its lock.
+- **Crumble:** engine.ts:2428's default of 1.1 s and the slow return are changed to P7, under the W1 and W7 locks, with stills and bot
+  runs.
+
+**Also marked:** ES 506's eventless walk (≤ 2.0 s / 3.0 s) and ES 752's Easy rests (2.0-2.5 s) are Gemini-only, with no primary
+source. They stay as estimates and are calibrated by the bots (TRIAGE C rows), never quoted as research. Piece counts per burst (ES
+390-391) have no source, so bursts are judged by time (5-20 s, Launchpad).
