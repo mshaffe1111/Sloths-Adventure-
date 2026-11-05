@@ -2395,13 +2395,13 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
 - A question this page doesn't answer: ask the designer. It is logged as a gap and counts as a fix against the pass line.
 
 ### A. The story and the feel (the brief; quote the brief, not this page, if they ever differ)
-- Two days after the soldiers took Meeca, Pokey leaves the home forest: slow, and coming anyway (brief, opening section).
-- **Start:** small and close to home, a little funny. The squirrels' laughter is the joke. Gentle, safe ground (brief :20).
-- **First lift:** "I can actually do this." The first real step up off the forest floor (:21).
-- **The moment:** the double-jump chain, Pokey surprising himself (:22-23).
+- Two days after the soldiers took Meeca, Pokey leaves the home forest: slow, and coming anyway (brief :13).
+- **Start:** small and close to home, a little funny. The squirrels' laughter is the joke. Gentle, safe ground (brief :19).
+- **First lift:** "I can actually do this." The first real step up off the forest floor (:20).
+- **The moment:** the double-jump chain, Pokey surprising himself (:21-22).
 - **End:** "up in the high branches, on the petal trail, pointed north. Resolve, not triumph. The bigger views belong to later stages"
-  (:24). No big view: the view north is 1-4's (:41).
-- **Kept out (owned by other stages, :39-44):** Meeca's note and the hibiscus line (1-2); the punch (1-3); the kapok climb and the view
+  (:23). No big view: the view north is 1-4's (:41).
+- **Kept out (owned by other stages, :38-43):** Meeca's note and the hibiscus line (1-2); the punch (1-3); the kapok climb and the view
   north (1-4); the folded petals and the chase (1-5); lianas (1-6); the bush (1-7). So 1-1 also has **no creaky, no crumbling and no
   animals** (nothing untaught).
 
@@ -2414,7 +2414,7 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
 | hills | `rolling` (the old 1-1 measured rolling; "hilly" was a word, not data) | 12:45, 12:48 |
 | branching | `moderate`: ground forks early (n3, n5), a canopy fork late (n10) | CP4 feel profile |
 | water | `false`: no creek and no lily pads until the engine draws 1-1's water zone. n5's low road is stump hop and bank hops meanwhile | 9:56 ruling (b), element gate |
-| petals | `trail`: low, at marching height, on trunks, banks and branches beside the route, never high in the canopy (brief :28-29) | brief |
+| petals | `trail`: low, at marching height, on trunks, banks and branches beside the route, never high in the canopy (brief :26) | brief |
 | look | lead `ground`, art `w1`. The commonest piece is a ground piece. Boughs only from n8 | 9:20 ruling, brief |
 | length | Normal 160-195 s (2:40-3:15), Easy ≥ 120 s | CP4 length; C28 |
 | core | the stage's top 3 landing kinds by share (a rank rule, #132). Expected: bank, log, then stone or branch | backlog #132 |
@@ -2434,7 +2434,7 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
 | n8 | the climb up into the boughs | bough stair, bounce up (never the long kapok climb: 1-4's) | low → mid | — |
 | n9 | **the moment (test)** | the double chain: 3-4 rising doubles, bough to bough, a flag before it | mid → high | "Look how high we are!" at its end (hint.1-1.high) |
 | n10 | the canopy fork | high: bough hops, bough stair; low: bough hops, stump hop. Rejoin | high (two roads) | "No soft moss up here!" (hint.1-1.noMoss) |
-| n11 | **the arrival** (ruling 4's exception, brief :24) | the top branch: an arrival on the petal trail to the shrine and the bootprint. It's a rest by the rest rule (G #83), with no dead walk; its deck gains bough hops, the top branch last | high → end bank | — |
+| n11 | **the arrival** (ruling 4's exception, brief :23) | the top branch: an arrival on the petal trail to the shrine and the bootprint. It's a rest by the rest rule (G #83), with no dead walk; its deck gains bough hops, the top branch last | high → end bank | — |
 
 - **Hearts:** only after real risk (n9).
 - **Flags:** before n9, and the flag rule decides the rest.
