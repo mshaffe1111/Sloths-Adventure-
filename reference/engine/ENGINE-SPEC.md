@@ -470,6 +470,22 @@ n10, n11, with a canopy over most floors. These must change before Matt sees it:
 7. **Length:** 3:14-3:29 is accepted. Matt sets the floor at 2:00 with no cap. A and B add a little; cutting D's mushroom entries takes
    some away. 1-4 and 1-6 in CP4 sit at least 20% either side of 1-5's median.
 
+
+**[designer ruling, 11-05 ~2:40 AM ET, on map v2's conflict] Every deck carries a floor idea, as the old 1-1's cycle does (a).**
+- **The conflict:** with each node drawing only from its own deck (fault C), too few bursts had a floor for a canopy to lie over.
+  Splits fell to 11-17 (floor 19) and the two-road share to 33-38% (line 40%).
+- **The fix:** a floor idea joins each one-idea or climbing deck, so the deck itself honestly holds what the canopy needs:
+  - n3: bounce up, the climb, stump hop;
+  - n6: snap-twig dash (test form), bank hops;
+  - n7: rotten-branch drop, stump hop;
+  - n9: bough stair, the climb, bank hops;
+  - n8 keeps its creek deck, but a roll that draws reed isles must pair them with a floor burst (bank hops or stump hop) in the same
+    node.
+- **The bursts still alternate inside the node,** so the test or teach idea comes first and the floor follows. The node's job is
+  unchanged.
+- **All the lines stay as they are:** splits at least 19, two-road share at least 40%, creaky at least 15% of landings and in the top
+  3 kinds, and the old 1-1's variety lines. The map no longer dropping labels settled A and B; the perch colour settled D.
+
 **The rules this plan meets by construction** (the mixer still checks every roll):
 - **Ideas:** 9 to 11 different ideas a roll. No idea twice in a row. Snap-twig dash comes twice (teach at n2, test at n6, not in a
   row), and the fork twice (n4, n10).
