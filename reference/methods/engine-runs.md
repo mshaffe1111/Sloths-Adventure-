@@ -54,8 +54,10 @@ src/ is committed (`git diff origin/<base> --stat -- src` is empty).
   Use the real-engine window probe for that.
 - 2026-11-05: **a bot run that never reaches the shrine is not a measure of the animals in it** (2-5, 2-9: every adult run ended at the
   sealed door). Count only what the validator counts.
-- 2026-11-05: **ruled rows change the line.** Read the "Contradictions ruled" block (ENGINE-SPEC C1-C30) before judging: C9 made 1-2 the
-  creaky and liana teach, C14 moved the neighbour rule to our own metric, C15 made cost lines history.
+- 2026-11-05: **ruled rows change the line, and rulings move.** Read the "Contradictions ruled" block (ENGINE-SPEC C1-C30) and the
+  later rulings before judging, and again before reporting: C9 ("1-2 teaches creaky and lianas") was reversed the same day (creaky 1-5,
+  lianas 1-6, as on main), which turned #121/#122's root cause from the table's text to the build. C14 moved the neighbour rule to our
+  own metric, C15 made cost lines history.
 
 ## Tried and didn't work
 - Laying a scratch scene into the running engine from the page after the stage loaded: the draw caches its plans at load, so new pieces
