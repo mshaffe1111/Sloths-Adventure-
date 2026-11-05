@@ -1815,3 +1815,6 @@ cleared by re-wording a rule. Each is accepted with its spec change, or rejected
 - **1-1's end piece is a bank, not a log (11:04 AM ET, the lead's bar for the bootprint: "on the shrine bank where the clue says").** In 1-1's
   data (`MIX11.end` kind bank, 640 px), the shrine stands on a bank, and the bootprint is a flush decal on the bank's top band, toe east,
   a little past the shrine's door so Pokey's feet never cover it. This is a data change for the 1-1 rebuild, not engine code.
+- **MATT APPROVED ruling 5 (11:06 AM ET, via the lead): one rulebook over all builders.** gen2 keeps its 23 stages, special stages stay
+  hand-built, and the mixer takes a stage only where it is proved better under that world's lock. Every stage, whatever builds it,
+  passes the same gates.
