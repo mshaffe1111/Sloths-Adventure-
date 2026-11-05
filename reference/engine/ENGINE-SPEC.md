@@ -780,6 +780,9 @@ another roll.
   - **S-6. Hard darkness (P-10)** still shows in the creek stills, with the engine-render helper.
   - **S-8. Dot's bubble covers the ground ahead** (round-1 frame 1; D10). A bubble sits clear of the route ahead, above it or on the
     side he has left, upright and sideways. The flag tip also shows twice; every tip shows once per stage (S-5).
+  - **S-9. Stones over open water** (the engine-render helper's still 03, after, x 31800). A stone in water rises from it: its base
+    draws down past the water line, submerged, with a ripple ring. A taller stepping stone is a stack or a stump in the stream. *Check:*
+    every stone's bottom is at or below the water or ground surface under it.
   - **S-7. The upright top half (P-6)** is still mostly sky over the start and the shrine.
 - These go back to the planner (S-2 to S-5, S-7) and the engine-render helper (S-1, S-6). Round 2 of the stills comes back to the
   designer before the lead.
