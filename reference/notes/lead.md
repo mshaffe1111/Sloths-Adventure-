@@ -27,6 +27,11 @@ Then ReadNotifications, then check that the 30-min check-in is armed (list_trigg
 ## THE BOARD: deadlines and what success looks like (set 10:26 AM ET; Matt: "You set the standards... deadlines... what success looks like. And you hold them to it... catch mistakes early, not late")
 Every check-in compares each line below with the clock. A missed time gets a send-back at once with the lesson (8i: bring options
 that still make the deadline, never "tomorrow"). Only the lead moves a deadline, and says why to Matt.
+Matt, 10:33 AM ET: "if they miss a deadline, you're on them... look how I've put pressure on you. That's how I expect you to put
+pressure on them. And we do not shortcut anything... Not done fast and sloppy to get it done. Done right." A miss gets an immediate,
+plain message: what was due, what success was, what arrived, the lesson broken, the new time and what happens if it's missed again
+(replaced by a fresh helper at high effort). A deadline never buys a shortcut: if right won't fit the time, they say so early and I
+move the time, never the bar.
 | Who | Deliverable | Success looks like | Due (ET) |
 |---|---|---|---|
 | Planner | Whole-engine cost estimate | each step in % of the week, total vs 55% (stop at 53%), from measured history | 10:45 AM |
