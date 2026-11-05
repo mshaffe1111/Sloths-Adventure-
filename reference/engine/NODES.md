@@ -183,7 +183,7 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
   the split between types is **JUDGMENT, anchored to Matt's words and the stage briefs' looks**, and is measured over many seeds
   against this target (NODE-MIX §B.8). Each stage's own deal follows its brief's look; the world share is the average they make.
 - **1-1's own deal** (from 1-1's teaches, its look and window): ground 40 (at the cap), floating 25 (last third only, under old
-  1-1's 25.3% line), climb 20 (the double is taught on the stair, §8), bounce 15. **JUDGMENT.**
+  1-1's 25.3% line), climb 20 (1-1's trend is up; MATT "climbing"), bounce 15. **JUDGMENT.**
 
 **World 2 (DRAFT for Matt to see). MATT, 11-05 ~5:00 PM to the lead: "world two, which has more of a lighter feeling, can be more
 puzzles. Whereas the first world is a lot more jumping, climbing, and learning the mechanics":**
@@ -363,17 +363,18 @@ The engine rejects a string that breaks one of these rules and names the rule an
 | V2 | **T is flat or rising, never inside a fork, and its move appears for the first time.** One T per move in the brief's `teaches`, in the teach order (run is A's) | §1; WORLD-RULEBOOK §4; CoachOverlay.tsx:10 |
 | V3 | P, X, C, W, M, U and S use only moves already taught earlier in the string. X's move is required (the limited-bot gate) | §1 |
 | V4 | W only after at least one X | §1 |
-| V5 | **Right after X, W or S comes R**, or E when it is the last node. The quiet arrival is flat with no hard input, which meets the rest rule | §1; WORLD-RULEBOOK §4 |
+| V5 | **Right after X, W or S comes R**, or E when it is the last node. An E straight after S must be a real breath: a calm walk-on of at least the rest's length (about 2× the local beat) with no hard input. In W1 that's #15 `w1-quiet-arrival` or #23 `w1-sunlit-log`. #30 `w1-last-step-up` (one hop) may end a stage only after an R (ruled 5:22 PM, supervisor's §8 flag 3) | §1; WORLD-RULEBOOK §4; 1-1.md:23 ("resolve, not triumph") |
 | V6 | Exactly one S, in the last third of the stage's time | §1; §4 |
 | V7 | F has two roads that both finish and rejoin. The high road carries `+`. No T inside | §1 fork, choice-reward |
 | V8 | U is `c` and rising. `^^` only in a stage that owns the shaft (W1: 1-4) | §1 climb |
 | V9 | D is falling (`_`) | §1 descent |
 | V10 | Shapes the stage may use. 1-1 NOW: flat, `^`, `_` and the fork. `^^`, `@` and `*` are LATER | §6 |
-| V11 | **No type over 40%** of the stage's content tokens (S and the structural letters don't count). **No type on two neighbouring content tokens.** Structural tokens between them don't separate them. The one exception is a P right after its own T | §7.4 |
+| V11 | **No type over 40%** of the stage's content tokens (S and the structural letters don't count; the cap on a count rounds to the nearest whole node, so 40% of 7 is 3). **No type on two neighbouring content tokens.** Structural tokens between them don't separate them. Two exceptions: a P right after its own T, and **a T may share its type with the node before it**, because a teach brings its ONE new move onto terrain the player already knows (§1 "one new thing"; R1 L5). Ruled 5:22 PM (supervisor's §8 flag 1): the double is taught on ground, on #8 `w1-double-teach` (R2's safe dip; the stage11 promise test checks it), never on a stair | §7.4; §1; R2 3:11 ruling |
 | V12 | Windows. In 1-1, `f` only in the last third (window [0.67, 1]) | §7.3; W1-NEW-SECTIONS |
 | V13 | Slot jobs: K never in a world's first stage; V only at X-9; G at X-6 (a world's story moves these) | §1; supervisor's notes in §6 |
 | V14 | **The type counts match the stage's deal, give or take 1** (the seed's jitter). A fork counts as its low road's type | §7.5; §7.1 |
 | V15 | The `ending-fork` `F[L^+\|R_] E` is the last node before E. LATER, not 1-1 | §1 (Matt, 11-05) |
+| V17 | **In 1-1, every graph holds at least one F**, so the stage can meet old 1-1's two-road floors (splits ≥ 34, two-road ≥ 0.61; stage.ts passLines). Ruled 5:22 PM (supervisor's §8 flag 2) | §E; stage.ts |
 | V16 | `&` only from the stage where creatures are taught (W1: 1-3), and about a third of the stage's time has none | Matt 12:15 AM (ENGINE-PLAN :55) |
 
 ### 8.4 The sprint graphs in code, and under 1-1's brief
@@ -383,34 +384,36 @@ A graph is jobs and shapes only; the deal fills in the content (§7.5).
 | Graph | Code | Under 1-1's brief (teaches jump, double, bounce; ends quiet; trend up) |
 |---|---|---|
 | A | `A T P F R X R S E` | `A T T T P F R X R S E` |
-| B | `A T M R C U X R S R L E` | `A T T T M R C U X R S E` (quiet: `R L` goes) |
+| B | `A T M F R C U X R S R L E` | `A T T T M F R C U X R S E` (quiet: `R L` goes; the F added 5:22 PM for V17) |
 | C | `A P F X R W R D_ S E` | `A T T T P F X R W R D_ S E` (the brief forces the teaches in) |
 | D | `A T P R U F X R S E` | `A T T T P R U F X R S E` |
 
 - Under 1-1's brief, the T slot becomes three teaches: jump, double, bounce.
-- V11 then forces the double onto a different type from the jump. The double is taught on the stair (`Tc2^`), so the three teaches read `Tg1 Tc2^ Tb`.
+- The three teaches read `Tg1 Tg2 Tb`: the jump and the double both on the ground (the double on #8's safe dip), then the bounce. V11's teach exception allows two ground teaches side by side.
 
 ### 8.5 Three example 1-1 rolls
 
 1-1's deal is ground 40, floating 25, climb 20, bounce 15, give or take 1, under the caps.
 
-**Roll 1 (graph A):** `A Tg1< Tc2^< Tb> Pb2> F[Pc2^+|Pg1]< R Xf2> R Sf2> E`
-- Types: ground 2 (counting the fork's low road), climb 1, bounce 2, floating 1.
-- It splits early and puts floating only at the test. The set piece is the double chain on floating logs.
+**Roll 1 (graph A):** `A Tg1< Tg2< Tb> Pc1^> F[Pc2^+|Pb]< R Xf2> R Sf2> E`
+- Types: ground 2, bounce 2 (counting the fork's low road), climb 1, floating 1.
+- It splits early, with a mushroom on the low road and the find up a stair. Floating comes only at the test.
+- The set piece is the double chain on floating logs, then the walk-on to the long log (#15 or #23, V5).
 
-**Roll 2 (graph B):** `A Tg1> Tc2^< Tb< Mg2> R Cb2< Uc^> Xf2> R Sf2< E`
-- Types: ground 2, climb 2, bounce 2, floating 1.
-- It has no split. Its flow is a hurry run of doubles, and its combine is bounce into double.
+**Roll 2 (graph B):** `A Tg1> Tg2< Tb< Mg2> F[Pb2^+|Pc1^]< R Cb2< Uc^> Xf2> R Sf2< E`
+- Types: ground 3, climb 2 (counting the fork's low road), bounce 2, floating 1.
+- Its flow is a hurry run of doubles, and it splits straight out of the flow.
+- The combine is bounce into double, then the climb.
 
-**Roll 3 (graph D):** `A Tg1< Tc2^> Tb> Pg2< R Uc^< F[Pc2^+|Pb]> Xf2> R Sf2< E`
-- Types: ground 2, climb 2, bounce 2 (counting the fork's low road), floating 1.
-- It climbs, then splits, with a mushroom on the low road.
+**Roll 3 (graph D):** `A Tg1< Tg2> Tb> Pb2< R Uc^< F[Pc2^+|Pg1]> Xf2> R Sf2< E`
+- Types: ground 3 (counting the fork's low road), bounce 2, climb 1, floating 1.
+- It climbs, then splits, with the find on the upper stair.
 
-The three tempo strings differ (`<<>><>>`, `><<><>><`, `<>><<>><`), so no tempo profile repeats (§5).
+All three pass V1-V17: the cap, the neighbour rule with its two exceptions, and the deal give or take 1. Their tempo strings differ (`<<>><>>`, `><<><<>><`, `<>><<>><`), so no tempo profile repeats (§5).
 
 ### 8.6 In the data
 - A world's graph list (§4) is stored as code strings.
 - A roll is saved as its filled string, next to the seed. The ledger (§5) compares strings: the same skeleton means the same graph, and the same marks mean the same tempo profile.
-- One parser reads the strings and checks V1-V16, and fails with the rule and the token.
+- One parser reads the strings and checks V1-V17, and fails with the rule and the token.
 - The engine-core porter builds the parser. Until then, these rules are the spec.
 
