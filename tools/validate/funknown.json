@@ -47,8 +47,8 @@
    "stage": "1-2",
    "setting": "easy",
    "rule": "dead walk",
-   "layouts": 13,
-   "owner": "World 1 rebuild (D26)"
+   "layouts": 16,
+   "owner": "Named exception (Matt approved 2026-11-04 ~9:00 PM ET): the true route ruler finds 2.5-3.5 s floor walks on every layout; fixed by the engine rebuild (R-163)"
   },
   {
    "stage": "1-2",
@@ -68,8 +68,8 @@
    "stage": "1-2",
    "setting": "normal",
    "rule": "dead walk",
-   "layouts": 13,
-   "owner": "World 1 rebuild (D26)"
+   "layouts": 16,
+   "owner": "Named exception (Matt approved 2026-11-04 ~9:00 PM ET): the true route ruler finds 2.5-3.5 s floor walks on every layout; fixed by the engine rebuild (R-163)"
   },
   {
    "stage": "1-2",
