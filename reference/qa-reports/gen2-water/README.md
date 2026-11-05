@@ -35,6 +35,7 @@ rolls: deadly dirty water 483-634 px from the calm well.
 | 6-7, 16 rolls x Normal and Easy (`waterRule.test.ts`) | **32/32 pass**: nearest deadly water 1,931-4,325 px from the well (was 483-634); same plan and layout seed as curated on all 32; 0 levelCheck errors. Fails on the old builder (seed 186666 first) |
 | W6-W8 regression lock (`tools/engine/gen2snap.ts`, 21 stages x 32 builds) | **640/672 unchanged**: every build of the other 20 stages identical. 6-7 32/32 changed, each explained below |
 | Curation's filters and jump bots on the 16 shipped 6-7 rolls, base vs fix (`tools/gen2/curate.ts` measureRoll + botCheck) | 0 fails before and after; adult bot (Normal) unchanged on all 16 (worst 0.94); kid bot (Easy) worst 0.89 (floor 0.85), within ±0.02 of base per roll; every liana still swung; quick player, model time, dead time and quiet stretches identical on Normal |
+| 60 fresh 6-7 rolls (seeds 1000-1059, Normal and Easy: what a future curation draws from) | fix: **0/120** builds miss W3, 0 levelCheck errors, 0 rerolls; base: 116/120 miss |
 | W7, the teaching pool (`waterRule.test.ts`) | within a screen of the well on all 32 builds: no animal, no zone, no crumbling tile, only soft falls |
 | The water gate (`tools/validate/watercheck.ts`), all 102 stages x 16 layouts x 2 settings | **PASS, 3,264 builds in 561 s**; on the base it fails 6-7 on 32/32 (483, 507, 511, 631 px ...: the research's numbers) |
 
