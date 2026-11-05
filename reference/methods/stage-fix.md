@@ -73,7 +73,22 @@ The bot's self-test (step 0), the CLAUDE.md checks (tsc, the full test globs in 
 `buildGen2ForGame` over 16 layouts x 2 settings when the machine is idle: tests running beside it doubled the numbers), the bot table
 (before/after, per roll and trial), the polish check against the clip.
 
-## Pitfalls we already paid for
+## A rule every roll breaks (a builder fix, not a stage fix): gen2-water, 2026-11-05
+When the defect is a missing rule in placement (6-7: deadly water 483-634 px from the calm well on 16/16 rolls), not one unfair spot:
+1. **Lock first:** fingerprint every stage the builder makes, part by part (`tools/engine/gen2snap.ts`: W6-W8, 21 stages x 16 rolls x 2
+   settings, about 2.5 min), and run it twice to prove it is stable before changing anything.
+2. **One measure, shared:** the rule in one pure module (`src/game/waterRule.ts`) that the builder obeys while laying and the gate
+   checks on every builder's built stages (`tools/validate/watercheck.ts`, all 102 x 16 x 2, about 9.5 min). Show the gate fails on the
+   base with the researcher's own numbers before trusting it.
+3. **Fix the smallest thing that breaks the rule:** lay again only what is in range (`pipeline.ts` `layDry`: the gaps, not whole sections;
+   the plan, versions and seeds kept, so curation's seeds stay valid and nothing needs re-curating). Drying whole sections first moved
+   more water than needed.
+4. **Explain every fingerprint change object by object:** diff full builds of base (a `git worktree` of the base commit, node_modules
+   symlinked) and fix; count each platform as same, added or shifted, and say why each pickup, warning or hint moved. Then re-run
+   curation's own filters and bots on the shipped seeds (`curate.ts` `measureRoll` + `botCheck`) on both trees.
+5. **Check a rule's numbers in the engine's units:** the spec's "844 px" was the phone's CSS width; the engine shows 1,169-1,203 world px
+   sideways (`engine.ts` WORLD_VIEW_H 540). The stills proved it (screen x 6918-8087 at zoom 0.72).
+
 - 2026-11-01: **a fix that is right for one world can be wrong in another.** The falling rope catch, game-wide, caught Pokey on a lower
   rope in 1-4, 2-6, 3-4 and 4-1's zigzag climbs (first-timer rescues 0-2 -> 5-10). Narrowed to a rope jumped for from its own ledge.
   Always run step 4's every-stage before/after.

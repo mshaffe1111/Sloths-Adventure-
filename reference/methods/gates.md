@@ -20,6 +20,7 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 | 8 | `node tools/roadmapcheck.mjs` | the roadmap out of step: an item without an R-number, a stale total, a broken table row, a known-defect entry with no item | seconds / in gates.yml |
 | 9 | `node tools/art/icons/checkbase.mjs <qa dir>` | an 'after' sheet shot on a stale base (D23): every still must carry the base commit stamp | seconds / report gate |
 | 10 | `npx tsx tools/validate/funcheck.ts` | World 1 made worse by the fun validator's structure checks (dead walks, repeats, pacing, nothing bites, padding, one tempo, enemies by a landing, moves-like and looks-like an earlier stage, nothing new): a (stage, setting, rule) flagged on more of the 16 layouts than `tools/validate/funknown.json` holds, or a new one; also fails a count that fell until it is lowered | about 45 s here / in gates.yml |
+| 11 | `npx tsx tools/validate/watercheck.ts` | the water rule W3 (ENGINE-SPEC W3; `src/game/waterRule.ts`): a room's calm pool (6-7's well) with deadly water (an open column over `waterY`, or a river that is not a teaching one) within one sideways screen of it (`W3_SCREEN`, 1,203 world px: the engine's 540 px view height on Matt's 998 x 448 phone; the spec's 844 is CSS px), or water drawn with the calm water's art (`proto.water`) that costs a life; on every stage the game builds (all 102, every builder), layouts 1-16, Normal and Easy. Fails a miss over `tools/validate/waterknown.json`, a new one, or a known one that is gone (lower or remove it in the same commit) | about 9.5 min here (3,264 builds) / its own runner in gates.yml |
 
 In CI (`.github/workflows/deploy.yml`): the test shards and `gates.yml` (artcheck, knowncheck and clipcheck on one runner; drawcheck on its own runner) run side by side. `publish` needs all of them, so a failing gate blocks the live site.
 
@@ -34,6 +35,7 @@ In CI (`.github/workflows/deploy.yml`): the test shards and `gates.yml` (artchec
 - **knowncheck**: `✗ <file>: N entries ADDED` lists them. Remove them and fix the defect; a known list never grows.
 - **roadmapcheck**: each `✗` names the orphan (a defect D#, a list file, a clipknown group, a NEXT.md) or the bad proof. Add the R-item (or cite the source on the right one) in reference/ROADMAP.md; never delete the source to get green. Method: reference/methods/roadmap.md.
 - **funcheck**: `✗ new` / `✗ worse: <stage> <setting> "<rule>" on N layouts, known M (layouts)` with the first flag's words and x: open that stage's validator page (`npx tsx tools/validate/world1.ts --stages <id>`) and fix the stage, never the count. `✗ better, lower the entry` / `✗ gone, delete the entry`: the stage improved; lower it with FUNCHECK_WRITE=1 in the same commit.
+- **watercheck**: `✗ <stage>|<setting>|<kind> (World N): k/16 layouts, not on the known list (first: L<v>: <what>)`. `near` names the deadly column's x, its distance from the calm pool and the pool's span; `calm-drawn` names the drawn zone and the open x under it. Re-run one stage with `npx tsx tools/validate/watercheck.ts --only 6-7` (every miss on every layout). The fix is in the builder (gen2: `pipeline.ts` `layDry` lays a gap within a screen of calm water as soft mud), never a hand edit and never a looser rule (LAWS law 22).
 - **drawcheck**: see PERFORMANCE-RULES §8.1. Each breach names the call sites (file:line).
 
 ## Known lists: shrink-only (LAWS.md law 5)
@@ -46,6 +48,7 @@ The lists:
 - `src/game/playerText.known.json` (`key`, `kind`, `owner`).
 - `tools/perf/limits.json` (`art.knownOver4096`, `blends.allowlist`).
 - `src/game/artUse.allow.json`.
+- `tools/validate/waterknown.json` (`stage`, `world`, `setting`, `kind`, `layouts`, `owner`, `defect`): the water gate's misses when it was built (2026-11-05: none; 6-7's 32 were fixed at the root by gen2's `layDry` in the same change). knowncheck counts one id per layout. `WATERCHECK_WRITE=1` only lowers counts.
 - `tools/validate/funknown.json` (`stage`, `setting`, `rule`, `layouts`, `owner`): World 1's fun debt behind D26, owner the World 1 rebuild. knowncheck counts one id per layout, so a raised count fails like an added entry. After a rebuild clears flags, run `FUNCHECK_WRITE=1 npx tsx tools/validate/funcheck.ts` to lower the counts in the same commit.
 
 When you fix a known defect, delete its entry in the same commit, or the gate fails.

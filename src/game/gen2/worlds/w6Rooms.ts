@@ -21,7 +21,8 @@
  *                    whole hollow. The hollow's floor is soft ground with a step out (never a life).
  *
  * None has an enemy socket, none is mirrored (a room reads left to right), each is once a stage (and only in its own stage: W6R_STAGE),
- * and the pipeline keeps a room's join quiet (no pit beside it). None can be walked past unsolved: the water room's root door stands on
+ * and the pipeline keeps a room's join quiet (no pit beside it), and the deadly water out of the screen of the water room's calm well (pipeline.ts
+ * layDry, the water rule W3: its gaps within a screen are soft mud). None can be walked past unsolved: the water room's root door stands on
  * the floor and its wall is out of a double jump's reach from anything he can stand on unaided; the dark and seesaw rooms' banks are too
  * high to jump.
  *

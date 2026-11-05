@@ -1,7 +1,7 @@
 /**
  * Stills of a stage's calm water at phone size (gen2-water, 2026-11-05: W3, "calm and deadly water never share a screen").
  *
- *   node tools/qa/wellShots.cjs <game url> <out dir> [level=6-7] [layouts=1,2] [difficulty=normal]
+ *   node tools/qa/wellShots.cjs <game url> <out dir> [level=6-7] [layouts=1,2] [difficulty=normal] [x,x: extra shots with Pokey there]
  *
  * For each layout: plays the level upright (390x844) and sideways (844x390) at deviceScaleFactor 2, puts Pokey on the bank just
  * before the stage's first calm pool (engine.calmPools(), swim.ts), lets the camera settle, and saves the frame ('bank'); one with Pokey
@@ -12,16 +12,21 @@
  */
 const { chromium } = require('playwright');
 const fs = require('fs');
-const [url = 'http://127.0.0.1:4310/', out = '/tmp/wellShots', level = '6-7', layoutsArg = '1', diff = 'normal'] = process.argv.slice(2);
+const [url = 'http://127.0.0.1:4310/', out = '/tmp/wellShots', level = '6-7', layoutsArg = '1', diff = 'normal', atArg = ''] = process.argv.slice(2);
+// (extra poses at fixed world x, `x7354`: the same spot before and after a change)
+const AT = atArg ? atArg.split(',').map((x) => `x${x}`) : [];
 fs.mkdirSync(out, { recursive: true });
+// (the setting is read from the save: difficulty.ts DIFFICULTY_KEY)
+const DIFF_KEY = 'sloth_difficulty';
 const SIZES = { upright: [390, 844], sideways: [844, 390] };
 (async () => {
   const b = await chromium.launch();
   for (const layout of layoutsArg.split(',')) for (const [orient, [W, H]] of Object.entries(SIZES)) {
     const ctx = await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
     const pg = await ctx.newPage();
+    if (diff === 'easy') await pg.addInitScript((k) => { try { localStorage.setItem(k, 'easy'); } catch {} }, DIFF_KEY);
     pg.on('pageerror', (e) => console.log('PAGE', e.message));
-    await pg.goto(url + `?autostart=1&level=${level}&layout=${layout}${diff === 'easy' ? '&difficulty=easy' : ''}`, { timeout: 120000 });
+    await pg.goto(url + `?autostart=1&level=${level}&layout=${layout}`, { timeout: 120000 });
     const eng = `(() => { const g = window.__engine; return typeof g === 'function' ? g() : g; })()`;
     let ok = false;
     for (let i = 0; i < 120 && !ok; i++) {
@@ -31,7 +36,7 @@ const SIZES = { upright: [390, 844], sideways: [844, 390] };
     if (!ok) { console.log(`layout ${layout} ${orient}: never reached play`); await ctx.close(); continue; }
     await pg.waitForTimeout(1500);
     await pg.waitForTimeout(3000);
-    for (const pose of ['bank', 'near', 'swim']) {
+    for (const pose of ['bank', 'near', 'swim', ...AT]) {
       const info = await pg.evaluate(([pose]) => {
         const g = window.__engine; const e = typeof g === 'function' ? g() : g;
         const st = e.currentStage;
@@ -43,7 +48,7 @@ const SIZES = { upright: [390, 844], sideways: [844, 390] };
         const falls = (st.gen2?.falls ?? []).filter((f) => f.kind === 'water');
         const d = (f) => (f.x1 < w.x0 ? w.x0 - f.x1 : f.x0 > w.x1 ? f.x0 - w.x1 : 0);
         const nf = falls.slice().sort((a, b) => d(a) - d(b))[0];
-        let x = pose === 'bank' ? w.x0 - 60 : pose === 'swim' ? (w.x0 + w.x1) / 2 : nf ? (nf.x1 < w.x0 ? (nf.x1 + w.x0) / 2 : (w.x1 + nf.x0) / 2) : w.x1 + 500;
+        let x = pose[0] === 'x' ? Number(pose.slice(1)) : pose === 'bank' ? w.x0 - 60 : pose === 'swim' ? (w.x0 + w.x1) / 2 : nf ? (nf.x1 < w.x0 ? (nf.x1 + w.x0) / 2 : (w.x1 + nf.x0) / 2) : w.x1 + 500;
         const ground = (xx) => st.platforms.filter((q) => q.type === 'solid' && !q.lift && xx >= q.x + 10 && xx <= q.x + q.width - 10 && q.y < 760).sort((a, b) => a.y - b.y)[0];
         let gr = ground(x);
         for (let k = 1; !gr && pose !== 'swim' && k < 40; k++) gr = ground(x + k * 20) ?? ground(x - k * 20), gr && (x = gr.x + gr.width / 2);

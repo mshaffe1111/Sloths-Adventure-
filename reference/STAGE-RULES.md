@@ -454,6 +454,11 @@ plan); never ship the rough version as finished.
   - *The swing and ground stages had to keep their sections apart* (2026-10-29). 6-4 and 6-6 are both sprints and 6-2 shared filler
     sections with the swing stages; curation's look-alike check (`--apart`: no 20 s stretch alike between a world's stages) then
     threw out most of 6-2's rolls (0.26 left). Which stage takes which sections is decided per stage (`w6Game.ts` `forStage`).
+  - *Deadly water beside the calm well* (2026-11-05, gen2-water; the water rule W3). 6-7's swings laid black water 483-634 px from
+    the calm well on all 16 rolls: one screen held both kinds of water, the swimming lesson beside the water that kills (WATER-SWIM.md
+    M10). Placement had no spacing rule. Now a gap within one sideways screen of a room's calm pool is laid as soft mud, its pit climbing
+    back to the swing's ledge (`pipeline.ts` `layDry`); the screen is measured in world px (`waterRule.ts` `W3_SCREEN`, 1,203: a
+    sideways phone shows 844 x 540 / 390 = 1,169 world px, not 844); the gate is `tools/validate/watercheck.ts` on every stage.
   - *A short bank between two creeks is a glide trap* (2026-10-28). Under 340 px the route glides over both creeks and the first-timer
     drowns. Banks between water gaps are 360 px or more (`w6Ground.ts` header).
   - *A watcher has to watch its own piece* (2026-10-29). Reeds whose watch zone spread to the next flat read the same in every roll

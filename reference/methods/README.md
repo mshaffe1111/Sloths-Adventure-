@@ -54,6 +54,7 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Painted icons (satchel recipe, one object per meaning, sizes, icon register) | `icons.md` | written 11-01 (icons-painted) | icons-painted (B-E) |
 | Gates (artcheck, drawcheck, clipcheck, playerText, art-use, knowncheck) | `gates.md` | written 11-01 (kaizen-gates) | whoever adds a gate |
 | WebGL / GPU renderer stages (PixiJS layer, look proof, context loss, pitfalls) | `webgl.md` | written 11-04 (warmup-5m) | the next GPU stage |
+| A drawing fault Matt sees on his phone, in shared render code | `render-fix.md` | written 11-05 (engine-render) | next render fix |
 | The World 1 measuring stick (move strings, look grid, flags, fixtures) | `validator.md` | written 11-04 (fix-petals; merges with fun-validator) | whoever extends the validator |
 | Quality review (in-order play, the six-question bar, verdicts) | `quality-review.md` | written 11-04 (quality supervisor; on quality-supervisor) | the quality supervisor |
 | Test link and release (build.py, Artifact publish limits, release branch, PR, deploy and APK check) | `test-link-and-release.md` | to write; source: HANDOFF §6-7 | the lead (11-01) |

@@ -4,6 +4,7 @@ name: Gates (art, known lists, clip, draw)
 # failing gate blocks the live site. The unit tests (playerText.test.ts among them) run in deploy.yml's own test shards.
 #   gates      artcheck (1 s) + knowncheck (1 s) + roadmapcheck (1 s) + funcheck (about 1 min) + clipcheck (about 3 min): about 5.5 min with setup
 #   drawcheck  its own runner, side by side: about 6.5 min with setup (measured 2026-11-01)
+#   watercheck its own runner, side by side: about 9.5 min for the check itself (102 stages x 16 layouts x 2 settings, measured 2026-11-05)
 # Both run alongside deploy.yml's test shards, so they add to the deploy only if they outlast the slowest shard.
 on:
   workflow_call:
@@ -64,3 +65,16 @@ jobs:
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       - run: npm install --no-save --no-audit --no-fund --legacy-peer-deps playwright@1.63.0 && npx playwright install --with-deps chromium
       - run: node tools/perf/drawcheck.mjs
+
+  # the water gate (the water rule W3: calm and deadly water never share a screen), every stage the game builds, 16 layouts x Normal
+  # and Easy; its known list only shrinks (tools/validate/watercheck.ts, waterknown.json; reference/methods/gates.md)
+  watercheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --legacy-peer-deps
+      - run: npx tsx tools/validate/watercheck.ts
