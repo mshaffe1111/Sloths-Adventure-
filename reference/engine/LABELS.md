@@ -14,7 +14,7 @@ ruling (ENGINE-SPEC), INV (the inventory row), or SHIPPED (a commit).
    understand the floating logs... A platform needs platforms.")
 3. **Water pieces only on a drawn water zone:** lily, reed, drift logs and pool logs. (MATT: "lily pads only on water"; engine-render's
    padsOffWater test.)
-4. **Theme lock:** a `wN…` dressing prop is World N's own art and is used only in World N. A kind with no world prefix may go in the
+4. **Theme lock** (widened by MATT, 11-05 ~5:40 PM ET: a piece stays in the world it was designed for, unless it adds something there): a `wN…` dressing prop is World N's own art and is used only in World N. A kind with no world prefix may go in the
    worlds it ships in today (the INV column), plus any world the element table allows. (MATT 11-05: "It can't just be using any piece
    from any world"; "no lava in the forest".)
 5. **Hanging is core** (a sloth game): vines, lianas and ropes are pieces of their own. A trunk is an anchor, never a landing.
@@ -40,7 +40,7 @@ ruling (ENGINE-SPEC), INV (the inventory row), or SHIPPED (a commit).
 | moss_stone art=boulder push / moss_stone push | | ground / the floor | no | push puzzle | W4 | push echo rule |
 | solid ruin | ruin, ruin art=hidden | ground (stone) / the floor, a column or its own base | **NO** | landing, temple floor | W5 (3), W7-W10 | needs a drawn column or base where it bridges a gap |
 | fragile ruin crumbleAfter (crumbling floor) | fragile ruin, crumbleAfter, pit=drop crumbleAfter | ground (stone) / a floor or column | **NO** | crumbling floor (W7's teach, 7-1) | W7 home; W8-W10 return (ruins). **Never W1** (SHIPPED acf6e1e8; ENGINE-SPEC 10:09 AM) | 1-5's 4 `fragile ruin` are a breach: replace them with W1 creaky |
-| fragile moss_stone / bouncy moss_stone / bouncy ruin | | ground (stone) / as above | **NO** | a breaking or bouncing stone | W5, W7-W10 | a bouncing stone: "a rock bounces you" reads oddly. **OPEN**, for Matt's look at a still; until then not laid in new stages |
+| fragile moss_stone / bouncy moss_stone / bouncy ruin | | ground (stone) / as above | **NO** | a breaking or bouncing stone | W5, W7-W10 | a bouncing stone: "a rock bounces you" reads oddly. **RULED by MATT, 11-05 ~5:40 PM ET:** "unless it adds something, then that should stay with the world that it was designed for." So it stays in W5 and W7-W10 only; never in W1 |
 | moving log / canopy_bridge (moveRange), moving art=lift | | built or plank / a track or rope | yes, as a platform that moves | moving platform (planned teach 2-7, R-164.9); the lift (2-7) | W2, W5, W6, W8, W9 | |
 | moving moss_stone / moving ruin | | stone that moves through the air | **NO: breaks rule 1** | — | W7, W9, W10 today (INV) | **Not used in new stages.** Today's 5 placements go on the known list; their moving-platform job goes to a log, plank or lift kin |
 | solid - art=kit / porch / lily / hidden / chase / crown | kit (puzzle-kit pieces), porch (W2 houses), lily (water), hidden (secret), chase (1-8), crown (1-8) | as their art: kit = built ground, porch = built, lily = water | no | puzzle rooms; the bank village; lily pads; secrets; the 1-8 chase set piece | as INV | kept as built; lily on water only |
