@@ -33,7 +33,7 @@
    "stage": "1-1",
    "setting": "normal",
    "rule": "pacing",
-   "layouts": 16,
+   "layouts": 13,
    "owner": "World 1 rebuild (D26)"
   },
   {
@@ -502,7 +502,7 @@
    "stage": "1-9",
    "setting": "easy",
    "rule": "repeat",
-   "layouts": 8,
+   "layouts": 5,
    "owner": "World 1 rebuild (D26)"
   },
   {
@@ -558,7 +558,7 @@
    "stage": "1-9",
    "setting": "normal",
    "rule": "repeat",
-   "layouts": 12,
+   "layouts": 11,
    "owner": "World 1 rebuild (D26)"
   }
  ]
