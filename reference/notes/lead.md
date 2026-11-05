@@ -2,6 +2,15 @@
 
 Keep this short and current. Rewrite stale lines. Times from `TZ=America/New_York date`.
 
+## PRIORITY LIST (read before EVERY action and every message; Matt 11-05: "it's your focus that's breaking me")
+THE ONE GOAL TODAY: prove the engine on 1-1. Nothing else.
+1. Every helper job fixes a MEASURED 1-1 failure or runs a check that protects the live game. Nothing else is started.
+2. Remove barriers on 1-1's path (red tests, missing tools, unanswered questions), the same hour.
+3. Start the cold builder the moment the how-to is signed off.
+4. Check 1-1 myself (object by object, both ways), then give Matt the test link.
+Before I send anything, ask: does this move 1-1 forward today? If not, it goes on ROADMAP and I say nothing more about it.
+Not today: 1-2, other worlds, art, polish, whole-game data, new helpers (except the cold builder).
+
 ## Read now, in this order (Matt, 2026-11-05: "make sure you're reading all your notes when you get compressed without me having to beg")
 1. reference/LAWS.md, reference/LESSONS.md
 2. reference/PARTNER.md, reference/LEADER-STANDARD-WORK.md, reference/CONTINUOUS-IMPROVEMENT.md (the table's last 5 rows)
