@@ -123,7 +123,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 139-140 | An animal counts as a move on the ladder (harder form, absent <= 2 stages) | OPEN | none | Matt said "anywhere", not "must return within 2" | Same as ES 113-116 |
 | 141-142 | Unused art feeds the library | MATT | MD:61-64 | | |
 | 147 | 273 unused pieces | MEASURED | b461499b (tools/art/artuse.mjs, IN-GAME-UNUSED.md) | | |
-| 148-149 | Dressing stays dressing; boss frames stay with bosses | OPEN | none | | (i) SR §4 "use ALL the art" (ccr: §4) allows any place; Matt to rule per item |
+| 148-149 | Dressing stays dressing; boss frames stay with bosses | OPEN | none | | (i) SR §4 "Use ALL the art" (ccr:218); Matt to rule per item |
 | 154-172 | 17 unused-art ideas and their "exists?" column | MEASURED | cp2/mechanics-exist.md:10-31 (7 yes, 9 adapt, 1 new) | The table is the designer's; the verdicts are the planner's code check | |
 | 174-175 | Unused animal frames give a second behaviour, the "harder form" | OPEN | none | | (iii) search for shipped games that give each enemy a second behaviour later (e.g. Rayman Origins enemy variants, DKC Returns) |
 | 181 | Easy: no rise over +40 px onto a landing under 220 px | MEASURED | cp2/cp2-trace-easy.out (flicks 246-281 ms at +50..+70); cp2/cp2-trace-easyfix.out (+40: 298-386 ms) | The 220 px threshold itself is not traced | (220 px part) (ii) cp2-trace.ts at +50/+70 onto 160/220/280 px landings |
@@ -138,8 +138,8 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 193 | Drifting logs and lily pads only in World 2 | MEASURED | cp2/library.txt:10, :12 | | |
 | 194 | 24 of 90 stages have no animal | MEASURED | cp2/enemies.txt:13 | | |
 | 196-197 | Spread first: moving/drifting platforms, lilies, mushrooms, taught animals | DERIVED | cp2/library.txt; cp2/enemies.txt | | |
-| 201-206 | 7 on the sheet, 9 small builds, 1 parked | MEASURED | cp2/mechanics-exist.md:31 | The spec's 7 "on the sheet" list differs from the planner's 7 "yes" (spec adds updraft, drops reed isles' "art only"?): both list reed isles, updraft, crumbling ledge, behind the falls, push block, scaffold, bridge span: same 7 | |
-| 204-205 | Matt picks which small builds to make | MATT | MD:21-23 (designer has full say is MD:17; build picks are Matt's per LD:18) | | |
+| 201-206 | 7 on the sheet, 9 small builds, 1 parked | MEASURED | cp2/mechanics-exist.md:31 (7 yes, 9 adapt, 1 new) | Same 7 as the planner's "yes" rows | |
+| 204-205 | Matt picks which small builds to make | OPEN | none | MD:17 gives the designer "full say" on use; no saved Matt rule on who picks builds | Ask Matt once, as a multiple-choice question |
 | 208-209 | CP3's 1-5 draws only proven ideas; World 1's 14 ideas | OPEN | none | Count of 14 not listed anywhere (9 + 4 + turtle) | (ii) list the ideas in library.ts (98b08168) |
 | 213 | Boa passes Easy, misses Normal: 2-3 hits at one boa, 2-3 lives a run | MEASURED | cp2/cp2-animals-groups.out:2-3; cp2/cp2-animals.out:1-2 (lives 3, 2) | | |
 | 214 | Turtle line: up to 5-6 hits at one line for the kid on Easy | MEASURED | cp2/cp2-animals-groups.out:8, :12 (5, 6) | | |
@@ -306,7 +306,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
 |---|---|---|---|---|---|
 | 532 | 60 rows of never-packed art | MEASURED | d34cc249 (NEVER-PACKED.md, 60 rows) | | |
-| 533-534 | Each is its own CP; Matt picks the order | MATT | LD:18 / ST:967 (Matt chooses the order of work) | | |
+| 533-534 | Each is its own CP; Matt picks the order | MATT | ST:967-968 (Matt sets the order of work) | | |
 | 534 | No Hugging Face spend (already painted) | MATT | CLAUDE.md HF rule ($72 total) | | |
 | 538-545 | Eight ideas and their estimates (0.1-2% each) | OPEN | none | Estimates | (ii) the meter on the first one built |
 | 547-548 | Backdrops and clip alternates are dressing and story | OPEN | none | | (i) SR §4 Use ALL the art (ccr:218) |
@@ -466,3 +466,291 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 914-920 | Matt's stills at 6 places, upright and sideways | SOURCED | CLAUDE.md "Done means polished"; LAWS 2 | | |
 | 922 | Each pair checked against P-1 to P-7; a failing still is fixed, not explained | SOURCED | LAWS 1 | | |
 | 924-925 | No HF spend; a small picture list if a gap shows | MATT | CLAUDE.md HF rule | | |
+
+## 15. CP4: trunk fix and the 1-1 plan (ES 928-1093)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 928 | "It's better." / "One first, then the rest." | MATT | ST:967 | | |
+| 931 | Boughs within 220 px share one tree | OPEN | none | Built and measured (a3bc093c) but the number is the designer's | (ii) bough-to-trunk spacing on old 1-1 (Matt's best) and main's kapok placement |
+| 932 | <= about 3 full trunks a screen width, both ways | OPEN | none | Window later 1,400 px (ES 1057, a3bc093c) | (ii) trunks per 1,400 px on old 1-1; (iii) DKC Returns / Rayman canopy screenshots per screen |
+| 933 | Further boughs hang from a shared trunk's side branch | OPEN | none | No side-branch art (ES 1057-1058); built as a thin post | Art list item |
+| 934 | No two neighbouring trunks share art or vine wrap | MEASURED | 27345325 (bare and vine-wrapped kapok alternate) | | |
+| 937-938 | 1-1 "Into the Canopy": run the high branches; arrival; teaches run, jump, double | SOURCED | dotLinesData.ts:94-98 [main] (run, jump, double coaching on 1-1) | | |
+| 939-940 | Rises from floor to high branches; backdrop changes with height | SOURCED | W1-REBUILD-PLAN row (as the spec says, not re-opened) | Matt asked for one sky on 1-1 (RM:475, R-164.2); see (b) C8 | |
+| 941 | Its moment: the first double-jump chain into the canopy | SOURCED | BR:21-22 | | |
+| 942 | d = 0; nothing untaught: no creaky, crumbling or animals | SOURCED | SR §1 Teaching (ccr:109) | Spec says 1-5 teaches creaky (stale, C9) | |
+| 943 | Run, jump, double and bounce taught here | MEASURED | ML (gap first 1-1, mushroom first 1-1) | | |
+| 944 | Overall trend up, so 1-1 and 1-5 never share a shape | OPEN | none | | (i) SR §0b.6 neighbours never share tempo and camera direction (ccr:58) |
+| 947-948 | "Are you also explaining how it should feel based on the story?" | MATT | MD:34-37 | | |
+| 950-954 | Where Pokey is: two days after, the vow, petal points north, squirrels | SOURCED | BR:12-16 (pilot-prologue-w1-v2.md:227, 247, 295) | | |
+| 955-957 | The feel: a small, determined start that grows | SOURCED | BR:18-23 | | |
+| 958-967 | Node-group feel (n1-n3 gentle; n4-n6 first lift; n7-n9 rising courage; n10-n11 arriving) | SOURCED | BR:18-23 | | |
+| 963-964 | n7-n9 is the only place in 1-1 where a miss costs a setback | OPEN | none | | (i) R3 F2 (first test of a new move ~0.85); MD:77-79 |
+| 965-967 | Bootprint at the shrine, a story prop | SOURCED | src/components/stageClue.ts:16 [main]; BR:33-36 | | |
+| 968-970 | The view north is 1-4's | SOURCED | BR:41 | | |
+| 971-972 | Every later spec opens with its beat and feel | MATT | MD:34-37 | | |
+| 975-976 | "not all branches like the last one" | MATT | BR:46 (PARTNER.md:34 on ccr) | | |
+| 978-979 | First half n1-n7 is the forest floor, no canopy | SOURCED | BR:45-52 | | |
+| 980-983 | Splits in the first half from the ground itself; n5 a ground fork | OPEN | none | Measured result: splits 2-4 (098aff49) | (ii) already measured; see ES 1158 |
+| 984-985 | Boughs only with the climb (n8 on); n4's bounce onto a mound or log jam | SOURCED | BR:50 ("the canopy comes late, as the reward") | | |
+| 987 | Boughs + creaky <= 30% of 1-1's landings | OPEN | none | Measured 11-12% (098aff49) | (i) BR:46 ("90% branches" was the fault); (ii) old 1-1's bough share (cp1) |
+| 988 | 1-1's commonest kind is not 1-5's | SOURCED | BR:52 | | |
+| 989 | 1-1 and 1-5 share <= half their ideas | OPEN | none | Measured 6 of 13 (098aff49) | (i) LEG E47 |
+| 990 | Old 1-1's floor numbers hold (up/down 4 of 5, new every 572 px) | MEASURED | cp1/table2.txt:2 | | |
+| 991-992 | If ground forks can't reach 19, report before working around | SOURCED | LAWS 3 / LD:46 | | |
+| 995-996 | The brief is the source; it wins over the designer's draft | SOURCED | LD (roles), ST:962 (the lead does story, the designer layout) | | |
+| 1000-1002 | Petals low at marching height on trunks and banks | SOURCED | BR:26-27 | | |
+| 1004-1008 | Squirrel poses as dressing; "I didn't know you could do that" pays off in 1-2 | SOURCED | BR:21-22, BR:28-29 | | |
+| 1009-1013 | Dot's shipped 1-1 lines and where they sit | SOURCED | dotLinesData.ts:94-101 [ccr]; BR:30-31 | Placement per node is the designer's | |
+| 1014 | Morning light, then deeper canopy as he climbs | SOURCED | BR:32 | Conflicts with one sky (RM:475); (b) C8 | |
+| 1015-1021 | Owned by other stages: 1-2 note, 1-3 punch, 1-4 kapok climb, 1-5 folded petals, lianas 1-6, bush 1-7 | SOURCED | BR:38-43 | Lianas belong to 1-2 (d272601f; ES 1429); BR:43 and ES 1020 are stale; (b) C9 | |
+| 1018 | So n8 draws bough stair or bounce up, never a long trunk climb | SOURCED | BR:41 | | |
+| 1022-1024 | Mostly ground and low pieces; commonest is a ground piece | SOURCED | BR:45-52 | | |
+| 1026-1034 | Workflow: brief, node plan, build and measure, lead check, Matt plays; all three sign | SOURCED | ST:962-963 | | |
+| 1037-1041 | Every spec carries a feel profile; pass lines from the profile | MATT | MD:25-32 ("various randoms ... how it branches, if it branches, if there's water") | | |
+| 1042-1044 | A feel check across stages; fails when neighbours are too alike | SOURCED | SR §0c.6-7 (ccr:90-99) | | |
+| 1046-1052 | 1-1 profile: moderate branching, hilly rising, calm march, low petal trail, morning forest edge | SOURCED | BR:18-32 | | |
+| 1055-1056 | Jumps judged as each stage teaches them (singles before the double) | MEASURED | 98f2decb (tools/engine/cp4-jumps11.ts) | | |
+| 1057 | <= 3 full trunks per 1,400 px on 16/16 rolls | MEASURED | a3bc093c (worst 3 a screen, was 6) | 3 and 1,400 are OPEN (ES 932) | |
+| 1057-1058 | A bough past the cap stands on a thin post (no side-branch art) | MEASURED | a3bc093c (post past 300 px from every tree) | | |
+| 1059-1060 | Hollow logs, squirrels, bootprint must exist in the W1 atlas; no stand-ins | MATT | CLAUDE.md Polish rule; SR §4 (ccr:203-210) | | |
+| 1065 | n1 teach run; no heart; start flag | SOURCED | dotLinesData.ts:96 (coach.run) | | |
+| 1066 | n2 teach jump: bank hops with safe dips, stump hop; "Jump the little gaps" | SOURCED | dotLinesData.ts:99 [main] (hint.1-1.gaps); R1:68 | | |
+| 1067 | n3 practise: "Hop from stone to stone" | SOURCED | dotLinesData.ts:100 [main] | ES 1010 put "Up the bank" at n3; w1mix:107 puts it on the n3 fork | |
+| 1068 | n4 teach bounce from a mushroom beside the path | SOURCED | 6dae405d (mushroom on a perch, walking on takes the low road) | | |
+| 1069 | n5 first fork on the ground; marks per CP3's fork rule | MEASURED | 14ff1727 (fork marks on shared ground) | | |
+| 1070 | n6 rest, a Dot spot; flag only if n7 follows hard | MATT | MD:79-80 | | |
+| 1071 | n7 teach double over safe ground; the two shipped double lines | SOURCED | dotLinesData.ts:95, :98 [main] | | |
+| 1072 | n8 low boughs; bough stair or bounce up (not n4's) | SOURCED | BR:41 | | |
+| 1073 | n9 the moment: 3-4 rising doubles, catch boughs below; flag before; heart after only with risk | OPEN | none (3-4) | | (ii) cp4-jumps11 and first-timer on n9 |
+| 1074 | n10 canopy fork | MATT | MD:8 | | |
+| 1075 | n11 one long high branch to the shrine; bootprint | SOURCED | BR:33-36 | | |
+| 1077 | Normal quick clock 2:40-3:15 | DERIVED | 1-5 median about 4:05 (b7c38491) x 0.8 = 3:16 | | |
+| 1077-1078 | At least 20% under 1-5's median; over 2:00; Easy >= 2:00 | MATT | MD:45-47 (2:00); 20% is OPEN (ES 667) | | |
+| 1080-1086 | Every rule built tonight applies (variety, decks, placement, P3, polish, Easy rules, 16-roll pacing) | DERIVED | rows above | | |
+| 1087 | Splits >= 19; two-road >= 40% | MEASURED | as ES 411, 424 | Replaced for 1-1 at ES 1168-1175 | |
+| 1088 | No idea over 40%, none twice in a row, >= 4 ideas | MEASURED | cp2/idea-tags.out (41%) | ">= 4" OPEN (ES 244) | |
+| 1089 | Record 1-1's wall time, retries and % estimate | MATT | ST:967 ("real cost measured") | | |
+| 1090-1091 | 1-2 to 1-4 wait for Matt's OK on 1-1; a miss stops the work | MATT | ST:967 | | |
+| 1092-1093 | New 1-1 must beat old 1-1 side by side | MATT | MD:5-6, MD:116 | | |
+
+## 16. CP4 as first written, CP5, total (ES 1095-1112)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 1097 | All five stages pass on 16/16 both settings | SOURCED | ES 261 | | |
+| 1098 | Neighbours share <= half their main pieces | OPEN | none | | (i) LEG E47 |
+| 1099 | Every node labelled; none twice in a row; none over old 1-1's top share | MEASURED | cp2/idea-tags.out | | |
+| 1100 | Fun gate: no new flags | SOURCED | D:1043 | | |
+| 1101 | Designer plays each stage both ways against the one it replaces | SOURCED | LAWS 2 | | |
+| 1102 | Five maps beside old 1-1; grey-box link of all five | MATT | MD:112-113 | Changed by ST:967 to one stage at a time | |
+| 1103 | <= 1 hour a stage after the mixer exists | MATT | RM:473 | | |
+| 1104 | Cost 1.5-2% | OPEN | none | | (ii) meter |
+| 1107-1108 | Matt picks the engine's stages over today's, before art (check 5) | MATT | MD:116 | | |
+| 1110 | Cost about 0.2% | OPEN | none | | (ii) meter |
+| 1112 | Total 4.5-6.2% under the 8% ceiling, 1.8-3.5% margin | DERIVED | ES 59, 97, 268, 1104, 1110 | Actuals already past it (ST:966: round 2 alone 5-6%); (b) C15 | |
+| 1120-1121 | Rhythm is the player's, not the song; regular, swing, broken, wait-and-go | MATT | ST:958 (MATT DECIDED, 11-04 10:40 PM ET); MD:12-13 | Types from D:1240 / R3 F12 | |
+
+## 17. Planner's amendments P1-P4 and signatures (ES 1125-1153)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 1127-1130 | P1: CP1 builds Easy as the engine does; inspector 0-20% identical | MEASURED | PLAN.md run E6 (engine-plan, as cited; not re-opened); D:85 (failure 5) | | |
+| 1131-1133 | P2: the tracer knows hop, jump, double onto bank, branch, stump, crumble; vines, ropes, lilies, moving logs proven in the real engine | SOURCED | beatTrace.ts:48-50 (as cited, origin/w1-rhythm, not re-opened); D:1056 | | |
+| 1134-1136 | P3: no first-timer drop onto a standable ledge in a life-costing span | MATT | RM:474 (R-164.1, Matt's clip) | | |
+| 1137-1139 | P4: one model of a jump; "can't reach" rejections = 0; 932 -> 41 | MEASURED | R4:40-50 (94% of 1-2's rejections one rule); PLAN.md E1/E9 (as cited) | | |
+| 1141-1145 | No old World 1 stage on main has a lily pad (16 layouts; 1-6 to 1-9 on 3-16) | MEASURED | a3473541; cp1/ | | |
+| 1147-1148 | 1-5's stone is moss_stone under 40 px (53 pieces); 68 fragile creak branches | MEASURED | 32751eb4 (planner's check, layout 1 Normal) | | |
+| 1149-1152 | Old 1-1: 0 splits strict, 31 at 120 px allowance (longest 1,540), 21 at 200 px; 1-3 8/14/18 | MEASURED | 32751eb4; 26d73d6c | | |
+| 1152 | A Normal flat jump 157-185 px (PLAN.md table 2.1; use 180) | MEASURED | D:119, D:125 (designer-measure.ts.txt) | | |
+
+## 18. 1-1 ground build ruling (ES 1155-1200)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 1157-1162 | Measured: splits 2-4, two-road 24-28% / 19-22%, fast 109-119 s, variety 16/18 with 2,042 / 2,646 px nothing-new, boughs+creaky 11-12%, ground commonest 16/16, 6 of 13 ideas shared | MEASURED | 098aff49 | Two-road Easy and the variety detail are in the designer's text only | |
+| 1164-1166 | Ruling (a): lines from 1-1's own profile; a mound is solid down | MATT | MD:25-27 ("how it branches, if it branches") | | |
+| 1166 | Options (b), (c) bring back boughs-over-floor Matt turned down | MATT | BR:46 | | |
+| 1172 | Splits whole stage >= 10 (>= 12 with hollow logs) | OPEN | none | Measured build gave 2-4 | (ii) build with the n8-n11 tree half and measure; (i) none |
+| 1173 | Splits n8-n11 >= 7 | OPEN | none | 7 echoes the planner's "split floor 7 from 1-3" (ES 1141, strict rule) | (ii) measure old 1-1's splits per 1,000 px of canopy x the tree half's length |
+| 1174 | Two-road Normal >= 25% | OPEN | none | Measured 24-28% | (ii) 16 rolls on the finished 1-1 |
+| 1175 | Two-road Easy >= 20% | OPEN | none | Measured 19-22% | (ii) as above |
+| 1177-1178 | Choice in the ground half from forks, hollow logs and side pockets; no thin raised roads | OPEN | none | | (i) GV:69, GV:173 (side branches for collectibles); R1:524 |
+| 1179-1181 | Variety 18/18 and length unchanged; nothing-new misses traced, not relaxed | MEASURED | cp1/table2.txt:2 | | |
+| 1180-1181 | Normal fast 160-195 s, Easy >= 120 s; 3 ground bursts a node in n2-n7; flat <= 1,351 px | DERIVED | ES 1077 (2:40-3:15 = 160-195 s); cp1/table2.txt:2 (1,351) | 3 bursts at d = 0 contradicts the dial's 2 (ES 648); (b) C21 | |
+| 1183-1188 | Every piece names its element; the mixer fails a piece outside it | MATT | MD:124-137 | | |
+| 1189-1191 | No water piece without a drawn water body; 1-1's creek on ground pieces until then | MATT | MD:28 ("We shouldn't have lily pads on branches"), MD:129-130 | | |
+| 1194-1196 | Squirrels and hollow logs packed in w1-new.json, nothing loads it; 1-1 waits for the squirrels | MEASURED | 098aff49 (recorded as dressing, not drawn) | | |
+| 1197-1199 | Bootprint: no art anywhere; a one-picture HF list | SOURCED | ST:970 (lead approved one HF bootprint, cap $3) | | |
+
+## 19. Stage profile and element table (ES 1202-1263)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 1204-1206 | Engine first; 1-1 parked at 72fe81a3 | MATT | MD:118-122 | | |
+| 1206-1207 | The planner may add fields, not remove any | OPEN | none | | lead's call |
+| 1212-1230 | Profile fields (story, arc, elements, water, branching, pace, length, mechanics, hazards, owns, commonest, unlike, caps, look, dress, marks, dot, difficulty) | MATT | MD:25-32 (speed, looks, what's in it, branching, water), MD:34-37 (story) | Field list beyond Matt's six is the designer's | |
+| 1215 | 1-1 elements: ground >= 70% n1-n7, tree >= 60% n8-n11, water 0 | OPEN | none | | (ii) element share on the 098aff49 build |
+| 1219 | Length: never below 120 s | MATT | MD:45-47 | | |
+| 1224 | 1-1 vs 1-5 <= half their ideas | OPEN | none | | (i) LEG E47 |
+| 1225 | 1-1 caps: boughs + creaky <= 30% | OPEN | none | as ES 987 | as ES 987 |
+| 1228 | Marks 0 for a sprint | OPEN | none | | (i) GV:173 (collectible tiers by stage type) |
+| 1232-1233 | World default: today's 1-5 lines (splits 19, two-road 40%) | MEASURED | as ES 411, 424 | | |
+| 1233-1234 | A profile that lowers a default gives its reason | SOURCED | LAWS 5 (never loosen silently) | | |
+| 1239 | bank, mound: ground, on the floor, solid to the bottom | SOURCED | MD:132-133 (support per piece) | | |
+| 1240-1246 | stump, log (across a creek both ends on banks), log jam, hollow log, mushroom (never in the air), stone (ground or rising from water), push block | MATT | MD:132-136 (stones in water need a base; roots grow from a trunk or bank) | Row details are the designer's | |
+| 1247 | lily pad, reed isle: on a drawn water zone, never over a painted drop | MATT | MD:28, MD:129-130 | | |
+| 1248 | bough: a trunk within 220 px, or a thin post past 300 px | MEASURED | a3bc093c | 220 / 300 are OPEN (ES 931) | |
+| 1249-1250 | creaky, rotten on a trunk or bough; vine hangs from a bough, top never in open sky | OPEN | none | | (i) SR §6 "nothing floats" (ccr:602) |
+| 1251 | crumbling ledge: element as its art shows | OPEN | none | Ruled ground then removed from W1 (ES 1450) | (ii) atlas key check |
+| 1252 | bridge span: both ends on the same element | SOURCED | ES 726 (P-11, Matt's stills) | | |
+| 1253 | exit totem, shrine on a long ground piece | OPEN | none | | (ii) shipped shrines' footing |
+| 1254 | pickups over a standable piece or on an arc, never inside a piece | MEASURED | d27c5acd ("a petal never inside a piece", asserted) | | |
+| 1257-1259 | Rules: fail outside element; no row, no use; untaggable art goes back, never a guess | MATT | MD:134-137 | | |
+| 1261-1263 | PLAN_11 n2/n5 lily pads with no water break rule 1 | MEASURED | 98b08168 (spec-check refuses 1-1's lily pads) | | |
+
+## 20. The move ladder (ES 1265-1333)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 1265 | "once you learn floating, you can float everywhere ... ropes, that's more used" | MATT | (relayed) MD:58-60 is the nearest saved words (enemies anywhere); the floating/ropes quote is not saved | | |
+| 1268 | One source for where a move is taught: lesson lines, skills, Dot's tips | SOURCED | MW1:111-112 (mechanics table method) | | |
+| 1269 | Known means allowed anywhere after its teach; checkSpec refuses before | SOURCED | SR §1 Teaching (ccr:109); SR §0.1 (ccr:19-20) | | |
+| 1270 | Per-move fit rules in the library | MATT | MD:132-137 | | |
+| 1272-1276 | Source: mechtable.ts / mechanics-world1.md; the table wins | MEASURED | MW1; ML (7d9ad9a9) | | |
+| 1282 | run, jump, duck, punch always known at 1-1 | SOURCED | dotLinesData.ts:94-98 [main] | | |
+| 1283 | mushroom bounce taught 1-1 (n4) | MEASURED | ML row mushroom (first 1-1) | | |
+| 1284 | double jump taught 1-1 (n7), required n9 | SOURCED | levelCheck.ts:118 (EARLY_DOUBLE has 1-1) | | |
+| 1285 | stomp, kick, mega punch at 1-3 | SOURCED | BR:40 (combat teach belongs to 1-3) | | |
+| 1286 | rope shimmy clearing 1-3, required 1-4 | MEASURED | ML row rope (first 1-3) | "clearing 1-3" = a skill reward, not re-checked | |
+| 1287 | trunk climb 1-4 | SOURCED | BR:41 | ML says trunk first at 1-1 (the mixer's 1-1); ES 1435-1437 | |
+| 1288 | breaking / creaky branch 1-5 | OPEN | none | ML says 1-2 (row breaking, first 1-2); revised at ES 1429-1433 but the table is unchanged; (b) C9 | (ii) settled by ML: 1-2 |
+| 1289 | liana swing 1-6 | OPEN | none | ML says 1-2 (row liana); d272601f "1-2 owns the lianas"; (b) C9 | (ii) settled by ML: 1-2 |
+| 1290 | push a log 1-6 | MEASURED | ML row push (first 1-6) | | |
+| 1291 | hide in a bush 1-7 | MEASURED | ML row bush (first 1-7) | | |
+| 1292 | ride a river log 2-1 | MEASURED | ML row drift (first 2-1) | | |
+| 1293 | lift 2-7 | MEASURED | ML row lift (first 2-7) | | |
+| 1294 | moving platform first shows in 2-10, a lair; must be taught in a stage first | MEASURED | ML row moving (first 2-10) | | |
+| 1295 | leaf glide clearing 4-1; required 4-7 | OPEN | none | ML has no glide row (ES 1490) | (ii) add the glide row to moveladder.ts |
+| 1296 | warm air 4-7 | MEASURED | ML row updraft (first 4-7) | | |
+| 1297 | silk line 5-4 | MEASURED | ML row silk (first 5-4) | | |
+| 1298 | swim 6-7 (root well) | SOURCED | 87f1e2f6 | | |
+| 1299 | hold / freeze 10-3, required 10-4 (R-2.7, planned) | SOURCED | RM:84 (R-2.7) | | |
+| 1302 | Hazards stay with their element: dark and spores W3, thorns W3, wind W4, webs W5, tide W6, crumbling floors W7, geysers W9, bolts W10 | MEASURED | ML rows zone:* and thorn (first 3-1, 3-4, 4-2, 5-6, 6-4, 7-1, 9-1, 10-1) | | |
+| 1303 | The 1-8 chase and the lairs stay with their stages | MEASURED | ML row chase (1-8 only) | | |
+| 1305 | They come back only where the element fits | SOURCED | SR §0c.7 (ccr:93-96) | | |
+| 1307 | Animals, once taught, anywhere on their element | MATT | MD:58-60 | "on their element" is the designer's | |
+| 1311-1312 | A touch = 1-2 uses, some = 3-6 (one required), lots = 7+ or the theme | OPEN | none | | (iii) Hayashida / Nintendo "four-step" counts per course; (ii) count uses per stage on old W1 with mechtable.ts |
+| 1316 | Teach stage: the move is the theme (lots) | SOURCED | D:422 (Hayashida: one core concept per stage) | | |
+| 1317 | Echo: the next 2 stages (skipping lairs), at least some, one required | OPEN | none | | (i) R1:68 (L5) and GV:105 ("return later without retraining"); (iii) Shovel Knight's "on cooldown" list (R1:527) |
+| 1318 | Own world after the echo: a touch every stage, some in half | OPEN | none | | (ii) mechtable.ts on old W1-W4 for today's numbers |
+| 1319 | Every later world: each core move in >= 1 of every 3 stages; the world's own move lots | OPEN | none | | (i) SR §0.1 (ccr:19-20, "comes back in every later world"); (ii) ML spread per move |
+| 1320 | Mixing W2 on: >= 3 known core moves besides run and jump, >= 1 from an earlier world | OPEN | none | | (i) SR §0b.5 pairs then triples (ccr:54-55); GV:21-55 (15 pairs) |
+| 1321 | Combining: >= 1 stage in the move's world joins it with another move in one beat | SOURCED | SR §0b.5 (ccr:54-55); GL A1 (Ten) | | |
+| 1322 | A use that breaks the fit rule doesn't count and fails | SOURCED | SR §0.2 (ccr:21-22: a hazard you can ignore is decoration) | | |
+| 1323 | Easy: the same moves and counts; Easy's sizes | SOURCED | SR §1b "don't remove a move from Easy" (ccr:135-137) | | |
+| 1324 | Overrides `none` only with a reason | SOURCED | LAWS 5 | | |
+| 1327-1328 | Hide (1-7) and push (1-6) never come back in World 1 | MEASURED | MW1:60-76 | | |
+| 1329 | Water (1-6) comes back in World 2 | MEASURED | MW1:72 | | |
+| 1330 | The chase, the boa and the snake ring are set pieces and exempt | OPEN | none | MW1:69-75 lists them as "built once" too | (i) R1:572 (one stage's twist is fine); Matt's ruling |
+| 1332-1333 | 1-1's proof uses only its own rows | DERIVED | ES 1282-1284 | | |
+
+## 21. 1-5 under the element gate; Matt's three; W1 labels (ES 1335-1426)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 1337-1338 | The crumbling ledge is ground: World 7's carved slab (crumbleArt.ts) | SOURCED | cp2/cp2-trace.ts.txt:36 (style 'ruin') | Removed from W1 at ES 1450 | |
+| 1339-1340 | A slab on a kapok is the floating fault (P-2) | SOURCED | SR §6 (ccr:602) | Revised by ES 1369 | |
+| 1341-1343 | 1-5's lily pads swap to ground pieces until water is drawn | MATT | MD:129-130 | | |
+| 1344 | Both stay named breaches; a named breach is not a pass | SOURCED | LAWS 5 | | |
+| 1345-1346 | Fingerprints change on purpose; re-run 16/16 | MEASURED | 9e243098 (32/32, 18/18, splits 20-26, two-road 40.3-43.0%) | | |
+| 1350-1351 | Floating objects: "looks better ... too much junk" | MATT | MD:125-126 | | |
+| 1351 | Each kind gets mayFloat; each profile a float line with a cap | MATT | MD:132-134 ("The support rule is per piece") | | |
+| 1352-1356 | May float: stone, log, crumbling ledge, bough | MATT | MD:129-130 ("I don't mind floating logs"); stones/ledges/boughs are the designer's | Only logs and planks are Matt's | |
+| 1357-1358 | Never float: lily pads, reeds, banks, mounds, stumps, mushrooms, creaky, bridges, totems, shrine | MATT | MD:129-130 (lily pads "more in the water") | Others the designer's | |
+| 1363 | 1-1 float cap <= 15% | OPEN | none | | (ii) float share on old 1-1; (iii) Super Mario Bros. 1-1 floating-block share (Matt's "Mario type thing", MD:125) |
+| 1364-1365 | 1-5 and default <= 25% | OPEN | none | | as ES 1363 |
+| 1367-1368 | A floating piece carries its own underside; never half hidden | SOURCED | GV:177 (silhouette legibility); SR §0b.7 (ccr:60-62) | | |
+| 1369-1371 | Revises P-2 and the 9:56 ruling; canopy breakables stay creaky | MATT | MD:124-130 | | |
+| 1373 | commonest becomes core; the commonest landing is a core piece | MATT | MD:127-128 ("label ... what levels they can be used on") | | |
+| 1377 | 1-1 core: bank, stump, log; bough for n8-n11; stone not core | SOURCED | BR:49-52 | | |
+| 1378 | 1-5 core: bough, creaky, bank | MEASURED | b7c38491 (creaky 20-25% top 3) | | |
+| 1380 | Core pieces >= 50% of landings | OPEN | none | | (ii) share of the top-3 kinds on old 1-1 (cp1 measures2.json) |
+| 1382-1384 | Themes: each kind names its worlds; checkSpec refuses off-theme ("no lava in the forest") | MATT | (relayed) e7089072 ("Matt, 11-05"); MD:127-129 ("look like they belong in that world") | "no lava" is not saved in Matt's words | |
+| 1385-1387 | The per-world object pass, world by world; World 1's 10 kinds done | OPEN | none | | lead's plan |
+| 1391-1392 | Labels: element, footing, floats, uses, teaches, worlds, stages | MATT | MD:127-128, MD:134-136 | | |
+| 1396 | bank: W1-W4, W6-W10 | OPEN | none | cp2/library.txt:3 places banks in W1-W7, W9-W10 (none in W8) | (ii) settled by cp2/library.txt:3 plus the W8 object pass |
+| 1397 | log: W1-W4, W6 | OPEN | none | library.txt:2 has logs in all 10 worlds | (ii) settled by cp2/library.txt:2: W1-W10 |
+| 1398 | stump: W1-W4, W6 | OPEN | none | | (ii) atlas listing |
+| 1399 | stone: W1-W4, W6, W9; a 50 px rise | MEASURED | fdabad42 (50 px); worlds OPEN (library.txt:5 lists 1, 3-5, 7-10) | | |
+| 1400 | mushroom: W1, W3, W6 | OPEN | none | library.txt:9 lists 1, 3-5, 7-10 (no W6) | (ii) settled by cp2/library.txt:9 |
+| 1401 | bough: W1, W2's banks, W5, W6, W8 | OPEN | none | library.txt:4 lists branch in all 10 | (ii) cp2/library.txt:4 |
+| 1402 | creaky: W1, W5, W6, W8 | OPEN | none | library.txt:11 crumble/snap in 1, 5, 7-10 | (ii) cp2/library.txt:11 |
+| 1403 | crumble slab: W1 (shrine stone), W7; never in the canopy | OPEN | none | Removed from W1 at ES 1450; the row is stale; (b) C29 | (i) acf6e1e8 |
+| 1404 | bridge: W1, W5, W6; from 1-1 n8 | OPEN | none | library.txt:7 lists bridges in 5, 8-10 | (ii) cp2/library.txt:7 |
+| 1405-1406 | lily, reed: W1 creeks, W2, W6; only where the water zone draws | MATT | MD:129-130 | | |
+| 1409-1411 | Fix 1: no stump kind; planner says which | OPEN | none | | (ii) the planner's library.ts |
+| 1412-1413 | Fix 2: crumble fits W1 only by the shrine stones | OPEN | none | Withdrawn at ES 1450; stale | (i) acf6e1e8 |
+| 1414-1416 | Fix 3: no ground log resting in the trees | MATT | MD:28 (lily pads on branches), MD:130-131 | | |
+| 1417-1419 | Fix 4: the worlds column above; later worlds closed until their pass | OPEN | none | | lead's plan |
+| 1422-1425 | Correction: a floating log in open air allowed in the canopy under the float cap | MATT | MD:129 ("floating logs ... more Mario") | | |
+
+## 22. The ladder against the all-world table (ES 1427-1456)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 1429-1431 | Lianas and breaking branches taught in 1-2; "the table is right" | MEASURED | ML rows liana, breaking (first 1-2); d272601f; 6dae405d | | |
+| 1432 | 1-5's creaky node becomes an echo | DERIVED | ES 1429 | | |
+| 1435-1437 | Trunk climb at 1-1 is the mixer's; re-run main's 1-1 to 1-3 | OPEN | none | Not re-run in any saved output | (ii) moveladder.ts on main's 1-1..1-3 |
+| 1439-1440 | Moving platform not taught in a lair (STAGE-RULES §0) | SOURCED | SR §1 Teaching (ccr:109); RM:482 (R-164.9) | The rule is §1, not §0 | |
+| 1441 | Taught in 2-7 beside the lift, echoed 2-8 and 2-9 | OPEN | none | | (i) SR §0.4 "moving platforms early (from World 2)" (ccr:25); GVs:17 (moving-platform kinds) |
+| 1446-1448 | Taught-at = first lesson card, tip or skill; presence before it is a breach fixed where it appears | SOURCED | SR §1 Teaching (ccr:109) | | |
+| 1450-1451 | Shipped acf6e1e8: World 1's breakables use W1's branch art, never W7's slab | MEASURED | acf6e1e8 | | |
+| 1453-1456 | 1-5's ground breakable is W1 rotten wood if it exists, else an art gap; theme check names the slab | OPEN | none | | (ii) atlas key search for W1 rotten wood |
+
+## 23. The whole-game plan (ES 1458-1635)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 1458 | "the engine plans the WHOLE game"; the lead's five bars | MATT | (relayed) not saved in MD or ST | | |
+| 1461 | 102 stages, 40 mechanics | MEASURED | ML (stages 102, 40 rows) | | |
+| 1462-1464 | Keep stages, names, specials, rooms, bosses and art; lock a world before changing it | SOURCED | 96ac0259 (regression lock); CLAUDE.md "New replaces old" | | |
+| 1470-1481 | Absences: warm air 63, lift 83, river logs 7 stages / 81, silk 2 / 55, push 4 / 61, breaking 22 / 41, rope 13 / 35, hide 8 / 28, moving 10 / 29, bounce 26 / 13 | MEASURED | ML (stage lists per row) | My recount of ML gives the same stage counts; absences come out 1 higher on 7 rows (e.g. rope 36, breaking 42), so the absence definition is off by one somewhere | |
+| 1483-1488 | Working: liana 4, trunk 5, tayra 5, harpy 8, finds 3 | MEASURED | ML | | |
+| 1490-1491 | Glide and swim have no row | MEASURED | ML (no glide or swim row) | | |
+| 1497-1506 | World places | SOURCED | src/game/biomes.ts:50-99 [main] (comments per world) | | |
+| 1497-1506 | World elements, own moves and special stages | MEASURED | ML first-use rows; special stages as the spec lists (not re-opened) | | |
+| 1505 | W9 lava only here | MATT | (relayed) e7089072 | | |
+| 1509 | Lava only in W9 (Matt) | MATT | (relayed) e7089072 | | |
+| 1510 | Webs only in W5 | MEASURED | ML row zone:web (5-6 only) | | |
+| 1511 | Swim only in deep water, only from 6-7 | SOURCED | 87f1e2f6 | | |
+| 1512 | Before 6-7 water costs a life, "Falling in costs a life" | SOURCED | src/game/lessons.ts:188 [main]; dotLinesData.ts:38 | | |
+| 1516-1522 | Core moves: jump, double, bounce, liana, climb, rope, creaky, hide, push, moving platform (after 2-7), glide (after 4-1), swim (after 6-7, water worlds) | OPEN | none | | (i) GV:5 (two verbs + four modifiers), SR §0b.5 |
+| 1526-1531 | World moves: river logs W2/W6/W8 ponds; lift W2/W7/W10; warm air W4/W9/W8; silk W5 | OPEN | none | | (i) SR §0c.7 (ccr:93-96) |
+| 1535-1548 | Ladder rows: taught, echo stages, "must keep returning" (>= 1 in 3, 1 in 4 for push and hide, >= 2-3 stages for world moves) | OPEN | none | Taught and today's-gap columns are MEASURED (ML); the return rates are judgments | (ii) mechtable.ts on old W1-W4; (iii) per-mechanic recurrence in a shipped 8-world platformer (Rayman Legends, DKC Returns) |
+| 1535 | Bounce gap 13 (W3-W4) | MEASURED | ML row mushroom (13, 5-8 to 7-2) | ML says the gap is 5-8 to 7-2, not W3-W4 | |
+| 1538 | Breaking gap 41 | MEASURED | ML | | |
+| 1539 | Rope gap 35 (W5-W7 get ropes) | MEASURED | ML | | |
+| 1541 | Push gap 61 | MEASURED | ML | | |
+| 1542 | Hide gap 28 | MEASURED | ML | | |
+| 1543 | Moving gap 29 | MEASURED | ML | | |
+| 1545 | Warm air gap 63 | MEASURED | ML | | |
+| 1547-1548 | Lift 83; river logs 81 | MEASURED | ML | | |
+| 1550-1561 | World hazards return only where the element fits; each list | OPEN | none | | (i) SR §0c.7; GV:105 |
+| 1558 | Tide in W2 only after 6-4 | MEASURED | ML row zone:tide (first 6-4) | | |
+| 1564-1565 | Animals anywhere their element fits | MATT | MD:58-60 | | |
+| 1566-1567 | Snapper to W6, spiders stay W5, frogs to W8, boa back in W3-W4 | OPEN | none | ML: boa absent 37 stages (1-9 to 5-6) | (ii) ML spreads; Matt's picks |
+| 1570-1571 | W2 on: >= 3 core moves besides run and jump, one from an earlier world | OPEN | none | | (i) SR §0b.5 |
+| 1572-1583 | One joined beat per world (list) | SOURCED | SR §0b.5 (ccr:54-55); GV:21-55 (the pair matrix) | The pairs chosen are the designer's | |
+| 1587-1588 | A profile names its water bodies (x, y, depth, swim) | MATT | MD:26-27 ("if there's water") | | |
+| 1590-1594 | Swims: <= 15-20 s under; exits 3-4 body widths; no slow drag ("suddenly fast"); currents and bubbles; tide | SOURCED | GVs:19 (triage row "Water"); RM:160 (R-5.22, Matt's "suddenly fast") | Gemini, not verified | |
+| 1596 | Gate fails over 20 s under | SOURCED | GVs:19 | | |
+| 1598-1601 | 6-7 teaches, 6-8/6-9 echo, then W6-W8 and W10 >= 1 in 3; none in W9 | OPEN | none | | (ii) mechtable.ts; Matt's pick |
+| 1602-1608 | The swimming stage is 6-9 reshaped (R-153); clue "Ripples..."; 6-8 out | SOURCED | src/components/stageClue.ts:81-82 [main]; RM:410 (R-153: reshape, no new stages) | | |
+| 1609-1610 | World 1 to 6-6: water is drawn and costs a life | SOURCED | lessons.ts:188 [main] | | |
+| 1614-1618 | Gates 1-5 (untaught, dropped, off-element, mixing, swim) | DERIVED | rows above | | |
+| 1619-1620 | Gate 6: today's misses a known list that only shrinks | SOURCED | CLAUDE.md (clipknown / knowncheck); LAWS 5 | | |
+| 1626-1629 | Order of the planner's steps | MATT | ST:968 | | |
+| 1631-1633 | Designer cost: 1.5 h, 0.5 h, 1 h a world | OPEN | none | | (ii) clock it |
+| 1635 | The 55% ceiling (stop at 53%) | OPEN | none | Not found in ST, RM, PARTNER or LD | Ask the lead/Matt for the source |
