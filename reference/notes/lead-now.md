@@ -20,11 +20,10 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 ## The board (owner, deliverable, success, due ET). Update at every check-in
 | Who | Deliverable | Success looks like | Due |
 |---|---|---|---|
-| Planner (session_01FhBbYJaUqNUPxNUvbHdHeN, engine-chunks) | Step 1 floor road in gen2 | lock 102/102 unchanged, floorRoll tests green | ~4:50 PM |
-| Planner | Trunks + golden seed in pipeline, then tempo, branching, window, length-by-count, no-repeat, cadence; CHECK 3b each dial alone and together ON 1-1 | each pushed separately | ~9:00-9:30 PM |
-| engine-core (session_01FhBbYNa68MoMsiQdv2EJXg, engine-core) | w1.ts pool (harvest + designer's 30) + stage.ts gen2 path + all gates | 3:1 per phase; gates.yml + stage.ts all PASS on 16 rolls | after planner |
-| Designer (session_01FhBbYPKnBYCweHg8duJSu2, engine-spec) | 1-1 brief for gen2 | signed, every line cited | after engine-core's field list |
-| Lead | 3 rolls + old 1-1 on the test link, checked object by object, supervisor arc check | Matt plays | ~10:30-11 PM |
+| Planner (session_01FhBbYJaUqNUPxNUvbHdHeN, engine-chunks) | DONE: floor (a105feed), seed (b59a0472). NOW: tempo; then the rolled graph from NODES.md §8 with the parser (V1-V18), branching through forks; then length and window on node count; then no-repeat and cadence; then CHECK 3b ON 1-1 | each pushed separately, lock 102/102 | tempo ~5:25 PM; all ~9:30-10 PM |
+| engine-core (session_01FhBbYNa68MoMsiQdv2EJXg, engine-core) | DONE: w1.ts with all sections (8cb80cf25), required-move and cadence gates. SENT BACK 5:26 PM: the secondary-object support gate (props, stones, pads, mushrooms over air) with a planted fail; and the stage11 regression | gate PASS/FAIL on 16x2 | ~6:00 PM |
+| Designer (session_01FhBbYPKnBYCweHg8duJSu2, engine-spec) | DONE: NODES.md §1-8, key + pieces (d4526ee5e). Next: the 1-1 brief for gen2 fields; judge 1-1 stills | signed, cited | after engine-core's field list |
+| Lead | Node key page for Matt (https://claude.ai/artifact/K3c5jywonpSVroHJ2dyenL, done); 3 rolls + old 1-1 on the test link, checked object by object, supervisor arc check | Matt plays | ~10:30-11 PM |
 
 ## Open with Matt (one question at a time)
 - How far tonight: he decides once he trusts how I run the team. Meter 67% at 4:23 PM ET (1.5%/h since 2:23 PM).
