@@ -16,7 +16,7 @@ but this one was written.
 | Planned | about 75 minutes |
 | Started | 02:17 UTC (9:17 PM ET, Nov 4) |
 | Finished | see the last line of this file (stamped when the file was closed) |
-| Where the time went | about 35 min reading 25 primary sources end to end (§6); about 25 min writing and running four measuring scripts on all nine World 1 stages, 16 layouts, both settings, plus the fun gate, the inspector's noisy bots and the first-timer bot; the rest writing and checking this file |
+| Where the time went | about 35 min reading 26 primary sources end to end (§6); about 25 min writing and running four measuring scripts on all nine World 1 stages, 16 layouts, both settings, plus the fun gate, the inspector's noisy bots and the first-timer bot; the rest writing and checking this file |
 
 ---
 
@@ -170,6 +170,12 @@ Each entry: the formula, targets per setting, the source, how to measure it with
   with simple actions ... is to our knowledge not part of any of the 'established' theories of what makes games fun."
 * **Our analogue.** The boa kick-to-roll (move O, `tools/validate/core.ts:37`) is a shell kick. Measured O count: 1-5 5, 1-9 9 on
   Normal, zero elsewhere in World 1.
+* **The 2010 Mario AI level-generation track (Shaker et al. 2011).** Judges played two generators' levels in both orders and answered
+  "which game of the two was more fun to play" (a two-alternative forced choice; 6 entries, the first 15 judges). Significant
+  correlations: "levels with fewer coins and rocks, smaller gaps, and even distribution of enemies are, in general, preferred ... the
+  lower the challenge in a level the higher the preference". The winner by one vote was "the simplest solution": no search, no
+  hand-made chunks, no pacing, but levels "densely filled with items, creatures, and landscape features"; the authors warn that judges
+  may judge "early or based only on local features".
 * **Limits.** Correlations from one game's short sessions; fun was not predictable from level parameters alone.
 
 ### F11. Flow as "above your own average" (Nakamura & Csikszentmihalyi 2002)
@@ -267,7 +273,12 @@ is 0.75-1.15, its Easy band 0.35-0.55 (`GEMINI-PCG-RESEARCH.md:290`). Median gap
 1-8; Easy medians match Normal within 0.5 s on every stage. Easy softens what a miss costs (leniency 0.53-0.98 against 0.13-0.98)
 but not the tempo. This is on the quick route's clock; a real first-timer is slower (1-1 Normal first-timer 189-204 s against 147 s
 quick, measured), so the true density is lower still. Whether that is bad is open: Lomas (F2) found easier games more engaging; Swink
-calls spacing that is too wide "thoughtless boredom". But the documents claim one band and the stages are in another.
+calls spacing that is too wide "thoughtless boredom"; the 2010 Mario AI judges preferred both lower challenge *and* levels densely
+filled with things to do (F10). Those two fit together only one way: raise the density of *lenient* actions (hops, pickups arcs over
+safe ground, rides, animal tricks) without raising the hazard sum (F1). Density and difficulty are two different dials, and the
+builders should be given both. The same pattern holds outside World 1 (measured, Normal layout 1, median gap between moves): 2-1 1.93 s,
+2-4 2.09, 2-7 1.44, 4-2 2.21, 4-5 2.88, 6-3 2.39, 8-4 2.78, 10-2 1.34; the biggest group between 1.0 s pads is 2 moves on all but 10-2
+(4). (World 2's stages show many moves at the same instant, IOI p10 = 0.00 s, which the density count treats as separate moves.)
 
 **W3. Double jumps are labelled as single jumps.** The route has no double-jump kind (`tools/inspect/route.ts:23`), so every jump link
 becomes J "jump over a gap" or "big jump up" (`tools/inspect/beats.ts:115`); `toSteps` re-labels a beat only when it is Q
@@ -481,6 +492,10 @@ The stage that teaches the game, 1-1, is World 1's hardest jumping for the Easy 
 ≤ 0.55 elsewhere), with 4 jumps under the 70% line and 6 under the kid's own 85% floor. This is with the early-stage help on: the jump
 bots apply `ASSIST` at full strength on Easy ("Easy keeps assist at 1 the whole game", `tools/inspect/jumps.ts:6-10`, `:118-120`).
 
+Against F1's first budgets (Normal E[lives] ≤ 1.0, Easy ≤ 0.3, reading a costly miss as a life): every Normal stage passes (worst 1-1,
+0.27); on Easy only 1-1 fails (0.45). Against F2's practice target (each jump ≥ 0.95): 1-1 fails on both settings, 1-2, 1-3, 1-6 and 1-9
+fail on Easy.
+
 The hardest jumps' failure reasons (bot's own words): 1-1 Normal x 15331 rate 0.755: "overshot the landing" 46, "flick came out short" 3;
 1-1 Easy x 29277 rate 0.06: "overshot the landing" 154, "ran off the ledge before the jump registered" 20, "flick came out short" 14.
 So the binding skill is stopping on the landing, not timing the take-off: the timing-only form of F1 (4.1) predicts 0.002 misses on
@@ -575,7 +590,7 @@ petal yields and the kid bot's per-jump floor, and "survival" only as that floor
 
 ---
 
-## 6. Sources actually opened (25)
+## 6. Sources actually opened (26)
 
 What I read of each is marked: **full** (every section), **parts** (the sections named), **abstract only**.
 
@@ -634,6 +649,10 @@ What I read of each is marked: **full** (every section), **parts** (the sections
     2014 — **abstract only** (the full text would not load): https://www.academia.edu/22122271/Learning_curves
 25. Yannakakis & Togelius, "Experience-Driven Procedural Content Generation", IEEE TAC 2011 — **abstract only**:
     https://www.academia.edu/2425131/Experience_Driven_Procedural_Content_Generation
+
+26. Shaker, Togelius, Yannakakis et al., "The 2010 Mario AI Championship: Level Generation Track", IEEE TCIAIG 2011 —
+    https://www.um.edu.mt/library/oar/bitstream/123456789/29776/1/The_2010_Mario_AI_championship_level_generation_track_2011.pdf
+    (**parts**: §IV scoring, §VI results, §VII discussion)
 
 Tried and blocked (not counted): the ACM PDFs of Smith & Whitehead 2010 and Hunicke 2005 (bot-blocked), diva-portal (King's "Crushing
 Candy Crush" and Purmonen theses: host refused), Wiley's DDA review (bot-blocked), Tenney & Polansky's temporal gestalt paper (scanned

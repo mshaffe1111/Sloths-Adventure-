@@ -34,8 +34,8 @@ Ranked by how much each changes "80% right by construction" and "every stage fee
    Tanagra has five single-beat patterns plus multi-beat ones; Dahlskog & Togelius found 23 patterns in 5 families in Super Mario Bros.
    I measured our beat-built 1-2 (section 4): one rhythm admits **3,366 to about 3 million** different geometries, but every take-off
    lands on one of **one or two kinds of thing** (a jump onto a branch, a hop onto a branch) on the canopy, and three on the floor.
-   The dice only move heights by 10-20 px. That is numeric variety, which players do not see as variety. Launchpad's evaluation
-   says the same about Notch's generator: low compression distance "corresponds very well with qualitative observations that the
+   The dice only move heights, in 10-20 px steps. That is numeric variety, which players do not see as variety. Horn et al.'s
+   comparison says the same about Notch's generator: low compression distance "corresponds very well with qualitative observations that the
    levels in Infinite Mario Bros appear quite similar to each other" (Horn et al. 2014, §4.1). **For the engine: a beat's geometry
    must be drawn from a grammar of kinds (Launchpad's Fig. 7: flat gap, gap/no-gap x jump-up/down/spring/fall, enemy-kill,
    enemy-avoid, stomper for wait-move, moving platform for wait-move-wait), and the variety gate must count kinds, not pixels.**
@@ -74,8 +74,8 @@ Ranked by how much each changes "80% right by construction" and "every stage fee
    fitness gave "a chaotic scattering of platforms" with constant anxiety; a periodic one gave rhythm groups but "its cyclical
    appearance is much more regular than what is observed in the Super Mario Bros. levels" with no peak near the end (§3.4-3.5). Their
    anxiety model is one line: da/dt = c(t) - c_decay. Compton & Mateas measure a jump's difficulty as the "spatial window the avatar can
-   start from" and the "temporal window" to correct in mid-air; our tracer already computes both (Landing.shortX/longX/lateX,
-   beatTrace.ts:88-107) and throws them away as a pass/fail.
+   start from" and the "temporal window" to correct in mid-air; our tracer already computes the spatial half (the spread of every clumsy
+   landing and the latest take-off, Landing.shortX/longX/lateX, beatTrace.ts:88-107) and uses it only as pass/fail.
 
 7. **Mixed-initiative beats batch generation for a small team.** Tanagra exists because "Making a change to a small section of a level,
    such as moving a single platform, can have a wide impact and require much of the rest of the level to be modified" (§1), exactly our
@@ -83,7 +83,7 @@ Ranked by how much each changes "80% right by construction" and "every stage fee
    value of a variable should be the same as the last time the solver was run. These constraints are then relaxed if no solution can be
    found" (§5.1).
 
-8. **Players punished hard levels in every study.** Mario AI 2010: "levels with fewer coins and rocks, smaller gaps, and even
+8. **Players punished hard levels in the player studies I read.** Mario AI 2010: "levels with fewer coins and rocks, smaller gaps, and even
    distribution of enemies are, in general, preferred" and "the simplest solution won" (Shaker et al. 2011, §VI, §VII-B). The music
    auto-runner thesis: "users had a very low completion rate", and "consider a level that has 10 rhythmic beats in it, and each beat is
    matched by a jump. The feeling for the user would be very monotonous" (Vanparijs 2022, ch. 6). Beat-locking every take-off is a
@@ -178,7 +178,8 @@ with "an insertion and deletion cost of 2 and customized substitution costs", cl
 
 **Cost.** Low to build; the evaluation tooling is the larger part. **Fit.** Very high. We should copy its *instrumentation* habit (it
 found three biases its authors did not intend) and its kind grammar. Our tracer shows the same rhythm-filters-geometry effect: on fast
-bars only hops fit (w1Rhythm.ts:204: jump only if `room > 0.6`), so dense swung bars become hop staircases, the same failure.
+bars only hops fit (w1Rhythm.ts:204: jump only if `room > 0.6`), and every hop goes down, so dense swung bars become jump-up/hop-down
+zigzags (measured in section 4, experiment 2): the same kind of rule-made pattern.
 
 ### 3.5 Tanagra: Smith, Whitehead, Mateas, FDG 2010 (the long paper, not the 2-page demo in our repo)
 
@@ -207,8 +208,7 @@ over our steps suffices (section 4 says what that search must check at each pref
 **How.** A genetic algorithm whose fitness is a model of challenge over time. Challenge of a jump: "c(t) = d(p1,p2) - (fp(p1) + fp(p2))
 + 2fp_max" with the "landing footprint" as margin of error; anxiety "da/dt = c(t) - c_decay"; enemies counted "as a small gap".
 Genome: "a sequence of x, y coordinates ... relative to the preceding platform ... the range of these offsets can be limited to the
-maximum distance a game character can jump". In the Mario AI entry (Shaker et al. 2011, §V-C) the encoding became free-form, so
-"crossover and mutation operations often yield infeasible offspring ... A constraint satisfaction subsystem is used to repair these";
+maximum distance a game character can jump". In their Mario AI entry (Shaker et al. 2011, §V-C) "crossover and mutation operations often yield infeasible offspring ... A constraint satisfaction subsystem is used to repair these";
 and it supports anchors: "if a designer creates a very challenging segment of a level by hand, the algorithm will naturally create
 easier segments on either side".
 
@@ -274,7 +274,7 @@ different length, amount of rewards, amount of risk)", our exact situation in 1-
 **Fit.** Patterns as *named building blocks* yes (our node plan); patterns as a *fitness to maximise* no (it overfills, and our stages
 need rests). Their lesson about parameter-only variation is direct evidence for lesson 1.
 
-### 3.10 Expressive range: Smith & Whitehead 2010; Horn, Dahlskog, Shaker, Smith, Togelius 2014 (FDG)
+### 3.10 Expressive range: Smith & Whitehead 2010 (its method read in Launchpad §V; the workshop paper itself not fetched); Horn, Dahlskog, Shaker, Smith, Togelius 2014 (FDG)
 
 **How.** Generate many, score each on two or more emergent metrics, plot a 2-D histogram. Horn et al. compare seven generators plus the
 original SMB on leniency, linearity (R² of a line on platform end points), density, pattern density, pattern variation and **compression
@@ -293,7 +293,7 @@ x JumpCount) [measured by the authors on Mario AI levels]. They also name the ga
 which aims to understand or quantify the possibility spaces which encompass generative spaces".
 
 **Fit.** We already have a 200-roll ERA tool with linearity, leniency and action 3-gram likeness (tools/inspect/era.ts:1-18,
-eraRoll.ts:202-220) and a weighted edit distance (tools/inspect/analyze.ts:131-163). What is missing is measuring the *kind* string and
+eraRoll.ts:196-235) and a weighted edit distance (tools/inspect/analyze.ts:131-163). What is missing is measuring the *kind* string and
 comparing across stages of a world (section 5, idea 4).
 
 ### 3.11 Answer set programming: Smith & Mateas 2011 (TCIAIG 3(3)); Nelson & Smith, PCG book ch. 8
@@ -338,7 +338,7 @@ explore constraint-based approaches to level generation with more continuous phy
 playthrough (Trace.safe, beatTrace.ts:129), with real physics. The warning to keep: solvers drift to the simplest solution unless a
 constraint demands otherwise (lesson 5).
 
-### 3.14 Repair instead of regenerate: Cooper & Sarkar 2020 (AIIDE workshop)
+### 3.14 Repair instead of regenerate: Cooper & Sarkar 2020 (CEUR-WS vol. 2862)
 
 **How.** A pathfinder that may make "impossible" moves at a high cost, then edits the level so the path becomes real. **Results
 [measured by the authors, 1,000 levels each]:** SMB trigram 995 playable without repair, 5 repaired; Kid Icarus bigram 6 playable, 893
@@ -368,7 +368,7 @@ instead bias the generators"; and "data scarcity is likely to plague PCGML for t
 **Fit.** Low. We have five beat-built W1 stages, not a corpus, and learning from them would copy the sameness we are fighting (the same
 conclusion as LEDGER-ENGINE-GEMINI E57). The one useful piece is the measurement side (n-gram likeness is already in era.ts).
 
-### 3.17 Quality-diversity (MAP-Elites): Sarkar & Cooper 2021; Withington 2020; Khalifa et al. (constrained MAP-Elites)
+### 3.17 Quality-diversity (MAP-Elites): Sarkar & Cooper 2021 (Withington 2020 and Khalifa et al.'s constrained MAP-Elites are cited there; I did not read them)
 
 **How.** "QD algorithms search for a set of diverse and high-quality solutions in a single run by defining subspaces ... that correspond
 to different behaviors and return the solution that optimizes a fitness function in each subspace ... a map of cells ... each cell
@@ -376,7 +376,17 @@ defines a partition or niche." **Fit.** Medium, as a *selection* rule, not a sea
 (DESIGN.md Part A) could become "keep the best roll in each cell of a grid of behaviour features" (e.g. kind mix x height range), which
 guarantees coverage instead of hoping distance-based picking finds it.
 
-### 3.18b Generate *for* the empty cell: Bazzaz & Cooper 2025, "Level Generation with Constrained Expressive Range" (FDG)
+### 3.18 Music-driven levels: Vanparijs 2022 (Maastricht MSc, The Impossible Game)
+
+**How.** librosa beat tracking -> an action per beat (JUMP / NO JUMP) with a random direction -> a BNF grammar of 13 pieces -> a GA with
+critics (line-to-pitch, spike ratio by genre, emptiness, jump ratio, height variety). **Results [measured by the author, 19 survey
+respondents].** "the levels were too difficult for the users, as the completion rate was very low"; "the emptiness critic resulted in the
+highest correlation to the user ratings"; "the proposed line critic had the strongest negative correlation with user ratings";
+monotony when every beat is a jump (lesson 8). **Fit.** The closest published system to our "beat is the music's beat" rule
+(beatTrace.ts:636-660). Evidence that following the music too literally costs fun; the rhythm should *select* from the music's grid,
+not fill it.
+
+### 3.19 Generate *for* the empty cell: Bazzaz & Cooper 2025, "Level Generation with Constrained Expressive Range" (FDG)
 
 **How.** Treat the expressive-range grid itself as the target: "a prioritized random selection to explore underrepresented cells ...
 cells containing fewer than 10 levels"; for the chosen cell, a constraint generator (Sturgeon) is told the cell's metric values as tile
@@ -390,16 +400,6 @@ own limit: metrics "like linearity, which go beyond counting tiles and are harde
 
 **Fit.** High as a *process* for us: once a world has a kind grid (section 5, idea 1), the engine should be asked for the missing cells
 directly (with a time box and a blocklist that tells the art/piece list what is impossible), not rolled until coverage appears.
-
-### 3.18 Music-driven levels: Vanparijs 2022 (Maastricht MSc, The Impossible Game)
-
-**How.** librosa beat tracking -> an action per beat (JUMP / NO JUMP) with a random direction -> a BNF grammar of 13 pieces -> a GA with
-critics (line-to-pitch, spike ratio by genre, emptiness, jump ratio, height variety). **Results [measured by the author, 19 survey
-respondents].** "the levels were too difficult for the users, as the completion rate was very low"; "the emptiness critic resulted in the
-highest correlation to the user ratings"; "the proposed line critic had the strongest negative correlation with user ratings";
-monotony when every beat is a jump (lesson 8). **Fit.** The closest published system to our "beat is the music's beat" rule
-(beatTrace.ts:636-660). Evidence that following the music too literally costs fun; the rhythm should *select* from the music's grid,
-not fill it.
 
 ---
 
@@ -599,7 +599,7 @@ Checked by searching `reference/research/` (all ledgers, the Gemini and Matt res
 7. **Quality-diversity selection for gen2's "best 16".** MAP-Elites keeps the best candidate in each niche of a feature grid; gen2 keeps
    "the best 16 that also differ the most" (DESIGN.md Part A). A niche grid (e.g. kind mix x height range x density) guarantees the 16
    cover the space, and an empty cell tells us which pieces to build (Matt's "more pieces" rule, made visible). Going one step further
-   (Bazzaz & Cooper 2025, 3.18b): ask the generator *for* each under-filled cell, with a time box, and keep a blocklist of cells that
+   (Bazzaz & Cooper 2025, 3.19): ask the generator *for* each under-filled cell, with a time box, and keep a blocklist of cells that
    proved impossible; a blocklisted cell is a piece list item, not a reroll.
 8. **Compression distance across a world, on the kind string.** Horn et al.'s NCD caught the Notch generator's sameness that players
    reported. We have edit distance (analyze.ts:131) and 3-gram cosine (era.ts), per stage. New: gzip distance of the kind strings of
