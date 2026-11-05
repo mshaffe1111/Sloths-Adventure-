@@ -316,3 +316,6 @@ never a default for other stages. Every line is re-based by the designer:
 - Matt's taste enters through what he has said about specific stages (memory file, STATUS, his play notes), each cited, and through
   his play of 1-1, which is the real judge.
 Hard rules (nothing costs a life in 1-1, no floating rocks, 2:00 floor, the variety and neighbour rules) are unchanged.
+3:36 PM ET, Matt added: "I've liked more than one levels. I mean, I just like variety. Level one was, I liked the look. And I just liked how
+it flowed. It doesn't mean it has to be exactly that way." So: VARIETY is his first taste. Old 1-1 gives two qualities to keep as
+FEEL, not numbers: its look and its flow. No stage is a numeric template.
