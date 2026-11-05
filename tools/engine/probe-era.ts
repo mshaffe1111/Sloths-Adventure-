@@ -6,7 +6,7 @@ import { cosine } from '../inspect/analyze.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 const levels = new Map(generateAllLevels().map((c) => [c.id, c]));
 for (const id of (process.argv[2] ?? '1-1,1-5').split(',')) {
-  const vs = rollVariants(6);
+  const vs = rollVariants(Number(process.env.ROLLS ?? 6));
   const rs = vs.map((v) => measureRoll(levels.get(id)!, v));
   const profs = rs.map((r) => new Map(r.prof));
   let d = 0, n = 0; for (let i = 0; i < rs.length; i++) for (let j = i + 1; j < rs.length; j++) { d += 1 - cosine(profs[i], profs[j]); n++; }

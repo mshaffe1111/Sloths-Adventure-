@@ -54,7 +54,15 @@ export const SPEC_11: StageSpec = {
   id: '1-1', name: 'Into the Canopy',
   story: { beat: 'two days after the soldiers took Meeca, Pokey leaves the home forest: slow, and coming anyway', feel: 'a small, determined start that grows: low, safe and a little comic, then higher than he has ever climbed' },
   profile: { trend: 'up', tempo: 'calm', hills: 'hilly', branching: 'moderate', water: false, petals: 'trail', look: { lead: 'ground', art: 'w1' },
-    length: { normal: [160, 195], easyMin: 120 }, mix: { jumps: 'lots', bounces: 'some', climbing: 'some', water: 'none' }, theme: 'forest', core: ['bank', 'log', 'stone'] },
+    length: { normal: [160, 195], easyMin: 120 }, mix: { jumps: 'lots', bounces: 'some', climbing: 'some', water: 'none' }, theme: 'forest', core: ['bank', 'log', 'stone'],
+    // (the designer's per-roll ranges, 12:35 PM, measured on main's old 1-1 over 32 rolls (rs-main-11.json): calm)
+    roll: {
+      hop: [{ range: [0.43, 0.51], weight: 11 }, { range: [0.74, 0.80], weight: 11 }, { range: [0.99, 1.0], weight: 10 }],
+      gap: { min: 0.79, mode: 0.82, max: 0.91, p90: 0.99 },
+      rise: { home: [0.65, 0.69], hilly: [0.81, 0.94], hillyShare: 7 / 32, p90: 0.95 },
+    },
+    // (nothing in 1-1 can cost a life: the old 1-1's promise, kept by the designer (4279fc12d), laid as moss dips and canopy catches (42ce19146))
+    safe: true },
   nodes: [
     // (n1-n7, the forest floor at the home forest's edge, no canopy: the lead's story brief and the designer's ground-stage ruling, 11-05)
     { job: 'teach run', teaches: 'run', deck: ['floor walk'], lay: { one: true, ground: true, band: [1180, 1320] } },
@@ -76,6 +84,9 @@ export const SPEC_11: StageSpec = {
     { job: 'canopy fork', deck: { high: ['bough hops', 'bough stair'], low: ['bough hops', 'stump hop'] }, line: { text: 'No soft moss up here!' }, lay: { band: [380, 560] } },
     { job: 'cool down', deck: ['top branch'], lay: { band: [340, 480] } },
   ],
+  // (TRIAL: the engine rolls 1-1's structure from the designer's brief, briefs/1-1.designer.md; the nodes above are not read)
+  brief: { teaches: ['run', 'jump', 'bounce', 'double'], trend: 'up', ends: 'quiet', branching: 'some', length: [120, 150],
+    not: ['creaky', 'crumbling', 'water', 'the kapok climb', 'ropes'] },
   goal: { kind: 'sprint' },
   dress: { start: ['squirrel-sit', 'squirrel-wave', 'squirrel-tip'], clue: 'bootprint' },
   // (its known moves are the move table's: none are taught before 1-1, moveLadder.ts)

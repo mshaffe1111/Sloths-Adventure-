@@ -16,11 +16,13 @@
 import type { Collectible, LevelConfig, Platform, Vine } from '../types.ts';
 import { IDEAS, SHAPES, type BurstRecipe } from './library.ts';
 import { kitFor, type WorldKit } from './kits.ts';
+import { generatePlan, trimPlan } from './plan.ts';
+import { modelAll } from '../stageTime.ts';
 import { holds } from './support.ts';
 import { paintedBank } from '../w1Pits.ts';
 import { fitTrunks, FOOT_IN, trunkGround } from '../trunkFit.ts';
 import { w1DressFacing, w1DressWidth } from '../w1NewArt.ts';
-import type { StageSpec } from './spec.ts';
+import type { RollRanges, StageSpec } from './spec.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import { fixPickups } from '../flowerReach.ts';
@@ -75,7 +77,7 @@ const nidOf = (plan: NodePlan[], i: number): string => plan[i].id ?? String(plan
 /** a stage the mixer builds, read from its spec: its plan, where it starts, how many of Meeca's marks it lays (0 for a sprint), its last
  *  piece, and its petals low on the pieces for a trail (1-1: Meeca's pressed petals, the lead's brief) */
 interface MixSpec { id: string; plan: NodePlan[]; startY: number; marks: number; end: { kind: string; w: number }; burstMin?: number; burstMax?: number; lowPetals?: boolean;
-  dress?: { start?: string[]; clue?: string } }
+  dress?: { start?: string[]; clue?: string }; roll?: RollRanges; safe?: boolean }
 
 /** a stage spec in the mixer's own terms (nothing stage-specific lives in this file: every stage is its spec, stages.ts) */
 export function mixOf(S: StageSpec): MixSpec {
@@ -86,7 +88,7 @@ export function mixOf(S: StageSpec): MixSpec {
     ...(n.safe ? { safe: true } : {}), ...(n.lay ?? {}),
   }));
   return { id: S.id, plan, startY: S.lay.startY, marks: S.goal.kind === 'marks' ? S.goal.count : 0, end: S.lay.end, burstMin: S.lay.burstMin, burstMax: S.lay.burstMax,
-    lowPetals: S.profile.petals === 'trail' || undefined, dress: S.dress };
+    lowPetals: S.profile.petals === 'trail' || undefined, dress: S.dress, roll: S.profile.roll, safe: S.profile.safe };
 }
 
 interface Lay {
@@ -136,6 +138,15 @@ interface Lay {
   glints: Array<{ x: number; y: number }>;
   /** laying a recipe whose logs stand on stumps: its logs are thin (the kit's stumpLog height) */
   stumping?: boolean;
+  /** this roll's own tempo (the profile's per-roll ranges, R-164.11): the share of landings a hop reaches, the median gap share, how
+   *  far rises are scaled from the kit's steps, and the caps on a gap's share and a rise */
+  tempo?: { hop: number; gap: number; gapP90: number; riseScale: number; riseMax: number };
+  /** a fork's high-road pieces (the low road under them is the floor) and where the ground nodes end: a safe stage's falls (safeFalls) */
+  high: Set<Platform>;
+  jumpRun: Set<Platform>;
+  /** this node lays the floor road (a safe stage's ground practise) */
+  road?: boolean;
+  groundEnd: number;
   /** the creeks laid so far (waterRun): the stage's drawn water, proto.water */
   water: Array<{ x0: number; x1: number; y: number }>;
 }
@@ -151,6 +162,9 @@ let K = undefined as unknown as WorldKit;
 let band = { yMin: 0, yMax: 0 };
 /** the narrowest gap that is still a jump (beatTrace.ts MIN_GAP) */
 const MIN_GAP = 40;
+/** a hop's landing: a gap of HOP_GAP px, which the route counts a hop where safe ground lies under it (tools/inspect/route.ts: a gap
+ *  under 200 px with a floor within 200 px under it; a safe stage's moss dips, safeFalls), as the old 1-1's hops were */
+const HOP_GAP: [number, number] = [MIN_GAP + 10, 150];
 
 function plat(L: Lay, k: string, x: number, y: number, w: number): Platform {
   const p: Platform & Record<string, unknown> = { id: L.pid++, x: Math.round(x), y: Math.round(y), width: Math.round(w), height: 24, type: 'solid', style: 'branch' } as never;
@@ -213,7 +227,8 @@ const UNDER_IN = 4;
 
 /** the pieces laid from cursor c on stand on stumps (supports draws a short trunk, no crown, for each): a ground high road */
 function markStumps(L: Lay, e: Cursor, c: Cursor): Cursor {
-  for (const p of L.P) if (p.x >= c.x - 2 && p.style === 'log') (p as Platform & { stump?: boolean }).stump = true;
+  // (only the thin logs the recipe laid on stumps: a 90 px log is ground, never on a stump)
+  for (const p of L.P) if (p.x >= c.x - 2 && p.style === 'log' && p.height === (K.heights.stumpLog ?? 30)) (p as Platform & { stump?: boolean }).stump = true;
   return e;
 }
 
@@ -293,6 +308,35 @@ const FLAT = 20;
  */
 function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: number[] = K.steps, fixedGap?: number, width?: number): Cursor {
   let { x, y } = c;
+  // (TRIAL (a): the burst is a hop run or a jump run; a jump run's gaps get the deep floor, safeFalls)
+  const hopBurst = !!L.tempo && R.r(0, 1) < L.tempo.hop;
+  const from = L.P.length;
+  const done = () => { if (L.tempo && !hopBurst) for (const q of L.P.slice(from)) L.jumpRun.add(q); };
+  // (TRIAL: a hop burst on the floor road is the road itself, touching banks stepping 20-30 px (hops, nothing to fall into), with a run of
+  // thin logs on stumps 120 px over it: two roads, head room under the logs (the designer's Q1, 0c8e22baa))
+  if (hopBurst && L.road && width === undefined && fixedGap === undefined) {
+    const x0 = x;
+    let minY = y;
+    for (let i = 0; i < n + 1; i++) {
+      let d = (R.r(0, 1) < 0.5 ? 1 : -1) * Math.round(R.r(20, 30));
+      if (y - d < band.yMin || y - d > band.yMax) d = -d;
+      y -= d;
+      const w = Math.round(R.r(160, 290) * L.bs);
+      plat(L, 'bank', x, y, w);
+      x += w;
+      minY = Math.min(minY, y);
+    }
+    const ly = minY - 120;
+    L.stumping = true;
+    for (let lx = x0 + 80; lx < x - 260;) {
+      const w = Math.round(R.r(180, 260));
+      const p = plat(L, 'log', lx, ly + (R.r(0, 1) < 0.5 ? 0 : -30), w);
+      (p as Platform & { stump?: boolean }).stump = true;
+      lx += w + Math.round(gateGap(L, ly, { y: ly, height: 30, type: 'solid' }, 0) * 0.8);
+    }
+    L.stumping = false;
+    return { x, y };
+  }
   for (let i = 0; i < n; i++) {
     const k = kinds[Math.floor(i / 2) % kinds.length];
     // (a stone sits on ground (the designer's S-3/S-9, and "keep the stones", 11-05): it is a 50 px rise on the far end of a bank, its
@@ -317,6 +361,10 @@ function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: num
     const order = bands.map((_, j) => bands[(turnAt + j) % bands.length]);
     const bnd = width !== undefined ? bands[turnAt] : order.find((b) => !L.recent.includes(sizeKey(k, (b[0] + b[1]) / 2, L.bs))) ?? bands[turnAt];
     let d = R.pick(steps);
+    // (this roll's tempo: a landing a hop reaches (a small gap, a low step), or a jump at the roll's own gap share and rise scale; the
+    // draw is made on both settings so Easy and Normal keep one stream, and Easy keeps its own gap and rise softening)
+    const T = L.tempo, hopHere = hopBurst;
+    if (T && !hopHere && !L.easy) d = Math.sign(d) * Math.min(T.riseMax, Math.round(Math.abs(d) * T.riseScale));
     // (outside its band a burst steps back toward it; inside, a step that would leave the band turns round, or shrinks to 30 px)
     if (y > band.yMax) d = Math.abs(d) || FLAT + 10;
     else if (y < band.yMin) d = -(Math.abs(d) || FLAT + 10);
@@ -333,13 +381,17 @@ function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: num
     let max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy);
     while (max < MIN_GAP + 10 && f.dy > 0) { f.dy -= 10; max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy); }
     // (the gap is the dial's share of the gate's widest, give or take 8%; Easy's 80 px cap on a rise still holds)
-    const want = Math.round(max * L.gapShare * R.r(0.92, 1.08));
+    const jig = R.r(0.92, 1.08);
+    const want = !T ? Math.round(max * L.gapShare * jig)
+      : hopHere ? Math.round(HOP_GAP[0] + (HOP_GAP[1] - HOP_GAP[0]) * (jig - 0.92) / 0.16)
+      : Math.round(max * Math.min(T.gapP90, (L.easy ? L.gapShare : T.gap) * (1 + (jig - 1) * 1.5)));
     f.gap = fixedGap ?? Math.max(MIN_GAP, Math.min(want, f.gap, max - 4));
     x += f.gap;
     y -= f.dy;
     plat(L, k, x, y, f.w);
     x += f.w;
   }
+  done();
   return { x, y };
 }
 
@@ -883,11 +935,80 @@ function supports(P: Platform[], height: number, clear: number[] = [], water: Re
 }
 
 /**
+ * Nothing in a safe stage costs a life (Profile.safe; the designer's rulings 4279fc12d and 42ce19146). Along the way's floor (every piece
+ * but a fork's high road, the boughs, perches, catches and mushrooms), each gap wider than Pokey's body:
+ *   - on the ground (before the canopy, L.groundEnd): a moss dip under it, a bank of earth from 30 px under one lip to 30 px under the
+ *     other, one jump under the higher lip and no more than the kit's depth under the lower (a dip in the ground, never a branch);
+ *     under a gap only a double crosses, the deep dip (the kit's `deep` under the lower lip), stopping 60 px short of the far bank, with a
+ *     one-jump step back up beside the near one: only the double crosses, and a miss costs nothing;
+ *   - in the canopy: a catch bough `catchDrop` under the lower lip, one jump back up, reaching under the far piece (short of it under a
+ *     gap only a double crosses), where nothing is under the gap yet.
+ */
+function safeFalls(L: Lay) {
+  const D = K.dip;
+  if (!D) throw new Error(`World ${K.world}'s kit has no dip row: the mixer cannot lay a safe stage there (src/game/mixer/kits.ts)`);
+  // (never a catch branch on the ground (the designer, 42ce19146): the shapes' own catches there go, the moss dips replace them)
+  for (let k = L.P.length - 1; k >= 0; k--) if ((L.P[k] as { catch?: boolean }).catch && L.P[k].x < L.groundEnd) L.P.splice(k, 1);
+  const floor = L.P.filter((q) => q.type !== 'bouncy' && !q.broken && !L.high.has(q) && !(q as { bough?: boolean; perch?: boolean }).bough && !(q as { perch?: boolean }).perch).sort((a, b) => a.x - b.x);
+  // (the floor's stretches along x, merged, each with the piece at its two ends)
+  const runs: Array<{ x0: number; x1: number; first: Platform; last: Platform }> = [];
+  for (const q of floor) {
+    const r = runs[runs.length - 1];
+    if (r && q.x <= r.x1 + 2) { if (q.x + q.width >= r.x1) { r.x1 = q.x + q.width; r.last = q; } }
+    else runs.push({ x0: q.x, x1: q.x + q.width, first: q, last: q });
+  }
+  // (how high one jump climbs out of a dip: the jump itself on both settings (Easy's held-jump softening is for the gaps he must make,
+  // not for climbing out: at its 26 px step the deep dip was 114 px under it, past a jump))
+  const N = { ...L, easy: false };
+  let maxRise = 0;
+  for (let dy = 10; dy <= 200; dy += 5) if (gateGap(N, 800, { y: 800 - dy, height: 24, type: 'solid' }, dy) >= MIN_GAP + 10) maxRise = dy;
+  for (let k = 1; k < runs.length; k++) {
+    const a = runs[k - 1].last, b = runs[k].first, x0 = runs[k - 1].x1, x1 = runs[k].x0;
+    // (every gap, even a step-across slit too narrow to fall into: no x is left with nothing under it)
+    if (x1 - x0 < 1) continue;
+    const lo = Math.max(a.y, b.y), diff = Math.abs(a.y - b.y);
+    const single = gateGap(L, a.y, { y: b.y, height: b.height, type: b.type }, a.y - b.y);
+    // (a gap only a double crosses: wider than a plain jump's reach and wide enough to hold the step and the deep floor (a narrow gap a
+    // plain jump cannot rise across is a bounce's, a mushroom up a wall: a shallow dip)
+    const dbl = x1 - x0 > single && x1 - x0 >= 120;
+    if (x0 < L.groundEnd) {
+      if (dbl) {
+        // (to the far wall, so no hole is left at its end: 140 px under the far lip, past a jump's highest rise, it is never a way up)
+        // (wall to wall, nothing inside another piece's body; the step back, one jump under the near lip, 60 px out from its wall)
+        plat(L, 'bank', x0 + 60, lo + D.deep, Math.max(20, x1 - (x0 + 60)));
+        plat(L, 'bank', x0, a.y + Math.min(D.depth, Math.round(maxRise * 0.85)), 60);
+      } else {
+        // (TRIAL: the roll's family sets the floor's depth: a hop roll (h >= 0.9) keeps every dip shallow, a jump roll (h <= 0.55) puts
+        // the floor deep under every gap, a mixed roll by its runs)
+        const fam = L.tempo?.hop ?? 0.7, deepHere = fam <= 0.55 || (fam < 0.9 && L.jumpRun.has(a) && L.jumpRun.has(b));
+        const depth = deepHere ? 240 : Math.max(30, Math.min(D.depth, Math.round(maxRise * 0.85) - diff));
+        plat(L, 'bank', x0, lo + depth, x1 - x0);
+      }
+    } else {
+      const y = lo + ((L.tempo?.hop ?? 0.7) <= 0.55 ? 210 : D.catchDrop);
+      const w = dbl ? x1 - 60 - (x0 - 30) : x1 + 50 - (x0 - 30);
+      L.P.push({ id: L.pid++, x: x0 - 30, y, width: Math.max(80, w), height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
+    }
+  }
+}
+
+/**
  * A stage from its spec (stages.ts): every stage the engine builds goes through here, nothing is built per stage. Normal and Easy draw the
  * same ideas from the same streams (Easy only changes sizes), so a roll is the same stage in both settings.
  */
 export function buildFromSpec(config: LevelConfig, seed: number, easy: boolean, spec: StageSpec): GeneratedStage & { proto: ProtoExtras } {
-  return buildMix(config, seed, easy, mixOf(spec));
+  // (a stage with a brief has its structure rolled per seed: the engine's plan, not a hand-written one)
+  if (!spec.brief) return buildMix(config, seed, easy, mixOf(spec));
+  // (rule 8, length: the plan's practises are taken out, last first, until Normal's quick clock is inside the brief's band; Easy lays
+  // the same plan)
+  const full = generatePlan(spec.brief, seed);
+  let plan = full;
+  for (let drop = 0; drop <= 12; drop++) {
+    plan = trimPlan(full, drop);
+    const st = buildMix(config, seed, false, mixOf({ ...spec, nodes: plan }));
+    if (modelAll(st as never).fast.total <= spec.brief.length[1]) break;
+  }
+  return buildMix(config, seed, easy, mixOf({ ...spec, nodes: plan }));
 }
 
 /** Pokey's body width (engine.ts: the hero is 44 px wide): no dressing stands within one body width of his spawn */
@@ -933,11 +1054,23 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
   // (the designer's pacing ruling A, 11-05: a calmer Easy, its landings about 300 px on its own size bands, Normal's times EASY_BS. The
   // fixed pieces (canopy hosts and ends) scale with it; the boughs over them do not: the high road is the optional one)
   const wScale = easy ? EASY_BS : 1;
-  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, bs: easy ? EASY_BS : 1, dial: d, mushrooms: 0, glints: [], water: [], recent: [], padSet: new Set(), creakyTaught: false, burstMin: S.burstMin, burstMax: S.burstMax, lowPetals: S.lowPetals, ...(S.plan.some((n) => Array.isArray(n.deck) && n.deck.includes('bounce up') && n.job.startsWith('teach')) ? { bounceTaught: false } : {}) };
+  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, bs: easy ? EASY_BS : 1, dial: d, mushrooms: 0, glints: [], water: [], high: new Set(), jumpRun: new Set(), groundEnd: 0, recent: [], padSet: new Set(), creakyTaught: false, burstMin: S.burstMin, burstMax: S.burstMax, lowPetals: S.lowPetals, ...(S.plan.some((n) => Array.isArray(n.deck) && n.deck.includes('bounce up') && n.job.startsWith('teach')) ? { bounceTaught: false } : {}) };
   // (the highest rise the gate allows: the largest step up a plain jump makes across a real gap, measured with the gate itself)
   let maxRise = 0;
   for (let dy = 10; dy <= 200; dy += 5) if (gateGap(L, 800, { y: 800 - dy, height: 24, type: 'solid' }, dy) >= MIN_GAP + 10) maxRise = dy;
   L.riseCap = Math.max(30, Math.round(maxRise * riseShare));
+  // (the roll's own tempo, from its own stream so the ideas' draws keep their order: a hop family by the references' weights, a median
+  // gap share most often near the tempo's centre, a rise band (home, or the hilly break on its share of rolls))
+  if (S.roll) {
+    const T = rngFor(seed, 'tempo'), Rr = S.roll;
+    const tw = Rr.hop.reduce((a, f) => a + f.weight, 0);
+    let pickW = T.r(0, tw), fam = Rr.hop[0];
+    for (const f of Rr.hop) { if (pickW < f.weight) { fam = f; break; } pickW -= f.weight; }
+    const tri = (a: number, m: number, b: number) => { const u = T.r(0, 1), c = (m - a) / (b - a); return u < c ? a + Math.sqrt(u * (b - a) * (m - a)) : b - Math.sqrt((1 - u) * (b - a) * (b - m)); };
+    const rise = T.r(0, 1) < Rr.rise.hillyShare ? T.r(...Rr.rise.hilly) : T.r(...Rr.rise.home);
+    const med = [...K.steps].map(Math.abs).sort((a, b) => a - b)[Math.floor(K.steps.length / 2)];
+    L.tempo = { hop: T.r(...fam.range), gap: tri(Rr.gap.min, Rr.gap.mode, Rr.gap.max), gapP90: Rr.gap.p90, riseScale: (rise * maxRise) / med, riseMax: Math.round(maxRise * Rr.rise.p90) };
+  }
   /** what each node rolled (a fork: both roads' ideas), so a later node can be held off it */
   const rolled: Array<string[]> = [];
   let lastIdea: Idea | undefined;
@@ -976,6 +1109,8 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
     if (L.easy && i > 0 && n.job !== 'rest' && PLAN[i - 1].job !== 'rest' && !L.padSet.has(L.P[L.P.length - 1])) c = breather(L, c, R);
     if (n.hint && !n.hintAtEnd) L.hints.push({ x: c.x + 60, text: n.hint, pad: n.padHint ?? n.hint, keys: n.padHint ?? n.hint, ...(c.y >= 600 ? { belowY: c.y - 60 } : { aboveY: c.y + 60 }) } as StageHint);
     const from = L.P.length;
+    // (the floor road runs in a safe stage's ground practises (WORLD-RULEBOOK rule 9): not a teach, a fork or a rest, which lay their own)
+    L.road = !!S.safe && !!n.ground && Array.isArray(n.deck) && !n.job.startsWith('teach') && n.job !== 'rest';
     if (Array.isArray(n.deck)) {
       // (the designer's ruling (a), CP3: a node lays its bursts from its deck, never the same idea twice in a row; the dial sets how
       // many. Every burst comes from the node's own deck (the teach pairs with bank hops); a floor idea carries a canopy (ruling 1 on the
@@ -1039,7 +1174,9 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
       const hiDeck = n.deck.high.filter((d) => !prev.has(d)), loDeck = n.deck.low.filter((d) => !prev.has(d));
       const hi = R.pick(hiDeck.length ? hiDeck : n.deck.high), lo = R.pick(loDeck.length ? loDeck : n.deck.low);
       // (a second idea the node before laid is swapped for a plain hop burst: no idea twice in a row)
-      const second = (deck: Idea[], first: Idea): Idea => deck.find((d) => d !== first && !prev.has(d)) ?? (first === 'bank hops' ? 'stump hop' : 'bank hops');
+      // (from its own deck only (the designer, R-164.11: the fallback outside the deck was a bug): the deck's other idea the node before
+      // did not lay, else its other idea, else its first again)
+      const second = (deck: Idea[], first: Idea): Idea => deck.find((d) => d !== first && !prev.has(d)) ?? deck.find((d) => d !== first) ?? first;
       const hi2 = second(n.deck.high, hi), lo2 = second(n.deck.low, lo);
       rolled[i] = [hi, lo, hi2, lo2];
       // (on Normal the fork bank is a rest pad, 400-440 px (ruling B): the roads carry no pad, and a fork ran 30-31 s without one)
@@ -1077,11 +1214,13 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
       // route never has to change roads for one)
       petalsOver(L, forkFrom, lowFrom);
       const hiPs = L.P.slice(forkFrom, lowFrom), loPs = L.P.slice(lowFrom, L.P.length - 1);
+      for (const q of hiPs) L.high.add(q);
       crossings(L, hiPs.filter((q) => q.type !== 'bouncy'), loPs.filter((q) => q.type !== 'bouncy'), n.job);
       // (the low road is the fork's lowest ground: under each of its gaps a catch branch 60 px below the lower lip, reaching 50 px under the
       // far piece, so a missed hop lands on it and a hop goes back up, never down to the stage's bottom. The adult bot lost 3 lives at one
       // n10 gap, and 1.5 a run in all, over the dial's 0.7)
-      const lows = loPs.filter((q) => q.type !== 'bouncy').sort((a, b) => a.x - b.x);
+      // (a safe stage's ground fork has moss dips under its low road instead (safeFalls): never a catch branch on the ground)
+      const lows = S.safe && n.ground ? [] : loPs.filter((q) => q.type !== 'bouncy').sort((a, b) => a.x - b.x);
       for (let k = 1; k < lows.length; k++) {
         const a = lows[k - 1], b = lows[k];
         if (b.x - (a.x + a.width) < 20) continue;
@@ -1101,7 +1240,8 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
     }
     // (a safe node (1-1's teaches): a catch branch 60 px under the lower lip of every gap on its floor road, reaching 50 px under the far
     // piece, so a short jump drops onto it and a hop goes back up)
-    if (n.safe) {
+    if (n.ground) L.groundEnd = Math.max(L.groundEnd, c.x);
+    if (n.safe && !S.safe) {
       const fl = L.P.slice(from).filter((q) => q.type !== 'bouncy' && !(q as { bough?: boolean; catch?: boolean; perch?: boolean }).bough && !(q as { catch?: boolean }).catch && !(q as { perch?: boolean }).perch).sort((a, b) => a.x - b.x);
       for (let k = 1; k < fl.length; k++) {
         const a = fl[k - 1], b = fl[k];
@@ -1185,12 +1325,14 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
   // faces read as big mossy rocks on posts over the gap), and a face only ever repeated the ledge's own top. The floor road only)
   const openTo = 100 + 6.5 * 285;
   const opening = L.P.filter((q) => q.type !== 'bouncy' && q.x < openTo && !(q as { catch?: boolean; bough?: boolean; perch?: boolean }).catch && !(q as { bough?: boolean }).bough && !(q as { perch?: boolean }).perch).sort((a, b) => a.x - b.x);
-  for (let k = 1; k < opening.length; k++) {
+  // (a safe stage's opening has its moss dips instead, safeFalls)
+  for (let k = 1; k < (S.safe ? 0 : opening.length); k++) {
     const a = opening[k - 1], b = opening[k];
     if (b.x - (a.x + a.width) < 20) continue;
     const y = Math.max(a.y, b.y) + 60;
     L.P.push({ id: L.pid++, x: a.x + a.width - 30, y, width: b.x + 50 - (a.x + a.width - 30), height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
   }
+  if (S.safe) safeFalls(L);
   // (no catch branch in a creek (Matt, 11-05: "a catch branch under a gap has no place in a creek"; w1NewArt.ts piecesUnderWater): a gap
   // over the water is the creek's, and a miss there is a splash)
   for (let k = L.P.length - 1; k >= 0; k--) {

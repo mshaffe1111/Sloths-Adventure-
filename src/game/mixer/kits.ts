@@ -22,6 +22,9 @@ export interface WorldKit {
    *  water piece's top stands over that surface (a lily pad floats on it; a log or a reed isle rises out of it), and how far the drawn
    *  water reaches in under each bank, so its edge is hidden by the bank's face. No row: the world lays no water idea */
   water?: { depth: number; top: Record<string, number>; inset: number };
+  /** a safe stage's fall (Profile.safe): a ground gap's moss dip at most `depth` under its lower lip (shallower where the lips differ, so
+   *  the higher lip is still one jump up), `deep` under a gap only a double crosses, and a canopy gap's catch bough `catchDrop` under it */
+  dip?: { depth: number; deep: number; catchDrop: number };
 }
 
 export const KITS: Record<number, WorldKit> = {
@@ -43,6 +46,9 @@ export const KITS: Record<number, WorldKit> = {
     // reed isle 40 over it, so no landing sits flat with the one before (FLAT 20); the bank's face 60 px over the water; the water 40 px
     // in under each bank, inside the face's lean (engine.ts ZONE_INSET))
     water: { depth: 60, top: { lily: 8, log: 30, reed: 40 }, inset: 40 },
+    // (one jump deep: 70, under the pit finder's 75 px sunk step, so it reads as a dip in the ground, not a pit; the double's 140 (the
+    // designer's R2); a canopy catch 70 under, inside the 60-120 the designer gave)
+    dip: { depth: 70, deep: 140, catchDrop: 70 },
   },
 };
 

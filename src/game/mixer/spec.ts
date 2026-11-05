@@ -43,6 +43,23 @@ export interface Profile {
   /** the core pieces this stage uses most, for continuity (Matt, 11-05: "these are the core objects from this level, use these the most");
    *  others only where they keep the same feel. The commonest landing must be one of these */
   core: string[];
+  /** each roll's own tempo, measured from the stage's reference rolls (the designer's per-roll ranges, R-164.11, ENGINE-SPEC
+   *  53c0b9960): no roll plays like the one before. Without it a stage keeps the dial's one tempo for every roll */
+  roll?: RollRanges;
+  /** nothing in the stage can cost a life (1-1, the designer 4279fc12d / 42ce19146): every gap on the ground has a moss dip under it,
+   *  one jump deep (a deep one, with a step back, under a gap only a double crosses), and every gap in the canopy a catch bough */
+  safe?: boolean;
+}
+
+/** a stage's per-roll ranges, from its reference stage's 32 measured rolls (engine-runs' Addendum 2) */
+export interface RollRanges {
+  /** the hop share h/(h+J): a roll picks one family (by its weight, the references' roll counts), then draws inside it */
+  hop: Array<{ range: [number, number]; weight: number }>;
+  /** each roll's median gap, a share of the gate's widest single jump at that rise: drawn over min-max, most often near `mode` (the
+   *  tempo's centre); no landing's gap over `p90` */
+  gap: { min: number; mode: number; max: number; p90: number };
+  /** the rise share (of the gate's highest rise): the home band, or on a share of rolls the hilly break; no rise over `p90` */
+  rise: { home: [number, number]; hilly: [number, number]; hillyShare: number; p90: number };
 }
 
 /** how much of a thing a stage has */
@@ -94,6 +111,8 @@ export interface NodeLay {
 
 export interface StageSpec {
   id: string;
+  /** the brief the engine rolls the stage's structure from (plan.ts generatePlan): when given, the nodes are rolled per seed, not written */
+  brief?: import('./plan.ts').Brief;
   name: string;
   /** from the lead's story brief: for the report, and for the helper to check the feel against */
   story: { beat: string; feel: string };
