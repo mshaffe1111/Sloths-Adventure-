@@ -37,3 +37,5 @@
    running helper the moment its deliverable lands.
 13. **In a python write, backticks are written plainly, never as \`** (escaped only inside a shell heredoc that isn't quoted). After any
    write, `grep -c '\\`'` the file must print 0 (11-05: three stray-backslash commits).
+14. **Rule 13 failed within minutes (11-05, a 4th stray backslash), so it's now mechanical:** every command that writes a file ends with
+   `sed -i 's/\\`/`/g' <file> && grep -c '\\`' <file>` before the commit, in the same command. A note is not a fix (law 10).
