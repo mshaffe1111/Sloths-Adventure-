@@ -1701,3 +1701,14 @@ inventory will show whether any builder lays a stump you can stand on.
     wall time, which is tighter than line 1's 1.7 h.
   - Both lines are kept. 1-1 is judged on whichever fails first, and both are reported as measured after the run.
   - The 1-1 clock starts only after the critic rulings that touch the core, the library or 1-1 (due 1:30 PM ET). Matt chose option A.
+- **Matt lifted the token ceiling (via the lead): "It takes what it takes today... done right."**
+  - The budget line (line 1) and "1-2 doesn't fit" are withdrawn. Line 2 (≤ 1/3 of 1-5's hand-mix: about 1.2 h, ≤ 1.1%), the fix rule,
+    0 engine changes for one stage, and every gate stay as the engine-quality bar for 1-1 and for 1-2.
+  - The order is the whole engine first:
+    1. the every-world inventory and library (12:00);
+    2. the critic (12:45);
+    3. the designer's rulings (1:30 PM);
+    4. step 6, the whole-game data and gates;
+    5. E3-E5;
+    6. 1-1, timed;
+    7. 1-2, timed.
