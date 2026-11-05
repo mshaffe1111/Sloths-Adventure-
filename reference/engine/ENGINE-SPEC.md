@@ -1952,3 +1952,36 @@ LEAD** (Matt: "You"), inside the Hugging Face money. The designer sends the rank
 - **[MATT, 11:26 AM ET via the lead] Swim speed: 1.25× the run** ("I thought he swam faster than he ran"). W4's gate: steady swim speed
   ≥ 1.25 × PHYS.maxRun (about 356 px/s). gen2-water builds it in swim.ts under the W6-W8 lock. Long water (6-9, 3,500-5,000 px a beat)
   comes with it, so the speed can be felt.
+
+## Floating stone in the shipped game: the count and the ruling (designer, 11-05 ~11:42 AM ET; engine-runs topic 4, 5051f41a, RUNS.md §4)
+
+**The count** (support.py, all 102 stages × 16 layouts × 2 settings): floating no-float pieces (rocks and ruin) over 16 builds of each
+stage are W1 82, W2 16, W3 32, W4 16, W5 286, W7 2,923, W8 422, W9 3,595 and W10 5,235. Almost all of W7-W10's are thin 26-28 px
+moss_stone and ruin ledges from the old generator (for example 9-1, `moss_stone 112x26 at (1608,505)`).
+- **It is an upper bound.** support.py can't see supports drawn only by the renderer: gen2's columns under thin ruin ledges
+  (columnArt.ts) and 1-2's scenery kapoks. The planner's E3 reads the real draw (art bounds, drawn columns and trunks) before the count
+  is final.
+- The old 1-1 floats 25.3% of its landings (26.0% for old W1 on main). The mixer's 1-1 floats 25.4%, level with Matt's bar.
+
+**Ruling: fixed now, in the shared renderer, not left for each world's rebuild.** Matt sees the shipped game today, and "rocks never
+float" applies to it. The fix is **render-only, so no landing moves**, and it is held by a lock: fingerprints identical before and after
+on every stage, the drawcheck and clipcheck gates, and stills both ways up of 2 stages per world.
+- **A stone ledge with solid ground within about one screen-height below it** gets a drawn column down to that ground, using the game's
+  existing column art (columnArt.ts) in the world's material: stone in W7-W10's ruins, root in forest and swamp worlds, wood elsewhere.
+- **A stone ledge high over open air**, which a column would turn into clutter (Matt: "too much junk... harder to understand"), is
+  drawn as that world's **platform kin** instead, a log, plank or beam that may float under the cap. The data kind becomes a platform
+  kind so E3 and the labels agree.
+- **Which case applies** is decided per piece by the measured gap below it, never by hand. The threshold between the two cases is set
+  by a run: stills at 3 heights, judged both ways up.
+- **W5** (its own kit, 286) is fixed in its own art by the same two cases. If W5 has no column or plank kin in its kit, that's an art
+  gap, and it goes to the lead as a picture list.
+- **The mixer's own floating never-float pieces** (1-5's creaky limbs, rope bridges and the W1 slab, about 40 a build) are an E3 fail
+  for the planner: creaky limbs and bridges get their posts or trunks, and the slab leaves W1 (already ruled).
+
+**1-1's float line:** my 15% was judgment, so it is withdrawn. 1-1's line is the old 1-1's measured 25.3% (the interim line, LABELS
+§4), and the mixer's 1-1 meets it (25.4% is within the old 1-1's range, 1.0-28.2). Its 3 floating rope bridges a build still fail
+(bridges never float).
+
+**Art gaps found by the same run, for the lead's picture list:**
+- W1 rotten wood, a ground breakable (no frame named rotten, decay or punk among the 7,446 packed frames);
+- a W1 side-branch, so a further bough can hang from a shared trunk's side branch.
