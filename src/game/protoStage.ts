@@ -198,6 +198,8 @@ export interface ProtoExtras {
    *  stageArt.ts drawPitWater), 'calm' is the clear swim water (calmWaterArt.ts), only where he swims, from 6-7 on. Lily pads over it draw
    *  on its surface; falling in is a splash, then under it, then the stage's own fall */
   water?: Array<{ x0: number; x1: number; y: number; kind?: WaterKind }>;
+  /** dressing pieces the start clearance could find no clear spot for within a screen (placeDress), by name and where they stood */
+  dressDropped?: Array<{ n: string; x: number; b: number }>;
   /** Worlds 1, 2 and 5: the bank, hanging and clutter sets (artDress.ts dressSets; pictures only) */
   dress?: import('./dressArt.ts').DressPiece[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */
@@ -499,6 +501,36 @@ export function dressClear(d: { n: string; x: number; b: number }, st: { spawnX:
   return true;
 }
 
+/** a screen's width (px, sideways): the farthest a dressing piece is moved to clear the start */
+const DRESS_MOVE_MAX = 1400;
+/**
+ * The start clearance (the designer's ruling, 11-05 1:02 PM, ENGINE-SPEC 3744e38a0): a dressing piece on Pokey at the start or on a set
+ * piece is MOVED, never deleted. Along its own surface (the landing whose top it stands on), away from the spawn so it keeps its side of
+ * him, to the first spot where it is clear (dressClear) and overlaps no other dressing piece there; its facing and its layer are its own
+ * still. Dropped only when no clear spot lies within a screen on that surface: each such piece is returned in `dropped`.
+ */
+export function placeDress<T extends { n: string; x: number; b: number }>(ds: T[], st: { spawnX: number; spawnY: number; platforms: readonly Platform[]; proto?: ProtoExtras }): { kept: T[]; dropped: T[] } {
+  const kept: T[] = [], dropped: T[] = [];
+  const width = (d: T) => { try { return dressSize(d.n as never).w; } catch { return 60; } };
+  const free = (d: T, x: number, others: T[]) => others.every((o) => o === d || Math.abs(o.b - d.b) >= 80 || Math.abs(o.x - x) >= (width(o) + width(d)) / 2);
+  for (const d of ds) {
+    if (dressClear(d, st)) { kept.push(d); continue; }
+    const w = width(d);
+    const on = st.platforms.find((q) => Math.abs(q.y - d.b) < 4 && d.x >= q.x && d.x <= q.x + q.width);
+    const lo = on ? on.x + w / 2 : -Infinity, hi = on ? on.x + on.width - w / 2 : Infinity;
+    const dir = d.x >= st.spawnX + HERO_W / 2 ? 1 : -1;
+    let at: number | undefined;
+    for (let dx = 10; dx <= DRESS_MOVE_MAX && at === undefined; dx += 10) {
+      const x = Math.round(d.x + dir * dx);
+      if (x < lo || x > hi) break;
+      if (dressClear({ ...d, x }, st) && free(d, x, [...kept, ...ds])) at = x;
+    }
+    if (at === undefined) dropped.push(d);
+    else { d.x = at; kept.push(d); }
+  }
+  return { kept, dropped };
+}
+
 /**
  * Worlds 1, 2, 5 and 8-10: the dressing sets (artDress.ts dressSets), on any of their stages (hand-built, World 2's, the new
  * generator's, and Worlds 8-10's old-generator stages, which have no `proto`: theirs go on the stage's own `dress`)
@@ -516,7 +548,12 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
   // spawn, none overlapping a set piece such as 1-1's squirrels (the lead, 11-05: the frog sat on a squirrel). On every stage the engine
   // builds from its spec; the shipped stages' 60 start pieces (hollows, logs, cages at some worlds' starts) wait on the designer's ruling,
   // as some may be designed start scenes)
-  if (specFor(c.id)) ds = ds.filter((d) => dressClear(d, st));
+  // (moved clear, never deleted: the designer's 1:02 ruling, placeDress; what finds no spot is listed on the stage, proto.dressDropped)
+  if (specFor(c.id)) {
+    const { kept, dropped } = placeDress(ds, st);
+    ds = kept;
+    if (dropped.length && st.proto) st.proto.dressDropped = dropped.map((d) => ({ n: d.n, x: d.x, b: d.b }));
+  }
   if (!ds.length) return;
   if (st.proto) st.proto.dress = ds;
   else st.dress = ds;
