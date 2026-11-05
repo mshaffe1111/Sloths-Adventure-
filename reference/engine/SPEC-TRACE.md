@@ -688,7 +688,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1400 | mushroom: W1, W3, W6 | OPEN | none | library.txt:9 lists 1, 3-5, 7-10 (no W6) | (ii) settled by cp2/library.txt:9 |
 | 1401 | bough: W1, W2's banks, W5, W6, W8 | OPEN | none | library.txt:4 lists branch in all 10 | (ii) cp2/library.txt:4 |
 | 1402 | creaky: W1, W5, W6, W8 | OPEN | none | library.txt:11 crumble/snap in 1, 5, 7-10 | (ii) cp2/library.txt:11 |
-| 1403 | crumble slab: W1 (shrine stone), W7; never in the canopy | OPEN | none | Removed from W1 at ES 1450; the row is stale; (b) C29 | (i) acf6e1e8 |
+| 1403 | crumble slab: W1 (shrine stone), W7; never in the canopy | OPEN | none | Removed from W1 at ES 1450; the row is stale; (b) C22 | (i) acf6e1e8 |
 | 1404 | bridge: W1, W5, W6; from 1-1 n8 | OPEN | none | library.txt:7 lists bridges in 5, 8-10 | (ii) cp2/library.txt:7 |
 | 1405-1406 | lily, reed: W1 creeks, W2, W6; only where the water zone draws | MATT | MD:129-130 | | |
 | 1409-1411 | Fix 1: no stump kind; planner says which | OPEN | none | | (ii) the planner's library.ts |
@@ -1042,16 +1042,21 @@ spec neither applies nor rejects them.
 
 Counted over every table row in sections 1-24 above (one tag per row).
 
-| Tag | Rows |
-|---|---|
-| MEASURED | 149 |
-| SOURCED | 151 |
-| MATT | 120 |
-| DERIVED | 18 |
-| OPEN | 155 |
-| **Total** | 593 |
+| Tag | Rows | Share |
+|---|---|---|
+| MEASURED | 152 | 24% |
+| SOURCED | 153 | 25% |
+| MATT | 131 | 21% |
+| DERIVED | 25 | 4% |
+| OPEN | 160 | 26% |
+| **Total** | **621** | |
 
-Of the MATT rows, 6 are "(relayed)": a commit or note credits Matt but his words are not saved anywhere I could open.
+- Of the MATT rows, 5 are "(relayed)": a commit or note credits Matt but his words are not saved anywhere I could open.
+- Every OPEN row carries a "how to settle" path: (i) a ledger or Gemini row, (ii) a run on our code, or (iii) a primary-source search.
+  Most OPEN rows can be settled by a run (ii) on tools we already have (cp1 measures, cp2-trace.ts, split180.py, mechtable.ts,
+  moveladder.ts, the first-timer bot); the ones that need (iii) are the dial's slopes, the move ladder's return rates, the float caps
+  and the stage-length spread.
+- Lists: (a) 234 research rows or items unused (a8); (b) 30 contradictions.
 
 ## Sources that should be fetched next (not fetched in this pass)
 
