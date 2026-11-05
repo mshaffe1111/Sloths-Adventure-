@@ -888,7 +888,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   mark(x - 300, y);
   mark(x + 200, y);
   mark(x + 470, y);
-  L.flags.push({ x: x + 200, y });
+  L.flags.push({ x: x + 100, y });
   // (Dot's line 260 px before the teach ledge: she holds a line while an animal is within 300 px (engine.ts guide env danger), and from
   // x + 140 the boa already was, so the line waited until he was past it, on the lianas)
   L.lines.push({ x: x - 260, y, text: BOA_LINE });
