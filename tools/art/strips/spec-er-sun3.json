@@ -1,0 +1,50 @@
+{
+ "tag": "er-sun3",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e8968d05f5d7246e7ed187078045489365718cf5/reference/prop-sheets/qa-notes/engine-render/starts/",
+ "neg": "straight edge, cut off, cropped, frame, border, box, rectangle, sky, clouds, haze, fog, gradient, text, letters, watermark, photo, 3d render, blurry, people, animals, sloth, flowers",
+ "items": [
+  {
+   "name": "midtree-s72-331",
+   "start": "mid-start3.png",
+   "prompt": "two old rainforest trees side by side, a slimmer grey trunk on the left and a huge gnarled trunk, under one broad dark green leafy crown with round leafy bumps all along its top and its left end, every edge finished and outlined in dark ink, on a flat plain magenta background, flat cartoon painting",
+   "strength": 0.72,
+   "seed": 331,
+   "w": 640,
+   "h": 896
+  },
+  {
+   "name": "midtree-s72-332",
+   "start": "mid-start3.png",
+   "prompt": "two old rainforest trees side by side, a slimmer grey trunk on the left and a huge gnarled trunk, under one broad dark green leafy crown with round leafy bumps all along its top and its left end, every edge finished and outlined in dark ink, on a flat plain magenta background, flat cartoon painting",
+   "strength": 0.72,
+   "seed": 332,
+   "w": 640,
+   "h": 896
+  },
+  {
+   "name": "midtree-s82-331",
+   "start": "mid-start3.png",
+   "prompt": "two old rainforest trees side by side, a slimmer grey trunk on the left and a huge gnarled trunk, under one broad dark green leafy crown with round leafy bumps all along its top and its left end, every edge finished and outlined in dark ink, on a flat plain magenta background, flat cartoon painting",
+   "strength": 0.82,
+   "seed": 331,
+   "w": 640,
+   "h": 896
+  },
+  {
+   "name": "midtree-s82-332",
+   "start": "mid-start3.png",
+   "prompt": "two old rainforest trees side by side, a slimmer grey trunk on the left and a huge gnarled trunk, under one broad dark green leafy crown with round leafy bumps all along its top and its left end, every edge finished and outlined in dark ink, on a flat plain magenta background, flat cartoon painting",
+   "strength": 0.82,
+   "seed": 332,
+   "w": 640,
+   "h": 896
+  }
+ ]
+}
