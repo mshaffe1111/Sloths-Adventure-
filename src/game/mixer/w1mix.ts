@@ -132,6 +132,8 @@ interface Lay {
   /** the last six landings' kind x size, as the variety gate reads them (cp1/measure2.py), so a burst picks a size that is new */
   recent: string[];
   glints: Array<{ x: number; y: number }>;
+  /** the creeks laid so far (waterRun): the stage's drawn water, proto.water */
+  water: Array<{ x0: number; x1: number; y: number }>;
 }
 type Entry = 'mushroom' | 'vine' | 'step';
 /** where the way is: the end of the last piece laid, its top, and the kind of piece it was */
@@ -340,6 +342,43 @@ function step(L: Lay, c: Cursor, R: Rng, k: string, w: number): Platform {
   return L.P[L.P.length - 1];
 }
 
+/**
+ * A creek (a water idea, the designer's 11:40 ruling: lily pads come back on real water): a bank, then the idea's pieces in turn on one
+ * drawn surface (the world kit's water row: a pad floats on it, a log or a reed isle rises out of it), then a bank on the far side at the
+ * near bank's height; the stretch between the banks is the stage's water (L.water, proto.water), reaching in under both banks. Every gap
+ * is the gate's, as a burst's are. `farW` sets the far bank's width (a canopy's long end piece). A world with no water row lays none.
+ */
+function waterRun(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, farW?: number): Cursor {
+  const W = K.water;
+  if (!W) throw new Error(`World ${K.world}'s kit has no water row: the mixer cannot lay a creek there (src/game/mixer/kits.ts)`);
+  const bank = (p: Platform | undefined) => !!p && p.style === 'moss_stone' && p.height >= 120 && Math.abs(p.x + p.width - c.x) < 2 && Math.abs(p.y - c.y) < 2;
+  const last = L.P[L.P.length - 1];
+  const near = bank(last) ? last : step(L, c, R, 'bank', Math.round(R.r(K.bands.bank[1][0], K.bands.bank[1][1]) * L.wScale));
+  const s = near.y + W.depth;
+  let x = near.x + near.width, y = near.y;
+  // (each piece a gate-sized gap on, at the dial's share of the widest, as a burst lays it)
+  const next = (k: string, ty: number, w: number): Platform => {
+    const h = K.heights[k] ?? (k === 'lily' ? 12 : k === 'reed' ? 90 : 24);
+    const f = easyFit(L, y - ty, w, 999);
+    const max = gateGap(L, y, { y: ty, height: h, type: 'solid' }, y - ty);
+    const gap = Math.max(MIN_GAP, Math.min(Math.round(max * L.gapShare * R.r(0.92, 1.08)), f.gap, max - 4));
+    const p = plat(L, k, x + gap, ty, f.w);
+    x = p.x + p.width; y = p.y;
+    return p;
+  };
+  for (let i = 0; i < n; i++) {
+    const k = kinds[i % kinds.length];
+    if (W.top[k] === undefined) throw new Error(`"${k}" has no height over the water in World ${K.world}'s kit water row`);
+    const bnd = R.pick(K.bands[k] ?? [[110, 200]]);
+    next(k, s - W.top[k], Math.round(R.r(bnd[0], bnd[1]) * L.bs));
+  }
+  // (on Easy the far bank is 220 px or more: a 52 px rise onto a narrower one breaks Easy's 40 px cap, easyFit)
+  const fw = farW ?? Math.round(R.r(K.bands.bank[1][0], K.bands.bank[1][1]) * L.wScale);
+  const far = next('bank', near.y, L.easy ? Math.max(220, fw) : fw);
+  L.water.push({ x0: near.x + near.width - W.inset, x1: far.x + W.inset, y: s });
+  return { x: far.x + far.width, y: far.y };
+}
+
 /** a burst idea laid from its library recipe (library.ts `lay`) */
 function layRecipe(L: Lay, c: Cursor, R: Rng, rec: BurstRecipe, n: number): Cursor {
   const ks = L.easy && rec.easyKinds ? rec.easyKinds : rec.kinds;
@@ -361,6 +400,8 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
   const n = L.easy ? 3 : R.i(L.burstMin ?? 4, L.burstMax ?? 5);
   // (a burst idea is the library's recipe; only the shapes below are built here)
   const rec = IDEAS[name]?.lay;
+  // (a water idea is a creek: its recipe's kinds on one drawn surface between two banks, waterRun)
+  if (rec && IDEAS[name].element === 'water') return waterRun(L, c, R, rec.kinds as string[], L.easy && rec.n ? rec.n.easy : rec.n ? rec.n.normal : n - 1);
   if (rec) return layRecipe(L, c, R, rec, n);
   // (the shapes' numbers are the library's, SHAPES; here only the geometry each one builds from them)
   const r = (q: readonly [number, number] | readonly number[]) => R.r(q[0], q[1]);
@@ -478,7 +519,8 @@ const FLOOR_KINDS: Record<string, { host: string; kinds: string[][] }> = {
   // (the long piece each stretch ends on, turning stretch by stretch so no two stretches repeat it: the gate's "something new")
   'bank hops': { host: 'bank', kinds: [['log'], ['stone'], ['bank']] },
   'stump hop': { host: 'bank', kinds: [['stone'], ['log'], ['stone']] },
-  'lily-pad hop': { host: 'log', kinds: [['lily']] },
+  // (the creek's host is its near bank and its long end piece the far one: the water lies between them, waterRun)
+  'lily-pad hop': { host: 'bank', kinds: [['lily']] },
   'log jam': { host: 'log', kinds: [['bank'], ['log'], ['stone']] },
 };
 
@@ -541,8 +583,10 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     // (on Normal too, the designer's two-road fix, 11-05: its rest is this piece, 520-560 px flat then the short step, about 1.1 s of quiet
     // off the boughs, so the rest keeps both roads over it; no separate pad follows a canopied burst)
     const endW = () => Math.round(L.easy ? R.r(770, 820) : R.r(650, 700));
-    let end = burst(L, { x: host.x + host.width, y: host.y }, R, [ks[0]], 1, [-30, -40], undefined, ks[0] === 'lily' ? undefined : endW());
-    if (ks[0] === 'lily') end = burst(L, end, R, ['log'], 1, [-30, -40], undefined, endW());
+    const wet = IDEAS[name].element === 'water';
+    // (one pad a stretch, as the creek's canopy always laid it: the host, a pad, the long end piece)
+    let end = wet ? waterRun(L, { x: host.x + host.width, y: host.y }, R, IDEAS[name].lay!.kinds as string[], 1, endW())
+      : burst(L, { x: host.x + host.width, y: host.y }, R, [ks[0]], 1, [-30, -40], undefined, endW());
     // (the long end piece is two, touching, the second 30 px up: a hop to make on the walk out from under the canopy, never a gap to
     // fall in (the fun gate's dead walks: a 2 s walk with nothing to do, 12 of them at canopy ends))
     const m1 = L.P[L.P.length - 1];
@@ -552,7 +596,7 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     // (on Easy the rest is one of the pads `padLogs` may turn to a log where the gate would run too long with nothing new; on Normal it
     // is a rest a mark may stand at the end of, `clearPiece`)
     L.padSet.add(m1);
-    const m2 = plat(L, ks[0] === 'lily' ? 'log' : ks[0], m1.x + m1.width, m1.y - 30, full - m1.width);
+    const m2 = plat(L, wet ? 'bank' : ks[0], m1.x + m1.width, m1.y - 30, full - m1.width);
     end = { x: m2.x + m2.width, y: m2.y };
     const floor = L.P.slice(from).concat(host);
     const hi = Math.min(...floor.map((q) => q.y)), lo = Math.max(...floor.map((q) => q.y));
@@ -584,6 +628,9 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     for (const q of L.P.slice(L.P.indexOf(b0))) (q as Platform & { bough?: boolean }).bough = true;
     const lb = L.P[L.P.length - 1];
     if (lb.x + lb.width > xEnd) lb.width = Math.max(100, Math.round(xEnd - lb.x));
+    // (a creaky limb over the creek holds: a snap drops him onto the low road, never into the water (this canopy's own rule above))
+    const z = wet ? L.water[L.water.length - 1] : undefined;
+    if (z) for (const q of L.P.slice(L.P.indexOf(b0))) if (q.type === 'fragile' && q.x < z.x1 && q.x + q.width > z.x0) { q.type = 'solid'; delete (q as { creak?: number }).creak; }
     band = save;
     e = end;
   }
@@ -714,7 +761,7 @@ function crossings(L: Lay, hi: Platform[], lo: Platform[], job: string) {
  * own under its middle; a bridge gets a thin post at each end; the perch a short stump. Each trunk runs from just under its piece's top to the
  * first bank under it, or past the stage's bottom.
  */
-function supports(P: Platform[], height: number, clear: number[] = []): { trunks: Array<{ x: number; topY: number; bottomY: number; w: number; art?: 'plain' }>; leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'bushTall' }> } {
+function supports(P: Platform[], height: number, clear: number[] = [], water: ReadonlyArray<{ x0: number; x1: number; y: number }> = []): { trunks: Array<{ x: number; topY: number; bottomY: number; w: number; art?: 'plain' }>; leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'bushTall' }> } {
   type T = { x: number; topY: number; bottomY: number; w: number; art?: 'plain' };
   const out: T[] = [];
   const leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'bushTall' }> = [];
@@ -734,10 +781,13 @@ function supports(P: Platform[], height: number, clear: number[] = []): { trunks
     out.push({ x: Math.round(x), topY: Math.round(top - rise), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: w * (0.85 + ((k * 37) % 7) * 0.07), ...(k % 2 ? { art: 'plain' as const } : {}) });
     if (room) leaves.push({ x: Math.round(x), y: Math.round(top - rise + 30), w: 160 + ((k * 29) % 4) * 20, flip: k % 2 === 1, kind: 'bushWide' });
   };
-  const air = P.filter((p) => p.type !== 'bouncy' && !(p as { catch?: boolean }).catch && !(p as { art?: string }).art
+  // (a piece in the creek, its middle over the water and its foot under the surface, stands in the water: a pad floats, a log or a reed
+  // isle rises out of it; no stem and no trunk)
+  const wet = (p: Platform) => water.some((z) => p.x + p.width / 2 > z.x0 && p.x + p.width / 2 < z.x1 && p.y + p.height > z.y);
+  const air = P.filter((p) => !wet(p) && p.type !== 'bouncy' && !(p as { catch?: boolean }).catch && !(p as { art?: string }).art
     && (p.style === 'branch' || p.style === 'canopy_bridge' || p.style === 'log' || p.style === 'ruin' || p.type === 'fragile')).sort((a, b) => a.x - b.x);
   // (a lily pad or a reed isle over the drop stands on a thin stem down to the ground (S-2: nothing above the water line floats))
-  for (const p of P) if ((p as { lily?: boolean }).lily || (p.style === undefined && p.height === 30 && p.type === 'solid')) tree(p.x + p.width / 2, p.y + 10, 0.45, false);
+  for (const p of P) if (!wet(p) && ((p as { lily?: boolean }).lily || (p.style === undefined && p.height === 30 && p.type === 'solid'))) tree(p.x + p.width / 2, p.y + 10, 0.45, false);
   // (would a full trunk at x put 4 in some screen's width, anywhere it is seen? every 1,400 px window that holds x)
   const crowded = (x: number) => {
     const xs = out.filter((t) => t.w >= 0.9 && Math.abs(t.x - x) < SCREEN).map((t) => t.x);
@@ -851,7 +901,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
   // (the designer's pacing ruling A, 11-05: a calmer Easy, its landings about 300 px on its own size bands, Normal's times EASY_BS. The
   // fixed pieces (canopy hosts and ends) scale with it; the boughs over them do not: the high road is the optional one)
   const wScale = easy ? EASY_BS : 1;
-  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, bs: easy ? EASY_BS : 1, dial: d, mushrooms: 0, glints: [], recent: [], padSet: new Set(), creakyTaught: false, burstMin: S.burstMin, burstMax: S.burstMax, lowPetals: S.lowPetals, ...(S.plan.some((n) => Array.isArray(n.deck) && n.deck.includes('bounce up') && n.job.startsWith('teach')) ? { bounceTaught: false } : {}) };
+  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, bs: easy ? EASY_BS : 1, dial: d, mushrooms: 0, glints: [], water: [], recent: [], padSet: new Set(), creakyTaught: false, burstMin: S.burstMin, burstMax: S.burstMax, lowPetals: S.lowPetals, ...(S.plan.some((n) => Array.isArray(n.deck) && n.deck.includes('bounce up') && n.job.startsWith('teach')) ? { bounceTaught: false } : {}) };
   // (the highest rise the gate allows: the largest step up a plain jump makes across a real gap, measured with the gate itself)
   let maxRise = 0;
   for (let dy = 10; dy <= 200; dy += 5) if (gateGap(L, 800, { y: 800 - dy, height: 24, type: 'solid' }, dy) >= MIN_GAP + 10) maxRise = dy;
@@ -1109,6 +1159,12 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
     const y = Math.max(a.y, b.y) + 60;
     L.P.push({ id: L.pid++, x: a.x + a.width - 30, y, width: b.x + 50 - (a.x + a.width - 30), height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
   }
+  // (no catch branch in a creek (Matt, 11-05: "a catch branch under a gap has no place in a creek"; w1NewArt.ts piecesUnderWater): a gap
+  // over the water is the creek's, and a miss there is a splash)
+  for (let k = L.P.length - 1; k >= 0; k--) {
+    const q = L.P[k], mid = q.x + q.width / 2;
+    if ((q as { catch?: boolean }).catch && L.water.some((z) => mid > z.x0 && mid < z.x1 && q.y > z.y + 2)) L.P.splice(k, 1);
+  }
   // (every gap is a drop: World 1 paints an unmarked fall as water otherwise)
   for (const p of L.P) if (p.type === 'solid' || p.type === 'fragile') (p as Platform & { pit?: string }).pit = 'drop';
   const movedPickups = fixPickups({ platforms: L.P, vines: L.V, ropes: [] }, L.C);
@@ -1122,7 +1178,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
   // (nothing floats unless it floats (the designer's P-2, P-7, P-11; D16): every bough, log, crumbling ledge and creaky limb in the air
   // stands on a painted kapok set back in the shade, as 1-2's logs do (protoArt.ts setDecoTrunks), down to the floor under it or past the
   // stage's bottom; a bridge hangs from a post at each end; the mushroom's perch is a short stump on its bank. Dressing only: no surface)
-  const { trunks, leaves } = supports(L.P, height, [100, exit.x, ...L.flags.map((f) => f.x)]);
+  const { trunks, leaves } = supports(L.P, height, [100, exit.x, ...L.flags.map((f) => f.x)], L.water);
   const beats: Array<[number, number, string]> = L.explain.map((e) => [e.x0, e.x1, `${e.job}: ${e.idea}${e.road ? ` (${e.road} road)` : ''}`]);
   const stage = {
     config: cfg, trees: [], platforms: L.P, vines: L.V, ropes: [], enemies: [], boss: null, collectibles: L.C,
@@ -1131,6 +1187,8 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
     easyGoal: Math.max(1, goalE), normalGoal: Math.max(1, goalN),
     meta: { attempt: seed, chunks: L.explain.map((e) => e.idea), width, pieces: L.explain.map((e) => ({ k: `${S.id} ${e.idea}`, x0: e.x0, x1: e.x1 })), mix: { explain: L.explain } },
     proto: { hints: L.hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, ownPetals: true, glints: L.glints, trunks, leaves,
+      // (the creeks, the world's deadly pit water: falling in costs a life, so the stage's first is warned of (waterTeach.ts))
+      ...(L.water.length ? { water: L.water.map((z) => ({ ...z, kind: 'deadly' as const })) } : {}),
       // (the dressing the stage asks for, by the w1-new atlas's frame names; drawn once engine-render wires that atlas: nothing draws it yet)
       ...(S.dress ? { mixDress: [...startDress(S.dress.start ?? [], 100, start), ...(S.dress.clue ? [{ n: S.dress.clue, x: end.x + end.width - 140, b: end.y }] : [])] } : {}) },
   } as unknown as GeneratedStage & { proto: ProtoExtras };
