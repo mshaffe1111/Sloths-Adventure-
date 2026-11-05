@@ -833,6 +833,9 @@ third Easy-only rest of 4-5 s goes after n3 (c). **This is a miss at the checkpo
 - **S-9:** both. The engine-render helper draws a stone's base down past the water line. The mixer lays a stepping stone no more than
   50 px above the water, and a taller one as a stump in the stream.
 - **S-8** (Dot's bubble) goes to the engine-render helper, as engine UI.
+- **[designer, ~5:15 AM ET] Stones stay in 1-5.** After S-9's tightening, 1-5 laid no stones, so a kind dropped out, the opposite of
+  "more pieces". Stones sit on ground (S-3, S-9 allow it): small rises in stump hop and bank hops on the floor and banks, as in the old
+  1-1, on both settings. Creek stepping stones (a stack or stump in the stream) wait for later engine-render work.
 - **S-5** is closed: the tip shows once in real play. The repeat came from the still script.
 - **Round 2, the designer's review:**
   - **Better:** nearby boughs now grow from shared big trees (S-4 fixed); the grey slab, pits and the dark box are gone; bridges stand
