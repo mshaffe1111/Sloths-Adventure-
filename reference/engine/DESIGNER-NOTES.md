@@ -18,3 +18,6 @@
    from the spec twice.
 6. **A range is set from the per-roll rows, never from a min/p10/p90 summary alone** (11-05, 12:35 PM ET: I split the measured
    gap and rise spreads into thirds; the per-roll rows showed every roll fills the whole gap spread and rises come in families).
+7. **Before I relay a helper's "full gate", I check its list of gates by name against .github/workflows/gates.yml** (11-05, 1:04 PM ET:
+   my art helper's "every gate passed" left out build:store and funcheck, because its list came from an older CLAUDE.md; I relayed it
+   to the lead unchecked). Every brief names gates.md and gates.yml as the list, never a copy.
