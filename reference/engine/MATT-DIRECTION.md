@@ -207,3 +207,9 @@ gets approved."
 So: art the engine needs (a missing piece, a platform kind, a world's fit) is approved by the lead without asking Matt. The lead
 still checks each picture list (Hugging Face first, unused art before new), keeps the money inside what's left of the $72 with about
 $15 in reserve, and tells Matt what was spent.
+
+## 2026-11-05 11:05 AM ET: MATT APPROVED the engine's shape (the designer's critic ruling 5)
+One rulebook over all builders: the engine is the stage spec, the labelled library, the whole-game move and water plan, and every gate,
+and every builder works under it; each stage names its builder. gen2 keeps its 23 stages, hand-built specials stay hand-built, and the
+mixer takes a stage only where it is proved better under that world's regression lock. Every stage, whatever builds it, passes the
+same gates (labels, support, rocks never float, the ladder, water, variety via era.ts, look-alikes); a fail is fixed at the root (law 22).
