@@ -1,0 +1,15 @@
+stage: runKS | creaky share, rank | boughs+creaky share | top-3 share | core share | newMeanPx with / without bridges
+mix 1-1 easy: runKS 3 (2-3) | creaky 0.0, rank 99 | boughs+creaky 0.319 (0.305-0.335) | top3 0.754 (0.74-0.77) | core 0.644 (0.624-0.663) | new 444 (400-462) / 478 (430-509)
+mix 1-1 normal: runKS 2 (2-3) | creaky 0.0, rank 99 | boughs+creaky 0.353 (0.335-0.364) | top3 0.787 (0.77-0.799) | core 0.618 (0.598-0.628) | new 359 (338-388) / 373 (350-401)
+mix 1-3 easy: runKS 3 (3-4) | creaky 0.0, rank 99 | boughs+creaky 0.218 (0.19-0.236) | top3 0.917 (0.912-0.921) | core - | new 679 (635-716) / 679 (635-716)
+mix 1-3 normal: runKS 3 | creaky 0.0, rank 99 | boughs+creaky 0.227 (0.207-0.239) | top3 0.915 (0.911-0.917) | core - | new 713 (626-766) / 713 (626-766)
+mix 1-5 easy: runKS 2 | creaky 0.214 (0.205-0.242), rank 3 (2-3) | boughs+creaky 0.484 (0.466-0.495) | top3 0.67 (0.644-0.7) | core 0.744 (0.725-0.777) | new 354 (335-381) / 373 (352-406)
+mix 1-5 normal: runKS 3 (2-3) | creaky 0.221 (0.199-0.23), rank 3 | boughs+creaky 0.529 (0.507-0.545) | top3 0.675 (0.649-0.69) | core 0.758 (0.731-0.782) | new 258 (245-268) / 276 (264-286)
+old 1-1 easy: runKS 7 (3-9) | creaky 0.0, rank 99 | boughs+creaky 0.253 (0.01-0.282) | top3 0.989 (0.89-0.995) | core 0.885 (0.635-0.986) | new 572 (360-606) / 572 (360-606)
+old 1-1 normal: runKS 7 (3-9) | creaky 0.0, rank 99 | boughs+creaky 0.253 (0.01-0.282) | top3 0.989 (0.89-0.995) | core 0.885 (0.635-0.986) | new 572 (360-606) / 572 (360-606)
+old 1-3 easy: runKS 2 (2-3) | creaky 0.0, rank 99 | boughs+creaky 0.301 (0.049-0.336) | top3 0.895 (0.871-0.947) | core - | new 562 (483-779) / 562 (483-779)
+old 1-3 normal: runKS 2 (2-3) | creaky 0.0, rank 99 | boughs+creaky 0.269 (0.039-0.318) | top3 0.89 (0.88-0.946) | core - | new 588 (492-804) / 588 (492-804)
+old 1-5 easy: runKS 3 (3-4) | creaky 0.143 (0.057-0.198), rank 3 (3-5) | boughs+creaky 0.276 (0.258-0.377) | top3 0.709 (0.698-0.802) | core 0.579 (0.496-0.612) | new 448 (417-497) / 448 (417-497)
+old 1-5 normal: runKS 3 (3-4) | creaky 0.144 (0.057-0.207), rank 3 (3-5) | boughs+creaky 0.27 (0.246-0.377) | top3 0.714 (0.707-0.836) | core 0.576 (0.496-0.595) | new 455 (421-575) / 455 (421-575)
+mix 1-1 normal canopy stretches (fork + canopy run), pieces each over 16 layouts: [(1, 137), (2, 45), (3, 12)]; inside 2-5: 57/194
+old 1-1 normal canopy stretches (fork + canopy run), pieces each over 16 layouts: [(1, 32), (3, 28), (4, 15), (5, 35)]; inside 2-5: 78/110

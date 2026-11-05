@@ -1,0 +1,3 @@
+deck check: 1600 draws over 1-1, 1-5 x 16 layouts x 2 settings; 58 outside their node's deck
+  32 x 1-1 n3 (practise (fork)) drew "bank hops" not in [stump tops, log jam]
+  26 x 1-5 n12 (master (fork)) drew "bank hops" not in [bough stair, stump hop]

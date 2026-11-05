@@ -1,0 +1,48 @@
+7446 packed frames
+/stump/: 24
+  w1Stump  shared/other  src/game/dressAtlasData.ts
+  w1WoodStump  shared/other  src/game/dressNewData.ts
+  stump  W2  src/game/kitAtlasData.ts
+  stump  W3  src/game/kitAtlasData.ts
+  stump  W4  src/game/kitAtlasData.ts
+  stump  W5  src/game/kitAtlasData.ts
+  stump  W6  src/game/kitAtlasData.ts
+  stump  W7  src/game/kitAtlasData.ts
+  stump  W8  src/game/kitAtlasData.ts
+  stump  W9  src/game/kitAtlasData.ts
+  stump  W10  src/game/kitAtlasData.ts
+  guardStump  shared/other  src/game/meecaNightData.ts
+  stump  W1  src/game/protoAtlasData.ts
+  tradeStump  shared/other  src/game/puzzleAtlasData.ts
+  coverStump  W4  src/game/w4PropsData.ts
+  fernStump  W5  src/game/w5PropsData.ts
+  stump-b  W8  src/game/w8DecorData.ts
+  stump-pillar  shared/other  src/assets/w6to10/gemini/secret-tunnel-kit.json
+  stump-b  W10  src/assets/w6to10/props-made/w10var.json
+  stump-b  W5  src/assets/w6to10/props-made/w5var.json
+  stump-b  W6  src/assets/w6to10/props-made/w6var.json
+  stump-b  W7  src/assets/w6to10/props-made/w7var.json
+  stump-b  W8  src/assets/w6to10/props-made/w8var.json
+  stump-b  W9  src/assets/w6to10/props-made/w9var.json
+/rotten/: 0
+/crumbl|crack/: 14
+  wallCrack  shared/other  src/game/boss1010Data.ts
+  cracked  shared/other  src/game/crumbleArt.ts
+  chaseCrack  W1  src/game/proto3AtlasData.ts
+  gustCrack  shared/other  src/game/puzzleAtlasData.ts
+  pillarCracked  W3  src/game/w3PropsData.ts
+  crack-cracking  W3  src/assets/w1to4art/w3-new.json
+  crack-whole  W3  src/assets/w1to4art/w3-new.json
+  ledge-cracking  W4  src/assets/w1to4art/w4-new.json
+  floor-crack  shared/other  src/assets/w6to10/gemini/secret-cracks.json
+  wall-crack  shared/other  src/assets/w6to10/gemini/secret-cracks.json
+  cracked  W2  src/assets/w6to10/gemini/w2-cages.json
+  cracked-ledge  W7  src/assets/w6to10/props-made/w7b.json
+  smoke-crack  W9  src/assets/w6to10/props-made/w9c-b.json
+  smoke-crack  W9  src/assets/w6to10/props-made/w9c.json
+/sidebranch|side_?branch|limbSide|forkBranch/: 0
+/totem|shrine/: 4
+  w4Totem  shared/other  src/game/dressNewData.ts
+  totem  W5  src/game/w5PropsData.ts
+  totem2  W5  src/game/w5PropsData.ts
+  totemDark  W5  src/game/w5PropsData.ts

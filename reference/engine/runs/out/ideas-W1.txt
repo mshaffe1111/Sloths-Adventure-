@@ -1,0 +1,86 @@
+mix 1-1 easy: tagger ideas median 6 (6-6); top idea share median 0.58 (max 0.62); mixer node ideas 18 (16-19); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs']
+mix 1-1 normal: tagger ideas median 6 (6-6); top idea share median 0.50 (max 0.53); mixer node ideas 17 (16-18); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs']
+mix 1-10 easy: tagger ideas median 2 (2-2); top idea share median 0.61 (max 0.61); ideas seen ['bank hops', 'canopy run']
+mix 1-10 normal: tagger ideas median 2 (2-2); top idea share median 0.61 (max 0.61); ideas seen ['bank hops', 'canopy run']
+mix 1-2 easy: tagger ideas median 4 (4-4); top idea share median 0.56 (max 0.62); ideas seen ['bank hops', 'flat walk', 'high perch', 'low boughs']
+mix 1-2 normal: tagger ideas median 4 (4-4); top idea share median 0.51 (max 0.59); ideas seen ['bank hops', 'flat walk', 'high perch', 'low boughs']
+mix 1-3 easy: tagger ideas median 8 (8-8); top idea share median 0.41 (max 0.44); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'rope crossing', 'the fork (canopy over the floor)']
+mix 1-3 normal: tagger ideas median 8 (8-8); top idea share median 0.41 (max 0.43); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'rope crossing', 'the fork (canopy over the floor)']
+mix 1-4 easy: tagger ideas median 5 (5-5); top idea share median 0.48 (max 0.52); ideas seen ['bank hops', 'canopy run', 'high perch', 'rope crossing', 'the fork (canopy over the floor)']
+mix 1-4 normal: tagger ideas median 5 (5-5); top idea share median 0.48 (max 0.51); ideas seen ['bank hops', 'canopy run', 'high perch', 'rope crossing', 'the fork (canopy over the floor)']
+mix 1-5 easy: tagger ideas median 6 (6-6); top idea share median 0.52 (max 0.56); mixer node ideas 16 (15-16); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs']
+mix 1-5 normal: tagger ideas median 6 (6-6); top idea share median 0.50 (max 0.52); mixer node ideas 16 (15-16); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs']
+mix 1-6 easy: tagger ideas median 6 (5-7); top idea share median 0.47 (max 0.50); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'the fork (canopy over the floor)']
+mix 1-6 normal: tagger ideas median 6 (5-7); top idea share median 0.47 (max 0.50); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'the fork (canopy over the floor)']
+mix 1-7 easy: tagger ideas median 6 (5-6); top idea share median 0.52 (max 0.57); ideas seen ['bank hops', 'bounce up', 'flat walk', 'high perch', 'rope crossing', 'the fork (canopy over the floor)']
+mix 1-7 normal: tagger ideas median 6 (5-6); top idea share median 0.52 (max 0.57); ideas seen ['bank hops', 'bounce up', 'flat walk', 'high perch', 'rope crossing', 'the fork (canopy over the floor)']
+mix 1-8 easy: tagger ideas median 3 (2-3); top idea share median 0.97 (max 0.97); ideas seen ['bank hops', 'canopy run', 'flat walk', 'low boughs']
+mix 1-8 normal: tagger ideas median 2 (2-2); top idea share median 0.97 (max 0.97); ideas seen ['bank hops', 'flat walk']
+mix 1-9 easy: tagger ideas median 7 (7-8); top idea share median 0.54 (max 0.62); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'rope crossing', 'the fork (canopy over the floor)']
+mix 1-9 normal: tagger ideas median 7 (7-8); top idea share median 0.54 (max 0.62); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'rope crossing', 'the fork (canopy over the floor)']
+old 1-1 easy: tagger ideas median 6 (4-6); top idea share median 0.64 (max 0.80); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'the fork (canopy over the floor)']
+old 1-1 normal: tagger ideas median 6 (4-6); top idea share median 0.64 (max 0.80); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'the fork (canopy over the floor)']
+old 1-10 easy: tagger ideas median 2 (2-2); top idea share median 0.61 (max 0.61); ideas seen ['bank hops', 'canopy run']
+old 1-10 normal: tagger ideas median 2 (2-2); top idea share median 0.61 (max 0.61); ideas seen ['bank hops', 'canopy run']
+old 1-2 easy: tagger ideas median 5 (4-5); top idea share median 0.40 (max 0.65); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'the fork (canopy over the floor)']
+old 1-2 normal: tagger ideas median 5 (4-5); top idea share median 0.40 (max 0.66); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'the fork (canopy over the floor)']
+old 1-3 easy: tagger ideas median 7 (5-8); top idea share median 0.54 (max 0.64); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'rope crossing', 'the fork (canopy over the floor)']
+old 1-3 normal: tagger ideas median 7 (5-8); top idea share median 0.54 (max 0.64); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'rope crossing', 'the fork (canopy over the floor)']
+old 1-4 easy: tagger ideas median 4 (3-4); top idea share median 0.51 (max 0.55); ideas seen ['bank hops', 'canopy run', 'rope crossing', 'the fork (canopy over the floor)']
+old 1-4 normal: tagger ideas median 4 (3-4); top idea share median 0.51 (max 0.55); ideas seen ['bank hops', 'canopy run', 'rope crossing', 'the fork (canopy over the floor)']
+old 1-5 easy: tagger ideas median 8 (7-8); top idea share median 0.41 (max 0.50); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'rope crossing', 'the fork (canopy over the floor)']
+old 1-5 normal: tagger ideas median 8 (7-8); top idea share median 0.43 (max 0.50); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'rope crossing', 'the fork (canopy over the floor)']
+old 1-6 easy: tagger ideas median 6 (5-7); top idea share median 0.42 (max 0.47); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'the fork (canopy over the floor)']
+old 1-6 normal: tagger ideas median 6 (5-7); top idea share median 0.42 (max 0.47); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'the fork (canopy over the floor)']
+old 1-7 easy: tagger ideas median 6 (5-6); top idea share median 0.52 (max 0.57); ideas seen ['bank hops', 'bounce up', 'flat walk', 'high perch', 'rope crossing', 'the fork (canopy over the floor)']
+old 1-7 normal: tagger ideas median 6 (5-6); top idea share median 0.52 (max 0.57); ideas seen ['bank hops', 'bounce up', 'flat walk', 'high perch', 'rope crossing', 'the fork (canopy over the floor)']
+old 1-8 easy: tagger ideas median 3 (2-3); top idea share median 0.97 (max 0.97); ideas seen ['bank hops', 'canopy run', 'flat walk', 'low boughs']
+old 1-8 normal: tagger ideas median 2 (2-2); top idea share median 0.97 (max 0.97); ideas seen ['bank hops', 'flat walk']
+old 1-9 easy: tagger ideas median 7 (7-8); top idea share median 0.55 (max 0.62); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'rope crossing', 'the fork (canopy over the floor)']
+old 1-9 normal: tagger ideas median 7 (7-8); top idea share median 0.55 (max 0.62); ideas seen ['bank hops', 'bounce up', 'canopy run', 'flat walk', 'high perch', 'low boughs', 'rope crossing', 'the fork (canopy over the floor)']
+
+pairs (Jaccard of the tagger idea sets, same layout number, 16 layouts): median (min-max)
+  normal old 1-1  vs mix 1-3 : 0.75 (0.50-0.75)
+  normal old 1-1  vs old 1-3 : 0.50 (0.29-0.75)
+  normal mix 1-1  vs mix 1-5 : 1.00 (1.00-1.00)
+  normal old 1-1  vs mix 1-1 : 0.71 (0.67-0.71)
+  normal old 1-1  vs old 1-2 : 0.80 (0.67-1.00)
+  normal old 1-2  vs old 1-3 : 0.50 (0.29-0.62)
+  normal old 1-3  vs old 1-4 : 0.43 (0.25-0.50)
+  normal old 1-4  vs old 1-5 : 0.50 (0.25-0.50)
+  normal old 1-5  vs old 1-6 : 0.75 (0.50-0.88)
+  normal old 1-6  vs old 1-7 : 0.57 (0.50-0.67)
+  normal old 1-7  vs old 1-8 : 0.33 (0.33-0.40)
+  normal old 1-8  vs old 1-9 : 0.29 (0.25-0.29)
+  normal old 1-9  vs old 1-10: 0.29 (0.25-0.29)
+  normal mix 1-1  vs mix 1-2 : 0.67 (0.67-0.67)
+  normal mix 1-2  vs mix 1-3 : 0.50 (0.50-0.50)
+  normal mix 1-3  vs mix 1-4 : 0.62 (0.62-0.62)
+  normal mix 1-4  vs mix 1-5 : 0.38 (0.38-0.38)
+  normal mix 1-5  vs mix 1-6 : 0.71 (0.57-0.86)
+  normal mix 1-6  vs mix 1-7 : 0.57 (0.50-0.67)
+  normal mix 1-7  vs mix 1-8 : 0.33 (0.33-0.40)
+  normal mix 1-8  vs mix 1-9 : 0.29 (0.25-0.29)
+  normal mix 1-9  vs mix 1-10: 0.29 (0.25-0.29)
+  easy   old 1-1  vs mix 1-3 : 0.75 (0.50-0.75)
+  easy   old 1-1  vs old 1-3 : 0.50 (0.29-0.75)
+  easy   mix 1-1  vs mix 1-5 : 1.00 (1.00-1.00)
+  easy   old 1-1  vs mix 1-1 : 0.71 (0.67-0.71)
+  easy   old 1-1  vs old 1-2 : 0.80 (0.67-0.83)
+  easy   old 1-2  vs old 1-3 : 0.57 (0.25-0.62)
+  easy   old 1-3  vs old 1-4 : 0.43 (0.25-0.50)
+  easy   old 1-4  vs old 1-5 : 0.50 (0.25-0.50)
+  easy   old 1-5  vs old 1-6 : 0.75 (0.50-0.88)
+  easy   old 1-6  vs old 1-7 : 0.57 (0.50-0.67)
+  easy   old 1-7  vs old 1-8 : 0.29 (0.29-0.40)
+  easy   old 1-8  vs old 1-9 : 0.38 (0.25-0.43)
+  easy   old 1-9  vs old 1-10: 0.29 (0.25-0.29)
+  easy   mix 1-1  vs mix 1-2 : 0.67 (0.67-0.67)
+  easy   mix 1-2  vs mix 1-3 : 0.50 (0.50-0.50)
+  easy   mix 1-3  vs mix 1-4 : 0.62 (0.62-0.62)
+  easy   mix 1-4  vs mix 1-5 : 0.38 (0.38-0.38)
+  easy   mix 1-5  vs mix 1-6 : 0.71 (0.57-0.86)
+  easy   mix 1-6  vs mix 1-7 : 0.57 (0.50-0.67)
+  easy   mix 1-7  vs mix 1-8 : 0.29 (0.29-0.40)
+  easy   mix 1-8  vs mix 1-9 : 0.38 (0.25-0.43)
+  easy   mix 1-9  vs mix 1-10: 0.29 (0.25-0.29)

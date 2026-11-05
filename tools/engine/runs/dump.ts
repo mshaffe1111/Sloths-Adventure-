@@ -27,6 +27,7 @@ for (const id of idsArg.split(',')) {
       proto: !!s.proto, rhythm: !!s.proto?.rhythm,
       mix: s.meta?.mix?.explain ?? null,
       trunks: (s.proto?.trunks ?? []).map((t: any) => ({ ...t })),
+      trees: (s.trees ?? []).map((t: any) => ({ x: Math.round(t.x), groundY: Math.round(t.groundY), topY: Math.round(t.topY), w: t.trunkWidth })),
       water: s.proto?.water ?? null, rivers: (s.rivers ?? []).length,
       platforms: s.platforms.map((p: any) => ({ id: p.id, x: Math.round(p.x), y: Math.round(p.y), w: Math.round(p.width), h: Math.round(p.height), type: p.type, style: p.style ?? null, deco: !!(p.decorative || p.isDecor || p.ghost), lily: !!(p.lily || p.lilyPad), soil: !!p.soil, creak: p.creak ?? null, pit: p.pit ?? null, catchL: !!p.catch, bare: !!p.bare, drift: !!p.drift, crumble: p.crumbleAfter ?? null, push: !!p.push, keys: Object.keys(p).filter((k) => !['id', 'x', 'y', 'width', 'height', 'type', 'style'].includes(k)).join('|') })),
       vines: (s.vines ?? []).map((q: any) => ({ x: Math.round(q.x), top: Math.round(q.topY), bot: Math.round(q.bottomY), type: q.vineType })),

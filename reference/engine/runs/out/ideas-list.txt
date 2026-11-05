@@ -1,0 +1,26 @@
+library.ts IDEAS: 23
+  floor walk: {"content":"jumps","element":"ground","needs":["run"],"teaches":"run","what":"low banks touching, small steps, no gap"}
+  bank hops: {"content":"jumps","element":"ground","needs":["jump"],"teaches":"jump","floor":true,"what":"hops between banks, stones and logs"}
+  stump hop: {"content":"jumps","element":"ground","needs":["jump"],"floor":true,"what":"hops over stones, banks and logs, bigger steps"}
+  bank walk: {"content":"jumps","element":"ground","needs":["run"],"what":"a rest: a long bank and a short hop"}
+  bounce mound: {"content":"bounces","element":"ground","needs":["bounce"],"teaches":"bounce","what":"a perched mushroom bounces him onto a mound"}
+  stump tops: {"content":"jumps","element":"ground","needs":["jump"],"what":"logs on stumps, a ground fork's high road"}
+  log jam: {"content":"jumps","element":"ground","needs":["jump"],"floor":true,"what":"logs at two heights on stumps"}
+  double gap: {"content":"jumps","element":"ground","needs":["double"],"teaches":"double","what":"gaps too wide for a single jump, a catch under each"}
+  lily-pad hop: {"content":"water","element":"water","needs":["jump"],"floor":true,"what":"lily pads and logs across the creek"}
+  reed isles: {"content":"water","element":"water","needs":["jump"],"what":"reed isles and lily pads"}
+  bounce up: {"content":"bounces","element":"tree","needs":["bounce"],"teaches":"bounce","what":"a mushroom up into the boughs"}
+  the climb: {"content":"climbing","element":"tree","needs":["climb"],"teaches":"climb","what":"a climbing vine up to a bough"}
+  bough stair: {"content":"climbing","element":"tree","needs":["jump"],"what":"boughs stepping up, a rope bridge at the top"}
+  bough hops: {"content":"jumps","element":"tree","needs":["jump"],"what":"hops between boughs and logs in the trees"}
+  double chain: {"content":"jumps","element":"tree","needs":["double"],"what":"rising double jumps bough to bough, catches below"}
+  top branch: {"content":"jumps","element":"tree","needs":["run"],"what":"one long high branch"}
+  bridge span: {"content":"jumps","element":"tree","needs":["jump","creaky"],"what":"rope bridges with creaky limbs between"}
+  snap teach: {"content":"breakable","element":"tree","needs":["jump"],"teaches":"creaky","what":"creaky twigs low over a long bank"}
+  snap dash: {"content":"breakable","element":"tree","needs":["creaky"],"what":"a run of creaky limbs and branches"}
+  creaky boughs: {"content":"breakable","element":"tree","needs":["creaky"],"what":"branches and creaky limbs"}
+  crumbling ledge: {"content":"breakable","element":"ground","needs":["jump"],"teaches":"crumble","what":"crumbling ledges and branches"}
+  rotten-branch drop: {"content":"breakable","element":"tree","needs":["creaky"],"what":"a drop down through a creaky limb to a catch"}
+  push block: {"content":"hazards","element":"ground","needs":["run"],"what":"a log to push (out of the mixer for now)"}
+PIECES: 10: bank, stone, log, mushroom, crumble, branch, creaky, bridge, lily, reed
+IDEA_KINDS: {"floor walk":["bank","log"],"bank hops":["bank","stone","log"],"stump hop":["stone","bank","log"],"bank walk":["bank","log"],"bounce mound":["bank","mushroom","log"],"stump tops":["log"],"log jam":["log"],"double gap":["bank","log"],"lily-pad hop":["lily","log"],"reed isles":["reed","lily"],"bounce up":["bank","mushroom","branch","bridge"],"the climb":["bank","branch"],"bough stair":["branch","log","bridge"],"bough hops":["branch","log"],"double chain":["bank","branch","log","bridge"],"top branch":["branch"],"bridge span":["bridge","creaky"],"snap teach":["bank","creaky"],"snap dash":["creaky","branch"],"creaky boughs":["branch","creaky"],"crumbling ledge":["crumble","branch"],"rotten-branch drop":["branch","creaky"],"push block":["log"]}
