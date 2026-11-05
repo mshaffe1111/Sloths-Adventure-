@@ -1331,3 +1331,16 @@ more, or the stage's theme.
 
 The planner builds these lines as gates over the all-world table. 1-1's proof uses only its own rows: teach run, jump, bounce and
 double.
+
+### [designer ruling, 11-05 ~10:40 AM ET] 1-5's crumbling ledges and lily pads under the element gate
+
+- **The crumbling ledge is ground.** Its art is World 7's carved stone slab (`crumbleArt.ts`), so its rule is option (b). In 1-5 it goes
+  on banks and the floor only. The breakables on the fork's high road and in the canopy become creaky limbs (tree, taught in 1-5's n2).
+  A stone slab standing in the air on a kapok trunk is the floating-piece fault (P-2), so no pillar art (a) or new wood art (c) is
+  bought to save it.
+- **1-5's lily pads:** with no drawn water they swap now to ground pieces (stones on a bank, stump hop), exactly as in 1-1. When the
+  engine draws the water zone, n8's creek gets its lily pads and reeds back on real water. That makes the water zone the first
+  engine-render item after the w1-new atlas, because Matt has already seen the floating pads.
+- **Both stay named breaches until fixed, and both fail the gate before Matt's next 1-5 build.** A named breach is not a pass.
+- These swaps change 1-5's regression fingerprints on purpose. The planner records them as such, and the variety lines and two-road
+  share are re-run on 16/16 rolls after the swap.
