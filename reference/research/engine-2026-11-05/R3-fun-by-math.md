@@ -181,7 +181,7 @@ Each entry: the formula, targets per setting, the source, how to measure it with
 * **Operational form (estimate).** Per 10 s window w: challenge c_w = Σ (1 − s_i) of the challenges in it; skill k_w = the bot's rolling
   success rate. z-score both against the stage's own mean. Flow share = share of windows with z(c) > 0 and z(k) > 0. A flat stage has
   no windows above its own average, so it cannot score flow however well tuned it is.
-* **Limits.** The source is self-report sampling of people's days, not games; Chen's thesis (2007) gives the zone only as a picture
+* **Limits.** The source is self-report sampling of people's days, not games; Chen's thesis (2006) gives the zone only as a picture
   and no numbers.
 
 ### F12. Rhythm regularity (Patel & Daniele 2003; Launchpad's rhythm types)
@@ -198,11 +198,12 @@ Each entry: the formula, targets per setting, the source, how to measure it with
 
 * **Arithmetic.** If bursts of n actions last T_b and are separated by rests T_r, the stage average is D = n / (T_b + T_r), and the mean
   interval inside a burst is T_b / (n − 1). The table's Normal row: 8-12 actions in 10-14 s, rests 1.0-1.2 s. Inside-burst interval =
-  0.91-1.86 s, typical 12 s / 9 = **1.33 s**, which is *longer than its own rest pad (1.0-1.2 s)*. Easy: 3-4 in 6-8 s gives 2.0-4.0 s
+  0.91-2.0 s, typical 12 s / 9 = **1.33 s**, which is *longer than its own rest pad (1.0-1.2 s)*. Easy: 3-4 in 6-8 s gives 2.0-4.0 s
   intervals against a 2.0-2.5 s rest. By its own definitions a Gemini burst is a row of rests. And 8 actions in 14 s with a 1.1 s
   rest averages 0.53/s, under its own Normal floor of 0.75/s.
 * **Fix (estimate).** Define a group boundary relative to the local beat: a gap is a rest when it is ≥ 2× the median interval of the
-  moves around it and ≥ 1.0 s (Normal) / 2.0 s (Easy). Then bursts and rests can both be measured.
+  moves around it and ≥ 1.0 s (Normal) / 2.0 s (Easy). Then bursts and rests can both be measured. Run on World 1 in §4.5: phrases of
+  5-12 moves appear, and so do 20 s+ stretches with no rest on 8 of 9 stages.
 
 ### F14. Game-feel numbers from primary code and notes
 
@@ -210,7 +211,7 @@ Each entry: the formula, targets per setting, the source, how to measure it with
 |---|---|---|---|
 | Coyote time | `JumpGraceTime = 0.1f` (100 ms, 6 frames at 60 Hz) | 0.133 s Normal, 0.167 s Easy (`src/game/physics.ts:41-42`) | Gemini's "5 frames = 83.3 ms" for Celeste (`GEMINI-PCG-RESEARCH.md:297`) does not match the code |
 | Variable jump | `VarJumpTime = .2f`, speed held at −105 while held | release caps rise speed at cutV 230 of 640 (36%) (`physics.ts:20`) | different mechanisms |
-| Apex hang | gravity × 0.5 while \|vy\| < 40 (`HalfGravThreshold`) and jump held | gravity × 0.72 while \|vy\| < 90 and held (`physics.ts:196`, `engine.ts:2268`) | simulated: Celeste half gravity for about 27% of airtime (estimate from the constants); ours 0.117 s of 0.650 s = 18% (measured in a step simulation, §4.5) |
+| Apex hang | gravity × 0.5 while \|vy\| < 40 (`HalfGravThreshold`) and jump held | gravity × 0.72 while \|vy\| < 90 and held (`physics.ts:196`, `engine.ts:2268`) | step simulation of the constants (§4.6): Celeste 0.177 s of 0.662 s = 27% of airtime at half gravity; ours 0.117 s of 0.650 s = 18% at 0.72 |
 | Jump arc | rise 28.5 px = 2.59 bodies (11 px hitbox), air 0.68 s (simulated) | rise 103 px = 2.15 bodies (48 px), air 0.65 s (simulated) | horizontal/vertical reach 2.16 Celeste, 1.80 ours |
 | Buffers elsewhere | Mario 1-2 frames, Braid 0.23 s; Disc Room arms killing hitboxes only after up to 50 ms (Pichlmair & Johansen survey) | buffer 0.133 / 0.2 s | Celeste's own buffer is in Input.cs, which I did not open: not verified |
 
@@ -235,10 +236,11 @@ rises 2.15 bodies and carries 3.9 bodies (185 px) at full run.
 ### F16. Difficulty curves from win/loss data (Sarkar & Cooper, Glicko-2)
 
 * **Method.** Treat each attempt as a match between player and level; play the history back through Glicko-2 (start 1500); bin by
-  rating (50-point bins); fit a logistic loss curve f(x) = 1 / (1 + e^(α(x − β))) with α ≈ 0.006, β = 1850 "so that players with a starting
-  rating of x = 1500 have a low 10% chance of losing" (check: 1/(1 + e^2.1) = 0.109). Survivorship fix: "phantom matches" for every pair
+  rating (50-point bins); fit a logistic curve of the loss rate served to a player of rating x, f(x) = 1 / (1 + e^(−α(x − β))), with
+  α ≈ 0.006, β = 1850 "so that players with a starting rating of x = 1500 have a low 10% chance of losing" (check: 1/(1 + e^2.1) = 0.109;
+  it reaches 50% at 1850). Survivorship fix: "phantom matches" for every pair
   that never happened, won by the player only if they out-rate the weakest player who beat that level. Without them hard levels look
-  easy (Paradox: σ −0.46 without, 0.73 with; measured, their Table I). They fit a platformer (Iowa James, 14 levels) too.
+  easy (Paradox's fitted curve scale σ: −0.46 without, 0.73 with, against a true 1.0; measured, their Table I). They fit a platformer (Iowa James, 14 levels) too.
 * **Use (estimate).** Rate every stage against our bot tiers (σ = 36, 50, 61, 80 ms thumbs) and later QA attempts; a world's band is
   the spread of its stage ratings. This is the number STAGE-RULES §1b's bands want.
 
@@ -267,14 +269,15 @@ but not the tempo. This is on the quick route's clock; a real first-timer is slo
 quick, measured), so the true density is lower still. Whether that is bad is open: Lomas (F2) found easier games more engaging; Swink
 calls spacing that is too wide "thoughtless boredom". But the documents claim one band and the stages are in another.
 
-**W3. Double jumps are labelled as single jumps.** `toSteps` re-labels a beat only when it is Q (`core.ts:128`); a beat the inspector
-calls "jump over a gap" stays J even when the gap needs the second jump. By the validator's own single-jump rule
+**W3. Double jumps are labelled as single jumps.** The route has no double-jump kind (`tools/inspect/route.ts:23`), so every jump link
+becomes J "jump over a gap" or "big jump up" (`tools/inspect/beats.ts:115`); `toSteps` re-labels a beat only when it is Q
+(`core.ts:128`), so a J stays J even when the gap needs the second jump. By the validator's own single-jump rule
 (`gap ≤ 0.97·reach − TAKEOFF_SLACK`, `core.ts:118`), measured J steps that need the double: 1-1 **14 of 15**, 1-6 **27 of 34**, 1-7 9 of
 10, 1-8 14 of 23 (Normal, §4.1). The inspector's physics check (`jumps[].dblNeeded`) says only 2 of 1-6's 58 jumps need it. The two
 tools disagree on what a double jump is, and the move string the similarity and "nothing new" rules read (`core.ts:254-266`) treats J
 and U as different moves. One rule is needed, then U counted.
 
-**W4. Per-jump survival floors are not a stage bound.** STAGE-RULES §1b and §2 "Hotspots" (lines 148, 184) floor each jump at 70%
+**W4. Per-jump survival floors are not a stage bound.** STAGE-RULES §1b (line 148) and §2 "Hotspots" (line 184) floor each jump at 70%
 (Normal adult) / 85% (Easy kid). Compounded (F1): 1-2 Normal has **32** jumps whose miss costs a life (measured, missCost). At the 70%
 floor that is E[lives] = 32 × 0.3 = **9.6 lives** and P(clean) = 0.7^32 ≈ **1e-5** (arithmetic). A floor finds hotspots; it does not
 bound difficulty. The measured bot rates are far above the floor (1-2 Normal E[costly misses] 0.00), so this is a missing gate, not a
@@ -287,8 +290,8 @@ frustration. And on 1-6 the Easy kid has **3 game overs per run** and spends 23-
 
 **W6. The adult bot's thumb is steadier than any measured human.** `FT_ADULT.thumb = [0.03, 0.03]` and `hold = [0.2, 0.035]`
 (`tools/inspect/firsttimer.ts:119-120`); the inspector's adult bot uses reactSd 0.03 (`report.json` `bots.adult`). Isaksen measured σ_p =
-**35.9 ms at the slowest target and 61.1 ms at the fastest** (desktop, 20 players), and showed precision worsens with speed. A 30 ms phone
-thumb is better than the best desktop condition. The kid's 65 ms equals Isaksen's fast-target adult. Suggest adult σ = 45 ms, rising
+**35.9 ms at the slowest target and 61.1 ms at the fastest** (a tap-on-time test in a web browser, 20 players), and showed precision
+worsens with speed. A 30 ms phone thumb is steadier than their best condition. The kid's 65 ms equals Isaksen's fast-target adult. Suggest adult σ = 45 ms, rising
 with hazard speed (estimate).
 
 **W7. The Gemini notes misstate two of Smith's metrics.** Leniency in `GEMINI-PCG-RESEARCH.md:264` runs from −1 to 1 with "Moving
@@ -313,12 +316,24 @@ an early commit. It is smaller than Celeste's (F14), so R-156 is "make it bigger
 ~0.78; `evaluate.ts:36` and `core.ts:277` gate at 0.45 / 0.55. Measured (§4.2): neighbours' terrain 3-gram cosine (letter + way) is
 **0.00-0.10** for every World 1 pair, and NCD 0.64-0.85 sits at the shuffle baseline (0.62). By move order every stage is unrelated to
 its neighbour, yet Matt's D26 complaint is "everything feels the same". The sameness Matt feels is not in the move order; it is in tempo
-(W2: one tempo everywhere), leniency and the look. A variety gate that can only fall to zero cannot see it.
+(W2: one tempo everywhere), leniency and the look. The known list says the same (measured, `tools/validate/funknown.json`): "like the
+stage before" is flagged on 1 layout of 1-7 only, while "one tempo" is flagged on all 16 layouts of all 9 stages in both settings, and
+"looks like" on 1-6, 1-7 and 1-9. A move-order gate that sits at zero cannot see the sameness; the tempo and look gates already do.
 
 **W12. Two World 1 stages barely change between rolls.** (Measured, 16 layouts, §4.2.) 1-1 has **2** distinct terrain move strings
 (mean NCD 0.12 between rolls); 1-4 has **7** (0.22); the goal route adds pickups (1-1 goal route: 9 distinct, 0.38). Both are rebuilt on
 the music's beat, so this may be by design (a fixed composition). If so, say so in STAGE-RULES §2 "Variety across rolls" (target 0.35)
 as a named exception, like 4-3 and 4-7.
+
+**W13. The two bots disagree about which stage is hard, and no check combines them.** The noisy jump bots rate 1-6 among the easiest
+(Normal E[any miss] 0.05, §4.3); the first-timer bot finds it the hardest by far (2.7 lives a minute, 3 game overs a run, 23-29% of the
+stage stuck, §4.4); for 1-1 Easy it is the other way round (jump bots 3.81 expected misses, first-timer 0 lives lost). The jump bots
+judge each jump given the right route; the first-timer judges finding the route. A difficulty number needs both (bands.ts already
+weighs both, `tools/inspect/bands.ts:43-51`, but funcheck uses neither).
+
+**W14. "Groups of 5-20 s, then a rest" is never measured as written.** With a boundary that can see phrases (§4.5), 8 of 9 World 1
+stages hold a phrase over 20 s with no rest on Normal. The fixed 1.0 s pad (W1) splits those phrases into single moves, so the
+validator's `GROUP_MAX = 20` check (`core.ts:292`, applied at `core.ts:364`) cannot fire on Normal.
 
 ---
 
@@ -326,7 +341,7 @@ as a named exception, like 4-3 and 4-7.
 
 All runs from the repo root, against the real engine (`build()` in `tools/validate/core.ts:87`, D19). Scripts:
 `/tmp/claude-0/-home-user-Sloths-Adventure-/de391798-4931-5f52-9808-d419b5307ca4/scratchpad/r3/funmath.ts`, `rhythm.ts`, `ioi.ts`,
-`rolls.ts`, `jumps1.ts`. Raw outputs beside them (`funmath16.out`, `funcheck.out`, `insp.json`, `ft.json`).
+`rolls.ts`, `relgroups.ts`, `jumps1.ts`. Raw outputs beside them (`funmath16.out`, `funcheck.out`, `insp.json`, `ft.json`).
 
 ### 4.0 The fun gate as it stood
 
@@ -415,7 +430,7 @@ stage  moves  IOI p10   p50   p90   share<1.0s  share<0.5s  biggestGroup(moves, 
 1-9     34    1.17   3.03   6.59    0.00        0.00            2,   1.2            yes
 ```
 
-nPVI of the intervals inside groups (F12), Normal: 1-1 0, 1-2 8, 1-4 16, 1-5 18, 1-6 42, 1-8 56 (1-3, 1-7, 1-9 have no group of two);
+nPVI of the intervals inside groups (F12), Normal: 1-1 0, 1-2 8, 1-4 16, 1-5 18, 1-6 42, 1-8 56 (1-3, 1-7, 1-9 have too few in-group intervals);
 Easy: 1-1 29, 1-2 47, 1-3 11, 1-4 49, 1-5 46, 1-6 36, 1-7 16, 1-8 61, 1-9 17. Profile roughness (F5b, mean |residual| in jump heights):
 1-4 9.9 (the tall climb), 1-2 1.2, 1-6 0.9, others 0.2-0.8. Boa kick-rolls (F10): 1-5 5, 1-9 9 on Normal; none elsewhere.
 
@@ -436,16 +451,35 @@ stage  terrain(quick) strings: distinct of 16, mean NCD between rolls   |  goal-
 1-5    16  0.69   |  16  0.69
 ```
 
-### 4.3 The inspector's noisy bots, compounded (F1) (`inspect.ts --worlds 1 --stages 1-1,1-2,1-6`, 200 trials per jump)
+### 4.3 The inspector's noisy bots, compounded (F1) (`npx tsx tools/inspect/inspect.ts --worlds 1 --json …`, 200 trials per jump)
+
+"Costly" = the jump's miss is a fall (not a free retry); E sums 1 − rate; P multiplies the rates of the costly jumps.
 
 ```
-1-1 normal jumps 82 min rate 0.755  E[costly misses]=0.27 P(no costly miss)=0.753
-1-1 easy   jumps 78 min rate 0.06   E[costly misses]=0.45 P(no costly miss)=0.612
-1-2 normal jumps 72 min rate 0.96   E[costly misses]=0.00 P(no costly miss)=1.000
-1-2 easy   jumps 76 min rate 0.88   E[costly misses]=0.22 P(no costly miss)=0.803
-1-6 normal jumps 58 min rate 0.985  E[costly misses]=0.00 P(no costly miss)=1.000
-1-6 easy   jumps 58 min rate 0.89   E[costly misses]=0.04 P(no costly miss)=0.961
+stage set     jumps  minRate  E[any miss]  E[costly miss]  P(no costly miss)  jumps<0.85  jumps<0.70
+1-1  normal    76   0.755       0.57          0.27           0.753             1          0
+1-1  easy      74   0.060       3.81          0.45           0.612             6          4
+1-2  normal    72   0.960       0.08          0.00           1.000             0          0
+1-2  easy      76   0.880       0.44          0.22           0.803             0          0
+1-3  normal    50   0.965       0.04          0.00           1.000             0          0
+1-3  easy      50   0.860       0.28          0.00           1.000             0          0
+1-4  normal    25   1.000       0.00          0.00           1.000             0          0
+1-4  easy      25   0.975       0.08          0.01           0.990             0          0
+1-5  normal   115   1.000       0.00          0.00           1.000             0          0
+1-5  easy     115   0.975       0.06          0.02           0.985             0          0
+1-6  normal    58   0.985       0.05          0.00           1.000             0          0
+1-6  easy      58   0.890       0.55          0.04           0.961             0          0
+1-7  normal    73   1.000       0.00          0.00           1.000             0          0
+1-7  easy      73   0.965       0.19          0.00           1.000             0          0
+1-8  normal    29   1.000       0.00          0.00           1.000             0          0
+1-8  easy      28   0.975       0.05          0.05           0.956             0          0
+1-9  normal    33   0.975       0.10          0.00           1.000             0          0
+1-9  easy      33   0.920       0.46          0.00           1.000             0          0
 ```
+
+The stage that teaches the game, 1-1, is World 1's hardest jumping for the Easy kid by a factor of 7 in expected misses (3.81 against
+≤ 0.55 elsewhere), with 4 jumps under the 70% line and 6 under the kid's own 85% floor. This is with the early-stage help on: the jump
+bots apply `ASSIST` at full strength on Easy ("Easy keeps assist at 1 the whole game", `tools/inspect/jumps.ts:6-10`, `:118-120`).
 
 The hardest jumps' failure reasons (bot's own words): 1-1 Normal x 15331 rate 0.755: "overshot the landing" 46, "flick came out short" 3;
 1-1 Easy x 29277 rate 0.06: "overshot the landing" 154, "ran off the ledge before the jump registered" 20, "flick came out short" 14.
@@ -472,7 +506,31 @@ stage set    who   time(s) quick(s) stuck-s stuck/time loops loop-deaths softFal
 
 1-6 is the outlier on every measure that predicts frustration (F9) and on the timing model (W_min 166 ms, 4.1): the measures agree.
 
-### 4.5 Jump arcs (step simulation of the published constants, 1/60 s steps)
+### 4.5 F13's fix run on World 1: a relative group boundary (`relgroups.ts`)
+
+A gap is a rest when it is ≥ 2× the median of the 3 intervals each side and ≥ 1.0 s (Normal) / 2.0 s (Easy).
+
+```
+=== normal, layout 1: fixed pad (core.ts groupsOf) vs relative boundary
+stage  fixed: groups, median moves   relative: groups, median moves, median secs, max moves (secs), share of moves in groups of 4+
+1-1      56, 1                           7, 7, 9.1 s, 18 (44.5 s), 0.97
+1-2      67, 1                           8, 5, 10.6 s, 38 (80.0 s), 0.99
+1-3      68, 1                           7, 9, 17.1 s, 20 (53.9 s), 0.94
+1-4      40, 1                           9, 5, 3.9 s, 21 (58.9 s), 0.93
+1-5     103, 1                          18, 10, 12.1 s, 28 (39.2 s), 0.99
+1-6      64, 1                           7, 12, 23.7 s, 25 (60.6 s), 0.97
+1-7      59, 1                          14, 5, 9.4 s, 9 (19.3 s), 0.81
+1-8      76, 1                           8, 18, 18.0 s, 26 (26.4 s), 0.98
+1-9      46, 1                           2, 32, 89.7 s, 32 (89.7 s), 1.00
+```
+
+With a relative boundary the stages do fall into phrases (median 5-12 moves, 4-24 s, inside Launchpad's 5-20 s), and the check that
+matters appears: 8 of 9 stages have a phrase over 20 s with no rest (1-9 is two phrases, one of them 90 s). That is STAGE-RULES §0b.1
+("groups of 5-20 s, a rest between") failing, which the fixed 1.0 s pad cannot see. Limit: the ratio is a choice. At 1.5× the median
+phrase is 3-5 moves and 7 of 8 stages still have one over 20 s; at 2.5× phrases merge (1-8 becomes one 130 s phrase). Calibrate it on
+the stages Matt ranks as best paced (F15).
+
+### 4.6 Jump arcs (step simulation of the published constants, 1/60 s steps)
 
 ```
 Celeste full jump: rise 28.5 px (Madeline hitbox 11 px tall: 2.59 bodies), air 0.683 s, run 90 px/s -> 62 px (+HBoost 40)
@@ -488,7 +546,8 @@ ratio horizontal/vertical: Celeste 2.16, Pokey 1.80
 
 Checked by searching `reference/research/`, the ledgers, `STAGE-RULES.md` and both Gemini files for each name and key term (Isaksen,
 survival, hazard sum, Wilson, 85%, Lomas, churn, persistence, Glicko, phantom, Pedersen, frustration, nPVI, Kullback, pairwise
-ranking, MAP-Elites, elasticity): none of these appears as a method, except "pairwise" in an unrelated sense (enemy adjacency).
+ranking, MAP-Elites, elasticity): none of these appears as a method. "Pairwise" appears only for enemy adjacency, "85%" only for
+petal yields and the kid bot's per-jump floor, and "survival" only as that floor.
 
 1. **A stage survival budget instead of only per-jump floors** (F1, W4): E[lives] = Σ (1 − s_i) from the bots we already run, with a
    world-by-world ramp. This is the missing number for STAGE-RULES §1b's bands.
@@ -498,8 +557,8 @@ ranking, MAP-Elites, elasticity): none of these appears as a method, except "pai
    low-persistence group that would quit. It turns "is this too hard?" into "who leaves here?".
 4. **Rate stages like chess players** (F16, Glicko-2 with phantom matches): bot tiers and later QA attempts as matches; a stage's rating
    is its difficulty, a world's spread is its band, and the survivorship fix stops hard late stages from looking easy.
-5. **A frustration meter from standing still** (F9): stuck share from the first-timer bot, gated per setting. It already flags 1-6
-   (0.23-0.29) and the kid's 6% jump on 1-1.
+5. **A frustration meter from standing still** (F9): stuck share from the first-timer bot, gated per setting. On today's numbers it
+   flags 1-6 (0.23-0.29, both settings) and 1-2 Easy (0.10-0.14).
 6. **Flow as "above the stage's own average"** (F11): windows where challenge and the bot's success are both above the stage's mean.
    A perfectly even stage scores zero by construction, which is the D26 complaint in a formula.
 7. **A novelty band, not a cap** (F7, Shu et al.): segment-to-segment divergence held inside [L, U] measured on Matt's favourite
@@ -518,56 +577,62 @@ ranking, MAP-Elites, elasticity): none of these appears as a method, except "pai
 
 ## 6. Sources actually opened (25)
 
-Read end to end unless marked.
+What I read of each is marked: **full** (every section), **parts** (the sections named), **abstract only**.
 
-1. Smith, Cha? no: Smith, G. & Whitehead, J. et al., "Launchpad: A Rhythm-Based Level Generator for 2-D Platformers", IEEE TCIAIG 2011 —
-   https://users.soe.ucsc.edu/~ejw/papers/Smith-Launchpad-TCIAIG-2011.pdf
-2. Smith, G., "Expressive Design Tools: Procedural Content Generation for Game Designers", PhD dissertation, UCSC 2012 (read the
-   Launchpad, metrics and Endless Web chapters, §2-§7; the full 431k characters searched) —
+1. Smith, Whitehead, Mateas, Treanor, March & Cha, "Launchpad: A Rhythm-Based Level Generator for 2-D Platformers", IEEE TCIAIG 2011 —
+   https://users.soe.ucsc.edu/~ejw/papers/Smith-Launchpad-TCIAIG-2011.pdf (**parts**: §III-V, rhythm generation, critics, metrics, expressive range)
+2. Smith, G., "Expressive Design Tools: Procedural Content Generation for Game Designers", PhD dissertation, UCSC 2012 (**parts**: the
+   Launchpad parameter table, linearity, leniency, rhythm-group distance and Endless Web sections; the rest searched) —
    https://users.soe.ucsc.edu/~ejw/dissertations/Gillian-Smith-dissertation.pdf
 3. Horn, Dahlskog, Shaker, Smith & Togelius, "A Comparative Evaluation of Procedural Level Generators in the Mario AI Framework",
-   FDG 2014 — http://www.fdg2014.org/papers/fdg2014_paper_14.pdf
+   FDG 2014 — http://www.fdg2014.org/papers/fdg2014_paper_14.pdf (**parts**: §3-4, metrics and Table 1)
 4. Pedersen, Togelius & Yannakakis, "Modeling Player Experience in Super Mario Bros", CIG 2009 —
-   https://www.um.edu.mt/library/oar/bitstream/123456789/22955/1/Modeling_player_experience_in_Super_Mario_Bros.pdf
+   https://www.um.edu.mt/library/oar/bitstream/123456789/22955/1/Modeling_player_experience_in_Super_Mario_Bros.pdf (**full**)
    (record page https://www.um.edu.mt/library/oar/handle/123456789/22955; abstract page
    https://www.academia.edu/2425118/Modeling_player_experience_in_Super_Mario_Bros)
 5. Isaksen, Gopstein & Nealen, "Exploring Game Space Using Survival Analysis", FDG 2015 —
-   http://www.nealen.net/papers/exploring-game-space-FDG2015.pdf
+   http://www.nealen.net/papers/exploring-game-space-FDG2015.pdf (**full**)
 6. Wilson, Shenhav, Straccia & Cohen, "The Eighty Five Percent Rule for optimal learning", Nature Communications 2019 —
-   https://www.nature.com/articles/s41467-019-12552-4
+   https://www.nature.com/articles/s41467-019-12552-4 (**parts**: abstract, theory, results, discussion; methods skimmed)
 7. Roohi, Relas, Takatalo, Heiskanen & Hämäläinen, "Predicting Game Difficulty and Churn Without Players", CHI PLAY 2020 (Rovio) —
-   https://arxiv.org/abs/2008.12937 and https://arxiv.org/html/2008.12937v1
+   https://arxiv.org/abs/2008.12937 and https://arxiv.org/html/2008.12937v1 (**full**)
 8. Gudmundsson et al., "Human-Like Playtesting with Deep Learning", CIG 2018 (King) —
-   https://gwern.net/doc/reinforcement-learning/imitation-learning/2018-gudmundsson.pdf
-9. Kristensen, J. T., "Operationalising Difficulty in Puzzle Games", PhD thesis, ITU 2022 (Tactile Games; read ch. 2-3, searched the
-   rest) — https://researcher.itu.dk/ws/files/109068185/PhD_Thesis_Final_version_Jeppe_Kristensen.pdf
+   https://gwern.net/doc/reinforcement-learning/imitation-learning/2018-gudmundsson.pdf (**parts**: §IV prediction
+   models, binomial regression, results; its Table II numbers did not survive extraction)
+9. Kristensen, J. T., "Operationalising Difficulty in Puzzle Games", PhD thesis, ITU 2022 (Tactile Games; **parts**: §2.1 and
+   §3.1, the rest searched) — https://researcher.itu.dk/ws/files/109068185/PhD_Thesis_Final_version_Jeppe_Kristensen.pdf
 10. Sarkar & Cooper, "Inferring and Comparing Game Difficulty Curves using Player-vs-Level Match Data" —
-    https://pmc.ncbi.nlm.nih.gov/articles/PMC8336693/
+    https://pmc.ncbi.nlm.nih.gov/articles/PMC8336693/ (**full**)
 11. Lomas, Patel, Forlizzi & Koedinger, "Optimizing Challenge in an Educational Game Using Large-Scale Design Experiments", CHI 2013 —
-    https://pact.cs.cmu.edu/pubs/Lomas,%20Forlizzi%20&%20Koedinger%202013.pdf
-12. Chen, J., "Flow in Games", MFA thesis, USC 2006 — https://www.jenovachen.com/flowingames/Flow_in_games_final.pdf
+    https://pact.cs.cmu.edu/pubs/Lomas,%20Forlizzi%20&%20Koedinger%202013.pdf (**parts**: abstract,
+    background, method, results)
+12. Chen, J., "Flow in Games", MFA thesis, USC 2006 — https://www.jenovachen.com/flowingames/Flow_in_games_final.pdf (**full**)
 13. Nakamura & Csikszentmihalyi, "The Concept of Flow", Handbook of Positive Psychology 2002 —
-    https://nuovoeutile.it/wp-content/uploads/2015/12/2002-Flow.pdf
+    https://nuovoeutile.it/wp-content/uploads/2015/12/2002-Flow.pdf (**parts**: the flow model
+    and measurement sections)
 14. Swink, S., "Game Feel: The Secret Ingredient", Gamasutra 2007 —
-    https://www.gamedeveloper.com/design/game-feel-the-secret-ingredient
-15. Thorson, M., "Celeste & Forgiveness" — https://maddythorson.medium.com/celeste-forgiveness-31e4a40399f1
+    https://www.gamedeveloper.com/design/game-feel-the-secret-ingredient (**full**)
+15. Thorson, M., "Celeste & Forgiveness" — https://maddythorson.medium.com/celeste-forgiveness-31e4a40399f1 (**full**)
 16. Celeste player source (Thorson & Berry), Player.cs constants and gravity code —
-    https://raw.githubusercontent.com/NoelFB/Celeste/master/Source/Player/Player.cs
-17. Pichlmair & Johansen, "Designing Game Feel. A Survey" — https://arxiv.org/html/2011.09201v1
-18. Lucas & Volz, "Tile Pattern KL-Divergence for Analysing and Evolving Game Levels", GECCO 2019 — https://arxiv.org/pdf/1905.05077
+    https://raw.githubusercontent.com/NoelFB/Celeste/master/Source/Player/Player.cs (**parts**: the constants block and both
+    gravity / variable-jump code paths)
+17. Pichlmair & Johansen, "Designing Game Feel. A Survey" — https://arxiv.org/html/2011.09201v1 (**parts**: the
+    techniques catalogue, §III; searched for every timing number)
+18. Lucas & Volz, "Tile Pattern KL-Divergence for Analysing and Evolving Game Levels", GECCO 2019 — https://arxiv.org/pdf/1905.05077 (**parts**: §1-4)
 19. Shu, Liu & Yannakakis, "Experience-Driven PCG via Reinforcement Learning: A Super Mario Bros Study", CoG 2021 —
-    https://arxiv.org/abs/2106.15877 and https://arxiv.org/html/2106.15877v2
+    https://arxiv.org/abs/2106.15877 and https://arxiv.org/html/2106.15877v2 (**full**; its formula images did not survive
+    extraction, the definitions in the text did)
 20. Yannakakis & Martínez, "Ratings are Overrated!", Frontiers in ICT 2015 —
-    https://www.frontiersin.org/articles/10.3389/fict.2015.00013/full
+    https://www.frontiersin.org/articles/10.3389/fict.2015.00013/full (**full**)
 21. Yannakakis & Togelius, "Artificial Intelligence and Games", Part III lecture deck (Generate), 2025 —
-    https://gameaibook.org/wp-content/uploads/2025/08/III.Generate.pdf
+    https://gameaibook.org/wp-content/uploads/2025/08/III.Generate.pdf (**full**)
 22. Patel & Daniele, "An empirical comparison of rhythm in language and music", Cognition 2003 —
-    https://labs.la.utexas.edu/gilden/files/2016/04/Patel_Daniele_Cognition.pdf
-23. Lahti/Wen? no: "PaceMaker: A Practical Tool for Pacing Video Games", 2024 (useful only for its definition of pacing; its intensity
-    formula did not survive extraction) — https://arxiv.org/html/2408.15001v2
+    https://labs.la.utexas.edu/gilden/files/2016/04/Patel_Daniele_Cognition.pdf (**full**)
+23. "PaceMaker: A Practical Tool for Pacing Video Games", arXiv 2408.15001, 2024 (**full**; useful only for its definition of
+    pacing, its intensity formula did not survive extraction) — https://arxiv.org/html/2408.15001v2
 24. Linehan, Bellord, Kirman, Morford & Roche, "Learning Curves: Analysing Pace and Challenge in Four Successful Puzzle Games", CHI PLAY
-    2014 — **abstract and key-findings page only** (the full text would not load): https://www.academia.edu/22122271/Learning_curves
-25. Yannakakis & Togelius, "Experience-Driven Procedural Content Generation", IEEE TAC 2011 — **summary page only**:
+    2014 — **abstract only** (the full text would not load): https://www.academia.edu/22122271/Learning_curves
+25. Yannakakis & Togelius, "Experience-Driven Procedural Content Generation", IEEE TAC 2011 — **abstract only**:
     https://www.academia.edu/2425131/Experience_Driven_Procedural_Content_Generation
 
 Tried and blocked (not counted): the ACM PDFs of Smith & Whitehead 2010 and Hunicke 2005 (bot-blocked), diva-portal (King's "Crushing

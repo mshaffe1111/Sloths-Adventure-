@@ -67,7 +67,7 @@ Ranked by how much each changes "80% right by construction" and "every stage fee
 5. **A mechanic must be required, not just present.** Nelson & Smith (PCG book ch. 8.6) generate levels where a property is
    "unavoidable across all alternative solutions"; Green et al. 2018 accept a scene only if "a perfect agent ... wins a level while an
    agent that cannot perform one mechanic loses". We already lost a teach this way: "A catch under the gap made the jump optional: the
-   quick route walked off onto it and stepped up" (w1Rhythm.ts:563-564). A "limited-agent" gate (the bot with the mechanic switched
+   quick route walked off onto it and stepped up" (w1Rhythm.ts:562-563). A "limited-agent" gate (the bot with the mechanic switched
    off must fail the teach node; the full bot must pass) is cheap with our bots and is not in any of our research (section 5).
 
 6. **Difficulty and pacing are curves you build to, with a real arc, not a constant or a sawtooth.** Sorenson & Pasquier: a flow
@@ -75,7 +75,7 @@ Ranked by how much each changes "80% right by construction" and "every stage fee
    appearance is much more regular than what is observed in the Super Mario Bros. levels" with no peak near the end (§3.4-3.5). Their
    anxiety model is one line: da/dt = c(t) - c_decay. Compton & Mateas measure a jump's difficulty as the "spatial window the avatar can
    start from" and the "temporal window" to correct in mid-air; our tracer already computes both (Landing.shortX/longX/lateX,
-   beatTrace.ts:84-110) and throws them away as a pass/fail.
+   beatTrace.ts:88-107) and throws them away as a pass/fail.
 
 7. **Mixed-initiative beats batch generation for a small team.** Tanagra exists because "Making a change to a small section of a level,
    such as moving a single platform, can have a wide impact and require much of the rest of the level to be modified" (§1), exactly our
@@ -126,7 +126,7 @@ movement significantly changes." Coins can split groups: the boundary is where "
 portals model branching.
 
 **Fit.** Already in our rules (STAGE-RULES 43; ledgers). What is not: the **cadence** as a designed thing (a change of rhythm, not only a
-flat rest). Our nodes all end on the same flat 200 px apron (beatTrace.ts:146, APRON), a single cadence type.
+flat rest). Our nodes all end on the same flat 200 px apron (beatTrace.ts:150, APRON), a single cadence type.
 
 ### 3.3 Smith, Treanor, Whitehead, Mateas 2009, "Rhythm-Based Level Generation for 2D Platformers" (FDG)
 
@@ -147,9 +147,9 @@ eliminate undesirable levels generally results in eliminating some number of des
 platforms randomly along a line gave levels that were "playable, but they were visually unappealing and not much fun" (§8.1), and
 critic values show "a distinct peak far from the lowest value", so most of the 1,000 are thrown away.
 
-**Fit.** Our beatTrace is this paper's rhythm tier done with real physics and a clumsy thumb (beatTrace.ts:1-37, 326-338): stronger on
+**Fit.** Our beatTrace is this paper's rhythm tier done with real physics and a clumsy thumb (beatTrace.ts:1-37, 330-342): stronger on
 playability than the paper. Its geometry tier is where we are thin (lesson 1). Note its "waiting" verb: geometry for a *wait* (stomper,
-moving platform). Our bars have only take-offs and running ('.'), no wait verb (beatTrace.ts:184-208), so a beat that asks Pokey to
+moving platform). Our bars have only take-offs and running ('.'), no wait verb (beatTrace.ts:200-224), so a beat that asks Pokey to
 *stop* (a snake passing, a falling twig) cannot be written.
 
 ### 3.4 Launchpad: Smith, Whitehead, Mateas, Treanor, March, Cha 2011 (IEEE TCIAIG 3(1))
@@ -178,7 +178,7 @@ with "an insertion and deletion cost of 2 and customized substitution costs", cl
 
 **Cost.** Low to build; the evaluation tooling is the larger part. **Fit.** Very high. We should copy its *instrumentation* habit (it
 found three biases its authors did not intend) and its kind grammar. Our tracer shows the same rhythm-filters-geometry effect: on fast
-bars only hops fit (w1Rhythm.ts:210-212: jump only if `room > 0.6`), so dense swung bars become hop staircases, the same failure.
+bars only hops fit (w1Rhythm.ts:204: jump only if `room > 0.6`), so dense swung bars become hop staircases, the same failure.
 
 ### 3.5 Tanagra: Smith, Whitehead, Mateas, FDG 2010 (the long paper, not the 2-page demo in our repo)
 
@@ -285,6 +285,13 @@ distance** ("if two strings are similar, you save more space when compressing th
 another kind of platform game in mind"; "for lenience, linearity and density ... all generators are bad at providing variance in those
 three dimensions".
 
+**Which two metrics? Withington & Tokarchuk 2023, "The Right Variety" (FDG).** No one justified Smith's pair: "research using ERA either
+repurposes metric pairings from prior work, often Smith et als original paper, or a large number of ERA plots is produced for all metric
+pairs." They rank 153 pairs on three criteria (fit levels spread evenly; the two metrics uncorrelated; little diversity left out) and
+find "15 out of the 20 high scoring pairs" mix one structural metric with one agent-extracted metric (e.g. Density x AverageY, Density
+x JumpCount) [measured by the authors on Mario AI levels]. They also name the gap our experiment fills: "there has been little prior work
+which aims to understand or quantify the possibility spaces which encompass generative spaces".
+
 **Fit.** We already have a 200-roll ERA tool with linearity, leniency and action 3-gram likeness (tools/inspect/era.ts:1-18,
 eraRoll.ts:202-220) and a weighted edit distance (tools/inspect/analyze.ts:131-163). What is missing is measuring the *kind* string and
 comparing across stages of a world (section 5, idea 4).
@@ -328,7 +335,7 @@ both a level and a playthrough". A 8x12 platformer ("plat") with jump-state tile
 **Failure, in their words.** "Scalability to larger problems may require future work"; "Some of the applications (e.g. plat and vvv) had
 relatively low variety"; "the solver would often prefer to generate levels with very short, simple solutions"; "It might be promising to
 explore constraint-based approaches to level generation with more continuous physics." **Fit.** Our tracer already yields level +
-playthrough (Trace.safe, beatTrace.ts:118-121), with real physics. The warning to keep: solvers drift to the simplest solution unless a
+playthrough (Trace.safe, beatTrace.ts:129), with real physics. The warning to keep: solvers drift to the simplest solution unless a
 constraint demands otherwise (lesson 5).
 
 ### 3.14 Repair instead of regenerate: Cooper & Sarkar 2020 (AIIDE workshop)
@@ -336,7 +343,7 @@ constraint demands otherwise (lesson 5).
 **How.** A pathfinder that may make "impossible" moves at a high cost, then edits the level so the path becomes real. **Results
 [measured by the authors, 1,000 levels each]:** SMB trigram 995 playable without repair, 5 repaired; Kid Icarus bigram 6 playable, 893
 repaired, 101 not; repair agent up to about 4x the default agent's time (150 ms -> 612 ms). **Fit.** gen2 already "fixes just that spot"
-(DESIGN.md Part A). For beat nodes the tracer's error already names the step and the reason (beatTrace.ts:380-466): a repair step that
+(DESIGN.md Part A). For beat nodes the tracer's error already names the step and the reason (beatTrace.ts:384-471): a repair step that
 changes only that step is cheaper than `fitSteps`' full reroll.
 
 ### 3.15 Grammar/graph missions: Dormans (PCG book ch. 5, Togelius, Shaker & Dormans)
@@ -369,6 +376,21 @@ defines a partition or niche." **Fit.** Medium, as a *selection* rule, not a sea
 (DESIGN.md Part A) could become "keep the best roll in each cell of a grid of behaviour features" (e.g. kind mix x height range), which
 guarantees coverage instead of hoping distance-based picking finds it.
 
+### 3.18b Generate *for* the empty cell: Bazzaz & Cooper 2025, "Level Generation with Constrained Expressive Range" (FDG)
+
+**How.** Treat the expressive-range grid itself as the target: "a prioritized random selection to explore underrepresented cells ...
+cells containing fewer than 10 levels"; for the chosen cell, a constraint generator (Sturgeon) is told the cell's metric values as tile
+count constraints; "If an attempt to generate a level in a cell fails ... it is added to a blocklist." "Instead of generating levels and
+hoping they cover a wide expressive range, we systematically explore the space to ensure full coverage."
+
+**Results [measured by the authors, 12 h per template].** The most constrained pattern template solved 177 of 200 attempts at 150 s
+average solve; the loosest 313 of 315 at 0.98 s. "random generation for each pattern template tends to cover entirely different areas of
+the expressive range"; the loose template "struggles to produce levels that are both playable and interesting without guidance". Their
+own limit: metrics "like linearity, which go beyond counting tiles and are harder to define as a satisfaction problem".
+
+**Fit.** High as a *process* for us: once a world has a kind grid (section 5, idea 1), the engine should be asked for the missing cells
+directly (with a time box and a blocklist that tells the art/piece list what is impossible), not rolled until coverage appears.
+
 ### 3.18 Music-driven levels: Vanparijs 2022 (Maastricht MSc, The Impossible Game)
 
 **How.** librosa beat tracking -> an action per beat (JUMP / NO JUMP) with a random direction -> a BNF grammar of 13 pieces -> a GA with
@@ -376,7 +398,7 @@ critics (line-to-pitch, spike ratio by genre, emptiness, jump ratio, height vari
 respondents].** "the levels were too difficult for the users, as the completion rate was very low"; "the emptiness critic resulted in the
 highest correlation to the user ratings"; "the proposed line critic had the strongest negative correlation with user ratings";
 monotony when every beat is a jump (lesson 8). **Fit.** The closest published system to our "beat is the music's beat" rule
-(beatTrace.ts:600-626). Evidence that following the music too literally costs fun; the rhythm should *select* from the music's grid,
+(beatTrace.ts:636-660). Evidence that following the music too literally costs fun; the rhythm should *select* from the music's grid,
 not fill it.
 
 ---
@@ -390,13 +412,13 @@ in that space (Launchpad's 14 jump kinds vs ours)?
 
 **Method.** Scripts in my scratchpad (not in the repo): `/tmp/claude-0/-home-user-Sloths-Adventure-/de391798-4931-5f52-9808-d419b5307ca4/scratchpad/exp/geomspace.ts`
 and `.../exp/geomsample2.ts`. They import the real `traceNode`, `easyNode`, `checkTrace`, `flight` (beatTrace.ts), `fitSteps`, `rhythmLayout`,
-`FACE_MARGIN` (w1Rhythm.ts) and build 1-2 roll 1 at its real BPM (128.2, from `stageBpm`, beatTrace.ts:607). For a node, I take its real
+`FACE_MARGIN` (w1Rhythm.ts) and build 1-2 roll 1 at its real BPM (128.2, from `stageBpm`, beatTrace.ts:641). For a node, I take its real
 bars from the layout and the palette that layout uses (PAL_A copied from w1Rhythm.ts:478; PAL_C from w1Rhythm.ts:707, with the union of
 its three rolled surface lists). The candidate steps at each mark are exactly the deterministic part of `fitSteps` (w1Rhythm.ts:166-214:
 the `fits` air-time and band rule, jump-or-hop by `room`, the stump/bank remaps). A step sequence is **valid** when it passes what
 `fitSteps` demands: Normal trace, Easy trace, and `checkTrace` on both (w1Rhythm.ts:217-221).
 - Small spaces: exhaustive depth-first search with prefix pruning (a prefix that fails `traceNode` fails every completion, because
-  traceNode processes steps left to right and throws at the first bad one, beatTrace.ts:368-470).
+  traceNode processes steps left to right and throws at the first bad one, beatTrace.ts:358-471).
 - Large spaces: count the space exactly (memoised by mark and height), then draw sequences *uniformly* from it and test them.
 - `fitSteps` with `tries = 1` on 400-1,000 seeds gives its per-try acceptance and its rejection reasons.
 - "Shape" = per step (move, up/flat/down, surface): the categorical geometry, the thing a player perceives as a different jump.
@@ -471,7 +493,7 @@ node 12: DFS prefix check = Normal trace: found ... in 13/20 runs; median 11, ma
 1. **Launchpad's claim holds for us, in the extreme: one 9-take-off rhythm admits about 3.0 million valid geometries [measured,
    ±0.7 pts].** The rhythm tier is not short of options.
 2. **On canopy nodes the tracer rejects nothing that `fitSteps` can draw (100%, 100%, 97.9%) [measured].** The only rejection on the
-   intro was GAP_REPEAT (beatTrace.ts:167-169, 464-468), a variety rule. So the design space there is set entirely by the palette's
+   intro was GAP_REPEAT (beatTrace.ts:171-172, 464-471), a variety rule. So the design space there is set entirely by the palette's
    heights and band, not by physics: "80% right by construction" is already true for these nodes, and the bottleneck for quality is
    what the palette offers.
 3. **The space is huge in pixels and tiny in kinds.** Per-step vocabulary: `jb` (jump onto a branch) on the intro; `jb, hb` on the two
@@ -485,7 +507,7 @@ node 12: DFS prefix check = Normal trace: found ... in 13/20 runs; median 11, ma
    fit *now* (w1Rhythm.ts:206-211), so sequences through narrow parts of the band are over-drawn. Harmless for playability; it matters
    once a node has a rise or fall target.
 5. **On the floor the tracer does reject: about half of what `fitSteps` draws (accepted 56-62% per try) [measured], and every
-   rejection in the top list is one rule**, MIN_GAP: "the gap is N px: no jump at all" (beatTrace.ts:441). That rejection is
+   rejection in the top list is one rule**, MIN_GAP: "the gap is N px: no jump at all" (beatTrace.ts:446). That rejection is
    predictable from the step alone (a flat or downward jump onto a near landing), so it can be filtered when the candidate is made,
    WFC's "propagate before you choose" (3.12), instead of discovered by a full trace.
 6. **A search is not faster than `fitSteps` today, and a naive one is worse.** Random retry needs 1.6-1.8 tries [measured], each 2
@@ -499,8 +521,43 @@ node 12: DFS prefix check = Normal trace: found ... in 13/20 runs; median 11, ma
    12-25 px of net climb, more on the climax), and kind quotas (lesson 1). Then random retry's acceptance collapses and a pruned search
    (with every check applied to prefixes) is the right tool.
 
+**Experiment 2: the whole stage's kind string, over 12 rolls (`.../exp/kinds.ts`).** Each landing becomes a token (surface + up/flat/down
+over the last landing, 15 px dead band), each liana `V`, each node with no landings `R`; 12 rolls each of 1-2 and 1-5 on Normal. Output
+[measured]:
+
+```
+1-2: 12 rolls, 101 landings+vines a roll; kind vocabulary 9: bD 29%, bU 19%, sU 14%, V 11%, kD 8%, bF 7%, cU 5%, cD 4%, R 3%
+   the two commonest kinds are 48% of all take-off landings
+1-5: 12 rolls, 121 landings+vines a roll; kind vocabulary 8: cD 22%, cF 17%, cU 16%, bD 14%, bF 12%, bU 11%, V 4%, R 2%
+   the two commonest kinds are 39% of all take-off landings
+compression distance (deflate, 0 same .. ~1 nothing shared), mean over pairs of rolls:
+   1-2 roll vs 1-2 roll: 0.525
+   1-5 roll vs 1-5 roll: 0.608
+   1-2 roll vs 1-5 roll: 0.684
+   control, 1-2 roll vs the same roll shuffled: 0.631
+   sample 1-2 roll: bU bU bD bU bD bD bF bU bU bU bD bD bU bD bU bD bF V bF bD bU bD bF bU bD bU bD V V V V V bU bD bU bD bU bD bF R cU bD cU bD cU bD cD bU cD bU cD bU cD bU cD bD cU bD cU R sU bD sU bD sU bD sU kD V sU kD sU kD sU bD sU s
+1-2: consecutive landings that flip up<->down 66%; windows of 4 landings that zigzag U/D/U/D 36%
+1-5: consecutive landings that flip up<->down 39%; windows of 4 landings that zigzag U/D/U/D 12%
+```
+
+What it shows:
+- **A whole beat-built stage speaks 8-9 words**, and the two commonest are 39-48% of everything the player lands on [measured]. (Not
+  directly comparable with Horn et al.'s tile-level numbers; same idea, different alphabet.)
+- **1-2's most visible repeat is a zigzag**: 66% of consecutive landings flip up/down, against about 42% if directions were independent
+  at their measured shares [estimate: 2 x 0.44 x 0.48]; 1-5 39% against about 23%. The sample roll shows it (`sU bD sU bD sU bD`). Two
+  causes, both in the palettes. First, **every hop goes down**: `hopDy: [-40, -30, -20]` in PAL_A, PAL_B, PAL_C (w1Rhythm.ts:478, 606,
+  707), and 1-2's swung bars pair a long jump with a quick hop ("a long jump, a quick hop", w1Rhythm.ts:522), so jump-up/hop-down is
+  built in. Second, the floor band is `yMin: C - 100, yMax: C` (w1Rhythm.ts:707), 100 px, with rises of 30-50 px, so after one
+  or two rises the only fitting move is down; the canopy band is 170 px (w1Rhythm.ts:478). This is the same failure Launchpad found in
+  itself ("the physics system filtering out potential geometry ... an upward staircase pattern", 3.4): a band rule shapes the output more
+  than the dice do. A kind/shape gate (section 5, idea 1) would flag it; a wider band or a pattern-level choice ("a stair of 3", "a mesa")
+  would fix it by construction.
+- Rolls of 1-2 share more with each other (0.525) than with a shuffled copy of themselves (0.631) or with 1-5 (0.684): the node plan
+  holds, and 1-2 and 1-5 are more different from each other than two rolls of one stage. Good; but the distance between the two stages
+  is only 0.16 above the within-stage figure.
+
 **Compared with Launchpad's rhythm-then-geometry.** Same order; ours is stronger on the physics (engine slices, clumsy thumb, camera
-framing, beatTrace.ts:326-338, 432-437) and weaker on the geometry grammar (one or two kinds where Launchpad had 14 + 5). Launchpad needed
+framing, beatTrace.ts:330-342, 448-452) and weaker on the geometry grammar (one or two kinds where Launchpad had 14 + 5). Launchpad needed
 critics because its grammar overgenerated; ours undergenerates in kind, so critics would have nothing different to choose between.
 
 ---
@@ -515,17 +572,20 @@ Checked by searching `reference/research/` (all ledgers, the Gemini and Matt res
    (move x surface x hazard) per take-off and the chosen roll must use at least M; per stage, the kind string's edit distance between
    nodes of the same tag must clear a floor. Measured today (section 4): 1-2's canopy nodes have 1-2 kinds per take-off.
 2. **A *wait* verb in the bars.** Launchpad's `Waiting-Moving -> stomper` and `Waiting-Moving-Waiting -> moving platform`. Our marks are
-   'x', 'o', 'h', '.' only (beatTrace.ts:184-208): every beat is "take off" or "keep running". A wait mark ('w': stop until something
+   'x', 'o', 'h', '.' only (beatTrace.ts:200-224): every beat is "take off" or "keep running". A wait mark ('w': stop until something
    passes) opens a whole class of geometry (a snake passing on the bough, a twig falling, a swinging liana coming back) that the tracer
    can also check, because a wait is time on the same ledge.
 3. **Limited-agent gate: "required, not just possible".** Green et al. 2018 (perfect vs limited A* agents) and Nelson & Smith's
    "unavoidable across all alternative solutions". For a node tagged as teaching mechanic M, run the route bot with M switched off; it
-   must fail, and the full bot must pass. This would have caught the 1-2 catch branch that "made the jump optional" (w1Rhythm.ts:563-564)
+   must fail, and the full bot must pass. This would have caught the 1-2 catch branch that "made the jump optional" (w1Rhythm.ts:562-563)
    automatically. Cost: one flag per mechanic in the existing bots.
 4. **Measure the space, not just the rolls: exact counts and uniform samples per rhythm.** What section 4 did, as a tool: for each
    node, the size of its candidate space, the valid share and the number of kinds. It tells a builder *before rolling* whether a node can
-   be varied at all, and it caught that the tracer is not the limit on canopy nodes. (Karth & Smith used the same counting idea to
-   explain WFC.) Related and also new: **sample uniformly** from the valid space (count-weighted descent) instead of per-step uniform
+   be varied at all, and it caught that the tracer is not the limit on canopy nodes. (Karth & Smith used solver statistics the same
+   way to explain WFC; Withington & Tokarchuk call the possibility space under a generator nearly unstudied, 3.10. For a beat node it
+   is small enough to count exactly or sample uniformly, which no paper I read does.) Pair it with an ERA whose axes follow their rule:
+   one structural metric (the kind mix) against one bot-measured metric (seconds on the ground, jumps a minute from the first-timer bot),
+   rather than only linearity x leniency, which are both read statically off the inspector's route and platforms (eraRoll.ts:196-235). Related and also new: **sample uniformly** from the valid space (count-weighted descent) instead of per-step uniform
    picks, which removes `fitSteps`' measured downhill and repeat bias.
 5. **Stability under edits ("same as last time, relax if impossible").** Tanagra §5.1. When a helper or Matt changes one node's bars or
    pins a moment, every other node keeps its solved values unless no solution exists. Today a node change shifts every later node
@@ -533,12 +593,14 @@ Checked by searching `reference/research/` (all ledgers, the Gemini and Matt res
    as the first candidate.
 6. **The rhythm of the rhythm (compound patterns) and designed cadences.** Compton & Mateas: "changing the rhythm in a rhythmic manner";
    Smith 2008: a group culminates "in a cadence ... where the rhythm of the player's movement significantly changes". Our node ends are
-   one cadence type (a flat apron, beatTrace.ts:146). Proposal: a small set of cadence kinds (a drop, a vine catch, a stop-and-look, a
+   one cadence type (a flat apron, beatTrace.ts:150). Proposal: a small set of cadence kinds (a drop, a vine catch, a stop-and-look, a
    rising stair) chosen per seam, counted by the kind gate. (Carmo's "cap universal connectors" is in the papers ledger; cadence *kinds*
    are not.)
 7. **Quality-diversity selection for gen2's "best 16".** MAP-Elites keeps the best candidate in each niche of a feature grid; gen2 keeps
    "the best 16 that also differ the most" (DESIGN.md Part A). A niche grid (e.g. kind mix x height range x density) guarantees the 16
-   cover the space, and an empty cell tells us which pieces to build (Matt's "more pieces" rule, made visible).
+   cover the space, and an empty cell tells us which pieces to build (Matt's "more pieces" rule, made visible). Going one step further
+   (Bazzaz & Cooper 2025, 3.18b): ask the generator *for* each under-filled cell, with a time box, and keep a blocklist of cells that
+   proved impossible; a blocklisted cell is a piece list item, not a reroll.
 8. **Compression distance across a world, on the kind string.** Horn et al.'s NCD caught the Notch generator's sameness that players
    reported. We have edit distance (analyze.ts:131) and 3-gram cosine (era.ts), per stage. New: gzip distance of the kind strings of
    *different stages of the same world*, a one-line "do these feel like one stage played six times?" check (the QA baseline's words).
@@ -546,7 +608,7 @@ Checked by searching `reference/research/` (all ledgers, the Gemini and Matt res
    answer a 4-alternative forced choice ("A", "B", "both equally fun", "neither"). For Matt and testers this is a fair, cheap way to
    compare a beat-built stage with its alternative, and the "several levels" rule is the direct test for "every stage feels the same".
 10. **A jump's difficulty as its window.** Compton & Mateas' spatial and temporal windows. Our tracer already has, per landing, the
-    shortest and longest landing over every clumsy try and the latest take-off (Landing.shortX, longX, lateX, beatTrace.ts:96-101). The
+    shortest and longest landing over every clumsy try and the latest take-off (Landing.shortX, longX, lateX, beatTrace.ts:103-106). The
     landing pad's spare width over (longX - shortX), and the take-off ledge's spare length in milliseconds of running, are a difficulty
     number per jump for free, a better input to the tension curve than counting obstacles (and an answer to the papers ledger's §5.2).
 11. **Seed the search with what already passed QA.** Sorenson & Pasquier: seeding the population "with existing well-designed levels"
@@ -567,6 +629,9 @@ Read in full (body text; reference lists skimmed):
 6. Sorenson & Pasquier, "The Evolution of Fun: Automatic Level Design through Challenge Modeling", ICCC 2010. https://computationalcreativity.net/iccc2010/papers/sorenson-pasquier.pdf
 7. Karth & Smith, "WaveFunctionCollapse is Constraint Solving in the Wild", FDG 2017. https://adamsmith.as/papers/wfc_is_constraint_solving_in_the_wild.pdf
 8. Green, Khalifa, Barros, Nealen, Togelius, "Generating Levels That Teach Mechanics", FDG 2018. https://arxiv.org/pdf/1807.06734
+8b. Bazzaz & Cooper, "Level Generation with Constrained Expressive Range", FDG 2025. https://arxiv.org/pdf/2504.05334
+8c. Withington & Tokarchuk, "The Right Variety: Improving Expressive Range Analysis with Metric Selection Methods", FDG 2023 (§1-3, §5.5-7;
+    method §4-5.4 skimmed). https://arxiv.org/pdf/2304.02366
 
 Read in the parts named:
 9. Shaker et al., "The 2010 Mario AI Championship: Level Generation Track", TCIAIG 3(4), 2011 (intro, entries of Weber, Shimizu &
@@ -605,8 +670,7 @@ Tried and failed (not read; nothing here is quoted from them): https://users.soe
 (unreachable), https://www.cs.cornell.edu/courses/cs6740/2010fa/papers/smith-expressive-range.pdf (unreachable),
 https://users.soe.ucsc.edu/~ejw/papers/smith-pcg2010.pdf (unreachable), https://www.aaai.org/Papers/AIIDE/2006/AIIDE06-022.pdf
 (unreachable), https://ojs.aaai.org/index.php/AIIDE/article/view/18755 and its download link (bot wall),
-https://dl.acm.org/doi/10.1145/3723498.3723845 (Bazzaz & Cooper, "Level Generation with Constrained Expressive Range", FDG 2025: bot
-wall), https://dl.acm.org/doi/pdf/10.1145/1814256.1814267 (Polymorph: bot wall), https://ojs.aaai.org/index.php/AIIDE/article/view/21944/21713
+https://dl.acm.org/doi/10.1145/3723498.3723845 (Bazzaz & Cooper on ACM: bot wall; read on arXiv instead, source 8b), https://dl.acm.org/doi/pdf/10.1145/1814256.1814267 (Polymorph: bot wall), https://ojs.aaai.org/index.php/AIIDE/article/view/21944/21713
 (Sturgeon 2022: 713 characters, no body).
 
 Our files read for this report: reference/LAWS.md, reference/research/README.md, reference/research/ledger/LEDGER-ENGINE-PAPERS.md (all),
