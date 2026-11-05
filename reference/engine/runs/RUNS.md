@@ -569,10 +569,10 @@ gives **57 rows**:
 - **Floating stone:** only 9 have it: 1-5 (its W7 slabs, about 5 a build) and **8 of the 10 lairs**. render-stone fixes all 9
   automatically, render-only, the builds locked.
 - **Floating share:** 21 float over the 25.3% interim cap; it is a cap for new stages, so this is how far each sits from it. A builder
-  change fixes each; no shared fix reaches it. Among them: 1-2 75%, 1-4 46%, the kapoks 4-1 and 4-6, 4-7, 5-2 to 5-4, and 10 lairs.
+  change fixes each; no shared fix reaches it. Among them: 1-2 75%, 1-4 46%, the kapoks 4-1 and 4-6, 4-7, 5-2 to 5-4, and 9 of the 10 lairs.
 - **Length:** 19 are not timed by the quick clock: the climbs, 5-M, 4-3, 6-8, 7-4 and the lairs. That is the clock's gap
   (`stageTime.ts:152`), a tool fix, not a stage fix. Lairs are boss fights; whether the 2:00 floor applies to them is the designer's.
-  **2 run under 2:00 on it: 4-7 The Long Drop (83 s, R-164.13) and 4-D Dot's flight.**
+  **2 run under 2:00 on it: 4-7 The Long Drop (83 s, R-164.13) and 4-D Dot's flight (102 s).**
 - **Look-alike:** 10 play like a neighbour on 8 or more of 16 rolls: 1-1/1-2, 2-3, 2-4, 3-1, 3-2, 3-6, 3-7, 4-8, 4-9. Builder fixes;
   no shared fix reaches them.
 - **Water:** every special has one water kind (deadly pit water, rivers in W2, 4-3's falls). So rule W3 passes for all; the water-art
