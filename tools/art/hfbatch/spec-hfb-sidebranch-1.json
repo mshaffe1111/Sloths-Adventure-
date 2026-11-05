@@ -1,0 +1,50 @@
+{
+ "note": "W1 side branch, round 1, 2026-11-05",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/art-w1-sidebranch/tools/art/hfbatch/starts/w1side/",
+ "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, ground, perspective, seen from above, leaves on the branch tip, two branches, a broken branch, flowers",
+ "items": [
+  {
+   "name": "side-s50-5",
+   "start": "side.png",
+   "prompt": "slothadv style, painted storybook illustration, a straight kapok tree trunk with a green vine wound round it, and one short sturdy branch growing out of the right side of the trunk, seen exactly from the side for a side-scrolling platform game: the branch joins the trunk with a swollen bark collar and no gap, runs out nearly level with moss along its top, and ends in a flat sawn-off end, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1024,
+   "h": 768
+  },
+  {
+   "name": "side-s50-11",
+   "start": "side.png",
+   "prompt": "slothadv style, painted storybook illustration, a straight kapok tree trunk with a green vine wound round it, and one short sturdy branch growing out of the right side of the trunk, seen exactly from the side for a side-scrolling platform game: the branch joins the trunk with a swollen bark collar and no gap, runs out nearly level with moss along its top, and ends in a flat sawn-off end, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.5,
+   "seed": 11,
+   "w": 1024,
+   "h": 768
+  },
+  {
+   "name": "side-s62-5",
+   "start": "side.png",
+   "prompt": "slothadv style, painted storybook illustration, a straight kapok tree trunk with a green vine wound round it, and one short sturdy branch growing out of the right side of the trunk, seen exactly from the side for a side-scrolling platform game: the branch joins the trunk with a swollen bark collar and no gap, runs out nearly level with moss along its top, and ends in a flat sawn-off end, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1024,
+   "h": 768
+  },
+  {
+   "name": "side-s62-11",
+   "start": "side.png",
+   "prompt": "slothadv style, painted storybook illustration, a straight kapok tree trunk with a green vine wound round it, and one short sturdy branch growing out of the right side of the trunk, seen exactly from the side for a side-scrolling platform game: the branch joins the trunk with a swollen bark collar and no gap, runs out nearly level with moss along its top, and ends in a flat sawn-off end, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.62,
+   "seed": 11,
+   "w": 1024,
+   "h": 768
+  }
+ ]
+}
