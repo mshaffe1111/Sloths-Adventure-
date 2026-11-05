@@ -1,0 +1,50 @@
+<title>World 1 Piece Library</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* layout: a field guide; one sheet, ideas as grey strips in a two-column grid that stacks on a phone */
+:root{--bg:#f3f5ef;--fg:#1d2419;--muted:#5b6656;--card:#ffffff;--line:#d6ddcf;
+--k-bough:#6f7f62;--k-log:#8a7a63;--k-bank:#a5a99c;--k-snap:#b88a4a;--k-stone:#7d8890;--k-bridge:#9b7b5c;--k-mush:#b5625a;--k-vine:#4f8a5a;--k-rope:#8c6f4e;
+--display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;--body:"Source Sans 3",ui-sans-serif,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151a13;--fg:#e4eadf;--muted:#9aa594;--card:#1e251b;--line:#33402e;
+--k-bough:#8fa37f;--k-log:#ab9a80;--k-bank:#7c8274;--k-snap:#d3a35e;--k-stone:#97a3ab;--k-bridge:#b99674;--k-mush:#d27b72;--k-vine:#6fb07b;--k-rope:#ad8b65;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#151a13;--fg:#e4eadf;--muted:#9aa594;--card:#1e251b;--line:#33402e;
+--k-bough:#8fa37f;--k-log:#ab9a80;--k-bank:#7c8274;--k-snap:#d3a35e;--k-stone:#97a3ab;--k-bridge:#b99674;--k-mush:#d27b72;--k-vine:#6fb07b;--k-rope:#ad8b65;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
+main{max-width:1100px;margin:0 auto;display:grid;gap:28px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:2rem}h2{font-size:1.3rem}h3{font-size:1.05rem}
+.lede{color:var(--muted);max-width:68ch;margin:6px 0 0}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+td.num{text-align:right;white-space:nowrap}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.ideas{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px}
+.idea{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:6px;min-width:0}
+.idea p{margin:0}.src{font-size:.85rem;color:var(--muted)}
+.strip{background:var(--bg);border-radius:6px;padding:8px}
+.strip svg{width:100%;height:150px;display:block}
+.tbd{height:150px;display:grid;place-items:center;color:var(--muted);font-size:.9rem;text-align:center}
+</style>
+<main>
+<header>
+<h1>World 1 piece library</h1>
+<p class="lede">Every piece the engine can use in World 1, from the old 1-1 and today's five stages, with the sizes they really ship at. Below, each node idea as a grey strip: one thing the player does, built only from pieces that belong together. A stage is a mix of these ideas.</p>
+</header>
+<section>
+<h2>Pieces</h2>
+<div class="tablewrap"><table>
+<thead><tr><th>Piece</th><th>Placed</th><th>Width px (short / typical / long)</th><th>Used in</th></tr></thead>
+<tbody>
+{{ROWS}}
+</tbody></table></div>
+</section>
+<section style="display:grid;gap:12px">
+<h2>Node ideas</h2>
+<div class="ideas">
+{{CARDS}}
+</div>
+</section>
+</main>
