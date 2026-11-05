@@ -130,6 +130,23 @@ export interface WorldManifest {
    * `gap.p90`), its rises by the roll's band over `rise.centre`, inside the jump's own limits. The hop family is floorRoll's.
    */
   rollRanges?: { gap: { min: number; mode: number; max: number; p90: number; centre: number }; rise: { home: [number, number]; hilly: [number, number]; hillyShare: number; centre: number } };
+  /**
+   * The rolled stage graph (NODES.md §4, §6: World 1 first): in place of the one fixed SPINE, a stage of this world rolls one of its
+   * archetype's graphs from `list` under its brief (`briefs`, by stage id), then rolls each node's shape and dials. The brief constrains
+   * and the roll chooses: the stage's lessons (`lessons`) force its teach nodes, `ends` a finale or a quiet end, `trend` the shapes,
+   * `branching` the fork count. Absent, or for a stage with no brief, the stage takes the SPINE, as before.
+   */
+  graphs?: {
+    list: StageGraphDef[];
+    briefs: Record<string, GraphBrief>;
+    terrains?: string[];
+    /** length from the chunk count (CHUNK-POOL-BRIEF step 3), never clock-filling: the stage holds round(its target seconds / this)
+     *  sections; a quiet node (the arrival, a rest, a cooldown, the exit) one, the working nodes the rest by their shares. The length
+     *  repair still adds or takes a whole section where the modelled clock misses the band */
+    chunkSeconds?: number;
+    /** the hard no-repeat (STAGE-RULES §0c.2), a construction rule: a section's cap when it names none (World 1: 1) */
+    maxPerStage?: number;
+  };
   /** the vertical corridor clamp (Part 3 §1): the route's ground stays between these world y's; inside `soft` px of an edge the
    *  selector leans toward sections that drift back */
   corridor: { top: number; bottom: number; soft: number };
@@ -389,6 +406,12 @@ export interface SectionTemplate {
   /** a stretch of the stage this section may stand in, as a share of the stage's chunks [from, to] (1-1's boughs, the late reward: the
    *  designer's last third, [0.67, 1]); outside it the section is never drawn */
   window?: [number, number];
+  /** the node jobs this section serves (NODES.md §1). Read only in a world with `graphs`: there a section that names its jobs fits only
+   *  nodes with one of them (a fork node only a two-road section); a section that names none fits by its phases, as everywhere else */
+  jobs?: NodeJob[];
+  /** the world's terrain family it belongs to (NODES.md §3: W1's floor and stones, raised logs, mounds, boughs): a node's terrain dial
+   *  weighs its own family up */
+  terrain?: string;
   /** extra seconds a typical first-timer spends here beyond walking its length (a room, a fight) */
   extraSeconds?: number;
 }
@@ -451,6 +474,34 @@ export interface MissionNode {
   branch?: MissionNode[];
   /** a rest ends with a flag */
   flag?: boolean;
+  /** a rolled graph's node (manifest `graphs`): its job, its shape and its dials; a teach node's move */
+  job?: NodeJob;
+  shape?: NodeShape;
+  dials?: NodeDials;
+  teaches?: string;
+  /** a rolled graph's node with `chunkSeconds`: how many sections it holds */
+  count?: number;
+}
+
+/** a node's job (NODES.md §1, §8.0's key): what it asks of the player. The graphs roll arrive to exit; the rest are LATER nodes (§6), or
+ *  tags a section may carry for a node's part (cooldown-in-node, choice-reward, reward), all named as the W1 kit names them */
+export type NodeJob =
+  | 'arrive' | 'teach' | 'practise' | 'fork' | 'rest' | 'flow' | 'combine' | 'climb' | 'descent' | 'twist' | 'test' | 'signature' | 'finale' | 'exit'
+  | 'reward' | 'pressure' | 'puzzle' | 'arena' | 'story' | 'preview' | 'change' | 'cooldown-in-node' | 'choice-reward';
+/** a node's shape (NODES.md §2) */
+export type NodeShape = 'flat' | 'rising' | 'falling' | 'two-road';
+/** a node's rolled dials (NODES.md §3): tempo (hurry or patience, even odds), density (climbing through the stage), height (up, level
+ *  or down inside the node, from its shape), terrain (a family from the world's list), rating (1-10, the cadence: ramps and cools) */
+export interface NodeDials { tempo: 'hurry' | 'patience'; density: 'low' | 'medium' | 'high'; height: 'up' | 'level' | 'down'; terrain?: string; rating: number }
+/** a stage graph (NODES.md §4): an ordered list of jobs, one of an archetype's several */
+export interface StageGraphDef { id: string; archetype: Archetype; jobs: NodeJob[] }
+/** the parts of a stage's brief (WORLD-RULEBOOK §5) the graph reads */
+export interface GraphBrief {
+  ends: 'quiet' | 'finale';
+  trend: 'up' | 'down' | 'level';
+  branching: 'none' | 'some' | 'lots';
+  /** the moves this stage teaches, in order (a section's `teaches`); absent, the world's `lessons` for this stage */
+  teaches?: string[];
 }
 
 export interface MissionGraph {
@@ -458,6 +509,8 @@ export interface MissionGraph {
   /** horizontal stages run right; an ascent runs up (phase 2) */
   flow: 'right' | 'up';
   nodes: MissionNode[];
+  /** the rolled graph's id (manifest `graphs`); absent on the SPINE */
+  id?: string;
 }
 
 // ───────────────────────────── pass 3-4: what was placed ─────────────────────────────
