@@ -1,0 +1,103 @@
+TF W1	1-1	Mangrove_Cove	150	main
+TF W1	1-2	Shipwreck_Shore	105	main
+TF W1	1-3	Canopy_Chaos	105	main
+TF W1	1-4	Trunk_Twister	115	main
+TF W1	1-BOSS	Big_Top_Bop	165	boss
+TF W2	2-1	Windmill_Hills	135	main
+TF W2	2-2	Mountain_Mania	145	main
+TF W2	2-3	Horn_Top_Hop	146	main
+TF W2	2-4	Sawmill_Thrill	124	main
+TF W2	2-5	Alpine_Incline	115	main
+TF W2	2-6	Wing_Ding	135	main
+TF W2	2-BOSS	Mountaintop_Tussle	245	boss
+TF W3	3-1	Grassland_Groove	140	main
+TF W3	3-2	Baobab_Bonanza	123	main
+TF W3	3-3	Frantic_Fields	141	main
+TF W3	3-4	Scorch_%27n%27_Torch	115	main
+TF W3	3-5	Twilight_Terror	127	main
+TF W3	3-6	Cannon_Canyon	83	main
+TF W3	3-BOSS	Triple_Trouble	200	boss
+TF W4	4-1	Deep_Keep	175	main
+TF W4	4-2	High_Tide_Ride	133	main
+TF W4	4-3	Amiss_Abyss	166	main
+TF W4	4-4	Irate_Eight	223	main
+TF W4	4-5	Sea_Stack_Attack	135	main
+TF W4	4-6	Current_Capers	212	main
+TF W4	4-BOSS	Fugu_Face-Off	225	boss
+TF W5	5-1	Harvest_Hazards	135	main
+TF W5	5-2	Reckless_Ride	148	main
+TF W5	5-3	Fruity_Factory	163	main
+TF W5	5-4	Panicky_Paddles	173	main
+TF W5	5-5	Jelly_Jamboree	128	main
+TF W5	5-6	Frosty_Fruits	113	main
+TF W5	5-BOSS	Punch_Bowl	272	boss
+TF W6	6-1	Homecoming_Hijinxs	97	main
+TF W6	6-2	Seashore_War	151	main
+TF W6	6-3	Aqueduct_Assault	102	main
+TF W6	6-4	Blurry_Flurry	153	main
+TF W6	6-5	Forest_Folly	172	main
+TF W6	6-6	Cliffside_Slide	136	main
+TF W6	6-7	Frozen_Frenzy_(level)	168	main
+TF W6	6-8	Meltdown_Mayhem	146	main
+TF W6	6-BOSS	Volcano_Dome	260	boss
+RL W1	1-1	Once Upon a Time (1-1)	49.13	main
+RL W1	1-2	Creepy Castle (1-2)	59.97	main
+RL W1	1-3	Enchanted Forest (1-3)	25.67	main
+RL W1	1-4	Ropes Course (1-4)	73.88	main
+RL W1	1-5	Quick Sand (1-5)	93.08	main
+RL W1	1-6	How to Shoot your Dragon (1-6)	93.23	main
+RL W1	1-B	Breathing Fire! (1-B)	64.32	boss
+RL W2	2-1	Ray and the Beanstalk (2-1)	46.97	main
+RL W2	2-2	Winds of Strange (2-2)	61.20	main
+RL W2	2-3	Castle in the Clouds (2-3)	55.05	main
+RL W2	2-4	Altitude Quickness (2-4)	62.52	main
+RL W2	2-5	When Toads Fly (2-5)	35.47	main
+RL W2	2-B	Armored Toad! (2-B)	18.45	boss
+RL W3	3-1	What the Duck? (3-1)	135.50	main
+RL W3	3-2	Spoiled Rotten (3-2)	52.47	main
+RL W3	3-3	I've Got a Filling (3-3)	86.78	main
+RL W3	3-4	Snakes on a Cake (3-4)	82.18	main
+RL W3	3-5	Lucha Libre Get Away (3-5)	69.27	main
+RL W3	3-B	Wrestling with a Giant! (3-B)	133.22	boss
+RL W4	4-1	The Mysterious Inflatable Island (4-1)	51.93	main
+RL W4	4-2	The Deadly Lights (4-2)	74.92	main
+RL W4	4-3	Mansion of the Deep (4-3)	120.10	main
+RL W4	4-4	Infiltration Station (4-4)	89.68	main
+RL W4	4-5	Elevator Ambush (4-5)	226.10	main
+RL W4	4-6	There's Always a Bigger Fish (4-6)	72.60	main
+RL W4	4-B	A Madman's Creation! (4-B)	131.43	boss
+RL W5	5-1	Shields Up... and Down (5-1)	61.87	main
+RL W5	5-2	The Dark Creatures Rise (5-2)	63.67	main
+RL W5	5-3	The Amazing Maze (5-3)	32.05	main
+RL W5	5-4	The Great Lava Pursuit (5-4)	106.57	main
+RL W5	5-5	Swarmed and Dangerous (5-5)	53.80	main
+RL W5	5-6	Hell Breaks Loose (5-6)	62.17	main
+RL W5	5-B	A Cloud of Darkness! (5-B)	118.45	boss
+DKCR W1	1-1	Jungle Hijinxs	53	main
+DKCR W1	1-2	King of Cling	78	main
+DKCR W1	1-3	Tree Top Bop	46	main
+DKCR W1	1-4	Sunset Shore	50	main
+DKCR W1	1-5	Canopy Cannons	61	main
+DKCR W1	1-6	Crazy Cart	102	main
+DKCR W1	1-B	Mugly's Mound	37	boss
+DKCR W2	2-1	Poppin' Planks	59	main
+DKCR W2	2-2	Sloppy Sands	69	main
+DKCR W2	2-3	Peaceful Pier	109	main
+DKCR W2	2-4	Cannon Cluster	44	main
+DKCR W2	2-5	Stormy Shore	69	main
+DKCR W2	2-6	Blowhole Bound	127	main
+DKCR W2	2-7	Tidal Terror	50	main
+DKCR W2	2-B	Pinchin' Pirates	67	boss
+DKCR W3	3-1	Wonky Waterway	66	main
+DKCR W3	3-2	Button Bash	131	main
+DKCR W3	3-3	Mast Blast	85	main
+DKCR W3	3-4	Damp Dungeon	51	main
+DKCR W3	3-5	Itty Bitty Biters	93	main
+DKCR W3	3-6	Temple Topple	72	main
+DKCR W3	3-B	Ruined Roost	51	boss
+DKCR W4	4-1	Rickety Rails	83	main
+DKCR W4	4-2	Grip & Trip	93	main
+DKCR W4	4-3	Bombs Away	104	main
+DKCR W4	4-4	Mole Patrol	90	main
+DKCR W4	4-5	Crowded Cavern	115	main
+DKCR W4	4-B	The Mole Train	97	boss

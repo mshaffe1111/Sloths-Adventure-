@@ -1,0 +1,35 @@
+# DKC Returns (Wii), developer-set Time Attack SHINY GOLD medal per level (the hidden top tier), from ludo.guide "Part 39" (https://www.ludo.guide/guide/donkey-kong-country-returns/donkey-kong-country-returns-part-39), read 2026-11-05 ~11:47 AM ET via TinyFish. World 5 rows are "00:??" on the page (not given), so World 5+ is not measured.
+# Cross-check against Super Mario Wiki (raw/mw_*.md, Wii column): World 1 values agree on all 7 stages both list (King of Cling 1:18, Tree Top Bop 0:46, Sunset Shore 0:50, Canopy Cannons 1:01, Crazy Cart 1:42, Platform Panic 1:06, Mugly's Mound 0:37 [wiki lists 0:36 and 0:37]).
+# Order: the page's order (1..n, B, K). Play order puts K after the boss (unlocked later); roles: main / boss / temple.
+DKCR W1	1-1	Jungle Hijinxs	53	main
+DKCR W1	1-2	King of Cling	78	main
+DKCR W1	1-3	Tree Top Bop	46	main
+DKCR W1	1-4	Sunset Shore	50	main
+DKCR W1	1-5	Canopy Cannons	61	main
+DKCR W1	1-6	Crazy Cart	102	main
+DKCR W1	1-B	Mugly's Mound	37	boss
+DKCR W1	1-K	Platform Panic	66	temple
+DKCR W2	2-1	Poppin' Planks	59	main
+DKCR W2	2-2	Sloppy Sands	69	main
+DKCR W2	2-3	Peaceful Pier	109	main
+DKCR W2	2-4	Cannon Cluster	44	main
+DKCR W2	2-5	Stormy Shore	69	main
+DKCR W2	2-6	Blowhole Bound	127	main
+DKCR W2	2-7	Tidal Terror	50	main
+DKCR W2	2-B	Pinchin' Pirates	67	boss
+DKCR W2	2-K	Tumblin' Temple	66	temple
+DKCR W3	3-1	Wonky Waterway	66	main
+DKCR W3	3-2	Button Bash	131	main
+DKCR W3	3-3	Mast Blast	85	main
+DKCR W3	3-4	Damp Dungeon	51	main
+DKCR W3	3-5	Itty Bitty Biters	93	main
+DKCR W3	3-6	Temple Topple	72	main
+DKCR W3	3-B	Ruined Roost	51	boss
+DKCR W3	3-K	Shifty Smashers	59	temple
+DKCR W4	4-1	Rickety Rails	83	main
+DKCR W4	4-2	Grip & Trip	93	main
+DKCR W4	4-3	Bombs Away	104	main
+DKCR W4	4-4	Mole Patrol	90	main
+DKCR W4	4-5	Crowded Cavern	115	main
+DKCR W4	4-B	The Mole Train	97	boss
+DKCR W4	4-K	Jagged Jewels	47	temple
