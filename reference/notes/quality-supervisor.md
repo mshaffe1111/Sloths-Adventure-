@@ -75,3 +75,4 @@ Goal 80-90 by Matt's own rating (reference/PLAN-TO-80.md). World 1 is the slice;
 - Lead 9:57 PM ET: both REDOs confirmed; fixes due 10:30 (1-2 logs w8-rope2; 1-5 markers w1-rhythm-b). Re-shoot ONLY 1-2 1:36-2:24 and 1-5 markers (0:00, 0:36, 2:47-2:59) on the new head ~10:35. Dot boa line stays; 1-5 backdrop = engine's world look (lead's call).
 - Re-shoot 727db7ba (21c3a8147) sent 10:31 PM ET: 1-2 logs PASS; thin rotten planks above DO read as floating (fix or name debt); 1-5 marks on stakes PASS.
 - Lead 10:35 PM ET: Matt ships with thin planks named (first in tomorrow's follow-up). No more shots unless a new head. Stand by until the release PR is open, then stand down.
+- Lead 11:12 PM ET: Matt HELD the release for tomorrow's fixes (1-2 drops land on the ledge below; 1-1 one sky; 1-2 thin planks). STOOD DOWN. Morning job: re-shoot those three on the new head (worktree /tmp/claude-0/qs/wr, port 4304; container may be fresh: recreate per method §1b).
