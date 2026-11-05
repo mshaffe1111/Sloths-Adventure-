@@ -3,7 +3,14 @@
 Role: reference/roles/RELEASE-CLERK.md (re-read before every round). Method: reference/methods/gates.md. Lead: session_019iachLiuwNTAZUBSJWUmR3.
 Built the gates on 2026-11-01 (clipcheck, playerText.test, knowncheck, CI gates.yml).
 
-## Job now: release-0.9.4 (started 2026-11-04 02:34 EST)
+## Job now: release-0.9.5 (2026-11-04 ET)
+- Candidate: kaizen-gates = the lead's frozen 727db7ba + version commit 05b4e248 (merge ae4e6c92), plus notes commits. Notes: reference/releases/0.9.5.md.
+- D32 (pixi's greeting broke build:store) found by this clerk; fixed by the lead (c41346d8, bf9d3cae). The clerk runs build:store in every §6.
+- The lead's full gate on 727db7ba: ALL PASS (2026-11-04 23:06 ET message); folded into the notes with §6 item 1 (clipcheck PASS, 83 known).
+- State: READY FOR MATT; Matt plays the test link first. The PR (kaizen-gates into main) waits for the lead's "open it"; this session never opens it.
+- After the merge: deploy, gates, Pages, APK on Releases; send the lead the links.
+
+## Done before: release-0.9.4
 - Scope (the lead, 2026-11-04): origin/main + icons-painted ed41fa91 (icons B-E + R-1.1 Crocus defeat fix) + lead branch ccr-0d59a91c-oy3imz. Nothing else.
 - Walk: every icon B-E screen and the Crocus defeat panel, upright and sideways, on fresh, old and finished saves.
 - The candidate is built on branch kaizen-gates (this session may only push there), restarted from origin/main (the old kaizen-gates was already merged into main, so it's a fast-forward). Say so in the report.
