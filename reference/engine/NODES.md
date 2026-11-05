@@ -381,6 +381,7 @@ The engine rejects a string that breaks one of these rules and names the rule an
 | V15 | The `ending-fork` `F[L^+\|R_] E` is the last node before E. LATER, not 1-1 | §1 (Matt, 11-05) |
 | V17 | **In 1-1, every graph holds at least one F**, so the stage can meet old 1-1's two-road floors (splits ≥ 34, two-road ≥ 0.61; stage.ts passLines). Ruled 5:22 PM (supervisor's §8 flag 2) | §E; stage.ts |
 | V18 | **A node's realised pieces match its content row in the key** (§8.0 PIECES: every MUST present, no NEVER). Added 5:24 PM (Matt) | LABELS.md §0, §1, §2 |
+| V19 | **A stage whose trend is up never loses height late.** A descent (D) in the last third must be followed, before E, by nodes that leave him HIGHER than where the descent began, and a D is never the last content node before S or E. So in 1-1's graph C (`... R D_ S E`), the S after D_ must rise net above D's start: #10, #44 a or #45, never #44 b, which falls to its long log. Added 6:48 PM (supervisor, round 5) | 1-1.md:23 ("up in the high branches... pointed north"), :47-52; §4 (`trend` biases the shapes) |
 | V16 | `&` only from the stage where creatures are taught (W1: 1-3), and about a third of the stage's time has none | Matt 12:15 AM (ENGINE-PLAN :55) |
 
 ### 8.4 The sprint graphs in code, and under 1-1's brief
@@ -415,12 +416,12 @@ A graph is jobs and shapes only; the deal fills in the content (§7.5).
 - Types: ground 3 (counting the fork's low road), bounce 2, climb 1, floating 1.
 - It climbs, then splits, with the find on the upper stair.
 
-All three pass V1-V18: the cap, the neighbour rule with its two exceptions, and the deal give or take 1. Their tempo strings differ (`<<>><>>`, `><<><<>><`, `<>><<>><`), so no tempo profile repeats (§5).
+All three pass V1-V19: the cap, the neighbour rule with its two exceptions, and the deal give or take 1. Their tempo strings differ (`<<>><>>`, `><<><<>><`, `<>><<>><`), so no tempo profile repeats (§5).
 
 ### 8.6 In the data
 - A world's graph list (§4) is stored as code strings.
 - A roll is saved as its filled string, next to the seed. The ledger (§5) compares strings: the same skeleton means the same graph, and the same marks mean the same tempo profile.
-- One parser reads the strings and checks V1-V18, and fails with the rule and the token.
+- One parser reads the strings and checks V1-V19, and fails with the rule and the token.
 - **The planner owns the parser**, inside gen2 (the graphs are its data; the lead, 5:22 PM). Engine-core only reads the realised string from meta. Until the parser exists, these rules are the spec.
 
 
