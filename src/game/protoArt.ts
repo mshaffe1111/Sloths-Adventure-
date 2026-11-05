@@ -93,8 +93,10 @@ export function bankPainted(p: Platform): boolean {
 /** a rock the painted layer draws (drawProtoScene: a 50-unit moss stone, or art 'rock'): the drawn ground leaves it alone (terrain.ts),
  *  or it drew a code earth body under the painted boulder, three gradients a stone a frame (the mixer's 1-5 n4 fork, drawcheck) */
 export const isPaintedRock = (p: Platform) => (p.height === 50 && p.style === 'moss_stone') || p.art === 'rock';
+// (engine-core, 11-05: only on a piece a builder marks, pit: 'drop', which only the mixer's stages do; every live stage keeps terrain's
+// earth under its painted rocks until taking this to every stage is its own tested change, R-165.46)
 export function rockPainted(p: Platform): boolean {
-  return groundOn && isPaintedRock(p) && !p.broken && protoArtReady();
+  return groundOn && isPaintedRock(p) && p.pit === 'drop' && !p.broken && protoArtReady();
 }
 /** whether a world has its own painted kit yet */
 export function hasKit(w: number): boolean {
