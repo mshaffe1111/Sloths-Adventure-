@@ -406,3 +406,59 @@ under them, over all catalogue landings. support.py's counts pieces it finds not
 - support.py matches the screen on those, but cannot see supports that are only drawn (its blind spot, stated in topic 4).
 - A rule that reads the renderer's own footing (stonesupport.ts:11 says E3's gate will) would settle both. Until then, the 0.253 old
   1-1 number is the one that matches what is on screen.
+
+## Addendum 2, 12:28-12:45 PM ET: per-roll ranges for R-164.11 (the designer's request)
+
+**Asked:** on main (68b31e665), the old 1-1 and 1-3, 32 rolls (era.ts `rollVariants(32)`), Normal and Easy, per roll:
+- the hop share;
+- the gap share (median and p90);
+- the rise share (median and p90);
+- bursts per stretch, if a tool gives it;
+- across the rolls, min / p10 / median / p90 / max, and each roll's lean.
+
+**Command:** `npx tsx tools/engine/runs/rollshares.ts <tree> <ids>`, then `python3 -I tools/engine/runs/rollsum.py`. Outputs are in
+`out/r16411/`: per roll `rs-*.json`, the summary and every roll's lean in `summary.txt`.
+
+**Each tree is measured with its own builders and its own inspector**, the route era.ts measures (eraRoll.ts `pickRoute(...).used`):
+- **hop share:** era's action mix on that route (eraRoll.ts:273-274), `h / (h + J)`.
+- **gap share:** each route jump's ledge gap over the level check's widest single jump at that rise (`jumpOK` searched as the mixer's
+  gate does, w1mix.ts:192-204).
+- **rise share:** each rise over the highest rise that gate allows across a 50 px gap (w1mix.ts:894-896): **80 px on both settings.**
+
+**On Easy, two denominators**, since the request names both:
+- jumpOK alone: the table below.
+- jumpOK capped by heldMaxGap (the mixer's Easy gate): that gate's highest rise is **30 px**, so the old stages' Easy rises read 1.4-2.5
+  on it. Those numbers are in `summary.txt`.
+
+**Also measured:** today's 1-3 and the mixer's 1-1 and 1-5 (engine-mixer; src/game is the same at 021ef4e93, 76b7c846c and af9dd8ca8),
+for the comparison the ranges are for.
+
+Cells are **min / p10 / median / p90 / max over 32 rolls**:
+
+| Stage, setting | Hop share | Gap share, roll median | Gap share, roll p90 | Rise share, roll median | Rise share, roll p90 |
+|---|---|---|---|---|---|
+| main 1-1 normal | 0.43 / 0.45 / 0.77 / 1.00 / 1.00 | 0.79 / 0.79 / 0.82 / 0.89 / 0.90 | 0.91 / 0.95 / 0.97 / 0.99 / 1.00 | 0.65 / 0.69 / 0.69 / 0.94 / 0.94 | 0.94 / 0.94 / 0.94 / 0.95 / 0.95 |
+| main 1-1 easy | 0.43 / 0.45 / 0.77 / 1.00 / 1.00 | 0.79 / 0.79 / 0.82 / 0.89 / 0.90 | 0.91 / 0.95 / 0.97 / 0.99 / 1.00 | 0.65 / 0.69 / 0.69 / 0.94 / 0.94 | 0.94 / 0.94 / 0.94 / 0.95 / 0.95 |
+| main 1-3 normal | 0.54 / 0.55 / 0.80 / 0.94 / 0.94 | 0.76 / 0.79 / 0.84 / 0.91 / 0.92 | 0.89 / 0.92 / 0.96 / 1.01 / 1.04 | 0.49 / 0.50 / 0.54 / 0.65 / 0.94 | 0.94 / 0.94 / 0.94 / 0.95 / 1.12 |
+| main 1-3 easy | 0.56 / 0.57 / 0.80 / 0.94 / 0.94 | 0.76 / 0.79 / 0.84 / 0.91 / 0.92 | 0.89 / 0.92 / 0.97 / 1.01 / 1.04 | 0.49 / 0.50 / 0.54 / 0.65 / 0.65 | 0.94 / 0.94 / 0.94 / 0.95 / 1.12 |
+| mixer 1-3 normal | 0.55 / 0.56 / 0.58 / 0.61 / 0.62 | 0.79 / 0.81 / 0.81 / 0.81 / 0.83 | 0.84 / 0.86 / 0.90 / 0.94 / 0.97 | 0.38 / 0.39 / 0.50 / 0.50 / 0.50 | 0.69 / 0.69 / 0.94 / 0.95 / 1.12 |
+| mixer 1-3 easy | 0.58 / 0.59 / 0.61 / 0.62 / 0.65 | 0.54 / 0.54 / 0.56 / 0.59 / 0.59 | 0.74 / 0.79 / 0.87 / 0.93 / 0.93 | 0.35 / 0.38 / 0.42 / 0.49 / 0.50 | 0.69 / 0.69 / 0.94 / 1.12 / 1.20 |
+| mixer 1-1 normal | 0.27 / 0.29 / 0.53 / 0.57 / 0.59 | 0.56 / 0.56 / 0.57 / 0.57 / 0.58 | 0.86 / 0.86 / 1.53 / 1.61 / 2.18 | 0.50 / 0.50 / 0.50 / 0.50 / 0.50 | 0.75 / 0.75 / 1.12 / 1.14 / 1.34 |
+| mixer 1-1 easy | 0.20 / 0.23 / 0.38 / 0.43 / 0.44 | 0.49 / 0.49 / 0.49 / 0.49 / 0.49 | 1.34 / 1.40 / 1.40 / 1.85 / 2.43 | 0.38 / 0.38 / 0.38 / 0.38 / 0.38 | 1.00 / 1.00 / 1.20 / 1.41 / 1.46 |
+| mixer 1-5 normal | 0.25 / 0.25 / 0.28 / 0.29 / 0.38 | 0.58 / 0.58 / 0.59 / 0.59 / 0.60 | 0.62 / 0.63 / 0.64 / 0.67 / 0.68 | 0.38 / 0.38 / 0.38 / 0.38 / 0.50 | 0.54 / 0.54 / 0.54 / 0.54 / 0.54 |
+| mixer 1-5 easy | 0.30 / 0.33 / 0.36 / 0.40 / 0.43 | 0.39 / 0.40 / 0.46 / 0.49 / 0.49 | 0.49 / 0.49 / 0.49 / 0.61 / 0.62 | 0.38 / 0.38 / 0.38 / 0.38 / 0.38 | 0.38 / 0.38 / 0.62 / 0.95 / 0.95 |
+
+**Read with these:**
+- **Old 1-1 on Easy is the old 1-1 on Normal**, number for number. The old builder's Easy pass changes no route geometry this measure
+  reads; CP1's tables show the same.
+- **Old 1-1's hop share comes in three families, not a spread:**
+  - 11 rolls at 0.43-0.51;
+  - 11 at 0.74-0.80;
+  - 10 at 0.99-1.00 (for example roll 821391: 99 hops, 0 jumps).
+  The per-roll lean is therefore about -0.33, -0.01 or +0.23. Every roll's lean is listed in `summary.txt`. Old 1-3: 0.54-0.94, also
+  clustered. Today's 1-3 is narrow (0.55-0.62).
+- **Shares over 1** are jumps a single jump cannot make: the mixer's 1-1 doubles (its gap p90 1.53 median), bounces and climbs that
+  land higher. They are kept, not clipped.
+- **Bursts per stretch: not given.** No tool measures bursts on the old stages: they carry no node plan (`meta.mix` is the mixer's
+  own), and the pacing groups in `tools/inspect/pacing.ts` are a different unit. Skipped, as the request allows.
+- 32 rolls is the designer's count; R3 F6 asks 200 for a generator's spread. The three hop-share families on old 1-1 show in 32.
