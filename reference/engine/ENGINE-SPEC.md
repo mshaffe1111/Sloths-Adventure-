@@ -1198,3 +1198,66 @@ turned down. The old 1-1's 34 splits came from canopy over floor, and 1-1 keeps 
   clue, so it is painted, not code-drawn. That makes a one-picture list for Hugging Face. The lead approves the spend; Matt approves
   the list. The art-gap rule applies, because this is a true gap.
 - **Morning light** is backdrop/lighting work (engine-side). The lead assigns it with the atlas wiring.
+
+### [designer, 11-05 ~10:05 AM ET] Engine first (Matt): the stage-profile format and the element table
+
+Matt has moved 1-1 behind the engine. The planner builds the two parts below as data plus gates. 1-1 (parked at engine-mixer
+72fe81a3) is then rebuilt from its profile as the first proof. This is the format the designer writes for every stage. The planner
+may add fields the gates need, but not remove any.
+
+#### 1. Stage profile: one per stage, written before its plan
+
+| Field | What it holds | Gate that reads it |
+|---|---|---|
+| `id`, `name` | e.g. 1-1, "Into the Canopy" | — |
+| `story` | one line from the lead's brief: what this stage is about, and its **moment** (the one peak beat, which node) | lead review |
+| `arc` | rises / descends / level / wave; start and end height band; each node's band | band check |
+| `elements` | share of landings on ground / tree / water, each a range (1-1: ground ≥ 70% in n1-n7, tree ≥ 60% in n8-n11, water 0 until the water zone exists) | element share |
+| `water` | none / creek ×n / lake / swamp; each one needs a drawn water zone | element gate |
+| `branching` | a word (none / light / moderate / heavy) plus its numbers: splits whole stage, splits per named stretch, two-road share Normal and Easy, fork count | split and two-road checks |
+| `pace` | a word (calm / march / brisk / sprint) plus its numbers: longest run without a stop (s), rests count, which nodes are quick | pace check (16 rolls, median and worst) |
+| `length` | Normal fast clock band (s), Easy minimum (s); never below 120 | length check |
+| `mechanics` | taught here (node); allowed (taught before); kept out (owned by a later stage, named) | teach and ownership checks |
+| `hazards` | allowed hazard kinds (taught ones only) | teach check |
+| `owns` | moments only this stage may use (1-4: the kapok climb and the view from the top) | cross-stage check |
+| `commonest` | the landing kind expected most; must differ from the stages named in `unlike` | cross-stage check |
+| `unlike` | stages it must not play like, and the most ideas it may share with each (1-1 vs 1-5: ≤ half) | cross-stage check |
+| `caps` | per-kind landing caps (1-1: boughs + creaky ≤ 30%) | landing share |
+| `look` | kit, light (morning / noon / dusk / night), backdrop | stills review |
+| `dress` | start, end and clue dressing (painted art only; a missing one blocks Matt's build, never a stand-in) | art check |
+| `marks`, `petals` | Meeca's marks (0 for a sprint); petals low or in arcs | collectibles check |
+| `dot` | Dot's lines, each pinned to a node (start or end) | story review |
+| `difficulty` | the dial's d from world and stage; any override stated with its reason | difficulty dial |
+
+Pass lines live in the profile. A stage with no number for a line takes the world default: today's 1-5 lines (splits 19,
+two-road 40%). A profile that lowers a default must give the reason in its own line, as 1-1's ruling did.
+
+#### 2. Element table: every piece kind, what it is, and what it must rest on
+
+| Piece kind | Element | Must rest on or attach to |
+|---|---|---|
+| bank, mound | ground | the stage floor (solid to the bottom) |
+| stump | ground | the floor or a bank |
+| log | ground | the floor, stumps or banks; across a creek, both ends on banks |
+| log jam, stump tops | ground | stumps or the floor |
+| hollow log | ground | the floor (walkable inside and on top) |
+| mushroom (bounce) | ground | the floor, a bank, a stump or a log, never in the air |
+| stone | ground or water | ground, or rising from a drawn water zone |
+| push block | ground | the floor or a bank |
+| lily pad, reed isle | water | a drawn water zone's surface, never over a painted drop |
+| bough | tree | a trunk within 220 px, or a thin post when the trunk cap leaves it over 300 px from every tree |
+| creaky branch, rotten branch | tree | a trunk or bough, like a bough |
+| vine | tree | hangs from a bough or the canopy; its top is never in open sky |
+| crumbling ledge | as its art shows: earth or stone is ground, wood is tree | the planner tags it from the atlas and names the art key |
+| bridge span | ground or tree, as its ends | both ends on the same element's pieces (posts on banks, or two boughs) |
+| exit totem, shrine | ground | a long ground piece |
+| petals, hearts, relics, finds | — | over a standable piece or on a path's arc; never inside a piece |
+
+Rules:
+1. The mixer fails a stage with any piece outside its element, or resting on something not in its row.
+2. A new piece kind is not used until it has a row.
+3. A piece whose art the planner can't tag goes back to the designer, never a guess.
+
+**Fix needed in today's PLAN_11 before the 1-1 proof:** n2 and n5 deal `lily-pad hop` with no water zone, which breaks rule 1. Until
+the water zone is drawn, use `stump hop` or `bank hops` in its place. With the water zone, `lily-pad hop` goes back into n5's low road
+only, the creek.
