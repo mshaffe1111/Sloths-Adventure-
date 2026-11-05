@@ -194,6 +194,18 @@ re-traces both on Easy after the change.
 So the first pieces the mixer should spread are the ones most worlds lack: moving and drifting platforms, lilies, mushrooms, and the
 taught animals.
 
+
+**[designer, 11-05 ~12:35 AM ET] Where the 17 unused-art ideas go** (the planner's check, `cp2/mechanics-exist.md`):
+- **On the sheet once proven in the real engine (7):** reed isles, updraft ride (after glide is taught), crumbling ledge, behind the
+  falls, push block, scaffold climb, bridge span.
+- **Small builds, placing a behaviour that already exists as a route piece (9):** hollow-log crawl, root gate, bobbing crates,
+  stalactites, sleeping bat, counterweight, slung log, hot rocks, secret tunnel. These go to Matt as a list with sizes. Matt picks
+  which to build; none is needed for CP3.
+- **New (1):** hanging planks. Parked until Matt asks.
+
+**CP3's 1-5 draws only from proven ideas.** The 1-5 remix uses World 1's 14 ideas, plus crumbling ledge, push block, bridge span
+and reed isles once they are proven.
+
 ### CP3: the mixer, proven on the worst stage first (1-5) (owner: designer specs the mix rule, planner builds and runs)
 - **The mix rule (designer), [Matt, 11-05] ideas first, pieces inside an idea.**
   1. **The stage's story beat and theme come first** (STAGE-RULES and the story files). They pick the stage's job and look, never
