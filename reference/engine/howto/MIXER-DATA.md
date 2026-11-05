@@ -25,7 +25,7 @@ and the world's rulebook (reference/engine/WORLD-RULEBOOK.md).
 
 **Knobs (optional):** `branching` (none / some / lots), `water` (yes / no), `d` (0-1).
 
-**The worked example** is 1-1's brief, WORLD-RULEBOOK §5. Read it for the format; your values come from your own story brief.
+**The format** is the table above. There is no worked example for your stage on your branch, on purpose: your values come from your own story brief alone.
 
 ## 2. The order you work in
 1. Read your story brief, then WORLD-RULEBOOK.md, then this part, then part 1.

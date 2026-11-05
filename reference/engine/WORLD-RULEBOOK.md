@@ -123,18 +123,7 @@ planner's 4:00 breakdown (3:42 PM ET) says where old 1-1's 0.384 comes from: one
     - dressing at its spot, clear of the spawn.
 13. **Neighbour difference:** the job sequence may not match a neighbour's, and the variety and neighbour gates judge the rest.
 
-## 5. 1-1's brief (the 7 fields and its knobs; from the lead's story brief, story-briefs/1-1.md; added 3:43 PM ET)
-
-```
-beat:    Two days after the soldiers took Meeca, Pokey leaves the home forest: slow, and coming anyway.   (brief :13)
-teaches: run, jump, bounce, double
-trend:   up
-ends:    quiet     ("Resolve, not triumph. The bigger views belong to later stages", :23)
-look:    morning light at the home forest's edge, rising into the canopy   (:32)
-must:    clue 'bootprint' on the end bank (held art, R-165.31);
-         dressing squirrel-sit, squirrel-wave, squirrel-tip at the start;
-         find: one golden seed;
-         Dot lines: coach.run, hint.1-1.gaps, hint.1-1.bank, hint.1-1.double, coach.nice, hint.1-1.high, hint.1-1.noMoss
-not:     creaky, crumbling, animals, ropes, lianas, the kapok climb, the view north, the bush, water   (:38-43)
-knobs:   branching some, water no, d 0
-```
+## 5. Stage briefs
+Each stage's brief lives in its own file, reference/engine/briefs/<id>.md. **The designer's 1-1 brief (briefs/1-1.designer.md) is NOT
+on the cold builder's branch.** It's kept only to compare with the builder's brief afterwards, because a builder who can read it is
+copying, not testing.
