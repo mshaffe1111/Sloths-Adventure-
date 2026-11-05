@@ -84,6 +84,7 @@ generated:
   - Its traces stay clean, and the fun gate shows no new flags for 1-5.
 - **Matt sees.** 1-5's side map next to the old 1-1's, and next to today's 1-5 ("just cracking logs"), plus a grey-box test link
   of the new 1-5.
+- **Time per stage (lead, from Matt's "a stage in about an hour, not a day").** Each stage's helper time from spec to gated grey-box, and its retries, are recorded. Pass line: a stage takes 1 hour or less after the mixer exists (1-5 in CP3 is allowed to take longer, as the first build).
 - **Cost estimate.** About 1.5-2%.
 
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
@@ -93,6 +94,7 @@ generated:
   - The fun gate shows no new flags.
   - The designer has played each stage, upright and sideways, against the stage it replaces.
 - **Matt sees.** Five maps beside the old 1-1, and a grey-box test link of all five.
+- **Time per stage (lead, from Matt's "a stage in about an hour, not a day").** Each stage's helper time from spec to gated grey-box, and its retries, are recorded. Pass line: a stage takes 1 hour or less after the mixer exists (1-5 in CP3 is allowed to take longer, as the first build).
 - **Cost estimate.** About 1.5-2%.
 
 ### CP5: Matt plays the grey-box (owner: Matt; the lead sends it)
