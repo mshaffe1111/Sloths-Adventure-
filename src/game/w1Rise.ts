@@ -407,7 +407,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   // (the kapoks the boughs grow from, the lead's second look, 2026-11-04: few and huge, unevenly spaced; a bough grows out of a trunk at
   // ONE end and its other end tucks into a leafy clump; a bough with no trunk at either end tucks into leaves at both)
   const trunks: Array<{ x: number; topY: number; bottomY: number; w: number }> = [];
-  const leaves: Array<{ x: number; y: number; w: number; flip?: boolean }> = [];
+  const leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' }> = [];
   const byX = [...boughs].sort((a, b) => a.x - b.x);
   let every = 2 + Math.floor(LOOK.f() * 3), since = every;
   for (const p of byX) {
@@ -416,17 +416,56 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     const atR = trunks.find((t) => Math.abs(t.x - (p.x + p.width)) < half(t) * 0.7);
     let grows = atL ? 'L' : atR ? 'R' : '';
     // (a new kapok every 2-4 boughs, at this bough's left or right end, never crowding the last)
-    if (!grows && ++since >= every && !trunks.some((t) => Math.abs(t.x - p.x) < 380)) {
+    if (!grows && ++since >= every && !trunks.some((t) => t.w >= 1.6 && Math.abs(t.x - p.x) < 380)) {
       const w = Math.round((1.6 + LOOK.f()) * 100) / 100;
-      const left = LOOK.f() < 0.5;
-      trunks.push({ x: Math.round(left ? p.x + 10 : p.x + p.width - 10), topY: -1200, bottomY: shift + BANK_H, w });
-      grows = left ? 'L' : 'R';
+      let left = LOOK.f() < 0.5;
+      // (never beside one of the slimmer trees: trunk against trunk)
+      const crowd = (x: number) => trunks.some((t) => Math.abs(t.x - x) < 160);
+      if (crowd(left ? p.x + 10 : p.x + p.width - 10)) left = !left;
+      if (!crowd(left ? p.x + 10 : p.x + p.width - 10)) {
+        trunks.push({ x: Math.round(left ? p.x + 10 : p.x + p.width - 10), topY: -1200, bottomY: shift + BANK_H, w });
+        grows = left ? 'L' : 'R';
+      }
       since = 0;
       every = 2 + Math.floor(LOOK.f() * 3);
     }
-    const leaf = (x: number, flip: boolean) => leaves.push({ x: Math.round(x), y: p.y + 8, w: Math.round(120 + LOOK.f() * 50), flip });
-    if (grows !== 'L') leaf(p.x - 6, true);
-    if (grows !== 'R') leaf(p.x + p.width + 6, false);
+    // (a bough no kapok holds grows from a slimmer tree of its own at its end furthest from them, crowned in leaves: the quality
+    // supervisor, 11-04, half the boughs read as planks floating in the air; never within 200 px of a trunk, so they don't wall up)
+    const reach = (x: number) => Math.min(Infinity, ...trunks.map((t) => Math.abs(t.x - x)));
+    if (!grows && !trunks.some((t) => t.x + half(t) * 0.7 >= p.x && t.x - half(t) * 0.7 <= p.x + p.width)) {
+      const left = reach(p.x) >= reach(p.x + p.width);
+      const at = left ? p.x + 10 : p.x + p.width - 10;
+      if (reach(at) >= 200) {
+        const w = Math.round((1.0 + LOOK.f() * 0.35) * 100) / 100;
+        const topY = p.y - Math.round(120 + LOOK.f() * 60);
+        trunks.push({ x: Math.round(at), topY, bottomY: shift + BANK_H, w });
+        leaves.push({ x: Math.round(at), y: topY + 30, w: Math.round(150 + LOOK.f() * 40), flip: LOOK.f() < 0.5, kind: 'bushWide' });
+        grows = left ? 'L' : 'R';
+      }
+    }
+    // (the free ends: World 1's three foliage pieces, flipped and sized at random; none where a neighbour's end is a hop away, where
+    // the clumps stacked)
+    const near = (x: number) => byX.some((q) => q !== p && Math.abs(q.y - p.y) < 90 && (Math.abs(q.x - x) < 70 || Math.abs(q.x + q.width - x) < 70));
+    const kinds = ['bushWide', 'bushWide', 'fernClump', 'bushTall'] as const;
+    const leaf = (x: number, flip: boolean, end: number) => {
+      if (near(end)) return;
+      const kind = kinds[Math.floor(LOOK.f() * kinds.length)];
+      leaves.push({ x: Math.round(x), y: p.y + 8, w: Math.round((kind === 'bushTall' ? 70 : 105) + LOOK.f() * (kind === 'bushTall' ? 30 : 55)), flip: LOOK.f() < 0.5 ? flip : !flip, kind });
+    };
+    if (grows !== 'L') leaf(p.x - 6, true, p.x);
+    if (grows !== 'R') leaf(p.x + p.width + 6, false, p.x + p.width);
+  }
+  // (the painted ends of two boughs a hop apart overlapped: each is cut at the gap's middle, draw only)
+  for (const p of byX) {
+    for (const q of byX) {
+      if (q === p || Math.abs(q.y - p.y) > 60) continue;
+      const gap = q.x - (p.x + p.width);
+      if (gap >= 0 && gap < 70) {
+        const mid = Math.round(p.x + p.width + gap / 2);
+        p.drawX1 = Math.min(p.drawX1 ?? Infinity, mid);
+        q.drawX0 = Math.max(q.drawX0 ?? -Infinity, mid);
+      }
+    }
   }
   const floorY = shift;
   const H0 = floorY + HOLLOW + BANK_H + 20;

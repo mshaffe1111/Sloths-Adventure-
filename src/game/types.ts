@@ -300,6 +300,9 @@ export interface Platform {
   bare?: boolean;
   /** the branch picture drawn this much thicker or thinner (0.8-1.3; draw only, the walkable top is unchanged) */
   thick?: number;
+  /** draw only: the painted bough cut at these world x (a neighbour's end a hop away: their painted ends overlapped, 1-1) */
+  drawX0?: number;
+  drawX1?: number;
   /** a boss ledge that starts cracking (becomes fragile) from this phase of the fight */
   crackFrom?: number;
   broken?: boolean;
