@@ -2553,7 +2553,9 @@ at n7 (1-1's at n9).
 
 **Dot's lines:**
 - Approved by the lead and me under Matt's 1:20 rule, since 1-2 opens the game: **hint.1-2.roots** and **hint.1-2.under** (11-04,
-  1bab7dac0, on engine-mixer's dotLinesData.ts:125, :128). Both are true of 1-2 as planned. Carry them word for word.
+  1bab7dac0, on engine-mixer's dotLinesData.ts:125, :128). Both are true of 1-2 as planned. **[revised 1:30 PM ET: once the lead
+  co-signs, engine-core carries them, as R-165.41 does for 1-1's three]** The builder checks they're in engine-core's dotLinesData.ts,
+  never copies or writes a line, and reports a missing one as an engine finding.
 - **Not used:**
   - hint.1-2.back ("up off the snakes"): snakes are untaught in 1-2;
   - hint.1-2.rotten ("Rotten wood!"): breaking wood is 1-5's on main, and that line was marked "needs Matt".
