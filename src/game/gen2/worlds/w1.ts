@@ -1139,7 +1139,20 @@ const TERRAIN: Record<string, W1Terrain> = {
   'w1-step-stones-teach': 'floor-stones', 'w1-log-teach': 'raised-logs', 'w1-dip-double-teach': 'floor-stones', 'w1-bank-double-teach': 'mounds', 'w1-mushroom-bank-teach': 'mounds', 'w1-morning-path': 'floor-stones', 'w1-mushroom-fork': 'boughs', 'w1-twin-mushroom-fork': 'boughs', 'w1-stair-fork': 'raised-logs', 'w1-bank-stair-fork': 'mounds', 'w1-stair-test': 'mounds', 'w1-log-stair-test': 'raised-logs', 'w1-backstep-twist': 'raised-logs', 'w1-dipping-boughs-twist': 'boughs', 'w1-log-chain': 'raised-logs', 'w1-mushroom-chain': 'boughs',
 };
 const VERSION_JOBS: Record<string, Record<string, W1Job[]>> = { 'w1-fallen-trunk': { double: ['test'], mushroom: ['twist'] } };
-export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id], terrain: TERRAIN[q.id], ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
+/**
+ * HELD until the planner's bounce-rise place exists (the designer, 11-05: a bounce lip laid as a walk is an 80 px step, a single jump
+ * clears it, so the bounce has no block): whole sections whose block is a bounce lip, and the wall versions of two others. Not in the pool.
+ */
+export const W1_HELD: Record<string, string> = {
+  'w1-mushroom-lift': "#5's bounce lip 200-220 px (lays 80 as a walk)", 'w1-twin-bounce': "#6's lifted banks 110-130 px", 'w1-mushroom-bank-teach': "#35's bounce lip",
+  'w1-hop-bounce': 'its bounce walls 225-240 px', 'w1-bounce-run/three-wall': 'its bounce wall', 'w1-ledges/walls': 'its bounce wall',
+};
+const held = (q: W1Section): W1Section | null => {
+  if (W1_HELD[q.id]) return null;
+  const keep = q.subBlocks![0].versions.filter((v) => !W1_HELD[`${q.id}/${v.id}`]);
+  return keep.length === q.subBlocks![0].versions.length ? q : { ...q, subBlocks: [{ ...q.subBlocks![0], versions: keep }] };
+};
+export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(held).filter((q): q is W1Section => !!q).map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id], terrain: TERRAIN[q.id], ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
 
 /** the phases a stage's slots fill */
 export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten', 'ketsu', 'goal'];

@@ -9,7 +9,7 @@
  *
  * c's "landings that each sit higher than the last" (ruled by the designer, engine-spec 4b7840b27): over the node, the landing tops (left
  * to right) rise on at least two thirds of the steps between neighbours, no step goes down (a level rest landing within 10 px is fine),
- * and the last is above the first.
+ * and the last is above the first; judged up to the summit (the highest landing), so a run-out after it is not part of the stair.
  */
 import type { Platform } from '../types.ts';
 import { landingKind } from './catalog.ts';
@@ -54,7 +54,9 @@ export function nodePieceBreaches(st: StageIn, world: number, nodes: readonly Re
       never(stoneAir.length > 0, `a floating rock or stone (${stoneAir.length})`);
       never(world === 1 && has('moving platform'), 'a lift in World 1');
     } else if (c === 'c') {
-      const tops = here.filter((p) => p.type !== 'bouncy').sort((a, b) => a.x - b.x).map((p) => p.y);
+      // (judged up to the summit, the highest landing: the run-out after it is not the stair (the designer, 11-05, on #40 b))
+      const all = here.filter((p) => p.type !== 'bouncy').sort((a, b) => a.x - b.x).map((p) => p.y);
+      const tops = all.slice(0, all.indexOf(Math.min(...all)) + 1);
       const steps = tops.slice(1).map((y, j) => tops[j] - y);
       need(tops.length >= 3 && steps.filter((d) => d > 10).length >= (2 / 3) * steps.length && steps.every((d) => d >= -10) && tops[0] > tops[tops.length - 1], 'landings that each sit higher than the last (no step down)');
       never(!o.climbOwner && vines.some((v) => v.vineType === 'tree_climb'), 'a vine climb (tree_climb) outside the stage that owns it');

@@ -261,7 +261,7 @@ if (fs.existsSync(OLD_FILE)) {
 // tokens, 3-gram overlap between rolls and against the world's other gen2 stages). The variety lines have no pass line until the designer sets one
 const codeRows: string[] = [];
 {
-  type G2 = { code?: string[]; codeString?: string; codeErrors?: string[]; loosened?: string[] };
+  type G2 = { code?: string[]; codeString?: string; codeErrors?: string[]; loosened?: string[]; errors?: string[] };
   const codes: string[][] = [];
   const bad: string[] = [];
   const t0 = Date.now();
@@ -270,6 +270,8 @@ const codeRows: string[] = [];
     if (!g?.code) break;
     if (setting === 'normal') { codes.push(g.code); codeRows.push(`normal ${v}: \`${g.codeString ?? g.code.join(' ')}\``); }
     for (const e of g.codeErrors ?? []) bad.push(`${setting} ${v}: ${e}`);
+    // (gen2.errors, the planner's: every loosened slot and every missing required section, each a breach)
+    for (const e of g.errors ?? []) bad.push(`${setting} ${v}: ${e}`);
     // (a loosened slot is a FAIL, the lead 11-05, Law 22: the fix is more sections, never a looser rule; its line names the pieces missing)
     for (const l of g.loosened ?? []) { codeRows.push(`${setting} ${v} loosened: ${l}`); bad.push(`${setting} ${v}: loosened, add sections: ${l}`); }
   }
@@ -283,7 +285,7 @@ const codeRows: string[] = [];
       if (oc.length) { const x = overlapSummary(codes, oc); linesShown.push(`node code vs ${o.id}: 3-gram overlap mean ${x.mean.toFixed(2)}, worst ${x.max.toFixed(2)}`); }
     }
     linesShown.push(`node code lines: ${((Date.now() - t0) / 1000).toFixed(0)} s`);
-    gate(`node code (V1-V17, no loosened slot, ${codes.length} x 2 rolls)`, bad);
+    gate(`node code (V1-V17, gen2.errors empty, no loosened slot, ${codes.length} x 2 rolls)`, bad);
   } else notMeasured.push('node code: per-roll code, V1-V17, distinct tokens and 3-gram overlap (gen2.code: once 1-1 builds on gen2)');
 }
 
