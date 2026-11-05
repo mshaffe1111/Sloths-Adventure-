@@ -127,3 +127,54 @@ planner's 4:00 breakdown (3:42 PM ET) says where old 1-1's 0.384 comes from: one
 Each stage's brief lives in its own file, reference/engine/briefs/<id>.md. **The designer's 1-1 brief (briefs/1-1.designer.md) is NOT
 on the cold builder's branch.** It's kept only to compare with the builder's brief afterwards, because a builder who can read it is
 copying, not testing.
+
+## 6. Every rule's source (added 3:49 PM ET; Matt, 4:04 PM: "hours and hours of research... nobody wants to use it")
+
+Kinds:
+- **RESEARCH:** a research row, file:line as the critic's trace keys it;
+- **MEASURED:** a run on shipped games or on our main;
+- **MATT:** his own rule;
+- **JUDGMENT:** no row. The reason is given, and it's on the list for Matt below.
+
+| Rule | Source | Kind |
+|---|---|---|
+| **§1 feel brief: `beat`, `look`, `must`, `not`** | the lead's story brief per stage (the brief process, ES "How a stage is made") | MATT (11-05: "a helper can put a prompt in of how it wants the stage to look like") |
+| §1 `teaches` | LEDGER-ENGINE-GEMINI.md:479 (one mechanic introduced, combined, twisted, mastered); GEMINI-PCG-RESEARCH.md:315 (a world's first level forces Node 1 to a dedicated teach) | RESEARCH |
+| §1 `trend` | LEDGER-2026-11-02-full.md:54 (every stage tags its direction; each world has a going-down stretch) | RESEARCH |
+| §1 `ends` | LEDGER-2026-11-02-full.md:78, :204, :343-344 (finale 15-20 s at the exit, walk-out ≤ about 3 s). `quiet` is the story's exception | RESEARCH; the quiet exception is **JUDGMENT** (story-led, no row) |
+| **§1 add: `pair`** (the stage's mechanic pair on one beat; for a teach stage, its taught moves) | LEDGER-2026-11-02-full.md:24, :33, :208 | RESEARCH (added now: the research makes the pair a stage's identity) |
+| §1 knobs `branching`, `water`, `d` | LEDGER-2026-11-04-part1.md:18 (map shape); the difficulty dial (ES §Dial, G rows) | RESEARCH |
+| **§2 kit, theme lock** | MATT 11-05 ("It can't just be using any piece from any world"; "no lava in the forest") | MATT |
+| §2 move ladder from main | main's taught-at (C9, from main) | MEASURED |
+| §2 rocks never float; everything stands on its holder | MATT 11-05 10:39; D16, D37 | MATT |
+| §2 every dip a one-jump way out | STAGE-RULES §2 (plainWalk) | MATT (STAGE-RULES) |
+| §2 a fall lands on something: the continuous moss floor | LEDGER-2026-11-02-full.md:388 ("W1 in bright daylight with generous safety floors"); MEASURED: old 1-1's floor gives its 0.384 diversity, 36 splits, 0.61 two-road (planner 4:00) | RESEARCH + MEASURED |
+| §2 new moves first used over safe ground, one new thing | LEDGER-ENGINE-GEMINI.md:479; CLAUDE.md "the first appearance of a mechanic is taught" | RESEARCH + MATT |
+| §2 nothing costs a life in 1-1 | main's old 1-1 promise (stage11.test.ts:30); LEDGER-2026-11-02-full.md:388 | MEASURED + RESEARCH |
+| §2 ≥ 2:00 | CLAUDE.md "stages take at least 2 minutes" | MATT |
+| §2 start clearance; safe first 1,300 px | STAGE-RULES:161 (safe start) | MATT (STAGE-RULES) |
+| §2 hearts after risk, flags before hard parts | LEDGER-2026-11-02-full.md:144, :427, :430 (checkpoint spacing; flags on the rests before the twist and finale) | RESEARCH (flags). Hearts-after-risk is **JUDGMENT** (house placement rule, no row) |
+| §2 end on a bank | the 11:04 ruling (the clue on the shrine bank) | JUDGMENT (story-led) |
+| **§2 rolled structure, map shape, spike/rest/fork placement** | LEDGER-2026-11-04-part2.md:113 (roll a map shape per stage, neighbours never share); LEDGER-2026-11-04-part1.md:18, :315-317 | RESEARCH |
+| §2 roll families; bursts 5-20 s | LEDGER-2026-11-02-full.md:203 (rhythm groups of 5/10/15/20 s); per-roll rows (engine-runs Addendum 2-3) | RESEARCH + MEASURED |
+| §2 diversity ≥ 0.35; lookalike < 0.78; 20 s window | STAGE-RULES §2; LEDGER-2026-11-04-part2.md:175 (C3); LEDGER-ENGINE-GEMINI.md:45, :465 (E1) | RESEARCH |
+| §2 length 120-150 s, first stage | PACING.md §2.2 (Tropical Freeze 1-1 dev clocks, 1:50-2:30) | MEASURED |
+| §2 taste floors (old 1-1) | engine-runs Addendum 4, out/old12/layout.txt | MEASURED (floor only, Matt 3:37) |
+| **§4 jobs** (arrive, teach, practise, fork, rest, test, twist, finale/arrival, end) | LEDGER-2026-11-04-part1.md:314 (skeleton: start, intro, halfway rest with wayside line, climax, goal); LEDGER-ENGINE-GEMINI.md:479 (kishotenketsu) | RESEARCH |
+| §4 rule 2: teach before use, a practise before a test | LEDGER-ENGINE-GEMINI.md:479 | RESEARCH |
+| §4 rule 3: a rest after every test and twist | LEDGER-2026-11-02-full.md:330 (a rest between every two groups); LEDGER-2026-11-04-part1.md:210 (rest placed by the grammar after Tight) | RESEARCH |
+| §4 rule 4: no same job side by side | LEDGER-ENGINE-GEMINI.md:45 (no 3-4 move repeats) | RESEARCH |
+| §4 rule 5: forks by branching | LEDGER-2026-11-04-part1.md:317 (high/low split, rejoin) | RESEARCH; the 0 / 1-2 / 3+ counts are **JUDGMENT** (no row gives a count) |
+| §4 rule 7: the moment in the last third | LEDGER-2026-11-02-full.md:86 (density climbs; densest group in the last quarter) | RESEARCH |
+| §4 rule 9: the floor road; R2 | as §2 above | RESEARCH + MEASURED |
+| §4 rule 12: placing must-haves; the golden seed | LEDGER-2026-11-02-full.md:439 (tier 3 at the top of the hardest group, proven reachable); main's old 1-1 (stage11.test.ts:17-24) | RESEARCH + MEASURED |
+| §4 rule 13: neighbours differ | LEDGER-2026-11-02-full.md:62, :350 (stages sharing tempo, camera and thinking load feel the same) | RESEARCH |
+
+**The JUDGMENT list, for Matt (one line each):**
+1. The quiet ending: a stage whose story ends quietly skips the research's dense finale.
+2. Hearts only after real risk.
+3. The end on a bank.
+4. Forks: none 0, some 1-2, lots 3 or more.
+
+**One research row not taken, on evidence:** LEDGER-2026-11-02-full.md:331-332 ("every 3-5 minute stage") is CONTRADICTED by the
+measured dev clocks (Tropical Freeze 1-1 1:50-2:30). Measurement outranks the claim (ES evidence order).
