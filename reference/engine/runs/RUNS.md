@@ -361,7 +361,7 @@ uncommitted scratch worktree.
 
 Last push 12:16 PM ET: about 1 h 8 min of the planned 3 h (see the time note at the top). Branch `engine-runs`.
 
-## Addendum, 12:22-12:45 PM ET: E3's two support rules side by side (the lead's request)
+## Addendum, 12:22-12:25 PM ET: E3's two support rules side by side (the lead's request)
 
 **Why:** two tools measure E3 with different rules. The planner's is `tools/engine/stonesupport.ts`, arrived with engine-mixer
 `76b7c846c`; it does not change `src/game` from `021ef4e93`. Mine is `tools/engine/runs/support.py`. The designer is to pick ONE rule.
