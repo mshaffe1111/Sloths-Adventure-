@@ -2,6 +2,11 @@
 
 Keep this short and current. Rewrite stale lines. Times from `TZ=America/New_York date`.
 
+## LAST CHANCE (Matt, 3:45 PM ET): "You have one more chance to get this right... you just don't know how to plan." Keep the plan to the 3 steps below. Matt hears from me 3 times: the 5:30 trial result, the build start, 1-1 ready.
+1. 5:30: the engine generates 1-1 from a brief; 16-roll trial, pass or fail plainly.
+2. On pass: a fresh helper writes its own brief, runs one command; then my check, then Matt plays.
+3. On fail: the exact number missed and the engine fix. Never hand patches.
+
 ## PRIORITY LIST (read before EVERY action and every message; Matt 11-05: "it's your focus that's breaking me")
 MATT'S GOAL (D45, check every design against it first): THE ENGINE DOES THE WORK. A person gives a short brief (7 fields) and judges; the engine generates each stage's structure per roll inside the world rulebook. A hand-written plan per stage is NOT an engine.
 THE ONE GOAL TODAY: prove that engine on 1-1. Nothing else.
