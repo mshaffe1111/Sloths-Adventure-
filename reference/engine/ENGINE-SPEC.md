@@ -1152,7 +1152,7 @@ Each stage's section is signed by all three before any building starts. New help
   as the low road. Proposed rule: a road keeps going across gaps up to a Normal flat jump (157-185 px, PLAN.md table 2.1; use 180).
   The split floor then comes from old 1-1. Not checked yet: that both roads are reachable routes (the CP3 prover's job).
 
-### [designer ruling, 11-05 ~9:50 AM ET] 1-1 ground build (planner 098aff49): option (a), lines from 1-1's own profile
+### [designer ruling, 11-05 ~9:41 AM ET] 1-1 ground build (planner 098aff49): option (a), lines from 1-1's own profile
 
 The planner measured the ground-first 1-1, 16 rolls on Normal and 16 on Easy:
 - splits 2-4 (line 19);
@@ -1199,7 +1199,7 @@ turned down. The old 1-1's 34 splits came from canopy over floor, and 1-1 keeps 
   the list. The art-gap rule applies, because this is a true gap.
 - **Morning light** is backdrop/lighting work (engine-side). The lead assigns it with the atlas wiring.
 
-### [designer, 11-05 ~10:05 AM ET] Engine first (Matt): the stage-profile format and the element table
+### [designer, 11-05 ~9:46 AM ET] Engine first (Matt): the stage-profile format and the element table
 
 Matt has moved 1-1 behind the engine. The planner builds the two parts below as data plus gates. 1-1 (parked at engine-mixer
 72fe81a3) is then rebuilt from its profile as the first proof. This is the format the designer writes for every stage. The planner
@@ -1262,7 +1262,7 @@ Rules:
 the water zone is drawn, use `stump hop` or `bank hops` in its place. With the water zone, `lily-pad hop` goes back into n5's low road
 only, the creek.
 
-### [designer, 11-05 ~10:30 AM ET] The move ladder (Matt: "once you learn floating, you can float everywhere... once you learn how to go across ropes, that's more used")
+### [designer, 11-05 ~9:55 AM ET] The move ladder (Matt: "once you learn floating, you can float everywhere... once you learn how to go across ropes, that's more used")
 
 The planner's proposal is accepted:
 - **1. One source.** Where a move is taught comes from the game's own lesson lines, skills and Dot's tips.
@@ -1332,7 +1332,7 @@ more, or the stage's theme.
 The planner builds these lines as gates over the all-world table. 1-1's proof uses only its own rows: teach run, jump, bounce and
 double.
 
-### [designer ruling, 11-05 ~10:40 AM ET] 1-5's crumbling ledges and lily pads under the element gate
+### [designer ruling, 11-05 ~9:56 AM ET] 1-5's crumbling ledges and lily pads under the element gate
 
 - **The crumbling ledge is ground.** Its art is World 7's carved stone slab (`crumbleArt.ts`), so its rule is option (b). In 1-5 it goes
   on banks and the floor only. The breakables on the fork's high road and in the canopy become creaky limbs (tree, taught in 1-5's n2).
@@ -1345,7 +1345,7 @@ double.
 - These swaps change 1-5's regression fingerprints on purpose. The planner records them as such, and the variety lines and two-road
   share are re-run on 16/16 rolls after the swap.
 
-### [designer ruling, 11-05 ~11:00 AM ET] Matt's three: floating, core objects, themes
+### [designer ruling, 11-05 ~9:58 AM ET] Matt's three: floating, core objects, themes
 
 **1. Floating (Matt: "certain floating objects... looks better. Too much junk... harder to understand").** The footing column stays the
 default. Each kind gets `mayFloat`, and each profile gets a `float` line: none, some or free, with a cap on its share of landings.
@@ -1366,7 +1366,7 @@ default. Each kind gets `mayFloat`, and each profile gets a `float` line: none, 
 
 - **A floating piece must read on its own.** It carries its own underside in its art and is never half-hidden by dressing. The
   stills review judges it upright and sideways.
-- **This revises P-2 and the 11-05 10:40 ruling.** A floating stone slab is no longer a fault in itself. 1-5's canopy breakables still
+- **This revises P-2 and the 11-05 9:56 AM ruling.** A floating stone slab is no longer a fault in itself. 1-5's canopy breakables still
   become creaky limbs, though, for theme reasons: the tree's own breakable belongs up there. Slabs may float low, over ground and
   creek gaps.
 
@@ -1386,7 +1386,7 @@ and checkSpec refuses anything off-theme.
 - It is done world by world, just before the engine first builds a stage of that world. World 1's 10 kinds are done. World 2 is
   next when its first stage is queued.
 
-### [designer, 11-05 ~11:15 AM ET] World 1 piece labels (Matt's priority: every piece labelled; the planner's sheet shows them before the mixer reads them)
+### [designer, 11-05 ~9:59 AM ET] World 1 piece labels (Matt's priority: every piece labelled; the planner's sheet shows them before the mixer reads them)
 
 Labels per kind: element, footing, may float, **uses** (the jobs it does in a node), **teaches**, worlds, **stages** (where it is
 core, and where it is allowed). This table is for the planner's library at engine-mixer e7089072. A kind not listed here is not used.
@@ -1418,13 +1418,13 @@ core, and where it is allowed). This table is for the planner's library at engin
    Whether a kind belongs in a world other than W1 is ruled in that world's object pass, so until then the planner may keep later
    worlds closed.
 
-**[designer, 11-05 ~11:25 AM ET] Correction to fix 3 (the lead's check, Matt's "floating logs... more Mario"):**
+**[designer, 11-05 ~10:00 AM ET] Correction to fix 3 (the lead's check, Matt's "floating logs... more Mario"):**
 - A **floating log in open air is allowed in the canopy half**, under the stage's float cap. What is not allowed is a log *resting on*
   a bough or trunk, as if a ground log had been put up in a tree.
 - So `bough hops`, `bough stair` and `double chain` may lay a log only as a floating piece, counted in the float share. Every
   non-floating landing up there is a branch.
 
-### [designer ruling, 11-05 ~11:55 AM ET] The move ladder against the all-world table (planner 7d9ad9a9)
+### [designer ruling, 11-05 ~10:09 AM ET] The move ladder against the all-world table (planner 7d9ad9a9)
 
 **(a) Lianas and breaking branches are taught in 1-2. The table is right.** Shipped decisions already say so: "1-2 owns the lianas"
 (d272601f) and "1-2 teaches crumbling" (6dae405d).
@@ -1447,7 +1447,7 @@ before it can hurt).
 - First presence counts only as a check. A mechanic present before its taught-at is a breach. It is fixed in the stage where it
   appears early, never by moving the teach back.
 
-**Correction to the 10:40 and 11:00 rulings (the crumble slab in World 1):** shipped commit acf6e1e8 already ruled that World 1's
+**Correction to the 9:56 and 9:58 AM rulings (the crumble slab in World 1):** shipped commit acf6e1e8 already ruled that World 1's
 breakables use "World 1's branch art, never World 7's ruin slab".
 - The slab is World 7's alone. It leaves World 1 entirely, which undoes "low by the shrine stones".
 - 1-5's ground breakables become World 1 rotten wood (creak, on the ground) if that art exists. Planner: name its atlas key.
@@ -1455,7 +1455,7 @@ breakables use "World 1's branch art, never World 7's ruin slab".
   roads use stump hop and bank hops with no breakable.
 - Until one of those is done, the theme check names the slab in World 1 as a breach.
 
-## The whole-game plan (designer, 11-05 ~12:20 PM ET; Matt: "the engine plans the WHOLE game"; the lead's five bars)
+## The whole-game plan (designer, 11-05 ~10:12 AM ET; Matt: "the engine plans the WHOLE game"; the lead's five bars)
 
 Data the engine reads, which the planner builds into `worlds.ts` and `ladder.ts`. The source for "where things are today" is the
 planner's all-world table, `tools/engine/moveladder.json` (engine-mixer 7d9ad9a9: 102 stages, 40 mechanics). **Build on what works:**
@@ -1599,8 +1599,13 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
   - 6-8 and 6-9 echo;
   - then W6-W8 and W10 at least 1 stage in 3 where water is drawn. W7's temple pools, W8's karst ponds and W10's camp river are the
     candidates. None in W9.
-- **The whole swimming stage (R-5.22)** goes in World 6 after 6-7, a reshaped existing stage, not a new one (R-153). Which stage is the
-  lead's call with the story; 6-8 "Stilt Climb" or 6-9's approach are the designer's suggestions.
+- **The whole swimming stage (R-5.22) is 6-9, its approach reshaped** (a reshaped existing stage, not a new one, R-153; designer's call
+  on the lead's story read, 11-05 ~10:15 AM ET).
+  - 6-9's clue is "Ripples cross the black water, all of them coming from one place", and it leads into the 6-10 Reaver lair. It keeps
+    its clue and its ending toward the lair.
+  - 6-8 is out: it is the hand-built Stilt Climb, and its clue says "you cannot hear the water".
+  - The lead writes 6-9's story brief (what makes the ripples; a fast, happy swim with dark water around it) when the engine reaches
+    World 6.
 - **World 1 to 6-6:** water is drawing and a life-costing hazard only (the engine-render water zone). Lily pads, reeds, stones and
   logs stand on it per the element table.
 
