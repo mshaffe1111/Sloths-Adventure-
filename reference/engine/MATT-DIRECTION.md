@@ -226,3 +226,8 @@ to put time and work trying to fix background pictures when we can just craft on
 So: a background or piece with a defect painted into it (clutter, seams, cut edges, smears) is remade fresh on Hugging Face and the
 old one is removed, never inpainted, cross-faded or masked. The lead approves the spend (Hugging Face first), inside what's left of the
 $72 with about $15 kept back.
+
+## 2026-11-05 11:25 AM ET: MATT PICKED THE SWIM SPEED: 1.25x his run
+"I thought he swam faster than he ran. So I would think that he would swim 1.25 his original speed."
+So clean-water swimming is 1.25 times Pokey's run speed (today 0.53x, swim.ts:35), everywhere he swims (W6-W8, W10). The research's
+option C, and real sloths do swim faster than they climb. "Suddenly fast" needs long water: 6-9's swim beats are long (3,500-5,000 px).
