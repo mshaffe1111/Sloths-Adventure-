@@ -30,6 +30,7 @@ import { supportCheck } from '../../src/game/mixer/support.ts';
 import { landingKind } from '../../src/game/mixer/catalog.ts';
 import { propBreaches } from '../../src/game/mixer/propSupport.ts';
 import { stillSpots } from '../../src/game/mixer/stillSpots.ts';
+import { distinctTokens, overlapSummary } from '../../src/game/mixer/codeVariety.ts';
 import { nodePieceBreaches, type RealisedNode } from '../../src/game/mixer/nodePieces.ts';
 import { botRun } from '../validate/play.ts';
 
@@ -247,6 +248,36 @@ if (fs.existsSync(OLD_FILE)) {
   else notMeasured.push('node pieces, V18 (mixer/nodePieces.ts, on gen2 meta.gen2.nodes: once 1-1 builds on gen2)');
 }
 
+// 5c'''. the node code (NODES.md §8; the planner's parser writes meta.gen2.code, codeString, codeErrors, loosened): each roll's realised
+// code in the report, V1-V17 as a gate (codeErrors), the loosened slots named, and the variety lines (mixer/codeVariety.ts: distinct
+// tokens, 3-gram overlap between rolls and against the world's other gen2 stages). The variety lines have no pass line until the designer sets one
+const codeRows: string[] = [];
+{
+  type G2 = { meta?: { gen2?: { code?: string[]; codeString?: string; codeErrors?: string[]; loosened?: string[] } } };
+  const codes: string[][] = [];
+  const bad: string[] = [];
+  const t0 = Date.now();
+  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) {
+    const g = (buildRoll(cfg, v, setting === 'easy') as G2).meta?.gen2;
+    if (!g?.code) break;
+    if (setting === 'normal') { codes.push(g.code); codeRows.push(`normal ${v}: \`${g.codeString ?? g.code.join(' ')}\``); }
+    for (const e of g.codeErrors ?? []) bad.push(`${setting} ${v}: ${e}`);
+    for (const l of g.loosened ?? []) codeRows.push(`${setting} ${v} loosened: ${l}`);
+  }
+  if (codes.length) {
+    const d = codes.map(distinctTokens).sort((x, y) => x - y);
+    const self = overlapSummary(codes);
+    linesShown.push(`node code: distinct tokens a roll ${d[0]}-${d[d.length - 1]}; 3-gram overlap between rolls mean ${self.mean.toFixed(2)}, worst ${self.max.toFixed(2)} (${self.pairs} pairs)`);
+    const w = cfg.worldIndex;
+    for (const o of levels.filter((l) => l.worldIndex === w && l.id !== id && !l.secret)) {
+      const oc = Array.from({ length: NB }, (_, i) => (buildRoll(o, i + 1) as G2).meta?.gen2?.code).filter((c): c is string[] => !!c);
+      if (oc.length) { const x = overlapSummary(codes, oc); linesShown.push(`node code vs ${o.id}: 3-gram overlap mean ${x.mean.toFixed(2)}, worst ${x.max.toFixed(2)}`); }
+    }
+    linesShown.push(`node code lines: ${((Date.now() - t0) / 1000).toFixed(0)} s`);
+    gate(`node code (V1-V17, ${codes.length} x 2 rolls)`, bad);
+  } else notMeasured.push('node code: per-roll code, V1-V17, distinct tokens and 3-gram overlap (meta.gen2.code: once 1-1 builds on gen2)');
+}
+
 // 5d. REQUIRED-MOVE (NODES.md §1 `test`, R2 §2 L5: Nelson & Smith; Green et al. 2018): on each teach and test node, a bot without the
 // node's move fails the node (it never gets past the node's end) and the full bot passes it. The bot is the first-timer
 // (tools/validate/play.ts botRun), its limit `without` (no second jump, or every mushroom in the stretch plain solid), the way R2 §5
@@ -346,7 +377,7 @@ const md = [`# ${id} ${spec.name}: stage report`, '', `\`npx tsx tools/engine/st
   '| Gate | Result | Detail |', '|---|---|---|',
   ...gates.map((g) => `| ${g.name} | ${g.pass ? 'PASS' : '**FAIL**'} | ${g.detail.slice(0, 6).join('; ').replace(/\|/g, '/') || '-'}${g.detail.length > 6 ? `; and ${g.detail.length - 6} more` : ''} |`),
   ...notRun.map((n) => `| ${n} | NOT RUN | not in stage.ts yet |`), '',
-  '## Stills', '', 'Judge them by eye, upright and sideways, before the stage is done: a PASS here means only that they were shot.', '', ...stillsDone.map((l) => `- ${l}`), '', '## Stage lines, measured (engine-runs tools)', '', ...linesShown.map((l) => `- ${l}`), '', '## Neighbours, closest', '', ...nbClosest.map((l) => `- ${l}`), '', '## Live neighbours, reported not judged (shrink-only known list, R-165.47)', '', ...(nbKnown.length ? nbKnown.map((l) => `- ${l}`) : ['- none failing']), ''].join('\n');
+  '## Node code, each roll (NODES.md §8)', '', ...(codeRows.length ? codeRows.map((l) => `- ${l}`) : ['- not built on gen2 yet']), '', '## Stills', '', 'Judge them by eye, upright and sideways, before the stage is done: a PASS here means only that they were shot.', '', ...stillsDone.map((l) => `- ${l}`), '', '## Stage lines, measured (engine-runs tools)', '', ...linesShown.map((l) => `- ${l}`), '', '## Neighbours, closest', '', ...nbClosest.map((l) => `- ${l}`), '', '## Live neighbours, reported not judged (shrink-only known list, R-165.47)', '', ...(nbKnown.length ? nbKnown.map((l) => `- ${l}`) : ['- none failing']), ''].join('\n');
 fs.mkdirSync(OUT, { recursive: true });
 const file = path.join(OUT, `${id}.md`);
 fs.writeFileSync(file, md + '\n');
