@@ -1776,3 +1776,6 @@ A number that no source settles goes to TRIAGE.md as a run (C) or research (R) i
 | C29 | Matt (lifted the ceiling) | Struck |
 | C30 | internal | One time line: the acceptance test (≤ 1/3 of 1-5's hand-mix, measured). R-163's "about an hour" is the target, not the test |
 | C31 | Matt (MD:206-208) | The lead approves Hugging Face for the engine, and Matt is told. "Matt approves the list" is struck |
+- **C18 decided by Matt (10:55 AM ET, via the lead): the rule holds.** Easy density stays 0.35-0.55 (SR §2). The engine thins Easy itself,
+  so every stage it builds meets the line. 1-5 is rebuilt from data, as an engine fix, not a hand edit. The planner's success line is
+  1-5 Easy ≤ 0.55 on 16/16 rolls with every other gate green. My 03:19 AM acceptance of 0.61 is withdrawn.
