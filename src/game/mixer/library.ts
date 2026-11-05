@@ -68,7 +68,7 @@ export const IDEAS: Record<string, Idea> = {
   'bank walk': { content: 'jumps', element: 'ground', needs: ['run'], what: 'a rest: a long bank and a short hop' },
   'bounce mound': { content: 'bounces', element: 'ground', needs: ['bounce'], teaches: 'bounce', what: 'a perched mushroom bounces him onto a mound' },
   'stump tops': { content: 'jumps', element: 'ground', needs: ['jump'], what: 'logs on stumps, a ground fork\'s high road' },
-  'log jam': { content: 'jumps', element: 'ground', needs: ['jump'], what: 'logs at two heights on stumps' },
+  'log jam': { content: 'jumps', element: 'ground', needs: ['jump'], floor: true, what: 'logs at two heights on stumps' },
   'double gap': { content: 'jumps', element: 'ground', needs: ['double'], teaches: 'double', what: 'gaps too wide for a single jump, a catch under each' },
   'lily-pad hop': { content: 'water', element: 'water', needs: ['jump'], floor: true, what: 'lily pads and logs across the creek' },
   'reed isles': { content: 'water', element: 'water', needs: ['jump'], what: 'reed isles and lily pads' },

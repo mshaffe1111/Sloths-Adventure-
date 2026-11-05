@@ -46,7 +46,8 @@ export type Idea =
   // (1-1's ground half, the designer's "a ground stage that becomes a tree stage", 11-05)
   | 'bounce mound' | 'stump tops' | 'log jam';
 /** the floor ideas a canopy is laid over (the designer's ruling 1 on the CP3 miss: "boughs run above bank hops, stump hops or the creek") */
-export const FLOOR: readonly Idea[] = ['bank hops', 'stump hop', 'lily-pad hop'];
+// (log jam joins them, 11-05: with no lily pads until the water draws, two floor ideas left one over the 40% cap on 1-5)
+export const FLOOR: readonly Idea[] = ['bank hops', 'stump hop', 'lily-pad hop', 'log jam'];
 export interface Fork { high: Idea[]; low: Idea[] }
 export interface NodePlan { id?: string; easyOnly?: boolean;
   /** one burst only (1-1's run teach: a flat walk, no gaps) */
@@ -66,25 +67,28 @@ export interface NodePlan { id?: string; easyOnly?: boolean;
 /** a node's name on the map: its plan id, or its number counting only the nodes without one (n7b sits between n7 and n8) */
 const nidOf = (plan: NodePlan[], i: number): string => plan[i].id ?? String(plan.slice(0, i + 1).filter((q) => !q.id).length);
 export const PLAN_15: NodePlan[] = [
-  { job: 'warm-up', deck: ['bank hops', 'stump hop'] },
+  { job: 'warm-up', deck: ['bank hops', 'stump hop', 'log jam'] },
   { job: 'teach creaky', deck: ['snap teach'], hint: 'Creaky branches! Grab the petals and keep moving' },
   // (each deck gains a floor idea, the old 1-1's cycle: the designer's ruling (a) on the review, 11-05 ~2:35 AM)
   { job: 'climb up', deck: ['bounce up', 'the climb', 'stump hop'] },
   // (Easy's third rest, the designer's option (c) for Easy's density, 11-05: Easy only)
   { id: '3b', easyOnly: true, job: 'rest', deck: ['bank walk'] },
-  { job: 'the fork', deck: { high: ['crumbling ledge', 'creaky boughs'], low: ['lily-pad hop', 'reed isles'] } },
+  // (the designer's ruling (b), 11-05: the high road's breakables are creaky limbs (a stone slab on a kapok trunk floats, P-2), and no
+  // lily pads until the engine draws water (the element gate): the low road is ground)
+  { job: 'the fork', deck: { high: ['creaky boughs', 'bough hops'], low: ['stump hop', 'crumbling ledge'] } },
   { job: 'rest', deck: ['bank walk'], hint: 'These petals are fresher. She came this way not long ago.', flagBefore: false },
-  { job: 'test creaky', deck: ['snap dash', 'bank hops'], flagBefore: true, heartAfter: true },
+  { job: 'test creaky', deck: ['snap dash', 'bank hops', 'log jam'], flagBefore: true, heartAfter: true },
   { job: 'twist', deck: ['rotten-branch drop', 'stump hop'] },
   // (the second rest, the designer's ruling on the fun gate, 11-05 ~2:26 AM: a short flat pad and a Dot spot after the drop; its flag
   // only if a hard node follows, which the flag rule decides; Dot's line is the designer's)
   { id: '7b', job: 'rest', deck: ['bank walk'], hint: 'Down on the forest floor now. Her marks go on past the creek.' },
   // (the designer's ruling 6 on the CP3 miss: n8 draws one that the previous two nodes did not lay)
-  { job: 'creek', deck: ['lily-pad hop', 'reed isles', 'stump hop', 'crumbling ledge'], notLast: 2 },
+  // (the creek's lily pads and reeds come back on real water once the engine draws it; until then its ground: ruling (b))
+  { job: 'creek', deck: ['stump hop', 'bank hops', 'crumbling ledge'], notLast: 2 },
   // (push block leaves n9 for CP3, the designer's ruling: the level check walks a pushed log only inside a puzzle room; back in CP4)
-  { job: 'puzzle beat', deck: ['bough stair', 'the climb', 'bank hops'], not: 3, seed: true, hint: 'Something shiny, far away...', padHint: 'Something shiny, far away... too far, for now.' },
-  { job: 'master (fork)', deck: { high: ['crumbling ledge', 'bridge span'], low: ['bough stair', 'bank hops'] }, flagBefore: true, heartAfter: true },
-  { job: 'cool down', deck: ['bank hops', 'stump hop'] },
+  { job: 'puzzle beat', deck: ['bough stair', 'the climb', 'bank hops', 'log jam'], not: 3, seed: true, hint: 'Something shiny, far away...', padHint: 'Something shiny, far away... too far, for now.' },
+  { job: 'master (fork)', deck: { high: ['creaky boughs', 'bridge span'], low: ['bough stair', 'stump hop'] }, flagBefore: true, heartAfter: true },
+  { job: 'cool down', deck: ['bank hops', 'stump hop', 'log jam'] },
 ];
 
 /**
@@ -487,7 +491,21 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
       const b = step(L, c, R, 'branch', Math.round(R.r(600, 700)));
       return { x: b.x + b.width, y: b.y };
     }
-    case 'crumbling ledge': return burst(L, c, R, ['crumble', 'branch'], n, [30, -30, 40, -40]);
+    // (a crumbling carved stone slab is ground (the designer's ruling (b), 11-05): each one spans a gap between two banks, both its ends on
+    // them; it gives way under him and the gap is under it)
+    case 'crumbling ledge': {
+      let e = step(L, c, R, 'bank', Math.round(R.r(220, 280) * L.wScale));
+      const k0 = L.easy ? 2 : R.i(2, 3);
+      for (let k = 0; k < k0; k++) {
+        // (between two slabs, a plain hop with a step up or down: never a long flat run of slab and bank)
+        if (k > 0) { const h = burst(L, { x: e.x + e.width, y: e.y }, R, ['bank'], 1, [40, -40, 50, -50]); e = L.P[L.P.length - 1]; void h; }
+        const g = Math.round(R.r(90, 130));
+        // (set 25 px down into the bank ends, so stepping on and off it is a step, not a flat walk: the gate's up/down share)
+        plat(L, 'crumble', e.x + e.width - 30, e.y + 25, g + 60);
+        e = plat(L, 'bank', e.x + e.width + g, e.y, Math.round(R.r(200, 280) * L.wScale));
+      }
+      return { x: e.x + e.width, y: e.y };
+    }
     // (on Easy the creaky limbs come first: a burst of 3 is then 2 creaky and 1 branch, not 1 and 2, which holds creaky at 15% or more of
     // Easy's landings (it was 14.6% on one roll) without adding a piece)
     case 'creaky boughs': return burst(L, c, R, L.easy ? ['creaky', 'branch'] : ['branch', 'creaky'], n);
@@ -544,6 +562,7 @@ const FLOOR_KINDS: Record<string, { host: string; kinds: string[][] }> = {
   'bank hops': { host: 'bank', kinds: [['log'], ['stone'], ['bank']] },
   'stump hop': { host: 'bank', kinds: [['stone'], ['log'], ['stone']] },
   'lily-pad hop': { host: 'log', kinds: [['lily']] },
+  'log jam': { host: 'log', kinds: [['bank'], ['log'], ['stone']] },
 };
 
 /**
