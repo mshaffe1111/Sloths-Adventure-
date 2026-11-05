@@ -82,6 +82,9 @@ const others = [...levels.filter((l) => l.worldIndex === world && l.id !== id &&
 const prof = (r: RollResult) => new Map(r.prof);
 const nbBad: string[] = [];
 const nbClosest: string[] = [];
+const nbKnown: string[] = [];
+const KNOWN_FILE = 'tools/engine/neighbourknown.json';
+const known: string[] = fs.existsSync(KNOWN_FILE) ? JSON.parse(fs.readFileSync(KNOWN_FILE, 'utf8')).pairs : [];
 for (const o of others) {
   let worstCos = 0, alikeAt = '', alike = 0, pairs = 0;
   for (let v = 1; v <= NB; v++) {
@@ -95,10 +98,17 @@ for (const o of others) {
     }
   }
   nbClosest.push(`${o.id}: max cosine ${worstCos.toFixed(2)}, ${alike} of ${pairs} roll pairs with a 20 s stretch alike${alikeAt ? ` (first: ${alikeAt})` : ''}`);
-  if (worstCos > RULES.cosine) nbBad.push(`${o.id}: cosine ${worstCos.toFixed(2)} over ${RULES.cosine}`);
-  if (alikeAt) nbBad.push(`${o.id}: a 20 s stretch plays alike (${alikeAt})`);
+  const fails = [...(worstCos > RULES.cosine ? [`cosine ${worstCos.toFixed(2)} over ${RULES.cosine}`] : []), ...(alikeAt ? [`a 20 s stretch plays alike (${alikeAt})`] : [])];
+  // (the designer's ruling, ENGINE-SPEC c62a778d: judged against every engine-built stage; a live, old stage is reported, not judged, on a
+  // known list that only shrinks, R-165.47: a live pair failing that is not on it is a FAIL, a listed pair that now passes is to delete)
+  const built = !!specFor(o.id) || o.id.includes('planted');
+  const key = `${id}~${o.id}`;
+  if (built) for (const f of fails) nbBad.push(`${o.id}: ${f}`);
+  else if (fails.length && !known.includes(key)) nbBad.push(`${o.id} (live): ${fails.join('; ')}, and not on ${KNOWN_FILE}: the list only shrinks`);
+  else if (fails.length) nbKnown.push(`${o.id} (live, known): ${fails.join('; ')}`);
+  else if (known.includes(key)) nbKnown.push(`${o.id} (live): passes now; take ${key} off ${KNOWN_FILE}`);
 }
-gate(`neighbours (World ${world}, ${others.length} stages x ${NB} rolls)`, nbBad);
+gate(`neighbours (judged: World ${world}'s engine-built stages; live ones reported against ${KNOWN_FILE}; ${NB} rolls each)`, nbBad);
 
 // 6. the stage's own tests
 const [w, m] = id.split('-');
@@ -115,7 +125,7 @@ const md = [`# ${id} ${spec.name}: stage report`, '', `\`npx tsx tools/engine/st
   '| Gate | Result | Detail |', '|---|---|---|',
   ...gates.map((g) => `| ${g.name} | ${g.pass ? 'PASS' : '**FAIL**'} | ${g.detail.slice(0, 6).join('; ').replace(/\|/g, '/') || '-'}${g.detail.length > 6 ? `; and ${g.detail.length - 6} more` : ''} |`),
   ...notRun.map((n) => `| ${n} | NOT RUN | not in stage.ts yet |`), '',
-  '## Neighbours, closest', '', ...nbClosest.map((l) => `- ${l}`), ''].join('\n');
+  '## Neighbours, closest', '', ...nbClosest.map((l) => `- ${l}`), '', '## Live neighbours, reported not judged (shrink-only known list, R-165.47)', '', ...(nbKnown.length ? nbKnown.map((l) => `- ${l}`) : ['- none failing']), ''].join('\n');
 fs.mkdirSync(OUT, { recursive: true });
 const file = path.join(OUT, `${id}.md`);
 fs.writeFileSync(file, md + '\n');
