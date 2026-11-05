@@ -552,7 +552,8 @@ export class W4Play {
   }
 
   /** behind Pokey: the falls, the pools, the chimes, the rock shadows and rocks, the fern, the knots and Dot, the monkeys, the fruit */
-  drawBack(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number; y0?: number; y1?: number }, zones: readonly Zone[], platforms: Platform[]) {
+  /** (probe: the support probe's draw, dev only, engine.ts supportProbe: no water and no mist, which hold nothing up) */
+  drawBack(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number; y0?: number; y1?: number }, zones: readonly Zone[], platforms: Platform[], probe = false) {
     const w4 = this.w4;
     this.view = view;
     const near = (x: number, pad = 300) => x > view.x0 - pad && x < view.x1 + pad;
@@ -562,7 +563,7 @@ export class W4Play {
       drawW4(ctx, d.n, d.x, d.b, d.w, { flip: d.flip, ...(wi >= 0 ? { alpha: 0.35 + 0.65 * this.flow[wi] } : {}) });
     }
     // (a curtain's water is drawn in front of him, drawFront; behind it, the hollow in the cliff he stands in)
-    (w4.falls ?? []).forEach((w, i) => near(w.x, w.width + 300) && (w.veil ? drawHollow(ctx, w) : drawFall(ctx, w, this.flow[i], t)));
+    (w4.falls ?? []).forEach((w, i) => near(w.x, w.width + 300) && (w.veil ? drawHollow(ctx, w) : !probe && drawFall(ctx, w, this.flow[i], t)));
     const treePainted = (w4.fruit ?? []).map((tree, i) => near(tree.x) && drawFruitTree(ctx, tree, this.fruit[i].state === 'hang'));
     (w4.pools ?? []).forEach((pool, i) => {
       const fall = (w4.falls ?? []).find((w) => w.id === pool.fedBy);
@@ -623,7 +624,7 @@ export class W4Play {
     });
     (w4.nests ?? []).forEach((n, i) => near(n.x) && drawNest(ctx, n, t, t - this.nestBlow[i].at));
     // the mist bank over everything in it (ledges and trunks alike), behind Pokey so he can always be seen in it
-    if (view.y0 !== undefined && view.y1 !== undefined) this.drawMistBank(ctx, t, { x0: view.x0, x1: view.x1, y0: view.y0, y1: view.y1 });
+    if (view.y0 !== undefined && view.y1 !== undefined && !probe) this.drawMistBank(ctx, t, { x0: view.x0, x1: view.x1, y0: view.y0, y1: view.y1 });
     // the places that settle the mist: a soft glow on the ledge, over the mist, so he can tell which ledges to stand still on
     (w4.patience ?? []).forEach((s, i) => {
       if (s.kind !== 'mist' || !s.area || !near((s.x0 + s.x1) / 2, s.x1 - s.x0)) return;

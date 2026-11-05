@@ -485,6 +485,8 @@ export class GameEngine {
   private camera: Camera;
   /** screen pixels per world unit */
   private zoom = 1;
+  /** dev only (tools/engine/stonecheck.mjs): render() draws the world's own layers alone, no backdrop, water, pickups, creatures or Pokey */
+  public supportProbe = false;
   /** css size of the canvas, and the seconds since play began (drives the zoom-in) */
   private viewCssW = 0;
   private viewCssH = 0;
@@ -6277,18 +6279,20 @@ export class GameEngine {
     // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
     const vw = this.camera.viewportWidth, vh = this.camera.viewportHeight;
     const stripVh = vh > vw ? (WORLD_VIEW_H * vw) / PORTRAIT_VIEW_W : vh;
-    if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
+    // (the support probe, dev only: the world's own layers alone on a clear canvas, no backdrop, water or what moves; tools/engine/stonecheck)
+    const probe = this.supportProbe;
+    if (!ownScene && !probe) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
     // 4-7: under the ledges is a long drop into the mist, never the painted ground (w4Play drawAbyss)
-    if (this.proto?.w4?.deepFall !== undefined) {
+    if (this.proto?.w4?.deepFall !== undefined && !probe) {
       const lipY = this.camLedge?.y ?? this.player.y;
       this.abyssLip = Number.isFinite(this.abyssLip) && Math.abs(this.abyssLip - lipY) < 2000 ? this.abyssLip + (lipY - this.abyssLip) * 0.12 : lipY;
       drawAbyss(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.abyssLip - this.camera.y, this.gameTime);
     }
     const lairView = { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight };
-    if (lair && this.currentStage.arena) drawLairBack(ctx, lair, lairView, this.currentStage.arena, this.gameTime, this.boss?.x ?? this.currentStage.arena.right, this.boss?.phase ?? 1);
+    if (lair && this.currentStage.arena && !probe) drawLairBack(ctx, lair, lairView, this.currentStage.arena, this.gameTime, this.boss?.x ?? this.currentStage.arena.right, this.boss?.phase ?? 1);
 
     // the secret Hollow is a dusk of purple thorn-light
-    if (this.currentStage.config.secret) {
+    if (this.currentStage.config.secret && !probe) {
       ctx.fillStyle = 'rgba(46, 16, 101, 0.5)';
       ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
     }
@@ -6303,10 +6307,10 @@ export class GameEngine {
     this.gpuTy = -snapCam(this.camera.y, snap) + shakeY;
     ctx.translate(this.gpuTx, this.gpuTy);
 
-    this.drawWaterAndFlags(ctx, world);
+    if (!probe) this.drawWaterAndFlags(ctx, world);
     // 6-8: the root wall and the hides and arches behind the climb
     if (this.proto?.stilt) drawStiltDecor(ctx, this.proto.stilt, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
-    this.drawRivers(ctx, world, false);
+    if (!probe) this.drawRivers(ctx, world, false);
     // 2-6: the river bank the village is dug into, behind the whole climb
     if (this.proto?.bankWall)
       drawEarthWall(ctx, this.proto.bankWall, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
@@ -6352,7 +6356,7 @@ export class GameEngine {
       if (!this.onScreen(ex, d.baseY, 80)) continue;
       drawLogComing(ctx, ex, d.baseY + LOG_DROP - 10, 1 - (d.width - travelled) / lead, this.gameTime);
     }
-    this.drawRivers(ctx, world, true);
+    if (!probe) this.drawRivers(ctx, world, true);
     // 7-3's ring of stone chairs, behind the courtyard's floor (w7ChairsArt.ts)
     const w7chairs = (this.proto?.gen2 as { w7?: { chairs?: Array<{ x: number; b: number }> } } | undefined)?.w7?.chairs;
     if (w7chairs) drawW7Chairs(ctx, w7chairs, this.camera.x, this.camera.x + this.camera.viewportWidth);
@@ -6381,7 +6385,7 @@ export class GameEngine {
       ctx.fillRect(p.x - 124, p.y - 158, 248, 248);
     }
     // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
-    if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
+    if (this.floodAt.size && !probe) this.drawRivers(ctx, world, true, true);
     // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
     for (const pl of this.platforms) if (pl.lift && this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) drawW2Lift(ctx, pl, !!pl.lift.postRight);
     // 2-6: the village's ladders where the climbs are
@@ -6418,9 +6422,9 @@ export class GameEngine {
       for (const q of this.platforms) if (!q.broken && q.y >= p.y && q.y < under && p.x > q.x && p.x < q.x + q.width && q.y - p.y < this.proto.w4.deepFall) under = q.y;
       if (under < Infinity) drawLandingShadow(ctx, p.x, p.y, under);
     }
-    this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
+    this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms, probe);
     this.w5?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
-    this.drawCalmWater(ctx, false);
+    if (!probe) this.drawCalmWater(ctx, false);
     this.lanternRun?.drawBack(ctx, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime);
     this.kit?.drawBack(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.mc) drawMeecaBack(ctx, this.mc, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
@@ -6442,6 +6446,11 @@ export class GameEngine {
     drawCrumbleTiles(ctx, this.platforms, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
     drawZoneBases(ctx, this.currentStage.zones, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
     if (lair && this.currentStage.arena) drawLairWorld(ctx, lair, this.currentStage.arena, lairView, this.gameTime);
+    if (probe) {
+      ctx.restore();
+      ctx.restore();
+      return;
+    }
 
     // Shimmy ropes (behind the hero)
     if (this.ropes.length) {
