@@ -304,3 +304,15 @@ So: until 1-1 has proved the engine, the only work is fixing a MEASURED 1-1 fail
 checks that prove the live game didn't break (the lock, the draw check). Cut from today and held on the roadmap: C18 (1-5 Easy) and
 all 1-5 work, the two 1-2 Dot rows, the era/lookalike gate wired into every builder (it runs in stage.ts on the stage being built),
 the other stages' profile pass lines, and anything else not on 1-1's path.
+
+## 2026-11-05 3:36 PM ET (to the lead): one "okay" stage is not the bar
+"Do you know where this is going to fail? You're looking at just one level that I said I liked. And how is it going to understand
+I like other ones? It doesn't really make sense to use what I liked. I just said, this is an okay one."
+So: old 1-1's numbers are not the target for 1-1's taste lines (float share, splits, two-road, pickups per view and the rest), and
+never a default for other stages. Every line is re-based by the designer:
+- the TARGET comes from the research: measured ranges from shipped games for a stage with the same role (a first stage that teaches),
+  from MOVES/PACING/WATER research and GEMINI-PCG-RESEARCH;
+- a live stage can only be a FLOOR ("no worse than what ships today"), never the aim;
+- Matt's taste enters through what he has said about specific stages (memory file, STATUS, his play notes), each cited, and through
+  his play of 1-1, which is the real judge.
+Hard rules (nothing costs a life in 1-1, no floating rocks, 2:00 floor, the variety and neighbour rules) are unchanged.
