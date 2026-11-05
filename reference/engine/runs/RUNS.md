@@ -407,7 +407,7 @@ under them, over all catalogue landings. support.py's counts pieces it finds not
 - A rule that reads the renderer's own footing (stonesupport.ts:11 says E3's gate will) would settle both. Until then, the 0.253 old
   1-1 number is the one that matches what is on screen.
 
-## Addendum 2, 12:28-12:45 PM ET: per-roll ranges for R-164.11 (the designer's request)
+## Addendum 2, 12:28-12:31 PM ET: per-roll ranges for R-164.11 (the designer's request)
 
 **Asked:** on main (68b31e665), the old 1-1 and 1-3, 32 rolls (era.ts `rollVariants(32)`), Normal and Easy, per roll:
 - the hop share;
