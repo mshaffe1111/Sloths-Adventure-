@@ -88,6 +88,7 @@ import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LI
 import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterOver, drawCalmWaterPlain } from './calmWaterArt.ts';
 import { swimHeadY } from './heroSwim.ts';
 import { drawHollowLog, drawW1Dress, insideHollow } from './w1NewArt.ts';
+import { drawPieces, isPiece, stepPiece, warmPieces } from './pieces/pieces.ts';
 import { paintedBank, setW1PitWater } from './w1Pits.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
@@ -443,6 +444,8 @@ export class GameEngine {
   private drawPlats: Platform[] = [];
   /** the hand-built stage's painted props: the platforms they draw, and their state */
   private paintedPlats: Platform[] = [];
+  /** the stage lays engine pieces (src/game/pieces/) */
+  private hasPieces = false;
   private swingVines: Vine[] = [];
   /** the vines the scene paints (a puzzle piece's climb, a kit vine, is the kit's own to draw) */
   private plainVines: Vine[] = [];
@@ -917,6 +920,8 @@ export class GameEngine {
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     if (this.currentStage.waterHint) this.currentStage.waterHint.shown = false;
     this.passTips = [];
+    this.hasPieces = this.platforms.some(isPiece);
+    warmPieces(this.platforms);
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
@@ -1564,6 +1569,12 @@ export class GameEngine {
     // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
     for (const plat of this.platforms) {
       if (plat.type !== 'moving' || plat.broken) continue;
+      // the engine pieces that move (src/game/pieces/: the slung log), carried the same way
+      if (isPiece(plat)) {
+        const m = stepPiece(plat, this.gameTime);
+        if (p.grounded && this.standingOnId === plat.id) { p.x += m.dx; p.y += m.dy; }
+        continue;
+      }
       if (plat.lift) {
         // World 2's basket lift rides up and down, and carries whoever stands in it
         const ny = liftY(plat.lift, this.gameTime);
@@ -6382,6 +6393,8 @@ export class GameEngine {
     }
     // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
     if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
+    // the engine pieces (src/game/pieces/: the slung log), over the ground and the boughs they hang from or stand on
+    if (this.hasPieces) drawPieces(ctx, this.platforms, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
     for (const pl of this.platforms) if (pl.lift && this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) drawW2Lift(ctx, pl, !!pl.lift.postRight);
     // 2-6: the village's ladders where the climbs are

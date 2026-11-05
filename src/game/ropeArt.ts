@@ -62,7 +62,7 @@ export interface RopeLoad {
 }
 
 /** the painted rope laid through `pts` (a polyline), its twist running on along the length */
-function layRope(ctx: CanvasRenderingContext2D, im: CanvasImageSource, pts: ArrayLike<readonly [number, number]>, thick = ROPE_THICK, src = ROPE_KIT.tile) {
+export function layRope(ctx: CanvasRenderingContext2D, im: CanvasImageSource, pts: ArrayLike<readonly [number, number]>, thick = ROPE_THICK, src = ROPE_KIT.tile) {
   const t = src;
   const k = thick / t.thick;
   const tileLen = t.w * k;
@@ -95,8 +95,12 @@ function layRope(ctx: CanvasRenderingContext2D, im: CanvasImageSource, pts: Arra
     // one slice may run past the end of the tile: then it is drawn in two parts, the second from the tile's start
     let done = 0;
     while (done < len - 0.001) {
-      const at = (u + done) % tileLen;
+      // (a slice that ends a hair short of the tile's end starts the next tile: else `part` could fall under the float step of `done`,
+      // and `done` never moved on, the page hung (engine-pieces, 11-05: the slung log's ropes at 5.1 thick hung the frame))
+      const at0 = (u + done) % tileLen;
+      const at = tileLen - at0 < 1e-6 ? 0 : at0;
       const part = Math.min(len - done, tileLen - at);
+      if (!(part > 1e-9)) break;
       // (a hair of overlap into the next slice so no seam shows where the slices meet at an angle)
       const over = done + part >= len - 0.001 ? 0.6 : 0;
       ctx.drawImage(im, t.x + at / k, t.y, part / k, t.h, done, -t.mid * k, part + over, t.h * k);
@@ -250,9 +254,9 @@ export function drawLairRopeLine(ctx: CanvasRenderingContext2D, x0: number, y0: 
 }
 
 /** the painted rope along a curve of the caller's (the journal's shimmy demo); false until the pieces have loaded */
-export function drawRopeAlong(ctx: CanvasRenderingContext2D, pts: Array<[number, number]>): boolean {
+export function drawRopeAlong(ctx: CanvasRenderingContext2D, pts: ArrayLike<readonly [number, number]>, thick = ROPE_THICK): boolean {
   load();
   if (!ready || !img) return false;
-  layRope(ctx, img, pts);
+  layRope(ctx, img, pts, thick);
   return true;
 }

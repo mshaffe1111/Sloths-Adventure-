@@ -1,0 +1,129 @@
+{
+ "sheet": "pieces.webp",
+ "size": {
+  "w": 1024,
+  "h": 878
+ },
+ "frames": {
+  "root-gate-open": {
+   "x": 0,
+   "y": 0,
+   "w": 177,
+   "h": 300,
+   "from": "w1to4art/w1-new",
+   "scale": 1.0
+  },
+  "root-gate-shut": {
+   "x": 181,
+   "y": 0,
+   "w": 177,
+   "h": 299,
+   "from": "w1to4art/w1-new",
+   "scale": 1.0
+  },
+  "bat-asleep": {
+   "x": 362,
+   "y": 0,
+   "w": 195,
+   "h": 210,
+   "from": "w1to4art/w3-new",
+   "scale": 0.5
+  },
+  "bat-flap1": {
+   "x": 561,
+   "y": 0,
+   "w": 192,
+   "h": 210,
+   "from": "w1to4art/w3-new",
+   "scale": 0.5
+  },
+  "bat-flap2": {
+   "x": 757,
+   "y": 0,
+   "w": 183,
+   "h": 210,
+   "from": "w1to4art/w3-new",
+   "scale": 0.5
+  },
+  "slung-log": {
+   "x": 0,
+   "y": 304,
+   "w": 487,
+   "h": 186,
+   "from": "w1to4art/w4-new",
+   "scale": 1.0
+  },
+  "stalactite-fall": {
+   "x": 491,
+   "y": 304,
+   "w": 140,
+   "h": 178,
+   "from": "w1to4art/w3-new",
+   "scale": 1.0
+  },
+  "stalactite-shards": {
+   "x": 635,
+   "y": 304,
+   "w": 271,
+   "h": 165,
+   "from": "w1to4art/w3-new",
+   "scale": 1.0
+  },
+  "bat-stir": {
+   "x": 0,
+   "y": 494,
+   "w": 210,
+   "h": 164,
+   "from": "w1to4art/w3-new",
+   "scale": 0.5
+  },
+  "crack-cracking": {
+   "x": 214,
+   "y": 494,
+   "w": 398,
+   "h": 152,
+   "from": "w1to4art/w3-new",
+   "scale": 1.0
+  },
+  "crate-down": {
+   "x": 616,
+   "y": 494,
+   "w": 171,
+   "h": 151,
+   "from": "w1to4art/w2-new",
+   "scale": 1.0
+  },
+  "crack-whole": {
+   "x": 0,
+   "y": 662,
+   "w": 400,
+   "h": 151,
+   "from": "w1to4art/w3-new",
+   "scale": 1.0
+  },
+  "crate-up": {
+   "x": 404,
+   "y": 662,
+   "w": 163,
+   "h": 136,
+   "from": "w1to4art/w2-new",
+   "scale": 1.0
+  },
+  "counterweight": {
+   "x": 571,
+   "y": 662,
+   "w": 198,
+   "h": 109,
+   "from": "w1to4art/w3-new",
+   "scale": 1.0
+  },
+  "waterline": {
+   "x": 0,
+   "y": 817,
+   "w": 501,
+   "h": 61,
+   "from": "w1to4art/w2-new",
+   "scale": 1.0
+  }
+ }
+}

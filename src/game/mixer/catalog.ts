@@ -31,6 +31,8 @@ export interface CatKind {
   noNew?: string;
   /** not yet ruled by the designer: no new stage lays it */
   open?: boolean;
+  /** the move or mechanic its first appearance teaches, and where (the engine pieces' labels, src/game/pieces/) */
+  teaches?: string;
 }
 
 const ALL = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -66,7 +68,7 @@ export const LANDINGS: LandingKind[] = [
     notes: "never World 1 (SHIPPED acf6e1e8; ENGINE-SPEC 10:09 AM): 1-5's 4 fragile ruin are a breach, to become World 1 creaky limbs" },
   { name: 'breaking or bouncing stone', match: (p) => (p.type === 'fragile' || p.type === 'bouncy') && p.style === 'moss_stone' || p.type === 'bouncy' && p.style === 'ruin', element: 'stone', footing: 'as a stone', mayFloat: 'no',
     uses: 'a breaking or bouncing stone', worlds: [5, 7, 8, 9, 10], noNew: 'OPEN: "a rock bounces you" reads oddly; waits on a still for Matt', open: true },
-  { name: 'moving platform', match: (p) => p.type === 'moving' && (p.style === 'log' || p.style === 'canopy_bridge' || art(p) === 'lift'), element: 'built', footing: 'a track or a rope', mayFloat: 'yes',
+  { name: 'moving platform', match: (p) => p.type === 'moving' && !p.sling && (p.style === 'log' || p.style === 'canopy_bridge' || art(p) === 'lift'), element: 'built', footing: 'a track or a rope', mayFloat: 'yes',
     uses: 'moving platform (planned teach 2-7, R-164.9); the lift (2-7)', worlds: [2, 5, 6, 8, 9] },
   { name: 'moving stone', match: (p) => p.type === 'moving' && (p.style === 'moss_stone' || p.style === 'ruin'), element: 'stone', footing: 'none: it moves through the air', mayFloat: 'no', uses: '(none)', worlds: [7, 9, 10],
     noNew: 'breaks rule 1 (rocks never float): today\'s 5 go on the known list; their job goes to a log, plank or lift kin' },
@@ -75,6 +77,10 @@ export const LANDINGS: LandingKind[] = [
   { name: 'lily pad', match: (p) => !!p.lily, element: 'water', footing: 'a drawn water zone', mayFloat: 'water', uses: 'a pad on the water', worlds: [1, 2, 6], notes: 'lily pads only on water (Matt); engine-render\'s padsOffWater test' },
   { name: 'fungus shelf', match: (p) => p.style === 'fungus_shelf', element: 'tree', footing: 'a trunk (a bracket shelf)', mayFloat: 'no', uses: "W8's night-forest landing", worlds: [8], notes: 'theme-locked' },
   { name: 'roost limb', match: (p) => p.style === 'roost_branch', element: 'tree', footing: 'a trunk (a roost limb)', mayFloat: 'no', uses: "W8's night-forest landing", worlds: [8], notes: 'theme-locked' },
+  // (the engine pieces, src/game/pieces/: engine-pieces' labels, each waiting on the designer's OK; `open` until it is given)
+  { name: 'slung log', match: (p) => !!p.sling, element: 'tree', footing: 'two ropes from a bough overhead; the bough grows between a kapok on each bank (laid with it)', mayFloat: 'yes',
+    uses: 'ride across a gap too wide to jump: board at one end of its swing, step off at the other (a moving platform, the pendulum kind)', worlds: [2, 4, 5, 6, 8, 9, 10],
+    teaches: 'moving platforms (2-7, R-164.9)', notes: 'World 4\'s painted slung log (w4-new), packed into pieces.webp; the ropes in the painted rope kit. Not World 1 (taught 2-7), not World 3 (caves) or World 7 (temple): no bough to hang from', open: true },
   // (measured in the inventory, with no row in LABELS.md yet: open until the designer rules)
   { name: 'breaking log or plank', match: (p) => p.type === 'fragile' && (p.style === 'log' || p.style === 'canopy_bridge'), element: 'tree', footing: '(not ruled)', mayFloat: 'yes', uses: 'a log or plank that gives way (W5-W10)', worlds: [5, 7, 8, 9, 10], open: true, noNew: 'no label yet: the designer rules it' },
 ];
