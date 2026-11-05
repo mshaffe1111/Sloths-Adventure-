@@ -68,7 +68,8 @@ Ranked by how much each changes "80% right by construction" and "every stage fee
    "unavoidable across all alternative solutions"; Green et al. 2018 accept a scene only if "a perfect agent ... wins a level while an
    agent that cannot perform one mechanic loses". We already lost a teach this way: "A catch under the gap made the jump optional: the
    quick route walked off onto it and stepped up" (w1Rhythm.ts:562-563). A "limited-agent" gate (the bot with the mechanic switched
-   off must fail the teach node; the full bot must pass) is cheap with our bots and is not in any of our research (section 5).
+   off must fail the teach node; the full bot must pass) is cheap with our bots and is not in any of our research (section 5). Tried
+   on 1-7 with the existing `noHide` bot: a player who never hides still reaches the shrine on all three layouts tested [measured].
 
 6. **Difficulty and pacing are curves you build to, with a real arc, not a constant or a sawtooth.** Sorenson & Pasquier: a flow
    fitness gave "a chaotic scattering of platforms" with constant anxiety; a periodic one gave rhythm groups but "its cyclical
@@ -438,7 +439,8 @@ the `fits` air-time and band rule, jump-or-hop by `room`, the stump/bank remaps)
 - `fitSteps` with `tries = 1` on 400-1,000 seeds gives its per-try acceptance and its rejection reasons.
 - "Shape" = per step (move, up/flat/down, surface): the categorical geometry, the thing a player perceives as a different jump.
 
-**Output [measured, 2026-11-05, 4 cores, other jobs running; ms figures are loose].**
+**Output [measured, 2026-11-05, 4 cores, other jobs running; ms figures are loose].** Lines are copied from the runs; for nodes 5,
+11 and 12 the repeated labels are shortened ("...") and timing lines dropped, the numbers are unchanged.
 
 ```
 1-2 roll 1, node 1 "ramp: jump + hop (swung)" at 128.2 BPM, 8 take-offs, bars ["x.....x.","x.....x.","x.......","x.....x.","x......."], y 410
@@ -505,8 +507,8 @@ node 12: DFS prefix check = Normal trace: found ... in 13/20 runs; median 11, ma
 ```
 
 **What it shows.**
-1. **Launchpad's claim holds for us, in the extreme: one 9-take-off rhythm admits about 3.0 million valid geometries [measured,
-   ±0.7 pts].** The rhythm tier is not short of options.
+1. **Launchpad's claim holds for us, in the extreme: one 9-take-off canopy rhythm admits about 3.0 million valid geometries, the
+   10-take-off climax about 294 million [measured, ±0.7 and ±2.8 pts on the valid share].** The rhythm tier is not short of options.
 2. **On canopy nodes the tracer rejects nothing that `fitSteps` can draw (100%, 100%, 97.9%) [measured].** The only rejection on the
    intro was GAP_REPEAT (beatTrace.ts:171-172, 464-471), a variety rule. So the design space there is set entirely by the palette's
    heights and band, not by physics: "80% right by construction" is already true for these nodes, and the bottleneck for quality is
@@ -517,13 +519,13 @@ node 12: DFS prefix check = Normal trace: found ... in 13/20 runs; median 11, ma
    stompers, moving platforms) and a *wait* state. This is the measured mechanism behind "every stage feels the same" in beat-built
    stages: the generator varies numbers, the player perceives kinds.
 4. **`fitSteps` is mildly biased, not broken.** It reaches fewer distinct geometries than a uniform draw would (731 vs 865; 788 vs 883)
-   and its net climb is off the uniform mean by 7-25 px, in different directions per node (canopy: 23 vs 31, -26 vs -18, -26 vs -17
+   and its net climb is off the uniform mean by 8-25 px, in different directions per node (canopy: 23 vs 31, -26 vs -18, -26 vs -17
    px; floor: 60 vs 49, 49 vs 32, -24 vs -49 px). The cause is in the code: it picks each step's height uniformly among the heights that
    fit *now* (w1Rhythm.ts:206-211), so sequences through narrow parts of the band are over-drawn. Harmless for playability; it matters
    once a node has a rise or fall target.
-5. **On the floor the tracer does reject: about half of what `fitSteps` draws (accepted 56-62% per try) [measured], and every
-   rejection in the top list is one rule**, MIN_GAP: "the gap is N px: no jump at all" (beatTrace.ts:446). That rejection is
-   predictable from the step alone (a flat or downward jump onto a near landing), so it can be filtered when the candidate is made,
+5. **On the floor the tracer does reject: about half of what `fitSteps` draws (accepted 56-62% per try) [measured], and all 304-352
+   rejections per node are one rule**, MIN_GAP: "the gap is N px: no jump at all" (beatTrace.ts:446). That rejection is
+   predictable from the step alone (a flat or downward jump whose landing comes down too close to, or over, the ledge it left), so it can be filtered when the candidate is made,
    WFC's "propagate before you choose" (3.12), instead of discovered by a full trace.
 6. **A search is not faster than `fitSteps` today, and a naive one is worse.** Random retry needs 1.6-1.8 tries [measured], each 2
    traces + 2 checks, so about 3-4 trace-equivalents a node [estimate]. A depth-first search that prunes on the Normal trace alone
@@ -591,6 +593,27 @@ samples [measured]. So the vocabulary can grow without losing "right by construc
 taught first and a required one is whole again on respawn, CLAUDE.md "Stage rules"; a stump on the canopy needs art that makes sense there), not the tracer. Not
 tested here: whether the clumsy-thumb bots and the level check agree with the tracer on the new kinds (they did for 1-5's snap twigs).
 
+**Experiment 4: a limited-agent check with a bot we already have (`.../exp/limited.ts`).** Green et al.'s test (lesson 5) asks
+whether the agent *without* a mechanic fails where the full agent passes. The validator's first-timer bot has one such switch, `noHide`
+(tools/validate/play.ts:303, 312), and 1-7 is where Dot teaches hiding from the eagle ("An eagle is watching. Slide down inside a bush
+to hide", src/game/dotLinesData.ts:120). The bot takes real hits and lives (tools/inspect/firsttimer.ts:817-833). Output [measured, Normal,
+3 layouts]:
+
+```
+1-7 layout 1 full bot   : end shrine, progress 100%, time 173 s, hid 4, eagle hits 1, lives lost 0
+1-7 layout 1 NO-HIDE bot: end shrine, progress 100%, time 175 s, hid 0, eagle hits 10, lives lost 2
+1-7 layout 2 full bot   : end shrine, progress 100%, time 160 s, hid 2, eagle hits 1, lives lost 0
+1-7 layout 2 NO-HIDE bot: end shrine, progress 100%, time 164 s, hid 0, eagle hits 9, lives lost 1
+1-7 layout 3 full bot   : end shrine, progress 100%, time 221 s, hid 2, eagle hits 1, lives lost 0
+1-7 layout 3 NO-HIDE bot: end shrine, progress 100%, time 196 s, hid 0, eagle hits 3, lives lost 0
+```
+
+By Green et al.'s strict rule, hiding is **not required** in 1-7: a bot that never hides still reaches the shrine on all three layouts.
+It pays for it (9-10 eagle hits and 1-2 lives on layouts 1-2), but on layout 3 only 3 hits and no life, about the same as skipping a
+lesson costs nothing. For a children's game "required" may rightly mean "costly" rather than "blocking"; that is a design call for the
+lead and Matt. The point for the engine is that the check is cheap (1-2 s a run) and turns "is the lesson real?" into a number per
+layout, and here it shows one layout of three where the lesson barely bites.
+
 **Compared with Launchpad's rhythm-then-geometry.** Same order; ours is stronger on the physics (engine slices, clumsy thumb, camera
 framing, beatTrace.ts:330-342, 448-452) and weaker on the geometry grammar (one or two kinds where Launchpad had 14 + 5). Launchpad needed
 critics because its grammar overgenerated; ours undergenerates in kind, so critics would have nothing different to choose between.
@@ -617,7 +640,8 @@ Checked by searching `reference/research/` (all ledgers, the Gemini and Matt res
    automatically. Cost: small. The first-timer bot already keeps a `learned` set of moves it picks up from Dot's tips
    (tools/inspect/firsttimer.ts:792-810, 1109-1112), and the validator already has one limited agent, `noHide`, which deletes 'hide'
    from that set (tools/validate/play.ts:303, 312); nothing in tools/ or src/ uses `noHide` as a must-fail gate today (searched). The gate
-   generalises it: for each teach node, the bot without that move must fail it, the bot with it must pass.
+   generalises it: for each teach node, the bot without that move must fail it (or pay a set cost), the bot with it must pass. Run on
+   1-7 today (section 4, experiment 4): the no-hide bot still finishes all three layouts; on layout 3 it pays only 3 hits.
 4. **Measure the space, not just the rolls: exact counts and uniform samples per rhythm.** What section 4 did, as a tool: for each
    node, the size of its candidate space, the valid share and the number of kinds. It tells a builder *before rolling* whether a node can
    be varied at all, and it caught that the tracer is not the limit on canopy nodes. (Karth & Smith used solver statistics the same
