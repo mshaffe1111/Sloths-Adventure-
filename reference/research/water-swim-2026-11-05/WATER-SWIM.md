@@ -5,7 +5,7 @@ Water and swim researcher, for the lead (session_019iachLiuwNTAZUBSJWUmR3) and t
 ## Planned vs actual time
 
 - **Planned:** about 2 h, due 1:30 PM ET.
-- **Actual:** 10:59 AM to about 11:35 AM ET, about 35-40 min (from `TZ=America/New_York date` at the start, at 11:17, and at the end).
+- **Actual:** 10:59 AM to 11:22 AM ET, about 23 min (from `TZ=America/New_York date` at the start, at 11:17, and at 11:20 before the push).
 - **That is under half the plan. Here is why, so the lead can check it:**
   - TinyFish fetches came back in 0.3-4 s each. Fetches over the size limit were saved to disk, and I copied them into the source files with a script instead of retyping them.
   - The engine measures run in seconds (`RealPlay`).
@@ -206,6 +206,6 @@ Numbers marked (est.) are my estimate, to be tested in play. Everything else is 
 
 ## Files
 
-- `sources/S01-S28*.txt`: 24 saved sources, each with URL, read date and verbatim text or excerpts. S13, S14 and S17 were dropped as empty or off-topic; S22 holds only the water passages of a copyrighted book.
+- `sources/S01-S28*.txt`: 24 saved sources, each with URL, read date and verbatim text or excerpts. numbers S13, S14, S15 and S17 are unused (empty, blocked, 404 or off-topic fetches); S22 holds only the water passages of a copyrighted book.
 - `measure/swim-measure.ts`: real-engine measures. Run with `npx tsx reference/research/water-swim-2026-11-05/measure/swim-measure.ts [--rules|--speed]`. It changes nothing in the game; `--speed` overrides `SWIM` in memory only.
 - `measure/swim-measure.out.txt`, `measure/rules-on-6-7.out.txt`, `measure/speed-trial.out.txt`: the outputs quoted above.
