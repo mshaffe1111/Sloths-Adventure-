@@ -92,6 +92,8 @@ interface Lay {
   /** how the last canopy was entered, and how many mushrooms the stage has (the designer's review D: no more than the old 1-1's) */
   entry?: Entry;
   mushrooms: number;
+  /** Easy's breather pads, so `padLogs` can find them */
+  padSet: Set<Platform>;
   /** Easy's breather pads laid so far (they alternate log and bank) */
   pads?: number;
   /** creaky has been taught (n2's first twig is laid): no creaky piece before it (STAGE-RULES: the first appearance is taught) */
@@ -288,7 +290,9 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
       return { x: b.x + b.width, y: b.y };
     }
     case 'crumbling ledge': return burst(L, c, R, ['crumble', 'branch'], n, [30, -30, 40, -40]);
-    case 'creaky boughs': return burst(L, c, R, ['branch', 'creaky'], n);
+    // (on Easy the creaky limbs come first: a burst of 3 is then 2 creaky and 1 branch, not 1 and 2, which holds creaky at 15% or more of
+    // Easy's landings (it was 14.6% on one roll) without adding a piece)
+    case 'creaky boughs': return burst(L, c, R, L.easy ? ['creaky', 'branch'] : ['branch', 'creaky'], n);
     case 'lily-pad hop': return burst(L, c, R, ['lily', 'log'], n, [30, -30, 40, -40]);
     case 'reed isles': return burst(L, c, R, ['reed', 'lily'], n, [30, -30, 40, -40]);
     case 'bank walk': {
@@ -330,7 +334,8 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
       // (the bridge only as the stair's top piece, a short rope bridge from the last bough on (the designer's ruling 4))
       return burst(L, burst(L, c, R, ['branch', 'log'], n - 1, L.easy ? [30, 40] : [50, 60, 70]), R, ['bridge'], 1, [30, -30]);
     // (rope bridges with creaky limbs between them: creaky shows on n10's high road (the designer's review E))
-    case 'bridge span': return burst(L, c, R, ['bridge', 'creaky'], n, [30, -30, 40, -40]);
+    // (on Easy, as the creaky boughs: the creaky limbs first, 2 of 3, so creaky is not a scrape over 15% of Easy's landings)
+    case 'bridge span': return burst(L, c, R, L.easy ? ['creaky', 'bridge'] : ['bridge', 'creaky'], n, [30, -30, 40, -40]);
   }
 }
 
@@ -446,10 +451,40 @@ function breather(L: Lay, c: Cursor, R: Rng): Cursor {
   L.pads = (L.pads ?? 0) + 1;
   // (a bank: logs would crowd out creaky, the stage's theme, from its 3 commonest kinds; the bank's width turns, 600-680, so no two pads
   // are one size twice running)
-  // (a bank: logs would crowd out creaky, the stage's theme, from its 3 commonest kinds; its width turns, 600 or 680)
+  // (a bank: logs would crowd out creaky, the stage's theme, from its 3 commonest kinds; its width turns, 600 or 680. The finished stage
+  // turns a pad into a log only where it would otherwise run too long with nothing new: see `padLogs`)
   const pad = step(L, c, R, 'bank', L.pads % 2 ? 600 : 680);
+  L.padSet.add(pad);
   for (let px = pad.x + 120; px < pad.x + pad.width - 80; px += 170) L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: 'orchid', x: Math.round(px), y: pad.y - 40, collected: false, bobPhase: (px * 0.031) % 6.28 } as Collectible);
   return { x: pad.x + pad.width, y: pad.y };
+}
+
+/**
+ * The finished Easy stage, read the way the variety gate reads it (`reference/engine/cp1/measure2.py`: a landing is new when its kind x size
+ * is not among the six landings before it, in order of their middles): where more than 1,400 px pass with nothing new and a breather pad
+ * lies in that stretch, the pad becomes a long log, which is new there. Only where it is needed: as a rule, log pads pushed creaky out of
+ * Easy's 3 commonest kinds on 13 of 16 rolls. (Layout 10 Easy ran 1,585 px with nothing new, over the gate's 1,516.)
+ */
+function padLogs(L: Lay) {
+  const kindOf = (p: Platform): string => {
+    const q = p as Platform & { creak?: number; catch?: boolean; lily?: boolean };
+    const k = p.type === 'bouncy' ? 'mushroom' : p.type === 'fragile' ? (q.creak ? 'creak' : 'twig') : p.style === 'canopy_bridge' ? 'bridge' : p.style === 'log' ? 'log'
+      : p.style === 'branch' ? (q.catch ? 'catch' : 'branch') : p.style === 'moss_stone' ? (p.height > 60 ? 'ground' : 'stone') : q.lily ? 'lily' : 'ground';
+    return `${k} ${p.width < 150 ? 's' : p.width <= 300 ? 'm' : 'l'}`;
+  };
+  for (let pass = 0; pass < 4; pass++) {
+    const ls = [...L.P.map((p) => ({ m: p.x + p.width / 2, k: kindOf(p), p: p as Platform | null })), ...L.V.map((v) => ({ m: v.x, k: v.vineType === 'tree_climb' ? 'climb' : 'liana', p: null }))].sort((a, b) => a.m - b.m);
+    let last = -1, fixed = false;
+    for (let i = 0; i < ls.length && !fixed; i++) {
+      if (ls.slice(Math.max(0, i - 6), i).some((q) => q.k === ls[i].k)) continue;
+      if (last >= 0 && ls[i].m - ls[last].m > 1400) {
+        const pad = ls.slice(last + 1, i).find((q) => q.p && L.padSet.has(q.p) && q.p.style === 'moss_stone');
+        if (pad?.p) { Object.assign(pad.p, { style: 'log', height: 90 }); fixed = true; }
+      }
+      last = i;
+    }
+    if (!fixed) break;
+  }
 }
 
 /**
@@ -510,7 +545,7 @@ function crossings(L: Lay, hi: Platform[], lo: Platform[], job: string) {
  * own under its middle; a bridge gets a thin post at each end; the perch a short stump. Each trunk runs from just under its piece's top to the
  * first bank under it, or past the stage's bottom.
  */
-function supports(P: Platform[], height: number): { trunks: Array<{ x: number; topY: number; bottomY: number; w: number; art?: 'plain' }>; leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'bushTall' }> } {
+function supports(P: Platform[], height: number, clear: number[] = []): { trunks: Array<{ x: number; topY: number; bottomY: number; w: number; art?: 'plain' }>; leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'bushTall' }> } {
   type T = { x: number; topY: number; bottomY: number; w: number; art?: 'plain' };
   const out: T[] = [];
   const leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'bushTall' }> = [];
@@ -562,6 +597,8 @@ function supports(P: Platform[], height: number): { trunks: Array<{ x: number; t
   for (const b of P.filter((q) => q.style === 'moss_stone' && q.height >= 90 && q.width >= 300)) {
     for (let x = b.x + 120; x < b.x + b.width - 120; x += 520) {
       if (out.some((t) => Math.abs(t.x - x) < 500)) continue;
+      // (never in front of a flag, the start or the shrine: v5's start tree hid the first flag)
+      if (clear.some((c) => Math.abs(c - x) < 200)) continue;
       const k = out.length;
       out.push({ x: Math.round(x), topY: Math.round(b.y - 560), bottomY: Math.round(b.y + 20), w: 1.3 * (0.85 + ((k * 37) % 7) * 0.07), ...(k % 2 ? { art: 'plain' as const } : {}) });
       if (!leaves.some((l) => Math.abs(l.x - x) < 360)) leaves.push({ x: Math.round(x), y: Math.round(b.y - 530), w: 180, flip: k % 2 === 1, kind: 'bushWide' });
@@ -582,7 +619,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   // (Easy's wider landings come from the engine's own Easy pass, easyMode.ts easyStage, which widens a ledge by its jump; the mixer widening
   // them too doubled it and pushed medium pieces into long, which broke the gate's "something new". Measured after that pass)
   const wScale = 1;
-  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, dial: d, mushrooms: 0, glints: [], recent: [], creakyTaught: false };
+  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, dial: d, mushrooms: 0, glints: [], recent: [], padSet: new Set(), creakyTaught: false };
   // (the highest rise the gate allows: the largest step up a plain jump makes across a real gap, measured with the gate itself)
   let maxRise = 0;
   for (let dy = 10; dy <= 200; dy += 5) if (gateGap(L, 800, { y: 800 - dy, height: 24, type: 'solid' }, dy) >= MIN_GAP + 10) maxRise = dy;
@@ -763,6 +800,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     const ground = L.P.some((q) => q !== p && q.style === 'moss_stone' && q.height >= 90 && q.x < p.x + p.width && q.x + q.width > p.x && q.y > p.y && q.y - p.y < 250);
     if (!ground) Object.assign(p, { style: 'branch', height: 24 });
   }
+  if (easy) padLogs(L);
   // (nothing hurts in the first seconds (STAGE-RULES §2 "Opening seconds"), as w1Rhythm.ts rhythmStage lays it: a catch branch 60 px
   // under the lower lip of every gap met in the first 6.5 s at a run, ending against a stone face under the far ledge, so a short jump
   // drops onto it and a hop goes back up)
@@ -788,7 +826,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   // (nothing floats unless it floats (the designer's P-2, P-7, P-11; D16): every bough, log, crumbling ledge and creaky limb in the air
   // stands on a painted kapok set back in the shade, as 1-2's logs do (protoArt.ts setDecoTrunks), down to the floor under it or past the
   // stage's bottom; a bridge hangs from a post at each end; the mushroom's perch is a short stump on its bank. Dressing only: no surface)
-  const { trunks, leaves } = supports(L.P, height);
+  const { trunks, leaves } = supports(L.P, height, [100, exit.x, ...L.flags.map((f) => f.x)]);
   const beats: Array<[number, number, string]> = L.explain.map((e) => [e.x0, e.x1, `${e.job}: ${e.idea}${e.road ? ` (${e.road} road)` : ''}`]);
   const stage = {
     config: cfg, trees: [], platforms: L.P, vines: L.V, ropes: [], enemies: [], boss: null, collectibles: L.C,
