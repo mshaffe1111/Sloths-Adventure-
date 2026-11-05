@@ -286,7 +286,8 @@ becomes J "jump over a gap" or "big jump up" (`tools/inspect/beats.ts:115`); `to
 (`gap ≤ 0.97·reach − TAKEOFF_SLACK`, `core.ts:118`), measured J steps that need the double: 1-1 **14 of 15**, 1-6 **27 of 34**, 1-7 9 of
 10, 1-8 14 of 23 (Normal, §4.1). The inspector's physics check (`jumps[].dblNeeded`) says only 2 of 1-6's 58 jumps need it. The two
 tools disagree on what a double jump is, and the move string the similarity and "nothing new" rules read (`core.ts:254-266`) treats J
-and U as different moves. One rule is needed, then U counted.
+and U as different moves. One rule is needed, then U counted. The same count on later worlds (layout 1, Normal; indicative only, since the validator does not read
+Worlds 2-10 yet, `tools/validate/funcheck.ts:197`): 4-2 **53 of 54**, 6-3 19 of 19, 8-4 32 of 32, 2-7 8 of 66, 10-2 6 of 56.
 
 **W4. Per-jump survival floors are not a stage bound.** STAGE-RULES §1b (line 148) and §2 "Hotspots" (line 184) floor each jump at 70%
 (Normal adult) / 85% (Easy kid). Compounded (F1): 1-2 Normal has **32** jumps whose miss costs a life (measured, missCost). At the 70%
@@ -352,7 +353,8 @@ validator's `GROUP_MAX = 20` check (`core.ts:292`, applied at `core.ts:364`) can
 
 All runs from the repo root, against the real engine (`build()` in `tools/validate/core.ts:87`, D19). Scripts:
 `/tmp/claude-0/-home-user-Sloths-Adventure-/de391798-4931-5f52-9808-d419b5307ca4/scratchpad/r3/funmath.ts`, `rhythm.ts`, `ioi.ts`,
-`rolls.ts`, `relgroups.ts`, `jumps1.ts`. Raw outputs beside them (`funmath16.out`, `funcheck.out`, `insp.json`, `ft.json`).
+`rolls.ts`, `relgroups.ts` (and `relgroups2.ts`, its ratio sweep), `ioiW.ts` (later worlds), `jumps1.ts`. Raw outputs beside them
+(`funmath16.out`, `funcheck.out`, `insp.json`, `inspW1.json`, `ft.json`).
 
 ### 4.0 The fun gate as it stood
 

@@ -32,8 +32,8 @@ Ranked by how much each changes "80% right by construction" and "every stage fee
    per beat: "The rhythm-based generator provides 14 different kinds of geometry for jumps, 5 different kinds of geometry for moves,
    three different types of rhythm, four different lengths of rhythm, and three different densities" (Smith et al. 2009, §8.2).
    Tanagra has five single-beat patterns plus multi-beat ones; Dahlskog & Togelius found 23 patterns in 5 families in Super Mario Bros.
-   I measured our beat-built 1-2 (section 4): one rhythm admits **3,366 to about 3 million** different geometries, but every take-off
-   lands on one of **one or two kinds of thing** (a jump onto a branch, a hop onto a branch) on the canopy, and three on the floor.
+   I measured our beat-built 1-2 (section 4): one rhythm admits **3,366 to about 290 million** different geometries, but every take-off
+   lands on one of **one or two kinds of thing** (a jump onto a branch, a hop onto a branch) on the canopy, and five on the floor.
    The dice only move heights, in 10-20 px steps. That is numeric variety, which players do not see as variety. Horn et al.'s
    comparison says the same about Notch's generator: low compression distance "corresponds very well with qualitative observations that the
    levels in Infinite Mario Bros appear quite similar to each other" (Horn et al. 2014, §4.1). **For the engine: a beat's geometry
@@ -401,6 +401,21 @@ own limit: metrics "like linearity, which go beyond counting tiles and are harde
 **Fit.** High as a *process* for us: once a world has a kind grid (section 5, idea 1), the engine should be asked for the missing cells
 directly (with a time box and a blocklist that tells the art/piece list what is impossible), not rolled until coverage appears.
 
+### 3.20 Charts from music: Donahue, Lipton, McAuley 2017, "Dance Dance Convolution" (ICML)
+
+**How.** Rhythm-game charts split into "step placement ... deciding when to place steps" and "step selection ... deciding which steps to
+select". Placement is onset detection: "While not every onset in our data corresponds to a DDR step, every DDR step corresponds to an
+onset." Difficulty lives in the subdivision: "Beginner charts tend to contain only quarter notes and eighth notes"; easy charts average
+under one step a second, the hardest exceed seven. Expert charts use kinds for musical roles: "jumps are used to emphasize accents in a
+rhythm; freezes are used to transition from regions of high rhythmic intensity to more ambient sections". Their motivation is ours:
+"players may tire of repeatedly performing the same charts."
+
+**Fit.** High for the idea, not the networks. We do not need audio analysis at all: our music is symbolic (bars of tokens parsed by
+src/audio/form.ts:31-56), so the exact note onsets of the stage's own theme are known. Today the tracer reads only the BPM
+(`stageBpm`, beatTrace.ts:641) and the bars are rolled from gap lists (`barsFrom`, w1Rhythm.ts:253). Placing take-offs on a *selection
+of the theme's onsets* (accents for jumps, held notes for swings or waits) would tie geometry to what the player hears, and would give each
+stage a rhythm that differs because its tune differs.
+
 ---
 
 ## 4. The code experiment and its output
@@ -556,6 +571,26 @@ What it shows:
   holds, and 1-2 and 1-5 are more different from each other than two rolls of one stage. Good; but the distance between the two stages
   is only 0.16 above the within-stage figure.
 
+**Experiment 3: is a richer vocabulary cheap by construction? (`.../exp/geomkinds.ts`)** The same uniform-sample test on the two canopy
+nodes, with only one change: the palette may also draw `crumble` and `stump` (both surfaces the tracer already handles: the Surface type, beatTrace.ts:50).
+Output [measured]:
+
+```
+node 1 "ramp: jump + hop (swung)", surfaces branch/crumble/stump
+UNIFORM over fitSteps' candidate space (4332528 sequences): 1000/1000 valid = 100.0% -> about 4332528 valid geometries for this one rhythm
+   KINDS among the 1000 valid uniform samples: 960 distinct shapes; per-step vocabulary: jc,hc,jb,hb,js
+RANDOM (fitSteps, 600 seeds): accepted 600 = 100.0% per try
+node 0 "intro: run + jump", surfaces branch/crumble/stump
+UNIFORM (8550478814 sequences): 992/1000 valid = 99.2% (+-0.6 pts) -> about 8482074983 valid geometries
+   KINDS among the 992 valid uniform samples: 992 distinct shapes; per-step vocabulary: jc,jb,js,hb
+RANDOM (fitSteps, 600 seeds): accepted 599 = 99.8% per try
+```
+
+Adding two kinds kept acceptance at 99-100% and took node 1 from 2 kinds per step to 5 and from 33 shapes to at least 960 among 1,000
+samples [measured]. So the vocabulary can grow without losing "right by construction"; what limits it is design (a crumbling twig must be
+taught first and a required one is whole again on respawn, CLAUDE.md "Stage rules"; a stump on the canopy needs art that makes sense there), not the tracer. Not
+tested here: whether the clumsy-thumb bots and the level check agree with the tracer on the new kinds (they did for 1-5's snap twigs).
+
 **Compared with Launchpad's rhythm-then-geometry.** Same order; ours is stronger on the physics (engine slices, clumsy thumb, camera
 framing, beatTrace.ts:330-342, 448-452) and weaker on the geometry grammar (one or two kinds where Launchpad had 14 + 5). Launchpad needed
 critics because its grammar overgenerated; ours undergenerates in kind, so critics would have nothing different to choose between.
@@ -572,20 +607,25 @@ Checked by searching `reference/research/` (all ledgers, the Gemini and Matt res
    (move x surface x hazard) per take-off and the chosen roll must use at least M; per stage, the kind string's edit distance between
    nodes of the same tag must clear a floor. Measured today (section 4): 1-2's canopy nodes have 1-2 kinds per take-off.
 2. **A *wait* verb in the bars.** Launchpad's `Waiting-Moving -> stomper` and `Waiting-Moving-Waiting -> moving platform`. Our marks are
-   'x', 'o', 'h', '.' only (beatTrace.ts:200-224): every beat is "take off" or "keep running". A wait mark ('w': stop until something
-   passes) opens a whole class of geometry (a snake passing on the bough, a twig falling, a swinging liana coming back) that the tracer
-   can also check, because a wait is time on the same ledge.
+   'x', 'o', 'h', '.' only (beatTrace.ts:200-224): every beat is "take off" or "keep running". STAGE-RULES already lists "wait" as a
+   move of a rhythm group (STAGE-RULES.md:43), but the beat tracer cannot write one. A wait mark ('w': stop until something passes)
+   opens a whole class of geometry (a snake passing on the bough, a twig falling, a swinging liana coming back) that the tracer can also
+   check, because a wait is time on the same ledge.
 3. **Limited-agent gate: "required, not just possible".** Green et al. 2018 (perfect vs limited A* agents) and Nelson & Smith's
    "unavoidable across all alternative solutions". For a node tagged as teaching mechanic M, run the route bot with M switched off; it
    must fail, and the full bot must pass. This would have caught the 1-2 catch branch that "made the jump optional" (w1Rhythm.ts:562-563)
-   automatically. Cost: one flag per mechanic in the existing bots.
+   automatically. Cost: small. The first-timer bot already keeps a `learned` set of moves it picks up from Dot's tips
+   (tools/inspect/firsttimer.ts:792-810, 1109-1112), and the validator already has one limited agent, `noHide`, which deletes 'hide'
+   from that set (tools/validate/play.ts:303, 312); nothing in tools/ or src/ uses `noHide` as a must-fail gate today (searched). The gate
+   generalises it: for each teach node, the bot without that move must fail it, the bot with it must pass.
 4. **Measure the space, not just the rolls: exact counts and uniform samples per rhythm.** What section 4 did, as a tool: for each
    node, the size of its candidate space, the valid share and the number of kinds. It tells a builder *before rolling* whether a node can
    be varied at all, and it caught that the tracer is not the limit on canopy nodes. (Karth & Smith used solver statistics the same
    way to explain WFC; Withington & Tokarchuk call the possibility space under a generator nearly unstudied, 3.10. For a beat node it
    is small enough to count exactly or sample uniformly, which no paper I read does.) Pair it with an ERA whose axes follow their rule:
    one structural metric (the kind mix) against one bot-measured metric (seconds on the ground, jumps a minute from the first-timer bot),
-   rather than only linearity x leniency, which are both read statically off the inspector's route and platforms (eraRoll.ts:196-235). Related and also new: **sample uniformly** from the valid space (count-weighted descent) instead of per-step uniform
+   rather than only linearity x leniency, which are both read statically off the inspector's route and platforms (eraRoll.ts:196-235).
+   Related and also new: **sample uniformly** from the valid space (count-weighted descent) instead of per-step uniform
    picks, which removes `fitSteps`' measured downhill and repeat bias.
 5. **Stability under edits ("same as last time, relax if impossible").** Tanagra §5.1. When a helper or Matt changes one node's bars or
    pins a moment, every other node keeps its solved values unless no solution exists. Today a node change shifts every later node
@@ -614,6 +654,11 @@ Checked by searching `reference/research/` (all ledgers, the Gemini and Matt res
 11. **Seed the search with what already passed QA.** Sorenson & Pasquier: seeding the population "with existing well-designed levels"
     made search fast enough for a one-minute limit. For us: a node's search starts from the steps of the rebuilt W1 nodes of the same tag
     (the papers ledger proposes seeding a *library*; seeding the *search* is different and cheaper).
+12. **Take-offs on the tune's own onsets.** Dance Dance Convolution (3.20): every step sits on a musical onset, and step kinds follow
+    musical roles (accents get jumps, held notes get freezes). Our themes are symbolic (src/audio/form.ts:31-56), so a node's bars can be
+    *selected* from the onsets of the bars the music will actually play, instead of rolled from gap lists (w1Rhythm.ts:253). The only
+    music idea in our research is the BPM grid ("the beat is the music's beat", beatTrace.ts:637); none mentions onsets or accents
+    (searched: "onset", "accent").
 
 ---
 
@@ -630,6 +675,7 @@ Read in full (body text; reference lists skimmed):
 7. Karth & Smith, "WaveFunctionCollapse is Constraint Solving in the Wild", FDG 2017. https://adamsmith.as/papers/wfc_is_constraint_solving_in_the_wild.pdf
 8. Green, Khalifa, Barros, Nealen, Togelius, "Generating Levels That Teach Mechanics", FDG 2018. https://arxiv.org/pdf/1807.06734
 8b. Bazzaz & Cooper, "Level Generation with Constrained Expressive Range", FDG 2025. https://arxiv.org/pdf/2504.05334
+8d. Donahue, Lipton, McAuley, "Dance Dance Convolution", ICML 2017 (full). https://arxiv.org/pdf/1703.06891
 8c. Withington & Tokarchuk, "The Right Variety: Improving Expressive Range Analysis with Metric Selection Methods", FDG 2023 (§1-3, §5.5-7;
     method §4-5.4 skimmed). https://arxiv.org/pdf/2304.02366
 
