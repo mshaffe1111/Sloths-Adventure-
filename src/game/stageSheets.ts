@@ -203,6 +203,9 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && W4_FALL_STAGES.has(cfg.id)) out.push('w4-falls');
   // (the control test's water stretches, River logs and Lily pads, are drawn with World 2's river; every mix has one of them)
   if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
+  // (the mixer's 1-5 lays lily pads, drawn with World 2's painted pad (engine.ts paintedRivers): its sheet loads with the stage, so the
+  // first frames never show the old code-drawn slab. 738 KB, so only for the stage that lays pads)
+  if (built && cfg.id === '1-5') out.push('w2-props');
   // the creatures it can draw, and their sheets (see foe: above)
   if (cfg.objectiveType === 'boss_lair') for (const f of BOSS_MINIONS[w] ?? []) out.push(`foe:${f}`);
   else if (!built) for (const f of genFoes(w)) out.push(`foe:${f}`);
