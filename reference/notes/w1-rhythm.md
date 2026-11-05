@@ -79,3 +79,34 @@ Merge origin/ccr-0d59a91c-oy3imz before starting and before every push.
   - Gaps still open: 1-2 dead walk (16 vs 13 known), 1-5 "like the stage before" (57% to 1-4), 1-5 Easy "nothing new" on 3 layouts,
     1-3 "like the stage before" (to 1-2, w8-rope2's stage), the Easy kid taking 1 heart at the boa teach, and the 1-2 Normal 0% jump
     at the stump face x 26112.
+
+## NEXT: the inspector's Easy is not the game's Easy (the lead, 2026-11-04 ~10:05 PM ET: the engine's first truth-of-the-ruler item)
+
+Found checking a researcher's report: the inspector's noisy kid jump bot gives 1-1 Easy's jump at x ~29277 (gap 111, rise 120, landing
+351, a retry) a 6% success rate, 154 of its misses "overshot the landing". Measured on the lead head 35206f89:
+
+- **The jump bot (tools/inspect/jumps.ts, KID on Easy):** 6.0% / 6.5% / 8.5% / 5.5% on layouts 1-4. Real for that geometry.
+- **The first-timer kid (the real engine), 1-1 Easy, layouts 1-16, one run each:** the shrine every time (169-183 s). From the first try
+  in x 28900-29700 to the first past it: 3.4, 4.9, 3.7, 4.0, 5.1, 4.8, 5.0, 4.0, 6.2, 3.9, 5.1, 4.9, 6.2, 5.5, 5.2, 6.0 s; 2-4 tries,
+  at most one miss there (redone with a double jump in under 2 s), no stuck spot.
+- **Why they disagree:** the jump isn't in the game's Easy 1-1. The engine's Easy (generateStage(cfg, 'easy'), layout 1, x 28950-29800)
+  is branches at y 755 with 87-110 px stone steps at 729 (26 px hops). The y 820 -> 700 jump is Normal's geometry (engine Normal:
+  29277 -> 29429, gap 152, rise 120). tools/inspect/stages.ts make() builds a hand stage's Easy as `capped(buildProtoStage(cfg, seed,
+  plan))` with NO easy flag, then easyStage() over it; the engine (stageGenerator.ts:2857) builds 1-1, 1-3, 1-4 (EASY_BUILT) and 1-2,
+  1-5 (RHYTHM_STAGES) with buildProtoStage(..., easy = true), their own Easy layout on the beat. Every inspector Easy number for those
+  five stages (jump bot, pacing, dead time, bands) is measured on Normal's layout run through easyStage. The first-timer plays the engine's
+  own stage, so it is right.
+- **And a mislabel:** jumps.ts:169 returns 'over' for any fall at an x past the landing's NEAR edge. Under a thin branch 120 px up, a flick
+  that doesn't rise high enough passes under it and is called an overshoot: it is "too low".
+
+**Proposed fix (not built):**
+1. stages.ts make(): build Easy the way the engine does: setLayoutVariant(seed); generateStage(cfg, easy ? 'easy' : 'normal') for the
+   hand stages too (or the same easy flag to buildProtoStage for EASY_BUILT and RHYTHM_STAGES). Fixture: the inspector's Easy 1-1 (and
+   1-2 to 1-5) platforms equal the engine's on layouts 1-3.
+2. jumps.ts: 'over' only past the landing's FAR end; otherwise 'short'. Fixture: a flick too low under a thin branch reads 'short'.
+3. Expect the inspector's Easy numbers for 1-1 to 1-5 to move; re-baseline any gate that reads them in the same commit, shrink-only.
+
+Also for the engine from tonight (w1-rhythm-pace, 49e95e55): the burst piece (12 hops over 60 px gaps, rock-faced catches), the dips
+ruler's beat-stage "out" (over the catch, not the G line), 1-2's canopy-split clumsy 0% (a miss onto the base bough the clumsy check
+counts as off-route: a split's either road should count), the chasm swing's 65-67% with a short run-up, and R-163 (1-2's floor step
+downs walked off).
