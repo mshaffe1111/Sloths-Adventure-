@@ -938,7 +938,7 @@ fills, the designer sends the lead a small picture list.
 - **Its job:** the arrival, teaching run, jump and then the double jump.
 - **Its shape** (W1-REBUILD-PLAN's row, for meaning, not layout): the stage rises from the forest floor to the high kapok branches, **[revised: C8, "Contradictions ruled", 10:49 AM]**
   and the backdrop changes with height.
-- **Its moment:** the first double-jump chain up into the canopy, then the view from the top branch.
+- **Its moment:** the first double-jump chain up into the canopy, then the view from the top branch. **[revised 1:27 PM ET: no view; the brief :23, :41. See "1-1 for the builder"]**
 - **d = 0:** the dial's easiest values. Nothing is untaught: no creaky (1-5 teaches it), no crumbling and no animals. **[revised: C9, "Contradictions ruled", 10:49 AM]**
 - **The move ladder:** run, jump, double and bounce are taught here. Hop and climb come back later.
 - **Overall trend up** (1-5's goes down), so the two stages never share a shape.
@@ -984,7 +984,7 @@ construction, not just look different.
 - **Boughs arrive only with the climb (n8 on),** so reaching the trees is the stage's change of feel, the story's "higher than he has
   ever been". n4's bounce lifts him onto a mound top or a log jam, not a bough.
 - **Pass lines that make "different from 1-5" a number:**
-  - boughs and creaky pieces together are at most 30% of 1-1's landings (in 1-5 they are well over half);
+  - boughs and creaky pieces together are at most 30% of 1-1's landings (in 1-5 they are well over half); **[revised 1:27 PM ET: 25.3%, backlog #102; see "1-1 for the builder"]**
   - 1-1's commonest kind is not 1-5's commonest kind;
   - 1-1 and 1-5 share no more than half their ideas (the neighbour rule, kept even though they are not neighbours);
   - the old 1-1's floor numbers still hold (up and down on 4 of 5 landings, something new every 572 px).
@@ -1046,7 +1046,7 @@ Each stage's section is signed by all three before any building starts. New help
 **1-1's feel profile** (from the lead's brief):
 - **Branching:** moderate, from ground forks in the first half and canopy forks late. The split and two-road lines are set from the
   first measured build, which the planner reports before working around anything.
-- **Shape:** hilly ground rising to the canopy, with the overall trend up.
+- **Shape:** hilly ground rising to the canopy, with the overall trend up. **[revised 1:27 PM ET: hills `rolling`, as measured; the rise is the trend. See "1-1 for the builder"]**
 - **Tempo:** calm and march-like, quicker only at n9.
 - **Petals:** a low trail you can clear, at marching height.
 - **Art:** the forest edge in morning light, then the canopy. Ground pieces lead.
@@ -1064,11 +1064,11 @@ Each stage's section is signed by all three before any building starts. New help
 |---|---|---|---|---|
 | n1 | **teach** run | flat forest-floor walk with low banks, no gaps | floor → floor | Dot's run coach line; no heart; the start flag |
 | n2 | **teach** jump (expose, then validate) | bank hops with small safe dips (no pit), then stump hop | floor → floor | "Jump the little gaps" |
-| n3 | practise | stump hop on stones and banks (stones on ground), bank hops | floor → low | "Hop from stone to stone" |
+| n3 | practise **[revised 1:27 PM ET: see "1-1 for the builder"]** | stump hop on stones and banks (stones on ground), bank hops | floor → low | "Hop from stone to stone" |
 | n4 | **teach** bounce | a mushroom beside the path up onto a stepped mound or a log jam, then bank hops (the walk past it never bounces) | low → mound top | — |
-| n5 | the first fork, on the ground (gentle) | high road: the mound tops and stump tops; low road: the floor and the creek (lily pads). Rejoin | low → low (two roads) | marks per CP3's fork rule, on the shared ground |
+| n5 | the first fork, on the ground (gentle) **[revised 1:27 PM ET: see "1-1 for the builder"]** | high road: the mound tops and stump tops; low road: the floor and the creek (lily pads). Rejoin | low → low (two roads) | marks per CP3's fork rule, on the shared ground |
 | n6 | rest | a bank walk | low → low | a Dot spot; a flag only if n7 follows hard |
-| n7 | **teach** double (expose, then validate) | one gap too wide for a single jump over safe ground, then two more safe ones; bank hops between bursts | low → low | "Nice jump! In the air, flick up again for a double jump" at the first double; "Flick up again in the air to jump twice" |
+| n7 | **teach** double (expose, then validate) **[revised 1:27 PM ET: see "1-1 for the builder"]** | one gap too wide for a single jump over safe ground, then two more safe ones; bank hops between bursts | low → low | "Nice jump! In the air, flick up again for a double jump" at the first double; "Flick up again in the air to jump twice" |
 | n8 | the climb up (low boughs; the kapok climb is 1-4's) | bough stair, bounce up (one not used in n4) | low → mid | — |
 | n9 | **the moment (test)** | the double-jump chain: three or four rising doubles, bough to bough, up into the canopy, with catch boughs below | mid → high | a flag before it; a heart after it only if it has risk |
 | n10 | the canopy fork | high road: the top branches; low road: mid boughs. Rejoin | high → high (two roads) | the high road's petal group |
