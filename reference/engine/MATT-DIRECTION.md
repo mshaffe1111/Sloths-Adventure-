@@ -1,5 +1,20 @@
 # Matt's direction for the engine (his words; the level designer designs from this, the lead checks against it)
 
+## STANDING RULE, 2026-11-05 ~10:49 AM ET (to the planner, in his words): binds the planner and every engine step
+
+"DO NOT HALF ASS ANYTHING! DO NOT GO FAST OVER DOING IT RIGHT!!! Write that down and do not mess this up."
+
+And just before it: "The answer isn't cutting... It's making it right. Cutting IS NOT RIGHT." Also: "This engine's the most important part
+of this game. We cannot mess it up... If this engine fails, the whole game fails."
+
+What it means for the planner, every step:
+- **Never cut scope or a check to make a time or a budget.** When something takes longer to do right, the deadline moves, and the lead is
+  told early and why. The bar never moves.
+- **Never ship a guess.** Every label, rule and number comes from the designer, the research, a measurement of our code, or Matt.
+- **Look at every result before it's reported:** every still, every table row, every gate output. Something rough or unproven is named
+  plainly, never hidden.
+- **Cover the whole game, not one world.** Every world, every piece, every prop.
+
 ## 2026-11-05 ~12:05 AM ET
 "So how do I make sure that pieces are being used and it's being done in ways that real platformers are built? When we first started
 off, we were doing really good. And we really hit a wall the last week or so. But the first stage is the best stage in the game. It
