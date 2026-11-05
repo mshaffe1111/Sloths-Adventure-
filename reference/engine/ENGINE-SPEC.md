@@ -1423,3 +1423,34 @@ core, and where it is allowed). This table is for the planner's library at engin
   a bough or trunk, as if a ground log had been put up in a tree.
 - So `bough hops`, `bough stair` and `double chain` may lay a log only as a floating piece, counted in the float share. Every
   non-floating landing up there is a branch.
+
+### [designer ruling, 11-05 ~11:55 AM ET] The move ladder against the all-world table (planner 7d9ad9a9)
+
+**(a) Lianas and breaking branches are taught in 1-2. The table is right.** Shipped decisions already say so: "1-2 owns the lianas"
+(d272601f) and "1-2 teaches crumbling" (6dae405d).
+- The ladder's taught-at for both is 1-2.
+- 1-5's creaky node becomes an echo, not a teach. Its Dot line stays.
+- 1-6's lianas are a later use.
+
+**Trunk climb at 1-1 is the mixer's own 1-1, not the game.** 1-1's profile keeps climbing out: n8 is bough stair or bounce up. So
+the mixer's 1-1 must lay no climbing vine. The ladder takes climb's taught-at from the shipped stages, which is 1-4 unless main's 1-2
+or 1-3 already has one. Planner: re-run that one row on main's 1-1 to 1-3 and tell me.
+
+**(b) The moving platform must not be taught in a lair.** A boss room is not a safe teach (STAGE-RULES §0: taught in a safe spot
+before it can hurt).
+- It is taught in 2-7 beside the lift, in a safe stretch, and echoed in 2-8 and 2-9 before the 2-10 lair.
+- This is R-164.9, built when the engine reaches World 2. Until then the ladder records 2-7 as its planned teach and names 2-10's use
+  as a known breach.
+
+**The taught-at rule for the ladder:**
+- A move's taught-at is the first stage that teaches it: a lesson card, Dot's tip or a skill.
+- First presence counts only as a check. A mechanic present before its taught-at is a breach. It is fixed in the stage where it
+  appears early, never by moving the teach back.
+
+**Correction to the 10:40 and 11:00 rulings (the crumble slab in World 1):** shipped commit acf6e1e8 already ruled that World 1's
+breakables use "World 1's branch art, never World 7's ruin slab".
+- The slab is World 7's alone. It leaves World 1 entirely, which undoes "low by the shrine stones".
+- 1-5's ground breakables become World 1 rotten wood (creak, on the ground) if that art exists. Planner: name its atlas key.
+- If no rotten-wood art exists, the ground breakable is a true art gap. It goes on a picture list for the lead, and until then 1-5's low
+  roads use stump hop and bank hops with no breakable.
+- Until one of those is done, the theme check names the slab in World 1 as a breach.
