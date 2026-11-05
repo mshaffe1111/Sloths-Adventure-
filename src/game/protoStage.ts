@@ -57,6 +57,7 @@ import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
 import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { buildRhythmStage, rhythmOwnPetals, rhythmPetalGoal } from './w1Rhythm.ts';
+import { buildMix15 } from './mixer/w1mix.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildIntoCanopy, clearDress, splitPetals as splitPetals11 } from './w1Rise.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
@@ -503,7 +504,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   if (plan === '6-8') return buildStiltClimb(config, seed);
   if (plan === '1-8') return buildLongBranch(config, seed);
   // 1-2 and 1-5: built node by node on the music's beat (w1Rhythm.ts, W1-REBUILD-PLAN.md)
-  if (plan === '1-2' || plan === '1-5') return buildRhythmStage(config, seed, easy);
+  // (engine-mixer branch, CP3 grey-box: 1-5 from the level designer's node plan, src/game/mixer/w1mix.ts)
+  if (plan === '1-5') return buildMix15(config, seed, easy);
+  if (plan === '1-2') return buildRhythmStage(config, seed, easy);
   const R = stream(seed);
   const P: Platform[] = [];
   const V: Vine[] = [];
