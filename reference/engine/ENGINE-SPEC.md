@@ -1861,3 +1861,13 @@ are named at the end.
   it until the water researcher saves primary texts.
 - **#151's "only where the element fits" reading.** SR:93-96 is about layout templates, and SR §0.1 says mechanics return everywhere.
   Ruling 3 governs, and the row is applied in that form above.
+
+**[MATT, 11:12 AM ET via the lead, MATT-DIRECTION.md] Set pieces come back ("Yes").** The 1-8 chase, the 1-9 boa and the snake ring are
+**not** exempt from the ladder. Each one's idea returns later as a twist, in that world's own art, never as a copy. The designer's
+candidates, for the world passes:
+- the collapsing-branch chase becomes W7's falling floors chasing him, or W10's collapsing scaffold;
+- the boa's coils become a W6 root-snake guarding a crossing;
+- the snake ring becomes a W8 ring of night hunters.
+
+The ladder data carries rows for "chase", "boa" and "ring" with the "must keep returning" line. **Who picks the small builds: the
+LEAD** (Matt: "You"), inside the Hugging Face money. The designer sends the ranked list with reasons.
