@@ -88,6 +88,9 @@ export type W1Section = SectionTemplate & {
   jobs?: W1Job[];
   /** each version's rhythm string (Round 4, R2 lesson 1: kinds, not pixels): h hop, j gap jump, d double, b bounce, c climb step, w walk */
   rhythms?: Record<string, string>;
+  /** a two-answer twist's two moves (NODES §8.7 B5: the gate runs it with both away, which must fail, and each alone, which must pass);
+   *  for the planner to carry into gen2.nodes[].moves */
+  answers?: Array<'double' | 'bounce'>;
   /** a version's own jobs where they differ from the section's (§8.8: #7's double version a test, its mushroom version a twist, B5) */
   versionJobs?: Record<string, W1Job[]>;
   /** its terrain family (NODES.md §3 `terrain`, W1: floor and stones, raised logs, mounds, boughs): the porter's reading, for the designer */
@@ -1193,6 +1196,8 @@ const TERRAIN: Record<string, W1Terrain> = {
   'w1-step-stones-teach': 'floor-stones', 'w1-log-teach': 'raised-logs', 'w1-dip-double-teach': 'floor-stones', 'w1-bank-double-teach': 'mounds', 'w1-mushroom-bank-teach': 'mounds', 'w1-morning-path': 'floor-stones', 'w1-mushroom-fork': 'boughs', 'w1-twin-mushroom-fork': 'boughs', 'w1-stair-fork': 'raised-logs', 'w1-bank-stair-fork': 'mounds', 'w1-stair-test': 'mounds', 'w1-log-stair-test': 'raised-logs', 'w1-backstep-twist': 'raised-logs', 'w1-dipping-boughs-twist': 'boughs', 'w1-log-chain': 'raised-logs', 'w1-mushroom-chain': 'boughs',
   'w1-mushroom-fork-dip': 'boughs', 'w1-root-stair-fork': 'raised-logs', 'w1-bank-stair-test': 'mounds', 'w1-bough-descent': 'boughs', 'w1-log-steps-descent': 'raised-logs', 'w1-canopy-drop': 'boughs', 'w1-stair-run': 'mounds', 'w1-bank-run': 'mounds', 'w1-zigzag-run': 'floor-stones', 'w1-high-step-twist': 'mounds', 'w1-stair-gap-twist': 'mounds', 'w1-drop-bounce-twist': 'floor-stones', 'w1-long-bounce-twist': 'floor-stones', 'w1-dip-bounce-twist': 'floor-stones', 'w1-bounce-stair-combine': 'raised-logs', 'w1-bounce-bough-combine': 'boughs',
 };
+/** the two-answer twists (B5): #7's mushroom version, #28, #59 (the designer, 11-05) */
+const ANSWERS: Record<string, Array<'double' | 'bounce'>> = { 'w1-fallen-trunk': ['double', 'bounce'], 'w1-two-answers': ['double', 'bounce'], 'w1-long-bounce-twist': ['double', 'bounce'] };
 const VERSION_JOBS: Record<string, Record<string, W1Job[]>> = { 'w1-fallen-trunk': { double: ['test'], mushroom: ['twist'] } };
 /**
  * HELD until the planner's bounce-rise place exists (the designer, 11-05: a bounce lip laid as a walk is an 80 px step, a single jump
@@ -1207,7 +1212,7 @@ const held = (q: W1Section): W1Section | null => {
   const keep = q.subBlocks![0].versions.filter((v) => !W1_HELD[`${q.id}/${v.id}`]);
   return keep.length === q.subBlocks![0].versions.length ? q : { ...q, subBlocks: [{ ...q.subBlocks![0], versions: keep }] };
 };
-export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(held).filter((q): q is W1Section => !!q).map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id], terrain: TERRAIN[q.id], ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
+export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(held).filter((q): q is W1Section => !!q).map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id], terrain: TERRAIN[q.id], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
 
 /** the phases a stage's slots fill */
 export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten', 'ketsu', 'goal'];
