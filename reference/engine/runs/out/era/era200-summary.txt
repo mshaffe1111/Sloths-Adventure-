@@ -1,0 +1,10 @@
+rolls 200 look 50
+1-1 lookalikeWith {'1-2': 45, '1-5': 49, '1-7': 18} diversity cos 0.027 win 0.347 fails look 50 / 50
+1-2 lookalikeWith {'1-1': 45, '1-3': 2, '1-5': 37, '1-7': 18} diversity cos 0.062 win 0.491 fails look 48 / 50
+1-3 lookalikeWith {'1-2': 2, '1-6': 13, '1-9': 41} diversity cos 0.027 win 0.351 fails look 45 / 50
+1-4 lookalikeWith {} diversity cos 0.029 win 0.255 fails look 0 / 50
+1-5 lookalikeWith {'1-1': 49, '1-2': 37} diversity cos 0.016 win 0.361 fails look 50 / 50
+1-6 lookalikeWith {'1-3': 13, '1-7': 7, '1-9': 9} diversity cos 0.260 win 0.639 fails look 22 / 50
+1-7 lookalikeWith {'1-1': 18, '1-2': 18, '1-6': 7, '1-9': 3} diversity cos 0.422 win 0.527 fails look 18 / 50
+1-8 lookalikeWith {} diversity cos 0.068 win 0.189 fails look 0 / 50
+1-9 lookalikeWith {'1-3': 41, '1-6': 9, '1-7': 3} diversity cos 0.314 win 0.561 fails look 43 / 50
