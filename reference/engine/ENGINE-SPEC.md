@@ -1818,3 +1818,46 @@ cleared by re-wording a rule. Each is accepted with its spec change, or rejected
 - **MATT APPROVED ruling 5 (11:06 AM ET, via the lead): one rulebook over all builders.** gen2 keeps its 23 stages, special stages stay
   hand-built, and the mixer takes a stage only where it is proved better under that world's lock. Every stage, whatever builds it,
   passes the same gates.
+
+## The 39 "G" rows applied (designer, 11-05 ~11:08 AM ET; TRIAGE.md Part 1, each line opened by the triage helper)
+
+Each row's research answer replaces the OPEN line, cited. Two G rows are **not** applied, because a later finding outranks them; they
+are named at the end.
+
+| ES line (TRIAGE #) | Applied rule | Source |
+|---|---|---|
+| 1320, 1570 (#128, #153) | From World 2, a stage brings back earlier worlds' mechanics with its own; Worlds 8-10 use three or four at once. The spec's "≥ 3 core moves besides run and jump" stays as the stricter floor | SR:54-55 |
+| 1441 (#146) | Moving platforms from World 2, then back in every world. The kinds come from GVs:17: pendulum branch, ride-to-start vine track, pulley and the like. Lift momentum (R-152.7) is built before a lift moves the player | SR:25; GVs:17-18 |
+| 1516 (#148) | Each core move is counted in the pairs table (the 15 pairs of the six things, widened to the full list) | GV:5; SR:54 |
+| 1526 (#149) | A world move returns only if it changes something you feel, paired with that world's own mechanic, in that world's art (ruling 3) | SR:93-96 |
+| 1652 (#156) | Hanging under a branch and shimmying are core: "the most sloth move there is" | D:1201 |
+| 341 (#32) | Part 1 of a stage shows its mechanic safely: a miss lands on solid ground, in 5-10 s groups | SR:45-46 |
+| 390 (#38) | Bursts are judged by time (groups of 5, 10, 15 or 20 s), not piece count. A rest is ≥ 2× the local median beat and ≥ 1.0 s Normal / 2.0 s Easy | SR:43-44; R3:199-213 |
+| 752 (#83) | Easy: 3-4 actions a burst in 6-8 s groups. A rest of 2.0-2.5 s is the target, and 4-5 s is allowed only as a floor | GP:292-293; R3:212-213 |
+| 944 (#99) | Neighbouring stages must not share a tempo and a camera direction | SR:58 |
+| 128 (#7) | Each world owns its pieces, and each stage draws a small themed pool from its world's sections | SR:93-96; R4:577-579 |
+| 348, 439 (#34, #42) | A node's deck is locked out for 4 draws after it is laid | LEG:504 (E40) |
+| 1385, 1417 (#133, #144) | Each world's pass decides its own pieces and its fingerprint (beat mix, camera directions, mechanic pairs, piece set), and is checked against every earlier world | SR:93-99 |
+| 1550 (#151) | Hazards return as the twist "without retraining", paired with the later world's own mechanic and in its art (ruling 3) | GV:105; SR:93-96 |
+| 219 (#16) | Before an enemy trigger: a flat runway of ≥ 1.0 s (about 285 px). The boa's ledge is ≥ 3.5 body widths from the entry | LEG:572, :581 (E108, E117) |
+| 640 (#65) | Single-jump gap share Normal 0.35-0.75, Easy 0.25-0.50 (calibrated on what shipped); doubles Normal 0.50-0.78, Easy 0.40-0.60; never above 0.82 Normal / 0.65 Easy. Gap share shapes the stride, not the difficulty (C1) | D:177, D:48; LEG:567 (E103); GP:75-76 |
+| 642, 468 (#67, #47) | Landing pads 3.5 body widths (about 154 px, Normal climax) to 7.0 (about 308 px, Easy intro). Normal's 110 px end is withdrawn. Easy = Normal × 1.35 stays as the code's rule (C4) inside this range | LEG:569 (E105) |
+| 644 (#69) | E[lives], first run: Normal ≤ 1.0 in World 1, rising about 0.5 a world; Easy ≤ 0.3. The bots are calibrated on touch recordings before any goal rests on them | R3:42-44; D:200; R4:559-562 |
+| 646, 228 (#71, #20) | Creak: Easy 1.2 s, Normal 0.67 s; snap twig about 0.15 s (C3) | LEG:615 (E151); SR:51-52 |
+| 300, 522 (#26, #54) | Checkpoints sit on the rests before parts 3 and 4, and respawn is within about 2 s of the hard part (C10, C11, C12) | SR:48, :64-65; GV:165 |
+| 360, 462, 828 (#36, #45, #90) | Normal goals 75-87.5% of what's reachable (13 marks: 10 or 11). The Easy goal is set by the first-timer kid bot (a C run) | LEG:582, :584; SR:115 |
+| 1177 (#112) | Choice in the ground half: an alternate entrance or an optional vertical branch for the second collectible tier | GV:173 |
+| 148, 547 (#10, #56) | Use all the art: every made frame has a place in the game. Whether an item is dressing or a piece is decided item by item | SR:218-219 |
+| 1249 (#118) | Nothing grows out of the air: stumps, roots, creaky limbs and vine tops all attach to something solid | SR:602-603 |
+| 667 (#74) | Each stage takes 2-5 min for a first-timer, and never under 2 min for a skilled player. A first-timer takes 20-25 min for World 1 | SR:36-38 (Matt) |
+| 790 (#86) | A generator is judged over 200 rolls (sd of each metric ≥ 0.05), or the stage is declared a fixed composition and judged on its one layout. 16 rolls stays the quick check | R3:116-121 (F6) |
+| 819 (#89) | Easy softens the high road too (wider and more forgiving), never Normal's bands unchanged | SR:135-137 |
+| 282 (#24) | Pairwise adjacency is checked in the builder: a gap and an enemy on its landing add up, and the pair is capped | LEG:485, :469 (E21, E5) |
+| 754 (#84) | Any new Dot line is marked "(new, needs Matt's approval)" | SR:118 |
+| 1678 (#159) | The target is about an hour a stage built from a spec (R-163). The acceptance test (≤ 1/3 of 1-5's hand-mix, measured) is the pass line | RM:473 |
+
+**Not applied (outranked):**
+- **#163, the swim gate's 20 s (GVs:19).** The critic showed GVs:19 is a one-line triage of an unsaved paste, misread. Ruling 7 withdrew
+  it until the water researcher saves primary texts.
+- **#151's "only where the element fits" reading.** SR:93-96 is about layout templates, and SR §0.1 says mechanics return everywhere.
+  Ruling 3 governs, and the row is applied in that form above.
