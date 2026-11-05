@@ -231,3 +231,9 @@ $72 with about $15 kept back.
 "I thought he swam faster than he ran. So I would think that he would swim 1.25 his original speed."
 So clean-water swimming is 1.25 times Pokey's run speed (today 0.53x, swim.ts:35), everywhere he swims (W6-W8, W10). The research's
 option C, and real sloths do swim faster than they climb. "Suddenly fast" needs long water: 6-9's swim beats are long (3,500-5,000 px).
+
+## 2026-11-05 12:31 PM ET: MATT PICKED THE CRUMBLE: the faster one (0.5 s)
+"I like crumbling #2 which looks faster." (the 0.5 s clip, against today's 1.1 s)
+So the designer's P7 stands: on Normal a crumbling piece gives way 0.5 s after he lands (Celeste Classic's timing), comes back after
+2 s, and a required one is whole on respawn. Its first appearance keeps the calibrated teaching margin (P7). Easy's timing comes from the bots'
+calibration, never guessed.
