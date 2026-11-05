@@ -28,3 +28,16 @@ test("no harvested section is combat (every one says so), and one that serves 1-
   for (const s of W1_SECTIONS.filter((q) => q.feel.includes('1-1'))) assert.ok(!(s.needs ?? []).some((m) => m === 'rope' || m === 'punch'), `${s.id} needs ${s.needs}`);
   assert.ok(NOT_ELSEWHERE.includes('lianas') && NOT_ELSEWHERE.includes('bush'));
 });
+
+test("the move table holds for the kit: every move a 1-1 section needs or uses is taught at 1-1 or before on main (moveLadder.ts)", async () => {
+  const { TAUGHT_AT } = await import('../../moveLadder.ts');
+  // (gen2's move names to the table's: 'walk' is the table's 'run'; a section's `uses` names a mechanic, the table covers bounce and double)
+  const asTable = (m: string) => (m === 'walk' ? 'run' : m);
+  const order = (id: string) => { const [w, s] = id.split('-').map(Number); return (w - 1) * 10 + s; };
+  for (const s of W1_SECTIONS.filter((q) => q.feel.includes('1-1'))) {
+    for (const m of [...(s.needs ?? []), ...(s.uses ?? []).filter((u) => u === 'bounce' || u === 'double')].map(asTable)) {
+      const at = (TAUGHT_AT as Record<string, string>)[m];
+      assert.ok(at && order(at) <= order('1-1'), `${s.id}: ${m} is ${at ? `taught at ${at}` : 'not in the move table'}`);
+    }
+  }
+});

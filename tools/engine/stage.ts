@@ -27,6 +27,7 @@ import { cosine } from '../inspect/analyze.ts';
 import { looksAlike } from '../inspect/lookalike.ts';
 import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
+import { landingKind } from '../../src/game/mixer/catalog.ts';
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const id = process.argv[2];
@@ -205,6 +206,22 @@ if (fs.existsSync(OLD_FILE)) {
     if (breaches.length > 2) bad.push(`layout ${v}: and ${breaches.length - 2} more`);
   }
   gate(`support (${N} layouts, Normal)`, bad);
+}
+
+// 5d. the element gate: every landing a kind the library knows, and of this world (mixer/catalog.ts LANDINGS, the designer's LABELS.md)
+{
+  const bad: string[] = [];
+  for (let v = 1; v <= N; v++) {
+    const st = buildRoll(cfg, v) as unknown as { platforms: Array<Parameters<typeof landingKind>[0]> };
+    for (const p of st.platforms) {
+      if ((p as { soil?: boolean }).soil) continue;
+      const ks = landingKind(p);
+      if (!ks.length) bad.push(`layout ${v}: piece ${p.id} at x ${Math.round(p.x)} (style ${p.style ?? '-'}, h ${p.height}) is no kind the library knows`);
+      else if (!ks.some((k) => (k.worlds as readonly number[]).includes(world))) bad.push(`layout ${v}: piece ${p.id} at x ${Math.round(p.x)} is a ${ks[0].name}, not World ${world}'s`);
+      if (bad.length > 8) break;
+    }
+  }
+  gate(`elements (every landing a World ${world} kind, ${N} layouts)`, bad);
 }
 
 // 6. the stage's own tests
