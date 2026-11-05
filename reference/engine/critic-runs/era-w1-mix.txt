@@ -1,0 +1,9 @@
+1/9 batches  7 s  (about 59 s to go)   2/9 batches  17 s  (about 58 s to go)   3/9 batches  22 s  (about 44 s to go)   4/9 batches  24 s  (about 30 s to go)   5/9 batches  28 s  (about 22 s to go)   6/9 batches  28 s  (about 14 s to go)   7/9 batches  30 s  (about 9 s to go)   8/9 batches  30 s  (about 4 s to go)   9/9 batches  34 s  (about 0 s to go)   
+look-alikes compared in 32 s
+9 stages x 16 rolls in 67 s
+wrote /tmp/claude-0/-home-user-Sloths-Adventure-/e5055117-b2d6-5076-b763-ad62a0968e7d/scratchpad/era-w1-mix.json
+wrote /tmp/claude-0/-home-user-Sloths-Adventure-/e5055117-b2d6-5076-b763-ad62a0968e7d/scratchpad/era-w1-mix.html
+
+real	1m8.103s
+user	1m49.748s
+sys	0m7.070s
