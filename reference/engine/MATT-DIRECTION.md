@@ -258,3 +258,17 @@ then it can go in the roadmap."
 So: the lead (with the designer) approves what the opening of the game needs now (the engine, World 1, 1-1 and 1-2) without asking
 Matt. Anything for a later world goes on ROADMAP with its R-id, held to next week. Applied at once: the belly slide (taught in W2) is held
 to the roadmap; the under-bough hang is approved for W1 (Matt's PLAN-TO-80).
+
+## 2026-11-05 1:22 PM ET (to the lead): a FRESH helper rebuilds 1-1; the planner and designer supervise
+"So how are we going to do the one-to-one rebuild? Are we going to create a new helper to see if it's able to do it? And we have the
+builder and the designer, or the planner and the designer, as the supervisors for all these going forward. So we have the expertise
+in place, but we're getting a fresh view of it."
+So: 1-1 (then 1-2) is built by a NEW helper that has never seen the engine work, from the engine's how-to, the story brief and
+`tools/engine/stage.ts` only. The planner and the designer supervise it (and every stage builder after it); they do not build the
+stage. This is the cold-helper proof the engine owes (helper-ready). Rules of the test:
+- The builder starts from engine-core, only after step 6 and E4/E5 land and the how-to exists.
+- The builder may change stage DATA only. Anything that needs engine code is an engine finding: the planner fixes it in the engine,
+  never the builder in the stage (Matt: "the engine gets fixed").
+- Every question the builder has to ask that the how-to does not answer is logged as a how-to gap and counts against the pass line
+  as a fix. Supervisors answer by pointing to (or fixing) the how-to, not by doing the work.
+- The pass line (b726b737: 1.7 h, ~1.1%, <= 2 data-only rounds, 0 engine changes, every gate) is measured on the fresh builder.
