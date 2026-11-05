@@ -61,3 +61,4 @@ that do the best job get the follow-on work.
 - Judge art against the absolute floor (floor.py in hf-backdrops.md), not against a weak "before". (backdrops, Nov 1)
 - Never Gemini prompts; Hugging Face only.
 - Show first: any big look change goes to Matt as stills or a mock-up before it is built.
+- D35 (11-05): a spec the build reads must trace every research row (used where, or not taken and why); counted by trace-check, reviewed by an independent critic before build. Matt: "Nothing guessed. Nothing tunnel visioned."
