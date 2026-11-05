@@ -45,6 +45,7 @@ for (const [o, w, h] of [['up', 390, 844], ['side', 844, 390]]) {
     const log = e.platforms.find((q) => q.sling);
     const crates = e.platforms.filter((q) => q.crate).sort((p1, p2) => p1.x - p2.x);
     const see = e.platforms.filter((q) => q.seesaw);
+    const gate = e.platforms.filter((q) => q.rootgate);
     e.__st = 'wait'; e.__lives = e.lives; e.__log = []; e.__hold = 0;
     e.__ticks = 0;
     const tick = () => {
@@ -54,7 +55,13 @@ for (const [o, w, h] of [['up', 390, 844], ['side', 844, 390]]) {
       if (e.lives !== e.__lives) { e.__log.push(`life lost at x ${Math.round(pl.x)} (${e.__st})`); e.__lives = e.lives; e.__st = 'wait'; }
       if (log) e.__minGap = Math.min(e.__minGap ?? 1e9, log.x - a.x0);
       let press = false, right = false;
-      if (see.length) {
+      if (gate.length) {
+        // (root gate: walk on; hop onto the rock with the plate; walk on through the door once it is open)
+        const rock = gate.find((q) => q.rootgate.role === 'knot');
+        const door = gate.find((q) => q.rootgate.role === 'door');
+        if (pl.x > door.x + door.width + 80 && pl.grounded) { e.__st = 'done'; e.__log.push(`through at ${Math.round(pl.x)}`); }
+        else { right = true; if (pl.grounded && e.__hold === 0 && pl.x > rock.x - 60 && pl.x < rock.x && pl.y > rock.y + 10) press = true; }
+      } else if (see.length) {
         // (seesaw: walk into the log and push it till it stops; hop onto it; walk on onto the raised far end; the second jump up the bank)
         const lg = e.platforms.find((q) => q.push && q.x >= a.x0 - 10);
         const R = see.find((q) => q.seesaw.side === 1);

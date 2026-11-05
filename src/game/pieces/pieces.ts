@@ -13,6 +13,8 @@ import { PIECE_FRAMES, blitPiece, piecesReady } from './pieceArt.ts';
 import { LOG_CELL, logScale, slingRopes, stepSling } from './sling.ts';
 import { CRATE_CELL, crateState, stepCrate } from './crate.ts';
 import { stepSeesaw, type PieceEnv } from './seesaw.ts';
+import { GATE, stepGate } from './rootgate.ts';
+import { drawWallArt, protoArtReady } from '../protoArt.ts';
 import { drawKitArt, kitArtReady, kitSize } from '../puzzleArt.ts';
 import { KIT_ART } from '../puzzleAtlasData.ts';
 import { SEESAW_PIVOT } from '../puzzlePlay.ts';
@@ -20,28 +22,31 @@ import { drawRopeAlong, warmRopeKit } from '../ropeArt.ts';
 
 const still = { dx: 0, dy: 0 };
 /** move piece `p` to where it is at game time t; how far it moved (0, 0 for a piece that does not move) */
-export function stepPiece(p: Platform, t: number, env: PieceEnv): { dx: number; dy: number } {
+export function stepPiece(p: Platform, t: number, env: PieceEnv): { dx: number; dy: number; opened?: boolean } {
   if (p.sling) return stepSling(p, t);
   if (p.crate) return stepCrate(p, t);
   if (p.seesaw) return stepSeesaw(p, env);
+  if (p.rootgate) return stepGate(p, t, env);
   return still;
 }
 /** whether the engine's moving-platform loop leaves this platform to stepPiece */
-export const isPiece = (p: Platform) => !!p.sling || !!p.crate || !!p.seesaw;
+export const isPiece = (p: Platform) => !!p.sling || !!p.crate || !!p.seesaw || !!p.rootgate;
 
 /** the sheets a stage's pieces draw from (stagePreload.ts keys) */
 export function pieceSheets(platforms: readonly Platform[]): string[] {
   const out: string[] = [];
-  if (platforms.some((p) => p.sling || p.crate)) out.push('pieces');
+  if (platforms.some((p) => p.sling || p.crate || p.rootgate)) out.push('pieces');
+  if (platforms.some((p) => p.rootgate)) out.push('kit:1');
   if (platforms.some((p) => p.sling)) out.push('rope');
-  if (platforms.some((p) => p.seesaw)) out.push('kit-pieces');
+  if (platforms.some((p) => p.seesaw || p.rootgate)) out.push('kit-pieces');
   return out;
 }
 /** start loading what the pieces draw with (the engine asks as a stage starts) */
 export function warmPieces(platforms: readonly Platform[]): void {
-  if (platforms.some((p) => p.sling || p.crate)) piecesReady();
+  if (platforms.some((p) => p.sling || p.crate || p.rootgate)) piecesReady();
+  if (platforms.some((p) => p.rootgate)) protoArtReady();
   if (platforms.some((p) => p.sling)) warmRopeKit();
-  if (platforms.some((p) => p.seesaw)) kitArtReady();
+  if (platforms.some((p) => p.seesaw || p.rootgate)) kitArtReady();
 }
 
 interface View { x0: number; x1: number; y0: number; y1: number }
@@ -55,6 +60,7 @@ export function drawPieces(ctx: CanvasRenderingContext2D, platforms: readonly Pl
   for (const p of platforms) {
     if (p.crate) { drawCrate(ctx, p, v, t); continue; }
     if (p.seesaw) { if (p.seesaw.side === 0) drawSeesaw(ctx, p, platforms, v); continue; }
+    if (p.rootgate) { drawGatePart(ctx, p, v, t); continue; }
     if (p.broken || !p.sling) continue;
     const s = p.sling;
     const k = logScale(p.width);
@@ -117,4 +123,49 @@ function drawSeesaw(ctx: CanvasRenderingContext2D, p: Platform, platforms: reado
   const k = (w + 24) / sz.w;
   const f = KIT_ART[n];
   drawKitArt(ctx, n, s.pivotX + (f.ax - SEESAW_PIVOT[n]) * f.k * k, s.y + 10, { scale: k });
+}
+
+/** the knot block's walkable top in its cell (px of 139: its mossy top, read off the alpha) */
+const KNOT_TOP = 5;
+
+/**
+ * A root gate's part: the root wall (the kit's painted wall, only the part on screen), the door (the painted root gate: woven shut, then
+ * the bare frame, the roots drawing back over GATE.opening s with a shiver), the knot block (World 1's painted knot, sinking a touch once he
+ * has stood on it).
+ */
+function drawGatePart(ctx: CanvasRenderingContext2D, p: Platform, v: View, t: number): void {
+  const g = p.rootgate!;
+  if (g.role === 'wall') {
+    if (!seen(p.x, p.x + p.width, p.y, p.y + p.height, v)) return;
+    const top = Math.max(p.y, v.y0 - 60);
+    drawWallArt(ctx, p.x - 6, top, p.y + p.height + 14, p.width + 12);
+    return;
+  }
+  if (g.role === 'plate') return;
+  if (g.role === 'knot') {
+    // the knot block, its mossy top on the plate's top, a hair wider than its box; stood on, it sinks a little (a pressed switch)
+    if (!seen(p.x - 20, p.x + p.width + 20, p.y - 20, p.y + p.height, v)) return;
+    const f = PIECE_FRAMES['knot-a'];
+    const w = p.width * 1.12, h = (w * f.h) / f.w;
+    const sink = g.on ? Math.min(1, (t - g.at) / 0.12) * 4 : 0;
+    blitPiece(ctx, 'knot-a', p.x + p.width / 2 - w / 2, p.y - KNOT_TOP * (h / f.h) + sink, w, h);
+    return;
+  }
+  // the door: drawn by its height, centred on the doorway, its foot on the floor
+  if (!seen(p.x - 20, p.x + p.width + 20, p.y - 20, p.y + p.height, v)) return;
+  const f = PIECE_FRAMES['root-gate-shut'];
+  const h = GATE.doorH + 26, w = (h * f.w) / f.h;
+  const x = p.x + p.width / 2 - w / 2, y = p.y + p.height - h + 6;
+  const since = g.on ? t - g.at : -1;
+  if (!g.on || since < 0) { blitPiece(ctx, 'root-gate-shut', x, y, w, h); return; }
+  const k = Math.min(1, since / GATE.opening);
+  blitPiece(ctx, 'root-gate-open', x, y, w, h);
+  if (k < 1) {
+    // (the woven roots shiver and draw back: the shut picture over the open one, fading, shaking less as it goes)
+    const shake = Math.sin(since * 60) * 3 * (1 - k);
+    ctx.save();
+    ctx.globalAlpha = 1 - k;
+    blitPiece(ctx, 'root-gate-shut', x + shake, y - k * 10, w, h);
+    ctx.restore();
+  }
 }

@@ -68,7 +68,7 @@ export const LANDINGS: LandingKind[] = [
     notes: "never World 1 (SHIPPED acf6e1e8; ENGINE-SPEC 10:09 AM): 1-5's 4 fragile ruin are a breach, to become World 1 creaky limbs" },
   { name: 'breaking or bouncing stone', match: (p) => (p.type === 'fragile' || p.type === 'bouncy') && p.style === 'moss_stone' || p.type === 'bouncy' && p.style === 'ruin', element: 'stone', footing: 'as a stone', mayFloat: 'no',
     uses: 'a breaking or bouncing stone', worlds: [5, 7, 8, 9, 10], noNew: 'OPEN: "a rock bounces you" reads oddly; waits on a still for Matt', open: true },
-  { name: 'moving platform', match: (p) => p.type === 'moving' && !p.sling && !p.crate && !p.seesaw && (p.style === 'log' || p.style === 'canopy_bridge' || art(p) === 'lift'), element: 'built', footing: 'a track or a rope', mayFloat: 'yes',
+  { name: 'moving platform', match: (p) => p.type === 'moving' && !p.sling && !p.crate && !p.seesaw && !p.rootgate && (p.style === 'log' || p.style === 'canopy_bridge' || art(p) === 'lift'), element: 'built', footing: 'a track or a rope', mayFloat: 'yes',
     uses: 'moving platform (planned teach 2-7, R-164.9); the lift (2-7)', worlds: [2, 5, 6, 8, 9] },
   { name: 'moving stone', match: (p) => p.type === 'moving' && (p.style === 'moss_stone' || p.style === 'ruin'), element: 'stone', footing: 'none: it moves through the air', mayFloat: 'no', uses: '(none)', worlds: [7, 9, 10],
     noNew: 'breaks rule 1 (rocks never float): today\'s 5 go on the known list; their job goes to a log, plank or lift kin' },
@@ -87,6 +87,9 @@ export const LANDINGS: LandingKind[] = [
   { name: 'counterweight seesaw', match: (p) => !!p.seesaw, element: 'ground', footing: 'its painted round pivot on the floor; the bank it lifts him to is too high to jump', mayFloat: 'no',
     uses: 'a step up a bank too high to jump: push the log onto the near end, its weight holds it down, the far end stays up as the step (the second jump from its top); alone, his weight tips it down', worlds: [1, 2, 3, 4, 6, 8],
     teaches: 'the counterweight (1-6\'s seesaw rooms teach it; on the route from then on)', notes: 'the kit\'s rules and painted planks (puzzleKit.ts, puzzleArt.ts), 1-6\'s sizes; the weight is the engine\'s push log', open: true },
+  { name: 'root gate', match: (p) => !!p.rootgate, element: 'tree', footing: 'the door at the foot of a root wall that comes down out of the canopy (too tall to jump); the plate on a mossy rock on the floor before it', mayFloat: 'no',
+    uses: 'a locked way on: step on the knot plate and the woven roots draw back; it stays open', worlds: [1, 3, 4, 6, 8],
+    teaches: 'a switch opens a gate (the kit\'s CARRY room teaches plates; on the route Dot names the locked way the first time)', notes: 'World 1\'s painted root gate (w1-new, never drawn) and the kit\'s root wall and knot plate', open: true },
   // (measured in the inventory, with no row in LABELS.md yet: open until the designer rules)
   { name: 'breaking log or plank', match: (p) => p.type === 'fragile' && (p.style === 'log' || p.style === 'canopy_bridge'), element: 'tree', footing: '(not ruled)', mayFloat: 'yes', uses: 'a log or plank that gives way (W5-W10)', worlds: [5, 7, 8, 9, 10], open: true, noNew: 'no label yet: the designer rules it' },
 ];

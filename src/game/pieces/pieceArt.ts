@@ -1,7 +1,7 @@
 /**
  * The engine pieces' art (src/game/pieces/): one small sheet, src/assets/pieces/pieces.webp, packed by tools/art/pieces/pack.py from
  * painted cells that were packed and never drawn (reference/engine/unused-art/IN-GAME-UNUSED.md): World 4's slung log, World 2's crates
- * and waterline, World 3's counterweight, cracks, bats and stalactites, World 1's root gates. 1024 px wide, about 3.6 MB decoded.
+ * and waterline, World 3's counterweight, cracks, bats and stalactites, World 1's root gates and knot blocks. 1024 px wide, about 3.6 MB decoded.
  *
  * Every draw returns false until the sheet has loaded; nothing is ever drawn in its place (a stage that lays a piece asks for the sheet
  * before it starts: pieceSheets in pieces.ts, stageSheets.ts 'pieces').
@@ -22,9 +22,11 @@ export const PIECE_FRAMES = {
   'crack-cracking': { x: 214, y: 494, w: 398, h: 152 },
   'crate-down': { x: 616, y: 494, w: 171, h: 151 },
   'crack-whole': { x: 0, y: 662, w: 400, h: 151 },
-  'crate-up': { x: 404, y: 662, w: 163, h: 136 },
-  'counterweight': { x: 571, y: 662, w: 198, h: 109 },
-  'waterline': { x: 0, y: 817, w: 501, h: 61 },
+  'knot-a': { x: 404, y: 662, w: 180, h: 139 },
+  'crate-up': { x: 588, y: 662, w: 163, h: 136 },
+  'knot-b': { x: 755, y: 662, w: 161, h: 119 },
+  'counterweight': { x: 0, y: 817, w: 198, h: 109 },
+  'waterline': { x: 202, y: 817, w: 501, h: 61 },
 } as const;
 export type PieceCell = keyof typeof PIECE_FRAMES;
 

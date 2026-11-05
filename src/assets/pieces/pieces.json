@@ -2,7 +2,7 @@
  "sheet": "pieces.webp",
  "size": {
   "w": 1024,
-  "h": 878
+  "h": 926
  },
  "frames": {
   "root-gate-open": {
@@ -101,24 +101,40 @@
    "from": "w1to4art/w3-new",
    "scale": 1.0
   },
-  "crate-up": {
+  "knot-a": {
    "x": 404,
+   "y": 662,
+   "w": 180,
+   "h": 139,
+   "from": "w1to4art/w1-new",
+   "scale": 0.6
+  },
+  "crate-up": {
+   "x": 588,
    "y": 662,
    "w": 163,
    "h": 136,
    "from": "w1to4art/w2-new",
    "scale": 1.0
   },
-  "counterweight": {
-   "x": 571,
+  "knot-b": {
+   "x": 755,
    "y": 662,
+   "w": 161,
+   "h": 119,
+   "from": "w1to4art/w1-new",
+   "scale": 0.6
+  },
+  "counterweight": {
+   "x": 0,
+   "y": 817,
    "w": 198,
    "h": 109,
    "from": "w1to4art/w3-new",
    "scale": 1.0
   },
   "waterline": {
-   "x": 0,
+   "x": 202,
    "y": 817,
    "w": 501,
    "h": 61,

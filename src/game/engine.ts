@@ -1575,6 +1575,7 @@ export class GameEngine {
         const env = this.pieceEnv;
         env.standingOn = this.standingOnId; env.grounded = p.grounded; env.platforms = this.platforms; env.dt = dt;
         const m = stepPiece(plat, this.gameTime, env);
+        if (m.opened) sound.playGate();
         if (p.grounded && this.standingOnId === plat.id) { p.x += m.dx; p.y += m.dy; }
         continue;
       }

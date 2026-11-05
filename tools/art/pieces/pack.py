@@ -22,6 +22,8 @@ CELLS = [
     ('w1to4art/w3-new', 'counterweight', 1.0),
     ('w1to4art/w1-new', 'root-gate-shut', 1.0),
     ('w1to4art/w1-new', 'root-gate-open', 1.0),
+    ('w1to4art/w1-new', 'knot-a', 0.6),         # drawn ~70 tall: 2x is ~140, the cell is 231
+    ('w1to4art/w1-new', 'knot-b', 0.6),
     ('w1to4art/w3-new', 'crack-whole', 1.0),
     ('w1to4art/w3-new', 'crack-cracking', 1.0),
     ('w1to4art/w3-new', 'bat-asleep', 0.5),     # drawn ~70-90 tall: 2x is ~180, the cell is 420
