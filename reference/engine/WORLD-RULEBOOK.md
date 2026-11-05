@@ -73,3 +73,68 @@ research where they exist:** length 120-150 s for a first stage (TF 1-1).
 **Why this is also the diversity answer:** a fixed 11-node plan with fixed shapes makes every roll the same stage. That's today's
 0.083 against 0.35. A structure rolled from a grammar is the lever the old 1-1 shows: its mix swings from roll to roll (0.396). The
 planner's 4:00 breakdown (3:42 PM ET) says where old 1-1's 0.384 comes from: one continuous moss floor about 240 px under its stepping stones. That makes two roads everywhere, and each roll's mix swings between them. A rolled structure laid over that floor is World 1's variety engine.
+
+## 4. The section grammar (complete, for generatePlan(brief, seed); added 3:43 PM ET)
+
+**Section jobs:**
+
+| Job | What it lays | Rules |
+|---|---|---|
+| `arrive` | the start: flat, safe ground | always first; nothing hurts and no ground ends in its first 1,300 px |
+| `teach(m)` | move m's first use: expose, then validate, over safe ground | one new thing only; never a fork; its deck must hold an idea that teaches m |
+| `practise` | taught moves, 1-3 bursts | may fork |
+| `fork` | two roads that both finish and rejoin | high and low, both walkable to the rejoin |
+| `rest` | a breath: flat ground, a Dot spot, about 2× the local beat (C2) | never two in a row; no flag unless a hard section follows |
+| `test` | taught moves under pressure | a flag before it; a heart after it only if it had risk |
+| `twist` | two taught moves combined, or an earlier world's mechanic (W2 on) | after at least one test |
+| `finale` | a dense 15-20 s at the exit | only when `ends: finale` |
+| `arrival` | a quiet walk-on to the end, held to the rest rule | only when `ends: quiet` |
+| `end` | the end bank, the clue, the shrine | always last |
+
+**Order rules:**
+1. `arrive` first and `end` last. `finale` or `arrival` comes just before `end`, by `ends`.
+2. Each move in `teaches` gets a `teach` before any section that uses it, in the world ladder's order (W1: run, jump, bounce,
+   double...). Each `teach` is followed by at least one `practise` or `fork` using it before a `test` uses it.
+3. A `rest` (or the `end`) follows every `test` and `twist`.
+4. No two sections of the same job sit side by side, except two `practise` around a `fork`.
+5. **Forks by branching:** none gives 0; some gives 1-2; lots gives 3 or more. A fork never sits on a `teach`.
+6. **Trend:**
+   - up: height bands rise section by section, ground first, then boughs once the climb starts;
+   - down: the reverse;
+   - level: one band with high and low roads.
+7. **The moment** is the last `test`, placed in the stage's last third.
+8. **Length:** sections are added until the quick clock reaches the world's band (W1 first stage: 120-150 s). Bursts are 5-20 s.
+9. **The floor road:**
+   - ground sections run over one continuous moss floor, with stone and log runs above it or hop steps on it;
+   - tree sections have catch boughs;
+   - a `teach` gap's safe ground lets only the taught move cross (R2).
+10. **Decks:** a section draws ideas whose needs are taught (or being taught here), whose element fits its height band, and which the
+    brief's `not` doesn't exclude. No idea twice in a row.
+11. **What rolls, per seed:**
+    - how many practises (1-3 per teach);
+    - where forks and rests fall, inside rules 3-5;
+    - the map shape (linear, high/low, loop-back; branching lots allows loop-back);
+    - which ideas each section draws;
+    - the roll families (gap, rise, hop).
+12. **Must-haves:** each `must` item is placed by its own rule:
+    - a Dot line at the first section where what it says is true;
+    - the clue on the end bank;
+    - a find off the main line where its rule says (the golden seed: above a mushroom, beyond a double, after the bounce teach);
+    - dressing at its spot, clear of the spawn.
+13. **Neighbour difference:** the job sequence may not match a neighbour's, and the variety and neighbour gates judge the rest.
+
+## 5. 1-1's brief (the 7 fields and its knobs; from the lead's story brief, story-briefs/1-1.md; added 3:43 PM ET)
+
+```
+beat:    Two days after the soldiers took Meeca, Pokey leaves the home forest: slow, and coming anyway.   (brief :13)
+teaches: run, jump, bounce, double
+trend:   up
+ends:    quiet     ("Resolve, not triumph. The bigger views belong to later stages", :23)
+look:    morning light at the home forest's edge, rising into the canopy   (:32)
+must:    clue 'bootprint' on the end bank (held art, R-165.31);
+         dressing squirrel-sit, squirrel-wave, squirrel-tip at the start;
+         find: one golden seed;
+         Dot lines: coach.run, hint.1-1.gaps, hint.1-1.bank, hint.1-1.double, coach.nice, hint.1-1.high, hint.1-1.noMoss
+not:     creaky, crumbling, animals, ropes, lianas, the kapok climb, the view north, the bush, water   (:38-43)
+knobs:   branching some, water no, d 0
+```
