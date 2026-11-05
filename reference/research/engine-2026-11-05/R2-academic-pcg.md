@@ -14,9 +14,14 @@ experiment; **[estimate]** = my judgement or arithmetic on someone else's number
 ## 1. Planned vs actual time
 
 - Planned: about 75 minutes.
-- Actual: started 02:17 UTC (9:17 PM ET, Nov 4), finished __END__ (see the last line of this file). __ACTUAL__
-- Where it went: about 35 minutes reading 24 primary sources (section 6), about 30 minutes on the code experiment (section 4: three
-  versions of the script, two of them killed and redesigned when the exhaustive search proved too big), the rest writing.
+- Actual: started 02:17 UTC (9:17 PM ET, Nov 4), finished 03:03 UTC (10:03 PM ET): **about 46 minutes, measured by the shell clock**
+  (`date` at start and end), against 75 planned. That is over half but well under the plan; I am naming it rather than padding it.
+  The last minutes went into running the limited-agent check on all three hide-teach stages instead of one. What more time would buy:
+  the same check for the other taught moves (double, kick, leaf) once the bot has switches for them, and the three bot-walled papers.
+- Where it went: about 20 minutes reading 25 primary sources beyond their abstracts (section 6), about 20 minutes on four code
+  experiments (section 4: the first exhaustive design proved too big for floor nodes and was killed and rebuilt as exact counting plus
+  uniform sampling), the rest writing and re-checking every code citation against this checkout (the papers ledger's line numbers are
+  from the w1-rhythm branch and are off by about 4 lines here).
 - What was cut: the Smith & Whitehead 2010 expressive-range workshop paper and the Dormans 2010 paper could not be fetched (both
   bot-walled or unreachable, section 6); I read their methods where the same authors re-published them (Launchpad TCIAIG 2011 §V carries
   the expressive-range method; PCG book ch. 5, co-written by Dormans, carries the mission/space grammars). The Polymorph paper was
@@ -69,7 +74,8 @@ Ranked by how much each changes "80% right by construction" and "every stage fee
    agent that cannot perform one mechanic loses". We already lost a teach this way: "A catch under the gap made the jump optional: the
    quick route walked off onto it and stepped up" (w1Rhythm.ts:562-563). A "limited-agent" gate (the bot with the mechanic switched
    off must fail the teach node; the full bot must pass) is cheap with our bots and is not in any of our research (section 5). Tried
-   on 1-7 with the existing `noHide` bot: a player who never hides still reaches the shrine on all three layouts tested [measured].
+   with the existing `noHide` bot on the three hide-teach stages (1-7, 3-2, 4-5): a player who never hides reaches the shrine on all 9
+   layouts, and faster on 7 [measured].
 
 6. **Difficulty and pacing are curves you build to, with a real arc, not a constant or a sawtooth.** Sorenson & Pasquier: a flow
    fitness gave "a chaotic scattering of platforms" with constant anxiety; a periodic one gave rhythm groups but "its cyclical
@@ -535,11 +541,11 @@ node 12: DFS prefix check = Normal trace: found ... in 13/20 runs; median 11, ma
    the papers ledger's proposal 7 ("a small search driven by that error would be faster and exact", LEDGER-ENGINE-PAPERS line 107) is
    **not supported on speed** at today's acceptance rates. A search earns its keep only when the constraints get tight, which is
    exactly what the engine will add: pinned moments, a target rise or fall per node (`fitSteps` already misses the uniform mean by
-   12-25 px of net climb, more on the climax), and kind quotas (lesson 1). Then random retry's acceptance collapses and a pruned search
+   8-25 px of net climb, most on the climax), and kind quotas (lesson 1). Then random retry's acceptance collapses and a pruned search
    (with every check applied to prefixes) is the right tool.
 
 **Experiment 2: the whole stage's kind string, over 12 rolls (`.../exp/kinds.ts`).** Each landing becomes a token (surface + up/flat/down
-over the last landing, 15 px dead band), each liana `V`, each node with no landings `R`; 12 rolls each of 1-2 and 1-5 on Normal. Output
+over the last landing, 15 px dead band; b branch, k bank, s stump, c crumble), each liana `V`, each node with no landings `R`; 12 rolls each of 1-2 and 1-5 on Normal. Output
 [measured]:
 
 ```
@@ -591,13 +597,13 @@ RANDOM (fitSteps, 600 seeds): accepted 599 = 99.8% per try
 Adding two kinds kept acceptance at 99-100% and took node 1 from 2 kinds per step to 5 and from 33 shapes to at least 960 among 1,000
 samples [measured]. So the vocabulary can grow without losing "right by construction"; what limits it is design (a crumbling twig must be
 taught first and a required one is whole again on respawn, CLAUDE.md "Stage rules"; a stump on the canopy needs art that makes sense there), not the tracer. Not
-tested here: whether the clumsy-thumb bots and the level check agree with the tracer on the new kinds (they did for 1-5's snap twigs).
+tested here: whether the clumsy-thumb bots and the level check agree with the tracer on the new kinds on these nodes.
 
 **Experiment 4: a limited-agent check with a bot we already have (`.../exp/limited.ts`).** Green et al.'s test (lesson 5) asks
 whether the agent *without* a mechanic fails where the full agent passes. The validator's first-timer bot has one such switch, `noHide`
 (tools/validate/play.ts:303, 312), and 1-7 is where Dot teaches hiding from the eagle ("An eagle is watching. Slide down inside a bush
 to hide", src/game/dotLinesData.ts:120). The bot takes real hits and lives (tools/inspect/firsttimer.ts:817-833). Output [measured, Normal,
-3 layouts]:
+3 layouts; each run took 1-2 s, timing column dropped]:
 
 ```
 1-7 layout 1 full bot   : end shrine, progress 100%, time 173 s, hid 4, eagle hits 1, lives lost 0
@@ -608,11 +614,31 @@ to hide", src/game/dotLinesData.ts:120). The bot takes real hits and lives (tool
 1-7 layout 3 NO-HIDE bot: end shrine, progress 100%, time 196 s, hid 0, eagle hits 3, lives lost 0
 ```
 
-By Green et al.'s strict rule, hiding is **not required** in 1-7: a bot that never hides still reaches the shrine on all three layouts.
-It pays for it (9-10 eagle hits and 1-2 lives on layouts 1-2), but on layout 3 only 3 hits and no life, about the same as skipping a
-lesson costs nothing. For a children's game "required" may rightly mean "costly" rather than "blocking"; that is a design call for the
+The same check on the two other stages where Dot teaches hiding from a watcher, 3-2 ("Eyes in the dark! Slide down inside a fern to
+hide", dotLinesData.ts:216) and 4-5 ("Her shadow! Slide down inside a bush to hide", dotLinesData.ts:277) [measured, Normal, 3 layouts;
+"eagle hits" counts every watcher hit]:
+
+```
+3-2 layout 1 full bot   : end shrine, progress 100%, time 207 s, hid 2, eagle hits 0, lives lost 5
+3-2 layout 1 NO-HIDE bot: end shrine, progress 100%, time 178 s, hid 0, eagle hits 1, lives lost 6
+3-2 layout 2 full bot   : end shrine, progress 100%, time 194 s, hid 2, eagle hits 1, lives lost 4
+3-2 layout 2 NO-HIDE bot: end shrine, progress 100%, time 168 s, hid 0, eagle hits 1, lives lost 4
+3-2 layout 3 full bot   : end shrine, progress 100%, time 222 s, hid 3, eagle hits 0, lives lost 4
+3-2 layout 3 NO-HIDE bot: end shrine, progress 100%, time 141 s, hid 0, eagle hits 2, lives lost 0
+4-5 layout 1 full bot   : end shrine, progress 100%, time 227 s, hid 10, eagle hits 2, lives lost 0
+4-5 layout 1 NO-HIDE bot: end shrine, progress 100%, time 205 s, hid 0, eagle hits 6, lives lost 1
+4-5 layout 2 full bot   : end shrine, progress 100%, time 201 s, hid 12, eagle hits 0, lives lost 2
+4-5 layout 2 NO-HIDE bot: end shrine, progress 100%, time 155 s, hid 0, eagle hits 8, lives lost 1
+4-5 layout 3 full bot   : end shrine, progress 100%, time 184 s, hid 14, eagle hits 0, lives lost 0
+4-5 layout 3 NO-HIDE bot: end shrine, progress 100%, time 164 s, hid 0, eagle hits 9, lives lost 1
+```
+
+By Green et al.'s strict rule, hiding is **not required** on any of the 9 layouts: the bot that never hides reaches the shrine every
+time, and it is **faster** in 7 of 9 (hiding costs waiting time; the two exceptions are 1-7 layouts 1-2, 2-4 s slower). On 3-2 hiding barely matters at all (0-2 watcher hits either way; the
+lives both bots lose there come from something else, and are worth a look by whoever owns 3-2). On 1-7 the skipper pays 9-10 hits and 1-2 lives on layouts 1-2 but only 3 hits and no life on layout 3; on 4-5, 6-9 hits
+and about one life. For a children's game "required" may rightly mean "costly" rather than "blocking"; that is a design call for the
 lead and Matt. The point for the engine is that the check is cheap (1-2 s a run) and turns "is the lesson real?" into a number per
-layout, and here it shows one layout of three where the lesson barely bites.
+layout, and here it shows that skipping the lesson is cheap, and in time even rewarded, on all three hide stages.
 
 **Compared with Launchpad's rhythm-then-geometry.** Same order; ours is stronger on the physics (engine slices, clumsy thumb, camera
 framing, beatTrace.ts:330-342, 448-452) and weaker on the geometry grammar (one or two kinds where Launchpad had 14 + 5). Launchpad needed
@@ -641,7 +667,7 @@ Checked by searching `reference/research/` (all ledgers, the Gemini and Matt res
    (tools/inspect/firsttimer.ts:792-810, 1109-1112), and the validator already has one limited agent, `noHide`, which deletes 'hide'
    from that set (tools/validate/play.ts:303, 312); nothing in tools/ or src/ uses `noHide` as a must-fail gate today (searched). The gate
    generalises it: for each teach node, the bot without that move must fail it (or pay a set cost), the bot with it must pass. Run on
-   1-7 today (section 4, experiment 4): the no-hide bot still finishes all three layouts; on layout 3 it pays only 3 hits.
+   1-7, 3-2 and 4-5 today (section 4, experiment 4): the no-hide bot finishes all 9 layouts, faster in 7.
 4. **Measure the space, not just the rolls: exact counts and uniform samples per rhythm.** What section 4 did, as a tool: for each
    node, the size of its candidate space, the valid share and the number of kinds. It tells a builder *before rolling* whether a node can
    be varied at all, and it caught that the tracer is not the limit on canopy nodes. (Karth & Smith used solver statistics the same
@@ -650,7 +676,7 @@ Checked by searching `reference/research/` (all ledgers, the Gemini and Matt res
    one structural metric (the kind mix) against one bot-measured metric (seconds on the ground, jumps a minute from the first-timer bot),
    rather than only linearity x leniency, which are both read statically off the inspector's route and platforms (eraRoll.ts:196-235).
    Related and also new: **sample uniformly** from the valid space (count-weighted descent) instead of per-step uniform
-   picks, which removes `fitSteps`' measured downhill and repeat bias.
+   picks, which removes `fitSteps`' measured climb bias and its lower spread.
 5. **Stability under edits ("same as last time, relax if impossible").** Tanagra §5.1. When a helper or Matt changes one node's bars or
    pins a moment, every other node keeps its solved values unless no solution exists. Today a node change shifts every later node
    (nodes chain by x1/yOut, beatTrace.ts:30-33), and a reroll changes everything. Cheap: seed each node's search with its previous steps
@@ -747,4 +773,16 @@ Our files read for this report: reference/LAWS.md, reference/research/README.md,
 the other ledgers by search; src/game/beatTrace.ts (all), src/game/w1Rhythm.ts (1-260, 520-600, 1000-1349), src/game/physics.ts (PHYS,
 TAKEOFF_SLACK), src/game/gen2/DESIGN.md (Part A), tools/inspect/era.ts (header), tools/inspect/analyze.ts (editDistance).
 
-Primary sources opened and read beyond the abstract: 22. Finished: __END__.
+Primary sources opened and read beyond the abstract: 25 (plus 3 abstract pages). Finished 03:03 UTC (10:03 PM ET).
+
+## Method update (law 4)
+
+- Worked better: fetching each PDF through the fetch tool, saving it to the scratchpad as one normalised text file, then reading it in
+  250-column chunks; quotes stay verbatim and checkable. For academic PDFs, the authors' own sites and arXiv worked; ACM, OJS (AAAI) and
+  ResearchGate were bot-walled every time.
+- Worked better: counting a beat node's whole candidate space (memoised by mark and height) and sampling it uniformly, instead of
+  exhaustive search; exhaustive search was fine for 3-4 thousand sequences and hopeless for 2-600 million.
+- Failed: my first kind key wrote bank and branch with the same letter; caught on reading the output, rerun. Proposal for
+  reference/methods/research-ledger.md: "when you encode categories as letters for a measurement, assert the code table is one-to-one".
+- Failed: copying line numbers from a ledger written on another branch; every citation here was re-grepped on this checkout. Proposal:
+  ledgers state the commit their line numbers belong to (the papers ledger does: origin 5ef13375), and helpers re-grep before citing.
