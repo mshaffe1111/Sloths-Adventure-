@@ -1,3 +1,5 @@
+> 4:07 PM ET: Matt moved the lead to session_01FhBbYN2DDsktc7BGtNxPFK (chunk-pool engine design). The old lead (session_019iachLiuwNTAZUBSJWUmR3) is now a consultant.
+
 # Lead handoff: everything a new lead needs to take over (written 2026-11-05 about 4:10 PM ET)
 
 Matt asked for this so the work can move to a new lead at any time. Keep it current: the lead updates it at every checkpoint.

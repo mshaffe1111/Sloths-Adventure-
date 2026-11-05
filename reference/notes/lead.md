@@ -1,3 +1,6 @@
+# ROLE CHANGE (4:07 PM ET, Matt): this session is now a CONSULTANT, not the lead. The lead is session_01FhBbYN2DDsktc7BGtNxPFK.
+Do NOT message helpers, arm check-ins or start jobs. Answer the new lead's questions (story, characters, Dot's voice, world cohesion, the history of decisions) from the repo, citing file:line. Everything below is history.
+
 # Lead's notes (read at every start and right after every memory compression, with the Read tool, before any other work)
 
 Keep this short and current. Rewrite stale lines. Times from `TZ=America/New_York date`.
