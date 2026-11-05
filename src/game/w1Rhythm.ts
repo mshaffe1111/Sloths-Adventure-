@@ -51,6 +51,9 @@ export interface LLedge extends Omit<Ledge, 'surface'> {
   node: number;
   /** a snap twig: how long it holds once stepped on (s), from his run on it on the beat (crumble only) */
   hold?: number;
+  /** a catch that ends against a stone face under the far ledge's near end: [x, top] (1-5's teach catches: holding the way on, he is
+   * stopped by the face and a hop goes up, never walked off the catch's end into the drop; the dips test, plainWalk.test.ts) */
+  wall?: [number, number];
 }
 export interface Layout {
   stage: '1-2' | '1-5';
@@ -751,6 +754,33 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   // (each roll breaks the beat its own way, and leans on the snap twigs more or less)
   const SET = R.pick([[3, 4, 4, 5, 6], [3, 3, 5, 6, 6], [4, 4, 3, 5, 3, 6], [3, 5, 4, 6, 3]]);
   const SNAP = R.pick([0.5, 0.7, 0.85]);
+  /**
+   * coiled boas on the way down after the kick is taught (node `ni`, trace `tr`): on its widest ledges, never its first or last, `max` at
+   * most, `apart` px apart. Each 215 px past where the jump onto its ledge lands (the validator's landing sits a little past the trace's;
+   * research 11-04: never within 150 px of a landing), 150 px or more short of the next ledge, and clear of every safe spot (the level
+   * check's SAFE_APPROACH: the flags so far and the next node's at this one's end). A twig with a boa holds the kick's time too.
+   */
+  const boasOn = (ni: number, tr: Trace, max: number, apart: number) => {
+    const mine = L.ledges.filter((q) => q.node === ni && q.surface !== 'catch' && q.surface !== 'apron').sort((a, b) => a.x0 - b.x0);
+    const land = (q: LLedge) => tr.landings.find((l) => l.toX >= q.x0 - 2 && l.toX <= q.x1 + 2)?.toX ?? q.x0 + 40;
+    const safeNow = [L.spawn, ...L.flags, { x: tr.x1 + 100, y: tr.yOut }];
+    let n = 0;
+    for (const q of [...mine.slice(1, -1)].sort((a, b) => (b.x1 - b.x0) - (a.x1 - a.x0))) {
+      if (n >= max) break;
+      const bx = land(q) + BOA_CLEAR + 40;
+      if (L.boas.some((b) => Math.abs(b.x - bx) < apart)) continue;
+      if (safeNow.some((f) => Math.abs(f.y - q.y) < 400 && Math.abs(f.x - bx) < SAFE_APPROACH + SNAKE_RANGE + 40)) continue;
+      const next = mine[mine.indexOf(q) + 1];
+      if (next && next.x0 - bx < 150) continue;
+      if (bx + 30 > q.x1) {
+        if (!next || next.x0 - (bx + 30) < 45) continue;
+        q.x1 = bx + 30;
+      }
+      L.boas.push({ x: bx, y: q.y, facing: -1 });
+      if (q.surface === 'crumble') q.hold = +((q.hold ?? 0.6) + (easy ? BOA_KICK_S.easy : BOA_KICK_S.normal)).toFixed(2);
+      n++;
+    }
+  };
   // ---- intro: the canopy, sparse jumps, the first carving on the path
   const intro = lay.traced('intro', 'run + jump', 'canopy', 1, x, y, barsFrom(Array.from({ length: 8 }, () => R.pick([7, 8, 9]))), { ...down(T.canopy, 0), jumpDy: [-30, -20, 0, 20, 30] });
   // (each mark at its ledge's far end, just before the take-off: the inspector counts a mark as a 1.5 s look, stageTime.ts relicSec, and
@@ -766,46 +796,62 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   for (const g of teach.tr.gaps) {
     const far = teach.tr.ledges.find((q) => q.x0 >= g.x1 - 1);
     const cy = (far?.y ?? y) + 80;
-    if (g.x1 + 60 - (g.x0 + 80) >= 60) lay.ledge(g.x0 + 80, g.x1 + 60, cy, 'catch');
+    // (ending against a stone face under the far ledge's near end, as the opening's catches do: 60 px under the far ledge with no face,
+    // a player holding the way on walked under it and off the catch's end into the drop; dips test 2026-11-05)
+    const x1 = far ? far.x0 + 50 : g.x1 + 60;
+    if (x1 - (g.x0 + 80) >= 60) {
+      lay.ledge(g.x0 + 80, x1, cy, 'catch');
+      if (far) L.ledges[L.ledges.length - 1].wall = [far.x0, far.y];
+    }
   }
   L.lines.push({ x: x + 120, y, text: 'These ones snap! Keep moving' });
   x = teach.tr.x1;
   y = teach.tr.yOut;
+  // ---- the kick, taught early (the lead's ruling, 2026-11-04: 1-5's new thing; at the top since 2026-11-05, so the boas meet him all the
+  // way down and Easy keeps it): a coiled boa, the first in the game, on a wide stone ledge,
+  // Dot's line before it. Punches bounce off it ("TOUGH!"), a stomp bounces; a kick (a quick flick toward it) rolls it away along the
+  // ledge and off its end. A flag at the ledge's start
+  lay.begin('ramp', 'kick a coiled boa (taught)', 'canopy', 1, x, y);
+  // (two root knots on the way in, small steps up and down: the walk from the last twig to the boa read as dead, 2.8-3.7 s; the boa's
+  // own ground, from the second knot to the end, holds it and its roll)
+  lay.ledge(x, x + 20, y, 'apron');
+  lay.ledge(x + 20, x + 110, y - 28, 'branch');
+  lay.ledge(x + 110, x + 300, y, 'apron');
+  lay.ledge(x + 300, x + 390, y - 28, 'branch');
+  lay.ledge(x + 390, x + BOA_TEACH_W, y, 'apron');
+  // (Meeca's marks lead him to it, two on the way in: the boa's meeting is counted as a 2 s fight, and the walk on from it to the ramp's
+  // first jump read as dead, 3.7 s, unless moves came just before it, a burst's rest; the validator's dead walk, 2026-11-05)
+  mark(x + 200, y);
+  mark(x + 470, y);
+  L.flags.push({ x: x + 200, y });
+  // (Dot's line 260 px before the teach ledge: she holds a line while an animal is within 300 px (engine.ts guide env danger), and from
+  // x + 140 the boa already was, so the line waited until he was past it, on the lianas)
+  L.lines.push({ x: x - 260, y, text: BOA_LINE });
+  // (asleep: it wakes only when he walks right into it, and then takes a moment before it can strike, predatorAI.ts: the safe teach)
+  // (three quarters along: room still to roll it off the end, and no long walk on after the kick)
+  L.boas.push({ x: x + Math.round(BOA_TEACH_W * 0.75), y, facing: -1, asleep: true });
+  x += BOA_TEACH_W;
+  lay.end(x, BOA_TEACH_W / PHYS.maxRun + 2);
   // ---- ramp: down a tier, snaps and plain branches, the broken beat; then down another, the falls real now
   const ramp = lay.traced('ramp', 'snap twig + jump (broken)', 'two', 1, x, y, barsFrom(broken(21, SET)), down(T.two, SNAP - 0.1));
   mark(ramp.tr.ledges[4].x1 - 40, ramp.tr.ledges[4].y);
+  // (a kick on the way down: the move 1-5 teaches, met again before the climax)
+  boasOn(L.nodes.length - 1, ramp.tr, 2, 900);
   x = ramp.tr.x1;
   y = ramp.tr.yOut;
   const ramp2 = lay.traced('ramp', 'snap twig + jump, over the drop (broken)', 'three', 1, x, y, barsFrom(broken(21, SET)), down(T.three, SNAP));
   mark(ramp2.tr.ledges[5].x1 - 40, ramp2.tr.ledges[5].y);
+  // (a kick on the way down: the move 1-5 teaches, met again before the climax)
+  boasOn(L.nodes.length - 1, ramp2.tr, 2, 900);
   x = ramp2.tr.x1;
   y = ramp2.tr.yOut;
   // ---- spike: down another tier, all snaps, the quickest gaps
   const spike = lay.traced('spike', 'snap twig + drop', 'four', 1, x, y, barsFrom(broken(22, SET.filter((g) => g < 6))), down(T.four, 0.9));
   mark(spike.tr.ledges[5].x1 - 40, spike.tr.ledges[5].y);
+  // (a kick on the way down: the move 1-5 teaches, met again before the climax)
+  boasOn(L.nodes.length - 1, spike.tr, 1, 900);
   x = spike.tr.x1;
   y = spike.tr.yOut;
-  // ---- rest: 4-5 s, the keepsake on a high branch across the drop (seen from here), reached up two branches
-  lay.begin('rest', 'none (Dot; the keepsake seen across the drop)', 'three', 1, x, y);
-  lay.ledge(x, x + 1180, y, 'apron');
-  L.flags.push({ x: x + 100, y });
-  lay.ledge(x + 860, x + 980, y - 70, 'branch');
-  lay.ledge(x + 980, x + 1160, y - 140, 'branch');
-  L.find = { x: x + 1080, y: y - 140 };
-  L.lines.push({ x: x + 200, y, text: 'She came this way. Look up there!' });
-  x += 1180;
-  lay.end(x, 1180 / PHYS.maxRun + 1);
-  // ---- the kick, taught (the lead's ruling, 2026-11-04: 1-5's new thing): a coiled boa, the first in the game, on a wide stone ledge,
-  // Dot's line before it. Punches bounce off it ("TOUGH!"), a stomp bounces; a kick (a quick flick toward it) rolls it away along the
-  // ledge and off its end. A flag at the ledge's start
-  lay.begin('counter', 'kick a coiled boa (taught)', 'three', 1, x, y);
-  lay.ledge(x, x + BOA_TEACH_W, y, 'apron');
-  L.flags.push({ x: x + 100, y });
-  L.lines.push({ x: x + 140, y, text: BOA_LINE });
-  // (asleep: it wakes only when he walks right into it, and then takes a moment before it can strike, predatorAI.ts: the safe teach)
-  L.boas.push({ x: x + Math.round(BOA_TEACH_W * 0.6), y, facing: -1, asleep: true });
-  x += BOA_TEACH_W;
-  lay.end(x, BOA_TEACH_W / PHYS.maxRun + 2);
   // ---- counter-melody: the only vines in 1-5, four swings of different lengths over the drop, down a tier on the way
   lay.begin('counter', 'jump + vine swing', 'five', 1, x, y);
   lay.ledge(x, x + 220, y, 'apron');
@@ -823,10 +869,27 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   mark(e - 120, y);
   lay.end(e, (e - x) / 300 + 4);
   x = e;
+  // ---- rest (after the vines, the breath before the climax: before them, the vines' first swings came after nothing to do): 4-5 s, the keepsake on a high branch across the drop (seen from here), reached up two branches
+  // (900 px with two root knots, the bough broken round each or the level check walks through it: with the kick taught at the top the
+  // rest runs straight on to the vines, and its old 1,180 px of plain walk were 7 s with nothing to do)
+  lay.begin('rest', 'none (Dot; the keepsake seen across the drop)', 'five', 1, x, y);
+  lay.ledge(x, x + 290, y, 'apron');
+  lay.ledge(x + 290, x + 380, y - 28, 'branch');
+  lay.ledge(x + 380, x + 560, y, 'apron');
+  lay.ledge(x + 560, x + 650, y - 28, 'branch');
+  lay.ledge(x + 650, x + 900, y, 'apron');
+  L.flags.push({ x: x + 100, y });
+  lay.ledge(x + 680, x + 790, y - 90, 'branch');
+  lay.ledge(x + 790, x + 900, y - 160, 'branch');
+  L.find = { x: x + 850, y: y - 160 };
+  L.lines.push({ x: x + 160, y, text: 'She came this way. Look up there!' });
+  x += 900;
+  lay.end(x, 900 / PHYS.maxRun + 1);
   // ---- climax: the carving chase, down two tiers to the floor, a carving every second ledge
   const climax = lay.traced('climax', 'snap twig + drop + hop (the chase)', 'floor', 1, x, y, barsFrom(broken(26, SET.filter((g) => g < 6))), down(T.floor, SNAP));
   // (the carving chase: closer and closer together toward the shrine)
-  climax.tr.ledges.forEach((q, i) => { const n = climax.tr.ledges.length; if (i > 0 && i < n - 1 && i % (i < n / 2 ? 3 : 2) === 0) mark((q.x0 + q.x1) / 2, q.y); });
+  // (at each ledge's far end, just before the take-off, as on the way down: mid-ledge, the look left a walk after it)
+  climax.tr.ledges.forEach((q, i) => { const n = climax.tr.ledges.length; if (i > 0 && i < n - 1 && i % (i < n / 2 ? 3 : 2) === 0) mark(q.x1 - 40, q.y); });
   // (the pair in one move: a coiled boa on a wide snap twig, kicked off it before the twig goes under him. The twig holds the kick's
   // time too, BOA_KICK_S; never the first twig of the climax, at most two, apart)
   const climaxN = L.nodes.length - 1;
@@ -1058,6 +1121,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
       P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: 24, type: 'fragile', style: 'branch', creak: q.hold ?? 0.6 });
     } else {
       P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: q.surface === 'bough' ? 40 : 24, type: 'solid', style: style(q), ...(q.surface === 'catch' ? { catch: true } : {}) });
+      if (q.wall) P.push({ id: pid++, x: q.wall[0], y: q.wall[1], width: 50, height: q.y - q.wall[1], type: 'solid', style: 'moss_stone', art: 'rock' });
     }
   }
   // (the floor: a slit under 40 px between two floor pieces is no gap he can fall through (he is 38 wide), only a sliver the pit art

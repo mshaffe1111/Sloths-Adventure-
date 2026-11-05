@@ -138,6 +138,11 @@ export function fromStage(id: string, layout: number, setting: Setting, sim: Rea
 
 /** the move string (small hops left out: they are walking with a bump in it, research §7's letters are the moves that count) */
 export const moveString = (steps: readonly Step[]) => steps.filter((s) => s.m !== 'h').map((s) => s.m).join('');
+/** each move's way, in moveString's order: u (up), d (down) or f (flat), from where the next move starts (the same as rhythmTokens) */
+export const moveDirs = (steps: readonly Step[]) => {
+  const moves = steps.filter((s) => s.m !== 'h');
+  return moves.map((s, i) => { const dy = moves[i + 1] ? moves[i + 1].y - s.y : 0; return dy < -15 ? 'u' : dy > 15 ? 'd' : 'f'; }).join('');
+};
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Checks on the move list (pure)
@@ -245,10 +250,13 @@ export function repeats(str: string, steps: readonly Step[], bpm?: number): Repe
  * differently (the lead, 2026-11-04: folded into one, every jumping stage read as the same stage, and 1-1's pair, the jump and the
  * double, was invisible). Only a move the check can't name (Q) reads as a jump.
  */
-export function grams(str0: string, n = 3): Map<string, number> {
+export function grams(str0: string, n = 3, dirs?: string): Map<string, number> {
   const str = str0.replace(/Q/g, 'J');
+  // (dirs, moveDirs: the way each move goes. A jump down onto a snap twig and a climb up onto a creaking limb are both B by letter, but a
+  // thumb feels them apart; the lead's ruling (a), 2026-11-04: every stage's moves are compared letter and way together)
+  const toks = dirs && dirs.length === str.length ? [...str].map((c, i) => c + dirs[i]) : [...str];
   const m = new Map<string, number>();
-  for (let i = 0; i + n <= str.length; i++) m.set(str.slice(i, i + n), (m.get(str.slice(i, i + n)) ?? 0) + 1);
+  for (let i = 0; i + n <= toks.length; i++) { const k = toks.slice(i, i + n).join(''); m.set(k, (m.get(k) ?? 0) + 1); }
   return m;
 }
 export function cosine(a: Map<string, number>, b: Map<string, number>): number {

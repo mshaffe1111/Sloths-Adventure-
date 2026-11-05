@@ -109,6 +109,21 @@ test('similarity keeps the hop, the jump and the double jump apart (the lead, 20
   assert.ok(cosine(grams('JQJQJQJQ'), grams('JJJJJJJJ')) > 0.99);
 });
 
+test('similarity reads each move with its way, up, down or flat (the lead\'s ruling (a), 2026-11-04: a snap twig dropped onto and a limb climbed up to are both B)', () => {
+  const s = 'BJBJBJBJBJBJ';
+  // (each way: the same moves the same way read alike; the same letters going down against going up do not)
+  assert.ok(cosine(grams(s, 3, 'dddddddddddd'), grams(s, 3, 'dddddddddddd')) > 0.99, 'the same moves the same way: alike');
+  assert.ok(cosine(grams(s, 3, 'dddddddddddd'), grams(s, 3, 'uuuuuuuuuuuu')) < SIMILAR_MAX, 'down against up: not alike');
+  assert.ok(cosine(grams(s, 3, 'dfdfdfdfdfdf'), grams(s, 3, 'dfdfdfdfdfdf')) > 0.99);
+  assert.ok(cosine(grams(s, 3, 'dfdfdfdfdfdf'), grams(s, 3, 'ufufufufufuf')) < SIMILAR_MAX);
+  // (no ways, or ways of the wrong length: the letters alone, as before)
+  assert.deepEqual(grams(s, 3, 'dd'), grams(s));
+  // (movesAlike reads the ways when a stage carries them)
+  const a = { str: s, quick: s, sdir: 'dddddddddddd', qdir: 'dddddddddddd' };
+  assert.ok(movesAlike(a, { ...a, sdir: 'uuuuuuuuuuuu', qdir: 'uuuuuuuuuuuu' }) < SIMILAR_MAX);
+  assert.ok(movesAlike(a, { ...a }) > 0.99);
+});
+
 // ---- pacing ----
 test('pacing: a dense 5 s is tight, an empty 5 s a rest, a slow start an intro; a flat stage is flagged as never tight', () => {
   const dense: Step[] = Array.from({ length: 8 }, (_, i) => ({ m: 'J', t: 10 + i * 0.6, x: 0, y: G, what: '' }));
