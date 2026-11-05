@@ -1,0 +1,23 @@
+== splits and two-road share (CP3 rule), and the split distance (#1)
+old 1-1 easy: splits at 80/120/160/200 px: 34 (14-51) / 34 (14-51) / 25 (1-41) / 25 (1-41); two-road share (120 px) 0.61 (0.193-0.681)
+old 1-1 normal: splits at 80/120/160/200 px: 34 (14-51) / 34 (14-51) / 25 (1-41) / 25 (1-41); two-road share (120 px) 0.61 (0.193-0.681)
+old 1-2 easy: splits at 80/120/160/200 px: 16 (13-25) / 16 (13-25) / 15 (5-19) / 2 (1-13); two-road share (120 px) 0.787 (0.426-0.828)
+old 1-2 normal: splits at 80/120/160/200 px: 16 (13-25) / 16 (13-25) / 15 (5-19) / 2 (1-13); two-road share (120 px) 0.787 (0.425-0.828)
+
+== forks (#37 #52 #53): per fork node, the gap between its two roads' height bands (px), share of the stage, crossings
+
+== elements per node range (#114), 1-1: ground / tree / water share of landings
+
+== ground ends by drop (#79): bank and ground-log ends (h >= 60) and the drop under each end
+  old 1-1 easy: per build 285.2 ends, 203.5 over a drop of more than 120 px
+  old 1-1 normal: per build 285.2 ends, 203.5 over a drop of more than 120 px
+  old 1-2 easy: per build 259.2 ends, 184.1 over a drop of more than 120 px
+  old 1-2 normal: per build 259.2 ends, 184.2 over a drop of more than 120 px
+
+== per phone view (#28 #29 #30 #81 #97), max over the stage per build, then median (min-max) over builds
+  old 1-1 easy: upright pickups 4 (3-4); upright hazard/animal kinds 0; upright standing kinds 4; upright full trunks 0; upright views with play in the upper half 0.98 (0.972-0.981); sideways pickups 7 (6-8); sideways hazard/animal kinds 0; sideways standing kinds 4; sideways full trunks 0
+  old 1-1 normal: upright pickups 4 (3-4); upright hazard/animal kinds 0; upright standing kinds 4; upright full trunks 0; upright views with play in the upper half 0.98 (0.972-0.981); sideways pickups 7 (6-8); sideways hazard/animal kinds 0; sideways standing kinds 4; sideways full trunks 0
+  old 1-2 easy: upright pickups 5 (4-5); upright hazard/animal kinds 0; upright standing kinds 4; upright full trunks 0; upright views with play in the upper half 0.979 (0.972-0.981); sideways pickups 8 (7-8); sideways hazard/animal kinds 0; sideways standing kinds 4; sideways full trunks 0
+  old 1-2 normal: upright pickups 5 (4-5); upright hazard/animal kinds 0; upright standing kinds 4; upright full trunks 0; upright views with play in the upper half 0.979 (0.971-0.981); sideways pickups 8 (7-8); sideways hazard/animal kinds 0; sideways standing kinds 4; sideways full trunks 0
+
+== boughs and trunks (#85 #96), the mixer's stages (old stages carry no trunks in their data): boughs per trunk, boughs within 220 px on different trunks

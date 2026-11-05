@@ -612,3 +612,39 @@ What exists:
 - era's action mix and quiet stretches.
 If the designer defines them in units these tools measure (for example tempo as beats a minute on era's route, and hills as the share
 of route jumps rising over 20 px), I can run them on main's old 1-1, 1-2, 1-3 and 1-5 in a few minutes.
+
+## Addendum 4, R-165.43, 1:37-1:45 PM ET: old 1-2 measured the way old 1-1 was (the lead, for the designer)
+
+**Built from origin/main** (`68b31e665`, the main worktree; not the lead branch), 16 layouts x 2 settings. The tools and commands are
+the same ones that gave old 1-1's numbers today:
+- the dump `tools/engine/runs/dump.ts <main> old 1-1,...,1-10 16` (`out/raw/dump-oldW1-16x2.json.gz`, trees included);
+- `python3 -I tools/engine/runs/support.py` -> `out/old12/support.txt`;
+- `vary.py` -> `out/old12/vary.txt`;
+- `layout.py` -> `out/old12/layout.txt`;
+- the quick clock `npx tsx tools/engine/runs/clock.ts <main> 1-4` -> `out/clock/clock-main-W1W4.txt`.
+
+The only edit to the tools is adding '1-2' to vary.py's and layout.py's stage filter. Old 1-1 is printed by the same runs, as the check
+that nothing else moved: its numbers match topics 3, 4 and 8 exactly.
+
+Each value is the median (min-max) over 16 layouts.
+
+| Measure (tool) | Old 1-1 Normal | Old 1-1 Easy | **Old 1-2 Normal** | **Old 1-2 Easy** |
+|---|---|---|---|---|
+| Quick clock, s (stageTime MODEL_FAST, clock.ts) | 167 (138-171) | 167 (138-171) | **183 (169-217)** | **183 (169-217)** |
+| Float share of landings (support.py) | 0.253 (0.010-0.282) | 0.253 (0.010-0.282) | **0.181 (0.077-0.270)** | **0.181 (0.077-0.270)** |
+| Floating no-float pieces (rocks, ruin) a build (support.py) | 0 | 0 | **0** | **0** |
+| Bough share: boughs + creaky of landings (vary.py, CP1 kinds) | 0.253 (0.010-0.282) | 0.253 (0.010-0.282) | **0.181 (0.077-0.270)** | **0.181 (0.077-0.270)** |
+| Pickups in one view, upright 440 x 900 (layout.py) | 4 (3-4) | 4 (3-4) | **5 (4-5)** | **5 (4-5)** |
+| Pickups in one view, sideways 1,073 x 512 | 7 (6-8) | 7 (6-8) | **8 (7-8)** | **8 (7-8)** |
+| Standing kinds in one view, upright / sideways | 4 / 4 | 4 / 4 | **4 / 4** | **4 / 4** |
+| Upper-half share: upright views with play above the play line (layout.py) | 0.980 (0.972-0.981) | 0.980 (0.972-0.981) | **0.979 (0.971-0.981)** | **0.979 (0.972-0.981)** |
+| Hazard or animal kinds in one view (layout.py) | 0 | 0 | 0 | 0 |
+
+**Read with these** (facts, not rulings):
+- **The float share and the bough share are the same number on both old stages.** It is not a typo. Every floating landing on old
+  1-1 and old 1-2 is a plain branch (old 1-2: 31.1 a build, old 1-1: 21.9). Every branch has nothing under it in the stage data,
+  because the old builders' kapoks are scenery the data does not carry (support.py's blind spot, topic 4).
+- **Old 1-2's Easy is its Normal** on every measure here, except the "something new" mean (vary.py: 506 px Easy, 513 Normal).
+- The views are the world px the real camera shows at clipcheck's phone sizes inside the insets (`out/views.txt`).
+- Other old-1-2 numbers already measured today: per-roll hop, gap and rise ranges (Addendum 3), era look-alike (old 1-1 / 1-2 share a
+  20 s stretch on 16/16 rolls, `out/era/era-main-W1.json`), and splits and two-road share (`out/old12/layout.txt`).

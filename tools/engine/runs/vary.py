@@ -17,7 +17,7 @@ def shares(r):
     return c, n
 print('stage: runKS | creaky share, rank | boughs+creaky share | top-3 share | core share | newMeanPx with / without bridges')
 for k in sorted(by, key=lambda k: (k[0], [int(x) for x in k[1].split('-')], k[2])):
-    if k[1] not in ('1-1', '1-3', '1-5') : continue
+    if k[1] not in ('1-1', '1-2', '1-3', '1-5') : continue
     v = by[k]; out = collections.defaultdict(list)
     for r in v:
         m = M.measure(r); out['runKS'].append(m['runKS']); out['newMeanPx'].append(m['newMeanPx'])

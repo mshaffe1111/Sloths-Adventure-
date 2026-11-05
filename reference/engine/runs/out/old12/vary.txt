@@ -1,0 +1,6 @@
+stage: runKS | creaky share, rank | boughs+creaky share | top-3 share | core share | newMeanPx with / without bridges
+old 1-1 easy: runKS 7 (3-9) | creaky 0.0, rank 99 | boughs+creaky 0.253 (0.01-0.282) | top3 0.989 (0.89-0.995) | core 0.885 (0.635-0.986) | new 572 (360-606) / 572 (360-606)
+old 1-1 normal: runKS 7 (3-9) | creaky 0.0, rank 99 | boughs+creaky 0.253 (0.01-0.282) | top3 0.989 (0.89-0.995) | core 0.885 (0.635-0.986) | new 572 (360-606) / 572 (360-606)
+old 1-2 easy: runKS 2 (1-9) | creaky 0.0, rank 99 | boughs+creaky 0.181 (0.077-0.27) | top3 0.832 (0.793-0.923) | core - | new 506 (445-630) / 506 (445-630)
+old 1-2 normal: runKS 2 (1-9) | creaky 0.0, rank 99 | boughs+creaky 0.181 (0.077-0.27) | top3 0.832 (0.793-0.923) | core - | new 513 (448-630) / 513 (448-630)
+old 1-1 normal canopy stretches (fork + canopy run), pieces each over 16 layouts: [(1, 32), (3, 28), (4, 15), (5, 35)]; inside 2-5: 78/110

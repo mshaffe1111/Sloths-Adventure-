@@ -7,7 +7,7 @@
 import json, sys, collections, statistics as st
 sys.path.insert(0, sys.argv[1]); import measure2 as M
 rows = []
-for f in sys.argv[2:]: rows += [r for r in json.load(open(f)) if 'error' not in r and r['id'] in ('1-1', '1-3', '1-5')]
+for f in sys.argv[2:]: rows += [r for r in json.load(open(f)) if 'error' not in r and r['id'] in ('1-1', '1-2', '1-3', '1-5')]
 by = collections.defaultdict(list)
 for r in rows: by[(r['tag'], r['id'], r['setting'])].append(r)
 def zones(r, dist=120):

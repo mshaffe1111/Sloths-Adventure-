@@ -1,0 +1,9 @@
+stage setting: float share median (min-max) over layouts | held by (median counts) | floating no-float pieces median (max) | examples
+old 1-1 easy: float 0.253 (0.010-0.282) | float 22 ground 144 rests 12 | no-float floating 0 (max 0)
+old 1-1 normal: float 0.253 (0.010-0.282) | float 22 ground 144 rests 12 | no-float floating 0 (max 0)
+old 1-2 easy: float 0.181 (0.077-0.270) | float 31 ground 131 rests 33 | no-float floating 0 (max 0)
+old 1-2 normal: float 0.181 (0.077-0.270) | float 31 ground 131 rests 33 | no-float floating 0 (max 0)
+
+per world (all stages, all layouts pooled): float share, floating no-float pieces per build, cap = share rounded up to the next 5% (LABELS §4)
+  old W1 easy: float 0.142 -> cap 15% | no-float floating 0 over 32 builds
+  old W1 normal: float 0.142 -> cap 15% | no-float floating 0 over 32 builds
