@@ -7,9 +7,24 @@
 import type { Platform, Rope } from './types.ts';
 
 /** a stage's lines: the median over its Normal builds must reach each one */
-export interface PassLines { splitsMin: number; twoRoadMin: number; source: string }
+export interface PassLines {
+  splitsMin: number;
+  twoRoadMin: number;
+  /** the rest of the stage's own lines, judged by stage.ts on engine-runs' measures (ENGINE-SPEC "1-1 for the builder" §E.2) */
+  floatMax?: number;
+  view?: { pickupsUpright: number; pickupsSideways: number; hazardKinds: number; standingKinds: number; upperHalfMin: number };
+  ideasMin?: number;
+  upDownMin?: number;
+  newEveryPxMax?: number;
+  source: string;
+}
 export const REFERENCE: Readonly<Record<string, PassLines>> = {
-  '1-1': { splitsMin: 34, twoRoadMin: 0.61, source: 'old 1-1 on main, medians over 16 layouts x 2 (engine-runs out/old12/layout.txt)' },
+  '1-1': {
+    splitsMin: 34, twoRoadMin: 0.61, floatMax: 0.253,
+    view: { pickupsUpright: 4, pickupsSideways: 7, hazardKinds: 0, standingKinds: 4, upperHalfMin: 0.98 },
+    ideasMin: 4, upDownMin: 0.8, newEveryPxMax: 572,
+    source: "old 1-1 on main, medians over 16 layouts x 2 (engine-runs out/old12/layout.txt; ENGINE-SPEC '1-1 for the builder' §E.2)",
+  },
 };
 
 /** CP1's landings, less climbs and lianas (layout.py zones): every standable top (soil walls are not one) and every rope */

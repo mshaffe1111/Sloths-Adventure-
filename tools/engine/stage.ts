@@ -9,8 +9,8 @@
 //   neighbours  the 200-roll tool's sameness test (eraRoll.ts RULES): against every other stage of the world, no roll pair with a
 //               3-gram cosine over RULES.cosine (analyze.ts cosine) or a 20 s stretch closer than LOOK.alike (lookalike.ts looksAlike)
 //   tests       the stage's own test file (src/game/stage<w><m>.test.ts), run as the suite runs it
-// Not in this step: stills, the stage map and the per-view measures (pickups and standing kinds per view, upper-half share). Those live in
-// engine-runs' Python (tools/engine/runs/layout.py on CP1's measure2.py); the report names them NOT RUN until they are ported.
+//   stage lines engine-runs' own measures called as they are: dump.ts -> layout.py (per view), support.py (float), ideas.py, measure2.py
+// Not in this step: stills and the stage map; the report names them NOT RUN.
 // Exit 1 on any FAIL.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -37,6 +37,7 @@ const levels = generateAllLevels();
 const cfg = levels.find((l) => l.id === id)!;
 type Gate = { name: string; pass: boolean; detail: string[] };
 const gates: Gate[] = [];
+const linesShown: string[] = [];
 const gate = (name: string, detail: string[], pass = detail.length === 0) => { gates.push({ name, pass, detail }); process.stderr.write(`${name}: ${pass ? 'PASS' : 'FAIL'}\n`); };
 const range = (v: number[]) => (v.length ? `${Math.min(...v).toFixed(0)}-${Math.max(...v).toFixed(0)}` : '-');
 
@@ -74,6 +75,49 @@ if (ref) {
   const ss = m.map((q) => q.splits).sort((a, b) => a - b), tt = m.map((q) => q.twoRoad).sort((a, b) => a - b);
   gate(`pass lines (splits median ${ss[Math.floor(N / 2)]} >= ${ref.splitsMin}; two-road median ${tt[Math.floor(N / 2)]} >= ${ref.twoRoadMin})`, judgeLines(id, m));
 } else gate('pass lines', ['no measured reference row for this stage (passLines.ts REFERENCE)'], false);
+
+// 4c. the rest of the stage's lines, on engine-runs' own measures, called as they are (the lead, 11-05: never re-implemented):
+// tools/engine/runs/dump.ts -> layout.py (per phone view), support.py (float share), ideas.py (ideas), CP1's measure2.py (floor numbers)
+const notMeasured: string[] = [];
+if (ref?.view) {
+  const tmp = fs.mkdtempSync('/tmp/stage-runs-');
+  const dumpFile = path.join(tmp, 'dump.json');
+  const d = spawnSync('npx', ['tsx', 'tools/engine/runs/dump.ts', process.cwd(), 'mix', id, String(N)], { encoding: 'utf8', maxBuffer: 1 << 30 });
+  fs.writeFileSync(dumpFile, d.stdout);
+  const py = (script: string, extra: string[] = [], cwd = process.cwd()) => spawnSync('python3', ['-I', path.resolve(script), ...extra, dumpFile], { encoding: 'utf8', cwd }).stdout ?? '';
+  const layout = py('tools/engine/runs/layout.py', [path.resolve('reference/engine/cp1')]);
+  const support = py('tools/engine/runs/support.py');
+  const ideas = py('tools/engine/runs/ideas.py');
+  fs.mkdirSync(path.join(tmp, 'cp1'));
+  const m2 = py('reference/engine/cp1/measure2.py', [], tmp);
+  const num = (txt: string, re: RegExp) => { const m = txt.match(re); return m ? Number(m[1]) : NaN; };
+  const bad: string[] = [];
+  const line = (what: string, v: number, ok: (x: number) => boolean, want: string) => { if (Number.isNaN(v)) bad.push(`${what}: not measured (the tool printed no value)`); else if (!ok(v)) bad.push(`${what}: ${v}, line ${want}`); return `${what} ${v}`; };
+  const shown: string[] = [];
+  for (const set of ['normal', 'easy']) {
+    const row = layout.split('\n').find((l) => l.includes(`mix ${id} ${set}: upright pickups`)) ?? '';
+    const V = ref.view;
+    shown.push(line(`${set} upright pickups`, num(row, /upright pickups (\d+)/), (x) => x <= V.pickupsUpright, `<= ${V.pickupsUpright}`));
+    shown.push(line(`${set} sideways pickups`, num(row, /sideways pickups (\d+)/), (x) => x <= V.pickupsSideways, `<= ${V.pickupsSideways}`));
+    shown.push(line(`${set} upright hazard/animal kinds`, num(row, /upright hazard\/animal kinds (\d+)/), (x) => x <= V.hazardKinds, `<= ${V.hazardKinds}`));
+    shown.push(line(`${set} sideways hazard/animal kinds`, num(row, /sideways hazard\/animal kinds (\d+)/), (x) => x <= V.hazardKinds, `<= ${V.hazardKinds}`));
+    shown.push(line(`${set} upright standing kinds`, num(row, /upright standing kinds (\d+)/), (x) => x <= V.standingKinds, `<= ${V.standingKinds}`));
+    shown.push(line(`${set} sideways standing kinds`, num(row, /sideways standing kinds (\d+)/), (x) => x <= V.standingKinds, `<= ${V.standingKinds}`));
+    shown.push(line(`${set} upright views with play in the upper half`, num(row, /upper half ([\d.]+)/), (x) => x >= V.upperHalfMin, `>= ${V.upperHalfMin}`));
+    const sup = support.split('\n').find((l) => l.startsWith(`mix ${id} ${set}: float`)) ?? '';
+    if (ref.floatMax !== undefined) shown.push(line(`${set} float share`, num(sup, /float ([\d.]+)/), (x) => x <= ref.floatMax!, `<= ${ref.floatMax}`));
+    const ide = ideas.split('\n').find((l) => l.startsWith(`mix ${id} ${set}: tagger ideas`)) ?? '';
+    if (ref.ideasMin !== undefined) shown.push(line(`${set} ideas`, num(ide, /tagger ideas median (\d+)/), (x) => x >= ref.ideasMin!, `>= ${ref.ideasMin}`));
+    const m2l = m2.split('\n'); const mi = m2l.findIndex((l) => l.startsWith(`== mix ${id} ${set}:`)); const mrow = mi >= 0 ? m2l[mi + 1] : '';
+    const up = num(mrow, /up=(\d+)/), flat = num(mrow, /flat=(\d+)/), down = num(mrow, /down=(\d+)/);
+    if (ref.upDownMin !== undefined) shown.push(line(`${set} landings up or down`, Math.round(((up + down) / (up + flat + down)) * 1000) / 1000, (x) => x >= ref.upDownMin!, `>= ${ref.upDownMin}`));
+    if (ref.newEveryPxMax !== undefined) shown.push(line(`${set} something new every (px, mean)`, num(mrow, /newMeanPx=(\d+)/), (x) => x <= ref.newEveryPxMax!, `<= ${ref.newEveryPxMax}`));
+  }
+  gate('stage lines (§E.2: per view, float, ideas, floor numbers)', bad);
+  linesShown.push(...shown);
+  notMeasured.push('boughs + creaky share <= 25.3% (no engine-runs tool prints it)', 'no idea twice in a row (ideas.py prints the count, not the order)');
+  fs.rmSync(tmp, { recursive: true, force: true });
+}
 
 // 5. the neighbour check: every other stage of the world, NB rolls each, against this stage's N Normal rolls
 const world = cfg.worldIndex;
@@ -120,12 +164,12 @@ if (fs.existsSync(testFile)) {
 } else gate(`tests (${testFile})`, ['no test file for this stage'], false);
 
 // the report
-const notRun = ['stills (upright and sideways)', 'stage map', 'per-view measures: pickups and standing kinds per view, upper-half share (engine-runs layout.py, not ported)'];
+const notRun = ['stills (upright and sideways)', 'stage map', ...notMeasured];
 const md = [`# ${id} ${spec.name}: stage report`, '', `\`npx tsx tools/engine/stage.ts ${id} --layouts ${N} --neighbours ${NB}\`, ${new Date().toISOString()}`, '',
   '| Gate | Result | Detail |', '|---|---|---|',
   ...gates.map((g) => `| ${g.name} | ${g.pass ? 'PASS' : '**FAIL**'} | ${g.detail.slice(0, 6).join('; ').replace(/\|/g, '/') || '-'}${g.detail.length > 6 ? `; and ${g.detail.length - 6} more` : ''} |`),
   ...notRun.map((n) => `| ${n} | NOT RUN | not in stage.ts yet |`), '',
-  '## Neighbours, closest', '', ...nbClosest.map((l) => `- ${l}`), '', '## Live neighbours, reported not judged (shrink-only known list, R-165.47)', '', ...(nbKnown.length ? nbKnown.map((l) => `- ${l}`) : ['- none failing']), ''].join('\n');
+  '## Stage lines, measured (engine-runs tools)', '', ...linesShown.map((l) => `- ${l}`), '', '## Neighbours, closest', '', ...nbClosest.map((l) => `- ${l}`), '', '## Live neighbours, reported not judged (shrink-only known list, R-165.47)', '', ...(nbKnown.length ? nbKnown.map((l) => `- ${l}`) : ['- none failing']), ''].join('\n');
 fs.mkdirSync(OUT, { recursive: true });
 const file = path.join(OUT, `${id}.md`);
 fs.writeFileSync(file, md + '\n');
