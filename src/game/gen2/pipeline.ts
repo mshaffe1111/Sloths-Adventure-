@@ -578,7 +578,8 @@ const CONTENT_LETTER: Readonly<Record<string, string>> = { ground: 'g', floating
  * bounce with no double, as `Tb`), the shape mark and the tempo mark; a fork as `F[high|low]`, its high road rising with the find, its
  * low road the section's own type. The string is checked against §8.3 (V18 reads the laid pieces, elsewhere).
  */
-function realisedCode(graph: MissionGraph, plan: readonly PlanSlot[], M: WorldManifest, budget: StageBudget): Pick<Gen2Meta, 'code' | 'codeString' | 'codeErrors'> {
+function realisedCode(graph: MissionGraph, laid: Laid, M: WorldManifest, budget: StageBudget): Pick<Gen2Meta, 'code' | 'codeString' | 'codeErrors' | 'nodes'> {
+  const plan = laid.plan;
   const byId = new Map(M.sections.map((t) => [t.id, t]));
   const tokens: CodeToken[] = [];
   for (const n of graph.nodes) {
@@ -606,7 +607,13 @@ function realisedCode(graph: MissionGraph, plan: readonly PlanSlot[], M: WorldMa
     ...(M.graphs?.windows ? { windows: Object.fromEntries(Object.entries(M.graphs.windows).map(([t, w]) => [CONTENT_LETTER[t], w!])) } : {}),
     ...(graph.deal ? { deal: Object.fromEntries(Object.entries(graph.deal).map(([t, k]) => [CONTENT_LETTER[t], k!])) } : {}),
   });
-  return { code, codeString: code.join(' '), codeErrors };
+  // (each node as laid: its sections' x-range, and its first block's landing)
+  const nodes = graph.nodes.map((n, k) => {
+    const secs = laid.sections.filter((q) => q.node === n.id);
+    const blk = laid.blocks?.find((b) => secs.some((q) => q.uid === b.uid));
+    return { token: code[k], x0: secs.length ? Math.min(...secs.map((q) => q.x0)) : 0, x1: secs.length ? Math.max(...secs.map((q) => q.x1)) : 0, ...(blk ? { block: blk.landing.x } : {}) };
+  });
+  return { code, codeString: code.join(' '), codeErrors, nodes };
 }
 
 // ───────────────────────────── pass 3: sections, stitched ─────────────────────────────
@@ -908,6 +915,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
 /** everything pass 3 hands on */
 export interface Laid {
   sections: PlacedSection[];
+  /** a rolled graph's blocks (NODES.md §8.7): each teach or test section's block pieces, as laid */
+  blocks?: Array<{ uid: string; key: string; kind: 'double' | 'bounce'; landing: Platform }>;
   /** a rolled graph's nodes filled past their rule (no section of the dealt type left: by job only; none for the job: by phase) */
   loosened?: string[];
   plan: PlanSlot[];
@@ -1439,8 +1448,23 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const shrine = mk(cur.x, cur.y, SHRINE_BANK, 'bank', 0);
   const exitX = R(shrine.x + 300);
   clearClimbs(vines, platforms);
+  // (the blocks: a teach or a test section's block pieces, as laid, for the place rule in the check)
+  const nodeJob = new Map(graph.nodes.map((n) => [n.id, n.job]));
+  const blocks = graph.id
+    ? sections.flatMap((sec) => {
+        const job = nodeJob.get(sec.node);
+        if (job !== 'teach' && job !== 'test') return [];
+        const tpl = byId.get(sec.template);
+        const all = [...(tpl?.pieces ?? []), ...(tpl?.subBlocks ?? []).flatMap((sb) => sb.versions.flatMap((v) => v.pieces))];
+        return all.filter((pc) => pc.block).flatMap((pc) => {
+          const laidPc = sec.pieces.find((q) => q.key === pc.key);
+          return laidPc ? [{ uid: sec.uid, key: pc.key, kind: pc.block!, landing: laidPc.platform }] : [];
+        });
+      })
+    : [];
   return {
     sections,
+    ...(blocks.length ? { blocks } : {}),
     ...(plan.some((p) => p.loose) ? { loosened: plan.flatMap((p, k) => (p.loose ? [`slot ${k + 1} (${p.loose})`] : [])) } : {}),
     plan,
     platforms,
@@ -2098,7 +2122,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     repairs: [],
     budget,
     graph,
-    ...(graph.id ? realisedCode(graph, laid.plan, req.kit.manifest, budget) : {}),
+    ...(graph.id ? realisedCode(graph, laid, req.kit.manifest, budget) : {}),
     ...(laid.loosened ? { loosened: laid.loosened } : {}),
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
@@ -2151,9 +2175,36 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   return need.length ? { ...res, ok: false, errors: [...res.errors, ...need] } : res;
 }
 
+/**
+ * The block rule (NODES.md §8.7 B1-B4, as amended at 5:44 PM): a block can't be walked round. A 'double' block's landing is reached by
+ * no single jump from any platform before it (the take-off, the floor road, a pit's floor or its steps, a catch bough, a stone, a
+ * stump), with 20 px to spare in height and in reach: so its rise is past a single jump's 108 + 20, or its gap past a single's reach +
+ * 20, and nothing under it stairs past (a pit floor or a bough at least 128 px under it). A 'bounce' block's landing is reached by no
+ * double from anything (the stump under the mushroom included), with 15 px to spare: only the bounce lands it. The mushroom itself is
+ * never a take-off (no one stands on one). Each breach names the section, so the check swaps it.
+ */
+export function blockBreaches(laid: Laid, platforms: readonly Platform[]): Array<{ uid: string; why: string }> {
+  const out: Array<{ uid: string; why: string }> = [];
+  for (const b of laid.blocks ?? []) {
+    const to = b.landing, dbl = b.kind === 'bounce', spare = dbl ? 15 : 20;
+    for (const from of platforms) {
+      if (from === to || from.type === 'bouncy' || from.x >= to.x) continue;
+      const up = from.y - to.y;
+      if (up + spare > (dbl ? DOUBLE_RISE : JUMP_RISE)) continue;
+      const gap = Math.max(0, to.x - (from.x + from.width));
+      const reach = reachJump(Math.max(0, up), dbl);
+      if (reach >= 0 && gap <= reach + 20) {
+        out.push({ uid: b.uid, why: `${b.kind} block at ${b.key} (x ${to.x}) is reached by a ${dbl ? 'double' : 'single jump'} from the platform at x ${from.x}, y ${from.y} (${up} px under, ${gap} px across)` });
+        break;
+      }
+    }
+  }
+  return out;
+}
+
 /** what the validation pass decided */
 /** (`thin`: it passes, but a purge or gauntlet holds fewer animals than it lays for, its goal + 2: worth a longer stage if there is time) */
-type Verdict = { ok: true; thin?: boolean } | { ok: false; swap?: number; reroll?: boolean; short?: boolean };
+type Verdict = { ok: true; thin?: boolean } | { ok: false; swap?: number; reroll?: boolean; short?: boolean; why?: string };
 
 /**
  * Pass 5: levelCheck (which runs puzzleCheck on the rooms), then local repair (D3, Part 1 Pass 5's "self-healing"):
@@ -2166,6 +2217,9 @@ type Verdict = { ok: true; thin?: boolean } | { ok: false; swap?: number; reroll
  */
 export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[], tried: Set<string>): Verdict {
   const st = b.stage;
+  // (a rolled graph's teach or test whose block can be walked round is swapped: the place rule comes before the level check)
+  const walked = blockBreaches(b.laid, st.platforms);
+  if (walked.length) return { ok: false, swap: Number(walked[0].uid.slice(1)) - 1, why: `the block is walked round: ${walked[0].why}` };
   for (let it = 0; it < 8; it++) {
     const res = checkStage(st, budget);
     if (res.ok) {
@@ -2309,7 +2363,7 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
           // report names it for its author)
           failedAt.set(tpl, (failedAt.get(tpl) ?? 0) + 1);
           if (failedAt.get(tpl)! >= 2) bans.set(-1, new Set([...(bans.get(-1) ?? []), tpl]));
-          repairs.push({ kind: 'swap', section: `s${v.swap + 1}`, note: `${tpl} swapped out` });
+          repairs.push({ kind: 'swap', section: `s${v.swap + 1}`, note: `${tpl} swapped out${v.why ? `: ${v.why}` : ''}` });
           plan = b.laid.plan;
           open = new Set([v.swap]);
           // (audit fix 3, a rolled graph's stage: a swapped-out section that taught a move takes its lesson with it, so every later slot

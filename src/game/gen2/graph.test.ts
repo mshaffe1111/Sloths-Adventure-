@@ -72,6 +72,14 @@ test('the graphs vary roll to roll, and every roll keeps the order rules and the
       assert.equal(st.gen2.code?.length, g.nodes.length, `seed ${s}: ${st.gen2.codeString}`);
       assert.equal(parseCode(st.gen2.codeString!).map(formatToken).join(' '), st.gen2.codeString);
       assert.ok(Array.isArray(st.gen2.codeErrors));
+      // (each node as laid, in order along the stage, for the gates that read the built stage)
+      assert.equal(st.gen2.nodes?.length, g.nodes.length);
+      st.gen2.nodes!.forEach((nd, k) => {
+        assert.equal(nd.token, st.gen2.code![k]);
+        assert.ok(nd.x1 > nd.x0, `seed ${s}: node ${k + 1} covers nothing`);
+        // (sections meet at their seams, a few px either way)
+        if (k) assert.ok(nd.x0 >= st.gen2.nodes![k - 1].x1 - 10, `seed ${s}: node ${k + 1} starts before node ${k} ends`);
+      });
       assert.ok(!st.gen2.codeErrors!.some((e) => /^V(1|2|4|5|6|7|9|10|13|16|17) /.test(e)), `seed ${s}: ${st.gen2.codeString}: ${st.gen2.codeErrors!.join('; ')}`);
     }
     assert.ok(ids.size >= 3, `${ids.size} graphs over 16 rolls`);
