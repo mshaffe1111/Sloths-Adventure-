@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat \"$CLAUDE_PROJECT_DIR/reference/LAWS.md\" \"$CLAUDE_PROJECT_DIR/reference/LESSONS.md\"; echo; echo \"NOTES: the lead reads reference/STATUS.md now. Every helper reads its own reference/notes/<your-name>.md now (create it in your first commit if it is missing; rules: reference/notes/README.md) and keeps it current at every report.\""
+            "command": "cat \"$CLAUDE_PROJECT_DIR/reference/notes/lead-now.md\"; echo; echo \"=== LEAD: the compass above comes first. Now Read the laws below in full with the Read tool if this print was cut to a preview. ===\"; echo; cat \"$CLAUDE_PROJECT_DIR/reference/LAWS.md\" \"$CLAUDE_PROJECT_DIR/reference/LESSONS.md\"; echo; echo \"NOTES: the lead reads reference/STATUS.md now. Every helper reads its own reference/notes/<your-name>.md now (create it in your first commit if it is missing; rules: reference/notes/README.md) and keeps it current at every report.\""
           }
         ]
       }
