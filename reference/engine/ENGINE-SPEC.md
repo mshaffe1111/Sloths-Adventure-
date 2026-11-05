@@ -732,6 +732,18 @@ another roll.
   Normal. It must show the real goal and total, so the player knows when the shrine opens. *Check:* the HUD's goal equals the stage
   record's goal.
 
+
+**[designer, 11-05 ~3:00 AM ET, on build 8c8cd997]**
+- **Accepted:** the cool down's deck is bank hops and stump hop; the first bough is creaky in vine and step canopy entries; the teach
+  twigs sit at 40, 75 and 40 px; the teach bank is 720 px.
+- **No creaky piece before n2's teach.** Every canopy before the first teach twig uses solid boughs, because the first appearance of a
+  mechanic is taught. The mixer asserts it.
+- **P-12's fix:** the mixer's stone is laid at 50 px, the height World 1's rock art is painted for, so the painted rock draws.
+- **Polish order, if the budget forces a split** (the lead's call):
+  1. P-9 (HUD on top) and P-8 (pit art), which look broken;
+  2. P-1 with P-12, P-2 with P-11, and P-5 with P-13;
+  3. P-3, P-4, P-6, P-7 and P-10.
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
