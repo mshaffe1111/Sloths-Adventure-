@@ -56,4 +56,5 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Test link and release (build.py, Artifact publish limits, release branch, PR, deploy and APK check) | `test-link-and-release.md` | to write; source: HANDOFF §6-7 | the lead (11-01) |
 | Cutscene art and clips | `hf-cutscenes.md` | to write; source: tools/art/hfstory, the hf-cutscenes branch notes | next cutscene helper |
 | Props and sprite sheets (cutting, atlases, art-use) | `hf-props.md` | to write; source: tools/art/hfbatch, prop-sheets | next props helper |
+| Fixing a drawing fault in shared render code (trace the call, fix it once for every stage, the whole-picture check, stills both ways) | `render-fix.md` | written 11-05 (engine-render, R-164.6/7/8) | next render helper |
 | Keeping the roadmap (numbering, sizing, closing with proof, the release sweep, roadmapcheck) | `roadmap.md` | written 11-01 (roadmap-keeper) | roadmap-keeper |
