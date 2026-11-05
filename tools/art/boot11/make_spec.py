@@ -16,10 +16,14 @@ P = ('slothadv style, painted storybook illustration, soft cel shading, thin dar
      'texture, World of a rainforest floor at dawn, no text')
 NEG = ('bare foot, toes, paw print, animal track, claw marks, hoof, shoe, a boot standing, a whole boot, leg, person, soldier, two prints, '
        'several footprints, flowers, stones, mushrooms, text, letters, watermark, frame, border, photo, 3d render, blurry')
+RND = sys.argv[2] if len(sys.argv) > 2 else '1'
+# round 1: the flat starts a/b (came back as flat dark stickers: not used); round 2: the relief starts c/d at lighter strengths, so the
+# repaint keeps the modelled depth and only paints it
+KS, SS = {'1': ('ab', (0.5, 0.62)), '2': ('cd', (0.45, 0.56))}[RND]
 items = [{'name': f'boot{k}-s{round(s * 100)}-{sd}', 'start': f'start-boot-{k}.png', 'prompt': P, 'strength': s, 'seed': sd, 'w': 1024,
-          'h': 384} for k in 'ab' for s in (0.5, 0.62) for sd in (5, 11)]
-spec = {'note': '1-1 bootprint remake (boot11), round 1, 2026-11-05', 'tag': 'boot11-1',
+          'h': 384} for k in KS for s in SS for sd in (5, 11)]
+spec = {'note': f'1-1 bootprint remake (boot11), round {RND}, 2026-11-05', 'tag': f'boot11-{RND}',
         'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 0.9]},
         'base': REPO + 'reference/prop-sheets/qa-notes/boot11/starts/', 'neg': NEG, 'items': items}
-(H / 'spec-1.json').write_text(json.dumps(spec, indent=1))
+(H / f'spec-{RND}.json').write_text(json.dumps(spec, indent=1))
 print(len(items))

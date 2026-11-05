@@ -137,6 +137,73 @@ def build(name, L, squash, heel, seed):
     print(p, im.size)
 
 
+def build_relief(name, L, squash, heel, seed, depth=26.0):
+    """round 2 (the lead's bar: a DEEP pressed print, shadowed rim, moss pushed up, heel deeper than the toe): round 1's flat starts came
+    back as flat dark stickers at s50-s62, so here the depth is modelled: a height map (moss at 0, a torn moss ridge round the rim, the
+    print sunk in with walls, the heel deepest, the lugs standing up off its floor), lit from the upper left and a little toward us, the
+    floor darkened by depth (it is shadowed in there). The repaint then only has to paint it."""
+    rng = np.random.default_rng(seed)
+    bed = np.asarray(moss_bed(seed)).astype(np.float32)
+    cx, cy = W / 2, H * 0.56
+    outline = sole(cx, cy, L, squash, heel)
+    mask = Image.new('L', (W, H), 0)
+    ImageDraw.Draw(mask).polygon(outline, fill=255)
+    m = np.asarray(mask) > 127
+    from scipy import ndimage
+    din = ndimage.distance_transform_edt(m)
+    dout = ndimage.distance_transform_edt(~m)
+    xx = (np.arange(W)[None, :] - (cx - L / 2)) / L  # 0 heel .. 1 toe
+    D = depth * (1.45 - 0.6 * np.clip(xx, 0, 1))      # the heel pressed deepest
+    wallw = L * 0.035
+    t = np.clip(din / wallw, 0, 1)
+    h = np.where(m, -D * (t * t * (3 - 2 * t)), 0.0)
+    # the torn moss ridge: pushed up round the rim, ragged, highest along the near (lower) edge and the heel
+    noise = ndimage.gaussian_filter(rng.uniform(0, 1, (H, W)), 6)
+    noise = (noise - noise.min()) / (noise.max() - noise.min() + 1e-6)
+    rw = L * 0.045
+    ys = np.linspace(0, 1, H)[:, None]
+    ridge = depth * 1.0 * np.exp(-(dout / rw) ** 2) * (0.6 + 0.8 * noise) * (0.8 + 0.5 * ys)
+    h = h + np.where(m, 0.0, ridge)
+    # the lugs: chunky chevrons on the forefoot, heavy bars across the heel, standing up off the floor
+    lug = Image.new('L', (W, H), 0)
+    ld = ImageDraw.Draw(lug)
+    hh = L * 0.2 * squash
+    for k in range(5):
+        x = cx + L * (0.1 + k * 0.075)
+        ld.line([(x - hh * 0.5, cy - hh * 0.72), (x + hh * 0.32, cy), (x - hh * 0.5, cy + hh * 0.72)], fill=255, width=int(L * 0.028))
+    for k in range(3):
+        x = cx - L * (0.4 - k * 0.085)
+        ld.line([(x, cy - hh * 0.75), (x, cy + hh * 0.75)], fill=255, width=int(L * 0.04))
+    lugm = ndimage.gaussian_filter(np.asarray(lug).astype(np.float32) / 255, 2.0) * (t > 0.9)
+    h = h + lugm * D * 0.45
+    h = ndimage.gaussian_filter(h, 1.2)
+    # light: from the upper left and toward us; the picture is seen low, so slopes facing down the picture face us
+    gy, gx = np.gradient(h)
+    n = np.dstack([-gx, -gy * 1.3, np.ones_like(h) * 1.6])
+    n /= np.linalg.norm(n, axis=-1, keepdims=True)
+    Lv = np.array([-0.55, -0.62, 0.56]); Lv /= np.linalg.norm(Lv)
+    shade = np.clip(0.42 + 0.95 * (n @ Lv), 0.15, 1.35)
+    # colour: the moss bed outside (the ridge's inner face torn to show earth), wet dark earth inside, darker the deeper
+    earth = np.asarray(EARTH.crop((300, 200, 300 + W, 200 + H))).astype(np.float32) * 0.62
+    torn = np.clip(1 - dout / (rw * 0.55), 0, 1) * (noise > 0.45) * (~m)
+    alb = bed * (1 - torn[..., None]) + earth * 1.1 * torn[..., None]
+    dn = np.clip(-h / (depth * 1.45), 0, 1)
+    inside = earth * (1 - 0.55 * dn)[..., None]
+    alb = np.where(m[..., None], inside, alb)
+    rgb = alb * shade[..., None]
+    im = Image.fromarray(rgb.clip(0, 255).astype(np.uint8))
+    # World 1's thin dark ink line, round the lip only
+    ImageDraw.Draw(im).line(outline + [outline[0]], fill=(28, 22, 14), width=2)
+    im = im.filter(ImageFilter.GaussianBlur(0.6))
+    p = OUT / f'start-{name}.png'
+    im.save(p)
+    print(p, im.size)
+
+
 # (the game draws it about 80 x 22 px: 3.6 to 1, so squash 0.7; b a shorter, deeper print with a heavier heel)
-build('boot-a', L=720, squash=0.7, heel=1.08, seed=3)
-build('boot-b', L=600, squash=0.85, heel=1.18, seed=7)
+if '--relief' not in sys.argv:
+    build('boot-a', L=720, squash=0.7, heel=1.08, seed=3)
+    build('boot-b', L=600, squash=0.85, heel=1.18, seed=7)
+# round 2: the depth modelled (c the long heavy print, d shorter, deeper, a heavier heel)
+build_relief('boot-c', L=700, squash=0.72, heel=1.1, seed=3, depth=30)
+build_relief('boot-d', L=600, squash=0.85, heel=1.2, seed=7, depth=36)
