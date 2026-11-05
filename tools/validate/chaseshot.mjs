@@ -22,6 +22,8 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     e.chase.front = f; e.chase.active = true; e.chase.hold = 99;
     for (let i = 0; i < 45; i++) e.update(1 / 30);
     e.clearGuide?.();
+    // (safe while the frames settle, then not: a still never shows him flashing see-through, the lead 11-05)
+    e.player.invincibleTimer = 0;
     e.render();
     return { camX: Math.round(e.camera.x), vw: Math.round(e.camera.viewportWidth), front: Math.round(e.chase.front), x: Math.round(e.player.x) };
   }, [Number(px), Number(fx), E]);

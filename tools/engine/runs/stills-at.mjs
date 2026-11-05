@@ -27,6 +27,8 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
       for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
       for (let i = 0; i < 60; i++) e.update(1 / 30);
       e.clearGuide?.();
+      // (safe while the frames settle, then not: a still never shows him flashing see-through, the lead 11-05)
+      e.player.invincibleTimer = 0;
       e.render();
     }, [x, pick, E]);
     const file = path.join(out, `${prefix}-${id}-L${layout}-x${x}-${tag}.jpg`);
