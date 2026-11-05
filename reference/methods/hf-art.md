@@ -108,3 +108,17 @@ Contact sheets of every take next to its start, before picking. Then the game sh
 - A creature's defeat in a fight: a boss with no ending fades out from 1.0 s (bossArt.ts drawBossFighter), so any new defeat art must be fully on screen by about 0.6 s. Shoot the fight with the engine paused at set death times (tools/art/crocdefeat/shot-death.mjs); wall-clock shots drift past the end.
 - Defeat cards are shot in the real game for EVERY boss, both ways up (tools/art/crocdefeat/shot-defeats.mjs), never one boss: a layout change for one moves them all.
 - Before reporting, run `node tools/art/icons/checkbase.mjs reference/qa-reports/<job>`: it fails any "after" sheet whose BASE is +wip or older than the code at HEAD (D23, twice).
+
+## Pitfalls added 2026-11-05 (1-1 bootprint clue, art-bootprint)
+- Anything that lies on the ground (a print, a puddle, a mat) is a FLUSH DECAL in the side view: no bed, no edge, no thickness, its top
+  edge exactly on the landing's top line. Round 1 (seen from above) and round 2 (a moss bed laid down with an earth edge) both stood on
+  the log like a disc. tools/art/hfbatch/bootcut.py masks a take to the print plus a thin feathered rim, grades the rim to the
+  ground's own moss (sampled from a real screenshot), and lays it ALONG the top band (toe east, squashed): a ground top is only ~30 px
+  deep, so a toe-up print there is too small to read sideways. Judge it on a real screenshot of the ground it will sit on (a bank,
+  not a stand-in log), both ways up, at game size, object by object: clear of props and of where Pokey stands (bootreview.py).
+  A clue's big picture goes on its card instead (w1-bootprint-card.webp).
+- Seed 17 at s68+ turned a boot print into a bear paw or a hole; s70 drew a bare foot with toes. For prints: s60-65, keep the
+  negative "foot, toes, paw print, animal tracks".
+- Outlines on magenta take a purple cast that the edge-only spill clamp misses: despill every pixel where red and blue both sit over
+  green (bootcut.py), and drop the loose wisps off the rim (largest piece only), then check on light AND dark.
+- hf_fs attach saves the bucket file locally (the result names the path); a plain curl of the bucket URL is refused (401).

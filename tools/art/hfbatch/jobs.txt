@@ -328,3 +328,25 @@ hfb-w8glowcaps-g1  6ae656aac78863f9c62f4ad5 rtx-pro-6000 20:59Z-21:00Z (~1.5 min
   (the fungus scenery's 'glow-mushrooms' look had no frame), 0.60 and 0.72, seeds 5 and 17. KEPT: glowcaps-s72-17 (the caps glowing,
   painted outlines). THROWN: the 0.60s (still the start's flat caps), s72-5 (a muddy clump). Cut by glowcut.py into
   src/assets/w6to10/props-made/w8glowcaps.webp. Running total ~$0.15 of $15.
+
+1-1 bootprint clue (2026-11-05, art-bootprint helper, cap $3 of the ~$72 left), branch art-bootprint: the Stage Cleared find of 1-1
+(stageClue.ts: "One deep bootprint in the moss, pointing north"). Start bootstart.py (W1 ground art: the bank strip's moss and the earth
+texture, a lugged boot sole pressed in), spec make_boot_spec.py, GPU fungusgpu.py unchanged (read from GitHub raw at art-bootprint), cut
+bootcut.py, review stills bootreview.py. Run through the Hugging Face connector's jobs tool (the token passed by the connector as the
+job secret; none in the container). Takes in the bucket mshaffe111/w5-xfer under hfbatch/w1boot/props/, fetched back with hf_fs attach.
+hfb-w1boot-r1  6aeca054c78863f9c63368d3 rtx-pro-6000 15:27:16Z-15:28:51Z (~1.6 min, ~$0.07): 6 takes of the bed seen from above,
+  0.55 / 0.68 / 0.80, seeds 5 and 17. Best: boot-s68-5 (a deep lugged print, painted outlines). NOT USED: on the shrine's log in the
+  side view it stood up like a green disc with a sole stuck on it. THROWN: the 0.55s (still the start's flat lines), s68-17 and s80-17
+  (a bear paw, a bare hole), s80-5 (a sole lying on the moss, not pressed in).
+hfb-w1boot-r2  6aeca3300e0338d1bb808aa3 rtx-pro-6000 15:39:28Z-15:40:52Z (~1.4 min, ~$0.06): 4 takes of the bed laid down for the side
+  view (bootstart.py build_low), 0.62 / 0.70, seeds 5 and 11. KEPT: low-s62-5 (a deep lugged boot print in a flat moss bed).
+  THROWN: s62-11 (the sole raised out of the moss, stubs under the bed), s70-5 (a bare human foot with toes), s70-11 (a whole shoe on
+  its side). The whole bed still stood on the log like a disc (the coordinator's review), so bootcut.py re-cuts the take ($0): masked
+  to the print and a thin feathered rim (no bed, no edge, no thickness), the rim graded to the ground's moss, a flush decal anchored at
+  its top edge on the landing's top line. A toe-up decal hanging on the log's ~34 px face (option A) came out 20x32 and read only as a
+  dark footprint; APPROVED option B: laid along the top band, toe east (onward, toward the shrine), src/assets/props/w1-bootprint.webp
+  (300x74, drawn 75x18; graded to the W1 bank top, the print's home once 1-1's end is a bank). The full painted print toe up (north)
+  for the Stage Cleared card: src/assets/props/w1-bootprint-card.webp (176x320; engine-render wires it). Review:
+  reference/prop-sheets/qa-notes/hf-art-bootprint/ (option-b-bank-*, option-b-*, option-a-*, card-picture, contact-takes). Lesson:
+  seed 17 drew paws and holes at 0.68+; in a side-view game a ground print is a flush decal along the top band, never a standing disc.
+running total ~$0.13 of $3 (of the ~$72 left: ~$71.87).
