@@ -1426,7 +1426,7 @@ core, and where it is allowed). This table is for the planner's library at engin
 
 ### [designer ruling, 11-05 ~10:09 AM ET] The move ladder against the all-world table (planner 7d9ad9a9)
 
-**(a) Lianas and breaking branches are taught in 1-2. The table is right.** Shipped decisions already say so: "1-2 owns the lianas" **[revised: critic §10, 11:21 AM]**
+**[REVERSED 12:22 AM ET by "The critic's deep pass ruled" #4: on main, creaky is taught in 1-5 and lianas in 1-6; this ruling rested on unshipped 11-04 work]** ~~**(a) Lianas and breaking branches are taught in 1-2. The table is right.** Shipped decisions already say so: "1-2 owns the lianas" **[revised: critic §10, 11:21 AM]**~~
 (d272601f) and "1-2 teaches crumbling" (6dae405d).
 - The ladder's taught-at for both is 1-2.
 - 1-5's creaky node becomes an echo, not a teach. Its Dot line stays.
@@ -1753,7 +1753,7 @@ A number that no source settles goes to TRIAGE.md as a run (C) or research (R) i
 | C6 | both, split by unit | A **template** (a fixed section layout) appears at most twice a stage (SR §0c.2). An **idea** may recur, as in the old 1-1, under the idea-share cap (≤ 40%, never twice in a row) |
 | C7 | Matt (MD:127-130) | Pieces belong to their world. Sharing is only where LABELS.md's worlds column allows. "One shared library, World 5 the only exception" is withdrawn |
 | C8 | Matt (R-164.2) | 1-1 has one sunrise sky for the whole stage. "The backdrop changes with height" is withdrawn |
-| C9 | shipped (d272601f, 6dae405d) | 1-2 teaches lianas and creaky. Every "creaky taught at 1-5" and "lianas 1-6" line is revised |
+| C9 | **REVERSED** (deep pass #4: d272601f and 6dae405d are unshipped 11-04 work) | ~~1-2 teaches lianas and creaky.~~ On main: creaky 1-5, lianas 1-6. Every "creaky taught at 1-5" and "lianas 1-6" line is revised |
 | C10 | the shipped rule doc (SR §0b.8; GV:165) | A checkpoint stands right before each hard part, so respawn is within about 2 s of it. The 45 s replay line is withdrawn |
 | C11 | the 1:35 AM withdrawals | The 2:45 AM block's fork share of 30-40%, the forks with 3 crossings, and the checkpoints only before n6 and n10 are struck |
 | C12 | the shipped rule doc (SR §0b.2) | Checkpoints sit **on** the rest before a hard part. "Never before a rest" is withdrawn |
