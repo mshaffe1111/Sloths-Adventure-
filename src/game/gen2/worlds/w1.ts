@@ -8,18 +8,25 @@
  *
  * World 1 art only (LABELS rule 4): banks of earth (moss_stone), mossy stones and stumps (block), boughs (branch), the mushroom (bouncy).
  *
- * The floor (the planner's floor port, agreed 11-05 4:17 PM): a section's floor-road pieces carry `role: 'floor'` and its entry/exit
- * ports are `kind: 'floor'` where it joins its neighbours on the one continuous moss floor at `W1_KIT.floor.line`. Raised pieces (stones,
- * stumps, logs, boughs) stand over the floor with head room. `role` and the 'floor' port kind land in types.ts with the planner's step 1:
- * until then this file types them locally (W1Piece, W1Port) and the pipeline does not read it.
+ * The floor is gen2's own ground (the planner's correction, 11-05 4:19 PM): old 1-1's ground at G is ordinary 'bank' pieces, and sections
+ * enter and exit on 'ground' ports on the manifest's ground line; stones, stumps, logs and boughs are ordinary pieces over it. The
+ * pipeline does not read this file until the planner's step 1 wires World 1 in.
  */
 import type { Phase, SectionPiece, SectionTemplate, Socket } from '../types.ts';
 import { DOUBLE_RISE, reachJump } from '../../physics.ts';
 
-/** World 1's kit row: the floor the floor port joins on (the planner fills the numbers: floor road 4fd9e992, w1mix.ts:983-984) */
+/**
+ * World 1's manifest rows for its floor (the planner's correction, 11-05 4:19 PM: gen2's own ground IS the floor). `ground` is the
+ * continuous moss floor line sections join on with 'ground' ports (pipeline.ts:868); `pit: 'soft'` with `pitDepth` lays a floor under each
+ * pit with stair steps out (pitUnder, pitSteps, pipeline.ts:735-761, :1090-1121); `floorRoll` is the per-roll floor depth the planner adds
+ * to types.ts (step 1), with old 1-1's families (his numbers, 11-05 4:19 PM).
+ */
 export const W1_KIT = {
-  floor: { line: 580, step: [20, 30] as [number, number], deep: 240, stair: { rise: 60, w: 90 } },
-} as const;
+  ground: { y: 580, bankH: 120, style: 'moss_stone' as const },
+  pit: 'soft' as const,
+  pitDepth: 110,
+  floorRoll: { hop: [{ range: [0.43, 0.51] as [number, number], weight: 11 }, { range: [0.74, 0.8] as [number, number], weight: 11 }, { range: [0.99, 1.0] as [number, number], weight: 10 }], shallow: 70, deep: 240, hopRoll: 0.9, jumpRoll: 0.55 },
+};
 
 /** a stage feel a section serves, and the World 1 stages it must never be used for (CHUNK-POOL-BRIEF step 2) */
 export type W1Feel = '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-6' | '1-7' | '1-8' | '1-9';
@@ -28,14 +35,8 @@ export type W1Not = 'meeca-note' | 'hibiscus-trail' | 'punch' | 'combat' | 'kapo
 /** the brief's not-list for every section that is not that stage's (a section serving 1-3 drops 'punch'/'combat' from its own) */
 export const NOT_ELSEWHERE: readonly W1Not[] = ['meeca-note', 'hibiscus-trail', 'punch', 'combat', 'kapok-climb', 'view-north', 'folded-petals', 'chase', 'lianas', 'bush'];
 
-/** a piece with the floor port's role (types.ts gains `role` with the planner's step 1) */
-export type W1Piece = SectionPiece & { role?: 'floor' | 'stair' };
-type W1Port = { piece: string; kind: 'floor' | 'ground' | 'ledge' };
-export type W1Section = Omit<SectionTemplate, 'pieces' | 'entry' | 'exit' | 'subBlocks'> & {
-  pieces: W1Piece[];
-  entry: W1Port;
-  exit: W1Port;
-  subBlocks?: Array<{ id: string; versions: Array<{ id: string; pieces: W1Piece[]; sockets?: Socket[]; weight?: number }> }>;
+type W1Piece = SectionPiece;
+export type W1Section = SectionTemplate & {
   /** the stage feels it serves */
   feel: W1Feel[];
   /** what it must never be used for */
@@ -48,16 +49,15 @@ export type W1Section = Omit<SectionTemplate, 'pieces' | 'entry' | 'exit' | 'sub
 
 // ───────────────────────────── helpers (World 1's pieces, with the old builders' numbers) ─────────────────────────────
 
-const G = W1_KIT.floor.line;
 type Opt = Partial<Socket>;
 const petals = (id: string, on: string, t: Socket['t'], count = 2, span = 140, o: Opt = {}): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span, ...o });
 const flag = (on: string, t: Socket['t']): Socket => ({ id: 'flag', role: 'flag', on, t });
 const tip = (on: string, t: Socket['t'] = 0.2): Socket => ({ id: 'tip', role: 'tip', on, t });
 const decor = (id: string, on: string, t: Socket['t']): Socket => ({ id, role: 'decor', on, t, chance: 0.6 });
-/** a stretch of the moss floor (a floor-road piece: role 'floor') */
-const floor = (key: string, w: SectionPiece['w'], place: SectionPiece['place'] = { kind: 'start' }): W1Piece => ({ key, shape: 'bank', w, place, style: 'moss_stone', role: 'floor', main: true, landing: true });
+/** a stretch of the moss floor: a bank on the ground line (old 1-1's ground at G) */
+const floor = (key: string, w: SectionPiece['w'], place: SectionPiece['place'] = { kind: 'start' }): W1Piece => ({ key, shape: 'bank', w, place, style: 'moss_stone', main: true, landing: true });
 /** the floor after a soft gap a plain jump crosses (`share` of the widest gap the difficulty allows) */
-const softGap = (key: string, after: string, w: SectionPiece['w'], share: [number, number], jump: 'jump' | 'double' = 'jump'): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump, share, soft: true }, style: 'moss_stone', role: 'floor', main: true, landing: true });
+const softGap = (key: string, after: string, w: SectionPiece['w'], share: [number, number], jump: 'jump' | 'double' = 'jump'): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump, share, soft: true }, style: 'moss_stone', main: true, landing: true });
 /** a mossy stump or rock standing on `on` (one easy hop: lowStumps 36-76, logHop 34-46) */
 const stump = (key: string, on: string, at: SectionPiece['w'], h: SectionPiece['w'], w: SectionPiece['w'] = [130, 170]): W1Piece => ({ key, shape: 'block', w, place: { kind: 'on', on, at, h }, style: 'moss_stone', landing: true });
 /** a stepping stone: a jump from `after`, `dy` up (negative) or down; it stands on the floor (pillars: 110-160 wide) */
@@ -216,7 +216,7 @@ function section(o: Omit<W1Section, 'pieces' | 'entry' | 'exit' | 'sockets' | 's
   });
   const first = { ...vs[0].c.pieces[0], key: 'in' };
   const { versions: _v, ...rest } = o;
-  return { ...rest, archetypes: 'any', pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'floor' }, exit: { piece: 'out', kind: 'floor' }, exitDy: 0, sockets: [], mirrorable: true };
+  return { ...rest, archetypes: 'any', pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: true };
 }
 function renPlace(pl: SectionPiece['place'], f: (s: string) => string): SectionPiece['place'] {
   const q = { ...pl } as Record<string, unknown>;
