@@ -2067,3 +2067,34 @@ envelopes of shipped games, with Matt's "everything builds on everything" (SR §
 - **Stairs:** today they step at about half a jump, and unequally (MOVES §5). The builder makes equal rises per M6.
 - **1-1's data** gets 3-5 marks on the run line (M5).
 - **The ladder gate** reads M3's three classes, each move tagged with its class in the library.
+
+### [designer ruling, 11-05 ~12:26 AM ET] ONE support rule for E3 (engine-runs 459d51e4, RUNS.md Addendum)
+
+**The rule:** a piece is supported **if and only if the renderer draws something solid under it**. The engine's own `footingOf(piece)`
+(engine-render) returns what holds a piece, from what the renderer draws:
+- ground or earth drawn to the screen bottom;
+- a drawn trunk, post, column or root;
+- another top it rests on;
+- a drawn water bed;
+- its own drawn base;
+- two anchored ropes, for hung pieces.
+
+Anything else floats. E3 calls footingOf and nothing else, so there is one definition, shared by the game's draw and the gate (D19:
+"a gate must call the code the screen calls").
+
+**Why this rule:**
+- Both tools agree it is the real answer.
+- **stonesupport.ts** reads only colliders. It calls banks drawn to the bottom, and boughs hanging from drawn trunks, "open", which is
+  wrong on the screen (old 1-1 35.5%).
+- **support.py** matches the screen on those families, but it can't see supports that exist only in the art.
+- A rule built on the renderer can't drift from what Matt sees.
+
+**Interim, until footingOf lands:**
+- **support.py** is the measure, giving the old 1-1 **25.3%**, as an upper bound.
+- **stonesupport.ts is retired as a gate**, though it stays as a collider diagnostic.
+- Every count quoted from support.py is marked "upper bound (art-only supports unseen)".
+
+**Proof when footingOf lands:**
+- it gives the same result as support.py on every family support.py sees correctly (banks drawn to the bottom, drawn trunks);
+- it finds the art-only supports support.py misses (gen2's columns, 1-2's scenery kapoks);
+- stills of 3 disputed pieces, both ways up, show the verdict matches the screen.
