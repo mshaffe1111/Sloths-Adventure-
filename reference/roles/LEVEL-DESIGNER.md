@@ -30,3 +30,19 @@ releases, and tells Matt the truth. The lead never rewrites the design.
   as one multiple-choice question with each side's reason, through the lead.
 - One shared file, reference/engine/ENGINE-SPEC.md (branch engine-spec), signed by both before anything is built.
 - They start when the lead sends GO, under the day's token ceiling Matt sets.
+
+## Who has the say (Matt, 2026-11-05 ~12:00 AM ET)
+Matt: "the designer has full say in how the pieces get used and how the engine gets built. The engine creator has also say in how
+things are being built, and I need to know how it's being done. I don't want to go a full day and just to have it where it's not
+working."
+- Level designer: full say on how the pieces are used and on how the engine is built.
+- Engine builder (the planner and the builders): a say in how it is built, technically. Disagreements: a run settles it, else Matt.
+- The lead: no design say. It runs the checkpoints below, checks the bars, and keeps Matt informed.
+
+## How Matt sees it working (checkpoints, so a day is never lost)
+1. Every 2 hours of work, a checkpoint with something Matt can SEE: a number against its pass line, plus a still, clip or grey-box
+   build. Its cost in % of the week. "Pass / miss / why" in three lines.
+2. Grey first: a stage is shown as a plain grey-box layout (shapes only, no art) and Matt plays it before any art or polish.
+3. A miss at a checkpoint stops the work until Matt has seen why. No pushing on through a red to the end of the day.
+4. One live progress page (an Artifact), updated at every checkpoint: the steps, their pass lines, results, cost so far, and the
+   latest still or playable link.
