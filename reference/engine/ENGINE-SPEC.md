@@ -2490,7 +2490,7 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
    - float 25.4%.
    If any is still there when the builder runs, it's an engine finding for the planner, never a reason to bend 1-1's data around it.
 
-## 1-2 for the builder: the one page to build 1-2 from (designer, 11-05 1:29 PM ET; DRAFT until the engine findings in F are answered)
+## 1-2 for the builder: the one page to build 1-2 from (designer, 11-05 1:29 PM ET; DRAFT until the planner's answers to F and old 1-2's measure, R-165.43, due 3:30 PM ET; the brief's line numbers are re-checked then, since the brief was corrected at 1:36)
 
 Same rules as "1-1 for the builder":
 - this page wins over older lines;
@@ -2553,9 +2553,9 @@ at n7 (1-1's at n9).
 
 **Dot's lines:**
 - Approved by the lead and me under Matt's 1:20 rule, since 1-2 opens the game: **hint.1-2.roots** and **hint.1-2.under** (11-04,
-  1bab7dac0, on engine-mixer's dotLinesData.ts:125, :128). Both are true of 1-2 as planned. **[revised 1:30 PM ET: once the lead
-  co-signs, engine-core carries them, as R-165.41 does for 1-1's three]** The builder checks they're in engine-core's dotLinesData.ts,
-  never copies or writes a line, and reports a missing one as an engine finding.
+  1bab7dac0, on engine-mixer's dotLinesData.ts:125, :128). Both are true of 1-2 as planned. **[revised 1:32 PM ET: co-signed by the lead
+  (1:36 PM); the lead's route: the builder adds the two rows as 1-2's stage data, word for word from the corrected brief, and writes no
+  other line]**
 - **Not used:**
   - hint.1-2.back ("up off the snakes"): snakes are untaught in 1-2;
   - hint.1-2.rotten ("Rotten wood!"): breaking wood is 1-5's on main, and that line was marked "needs Matt".
@@ -2564,6 +2564,9 @@ at n7 (1-1's at n9).
 - `end: { kind: 'bank', w: 640 }`. Bursts by time.
 - **The iron-collared snake at the start (:26):** a story cameo out of reach, drawn as scenery, never on the route and never able to
   hurt. If no W1 pose of that snake exists that reads as "more bluster than bite", report it. No stand-in, and never an enemy.
+- **Art gaps, R-165.42 (lead, 1:36 PM ET): approved, held to art week.** The builder reports each missing piece once and draws no
+  stand-in, the same rule as 1-1's bootprint, so they are known items, not fix rounds. (The brief is corrected: it no longer offers
+  W3's or W6's art.)
 - **The pink bell (:21, :30):** there is no W1 pink bell. The painted pink bell is World 5's (engine.ts:6116, Pell's note), and the
   theme lock keeps it out of W1. It's an art gap for the lead. The note is placed meanwhile, and the bell is reported.
 - **The hibiscus near miss (:32, "can"):** there's no W1 hibiscus art, so it's left out until the art exists.
