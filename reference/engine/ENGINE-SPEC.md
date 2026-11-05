@@ -486,6 +486,30 @@ n10, n11, with a canopy over most floors. These must change before Matt sees it:
 - **All the lines stay as they are:** splits at least 19, two-road share at least 40%, creaky at least 15% of landings and in the top
   3 kinds, and the old 1-1's variety lines. The map no longer dropping labels settled A and B; the perch colour settled D.
 
+
+**[designer ruling, 11-05 ~2:45 AM ET, on the fun gate's pacing flags (build 9da17a27)] Rests and breathers.**
+- **Cleared since main:**
+  - repeats, 5 → 0;
+  - Normal "too sparse" (now 0.74 actions a second);
+  - Easy "tension flat".
+- **New flags:**
+  - Easy is too busy: 0.76 a second against 0.35-0.55;
+  - Easy's longest run with no rest is 92 s against 6-8 s;
+  - 3.2 s of dead time on n2's 900 px bank.
+- **The rulings:**
+  - **A second rest node, n7b, after the rotten-branch drop,** on both settings. It is one short flat pad on the forest floor and the
+    stage's second Dot spot. A flag goes there only if a hard node follows. The stage then breathes before its creek and its master
+    fork, as Shovel Knight's ramp-and-cool asks.
+  - **On Easy, a breather pad of 2-3 s between every node.** It is flat, safe ground with no pickups but breadcrumb petals.
+  - **On Easy, bursts are one piece shorter** (3-5 pieces). Easy asks for fewer moves a second, not the same moves with wider gaps
+    (§2.5's finding, R3 W2).
+  - **The teach bank in n2 is cut from 900 to 600 px.**
+- **The pass lines are the fun gate's own:**
+  - Easy at 0.35-0.55 actions a second;
+  - no Easy run over 20 s without a 2-second rest (the plan's 5-20 s groups);
+  - no dead time over 2.5 s;
+  - Normal's flags no worse than main.
+
 **The rules this plan meets by construction** (the mixer still checks every roll):
 - **Ideas:** 9 to 11 different ideas a roll. No idea twice in a row. Snap-twig dash comes twice (teach at n2, test at n6, not in a
   row), and the fork twice (n4, n10).
