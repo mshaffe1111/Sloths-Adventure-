@@ -21,6 +21,12 @@ def strip(pieces, x0, x1, label_src):
     out = [f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="{html.escape(label_src)}" preserveAspectRatio="xMidYMid meet">']
     for x, w, y, k in sel:
         c = COL.get(k, 'var(--fg)')
+        if k == 'lily':
+            out.append(f'<rect x="{x - x0 - 90}" y="{y - ymin + 8}" width="{w + 180}" height="40" fill="var(--k-water)" opacity="0.35"/><rect x="{x - x0}" y="{y - ymin}" width="{w}" height="12" rx="6" fill="var(--k-vine)"/>')
+            continue
+        if k == 'turtle':
+            out.append(f'<ellipse cx="{x - x0 - 60}" cy="{y - ymin - 10}" rx="24" ry="12" fill="var(--k-mush)"/>')
+            continue
         if k == 'boa':
             out.append(f'<ellipse cx="{x - x0 - 35}" cy="{y - ymin - 14}" rx="38" ry="14" fill="var(--k-mush)"/><text x="{x - x0 - 35}" y="{y - ymin - 36}" text-anchor="middle" font-size="26" fill="var(--muted)">boa</text>')
             continue
@@ -52,7 +58,8 @@ IDEAS = [
  ('Bridge walk', 'crosses one long rope bridge', 'real', ('Rebuilt 1-2', 0, 0)),
  ('Stump hop', 'crosses broken ground on stones of three heights', 'laid', [('bank', 150, 0, 90), ('stone', 60, 50, 80), ('stone', 120, 40, 90), ('stone', 233, -70, 90), ('bank', 220, -20, 0)]),
  ('Animal on the path', 'one boa in the way: jump it, wait, or kick-roll it', 'laid', [('bank', 230, 0, 0), ('log', 180, 0, 0), ('boa', 0, 0, 0), ('log', 170, 0, 0), ('bank', 230, 0, 0)]),
- ('Lily-pad hop', 'hops across water on pads (waits on Matt: which stage had them?)', 'none', None),
+ ('Lily-pad hop', 'hops across still water on lily pads; falling in puts him back on the bank (from the World 1 test version, Matt 11-05)', 'laid', [('bank', 170, 0, 85), ('lily', 94, 30, 90), ('lily', 88, 0, 80), ('lily', 102, 0, 95), ('lily', 86, 0, 85), ('bank', 200, -30, 0)]),
+ ('Turtle line', 'snapping turtles along the ground: punch one from behind, or kick its shell into the others (World 1 test version)', 'laid', [('bank', 300, 0, 0), ('turtle', 0, 0, 0), ('bank', 180, 0, 0), ('turtle', 0, 0, 0), ('bank', 200, 0, 0), ('turtle', 0, 0, 0), ('bank', 300, 0, 0)]),
 ]
 def first_of(name, kind, span):
     for x, w, y, k, f in S[name]:

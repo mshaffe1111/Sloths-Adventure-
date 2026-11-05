@@ -106,7 +106,7 @@ generated:
 | Rope crossing | goes hand over hand along a shimmy rope over a gap | shimmy rope (exists, PLAN.md E11), a bough or bank either end | mid or high → same |
 | Animal on the path | deals with one animal in the way: jump it, wait for it, or kick-roll it | the boa (kick-roll, 1-5), bank or bough with room around it | any → same height |
 
-**Corrected (planner's count):** no old World 1 stage on `main` has a lily pad, though the piece exists (`protoStage.ts:2294`, World 2's river). Which stage Matt meant goes to him through the lead; the lily-pad hop idea waits for his answer. Gliding is not a World 1
+**Answered (Matt, 11-05, via the planner):** the lily pads were in the World 1 test version (the control test, `protoStage.ts:2294`, drawn on about 2 runs in 3), which testers played. Lily-pad hop is a World 1 idea: flat still water, pads 84-104 px with gaps of 0.42-0.55 of a jump, and falling in puts him back on the bank. World 2 keeps its own river use of lilies (moving water, logs), so the two worlds don't share the idea. The same test version's **turtle line** (punch one from behind, or kick its shell into the others) joins World 1 as a second animal idea; a kick that sets off a chain was the strongest fun correlate in the Mario study (R3 F10). Gliding is not a World 1
 idea unless World 1 already teaches it; it is on the move ladder below.
 
 **"It keeps building" (Matt to the planner: "every move you learn keeps coming back... it just keeps building and building"):**
