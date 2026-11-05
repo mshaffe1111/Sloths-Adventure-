@@ -204,6 +204,20 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     expert += 1.4 + gapW / RUN;
   };
 
+  /**
+   * a root knot just past a mushroom's landing: the goal route, after the low road's first bounce, turned on the landing bough and
+   * dropped back for the high road, 3.5 s of the bounce and a walk with no move (the fun gate's dead walk, the lead's ruling 2026-11-04);
+   * a knot there is a hop in it, both ways
+   */
+  const knotPastLanding = () => {
+    walk(60);
+    leave();
+    const kw = Math.round(R.r(80, 100));
+    P.push({ id: pid++, x: Math.round(x), y: y - 26, width: kw, height: 50, type: 'solid', style: 'moss_stone' });
+    walk(kw);
+    from = x;
+  };
+
   /** a quiet walk with root knots to step over (small hops: a bump in the walk, not a move) */
   const stroll = (len: number, knots: number) => {
     const x0 = x;
@@ -299,8 +313,10 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
   beat('Spike: up into the canopy', () => guard(() => {
     const x0 = x;
     node(['h.......', 'h...h...', 'x.x.x.x.', 'h.......', 'h...h...', 'h.......'],
-      // (Easy: one gap in four open air, a soft fall back to the spike's flag; on Easy the guard is no hurt, so all catches cost nothing)
-      [D(140), J(0), H(-50), H(-20), H(-35), H(-15), H(-30), D(150), J(20), J(-30), D(150)], (i) => (easy && i % 4 === 3 ? 'pit' : 'catch'));
+      // (one gap in three open air, both settings: inside the guard a miss there is a heart and back on the ledge on Normal, Easy's soft
+      // fall on Easy, never a life; with a bough under every gap the canopy's misses cost nothing on Normal, the fun gate's "nothing
+      // bites", the lead's ruling 2026-11-04: about one in four was asked; one in four still left 7 layouts flagged)
+      [D(140), J(0), H(-50), H(-20), H(-35), H(-15), H(-30), D(150), J(20), J(-30), D(150)], (i) => (i % 3 === 1 ? 'pit' : 'catch'));
     pieces.push({ k: 'canopy', x0, x1: x });
   }));
 
@@ -327,6 +343,7 @@ export function buildIntoCanopy(config: LevelConfig, seed: number, easy = false)
     const lowU = (i: number): Under => (i % 3 === 2 ? 'pit' : 'catch');
     roads.low.tr.push(node(['h...h...', 'x.x.x...'], [J(0), H(-40), H(-20), H(-35), H(-25)], lowU, { flag: false }));
     bounce(BOUNCE_UP - 20, 'branch', 'catch');
+    knotPastLanding();
     // (a flag on the low road halfway: LV-9, never 4000 px without one)
     flag(x + 60);
     roads.low.tr.push(node(['h.......', 'h...h...', 'x.x.x.x.'], [J(0), H(-30), J(20), H(-35), H(-20), H(-30), H(-25)], lowU, { flag: false }));

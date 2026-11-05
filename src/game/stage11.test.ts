@@ -35,7 +35,7 @@ test('1-1: every roll keeps the curve (intro, ramps up and down the bank, the tw
   }
 });
 
-test('1-1: open air only on the high road and in the finale; every other gap has moss, the bank or a bough under it', () => {
+test('1-1: open air only on the high road and in the finale, and before the choice only as guarded heart falls in the spike; every other gap has moss, the bank or a bough under it', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-1');
     const finale = st.proto.beats.find((b) => b[2].startsWith('Finale'))!;
@@ -45,9 +45,18 @@ test('1-1: open air only on the high road and in the finale; every other gap has
     const zones = (st.fallZones ?? []).filter((z) => !hf.some((h) => h.x0 === z.x0 && h.x1 === z.x1));
     assert.ok(hf.length >= 3, `seed ${s}: the twist, the spike and the low road are guarded`);
     assert.ok(zones.length >= 2, `seed ${s}: ${zones.length} stretches of open air`);
-    for (const z of zones) assert.ok(z.x0 >= choice[0] - 60 && (z.x1 <= choice[1] + 600 || z.x0 >= finale[0] - 60), `seed ${s}: open air at ${z.x0}`);
+    for (const z of zones.filter((q) => q.x1 >= choice[0])) assert.ok(z.x0 >= choice[0] - 60 && (z.x1 <= choice[1] + 600 || z.x0 >= finale[0] - 60), `seed ${s}: open air at ${z.x0}`);
     // before the choice, every x has something within 260 px under the surface at that x
+    // (the spike's open air, one gap in three: inside a heart fall, never a life, the lead's ruling 2026-11-04)
+    const spike = st.proto.beats.find((b) => b[2].startsWith('Spike'))!;
+    const spikeAir = (st.fallZones ?? []).filter((z) => z.x1 < choice[0] && !hf.some((h) => h.x0 === z.x0 && h.x1 === z.x1));
+    assert.ok(spikeAir.length >= 1, `seed ${s}: some open air in the spike`);
+    for (const z of spikeAir) {
+      assert.ok(z.x0 >= spike[0] && z.x1 <= spike[1], `seed ${s}: open air before the choice at ${z.x0}, outside the spike`);
+      assert.ok(hf.some((h) => h.x0 <= z.x0 && h.x1 >= z.x1), `seed ${s}: the spike's open air at ${z.x0} is not a guarded heart fall`);
+    }
     for (let x = 300; x < choice[0]; x += 25) {
+      if (spikeAir.some((z) => x >= z.x0 && x <= z.x1)) continue;
       const tops = st.platforms.filter((p) => p.x <= x && p.x + p.width >= x).map((p) => p.y);
       assert.ok(tops.length, `seed ${s}: nothing at all under x ${x}`);
     }
