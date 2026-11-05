@@ -480,13 +480,24 @@ node 12: DFS prefix check = Normal trace: found ... in 13/20 runs; median 11, ma
    stompers, moving platforms) and a *wait* state. This is the measured mechanism behind "every stage feels the same" in beat-built
    stages: the generator varies numbers, the player perceives kinds.
 4. **`fitSteps` is mildly biased, not broken.** It reaches fewer distinct geometries than a uniform draw would (731 vs 865; 788 vs 883)
-   and leans downhill (mean net climb 23 vs 31 px; -26 vs -18 px). The cause is in the code: it picks each step's height uniformly among
-   the heights that fit (w1Rhythm.ts:206-211), so sequences in narrow parts of the band are over-drawn. Harmless for playability;
-   relevant if a curve target (rise, fall) matters.
-5. **A search beats random retry only where the tracer actually rejects**, i.e. floor nodes with faces (see the tier C block). There, a
-   naive depth-first search with only the Normal-trace prefix check can stall, because the Easy trace and `checkTrace` are applied only at
-   the leaves. WFC's lesson (3.12) applies: a search must prune with *every* check on each prefix (Easy trace and checkTrace are also left
-   to right), or it thrashes.
+   and its net climb is off the uniform mean by 7-25 px, in different directions per node (canopy: 23 vs 31, -26 vs -18, -26 vs -17
+   px; floor: 60 vs 49, 49 vs 32, -24 vs -49 px). The cause is in the code: it picks each step's height uniformly among the heights that
+   fit *now* (w1Rhythm.ts:206-211), so sequences through narrow parts of the band are over-drawn. Harmless for playability; it matters
+   once a node has a rise or fall target.
+5. **On the floor the tracer does reject: about half of what `fitSteps` draws (accepted 56-62% per try) [measured], and every
+   rejection in the top list is one rule**, MIN_GAP: "the gap is N px: no jump at all" (beatTrace.ts:441). That rejection is
+   predictable from the step alone (a flat or downward jump onto a near landing), so it can be filtered when the candidate is made,
+   WFC's "propagate before you choose" (3.12), instead of discovered by a full trace.
+6. **A search is not faster than `fitSteps` today, and a naive one is worse.** Random retry needs 1.6-1.8 tries [measured], each 2
+   traces + 2 checks, so about 3-4 trace-equivalents a node [estimate]. A depth-first search that prunes on the Normal trace alone
+   *failed to find any answer within 5,000 calls in 5-7 of 20 runs* [measured], because the Easy trace and `checkTrace` only bite at the
+   leaves, so it explores dead subtrees (Karth & Smith's point about global constraints and restarts). Pruning with both Normal and Easy
+   prefix traces found an answer 60/60 times in 18-24 calls [measured]: reliable, but still costlier than the 3-4 of a random retry. So
+   the papers ledger's proposal 7 ("a small search driven by that error would be faster and exact", LEDGER-ENGINE-PAPERS line 107) is
+   **not supported on speed** at today's acceptance rates. A search earns its keep only when the constraints get tight, which is
+   exactly what the engine will add: pinned moments, a target rise or fall per node (`fitSteps` already misses the uniform mean by
+   12-25 px of net climb, more on the climax), and kind quotas (lesson 1). Then random retry's acceptance collapses and a pruned search
+   (with every check applied to prefixes) is the right tool.
 
 **Compared with Launchpad's rhythm-then-geometry.** Same order; ours is stronger on the physics (engine slices, clumsy thumb, camera
 framing, beatTrace.ts:326-338, 432-437) and weaker on the geometry grammar (one or two kinds where Launchpad had 14 + 5). Launchpad needed
@@ -582,7 +593,8 @@ Read in the parts named:
     work). https://arxiv.org/pdf/2102.12463
 21. Vanparijs, "Procedural Level Generation for 2D Auto-Runner Games Based on Musical Features", MSc thesis, Maastricht 2022 (abstract,
     §4.3-4.6, results, limitations). https://matthewstephenson.info/papers/students/Procedural%20Level%20Generation%20for%202D%20Auto-Runner%20Games%20Based%20on%20Musical%20Features.pdf
-22. Withington et al., "On the Evaluation of Procedural Level Generation Systems", 2024 (abstract, intro only). https://arxiv.org/html/2404.18657v1
+22. "On the Evaluation of Procedural Level Generation Systems", arXiv 2024 (authors not in the HTML text I fetched; abstract and
+    intro only). https://arxiv.org/html/2404.18657v1
 
 Abstract pages only (no full text read):
 23. Summerville et al., "The VGLC: The Video Game Level Corpus", 2016. https://arxiv.org/abs/1606.07487
