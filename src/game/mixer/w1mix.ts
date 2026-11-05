@@ -60,6 +60,10 @@ export const PLAN_15: NodePlan[] = [
 ];
 
 interface Lay {
+  /** the difficulty dial's gap, as a share of the gate's widest (ENGINE-SPEC "The difficulty dial") */
+  gapShare: number;
+  /** the dial's d for this stage (0 at 1-1, 1 at 10-9) */
+  dial: number;
   P: Platform[];
   V: Vine[];
   C: Collectible[];
@@ -124,28 +128,6 @@ function gateGap(L: Lay, aY: number, b: { y: number; height: number; type: strin
   return max;
 }
 
-/** a run of pieces of one kind: each a gap on from the last and dy higher (up +), widths and steps rolled in their ranges. Steps are
- *  clamped to the band; a step whose gap the gate allows under MIN_GAP comes down 10 px at a time until it is a real jump */
-function hops(L: Lay, c: Cursor, R: Rng, k: string, n: number, w: [number, number], dy: number[], gap: [number, number]): Cursor {
-  let { x, y } = c;
-  const h = k === 'bank' ? 120 : k === 'stone' ? 40 : k === 'log' ? 90 : 24;
-  const type = k === 'creaky' || k === 'crumble' ? 'fragile' : 'solid';
-  for (let i = 0; i < n; i++) {
-    let d = R.pick(dy);
-    if (y - d < band.yMin || y - d > band.yMax) d = -d;
-    if (y - d < band.yMin || y - d > band.yMax) d = 0;
-    const f = easyFit(L, d, R.r(w[0], w[1]), R.r(gap[0], gap[1]));
-    let max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy);
-    while (max < MIN_GAP + 10 && f.dy > 0) { f.dy -= 10; max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy); }
-    f.gap = Math.max(MIN_GAP, Math.min(f.gap, max - 4));
-    x += f.gap;
-    y -= f.dy;
-    plat(L, k, x, y, f.w);
-    x += f.w;
-  }
-  return { x, y };
-}
-
 /** a petal over the middle of each gap between neighbouring route pieces from index `from` on (an arc that shows where the jump goes) */
 function petalsOver(L: Lay, from: number) {
   const ps = L.P.slice(from).filter((p) => p.type !== 'bouncy');
@@ -172,27 +154,37 @@ const BANDS: Record<string, Array<[number, number]>> = {
 };
 const HEIGHT: Record<string, number> = { bank: 120, stone: 40, log: 90 };
 /** a landing steps up or down (the designer's (c): at least 4 of 5 landings do) */
-const STEPS = [40, 20, -20, -40, -60];
+const STEPS = [40, 30, 50, -30, -40, -60];
+/** (a step of 20 px or less reads as flat: the variety gate's up/flat/down, cp1/measure2.py) */
+const FLAT = 20;
 
 /**
- * A burst (the designer's ruling, CP3 (a)+(c)): `n` pieces from `kinds`; the kind changes every 2 pieces, and where it can't (one kind)
- * the size band does; every landing steps up or down unless the band forbids it. Gaps are the gate's (gateGap), inside `gap`.
+ * A burst (the designer's ruling, CP3 (a)+(c)): `n` pieces from `kinds`; the kind changes every 2 pieces and the size band every piece;
+ * every landing steps up or down more than 20 px unless the band forbids it. Gaps are the dial's share of the gate's (gateGap).
  */
-function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: number[] = STEPS, gap: [number, number] = [70, 90]): Cursor {
+function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: number[] = STEPS, fixedGap?: number, width?: number): Cursor {
   let { x, y } = c;
   for (let i = 0; i < n; i++) {
     const k = kinds[Math.floor(i / 2) % kinds.length];
     const bands = BANDS[k] ?? [[110, 200]];
-    const bnd = bands[(Math.floor(i / 2) + (kinds.length === 1 ? i : 0)) % bands.length];
+    // (the size band turns every piece, so two of a kind side by side are two sizes: "something new" comes often)
+    const bnd = bands[(i + Math.floor(i / 2)) % bands.length];
     let d = R.pick(steps);
-    if (y - d < band.yMin || y - d > band.yMax) d = -d;
-    if (y - d < band.yMin || y - d > band.yMax) d = Math.sign(-d) * 20;
-    if (y - d < band.yMin || y - d > band.yMax) d = 0;
-    const f = easyFit(L, d, Math.round(R.r(bnd[0], bnd[1])), R.r(gap[0], gap[1]));
+    // (outside its band a burst steps back toward it; inside, a step that would leave the band turns round, or shrinks to 30 px)
+    if (y > band.yMax) d = Math.abs(d) || FLAT + 10;
+    else if (y < band.yMin) d = -(Math.abs(d) || FLAT + 10);
+    else {
+      if (y - d < band.yMin || y - d > band.yMax) d = -d;
+      if (y - d < band.yMin || y - d > band.yMax) d = Math.sign(-d) * (FLAT + 10);
+      if (y - d < band.yMin || y - d > band.yMax) d = 0;
+    }
+    const f = easyFit(L, d, width ?? Math.round(R.r(bnd[0], bnd[1])), 999);
     const h = HEIGHT[k] ?? 24, type = k === 'creaky' || k === 'crumble' ? 'fragile' : 'solid';
     let max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy);
     while (max < MIN_GAP + 10 && f.dy > 0) { f.dy -= 10; max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy); }
-    f.gap = Math.max(MIN_GAP, Math.min(f.gap, max - 4));
+    // (the gap is the dial's share of the gate's widest, give or take 8%; Easy's 80 px cap on a rise still holds)
+    const want = Math.round(max * L.gapShare * R.r(0.92, 1.08));
+    f.gap = fixedGap ?? Math.max(MIN_GAP, Math.min(want, f.gap, max - 4));
     x += f.gap;
     y -= f.dy;
     plat(L, k, x, y, f.w);
@@ -201,71 +193,101 @@ function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: num
   return { x, y };
 }
 
+/** one piece `w` wide, a gate-sized gap on from the cursor and a step up or down from it (no landing sits flat with the one before) */
+function step(L: Lay, c: Cursor, R: Rng, k: string, w: number): Platform {
+  burst(L, c, R, [k], 1, STEPS, undefined, w);
+  return L.P[L.P.length - 1];
+}
+
 /** one idea's burst, laid from the cursor; returns the way's end */
 function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
   const n = R.i(4, 6);
   switch (name) {
     case 'bank hops': return burst(L, c, R, R.pick([['bank', 'stone', 'log'], ['log', 'bank'], ['stone', 'bank', 'log']]), n);
-    case 'stump hop': return burst(L, c, R, ['stone', 'bank'], n, [40, -40, -70, 20, -20], [80, 90]);
+    case 'stump hop': return burst(L, c, R, ['stone', 'bank'], n, [40, -40, -70, 30, -30]);
     case 'snap teach': {
       // (expose, then validate: a creaky twig low over a long bank, then two over safe ground; nothing to fall into)
-      const bank = plat(L, 'bank', c.x + 80, c.y, 900);
-      plat(L, 'creaky', bank.x + 200, c.y - 60, 150);
-      plat(L, 'creaky', bank.x + 470, c.y - 70, 140);
-      plat(L, 'creaky', bank.x + 690, c.y - 60, 130);
-      return { x: bank.x + bank.width, y: c.y };
+      const bank = step(L, c, R, 'bank', 900);
+      plat(L, 'creaky', bank.x + 200, bank.y - 60, 150);
+      plat(L, 'creaky', bank.x + 470, bank.y - 70, 140);
+      plat(L, 'creaky', bank.x + 690, bank.y - 60, 130);
+      return { x: bank.x + bank.width, y: bank.y };
     }
     case 'snap dash': return burst(L, c, R, ['creaky', 'branch'], n);
     case 'bounce up': {
       // (the old 1-1's highRoad: a mushroom on the ground, branches 170-200 px over it, proven there)
-      const pad = plat(L, 'bank', c.x + 80, c.y, 300);
-      plat(L, 'mushroom', pad.x + 170, c.y - 30, 70);
-      const by = c.y - Math.round(R.r(170, 200));
+      const pad = step(L, c, R, 'bank', 300);
+      plat(L, 'mushroom', pad.x + 170, pad.y - 30, 70);
+      const by = pad.y - Math.round(R.r(170, 200));
       const b = plat(L, 'branch', pad.x + 210, by, Math.round(R.r(220, 280)));
       return burst(L, { x: b.x + b.width, y: by }, R, ['branch', 'bridge'], R.i(2, 4));
     }
     case 'the climb': {
       // (CP2 cp2-climb.out: a bank, a climbing vine at its end, a bough 170-300 px up out from it, on the bough in 1.2-2.4 s)
-      const bank = plat(L, 'bank', c.x + 80, c.y, 260);
-      const rise = Math.round(R.r(170, Math.max(170, Math.min(300, c.y - LIMIT.yMin))));
+      const bank = step(L, c, R, 'bank', 260);
+      const rise = Math.round(R.r(170, Math.max(170, Math.min(300, bank.y - LIMIT.yMin))));
       const vx = bank.x + bank.width + 2;
-      L.V.push({ id: -1, x: vx, topY: c.y - rise - 30, bottomY: c.y, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as Vine);
-      const b = plat(L, 'branch', vx + 13, c.y - rise, Math.round(R.r(240, 300)));
+      L.V.push({ id: -1, x: vx, topY: bank.y - rise - 30, bottomY: bank.y, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as Vine);
+      const b = plat(L, 'branch', vx + 13, bank.y - rise, Math.round(R.r(240, 300)));
       return { x: b.x + b.width, y: b.y };
     }
-    case 'crumbling ledge': return burst(L, c, R, ['crumble', 'branch'], n, [20, -20, 40, -40], [80, 80]);
+    case 'crumbling ledge': return burst(L, c, R, ['crumble', 'branch'], n, [30, -30, 40, -40]);
     case 'creaky boughs': return burst(L, c, R, ['branch', 'creaky'], n);
-    case 'lily-pad hop': return burst(L, c, R, ['lily', 'log'], n, [20, -20, 30, -30], [80, 90]);
-    case 'reed isles': return burst(L, c, R, ['reed', 'lily'], n, [20, -20, 30, -30], [80, 90]);
+    case 'lily-pad hop': return burst(L, c, R, ['lily', 'log'], n, [30, -30, 40, -40]);
+    case 'reed isles': return burst(L, c, R, ['reed', 'lily'], n, [30, -30, 40, -40]);
     case 'bank walk': {
-      const b = plat(L, 'bank', c.x + 80, c.y, Math.round(R.r(600, 700)));
-      return { x: b.x + b.width, y: b.y };
+      // (a rest: a long bank and a medium stone, an easy step between them; never one long flat, never one size: the variety gate)
+      const b1 = step(L, c, R, 'bank', Math.round(R.r(300, 360)));
+      const b2 = step(L, { x: b1.x + b1.width, y: b1.y }, R, 'stone', Math.round(R.r(180, 230)));
+      return { x: b2.x + b2.width, y: b2.y };
     }
     case 'rotten-branch drop': {
       // (CP2: branch -> creaky limb 40 down, gap 60 -> catch branch 150 down, gap 120 -> bank 120 down, gap 80; 421-667 ms)
-      let e = burst(L, c, R, ['branch'], 1, [0]);
-      e = burst(L, e, R, ['creaky'], 1, [-40], [60, 60]);
-      e = burst(L, e, R, ['catch'], 1, [-150], [120, 120]);
-      return burst(L, e, R, ['bank'], 1, [-120], [80, 80]);
+      // (the drop is 310 px after its first branch's step (60 px at most) and is never flipped into a climb: deep in the stage its band gives it the room, and the bursts after it
+      // climb back into the band)
+      const save = band;
+      band = { yMin: band.yMin, yMax: Math.max(band.yMax, c.y + 60 + 330) };
+      let e = burst(L, c, R, ['branch'], 1);
+      e = burst(L, e, R, ['creaky'], 1, [-40], 60);
+      e = burst(L, e, R, ['catch'], 1, [-150], 120);
+      e = burst(L, e, R, ['bank'], 1, [-120], 80);
+      band = save;
+      return e;
     }
     case 'push block': throw new Error('push block is out of 1-5 for CP3 (the designer\'s ruling)');
     case 'bough stair':
       // (CP2, with Easy's rule: Normal steps +50 to +70; Easy +30 to +40, gaps 80 or less: easyFit and the gate cap them)
-      return burst(L, c, R, ['branch', 'log'], n, L.easy ? [30, 40] : [50, 60, 70], [70, 90]);
-    case 'bridge span': return burst(L, c, R, ['bridge', 'branch'], n, [30, -30, 20, -20], [80, 90]);
+      return burst(L, c, R, ['branch', 'log'], n, L.easy ? [30, 40] : [50, 60, 70]);
+    case 'bridge span': return burst(L, c, R, ['bridge', 'branch'], n, [30, -30, 40, -40]);
     case 'canopy over floor': {
-      // (the designer's ruling (b), CP3: the old 1-1's fork in small. A mushroom bounces him up into 2-5 boughs 170-200 px up (the old
-      // 1-1's highRoad heights); under them the low route is one long walk on a log, with no jump to meet a bough over his head; past the
-      // boughs' end both come down to the same ground and the low route's hops go on)
-      const pad = plat(L, 'bank', c.x + 80, c.y, 300);
-      plat(L, 'mushroom', pad.x + 170, c.y - 30, 70);
-      const by = c.y - Math.round(R.r(170, 200));
-      const save = band;
-      band = { yMin: by - 20, yMax: by + 20 };
-      const hiEnd = burst(L, { x: pad.x + 140, y: by }, R, ['branch', 'bridge'], R.i(2, 5), [20, -20], [70, 80]);
-      band = save;
-      const log = plat(L, 'log', pad.x + pad.width, c.y, Math.max(300, hiEnd.x - (pad.x + pad.width) + 60));
-      return burst(L, { x: log.x + log.width, y: c.y }, R, ['bank', 'stone'], R.i(2, 3));
+      // (the designer's rulings (b), CP3 and 11-05 1:11 AM: the old 1-1's canopy over the floor in short stretches, not one long one.
+      // Each stretch: a mushroom on a bank bounces him up into 2-3 boughs 170-200 px up (the old 1-1's highRoad heights), in the
+      // stretch's own height band; under them the low route is one long walk on a log, with no jump to meet a bough over his head; past
+      // the boughs both come down onto the same ground, and a hop or two on the floor leads to the next stretch)
+      let e = c;
+      const stretches = 3;
+      for (let s = 0; s < stretches; s++) {
+        // (the pad steps up or down from the floor before it, as every landing does)
+        // (each stretch differs in its sizes and its floor, so the three never read as one piece three times: the gate's "something new")
+        burst(L, e, R, ['bank'], 1, STEPS, undefined, s === 1 ? 260 : 300);
+        const pad = L.P[L.P.length - 1];
+        e = { x: e.x, y: pad.y };
+        plat(L, 'mushroom', pad.x + 170, e.y - 30, 70);
+        const by = e.y - Math.round(R.r(170, 200));
+        // (the boughs stay 140-200 px over the floor: a jump off a bough (about 180 px up with the double) down to the floor must fall
+        // less than the long fall that hurts (engine.ts LONG_FALL, 400 px), since the floor is the low route, not a miss)
+        const save = band;
+        band = { yMin: e.y - 200, yMax: e.y - 140 };
+        // (the first bough starts 210 px along the pad, clear of the mushroom's bounce, as the old 1-1's highRoad and "bounce up" lay it)
+        const b0 = plat(L, s === 1 ? 'bridge' : 'branch', pad.x + 210, by, Math.round(s === 1 ? R.r(124, 148) : R.r(160, 240)));
+        const hiEnd = burst(L, { x: b0.x + b0.width, y: by }, R, [['bridge', 'branch'], ['branch', 'bridge'], ['bridge']][s % 3], R.i(1, 2), [30, -30]);
+        band = save;
+        // (the floor runs 220 px on past the last bough, so stepping off the boughs' end is a plain drop onto wide ground in view: a
+        // first-timer stood 8-20 s at a 60 px lip, cp3-ft stuck spots)
+        const log = plat(L, (['log', 'bank', 'stone'] as const)[s % 3], pad.x + pad.width, e.y, Math.max(300, hiEnd.x - (pad.x + pad.width) + 220));
+        e = burst(L, { x: log.x + log.width, y: e.y }, R, s === stretches - 1 ? ['stone', 'bank'] : R.pick([['stone'], ['stone', 'bank']]), s === stretches - 1 ? R.i(2, 3) : R.i(1, 2));
+      }
+      return e;
     }
   }
 }
@@ -275,7 +297,10 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
  * same stage in both settings.
  */
 export function buildMix15(config: LevelConfig, seed: number, easy: boolean): GeneratedStage & { proto: ProtoExtras } {
-  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy };
+  // (the difficulty dial, ENGINE-SPEC: d from the world and stage; the gap is this share of the gate's widest)
+  const d = (0.1 * (config.worldIndex - 1) + 0.2 * (config.miniIndex - 1) / 8) / 1.1;
+  const gapShare = easy ? 0.45 + 0.35 * d : 0.55 + 0.37 * d;
+  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, dial: d };
   /** what each node rolled (a fork: both roads' ideas), so a later node can be held off it */
   const rolled: Array<string[]> = [];
   let lastIdea: Idea | undefined;
@@ -290,9 +315,10 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     const R = rngFor(seed, `1-5 n${i}`);
     const x0 = c.x;
     if (n.flagBefore) {
-      const pad = plat(L, 'bank', c.x + 80, c.y, 320);
-      L.flags.push({ x: pad.x + 120, y: c.y });
-      c = { x: pad.x + pad.width, y: c.y };
+      // (a medium log, not another bank beside the banks around it: the gate's "something new")
+      const pad = step(L, c, R, 'log', 280);
+      L.flags.push({ x: pad.x + 120, y: pad.y });
+      c = { x: pad.x + pad.width, y: pad.y };
     }
     if (n.hint) L.hints.push({ x: c.x + 60, text: n.hint, pad: n.padHint ?? n.hint, keys: n.padHint ?? n.hint, ...(c.y >= 600 ? { belowY: c.y - 60 } : { aboveY: c.y + 60 }) } as StageHint);
     const from = L.P.length;
@@ -302,13 +328,17 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       const one = n.job === 'rest' || n.job === 'cool down';
       const pool: Idea[] = n.job.startsWith('teach') ? [...n.deck, 'bank hops'] : n.deck.length > 1 ? [...n.deck, 'canopy over floor'] : [...n.deck, 'canopy over floor'];
       const off = new Set([...(rolled[i - 1] ?? []), ...(n.not !== undefined ? rolled[n.not - 1] ?? [] : [])]);
-      const bursts = one ? 1 : R.i(2, 3);
+      // (the difficulty dial's bursts per node: 2 at d = 0, 3 at d = 1, ENGINE-SPEC "The difficulty dial")
+      const bursts = one ? 1 : Math.round(2 + L.dial);
       const laid: Idea[] = [];
       let last = lastIdea;
       // (the node's own idea comes first: its job is what it teaches or tests)
       for (let k = 0; k < bursts; k++) {
         const own = n.deck.filter((d) => d !== last && !off.has(d));
-        const cand = k === 0 && own.length ? own : pool.filter((d) => d !== last && !(k === 0 && off.has(d)) && !laid.includes(d));
+        // (the designer's ruling, 11-05 1:11 AM: canopy over floor recurs with the other bursts, never twice in a row; it is each node's
+        // second burst wherever the pool has it)
+        const canopy: Idea[] = k === 1 && last !== 'canopy over floor' && pool.includes('canopy over floor') ? ['canopy over floor'] : [];
+        const cand = k === 0 && own.length ? own : canopy.length ? canopy : pool.filter((d) => d !== last && !(k === 0 && off.has(d)) && !laid.includes(d));
         const pick = R.pick(cand.length ? cand : pool.filter((d) => d !== last));
         const bx = c.x;
         c = idea(L, pick, c, R);
@@ -324,30 +354,34 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       const prev = new Set(rolled[i - 1] ?? []);
       const hiDeck = n.deck.high.filter((d) => !prev.has(d)), loDeck = n.deck.low.filter((d) => !prev.has(d));
       const hi = R.pick(hiDeck.length ? hiDeck : n.deck.high), lo = R.pick(loDeck.length ? loDeck : n.deck.low);
-      rolled[i] = [hi, lo];
-      lastIdea = lo;
-      const forkBank = plat(L, 'bank', c.x + 80, c.y, 240);
+      // (a second idea the node before laid is swapped for a plain hop burst: no idea twice in a row)
+      const second = (deck: Idea[], first: Idea): Idea => deck.find((d) => d !== first && !prev.has(d)) ?? (first === 'bank hops' ? 'stump hop' : 'bank hops');
+      const hi2 = second(n.deck.high, hi), lo2 = second(n.deck.low, lo);
+      rolled[i] = [hi, lo, hi2, lo2];
+      const forkBank = step(L, c, R, 'bank', 240);
       // (each road keeps to its own band, 200 px apart, so they never meet: the high road no lower than 60 px under the fork bank,
       // the low road no higher than 60 px over its start)
       // (head room: the high road never comes down toward the low one and the low one never rises toward it, so the roads stay 260 px
       // or more apart: a jump on the low road (100 px up, his body 116 tall) never meets the high road over it)
-      const hy = c.y, ly = Math.min(LIMIT.yMax, c.y + 260);
+      const hy = forkBank.y, ly = hy + 260;
       band = { yMin: Math.max(LIMIT.yMin, hy - 160), yMax: hy };
       const forkFrom = L.P.length;
-      const hiEnd = idea(L, hi, { x: forkBank.x + forkBank.width, y: hy }, R);
+      // (each road lays two bursts, its deck's two ideas in turn, so the fork is a real stretch of the stage: the plan's 15-20% each)
+      lastIdea = lo2;
+      const hiEnd = idea(L, hi2, idea(L, hi, { x: forkBank.x + forkBank.width, y: hy }, R), R);
       // (the low road starts under the gap off the fork bank's end, so running off that end drops him onto it)
       const lowStart = { x: forkBank.x + forkBank.width - 90, y: ly };
-      band = { yMin: ly, yMax: Math.min(LIMIT.yMax, ly + 160) };
+      band = { yMin: ly, yMax: ly + 160 };
       const lowFrom = L.P.length;
-      const loEnd = idea(L, lo, lowStart, R);
+      const loEnd = idea(L, lo2, idea(L, lo, lowStart, R), R);
       band = { ...LIMIT };
       // (rejoin: one long bank 30 px over the low road's end, a gap the gate allows on from it, and long enough to run on under the high
       // road's end, which drops onto it)
       const ry = Math.max(LIMIT.yMin, loEnd.y - 30);
       const rx = loEnd.x + Math.min(70, gateGap(L, loEnd.y, { y: ry, height: 120, type: 'solid' }, loEnd.y - ry) - 4);
       const rejoin = plat(L, 'bank', rx, ry, Math.max(320, hiEnd.x + 240 - rx));
-      L.explain.push({ node: i + 1, job: n.job, idea: hi, road: 'high', x0, x1: hiEnd.x, why: `high road from [${n.deck.high.join(', ')}]` });
-      L.explain.push({ node: i + 1, job: n.job, idea: lo, road: 'low', x0: lowStart.x, x1: loEnd.x, why: `low road from [${n.deck.low.join(', ')}]` });
+      L.explain.push({ node: i + 1, job: n.job, idea: `${hi} + ${hi2}` as Idea, road: 'high', x0, x1: hiEnd.x, why: `high road from [${n.deck.high.join(', ')}]` });
+      L.explain.push({ node: i + 1, job: n.job, idea: `${lo} + ${lo2}` as Idea, road: 'low', x0: lowStart.x, x1: loEnd.x, why: `low road from [${n.deck.low.join(', ')}]` });
       petalsOver(L, lowFrom);
       // (Meeca's marks, the designer's ruling: one on each road; the high road's at its hardest spot, its middle piece)
       const hiPs = L.P.slice(forkFrom, lowFrom), loPs = L.P.slice(lowFrom, L.P.length - 1);
@@ -363,12 +397,12 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     // the glide. The far-off glint, dressing only, is a separate small piece still to draw)
     if (n.heartAfter && !easy) L.C.push({ id: L.cid++, type: 'heart', x: c.x + 40, y: c.y - 60, collected: false, bobPhase: 0 } as Collectible);
   });
-  const end = plat(L, 'bank', c.x + 80, c.y, 640);
-  const exit = { x: end.x + 420, y: c.y };
+  const end = step(L, c, rngFor(seed, '1-5 end'), 'bank', 640);
+  const exit = { x: end.x + 420, y: end.y };
   L.marks.push(...forkMarks);
   for (const m of L.marks) L.C.push({ id: L.cid++, type: 'relic', mark: 'meeca', x: m.x, y: m.y - 34, collected: false, bobPhase: (m.x * 0.017) % 6.28 } as Collectible);
   const find = findForStage(config.worldIndex, config.miniIndex);
-  if (find) L.C.push({ id: L.cid++, type: 'find', findId: find.id, hidden: false, x: end.x + 200, y: c.y - 26, collected: false, bobPhase: 0 } as Collectible);
+  if (find) L.C.push({ id: L.cid++, type: 'find', findId: find.id, hidden: false, x: end.x + 200, y: end.y - 26, collected: false, bobPhase: 0 } as Collectible);
   L.C.push({ id: L.cid++, type: 'exit_totem', x: exit.x, y: exit.y - 30, collected: false, bobPhase: 0 } as Collectible);
   L.V.forEach((v, k) => (v.id = k + 1));
   // (nothing hurts in the first seconds (STAGE-RULES §2 "Opening seconds"), as w1Rhythm.ts rhythmStage lays it: a catch branch 60 px
