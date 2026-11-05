@@ -28,9 +28,9 @@ def roll(a, k):
     return np.roll(a, -k, axis=1)
 
 
-def feather(w, h, pad, bottom=True, top=True):
+def feather(w, h, pad, bottom=True, top=True, left=True):
     yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
-    d = np.minimum(xx, w - 1 - xx)
+    d = (np.minimum(xx, w - 1 - xx) if left else w - 1 - xx)
     if top:
         d = np.minimum(d, yy)
     if bottom:
@@ -107,6 +107,67 @@ def finish(out, far_take, mid_take, far_take2=None):
     Image.fromarray(np.clip(mm + 0.5, 0, 255).astype(np.uint8), 'RGBA').save(out / 'w1sunrise-mid.webp', 'WEBP', quality=90, method=6)
     print('finished in', out)
 
+
+# round 2 (er-sun2): the far's lower left (the original's foreground branch, its end hard shards) and the mid's canopy corner (a
+# straight left edge the first repaint kept), each cut from round 1's result and repainted again
+FAR_BOX3 = (0, 774, 912, 1302)            # 912 x 528
+MID_BOX2 = (64, 448, 448, 768)            # 384 x 320
+
+
+def starts2(out):
+    out = Path(out)
+    f = np.asarray(Image.open(out / 'w1sunrise-far.webp').convert('RGB'))
+    x0, y0, x1, y1 = FAR_BOX3
+    c = f[y0:y1, x0:x1].astype(np.float32)
+    # (the branch's red-brown and its shards go to the canopy's deep teal, then a blur: the model paints treetops there)
+    lum = c @ np.array([0.3, 0.59, 0.11], np.float32)
+    br = (c[..., 0] > c[..., 1] + 8) | (lum < 32)
+    c[br] = (30, 56, 52)
+    crop = Image.fromarray(f[y0:y1, x0:x1])
+    # (to its left edge too: the strip's other end, which meets it there, has no branch)
+    m = Image.fromarray((feather(x1 - x0, y1 - y0, 120, bottom=False, left=False) * 255).astype(np.uint8))
+    Image.composite(Image.fromarray(c.astype(np.uint8)).filter(ImageFilter.GaussianBlur(26)), crop, m).save(out / 'far-start3.png')
+    mm = Image.open(out / 'w1sunrise-mid.webp').convert('RGBA')
+    x0, y0, x1, y1 = MID_BOX2
+    cm = mm.crop((x0, y0, x1, y1))
+    a = np.asarray(cm, np.float32)
+    # (the canopy's straight left edge: its first 70 columns' paint taken out, so the model rounds the crown there)
+    a[:, :140, 3] *= np.clip((np.arange(140) - 70) / 70, 0, 1)[None, :]
+    cm = Image.fromarray(a.astype(np.uint8), 'RGBA')
+    bg = Image.new('RGBA', cm.size, KEY + (255,))
+    bg.alpha_composite(cm)
+    bg.convert('RGB').save(out / 'mid-start2.png')
+    print('round 2 starts in', out)
+
+
+def finish2(out, far_take, mid_take):
+    out = Path(out)
+    f = np.asarray(Image.open(out / 'w1sunrise-far.webp').convert('RGB'), np.float32)
+    x0, y0, x1, y1 = FAR_BOX3
+    t = np.asarray(Image.open(far_take).convert('RGB').resize((x1 - x0, y1 - y0), Image.LANCZOS), np.float32)
+    # (the crop runs to the strip's left edge and bottom; the left edge is the repaint's, then joined to the strip's right end by a narrow
+    # band below)
+    m = feather(x1 - x0, y1 - y0, 90, bottom=False, left=False)
+    f[y0:y1, x0:x1] = m[..., None] * t + (1 - m[..., None]) * f[y0:y1, x0:x1]
+    Image.fromarray(np.clip(f + 0.5, 0, 255).astype(np.uint8)).save(out / 'w1sunrise-far.webp', 'WEBP', quality=90, method=6)
+    mm = np.asarray(Image.open(out / 'w1sunrise-mid.webp').convert('RGBA'), np.float32)
+    x0, y0, x1, y1 = MID_BOX2
+    t = np.asarray(Image.open(mid_take).convert('RGB').resize((x1 - x0, y1 - y0), Image.LANCZOS), np.float32)
+    d = np.sqrt(((t - np.array(KEY, np.float32)) ** 2).sum(-1))
+    a = np.clip((d - 60) / 50, 0, 1)
+    w = feather(x1 - x0, y1 - y0, 50)
+    old = mm[y0:y1, x0:x1]
+    na = a * w + old[..., 3] / 255 * (1 - w)
+    rgb = (t * (a * w)[..., None] + old[..., :3] * (old[..., 3:4] / 255) * (1 - w)[..., None]) / np.maximum(na[..., None], 1e-4)
+    mm[y0:y1, x0:x1, :3] = rgb
+    mm[y0:y1, x0:x1, 3] = na * 255
+    Image.fromarray(np.clip(mm + 0.5, 0, 255).astype(np.uint8), 'RGBA').save(out / 'w1sunrise-mid.webp', 'WEBP', quality=90, method=6)
+    print('round 2 finished in', out)
+
+
+if __name__ == '__main__' and sys.argv[1] in ('starts2', 'finish2'):
+    (starts2 if sys.argv[1] == 'starts2' else finish2)(*sys.argv[2:])
+    sys.exit(0)
 
 if __name__ == '__main__':
     if sys.argv[1] == 'starts':
