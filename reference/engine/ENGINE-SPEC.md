@@ -564,6 +564,21 @@ value.
 **1-5 now: d = 0.09.** On Normal that gives gaps at 0.58 of the gate's limit, typical landings about 210 px, 0-1 risky pieces a
 burst, and E[lives] about 0.7. This replaces the planner's fixed 70-90 px stand-in.
 
+
+## Stage length (designer, 11-05 ~1:15 AM ET; Matt: "minimum 2 minutes, but if it goes over 5, I'm okay with that too... it should vary the length of stages")
+
+- **Floor:** every stage is at least **2:00** on the quick-route clock, a skilled player straight through ("played like Matt").
+- **No cap:** over 5 minutes is fine.
+- **Lengths vary across a world, by design.** Each stage's spec sets its length band through its node count and its bursts per node.
+  A world's nine stages spread from about 2:00 to about 5:00. **Neighbouring stages differ by at least 20% on the quick clock**
+  (designer's default; the planner proposes the measured number). The world's set piece or finale is among its longest.
+- **Length still comes from units, never from filling a clock:** a longer stage has more nodes or more bursts, so it has more ideas,
+  not longer runs of one piece.
+- **Pass line:**
+  - every roll is at least 2:00 on both settings;
+  - over a world, no two neighbours are within 20% of each other;
+  - the world's spread is at least 2.5 minutes.
+
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
