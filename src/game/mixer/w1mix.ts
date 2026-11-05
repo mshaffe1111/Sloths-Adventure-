@@ -77,6 +77,8 @@ interface Lay {
   riseCap: number;
   /** the dial's landing width: Easy's typical landing over Normal's (260 -> 150 against 220 -> 110 px) */
   wScale: number;
+  /** Easy's own size bands: every band this many times Normal's (the designer's pacing ruling A, 11-05: Easy landings about 300 px) */
+  bs: number;
   /** the dial's d for this stage (0 at 1-1, 1 at 10-9) */
   dial: number;
   P: Platform[];
@@ -92,6 +94,8 @@ interface Lay {
   /** how the last canopy was entered, and how many mushrooms the stage has (the designer's review D: no more than the old 1-1's) */
   entry?: Entry;
   mushrooms: number;
+  /** bursts laid so far on Normal (normalPad) */
+  nb?: number;
   /** Easy's breather pads, so `padLogs` can find them */
   padSet: Set<Platform>;
   /** Easy's breather pads laid so far (they alternate log and bank) */
@@ -132,14 +136,14 @@ function plat(L: Lay, k: string, x: number, y: number, w: number): Platform {
   else if (k === 'reed') Object.assign(p, { style: undefined, height: 30 });
   else if (k === 'mushroom') Object.assign(p, { type: 'bouncy', style: undefined, height: 30 });
   L.P.push(p);
-  L.recent.push(sizeKey(k, p.width));
+  L.recent.push(sizeKey(k, p.width, L.bs));
   if (L.recent.length > 6) L.recent.shift();
   return p;
 }
 
 /** a piece's kind x size as the variety gate names it: short under 150 px, medium to 300, long over */
-function sizeKey(k: string, w: number): string {
-  return `${k} ${w < 150 ? 'short' : w <= 300 ? 'medium' : 'long'}`;
+function sizeKey(k: string, w: number, s = 1): string {
+  return `${k} ${w < 150 * s ? 'short' : w <= 300 * s ? 'medium' : 'long'}`;
 }
 
 /** the Easy rules (designer, CP2), applied to a rise `dy` (up +) onto a landing `w` wide, after a gap */
@@ -171,7 +175,9 @@ function gateGap(L: Lay, aY: number, b: { y: number; height: number; type: strin
 
 /** a petal over the middle of each gap between neighbouring route pieces from index `from` on (an arc that shows where the jump goes) */
 function petalsOver(L: Lay, from: number) {
-  const ps = L.P.slice(from).filter((p) => p.type !== 'bouncy');
+  // (one road's petals, the floor's, where the marks are: petals on both roads of a canopy traced a way no one takes, up to the boughs
+  // and down again, and the inspector's pickup route counted every one of those hops)
+  const ps = L.P.slice(from).filter((p) => p.type !== 'bouncy' && !(p as { bough?: boolean }).bough && !(p as { perch?: boolean }).perch);
   for (let i = 1; i < ps.length; i++) {
     const a = ps[i - 1], b = ps[i];
     const gx = (a.x + a.width + b.x) / 2;
@@ -213,6 +219,8 @@ const BANDS: Record<string, Array<[number, number]>> = {
   bridge: [[112, 148], [160, 300]], creaky: [[110, 148], [150, 170]], crumble: [[110, 110]], lily: [[82, 102]], reed: [[150, 190]],
 };
 const HEIGHT: Record<string, number> = { bank: 120, stone: 50, log: 90 };
+/** Easy's size bands over Normal's (pacing ruling A); the variety gate reads Easy's sizes on the same bands (cp1/measure2.py) */
+export const EASY_BS = 1.35;
 /** a landing steps up or down (the designer's (c): at least 4 of 5 landings do) */
 const STEPS = [40, 30, 50, -30, -40, -60];
 /** (a step of 20 px or less reads as flat: the variety gate's up/flat/down, cp1/measure2.py) */
@@ -226,12 +234,12 @@ function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: num
   let { x, y } = c;
   for (let i = 0; i < n; i++) {
     const k = kinds[Math.floor(i / 2) % kinds.length];
-    const bands = BANDS[k] ?? [[110, 200]];
+    const bands = (BANDS[k] ?? [[110, 200]]).map(([a, b]) => [Math.round(a * L.bs), Math.round(b * L.bs)] as [number, number]);
     // (the size band turns every piece, so two of a kind side by side are two sizes: "something new" comes often)
     // (and of the bands, the first in that turn whose size is new against the last six landings, the gate's "something new")
     const turnAt = (i + Math.floor(i / 2)) % bands.length;
     const order = bands.map((_, j) => bands[(turnAt + j) % bands.length]);
-    const bnd = width !== undefined ? bands[turnAt] : order.find((b) => !L.recent.includes(sizeKey(k, (b[0] + b[1]) / 2))) ?? bands[turnAt];
+    const bnd = width !== undefined ? bands[turnAt] : order.find((b) => !L.recent.includes(sizeKey(k, (b[0] + b[1]) / 2, L.bs))) ?? bands[turnAt];
     let d = R.pick(steps);
     // (outside its band a burst steps back toward it; inside, a step that would leave the band turns round, or shrinks to 30 px)
     if (y > band.yMax) d = Math.abs(d) || FLAT + 10;
@@ -244,7 +252,7 @@ function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: num
     // (the dial's rise cap, and its landing widths: Easy's are wider by the dial's ratio, up to the top of the piece's own size band, so
     // a short piece stays short and the gate's kind x size variety holds; never under 90 px)
     if (d > L.riseCap) d = L.riseCap;
-    const f = easyFit(L, d, width ?? Math.max(90, Math.round(Math.min(Math.max(bnd[1], bnd[0] * L.wScale), R.r(bnd[0], bnd[1]) * L.wScale))), 999);
+    const f = easyFit(L, d, width ?? Math.max(90, Math.round(R.r(bnd[0], bnd[1]))), 999);
     const h = HEIGHT[k] ?? 24, type = k === 'creaky' || k === 'crumble' ? 'fragile' : 'solid';
     let max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy);
     while (max < MIN_GAP + 10 && f.dy > 0) { f.dy -= 10; max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy); }
@@ -387,7 +395,7 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     const way = R.pick(ways);
     L.entry = way;
     // (a step entry's host never steps down 70: the step, 80 px over it, would sit flat with the piece before)
-    burst(L, e, R, [fk.host], 1, way === 'step' ? [30, 40, 50] : [30, 40, 50, -70], undefined, Math.min(290, Math.round(R.r(240, 280) * L.wScale)));
+    burst(L, e, R, [fk.host], 1, way === 'step' ? [30, 40, 50] : [30, 40, 50, -70], undefined, Math.min(Math.round(290 * L.bs), Math.round(R.r(240, 280) * L.wScale)));
     const host = L.P[L.P.length - 1];
     let bx = host.x + 160;
     let entryY: number | undefined;
@@ -417,14 +425,17 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     // (the creek's stretch is a lily pad and a log after the host; the others one wide piece of their own kinds)
     const from = L.P.length;
     const ks = fk.kinds[(turn + s) % fk.kinds.length];
-    let end = burst(L, { x: host.x + host.width, y: host.y }, R, [ks[0]], 1, [-30, -40], undefined, ks[0] === 'lily' ? undefined : Math.round(R.r(330, 380) * L.wScale));
-    if (ks[0] === 'lily') end = burst(L, end, R, ['log'], 1, [-30, -40], undefined, Math.round(R.r(330, 380) * L.wScale));
+    // (on Easy the end piece is a rest (the designer's pacing ruling A): its first part 600-680 px, about 2.1-2.4 s at a run, then a short
+    // second part 30 px up; a canopy ran 27-30 s on Easy with no 2 s rest)
+    const endW = () => Math.round(L.easy ? R.r(780, 860) : R.r(330, 380));
+    let end = burst(L, { x: host.x + host.width, y: host.y }, R, [ks[0]], 1, [-30, -40], undefined, ks[0] === 'lily' ? undefined : endW());
+    if (ks[0] === 'lily') end = burst(L, end, R, ['log'], 1, [-30, -40], undefined, endW());
     // (the long end piece is two, touching, the second 30 px up: a hop to make on the walk out from under the canopy, never a gap to
     // fall in (the fun gate's dead walks: a 2 s walk with nothing to do, 12 of them at canopy ends))
     const m1 = L.P[L.P.length - 1];
     const full = m1.width;
     // (60/40, so the second half is short and the first medium: two sizes, the gate's "something new")
-    m1.width = Math.round(full * 0.6);
+    m1.width = L.easy ? full - Math.round(R.r(160, 190)) : Math.round(full * 0.6);
     const m2 = plat(L, ks[0] === 'lily' ? 'log' : ks[0], m1.x + m1.width, m1.y - 30, full - m1.width);
     end = { x: m2.x + m2.width, y: m2.y };
     const floor = L.P.slice(from).concat(host);
@@ -486,7 +497,7 @@ function padLogs(L: Lay) {
     const q = p as Platform & { creak?: number; catch?: boolean; lily?: boolean };
     const k = p.type === 'bouncy' ? 'mushroom' : p.type === 'fragile' ? (q.creak ? 'creak' : 'twig') : p.style === 'canopy_bridge' ? 'bridge' : p.style === 'log' ? 'log'
       : p.style === 'branch' ? (q.catch ? 'catch' : 'branch') : p.style === 'moss_stone' ? (p.height > 60 ? 'ground' : 'stone') : q.lily ? 'lily' : 'ground';
-    return `${k} ${p.width < 150 ? 's' : p.width <= 300 ? 'm' : 'l'}`;
+    return `${k} ${p.width < 150 * L.bs ? 's' : p.width <= 300 * L.bs ? 'm' : 'l'}`;
   };
   for (let pass = 0; pass < 4; pass++) {
     const ls = [...L.P.map((p) => ({ m: p.x + p.width / 2, k: kindOf(p), p: p as Platform | null })), ...L.V.map((v) => ({ m: v.x, k: v.vineType === 'tree_climb' ? 'climb' : 'liana', p: null }))].sort((a, b) => a.m - b.m);
@@ -501,6 +512,19 @@ function padLogs(L: Lay) {
     }
     if (!fixed) break;
   }
+}
+
+/**
+ * Normal's breath (the designer's pacing ruling B, 11-05): after every second burst, a flat bank of 400-440 px: about 1.0-1.2 s of quiet
+ * between landing on it and leaving it (300-340 px measured under the inspector's 1.0 s split),
+ * so no Normal run goes longer than main's 1-5 (29 s) without a rest. Easy has its own breathers.
+ */
+function normalPad(L: Lay, c: Cursor, R: Rng): Cursor {
+  if (L.easy) return c;
+  L.nb = (L.nb ?? 0) + 1;
+  if (L.nb % 2) return c;
+  const pad = step(L, c, R, 'bank', Math.round(R.r(400, 440)));
+  return { x: pad.x + pad.width, y: pad.y };
 }
 
 /**
@@ -634,8 +658,10 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   const riseShare = easy ? 0.4 + 0.4 * d : 0.5 + 0.45 * d;
   // (Easy's wider landings come from the engine's own Easy pass, easyMode.ts easyStage, which widens a ledge by its jump; the mixer widening
   // them too doubled it and pushed medium pieces into long, which broke the gate's "something new". Measured after that pass)
-  const wScale = 1;
-  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, dial: d, mushrooms: 0, glints: [], recent: [], padSet: new Set(), creakyTaught: false };
+  // (the designer's pacing ruling A, 11-05: a calmer Easy, its landings about 300 px on its own size bands, Normal's times EASY_BS. The
+  // fixed pieces (canopy hosts and ends) scale with it; the boughs over them do not: the high road is the optional one)
+  const wScale = easy ? EASY_BS : 1;
+  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, bs: easy ? EASY_BS : 1, dial: d, mushrooms: 0, glints: [], recent: [], padSet: new Set(), creakyTaught: false };
   // (the highest rise the gate allows: the largest step up a plain jump makes across a real gap, measured with the gate itself)
   let maxRise = 0;
   for (let dy = 10; dy <= 200; dy += 5) if (gateGap(L, 800, { y: 800 - dy, height: 24, type: 'solid' }, dy) >= MIN_GAP + 10) maxRise = dy;
@@ -672,6 +698,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       const one = n.job === 'rest' || n.job === 'cool down' || n.job === 'warm-up';
       const off = new Set([...(rolled[i - 1] ?? []), ...(n.not !== undefined ? rolled[n.not - 1] ?? [] : []), ...(n.notLast ? rolled.slice(Math.max(0, i - n.notLast), i).flat() : [])]);
       // (the difficulty dial's bursts per node: 2 at d = 0, 3 at d = 1, ENGINE-SPEC "The difficulty dial")
+      // (Easy lays one fewer, the designer's pacing ruling A, so its wider landings hold the length)
       const bursts = one ? 1 : Math.round(2 + L.dial);
       const laid: Idea[] = [];
       let last = lastIdea;
@@ -702,6 +729,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
         // (and between a node's bursts, so no Easy run goes 20 s without a 2 s rest)
         if (L.easy && k > 0) c = breather(L, c, R);
         c = over ? canopied(L, pick, c, R) : idea(L, pick, c, R);
+        c = normalPad(L, c, R);
         L.explain.push({ node: i + 1, nid: nid(i), job: n.job, idea: pick, ...(over ? { canopy: true } : {}), x0: bx, x1: c.x, why: `burst ${k + 1} of ${bursts}${over ? ', a canopy over it' : ''}` });
         laid.push(pick);
         last = pick;
@@ -730,7 +758,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       // (each road lays two bursts, its deck's two ideas in turn, so the fork is a real stretch of the stage: the plan's 15-20% each)
       lastIdea = lo2;
       // (on Easy a breather between each road's two bursts, as between a node's)
-      const gap = (e: Cursor) => (L.easy ? breather(L, e, R) : e);
+      const gap = (e: Cursor) => (L.easy ? breather(L, e, R) : normalPad(L, e, R));
       const hiEnd = idea(L, hi2, gap(idea(L, hi, { x: forkBank.x + forkBank.width, y: hy }, R)), R);
       // (the low road starts under the gap off the fork bank's end, so running off that end drops him onto it)
       const lowStart = { x: forkBank.x + forkBank.width - 90, y: ly };
