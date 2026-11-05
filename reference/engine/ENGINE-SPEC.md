@@ -2674,3 +2674,29 @@ at n7 (1-1's at n9).
      new pair is ever let in.
 4. **The fix for today's 1-1/1-5 fail is the same work as the 4:00 diversity ruling.** It's ruled from the planner's measured
    breakdown, never by weakening looksAlike.
+
+## 1-1's taste lines re-based: research target, old-1-1 floor, Matt's own words (designer, 11-05 3:37 PM ET; Matt, 3:37 PM: "It doesn't really make sense to use what I liked. I just said, this is an okay one.")
+
+**This replaces the 1:14 rule** that 1-1's taste lines are old 1-1's medians. Old 1-1 is now only the **floor**: a new stage is never
+worse than what ships. The **target** comes from shipped games where a measured number exists. **Matt's play of 1-1 is the judge.**
+The hard rules are unchanged: nothing costs a life, rocks never float, the 2:00 floor, era diversity ≥ 0.35, lookalike < 0.78, the
+20 s window < 0.30, and the neighbour rule.
+
+| Line | Target (research) | Source | Floor (old 1-1, "no worse") | Matt's own words |
+|---|---|---|---|---|
+| **Length (quick clock, Normal)** | **120-150 s**. A first stage's dev-set clock runs from Tropical Freeze 1-1's gold (1:50) to its bronze (2:30); the 2:00 floor clips the low end | PACING.md §2.2 (TF bronze, raw/mw_tf_Mangrove_Cove.md: "1:50.00 ... gold ... 2:30.00 for bronze"); DKCR W1 bronze 1:35-2:21 (raw/dkcr_w1_bronze.tsv) | none: "longer" isn't worse or better. Old 1-1 is 167 s | "stages take at least 2 minutes" (CLAUDE.md) |
+| Bough share (boughs + creaky) | **none found** | searched: GEMINI-PCG-RESEARCH, STAGE-RULES, PACING, MOVES, games.md, the five LEDGER files, MATT-RESEARCH-11-04 (terms: branch, route, float, platform share) | ≤ 25.3% | "last time it was 90% branches that were tied to trees" (the lead's 1-1 brief): 1-1 is ground-led |
+| Float share | **none found** (same search) | — | ≤ 25.3% | "I understand the floating logs... A platform needs platforms"; "Rocks can't float" (hard) |
+| Splits at 120 px / two-road share | **none found**. The research gives map shapes (high/low split, loop-back: LEDGER-11-04 part1:315-318) but no share | same search | ≥ 34 / ≥ 0.61 (medians) | "hills and other little areas to jump up on" (ES 592) |
+| Pickups in one view, upright / sideways | **none found** | same search | ≤ 4 / ≤ 7 | "too much junk... harder to understand" (11-05, on anchors) |
+| Standing kinds in one view | **none found**. The research's rule is spacing, not a count (GEMINI-PCG L61: "no two interactive mechanics of the same category closer than R_min"), with no value given | GEMINI-PCG-RESEARCH.md:61 | ≤ 4 | same as above |
+| Upright views with play in the upper half | **none found**. The research measures look-ahead time, not this share (LEDGER-ENGINE-GEMINI F61/E204: 1.2 s sideways, 0.45 s upright, "measure ours before believing it") | LEDGER-ENGINE-GEMINI.md:325, :668 | ≥ 0.980 | — |
+| "Something new" spacing | the research's target is a window rule, not a px spacing: no 30 s stretch with the same mix (LEDGER-ENGINE-GEMINI E1). It's held by the hard 20 s window gate | LEDGER-ENGINE-GEMINI.md:45, :465 | ≤ 572 px | "we just stopped the imagination... the new elements" (STAGE-RULES:15) |
+
+**What changes for 1-1 now:**
+1. **Length: Normal 120-150 s,** replacing 160-195, which was judgment ("20% under 1-5"). Easy stays ≥ 120 s.
+2. **Every other taste line has no shipped-game target** in the research we hold. It's a floor only, never an aim. Above the floor,
+   Matt's play decides.
+3. **A "none found" is not filled from 1-1.** If a line matters to Matt's play, the next research ask is for that one number.
+
+**The planner's 5 splits** fails the floor (≥ 34), whatever the target.
