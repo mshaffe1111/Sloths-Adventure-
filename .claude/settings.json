@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat \"$CLAUDE_PROJECT_DIR/reference/LAWS.md\" \"$CLAUDE_PROJECT_DIR/reference/LESSONS.md\" \"$CLAUDE_PROJECT_DIR/reference/PARTNER.md\" \"$CLAUDE_PROJECT_DIR/reference/LEADER-STANDARD-WORK.md\"; echo; echo \"NOTES: the lead reads reference/STATUS.md now. Every helper reads its own reference/notes/<your-name>.md now (create it in your first commit if it is missing; rules: reference/notes/README.md) and keeps it current at every report.\"; echo; echo \"LEAD: before any other work, read the latest day review and apply its fixes today:\"; ls -1 \"$CLAUDE_PROJECT_DIR/reference/daily/\"*.md 2>/dev/null | tail -1 | xargs -r cat"
+            "command": "cat \"$CLAUDE_PROJECT_DIR/reference/START-HERE.txt\" \"$CLAUDE_PROJECT_DIR/reference/LAWS.md\" \"$CLAUDE_PROJECT_DIR/reference/LESSONS.md\" \"$CLAUDE_PROJECT_DIR/reference/PARTNER.md\" \"$CLAUDE_PROJECT_DIR/reference/LEADER-STANDARD-WORK.md\"; echo; echo \"NOTES: the lead reads reference/notes/lead.md and reference/STATUS.md now. Every helper reads its own reference/notes/<your-name>.md now (create it in your first commit if it is missing; rules: reference/notes/README.md) and keeps it current at every report.\"; echo; echo \"LEAD: before any other work, read the latest day review and apply its fixes today:\"; ls -1 \"$CLAUDE_PROJECT_DIR/reference/daily/\"*.md 2>/dev/null | tail -1 | xargs -r cat"
           }
         ]
       }
