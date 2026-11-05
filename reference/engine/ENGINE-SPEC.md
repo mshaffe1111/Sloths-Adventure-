@@ -1386,7 +1386,7 @@ and checkSpec refuses anything off-theme.
 - It is done world by world, just before the engine first builds a stage of that world. World 1's 10 kinds are done. World 2 is
   next when its first stage is queued.
 
-### [designer, 11-05 ~9:59 AM ET] World 1 piece labels (Matt's priority: every piece labelled; the planner's sheet shows them before the mixer reads them)
+### [designer, 11-05 ~9:59 AM ET] World 1 piece labels (Matt's priority: every piece labelled; the planner's sheet shows them before the mixer reads them) **[superseded by reference/engine/LABELS.md; kept as history]**
 
 Labels per kind: element, footing, may float, **uses** (the jobs it does in a node), **teaches**, worlds, **stages** (where it is
 core, and where it is allowed). This table is for the planner's library at engine-mixer e7089072. A kind not listed here is not used.
@@ -2015,3 +2015,16 @@ walk-through stages (stageTime.ts MODEL_FAST, seeds 1-3).
 **Also marked:** ES 506's eventless walk (≤ 2.0 s / 3.0 s) and ES 752's Easy rests (2.0-2.5 s) are Gemini-only, with no primary
 source. They stay as estimates and are calibrated by the bots (TRIAGE C rows), never quoted as research. Piece counts per burst (ES
 390-391) have no source, so bursts are judged by time (5-20 s, Launchpad).
+
+### [designer, 11-05 ~11:56 AM ET] My backlog rows: lines re-set to measured references (engine-runs 74c0f6de, RUNS.md)
+
+| Row | New line | Source | Today |
+|---|---|---|---|
+| #102, #116 | 1-1's boughs + creaky ≤ the old 1-1's share, **25.3%**. Catch branches count as boughs, because they're seen as branches and the cap is about how the stage reads | MEASURED (old 1-1) | mixer 1-1 35.3% Normal, 27% of it catch branches → **MISS**. Fix in the W1 fixes: catch branches only under a teach's first gaps and the opening seconds, not under every gap |
+| #132 | **Core = the stage's commonest kinds.** Its core kinds are its top 3 by landing share, a rank rule, not a percent. The 50% and the "≥ old 1-1's 98.9%" are both withdrawn (the second fights the variety lines) | MATT ("core objects... use these the most") | W1 fixes print the rank |
+| #28 | Pickups in one view ≤ the old 1-1's max per orientation: **upright 4, sideways 7** (about 8 is withdrawn) | MEASURED (old 1-1; views at clipcheck's sizes inside the insets) | Easy upright 5 in 1-1 and 1-5 → **MISS**, W1 fixes |
+| #29 | Breakable or animal kinds in one view: **≤ 1**, as the references (old 1-1 0, today's 1-3 1); **≤ 2 only when the two are the stage's own mechanic pair** (critic ruling 4) | MEASURED (references) + the pair rule | 1-5's creaky + crumble pass as its pair. After the slab leaves W1, re-measure |
+| #30 | Standing kinds in one view ≤ **4**, the measured value in both references (old 1-1 4, today's 1-3 4). The spec's 3 is withdrawn (old 1-1 itself fails it) | MEASURED | mixer 1-1 5, 1-5 6-7 → **MISS**, W1 fixes |
+| #81 | Upright views with play in the upper half ≥ the old 1-1's **98.0%** | MEASURED | mixer 1-1 93.8%, 1-5 96.1% → **MISS**, W1 fixes |
+| #49 | Today's numbers for 1-5: splits **26** (26-27) Normal / **20** Easy; two-road **41.1%** (40.3-43.0) Normal / 26.7% Easy (74c0f6de). The 46-50% quoted from 8c8cd997 is stale | MEASURED | written |
+| #134-#141, #143 | The 9:59 AM World 1 label table (ES ~1395-1419) is **superseded by reference/engine/LABELS.md**, keyed to the measured inventory. The old rows stay only as history | designer | marked |
