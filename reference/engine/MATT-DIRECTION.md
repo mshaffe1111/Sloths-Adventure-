@@ -22,6 +22,14 @@ So today's pieces (logs, bridges, boughs, snap twigs, vines, stumps, rotten bran
 engine's library, look and feel included. The fault is the mix, not the pieces. The engine's first job is mixing them so no stage
 repeats.
 
+## 2026-11-05 ~12:23 AM ET (to the planner and the lead)
+- "same thing goes with enemies... once you introduce them, they can be anywhere": an enemy, once taught, may appear in any world
+  where it fits (World 5 aside), like the pieces.
+- "look at the library of art and see what we've created that's not been used. Because I'm afraid there's a lot." / "I know we've
+  made other enemies and other things that we've never touched, other platforms, other things, and I don't want anything missed."
+  The inventory: reference/engine/unused-art/IN-GAME-UNUSED.md (273 packed pieces nothing draws) and NEVER-PACKED.md (art never
+  packed, in progress).
+
 ## 2026-11-05 ~12:20 AM ET (to the planner)
 "intermix the different worlds if you have to with the arts... if you have other stages where putting logs into it makes sense, use
 it from world one. Make as much and take as much as we can out of what we have. The only one that really plays differently is world
