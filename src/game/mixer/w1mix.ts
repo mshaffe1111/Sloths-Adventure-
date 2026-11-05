@@ -39,11 +39,13 @@ export function rngFor(seed: number, salt: string): Rng {
 
 export type Idea =
   | 'bank hops' | 'stump hop' | 'snap teach' | 'snap dash' | 'bounce up' | 'the climb' | 'crumbling ledge' | 'creaky boughs'
-  | 'lily-pad hop' | 'reed isles' | 'bank walk' | 'rotten-branch drop' | 'push block' | 'bough stair' | 'bridge span' | 'canopy over floor';
+  | 'lily-pad hop' | 'reed isles' | 'bank walk' | 'rotten-branch drop' | 'push block' | 'bough stair' | 'bridge span';
+/** the floor ideas a canopy is laid over (the designer's ruling 1 on the CP3 miss: "boughs run above bank hops, stump hops or the creek") */
+export const FLOOR: readonly Idea[] = ['bank hops', 'stump hop', 'lily-pad hop'];
 export interface Fork { high: Idea[]; low: Idea[] }
-export interface NodePlan { job: string; deck: Idea[] | Fork; not?: number; hint?: string; padHint?: string; flagBefore?: boolean; heartAfter?: boolean; seed?: boolean }
+export interface NodePlan { job: string; deck: Idea[] | Fork; not?: number; notLast?: number; hint?: string; padHint?: string; flagBefore?: boolean; heartAfter?: boolean; seed?: boolean }
 
-/** CP3's 1-5 plan, row by row (ENGINE-SPEC "CP3 design"); `not`: never the idea node `not` rolled */
+/** CP3's 1-5 plan, row by row (ENGINE-SPEC "CP3 design"); `not`: never the idea node `not` rolled; `notLast`: never one the last n nodes laid */
 export const PLAN_15: NodePlan[] = [
   { job: 'warm-up', deck: ['bank hops', 'stump hop'] },
   { job: 'teach creaky', deck: ['snap teach'], hint: 'Creaky branches! Grab the petals and keep moving' },
@@ -52,7 +54,8 @@ export const PLAN_15: NodePlan[] = [
   { job: 'rest', deck: ['bank walk'], hint: 'These petals are fresher. She came this way not long ago.', flagBefore: false },
   { job: 'test creaky', deck: ['snap dash'], flagBefore: true, heartAfter: true },
   { job: 'twist', deck: ['rotten-branch drop'] },
-  { job: 'creek', deck: ['lily-pad hop', 'reed isles', 'stump hop'], not: 4 },
+  // (the designer's ruling 6 on the CP3 miss: n8 draws one that the previous two nodes did not lay)
+  { job: 'creek', deck: ['lily-pad hop', 'reed isles', 'stump hop', 'crumbling ledge'], notLast: 2 },
   // (push block leaves n9 for CP3, the designer's ruling: the level check walks a pushed log only inside a puzzle room; back in CP4)
   { job: 'puzzle beat', deck: ['bough stair', 'the climb'], not: 3, seed: true, hint: 'Something shiny, far away...', padHint: 'Something shiny, far away... too far, for now.' },
   { job: 'master (fork)', deck: { high: ['crumbling ledge', 'bridge span'], low: ['bough stair', 'bank hops'] }, flagBefore: true, heartAfter: true },
@@ -62,6 +65,10 @@ export const PLAN_15: NodePlan[] = [
 interface Lay {
   /** the difficulty dial's gap, as a share of the gate's widest (ENGINE-SPEC "The difficulty dial") */
   gapShare: number;
+  /** the dial's rise cap: its share of the highest rise the gate allows (px) */
+  riseCap: number;
+  /** the dial's landing width: Easy's typical landing over Normal's (260 -> 150 against 220 -> 110 px) */
+  wScale: number;
   /** the dial's d for this stage (0 at 1-1, 1 at 10-9) */
   dial: number;
   P: Platform[];
@@ -70,7 +77,7 @@ interface Lay {
   hints: StageHint[];
   flags: Array<{ x: number; y: number }>;
   marks: Array<{ x: number; y: number }>;
-  explain: Array<{ node: number; job: string; idea: string; road?: 'high' | 'low'; x0: number; x1: number; why: string }>;
+  explain: Array<{ node: number; job: string; idea: string; road?: 'high' | 'low'; canopy?: boolean; x0: number; x1: number; why: string }>;
   pid: number;
   cid: number;
   easy: boolean;
@@ -139,18 +146,20 @@ function petalsOver(L: Lay, from: number) {
   }
 }
 
-/** the middle-most of these pieces with nothing over it for 140 px (a mark on it is never inside a piece above) */
+/** the middle-most of these pieces with nothing over it for 110 px (a mark on it is never inside a piece above), on the walking road:
+ *  never a canopy's bough or perch, which only a bounce reaches (a first-timer on the floor met a sealed door, cp3-ft after the rebuild) */
 function clearPiece(L: Lay, ps: Platform[]): Platform | undefined {
-  const mid = ps.length >> 1;
-  const order = ps.map((p, i) => [Math.abs(i - mid), p] as const).sort((a, b) => a[0] - b[0]).map(([, p]) => p);
-  return order.find((p) => p.type !== 'bouncy' && !L.P.some((q) => q !== p && q.x < p.x + p.width / 2 + 40 && q.x + q.width > p.x + p.width / 2 - 40 && q.y < p.y && p.y - q.y < 140));
+  const road = ps.filter((p) => !(p as { bough?: boolean }).bough && !(p as { perch?: boolean }).perch);
+  const mid = road.length >> 1;
+  const order = road.map((p, i) => [Math.abs(i - mid), p] as const).sort((a, b) => a[0] - b[0]).map(([, p]) => p);
+  return order.find((p) => p.type !== 'bouncy' && !L.P.some((q) => q !== p && q.x < p.x + p.width / 2 + 40 && q.x + q.width > p.x + p.width / 2 - 40 && q.y < p.y && p.y - q.y < 110));
 }
 
 /** each piece kind's widths by size band (short under 150 px, medium 150-300, long over 300), inside the shipped p10-p90 (cp2/library.txt)
  *  and CP2's proven sizes */
 const BANDS: Record<string, Array<[number, number]>> = {
   bank: [[110, 148], [160, 290], [310, 360]], stone: [[60, 140], [160, 233]], log: [[180, 290], [310, 420]], branch: [[110, 148], [160, 290]],
-  bridge: [[112, 148], [160, 300]], creaky: [[110, 148], [150, 170]], crumble: [[110, 110]], lily: [[82, 102]], reed: [[120, 140]],
+  bridge: [[112, 148], [160, 300]], creaky: [[110, 148], [150, 170]], crumble: [[110, 110]], lily: [[82, 102]], reed: [[150, 190]],
 };
 const HEIGHT: Record<string, number> = { bank: 120, stone: 40, log: 90 };
 /** a landing steps up or down (the designer's (c): at least 4 of 5 landings do) */
@@ -178,7 +187,10 @@ function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: num
       if (y - d < band.yMin || y - d > band.yMax) d = Math.sign(-d) * (FLAT + 10);
       if (y - d < band.yMin || y - d > band.yMax) d = 0;
     }
-    const f = easyFit(L, d, width ?? Math.round(R.r(bnd[0], bnd[1])), 999);
+    // (the dial's rise cap, and its landing widths: Easy's are wider by the dial's ratio, up to the top of the piece's own size band, so
+    // a short piece stays short and the gate's kind x size variety holds; never under 90 px)
+    if (d > L.riseCap) d = L.riseCap;
+    const f = easyFit(L, d, width ?? Math.max(90, Math.round(Math.min(Math.max(bnd[1], bnd[0] * L.wScale), R.r(bnd[0], bnd[1]) * L.wScale))), 999);
     const h = HEIGHT[k] ?? 24, type = k === 'creaky' || k === 'crumble' ? 'fragile' : 'solid';
     let max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy);
     while (max < MIN_GAP + 10 && f.dy > 0) { f.dy -= 10; max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy); }
@@ -201,7 +213,8 @@ function step(L: Lay, c: Cursor, R: Rng, k: string, w: number): Platform {
 
 /** one idea's burst, laid from the cursor; returns the way's end */
 function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
-  const n = R.i(4, 6);
+  // (a burst is 4-6 pieces, the designer's (a); 1-5 sits at 4-5 for its 2:30-3:00 aim, ENGINE-SPEC "Stage length")
+  const n = R.i(4, 5);
   switch (name) {
     case 'bank hops': return burst(L, c, R, R.pick([['bank', 'stone', 'log'], ['log', 'bank'], ['stone', 'bank', 'log']]), n);
     case 'stump hop': return burst(L, c, R, ['stone', 'bank'], n, [40, -40, -70, 30, -30]);
@@ -257,39 +270,76 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     case 'push block': throw new Error('push block is out of 1-5 for CP3 (the designer\'s ruling)');
     case 'bough stair':
       // (CP2, with Easy's rule: Normal steps +50 to +70; Easy +30 to +40, gaps 80 or less: easyFit and the gate cap them)
-      return burst(L, c, R, ['branch', 'log'], n, L.easy ? [30, 40] : [50, 60, 70]);
+      // (with a bridge as its third kind, for the gate's "something new": branch and log alone, two sizes each, repeat inside 5 pieces)
+      return burst(L, c, R, ['branch', 'log', 'bridge'], n, L.easy ? [30, 40] : [50, 60, 70]);
     case 'bridge span': return burst(L, c, R, ['bridge', 'branch'], n, [30, -30, 40, -40]);
-    case 'canopy over floor': {
-      // (the designer's rulings (b), CP3 and 11-05 1:11 AM: the old 1-1's canopy over the floor in short stretches, not one long one.
-      // Each stretch: a mushroom on a bank bounces him up into 2-3 boughs 170-200 px up (the old 1-1's highRoad heights), in the
-      // stretch's own height band; under them the low route is one long walk on a log, with no jump to meet a bough over his head; past
-      // the boughs both come down onto the same ground, and a hop or two on the floor leads to the next stretch)
-      let e = c;
-      const stretches = 3;
-      for (let s = 0; s < stretches; s++) {
-        // (the pad steps up or down from the floor before it, as every landing does)
-        // (each stretch differs in its sizes and its floor, so the three never read as one piece three times: the gate's "something new")
-        burst(L, e, R, ['bank'], 1, STEPS, undefined, s === 1 ? 260 : 300);
-        const pad = L.P[L.P.length - 1];
-        e = { x: e.x, y: pad.y };
-        plat(L, 'mushroom', pad.x + 170, e.y - 30, 70);
-        const by = e.y - Math.round(R.r(170, 200));
-        // (the boughs stay 140-200 px over the floor: a jump off a bough (about 180 px up with the double) down to the floor must fall
-        // less than the long fall that hurts (engine.ts LONG_FALL, 400 px), since the floor is the low route, not a miss)
-        const save = band;
-        band = { yMin: e.y - 200, yMax: e.y - 140 };
-        // (the first bough starts 210 px along the pad, clear of the mushroom's bounce, as the old 1-1's highRoad and "bounce up" lay it)
-        const b0 = plat(L, s === 1 ? 'bridge' : 'branch', pad.x + 210, by, Math.round(s === 1 ? R.r(124, 148) : R.r(160, 240)));
-        const hiEnd = burst(L, { x: b0.x + b0.width, y: by }, R, [['bridge', 'branch'], ['branch', 'bridge'], ['bridge']][s % 3], R.i(1, 2), [30, -30]);
-        band = save;
-        // (the floor runs 220 px on past the last bough, so stepping off the boughs' end is a plain drop onto wide ground in view: a
-        // first-timer stood 8-20 s at a 60 px lip, cp3-ft stuck spots)
-        const log = plat(L, (['log', 'bank', 'stone'] as const)[s % 3], pad.x + pad.width, e.y, Math.max(300, hiEnd.x - (pad.x + pad.width) + 220));
-        e = burst(L, { x: log.x + log.width, y: e.y }, R, s === stretches - 1 ? ['stone', 'bank'] : R.pick([['stone'], ['stone', 'bank']]), s === stretches - 1 ? R.i(2, 3) : R.i(1, 2));
-      }
-      return e;
-    }
   }
+}
+
+
+/** each floor idea's kinds, and the wide kind that holds a canopy's mushroom */
+const FLOOR_KINDS: Record<string, { host: string; kinds: string[][] }> = {
+  // (the long piece each stretch ends on, turning stretch by stretch so no two stretches repeat it: the gate's "something new")
+  'bank hops': { host: 'bank', kinds: [['log'], ['stone'], ['bank']] },
+  'stump hop': { host: 'bank', kinds: [['stone'], ['log'], ['stone']] },
+  'lily-pad hop': { host: 'log', kinds: [['lily']] },
+};
+
+/**
+ * A floor idea with a canopy over it (the designer's rulings 1 and 4 on the CP3 miss): the floor idea's own pieces, in three short
+ * stretches; each starts on a wide host piece with a mushroom on a perch beside the lane, 46 px over the floor, so walking on passes
+ * under it and only a hop onto it bounces him up. The boughs run from just past the mushroom to 90 px into the stretch's last floor
+ * piece, a long one, so stepping or jumping off their end lands on floor:
+ *   - 135 px or more over the highest floor under them, so the two roads count as a split (120 px);
+ *   - no more than 215 px over the lowest, so a jump off a bough (about 180 px up) down to the floor falls less than LONG_FALL (400 px).
+ * The length counts for the floor idea; the canopy is its split.
+ */
+function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
+  const fk = FLOOR_KINDS[name];
+  let e = c;
+  const turn = R.i(0, 2);
+  for (let s = 0; s < 3; s++) {
+    // (the host is a medium piece, 240-290 px, never long like the stretch's end piece; it steps up 30-50 or down 70, and the floor after it steps down 30-40: the perch, 46 px over the host, then never sits
+    // within 20 px of a piece beside it, so no landing next to it is flat)
+    burst(L, e, R, [fk.host], 1, [30, 40, 50, -70], undefined, Math.min(290, Math.round(R.r(240, 280) * L.wScale)));
+    const host = L.P[L.P.length - 1];
+    const perch = plat(L, 'branch', host.x + 105, host.y - 46, 80);
+    (perch as Platform & { perch?: boolean }).perch = true;
+    plat(L, 'mushroom', host.x + 110, perch.y - 30, 70);
+    // (the floor stays within 40 px of the host's height under the canopy, so the boughs fit both limits)
+    const save = band;
+    band = { yMin: host.y, yMax: host.y + 40 };
+    // (the creek's stretch is a lily pad and a log after the host; the others one wide piece of their own kinds)
+    const from = L.P.length;
+    const ks = fk.kinds[(turn + s) % fk.kinds.length];
+    let end = burst(L, { x: host.x + host.width, y: host.y }, R, [ks[0]], 1, [-30, -40], undefined, ks[0] === 'lily' ? undefined : Math.round(R.r(330, 380) * L.wScale));
+    if (ks[0] === 'lily') end = burst(L, end, R, ['log'], 1, [-30, -40], undefined, Math.round(R.r(330, 380) * L.wScale));
+    const floor = L.P.slice(from).concat(host);
+    const hi = Math.min(...floor.map((q) => q.y)), lo = Math.max(...floor.map((q) => q.y));
+    band = { yMin: lo - 215, yMax: hi - 135 };
+    const last = L.P[L.P.length - 1];
+    // (the boughs end 90 px into the stretch's last floor piece, a long one: a running jump off their end carries about 240 px, and
+    // lands on that floor, never in the gap past it (cp3-ft: the adult's pit lives after the first rebuild))
+    const xEnd = last.x + 90;
+    const by = Math.round(Math.max(band.yMin, Math.min(band.yMax, hi - R.r(150, 175))));
+    // (boughs at the dial's typical landing, 170-240 px; not widened on Easy, where the high road is the optional one and wider boughs
+    // all fell in one size band, which broke the gate's "something new")
+    const bw = () => Math.round(R.r(170, 240));
+    const b0 = plat(L, s === 1 ? 'bridge' : 'branch', host.x + 160, by, bw());
+    let bc: Cursor = { x: b0.x + b0.width, y: by };
+    // (the boughs step between the band's top and bottom, 50 px or more apart, so no two sit flat)
+    for (let guard = 0; guard < 6 && bc.x < xEnd - 140; guard++) {
+      const to = bc.y > (band.yMin + band.yMax) / 2 ? band.yMin : band.yMax;
+      bc = burst(L, bc, R, [s === 1 ? 'branch' : 'bridge'], 1, [bc.y - to], undefined, bw());
+    }
+    // (the last bough ends over the floor: trimmed back to 90 px into it, never under 100 px)
+    for (const q of L.P.slice(L.P.indexOf(b0))) (q as Platform & { bough?: boolean }).bough = true;
+    const lb = L.P[L.P.length - 1];
+    if (lb.x + lb.width > xEnd) lb.width = Math.max(100, Math.round(xEnd - lb.x));
+    band = save;
+    e = end;
+  }
+  return e;
 }
 
 /**
@@ -300,7 +350,15 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   // (the difficulty dial, ENGINE-SPEC: d from the world and stage; the gap is this share of the gate's widest)
   const d = (0.1 * (config.worldIndex - 1) + 0.2 * (config.miniIndex - 1) / 8) / 1.1;
   const gapShare = easy ? 0.45 + 0.35 * d : 0.55 + 0.37 * d;
-  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, dial: d };
+  const riseShare = easy ? 0.4 + 0.4 * d : 0.5 + 0.45 * d;
+  // (Easy's wider landings come from the engine's own Easy pass, easyMode.ts easyStage, which widens a ledge by its jump; the mixer widening
+  // them too doubled it and pushed medium pieces into long, which broke the gate's "something new". Measured after that pass)
+  const wScale = 1;
+  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, dial: d };
+  // (the highest rise the gate allows: the largest step up a plain jump makes across a real gap, measured with the gate itself)
+  let maxRise = 0;
+  for (let dy = 10; dy <= 200; dy += 5) if (gateGap(L, 800, { y: 800 - dy, height: 24, type: 'solid' }, dy) >= MIN_GAP + 10) maxRise = dy;
+  L.riseCap = Math.max(30, Math.round(maxRise * riseShare));
   /** what each node rolled (a fork: both roads' ideas), so a later node can be held off it */
   const rolled: Array<string[]> = [];
   let lastIdea: Idea | undefined;
@@ -317,32 +375,32 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     if (n.flagBefore) {
       // (a medium log, not another bank beside the banks around it: the gate's "something new")
       const pad = step(L, c, R, 'log', 280);
-      L.flags.push({ x: pad.x + 120, y: pad.y });
       c = { x: pad.x + pad.width, y: pad.y };
     }
     if (n.hint) L.hints.push({ x: c.x + 60, text: n.hint, pad: n.padHint ?? n.hint, keys: n.padHint ?? n.hint, ...(c.y >= 600 ? { belowY: c.y - 60 } : { aboveY: c.y + 60 }) } as StageHint);
     const from = L.P.length;
     if (Array.isArray(n.deck)) {
-      // (the designer's ruling (a), CP3: a node lays 2-3 bursts from its deck, alternating ideas, never the same idea twice in a row;
-      // a node with one idea alternates it with "canopy over floor"; the teach alternates with bank hops; rest and cool down lay one)
-      const one = n.job === 'rest' || n.job === 'cool down';
-      const pool: Idea[] = n.job.startsWith('teach') ? [...n.deck, 'bank hops'] : n.deck.length > 1 ? [...n.deck, 'canopy over floor'] : [...n.deck, 'canopy over floor'];
-      const off = new Set([...(rolled[i - 1] ?? []), ...(n.not !== undefined ? rolled[n.not - 1] ?? [] : [])]);
+      // (the designer's ruling (a), CP3: a node lays its bursts from its deck, never the same idea twice in a row; the dial sets how
+      // many. The first is the node's own idea; the rest are floor ideas with a canopy over them (ruling 1 on the CP3 miss), or the
+      // teach's bank hops. Rest lays one; so do the warm-up and the cool down, under a canopy)
+      // (the warm-up lays one too, so the first hard node starts inside LV-9's first 4,000 px and the stage's second flag stands before
+      // it, never on the warm-up's easy ground: placement rule 3, the designer's ruling 3 on the CP3 miss. For the designer to confirm)
+      const one = n.job === 'rest' || n.job === 'cool down' || n.job === 'warm-up';
+      const off = new Set([...(rolled[i - 1] ?? []), ...(n.not !== undefined ? rolled[n.not - 1] ?? [] : []), ...(n.notLast ? rolled.slice(Math.max(0, i - n.notLast), i).flat() : [])]);
       // (the difficulty dial's bursts per node: 2 at d = 0, 3 at d = 1, ENGINE-SPEC "The difficulty dial")
       const bursts = one ? 1 : Math.round(2 + L.dial);
       const laid: Idea[] = [];
       let last = lastIdea;
-      // (the node's own idea comes first: its job is what it teaches or tests)
       for (let k = 0; k < bursts; k++) {
         const own = n.deck.filter((d) => d !== last && !off.has(d));
-        // (the designer's ruling, 11-05 1:11 AM: canopy over floor recurs with the other bursts, never twice in a row; it is each node's
-        // second burst wherever the pool has it)
-        const canopy: Idea[] = k === 1 && last !== 'canopy over floor' && pool.includes('canopy over floor') ? ['canopy over floor'] : [];
-        const cand = k === 0 && own.length ? own : canopy.length ? canopy : pool.filter((d) => d !== last && !(k === 0 && off.has(d)) && !laid.includes(d));
-        const pick = R.pick(cand.length ? cand : pool.filter((d) => d !== last));
+        const floors = FLOOR.filter((d) => d !== last && !laid.includes(d) && !off.has(d));
+        const cand: Idea[] = k === 0 ? (own.length ? own : n.deck.filter((d) => d !== last)) : n.job.startsWith('teach') ? ['bank hops'] : floors.length ? floors : FLOOR.filter((d) => d !== last);
+        const pick = R.pick(cand.length ? cand : n.deck);
         const bx = c.x;
-        c = idea(L, pick, c, R);
-        L.explain.push({ node: i + 1, job: n.job, idea: pick, x0: bx, x1: c.x, why: `burst ${k + 1} of ${bursts} from [${pool.join(', ')}]` });
+        // (a floor idea outside a fork and the rest carries a canopy)
+        const over = FLOOR.includes(pick) && n.job !== 'rest';
+        c = over ? canopied(L, pick, c, R) : idea(L, pick, c, R);
+        L.explain.push({ node: i + 1, job: n.job, idea: pick, ...(over ? { canopy: true } : {}), x0: bx, x1: c.x, why: `burst ${k + 1} of ${bursts}${over ? ', a canopy over it' : ''}` });
         laid.push(pick);
         last = pick;
       }
@@ -363,15 +421,16 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       // the low road no higher than 60 px over its start)
       // (head room: the high road never comes down toward the low one and the low one never rises toward it, so the roads stay 260 px
       // or more apart: a jump on the low road (100 px up, his body 116 tall) never meets the high road over it)
-      const hy = forkBank.y, ly = hy + 260;
-      band = { yMin: Math.max(LIMIT.yMin, hy - 160), yMax: hy };
+      // (Easy, the designer's ruling 5 on the CP3 miss: the roads sit within 400 px of each other, so a slip costs nothing there)
+      const hy = forkBank.y, ly = hy + (L.easy ? 240 : 260);
+      band = { yMin: Math.max(LIMIT.yMin, hy - (L.easy ? 60 : 160)), yMax: hy };
       const forkFrom = L.P.length;
       // (each road lays two bursts, its deck's two ideas in turn, so the fork is a real stretch of the stage: the plan's 15-20% each)
       lastIdea = lo2;
       const hiEnd = idea(L, hi2, idea(L, hi, { x: forkBank.x + forkBank.width, y: hy }, R), R);
       // (the low road starts under the gap off the fork bank's end, so running off that end drops him onto it)
       const lowStart = { x: forkBank.x + forkBank.width - 90, y: ly };
-      band = { yMin: ly, yMax: ly + 160 };
+      band = { yMin: ly, yMax: ly + (L.easy ? 60 : 160) };
       const lowFrom = L.P.length;
       const loEnd = idea(L, lo2, idea(L, lo, lowStart, R), R);
       band = { ...LIMIT };
@@ -405,6 +464,34 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   if (find) L.C.push({ id: L.cid++, type: 'find', findId: find.id, hidden: false, x: end.x + 200, y: end.y - 26, collected: false, bobPhase: 0 } as Collectible);
   L.C.push({ id: L.cid++, type: 'exit_totem', x: exit.x, y: exit.y - 30, collected: false, bobPhase: 0 } as Collectible);
   L.V.forEach((v, k) => (v.id = k + 1));
+  // (the flags, the designer's ruling 3 on the CP3 miss: LV-9's spacing (easyMode.ts FLAG_SPAN_MAX, 4,000 px from the spawn to the exit)
+  // holds, and inside each 4,000 px window the flag stands on the nearest safe spot before the next hard node; with no hard node in a
+  // window, LV-9 still puts one at the window's far end. A safe spot: a solid piece 200 px or wider, nothing over it, on no fork road)
+  const hardSpans = PLAN_15.flatMap((n, i) => {
+    if (['warm-up', 'rest', 'cool down'].includes(n.job)) return [];
+    const es = L.explain.filter((e) => e.node === i + 1);
+    return [[Math.min(...es.map((e) => e.x0)), Math.max(...es.map((e) => e.x1))] as [number, number]];
+  }).sort((a, b) => a[0] - b[0]);
+  const roads = L.explain.filter((e) => e.road);
+  const onRoad = (x: number) => roads.some((e) => x > e.x0 - 60 && x < e.x1 + 60);
+  const covered = (p: Platform, x: number) => L.P.some((q) => q !== p && q.type !== 'bouncy' && q.x < x + 40 && q.x + q.width > x - 40 && q.y < p.y && p.y - q.y < 160);
+  // (every 40 px along a piece, 60 px in from its ends: a long bank with twigs over its middle still has room before them)
+  const spots = L.P.filter((p) => p.type === 'solid' && p.width >= 200 && !(p as { catch?: boolean }).catch)
+    .flatMap((p) => Array.from({ length: Math.floor((p.width - 120) / 40) + 1 }, (_, k) => p.x + 60 + 40 * k).filter((x) => !covered(p, x) && !onRoad(x)).map((x) => ({ x: Math.round(x), y: p.y })))
+    .sort((a, b) => a.x - b.x);
+  const SPAN = 3900;
+  for (let lastX = 100, guard = 0; exit.x - lastX > SPAN && guard < 40; guard++) {
+    const win = spots.filter((q) => q.x > lastX + 400 && q.x <= lastX + SPAN);
+    if (!win.length) break;
+    // (the hard node the last flag stands before, or in, is its own; the next flag goes before the hard node after that one, so hard
+    // ground always lies between two flags)
+    const own = hardSpans.findIndex(([, x1]) => x1 > lastX);
+    const h = own >= 0 ? hardSpans.slice(own).find(([x0]) => x0 > Math.max(lastX, hardSpans[own][0]) + 50)?.[0] : undefined;
+    const before = h !== undefined && h <= lastX + SPAN ? win.filter((q) => q.x < h) : [];
+    const pick = before.length ? before[before.length - 1] : win[win.length - 1];
+    L.flags.push(pick);
+    lastX = pick.x;
+  }
   // (nothing hurts in the first seconds (STAGE-RULES §2 "Opening seconds"), as w1Rhythm.ts rhythmStage lays it: a catch branch 60 px
   // under the lower lip of every gap met in the first 6.5 s at a run, ending against a stone face under the far ledge, so a short jump
   // drops onto it and a hop goes back up)
