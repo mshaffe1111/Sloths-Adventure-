@@ -14,6 +14,7 @@
  * Coordinates: x right, y down (the game's), feet on a platform's top.
  */
 import type { Collectible, LevelConfig, Platform, Vine } from '../types.ts';
+import { IDEAS } from './library.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import { fixPickups } from '../flowerReach.ts';
@@ -97,13 +98,14 @@ export const PLAN_11: NodePlan[] = [
   { job: 'teach run', deck: ['floor walk'], one: true, ground: true, band: [1180, 1320] },
   // (1-1's profile, the designer, 11-05: branching moderate, ground forks early and canopy forks late; hilly ground rising to the canopy;
   // a calm march, quicker only at n9. The ground teaches lay 3 bursts each, for the length a canopy gave 1-5)
-  { job: 'teach jump', deck: ['bank hops', 'stump hop', 'lily-pad hop'], hint: 'Jump the little gaps', safe: true, ground: true, bursts: 3, band: [1150, 1320] },
+  { job: 'teach jump', deck: ['bank hops', 'stump hop', 'log jam'], hint: 'Jump the little gaps', safe: true, ground: true, bursts: 3, band: [1150, 1320] },
   // (the first of the early ground forks: logs on stumps over the stump hops and banks)
   { job: 'practise (fork)', deck: { high: ['stump tops', 'log jam'], low: ['stump hop', 'bank hops'] }, hint: 'Up the bank! Step to step', ground: true, band: [1100, 1300] },
   // (the bounce lifts him onto a mound top, not a bough)
   { job: 'teach bounce', deck: ['bounce mound', 'stump hop', 'bank hops'], ground: true, bursts: 3, band: [1000, 1250] },
   // (a ground fork: the high road on stump tops and a log jam, the low road on the floor and the creek)
-  { job: 'the fork', deck: { high: ['stump tops', 'log jam'], low: ['bank hops', 'lily-pad hop'] }, ground: true, band: [950, 1150] },
+  // (its low road is the creek's once the engine draws a water zone: lily pads then, stump hop until then (the designer's element gate, 11-05))
+  { job: 'the fork', deck: { high: ['stump tops', 'log jam'], low: ['bank hops', 'stump hop'] }, ground: true, band: [950, 1150] },
   { job: 'rest', deck: ['bank walk'], flagBefore: false, ground: true, band: [950, 1150] },
   { job: 'teach double', deck: ['double gap', 'bank hops', 'stump hop'], hint: 'Flick up again in the air to jump twice', padHint: 'Press Jump again in the air', safe: true, ground: true, bursts: 3, band: [900, 1100] },
   // (n8 on, the trees: bough stair or a bounce up into the boughs; the kapok climb is 1-4's)
@@ -942,6 +944,8 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
       const bare = easy && !easyKeep.has(i);
       const bursts = one || bare ? 1 : n.bursts ?? Math.round(2 + L.dial);
       const laid: Idea[] = [];
+      // (the move a teach node teaches: its job's last word, "teach double" -> double)
+      const taught = n.job.startsWith('teach ') ? n.job.slice(6) : undefined;
       let last = lastIdea;
       for (let k = 0; k < bursts; k++) {
         // (the designer's review C: a node draws only from its own deck; the teach pairs with bank hops (ruling (a)). A node whose deck has
@@ -952,7 +956,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
         const ownIdeas = n.deck.filter((d) => !FLOOR.includes(d));
         let cand: Idea[];
         // (a teach's second burst: its deck's own floor idea, not the one just laid; bank hops where it has none (1-5's snap teach))
-        if (n.job.startsWith('teach')) { const fl = n.deck.filter((d) => FLOOR.includes(d) && d !== last && !laid.includes(d)); const own = n.deck.filter((d) => !FLOOR.includes(d) && ok(d)); cand = k === 0 ? (own.length ? own : n.deck.filter(ok)) : fl.length ? fl : k === 1 ? ['bank hops'] : []; }
+        if (n.job.startsWith('teach')) { const fl = n.deck.filter((d) => FLOOR.includes(d) && d !== last && !laid.includes(d)); const own = n.deck.filter((d) => IDEAS[d]?.teaches === taught); cand = k === 0 ? (own.length ? own : n.deck.filter(ok)) : fl.length ? fl : k === 1 ? ['bank hops'] : []; }
         else if (k === 0) {
           const own = (ownIdeas.length ? ownIdeas : n.deck).filter(ok);
           cand = own.length ? own : (ownIdeas.length ? ownIdeas : n.deck).filter((d) => d !== last);
@@ -978,8 +982,9 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
         last = pick;
       }
       // (a teach lays what it teaches: its own idea, when its deck has one (1-1's n7 once laid two floor bursts and no double gap))
-      const ownOf = n.deck.filter((d) => !FLOOR.includes(d));
-      if (n.job.startsWith('teach') && ownOf.length && !laid.some((d) => ownOf.includes(d))) throw new Error(`${S.id} n${i + 1} (${n.job}) laid no idea of its own`);
+      // (what it teaches is the library's word: the deck's idea that teaches the job's move, "teach jump" -> bank hops)
+      const ownOf = n.deck.filter((d) => IDEAS[d]?.teaches === taught);
+      if (n.job.startsWith('teach') && ownOf.length && !laid.some((d) => ownOf.includes(d))) throw new Error(`${S.id} n${i + 1} (${n.job}) laid no idea that teaches ${taught}`);
       lastIdea = last;
       rolled[i] = laid;
     } else {
