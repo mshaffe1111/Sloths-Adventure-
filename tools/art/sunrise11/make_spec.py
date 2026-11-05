@@ -51,6 +51,15 @@ def specs(sha):
     (H / 'spec-M.json').write_text(json.dumps(mid, indent=1))
 
 
+def specs2(sha):
+    # round M2: starts.py's starts with open ground at both ends (all 8 of round M failed cut.py's join check)
+    mid = {'tag': 'sun11-M2', 'loras': {'style': LORA + [1.0]}, 'neg': MIDNEG,
+           'base': REPO.format(c=sha) + 'reference/prop-sheets/qa-notes/art-1-1-sunrise/starts/',
+           'items': [{'name': f'w1sun2-mid{k}-s{round(st * 100)}-{sd}', 'start': f'start-w1sun2-mid{k}.webp', 'prompt': MID,
+                      'strength': st, 'seed': sd, 'w': 2048, 'h': 1104} for k in 'EFG' for st in (0.68, 0.76) for sd in (7, 23)]}
+    (H / 'spec-M2.json').write_text(json.dumps(mid, indent=1))
+
+
 def hd(sha, names):
     style = ('slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark '
              'outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail')
@@ -69,6 +78,8 @@ if __name__ == '__main__':
     c = sys.argv[1]
     if c == 'specs':
         specs(sys.argv[2])
+    elif c == 'specs2':
+        specs2(sys.argv[2])
     elif c == 'hd':
         hd(sys.argv[2], sys.argv[3:])
     elif c == 'args':
