@@ -16,7 +16,11 @@ I did not read `reference/engine/SPEC-TRACE.md` before writing §1 and §2 (the 
   primary source, and audited two random samples of the readers' rows (24 rows: 21 held, 3 corrected). What I did **not** do in the
   time: open more primary sources beyond SMBF (A6 found two R2 claims not in the saved texts; in `reference/engine/critic-runs/readers/A6-notes.md`), re-run the
   planner's CP1 measures, or run era.ts beyond World 1.
-- **Cost:** no Hugging Face spend; TinyFish: one fetch of 2 pages.
+- **After the first report (10:51 AM ET, e0d2023b):** I read the lead's three queued messages (10:21, 10:27, 10:33 AM ET) and added §9
+  (a source for every guess; every stage-specific branch), two more runs (12, 13), one more primary source (Yacht Club), and re-checked
+  everything against engine-mixer da11cc4e and engine-spec e0f4f978. Finished 10:56 AM ET (`date`). Total wall time about 40 minutes;
+  the deadlines were 11:30 (interim) and 12:45 (final).
+- **Cost:** no Hugging Face spend; TinyFish: two fetches, 3 pages.
 
 ## Verdict first
 
@@ -53,7 +57,8 @@ important first; each has its evidence in the section named.
    speed.
 8. **Settle the 23 guesses before helpers build on them** (§2): above all the dial (every row an estimate; no snap twig in its crumble
    range; past the research's gap margin from about World 8), the 45 s replay against the research's 2 s, the neighbour rules (50% shared,
-   20% length) and the three different Easy landing widths.
+   20% length) and the three different Easy landing widths. §9a names the source that answers each one; §9b lists every stage-specific
+   branch that stops a stage being fixed through its data file alone (the lead's two additions).
 
 What is ready and should be kept: the placement rules (hearts after risk, flags before hard parts, clutter caps, petals on the route),
 the polish rules P-1 to P-13 and S-1 to S-9, the element and float rules with "rocks never float", the "a node that can't meet a line
@@ -488,6 +493,13 @@ All on engine-mixer 7d9ad9a9 (worktree, `bun install --frozen-lockfile`) unless 
     each worktree (67 s each): §3.4's table, raw in `reference/engine/critic-runs/era-compare.txt`.
 11. **Re-run on engine-mixer's new head da11cc4e** (moved during the review): run 6 gives the same 6 and 4 problems; spec-check OK x2;
     snapshot 64/64 unchanged. `spec.ts:14` Element and `:17` Move unchanged.
+12. **The stage-id gate against the core it guards.** `node tools/engine/critic/gatemiss.cjs` on da11cc4e → `quoted stage ids the gate
+    sees: 0`; two `throw` lines that name 1-5 pass it; `stage-named identifiers: 6` (output `critic-runs/gatemiss.txt`).
+13. **The split threshold swept.** `python3 tools/engine/critic/splitsweep.py <cp1 dumps>` (dumps made with
+    `reference/engine/cp1/cp1-dump.ts.txt` on main for the old 1-1 and on da11cc4e for the mixer's 1-1 and 1-5, 16 layouts x 2 settings):
+    old 1-1 at 120 px median 34 (14-51), the same as CP1's; table in §9a, raw in `critic-runs/splitsweep.txt`.
+14. **Primary source opened:** Yacht Club's Specter of Torment level-design deep dive 1/5, saved with URL and date at
+    `reference/research/critic-2026-11-05/yacht-club-specter-deep-dive-1.md`.
 
 ---
 
@@ -543,3 +555,54 @@ one to three files each, every one also reading the whole spec); one row per res
 3. *Gap found:* the research-ledger method has no step for "the summary we act on is not the saved text". GEMINI-VARIETY's water rules
    are a triage line of an unsaved paste, and the spec built a gate on it. Add to step 1: "a rule taken from a triage row names the saved
    primary text and line; if none is saved, the rule is OPEN until it is".
+
+---
+
+## 9. The lead's two additions (messages of 10:21 and 10:27 AM ET)
+
+### 9a. The source that should answer each guess or OPEN
+
+"Our run" = a tool we already have, named; "fetched" = I opened the primary source today and saved it in
+`reference/research/critic-2026-11-05/`. No row says "no source exists": for each I name one.
+
+| Spec | Guess or OPEN | The source that should answer it | Status |
+|---|---|---|---|
+| L37 | two roads ≥120 px apart count as a split | **Our run, done** (`tools/engine/critic/splitsweep.py`, output `critic-runs/splitsweep.txt`): sweeping 80/120/160/200 px. It reproduces CP1's old 1-1 exactly (median 34, 14-51 at 120 px), so the tool is right. The threshold decides outcomes: the mixer's 1-5 Easy reads 20 splits at 120 px but 15 at 160 px (its line is 19); its Normal drops 26 → 8 at 200 px; the old 1-1 drops 34 → 25 at 160 px. And every mixer 1-5 roll gives the same count (26 / 26 / 26), against the old 1-1's 14-51: little variety between rolls again (§3.4).
+The parked mixer 1-1 reads 4 (4-5) at 120 px against its own line of ≥10 (L1172). Settle 120 px by Matt's eye on the strip maps at 120 and 160 | answered by run: the number matters; pick by eye |
+| L41, L133 | neighbours share at most half | LEDGER-ENGINE-GEMINI E47/E127 (Jaccard ≤42% across stages, per SPEC-TRACE); LEDGER-2026-11-04-part2.md:175 (≤55% vs the last 7); SMBF "we keep track to avoid duplicates" (fetched) | research answers: tighter, and over 7 stages |
+| L242 | one idea up to ~40% | R1:39-48 (L2, L3); SMBF (fetched); Yacht Club "no gameplay concepts should overstay their welcome" (fetched) | research answers: lower |
+| L300 | replay ≤45 s | Gemini full text L165 via LEDGER-2026-11-02-full.md:144-149 ("respawn within two seconds", 1-2 hard groups between flags); STAGE-RULES §0b.8 (L61) | research answers: ~2 s from the hard part |
+| L424 | two-road ≥40% | our own CP1 run (old 1-1 61%); the designer must give the reason for 40% | OPEN by choice; the measured number is 61% |
+| L458 | creaky ≥15% | Yacht Club: each level is planned around "about 5 enemies and 5 objects" that interact (fetched); LEDGER-2026-11-02-full.md:24-31 (a stage's identity is its pair). Neither gives a share; the measure to run is the old 1-x stages' share of their own theme piece (CP1 tools, `measure2.py`) | OPEN: needs our run on the old stages |
+| L628-648 | the dial | R3-fun-by-math.md:42-44 (E[lives] per world), :601 (Glicko ratings), :615 (knob elasticities); GEMINI-PCG-RESEARCH.md:75-76 (0.82 / 0.65 gap caps), :100 (new world starts just below the last world's end); LEDGER-2026-11-04-part1.md:416 (15% margin); STAGE-RULES §0b.4 (snap twig 0.15 s, creak 0.6 s) | research answers each row except density and timed windows, which need R3's elasticity runs |
+| L646 | crumble 0.9 → 0.5 s | LEDGER-2026-11-02-full.md:286-287; GEMINI-VARIETY full L13 (via the ledger) | research answers |
+| L667, L471 | neighbours differ ≥20% in length; spread ≥2.5 min | **Yacht Club (fetched): "A consistent length means that every stage will take a similar amount of time ... it lets us reinforce or subvert that expectation later"**; SMBF builds length from a fixed count of chunks (fetched). Both say: consistent by units, varied on purpose. Matt: "it should vary the length of stages" (MATT-DIRECTION.md:46-47) | research and Matt differ: Matt wins on "vary", Yacht Club argues against a fixed 20% rule; put to Matt as one question |
+| L642, L468, L796 | three Easy landing widths | LEDGER-ENGINE-GEMINI E105 (154-308 px, per SPEC-TRACE); CP3's measured 221/218 px (cp3/CP3-REBUILD.md:53-57) | research and our run answer; pick one |
+| L700, L705, L911, L1057 | polish thresholds (120 px drop, 3 of 4 views, 3 trunks per 1,400 px) | our stills: the same stills review (`cp3/stills-v*`) at two values each, judged by the designer and the lead | OPEN: needs our stills |
+| L314-316 | ≤8 pickups, ≤2 hazard kinds, ≤3 standing kinds per view | the spec's own CP1 instruction ("set from the old 1-1", L320); LEDGER-2026-11-04-part2.md:277 (1-3 active enemies on screen) | OPEN: run CP1's sliding view on the old 1-1 |
+| L1215, L1363, L1380, L987 | element shares, float caps, core ≥50%, boughs+creaky ≤30% | LABELS.md says float caps come from "the E3 measurement" (e0f4f978 log); the rest: CP1 measures on the old stages per world | OPEN: needs the planner's per-world measure |
+| L1311-1321 | ladder amounts (touch/some/lots, echo 2, ≥1 in 3) | Yacht Club "on cooldown" and "no ... one-offs" (fetched); R1:68 (L5, Ubisoft's three-step teach); GEMINI-VARIETY full L105 ("return later without retraining"); our run: `tools/validate/mechtable.ts` uses per stage in the old W1-W4 | research gives the shape, not the numbers: OPEN for a run |
+| L1590-1596, L1618 | swim rules and the 20 s gate | the unsaved Gemini paste of 11-02 (LEDGER-2026-11-02-full.md:9-11: "kept in the lead session transcript"); the lead should export that transcript text into `reference/research/` | OPEN until the primary text is saved |
+| L1592 | swim speed | LEDGER-2026-11-04-part1.md:219 (C15, x1.8), :264; ROADMAP R-5.22 (Matt: "suddenly fast"); code `swim.ts:34-35` (150) | research and Matt agree against the code: Matt sets the number |
+
+### 9b. Can a stage be fixed only through its data file? (engine-mixer da11cc4e)
+
+`tools/engine/library-check.ts` (2afed23b) now fails if the mixer's code names a stage, and passes: "the mixer names no stage". **Not
+yet true in practice.** Every stage-specific branch I found:
+
+| Where | What | Why it blocks a data-only fix |
+|---|---|---|
+| `src/game/mixer/w1mix.ts:843-850` | `buildMix15()` and `buildMix11()`, one exported builder per stage, each importing its spec (`w1mix.ts:19`: `import { SPEC_11, SPEC_15 }`) | a new stage needs a new function in the mixer |
+| `src/game/protoStage.ts:494`, `:511` | `if (plan === '1-1') return buildMix11(...)`, `if (plan === '1-5') return buildMix15(...)` | a new stage needs a route in the builder |
+| `src/game/protoStage.ts:388` | `if (plan === '1-1') splitPetals11(st)` | the mixer's 1-1 gets a petal pass no other stage gets, outside its data |
+| `src/game/protoStage.ts:401` | `if (plan === '1-1') clearDress(...)` | the same, for dressing |
+| `src/game/mixer/spec.ts:110-116` | `TAUGHT_BEFORE` keyed by stage id, 1-1 to 1-5 only | a stage from 1-6 on knows no moves (run 6) until code is edited |
+| `src/game/mixer/w1mix.ts:502` | `throw new Error('push block is out of 1-5 for CP3 ...')` | a 1-5 ruling baked into the core: no stage can use push block |
+| `src/game/mixer/w1mix.ts:945` | ``throw new Error(`1-5 n${i + 1} drew ${pick}, not in its deck`)`` | a 1-5 message on every stage's check (cosmetic, but it names a stage) |
+| `src/game/mixer/w1mix.ts:136-147, :285-289` | `MUSHROOM_CAP = 14` ("the old 1-1's mushrooms"), `SCREEN = 1400`, `GROUND = 900`, `LIMIT = { yMin: 300, yMax: 1400 }`, `MIN_GAP`, `EASY_BS = 1.35`, `STEPS`, `FLAT` | World 1 values every stage inherits; a stage that needs a different floor, band or step set must change the core |
+| `src/game/mixer/w1mix.ts:354-509` | the `idea()` switch: each idea's kinds and step sets in code (e.g. `stump hop` steps `[40, -40, -70, 30, -30]`) | an idea's feel can't be tuned per stage by data |
+
+**The gate misses lines 502 and 945.** Its pattern is a quoted id (`['\`"](\d+-\d+)['\`"]`, library-check.ts), so `'push block is out of
+1-5 ...'` and `` `1-5 n${...}` `` pass. It reads only `w1mix.ts`, so `protoStage.ts:388, :401, :494, :511` and `spec.ts:110-116` are
+outside it. Run (§6 run 12): the same pattern over the comment-stripped `w1mix.ts` finds 0 quoted ids, while 2 throw lines name 1-5 and
+6 identifiers are stage-named (`SPEC_11`, `SPEC_15`, `buildMix11`, `buildMix15`).

@@ -1,7 +1,7 @@
 # Super Meat Boy Forever: Tommy Refenes on chunks (primary source, read by the engine critic)
 
 URL: https://gamingbolt.com/super-meat-boy-forever-interview-controls-levels-story-and-more (Shubhankar Parijat, published 2021-01-18)
-Read: 2026-11-05 ~10:50 AM ET, TinyFish fetch_content. Verbatim excerpt of the level-generation answer:
+Read: 2026-11-05, saved by 10:37 AM ET (`date` after the save), TinyFish fetch_content. Verbatim excerpt of the level-generation answer:
 
 > A Chunk is a section of a level that we've designed and decorated by hand. These are usually about the size of a Super Meat Boy
 > level from the 2010 game. They have a defined start and a defined end. We built these levels like you would build any level in any

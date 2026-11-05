@@ -1,0 +1,4 @@
+quoted stage ids the gate sees: 0
+names a stage, passes the gate: case 'push block': throw new Error('push block is out of 1-5 for CP3 (the designer\'s ruling)');
+names a stage, passes the gate: if (!n.deck.includes(pick) && !(n.job.startsWith('teach') && pick === 'bank hops')) throw new Error(`1-5 n${i 
+stage-named identifiers: 6

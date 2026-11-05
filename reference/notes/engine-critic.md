@@ -11,5 +11,4 @@ source read: SMBF Refenes).
 Pitfalls I hit: the persisted STAGE-RULES read had a 3-line offset (wc header): cite STAGE-RULES lines from grep -n, never from a saved
 dump. STAGE-RULES on ccr-0d59a91c-oy3imz is newer than engine-spec's copy (§0c exists only on ccr).
 
-Open after the report: the spec moved to e0f4f978 (L1636-1734 added: every-world labels, the 1-1 acceptance test, rocks never float),
-reviewed in CRITIC-SPEC §3.4; anything later is not reviewed.
+Done 10:56 AM ET: §9 added for the lead's (a) and (b); re-checked on engine-mixer da11cc4e and engine-spec e0f4f978. Anything later is not reviewed.
