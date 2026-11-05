@@ -22,6 +22,12 @@ So today's pieces (logs, bridges, boughs, snap twigs, vines, stumps, rotten bran
 engine's library, look and feel included. The fault is the mix, not the pieces. The engine's first job is mixing them so no stage
 repeats.
 
+## 2026-11-05 ~12:50 AM ET (to the lead)
+"let them know they have Hugging Face if they need to get more stuff. And for platforms and other things, I can run that on Gemini
+too. But I would prefer Hugging Face first."
+- New pieces can be made on Hugging Face: a picture list with its cost goes to the lead for approval first (PARTNER: the lead
+  approves HF spend; $72 total, about $15 kept in reserve). Gemini only as the fallback for platforms and pieces, run by Matt.
+
 ## 2026-11-05 ~12:23 AM ET (to the planner and the lead)
 - "same thing goes with enemies... once you introduce them, they can be anywhere": an enemy, once taught, may appear in any world
   where it fits (World 5 aside), like the pieces.
