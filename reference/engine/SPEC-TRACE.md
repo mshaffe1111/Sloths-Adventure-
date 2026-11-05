@@ -165,7 +165,7 @@ engine-plan and w1-rhythm at their current heads. Every file:line in sections 1-
 | 235-236 | A stage is a sequence of node ideas; neighbours share <= half | OPEN | none ("half") | | (i) LEG E47 |
 | 237-240 | "No idea twice" withdrawn: old 1-1 is a cycle of three ideas, about 8 times, the fork 41% | MEASURED | cp2/idea-tags.out:1-8 (fork 41%, 6 ideas) | Conflicts with SR §0c.2 "no template more than twice in a stage"; see (b) C6 | |
 | 241 | No idea twice in a row | SOURCED | SR §0c.2 (ccr:79-80) | | |
-| 242 | No idea over the old 1-1's top share (about 40%) | MEASURED | cp2/idea-tags.out (41%) | | |
+| 242 | No idea over the old 1-1's top share (about 40%) | MEASURED (old 1-1); CONTRADICTED by R1:39-47 (L2) | cp2/idea-tags.out (41%) | | | **[critic §7, ruled 11-05: R1 says no unit repeats in a level; settle by run (ENGINE-SPEC critic ruling 8)]**
 | 243 | Every repeat is a new kind x size ("new in the last 6") | SOURCED | SR §0c.3 (ccr:81-82) | "last 6" is the planner's window (8c8cd997), not sourced | |
 | 244 | A stage has >= 4 ideas | OPEN | none | Old 1-1 has 6 ideas (cp2/idea-tags.out) | (ii) count ideas in old 1-1 and 1-3 rolls; (i) Shovel Knight 5 new enemies + 5 new objects a level (R1:527) |
 | 246-247 | Today's 1-1, 1-2, 1-4, 1-5 fail: one idea 54-76% | MEASURED | cp2/idea-tags.out (76, 54, 58; 1-5 alternation) | | |
@@ -260,7 +260,7 @@ engine-plan and w1-rhythm at their current heads. Every file:line in sections 1-
 | 414 | Old 1-1 Easy has 15 hearts and 15 flags | MEASURED | cp1/table2.txt:4 (hearts=15, checkpoints=15) | | |
 | 416 | "hearts aren't given out the very first thing" holds on both settings | MATT | MD:77 | Deferred to after CP4; see (b) C19 | |
 | 421-423 | Canopy over another idea's floor; share counts the floor; 40% cap stays | MEASURED | cp3/CP3-CHECKPOINT.md:26, :61-69 (canopy 59-65% under the old rule) | | |
-| 424-425 | Two roads side by side >= 40% (old 1-1 61%) | MEASURED | cp3/cp3-lines.txt:21 (old 1-1 median 0.61) | 40% itself is the designer's line, below the measured 61% | |
+| 424-425 | Two roads side by side >= 40% (old 1-1 61%) | OPEN (the 40%); MEASURED (the 61%) | cp3/cp3-lines.txt:21 (old 1-1 median 0.61) | 40% itself is the designer's line, below the measured 61% | | **[critic §7, ruled 11-05: the line is the designer's, below the bar it copies]**
 | 425 | Planned 30-40% for the forks withdrawn | MEASURED | cp3/cp3-forks.txt:1 (forks 10.6-13.4%) | Re-stated at ES 516; see (b) C11 | |
 | 426 | LV-9: at most 4,000 px between flags | SOURCED | src/game/easyMode.ts:256, :263 [engine-mixer 7d9ad9a9] (FLAG_SPAN_MAX 4000, capFlagSpans) | | |
 | 427-429 | Flag at the nearest safe spot before the next hard node; never over easy ground only; never on a rest without a hard node after | MATT | MD:79-80, MD:84 | | |
@@ -600,7 +600,7 @@ engine-plan and w1-rhythm at their current heads. Every file:line in sections 1-
 | 1224 | 1-1 vs 1-5 <= half their ideas | OPEN | none | | (i) LEG E47 |
 | 1225 | 1-1 caps: boughs + creaky <= 30% | OPEN | none | as ES 987 | (i) BR:46; (ii) old 1-1's bough share (cp1 measures2.json) |
 | 1228 | Marks 0 for a sprint | OPEN | none | | (i) GV:173 (collectible tiers by stage type) |
-| 1232-1233 | World default: today's 1-5 lines (splits 19, two-road 40%) | MEASURED | as ES 411, 424 | | |
+| 1232-1233 | World default: today's 1-5 lines (splits 19, two-road 40%) | OPEN | as ES 411, 424 | | | **[critic §7, ruled 11-05: no default: every profile states its own lines (critic ruling, L1232)]**
 | 1233-1234 | A profile that lowers a default gives its reason | SOURCED | LAWS 5 (never loosen silently) | | |
 | 1239 | bank, mound: ground, on the floor, solid to the bottom | SOURCED | MD:132-133 (support per piece) | | |
 | 1240-1246 | stump, log (across a creek both ends on banks), log jam, hollow log, mushroom (never in the air), stone (ground or rising from water), push block | MATT | MD:132-136 (stones in water need a base; roots grow from a trunk or bank) | Row details are the designer's | |
@@ -641,9 +641,9 @@ engine-plan and w1-rhythm at their current heads. Every file:line in sections 1-
 | 1297 | silk line 5-4 | MEASURED | ML row silk (first 5-4) | | |
 | 1298 | swim 6-7 (root well) | SOURCED | 87f1e2f6 | | |
 | 1299 | hold / freeze 10-3, required 10-4 (R-2.7, planned) | SOURCED | RM:84 (R-2.7) | | |
-| 1302 | Hazards stay with their element: dark and spores W3, thorns W3, wind W4, webs W5, tide W6, crumbling floors W7, geysers W9, bolts W10 | MEASURED | ML rows zone:* and thorn (first 3-1, 3-4, 4-2, 5-6, 6-4, 7-1, 9-1, 10-1) | | |
+| 1302 | Hazards stay with their element: dark and spores W3, thorns W3, wind W4, webs W5, tide W6, crumbling floors W7, geysers W9, bolts W10 | MEASURED as a fact; NOT a rule | ML rows zone:* and thorn (first 3-1, 3-4, 4-2, 5-6, 6-4, 7-1, 9-1, 10-1) | | | **[critic §7, ruled 11-05: where hazards are today is the repetition being diagnosed; ruled: mechanics travel (critic ruling 3)]**
 | 1303 | The 1-8 chase and the lairs stay with their stages | MEASURED | ML row chase (1-8 only) | | |
-| 1305 | They come back only where the element fits | SOURCED | SR §0c.7 (ccr:93-96) | | |
+| 1305 | They come back only where the element fits | CONTRADICTED | SR §0c.7 (ccr:93-96) | | | **[critic §7, ruled 11-05: SR §0c.7 is about layout templates; SR §0.1 (ccr:19-20) says mechanics come back in every later world]**
 | 1307 | Animals, once taught, anywhere on their element | MATT | MD:58-60 | "on their element" is the designer's | |
 | 1311-1312 | A touch = 1-2 uses, some = 3-6 (one required), lots = 7+ or the theme | OPEN | none | | (iii) Hayashida / Nintendo "four-step" counts per course; (ii) count uses per stage on old W1 with mechtable.ts |
 | 1316 | Teach stage: the move is the theme (lots) | SOURCED | D:422 (Hayashida: one core concept per stage) | | |
@@ -718,8 +718,8 @@ engine-plan and w1-rhythm at their current heads. Every file:line in sections 1-
 | ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
 |---|---|---|---|---|---|
 | 1458 | "the engine plans the WHOLE game"; the lead's five bars | MATT | MD:140-166 (10:08 AM ET, appended to MD after this trace began) | | |
-| 1461 | 102 stages, 40 mechanics | MEASURED | ML (stages 102, 40 rows) | | |
-| 1462-1464 | Keep stages, names, specials, rooms, bosses and art; lock a world before changing it | SOURCED | 96ac0259 (regression lock); CLAUDE.md "New replaces old" | | |
+| 1461 | 102 stages, 40 mechanics | MEASURED by an untested tool (D15) | ML (stages 102, 40 rows) | | | **[critic §7, ruled 11-05: 2 layouts, 4-D in no row, gen2 water invisible (critic §3.2)]**
+| 1462-1464 | Keep stages, names, specials, rooms, bosses and art; lock a world before changing it | SOURCED; incomplete | 96ac0259 (regression lock); CLAUDE.md "New replaces old" | | | **[critic §7, ruled 11-05: 4-D and 8-4 omitted; the lock covers 1-1 and 1-5 only (critic §4.1)]**
 | 1470-1481 | Absences: warm air 63, lift 83, river logs 7 stages / 81, silk 2 / 55, push 4 / 61, breaking 22 / 41, rope 13 / 35, hide 8 / 28, moving 10 / 29, bounce 26 / 13 | MEASURED | ML (stage lists per row) | My recount of ML gives the same stage counts; absences come out 1 higher on 7 rows (e.g. rope 36, breaking 42), so the absence definition is off by one somewhere | |
 | 1483-1488 | Working: liana 4, trunk 5, tayra 5, harpy 8, finds 3 | MEASURED | ML | | |
 | 1490-1491 | Glide and swim have no row | MEASURED | ML (no glide or swim row) | | |
@@ -748,8 +748,8 @@ engine-plan and w1-rhythm at their current heads. Every file:line in sections 1-
 | 1570-1571 | W2 on: >= 3 core moves besides run and jump, one from an earlier world | OPEN | none | | (i) SR §0b.5 |
 | 1572-1583 | One joined beat per world (list) | SOURCED | SR §0b.5 (ccr:54-55); GV:21-55 (the pair matrix) | The pairs chosen are the designer's | |
 | 1587-1588 | A profile names its water bodies (x, y, depth, swim) | MATT | MD:26-27 ("if there's water") | | |
-| 1590-1594 | Swims: <= 15-20 s under; exits 3-4 body widths; no slow drag ("suddenly fast"); currents and bubbles; tide | SOURCED | GVs:19 (triage row "Water"); RM:160 (R-5.22); MD:141-142, MD:156-159 (Matt: "quick in and out things. We already did the research") | Gemini numbers, not verified against a shipped game | |
-| 1596 | Gate fails over 20 s under | SOURCED | GVs:19 | | |
+| 1590-1594 | Swims: <= 15-20 s under; exits 3-4 body widths; no slow drag ("suddenly fast"); currents and bubbles; tide | OPEN (misread summary) | GVs:19 (triage row "Water"); RM:160 (R-5.22); MD:141-142, MD:156-159 (Matt: "quick in and out things. We already did the research") | Gemini numbers, not verified against a shipped game | | **[critic §7, ruled 11-05: GVs:19 is a one-line triage of an unsaved paste; "in and out every 15-20 s" is a rhythm, not a cap; body widths are the connector rule (GVs:28)]**
+| 1596 | Gate fails over 20 s under | OPEN | GVs:19 | | | **[critic §7, ruled 11-05: the gate cannot fail (diveFor 3 s, swim.ts:43-45); withdrawn until primary texts are saved]**
 | 1598-1601 | 6-7 teaches, 6-8/6-9 echo, then W6-W8 and W10 >= 1 in 3; none in W9 | OPEN | none | | (ii) mechtable.ts; Matt's pick |
 | 1602-1608 | The swimming stage is 6-9 reshaped (R-153); clue "Ripples..."; 6-8 out | SOURCED | src/components/stageClue.ts:81-82 [main]; RM:410 (R-153: reshape, no new stages) | | |
 | 1609-1610 | World 1 to 6-6: water is drawn and costs a life | SOURCED | lessons.ts:188 [main] | | |
