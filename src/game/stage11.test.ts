@@ -238,10 +238,21 @@ test('1-1\'s canopy look (the lead\'s polish review, 2026-11-04): every bough gr
       const trunks = st.proto.trunks!;
       // (each end grows from a kapok or tucks into a leafy clump: nothing floats; the kapoks are few, one to every 2-5 boughs)
       const leaves = st.proto.leaves!;
-      const held = (x: number, y: number) => trunks.some((t) => Math.abs(t.x - x) < 42 * (t.w ?? 1)) || leaves.some((l) => Math.abs(l.x - x) < 12 && Math.abs(l.y - y) < 12);
-      for (const b of boughs) assert.ok(held(b.x, b.y + 8) && held(b.x + b.width, b.y + 8), `seed ${s}: bough ${b.id} has a bare end`);
-      assert.ok(trunks.length <= boughs.length / 2 && trunks.length >= boughs.length / 6, `seed ${s}: ${trunks.length} kapoks for ${boughs.length} boughs`);
-      for (const t of trunks) assert.ok(t.w! >= 1.6 && t.w! <= 2.6);
+      // (or meets a neighbour's end a hop away, where a clump would stack on the next bough: the quality supervisor, 11-04)
+      const hop = (b: (typeof boughs)[number], x: number) => boughs.some((q) => q !== b && Math.abs(q.y - b.y) < 90 && (Math.abs(q.x - x) < 70 || Math.abs(q.x + q.width - x) < 70));
+      const held = (b: (typeof boughs)[number], x: number, y: number) => trunks.some((t) => Math.abs(t.x - x) < 42 * (t.w ?? 1)) || leaves.some((l) => Math.abs(l.x - x) < 12 && Math.abs(l.y - y) < 12) || hop(b, x);
+      for (const b of boughs) assert.ok(held(b, b.x, b.y + 8) && held(b, b.x + b.width, b.y + 8), `seed ${s}: bough ${b.id} has a bare end`);
+      // (the big kapoks few, one to every 2-5 boughs; with the slimmer trees, never more trees than three in five boughs)
+      const kapoks = trunks.filter((t) => (t.w ?? 1) >= 1.6).length;
+      // (one to every 2-9 boughs: the slimmer trees hold the rest, and at least four in five boughs grow from a tree, below)
+      assert.ok(kapoks <= boughs.length / 2 && kapoks >= boughs.length / 9, `seed ${s}: ${kapoks} kapoks for ${boughs.length} boughs`);
+      assert.ok(trunks.length <= boughs.length * 0.6, `seed ${s}: ${trunks.length} trees for ${boughs.length} boughs`);
+      // (the kapoks 1.6-2.6 times a climb's width, full height; the slimmer trees a lone bough grows from, 1.0-1.35, crowned in leaves
+      // just over it: the quality supervisor, 11-04, half the boughs read as floating planks)
+      for (const t of trunks) assert.ok((t.w! >= 1.6 && t.w! <= 2.6) || (t.w! >= 1.0 && t.w! <= 1.35 && t.topY > -1000 && leaves.some((l) => l.x === t.x && Math.abs(l.y - t.topY - 30) < 2)), `seed ${s}: trunk at ${t.x}, w ${t.w}`);
+      // (and now most boughs grow from a tree: at most one in six held by leaves alone)
+      const byTree = boughs.filter((b) => trunks.some((t) => t.x + 42 * (t.w ?? 1) * 0.7 >= b.x && t.x - 42 * (t.w ?? 1) * 0.7 <= b.x + b.width)).length;
+      assert.ok(byTree >= boughs.length * 0.8, `seed ${s}: ${byTree} of ${boughs.length} boughs grow from a tree`);
       assert.equal(st.vines.filter((v) => v.vineType === 'tree_climb').length, 0, 'no climb added');
       const bare = boughs.filter((b) => b.bare).length / boughs.length;
       assert.ok(bare > 0.5 && bare < 0.85, `seed ${s}: ${bare}`);

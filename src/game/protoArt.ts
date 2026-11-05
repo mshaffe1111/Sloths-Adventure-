@@ -47,7 +47,7 @@ export function setKitWorld(w: number) {
 let stageWorld = 1;
 /** trunks drawn behind a stage's boughs that are scenery, not climbs (1-1's canopy: no bough floats with nothing holding it) */
 type DecoTrunk = { x: number; topY: number; bottomY: number; w?: number };
-type DecoLeaves = { x: number; y: number; w: number; flip?: boolean };
+type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
 /** the leafy clumps the boughs' free ends tuck into (1-1's canopy), drawn behind the boughs */
 let decoLeaves: ReadonlyArray<DecoLeaves> = [];
@@ -507,14 +507,17 @@ export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state:
   const { img, f: fr } = frameOf(name);
   // (each slice 0.5 px wider, so no hairline of background shows between them)
   // (bare: only the bark, from just above the walkable top down; the painted plant and moss above it left out)
-  if (p.bare) {
+  // (bare: from just above the walkable top down; and a painted end cut where a neighbour's begins a hop away: drawX0/drawX1)
+  const cut = p.bare || p.drawX0 !== undefined || p.drawX1 !== undefined;
+  if (cut) {
+    const cx0 = p.drawX0 ?? p.x - 80, cx1 = p.drawX1 ?? p.x + p.width + 80;
     ctx.save();
     ctx.beginPath();
-    ctx.rect(p.x - 80, p.y + 1, p.width + 160, h + 12);
+    ctx.rect(cx0, p.bare ? p.y + 1 : y - 40, cx1 - cx0, (p.bare ? h + 12 : h + 60));
     ctx.clip();
   }
   for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c.sx * fr.w, fr.y, c.sw * fr.w, fr.h, c.dx, y, c.dw + 0.5, h);
-  if (p.bare) ctx.restore();
+  if (cut) ctx.restore();
   return true;
 }
 
@@ -1233,9 +1236,10 @@ export function drawProtoScene(
   if (decoLeaves.length) {
     load2();
     if (ready2 && img2) {
-      const b = PROTO2_FRAMES.bushWide;
       for (const l of decoLeaves) {
         if (l.x < view.x0 - 200 || l.x > view.x1 + 200 || l.y < vy0 - 200 || l.y > vy1 + 200) continue;
+        // (World 1's three foliage pieces, not one bush stamped at every end: the quality supervisor, 11-04)
+        const b = PROTO2_FRAMES[l.kind ?? 'bushWide'];
         const bh = (l.w * b.h) / b.w;
         ctx.save();
         ctx.translate(l.x, l.y);
