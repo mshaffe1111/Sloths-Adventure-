@@ -510,21 +510,30 @@ function crossings(L: Lay, hi: Platform[], lo: Platform[], job: string) {
  * own under its middle; a bridge gets a thin post at each end; the perch a short stump. Each trunk runs from just under its piece's top to the
  * first bank under it, or past the stage's bottom.
  */
-function supports(P: Platform[], height: number): Array<{ x: number; topY: number; bottomY: number; w: number; art?: 'plain' }> {
+function supports(P: Platform[], height: number): { trunks: Array<{ x: number; topY: number; bottomY: number; w: number; art?: 'plain' }>; leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'bushTall' }> } {
   type T = { x: number; topY: number; bottomY: number; w: number; art?: 'plain' };
   const out: T[] = [];
+  const leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'bushTall' }> = [];
   const floorOf = (x: number, y: number) => {
     const under = P.filter((q) => q.type !== 'bouncy' && q.style === 'moss_stone' && q.x <= x && q.x + q.width >= x && q.y > y + 30);
     return under.length ? Math.min(...under.map((q) => q.y)) : null;
   };
   // (each tree its own width and, tree by tree, the vine-wrapped kapok or the bare one: never two neighbours alike (S-4))
-  const tree = (x: number, top: number, w: number) => {
+  // (and a tree goes on up past its boughs, 320-420 px, to a leafy crown: the upright screen's top half holds the canopy, never empty sky
+  // (P-6, S-7); a post, a stump or a lily's stem stops at its piece)
+  const tree = (x: number, top: number, w: number, crown = true) => {
     const fl = floorOf(x, top - 16);
     const k = out.length;
-    out.push({ x: Math.round(x), topY: Math.round(top), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: w * (0.85 + ((k * 37) % 7) * 0.07), ...(k % 2 ? { art: 'plain' as const } : {}) });
+    // (a crown only where no other is within 360 px: a canopy line overhead, not a wall of leaves in front of the play, round-2 stills)
+    const room = crown && !leaves.some((l) => Math.abs(l.x - x) < 360);
+    const rise = room ? 400 + ((k * 53) % 4) * 20 : 0;
+    out.push({ x: Math.round(x), topY: Math.round(top - rise), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: w * (0.85 + ((k * 37) % 7) * 0.07), ...(k % 2 ? { art: 'plain' as const } : {}) });
+    if (room) leaves.push({ x: Math.round(x), y: Math.round(top - rise + 30), w: 160 + ((k * 29) % 4) * 20, flip: k % 2 === 1, kind: 'bushWide' });
   };
   const air = P.filter((p) => p.type !== 'bouncy' && !(p as { catch?: boolean }).catch && !(p as { art?: string }).art
     && (p.style === 'branch' || p.style === 'canopy_bridge' || p.style === 'log' || p.style === 'ruin' || p.type === 'fragile')).sort((a, b) => a.x - b.x);
+  // (a lily pad or a reed isle over the drop stands on a thin stem down to the ground (S-2: nothing above the water line floats))
+  for (const p of P) if ((p as { lily?: boolean }).lily || (p.style === undefined && p.height === 30 && p.type === 'solid')) tree(p.x + p.width / 2, p.y + 10, 0.45, false);
   const done = new Set<Platform>();
   for (let i = 0; i < air.length; i++) {
     const p = air[i];
@@ -536,7 +545,7 @@ function supports(P: Platform[], height: number): Array<{ x: number; topY: numbe
       for (const x of [p.x + 12, p.x + p.width - 12]) { const fl = floorOf(x, p.y); out.push({ x: Math.round(x), topY: Math.round(top(p)), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: 0.5 }); }
       continue;
     }
-    if (perch) { tree(p.x + p.width / 2, top(p), 0.7); continue; }
+    if (perch) { tree(p.x + p.width / 2, top(p), 0.7, false); continue; }
     // (two boughs side by side, a short gap and a step between them, grow from one tree standing in the gap (S-4: like the old 1-1's
     // canopy, one trunk and its boughs at two heights))
     const q = air.slice(i + 1).find((o) => !done.has(o) && o.style !== 'canopy_bridge' && !(o as { perch?: boolean }).perch && o.x >= p.x + p.width - 10);
@@ -548,7 +557,17 @@ function supports(P: Platform[], height: number): Array<{ x: number; topY: numbe
     if (out.some((t) => Math.abs(t.x - (p.x + p.width / 2)) < 160 && Math.abs(t.topY - top(p)) < 80)) continue;
     tree(p.x + p.width / 2, top(p), 1.15);
   }
-  return out;
+  // (on the long banks where no tree stands within 500 px, a tree grows from the bank itself, set back, so the start, the rests and the
+  // shrine have their canopy overhead too (S-7))
+  for (const b of P.filter((q) => q.style === 'moss_stone' && q.height >= 90 && q.width >= 300)) {
+    for (let x = b.x + 120; x < b.x + b.width - 120; x += 520) {
+      if (out.some((t) => Math.abs(t.x - x) < 500)) continue;
+      const k = out.length;
+      out.push({ x: Math.round(x), topY: Math.round(b.y - 560), bottomY: Math.round(b.y + 20), w: 1.3 * (0.85 + ((k * 37) % 7) * 0.07), ...(k % 2 ? { art: 'plain' as const } : {}) });
+      if (!leaves.some((l) => Math.abs(l.x - x) < 360)) leaves.push({ x: Math.round(x), y: Math.round(b.y - 530), w: 180, flip: k % 2 === 1, kind: 'bushWide' });
+    }
+  }
+  return { trunks: out, leaves };
 }
 
 /**
@@ -769,7 +788,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   // (nothing floats unless it floats (the designer's P-2, P-7, P-11; D16): every bough, log, crumbling ledge and creaky limb in the air
   // stands on a painted kapok set back in the shade, as 1-2's logs do (protoArt.ts setDecoTrunks), down to the floor under it or past the
   // stage's bottom; a bridge hangs from a post at each end; the mushroom's perch is a short stump on its bank. Dressing only: no surface)
-  const trunks = supports(L.P, height);
+  const { trunks, leaves } = supports(L.P, height);
   const beats: Array<[number, number, string]> = L.explain.map((e) => [e.x0, e.x1, `${e.job}: ${e.idea}${e.road ? ` (${e.road} road)` : ''}`]);
   const stage = {
     config: cfg, trees: [], platforms: L.P, vines: L.V, ropes: [], enemies: [], boss: null, collectibles: L.C,
@@ -777,7 +796,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     checkpoints: L.flags.map((f) => ({ x: f.x, y: f.y, reached: false })).sort((a, b) => a.x - b.x),
     easyGoal: Math.max(1, goalE), normalGoal: Math.max(1, goalN),
     meta: { attempt: seed, chunks: L.explain.map((e) => e.idea), width, pieces: L.explain.map((e) => ({ k: `1-5 ${e.idea}`, x0: e.x0, x1: e.x1 })), mix: { explain: L.explain } },
-    proto: { hints: L.hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, ownPetals: true, glints: L.glints, trunks },
+    proto: { hints: L.hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, ownPetals: true, glints: L.glints, trunks, leaves },
   } as unknown as GeneratedStage & { proto: ProtoExtras };
   // (petals the shared judge can't reach come off: a petal over a gap between the canopy and the floor below it marks no jump anyone
   // makes. The level check names each one; only petals are taken off, never a mark, a heart or the exit)
