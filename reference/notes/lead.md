@@ -46,7 +46,10 @@ move the time, never the bar.
 | Bootprint (designer's helper) | Still on the shrine bank | phone size, both ways, belongs in the W1 kit, spend reported (cap $3) | 11:30 AM |
 | Critic | Interim: the trace half-done | row count traced / total, first MISSING items ranked | 11:30 AM |
 | Critic | CRITIC-SPEC.md + trace-check.mjs + verdict | every section of its brief, every fact cited | 12:45 PM |
-| Designer | Rulings on the critic's findings | each finding: accepted with the spec change, or rejected with evidence | 1:30 PM |
+| Designer | (moved to 1:00 PM, see above) | | |
+| Planner | R-164.11 root cause: why every roll is the same (era cosine 0.02 vs 0.35) + regression lock for W1-W10 and why 1-2/1-3/1-4/1-6/1-9 changed | file:line cause; lock recorded; engine gate imports era/lookalike/bands | 12:30 PM |
+| Designer | Ruling on every critic finding (CRITIC-SPEC e0d2023b) | each accepted with the spec change or rejected with evidence; no rule re-worded to clear a miss (law 22) | 1:00 PM |
+| research-water-swim (session_01FhBbYNGvGQ8wvSPExiJ1tp) | WATER-SWIM.md | shipped-game sources saved, rules with numbers + sources, spec lines wrong/unsourced, one Matt question (swim speed) | 1:30 PM |
 | Lead | CHECKPOINT 1 for Matt | library sheet by world, render stills, critic interim, cost so far vs meter | 12:15 PM |
 | Planner | E3 element + SUPPORT check | every landing AND prop/dress on 102 stages x2 layouts x2 settings; may-float-no over air fails; water pieces only on zones; zone ends under banks; counts per world on a shrinking known list; float share measured; 1-1/1-5 0 breaches; 1-5 creek zone, pad test green | 1:45 PM |
 | Planner | W1 fixes from the rulings | stone/crumble no-float; crumble out of W1; tree ideas lay branch; vine/liana/rope kinds; no climbing vine 1-1; log jam out of 1-5 once water's back; snapshot changes named; 1-5 gates re-run | 2:30 PM |
