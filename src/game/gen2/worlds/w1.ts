@@ -86,6 +86,8 @@ export type W1Section = SectionTemplate & {
   source: string;
   /** the node jobs it can fill (NODES.md §1, ruled §8.8) */
   jobs?: W1Job[];
+  /** each version's rhythm string (Round 4, R2 lesson 1: kinds, not pixels): h hop, j gap jump, d double, b bounce, c climb step, w walk */
+  rhythms?: Record<string, string>;
   /** a version's own jobs where they differ from the section's (§8.8: #7's double version a test, its mushroom version a twist, B5) */
   versionJobs?: Record<string, W1Job[]>;
   /** its terrain family (NODES.md §3 `terrain`, W1: floor and stones, raised logs, mounds, boughs): the porter's reading, for the designer */
@@ -830,8 +832,87 @@ const seedPerch = section({
   source: "the planner's seed perch (4:27 PM): mixer/post.ts placeSeed (a bough DOUBLE_RISE + 50 over the perch, reached by the bounce and a double)",
 });
 
+// ───────────────────────────── Round 4, part 2 (engine-spec 0164dff4f): the pool cells that bind ─────────────────────────────
+// Each version is built from its rhythm string, beat by beat (BEATS), so versions differ in kind or order, never only in size. The block
+// beats (NODES §8.7) are their own letters: K a jump block (a 66-78 px bank face, no step beside it, then down), L a log face 62-80 px
+// on the floor, D a double rise block onto a bank (136-140 px, double place), B a bounce lip (the mushroom on the floor, lip 200-220 px:
+// lays short until the planner's bounce place, the named exitDy failure). Lower case are the designer's beats.
+const BEATS: Record<string, G> = {
+  w: gRest([260, 320]),
+  h: gLogHop(),
+  j: gDip(),
+  d: gDoubleGaps([[0.85, 0.89]]),
+  /** a climb step: a bank one hop up (62-78 px), the route stays up */
+  c: (k, after) => { const b = bankW(`${k}c`, after!, [-78, -62], [260, 320]); return { pieces: [b], sockets: [petals(`${k}p`, b.key, [0.3, 0.6], 1)], last: b.key }; },
+  /** a very low root (24-36 px) on the floor: the arrival's hop */
+  r: (k, after) => { const f = floor(`${k}f`, [400, 460], startOr(after)); const q = stump(`${k}r`, f.key, [0.45, 0.55], [24, 36], LAND); return { pieces: [f, q], sockets: [petals(`${k}p`, q.key, 0.5, 1)], last: f.key }; },
+  /** a low log lying on the floor (30-34 px) */
+  l: (k, after) => { const f = floor(`${k}f`, [420, 500], startOr(after)); const q: W1Piece = { key: `${k}l`, shape: 'block', w: [200, 240], place: { kind: 'on', on: f.key, at: [0.4, 0.5], h: [30, 34] }, style: 'log', landing: true }; return { pieces: [f, q], sockets: [petals(`${k}p`, q.key, 0.5, 1)], last: f.key }; },
+  /** a jump block: a bank face 66-78 px with no lower step beside it, the floor ending at it (B1), then a step back down */
+  K: (k, after) => { const u = bankW(`${k}u`, after!, [-78, -66], [300, 360]); const dn = bankW(`${k}n`, u.key, [66, 78], [240, 280]); return { pieces: [u, dn], sockets: [petals(`${k}p`, u.key, [0.4, 0.7], 2)], last: dn.key }; },
+  /** a jump block of a log: a fallen log 62-80 px tall across the floor, nothing beside it */
+  L: (k, after) => { const f = floor(`${k}f`, [620, 700], startOr(after)); const q: W1Piece = { key: `${k}L`, shape: 'block', w: [220, 260], place: { kind: 'on', on: f.key, at: [0.4, 0.5], h: [62, 80] }, style: 'log', landing: true }; return { pieces: [f, q], sockets: [petals(`${k}p`, q.key, [0.3, 0.7], 2)], last: f.key }; },
+  /** a double rise block onto a bank: 136-140 px, past a single's 108 (B2a), placed as a double */
+  D: (k, after) => { const b: W1Piece = { key: `${k}D`, shape: 'bank', w: [320, 380], place: { kind: 'double', after: after!, dy: [-140, -136], share: [0.15, 0.25], soft: true }, style: 'moss_stone', main: true, landing: true }; return { pieces: [b], sockets: [petals(`${k}p`, b.key, [0.4, 0.7], 2)], last: b.key }; },
+  /** a bounce block: the mushroom on the floor before a bank lip 200-220 px up (B3 as amended), the route stays up */
+  B: (k, after) => { const f = floor(`${k}f`, [360, 420], startOr(after)); const L = bankW(`${k}B`, f.key, [-220, -200], [300, 360]); return { pieces: [f, mushroom(`${k}m`, f.key, [0.7, 0.8]), L], sockets: [petals(`${k}p`, L.key, [0.3, 0.6], 2)], last: L.key }; },
+};
+const fromRhythm = (r: string): G[] => r.split(' ').map((t) => { const g = BEATS[t]; if (!g) throw new Error(`w1.ts: no beat '${t}'`); return g; });
+/** a section from rhythm strings: versions { id: [built beats, the designer's rhythm] } */
+function rhythmic(o: Omit<Parameters<typeof section>[0], 'versions'> & { versions: Record<string, [string, string]> }): W1Section {
+  const { versions, ...rest } = o;
+  const sec = section({ ...rest, versions: Object.entries(versions).map(([id, [built]]) => ({ id, groups: fromRhythm(built) })) });
+  return { ...sec, rhythms: Object.fromEntries(Object.entries(versions).map(([id, [, r]]) => [id, r])) };
+}
+
+/** #31 (teach jump): shown on hops, the check a bank face (K), then the gaps */
+const stepStonesTeach = rhythmic({
+  id: 'w1-step-stones-teach', floor: 'hop', name: 'the first stones', phases: ['ki'], difficulty: 2, needs: ['jump'], teaches: 'jump',
+  versions: { a: ['w h h K j w', 'w h h j w'], b: ['w j w K j j j', 'w j w j j'], c: ['w h j K h j', 'w h j h j'] },
+  feel: ['1-1'], not: NOT_11, rating: 2,
+  source: "Round 4 #31 (designer, 0164dff4f): 1-1's teach run then jump (CoachOverlay.tsx:10); the jump block a 66-78 px bank face, no step beside (B1)",
+});
+/** #32 (teach jump): low logs, the check a log face (L) */
+const logTeach = rhythmic({
+  id: 'w1-log-teach', floor: 'hop', name: 'up the first log', phases: ['ki'], difficulty: 2, needs: ['jump'], teaches: 'jump',
+  versions: { a: ['w l w L j j', 'w h w j j'], b: ['w j L l l l', 'w j h h'] },
+  feel: ['1-1'], not: NOT_11, rating: 2,
+  source: 'Round 4 #32: old 1-1\'s logs (LABELS §1 solid log); the jump block a fallen log face 62-80 px with no step beside (B1)',
+});
+/** #33 (teach double): the double gap past a single, share 0.85+ (the Easy rise version is the planner's, no per-setting version) */
+const dipDoubleTeach = rhythmic({
+  id: 'w1-dip-double-teach', floor: 'hop', name: 'the wide dip', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double',
+  versions: { a: ['w j d w j d w', 'w j d w'], b: ['w d j j d j j', 'w d j j'] }, // (the rhythm twice: 10 s by repetition, the ruling 08c5a2944)
+  feel: ['1-1'], not: NOT_11, rating: 3,
+  source: 'Round 4 #33: R2 (3:11); NODES §8.7 (a gap at share 0.85+, back-only pit: the planner\'s block rule)',
+});
+/** #34 (teach double): the rise block onto a tall bank */
+const bankDoubleTeach = rhythmic({
+  id: 'w1-bank-double-teach', floor: 'hop', name: 'the tall bank', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', exitDy: -276,
+  versions: { a: ['w h D w h D w', 'w h d w'], b: ['w D h h D h h', 'w d h h'] }, // (the rhythm twice: 10 s by repetition)
+  feel: ['1-1'], not: NOT_11, rating: 3,
+  source: 'Round 4 #34: NODES §8.7 B2a (a rise block 136-140 px onto a bank, the floor ending at its face)',
+});
+/** #35 (teach bounce): the mushroom on the floor, the lip 200-220 px (lays short today: the named exitDy failure) */
+const mushroomBankTeach = rhythmic({
+  id: 'w1-mushroom-bank-teach', floor: 'hop', name: 'the bounce bank', phases: ['sho'], difficulty: 2, teaches: 'bounce', exitDy: -210,
+  versions: { a: ['w h h B w h', 'w b w h'], b: ['w h h h B j', 'w h b j'] }, // (more hops before the lip: 10 s by repetition)
+  feel: ['1-1'], not: NOT_11, rating: 2,
+  source: "Round 4 #35: the brief's first lift (1-1.md:20); B3 as amended (the mushroom on the floor, lip 200-220)",
+});
+/** #46 (arrive): flat and safe, no ground ends in the first 1,300 px, very low roots; the squirrels' spot */
+const morningPath = rhythmic({
+  id: 'w1-morning-path', floor: 'hop', name: 'the morning path', phases: ['start'], difficulty: 1, needs: ['walk'], maxPerStage: 1,
+  versions: { a: ['w w r w', 'w w h w'], b: ['w r w r', 'w h w h'] },
+  feel: ['1-1'], not: NOT_11, rating: 1,
+  source: 'Round 4 #46: the brief\'s start (the squirrels: 1-1.md must); STAGE-RULES:161 (flat and safe)',
+});
+// (the arrival's squirrels sit on its first floor, clear of the spawn: the brief's must; the start's Dot line, coach.run)
+morningPath.sockets = [decor('sq', 'in', [0.6, 0.7]), dot('tip', 'in', 0.1, 'coach.run')];
+const ROUND4 = [stepStonesTeach, logTeach, dipDoubleTeach, bankDoubleTeach, mushroomBankTeach, morningPath];
+
 /** the designer's sections entered (all 30) and the planner's seed perch */
-export const W1_NEW: readonly W1Section[] = [stumpStile, stoneZigzag, logRoad, hollowTwoway, mushroomLift, twinBounce, fallenTrunk, doubleTeach, boughStepup, canopyRungs, highWalk, dropdownStair, knotBank, floorDash, quietArrival, forestEdge, fernBank, clearing, boughBench, stumpTowers, bounceDouble, canopyWeave, sunlitLog, stumpDescent, moundLog, logWalk, stiltLogs, twoAnswers, boughLog, lastStepUp, seedPerch];
+export const W1_NEW: readonly W1Section[] = [stumpStile, stoneZigzag, logRoad, hollowTwoway, mushroomLift, twinBounce, fallenTrunk, doubleTeach, boughStepup, canopyRungs, highWalk, dropdownStair, knotBank, floorDash, quietArrival, forestEdge, fernBank, clearing, boughBench, stumpTowers, bounceDouble, canopyWeave, sunlitLog, stumpDescent, moundLog, logWalk, stiltLogs, twoAnswers, boughLog, lastStepUp, seedPerch, ...ROUND4];
 
 const HARVEST: readonly W1Section[] = [learn, developStones, cacheStones, developStumpStones, developStoneDips, twistGaps, twistLeapStones, twistHighLeaps, finishHopBounce, finishBounceRun, finishStoneRoad, meadow, lowBoughs, ledges, ropes];
 /**
@@ -852,6 +933,7 @@ const JOBS: Record<string, W1Job[]> = {
   'w1-canopy-weave': ['fork', 'choice-reward'], 'w1-sunlit-log': ['exit'], 'w1-stump-descent': ['descent', 'practise'], 'w1-mound-log': ['practise'],
   'w1-log-walk': ['rest'], 'w1-stilt-logs': ['test'], 'w1-two-answers': ['twist'], 'w1-bough-log': ['climb'], 'w1-last-step-up': ['exit'],
   'w1-seed-perch': ['reward'],
+  'w1-step-stones-teach': ['teach'], 'w1-log-teach': ['teach'], 'w1-dip-double-teach': ['teach'], 'w1-bank-double-teach': ['teach'], 'w1-mushroom-bank-teach': ['teach'], 'w1-morning-path': ['arrive'],
 };
 /** the designer's content tags (NODES.md §7.7, engine-spec d4526ee5e; forks retagged by their low road). The seed perch is the porter's
  *  reading ('bounce': its find is reached by the perched mushroom), for the designer to rule */
@@ -865,6 +947,7 @@ const CONTENT: Record<string, W1Content> = {
   'w1-mushroom-lift': 'bounce', 'w1-twin-bounce': 'bounce', 'w1-bounce-double': 'bounce', 'w1-seed-perch': 'bounce',
   'w1-high-walk': 'structural', 'w1-quiet-arrival': 'structural', 'w1-forest-edge': 'structural', 'w1-fern-bank': 'structural', 'w1-clearing': 'structural',
   'w1-bough-bench': 'structural', 'w1-sunlit-log': 'structural', 'w1-log-walk': 'structural', 'w1-last-step-up': 'structural',
+  'w1-step-stones-teach': 'ground', 'w1-log-teach': 'ground', 'w1-dip-double-teach': 'ground', 'w1-bank-double-teach': 'ground', 'w1-mushroom-bank-teach': 'bounce', 'w1-morning-path': 'structural',
 };
 /** every W1 section: the harvest, then the designer's new ones (and the planner's seed perch), each with its proposed jobs and its type */
 /** each section's terrain family: where most of its landings are (ruled by the designer, 11-05: hollow-twoway, fallen-trunk and log-walk raised-logs) */
@@ -879,6 +962,7 @@ const TERRAIN: Record<string, W1Terrain> = {
   'w1-bounce-double': 'raised-logs', 'w1-canopy-weave': 'boughs', 'w1-sunlit-log': 'boughs', 'w1-stump-descent': 'raised-logs', 'w1-mound-log': 'mounds',
   'w1-log-walk': 'raised-logs', 'w1-stilt-logs': 'raised-logs', 'w1-two-answers': 'floor-stones', 'w1-bough-log': 'boughs', 'w1-last-step-up': 'boughs',
   'w1-seed-perch': 'boughs',
+  'w1-step-stones-teach': 'floor-stones', 'w1-log-teach': 'raised-logs', 'w1-dip-double-teach': 'floor-stones', 'w1-bank-double-teach': 'mounds', 'w1-mushroom-bank-teach': 'mounds', 'w1-morning-path': 'floor-stones',
 };
 const VERSION_JOBS: Record<string, Record<string, W1Job[]>> = { 'w1-fallen-trunk': { double: ['test'], mushroom: ['twist'] } };
 export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id], terrain: TERRAIN[q.id], ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
