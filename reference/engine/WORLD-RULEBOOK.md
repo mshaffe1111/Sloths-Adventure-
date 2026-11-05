@@ -119,7 +119,8 @@ planner's 4:00 breakdown (3:42 PM ET) says where old 1-1's 0.384 comes from: one
    - tree sections have catch boughs;
    - a `teach` gap's safe ground lets only the taught move cross (R2).
 10. **Decks:** a section draws ideas whose needs are taught (or being taught here), whose element fits its height band, and which the
-    brief's `not` doesn't exclude. No idea twice in a row.
+    brief's `not` doesn't exclude. **[revised 4:03 PM ET, WORLD-TRACE: "no idea twice in a row" had no source and contradicted Smith 2009 §5,
+    accepted at ES L1883]** One exact repeat is allowed before a rest; otherwise no idea twice in a row.
 11. **What rolls, per seed:**
     - how many practises (1-3 per teach);
     - where forks and rests fall, inside rules 3-5;
@@ -188,3 +189,33 @@ Kinds:
 
 **One research row not taken, on evidence:** LEDGER-2026-11-02-full.md:331-332 ("every 3-5 minute stage") is CONTRADICTED by the
 measured dev clocks (Tropical Freeze 1-1 1:50-2:30). Measurement outranks the claim (ES evidence order).
+
+## 7. Adopted from the research trace (designer, 11-05 4:03 PM ET; WORLD-TRACE.md 6adf90a31, worldtrace-check PASS: 892 rows; USED-VIA 365, NOT TAKEN 354, ADOPT 73, LATER WORLD 52, CONTRADICTED 48)
+
+Each rule's source rows are listed in WORLD-TRACE.md's "ADOPT candidates".
+
+1. **Dead time:** outside \`arrive\`, \`rest\` and \`arrival\`, more than 2.5 s with nothing to do fails the roll (the game code's 2.5 s; ES L510).
+2. **Map shapes:** a stage's 16 judged rolls show at least 3 map shapes where its \`branching\` allows 3 (P1:206).
+3. **Landing in view:** at every take-off the landing is on screen, upright and sideways; if it wouldn't be, the path folds.
+4. **Timing:** no four take-offs in a row at the same interval (± 0.1 s) (ES L1807).
+5. **Animals (from the stage that teaches them):**
+   - no animal sits on a gap's landing;
+   - a gap-plus-enemy pair is capped;
+   - at least 1.0 s (about 285 px) of flat ground before an animal's trigger (ES G L1842, L1855).
+6. **Rope sections:** a shimmy rope never runs as an empty corridor. It sits beside a faster road or carries a dodge.
+7. **Petal goal (marks stages):** Normal is 75-87.5% of the reachable petals; the Easy goal is set by the first-timer kid bot (G L1848).
+8. **First-timer clock:** 180-300 s a stage, judged by the first-timer bot, alongside the quick clock's band.
+9. **Lockout:**
+   - an idea is locked out for 4 draws after it's used;
+   - a template appears in at most 3 of a world's stages (G L1839, C14 L1761).
+10. **Both roads judged:** every gate judges both roads of a fork, not only the bot's route.
+11. **Pool size:** World 1's section pool holds at least 14 section types, and more whenever a stage only scrapes past the variety
+    gates (ES C24 L1771; Matt's "more pieces").
+12. **No re-roll on death:** the layout stays until the stage is cleared.
+
+**Landing width, settled:** the G-row ruling (ES L1844, LEG:569 E105) wins over the dial's row (ES L642). It's later and sourced: pads
+are 3.5 body widths (about 154 px, Normal's climax) to 7.0 (about 308 px, Easy's intro). The 110 px end is withdrawn. Easy = Normal ×
+1.35 stays (C4) inside this range.
+
+**For the planner's generatePlan:** rules 1-4, 9, 10 and 12 are gates or draw rules it encodes now. 5-7 bind once a W1 stage places
+animals, ropes or marks. 11 is a library floor.

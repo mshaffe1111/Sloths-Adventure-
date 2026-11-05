@@ -639,7 +639,7 @@ to be tuned on Matt's play.
 |---|---|---|---|
 | Gap, as a share of the level check's limit at that height (`jumpOK`, `heldMaxGap`) | 0.55 → 0.92 | 0.45 → 0.80 | the gate stays the ceiling | **[revised: C1, C20, "Contradictions ruled", 10:49 AM]**
 | Rise, as a share of the highest rise the gate allows | 0.50 → 0.95 | 0.40 → 0.80 | Easy's CP2 caps still apply |
-| Typical landing width (p50) | 220 → 110 px | 260 → 150 px | never under 90 px | **[revised: C4, "Contradictions ruled", 10:49 AM]**
+| Typical landing width (p50) **[revised 4:03 PM ET: G L1844 wins; pads are 3.5-7.0 body widths (about 154-308 px), and the 110 px end is withdrawn: WORLD-RULEBOOK §7]** | 220 → 110 px | 260 → 150 px | never under 90 px | **[revised: C4, "Contradictions ruled", 10:49 AM]**
 | Risky pieces per burst (a miss costs a heart or a life) | 0-1 → 3-4 | 0 → 2 | rests and teach steps hold 0 |
 | Stage risk budget, E[lives] on a first run | 0.5 → 3.0 | 0.2 → 1.0 | DESIGNER §2.3; bots judge it | **[revised: C16, "Contradictions ruled", 10:49 AM]**
 | Taught animals per stage | 0-1 → 4-5 | 0-1 → 3 | only animals already taught |
