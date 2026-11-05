@@ -114,3 +114,25 @@ The generator is aimed at the way the old 1-1 is built, not the rebuilt one. It 
 4. **No all-or-nothing**: a stage fails if one piece makes up most of it, or if the same piece runs many times in a row (the
    thresholds come from the old 1-1's own numbers).
 5. **Matt plays it** in grey-box against the old 1-1 / 1-2 before any art.
+
+## 2026-11-05 ~9:45 AM ET (to the planner): the engine before 1-1
+"I disagree with finishing 1-1. I think you need to get the engine... You should be able to finish 1-1 quickly if you get the engine
+done right... Your job is to ensure this engine works well, not to design all the stages."
+So 1-1 is parked (engine-mixer 72fe81a3) and the planner builds the engine first: regression lock on 1-5, stage as data, tagged piece
+library, element gate + water zone, profile pass lines + neighbour check, one command per stage. Then 1-1 from data, then 1-2.
+
+## 2026-11-05 ~10:00 AM ET (to the planner, then the lead): floating is allowed; every piece is labelled; pieces belong to their world
+"Having floating objects are fine as long as it looks good and plays good. I don't mind having like a Mario type thing that floats.
+Sometimes having everything anchored just is too much and it clutters the screen... it needs to somewhat be clean too."
+"Somebody needs to go through and label when the objects are used, how they can be used, the props, the platforms, and what levels
+they can be used on. It has to have a good cosmetic feel to it. They have to look like they belong in that world. It can't just be
+using any piece from any world. And it has to be realistic. You can't have floating lily pads. I don't mind floating logs because
+that's more Mario. But the lily pads should be more in the water... that's a priority to get the engine tied to things."
+What this means for the engine:
+- **The support rule is per piece, not global.** Each piece's label says whether it may float (logs, planks: yes, Mario-style) or must
+  sit on what holds it in life (lily pads ON water only; stones in water need a base; roots grow from a trunk or bank). A clean screen
+  beats anchoring everything.
+- **Every piece and prop is labelled** in the tagged library: what it is, its element (ground / water / tree / air), whether it may
+  float, how it can be used (stand, climb, hang, crumble, bounce, hide), which worlds and stages it belongs to, and what it teaches.
+  The mixer may only pick a piece labelled for that world, and the element gate rejects a piece out of its element.
+- **This is priority one in the engine work** (the planner's step 2-3), ahead of pass lines and the one-command build.
