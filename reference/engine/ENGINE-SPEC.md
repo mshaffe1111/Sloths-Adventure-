@@ -2285,3 +2285,22 @@ part of the ruling:
    stills upright and sideways.
 
 (b) isn't needed: steps or a minimum gap would treat the symptom, and the cause is the art.
+
+## Start clearance in every world: move, never delete, never exempt (designer, 11-05 1:02 PM ET; the planner's ask on 7a632995)
+
+**Ruling: the clearance rules apply to every stage, whatever builds it.** No dressing within one body width of the spawn, and none on
+a set piece (one rulebook over all builders, Matt 11:06 AM).
+- **No "start piece" exemption label.** Exempting a piece by data would change the rule to get around a miss (law 22).
+- **The fix is to move the piece, not delete it.** The 60 pieces on 46 starts include designed start scenes: W8's hollows, W6's drift
+  roots, W7's offerings, W5's sewing-box pieces. Deleting them would cut the scene and the variety they give.
+  - The shared dressing pass moves each one along its own surface, just clear of the clearance (one body width plus its own half-width
+    from the spawn, and off any set piece).
+  - It keeps the piece's side of the spawn, its facing and its layer. So a hollow he starts in front of still frames him, a body
+    width on.
+  - Only where no clear spot exists on that surface within one screen is the piece dropped. Each such case is listed by stage and
+    piece, never dropped quietly.
+- **The order (Matt, 12:40: core first, polish next week):**
+  - The spec-built stages (1-1 now) take the rule today, and 7a632995 does that for 1-1. 1-1's w1TrailPost, w1TreeFrog and
+    w1FlowerBush move clear, rather than leaving 1-1's start bare, if the pass can move them. Otherwise they're listed.
+  - The shipped stages take it when the shared pass runs over them, behind each world's regression lock (fingerprints change on
+    purpose, each change explained). That's not today's core work. It goes on the roadmap with an R-id from the lead.
