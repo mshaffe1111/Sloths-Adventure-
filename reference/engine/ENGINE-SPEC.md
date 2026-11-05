@@ -372,6 +372,9 @@ as she walked. Follow her marks to the shrine"). Marks sit on trees, where she w
   away... too far, for now". The real seed is laid in the stage that teaches the glide. Not a reachable seed: doubles don't count on
   1-5, and a seed he could reach would make "for now" untrue. No gate change. The glint must be visible upright and sideways from
   n9's route.
+- **n9 push block, for CP3:** out of n9's deck. The level check never moves a pushed log, so it fails at any wall height unless the
+  block is wrapped as a puzzle room, as the shipped log puzzle is. n9 draws bough stair or the climb (never the one n3 rolled). Push
+  block comes back in CP4, wrapped as a puzzle room.
 - **Fork roads each keep their own height band**, so the two roads never cross.
 
 **The rules this plan meets by construction** (the mixer still checks every roll):
