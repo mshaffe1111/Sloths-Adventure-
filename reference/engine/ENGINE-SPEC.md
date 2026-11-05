@@ -1417,3 +1417,9 @@ core, and where it is allowed). This table is for the planner's library at engin
 4. **Worlds:** today W1's list covers forest, river, canopy-high and swamp for every kind. Use the worlds column above instead.
    Whether a kind belongs in a world other than W1 is ruled in that world's object pass, so until then the planner may keep later
    worlds closed.
+
+**[designer, 11-05 ~11:25 AM ET] Correction to fix 3 (the lead's check, Matt's "floating logs... more Mario"):**
+- A **floating log in open air is allowed in the canopy half**, under the stage's float cap. What is not allowed is a log *resting on*
+  a bough or trunk, as if a ground log had been put up in a tree.
+- So `bough hops`, `bough stair` and `double chain` may lay a log only as a floating piece, counted in the float share. Every
+  non-floating landing up there is a branch.
