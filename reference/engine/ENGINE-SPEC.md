@@ -2383,3 +2383,106 @@ None of these changes 1-1's or 1-2's acceptance test, which is data only. Each i
 | L4 | **The hurry and patience family** (11-02:109 each world's tempo polarity; :116 two kinds of slow-down; :273 "every modifier has a hurry and a patience version, both weighted equally"; :276 worlds swing between urgency and patience; :291 a wading field pushes him up to a high route) | **ADOPTED.** (a) Each library modifier is tagged `hurry` or `patience`, and a world's decks hold both, weighted equally (:273). (b) Each world's profile names its `polarity`, from its story brief (the lead's and Matt's, never guessed), and neighbouring worlds alternate (:276, a gate over the world list). (c) The two-height node: a slow field low with a high road above it (stilt roots, vines) is a node shape in the library (:291) | library tags; the world table; a node shape | tags and the alternation gate at step 6; each world's polarity with its story brief |
 | L5 | **X-6, the change of pace** (11-02:358: "a sense flipped: climb or dark/puzzle room, low tempo (2-6, 6-6, 7-6)") | **ADOPTED as a slot job.** Ruling 4's slot list gains X-6: a change of pace, slow, dark or a puzzle room. checkSpec fails an X-6 spec that doesn't flip the sense, and the gate fails an X-6 stage whose median beat rate isn't its world's lowest. 7-6 today is the fastest crumble sprint (stagePlan.ts:106), so it's a named miss on the known list, owned by W7's rebuild | ruling 4's slot field; checkSpec; a world gate | step 6 (slot is a Profile field) |
 | L6 | **Cause and effect between stages** (part2:59, :236 2-3's log jam breaks and the river rises in 2-4; :237 7-3's stone chair opens 7-6's upper passage; :232 W3's noise feeds the watchers) | **ADOPTED: one link per world**, as the ledger rules (Phase B). A world's data gains `links: [{ from, act, to, effect }]`. The effect is laid by the engine from the save state. W2's link is the log jam (:236), W7's the chair (:237), and W3's noise rule is adapted (hard landings feed the watchers, :232). Every other world's link is named in its story brief, W1's included. It needs a save-state check against PLAY-STORE-RULES (saves) before it's built | world data; the save | each world's rebuild (Phase B), never before its stages pass |
+
+## 1-1 for the builder: the one page to build 1-1 from (designer, 11-05 1:25 PM ET; Matt 1:22 PM: a fresh helper builds 1-1, the planner and designer supervise)
+
+**For the fresh stage builder.** This page gathers every ruling for 1-1 that stands today, each with its source. When an older line in
+this spec disagrees with this page, **this page wins.** Every older line it replaces is marked "[revised]" where it stands.
+- Read the brief first: `reference/engine/story-briefs/1-1.md` (on the lead's branch, ccr-0d59a91c-oy3imz). Then this page, then the
+  planner's how-to (R-165.40).
+- You change **1-1's data only** (its spec in stages.ts: story, profile, plan). Anything the data can't say is an engine finding: you
+  report it, and the planner fixes the engine (MATT-DIRECTION 11-05 1:22 PM).
+- A question this page doesn't answer: ask the designer. It is logged as a gap and counts as a fix against the pass line.
+
+### A. The story and the feel (the brief; quote the brief, not this page, if they ever differ)
+- Two days after the soldiers took Meeca, Pokey leaves the home forest: slow, and coming anyway (brief, opening section).
+- **Start:** small and close to home, a little funny. The squirrels' laughter is the joke. Gentle, safe ground (brief :20).
+- **First lift:** "I can actually do this." The first real step up off the forest floor (:21).
+- **The moment:** the double-jump chain, Pokey surprising himself (:22-23).
+- **End:** "up in the high branches, on the petal trail, pointed north. Resolve, not triumph. The bigger views belong to later stages"
+  (:24). No big view: the view north is 1-4's (:41).
+- **Kept out (owned by other stages, :39-44):** Meeca's note and the hibiscus line (1-2); the punch (1-3); the kapok climb and the view
+  north (1-4); the folded petals and the chase (1-5); lianas (1-6); the bush (1-7). So 1-1 also has **no creaky, no crumbling and no
+  animals** (nothing untaught).
+
+### B. The profile (SPEC_11's `profile`)
+
+| Field | Value | Source |
+|---|---|---|
+| trend | `up`: from the forest floor to the high branches | CP4 step 2 |
+| tempo | `calm` (descriptive; the numbers are in `roll`) | 12:48 ruling |
+| hills | `rolling` (the old 1-1 measured rolling; "hilly" was a word, not data) | 12:45, 12:48 |
+| branching | `moderate`: ground forks early (n3, n5), a canopy fork late (n10) | CP4 feel profile |
+| water | `false`: no creek and no lily pads until the engine draws 1-1's water zone. n5's low road is stump hop and bank hops meanwhile | 9:56 ruling (b), element gate |
+| petals | `trail`: low, at marching height, on trunks, banks and branches beside the route, never high in the canopy (brief :28-29) | brief |
+| look | lead `ground`, art `w1`. The commonest piece is a ground piece. Boughs only from n8 | 9:20 ruling, brief |
+| length | Normal 160-195 s (2:40-3:15), Easy ≥ 120 s | CP4 length; C28 |
+| core | the stage's top 3 landing kinds by share (a rank rule, #132). Expected: bank, log, then stone or branch | backlog #132 |
+| roll | `roll11` exactly as written in "1-2 and 1-5 measured" (hop families, gap 0.79-0.91 centre 0.82, rise families, p90 caps, bursts 5-20 s) | 12:48 ruling |
+
+### C. The node plan (n1-n11)
+
+| # | Job | Deck (ideas) | Height | Dot's line (as worded in engine-mixer's dotLinesData.ts) |
+|---|---|---|---|---|
+| n1 | teach run | floor walk, one burst, no gaps | floor | coach.run (shipped) |
+| n2 | teach jump, safe | bank hops, stump hop, log jam | floor | "Jump the little gaps" (hint.1-1.gaps, shipped) |
+| n3 | practise, a ground fork | high: stump tops, log jam; low: stump hop, bank hops | floor → low | "Up the bank! Step to step" (hint.1-1.bank) |
+| n4 | teach bounce | bounce mound, stump hop, bank hops. The mushroom lifts him onto a mound top, never a bough | low → mound top | — |
+| n5 | the fork, on the ground | high: stump tops, log jam; low: bank hops, stump hop | low (two roads) | — |
+| n6 | rest | bank walk, a Dot spot; a flag only if n7 follows hard | low | — |
+| n7 | teach double, safe | double gap, bank hops, stump hop | low | "Flick up again in the air to jump twice" (hint.1-1.double, shipped); coach.nice at the first double (shipped) |
+| n8 | the climb up into the boughs | bough stair, bounce up (never the long kapok climb: 1-4's) | low → mid | — |
+| n9 | **the moment (test)** | the double chain: 3-4 rising doubles, bough to bough, a flag before it | mid → high | "Look how high we are!" at its end (hint.1-1.high) |
+| n10 | the canopy fork | high: bough hops, bough stair; low: bough hops, stump hop. Rejoin | high (two roads) | "No soft moss up here!" (hint.1-1.noMoss) |
+| n11 | **the arrival** (ruling 4's exception, brief :24) | the top branch: an arrival on the petal trail to the shrine and the bootprint. It's a rest by the rest rule (G #83), with no dead walk; its deck gains bough hops, the top branch last | high → end bank | — |
+
+- **Hearts:** only after real risk (n9).
+- **Flags:** before n9, and the flag rule decides the rest.
+- **The three lines marked "(hint.1-1.bank/high/noMoss)"** are Matt-approved (6dae405d8, 11-04) but **not on main**. If the builder's
+  base lacks them, carry them in as data from engine-mixer's dotLinesData.ts:99-101, word for word. Never write new ones.
+
+### D. Lay (SPEC_11's `lay` and recipes)
+- `startY: 1260`; **end: `{ kind: 'bank', w: 640 }`**: the shrine stands on its bank (11:04 ruling). Remove `burstMin` and
+  `burstMax`; bursts are by time (`roll.burstSecs`).
+- **`stump tops` and `log jam` lay thin logs, `heights: { log: 30 }`**, each on a drawn stump that meets the log's underside, stands on
+  the first surface under it, and draws behind him (12:51 ruling).
+- **Dressing:**
+  - the squirrels at the start (squirrel-sit, -wave, -tip), each moved clear of the spawn by the clearance rule, never deleted (1:02
+    ruling);
+  - the bootprint at the end, a flush decal on the end bank's top band, toe east, just past the shrine's door (11:04 ruling). Its art
+    is on the unmerged art-bootprint branch, so if it isn't in the builder's tree, report it. Never a stand-in.
+
+### E. The pass line (all of it must hold)
+1. **The acceptance test** (ES 1657):
+   - ≤ 1.7 h wall and ≤ about 1.1% of the week;
+   - ≤ 2 fix rounds, each a change to 1-1's data only;
+   - 0 engine changes (an engine change ends the attempt, and it is re-run fresh: P9 is marked);
+   - every gate 16/16 on Normal and Easy;
+   - stills P-1 to P-13 and S-1 to S-9 at 6 places, upright and sideways, passed by the designer, then the lead;
+   - library-check green.
+2. **1-1's own lines:**
+   - the median float share over rolls ≤ 25.3%;
+   - boughs + creaky (catch branches count) ≤ 25.3%;
+   - pickups in one view ≤ 4 upright and ≤ 7 sideways;
+   - breakable or animal kinds in a view: 0 (none taught);
+   - standing kinds in a view ≤ 4;
+   - upright views with play in the upper half ≥ 98.0%;
+   - splits ≥ 19, two-road share ≥ 40%;
+   - at least 4 ideas, none twice in a row (the 40% cap is reported, not judged, until ruling 8's run: C6);
+   - the old 1-1's floor numbers: up or down on 4 of 5 landings, something new every 572 px.
+3. **The engine's gates:**
+   - era diversity ≥ 0.35 over 200 rolls (32 is the quick check);
+   - lookalike < 0.78 and the 20 s window < 0.30;
+   - each roll inside roll11's ranges;
+   - E3 (footingOf);
+   - the vault-pit test on all 16 layouts;
+   - start clearance;
+   - jumps judged as taught (single before n7, doubles after: cp4-jumps11);
+   - every repo gate in `.github/workflows/gates.yml` (the list there, never a copy).
+4. **Misses known today, before the builder starts** (engine work, not the builder's):
+   - boughs + creaky 35.3%;
+   - Easy upright pickups 5;
+   - standing kinds 5;
+   - upper half 93.8%;
+   - float 25.4%.
+   If any is still there when the builder runs, it's an engine finding for the planner, never a reason to bend 1-1's data around it.
