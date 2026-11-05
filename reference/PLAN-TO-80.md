@@ -96,3 +96,9 @@ Phase A is sized by the roadmap keeper from measured history; Phases B and C are
 - **Order:** the repetitive layouts first. Special stages and bosses are hand-built and come later.
 - **All of them share the one engine.** They write data (the world profile, section patterns, art choices, stage specs), never
   their own engine code. Each world is judged by a reviewer who didn't design it.
+
+## The engine's core win (Matt, 2026-11-04: "the core win is that we cannot spend full days on just a level or two. It's kind of painful to watch.")
+The engine plan's first acceptance criterion, measured on its first real stage: one stage from description to accepted in about
+an hour of wall-clock time, at a small fraction of the tokens of a hand-built stage today (target ~0.3% of the week or less), coming
+out right on the first pass (the self-fixer and blame log handle the rest). If the first stage misses this by a wide margin, the
+design is wrong and gets rethought, not pushed through.
