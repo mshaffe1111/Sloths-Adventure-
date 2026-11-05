@@ -8,6 +8,7 @@
  * asks. `checkSpec` names every problem in plain words before anything is built, so a helper fixes the spec, not the code.
  */
 
+import { taughtBefore } from '../moveLadder.ts';
 import type { Theme } from './library.ts';
 
 /** where a piece belongs (the designer's element gate, 11-05): a piece outside its element fails the build */
@@ -102,9 +103,9 @@ export interface StageSpec {
   goal: { kind: 'sprint' } | { kind: 'marks'; count: number; normal: number; easy: number };
   /** dressing and the end's clue prop, by the art atlas's frame names (drawn only once that atlas is wired) */
   dress?: { start?: string[]; clue?: string };
-  /** the moves taught before this stage (by the stages before it), which any node may use (the game's move ladder replaces this list,
-   *  step 6) */
-  taughtBefore: Move[];
+  /** the moves taught before this stage (by the stages before it), which any node may use. Left out, they come from the move table
+   *  (moveLadder.ts taughtBefore: where main teaches each move); a spec whose moves the table does not cover yet lists them here */
+  taughtBefore?: Move[];
   /** what runs on the built stage after the petal pass and the dressing: the dressing kept off the play line (no piece over the shrine,
    *  none in the air he walks or jumps through, none with nothing to grow from) */
   post?: { clearDress?: boolean };
@@ -140,7 +141,7 @@ export function checkSpec(s: StageSpec, ideas: Record<string, { element: Element
     const used = new Set(s.nodes.flatMap((n) => (Array.isArray(n.deck) ? n.deck : [...n.deck.high, ...n.deck.low])));
     for (const name of used) for (const k of ideaKinds[name] ?? []) if (pieces[k] && !pieces[k].worlds.includes(s.profile.theme)) err.push(`"${name}" lays ${k}, which is not of the ${s.profile.theme} theme`);
   }
-  const known = new Set<Move>(s.taughtBefore);
+  const known = new Set<Move>(s.taughtBefore ?? taughtBefore(s.id));
   if (!s.nodes.length) err.push('the spec has no nodes');
   if (s.profile.length.normal[0] < 120) err.push(`Normal's length starts at ${s.profile.length.normal[0]} s; every stage takes at least 120 s`);
   s.nodes.forEach((n, i) => {
