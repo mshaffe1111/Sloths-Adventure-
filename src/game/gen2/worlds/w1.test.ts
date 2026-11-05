@@ -89,3 +89,20 @@ test("W1_KIT's graph and tempo rows fit the planner's manifest types, and every 
   const jobs: import('../types.ts').NodeJob[] = W1_SECTIONS.flatMap((s) => s.jobs ?? []);
   assert.ok(jobs.length > 0);
 });
+
+test("every W1 section's every version lays its exit where its exitDy says (within 25 px: the corridor clamp steers by it, the planner's CHECK 3b finding 5)", async () => {
+  const { layLocal, planBudget, rngFor } = await import('../pipeline.ts');
+  const { cfg, manifest } = await import('../toyWorld.ts');
+  const nb = planBudget(cfg('1-1', 'stealth'), manifest, 'normal');
+  (nb as { moves: string[] }).moves = ['walk', 'jump', 'double'];
+  const off: string[] = [];
+  for (const s of W1_SECTIONS) {
+    if (s.needs?.includes('rope')) continue;
+    for (const v of s.subBlocks![0].versions) for (const seed of [1, 2, 3]) {
+      const y = layLocal(s, nb, rngFor(seed), false, { versions: { body: v.id } }).exit.y;
+      if (Math.abs(y - s.exitDy) > 25) { off.push(`${s.id}/${v.id}: exitDy ${s.exitDy}, laid ${Math.round(y)}`); break; }
+    }
+  }
+  // (today's breaches are the bounce walls and lips layLocal clamps to a walk's rise, about 80 px: the planner's bounce place is asked for)
+  assert.deepEqual(off, []);
+});
