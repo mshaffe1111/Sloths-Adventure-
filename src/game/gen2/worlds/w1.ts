@@ -288,14 +288,14 @@ const developStoneDips = section({
 /** w1Sections '1-1' twist: 'gaps', 'highLeaps', 'stoneLeaps' (on main 272-302); 'highLeaps' and 'stoneLeaps' ran 24-36 s, so cut */
 const twistGaps = section({
   id: 'w1-second-jump', floor: 'jump', name: 'the second jump', phases: ['ten'], difficulty: 5, needs: ['double'], uses: ['double'], maxPerStage: 1, // (Round 2 (c): the double's first test; #8 teaches it)
-  versions: [{ id: 'old', groups: [gShelf(), gDoubleGaps([[0.62, 0.66], [0.72, 0.76], [0.82, 0.86]]), gRest([200, 260]), gStones([60, 70, 50], [0.6, 0.72], true)] }],
+  versions: [{ id: 'old', groups: [gShelf(), gDoubleGaps([[0.85, 0.89], [0.89, 0.93], [0.91, 0.95]]), gRest([200, 260]), gStones([60, 70, 50], [0.6, 0.72], true)] }],
   feel: ['1-1'], not: NOT_11, rating: 5,
   source: "w1Sections '1-1' twist 'gaps' (on main 273-280): practiceShelf, gapRun(reachTwo x 0.62/0.72/0.82), a run of 200-260, pillars [60,70,50] dbl at 0.6-0.72",
 });
 const twistLeapStones = section({
   id: 'w1-leap-stones', floor: 'jump', name: 'leaps and stones', phases: ['ten', 'ketsu'], difficulty: 6, needs: ['double'], uses: ['double'],
-  versions: [{ id: 'two-gaps', groups: [gRest([200, 260]), gDoubleGaps([[0.62, 0.66], [0.72, 0.76]]), gStones([60, 70, 50], [0.6, 0.72], true), gStones([50, 60, 60, 50], [0.6, 0.72], true)] },
-    { id: 'one-gap', groups: [gRest([200, 260]), gDoubleGaps([[0.62, 0.66]]), gStones([60, 70, 50], [0.6, 0.72], true), gBusy(['dip']), gStones([50, 60, 50], [0.6, 0.72], true)] }],
+  versions: [{ id: 'two-gaps', groups: [gRest([200, 260]), gDoubleGaps([[0.85, 0.89], [0.89, 0.93]]), gStones([60, 70, 50], [0.6, 0.72], true), gStones([50, 60, 60, 50], [0.6, 0.72], true)] },
+    { id: 'one-gap', groups: [gRest([200, 260]), gDoubleGaps([[0.85, 0.89]]), gStones([60, 70, 50], [0.6, 0.72], true), gBusy(['dip']), gStones([50, 60, 50], [0.6, 0.72], true)] }],
   feel: ['1-1'], not: NOT_11, rating: 6,
   source: "w1Sections '1-1' twist 'stoneLeaps' and 'highLeaps' (on main 284-302) less the practice shelf (in w1-second-jump): gapRun(reachTwo x 0.62[/0.72]), pillars [60,70,50] dbl, busy(2, [leap, dip]), pillars [50,60,60,50] dbl",
 });
@@ -475,8 +475,8 @@ const hollowTwoway = section({
 const mushroomLift = section({
   id: 'w1-mushroom-lift', name: 'first lift', phases: ['sho'], difficulty: 2, teaches: 'bounce', ports: ['ground', 'ledge'], exitDy: -210,
   versions: [
-    { id: 'mound', groups: [gRest([160, 200]), gStile([40, 76, 100, 76, 40]), (k, after) => { const f = floor(`${k}f`, [520, 600], startOr(after)); const L = bankW(`${k}L`, f.key, [-225, -200], [330, 400]); /* (B3: the floor ends at the bank face, its lip 200-225 up) */ return { pieces: [f, ...perch(k, f.key, [0.15, 0.2]), L], sockets: [tip(f.key, 0.05), petals(`${k}pl`, L.key, [0.3, 0.7], 2)], last: L.key }; }] },
-    { id: 'log-road', groups: [gRest([160, 200]), gStile([40, 76, 100, 76, 40]), (k, after) => { const f = floor(`${k}f`, [520, 600], startOr(after)); const B = bankW(`${k}B`, f.key, [-225, -200], [300, 340]); const P = post(`${k}P`, B.key, [0.6, 0.7], [70, 80]); const L = logOn(`${k}L`, P.key, [240, 300]); return { pieces: [f, ...perch(k, f.key, [0.15, 0.2]), B, P, L], sockets: [tip(f.key, 0.05), petals(`${k}pl`, L.key, [0.3, 0.7], 2)], last: L.key }; }] },
+    { id: 'mound', groups: [gRest([160, 200]), gStile([40, 76, 100, 76, 40]), (k, after) => { const f = floor(`${k}f`, [520, 600], startOr(after)); const L = bankW(`${k}L`, f.key, [-220, -200], [330, 400]); /* (B3 as amended: the floor ends at the bank face, its lip 200-220 up) */ return { pieces: [f, mushroom(`${k}m`, f.key, [0.7, 0.8]), L], sockets: [tip(f.key, 0.05), petals(`${k}pl`, L.key, [0.3, 0.7], 2)], last: L.key }; }] },
+    { id: 'log-road', groups: [gRest([160, 200]), gStile([40, 76, 100, 76, 40]), (k, after) => { const f = floor(`${k}f`, [520, 600], startOr(after)); const B = bankW(`${k}B`, f.key, [-220, -200], [300, 340]); const P = post(`${k}P`, B.key, [0.6, 0.7], [70, 80]); const L = logOn(`${k}L`, P.key, [240, 300]); return { pieces: [f, mushroom(`${k}m`, f.key, [0.7, 0.8]), B, P, L], sockets: [tip(f.key, 0.05), petals(`${k}pl`, L.key, [0.3, 0.7], 2)], last: L.key }; }] },
   ],
   feel: ['1-1'], not: NOT_11, rating: 2,
   source: 'W1-NEW-SECTIONS #5: the brief\'s "first lift" (1-1.md:20); the perch rule (Q2). sho (the ruling, 08c5a2944: the bounce taught after the double); a stump stile before the lift for the 10 s',
@@ -510,7 +510,7 @@ const fallenTrunk = section({
 /** #8 */
 const doubleTeach = section({
   id: 'w1-double-teach', floor: 'hop', name: 'double over the dip', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', maxPerStage: 1,
-  versions: [4, 5].map((n) => ({ id: `gaps${n}`, groups: [(k, after) => { const g = gRest([300, 360])(k, after); g.sockets.push(dot(`${k}nice`, g.last, 0.2, 'coach.nice')); return g; }, gDoubleGaps(([[0.6, 0.64], [0.66, 0.7], [0.7, 0.74], [0.7, 0.74], [0.72, 0.76], [0.72, 0.76]] as R2[]).slice(0, n + 1)), (k: string, after: string | null) => { const g = gRest([200, 240])(k, after); g.sockets.push(dot(`${k}dbl`, g.last, 0.3, 'double')); return g; }] })),
+  versions: [4, 5].map((n) => ({ id: `gaps${n}`, groups: [(k, after) => { const g = gRest([300, 360])(k, after); g.sockets.push(dot(`${k}nice`, g.last, 0.2, 'coach.nice')); return g; }, gDoubleGaps(([[0.85, 0.89], [0.89, 0.93], [0.91, 0.95], [0.91, 0.95], [0.91, 0.95], [0.91, 0.95]] as R2[]).slice(0, n + 1)), (k: string, after: string | null) => { const g = gRest([200, 240])(k, after); g.sockets.push(dot(`${k}dbl`, g.last, 0.3, 'double')); return g; }] })),
   feel: ['1-1'], not: NOT_11, rating: 3,
   source: 'W1-NEW-SECTIONS #8: one gap just past a single jump over a safe dip (soft pit: a floor under it, stair steps back, pipeline pitUnder/pitSteps), then two more (R2, the 3:11 ruling)',
 });
@@ -540,8 +540,8 @@ const gRungs = (n: number, rise: R2, kind: 'jump' | 'double', share: R2, w: R2 =
 /** #10 */
 const canopyRungs = section({
   id: 'w1-canopy-rungs', name: 'canopy rungs', phases: ['ten'], difficulty: 7, needs: ['double'], uses: ['double'], ports: ['ledge', 'ledge'], exitDy: -590, window: BOUGH_WINDOW,
-  // (NODES §8.7 B2a: a rise of 130-165 px, past a single's 108 + 20); 4-5 rungs, wide, for the 10 s inside the 900 px corridor (the porter's note to the designer, 11-05)
-  versions: [[4, [500, 580]], [5, [380, 440]]].map(([n, w]) => ({ id: `rungs${n}`, groups: [gRungs(n as number, [-165, -130], 'double', [0.3, 0.45], w as R2)] })),
+  // (NODES §8.7 B2a as amended, 891908b5b: a block rise 130-145 px, past a single's 108 and under the 148 px clamp); 4-5 rungs, wide, for the 10 s inside the 900 px corridor (the porter's note to the designer, 11-05)
+  versions: [[4, [500, 580]], [5, [380, 440]]].map(([n, w]) => ({ id: `rungs${n}`, groups: [gRungs(n as number, [-145, -130], 'double', [0.3, 0.45], w as R2)] })),
   feel: ['1-1'], not: NOT_11, rating: 7,
   source: "W1-NEW-SECTIONS #10: the brief's double chain (1-1.md:21-22); catch boughs 60-120 under each gap are the engine's (floorRoll.catchDrop 90, the planner's); left or right leaning by the mirror",
 });
@@ -639,7 +639,7 @@ const stumpTowers = section({
   id: 'w1-stump-towers', floor: 'jump', name: 'stump towers', phases: ['ten'], difficulty: 5, needs: ['double'], uses: ['double'],
   versions: [4, 5].map((n) => ({ id: `towers${n}`, groups: [gRest([200, 260]), (k: string, after: string | null) => {
     const pieces: W1Piece[] = []; let prev = after!;
-    seq(n, (j) => { const key = `${k}t${j}`; pieces.push(limb(key, { kind: 'double', after: prev, dy: [-150, -130], share: [0.2, 0.3], soft: true }, LAND, 'log')); prev = key; }); // (NODES §8.7 B2a: a rise of 130-165 px, past a single's 108 + 20)
+    seq(n, (j) => { const key = `${k}t${j}`; pieces.push(limb(key, { kind: 'double', after: prev, dy: [-145, -130], share: [0.2, 0.3], soft: true }, LAND, 'log')); prev = key; }); // (NODES §8.7 B2a as amended, 891908b5b: a block rise 130-145 px, past a single's 108 and under the 148 px clamp)
     pieces.push({ ...floor(`${k}o`, [300, 360]), place: { kind: 'jump', after: prev, dy: [n * 140 - 10, n * 140 + 10], share: [0.25, 0.35], soft: true } });
     return { pieces, sockets: pieces.slice(0, n).map((p) => petals(`p-${p.key}`, p.key, 0.5, 1)), last: `${k}o` };
   }, gStile([40, 76, 40])] })),
@@ -664,11 +664,11 @@ const canopyWeave = section({
     const pieces: W1Piece[] = [limb(`${k}a`, { kind: 'start' }, [260, 320])];
     let hi = `${k}a`, mid = `${k}a`;
     seq(n, (j) => {
-      pieces.push(limb(`${k}h${j}`, { kind: j ? 'double' : 'jump', after: hi, dy: j ? [-10, 10] : [-165, -130], share: j ? [0.55, 0.65] : [0.3, 0.45] }, [200, 240]));
+      pieces.push(limb(`${k}h${j}`, { kind: j ? 'double' : 'jump', after: hi, dy: j ? [-10, 10] : [-145, -130], share: j ? [0.55, 0.65] : [0.3, 0.45] }, [200, 240]));
       pieces.push(limb(`${k}m${j}`, { kind: 'jump', after: mid, dy: j ? [-10, 10] : [25, 35], share: [0.45, 0.55] }, [200, 240], 'branch', false));
       hi = `${k}h${j}`; mid = `${k}m${j}`;
     });
-    pieces.push(limb(`${k}o`, { kind: 'jump', after: hi, dy: [130, 165], share: [0.3, 0.4] }, [260, 320]));
+    pieces.push(limb(`${k}o`, { kind: 'jump', after: hi, dy: [130, 145], share: [0.3, 0.4] }, [260, 320]));
     pieces.push(lowLog(`${k}lo`, `${k}m0`, [0.2, 0.3]));
     return { pieces, sockets: [petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2), find(`${k}find`, hi)], last: `${k}o` };
   }] })),
@@ -736,7 +736,7 @@ const stiltLogs = section({
   id: 'w1-stilt-logs', floor: 'jump', name: 'high stump logs', phases: ['ten'], difficulty: 5, needs: ['double'], uses: ['double'],
   versions: [4, 5].map((n) => ({ id: `logs${n}`, groups: [gRest([200, 260]), (k: string, after: string | null) => {
     const pieces: W1Piece[] = []; let prev = after!;
-    seq(n, (j) => { const key = `${k}l${j}`; pieces.push(limb(key, { kind: 'double', after: prev, dy: [-150, -130], share: [0.3, 0.4], soft: true }, [180, 240], 'log')); prev = key; }); // (NODES §8.7 B2a: a rise of 130-165 px, past a single's 108 + 20)
+    seq(n, (j) => { const key = `${k}l${j}`; pieces.push(limb(key, { kind: 'double', after: prev, dy: [-145, -130], share: [0.3, 0.4], soft: true }, [180, 240], 'log')); prev = key; }); // (NODES §8.7 B2a as amended, 891908b5b: a block rise 130-145 px, past a single's 108 and under the 148 px clamp)
     pieces.push({ ...floor(`${k}o`, [300, 360]), place: { kind: 'jump', after: prev, dy: [n * 140 - 10, n * 140 + 10], share: [0.25, 0.35], soft: true } });
     return { pieces, sockets: pieces.slice(0, n).map((p) => petals(`p-${p.key}`, p.key, 0.5, 1)), last: `${k}o` };
   }, gStile([40, 76, 40])] })),
@@ -757,10 +757,10 @@ const twoAnswers = section({
 /** #29 (no rope: the span is a thick log held at both ends by the top boughs, Round 3 story fix) */
 const boughLog = section({
   id: 'w1-bough-log', name: 'bough stair and log span', phases: ['ketsu'], difficulty: 5, needs: ['double'], uses: ['double'], ports: ['ledge', 'ledge'], exitDy: -440, window: BOUGH_WINDOW,
-  // (NODES §8.7 B2a: a rise of 130-165 px, past a single's 108 + 20); 4-5 boughs, wide, inside the corridor
+  // (NODES §8.7 B2a as amended, 891908b5b: a block rise 130-145 px, past a single's 108 and under the 148 px clamp); 4-5 boughs, wide, inside the corridor
   versions: [4, 5].flatMap((n) => [true, false].map((span) => ({ id: `${n}-${span ? 'log' : 'bough'}`, groups: [(k: string) => {
     const pieces: W1Piece[] = [limb(`${k}b0`, { kind: 'start' }, [240, 280])];
-    seq(n - 1, (j) => pieces.push(limb(`${k}b${j + 1}`, { kind: 'double', after: `${k}b${j}`, dy: [-165, -130], share: [0.3, 0.45] }, n === 4 ? [460, 540] : [360, 440])));
+    seq(n - 1, (j) => pieces.push(limb(`${k}b${j + 1}`, { kind: 'double', after: `${k}b${j}`, dy: [-145, -130], share: [0.3, 0.45] }, n === 4 ? [460, 540] : [360, 440])));
     const top = `${k}b${n - 1}`;
     pieces.push(span ? limb(`${k}S`, { kind: 'walk', after: top, dy: [0, 0] }, [380, 440], 'log') : limb(`${k}S`, { kind: 'double', after: top, dy: [-10, 0], share: [0.55, 0.65] }, [200, 240]));
     pieces.push(limb(`${k}o`, { kind: 'walk', after: `${k}S`, dy: [0, 0] }, [200, 240]));
