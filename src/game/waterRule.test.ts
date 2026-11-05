@@ -3,7 +3,8 @@
  * floor that closes it, a river, a teaching river), the screen tied to the engine's own view, the gate's two kinds of miss
  * (tools/validate/watercheck.ts missesOf), and gen2's placement (pipeline.ts layDry) on 6-7, the only stage with calm water: all 16
  * shipped rolls, Normal and Easy, keep every deadly column more than a screen from the well, on the plan that was curated, and the
- * water left is still deadly water (the fix moves the water away from the well; it does not take World 6's water out).
+ * water left is still deadly water (the fix moves the water away from the well; it does not take World 6's water out); and W7, the
+ * teaching pool: no animal, no zone and no fall that costs a life within its screen.
  */
 import './headlessDom.ts';
 import test from 'node:test';
@@ -78,6 +79,10 @@ test("6-7's shipped rolls, Normal and Easy: no deadly water within a screen of t
       const water = (st.gen2.falls ?? []).filter((f) => f.kind === 'water');
       assert.ok(water.length >= 10, `${what}: ${water.length} water gaps left`);
       for (const f of water) assert.ok(Math.min(distTo(f.x0, pools[0]), distTo(f.x1, pools[0])) > W3_SCREEN, `${what}: water ${f.x0}-${f.x1}`);
+      // (W7, the teaching pool: nothing that can cost a life or a heart within its screen: no animal, no zone, only soft falls)
+      assert.deepEqual(st.enemies.filter((e) => distTo(e.x, pools[0]) <= W3_SCREEN).map((e) => `${e.type} at ${e.x}`), [], `${what}: an animal within a screen of the well`);
+      assert.deepEqual((st.zones ?? []).filter((z) => Math.min(distTo(z.x0, pools[0]), distTo(z.x1, pools[0])) <= W3_SCREEN).map((z) => z.kind), [], `${what}: a zone within a screen of the well`);
+      assert.deepEqual((st.gen2.falls ?? []).filter((f) => f.kind !== 'soft' && Math.min(distTo(f.x0, pools[0]), distTo(f.x1, pools[0])) <= W3_SCREEN), [], `${what}: a fall that costs a life within a screen of the well`);
     }
   }
 });

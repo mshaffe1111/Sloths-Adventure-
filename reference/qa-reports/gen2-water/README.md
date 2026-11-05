@@ -35,6 +35,7 @@ rolls: deadly dirty water 483-634 px from the calm well.
 | 6-7, 16 rolls x Normal and Easy (`waterRule.test.ts`) | **32/32 pass**: nearest deadly water 1,931-4,325 px from the well (was 483-634); same plan and layout seed as curated on all 32; 0 levelCheck errors. Fails on the old builder (seed 186666 first) |
 | W6-W8 regression lock (`tools/engine/gen2snap.ts`, 21 stages x 32 builds) | **640/672 unchanged**: every build of the other 20 stages identical. 6-7 32/32 changed, each explained below |
 | Curation's filters and jump bots on the 16 shipped 6-7 rolls, base vs fix (`tools/gen2/curate.ts` measureRoll + botCheck) | 0 fails before and after; adult bot (Normal) unchanged on all 16 (worst 0.94); kid bot (Easy) worst 0.89 (floor 0.85), within ±0.02 of base per roll; every liana still swung; quick player, model time, dead time and quiet stretches identical on Normal |
+| W7, the teaching pool (`waterRule.test.ts`) | within a screen of the well on all 32 builds: no animal, no zone, no crumbling tile, only soft falls |
 | The water gate (`tools/validate/watercheck.ts`), all 102 stages x 16 layouts x 2 settings | **PASS, 3,264 builds in 561 s**; on the base it fails 6-7 on 32/32 (483, 507, 511, 631 px ...: the research's numbers) |
 
 **Every 6-7 fingerprint change, object by object** (full builds of base and fix diffed, `generateStage` + `withGoals`/`easyStage`):
@@ -43,7 +44,10 @@ rolls: deadly dirty water 483-634 px from the calm well.
   platform identical, width identical). Downstream of that, the shared finish passes (`stageGenerator.ts` finishStage: petal arcs, finds,
   the heart by every second flag) re-place a few petals (+0..4 / -0..6) because the gaps under them changed; on one roll (layout 6) the
   first water warning sign (and its hint) moves from the old first creek (x 5236) to the first one now left (x 9088). Enemies, vines
-  and flags unchanged on all 16; hints unchanged on the other 15.
+  and flags unchanged on all 16; hints unchanged on the other 15. `kit` changes on the 9 rolls with a dried gap before the room: the
+  pit's two blocks are numbered before it, so the room's anchors name platform ids +2 (every anchor's spot the same). `proto` changes
+  are the dressing pass (`addDress`, run after the pickups): a few props re-placed where the petals moved, and the new pit floors
+  dressed (wet leaves and a snail rock on the dried pit in layout 2: the rock in `sideways-x7354-after.jpg`).
 - **Easy (16):** the same dried gaps (Easy's pit has two steps: +3 or +6 blocks), and the perch past each dried swing moves 6-14 px
   (Easy's wider perch is pushed clear of the pit's steps, `pipeline.ts` `minFor`, so a jump from a step can't skip the swing), so
   everything after it shifts by that much: every changed platform is a base platform shifted by 6-14 px (or -4 to -11 where the band
@@ -56,6 +60,7 @@ rolls: deadly dirty water 483-634 px from the calm well.
 | `sideways-x7354-before/after.jpg` (Pokey by the root door, the old first water after the well) | Before: the calm well (left) and the foaming dirty water (right) on one screen: two opposite meanings in one view. After: the swing's gap is a dip: the step (a moss-stone block) stands on the pit floor, the floor spans the gap, both banks reach down to it. It reads "a dry dip; the step goes back up to the ledge" | pass, with the note below |
 | `sideways-x6369-before/after.jpg` (between the old water before the well and the well) | Before: dirty water bottom left, the well right. After: no dirty water; the perch bank now reaches down to the pit floor (squared face) | pass |
 | `sideways-x5725-after.jpg`, `upright-x7840-after.jpg` (Pokey standing in each dried pit) | The floor holds him; the step at the take-off side leads back to the swing's ledge; the far wall is too high (the swing is still needed, bots: every liana swung) | pass |
+| `easy-sideways-near-before/after.jpg`, `easy-upright-near-*` (Easy, the same spot +7 px) | Before: dirty water beside the well on one screen. After: the dried pit steps down in two painted steps (Easy's smaller hop) to a dressed floor (snail rock, stump); nothing deadly on screen | pass |
 | `*-swim-*`, `*-bank-*` | The well itself and its banks: identical before and after (the room was not touched) | pass |
 
 **Named rough spots (not hidden):**
