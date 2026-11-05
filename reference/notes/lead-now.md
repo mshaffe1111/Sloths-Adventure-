@@ -30,6 +30,8 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 - How far tonight: he decides once he trusts how I run the team. Meter 67% at 4:23 PM ET (1.5%/h since 2:23 PM).
 - Judgment item 1: does 1-1 end on a quiet arrival? (designer's pick: yes).
 - Owed: the end-of-day review reference/daily/2026-11-05.md.
+- Owed (law 21): R-ids on ROADMAP for today's direction change (chunk pool on gen2, roll dials, window, new gates) and for the
+  supervisor role. ROADMAP and STATUS live on origin/ccr-0d59a91c-oy3imz; bring them onto this branch first (docs only, never its src/).
 
 ## My traps (read every time)
 - Read the real thing, not the report: open the commit, the file, the still. A helper's "done" isn't done until I've looked.
