@@ -26,6 +26,7 @@ import { buildRoll, checkRoll, measureRoll, RULES, type RollResult } from '../in
 import { cosine } from '../inspect/analyze.ts';
 import { looksAlike } from '../inspect/lookalike.ts';
 import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
+import { supportCheck } from '../../src/game/mixer/support.ts';
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const id = process.argv[2];
@@ -124,12 +125,20 @@ if (ref?.view) {
       const med = Math.round(share[Math.floor(share.length / 2)] * 1000) / 1000;
       shown.push(line(`${set} boughs + creaky share of landings`, med, (x) => x <= ref.boughShareMax!, `<= ${ref.boughShareMax}`));
     }
+    // (the kinds count, R2 lesson 1: distinct surface kinds a build, CP1's kinds (measure2.py kind, line for line))
+    if (ref.surfaceKindsMin !== undefined) {
+      const kind = (q: DP & { type: string; style?: string; soil: boolean; creak?: unknown; catchL?: boolean; drift?: boolean; lily?: boolean; h: number }) => q.soil ? null : q.type === 'bouncy' ? 'mushroom' : q.drift || q.type === 'drift' ? 'drifting log' : q.type === 'fragile' ? (q.creak ? 'creaking limb' : 'snap twig') : q.style === 'canopy_bridge' ? 'bridge' : q.style === 'log' ? 'log' : q.style === 'branch' ? (q.catchL ? 'catch branch' : 'branch') : q.style === 'moss_stone' ? (q.h > 60 ? 'ground' : 'stone') : q.lily ? 'lily pad' : 'ground';
+      const ks = rs.map((r) => new Set(r.platforms.map((q) => kind(q as never)).filter(Boolean)).size).sort((a, b) => a - b);
+      const med = ks.length % 2 ? ks[(ks.length - 1) / 2] : (ks[ks.length / 2 - 1] + ks[ks.length / 2]) / 2;
+      shown.push(line(`${set} surface kinds a build`, med, (x) => x >= ref.surfaceKindsMin!, `>= ${ref.surfaceKindsMin}`));
+    }
     // (an idea laid twice in a row: two bursts back to back with the same idea; a fork's road pair counts as one entry)
     const twice = rs.map((r) => (r.mix ?? []).filter((e, i, m) => i > 0 && e.idea === m[i - 1].idea).length);
     const worst = Math.max(0, ...twice);
     shown.push(line(`${set} ideas twice in a row (worst build)`, worst, (x) => x === 0, '0'));
   }
-  gate('stage lines (§E.2: per view, float, ideas, floor numbers)', bad);
+  gate('stage lines (§E.2: per view, float, ideas, floor numbers, surface kinds)', bad);
+  notMeasured.push('section kinds a build (gen2 meta, once 1-1 builds on gen2)', 'share of chunks cut from the old stage (gen2 meta, once 1-1 builds on gen2)');
   linesShown.push(...shown);
   fs.rmSync(tmp, { recursive: true, force: true });
 }
@@ -168,6 +177,35 @@ for (const o of others) {
   else if (known.includes(key)) nbKnown.push(`${o.id} (live): passes now; take ${key} off ${KNOWN_FILE}`);
 }
 gate(`neighbours (judged: World ${world}'s engine-built stages; live ones reported against ${KNOWN_FILE}; ${NB} rolls each)`, nbBad);
+
+// 5b. the new stage against the old one it replaces (CHUNK-POOL-BRIEF step 5): the neighbour rule against old 1-1's own 16 rolls, measured
+// on main (tools/engine/old11-rolls.json); the share of each roll's chunks cut from old 1-1 is reported once the build carries its sections
+const OLD_FILE = `tools/engine/old${id.replace('-', '')}-rolls.json`;
+if (fs.existsSync(OLD_FILE)) {
+  const old: { source: string; rolls: Array<{ variant: number; prof: Array<[string, number]>; wins: RollResult['wins'] }> } = JSON.parse(fs.readFileSync(OLD_FILE, 'utf8'));
+  let worst = 0, alike = 0, pairs = 0, first = '';
+  for (const r of rolls) for (const o of old.rolls) {
+    pairs++;
+    const c = cosine(prof(r), new Map(o.prof));
+    if (c > worst) worst = c;
+    if (looksAlike(r.wins, o.wins)) { alike++; first ||= `roll ${r.variant} vs old roll ${o.variant}`; }
+  }
+  const bad = [...(worst > RULES.cosine ? [`cosine ${worst.toFixed(2)} over ${RULES.cosine}`] : []), ...(alike ? [`${alike} of ${pairs} roll pairs with a 20 s stretch alike (first: ${first})`] : [])];
+  nbClosest.push(`old ${id} (${old.source}): max cosine ${worst.toFixed(2)}, ${alike} of ${pairs} roll pairs alike`);
+  gate(`against old ${id} (cosine < ${RULES.cosine}, no 20 s stretch alike; ${old.rolls.length} old rolls)`, bad);
+}
+
+// 5c. support: every landing on something that holds it (mixer/support.ts, the designer's labels: rocks never float, boughs on trunks)
+{
+  const bad: string[] = [];
+  for (let v = 1; v <= N; v++) {
+    const st = buildRoll(cfg, v) as never;
+    const { breaches } = supportCheck(st, world);
+    for (const b of breaches.slice(0, 2)) bad.push(`layout ${v}: ${b.kind} at x ${Math.round(b.x)} (${b.why})`);
+    if (breaches.length > 2) bad.push(`layout ${v}: and ${breaches.length - 2} more`);
+  }
+  gate(`support (${N} layouts, Normal)`, bad);
+}
 
 // 6. the stage's own tests
 const [w, m] = id.split('-');
