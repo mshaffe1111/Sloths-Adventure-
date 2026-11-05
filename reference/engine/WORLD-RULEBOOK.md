@@ -181,11 +181,11 @@ Kinds:
 | §4 rule 12: placing must-haves; the golden seed | LEDGER-2026-11-02-full.md:439 (tier 3 at the top of the hardest group, proven reachable); main's old 1-1 (stage11.test.ts:17-24) | RESEARCH + MEASURED |
 | §4 rule 13: neighbours differ | LEDGER-2026-11-02-full.md:62, :350 (stages sharing tempo, camera and thinking load feel the same) | RESEARCH |
 
-**The JUDGMENT list, for Matt (one line each):**
-1. The quiet ending: a stage whose story ends quietly skips the research's dense finale.
-2. Hearts only after real risk.
-3. The end on a bank.
-4. Forks: none 0, some 1-2, lots 3 or more.
+**The JUDGMENT list [ruled 4:17 PM ET by the lead]:**
+1. **The quiet ending:** with Matt. The lead is putting it to him; my pick is (A), a calm arrival held to the rest rule.
+2. **Hearts only after real risk: MATT,** not judgment. MATT-DIRECTION 12:15 AM: "a heart only where the player can have lost one".
+3. **The end on a ground bank:** lead-approved under Matt's 1:20 PM rule (what starts the game, the lead approves).
+4. **Forks none 0 / some 1-2 / lots 3+:** lead-approved the same way. It's re-measured once a shipped-game count exists.
 
 **One research row not taken, on evidence:** LEDGER-2026-11-02-full.md:331-332 ("every 3-5 minute stage") is CONTRADICTED by the
 measured dev clocks (Tropical Freeze 1-1 1:50-2:30). Measurement outranks the claim (ES evidence order).
