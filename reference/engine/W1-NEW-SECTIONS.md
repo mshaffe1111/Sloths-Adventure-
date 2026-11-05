@@ -166,3 +166,23 @@ Every phase is at least 3:1.
   - the exit totem is an `objective` socket (stageGenerator.ts:2136);
   - the bootprint is the held clue's place, reported (R-165.31);
   - knots are dressing.
+
+## Round 4: the floor road under the raised sections (designer, 11-05 6:34 PM; check 3b on gen2 1-1 FAILS: diversity 0.04-0.06 against 0.35, splits 3-7 against 34, two-road about 0.1 against 0.61)
+
+**The root.** Old 1-1's two roads come from logs on stump-posts and stones over ONE continuous moss floor: the floor is the low road
+almost everywhere (the planner's 4:00 PM measure: 36 splits, two-road 0.61; LABELS §1 solid log, "ground-fork high road"). Our raised
+sections lay their high pieces with no walkable floor under them, so a roll has one road. Variety then has nowhere to come from
+(MATT: "variety first").
+
+**The floor-road rules (FR), for every raised section:**
+
+| # | Rule | Source |
+|---|---|---|
+| FR1 | **A floor piece runs the whole length under the raised pieces**, walkable end to end. The exception is a T's check or an X's block, where the floor ENDS at the block face (B1). The floor road comes back after the block | old 1-1 (above); NODES §8.7 B1 |
+| FR2 | **Head room:** a raised piece's underside is at least 110 px over the floor top, so Pokey walks under (76 px body, plus 34) | the porter's petal head room (76 px); P-6 (nothing in the lane) |
+| FR3 | **The low road is a real road:** it rejoins the high road at the section's end. Either the high road steps back down to the floor, or a stair of landings climbs back up, each step at most 88 px (a single jump, 108, less 20) | V7 (both roads finish and rejoin); physics.ts JUMP_RISE |
+| FR4 | **The low road has its own beat, of a different kind from the high road's** (R2 lesson 1: kinds, not pixels). For example, low stumps or a dip under a high log road; stones under boughs. The petals sit on the LOW road (they're the story's trail, 1-1.md:26-27); a find on the high road (V7 +) | R2 L1; 1-1.md:26-27 |
+| FR5 | **In the bough window ([0.67, 1]) the low road is a MID road** (low logs on stumps, or stones on banks, 110-300 px under the boughs), not the deep floor. The corridor is 900 px, and the climb back must stay a stair (FR3) | the corridor (W1_KIT 900 px); FR3 |
+| FR6 | **Blocks never get a low road past them** (B1-B4). Where a section is both a two-road and a T or X, the block sits where the roads have met, or on the high road with the low road ending back-only | B1-B4 |
+
+**Per-section changes:** these are set to the planner's harness counts, which I've asked for, and follow in this round.
