@@ -754,6 +754,38 @@ another roll.
 - **n7b's Dot line:** "Down on the forest floor now. Her marks go on past the creek."
 - **Polish split (the lead):** the planner takes P-1 to P-7 and P-11 to P-13; an engine-render helper takes P-8 to P-10.
 
+
+**[designer review of polish stills round 1, `cp3/stills-v2/`, 11-05 ~3:25 AM ET]**
+- **Fixed, and good:**
+  - no grey slab;
+  - painted rocks;
+  - trunks under the boughs;
+  - posts at the bridge ends;
+  - the HUD reads x/10.
+- **Still failing, or new:**
+  - **S-1. Pit columns (P-8):** black drop columns still stand under the creek pieces, upright and sideways. With the engine-render
+    helper.
+  - **S-2. Floating grass islands (P-2):** grass blocks with dangling roots hang about 100 px over the water in the creek stills. A
+    reed isle sits on the water line, and anything above the water stands on a trunk or post.
+  - **S-3. Stones perched on poles:** big mossy rocks sit on top of thin trunk poles, so they read as mushrooms on sticks. A stone
+    stands on ground, or on another stone in shallow water, never on a pole. Up in the air, the pieces are boughs.
+  - **S-4. Every bough on its own identical pole:** a row of the same kapok pole, each with the same vine, reads as stamped. The
+    rules:
+    - boughs near each other grow from one shared tree (one trunk, two or three boughs at different heights, as the old 1-1's canopy
+      hangs from big trees);
+    - no two neighbouring trunks use the same trunk art or the same vine wrap;
+    - and trunks vary in width.
+  - **S-5. The same Dot tip in 4 of 6 stills** ("Flick up just before the edge"). A tip shows once, at its first need, and then it is
+    done for the stage.
+  - **S-6. Hard darkness (P-10)** still shows in the creek stills, with the engine-render helper.
+  - **S-7. The upright top half (P-6)** is still mostly sky over the start and the shrine.
+- These go back to the planner (S-2 to S-5, S-7) and the engine-render helper (S-1, S-6). Round 2 of the stills comes back to the
+  designer before the lead.
+
+**[designer ruling on the Easy density miss]** Easy's pacing lines are judged over 16 rolls, by their median and worst, as every other
+line is (b). One roll's noise (±0.03 density, ±15 s) is bigger than the gap being chased. If the 16-roll median is still over 0.55, a
+third Easy-only rest of 4-5 s goes after n3 (c). **This is a miss at the checkpoint, so it goes to Matt before the work goes on.**
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
