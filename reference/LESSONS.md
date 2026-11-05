@@ -74,3 +74,4 @@ that do the best job get the follow-on work.
 - D42 (11-05): 'all gates' means the list in .github/workflows/gates.yml, gate by gate, PASS or NOT RUN; never a copied list.
 - D43 (11-05): a story brief's 'shipped' is checked with git show origin/main:<file>, never the lead branch; art suggestions come only from that world's own kit (LABELS rule 4).
 - D44 (11-05): never build ahead of proof. Until the test stage passes, every job names the measured failure it fixes or the live-game check it runs; the rest waits.
+- D45 (11-05): check every design against Matt's one-line goal first. The engine does the work from a short brief; a hand-written plan per stage is a level editor, not an engine.

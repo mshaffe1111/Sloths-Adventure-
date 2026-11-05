@@ -3,7 +3,8 @@
 Keep this short and current. Rewrite stale lines. Times from `TZ=America/New_York date`.
 
 ## PRIORITY LIST (read before EVERY action and every message; Matt 11-05: "it's your focus that's breaking me")
-THE ONE GOAL TODAY: prove the engine on 1-1. Nothing else.
+MATT'S GOAL (D45, check every design against it first): THE ENGINE DOES THE WORK. A person gives a short brief (7 fields) and judges; the engine generates each stage's structure per roll inside the world rulebook. A hand-written plan per stage is NOT an engine.
+THE ONE GOAL TODAY: prove that engine on 1-1. Nothing else.
 1. Every helper job fixes a MEASURED 1-1 failure or runs a check that protects the live game. Nothing else is started.
 2. Remove barriers on 1-1's path (red tests, missing tools, unanswered questions), the same hour.
 3. Start the cold builder the moment the how-to is signed off.
