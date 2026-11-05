@@ -1,103 +1,43 @@
-# How-to, part 2: writing a stage's data (the mixer data)
+# How-to, part 2: writing a stage's brief (rewritten by the level designer, 11-05 3:44 PM ET; Matt 3:52 PM: the engine makes the stage)
 
-Drafted by the level designer, 11-05 3:13 PM ET, for the planner to fact-check and for the critic or the lead to review cold. Written
-against engine-mixer d4dbadae8: src/game/mixer/spec.ts, stages.ts, library.ts and w1mix.ts. Part 1 (engine-core) covers running
-tools/engine/stage.ts, the gates, and reading a breach.
+Part 1 (engine-core) covers running tools/engine/stage.ts, the gates, and reading a breach. This part covers the only thing you
+write. **You never write nodes, decks, heights or numbers: the engine generates the stage's structure on every roll** from your brief
+and the world's rulebook (reference/engine/WORLD-RULEBOOK.md).
 
-## 0. What you write, and what you never touch [revised 3:14 PM ET: test fairness, the lead]
-- **You write 1-1's spec from the page alone.** Your branch starts with no \`SPEC_11\` in \`src/game/mixer/stages.ts\`: it was removed
-  on purpose, so this is a real test of whether the engine and its pages are enough. Don't look for it on any other branch: engine-core
-  keeps the planner's copy only to compare with yours afterwards. Reading it would turn the test into copying.
-- **You add one thing: \`SPEC_11\`** (a \`StageSpec\`, §1) in \`src/game/mixer/stages.ts\`, written from the stage's page, plus
-  whatever registration line part 1 says the engine needs to find it. That's all the data a stage has: its story, profile, node plan,
-  goal, dressing and lay. \`SPEC_15\` in the same file is another stage's spec: read it to see the format, but take no values from it.
-- **You never edit** w1mix.ts, library.ts, spec.ts, kits.ts or any other engine file. If your stage needs something the spec can't
-  say, stop and report it as an engine finding. The engine gets fixed; the stage is never patched around it (Matt).
-- **Your design source** is "1-1 for the builder" in ENGINE-SPEC.md and the lead's story brief. Copy values from the page. Never invent
-  a number, a line of dialogue or an idea name. If the page doesn't say, ask: it's logged as a gap.
+## 0. What you write, and what you never touch
+- **You write one brief** for your stage, in the 7 fields below, from the lead's story brief (reference/engine/story-briefs/<id>.md).
+  Your branch starts with no brief for your stage, on purpose: this tests whether the engine and these pages are enough.
+- **You never edit** the engine, the world rulebook, or another stage's brief. If the brief can't say something the stage needs, stop
+  and report it as an engine or rulebook finding. The engine gets fixed; the stage is never patched around it (Matt).
+- Never invent a story fact, a line of dialogue or a piece. If the story brief doesn't say, ask: it's logged as a gap.
 
-## 1. The shape of a spec (spec.ts `StageSpec`)
+## 1. The 7 fields (WORLD-RULEBOOK §1)
 
-| Field | What it is | 1-1's value (from the page) |
+| Field | Write | Take it from |
 |---|---|---|
-| `id`, `name` | the stage id and its shipped name | `'1-1'`, `'Into the Canopy'` |
-| `story` | `{ beat, feel }` in one line each, from the brief | the brief's beat and feel |
-| `profile` | the feel, below (§2) | page §B |
-| `nodes` | the node plan, in order (§3) | page §C, n1-n11 |
-| `goal` | `{ kind: 'sprint' }` or `{ kind: 'marks', count, normal, easy }` | `{ kind: 'sprint' }` |
-| `dress` | `{ start: [frame names], clue: frame name }`, the atlas's frame names | squirrels at the start, `clue: 'bootprint'` (held art: page §D) |
-| `taughtBefore` | the moves earlier stages taught | `[]` for 1-1 |
-| `post` | `{ clearDress: true }` keeps dressing off the play line | `{ clearDress: true }` |
-| `lay` | `{ startY, end: { kind, w } }`: the spawn bank's y and the last piece | `{ startY: 1260, end: { kind: 'bank', w: 640 } }` |
+| `beat` | one line of story | the story brief's "Where Pokey is" |
+| `teaches` | the moves this stage introduces, from the world's ladder (0-2, or more for a world's first stage) | the story brief and the ladder (rulebook §2) |
+| `trend` | `up`, `down` or `level` | the story brief's feel and look |
+| `ends` | `quiet` or `finale` | the story brief's "End:" line |
+| `look` | the light and the backdrop, in a phrase | the story brief's look and setting lines |
+| `must` | the clue, any find, the approved Dot lines (by row id), the dressing | the story brief's "What belongs"; Dot rows from dotLinesData.ts, only rows the brief names as approved |
+| `not` | what other stages own, plus any move not yet taught | the story brief's "Owned by other stages" |
 
-**`burstMin` and `burstMax` are not used.** Bursts go by time (the profile's roll), not by count.
+**Knobs (optional):** `branching` (none / some / lots), `water` (yes / no), `d` (0-1).
 
-## 2. The profile (spec.ts `Profile`)
+**The worked example** is 1-1's brief, WORLD-RULEBOOK §5. Read it for the format; your values come from your own story brief.
 
-| Field | Allowed values | What it does |
-|---|---|---|
-| `trend` | `'up' \| 'down' \| 'level'` | the stage's overall line |
-| `tempo` | `'calm' \| 'steady' \| 'brisk'` | descriptive. **Today it also picks the longest-run line in `linesFor`**; see §5 |
-| `hills` | `'flat' \| 'rolling' \| 'hilly'` | descriptive. **Today it also picks the up/down line in `linesFor`**; see §5 |
-| `branching` | `'none' \| 'light' \| 'moderate' \| 'heavy'` | how often the way splits |
-| `water` | `true \| false` | only with `true` may a deck hold water ideas (lily-pad hop, reed isles) |
-| `petals` | `'trail' \| 'scattered' \| 'hidden'` | how the petals lie |
-| `look` | `{ lead: 'ground' \| 'water' \| 'tree', art: 'w1' }` | the element the commonest piece belongs to, and the art set |
-| `length` | `{ normal: [min, max], easyMin }` in seconds; never under 120 | the quick-clock band |
-| `mix` | `{ jumps, climbing, vines, bounces, water, enemies, hazards, breakable }`, each `'none' \| 'some' \| 'lots'` | the stage's content shares |
-| `theme` | `'forest' \| 'river' \| 'canopy-high' \| 'swamp' \| ...` | only pieces of this theme may be laid |
-| `core` | piece kinds, e.g. `['bank', 'log', 'stone']` | the commonest landing must be one of these |
-| `roll` | **not in spec.ts yet** (the planner's per-roll fix) | the per-roll draws. Copy `roll11` from ENGINE-SPEC "1-2 and 1-5 measured", exactly |
+## 2. The order you work in
+1. Read your story brief, then WORLD-RULEBOOK.md, then this part, then part 1.
+2. Write the brief.
+3. Run stage.ts (part 1). It generates the stage on 16 layouts, Normal and Easy, and runs every gate.
+4. **Judge each breach** as one of:
+   - **a brief fix**, changing a field. That counts as one of your 2 rounds;
+   - **an engine or rulebook finding**: report it and stop that line;
+   - **a known miss** on the world's list, which isn't yours;
+   - **held art**, listed under "known held art".
+5. Shoot the stills part 1 asks for, upright and sideways, judge them against your story brief's feel, and report.
 
-## 3. A node (spec.ts `NodeSpec`)
-
-| Field | What it is | Example (1-1's n2) |
-|---|---|---|
-| `job` | what the node is for (teach X, practise, rest, the fork, the moment, cool down) | `'teach jump'` |
-| `deck` | the ideas it may draw from: a list, or `{ high: [...], low: [...] }` for a fork | `['bank hops', 'stump hop', 'log jam']` |
-| `teaches` | the move taught here; its deck must hold an idea that teaches it | `'jump'` |
-| `line` | Dot's line: `{ text, pad?, at?: 'start' \| 'end' }`, copied word for word from dotLinesData.ts | `{ text: 'Jump the little gaps' }` |
-| `flagBefore`, `heartAfter` | a checkpoint before it; a heart after (only after real risk) | — |
-| `safe` | a miss costs nothing here. **For 1-1 the whole stage is safe** (page §C, R1) | `true` |
-| `height` | the height band as a share of the climb, 0-1 | — |
-| `id` | a short name for a node set between two others (`'7b'`) | — |
-| `lay` | the engine's knobs: `easyOnly`, `one`, `bursts`, `ground`, `band: [top, bottom]` px, `not`, `notLast`, `seed` | `{ ground: true, bursts: 3, band: [1150, 1320] }` |
-
-**The idea names a deck may hold** (library.ts `IDEAS`): floor walk, bank hops, stump hop, bank walk, bounce mound, stump tops, log jam,
-double gap, bounce up, bough stair, bough hops, double chain, top branch, and, for later stages, lily-pad hop, reed isles, the climb,
-bridge span, snap teach, snap dash, creaky boughs, crumbling ledge, rotten-branch drop. Each idea has `needs` (moves it requires) and
-may `teach` one. An idea that needs a move not yet taught fails `checkSpec`.
-
-## 4. Before you build: `checkSpec`
-`checkSpec` (spec.ts) lists every problem in plain words before anything is laid:
-- an unknown idea;
-- a water idea without `water: true`;
-- a move used before it's taught;
-- a teach node whose deck can't teach it;
-- a fork with an empty road;
-- a length under 120 s;
-- a piece outside the theme.
-
-**An empty list means the engine can build it.** Fix every line it prints in your spec, and only in your spec. A line you can't fix in
-the spec is an engine finding.
-
-## 5. Where your pass lines come from (read this before you judge a result)
-- **Today, `linesFor` (spec.ts) turns profile words into some pass lines:** splits and two-road share from `branching`, up/down from
-  `hills`, longest run from `tempo`.
-- **The designer's ruling (ENGINE-SPEC, 12:48 PM ET) is that the words set no numbers.** The lines come from the stage's measured
-  reference. For 1-1, page §E lists them all: splits at 120 px ≥ 34, two-road ≥ 0.61, and the rest.
-- **Where `linesFor` and page §E disagree, page §E is the line,** and the difference is an engine finding for the planner, not a data
-  change. Today's known case: `branching: 'moderate'` gives `splitsMin` 10 and two-road 0.25. The page says 34 and 0.61 (old 1-1's
-  measure).
-
-## 6. The order you work in
-1. Read the brief, then the stage's page, then this part and part 1.
-2. Write the spec, every value from the page.
-3. Run `checkSpec` until it's empty.
-4. Build and run every gate (part 1).
-5. Judge every breach:
-   - a data fix (counts as one of your 2 rounds); or
-   - an engine finding (report it, and stop that line of work);
-   - a known miss on the page's §E4 list (not yours); or
-   - held art (list it under "known held art").
-6. Shoot the stills the page asks for, and report.
+## 3. Where the pass lines come from
+- The hard rules and the world's targets and floors are in WORLD-RULEBOOK §2.
+- You never set a number. If a line seems wrong for your stage, that's a finding for the designer, not a brief change.
