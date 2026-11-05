@@ -187,6 +187,35 @@ What it says:
 5. **Random step search needs re-rolls** (1-2 Easy up to 3 per layout, WR:149), and 1-2 throws "no steps fit" if the tempo is wrong
    (it did when this script first read the wrong BPM). Written pieces never re-roll: they either prove over their range or they don't.
 
+### 2.5b Each option's core idea, run on real stage 1-2 (`reference/engine/designer-cores.ts.txt`)
+
+**A's core (a piece proven over a tempo range stays valid):** 1-2 built by WR at every whole BPM of World 1's range, 16 layouts each:
+
+| BPM | Normal built (re-rolls) | Easy built (re-rolls) | Normal expert clock (s) |
+|---|---|---|---|
+| 126 | 16/16 (1) | 16/16 (8) | 159-183 |
+| 128 | 16/16 (1) | 16/16 (9) | 157-180 |
+| 130 | 16/16 (0) | 16/16 (17) | 155-181 |
+| 132 | 16/16 (0) | 16/16 (17) | 150-179 |
+| 134 | 16/16 (0) | 16/16 (17) | 149-177 |
+
+The real stage's nodes are portable across its world's tempo range: every layout builds at every tempo. Two costs show: **Easy leans
+on re-rolls** (8-18 across the 16 layouts, against 0-1 on Normal), so Easy's pieces are where the proof must be strictest; and **the
+clock falls about 10 s from 126 to 134 BPM**, so a stage's length must be checked at the fast end of its tempo range, not its middle.
+
+**B's core (search instead of random steps):** for four 3-bar nodes of 1-2's kind (canopy branches, WR's PAL_A palette), random step
+lists found a clean trace in **1.0-1.3 traces** on average (20/20 within fitSteps' 160), while backtracking on traced prefixes used
+**6-12**. With a palette this forgiving, random search is not slow, and B's search buys nothing on cost. So the problem with
+`fitSteps` is not wasted work; it is that chance decides the motif, which is how 1-5's "long wait, onto a short twig" came back four
+times (acd556ab). This weakens B's case and my own first-draft claim that search would be "faster and exact": a search is needed only
+where constraints are tight (the Easy re-rolls above), and what random needs is control (decks with a lockout), not replacement.
+
+**C's core (an archive of kinds):** 1-2's 272 nodes over 16 layouts, binned by direction x density band x job: **13 of 56 cells
+filled, and 256 of 272 nodes run right** (the only left nodes are the bough leg's counter-melody). The 16 layouts differ in detail
+inside the same 13 kinds. This is the measured form of "the rolls barely differ" (SR:303): replay variety today comes from the details
+of the same kinds of node. Any option must change the KIND of node per roll (direction, density band, job's room), and C's archive
+is the one tool that would show it. Whatever engine is chosen, this binning belongs in its gates.
+
 ### 2.6 How many pieces a world needs: the variety maths
 
 The question "how many rooms per world?" answered with the validator's own measure (cosine of move 3-gram counts, core.ts:221-237;
