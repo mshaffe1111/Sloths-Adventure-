@@ -1,4 +1,4 @@
-# The engine going forward (new lead, 2026-11-05, draft 1 for the supervisor's review)
+# The engine going forward (new lead, 2026-11-05, draft 2, supervisor-reviewed)
 
 Sources: three fresh audits made today (gen2 on main; today's work on 8 branches; everything Matt asked for or the research
 recommended that is not built), plus R1-R4. File:line evidence is in the lead's audit notes; the claims here are checked against
@@ -60,6 +60,16 @@ A stage is done when its brief builds, every gate passes, and Matt plays it. A m
    rejection report by rule.
 10. **Easy as its own profile** (gentler pacing, crumble timing from the bots), so it never reads harder than Normal.
 
+## Matt's decided numbers and rules (the engine honours them; they aren't re-opened)
+- Crumble gives way 0.5 s after he lands on Normal, back after 2 s, whole on respawn (12:31 PM). Easy's timing comes from the bots.
+- Swim at 1.25x his run (11:25 AM), under the designer's water rules W1-W12 (da0e5ba4: no breath meter, dives of 3 s or less, legs
+  of 10-14 s, one kind of water per screen).
+- Rocks never float. Floating logs and planks are fine. Lily pads only ON water (10:00 and 10:39 AM).
+- Set pieces and hazards come back later as twists, in each world's own art (11:11 AM, "Yes").
+- Every stage takes at least 2:00, with no cap and lengths that vary (1:05 AM).
+- World 5 plays differently (carvings, Meeca's messages) and keeps its own play.
+- Hand-built specials and bosses stay hand-built (11:05 AM).
+
 ## Layer 5: the gates every stage passes (stage.ts)
 Already built today:
 - level check;
@@ -80,21 +90,33 @@ To add, as each gap above lands:
 - the enemy-share gate;
 - the bough share and window gates;
 - the difficulty-curve check across a world.
+stage.ts isn't the release bar on its own: every release also passes .github/workflows/gates.yml gate by gate (drawcheck, clipcheck,
+artcheck, build:store, knowncheck, roadmapcheck and the rest; D42) and PERFORMANCE-RULES §1.
 
 ## Order (each step proved before the next builds on it; Matt plays at every star)
-- **Step 0 (now): 1-1 on gen2.** The World 1 kit, the floor, the tempo and branching dials, trunks, the seed, length by count,
-  no-repeat, the window. CHECK: World 10 with the fixes, each dial alone and together. ★ Matt plays 3 rolls next to old 1-1.
-- **Step 1: gen2's core faults fixed for every gen2 world** (D read, lesson-safe swaps, themes off teaching, honest curation,
-  no-repeat default, Easy never falls back). Each world is re-proved by its own lock and gates. New replaces old once Matt has
-  played it.
-- **Step 2: the game plan as data** (the whole ladder W1-W10, elements, water, slot roles) plus the ladder and required gates.
-- **Step 3: placement with meaning** (hearts, flags, enemies, finds) as pipeline passes plus their gates.
-- **Step 4: World 1 stage by stage** (1-2 to 1-9) from briefs by helpers (the cold-helper proof). Each brings its own sections. ★
-- **Step 5: water and swimming** (zones, swim beats, 1.25x), then the pieces from today and from the unused art. ★ at 6-9.
-- **Step 6: Worlds 2-4 and 9-10 onto gen2, world by world**, each with its kit, a regression lock, and Matt's play. Hand-built
-  specials and bosses stay hand-built.
-Art: only what we have (273 unused packed pieces and every world's kit). Hugging Face only for a gap a stage truly can't fill,
-with Matt's approval of the list.
+Matt: "1-1's our test. Then 1-2 is the second test." Nothing wider is built until both pass.
+- **Step 0 (now): 1-1 on gen2.** The World 1 kit, the floor, tempo and branching, trunks, the seed, length by count, no-repeat,
+  the window. CHECK on World 8 (a real gen2 world): each dial alone and together. ★ Matt plays 3 rolls next to old 1-1.
+- **Step 1: 1-2 from a brief, built by a fresh cold helper** with the how-to only. It brings its own sections. Its time, cost and
+  fix count go against the pass line. ★
+- **Step 2: the game plan as data** (the whole ladder W1-W10, elements, water, slot roles) plus the ladder and move-required gates.
+- **Step 3: placement with meaning** (hearts, flags, enemies, finds) as pipeline passes, with their gates.
+- **Step 4: the rest of World 1** (1-3 to 1-9) from briefs by 2-3 helpers in parallel. ★ at each stage.
+- **Step 5: gen2's core faults fixed in the worlds already on gen2** (5-7, 5-9, W6-W8), ONE WORLD AT A TIME:
+  - D read, lesson-safe swaps, themes off teaching, honest curation, no-repeat default, Easy never falls back;
+  - each world's lock and gates first, and Matt plays it BEFORE it replaces the live stages;
+  - World 5's own play is kept.
+- **Step 6: water and swimming** (zones, swim beats, 1.25x), then today's pieces and the unused art. ★ at 6-9.
+- **Step 7: Worlds 2-4 and 9-10 onto gen2, world by world**, each with its kit, a lock and Matt's play.
+
+## Cost (Matt: under 90% for the week, "that leaves 10 for 5 days"; 67% at 4:23 PM ET, about 1.5%/h since 2:23)
+Step 0 is measured to the hour tonight, and its real cost becomes the yardstick for every later step. Estimates are re-made from
+it, never guessed. What fits this week: Step 0, Step 1 (1-2), and Step 2's data for World 1. The rest is next week, in this order.
+
+## Art
+Existing art first: 273 unused packed pieces plus every world's kit. Hugging Face on the lead's approval, inside the $72 with about $15
+kept back, with the spend told to Matt (Matt deferred this to the lead, 11-04 and 11-05 10:42). Next week's polish is new pictures and
+backgrounds, as Matt planned (12:40 PM).
 
 ## What stops
 - No new builder. The mixer, plan.ts and beat-traced World 1 code are retired as their ideas land in gen2.
@@ -103,7 +125,7 @@ with Matt's approval of the list.
 - No step starts before the one before it is proved.
 
 ## Risks, said plainly
-- Re-proving Worlds 5-8 after Step 1 changes stages players know. It's done world by world, Matt plays each, and nothing ships
+- Re-proving Worlds 5-8 in Step 5 changes stages players know. It's done world by world, Matt plays each, and nothing ships
   until he says so.
 - The section pools are the real cost. Every world needs about 30-40 sections. Helpers write them from the kit and the rulebook,
   and that's where 3-4 helpers in parallel pay off.
