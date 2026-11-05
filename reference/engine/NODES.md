@@ -140,6 +140,7 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
 - **Content type** (§7.2) is what fills it: a family with a difficulty ladder inside it (Dahlskog & Togelius: 23 patterns in 5
   families).
 - **Shape** (§2) and **dials** (§3) as above.
+- **Ruled 5:19 PM (the supervisor's §7 review, the lead accepting):** forks are a SHAPE (§2 `two-road`), not a content type, so no fork share throttles the floor road's splits (old 1-1: splits ≥ 34, two-road ≥ 0.61). Creatures are a DIAL (§3 `creatures`), not a content share: Matt's rule is "about a third of each stage enemy-free, 1-3 on screen" (his 12:15 AM rules, ENGINE-PLAN :55), from 1-3 on. A fork node counts as its LOW road's type.
 - **Structural nodes sit OUTSIDE the percentages:** `arrive`, `rest`, `story`, `exit` and `finale` / `arrival` (Smith 2009's
   rest areas). Graphs (§4) name content SLOTS, and the world's mix fills them.
 
@@ -154,44 +155,44 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
 | `climb` | rising stair of landings; shaft or trunk only where owned | stair 1-1; kapok climb 1-4 |
 | `bounce` | perched mushroom, twin bounce, bounce then double | 1-1 |
 | `crumble` | snap twig, creaky limb, tipping root, crumbling floor (W7) | creaky 1-5 |
-| `creature` | patrol, stomp, timed, watcher, swarm (by behaviour) | 1-3 on |
+| ~~`creature`~~ | now a DIAL (§3), not a type: patrol, stomp, timed, watcher, swarm (by behaviour) | 1-3 on |
 | `hazard` | the world's taught hazards (ruling 3: they return in later worlds) | per world |
 | `puzzle` | the hand-built rooms | W1 rooms; W2 more |
 | `pressure` | chase, rising water, closing light | 1-5 (W1's chase, by story) |
-| `fork` / risk-reward | a high/low split whose harder road holds a FIND | all |
+| ~~`fork`~~ / risk-reward | now a SHAPE (§2 two-road), not a type: a high/low split whose harder road holds a FIND | all |
 | `secret` | an alcove off the line | all |
 | `setpiece` | the stage's signature (unique in the game) | per stage |
 
-### 7.3 World 1's MIX (real), and World 2's (DRAFT for Matt)
+### 7.3 World 1's MIX (real), and World 2's (DRAFT for Matt) (re-set 5:19 PM, after the supervisor's review)
 
-**World 1, shares of content nodes across the world:**
+**World 1, shares of content nodes across the world (creatures and forks taken out, the rest re-normalised to 100):**
 
 | Type | W1 share | Arc (0 until taught, a peak over 2-3 stages, then a floor) | Source |
 |---|---|---|---|
-| ground | 30 | 1-1 on; peak 1-1 to 1-3; floor 15 | MATT ("World 1 = jumping, climbing, learning"); ES M3 L2045 (a staple is about a third or more) |
-| floating | 18 | 1-1 (late window) on; peak 1-4 to 1-6 | the float floor: floating + crumble ≤ 25.3% (old 1-1, LABELS §4). 18 + 7 = 25 |
-| climb | 12 | stair 1-1; kapok 1-4; peak 1-4 to 1-6 | MATT ("climbing"); the ladder (1-4) |
-| rope | 12 | shimmy 1-3, liana 1-6; peak 1-6 to 1-8 | the ladder (moveLadder.ts; main's taught-at) |
+| ground | 32 | 1-1 on; peak 1-1 to 1-3; floor 15 | MATT ("the first world is a lot more jumping, climbing, and learning the mechanics", 11-05 ~5:00 PM); ES M3 L2045 (a staple is about a third or more) |
+| floating | 22 | low in 1-1 (last third only); peak at 1-5 (boughs on kapok trunks) and 1-4 to 1-6 | the stage briefs' looks: 1-1.md:51 (boughs late), the 1-2 brief :45-47 (1-5's boughs on kapok). Old 1-1's 25.3% float line is **1-1's line only**, not a world cap (MATT 3:3x PM: "how else are you going to get variety if you're still judging everything off of one stage?") |
+| climb | 13 | stair 1-1; kapok 1-4; peak 1-4 to 1-6 | MATT ("climbing"); the ladder (1-4) |
+| rope | 13 | shimmy 1-3, liana 1-6; peak 1-6 to 1-8 | the ladder (moveLadder.ts; main's taught-at); 1-6 is lianas |
 | bounce | 8 | 1-1; peak 1-1 to 1-2; floor 4 | main's 1-1 (mushroom on 16/16 layouts) |
-| crumble | 7 | creaky 1-5; peak 1-5 to 1-7 | the ladder (creaky 1-5, C9) |
-| creature | 6 | 1-3 on (combat); peak 1-3 to 1-5 | the ladder (punch 1-3); NODE-MIX §C (5) |
+| crumble | 8 | creaky 1-5; peak 1-5 to 1-7 | the ladder (creaky 1-5, C9) |
 | puzzle | 4 | the W1 rooms only | the rooms rule (hand-built) |
-| fork | 3 | all | NODE-MIX §C (forks and secrets 5, split with secret) |
 | secret | 0 as content; it rides as a `reward` job on forks and rests | — | §1 choice-reward |
 | pressure | 0 as content; 1-5's chase is a set piece by story | — | ES slot roles (the story overrides) |
 
 - These shares are mine, set from the sources listed. No shipped game publishes a per-type mix (NODE-MIX §C gives examples only), so
-  the split between types is **JUDGMENT, anchored to Matt's words and our measured floors**, and is measured over many seeds against
-  this target (NODE-MIX §B.8).
-- **1-1's own deal**, from 1-1's teaches and window: ground 40 (at the cap), floating 22 (last third only), climb 15, bounce 13,
-  fork 10.
+  the split between types is **JUDGMENT, anchored to Matt's words and the stage briefs' looks**, and is measured over many seeds
+  against this target (NODE-MIX §B.8). Each stage's own deal follows its brief's look; the world share is the average they make.
+- **1-1's own deal** (from 1-1's teaches, its look and window): ground 40 (at the cap), floating 25 (last third only, under old
+  1-1's 25.3% line), climb 20 (the double is taught on the stair, §8), bounce 15. **JUDGMENT.**
 
-**World 2 (DRAFT for Matt to see; "lighter, more puzzles"):**
+**World 2 (DRAFT for Matt to see). MATT, 11-05 ~5:00 PM to the lead: "world two, which has more of a lighter feeling, can be more
+puzzles. Whereas the first world is a lot more jumping, climbing, and learning the mechanics":**
 
-| Type | puzzle | water (drift logs, pads, stones) | rope (swing) | floating (incl. lifts) | ground | climb | crumble | creature | fork | bounce |
-|---|---|---|---|---|---|---|---|---|---|---|
-| W2 share | 18 | 22 | 10 | 14 | 10 | 8 | 5 | 5 | 4 | 4 |
+| Type | puzzle | water (drift logs, pads, stones) | rope (swing) | floating (incl. lifts) | ground | climb | crumble | bounce |
+|---|---|---|---|---|---|---|---|---|
+| W2 share | 20 | 24 | 11 | 15 | 11 | 9 | 6 | 4 |
 
+- Re-normalised after creatures and forks came out. The split is the researcher's and mine (JUDGMENT); Matt's words set "more puzzles".
 - "Lighter" comes mostly from the dials: tempo toward patience, low density (NODE-MIX §C, the researcher's own call, unsourced).
 - The W1 floor below holds from W2 on.
 
@@ -232,74 +233,110 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
   - rope: w1-ropes;
   - structural: w1-meadow.
 - **Mine (W1-NEW-SECTIONS):**
-  - ground: #1, #2, #7, #8, #24;
-  - floating: #3, #10, #20, #27;
-  - climb: #9, #12, #13, #25, #29;
+  - ground: #1, #2, #7, #8, #24, plus the forks #4, #14, #28;
+  - floating: #3, #10, #20, #27, plus the fork #22;
+  - climb: #9, #12, #13, #25, #29. #29 is a bough stair and a log span, with no rope, so 1-1's `not: ropes` holds; it sits only in 1-1's last third (ketsu, its boughs float);
   - bounce: #5, #6, #21;
-  - fork: #4, #14, #22, #28;
+  - fork sections take their LOW road's type (5:19 PM): #4 and #14 are ground, #22 is floating, #28 is ground (its mushroom is the other answer).
   - structural: #11, #15, #16, #17, #18, #19, #23, #26, #30.
 
-## 8. The node code (designer, 11-05 5:17 PM; Matt, via the lead: "our own compact notation", so every stage plan reads as a short string and variety shows at a glance)
+
+## 8. The node code (designer, 11-05 5:17 PM, with the key added at 5:20 PM; Matt, via the lead: "our own compact notation", and "a key of what the different nodes would be, how the engine would define them, and a brief description of how they would play. That way, there's no ambiguity in what we're building")
+
+### 8.0 THE KEY
+
+Each row gives:
+- **Code:** the symbol.
+- **Name:** what it's called.
+- **How the engine defines it:** what must be true for a node to count as it, and which check proves it.
+- **How it plays:** what it's like for Pokey.
+
+LATER means it is not built yet and not in 1-1.
+
+**Jobs: one capital letter, always first**
+
+| Code | Name | How the engine defines it | How it plays |
+|---|---|---|---|
+| A | Arrive | Flat and safe. No ground ends and nothing hurts in the first 1,300 px (STAGE-RULES:161) | You walk in on soft moss floor and look around. Nothing can hurt you yet. |
+| T | Teach | **One new move,** in three steps: shown; then a SAFE check that blocks the way until you do the move (a miss costs nothing); then one small challenge. Flat or rising, never on a fork. Gate: a bot without the move can't get past the check | Something new turns up, like a step too tall to hop. You try the new move where missing is safe, then use it once for real. |
+| P | Practise | A taught move again, a little changed each time. May sit on a fork. One exact repeat is allowed before a rest | You do the move you just learned a few more times, each one a bit different. |
+| X | Test | A taught move under pressure, and **required**: a bot without it fails here, the full bot passes. A rest follows. It eases off at its end | A harder stretch you can only get through by using the move. Then it lets up. |
+| C | Combine | Two taught moves on one beat: the stage's pair (1-1: bounce then double) | Two moves back to back, like a mushroom bounce straight into a double jump. |
+| W | Twist | A taught move turned around: its rhythm differs from the stretch before. Only after a test. A rest follows | A move you know, used a new way, so the rhythm you just got used to breaks. |
+| R | Rest | About twice the local beat, no hard input. Comes after every test, twist and set piece. Holds a Dot spot (a line only where a Matt-approved one fits) | A calm patch to breathe. Dot might say something here. |
+| S | Signature (set piece) | One per stage, unique in the game, in the last third. Passes Wonder's 3 tests: it links to before; he can suddenly do something new; it says itself in one phrase. A rest or the exit follows | The one big moment you remember the stage by, like a chain of double jumps across floating logs. |
+| F | Fork | Two roads that both finish and rejoin. The high road holds a find. Both roads pass the gates. It counts as its low road's type | The path splits: a harder high road with a treasure, or an easier low road. Both get you there. |
+| U | Climb | A rising stair of landings, taught moves only. A straight-up trunk climb only where a stage owns it (W1: 1-4) | You hop up a staircase of logs and ledges toward the treetops. |
+| D | Descent | Across and down | You drop down ledge by ledge toward the forest floor. |
+| M | Flow | A run of quick beats at the roll's tempo, never more than 2.5 s of dead time (WORLD-RULEBOOK §7.1) | A run where every jump leads straight into the next, without stopping. |
+| E | Exit (the arrival) | The end piece where the stage's trend reaches. 1-1: a long high log with the exit totem (main stageGenerator.ts:2136); the clue. A quiet exit is held to the rest rule | You walk out along a long high log to the totem, calm, and the stage is done. |
+| L | Finale | 15-20 s at the exit, everything taught, dense. Not in 1-1 (it ends quiet) | The last stretch throws everything you've learned at you, fast. |
+| H | Hidden alcove (LATER) | A find off the main route, proven reachable | A sneaky spot off the path with something to find, if you look. |
+| K | Chase (LATER) | Moving pressure. Never in a world's first stage. W1's is 1-5's, by story | Something is coming. Keep moving and don't stop. |
+| Z | Puzzle room (LATER) | A hand-built room that stays as built | A room where you stop and work out how to get through. |
+| B | Arena (LATER) | A fight in a held space; the combat ladder | You hold one spot and deal with the creatures that come. |
+| Y | Story beat (LATER) | A beat the brief names (the note, a clue), with no hard input over it | You stop for a moment and something in the story happens. |
+| V | Boss preview (LATER) | The boss's attack in small form, at X-9 only | A small taste of what the boss will throw at you. |
+| G | Change of pace (LATER) | A sense flipped: slow, dark or a puzzle. X-6's job | The stage suddenly feels different: slower, darker or a head-scratcher. |
+| `F[L^+\|R_] E` | Ending fork (LATER, not 1-1) | The last node before the exit. A high road to a denser finale with a find, or a quiet low road to the arrival. Both reach the same exit (Matt, 11-05) | At the end you choose: a tougher climb with a prize, or a calm walk home. |
+
+**Content: one small letter, what the node is made of**
+
+| Code | Name | How the engine defines it | How it plays |
+|---|---|---|---|
+| g | Ground jump run | Pieces on the moss floor road: hops, gap jumps, stone runs, stump stiles, mounds. Landings 3.5-7 body widths (G L1844). Rocks sit on the ground, never float | You jump along the forest floor over stones, stumps and dips. In 1-1 a miss just drops you to the floor. |
+| f | Floating pieces | Boughs, floating logs, plank spans; platforms may float. In 1-1, only in the last third (window [0.67, 1]). Moving lifts are LATER (W2) | You hop across branches and logs hanging in the air. |
+| c | Climb | A rising stair of landings | Each landing is a little higher than the last, so you go up as you go along. |
+| b | Bounce | A mushroom seated on a stump or bank (never floating); a twin bounce; a bounce into a double | You land on a mushroom and it springs you up high. |
+| r | Rope and vine (LATER; not in 1-1) | Shimmy rope (1-3), liana (1-6). Straight up or down on a vine always climbs | You grab a rope or vine and shimmy or swing across. |
+| k | Crumble (LATER, 1-5) | A creaky limb that gives way. A required one is whole again when he respawns | A branch creaks and drops away soon after you land, so don't wait around. |
+| w | Water (LATER) | Pads, stones on the bed, drifting logs | You cross water on pads, stones and floating logs. |
+| h | Hazard (LATER) | The world's taught hazards, which come back in later worlds | Something on the way hurts, so you go over or around it. |
+
+**Move: a digit**
+
+| Code | Name | How the engine defines it | How it plays |
+|---|---|---|---|
+| 1 | Jump | A single jump is enough | One hop gets you there. |
+| 2 | Double jump | **Required:** a gap or height past a single jump, which a bot without the double fails | You jump, then jump again in the air to reach it. |
+
+**Shape: a mark after the move (flat has no mark)**
+
+| Code | Name | How the engine defines it | How it plays |
+|---|---|---|---|
+| (none) | Flat | Across, one band | You head straight along. |
+| `^` | Rising | Across and up | You climb as you go. |
+| `_` | Falling | Across and down | You work your way down. |
+| `F[ \| ]` | Two roads | High and low roads that rejoin | You pick a high road or a low road. |
+| `^^` | Shaft (LATER, 1-4) | Straight up a column | You go straight up a tall trunk. |
+| `@` | Loop-back (LATER) | Bottom left to right, up a shaft, top right to left over the start, then a drop to the exit | You run under, climb up, then run back over where you started. |
+| `*` | Hub (LATER) | A centre with an alcove or two off it | A little clearing with hidden corners to poke into. |
+
+**Marks**
+
+| Code | Name | How the engine defines it | How it plays |
+|---|---|---|---|
+| `+` | Find | The golden seed or a keepsake, proven reachable. Never petals (they're the story's trail, low at marching height) | A treasure sits on the harder road. |
+| `>` | Hurry | The node rolls its tempo to hurry (§3; hurry and patience are weighted equally, and the numbers are the planner's tempo range) | Keep moving. The jumps come at you quick. |
+| `<` | Patience | The node rolls its tempo to patience | Take your time, look, then go. |
+| `&` | Creatures (LATER, 1-3 on) | The creature dial on this node: none (no mark), one kind `&`, a formation `&&`. Matt: about a third of each stage enemy-free, 1-3 on screen | Critters are about, so watch where you land. |
+
+**Kept in the data, with no mark:**
+- the rating (1-10, read by the cadence check; the long form is `Xf2>:7`);
+- density;
+- the terrain family.
 
 ### 8.1 One token per node
 
-A token is written `JOB content move shape find tempo`, with no spaces. Only the JOB is always there.
+A token is written `JOB content move shape find creatures tempo`, with no spaces. Only the JOB is always there.
 - `Tg1^<` = teach, on the ground, the jump, rising, patience.
 - `Xf2>` = test, on floating pieces, the double jump, flat, hurry.
 
-**JOB: one capital letter (§1).**
-
-| Letter | Job | Letter | Job | Letter | Job |
-|---|---|---|---|---|---|
-| A | arrive | T | teach | P | practise |
-| X | test | C | combine | W | twist |
-| R | rest (holds a Dot spot) | S | signature (set piece) | F | fork |
-| U | climb (up) | D | descent (down) | M | flow (momentum run) |
-| H | hidden alcove (reward) | K | chase (pressure) | Z | puzzle room |
-| B | arena (battle) | Y | story beat | V | boss preview |
-| G | change of pace | L | finale | E | exit (the arrival) |
-
-- `cooldown-in-node` has no letter: every hard node cools at its end (§1).
-- `choice-reward` is the `+` mark below.
-- `ending-fork` is a pattern, `F[L^+|R_] E`, not a letter.
-
-**content: one small letter (§7.2).** Only content jobs carry one. A, R, Y, L and E are structural and never do (§7.1).
-
-| Letter | Type | Letter | Type | Letter | Type |
-|---|---|---|---|---|---|
-| g | ground jump run | f | floating pieces | w | water crossing |
-| r | rope and vine | c | climb (stair) | b | bounce |
-| k | crumble | e | creature | h | hazard |
-
-- The puzzle, pressure, fork and setpiece types are written by their job letter alone (Z, K, F, S).
-- After S, the letters say what the set piece uses. S is still its own type and never counts in the mix (§7.6).
-
-**move: a digit.** 1 is the jump, 2 is the double, as the node needs it. Bounce is the `b` content. Run is the arrive's.
-
-**shape (§2): flat is no mark.**
-
-| Mark | Shape |
-|---|---|
-| `^` | rising |
-| `_` | falling |
-| `^^` | shaft (straight up) |
-| `@` | loop-back |
-| `*` | hub |
-| `F[ \| ]` | two-road |
-
-The height dial (§3) shares `^` and `_`: a node's height and its rising or falling shape say the same thing, so the code keeps one mark.
-
-**find: `+`.** A find sits on this node: the golden seed or a keepsake, never petals (§1 `choice-reward`).
-
-**tempo: `>` hurry, `<` patience.**
-- Every content token carries one, because tempo is rolled and never a default (§3).
-- On a fork, the mark after the bracket covers both roads.
-
-**Not in the string, kept in the data:**
-- the rating (1-10), which the cadence check reads (optional long form: `Xf2>:7`);
-- density;
-- the terrain family.
-The string stays short enough to read on a phone.
+Other rules:
+- Only content jobs carry a content letter. A, R, Y, L and E are structural and never do (§7.1).
+- After S, the letters say what the set piece uses. S is its own type and never counts in the mix (§7.6).
+- Every content token carries a tempo mark, because tempo is rolled, never a default (§3). On a fork, the mark after the bracket covers both roads.
+- The height dial (§3) and the rising or falling shape say the same thing, so the code keeps one mark.
 
 ### 8.2 A stage string
 
@@ -308,12 +345,13 @@ A stage string is the tokens in order, with spaces between them.
 A fork is written `F[high road|low road]`:
 - each road is its own run of tokens;
 - the high road comes first;
-- both roads end at the next token after the bracket (they rejoin);
-- the fork counts as ONE `fork` content node, and its roads' tokens don't count again in the deal.
+- both roads end at the token after the bracket;
+- the fork counts as ONE content node, of its low road's type (forks are a shape, §7.1).
 
 Example: `F[Pb2^+|Pg1]<` is a fork, patience on both roads.
-- The high road practises a bounce into the double, rising, with the find.
+- The high road bounces into a double, rising, with the find.
 - The low road practises the jump on the ground.
+- It counts as ground.
 
 ### 8.3 Validity rules
 
@@ -325,7 +363,7 @@ The engine rejects a string that breaks one of these rules and names the rule an
 | V2 | **T is flat or rising, never inside a fork, and its move appears for the first time.** One T per move in the brief's `teaches`, in the teach order (run is A's) | §1; WORLD-RULEBOOK §4; CoachOverlay.tsx:10 |
 | V3 | P, X, C, W, M, U and S use only moves already taught earlier in the string. X's move is required (the limited-bot gate) | §1 |
 | V4 | W only after at least one X | §1 |
-| V5 | **Right after X, W or S comes R**, or E when it is the stage's last node. The quiet arrival is flat with no hard input, which meets the rest rule | §1; WORLD-RULEBOOK §4 |
+| V5 | **Right after X, W or S comes R**, or E when it is the last node. The quiet arrival is flat with no hard input, which meets the rest rule | §1; WORLD-RULEBOOK §4 |
 | V6 | Exactly one S, in the last third of the stage's time | §1; §4 |
 | V7 | F has two roads that both finish and rejoin. The high road carries `+`. No T inside | §1 fork, choice-reward |
 | V8 | U is `c` and rising. `^^` only in a stage that owns the shaft (W1: 1-4) | §1 climb |
@@ -334,8 +372,9 @@ The engine rejects a string that breaks one of these rules and names the rule an
 | V11 | **No type over 40%** of the stage's content tokens (S and the structural letters don't count). **No type on two neighbouring content tokens.** Structural tokens between them don't separate them. The one exception is a P right after its own T | §7.4 |
 | V12 | Windows. In 1-1, `f` only in the last third (window [0.67, 1]) | §7.3; W1-NEW-SECTIONS |
 | V13 | Slot jobs: K never in a world's first stage; V only at X-9; G at X-6 (a world's story moves these) | §1; supervisor's notes in §6 |
-| V14 | **The type counts match the stage's deal, give or take 1** (the seed's jitter). F slots take `fork`, and no other slot does | §7.5 |
-| V15 | `ending-fork` `F[L^+\|R_] E` is the last node before E. LATER, not 1-1 | §1 (Matt, 11-05) |
+| V14 | **The type counts match the stage's deal, give or take 1** (the seed's jitter). A fork counts as its low road's type | §7.5; §7.1 |
+| V15 | The `ending-fork` `F[L^+\|R_] E` is the last node before E. LATER, not 1-1 | §1 (Matt, 11-05) |
+| V16 | `&` only from the stage where creatures are taught (W1: 1-3), and about a third of the stage's time has none | Matt 12:15 AM (ENGINE-PLAN :55) |
 
 ### 8.4 The sprint graphs in code, and under 1-1's brief
 
@@ -351,32 +390,27 @@ A graph is jobs and shapes only; the deal fills in the content (§7.5).
 - Under 1-1's brief, the T slot becomes three teaches: jump, double, bounce.
 - V11 then forces the double onto a different type from the jump. The double is taught on the stair (`Tc2^`), so the three teaches read `Tg1 Tc2^ Tb`.
 
-Variety at a glance: the four skeletons differ in where the fork, the climb, the flow and the twist sit, and in how many rests there are.
-
 ### 8.5 Three example 1-1 rolls
 
-1-1's deal is ground 40, floating 22, climb 15, bounce 13, fork 10, over its content slots, give or take 1, under the caps.
+1-1's deal is ground 40, floating 25, climb 20, bounce 15, give or take 1, under the caps.
 
-**Roll 1 (graph A):** `A Tg1< Tc2^< Tb> Pg2> F[Pb2^+|Pg1]< R Xf2> R Sf2> E`
-- Types: ground 2, climb 1, bounce 1, fork 1, floating 1.
-- Floating comes only at the test, in the last third. The set piece is the double chain on floating logs.
+**Roll 1 (graph A):** `A Tg1< Tc2^< Tb> Pb2> F[Pc2^+|Pg1]< R Xf2> R Sf2> E`
+- Types: ground 2 (counting the fork's low road), climb 1, bounce 2, floating 1.
+- It splits early and puts floating only at the test. The set piece is the double chain on floating logs.
 
 **Roll 2 (graph B):** `A Tg1> Tc2^< Tb< Mg2> R Cb2< Uc^> Xf2> R Sf2< E`
-- Types: ground 2, climb 2, bounce 2, floating 1. This graph has no fork slot, so fork deals 0 (V14).
-- The combine is bounce then double (the stage's pair). The flow is a hurry run of doubles.
+- Types: ground 2, climb 2, bounce 2, floating 1.
+- It has no split. Its flow is a hurry run of doubles, and its combine is bounce into double.
 
-**Roll 3 (graph D):** `A Tg1< Tc2^> Tb> Pg2< R Uc^< F[Pb2^+|Pg1]> Xf2> R Sf2< E`
-- Types: ground 2, climb 2, bounce 1, fork 1, floating 1.
-- It climbs before it splits, then ends on a floating test and the double chain.
+**Roll 3 (graph D):** `A Tg1< Tc2^> Tb> Pg2< R Uc^< F[Pc2^+|Pb]> Xf2> R Sf2< E`
+- Types: ground 2, climb 2, bounce 2 (counting the fork's low road), floating 1.
+- It climbs, then splits, with a mushroom on the low road.
 
-Reading the three together on a phone:
-- Roll 1 splits early.
-- Roll 2 runs a flow and has no split.
-- Roll 3 climbs, then splits.
-- Their tempo strings differ (`<<>><>>`, `><<><>><`, `<>><<>><`), and no tempo profile repeats (§5).
+The three tempo strings differ (`<<>><>>`, `><<><>><`, `<>><<>><`), so no tempo profile repeats (§5).
 
 ### 8.6 In the data
 - A world's graph list (§4) is stored as code strings.
-- A roll is saved as its filled string, next to the seed. The ledger (§5) compares strings: the same skeleton means the same graph, and the same tempo marks mean the same tempo profile.
-- One parser reads the strings and checks V1-V15, and fails with the rule and the token.
+- A roll is saved as its filled string, next to the seed. The ledger (§5) compares strings: the same skeleton means the same graph, and the same marks mean the same tempo profile.
+- One parser reads the strings and checks V1-V16, and fails with the rule and the token.
 - The engine-core porter builds the parser. Until then, these rules are the spec.
+
