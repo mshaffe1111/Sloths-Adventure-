@@ -581,3 +581,34 @@ gives **57 rows**:
 - **No hand fix found by today's gates: 19.** 1-3, 1-7, 1-9, 2-1, 2-2, 2-5, 2-8, 2-9, 3-3, 3-5, 3-8, 3-9, 4-2, 4-4, 4-5, 5-1, 5-5,
   5-9 and **8-4 Lantern Run**.
 - **The ladder** is a world-level rule (topic 1: no builder reads it); each row shows what it teaches and brings back.
+
+## Addendum 3, 12:47-12:50 PM ET: the same per-roll ranges on main's old 1-2 and old 1-5 (the lead, for 1-2's acceptance test)
+
+Measured exactly as in Addendum 2: `npx tsx tools/engine/runs/rollshares.ts <main worktree> 1-2` (and `1-5`), then `rollsum.py`. The
+runs are main 68b31e665, 32 rolls (rollVariants), Normal and Easy. Outputs: `out/r16411/rs-main-12.json`, `rs-main-15.json`, and
+`summary-12-15.txt` (with every roll's lean and the Easy-gate shares).
+
+Cells are min / p10 / median / p90 / max over 32 rolls:
+
+| Stage, setting | Hop share | Gap share, roll median | Gap share, roll p90 | Rise share, roll median | Rise share, roll p90 |
+|---|---|---|---|---|---|
+| main 1-2 normal | 0.47 / 0.48 / 0.79 / 0.98 / 0.98 | 0.73 / 0.76 / 0.83 / 0.86 / 0.88 | 0.89 / 0.91 / 0.95 / 0.98 / 1.00 | 0.38 / 0.38 / 0.45 / 0.54 / 0.56 | 0.94 / 0.94 / 0.94 / 1.12 / 1.12 |
+| main 1-2 easy | 0.47 / 0.48 / 0.79 / 0.98 / 0.98 | 0.65 / 0.65 / 0.83 / 0.86 / 0.88 | 0.69 / 0.70 / 0.95 / 0.98 / 1.00 | 0.38 / 0.38 / 0.45 / 0.50 / 0.51 | 0.94 / 0.94 / 0.94 / 1.12 / 1.12 |
+| main 1-5 normal | 0.36 / 0.38 / 0.86 / 0.95 / 0.95 | 0.68 / 0.71 / 0.77 / 0.81 / 0.83 | 0.83 / 0.86 / 0.94 / 0.97 / 1.00 | 0.57 / 0.65 / 0.69 / 0.69 / 0.75 | 0.94 / 0.94 / 1.12 / 1.12 / 1.12 |
+| main 1-5 easy | 0.36 / 0.38 / 0.86 / 0.95 / 0.95 | 0.68 / 0.69 / 0.74 / 0.81 / 0.83 | 0.82 / 0.86 / 0.93 / 0.96 / 0.97 | 0.57 / 0.65 / 0.69 / 0.69 / 0.75 | 0.94 / 0.94 / 1.12 / 1.12 / 1.12 |
+
+**Hop-share families.** Like old 1-1, the rolls fall into separate families, not one spread:
+- **Old 1-2:** 12 rolls at 0.47-0.50, 12 at 0.78-0.82, 8 at 0.98. Median 0.79, so each roll's lean is about -0.30, 0.00 or +0.19.
+- **Old 1-5:** 13 rolls at 0.36-0.41 and 19 at 0.85-0.95 (6 of them at 0.85-0.86, 6 at 0.93-0.95). Median 0.86, so the lean is about
+  -0.47 or 0 to +0.09.
+
+**Easy vs Normal.** On both stages the hop shares and rises are the same on Easy as on Normal. The gaps are slightly smaller on Easy:
+old 1-2's gap-share median drops to 0.646 on its lowest rolls (Normal 0.734), and old 1-5's p10 to 0.694 (Normal 0.712). That is the
+old builder's Easy pass, which here widens a few landings.
+
+**Not given: "steady" and "hilly".** They are tempo and terrain words, not these four measures. No tool on main gives them by roll.
+What exists:
+- 1-5's up/flat/down counts from CP1's measure2 (`cp1/table2.txt`: old 1-5 is not in it; the "new 1-5" there is the rhythm 1-5).
+- era's action mix and quiet stretches.
+If the designer defines them in units these tools measure (for example tempo as beats a minute on era's route, and hills as the share
+of route jumps rising over 20 px), I can run them on main's old 1-1, 1-2, 1-3 and 1-5 in a few minutes.
