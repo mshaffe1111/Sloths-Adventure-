@@ -15,6 +15,7 @@
  */
 import type { Collectible, LevelConfig, Platform, Vine } from '../types.ts';
 import { IDEAS } from './library.ts';
+import { kitFor, type WorldKit } from './kits.ts';
 import { w1DressFacing, w1DressWidth } from '../w1NewArt.ts';
 import type { StageSpec } from './spec.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
@@ -132,17 +133,15 @@ interface Lay {
   glints: Array<{ x: number; y: number }>;
 }
 type Entry = 'mushroom' | 'vine' | 'step';
-/** the old 1-1's mushrooms, median over its 16 layouts (cp1-old.json) */
-const MUSHROOM_CAP = 14;
 /** where the way is: the end of the last piece laid, its top, and the kind of piece it was */
 interface Cursor { x: number; y: number }
 
 /** a phone screen's width of the stage, sideways (the stills): the trunk cap counts within it */
 const SCREEN = 1400;
-const GROUND = 900;
-const LIMIT = { yMin: 300, yMax: 1400 };
+/** this build's world kit (kits.ts): set at the start of every build, from the stage's world */
+let K = undefined as unknown as WorldKit;
 /** the band the way must stay in right now (a fork's road keeps to its own, so the two roads never meet) */
-let band = { ...LIMIT };
+let band = { yMin: 0, yMax: 0 };
 /** the narrowest gap that is still a jump (beatTrace.ts MIN_GAP) */
 const MIN_GAP = 40;
 
@@ -273,18 +272,8 @@ function clearPiece(L: Lay, ps: Platform[]): Platform | undefined {
   return order.find((p) => clear(p) && open(p) && span(p) >= 380) ?? order.find((p) => clear(p) && span(p) >= 380) ?? order.find((p) => clear(p) && open(p)) ?? order.find(clear);
 }
 
-/** each piece kind's widths by size band (short under 150 px, medium 150-300, long over 300), inside the shipped p10-p90 (cp2/library.txt)
- *  and CP2's proven sizes */
-// (short stones stop at 120 px: Easy's own pass widens a ledge by its jump, and a 140 px stone came out medium, easyMode.ts)
-const BANDS: Record<string, Array<[number, number]>> = {
-  bank: [[110, 148], [160, 290], [310, 360]], stone: [[60, 120], [160, 233]], log: [[180, 290], [310, 420]], branch: [[110, 148], [160, 290]],
-  bridge: [[112, 148], [160, 300]], creaky: [[110, 148], [150, 170]], crumble: [[110, 110]], lily: [[82, 102]], reed: [[150, 190]],
-};
-const HEIGHT: Record<string, number> = { bank: 120, stone: 50, log: 90 };
 /** Easy's size bands over Normal's (pacing ruling A); the variety gate reads Easy's sizes on the same bands (cp1/measure2.py) */
 export const EASY_BS = 1.35;
-/** a landing steps up or down (the designer's (c): at least 4 of 5 landings do) */
-const STEPS = [40, 30, 50, -30, -40, -60];
 /** (a step of 20 px or less reads as flat: the variety gate's up/flat/down, cp1/measure2.py) */
 const FLAT = 20;
 
@@ -292,7 +281,7 @@ const FLAT = 20;
  * A burst (the designer's ruling, CP3 (a)+(c)): `n` pieces from `kinds`; the kind changes every 2 pieces and the size band every piece;
  * every landing steps up or down more than 20 px unless the band forbids it. Gaps are the dial's share of the gate's (gateGap).
  */
-function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: number[] = STEPS, fixedGap?: number, width?: number): Cursor {
+function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: number[] = K.steps, fixedGap?: number, width?: number): Cursor {
   let { x, y } = c;
   for (let i = 0; i < n; i++) {
     const k = kinds[Math.floor(i / 2) % kinds.length];
@@ -311,7 +300,7 @@ function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: num
       x = st.x + st.width; y = st.y;
       continue;
     }
-    const bands = (BANDS[k] ?? [[110, 200]]).map(([a, b]) => [Math.round(a * L.bs), Math.round(b * L.bs)] as [number, number]);
+    const bands = (K.bands[k] ?? [[110, 200]]).map(([a, b]) => [Math.round(a * L.bs), Math.round(b * L.bs)] as [number, number]);
     // (the size band turns every piece, so two of a kind side by side are two sizes: "something new" comes often)
     // (and of the bands, the first in that turn whose size is new against the last six landings, the gate's "something new")
     const turnAt = (i + Math.floor(i / 2)) % bands.length;
@@ -330,7 +319,7 @@ function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: num
     // a short piece stays short and the gate's kind x size variety holds; never under 90 px)
     if (d > L.riseCap) d = L.riseCap;
     const f = easyFit(L, d, width ?? Math.max(90, Math.round(R.r(bnd[0], bnd[1]))), 999);
-    const h = HEIGHT[k] ?? 24, type = k === 'creaky' || k === 'crumble' ? 'fragile' : 'solid';
+    const h = K.heights[k] ?? 24, type = k === 'creaky' || k === 'crumble' ? 'fragile' : 'solid';
     let max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy);
     while (max < MIN_GAP + 10 && f.dy > 0) { f.dy -= 10; max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy); }
     // (the gap is the dial's share of the gate's widest, give or take 8%; Easy's 80 px cap on a rise still holds)
@@ -346,7 +335,7 @@ function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: num
 
 /** one piece `w` wide, a gate-sized gap on from the cursor and a step up or down from it (no landing sits flat with the one before) */
 function step(L: Lay, c: Cursor, R: Rng, k: string, w: number): Platform {
-  burst(L, c, R, [k], 1, STEPS, undefined, w);
+  burst(L, c, R, [k], 1, K.steps, undefined, w);
   return L.P[L.P.length - 1];
 }
 
@@ -386,7 +375,7 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     case 'the climb': {
       // (CP2 cp2-climb.out: a bank, a climbing vine at its end, a bough 170-300 px up out from it, on the bough in 1.2-2.4 s)
       const bank = step(L, c, R, 'bank', 260);
-      const rise = Math.round(R.r(170, Math.max(170, Math.min(300, bank.y - LIMIT.yMin))));
+      const rise = Math.round(R.r(170, Math.max(170, Math.min(300, bank.y - K.limit.yMin))));
       const vx = bank.x + bank.width + 2;
       L.V.push({ id: -1, x: vx, topY: bank.y - rise - 30, bottomY: bank.y, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as Vine);
       const b = plat(L, 'branch', vx + 13, bank.y - rise, Math.round(R.r(240, 300)));
@@ -540,7 +529,7 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     // within 20 px of a piece beside it, so no landing next to it is flat)
     // (the designer's review D: each canopy is entered a different way from the one before, by a mushroom, a climb vine or a bough
     // step, and the stage has no more mushrooms than the old 1-1)
-    const ways = (['mushroom', 'vine', 'step'] as Entry[]).filter((w) => w !== L.entry && (w !== 'mushroom' || (L.mushrooms < MUSHROOM_CAP && L.bounceTaught !== false)));
+    const ways = (['mushroom', 'vine', 'step'] as Entry[]).filter((w) => w !== L.entry && (w !== 'mushroom' || (L.mushrooms < K.mushroomCap && L.bounceTaught !== false)));
     const way = R.pick(ways);
     L.entry = way;
     // (a step entry's host never steps down 70: the step, 80 px over it, would sit flat with the piece before)
@@ -875,7 +864,8 @@ function startDress(names: string[], spawnX: number, bank: Platform): Array<{ n:
 function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec): GeneratedStage & { proto: ProtoExtras } {
   // (the band starts at the stage's limits on every build: it was left over from the stage built before, so 1-5 after 1-1 was a different
   // stage from 1-5 built fresh, same seed (found 11-05, tools/engine/probe-order.ts); the snapshot's order check holds it)
-  band = { ...LIMIT };
+  K = kitFor(config.worldIndex);
+  band = { ...K.limit };
   const PLAN = S.plan;
   const nid = (i: number) => nidOf(PLAN, i);
   // (the difficulty dial, ENGINE-SPEC: d from the world and stage; the gap is this share of the gate's widest)
@@ -1004,7 +994,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
       // or more apart: a jump on the low road (100 px up, his body 116 tall) never meets the high road over it)
       // (Easy, the designer's ruling 5 on the CP3 miss: the roads sit within 400 px of each other, so a slip costs nothing there)
       const hy = forkBank.y, ly = hy + (L.easy ? 240 : 260);
-      band = { yMin: Math.max(LIMIT.yMin, hy - (L.easy ? 60 : 160)), yMax: hy };
+      band = { yMin: Math.max(K.limit.yMin, hy - (L.easy ? 60 : 160)), yMax: hy };
       const forkFrom = L.P.length;
       // (each road lays two bursts, its deck's two ideas in turn, so the fork is a real stretch of the stage: the plan's 15-20% each)
       lastIdea = lo2;
@@ -1018,10 +1008,10 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
       band = { yMin: ly, yMax: ly + (L.easy ? 60 : 160) };
       const lowFrom = L.P.length;
       const loEnd = idea(L, lo2, gap(idea(L, lo, lowStart, R)), R);
-      band = { ...LIMIT };
+      band = { ...K.limit };
       // (rejoin: one long bank 30 px over the low road's end, a gap the gate allows on from it, and long enough to run on under the high
       // road's end, which drops onto it)
-      const ry = Math.max(LIMIT.yMin, loEnd.y - 30);
+      const ry = Math.max(K.limit.yMin, loEnd.y - 30);
       const rx = loEnd.x + Math.min(70, gateGap(L, loEnd.y, { y: ry, height: 120, type: 'solid' }, loEnd.y - ry) - 4);
       // (a long log: after a low road of banks, another long bank was nothing new for 1.6k px)
       const rejoin = plat(L, 'log', rx, ry, Math.max(320, hiEnd.x + 240 - rx));
@@ -1192,10 +1182,10 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
   }
   // (every piece has a look World 1's kit paints: a bank, stone, log, branch, ruin, bridge, lily pad or mushroom; anything else falls back
   // to terrain's code-drawn island, 3 gradients a frame (engine-render's suggestion, 11-05))
-  const KIT = new Set(['moss_stone', 'log', 'branch', 'ruin', 'canopy_bridge']);
+  const KIT = new Set(K.styles);
   for (const p of stage.platforms) {
     const q = p as Platform & { lily?: boolean };
-    if (!(KIT.has(p.style as string) || q.lily || p.type === 'bouncy')) throw new Error(`${S.id}: piece ${p.id} at x ${p.x} (h ${p.height}, style ${p.style}) has no World 1 kit look`);
+    if (!(KIT.has(p.style as string) || q.lily || p.type === 'bouncy')) throw new Error(`${S.id}: piece ${p.id} at x ${p.x} (h ${p.height}, style ${p.style}) has no look in World ${K.world}'s kit`);
   }
   return stage;
 }
