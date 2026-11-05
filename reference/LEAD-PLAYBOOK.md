@@ -261,3 +261,7 @@ time honest. A shallow report goes back at once, or the helper is replaced with 
    game, then searches on its own. Our earlier research goes in only after its first list of sources, as a cross-check.
 6. *Matt couldn't see them.* Research helpers run as cloud sessions (create_session), one per researcher, so Matt can watch them in
    his session list. Local background helpers don't appear there (Matt, 2026-11-04: "I don't see it running").
+7. *The briefs anchored the design on our code.* The designer, critic and planner were all told to start from or "build on" what we
+   have, so every option came out as "fix ours" (Matt, 2026-11-04: "the whole point was to make the engine not based upon what we
+   already have, but what the best way of doing it"). A design brief now asks for the clean-sheet best way FIRST, as if we had no code,
+   and only then a fit table: each of our pieces kept, adapted or replaced, with the reason. "Builds on X" is never a given in a brief.
