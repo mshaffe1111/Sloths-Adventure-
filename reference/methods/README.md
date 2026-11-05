@@ -55,6 +55,7 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Gates (artcheck, drawcheck, clipcheck, playerText, art-use, knowncheck) | `gates.md` | written 11-01 (kaizen-gates) | whoever adds a gate |
 | WebGL / GPU renderer stages (PixiJS layer, look proof, context loss, pitfalls) | `webgl.md` | written 11-04 (warmup-5m) | the next GPU stage |
 | The World 1 measuring stick (move strings, look grid, flags, fixtures) | `validator.md` | written 11-04 (fix-petals; merges with fun-validator) | whoever extends the validator |
+| Settling spec rows by runs on our code (frozen worktrees, one dump, existing measures first, the bot-count rule, stills by scratch hook) | `engine-runs.md` | written 11-05 (engine-runs) | the next measurement helper |
 | Quality review (in-order play, the six-question bar, verdicts) | `quality-review.md` | written 11-04 (quality supervisor; on quality-supervisor) | the quality supervisor |
 | Test link and release (build.py, Artifact publish limits, release branch, PR, deploy and APK check) | `test-link-and-release.md` | to write; source: HANDOFF §6-7 | the lead (11-01) |
 | Cutscene art and clips | `hf-cutscenes.md` | to write; source: tools/art/hfstory, the hf-cutscenes branch notes | next cutscene helper |

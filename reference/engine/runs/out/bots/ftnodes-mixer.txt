@@ -1,32 +1,32 @@
-== 1-1 ADULT (normal), 16 layouts: per node: lives lost per run | hits per run | jump tries ok share | doubles ok | hearts laid per build
-   whole stage: lives 1.94/run, hits 0.00/run, rescues 3.25/run, soft falls 0.00/run (soft falls carry no x)
-   n1 teach run          lives 0.00 | hits 0.00 | tries 52 ok 1.000 | doubles 0 ok 0.000 | hearts 0.00
-   n2 teach jump         lives 0.00 | hits 0.00 | tries 303 ok 0.997 | doubles 1 ok 1.000 | hearts 0.00
-   n3 practise (fork)    lives 0.06 | hits 0.00 | tries 407 ok 0.789 | doubles 77 ok 0.169 | hearts 0.00
-   n4 teach bounce       lives 0.81 | hits 0.00 | tries 280 ok 0.918 | doubles 20 ok 0.900 | hearts 0.00
-   n5 the fork           lives 0.00 | hits 0.00 | tries 346 ok 0.772 | doubles 67 ok 0.104 | hearts 0.00
-   n6 rest               lives 0.00 | hits 0.00 | tries 32 ok 1.000 | doubles 0 ok 0.000 | hearts 0.00
-   n7 teach double       lives 0.00 | hits 0.00 | tries 307 ok 0.925 | doubles 0 ok 0.000 | hearts 0.00
-   n8 climb up           lives 0.00 | hits 0.00 | tries 90 ok 0.978 | doubles 0 ok 0.000 | hearts 0.00
-   n9 test double        lives 1.06 | hits 0.00 | tries 128 ok 0.789 | doubles 20 ok 1.000 | hearts 0.00
-   n10 canopy fork        lives 0.00 | hits 0.00 | tries 322 ok 0.748 | doubles 65 ok 0.015 | hearts 0.00
-   n11 cool down          lives 0.00 | hits 0.00 | tries 16 ok 1.000 | doubles 0 ok 0.000 | hearts 0.00
-   n- between nodes / start / end lives 0.00 | hits 0.00 | tries 149 ok 1.000 | doubles 0 ok 0.000 | hearts 0.00
-== 1-1 KID (easy), 16 layouts: per node: lives lost per run | hits per run | jump tries ok share | doubles ok | hearts laid per build
-   whole stage: lives 0.00/run, hits 0.00/run, rescues 4.31/run, soft falls 2.50/run (soft falls carry no x)
-   n1 teach run          lives 0.00 | hits 0.00 | tries 24 ok 1.000 | doubles 0 ok 0.000 | hearts 1.00
-   n2 teach jump         lives 0.00 | hits 0.00 | tries 188 ok 0.989 | doubles 1 ok 1.000 | hearts 2.62
-   n3 practise (fork)    lives 0.00 | hits 0.00 | tries 301 ok 0.728 | doubles 61 ok 0.049 | hearts 1.44
-   n4 teach bounce       lives 0.00 | hits 0.00 | tries 245 ok 0.849 | doubles 35 ok 0.486 | hearts 2.75
-   n5 the fork           lives 0.00 | hits 0.00 | tries 273 ok 0.729 | doubles 56 ok 0.089 | hearts 2.12
-   n6 rest               lives 0.00 | hits 0.00 | tries 49 ok 0.980 | doubles 1 ok 1.000 | hearts 1.00
-   n7 teach double       lives 0.00 | hits 0.00 | tries 231 ok 0.935 | doubles 1 ok 1.000 | hearts 2.62
-   n8 climb up           lives 0.00 | hits 0.00 | tries 56 ok 1.000 | doubles 0 ok 0.000 | hearts 0.31
-   n9 test double        lives 0.00 | hits 0.00 | tries 106 ok 0.538 | doubles 18 ok 0.889 | hearts 0.81
-   n10 canopy fork        lives 0.00 | hits 0.00 | tries 282 ok 0.702 | doubles 61 ok 0.033 | hearts 1.19
-   n11 cool down          lives 0.00 | hits 0.00 | tries 19 ok 1.000 | doubles 0 ok 0.000 | hearts 0.00
-   n- between nodes / start / end lives 0.00 | hits 0.00 | tries 161 ok 1.000 | doubles 0 ok 0.000 | hearts 5.25
-== 1-5 ADULT (normal), 16 layouts: per node: lives lost per run | hits per run | jump tries ok share | doubles ok | hearts laid per build
+== 1-1 ADULT (normal), 12 counted runs of 16 (left out: L2 (shrine, 4 rescues), L5 (shrine, 4 rescues), L7 (shrine, 4 rescues), L11 (shrine, 4 rescues)): per node: lives lost per run | hits per run | jump tries ok share | doubles ok | hearts laid per build
+   whole stage: lives 2.08/run, hits 0.00/run, rescues 3.00/run, soft falls 0.00/run (soft falls carry no x)
+   n1 teach run          lives 0.00 | hits 0.00 | tries 41 ok 1.000 | doubles 0 ok 0.000 | hearts 0.00
+   n2 teach jump         lives 0.00 | hits 0.00 | tries 228 ok 1.000 | doubles 0 ok 0.000 | hearts 0.00
+   n3 practise (fork)    lives 0.08 | hits 0.00 | tries 312 ok 0.788 | doubles 54 ok 0.111 | hearts 0.00
+   n4 teach bounce       lives 0.92 | hits 0.00 | tries 208 ok 0.909 | doubles 16 ok 0.875 | hearts 0.00
+   n5 the fork           lives 0.00 | hits 0.00 | tries 256 ok 0.785 | doubles 46 ok 0.065 | hearts 0.00
+   n6 rest               lives 0.00 | hits 0.00 | tries 24 ok 1.000 | doubles 0 ok 0.000 | hearts 0.00
+   n7 teach double       lives 0.00 | hits 0.00 | tries 232 ok 0.922 | doubles 0 ok 0.000 | hearts 0.00
+   n8 climb up           lives 0.00 | hits 0.00 | tries 63 ok 0.984 | doubles 0 ok 0.000 | hearts 0.00
+   n9 test double        lives 1.08 | hits 0.00 | tries 94 ok 0.766 | doubles 16 ok 1.000 | hearts 0.00
+   n10 canopy fork        lives 0.00 | hits 0.00 | tries 242 ok 0.752 | doubles 48 ok 0.000 | hearts 0.00
+   n11 cool down          lives 0.00 | hits 0.00 | tries 12 ok 1.000 | doubles 0 ok 0.000 | hearts 0.00
+   n- between nodes / start / end lives 0.00 | hits 0.00 | tries 111 ok 1.000 | doubles 0 ok 0.000 | hearts 0.00
+== 1-1 KID (easy), 3 counted runs of 16 (left out: L1 (shrine, 6 rescues), L2 (shrine, 6 rescues), L3 (shrine, 4 rescues), L5 (shrine, 5 rescues), L6 (shrine, 4 rescues), L7 (shrine, 4 rescues), L9 (shrine, 6 rescues), L10 (shrine, 4 rescues), L11 (shrine, 4 rescues), L12 (shrine, 4 rescues), L13 (shrine, 5 rescues), L14 (shrine, 4 rescues), L16 (shrine, 4 rescues)): per node: lives lost per run | hits per run | jump tries ok share | doubles ok | hearts laid per build
+   whole stage: lives 0.00/run, hits 0.00/run, rescues 3.00/run, soft falls 2.33/run (soft falls carry no x)
+   n1 teach run          lives 0.00 | hits 0.00 | tries 8 ok 1.000 | doubles 0 ok 0.000 | hearts 1.00
+   n2 teach jump         lives 0.00 | hits 0.00 | tries 37 ok 1.000 | doubles 0 ok 0.000 | hearts 3.00
+   n3 practise (fork)    lives 0.00 | hits 0.00 | tries 54 ok 0.722 | doubles 12 ok 0.083 | hearts 1.33
+   n4 teach bounce       lives 0.00 | hits 0.00 | tries 42 ok 0.905 | doubles 4 ok 0.750 | hearts 2.67
+   n5 the fork           lives 0.00 | hits 0.00 | tries 51 ok 0.686 | doubles 13 ok 0.077 | hearts 2.33
+   n6 rest               lives 0.00 | hits 0.00 | tries 10 ok 0.900 | doubles 1 ok 1.000 | hearts 1.00
+   n7 teach double       lives 0.00 | hits 0.00 | tries 47 ok 0.872 | doubles 0 ok 0.000 | hearts 3.00
+   n8 climb up           lives 0.00 | hits 0.00 | tries 11 ok 1.000 | doubles 0 ok 0.000 | hearts 0.33
+   n9 test double        lives 0.00 | hits 0.00 | tries 17 ok 0.647 | doubles 4 ok 1.000 | hearts 0.67
+   n10 canopy fork        lives 0.00 | hits 0.00 | tries 48 ok 0.708 | doubles 11 ok 0.000 | hearts 1.33
+   n11 cool down          lives 0.00 | hits 0.00 | tries 3 ok 1.000 | doubles 0 ok 0.000 | hearts 0.00
+   n- between nodes / start / end lives 0.00 | hits 0.00 | tries 31 ok 1.000 | doubles 0 ok 0.000 | hearts 5.00
+== 1-5 ADULT (normal), 16 counted runs of 16 (left out: none): per node: lives lost per run | hits per run | jump tries ok share | doubles ok | hearts laid per build
    whole stage: lives 0.38/run, hits 0.31/run, rescues 1.88/run, soft falls 0.00/run (soft falls carry no x)
    n1 warm-up            lives 0.00 | hits 0.00 | tries 120 ok 1.000 | doubles 34 ok 1.000 | hearts 0.00
    n2 teach creaky       lives 0.00 | hits 0.00 | tries 126 ok 1.000 | doubles 52 ok 1.000 | hearts 0.00
@@ -41,7 +41,7 @@
    n10 master (fork)      lives 0.00 | hits 0.19 | tries 324 ok 0.731 | doubles 87 ok 0.310 | hearts 0.00
    n11 cool down          lives 0.00 | hits 0.00 | tries 109 ok 1.000 | doubles 40 ok 1.000 | hearts 0.00
    n- between nodes / start / end lives 0.00 | hits 0.00 | tries 83 ok 0.988 | doubles 16 ok 1.000 | hearts 1.00
-== 1-5 KID (easy), 16 layouts: per node: lives lost per run | hits per run | jump tries ok share | doubles ok | hearts laid per build
+== 1-5 KID (easy), 16 counted runs of 16 (left out: none): per node: lives lost per run | hits per run | jump tries ok share | doubles ok | hearts laid per build
    whole stage: lives 0.00/run, hits 0.00/run, rescues 0.81/run, soft falls 0.88/run (soft falls carry no x)
    n1 warm-up            lives 0.00 | hits 0.00 | tries 41 ok 1.000 | doubles 2 ok 1.000 | hearts 0.25
    n2 teach creaky       lives 0.00 | hits 0.00 | tries 155 ok 0.987 | doubles 41 ok 1.000 | hearts 2.44
