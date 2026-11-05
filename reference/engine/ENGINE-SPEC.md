@@ -2438,8 +2438,9 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
 
 - **Hearts:** only after real risk (n9).
 - **Flags:** before n9, and the flag rule decides the rest.
-- **The three lines marked "(hint.1-1.bank/high/noMoss)"** are Matt-approved (6dae405d8, 11-04) but **not on main**. If the builder's
-  base lacks them, carry them in as data from engine-mixer's dotLinesData.ts:99-101, word for word. Never write new ones.
+- **The three lines marked "(hint.1-1.bank/high/noMoss)"** are Matt-approved (6dae405d8, 11-04) but not on main. **[revised 1:30 PM ET,
+  the lead: engine-core carries them, R-165.41]** The builder does NOT copy them from anywhere. It checks that all three are in
+  engine-core's dotLinesData.ts, word for word as above. If any is missing, that's an engine finding: report it. Never write a line.
 
 ### D. Lay (SPEC_11's `lay` and recipes)
 - `startY: 1260`; **end: `{ kind: 'bank', w: 640 }`**: the shrine stands on its bank (11:04 ruling). Remove `burstMin` and
@@ -2449,8 +2450,10 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
 - **Dressing:**
   - the squirrels at the start (squirrel-sit, -wave, -tip), each moved clear of the spawn by the clearance rule, never deleted (1:02
     ruling);
-  - the bootprint at the end, a flush decal on the end bank's top band, toe east, just past the shrine's door (11:04 ruling). Its art
-    is on the unmerged art-bootprint branch, so if it isn't in the builder's tree, report it. Never a stand-in.
+  - the bootprint at the end, a flush decal on the end bank's top band, toe east, just past the shrine's door (11:04 ruling).
+    **[1:30 PM ET, the lead: its art is HELD to next week, R-165.31, and is not in engine-core.]** The builder sets `dress.clue:
+    'bootprint'` in the data, reports the missing art once, and draws no stand-in. Because it is held on purpose, the missing art is
+    a known item, not a fix round and not a fail of the pass line.
 
 ### E. The pass line (all of it must hold)
 1. **The acceptance test** (ES 1657):
