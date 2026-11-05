@@ -42,9 +42,12 @@ spec's number actually rests on, and the difference is in the note (and in list 
 | GC / LCA | `reference/research/engine-2026-11-04/GEMINI-CRITICAL-AGENTS.txt` / `reference/research/ledger/LEDGER-CRITICAL-AGENTS.md` [engine-design] |
 | cp1/ cp2/ cp3/ | `reference/engine/cp1/`, `cp2/`, `cp3/` [engine-spec] |
 | ML | `tools/engine/moveladder.json` [origin/engine-mixer 7d9ad9a9] |
-| w1mix | `src/game/mixer/w1mix.ts` [origin/engine-mixer] |
+| w1mix | `src/game/mixer/w1mix.ts` [origin/engine-mixer 7d9ad9a9] |
 
-Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unless named.
+Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unless named. Line numbers are pinned to: ccr = cbbc0230,
+engine-design = db3342a1, engine-mixer = 7d9ad9a9 (the branch has moved since; w1mix.ts lines differ on its HEAD), main = 68b31e66,
+engine-plan and w1-rhythm at their current heads. Every file:line in sections 1-24 and lists (a)-(b) was checked by
+`/tmp/claude-0/-home-user-Sloths-Adventure-/ae911ee5-4c11-5de9-a62f-5a201b1932ff/scratchpad/tools/citecheck.py` (see "Citation check" at the end).
 
 ---
 
@@ -115,7 +118,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 109 | Turtle line joins World 1 | SOURCED | R3:168-171 (F10: kicking shells 0.345, strongest fun correlate) | Turtles live only in 2-5 and 2-9 (ML row animal:turtle) | |
 | 113-116 | Move ladder: <= 1 new move a stage; >= 2 earlier ones reused harder; none taught in the last 3 stages absent > 2 stages | OPEN | none | Matt's "keeps building" (relayed to the planner; not saved) and SR §0.1 (ccr:19-20) give the intent, not the numbers | (i) SR §0b.2 four parts and R1 L5 (R1:68) for the teach; GV:105 ("return later without retraining"); (iii) search Hayashida's GDC 2012 talk and Shovel Knight's "on cooldown" list (R1:527) for re-use spacing |
 | 118-119 | Each reuse at a higher job (teach, test, twist, master) or risk | SOURCED | GL A1 (Kishotenketsu); D:422 (Hayashida's four steps) | | |
-| 123-125 | One shared library; World 5 the exception | MATT | MD:66-70 | Later Matt words (MD:127-130) narrow it; see (b) C7 | |
+| 122-125 | One shared library; World 5 the exception | MATT | MD:66-70 | Later Matt words (MD:127-130) narrow it; see (b) C7 | |
 | 126-127 | Library = every piece and idea in any world, tagged by worlds | MATT | MD:66-70 | | |
 | 128-129 | A world's own new ideas lead; others fill in | OPEN | none | | (i) SR §0c.7 (ccr:93-99): a world owns its pieces; R4:577 (themed pools per stage) |
 | 130-132 | Coherence per idea and per join, one art family per join | MATT | MD:76-79 ("they should all fit together") | | |
@@ -125,13 +128,13 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 141-142 | Unused art feeds the library | MATT | MD:61-64 | | |
 | 147 | 273 unused pieces | MEASURED | b461499b (tools/art/artuse.mjs, IN-GAME-UNUSED.md) | | |
 | 148-149 | Dressing stays dressing; boss frames stay with bosses | OPEN | none | | (i) SR §4 "Use ALL the art" (ccr:218); Matt to rule per item |
-| 154-172 | 17 unused-art ideas and their "exists?" column | MEASURED | cp2/mechanics-exist.md:10-31 (7 yes, 9 adapt, 1 new) | The table is the designer's; the verdicts are the planner's code check | |
+| 154-172 | 17 unused-art ideas and their "exists?" column | MEASURED | cp2/mechanics-exist.md:10-30 (7 yes, 9 adapt, 1 new) | The table is the designer's; the verdicts are the planner's code check | |
 | 174-175 | Unused animal frames give a second behaviour, the "harder form" | OPEN | none | | (iii) search for shipped games that give each enemy a second behaviour later (e.g. Rayman Origins enemy variants, DKC Returns) |
-| 181 | Easy: no rise over +40 px onto a landing under 220 px | MEASURED | cp2/cp2-trace-easy.out (flicks 246-281 ms at +50..+70); cp2/cp2-trace-easyfix.out (+40: 298-386 ms) | The 220 px threshold itself is not traced: settle with cp2-trace.ts at +50/+70 onto 160/220/280 px landings | |
-| 182 | A landing after +40 is >= 110 px | OPEN | none | Not in the trace outputs | (ii) cp2-trace.ts: Easy +40 onto 90/110/130 px landings |
-| 183 | +50 to +70 only onto >= 220 px | OPEN | none | Not traced | (ii) as ES 181 |
+| 180 | Easy: no rise over +40 px onto a landing under 220 px | MEASURED | cp2/cp2-trace-easy.out (flicks 246-281 ms at +50..+70); cp2/cp2-trace-easyfix.out (+40: 298-386 ms) | The 220 px threshold itself is not traced: settle with cp2-trace.ts at +50/+70 onto 160/220/280 px landings | |
+| 181 | A landing after +40 is >= 110 px | OPEN | none | Not in the trace outputs | (ii) cp2-trace.ts: Easy +40 onto 90/110/130 px landings |
+| 182 | +50 to +70 only onto >= 220 px | OPEN | none | Not traced | (ii) as ES 180 |
 | 183-184 | Rise >= +30 has a gap <= 80 px (90 px gives a 298 ms flick) | MEASURED | cp2/cp2-trace-easyfix.out (+35/90 px: 298 ms), cp2/cp2-trace-yes4.out (bridge +30/90: 298 ms); d5c44600, ccfa8f06 | | |
-| 183 | Easy floor 300 ms | SOURCED | GL F5 (W_min >= 300 ms Easy); SR §1b (ccr:140) | | |
+| 184 | Easy floor 300 ms | SOURCED | GL F5 (W_min >= 300 ms Easy); SR §1b (ccr:140) | | |
 | 184 | Easy bough stair 250 px in 7 steps | MEASURED | cp2/cp2-trace-easyfix.out (7 steps: 40+40+35+35+35+35+30 = 250) | | |
 | 186 | Bough stair flicks 246-281 ms against 300 | MEASURED | cp2/cp2-trace-easy.out lines 3-6 | | |
 | 191 | Logs 9,095 of about 19,000 placed pieces | MEASURED | cp2/library.txt:2 (sum of rows 19,651) | | |
@@ -139,7 +142,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 193 | Drifting logs and lily pads only in World 2 | MEASURED | cp2/library.txt:10, :12 | | |
 | 194 | 24 of 90 stages have no animal | MEASURED | cp2/enemies.txt:13 | | |
 | 196-197 | Spread first: moving/drifting platforms, lilies, mushrooms, taught animals | DERIVED | cp2/library.txt; cp2/enemies.txt | | |
-| 201-206 | 7 on the sheet, 9 small builds, 1 parked | MEASURED | cp2/mechanics-exist.md:31 (7 yes, 9 adapt, 1 new) | Same 7 as the planner's "yes" rows | |
+| 201-206 | 7 on the sheet, 9 small builds, 1 parked | MEASURED | cp2/mechanics-exist.md:30 (7 yes, 9 adapt, 1 new) | Same 7 as the planner's "yes" rows | |
 | 204-205 | Matt picks which small builds to make | OPEN | none | MD:17 gives the designer "full say" on use; no saved Matt rule on who picks builds | (iii) not a research question: one multiple-choice question to Matt; (i) LD:18 (Matt sets the day's work) |
 | 208-209 | CP3's 1-5 draws only proven ideas; World 1's 14 ideas | OPEN | none | Count of 14 not listed anywhere (9 + 4 + turtle) | (ii) list the ideas in library.ts (98b08168) |
 | 213 | Boa passes Easy, misses Normal: 2-3 hits at one boa, 2-3 lives a run | MEASURED | cp2/cp2-animals-groups.out:2-3; cp2/cp2-animals.out:1-2 (lives 3, 2) | | |
@@ -166,7 +169,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 243 | Every repeat is a new kind x size ("new in the last 6") | SOURCED | SR §0c.3 (ccr:81-82) | "last 6" is the planner's window (8c8cd997), not sourced | |
 | 244 | A stage has >= 4 ideas | OPEN | none | Old 1-1 has 6 ideas (cp2/idea-tags.out) | (ii) count ideas in old 1-1 and 1-3 rolls; (i) Shovel Knight 5 new enemies + 5 new objects a level (R1:527) |
 | 246-247 | Today's 1-1, 1-2, 1-4, 1-5 fail: one idea 54-76% | MEASURED | cp2/idea-tags.out (76, 54, 58; 1-5 alternation) | | |
-| 248 | A stage that teaches opens with the idea that teaches it | SOURCED | GP:315 (slot-1 override) | | |
+| 247-248 | A stage that teaches opens with the idea that teaches it | SOURCED | GP:315 (slot-1 override) | | |
 | 249-250 | Inside an idea, its own pieces in order, sizes via a shuffle bag | SOURCED | GL C1; GP:59 | | |
 | 251 | Exit = next entry (high, mid, low, two roads) | SOURCED | GL C9; LEP row 28 (CA:673-683, LOW/MID/TOP) | | |
 | 253-257 | Share cap, run cap, new-within-N, splits, from CP1 | MEASURED | cp1/table2.txt:2 | | |
@@ -215,7 +218,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 331 | Up and down node by node, overall trend down | OPEN | none | | (ii) arc check on 1-5 rolls (spec field `arc`, ES 1214) |
 | 333 | Sizes: shipped p10-p90 widths per kind | MEASURED | cp2/sheet.html (short/typical/long per kind) | The spec cites cp2/library.txt, which has no widths | |
 | 333 | Easy rules: rise cap +40, gap <= 80 px from +30, crumble 1.0 s | MEASURED | cp2/cp2-trace-easyfix.out (rise, gap); crumble 1.0 s is OPEN (ES 228) | | |
-| 333-334 | Target about 150 s skilled | SOURCED | D:210 (target 150 s, SR:36-38 old); LEG E77 (120-150 s) | Accepted later at 4:00-4:12 (ES 909) | |
+| 333-334 | Target about 150 s skilled | SOURCED | D:210 (target 150 s); LEG E77 (120-150 s) | Accepted later at 4:00-4:12 (ES 909) | |
 | 336-337 | A node rolls one idea from its deck through a shuffle bag | SOURCED | D:523-526 (Option A roll: deck, shuffle bag, cooldown); GL C1 | | |
 | 341 | n1 warm-up: bough stair level form, bank hops | OPEN | none | | (ii) fun-gate pacing on n1; (i) SR §0b.2 part 1 (5-10 s groups, low density) |
 | 342 | n2 teach creaky: one twig over a bough below, then two, catch bough, no pit | SOURCED | R1:68-73 (expose, then safe validate); GP:316-318 (zero lethal failure) | Creaky is taught in 1-2, not 1-5 (ES 1429-1433); see (b) C9 | |
@@ -235,7 +238,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 360 | 11 on any path, 13 in all | DERIVED | ES 356-359 (9 + 2 x 1 per fork path = 11; 9 + 4 = 13) | | |
 | 360 | Goal 85% Normal (11 of 13), 65% Easy (9 of 13) | OPEN | none | Revised at ES 462 (10 and 8) | (i) LEG E118 (75% goal), E120 (single-pass yield 0.85); SR §1 Normal goals 87.5% of reachable petals (ccr:115) |
 | 366 | n9 push-block wall about 190 px (100 px log + 90 px single rise) | MEASURED | cp2/cp2-push.out (single jump never on top of the shipped wall) | 190 is the designer's arithmetic | |
-| 366-367 | Doubles allowed on 1-5 only through EARLY_DOUBLE | SOURCED | src/game/levelCheck.ts:118-120 [engine-mixer] (EARLY_DOUBLE = 1-1, 1-4; doubles from stage 6) | | |
+| 366-367 | Doubles allowed on 1-5 only through EARLY_DOUBLE | SOURCED | src/game/levelCheck.ts:118-120 [engine-mixer 7d9ad9a9] (EARLY_DOUBLE = 1-1, 1-4; doubles from stage 6) | | |
 | 369 | Gaps sized by the level check's own functions (jumpOK, heldMaxGap) | SOURCED | R4:551 (idea 2, one reach predicate); ES 1137 P4 | | |
 | 371-374 | n9 seed as a code-drawn glint; visible both ways; real seed with the glide | MATT | CLAUDE.md Polish rule ("a sparkle ... fine") | | |
 | 375-377 | Push block out of n9 (the level check never moves a pushed log) | MEASURED | f735c4fc / 39f8ef63 (planner's build finding) | | |
@@ -244,26 +247,26 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 385-388 | 22 same piece in a row vs 9; new every 1,002 px vs 572; 4,103 px flat vs 1,351; about a third of the ups and downs | MEASURED | old 1-1 side: cp1/table2.txt:2; stretched-1-5 side: no file kept | Only the old 1-1 numbers have a saved output | |
 | 390-391 | (a) A node lays 2-3 bursts of 4-6 pieces | OPEN | none | | (i) SR §0b.1 (5-20 s rhythm groups); R3 F12 (Launchpad group lengths 5/10/15/20 s); (ii) old 1-1 idea stretch lengths (cp2/idea-tags.json) |
 | 391-392 | Bursts alternate ideas; never the same burst twice in a stage | SOURCED | SR §0c.2 (ccr:80); R1:39 (L2 no unit repeats in a level) | | |
-| 392-393 | Teach pairs with bank hops; rest is one short walk | OPEN | none | | (ii) fun-gate dead time on n2 |
+| 391-392 | Teach pairs with bank hops; rest is one short walk | OPEN | none | | (ii) fun-gate dead time on n2 |
 | 393 | (c) Kind or size band changes at least every 2 pieces | OPEN | none | Old 1-1 runKS median 7 (cp1/table2.txt:2) is far looser | (ii) old 1-1 kind x size run lengths (cp1 measures2.json) |
 | 394 | >= 4 of 5 landings step up or down (old 1-1: 171 of 202) | MEASURED | cp1/table2.txt:2 (up 91 + down 80 of 202 = 0.847) | The gate uses 0.949 (cp3/lines.py:12, cp3/CP3-CHECKPOINT.md:21); see (b) C13 | |
 | 396-399 | Pass lines: run <= 9, kind x size <= 7, new <= 572 px, never > 1,516 px, flat <= 1,351, ups+downs >= old 1-1 | MEASURED | cp1/table2.txt:2; cp3/lines.py:10-14 | | |
 | 400 | Fast clock >= 120 s | MATT | CLAUDE.md "stages take at least 2 minutes"; MD:45-47 | | |
-| 401 | Easy adds flags and hearts after the mixer (16 and 16) | MEASURED | cp1/table2.txt:4 (rebuilt 1-1 Easy: hearts 24 / 1-5 Easy 33); 16/16 not in a saved file | | |
+| 401 | Easy adds flags and hearts after the mixer (16 and 16) | MEASURED | cp1/table2.txt:8 (rebuilt 1-1 Easy: hearts=24), :24 (rebuilt 1-5 Easy: hearts=33); 16/16 not in a saved file | | |
 | 406 | Splits: old 1-1 34 (14-51), today's 1-3 19 | MEASURED | cp3/cp3-splits.txt:1, :3 | | |
-| 406-407 | New 1-5 with two long forks: 2-3 | MEASURED | cp1/table2.txt (1-5 splits 0); 2-3 not in a saved file | | |
+| 406-407 | New 1-5 with two long forks: 2-3 | MEASURED | cp1/table2.txt:22 (new 1-5 normal: splits=0); 2-3 not in a saved file | | |
 | 408-410 | Canopy over floor as a burst any node may lay, 2-5 pieces, never twice in a row | OPEN | none | | (ii) idea-tags.json stretch lengths of old 1-1's fork |
 | 411 | Pass >= 19 splits on 16/16; 34 the target | MEASURED | cp3/cp3-splits.txt:1, :3 | | |
-| 414 | Old 1-1 Easy has 15 hearts and 15 flags | MEASURED | cp1/table2.txt:3 (hearts 15, checkpoints 15) | | |
+| 414 | Old 1-1 Easy has 15 hearts and 15 flags | MEASURED | cp1/table2.txt:4 (hearts=15, checkpoints=15) | | |
 | 416 | "hearts aren't given out the very first thing" holds on both settings | MATT | MD:77 | Deferred to after CP4; see (b) C19 | |
 | 421-423 | Canopy over another idea's floor; share counts the floor; 40% cap stays | MEASURED | cp3/CP3-CHECKPOINT.md:26, :61-69 (canopy 59-65% under the old rule) | | |
 | 424-425 | Two roads side by side >= 40% (old 1-1 61%) | MEASURED | cp3/cp3-lines.txt:21 (old 1-1 median 0.61) | 40% itself is the designer's line, below the measured 61% | |
 | 425 | Planned 30-40% for the forks withdrawn | MEASURED | cp3/cp3-forks.txt:1 (forks 10.6-13.4%) | Re-stated at ES 516; see (b) C11 | |
-| 426 | LV-9: at most 4,000 px between flags | SOURCED | src/game/easyMode.ts:256, :263 [engine-mixer] (FLAG_SPAN_MAX 4000, capFlagSpans) | | |
+| 426 | LV-9: at most 4,000 px between flags | SOURCED | src/game/easyMode.ts:256, :263 [engine-mixer 7d9ad9a9] (FLAG_SPAN_MAX 4000, capFlagSpans) | | |
 | 427-429 | Flag at the nearest safe spot before the next hard node; never over easy ground only; never on a rest without a hard node after | MATT | MD:79-80, MD:84 | | |
 | 432-433 | Mushroom off the floor's lane; adult bot loops 7-11 must go to 0 | MEASURED | cp3/CP3-CHECKPOINT.md:40 (stuck 7-11 times a run) | | |
 | 435-436 | Normal: a slip off the high road may cost a heart; E[lives] 0.7 at d = 0.09 | DERIVED | ES 644 dial (0.5 + 2.5 x 0.0909 = 0.73) | | |
-| 437 | Easy: roads within 400 px (under LONG_FALL), a slip costs nothing | SOURCED | src/game/engine.ts:232 [engine-mixer] (LONG_FALL = 400) | "Costs nothing" conflicts with D:194-195 and LEG E132; see (b) C5 | |
+| 437 | Easy: roads within 400 px (under LONG_FALL), a slip costs nothing | SOURCED | src/game/engine.ts:232 [engine-mixer 7d9ad9a9] (LONG_FALL = 400) | "Costs nothing" conflicts with D:194-195 and LEG E132; see (b) C5 | |
 | 438 | Never a life (P3) | SOURCED | RM:474 (R-164.1, Matt's clip) | | |
 | 439 | n8 deck draws one the previous two nodes did not lay | OPEN | none | | (i) GL C4 / GP:256 (2-level cooldown) |
 | 441 | The miss stops the work until Matt has seen why | SOURCED | LD:46 | | |
@@ -281,7 +284,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 470 | Floor 2:00, no cap | MATT | MD:45-47 | | |
 | 471 | 1-4 and 1-6 sit >= 20% either side of 1-5's median | OPEN | none | | (ii) quick clock of old W1-W4 neighbours (stageTime.ts MODEL_FAST); (iii) stage clear-time spreads in a shipped world |
 | 476-477 | Splits fell to 11-17, two-road 33-38% (map v2) | MEASURED | 9da17a27 ("Splits now 11-17") | 33-38% not in a saved file | |
-| 478-483 | A floor idea joins each one-idea or climbing deck (n3, n6, n7, n9; n8 reeds pair a floor) | OPEN | none | | (ii) already re-measured: 8c8cd997 (splits 25-26, two-road 46-50%) |
+| 477-483 | A floor idea joins each one-idea or climbing deck (n3, n6, n7, n9; n8 reeds pair a floor) | OPEN | none | | (ii) already re-measured: 8c8cd997 (splits 25-26, two-road 46-50%) |
 | 486-487 | All lines stay: splits >= 19, two-road >= 40%, creaky >= 15% top 3, old 1-1's variety lines | MEASURED | as ES 396-411, 424 | | |
 | 492-494 | Cleared: repeats 5 -> 0, Normal too sparse (0.74 a second), Easy tension flat | MEASURED | 9da17a27 fun-gate run (designer's ruling text) | No saved fun-gate output | |
 | 496-498 | Easy too busy 0.76 vs 0.35-0.55; Easy longest run 92 s vs 6-8 s; 3.2 s dead on n2's 900 px bank | MEASURED | fun gate on 9da17a27 (designer's text) | No saved output; the "6-8 s" is GP:292 (Easy group length) | |
@@ -291,7 +294,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 506 | n2 teach bank 900 -> 600 px | OPEN | none | Built as 720 px (ES 738) | (ii) fun-gate dead time at 600/720 px |
 | 508 | Easy 0.35-0.55 actions a second | SOURCED | GP:290; SR §2 Pacing (ccr:173); GL E3 | | |
 | 509 | No Easy run over 20 s without a 2-second rest | SOURCED | SR §0b.1 (5-20 s groups, ccr:43); R3:205-215 (F13: rest >= 2.0 s Easy) | F13's rest is also relative (2x the local median), which the spec drops | |
-| 510 | No dead time over 2.5 s | SOURCED | R3:325-328 (W10: code DEAD_WALK = 2.5, core.ts:153) | SR §2 says 2.0/3.0 s (ccr:173) and about 4 s (ccr:171) | |
+| 510 | No dead time over 2.5 s | SOURCED | R3:325-328 (W10); tools/validate/core.ts:153 [ccr] (DEAD_WALK = 2.5) | SR §2 says 2.0/3.0 s (ccr:173) and about 4 s (ccr:171) | |
 | 511 | Normal's flags no worse than main | OPEN | none | | (ii) fun gate on main vs mixer |
 | 514 | 9 to 11 ideas a roll; snap dash twice; fork twice | DERIVED | ES 339-351 node plan | | |
 | 516-517 | Fork share n4 + n10 15-20% each, 30-40% | OPEN | none | Already withdrawn at ES 425 (measured 11-13%); stale; see (b) C11 | (ii) measured: cp3/cp3-forks.txt:1 |
@@ -323,7 +326,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 559-560 | The mix counts kind x size | SOURCED | SR §0c.3 (ccr:81-82) | | |
 | 564 | Solid log everywhere | MEASURED | cp2/library.txt:2 (worlds 1-10) | | |
 | 565 | Drifting log: World 2 only, 302 placed | MEASURED | cp2/library.txt:10 | | |
-| 566 | Pushed log room; wrap 30-45 min | SOURCED | cp2/mechanics-exist.md:24 (w1Sections.ts:101) | 30-45 min is the planner's estimate | |
+| 566 | Pushed log room; wrap 30-45 min | SOURCED | cp2/mechanics-exist.md:23 (the Push block row) | 30-45 min is the planner's estimate | |
 | 567-574 | Hollow, mossy, broken, jam, slung, cracking, rolling, biting: exists?/art | SOURCED | cp2/mechanics-exist.md:12-29; IN-GAME-UNUSED / NEVER-PACKED (b461499b, d34cc249) | | |
 | 567-575 | Their estimates (0.1-1.5%) | OPEN | none | Estimates | (ii) meter |
 | 575 | Sinking log: skip; cracking log gives the same feel for less | OPEN | none | | (iii) shipped sinking-platform examples (DKC Tropical Freeze, GP:42 "sinking mudflat logs") |
@@ -360,17 +363,17 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 640 | Gap share of the level check's limit: Normal 0.55 -> 0.92, Easy 0.45 -> 0.80 | OPEN | none | D overturned gap share as a difficulty dial (D:48, D:180-187); Gemini gives 0.35-0.75 / 0.25-0.55 of R1 (LEG E103, GE:173); GP:75-76 caps 0.82 / 0.65; see (b) C1, C20 | (i) LEG E103 (start ranges) and D:177 (calibrated 0.35-0.75 / 0.25-0.50); (ii) noisy bots at each share |
 | 641 | Rise share of the gate's highest: Normal 0.50 -> 0.95, Easy 0.40 -> 0.80 | OPEN | none | | (ii) cp2-trace.ts flick windows per rise share |
 | 642 | Typical landing p50: Normal 220 -> 110 px, Easy 260 -> 150 px | OPEN | none | Measured CP3: Normal 221, Easy 218 (cp3/CP3-REBUILD.md:53-57); later Easy about 300 (ES 796); see (b) C4 | (i) LEG E105 (154-308 px) |
-| 642 | Never under 90 px | SOURCED | D:179 (BT minimum 90 px); LEG E105 (MIN_LEDGE 90, BT:175) | | |
+| 642 | Never under 90 px | SOURCED | D:179 (BT minimum 90 px); LEG E105 (MIN_LEDGE 90) | | |
 | 643 | Risky pieces a burst: Normal 0-1 -> 3-4, Easy 0 -> 2 | OPEN | none | | (i) R4:555 idea 3 (node expected falls: intro 0, spike 0.2-0.4, climax 0.3-0.6) |
 | 643 | Rests and teach steps hold 0 risky pieces | SOURCED | GP:317 (zero lethal failure); GV:61 (rest areas) | | |
-| 644 | E[lives] on a first run: Normal 0.5 -> 3.0, Easy 0.2 -> 1.0 | OPEN | none | Cites D §2.3, which says Normal W1 <= 1.0 rising about 0.5 a world (W10 about 5.5), Easy <= 0.3 (D:200; R3:44); the endpoints differ; see (b) C16 | (i) R3 F1 (R3:44) and D:200; (ii) calibrate bots on touchReplay recordings first (R4:559 idea 4) |
+| 644 | E[lives] on a first run: Normal 0.5 -> 3.0, Easy 0.2 -> 1.0 | OPEN | none | Cites D §2.3, which says Normal W1 <= 1.0 rising about 0.5 a world (W10 about 5.5), Easy <= 0.3 (D:200; R3:42-44); the endpoints differ; see (b) C16 | (i) R3 F1 (R3:42-44) and D:200; (ii) calibrate bots on touchReplay recordings first (R4:559 idea 4) |
 | 645 | Taught animals a stage: Normal 0-1 -> 4-5, Easy 0-1 -> 3 | OPEN | none | Gemini: 3.5-11.35 enemies a minute (LEG E114, GE:199); MR: >= 35% of nodes animal-free (D:207) | (i) LEG E113-E115; (ii) count animals per old W1-W4 stage (cp2/enemies.txt) |
 | 646 | Crumble delay: Normal 0.9 -> 0.5 s, Easy 1.2 -> 0.8 s | OPEN | none | Easy 1.2 matches Gemini's 36 frames (LEG E151); Normal 0.9 matches nothing; conflicts with ES 228/333 (Easy 1.0 s); GV:13 snap 0.15 s, creak 0.6 s; shipped tiles 0.85-0.61 s (RM:418); see (b) C3 | (i) LEG E151; SR §0b.4 (ccr:51-52) |
 | 647 | Timed windows: Normal x1.0 -> x0.75, Easy x1.15 -> x0.9 of each piece's proven window | OPEN | none | | (i) GL F5 (window floors 167 / 300 ms) as the hard floor; (ii) pressWindow per piece |
 | 648 | Bursts a node 2 -> 3 | OPEN | none | 1-1 (d = 0) lays 3 in n2-n7 (ES 1181); see (b) C21 | (ii) length per burst count on the mixer |
 | 651-652 | Floors: Normal adult >= 70% W1-5, 50% W6-10; Easy kid >= 85% | SOURCED | SR §1b (ccr:147-148); GP:368; GL F3 | R3 W4 (R3:294) shows these do not bound a stage | |
-| 653 | Every teach step at miss chance <= 0.01 | SOURCED | D:1287-1288 (teach <= 0.01 per event, estimate) | R3 F2 gives the teaching beat >= 0.97 success (R3:61-62) | |
-| 654 | The placement rules never move with d | MATT | MD:76-86 | | |
+| 652 | Every teach step at miss chance <= 0.01 | SOURCED | D:1287-1288 (teach <= 0.01 per event, estimate) | R3 F2 gives the teaching beat >= 0.97 success (R3:61-62) | |
+| 653 | The placement rules never move with d | MATT | MD:76-86 | | |
 | 655-656 | A test node sits higher than a warm-up inside the dial, never above d = 1 | SOURCED | GP:87-93 (sawtooth); GL A6 | | |
 | 658-659 | 1-5 at d = 0.09: gap 0.58, landings about 210 px, 0-1 risky, E[lives] about 0.7 | DERIVED | ES 640-644 at d = 0.0909 (0.584, 210, 0.73) | | |
 | 659 | Replaces the planner's fixed 70-90 px stand-in | MEASURED | cp3/CP3-CHECKPOINT.md:56 (Normal 0.58, Easy 0.48 of the gate's widest) | | |
@@ -424,7 +427,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 778-779 | S-5 a tip shows once per stage | SOURCED | SR §1 Dot (ccr:124-127: once per save, 30 s between lines) | SR says once per save, stricter | |
 | 781-782 | S-8 Dot's bubble clear of the route ahead (D10) | SOURCED | 3f03680c (the lead's check) | | |
 | 783-785 | S-9 a stone in water rises from it; check its bottom at or below the surface | MEASURED | 61085f91 (S-9 check holds 32/32) | | |
-| 790-792 | Easy pacing judged over 16 rolls by median and worst | SOURCED | D:1037 / R3 (single-roll noise); ES 790-791 states +-0.03, +-15 s | Noise numbers: no saved output | |
+| 790-792 | Easy pacing judged over 16 rolls by median and worst | OPEN | none | Was cited to D:1037, which is about step 0, not this; noise numbers (+-0.03, +-15 s) have no saved output | (ii) tools/engine/cp3-pace16.sh: one-roll spread vs the 16-roll median and worst; (i) R3 F6 (R3:114-123, judge spread over many rolls) |
 | 792 | A third Easy-only rest after n3 if the median is still over 0.55 | MEASURED | 27345325 (Easy-only rest n3b) | | |
 
 ## 14. Pacing rulings and the CP3 finish (ES 795-925)
@@ -440,12 +443,12 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 804-806 | Bot fork stall not counted as dead time once traced | MEASURED | cp3/cp3-stuck.out; cp3/CP3-REBUILD.md:31-35 | | |
 | 809-810 | B passes: Normal longest run 23.9 s median, 30.5 worst vs 29.3; Easy density 0.54 median, 0.57 worst; Easy clock about 5:00; nothing new 2,094 px | MEASURED | dcb75adf | | |
 | 811-812 | (3) On Easy about 6 nodes keep the canopy, 3-4 drop it | OPEN | none | | (ii) measured after: b88f2ea2 (Easy splits 20) |
-| 813 | Kept canopies: fork neighbours and the node after a teach or test | OPEN | none | | (i) GV:69 (portal at the Ten) |
+| 812 | Kept canopies: fork neighbours and the node after a teach or test | OPEN | none | | (i) GV:69 (portal at the Ten) |
 | 814-818 | Easy lines: splits >= 19, density <= 0.55, run <= 20 s, nothing new <= 1,516 px, fast clock < 4:00 | MEASURED | cp3/cp3-splits.txt; cp1/table2.txt:2 (1,516); 4:00 is the designer's (withdrawn ES 831) | | |
 | 819 | Easy high-road boughs keep Normal's bands (the road is optional) | OPEN | none | | (i) SR §1b "Easy is gentler, never empty" (ccr:135-137) |
 | 820-822 | No breather pads on fork roads | MEASURED | b88f2ea2 (bot stall at the road-end breather) | | |
 | 826-829 | (i) Fork marks on the shared ground | MEASURED | 14ff1727 | | |
-| 829 | Goal stays 10 of 13 Normal, 8 Easy | OPEN | none | as ES 462 | (i) LEG E120 (yield 0.85); (ii) first-timer bot marks per route (cp3-ft.ts) |
+| 828 | Goal stays 10 of 13 Normal, 8 Easy | OPEN | none | as ES 462 | (i) LEG E120 (yield 0.85); (ii) first-timer bot marks per route (cp3-ft.ts) |
 | 830-831 | Easy clock 4:21-4:33 accepted; Matt's 2:00 floor, no cap | MATT | MD:45-47 | 4:21-4:33 measured in b88f2ea2 run | |
 | 831-832 | The 20% spread judged on Normal's quick clock | OPEN | none | | (ii) quick clock of old W1-W4 neighbours (stageTime.ts MODEL_FAST); (iii) stage clear-time spreads in a shipped world |
 | 833-834 | S-9: stepping stone <= 50 px above the water; taller ones are stumps | OPEN | none | | (ii) stills |
@@ -454,7 +457,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 854-857 | Easy density 0.60 calibrated on old 1-1 Easy | MEASURED | cp3/old11-main-pace16.txt | | |
 | 861-863 | Deep pits: dark follows the bank faces then fades over about 300 px; to Matt | OPEN | none | | (ii) the before/after stills exist (cp3/pit-fade-choice on ccr); (iii) dark-edge treatments in shipped painted platformers (Ori, Rayman Legends) |
 | 868-871 | Old 1-1 Easy density median 0.575 (0.53-0.66), longest run 25-119 s; new 1-5 0.61 / 0.63, 17-18 s | MEASURED | cp3/old11-main-pace16.txt (16 rolls); 213cbc4b | | |
-| 875 | Double breather adds about a minute (Easy about 5:20) | OPEN | none | Not run | (ii) build it once and clock it |
+| 874 | Double breather adds about a minute (Easy about 5:20) | OPEN | none | Not run | (ii) build it once and clock it |
 | 877-878 | (a) double breather about 0.52; (b) keep 0.61 (designer's pick) | OPEN | none | (a)'s 0.52 not measured | (ii) as above; then Matt's pick |
 | 881-882 | Two-road worst 38.5%; B's pads added about 4,000 px of single road; catch branches 0.003; fork-bank pad about 1% | MEASURED | designer's trace on d27c5acd (no saved output) | | |
 | 883-884 | Canopy end piece is the rest: 520-560 px flat, then a short step | MEASURED | b7c38491 | | |
@@ -478,13 +481,13 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 933 | Further boughs hang from a shared trunk's side branch | OPEN | none | No side-branch art (ES 1057-1058); built as a thin post | (ii) atlas search for a side-branch frame (tools/art/artuse.mjs); else an HF picture-list item |
 | 934 | No two neighbouring trunks share art or vine wrap | MEASURED | 27345325 (bare and vine-wrapped kapok alternate) | | |
 | 937-938 | 1-1 "Into the Canopy": run the high branches; arrival; teaches run, jump, double | SOURCED | dotLinesData.ts:94-98 [main] (run, jump, double coaching on 1-1) | | |
-| 939-940 | Rises from floor to high branches; backdrop changes with height | SOURCED | W1-REBUILD-PLAN row (as the spec says, not re-opened) | Matt asked for one sky on 1-1 (RM:475, R-164.2); see (b) C8 | |
+| 939-940 | Rises from floor to high branches; backdrop changes with height | SOURCED | reference/W1-REBUILD-PLAN.md:23 [ccr] ("floor -> canopy; the backdrop changes with height") | Matt asked for one sky on 1-1 (RM:475, R-164.2); see (b) C8 | |
 | 941 | Its moment: the first double-jump chain into the canopy | SOURCED | BR:21-22 | | |
 | 942 | d = 0; nothing untaught: no creaky, crumbling or animals | SOURCED | SR §1 Teaching (ccr:109) | Spec says 1-5 teaches creaky (stale, C9) | |
 | 943 | Run, jump, double and bounce taught here | MEASURED | ML (gap first 1-1, mushroom first 1-1) | | |
 | 944 | Overall trend up, so 1-1 and 1-5 never share a shape | OPEN | none | | (i) SR §0b.6 neighbours never share tempo and camera direction (ccr:58) |
 | 947-948 | "Are you also explaining how it should feel based on the story?" | MATT | MD:34-37 | | |
-| 950-954 | Where Pokey is: two days after, the vow, petal points north, squirrels | SOURCED | BR:12-16 (pilot-prologue-w1-v2.md:227, 247, 295) | | |
+| 950-954 | Where Pokey is: two days after, the vow, petal points north, squirrels | SOURCED | BR:5-7, BR:12-16 | | |
 | 955-957 | The feel: a small, determined start that grows | SOURCED | BR:18-23 | | |
 | 958-967 | Node-group feel (n1-n3 gentle; n4-n6 first lift; n7-n9 rising courage; n10-n11 arriving) | SOURCED | BR:18-23 | | |
 | 963-964 | n7-n9 is the only place in 1-1 where a miss costs a setback | OPEN | none | | (i) R3 F2 (first test of a new move ~0.85); MD:77-79 |
@@ -518,7 +521,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1059-1060 | Hollow logs, squirrels, bootprint must exist in the W1 atlas; no stand-ins | MATT | CLAUDE.md Polish rule; SR §4 (ccr:203-210) | | |
 | 1065 | n1 teach run; no heart; start flag | SOURCED | dotLinesData.ts:96 (coach.run) | | |
 | 1066 | n2 teach jump: bank hops with safe dips, stump hop; "Jump the little gaps" | SOURCED | dotLinesData.ts:99 [main] (hint.1-1.gaps); R1:68 | | |
-| 1067 | n3 practise: "Hop from stone to stone" | SOURCED | dotLinesData.ts:100 [main] | ES 1010 put "Up the bank" at n3; w1mix:107 puts it on the n3 fork | |
+| 1067 | n3 practise: "Hop from stone to stone" | SOURCED | dotLinesData.ts:100 [main] | ES 1011 put "Up the bank" at n3; w1mix:107 puts it on the n3 fork | |
 | 1068 | n4 teach bounce from a mushroom beside the path | SOURCED | 6dae405d (mushroom on a perch, walking on takes the low road) | | |
 | 1069 | n5 first fork on the ground; marks per CP3's fork rule | MEASURED | 14ff1727 (fork marks on shared ground) | | |
 | 1070 | n6 rest, a Dot spot; flag only if n7 follows hard | MATT | MD:79-80 | | |
@@ -557,10 +560,10 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 
 | ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
 |---|---|---|---|---|---|
-| 1127-1130 | P1: CP1 builds Easy as the engine does; inspector 0-20% identical | MEASURED | PLAN.md run E6 (engine-plan, as cited; not re-opened); D:85 (failure 5) | | |
-| 1131-1133 | P2: the tracer knows hop, jump, double onto bank, branch, stump, crumble; vines, ropes, lilies, moving logs proven in the real engine | SOURCED | beatTrace.ts:48-50 (as cited, origin/w1-rhythm, not re-opened); D:1056 | | |
+| 1127-1130 | P1: CP1 builds Easy as the engine does; inspector 0-20% identical | MEASURED | PLAN.md:74 [engine-plan] (E6: the inspector's Easy is not the engine's); D:85 (failure 5) | | |
+| 1131-1133 | P2: the tracer knows hop, jump, double onto bank, branch, stump, crumble; vines, ropes, lilies, moving logs proven in the real engine | SOURCED | src/game/beatTrace.ts:48-50 [w1-rhythm] (Move hop/jump/double; Surface bank/branch/stump/crumble); D:1056 | | |
 | 1134-1136 | P3: no first-timer drop onto a standable ledge in a life-costing span | MATT | RM:474 (R-164.1, Matt's clip) | | |
-| 1137-1139 | P4: one model of a jump; "can't reach" rejections = 0; 932 -> 41 | MEASURED | R4:40-50 (94% of 1-2's rejections one rule); PLAN.md E1/E9 (as cited) | | |
+| 1137-1139 | P4: one model of a jump; "can't reach" rejections = 0; 932 -> 41 | MEASURED | R4:40-50 (94% of 1-2's rejections one rule); PLAN.md:65-67 [engine-plan] (E9: 932 -> 41) | | |
 | 1141-1145 | No old World 1 stage on main has a lily pad (16 layouts; 1-6 to 1-9 on 3-16) | MEASURED | a3473541; cp1/ | | |
 | 1147-1148 | 1-5's stone is moss_stone under 40 px (53 pieces); 68 fragile creak branches | MEASURED | 32751eb4 (planner's check, layout 1 Normal) | | |
 | 1149-1152 | Old 1-1: 0 splits strict, 31 at 120 px allowance (longest 1,540), 21 at 200 px; 1-3 8/14/18 | MEASURED | 32751eb4; 26d73d6c | | |
@@ -572,7 +575,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 |---|---|---|---|---|---|
 | 1157-1162 | Measured: splits 2-4, two-road 24-28% / 19-22%, fast 109-119 s, variety 16/18 with 2,042 / 2,646 px nothing-new, boughs+creaky 11-12%, ground commonest 16/16, 6 of 13 ideas shared | MEASURED | 098aff49 | Two-road Easy and the variety detail are in the designer's text only | |
 | 1164-1166 | Ruling (a): lines from 1-1's own profile; a mound is solid down | MATT | MD:25-27 ("how it branches, if it branches") | | |
-| 1166 | Options (b), (c) bring back boughs-over-floor Matt turned down | MATT | BR:46 | | |
+| 1165-1166 | Options (b), (c) bring back boughs-over-floor Matt turned down | MATT | BR:46 | | |
 | 1172 | Splits whole stage >= 10 (>= 12 with hollow logs) | OPEN | none | Measured build gave 2-4 | (ii) build with the n8-n11 tree half and measure; (i) none |
 | 1173 | Splits n8-n11 >= 7 | OPEN | none | 7 echoes the planner's "split floor 7 from 1-3" (ES 1141, strict rule) | (ii) measure old 1-1's splits per 1,000 px of canopy x the tree half's length |
 | 1174 | Two-road Normal >= 25% | OPEN | none | Measured 24-28% | (ii) 16 rolls on the finished 1-1 |
@@ -622,7 +625,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1272-1276 | Source: mechtable.ts / mechanics-world1.md; the table wins | MEASURED | MW1; ML (7d9ad9a9) | | |
 | 1282 | run, jump, duck, punch always known at 1-1 | SOURCED | dotLinesData.ts:94-98 [main] | | |
 | 1283 | mushroom bounce taught 1-1 (n4) | MEASURED | ML row mushroom (first 1-1) | | |
-| 1284 | double jump taught 1-1 (n7), required n9 | SOURCED | levelCheck.ts:118 (EARLY_DOUBLE has 1-1) | | |
+| 1284 | double jump taught 1-1 (n7), required n9 | SOURCED | src/game/levelCheck.ts:118 [engine-mixer 7d9ad9a9] (EARLY_DOUBLE has 1-1) | | |
 | 1285 | stomp, kick, mega punch at 1-3 | SOURCED | BR:40 (combat teach belongs to 1-3) | | |
 | 1286 | rope shimmy clearing 1-3, required 1-4 | MEASURED | ML row rope (first 1-3) | "clearing 1-3" = a skill reward, not re-checked | |
 | 1287 | trunk climb 1-4 | SOURCED | BR:41 | ML says trunk first at 1-1 (the mixer's 1-1); ES 1435-1437 | |
@@ -682,14 +685,14 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1385-1387 | The per-world object pass, world by world; World 1's 10 kinds done | OPEN | none | | (ii) none needed: a scheduling call; (i) SR §0c.7 (ccr:93-99) for what each world's pass must decide |
 | 1391-1392 | Labels: element, footing, floats, uses, teaches, worlds, stages | MATT | MD:127-128, MD:134-136 | | |
 | 1396 | bank: W1-W4, W6-W10 | OPEN | none | cp2/library.txt:3 places banks in W1-W7, W9-W10 (none in W8) | (ii) settled by cp2/library.txt:3 plus the W8 object pass |
-| 1397 | log: W1-W4, W6 | OPEN | none | library.txt:2 has logs in all 10 worlds | (ii) settled by cp2/library.txt:2: W1-W10 |
+| 1397 | log: W1-W4, W6 | OPEN | none | cp2/library.txt:2 has logs in all 10 worlds | (ii) settled by cp2/library.txt:2: W1-W10 |
 | 1398 | stump: W1-W4, W6 | OPEN | none | | (ii) atlas listing |
-| 1399 | stone: W1-W4, W6, W9; a 50 px rise | MEASURED | fdabad42 (50 px); worlds OPEN (library.txt:5 lists 1, 3-5, 7-10) | | |
-| 1400 | mushroom: W1, W3, W6 | OPEN | none | library.txt:9 lists 1, 3-5, 7-10 (no W6) | (ii) settled by cp2/library.txt:9 |
-| 1401 | bough: W1, W2's banks, W5, W6, W8 | OPEN | none | library.txt:4 lists branch in all 10 | (ii) cp2/library.txt:4 |
-| 1402 | creaky: W1, W5, W6, W8 | OPEN | none | library.txt:11 crumble/snap in 1, 5, 7-10 | (ii) cp2/library.txt:11 |
+| 1399 | stone: W1-W4, W6, W9; a 50 px rise | MEASURED | fdabad42 (50 px); worlds OPEN (cp2/library.txt:5 lists 1, 3-5, 7-10) | | |
+| 1400 | mushroom: W1, W3, W6 | OPEN | none | cp2/library.txt:9 lists 1, 3-5, 7-10 (no W6) | (ii) settled by cp2/library.txt:9 |
+| 1401 | bough: W1, W2's banks, W5, W6, W8 | OPEN | none | cp2/library.txt:4 lists branch in all 10 | (ii) cp2/library.txt:4 |
+| 1402 | creaky: W1, W5, W6, W8 | OPEN | none | cp2/library.txt:11 crumble/snap in 1, 5, 7-10 | (ii) cp2/library.txt:11 |
 | 1403 | crumble slab: W1 (shrine stone), W7; never in the canopy | OPEN | none | Removed from W1 at ES 1450; the row is stale; (b) C22 | (i) acf6e1e8 |
-| 1404 | bridge: W1, W5, W6; from 1-1 n8 | OPEN | none | library.txt:7 lists bridges in 5, 8-10 | (ii) cp2/library.txt:7 |
+| 1404 | bridge: W1, W5, W6; from 1-1 n8 | OPEN | none | cp2/library.txt:7 lists bridges in 5, 8-10 | (ii) cp2/library.txt:7 |
 | 1405-1406 | lily, reed: W1 creeks, W2, W6; only where the water zone draws | MATT | MD:129-130 | | |
 | 1409-1411 | Fix 1: no stump kind; planner says which | OPEN | none | | (ii) the planner's library.ts |
 | 1412-1413 | Fix 2: crumble fits W1 only by the shrine stones | OPEN | none | Withdrawn at ES 1450; stale | (i) acf6e1e8 |
@@ -714,7 +717,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 
 | ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
 |---|---|---|---|---|---|
-| 1458 | "the engine plans the WHOLE game"; the lead's five bars | MATT | MD:140-160 (10:08 AM ET, appended to MD after this trace began) | | |
+| 1458 | "the engine plans the WHOLE game"; the lead's five bars | MATT | MD:140-166 (10:08 AM ET, appended to MD after this trace began) | | |
 | 1461 | 102 stages, 40 mechanics | MEASURED | ML (stages 102, 40 rows) | | |
 | 1462-1464 | Keep stages, names, specials, rooms, bosses and art; lock a world before changing it | SOURCED | 96ac0259 (regression lock); CLAUDE.md "New replaces old" | | |
 | 1470-1481 | Absences: warm air 63, lift 83, river logs 7 stages / 81, silk 2 / 55, push 4 / 61, breaking 22 / 41, rope 13 / 35, hide 8 / 28, moving 10 / 29, bounce 26 / 13 | MEASURED | ML (stage lists per row) | My recount of ML gives the same stage counts; absences come out 1 higher on 7 rows (e.g. rope 36, breaking 42), so the absence definition is off by one somewhere | |
@@ -745,7 +748,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1570-1571 | W2 on: >= 3 core moves besides run and jump, one from an earlier world | OPEN | none | | (i) SR §0b.5 |
 | 1572-1583 | One joined beat per world (list) | SOURCED | SR §0b.5 (ccr:54-55); GV:21-55 (the pair matrix) | The pairs chosen are the designer's | |
 | 1587-1588 | A profile names its water bodies (x, y, depth, swim) | MATT | MD:26-27 ("if there's water") | | |
-| 1590-1594 | Swims: <= 15-20 s under; exits 3-4 body widths; no slow drag ("suddenly fast"); currents and bubbles; tide | SOURCED | GVs:19 (triage row "Water"); RM:160 (R-5.22); MD:141-142, MD:155-158 (Matt: "quick in and out things. We already did the research") | Gemini numbers, not verified against a shipped game | |
+| 1590-1594 | Swims: <= 15-20 s under; exits 3-4 body widths; no slow drag ("suddenly fast"); currents and bubbles; tide | SOURCED | GVs:19 (triage row "Water"); RM:160 (R-5.22); MD:141-142, MD:156-159 (Matt: "quick in and out things. We already did the research") | Gemini numbers, not verified against a shipped game | |
 | 1596 | Gate fails over 20 s under | SOURCED | GVs:19 | | |
 | 1598-1601 | 6-7 teaches, 6-8/6-9 echo, then W6-W8 and W10 >= 1 in 3; none in W9 | OPEN | none | | (ii) mechtable.ts; Matt's pick |
 | 1602-1608 | The swimming stage is 6-9 reshaped (R-153); clue "Ripples..."; 6-8 out | SOURCED | src/components/stageClue.ts:81-82 [main]; RM:410 (R-153: reshape, no new stages) | | |
@@ -761,7 +764,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 
 | ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
 |---|---|---|---|---|---|
-| 1637-1648 | The element table must cover every world's kinds (W2 river logs, lifts, bank houses ... W10 towers, netting) | MATT | MD:150-153 (whole-game element plan) | | |
+| 1637-1648 | The element table must cover every world's kinds (W2 river logs, lifts, bank houses ... W10 towers, netting) | MATT | MD:152-155 (whole-game element plan) | | |
 | 1649-1651 | Revises "the object pass is done world by world, later" | MATT | MD:140-147 ("It can't just be looking at level one") | Revises ES 1385-1387, marked | |
 | 1652-1653 | Hanging moves are core: vine, liana, rope, bough underside; trunks are anchors | OPEN | none | D:1201 (hang-under "the most sloth move there is") is the closest source | (i) D:1174-1186, D:1201 (hang-under MoveDef); (iii) DKC Returns grass-ceiling sections (D:1201) |
 | 1654-1655 | Float default "some, <= 25%" until a world's row says otherwise | OPEN | none | as ES 1364-1365 | (ii) float share on old 1-1; (iii) Super Mario Bros. 1-1 floating-block share |
@@ -777,18 +780,18 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1683 | Time <= 1.7 h wall from "1-1 data written" to all gates green | DERIVED | ES 1678 (5.2 / 3) | | |
 | 1684 | Cost <= about 1.1% | DERIVED | ES 1669 (3.3 / 3) | At 0.9%/h this is about 1.2 h (ES 1700-1701) | |
 | 1685 | <= 2 fix rounds, each data-only | OPEN | none | Matt: "still needs a lot of pieces fixed" (MD:172) gives no number | (ii) compare with 1-5's 9 rounds (planner's count); (iii) a shipped data-driven pipeline's iteration count (Sure Footing, D:431) |
-| 1686-1687 | No engine change for 1-1; else the engine is fixed and 1-1 rebuilt as a second attempt | MATT | MD:172-173, MD:178-180 | | |
+| 1686-1687 | No engine change for 1-1; else the engine is fixed and 1-1 rebuilt as a second attempt | MATT | MD:172-173, MD:179-182 | | |
 | 1689 | Every gate green on 16/16 rolls both settings | SOURCED | ES 261 | | |
 | 1690 | Stills P-1 to P-13, S-1 to S-9, 6 places both ways, designer then lead | SOURCED | LAWS 1-2; ES 914-922 | | |
-| 1691 | "No stage id in the mixer core" (library-check.ts, 2afed23b) | MATT | MD:178-180 ("a check: no stage id in the mixer core") | Built in 2afed23b | |
+| 1691 | "No stage id in the mixer core" (library-check.ts, 2afed23b) | MATT | MD:181 ("a check: no stage id in the mixer core") | Built in 2afed23b | |
 | 1693-1695 | 1-2 does not fit under 53% | DERIVED | ES 1670-1678 | Withdrawn at ES 1705 | |
 | 1697-1698 | The stump is drawing only, never a landing; 1-1 core bank and log (+ branch n8-n11) | MEASURED | planner's answer to fix 1 (ES 1409-1411); not in a saved output | | |
 | 1700-1701 | Active team rate about 0.9%/h | DERIVED | the lead's correction (0.63%/h included 6-9 AM with every helper stopped, ST:966) | | |
 | 1702 | Both lines kept; judged on whichever fails first | OPEN | none | | (ii) report both after the run; no research needed |
 | 1703 | 1-1 clock starts after the critic rulings (due 1:30 PM); Matt chose option A | MATT | ST:980 | Option A was later reversed (ST:982) | |
 | 1704 | Matt lifted the token ceiling: "It takes what it takes today... done right" | MATT | MD:186-192; ST:982 | | |
-| 1705-1706 | Line 1 and "1-2 doesn't fit" withdrawn; line 2, the fix rule, 0 engine changes and every gate stay for 1-1 and 1-2 | MATT | MD:190-192 ("the 1-1 pass line's cost line stays as an engine-quality measure") | | |
-| 1707-1714 | Order: inventory, critic, rulings, step 6, E3-E5, 1-1 timed, 1-2 timed | MATT | MD:188-191; ST:982 | | |
+| 1705-1706 | Line 1 and "1-2 doesn't fit" withdrawn; line 2, the fix rule, 0 engine changes and every gate stay for 1-1 and 1-2 | MATT | MD:192-193 ("the 1-1 pass line's cost line stays as an engine-quality measure") | | |
+| 1707-1714 | Order: inventory, critic, rulings, step 6, E3-E5, 1-1 timed, 1-2 timed | MATT | MD:190-192; ST:982 | | |
 
 ---
 
@@ -1007,7 +1010,7 @@ spec neither applies nor rejects them.
 |---|---|---|---|---|
 | C1 | ES 640, 658 | Gap share is a difficulty dial (0.55 -> 0.92 Normal) | D:48, D:180-187: "[11-05 overturned] γ is not a difficulty dial" (traced jumps carry almost no risk; difficulty is the landing window and what sits on the avoided lines); R4:28 (L1). D:275-277 also called a 0.55 start "tighter than anything QA has played" (on clumsy reach) | Research row |
 | C2 | ES 799, 509, 815 | Fixed Normal pad of 1.0-1.2 s after every second burst; "a 2-second rest" on Easy | D:49, D:188-193 and R3:265-271 (W1), R3:205-215 (F13): a fixed pad cuts phrases into single moves; the rest is relative (2x the local median) | Research row |
-| C3 | ES 646 vs ES 228, 333 | Dial: crumble Normal 0.9 -> 0.5 s, Easy 1.2 -> 0.8 s; ruling: Easy tile 1.0 s; CP3 sizes "crumble 1.0 s" | Each other (the dial, written later, does not mark the 1.0 s ruling revised); GV:13 and SR §0b.4 (snap ~0.15 s, creak ~0.6 s); LEG E151 (Easy 1.2, Normal 0.67); shipped 0.7 s commonest (cp2-trace.ts.txt:15) | Later ruling not marked; research row |
+| C3 | ES 646 vs ES 228, 333 | Dial: crumble Normal 0.9 -> 0.5 s, Easy 1.2 -> 0.8 s; ruling: Easy tile 1.0 s; CP3 sizes "crumble 1.0 s" | Each other (the dial, written later, does not mark the 1.0 s ruling revised); GV:13 and SR §0b.4 (snap ~0.15 s, creak ~0.6 s); LEG E151 (Easy 1.2, Normal 0.67); shipped 0.7 s commonest (cp2/cp2-trace.ts.txt:15) | Later ruling not marked; research row |
 | C4 | ES 642 vs ES 468 vs ES 796 | Easy typical landing 260 -> 150 px; then 220 -> 150 px; then about 300 px (EASY_BS 1.35) | Each other; none marks the earlier revised | Later ruling not marked |
 | C5 | ES 437 | Easy: a slip off the high road costs nothing | D:194-195 ("Easy one tier softer, never 'nothing' after the first teach"); LEG E132 (C_miss > 0) | Research row |
 | C6 | ES 237-244 | "No idea twice" withdrawn; old 1-1 repeats its cycle about 8 times | SR §0c.2 (ccr:79-80): "no template more than twice in a stage"; R1:39 (L2) and R1:550 (mistake 4); SR not marked revised | Shipped rule doc |
@@ -1020,7 +1023,7 @@ spec neither applies nor rejects them.
 | C13 | ES 394, 396-399 | ">= 4 of every 5 landings step up or down, as the old 1-1 does (171 of 202)" | The gate's line is 0.949 (cp3/lines.py:12; cp3/CP3-CHECKPOINT.md:21); 171/202 = 0.847 (cp1/table2.txt:2). Two measures of one number | Measurement |
 | C14 | ES 41, 133-134, 235-236, 989, 1098 | Neighbours share <= half their ideas or pieces | LEG E47 / E127 (cross-stage Jaccard <= 42%); SR §0c.4 (ccr:83-84: no template in more than 3 of a world's stages) | Research / rule doc |
 | C15 | ES 11, 59, 97, 268, 1104, 1112 | 8% ceiling as Matt's; total 4.5-6.2% | ST:962, ST:964 (8% is the lead's proposal); CP3 cost 2-3% so far (cp3/CP3-CHECKPOINT.md:89) plus round 2 (cp3/CP3-ROUND2.md:82; ST:966: 5-6%, "over the 2-4% Matt allowed"). The spec's estimates are not updated | Measurement / record |
-| C16 | ES 644 | E[lives] Normal 0.5 -> 3.0, Easy 0.2 -> 1.0, citing "DESIGNER §2.3" | D:200 and R3:44: Normal World 1 <= 1.0 rising about 0.5 a world (World 10 about 5.5), Easy <= 0.3 | Misread source |
+| C16 | ES 644 | E[lives] Normal 0.5 -> 3.0, Easy 0.2 -> 1.0, citing "DESIGNER §2.3" | D:200 and R3:42-44: Normal World 1 <= 1.0 rising about 0.5 a world (World 10 about 5.5), Easy <= 0.3 | Misread source |
 | C17 | ES 631-632 | "a new world's first stage starts at the previous world's middle ... STAGE-RULES §1b's rule" | SR §1b (ccr:131-148) says bands climb and may overlap "a little, never by a whole world"; GP:100 says the first stage "drops slightly below the end of the previous world". The dial overlaps neighbours by half a world | Misread source |
 | C18 | ES 797 vs ES 888-892 | "this line is not loosened" (Easy <= 0.55); then the line becomes "no denser than the old 1-1's Easy range" | SR §2 Pacing (ccr:173) Easy 0.35-0.55; Matt's yes on the change is not recorded (ST:966 says "designer accepted") | Later ruling loosens a written line |
 | C19 | ES 414-417 | Easy hearts and flags left as the engine's Easy pass lays them (15-33 a stage, several in the first 30 s) | MD:77-79 ("hearts aren't given out the very first thing"), which the spec itself says holds on both settings | Matt direction (named, deferred) |

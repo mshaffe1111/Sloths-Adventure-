@@ -385,11 +385,11 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 
 **How §5 was checked (designer, 11-05 ~10:47 AM ET, after Matt's "not half-ass anything").** The first cut sorted by key-name families,
 and only a sample was read. Every row has now been checked against its real art:
-- contact sheets of every frame, with key names and the atlas's own  flag, in ;
+- contact sheets of every frame, with key names and the atlas's own `hang` flag, in `reference/engine/labels/sheets/`;
 - the sources were dressNewData (W1-W7), dressAtlasData (W1, W2, W5, W8-W10), w2PropsData, w3PropsData and puzzleAtlasData;
 - the 4 hide bushes were checked from engine.ts drawBushArt and drawW3Fern.
 
-**28 rows were corrected from the art.** The overrides are in  OV.
+**27 rows were corrected from the art**, plus the 4 bushes' use. The overrides are in `reference/engine/labels/props.py` (OV).
 - Drawn on a base, not flying: w1Morpho, w4Feather, w5Petals, w5Ladybug, w8Firefly, w8FireflyB.
 - Creature on its own base: w1Snail.
 - Earth or stone, not creature or plant: w1Termites, w3OldNest, w3GlowWorms, grottoMouth, basin.
