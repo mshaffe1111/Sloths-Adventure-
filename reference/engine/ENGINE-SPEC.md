@@ -310,7 +310,7 @@ Each rule has the planner's machine check under it; a rule that can't be checked
    *Check:* every petal lies on its node's planned route, or on the arc of a jump in it. Every hard collectible sits in a node of
    job test or above, or on a fork's high road, and is reachable only by the idea's own move. That uses the limited-agent bot: the
    bot without the move can't reach it.
-5. **No clutter.** In any one phone view (upright 400 x 880 and sideways 1100 x 540):
+5. **No clutter.** In any one phone view (upright 412 x 915 and sideways 915 x 412, with insets, as the shipped clip check uses, tools/perf/clipcheck.mjs:54-55):
    - at most about 8 pickups (estimate);
    - at most 2 kinds of hazard or animal;
    - at most 3 kinds of standing piece;
@@ -1758,7 +1758,7 @@ A number that no source settles goes to TRIAGE.md as a run (C) or research (R) i
 | C11 | the 1:35 AM withdrawals | The 2:45 AM block's fork share of 30-40%, the forks with 3 crossings, and the checkpoints only before n6 and n10 are struck |
 | C12 | the shipped rule doc (SR §0b.2) | Checkpoints sit **on** the rest before a hard part. "Never before a rest" is withdrawn |
 | C13 | needs a run | Two measures of one number (0.847 against the gate's 0.949). Run cp3/lines.py and cp1/table2 on the old 1-1 with one definition, then quote the gate's own number. TRIAGE (C) |
-| C14 | research (LEG E47, E127) and SR §0c.4 | Neighbours: idea-set Jaccard ≤ 0.42, and no template in more than 3 of a world's stages. "≤ half" is withdrawn. 1-1 against 1-5 is re-measured as a Jaccard |
+| C14 | needs a run (corrected 11:05 AM: the ledger marks E127 NOT taken, "cap our own metric instead", LEG:591; E241 "measure on our metric", LEG:705) | Neighbours and sameness are judged on **our** metrics: the era.ts and lookalike.ts gates of the critic's ruling 1 (SR §2: cosine under ~0.78, window 0.30), plus no template in more than 3 of a world's stages (SR §0c.4). The cap's number on the set-of-ideas measure is **calibrated by a run**: old 1-1 against 1-3, as our two references. "≤ half" is withdrawn, and my 0.42 Jaccard citation was wrong |
 | C15 | the record (ST:962-966) | 8% was the lead's proposal, not Matt's. Matt has since lifted the ceiling. The cost lines are history |
 | C16 | the source (D:200; R3:42-44) | E[lives] on a first run: Normal ≤ 1.0 in World 1, rising about 0.5 a world; Easy ≤ 0.3. The misread 0.5→3.0 / 0.2→1.0 is withdrawn. The bots must be calibrated first (TRIAGE) |
 | C17 | the sources (SR §1b; GP:100) | Bands climb and may overlap a little, never by a whole world. A world's first stage sits slightly below the previous world's end. The half-world overlap is withdrawn, and the dial's numbers are re-run |
