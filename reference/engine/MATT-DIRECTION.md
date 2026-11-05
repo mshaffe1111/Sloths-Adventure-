@@ -22,6 +22,15 @@ So today's pieces (logs, bridges, boughs, snap twigs, vines, stumps, rotten bran
 engine's library, look and feel included. The fault is the mix, not the pieces. The engine's first job is mixing them so no stage
 repeats.
 
+## 2026-11-05 ~12:20 AM ET (to the planner)
+"intermix the different worlds if you have to with the arts... if you have other stages where putting logs into it makes sense, use
+it from world one. Make as much and take as much as we can out of what we have. The only one that really plays differently is world
+five. But I can see intermixing art all over the place. Different platforms and different pieces."
+- Pieces and art are shared across worlds wherever they fit. World 5 is the one world that plays differently.
+- The lily pads Matt remembers are from the control test (the testers' course, protoStage.ts:2423-2426) and World 2; no World 1
+  stage on main has them.
+- Matt asked the planner to hold new work after this (CP2's trace check paused, ~12:20 AM ET).
+
 ## 2026-11-05 ~12:15 AM ET (to the lead)
 "the pieces should all fit together. That even if it goes random, they should all fit together. We shouldn't have anything that is
 so weird that it feels out of place. Other things to look for is that hearts aren't given out the very first thing. You know, if
