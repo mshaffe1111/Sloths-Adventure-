@@ -29,3 +29,12 @@ test('a planted floating prop is caught: a fern 200 px over open air, and a rock
 
 // (the engine-built stages themselves are judged by tools/engine/stage.ts's gate, 16 layouts x 2: the mixed 1-1 and 1-5 fail it today,
 // props hung past a piece's edge, the porter's report of 11-05)
+
+test('nothing dressed over the exit door: a planted fern on the door is caught, one well clear of it is not', async () => {
+  const { dressOverDoor } = await import('./propSupport.ts');
+  const st = build('1-1', 1, 'normal');
+  const list = st.proto?.mixDress ?? st.proto?.dress ?? (st.proto.dress = []);
+  const before = dressOverDoor(st).length;
+  list.push({ n: 'w1Fern', x: st.exitTotemX + 60, b: st.exitTotemY }, { n: 'w1Fern', x: st.exitTotemX - 900, b: st.exitTotemY });
+  assert.equal(dressOverDoor(st).length, before + 1);
+});

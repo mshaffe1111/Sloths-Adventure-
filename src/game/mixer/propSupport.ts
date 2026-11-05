@@ -11,7 +11,7 @@
  * landings' own secondaries (stones, mushrooms, lily pads) are support.ts's.
  */
 import { dressSize } from '../dressArt.ts';
-import { w1DressWidth } from '../w1NewArt.ts';
+import { CLUE_NAME, CLUE_W, w1DressWidth } from '../w1NewArt.ts';
 import { propFamily } from './catalog.ts';
 
 /** pieces that are part of a drawn structure the landing list does not hold (a W2 bank house, W2's canopy over it, World 3's cave
@@ -59,4 +59,24 @@ export function propBreaches(s: any, out: { onStructure?: Record<string, number>
     if (!ok) bad.push({ ...d, x: Math.round(d.x), b: Math.round(d.b), family: fam.family, why });
   }
   return bad;
+}
+
+/**
+ * Nothing dressed over the way out (the lead, 11-05, on the mixed 1-1's upright still: a big white frond over the door's right post): no
+ * dressing piece's drawn box overlaps the exit door's (sanctuaryDoor.ts: the world's painted gate, GATE_H tall, its ground at the stage's
+ * exitTotemY; DOOR_HALF either side of exitTotemX, the gate's posts with a little room). A flat decal on the ground in front of it (the
+ * bootprint) lies under the door's ground line, so it never counts.
+ */
+export const DOOR_HALF = 140, DOOR_H = 250;
+export function dressOverDoor(s: any): PropItem[] {
+  const x = s.exitTotemX, g = s.exitTotemY;
+  if (!(x > 0) || !Number.isFinite(g)) return [];
+  const d0 = x - DOOR_HALF, d1 = x + DOOR_HALF, top = g - DOOR_H;
+  return propItems(s).filter((d) => {
+    let sz = { w: d.w ?? 60, h: 60 }; if (d.w === undefined) try { sz = dressSize(d.n as never); } catch { /* no frame: 60 px */ }
+    // (the clue decal lies flat from the piece top down, CLUE_H deep: w1NewArt.ts cluePlace)
+    if (d.n === CLUE_NAME) sz = { w: CLUE_W, h: 0 };
+    const x0 = d.x - sz.w / 2, x1 = d.x + sz.w / 2, y0 = d.b - sz.h, y1 = d.b;
+    return x1 > d0 && x0 < d1 && y1 > top && y0 < g - 2 && sz.h > 0;
+  });
 }

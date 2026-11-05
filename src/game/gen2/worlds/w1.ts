@@ -41,7 +41,11 @@ export const W1_KIT = {
   graphs: {
     /** the sprint graphs A-D (gen2/graphs.ts SPRINT_GRAPHS, the planner's; NODES §8.4's code strings: A `A T P F R X R S E`, B `A T M F R C U X R S R L E`, C `A P F X R W R D_ S E`, D `A T P R U F X R S E`) */
     list: [...SPRINT_GRAPHS],
-    briefs: { '1-1': { ends: 'quiet' as const, trend: 'up' as const, branching: 'some' as const, teaches: ['jump', 'double', 'bounce'] } },
+    briefs: { '1-1': { ends: 'quiet' as const, trend: 'up' as const, branching: 'some' as const, teaches: ['jump', 'double', 'bounce'], deal: { ground: 40, floating: 25, climb: 20, bounce: 15 } } },
+    /** floating pieces only in the last third (NODES V12; the designer's bough window) */
+    windows: { floating: [0.67, 1] as const },
+    /** a bounce node only once the bounce is taught (V3): the move's name as the sections' `teaches` */
+    typeNeeds: { bounce: 'bounce' },
     terrains: ['floor-stones', 'raised-logs', 'mounds', 'boughs'],
     chunkSeconds: 11.2,
     maxPerStage: 1,
@@ -418,6 +422,9 @@ const times = (n: number, g: G): G => (k, after) => {
 const lowLog = (key: string, over: string, at: R2): W1Piece => limb(key, { kind: 'over', on: over, at, dy: [96, 104] }, [180, 220], 'log', false);
 /** the exit totem's socket on the end log (the ruling: an `objective` socket; main's stageGenerator.ts:2136 gen.item('exit_totem')) */
 const totem = (on: string): Socket => ({ id: 'exit-totem', role: 'objective', on, t: 0.85, allow: ['exit_totem'] });
+/** 1-1's clue, the bootprint, on the end log's walking line 200-260 px WEST of the totem, so he walks over it before the door (the lead,
+ *  11-05, on the mixed 1-1's still: there it lay past the door). On a 685 px log with the totem at t 0.85 (582 px): t 0.47-0.56 */
+const clue = (on: string): Socket => ({ id: 'clue', role: 'decor', on, t: [0.47, 0.56], dn: 0, allow: ['bootprint'] });
 
 /** #1 stump stile: stumps stepping up then down (or down then up) over the floor */
 const gStile = (hs: number[]): G => (k, after) => {
@@ -622,7 +629,7 @@ const floorDash = section({
 /** #15: the exit totem an `objective` socket on the end log; the bootprint the held clue's place (R-165.31), reported */
 const quietArrival = section({
   id: 'w1-quiet-arrival', name: 'quiet arrival', phases: ['goal'], difficulty: 1, needs: ['walk'], ports: ['ledge', 'ledge'], window: BOUGH_WINDOW,
-  versions: [[240, 280], [520, 600]].map((w, j) => ({ id: j ? 'long' : 'short', groups: [(k: string) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, w as R2), limb(`${k}L`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, END_LOG, 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3])], sockets: [totem(`${k}L`), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}L` })] })),
+  versions: [[240, 280], [520, 600]].map((w, j) => ({ id: j ? 'long' : 'short', groups: [(k: string) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, w as R2), limb(`${k}L`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, END_LOG, 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3])], sockets: [totem(`${k}L`), clue(`${k}L`), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}L` })] })),
   feel: ['1-1'], not: NOT_11, rating: 1,
   source: "W1-NEW-SECTIONS #15: a calm high-branch walk onto the long high log (main's old 1-1 end: 685 px, exit_totem, no shrine); 1-1.md:23; stageClue.ts:16",
 });
@@ -710,7 +717,7 @@ const sunlitLog = section({
     const pieces: W1Piece[] = [limb(`${k}a`, { kind: 'start' }, [260, 300])];
     if (n === 2) pieces.push(limb(`${k}s`, { kind: 'walk', after: `${k}a`, dy: [-32, -28] }, [200, 240]));
     pieces.push(limb(`${k}L`, { kind: 'walk', after: pieces[pieces.length - 1].key, dy: [-32, -28] }, END_LOG, 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3]));
-    return { pieces, sockets: [totem(`${k}L`), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}L` };
+    return { pieces, sockets: [totem(`${k}L`), clue(`${k}L`), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}L` };
   }] })),
   feel: ['1-1'], not: NOT_11, rating: 1,
   source: "W1-NEW-SECTIONS #23: a bough walk-on (one or two steps) to the long high log with the exit totem (stageGenerator.ts:2136 on main; a 685 px log at y 580, eraRoll layout 1); 1-1.md:23",
@@ -804,7 +811,7 @@ const lastStepUp = section({
     const pieces: W1Piece[] = [limb(`${k}a`, { kind: 'start' }, [240, 280])];
     if (walk) pieces.push(limb(`${k}w`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, [200, 240]));
     pieces.push(limb(`${k}L`, { kind: 'jump', after: pieces[pieces.length - 1].key, dy: [-80, -70], share: [0.2, 0.3] }, END_LOG, 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3]));
-    return { pieces, sockets: [totem(`${k}L`), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}L` };
+    return { pieces, sockets: [totem(`${k}L`), clue(`${k}L`), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}L` };
   }] })),
   feel: ['1-1'], not: NOT_11, rating: 1,
   source: "W1-NEW-SECTIONS #30: one easy hop from a lower bough onto the long high log with the exit totem (main's 1-1 end; 1-1.md:23)",

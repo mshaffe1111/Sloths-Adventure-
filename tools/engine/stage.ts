@@ -28,7 +28,7 @@ import { looksAlike } from '../inspect/lookalike.ts';
 import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
 import { landingKind } from '../../src/game/mixer/catalog.ts';
-import { propBreaches } from '../../src/game/mixer/propSupport.ts';
+import { dressOverDoor, propBreaches } from '../../src/game/mixer/propSupport.ts';
 import { stillSpots } from '../../src/game/mixer/stillSpots.ts';
 import { distinctTokens, overlapSummary } from '../../src/game/mixer/codeVariety.ts';
 import { nodePieceBreaches, type RealisedNode } from '../../src/game/mixer/nodePieces.ts';
@@ -47,6 +47,8 @@ type Gate = { name: string; pass: boolean; detail: string[] };
 const gates: Gate[] = [];
 const linesShown: string[] = [];
 const gate = (name: string, detail: string[], pass = detail.length === 0) => { gates.push({ name, pass, detail }); process.stderr.write(`${name}: ${pass ? 'PASS' : 'FAIL'}\n`); };
+/** gen2's own record on a built stage: st.gen2 (gen2's Gen2Stage), proto.gen2 (the game's stage); undefined on a mixer stage */
+const gen2Of = <T,>(st: unknown): T | undefined => { const q = st as { gen2?: T; proto?: { gen2?: T } }; return q.gen2 ?? q.proto?.gen2; };
 const range = (v: number[]) => (v.length ? `${Math.min(...v).toFixed(0)}-${Math.max(...v).toFixed(0)}` : '-');
 
 // 1. the spec
@@ -231,38 +233,45 @@ if (fs.existsSync(OLD_FILE)) {
   if (unl.size) bad.push(`props no label covers (cannot be judged, so not passed): ${[...unl].join(', ')}`);
   gate(`secondary objects over air (props and dressing, ${N} layouts x 2${n ? `, ${n} found` : ''})`, bad);
 }
+// 5c'-door. nothing dressed over the way out (the lead, 11-05): no dressing piece over the exit door (mixer/propSupport.ts dressOverDoor)
+{
+  const bad: string[] = [];
+  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) for (const d of dressOverDoor(buildRoll(cfg, v, setting === 'easy')).slice(0, 2)) bad.push(`${setting} ${v}: ${d.n} (${d.list}) at x ${Math.round(d.x)} over the door`);
+  gate(`nothing dressed over the exit door (${N} layouts x 2)`, bad);
+}
 
 // 5c''. V18 (NODES.md §8.3, §8.0 PIECES): each realised node's pieces match its content row in the key (mixer/nodePieces.ts), from
-// gen2's meta (meta.gen2.nodes: each node's token and x-range, the planner's), every layout, both settings
+// gen2's record (gen2.nodes: each node's token and x-range, the planner's), every layout, both settings
 {
   const bad: string[] = [];
   let judged = 0;
   for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) {
-    const st = buildRoll(cfg, v, setting === 'easy') as { meta?: { gen2?: { nodes?: RealisedNode[] } } };
-    const nodes = st.meta?.gen2?.nodes;
+    const st = buildRoll(cfg, v, setting === 'easy');
+    const nodes = gen2Of<{ nodes?: RealisedNode[] }>(st)?.nodes;
     if (!nodes) break; // (a build without gen2 meta: none of this stage's builds carry it)
     judged++;
     for (const b of nodePieceBreaches(st as never, cfg.worldIndex, nodes, { stage: id, climbOwner: id === '1-4' }).slice(0, 3)) bad.push(`${setting} ${v}: ${b}`);
   }
   if (judged) gate(`node pieces, V18 (${judged} builds)`, bad);
-  else notMeasured.push('node pieces, V18 (mixer/nodePieces.ts, on gen2 meta.gen2.nodes: once 1-1 builds on gen2)');
+  else notMeasured.push('node pieces, V18 (mixer/nodePieces.ts, on gen2.nodes: once 1-1 builds on gen2)');
 }
 
-// 5c'''. the node code (NODES.md §8; the planner's parser writes meta.gen2.code, codeString, codeErrors, loosened): each roll's realised
+// 5c'''. the node code (NODES.md §8; the planner's parser writes gen2.code, codeString, codeErrors, loosened): each roll's realised
 // code in the report, V1-V17 as a gate (codeErrors), the loosened slots named, and the variety lines (mixer/codeVariety.ts: distinct
 // tokens, 3-gram overlap between rolls and against the world's other gen2 stages). The variety lines have no pass line until the designer sets one
 const codeRows: string[] = [];
 {
-  type G2 = { meta?: { gen2?: { code?: string[]; codeString?: string; codeErrors?: string[]; loosened?: string[] } } };
+  type G2 = { code?: string[]; codeString?: string; codeErrors?: string[]; loosened?: string[] };
   const codes: string[][] = [];
   const bad: string[] = [];
   const t0 = Date.now();
   for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) {
-    const g = (buildRoll(cfg, v, setting === 'easy') as G2).meta?.gen2;
+    const g = gen2Of<G2>(buildRoll(cfg, v, setting === 'easy'));
     if (!g?.code) break;
     if (setting === 'normal') { codes.push(g.code); codeRows.push(`normal ${v}: \`${g.codeString ?? g.code.join(' ')}\``); }
     for (const e of g.codeErrors ?? []) bad.push(`${setting} ${v}: ${e}`);
-    for (const l of g.loosened ?? []) codeRows.push(`${setting} ${v} loosened: ${l}`);
+    // (a loosened slot is a FAIL, the lead 11-05, Law 22: the fix is more sections, never a looser rule; its line names the pieces missing)
+    for (const l of g.loosened ?? []) { codeRows.push(`${setting} ${v} loosened: ${l}`); bad.push(`${setting} ${v}: loosened, add sections: ${l}`); }
   }
   if (codes.length) {
     const d = codes.map(distinctTokens).sort((x, y) => x - y);
@@ -270,12 +279,12 @@ const codeRows: string[] = [];
     linesShown.push(`node code: distinct tokens a roll ${d[0]}-${d[d.length - 1]}; 3-gram overlap between rolls mean ${self.mean.toFixed(2)}, worst ${self.max.toFixed(2)} (${self.pairs} pairs)`);
     const w = cfg.worldIndex;
     for (const o of levels.filter((l) => l.worldIndex === w && l.id !== id && !l.secret)) {
-      const oc = Array.from({ length: NB }, (_, i) => (buildRoll(o, i + 1) as G2).meta?.gen2?.code).filter((c): c is string[] => !!c);
+      const oc = Array.from({ length: NB }, (_, i) => gen2Of<G2>(buildRoll(o, i + 1))?.code).filter((c): c is string[] => !!c);
       if (oc.length) { const x = overlapSummary(codes, oc); linesShown.push(`node code vs ${o.id}: 3-gram overlap mean ${x.mean.toFixed(2)}, worst ${x.max.toFixed(2)}`); }
     }
     linesShown.push(`node code lines: ${((Date.now() - t0) / 1000).toFixed(0)} s`);
-    gate(`node code (V1-V17, ${codes.length} x 2 rolls)`, bad);
-  } else notMeasured.push('node code: per-roll code, V1-V17, distinct tokens and 3-gram overlap (meta.gen2.code: once 1-1 builds on gen2)');
+    gate(`node code (V1-V17, no loosened slot, ${codes.length} x 2 rolls)`, bad);
+  } else notMeasured.push('node code: per-roll code, V1-V17, distinct tokens and 3-gram overlap (gen2.code: once 1-1 builds on gen2)');
 }
 
 // 5d. REQUIRED-MOVE (NODES.md §1 `test`, R2 §2 L5: Nelson & Smith; Green et al. 2018): on each teach and test node, a bot without the
@@ -289,9 +298,20 @@ const codeRows: string[] = [];
   for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= NBOT; v++) {
     const st = buildRoll(cfg, v, setting === 'easy') as { meta?: { mix?: { explain: Array<{ node: number; job: string; x0: number; x1: number }> } } };
     const ex = st.meta?.mix?.explain;
-    if (!ex) { bad.push(`${setting} ${v}: no node ranges in the build (meta.mix.explain): the gen2 build's section ranges are not wired yet`); continue; }
     const nodes = new Map<number, { job: string; x0: number; x1: number; moves?: Array<'double' | 'bounce'> }>();
-    for (const e of ex) { if (e.node < 0) continue; const q = nodes.get(e.node); nodes.set(e.node, q ? { job: q.job, x0: Math.min(q.x0, e.x0), x1: Math.max(q.x1, e.x1) } : { job: e.job, x0: e.x0, x1: e.x1 }); }
+    const g2 = gen2Of<{ nodes?: Array<RealisedNode & { moves?: Array<'double' | 'bounce'> }> }>(st)?.nodes;
+    if (g2) {
+      // (gen2: each node's job from its token's job letter, its move from the move digit (2: the double) or the content letter (b: the
+      // bounce); only those characters are read, NODES §8.0/§8.1; a twist (W) takes the node's own moves, else both of 1-1's)
+      g2.forEach((q, i) => {
+        const J = q.token[0], c = q.token[1], dbl = /^[A-Z][a-z]?2/.test(q.token);
+        const move = dbl ? 'double' : c === 'b' ? 'bounce' : 'jump';
+        if (J === 'T' || J === 'X') nodes.set(i + 1, { job: `${J === 'T' ? 'teach' : 'test'} ${move}`, x0: q.x0, x1: q.x1 });
+        else if (J === 'W') nodes.set(i + 1, { job: `twist ${q.token}`, x0: q.x0, x1: q.x1, moves: q.moves ?? ['double', 'bounce'] });
+      });
+    } else if (ex) {
+      for (const e of ex) { if (e.node < 0) continue; const q = nodes.get(e.node); nodes.set(e.node, q ? { job: q.job, x0: Math.min(q.x0, e.x0), x1: Math.max(q.x1, e.x1) } : { job: e.job, x0: e.x0, x1: e.x1 }); }
+    } else { bad.push(`${setting} ${v}: no node ranges in the build (mixer meta.mix.explain or gen2.nodes)`); continue; }
     const full = botRun(id, v, setting);
     for (const [n, q] of nodes) {
       // (a twist with two answers, NODES §8.7 B5: without both moves the bot fails it, without either one alone it passes)
@@ -304,7 +324,7 @@ const codeRows: string[] = [];
       }
       const m = q.job.match(/^(teach|test) (\w+)/);
       if (!m) continue;
-      const move = (spec.nodes[n - 1]?.teaches as string | undefined) ?? m[2];
+      const move = (g2 ? undefined : (spec.nodes[n - 1]?.teaches as string | undefined)) ?? m[2];
       if (move !== 'double' && move !== 'bounce') { unjudged.add(`${q.job} (no bot without ${move})`); continue; }
       const fullOK = full.run.end === 'shrine' || full.reachX >= q.x1;
       const lim = botRun(id, v, setting, { without: { move, x0: q.x0, x1: q.x1 } });
