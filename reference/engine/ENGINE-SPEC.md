@@ -208,6 +208,18 @@ taught animals.
 **CP3's 1-5 draws only from proven ideas.** The 1-5 remix uses World 1's 14 ideas, plus crumbling ledge, push block, bridge span
 and reed isles once they are proven.
 
+
+**[designer ruling, 11-05 ~12:36 AM ET, on the animal runs (`cp2/cp2-animals*.out`)] Animals need their teach before their line.**
+- The boa passes on Easy and misses on Normal: 2-3 hits at one boa, and 2-3 lives a run.
+- The turtle line misses: up to 5-6 hits at one line for the kid on Easy.
+- In both, the first-timer had not been taught the trick.
+
+So both ideas are marked **not ready**, and they change as follows:
+- **Every animal idea gets its teach steps first** (expose, then a safe validate), and the line comes after.
+- **Boa on Normal:** a clear rear-up tell, with a flat run-up of at least one screen's width to read it.
+- **Turtle line:** at most 2 turtles in a line on Easy (3 on Normal), with the shell kick taught in the validate step.
+- **Pass line, re-run in CP3:** past each animal with at most one heart lost, adult on Normal and kid on Easy.
+
 ### CP3: the mixer, proven on the worst stage first (1-5) (owner: designer specs the mix rule, planner builds and runs)
 - **The mix rule (designer), [Matt, 11-05] ideas first, pieces inside an idea.**
   1. **The stage's story beat and theme come first** (STAGE-RULES and the story files). They pick the stage's job and look, never
