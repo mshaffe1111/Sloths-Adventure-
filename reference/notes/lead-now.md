@@ -47,6 +47,16 @@ else is built. Nothing reaches main until Matt plays it and says "push".
   supervisor role, and gen2 faults to roadmap: theme lock hijacks teaching (w6Ground.ts:23), Easy fallback plan + `best` returned +
   usedVersions not passed (pipeline.ts:1856,1957; game.ts:134), curation before post-passes (curate.ts:70). ROADMAP and STATUS live on origin/ccr-0d59a91c-oy3imz; bring them onto this branch first (docs only, never its src/).
 
+## The 55 (Matt's rating, 11-04): the engine fixes only part of it (Rule one: say so)
+reference/PLAN-TO-80.md lists the six causes. The engine work covers #3 (stages have no shape) and #4 (mechanics taught, then
+dropped), plus the repetition ("sludge after 5 hours"). Still UNASSIGNED on ROADMAP (checked 11-05 ~6:10 PM ET):
+- #1 hazards that bite: R-154, R-158.1 (the eagle lock-on);
+- #2 enemies with jobs: R-159.1 (the combat triangle);
+- Pokey's hang move: R-160.1;
+- #5 bosses with three ways to win: R-161.1;
+- #6 frame rate and feel: WebGL R-3.1-3.7 (warmup-5m).
+After 1-1 is proven, these run as their own lanes, one engine.ts holder at a time.
+
 ## My traps (read every time)
 - Read the real thing, not the report: open the commit, the file, the still. A helper's "done" isn't done until I've looked.
 - Helpers' fast work gets the same check as slow work.
