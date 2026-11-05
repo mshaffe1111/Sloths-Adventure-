@@ -21,3 +21,12 @@ The level designer leads how stages, worlds and the level engine's content are d
 ## The lead's part
 Checks the work against the bar and the gates, approves or sends back with exactly what fails, runs the helpers, gates and
 releases, and tells Matt the truth. The lead never rewrites the design.
+
+## Who, and how they work (Matt, 2026-11-04 ~11:40 PM ET: "pair them; designer leads")
+- Level designer: the engine designer, session_01FhBbYPKnBYCweHg8duJSu2 (wrote Option E, DESIGNER.md §13). It leads.
+- Its pair: the engine planner, session_01FhBbYJaUqNUPxNUvbHdHeN (PLAN.md). It owns buildability: real-code runs, pass numbers,
+  order of work, owners, cost, the variety gate as a machine check.
+- They message each other directly; disagreements are settled by a run on the real code, and what a run can't settle goes to Matt
+  as one multiple-choice question with each side's reason, through the lead.
+- One shared file, reference/engine/ENGINE-SPEC.md (branch engine-spec), signed by both before anything is built.
+- They start when the lead sends GO, under the day's token ceiling Matt sets.
