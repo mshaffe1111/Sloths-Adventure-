@@ -22,7 +22,7 @@ Then ReadNotifications, then check that the 30-min check-in is armed (list_trigg
   never the stage.
 - The lead does NOT design. The lead checks, approves, sends back, writes story briefs (story and look), and runs the team and the
   checkpoints.
-- METER: 56% at 11:50 AM ET (45% at 10:05): about 6%/h with 11 helpers. Matt: keep everything running, keep an eye on it. Ask for the meter at EVERY checkpoint, report the burn and when the week runs out.
+- METER: 64% at 2:23 PM ET (60% at 12:37; about 2.3%/h with 3 helpers). Projected ~90% by midnight with the 1-1 and 1-2 tests. Ask for it at every checkpoint.
 - NO CEILING today (Matt, 10:32 AM ET: "It takes what it takes today... not going to rush or shortcut token-wise"). Costs are still reported and the meter read at checkpoints; no waste.
 
 ## THE BOARD: deadlines and what success looks like (set 10:26 AM ET; Matt: "You set the standards... deadlines... what success looks like. And you hold them to it... catch mistakes early, not late")
