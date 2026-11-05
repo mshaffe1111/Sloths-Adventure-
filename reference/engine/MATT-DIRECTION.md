@@ -22,6 +22,15 @@ So today's pieces (logs, bridges, boughs, snap twigs, vines, stumps, rotten bran
 engine's library, look and feel included. The fault is the mix, not the pieces. The engine's first job is mixing them so no stage
 repeats.
 
+## 2026-11-05 ~9:40 AM ET (Matt to the planner)
+- "There needs to be various randoms placed into the engine, such as speed of the level, the looks of the level, what's in the level,
+  how it branches, if it branches, if there's water."
+- "We shouldn't have lily pads on branches."
+- "We need all this in the engine so that when we have multiple people making things... 80% of the level is done with the engine. And
+  they just need to clean up, not overhaul everything."
+The build answer: a stage is data (a spec with its feel profile and node plan); a tagged idea library with an element gate and a real
+water zone; pass lines from each stage's profile plus a neighbour feel check; one command per stage.
+
 ## 2026-11-05 ~9:15 AM ET (Matt to the designer)
 Matt asked whether each stage's feel is explained from the story. Now a rule: every stage spec opens with its story beat and how it
 should feel, before any node is laid (1-1: Pokey has just left home, slow but vowing to come; a small, determined start that grows
