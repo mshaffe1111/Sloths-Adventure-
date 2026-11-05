@@ -2,9 +2,9 @@
 
 Researcher 3 of 4, 2026-11-05. Topic: formulas an engine can build to, each with its source, its numbers, how a bot or a checker
 measures it, and where it stops being true. Every number is marked **(measured)** when it came out of our code or a source's own
-table, and **(estimate)** when it is my proposal or arithmetic on someone else's number. Code was measured on the work tree at commit
-`3276e305` (02:20-02:45 UTC); other helpers committed while I worked (`27389479` landed at 02:17, `c41346d8` at 02:47), so the fun gate
-counts below are a snapshot, not a verdict on anyone's work. Scripts I wrote live only in my scratchpad (listed in §4); no repo file
+table, and **(estimate)** when it is my proposal or arithmetic on someone else's number. Code was measured on the live work tree between
+02:20 and 03:00 UTC (HEAD moved from `3276e305` to `bf984e5f` as other helpers committed; `27389479`, the pacing-ruler change, landed at
+02:17), so the fun gate counts below are a snapshot, not a verdict on anyone's work. Scripts I wrote live only in my scratchpad (listed in §4); no repo file
 but this one was written.
 
 ---
@@ -15,8 +15,10 @@ but this one was written.
 |---|---|
 | Planned | about 75 minutes |
 | Started | 02:17 UTC (9:17 PM ET, Nov 4) |
-| Finished | see the last line of this file (stamped when the file was closed) |
-| Where the time went | about 35 min reading 26 primary sources end to end (§6); about 25 min writing and running four measuring scripts on all nine World 1 stages, 16 layouts, both settings, plus the fun gate, the inspector's noisy bots and the first-timer bot; the rest writing and checking this file |
+| Finished | 03:01 UTC (10:01 PM ET) |
+| Actual | about 44 minutes: under the 75 planned, over half. Fetches and engine runs were quick (the whole World 1 bot pass took 20 s, the first-timer pass 55 s, the fun gate 90 s), so the plan's reading-and-running budget went further than expected; I stopped when every section asked for was done and checked, rather than pad it. |
+| Where the time went | about 20 min opening and reading 26 primary sources (§6, how much of each is marked); about 12 min writing and running eight measuring scripts on all nine World 1 stages (16 layouts, both settings) and eight later-world stages, plus the fun gate, the inspector's noisy bots and the first-timer bot; about 12 min writing this file and re-checking every number in it against the outputs |
+| Not done with more time | a Glicko-2 rating of each stage from several bot thumbs (F16); Celeste's jump-buffer value (lives in Input.cs, not in the released source); the knob-elasticity table (F17) |
 
 ---
 
@@ -353,7 +355,7 @@ validator's `GROUP_MAX = 20` check (`core.ts:292`, applied at `core.ts:364`) can
 
 All runs from the repo root, against the real engine (`build()` in `tools/validate/core.ts:87`, D19). Scripts:
 `/tmp/claude-0/-home-user-Sloths-Adventure-/de391798-4931-5f52-9808-d419b5307ca4/scratchpad/r3/funmath.ts`, `rhythm.ts`, `ioi.ts`,
-`rolls.ts`, `relgroups.ts` (and `relgroups2.ts`, its ratio sweep), `ioiW.ts` (later worlds), `jumps1.ts`. Raw outputs beside them
+`rolls.ts`, `relgroups.ts` (and `relgroups2.ts`, its ratio sweep), `ioiW.ts` (later worlds), `popsim.py`, `jumps1.ts`. Raw outputs beside them
 (`funmath16.out`, `funcheck.out`, `insp.json`, `inspW1.json`, `ft.json`).
 
 ### 4.0 The fun gate as it stood
@@ -557,6 +559,30 @@ ratio horizontal/vertical: Celeste 2.16, Pokey 1.80
 
 (Our discrete rise is 103 px against `JUMP_RISE` ≈ 108 px, `physics.ts:133`: Euler step order; the level check uses its own tables.)
 
+### 4.7 F3's population layer on our bot rates (`popsim.py inspW1.json`; every population number an estimate)
+
+2,000 simulated players: skill z ~ N(0, 1) adds 0.6·z to each jump's log-odds; each failed try adds 0.3 (learning); a player quits at a
+jump after more than N(6, 2.5) failed tries there (persistence); 2% quit after any stage (boredom). Jump success = the noisy bots' rates.
+
+```
+=== easy
+stage  started  quit-at-a-jump  quit-bored  share-of-starters-lost  worst jump (quits)
+1-1     2000        868           28        0.448              jump #68 rate 0.060 (575)
+1-2     1104          0           24        0.022              -
+...    (1-3 to 1-9: 0 quit at a jump, 1.5-2.2% bored each)
+finished World 1: 944 of 2000 (0.47)
+=== normal
+1-1     2000         15           39        0.027              jump #36 rate 0.755 (8)
+1-2     1946          1           34        0.018              jump #42 rate 0.960 (1)
+...    (1-3 to 1-9: 0 quit at a jump)
+finished World 1: 1675 of 2000 (0.84)
+```
+
+What it shows is sensitivity, not a forecast: one 6% jump, if real, would lose about 45% of Easy players on the very first stage, while
+everything else in World 1 costs under 3%. Whether it is real is W13's disagreement: at that spot (x 29277) the noisy bot gives the
+reason "take-off spot", and the first-timer kid, who picks his own take-off, loops 3-4 times nearby (x 28723) but is not recorded stuck
+at it. One look at that jump on a phone settles which bot is right.
+
 ---
 
 ## 5. Ideas none of our research mentions
@@ -571,7 +597,7 @@ petal yields and the kid bot's per-jump floor, and "survival" only as that floor
 2. **Teach, test and practise at different success targets** (F2): about 0.97 / 0.85 / 0.95, from the learning-optimal 85% rule and the
    large-sample finding that easier play is played longer.
 3. **A player population on top of the bots** (F3, Rovio): skill, persistence, boredom, learning; per stage, the share of a simulated
-   low-persistence group that would quit. It turns "is this too hard?" into "who leaves here?".
+   population that would quit. It turns "is this too hard?" into "who leaves here?". Run in §4.7: it singles out one jump on 1-1 Easy.
 4. **Rate stages like chess players** (F16, Glicko-2 with phantom matches): bot tiers and later QA attempts as matches; a stage's rating
    is its difficulty, a world's spread is its band, and the survivorship fix stops hard late stages from looking easy.
 5. **A frustration meter from standing still** (F9): stuck share from the first-timer bot, gated per setting. On today's numbers it
@@ -660,4 +686,4 @@ Tried and blocked (not counted): the ACM PDFs of Smith & Whitehead 2010 and Huni
 Candy Crush" and Purmonen theses: host refused), Wiley's DDA review (bot-blocked), Tenney & Polansky's temporal gestalt paper (scanned
 PDF, no text). Celeste's assist-mode usage and death data: I found no figures published by the developers; none are used here.
 
-Closed at 03:0x UTC — see the report to the lead for the exact time.
+Closed 03:01 UTC (10:01 PM ET), 2026-11-05.
