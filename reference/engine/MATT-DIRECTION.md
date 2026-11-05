@@ -22,6 +22,11 @@ So today's pieces (logs, bridges, boughs, snap twigs, vines, stumps, rotten bran
 engine's library, look and feel included. The fault is the mix, not the pieces. The engine's first job is mixing them so no stage
 repeats.
 
+## 2026-11-04 ~11:5x PM ET (to the planner)
+"Maybe the best level was 1-3. I think 1-2 was broken... but it branched out."
+So today's 1-3 is a second reference beside the old 1-1, and 1-2's branching shape is kept as a piece. 1-2's known break: drops to
+the ledge below respawned him (R-164.1, D33); the planner is asking Matt if there is more.
+
 ## The reference: the OLD 1-1 (live on main), Matt's best stage
 The generator is aimed at the way the old 1-1 is built, not the rebuilt one. It is the bar every generated stage is measured against.
 
