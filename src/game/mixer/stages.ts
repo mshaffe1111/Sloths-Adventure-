@@ -79,7 +79,7 @@ export const SPEC_11: StageSpec = {
   goal: { kind: 'sprint' },
   dress: { start: ['squirrel-sit', 'squirrel-wave', 'squirrel-tip'], clue: 'bootprint' },
   // (its known moves are the move table's: none are taught before 1-1, moveLadder.ts)
-  post: { clearDress: true },
+  post: { clearDress: true, seed: { job: 'rest' } },
   // (the shrine stands on a long log at the top branch's end: three long pieces of one kind in a row ran the gate's "nothing new" to 2,106 px)
   lay: { startY: 1260, end: { kind: 'log', w: 640 }, burstMin: 5, burstMax: 6 },
 };

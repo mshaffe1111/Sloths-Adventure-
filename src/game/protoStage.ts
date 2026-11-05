@@ -55,7 +55,7 @@ import { W4Roll } from './w4Sections.ts';
 import { buildFromSpec } from './mixer/w1mix.ts';
 import { w1DressWidth } from './w1NewArt.ts';
 import { specFor } from './mixer/stages.ts';
-import { clearDress, ownPetals } from './mixer/post.ts';
+import { clearDress, ownPetals, placeSeed } from './mixer/post.ts';
 import { dressSize } from './dressArt.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
@@ -385,6 +385,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   const made = teachWater(buildPlan(config, seed, plan, easy));
   const st = made.proto.ownPetals ? made : petalPass(made);
   if (made.proto.ownPetals) ownPetals(st);
+  // (a spec's secret golden seed over a mushroom, mixer/post.ts placeSeed)
+  const seedAt = specFor(plan)?.post?.seed;
+  if (seedAt) placeSeed(st, seedAt.job);
   // (5-3's quota is a share of the flowers it holds: of those the petal pass kept)
   if (plan === '5-3') st.config = { ...st.config, targetCount: Math.round(st.collectibles.filter((c) => c.type === 'flower').length * W5_HARVEST_SHARE) };
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)

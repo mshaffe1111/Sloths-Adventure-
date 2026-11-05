@@ -7,6 +7,7 @@
  */
 import { badPickups } from '../flowerReach.ts';
 import { PICKUP_APART } from '../levelCheck.ts';
+import { DOUBLE_RISE } from '../physics.ts';
 import { busiestScreen, clumpExtras, offArc, PER_SCREEN, rowExtras } from '../petals.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras } from '../protoStage.ts';
@@ -75,4 +76,28 @@ export function clearDress(st: { platforms: Platform[]; collectibles: Collectibl
     // (grows from something: its foot on a top, or its head under a bough's underside)
     return solid.some((p) => x1 > p.x && x0 < p.x + p.width && (Math.abs(d.b - p.y) < 10 || Math.abs(top - (p.y + p.height)) < 12));
   });
+}
+
+/**
+ * The secret golden seed (main's 1-1 mushroomCache, protoStage.ts on main: the rule the designer kept, ENGINE-SPEC 4279fc12d): in the node
+ * a spec names (`post.seed.job`, off the main line), a mushroom on a perch over its widest bank, 46 px up and beside the lane so walking on
+ * passes under it (the mixer's own canopied perch), a bough higher than a double jump reaches from the bank, the seed over the bough. Only
+ * the bounce gets him there. A scenery trunk holds the bough (every bough has a trunk, the designer's P-2; trunkFit stands it on the bank).
+ */
+export function placeSeed(st: GeneratedStage & { proto: ProtoExtras }, job: string): void {
+  const beat = st.proto.beats.find((b) => b[2].startsWith(job + ':'));
+  if (!beat) throw new Error(`post.seed: the stage has no "${job}" node`);
+  const bank = st.platforms.filter((p) => p.type === 'solid' && p.height >= 90 && p.x >= beat[0] - 60 && p.x + p.width <= beat[1] + 60).sort((a, b) => b.width - a.width)[0];
+  if (!bank || bank.width < 300) throw new Error(`post.seed: no bank 300 px wide in the "${job}" node`);
+  let pid = Math.max(...st.platforms.map((p) => p.id)) + 1;
+  let cid = Math.max(0, ...st.collectibles.map((c) => c.id)) + 1;
+  const perch: Platform = { id: pid++, x: bank.x + 105, y: bank.y - 46, width: 80, height: 24, type: 'solid', style: 'branch', pit: 'drop' };
+  (perch as Platform & { perch?: boolean }).perch = true;
+  const mush: Platform = { id: pid++, x: bank.x + 110, y: perch.y - 30, width: 70, height: 30, type: 'bouncy' };
+  // (higher than a double jump reaches from the bank, as main's cache: DOUBLE_RISE + 70)
+  const by = Math.round(bank.y - DOUBLE_RISE - 70);
+  const bough: Platform = { id: pid++, x: mush.x - 40, y: by, width: 270, height: 24, type: 'solid', style: 'branch', pit: 'drop' };
+  st.platforms.push(perch, mush, bough);
+  st.collectibles.push({ id: cid++, type: 'seed', x: mush.x + 150, y: by - 70, collected: false, bobPhase: 1, findId: 'seed-1' } as Collectible);
+  (st.proto.trunks ??= []).push({ x: bough.x + bough.width - 60, topY: by + 12, bottomY: bank.y + 6, w: 1 });
 }

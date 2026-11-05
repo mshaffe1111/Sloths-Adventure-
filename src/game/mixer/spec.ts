@@ -107,8 +107,9 @@ export interface StageSpec {
    *  (moveLadder.ts taughtBefore: where main teaches each move); a spec whose moves the table does not cover yet lists them here */
   taughtBefore?: Move[];
   /** what runs on the built stage after the petal pass and the dressing: the dressing kept off the play line (no piece over the shrine,
-   *  none in the air he walks or jumps through, none with nothing to grow from) */
-  post?: { clearDress?: boolean };
+   *  none in the air he walks or jumps through, none with nothing to grow from); `seed`: the secret golden seed over a mushroom in the node
+   *  with that job, off the main line (mixer/post.ts placeSeed) */
+  post?: { clearDress?: boolean; seed?: { job: string } };
   /** where the stage starts (the spawn bank's y, px) and its last piece; bursts a node lays when the dial decides (min-max) */
   lay: { startY: number; end: { kind: string; w: number }; burstMin?: number; burstMax?: number };
 }
