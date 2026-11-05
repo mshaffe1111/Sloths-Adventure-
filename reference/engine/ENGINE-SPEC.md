@@ -1696,3 +1696,8 @@ between line 1 and line 2.
 
 **The stump:** it is drawing only, never a landing by itself. 1-1's core is bank and log, plus branch in n8-n11. The every-world
 inventory will show whether any builder lays a stump you can stand on.
+- **Lead's correction (accepted, 10:33 AM ET):**
+  - The 0.63%/h counts 6-9 AM, when every helper was stopped. The active team rate is about 0.9%/h, so line 2's 1.1% is about 1.2 h of
+    wall time, which is tighter than line 1's 1.7 h.
+  - Both lines are kept. 1-1 is judged on whichever fails first, and both are reported as measured after the run.
+  - The 1-1 clock starts only after the critic rulings that touch the core, the library or 1-1 (due 1:30 PM ET). Matt chose option A.

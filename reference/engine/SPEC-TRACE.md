@@ -345,3 +345,124 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 605-615 | Estimates (0.1-5%) | OPEN | none | | (ii) meter |
 | 615 | True slope: 3-5% plus HF; not now | OPEN | none | | (iii) Tiny Wings / Alto's slope engines (D:417, R4 Alto's) for cost |
 | 618-620 | Today 4 ground kinds; +1-1.5% for 12 kinds | DERIVED | rows above | | |
+
+## 11. The difficulty dial (ES 624-659)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 624 | Difficulty rises through the game, on Easy and Normal | MATT | SR §0.5 (ccr:26-35); SR §1b (ccr:131-134); dial quote relayed | The quoted sentence itself is not saved | |
+| 628 | d = (0.1(w-1) + 0.2(s-1)/8) / 1.1 | OPEN | none | Gemini's D(w,s) (GP:98-101, LEG E137) was rejected (D:945) | (i) LEG E137 / GL F2 (bands.ts measures each stage); (ii) tools/inspect/bands.ts on old W1-W4 to fit d to today's measured bands |
+| 630 | d = 0 at 1-1, 1 at 10-9; each world climbs 0.18 | DERIVED | ES 628 (0.2/1.1 = 0.182) | | |
+| 631-632 | A new world's first stage starts at the previous world's middle; "STAGE-RULES §1b" | DERIVED | ES 628 (0.1/1.1 = half of 0.182) | §1b (ccr:131-148) does not say this; GP:100 says "slightly below the end"; see (b) C17 | |
+| 633 | Examples 1-1 0.00, 1-5 0.09, 1-9 0.18, 2-1 0.09, 2-9 0.27, 5-5 0.45, 10-1 0.82 | DERIVED | ES 628 (checked: 0.091, 0.182, 0.273, 0.455, 0.818) | | |
+| 635-636 | Each dial linear in d; all estimates, tuned on Matt's play | OPEN | none | | (ii) bots per d on the mixer; (i) R3 F17 knob elasticity (R3:255) |
+| 640 | Gap share of the level check's limit: Normal 0.55 -> 0.92, Easy 0.45 -> 0.80 | OPEN | none | D overturned gap share as a difficulty dial (D:48, D:180-187); Gemini gives 0.35-0.75 / 0.25-0.55 of R1 (LEG E103, GE:173); GP:75-76 caps 0.82 / 0.65; see (b) C1, C20 | (i) LEG E103 (start ranges) and D:177 (calibrated 0.35-0.75 / 0.25-0.50); (ii) noisy bots at each share |
+| 641 | Rise share of the gate's highest: Normal 0.50 -> 0.95, Easy 0.40 -> 0.80 | OPEN | none | | (ii) cp2-trace.ts flick windows per rise share |
+| 642 | Typical landing p50: Normal 220 -> 110 px, Easy 260 -> 150 px | OPEN | none | Measured CP3: Normal 221, Easy 218 (cp3/CP3-REBUILD.md:53-57); later Easy about 300 (ES 796); see (b) C4 | (i) LEG E105 (154-308 px) |
+| 642 | Never under 90 px | SOURCED | D:179 (BT minimum 90 px); LEG E105 (MIN_LEDGE 90, BT:175) | | |
+| 643 | Risky pieces a burst: Normal 0-1 -> 3-4, Easy 0 -> 2 | OPEN | none | | (i) R4:555 idea 3 (node expected falls: intro 0, spike 0.2-0.4, climax 0.3-0.6) |
+| 643 | Rests and teach steps hold 0 risky pieces | SOURCED | GP:317 (zero lethal failure); GV:61 (rest areas) | | |
+| 644 | E[lives] on a first run: Normal 0.5 -> 3.0, Easy 0.2 -> 1.0 | OPEN | none | Cites D §2.3, which says Normal W1 <= 1.0 rising about 0.5 a world (W10 about 5.5), Easy <= 0.3 (D:200; R3:44); the endpoints differ; see (b) C16 | (i) R3 F1 (R3:44) and D:200; (ii) calibrate bots on touchReplay recordings first (R4:559 idea 4) |
+| 645 | Taught animals a stage: Normal 0-1 -> 4-5, Easy 0-1 -> 3 | OPEN | none | Gemini: 3.5-11.35 enemies a minute (LEG E114, GE:199); MR: >= 35% of nodes animal-free (D:207) | (i) LEG E113-E115; (ii) count animals per old W1-W4 stage (cp2/enemies.txt) |
+| 646 | Crumble delay: Normal 0.9 -> 0.5 s, Easy 1.2 -> 0.8 s | OPEN | none | Easy 1.2 matches Gemini's 36 frames (LEG E151); Normal 0.9 matches nothing; conflicts with ES 228/333 (Easy 1.0 s); GV:13 snap 0.15 s, creak 0.6 s; shipped tiles 0.85-0.61 s (RM:418); see (b) C3 | (i) LEG E151; SR §0b.4 (ccr:51-52) |
+| 647 | Timed windows: Normal x1.0 -> x0.75, Easy x1.15 -> x0.9 of each piece's proven window | OPEN | none | | (i) GL F5 (window floors 167 / 300 ms) as the hard floor; (ii) pressWindow per piece |
+| 648 | Bursts a node 2 -> 3 | OPEN | none | 1-1 (d = 0) lays 3 in n2-n7 (ES 1181); see (b) C21 | (ii) length per burst count on the mixer |
+| 651-652 | Floors: Normal adult >= 70% W1-5, 50% W6-10; Easy kid >= 85% | SOURCED | SR §1b (ccr:147-148); GP:368; GL F3 | R3 W4 (R3:294) shows these do not bound a stage | |
+| 653 | Every teach step at miss chance <= 0.01 | SOURCED | D:1287-1288 (teach <= 0.01 per event, estimate) | R3 F2 gives the teaching beat >= 0.97 success (R3:61-62) | |
+| 654 | The placement rules never move with d | MATT | MD:76-86 | | |
+| 655-656 | A test node sits higher than a warm-up inside the dial, never above d = 1 | SOURCED | GP:87-93 (sawtooth); GL A6 | | |
+| 658-659 | 1-5 at d = 0.09: gap 0.58, landings about 210 px, 0-1 risky, E[lives] about 0.7 | DERIVED | ES 640-644 at d = 0.0909 (0.584, 210, 0.73) | | |
+| 659 | Replaces the planner's fixed 70-90 px stand-in | MEASURED | cp3/CP3-CHECKPOINT.md:56 (Normal 0.58, Easy 0.48 of the gate's widest) | | |
+
+## 12. Stage length (ES 662-674)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 664 | Floor 2:00 on the quick-route clock, skilled player | MATT | MD:45-47; CLAUDE.md | The quick clock ignores climbing (RM:478, R-164.5) | |
+| 665 | No cap; over 5 minutes is fine | MATT | MD:45-47 | | |
+| 666 | Lengths vary across a world | MATT | MD:45-47 | | |
+| 667 | A world's nine stages spread from about 2:00 to about 5:00 | OPEN | none | SR §0.5 (ccr:36-38): first-timer 2-5 min a stage, World 1 20-25 min in all | (i) SR ccr:36-38 (first-timer totals per world); (iii) stage clear-time spreads in a shipped world (e.g. Rayman Legends, Mario Wonder speedrun splits) |
+| 667-668 | Neighbours differ by >= 20% on the quick clock | OPEN | none | Designer's default, "the planner proposes the measured number" (never done) | (ii) quick clock of old W1-W4 neighbours; (i) D:1256 (neighbour pulses differ >= 15%, SR §0b.6 "must not share a tempo") |
+| 668 | The set piece or finale is among the longest | OPEN | none | | (iii) shipped worlds: is the X-9 / finale stage the longest? |
+| 669-670 | Length from units, never from a clock | SOURCED | SR §0c.1 (ccr:77-78); R1:48-59 (L3); D:212-213 | | |
+| 672 | Every roll >= 2:00 on both settings | MATT | SR §1 Length (ccr:106, "on every roll") | | |
+| 673 | No two neighbours within 20% | OPEN | none | as ES 667-668 | as ES 667-668 |
+| 674 | A world's spread >= 2.5 minutes | OPEN | none | | as ES 667 |
+
+## 13. The polish pass, P-1 to P-13, S-1 to S-9 (ES 677-794)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 677 | "It played much better. Needs polish... kind of ugly" | MATT | MD:39-42 | | |
+| 679-684 | Five faults in Matt's still | MATT | MD:40-42 (the still matt-1-5-mixer-0216.png) | The fifth (empty top half) is the designer's read | |
+| 690-692 | P-1 every piece painted; no grey placeholder ships | MATT | CLAUDE.md Polish rule; SR §4 (ccr:203-210) | | |
+| 693-695 | P-2 nothing floats unless it floats (D16) | SOURCED | SR §6 "Ledges in the air: nothing floats" (ccr:602-606); RM:476 (R-164.3) | Revised by ES 1369 (floating allowed per kind, Matt MD:124-133) | |
+| 696-700 | P-3 ground ends dressed; check drops over 120 px | OPEN | none (120 px) | Rule from Matt's still; 120 px is the designer's | (ii) count bank ends by drop height on old 1-1 |
+| 701-702 | P-4 foliage follows the ground | MATT | MD:41-42 (his still) | | |
+| 703-704 | P-5 flags, marks, hearts stand on the path; base within 4 px of a standable top | OPEN | none (4 px) | | (ii) tolerance from the engine's foot slop (FORGIVE.landPx 8/12 px, GL G3) |
+| 705-708 | P-6 upright screen never half empty; 3 views of 4 | OPEN | none (3 of 4) | | (ii) sliding upright view on old 1-1 (Matt's best) |
+| 709 | P-7 a stump under the perched mushroom (W6 kit-15 or W5 fernStump) | MATT | CLAUDE.md Polish rule | | |
+| 715-718 | P-8 pit art only where there is a pit | MATT | RM:479 (R-164.6, Matt's stills) | | |
+| 719-721 | P-9 HUD always on top, at the 6 places | MATT | RM:480 (R-164.7) | | |
+| 722-725 | P-10 darkness fades over >= 200 px; bank face seamless | MATT | RM:481 (R-164.8) | 200 px is OPEN: (ii) stills at 100/200/300 px; must be baked (PERFORMANCE-RULES:89, no per-frame gradients) | |
+| 726-728 | P-11 bridges stand on posts or a standable top within 4 px | MATT | MD:40-42 (stills 02, 07, 08) | 4 px as P-5 | |
+| 729-730 | P-12 no placeholder stone | MATT | CLAUDE.md Polish rule | | |
+| 731-733 | P-13 the marks counter matches the goal | SOURCED | e9c7ed6c (asserted HUD goal) | | |
+| 737-738 | Teach twigs at 40, 75, 40 px; teach bank 720 px | MEASURED | 8c8cd997 (teach bank 720 px; fun gate dead walk 27.5 -> 4.7 s) | | |
+| 739-740 | No creaky piece before n2's teach | MATT | CLAUDE.md "the first appearance of a mechanic is taught" | Creaky's real teach is 1-2 (b) C9 | |
+| 741 | Stone at 50 px, the height World 1's rock art is painted for | MEASURED | fdabad42 (P-12, stones at 50 px) | | |
+| 742-745 | Polish order if the budget forces a split | OPEN | none | | lead's call |
+| 749-753 | Easy density 0.67 vs 0.35-0.55 not accepted; fixes in order | MEASURED | 34c27751 (0.65), e68b6f4b | | |
+| 752-753 | Easy bursts 3 pieces, snap dash 5; rests 4-5 s with a petal arc | OPEN | none | | (i) GP:292-293 (Easy groups 6-8 s, 3-4 actions; rests 2.0-2.5 s) |
+| 754 | n7b's Dot line | OPEN | none | New line; SR §1 Story (ccr:118) needs "(new, needs Matt's approval)" | Matt approves the line |
+| 759-764 | Round 1 fixed: no grey slab, painted rocks, trunks, posts, x/10 | MEASURED | cp3/stills-v2/; 5a217b85 | | |
+| 766-767 | S-1 pit columns still under creek pieces | MEASURED | cp3/stills-v2/ | | |
+| 768-769 | S-2 grass blocks about 100 px over water | MEASURED | cp3/stills-v2/ | | |
+| 770-771 | S-3 stones on poles read as mushrooms on sticks | MEASURED | cp3/stills-v2/ | | |
+| 772-777 | S-4 boughs share a tree (one trunk, 2-3 boughs); no two neighbouring trunks share art or vine wrap; widths vary | OPEN | none | Old 1-1's canopy "hangs from big trees" is the designer's read | (ii) count boughs per trunk on old 1-1 |
+| 778-779 | S-5 a tip shows once per stage | SOURCED | SR §1 Dot (ccr:124-127: once per save, 30 s between lines) | SR says once per save, stricter | |
+| 781-782 | S-8 Dot's bubble clear of the route ahead (D10) | SOURCED | 3f03680c (the lead's check) | | |
+| 783-785 | S-9 a stone in water rises from it; check its bottom at or below the surface | MEASURED | 61085f91 (S-9 check holds 32/32) | | |
+| 790-792 | Easy pacing judged over 16 rolls by median and worst | SOURCED | D:1037 / R3 (single-roll noise); ES 790-791 states +-0.03, +-15 s | Noise numbers: no saved output | |
+| 792 | A third Easy-only rest after n3 if the median is still over 0.55 | MEASURED | 27345325 (Easy-only rest n3b) | | |
+
+## 14. Pacing rulings and the CP3 finish (ES 795-925)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 796 | (A) Easy own size bands, landings about 300 px; one fewer burst a node | DERIVED | w1mix:330 (EASY_BS = 1.35 x Normal's bands), dcb75adf | 1.35 x 220 = 297 px; 1.35 itself is OPEN: (i) LEG E105 / GE:173 (7.0 sloth widths on Easy intro) | |
+| 797 | Easy at 0.55 or less; "this line is not loosened" | SOURCED | SR §2 Pacing (ccr:173); GP:290 | Loosened at ES 892; see (b) C18 | |
+| 799 | (B) Normal: a 1.0-1.2 s pad after every second burst | SOURCED | GP:293; SR §2 Pacing (ccr:173) | D:49, D:188-193 and R3 W1 (R3:265) say a fixed pad cuts phrases; see (b) C2 | |
+| 799-800 | Normal's longest run without a rest no worse than main's 29 s | MEASURED | cp3/CP3-ROUND2.md:23 (main's 1-5: 29.3 s) | | |
+| 801-803 | (C) Normal density 0.80 vs main's 0.57 accepted provisional (§0 row 2) | MEASURED | cp3/CP3-ROUND2.md:23; D:47 (band not calibrated) | | |
+| 802-803 | Matt played the busier mixer 1-5: "It played much better" | MATT | MD:39-40 | | |
+| 804-806 | Bot fork stall not counted as dead time once traced | MEASURED | cp3/cp3-stuck.out; cp3/CP3-REBUILD.md:31-35 | | |
+| 809-810 | B passes: Normal longest run 23.9 s median, 30.5 worst vs 29.3; Easy density 0.54 median, 0.57 worst; Easy clock about 5:00; nothing new 2,094 px | MEASURED | dcb75adf | | |
+| 811-812 | (3) On Easy about 6 nodes keep the canopy, 3-4 drop it | OPEN | none | | (ii) measured after: b88f2ea2 (Easy splits 20) |
+| 813 | Kept canopies: fork neighbours and the node after a teach or test | OPEN | none | | (i) GV:69 (portal at the Ten) |
+| 814-818 | Easy lines: splits >= 19, density <= 0.55, run <= 20 s, nothing new <= 1,516 px, fast clock < 4:00 | MEASURED | cp3/cp3-splits.txt; cp1/table2.txt:2 (1,516); 4:00 is the designer's (withdrawn ES 831) | | |
+| 819 | Easy high-road boughs keep Normal's bands (the road is optional) | OPEN | none | | (i) SR §1b "Easy is gentler, never empty" (ccr:135-137) |
+| 820-822 | No breather pads on fork roads | MEASURED | b88f2ea2 (bot stall at the road-end breather) | | |
+| 826-829 | (i) Fork marks on the shared ground | MEASURED | 14ff1727 | | |
+| 829 | Goal stays 10 of 13 Normal, 8 Easy | OPEN | none | as ES 462 | as ES 462 |
+| 830-831 | Easy clock 4:21-4:33 accepted; Matt's 2:00 floor, no cap | MATT | MD:45-47 | 4:21-4:33 measured in b88f2ea2 run | |
+| 831-832 | The 20% spread judged on Normal's quick clock | OPEN | none | | as ES 667 |
+| 833-834 | S-9: stepping stone <= 50 px above the water; taller ones are stumps | OPEN | none | | (ii) stills |
+| 836-838 | Stones stay in 1-5 on ground ("more pieces") | MATT | CLAUDE.md "Variety comes from more pieces" | | |
+| 851-852 | 18/18 variety lines; 32/32 level checks; bots 4/4 | MEASURED | 14ff1727 | | |
+| 854-857 | Easy density 0.60 calibrated on old 1-1 Easy | MEASURED | cp3/old11-main-pace16.txt | | |
+| 861-863 | Deep pits: dark follows the bank faces then fades over about 300 px; to Matt | OPEN | none | | Matt's pick (cp3/pit-fade-choice on ccr) |
+| 868-871 | Old 1-1 Easy density median 0.575 (0.53-0.66), longest run 25-119 s; new 1-5 0.61 / 0.63, 17-18 s | MEASURED | cp3/old11-main-pace16.txt (16 rolls); 213cbc4b | | |
+| 875 | Double breather adds about a minute (Easy about 5:20) | OPEN | none | Not run | (ii) build it once and clock it |
+| 877-878 | (a) double breather about 0.52; (b) keep 0.61 (designer's pick) | OPEN | none | (a)'s 0.52 not measured | (ii) as above; then Matt's pick |
+| 881-882 | Two-road worst 38.5%; B's pads added about 4,000 px of single road; catch branches 0.003; fork-bank pad about 1% | MEASURED | designer's trace on d27c5acd (no saved output) | | |
+| 883-884 | Canopy end piece is the rest: 520-560 px flat, then a short step | MEASURED | b7c38491 | | |
+| 885 | Two-road >= 40% every roll; Normal longest run <= 29 s | MEASURED | b7c38491 (41.1-44.6%; 14.9 / 19.2 s) | | |
+| 888-892 | Easy accepted at 0.61 / 0.63; line becomes "no denser than the old 1-1's Easy range" | MEASURED | cp3/old11-main-pace16.txt | Changes a written line without Matt's recorded yes; (b) C18 | |
+| 893-894 | No tuning until Matt has played and given his meter reading | MATT | ST:966-967 | | |
+| 899-908 | CP3 READY numbers: two-road 41-45%, longest run 14.9/19.2 s, 18/18, splits 26/20, creaky 20-25%, biggest idea 29-36%, 32/32, draw check, bots 4/4 with 13/13 | MEASURED | b7c38491; cp3/ (pace16l.jsonl, stills-v9) | | |
+| 909 | Normal clock 4:00-4:12 accepted | MEASURED | b7c38491 run | | |
+| 910-912 | Trunk density: six near-identical trunks a screen; fix: share within 220 px, <= about 3 full trunks a screen, side branches | MEASURED | cp3/stills-v9/ (six trunks); 220 / 3 are OPEN (ES 930-934) | | |
+| 914-920 | Matt's stills at 6 places, upright and sideways | SOURCED | CLAUDE.md "Done means polished"; LAWS 2 | | |
+| 922 | Each pair checked against P-1 to P-7; a failing still is fixed, not explained | SOURCED | LAWS 1 | | |
+| 924-925 | No HF spend; a small picture list if a gap shows | MATT | CLAUDE.md HF rule | | |
