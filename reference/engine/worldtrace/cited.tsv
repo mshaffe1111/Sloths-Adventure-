@@ -1,0 +1,30 @@
+LEDGER-2026-11-02-full.md:24	Y	Each stage is built around one named mechanic pair as its identity; no two stages of a world share pair plus direction	PARTIAL §critic ruling 4 L1795: per-stage 'pair' field added; no rule that no two stages of a world share pair plus direction
+LEDGER-2026-11-02-full.md:33	Y	A pair counts only when both mechanics act on the same beat, not merely both present in the stage	§critic ruling 4 L1795
+LEDGER-2026-11-02-full.md:54	Y	Every node and stage tags its direction (across, up, down); each pair used in two directions; each world has a going-down stretch	PARTIAL L1795,L1837,L1840: map field, neighbours differ in camera direction, world fingerprint of camera directions; no node direction tag, pair-in-two-directions, per-world down stretch
+LEDGER-2026-11-02-full.md:62	Y	Each world slot has its own camera direction, density and thinking mode; nine stages sharing them feel the same	PARTIAL §critic ruling 4 L1795; L1806,L1837: slot roles X-1..X-9 and neighbour tempo/camera; no per-slot density or thinking mode
+LEDGER-2026-11-02-full.md:78	Y	Finale is a 15-20 s dense group of everything the stage taught, ending at the exit	§critic ruling 4 L1795
+LEDGER-2026-11-02-full.md:86	Y	Density climbs through the four parts: low at the start, densest group in the last quarter	PARTIAL L1795,L2040,L1834: safe part 1, four steps, dense finale; no in-stage density-climbs-by-part check
+LEDGER-2026-11-02-full.md:144	Y	Difficulty is felt through checkpoint spacing: at most 1-2 hard groups between flags, back at the hard part within 2 s	§C10 L1757; G L1847
+LEDGER-2026-11-02-full.md:203	Y	Rhythm groups of 5/10/15/20 s; density low/medium/high by part; stage band kept as the average	PARTIAL G L1835: groups of 5/10/15/20 s by time; no per-part low/medium/high density with stage band as average
+LEDGER-2026-11-02-full.md:204	Y	The finale ends at the exit: walk-out at most about 3 s, or none	PARTIAL §critic ruling 4 L1795: finale at exit, not a cool-down; no ≤3 s walk-out number; L2186 1-1 data still lays a cool-down
+LEDGER-2026-11-02-full.md:208	Y	A pair is an interaction inside one beat, not two things present anywhere	§critic ruling 4 L1795
+LEDGER-2026-11-02-full.md:330	Y	Groups never run into each other: a rest with no hard input between every two	PARTIAL C2 L1749; G L1835: rest defined as ≥2× local median beat; no rest required between every two groups
+LEDGER-2026-11-02-full.md:331	Y	Every 3-5 minute stage is a four-act showcase for ONE specific mechanic pair	§M1 L2040; critic ruling 4 L1795
+LEDGER-2026-11-02-full.md:332	Y	The four-part plan on all 90 non-boss stages, each under 5 minutes	§M1 L2040; G L1852; P4 L2000
+LEDGER-2026-11-02-full.md:343	Y	A short recovery, then a 15-20 s dense group of everything taught, ending at the exit	§critic ruling 4 L1795
+LEDGER-2026-11-02-full.md:344	Y	The finale empowers because the timing was taught; a quick ending into the next stage	§critic ruling 4 L1795
+LEDGER-2026-11-02-full.md:350	Y	A world feels repetitive if its stages share tempo, camera direction and thinking load	PARTIAL G L1837: neighbours must not share tempo and camera direction; no thinking load
+LEDGER-2026-11-02-full.md:388	Y	W1 in bright daylight with generous safety floors	§Difficulty dial L651; §C8 L1755
+LEDGER-2026-11-02-full.md:427	Y	Difficulty is felt through checkpoint spacing: how many groups you replay after a death	§C10 L1757; G L1847
+LEDGER-2026-11-02-full.md:430	Y	Checkpoints on the rests just before the twist and the finale	§Placement rule 3 L296-297; §1-5 plan L345,L350
+LEDGER-2026-11-02-full.md:439	Y	Tier 3 at the top of the hardest twist or finale group, proven reachable by a test	§Placement rule 4 L306-312
+LEDGER-2026-11-04-part1.md:18	Y	Every stage gets a map shape (loop-back, high/low split, chimney, spoke); a replay never repeats the last shape	PARTIAL §critic ruling 4 L1795: map field per stage; no replay last-shape exclusion
+LEDGER-2026-11-04-part1.md:210	Y	Rest is one tag placed by the grammar (always after Tight), not a rest after every group (stop-go sameness)	CONTRADICTED L503: Easy breather between every node stands, unmarked; no never-T-then-T rule
+LEDGER-2026-11-04-part1.md:314	Y	Skeleton: start, intro, halfway rest with wayside line, climax, goal	§1-5 node plan L339-351, §1-1 table L1063-1075
+LEDGER-2026-11-04-part1.md:315	Y	Graph-rewriting turns the middle into one of the map shapes	PARTIAL L1795: map shapes named; no graph-rewriting
+LEDGER-2026-11-04-part1.md:316	Y	Over-under loop-back: bottom left-to-right, shaft up, top right-to-left above the start, drop to exit	PARTIAL L1795: loop-back named; no layout definition
+LEDGER-2026-11-04-part1.md:317	Y	High/low split at node 2: upper harder with collectible, lower puzzle/water; rejoin	§1-5 node plan L344, L350, §Placement rule 4 L306, §CP2 L81
+LEDGER-2026-11-04-part2.md:113	Y	Roll a map shape per stage (linear, loopback, high/low split, chimney, hub for search); neighbours never share a shape	§Critic ruling 4 L1795
+LEDGER-2026-11-04-part2.md:175	Y	C3: Levenshtein over 55% against N-1..N-7 rejects; ours cosine 0.55/0.45 and only flags	§Critic ruling 1 L1792
+LEDGER-ENGINE-GEMINI.md:465	Y	Diagnosis: move-level variety converges on white noise; every 30 s window has the same mix, direction and pace.	PARTIAL §Critic 1 L1792, 4 L1795; per-roll L2102-2116: roll tempo, map and tension added; no within-stage window-mix check
+LEDGER-ENGINE-GEMINI.md:479	Y	Kishotenketsu: one mechanic introduced, combined, twisted, mastered.	§Move ladder M1 L2040
