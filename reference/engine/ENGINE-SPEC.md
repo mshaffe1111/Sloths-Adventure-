@@ -180,7 +180,7 @@ Every idea is the same idea on Easy; only its numbers soften. On Easy:
 - no rise is more than **+40 px** onto a landing narrower than 220 px;
 - a landing after a rise of +40 is at least **110 px** wide;
 - a rise of +50 to +70 stays allowed only onto a landing of 220 px or more.
-- **[re-trace, `cp2/cp2-trace-easyfix.out`]** a rise of +35 to +40 has a gap of at most 80 px (at 90 px a flick gets 298 ms, just under
+- **[re-trace, `cp2/cp2-trace-easyfix.out`]** a rise of **+30 or more** has a gap of at most 80 px (widened from +35 after the bridge-span trace, `cp2/cp2-trace-yes4.out`) (at 90 px a flick gets 298 ms, just under
   300). With this clause the Easy bough stair (250 px in seven steps) and stump hop pass every cell measured.
 
 This fixes bough stair (flicks 246-281 ms against Easy's 300 ms floor at +50 to +70) and stump hop step 1 (+50 onto a 60 px stone)
@@ -219,6 +219,14 @@ So both ideas are marked **not ready**, and they change as follows:
 - **Boa on Normal:** a clear rear-up tell, with a flat run-up of at least one screen's width to read it.
 - **Turtle line:** at most 2 turtles in a line on Easy (3 on Normal), with the shell kick taught in the validate step.
 - **Pass line, re-run in CP3:** past each animal with at most one heart lost, adult on Normal and kid on Easy.
+
+
+**[designer, 11-05 ~12:38 AM ET] The four YES ideas are proven** (`cp2/cp2-trace-yes4.out`, `cp2-push.out`): crumbling ledge, reed
+isles, bridge span and push block pass on Normal and Easy, the bridge span under the widened Easy gap clause. They join 1-5's pool for
+CP3.
+- **Crumbling ledge:** a first-timer who pauses on a tile has about 0.3 s spare at crumbleAfter 0.7 s. So on Easy a crumbling tile
+  waits **1.0 s**, and every crumbling ledge comes after its teach (a single tile over safe ground). CP3's first-timer run checks a
+  pause.
 
 ### CP3: the mixer, proven on the worst stage first (1-5) (owner: designer specs the mix rule, planner builds and runs)
 - **The mix rule (designer), [Matt, 11-05] ideas first, pieces inside an idea.**
