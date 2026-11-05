@@ -10,7 +10,8 @@
 //               3-gram cosine over RULES.cosine (analyze.ts cosine) or a 20 s stretch closer than LOOK.alike (lookalike.ts looksAlike)
 //   tests       the stage's own test file (src/game/stage<w><m>.test.ts), run as the suite runs it
 //   stage lines engine-runs' own measures called as they are: dump.ts -> layout.py (per view), support.py (float), ideas.py, measure2.py
-// Not in this step: stills and the stage map; the report names them NOT RUN.
+//   stills      a dev build, served, and engine-runs' stills-at.mjs (layout 1, Normal, both ways) at the start, forks, double teach, seed, end
+// Not in this step: the stage map (no tool exists); the report names it NOT RUN.
 // Exit 1 on any FAIL.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -113,9 +114,23 @@ if (ref?.view) {
     if (ref.upDownMin !== undefined) shown.push(line(`${set} landings up or down`, Math.round(((up + down) / (up + flat + down)) * 1000) / 1000, (x) => x >= ref.upDownMin!, `>= ${ref.upDownMin}`));
     if (ref.newEveryPxMax !== undefined) shown.push(line(`${set} something new every (px, mean)`, num(mrow, /newMeanPx=(\d+)/), (x) => x <= ref.newEveryPxMax!, `<= ${ref.newEveryPxMax}`));
   }
+  // (two lines no engine-runs tool prints, computed from the same dump: CP1's kinds (measure2.py kind) and the mixer's own idea order)
+  type DP = { type: string; style?: string; soil: boolean };
+  const rows: Array<{ setting: string; platforms: DP[]; mix?: Array<{ idea: string; job: string }> }> = JSON.parse(fs.readFileSync(dumpFile, 'utf8')).filter((r: { error?: string }) => !r.error);
+  for (const set of ['normal', 'easy']) {
+    const rs = rows.filter((r) => r.setting === set);
+    if (ref.boughShareMax !== undefined) {
+      const share = rs.map((r) => { const L = r.platforms.filter((q) => !q.soil); return L.filter((q) => q.type === 'fragile' || (q.style === 'branch' && q.type !== 'bouncy')).length / Math.max(1, L.length); }).sort((a, b) => a - b);
+      const med = Math.round(share[Math.floor(share.length / 2)] * 1000) / 1000;
+      shown.push(line(`${set} boughs + creaky share of landings`, med, (x) => x <= ref.boughShareMax!, `<= ${ref.boughShareMax}`));
+    }
+    // (an idea laid twice in a row: two bursts back to back with the same idea; a fork's road pair counts as one entry)
+    const twice = rs.map((r) => (r.mix ?? []).filter((e, i, m) => i > 0 && e.idea === m[i - 1].idea).length);
+    const worst = Math.max(0, ...twice);
+    shown.push(line(`${set} ideas twice in a row (worst build)`, worst, (x) => x === 0, '0'));
+  }
   gate('stage lines (§E.2: per view, float, ideas, floor numbers)', bad);
   linesShown.push(...shown);
-  notMeasured.push('boughs + creaky share <= 25.3% (no engine-runs tool prints it)', 'no idea twice in a row (ideas.py prints the count, not the order)');
   fs.rmSync(tmp, { recursive: true, force: true });
 }
 
@@ -163,13 +178,46 @@ if (fs.existsSync(testFile)) {
   gate(`tests (${testFile})`, fails, t.status === 0);
 } else gate(`tests (${testFile})`, ['no test file for this stage'], false);
 
+// 7. stills: a dev build served here, engine-runs' stills-at.mjs called as it is, layout 1, Normal, upright and sideways, at the start, each
+// fork, the double teach, the golden seed and the end (the lead, 11-05: no stage reaches anyone without stills)
+const stillsDir = path.join(OUT, `${id}-stills`);
+const stillsDone: string[] = [];
+if (!process.argv.includes('--no-stills')) {
+  const st1 = buildRoll(cfg, 1) as unknown as { spawnX: number; exitTotemX: number; proto?: { beats: Array<[number, number, string]> }; collectibles: Array<{ type: string; x: number }> };
+  const beats = st1.proto?.beats ?? [];
+  const spots: Array<[string, number, string]> = [['start', st1.spawnX + 80, 'low']];
+  for (const b of beats) if (/fork/.test(b[2].split(':')[0]) && !/crossings/.test(b[2])) spots.push([`fork-${b[2].includes('high road') ? 'high' : 'low'}`, b[0] + 120, b[2].includes('high road') ? 'high' : 'low']);
+  const dbl = beats.find((b) => b[2].startsWith('teach double:'));
+  if (dbl) spots.push(['double-teach', dbl[0] + 60, 'low']);
+  const seed = st1.collectibles.find((c) => c.type === 'seed');
+  if (seed) spots.push(['golden-seed', seed.x - 100, 'low']);
+  spots.push(['end', st1.exitTotemX - 200, 'low']);
+  const dist = fs.mkdtempSync('/tmp/stage-dist-');
+  spawnSync('npx', ['vite', 'build', '--outDir', dist], { encoding: 'utf8', env: { ...process.env, NODE_ENV: 'development' } });
+  if (!fs.existsSync(path.join(dist, 'index.html'))) gate('stills', ['the dev build made no index.html'], false);
+  else {
+    const port = 4700 + Math.floor(Math.random() * 200);
+    const server = (await import('node:child_process')).spawn('python3', ['-m', 'http.server', String(port), '-d', dist], { stdio: 'ignore' });
+    await new Promise((r) => setTimeout(r, 1200));
+    fs.rmSync(stillsDir, { recursive: true, force: true });
+    const pw = process.env.PW ?? '/opt/node-tools/node_modules/playwright/index.mjs';
+    const shot = spawnSync('node', ['tools/engine/runs/stills-at.mjs', String(port), stillsDir, id, id, '1', ...spots.map(([, x, pick]) => `${Math.round(x)}:${pick}`)], { encoding: 'utf8', env: { ...process.env, PW: pw } });
+    server.kill();
+    const wrote = (shot.stdout ?? '').split('\n').filter((l) => l.startsWith('wrote')).length;
+    const errs = (shot.stdout ?? '').split('\n').filter((l) => l.startsWith('ERR'));
+    for (const [name, x] of spots) stillsDone.push(`${name}: x ${Math.round(x)}`);
+    gate(`stills (${wrote} of ${spots.length * 2}, layout 1 Normal, upright and sideways, in ${stillsDir})`, [...(wrote === spots.length * 2 ? [] : [`${wrote} of ${spots.length * 2} written`]), ...errs]);
+  }
+  fs.rmSync(dist, { recursive: true, force: true });
+}
+
 // the report
-const notRun = ['stills (upright and sideways)', 'stage map', ...notMeasured];
+const notRun = [...(process.argv.includes('--no-stills') ? ['stills (--no-stills)'] : []), 'stage map (no tool exists)', ...notMeasured];
 const md = [`# ${id} ${spec.name}: stage report`, '', `\`npx tsx tools/engine/stage.ts ${id} --layouts ${N} --neighbours ${NB}\`, ${new Date().toISOString()}`, '',
   '| Gate | Result | Detail |', '|---|---|---|',
   ...gates.map((g) => `| ${g.name} | ${g.pass ? 'PASS' : '**FAIL**'} | ${g.detail.slice(0, 6).join('; ').replace(/\|/g, '/') || '-'}${g.detail.length > 6 ? `; and ${g.detail.length - 6} more` : ''} |`),
   ...notRun.map((n) => `| ${n} | NOT RUN | not in stage.ts yet |`), '',
-  '## Stage lines, measured (engine-runs tools)', '', ...linesShown.map((l) => `- ${l}`), '', '## Neighbours, closest', '', ...nbClosest.map((l) => `- ${l}`), '', '## Live neighbours, reported not judged (shrink-only known list, R-165.47)', '', ...(nbKnown.length ? nbKnown.map((l) => `- ${l}`) : ['- none failing']), ''].join('\n');
+  '## Stills', '', 'Judge them by eye, upright and sideways, before the stage is done: a PASS here means only that they were shot.', '', ...stillsDone.map((l) => `- ${l}`), '', '## Stage lines, measured (engine-runs tools)', '', ...linesShown.map((l) => `- ${l}`), '', '## Neighbours, closest', '', ...nbClosest.map((l) => `- ${l}`), '', '## Live neighbours, reported not judged (shrink-only known list, R-165.47)', '', ...(nbKnown.length ? nbKnown.map((l) => `- ${l}`) : ['- none failing']), ''].join('\n');
 fs.mkdirSync(OUT, { recursive: true });
 const file = path.join(OUT, `${id}.md`);
 fs.writeFileSync(file, md + '\n');

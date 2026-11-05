@@ -14,6 +14,8 @@ export interface PassLines {
   floatMax?: number;
   view?: { pickupsUpright: number; pickupsSideways: number; hazardKinds: number; standingKinds: number; upperHalfMin: number };
   ideasMin?: number;
+  /** boughs and creaky pieces (catch branches count) as a share of the landings, median over builds */
+  boughShareMax?: number;
   upDownMin?: number;
   newEveryPxMax?: number;
   source: string;
@@ -22,7 +24,7 @@ export const REFERENCE: Readonly<Record<string, PassLines>> = {
   '1-1': {
     splitsMin: 34, twoRoadMin: 0.61, floatMax: 0.253,
     view: { pickupsUpright: 4, pickupsSideways: 7, hazardKinds: 0, standingKinds: 4, upperHalfMin: 0.98 },
-    ideasMin: 4, upDownMin: 0.8, newEveryPxMax: 572,
+    ideasMin: 4, upDownMin: 0.8, newEveryPxMax: 572, boughShareMax: 0.253,
     source: "old 1-1 on main, medians over 16 layouts x 2 (engine-runs out/old12/layout.txt; ENGINE-SPEC '1-1 for the builder' §E.2)",
   },
 };
