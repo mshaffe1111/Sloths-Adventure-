@@ -255,3 +255,7 @@ Every section's versions differ in kinds or order, never only in sizes. All of t
 - #44 and #45 are both "the double chain" moment the brief names (1-1.md:21-22), each in a new form. Neither adds a beat.
 - No animals, ropes, creaky limbs or water appear (the brief's `not`).
 - The petals stay low on every low road (1-1.md:26-27).
+
+**The supervisor's story check, round 4: PASS (6:40 PM). Its two notes are applied:**
+- #44, #45 and #10 (the three signatures) are **`feel: ['1-1']` ONLY**. Each is the brief's one double-chain moment, unique in the game (§1; R1 L6), so no other stage draws them. Exactly one per roll (V6).
+- #42's leftward leg is **at most about one screen** (≤ 800 px). Onward and to the right is north (the lead's ruling), so a long walk back would read as going backwards.
