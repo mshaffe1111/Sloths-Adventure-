@@ -181,6 +181,8 @@ export interface ProtoExtras {
   w3decor?: import('./w3Art.ts').W3Decor[];
   /** Matt's World 3 and 4 puzzle sheets set in as dressing once the stage is built (artDress.ts): pictures only */
   kitDecor?: import('./puzzleArt.ts').KitDecor[];
+  /** far-off twinkles, dressing only (the mixer's 1-5 n9: "Something shiny, far away"), engine.ts drawGlint */
+  glints?: Array<{ x: number; y: number }>;
   /** Worlds 1, 2 and 5: the bank, hanging and clutter sets (artDress.ts dressSets; pictures only) */
   dress?: import('./dressArt.ts').DressPiece[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */

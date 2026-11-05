@@ -81,7 +81,14 @@ interface Lay {
   pid: number;
   cid: number;
   easy: boolean;
+  /** how the last canopy was entered, and how many mushrooms the stage has (the designer's review D: no more than the old 1-1's) */
+  entry?: Entry;
+  mushrooms: number;
+  glints: Array<{ x: number; y: number }>;
 }
+type Entry = 'mushroom' | 'vine' | 'step';
+/** the old 1-1's mushrooms, median over its 16 layouts (cp1-old.json) */
+const MUSHROOM_CAP = 14;
 /** where the way is: the end of the last piece laid, its top, and the kind of piece it was */
 interface Cursor { x: number; y: number }
 
@@ -149,7 +156,7 @@ function petalsOver(L: Lay, from: number) {
 /** the middle-most of these pieces with nothing over it for 110 px (a mark on it is never inside a piece above), on the walking road:
  *  never a canopy's bough or perch, which only a bounce reaches (a first-timer on the floor met a sealed door, cp3-ft after the rebuild) */
 function clearPiece(L: Lay, ps: Platform[]): Platform | undefined {
-  const road = ps.filter((p) => !(p as { bough?: boolean }).bough && !(p as { perch?: boolean }).perch);
+  const road = ps.filter((p) => !(p as { bough?: boolean }).bough && !(p as { perch?: boolean }).perch && !(p as { crossing?: boolean }).crossing);
   const mid = road.length >> 1;
   const order = road.map((p, i) => [Math.abs(i - mid), p] as const).sort((a, b) => a[0] - b[0]).map(([, p]) => p);
   return order.find((p) => p.type !== 'bouncy' && !L.P.some((q) => q !== p && q.x < p.x + p.width / 2 + 40 && q.x + q.width > p.x + p.width / 2 - 40 && q.y < p.y && p.y - q.y < 110));
@@ -226,7 +233,8 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
       plat(L, 'creaky', bank.x + 690, bank.y - 60, 130);
       return { x: bank.x + bank.width, y: bank.y };
     }
-    case 'snap dash': return burst(L, c, R, ['creaky', 'branch'], n);
+    // (the test of n2's teach in its full form (the designer's review B): six pieces, three of them creaky, every gap a real one)
+    case 'snap dash': return burst(L, c, R, ['creaky', 'branch'], 6);
     case 'bounce up': {
       // (the old 1-1's highRoad: a mushroom on the ground, branches 170-200 px over it, proven there)
       const pad = step(L, c, R, 'bank', 300);
@@ -270,9 +278,10 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     case 'push block': throw new Error('push block is out of 1-5 for CP3 (the designer\'s ruling)');
     case 'bough stair':
       // (CP2, with Easy's rule: Normal steps +50 to +70; Easy +30 to +40, gaps 80 or less: easyFit and the gate cap them)
-      // (with a bridge as its third kind, for the gate's "something new": branch and log alone, two sizes each, repeat inside 5 pieces)
-      return burst(L, c, R, ['branch', 'log', 'bridge'], n, L.easy ? [30, 40] : [50, 60, 70]);
-    case 'bridge span': return burst(L, c, R, ['bridge', 'branch'], n, [30, -30, 40, -40]);
+      // (the bridge only as the stair's top piece, a short rope bridge from the last bough on (the designer's ruling 4))
+      return burst(L, burst(L, c, R, ['branch', 'log'], n - 1, L.easy ? [30, 40] : [50, 60, 70]), R, ['bridge'], 1, [30, -30]);
+    // (rope bridges with creaky limbs between them: creaky shows on n10's high road (the designer's review E))
+    case 'bridge span': return burst(L, c, R, ['bridge', 'creaky'], n, [30, -30, 40, -40]);
   }
 }
 
@@ -301,11 +310,36 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
   for (let s = 0; s < 3; s++) {
     // (the host is a medium piece, 240-290 px, never long like the stretch's end piece; it steps up 30-50 or down 70, and the floor after it steps down 30-40: the perch, 46 px over the host, then never sits
     // within 20 px of a piece beside it, so no landing next to it is flat)
-    burst(L, e, R, [fk.host], 1, [30, 40, 50, -70], undefined, Math.min(290, Math.round(R.r(240, 280) * L.wScale)));
+    // (the designer's review D: each canopy is entered a different way from the one before, by a mushroom, a climb vine or a bough
+    // step, and the stage has no more mushrooms than the old 1-1)
+    const ways = (['mushroom', 'vine', 'step'] as Entry[]).filter((w) => w !== L.entry && (w !== 'mushroom' || L.mushrooms < MUSHROOM_CAP));
+    const way = R.pick(ways);
+    L.entry = way;
+    // (a step entry's host never steps down 70: the step, 80 px over it, would sit flat with the piece before)
+    burst(L, e, R, [fk.host], 1, way === 'step' ? [30, 40, 50] : [30, 40, 50, -70], undefined, Math.min(290, Math.round(R.r(240, 280) * L.wScale)));
     const host = L.P[L.P.length - 1];
-    const perch = plat(L, 'branch', host.x + 105, host.y - 46, 80);
-    (perch as Platform & { perch?: boolean }).perch = true;
-    plat(L, 'mushroom', host.x + 110, perch.y - 30, 70);
+    let bx = host.x + 160;
+    let entryY: number | undefined;
+    if (way === 'mushroom') {
+      // (on a perch 46 px over the floor, beside the lane: walking on passes under it, and only a hop onto it bounces him up)
+      const perch = plat(L, 'branch', host.x + 105, host.y - 46, 80);
+      (perch as Platform & { perch?: boolean }).perch = true;
+      plat(L, 'mushroom', host.x + 110, perch.y - 30, 70);
+      L.mushrooms++;
+    } else if (way === 'vine') {
+      // (a climbing vine from the host up to the first bough's left end, as "the climb" lays it (CP2 cp2-climb.out); walking past a vine
+      // never grabs it, only up does)
+      const vx = host.x + 150;
+      entryY = host.y - 175;
+      L.V.push({ id: -1, x: vx, topY: entryY - 30, bottomY: host.y, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as Vine);
+      bx = vx + 13;
+    } else {
+      // (a short bough 80 px over the host, one hop up, and the canopy one more hop over it: a bough stair of two steps)
+      const st = plat(L, 'branch', host.x + 90, host.y - 80, 110);
+      (st as Platform & { perch?: boolean }).perch = true;
+      entryY = host.y - 155;
+      bx = st.x + st.width + 40;
+    }
     // (the floor stays within 40 px of the host's height under the canopy, so the boughs fit both limits)
     const save = band;
     band = { yMin: host.y, yMax: host.y + 40 };
@@ -321,16 +355,18 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     // (the boughs end 90 px into the stretch's last floor piece, a long one: a running jump off their end carries about 240 px, and
     // lands on that floor, never in the gap past it (cp3-ft: the adult's pit lives after the first rebuild))
     const xEnd = last.x + 90;
-    const by = Math.round(Math.max(band.yMin, Math.min(band.yMax, hi - R.r(150, 175))));
+    const by = entryY ?? Math.round(Math.max(band.yMin, Math.min(band.yMax, hi - R.r(150, 175))));
     // (boughs at the dial's typical landing, 170-240 px; not widened on Easy, where the high road is the optional one and wider boughs
     // all fell in one size band, which broke the gate's "something new")
     const bw = () => Math.round(R.r(170, 240));
-    const b0 = plat(L, s === 1 ? 'bridge' : 'branch', host.x + 160, by, bw());
+    const b0 = plat(L, s === 1 ? 'bridge' : 'branch', bx, by, bw());
     let bc: Cursor = { x: b0.x + b0.width, y: by };
     // (the boughs step between the band's top and bottom, 50 px or more apart, so no two sit flat)
     for (let guard = 0; guard < 6 && bc.x < xEnd - 140; guard++) {
       const to = bc.y > (band.yMin + band.yMax) / 2 ? band.yMin : band.yMax;
-      bc = burst(L, bc, R, [s === 1 ? 'branch' : 'bridge'], 1, [bc.y - to], undefined, bw());
+      // (the second bough of each canopy is a creaky limb: the stage's theme (the designer's review E), over floor, so a snap drops him
+      // onto the low road, never into a pit)
+      bc = burst(L, bc, R, [bc.x === b0.x + b0.width ? 'creaky' : s === 1 ? 'branch' : 'bridge'], 1, [bc.y - to], undefined, bw());
     }
     // (the last bough ends over the floor: trimmed back to 90 px into it, never under 100 px)
     for (const q of L.P.slice(L.P.indexOf(b0))) (q as Platform & { bough?: boolean }).bough = true;
@@ -340,6 +376,42 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     e = end;
   }
   return e;
+}
+
+/**
+ * A fork's crossings (the designer's ruling 1 on the CP3 rebuild): a step-down halfway along the high road, a middle ledge in one of its
+ * gaps over the low road, so a player who wants the low road drops twice (each under 220 px, inside LONG_FALL with a jump), and later a
+ * climbing vine from the low road up to the start of a high-road piece. Each is placed only where the two roads line up for it; what
+ * could not be placed is written to `explain`.
+ */
+function crossings(L: Lay, hi: Platform[], lo: Platform[], job: string) {
+  const mid = (hi[0].x + hi[hi.length - 1].x + hi[hi.length - 1].width) / 2;
+  const downs: Array<{ H: Platform; W: Platform; d: number }> = [];
+  for (let k = 0; k + 1 < hi.length; k++) {
+    const H = hi[k], end = H.x + H.width;
+    if (H.x + H.width > mid + 1500) break;
+    for (const W of lo) if (W.x <= end + 20 && W.x + W.width >= end + 170 && W.y - H.y >= 200 && W.y - H.y <= 440) downs.push({ H, W, d: Math.abs(end - mid) });
+  }
+  downs.sort((a, b) => a.d - b.d);
+  const dn = downs[0];
+  let made = '';
+  if (dn) {
+    const m = plat(L, 'stone', dn.H.x + dn.H.width + 10, Math.round((dn.H.y + dn.W.y) / 2), 130);
+    (m as Platform & { crossing?: boolean }).crossing = true;
+    made += 'step-down';
+  }
+  const ups: Array<{ H: Platform; W: Platform; d: number }> = [];
+  for (const H of hi) {
+    if (H.x < mid + 300) continue;
+    for (const W of lo) if (H.x >= W.x + 60 && H.x <= W.x + W.width - 20 && W.y - H.y >= 170 && W.y - H.y <= 440) ups.push({ H, W, d: H.x - mid });
+  }
+  ups.sort((a, b) => a.d - b.d);
+  const up = ups[0];
+  if (up) {
+    L.V.push({ id: -1, x: up.H.x - 2, topY: up.H.y - 30, bottomY: up.W.y, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as Vine);
+    made += (made ? ' + ' : '') + 'climb up';
+  }
+  L.explain.push({ node: -1, job, idea: `crossings: ${made || 'none could be placed'}`, x0: Math.round(mid), x1: Math.round(mid), why: 'the designer\'s ruling 1 on the CP3 rebuild' });
 }
 
 /**
@@ -354,7 +426,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   // (Easy's wider landings come from the engine's own Easy pass, easyMode.ts easyStage, which widens a ledge by its jump; the mixer widening
   // them too doubled it and pushed medium pieces into long, which broke the gate's "something new". Measured after that pass)
   const wScale = 1;
-  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, dial: d };
+  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, dial: d, mushrooms: 0, glints: [] };
   // (the highest rise the gate allows: the largest step up a plain jump makes across a real gap, measured with the gate itself)
   let maxRise = 0;
   for (let dy = 10; dy <= 200; dy += 5) if (gateGap(L, 800, { y: 800 - dy, height: 24, type: 'solid' }, dy) >= MIN_GAP + 10) maxRise = dy;
@@ -381,8 +453,8 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     const from = L.P.length;
     if (Array.isArray(n.deck)) {
       // (the designer's ruling (a), CP3: a node lays its bursts from its deck, never the same idea twice in a row; the dial sets how
-      // many. The first is the node's own idea; the rest are floor ideas with a canopy over them (ruling 1 on the CP3 miss), or the
-      // teach's bank hops. Rest lays one; so do the warm-up and the cool down, under a canopy)
+      // many. Every burst comes from the node's own deck (the teach pairs with bank hops); a floor idea carries a canopy (ruling 1 on the
+      // CP3 miss). Rest lays one; so do the warm-up and the cool down, under a canopy)
       // (the warm-up lays one too, so the first hard node starts inside LV-9's first 4,000 px and the stage's second flag stands before
       // it, never on the warm-up's easy ground: placement rule 3, the designer's ruling 3 on the CP3 miss. For the designer to confirm)
       const one = n.job === 'rest' || n.job === 'cool down' || n.job === 'warm-up';
@@ -392,10 +464,13 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       const laid: Idea[] = [];
       let last = lastIdea;
       for (let k = 0; k < bursts; k++) {
-        const own = n.deck.filter((d) => d !== last && !off.has(d));
-        const floors = FLOOR.filter((d) => d !== last && !laid.includes(d) && !off.has(d));
-        const cand: Idea[] = k === 0 ? (own.length ? own : n.deck.filter((d) => d !== last)) : n.job.startsWith('teach') ? ['bank hops'] : floors.length ? floors : FLOOR.filter((d) => d !== last);
-        const pick = R.pick(cand.length ? cand : n.deck);
+        // (the designer's review C: a node draws only from its own deck; the teach pairs with bank hops (ruling (a)). A node whose deck has
+        // nothing left that is not the idea just laid lays no more bursts)
+        const own = n.deck.filter((d) => d !== last && !off.has(d) && !laid.includes(d));
+        const cand: Idea[] = k === 0 ? (own.length ? own : n.deck.filter((d) => d !== last)) : n.job.startsWith('teach') ? ['bank hops'] : n.deck.filter((d) => d !== last && !laid.includes(d));
+        if (!cand.length) break;
+        const pick = R.pick(cand);
+        if (!n.deck.includes(pick) && !(n.job.startsWith('teach') && pick === 'bank hops')) throw new Error(`1-5 n${i + 1} drew ${pick}, not in its deck`);
         const bx = c.x;
         // (a floor idea outside a fork and the rest carries a canopy)
         const over = FLOOR.includes(pick) && n.job !== 'rest';
@@ -444,6 +519,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       petalsOver(L, lowFrom);
       // (Meeca's marks, the designer's ruling: one on each road; the high road's at its hardest spot, its middle piece)
       const hiPs = L.P.slice(forkFrom, lowFrom), loPs = L.P.slice(lowFrom, L.P.length - 1);
+      crossings(L, hiPs.filter((q) => q.type !== 'bouncy'), loPs.filter((q) => q.type !== 'bouncy'), n.job);
       const hm = clearPiece(L, hiPs), lm = clearPiece(L, loPs);
       if (hm) forkMarks.push({ x: hm.x + hm.width / 2, y: hm.y });
       if (lm) forkMarks.push({ x: lm.x + lm.width / 2, y: lm.y });
@@ -453,7 +529,12 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     // one of Meeca's marks in each non-fork node, on the main route, on a piece the idea laid (its middle one)
     if (Array.isArray(n.deck)) { const m = clearPiece(L, L.P.slice(from)); if (m) L.marks.push({ x: m.x + m.width / 2, y: m.y }); }
     // (n9's golden seed: the designer's ruling (b), CP3: no seed on 1-5; Dot's line plays here, the seed waits for the stage that teaches
-    // the glide. The far-off glint, dressing only, is a separate small piece still to draw)
+    // the glide. The far-off glint is dressing only: a twinkle 420 px over the node's highest piece, out of every jump's reach)
+    if (n.seed) {
+      const ps = L.P.slice(from);
+      const top = Math.min(...ps.map((q) => q.y));
+      L.glints.push({ x: Math.round((x0 + c.x) / 2), y: Math.max(40, top - 420) });
+    }
     if (n.heartAfter && !easy) L.C.push({ id: L.cid++, type: 'heart', x: c.x + 40, y: c.y - 60, collected: false, bobPhase: 0 } as Collectible);
   });
   const end = step(L, c, rngFor(seed, '1-5 end'), 'bank', 640);
@@ -510,15 +591,17 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   const width = end.x + end.width + 40;
   const height = Math.max(...L.P.map((p) => p.y + p.height)) + 120;
   const nMarks = L.marks.length;
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: height, targetCount: Math.max(1, Math.round(nMarks * (easy ? 0.65 : 0.85))) };
+  // (the marks goal, the designer's ruling 2: 10 of 13 on Normal and 8 of 13 on Easy, one miss of slack on a single route of 11)
+  const goalN = Math.min(nMarks, Math.round(nMarks * 10 / 13)), goalE = Math.min(nMarks, Math.round(nMarks * 8 / 13));
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: height, targetCount: Math.max(1, easy ? goalE : goalN) };
   const beats: Array<[number, number, string]> = L.explain.map((e) => [e.x0, e.x1, `${e.job}: ${e.idea}${e.road ? ` (${e.road} road)` : ''}`]);
   const stage = {
     config: cfg, trees: [], platforms: L.P, vines: L.V, ropes: [], enemies: [], boss: null, collectibles: L.C,
     spawnX: 100, spawnY: 460, exitTotemX: exit.x, exitTotemY: exit.y,
     checkpoints: L.flags.map((f) => ({ x: f.x, y: f.y, reached: false })).sort((a, b) => a.x - b.x),
-    easyGoal: Math.max(1, Math.round(nMarks * 0.65)), normalGoal: Math.max(1, Math.round(nMarks * 0.85)),
+    easyGoal: Math.max(1, goalE), normalGoal: Math.max(1, goalN),
     meta: { attempt: seed, chunks: L.explain.map((e) => e.idea), width, pieces: L.explain.map((e) => ({ k: `1-5 ${e.idea}`, x0: e.x0, x1: e.x1 })), mix: { explain: L.explain } },
-    proto: { hints: L.hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, ownPetals: true },
+    proto: { hints: L.hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, ownPetals: true, glints: L.glints },
   } as unknown as GeneratedStage & { proto: ProtoExtras };
   // (petals the shared judge can't reach come off: a petal over a gap between the canopy and the floor below it marks no jump anyone
   // makes. The level check names each one; only petals are taken off, never a mark, a heart or the exit)

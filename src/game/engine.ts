@@ -6610,6 +6610,8 @@ export class GameEngine {
         if (!drawCurtainArt(ctx, cv.x - 20, cv.y - 40, cv.w + 40, cv.h + 60, near)) drawLeafCover(ctx, cv, this.player.x, this.player.y - 30, this.gameTime);
       }
     }
+    // far-off twinkles (dressing only): a gold four-pointed star that breathes, and a faint glow under it; two paths a frame each
+    for (const g of this.proto?.glints ?? []) if (this.onScreen(g.x, g.y, 120)) this.drawGlint(ctx, g.x, g.y);
     // the boss's attacks go over him, so a warning is never hidden behind Pokey
     if (this.boss && !this.boss.defeated && this.hazards.length) drawHazards(ctx, this.hazards, this.gameTime);
     if (this.debugBoxes) this.drawHitboxes(ctx);
@@ -8402,6 +8404,28 @@ export class GameEngine {
     q.maxLife = p.maxLife;
     q.type = p.type;
     q.seed = p.seed ?? Math.random();
+  }
+
+  /** a far-off glint (protoStage.ts glints): a gold four-pointed star, its size breathing over 1.6 s, on a faint glow */
+  private drawGlint(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    const tw = 0.6 + 0.4 * Math.sin(this.gameTime * 3.9) ** 2;
+    ctx.save();
+    ctx.globalAlpha = 0.22 * tw;
+    ctx.fillStyle = '#ffe9a8';
+    ctx.beginPath();
+    ctx.arc(x, y, 26 * tw, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 0.95;
+    ctx.fillStyle = '#fff4c8';
+    const k = 18 * tw;
+    ctx.beginPath();
+    ctx.moveTo(x, y - k);
+    ctx.quadraticCurveTo(x, y, x + k, y);
+    ctx.quadraticCurveTo(x, y, x, y + k);
+    ctx.quadraticCurveTo(x, y, x - k, y);
+    ctx.quadraticCurveTo(x, y, x, y - k);
+    ctx.fill();
+    ctx.restore();
   }
 
   /** the painted hit spark (a brief glow and the star bursting into rays), `w` wide, and a few sparkles flying off it */
