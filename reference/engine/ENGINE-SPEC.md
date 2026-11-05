@@ -862,6 +862,21 @@ widens into a hard, stepped cave shape that reads as a hole cut out of the pictu
 down to where the end piece stops, then fades out over about 300 px so the forest shows, with no widening and no stepped edge. It changes
 every World 1 bank end, so it goes to Matt as one question with a before/after pair. Built only on his pick.
 
+
+**[designer, 11-05 ~5:50 AM ET] Easy density, measured on the old 1-1** (`cp3/old11-main-pace16.txt`; same inspector, 16 rolls, main):
+
+| | Easy density | Easy longest run without a 2 s rest |
+|---|---|---|
+| Old 1-1 | median 0.575, range 0.53-0.66 | 25-119 s |
+| New 1-5 | median 0.61, worst 0.63 | 17-18 s |
+
+The rule as written (old 1-1 at 0.60 or above, or else build the double breather) points to the double breather, since the old 1-1 is
+at 0.575. The trade is real, though: the double breather adds about a minute of walking for children (Easy about 5:20), while the new
+1-5 is already less dense than the old 1-1 on its worst roll and rests 4-6 times more often. The designer does not bend a written line
+quietly, so this goes to Matt as one question in the CP3 report, with the designer's pick:
+- (a) the double breather, about 0.52 and about 5:20;
+- (b) keep 0.61, within the old 1-1's own range, with far more rests. **This is the designer's pick.**
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
