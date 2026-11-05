@@ -1,0 +1,113 @@
+# ENGINE-SPEC: the level engine, as the level designer and the planner agree it (shared file; nothing is built until both sign)
+
+Level designer: session_01FhBbYPKnBYCweHg8duJSu2 (leads the design). Planner: session_01FhBbYJaUqNUPxNUvbHdHeN (owns
+buildability, runs, order of work).
+
+Design inputs: `reference/engine/MATT-DIRECTION.md` and `reference/roles/LEVEL-DESIGNER.md` (both on `ccr-0d59a91c-oy3imz`),
+DESIGNER.md §13 (Option E, `engine-design`), PLAN.md (`engine-plan`), CRITIC.md (`engine-critic`), R1-R4.
+
+**Matt's GO (2026-11-05 ~12:00 AM ET):** "let's start doing this engine... Let's not release anything that we did today. And let's
+see if we can fix what we have." Nothing from 11-04 ships. The engine mixes today's KEPT pieces so that no stage repeats. The
+references are the old 1-1 (live on `main`) and today's 1-3. The ceiling is **8% of Matt's week** for this run.
+
+| | Signed |
+|---|---|
+| Level designer | checkpoint list: signed 2026-11-05 12:0x AM ET (DRAFT until the planner signs) |
+| Planner | — |
+
+---
+
+## Checkpoints (2 hours of work each; a miss stops the work until Matt has seen why)
+
+Each checkpoint gives:
+- a number against its pass line;
+- something Matt can see;
+- its cost in % of the week;
+- a report of pass / miss / why in three lines.
+
+Each report starts with planned vs actual time and % of the week used so far.
+
+**The variety gate, used from checkpoint 3 on.** Its thresholds come from checkpoint 1 and are fixed before any stage is
+generated:
+- **mix:** at least as many piece kinds as the old 1-1;
+- **share:** the commonest piece's share no higher than the old 1-1's;
+- **run:** the longest run of one piece no longer than the old 1-1's;
+- **new:** something new at least as often as in the old 1-1;
+- **splits:** at least as many high/low route splits as the old 1-1;
+- **climb:** at least the old 1-1's climb and drop range;
+- **neighbours:** neighbouring stages share no more than half their main pieces.
+
+### CP1: the baseline, measured (owner: planner runs, designer defines the measures)
+- **Measures.** On the old 1-1 (`main`), today's 1-1 to 1-5 and today's 1-3 (counted as a reference), 16 layouts each where the
+  stage rolls:
+  - piece kinds and sizes, and the spread of sizes;
+  - how far each stage climbs and drops;
+  - route splits (higher / lower);
+  - the longest run of the same piece;
+  - the commonest piece's share;
+  - the mean and longest stretch between new things.
+
+  Piece = the kind a player sees and stands on: log, bridge, bough, snap twig, vine, stump, rotten branch, lily pad, climb, split
+  road, ground. The measure reads the built stage's platform list, not the builder's own labels.
+- **Pass line.** Every number exists for all 6 stages. The old 1-1 and 1-3 are the bar, and each of today's five is marked
+  above or below it on each measure. 1-5 must show its "all cracking logs" fault as a number (expected: share and run far over the
+  old 1-1). If it doesn't, the measure is wrong, and that is a miss.
+- **Matt sees.** One table, plus a side map strip for each stage: platforms as grey bars coloured by piece kind, old 1-1 on top.
+- **Cost estimate.** About 0.5-0.8% of the week.
+
+### CP2: the piece library sheet (owner: designer, planner checks each piece traces)
+- **Content.** Every kept piece (Matt, 11-04: "I liked all the pieces... They were redundant"), with old 1-1's pieces it uses that
+  today's stages dropped (lily pads and the rest). Each piece in its sizes and its kinds of placement (up, flat, down, high road,
+  low road), with:
+  - its entry and exit contract;
+  - the moves it asks for;
+  - the gap or reach range it is proven over, Normal and Easy.
+- **Pass line.**
+  - The library holds at least the old 1-1's count of piece kinds and of distinct sizes (from CP1).
+  - Every piece and size traces clean in a grey test strip, on both settings.
+  - Any piece that doesn't trace is named, with its reason.
+- **Matt sees.** One sheet, a grey still of every piece and size, labelled. It is shown to him before any stage is built from it
+  (MATT-DIRECTION check 2).
+- **Cost estimate.** About 0.8-1.2%.
+
+### CP3: the mixer, proven on the worst stage first (1-5) (owner: designer specs the mix rule, planner builds and runs)
+- **The mix rule (designer).** A stage is built from its node plan, and every node draws pieces from the library through a
+  shuffle bag. Construction rules enforce, with the thresholds from CP1:
+  - the share cap;
+  - the run cap;
+  - the "something new within N" rule;
+  - splits from 1-2's branching shape, kept as a piece.
+
+  A node that can't meet them fails with the missing piece named, never a reroll.
+- **Pass line.**
+  - 1-5 rebuilt from today's pieces passes the variety gate on 16 of 16 rolls, Normal and Easy.
+  - Its traces stay clean, and the fun gate shows no new flags for 1-5.
+- **Matt sees.** 1-5's side map next to the old 1-1's, and next to today's 1-5 ("just cracking logs"), plus a grey-box test link
+  of the new 1-5.
+- **Cost estimate.** About 1.5-2%.
+
+### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
+- **Pass line.**
+  - All five stages pass the variety gate on 16 of 16 rolls, both settings.
+  - Neighbouring stages share no more than half their main pieces.
+  - The fun gate shows no new flags.
+  - The designer has played each stage, upright and sideways, against the stage it replaces.
+- **Matt sees.** Five maps beside the old 1-1, and a grey-box test link of all five.
+- **Cost estimate.** About 1.5-2%.
+
+### CP5: Matt plays the grey-box (owner: Matt; the lead sends it)
+- **Pass line.** Matt picks the engine's stages over today's, and the engine's 1-2 against the old 1-2, side by side, before any
+  art or polish (MATT-DIRECTION check 5).
+- **Matt sees.** The test link, with each new stage beside its old one.
+- **Cost estimate.** About 0.2%. Art and polish come after this, as a separate plan.
+
+**Total estimate: about 4.5-6.2% of the week, under the 8% ceiling, with 1.8-3.5% of margin for one CP to be redone.**
+
+---
+
+## Design (filled in from CP1 on; the designer writes, the planner signs)
+
+- Pieces: CP2's sheet.
+- Mix rule: CP3.
+- Rhythm: the player's rhythm, not the song (Matt, 11-04; DESIGNER.md §13.3, PLAN.md). Every node draws its rhythm pattern
+  (regular, swing, broken, wait-and-go) the same way it draws pieces.
