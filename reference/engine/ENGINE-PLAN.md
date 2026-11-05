@@ -96,7 +96,7 @@ artcheck, build:store, knowncheck, roadmapcheck and the rest; D42) and PERFORMAN
 ## Order (each step proved before the next builds on it; Matt plays at every star)
 Matt: "1-1's our test. Then 1-2 is the second test." Nothing wider is built until both pass.
 - **Step 0 (now): 1-1 on gen2.** The World 1 kit, the floor, tempo and branching, trunks, the seed, length by count, no-repeat,
-  the window. CHECK on World 8 (a real gen2 world): each dial alone and together. ★ Matt plays 3 rolls next to old 1-1.
+  the window. CHECK on 1-1 itself: each dial alone and all together, 16 rolls (nothing outside World 1 is touched). ★ Matt plays 3 rolls next to old 1-1.
 - **Step 1: 1-2 from a brief, built by a fresh cold helper** with the how-to only. It brings its own sections. Its time, cost and
   fix count go against the pass line. ★
 - **Step 2: the game plan as data** (the whole ladder W1-W10, elements, water, slot roles) plus the ladder and move-required gates.

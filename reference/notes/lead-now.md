@@ -21,7 +21,7 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 | Who | Deliverable | Success looks like | Due |
 |---|---|---|---|
 | Planner (session_01FhBbYJaUqNUPxNUvbHdHeN, engine-chunks) | Step 1 floor road in gen2 | lock 102/102 unchanged, floorRoll tests green | ~4:50 PM |
-| Planner | Trunks + golden seed in pipeline, then tempo, branching, window, length-by-count, no-repeat, cadence; CHECK 3b W10 era | each pushed separately; W10 era before vs after | ~9:00-9:30 PM |
+| Planner | Trunks + golden seed in pipeline, then tempo, branching, window, length-by-count, no-repeat, cadence; CHECK 3b each dial alone and together ON 1-1 | each pushed separately | ~9:00-9:30 PM |
 | engine-core (session_01FhBbYNa68MoMsiQdv2EJXg, engine-core) | w1.ts pool (harvest + designer's 30) + stage.ts gen2 path + all gates | 3:1 per phase; gates.yml + stage.ts all PASS on 16 rolls | after planner |
 | Designer (session_01FhBbYPKnBYCweHg8duJSu2, engine-spec) | 1-1 brief for gen2 | signed, every line cited | after engine-core's field list |
 | Lead | 3 rolls + old 1-1 on the test link, checked object by object, supervisor arc check | Matt plays | ~10:30-11 PM |
@@ -37,5 +37,6 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 - Read the real thing, not the report: open the commit, the file, the still. A helper's "done" isn't done until I've looked.
 - Helpers' fast work gets the same check as slow work.
 - Never type a time; paste it from `date`. Never build from origin/ccr-0d59a91c-oy3imz src/ (rejected rebuild, D40).
+- 1-1 ONLY until it passes and Matt plays it: no other world is built OR measured (Matt 4:5x PM: "why are we working on World 10 when we can't even get World 1 right?"; my own brief sent CHECK 3b to W10, which isn't even gen2).
 - Cut scope, never a check. Every job names the 1-1 number it fixes (D44). The lead doesn't design.
 - One helper, one branch, one owner per file. A change of plan is confirmed within 10 minutes (D39); a pause is confirmed with list_sessions (D41).
