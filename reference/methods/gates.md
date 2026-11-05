@@ -12,7 +12,7 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 | 1 | `npx tsc --noEmit -p .` | type errors | about 2 min / in publish |
 | 2 | `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts` | every unit test, including `artUse.test.ts` (art made but never drawn) and `playerText.test.ts` (repeated, look-alike or filler player text; a journal page that repeats a line) | over 25 min in this container (run it in the background) / 6 shards side by side |
 | 3 | `npx vite build` | build errors, any asset over 4 MiB | about 10 s |
-| 4 | `node tools/perf/artcheck.mjs` | an image over 4096 px on a side | seconds |
+| 4 | `node tools/perf/artcheck.mjs` | an image over 4096 px on a side; a frame with leftover key-hue pixels (magenta/pink, key green, flat grey) not in `tools/perf/keyknown.json`; a picture not scanned at its current content (run `python3 -I tools/perf/keyscan.py --write --image <file>` after changing any picture) | seconds |
 | 5 | `node tools/perf/knowncheck.mjs` | a known-defect list that GREW (clipknown, playerText.known, limits.json, artUse.allow) compared with main | seconds |
 | 5b | `node tools/roadmapcheck.mjs` | open work with no R-id on reference/ROADMAP.md: a defect left for roadmap / next week / later, a known or allow list (and each clipknown group, each playerText.known key), a NEXT.md; a done item whose PR or commit is not in the history; a reused id | seconds / in the gates job (needs fetch-depth 0) |
 | 6 | `node tools/perf/clipcheck.mjs` | menu text that overflows or is cut off, tap targets under 44 px, tap targets inside the phone's insets, on every menu screen and pop-up, 412x915 and 915x412, fresh/old/finished saves | 270-290 s here / 179 s in CI (gates job about 4.5 min with setup) |
@@ -105,3 +105,14 @@ Every gate in the table, in order. Run the full unit suite in the background (it
 
 ## Report gates (run by the helper before it reports, not in CI)
 - `node tools/art/icons/checkbase.mjs reference/qa-reports/<job>`: fails an "after" sheet shot on a stale or work-in-progress base (D23). Added 2026-11-02 (icons-painted, R-1.1).
+
+## The key-hue check (artcheck.mjs, added 2026-11-05)
+
+Why: the W6 wetLeaves and stakeLantern frames shipped with a pink smear and glow of the magenta key; nothing caught it. `tools/perf/keyscan.py`
+(Python: PIL, numpy, scipy, tools/README.md Setup) counts, in every frame's alpha edge and soft halo, the pixels in a cutter's key colour that
+the piece is not itself painted in, and writes `tools/perf/keyscan.json` (each picture's sha1 and its frames' counts). `artcheck.mjs` needs no
+image library: it fails a picture whose sha1 is not in the scan (changed or new art: re-scan it), a frame over the threshold (pink 40, green 40,
+grey 400 px) not in `tools/perf/keyknown.json`, and a listed frame that is clean now (shrink-only; knowncheck fails an added entry). Reading a
+breach: `python3 -I tools/perf/keyscan.py --contact out.jpg 60` draws the worst frames with the counted pixels in cyan. The list began with 467
+frames (R-164.15, owner "lead triage"); a frame the lead judges painted on purpose keeps its entry with `reason: "painted, judged <date> by lead"`.
+Proofs (the old wetLeaves and the lantern fail, a clean frame passes, a clean listed frame fails): reference/qa-reports/keyscan/proof.txt.

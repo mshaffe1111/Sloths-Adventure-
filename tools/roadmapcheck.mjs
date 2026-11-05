@@ -148,6 +148,7 @@ const listFiles = [];
   }
 })(path.join(root, 'src'));
 listFiles.push('tools/perf/clipknown.json');
+listFiles.push('tools/perf/keyknown.json');
 const size = (j) => (Array.isArray(j) ? j.length : Array.isArray(j.known) ? j.known.length : Object.keys(j).length);
 for (const f of listFiles) {
   const j = JSON.parse(read(f));

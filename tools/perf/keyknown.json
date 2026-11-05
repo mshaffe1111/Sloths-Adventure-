@@ -1,0 +1,6543 @@
+{
+ "about": "Frames with leftover key-hue pixels when the key-hue check was made (2026-11-05, tools/perf/keyscan.py; artcheck.mjs fails any frame over the threshold not listed here). Shrink-only (LAWS.md law 5): artcheck fails a listed frame that is clean now, knowncheck.mjs fails an added one. Worst first. Owner \"lead triage\": the lead judges each; a frame painted on purpose (a lava glow, a dusk haze) keeps its entry with reason \"painted, judged <date> by lead\"; the rest is debt.",
+ "known": [
+  {
+   "sheet": "src/assets/backdrops/w5dusk1-mid.webp",
+   "frame": "piece@0,110",
+   "hue": "pink",
+   "count": 21761,
+   "box": [
+    0,
+    110,
+    2394,
+    1192
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w5dusk2-mid.webp",
+   "frame": "piece@0,79",
+   "hue": "pink",
+   "count": 18174,
+   "box": [
+    0,
+    79,
+    2475,
+    1223
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w5dusk1-near.webp",
+   "frame": "piece@0,532",
+   "hue": "pink",
+   "count": 14039,
+   "box": [
+    0,
+    532,
+    3520,
+    1204
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/props-made/w9b.webp",
+   "frame": "lava-dome",
+   "hue": "pink",
+   "count": 3074,
+   "box": [
+    1767,
+    0,
+    17,
+    24
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/ground/w5.webp",
+   "frame": "piece@0,91",
+   "hue": "pink",
+   "count": 2193,
+   "box": [
+    0,
+    91,
+    1600,
+    309
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w5gold2-mid.webp",
+   "frame": "piece@0,111",
+   "hue": "pink",
+   "count": 1972,
+   "box": [
+    0,
+    111,
+    2454,
+    1191
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dressnew-w5.webp",
+   "frame": "w5ButterflyBush",
+   "hue": "pink",
+   "count": 1743,
+   "box": [
+    0,
+    0,
+    292,
+    384
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w5gold2-near.webp",
+   "frame": "piece@0,532",
+   "hue": "pink",
+   "count": 1433,
+   "box": [
+    0,
+    532,
+    285,
+    568
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w3-props.webp",
+   "frame": "piece@1114,0",
+   "hue": "green",
+   "count": 1376,
+   "box": [
+    1114,
+    0,
+    253,
+    421
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@450,368",
+   "hue": "pink",
+   "count": 1234,
+   "box": [
+    450,
+    368,
+    311,
+    329
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-4.webp",
+   "frame": "piece@1287,1636",
+   "hue": "pink",
+   "count": 1184,
+   "box": [
+    1287,
+    1636,
+    202,
+    367
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1607,515",
+   "hue": "pink",
+   "count": 1108,
+   "box": [
+    1607,
+    515,
+    229,
+    170
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/props-made/w6c-b.webp",
+   "frame": "lantern-flower",
+   "hue": "pink",
+   "count": 930,
+   "box": [
+    714,
+    0,
+    249,
+    444
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w8dawn-mid.webp",
+   "frame": "piece@0,713",
+   "hue": "pink",
+   "count": 747,
+   "box": [
+    0,
+    713,
+    2113,
+    589
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@0,0",
+   "hue": "pink",
+   "count": 743,
+   "box": [
+    0,
+    0,
+    271,
+    526
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/faces810.webp",
+   "frame": "piece@1562,18",
+   "hue": "grey",
+   "count": 6664,
+   "box": [
+    1562,
+    18,
+    348,
+    348
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-5.webp",
+   "frame": "piece@11,1502",
+   "hue": "pink",
+   "count": 642,
+   "box": [
+    11,
+    1502,
+    125,
+    351
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@416,1185",
+   "hue": "pink",
+   "count": 489,
+   "box": [
+    416,
+    1185,
+    410,
+    132
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/dangler-anim.webp",
+   "frame": "piece@0,3643",
+   "hue": "grey",
+   "count": 4762,
+   "box": [
+    0,
+    3643,
+    2027,
+    795
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dress.webp",
+   "frame": "piece@0,0",
+   "hue": "pink",
+   "count": 449,
+   "box": [
+    0,
+    0,
+    415,
+    512
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/props-made/w9c.webp",
+   "frame": "lava-pool",
+   "hue": "pink",
+   "count": 443,
+   "box": [
+    0,
+    477,
+    457,
+    145
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/bosses/boss-fx.webp",
+   "frame": "lava1",
+   "hue": "pink",
+   "count": 441,
+   "box": [
+    432,
+    0,
+    159,
+    594
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@1056,8",
+   "hue": "pink",
+   "count": 418,
+   "box": [
+    1056,
+    8,
+    330,
+    337
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@384,528",
+   "hue": "pink",
+   "count": 362,
+   "box": [
+    384,
+    528,
+    219,
+    220
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/ground/w2.webp",
+   "frame": "piece@0,2058",
+   "hue": "pink",
+   "count": 357,
+   "box": [
+    0,
+    2058,
+    2048,
+    118
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1284,0",
+   "hue": "pink",
+   "count": 351,
+   "box": [
+    1284,
+    0,
+    146,
+    207
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/bosses/boss-fx.webp",
+   "frame": "lava2",
+   "hue": "pink",
+   "count": 349,
+   "box": [
+    7,
+    16,
+    174,
+    605
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1123,879",
+   "hue": "pink",
+   "count": 330,
+   "box": [
+    1123,
+    879,
+    153,
+    150
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@0,1037",
+   "hue": "pink",
+   "count": 329,
+   "box": [
+    0,
+    1037,
+    425,
+    146
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dress.webp",
+   "frame": "w2Hang2",
+   "hue": "pink",
+   "count": 319,
+   "box": [
+    547,
+    0,
+    156,
+    224
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/bosses/boss-910.webp",
+   "frame": "lavaTop",
+   "hue": "pink",
+   "count": 317,
+   "box": [
+    1476,
+    800,
+    10,
+    11
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@0,0",
+   "hue": "grey",
+   "count": 3126,
+   "box": [
+    0,
+    0,
+    1914,
+    238
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/bosses/boss-fx.webp",
+   "frame": "lava0",
+   "hue": "pink",
+   "count": 305,
+   "box": [
+    252,
+    29,
+    157,
+    570
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w9dawn-mid.webp",
+   "frame": "piece@0,721",
+   "hue": "pink",
+   "count": 277,
+   "box": [
+    0,
+    721,
+    2113,
+    581
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-5.webp",
+   "frame": "piece@717,769",
+   "hue": "pink",
+   "count": 272,
+   "box": [
+    717,
+    769,
+    270,
+    345
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/croc-anim.webp",
+   "frame": "piece@0,1899",
+   "hue": "pink",
+   "count": 262,
+   "box": [
+    0,
+    1899,
+    457,
+    157
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@605,528",
+   "hue": "pink",
+   "count": 258,
+   "box": [
+    605,
+    528,
+    228,
+    217
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dressnew-w5.webp",
+   "frame": "w5Bench",
+   "hue": "pink",
+   "count": 248,
+   "box": [
+    294,
+    0,
+    335,
+    324
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w7court-near.webp",
+   "frame": "piece@0,1018",
+   "hue": "pink",
+   "count": 245,
+   "box": [
+    0,
+    1018,
+    2902,
+    718
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/croc-anim.webp",
+   "frame": "piece@486,1899",
+   "hue": "pink",
+   "count": 242,
+   "box": [
+    486,
+    1899,
+    458,
+    157
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1278,879",
+   "hue": "pink",
+   "count": 236,
+   "box": [
+    1278,
+    879,
+    396,
+    148
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@169,528",
+   "hue": "pink",
+   "count": 235,
+   "box": [
+    169,
+    528,
+    213,
+    220
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@546,0",
+   "hue": "pink",
+   "count": 232,
+   "box": [
+    546,
+    0,
+    216,
+    273
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@1179,7",
+   "hue": "pink",
+   "count": 232,
+   "box": [
+    1179,
+    7,
+    260,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@308,1",
+   "hue": "pink",
+   "count": 230,
+   "box": [
+    308,
+    1,
+    243,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@1135,454",
+   "hue": "pink",
+   "count": 228,
+   "box": [
+    1135,
+    454,
+    242,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@981,0",
+   "hue": "pink",
+   "count": 225,
+   "box": [
+    981,
+    0,
+    212,
+    231
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w10dusk-mid.webp",
+   "frame": "piece@0,660",
+   "hue": "pink",
+   "count": 224,
+   "box": [
+    0,
+    660,
+    2113,
+    642
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@2513,1",
+   "hue": "pink",
+   "count": 224,
+   "box": [
+    2513,
+    1,
+    242,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@3784,460",
+   "hue": "pink",
+   "count": 222,
+   "box": [
+    3784,
+    460,
+    264,
+    459
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "netTell_10",
+   "hue": "grey",
+   "count": 2201,
+   "box": [
+    392,
+    1040,
+    1473,
+    315
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@2235,1",
+   "hue": "pink",
+   "count": 218,
+   "box": [
+    2235,
+    1,
+    241,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@577,722",
+   "hue": "pink",
+   "count": 217,
+   "box": [
+    577,
+    722,
+    253,
+    324
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@299,1065",
+   "hue": "pink",
+   "count": 217,
+   "box": [
+    299,
+    1065,
+    238,
+    313
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1432,0",
+   "hue": "pink",
+   "count": 212,
+   "box": [
+    1432,
+    0,
+    147,
+    205
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w2mist-near.webp",
+   "frame": "piece@0,757",
+   "hue": "pink",
+   "count": 209,
+   "box": [
+    0,
+    757,
+    2902,
+    979
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@3330,1",
+   "hue": "pink",
+   "count": 209,
+   "box": [
+    3330,
+    1,
+    257,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "piece@0,6616",
+   "hue": "grey",
+   "count": 2082,
+   "box": [
+    0,
+    6616,
+    1716,
+    373
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@835,528",
+   "hue": "pink",
+   "count": 208,
+   "box": [
+    835,
+    528,
+    217,
+    214
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@307,7",
+   "hue": "pink",
+   "count": 204,
+   "box": [
+    307,
+    7,
+    268,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@1768,9",
+   "hue": "pink",
+   "count": 204,
+   "box": [
+    1768,
+    9,
+    255,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1675,1037",
+   "hue": "pink",
+   "count": 203,
+   "box": [
+    1675,
+    1037,
+    148,
+    136
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@2793,1",
+   "hue": "pink",
+   "count": 203,
+   "box": [
+    2793,
+    1,
+    242,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@30,2",
+   "hue": "pink",
+   "count": 203,
+   "box": [
+    30,
+    2,
+    243,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/dot-0.webp",
+   "frame": "piece@17,13",
+   "hue": "pink",
+   "count": 202,
+   "box": [
+    17,
+    13,
+    338,
+    365
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@2621,460",
+   "hue": "pink",
+   "count": 202,
+   "box": [
+    2621,
+    460,
+    262,
+    459
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@295,721",
+   "hue": "pink",
+   "count": 201,
+   "box": [
+    295,
+    721,
+    257,
+    325
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@2911,460",
+   "hue": "pink",
+   "count": 201,
+   "box": [
+    2911,
+    460,
+    263,
+    459
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@2442,1354",
+   "hue": "pink",
+   "count": 200,
+   "box": [
+    2442,
+    1354,
+    271,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w4terraces-mid.webp",
+   "frame": "piece@0,475",
+   "hue": "grey",
+   "count": 1992,
+   "box": [
+    0,
+    475,
+    2076,
+    827
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@887,7",
+   "hue": "pink",
+   "count": 199,
+   "box": [
+    887,
+    7,
+    261,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1059,0",
+   "hue": "pink",
+   "count": 198,
+   "box": [
+    1059,
+    0,
+    223,
+    213
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@3048,903",
+   "hue": "pink",
+   "count": 197,
+   "box": [
+    3048,
+    903,
+    271,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@3812,17",
+   "hue": "pink",
+   "count": 197,
+   "box": [
+    3812,
+    17,
+    261,
+    443
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1540,707",
+   "hue": "pink",
+   "count": 196,
+   "box": [
+    1540,
+    707,
+    182,
+    159
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@3229,15",
+   "hue": "pink",
+   "count": 196,
+   "box": [
+    3229,
+    15,
+    260,
+    445
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@843,1",
+   "hue": "pink",
+   "count": 195,
+   "box": [
+    843,
+    1,
+    259,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@1,454",
+   "hue": "pink",
+   "count": 195,
+   "box": [
+    1,
+    454,
+    260,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@281,454",
+   "hue": "pink",
+   "count": 195,
+   "box": [
+    281,
+    454,
+    254,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@481,0",
+   "hue": "pink",
+   "count": 194,
+   "box": [
+    481,
+    0,
+    118,
+    362
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@1836,1354",
+   "hue": "pink",
+   "count": 194,
+   "box": [
+    1836,
+    1354,
+    271,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@855,455",
+   "hue": "pink",
+   "count": 194,
+   "box": [
+    855,
+    455,
+    241,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@2442,903",
+   "hue": "pink",
+   "count": 193,
+   "box": [
+    2442,
+    903,
+    270,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@1948,454",
+   "hue": "pink",
+   "count": 193,
+   "box": [
+    1948,
+    454,
+    258,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/goldsnake-head.webp",
+   "frame": "piece@5,27",
+   "hue": "grey",
+   "count": 1929,
+   "box": [
+    5,
+    27,
+    379,
+    299
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@18,1354",
+   "hue": "pink",
+   "count": 192,
+   "box": [
+    18,
+    1354,
+    271,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1110,515",
+   "hue": "pink",
+   "count": 191,
+   "box": [
+    1110,
+    515,
+    141,
+    174
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@0,895",
+   "hue": "grey",
+   "count": 1909,
+   "box": [
+    0,
+    895,
+    399,
+    1941
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+   "frame": "piece@0,576",
+   "hue": "grey",
+   "count": 1901,
+   "box": [
+    0,
+    576,
+    661,
+    2045
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w3-props.webp",
+   "frame": "piece@638,1987",
+   "hue": "green",
+   "count": 190,
+   "box": [
+    638,
+    1987,
+    302,
+    187
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@3618,455",
+   "hue": "pink",
+   "count": 190,
+   "box": [
+    3618,
+    455,
+    241,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@0,515",
+   "hue": "pink",
+   "count": 189,
+   "box": [
+    0,
+    515,
+    229,
+    190
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@3059,1",
+   "hue": "pink",
+   "count": 189,
+   "box": [
+    3059,
+    1,
+    252,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@1230,1354",
+   "hue": "pink",
+   "count": 188,
+   "box": [
+    1230,
+    1354,
+    271,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@18,1805",
+   "hue": "pink",
+   "count": 188,
+   "box": [
+    18,
+    1805,
+    271,
+    450
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@597,7",
+   "hue": "pink",
+   "count": 188,
+   "box": [
+    597,
+    7,
+    263,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@2647,12",
+   "hue": "pink",
+   "count": 188,
+   "box": [
+    2647,
+    12,
+    256,
+    448
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@1114,1",
+   "hue": "pink",
+   "count": 186,
+   "box": [
+    1114,
+    1,
+    264,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@2355,11",
+   "hue": "pink",
+   "count": 185,
+   "box": [
+    2355,
+    11,
+    255,
+    449
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@612,476",
+   "hue": "pink",
+   "count": 185,
+   "box": [
+    612,
+    476,
+    260,
+    443
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@0,528",
+   "hue": "pink",
+   "count": 184,
+   "box": [
+    0,
+    528,
+    167,
+    222
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@1836,903",
+   "hue": "pink",
+   "count": 184,
+   "box": [
+    1836,
+    903,
+    270,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@1411,454",
+   "hue": "pink",
+   "count": 184,
+   "box": [
+    1411,
+    454,
+    243,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@1193,475",
+   "hue": "pink",
+   "count": 184,
+   "box": [
+    1193,
+    475,
+    260,
+    444
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@3202,460",
+   "hue": "pink",
+   "count": 183,
+   "box": [
+    3202,
+    460,
+    263,
+    459
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@2485,454",
+   "hue": "pink",
+   "count": 181,
+   "box": [
+    2485,
+    454,
+    259,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@1401,1400",
+   "hue": "pink",
+   "count": 180,
+   "box": [
+    1401,
+    1400,
+    230,
+    286
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@3331,455",
+   "hue": "pink",
+   "count": 180,
+   "box": [
+    3331,
+    455,
+    246,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@1475,9",
+   "hue": "pink",
+   "count": 178,
+   "box": [
+    1475,
+    9,
+    255,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@321,476",
+   "hue": "pink",
+   "count": 178,
+   "box": [
+    321,
+    476,
+    260,
+    443
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1766,1185",
+   "hue": "pink",
+   "count": 177,
+   "box": [
+    1766,
+    1185,
+    130,
+    124
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@2937,13",
+   "hue": "pink",
+   "count": 177,
+   "box": [
+    2937,
+    13,
+    258,
+    447
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@18,1",
+   "hue": "pink",
+   "count": 176,
+   "box": [
+    18,
+    1,
+    270,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@1383,1",
+   "hue": "pink",
+   "count": 176,
+   "box": [
+    1383,
+    1,
+    257,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@1947,1",
+   "hue": "pink",
+   "count": 176,
+   "box": [
+    1947,
+    1,
+    245,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@3521,16",
+   "hue": "pink",
+   "count": 176,
+   "box": [
+    3521,
+    16,
+    260,
+    444
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@1230,903",
+   "hue": "pink",
+   "count": 173,
+   "box": [
+    1230,
+    903,
+    586,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@3048,1354",
+   "hue": "pink",
+   "count": 171,
+   "box": [
+    3048,
+    1354,
+    271,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@1682,454",
+   "hue": "pink",
+   "count": 171,
+   "box": [
+    1682,
+    454,
+    249,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@1600,528",
+   "hue": "pink",
+   "count": 169,
+   "box": [
+    1600,
+    528,
+    213,
+    193
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@300,925",
+   "hue": "pink",
+   "count": 169,
+   "box": [
+    300,
+    925,
+    262,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-4.webp",
+   "frame": "piece@975,1636",
+   "hue": "pink",
+   "count": 168,
+   "box": [
+    975,
+    1636,
+    280,
+    362
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w4/falls.webp",
+   "frame": "lip-2",
+   "hue": "green",
+   "count": 168,
+   "box": [
+    1328,
+    0,
+    375,
+    179
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@0,707",
+   "hue": "pink",
+   "count": 166,
+   "box": [
+    0,
+    707,
+    219,
+    170
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@624,1354",
+   "hue": "pink",
+   "count": 166,
+   "box": [
+    624,
+    1354,
+    271,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@0,0",
+   "hue": "pink",
+   "count": 165,
+   "box": [
+    0,
+    0,
+    479,
+    513
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@2764,454",
+   "hue": "pink",
+   "count": 165,
+   "box": [
+    2764,
+    454,
+    254,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@3046,454",
+   "hue": "pink",
+   "count": 162,
+   "box": [
+    3046,
+    454,
+    248,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@3493,460",
+   "hue": "pink",
+   "count": 162,
+   "box": [
+    3493,
+    460,
+    263,
+    459
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@0,1541",
+   "hue": "grey",
+   "count": 1616,
+   "box": [
+    0,
+    1541,
+    468,
+    1831
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@1663,1",
+   "hue": "pink",
+   "count": 161,
+   "box": [
+    1663,
+    1,
+    251,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@2220,454",
+   "hue": "pink",
+   "count": 161,
+   "box": [
+    2220,
+    454,
+    261,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@2061,11",
+   "hue": "pink",
+   "count": 161,
+   "box": [
+    2061,
+    11,
+    255,
+    449
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@0,0",
+   "hue": "grey",
+   "count": 1609,
+   "box": [
+    0,
+    0,
+    1315,
+    1115
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@764,0",
+   "hue": "pink",
+   "count": 160,
+   "box": [
+    764,
+    0,
+    215,
+    232
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/goldsnake-wake.webp",
+   "frame": "piece@17,29",
+   "hue": "pink",
+   "count": 159,
+   "box": [
+    17,
+    29,
+    365,
+    286
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@3595,1",
+   "hue": "pink",
+   "count": 159,
+   "box": [
+    3595,
+    1,
+    266,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@409,707",
+   "hue": "pink",
+   "count": 158,
+   "box": [
+    409,
+    707,
+    208,
+    167
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@562,454",
+   "hue": "pink",
+   "count": 158,
+   "box": [
+    562,
+    454,
+    248,
+    452
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@231,515",
+   "hue": "pink",
+   "count": 157,
+   "box": [
+    231,
+    515,
+    212,
+    181
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@624,903",
+   "hue": "pink",
+   "count": 157,
+   "box": [
+    624,
+    903,
+    587,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@1,923",
+   "hue": "pink",
+   "count": 156,
+   "box": [
+    1,
+    923,
+    261,
+    454
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w4/falls.webp",
+   "frame": "lip-3",
+   "hue": "green",
+   "count": 154,
+   "box": [
+    0,
+    621,
+    367,
+    180
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/dangler-anim.webp",
+   "frame": "hurt_16",
+   "hue": "grey",
+   "count": 1536,
+   "box": [
+    349,
+    3371,
+    1698,
+    269
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@384,1541",
+   "hue": "grey",
+   "count": 1532,
+   "box": [
+    384,
+    1541,
+    407,
+    1528
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-4.webp",
+   "frame": "piece@1232,1247",
+   "hue": "pink",
+   "count": 153,
+   "box": [
+    1232,
+    1247,
+    205,
+    367
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@2331,460",
+   "hue": "pink",
+   "count": 152,
+   "box": [
+    2331,
+    460,
+    262,
+    459
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@30,476",
+   "hue": "pink",
+   "count": 152,
+   "box": [
+    30,
+    476,
+    260,
+    443
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@1819,0",
+   "hue": "pink",
+   "count": 151,
+   "box": [
+    1819,
+    0,
+    213,
+    221
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@619,707",
+   "hue": "pink",
+   "count": 151,
+   "box": [
+    619,
+    707,
+    164,
+    166
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-idle.webp",
+   "frame": "piece@576,1",
+   "hue": "pink",
+   "count": 149,
+   "box": [
+    576,
+    1,
+    252,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@1759,466",
+   "hue": "pink",
+   "count": 147,
+   "box": [
+    1759,
+    466,
+    260,
+    453
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@903,475",
+   "hue": "pink",
+   "count": 144,
+   "box": [
+    903,
+    475,
+    260,
+    444
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/faces810.webp",
+   "frame": "piece@1562,404",
+   "hue": "grey",
+   "count": 1381,
+   "box": [
+    1562,
+    404,
+    348,
+    348
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@3045,452",
+   "hue": "pink",
+   "count": 138,
+   "box": [
+    3045,
+    452,
+    568,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@0,1185",
+   "hue": "pink",
+   "count": 137,
+   "box": [
+    0,
+    1185,
+    206,
+    134
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "netTell_17",
+   "hue": "grey",
+   "count": 1365,
+   "box": [
+    837,
+    1664,
+    918,
+    288
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@348,752",
+   "hue": "pink",
+   "count": 135,
+   "box": [
+    348,
+    752,
+    205,
+    179
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1724,707",
+   "hue": "pink",
+   "count": 135,
+   "box": [
+    1724,
+    707,
+    200,
+    157
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "netTell_14",
+   "hue": "grey",
+   "count": 1330,
+   "box": [
+    1108,
+    1359,
+    885,
+    298
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1093,1037",
+   "hue": "pink",
+   "count": 133,
+   "box": [
+    1093,
+    1037,
+    130,
+    138
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@1477,470",
+   "hue": "pink",
+   "count": 133,
+   "box": [
+    1477,
+    470,
+    259,
+    449
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dressnew-w5.webp",
+   "frame": "w5TeaTin",
+   "hue": "pink",
+   "count": 132,
+   "box": [
+    211,
+    1414,
+    210,
+    187
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1253,515",
+   "hue": "pink",
+   "count": 132,
+   "box": [
+    1253,
+    515,
+    156,
+    172
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@0,373",
+   "hue": "grey",
+   "count": 1315,
+   "box": [
+    0,
+    373,
+    1765,
+    127
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "netTell_05",
+   "hue": "grey",
+   "count": 1299,
+   "box": [
+    412,
+    358,
+    884,
+    342
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@17,903",
+   "hue": "pink",
+   "count": 126,
+   "box": [
+    17,
+    903,
+    586,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/croc-anim.webp",
+   "frame": "piece@349,801",
+   "hue": "grey",
+   "count": 1242,
+   "box": [
+    349,
+    801,
+    1068,
+    304
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@208,1185",
+   "hue": "pink",
+   "count": 124,
+   "box": [
+    208,
+    1185,
+    206,
+    134
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@2044,462",
+   "hue": "pink",
+   "count": 124,
+   "box": [
+    2044,
+    462,
+    260,
+    457
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/bosses/boss-fx.webp",
+   "frame": "gust",
+   "hue": "grey",
+   "count": 1239,
+   "box": [
+    1103,
+    1707,
+    642,
+    41
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@1054,528",
+   "hue": "pink",
+   "count": 123,
+   "box": [
+    1054,
+    528,
+    198,
+    214
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@831,1402",
+   "hue": "pink",
+   "count": 122,
+   "box": [
+    831,
+    1402,
+    232,
+    299
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@18,9",
+   "hue": "pink",
+   "count": 122,
+   "box": [
+    18,
+    9,
+    270,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@1219,5",
+   "hue": "pink",
+   "count": 121,
+   "box": [
+    1219,
+    5,
+    553,
+    447
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@273,0",
+   "hue": "pink",
+   "count": 117,
+   "box": [
+    273,
+    0,
+    49,
+    464
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamAct_24",
+   "hue": "grey",
+   "count": 1164,
+   "box": [
+    831,
+    2703,
+    1192,
+    227
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@940,1185",
+   "hue": "pink",
+   "count": 115,
+   "box": [
+    940,
+    1185,
+    208,
+    128
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@0,4861",
+   "hue": "grey",
+   "count": 1147,
+   "box": [
+    0,
+    4861,
+    1168,
+    585
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/bosses/boss-atk.webp",
+   "frame": "colWeb",
+   "hue": "grey",
+   "count": 1146,
+   "box": [
+    542,
+    0,
+    259,
+    361
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@617,1",
+   "hue": "pink",
+   "count": 114,
+   "box": [
+    617,
+    1,
+    559,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamRec_28",
+   "hue": "grey",
+   "count": 1135,
+   "box": [
+    0,
+    3157,
+    1145,
+    220
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamRec_27",
+   "hue": "grey",
+   "count": 1118,
+   "box": [
+    781,
+    2932,
+    1146,
+    221
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-5.webp",
+   "frame": "piece@257,14",
+   "hue": "pink",
+   "count": 111,
+   "box": [
+    257,
+    14,
+    417,
+    355
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@248,4284",
+   "hue": "grey",
+   "count": 1107,
+   "box": [
+    248,
+    4284,
+    1799,
+    392
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+   "frame": "piece@0,2372",
+   "hue": "grey",
+   "count": 1103,
+   "box": [
+    0,
+    2372,
+    685,
+    1225
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "netAct_19",
+   "hue": "grey",
+   "count": 1100,
+   "box": [
+    0,
+    704,
+    897,
+    336
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dressnew-w1.webp",
+   "frame": "w1FlowerBush",
+   "hue": "pink",
+   "count": 109,
+   "box": [
+    0,
+    992,
+    303,
+    312
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "stunned_10",
+   "hue": "grey",
+   "count": 1087,
+   "box": [
+    0,
+    6426,
+    1741,
+    190
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@0,3672",
+   "hue": "grey",
+   "count": 1044,
+   "box": [
+    0,
+    3672,
+    459,
+    1357
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/ocelot-anim.webp",
+   "frame": "piece@656,1235",
+   "hue": "grey",
+   "count": 1039,
+   "box": [
+    656,
+    1235,
+    1371,
+    306
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@2429,5",
+   "hue": "pink",
+   "count": 101,
+   "box": [
+    2429,
+    5,
+    543,
+    447
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@680,4974",
+   "hue": "grey",
+   "count": 995,
+   "box": [
+    680,
+    4974,
+    769,
+    506
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@11,723",
+   "hue": "pink",
+   "count": 98,
+   "box": [
+    11,
+    723,
+    262,
+    321
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1751,0",
+   "hue": "pink",
+   "count": 98,
+   "box": [
+    1751,
+    0,
+    156,
+    191
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/dot-0.webp",
+   "frame": "piece@429,415",
+   "hue": "pink",
+   "count": 98,
+   "box": [
+    429,
+    415,
+    385,
+    287
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@1083,1400",
+   "hue": "pink",
+   "count": 97,
+   "box": [
+    1083,
+    1400,
+    297,
+    291
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@1405,528",
+   "hue": "pink",
+   "count": 97,
+   "box": [
+    1405,
+    528,
+    193,
+    199
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/flora/heartbloom-epic.webp",
+   "frame": "piece@0,0",
+   "hue": "pink",
+   "count": 96,
+   "box": [
+    0,
+    0,
+    484,
+    228
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@733,0",
+   "hue": "pink",
+   "count": 96,
+   "box": [
+    733,
+    0,
+    230,
+    303
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@0,0",
+   "hue": "grey",
+   "count": 959,
+   "box": [
+    0,
+    0,
+    788,
+    617
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@304,617",
+   "hue": "grey",
+   "count": 959,
+   "box": [
+    304,
+    617,
+    710,
+    923
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-look.webp",
+   "frame": "piece@599,929",
+   "hue": "pink",
+   "count": 94,
+   "box": [
+    599,
+    929,
+    256,
+    448
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@0,617",
+   "hue": "grey",
+   "count": 938,
+   "box": [
+    0,
+    617,
+    389,
+    924
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dressnew-w6.webp",
+   "frame": "w6StakeLantern",
+   "hue": "pink",
+   "count": 93,
+   "box": [
+    0,
+    933,
+    240,
+    319
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokey-0.webp",
+   "frame": "piece@703,1377",
+   "hue": "pink",
+   "count": 93,
+   "box": [
+    703,
+    1377,
+    242,
+    405
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-4.webp",
+   "frame": "piece@1686,1240",
+   "hue": "pink",
+   "count": 92,
+   "box": [
+    1686,
+    1240,
+    240,
+    369
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@607,458",
+   "hue": "pink",
+   "count": 92,
+   "box": [
+    607,
+    458,
+    525,
+    445
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@153,62",
+   "hue": "pink",
+   "count": 92,
+   "box": [
+    153,
+    62,
+    270,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@2435,452",
+   "hue": "pink",
+   "count": 91,
+   "box": [
+    2435,
+    452,
+    538,
+    451
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-bridges.webp",
+   "frame": "far2",
+   "hue": "grey",
+   "count": 900,
+   "box": [
+    1579,
+    299,
+    697,
+    122
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@613,5739",
+   "hue": "grey",
+   "count": 899,
+   "box": [
+    613,
+    5739,
+    952,
+    581
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-1.webp",
+   "frame": "piece@789,34",
+   "hue": "pink",
+   "count": 89,
+   "box": [
+    789,
+    34,
+    600,
+    564
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "silkAct_37",
+   "hue": "grey",
+   "count": 889,
+   "box": [
+    366,
+    7173,
+    1408,
+    183
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-4.webp",
+   "frame": "piece@11,1637",
+   "hue": "pink",
+   "count": 88,
+   "box": [
+    11,
+    1637,
+    206,
+    371
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/kits/w4.webp",
+   "frame": "piece@516,1064",
+   "hue": "pink",
+   "count": 88,
+   "box": [
+    516,
+    1064,
+    1387,
+    158
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@1824,4",
+   "hue": "pink",
+   "count": 88,
+   "box": [
+    1824,
+    4,
+    545,
+    448
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w4/falls.webp",
+   "frame": "lip-1",
+   "hue": "green",
+   "count": 88,
+   "box": [
+    952,
+    0,
+    374,
+    173
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@770,1541",
+   "hue": "grey",
+   "count": 861,
+   "box": [
+    770,
+    1541,
+    411,
+    918
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-0.webp",
+   "frame": "piece@60,1440",
+   "hue": "pink",
+   "count": 86,
+   "box": [
+    60,
+    1440,
+    571,
+    537
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@2711,515",
+   "hue": "pink",
+   "count": 86,
+   "box": [
+    2711,
+    515,
+    469,
+    510
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w5twi2-mid.webp",
+   "frame": "piece@0,111",
+   "hue": "grey",
+   "count": 857,
+   "box": [
+    0,
+    111,
+    2542,
+    1191
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@0,1717",
+   "hue": "grey",
+   "count": 854,
+   "box": [
+    0,
+    1717,
+    466,
+    646
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@433,1388",
+   "hue": "grey",
+   "count": 843,
+   "box": [
+    433,
+    1388,
+    374,
+    975
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@828,1185",
+   "hue": "pink",
+   "count": 84,
+   "box": [
+    828,
+    1185,
+    110,
+    130
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@461,2363",
+   "hue": "grey",
+   "count": 839,
+   "box": [
+    461,
+    2363,
+    1190,
+    317
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1449,1321",
+   "hue": "pink",
+   "count": 83,
+   "box": [
+    1449,
+    1321,
+    117,
+    76
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/golem-anim.webp",
+   "frame": "piece@0,2137",
+   "hue": "grey",
+   "count": 830,
+   "box": [
+    0,
+    2137,
+    991,
+    821
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dressnew-w5.webp",
+   "frame": "w5Pots",
+   "hue": "pink",
+   "count": 82,
+   "box": [
+    631,
+    0,
+    231,
+    309
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@0,1583",
+   "hue": "grey",
+   "count": 819,
+   "box": [
+    0,
+    1583,
+    1628,
+    105
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokey-1.webp",
+   "frame": "piece@1781,1319",
+   "hue": "pink",
+   "count": 80,
+   "box": [
+    1781,
+    1319,
+    199,
+    385
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@572,53",
+   "hue": "pink",
+   "count": 80,
+   "box": [
+    572,
+    53,
+    492,
+    460
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "idle_12",
+   "hue": "grey",
+   "count": 798,
+   "box": [
+    390,
+    5643,
+    1362,
+    197
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w7slide/flume-props.webp",
+   "frame": "piece@411,126",
+   "hue": "grey",
+   "count": 795,
+   "box": [
+    411,
+    126,
+    116,
+    118
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "piece@364,6989",
+   "hue": "grey",
+   "count": 791,
+   "box": [
+    364,
+    6989,
+    1352,
+    183
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-0.webp",
+   "frame": "piece@757,1410",
+   "hue": "pink",
+   "count": 79,
+   "box": [
+    757,
+    1410,
+    600,
+    565
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@785,707",
+   "hue": "pink",
+   "count": 79,
+   "box": [
+    785,
+    707,
+    199,
+    165
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@3303,1073",
+   "hue": "pink",
+   "count": 79,
+   "box": [
+    3303,
+    1073,
+    372,
+    464
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@1826,453",
+   "hue": "pink",
+   "count": 78,
+   "box": [
+    1826,
+    453,
+    525,
+    450
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@1175,864",
+   "hue": "grey",
+   "count": 771,
+   "box": [
+    1175,
+    864,
+    632,
+    1144
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-4.webp",
+   "frame": "piece@1224,848",
+   "hue": "pink",
+   "count": 77,
+   "box": [
+    1224,
+    848,
+    214,
+    370
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dressnew-w5.webp",
+   "frame": "w5CupChime",
+   "hue": "pink",
+   "count": 77,
+   "box": [
+    0,
+    386,
+    230,
+    298
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@630,552",
+   "hue": "pink",
+   "count": 77,
+   "box": [
+    630,
+    552,
+    369,
+    473
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@223,2196",
+   "hue": "grey",
+   "count": 769,
+   "box": [
+    223,
+    2196,
+    388,
+    640
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/bosses/boss-fx.webp",
+   "frame": "spark3",
+   "hue": "pink",
+   "count": 76,
+   "box": [
+    1637,
+    944,
+    164,
+    186
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/bosses/boss-fx.webp",
+   "frame": "ventHot",
+   "hue": "pink",
+   "count": 76,
+   "box": [
+    1558,
+    1551,
+    20,
+    34
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-4.webp",
+   "frame": "piece@356,438",
+   "hue": "pink",
+   "count": 76,
+   "box": [
+    356,
+    438,
+    279,
+    381
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "idle_00",
+   "hue": "grey",
+   "count": 760,
+   "box": [
+    0,
+    5444,
+    1130,
+    199
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@2729,6",
+   "hue": "pink",
+   "count": 76,
+   "box": [
+    2729,
+    6,
+    447,
+    507
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-5.webp",
+   "frame": "piece@1752,1508",
+   "hue": "pink",
+   "count": 75,
+   "box": [
+    1752,
+    1508,
+    168,
+    340
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/dot-0.webp",
+   "frame": "piece@12,746",
+   "hue": "pink",
+   "count": 75,
+   "box": [
+    12,
+    746,
+    351,
+    265
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@790,1478",
+   "hue": "grey",
+   "count": 749,
+   "box": [
+    790,
+    1478,
+    1107,
+    239
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "stunned_24",
+   "hue": "grey",
+   "count": 748,
+   "box": [
+    0,
+    7537,
+    1151,
+    178
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@591,751",
+   "hue": "grey",
+   "count": 732,
+   "box": [
+    591,
+    751,
+    1052,
+    107
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@0,2836",
+   "hue": "grey",
+   "count": 731,
+   "box": [
+    0,
+    2836,
+    424,
+    836
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@370,4258",
+   "hue": "grey",
+   "count": 731,
+   "box": [
+    370,
+    4258,
+    474,
+    629
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w2rapids-near.webp",
+   "frame": "piece@0,641",
+   "hue": "pink",
+   "count": 73,
+   "box": [
+    0,
+    641,
+    2902,
+    1095
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@784,368",
+   "hue": "pink",
+   "count": 73,
+   "box": [
+    784,
+    368,
+    206,
+    333
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/flora/flowers-atlas.webp",
+   "frame": "piece@731,242",
+   "hue": "pink",
+   "count": 73,
+   "box": [
+    731,
+    242,
+    238,
+    232
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1411,515",
+   "hue": "pink",
+   "count": 73,
+   "box": [
+    1411,
+    515,
+    194,
+    171
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@437,1321",
+   "hue": "pink",
+   "count": 73,
+   "box": [
+    437,
+    1321,
+    144,
+    112
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@602,0",
+   "hue": "grey",
+   "count": 723,
+   "box": [
+    602,
+    0,
+    1231,
+    287
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-props.webp",
+   "frame": "piece@1254,528",
+   "hue": "pink",
+   "count": 72,
+   "box": [
+    1254,
+    528,
+    149,
+    208
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@6,457",
+   "hue": "pink",
+   "count": 72,
+   "box": [
+    6,
+    457,
+    522,
+    446
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@1651,3",
+   "hue": "pink",
+   "count": 72,
+   "box": [
+    1651,
+    3,
+    457,
+    510
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@3254,518",
+   "hue": "pink",
+   "count": 72,
+   "box": [
+    3254,
+    518,
+    449,
+    507
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@0,5513",
+   "hue": "grey",
+   "count": 720,
+   "box": [
+    0,
+    5513,
+    402,
+    934
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "hurt_01",
+   "hue": "grey",
+   "count": 710,
+   "box": [
+    401,
+    1359,
+    707,
+    304
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@583,1321",
+   "hue": "pink",
+   "count": 71,
+   "box": [
+    583,
+    1321,
+    150,
+    112
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/boa-anim.webp",
+   "frame": "dazed_04",
+   "hue": "grey",
+   "count": 702,
+   "box": [
+    0,
+    0,
+    1018,
+    153
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1289,1321",
+   "hue": "pink",
+   "count": 70,
+   "box": [
+    1289,
+    1321,
+    158,
+    78
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@1099,515",
+   "hue": "pink",
+   "count": 70,
+   "box": [
+    1099,
+    515,
+    473,
+    510
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@823,1037",
+   "hue": "pink",
+   "count": 69,
+   "box": [
+    823,
+    1037,
+    140,
+    140
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@533,2196",
+   "hue": "grey",
+   "count": 689,
+   "box": [
+    533,
+    2196,
+    368,
+    639
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@0,2574",
+   "hue": "grey",
+   "count": 686,
+   "box": [
+    0,
+    2574,
+    695,
+    232
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@1214,456",
+   "hue": "pink",
+   "count": 68,
+   "box": [
+    1214,
+    456,
+    524,
+    447
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@1092,1550",
+   "hue": "grey",
+   "count": 677,
+   "box": [
+    1092,
+    1550,
+    451,
+    645
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@797,5513",
+   "hue": "grey",
+   "count": 674,
+   "box": [
+    797,
+    5513,
+    394,
+    623
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@774,0",
+   "hue": "grey",
+   "count": 667,
+   "box": [
+    774,
+    0,
+    462,
+    616
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@776,617",
+   "hue": "grey",
+   "count": 667,
+   "box": [
+    776,
+    617,
+    396,
+    616
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "skitter_24",
+   "hue": "grey",
+   "count": 652,
+   "box": [
+    340,
+    4835,
+    700,
+    204
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@0,1050",
+   "hue": "grey",
+   "count": 651,
+   "box": [
+    0,
+    1050,
+    433,
+    667
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/goldsnake-sleep.webp",
+   "frame": "piece@17,29",
+   "hue": "pink",
+   "count": 65,
+   "box": [
+    17,
+    29,
+    365,
+    286
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@0,4974",
+   "hue": "grey",
+   "count": 649,
+   "box": [
+    0,
+    4974,
+    680,
+    507
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/props/props.webp",
+   "frame": "piece@421,843",
+   "hue": "grey",
+   "count": 649,
+   "box": [
+    421,
+    843,
+    1266,
+    325
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@946,879",
+   "hue": "pink",
+   "count": 64,
+   "box": [
+    946,
+    879,
+    175,
+    150
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@88,1588",
+   "hue": "pink",
+   "count": 64,
+   "box": [
+    88,
+    1588,
+    360,
+    461
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/props/guardiansfree.webp",
+   "frame": "piece@0,521",
+   "hue": "grey",
+   "count": 633,
+   "box": [
+    0,
+    521,
+    521,
+    751
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@427,1037",
+   "hue": "pink",
+   "count": 63,
+   "box": [
+    427,
+    1037,
+    158,
+    144
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1367,1037",
+   "hue": "pink",
+   "count": 63,
+   "box": [
+    1367,
+    1037,
+    125,
+    137
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1342,1185",
+   "hue": "pink",
+   "count": 63,
+   "box": [
+    1342,
+    1185,
+    168,
+    127
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/guard-1.webp",
+   "frame": "piece@25,980",
+   "hue": "pink",
+   "count": 63,
+   "box": [
+    25,
+    980,
+    981,
+    408
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@1171,617",
+   "hue": "grey",
+   "count": 630,
+   "box": [
+    1171,
+    617,
+    397,
+    616
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "silkAct_38",
+   "hue": "grey",
+   "count": 629,
+   "box": [
+    0,
+    7356,
+    1072,
+    181
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/props/props.webp",
+   "frame": "piece@201,0",
+   "hue": "grey",
+   "count": 629,
+   "box": [
+    201,
+    0,
+    604,
+    843
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@1158,1848",
+   "hue": "grey",
+   "count": 628,
+   "box": [
+    1158,
+    1848,
+    388,
+    611
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "piece@1074,4630",
+   "hue": "grey",
+   "count": 627,
+   "box": [
+    1074,
+    4630,
+    671,
+    204
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "hurt_05",
+   "hue": "grey",
+   "count": 625,
+   "box": [
+    897,
+    704,
+    697,
+    330
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/drake-anim.webp",
+   "frame": "piece@0,2640",
+   "hue": "grey",
+   "count": 623,
+   "box": [
+    0,
+    2640,
+    567,
+    602
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/hud/hud-atlas.webp",
+   "frame": "piece@4,62",
+   "hue": "grey",
+   "count": 621,
+   "box": [
+    4,
+    62,
+    900,
+    667
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@350,1115",
+   "hue": "grey",
+   "count": 621,
+   "box": [
+    350,
+    1115,
+    785,
+    435
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@0,4887",
+   "hue": "grey",
+   "count": 620,
+   "box": [
+    0,
+    4887,
+    455,
+    626
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@0,500",
+   "hue": "grey",
+   "count": 619,
+   "box": [
+    0,
+    500,
+    885,
+    125
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@754,3312",
+   "hue": "grey",
+   "count": 619,
+   "box": [
+    754,
+    3312,
+    484,
+    631
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-4.webp",
+   "frame": "piece@518,1638",
+   "hue": "pink",
+   "count": 61,
+   "box": [
+    518,
+    1638,
+    236,
+    362
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-5.webp",
+   "frame": "piece@1011,769",
+   "hue": "pink",
+   "count": 61,
+   "box": [
+    1011,
+    769,
+    271,
+    345
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/journal-cards.webp",
+   "frame": "capuchin",
+   "hue": "pink",
+   "count": 61,
+   "box": [
+    1,
+    361,
+    168,
+    127
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/hud/hud-atlas.webp",
+   "frame": "piece@0,3",
+   "hue": "grey",
+   "count": 610,
+   "box": [
+    0,
+    3,
+    1024,
+    44
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/ocelot-anim.webp",
+   "frame": "land_40",
+   "hue": "grey",
+   "count": 604,
+   "box": [
+    307,
+    213,
+    640,
+    186
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/ocelot-anim.webp",
+   "frame": "land_33",
+   "hue": "grey",
+   "count": 602,
+   "box": [
+    1012,
+    1542,
+    682,
+    147
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@0,4462",
+   "hue": "grey",
+   "count": 601,
+   "box": [
+    0,
+    4462,
+    709,
+    512
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-0.webp",
+   "frame": "piece@763,61",
+   "hue": "pink",
+   "count": 60,
+   "box": [
+    763,
+    61,
+    596,
+    561
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokey-2.webp",
+   "frame": "piece@17,18",
+   "hue": "pink",
+   "count": 60,
+   "box": [
+    17,
+    18,
+    330,
+    384
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@1099,1025",
+   "hue": "pink",
+   "count": 60,
+   "box": [
+    1099,
+    1025,
+    469,
+    512
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@879,2574",
+   "hue": "grey",
+   "count": 597,
+   "box": [
+    879,
+    2574,
+    637,
+    122
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/reaver-anim.webp",
+   "frame": "piece@453,209",
+   "hue": "grey",
+   "count": 592,
+   "box": [
+    453,
+    209,
+    846,
+    177
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@2191,5",
+   "hue": "pink",
+   "count": 59,
+   "box": [
+    2191,
+    5,
+    451,
+    508
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@0,864",
+   "hue": "grey",
+   "count": 587,
+   "box": [
+    0,
+    864,
+    482,
+    574
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@1109,2410",
+   "hue": "grey",
+   "count": 586,
+   "box": [
+    1109,
+    2410,
+    325,
+    425
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/croc-anim.webp",
+   "frame": "piece@868,1105",
+   "hue": "grey",
+   "count": 584,
+   "box": [
+    868,
+    1105,
+    1292,
+    147
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/bosses/boss-fx.webp",
+   "frame": "spark2",
+   "hue": "pink",
+   "count": 58,
+   "box": [
+    1450,
+    967,
+    132,
+    139
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@1483,1056",
+   "hue": "green",
+   "count": 58,
+   "box": [
+    1483,
+    1056,
+    314,
+    330
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dressnew-w5.webp",
+   "frame": "w5Ribbon",
+   "hue": "pink",
+   "count": 58,
+   "box": [
+    693,
+    686,
+    220,
+    244
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/dot-0.webp",
+   "frame": "piece@381,17",
+   "hue": "pink",
+   "count": 58,
+   "box": [
+    381,
+    17,
+    361,
+    341
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@1072,48",
+   "hue": "pink",
+   "count": 58,
+   "box": [
+    1072,
+    48,
+    535,
+    465
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@328,5513",
+   "hue": "grey",
+   "count": 580,
+   "box": [
+    328,
+    5513,
+    479,
+    623
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@1075,2325",
+   "hue": "grey",
+   "count": 573,
+   "box": [
+    1075,
+    2325,
+    623,
+    110
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+   "frame": "piece@0,5265",
+   "hue": "grey",
+   "count": 571,
+   "box": [
+    0,
+    5265,
+    349,
+    704
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@0,1724",
+   "hue": "grey",
+   "count": 571,
+   "box": [
+    0,
+    1724,
+    689,
+    568
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokey-0.webp",
+   "frame": "piece@341,21",
+   "hue": "pink",
+   "count": 57,
+   "box": [
+    341,
+    21,
+    358,
+    416
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/drake-anim.webp",
+   "frame": "piece@0,2274",
+   "hue": "grey",
+   "count": 569,
+   "box": [
+    0,
+    2274,
+    258,
+    123
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/dangler-poses.webp",
+   "frame": "tell",
+   "hue": "grey",
+   "count": 567,
+   "box": [
+    434,
+    0,
+    199,
+    203
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@1546,1848",
+   "hue": "grey",
+   "count": 567,
+   "box": [
+    1546,
+    1848,
+    386,
+    611
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/ocelot-anim.webp",
+   "frame": "land_34",
+   "hue": "grey",
+   "count": 563,
+   "box": [
+    0,
+    1542,
+    679,
+    148
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/ocelot-anim.webp",
+   "frame": "leap_33",
+   "hue": "grey",
+   "count": 562,
+   "box": [
+    0,
+    1690,
+    685,
+    146
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@0,2204",
+   "hue": "grey",
+   "count": 561,
+   "box": [
+    0,
+    2204,
+    911,
+    73
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w5twi1-mid.webp",
+   "frame": "piece@0,111",
+   "hue": "grey",
+   "count": 559,
+   "box": [
+    0,
+    111,
+    2394,
+    1191
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+   "frame": "piece@530,1353",
+   "hue": "grey",
+   "count": 555,
+   "box": [
+    530,
+    1353,
+    458,
+    1018
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/dozer-anim.webp",
+   "frame": "attack_24",
+   "hue": "grey",
+   "count": 551,
+   "box": [
+    1221,
+    2227,
+    794,
+    305
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokeyface-0.webp",
+   "frame": "piece@664,687",
+   "hue": "pink",
+   "count": 55,
+   "box": [
+    664,
+    687,
+    467,
+    490
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokeyface-1.webp",
+   "frame": "piece@639,89",
+   "hue": "pink",
+   "count": 55,
+   "box": [
+    639,
+    89,
+    483,
+    486
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@1136,1549",
+   "hue": "pink",
+   "count": 55,
+   "box": [
+    1136,
+    1549,
+    408,
+    500
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/dozer-anim.webp",
+   "frame": "attack_08",
+   "hue": "grey",
+   "count": 547,
+   "box": [
+    0,
+    2534,
+    793,
+    304
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@655,6320",
+   "hue": "grey",
+   "count": 547,
+   "box": [
+    655,
+    6320,
+    487,
+    578
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/venom2-atlas.webp",
+   "frame": "piece@0,604",
+   "hue": "grey",
+   "count": 546,
+   "box": [
+    0,
+    604,
+    1541,
+    409
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@807,2042",
+   "hue": "grey",
+   "count": 544,
+   "box": [
+    807,
+    2042,
+    731,
+    321
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/croc-anim.webp",
+   "frame": "piece@2173,953",
+   "hue": "grey",
+   "count": 541,
+   "box": [
+    2173,
+    953,
+    1072,
+    150
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@0,3628",
+   "hue": "grey",
+   "count": 541,
+   "box": [
+    0,
+    3628,
+    852,
+    315
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/guard-2.webp",
+   "frame": "piece@25,765",
+   "hue": "pink",
+   "count": 54,
+   "box": [
+    25,
+    765,
+    852,
+    261
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@0,4258",
+   "hue": "grey",
+   "count": 537,
+   "box": [
+    0,
+    4258,
+    408,
+    629
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@0,2855",
+   "hue": "grey",
+   "count": 537,
+   "box": [
+    0,
+    2855,
+    739,
+    558
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w9night-mid.webp",
+   "frame": "piece@0,556",
+   "hue": "pink",
+   "count": 53,
+   "box": [
+    0,
+    556,
+    2113,
+    743
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pair-laugh.webp",
+   "frame": "piece@3035,5",
+   "hue": "pink",
+   "count": 53,
+   "box": [
+    3035,
+    5,
+    537,
+    447
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/dangler-poses.webp",
+   "frame": "hurt",
+   "hue": "grey",
+   "count": 524,
+   "box": [
+    633,
+    0,
+    385,
+    181
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/creatures/soldier-anim-0.webp",
+   "frame": "piece@0,0",
+   "hue": "grey",
+   "count": 523,
+   "box": [
+    0,
+    0,
+    461,
+    1225
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@0,1720",
+   "hue": "green",
+   "count": 52,
+   "box": [
+    0,
+    1720,
+    228,
+    200
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@1128,673",
+   "hue": "grey",
+   "count": 517,
+   "box": [
+    1128,
+    673,
+    750,
+    441
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@0,874",
+   "hue": "grey",
+   "count": 515,
+   "box": [
+    0,
+    874,
+    763,
+    99
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+   "frame": "piece@0,0",
+   "hue": "grey",
+   "count": 514,
+   "box": [
+    0,
+    0,
+    324,
+    576
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@401,4462",
+   "hue": "grey",
+   "count": 514,
+   "box": [
+    401,
+    4462,
+    1052,
+    256
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@340,3943",
+   "hue": "grey",
+   "count": 512,
+   "box": [
+    340,
+    3943,
+    445,
+    519
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokeyface-0.webp",
+   "frame": "piece@37,1293",
+   "hue": "pink",
+   "count": 51,
+   "box": [
+    37,
+    1293,
+    485,
+    486
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@1562,617",
+   "hue": "grey",
+   "count": 506,
+   "box": [
+    1562,
+    617,
+    399,
+    616
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/croc-anim.webp",
+   "frame": "piece@1878,269",
+   "hue": "grey",
+   "count": 505,
+   "box": [
+    1878,
+    269,
+    1046,
+    180
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokey-0.webp",
+   "frame": "piece@1129,934",
+   "hue": "pink",
+   "count": 50,
+   "box": [
+    1129,
+    934,
+    215,
+    405
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokeyface-1.webp",
+   "frame": "piece@1247,89",
+   "hue": "pink",
+   "count": 50,
+   "box": [
+    1247,
+    89,
+    474,
+    486
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@771,2460",
+   "hue": "grey",
+   "count": 500,
+   "box": [
+    771,
+    2460,
+    386,
+    609
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@816,2410",
+   "hue": "grey",
+   "count": 498,
+   "box": [
+    816,
+    2410,
+    320,
+    425
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamTell_14",
+   "hue": "grey",
+   "count": 497,
+   "box": [
+    0,
+    1040,
+    392,
+    319
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@1613,2196",
+   "hue": "grey",
+   "count": 497,
+   "box": [
+    1613,
+    2196,
+    409,
+    427
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@989,6609",
+   "hue": "grey",
+   "count": 497,
+   "box": [
+    989,
+    6609,
+    795,
+    289
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "defeat_06",
+   "hue": "grey",
+   "count": 495,
+   "box": [
+    1146,
+    7715,
+    764,
+    153
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "netTell_03",
+   "hue": "grey",
+   "count": 494,
+   "box": [
+    1679,
+    358,
+    293,
+    338
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/butler-poses.webp",
+   "frame": "attack",
+   "hue": "grey",
+   "count": 493,
+   "box": [
+    805,
+    0,
+    414,
+    179
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/faces810.webp",
+   "frame": "piece@1176,18",
+   "hue": "grey",
+   "count": 491,
+   "box": [
+    1176,
+    18,
+    348,
+    348
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@0,0",
+   "hue": "green",
+   "count": 49,
+   "box": [
+    0,
+    0,
+    374,
+    358
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-6.webp",
+   "frame": "piece@384,11",
+   "hue": "pink",
+   "count": 49,
+   "box": [
+    384,
+    11,
+    197,
+    337
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokey-1.webp",
+   "frame": "piece@873,460",
+   "hue": "pink",
+   "count": 49,
+   "box": [
+    873,
+    460,
+    257,
+    391
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@1088,2680",
+   "hue": "grey",
+   "count": 490,
+   "box": [
+    1088,
+    2680,
+    399,
+    632
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamTell_19",
+   "hue": "grey",
+   "count": 486,
+   "box": [
+    0,
+    358,
+    412,
+    346
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamTell_13",
+   "hue": "grey",
+   "count": 486,
+   "box": [
+    0,
+    1359,
+    401,
+    305
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+   "frame": "piece@0,3597",
+   "hue": "grey",
+   "count": 485,
+   "box": [
+    0,
+    3597,
+    336,
+    717
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+   "frame": "piece@1076,4314",
+   "hue": "grey",
+   "count": 485,
+   "box": [
+    1076,
+    4314,
+    442,
+    713
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w6-mid.webp",
+   "frame": "piece@0,307",
+   "hue": "grey",
+   "count": 483,
+   "box": [
+    0,
+    307,
+    2113,
+    995
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/bosses/boss-atk.webp",
+   "frame": "embers",
+   "hue": "pink",
+   "count": 48,
+   "box": [
+    1333,
+    0,
+    39,
+    60
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1926,707",
+   "hue": "pink",
+   "count": 48,
+   "box": [
+    1926,
+    707,
+    113,
+    156
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokey-1.webp",
+   "frame": "piece@1787,457",
+   "hue": "pink",
+   "count": 48,
+   "box": [
+    1787,
+    457,
+    167,
+    391
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@139,2106",
+   "hue": "pink",
+   "count": 48,
+   "box": [
+    139,
+    2106,
+    332,
+    454
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/seamstress-poses.webp",
+   "frame": "attack",
+   "hue": "grey",
+   "count": 478,
+   "box": [
+    950,
+    0,
+    507,
+    221
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@783,1766",
+   "hue": "grey",
+   "count": 476,
+   "box": [
+    783,
+    1766,
+    408,
+    429
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamTell_12",
+   "hue": "grey",
+   "count": 475,
+   "box": [
+    428,
+    1664,
+    409,
+    290
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamTell_15",
+   "hue": "grey",
+   "count": 473,
+   "box": [
+    1296,
+    358,
+    383,
+    339
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@965,0",
+   "hue": "pink",
+   "count": 47,
+   "box": [
+    965,
+    0,
+    92,
+    221
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/guard-0.webp",
+   "frame": "piece@26,22",
+   "hue": "pink",
+   "count": 47,
+   "box": [
+    26,
+    22,
+    1589,
+    633
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokeyface-1.webp",
+   "frame": "piece@13,656",
+   "hue": "pink",
+   "count": 47,
+   "box": [
+    13,
+    656,
+    449,
+    420
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@90,1073",
+   "hue": "pink",
+   "count": 47,
+   "box": [
+    90,
+    1073,
+    361,
+    464
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamTell_11",
+   "hue": "grey",
+   "count": 467,
+   "box": [
+    0,
+    1955,
+    407,
+    278
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/croc-anim.webp",
+   "frame": "piece@1497,1537",
+   "hue": "grey",
+   "count": 465,
+   "box": [
+    1497,
+    1537,
+    739,
+    132
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "hurt_08",
+   "hue": "grey",
+   "count": 465,
+   "box": [
+    1096,
+    5840,
+    809,
+    196
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "stunned_22",
+   "hue": "grey",
+   "count": 465,
+   "box": [
+    1072,
+    7356,
+    733,
+    179
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@1515,1766",
+   "hue": "grey",
+   "count": 465,
+   "box": [
+    1515,
+    1766,
+    317,
+    429
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@1135,1115",
+   "hue": "grey",
+   "count": 464,
+   "box": [
+    1135,
+    1115,
+    764,
+    218
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/dangler-poses.webp",
+   "frame": "defeated",
+   "hue": "grey",
+   "count": 461,
+   "box": [
+    293,
+    0,
+    141,
+    244
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@1353,2204",
+   "hue": "grey",
+   "count": 461,
+   "box": [
+    1353,
+    2204,
+    595,
+    106
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dressnew-w5.webp",
+   "frame": "w5OrchidBasket",
+   "hue": "pink",
+   "count": 46,
+   "box": [
+    232,
+    386,
+    241,
+    298
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokey-2.webp",
+   "frame": "piece@1149,19",
+   "hue": "pink",
+   "count": 46,
+   "box": [
+    1149,
+    19,
+    389,
+    365
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@1696,556",
+   "hue": "pink",
+   "count": 46,
+   "box": [
+    1696,
+    556,
+    370,
+    469
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/dozer-anim.webp",
+   "frame": "piece@0,1919",
+   "hue": "grey",
+   "count": 459,
+   "box": [
+    0,
+    1919,
+    445,
+    615
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/ocelot-anim.webp",
+   "frame": "gather_20",
+   "hue": "grey",
+   "count": 459,
+   "box": [
+    324,
+    1235,
+    333,
+    306
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/props/props.webp",
+   "frame": "piece@1074,0",
+   "hue": "grey",
+   "count": 456,
+   "box": [
+    1074,
+    0,
+    612,
+    421
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/drake-anim.webp",
+   "frame": "piece@0,5587",
+   "hue": "grey",
+   "count": 455,
+   "box": [
+    0,
+    5587,
+    1969,
+    195
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/drake-anim.webp",
+   "frame": "piece@0,5384",
+   "hue": "grey",
+   "count": 452,
+   "box": [
+    0,
+    5384,
+    1130,
+    301
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w2-props.webp",
+   "frame": "piece@0,0",
+   "hue": "pink",
+   "count": 45,
+   "box": [
+    0,
+    0,
+    192,
+    621
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@3288,33",
+   "hue": "pink",
+   "count": 45,
+   "box": [
+    3288,
+    33,
+    392,
+    480
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@628,1073",
+   "hue": "pink",
+   "count": 45,
+   "box": [
+    628,
+    1073,
+    372,
+    464
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamAct_21",
+   "hue": "grey",
+   "count": 449,
+   "box": [
+    0,
+    2472,
+    430,
+    231
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@1121,3943",
+   "hue": "grey",
+   "count": 449,
+   "box": [
+    1121,
+    3943,
+    372,
+    630
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@482,864",
+   "hue": "grey",
+   "count": 449,
+   "box": [
+    482,
+    864,
+    818,
+    287
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-2.webp",
+   "frame": "piece@0,288",
+   "hue": "grey",
+   "count": 448,
+   "box": [
+    0,
+    288,
+    775,
+    288
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/props/props.webp",
+   "frame": "piece@0,0",
+   "hue": "grey",
+   "count": 448,
+   "box": [
+    0,
+    0,
+    219,
+    843
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@1179,5513",
+   "hue": "grey",
+   "count": 447,
+   "box": [
+    1179,
+    5513,
+    389,
+    623
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@1163,238",
+   "hue": "grey",
+   "count": 446,
+   "box": [
+    1163,
+    238,
+    595,
+    127
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@394,1550",
+   "hue": "grey",
+   "count": 444,
+   "box": [
+    394,
+    1550,
+    389,
+    431
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+   "frame": "piece@1204,1333",
+   "hue": "grey",
+   "count": 443,
+   "box": [
+    1204,
+    1333,
+    783,
+    216
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@247,2840",
+   "hue": "grey",
+   "count": 441,
+   "box": [
+    247,
+    2840,
+    423,
+    132
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/flora/flowers-atlas.webp",
+   "frame": "piece@853,120",
+   "hue": "pink",
+   "count": 44,
+   "box": [
+    853,
+    120,
+    122,
+    81
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/pits/w1-lip.webp",
+   "frame": "piece@0,0",
+   "hue": "pink",
+   "count": 44,
+   "box": [
+    0,
+    0,
+    256,
+    475
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/w4-props.webp",
+   "frame": "piece@1512,1185",
+   "hue": "pink",
+   "count": 44,
+   "box": [
+    1512,
+    1185,
+    126,
+    127
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@2234,554",
+   "hue": "pink",
+   "count": 44,
+   "box": [
+    2234,
+    554,
+    374,
+    471
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamAct_20",
+   "hue": "grey",
+   "count": 439,
+   "box": [
+    0,
+    1664,
+    428,
+    291
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamAct_22",
+   "hue": "grey",
+   "count": 438,
+   "box": [
+    829,
+    2472,
+    422,
+    229
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/seamstress-poses.webp",
+   "frame": "tell",
+   "hue": "grey",
+   "count": 437,
+   "box": [
+    0,
+    0,
+    232,
+    283
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@1156,3372",
+   "hue": "grey",
+   "count": 436,
+   "box": [
+    1156,
+    3372,
+    671,
+    301
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/prowler-anim.webp",
+   "frame": "piece@0,0",
+   "hue": "grey",
+   "count": 433,
+   "box": [
+    0,
+    0,
+    326,
+    549
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@1596,2840",
+   "hue": "grey",
+   "count": 433,
+   "box": [
+    1596,
+    2840,
+    425,
+    130
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@1193,1717",
+   "hue": "grey",
+   "count": 432,
+   "box": [
+    1193,
+    1717,
+    458,
+    323
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dressnew-w5.webp",
+   "frame": "w5Wheelbarrow",
+   "hue": "pink",
+   "count": 43,
+   "box": [
+    346,
+    686,
+    345,
+    263
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/croc-anim.webp",
+   "frame": "piece@863,1398",
+   "hue": "grey",
+   "count": 426,
+   "box": [
+    863,
+    1398,
+    737,
+    137
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamTell_18",
+   "hue": "grey",
+   "count": 426,
+   "box": [
+    1355,
+    0,
+    374,
+    345
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@727,2680",
+   "hue": "grey",
+   "count": 426,
+   "box": [
+    727,
+    2680,
+    398,
+    632
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w1rain-mid.webp",
+   "frame": "piece@0,453",
+   "hue": "grey",
+   "count": 422,
+   "box": [
+    0,
+    453,
+    2113,
+    849
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+   "frame": "piece@331,3837",
+   "hue": "grey",
+   "count": 421,
+   "box": [
+    331,
+    3837,
+    426,
+    477
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokey-3.webp",
+   "frame": "piece@16,15",
+   "hue": "pink",
+   "count": 42,
+   "box": [
+    16,
+    15,
+    270,
+    296
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@2713,1027",
+   "hue": "pink",
+   "count": 42,
+   "box": [
+    2713,
+    1027,
+    466,
+    510
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/ocelot-anim.webp",
+   "frame": "leap_30",
+   "hue": "grey",
+   "count": 419,
+   "box": [
+    0,
+    743,
+    716,
+    167
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamTell_16",
+   "hue": "grey",
+   "count": 419,
+   "box": [
+    644,
+    0,
+    361,
+    345
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@1067,1111",
+   "hue": "grey",
+   "count": 418,
+   "box": [
+    1067,
+    1111,
+    425,
+    136
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/props/guardiansfree.webp",
+   "frame": "piece@927,0",
+   "hue": "grey",
+   "count": 417,
+   "box": [
+    927,
+    0,
+    508,
+    521
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/props/dot-bridges.webp",
+   "frame": "far1",
+   "hue": "grey",
+   "count": 416,
+   "box": [
+    128,
+    270,
+    498,
+    171
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "slamTell_10",
+   "hue": "grey",
+   "count": 414,
+   "box": [
+    407,
+    1955,
+    401,
+    268
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "hurt_10",
+   "hue": "grey",
+   "count": 414,
+   "box": [
+    413,
+    6232,
+    819,
+    194
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/dozer-anim.webp",
+   "frame": "hurt_04",
+   "hue": "grey",
+   "count": 413,
+   "box": [
+    749,
+    4581,
+    1022,
+    265
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/monarch-anim.webp",
+   "frame": "piece@873,2090",
+   "hue": "grey",
+   "count": 413,
+   "box": [
+    873,
+    2090,
+    973,
+    61
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/bosses/boss-fx.webp",
+   "frame": "spark1",
+   "hue": "pink",
+   "count": 41,
+   "box": [
+    1267,
+    989,
+    89,
+    95
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/characters/cels-5.webp",
+   "frame": "piece@1479,757",
+   "hue": "green",
+   "count": 41,
+   "box": [
+    1479,
+    757,
+    258,
+    368
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/story/hd/pokey-1.webp",
+   "frame": "piece@276,894",
+   "hue": "pink",
+   "count": 41,
+   "box": [
+    276,
+    894,
+    346,
+    390
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/title/clip-pokey-cheer.webp",
+   "frame": "piece@1698,1073",
+   "hue": "pink",
+   "count": 41,
+   "box": [
+    1698,
+    1073,
+    358,
+    464
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/backdrops/w9-near.webp",
+   "frame": "piece@0,967",
+   "hue": "grey",
+   "count": 409,
+   "box": [
+    0,
+    967,
+    3519,
+    769
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/dangler-anim.webp",
+   "frame": "move_08",
+   "hue": "grey",
+   "count": 409,
+   "box": [
+    254,
+    560,
+    515,
+    560
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+   "frame": "piece@0,2363",
+   "hue": "grey",
+   "count": 409,
+   "box": [
+    0,
+    2363,
+    461,
+    317
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/props/props.webp",
+   "frame": "piece@1686,0",
+   "hue": "grey",
+   "count": 409,
+   "box": [
+    1686,
+    0,
+    345,
+    421
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/queen-anim.webp",
+   "frame": "hurt_11",
+   "hue": "grey",
+   "count": 405,
+   "box": [
+    0,
+    6036,
+    804,
+    196
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/golem-anim.webp",
+   "frame": "piece@0,4374",
+   "hue": "grey",
+   "count": 404,
+   "box": [
+    0,
+    4374,
+    1823,
+    177
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+   "frame": "piece@348,5736",
+   "hue": "grey",
+   "count": 404,
+   "box": [
+    348,
+    5736,
+    474,
+    465
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/enemies/dangler-anim.webp",
+   "frame": "piece@0,0",
+   "hue": "grey",
+   "count": 402,
+   "box": [
+    0,
+    0,
+    254,
+    1120
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+   "frame": "piece@302,4790",
+   "hue": "grey",
+   "count": 402,
+   "box": [
+    302,
+    4790,
+    455,
+    475
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  },
+  {
+   "sheet": "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+   "frame": "piece@0,6320",
+   "hue": "grey",
+   "count": 402,
+   "box": [
+    0,
+    6320,
+    790,
+    289
+   ],
+   "owner": "lead triage",
+   "why": "key-hue scan 2026-11-05 (R-164.15)"
+  }
+ ]
+}

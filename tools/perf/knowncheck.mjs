@@ -23,6 +23,8 @@ const LISTS = [
   { file: 'tools/perf/limits.json', ids: (j) => [...(j.art?.knownOver4096 ?? []).map((f) => `art>4096|${f}`), ...(j.blends?.allowlist ?? []).map((a) => `blend|${a.site}|${a.mode}`)] },
   // (the fun gate's World 1 counts: one id per layout counted, so raising a count adds ids and fails here; tools/validate/funcheck.ts)
   { file: 'tools/validate/funknown.json', ids: (j) => j.known.flatMap((k) => Array.from({ length: k.layouts }, (_, i) => `${k.stage}|${k.setting}|${k.rule}#${i + 1}`)) },
+  // (the key-hue check's frames: tools/perf/artcheck.mjs, keyscan.py)
+  { file: 'tools/perf/keyknown.json', ids: (j) => j.known.map((k) => `${k.sheet}|${k.frame}`) },
   { file: 'src/game/artUse.allow.json', ids: (j) => (Array.isArray(j) ? j : Object.keys(j)).map((x) => (typeof x === 'string' ? x : x.id ?? JSON.stringify(x))) },
 ];
 

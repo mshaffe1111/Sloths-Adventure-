@@ -1,0 +1,39 @@
+# key-hue gate proofs, 2026-11-05T17:25:26Z on 645a298b4
+
+## 1. the old w6WetLeaves put back with its old frames (dressnew-w6.webp and dressNewData.ts as on 645a298b^) and scanned: artcheck must FAIL on it
+key scan: 1 images, 15 frames, 2 over the threshold {'pink': 40, 'green': 40, 'grey': 400}
+    20.8x  src/assets/props/dressnew-w6.webp  w6WetLeaves  worst pink 833 (pink 833, green 0, grey 11; edge 6380 px, box [527, 1254, 210, 191])
+     1.4x  src/assets/props/dressnew-w6.webp  w6StakeLantern  worst pink 58 (pink 58, green 0, grey 0; edge 7978 px, box [0, 933, 240, 319])
+key-hue check: 681 images scanned, 467 known frame(s) over the threshold (keyknown.json)
+FAIL: 1 frame(s) with leftover key-hue pixels (python3 -I tools/perf/keyscan.py --contact <out.jpg> shows them):
+  src/assets/props/dressnew-w6.webp w6WetLeaves: pink 833 (over 40, box 527,1254,210,191)
+artcheck exit: 1
+
+## 2. the new w6WetLeaves back and rescanned: artcheck must PASS (a clean frame passes)
+key scan: 1 images, 15 frames, 1 over the threshold {'pink': 40, 'green': 40, 'grey': 400}
+     2.3x  src/assets/props/dressnew-w6.webp  w6StakeLantern  worst pink 93 (pink 93, green 0, grey 4; edge 7978 px, box [0, 933, 240, 319])
+wrote /tmp/claude-0/-home-user-Sloths-Adventure-/ae911ee5-4c11-5de9-a62f-5a201b1932ff/scratchpad/wt2/tools/perf/keyscan.json
+key-hue check: 681 images scanned, 467 known frame(s) over the threshold (keyknown.json)
+PASS
+artcheck exit: 0
+
+## 3. w6StakeLantern taken off keyknown.json: artcheck must FAIL on it (the known-bad lantern is caught)
+key-hue check: 681 images scanned, 466 known frame(s) over the threshold (keyknown.json)
+FAIL: 1 frame(s) with leftover key-hue pixels (python3 -I tools/perf/keyscan.py --contact <out.jpg> shows them):
+  src/assets/props/dressnew-w6.webp w6StakeLantern: pink 93 (over 40, box 0,933,240,319)
+artcheck exit: 1
+
+## 4. a known entry that is clean (a fake one for the new w6WetLeaves) added: artcheck must FAIL (the list only shrinks), and knowncheck must FAIL on an added entry
+key-hue check: 681 images scanned, 467 known frame(s) over the threshold (keyknown.json)
+FAIL: 1 keyknown.json entr(ies) are clean now: take them off the list (it only shrinks)
+  src/assets/props/dressnew-w6.webp w6WetLeaves
+artcheck exit: 1
+  tools/perf/keyknown.json: new list (468 entries), not on the base yet
+✓ src/game/artUse.allow.json: 276 entries
+PASS
+
+## 5. restored: artcheck must PASS
+key-hue check: 681 images scanned, 467 known frame(s) over the threshold (keyknown.json)
+PASS
+artcheck exit: 0
+(knowncheck: keyknown.json is a new list, so it passes with a note today, as every list does on its first commit; from the next commit an added entry fails it)
