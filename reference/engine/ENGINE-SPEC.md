@@ -401,6 +401,21 @@ it.**
 - **Easy's own pass** adds flags and hearts after the mixer (16 and 16). The planner measures the old 1-1's Easy the same way. If the
   Easy pass breaks the placement rules (hearts after risk, checkpoints before hard parts), that pass is in scope for CP3.
 
+
+**[designer ruling, 11-05 ~1:11 AM ET] Splits come in many short stretches, as in the old 1-1, not two long forks.**
+- **Measured, Normal medians on the 180 px rule:** the old 1-1 has 34 (14-51), today's 1-3 19, and the new 1-5 with two long forks
+  only 2-3. The old 1-1's splits are dozens of short canopy-over-floor stretches.
+- **The rule (b):** "canopy over floor" becomes a burst any node may lay. It is a few boughs or a log above the low route, each with
+  its own height band, for 2-5 pieces. It recurs with the other bursts, never twice in a row. The two big forks (n4, n10) stay as
+  the stage's real choices, with marks on both roads.
+- **Pass line:** at least 19 splits (today's 1-3, Matt's second reference) on 16 of 16 rolls. The old 1-1's 34 is the target, and
+  the report shows where each roll sits against both.
+
+**Easy's extra flags and hearts:** the old 1-1 has the same (15 and 15), so they come from the engine's Easy pass, not the mixer.
+For CP3 the placement rules are judged on Normal, and Easy is reported as it is. Whether hearts and flags on Easy should follow the
+same rules is a separate item for Matt (his words, "hearts aren't given out the very first thing", hold on both settings). It goes
+on the list after CP4.
+
 **The rules this plan meets by construction** (the mixer still checks every roll):
 - **Ideas:** 9 to 11 different ideas a roll. No idea twice in a row. Snap-twig dash comes twice (teach at n2, test at n6, not in a
   row), and the fork twice (n4, n10).
