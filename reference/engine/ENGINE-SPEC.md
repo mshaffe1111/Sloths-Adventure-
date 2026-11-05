@@ -2436,6 +2436,13 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
 | n10 | the canopy fork | high: bough hops, bough stair; low: bough hops, stump hop. Rejoin | high (two roads) | "No soft moss up here!" (hint.1-1.noMoss) |
 | n11 | **the arrival** (ruling 4's exception, brief :23) | the top branch: an arrival on the petal trail to the shrine and the bootprint. It's a rest by the rest rule (G #83), with no dead walk; its deck gains bough hops, the top branch last | high → end bank | — |
 
+- **The golden seed [added 3:10 PM ET; my plan had left it out, with no ruling dropping it]:** one golden seed, a secret, as main's old
+  1-1 promises (stage11.test.ts:17-24): more than 200 px up, higher than a double jump reaches, with a mushroom within 260 px below
+  it, so the bounce taught at n4 is the way up. It's laid after n4 and before n7 (n5's fork or n6's rest, the planner's pick), off
+  the main line.
+- **Nothing in 1-1 can cost a life [added 3:10 PM ET]:** main's old 1-1 promise (stage11.test.ts:30): every drop lands on moss, and every
+  floor is above the water. It is the first stage, and it matches "every dip has a one-jump way out" (STAGE-RULES §2). No floorless
+  drop anywhere in 1-1.
 - **Hearts:** only after real risk (n9).
 - **Flags:** before n9, and the flag rule decides the rest.
 - **The three lines marked "(hint.1-1.bank/high/noMoss)"** are Matt-approved (6dae405d8, 11-04) but not on main. **[revised 1:30 PM ET,
@@ -2494,6 +2501,12 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
    - **[same time]** dips around x 28862-32929 that a single jump never leaves (firsttimer plainWalk), against STAGE-RULES §2,
      "every dip has a one-jump way out". This is an engine fix: the lay gives every dip a one-jump way out. It's never accepted
      because the double is taught by then.
+
+   - **[added 3:10 PM ET, engine-core eb1a900a7: the old 1-1's promises restored, 4 of 8 fail]**
+     - no golden seed (above);
+     - floorless 45-60 px drops in the ground nodes, where he dies just past the mushroom ("nothing can cost a life");
+     - n7's double teach has no gap that needs a double.
+     All three are engine and lay fixes for the planner.
 
    If any is still there when the builder runs, it's an engine finding for the planner, never a reason to bend 1-1's data around it.
 
