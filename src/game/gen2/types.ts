@@ -123,6 +123,13 @@ export interface WorldManifest {
     /** a catch bough under every gap that is not a pit (a jump between ledges, the canopy's: the designer's ac7a233c, 60-120 px), this far
      *  under the gap's lower lip, reaching from 30 px under the near ledge to 50 px under the far one; one jump back up */
     catchDrop?: number };
+  /**
+   * World 1's per-roll tempo (the mixer's per-roll draw, w1mix.ts:1072 / spec.ts RollRanges; the designer's measured ranges from old 1-1,
+   * 53c0b9960): each roll draws its median gap share (triangular min / mode / max) and its rise band (home, or the hilly break on
+   * `hillyShare` of rolls), from its own stream. A section's jump shares are scaled by the roll's median over `gap.centre` (never past
+   * `gap.p90`), its rises by the roll's band over `rise.centre`, inside the jump's own limits. The hop family is floorRoll's.
+   */
+  rollRanges?: { gap: { min: number; mode: number; max: number; p90: number; centre: number }; rise: { home: [number, number]; hilly: [number, number]; hillyShare: number; centre: number } };
   /** the vertical corridor clamp (Part 3 §1): the route's ground stays between these world y's; inside `soft` px of an edge the
    *  selector leans toward sections that drift back */
   corridor: { top: number; bottom: number; soft: number };

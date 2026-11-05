@@ -388,6 +388,8 @@ export interface LocalLayout {
 }
 
 export interface LayLocalOptions {
+  /** the roll's tempo (manifest rollRanges): a section's jump shares times `gap` (never past `gapMax`), its rises times `rise` */
+  tempo?: { gap: number; gapMax: number; rise: number };
   /** the versions to lay (Easy lays Normal's); a sub-block not named here is rolled */
   versions?: Readonly<Record<string, string>>;
   /** the stream the versions are rolled from (default: the layout's own stream) */
@@ -444,7 +446,11 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
   const out: LocalPiece[] = [];
   const gaps: LocalGap[] = [];
   const dblOK = budget.moves.includes('double');
-  const shareFor = (s: Range | undefined) => Math.min(1, s === undefined ? 0.5 + 0.3 * budget.heat + 0.1 * rng() : roll(rng, s));
+  const T = lo.tempo;
+  const shareFor = (s: Range | undefined) => {
+    const v = Math.min(1, s === undefined ? 0.5 + 0.3 * budget.heat + 0.1 * rng() : roll(rng, s));
+    return T ? Math.min(T.gapMax, v * T.gap) : v;
+  };
   const versions = chooseVersions(tpl, lo.pickRng ?? rng, lo.once, lo.versions);
   const chosen = (tpl.subBlocks ?? []).map((sb) => sb.versions.find((v) => v.id === versions[sb.id])!);
   const all: SectionPiece[] = [...tpl.pieces, ...chosen.flatMap((v) => v.pieces)];
@@ -491,6 +497,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const glide = pl.kind === 'pit' && pl.jump === 'glide' && budget.moves.includes('glide') && dblOK;
       const dbl = (pl.kind === 'pit' ? pl.jump !== 'jump' : pl.kind === 'double') && dblOK;
       let dy = pl.kind === 'pit' || pl.dy === undefined ? 0 : roll(rng, pl.dy);
+      if (T) dy *= T.rise;
       dy = Math.max(-riseLimit(dbl, budget.riseShare) * 0.95, dy);
       const g = glide ? glideGap(-dy, budget) : maxGap(-dy, dbl, budget.margin);
       const share = shareFor(pl.share);
@@ -746,6 +753,17 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     fam = pick.range[0] + fr() * (pick.range[1] - pick.range[0]);
   }
   let depthNow = M.pitDepth;
+  // (World 1's per-roll tempo, M.rollRanges: the roll's median gap share and rise band, from its own stream)
+  const RR = M.rollRanges;
+  let tempo: LayLocalOptions['tempo'];
+  if (RR) {
+    const tr = rngFor(seed, 61);
+    const g = RR.gap, u = tr(), c = (g.mode - g.min) / (g.max - g.min);
+    const med = u < c ? g.min + Math.sqrt(u * (g.max - g.min) * (g.mode - g.min)) : g.max - Math.sqrt((1 - u) * (g.max - g.min) * (g.max - g.mode));
+    const band = tr() < RR.rise.hillyShare ? RR.rise.hilly : RR.rise.home;
+    const rise = band[0] + tr() * (band[1] - band[0]);
+    tempo = { gap: med / g.centre, gapMax: g.p90, rise: rise / RR.rise.centre };
+  }
   // (a catch bough under a ledge gap, World 1's canopy: never in water, never where a pit already lies under it)
   const catchUnder = (x0: number, x1: number, lowerLip: number) => {
     if (!FR?.catchDrop || x1 - x0 < 20) return;
@@ -883,7 +901,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const mirrored = fixed ? fixed.mirrored : flip < 0.5 && !hangsNeed(tpl).includes('swing');
       // (the slot's floor depth: a hop roll shallow, a jump roll deep, a mixed roll by the slot's own draw against the family)
       if (FR) depthNow = fam >= FR.hopRoll ? FR.shallow : fam <= FR.jumpRoll ? FR.deep : rngFor(seed, 59, i)() < fam ? FR.shallow : FR.deep;
-      const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow });
+      const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow, ...(tempo ? { tempo } : {}) });
       // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
       const jrng = rngFor(seed, 13, i);
       let join: PlanSlot['join'];
@@ -908,7 +926,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       } else if (join === 'pit' || join === 'jump') {
         if (join === 'jump') dy = -lim1 * 0.6 + j * (lim1 * 0.6 + 80);
         const g = maxGap(-dy, false, budget.margin);
-        dx = Math.max(60, R((0.5 + 0.3 * budget.heat + 0.15 * jrng()) * g));
+        dx = Math.max(60, R(Math.min(tempo ? tempo.gapMax : 1, (0.5 + 0.3 * budget.heat + 0.15 * jrng()) * (tempo ? tempo.gap : 1)) * g));
       }
       dy = Math.max(M.corridor.top - cur.y, Math.min(M.corridor.bottom - cur.y, dy));
       const ox = cur.x + dx;
