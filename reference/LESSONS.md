@@ -62,3 +62,4 @@ that do the best job get the follow-on work.
 - Never Gemini prompts; Hugging Face only.
 - Show first: any big look change goes to Matt as stills or a mock-up before it is built.
 - D35 (11-05): a spec the build reads must trace every research row (used where, or not taken and why); counted by trace-check, reviewed by an independent critic before build. Matt: "Nothing guessed. Nothing tunnel visioned."
+- D36 (11-05): a start-up print over ~2 KB is cut to a preview after compression; what must be read is in START-HERE.txt (printed first), and the lead opens its files with the Read tool, starting at reference/notes/lead.md.
