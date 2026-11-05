@@ -994,7 +994,10 @@ construction, not just look different.
 
 **[designer, 11-05 ~9:30 AM ET] 1-1's feel, corrected from the lead's story brief** (`reference/engine/story-briefs/1-1.md` on
 `ccr-0d59a91c-oy3imz`). The brief is the source; where it and the designer's draft above disagree, the brief wins.
-- **No bootprint.** The trail is Meeca's petals, pressed flat and placed **low, at marching height**, on trunks and branches where she
+- **The bootprint is back** (the lead's correction: it is 1-1's shipped Stage Cleared clue, `src/components/stageClue.ts:16`). At the
+  **end** of 1-1 there is one deep bootprint in the moss, pointing north, a soldier's boot, so the stage's last image matches the card
+  the player reads next. It is a story prop beside the path, not a pickup.
+- **Along the way, the trail is Meeca's petals,** pressed flat and placed **low, at marching height**, on trunks and branches where she
   could reach with a soldier on each arm. 1-1's petals sit low on the trunks and banks beside the route (breadcrumbs), never high in
   the canopy. The first is the one he peels off in the arrival scene.
 - **The feel, by node group:**
@@ -1042,7 +1045,7 @@ Each stage's section is signed by all three before any building starts. New help
 | n8 | the climb up (low boughs; the kapok climb is 1-4's) | bough stair, bounce up (one not used in n4) | low → mid | — |
 | n9 | **the moment (test)** | the double-jump chain: three or four rising doubles, bough to bough, up into the canopy, with catch boughs below | mid → high | a flag before it; a heart after it only if it has risk |
 | n10 | the canopy fork | high road: the top branches; low road: mid boughs. Rejoin | high → high (two roads) | the high road's petal group |
-| n11 | cool down, arriving in the canopy | one long high branch, the sky opening ahead (the far Highlands are 1-4's), to the shrine | high → shrine | Meeca's petals low on the trunks, pointing on north |
+| n11 | cool down, arriving in the canopy | one long high branch, the sky opening ahead (the far Highlands are 1-4's), to the shrine | high → shrine | Meeca's petals low on the trunks; at the end, the soldier's bootprint in the moss, pointing north |
 
 - **Length:** Normal's quick clock is 2:40-3:15. That is at least 20% under 1-5's median of about 4:05 (no more than 3:16), and over
   the 2:00 floor. Easy is at least 2:00. Length comes from the nodes and bursts, never from a clock.
