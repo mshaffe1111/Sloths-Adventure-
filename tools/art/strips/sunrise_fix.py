@@ -24,6 +24,19 @@ MID_BOX = (0, 406, 512, 1302)             # 512 x 896
 KEY = (255, 0, 255)
 
 
+def keyed(t):
+    """a repaint on the key colour: its alpha, and its colour with the key colour taken back out of every partly see-through pixel (a
+    plain key left magenta mixed into the canopy's fading top: a purple band against the sky)"""
+    k = np.array(KEY, np.float32)
+    d = np.sqrt(((t - k) ** 2).sum(-1))
+    a = np.clip((d - 60) / 110, 0, 1)
+    fg = (t - (1 - a)[..., None] * k) / np.maximum(a, 0.05)[..., None]
+    # (and whatever magenta is left in the fringe goes: green and red pulled to the pixel's own green level)
+    fg[..., 0] = np.minimum(fg[..., 0], np.maximum(fg[..., 1] + 20, 0))
+    fg[..., 2] = np.minimum(fg[..., 2], np.maximum(fg[..., 1] + 30, 0))
+    return np.clip(fg, 0, 255), a
+
+
 def roll(a, k):
     return np.roll(a, -k, axis=1)
 
@@ -92,9 +105,8 @@ def finish(out, far_take, mid_take, far_take2=None):
     mm = np.asarray(Image.open(out / 'mid-rolled.png').convert('RGBA'), np.float32)
     x0, y0, x1, y1 = MID_BOX
     t = np.asarray(Image.open(mid_take).convert('RGB').resize((x1 - x0, y1 - y0), Image.LANCZOS), np.float32)
-    # (key out the magenta: distance from the key colour; soft over a narrow band)
-    d = np.sqrt(((t - np.array(KEY, np.float32)) ** 2).sum(-1))
-    a = np.clip((d - 60) / 50, 0, 1)
+    # (key out the magenta, despilled)
+    t, a = keyed(t)
     # (inside the crop the repaint replaces the old paint; at its right edge the old strip takes over over 80 px)
     xx = np.arange(x1 - x0, dtype=np.float32)
     w = np.clip((x1 - x0 - 1 - xx) / 80, 0, 1)[None, :]
@@ -153,8 +165,7 @@ def finish2(out, far_take, mid_take):
     mm = np.asarray(Image.open(out / 'w1sunrise-mid.webp').convert('RGBA'), np.float32)
     x0, y0, x1, y1 = MID_BOX2
     t = np.asarray(Image.open(mid_take).convert('RGB').resize((x1 - x0, y1 - y0), Image.LANCZOS), np.float32)
-    d = np.sqrt(((t - np.array(KEY, np.float32)) ** 2).sum(-1))
-    a = np.clip((d - 60) / 50, 0, 1)
+    t, a = keyed(t)
     w = feather(x1 - x0, y1 - y0, 50)
     old = mm[y0:y1, x0:x1]
     na = a * w + old[..., 3] / 255 * (1 - w)
@@ -164,6 +175,96 @@ def finish2(out, far_take, mid_take):
     Image.fromarray(np.clip(mm + 0.5, 0, 255).astype(np.uint8), 'RGBA').save(out / 'w1sunrise-mid.webp', 'WEBP', quality=90, method=6)
     print('round 2 finished in', out)
 
+
+def corner(out):
+    """the mid's canopy: its left end, a straight edge at column 131 over rows 540-770 that two repaints kept (the second left a purple
+    fringe), fades into the mist over 110 px, the way its top already does (the lead's fallback, 11-05)"""
+    out = Path(out)
+    m = np.asarray(Image.open(out / 'w1sunrise-mid.webp').convert('RGBA'), np.float32)
+    y0, y1, x0, w = 520, 790, 131, 110
+    ys = np.arange(y0, y1, dtype=np.float32)
+    # (full fade over rows 545-765, easing back to none over 25 rows at each end)
+    k = np.clip(np.minimum(ys - y0, y1 - ys) / 25, 0, 1)
+    xs = (np.arange(x0, x0 + w, dtype=np.float32) - x0 + 0.5) / w
+    ramp = xs * xs * (3 - 2 * xs)
+    f = 1 - k[:, None] * (1 - ramp[None, :])
+    m[y0:y1, x0:x0 + w, 3] *= f
+    Image.fromarray(np.clip(m + 0.5, 0, 255).astype(np.uint8), 'RGBA').save(out / 'w1sunrise-mid.webp', 'WEBP', quality=90, method=6)
+    print('corner faded in', out)
+
+
+# round 3 (er-sun3): the mid's whole left tree, from the rolled strip: its faded top band and its straight left edge taken out of the
+# start (the model kept both at s65 and painted the band as a box), repainted harder; then keyed, despilled, and blended back
+MID_BOX3 = (0, 406, 640, 1302)            # 640 x 896
+
+
+def starts3(out):
+    out = Path(out)
+    mm = np.asarray(Image.open(out / 'mid-rolled.png').convert('RGBA'), np.float32)
+    x0, y0, x1, y1 = MID_BOX3
+    c = mm[y0:y1, x0:x1].copy()
+    # (the fade: anything not nearly opaque is background; and the cut's first 40 columns go too, so no straight line is left to copy)
+    c[..., 3] = np.where(c[..., 3] > 230, 255, 0)
+    # (both cut lines carved into round leafy bumps, so there is no straight line for the model to copy)
+    H, W = c.shape[:2]
+    yy = np.arange(H, dtype=np.float32)
+    left = 171 + 34 * np.abs(np.sin(yy / 23)) + 14 * np.sin(yy / 9.0)
+    xx = np.arange(W, dtype=np.float32)
+    rows = np.where(c[..., 3].max(axis=1) > 0)[0]
+    top0 = rows[0] if len(rows) else 0
+    top = top0 + 30 * np.abs(np.sin(xx / 27)) + 12 * np.sin(xx / 11.0)
+    c[xx[None, :] < left[:, None], 3] = 0
+    c[yy[:, None] < top[None, :], 3] = 0
+    im = Image.fromarray(c.astype(np.uint8), 'RGBA')
+    bg = Image.new('RGBA', im.size, KEY + (255,))
+    bg.alpha_composite(im)
+    bg.convert('RGB').save(out / 'mid-start3.png')
+    print('round 3 start in', out)
+
+
+def finish3(out, mid_take):
+    out = Path(out)
+    mm = np.asarray(Image.open(out / 'mid-rolled.png').convert('RGBA'), np.float32)
+    x0, y0, x1, y1 = MID_BOX3
+    t = np.asarray(Image.open(mid_take).convert('RGB').resize((x1 - x0, y1 - y0), Image.LANCZOS), np.float32)
+    t, a = keyed(t)
+    # (the repaint inside the crop; the old strip beyond its right side, over 100 px; top and bottom are the crop's own)
+    xx = np.arange(x1 - x0, dtype=np.float32)
+    w = np.clip((x1 - x0 - 1 - xx) / 100, 0, 1)[None, :]
+    w = w * w * (3 - 2 * w) * np.ones((y1 - y0, 1), np.float32)
+    old = mm[y0:y1, x0:x1]
+    na = a * w + old[..., 3] / 255 * (1 - w)
+    rgb = (t * (a * w)[..., None] + old[..., :3] * (old[..., 3:4] / 255) * (1 - w)[..., None]) / np.maximum(na[..., None], 1e-4)
+    mm[y0:y1, x0:x1, :3] = rgb
+    mm[y0:y1, x0:x1, 3] = na * 255
+    # (and nothing over the crop's top row: the canopy's top is the repaint's)
+    Image.fromarray(np.clip(mm + 0.5, 0, 255).astype(np.uint8), 'RGBA').save(out / 'w1sunrise-mid.webp', 'WEBP', quality=90, method=6)
+    print('round 3 finished in', out)
+
+
+def farjoin(out, band=160, y0=774):
+    """the far's two ends meet again after round 2 changed its left edge in the bottom rows: the first `band` columns of those rows
+    blend toward the mirror of the strip's own right end, so at the seam both sides are the same paint"""
+    out = Path(out)
+    f = np.asarray(Image.open(out / 'w1sunrise-far.webp').convert('RGB'), np.float32)
+    H, W = f.shape[:2]
+    t = (np.arange(band, dtype=np.float32) + 0.5) / band
+    t = t * t * (3 - 2 * t)
+    rows = np.clip((np.arange(H, dtype=np.float32) - y0) / 60, 0, 1)[:, None]
+    mir = f[:, W - 1::-1][:, :band]
+    k = (1 - t)[None, :] * rows
+    f[:, :band] = k[..., None] * mir + (1 - k[..., None]) * f[:, :band]
+    Image.fromarray(np.clip(f + 0.5, 0, 255).astype(np.uint8)).save(out / 'w1sunrise-far.webp', 'WEBP', quality=90, method=6)
+    print('far join in', out)
+
+
+if __name__ == '__main__' and sys.argv[1] in ('starts3', 'finish3', 'farjoin'):
+    {'starts3': starts3, 'finish3': finish3, 'farjoin': farjoin}[sys.argv[1]](*sys.argv[2:])
+    sys.exit(0)
+
+if __name__ == '__main__' and sys.argv[1] == 'corner':
+    corner(sys.argv[2])
+    sys.exit(0)
 
 if __name__ == '__main__' and sys.argv[1] in ('starts2', 'finish2'):
     (starts2 if sys.argv[1] == 'starts2' else finish2)(*sys.argv[2:])
