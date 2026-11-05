@@ -1,0 +1,4 @@
+mix 1-1 easy: flag n=338 within 4 px 338, over [], nothing under 0 | heart n=338 within 4 px 0, over [34, 40, 90], nothing under 0
+mix 1-1 normal: flag n=177 within 4 px 177, over [], nothing under 0
+mix 1-5 easy: flag n=449 within 4 px 449, over [], nothing under 0 | find n=16 within 4 px 0, over [26], nothing under 0 | heart n=449 within 4 px 0, over [34], nothing under 0
+mix 1-5 normal: flag n=224 within 4 px 224, over [], nothing under 0 | heart n=32 within 4 px 0, over [60], nothing under 0 | find n=16 within 4 px 0, over [26], nothing under 0
