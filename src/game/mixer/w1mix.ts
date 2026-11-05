@@ -486,6 +486,36 @@ function crossings(L: Lay, hi: Platform[], lo: Platform[], job: string) {
 }
 
 /**
+ * The trunks and posts that hold the pieces in the air (P-2, P-7, P-11). A piece is in the air when it is a bough, a log, a crumbling ledge
+ * or a creaky limb; banks and stones are ground. The trunk goes under the piece's middle (a bridge gets a thin post at each end), from just
+ * under its top down to the first floor under it, or past the stage's bottom; trunks closer than 200 px at about the same height are one.
+ */
+function supports(P: Platform[], height: number): Array<{ x: number; topY: number; bottomY: number; w: number }> {
+  const out: Array<{ x: number; topY: number; bottomY: number; w: number }> = [];
+  const floorOf = (x: number, y: number) => {
+    const under = P.filter((q) => q.type !== 'bouncy' && q.style === 'moss_stone' && q.x <= x && q.x + q.width >= x && q.y > y + 30);
+    return under.length ? Math.min(...under.map((q) => q.y)) : null;
+  };
+  for (const p of P) {
+    if (p.type === 'bouncy' || (p as { catch?: boolean }).catch || (p as { art?: string }).art) continue;
+    // (a stone, the painted mossy rock, in the air stands on a thin root post down to the floor: a rock never hangs in the sky)
+    const stone = p.style === 'moss_stone' && p.height === 50;
+    const air = stone || p.style === 'branch' || p.style === 'canopy_bridge' || p.style === 'log' || p.style === 'ruin' || p.type === 'fragile';
+    if (!air) continue;
+    const perch = !!(p as { perch?: boolean }).perch;
+    const bridge = p.style === 'canopy_bridge';
+    const xs = bridge ? [p.x + 12, p.x + p.width - 12] : [p.x + p.width / 2];
+    for (const x of xs) {
+      const top = p.y + (p.style === 'log' ? 50 : stone ? 40 : 16);
+      if (!bridge && out.some((t) => Math.abs(t.x - x) < 200 && Math.abs(t.topY - top) < 80)) continue;
+      const fl = floorOf(x, p.y);
+      out.push({ x: Math.round(x), topY: Math.round(top), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: perch ? 0.7 : bridge ? 0.5 : stone ? 0.6 : 1.15 + ((Math.round(x) * 7) % 5) * 0.08 });
+    }
+  }
+  return out;
+}
+
+/**
  * Build 1-5 from its node plan. Normal and Easy draw the same ideas from the same streams (Easy only changes sizes), so a roll is the
  * same stage in both settings.
  */
@@ -617,7 +647,8 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     }
     petalsOver(L, from);
     // one of Meeca's marks in each non-fork node, on the main route, on a piece the idea laid (its middle one)
-    if (Array.isArray(n.deck)) { const m = clearPiece(L, L.P.slice(from)); if (m) L.marks.push({ x: m.x + m.width / 2, y: m.y }); }
+    // (n7b, the second rest, lays no mark: the designer's 13 marks are the plan's nine nodes and the forks' four, and the goal is 10 of them)
+    if (Array.isArray(n.deck) && !n.id) { const m = clearPiece(L, L.P.slice(from)); if (m) L.marks.push({ x: m.x + m.width / 2, y: m.y }); }
     // (n9's golden seed: the designer's ruling (b), CP3: no seed on 1-5; Dot's line plays here, the seed waits for the stage that teaches
     // the glide. The far-off glint is dressing only: a twinkle 420 px over the node's highest piece, out of every jump's reach)
     if (n.seed) {
@@ -625,7 +656,12 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       const top = Math.min(...ps.map((q) => q.y));
       L.glints.push({ x: Math.round((x0 + c.x) / 2), y: Math.max(40, top - 420) });
     }
-    if (n.heartAfter && !easy) L.C.push({ id: L.cid++, type: 'heart', x: c.x + 40, y: c.y - 60, collected: false, bobPhase: 0 } as Collectible);
+    // (on the node's last solid piece, over its middle, never over the gap past it: markers stand on the path, P-5)
+    if (n.heartAfter && !easy) {
+      const lastP = [...L.P.slice(from)].reverse().find((q) => q.type === 'solid' && !(q as { bough?: boolean }).bough && q.width >= 100);
+      const hx = lastP ? lastP.x + lastP.width / 2 : c.x - 60, hy = lastP ? lastP.y : c.y;
+      L.C.push({ id: L.cid++, type: 'heart', x: Math.round(hx), y: hy - 60, collected: false, bobPhase: 0 } as Collectible);
+    }
   });
   const end = step(L, c, rngFor(seed, '1-5 end'), 'bank', 640);
   const exit = { x: end.x + 420, y: end.y };
@@ -683,7 +719,12 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   const nMarks = L.marks.length;
   // (the marks goal, the designer's ruling 2: 10 of 13 on Normal and 8 of 13 on Easy, one miss of slack on a single route of 11)
   const goalN = Math.min(nMarks, Math.round(nMarks * 10 / 13)), goalE = Math.min(nMarks, Math.round(nMarks * 8 / 13));
+  if (nMarks !== 13) throw new Error(`1-5 laid ${nMarks} marks, not the plan's 13`);
   const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: height, targetCount: Math.max(1, easy ? goalE : goalN) };
+  // (nothing floats unless it floats (the designer's P-2, P-7, P-11; D16): every bough, log, crumbling ledge and creaky limb in the air
+  // stands on a painted kapok set back in the shade, as 1-2's logs do (protoArt.ts setDecoTrunks), down to the floor under it or past the
+  // stage's bottom; a bridge hangs from a post at each end; the mushroom's perch is a short stump on its bank. Dressing only: no surface)
+  const trunks = supports(L.P, height);
   const beats: Array<[number, number, string]> = L.explain.map((e) => [e.x0, e.x1, `${e.job}: ${e.idea}${e.road ? ` (${e.road} road)` : ''}`]);
   const stage = {
     config: cfg, trees: [], platforms: L.P, vines: L.V, ropes: [], enemies: [], boss: null, collectibles: L.C,
@@ -691,7 +732,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     checkpoints: L.flags.map((f) => ({ x: f.x, y: f.y, reached: false })).sort((a, b) => a.x - b.x),
     easyGoal: Math.max(1, goalE), normalGoal: Math.max(1, goalN),
     meta: { attempt: seed, chunks: L.explain.map((e) => e.idea), width, pieces: L.explain.map((e) => ({ k: `1-5 ${e.idea}`, x0: e.x0, x1: e.x1 })), mix: { explain: L.explain } },
-    proto: { hints: L.hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, ownPetals: true, glints: L.glints },
+    proto: { hints: L.hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, ownPetals: true, glints: L.glints, trunks },
   } as unknown as GeneratedStage & { proto: ProtoExtras };
   // (petals the shared judge can't reach come off: a petal over a gap between the canopy and the floor below it marks no jump anyone
   // makes. The level check names each one; only petals are taken off, never a mark, a heart or the exit)
