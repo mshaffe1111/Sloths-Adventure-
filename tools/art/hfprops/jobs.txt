@@ -43,3 +43,12 @@ wl1   6aecaee8c78863f9c633716c  2026-11-05 16:29:28Z-16:31:48Z (~2.3 min, ~$0.11
      other world's sheet and frames untouched), cropBottom 0.09, same units (40 -> drawn 52). Old frame gone. Review:
      reference/prop-sheets/qa-notes/hf-props/wetleaves/ (before/after on 6-4's start bank, upright and sideways, contact-takes).
 SPEND TOTAL: ~$5.8 (this file's jobs); this remake ~$0.11 of its $1 cap.
+ln1   6aecb7830e0338d1bb8093c5  2026-11-05 17:06:11Z-17:08:28Z (~2.3 min, ~$0.11; cap $1; branch art-w6lantern)  W6 stakeLantern REMADE
+     (the lead's go: the old frame, take w6-stakeLantern-17, had a pink glow of the magenta key round its lantern; the key-hue scan
+     scored it 2.3x). make_single.py --grey --desc --neg ("glow halo around it, aura, bloom, light rays, lens flare, haze"): 4 takes,
+     seeds 5/11/17/23, on mid grey, spec at 5f8c946a. KEPT: w6-stakeLantern-11g (a black iron lantern lit inside, hung from a cross-arm
+     stake on mangrove roots; the faint yellow glow keyed out). THROWN: 5g (a wide halo), 17g (a bent branch on a stone), 23g (a green
+     vignette, a thin stake). cut.py: a grey-keyed piece is solid inside its outline EXCEPT a wide grey hole (the key inside the handle
+     loop), which is cleared; small grey glints stay. cropBottom 0.14 (the puddle), units 32 (drawn 42: the old one's height on screen).
+     Review: reference/prop-sheets/qa-notes/hf-props/stakelantern/ (before/after on 6-4's start, x 704).
+SPEND: this remake ~$0.11 of its $1 cap.

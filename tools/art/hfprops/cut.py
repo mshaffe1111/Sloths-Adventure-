@@ -63,8 +63,21 @@ def key_own(img, solo=False):
         # (a grey key, 2026-11-05, the W6 wetLeaves remake: an olive leaf sits only ~80 from mid grey, so the distance key left its
         # body half see-through. A piece's ink outline closes it: everything inside the outline is solid, only the outline's own
         # edge keeps the soft key)
+        # (but a hole the outline closes round the key itself, as inside a lantern's handle loop, stays clear: each part of the
+        # inside that is not solid already is filled only if it is painted colour, and cleared if it is grey like the key)
         solid = ndimage.binary_fill_holes(alpha > 0.35)
-        alpha = np.where(ndimage.binary_erosion(solid, iterations=2), 1.0, alpha)
+        inner = ndimage.binary_erosion(solid, iterations=2)
+        lab, n = ndimage.label(inner & (alpha < 0.95))
+        mx, mn = a.max(-1), a.min(-1)
+        sat = (mx - mn) / np.maximum(mx, 1)
+        if n:
+            ms = ndimage.mean(sat, lab, range(1, n + 1))
+            area = ndimage.sum(np.ones_like(sat), lab, range(1, n + 1))
+            # (and big: a grey metal glint on the lantern is the piece's own paint, a few px; the key inside a loop is a wide hole)
+            keyish_hole = np.isin(lab, 1 + np.nonzero((ms < 0.12) & (area > 0.004 * inner.sum()))[0]) & (lab > 0)
+        else:
+            keyish_hole = np.zeros_like(inner)
+        alpha = np.where(inner & ~keyish_hole, 1.0, np.where(keyish_hole, 0.0, alpha))
     al = alpha[..., None]
     paint = np.where(al > 0.02, (a - (1 - al) * bgm) / np.maximum(al, 0.02), 0)
     rgb = np.where(al < 0.999, paint, a).clip(0, 255)

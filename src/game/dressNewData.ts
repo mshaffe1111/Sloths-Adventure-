@@ -845,15 +845,15 @@ export const DRESS_NEW_FRAMES = {
   "hang": true
  },
  "w6StakeLantern": {
-  "x": 0,
-  "y": 934,
-  "w": 239,
-  "h": 317,
-  "units": 60,
+  "x": 813,
+  "y": 599,
+  "w": 166,
+  "h": 321,
+  "units": 42,
   "world": 6
  },
  "w6BromeliadRoot": {
-  "x": 243,
+  "x": 0,
   "y": 934,
   "w": 270,
   "h": 283,
@@ -861,7 +861,7 @@ export const DRESS_NEW_FRAMES = {
   "world": 6
  },
  "w6SnailRock": {
-  "x": 517,
+  "x": 274,
   "y": 934,
   "w": 239,
   "h": 273,
@@ -869,7 +869,7 @@ export const DRESS_NEW_FRAMES = {
   "world": 6
  },
  "w6NestBasket": {
-  "x": 760,
+  "x": 517,
   "y": 934,
   "w": 229,
   "h": 264,
@@ -878,40 +878,40 @@ export const DRESS_NEW_FRAMES = {
   "hang": true
  },
  "w6DriftRoot": {
-  "x": 0,
-  "y": 1255,
+  "x": 750,
+  "y": 934,
   "w": 260,
   "h": 264,
   "units": 65,
   "world": 6
  },
  "w6MudLilies": {
-  "x": 264,
-  "y": 1255,
+  "x": 0,
+  "y": 1221,
   "w": 260,
   "h": 255,
   "units": 65,
   "world": 6
  },
  "w6Mudskipper": {
-  "x": 528,
-  "y": 1255,
+  "x": 264,
+  "y": 1221,
   "w": 239,
   "h": 164,
   "units": 60,
   "world": 6
  },
  "w6WetLeaves": {
-  "x": 771,
-  "y": 1255,
+  "x": 507,
+  "y": 1221,
   "w": 208,
   "h": 131,
   "units": 52,
   "world": 6
  },
  "w6Pods": {
-  "x": 0,
-  "y": 1523,
+  "x": 719,
+  "y": 1221,
   "w": 260,
   "h": 90,
   "units": 65,

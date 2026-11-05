@@ -22,9 +22,9 @@
    "cropBottom": 0.08
   },
   "stakeLantern": {
-   "take": "w6-stakeLantern-17",
-   "units": 46,
-   "cropBottom": 0.06
+   "take": "w6-stakeLantern-11g",
+   "units": 32,
+   "cropBottom": 0.14
   },
   "orchidSpray": {
    "take": "w6-orchidSpray-17",
