@@ -788,6 +788,19 @@ another roll.
 line is (b). One roll's noise (±0.03 density, ±15 s) is bigger than the gap being chased. If the 16-roll median is still over 0.55, a
 third Easy-only rest of 4-5 s goes after n3 (c). **This is a miss at the checkpoint, so it goes to Matt before the work goes on.**
 
+
+**[designer ruling, 11-05 ~3:45 AM ET, on the 16-roll pacing run (27345325)] A + B, and C for Normal's density only.**
+- **(A) A calmer Easy.** Easy has its own size bands, with landings about 300 px (settling CP3 item 6), and lays one fewer burst a node,
+  so the length holds. The aim is Easy at 0.55 or less. Easy is where children play, so this line is not loosened. If "something new"
+  breaks on Easy, its gap is judged on Easy's own bands.
+- **(B) Normal breathes.** A 1.0-1.2 s pad after every second burst on Normal. Normal's longest run without a rest must be no worse than
+  main's 29 s, on the 16-roll median and worst.
+- **(C) Normal's density only:** 0.80 against main's 0.57 is accepted as provisional (§0 row 2: the band is not calibrated). Matt
+  played the busier mixer 1-5 and said "It played much better". Normal is judged on its longest run and dead time, not on matching
+  main's density. Easy's density line stands.
+- **The bot's fork stall** is not counted as layout dead time once traced (rolls with stalls at n4 and n10). The fork crossings (CP3 item
+  1) should end it. If it persists, the planner tells the designer.
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
