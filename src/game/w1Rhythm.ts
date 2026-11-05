@@ -83,6 +83,8 @@ export interface Layout {
   /** open air over a later part of the way (1-2's rotten bough over the floor leg): a fall that deep under his last ground is a fall
    * there and then (engine.ts fallZones), never a landing on the leg below */
   fallZones: Array<{ x0: number; x1: number; depth: number }>;
+  /** the stage's tiers, its ground lines (1-2: canopy, bough, floor; 1-5: the trail's steps down) */
+  tiers: number[];
   /** a quick, sure player's seconds */
   expert: number;
   /** faces he can't pass (a trunk at the end of a leg): x0, x1, top, bottom */
@@ -259,7 +261,7 @@ class Lay {
   L: Layout;
   node = -1;
   constructor(stage: Layout['stage'], bpm: number, readonly R: Rng, readonly easy: boolean) {
-    this.L = { stage, bpm, ledges: [], vines: [], nodes: [], flags: [], petals: [], snakes: [], boas: [], rocks: [], marks: [], find: null, lines: [], spawn: { x: 0, y: 0 }, exit: { x: 0, y: 0 }, width: 0, height: 0, heartFalls: [], fallZones: [], expert: 0, walls: [] };
+    this.L = { stage, bpm, ledges: [], vines: [], nodes: [], flags: [], petals: [], snakes: [], boas: [], rocks: [], marks: [], find: null, lines: [], spawn: { x: 0, y: 0 }, exit: { x: 0, y: 0 }, width: 0, height: 0, heartFalls: [], fallZones: [], tiers: [], expert: 0, walls: [] };
   }
   begin(tag: Tag, pair: string, tier: string, dir: 1 | -1, x: number, y: number, bars: string[] = []) {
     this.lastExit = null;
@@ -355,8 +357,10 @@ function shift(tr: Trace, dx: number): Trace {
  * and the first-timer's short flick alike (the pickup is 46 px round a point 20 px over his feet, engine.ts). At the top of the arc it
  * was 140 px up, over a short flick's head (D14): the fixed first-timer got about half of 1-2's petals
  */
-function arcPetals(out: Layout['petals'], fx: number, tx: number, _fy: number, ty: number, _move: Move) {
-  out.push({ x: Math.round(tx + Math.sign(tx - fx) * 14), y: Math.round(ty - 45) });
+function arcPetals(out: Layout['petals'], fx: number, tx: number, fy: number, _ty: number, _move: Move) {
+  // (just before the take-off: everyone runs to the edge to jump, where a petal just past the beat's landing was missed by anyone who
+  // landed further on, the fixed adult bot 2026-11-04)
+  out.push({ x: Math.round(fx - Math.sign(tx - fx) * 30), y: Math.round(fy - 45) });
 }
 
 /** the petal shares (Matt, 2026-11-04, via the lead): the shared path every route crosses carries 70%, each road of a split 15% */
@@ -378,7 +382,8 @@ function splitPetals(L: Layout, splits: ReadonlyArray<{ x0: number; x1: number; 
     }
   }
   high.sort((a, b) => a.x - b.x);
-  const n = Math.min(high.length, Math.round(shared.length * PETAL_ROAD));
+  // (every candidate kept: the stage's own pass, rhythmOwnPetals, takes the roads in turn up to their share under the petal rules)
+  const n = high.length;
   const pick = <T,>(xs: T[], k: number) => (k <= 0 ? [] : Array.from({ length: k }, (_, i) => xs[Math.floor(((i + 0.5) * xs.length) / k)]));
   const highKeep = pick(high, n).map((pt) => ({ ...pt, road: 'high' as const }));
   const spots: number[][] = [];
@@ -389,17 +394,18 @@ function splitPetals(L: Layout, splits: ReadonlyArray<{ x0: number; x1: number; 
         if (L.ledges.some((c) => c.surface === 'crumble' && c.y === q.y && x > c.x0 - 120 && x < c.x1 + 120)) continue;
         if (L.snakes.some((sn) => Math.abs(sn.y - q.y) < 20 && Math.abs(sn.x - x) < 140)) continue;
         if (L.flags.some((f) => Math.abs(f.y - q.y) < 20 && Math.abs(f.x - x) < 100)) continue;
+        // (never under the high road's jumps, the gaps between its branches: a petal below a required jump's arc breaks the petal rules,
+        // petals.ts offArc; under a branch 75 px up or more is room)
+        const hi = L.ledges.filter((h) => h.y <= sp.line - 50 && (h.surface === 'branch' || h.surface === 'crumble') && h.x1 > sp.x0 && h.x0 < sp.x1).sort((a, b) => a.x0 - b.x0);
+        const under = hi.find((h) => x > h.x0 - 10 && x < h.x1 + 10);
+        if (under ? q.y - under.y < 75 : hi.some((h, k) => k > 0 && x > hi[k - 1].x1 - 40 && x < h.x0 + 40)) continue;
         spots.push([x, q.y]);
       }
     }
   }
   spots.sort((a, b) => a[0] - b[0]);
-  const low = pick(spots, Math.min(n, spots.length)).map(([x, y]) => ({ x, y: y - 45, road: 'low' as const }));
-  const k = Math.min(highKeep.length, low.length);
-  const all = apart([...apart(shared), ...pick(highKeep, k), ...pick(low, k)]);
-  // (the spacing can drop a road's petal: the larger road gives up as many, so the two stay equal)
-  const hi = all.filter((pt) => pt.road === 'high'), lo = all.filter((pt) => pt.road === 'low'), m = Math.min(hi.length, lo.length);
-  L.petals = [...all.filter((pt) => !pt.road), ...pick(hi, m), ...pick(lo, m)];
+  const low = spots.map(([x, y]) => ({ x, y: y - 45, road: 'low' as const }));
+  L.petals = apart([...apart(shared), ...highKeep, ...low]);
 }
 
 /** petals at least PICKUP_APART + 4 px from each other (levelCheck.ts: two pickups closer are one on top of the other); the first kept */
@@ -577,7 +583,10 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   let y = ramp.tr.yOut;
   // spike: the vine, taught over a catch branch (a miss lands on it), then the chain over the drop, then the swung jumps off it
   lay.begin('spike', 'jump + vine swing', 'A', 1, x, y);
-  lay.ledge(x, x + 320, y, 'apron');
+  // (a hop in the apron, 70 px across at the same height: the ramp's last ledge and this apron were a 3.3-3.8 s walk with nothing to do,
+  // fun gate dead walk; a gap the route takes as a hop, where decorative rocks were not registered)
+  lay.ledge(x, x + 150, y, 'apron');
+  lay.ledge(x + 220, x + 320, y, 'apron');
   L.flags.push({ x: x + 100, y });
   let edge = x + 320;
   const far1 = vineChain(lay, edge, y, 1, true, 360);
@@ -694,6 +703,7 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   lay.end(x + 640, 640 / PHYS.maxRun);
   L.width = x + 660;
   L.height = C + 120;
+  L.tiers = [T12.A, T12.B, T12.C];
   rottenBough(L, back.tr, Lx, bRight, B, easy);
   // (the two splits: the high branches over the canopy's base bough, and the bough leg's branches over the bough)
   const topN = L.nodes[topNode], bN = L.nodes.find((nd) => nd.tier === 'B')!;
@@ -719,6 +729,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   const L = lay.L;
   // the trail's tiers, canopy to floor: each middle node comes down one (a staircase you see from the rests)
   const T = { canopy: 330, two: 460, three: 590, four: 720, five: 820, floor: 930 } as const;
+  L.tiers = Object.values(T);
   L.spawn = { x: 140, y: T.canopy };
   /** a carving on the path: on the nearest solid ledge to (x, y) (never a snap twig, which breaks under it) */
   const mark = (x: number, y: number) => {
@@ -905,85 +916,92 @@ export const BOA_LINE = 'A coiled boa! Punches bounce off. Kick it!';
 /** the first seconds of the way, at full run, in which no gap can hurt (a catch under each) */
 export const OPENING_S = 6.5;
 /** 1-2's petal goal, a share of its petals, from the first-timer bots' runs */
-export const PETAL_SHARE = { normal: 0.6, easy: 0.6 } as const;
+export const PETAL_SHARE = { normal: 0.75, easy: 0.75 } as const;
 const petalGoal = (n: number, k: number) => Math.max(1, Math.round(n * k));
 /**
- * 1-2's two splits on the stage as built (Matt's 70/30, the lead 2026-11-04; as protoStage.ts splitPetals does 1-3's): the petal pass has
- * filled the trail's long gaps, most of them on the shared path, so each road (the high branches, the bough under them) is brought to
- * 15/70 of the shared petals: extras taken off evenly, then even spots filled (clear of the snakes, the rotten wood and the flags), each
- * new petal kept only where the pass's own rules still hold (six a screen, no rows, no clumps)
+ * The beat-traced stage's own petals (proto.ownPetals, the lead's ruling 2026-11-04: the petal pass adds none), held to the pass's rules
+ * here: the shared path's petals first, then the splits' two roads (1-2) in turn, as many on each, up to 15/70 of the shared path, then
+ * the bare stretches filled on solid ledges; each petal kept only where it breaks none of the rules (petals.ts: never below a required
+ * jump's arc, no rows, no clumps, six a screen; flowerReach.ts: in reach; 40 px from any other pickup; petals.test.ts: two screens)
  */
-function rhythmRoads(st: GeneratedStage & { proto: ProtoExtras }): void {
+export function rhythmOwnPetals(st: GeneratedStage & { proto: ProtoExtras }): void {
+  const isPet = (c: Collectible) => c.type === 'flower' || c.type === 'leaf';
   const nodes = st.proto.rhythm?.nodes ?? [];
   const top = nodes.find((n) => n.tier === 'A' && n.pair.includes('rotten branches')), leg = nodes.find((n) => n.tier === 'B');
-  if (!top || !leg) return;
-  const splits = [{ x0: top.x0, x1: top.x1, line: top.y }, { x0: leg.x0, x1: leg.x1, line: T12.B }];
-  const isPet = (c: Collectible) => c.type === 'flower' || c.type === 'leaf';
-  // (by height too: the bough leg runs under the canopy, whose petals are the shared path's)
+  const splits = top && leg ? [{ x0: top.x0, x1: top.x1, line: top.y }, { x0: leg.x0, x1: leg.x1, line: T12.B }] : [];
   const roadOf = (c: { x: number; y: number }) => {
     const sp = splits.find((q) => c.x > q.x0 && c.x < q.x1 && c.y >= q.line - 180 && c.y <= q.line + 10);
     return !sp ? null : c.y <= sp.line - 80 ? 'high' : 'low';
   };
-  const want = Math.round((st.collectibles.filter((c) => isPet(c) && !roadOf(c)).length * 15) / 70);
-  // (a road over its share gives up its extras, evenly along it)
-  for (const r of ['high', 'low'] as const) {
-    const on = st.collectibles.filter((c) => isPet(c) && roadOf(c) === r).sort((a, b) => a.x - b.x);
-    const extra = on.length - want;
-    for (let i = 0; i < extra; i++) {
-      const c = on[Math.floor(((i + 0.5) * on.length) / extra)];
-      st.collectibles.splice(st.collectibles.indexOf(c), 1);
-    }
-  }
-  const spots: Record<'high' | 'low', Array<{ x: number; y: number }>> = { high: [], low: [] };
-  for (const sp of splits) {
-    for (const p of st.platforms) {
-      if (p.type !== 'solid' || p.x + p.width < sp.x0 || p.x > sp.x1) continue;
-      const r = p.y <= sp.line - 50 && p.y >= sp.line - 135 && p.style === 'branch' ? 'high' : p.y === Math.round(sp.line) && p.style === 'log' ? 'low' : null;
-      if (!r) continue;
-      for (let fx = Math.max(p.x, sp.x0) + 50; fx <= Math.min(p.x + p.width, sp.x1) - 50; fx += 30) {
-        if (st.enemies.some((e) => Math.abs(e.y + 14 - p.y) < 20 && Math.abs(e.x - fx) < 140)) continue;
-        if (st.platforms.some((f) => f.type === 'fragile' && Math.abs(f.y - p.y) < 10 && fx > f.x - 120 && fx < f.x + f.width + 120)) continue;
-        if ((st.checkpoints ?? []).some((f) => Math.abs(f.y - p.y) < 20 && Math.abs(f.x - fx) < 100)) continue;
-        // (and open air over it: a petal under a branch 75 px up or less is boxed in, the level check cannot take it)
-        if (st.platforms.some((f) => f !== p && f.y < p.y && f.y > p.y - 75 && fx > f.x - 30 && fx < f.x + f.width + 30)) continue;
-        spots[r].push({ x: fx, y: p.y - 45 });
+  const all = st.collectibles.filter(isPet).sort((a, b) => a.x - b.x);
+  st.collectibles = st.collectibles.filter((c) => !isPet(c));
+  const kept: Collectible[] = [];
+  const why: Record<string, number> = {};
+  const no = (k: string) => { why[k] = (why[k] ?? 0) + 1; return false; };
+  const accept = (c: Collectible) => {
+    if (st.collectibles.some((o) => o.type !== 'exit_totem' && Math.hypot(o.x - c.x, o.y - c.y) < PICKUP_APART + 4)) return no(roadOf(c) + ' near');
+    const pets = [...kept, c];
+    if (offArc(st, [c]).size) return no(roadOf(c) + ' arc');
+    if (rowExtras(pets).size) return no(roadOf(c) + ' row');
+    if (clumpExtras(pets).size) return no(roadOf(c) + ' clump');
+    if (busiestScreen(pets).n > PER_SCREEN) return no(roadOf(c) + ' screen');
+    kept.push(c);
+    st.collectibles.push(c);
+    return true;
+  };
+  // (the roads first: over the loop the canopy, the bough leg and the floor under them all share one screen's six, and the shared
+  // path's floor petals there would leave the roads none; then the shared path)
+  const sharedAll = all.filter((c) => !roadOf(c));
+  const want = Math.round((sharedAll.length * 15) / 70);
+  const road = { high: all.filter((c) => roadOf(c) === 'high'), low: all.filter((c) => roadOf(c) === 'low') };
+  const taken = { high: [] as Collectible[], low: [] as Collectible[] };
+  // (the scarcer road first, wherever its spots are: the bough's legal spots are few, under the branches with room, and the high road
+  // would fill those screens' six first)
+  const roads = (['low', 'high'] as const).slice().sort((a, b) => road[a].length - road[b].length);
+  for (const r of roads) for (const c of road[r]) if (taken[r].length < want && accept(c)) taken[r].push(c);
+  for (const c of sharedAll) accept(c);
+  // (the bare stretches: a petal on a solid ledge every 300 px between two petals more than 1,900 px apart, at his body's height; over
+  // a run of lianas, at a liana's foot, where his body passes on the swing)
+  let id = Math.max(0, ...st.collectibles.map((c) => c.id), ...all.map((c) => c.id)) + 1;
+  const ledges = st.platforms.filter((p) => p.type === 'solid' && p.width >= 120 && p.height < 300);
+  for (let pass = 0; pass < 3; pass++) {
+    const xs = kept.map((c) => c.x).sort((a, b) => a - b);
+    for (let i = 1; i < xs.length; i++) {
+      if (xs[i] - xs[i - 1] <= 1900) continue;
+      for (let x = xs[i - 1] + 300; x < xs[i] - 200; x += 300) {
+        const q = ledges.filter((p) => x > p.x + 30 && x < p.x + p.width - 30).sort((a, b) => a.y - b.y)[0];
+        const v = !q ? st.vines.find((vn) => Math.abs(vn.x - x) < 150) : undefined;
+        if (v) accept({ id: id++, type: 'flower', botanicalVariant: 'orchid', x: v.x, y: v.bottomY + 10, collected: false, bobPhase: (v.x * 0.031) % 6.28 });
+        else if (q) accept({ id: id++, type: 'flower', botanicalVariant: 'orchid', x, y: q.y - 45, collected: false, bobPhase: (x * 0.031) % 6.28 });
       }
     }
   }
-  let id = Math.max(0, ...st.collectibles.map((c) => c.id)) + 1;
-  const firstNew = id;
-  for (const r of ['high', 'low'] as const) {
-    let have = st.collectibles.filter((c) => isPet(c) && roadOf(c) === r).length;
-    const list = spots[r].sort((a, b) => a.x - b.x);
-    for (let k = 0; have < want && k < 3; k++) {
-      // (three passes over the road's spots, spread out first, then closer)
-      const step = Math.max(1, Math.floor(list.length / Math.max(1, want - have)) >> k);
-      for (let i = Math.floor(step / 2); i < list.length && have < want; i += step) {
-        const q = list[i];
-        const c: Collectible = { id, type: 'flower', botanicalVariant: 'orchid', x: q.x, y: q.y, collected: false, bobPhase: (q.x * 0.031) % 6.28 };
-        const pets = [...st.collectibles.filter(isPet), c];
-        if (st.collectibles.some((o) => o.type !== 'exit_totem' && Math.hypot(o.x - c.x, o.y - c.y) < PICKUP_APART + 4)) continue;
-        if (busiestScreen(pets).n > PER_SCREEN || rowExtras(pets).size || clumpExtras(pets).size) continue;
-        st.collectibles.push(c);
-        id++;
-        have++;
-      }
-    }
-  }
-  // (a new petal the level check cannot reach is taken off again: flowerReach.ts badPickups, the check the stage's test holds it to)
-  const bad = new Set(badPickups({ platforms: st.platforms, vines: st.vines, waterY: st.waterY }, st.collectibles).filter((c) => c.id >= firstNew));
-  // (nor one hanging below a required jump's arc: the petal rules, petals.ts offArc)
-  for (const c of offArc(st, st.collectibles.filter(isPet))) if (c.id >= firstNew) bad.add(c);
+  if (process.env.PETAL_WHY) console.log('petal rejects', JSON.stringify(why));
+  // (none the level check cannot reach)
+  const bad = new Set(badPickups({ platforms: st.platforms, vines: st.vines, waterY: st.waterY }, st.collectibles).filter(isPet));
   st.collectibles = st.collectibles.filter((c) => !bad.has(c));
-  // (NOT thinned to keep the shares: where the six-a-screen cap leaves a road short, thinning the shared path to match took 1-2 down to
-  // about 27 petals and sealed the door, the fixed first-timer, 2026-11-04 5:15 PM; the 70/30 shares on the built stage are open, R-id
-  // to come: the petal pass's trail fills the shared path past 70%)
+  // (and the roads equal: the longer gives up its extras, evenly)
+  const on = (r: 'high' | 'low') => st.collectibles.filter((c) => isPet(c) && roadOf(c) === r).sort((a, b) => a.x - b.x);
+  // (a road's count: as many as the shorter road holds, and no more than 15/70 of the shared path kept)
+  const m = Math.min(on('high').length, on('low').length, Math.round((st.collectibles.filter((c) => isPet(c) && !roadOf(c)).length * 15) / 70));
+  const thin = (list: Collectible[], keep: number) => {
+    const extra = list.length - keep;
+    const drop = new Set(Array.from({ length: Math.max(0, extra) }, (_, i) => list[Math.floor(((i + 0.5) * list.length) / extra)]));
+    st.collectibles = st.collectibles.filter((c) => !drop.has(c));
+  };
+  for (const r of ['high', 'low'] as const) thin(on(r), m);
+  // (the shares by the shared path's density: over the loop the canopy's two roads and the bough leg's share screens, so six a screen
+  // holds a road to about a dozen; the shared path then keeps 70/15 of a road's count, thinned evenly. Never under 8 a road: at 4 a road
+  // this took 1-2 to 27 petals and sealed the door, 2026-11-04)
+  if (splits.length && m >= 8) {
+    const sh = st.collectibles.filter((c) => isPet(c) && !roadOf(c)).sort((a, b) => a.x - b.x);
+    thin(sh, Math.min(sh.length, Math.round((m * 70) / 15)));
+  }
 }
 
 /** 1-2's goal on the stage as built, after the petal pass (protoStage.ts: it fills the trail's long gaps): PETAL_SHARE of the petals it
  *  holds, counted as the goal counts them (goals.ts goalCounts: none on a crumbling branch) */
 export function rhythmPetalGoal(st: GeneratedStage, easy: boolean): void {
-  rhythmRoads(st as GeneratedStage & { proto: ProtoExtras });
   const n = goalCounts(st as never).petals;
   st.normalGoal = petalGoal(n, PETAL_SHARE.normal);
   st.easyGoal = petalGoal(n, PETAL_SHARE.easy);
@@ -1024,7 +1042,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     const a = intro[i - 1], b = intro[i];
     if (b.x0 - a.x1 < 20) continue;
     const y = Math.max(a.y, b.y) + 60;
-    P.push({ id: pid++, x: a.x1 - 30, y, width: b.x0 + 50 - (a.x1 - 30), height: 24, type: 'solid', style: 'branch' });
+    P.push({ id: pid++, x: a.x1 - 30, y, width: b.x0 + 50 - (a.x1 - 30), height: 24, type: 'solid', style: 'branch', catch: true });
     P.push({ id: pid++, x: b.x0, y: b.y, width: 50, height: y - b.y, type: 'solid', style: 'moss_stone', art: 'rock' });
     // (a catch the layout already laid there, 1-5's teach catches: this one replaces it)
     for (const c of L.ledges) if (c.surface === 'catch' && c.x0 < b.x0 && c.x1 > a.x1) c.x1 = c.x0;
@@ -1039,7 +1057,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     } else if (q.surface === 'crumble') {
       P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: 24, type: 'fragile', style: 'branch', creak: q.hold ?? 0.6 });
     } else {
-      P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: q.surface === 'bough' ? 40 : 24, type: 'solid', style: style(q) });
+      P.push({ id: pid++, x: q.x0, y: q.y, width: w, height: q.surface === 'bough' ? 40 : 24, type: 'solid', style: style(q), ...(q.surface === 'catch' ? { catch: true } : {}) });
     }
   }
   // (the floor: a slit under 40 px between two floor pieces is no gap he can fall through (he is 38 wide), only a sliver the pit art
@@ -1116,7 +1134,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     // the goal is always in reach whichever road he takes (splitPetals); checked against the fixed first-timer bots' runs)
     ...(id === '1-2' ? { normalGoal: petalGoal(L.petals.length, PETAL_SHARE.normal), easyGoal: petalGoal(L.petals.length, PETAL_SHARE.easy) } : {}),
     meta: { attempt: seed, chunks: L.nodes.map((n) => n.tag), width: L.width, pieces: L.nodes.map((n) => ({ k: `${id} ${n.tag} ${n.tier}`, x0: n.x0, x1: n.x1 })), timing: { layoutSeconds: L.expert, decorSeconds: 0, route: L.width } },
-    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, bpm, rhythm: { bpm, nodes: L.nodes, reroll: L.reroll } },
+    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, bpm, ownPetals: true, rhythm: { bpm, nodes: L.nodes, reroll: L.reroll, tiers: L.tiers } },
   } as GeneratedStage & { proto: ProtoExtras };
 }
 
@@ -1130,6 +1148,8 @@ function swings(lay: Lay, edge: number, y: number, n: number, soft: boolean, pad
     const w = k === n - 1 ? lastPad : pad;
     const far = vineChain(lay, e, y, 1, soft, w);
     lay.ledge(far, far + w, y, 'branch');
+    // (a petal before the pad's take-off for the next liana, as a jump's: everyone crosses the pad)
+    lay.L.petals.push({ x: Math.round(far + w - 40), y: y - 45 });
     e = far + w;
   }
   return e;

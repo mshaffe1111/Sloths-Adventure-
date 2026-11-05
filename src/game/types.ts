@@ -337,6 +337,8 @@ export interface Platform {
   soil?: boolean;
   /** World 1: a floorless gap beside this bank is a painted drop, a fall, not water (w1Pits.ts, R-6.38: a builder sets it on either bank) */
   pit?: 'drop';
+  /** a catch a builder lays under a gap (w1Rhythm.ts): a fall's floor, left with a hop; the dips test checks each one (plainWalk.test.ts) */
+  catch?: boolean;
 }
 
 /**

@@ -56,7 +56,7 @@ import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
 import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
-import { buildRhythmStage, rhythmPetalGoal } from './w1Rhythm.ts';
+import { buildRhythmStage, rhythmOwnPetals, rhythmPetalGoal } from './w1Rhythm.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildIntoCanopy, clearDress, splitPetals as splitPetals11 } from './w1Rise.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
@@ -119,9 +119,11 @@ export interface ProtoExtras {
   /** the beats, for the blueprint and the tests: [x0, x1, name] */
   beats: Array<[number, number, string]>;
   /** a beat-built stage (w1Rhythm.ts: 1-2, 1-5): its music's BPM, its nodes on the tension curve, and how many times its dice were rolled again */
-  rhythm?: { bpm: number; nodes: import('./w1Rhythm.ts').LNode[]; reroll: number };
+  rhythm?: { bpm: number; nodes: import('./w1Rhythm.ts').LNode[]; reroll: number; tiers?: number[] };
   /** a beat-traced stage's beat (beatTrace.ts): the validator counts its repeats as rhythm tokens (tools/validate/core.ts rhythmTokens) */
   bpm?: number;
+  /** the stage places every petal itself (the beat-traced stages): the petal pass adds none; its builder keeps the pass's rules */
+  ownPetals?: boolean;
   /** pickups the last pass had to move to where he can get them (flowerReach.ts): a hand-built stage should need none */
   movedPickups?: number;
   /** hollows in climb trunks (1-4): drawn on the trunk at this height, glowing once he is close */
@@ -362,7 +364,11 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  */
 export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto', easy = false): GeneratedStage & { proto: ProtoExtras } {
   // water taught before it costs a life (LV-8), the petal trail (petalPass.ts): the pickups are final before the dressing sees them
-  const st = petalPass(teachWater(buildPlan(config, seed, plan, easy)));
+  // (a stage that places its own petals, `proto.ownPetals` (the beat-traced stages, the lead's ruling 2026-11-04), gets none added by the
+  // petal pass: its builder holds them to the pass's rules itself (w1Rhythm.ts rhythmOwnPetals), and petals.test.ts checks every stage)
+  const made = teachWater(buildPlan(config, seed, plan, easy));
+  const st = made.proto.ownPetals ? made : petalPass(made);
+  if (made.proto.ownPetals) rhythmOwnPetals(st);
   if (plan === '1-3') splitPetals(st);
   // (1-2's goal, from what it holds after the petal pass, w1Rhythm.ts rhythmPetalGoal)
   if (plan === '1-2') rhythmPetalGoal(st, easy);

@@ -113,6 +113,18 @@ function climbFromFace(sim: RealPlay, f: Face): boolean {
 }
 
 /** low floors (dips): under the ground, open on top, not water's stepping stones (a river over them) and not a puzzle room's floor */
+test('dips, the ruler on a beat-traced stage: its pits are the catches its builder lays under gaps, and every one is checked', () => {
+  // (1-2 and 1-5 have no one floor: the canopy drifts, the bough and floor legs are ground lines of their own, the trail steps down; a
+  // fall there lands on a catch the builder laid or drops out of the stage, so the catches are the stage's dips)
+  for (const id of ['1-2', '1-5']) {
+    const sim = touchPlay(id, 1);
+    const dips = dipsOf(sim);
+    assert.ok(dips.length >= 1, `${id}: its catches are dips`);
+    assert.ok(dips.every((d) => d.catch), `${id}: only its catches`);
+    assert.ok(!dips.some((d) => d.style === 'log'), `${id}: never a bough`);
+  }
+});
+
 function dipsOf(sim: RealPlay): Platform[] {
   const st = sim.stage;
   const rooms = (st.kit?.rooms ?? []).map((r) => {
@@ -123,7 +135,9 @@ function dipsOf(sim: RealPlay): Platform[] {
     return [Math.min(...xs) - 200, Math.max(...xs) + 200];
   });
   const wet = (x0: number, x1: number) => (st.rivers ?? []).some((r) => r.x1 > x0 && r.x0 < x1);
-  // (the stage's own floor: G on every stage built at the ground; 1-1 is built from the floor up, its floor at the spawn's height)
+  // (the stage's own floor: G on every stage built at the ground; 1-1 is built from the floor up, its floor at the spawn's height.
+  // A beat-traced stage (proto.rhythm) has no one floor: its dips are the catches its builder lays under gaps, Platform.catch)
+  if ((st as { proto?: { rhythm?: unknown } }).proto?.rhythm) return sim.platforms.filter((q) => solidish(q) && q.catch && q.width >= 40);
   const g = st.config.id === '1-1' ? st.spawnY : G;
   return sim.platforms.filter((q) => solidish(q) && q.y > g + 30 && q.y <= g + 220 && q.width >= 40 && !wet(q.x, q.x + q.width)
     && !rooms.some(([a, b]) => q.x + q.width > a && q.x < b)
