@@ -17,6 +17,7 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { endFace } from './groundPaint.ts';
+import { GROUND_FRAMES } from './groundAtlasData.ts';
 import type { Platform } from './types.ts';
 
 const URL_OF = {
@@ -198,7 +199,10 @@ const DEEP_SCALE = 0.25;
  */
 function bakeDrop(g: PitGap, drop: HTMLImageElement, bottom: number): { top: HTMLCanvasElement | null; deep: HTMLCanvasElement | null; x: number } | null {
   const [yl, yr] = g.walls!;
-  const H = Math.min(3000, bottom - g.top);
+  // (TRIAL, the level designer's ask: the dark follows the faces to where the banks' painted end pieces stop, then fades out over
+  // DROP_FADE so the forest shows below; under the end pieces it never widens)
+  const foot = endPieceFoot(g, yl, yr);
+  const H = Math.min(3000, bottom - g.top, foot - FADE_EARLY + DROP_FADE - g.top);
   if (H <= 0) return null;
   const outline = dropOutline(g, yl, yr, g.top + H);
   const xs = outline.flatMap(([, a, b]) => (a < b ? [a, b] : []));
@@ -227,16 +231,36 @@ function bakeDrop(g: PitGap, drop: HTMLImageElement, bottom: number): { top: HTM
     const dk = dc?.getContext('2d');
     if (dc && dk) {
       clipTo(dk, DEEP_SCALE, g.top + DROP_DARK);
-      dk.fillStyle = 'rgba(10,7,5,0.94)';
+      // (near black down to the end pieces' foot, then fading out to nothing over DROP_FADE)
+      // (begun FADE_EARLY above the foot: the soil steps outward there, and a dark still near black beside it read as a column)
+      const f0 = Math.max(0, foot - FADE_EARLY - (g.top + DROP_DARK)) * DEEP_SCALE, f1 = f0 + DROP_FADE * DEEP_SCALE;
+      const fade = dk.createLinearGradient(0, f0, 0, f1);
+      fade.addColorStop(0, 'rgba(10,7,5,0.94)');
+      fade.addColorStop(0.5, 'rgba(10,7,5,0.5)');
+      fade.addColorStop(1, 'rgba(10,7,5,0)');
+      dk.fillStyle = fade;
       dk.fillRect(0, 0, dc.width, dc.height);
     }
   }
   return { top: tc, deep: dc, x: X0 };
 }
 
-/** a drop's outline, every 8 px down from its lip: [y, the left bank's face x, the right bank's face x] (closed where they meet) */
+/** the dark fades out over this far under the banks' end pieces (px) */
+export const DROP_FADE = 300;
+/** the fade begins this far above the end pieces' foot (px) */
+const FADE_EARLY = 80;
+/** where the higher of a drop's two painted end pieces stops: the last point of its own face, before the soil's wobbling line below it */
+export function endPieceFoot(g: PitGap, yl: number, yr: number): number {
+  const n = GROUND_FRAMES[1]?.end.face.length ?? 1;
+  const fl = endFace(1, g.x0, yl, g.top + 2000, true), fr = endFace(1, g.x1, yr, g.top + 2000, false);
+  // (the face's second-last point: its last swings out to where the end piece's art is cut, the step the dark followed)
+  return Math.min(fl[Math.max(0, Math.min(n, fl.length) - 2)][1], fr[Math.max(0, Math.min(n, fr.length) - 2)][1]);
+}
+/** a drop's outline, every 8 px down from its lip: [y, the left bank's face x, the right bank's face x] (closed where they meet); under
+ *  the end pieces' foot it never widens (the faces step outward there, and the dark stepped with them) */
 export function dropOutline(g: PitGap, yl: number, yr: number, bottom: number): Array<[number, number, number]> {
   const fl = endFace(1, g.x0, yl, bottom, true), fr = endFace(1, g.x1, yr, bottom, false);
+  const foot = endPieceFoot(g, yl, yr);
   const at = (f: Array<[number, number]>, y: number) => {
     if (y <= f[0][1]) return f[0][0];
     for (let i = 1; i < f.length; i++) if (f[i][1] >= y) return f[i - 1][0] + ((f[i][0] - f[i - 1][0]) * (y - f[i - 1][1])) / (f[i][1] - f[i - 1][1] || 1);
@@ -244,7 +268,7 @@ export function dropOutline(g: PitGap, yl: number, yr: number, bottom: number): 
   };
   const out: Array<[number, number, number]> = [];
   for (let y = g.top; ; y = Math.min(bottom, y + 8)) {
-    const a = at(fl, y), b = at(fr, y);
+    const a = y > foot ? Math.max(at(fl, y), at(fl, foot)) : at(fl, y), b = y > foot ? Math.min(at(fr, y), at(fr, foot)) : at(fr, y);
     out.push(a < b ? [y, a, b] : [y, (a + b) / 2, (a + b) / 2]);
     if (y >= bottom) break;
   }

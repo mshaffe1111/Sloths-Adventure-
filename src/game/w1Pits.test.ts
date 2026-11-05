@@ -5,7 +5,7 @@
 import './headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { dropOutline, findW1Pits, paintedBank } from './w1Pits.ts';
+import { dropOutline, endPieceFoot, findW1Pits, paintedBank } from './w1Pits.ts';
 import { endFace } from './groundPaint.ts';
 import { RealPlay } from './realPlay.ts';
 import type { Platform } from './types.ts';
@@ -106,10 +106,13 @@ test("a drop's dark follows its banks' own painted faces all the way down, and i
     return f[f.length - 1][0];
   };
   const rows = dropOutline(g, G, G, G + 1200);
+  const foot = endPieceFoot(g, G, G);
+  const lf = at(fl, foot), rf = at(fr, foot);
   assert.ok(rows.length > 100 && rows[0][0] === G && rows[rows.length - 1][0] === G + 1200);
   let leans = 0;
   for (const [y, a, b] of rows) {
-    const l = at(fl, y), r = at(fr, y);
+    // (under the end pieces' foot the dark never widens: TRIAL, the level designer's fade)
+    const l = y > foot ? Math.max(at(fl, y), lf) : at(fl, y), r = y > foot ? Math.min(at(fr, y), rf) : at(fr, y);
     if (l < r) assert.deepEqual([a, b], [l, r], `at ${y}`);
     else assert.equal(a, b, `closed at ${y}`);
     // (the faces wobble and lean: a straight column from x0 to x1 left open air beside it here)
