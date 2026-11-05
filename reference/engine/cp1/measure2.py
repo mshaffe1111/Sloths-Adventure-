@@ -20,7 +20,8 @@ EASY_BS = 1.35
 band = lambda w, s=1: 'short' if w < 150 * s else 'medium' if w <= 300 * s else 'long'
 def landings(r):
     s = EASY_BS if r.get('tag') == 'mix' and r.get('setting') == 'easy' else 1
-    L = [(p['x'], p['x'] + p['w'], p['y'], kind(p), band(p['w'], s)) for p in r['platforms'] if kind(p)]
+    # (a canopy's boughs keep Normal's bands on Easy: the high road is optional, the designer, 11-05)
+    L = [(p['x'], p['x'] + p['w'], p['y'], kind(p), band(p['w'], 1 if 'bough' in (p.get('keys') or '').split('|') else s)) for p in r['platforms'] if kind(p)]
     L += [(v['x'], v['x'], v['bot'], 'climb' if v['type'] == 'tree_climb' else 'liana', '-') for v in r['vines']]
     L += [(q['x0'], q['x1'], q['y'], 'rope', band(q['x1'] - q['x0'], s)) for q in r['ropes']]
     return sorted(L, key=lambda q: (q[0] + q[1]) / 2)

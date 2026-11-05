@@ -1,0 +1,27 @@
+draw check: 1-5 at q0, upright and sideways, 4 spots each
+[port 09:33:36] 1-5 port 175s 4 spots, 33 counted frames, 133 sites 
+[land 09:33:43] 1-5 land 178s 4 spots, 33 counted frames, 147 sites 
+
+✗ 1-5 port
+  ✗ gradients 3.00 at spot 1 (x 10595) > limit 2
+      src/game/terrain.ts:207 (earthBody) 0.48/frame  | const grad = ctx.createLinearGradient(0, y, 0, y + Math.min(depth, 420));
+      src/game/terrain.ts:220 (earthBody) 0.48/frame  | const ao = ctx.createLinearGradient(0, y, 0, y + 70);
+      src/game/terrain.ts:272 (earthBody) 0.48/frame  | const sh = ctx.createLinearGradient(x, 0, x + w, 0);
+  note shrunkOver2_5x 8.00 at spot 1 (x 10595) (reported; fails over 32)
+      src/game/protoArt.ts:256 (blit) 0.97/frame  | ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, w, h);
+      src/game/protoArt.ts:117 (blit2) 0.97/frame  | ctx.drawImage(img2, f.x, f.y, f.w, f.h, x, y, w, h);
+      src/game/protoArt.ts:526 (drawBranchArt) 0.73/frame  | for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 0.27/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+✗ 1-5 land
+  ✗ gradients 6.00 at spot 2 (x 24918) > limit 2
+      src/game/terrain.ts:207 (earthBody) 0.79/frame  | const grad = ctx.createLinearGradient(0, y, 0, y + Math.min(depth, 420));
+      src/game/terrain.ts:220 (earthBody) 0.79/frame  | const ao = ctx.createLinearGradient(0, y, 0, y + 70);
+      src/game/terrain.ts:272 (earthBody) 0.79/frame  | const sh = ctx.createLinearGradient(x, 0, x + w, 0);
+  note shrunkOver2_5x 27.22 at spot 2 (x 24918) (reported; fails over 32)
+      src/game/protoArt.ts:526 (drawBranchArt) 8.24/frame  | for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c
+      src/game/protoArt.ts:256 (blit) 3.21/frame  | ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, w, h);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 2.30/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 1.24/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/sheetBake.ts:124 (drawSheet) 1.12/frame  | ctx.drawImage(b.cv, sx * r + ex, sy * r + ey, bw - 2 * ex, bh - 2 * ey, dx + ex * kx, dy +
+
+FAIL: 2 breach(es) (203 s; raw results in /tmp/drawcheck-LcKN4B)
