@@ -11,3 +11,5 @@ sun11-hdF2 6aecbadc0e0338d1bb8094f6 native pass, fars 83/97/113                 
 sun11-hdM 6aecbee80e0338d1bb80980c  native pass, mids E-s76-7, G-s68-23, F-s68-7             started 17:37Z, ~2.5 min
 sun11-M3  6aecc18fc78863f9c6337ce1  middle strip img2img, taller starts H/I, 8 takes          started 17:49Z (before the pause was read)
   hdF ~3 min, M2 ~8 min. Total ~38.5 min of rtx-pro-6000: ~$1.95 (estimate). PAUSED 17:50Z by the lead.
+--- resumed 2026-11-05 ~5:55 PM ET on art-1-1-sunrise-2 (lead session_01FhBbYN2DDsktc7BGtNxPFK; handoff confirmed by the supervisor) ---
+  M3 finished 17:54:52Z: 5m49s measured (~$0.27). H takes pass the join check, crowns at row ~485 of 1302.
