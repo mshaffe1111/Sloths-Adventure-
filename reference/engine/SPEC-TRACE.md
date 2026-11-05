@@ -1,6 +1,7 @@
 # SPEC-TRACE: where every number and rule in ENGINE-SPEC.md comes from
 
-Source register for `reference/engine/ENGINE-SPEC.md` as it stands on `engine-spec` (1,635 lines, last commit 7f4373c0). Written
+Source register for `reference/engine/ENGINE-SPEC.md` on `engine-spec`: lines 1-1635 as of 7f4373c0, and lines 1637-1714 added by
+2a030ddf-b34e7487 while this trace was being written (section 24). Line numbers are the current file's (b34e7487); lines 1-1635 did not move. Written
 2026-11-05 by an audit helper for the level designer, who reviews and commits it. ENGINE-SPEC.md was not edited. Nothing was fetched
 from the web.
 
@@ -713,7 +714,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 
 | ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
 |---|---|---|---|---|---|
-| 1458 | "the engine plans the WHOLE game"; the lead's five bars | MATT | (relayed) not saved in MD or ST | | |
+| 1458 | "the engine plans the WHOLE game"; the lead's five bars | MATT | MD:140-160 (10:08 AM ET, appended to MD after this trace began) | | |
 | 1461 | 102 stages, 40 mechanics | MEASURED | ML (stages 102, 40 rows) | | |
 | 1462-1464 | Keep stages, names, specials, rooms, bosses and art; lock a world before changing it | SOURCED | 96ac0259 (regression lock); CLAUDE.md "New replaces old" | | |
 | 1470-1481 | Absences: warm air 63, lift 83, river logs 7 stages / 81, silk 2 / 55, push 4 / 61, breaking 22 / 41, rope 13 / 35, hide 8 / 28, moving 10 / 29, bounce 26 / 13 | MEASURED | ML (stage lists per row) | My recount of ML gives the same stage counts; absences come out 1 higher on 7 rows (e.g. rope 36, breaking 42), so the absence definition is off by one somewhere | |
@@ -744,7 +745,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1570-1571 | W2 on: >= 3 core moves besides run and jump, one from an earlier world | OPEN | none | | (i) SR §0b.5 |
 | 1572-1583 | One joined beat per world (list) | SOURCED | SR §0b.5 (ccr:54-55); GV:21-55 (the pair matrix) | The pairs chosen are the designer's | |
 | 1587-1588 | A profile names its water bodies (x, y, depth, swim) | MATT | MD:26-27 ("if there's water") | | |
-| 1590-1594 | Swims: <= 15-20 s under; exits 3-4 body widths; no slow drag ("suddenly fast"); currents and bubbles; tide | SOURCED | GVs:19 (triage row "Water"); RM:160 (R-5.22, Matt's "suddenly fast") | Gemini, not verified | |
+| 1590-1594 | Swims: <= 15-20 s under; exits 3-4 body widths; no slow drag ("suddenly fast"); currents and bubbles; tide | SOURCED | GVs:19 (triage row "Water"); RM:160 (R-5.22); MD:141-142, MD:155-158 (Matt: "quick in and out things. We already did the research") | Gemini numbers, not verified against a shipped game | |
 | 1596 | Gate fails over 20 s under | SOURCED | GVs:19 | | |
 | 1598-1601 | 6-7 teaches, 6-8/6-9 echo, then W6-W8 and W10 >= 1 in 3; none in W9 | OPEN | none | | (ii) mechtable.ts; Matt's pick |
 | 1602-1608 | The swimming stage is 6-9 reshaped (R-153); clue "Ripples..."; 6-8 out | SOURCED | src/components/stageClue.ts:81-82 [main]; RM:410 (R-153: reshape, no new stages) | | |
@@ -753,7 +754,41 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1619-1620 | Gate 6: today's misses a known list that only shrinks | SOURCED | CLAUDE.md (clipknown / knowncheck); LAWS 5 | | |
 | 1626-1629 | Order of the planner's steps | MATT | ST:968 | | |
 | 1631-1633 | Designer cost: 1.5 h, 0.5 h, 1 h a world | OPEN | none | | (ii) clock it |
-| 1635 | The 55% ceiling (stop at 53%) | OPEN | none | Not found in ST, RM, PARTNER or LD | (iii) not in any file read; ask the lead for the source of 55%, or drop the line |
+| 1635 | The 55% ceiling (stop at 53%) | MATT | ST:973 (10:10 AM ET) | Lifted at 10:32 AM (MD:186-192, ST:982); ES 1635 is not marked revised; (b) C29 | |
+
+
+## 24. Added during this trace: every-world labels and the engine's acceptance test (ES 1637-1714)
+
+| ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
+|---|---|---|---|---|---|
+| 1637-1648 | The element table must cover every world's kinds (W2 river logs, lifts, bank houses ... W10 towers, netting) | MATT | MD:150-153 (whole-game element plan) | | |
+| 1649-1651 | Revises "the object pass is done world by world, later" | MATT | MD:140-147 ("It can't just be looking at level one") | Revises ES 1385-1387, marked | |
+| 1652-1653 | Hanging moves are core: vine, liana, rope, bough underside; trunks are anchors | OPEN | none | D:1201 (hang-under "the most sloth move there is") is the closest source | (i) D:1174-1186, D:1201 (hang-under MoveDef); (iii) DKC Returns grass-ceiling sections (D:1201) |
+| 1654-1655 | Float default "some, <= 25%" until a world's row says otherwise | OPEN | none | as ES 1364-1365 | (ii) float share on old 1-1; (iii) Super Mario Bros. 1-1 floating-block share |
+| 1659-1660 | "we use 1-1 and then 1-2 as the test ... the engine gets fixed" | MATT | MD:171-173 | | |
+| 1666 | 1-5 hand-mix: 5.2 h wall, 28 commits, 9 fix rounds, all engine code | MEASURED | 78da6ddb (05:47 UTC) to b7c38491 (10:57 UTC) = 5 h 10 min | 28 commits and 9 rounds are from the planner's message (not saved); my count of "Mixer" commits in the range is 25 | |
+| 1667 | 1-1 grey-box about 3.75 h, never finished | MEASURED | 98f2decb .. 72fe81a3 commit times (planner's message) | Not re-counted | |
+| 1668 | Team spend 0.63% of the week an hour | DERIVED | ST:965 (39% at 12:40 AM) and the lead's 45% at about 10:05 AM | Lead corrected to about 0.9%/h active (ES 1700-1701) | |
+| 1669 | 1-5's 5.2 h cost about 3.3% | DERIVED | 5.2 h x 0.63 | | |
+| 1670 | 8% left under Matt's 53% stop | MATT | ST:973, ST:980 | Withdrawn at ES 1705 | |
+| 1671 | Engine's remaining steps about 6.5% | OPEN | none | Planner's estimate | (ii) the meter after each step |
+| 1677 | Line 1: (8 - 6.5) / 1 stage <= 1.5% | DERIVED | ES 1670-1671 | Withdrawn at ES 1705 | |
+| 1678 | Line 2: <= 1/3 of 1-5's hand-mix: <= 1.7 h, <= about 1.1% | OPEN | none | The 1/3 is the designer's "clearly faster"; R-163 asks for "about an hour" (RM:473) | (i) RM:473 (about 1 hour a stage, Matt 11-04); D:1043 (target under an hour of helper time) |
+| 1683 | Time <= 1.7 h wall from "1-1 data written" to all gates green | DERIVED | ES 1678 (5.2 / 3) | | |
+| 1684 | Cost <= about 1.1% | DERIVED | ES 1669 (3.3 / 3) | At 0.9%/h this is about 1.2 h (ES 1700-1701) | |
+| 1685 | <= 2 fix rounds, each data-only | OPEN | none | Matt: "still needs a lot of pieces fixed" (MD:172) gives no number | (ii) compare with 1-5's 9 rounds (planner's count); (iii) a shipped data-driven pipeline's iteration count (Sure Footing, D:431) |
+| 1686-1687 | No engine change for 1-1; else the engine is fixed and 1-1 rebuilt as a second attempt | MATT | MD:172-173, MD:178-180 | | |
+| 1689 | Every gate green on 16/16 rolls both settings | SOURCED | ES 261 | | |
+| 1690 | Stills P-1 to P-13, S-1 to S-9, 6 places both ways, designer then lead | SOURCED | LAWS 1-2; ES 914-922 | | |
+| 1691 | "No stage id in the mixer core" (library-check.ts, 2afed23b) | MATT | MD:178-180 ("a check: no stage id in the mixer core") | Built in 2afed23b | |
+| 1693-1695 | 1-2 does not fit under 53% | DERIVED | ES 1670-1678 | Withdrawn at ES 1705 | |
+| 1697-1698 | The stump is drawing only, never a landing; 1-1 core bank and log (+ branch n8-n11) | MEASURED | planner's answer to fix 1 (ES 1409-1411); not in a saved output | | |
+| 1700-1701 | Active team rate about 0.9%/h | DERIVED | the lead's correction (0.63%/h included 6-9 AM with every helper stopped, ST:966) | | |
+| 1702 | Both lines kept; judged on whichever fails first | OPEN | none | | (ii) report both after the run; no research needed |
+| 1703 | 1-1 clock starts after the critic rulings (due 1:30 PM); Matt chose option A | MATT | ST:980 | Option A was later reversed (ST:982) | |
+| 1704 | Matt lifted the token ceiling: "It takes what it takes today... done right" | MATT | MD:186-192; ST:982 | | |
+| 1705-1706 | Line 1 and "1-2 doesn't fit" withdrawn; line 2, the fix rule, 0 engine changes and every gate stay for 1-1 and 1-2 | MATT | MD:190-192 ("the 1-1 pass line's cost line stays as an engine-quality measure") | | |
+| 1707-1714 | Order: inventory, critic, rulings, step 6, E3-E5, 1-1 timed, 1-2 timed | MATT | MD:188-191; ST:982 | | |
 
 ---
 
@@ -998,12 +1033,14 @@ spec neither applies nor rejects them.
 | C26 | ES 1435-1437, 1287 | Trunk climb taught at 1-4 | ML row trunk (first 1-1, on the mixer branch); the re-run on main's 1-1..1-3 was asked for and is not recorded | Open measurement |
 | C27 | ES 37 (and splits everywhere) | Split rule: road continues across <= 180 px gaps, heights >= 120 px apart | cp3/split180.py:11 also requires a stretch over 300 px, which the spec never states; a rule the gate applies that the spec doesn't say | Spec vs tool |
 | C28 | ES 1077 vs ES 333, 909 | 1-1 at "at least 20% under 1-5's median of about 4:05" | 1-5's own target was about 150 s (ES 333-334), accepted at 4:00-4:12 (ES 909); 1-1's band is set from a 1-5 that is far over its own plan | Internal (worth naming) |
+| C29 | ES 1635 | "against the 55% ceiling (stop at 53%)" | MD:186-192 and ST:982: Matt lifted the ceiling at 10:32 AM; ES 1704-1706 records it but ES 1635 is not marked revised | Later Matt direction, not marked |
+| C30 | ES 1678, 1683-1685 | 1-1's pass line is one third of 1-5's hand-mix (<= 1.7 h, then about 1.2 h at 0.9%/h) | RM:473 (R-163: "Stages built from a spec in about an hour") and ES 267 / 1103 (<= 1 hour a stage after the mixer exists): three time lines for one stage | Internal |
 
 ---
 
 ## Summary count per tag
 
-Counted over every table row in sections 1-23 above (one tag per row).
+Counted over every table row in sections 1-24 above (one tag per row).
 
 | Tag | Rows |
 |---|---|
