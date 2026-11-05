@@ -1,0 +1,77 @@
+// Engine-design measurements (designer, 2026-11-04). Pure numbers from the real physics and the real beat tracer.
+import { flight, traceNode, easyNode, checkTrace, type NodeSpec, type Step, type Move, type Surface } from './src/game/beatTrace.ts';
+import { PHYS } from './src/game/physics.ts';
+
+const out: string[] = [];
+const p = (s: string) => out.push(s);
+
+// 1. Reach envelope: flat-run take-off at full speed, Normal (full hold) and Easy (0.7 hold), clean and clumsy (85% air)
+p('## 1. Reach envelope (px past take-off where the feet come down through a surface dy px above), dt 1/60');
+p('| dy | hop | jump | double | jump Easy | double Easy | jump clumsy | double clumsy | air s (jump) | air s (double) |');
+p('|---|---|---|---|---|---|---|---|---|---|');
+for (const dy of [-240, -160, -120, -80, -40, 0, 20, 40, 60, 80, 100, 140, 180]) {
+  const f = (move: Move, hold = 1, air = 1) => flight({ move, dy, vx: PHYS.maxRun, hold, air });
+  const v = (fl: ReturnType<typeof flight>) => (fl ? Math.round(fl.dx).toString() : '-');
+  const j = f('jump'), d = f('double');
+  p(`| ${dy} | ${v(f('hop'))} | ${v(j)} | ${v(d)} | ${v(f('jump', 0.7))} | ${v(f('double', 0.7))} | ${v(f('jump', 1, 0.85))} | ${v(f('double', 1, 0.85))} | ${j ? j.t.toFixed(2) : '-'} | ${d ? d.t.toFixed(2) : '-'} |`);
+}
+
+// 2. Beat grid per world (music ranges from src/audio/styles.ts via the ledger): eighth length and run px per eighth; frame-harmonic tempos
+const WORLDS: Array<[number, number, number, number]> = [[1, 126, 134, 8], [2, 94, 102, 8], [3, 66, 74, 12], [4, 84, 92, 8], [5, 100, 108, 8], [6, 86, 94, 8], [7, 64, 72, 8], [8, 84, 92, 12], [9, 112, 120, 8], [10, 78, 84, 8]];
+p('\n## 2. The beat grid per world (eighth note = 30/BPM s; run px = 285 x that)');
+p('| world | BPM range | eighth s | run px per eighth | jump (air) in eighths | double in eighths | frame-harmonic BPMs in range (1800/BPM or 3600/BPM whole) |');
+p('|---|---|---|---|---|---|---|');
+const jAir = flight({ move: 'jump', dy: 0, vx: PHYS.maxRun })!.t, dAir = flight({ move: 'double', dy: 0, vx: PHYS.maxRun })!.t;
+for (const [w, lo, hi] of WORLDS) {
+  const mid = (lo + hi) / 2, e = 30 / mid;
+  const harm: string[] = [];
+  for (let k = 1; k < 200; k++) { const b = 3600 / k; if (b >= lo && b <= hi) harm.push(b.toFixed(2) + (k % 2 ? ' (half-frame)' : '')); }
+  p(`| ${w} | ${lo}-${hi} | ${e.toFixed(3)} | ${Math.round(285 * e)} | ${(jAir / e).toFixed(1)} | ${(dAir / e).toFixed(1)} | ${harm.join(', ') || 'none'} |`);
+}
+
+// 3. Re-trace test: does a piece written as beat data survive every tempo of its world and Easy?
+// Pieces: small hand-written node specs of the kind w1Rhythm builds (bars + steps), 8-eighth bars.
+type Piece = { name: string; bars: string[]; steps: Step[] };
+const S = (move: Move, dy: number, surface: Surface): Step => ({ move, dy, surface });
+const PIECES: Piece[] = [
+  { name: 'march: jump x4 level', bars: ['x...x...', 'x...x...'], steps: [S('jump', 0, 'bank'), S('jump', 0, 'bank'), S('jump', 0, 'bank'), S('jump', 20, 'branch')] },
+  { name: 'stairs up: jump +40 x3', bars: ['x...x...', 'x.......'], steps: [S('jump', 40, 'branch'), S('jump', 40, 'branch'), S('jump', 40, 'branch')] },
+  { name: 'swung: hop-jump', bars: ['x..o....', 'x..o....'], steps: [S('hop', -20, 'stump'), S('jump', 20, 'branch'), S('hop', -20, 'stump'), S('jump', 20, 'branch')] },
+  { name: 'double over pit', bars: ['x.......', 'x.......'], steps: [S('double', 0, 'bank'), S('jump', -40, 'branch')] },
+  { name: 'busy: quarters', bars: ['x.x.x.x.'], steps: [S('hop', 0, 'branch'), S('hop', 0, 'branch'), S('hop', 0, 'branch'), S('hop', 20, 'branch')] },
+  { name: 'drop down x3', bars: ['x...x...', 'x.......'], steps: [S('jump', -60, 'branch'), S('jump', -60, 'branch'), S('jump', -40, 'bank')] },
+  { name: 'crumble run', bars: ['x...x...', 'x...x...'], steps: [S('jump', 0, 'crumble'), S('jump', 0, 'crumble'), S('jump', 0, 'crumble'), S('jump', 0, 'bank')] },
+  { name: 'half notes long', bars: ['h...h...', 'h...h...'], steps: [S('jump', 0, 'bank'), S('double', 40, 'branch'), S('jump', -40, 'bank'), S('jump', 0, 'bank')] },
+];
+p('\n## 3. Re-trace: each piece traced at every whole BPM of each world range, Normal and Easy (pass = traces and checkTrace clean)');
+p('| piece | ' + WORLDS.map(([w]) => `W${w}`).join(' | ') + ' |');
+p('|---|' + WORLDS.map(() => '---').join('|') + '|');
+const why = new Map<string, number>();
+let total = 0, pass = 0;
+for (const pc of PIECES) {
+  const cells: string[] = [];
+  for (const [, lo, hi] of WORLDS) {
+    let ok = 0, n = 0;
+    for (let bpm = lo; bpm <= hi; bpm++) {
+      for (const easy of [false, true]) {
+        n++; total++;
+        const spec: NodeSpec = { bpm, x: 0, y: 600, bars: pc.bars, steps: pc.steps };
+        try {
+          const tr = traceNode(easy ? easyNode(spec) : spec);
+          const bad = checkTrace(tr, pc.steps, easy);
+          if (bad.length === 0) { ok++; pass++; } else { const k = bad[0].replace(/[0-9.]+/g, '#').slice(0, 70); why.set(k, (why.get(k) ?? 0) + 1); }
+        } catch (e) {
+          const k = String((e as Error).message).replace(/[0-9.]+/g, '#').slice(0, 70);
+          why.set(k, (why.get(k) ?? 0) + 1);
+        }
+      }
+    }
+    cells.push(`${ok}/${n}`);
+  }
+  p(`| ${pc.name} | ${cells.join(' | ')} |`);
+}
+p(`\nOverall: ${pass}/${total} traces pass (${((100 * pass) / total).toFixed(0)}%).`);
+p('\nWhy the rest failed (count, message with numbers masked):');
+[...why.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).forEach(([k, n]) => p(`- ${n} x ${k}`));
+
+console.log(out.join('\n'));

@@ -1,0 +1,51 @@
+// Calibration on the rebuilt World 1 beat stages (1-2, 1-5), 16 layouts x Normal/Easy: what the hand-tuned builders actually produce.
+import { rhythmLayout } from './src/game/w1Rhythm.ts';
+import { flight } from './src/game/beatTrace.ts';
+import { PHYS } from './src/game/physics.ts';
+
+const BPM: Record<string, number> = { '1-2': 0, '1-5': 0 };
+// the stages' own beats, from the scenes comment (1-2 ~130.1? read stageBeatBpm instead)
+import { stageBpm } from './src/game/beatTrace.ts';
+import { STAGE_PLAN } from './src/game/stagePlan.ts';
+for (const id of ['1-2', '1-5']) { const mini = Number(id.split('-')[1]); const plan: any = (STAGE_PLAN as any)[id] ?? (STAGE_PLAN as any)[1]?.[mini - 1]; BPM[id] = stageBpm({ worldIndex: 1, id, miniIndex: mini, objectiveType: plan?.kind ?? plan?.objectiveType }); }
+
+type Row = { tag: string; density: number; seconds: number; bars: number };
+const out: string[] = [];
+for (const id of ['1-2', '1-5'] as const) {
+  for (const easy of [false, true]) {
+    const byTag = new Map<string, Row[]>();
+    const lengths: number[] = [], rerolls: number[] = [], expert: number[] = [];
+    const gapsShare: number[] = [];
+    let ledgesN = 0;
+    for (let seed = 1; seed <= 16; seed++) {
+      let L;
+      try { L = rhythmLayout(id, seed, easy, BPM[id]); } catch (e) { out.push(`${id} ${easy ? 'easy' : 'normal'} seed ${seed}: THROWS ${(e as Error).message.slice(0, 80)}`); continue; }
+      rerolls.push(L.reroll); expert.push(L.expert); lengths.push(L.nodes.length);
+      for (const n of L.nodes) { const a = byTag.get(n.tag) ?? []; a.push({ tag: n.tag, density: n.density, seconds: n.seconds, bars: n.bars.length }); byTag.set(n.tag, a); }
+      // gaps between consecutive ledges of the same node, as a share of the clean flat jump for that dy (a proxy: move unknown)
+      const ls = [...L.ledges].sort((a, b) => a.x0 - b.x0);
+      for (let i = 1; i < ls.length; i++) {
+        const a = ls[i - 1], b = ls[i];
+        if (b.x0 - a.x1 > 420 || Math.abs(a.y - b.y) > 260) continue;
+        const gap = b.x0 - a.x1; if (gap <= 0) continue;
+        const dy = a.y - b.y; // up is +
+        const j = flight({ move: 'jump', dy, vx: PHYS.maxRun, air: 0.85 }); const d = flight({ move: 'double', dy, vx: PHYS.maxRun, air: 0.85 });
+        const R = j && gap <= j.dx ? j.dx : d ? d.dx : NaN;
+        if (R === R) gapsShare.push(gap / R);
+        ledgesN++;
+      }
+    }
+    const mean = (a: number[]) => a.reduce((s, x) => s + x, 0) / Math.max(1, a.length);
+    const q = (a: number[], p: number) => { if (!a.length) return NaN; const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(p * s.length))]; };
+    out.push(`\n### ${id} ${easy ? 'Easy' : 'Normal'} (beat ${BPM[id].toFixed(1)} BPM), 16 layouts`);
+    out.push(`nodes per stage ${Math.min(...lengths)}-${Math.max(...lengths)}; expert clock ${Math.round(Math.min(...expert))}-${Math.round(Math.max(...expert))} s; rerolls needed per layout: mean ${mean(rerolls).toFixed(2)}, max ${Math.max(...rerolls)}`);
+    out.push('| tag | n | density mean (min-max) take-offs/s | seconds mean (min-max) | bars mean |');
+    out.push('|---|---|---|---|---|');
+    for (const [tag, rows] of byTag) {
+      const ds = rows.map((r) => r.density), ss = rows.map((r) => r.seconds), bs = rows.map((r) => r.bars);
+      out.push(`| ${tag} | ${rows.length} | ${mean(ds).toFixed(2)} (${Math.min(...ds).toFixed(2)}-${Math.max(...ds).toFixed(2)}) | ${mean(ss).toFixed(1)} (${Math.min(...ss).toFixed(1)}-${Math.max(...ss).toFixed(1)}) | ${mean(bs).toFixed(1)} |`);
+    }
+    out.push(`gap as a share of the clumsy reach (jump if it fits, else double): n ${gapsShare.length}, p10 ${q(gapsShare, 0.1).toFixed(2)}, median ${q(gapsShare, 0.5).toFixed(2)}, p90 ${q(gapsShare, 0.9).toFixed(2)}, max ${Math.max(...gapsShare).toFixed(2)}`);
+  }
+}
+console.log(out.join('\n'));
