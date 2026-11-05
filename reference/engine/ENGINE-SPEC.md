@@ -1923,3 +1923,26 @@ LEAD** (Matt: "You"), inside the Hugging Face money. The designer sends the rank
 - 6-7, as the teach stage, must also meet W7: nothing deadly within its first calm pool's screen.
 - The W3 gate runs on all 23 gen2 stages and the hand stages. Today's misses go on the known list until fixed.
 - It is engine work for the builder that owns gen2 under one rulebook. The lead assigns it, with a W6 regression lock first.
+
+### [designer ruling, 11-05 ~11:24 AM ET] The W1 creek is DEADLY water, drawn in World 1's painted deadly water (the lead's (a)); every water body carries a kind
+
+- **(a), the creek costs a life,** for three reasons:
+  1. **The game already teaches it that way.** World 1's shipped deadly water is the painted W1 pit water (src/assets/props/pitwater/w1.webp:
+     murky brown water with ripples and leaves, stageArt.ts:31), and W2's lesson card says "Falling in costs a life".
+  2. **Clear, clean water must stay the one look that means "you can swim here"**, unique to calm swim water from 6-7 on (W3; F19).
+  3. **A W1 splash-back creek** (b) would need a third water look before the game has taught even one.
+- **The creek uses the W1 pit-water art**, never calmWaterArt. To read as water at phone size (my 10:31 notes to engine-render), it
+  fills down to its bed with no void under the surface, and keeps the surface strip's ripple and shine line.
+- **Its first appearance is taught**, by the existing water teach (waterTeach.ts: the warning sign on the bank 40 px before it, and
+  Dot's line), before it can cost a life.
+- **Every water body carries `kind`:** `calm` (swim, from 6-7), `deadly` or `teaching` (safe splash-back, as 2-1's river and the
+  teaching pools). Each kind has its art: calm uses calmWaterArt; deadly uses the world's painted deadly water (pitwater/wN, W2's
+  river, W6's badWaterArt); teaching uses a deliberate teaching-water look named per world.
+- **The element gate (E3) fails:**
+  1. a body whose art doesn't match its kind;
+  2. two kinds on one screen (844 px), unless a drawn bank divides them and both are taught (W3).
+- engine-render redraws the creek in the W1 deadly art, which uses art we already have and needs no Hugging Face picture.
+- **Also from the researcher:**
+  - 6-8 is dropped from swimming's echo (ES 1546, 1598 are revised; 6-9 is the echo);
+  - #163's 20 s gate is replaced by W5 (beat length) and W6 (exits), both measured in the real engine;
+  - small, big and sinking lily pads go on the small-builds list, for the lead to decide.
