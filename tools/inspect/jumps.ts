@@ -368,7 +368,8 @@ export interface JumpReport {
 
 /** every jump on a route, on one setting, with one bot */
 
-export function inspectJumps(stage: Stage, route: Route, easy: boolean, persona: Persona): JumpReport[] {
+/** `allowDouble`: the bot may double jump (default: from mission 6, as before; the CP4 mixer's 1-1 passes true after its double teach) */
+export function inspectJumps(stage: Stage, route: Route, easy: boolean, persona: Persona, allowDouble?: (x: number) => boolean): JumpReport[] {
   const c = stage.config;
   const mission = (c.worldIndex - 1) * 10 + c.miniIndex;
   const assist = easy ? 1 : easeAssist(mission);
@@ -377,7 +378,7 @@ export function inspectJumps(stage: Stage, route: Route, easy: boolean, persona:
   routeJumps(route).forEach((e, i) => {
     const pit = !stage.platforms.some((q) => q !== e.from && q !== e.to && !q.broken && q.x < Math.max(e.x, e.to.x + e.to.width / 2) && q.x + q.width > Math.min(e.x, e.to.x + e.to.width / 2) && q.y > Math.max(e.from.y, e.to.y) && q.y < Math.max(e.from.y, e.to.y) + 220);
     const base = { x: Math.round(e.x), y: Math.round(e.y), gap: Math.round(e.gap), rise: Math.round(e.rise), landW: Math.round(e.to.width), miss: (pit && e.gap > 30 ? 'fall' : 'retry') as 'fall' | 'retry' };
-    const both = feasible(e, assist, mission >= 6);
+    const both = feasible(e, assist, allowDouble ? allowDouble(e.x) : mission >= 6);
     if (!both.one && !both.two) { out.push({ ...base, dbl: false, dblNeeded: false, reach: 1, dblWindow: null, timing: timingFor(stage, e), rate: null, fails: {}, why: ['no clean jump makes it in this model'], unflyable: true }); return; }
     // the bot takes one jump or a double jump, whichever works better for it (a player who keeps missing a tall stump double-jumps)
     const seed = 1000 + i * 7919 + Math.round(e.x);

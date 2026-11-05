@@ -1,0 +1,12215 @@
+{
+ "layouts": 2,
+ "stages": 102,
+ "rows": [
+  {
+   "cat": "air",
+   "arr": "drafts47",
+   "key": "across",
+   "perWorld": [
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-7",
+   "stageCount": 1,
+   "stageList": [
+    "4-7"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "air",
+   "arr": "drafts47",
+   "key": "bonus",
+   "perWorld": [
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-7",
+   "stageCount": 1,
+   "stageList": [
+    "4-7"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "air",
+   "arr": "drafts47",
+   "key": "rock",
+   "perWorld": [
+    0,
+    0,
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-7",
+   "stageCount": 1,
+   "stageList": [
+    "4-7"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "air",
+   "arr": "drafts47",
+   "key": "up",
+   "perWorld": [
+    0,
+    0,
+    0,
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-7",
+   "stageCount": 1,
+   "stageList": [
+    "4-7"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "air",
+   "arr": "updrafts",
+   "key": "",
+   "perWorld": [
+    0,
+    0,
+    0,
+    11,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-7",
+   "stageCount": 1,
+   "stageList": [
+    "4-7"
+   ],
+   "at": "W4 src/game/protoStage.ts:5762"
+  },
+  {
+   "cat": "animal",
+   "arr": "enemies",
+   "key": "boa",
+   "perWorld": [
+    9,
+    0,
+    0,
+    0,
+    1,
+    0,
+    7,
+    25,
+    12,
+    12
+   ],
+   "first": "1-9",
+   "stageCount": 23,
+   "stageList": [
+    "1-9",
+    "5-6",
+    "5-8",
+    "7-2",
+    "7-3",
+    "7-6",
+    "7-9",
+    "8-3",
+    "8-6",
+    "8-9",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
+   "at": "W1 src/game/protoStage.ts:2397, W5 src/game/stageGenerator.ts:559, W7 src/game/stageGenerator.ts:559, W8 src/game/gen2/pipeline.ts:1336, W9 src/game/stageGenerator.ts:559, W10 src/game/stageGenerator.ts:559"
+  },
+  {
+   "cat": "animal",
+   "arr": "enemies",
+   "key": "caiman",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    16,
+    0,
+    0,
+    13,
+    6
+   ],
+   "first": "6-4",
+   "stageCount": 17,
+   "stageList": [
+    "6-4",
+    "6-5",
+    "6-9",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
+   "at": "W6 src/game/gen2/pipeline.ts:1336, W9 src/game/stageGenerator.ts:565, W10 src/game/stageGenerator.ts:565"
+  },
+  {
+   "cat": "animal",
+   "arr": "enemies",
+   "key": "eagle",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    9,
+    0,
+    4,
+    2,
+    73,
+    56
+   ],
+   "first": "5-6",
+   "stageCount": 23,
+   "stageList": [
+    "5-6",
+    "5-8",
+    "7-2",
+    "7-8",
+    "8-7",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:658, W7 src/game/stageGenerator.ts:658, W8 src/game/stageGenerator.ts:658, W9 src/game/stageGenerator.ts:658, W10 src/game/stageGenerator.ts:658"
+  },
+  {
+   "cat": "animal",
+   "arr": "enemies",
+   "key": "frog",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    38,
+    31,
+    0,
+    0,
+    0
+   ],
+   "first": "6-1",
+   "stageCount": 15,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-9",
+    "7-1",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W6 src/game/gen2/pipeline.ts:1336, W7 src/game/gen2/pipeline.ts:1336"
+  },
+  {
+   "cat": "animal",
+   "arr": "enemies",
+   "key": "harpy",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    6,
+    11,
+    18
+   ],
+   "first": "7-8",
+   "stageCount": 20,
+   "stageList": [
+    "7-8",
+    "8-7",
+    "8-8",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
+   "at": "W7 src/game/stageGenerator.ts:585, W8 src/game/stageGenerator.ts:585, W9 src/game/stageGenerator.ts:585, W10 src/game/stageGenerator.ts:585"
+  },
+  {
+   "cat": "animal",
+   "arr": "enemies",
+   "key": "jaguar",
+   "perWorld": [
+    0,
+    0,
+    5,
+    0,
+    0,
+    0,
+    2,
+    9,
+    20,
+    14
+   ],
+   "first": "3-3",
+   "stageCount": 20,
+   "stageList": [
+    "3-3",
+    "3-9",
+    "7-8",
+    "8-7",
+    "8-9",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:2968, W7 src/game/stageGenerator.ts:552, W8 src/game/stageGenerator.ts:552, W9 src/game/stageGenerator.ts:552, W10 src/game/stageGenerator.ts:552"
+  },
+  {
+   "cat": "animal",
+   "arr": "enemies",
+   "key": "ocelot",
+   "perWorld": [
+    0,
+    0,
+    35,
+    0,
+    4,
+    10,
+    34,
+    21,
+    7,
+    4
+   ],
+   "first": "3-3",
+   "stageCount": 30,
+   "stageList": [
+    "3-3",
+    "3-9",
+    "5-6",
+    "5-8",
+    "6-3",
+    "6-5",
+    "6-9",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "8-2",
+    "8-3",
+    "8-7",
+    "8-8",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-5",
+    "10-7",
+    "10-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:2968, W5 src/game/stageGenerator.ts:546, W6 src/game/gen2/pipeline.ts:1336, W7 src/game/stageGenerator.ts:546, W8 src/game/gen2/pipeline.ts:1336, W9 src/game/stageGenerator.ts:546, W10 src/game/stageGenerator.ts:546"
+  },
+  {
+   "cat": "animal",
+   "arr": "enemies",
+   "key": "snake",
+   "perWorld": [
+    53,
+    9,
+    0,
+    3,
+    5,
+    0,
+    4,
+    1,
+    40,
+    36
+   ],
+   "first": "1-3",
+   "stageCount": 33,
+   "stageList": [
+    "1-3",
+    "1-4",
+    "1-6",
+    "1-8",
+    "1-9",
+    "2-2",
+    "2-6",
+    "2-7",
+    "2-8",
+    "4-6",
+    "5-6",
+    "5-8",
+    "7-2",
+    "7-8",
+    "8-7",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
+   "at": "W1 src/game/protoStage.ts:635, W2 src/game/w2Stages.ts:172, W4 src/game/protoStage.ts:5756, W5 src/game/stageGenerator.ts:540, W7 src/game/stageGenerator.ts:540, W8 src/game/stageGenerator.ts:540, W9 src/game/stageGenerator.ts:540, W10 src/game/stageGenerator.ts:540"
+  },
+  {
+   "cat": "animal",
+   "arr": "enemies",
+   "key": "spider",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    101,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/w5Stages.ts:329"
+  },
+  {
+   "cat": "animal",
+   "arr": "enemies",
+   "key": "tayra",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    4,
+    13,
+    13,
+    12,
+    23,
+    23
+   ],
+   "first": "5-6",
+   "stageCount": 35,
+   "stageList": [
+    "5-6",
+    "5-8",
+    "6-3",
+    "6-5",
+    "6-7",
+    "6-8",
+    "6-9",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "8-5",
+    "8-7",
+    "8-8",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:571, W6 src/game/gen2/pipeline.ts:1336, W7 src/game/stageGenerator.ts:571, W8 src/game/gen2/pipeline.ts:1336, W9 src/game/stageGenerator.ts:571, W10 src/game/stageGenerator.ts:571"
+  },
+  {
+   "cat": "animal",
+   "arr": "enemies",
+   "key": "turtle",
+   "perWorld": [
+    0,
+    72,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-5",
+   "stageCount": 2,
+   "stageList": [
+    "2-5",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:198"
+  },
+  {
+   "cat": "climbable",
+   "arr": "ropes",
+   "key": "rope",
+   "perWorld": [
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    1
+   ],
+   "first": "1-3",
+   "stageCount": 6,
+   "stageList": [
+    "1-3",
+    "1-7",
+    "1-9",
+    "9-1",
+    "9-5",
+    "10-1"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "climbable",
+   "arr": "ropes",
+   "key": "rope required",
+   "perWorld": [
+    4,
+    11,
+    10,
+    12,
+    0,
+    0,
+    0,
+    16,
+    1,
+    0
+   ],
+   "first": "1-4",
+   "stageCount": 7,
+   "stageList": [
+    "1-4",
+    "2-6",
+    "3-4",
+    "4-1",
+    "4-6",
+    "8-2",
+    "9-8"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "climbable",
+   "arr": "vines",
+   "key": "swing_liana",
+   "perWorld": [
+    37,
+    62,
+    25,
+    52,
+    8,
+    64,
+    15,
+    38,
+    35,
+    41
+   ],
+   "first": "1-2",
+   "stageCount": 56,
+   "stageList": [
+    "1-2",
+    "1-4",
+    "1-6",
+    "1-8",
+    "1-10",
+    "2-4",
+    "2-7",
+    "2-10",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-8",
+    "3-9",
+    "3-10",
+    "4-4",
+    "4-5",
+    "4-10",
+    "5-6",
+    "5-8",
+    "5-10",
+    "6-1",
+    "6-3",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-10",
+    "7-2",
+    "7-5",
+    "7-8",
+    "7-9",
+    "7-10",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-7",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
+   "at": "W1 src/game/w1Rhythm.ts:1213, W2 src/game/w2Stages.ts:568, W3 src/game/protoStage.ts:615, W4 src/game/protoStage.ts:615, W5 src/game/stageForks.ts:88, W6 src/game/gen2/pipeline.ts:925, W7 src/game/stageGenerator.ts:2509, W8 src/game/gen2/pipeline.ts:925, W9 src/game/stageGenerator.ts:899, W10 src/game/stageForks.ts:88"
+  },
+  {
+   "cat": "climbable",
+   "arr": "vines",
+   "key": "swing_liana silk",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    44,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-4",
+   "stageCount": 2,
+   "stageList": [
+    "5-4",
+    "5-5"
+   ],
+   "at": "W5 src/game/w5Stage54.ts:179"
+  },
+  {
+   "cat": "climbable",
+   "arr": "vines",
+   "key": "tree_climb",
+   "perWorld": [
+    41,
+    36,
+    65,
+    85,
+    28,
+    48,
+    42,
+    56,
+    48,
+    63
+   ],
+   "first": "1-1",
+   "stageCount": 71,
+   "stageList": [
+    "1-1",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-10",
+    "2-2",
+    "2-3",
+    "2-6",
+    "2-10",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-9",
+    "3-10",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-5",
+    "4-6",
+    "4-8",
+    "4-9",
+    "4-10",
+    "5-M",
+    "5-6",
+    "5-8",
+    "5-10",
+    "6-1",
+    "6-3",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-10",
+    "7-1",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-7",
+    "7-8",
+    "7-9",
+    "7-10",
+    "8-1",
+    "8-5",
+    "8-7",
+    "8-8",
+    "8-9",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "9-10",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:727, W2 src/game/w2Stages.ts:506, W3 src/game/protoStage.ts:620, W4 src/game/protoStage.ts:5737, W5 src/game/meecaStage.ts:222, W6 src/game/gen2/pipeline.ts:925, W7 src/game/gen2/pipeline.ts:925, W8 src/game/gen2/pipeline.ts:925, W9 src/game/stageForks.ts:206, W10 src/game/stageForks.ts:206"
+  },
+  {
+   "cat": "climbable",
+   "arr": "vines",
+   "key": "tree_climb kit",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-M",
+   "stageCount": 1,
+   "stageList": [
+    "5-M"
+   ],
+   "at": "W5 src/game/meecaStage.ts:189"
+  },
+  {
+   "cat": "climbable",
+   "arr": "vines",
+   "key": "tree_climb kit off",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "first": "5-M",
+   "stageCount": 2,
+   "stageList": [
+    "5-M",
+    "8-1"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "climbable",
+   "arr": "vines",
+   "key": "tree_climb rope",
+   "perWorld": [
+    0,
+    0,
+    0,
+    17,
+    0,
+    0,
+    0,
+    5,
+    0,
+    0
+   ],
+   "first": "4-8",
+   "stageCount": 3,
+   "stageList": [
+    "4-8",
+    "4-9",
+    "8-4"
+   ],
+   "at": "W4 src/game/protoStage.ts:5189, W8 src/game/w8Lantern.ts:185"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "bouncy -",
+   "perWorld": [
+    41,
+    0,
+    0,
+    2,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 9,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9",
+    "3-1",
+    "4-5",
+    "7-7"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:167, W3 src/game/protoStage.ts:1302, W4 src/game/protoStage.ts:1302, W7 src/game/stageGenerator.ts:2971"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "bouncy branch",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    4,
+    4,
+    2,
+    0
+   ],
+   "first": "5-8",
+   "stageCount": 7,
+   "stageList": [
+    "5-8",
+    "7-8",
+    "8-7",
+    "9-4",
+    "9-7",
+    "9-8",
+    "9-9"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:379, W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "bouncy canopy_bridge",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    3
+   ],
+   "first": "5-8",
+   "stageCount": 5,
+   "stageList": [
+    "5-8",
+    "8-7",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "bouncy log",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    3,
+    4
+   ],
+   "first": "7-2",
+   "stageCount": 9,
+   "stageList": [
+    "7-2",
+    "9-2",
+    "9-4",
+    "9-7",
+    "9-8",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
+   "at": "W7 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "bouncy moss_stone",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    5,
+    2,
+    5,
+    5
+   ],
+   "first": "5-8",
+   "stageCount": 15,
+   "stageList": [
+    "5-8",
+    "7-2",
+    "7-8",
+    "8-7",
+    "8-9",
+    "9-2",
+    "9-4",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:379, W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "bouncy ruin",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    1,
+    3,
+    8
+   ],
+   "first": "7-2",
+   "stageCount": 11,
+   "stageList": [
+    "7-2",
+    "7-8",
+    "8-7",
+    "9-2",
+    "9-5",
+    "9-7",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
+   "at": "W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "drift log drift",
+   "perWorld": [
+    0,
+    136,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:355"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "fragile branch",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    8
+   ],
+   "first": "7-2",
+   "stageCount": 6,
+   "stageList": [
+    "7-2",
+    "8-7",
+    "9-3",
+    "9-7",
+    "10-1",
+    "10-3"
+   ],
+   "at": "W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "fragile branch creak",
+   "perWorld": [
+    30,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-2",
+   "stageCount": 2,
+   "stageList": [
+    "1-2",
+    "1-4"
+   ],
+   "at": "W1 src/game/w1Rhythm.ts:1192"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "fragile branch crumbleAfter",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-6",
+   "stageCount": 1,
+   "stageList": [
+    "1-6"
+   ],
+   "at": "W1 src/game/w1Rhythm.ts:1192"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "fragile branch pit=drop creak",
+   "perWorld": [
+    55,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-5",
+   "stageCount": 1,
+   "stageList": [
+    "1-5"
+   ],
+   "at": "W1 src/game/w1Rhythm.ts:1192"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "fragile canopy_bridge",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    3
+   ],
+   "first": "5-8",
+   "stageCount": 5,
+   "stageList": [
+    "5-8",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "fragile log",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    2,
+    2,
+    6
+   ],
+   "first": "5-8",
+   "stageCount": 10,
+   "stageList": [
+    "5-8",
+    "7-8",
+    "8-7",
+    "9-2",
+    "9-5",
+    "9-7",
+    "10-1",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:379, W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "fragile moss_stone",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    4,
+    9
+   ],
+   "first": "5-8",
+   "stageCount": 9,
+   "stageList": [
+    "5-8",
+    "7-8",
+    "8-7",
+    "9-2",
+    "9-7",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:379, W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "fragile ruin",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    3,
+    10
+   ],
+   "first": "7-8",
+   "stageCount": 9,
+   "stageList": [
+    "7-8",
+    "9-2",
+    "9-6",
+    "9-7",
+    "10-1",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
+   "at": "W7 src/game/gen2/pipeline.ts:728, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "fragile ruin crumbleAfter",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    127,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 3,
+   "stageList": [
+    "7-1",
+    "7-5",
+    "7-6"
+   ],
+   "at": "W7 src/game/gen2/pipeline.ts:728"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "fragile ruin pit=drop crumbleAfter",
+   "perWorld": [
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-5",
+   "stageCount": 1,
+   "stageList": [
+    "1-5"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:167"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "moving - art=lift lift",
+   "perWorld": [
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-7",
+   "stageCount": 1,
+   "stageList": [
+    "2-7"
+   ],
+   "at": "W2 src/game/w2Stages.ts:689"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "moving canopy_bridge moveRange",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "first": "2-10",
+   "stageCount": 2,
+   "stageList": [
+    "2-10",
+    "8-10"
+   ],
+   "at": "W2 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "moving log moveRange",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0
+   ],
+   "first": "5-10",
+   "stageCount": 3,
+   "stageList": [
+    "5-10",
+    "6-10",
+    "9-10"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:379, W6 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "moving moss_stone moveRange",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    2
+   ],
+   "first": "9-5",
+   "stageCount": 3,
+   "stageList": [
+    "9-5",
+    "10-1",
+    "10-3"
+   ],
+   "at": "W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "moving ruin moveRange",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    2
+   ],
+   "first": "7-10",
+   "stageCount": 3,
+   "stageList": [
+    "7-10",
+    "10-1",
+    "10-10"
+   ],
+   "at": "W7 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid - art=hidden",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-9",
+   "stageCount": 1,
+   "stageList": [
+    "1-9"
+   ],
+   "at": "W1 src/game/protoStage.ts:2423"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid - art=kit",
+   "perWorld": [
+    8,
+    17,
+    6,
+    4,
+    12,
+    8,
+    4,
+    11,
+    0,
+    0
+   ],
+   "first": "1-4",
+   "stageCount": 20,
+   "stageList": [
+    "1-4",
+    "1-6",
+    "2-3",
+    "2-8",
+    "2-9",
+    "3-2",
+    "4-1",
+    "4-6",
+    "4-8",
+    "5-M",
+    "5-9",
+    "6-3",
+    "6-6",
+    "6-7",
+    "7-3",
+    "7-7",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-5"
+   ],
+   "at": "W1 src/game/puzzleKit.ts:344, W2 src/game/puzzleKit.ts:344, W3 src/game/puzzleKit.ts:337, W4 src/game/puzzleKit.ts:344, W5 src/game/puzzleKit.ts:327, W6 src/game/puzzleKit.ts:333, W7 src/game/puzzleKit.ts:340, W8 src/game/puzzleKit.ts:340"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid - art=porch",
+   "perWorld": [
+    0,
+    62,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-7",
+   "stageCount": 2,
+   "stageList": [
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:644"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid - chase",
+   "perWorld": [
+    124,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-8",
+   "stageCount": 1,
+   "stageList": [
+    "1-8"
+   ],
+   "at": "W1 src/game/flowerReach.ts:65"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid - chase chaseTip",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-8",
+   "stageCount": 1,
+   "stageList": [
+    "1-8"
+   ],
+   "at": "W1 src/game/flowerReach.ts:65"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid - crown",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-8",
+   "stageCount": 1,
+   "stageList": [
+    "1-8"
+   ],
+   "at": "W1 src/game/flowerReach.ts:65"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid - lily",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-3",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:466"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid branch",
+   "perWorld": [
+    126,
+    55,
+    59,
+    307,
+    165,
+    2,
+    28,
+    36,
+    70,
+    31
+   ],
+   "first": "1-2",
+   "stageCount": 58,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-6",
+    "1-7",
+    "1-9",
+    "1-10",
+    "2-2",
+    "2-3",
+    "2-6",
+    "2-10",
+    "3-1",
+    "3-3",
+    "3-4",
+    "3-9",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-7",
+    "4-8",
+    "4-9",
+    "5-M",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "6-7",
+    "6-10",
+    "7-2",
+    "7-7",
+    "7-8",
+    "8-2",
+    "8-3",
+    "8-5",
+    "8-7",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:1038, W2 src/game/w2Stages.ts:517, W3 src/game/protoStage.ts:553, W4 src/game/protoStage.ts:5732, W5 src/game/meecaStage.ts:217, W6 src/game/gen2/pipeline.ts:728, W7 src/game/stageGenerator.ts:379, W8 src/game/gen2/pipeline.ts:728, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid branch art=frond",
+   "perWorld": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-1",
+   "stageCount": 1,
+   "stageList": [
+    "4-1"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid branch art=orchid",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    39,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-3",
+   "stageCount": 3,
+   "stageList": [
+    "5-3",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/w5Stages.ts:660"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid branch art=post lip",
+   "perWorld": [
+    0,
+    53,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid branch art=stilt",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    7,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid branch catch",
+   "perWorld": [
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-2",
+   "stageCount": 1,
+   "stageList": [
+    "1-2"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:1038"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid branch catch pit=drop",
+   "perWorld": [
+    80,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 2,
+   "stageList": [
+    "1-1",
+    "1-5"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:1038"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid branch lip",
+   "perWorld": [
+    0,
+    0,
+    0,
+    42,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-6",
+   "stageCount": 1,
+   "stageList": [
+    "4-6"
+   ],
+   "at": "W4 src/game/protoStage.ts:5732"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid branch pillar",
+   "perWorld": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-10",
+   "stageCount": 1,
+   "stageList": [
+    "4-10"
+   ],
+   "at": "W4 src/game/protoStage.ts:5732"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid branch pit=drop",
+   "perWorld": [
+    115,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 4,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:1038"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid canopy_bridge",
+   "perWorld": [
+    42,
+    0,
+    0,
+    0,
+    29,
+    0,
+    0,
+    22,
+    44,
+    144
+   ],
+   "first": "1-2",
+   "stageCount": 21,
+   "stageList": [
+    "1-2",
+    "5-6",
+    "5-8",
+    "8-7",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:167, W5 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid canopy_bridge art=hidden",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-2",
+   "stageCount": 1,
+   "stageList": [
+    "1-2"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid canopy_bridge catch",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-2",
+   "stageCount": 1,
+   "stageList": [
+    "1-2"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:167"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid canopy_bridge pit=drop",
+   "perWorld": [
+    12,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 2,
+   "stageList": [
+    "1-1",
+    "1-5"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:167"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid fungus_shelf",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "8-2",
+   "stageCount": 3,
+   "stageList": [
+    "8-2",
+    "8-3",
+    "8-5"
+   ],
+   "at": "W8 src/game/gen2/pipeline.ts:728"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid log",
+   "perWorld": [
+    209,
+    391,
+    253,
+    420,
+    283,
+    999,
+    25,
+    887,
+    399,
+    274
+   ],
+   "first": "1-2",
+   "stageCount": 90,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-6",
+    "1-7",
+    "1-9",
+    "1-10",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9",
+    "2-10",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "3-10",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-8",
+    "4-9",
+    "4-10",
+    "5-M",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "5-10",
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-9",
+    "6-10",
+    "7-2",
+    "7-8",
+    "7-10",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-7",
+    "8-8",
+    "8-9",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "9-10",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:167, W2 src/game/w2Stages.ts:140, W3 src/game/protoStage.ts:548, W4 src/game/protoStage.ts:5765, W5 src/game/meecaStage.ts:240, W6 src/game/gen2/pipeline.ts:728, W7 src/game/stageGenerator.ts:379, W8 src/game/gen2/pipeline.ts:728, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid log art=poolLog",
+   "perWorld": [
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-3",
+   "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
+   "at": "W4 src/game/w4Stage43.ts:323"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid log art=steps",
+   "perWorld": [
+    0,
+    27,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:608"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid log art=stilt",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    38,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid log pit=drop",
+   "perWorld": [
+    111,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 5,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-9"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:167"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid log push",
+   "perWorld": [
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-6",
+   "stageCount": 1,
+   "stageList": [
+    "1-6"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:167"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid moss_stone",
+   "perWorld": [
+    170,
+    90,
+    573,
+    161,
+    420,
+    107,
+    780,
+    18,
+    152,
+    171
+   ],
+   "first": "1-2",
+   "stageCount": 76,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-9",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-8",
+    "2-9",
+    "2-10",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "3-10",
+    "4-2",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-10",
+    "5-M",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "5-10",
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9",
+    "7-1",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "8-7",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "9-10",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:167, W2 src/game/w2Stages.ts:857, W3 src/game/protoStage.ts:610, W4 src/game/protoStage.ts:563, W5 src/game/meecaStage.ts:182, W6 src/game/gen2/pipeline.ts:728, W7 src/game/gen2/pipeline.ts:728, W8 src/game/gen2/pipeline.ts:728, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid moss_stone art=boulder push",
+   "perWorld": [
+    0,
+    0,
+    0,
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-3",
+   "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
+   "at": "W4 src/game/w4Stage43.ts:347"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid moss_stone art=rock",
+   "perWorld": [
+    3,
+    0,
+    0,
+    81,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-2",
+   "stageCount": 6,
+   "stageList": [
+    "1-2",
+    "4-2",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W1 src/game/w1Rhythm.ts:1180, W4 src/game/w4Stage49.ts:197"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid moss_stone pillar",
+   "perWorld": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-10",
+   "stageCount": 1,
+   "stageList": [
+    "4-10"
+   ],
+   "at": "W4 src/game/protoStage.ts:563"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid moss_stone pit=drop",
+   "perWorld": [
+    172,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 3,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-5"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:167"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid moss_stone push",
+   "perWorld": [
+    0,
+    0,
+    0,
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-8",
+   "stageCount": 2,
+   "stageList": [
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/protoStage.ts:563"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid moss_stone soil",
+   "perWorld": [
+    196,
+    0,
+    156,
+    368,
+    303,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-3",
+   "stageCount": 21,
+   "stageList": [
+    "1-3",
+    "1-6",
+    "1-7",
+    "1-9",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "4-2",
+    "4-4",
+    "4-5",
+    "4-8",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:167, W3 src/game/protoStage.ts:610, W4 src/game/protoStage.ts:563, W5 src/game/meecaStage.ts:182"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid roost_branch",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "first": "8-1",
+   "stageCount": 1,
+   "stageList": [
+    "8-1"
+   ],
+   "at": "W8 src/game/gen2/pipeline.ts:728"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid ruin",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    3,
+    0,
+    83,
+    16,
+    120,
+    202
+   ],
+   "first": "5-6",
+   "stageCount": 24,
+   "stageList": [
+    "5-6",
+    "7-2",
+    "7-4",
+    "7-8",
+    "8-7",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:379, W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
+  },
+  {
+   "cat": "landing",
+   "arr": "platforms",
+   "key": "solid ruin art=hidden",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0
+   ],
+   "first": "7-4",
+   "stageCount": 1,
+   "stageList": [
+    "7-4"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "other",
+   "arr": "bowlGates",
+   "key": "",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-9",
+   "stageCount": 1,
+   "stageList": [
+    "1-9"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:878"
+  },
+  {
+   "cat": "other",
+   "arr": "falls43",
+   "key": "plug",
+   "perWorld": [
+    0,
+    0,
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-3",
+   "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "other",
+   "arr": "falls43",
+   "key": "pool",
+   "perWorld": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-3",
+   "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "other",
+   "arr": "falls43",
+   "key": "surge",
+   "perWorld": [
+    0,
+    0,
+    0,
+    5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-3",
+   "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "other",
+   "arr": "falls43",
+   "key": "tide",
+   "perWorld": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-3",
+   "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "other",
+   "arr": "fallZones",
+   "key": "",
+   "perWorld": [
+    24,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-2",
+   "stageCount": 1,
+   "stageList": [
+    "1-2"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:878"
+  },
+  {
+   "cat": "other",
+   "arr": "lanes",
+   "key": "",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    21,
+    15
+   ],
+   "first": "5-6",
+   "stageCount": 13,
+   "stageList": [
+    "5-6",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
+   "at": "W5 src/game/meecaStage.ts:202, W9 src/game/stageGenerator.ts:1631, W10 src/game/stageGenerator.ts:1631"
+  },
+  {
+   "cat": "other",
+   "arr": "links",
+   "key": "",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0
+   ],
+   "first": "7-4",
+   "stageCount": 1,
+   "stageList": [
+    "7-4"
+   ],
+   "at": "W7 src/game/gen2/pipeline.ts:595"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.catches",
+   "key": "",
+   "perWorld": [
+    0,
+    0,
+    0,
+    10,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-1",
+   "stageCount": 2,
+   "stageList": [
+    "4-1",
+    "4-6"
+   ],
+   "at": "W4 src/game/protoStage.ts:5762"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.covers",
+   "key": "",
+   "perWorld": [
+    2,
+    0,
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-6",
+   "stageCount": 5,
+   "stageList": [
+    "1-6",
+    "1-7",
+    "4-4",
+    "4-5",
+    "4-9"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:878, W4 src/game/protoStage.ts:5762"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.glints",
+   "key": "",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-5",
+   "stageCount": 1,
+   "stageList": [
+    "1-5"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:878"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.hollows",
+   "key": "",
+   "perWorld": [
+    1,
+    0,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-4",
+   "stageCount": 4,
+   "stageList": [
+    "1-4",
+    "3-4",
+    "4-1",
+    "4-6"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:878, W3 src/game/protoStage.ts:646, W4 src/game/protoStage.ts:5762"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.leaves",
+   "key": "bushWide",
+   "perWorld": [
+    84,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 2,
+   "stageList": [
+    "1-1",
+    "1-5"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:773"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "cattails",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:748"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "glow-mushrooms",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:748"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "lantern-flower",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    5,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:748"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "log-hide",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:748"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "mooring-post",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    5,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:748"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "moss-arch",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:748"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "moss-curtain",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    6,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:763"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "moss-hide",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:748"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "reed-hide",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:748"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "root-arch",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:748"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "root-mound",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    3,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:748"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "rope",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    3,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:705"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stilt",
+   "key": "stilt",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    69,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:705"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stiltLedges",
+   "key": "1",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    56,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:656"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stiltLedges",
+   "key": "2",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    4,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:723"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stiltLedges",
+   "key": "3",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    4,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:723"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.stiltLedges",
+   "key": "5",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/w6Stages.ts:723"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.thorns",
+   "key": "",
+   "perWorld": [
+    0,
+    0,
+    74,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-4",
+   "stageCount": 5,
+   "stageList": [
+    "3-4",
+    "3-5",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:646"
+  },
+  {
+   "cat": "other",
+   "arr": "proto.trunks",
+   "key": "",
+   "perWorld": [
+    186,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 3,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-5"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:878"
+  },
+  {
+   "cat": "other",
+   "arr": "rivers",
+   "key": "",
+   "perWorld": [
+    0,
+    161,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:224"
+  },
+  {
+   "cat": "other",
+   "arr": "trees",
+   "key": "",
+   "perWorld": [
+    26,
+    36,
+    65,
+    85,
+    28,
+    32,
+    26,
+    18,
+    48,
+    63
+   ],
+   "first": "1-4",
+   "stageCount": 57,
+   "stageList": [
+    "1-4",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-10",
+    "2-2",
+    "2-3",
+    "2-6",
+    "2-10",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-9",
+    "3-10",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-5",
+    "4-6",
+    "4-8",
+    "4-9",
+    "4-10",
+    "5-M",
+    "5-6",
+    "5-8",
+    "5-10",
+    "6-8",
+    "6-10",
+    "7-2",
+    "7-8",
+    "7-10",
+    "8-4",
+    "8-7",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "9-10",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:878, W2 src/game/w2Stages.ts:224, W3 src/game/protoStage.ts:646, W4 src/game/protoStage.ts:5762, W5 src/game/meecaStage.ts:202, W6 src/game/gen2/pipeline.ts:595, W7 src/game/gen2/pipeline.ts:595, W8 src/game/gen2/pipeline.ts:595, W9 src/game/stageGenerator.ts:1631, W10 src/game/stageGenerator.ts:1631"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "cage",
+   "perWorld": [
+    0,
+    15,
+    0,
+    20,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-3",
+   "stageCount": 3,
+   "stageList": [
+    "2-3",
+    "2-8",
+    "4-8"
+   ],
+   "at": "W2 src/game/w2Stages.ts:985, W4 src/game/protoStage.ts:5181"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "exit_totem",
+   "perWorld": [
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9
+   ],
+   "first": "1-1",
+   "stageCount": 90,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-9",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-7",
+    "4-8",
+    "4-9",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-9",
+    "7-1",
+    "7-2",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-7",
+    "8-8",
+    "8-9",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:1068, W2 src/game/w2Stages.ts:1151, W3 src/game/protoStage.ts:5601, W4 src/game/protoStage.ts:7089, W5 src/game/w5Stages.ts:1461, W6 src/game/gen2/pipeline.ts:1691, W7 src/game/gen2/pipeline.ts:1691, W8 src/game/gen2/pipeline.ts:1691, W9 src/game/stageGenerator.ts:475, W10 src/game/stageGenerator.ts:475"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "find",
+   "perWorld": [
+    5,
+    4,
+    4,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    4
+   ],
+   "first": "1-2",
+   "stageCount": 47,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-8",
+    "2-2",
+    "2-3",
+    "2-5",
+    "2-8",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-8",
+    "4-2",
+    "4-3",
+    "4-6",
+    "4-8",
+    "4-9",
+    "5-2",
+    "5-5",
+    "5-6",
+    "5-8",
+    "5-9",
+    "6-2",
+    "6-3",
+    "6-5",
+    "6-6",
+    "6-8",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-8",
+    "8-2",
+    "8-3",
+    "8-5",
+    "8-6",
+    "8-8",
+    "9-2",
+    "9-3",
+    "9-5",
+    "9-6",
+    "9-8",
+    "10-2",
+    "10-3",
+    "10-5",
+    "10-8"
+   ],
+   "at": "W1 src/game/w1Rhythm.ts:1233, W2 src/game/w2Sections.ts:548, W3 src/game/protoStage.ts:5565, W4 src/game/stageGenerator.ts:3048, W5 src/game/w5Stages.ts:983, W6 src/game/stageGenerator.ts:3048, W7 src/game/stageGenerator.ts:3048, W8 src/game/stageGenerator.ts:3048, W9 src/game/stageGenerator.ts:3048, W10 src/game/stageGenerator.ts:3048"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "flower",
+   "perWorld": [
+    753,
+    795,
+    845,
+    1248,
+    1086,
+    762,
+    565,
+    842,
+    712,
+    642
+   ],
+   "first": "1-1",
+   "stageCount": 90,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-9",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-7",
+    "4-8",
+    "4-9",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-9",
+    "7-1",
+    "7-2",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-7",
+    "8-8",
+    "8-9",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:238, W2 src/game/w2Stages.ts:144, W3 src/game/protoStage.ts:624, W4 src/game/protoStage.ts:5751, W5 src/game/w5Stages.ts:252, W6 src/game/gen2/pipeline.ts:1208, W7 src/game/gen2/pipeline.ts:1208, W8 src/game/gen2/pipeline.ts:1208, W9 src/game/stageGenerator.ts:432, W10 src/game/stageGenerator.ts:432"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "heart",
+   "perWorld": [
+    37,
+    25,
+    45,
+    56,
+    47,
+    46,
+    36,
+    52,
+    72,
+    63
+   ],
+   "first": "1-2",
+   "stageCount": 95,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9",
+    "1-10",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9",
+    "2-10",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "3-10",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-7",
+    "4-8",
+    "4-9",
+    "4-10",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "5-10",
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-9",
+    "6-10",
+    "7-1",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "7-10",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-8",
+    "8-9",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "9-10",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-9",
+    "10-10"
+   ],
+   "at": "W1 src/game/protoStage.ts:242, W2 src/game/w2Stages.ts:163, W3 src/game/protoStage.ts:242, W4 src/game/protoStage.ts:242, W5 src/game/protoStage.ts:242, W6 src/game/easyMode.ts:234, W7 src/game/easyMode.ts:234, W8 src/game/easyMode.ts:234, W9 src/game/stageGenerator.ts:475, W10 src/game/stageGenerator.ts:475"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "powerup_invincible",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    7,
+    10
+   ],
+   "first": "9-1",
+   "stageCount": 12,
+   "stageList": [
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
+   "at": "W9 src/game/stageGenerator.ts:475, W10 src/game/stageGenerator.ts:475"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "powerup_magnet",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    2,
+    0,
+    16,
+    7
+   ],
+   "first": "5-6",
+   "stageCount": 18,
+   "stageList": [
+    "5-6",
+    "7-2",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:475, W7 src/game/stageGenerator.ts:475, W9 src/game/stageGenerator.ts:475, W10 src/game/stageGenerator.ts:475"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "powerup_speed",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    4,
+    0,
+    0,
+    0,
+    7,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 8,
+   "stageList": [
+    "5-6",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:475, W9 src/game/stageGenerator.ts:475"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "relic",
+   "perWorld": [
+    13,
+    0,
+    18,
+    0,
+    3,
+    0,
+    10,
+    0,
+    4,
+    0
+   ],
+   "first": "1-5",
+   "stageCount": 7,
+   "stageList": [
+    "1-5",
+    "3-6",
+    "3-7",
+    "5-6",
+    "7-3",
+    "7-7",
+    "9-8"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:1065, W3 src/game/protoStage.ts:3606, W5 src/game/stageGenerator.ts:475, W7 src/game/gen2/pipeline.ts:1352, W9 src/game/stageGenerator.ts:475"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "seed",
+   "perWorld": [
+    6,
+    9,
+    1,
+    7,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-4",
+   "stageCount": 22,
+   "stageList": [
+    "1-4",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-9",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9",
+    "3-4",
+    "4-1",
+    "4-2",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W1 src/game/protoStage.ts:5981, W2 src/game/w2Stages.ts:214, W3 src/game/w3Sections.ts:318, W4 src/game/protoStage.ts:5981"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "super_heart",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    7,
+    5
+   ],
+   "first": "5-6",
+   "stageCount": 13,
+   "stageList": [
+    "5-6",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
+   "at": "W5 src/game/stageGenerator.ts:475, W9 src/game/stageGenerator.ts:475, W10 src/game/stageGenerator.ts:475"
+  },
+  {
+   "cat": "pickup",
+   "arr": "collectibles",
+   "key": "thorn_gate",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0
+   ],
+   "first": "7-7",
+   "stageCount": 1,
+   "stageList": [
+    "7-7"
+   ],
+   "at": "W7 src/game/stageGenerator.ts:2973"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w10Banner",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    8
+   ],
+   "first": "10-2",
+   "stageCount": 4,
+   "stageList": [
+    "10-2",
+    "10-4",
+    "10-6",
+    "10-8"
+   ],
+   "at": "W10 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w10Brazier",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    10
+   ],
+   "first": "10-1",
+   "stageCount": 7,
+   "stageList": [
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-6",
+    "10-7",
+    "10-8"
+   ],
+   "at": "W10 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w10Cage",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    10
+   ],
+   "first": "10-1",
+   "stageCount": 5,
+   "stageList": [
+    "10-1",
+    "10-3",
+    "10-5",
+    "10-7",
+    "10-9"
+   ],
+   "at": "W10 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w10Crate",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    8
+   ],
+   "first": "10-1",
+   "stageCount": 6,
+   "stageList": [
+    "10-1",
+    "10-3",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
+   "at": "W10 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w10Crates",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    8
+   ],
+   "first": "10-2",
+   "stageCount": 4,
+   "stageList": [
+    "10-2",
+    "10-4",
+    "10-6",
+    "10-8"
+   ],
+   "at": "W10 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w10Rack",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    10
+   ],
+   "first": "10-1",
+   "stageCount": 5,
+   "stageList": [
+    "10-1",
+    "10-3",
+    "10-5",
+    "10-7",
+    "10-9"
+   ],
+   "at": "W10 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5BankA1",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5BankA2",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5BankB1",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5BankB2",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5BankB3",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5Bench",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5Birdbath",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5BookStack",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5ButterflyBush",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5ClutA1",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5ClutA2",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5ClutB1",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5ClutB2",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5ClutB3",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5CupChime",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
+   "at": "W5 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5FernPot",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5Hang1",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-8",
+   "stageCount": 1,
+   "stageList": [
+    "5-8"
+   ],
+   "at": "W5 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5Hang2",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-8",
+   "stageCount": 1,
+   "stageList": [
+    "5-8"
+   ],
+   "at": "W5 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5Ladybug",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5Lanterns",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
+   "at": "W5 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5Petals",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5Pots",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5Spool",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5Teacups",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5TeaTin",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5Thimbles",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w5WateringCan",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w7Banner",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    4,
+    0,
+    0,
+    0
+   ],
+   "first": "7-2",
+   "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
+   "at": "W7 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w7BellVine",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    4,
+    0,
+    0,
+    0
+   ],
+   "first": "7-2",
+   "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
+   "at": "W7 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w7Capuchin",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0
+   ],
+   "first": "7-2",
+   "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w7Censer",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    4,
+    0,
+    0,
+    0
+   ],
+   "first": "7-2",
+   "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
+   "at": "W7 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w7FrogIdol",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "7-2",
+   "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w7LizardBlock",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "7-2",
+   "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w7MonkeyStatue",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0
+   ],
+   "first": "7-2",
+   "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w7StoneLantern",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "7-2",
+   "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w7Tablet",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0
+   ],
+   "first": "7-2",
+   "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w8Curtain",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    6,
+    0,
+    0
+   ],
+   "first": "8-7",
+   "stageCount": 1,
+   "stageList": [
+    "8-7"
+   ],
+   "at": "W8 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w8FireflyB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "first": "8-7",
+   "stageCount": 1,
+   "stageList": [
+    "8-7"
+   ],
+   "at": "W8 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w8FlowersB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "first": "8-7",
+   "stageCount": 1,
+   "stageList": [
+    "8-7"
+   ],
+   "at": "W8 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w8NestB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "first": "8-7",
+   "stageCount": 1,
+   "stageList": [
+    "8-7"
+   ],
+   "at": "W8 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w9Fern",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    15,
+    0
+   ],
+   "first": "9-1",
+   "stageCount": 5,
+   "stageList": [
+    "9-1",
+    "9-3",
+    "9-5",
+    "9-7",
+    "9-9"
+   ],
+   "at": "W9 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w9FernB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    8,
+    0
+   ],
+   "first": "9-2",
+   "stageCount": 4,
+   "stageList": [
+    "9-2",
+    "9-4",
+    "9-6",
+    "9-8"
+   ],
+   "at": "W9 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w9Log",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    3,
+    0
+   ],
+   "first": "9-3",
+   "stageCount": 3,
+   "stageList": [
+    "9-3",
+    "9-5",
+    "9-9"
+   ],
+   "at": "W9 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w9LogB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    3,
+    0
+   ],
+   "first": "9-4",
+   "stageCount": 2,
+   "stageList": [
+    "9-4",
+    "9-8"
+   ],
+   "at": "W9 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w9Obsidian",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    12,
+    0
+   ],
+   "first": "9-1",
+   "stageCount": 5,
+   "stageList": [
+    "9-1",
+    "9-3",
+    "9-5",
+    "9-7",
+    "9-9"
+   ],
+   "at": "W9 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w9ObsidianB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    11,
+    0
+   ],
+   "first": "9-2",
+   "stageCount": 4,
+   "stageList": [
+    "9-2",
+    "9-4",
+    "9-6",
+    "9-8"
+   ],
+   "at": "W9 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w9Smoke",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    3,
+    0
+   ],
+   "first": "9-3",
+   "stageCount": 3,
+   "stageList": [
+    "9-3",
+    "9-5",
+    "9-9"
+   ],
+   "at": "W9 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w9SmokeB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    3,
+    0
+   ],
+   "first": "9-4",
+   "stageCount": 2,
+   "stageList": [
+    "9-4",
+    "9-8"
+   ],
+   "at": "W9 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w9Tree",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    12,
+    0
+   ],
+   "first": "9-1",
+   "stageCount": 5,
+   "stageList": [
+    "9-1",
+    "9-3",
+    "9-5",
+    "9-7",
+    "9-9"
+   ],
+   "at": "W9 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "dress",
+   "key": "w9TreeB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    8,
+    0
+   ],
+   "first": "9-2",
+   "stageCount": 4,
+   "stageList": [
+    "9-2",
+    "9-4",
+    "9-6",
+    "9-8"
+   ],
+   "at": "W9 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.bushes",
+   "key": "fern",
+   "perWorld": [
+    1,
+    0,
+    0,
+    19,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-7",
+   "stageCount": 2,
+   "stageList": [
+    "1-7",
+    "4-5"
+   ],
+   "at": "W1 src/game/protoStage.ts:2191, W4 src/game/protoStage.ts:2191"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.bushes",
+   "key": "grotto",
+   "perWorld": [
+    0,
+    0,
+    10,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-2",
+   "stageCount": 2,
+   "stageList": [
+    "3-2",
+    "3-7"
+   ],
+   "at": "W3 src/game/protoStage.ts:2191"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.bushes",
+   "key": "tall",
+   "perWorld": [
+    19,
+    0,
+    0,
+    4,
+    0,
+    48,
+    0,
+    1,
+    0,
+    0
+   ],
+   "first": "1-7",
+   "stageCount": 6,
+   "stageList": [
+    "1-7",
+    "4-5",
+    "6-2",
+    "6-3",
+    "6-7",
+    "8-2"
+   ],
+   "at": "W1 src/game/protoStage.ts:2191, W4 src/game/protoStage.ts:2191, W6 src/game/gen2/worlds/w6.ts:293, W8 src/game/gen2/worlds/w8.ts:269"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.bushes",
+   "key": "wide",
+   "perWorld": [
+    12,
+    0,
+    0,
+    4,
+    0,
+    47,
+    0,
+    1,
+    0,
+    0
+   ],
+   "first": "1-7",
+   "stageCount": 6,
+   "stageList": [
+    "1-7",
+    "4-5",
+    "6-2",
+    "6-3",
+    "6-7",
+    "8-2"
+   ],
+   "at": "W1 src/game/protoStage.ts:2191, W4 src/game/protoStage.ts:2191, W6 src/game/gen2/worlds/w6.ts:293, W8 src/game/gen2/worlds/w8.ts:269"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "archway",
+   "perWorld": [
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-9",
+   "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "banner",
+   "perWorld": [
+    0,
+    7,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-9",
+   "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "bell",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": "W2 src/game/protoStage.ts:6754"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "canopy",
+   "perWorld": [
+    0,
+    59,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-4",
+   "stageCount": 1,
+   "stageList": [
+    "2-4"
+   ],
+   "at": "W2 src/game/w2Stages.ts:585"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "chimney",
+   "perWorld": [
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 2,
+   "stageList": [
+    "2-1",
+    "2-7"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "dais",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-9",
+   "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "door",
+   "perWorld": [
+    0,
+    9,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-4",
+    "2-7"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "doorRoof",
+   "perWorld": [
+    0,
+    8,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": "W2 src/game/protoStage.ts:6746"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "gong",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-9",
+   "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "lantern",
+   "perWorld": [
+    0,
+    18,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 2,
+   "stageList": [
+    "2-6",
+    "2-9"
+   ],
+   "at": "W2 src/game/protoStage.ts:6747"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "laundry",
+   "perWorld": [
+    0,
+    14,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 5,
+   "stageList": [
+    "2-1",
+    "2-4",
+    "2-6",
+    "2-7",
+    "2-8"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "lilyCarpet",
+   "perWorld": [
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-9",
+   "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "limbShort",
+   "perWorld": [
+    0,
+    41,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-4",
+   "stageCount": 1,
+   "stageList": [
+    "2-4"
+   ],
+   "at": "W2 src/game/w2Stages.ts:563"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "logShort",
+   "perWorld": [
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 2,
+   "stageList": [
+    "2-1",
+    "2-3"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "mailbox",
+   "perWorld": [
+    0,
+    40,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-6",
+    "2-7"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "po.carry_stand",
+   "perWorld": [
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 2,
+   "stageList": [
+    "2-1",
+    "2-7"
+   ],
+   "at": "W2 src/game/w2Stages.ts:709"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "pole",
+   "perWorld": [
+    0,
+    11,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-4"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "porch",
+   "perWorld": [
+    0,
+    62,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-7",
+   "stageCount": 2,
+   "stageList": [
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:648"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "reedLean",
+   "perWorld": [
+    0,
+    73,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:227"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "reedShort",
+   "perWorld": [
+    0,
+    108,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 9,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:227"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "reedTall",
+   "perWorld": [
+    0,
+    98,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 9,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:227"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "rooftop",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": "W2 src/game/protoStage.ts:6753"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "sign",
+   "perWorld": [
+    0,
+    23,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 4,
+   "stageList": [
+    "2-1",
+    "2-6",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "steps",
+   "perWorld": [
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:621"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "swingFrame",
+   "perWorld": [
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-7",
+   "stageCount": 1,
+   "stageList": [
+    "2-7"
+   ],
+   "at": "W2 src/game/w2Stages.ts:555"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "tc.hat_shout",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": "W2 src/game/protoStage.ts:6755"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "tc.scroll",
+   "perWorld": [
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 2,
+   "stageList": [
+    "2-1",
+    "2-7"
+   ],
+   "at": "W2 src/game/w2Stages.ts:735"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "throne",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-9",
+   "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "window",
+   "perWorld": [
+    0,
+    14,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 4,
+   "stageList": [
+    "2-1",
+    "2-4",
+    "2-6",
+    "2-7"
+   ],
+   "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Acorns",
+   "perWorld": [
+    12,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Beetle",
+   "perWorld": [
+    6,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-2",
+   "stageCount": 6,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1BerryHang",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-5",
+   "stageCount": 2,
+   "stageList": [
+    "1-5",
+    "1-8"
+   ],
+   "at": "W1 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Bromeliad",
+   "perWorld": [
+    8,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Coati",
+   "perWorld": [
+    9,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1FallenLog",
+   "perWorld": [
+    18,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Fern",
+   "perWorld": [
+    9,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1FernHang",
+   "perWorld": [
+    6,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-2",
+   "stageCount": 5,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-8"
+   ],
+   "at": "W1 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Fiddle",
+   "perWorld": [
+    5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 5,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
+   "at": "W1 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1FlowerBush",
+   "perWorld": [
+    15,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Hang1",
+   "perWorld": [
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-2",
+   "stageCount": 4,
+   "stageList": [
+    "1-2",
+    "1-4",
+    "1-5",
+    "1-8"
+   ],
+   "at": "W1 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Hang2",
+   "perWorld": [
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-2",
+   "stageCount": 4,
+   "stageList": [
+    "1-2",
+    "1-4",
+    "1-5",
+    "1-8"
+   ],
+   "at": "W1 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Heliconia",
+   "perWorld": [
+    13,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1LeafLitter",
+   "perWorld": [
+    20,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Morpho",
+   "perWorld": [
+    12,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1MossBoulder",
+   "perWorld": [
+    13,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Mushroom",
+   "perWorld": [
+    10,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1MushroomDim",
+   "perWorld": [
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 5,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
+   "at": "W1 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1MushroomTall",
+   "perWorld": [
+    9,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1NestHang",
+   "perWorld": [
+    5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-2",
+   "stageCount": 4,
+   "stageList": [
+    "1-2",
+    "1-4",
+    "1-5",
+    "1-8"
+   ],
+   "at": "W1 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1NutPod",
+   "perWorld": [
+    13,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1OrchidHang",
+   "perWorld": [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-4",
+   "stageCount": 3,
+   "stageList": [
+    "1-4",
+    "1-5",
+    "1-8"
+   ],
+   "at": "W1 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Pebble",
+   "perWorld": [
+    15,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 8,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Pinecone",
+   "perWorld": [
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 5,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1SeedPods",
+   "perWorld": [
+    15,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Snail",
+   "perWorld": [
+    12,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Sprig",
+   "perWorld": [
+    10,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Stones",
+   "perWorld": [
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 4,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-7"
+   ],
+   "at": "W1 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Stump",
+   "perWorld": [
+    8,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Termites",
+   "perWorld": [
+    16,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1Toucan",
+   "perWorld": [
+    12,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1TrailPost",
+   "perWorld": [
+    15,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1TreeFrog",
+   "perWorld": [
+    14,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w1WoodStump",
+   "perWorld": [
+    17,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
+   "at": "W1 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2BasketHang",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": "W2 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Canoe",
+   "perWorld": [
+    0,
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 6,
+   "stageList": [
+    "2-1",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2CattailFly",
+   "perWorld": [
+    0,
+    11,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Crab",
+   "perWorld": [
+    0,
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-3",
+   "stageCount": 5,
+   "stageList": [
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Driftwood",
+   "perWorld": [
+    0,
+    8,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Fern",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-2",
+   "stageCount": 2,
+   "stageList": [
+    "2-2",
+    "2-4"
+   ],
+   "at": "W2 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2FishTrap",
+   "perWorld": [
+    0,
+    11,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Frog",
+   "perWorld": [
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-4",
+   "stageCount": 4,
+   "stageList": [
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2GourdHang",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": "W2 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Hang1",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": "W2 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Hang2",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": "W2 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Heron",
+   "perWorld": [
+    0,
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 6,
+   "stageList": [
+    "2-1",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2KingfisherPost",
+   "perWorld": [
+    0,
+    12,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2LilyBucket",
+   "perWorld": [
+    0,
+    12,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Log",
+   "perWorld": [
+    0,
+    5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 6,
+   "stageList": [
+    "2-1",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2MossDrip",
+   "perWorld": [
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": "W2 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2NetHang",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": "W2 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Otter",
+   "perWorld": [
+    0,
+    11,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Raft",
+   "perWorld": [
+    0,
+    8,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2ReedBundle",
+   "perWorld": [
+    0,
+    9,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2ReedLean",
+   "perWorld": [
+    0,
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-2",
+   "stageCount": 6,
+   "stageList": [
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2ReedShort",
+   "perWorld": [
+    0,
+    11,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2ReedTall",
+   "perWorld": [
+    0,
+    5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-2",
+   "stageCount": 6,
+   "stageList": [
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2RiverStone",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-4",
+   "stageCount": 2,
+   "stageList": [
+    "2-4",
+    "2-5"
+   ],
+   "at": "W2 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2SignPost",
+   "perWorld": [
+    0,
+    11,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Stone",
+   "perWorld": [
+    0,
+    8,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Stones",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-2",
+   "stageCount": 2,
+   "stageList": [
+    "2-2",
+    "2-4"
+   ],
+   "at": "W2 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2Turtle",
+   "perWorld": [
+    0,
+    5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w2WaterJar",
+   "perWorld": [
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-3",
+   "stageCount": 3,
+   "stageList": [
+    "2-3",
+    "2-7",
+    "2-9"
+   ],
+   "at": "W2 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3BeadMoss",
+   "perWorld": [
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-4",
+   "stageCount": 1,
+   "stageList": [
+    "3-4"
+   ],
+   "at": "W3 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3Cricket",
+   "perWorld": [
+    0,
+    0,
+    42,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3CrystalDrip",
+   "perWorld": [
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-4",
+   "stageCount": 1,
+   "stageList": [
+    "3-4"
+   ],
+   "at": "W3 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3Crystals",
+   "perWorld": [
+    0,
+    0,
+    42,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3Fossil",
+   "perWorld": [
+    0,
+    0,
+    32,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3Geode",
+   "perWorld": [
+    0,
+    0,
+    22,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3GlowMoss",
+   "perWorld": [
+    0,
+    0,
+    20,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3GlowShrooms",
+   "perWorld": [
+    0,
+    0,
+    22,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3GlowStalks",
+   "perWorld": [
+    0,
+    0,
+    25,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3GlowStone",
+   "perWorld": [
+    0,
+    0,
+    42,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3GlowWorms",
+   "perWorld": [
+    0,
+    0,
+    9,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3OldNest",
+   "perWorld": [
+    0,
+    0,
+    47,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 9,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3Pebbles",
+   "perWorld": [
+    0,
+    0,
+    16,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 6,
+   "stageList": [
+    "3-1",
+    "3-3",
+    "3-5",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3RootBoulder",
+   "perWorld": [
+    0,
+    0,
+    62,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 9,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3RootGlow",
+   "perWorld": [
+    0,
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-3",
+   "stageCount": 2,
+   "stageList": [
+    "3-3",
+    "3-4"
+   ],
+   "at": "W3 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3ShardsGlow",
+   "perWorld": [
+    0,
+    0,
+    19,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 7,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w3Stalagmites",
+   "perWorld": [
+    0,
+    0,
+    46,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 9,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4BellHang",
+   "perWorld": [
+    0,
+    0,
+    0,
+    5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-1",
+   "stageCount": 5,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-6",
+    "4-7",
+    "4-8"
+   ],
+   "at": "W4 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4BellOne",
+   "perWorld": [
+    0,
+    0,
+    0,
+    10,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-1",
+   "stageCount": 8,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-5",
+    "4-6",
+    "4-7",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4BoulderMoss",
+   "perWorld": [
+    0,
+    0,
+    0,
+    26,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4Cairn",
+   "perWorld": [
+    0,
+    0,
+    0,
+    32,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-1",
+   "stageCount": 7,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4Feather",
+   "perWorld": [
+    0,
+    0,
+    0,
+    43,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-1",
+   "stageCount": 7,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4FernTuft",
+   "perWorld": [
+    0,
+    0,
+    0,
+    11,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4LeafHang",
+   "perWorld": [
+    0,
+    0,
+    0,
+    6,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-1",
+   "stageCount": 5,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-7",
+    "4-8"
+   ],
+   "at": "W4 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4Lizard",
+   "perWorld": [
+    0,
+    0,
+    0,
+    17,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4Marmot",
+   "perWorld": [
+    0,
+    0,
+    0,
+    28,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4MossStones",
+   "perWorld": [
+    0,
+    0,
+    0,
+    25,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4RopePost",
+   "perWorld": [
+    0,
+    0,
+    0,
+    25,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4SeedGrass",
+   "perWorld": [
+    0,
+    0,
+    0,
+    20,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4SlateChips",
+   "perWorld": [
+    0,
+    0,
+    0,
+    32,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4Thistle",
+   "perWorld": [
+    0,
+    0,
+    0,
+    12,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4Totem",
+   "perWorld": [
+    0,
+    0,
+    0,
+    23,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4VineHang",
+   "perWorld": [
+    0,
+    0,
+    0,
+    6,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-1",
+   "stageCount": 5,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-6",
+    "4-7",
+    "4-8"
+   ],
+   "at": "W4 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w4WindShrub",
+   "perWorld": [
+    0,
+    0,
+    0,
+    27,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5BankA1",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    10,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5BankA2",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    11,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5BankA3",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    10,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5BankB1",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    9,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5BankB2",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    7,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5BankB3",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    10,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Bench",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    19,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Birdbath",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    20,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5BookStack",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    20,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5ButterflyBush",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    20,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Buttons",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    14,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5ClutA1",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    9,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5ClutA2",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    6,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-2",
+   "stageCount": 6,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5ClutA3",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    8,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5ClutB1",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    9,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5ClutB2",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    10,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5ClutB3",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    9,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5FernPot",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    22,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Ladybug",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    24,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Petals",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    14,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-2",
+   "stageCount": 6,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Pots",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    40,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Ribbon",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    15,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-2",
+   "stageCount": 6,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Spool",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    20,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Sugar",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    12,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-2",
+   "stageCount": 5,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Teacups",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    16,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-2",
+   "stageCount": 6,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5TeaTin",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    14,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-2",
+   "stageCount": 6,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Thimbles",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    26,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5WateringCan",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    20,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-1",
+   "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w5Wheelbarrow",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    8,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-2",
+   "stageCount": 5,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-7",
+    "5-9"
+   ],
+   "at": "W5 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6AirPlants",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6BromeliadRoot",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    31,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-1",
+   "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
+   "at": "W6 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6DriftRoot",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    9,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-1",
+   "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
+   "at": "W6 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6MudLilies",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-2",
+   "stageCount": 4,
+   "stageList": [
+    "6-2",
+    "6-3",
+    "6-6",
+    "6-9"
+   ],
+   "at": "W6 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6Mudskipper",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    23,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-1",
+   "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
+   "at": "W6 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6NestBasket",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6OrchidSpray",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6OysterRoot",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    22,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-1",
+   "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
+   "at": "W6 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6Pitchers",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    61,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-1",
+   "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
+   "at": "W6 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6Pods",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    7,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-1",
+   "stageCount": 7,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
+   "at": "W6 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6SnailRock",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    5,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-1",
+   "stageCount": 7,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
+   "at": "W6 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6StakeLantern",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    60,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-1",
+   "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
+   "at": "W6 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6SwampFerns",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    57,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-1",
+   "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
+   "at": "W6 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6WeaverNest",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-8",
+   "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
+   "at": "W6 src/game/artDress.ts:340"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w6WetLeaves",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    9,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-1",
+   "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
+   "at": "W6 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7Altar",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    10,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7Capuchin",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    19,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7Coins",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    7,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7FrogIdol",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    16,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7IdolHead",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    8,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7JaguarHead",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    18,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7LizardBlock",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    17,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7Macaw",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    17,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7MonkeyStatue",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    20,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7Offering",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    13,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7PillarStub",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    31,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7Shards",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    10,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 6,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7StoneBall",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    7,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 6,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7"
+   ],
+   "at": "W7 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7StoneLantern",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    16,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7Tablet",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    22,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 6,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w7UrnTall",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    10,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
+   "at": "W7 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w8Firefly",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    22,
+    0,
+    0
+   ],
+   "first": "8-2",
+   "stageCount": 4,
+   "stageList": [
+    "8-2",
+    "8-4",
+    "8-6",
+    "8-8"
+   ],
+   "at": "W8 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w8FireflyB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    29,
+    0,
+    0
+   ],
+   "first": "8-1",
+   "stageCount": 8,
+   "stageList": [
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-8",
+    "8-9"
+   ],
+   "at": "W8 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w8Flowers",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    26,
+    0,
+    0
+   ],
+   "first": "8-1",
+   "stageCount": 8,
+   "stageList": [
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-8",
+    "8-9"
+   ],
+   "at": "W8 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w8FlowersB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    24,
+    0,
+    0
+   ],
+   "first": "8-1",
+   "stageCount": 4,
+   "stageList": [
+    "8-1",
+    "8-3",
+    "8-5",
+    "8-9"
+   ],
+   "at": "W8 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w8Fungus",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    4,
+    0,
+    0
+   ],
+   "first": "8-1",
+   "stageCount": 4,
+   "stageList": [
+    "8-1",
+    "8-3",
+    "8-5",
+    "8-9"
+   ],
+   "at": "W8 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w8Hollow",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    4,
+    0,
+    0
+   ],
+   "first": "8-1",
+   "stageCount": 4,
+   "stageList": [
+    "8-1",
+    "8-3",
+    "8-5",
+    "8-9"
+   ],
+   "at": "W8 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w8HollowB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    5,
+    0,
+    0
+   ],
+   "first": "8-2",
+   "stageCount": 4,
+   "stageList": [
+    "8-2",
+    "8-4",
+    "8-6",
+    "8-8"
+   ],
+   "at": "W8 src/game/artDress.ts:360"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w8Nest",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    22,
+    0,
+    0
+   ],
+   "first": "8-2",
+   "stageCount": 4,
+   "stageList": [
+    "8-2",
+    "8-4",
+    "8-6",
+    "8-8"
+   ],
+   "at": "W8 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.dress",
+   "key": "w8NestB",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    29,
+    0,
+    0
+   ],
+   "first": "8-1",
+   "stageCount": 8,
+   "stageList": [
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-8",
+    "8-9"
+   ],
+   "at": "W8 src/game/artDress.ts:301"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "basin",
+   "perWorld": [
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 2,
+   "stageList": [
+    "3-1",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:122"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "branchGate",
+   "perWorld": [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-6",
+   "stageCount": 1,
+   "stageList": [
+    "1-6"
+   ],
+   "at": "W1 src/game/artDress.ts:82"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "bridge",
+   "perWorld": [
+    0,
+    0,
+    0,
+    8,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 4,
+   "stageList": [
+    "4-2",
+    "4-4",
+    "4-6",
+    "4-8"
+   ],
+   "at": "W4 src/game/artDress.ts:166"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "bridgeBroken",
+   "perWorld": [
+    0,
+    0,
+    0,
+    16,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-1",
+   "stageCount": 5,
+   "stageList": [
+    "4-1",
+    "4-3",
+    "4-5",
+    "4-7",
+    "4-9"
+   ],
+   "at": "W4 src/game/artDress.ts:166"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "fern2",
+   "perWorld": [
+    0,
+    0,
+    6,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-2",
+   "stageCount": 3,
+   "stageList": [
+    "3-2",
+    "3-6",
+    "3-8"
+   ],
+   "at": "W3 src/game/artDress.ts:122"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "fern4",
+   "perWorld": [
+    0,
+    0,
+    5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 5,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:122"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "fernDoorShut",
+   "perWorld": [
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-7",
+   "stageCount": 1,
+   "stageList": [
+    "3-7"
+   ],
+   "at": "W3 src/game/artDress.ts:101"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "nestDoorShut",
+   "perWorld": [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-4",
+   "stageCount": 1,
+   "stageList": [
+    "1-4"
+   ],
+   "at": "W1 src/game/artDress.ts:81"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "petalBundle",
+   "perWorld": [
+    6,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-4",
+   "stageCount": 3,
+   "stageList": [
+    "1-4",
+    "1-6",
+    "1-7"
+   ],
+   "at": "W1 src/game/artDress.ts:84"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "pool",
+   "perWorld": [
+    0,
+    0,
+    9,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-2",
+   "stageCount": 5,
+   "stageList": [
+    "3-2",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:122"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "slab",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-2",
+   "stageCount": 2,
+   "stageList": [
+    "3-2",
+    "3-8"
+   ],
+   "at": "W3 src/game/artDress.ts:122"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "slabStones",
+   "perWorld": [
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 4,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:122"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.kitDecor",
+   "key": "steppingStones",
+   "perWorld": [
+    0,
+    0,
+    9,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-2",
+   "stageCount": 5,
+   "stageList": [
+    "3-2",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/artDress.ts:122"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.mixDress",
+   "key": "bootprint",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 1,
+   "stageList": [
+    "1-1"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.mixDress",
+   "key": "squirrel-sit",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 1,
+   "stageList": [
+    "1-1"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.mixDress",
+   "key": "squirrel-tip",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 1,
+   "stageList": [
+    "1-1"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.mixDress",
+   "key": "squirrel-wave",
+   "perWorld": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-1",
+   "stageCount": 1,
+   "stageList": [
+    "1-1"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "bones",
+   "perWorld": [
+    0,
+    0,
+    15,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-7",
+   "stageCount": 2,
+   "stageList": [
+    "3-7",
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:5585"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "clawRock",
+   "perWorld": [
+    0,
+    0,
+    39,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-2",
+   "stageCount": 6,
+   "stageList": [
+    "3-2",
+    "3-4",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:5585"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "fern",
+   "perWorld": [
+    0,
+    0,
+    97,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 7,
+   "stageList": [
+    "3-1",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:5585"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "glowLit",
+   "perWorld": [
+    0,
+    0,
+    77,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:5591"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "grottoMouth",
+   "perWorld": [
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 1,
+   "stageList": [
+    "3-1"
+   ],
+   "at": "W3 src/game/protoStage.ts:3375"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "mossCurtain",
+   "perWorld": [
+    0,
+    0,
+    59,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-2",
+   "stageCount": 6,
+   "stageList": [
+    "3-2",
+    "3-4",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:5591"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "mushrooms",
+   "perWorld": [
+    0,
+    0,
+    54,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-2",
+   "stageCount": 6,
+   "stageList": [
+    "3-2",
+    "3-4",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:5585"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "pawprint",
+   "perWorld": [
+    0,
+    0,
+    91,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 4,
+   "stageList": [
+    "3-1",
+    "3-3",
+    "3-5",
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:5585"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "pillar",
+   "perWorld": [
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-9",
+   "stageCount": 1,
+   "stageList": [
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:4143"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "pillarBroken",
+   "perWorld": [
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-9",
+   "stageCount": 1,
+   "stageList": [
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:4147"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "pillarCracked",
+   "perWorld": [
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-9",
+   "stageCount": 1,
+   "stageList": [
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:4146"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "ringWall",
+   "perWorld": [
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-9",
+   "stageCount": 1,
+   "stageList": [
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:4144"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "stalactite",
+   "perWorld": [
+    0,
+    0,
+    112,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 6,
+   "stageList": [
+    "3-1",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:5591"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "stalagmites",
+   "perWorld": [
+    0,
+    0,
+    113,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-8",
+    "3-9"
+   ],
+   "at": "W3 src/game/protoStage.ts:5585"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "trickle",
+   "perWorld": [
+    0,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-4",
+   "stageCount": 1,
+   "stageList": [
+    "3-4"
+   ],
+   "at": "W3 src/game/w3Sections.ts:425"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.w3decor",
+   "key": "wallTile",
+   "perWorld": [
+    0,
+    0,
+    28,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-4",
+   "stageCount": 1,
+   "stageList": [
+    "3-4"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "prop",
+   "arr": "waterSigns",
+   "key": "",
+   "perWorld": [
+    3,
+    8,
+    8,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "1-3",
+   "stageCount": 22,
+   "stageList": [
+    "1-3",
+    "1-6",
+    "1-9",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "4-4",
+    "4-5",
+    "5-6"
+   ],
+   "at": "W1 src/game/mixer/w1mix.ts:878, W2 src/game/w2Stages.ts:224, W3 src/game/protoStage.ts:646, W4 src/game/protoStage.ts:5762, W5 src/game/meecaStage.ts:202"
+  },
+  {
+   "cat": "water",
+   "arr": "tides43",
+   "key": "",
+   "perWorld": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-3",
+   "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
+   "at": "W4 src/game/protoStage.ts:5762"
+  },
+  {
+   "cat": "zone",
+   "arr": "zones",
+   "key": "bolt",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    27
+   ],
+   "first": "10-1",
+   "stageCount": 5,
+   "stageList": [
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "zone",
+   "arr": "zones",
+   "key": "crumble",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    28,
+    0,
+    0,
+    0
+   ],
+   "first": "7-1",
+   "stageCount": 3,
+   "stageList": [
+    "7-1",
+    "7-5",
+    "7-6"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "zone",
+   "arr": "zones",
+   "key": "dark",
+   "perWorld": [
+    0,
+    0,
+    20,
+    0,
+    1,
+    4,
+    0,
+    15,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 17,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-9",
+    "5-M",
+    "6-6",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-8",
+    "8-9"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "zone",
+   "arr": "zones",
+   "key": "geyser",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    37,
+    0
+   ],
+   "first": "9-1",
+   "stageCount": 7,
+   "stageList": [
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "zone",
+   "arr": "zones",
+   "key": "spore",
+   "perWorld": [
+    0,
+    0,
+    8,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "3-1",
+   "stageCount": 5,
+   "stageList": [
+    "3-1",
+    "3-3",
+    "3-6",
+    "3-7",
+    "3-9"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "zone",
+   "arr": "zones",
+   "key": "tide",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    32,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "6-4",
+   "stageCount": 3,
+   "stageList": [
+    "6-4",
+    "6-5",
+    "6-9"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "zone",
+   "arr": "zones",
+   "key": "web",
+   "perWorld": [
+    0,
+    0,
+    0,
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "5-6",
+   "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
+   "at": ""
+  },
+  {
+   "cat": "zone",
+   "arr": "zones",
+   "key": "wind",
+   "perWorld": [
+    0,
+    0,
+    0,
+    50,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "4-2",
+   "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-8",
+    "4-9"
+   ],
+   "at": ""
+  }
+ ],
+ "fail": []
+}

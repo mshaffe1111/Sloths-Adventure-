@@ -38,6 +38,8 @@
  *   stage-art      the painted checkpoint post, hearts, power-ups, Thorn Gate, story finds and 4-8's netting (stageArt.ts): every stage
  *   gate:<w>       the world's painted exit gate, shut and open (stageArt.ts): every stage
  *   pit-water:<w>  Worlds 1, 3, 4 and 5's painted pit water (stageArt.ts): every stage in those worlds
+ *   w1-new         World 1's new painted pieces, the squirrels and hollow logs (w1NewArt.ts): 1-1
+ *   pit-art:1      World 1's painted drops (w1Pits.ts): a stage the mixer builds (it marks its drops, pit: 'drop')
  *
  * (QA 2026-10-29, Android Chrome: 'blank wait' at 80 s and 179 s for the golden snake's heads and the snake sheet, at 201 s for the
  * eagle, at 650 s for Dot's perch: those sheets were asked for only when each first came on screen. stageSheets.test.ts builds every
@@ -60,6 +62,7 @@ import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
 import { W7_ROOM_STAGES, W7_SENTRY_STAGE } from './gen2/worlds/w7.ts';
 import { W6_SWIM_STAGES } from './gen2/worlds/w6Rooms.ts';
 import { W8_ROOM_STAGES } from './gen2/worlds/w8Rooms.ts';
+import { specFor } from './mixer/stages.ts';
 import type { LevelConfig } from './types.ts';
 
 /**
@@ -70,7 +73,6 @@ import type { LevelConfig } from './types.ts';
 export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '1-3': ['foe:goldsnake'],
   '1-4': ['foe:goldsnake', 'props2'],
-  '1-5': ['foe:goldsnake'],
   '1-6': ['foe:goldsnake'],
   '1-7': ['foe:eagle', 'props2'],
   '1-8': ['foe:goldsnake'],
@@ -201,6 +203,11 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && W4_FALL_STAGES.has(cfg.id)) out.push('w4-falls');
   // (the control test's water stretches, River logs and Lily pads, are drawn with World 2's river; every mix has one of them)
   if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
+  // (the mixer's stages: World 1's painted drops, which they mark (w1Pits.ts); a spec that asks for dressing (1-1's squirrels) also World 1's new pieces, w1NewArt.ts: the
+  // sheet is 1996x925, about 7 MB decoded, so only where laid. No lily pads, water or hollow logs are laid yet (measured on 16 layouts x 2
+  // settings, 11-05): their sheets, w2-props and calm-water, join when a spec lays them)
+  if (built && specFor(cfg.id)) out.push('pit-art:1');
+  if (built && specFor(cfg.id)?.dress) out.push('w1-new');
   // the creatures it can draw, and their sheets (see foe: above)
   if (cfg.objectiveType === 'boss_lair') for (const f of BOSS_MINIONS[w] ?? []) out.push(`foe:${f}`);
   else if (!built) for (const f of genFoes(w)) out.push(`foe:${f}`);

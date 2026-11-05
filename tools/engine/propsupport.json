@@ -1,0 +1,1836 @@
+{
+ "placed": {
+  "1": 385,
+  "2": 765,
+  "3": 1189,
+  "4": 387,
+  "5": 454,
+  "6": 383,
+  "7": 259,
+  "8": 176,
+  "9": 78,
+  "10": 54
+ },
+ "unsup": {
+  "1": 11,
+  "2": 51,
+  "3": 10,
+  "4": 12,
+  "5": 1
+ },
+ "onStruct": {
+  "part of a W2 bank house": 88,
+  "the W2 canopy over the village": 59,
+  "a limb of the W2 canopy tree": 41,
+  "hangs from World 3's cave ceiling": 171,
+  "a glow on World 3's cave wall": 77,
+  "World 3's cave wall": 28
+ },
+ "bad": [
+  {
+   "st": "1-2",
+   "layout": 1,
+   "list": "proto.dress",
+   "n": "w1WoodStump",
+   "family": "wood",
+   "x": 22673,
+   "b": 835,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-3",
+   "layout": 1,
+   "list": "proto.dress",
+   "n": "w1SeedPods",
+   "family": "plant",
+   "x": 6397,
+   "b": 586,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-4",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 2634,
+   "b": 3608,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-4",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 1341,
+   "b": 2158,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-4",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 2637,
+   "b": 3618,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-4",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 1318,
+   "b": 2159,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-6",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 16273,
+   "b": 290,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-6",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 26056,
+   "b": 300,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-6",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 14706,
+   "b": 290,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-6",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 24487,
+   "b": 300,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-7",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 11157,
+   "b": 560,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-7",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 12561,
+   "b": 560,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-7",
+   "layout": 1,
+   "list": "proto.bushes",
+   "n": "tall",
+   "family": "plant",
+   "x": 8867,
+   "b": 440,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-7",
+   "layout": 1,
+   "list": "proto.bushes",
+   "n": "tall",
+   "family": "plant",
+   "x": 9142,
+   "b": 440,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-7",
+   "layout": 1,
+   "list": "proto.bushes",
+   "n": "tall",
+   "family": "plant",
+   "x": 9416,
+   "b": 440,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-7",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 11021,
+   "b": 560,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-7",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "petalBundle",
+   "family": "wood",
+   "x": 12403,
+   "b": 560,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-7",
+   "layout": 2,
+   "list": "proto.bushes",
+   "n": "tall",
+   "family": "plant",
+   "x": 8773,
+   "b": 440,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-7",
+   "layout": 2,
+   "list": "proto.bushes",
+   "n": "tall",
+   "family": "plant",
+   "x": 9039,
+   "b": 440,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "1-7",
+   "layout": 2,
+   "list": "proto.bushes",
+   "n": "tall",
+   "family": "plant",
+   "x": 9304,
+   "b": 440,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-1",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 4003,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-1",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 7142,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-1",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 10446,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-1",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 13639,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-1",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 16753,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-1",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 20884,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-1",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 22327,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-1",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 25002,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-2",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 3377,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 2005,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 5068,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 6935,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 9189,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 10652,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 13455,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 15304,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 17718,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 19550,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 21343,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 22808,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 24229,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-3",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 25823,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-4",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "pole",
+   "family": "wood",
+   "x": 1667,
+   "b": 652,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-4",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "pole",
+   "family": "wood",
+   "x": 2812,
+   "b": 652,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-4",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "pole",
+   "family": "wood",
+   "x": 4342,
+   "b": 652,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-4",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "pole",
+   "family": "wood",
+   "x": 5877,
+   "b": 652,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-4",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "pole",
+   "family": "wood",
+   "x": 11683,
+   "b": 652,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-4",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "pole",
+   "family": "wood",
+   "x": 18983,
+   "b": 652,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-4",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "pole",
+   "family": "wood",
+   "x": 20841,
+   "b": 652,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-4",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "pole",
+   "family": "wood",
+   "x": 22470,
+   "b": 652,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-4",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "pole",
+   "family": "wood",
+   "x": 27878,
+   "b": 652,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-4",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "pole",
+   "family": "wood",
+   "x": 12762,
+   "b": 652,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-4",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "pole",
+   "family": "wood",
+   "x": 26471,
+   "b": 652,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 866,
+   "b": 5304,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 2932,
+   "b": 4419,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 1547,
+   "b": 4145,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 784,
+   "b": 3509,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 2729,
+   "b": 3193,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 1255,
+   "b": 2205,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 438,
+   "b": 1582,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 861,
+   "b": 721,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 871,
+   "b": 5441,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 2932,
+   "b": 4559,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 1562,
+   "b": 4263,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 1609,
+   "b": 3592,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 3033,
+   "b": 2970,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 879,
+   "b": 2266,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 482,
+   "b": 1650,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 2058,
+   "b": 1361,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-6",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "lantern",
+   "family": "wood",
+   "x": 806,
+   "b": 695,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 741,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 1561,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "sign",
+   "family": "wood",
+   "x": 1487,
+   "b": 584,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 2970,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 6502,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 7034,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "swingFrame",
+   "family": "wood",
+   "x": 8118,
+   "b": 656,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "swingFrame",
+   "family": "wood",
+   "x": 8441,
+   "b": 656,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 9249,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 9794,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 10417,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 12692,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 13469,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 13925,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 14702,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 15953,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 18188,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 18629,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 19435,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 20038,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 20856,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 22189,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 24357,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 25558,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 27870,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.dress",
+   "n": "w2SignPost",
+   "family": "wood",
+   "x": 5280,
+   "b": 354,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 723,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 1523,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "sign",
+   "family": "wood",
+   "x": 1454,
+   "b": 584,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 2976,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 3520,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 4502,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 5035,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "swingFrame",
+   "family": "wood",
+   "x": 7143,
+   "b": 656,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "swingFrame",
+   "family": "wood",
+   "x": 7478,
+   "b": 656,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 8293,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 8823,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 10204,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 10735,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 12586,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 13122,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 14516,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 15049,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 16047,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 16586,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 18161,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 18716,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 19715,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 20266,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 22268,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-7",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 22800,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-8",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 7689,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-8",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 10793,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-8",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 15595,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 3300,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 5674,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 10897,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "reedTall",
+   "family": "water",
+   "x": 11707,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 1,
+   "list": "proto.decor",
+   "n": "throne",
+   "family": "stone",
+   "x": 19346,
+   "b": 550,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "2-9",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 4408,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 6464,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 9535,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 13838,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 16554,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedLean",
+   "family": "water",
+   "x": 19275,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "reedShort",
+   "family": "water",
+   "x": 21677,
+   "b": 586,
+   "why": "no water surface or bank under it"
+  },
+  {
+   "st": "2-9",
+   "layout": 2,
+   "list": "proto.decor",
+   "n": "throne",
+   "family": "stone",
+   "x": 22988,
+   "b": 550,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-3",
+   "layout": 1,
+   "list": "proto.w3decor",
+   "n": "pawprint",
+   "family": "wood",
+   "x": 7557,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-3",
+   "layout": 1,
+   "list": "proto.w3decor",
+   "n": "pawprint",
+   "family": "wood",
+   "x": 7979,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-3",
+   "layout": 1,
+   "list": "proto.w3decor",
+   "n": "pawprint",
+   "family": "wood",
+   "x": 8316,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-3",
+   "layout": 1,
+   "list": "proto.w3decor",
+   "n": "stalagmites",
+   "family": "stone",
+   "x": 11114,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-3",
+   "layout": 1,
+   "list": "proto.w3decor",
+   "n": "fern",
+   "family": "plant",
+   "x": 11405,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-3",
+   "layout": 1,
+   "list": "proto.w3decor",
+   "n": "pawprint",
+   "family": "wood",
+   "x": 11828,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-3",
+   "layout": 2,
+   "list": "proto.dress",
+   "n": "w3Pebbles",
+   "family": "stone",
+   "x": 2363,
+   "b": 586,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-3",
+   "layout": 2,
+   "list": "proto.w3decor",
+   "n": "stalagmites",
+   "family": "stone",
+   "x": 7000,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-3",
+   "layout": 2,
+   "list": "proto.w3decor",
+   "n": "stalagmites",
+   "family": "stone",
+   "x": 7460,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-6",
+   "layout": 2,
+   "list": "proto.dress",
+   "n": "w3RootBoulder",
+   "family": "stone",
+   "x": 4471,
+   "b": 549,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-6",
+   "layout": 2,
+   "list": "proto.dress",
+   "n": "w3Stalagmites",
+   "family": "stone",
+   "x": 24447,
+   "b": 555,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-7",
+   "layout": 1,
+   "list": "proto.dress",
+   "n": "w3RootBoulder",
+   "family": "stone",
+   "x": 11451,
+   "b": 547,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-7",
+   "layout": 1,
+   "list": "proto.w3decor",
+   "n": "mushrooms",
+   "family": "plant",
+   "x": 5966,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-8",
+   "layout": 1,
+   "list": "proto.w3decor",
+   "n": "mushrooms",
+   "family": "plant",
+   "x": 18154,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-8",
+   "layout": 1,
+   "list": "proto.w3decor",
+   "n": "mushrooms",
+   "family": "plant",
+   "x": 24505,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "3-9",
+   "layout": 2,
+   "list": "proto.w3decor",
+   "n": "fern",
+   "family": "plant",
+   "x": 29745,
+   "b": 588,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-3",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 17178,
+   "b": 5172,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-3",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 17258,
+   "b": 5172,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-3",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 21926,
+   "b": 3474,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-3",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 22006,
+   "b": 3474,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 770,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 820,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 3263,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 3313,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 5101,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 5155,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 1758,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 1813,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 4130,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 4182,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 6517,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-5",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 6570,
+   "b": 590,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-9",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 9874,
+   "b": 2693,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-9",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 10061,
+   "b": 2693,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-9",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 46149,
+   "b": 696,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-9",
+   "layout": 1,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 46348,
+   "b": 696,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-9",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 12161,
+   "b": 2968,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-9",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 12348,
+   "b": 2968,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-9",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 15192,
+   "b": 2479,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-9",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 15390,
+   "b": 2479,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-9",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 18453,
+   "b": 2400,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "4-9",
+   "layout": 2,
+   "list": "proto.kitDecor",
+   "n": "bridgeBroken",
+   "family": "wood",
+   "x": 18647,
+   "b": 2400,
+   "why": "nothing under its foot"
+  },
+  {
+   "st": "5-3",
+   "layout": 1,
+   "list": "proto.dress",
+   "n": "w5Teacups",
+   "family": "wood",
+   "x": 36176,
+   "b": 586,
+   "why": "nothing under its foot"
+  }
+ ],
+ "unlabelled": [
+  "po.carry_stand",
+  "tc.scroll",
+  "tc.hat_shout"
+ ]
+}

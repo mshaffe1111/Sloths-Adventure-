@@ -110,8 +110,13 @@ export function heldMaxGap(a: Platform, b: Platform, allowDouble: boolean): numb
   const r = allowDouble ? Math.max(reachJumpHeld(dyJ, false), reachJumpHeld(dyJ, true)) : reachJumpHeld(dyJ, false);
   return r < 0 ? -1 : r * MARGIN - TAKEOFF_SLACK;
 }
-/** the validator's rule for whether a double jump may be counted on a stage (it is taught by stage 6, 1-6) */
-export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6;
+/**
+ * the stages before 1-6 that count the double jump: the mixer's 1-1 teaches the second jump (its node 'teach double', mixer/stages.ts
+ * SPEC_11) before any gap needs it, so it is in the player's kit from then on (the lead's ruling, 11-04)
+ */
+export const EARLY_DOUBLE: ReadonlySet<string> = new Set(['1-1']);
+/** the validator's rule for whether a double jump may be counted on a stage: from stage 6 (1-6's practice spot), and EARLY_DOUBLE */
+export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6 || EARLY_DOUBLE.has(`${cfg.worldIndex}-${cfg.miniIndex}`);
 
 /** Can the player get from platform a to platform b with jumps (and a double jump)? */
 export function jumpOK(a: Platform, b: Platform, allowDouble = true): { ok: boolean; gap: number } {
@@ -457,7 +462,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   const pid = (p: Platform) => keys.get(p) ?? `p${p.id}`;
   const vid = (v: Vine) => `v${v.id}`;
 
-  // a double jump is a tool the player may need from mission 6 on; before that every gap is a plain jump
+  // a double jump is a tool the player may need from 1-1 on (the mixer's 1-1 teaches it), and from mission 6 in the old reckoning
   const allowDouble = doubleAllowed(cfg);
   // the leaf glide, from the stage everyone who gets there has learned it (skills.ts): it carries a falling jump much further
   const allowGlide = skillGuaranteedAt('glide', (cfg.worldIndex - 1) * 10 + cfg.miniIndex);
