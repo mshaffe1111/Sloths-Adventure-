@@ -59,29 +59,53 @@ export interface Idea {
   what: string;
   /** the worlds it belongs to (its pieces' worlds, narrowed where the idea itself is a world's own) */
   worlds?: Theme[];
+  /** how a burst idea lays: the mixer reads this, it holds no recipe of its own (an idea without one is a shape the mixer builds) */
+  lay?: BurstRecipe;
+}
+
+/** a burst idea's recipe: pieces in a row, each a step up or down from the last, across a gap the dial sizes */
+export interface BurstRecipe {
+  /** the piece kinds, turning every 2 pieces; several lists: one is picked for each burst */
+  kinds: string[] | string[][];
+  /** on Easy, other kinds (the creaky limbs first: creaky holds 15% of Easy's landings, the designer) */
+  easyKinds?: string[];
+  /** the steps between landings, px (otherwise the world kit's) */
+  steps?: number[];
+  /** Easy's steps, where they differ */
+  easySteps?: number[];
+  /** how many pieces, where the idea fixes it (otherwise the node's burst count) */
+  n?: { normal: number; easy: number };
+  /** this many fewer than the node's burst count (a stair whose top is its own piece) */
+  nLess?: number;
+  /** a fixed gap, px (0: touching, a walk) */
+  gap?: number;
+  /** its logs stand on stumps (a ground fork's raised road) */
+  stumps?: boolean;
+  /** a second burst laid on from its end (a stair's bridge at the top) */
+  then?: BurstRecipe;
 }
 
 export const IDEAS: Record<string, Idea> = {
-  'floor walk': { content: 'jumps', element: 'ground', needs: ['run'], teaches: 'run', what: 'low banks touching, small steps, no gap' },
-  'bank hops': { content: 'jumps', element: 'ground', needs: ['jump'], teaches: 'jump', floor: true, what: 'hops between banks, stones and logs' },
-  'stump hop': { content: 'jumps', element: 'ground', needs: ['jump'], floor: true, what: 'hops over stones, banks and logs, bigger steps' },
+  'floor walk': { content: 'jumps', element: 'ground', needs: ['run'], teaches: 'run', what: 'low banks touching, small steps, no gap', lay: { kinds: ['bank', 'log'], steps: [30, -30], gap: 0 } },
+  'bank hops': { content: 'jumps', element: 'ground', needs: ['jump'], teaches: 'jump', floor: true, what: 'hops between banks, stones and logs', lay: { kinds: [['bank', 'stone', 'log'], ['log', 'stone', 'bank'], ['stone', 'bank', 'log']] } },
+  'stump hop': { content: 'jumps', element: 'ground', needs: ['jump'], floor: true, what: 'hops over stones, banks and logs, bigger steps', lay: { kinds: ['stone', 'bank', 'log'], steps: [40, -40, -70, 30, -30] } },
   'bank walk': { content: 'jumps', element: 'ground', needs: ['run'], what: 'a rest: a long bank and a short hop' },
   'bounce mound': { content: 'bounces', element: 'ground', needs: ['bounce'], teaches: 'bounce', what: 'a perched mushroom bounces him onto a mound' },
-  'stump tops': { content: 'jumps', element: 'ground', needs: ['jump'], what: 'logs on stumps, a ground fork\'s high road' },
-  'log jam': { content: 'jumps', element: 'ground', needs: ['jump'], floor: true, what: 'logs at two heights on stumps' },
+  'stump tops': { content: 'jumps', element: 'ground', needs: ['jump'], what: 'logs on stumps, a ground fork\'s high road', lay: { kinds: ['log', 'log'], steps: [30, -30, 40, -40], stumps: true } },
+  'log jam': { content: 'jumps', element: 'ground', needs: ['jump'], floor: true, what: 'logs at two heights on stumps', lay: { kinds: ['log'], steps: [50, -50, 40, -40], stumps: true } },
   'double gap': { content: 'jumps', element: 'ground', needs: ['double'], teaches: 'double', what: 'gaps too wide for a single jump, a catch under each' },
-  'lily-pad hop': { content: 'water', element: 'water', needs: ['jump'], floor: true, what: 'lily pads and logs across the creek' },
-  'reed isles': { content: 'water', element: 'water', needs: ['jump'], what: 'reed isles and lily pads' },
+  'lily-pad hop': { content: 'water', element: 'water', needs: ['jump'], floor: true, what: 'lily pads and logs across the creek', lay: { kinds: ['lily', 'log'], steps: [30, -30, 40, -40] } },
+  'reed isles': { content: 'water', element: 'water', needs: ['jump'], what: 'reed isles and lily pads', lay: { kinds: ['reed', 'lily'], steps: [30, -30, 40, -40] } },
   'bounce up': { content: 'bounces', element: 'tree', needs: ['bounce'], teaches: 'bounce', what: 'a mushroom up into the boughs' },
   'the climb': { content: 'climbing', element: 'tree', needs: ['climb'], teaches: 'climb', what: 'a climbing vine up to a bough' },
-  'bough stair': { content: 'climbing', element: 'tree', needs: ['jump'], what: 'boughs stepping up, a rope bridge at the top' },
-  'bough hops': { content: 'jumps', element: 'tree', needs: ['jump'], what: 'hops between boughs and logs in the trees' },
+  'bough stair': { content: 'climbing', element: 'tree', needs: ['jump'], what: 'boughs stepping up, a rope bridge at the top', lay: { kinds: ['branch', 'log'], nLess: 1, steps: [50, 60, 70], easySteps: [30, 40], then: { kinds: ['bridge'], n: { normal: 1, easy: 1 }, steps: [30, -30] } } },
+  'bough hops': { content: 'jumps', element: 'tree', needs: ['jump'], what: 'hops between boughs and logs in the trees', lay: { kinds: ['branch', 'log'] } },
   'double chain': { content: 'jumps', element: 'tree', needs: ['double'], what: 'rising double jumps bough to bough, catches below' },
   'top branch': { content: 'jumps', element: 'tree', needs: ['run'], what: 'one long high branch' },
-  'bridge span': { content: 'jumps', element: 'tree', needs: ['jump', 'creaky'], what: 'rope bridges with creaky limbs between' },
+  'bridge span': { content: 'jumps', element: 'tree', needs: ['jump', 'creaky'], what: 'rope bridges with creaky limbs between', lay: { kinds: ['bridge', 'creaky'], easyKinds: ['creaky', 'bridge'], steps: [30, -30, 40, -40] } },
   'snap teach': { content: 'breakable', element: 'tree', needs: ['jump'], teaches: 'creaky', what: 'creaky twigs low over a long bank' },
-  'snap dash': { content: 'breakable', element: 'tree', needs: ['creaky'], what: 'a run of creaky limbs and branches' },
-  'creaky boughs': { content: 'breakable', element: 'tree', needs: ['creaky'], what: 'branches and creaky limbs' },
+  'snap dash': { content: 'breakable', element: 'tree', needs: ['creaky'], what: 'a run of creaky limbs and branches', lay: { kinds: ['creaky', 'branch'], n: { normal: 6, easy: 5 } } },
+  'creaky boughs': { content: 'breakable', element: 'tree', needs: ['creaky'], what: 'branches and creaky limbs', lay: { kinds: ['branch', 'creaky'], easyKinds: ['creaky', 'branch'] } },
   'crumbling ledge': { content: 'breakable', element: 'ground', needs: ['jump'], teaches: 'crumble', what: 'crumbling ledges and branches' },
   'rotten-branch drop': { content: 'breakable', element: 'tree', needs: ['creaky'], what: 'a drop down through a creaky limb to a catch' },
   'push block': { content: 'hazards', element: 'ground', needs: ['run'], what: 'a log to push (out of the mixer for now)' },

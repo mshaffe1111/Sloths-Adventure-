@@ -14,7 +14,7 @@
  * Coordinates: x right, y down (the game's), feet on a platform's top.
  */
 import type { Collectible, LevelConfig, Platform, Vine } from '../types.ts';
-import { IDEAS } from './library.ts';
+import { IDEAS, type BurstRecipe } from './library.ts';
 import { kitFor, type WorldKit } from './kits.ts';
 import { w1DressFacing, w1DressWidth } from '../w1NewArt.ts';
 import type { StageSpec } from './spec.ts';
@@ -339,17 +339,29 @@ function step(L: Lay, c: Cursor, R: Rng, k: string, w: number): Platform {
   return L.P[L.P.length - 1];
 }
 
+/** a burst idea laid from its library recipe (library.ts `lay`) */
+function layRecipe(L: Lay, c: Cursor, R: Rng, rec: BurstRecipe, n: number): Cursor {
+  const ks = L.easy && rec.easyKinds ? rec.easyKinds : rec.kinds;
+  // (several kind lists: one is picked for each burst)
+  const kinds = Array.isArray(ks[0]) ? R.pick(ks as string[][]) : (ks as string[]);
+  const count = rec.n ? (L.easy ? rec.n.easy : rec.n.normal) : n - (rec.nLess ?? 0);
+  const steps = (L.easy && rec.easySteps) || rec.steps;
+  let e = burst(L, c, R, kinds, count, steps, rec.gap);
+  if (rec.stumps) e = markStumps(L, e, c);
+  if (rec.then) e = layRecipe(L, e, R, rec.then, n);
+  return e;
+}
+
 /** one idea's burst, laid from the cursor; returns the way's end */
 function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
   // (a burst is 4-6 pieces, the designer's (a); 1-5 sits at 4-5 for its 2:30-3:00 aim, ENGINE-SPEC "Stage length")
   // (Easy one piece shorter, 3-4, the designer's ruling on the fun gate)
   // (Easy at 3 pieces: the designer's second fix for Easy's density; the snap dash keeps 5 for its teach-to-test job)
   const n = L.easy ? 3 : R.i(L.burstMin ?? 4, L.burstMax ?? 5);
+  // (a burst idea is the library's recipe; only the shapes below are built here)
+  const rec = IDEAS[name]?.lay;
+  if (rec) return layRecipe(L, c, R, rec, n);
   switch (name) {
-    // (every list lays stones, a small rise on a bank's end: the designer, 11-05, "stone" stays among 1-5's kinds)
-    case 'bank hops': return burst(L, c, R, R.pick([['bank', 'stone', 'log'], ['log', 'stone', 'bank'], ['stone', 'bank', 'log']]), n);
-    // (a log as its third kind: on Easy its stones and banks all widen into one size, and the gate's "something new" ran out)
-    case 'stump hop': return burst(L, c, R, ['stone', 'bank', 'log'], n, [40, -40, -70, 30, -30]);
     case 'snap teach': {
       L.creakyTaught = true;
       // (expose, then validate: a creaky twig low over a long bank, then two over safe ground; nothing to fall into)
@@ -361,8 +373,6 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
       plat(L, 'creaky', bank.x + 440, bank.y - 40, 130);
       return { x: bank.x + bank.width, y: bank.y };
     }
-    // (the test of n2's teach in its full form (the designer's review B): six pieces, three of them creaky, every gap a real one)
-    case 'snap dash': return burst(L, c, R, ['creaky', 'branch'], L.easy ? 5 : 6);
     case 'bounce up': {
       L.bounceTaught = true;
       // (the old 1-1's highRoad: a mushroom on the ground, branches 170-200 px over it, proven there)
@@ -395,14 +405,6 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
       const top = plat(L, 'bank', pad.x + pad.width + 30, pad.y - Math.round(R.r(170, 200)), Math.round(R.r(240, 300) * L.wScale));
       return burst(L, { x: top.x + top.width, y: top.y }, R, ['bank', 'log'], 2, [-40, -50]);
     }
-    // (logs on stumps: a fork's ground high road, raised pieces with a stump under each, over the floor road)
-    case 'stump tops': return markStumps(L, burst(L, c, R, ['log', 'log'], n, [30, -30, 40, -40]), c);
-    // (a log jam: logs at two heights, close together, on stumps)
-    case 'log jam': return markStumps(L, burst(L, c, R, ['log'], n, [50, -50, 40, -40]), c);
-    // (1-1's run teach: low banks touching, small steps up and down, no gap to jump)
-    case 'floor walk': return burst(L, c, R, ['bank', 'log'], n, [30, -30], 0);
-    // (boughs and logs in the air: 1-1's low fork road and its canopy roads)
-    case 'bough hops': return burst(L, c, R, ['branch', 'log'], n);
     // (1-1's double teach, expose then validate: three gaps each too wide for a single jump and inside a double's reach, flat, a catch
     // branch under each, so a miss costs nothing)
     case 'double gap': {
@@ -450,11 +452,6 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
       }
       return { x: e.x + e.width, y: e.y };
     }
-    // (on Easy the creaky limbs come first: a burst of 3 is then 2 creaky and 1 branch, not 1 and 2, which holds creaky at 15% or more of
-    // Easy's landings (it was 14.6% on one roll) without adding a piece)
-    case 'creaky boughs': return burst(L, c, R, L.easy ? ['creaky', 'branch'] : ['branch', 'creaky'], n);
-    case 'lily-pad hop': return burst(L, c, R, ['lily', 'log'], n, [30, -30, 40, -40]);
-    case 'reed isles': return burst(L, c, R, ['reed', 'lily'], n, [30, -30, 40, -40]);
     case 'bank walk': {
       // (a rest: a long bank and a medium stone, an easy step between them; never one long flat, never one size: the variety gate)
       if (L.easy) {
@@ -490,13 +487,7 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     }
     // (the library holds it, the mixer does not lay it yet: a spec that draws it is refused by checkSpec, and the build throws)
     case 'push block': throw new Error('push block is in the library but the mixer does not lay it yet');
-    case 'bough stair':
-      // (CP2, with Easy's rule: Normal steps +50 to +70; Easy +30 to +40, gaps 80 or less: easyFit and the gate cap them)
-      // (the bridge only as the stair's top piece, a short rope bridge from the last bough on (the designer's ruling 4))
-      return burst(L, burst(L, c, R, ['branch', 'log'], n - 1, L.easy ? [30, 40] : [50, 60, 70]), R, ['bridge'], 1, [30, -30]);
-    // (rope bridges with creaky limbs between them: creaky shows on n10's high road (the designer's review E))
-    // (on Easy, as the creaky boughs: the creaky limbs first, 2 of 3, so creaky is not a scrape over 15% of Easy's landings)
-    case 'bridge span': return burst(L, c, R, L.easy ? ['creaky', 'bridge'] : ['bridge', 'creaky'], n, [30, -30, 40, -40]);
+    default: throw new Error(`idea "${name}" has no recipe in the library and no shape in the mixer`);
   }
 }
 
