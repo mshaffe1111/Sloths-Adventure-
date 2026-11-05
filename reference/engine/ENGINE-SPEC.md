@@ -844,6 +844,18 @@ third Easy-only rest of 4-5 s goes after n3 (c). **This is a miss at the checkpo
     ground or in water only, never on posts.
   - Round 2 goes to the lead once S-3 is fixed and (i) is built, with the 16-roll table re-run.
 
+
+**[designer, 11-05 ~5:20 AM ET, on build 14ff1727 and stills v7]**
+- **Stills v7 pass the designer's review.** The rocks on posts are gone (S-3), nearby boughs share trees (S-4), the forks are clean,
+  Dot's bubble is clear of the route (S-8), and there are no pits or dark box.
+- **Everything else passes on 16 rolls.** Normal and Easy runs and dead time; 18 of 18 variety lines; splits; creaky; 32/32 level
+  checks; no jump under the per-jump floors; both bots reach the shrine 4/4.
+- **Stones are still missing** (the 5:15 ruling): the planner lays them on ground and re-runs the variety lines.
+- **Easy density (0.60 against 0.55) is calibrated, not waived.** §0 row 2 says the band is not calibrated until measured on Matt's
+  stages, so the planner measures the old 1-1's Easy density with the same tool on 16 rolls.
+  - If the old 1-1's Easy is at or above about 0.60, the line becomes "no denser than the old 1-1's Easy", and the new 1-5 passes.
+  - If it is under, the double breather (a) is built.
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
