@@ -29,6 +29,14 @@ designed... We need this engine. And we need people that know how to build this 
   whether the work meets the bar, never what the design should be.
 - When the lead sees a design problem, it reports it to the designer and to Matt with the evidence (a still, a number, a clip). It
   does not propose the fix's design.
+- **The lead's story role (Matt, 2026-11-05 ~9:20 AM ET):** "you're going to be helping the team with how the story and how it should
+  look based upon the story. That way it should keep things fresh and clean looking as they're building... and to ensure that it
+  follows the story and we're not using all the same thought process. Like the last time it was 90% branches that were tied to trees."
+  For every stage the lead writes a story brief (reference/engine/story-briefs/<stage>.md): where the characters are, what the
+  player should feel at each moment, the props and lines that belong, what later stages own, and the look the story calls for,
+  including which piece families should lead, so that no two stages fall into the same look. It's story and look, never layout.
+  The workflow: lead's story brief, then the designer's node plan, then the planner's build and measure, then the lead's check
+  against the bar and the story, then Matt plays.
 - Why: the lead's World 1 design (W1-REBUILD-PLAN) shipped five stages that each repeat one piece from start to finish, worse than
   the old World 1 (STATUS 2026-11-04 11:2x PM ET; D34).
 
