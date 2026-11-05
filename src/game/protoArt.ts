@@ -46,7 +46,8 @@ export function setKitWorld(w: number) {
 /** the world being played (World 1 paints its pits: w1Pits.ts) */
 let stageWorld = 1;
 /** trunks drawn behind a stage's boughs that are scenery, not climbs (1-1's canopy: no bough floats with nothing holding it) */
-type DecoTrunk = { x: number; topY: number; bottomY: number; w?: number };
+/** `art: 'plain'`: the bare kapok (trunkPlain), so neighbouring trees never share one trunk picture and vine wrap (the mixer's 1-5, S-4) */
+type DecoTrunk = { x: number; topY: number; bottomY: number; w?: number; art?: 'plain' };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
 /** the leafy clumps the boughs' free ends tuck into (1-1's canopy), drawn behind the boughs */
@@ -1216,8 +1217,10 @@ export function drawProtoScene(
   // the scenery trunks: the same painted kapok, set back in the shade (darker), so it reads as the tree behind and not a climb
   for (const v of decoTrunks) {
     if (v.x < view.x0 - 260 || v.x > view.x1 + 260 || v.bottomY < vy0 - 40 || v.topY > vy1 + 40) continue;
+    const plain = v.art === 'plain';
+    const pf = plain ? PROTO2_FRAMES.trunkPlain : tf;
     const tw = 84 * (v.w ?? 1);
-    const th = (tw * tf.h) / tf.w;
+    const th = (tw * pf.h) / pf.w;
     const y0 = Math.max(v.topY, vy0 - 40), y1 = Math.min(v.bottomY, vy1 + 40);
     ctx.save();
     ctx.beginPath();
@@ -1228,7 +1231,7 @@ export function drawProtoScene(
     const lap = Math.max(6, th * 0.12);
     for (let y = v.bottomY - th; y > v.topY - th; y -= th - lap) {
       if (y > vy1 + 20 || y + th < vy0 - 20) continue;
-      blit(ctx, 'trunk', v.x - tw / 2, y, tw, th);
+      if (!plain || !blit2(ctx, 'trunkPlain', v.x - tw / 2, y, tw, th)) blit(ctx, 'trunk', v.x - tw / 2, y, tw, th);
     }
     ctx.restore();
   }

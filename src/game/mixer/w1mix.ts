@@ -43,7 +43,7 @@ export type Idea =
 /** the floor ideas a canopy is laid over (the designer's ruling 1 on the CP3 miss: "boughs run above bank hops, stump hops or the creek") */
 export const FLOOR: readonly Idea[] = ['bank hops', 'stump hop', 'lily-pad hop'];
 export interface Fork { high: Idea[]; low: Idea[] }
-export interface NodePlan { id?: string; job: string; deck: Idea[] | Fork; not?: number; notLast?: number; hint?: string; padHint?: string; flagBefore?: boolean; heartAfter?: boolean; seed?: boolean }
+export interface NodePlan { id?: string; easyOnly?: boolean; job: string; deck: Idea[] | Fork; not?: number; notLast?: number; hint?: string; padHint?: string; flagBefore?: boolean; heartAfter?: boolean; seed?: boolean }
 
 /** CP3's 1-5 plan, row by row (ENGINE-SPEC "CP3 design"); `not`: never the idea node `not` rolled; `notLast`: never one the last n nodes laid */
 /** a node's name on the map: its plan id, or its number counting only the nodes without one (n7b sits between n7 and n8) */
@@ -53,6 +53,8 @@ export const PLAN_15: NodePlan[] = [
   { job: 'teach creaky', deck: ['snap teach'], hint: 'Creaky branches! Grab the petals and keep moving' },
   // (each deck gains a floor idea, the old 1-1's cycle: the designer's ruling (a) on the review, 11-05 ~2:35 AM)
   { job: 'climb up', deck: ['bounce up', 'the climb', 'stump hop'] },
+  // (Easy's third rest, the designer's option (c) for Easy's density, 11-05: Easy only)
+  { id: '3b', easyOnly: true, job: 'rest', deck: ['bank walk'] },
   { job: 'the fork', deck: { high: ['crumbling ledge', 'creaky boughs'], low: ['lily-pad hop', 'reed isles'] } },
   { job: 'rest', deck: ['bank walk'], hint: 'These petals are fresher. She came this way not long ago.', flagBefore: false },
   { job: 'test creaky', deck: ['snap dash', 'bank hops'], flagBefore: true, heartAfter: true },
@@ -294,8 +296,13 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
       if (L.easy) {
         // (Easy's rest, 4-5 s: two banks of about 2 s each with one small hop between and a petal arc over it, play, not dead time:
         // the designer's third fix for Easy's density, which also gives Easy its breather in the middle)
-        const e1 = step(L, c, R, 'bank', 560);
-        const e2 = burst(L, { x: e1.x + e1.width, y: e1.y }, R, ['bank'], 1, [30, -30], 60, 560);
+        // (620 px each, about 2.2 s: a rest of 2 s or more that is still under the gate's 2.5 s dead walk, since the gate reads a petal as
+        // nothing to do)
+        // (a log, then a bank: after a fork's long rejoin bank, two more banks read as nothing new)
+        const e1 = step(L, c, R, 'log', 620);
+        // (the hop between the halves is onto a short log stump, 130 px: something new in the middle of 1.3k px of rest)
+        const mid = burst(L, { x: e1.x + e1.width, y: e1.y }, R, ['log'], 1, [30, -30], 50, 130);
+        const e2 = burst(L, mid, R, ['bank'], 1, [30, -30], 50, 620);
         const e3 = L.P[L.P.length - 1];
         for (let k = 0; k < 5; k++) L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: k % 2 ? 'orchid' : 'hibiscus', x: Math.round(e1.x + e1.width - 60 + k * 45), y: Math.round(Math.min(e1.y, e3.y) - 50 - Math.sin((k / 4) * Math.PI) * 60), collected: false, bobPhase: k * 0.9 } as Collectible);
         return e2;
@@ -498,31 +505,48 @@ function crossings(L: Lay, hi: Platform[], lo: Platform[], job: string) {
 }
 
 /**
- * The trunks and posts that hold the pieces in the air (P-2, P-7, P-11). A piece is in the air when it is a bough, a log, a crumbling ledge
- * or a creaky limb; banks and stones are ground. The trunk goes under the piece's middle (a bridge gets a thin post at each end), from just
- * under its top down to the first floor under it, or past the stage's bottom; trunks closer than 200 px at about the same height are one.
+ * The trees and posts that hold the pieces in the air (P-2, P-7, P-11, S-4). A piece is in the air when it is a bough, a log, a crumbling
+ * ledge or a creaky limb; banks and stones are ground. Two boughs side by side share one tree in the gap between them; a lone bough has its
+ * own under its middle; a bridge gets a thin post at each end; the perch a short stump. Each trunk runs from just under its piece's top to the
+ * first bank under it, or past the stage's bottom.
  */
-function supports(P: Platform[], height: number): Array<{ x: number; topY: number; bottomY: number; w: number }> {
-  const out: Array<{ x: number; topY: number; bottomY: number; w: number }> = [];
+function supports(P: Platform[], height: number): Array<{ x: number; topY: number; bottomY: number; w: number; art?: 'plain' }> {
+  type T = { x: number; topY: number; bottomY: number; w: number; art?: 'plain' };
+  const out: T[] = [];
   const floorOf = (x: number, y: number) => {
     const under = P.filter((q) => q.type !== 'bouncy' && q.style === 'moss_stone' && q.x <= x && q.x + q.width >= x && q.y > y + 30);
     return under.length ? Math.min(...under.map((q) => q.y)) : null;
   };
-  for (const p of P) {
-    if (p.type === 'bouncy' || (p as { catch?: boolean }).catch || (p as { art?: string }).art) continue;
-    // (a stone, the painted mossy rock, in the air stands on a thin root post down to the floor: a rock never hangs in the sky)
-    const stone = p.style === 'moss_stone' && p.height === 50;
-    const air = stone || p.style === 'branch' || p.style === 'canopy_bridge' || p.style === 'log' || p.style === 'ruin' || p.type === 'fragile';
-    if (!air) continue;
+  // (each tree its own width and, tree by tree, the vine-wrapped kapok or the bare one: never two neighbours alike (S-4))
+  const tree = (x: number, top: number, w: number) => {
+    const fl = floorOf(x, top - 16);
+    const k = out.length;
+    out.push({ x: Math.round(x), topY: Math.round(top), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: w * (0.85 + ((k * 37) % 7) * 0.07), ...(k % 2 ? { art: 'plain' as const } : {}) });
+  };
+  const air = P.filter((p) => p.type !== 'bouncy' && !(p as { catch?: boolean }).catch && !(p as { art?: string }).art
+    && (p.style === 'branch' || p.style === 'canopy_bridge' || p.style === 'log' || p.style === 'ruin' || p.type === 'fragile')).sort((a, b) => a.x - b.x);
+  const done = new Set<Platform>();
+  for (let i = 0; i < air.length; i++) {
+    const p = air[i];
+    if (done.has(p)) continue;
     const perch = !!(p as { perch?: boolean }).perch;
-    const bridge = p.style === 'canopy_bridge';
-    const xs = bridge ? [p.x + 12, p.x + p.width - 12] : [p.x + p.width / 2];
-    for (const x of xs) {
-      const top = p.y + (p.style === 'log' ? 50 : stone ? 40 : 16);
-      if (!bridge && out.some((t) => Math.abs(t.x - x) < 200 && Math.abs(t.topY - top) < 80)) continue;
-      const fl = floorOf(x, p.y);
-      out.push({ x: Math.round(x), topY: Math.round(top), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: perch ? 0.7 : bridge ? 0.5 : stone ? 0.6 : 1.15 + ((Math.round(x) * 7) % 5) * 0.08 });
+    const top = (q: Platform) => q.y + (q.style === 'log' ? 50 : 16);
+    if (p.style === 'canopy_bridge') {
+      // (a bridge hangs from a thin post at each end, P-11)
+      for (const x of [p.x + 12, p.x + p.width - 12]) { const fl = floorOf(x, p.y); out.push({ x: Math.round(x), topY: Math.round(top(p)), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: 0.5 }); }
+      continue;
     }
+    if (perch) { tree(p.x + p.width / 2, top(p), 0.7); continue; }
+    // (two boughs side by side, a short gap and a step between them, grow from one tree standing in the gap (S-4: like the old 1-1's
+    // canopy, one trunk and its boughs at two heights))
+    const q = air.slice(i + 1).find((o) => !done.has(o) && o.style !== 'canopy_bridge' && !(o as { perch?: boolean }).perch && o.x >= p.x + p.width - 10);
+    if (q && q.x - (p.x + p.width) <= 120 && Math.abs(q.y - p.y) <= 140) {
+      done.add(q);
+      tree((p.x + p.width + q.x) / 2, Math.min(top(p), top(q)), 1.25);
+      continue;
+    }
+    if (out.some((t) => Math.abs(t.x - (p.x + p.width / 2)) < 160 && Math.abs(t.topY - top(p)) < 80)) continue;
+    tree(p.x + p.width / 2, top(p), 1.15);
   }
   return out;
 }
@@ -555,6 +579,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   L.flags.push({ x: 100, y: c.y });
   const forkMarks: Array<{ x: number; y: number }> = [];
   PLAN_15.forEach((n, i) => {
+    if (n.easyOnly && !easy) return;
     const R = rngFor(seed, `1-5 n${i}`);
     const x0 = c.x;
     if (n.flagBefore) {
@@ -645,7 +670,8 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       // road's end, which drops onto it)
       const ry = Math.max(LIMIT.yMin, loEnd.y - 30);
       const rx = loEnd.x + Math.min(70, gateGap(L, loEnd.y, { y: ry, height: 120, type: 'solid' }, loEnd.y - ry) - 4);
-      const rejoin = plat(L, 'bank', rx, ry, Math.max(320, hiEnd.x + 240 - rx));
+      // (a long log: after a low road of banks, another long bank was nothing new for 1.6k px)
+      const rejoin = plat(L, 'log', rx, ry, Math.max(320, hiEnd.x + 240 - rx));
       L.explain.push({ node: i + 1, nid: nid(i), job: n.job, idea: `${hi} + ${hi2}` as Idea, road: 'high', x0, x1: hiEnd.x, why: `high road from [${n.deck.high.join(', ')}]` });
       L.explain.push({ node: i + 1, nid: nid(i), job: n.job, idea: `${lo} + ${lo2}` as Idea, road: 'low', x0: lowStart.x, x1: loEnd.x, why: `low road from [${n.deck.low.join(', ')}]` });
       petalsOver(L, lowFrom);
@@ -710,6 +736,13 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     const pick = before.length ? before[before.length - 1] : win[win.length - 1];
     L.flags.push(pick);
     lastX = pick.x;
+  }
+  // (stones stand on ground, never on poles (the designer's S-3, round 1): a stone with no bank under it within 250 px is a bough, up
+  // in the canopy where a stone cannot be)
+  for (const p of L.P) {
+    if (!(p.style === 'moss_stone' && p.height === 50)) continue;
+    const ground = L.P.some((q) => q !== p && q.style === 'moss_stone' && q.height >= 90 && q.x < p.x + p.width && q.x + q.width > p.x && q.y > p.y && q.y - p.y < 250);
+    if (!ground) Object.assign(p, { style: 'branch', height: 24 });
   }
   // (nothing hurts in the first seconds (STAGE-RULES §2 "Opening seconds"), as w1Rhythm.ts rhythmStage lays it: a catch branch 60 px
   // under the lower lip of every gap met in the first 6.5 s at a run, ending against a stone face under the far ledge, so a short jump
