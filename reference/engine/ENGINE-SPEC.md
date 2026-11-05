@@ -350,6 +350,17 @@ sizes are rolled inside the idea. Decks are what make two rolls different stages
 | n10 | **master**, the second fork | high road: crumbling ledge or bridge span; low road: stump hop or bank hops on the floor; rejoin before n11 | mid → low (two roads) | a checkpoint before it; the fourth petal group, with its harder half on the high road |
 | n11 | cool down | bank hops on the forest floor | low → shrine | — |
 
+
+**The goal: Meeca's marks** (designer ruling, 11-05 ~12:46 AM ET; 1-5 is a relic hunt, `stagePlan.ts:39`: "Meeca marked the trees
+as she walked. Follow her marks to the shrine"). Marks sit on trees, where she would have walked:
+- one mark in each of the 7 nodes that are not forks (n1-n3, n5-n9 less the forks, n11), on the main route, each on the trunk or
+  bough the idea already uses;
+- one mark on each road of each fork (n4 and n10): 4 marks in all. The high road's mark sits where the road is hardest, as
+  collectible rule 4 asks.
+- **Total: 11 on any single path, 13 in all. Goal 85% on Normal (11 of 13), 65% on Easy (9 of 13).** A player can finish on
+  either road of each fork; taking both roads is the reward for replaying.
+- Petal groups stay as planned (one per fork road, plus n6), and the seed stays out of reach.
+
 **The rules this plan meets by construction** (the mixer still checks every roll):
 - **Ideas:** 9 to 11 different ideas a roll. No idea twice in a row. Snap-twig dash comes twice (teach at n2, test at n6, not in a
   row), and the fork twice (n4, n10).
