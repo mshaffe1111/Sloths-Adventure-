@@ -180,7 +180,7 @@ sections lay their high pieces with no walkable floor under them, so a roll has 
 |---|---|---|
 | FR1 | **A floor piece runs the whole length under the raised pieces**, walkable end to end. The exception is a T's check or an X's block, where the floor ENDS at the block face (B1). The floor road comes back after the block | old 1-1 (above); NODES §8.7 B1 |
 | FR2 | **Head room:** a raised piece's underside is at least 110 px over the floor top, so Pokey walks under (76 px body, plus 34) | the porter's petal head room (76 px); P-6 (nothing in the lane) |
-| FR3 | **The low road is a real road:** it rejoins the high road at the section's end. Either the high road steps back down to the floor, or a stair of landings climbs back up, each step at most 88 px (a single jump, 108, less 20) | V7 (both roads finish and rejoin); physics.ts JUMP_RISE |
+| FR3 | **The low road is a real road:** it rejoins the high road at the section's end. Either the high road steps back down to the floor, or a stair of landings climbs back up, each step at most 80 px (gen2's 'walk' rise limit on 1-1, the porter 6:35 PM; under a single jump's 108) | V7 (both roads finish and rejoin); physics.ts JUMP_RISE |
 | FR4 | **The low road has its own beat, of a different kind from the high road's** (R2 lesson 1: kinds, not pixels). For example, low stumps or a dip under a high log road; stones under boughs. The petals sit on the LOW road (they're the story's trail, 1-1.md:26-27); a find on the high road (V7 +) | R2 L1; 1-1.md:26-27 |
 | FR5 | **In the bough window ([0.67, 1]) the low road is a MID road** (low logs on stumps, or stones on banks, 110-300 px under the boughs), not the deep floor. The corridor is 900 px, and the climb back must stay a stair (FR3) | the corridor (W1_KIT 900 px); FR3 |
 | FR6 | **Blocks never get a low road past them** (B1-B4). Where a section is both a two-road and a T or X, the block sits where the roads have met, or on the high road with the low road ending back-only | B1-B4 |
@@ -191,14 +191,14 @@ sections lay their high pieces with no walkable floor under them, so a roll has 
 
 | Section | Change (FR rules) |
 |---|---|
-| `w1-log-road`, `w1-bounce-double` (#21), `w1-high-leaps`, `w1-bounce-run`, `w1-ledges`, `w1-bough-stepup` (#9) | **FR1-FR4:** a floor piece the whole length under the raised pieces, head room ≥ 110 px. The low road's beat: low stumps (`gLowStumps`) or a dip (`gDip`), with petals on it. It rejoins by the high road stepping down, or a stump stair ≤ 88 px a step. #21 is a combine, not a T or X, so its floor road may pass under |
+| `w1-log-road`, `w1-bounce-double` (#21), `w1-high-leaps`, `w1-bounce-run`, `w1-ledges`, `w1-bough-stepup` (#9) | **FR1-FR4:** a floor piece the whole length under the raised pieces, head room ≥ 110 px. The low road's beat: low stumps (`gLowStumps`) or a dip (`gDip`), with petals on it. It rejoins by the high road stepping down, or a stump stair ≤ 80 px a step. #21 is a combine, not a T or X, so its floor road may pass under |
 | `w1-second-jump`, `w1-stump-towers` (#20), `w1-stilt-logs` (#27), `w1-fallen-trunk` (#7), `w1-two-answers` (#28) | **FR6 (tests and twists):** the floor runs under the approach and resumes after the block, but ends at the block face (back-only pit, B2b). It's two roads before and after, never past the block |
 | `w1-canopy-rungs` (#10, the signature) | **FR6 extends to S:** a set piece that can be walked round isn't one (Wonder's test 2, "he can suddenly do something new"). A MID road (FR5) of low logs on stumps runs under the approach and the run-out only |
 | `w1-high-walk`, `w1-bough-bench` (rests in the window) | **FR5:** a mid road of low logs on stumps 110-300 px under the bough, petals on it, rejoining at the far end by a stump stair. Two roads, no hard input on either |
 | `w1-canopy-weave` (#22), `w1-bough-log` (#29) | **FR5:** the low road is the mid road, not the floor (the corridor). #22 already has two bough roads; #29's catch boughs stay ≥ 130 px under the next landing (B4) |
 | goal sections (#15, #23, #30) | no change. The end log is the arrival, one road (the quiet ending) |
 
-### Round 4, part 2: new sections for the pool cells that bind (the planner's 7:44 PM harness, 16 seeds)
+### Round 4, part 2: new sections for the pool cells that bind (the planner's 6:34 PM harness, 16 seeds)
 
 **What binds, at 3:1 against the most a roll needs:**
 - teach: 4 against 9;
@@ -223,14 +223,14 @@ Every section's versions differ in kinds or order, never only in sizes. All of t
 
 | # | id, name | Job, type, phase | Versions (rhythm string) | Block / roads | Sources |
 |---|---|---|---|---|---|
-| 31 | `w1-step-stones-teach` "The first stones" | teach jump, ground, ki | **a** `w h h j w`; **b** `w j w j j` (2 gaps, then a pair); **c** `w h j h j` | jump block: a step 60-88 px up onto a stone bank with no lower step beside it, floor ending at its face (B1); the miss lands on the floor before it | 1-1's teach run then jump (CoachOverlay.tsx:10); B1 |
-| 32 | `w1-log-teach` "Up the first log" | teach jump, ground, ki | **a** `w h w j j` over low logs on the floor; **b** `w j h h` onto a log on stumps, then off | as #31: a log face 60-88 px, no step beside | old 1-1's logs on stump-posts (LABELS §1 solid log); B1 |
+| 31 | `w1-step-stones-teach` "The first stones" | teach jump, ground, ki | **a** `w h h j w`; **b** `w j w j j` (2 gaps, then a pair); **c** `w h j h j` | jump block: a step 60-80 px up onto a stone bank with no lower step beside it, floor ending at its face (B1); the miss lands on the floor before it | 1-1's teach run then jump (CoachOverlay.tsx:10); B1 |
+| 32 | `w1-log-teach` "Up the first log" | teach jump, ground, ki | **a** `w h w j j` over low logs on the floor; **b** `w j h h` onto a log on stumps, then off | as #31: a log face 60-80 px, no step beside | old 1-1's logs on stump-posts (LABELS §1 solid log); B1 |
 | 33 | `w1-dip-double-teach` "The wide dip" | teach double, ground, ki | **a** `w j d w` (one jump, then the double gap); **b** `w d j j`; Easy: a rise block 130-145 px (§8.7 amended) | double block: gap ≥ single + 20 px (share ≥ 0.85, the planner's pixel check), back-only pit | R2 (3:11); NODES §8.7 |
 | 34 | `w1-bank-double-teach` "The tall bank" | teach double, ground, ki | **a** `w h d w` (a rise block onto a bank); **b** `w d h h` | rise block 130-145 px, the floor ends at the bank face | NODES §8.7 B2a |
 | 35 | `w1-mushroom-bank-teach` "The bounce bank" | teach bounce, bounce, sho | **a** `w b w h`; **b** `w h b j` | bounce block: the mushroom on the floor, lip 200-220 px (§8.7 #5 ruling) | the brief's first lift (1-1.md:20); B3 |
 | 36 | `w1-mushroom-fork` "Mushroom or the long way" | fork, bounce (low road), sho | **a** high `b d +` / low [`b h h`]; **b** high `b c c +` / low [`h b w`] | none (P). Both roads rejoin; the find on the high road | V7; FR3-FR4; 1-1.md:26-27 (petals low) |
 | 37 | `w1-twin-mushroom-fork` "Two mushrooms" | fork, bounce, sho | **a** high `b b +` / low [`b j`]; **b** high `b d +` / low [`j b w`] | none | as #36; #6 twin bounce |
-| 38 | `w1-stair-fork` "The stump stair or the floor" | fork, climb (low road), sho | **a** high `c c d +` / low [`c h c`]; **b** high `c d c +` / low [`c c w`] | none. The low road is itself a low stair (each ≤ 88 px) | V7; FR3 |
+| 38 | `w1-stair-fork` "The stump stair or the floor" | fork, climb (low road), sho | **a** high `c c d +` / low [`c h c`]; **b** high `c d c +` / low [`c c w`] | none. The low road is itself a low stair (each ≤ 80 px) | V7; FR3 |
 | 39 | `w1-bank-stair-fork` "Bank steps, two ways" | fork, climb, sho | **a** high `c c j +` / low [`h c c`]; **b** high `d c +` / low [`c j c`] | none | stepped mounds (#24 kin) |
 | 40 | `w1-stair-test` "The steep stair" | test double, climb, ketsu | **a** `c d c d`; **b** `d c d d`; **c** `c c d d` | each `d` is a rise block 130-145 px; floor road back-only under it (FR6) | NODES §8.7; LEDGER-11-02:54 (rising) |
 | 41 | `w1-log-stair-test` "Logs up the bank" | test double, climb, ketsu | **a** `d c d` up logs on stumps; **b** `c d j d` | as #40 | as #40; LABELS §1 log on stump-post |
