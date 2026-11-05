@@ -76,7 +76,9 @@ export const LANDINGS: LandingKind[] = [
   { name: 'fungus shelf', match: (p) => p.style === 'fungus_shelf', element: 'tree', footing: 'a trunk (a bracket shelf)', mayFloat: 'no', uses: "W8's night-forest landing", worlds: [8], notes: 'theme-locked' },
   { name: 'roost limb', match: (p) => p.style === 'roost_branch', element: 'tree', footing: 'a trunk (a roost limb)', mayFloat: 'no', uses: "W8's night-forest landing", worlds: [8], notes: 'theme-locked' },
   // (measured in the inventory, with no row in LABELS.md yet: open until the designer rules)
-  { name: 'breaking log or plank', match: (p) => p.type === 'fragile' && (p.style === 'log' || p.style === 'canopy_bridge'), element: 'tree', footing: '(not ruled)', mayFloat: 'yes', uses: 'a log or plank that gives way (W5-W10)', worlds: [5, 7, 8, 9, 10], open: true, noNew: 'no label yet: the designer rules it' },
+  // (the designer's LABELS §6, 11-05 10:57: a platform log or plank that gives way; creak Normal 0.67 s, Easy 1.2 s; laid in a new stage
+  // only once its art shows the creak tell (a crack or a sag): open for the art)
+  { name: 'breaking log or plank', match: (p) => p.type === 'fragile' && (p.style === 'log' || p.style === 'canopy_bridge'), element: 'tree', footing: 'as a log or plank', mayFloat: 'yes', uses: 'a log or plank that gives way', worlds: [5, 7, 8, 9, 10], open: true, noNew: 'laid only once its art shows the creak tell (open for art)' },
 ];
 
 /** a climbable's kind (LABELS.md §2): a vine by its vineType and flags, a rope by whether it is required */
@@ -92,22 +94,31 @@ export const CLIMBS: ClimbKind[] = [
 ];
 
 /** zones, air, water bodies and set pieces (LABELS.md §2-3), by the array the stage keeps them in and their kind */
-export interface ZoneKind extends CatKind { arr: string; kinds?: string[] }
+export interface ZoneKind extends CatKind {
+  arr: string; kinds?: string[];
+  /** the worlds that have its art today: it is laid in world N only where N is here; a world in `worlds` but not in `artIn` is an art
+   *  gap, on a shrink-only known list, never drawn in another world's art (the designer and the critic, ENGINE-SPEC 0dffc84e1) */
+  artIn?: number[];
+  /** a set piece of one stage, which never returns (4-3's falls and tide lines) */
+  setPiece?: boolean;
+}
+/** from a hazard's teach world through World 10 (a taught hazard keeps returning: the designer's 1:14 ruling) */
+const fromW = (w: number) => Array.from({ length: 11 - w }, (_, i) => w + i);
 export const ZONES: ZoneKind[] = [
   { name: 'warm air', arr: 'updrafts', element: 'air', footing: 'open drop space under it', mayFloat: 'yes', uses: 'glide (taught 4-7)', worlds: [4, 8, 9], notes: 'needs the glide known' },
   { name: 'warm air (4-7 drafts)', arr: 'drafts47', kinds: ['across', 'bonus', 'rock', 'up'], element: 'air', footing: 'open drop space under it', mayFloat: 'yes', uses: 'glide (taught 4-7)', worlds: [4] },
-  { name: 'wind', arr: 'zones', kinds: ['wind'], element: 'air', footing: 'cliffs and tops', mayFloat: 'yes', uses: 'wind (taught 4-2)', worlds: [4, 8, 10] },
-  { name: 'dark', arr: 'zones', kinds: ['dark'], element: 'cave', footing: 'caves and the dark forest', mayFloat: 'yes', uses: 'dark (3-1)', worlds: [3, 5, 6, 8] },
-  { name: 'spore', arr: 'zones', kinds: ['spore'], element: 'cave', footing: 'caves', mayFloat: 'yes', uses: 'spore (3-1)', worlds: [3] },
-  { name: 'web', arr: 'zones', kinds: ['web'], element: 'tree', footing: 'between trunks', mayFloat: 'yes', uses: 'web (5-6)', worlds: [5] },
-  { name: 'tide', arr: 'zones', kinds: ['tide'], element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'tide (6-4)', worlds: [6] },
-  { name: '4-3 falls and tide', arr: 'falls43', kinds: ['plug', 'pool', 'surge', 'tide'], element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'the waterfall steps (4-3)', worlds: [4] },
-  { name: '4-3 tide line', arr: 'tides43', element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'the waterfall steps (4-3)', worlds: [4] },
-  { name: 'crumbling floor zone', arr: 'zones', kinds: ['crumble'], element: 'stone', footing: 'temple floors', mayFloat: 'no', uses: 'crumbling floor (7-1)', worlds: [7, 10] },
-  { name: 'geyser', arr: 'zones', kinds: ['geyser'], element: 'heat', footing: 'heat rock', mayFloat: 'no', uses: 'geyser (9-1)', worlds: [9] },
-  { name: 'bolt', arr: 'zones', kinds: ['bolt'], element: 'storm', footing: 'open sky', mayFloat: 'yes', uses: 'bolt (10-1)', worlds: [10] },
+  { name: 'wind', arr: 'zones', kinds: ['wind'], element: 'air', footing: 'cliffs and tops', mayFloat: 'yes', uses: 'wind (taught 4-2)', worlds: fromW(4), artIn: [4, 8, 10] },
+  { name: 'dark', arr: 'zones', kinds: ['dark'], element: 'cave', footing: 'caves and the dark forest', mayFloat: 'yes', uses: 'dark (3-1)', worlds: fromW(3), artIn: [3, 5, 6, 8] },
+  { name: 'spore', arr: 'zones', kinds: ['spore'], element: 'cave', footing: 'caves', mayFloat: 'yes', uses: 'spore (3-1)', worlds: fromW(3), artIn: [3] },
+  { name: 'web', arr: 'zones', kinds: ['web'], element: 'tree', footing: 'between trunks', mayFloat: 'yes', uses: 'web (5-6)', worlds: fromW(5), artIn: [5] },
+  { name: 'tide', arr: 'zones', kinds: ['tide'], element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'tide (6-4)', worlds: fromW(6), artIn: [6] },
+  { name: '4-3 falls and tide', arr: 'falls43', kinds: ['plug', 'pool', 'surge', 'tide'], element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'the waterfall steps (4-3)', worlds: [4], artIn: [4], setPiece: true },
+  { name: '4-3 tide line', arr: 'tides43', element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'the waterfall steps (4-3)', worlds: [4], artIn: [4], setPiece: true },
+  { name: 'crumbling floor zone', arr: 'zones', kinds: ['crumble'], element: 'stone', footing: 'temple floors', mayFloat: 'no', uses: 'crumbling floor (7-1)', worlds: fromW(7), artIn: [7, 10] },
+  { name: 'geyser', arr: 'zones', kinds: ['geyser'], element: 'heat', footing: 'heat rock', mayFloat: 'no', uses: 'geyser (9-1)', worlds: fromW(9), artIn: [9] },
+  { name: 'bolt', arr: 'zones', kinds: ['bolt'], element: 'storm', footing: 'open sky', mayFloat: 'yes', uses: 'bolt (10-1)', worlds: fromW(10), artIn: [10] },
   { name: 'river', arr: 'rivers', element: 'water', footing: 'a drawn river, its banks at both ends', mayFloat: 'water', uses: 'river logs (2-1)', worlds: [2, 6, 8] },
-  { name: 'thorn vine', arr: 'proto.thorns', element: 'tree', footing: 'hangs or swings from trunks', mayFloat: 'no', uses: 'thorns (3-4)', worlds: [3, 6, 10] },
+  { name: 'thorn vine', arr: 'proto.thorns', element: 'tree', footing: 'hangs or swings from trunks', mayFloat: 'no', uses: 'thorns (3-4)', worlds: fromW(3), artIn: [3] },
   { name: 'trunk', arr: 'trees', element: 'tree', footing: 'the floor', mayFloat: 'no', uses: 'an anchor for boughs, vines and lianas; never a landing', worlds: ALL, notes: 'at most 3 full trunks per 1,400 px' },
   { name: 'trunk (mixer)', arr: 'proto.trunks', element: 'tree', footing: 'the floor', mayFloat: 'no', uses: 'an anchor; never a landing', worlds: ALL },
   { name: 'hollow log', arr: 'proto.hollows', element: 'ground', footing: 'seated on the floor', mayFloat: 'no', uses: 'a two-road split: walk inside, run on top', worlds: [1, 3, 4, 6, 8], notes: 'two open ends or it is a hide spot only; no trunk within its width + 40 px' },
@@ -119,6 +130,10 @@ export const ZONES: ZoneKind[] = [
  *  wins). A wN prop is World N's own art, used only in World N */
 export interface PropFamily { family: string; rx: RegExp; element: string; footing: string; mayFloat: 'yes' | 'no' }
 export const PROP_FAMILIES: PropFamily[] = [
+  // (the designer's LABELS §6, 11-05 10:57: W2's walking villagers are a family of their own; the water sign is the warning post at a
+  // stage's first water, built ground on the bank, a teach marker (waterTeach.ts:103))
+  { family: 'villager', rx: /^(po|tc)\./, element: 'ground (villager)', footing: "on a porch or the ground, never open air; W2's village only; dressing, never in the lane", mayFloat: 'no' },
+  { family: 'teach marker', rx: /^waterSigns$/, element: 'ground (built)', footing: 'on the bank about 40 px before the water', mayFloat: 'no' },
   { family: 'fly', rx: /Morpho|Firefly|Butterfly(?!Bush)|Ladybug|Smoke|CattailFly|Feather|Petals$/, element: 'air (dressing)', footing: 'drifts or flies; may float', mayFloat: 'yes' },
   { family: 'hang', rx: /Hang|Curtain|Drip|BellVine|VineHang|LeafHang|BellHang|BellOne|Lanterns$|mossCurtain|stalactite|AirPlants|OrchidSpray|NestBasket|WeaverNest|laundry|Chime/, element: 'tree (hanging)', footing: 'hangs from a bough, the canopy, a roof or a line; never open sky', mayFloat: 'no' },
   { family: 'water', rx: /Lily|Reed|reed(?!-hide)|waterSigns|Canoe|Raft|FishTrap|Turtle|Otter|Heron|Crab|Mud|Cattail|cattails|WaterJar|Driftwood|DriftRoot|OysterRoot|pool|basin|trickle|Mooring|mooring/, element: 'water (edge or surface)', footing: 'on a drawn water surface or its bank edge', mayFloat: 'no' },
@@ -132,6 +147,16 @@ export const PROP_FAMILIES: PropFamily[] = [
 export const PICKUP_RULE = 'over a standable piece or on a path\'s arc, never inside a piece; hearts only after risk; the exit totem on a long ground piece';
 export const ANIMAL_RULE = 'on their element: snakes, boas and tayras on boughs or ground; caimans, turtles and frogs at water; harpies and eagles in open sky; jaguars and ocelots on ground; spiders on webs (W5)';
 
+/** the worlds whose kit draws a thin piece (a 'branch' frame) as stone, which never floats (the designer's LABELS §8, 11-05: W3 mossy
+ *  slab, W4 slate, W7 carved ruin, W9 basalt); elsewhere it is a bough, a plank, a stump, a log or a grate, which may */
+export const STONE_THIN_WORLDS = [3, 4, 7, 9];
+/** whether a landing may stand with open air under it, in its world: its kind's label, with a thin piece's element from its art (§8) */
+export function mayFloatIn(p: Platform & Record<string, unknown>, world: number): MayFloat | undefined {
+  const k = LANDINGS.find((q) => q.match(p));
+  if (!k) return undefined;
+  if (k.name === 'bough' && STONE_THIN_WORLDS.includes(world)) return 'no';
+  return k.mayFloat;
+}
 export const landingKind = (p: Platform & Record<string, unknown>) => LANDINGS.filter((k) => k.match(p));
 export const climbKind = (arr: 'vines' | 'ropes', v: Record<string, unknown>) => CLIMBS.filter((k) => k.match(arr, v));
 export const propFamily = (name: string) => PROP_FAMILIES.find((f) => f.rx.test(name));

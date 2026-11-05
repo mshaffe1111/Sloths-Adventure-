@@ -14,8 +14,9 @@
  * Coordinates: x right, y down (the game's), feet on a platform's top.
  */
 import type { Collectible, LevelConfig, Platform, Vine } from '../types.ts';
-import { IDEAS, type BurstRecipe } from './library.ts';
+import { IDEAS, SHAPES, type BurstRecipe } from './library.ts';
 import { kitFor, type WorldKit } from './kits.ts';
+import { holds } from './support.ts';
 import { w1DressFacing, w1DressWidth } from '../w1NewArt.ts';
 import type { StageSpec } from './spec.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
@@ -361,131 +362,111 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
   // (a burst idea is the library's recipe; only the shapes below are built here)
   const rec = IDEAS[name]?.lay;
   if (rec) return layRecipe(L, c, R, rec, n);
+  // (the shapes' numbers are the library's, SHAPES; here only the geometry each one builds from them)
+  const r = (q: readonly [number, number] | readonly number[]) => R.r(q[0], q[1]);
   switch (name) {
     case 'snap teach': {
+      const P = SHAPES['snap teach'];
       L.creakyTaught = true;
-      // (expose, then validate: a creaky twig low over a long bank, then two over safe ground; nothing to fall into)
-      // (600 px, the twigs close together: the designer's ruling on the fun gate (the 900 px bank was a 3 s walk with nothing to do))
-      const bank = step(L, c, R, 'bank', 600);
-      // (low, higher, low: 40, 75 and 40 px over the bank, each a step up or down from the last, never flat)
-      plat(L, 'creaky', bank.x + 110, bank.y - 40, 150);
-      plat(L, 'creaky', bank.x + 280, bank.y - 75, 140);
-      plat(L, 'creaky', bank.x + 440, bank.y - 40, 130);
+      const bank = step(L, c, R, 'bank', P.bank);
+      for (const [dx, dy, w] of P.twigs) plat(L, 'creaky', bank.x + dx, bank.y + dy, w);
       return { x: bank.x + bank.width, y: bank.y };
     }
     case 'bounce up': {
+      const P = SHAPES['bounce up'];
       L.bounceTaught = true;
-      // (the old 1-1's highRoad: a mushroom on the ground, branches 170-200 px over it, proven there)
-      const pad = step(L, c, R, 'bank', 300);
-      plat(L, 'mushroom', pad.x + 170, pad.y - 30, 70);
-      const by = pad.y - Math.round(R.r(170, 200));
-      const b = plat(L, 'branch', pad.x + 210, by, Math.round(R.r(220, 280)));
-      return burst(L, { x: b.x + b.width, y: by }, R, ['branch', 'bridge'], R.i(2, 4));
+      const pad = step(L, c, R, 'bank', P.pad);
+      plat(L, 'mushroom', pad.x + P.mushDx, pad.y - 30, P.mushW);
+      const by = pad.y - Math.round(r(P.rise));
+      const b = plat(L, 'branch', pad.x + P.boughDx, by, Math.round(r(P.boughW)));
+      return burst(L, { x: b.x + b.width, y: by }, R, [...P.tail], R.i(P.tailN[0], P.tailN[1]));
     }
     case 'the climb': {
-      // (CP2 cp2-climb.out: a bank, a climbing vine at its end, a bough 170-300 px up out from it, on the bough in 1.2-2.4 s)
-      const bank = step(L, c, R, 'bank', 260);
-      const rise = Math.round(R.r(170, Math.max(170, Math.min(300, bank.y - K.limit.yMin))));
-      const vx = bank.x + bank.width + 2;
-      L.V.push({ id: -1, x: vx, topY: bank.y - rise - 30, bottomY: bank.y, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as Vine);
-      const b = plat(L, 'branch', vx + 13, bank.y - rise, Math.round(R.r(240, 300)));
+      const P = SHAPES['the climb'];
+      const bank = step(L, c, R, 'bank', P.bank);
+      const rise = Math.round(R.r(P.rise[0], Math.max(P.rise[0], Math.min(P.rise[1], bank.y - K.limit.yMin))));
+      const vx = bank.x + bank.width + P.vineDx;
+      L.V.push({ id: -1, x: vx, topY: bank.y - rise - P.vineTop, bottomY: bank.y, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as Vine);
+      const b = plat(L, 'branch', vx + P.boughDx, bank.y - rise, Math.round(r(P.boughW)));
       return { x: b.x + b.width, y: b.y };
     }
-    // (1-1's bounce teach: a mushroom beside the path lifts him onto a mound top, two banks stepping up; the mound steps back down to the
-    // floor. The walk past the mushroom never bounces: it stands on its own short perch beside the bank, as 1-5's do)
     case 'bounce mound': {
+      const P = SHAPES['bounce mound'];
       L.bounceTaught = true;
-      const pad = step(L, c, R, 'bank', Math.round(300 * L.wScale));
-      // (on a perch 46 px over the bank near its end, as 1-5's canopy entries: walking passes under it, a hop onto it bounces him up to
-      // the mound, which starts 30 px past the bank's end, 170-200 px up: too high for a plain jump, so the bounce is the way)
-      const perch = plat(L, 'branch', pad.x + pad.width - 125, pad.y - 46, 80);
+      const pad = step(L, c, R, 'bank', Math.round(P.pad * L.wScale));
+      const perch = plat(L, 'branch', pad.x + pad.width - P.perchBack, pad.y - P.perchUp, P.perchW);
       (perch as Platform & { perch?: boolean }).perch = true;
-      plat(L, 'mushroom', pad.x + pad.width - 120, perch.y - 30, 70);
+      plat(L, 'mushroom', pad.x + pad.width - P.mushBack, perch.y - 30, P.mushW);
       L.mushrooms++;
-      const top = plat(L, 'bank', pad.x + pad.width + 30, pad.y - Math.round(R.r(170, 200)), Math.round(R.r(240, 300) * L.wScale));
-      return burst(L, { x: top.x + top.width, y: top.y }, R, ['bank', 'log'], 2, [-40, -50]);
+      const top = plat(L, 'bank', pad.x + pad.width + P.moundDx, pad.y - Math.round(r(P.rise)), Math.round(r(P.moundW) * L.wScale));
+      return burst(L, { x: top.x + top.width, y: top.y }, R, [...P.tail], P.tailN, [...P.tailSteps]);
     }
-    // (1-1's double teach, expose then validate: three gaps each too wide for a single jump and inside a double's reach, flat, a catch
-    // branch under each, so a miss costs nothing)
     case 'double gap': {
-      let e = step(L, c, R, 'bank', Math.round(R.r(240, 300) * L.wScale));
-      for (let k = 0; k < 3; k++) {
+      const P = SHAPES['double gap'];
+      let e = step(L, c, R, 'bank', Math.round(r(P.bank) * L.wScale));
+      for (let k = 0; k < P.count; k++) {
         const g = doubleGap(L, e.y, 0);
-        const b = plat(L, k === 1 ? 'log' : 'bank', e.x + e.width + g, e.y, Math.round(R.r(220, 300) * L.wScale));
-        L.P.push({ id: L.pid++, x: e.x + e.width - 30, y: e.y + 60, width: g + 80, height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
+        const b = plat(L, k === 1 ? P.middle : 'bank', e.x + e.width + g, e.y, Math.round(r(P.landW) * L.wScale));
+        L.P.push({ id: L.pid++, x: e.x + e.width - P.catchBack, y: e.y + P.catchDrop, width: g + P.catchExtra, height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
         e = b;
       }
       return { x: e.x + e.width, y: e.y };
     }
-    // (1-1's moment: three or four rising doubles, bough to bough, up into the canopy, a catch bough under each gap)
     case 'double chain': {
-      let e = step(L, c, R, 'bank', Math.round(R.r(220, 260) * L.wScale));
-      const k0 = R.i(3, 4);
+      const P = SHAPES['double chain'];
+      let e = step(L, c, R, 'bank', Math.round(r(P.bank) * L.wScale));
+      const k0 = R.i(P.count[0], P.count[1]);
       for (let k = 0; k < k0; k++) {
-        const dy = Math.round(R.r(90, 120));
+        const dy = Math.round(r(P.rise));
         const g = doubleGap(L, e.y, dy);
-        // (kinds and sizes turn bough by bough: a branch, a log, a bridge, short, long, medium (the gate's "something new"))
-        const kinds = ['branch', 'log', 'bridge', 'branch'], ws = [[120, 145], [310, 360], [170, 230], [120, 145]];
-        const b = plat(L, kinds[k], e.x + e.width + g, e.y - dy, Math.round(R.r(ws[k][0], ws[k][1]) * (kinds[k] === 'branch' ? 1 : L.bs)));
-        L.P.push({ id: L.pid++, x: e.x + e.width - 30, y: e.y + 60, width: g + 80, height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
+        const kind = P.kinds[k], ws = P.widths[k];
+        const b = plat(L, kind, e.x + e.width + g, e.y - dy, Math.round(R.r(ws[0], ws[1]) * (kind === 'branch' ? 1 : L.bs)));
+        L.P.push({ id: L.pid++, x: e.x + e.width - P.catchBack, y: e.y + P.catchDrop, width: g + P.catchExtra, height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
         e = b;
       }
       return { x: e.x + e.width, y: e.y };
     }
-    // (1-1's cool down and the view: one long top branch, the backdrop wide open)
     case 'top branch': {
-      const b = step(L, c, R, 'branch', Math.round(R.r(600, 700)));
+      const b = step(L, c, R, 'branch', Math.round(r(SHAPES['top branch'].w)));
       return { x: b.x + b.width, y: b.y };
     }
-    // (a crumbling carved stone slab is ground (the designer's ruling (b), 11-05): each one spans a gap between two banks, both its ends on
-    // them; it gives way under him and the gap is under it)
     case 'crumbling ledge': {
-      let e = step(L, c, R, 'bank', Math.round(R.r(220, 280) * L.wScale));
-      const k0 = L.easy ? 2 : R.i(2, 3);
+      const P = SHAPES['crumbling ledge'];
+      let e = step(L, c, R, 'bank', Math.round(r(P.bank) * L.wScale));
+      const k0 = L.easy ? P.easyCount : R.i(P.count[0], P.count[1]);
       for (let k = 0; k < k0; k++) {
-        // (between two slabs, a plain hop with a step up or down: never a long flat run of slab and bank)
-        if (k > 0) { const h = burst(L, { x: e.x + e.width, y: e.y }, R, ['bank'], 1, [40, -40, 50, -50]); e = L.P[L.P.length - 1]; void h; }
-        const g = Math.round(R.r(90, 130));
-        // (set 25 px down into the bank ends, so stepping on and off it is a step, not a flat walk: the gate's up/down share)
-        plat(L, 'crumble', e.x + e.width - 30, e.y + 25, g + 60);
-        e = plat(L, 'bank', e.x + e.width + g, e.y, Math.round(R.r(200, 280) * L.wScale));
+        if (k > 0) { burst(L, { x: e.x + e.width, y: e.y }, R, ['bank'], 1, [...P.hopSteps]); e = L.P[L.P.length - 1]; }
+        const g = Math.round(r(P.gap));
+        plat(L, 'crumble', e.x + e.width - P.back, e.y + P.setIn, g + P.overlap);
+        e = plat(L, 'bank', e.x + e.width + g, e.y, Math.round(r(P.landW) * L.wScale));
       }
       return { x: e.x + e.width, y: e.y };
     }
     case 'bank walk': {
-      // (a rest: a long bank and a medium stone, an easy step between them; never one long flat, never one size: the variety gate)
+      const P = SHAPES['bank walk'];
       if (L.easy) {
-        // (Easy's rest, 4-5 s: two banks of about 2 s each with one small hop between and a petal arc over it, play, not dead time:
-        // the designer's third fix for Easy's density, which also gives Easy its breather in the middle)
-        // (620 px each, about 2.2 s: a rest of 2 s or more that is still under the gate's 2.5 s dead walk, since the gate reads a petal as
-        // nothing to do)
-        // (a log, then a bank: after a fork's long rejoin bank, two more banks read as nothing new)
-        const e1 = step(L, c, R, 'log', 620);
-        // (the hop between the halves is onto a short log stump, 130 px: something new in the middle of 1.3k px of rest)
-        const mid = burst(L, { x: e1.x + e1.width, y: e1.y }, R, ['log'], 1, [30, -30], 50, 130);
-        const e2 = burst(L, mid, R, ['bank'], 1, [30, -30], 50, 620);
+        const Q = P.easy;
+        const e1 = step(L, c, R, 'log', Q.first);
+        const mid = burst(L, { x: e1.x + e1.width, y: e1.y }, R, ['log'], 1, [...Q.midSteps], Q.midGap, Q.mid);
+        const e2 = burst(L, mid, R, ['bank'], 1, [...Q.midSteps], Q.midGap, Q.second);
         const e3 = L.P[L.P.length - 1];
-        for (let k = 0; k < 5; k++) L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: k % 2 ? 'orchid' : 'hibiscus', x: Math.round(e1.x + e1.width - 60 + k * 45), y: Math.round(Math.min(e1.y, e3.y) - 50 - Math.sin((k / 4) * Math.PI) * 60), collected: false, bobPhase: k * 0.9 } as Collectible);
+        // (the petal arc over the hop between them)
+        for (let k = 0; k < Q.petals; k++) L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: k % 2 ? 'orchid' : 'hibiscus', x: Math.round(e1.x + e1.width - 60 + k * 45), y: Math.round(Math.min(e1.y, e3.y) - 50 - Math.sin((k / (Q.petals - 1)) * Math.PI) * 60), collected: false, bobPhase: k * 0.9 } as Collectible);
         return e2;
       }
-      const b1 = step(L, c, R, 'bank', Math.round(R.r(300, 360)));
-      const b2 = step(L, { x: b1.x + b1.width, y: b1.y }, R, 'stone', Math.round(R.r(180, 230)));
+      const b1 = step(L, c, R, 'bank', Math.round(r(P.normal.bank)));
+      const b2 = step(L, { x: b1.x + b1.width, y: b1.y }, R, 'stone', Math.round(r(P.normal.stone)));
       return { x: b2.x + b2.width, y: b2.y };
     }
     case 'rotten-branch drop': {
-      // (CP2: branch -> creaky limb 40 down, gap 60 -> catch branch 150 down, gap 120 -> bank 120 down, gap 80; 421-667 ms)
-      // (the drop is 310 px after its first branch's step (60 px at most) and is never flipped into a climb: deep in the stage its band gives it the room, and the bursts after it
-      // climb back into the band)
+      const P = SHAPES['rotten-branch drop'];
       const save = band;
-      band = { yMin: band.yMin, yMax: Math.max(band.yMax, c.y + 60 + 330) };
+      band = { yMin: band.yMin, yMax: Math.max(band.yMax, c.y + 60 + P.room) };
       let e = burst(L, c, R, ['branch'], 1);
-      e = burst(L, e, R, ['creaky'], 1, [-40], 60);
-      e = burst(L, e, R, ['catch'], 1, [-150], 120);
-      e = burst(L, e, R, ['bank'], 1, [-120], 80);
+      for (const [kind, dy, gap] of P.drops) e = burst(L, e, R, [kind], 1, [dy], gap);
       band = save;
       return e;
     }
-    // (the library holds it, the mixer does not lay it yet: a spec that draws it is refused by checkSpec, and the build throws)
     case 'push block': throw new Error('push block is in the library but the mixer does not lay it yet');
     default: throw new Error(`idea "${name}" has no recipe in the library and no shape in the mixer`);
   }
@@ -797,7 +778,9 @@ function supports(P: Platform[], height: number, clear: number[] = []): { trunks
   for (const p of air) {
     if (p.style === 'canopy_bridge' || (p as { perch?: boolean }).perch) continue;
     const m = p.x + p.width / 2;
-    if (out.some((t) => Math.abs(t.x - m) < p.width / 2 + 300)) continue;
+    // (held only by a trunk within 220 px of it that reaches its height: the designer's label, the same rule E3's check reads (support.ts);
+    // one 300 px off along x alone, whatever its height, left 1-5's creaky limbs over a trunk that stopped below them)
+    if (out.some((t) => holds(t, p))) continue;
     const fl = floorOf(m, p.y);
     out.push({ x: Math.round(m), topY: Math.round(p.y + 16), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: 0.55 });
   }

@@ -30,12 +30,12 @@ export type Theme = 'forest' | 'river' | 'cavern' | 'canopy-high' | 'swamp' | 'l
 const W1: Theme[] = ['forest', 'river', 'canopy-high', 'swamp'];
 export const PIECES: Record<string, PieceKind> = {
   bank: { element: 'ground', stands: 'self', what: 'a bank of earth, the floor', worlds: W1, mayFloat: false },
-  stone: { element: 'ground', stands: 'ground', what: 'a mossy boulder, a small rise on a bank\'s end', worlds: W1, mayFloat: true },
+  stone: { element: 'ground', stands: 'ground', what: 'a mossy boulder, a small rise on a bank\'s end', worlds: W1, mayFloat: false },
   log: { element: 'ground', stands: 'ground', what: 'a fallen log on the floor, or on a stump in a ground fork', worlds: W1, mayFloat: true },
   mushroom: { element: 'ground', stands: 'ground', what: 'a bounce mushroom on its perch', worlds: W1, mayFloat: false },
   // (tagged from its art: World 7's crumble tile, src/assets/w7/crumble.webp, a carved stone slab with roots through it, so ground,
   // per the designer's rule; 1-5 lays it in the air on trunks, a named breach waiting on the designer's ruling)
-  crumble: { element: 'ground', stands: 'ground', what: 'a crumbling carved stone ledge', worlds: ['forest', 'ruins'], mayFloat: true },
+  crumble: { element: 'ground', stands: 'ground', what: 'a crumbling carved stone ledge', worlds: ['ruins'], mayFloat: false },
   branch: { element: 'tree', stands: 'trunk', what: 'a bough on a kapok', worlds: W1, mayFloat: true },
   creaky: { element: 'tree', stands: 'trunk', what: 'a creaky limb that gives way', worlds: W1, mayFloat: false },
   bridge: { element: 'tree', stands: 'trunk', what: 'a rope bridge between posts', worlds: W1, mayFloat: false },
@@ -127,3 +127,34 @@ export const COMING: Partial<Record<Content, string>> = {
   enemies: 'the mixer lays no animals yet',
   hazards: 'thorns and costly pits are not in the library yet',
 };
+
+/** the shape ideas' numbers (the mixer builds each shape's geometry from these; it holds none of its own). Ranges are [min, max] px,
+ *  drawn per roll; offsets are from the shape's first bank (dx along, dy up negative) */
+export const SHAPES = {
+  // (expose, then validate: a creaky twig low over a long bank, then two over safe ground; nothing to fall into; 600 px, the twigs close
+  // together: the designer's ruling on the fun gate. Low, higher, low: each a step up or down from the last, never flat)
+  'snap teach': { bank: 600, twigs: [[110, -40, 150], [280, -75, 140], [440, -40, 130]] as ReadonlyArray<readonly [number, number, number]> },
+  // (the old 1-1's high road: a mushroom on the ground, branches 170-200 px over it, proven there)
+  'bounce up': { pad: 300, mushDx: 170, mushW: 70, rise: [170, 200], boughDx: 210, boughW: [220, 280], tail: ['branch', 'bridge'], tailN: [2, 4] },
+  // (CP2 cp2-climb.out: a bank, a climbing vine at its end, a bough 170-300 px up out from it, on the bough in 1.2-2.4 s)
+  'the climb': { bank: 260, rise: [170, 300], vineDx: 2, vineTop: 30, boughDx: 13, boughW: [240, 300] },
+  // (a mushroom on a perch 46 px over the bank near its end lifts him onto a mound 170-200 px up, 30 px past the bank's end: too high for a
+  // plain jump, so the bounce is the way; the walk past it never bounces; the mound steps back down to the floor)
+  'bounce mound': { pad: 300, perchBack: 125, perchUp: 46, perchW: 80, mushBack: 120, mushW: 70, moundDx: 30, rise: [170, 200], moundW: [240, 300], tail: ['bank', 'log'], tailN: 2, tailSteps: [-40, -50] },
+  // (expose then validate: three gaps each too wide for a single jump and inside a double's reach, flat, a catch branch under each)
+  'double gap': { bank: [240, 300], count: 3, landW: [220, 300], middle: 'log', catchBack: 30, catchDrop: 60, catchExtra: 80 },
+  // (three or four rising doubles, bough to bough, a catch bough under each gap; kinds and sizes turn bough by bough: the gate's
+  // "something new")
+  'double chain': { bank: [220, 260], count: [3, 4], rise: [90, 120], kinds: ['branch', 'log', 'bridge', 'branch'], widths: [[120, 145], [310, 360], [170, 230], [120, 145]] as ReadonlyArray<readonly [number, number]>, catchBack: 30, catchDrop: 60, catchExtra: 80 },
+  // (one long top branch, the backdrop wide open)
+  'top branch': { w: [600, 700] },
+  // (each slab spans a gap between two banks, both its ends on them, set 25 px down into the bank ends; between two slabs a plain hop with a
+  // step up or down, never a long flat run of slab and bank: the designer's ruling (b), 11-05)
+  'crumbling ledge': { bank: [220, 280], count: [2, 3], easyCount: 2, hopSteps: [40, -40, 50, -50], gap: [90, 130], back: 30, setIn: 25, overlap: 60, landW: [200, 280] },
+  // (a rest: on Normal a long bank and a medium stone, an easy step between; on Easy two pieces of about 2 s each with a short log stump
+  // and a petal arc between them, play and not dead time: the designer's third fix for Easy's density)
+  'bank walk': { easy: { first: 620, mid: 130, midSteps: [30, -30], midGap: 50, second: 620, petals: 5 }, normal: { bank: [300, 360], stone: [180, 230] } },
+  // (CP2: branch, then a creaky limb 40 down after a 60 gap, a catch branch 150 down after 120, a bank 120 down after 80; 421-667 ms; the
+  // way's band opens 330 px under the drop for it)
+  'rotten-branch drop': { room: 330, drops: [['creaky', -40, 60], ['catch', -150, 120], ['bank', -120, 80]] as ReadonlyArray<readonly [string, number, number]> },
+} as const;

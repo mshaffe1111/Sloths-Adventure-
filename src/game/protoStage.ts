@@ -53,6 +53,7 @@ import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
 import { w1Chase, w1Kapok, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildFromSpec } from './mixer/w1mix.ts';
+import { w1DressWidth } from './w1NewArt.ts';
 import { specFor } from './mixer/stages.ts';
 import { clearDress, ownPetals } from './mixer/post.ts';
 import { dressSize } from './dressArt.ts';
@@ -110,6 +111,11 @@ export interface StageHint {
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }
 
+/** what a stage's drawn water is, which picks its art: deadly and teaching water is the world's murky pit water, calm is swim water */
+export type WaterKind = 'calm' | 'deadly' | 'teaching';
+/** the art a kind of water draws with: one rule, read by the draw (engine.ts) and the mixer's element gate */
+export const waterArt = (kind: WaterKind | undefined): 'pit' | 'calm' => (kind === 'calm' ? 'calm' : 'pit');
+
 export interface ProtoExtras {
   hints: StageHint[];
   covers: LeafCover[];
@@ -128,9 +134,11 @@ export interface ProtoExtras {
   /** dressing from World 1's new painted pieces (w1NewArt.ts, the mixer's stage spec `dress`): a frame name, its centre x and the ground
    *  it stands on (1-1: the squirrels who watch him leave); a name with no picture yet (the bootprint) is not drawn */
   mixDress?: Array<{ n: string; x: number; b: number; flip?: boolean }>;
-  /** drawn water a stage declares (engine.ts drawWaterZones): from x0 to x1, its surface at y. Lily pads over it draw on its surface;
-   *  falling in is the stage's own fall */
-  water?: Array<{ x0: number; x1: number; y: number }>;
+  /** drawn water a stage declares (engine.ts drawWaterAndFlags): from x0 to x1, its surface at y, a body to below the ground. Its `kind`
+   *  picks its art (the designer, 11-05): 'deadly' (the default) and 'teaching' are the world's painted pit water (World 1's murky creek,
+   *  stageArt.ts drawPitWater), 'calm' is the clear swim water (calmWaterArt.ts), only where he swims, from 6-7 on. Lily pads over it draw
+   *  on its surface; falling in is a splash, then under it, then the stage's own fall */
+  water?: Array<{ x0: number; x1: number; y: number; kind?: WaterKind }>;
   /** 1-2's catch mushrooms (platform ids): one under each high branch's near end, a miss bounced back up to the trail (buildPlan catchUp) */
   catchUps?: number[];
   /** hollows in climb trunks (1-4): drawn on the trunk at this height, glowing once he is close */
@@ -391,6 +399,22 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   return out;
 }
 
+/** Pokey's body width (engine.ts: the hero is 44 px wide) */
+const HERO_W = 44;
+/** a dressing piece clear of the spawn (one body width either side of his body) and of the stage's own set dressing */
+export function dressClear(d: { n: string; x: number; b: number }, st: { spawnX: number; spawnY: number; proto?: ProtoExtras }): boolean {
+  let w = 60, h = 60;
+  try { ({ w, h } = dressSize(d.n as never)); } catch { /* a piece with no frame: 60 px */ }
+  const x0 = d.x - w / 2, x1 = d.x + w / 2;
+  // (the spawn's clear zone: his body, x .. x + 44, and one body width either side; only pieces near his feet's height)
+  if (x1 > st.spawnX - HERO_W && x0 < st.spawnX + 2 * HERO_W && Math.abs(d.b - st.spawnY) < 120) return false;
+  for (const m of st.proto?.mixDress ?? []) {
+    const mw = w1DressWidth(m.n) || 60;
+    if (x1 > m.x - mw / 2 && x0 < m.x + mw / 2 && Math.abs(d.b - m.b) < 80) return false;
+  }
+  return true;
+}
+
 /**
  * Worlds 1, 2, 5 and 8-10: the dressing sets (artDress.ts dressSets), on any of their stages (hand-built, World 2's, the new
  * generator's, and Worlds 8-10's old-generator stages, which have no `proto`: theirs go on the stage's own `dress`)
@@ -400,7 +424,12 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
   if (!DRESS_WORLDS.includes(c.worldIndex as (typeof DRESS_WORLDS)[number]) || c.objectiveType === 'boss_lair') return;
   // (Worlds 1-7's old-generator stages, 5-6, 5-8, 7-2, 7-8: dressed too since hf-props, 2026-10-31; theirs go on the stage's own `dress`)
   if (!st.proto && c.worldIndex < 8 && c.secret) return;
-  const ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
+  let ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
+  // (nothing stands on Pokey at the start, and nothing on a stage's own set dressing: no piece within one body width (44 px) of his
+  // spawn, none overlapping a set piece such as 1-1's squirrels (the lead, 11-05: the frog sat on a squirrel). On every stage the engine
+  // builds from its spec; the shipped stages' 60 start pieces (hollows, logs, cages at some worlds' starts) wait on the designer's ruling,
+  // as some may be designed start scenes)
+  if (specFor(c.id)) ds = ds.filter((d) => dressClear(d, st));
   if (!ds.length) return;
   if (st.proto) st.proto.dress = ds;
   else st.dress = ds;

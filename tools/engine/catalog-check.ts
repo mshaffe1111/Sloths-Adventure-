@@ -31,6 +31,18 @@ for (const r of inv.rows) {
   if (names.length !== 1) err.push(`${r.arr} "${r.key}" (${r.cat}) maps to ${names.length ? names.join(' + ') : 'no entry'}`);
   else tally[r.cat] = (tally[r.cat] ?? 0) + 1;
 }
+// (a taught hazard or zone keeps returning to World 10 (the designer, 11-05 1:14): its worlds run from its teach world through W10; a
+// one-stage set piece (4-3's) is named and excepted; a world it may go in but has no art for is an art gap, listed, never drawn in another
+// world's art)
+const HAZARDS = ['wind', 'dark', 'spore', 'web', 'tide', 'crumbling floor zone', 'geyser', 'bolt', 'thorn vine'];
+for (const z of ZONES.filter((q) => HAZARDS.includes(q.name))) {
+  if (z.setPiece) continue;
+  const first = Math.min(...z.worlds);
+  for (let w = first; w <= 10; w++) if (!z.worlds.includes(w)) err.push(`hazard "${z.name}" (taught in W${first}) stops short of W10: no W${w}`);
+  if (!z.artIn?.length) err.push(`hazard "${z.name}" names no worlds with its art (artIn)`);
+}
+const artGaps = ZONES.filter((q) => HAZARDS.includes(q.name) && !q.setPiece).map((q) => `${q.name}: ${q.worlds.filter((w) => !(q.artIn ?? []).includes(w)).map((w) => 'W' + w).join(' ') || 'none'}`);
 console.log(err.length ? err.join('\n') : `catalogue check: all ${inv.rows.length} measured kinds map to exactly one entry (${Object.entries(tally).map(([c, n]) => `${c} ${n}`).join(', ')}); ${LANDINGS.length} landing kinds, ${CLIMBS.length} climbables, ${ZONES.length} zones and helpers, ${PROP_FAMILIES.length} prop families`);
+console.log(`art gaps (worlds a taught hazard may go in with no art there yet; shrink-only): ${artGaps.join('; ')}`);
 if (open.length) console.log(`open (not laid in a new stage until ruled): ${open.join('; ')}`);
 process.exit(err.length ? 1 : 0);

@@ -432,12 +432,6 @@
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
-  "id": "src/game/proto2AtlasData.ts#trunkPlain",
-  "owner": "w1-4 builders (W1 grab bag)",
-  "world": "W1",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
   "id": "src/game/proto3AtlasData.ts#chaseDebris",
   "owner": "w1-4 builders (W1 grab bag)",
   "world": "W1",
@@ -1380,25 +1374,7 @@
   "why": "painted by Matt, never cut or packed"
  },
  {
-  "id": "src/assets/w1to4art/w1-new.json#squirrel-sit",
-  "owner": "gen2 W1 builder",
-  "world": "W1",
-  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
- },
- {
-  "id": "src/assets/w1to4art/w1-new.json#squirrel-wave",
-  "owner": "gen2 W1 builder",
-  "world": "W1",
-  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
- },
- {
   "id": "src/assets/w1to4art/w1-new.json#squirrel-haul",
-  "owner": "gen2 W1 builder",
-  "world": "W1",
-  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
- },
- {
-  "id": "src/assets/w1to4art/w1-new.json#squirrel-tip",
   "owner": "gen2 W1 builder",
   "world": "W1",
   "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
@@ -1428,19 +1404,7 @@
   "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
  },
  {
-  "id": "src/assets/w1to4art/w1-new.json#hollowlog-moss",
-  "owner": "gen2 W1 builder",
-  "world": "W1",
-  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
- },
- {
   "id": "src/assets/w1to4art/w1-new.json#knot-b",
-  "owner": "gen2 W1 builder",
-  "world": "W1",
-  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
- },
- {
-  "id": "src/assets/w1to4art/w1-new.json#hollowlog-plain",
   "owner": "gen2 W1 builder",
   "world": "W1",
   "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"

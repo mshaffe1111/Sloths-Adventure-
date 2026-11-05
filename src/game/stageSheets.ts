@@ -40,6 +40,7 @@
  *   pit-water:<w>  Worlds 1, 3, 4 and 5's painted pit water (stageArt.ts): every stage in those worlds
  *   w1-new         World 1's new painted pieces, the squirrels and hollow logs (w1NewArt.ts): 1-1
  *   pit-art:1      World 1's painted drops (w1Pits.ts): a stage the mixer builds (it marks its drops, pit: 'drop')
+ *   creek:1        World 1's painted deadly creek body and its muddy splash (w1Creek.ts), for a stage's drawn water zones (none laid yet)
  *
  * (QA 2026-10-29, Android Chrome: 'blank wait' at 80 s and 179 s for the golden snake's heads and the snake sheet, at 201 s for the
  * eagle, at 650 s for Dot's perch: those sheets were asked for only when each first came on screen. stageSheets.test.ts builds every
@@ -205,7 +206,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
   // (the mixer's stages: World 1's painted drops, which they mark (w1Pits.ts); a spec that asks for dressing (1-1's squirrels) also World 1's new pieces, w1NewArt.ts: the
   // sheet is 1996x925, about 7 MB decoded, so only where laid. No lily pads, water or hollow logs are laid yet (measured on 16 layouts x 2
-  // settings, 11-05): their sheets, w2-props and calm-water, join when a spec lays them)
+  // settings, 11-05): their sheets, w2-props, calm-water and creek:1, join when a spec lays them)
   if (built && specFor(cfg.id)) out.push('pit-art:1');
   if (built && specFor(cfg.id)?.dress) out.push('w1-new');
   // the creatures it can draw, and their sheets (see foe: above)

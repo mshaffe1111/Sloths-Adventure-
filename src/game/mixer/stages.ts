@@ -20,7 +20,9 @@ export const SPEC_15: StageSpec = {
     { id: '3b', job: 'rest', deck: ['bank walk'], lay: { easyOnly: true } },
     // (the designer's ruling (b), 11-05: the high road's breakables are creaky limbs (a stone slab on a kapok trunk floats, P-2), and no
     // lily pads until the engine draws water (the element gate): the low road is ground)
-    { job: 'the fork', deck: { high: ['creaky boughs', 'bough hops'], low: ['stump hop', 'crumbling ledge'] } },
+    // (the designer's 10:09 ruling: World 7's crumbling slab leaves World 1 (SHIPPED acf6e1e8), and World 1 has no ground rotten-wood
+    // art yet, so the low roads lay stump hop and bank hops with no breakable until it is painted (on the picture list))
+    { job: 'the fork', deck: { high: ['creaky boughs', 'bough hops'], low: ['stump hop', 'bank hops'] } },
     { job: 'rest', deck: ['bank walk'], line: { text: 'These petals are fresher. She came this way not long ago.' }, flagBefore: false },
     { job: 'test creaky', deck: ['snap dash', 'bank hops', 'log jam'], flagBefore: true, heartAfter: true },
     { job: 'twist', deck: ['rotten-branch drop', 'stump hop'] },
@@ -29,7 +31,7 @@ export const SPEC_15: StageSpec = {
     { id: '7b', job: 'rest', deck: ['bank walk'], line: { text: 'Down on the forest floor now. Her marks go on past the creek.' } },
     // (the designer's ruling 6 on the CP3 miss: n8 draws one that the previous two nodes did not lay)
     // (the creek's lily pads and reeds come back on real water once the engine draws it; until then its ground: ruling (b))
-    { job: 'creek', deck: ['stump hop', 'bank hops', 'crumbling ledge'], lay: { notLast: 2 } },
+    { job: 'creek', deck: ['stump hop', 'bank hops'], lay: { notLast: 2 } },
     // (push block leaves n9 for CP3, the designer's ruling: the level check walks a pushed log only inside a puzzle room; back in CP4)
     { job: 'puzzle beat', deck: ['bough stair', 'the climb', 'bank hops', 'log jam'], line: { text: 'Something shiny, far away...', pad: 'Something shiny, far away... too far, for now.' }, lay: { not: 3, seed: true } },
     { job: 'master (fork)', deck: { high: ['creaky boughs', 'bridge span'], low: ['bough stair', 'stump hop'] }, flagBefore: true, heartAfter: true },
@@ -43,7 +45,8 @@ export const SPEC_15: StageSpec = {
 /**
  * CP4's 1-1, "Into the Canopy" (ENGINE-SPEC "CP4, stage by stage", the designer's node plan): the arrival, teaching run, jump, the
  * bounce and then the double jump (nothing untaught: no creaky, no crumbling, no animals). It rises from the forest floor to the high
- * kapok branches (1-5 goes down), its moment the first double-jump chain up into the canopy, then the view from the top branch. A sprint:
+ * kapok branches (1-5 goes down), its moment the first double-jump chain up into the canopy, ending in a calm resolve, not a triumph (the
+ * brief, 1-1.md:23: the bigger views belong to later stages; the designer's "1-1 for the builder" page is the design source). A sprint:
  * no marks; the goal is the shrine. Dot's lines are the shipped 1-1's (dotLinesData.ts hint.1-1.*).
  */
 export const SPEC_11: StageSpec = {

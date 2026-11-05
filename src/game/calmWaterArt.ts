@@ -158,6 +158,19 @@ export function drawCalmWaterOver(ctx: CanvasRenderingContext2D, w: CalmPool, ti
   return true;
 }
 
+/** a ripple ring spreading slowly round something floating at (cx, y), about `w` wide (a lily pad on a stage's drawn water): painted
+ *  ring, one drawImage, false until the sheet loads */
+export function drawCalmRing(ctx: CanvasRenderingContext2D, cx: number, y: number, w: number, time: number): boolean {
+  if (!calmWaterReady()) return false;
+  const u = (time * 0.35 + cx * 0.0013) % 1;
+  const rw = w * (0.95 + 0.5 * u);
+  ctx.save();
+  ctx.globalAlpha = 0.55 * (1 - u);
+  blit(ctx, 'ring', cx - rw / 2, y - rw * 0.08, rw, (rw * FRAMES.ring.h) / FRAMES.ring.w);
+  ctx.restore();
+  return true;
+}
+
 /** the ring round him at the top and, under, his bubbles rising */
 function drawSwimmerMarks(ctx: CanvasRenderingContext2D, w: CalmPool, time: number, who: Swimmer) {
   {

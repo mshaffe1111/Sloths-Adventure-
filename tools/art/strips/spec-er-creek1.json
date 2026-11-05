@@ -1,0 +1,126 @@
+{
+ "tag": "er-creek1",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/a539ed2bd1b79f08464218088f14e70c9b165c92/reference/prop-sheets/qa-notes/engine-render/creek/",
+ "neg": "void, black, empty, cave, sky, plants above water, land, bank, rocks, fish, people, animals, sloth, frame, border, text, letters, watermark, photo, 3d render, blurry, blue water, clear water",
+ "items": [
+  {
+   "name": "body-s50-341",
+   "start": "body-start.png",
+   "prompt": "a cross-section side view of a deep murky brown jungle creek, painted: the muddy water surface at the top with ripples and floating leaves, below it deep murky tea-brown water getting darker with depth, faint sunken leaves and twigs, drifting silt, soft light shafts from above, it reads clearly as deep dangerous water, flat cartoon painting, the same style, seamless left to right",
+   "strength": 0.5,
+   "seed": 341,
+   "w": 1024,
+   "h": 1232
+  },
+  {
+   "name": "body-s50-342",
+   "start": "body-start.png",
+   "prompt": "a cross-section side view of a deep murky brown jungle creek, painted: the muddy water surface at the top with ripples and floating leaves, below it deep murky tea-brown water getting darker with depth, faint sunken leaves and twigs, drifting silt, soft light shafts from above, it reads clearly as deep dangerous water, flat cartoon painting, the same style, seamless left to right",
+   "strength": 0.5,
+   "seed": 342,
+   "w": 1024,
+   "h": 1232
+  },
+  {
+   "name": "body-s50-343",
+   "start": "body-start.png",
+   "prompt": "a cross-section side view of a deep murky brown jungle creek, painted: the muddy water surface at the top with ripples and floating leaves, below it deep murky tea-brown water getting darker with depth, faint sunken leaves and twigs, drifting silt, soft light shafts from above, it reads clearly as deep dangerous water, flat cartoon painting, the same style, seamless left to right",
+   "strength": 0.5,
+   "seed": 343,
+   "w": 1024,
+   "h": 1232
+  },
+  {
+   "name": "body-s50-344",
+   "start": "body-start.png",
+   "prompt": "a cross-section side view of a deep murky brown jungle creek, painted: the muddy water surface at the top with ripples and floating leaves, below it deep murky tea-brown water getting darker with depth, faint sunken leaves and twigs, drifting silt, soft light shafts from above, it reads clearly as deep dangerous water, flat cartoon painting, the same style, seamless left to right",
+   "strength": 0.5,
+   "seed": 344,
+   "w": 1024,
+   "h": 1232
+  },
+  {
+   "name": "body-s62-341",
+   "start": "body-start.png",
+   "prompt": "a cross-section side view of a deep murky brown jungle creek, painted: the muddy water surface at the top with ripples and floating leaves, below it deep murky tea-brown water getting darker with depth, faint sunken leaves and twigs, drifting silt, soft light shafts from above, it reads clearly as deep dangerous water, flat cartoon painting, the same style, seamless left to right",
+   "strength": 0.62,
+   "seed": 341,
+   "w": 1024,
+   "h": 1232
+  },
+  {
+   "name": "body-s62-342",
+   "start": "body-start.png",
+   "prompt": "a cross-section side view of a deep murky brown jungle creek, painted: the muddy water surface at the top with ripples and floating leaves, below it deep murky tea-brown water getting darker with depth, faint sunken leaves and twigs, drifting silt, soft light shafts from above, it reads clearly as deep dangerous water, flat cartoon painting, the same style, seamless left to right",
+   "strength": 0.62,
+   "seed": 342,
+   "w": 1024,
+   "h": 1232
+  },
+  {
+   "name": "body-s62-343",
+   "start": "body-start.png",
+   "prompt": "a cross-section side view of a deep murky brown jungle creek, painted: the muddy water surface at the top with ripples and floating leaves, below it deep murky tea-brown water getting darker with depth, faint sunken leaves and twigs, drifting silt, soft light shafts from above, it reads clearly as deep dangerous water, flat cartoon painting, the same style, seamless left to right",
+   "strength": 0.62,
+   "seed": 343,
+   "w": 1024,
+   "h": 1232
+  },
+  {
+   "name": "body-s62-344",
+   "start": "body-start.png",
+   "prompt": "a cross-section side view of a deep murky brown jungle creek, painted: the muddy water surface at the top with ripples and floating leaves, below it deep murky tea-brown water getting darker with depth, faint sunken leaves and twigs, drifting silt, soft light shafts from above, it reads clearly as deep dangerous water, flat cartoon painting, the same style, seamless left to right",
+   "strength": 0.62,
+   "seed": 344,
+   "w": 1024,
+   "h": 1232
+  },
+  {
+   "name": "splash-s45-351",
+   "start": "splash-start.png",
+   "prompt": "a muddy brown water splash, droplets of muddy water thrown up in a crown, a small ring of brown ripples at its base, flat cartoon painting with dark outlines, on a flat plain magenta background",
+   "strength": 0.45,
+   "seed": 351,
+   "w": 560,
+   "h": 416,
+   "neg": "blue, white water, clear water, frame, border, text, photo, 3d render, blurry"
+  },
+  {
+   "name": "splash-s45-352",
+   "start": "splash-start.png",
+   "prompt": "a muddy brown water splash, droplets of muddy water thrown up in a crown, a small ring of brown ripples at its base, flat cartoon painting with dark outlines, on a flat plain magenta background",
+   "strength": 0.45,
+   "seed": 352,
+   "w": 560,
+   "h": 416,
+   "neg": "blue, white water, clear water, frame, border, text, photo, 3d render, blurry"
+  },
+  {
+   "name": "splash-s58-351",
+   "start": "splash-start.png",
+   "prompt": "a muddy brown water splash, droplets of muddy water thrown up in a crown, a small ring of brown ripples at its base, flat cartoon painting with dark outlines, on a flat plain magenta background",
+   "strength": 0.58,
+   "seed": 351,
+   "w": 560,
+   "h": 416,
+   "neg": "blue, white water, clear water, frame, border, text, photo, 3d render, blurry"
+  },
+  {
+   "name": "splash-s58-352",
+   "start": "splash-start.png",
+   "prompt": "a muddy brown water splash, droplets of muddy water thrown up in a crown, a small ring of brown ripples at its base, flat cartoon painting with dark outlines, on a flat plain magenta background",
+   "strength": 0.58,
+   "seed": 352,
+   "w": 560,
+   "h": 416,
+   "neg": "blue, white water, clear water, frame, border, text, photo, 3d render, blurry"
+  }
+ ]
+}

@@ -49,7 +49,7 @@ function personaViews(p) {
 }
 let views = VIEWS;
 
-async function open(stage, v, flag = 0, layout = 1) {
+async function open(stage, v, flag = 0, layout) {
   if (page) await page.close().catch(() => {});
   // a size of its own ("740x360"): that screen, as the phone is held then
   const sized = /^(\d+)x(\d+)$/.exec(v || '');
@@ -68,9 +68,11 @@ async function open(stage, v, flag = 0, layout = 1) {
   const T0 = Date.UTC(2026, 9, 25, 12);
   await page.clock.install({ time: T0 });
   await page.clock.pauseAt(T0 + 1000);
-  await page.goto(url + (url.includes('?') ? '&' : '?') + `layout=${layout}`);
+  await page.goto(url + (url.includes('?') ? '&' : '?') + `layout=${layout ?? 1}`);
   await page.clock.runFor(3500);
-  await page.evaluate((id) => window.__play(id), stage);
+  // (a layout asked for is built: the engine's own variant N, as sim and the measures build it (realPlay.ts setLayoutVariant(N)); none
+  // asked for keeps the stage's designed layout, as before. window.__play takes the variant; ?layout alone never reached it)
+  await page.evaluate(([id, l]) => window.__play(id, l), [stage, layout]);
   await page.clock.runFor(3000);
   // a later flag to start from, the way a play-tester is handed a checkpoint select (the stage itself is untouched)
   if (flag > 0) {
@@ -210,7 +212,7 @@ async function handle(cmd) {
     return { text: `playing as ${persona.name}: phone ${views.port.width}x${views.port.height} upright, ${views.land.width}x${views.land.height} sideways${at}` };
   }
   if (cmd.cmd === 'start') {
-    const flags = await open(cmd.stage, cmd.view, Number(cmd.flag || 0), Number(cmd.layout || 1));
+    const flags = await open(cmd.stage, cmd.view, Number(cmd.flag || 0), cmd.layout === undefined || cmd.layout === '' ? undefined : Number(cmd.layout));
     return { shot: await shot('start'), text: (cmd.flag ? `[started at flag ${cmd.flag} of ${flags}] ` : '') + (await screenText()) };
   }
   if (!page) throw new Error('no stage open: start one first');
