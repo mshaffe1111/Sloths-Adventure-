@@ -582,7 +582,7 @@ gives **57 rows**:
   5-9 and **8-4 Lantern Run**.
 - **The ladder** is a world-level rule (topic 1: no builder reads it); each row shows what it teaches and brings back.
 
-## Addendum 3, 12:47-12:50 PM ET: the same per-roll ranges on main's old 1-2 and old 1-5 (the lead, for 1-2's acceptance test)
+## Addendum 3, 12:44-12:47 PM ET: the same per-roll ranges on main's old 1-2 and old 1-5 (the lead, for 1-2's acceptance test)
 
 Measured exactly as in Addendum 2: `npx tsx tools/engine/runs/rollshares.ts <main worktree> 1-2` (and `1-5`), then `rollsum.py`. The
 runs are main 68b31e665, 32 rolls (rollVariants), Normal and Easy. Outputs: `out/r16411/rs-main-12.json`, `rs-main-15.json`, and
@@ -602,13 +602,13 @@ Cells are min / p10 / median / p90 / max over 32 rolls:
 - **Old 1-5:** 13 rolls at 0.36-0.41 and 19 at 0.85-0.95 (6 of them at 0.85-0.86, 6 at 0.93-0.95). Median 0.86, so the lean is about
   -0.47 or 0 to +0.09.
 
-**Easy vs Normal.** On both stages the hop shares and rises are the same on Easy as on Normal. The gaps are slightly smaller on Easy:
+**Easy vs Normal.** On both stages the hop shares are the same on Easy as on Normal, and the rises nearly so. The gaps are slightly smaller on Easy:
 old 1-2's gap-share median drops to 0.646 on its lowest rolls (Normal 0.734), and old 1-5's p10 to 0.694 (Normal 0.712). That is the
 old builder's Easy pass, which here widens a few landings.
 
 **Not given: "steady" and "hilly".** They are tempo and terrain words, not these four measures. No tool on main gives them by roll.
 What exists:
-- 1-5's up/flat/down counts from CP1's measure2 (`cp1/table2.txt`: old 1-5 is not in it; the "new 1-5" there is the rhythm 1-5).
+- CP1's up/flat/down counts (measure2.py). Its `cp1/table2.txt` has no old 1-5 row: its "new 1-5" is the rhythm 1-5.
 - era's action mix and quiet stretches.
 If the designer defines them in units these tools measure (for example tempo as beats a minute on era's route, and hills as the share
 of route jumps rising over 20 px), I can run them on main's old 1-1, 1-2, 1-3 and 1-5 in a few minutes.
