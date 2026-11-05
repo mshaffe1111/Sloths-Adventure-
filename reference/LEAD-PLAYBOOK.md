@@ -224,7 +224,7 @@ work"). The measure: the same kind of job costs less each time (GAMEPLAN §5, §
 ## 8i. Deadlines are deadlines (Matt, 2026-11-04: "they need to understand that deadlines are deadlines, and they need to figure it out")
 Every brief says it in these words. A helper that hits a wall brings the lead options that still make the deadline (a smaller,
 correct version, a different route, help it needs), never "push it to tomorrow" as the first answer. The quality bar and the
-checks do not move to make a deadline (laws: cut scope, never a check); the helper finds the way. Only the lead moves a deadline,
+checks do not move to make a deadline, and nothing is cut to make one (laws, Matt 2026-11-05: "Cutting IS NOT RIGHT"); the helper finds the way. Only the lead moves a deadline,
 and says why to Matt.
 
 ## 8j. Stuck means stop and find the cause, then fresh eyes (2026-11-04: 1-5's repeat)

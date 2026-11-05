@@ -5,7 +5,10 @@ results rather than doing things right always. So they skip things... Laws can n
 
 These bind the lead AND every helper. They are printed into every session at start, on resume and after every memory compression (the
 SessionStart hook in .claude/settings.json), so a wiped memory still starts here. If a law and speed conflict, the law wins. **When time
-is short, cut scope, never a check.** Say plainly what was cut.
+is short, take more time: never cut a check, and never cut what makes the work right.** (Matt, 2026-11-05: "DO NOT HALF ASS ANYTHING!
+DO NOT GO FAST OVER DOING IT RIGHT!!!" and "The answer isn't cutting... It's making it right. Cutting IS NOT RIGHT.") Only Matt
+drops something from the job, and only when he says so; a helper that can't do it right in the time says so early, and the lead
+moves the time, never the bar.
 
 ## Law zero: the partnership (Matt, 2026-11-01, his words)
 
