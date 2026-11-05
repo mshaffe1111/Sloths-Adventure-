@@ -514,6 +514,13 @@ export const TOP_DROP = 60;
 /** a petal this far over the split node's entry line, or more, is on the high road (the branches); under it, the base bough's low road */
 export const ROAD_CUT = 10;
 export const ROT_DEPTH = 170;
+/** 1-2's burst before the chasm: this many pieces, a long sound branch and a short rotten twig in turn (px), each BURST_GAP (px) past the last: 0.6-0.8 s a
+ *  take-off, a hop the clumsy thumb's short flick clears */
+const BURST_TWIGS = 12, BURST_LONG = 110, BURST_SHORT = 70, BURST_GAP = 60;
+/** each twig's height over the burst's start, in turn (px; up 16 is still a level hop to the route, a hop up to a thumb's ear) */
+const BURST_RISE = [16, 32, 16, 0] as const;
+/** how deep the catch in each of the burst's gaps lies under its lower side (px), the opening's 60 */
+const BURST_DIP = 60;
 /** 1-2's rest over the loop, Dot's stop (px): 2.1 s at a run */
 const REST_W = 600;
 /** the gaps to hop in 1-2's canopy base bough (px) */
@@ -672,7 +679,8 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   const beat = swung(R, 40, 0.2);
   let hx = Rx - 260;
   for (let k = 0; hx > Lx + 420; k++) {
-    const rot = k === 0 || !R.chance(0.34);
+    // (never three rotten stretches running: three hops alike back to back are the fun gate's repeat, so the third is a snake)
+    const rot = k === 0 || (!R.chance(0.34) && !(hz.length >= 2 && hz[hz.length - 1].rot && hz[hz.length - 2].rot));
     const w = rot ? Math.round(R.r(120, 160)) : 76;
     hz.push({ x0: hx - w, x1: hx, rot });
     // (the next hazard on the beat, never nearer than a landing's 150 px clear of a snake)
@@ -728,6 +736,30 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   const climax = lay.traced('climax', 'jump + hop + drop (swung, densest)', 'C', 1, x, y, bars2, { ...PAL_C, yMin: Math.min(y, C) - 100, yMax: Math.max(y, C), surfaces: ['bank', 'stump', 'branch'] });
   x = climax.tr.x1;
   y = climax.tr.yOut;
+  // ---- the burst: a quick run of hops over little gaps on the swung beat, a long sound branch and a short rotten twig in turn (each twig
+  // gone once he has left it), stepping up and back down (BURST_RISE), so the thumb never stops: the stage's one tight stretch (the fun
+  // gate's "never tight", the lead 2026-11-04). Rotten wood was taught in the canopy and bit on the bough leg; every take-off is a hop
+  // over a gap, never a step up or a drop
+  lay.begin('climax', 'hop the rotten twigs (swung, the burst)', 'C', 1, x, y);
+  let by = y;
+  for (let k = 0; k < BURST_TWIGS; k++) {
+    const rot = k % 2 === 1, w = rot ? BURST_SHORT : BURST_LONG;
+    const ny = y - BURST_RISE[k % BURST_RISE.length];
+    // (a catch in each gap, BURST_DIP under its lower side, ending against a rock face under the next piece's near end (the opening's
+    // catches, 1-5's LLedge.wall): a miss is a dip, stopped at the face, a single flick up; never a life)
+    lay.ledge(x - 30, x + BURST_GAP, Math.max(by, ny) + BURST_DIP, 'catch');
+    L.ledges[L.ledges.length - 1].wall = [x + BURST_GAP, ny];
+    lay.ledge(x + BURST_GAP, x + BURST_GAP + w, ny, rot ? 'crumble' : 'branch');
+    if (rot) L.ledges[L.ledges.length - 1].hold = +(w / PHYS.maxRun + (easy ? SNAP_EASY : SNAP_SPARE)).toFixed(2);
+    // (a petal just before each sound branch's take-off: everyone crosses it)
+    else L.petals.push({ x: Math.round(x + BURST_GAP + w - 30), y: ny - 45 });
+    x += BURST_GAP + w;
+    by = ny;
+  }
+  lay.ledge(x - 30, x + BURST_GAP, Math.max(by, y) + BURST_DIP, 'catch');
+  L.ledges[L.ledges.length - 1].wall = [x + BURST_GAP, y];
+  x += BURST_GAP;
+  lay.end(x, BURST_TWIGS * 0.75);
   lay.begin('climax', 'jump + vine swing (over the chasm)', 'C', 1, x, y);
   lay.ledge(x, x + 200, y, 'apron');
   L.flags.push({ x: x + 100, y });

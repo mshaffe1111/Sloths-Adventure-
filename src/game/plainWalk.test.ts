@@ -168,7 +168,10 @@ function leaveDip(sim: RealPlay, d: Platform): number {
     sim.frame({ right: p.grounded && !face && hold <= 0, press, jump: hold > 0 });
     hold--;
     if (sim.died) return -1;
-    if (sim.p.grounded && sim.p.y <= Math.min(d.y - 20, (sim.stage.config.id === '1-1' ? sim.stage.spawnY : G) + 2) && sim.p.x > d.x + d.width + 30) return flicks;
+    // (out: standing 20 px or more over the dip, past it, and up at the stage's floor; a beat-traced stage has no one floor (dipsOf), so
+    // out is over its catch: its burst's catches lie under the floor tier's own line, where the G clamp read every one as never out)
+    const floorY = (sim.stage as { proto?: { rhythm?: unknown } }).proto?.rhythm ? Infinity : (sim.stage.config.id === '1-1' ? sim.stage.spawnY : G) + 2;
+    if (sim.p.grounded && sim.p.y <= Math.min(d.y - 20, floorY) && sim.p.x > d.x + d.width + 30) return flicks;
     if (flicks > 6) break;
   }
   return -1;
