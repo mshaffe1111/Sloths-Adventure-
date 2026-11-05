@@ -22,6 +22,11 @@ So today's pieces (logs, bridges, boughs, snap twigs, vines, stumps, rotten bran
 engine's library, look and feel included. The fault is the mix, not the pieces. The engine's first job is mixing them so no stage
 repeats.
 
+## 2026-11-05 ~2:16 AM ET (Matt played the mixer's 1-5 on his phone)
+"It played much better. Needs polish.. was kind of ugly... Example" (reference/engine/cp3/matt-1-5-mixer-0216.png, upright).
+In the still: a thin grey slab floating over the water with nothing under it (D16); the bank ends in a hard straight cliff; the
+foliage band ends in a hard straight line over the pond; a large empty area above the play line.
+
 ## 2026-11-05 ~1:05 AM ET (to the lead)
 "minimum 2 minutes, but if it goes over 5, I'm okay with that too. It varies. And it should vary the length of stages. 2 minutes is
 the minimum."
