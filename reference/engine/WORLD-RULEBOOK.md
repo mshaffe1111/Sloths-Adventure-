@@ -70,7 +70,7 @@ research where they exist:** length 120-150 s for a first stage (TF 1-1).
 |---|---|
 | rocks never float; thin logs on stumps that meet the log; head room under raised logs; catch boughs count as boughs | **world rule** |
 | nothing costs a life; every dip a one-jump way out; moss dips on the ground, catch boughs in the canopy | **world rule** (the "no life lost" part is brief-driven: `teaches` stage 1) |
-| the end on a bank; start clearance; hearts, flags, petals placement | **world rule** |
+| the end piece with the exit totem (as main); start clearance; hearts, flags, petals placement | **world rule** |
 | one golden seed above a mushroom, beyond a double | **brief** (`must`); the engine rolls where it goes |
 | the n1-n11 node plan, its decks, forks at n3/n5/n10, the rest at n6, the spike at n9 | **engine roll** (the section grammar) |
 | ground first, boughs late; "commonest piece is ground" | **brief** (`trend: up` + `look`); the engine keeps it with the bough-share floor |
@@ -99,7 +99,7 @@ planner's 4:00 breakdown (3:42 PM ET) says where old 1-1's 0.384 comes from: one
 | `twist` | two taught moves combined, or an earlier world's mechanic (W2 on) | after at least one test |
 | `finale` | a dense 15-20 s at the exit | only when `ends: finale` |
 | `arrival` | a quiet walk-on to the end, held to the rest rule | only when `ends: quiet` |
-| `end` | the end bank, the clue, the shrine | always last |
+| `end` | the end piece (where the trend reaches), the exit totem, the clue | always last |
 
 **Order rules:**
 1. `arrive` first and `end` last. `finale` or `arrival` comes just before `end`, by `ends`.
@@ -129,7 +129,7 @@ planner's 4:00 breakdown (3:42 PM ET) says where old 1-1's 0.384 comes from: one
     - the roll families (gap, rise, hop).
 12. **Must-haves:** each `must` item is placed by its own rule:
     - a Dot line at the first section where what it says is true;
-    - the clue on the end bank;
+    - the clue on the end piece;
     - a find off the main line where its rule says (the golden seed: above a mushroom, beyond a double, after the bounce teach);
     - dressing at its spot, clear of the spawn.
 13. **Neighbour difference:** the job sequence may not match a neighbour's, and the variety and neighbour gates judge the rest.
@@ -165,7 +165,7 @@ Kinds:
 | §2 ≥ 2:00 | CLAUDE.md "stages take at least 2 minutes" | MATT |
 | §2 start clearance; safe first 1,300 px | STAGE-RULES:161 (safe start) | MATT (STAGE-RULES) |
 | §2 hearts after risk, flags before hard parts | LEDGER-2026-11-02-full.md:144, :427, :430 (checkpoint spacing; flags on the rests before the twist and finale) | RESEARCH (flags). Hearts-after-risk is **JUDGMENT** (house placement rule, no row) |
-| §2 end on a bank | the 11:04 ruling (the clue on the shrine bank) | JUDGMENT (story-led) |
+| §2 the end piece and exit totem | main's old 1-1 (a long high log with exit_totem); 1-1.md:23 | MEASURED (main) |
 | **§2 rolled structure, map shape, spike/rest/fork placement** | LEDGER-2026-11-04-part2.md:113 (roll a map shape per stage, neighbours never share); LEDGER-2026-11-04-part1.md:18, :315-317 | RESEARCH |
 | §2 roll families; bursts 5-20 s | LEDGER-2026-11-02-full.md:203 (rhythm groups of 5/10/15/20 s); per-roll rows (engine-runs Addendum 2-3) | RESEARCH + MEASURED |
 | §2 diversity ≥ 0.35; lookalike < 0.78; 20 s window | STAGE-RULES §2; LEDGER-2026-11-04-part2.md:175 (C3); LEDGER-ENGINE-GEMINI.md:45, :465 (E1) | RESEARCH |
