@@ -37,6 +37,7 @@ Then ReadNotifications, then check that the 30-min check-in is armed (list_trigg
 ## Held / waiting
 - HELD: anything built from ENGINE-SPEC sections A-F (worlds/ladder data, six gates) until the critic reports and the designer
   rules on its findings. The planner works on plumbing only.
+- SENT BACK 10:30: the library sheet was World-1-only (no climb/hang/swing, no air); redo from a code inventory of every world.
 - Waiting: the planner's cost estimate vs 55%; the 1-1/1-2 pass line (time, cost, fixes) for Matt to OK; the critic's verdict;
   Matt's pick on the deep-pit look (stills sent 11-05 morning).
 - Lead to write: the 1-3 and 1-4 story briefs; 6-9's brief (the swimming stage) when the engine reaches W6.
