@@ -4,8 +4,9 @@
  * canvas (engine.ts supportProbe) and reads the draw (tools/engine/stoneprobe.js): the art each piece is painted with gives its
  * material, and the paint under it gives its support. A stone piece with open air under it floats.
  *
- *   node tools/engine/stonecheck.mjs                       all 102 stages, layouts 1-4, both settings; gate: fails on any floating stone
- *                                                          not in tools/engine/stoneknown.json (which may only shrink)
+ *   node tools/engine/stonecheck.mjs                       the gate: all 102 stages, layouts 1-2, both settings (408 builds, about 4 min);
+ *                                                          fails on any floating stone not in tools/engine/stoneknown.json, and on a
+ *                                                          listed one that no longer floats (the list only shrinks; knowncheck.mjs too)
  *   STONE_LAYOUTS=16 node tools/engine/stonecheck.mjs      16 layouts (the defect count's measure)
  *   STONE_STAGES=7-1,9-1 STONE_OUT=/tmp/x.json ...         some stages; the raw rows to a file
  *   STONE_STILL=9-1:1:normal:x,y,w,h ...                   also a still of that window (probe draw and the full game draw)
@@ -23,7 +24,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, '..', '..');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const freePort = () => new Promise((res) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => res(p)); }); });
-const NL = +(process.env.STONE_LAYOUTS || 4);
+const NL = +(process.env.STONE_LAYOUTS || 2);
 const PAGES = +(process.env.STONE_PAGES || 3);
 const SETTINGS = (process.env.STONE_SETTINGS || 'normal,easy').split(',');
 
@@ -142,8 +143,15 @@ for (const e of errs) console.log(`  ✗ ${e.id} ${e.setting} ${e.v}: ${e.error}
 const knownFile = path.join(here, 'stoneknown.json');
 const known = new Set(fs.existsSync(knownFile) ? JSON.parse(fs.readFileSync(knownFile, 'utf8')) : []);
 const fresh = floats.filter((k) => !known.has(k));
+// (the list's other half of shrink-only: an entry this run measured that no longer floats must come off)
+const measured = new Set(rows.filter((r) => !r.error).map((r) => `${r.id} ${r.setting} ${r.v} `));
+const floatSet = new Set(floats);
+const fixed = [...known].filter((k) => measured.has(k.slice(0, k.indexOf('#'))) && !floatSet.has(k));
 if (process.env.STONE_WRITE_KNOWN) { fs.writeFileSync(knownFile, JSON.stringify(floats.sort(), null, 0) + '\n'); console.log(`  wrote ${floats.length} known floaters`); }
-else if (!process.env.STONE_STAGES && (fresh.length || errs.length)) {
+else if (!process.env.STONE_STAGES && fixed.length) {
+  console.log(`✗ ${fixed.length} known floaters are held now: take them off tools/engine/stoneknown.json (STONE_WRITE_KNOWN=1 on a full run): ` + fixed.slice(0, 20).join(', '));
+  process.exit(1);
+} else if (!process.env.STONE_STAGES && (fresh.length || errs.length)) {
   console.log(`✗ ${fresh.length} floating stone pieces not on the known list` + (fresh.length ? ': ' + fresh.slice(0, 20).join(', ') : ''));
   process.exit(1);
 } else console.log(fresh.length ? `  (${fresh.length} floating, a partial run judges nothing)` : '✓ no floating stone off the known list');

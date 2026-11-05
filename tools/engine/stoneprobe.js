@@ -166,7 +166,7 @@
         for (; y < y1 - 4; y += step) {
           if (tops.length && y >= tops[0] - 4) { held = true; break; }
           if (covered(y)) open = 0;
-          else if ((open += step) > (opts.gap || 12)) break;
+          else if ((open += step) > (opts.gap || 8)) break;
         }
         if (y >= y1 - 4) held = true;
         // (a piece that moves is in the air by its nature)

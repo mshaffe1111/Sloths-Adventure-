@@ -13,8 +13,9 @@
  */
 import type { Platform } from './types.ts';
 
-/** the deepest open drop a stone piece is drawn on columns over (world px from its underside to the ground); deeper, it becomes kin */
-export const STONE_COLUMN_MAX = 300;
+/** the deepest open drop a stone piece is drawn on columns over (world px from its underside to the ground; two thirds of a screen, 540:
+ * the stills at 49-333 px, reference/engine/stone/threshold-3-heights.png); deeper, it becomes kin */
+export const STONE_COLUMN_MAX = 360;
 
 export type StoneHold = null | { kind: 'column'; cols: Array<{ x: number; w: number; bottom: number }> } | { kind: 'kin' };
 

@@ -64,3 +64,16 @@ jobs:
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       - run: npm install --no-save --no-audit --no-fund --legacy-peer-deps playwright@1.63.0 && npx playwright install --with-deps chromium
       - run: node tools/perf/drawcheck.mjs
+
+  stonecheck:
+    # (rocks never float: every stone piece the game draws, with what the renderer paints under it; tools/engine/stonecheck.mjs, about 4 min)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --legacy-peer-deps
+      - run: npm install --no-save --no-audit --no-fund --legacy-peer-deps playwright@1.63.0 && npx playwright install --with-deps chromium
+      - run: node tools/engine/stonecheck.mjs
