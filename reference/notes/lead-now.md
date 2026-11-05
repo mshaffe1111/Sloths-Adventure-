@@ -33,7 +33,7 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 - DECIDED (Matt ~5:15 PM ET): 1-1 ends on the quiet arrival. Later stages get an ending FORK the player chooses (a high road to a finale
   with a find, or a quiet low road), NODE-MIX-RESEARCH §E. Matt wants a NODE CODE (TJ = teach jump, TFJ = teach fork jump): the designer is
   writing NODES.md §8, the planner stores graphs as code strings, and stage.ts prints each roll's code.
-- For Matt LATER (not 1-1): in W3/W4/W7/W9 a thin floating platform is drawn as a stone slab, which reads as a floating rock. Likely answer: render-stone's world-kin pieces (cave log, driftwood, lashed plank, charred log; branch render-stone 7da53035). Show him a still when those worlds come up.
+- MATT (~5:45 PM ET): the floating stone slabs (W3 Mossy Grotto, W4 Mist Cascades, W7 Ancient Ruins, W9 Volcanic Jungle) 'looked kind of weird'; his idea is grey BRICKS, new HF art, also usable on the ground for variation. Lead's proposal (asked): carved stone bricks for W7 ruins (and W10 fortress); each world's own kin elsewhere (W3 cave log, W4 driftwood, W9 charred log; render-stone 7da53035 had these approved at $6). Show-first stills, then the HF job when those worlds move to gen2 (not tonight).
 - Owed: the end-of-day review reference/daily/2026-11-05.md.
 - Owed (law 21): R-ids on ROADMAP for today's direction change (chunk pool on gen2, roll dials, window, new gates) and for the
   supervisor role, and gen2 faults to roadmap: theme lock hijacks teaching (w6Ground.ts:23), Easy fallback plan + `best` returned +
