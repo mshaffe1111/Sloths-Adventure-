@@ -244,3 +244,18 @@ critic or planner brief now opens with this block, word for word:
 > under half the planned time is a red flag: the lead checks it before accepting it.
 The lead checks the first report against it before passing anything on: sources really opened, code really run, every fact cited,
 time honest. A shallow report goes back at once, or the helper is replaced with a fresh one at high effort.
+
+**Why research kept failing (Matt asked, 2026-11-04 ~9:25 PM ET), and the fixes that are now part of every brief:**
+1. *The tool that works was never named.* From a cloud container, `curl` gets a 403 at the proxy, and many sites block automated
+   fetches. The first designer had only search snippets, and it "researched" from them. The tool that does work is TinyFish
+   `fetch_content` (and `search`). Every brief names it, and the helper tests one fetch first, before it plans anything.
+2. *Research and design were one brief.* A helper asked to research and design rushes to the design. Research is its own helper
+   (or its own phase), with its own file of notes. The designer gets that file.
+3. *No proof was asked for.* Every source used is saved as text with its URL and the date read (`designer-sources/`,
+   `research/<topic>/`), and every quote in the report can be found in that saved text. Blocked sources are listed, not skipped
+   in silence.
+4. *The lead didn't check until Matt noticed.* At the helper's first report, the lead counts its fetch calls in its activity log
+   (`list_events`; the calls are TinyFish `fetch_content`, not WebFetch) and spot-checks three quotes against the saved text.
+   This takes ten minutes, and it is done before anything is passed on.
+5. *We fed it our own research first, so it repeated the same games.* The helper gets the question and the hard facts about our
+   game, then searches on its own. Our earlier research goes in only after its first list of sources, as a cross-check.
