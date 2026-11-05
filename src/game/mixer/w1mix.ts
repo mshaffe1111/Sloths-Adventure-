@@ -50,6 +50,8 @@ export interface Fork { high: Idea[]; low: Idea[] }
 export interface NodePlan { id?: string; easyOnly?: boolean;
   /** one burst only (1-1's run teach: a flat walk, no gaps) */
   one?: boolean;
+  /** bursts this node lays, over the dial's (1-1's ground teaches: 3, for its length without a canopy) */
+  bursts?: number;
   /** no canopy over its floor idea (1-1's n1-n7: the forest floor; boughs arrive with the climb) */
   ground?: boolean;
   /** Dot's line at the node's end, not its start (1-1's "Look how high we are!" at the chain's top) */
@@ -93,14 +95,17 @@ export const PLAN_15: NodePlan[] = [
 export const PLAN_11: NodePlan[] = [
   // (n1-n7, the forest floor at the home forest's edge, no canopy: the lead's story brief and the designer's ground-stage ruling, 11-05)
   { job: 'teach run', deck: ['floor walk'], one: true, ground: true, band: [1180, 1320] },
-  { job: 'teach jump', deck: ['bank hops', 'stump hop'], hint: 'Jump the little gaps', safe: true, ground: true, band: [1150, 1320] },
-  { job: 'practise', deck: ['stump hop', 'bank hops'], hint: 'Up the bank! Step to step', ground: true, band: [1100, 1300] },
+  // (1-1's profile, the designer, 11-05: branching moderate, ground forks early and canopy forks late; hilly ground rising to the canopy;
+  // a calm march, quicker only at n9. The ground teaches lay 3 bursts each, for the length a canopy gave 1-5)
+  { job: 'teach jump', deck: ['bank hops', 'stump hop', 'lily-pad hop'], hint: 'Jump the little gaps', safe: true, ground: true, bursts: 3, band: [1150, 1320] },
+  // (the first of the early ground forks: logs on stumps over the stump hops and banks)
+  { job: 'practise (fork)', deck: { high: ['stump tops', 'log jam'], low: ['stump hop', 'bank hops'] }, hint: 'Up the bank! Step to step', ground: true, band: [1100, 1300] },
   // (the bounce lifts him onto a mound top, not a bough)
-  { job: 'teach bounce', deck: ['bounce mound', 'stump hop'], ground: true, band: [1000, 1250] },
+  { job: 'teach bounce', deck: ['bounce mound', 'stump hop', 'bank hops'], ground: true, bursts: 3, band: [1000, 1250] },
   // (a ground fork: the high road on stump tops and a log jam, the low road on the floor and the creek)
   { job: 'the fork', deck: { high: ['stump tops', 'log jam'], low: ['bank hops', 'lily-pad hop'] }, ground: true, band: [950, 1150] },
   { job: 'rest', deck: ['bank walk'], flagBefore: false, ground: true, band: [950, 1150] },
-  { job: 'teach double', deck: ['double gap', 'bank hops'], hint: 'Flick up again in the air to jump twice', padHint: 'Press Jump again in the air', safe: true, ground: true, band: [900, 1100] },
+  { job: 'teach double', deck: ['double gap', 'bank hops', 'stump hop'], hint: 'Flick up again in the air to jump twice', padHint: 'Press Jump again in the air', safe: true, ground: true, bursts: 3, band: [900, 1100] },
   // (n8 on, the trees: bough stair or a bounce up into the boughs; the kapok climb is 1-4's)
   { job: 'climb up', deck: ['bough stair', 'bounce up'], band: [650, 950] },
   { job: 'test double', deck: ['double chain'], flagBefore: true, hint: 'Look how high we are!', hintAtEnd: true, band: [380, 750] },
@@ -109,14 +114,14 @@ export const PLAN_11: NodePlan[] = [
 ];
 
 /** a stage the mixer builds: its plan, where it starts, how many of Meeca's marks it lays (0 for a sprint), and its last piece */
-export interface MixSpec { id: string; plan: NodePlan[]; startY: number; marks: number; end: { kind: string; w: number }; burstMax?: number;
+export interface MixSpec { id: string; plan: NodePlan[]; startY: number; marks: number; end: { kind: string; w: number }; burstMin?: number; burstMax?: number;
   /** petals low, at marching height on the pieces, never in arcs over the gaps (1-1: Meeca's pressed petals, the lead's brief) */
   lowPetals?: boolean;
   /** the dressing and the clue prop at the stage's ends (1-1: the squirrels at the start, the bootprint at the shrine) */
   dress?: { start?: string[]; clue?: string } }
 export const MIX15: MixSpec = { id: '1-5', plan: PLAN_15, startY: 460, marks: 13, end: { kind: 'bank', w: 640 } };
 // (the shrine stands on a long log at the top branch's end: three long pieces of one kind in a row ran the gate's "nothing new" to 2,106 px)
-export const MIX11: MixSpec = { id: '1-1', plan: PLAN_11, startY: 1260, marks: 0, end: { kind: 'log', w: 640 }, lowPetals: true,
+export const MIX11: MixSpec = { id: '1-1', plan: PLAN_11, startY: 1260, marks: 0, end: { kind: 'log', w: 640 }, burstMin: 5, burstMax: 6, lowPetals: true,
   dress: { start: ['squirrel-sit', 'squirrel-wave', 'squirrel-tip'], clue: 'bootprint' } };
 
 interface Lay {
@@ -147,6 +152,8 @@ interface Lay {
   nb?: number;
   /** petals at marching height on the pieces (MixSpec.lowPetals) */
   lowPetals?: boolean;
+  /** the fewest pieces a Normal burst lays (1-1: 5, a calm march over wide ground) */
+  burstMin?: number;
   /** the most pieces a Normal burst lays (1-1: 4, for its 2:40-3:15 clock; 1-5: 5) */
   burstMax?: number;
   /** whether a mushroom's bounce has been taught yet (1-1's n4): no canopy is entered by one before it */
@@ -387,7 +394,7 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
   // (a burst is 4-6 pieces, the designer's (a); 1-5 sits at 4-5 for its 2:30-3:00 aim, ENGINE-SPEC "Stage length")
   // (Easy one piece shorter, 3-4, the designer's ruling on the fun gate)
   // (Easy at 3 pieces: the designer's second fix for Easy's density; the snap dash keeps 5 for its teach-to-test job)
-  const n = L.easy ? 3 : R.i(4, L.burstMax ?? 5);
+  const n = L.easy ? 3 : R.i(L.burstMin ?? 4, L.burstMax ?? 5);
   switch (name) {
     // (every list lays stones, a small rise on a bank's end: the designer, 11-05, "stone" stays among 1-5's kinds)
     case 'bank hops': return burst(L, c, R, R.pick([['bank', 'stone', 'log'], ['log', 'stone', 'bank'], ['stone', 'bank', 'log']]), n);
@@ -879,7 +886,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
   // (the designer's pacing ruling A, 11-05: a calmer Easy, its landings about 300 px on its own size bands, Normal's times EASY_BS. The
   // fixed pieces (canopy hosts and ends) scale with it; the boughs over them do not: the high road is the optional one)
   const wScale = easy ? EASY_BS : 1;
-  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, bs: easy ? EASY_BS : 1, dial: d, mushrooms: 0, glints: [], recent: [], padSet: new Set(), creakyTaught: false, burstMax: S.burstMax, lowPetals: S.lowPetals, ...(S.plan.some((n) => Array.isArray(n.deck) && n.deck.includes('bounce up') && n.job.startsWith('teach')) ? { bounceTaught: false } : {}) };
+  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, bs: easy ? EASY_BS : 1, dial: d, mushrooms: 0, glints: [], recent: [], padSet: new Set(), creakyTaught: false, burstMin: S.burstMin, burstMax: S.burstMax, lowPetals: S.lowPetals, ...(S.plan.some((n) => Array.isArray(n.deck) && n.deck.includes('bounce up') && n.job.startsWith('teach')) ? { bounceTaught: false } : {}) };
   // (the highest rise the gate allows: the largest step up a plain jump makes across a real gap, measured with the gate itself)
   let maxRise = 0;
   for (let dy = 10; dy <= 200; dy += 5) if (gateGap(L, 800, { y: 800 - dy, height: 24, type: 'solid' }, dy) >= MIN_GAP + 10) maxRise = dy;
@@ -933,7 +940,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
       // (the difficulty dial's bursts per node: 2 at d = 0, 3 at d = 1, ENGINE-SPEC "The difficulty dial")
       // (Easy lays one fewer, the designer's pacing ruling A, so its wider landings hold the length)
       const bare = easy && !easyKeep.has(i);
-      const bursts = one || bare ? 1 : Math.round(2 + L.dial);
+      const bursts = one || bare ? 1 : n.bursts ?? Math.round(2 + L.dial);
       const laid: Idea[] = [];
       let last = lastIdea;
       for (let k = 0; k < bursts; k++) {
@@ -945,7 +952,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
         const ownIdeas = n.deck.filter((d) => !FLOOR.includes(d));
         let cand: Idea[];
         // (a teach's second burst: its deck's own floor idea, not the one just laid; bank hops where it has none (1-5's snap teach))
-        if (n.job.startsWith('teach')) cand = k === 0 ? n.deck.filter(ok) : (n.deck.filter((d) => FLOOR.includes(d) && d !== last).length ? n.deck.filter((d) => FLOOR.includes(d) && d !== last) : ['bank hops']);
+        if (n.job.startsWith('teach')) { const fl = n.deck.filter((d) => FLOOR.includes(d) && d !== last && !laid.includes(d)); const own = n.deck.filter((d) => !FLOOR.includes(d) && ok(d)); cand = k === 0 ? (own.length ? own : n.deck.filter(ok)) : fl.length ? fl : k === 1 ? ['bank hops'] : []; }
         else if (k === 0) {
           const own = (ownIdeas.length ? ownIdeas : n.deck).filter(ok);
           cand = own.length ? own : (ownIdeas.length ? ownIdeas : n.deck).filter((d) => d !== last);
@@ -970,6 +977,9 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
         laid.push(pick);
         last = pick;
       }
+      // (a teach lays what it teaches: its own idea, when its deck has one (1-1's n7 once laid two floor bursts and no double gap))
+      const ownOf = n.deck.filter((d) => !FLOOR.includes(d));
+      if (n.job.startsWith('teach') && ownOf.length && !laid.some((d) => ownOf.includes(d))) throw new Error(`${S.id} n${i + 1} (${n.job}) laid no idea of its own`);
       lastIdea = last;
       rolled[i] = laid;
     } else {
