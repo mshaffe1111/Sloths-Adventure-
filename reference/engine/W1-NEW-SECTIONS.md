@@ -259,3 +259,52 @@ Every section's versions differ in kinds or order, never only in sizes. All of t
 **The supervisor's story check, round 4: PASS (6:40 PM). Its two notes are applied:**
 - #44, #45 and #10 (the three signatures) are **`feel: ['1-1']` ONLY**. Each is the brief's one double-chain moment, unique in the game (§1; R1 L6), so no other stage draws them. Exactly one per roll (V6).
 - #42's leftward leg is **at most about one screen** (≤ 800 px). Onward and to the right is north (the lead's ruling), so a long walk back would read as going backwards.
+
+## Round 5: the rest of what blocks 1-1 (designer, 11-05 6:47 PM; the planner's exact CHECK 3b list, 6:46 PM ET, 16 rolls on 5a9d7d2c, before Round 4 was entered)
+
+**What Round 4 already covers:**
+- signature (14 rolls dry): #44, #45;
+- bounce forks (11): #36, #37;
+- climb tests (8): #40, #41;
+- climb forks (5): #38, #39;
+- the bounce teach (4) and the reward (4): #35. Both come back once the planner's bounce-rise place lets #5 and #35 lay.
+
+**Round 5 tops each binding cell up to 3 (the planner: "aim for 3 of each where a roll can need one").** A fork's type is its LOW road's.
+
+| # | id, name | Job, type, phase | Versions (rhythm string) | Block / roads | Sources |
+|---|---|---|---|---|---|
+| 47 | `w1-mushroom-fork-dip` "The dip mushroom" | fork, bounce, sho | **a** high `j d +` / low [`h b h`] (a mushroom in a dip lifts the low road out); **b** high `d j +` / low [`b w b`] | none; rejoin; petals low | V7; FR3-FR4 |
+| 48 | `w1-root-stair-fork` "Roots up, or the stair" | fork, climb, sho | **a** high `d d +` / low [`c c c`]; **b** high `j d +` / low [`c w c`] | none; the low stair's steps ≤ 80 px | V7; FR3 |
+| 49 | `w1-bank-stair-test` "The bank wall" | test double, climb, ketsu | **a** `c D c D`; **b** `D w D c` (K/D beats as entered) | D = rise 136-140, the floor back-only under it | NODES §8.7 |
+| 50 | `w1-bough-descent` "Down through the boughs" (window) | descent, floating, sho | **a** `j j h` down three boughs; **b** `h j w j` with a level bough | falling (`_`); each drop ≤ 140 px; a mid road (FR5) under the top | §1 descent; LEDGER-11-02:54; platforms may float |
+| 51 | `w1-log-steps-descent` "Floating logs down" (window) | descent, floating, sho | **a** `d` level, then `j j` down; **b** `j h j h` | as #50 | as #50 |
+| 52 | `w1-canopy-drop` "Bough to bough, down" (window) | descent, floating, sho | **a** `j j j` with a catch bough under the last; **b** `h j d` down then a level double | as #50; B4 for the catch bough | as #50 |
+| 53 | `w1-stair-run` "Up the stump stair at a run" | flow, climb, sho | **a** `c c c c` (quick single steps, ≤ 80 px each, no stop); **b** `c h c h c` | none; no dead time over 2.5 s (§1 flow) | WORLD-RULEBOOK §7.1; R2 L1 (rhythm groups) |
+| 54 | `w1-bank-run` "Bank steps at a run" | flow, climb, sho | **a** `h c c h c`; **b** `c c j c` | as #53 | as #53 |
+| 55 | `w1-zigzag-run` "The quick zigzag up" | flow, climb, sho | **a** `c c` up stones, then `c c` up logs; **b** `c j c j` | as #53 | as #53; #2 zigzag kin |
+| 56 | `w1-high-step-twist` "Up, then the double back down" | twist, climb, ten | **a** `c c c`, then a `d` ACROSS (not up) to a lower stair; **b** `c d c` with the double going level | turns the climb's rhythm (§1 twist) | §1; LEDGER-11-02:72 |
+| 57 | `w1-stair-gap-twist` "The broken stair" | twist, climb, ten | **a** `c c j c` (a gap in the stair); **b** `c j c j` | as #56 | as #56 |
+| 58 | `w1-drop-bounce-twist` "Drop onto the mushroom" | twist, bounce, ten | **a** `w` off a log DOWN onto a floor mushroom, `b` back up across a gap; **b** `h` down, `b`, `j` | the bounce turned: down-then-up, not walk-then-up | §1 twist; the bounce (1-1 teach) |
+| 59 | `w1-long-bounce-twist` "The long bounce" | twist, bounce, ten | **a** `b` ACROSS a wide gap (a long low bounce, steered); **b** `b j b` | as #58 | as #58 |
+| 60 | `w1-dip-bounce-twist` "Out of the dip" | twist, bounce, ten | **a** `h` into a dip, `b` out of it; **b** `j` over, then `h` down, `b` up | as #58 | as #58; #47 kin |
+| 61 | `w1-bounce-stair-combine` "Bounce, double, up the stair" | combine, climb, ten | **a** `b d c c`; **b** `c b d c` | the pair (bounce + double) on one beat, onto a stair | LEDGER-11-02:33 (the pair) |
+| 62 | `w1-bounce-bough-combine` "Bounce into the bough" (window) | combine, floating, ten | **a** `b d` onto a bough, `j j`; **b** `h b d h` | the pair, onto floating boughs | as #61; platforms may float |
+
+**Counts after Round 5 (the cells the planner listed):**
+
+| Cell | Count |
+|---|---|
+| signature | 3 |
+| bounce fork | 3 |
+| climb fork | 3 |
+| climb test | 3 |
+| floating descent | 3 |
+| climb flow | 3 |
+| climb twist | 3 |
+| bounce twist | 3 |
+| combine | 5 (adding climb and floating types) |
+| bounce teach | 3 (once the bounce-rise place exists) |
+
+All existing W1 art; boughs only in the window; nothing from the brief's not-list; petals low, finds high.
+
+**Watch:** #53-#55 are a climb in flow's job. Each step is ≤ 80 px (the walk rise), so the stair is quick single jumps, not doubles.
