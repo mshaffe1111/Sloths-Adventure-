@@ -2492,7 +2492,7 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
    - breakable or animal kinds in a view: 0 (none taught);
    - standing kinds in a view ≤ 4;
    - upright views with play in the upper half ≥ 98.0%;
-   - splits ≥ 19, two-road share ≥ 40%;
+   - splits at 120 px ≥ 34 and two-road share ≥ 0.61 [revised 3:12 PM ET: old 1-1's measured medians, engine-runs out/old12/layout.txt; the earlier 19 / 40% were borrowed from 1-5's numbers, against the reference rule];
    - at least 4 ideas, none twice in a row (the 40% cap is reported, not judged, until ruling 8's run: C6);
    - the old 1-1's floor numbers: up or down on 4 of 5 landings, something new every 572 px.
 3. **The engine's gates:**
