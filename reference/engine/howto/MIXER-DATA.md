@@ -4,13 +4,17 @@ Drafted by the level designer, 11-05 3:13 PM ET, for the planner to fact-check a
 against engine-mixer d4dbadae8: src/game/mixer/spec.ts, stages.ts, library.ts and w1mix.ts. Part 1 (engine-core) covers running
 tools/engine/stage.ts, the gates, and reading a breach.
 
-## 0. What you write, and what you never touch
-- **You write one thing: your stage's `StageSpec` in `src/game/mixer/stages.ts`** (for 1-1, `SPEC_11`). That's all the data a stage
-  has: its story, its profile, its node plan, its goal, its dressing and its lay.
+## 0. What you write, and what you never touch [revised 3:14 PM ET: test fairness, the lead]
+- **You write 1-1's spec from the page alone.** Your branch starts with no \`SPEC_11\` in \`src/game/mixer/stages.ts\`: it was removed
+  on purpose, so this is a real test of whether the engine and its pages are enough. Don't look for it on any other branch: engine-core
+  keeps the planner's copy only to compare with yours afterwards. Reading it would turn the test into copying.
+- **You add one thing: \`SPEC_11\`** (a \`StageSpec\`, §1) in \`src/game/mixer/stages.ts\`, written from the stage's page, plus
+  whatever registration line part 1 says the engine needs to find it. That's all the data a stage has: its story, profile, node plan,
+  goal, dressing and lay. \`SPEC_15\` in the same file is another stage's spec: read it to see the format, but take no values from it.
 - **You never edit** w1mix.ts, library.ts, spec.ts, kits.ts or any other engine file. If your stage needs something the spec can't
-  say, stop and report it to the planner as an engine finding. The engine gets fixed; the stage is never patched around it (Matt).
-- **Your design source** is the stage's page in ENGINE-SPEC.md ("1-1 for the builder") and the lead's story brief. Copy values from
-  the page. Never invent a number, a line of dialogue or an idea name.
+  say, stop and report it as an engine finding. The engine gets fixed; the stage is never patched around it (Matt).
+- **Your design source** is "1-1 for the builder" in ENGINE-SPEC.md and the lead's story brief. Copy values from the page. Never invent
+  a number, a line of dialogue or an idea name. If the page doesn't say, ask: it's logged as a gap.
 
 ## 1. The shape of a spec (spec.ts `StageSpec`)
 
