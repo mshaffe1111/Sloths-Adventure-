@@ -1344,3 +1344,44 @@ double.
 - **Both stay named breaches until fixed, and both fail the gate before Matt's next 1-5 build.** A named breach is not a pass.
 - These swaps change 1-5's regression fingerprints on purpose. The planner records them as such, and the variety lines and two-road
   share are re-run on 16/16 rolls after the swap.
+
+### [designer ruling, 11-05 ~11:00 AM ET] Matt's three: floating, core objects, themes
+
+**1. Floating (Matt: "certain floating objects... looks better. Too much junk... harder to understand").** The footing column stays the
+default. Each kind gets `mayFloat`, and each profile gets a `float` line: none, some or free, with a cap on its share of landings.
+- **May float:**
+  - stone, as a stepping stone;
+  - log, as a short floating log;
+  - crumbling ledge, as a floating slab;
+  - bough, with no trunk or post when it reads cleaner.
+- **Never float:** lily pads, reeds, banks, mounds, stumps, mushrooms, creaky limbs, bridges, totems and the shrine. They are what
+  their footing means.
+- **Profile lines:**
+
+  | Stage | Float | Cap on landings | Why |
+  |---|---|---|---|
+  | 1-1 | some | ≤ 15% | a ground stage reads as ground |
+  | 1-5 | some | ≤ 25% | |
+  | Default | some | ≤ 25% | |
+
+- **A floating piece must read on its own.** It carries its own underside in its art and is never half-hidden by dressing. The
+  stills review judges it upright and sideways.
+- **This revises P-2 and the 11-05 10:40 ruling.** A floating stone slab is no longer a fault in itself. 1-5's canopy breakables still
+  become creaky limbs, though, for theme reasons: the tree's own breakable belongs up there. Slabs may float low, over ground and
+  creek gaps.
+
+**2. Core objects.** The profile's `commonest` becomes `core`, and the commonest landing must be one of them.
+
+| Stage | Core | Notes |
+|---|---|---|
+| 1-1 | bank, stump, log | n1-n7, the ground. **bough** is added for n8-n11, the trees. **Stone** is not core: it is 1-5's on-the-bank look, allowed as an extra |
+| 1-5 | bough, creaky, bank | accepted |
+
+Other pieces "with the same feel" may be used, but core pieces stay the majority: at least 50% of landings.
+
+**3. Themes (Matt: no lava in the forest).** Accepted as the planner built it: each kind names its worlds, each idea names its pieces,
+and checkSpec refuses anything off-theme.
+- **The per-world object pass is the designer's job** (how pieces get used). The planner tags each kind from its art, and the
+  designer rules on which worlds and places it belongs to and how it must look there.
+- It is done world by world, just before the engine first builds a stage of that world. World 1's 10 kinds are done. World 2 is
+  next when its first stage is queued.
