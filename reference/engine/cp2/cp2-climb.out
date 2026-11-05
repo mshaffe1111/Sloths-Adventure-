@@ -1,0 +1,12 @@
+NORMAL bough 170 px up, release right+jump: climbed; on the bough after 1.8 s
+NORMAL bough 170 px up, release jump: climbed; on the bough after 1.8 s
+NORMAL bough 220 px up, release right+jump: climbed; on the bough after 2.0 s
+NORMAL bough 220 px up, release jump: climbed; on the bough after 2.0 s
+NORMAL bough 300 px up, release right+jump: climbed; on the bough after 2.4 s
+NORMAL bough 300 px up, release jump: climbed; on the bough after 2.4 s
+EASY   bough 170 px up, release right+jump: climbed; on the bough after 1.2 s
+EASY   bough 170 px up, release jump: climbed; on the bough after 1.2 s
+EASY   bough 220 px up, release right+jump: climbed; on the bough after 1.4 s
+EASY   bough 220 px up, release jump: climbed; on the bough after 1.4 s
+EASY   bough 300 px up, release right+jump: climbed; on the bough after 1.8 s
+EASY   bough 300 px up, release jump: climbed; on the bough after 1.8 s

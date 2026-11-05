@@ -1,0 +1,24 @@
+// CP2: "The climb" (designer's strip: a bank, a climbing vine at its end, a bough 170 px up out from the vine) in the real engine,
+// Normal and Easy: walk to the vine, hold up to climb, then jump off toward the bough. Lands on the bough or not, and how long it took.
+import './src/game/headlessDom.ts';
+import { setDifficulty } from './src/game/difficulty.ts';
+if (process.env.MODE === 'easy') setDifficulty('easy');
+import { RealPlay } from './src/game/realPlay.ts';
+import type { Platform, Vine } from './src/game/types.ts';
+const r = new RealPlay('3-5', 1);
+for (const rise of [170, 220, 300]) for (const release of ['right+jump', 'jump']) {
+  const bank = { id: 1, x: 0, y: 900, width: 260, height: 120, type: 'solid', style: 'moss_stone' } as Platform;
+  const bough = { id: 2, x: 275, y: 900 - rise, width: 260, height: 24, type: 'solid', style: 'branch' } as Platform;
+  const vine = { id: 3, x: 262, topY: 900 - rise - 30, bottomY: 900, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as unknown as Vine;
+  r.bare([bank, bough], [vine]); r.stand(120, 900);
+  let res = 'never on the bough', climbed = false, t = 0;
+  for (let i = 0; i < 300; i++) {
+    const p: any = r.p;
+    if (p.climbing) climbed = true;
+    const atTop = p.climbing && p.y <= bough.y + 20;
+    const pad = !climbed ? { right: true, up: p.x > 230 } : atTop ? (release === 'jump' ? { press: true } : { right: true, press: true }) : p.climbing ? { up: true } : { right: true };
+    r.frame(pad);
+    if (p.grounded && Math.abs(p.y - bough.y) < 2) { res = `on the bough after ${((i + 1) / 30).toFixed(1)} s`; break; }
+  }
+  console.log(`${process.env.MODE === 'easy' ? 'EASY  ' : 'NORMAL'} bough ${rise} px up, release ${release}: ${climbed ? 'climbed' : 'never grabbed the vine'}; ${res}`);
+}
