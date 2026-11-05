@@ -164,3 +164,21 @@ What this means for the engine (the designer decides how; these are the bars the
    build it with the engine alone, with one command and the gates. Then it's cleanup. So the engine ships with its own how-to
    (reference/methods/), proved by one helper building a stage from it cold.
 5. **Not rushed:** time goes here. The checkpoints and Matt's 55% ceiling still hold; a checkpoint shows progress, not a finished world.
+
+## 2026-11-05 ~10:20 AM ET (to the lead): nothing is a guess; 1-1 and 1-2 test the ENGINE; fix the engine, never the stage
+"There's been a million games that have been made. So we shouldn't have to guess about anything... We have hundreds of thousands of
+words with even code put into it from Gemini on how to build things. We've done our own research on how to build things. Nothing's a
+guess. This engine needs to be concrete. Needs to be right the first time. And we use 1-1 and then 1-2 as the test. How quick things get
+made. If 1-1 takes too long and it still needs a lot of pieces fixed, the engine gets fixed. We don't just go into the stage and fix it.
+That's how it has to get done. After the engine gets done, the level designers have the fun job because they get to put together
+creatively how the levels get designed with the inputs and just put the polish on it."
+"This engine literally is the game... Done right the first time. No redos on this... Nothing guessed. Nothing tunnel visioned."
+What the lead holds everyone to:
+1. **OPEN is not an end state.** Every rule and number is answered from shipped games (postmortems, talks, papers, code), the Gemini
+   research (with its code) or our own research, or by a run on our code. "Designer's judgment" is never a source.
+2. **1-1 then 1-2 are the engine's acceptance test.** Recorded for each: wall time and token cost from "stage data written" to "every
+   gate green", and the count of fixes needed after the first build. A stage is fixed only by changing its data file (story, profile,
+   plan) or the engine. Any stage-specific code or hand edit in the engine fails the test (a check: no stage id in the mixer core). Too
+   slow, or too many fixes: the engine is changed and the stage rebuilt from data.
+3. **After the engine:** stage helpers (level designers) compose stages creatively from the inputs and polish. They don't build
+   machinery.
