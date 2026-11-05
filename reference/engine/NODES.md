@@ -185,14 +185,13 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
 - **1-1's own deal** (from 1-1's teaches, its look and window): ground 40 (at the cap), floating 25 (last third only, under old
   1-1's 25.3% line), climb 20 (1-1's trend is up; MATT "climbing"), bounce 15. **JUDGMENT.**
 
-**World 2 (DRAFT for Matt to see). MATT, 11-05 ~5:00 PM to the lead: "world two, which has more of a lighter feeling, can be more
-puzzles. Whereas the first world is a lot more jumping, climbing, and learning the mechanics":**
+**World 2: AN EXAMPLE only, not a ruling (Matt, via the lead, 5:24 PM: "lighter, more puzzles" was an example). W2's real mix is set when W2's kit is built, with its story, together with the supervisor:**
 
 | Type | puzzle | water (drift logs, pads, stones) | rope (swing) | floating (incl. lifts) | ground | climb | crumble | bounce |
 |---|---|---|---|---|---|---|---|---|
 | W2 share | 20 | 24 | 11 | 15 | 11 | 9 | 6 | 4 |
 
-- Re-normalised after creatures and forks came out. The split is the researcher's and mine (JUDGMENT); Matt's words set "more puzzles".
+- Re-normalised after creatures and forks came out. An example split only (JUDGMENT), to show the shape a world's mix takes.
 - "Lighter" comes mostly from the dials: tempo toward patience, low density (NODE-MIX §C, the researcher's own call, unsourced).
 - The W1 floor below holds from W2 on.
 
@@ -280,18 +279,24 @@ LATER means it is not built yet and not in 1-1.
 | G | Change of pace (LATER) | A sense flipped: slow, dark or a puzzle. X-6's job | The stage suddenly feels different: slower, darker or a head-scratcher. |
 | `F[L^+\|R_] E` | Ending fork (LATER, not 1-1) | The last node before the exit. A high road to a denser finale with a find, or a quiet low road to the arrival. Both reach the same exit (Matt, 11-05) | At the end you choose: a tougher climb with a prize, or a calm walk home. |
 
-**Content: one small letter, what the node is made of**
+**Content: one small letter, what the node is made of.** The PIECES column (added 5:24 PM, Matt: "do certain nodes have certain pieces? Vines have to have vines, lily pads need lily pads") draws from LABELS.md. It says what the node MUST have, MAY have and must NEVER have. V18 checks it.
 
-| Code | Name | How the engine defines it | How it plays |
-|---|---|---|---|
-| g | Ground jump run | Pieces on the moss floor road: hops, gap jumps, stone runs, stump stiles, mounds. Landings 3.5-7 body widths (G L1844). Rocks sit on the ground, never float | You jump along the forest floor over stones, stumps and dips. In 1-1 a miss just drops you to the floor. |
-| f | Floating pieces | Boughs, floating logs, plank spans; platforms may float. In 1-1, only in the last third (window [0.67, 1]). Moving lifts are LATER (W2) | You hop across branches and logs hanging in the air. |
-| c | Climb | A rising stair of landings | Each landing is a little higher than the last, so you go up as you go along. |
-| b | Bounce | A mushroom seated on a stump or bank (never floating); a twin bounce; a bounce into a double | You land on a mushroom and it springs you up high. |
-| r | Rope and vine (LATER; not in 1-1) | Shimmy rope (1-3), liana (1-6). Straight up or down on a vine always climbs | You grab a rope or vine and shimmy or swing across. |
-| k | Crumble (LATER, 1-5) | A creaky limb that gives way. A required one is whole again when he respawns | A branch creaks and drops away soon after you land, so don't wait around. |
-| w | Water (LATER) | Pads, stones on the bed, drifting logs | You cross water on pads, stones and floating logs. |
-| h | Hazard (LATER) | The world's taught hazards, which come back in later worlds | Something on the way hurts, so you go over or around it. |
+| Code | Name | How the engine defines it | PIECES (from LABELS.md) | How it plays |
+|---|---|---|---|---|
+| g | Ground jump run | Pieces on the moss floor road: hops, gap jumps, stone runs, stump stiles, mounds. Landings 3.5-7 body widths (G L1844) | **MUST:** the moss floor road under it, and at least one of: moss_stone, a log on a stump-post, a stump, a mound or bank. **MAY:** a low log; dressing off the lane; petals low. **NEVER:** a rock, stone, mound or bank in the air (LABELS rule 1); water pieces; a rope or vine as the way across | You jump along the forest floor over stones, stumps and dips. In 1-1 a miss just drops you to the floor. |
+| f | Floating pieces | In 1-1, only in the last third (window [0.67, 1]). Moving lifts are LATER (W2) | **MUST:** at least one floating platform: a solid log, a bough (a solid branch on a trunk within 220 px, or a post, or floating where ruled) or canopy_bridge planks. **MAY:** catch boughs under each gap; a trunk as an anchor. **NEVER:** a floating rock or stone (rule 1); a trunk as a landing (rule 5); a lift in W1 | You hop across branches and logs hanging in the air. |
+| c | Climb | A rising stair of landings | **MUST:** landings that each sit higher than the last (log, bough, or moss_stone on a bank or its own base). **MAY:** a stump step. **NEVER:** a trunk as a landing; a vine climb (tree_climb) except in a stage that owns it (W1: 1-4) | Each landing is a little higher than the last, so you go up as you go along. |
+| b | Bounce | A bounce, a twin bounce, a bounce into a double | **MUST:** a mushroom (bouncy) seated on the floor, a bank, a stump or a log. **NEVER:** a mushroom in the air; a bouncy branch or stone in W1 (those are W5, W7-W10; a bouncing stone is OPEN for Matt); the dressing mushrooms (w1Mushroom and kin are never landings, rule 6) | You land on a mushroom and it springs you up high. |
+| r | Rope and vine (LATER; never in 1-1) | Shimmy rope (1-3, main dotLinesData:122), liana. Straight up or down on a vine always climbs | **MUST:** a rope with two anchors at the same height (± 40 px); or a liana anchored to a bough or the canopy with a landing past its arc; or a climb vine whose foot reaches a landing. **NEVER:** in 1-1 (`not: ropes`); a vine top in open sky; a trunk as a landing | You grab a rope or vine and shimmy or swing across. |
+| k | Crumble (LATER, 1-5: main dotLinesData:123) | A landing that gives way. A required one is whole again when he respawns | **MUST:** a creaky branch (fragile branch creak) on a trunk or bough, drawn in W1's branch art. **NEVER:** the crumbling stone floor in W1 (that is W7's: LABELS §1, "Never W1"); a crumbling stone in the air | A branch creaks and drops away soon after you land, so don't wait around. |
+| w | Water (LATER) | Pads, stones on the bed, drifting logs | **MUST:** a drawn water zone, with lily pads on its surface, stones seated on its bed, or drift logs on a drawn river. **NEVER:** pads, reeds or drift logs off water (rule 3; MATT "lily pads only on water"); a stone floating on the water | You cross water on pads, stones and floating logs. |
+| h | Hazard (LATER) | The world's taught hazards, which come back in later worlds | **MUST:** the world's own taught hazard piece (W3: thorn vines hanging or swinging from trunks). **NEVER:** a hazard before its world teaches it; another world's hazard art (rule 4, "no lava in the forest") | Something on the way hurts, so you go over or around it. |
+
+**Gates that prove the PIECES column:**
+- engine-render's `padsOffWater` test (w);
+- the E3 support check, where rocks never float (g, f, c, k);
+- the theme lock (rule 4);
+- V18 (§8.3) for the rest. It is new, part of the planner's parser: it reads each realised node's piece kinds against its row.
 
 **Move: a digit**
 
@@ -375,6 +380,7 @@ The engine rejects a string that breaks one of these rules and names the rule an
 | V14 | **The type counts match the stage's deal, give or take 1** (the seed's jitter). A fork counts as its low road's type | §7.5; §7.1 |
 | V15 | The `ending-fork` `F[L^+\|R_] E` is the last node before E. LATER, not 1-1 | §1 (Matt, 11-05) |
 | V17 | **In 1-1, every graph holds at least one F**, so the stage can meet old 1-1's two-road floors (splits ≥ 34, two-road ≥ 0.61; stage.ts passLines). Ruled 5:22 PM (supervisor's §8 flag 2) | §E; stage.ts |
+| V18 | **A node's realised pieces match its content row in the key** (§8.0 PIECES: every MUST present, no NEVER). Added 5:24 PM (Matt) | LABELS.md §0, §1, §2 |
 | V16 | `&` only from the stage where creatures are taught (W1: 1-3), and about a third of the stage's time has none | Matt 12:15 AM (ENGINE-PLAN :55) |
 
 ### 8.4 The sprint graphs in code, and under 1-1's brief
@@ -409,11 +415,11 @@ A graph is jobs and shapes only; the deal fills in the content (§7.5).
 - Types: ground 3 (counting the fork's low road), bounce 2, climb 1, floating 1.
 - It climbs, then splits, with the find on the upper stair.
 
-All three pass V1-V17: the cap, the neighbour rule with its two exceptions, and the deal give or take 1. Their tempo strings differ (`<<>><>>`, `><<><<>><`, `<>><<>><`), so no tempo profile repeats (§5).
+All three pass V1-V18: the cap, the neighbour rule with its two exceptions, and the deal give or take 1. Their tempo strings differ (`<<>><>>`, `><<><<>><`, `<>><<>><`), so no tempo profile repeats (§5).
 
 ### 8.6 In the data
 - A world's graph list (§4) is stored as code strings.
 - A roll is saved as its filled string, next to the seed. The ledger (§5) compares strings: the same skeleton means the same graph, and the same marks mean the same tempo profile.
-- One parser reads the strings and checks V1-V17, and fails with the rule and the token.
+- One parser reads the strings and checks V1-V18, and fails with the rule and the token.
 - The engine-core porter builds the parser. Until then, these rules are the spec.
 
