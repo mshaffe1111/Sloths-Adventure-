@@ -1,10 +1,10 @@
-"""From the native pass to 1-1's game strips (art-1-1-sunrise, 2026-11-05), written over src/assets/backdrops/w1sunrise-{far,sky,mid}.webp
-(the old ones are replaced, not kept beside: Matt's new-replaces-old rule) and copied to <out dir> so candidates can be swapped in turn.
-    python3 -I tools/art/sunrise11/finish.py far <tall-hd.webp> [out dir]           -> w1sunrise-far (bottom 1302 rows) + w1sunrise-sky
-    python3 -I tools/art/sunrise11/finish.py mid <name> <hd dir> [out dir] [haze]   -> w1sunrise-mid (keyed/<name>.webp shape, hd paint,
+"""From the native pass to 1-1's game strips (art-1-1-sunrise, 2026-11-05), written to src/assets/backdrops/w1sun2-{far,sky,mid}.webp
+(1-1's set: it replaces w1sunrise on 1-1's path, stageBackdrops.ts) and copied to <out dir> so candidates can be swapped in turn.
+    python3 -I tools/art/sunrise11/finish.py far <tall-hd.webp> [out dir]           -> <stem>-far (bottom 1302 rows) + <stem>-sky
+    python3 -I tools/art/sunrise11/finish.py mid <name> <hd dir> [out dir] [haze]   -> <stem>-mid (keyed/<name>.webp shape, hd paint,
                                                                                        inked, hazed into the far strip now in place)
 """
-import importlib.util, shutil, subprocess, sys
+import importlib.util, os, shutil, subprocess, sys
 from pathlib import Path
 
 from PIL import Image
@@ -14,7 +14,8 @@ ROOT = H.parents[2]
 BACK = ROOT / 'src/assets/backdrops'
 KEYED = ROOT / 'reference/prop-sheets/qa-notes/art-1-1-sunrise/keyed'
 PY = sys.executable
-STEM = 'w1sunrise'
+# (1-1's own set, w1sun2 (the lead, 11-05 6 PM: 1-3 stays on w1sunrise until its own stills check); STEM= for another)
+STEM = os.environ.get('STEM', 'w1sun2')
 
 
 def mod(p, name):

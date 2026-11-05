@@ -13,3 +13,5 @@ sun11-M3  6aecc18fc78863f9c6337ce1  middle strip img2img, taller starts H/I, 8 t
   hdF ~3 min, M2 ~8 min. Total ~38.5 min of rtx-pro-6000: ~$1.95 (estimate). PAUSED 17:50Z by the lead.
 --- resumed 2026-11-05 ~5:55 PM ET on art-1-1-sunrise-2 (lead session_01FhBbYN2DDsktc7BGtNxPFK; handoff confirmed by the supervisor) ---
   M3 finished 17:54:52Z: 5m49s measured (~$0.27). H takes pass the join check, crowns at row ~485 of 1302.
+sun11-hdM3 6aed0d090e0338d1bb80c43e native pass, mids H-s76-7 + H-s68-7  23:11:05Z-23:12:58Z (1.9 min measured, ~$0.09)
+  TOTAL so far ~40.2 GPU min (F, M, M3, hdM3 measured; the rest estimated) = ~$1.84. (The ~$1.95 in STOPPED.md was my arithmetic slip.)
