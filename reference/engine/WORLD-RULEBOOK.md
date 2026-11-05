@@ -51,6 +51,16 @@ lianas (1-6); the bush (1-7). A stage may use only moves taught at or before it.
 - its **roll** (gap, rise and hop families) and its **bursts** by time (5-20 s);
 - the gates: era diversity ≥ 0.35 between rolls, lookalike < 0.78 and the 20 s window < 0.30, against every engine-built stage.
 
+**Adopted by reference [3:50 PM ET]:** these ENGINE-SPEC sections bind every World 1 stage, as written there with their own citations:
+- the placement rules (ES 270-330);
+- the polish rules P-1 to P-13 and S-1 to S-9;
+- the difficulty dial;
+- the pacing rows P1-P9;
+- the move ladder M1-M8;
+- the water rules W1-W12 (for W1's teaching river and creek);
+- LABELS.md's element and support table.
+A research row used by one of those lines counts as used by this rulebook.
+
 **Floors (never worse than what ships):** old 1-1's per-view caps, bough and float shares, splits and two-road. **Targets from
 research where they exist:** length 120-150 s for a first stage (TF 1-1).
 
