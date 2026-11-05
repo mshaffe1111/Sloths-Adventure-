@@ -79,6 +79,7 @@ move the time, never the bar.
   guesses, tunnel vision across 5+ worlds, build-on-what-works, helper-ready, stage-specific code in the mixer, verdict. About 2.5 h
   from 10:15 AM ET. It does not read SPEC-TRACE until its own trace is written.
 - art-bootprint: under the designer. One HF picture, cap $3. The still comes to the lead before it's wired.
+- HF approved today (caps): bootprint $3 (spent 0.13), w6WetLeaves $1 (0.11), lantern $1, W1 rotten wood + side branch $1, engine-render wasted 0.35, new 1-1 sunrise $5, deadly creek + muddy splash $3, render-stone 4 kin pieces $6. Caps total about $20.5; ask each helper for the actual.
 - HF for the engine: the LEAD approves (Matt, 10:42 AM ET). Check the list (unused art first), stay inside the $72 with ~$15 reserve, tell Matt the spend.
 
 ## SUPERSEDED at 10:32 by "it takes what it takes": the order is critic, rulings, step 6, 1-1, 1-2 (all today). Was: Matt's call, 10:31 AM ET: option (A)
