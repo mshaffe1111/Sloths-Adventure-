@@ -58,8 +58,8 @@ export const PLAN_15: NodePlan[] = [
   { job: 'test creaky', deck: ['snap dash', 'bank hops'], flagBefore: true, heartAfter: true },
   { job: 'twist', deck: ['rotten-branch drop', 'stump hop'] },
   // (the second rest, the designer's ruling on the fun gate, 11-05 ~2:26 AM: a short flat pad and a Dot spot after the drop; its flag
-  // only if a hard node follows, which the flag rule decides. The line is the planner's draft, for the designer)
-  { id: '7b', job: 'rest', deck: ['bank walk'], hint: 'Catch your breath. Her marks go on past the creek.' },
+  // only if a hard node follows, which the flag rule decides; Dot's line is the designer's)
+  { id: '7b', job: 'rest', deck: ['bank walk'], hint: 'Down on the forest floor now. Her marks go on past the creek.' },
   // (the designer's ruling 6 on the CP3 miss: n8 draws one that the previous two nodes did not lay)
   { job: 'creek', deck: ['lily-pad hop', 'reed isles', 'stump hop', 'crumbling ledge'], notLast: 2 },
   // (push block leaves n9 for CP3, the designer's ruling: the level check walks a pushed log only inside a puzzle room; back in CP4)
@@ -249,7 +249,8 @@ function step(L: Lay, c: Cursor, R: Rng, k: string, w: number): Platform {
 function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
   // (a burst is 4-6 pieces, the designer's (a); 1-5 sits at 4-5 for its 2:30-3:00 aim, ENGINE-SPEC "Stage length")
   // (Easy one piece shorter, 3-4, the designer's ruling on the fun gate)
-  const n = L.easy ? R.i(3, 4) : R.i(4, 5);
+  // (Easy at 3 pieces: the designer's second fix for Easy's density; the snap dash keeps 5 for its teach-to-test job)
+  const n = L.easy ? 3 : R.i(4, 5);
   switch (name) {
     case 'bank hops': return burst(L, c, R, R.pick([['bank', 'stone', 'log'], ['log', 'bank'], ['stone', 'bank', 'log']]), n);
     // (a log as its third kind: on Easy its stones and banks all widen into one size, and the gate's "something new" ran out)
@@ -290,6 +291,15 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     case 'reed isles': return burst(L, c, R, ['reed', 'lily'], n, [30, -30, 40, -40]);
     case 'bank walk': {
       // (a rest: a long bank and a medium stone, an easy step between them; never one long flat, never one size: the variety gate)
+      if (L.easy) {
+        // (Easy's rest, 4-5 s: two banks of about 2 s each with one small hop between and a petal arc over it, play, not dead time:
+        // the designer's third fix for Easy's density, which also gives Easy its breather in the middle)
+        const e1 = step(L, c, R, 'bank', 560);
+        const e2 = burst(L, { x: e1.x + e1.width, y: e1.y }, R, ['bank'], 1, [30, -30], 60, 560);
+        const e3 = L.P[L.P.length - 1];
+        for (let k = 0; k < 5; k++) L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: k % 2 ? 'orchid' : 'hibiscus', x: Math.round(e1.x + e1.width - 60 + k * 45), y: Math.round(Math.min(e1.y, e3.y) - 50 - Math.sin((k / 4) * Math.PI) * 60), collected: false, bobPhase: k * 0.9 } as Collectible);
+        return e2;
+      }
       const b1 = step(L, c, R, 'bank', Math.round(R.r(300, 360)));
       const b2 = step(L, { x: b1.x + b1.width, y: b1.y }, R, 'stone', Math.round(R.r(180, 230)));
       return { x: b2.x + b2.width, y: b2.y };
@@ -339,6 +349,7 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
   const fk = FLOOR_KINDS[name];
   let e = c;
   const turn = R.i(0, 2);
+  // (3 stretches on both settings: the designer's first fix for Easy's density, 2 on Easy, dropped Easy's splits to 18, under the floor)
   for (let s = 0; s < 3; s++) {
     // (the host is a medium piece, 240-290 px, never long like the stretch's end piece; it steps up 30-50 or down 70, and the floor after it steps down 30-40: the perch, 46 px over the host, then never sits
     // within 20 px of a piece beside it, so no landing next to it is flat)
@@ -421,13 +432,14 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
 }
 
 /**
- * Easy's breather (the designer's ruling on the fun gate, 11-05 ~2:26 AM): a flat, safe pad, 640 px, about 2.2 s at a run (a rest of 2 s
+ * Easy's breather (the designer's ruling on the fun gate, 11-05 ~2:26 AM): a flat, safe pad, 600-680 px, about 2.1-2.4 s at a run (a rest of 2 s
  * or more, under the gate's 2.5 s of dead time), with breadcrumb petals only.
  */
 function breather(L: Lay, c: Cursor, R: Rng): Cursor {
   L.pads = (L.pads ?? 0) + 1;
   // (a bank: logs would crowd out creaky, the stage's theme, from its 3 commonest kinds; the bank's width turns, 600-680, so no two pads
   // are one size twice running)
+  // (a bank: logs would crowd out creaky, the stage's theme, from its 3 commonest kinds; its width turns, 600 or 680)
   const pad = step(L, c, R, 'bank', L.pads % 2 ? 600 : 680);
   for (let px = pad.x + 120; px < pad.x + pad.width - 80; px += 170) L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: 'orchid', x: Math.round(px), y: pad.y - 40, collected: false, bobPhase: (px * 0.031) % 6.28 } as Collectible);
   return { x: pad.x + pad.width, y: pad.y };
