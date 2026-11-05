@@ -5,6 +5,7 @@
  * parallax each frame. That lets the layers carry far more detail than we could afford to
  * draw live, which is what gives the scenes their depth and richness.
  */
+import { backdropBegin, backdropFlush, backdropForget, backdropIdle, backdropPush, backdropUpload } from './gpuLayer.ts';
 import { getSceneSeed, onSceneSeedChange } from './sceneSeed.ts';
 import { canvasLost } from './canvasLost.ts';
 import { drawPaintedLeaf } from './leafSprites.ts';
@@ -17,7 +18,7 @@ import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
 import { isRich } from './rainforest.ts';
-import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted, FADE_IN_MS, type PaintedSet } from './paintedBackdrops.ts';
+import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted, revealSet, FADE_IN_MS, type PaintedSet } from './paintedBackdrops.ts';
 import { w5Mood, type W5Mood } from './w5Backdrop.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
@@ -1587,6 +1588,14 @@ interface TileOpt {
 }
 
 /** device pixels per scene unit, from the transform the caller set (the engine scales by dpr × zoom; a story canvas by its own) */
+/** whether the canvas's transform is a plain uniform scale (no turn, no shift): the GPU backdrop stamps in device pixels from it */
+function pureScale(ctx: CanvasRenderingContext2D): boolean {
+  const t = typeof ctx.getTransform === 'function' ? ctx.getTransform() : null;
+  return !!t && t.b === 0 && t.c === 0 && t.e === 0 && t.f === 0 && t.a > 0 && Math.abs(t.a - t.d) < 1e-9;
+}
+/** this frame's fitted strips go to the GPU layer (renderScenery sets it around strips(); drawFitted reads it) */
+let gpuStrips = false;
+
 export function devScale(ctx: CanvasRenderingContext2D): number {
   const t = typeof ctx.getTransform === 'function' ? ctx.getTransform() : null;
   const k = t ? Math.hypot(t.a, t.b) : 1;
@@ -1925,6 +1934,8 @@ export function stampSceneryFits(ctx: CanvasRenderingContext2D): number {
   }
   ctx.clearRect(0, 0, 2, 2);
   ctx.restore();
+  // (and handed to the GPU layer, which stamps them in play: gpuLayer.ts backdropUpload)
+  backdropUpload(warmMade);
   warmMade.length = 0;
   return bytes;
 }
@@ -1974,7 +1985,11 @@ function makeFit(img: HTMLImageElement, sky: Layer | null, pitch: number, dh: nu
   const f: Fitted = { key, cv, grade: fitGrade, sky: !!sky, oy, d, sky0: sky ? Math.ceil(oy + skyY) : 0 };
   // (the oldest size goes: its pixels are freed now, not whenever the collector gets to them)
   // (three: this quality step's and the two lighter ones', all fitted under the title card, so a step down mid-play is a swap)
-  if (list.length >= 3) list.shift()!.cv.width = 0;
+  if (list.length >= 3) {
+    const gone = list.shift()!.cv;
+    backdropForget(gone);
+    gone.width = 0;
+  }
   if (warming) warmMade.push(cv);
   list.push(f);
   fits.set(img, list);
@@ -1993,7 +2008,7 @@ function drawFitted(ctx: CanvasRenderingContext2D, img: HTMLImageElement, part: 
   const key = fitKey(img, sky, pitchF, dhF, k);
   const list = fits.get(img);
   // (a fit the phone took back draws nothing: let go, so the plan makes it again and the frame draws the old way meanwhile)
-  if (list && stripMode === 'plan') for (let i = list.length - 1; i >= 0; i--) if (canvasLost(list[i].cv, 'backdrop fit')) list.splice(i, 1);
+  if (list && stripMode === 'plan') for (let i = list.length - 1; i >= 0; i--) if (canvasLost(list[i].cv, 'backdrop fit')) backdropForget(list.splice(i, 1)[0].cv);
   let f = list?.find((x) => x.key === key);
   if (stripMode === 'plan') {
     if (f) return;
@@ -2034,11 +2049,21 @@ function drawFitted(ctx: CanvasRenderingContext2D, img: HTMLImageElement, part: 
     const sw = Math.min(bw, Math.ceil((W - dx) / r)) - sx;
     const sy = Math.max(0, Math.floor(-y0 / r));
     const sh2 = Math.min(cv.height, Math.ceil((Hd - y0) / r)) - sy;
-    if (sw > 0 && sh2 > 0) ctx.drawImage(cv, sx, sy, sw, sh2, (dx + sx * r) / k, (y0 + sy * r) / k, (sw * r) / k, (sh2 * r) / k);
+    // (on the GPU layer this frame: the same stamps, in device pixels, gpuLayer.ts backdropPush; else on the 2D canvas, as always)
+    if (sw > 0 && sh2 > 0) {
+      if (gpuStrips) backdropPush(cv, sx, sy, sw, sh2, dx + sx * r, y0 + sy * r, sw * r, sh2 * r, ctx.globalAlpha);
+      else ctx.drawImage(cv, sx, sy, sw, sh2, (dx + sx * r) / k, (y0 + sy * r) / k, (sw * r) / k, (sh2 * r) / k);
+    }
     // (a screen taller than any phone: the sky's top row carries on up to the edge)
-    if (sky && skyTop > 0) ctx.drawImage(cv, 0, f.sky0, bw, 1, px, 0, (bw * r) / k, skyTop + 1 / k);
+    if (sky && skyTop > 0) {
+      if (gpuStrips) backdropPush(cv, 0, f.sky0, bw, 1, px * k, 0, bw * r, (skyTop + 1 / k) * k, ctx.globalAlpha);
+      else ctx.drawImage(cv, 0, f.sky0, bw, 1, px, 0, (bw * r) / k, skyTop + 1 / k);
+    }
     // the strip's last rows carry on down to the bottom of the view (up a climb the camera is in the air: drawStrip)
-    if (gap > 0) ctx.drawImage(cv, 0, f.oy + f.d - rows, bw, rows, px, top + dh - 1 / k, (bw * r) / k, gap + 2);
+    if (gap > 0) {
+      if (gpuStrips) backdropPush(cv, 0, f.oy + f.d - rows, bw, rows, px * k, (top + dh - 1 / k) * k, bw * r, (gap + 2) * k, ctx.globalAlpha);
+      else ctx.drawImage(cv, 0, f.oy + f.d - rows, bw, rows, px, top + dh - 1 / k, (bw * r) / k, gap + 2);
+    }
   }
   ctx.imageSmoothingQuality = q;
 }
@@ -2238,6 +2263,16 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
       if (fa < 1) drawStrip(ctx, waitingSky(look), 'far', 0.05, camX, vw, vh, s, yo * 0.3);
       ctx.globalAlpha = fa;
       drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, farScale(set.sky, vh, ps, yo * 0.3), yo * 0.3, set.sky ?? null, farScale(set.sky, vh, ps, farMax));
+      // (1-1: up in its canopy the far view turns to the one over the treetops, as the canopy strips fade in; the sunrise far's painted
+      // orchids in its lower corners showed between the boughs, huge and pale, the lead's polish review 2026-11-04)
+      const cFar = cano && k > 0.01 && backdropStage() === '1-1' ? revealSet({ far: 'w1-far', mid: 'w1c-mid', near: 'w1c-near' }) : null;
+      if (cFar) {
+        // (over a short stretch of the climb, k 0.15-0.3: a half-faded sunrise far still showed its orchids, pale, and two far strips
+        // half faded showed their 1 px tile overlaps as lines in the sky, the lead's review 2026-11-04)
+        ctx.globalAlpha = Math.max(0, Math.min(1, (k - 0.15) / 0.15)) * fa;
+        drawStrip(ctx, cFar.far, 'far', 0.05, camX, vw, vh, farScale(cFar.sky, vh, ps, yo * 0.3), yo * 0.3, cFar.sky ?? null, farScale(cFar.sky, vh, ps, farMax));
+        ctx.globalAlpha = fa;
+      }
       if (rv) {
         ctx.globalAlpha = rk;
         drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, farScale(rv.sky, vh, ps, yo * 0.3), yo * 0.3, rv.sky, farScale(rv.sky, vh, ps, farMax));
@@ -2279,7 +2314,14 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
       return;
     }
     stripMode = mode;
+    // (the fitted strips on the GPU layer, copied into this canvas in one draw: gpuLayer.ts, GPU plan stage 1. Only fitted stamps go
+    // there, under a plain scale: the canvas's own transform is exactly the device scale here)
+    gpuStrips = mode !== 'raw' && pureScale(ctx) && backdropBegin(ctx.canvas);
+    const onGpu = gpuStrips;
     strips();
+    gpuStrips = false;
+    if (onGpu && !backdropFlush(ctx)) strips();
+    if (!onGpu) backdropIdle();
     stripMode = 'raw';
     if (mode === 'raw') {
       ctx.fillStyle = rgba(look.grade[0], look.grade[1] * (1 - rk));

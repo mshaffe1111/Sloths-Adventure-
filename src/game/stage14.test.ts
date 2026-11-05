@@ -12,10 +12,18 @@ const cfg = {
 } as LevelConfig;
 const SEEDS = Array.from({ length: 20 }, (_, i) => 1 + i * 41);
 
-test('1-4: every roll keeps the plan, climbs from the floor to the crown, and takes two minutes', () => {
-  for (const s of SEEDS) {
-    const st = buildProtoStage(cfg, s, '1-4');
-    assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Learn', 'Test', 'Twist', 'Finish'], `seed ${s}`);
+test('1-4: every roll keeps the plan (the kept start, then creaking limbs, the climb-and-leap, the swing, the fork, across, the rope onto a limb and the high lift, the climax, the crown), climbs from the floor to the crown, and takes two minutes', () => {
+  for (const easy of [false, true]) for (const s of SEEDS) {
+    const st = buildProtoStage(cfg, s, '1-4', easy);
+    const names = st.proto.beats.map((b) => b[2]);
+    assert.deepEqual(names.slice(0, 8).map((n) => n.split(':')[0]), ['Learn', 'Test', 'Ramp', 'Spike', 'Ramp', 'Rest', 'Ramp', names[7].split(':')[0]], `seed ${s}`);
+    assert.deepEqual(names.slice(7, 9).map((n) => n.split(':')[0]).sort(), ['Counter', 'Twist'], `seed ${s}: the high lift and the rope onto a limb, in either order`);
+    assert.deepEqual(names.slice(9).map((n) => n.split(':')[0]), ['Climax', 'Cool-down'], `seed ${s}`);
+    // the creaking limbs: 0.6 s on Normal, longer on Easy (a cruise)
+    const limbs = st.platforms.filter((p) => p.type === 'fragile');
+    assert.ok(limbs.length >= 9 && limbs.every((p) => p.creak === (easy ? 1.2 : 0.6) && p.crumbleAfter === undefined), `seed ${s}: ${limbs.length} limbs`);
+    assert.ok(st.vines.some((v) => v.vineType === 'swing_liana'), `seed ${s}: the swing between trunks`);
+    assert.ok(st.enemies.length <= 1, `seed ${s}: at most the one snake on the way across`);
     assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
     assert.ok(st.exitTotemY < st.spawnY - 4000, `seed ${s}: a real climb (${st.spawnY - st.exitTotemY} px)`);
     assert.equal(st.exitTotemY, 400);
@@ -50,7 +58,7 @@ test('1-4: every rope hangs at grabbing height between two branches of its heigh
   const two = reachJump(0, true);
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-4');
-    assert.ok(st.ropes!.length >= 6, `seed ${s}`);
+    assert.ok(st.ropes!.length >= 4, `seed ${s}`);
     for (const r of st.ropes!) {
       const left = st.platforms.find((p) => Math.abs(p.y - r.g0) < 1 && Math.abs(p.x + p.width - 44 - r.x0) < 1);
       const right = st.platforms.find((p) => Math.abs(p.y - r.g1) < 1 && Math.abs(p.x + 44 - r.x1) < 1);
@@ -58,16 +66,18 @@ test('1-4: every rope hangs at grabbing height between two branches of its heigh
       assert.equal(r.g0 - r.y, ROPE_RISE);
       assert.ok(right!.x - (left!.x + left!.width) > two, `seed ${s}: rope ${r.id} spans a gap a double jump cannot`);
     }
-    // the twist: one rope far longer than the rest
+    // the long rope across the tree after the high lift: one rope far longer than the rest
     const spans = st.ropes!.map((r) => r.x1 - r.x0).sort((a, b) => b - a);
-    assert.ok(spans[0] > 900 && spans[0] > spans[1] * 1.6, `seed ${s}: the long rope (${spans[0]} vs ${spans[1]})`);
+    assert.ok(spans[0] > 600 && spans[0] > spans[1] * 1.2, `seed ${s}: the long rope (${spans[0]} vs ${spans[1]})`);
+    // and one rope whose far end is a creaking limb (the twist)
+    assert.ok(st.ropes!.some((r) => st.platforms.some((p) => p.type === 'fragile' && Math.abs(p.y - r.g1) < 1 && Math.abs(p.x + 44 - r.x1) < 1) || st.platforms.some((p) => p.type === 'fragile' && Math.abs(p.y - r.g0) < 1 && Math.abs(p.x + p.width - 44 - r.x0) < 1)), `seed ${s}: the rope onto a limb`);
   }
 });
 
 test('1-4: every trunk stands on a branch (or the floor) and reaches a branch at its top; the hollow is on a trunk with a seed in it', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-4');
-    for (const v of st.vines) {
+    for (const v of st.vines.filter((q) => q.vineType === 'tree_climb')) {
       assert.ok(st.platforms.some((p) => Math.abs(p.y - (v.bottomY + 6)) < 1 && v.x >= p.x && v.x <= p.x + p.width), `seed ${s}: trunk at ${v.x} stands on nothing`);
       assert.ok(st.platforms.some((p) => Math.abs(p.y - (v.topY + 2)) < 1 && v.x >= p.x && v.x <= p.x + p.width), `seed ${s}: trunk at ${v.x} leads nowhere`);
     }
@@ -75,5 +85,16 @@ test('1-4: every trunk stands on a branch (or the floor) and reaches a branch at
     assert.equal(h.length, 1);
     assert.ok(st.vines.some((v) => v.x === h[0].x && h[0].y > v.topY && h[0].y < v.bottomY), `seed ${s}: hollow on a trunk`);
     assert.ok(st.collectibles.some((c) => c.type === 'seed' && Math.abs(c.x - h[0].x) < 2 && Math.abs(c.y - h[0].y) < 10), `seed ${s}: a seed in the hollow`);
+  }
+});
+
+test('1-4: no bough crosses a liana; each hangs from the bough over it (a liana drawn through a branch, found 2026-11-04)', () => {
+  for (const easy of [false, true]) for (const s of SEEDS) {
+    const st = buildProtoStage(cfg, s, '1-4', easy);
+    for (const v of st.vines.filter((v) => v.isSwingingVine)) {
+      const across = st.platforms.filter((p) => p.x < v.x + 15 && p.x + p.width > v.x - 15 && p.y > v.topY + 2 && p.y < v.bottomY + 10);
+      assert.deepEqual(across.map((p) => p.id), [], `seed ${s} ${easy ? 'Easy' : 'Normal'}: liana at ${v.x}`);
+      assert.ok(st.platforms.some((p) => p.x < v.x + 15 && p.x + p.width > v.x - 15 && p.y <= v.topY + 2 && p.y > v.topY - 30), `seed ${s}: liana at ${v.x} hangs from nothing`);
+    }
   }
 });

@@ -1,3 +1,4 @@
+import { RHYTHM_STAGES } from './w1Rhythm.ts';
 import { petalPass } from './petalPass.ts';
 import { w4Normal } from './w4Normal.ts';
 import { groundToFloor } from './groundFloor.ts';
@@ -96,6 +97,8 @@ export interface GeneratedStage {
   zones?: import('./zones.ts').Zone[];
   /** World 8 Normal's swing and glide gaps (gen2 heartFalls): a fall there costs a heart and sets him back on the ledge he left */
   heartFalls?: Array<{ x0: number; x1: number }>;
+  /** the flags take in the order of `checkpoints` (the way's order), not by x: a stage whose way turns back on itself (1-2's loop, w1Rhythm.ts) */
+  flagsInOrder?: boolean;
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
   /**
@@ -2835,9 +2838,9 @@ const flagsCapped = (st: GeneratedStage): GeneratedStage => {
   return st;
 };
 
-/** the rebuilt World 1 stages whose Easy is built as Easy (buildProtoStage's `easy`), not only Normal's thinned by easyStage: 1-3 (the
- *  lead, 11-04); w1-rhythm-b's 1-1 and 1-4 join this set, and w1Rhythm.ts's RHYTHM_STAGES pass it too */
-const EASY_BUILT: ReadonlySet<string> = new Set(['1-3']);
+/** the hand-built stages whose builder lays Easy itself (the rest are made gentler on the built stage alone: easyMode.ts): w1-rhythm-b's
+ *  1-1 and 1-4, w8-rope2's 1-3 (the lead, 11-04); w1Rhythm.ts's RHYTHM_STAGES (1-2, 1-5) pass it too */
+const EASY_BUILT: ReadonlySet<string> = new Set(['1-1', '1-3', '1-4']);
 
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
@@ -2851,7 +2854,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) {
-    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && EASY_BUILT.has(config.id)));
+    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && (RHYTHM_STAGES.has(config.id) || EASY_BUILT.has(config.id))));
     addMissingFind(st);
     return difficulty === 'normal' ? w4Normal(st) : st;
   }

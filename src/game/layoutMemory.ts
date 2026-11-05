@@ -1,6 +1,7 @@
 import type { LevelConfig } from './types.ts';
 import { rollLayoutVariant } from './stageGenerator.ts';
 import { isW1Stage, w1RollDistance } from './w1Sections.ts';
+import { RHYTHM_STAGES, rhythmRollDistance } from './w1Rhythm.ts';
 import { GEN2_STAGES, gen2SeedCount, gen2SeedIndex } from './gen2/game.ts';
 
 /**
@@ -124,11 +125,14 @@ function awayFrom(id: string, prev: number, roll: () => number | null): number |
     return best;
   }
   if (!isW1Stage(id)) return best;
-  let far = w1RollDistance(id, prev, best);
-  for (let k = 1; k < AWAY.tries && far < 1; k++) {
+  // (the beat-built stages, w1Rhythm.ts: their own distance, which builds each roll's layout, so it stops at the first far enough)
+  const beatBuilt = RHYTHM_STAGES.has(id);
+  const dist = (x: number, y: number) => (beatBuilt ? rhythmRollDistance(id as '1-2' | '1-5', x, y) : w1RollDistance(id, x, y));
+  let far = dist(prev, best);
+  for (let k = 1; k < (beatBuilt ? 8 : AWAY.tries) && far < (beatBuilt ? AWAY.min : 1); k++) {
     const c = roll();
     if (c == null) break;
-    const d = w1RollDistance(id, prev, c);
+    const d = dist(prev, c);
     if (d > far) { best = c; far = d; }
   }
   return best;

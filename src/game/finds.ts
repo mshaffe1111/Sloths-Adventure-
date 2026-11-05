@@ -406,8 +406,9 @@ export function saveFinds(found: string[]) {
  * per stage (2026-11-01). Under 12 words, warm, and never the answer.
  */
 export const DOT_HINTS: Record<string, string> = {
-  w1_note: 'Bounce the mushroom on the petal stairs. Leaves hide a shelf.',
-  w1_keepsake: 'Climb the lone tree in Where She Walked. Check its branch.',
+  // (w1-rhythm, 2026-11-04: the rebuilt 1-2 and 1-5 moved these two; new lines, need Matt's approval)
+  w1_note: 'The Petal Trail: rest high up, then look way down.',
+  w1_keepsake: 'Where She Walked: at the quiet ledge, look up high.',
   w1_book: 'On The Long Branch, check by the first knot. Early!',
   w1_notch: 'Up the Kapok, somewhere on a ledge. Keep your eyes open.',
   w1_snail: 'In Branch Snakes he stays on the ground. Snails hate heights.',

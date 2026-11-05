@@ -20,8 +20,9 @@ import { petalPass } from './petalPass.ts';
 import { findW1Pits } from './w1Pits.ts';
 import { busiestScreen, clumpExtras, PER_SCREEN, rowExtras } from './petals.ts';
 import { badPickups, fixPickups } from './flowerReach.ts';
+import { dressSize } from './dressArt.ts';
 import { PAST_SHRINE } from './rules.ts';
-import { easyNode, stageBpm, traceNode, type Ledge, type NodeSpec, type Step, type Trace } from './beatTrace.ts';
+import { APRON, easyNode, stageBpm, traceNode, type Ledge, type NodeSpec, type Step, type Trace } from './beatTrace.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, reachJumpHeld, SAFE } from './physics.ts';
@@ -54,8 +55,10 @@ import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
-import { w1Chase, w1Kapok, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
+import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
+import { buildRhythmStage, rhythmPetalGoal } from './w1Rhythm.ts';
 import { W4Roll } from './w4Sections.ts';
+import { buildIntoCanopy, clearDress, splitPetals as splitPetals11 } from './w1Rise.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
@@ -115,12 +118,12 @@ export interface ProtoExtras {
   covers: LeafCover[];
   /** the beats, for the blueprint and the tests: [x0, x1, name] */
   beats: Array<[number, number, string]>;
-  /** pickups the last pass had to move to where he can get them (flowerReach.ts): a hand-built stage should need none */
-  movedPickups?: number;
+  /** a beat-built stage (w1Rhythm.ts: 1-2, 1-5): its music's BPM, its nodes on the tension curve, and how many times its dice were rolled again */
+  rhythm?: { bpm: number; nodes: import('./w1Rhythm.ts').LNode[]; reroll: number };
   /** a beat-traced stage's beat (beatTrace.ts): the validator counts its repeats as rhythm tokens (tools/validate/core.ts rhythmTokens) */
   bpm?: number;
-  /** 1-2's catch mushrooms (platform ids): one under each high branch's near end, a miss bounced back up to the trail (buildPlan catchUp) */
-  catchUps?: number[];
+  /** pickups the last pass had to move to where he can get them (flowerReach.ts): a hand-built stage should need none */
+  movedPickups?: number;
   /** hollows in climb trunks (1-4): drawn on the trunk at this height, glowing once he is close */
   hollows?: Array<{ x: number; y: number }>;
   /**
@@ -140,6 +143,14 @@ export interface ProtoExtras {
   /** a stage that climbs from the forest floor into the trees (1-1, w1Rise.ts): from height y0 to y1 (world y) the backdrop turns to the
    *  world's canopy strips (engine.ts setCanopy, as 1-8's and the ascents') */
   rise?: { y0: number; y1: number };
+  /** scenery trunks behind the boughs (not climbs: protoArt.ts setDecoTrunks), 1-1's canopy */
+  trunks?: Array<{ x: number; topY: number; bottomY: number; w?: number }>;
+  /** leafy clumps at the boughs' free ends, behind them (1-1's canopy; protoArt.ts setDecoTrunks) */
+  leaves?: Array<{ x: number; y: number; w: number; flip?: boolean }>;
+  /** 1-1's choice: the petals on each road, by id (the rest are on the shared path: 70/15/15, Matt 2026-11-04) */
+  roads?: { low: number[]; high: number[] };
+  /** 1-1's choice: each road's ledges [x0, x1, y], for the split (w1Rise.ts splitPetals) */
+  choice?: { low: Array<[number, number, number]>; high: Array<[number, number, number]> };
   /** 6-8's dressing from Matt's painted World 6 pieces: hides and arches on the shelves, the root wall behind (w6StiltArt.ts) */
   stilt?: import('./w6StiltArt.ts').StiltDecor[];
   /** 6-8's ledges painted in Matt's other World 6 pieces (their platforms are art 'stilt': w6StiltArt.ts) */
@@ -288,19 +299,6 @@ export function plainOrder(heights: readonly number[]): number[] {
 /** how high a double jump lifts him (computed once from the physics) */
 const RISE = maxRise();
 
-/**
- * 1-2 The Petal Trail asks for 80 petals, not the generated stage's 33 (Matt, 2026-10-23): the trail holds about half again as many, so he
- * has to follow most of it, high and low, to open the sanctuary. One petal in trails, at most six on a screen (petals.ts, Matt 2026-10-29)
- * leaves the trail 105-121 petals, so it asks for 72 (was 80), keeping it about half again as many.
- */
-export const PETAL_GOAL_12 = 72;
-/** 1-2's catch mushrooms (buildPlan catchUp) stand this far past the near end of the branch they bounce him back up to */
-export const CATCH_DX = 10;
-/** and under highLeaps' branches (240 up: a walk off one lands further on, and the bounce wants a second flick and a steer) */
-export const CATCH_HIGH_DX = -10;
-/** 1-5 More Petals asks for 77 (a step up from 1-2's 72; was 90 before the six-a-screen cap left it 108-122), and holds about one and
- *  a half times that */
-export const PETAL_GOAL_15 = 77;
 /** 1-9 The Boa's Branches asks for 16 (goals.ts withGoals sets Normal to Matt's share and Easy to its floor, as on main: the lead 11-04,
  *  1-9's own counted goals wait for its rework) */
 export const GUARD_GOAL_19 = 16;
@@ -366,6 +364,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   // water taught before it costs a life (LV-8), the petal trail (petalPass.ts): the pickups are final before the dressing sees them
   const st = petalPass(teachWater(buildPlan(config, seed, plan, easy)));
   if (plan === '1-3') splitPetals(st);
+  // (1-2's goal, from what it holds after the petal pass, w1Rhythm.ts rhythmPetalGoal)
+  if (plan === '1-2') rhythmPetalGoal(st, easy);
   // (World 1's real drops a builder lays, 1-3's climax on Normal and 1-9's hard vault, are painted drops, not water: a bank beside each
   // marked `pit: 'drop'`, w1Pits.ts; an unmarked floorless gap reads as 1-6's water)
   if (plan === '1-3' || plan === '1-9') {
@@ -375,6 +375,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       if (bank) bank.pit = 'drop';
     }
   }
+  // (1-1: the petals split 70/15/15 between the shared path and the choice's two roads, once the petal pass has laid them)
+  if (plan === '1-1') splitPetals11(st);
   // (5-3's quota is a share of the flowers it holds: of those the petal pass kept)
   if (plan === '5-3') st.config = { ...st.config, targetCount: Math.round(st.collectibles.filter((c) => c.type === 'flower').length * W5_HARVEST_SHARE) };
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
@@ -386,6 +388,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   // then the dressing, once the stage is final
   const out = st;
   addDress(out, seed);
+  // (1-1: the dressing off the play line and the shrine)
+  if (plan === '1-1') clearDress(out, (n) => dressSize(n as never));
   return out;
 }
 
@@ -477,7 +481,8 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
 
 /** `easy`: built for Easy (only the control test's long jumps differ, gaps; the rest of Easy is easyMode.ts on the built stage) */
 function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = false): GeneratedStage & { proto: ProtoExtras } {
-  if (plan === '1-4') return buildKapok(config, seed);
+  if (plan === '1-1') return buildIntoCanopy(config, seed, easy);
+  if (plan === '1-4') return buildKapok(config, seed, false, false, false, false, easy);
   if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
   if (plan === '4-3') return buildWaterfallSteps(config, seed);
@@ -491,10 +496,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   if (plan === '5-5') return buildW5Stage(config, seed, plan);
   if (plan === '6-8') return buildStiltClimb(config, seed);
   if (plan === '1-8') return buildLongBranch(config, seed);
+  // 1-2 and 1-5: built node by node on the music's beat (w1Rhythm.ts, W1-REBUILD-PLAN.md)
+  if (plan === '1-2' || plan === '1-5') return buildRhythmStage(config, seed, easy);
   const R = stream(seed);
   const P: Platform[] = [];
-  /** 1-2's catch mushrooms (catchUp) */
-  const CATCH_UPS: number[] = [];
   const V: Vine[] = [];
   const ROPES: Rope[] = [];
   const RIVERS: RiverZone[] = [];
@@ -1418,7 +1423,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const w = Math.round(guard ? R.r(240, 270) : R.r(170, 230));
       branch(bx, bx + w, y);
       // (the branches are 240 up: a bounce and a second flick; a walk off one carries him further, so its catch reaches back under the gap)
-      if (k > 0) catchUp(bx, CATCH_HIGH_DX);
       if (guard) snake(bx + w / 2, y, w - 100);
       else row(bx + 40, bx + w - 40, y - 34, 2, 'hibiscus');
       bx += w + Math.round(dbl ? two * R.r(0.6, 0.7) : one * R.r(0.4, 0.55));
@@ -1486,61 +1490,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   /** this roll's version of one of the stage's sections (w1Sections.ts) */
   const section = (slot: Slot) => w1Section(w1, w1Stage, slot, seed);
 
-  if (plan === '1-1') {
-    // 1-1 Into the Canopy: run and jump. Taught over soft moss, tested on stepping stones at three heights, and twisted at the end
-    // into gaps only the second jump crosses. The touch coach teaches the gestures at the start (engine.ts), so the hints come later.
-    // (Rebuilt 2026-10-28: the open ground between the pieces holds hops and dips, the stumps and stones stay one easy jump up, and
-    // the finish keeps the double jump to gaps over level stones: no tall double jumps in World 1's first stages, Matt.)
-    beat('Learn: run and jump', () => {
-      rest(R.r(400, 440));
-      lowStumps();
-      busy(1, ['log'], R.r(240, 290));
-      hint(x + 40, 'Jump the little gaps', 'Jump the little gaps', 'Jump the little gaps');
-      const one = reachJump(0, false);
-      for (const w of [one * 0.35, one * 0.45, one * 0.55]) {
-        const edge = x;
-        close();
-        const far = Math.round(edge + w);
-        softPit(edge, far);
-        open(far);
-        run(R.r(220, 300));
-      }
-      flag();
-    });
-    beat('Test: the stepping stones', () => {
-      hint(x + 60, 'Hop from stone to stone', 'Hop from stone to stone', 'Hop from stone to stone');
-      // (the stones climb 60 at most from one to the next, and the first stands 60 up: the kid bot missed 80 and more, 2026-10-28)
-      section('develop');
-      // (a dip before the twist's tip: the walk past its practice shelf follows)
-      run(R.r(60, 90));
-      dip();
-      run(R.r(120, 160));
-      flag();
-    });
-    beat('Twist: the second jump', () => {
-      hint(x + 60, 'Flick up again in the air to jump twice', 'Press Jump again in the air', 'Press Space again in the air');
-      section('twist');
-      flag();
-    });
-    beat('Finish', () => {
-      // more of the second jump and the stones, in this roll's rhythm, until even a quick player needs two minutes
-      section('finish');
-      homeRun();
-    });
-  }
-
-  /**
-   * 1-2's way back up (fix-petals, 2026-11-01): a mushroom on the floor at the near end of a high branch, so a hop that falls short of it
-   * (or a walk off the stair top under it) is one bounce back up to the trail, never the rest of the run's petals lost. The first-timer
-   * bot left 15-23 petals a run on 1-2's boughs, every one up a run it had fallen off with no way back, and the door stayed sealed on
-   * every Normal roll tested (70-77 of 92-99). 1-2 teaches the petal goal, so a missed hop costs a moment, not the goal. (A bounce goes
-   * up through the branch over it: branches are stood on from above only.)
-   */
-  function catchUp(bx: number, dx = CATCH_DX) {
-    if (plan !== '1-2') return;
-    CATCH_UPS.push(pid);
-    P.push({ id: pid++, x: Math.round(bx + dx), y: G - 30, width: 70, height: 30, type: 'bouncy' });
-  }
 
   /**
    * the petal stairs: stumps rising to a run of branches, the petals climbing with them. The forest floor carries on below (safe),
@@ -1555,15 +1504,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const w = R.r(115, 140);
       // (1-2: each step stands down into the ground, the bank broken around it, as lowStumps' do: the first, 40 px, was a thin ledge he
       // walked straight through on the floor, its petal over his head; fix-petals)
-      if (plan === '1-2') {
-        close();
-        block(x, x + w, h).height = h + BANK_H;
-        flower(x + w / 2, G - h - 34, 'orchid');
-        run(w);
-        open(x);
-        run(R.r(50, 75));
-        continue;
-      }
       block(x, x + w, h);
       flower(x + w / 2, G - h - 34, 'orchid');
       run(w + R.r(50, 75));
@@ -1575,7 +1515,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     for (let k = 0; k < n; k++) {
       const w = Math.round(R.r(220, 300));
       branch(bx, bx + w, y);
-      catchUp(bx);
       row(bx + 40, bx + w - 40, y - 34, 2, 'orchid');
       if (k === n - 2) nookAt = bx + w * 0.5;
       bx += w + Math.round(reachJump(0, false) * R.r(0.35, 0.5));
@@ -1619,7 +1558,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       for (let j = 0; j < n; j++) {
         const w = Math.round(R.r(200, 280));
         branch(bx, bx + w, y);
-        if (j > 0) catchUp(bx);
         row(bx + 40, bx + w - 40, y - 34, 2, 'hibiscus');
         bx += w + Math.round(reachJump(0, false) * R.r(0.35, 0.5));
       }
@@ -1705,51 +1643,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     pieces.push({ k: 'highrun', x0, x1: x });
   }
 
-  if (plan === '1-2') {
-    // 1-2 The Petal Trail: the petals show the way. Taught on the floor (they arc over each gap where the jump goes), tested up the
-    // stumps to the branches overhead, twisted into a trail that swaps between high and low. The stage asks for 33 of them.
-    // (Rebuilt 2026-10-28: the trail is bounces and arcs, up and down, where 1-1 is hops along stones; the steps are 40 up and wide,
-    // the hidden shelf is a mushroom up, and between the pieces the petals go up a mushroom and arc back down over a dip.)
-    beat('Learn: follow the petals', () => {
-      rest(R.r(300, 340));
-      // (the rest's first petal lay 60 px behind where he starts (spawnX 140): nobody walking on ever took it, so the stage that teaches
-      // the petal goal starts with none behind him; fix-petals)
-      for (let i = C.length - 1; i >= 0; i--) if (C[i].type === 'flower' && C[i].x < 140) C.splice(i, 1);
-      hint(x - 160, 'Follow the petals', 'Follow the petals', 'Follow the petals');
-      row(x - 160, x + 40, G - 34, 3, 'orchid');
-      const one = reachJump(0, false);
-      for (const w of [one * 0.4, one * 0.5, one * 0.6]) {
-        run(R.r(160, 220));
-        const edge = x;
-        close();
-        const far = Math.round(edge + w);
-        softPit(edge, far);
-        arc(edge - 50, far + 50, G - 110, 3, 'hibiscus');
-        open(far);
-      }
-      run(R.r(160, 220));
-      // (then the petals up the stumps, or up a mushroom, in this roll's rhythm)
-      section('start');
-      flag();
-    });
-    beat('Test: up to the branches', () => {
-      hint(x + 60, 'The petals go up', 'The petals go up', 'The petals go up');
-      // (every version climbs the stairs to the hidden shelf with World 1's note: w1Sections.ts)
-      section('develop');
-      flag();
-    });
-    beat('Twist: high and low', () => {
-      hint(x + 60, 'Stay on the petals, high or low', 'Stay on the petals, high or low', 'Stay on the petals, high or low');
-      section('twist');
-      flag();
-    });
-    beat('Finish', () => {
-      // (the trail's own beat, in this roll's rhythm: up a mushroom to the petals and down again, or up the stairs and along)
-      section('finish');
-      homeRun(['dip']);
-    });
-    thinFinish(120);
-  }
 
   /** branches over a soft pit with a snake on most of them: punch it or hop over it (falling only drops him to the moss) */
   function snakeBranches(n: number, y: number) {
@@ -2276,36 +2169,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     expert += (x - x0) / RUN + 3;
     pieces.push({ k: 'vault', x0, x1: x });
     vaults.push({ x: sx, edge, far, soft });
-  }
-
-  if (plan === '1-5') {
-    // 1-5 More Petals: everything so far, mixed. Every group of petals asks for a different move (a climb, a rope, a double jump, a
-    // bounce, a punch), then the petals go onto creaking branches that give way: grab and keep moving. The keepsake hides in a fern
-    // up a tree, and a seed far out from a lookout waits for the Leaf Glide.
-    // (Rebuilt 2026-10-28: a dip or a rock between the groups, and a finish of climbs, ropes, creaking runs and snakes, where 1-2's
-    // trail is bounces and stairs: the two read as different stages now.)
-    beat('Start', () => {
-      rest(R.r(400, 440));
-      busy(1, ['log']);
-      flag();
-    });
-    beat('Test: a move for every group', () => {
-      hint(x + 40, 'Every group of petals needs a different move', 'Every group of petals needs a different move', 'Every group of petals needs a different move');
-      // (every version climbs the tree with the keepsake in its fern: w1Sections.ts)
-      section('develop');
-      flag();
-    });
-    beat('Twist: creaking branches', () => {
-      hint(x + 60, 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving');
-      section('twist');
-      flag();
-    });
-    beat('Finish', () => {
-      section('finish');
-      glideLookout();
-      homeRun();
-    });
-    thinFinish(135);
   }
 
   /** the bush sizes (px wide); each painting keeps its own shape */
@@ -5725,7 +5588,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
   cid = heartsAtFlags(C, checkpoints, cid);
   // the puzzle rooms' own platforms (a seesaw's two ends, a gate's door): added once, here, so the game and the check see the same ground
   const kit: KitExtras | undefined = ROOMS.length ? { rooms: ROOMS } : undefined;
@@ -5757,7 +5620,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     proto: {
       ...(W3D.length ? { w3decor: W3D } : {}),
       ...(THORNS.length ? { thorns: THORNS } : {}),
-      hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(tracedBpm ? { bpm: tracedBpm } : {}), ...(CATCH_UPS.length ? { catchUps: CATCH_UPS } : {}), ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
+      hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(tracedBpm ? { bpm: tracedBpm } : {}), ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
       ...(MIX ? { mix: MIX, grant: ['shimmy'] as SkillId[] } : {}),
       ...(W4C.length || W4K.length || W4R.length || Object.keys(W4X).length ? { w4: { ...W4X, ...(W4C.length ? { chimes: W4C } : {}), ...(W4K.length ? { knots: W4K } : {}), ...(W4R.length ? { rocks: W4R } : {}) } } : {}),
     },
@@ -5769,6 +5632,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
 /** the kapok's width (the engine keeps him inside it) and the margin nothing is built in */
 const KAPOK_W = 3200;
 const KAPOK_MARGIN = 90;
+/** 1-4's creaking limbs hold this long once stepped on (s): time to recover, not to stand (STAGE-RULES §0b.4) */
+const CREAK_S = 0.6;
+/** and on Easy, a cruise (STAGE-RULES §0.5): time enough to stop and go again */
+const CREAK_EASY = 1.2;
+/** 1-4's nodes, named as pieces for the validator's look (what the player climbs, swings and rides in each) */
+const PIECE14: Record<string, string> = {
+  Learn: 'trunks', Test: 'zigzag', Teach: 'limbs', Spike: 'trunk-limbs', Ramp: 'swing', Rest: 'fork', Twist: 'rope-limb', Counter: 'lift-rope', Climax: 'crown-climb', 'Cool-down': 'crown',
+};
 /**
  * 4-6's mist: the wide ledge at the foot of each hidden column (it catches every miss from the column), the three lanes the small
  * hidden ledges stand in (their middles this far apart) and how wide they are, how long standing still takes to settle the mist (s),
@@ -5825,7 +5696,7 @@ export const KNOT_PULLEY_TIPS: RoomTips = { enter: 'I knotted us a pulley!', hol
  * mist in turn; then the crown and the shrine. It is a long stage (stageSeconds('4-6'), four minutes). No glide is needed (4-7 is the
  * first stage that needs the leaf).
  */
-export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false, cliff = false, mist = false): GeneratedStage & { proto: ProtoExtras } {
+export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false, cliff = false, mist = false, easy = false): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
   const W = KAPOK_W;
   const P: Platform[] = [];
@@ -5961,10 +5832,17 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     if (group.length) hopGroups.push(group);
   };
   const flag = () => checkpoints.push({ x: Math.round(cur.x + cur.width / 2), y: cur.y, reached: false });
+  /** 1-4's pieces (the validator's look, tools/validate/look.ts): each node's kind and the span of the tree its platforms cover */
+  const pieces14: Array<{ k: string; x0: number; x1: number }> = [];
   const beat = (name: string, f: () => void) => {
     const b0 = cur ? cur.y : 0;
+    const p0 = P.length;
     f();
     beats.push([b0, cur.y, name]);
+    if (squirrels && P.length > p0) {
+      const add = P.slice(p0);
+      pieces14.push({ k: /across/.test(name) ? 'across' : PIECE14[name.split(':')[0]] ?? 'climb', x0: Math.min(...add.map((p) => p.x)), x1: Math.max(...add.map((p) => p.x + p.width)) });
+    }
   };
 
   // ---- 1-4's squirrels' lift (the shared puzzle kit, puzzleKit.ts: the counterweight basket and its lift), 2026-10-28
@@ -6102,6 +5980,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         climb(Math.round(R.r(260, 300)));
       }
       flag();
+      // (1-4 climbs on from here by its own nodes: below)
+      return;
     }
     // 4-1: Dot's knot pulley, once (the basket hangs low beside the lift: stand on it and a tap sets a stone in)
     if (cliff) {
@@ -6118,17 +5998,15 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     let n = 0;
     // (4-6 leaves room for the mist and the nests, which take a while: it is a longer stage, stageSeconds('4-6'))
     // (and since 2026-10-28 its pinwheel lift a second time: a shorter climb across the tree leaves it room, PINWHEEL_AGAIN)
-    // (1-4, the variety pass 2026-10-28: the roll's rhythm of hops and ropes, and how often a snake waits: w1Sections.ts w1Kapok)
-    const climb14 = squirrels ? w1Kapok(seed) : null;
     while (expert < (mist ? stageSeconds('4-6') - MIST_LEAVES - PINWHEEL_AGAIN : EXPERT_SECONDS - 32) && n < 30) {
       // (4-1, 2026-10-28: the cliff climbs mostly by hops up wide ledges, where its rocks come loose, and a rope now and then: 4-6's
       // climb is the tree's ropes. The stage inspector found the two alike on every measure)
-      if (climb14 ? climb14.steps[n % climb14.steps.length] === 'hops' : w4Climb ? w4Climb.hopsAt(n) : cliff ? n % 3 !== 1 : n % 3 === 2) hops(R.i(2, 3), cliff);
+      if (w4Climb ? w4Climb.hopsAt(n) : cliff ? n % 3 !== 1 : n % 3 === 2) hops(R.i(2, 3), cliff);
       else rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
       // (the sinkhole is a quiet climb toward the moonlight: nothing prowls on its shelves)
       // (the cliff has its falling rocks instead)
-      if (n >= 2 && cur.width >= 320 && R.chance(climb14?.snakes ?? 0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
+      if (n >= 2 && cur.width >= 320 && R.chance(0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
       climb(Math.round(R.r(260, 320)));
       n++;
       if (n % 2 === 0) flag();
@@ -6248,8 +6126,325 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     flag();
   });
 
+  // ---- 1-4's climb above the first lift (the World 1 rebuild, w1-rhythm-b 2026-11-04; reference/notes/w1-rhythm-b-plan.md): the old
+  // fill of trunk, plank, trunk, rope until the clock said two minutes is gone. Whole notes and whole-bar waits (the lifts, the ropes, the
+  // fork), and the creaking limbs on half notes (land and go: they hold 0.6 s). 1-4's pair, in one move: up a trunk and off it onto a
+  // creaking limb. The hops on the beat are traced (beatTrace.ts) and mirrored when the run goes left.
+  const bpm14 = squirrels ? stageBpm(config) : 0;
+  /** a run on the beat off the end of `cur` the way `d` goes; `low(gap, a, b)` puts what goes under each gap */
+  const beatRun = (bars: string[], steps: Step[], d: 1 | -1, low?: (x0: number, x1: number, y: number) => void) => {
+    const edge = d === 1 ? cur.x + cur.width : cur.x;
+    const spec = { bpm: bpm14, x: 0, y: cur.y, bars, steps };
+    const tr = traceNode(easy ? easyNode(spec) : spec);
+    // (the tracer's entrance apron is the last APRON px of the ledge he is on: x 0 of the trace sits APRON back from its end)
+    const X = (u: number) => (d === 1 ? edge - APRON + u : edge + APRON - u);
+    const span = (u0: number, u1: number) => [Math.round(Math.min(X(u0), X(u1))), Math.round(Math.max(X(u0), X(u1)))] as const;
+    const [, apEnd] = d === 1 ? span(0, tr.ledges[0].x1) : [0, 0];
+    if (d === 1) cur.width = Math.max(cur.width, apEnd - cur.x);
+    else {
+      const [a0] = span(0, tr.ledges[0].x1);
+      const right = cur.x + cur.width;
+      cur.x = Math.min(cur.x, a0);
+      cur.width = right - cur.x;
+    }
+    let last = cur;
+    tr.ledges.slice(1).forEach((l) => {
+      const [a, b] = span(l.x0, l.x1);
+      const p = ledge(a, b, l.y);
+      if (l.surface === 'crumble') {
+        p.type = 'fragile';
+        p.creak = easy ? CREAK_EASY : CREAK_S;
+      } else if (Math.abs(p.y - last.y) > 30 || p.width > 160) flower(p.x + p.width / 2, p.y - 34, 'orchid');
+      last = p;
+    });
+    if (low) for (const g of tr.gaps) {
+      const [a, b] = span(g.x0, g.x1);
+      const ys = tr.ledges.filter((l) => Math.abs(l.x1 - g.x0) < 2 || Math.abs(l.x0 - g.x1) < 2).map((l) => l.y);
+      low(a, b, Math.max(...ys));
+    }
+    expert += tr.seconds - APRON / RUN;
+    cur = last;
+    return tr;
+  };
+  /** how far a run reaches past the end of `cur` (px), traced as beatRun would */
+  const runSpan = (bars: string[], steps: Step[]) => {
+    const spec = { bpm: bpm14, x: 0, y: cur.y, bars, steps };
+    return traceNode(easy ? easyNode(spec) : spec).x1 - APRON;
+  };
+  /** the room past `cur` the way d goes */
+  const roomTo = (d: 1 | -1) => (d === 1 ? W - KAPOK_MARGIN - (cur.x + cur.width) : cur.x - KAPOK_MARGIN);
+  /** the first of these runs that fits the way d goes, else the first that fits the other way: its bars, steps and way */
+  const fitRun = (d: 1 | -1, runs: Array<[string[], Step[]]>, after = 0): [string[], Step[], 1 | -1] => {
+    // (`after`: room to leave past the run for what comes next the same way)
+    for (const dd of [d, d === 1 ? -1 : 1] as const) for (const [b, st] of runs) if (runSpan(b, st) + 60 + after <= roomTo(dd)) return [b, st, dd];
+    return [runs[runs.length - 1][0], runs[runs.length - 1][1], roomTo(1) > roomTo(-1) ? 1 : -1];
+  };
+  /** a trunk at x up from `cur` by h, topping out on a ledge from a to b (each side of the trunk it grows out on) */
+  const trunkUp = (tx: number, h: number, a: number, b: number) => {
+    const y = cur.y - h;
+    trunk(Math.round(tx), cur.y, y);
+    for (let i = 0; i < 2; i++) flower(tx, cur.y - 80 - (h - 140) * i, 'hibiscus');
+    expert += h / CLIMB + 0.8;
+    cur = ledge(a, b, y);
+  };
+  /** a quiet stretch with root knots (painted rocks on the bough: bumps in the walk) */
+  const knots14 = (n: number) => {
+    void n;
+    expert += cur.width / RUN;
+  };
+  /**
+   * 1-4's long boughs get root knots, a painted mossy rock every ~360 px, the bough broken round each (on one long piece under a rock the
+   * level check's route walked through it): a walk along one is never 2.5 s with nothing under the thumb. Not on a lift room's floor, by a
+   * rope's end or a trunk, nor on a snake's bough.
+   */
+  const knotLongBoughs = (from: number) => {
+    const roomIds = new Set(ROOMS.flatMap((r) => [...(r.ground ?? []), r.left.on, r.right.on]));
+    for (const p of P.slice(from)) {
+      // (only what meets this bough: a trunk standing on it or topping out on it, a rope tied to it)
+      const busyX = [...V.filter((v) => Math.abs(v.bottomY + 6 - p.y) < 30 || Math.abs(v.topY + 2 - p.y) < 30).map((v) => v.x), ...ROPES.filter((r) => Math.abs(r.g0 - p.y) < 30 || Math.abs(r.g1 - p.y) < 30).flatMap((r) => [r.x0, r.x1])];
+      if (p.type !== 'solid' || p.style !== 'branch' || p.width < 480 || roomIds.has(p.id)) continue;
+      if (E.some((m) => Math.abs(m.y + 14 - p.y) < 4 && m.x > p.x && m.x < p.x + p.width)) continue;
+      const near = (x: number) => busyX.some((b) => Math.abs(b - x) < 130) || P.some((q) => q !== p && Math.abs(q.y - p.y) < 30 && Math.abs(q.x + q.width / 2 - x) < q.width / 2 + 40 && q.height === 50);
+      const n = Math.max(1, Math.floor((p.width - 200) / 360));
+      const at: number[] = [];
+      for (let k = 1; k <= n; k++) {
+        // (the nearest free spot to where it would sit evenly: clear of a trunk, a rope's end and another knot)
+        const ideal = p.x + (p.width * k) / (n + 1);
+        const spots = Array.from({ length: 13 }, (_, i) => ideal + (i % 2 ? 1 : -1) * Math.ceil(i / 2) * 30).filter((kx) => kx > p.x + 110 && kx < p.x + p.width - 110 && at.every((q) => Math.abs(q - kx) > 220));
+        const kx = spots.find((q) => !near(q));
+        if (kx !== undefined) at.push(kx);
+      }
+      at.sort((u, v) => u - v);
+      if (!at.length) continue;
+      // the bough in pieces between the knots (the first piece keeps the bough's id, for everything that refers to it)
+      const x1 = p.x + p.width;
+      let a = p.x;
+      const cuts = at.map((kx) => [Math.round(kx - 45), Math.round(kx + 45)] as const);
+      p.width = cuts[0][0] - p.x;
+      for (let i = 0; i < cuts.length; i++) {
+        P.push({ id: pid++, x: cuts[i][0], y: p.y - 26, width: 90, height: 50, type: 'solid', style: 'moss_stone' });
+        // (a petal over the knot sits on its top now)
+        for (const c of C) if (c.type === 'flower' && c.x > cuts[i][0] - 20 && c.x < cuts[i][1] + 20 && Math.abs(c.y - (p.y - 34)) < 6) c.y = p.y - 26 - 34;
+        a = cuts[i][1];
+        const b = i + 1 < cuts.length ? cuts[i + 1][0] : x1;
+        if (b - a > 4) P.push({ ...p, id: pid++, x: a, width: b - a });
+      }
+    }
+  };
+  const p14 = { from: 0 };
+
+  if (squirrels) {
+    p14.from = P.length;
+    // (a flag only where it is higher than the last: on a climb the engine takes a flag only further up, checkpoint 'further')
+    const flag = () => {
+      const last = checkpoints[checkpoints.length - 1];
+      if (!last || cur.y < last.y - 10) checkpoints.push({ x: Math.round(cur.x + cur.width / 2), y: cur.y, reached: false });
+    };
+    const C_ = (dy: number): Step => ({ move: 'jump', dy, surface: 'crumble' });
+    const B_ = (dy: number): Step => ({ move: 'jump', dy, surface: 'branch' });
+    const flip = (d: 1 | -1): 1 | -1 => (d === 1 ? -1 : 1);
+    /** the bough one hop under a gap (a miss here costs a hop back up) */
+    const hopUnder = (x0: number, x1: number, y: number) => {
+      if (!blocked(x0 - 30, x1 + 30, y + 90)) ledge(x0 - 30, x1 + 30, y + 90);
+    };
+    // (the way each node goes is planned so the climb fits the tree: the creaking run goes to the side with room, the spike comes back,
+    // the swing carries on, the fork turns, across the tree is always to the left, so the high lift (built going right) has its room)
+    let way: 1 | -1 = roomTo(-1) > roomTo(1) ? -1 : 1;
+
+    // ---- 4. Creaking limbs, the climbing kind (1-2 teaches crumbling first, the rotten wood): one limb over a drop of one hop onto a
+    // wide bough (a miss is safe), a whole bar's wait, then two limbs and a bough.
+    // A limb is left on the next half note at the latest (it holds 0.6 s); the waits are on the boughs.
+    beat('Ramp: creaking limbs', () => {
+      // (the lift's ledge is the room's far end: back the other way the run would lie over its basket and plank, where the acorn is
+      // thrown and the plank rides (Matt, 2026-10-29). On to the right; with no room there, a trunk up out of the room's air first)
+      way = 1;
+      if (roomTo(1) < 1500) {
+        const tx = cur.x + cur.width - 60;
+        trunkUp(tx, Math.round(R.r(230, 250)), tx - 300, tx + 40);
+        way = -1;
+      }
+      hint('This limb creaks. Keep moving!', 'This limb creaks. Keep moving!', 'This limb creaks. Keep moving!', cur.y + 10);
+      const [bars, steps, d] = fitRun(way, [
+        [['h...h...', 'h...h...', 'h.......', 'h.......'], [C_(0), B_(-30), C_(20), C_(0), B_(-20), B_(10)]],
+        [['h...h...', 'h...h...', 'h.......'], [C_(0), B_(-30), C_(20), C_(0), B_(-20)]],
+      ]);
+      beatRun(bars, steps, d, hopUnder);
+      way = d;
+      flag();
+    });
+
+    // ---- 5. The spike: up a tall trunk and off its top straight onto the creaking limbs (the pair), four of them at uneven gaps and
+    // heights, back the way he came. A miss drops onto the creaking run, about 340 below: back along it to the trunk, and up again.
+    beat('Spike: climb and leap', () => {
+      const d = flip(way);
+      const tx = d === 1 ? cur.x + 70 : cur.x + cur.width - 70;
+      trunkUp(tx, Math.round(R.r(330, 360)), d === 1 ? tx - 40 : tx - 230, d === 1 ? tx + 230 : tx + 40);
+      const [bars, steps, dd] = fitRun(d, [
+        [['h...h...', 'h...h...', 'h.......'], [C_(10), C_(-20), C_(30), C_(0), B_(-10)]],
+        [['h...h...', 'h.......'], [C_(10), C_(-20), B_(20)]],
+      ], 820);
+      beatRun(bars, steps, dd);
+      way = dd;
+      row(cur.x + 40, cur.x + cur.width - 40, cur.y - 34, 2, 'hibiscus');
+      flag();
+    });
+
+    // ---- 5b. The swing between trunks (1-2's liana comes back): from the spike's end, a liana over the gap to the next trunk's bough
+    /** a liana from the end of `cur` over a gap to a bough, checked with the swing's own physics; the way `way` goes, else back */
+    /** the top of the last liana: a bough built over it sits above its top, so the liana hangs from it and never through it */
+    let swingTop = Infinity;
+    const overSwing = (h: number, below = 0) => (swingTop < Infinity ? Math.max(h, cur.y - swingTop + 20 + below) : h);
+    const swingOn = (): boolean => {
+      const y = cur.y;
+      for (const d of [way, flip(way)] as const) {
+        const edge = d === 1 ? cur.x + cur.width : cur.x;
+        for (let tries = 0; tries < 16; tries++) {
+          const d0 = R.r(170, 200), d1 = tries > 9 ? R.r(190, 215) : R.r(200, 240);
+          const top = Math.round(y - R.r(360, 400));
+          const w = Math.round(R.r(300, 360));
+          // (checked going right; laid mirrored when the way on is left)
+          const v: Vine = { id: -1, x: edge + d0, topY: top, bottomY: Math.min(y + 30, top + 410), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true };
+          const far: Platform = { id: -99, x: edge + d0 + d1, y, width: w, height: 24, type: 'solid' };
+          if (!(jumpGrab(edge, y, v) >= 4 && landWindow(null, v, far) >= 8)) continue;
+          const fx0 = d === 1 ? far.x : 2 * edge - far.x - w;
+          if (fx0 < KAPOK_MARGIN || fx0 + w > W - KAPOK_MARGIN || blocked(fx0, fx0 + w, y)) continue;
+          const vx = d === 1 ? v.x : 2 * edge - v.x;
+          V.push({ ...v, id: vid++, x: Math.round(vx), swayPhase: (vx * 0.013) % 6.28 });
+          row(Math.min(edge, vx) + 20, Math.max(edge, vx) - 20, Math.min(y - 150, top + 200), 2, 'hibiscus');
+          cur = ledge(fx0, fx0 + w, y);
+          swingTop = top;
+          expert += (d0 + d1) / 430 + 0.8 + w / RUN;
+          way = d;
+          return true;
+        }
+      }
+      return false;
+    };
+    beat('Ramp: the swing', () => {
+      swingOn();
+      flag();
+    });
+
+    // ---- 6. The fork (a rest): a wide ledge in the fork of the tree, turned back toward the middle, root knots, the crown in view above
+    // (sideways: the climb looks up)
+    beat('Rest: the fork', () => {
+      const tx = way === 1 ? cur.x + cur.width - 60 : cur.x + 60;
+      const w = Math.round(R.r(600, 660));
+      // (the ledge grows back the way he came, over the swing's gap, toward the middle of the tree)
+      // (a tall trunk: the run across the tree from here comes down a little, and must stay out of a double jump's reach of the spike's
+      // row under it, or the second jump off the spike's trunk would skip the limbs, the swing and the fork)
+      trunkUp(tx, overSwing(Math.round(R.r(340, 360))), way === 1 ? tx - w : tx - 40, way === 1 ? tx + 40 : tx + w);
+      hint('The crown! Up there, see?', 'The crown! Up there, see?', 'The crown! Up there, see?', cur.y + 10);
+      knots14(3);
+      flag();
+    });
+
+    // ---- 6b. Across the tree, to the left (sideways and down before up): whole-note hops down along the boughs, a snake on the widest
+    // (1-3's punch or a stomp), a bough one hop under each gap
+    beat('Ramp: across the tree', () => {
+      const before = P.length;
+      const [bars, steps, d] = fitRun(-1, [
+        [['h.......', 'h.......', 'h...h...', 'h.......'], [B_(-30), B_(0), B_(-20), B_(30), B_(-10)]],
+        [['h.......', 'h...h...', 'h.......'], [B_(-30), B_(-20), B_(30), B_(-10)]],
+        [['h.......', 'h.......'], [B_(-30), B_(10)]],
+      ]);
+      // (no catch boughs here: between the levels they were steps a second jump took to skip whole nodes; a miss drops to the fork)
+      beatRun(bars, steps, d);
+      way = d;
+      const wide = P.slice(before).filter((p) => p.type === 'solid' && Math.abs(p.y - cur.y) < 80).sort((a, b) => b.width - a.width)[0];
+      if (wide && wide.width >= 420) snake(wide.x + wide.width / 2, wide.y, Math.min(120, wide.width - 300));
+      flag();
+    });
+
+    // ---- 6c. The rope onto a limb (the twist on the pair: off the end of a rope onto a creaking limb, and go): up a trunk at the end of
+    // the run across, a rope over the gap, its far end a creaking limb, then a hop onto a bough
+    const twistNode = () => {
+    beat('Twist: the rope onto a limb', () => {
+        // (the rope goes the way with more room; the trunk stands at the other end of the bough he is on)
+        const tw: 1 | -1 = roomTo(1) >= roomTo(-1) ? 1 : -1;
+        const tx = tw === 1 ? cur.x + 70 : cur.x + cur.width - 70;
+        const lw = Math.round(R.r(240, 280));
+        trunkUp(tx, Math.round(R.r(300, 330)), tw === 1 ? tx - 40 : tx - lw, tw === 1 ? tx + lw : tx + 40);
+        dir = tw;
+        const gap = Math.round(R.r(400, 460));
+        if (roomTo(tw) >= gap + 160 + 300) {
+          rope(gap, 160, 3);
+          cur.type = 'fragile';
+          cur.creak = easy ? CREAK_EASY : CREAK_S;
+          // (the limb is left at once: a hop on the next half note onto a bough)
+          beatRun(['h.......'], [B_(-20)], tw);
+          way = tw;
+        }
+        flag();
+      });
+    };
+    const counterNode = () => {
+    // ---- 7. The counter-melody: the squirrels' high lift (flick up to throw), then sideways: the long rope across the tree
+      beat('Counter: the high lift and the long rope', () => {
+        for (let k = 0; k < 2 && !liftRoom(true); k++) {
+          // (no room to the right: a trunk up from the near end first, one step only)
+          dir = -1;
+          climb(Math.round(R.r(220, 260)));
+        }
+        flag();
+        // (on along the lift's ledge to the long rope, at its height: a drop back down here put its far end by the rope onto a limb, a hop
+        // that skipped the lift and the rope)
+        dir = roomTo(1) > roomTo(-1) ? 1 : -1;
+        hint('A long way across. Keep sliding', 'A long way across. Keep holding the way to go', 'A long way across. Keep holding the way to go', cur.y + 10);
+        rope(Math.max(420, Math.min(Math.round(R.r(820, 950)), Math.round(roomTo(dir) - 340))), 320, 5);
+        way = dir;
+        flag();
+      });
+    };
+    // (the high lift is built going right, come into at its left end: when the climb is on the left with room, the lift first, else the
+    // twist first, its rope going left, and the lift after)
+    if (roomTo(1) >= 900) {
+      counterNode();
+      twistNode();
+    } else {
+      twistNode();
+      counterNode();
+    }
+
+    // ---- 8. The climax: a short trunk, two limbs, a long plank, a tall trunk, two limbs, a short rope, and the crown's trunk
+    beat('Climax: up through the crown', () => {
+      // (each piece carries on away from the last, the way there is room: a piece that came back would sit by the one before it)
+      let d = flip(way);
+      let tx = d === 1 ? cur.x + 70 : cur.x + cur.width - 70;
+      // (tall enough that the climax's first bough is out of a double jump's reach of the high lift's ledge, back across the tree)
+      trunkUp(tx, Math.round(R.r(360, 380)), d === 1 ? tx - 40 : tx - 200, d === 1 ? tx + 200 : tx + 40);
+      let [bars, steps, dd] = fitRun(d, [[['h...h...'], [C_(20), B_(-10)]]], 300);
+      beatRun(bars, steps, dd);
+      way = dd;
+      // (the plank runs on, long)
+      if (dd === 1) cur.width = Math.max(cur.width, Math.min(420, W - KAPOK_MARGIN - cur.x));
+      else { const r = cur.x + cur.width; cur.x = Math.max(KAPOK_MARGIN, Math.min(cur.x, r - 420)); cur.width = r - cur.x; }
+      expert += 200 / RUN;
+      // a tall trunk at the plank's far end, and two limbs on, the same way, then a liana over the next gap
+      tx = way === 1 ? cur.x + cur.width - 70 : cur.x + 70;
+      trunkUp(tx, Math.round(R.r(320, 350)), way === 1 ? tx - 220 : tx - 40, way === 1 ? tx + 40 : tx + 220);
+      // (a bough first, then the limb: the climb straight onto a limb is the spike's and the climax's first; four of them read as one
+      // unit repeated)
+      [bars, steps, dd] = fitRun(flip(way), [[['h...h...', 'h.......'], [B_(10), C_(30), B_(-20)]], [['h...h...'], [B_(0), C_(20)]]], 700);
+      beatRun(bars, steps, dd);
+      way = dd;
+      swingOn();
+      // and once more, higher: a trunk off the swing's bough and a limb on, back across, to the crown's trunk
+      {
+        const d3 = flip(way);
+        const t3 = d3 === 1 ? cur.x + 70 : cur.x + cur.width - 70;
+        trunkUp(t3, overSwing(Math.round(R.r(280, 300)), 24), d3 === 1 ? t3 - 40 : t3 - 200, d3 === 1 ? t3 + 200 : t3 + 40);
+        const [b3, s3, e3] = fitRun(d3, [[['h...h...', 'h.......'], [B_(-20), C_(10), B_(30)]], [['h...h...'], [B_(-20), C_(10)]]], 400);
+        beatRun(b3, s3, e3);
+        way = e3;
+      }
+      flag();
+    });
+    knotLongBoughs(p14.from);
+  }
+
   // ---- Twist: the long rope across the widest gap, with the whole crown around him
-  if (!mist) beat('Twist: the long rope', () => {
+  if (!mist && !squirrels) beat('Twist: the long rope', () => {
     // set out from the side of the tree that leaves the most room
     dir = cur.x + cur.width / 2 < W / 2 ? 1 : -1;
     hint('A long way across. Keep sliding', 'A long way across. Keep holding the way to go', 'A long way across. Keep holding the way to go', cur.y + 10);
@@ -6461,7 +6656,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   });
 
   // ---- Finish: up to the crown and the shrine
-  beat('Finish: the crown', () => {
+  beat(squirrels ? 'Cool-down: the crown' : 'Finish: the crown', () => {
     if (mist) {
       // 4-6: the high mist, up past the nests: two tall columns with a ledge to stop on halfway, then the crown and the shrine.
       // (The first trunk stands at the far end of the last ledge across the tree, past its nest.)
@@ -6478,16 +6673,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       row(cur.x + 80, cur.x + 300, top - 34, 3, 'hibiscus');
       return;
     }
-    climb(Math.round(R.r(280, 320)));
-    // 1-4: the squirrels' lift again, its basket hung high now (flick up to throw the acorn in)
-    if (squirrels) {
-      for (let k = 0; k < 4 && !liftRoom(true); k++) {
-        dir = -1;
-        hops(2);
-        climb(Math.round(R.r(260, 300)));
-      }
-      flag();
-    }
+    // (1-4's crown comes straight off its climax: no climb or lift here)
+    if (!squirrels) climb(Math.round(R.r(280, 320)));
     // (4-1: up the cliff's wide ledges, where its rocks come loose)
     hops(2, cliff);
     // the crown: a wide branch with the shrine on it
@@ -6499,6 +6686,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     if (!cliff) {
       cur = ledge(tX - 40, Math.min(W - KAPOK_MARGIN, tX + 560), top);
       row(cur.x + 80, cur.x + 300, top - 34, 3, 'hibiscus');
+      // (1-4: the walk along the crown to the shrine, about 420 px, is part of a quick player's time too)
+      if (squirrels) expert += 420 / RUN;
       return;
     }
     // the cliff top: a ledge, the gap, and the fern frond at its edge that bridges it for a sloth who waits. The bridge goes toward
@@ -6906,7 +7095,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     exitTotemX: exitX,
     exitTotemY: crown.y,
     checkpoints: checkpoints.sort((a, b) => b.y - a.y),
-    meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: H } },
+    meta: { attempt: seed, chunks: pieces14.map((p) => p.k), width: W, ...(pieces14.length ? { pieces: pieces14 } : {}), timing: { layoutSeconds: expert, decorSeconds: 0, route: H } },
     ...(kit ? { kit } : {}),
     ...(gusts.length ? { zones: gusts } : {}),
     proto: {

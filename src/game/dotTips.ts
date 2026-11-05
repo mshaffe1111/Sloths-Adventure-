@@ -25,6 +25,13 @@ export const FIRST_OF: Readonly<Record<string, string>> = {
   // World 1
   'hint.1-1.double': 'double',
   'hint.1-5.shiny': 'golden',
+  // (the beat-built 1-2 turns back on itself, and 1-5's trail is Meeca's marks and snap twigs: w1Rhythm.ts)
+  'hint.1-2.back': 'turnBack',
+  'hint.1-2.rotten': 'rottenWood',
+  'hint.1-5.mark': 'meecaMark',
+  'hint.1-5.snap': 'snapTwig',
+  // (the coiled boa is met first on 1-5 now, the kick its answer: 1-9's guard line is the reminder)
+  'hint.1-5.boa': 'guardSnake',
   'hint.1-6.log': 'pushLog',
   'eng.watch.hide.bush': 'watcher',
   'hint.1-7.hide': 'watcher',

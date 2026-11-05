@@ -387,12 +387,13 @@ for (const [name, who] of WHO) {
 }
 
 for (const [name, who] of WHO) {
-  test(`${name}: on a stage after the one whose hint teaches it, he knows the stomp (after 1-3) and the kick (after 1-9) from the start`, () => {
+  test(`${name}: on a stage after the one whose hint teaches it, he knows the stomp (after 1-3) and the kick (after 1-5, the coiled boa's first stage since the lead's ruling 2026-11-04) from the start`, () => {
     const knows = (id: string) => (new FirstTimerRun(id, 1, who, { route: [{ x: 100, y: Y }], cap: 1, rescueAfter: 1000 }) as unknown as { learned: Set<string> }).learned;
     assert.ok(!knows('1-2').has('stomp'), 'before 1-3 he does not know the stomp');
     assert.ok(knows('1-5').has('stomp'), 'after 1-3 he knows the stomp');
-    assert.ok(!knows('1-8').has('kick'), 'before 1-9 he does not know the kick');
-    assert.ok(knows('2-1').has('kick'), 'after 1-9 he knows the kick');
+    assert.ok(!knows('1-4').has('kick'), 'before 1-5 he does not know the kick');
+    assert.ok(knows('1-6').has('kick'), 'after 1-5 he knows the kick');
+    assert.ok(knows('2-1').has('kick'), 'and on every later stage');
     for (const seed of [1, 2]) {
       const s = foeRun(who, seed, '1-5', foe('snake', 1000, { trick: 'lunge', state: 'patrol', stagger: 4, staggerMax: 4 }), null);
       assert.ok(s.stomped, `seed ${seed}: on 1-5 he did not stomp the dazed snake`);

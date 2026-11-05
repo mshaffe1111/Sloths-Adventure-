@@ -37,7 +37,7 @@
  * is 0.23 s: a jump (0.65 s in the air) needs 3 eighths before the next mark, a hop (0.44 s) 2, a double (1.05 s) 5.
  * Limits measured: a flat jump's gap ~104 px, a double's ~200; a face (stump, bank) up to 70 px Normal / 42 Easy; a branch up to 90.
  */
-import { LAND_HALF, PHYS, TAKEOFF_SLACK, secondJumpV } from './physics.ts';
+import { LAND_HALF, PHYS, TAKEOFF_SLACK, reachJump, reachJumpHeld, secondJumpV } from './physics.ts';
 import { AHEAD, heroBox, landingBox } from './cameraFollow.ts';
 import { BEAT_STAGES, stageBeatBpm, stageMusic } from '../audio/scenes.ts';
 import { themeById } from '../audio/themes.ts';
@@ -67,6 +67,13 @@ export interface NodeSpec {
   x: number;
   /** Easy: the thumb holds a jump only 70% (physics.ts EASY_HOLD) and every landing pad is wider */
   easy?: boolean;
+  /** refuse a branch up over the end of the ledge he jumps from (he'd stand under it, his head through it; the level check reads it as
+   *  no way up). Off by default, so a builder's fixed steps keep tracing as they did (w1Rise.ts); w1Rhythm.ts fitSteps turns it on */
+  noOverhang?: boolean;
+  /** px more inside the reach for a gap whose landing is a faced piece (a bank or a stump: 50 px or more of wall under its lip): a short
+   *  flick that lands a little short there hits the face and drops into the pit, where a branch's thin lip would still have taken him
+   *  (0% for the clumsy thumb at 1-2's stump-to-bank drop, x 26112 on layout 1, 2026-11-04). Off by default; w1Rhythm.ts fitSteps sets it */
+  faceMargin?: number;
 }
 
 /** a ledge the node needs, left to right (an apron, or the surface under one landing) */
@@ -152,6 +159,8 @@ const EASY_HOLD = 0.7;
 /** the real engine (realPlay, 30 fps) comes down up to 9.3 px shorter than the tracer's 30 Hz flight (a double jump down 100 px; measured 2026-11-04, beatTrace.test.ts):
  *  every near edge is moved back this much more, so the engine's own landing is still INSIDE px in */
 export const SLOP = 10;
+/** how far inside the level check's reach every gap stays (px): the first-timer's shortest flick (tools/inspect/firsttimer.ts) */
+export const FT_MARGIN = 15;
 /** a face's corner may be met this far under its top (px): the engine hoists him onto a lip up to FORGIVE.mantle (26) over his feet;
  *  the tracer counts only half of that */
 export const HOIST = 13;
@@ -164,6 +173,8 @@ export const GAP_REPEAT = 4;
 export const GAP_SAME = 12;
 /** a hazard on an avoided line keeps this far (px) from Pokey's body on every safe try (his body: heroBox, 56 x 116) */
 export const HAZARD_CLEAR = 24;
+/** the level check's margin on a jump's reach (levelCheck.ts MARGIN) */
+export const LC_MARGIN = 0.97;
 /** the narrowest ledge it places (px): a landing is never a sliver */
 export const MIN_LEDGE = 90;
 
@@ -316,14 +327,20 @@ export function landingInView(px: number, py: number, lx: number, ly: number, vw
  * full or 15% less air speed), an eager thumb (100 ms early, full air), and the game's own take-off slack (the last 70 px before an edge,
  * physics.ts TAKEOFF_SLACK, full air: the level check's rule). `off` is seconds late (negative early), or 'slack'.
  */
-export const TRIES: ReadonlyArray<{ off: number | 'slack'; air: number }> = [
+export const TRIES: ReadonlyArray<{ off: number | 'slack'; air: number; short?: boolean }> = [
   { off: 0, air: 1 },
   { off: CLUMSY.late, air: 1 },
   { off: 0, air: CLUMSY.air },
   { off: CLUMSY.late, air: CLUMSY.air },
   { off: -CLUMSY.late, air: 1 },
   { off: 'slack', air: 1 },
+  // (and the flick that lets go early: a first-timer's thumb is on the glass 0.06-0.25 s, tools/inspect/firsttimer.ts, so a jump is
+  // often cut short. The validator's clumsy thumb missed 1-2's and 1-5's full-hold gaps 33-100% of the time, 2026-11-04. A short
+  // jump rises SHORT_HOLD of a full one: Normal 80%, Easy 60%)
+  { off: 0, air: 1, short: true },
 ];
+/** a short flick's share of a full jump's height: Normal, Easy */
+export const SHORT_HOLD = { normal: 0.8, easy: 0.6 } as const;
 const DTS = [STEP, FRAME] as const;
 
 /** a sure player running from rest: how far he gets in `t` seconds starting at speed v (groundAcc up to maxRun) */
@@ -376,7 +393,7 @@ export function traceNode(spec: NodeSpec): Trace {
     for (const tr of TRIES) {
       for (const dt of DTS) {
         const from = tr.off === 'slack' ? NaN : x + PHYS.maxRun * tr.off;
-        const f = flight({ move: st.move, dy: st.dy, vx: PHYS.maxRun, air: tr.air, dt, hold });
+        const f = flight({ move: st.move, dy: st.dy, vx: PHYS.maxRun, air: tr.air, dt, hold: tr.short && st.move === 'jump' ? (spec.easy ? SHORT_HOLD.easy : SHORT_HOLD.normal) : hold });
         if (!f) throw new Error(`step ${i + 1}: a clumsy ${st.move} (air ${tr.air}) can't reach ${st.dy} px up`);
         toTry.push({ from, f });
         if (tr.off !== 'slack') {
@@ -394,7 +411,20 @@ export function traceNode(spec: NodeSpec): Trace {
       shortX = Math.min(shortX, from + tr.f.dx);
       longX = Math.max(longX, from + tr.f.dx);
     }
-    const near = Math.round(shortX - INSIDE - SLOP);
+    let near = Math.round(shortX - INSIDE - SLOP);
+    // (and never wider than the level check's own reach: its jump has no hang at the top and reaches less than the engine's, so a gap the
+    // engine makes it may still fail the shared gate; levelCheck.ts gap <= reach x 0.97 - TAKEOFF_SLACK. A nearer edge only makes it easier)
+    const wallUp = st.dy > 0 && (st.surface === 'stump' || st.surface === 'bank');
+    // (Easy: the level check's held jump, 70%: validator easyHoldCheck; a double: its double reach. A jump the level check's model can't
+    // make at all is refused here, so a builder sees it up front: w1-rhythm-b, 2026-11-04, a double up 110 px the check read as "Q")
+    const dbl = st.move === 'double';
+    const lcReach = spec.easy ? reachJumpHeld(st.dy, dbl) : reachJump(st.dy, dbl);
+    if (lcReach < 0) throw new Error(`step ${i + 1}: the level check's ${st.move} can't reach ${st.dy} px up (levelCheck.ts reachJump)`);
+    // (and FT_MARGIN inside it: the widest gap the check allows is one the first-timer's shortest flick misses every time, 0% at three
+    // 115 px drops on 1-2, the validator's clumsy thumb and the fixed first-timer bot, 2026-11-04)
+    const faced = !wallUp && (st.surface === 'stump' || st.surface === 'bank') ? spec.faceMargin ?? 0 : 0;
+    if (!wallUp) near = Math.min(near, Math.floor(edge + lcReach * LC_MARGIN - TAKEOFF_SLACK - 2 - FT_MARGIN - faced));
+    else if (near - edge > lcReach * LC_MARGIN - TAKEOFF_SLACK) throw new Error(`step ${i + 1}: the ${st.surface}'s face is ${near - edge} px out, past the level check's reach (${Math.round(lcReach * LC_MARGIN - TAKEOFF_SLACK)})`);
     const ny = y - st.dy;
     for (const tr of toTry) {
       const from = Number.isNaN(tr.from) ? slackX : tr.from;
@@ -409,6 +439,10 @@ export function traceNode(spec: NodeSpec): Trace {
         const from = Number.isNaN(tr.from) ? slackX : tr.from;
         if (heightAt(tr.f, near - from) < st.dy - HOIST) throw new Error(`step ${i + 1}: a try from ${Math.round(from)} meets the face of the ${st.surface} at ${near} below its top`);
       }
+    } else if (spec.noOverhang && st.dy > 0 && near < edge + 20) {
+      // (a branch up over the end of the ledge he jumps from: he would stand under it, his head through it, and the level check reads
+      // it as no way up)
+      throw new Error(`step ${i + 1}: the ${st.surface} at ${near} hangs over the take-off ledge's end (${edge})`);
     } else if (st.dy <= 0 && near - edge < (st.dy === 0 ? MIN_GAP : 0)) throw new Error(`step ${i + 1}: the gap is ${near - edge} px: no jump at all (make it a drop, a rise, or a bigger move)`);
     // the landing on screen at take-off, from every take-off point (the planned one and the latest), upright and sideways
     for (const [name, v] of Object.entries(VIEWS)) {
@@ -582,7 +616,7 @@ export function checkTrace(tr: Trace, steps: readonly Step[], easy = false): str
     for (const tr of TRIES) {
       const sx = tr.off === 'slack' ? Math.min(l.fromX - PHYS.maxRun * CLUMSY.late, from.x1 - TAKEOFF_SLACK) : l.fromX + PHYS.maxRun * tr.off;
       for (const dt of DTS) {
-        const f = flight({ move: st.move, dy: st.dy, vx: PHYS.maxRun, air: tr.air, dt, hold });
+        const f = flight({ move: st.move, dy: st.dy, vx: PHYS.maxRun, air: tr.air, dt, hold: tr.short && st.move === 'jump' ? (easy ? SHORT_HOLD.easy : SHORT_HOLD.normal) : hold });
         if (!f) {
           bad.push(`step ${l.step + 1}: no landing (air ${tr.air}, dt ${dt.toFixed(3)})`);
           continue;

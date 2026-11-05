@@ -45,7 +45,13 @@ export default defineConfig(() => {
         // the painted sprite sheets are cached with the app, so they load instantly and work offline
         // the animated boss sheets and the game's own script are each a little over Workbox's 2 MiB default, and a file over the limit
         // fails the whole build, so the limit is raised to 4 MiB
-        workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,webmanifest,mp3,webm,woff2}'], maximumFileSizeToCacheInBytes: 4 * 1024 * 1024 },
+        // the GPU layer's Pixi chunks are left out: only the testers' link (#ctest) starts the layer (gpuLayer.ts, the measurement switch),
+        // so a player never downloads them, not even in the background (tools/qa/gpuDefaultOff.cjs checks the precache list)
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,webmanifest,mp3,webm,woff2}'],
+          globIgnores: ['**/assets/gpuPixi-*.js', '**/assets/browserAll-*.js', '**/assets/webworkerAll-*.js', '**/assets/init-*.js'],
+          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+        },
         includeAssets: ['favicon-48.png', 'apple-touch-icon.png'],
         manifest: {
           id: base,

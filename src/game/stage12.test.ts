@@ -1,61 +1,128 @@
+/**
+ * 1-2 The Petal Trail, built on the music's beat (w1Rhythm.ts; w1-rhythm 2026-11-04, W1-REBUILD-PLAN.md): an over-under loop-back on
+ * the swung beat. Replaces the old 1-2's tests (its mushroom stairs and catch mushrooms went with it).
+ */
+import './headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProtoStage, EXPERT_SECONDS, G, PETAL_GOAL_12 } from './protoStage.ts';
+import { generateStage } from './stageGenerator.ts';
+import { setLayoutVariant } from './stageGenerator.ts';
+import { generateAllLevels } from './worldsData.ts';
 import { badPickups } from './flowerReach.ts';
-import { w1Pick } from './w1Sections.ts';
-import type { LevelConfig } from './types.ts';
+import { stageBpm } from './beatTrace.ts';
+import { T12, rhythmLayout } from './w1Rhythm.ts';
+import { templateFlags, unitsOf } from '../../tools/validate/variety.ts';
+import { findW1Pits } from './w1Pits.ts';
+import { validateStage } from './levelCheck.ts';
+import type { GeneratedStage } from './stageGenerator.ts';
 
-const cfg = {
-  worldIndex: 1, miniIndex: 2, id: '1-2', name: 'The Petal Trail', objectiveType: 'harvest', targetCount: 33, timeLimit: 0,
-  levelWidth: 16200, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
-} as LevelConfig;
-const SEEDS = Array.from({ length: 20 }, (_, i) => 1 + i * 41);
-
-test('1-2: every roll keeps the plan (learn, test, twist, finish), asks for 72 petals and holds about half again as many, and takes two minutes', () => {
-  for (const s of SEEDS) {
-    const st = buildProtoStage(cfg, s, '1-2');
-    assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Learn', 'Test', 'Twist', 'Finish'], `seed ${s}`);
-    assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
-    const petals = st.collectibles.filter((c) => c.type === 'flower').length;
-    assert.equal(st.config.targetCount, PETAL_GOAL_12);
-    assert.ok(petals >= PETAL_GOAL_12 * 1.4 && petals <= PETAL_GOAL_12 * 1.7, `seed ${s}: ${petals} petals`);
-    assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 15, `seed ${s}: ${st.meta!.timing!.layoutSeconds.toFixed(0)} s`);
-    assert.ok(st.proto.covers.length >= 1, `seed ${s}: the hidden shelf behind leaves`);
-    // World 1's note is on that shelf (a hand-built stage has to place its own find)
-    const note = st.collectibles.find((c) => c.type === 'find');
-    assert.equal(note?.findId, 'w1_note', `seed ${s}`);
-    const cv = st.proto.covers[0];
-    assert.ok(note!.x >= cv.x && note!.x <= cv.x + cv.w && note!.y >= cv.y - 40 && note!.y <= cv.y + cv.h, `seed ${s}: the note sits behind the leaves`);
-    assert.equal(st.proto.movedPickups, 0, `seed ${s}: the plan put every petal where he can get it (nothing for the safety pass to move)`);
+const cfg = generateAllLevels().find((l) => l.id === '1-2')!;
+const LAYOUTS = Array.from({ length: 16 }, (_, i) => i + 1);
+const built = (v: number, d: 'normal' | 'easy') => {
+  setLayoutVariant(v);
+  try {
+    return generateStage(cfg, d) as GeneratedStage & { proto: { beats: Array<[number, number, string]>; rhythm: { bpm: number; nodes: Array<{ tag: string; tier: string; dir: number; x0: number; x1: number }>; reroll: number } } };
+  } finally {
+    setLayoutVariant(null);
   }
-});
+};
 
-test('1-2: every petal can be reached, and the floor runs the whole way (nothing costs a life)', () => {
-  for (const s of SEEDS) {
-    const st = buildProtoStage(cfg, s, '1-2');
-    assert.deepEqual(badPickups({ platforms: st.platforms, vines: st.vines, waterY: st.waterY }, st.collectibles).map((c) => `${Math.round(c.x)},${Math.round(c.y)}`), [], `seed ${s}`);
-    assert.ok(st.platforms.every((p) => p.y < (st.waterY ?? 730)), `seed ${s}`);
-    for (let x = 0; x < st.exitTotemX; x += 20) {
-      // (or a wall standing on the ground, that a mushroom bounces him up: w1Sections.ts bounceWall, highLeaps)
-      assert.ok(st.platforms.some((p) => p.x <= x && p.x + p.width >= x && (p.y >= G - 200 || p.y + p.height >= G)), `seed ${s}: no floor at x ${x}`);
+test("1-2: every roll is the research's tension curve (intro, ramp, spike, rest, counter-melody, climax, cool-down), on the music's beat, two minutes or more on it, Normal and Easy", () => {
+  for (const v of LAYOUTS) {
+    for (const d of ['normal', 'easy'] as const) {
+      const st = built(v, d);
+      const r = st.proto.rhythm;
+      assert.equal(r.bpm, stageBpm(cfg), `${v} ${d}: the music's BPM`);
+      const tags = new Set(r.nodes.map((n) => n.tag));
+      for (const t of ['intro', 'ramp', 'spike', 'rest', 'counter', 'climax', 'cool']) assert.ok(tags.has(t), `${v} ${d}: a ${t} node`);
+      // the order of the curve: intro first, the climax after the counter-melody, the cool-down last
+      const at = (t: string) => r.nodes.findIndex((n) => n.tag === t);
+      assert.ok(at('intro') === 0 && at('spike') < at('rest') && at('rest') < at('counter') && at('counter') < at('climax') && at('cool') === r.nodes.length - 1, `${v} ${d}: ${r.nodes.map((n) => n.tag)}`);
+      assert.ok(st.meta!.timing!.layoutSeconds >= 118, `${v} ${d}: ${st.meta!.timing!.layoutSeconds.toFixed(0)} s on the beat`);
+      assert.ok(!st.proto.beats.some((b) => /^Finish/.test(b[2])), 'no padded finish');
+      assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
+      assert.equal(st.collectibles.find((c) => c.type === 'find')?.findId, 'w1_note');
     }
   }
 });
 
-test('1-2: the twist swaps the trail between the branches and the floor (three mushrooms up, two, or the stairs: w1Sections.ts)', () => {
-  const seen = new Set<string>();
-  for (const s of SEEDS) {
-    const st = buildProtoStage(cfg, s, '1-2');
-    const tw = st.proto.beats.find((b) => b[2].startsWith('Twist'))!;
-    const v = w1Pick('1-2', s).twist!;
-    seen.add(v);
-    // (the trail's own mushrooms up; the catch mushrooms under the branches' near ends, which bounce a miss back up, are not counted)
-    const catches = new Set(st.proto.catchUps ?? []);
-    const ups = st.platforms.filter((p) => p.type === 'bouncy' && !catches.has(p.id) && p.x >= tw[0] && p.x <= tw[1]).length;
-    const high = st.platforms.filter((p) => p.y <= G - 160 && p.x >= tw[0] && p.x <= tw[1] && p.style === 'branch').length;
-    const dips = st.platforms.filter((p) => p.y > G && p.style === 'moss_stone' && p.x >= tw[0] && p.x <= tw[1]).length;
-    assert.equal(ups, v === 'split' ? 3 : v === 'highLow' ? 2 : 0, `seed ${s} (${v})`);
-    assert.ok(high >= 3 && dips >= 2, `seed ${s} (${v}): ${high} branches up high, ${dips} pieces of soft moss low`);
+test('1-2: the loop goes back the other way: the bough leg runs right to left, under the canopy, over the floor', () => {
+  for (const v of LAYOUTS) {
+    const r = built(v, 'normal').proto.rhythm;
+    const b = r.nodes.find((n) => n.tier === 'B')!;
+    assert.equal(b.dir, -1, `${v}`);
+    const a = r.nodes.filter((n) => n.tier === 'A');
+    const c = r.nodes.filter((n) => n.tier === 'C');
+    assert.ok(a.some((n) => n.x0 <= b.x0 && n.x1 >= b.x0) || a[a.length - 1].x1 >= b.x0, `${v}: the canopy over the bough`);
+    assert.ok(c[0].x0 < b.x1 && c[c.length - 1].x1 > b.x1, `${v}: the floor under the bough and on past it`);
   }
-  assert.equal(seen.size, 3, 'all three twists turn up');
+});
+
+test('1-2: a miss never lands on a later part of the way (the canopy has nothing below it but its own catches, the bough no gap)', () => {
+  for (const v of LAYOUTS) {
+    for (const easy of [false, true]) {
+      const L = rhythmLayout('1-2', v, easy, stageBpm(cfg));
+      const rest = L.nodes.find((n) => n.tag === 'rest')!;
+      // left of the rest, under the canopy, there is nothing but its catch branches
+      for (const q of L.ledges) if (L.nodes[q.node]?.tier !== 'A' && q.x0 < rest.x0) assert.fail(`${v}: a ${q.surface} of tier ${L.nodes[q.node]?.tier} at ${q.x0},${q.y} under the canopy's gaps`);
+      // the canopy over the loop has its base bough the whole way, and the bough leg is one bough
+      // (the bough leg's bough is in pieces with its rotten stretches between them: together they run the whole leg with no gap)
+      const bLeg = L.nodes.find((n) => n.tier === 'B')!;
+      const leg = L.ledges.filter((q) => q.y === T12.B && L.nodes[q.node]?.tier === 'B' && (q.surface === 'bough' || q.surface === 'crumble')).sort((a, b) => a.x0 - b.x0);
+      assert.ok(leg.length >= 1 && leg[0].x0 <= bLeg.x0 + 1 && leg[leg.length - 1].x1 >= bLeg.x1 - 1, `${v}: the bough under the whole leftward leg`);
+      for (let i = 1; i < leg.length; i++) assert.equal(leg[i].x0, leg[i - 1].x1, `${v}: the bough leg is unbroken at ${leg[i].x0}`);
+      assert.ok(L.ledges.some((q) => q.surface === 'bough' && L.nodes[q.node]?.tier === 'A'), `${v}: the canopy's base bough over the loop`);
+    }
+  }
+});
+
+test('1-2: every petal can be reached, the level check finds the shrine, and the snakes sit only under the high branches', () => {
+  for (const v of LAYOUTS) {
+    const st = built(v, 'normal');
+    assert.deepEqual(badPickups({ platforms: st.platforms, vines: st.vines, waterY: st.waterY }, st.collectibles).map((c) => `${Math.round(c.x)},${Math.round(c.y)}`), [], `${v}`);
+    assert.ok(validateStage(st, { rooms: false }).ok, `${v}: the level check reaches the shrine`);
+    for (const e of st.enemies) assert.ok(Math.abs(e.y + 14 - T12.B) < 2, `${v}: a snake on the bough`);
+  }
+});
+
+test('1-2: no node template twice in a row, none over twice, none again with the same numbers (STAGE-RULES §0c.2-3), 16 rolls, Normal and Easy', () => {
+  for (const v of LAYOUTS) {
+    for (const d of ['normal', 'easy'] as const) {
+      const flags = templateFlags(unitsOf(built(v, d) as never));
+      assert.deepEqual(flags, [], `layout ${v} ${d}: ${flags.map((f) => f.what).join('; ')}`);
+    }
+  }
+});
+
+test('1-2: every floor gap paints as a drop, never water (w1Pits.ts), and none is a slit under 40 px, 16 rolls, Normal and Easy', () => {
+  for (const v of LAYOUTS) {
+    for (const d of ['normal', 'easy'] as const) {
+      const gaps = findW1Pits(built(v, d).platforms);
+      for (const g of gaps) {
+        assert.ok(g.kind !== 'fall' || g.drop, `layout ${v} ${d}: the gap at x ${Math.round(g.x0)} paints as water`);
+        assert.ok(g.x1 - g.x0 >= 40, `layout ${v} ${d}: a ${Math.round(g.x1 - g.x0)} px slit at x ${Math.round(g.x0)}`);
+      }
+    }
+  }
+});
+
+test('1-2: petals 70/30 (Matt), on the stage as built (after the petal pass): the shared path 66-74%, each road of a split 13-17%, and the goal within shared + the smaller road - 5%, 16 rolls, Normal and Easy', () => {
+  for (const v of LAYOUTS) {
+    for (const d of ['normal', 'easy'] as const) {
+      const st = built(v, d);
+      const nodes = st.proto.rhythm.nodes as unknown as Array<{ tag: string; tier: string; pair: string; x0: number; x1: number; y: number }>;
+      const top = nodes.find((n) => n.tier === 'A' && n.pair.includes('rotten branches'))!, leg = nodes.find((n) => n.tier === 'B')!;
+      const splits = [{ x0: top.x0, x1: top.x1, line: top.y }, { x0: leg.x0, x1: leg.x1, line: T12.B }];
+      const petals = st.collectibles.filter((c) => c.type === 'flower');
+      const road = (c: { x: number; y: number }) => { const sp = splits.find((q) => c.x > q.x0 && c.x < q.x1 && c.y >= q.line - 180 && c.y <= q.line + 10); return !sp ? 'shared' : c.y <= sp.line - 80 ? 'high' : 'low'; };
+      const n = petals.length;
+      const share = (r: string) => petals.filter((c) => road(c) === r).length / n;
+      const shared = share('shared'), high = share('high'), low = share('low');
+      const at = `layout ${v} ${d}: ${n} petals, shared ${(shared * 100).toFixed(1)}%, high ${(high * 100).toFixed(1)}%, low ${(low * 100).toFixed(1)}%`;
+      assert.ok(shared >= 0.66 && shared <= 0.74, at);
+      assert.ok(high >= 0.13 && high <= 0.17 && low >= 0.13 && low <= 0.17, at);
+      const goal = (d === 'easy' ? st.easyGoal : st.normalGoal)!;
+      assert.ok(goal / n <= shared + Math.min(high, low) - 0.05 + 1e-9, `${at}, goal ${goal}`);
+    }
+  }
 });
