@@ -744,6 +744,16 @@ another roll.
   2. P-1 with P-12, P-2 with P-11, and P-5 with P-13;
   3. P-3, P-4, P-6, P-7 and P-10.
 
+
+**[designer, 11-05 ~3:05 AM ET, on the rest build (e68b6f4b)]**
+- **Easy's density** (0.67 against 0.35-0.55) is not accepted for 1-5. Fixes, in order; the planner stops at the first that passes:
+  1. Easy canopies at 2 stretches;
+  2. Easy bursts at 3 pieces, with the snap dash kept at 5 for its teach-to-test job;
+  3. Easy rests at n5 and n7b lasting 4-5 s, as a pad with a petal arc (play, not dead time), which also answers "no breather in the
+     middle".
+- **n7b's Dot line:** "Down on the forest floor now. Her marks go on past the creek."
+- **Polish split (the lead):** the planner takes P-1 to P-7 and P-11 to P-13; an engine-render helper takes P-8 to P-10.
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
