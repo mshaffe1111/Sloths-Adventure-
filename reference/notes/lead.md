@@ -68,6 +68,7 @@ move the time, never the bar.
 | Planner | 1-1 from data, timed | pass line b726b737; clock starts at "1-1 data written" after step 6 | 7:30 PM |
 | Planner | 1-2 from data, timed | same line, from story-briefs/1-2.md | 10:00 PM |
 | Lead | CHECKPOINTS 3-5 for Matt | progress vs this board, stills, numbers, meter | 4:15, 6:15, 8:15 PM |
+| SPLIT (accepted 1:38 PM ET) | Planner: E3 remainder 2:45, R-164.11 tempo 3:45, W1 fixes 5:15, how-to R-165.40 6:00. engine-core: lock + port of the planner's engine-mixer commits 2:30, Dot lines R-165.41 (5 rows) 2:45, era/lookalike gate + per-view measures 3:15, stage.ts 4:00, E4 4:45, step 6 4:45-6:45 (1-1 lock held after 6:15). Designer: 1-1 page done; cold re-read 5:30; how-to review 6:00-6:15; 1-2 page 7:00. engine-runs: old 1-2 measured (R-165.43) 3:30 | FRESH COLD BUILDER starts 6:15 PM (6:45 if step 6 can't hold 1-1's lock; planner says by 2:00) | see left |
 | Lead | CHECKPOINT 2 for Matt | critic verdict + rulings, water stills, the build plan for 1-1 with its pass line | 2:15 PM |
 
 ## Who (cloud sessions)
