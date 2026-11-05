@@ -319,3 +319,13 @@ Hard rules (nothing costs a life in 1-1, no floating rocks, 2:00 floor, the vari
 3:36 PM ET, Matt added: "I've liked more than one levels. I mean, I just like variety. Level one was, I liked the look. And I just liked how
 it flowed. It doesn't mean it has to be exactly that way." So: VARIETY is his first taste. Old 1-1 gives two qualities to keep as
 FEEL, not numbers: its look and its flow. No stage is a numeric template.
+
+## 2026-11-05 3:40 PM ET (to the lead): the ENGINE makes variety; people stay out of each stage's details
+"I thought we were building in variety in the engine so that the helpers can go in there and make the modifications and kind of make
+it different so it has a different feel to it... why don't the designer just make it if it's going to tell it how to make it? The
+whole point was is to have variety, and the engine will work. We're making it so that we're still way involved with this when that's
+where we keep messing up."
+So: a hand-written node plan per stage defeats the engine. It is also the measured cap on variety (1-1 diversity 0.083 with fixed
+shapes). Direction: the engine generates each stage's structure (sections, order, forks, ideas) per roll; the designer sets the
+rulebook once per world (kit, moves, must-haves, what makes stages differ); a helper gives a short feel brief plus a few knobs and
+judges the result; Matt plays. The 4:00 breakdown must say what it takes and how long. The choice of path goes to Matt at 4:00.
