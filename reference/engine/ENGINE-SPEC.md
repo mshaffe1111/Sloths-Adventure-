@@ -739,7 +739,7 @@ another roll.
 - **No creaky piece before n2's teach.** Every canopy before the first teach twig uses solid boughs, because the first appearance of a **[revised: C9, "Contradictions ruled", 10:49 AM]**
   mechanic is taught. The mixer asserts it.
 - **P-12's fix:** the mixer's stone is laid at 50 px, the height World 1's rock art is painted for, so the painted rock draws.
-- **Polish order, if the budget forces a split** (the lead's call):
+**[struck 11:09 AM ET: no split; every polish rule applies (law: never cut)]** - **Polish order, if the budget forces a split** (the lead's call):
   1. P-9 (HUD on top) and P-8 (pit art), which look broken;
   2. P-1 with P-12, P-2 with P-11, and P-5 with P-13;
   3. P-3, P-4, P-6, P-7 and P-10.
