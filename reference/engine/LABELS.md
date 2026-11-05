@@ -76,17 +76,26 @@ ruling (ENGINE-SPEC), INV (the inventory row), or SHIPPED (a commit).
 | pickups (collectibles: flower, heart, find, relic, seed, cage, exit_totem, thorn_gate, power-ups) | — | over a standable piece or on a path's arc, never inside a piece; hearts only after risk; the exit totem on a long ground piece | as INV | as their lessons |
 | animals (enemies) | as the animal | on their element: snakes, boas and tayras on boughs or ground; caimans, turtles and frogs at water; harpies and eagles in open sky; jaguars and ocelots on ground; spiders on webs (W5) | anywhere taught, where the element fits | as the ladder |
 
-## 4. Float caps per world: set by a measurement, not chosen
+## 4. Float caps per world: OPEN until a good reference sets them (revised 11:40 AM ET, the lead's challenge)
 
-The first-cut caps (1-1 ≤ 15%, default ≤ 25%) are **OPEN** in SPEC-TRACE. They are replaced by this rule:
-- The E3 support check measures, for each world's shipped stages today, the share of landings that are **platform pieces with nothing
-  solid under them**. Matt has played those and accepts floating logs as core.
-- Each world's cap is that measured share, rounded up to the next 5%.
-- **Stones never count toward the cap. They are never allowed to float at all.**
-- A stage profile may set a lower cap with its reason (1-1: "a ground stage reads as ground").
-- **Settle by run:** the planner's E3, over all 102 stages, reports per world (1) the floating platform share and (2) the count of
-  unsupported no-float pieces (moss_stone, ruin, fragile ruin, moving stone). Count (2) goes on the known list. It only shrinks, and a
-  world clears it when the engine rebuilds that world.
+**The earlier rule ("the cap is today's share, rounded up") is withdrawn.** engine-runs topic 4 (5051f41a) measured today's floating
+share per world: W1 37%, W2 10, W3 5, W4 19, W5 29, W6 2, W7 22, W8 10, W9 55 and W10 62. W9 and W10 float the most **and** score the
+lowest on variety (0.27 and 0.17). Writing today's share into the cap would shape the rule to fit the defect, which is law 22 in reverse.
+
+**How each world's cap is set (OPEN until one of these answers it, never by judgment):**
+1. **A good reference, measured:** the old 1-1 (Matt's bar; its floating share is measured by engine-runs with the same tool), and each
+   world's best-rated stages (Matt's and the quality supervisor's ratings, where they exist).
+2. **Shipped games:** research-pacing and research-moves report the floating-platform share of comparable courses (Mario, DKC, Rayman).
+3. **Until set, the interim line is the old 1-1's measured share.** No new stage may exceed it, and today's stages over it go on the
+   known list. A world may go below it with its element's reason (W6 swamp, W3 caves).
+
+**Rules that hold in any case:**
+- Stones never count toward the cap and never float (rule 1).
+- The mixer's 1-5 lays about 40 never-float pieces floating per build (creaky, bridges, the W7 slab). That is an E3 **fail now**, not a
+  cap question.
+- **E3 reads the real art bounds**, not only the platform list. A support drawn only in the art (a painted root, post or trunk under a
+  piece) counts, and a piece whose art shows nothing under it is floating whatever the data says. The tool's present blind spot is named,
+  and the planner fixes it before E3's numbers are trusted (D15).
 
 ## 5. Dressing props (286 rows, every one): labelled by family, theme-locked by prefix
 
