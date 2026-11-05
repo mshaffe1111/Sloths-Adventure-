@@ -8,7 +8,7 @@ export interface WorldKit {
   /** each piece kind's widths by size band (short under 150 px, medium 150-300, long over 300), inside the shipped p10-p90
    *  (cp2/library.txt) and CP2's proven sizes */
   bands: Record<string, Array<[number, number]>>;
-  /** a piece kind's height where it is not the platform default (a bank of earth, a stone, a log) */
+  /** a piece kind's height where it is not the platform default (a bank of earth, a stone, a log; `stumpLog`, a log laid on a stump) */
   heights: Record<string, number>;
   /** a landing steps up or down by one of these (px; the designer's (c): at least 4 of 5 landings do) */
   steps: number[];
@@ -32,7 +32,9 @@ export const KITS: Record<number, WorldKit> = {
       bank: [[110, 148], [160, 290], [310, 360]], stone: [[60, 120], [160, 233]], log: [[180, 290], [310, 420]], branch: [[110, 148], [160, 290]],
       bridge: [[112, 148], [160, 300]], creaky: [[110, 148], [150, 170]], crumble: [[110, 110]], lily: [[82, 102]], reed: [[150, 190]],
     },
-    heights: { bank: 120, stone: 50, log: 90 },
+    // (a log on a stump is a thin log, 30 px, drawn as a log on its stump: a 90 px one is painted as an earth column (the designer's
+    // 12:52 ruling (a), ENGINE-SPEC 3951b0f9f))
+    heights: { bank: 120, stone: 50, log: 90, stumpLog: 30 },
     steps: [40, 30, 50, -30, -40, -60],
     limit: { yMin: 300, yMax: 1400 },
     mushroomCap: 14,

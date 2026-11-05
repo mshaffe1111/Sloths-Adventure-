@@ -154,7 +154,7 @@ export interface ProtoExtras {
    *  world's canopy strips (engine.ts setCanopy, as 1-8's and the ascents') */
   rise?: { y0: number; y1: number };
   /** scenery trunks behind the boughs (not climbs: protoArt.ts setDecoTrunks), 1-1's canopy */
-  trunks?: Array<{ x: number; topY: number; bottomY: number; w?: number }>;
+  trunks?: Array<{ x: number; topY: number; bottomY: number; w?: number; holdY?: number }>;
   /** leafy clumps at the boughs' free ends, behind them (1-1's canopy; protoArt.ts setDecoTrunks) */
   leaves?: Array<{ x: number; y: number; w: number; flip?: boolean }>;
   /** 1-1's choice: the petals on each road, by id (the rest are on the shared path: 70/15/15, Matt 2026-11-04) */

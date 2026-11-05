@@ -5,14 +5,12 @@
 import './headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { dropOutline, findW1Pits, paintedBank } from './w1Pits.ts';
+import { dropOutline, findW1Pits, paintedBank, SUNK_STEP } from './w1Pits.ts';
 import { endFace } from './groundPaint.ts';
 import { RealPlay } from './realPlay.ts';
 import type { Platform } from './types.ts';
 
 const G = 580;
-/** a floor this close under the lower lip is its own way out (findW1Pits: 'A sunk step (75 px) is not a pit') */
-const SUNK_STEP = 75;
 const P = (id: number, x: number, y: number, width: number, height: number, more: Partial<Platform> = {}): Platform => ({ id, x, y, width, height, type: 'solid', style: 'moss_stone', ...more }) as Platform;
 
 test('a soft pit (a floor 130 down) is found with its steps; a 75 px sunk step is not a pit; a floorless gap is a fall', () => {

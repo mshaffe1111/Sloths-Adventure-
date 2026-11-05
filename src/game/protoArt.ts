@@ -48,7 +48,8 @@ export function setKitWorld(w: number) {
 let stageWorld = 1;
 /** trunks drawn behind a stage's boughs that are scenery, not climbs (1-1's canopy: no bough floats with nothing holding it) */
 /** `art: 'plain'`: the bare kapok (trunkPlain), so neighbouring trees never share one trunk picture and vine wrap (the mixer's 1-5, S-4) */
-type DecoTrunk = { x: number; topY: number; bottomY: number; w?: number; art?: 'plain' };
+import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
+export { fitTrunks };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
 /** the leafy clumps the boughs' free ends tuck into (1-1's canopy), drawn behind the boughs */
@@ -56,28 +57,6 @@ let decoLeaves: ReadonlyArray<DecoLeaves> = [];
 export function setDecoTrunks(t: ReadonlyArray<DecoTrunk> | undefined, leaves?: ReadonlyArray<DecoLeaves>, platforms?: readonly Platform[], water?: ReadonlyArray<{ x0: number; x1: number; y: number }>) {
   decoTrunks = platforms ? fitTrunks(t ?? [], platforms, water ?? []) : t ?? [];
   decoLeaves = leaves ?? [];
-}
-/**
- * Every trunk must have a reason to be there (Matt, 11-05: "If we have ground the whole way down, why do we need to put something over
- * top of it?"). A trunk holds up the piece at its top. If that piece is a bank of earth, its soil already runs down out of sight and holds
- * it, so the trunk is dropped. Otherwise it stands on the first ground or water under its top, and stops there: never on down over solid
- * ground or through the water to the bottom.
- */
-export function fitTrunks(trunks: ReadonlyArray<DecoTrunk>, platforms: readonly Platform[], water: ReadonlyArray<{ x0: number; x1: number; y: number }>): DecoTrunk[] {
-  const out: DecoTrunk[] = [];
-  for (const t of trunks) {
-    const at = (q: Platform) => t.x >= q.x - 2 && t.x <= q.x + q.width + 2;
-    // (the piece it holds: the one whose underside or body is at its top)
-    const held = platforms.find((q) => at(q) && !q.broken && q.y <= t.topY + 4 && q.y + q.height >= t.topY - 4);
-    if (held && paintedBank(held)) continue;
-    // (the first surface under its top: a piece's top, or a drawn water's surface)
-    let foot = t.bottomY;
-    for (const q of platforms) if (at(q) && !q.broken && q !== held && q.type !== 'bouncy' && q.y > t.topY + 8 && q.y < foot) foot = q.y + 6;
-    for (const z of water) if (t.x > z.x0 && t.x < z.x1 && z.y > t.topY + 8 && z.y < foot) foot = z.y + 10;
-    if (foot - t.topY < 20) continue;
-    out.push(foot === t.bottomY ? t : { ...t, bottomY: foot });
-  }
-  return out;
 }
 /** a step down to the next bank this short (px) is a plinth's: its painted end stops at the lower bank's top with no fade */
 const SHORT_STEP = 60;
