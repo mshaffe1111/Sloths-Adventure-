@@ -1136,11 +1136,17 @@ export function drawCollectible(
         else drawSearchHint(ctx, item, time);
         break;
       }
-      fillGlow(ctx, 'relic', 0, -2, 4, 30, [[0, 'rgba(255, 220, 110, 0.6)'], [1, 'rgba(255, 220, 110, 0)']]);
       if (item.mark === 'meeca') {
+        // (a carving stands on the ground, it does not bob: the quality supervisor, 2026-11-05, the slabs floated like UI icons. The mark
+        // is laid 34 px over its ledge (w1Rhythm.ts), so a short carved post runs from under the slab to the ground; the pickup itself is
+        // where it was)
+        ctx.translate(0, -bobY);
+        drawMeecaPost(ctx);
+        fillGlow(ctx, 'relic', 0, -2, 4, 30, [[0, 'rgba(255, 220, 110, 0.6)'], [1, 'rgba(255, 220, 110, 0)']]);
         drawMeecaMark(ctx, time, item.bobPhase);
         break;
       }
+      fillGlow(ctx, 'relic', 0, -2, 4, 30, [[0, 'rgba(255, 220, 110, 0.6)'], [1, 'rgba(255, 220, 110, 0)']]);
       // what this world's search turns up (Grandma's things, Meeca's messages, the lieutenant's thread); the golden idol elsewhere
       const keep = relicArt(world, item.id);
       if (keep && drawPickup(ctx, keep, 34, Math.sin(time * 1.6 + item.bobPhase) * 0.06)) break;
@@ -1254,6 +1260,34 @@ export function drawCollectible(
  * glowing warm and breathing softly. A small code-drawn mark on the relic's own glow (STAGE-RULES §4: a minor touch, no new painting),
  * in the colours of meecaArt.ts's trail mark (dark cut, cream light).
  */
+/** the post Meeca's mark is cut into: a short split stake from under the slab to the ground at +34, a tuft of moss where it stands */
+function drawMeecaPost(ctx: CanvasRenderingContext2D) {
+  ctx.save();
+  ctx.fillStyle = '#5a3c22';
+  ctx.strokeStyle = 'rgba(38, 20, 10, 0.9)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(-6, 8);
+  ctx.lineTo(6, 8);
+  ctx.lineTo(7, 33);
+  ctx.quadraticCurveTo(0, 36, -7, 33);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  // (the split down its middle, and the moss at its foot)
+  ctx.strokeStyle = 'rgba(40, 22, 10, 0.5)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(1, 12);
+  ctx.lineTo(-1, 31);
+  ctx.stroke();
+  ctx.fillStyle = '#4f7a3a';
+  ctx.beginPath();
+  ctx.ellipse(0, 34, 11, 3.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
 function drawMeecaMark(ctx: CanvasRenderingContext2D, time: number, phase: number) {
   ctx.save();
   // the bark slab
