@@ -182,7 +182,7 @@ Kinds:
 | §4 rule 13: neighbours differ | LEDGER-2026-11-02-full.md:62, :350 (stages sharing tempo, camera and thinking load feel the same) | RESEARCH |
 
 **The JUDGMENT list [ruled 4:17 PM ET by the lead]:**
-1. **The quiet ending:** with Matt. The lead is putting it to him; my pick is (A), a calm arrival held to the rest rule.
+1. **The quiet ending:** RULED by MATT (via the lead, 11-05): 1-1 ends on the quiet arrival. Later stages may end on the `ending-fork` (NODES.md §1, §8), LATER.
 2. **Hearts only after real risk: MATT,** not judgment. MATT-DIRECTION 12:15 AM: "a heart only where the player can have lost one".
 3. **The end [revised 4:24 PM ET, from main]:** 1-1 ends as main's old 1-1 does: a long high log with the exit totem, no shrine (1-1.md:23 "up in the high branches"). The "ground bank" pick is withdrawn. A stage's end piece is the one its brief's trend reaches, with the exit totem, and the story's clue on that piece.
 4. **Forks none 0 / some 1-2 / lots 3+:** lead-approved the same way. It's re-measured once a shipped-game count exists.
