@@ -419,6 +419,33 @@ Butler, Meeca carry) are dressing and story, not node ideas. They go to the art 
    piece of work.
 2. **Mangrove roots**, which gives the creeks a second platform family.
 
+
+## The log family (designer, 11-05 ~1:00 AM ET, answering Matt: "more logs? different log sizes? different types of feel?")
+
+Yes. Logs stop being one piece and become a family of kinds, each with its own feel. A stage draws several kinds, in three size bands
+(short about 110 px, mid about 320 px, long about 880 px: the shipped spread, `cp2/library.txt`). The mix rule counts **kind x size**,
+so a run of same-size logs fails the gate even when the logs are scattered.
+
+| Log kind | Feel | Exists today? | Art | Work and estimate |
+|---|---|---|---|---|
+| Solid log | firm footing, any length | yes, everywhere | World 1-10 logs | none |
+| Drifting log | rides the river, so you time the board and the leave | yes, World 2 only (302 placed) | World 2 | none: it joins the shared library for World 1's creek and World 6 |
+| Pushed log | push it to make a step | yes, as a puzzle room (1-x "Push the log") | World 1 | wrap as a room in CP4 (planner: 30-45 min) |
+| Hollow log | crawl through it, or hide inside from the eagle | the hide exists; no hollow log is drawn | W1 hollowlog-moss/-plain (packed, unused); Matt's 3 painted hollow logs (never cut) | place on today's hide: about 0.2%; cutting Matt's 3 about 0.1% |
+| Mossy log | slick moss look, the same footing (look variety, not a new feel) | no | W5 mossy-log, W6 kit-05 | pack: about 0.1-0.2% |
+| Broken log | a log snapped in two with a gap to jump | no | W4 brokenLog (packed, unused) | place as a static piece: about 0.1% |
+| Log jam | a pile of logs to climb up through | no | W4 logJam (packed, unused) | place as a climbable pile: about 0.2-0.3% |
+| Slung log | hangs from ropes and swings, so you time the landing | the swinging platform exists only in a boss lair | W4 slung-log, rope-anchor (packed, unused) | bring the lair's swinging platform onto routes: about 0.5-1% |
+| Cracking log | cracks a beat after you land, then falls (the crumble rule, on log art) | the crumble exists (twigs, W7 tiles) | W4 brokenLog as its "after" frame | about 0.3% |
+| Rolling log | rolls down a slope at you, so you jump it or hide | unclear: W1 chaseDebris is packed, never drawn | W1 chaseDebris | the planner checks the 1-8 chase code first; about 0.5-1% if new |
+| Biting log | one log in a row is a moss-log caiman: the eye opens, then it snaps | no | W6 moss-log caiman, 17-frame snap (never packed) | a new hazard with a tell: about 1-1.5% |
+| Sinking log | sinks slowly while you stand on it | no (lily pads don't sink either) | any log art | a new surface rule: about 0.5-1%. My pick is to skip it for now; the cracking log gives the same "keep moving" feel for less |
+
+**Summary for Matt:**
+- **Today:** 3 log kinds (solid, drifting, pushed) in 3 sizes.
+- **For about 0.5% more** (hollow, mossy, broken, jam, cracking, all on art that already exists and mechanics that already exist): 8 kinds.
+- **The three that feel most different** each take real work: slung (about 0.5-1%), rolling (to be checked) and biting (about 1-1.5%).
+
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
