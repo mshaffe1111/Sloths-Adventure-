@@ -76,7 +76,9 @@ export const LANDINGS: LandingKind[] = [
   { name: 'fungus shelf', match: (p) => p.style === 'fungus_shelf', element: 'tree', footing: 'a trunk (a bracket shelf)', mayFloat: 'no', uses: "W8's night-forest landing", worlds: [8], notes: 'theme-locked' },
   { name: 'roost limb', match: (p) => p.style === 'roost_branch', element: 'tree', footing: 'a trunk (a roost limb)', mayFloat: 'no', uses: "W8's night-forest landing", worlds: [8], notes: 'theme-locked' },
   // (measured in the inventory, with no row in LABELS.md yet: open until the designer rules)
-  { name: 'breaking log or plank', match: (p) => p.type === 'fragile' && (p.style === 'log' || p.style === 'canopy_bridge'), element: 'tree', footing: '(not ruled)', mayFloat: 'yes', uses: 'a log or plank that gives way (W5-W10)', worlds: [5, 7, 8, 9, 10], open: true, noNew: 'no label yet: the designer rules it' },
+  // (the designer's LABELS §6, 11-05 10:57: a platform log or plank that gives way; creak Normal 0.67 s, Easy 1.2 s; laid in a new stage
+  // only once its art shows the creak tell (a crack or a sag): open for the art)
+  { name: 'breaking log or plank', match: (p) => p.type === 'fragile' && (p.style === 'log' || p.style === 'canopy_bridge'), element: 'tree', footing: 'as a log or plank', mayFloat: 'yes', uses: 'a log or plank that gives way', worlds: [5, 7, 8, 9, 10], open: true, noNew: 'laid only once its art shows the creak tell (open for art)' },
 ];
 
 /** a climbable's kind (LABELS.md §2): a vine by its vineType and flags, a rope by whether it is required */
@@ -119,6 +121,10 @@ export const ZONES: ZoneKind[] = [
  *  wins). A wN prop is World N's own art, used only in World N */
 export interface PropFamily { family: string; rx: RegExp; element: string; footing: string; mayFloat: 'yes' | 'no' }
 export const PROP_FAMILIES: PropFamily[] = [
+  // (the designer's LABELS §6, 11-05 10:57: W2's walking villagers are a family of their own; the water sign is the warning post at a
+  // stage's first water, built ground on the bank, a teach marker (waterTeach.ts:103))
+  { family: 'villager', rx: /^(po|tc)\./, element: 'ground (villager)', footing: "on a porch or the ground, never open air; W2's village only; dressing, never in the lane", mayFloat: 'no' },
+  { family: 'teach marker', rx: /^waterSigns$/, element: 'ground (built)', footing: 'on the bank about 40 px before the water', mayFloat: 'no' },
   { family: 'fly', rx: /Morpho|Firefly|Butterfly(?!Bush)|Ladybug|Smoke|CattailFly|Feather|Petals$/, element: 'air (dressing)', footing: 'drifts or flies; may float', mayFloat: 'yes' },
   { family: 'hang', rx: /Hang|Curtain|Drip|BellVine|VineHang|LeafHang|BellHang|BellOne|Lanterns$|mossCurtain|stalactite|AirPlants|OrchidSpray|NestBasket|WeaverNest|laundry|Chime/, element: 'tree (hanging)', footing: 'hangs from a bough, the canopy, a roof or a line; never open sky', mayFloat: 'no' },
   { family: 'water', rx: /Lily|Reed|reed(?!-hide)|waterSigns|Canoe|Raft|FishTrap|Turtle|Otter|Heron|Crab|Mud|Cattail|cattails|WaterJar|Driftwood|DriftRoot|OysterRoot|pool|basin|trickle|Mooring|mooring/, element: 'water (edge or surface)', footing: 'on a drawn water surface or its bank edge', mayFloat: 'no' },

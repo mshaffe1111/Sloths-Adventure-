@@ -15,6 +15,9 @@ export interface SupportBreach { id: number; x: number; y: number; w: number; ki
 const SLACK = 8;
 
 type Trunk = { x: number; topY: number; bottomY: number };
+/** a trunk or post holds a tree piece when it stands within 220 px of it (the designer's label for boughs and creaky limbs) and reaches
+ *  its underside (a post planted under a bough starts 16 px under its top; 10 px of slack). The mixer plants trunks by this same rule */
+export const holds = (t: Trunk, p: { x: number; y: number; width: number }) => Math.max(p.x - t.x, t.x - (p.x + p.width), 0) <= 220 && t.topY <= p.y + 26 && t.bottomY >= p.y;
 type StageIn = { platforms: Platform[]; proto?: { water?: Array<{ x0: number; x1: number; y: number }>; trunks?: Trunk[] }; trees?: Array<{ x: number; topY: number; groundY: number }>; rivers?: Array<{ x0: number; x1: number; surfaceY: number }>; config: { levelHeight: number } };
 /** the check's breaches, and the pieces it cannot judge (listed apart: never passed and never failed) */
 export function supportCheck(st: StageIn, world: number): { breaches: SupportBreach[]; unjudged: SupportUnjudged[] } {
@@ -28,7 +31,7 @@ export function supportBreaches(st: StageIn, world: number, unjudged: SupportUnj
   const water = [...(st.rivers ?? []).map((r) => ({ x0: r.x0, x1: r.x1, y: r.surfaceY })), ...(st.proto?.water ?? [])];
   // (a tree piece stands on a trunk: one within 220 px of it that reaches its height, the designer's label for boughs and creaky limbs)
   const trunks: Trunk[] = [...(st.proto?.trunks ?? []), ...(st.trees ?? []).map((t) => ({ x: t.x, topY: t.topY, bottomY: t.groundY }))];
-  const onTrunk = (p: Platform) => trunks.some((t) => Math.max(p.x - t.x, t.x - (p.x + p.width), 0) <= 220 && t.topY <= p.y + 10 && t.bottomY >= p.y);
+  const onTrunk = (p: Platform) => trunks.some((t) => holds(t, p));
   const out: SupportBreach[] = [];
   for (const p of P) {
     const mf = mayFloatIn(p as never, world);

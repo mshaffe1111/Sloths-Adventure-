@@ -16,6 +16,7 @@
 import type { Collectible, LevelConfig, Platform, Vine } from '../types.ts';
 import { IDEAS, SHAPES, type BurstRecipe } from './library.ts';
 import { kitFor, type WorldKit } from './kits.ts';
+import { holds } from './support.ts';
 import { w1DressFacing, w1DressWidth } from '../w1NewArt.ts';
 import type { StageSpec } from './spec.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
@@ -777,7 +778,9 @@ function supports(P: Platform[], height: number, clear: number[] = []): { trunks
   for (const p of air) {
     if (p.style === 'canopy_bridge' || (p as { perch?: boolean }).perch) continue;
     const m = p.x + p.width / 2;
-    if (out.some((t) => Math.abs(t.x - m) < p.width / 2 + 300)) continue;
+    // (held only by a trunk within 220 px of it that reaches its height: the designer's label, the same rule E3's check reads (support.ts);
+    // one 300 px off along x alone, whatever its height, left 1-5's creaky limbs over a trunk that stopped below them)
+    if (out.some((t) => holds(t, p))) continue;
     const fl = floorOf(m, p.y);
     out.push({ x: Math.round(m), topY: Math.round(p.y + 16), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: 0.55 });
   }

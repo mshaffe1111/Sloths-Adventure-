@@ -30,12 +30,12 @@ export type Theme = 'forest' | 'river' | 'cavern' | 'canopy-high' | 'swamp' | 'l
 const W1: Theme[] = ['forest', 'river', 'canopy-high', 'swamp'];
 export const PIECES: Record<string, PieceKind> = {
   bank: { element: 'ground', stands: 'self', what: 'a bank of earth, the floor', worlds: W1, mayFloat: false },
-  stone: { element: 'ground', stands: 'ground', what: 'a mossy boulder, a small rise on a bank\'s end', worlds: W1, mayFloat: true },
+  stone: { element: 'ground', stands: 'ground', what: 'a mossy boulder, a small rise on a bank\'s end', worlds: W1, mayFloat: false },
   log: { element: 'ground', stands: 'ground', what: 'a fallen log on the floor, or on a stump in a ground fork', worlds: W1, mayFloat: true },
   mushroom: { element: 'ground', stands: 'ground', what: 'a bounce mushroom on its perch', worlds: W1, mayFloat: false },
   // (tagged from its art: World 7's crumble tile, src/assets/w7/crumble.webp, a carved stone slab with roots through it, so ground,
   // per the designer's rule; 1-5 lays it in the air on trunks, a named breach waiting on the designer's ruling)
-  crumble: { element: 'ground', stands: 'ground', what: 'a crumbling carved stone ledge', worlds: ['forest', 'ruins'], mayFloat: true },
+  crumble: { element: 'ground', stands: 'ground', what: 'a crumbling carved stone ledge', worlds: ['ruins'], mayFloat: false },
   branch: { element: 'tree', stands: 'trunk', what: 'a bough on a kapok', worlds: W1, mayFloat: true },
   creaky: { element: 'tree', stands: 'trunk', what: 'a creaky limb that gives way', worlds: W1, mayFloat: false },
   bridge: { element: 'tree', stands: 'trunk', what: 'a rope bridge between posts', worlds: W1, mayFloat: false },
