@@ -1,0 +1,24 @@
+URL: https://www.gamestar.de/artikel/making-games-report-im-gespraech-mit-tiny-wings-erfinder-andreas-illiger,2324301.html
+Read: 2026-11-05 by the moves researcher (TinyFish fetch_content), read in full.
+Title: Making Games Report - Im Gespräch mit Tiny-Wings-Erfinder Andreas Illiger (GameStar, 2011-07-23; Superlevel.de interview by
+Stephan "Fabu" Günther, reprinted from Making Games 03/2011). German original.
+NOTE: the interview text as GameStar shows it, verbatim (GameStar's page shows the first part of the interview; the page ends after the
+profile box). Site menus, comment widgets and the subscription banner left out. My English glosses are in [brackets] and are not part
+of the source.
+---
+Stephan »Fabu« Günther vom Gaming Blog Superlevel.de hatte die seltene Ehre, mit Andreas Illiger über dessen iPhone-Spiel Tiny Wings zu sprechen. Das Interview hat er uns freundlicherweise zur Verfügung gestellt.
+
+Fabu: Wann und wo hattest du die Idee zum Spiel, über welchen Zeitraum erstreckte sich die Entwicklung und waren außer dir noch andere Personen involviert?
+
+Andreas Illiger: Mit den Ideen ist das so eine Sache. Die passieren bei mir nicht einfach so, sondern wollen erarbeitet werden. Soll heißen: Durch intensives Eintauchen in die Welt der Fantasie, nachts im Bett oder tags im Wald und dazwischen auf meinem Meditationskissen, mental Prototypen spielend, unzählige Features ausprobierend, reiften innerhalb von etwa zwei Monaten all die Ideen zu Tiny Wings. Es gab kein Schlüsselerlebnis oder großen Geistesblitz – alles harte, trockene Arbeit.
+[gloss: all the ideas matured within about two months, playing prototypes in his head]
+
+Fabu: Prozedural generierte Levels sind momentan in der Szene (zumindest seit Minecraft) zunehmend »in«. Waren die Inseln in »Tiny Wings« eine bewusste Designentscheidung?
+
+Andreas Illiger: Gibt es unbewusste Designentscheidungen? Prozedural generierter Content ist eine Leidenschaft von mir und hat mich während meines gesamten Studiums begleitet. Die Motivation, die Grafik von Tiny Wings prozedural zu gestalten, kam aber nun nicht daher, dass das gerade »in« sei (ist mir gar nicht bewusst, dass das so ist).
+Weil das Spiel ja eigentlich immer gleich verläuft, wollte ich einfach etwas Abwechslung erzeugen und den Erkundungstrieb der Spieler reizen. Viele Spieler berichten mir, dass sie Tiny Wings mindestens einmal pro Tag spielen, nur um zu schauen, wie die Inseln denn heute aussehen. In der Anfangsphase gab es sogar Forenposts von Leuten, die sich nachts extra einen Wecker gestellt haben, um zu checken, ob sich die Welt alle 24 Stunden ändert. Crazy.
+[gloss: procedural content has been his passion since his studies; he made the GRAPHICS procedural for variety, because the game
+always runs the same way; islands change every 24 hours. Nothing on how the hill shapes are computed.]
+
+(Profile box) Andreas Illiger ist Konzipierer, Programmierer, Illustrierer und Komponierer. Andreas hat innerhalb von sieben Monaten fast im Alleingang das iPhone-Spiel Tiny Wings entwickelt – ein Erfolg, der selbst ihn überrascht hat.
+[gloss: he developed Tiny Wings almost single-handed within seven months]

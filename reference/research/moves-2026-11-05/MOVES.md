@@ -106,7 +106,8 @@ electric projectiles ... and Spy Toads" (`:32`). RayWiki's level and world lists
 so the world each form first appears in is not sourced.
 
 **Answer:** 5 of the 7 DKCR later forms change **what the player must do** (blow out, flip, use a barrel, dodge a new attack), 2 change
-only stats/size. Forms arrive **0-2 worlds after the base** (same world for Doom and Flaming Buzz, 1 world for Torch, 2 for Tank). This
+only stats/size. Five forms arrive **0-2 worlds after the base** (same world: Doom, Flaming Buzz; 1 world: Torch after the Goon, Bomber after the Torch; 2: Tank);
+the Tiki Zing's forms come 4-6 worlds later (big W5, inflamed W6, metallic W7). This
 supports ES 174-175's idea (a second behaviour as the harder form), with one sharpening the sources give: the later form changes the
 verb, not just the numbers.
 
@@ -184,6 +185,24 @@ Tropical Freeze, same pattern faster: carts 1-4, 2-4, 4-2; rockets 2-B, 3-5, 5-2
 ES's window, 0 pass the DKCR staple envelope, 14 pass the signature envelope. Mario's variety comes from many short-lived kinds; its
 one staple, the Goomba, is in a fifth of later courses and absent up to 10 in a row.
 
+**Rayman Legends, Teensies in Trouble (one world), from the IGN level pages' text** (wiki-grade; RayWiki's level and enemy
+sections were blocked, so this is what each walkthrough *names*, an undercount):
+
+| Level | What the page names as its feature | Murfy | Chain slide | Teensies | Source |
+|---|---|---|---|---|---|
+| 1 Once Upon a Time | Murfy's first level | yes (first) | a chain turns a wall (no slide) | 10 | `rayman-ign-legends-once-upon-a-time.txt` (opening lines) |
+| 2 Creepy Castle | guillotines on pressure plates, shielded enemies, wall jump, a pillow bounce | "you will not have Murphy" | yes | 10 | `...creepy-castle.txt` |
+| 3 Enchanted Forest | "moving trees and roots that can help or hinder" | — | — | 10 | `...enchanted-forest.txt:15-19` |
+| 4 Ropes Course | Murfy cuts and swings ropes; enemies on stilts | yes | yes | 10 | `...ropes-course.txt` |
+| 5 Quick Sand | "crumbling structures that must be climbed and escaped from", a chase | "you won't have Murfy" (`:37`) | yes (`:29`) | 10 | `...quick-sand.txt:15,25` |
+| 6 How to Shoot Your Dragon | shooting projectiles at dragons; Murfy rotates platforms | yes | yes | 10 | `...how-to-shoot-your-dragon.txt` |
+| Dungeon Dash / Dungeon Chase | short Murfy runs with fire behind | yes | yes | 3 / 3 | `...dungeon-dash.txt:15-19`, `...dungeon-chase.txt:15-19` |
+| Breathing Fire! (boss) / Castle Rock (music) | projectiles / run to the beat | — | — / yes | 3 / 3 | `...breathing-fire.txt`, `...castle-rock.txt:15-19` |
+
+Read for return: each normal level has its own named feature (moving forest, ropes, sinking sand, shooting) that does not recur
+inside the world; the helper character (Murfy) is in 3 of 6 normal levels (1, 4, 6) and both chases, and the chain slide in 4 of 6 plus the music level, i.e. Rayman's "staple" is a helper verb,
+not an enemy or a piece. RayWiki's infobox gives the world as 10 levels and 90 Teensies (`rayman-raywiki-teensies-in-trouble-world.txt:10-11`).
+
 **Answer to "settles our >= 1 in 3":**
 - Read as a **share** (>= 1/3 of later stages), it is what DKCR's **two commonest enemies** reach (30%, 35%), nothing else; in 3D
   World no enemy kind reaches it (best 23%, Goomba 20%).
@@ -216,6 +235,11 @@ the research says the realistic floor for most of them is the signature envelope
 - Rayman Legends 1-5 Quick Sand is built on it: "Nearly every structure you come across will fall over and sink into the sand rapidly"
   (`rayman-ign-legends-quick-sand.txt:25`). Rayman Origins uses sinking as a passing piece: toucans that "will sink if you stay on too
   long" (`rayman-gamefaqs-origins-walkthrough-x360.txt:884`), a building that "immediately begins sinking into the sand" (`:1164`).
+- Shovel Knight's Lich Yard is built on sinking ledges ("ledges that will slowly descend into watery depths as you stand on them ...
+  jump as needed, to avoid keeping too much weight on the treacherous footing"; they sink only with a shaman skull on them, a puzzle;
+  later "sinking ... you can't necessarily tell that they are sinking because the darkness hides the fact") (a player's walkthrough,
+  `sk-honestgamers-lich-yard-walkthrough-EXCERPT.txt`). This is the "weighted platform puzzles in the Lich Yard" Yacht Club later put
+  "on cooldown" because the series had used them up (`sk-...-1of5.txt:91`): a whole-stage theme, combined with darkness in its own stage.
 - Gemini already listed "rhythmic sinking platforms" as a one-stage focal twist (GEMINI-PCG-RESEARCH.md:42); the shipped games confirm
   the use, and also show it **returns** (DKCR 2-K -> 6-2 -> 8-5).
 - **Sink time: no source.** The only wording is "slowly" and "after a few seconds of the entire platform sinking"
@@ -276,9 +300,12 @@ face. Matt's pick between the stills (cp3/pit-fade-choice) is the right way to s
 
 ## 6. Process: #62 ES 615 — "true slope: 3-5% plus HF; not now" (Tiny Wings, Alto)
 
-- Illiger said nothing about hill generation in the interviews that loaded: Kill Screen (`tw-killscreen-andreas-illiger.txt`, read in
-  full) and AppAgent (`tw-appagent-illiger-success-was-scary.txt`; "over 7 months of development" there is his *next* game, `:27`).
-  The German Superlevel / Making Games interview was not attempted (BLOCKED-sk-smb-tw.txt). **Tiny Wings' own method: no source.**
+- Illiger never says how the hill shapes are computed in the three interviews read in full: Kill Screen (`tw-killscreen-andreas-illiger.txt`),
+  AppAgent (`tw-appagent-illiger-success-was-scary.txt`) and the German Superlevel / Making Games interview
+  (`tw-makinggames-superlevel-illiger-interview-de.txt`). What he does say (dev-reported): procedural content "is a passion of mine"
+  and he made the **graphics** procedural for variety "because the game always runs the same way"; the ideas matured "within about
+  two months"; Tiny Wings took "7 months of development" (AppAgent `:27`), "almost single-handed" (Making Games profile box).
+  **How Tiny Wings builds its slopes: no source.**
 - What is sourced is a **reconstruction**, not Illiger's word: Kodeco's clone tutorial makes hills from random key points (dx 160 + 0-80,
   dy 60 + 0-40) joined by half cosine curves cut into 10-px segments (`tw-kodeco-tiny-wings-cocos2d-part1-RECONSTRUCTION.txt:253-256,394-429`).
 - Alto's Adventure (the nearest shipped analogue): Nesbitt had "procedurally generated terrain" running in a Unity prototype "within a
@@ -287,7 +314,8 @@ face. Matt's pick between the stills (cp3/pit-fade-choice) is the right way to s
   a translation of Ryan Cash). Dev-reported, and about a whole game built on slopes.
 
 **Answer:** the sources split the cost the way ES does: the slope **shape** is cheap (days), making a character **feel right** on it is
-the long part. No source gives a percentage for adding slopes to an existing flat-collision engine; ES's 3-5% stays the planner's estimate.
+the long part. Whole slope games: Tiny Wings 7 months by one person, Alto 27 months by a small team, both built around the slope from
+day one. No source gives a cost for adding slopes to an existing flat-collision engine; ES's 3-5% stays the planner's estimate.
 
 ---
 
@@ -304,8 +332,8 @@ the long part. No source gives a percentage for adding slopes to an existing fla
      stages (DKCR Tiki Goon/Buzz 30-35%, <= 8; 3D World Goomba 20%, <= 10);
    - *signature pieces* (a world's own move, vehicles and set pieces, animals of one element): back in >= 3/7 of the later worlds,
      longest absence <= 25 stages. This is where SR:19-20's "comes back in every later world" is the stricter house rule.
-4. **The harder form changes the verb** (blow out, flip, use a barrel, a new attack), within 0-2 worlds of the base. Source: DKCR
-   Tiki forms (§1 #11).
+4. **The harder form changes the verb** (blow out, flip, use a barrel, a new attack), usually within 0-2 worlds of the base (5 of 7
+   DKCR forms). Source: DKCR Tiki forms (§1 #11).
 5. **Sprints keep collectibles**, fewer and on the run line: about 3-5 where a normal stage has 6-10. Source: DKCR 5 vs 6.3, Rayman 3 vs 10.
 6. **A stepped mound has equal rises**, about a quarter to a third of a jump each, about 4 of them (2-6). Source: SMB measured; Launchpad's
    equal-step rule.
@@ -355,7 +383,7 @@ line by line (helpers saved them; I grepped them for every keyword of the brief)
 
 Saved sources: `sources/` (one file per page; headers give URL and date read). Blocked: `sources/BLOCKED-mario.txt`, `BLOCKED-dkc.txt`,
 `BLOCKED-rayman-ori.txt`, `BLOCKED-sk-smb-tw.txt` (YouTube; GDC Vault video; all RayWiki/Fandom Rayman pages; shovelknight.fandom.com;
-every image host; Semantic Scholar; Superlevel not attempted).
+every image host; Semantic Scholar).
 
 ## 11. Quality check (law 1, for a research report)
 
