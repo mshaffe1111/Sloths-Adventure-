@@ -377,6 +377,30 @@ as she walked. Follow her marks to the shrine"). Marks sit on trees, where she w
   block comes back in CP4, wrapped as a puzzle room.
 - **Fork roads each keep their own height band**, so the two roads never cross.
 
+
+**[designer ruling, 11-05 ~1:08 AM ET, on the planner's CP3 measurement] Length comes from short bursts, the way the old 1-1 gets
+it.**
+- **The conflict, measured:** 11 nodes of one idea each come out either too short (88-101 s against 120 s) or, stretched, as long
+  runs of one piece:
+  - 22 of the same piece in a row, against the old 1-1's 9;
+  - something new only every 1,002 px, against 572;
+  - 4,103 px flat, against 1,351;
+  - about a third of the old 1-1's ups and downs.
+- **The rule is (a)+(c):**
+  - **(a) Bursts.** A node lays 2-3 short bursts of 4-6 pieces each, drawn from its deck. Bursts alternate between the deck's
+    ideas: never the same idea twice in a row, and never the same burst twice in a stage. The teach node pairs its teach with bank
+    hops between bursts, and the rest node stays one short walk.
+  - **(c) Each idea varies inside.** Within a burst, the piece's kind or size band changes at least every 2 pieces. At least 4 of
+    every 5 landings step up or down, as the old 1-1 does (171 of 202).
+- **The pass line is the old 1-1's own numbers** (CP1), on 16 rolls x 2 settings:
+  - longest same piece in a row: 9 or fewer; same kind x size: 7 or fewer;
+  - something new every 572 px or less, and never more than 1,516 px without;
+  - longest flat stretch: 1,351 px or less;
+  - ups plus downs at least the old 1-1's share;
+  - a fast player's clock at 120 s or more.
+- **Easy's own pass** adds flags and hearts after the mixer (16 and 16). The planner measures the old 1-1's Easy the same way. If the
+  Easy pass breaks the placement rules (hearts after risk, checkpoints before hard parts), that pass is in scope for CP3.
+
 **The rules this plan meets by construction** (the mixer still checks every roll):
 - **Ideas:** 9 to 11 different ideas a roll. No idea twice in a row. Snap-twig dash comes twice (teach at n2, test at n6, not in a
   row), and the fork twice (n4, n10).
