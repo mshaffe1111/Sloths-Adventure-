@@ -875,7 +875,12 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   for (const p of L.P) {
     if (!(p.style === 'moss_stone' && p.height === 50)) continue;
     const ground = L.P.some((q) => q !== p && q.style === 'moss_stone' && q.height >= 90 && q.x < p.x + p.width && q.x + q.width > p.x && q.y > p.y && q.y - p.y < 250);
-    if (!ground) Object.assign(p, { style: 'branch', height: 24 });
+    // (and a stone sits on what is under it, never on air over water or a lower road (the designer's S-9): its bottom meets the surface
+    // under its middle, or it is a bough. The fork's step-down stone hung 75-150 px over the low road on 8 of 32 rolls)
+    const mid = p.x + p.width / 2;
+    const under = L.P.filter((q) => q !== p && q.x <= mid && q.x + q.width >= mid && q.y >= p.y + 10).map((q) => q.y);
+    const sits = under.length > 0 && Math.min(...under) <= p.y + p.height + 2;
+    if (!ground || !sits) Object.assign(p, { style: 'branch', height: 24 });
   }
   if (easy) padLogs(L);
   // (nothing hurts in the first seconds (STAGE-RULES §2 "Opening seconds"), as w1Rhythm.ts rhythmStage lays it: a catch branch 60 px
