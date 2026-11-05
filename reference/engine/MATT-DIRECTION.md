@@ -213,3 +213,9 @@ One rulebook over all builders: the engine is the stage spec, the labelled libra
 and every builder works under it; each stage names its builder. gen2 keeps its 23 stages, hand-built specials stay hand-built, and the
 mixer takes a stage only where it is proved better under that world's regression lock. Every stage, whatever builds it, passes the
 same gates (labels, support, rocks never float, the ladder, water, variety via era.ts, look-alikes); a fail is fixed at the root (law 22).
+
+## 2026-11-05 11:11 AM ET: Matt's answers to the designer's two questions
+1. "Do the big set pieces (the 1-8 chase, the 1-9 boa, the snake ring) come back later?" Matt: **"Yes."** They are not exempt from the
+   ladder: the set piece is not copied, but its idea returns later as a twist in that world's own art (the designer's option c).
+2. "Who picks which small extra pieces and art get made?" Matt: **"You."** The lead picks (with the designer's list and reasons as the
+   input), inside the Hugging Face money, and tells Matt what was made and spent.
