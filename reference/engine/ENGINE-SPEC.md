@@ -1350,9 +1350,9 @@ double.
 **1. Floating (Matt: "certain floating objects... looks better. Too much junk... harder to understand").** The footing column stays the
 default. Each kind gets `mayFloat`, and each profile gets a `float` line: none, some or free, with a cap on its share of landings.
 - **May float:**
-  - stone, as a stepping stone;
+  - stone, as a stepping stone; **[superseded 10:39 AM: rocks never float]**
   - log, as a short floating log;
-  - crumbling ledge, as a floating slab;
+  - crumbling ledge, as a floating slab; **[superseded 10:39 AM]**
   - bough, with no trunk or post when it reads cleaner.
 - **Never float:** lily pads, reeds, banks, mounds, stumps, mushrooms, creaky limbs, bridges, totems and the shrine. They are what
   their footing means.
@@ -1366,7 +1366,7 @@ default. Each kind gets `mayFloat`, and each profile gets a `float` line: none, 
 
 - **A floating piece must read on its own.** It carries its own underside in its art and is never half-hidden by dressing. The
   stills review judges it upright and sideways.
-- **This revises P-2 and the 11-05 9:56 AM ruling.** A floating stone slab is no longer a fault in itself. 1-5's canopy breakables still
+**[superseded 10:39 AM: rocks never float]** - **This revises P-2 and the 11-05 9:56 AM ruling.** A floating stone slab is no longer a fault in itself. 1-5's canopy breakables still
   become creaky limbs, though, for theme reasons: the tree's own breakable belongs up there. Slabs may float low, over ground and
   creek gaps.
 
@@ -1396,11 +1396,11 @@ core, and where it is allowed). This table is for the planner's library at engin
 | bank | ground / self | no | floor, landing, rest, fork bank, the shrine's ground | run | W1-W4, W6-W10 (every forest-floor world) | 1-1, 1-5 | every W1 stage |
 | log | ground / floor, stumps or banks | yes, short and low | landing, low rise, ground-fork high road on stumps, rest | — | W1-W4, W6 | 1-1 | every W1 stage |
 | stump | ground / floor or bank | no | the post under a log, a small rise | — | W1-W4, W6 | 1-1 (if drawn: see note 1) | every W1 stage |
-| stone | ground / ground, or rising from water | yes | a 50 px rise on a bank's end, a stepping stone | — | W1-W4, W6, W9 | — (1-5's look) | 1-1 as an extra, then all W1 |
+| stone | ground / ground, or rising from water | **no** (10:39 AM: rocks never float) | a 50 px rise on a bank's end, a stepping stone | — | W1-W4, W6, W9 | — (1-5's look) | 1-1 as an extra, then all W1 |
 | mushroom | ground / floor, bank, stump or log | no | bounce up, a lift onto a mound or into the boughs | bounce (1-1 n4) | W1, W3, W6 | — | 1-1 from n4, then all W1 |
 | branch (bough) | tree / trunk within 220 px, or a post | yes, where it reads cleaner | landing, stair, canopy road, top branch | — | W1, W2's banks, W5, W6, W8 | 1-1 n8-n11, 1-5 | 1-1 from n8, then all W1 |
 | creaky | tree / trunk or bough | no | a landing that gives way, the canopy breakable | creaky (1-5 n2) | W1, W5, W6, W8 | 1-5 | from 1-5 |
-| crumble (stone slab) | ground / ground | yes, low over ground and creek gaps | a ledge that breaks a beat after landing | crumble (its first stage) | W1 (shrine stone, see note 2), W7 | — | from its teach; never in the canopy |
+| crumble (stone slab) | ground / ground | **no** (10:39 AM) | a ledge that breaks a beat after landing | crumble (its first stage) | W1 (shrine stone, see note 2), W7 | — | from its teach; never in the canopy |
 | bridge (rope) | tree / both ends on posts or boughs | no | a span at a canopy stair's top | — | W1, W5, W6 | — | from 1-1 n8 |
 | lily | water / a drawn water zone | no | stepping across a creek | — | W1 creeks, W2, W6 | — | only where the water zone draws |
 | reed isle | water / a drawn water zone | no | a low landing in water | — | W1 creeks, W2, W6 | — | only where the water zone draws |
