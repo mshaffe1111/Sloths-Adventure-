@@ -258,3 +258,11 @@ Each rule has the planner's machine check under it; a rule that can't be checked
   pad.** Built as the engine builds them, the old 1-1 has none on 16 layouts, and neither do the old 1-6 to 1-9 on 3-16 layouts
   (reference/engine/cp1/). Lily pads exist as code: a `lilyPads` section in `protoStage.ts:2294` (drawn from a pool at `:2425`) and
   World 2's river. Matt's "we used to have the lily pads" needs a check of which stage he means before the sheet says "from the old 1-1".
+- **Planner, 12:16 AM ET:** signed c883f235 (the four idea rules). Two checks the designer asked for, both measured on layout 1 Normal:
+  (a) 1-5's "stone" is solid `moss_stone` under 40 px tall (53 pieces), not snap twigs. 1-5's breaking pieces are its 68
+  `fragile` branches with `creak` set ("creaking limb"). The tagger's names are right.
+  (b) The split rule was too strict. With no gap allowed, old 1-1 has 0 splits, because its canopy is branches you jump between and the
+  two heights never sit at the same x for 300 px. If a road may have gaps up to one jump, old 1-1 has 31 splits (120 px allowance;
+  longest 1,540 px) or 21 (200 px; longest 2,280). Rebuilt 1-3 has 8, 14 or 18 under the same three rules. The floor log does count
+  as the low road. Proposed rule: a road keeps going across gaps up to a Normal flat jump (157-185 px, PLAN.md table 2.1; use 180).
+  The split floor then comes from old 1-1. Not checked yet: that both roads are reachable routes (the CP3 prover's job).
