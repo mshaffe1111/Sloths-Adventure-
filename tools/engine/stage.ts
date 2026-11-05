@@ -31,7 +31,7 @@ import { landingKind } from '../../src/game/mixer/catalog.ts';
 import { dressOverDoor, propBreaches } from '../../src/game/mixer/propSupport.ts';
 import { stillSpots } from '../../src/game/mixer/stillSpots.ts';
 import { distinctTokens, overlapSummary } from '../../src/game/mixer/codeVariety.ts';
-import { nodePieceBreaches, type RealisedNode } from '../../src/game/mixer/nodePieces.ts';
+import { nodePieceBreaches, v19Breaches, type RealisedNode } from '../../src/game/mixer/nodePieces.ts';
 import { botRun } from '../validate/play.ts';
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -251,8 +251,10 @@ if (fs.existsSync(OLD_FILE)) {
     if (!nodes) break; // (a build without gen2 meta: none of this stage's builds carry it)
     judged++;
     for (const b of nodePieceBreaches(st as never, cfg.worldIndex, nodes, { stage: id, climbOwner: id === '1-4' }).slice(0, 3)) bad.push(`${setting} ${v}: ${b}`);
+    // (V19: an up-trend stage never loses height late; the trend from the world's brief for this stage)
+    for (const b of v19Breaches(st as never, nodes, (gen2Of<{ brief?: { trend?: 'up' | 'down' | 'level' } }>(st)?.brief?.trend) ?? (id === '1-1' ? 'up' : 'level'))) bad.push(`${setting} ${v}: ${b}`);
   }
-  if (judged) gate(`node pieces, V18 (${judged} builds)`, bad);
+  if (judged) gate(`node pieces V18, and V19 (no late height lost on an up stage) (${judged} builds)`, bad);
   else notMeasured.push('node pieces, V18 (mixer/nodePieces.ts, on gen2.nodes: once 1-1 builds on gen2)');
 }
 

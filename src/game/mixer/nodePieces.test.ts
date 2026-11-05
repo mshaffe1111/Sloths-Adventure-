@@ -34,3 +34,16 @@ test('V18: a bounce node needs a seated mushroom, a floating node a floating pla
   const runout = stage([...(stair as any).platforms, P({ x: 1200, y: 980, width: 200, style: 'log' })]);
   assert.deepEqual(nodePieceBreaches(runout, 1, [{ token: 'Xc2^', x0: 0, x1: 1500 }]), [], 'a step down after the summit is the run-out, not the stair');
 });
+
+test('V19: a late descent made good before the exit passes; one that leaves him lower, or sits straight before the exit, is caught', async () => {
+  const { v19Breaches } = await import('./nodePieces.ts');
+  const plats = [P({ x: 0, y: 1000, width: 3000 }), P({ x: 2000, y: 700, width: 300 }), P({ x: 2400, y: 900, width: 200 }), P({ x: 2700, y: 600, width: 300 })];
+  const st = { platforms: plats } as never;
+  const ok = [{ token: 'A', x0: 0, x1: 1000 }, { token: 'R', x0: 1000, x1: 2000 }, { token: 'Df_', x0: 2100, x1: 2500 }, { token: 'Sf2', x0: 2500, x1: 2750 }, { token: 'E', x0: 2750, x1: 3000 }];
+  assert.deepEqual(v19Breaches(st, ok, 'up'), []);
+  const low = [{ token: 'A', x0: 0, x1: 1000 }, { token: 'R', x0: 1000, x1: 2000 }, { token: 'Df_', x0: 2100, x1: 2500 }, { token: 'Sf2', x0: 2500, x1: 2600 }, { token: 'E', x0: 2600, x1: 2650 }];
+  assert.match(v19Breaches(st, low, 'up').join(';'), /not above where the late descent began/);
+  const straight = [{ token: 'A', x0: 0, x1: 1000 }, { token: 'R', x0: 1000, x1: 2000 }, { token: 'Df_', x0: 2100, x1: 2700 }, { token: 'E', x0: 2700, x1: 3000 }];
+  assert.match(v19Breaches(st, straight, 'up').join(';'), /straight before the exit/);
+  assert.deepEqual(v19Breaches(st, low, 'level'), [], 'only an up-trend stage');
+});

@@ -77,3 +77,25 @@ export function nodePieceBreaches(st: StageIn, world: number, nodes: readonly Re
   });
   return out;
 }
+
+/**
+ * V19 (NODES.md §8.3, the supervisor's round 5; 1-1.md:23 "up in the high branches... pointed north"): a stage whose trend is up never
+ * loses height late. A descent node (job D) in the last third must be followed, before the exit (E), by nodes that leave him HIGHER
+ * than where the descent began, and a D is never the node straight before E. Heights are the route's: the highest landing over x (the
+ * high road where there are two). Only the token's job letter is read.
+ */
+export function v19Breaches(st: { platforms: Platform[] }, nodes: readonly RealisedNode[], trend: 'up' | 'down' | 'level'): string[] {
+  if (trend !== 'up' || !nodes.length) return [];
+  const P = st.platforms.filter((p) => !p.broken && p.type !== 'bouncy');
+  const heightAt = (x: number) => Math.min(...P.filter((p) => p.x <= x + 40 && p.x + p.width >= x - 40).map((p) => p.y));
+  const end = nodes[nodes.length - 1].x1, start = nodes[0].x0;
+  const exitAt = nodes.find((n) => n.token[0] === 'E')?.x0 ?? end;
+  const out: string[] = [];
+  nodes.forEach((n, i) => {
+    if (n.token[0] !== 'D' || n.x0 < start + ((end - start) * 2) / 3) return;
+    if (nodes[i + 1]?.token[0] === 'E') out.push(`V19 at node ${i + 1} (${n.token}): a late descent straight before the exit`);
+    const from = heightAt(n.x0), then = heightAt(exitAt);
+    if (!(then < from)) out.push(`V19 at node ${i + 1} (${n.token}): the exit (y ${Math.round(then)}) is not above where the late descent began (y ${Math.round(from)})`);
+  });
+  return out;
+}
