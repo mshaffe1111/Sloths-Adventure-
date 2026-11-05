@@ -74,6 +74,9 @@ engine first; Matt decided, so now do it his way, well.
 - Lead to write: the 1-3 and 1-4 story briefs; 6-9's brief (the swimming stage) when the engine reaches W6.
 
 ## My own pitfalls (and the countermeasure)
+- STILL REVIEW CHECKLIST (D37, Matt caught a floating boulder I passed): before judging the feature, go object by object through the
+  WHOLE frame: what holds it up (ground, base, trunk, water; a float-OK label if not)? Does it belong in this world? Does it overlap,
+  clip or sit on the route? Then the feature. Then upright AND sideways.
 - The start-up print was 34 KB and was cut to a 2 KB preview after compression, so I didn't really get my notes (D36). Now the
   print is small and points here; I READ the files above with the Read tool.
 - Combined git fetch aborts on one missing ref: fetch each branch on its own.
