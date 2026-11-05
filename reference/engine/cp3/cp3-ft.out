@@ -1,0 +1,8 @@
+ADULT normal layout 1: end time in 360 s, goal 11/11, harms 2 (lives 1) [pit, other], rescues 4, stuck 7
+ADULT normal layout 2: end time in 360 s, goal 9/11, harms 0 (lives 0) , rescues 3, stuck 11
+ADULT normal layout 3: end time in 360 s, goal 9/11, harms 0 (lives 0) , rescues 6, stuck 10
+ADULT normal layout 4: end time in 360 s, goal 7/11, harms 3 (lives 2) [other, pit], rescues 6, stuck 11
+KID easy   layout 1: end shrine in 270 s, goal 11/8, harms 0 (lives 0) , rescues 1, stuck 3
+KID easy   layout 2: end shrine in 243 s, goal 10/8, harms 0 (lives 0) , rescues 1, stuck 2
+KID easy   layout 3: end shrine in 308 s, goal 11/8, harms 0 (lives 0) , rescues 2, stuck 4
+KID easy   layout 4: end shrine in 320 s, goal 10/8, harms 0 (lives 0) , rescues 2, stuck 4

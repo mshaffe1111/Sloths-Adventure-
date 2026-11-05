@@ -1,0 +1,4 @@
+two big forks (n4 + n10) share of length, Normal: 0.106 - 0.134 median 0.122 (plan: 30-40%)
+checkpoints, Normal: [11, 12, 12, 12, 13, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14]
+hearts, Normal: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+width px, Normal: median 45351
