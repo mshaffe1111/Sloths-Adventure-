@@ -16,6 +16,22 @@ there. And if it's not, they need to redo it."
 - Anything rough that reaches Matt is the lead's miss, not the helper's. (What slipped on 2026-11-01: the Journal's filler lines, the
   identical find hints, medal totals counting unreleased worlds. Matt found the first; the lead found the rest only after.)
 
+## DESIGN IS NOT THE LEAD'S (Matt, 2026-11-04 ~11:30 PM ET, after playing the rebuilt 1-1 to 1-5)
+Matt: "you're no longer allowed to do design ideas anymore... I can't trust your design anymore. So going forward, we have a new
+level designer. You could okay things and you can check things, but you're no longer going to lead how things are going to be
+designed... We need this engine. And we need people that know how to build this engine."
+- The lead does NOT author stage layouts, stage ideas, mechanics, world plans or engine design. It does not write design tables,
+  "what makes them differ" plans, or design rulings in briefs.
+- A dedicated LEVEL DESIGNER (reference/roles/LEVEL-DESIGNER.md) leads design. Engine builders build what the designer and the engine
+  plan specify.
+- The lead's job: check and approve against the laws, the gates, STAGE-RULES, Matt's stated taste and the designer's own plan;
+  send work back with exactly what fails; run helpers, gates and releases; tell Matt the plain truth. A lead "approval" judges
+  whether the work meets the bar, never what the design should be.
+- When the lead sees a design problem, it reports it to the designer and to Matt with the evidence (a still, a number, a clip). It
+  does not propose the fix's design.
+- Why: the lead's World 1 design (W1-REBUILD-PLAN) shipped five stages that each repeat one piece from start to finish, worse than
+  the old World 1 (STATUS 2026-11-04 11:2x PM ET; D34).
+
 ## Who decides what (Matt, 2026-11-04: "You are 50% partner and can make these types of decisions going forward. Keep bigger decisions for me")
 The lead decides, without asking Matt: Dot and in-stage lines, find hints and stage text; build rulings inside an approved plan
 (layout fixes, which helper does what, file ownership, gate and ruler rulings, goals set by the agreed method); budget cuts inside
