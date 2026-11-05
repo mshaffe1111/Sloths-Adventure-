@@ -60,6 +60,11 @@ move the time, never the bar.
   from 10:15 AM ET. It does not read SPEC-TRACE until its own trace is written.
 - art-bootprint: under the designer. One HF picture, cap $3. The still comes to the lead before it's wired.
 
+## Matt's call, 10:38 AM ET: option (A)
+1-1 is built TODAY on the W1 ladder, after the full library and labels (12:00), the pass line (11:15) and the critic rulings that touch it (1:30). Step 6
+(whole-game data and gates) runs after the critic; 1-1 is re-run through it when it lands. 1-2 next budget. The lead argued for the whole
+engine first; Matt decided, so now do it his way, well.
+
 ## Held / waiting
 - HELD: anything built from ENGINE-SPEC sections A-F (worlds/ladder data, six gates) until the critic reports and the designer
   rules on its findings. The planner works on plumbing only.
