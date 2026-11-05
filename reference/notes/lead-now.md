@@ -28,6 +28,9 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 
 ## Open with Matt (one question at a time)
 - How far tonight: he decides once he trusts how I run the team. Meter 67% at 4:23 PM ET (1.5%/h since 2:23 PM).
+- Hugging Face: about $50 left (Matt, 11-05 evening); keep about $15 back. The lead approves engine art and tells Matt the spend.
+- Matt: "the focus of getting the engine done and right over playing around with something we're not even going to keep." No
+  throwaway trials: everything built is engine code or kit data that stays.
 - Judgment item 1: does 1-1 end on a quiet arrival? (designer's pick: yes).
 - Owed: the end-of-day review reference/daily/2026-11-05.md.
 - Owed (law 21): R-ids on ROADMAP for today's direction change (chunk pool on gen2, roll dials, window, new gates) and for the
