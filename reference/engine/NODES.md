@@ -490,3 +490,23 @@ JUDGMENT, to re-check on 16 layouts once 1-1 builds on gen2.
 
 **One flag for Matt (LABELS §8):** in W3, W4, W7 and W9 a thin platform is DRAWN as a stone slab. Under the new floating rule it may
 float, which puts a floating slab on screen, and rocks don't float. It needs his look at a still. It's not a 1-1 matter.
+
+**§8.7 amended (designer, 11-05 5:44 PM; the porter's measures on engine-core, which replace my estimates):**
+- **The reach:** reachJump(0) gives the double 313 px and a single 175 px, so a single is **0.56** of the double, not my 0.63 airtime
+  estimate. gen2's `share` is a fraction of the margin's gap, not of the true reach: share 1.0 = 230 px on Normal (MARGIN 0.82)
+  and 204 px on Easy (0.65).
+- **B2b, gap block (Normal):** the gap is at least 175 + 20 = 195 px, so **share ≥ 0.85**. #8 is [0.85, 0.89], [0.89, 0.93],
+  [0.91, 0.95]. Every harvest `gDoubleGaps` share that is meant to block is ≥ 0.85.
+- **B2b on Easy:** a gap can't block (204 px at most, against 195 + margin). **On Easy every double block is a RISE (B2a), never a
+  gap.** #8's Easy version raises the far bank 130-145 px over the take-off. The Easy margin stays as it is, because it's what keeps
+  Easy fair (JUDGMENT).
+- **B2a, rise block:** **130-145 px**, under gen2's clamp (riseLimit × 0.95 = 148 px at riseShare 0.8). #20 and #27 are
+  [-145, -130]. After the clamp, a block rise must still be ≥ 130 px. If a stage's riseShare clamps it lower, that section can't be
+  a T or an X on that stage, and the planner's block rule rejects it there.
+- **B3, #5:** the porter's option (b). **The mushroom sits on the floor (no perch); the lip is [-220, -200].**
+  - Without the bounce, a double from the floor reaches 185, which is short.
+  - The bounce from the cap (about 30 + 181 = 211) plus its one air jump (about 288) clears it.
+  - The bounce is the one new thing; the hop after it is a known move.
+  - B3's stump clause applies only to perched mushrooms (#21: a double off the stump top reaches 56 + 185 = 241, under its
+    [-290, -270]).
+- **#10, #22, #29:** 4-5 rises with wider boughs, still 10 s or more and inside the 900 px corridor (the porter's entry). Accepted.
