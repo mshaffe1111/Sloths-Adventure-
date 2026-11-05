@@ -2700,3 +2700,42 @@ The hard rules are unchanged: nothing costs a life, rocks never float, the 2:00 
 3. **A "none found" is not filled from 1-1.** If a line matters to Matt's play, the next research ask is for that one number.
 
 **The planner's 5 splits** fails the floor (≥ 34), whatever the target.
+
+### Variety first; old 1-1's LOOK and FLOW kept as feel, not numbers (designer, 11-05 3:40 PM ET; Matt, 3:39 PM: "I just like variety. Level one was, I liked the look. And I just liked how it flowed. It doesn't mean it has to be exactly that way.")
+
+**Variety is Matt's first taste.** It's held by the hard rules: era diversity ≥ 0.35, lookalike < 0.78, the 20 s window < 0.30, and
+the neighbour rule.
+
+**The LOOK, in words (for the builder and the stills judge):**
+- morning light at the home forest's edge;
+- banks, logs, stumps, mushrooms and mossy stones close to the ground, then the boughs coming late as the reward (brief :19-23;
+  "1-1 is a ground stage that becomes a tree stage", 9:20 ruling);
+- painted pieces everywhere, nothing grey, nothing floating that shouldn't (P-1, rule 1).
+- Judged on stills, upright and sideways. No number stands in for it.
+
+**The FLOW, in words:**
+- a steady march of short hops that never stalls;
+- small rises and drops on almost every landing;
+- a brief breath now and then, never a dead walk;
+- something new arriving before the last thing gets old;
+- the pace quickening only at the double chain (the feel profile: "calm and march-like, quicker only at n9").
+
+**Where flow is measured, and what the research says:**
+
+| Where flow shows | Research range | Source | Floor (old 1-1) |
+|---|---|---|---|
+| Pace: groups of moves | bursts of 5-20 s | Launchpad (G #38) | — |
+| Pace: gap difficulty | intended gaps ≤ 0.8 of the true max, out of 0.85-1.15 | P8 (Yacht Club); 1-1's references sit at 0.35-0.56 (C20 run) | — |
+| Quiet stretches (rests) | a rest is about 2× the local median beat | C2 (D:188-193; R3 F13) | — |
+| No dead walk | eventless walk ≤ 2.0 s Normal / 3.0 s Easy, an ESTIMATE (Gemini only, calibrated by the bots) | ES 506, TRIAGE C | the fun gate's dead-walk flags may only shrink |
+| Something new | no 30 s stretch with the same mix (the 20 s window gate holds it) | LEDGER-ENGINE-GEMINI E1 (:45, :465) | ≤ 572 px |
+| Up and down | no research share | none found (same search as the taste table) | up or down on 4 of 5 landings |
+
+### The planner's Q1 and Q2 (same time)
+- **Q1: (a), with head room.**
+  - A moss floor runs under each log run, 100-120 px under the log tops. The stumps stand on it, and a bank step at each end climbs
+    back up. The logs become a raised road over a walkable floor, a two-road stretch that adds splits.
+  - The condition: the clear space from the floor to a log's underside is at least his standing height (player.height) + 20 px, so he
+    never bonks walking under. Where it's less, the floor is not a road: the logs sit on an earth bank there instead (b).
+- **Q2: (a).** The perch rule stands: walking passes under a perched mushroom, and only a hop onto it bounces. engine-core's test runs
+  a hop onto the perch.
