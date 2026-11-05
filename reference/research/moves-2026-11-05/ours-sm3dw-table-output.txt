@@ -32,3 +32,21 @@
 
 29 enemy kinds in W1-W2; 19 appear in exactly one course; new kinds per course: 1-1:2, 1-2:4, 1-A:1, 1-3:2, 1-4:1, 1-5:4, 1-C:2, 2-1:1, 2-2:2, 2-3:3, 2-4:2, 2-A:1, 2-5:2, 2-T:2
 reused kinds per course (seen in an earlier course): 1-1:0, 1-2:1, 1-A:0, 1-3:1, 1-4:0, 1-5:0, 1-C:2, 2-1:1, 2-2:2, 2-3:3, 2-4:3, 2-A:0, 2-5:1, 2-T:2
+
+Uses per course (wiki enemy counts; 'main' = the course's most numerous kind):
+  1-1: main Goomba x7; others: Cat Goomba x3
+  1-2: main Koopa Troopa x12; others: Unshelled Koopa x12, Goomba x12, Mini Goomba x6, Goomba Tower x1
+  1-A: main Chargin' Chuck x2; others: 
+  1-3: main Piranha Plant x14; others: Cat Goomba x8, Mega Piranha Plant x1
+  1-4: main Splounder x29; others: 
+  1-5: main Biddybud x8; others: Stingby x8, Para-Biddybud x6, Magikoopa x1
+  1-C: main Goomba x22; others: Goomba Tower x9, Thwomp x3, Kick Bomb x2
+  2-1: main Conkdor x18; others: Stingby x7
+  2-2: main Piranha Plant x12; others: Galoomba x12, Mini Goomba x9, Coin Coffer x1
+  2-3: main Fuzzy x25; others: Blurker x24, Piranha Plant x5, Fire Piranha Plant x5, Mini Goomba x3, Mega Piranha Plant x1
+  2-4: main Galoomba x13; others: Skipsqueak x11, Mini Goomba x8, Spiny Skipsqueak x8, Goomba x2
+  2-A: main Big Galoomba x3; others: 
+  2-5: main Blockstepper x18; others: Galoomba x2, Fire Bro x1
+  2-T: main Blockstepper x25; others: Fire Piranha Plant x4, Cannon x2
+  all enemy-kind counts per course (n=44): {'lots 7+': 24, 'some 3-6': 9, 'touch 1-2': 11}
+  echo: 4 of 29 kinds appear again within the next 2 courses after their first

@@ -28,3 +28,26 @@ for e,st in sorted(at.items(),key=lambda x:(idx[x[1][0]],x[0])):
 print(f"\n{len(at)} enemy kinds in W1-W2; {one} appear in exactly one course; "+
       f"new kinds per course: "+', '.join(f"{c}:{sum(1 for e,st in at.items() if st[0]==c)}" for c in order))
 print("reused kinds per course (seen in an earlier course): "+', '.join(f"{c}:{sum(1 for e,st in at.items() if c in st and st[0]!=c)}" for c in order))
+
+# --- uses per course (TRIAGE #124): the wiki's per-course enemy COUNT, main enemy vs guest enemies ---
+print("\nUses per course (wiki enemy counts; 'main' = the course's most numerous kind):")
+def counts(fn):
+    f,_,part=fn.partition('#'); t=open('sources/'+f).read()
+    if part=='1': return {"Chargin' Chuck":2}
+    if part=='2': t=t.split('Big_Galoomba_Blockade ===')[1]
+    sec=t.split('## Enemies',1)[1].split('\n## ',1)[0].split('Captain Toad: Treasure Tracker')[0]
+    out={}
+    for m in re.finditer(r'^\| ([^|]+) \| ([0-9]+)',sec,re.M):
+        if m.group(1).strip() not in skip: out[m.group(1).strip()]=int(m.group(2))
+    return out
+allc=[]
+for c,fn in files:
+    d=counts(fn); 
+    if not d: continue
+    main=max(d,key=d.get); allc+=list(d.values())
+    print(f"  {c}: main {main} x{d[main]}; others: "+', '.join(f"{k} x{v}" for k,v in sorted(d.items(),key=lambda x:-x[1]) if k!=main))
+b=collections.Counter('touch 1-2' if v<=2 else 'some 3-6' if v<=6 else 'lots 7+' for v in allc)
+print(f"  all enemy-kind counts per course (n={len(allc)}): {dict(b)}")
+# echo: does a kind return in the next 2 regular courses (blockades 1-A/2-A and the castle/tank count as courses here)?
+ech=sum(1 for e,st in at.items() if any(0<idx[s]-idx[st[0]]<=2 for s in st)); 
+print(f"  echo: {ech} of {len(at)} kinds appear again within the next 2 courses after their first")

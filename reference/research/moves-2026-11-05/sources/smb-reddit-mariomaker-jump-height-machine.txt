@@ -1,0 +1,45 @@
+URL: https://www.reddit.com/r/MarioMaker/comments/3xgvq7/mario_machine_rd_jump_height_mechanics/
+Read: 2026-11-05 by the moves researcher (TinyFish fetch_content). Post by u/zing007, 2015-12-19.
+Title: Mario Machine R&D: Jump Height Mechanics : r/MarioMaker
+NOTE: a player's measurement with a button-pressing machine, in Super Mario Maker's SMB style (not Nintendo's own figure, not the
+NES original). Post body copied verbatim; comment section (two off-topic replies) and site ads left out.
+---
+As you know I have built a machine that can press the buttons on the Wii Controller at timed intervals (https://www.reddit.com/r/MarioMaker/comments/3x5bld/so_i_am_currently_building_a_machine_that_can/). Today I went and researched the variability of Jumping height, and I would like to share the results to help with your level design.
+
+Introduction
+
+Using the machine, I wanted to figure out the time intervals require to jump specific heights. There is a difference between a full jump and a short hop in timing the jump button. So through trial and error testing here are the results. The data shows that if the JUMP button is press for (X) milliseconds, Mario will jump (X) blocks high. This study is only telling you what your thumbs are actually doing, and how the game receives those inputs.
+
+Methods
+
+Having Mario STANDING in place in SMB, I had him jump at different time intervals. The time interval is the time the button is press and the time the button is released. To verify block height, I had Mario jump inside a tower of donut blocks so I know if Mario had jump 2 blocks or 3 blocks. To verify a fraction of a block, I added a spike and used a death verification. If Mario jumps 2.5 blocks high and the spike is the 3 blocks high, Mario will definitely die.
+
+Results
+
+15-60 ms = 1.25 Blocks
+70-110 ms= 2 Blocks
+120-140 ms= 2.25 Blocks
+150 ms= 2.5 Blocks?
+160-200 ms= 3 Blocks
+210-260 ms= 3.33 Blocks
++270 ms= 4 Blocks
+
+There is a 10 ms gap between jump heights just because my machine does not have enough precision to play around the threshold between jumps. Also because of that precision, I think 150 ms makes you jump a tiny bit higher but I cannot verify that. Furthermore, the decimals are measured with my eyes only, since there is no verifiable output for jumping half a block.
+
+Discussion
+
+What you can take from this is that you can jump at 6 different heights (not including that 150 ms test).
+
+1. You can jump at the minimum 1.25 blocks height. Which means Mario will always bump his head if the distance between the ceiling and floor is two blocks.
+2. This also applies to the 2.25, and 3.33 high jumps.
+3. Mario can jump 2 and 3 blocks high without hitting the ceiling. This is useful if you design jump sensitive obstacles.
+4. Max standing jump height is 4 blocks, which is well known. Logically, you never make a standing jump and hit a spike that is 5 blocks high. However, I discovered the the hit boxes or physics in SMB and SMB3 are different from SMW and NSMB. In SMB and SMB3, Mario does not die from a standing jump from a 5-block high spike. In SMW and NSMB, Mario does die from it, you can try it out yourself.
+5. Further note that the decimal jumps are on the low end of the block heights. So you know that there is at least half a block of room above Mario's head when making these partial jumps.
+6. You have about a 40-50 ms window between jump heights. That is how preicse your fingers are if you are good at partial jumps.
+7. This also means that jump height is not absolutely proportional to how long you press the jump button, at least for standing jumps. There are jump height windows, which means the jumps are repeatable with talented thumbs.
+
+Conclusion
+
+What I mapped out is all the possible standing jump heights you can do in Mario Maker. Any spike ceiling that is two blocks high will hit Mario when he jumps. With this information, you can design precise obstacles that are dependent on jump height.
+
+My next project is to investigate running jumps. If you have anything you want me to measure out with data points, I could investigate that.

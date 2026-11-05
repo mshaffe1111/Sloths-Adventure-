@@ -51,3 +51,26 @@ for c,v in pp.items():
     g[t].append((c,v))
 print("\nPuzzle pieces per level (from the world tables):")
 for t,l in g.items(): print(f"  {t}: n={len(l)} pieces " + ', '.join(f'{c}:{v}' for c,v in sorted(l,key=lambda x:idx[x[0]])))
+
+# --- level THEMES from the world tables' one-line descriptions (dkc-world-*.txt). A theme row undercounts: it marks only the levels
+# whose description names the element, not every level that holds it. ---
+T={
+ 'Barrel cannons as the theme':"1-5 3-2 5-5 5-K 6-8",   # "featuring several Barrel Cannons", "navigated by Barrel Cannons", "great use of Barrel Cannons", "Barrel Cannons and bouncy tires", "Blast Barrels"
+ 'Climbing grass/turf as the theme':"1-2 5-2",           # "introduces a grassy, green turf", "much like in King of Cling ... grassy turf"
+ 'Silhouette level':"1-4 7-1 8-4",                       # "first silhouetted level", "A silhouetted level", "silhouetted"
+ 'Collapsing/sinking platforms as the theme':"1-K 2-K 6-6 8-5",  # "disappear shortly after being stepped on", "sink into the lava", "rocks and platforms can easily fall apart", "bob ... some immersing completely"
+ 'Chased (lava/munchers/wave) as the theme':"5-8 6-K 8-2 8-7",  # "chased by a growing hoard of munchers", "rising lava pursues", "A wave of lava chases", "pressured by rising lava"
+}
+print("\n| level theme (description only) | levels | longest absence | later worlds with it |\n|---|---|---|---|")
+for m,s in T.items():
+    st=sorted(s.split(),key=idx.get); gaps=[idx[b]-idx[a]-1 for a,b in zip(st,st[1:])]
+    fw=int(st[0][0]); ws={int(c[0]) for c in st}
+    print(f"| {m} | {', '.join(st)} | {max(gaps)} | {sum(w in ws for w in range(fw+1,9))}/{8-fw} |")
+# --- echo (TRIAGE #125): present in either of the next 2 levels after the first, boss levels skipped ---
+nb=[c for c in order if not c.endswith('B')]; nidx={c:i for i,c in enumerate(nb)}
+print("\nEcho, next 2 non-boss levels after the first appearance:")
+for m,s in list(M.items())+[(k,None) for k in T]:
+    st=[code[n.strip()] for n in s.split(';')] if s else T[m].split()
+    st=sorted({c for c in st if c in nidx},key=nidx.get); f=nidx[st[0]]
+    nxt=nb[f+1:f+3]; hit=[c for c in nxt if c in st]
+    print(f"  {m}: first {st[0]}, next two {nxt} -> {'echoed in '+','.join(hit) if hit else 'NOT echoed'}")

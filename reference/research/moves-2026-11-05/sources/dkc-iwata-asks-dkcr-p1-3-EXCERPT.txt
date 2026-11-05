@@ -1,0 +1,29 @@
+URL: https://iwataasks.nintendo.com/interviews/wii/donkey-kong-country-returns/0/0/  (page 1 "Codename: Fate")
+URL: https://iwataasks.nintendo.com/interviews/wii/donkey-kong-country-returns/0/1/  (page 2 "The Magic Moment")
+URL: https://iwataasks.nintendo.com/interviews/wii/donkey-kong-country-returns/0/2/  (page 3 "A Meeting at 5 AM")
+Read: 2026-11-05 by the moves researcher (TinyFish fetch_content), all three pages read in full.
+Title: Iwata Asks - Donkey Kong Country Returns, pages 1-3
+NOTE: EXCERPT. The three pages were read in full; only the lines that bear on level design are copied verbatim below. Pages 1-3
+contain no statement on how many mechanics a level has, how often a mechanic recurs, or sink times (searched for while reading).
+Page 1 is team introductions and the project's origin only.
+---
+[page 2]
+Kynan
+(laughs) We, too, noticed a dramatic change at a certain point. One reason is that over the course of many discussions Nintendo and Retro Studios had, we had come to share a certain philosophy with regards to how to make the game's levels and had achieved a common understanding of what makes a level fun. We learned the tempo necessary for a fun level and the kinds of elements to put in.
+
+Kynan
+Yes. A lot of people might think that making a side-scrolling action level would be easy in 2D, but everything in that level is there for a reason. When we finally grasped that, making the levels started going smoothly.
+
+[page 3]
+Tanabe
+During development, all the names of the levels were written on it. We adopted a system of evaluating the status of the levels with symbols like or or and trying them over and over until they all had a mark. So whoever was in charge of a level without a would reapply himself in order to get a .
+(The grade symbols did not survive text extraction.)
+
+Kynan
+Something funny happened with regard to the area called Cliff. After all the levels had been completed to a certain degree, I had Tanabe-san look at them and he said Cliff was the most fun. But then, after all the other levels had been redone, I had him try them out again, and he said Cliff was the least fun!
+
+Mike
+In the end, we made it so that when Donkey Kong gets close, they slowly lean back, then swiftly attack a moment later.
+
+Tabata
+I wanted to generate a thrill—so if you don't get pretty close to them, nothing happens, but if you get too close and don't get away quickly enough, you're a goner.
