@@ -60,3 +60,27 @@ The content families:
 6. No floor for older mechanics.
 7. The world's signature mechanic and the stage's signature set piece are conflated.
 8. Structural nodes must sit outside the percentages.
+
+## E. Endings that adapt to how the player plays (Matt's idea, 11-05)
+Sources: Booth GDC 2009 (Left 4 Dead's AI Director); Rubin, all-things-andy-gavin.com part 6 (Crash); PCG book ch. 10 (Mario Kart,
+experience-driven PCG); Kasavin in Inverse 2021 (Hades); Wikipedia citing Thorson (Celeste); Hunicke's Hamlet.
+- L4D's Director places PRE-BUILT groups by an intensity score (it rises with damage and decays; build up, peak, fade, relax
+  30-45 s), and bosses are exempt.
+- Crash: help weaker players without changing the game for the better ones (a slower boulder, a crate that becomes a checkpoint).
+- Hades and Celeste: help is the player's own choice.
+- Research systems adapt BETWEEN levels, not within one.
+- Signals:
+  - struggling = deaths or respawns at one checkpoint, hearts lost, retries of one gap;
+  - exploring = time off the main route, alcoves entered, petals off the line, with no deaths;
+  - idle = neither.
+- Pitfalls:
+  - a repeated intervention feels trivial;
+  - players game it;
+  - regenerating live breaks WORLD-RULEBOOK §7.12, "no re-roll on death".
+- Recommendation:
+  - build two finished, gate-checked endings per stage, both on the seed;
+  - at the last checkpoint, an exploring player with no deaths gets the denser finale, and anyone with deaths there gets the quiet
+    arrival;
+  - the pick holds through every retry;
+  - never add challenge because of deaths; help on deaths quietly;
+  - a better form still: let the player CHOOSE, with a high road to the finale (with a find on it) and a quiet low road.
