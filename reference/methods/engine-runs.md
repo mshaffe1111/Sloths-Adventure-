@@ -36,8 +36,7 @@ rows (R), Matt's calls (M) or rows answered by a cited source (G).
 ## The bar
 - Every row: the command, the output file, the number (measured, or marked estimate), PASS / MISS / NOT RUN, and for a MISS the file:line.
 - Example rows at the bar: RUNS.md #43 (the measure, the count, the guard that exists, the line that lets it through: `w1mix.ts:998`);
-  #92 (stills at the three heights, both ways, looked at, and the verdict in one sentence); #121 (the build matches ruling C9; the MISS
-  is the spec's table text).
+  #92 (stills at the three heights, both ways, looked at, and the verdict in one sentence); #121 (its root cause re-read when ruling C9 was reversed: rulings move, so re-read them before reporting).
 
 ## Checks before reporting
 Every TRIAGE C id appears in RUNS.md (a script over both files); counts per topic add up; every output file named exists; no edit to
