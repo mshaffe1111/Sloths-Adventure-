@@ -1,7 +1,7 @@
 // E3: logs on stumps (the designer's 12:52 ruling (a), ENGINE-SPEC 3951b0f9f) and every trunk's foot, on every stage the engine builds
 // from its spec, 16 layouts x Normal and Easy:
 //   1. a log on a stump is thin (the kit's stumpLog height) and its stump meets the log's underside;
-//   2. every trunk (a stump, a kapok, a post) stands on the first solid surface under its top (a landing's top or a creek's water) and
+//   2. every trunk (a stump, a kapok, a post) stands on the first ground under its piece (a bank, a stone, the floor or a creek's water; it passes behind logs and boughs) and
 //      never runs on down through one; the surface's drawn body (terrain.ts footingOf) reaches its foot;
 //   3. (the stumps draw in the trunk layer, protoArt.ts drawProtoScene's deco trunks, before the hero: engine.ts draw order, by
 //      construction; seen in the stills);
@@ -16,6 +16,7 @@ import { withGoals } from '../goals.ts';
 import { findW1Pits, SUNK_STEP } from '../w1Pits.ts';
 import { footingsFor } from '../terrain.ts';
 import { fitTrunks } from '../protoArt.ts';
+import { trunkGround } from '../trunkFit.ts';
 import { SPECS } from './stages.ts';
 import { kitFor } from './kits.ts';
 import type { Platform } from '../types.ts';
@@ -56,7 +57,7 @@ test('a log on a stump is thin and its stump meets its underside (conditions 1)'
 
 // (as drawn: the draw fits every trunk to the pieces really there (protoArt.ts fitTrunks), which on Easy include what Easy's own pass
 // widens or adds after the mixer (easyMode.ts); on Normal the mixer's own trunks must already be exactly what is drawn)
-test('every trunk stands on the first solid surface under it, inside that surface\'s drawn body, and Normal\'s are drawn as laid (condition 2)', () => {
+test('every trunk stands on the first ground under it, inside that surface\'s drawn body, and Normal\'s are drawn as laid (condition 2)', () => {
   const bad: string[] = [];
   for (const { name, st, world } of all) {
     const foot = footingsFor(st, world);
@@ -71,7 +72,8 @@ test('every trunk stands on the first solid surface under it, inside that surfac
       // (the piece it holds: its body is at the trunk's piece, holdY (a crowned tree rises over its bough) or its top)
       const from = t.holdY ?? t.topY;
       const held = (st.platforms as Platform[]).filter((q) => at(q) && q.y <= from + 4 && q.y + q.height >= from - 4);
-      const under = (st.platforms as Platform[]).filter((q) => at(q) && !held.includes(q) && q.y > from + 8);
+      // (the first GROUND under it: a bank, a stone or the floor; it passes behind a log or a bough (trunkFit.ts trunkGround))
+      const under = (st.platforms as Platform[]).filter((q) => at(q) && !held.includes(q) && trunkGround(q) && q.y > from + 8);
       const tops = [...under.map((q) => ({ y: q.y, q: q as Platform | null })), ...water.filter((z: any) => t.x > z.x0 && t.x < z.x1 && z.y > from + 8).map((z: any) => ({ y: z.y, q: null }))];
       if (!tops.length) continue;
       const first = tops.reduce((a, b) => (b.y < a.y ? b : a));

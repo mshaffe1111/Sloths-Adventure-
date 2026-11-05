@@ -18,7 +18,7 @@ import { IDEAS, SHAPES, type BurstRecipe } from './library.ts';
 import { kitFor, type WorldKit } from './kits.ts';
 import { holds } from './support.ts';
 import { paintedBank } from '../w1Pits.ts';
-import { fitTrunks, FOOT_IN } from '../trunkFit.ts';
+import { fitTrunks, FOOT_IN, trunkGround } from '../trunkFit.ts';
 import { w1DressFacing, w1DressWidth } from '../w1NewArt.ts';
 import type { StageSpec } from './spec.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
@@ -778,7 +778,7 @@ function supports(P: Platform[], height: number, clear: number[] = [], water: Re
   // fitTrunks); a stump stands on it and never runs on down through the low road (the designer's 12:52 condition 2). Before, only a
   // bank of earth counted, so a trunk ran down through a log or a bough under it)
   const floorOf = (x: number, y: number) => {
-    const under = P.filter((q) => q.type !== 'bouncy' && !q.broken && q.x - 2 <= x && q.x + q.width + 2 >= x && q.y > y + 8).map((q) => q.y);
+    const under = P.filter((q) => trunkGround(q) && q.x - 2 <= x && q.x + q.width + 2 >= x && q.y > y + 8).map((q) => q.y);
     for (const z of water) if (x > z.x0 && x < z.x1 && z.y > y + 8) under.push(z.y);
     return under.length ? Math.min(...under) : null;
   };
