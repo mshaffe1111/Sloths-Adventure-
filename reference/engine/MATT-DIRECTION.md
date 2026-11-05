@@ -272,3 +272,11 @@ stage. This is the cold-helper proof the engine owes (helper-ready). Rules of th
 - Every question the builder has to ask that the how-to does not answer is logged as a how-to gap and counts against the pass line
   as a fix. Supervisors answer by pointing to (or fixing) the how-to, not by doing the work.
 - The pass line (b726b737: 1.7 h, ~1.1%, <= 2 data-only rounds, 0 engine changes, every gate) is measured on the fresh builder.
+
+## 2026-11-05 2:27 PM ET (to the lead, meter 64%): finish tonight under 90%; prove the engine first, then extend it
+"Lets push for better than 90. That leaves 10 for 5 days." "We need to look at the plan and make it more efficient." He chose "Prove
+first": engine-core does not fill in Worlds 2-10 (step 6's whole-game data) today. 1-1 (7:00 PM) then 1-2 prove the engine; Worlds 2-10
+follow tomorrow on a proven engine, so nothing built for them is redone if 1-1 forces an engine fix. The W1 parts 1-1 needs (move-table
+row, main taught-at, the 1-1 lock) still land first. The lead's check-ins are tied to the helpers' deadlines (about hourly), each still a
+full quality check on the real screens; the lead tells Matt only at checkpoints and decisions; every helper goes idle the moment its
+work is accepted. Nothing is cut: the order changes, not the bar.

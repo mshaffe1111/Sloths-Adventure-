@@ -23,7 +23,8 @@ Then ReadNotifications, then check that the 30-min check-in is armed (list_trigg
 - The lead does NOT design. The lead checks, approves, sends back, writes story briefs (story and look), and runs the team and the
   checkpoints.
 - METER: 64% at 2:23 PM ET (60% at 12:37; about 2.3%/h with 3 helpers). Projected ~90% by midnight with the 1-1 and 1-2 tests. Ask for it at every checkpoint.
-- NO CEILING today (Matt, 10:32 AM ET: "It takes what it takes today... not going to rush or shortcut token-wise"). Costs are still reported and the meter read at checkpoints; no waste.
+- MATT 2:27 PM ET: finish tonight UNDER 90% ("leaves 10 for 5 days"). Prove first: no W2-W10 step-6 work today. Check-ins at helper deadlines only (3:30, 4:15, 5:00, 6:15, 6:40, 7:00, then the 1-1 test), each a full quality check. Tell Matt only at checkpoints and decisions. Helpers idle the moment their work is accepted. No new helpers except the cold builder.
+- (superseded by the line above for cost) NO CEILING today (Matt, 10:32 AM ET: "It takes what it takes today... not going to rush or shortcut token-wise"). Costs are still reported and the meter read at checkpoints; no waste.
 
 ## THE BOARD: deadlines and what success looks like (set 10:26 AM ET; Matt: "You set the standards... deadlines... what success looks like. And you hold them to it... catch mistakes early, not late")
 Every check-in compares each line below with the clock. A missed time gets a send-back at once with the lesson (8i: bring options
