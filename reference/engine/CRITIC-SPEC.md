@@ -24,6 +24,9 @@ I did not read `reference/engine/SPEC-TRACE.md` before writing §1 and §2 (the 
 
 ## Verdict first
 
+**Update, 1:11 PM ET (re-review, §11):** the rulings are root fixes; the verdict is now **NOT READY to build step 6 until four edits land** (no new research or runs needed), then READY. See §11e.
+
+
 **NOT READY TO BUILD.** The spec is strong on World 1 craft (placement, polish, element and float rules, the old 1-1 as a measured bar,
 honest rulings when a line is missed). But it has not used most of the research, its whole-game gates read a table that can't see
 what they gate, and by the game's own variety measure the mixer's stages repeat more than the stages they replace. Eight changes, most
@@ -709,3 +712,142 @@ I first wrote "two R2 claims" in §0; precisely it was **one R2 claim and one R1
    player's rhythm, not the song"); §5, "Rhythm groups can optionally be repeated before this rest area", supports one exact repeat
    (LEDGER-2026-11-02-full.md C4) against L392's "never the same burst twice".
 2. **R1:39, SMBF "We keep track to avoid duplicates"**: fetched and saved earlier (`smbf-refenes-gamingbolt.md`). **Holds verbatim.**
+
+---
+
+## 11. Re-review of the designer's rulings (1:00-1:45 PM ET; Matt's law 22: "We don't change rules to go around defects. We fix the problem")
+
+Reviewed: ENGINE-SPEC.md at **engine-spec 3951b0f9** (2,287 lines; L1-1635 edited in place, so old line numbers still hold; L1636-2287
+new), LABELS.md and TRIAGE.md there, and the engine code at **engine-mixer 2da28800** (`src/game/mixer/`, `tools/engine/`).
+`engine-core` did not exist at 1:00 PM ET (`git fetch origin engine-core`: "couldn't find remote ref"). Scope per the lead (12:46 PM):
+the core engine only (rules, gates, data, root fixes); polish is next week.
+
+**The test I used for each ruling.** *Root:* the ruling changes the cause (the gate, the data, the code) and leaves the bar where it
+was or raises it. *Re-worded:* a line is lowered, redefined or dropped so the defect stops showing. *Pending:* the root ruling is
+written but not yet in the data or code the engine reads. A pending ruling is fine for "ready to build step 6" if it IS step 6's work;
+it is not fine if step 6 would read data that still says the opposite.
+
+### 11a. Each finding, ruled (spec "The critic's review ruled", L1783-1821; "deep pass ruled", L1875-1884; "Contradictions", L1736-1782)
+
+| # | My finding | The ruling | Root or re-worded? | In the code at 2da28800 (my re-run) |
+|---|---|---|---|---|
+| 1 | Rolls 98-99% alike (era 0.021 / 0.014) | Gate with era.ts, lookalike.ts, bands.ts at STAGE-RULES' own lines (0.35, 0.78, 0.30), against every stage of the world and every earlier world; find the cause first (R-164.11) before changing the generator (L1792) | **Root.** The bar is the game's existing one, unchanged, and the gate measures moves, not pieces | **Pending.** No engine file imports era, lookalike or bands (grep: only the probe `tools/engine/probe-era.ts`). era on W1 unchanged: 1-1 0.021, 1-5 0.014 (run, 16 rolls) |
+| 2 | The move table is untested (2 layouts, 4-D, W6-W7 water) | Rebuilt and tested before any gate reads it: 16 layouts, water from gen2Water, rows for 4-D and 8-4, glide and swim; a test fails it on a missing stage or water (L1793) | **Root** (it adds a test on the tool, D15) | **Pending.** `moveladder.json` is still 7d9ad9a9's: `"layouts": 2`, 40 rows, no glide, swim or 4-D; water row sees 0 of 13 gen2 water stages (run 3 again) |
+| 3 | Hazards locked to their home world | **Mechanics travel, art does not**: every hazard returns as a twist in every later world, in that world's art (L1794); applied to the G row #151 (L1847) | **Root in the ruling.** But the lines a helper reads still say the opposite: **L1301-1305 ("stay with their element... not everywhere") and the hazard table L1550-1561 ("geysers W9 only", "bolts W10 only") stand with no "[revised]" mark**, though the contradiction section promises one wherever a line is overruled (L1738); LABELS.md L66-71 still has "web W5 only", "geyser W9 only"; and the engine library's data, `src/game/mixer/catalog.ts:102-108`, gives `worlds: [5]` (web), `[6]` (tide), `[9]` (geyser), `[10]` (bolt), field defined as "the worlds it may go in" (`catalog.ts:26`) | **Not carried into the data.** Step 6's world table would be built from LABELS/catalog as they stand and lock the hazards again |
+| 4 | No stage identity; one template | Profile gains pair, twist, map, slot, tension; checkSpec fails a plan whose shape matches its neighbour's; a 15-20 s finale at the exit; 1-1 and 1-5 redrawn (L1795) | **Root** | **Pending.** `Profile` has none of the fields (`spec.ts:20-46` unchanged) |
+| 5 | The engine can't express W2-W10; no builder named | One rulebook over all builders; `builder` named per stage; gen2 keeps its 23; Move, Element, TAUGHT_BEFORE, Profile fields catch up; the method file replaced (L1796; Matt approved, L1819) | **Root**, and it answers "build on what works" well | **Partly.** TAUGHT_BEFORE now lives in each spec (06274b9b); `Move` and `Element` unchanged (`spec.ts:14, :17`); run 6 again: 2-4 6 problems, 6-9 4. No new method file |
+| 6 | No lock; W1 changed; replay broken | Per-world locks (a)-(d) before any change; the 11-04 differences separated (now: `engine-core` from main, the lead's D40); layoutMemory measures the layout the player sees (L1797) | **Root** | **Partly.** `tools/engine/lockall.ts` exists (every stage, part by part) but no lock is recorded (`lockall.json` absent). Fingerprints vs main again: 1-2, 1-3, 1-4, 1-6, 1-9 still differ 6/6; W2-W10 0/84. `layoutMemory.ts:129-130` still uses `rhythmRollDistance` / `w1RollDistance` for 1-1 and 1-5 |
+| 7 | Water rules from a misread summary; swim speed | Withdrawn to OPEN, then rewritten from recovered primary text (WATER-SWIM.md, the 11-02 paste recovered, L1885-1955); swim speed is Matt's pick with a clip of each (L1798) | **Root** (the source is now saved; the 20 s gate that could not fail is gone) | Speed still 150 (`swim.ts:35`), as it should be until Matt picks |
+| 8 | 23 guesses | Each into TRIAGE (run, research or answered); 39 G rows applied with sources (L1822-1874); C1-C31 (L1736-1782) | **Root, with one exception to watch** (11b) | runs pending in TRIAGE |
+| §9b | Nine stage-specific branches | Removed in four commits (06274b9b, 452fc9f8, a6757499, 2da28800): one builder from the spec, World 1 numbers to a kit row, idea recipes and shapes to the library; the gate reads every mixer file and protoStage and was shown to catch planted breaches | **Root** | **Done.** `gatemiss.cjs` now: 0 quoted ids, 0 stage-named identifiers; library-check green; snapshot 64/64 unchanged |
+| §10 | W9-W10 worst; defaults fail W2-W4; ladder amounts; 1-2 ruling on unshipped work; Smith 2009 | All accepted (L1875-1884): every builder gated; per-world, per-kind lines measured; amounts from shipped envelopes (M1-M8, L2032-2070); the 1-2 teach ruling **reversed** to main's 1-5 / 1-6 (C9, struck); L392 allows one exact repeat before a rest | **Root.** Reversing its own ruling on evidence is the opposite of re-wording | data pending |
+
+### 11b. Did any ruling lower a bar to clear a defect?
+
+I looked hardest at every place a number moved. None is lowered to clear a defect without a source; three need watching:
+- **P8 gaps (L2001, L2211-2227).** The cap moved from "0.92 of the level check's limit" to "≤ 0.8 of the engine's true maximum reach".
+  The C20 run found the level check's widest is 0.43-0.57 of the true maximum, so P8 can never bind while `jumpOK` decides. That is
+  stated, not hidden ("nothing to Matt"), and the research's 0.82 (GP:75-76) is of the maximum reach, so the denominator is the right one.
+  **Not a re-word**, but it means gap difficulty is now set by `jumpOK` alone; the difficulty work moved to C1 ("the landing window plus
+  what sits on the avoided lines", OPEN).
+- **M3, the ladder's return lines (L2040-2050).** "≥ 1 in 3" became three classes from shipped envelopes. The verbs' line is "never below
+  today's measured share" and staples are "about a third or more, longest absence ≤ 8": both are measured from DKCR, Tropical Freeze and
+  Mario, and signature pieces keep **Matt's stricter every-later-world floor**. Not lowered below Matt's rule; sourced where it is new.
+- **P3, neighbour length (L1997).** "Neighbours ≥ 20% apart" became "never 3 flat pairs in a row": 13 of 15 shipped worlds fail the
+  old line, 0 break the new one. Sourced, and my own §9a had flagged the 20% as unsourced. Not a re-word.
+- **Two small re-words, found by the re-trace readers and checked by me:**
+  (i) **1-1's float line** (L1981-1983): "1-1's line is the old 1-1's measured 25.3% ... and the mixer's 1-1 meets it (25.4% is within the
+  old 1-1's range, 1.0-28.2)". The line is set at a median and then judged against a range, so a 25.4% build passes a 25.3% line. Pick
+  one: the median is the line (the mixer's 1-1 misses by 0.1 and is fixed), or the line is stated as the range from the start.
+  (ii) **P9 against the acceptance test.** P9 (L2005) makes a fix round "one change to data, or one engine change"; the 1-1 acceptance
+  test says each round is "a change to 1-1's data file only" and "Engine changes: none made for 1-1" (L1685-1686). Under P9's wording an
+  engine change could be counted as one of 1-1's two rounds. The acceptance test's words must govern 1-1 (Matt: "if a stage needs
+  fixes, the engine gets fixed", and the rebuild is a second, separately measured attempt).
+- **Conditional, to watch:** C6 (L1753) splits a "unit" into a template (at most twice a stage) and an idea (may recur under a 40% cap),
+  which would clear R1's "no unit repeats" (R1:39) by definition. Ruling 8 (L1799) keeps the 40% only if a run shows the old 1-1's measure
+  beats R1; until that run, the cap is not a passed line.
+- **The re-word I found last time is undone:** C18 (L1777-1782) withdraws the 03:19 AM acceptance of 1-5's Easy 0.61 and holds the 0.55
+  line, with the engine thinning Easy itself. That is law 22 applied.
+
+### 11c. New problems in the rulings themselves
+
+1. **Ruling 3 is not where the engine reads.** (Above.) The fix is mechanical: mark L1301-1305 and L1550-1561 "[revised: ruling 3]",
+   change LABELS §3's zone rows and `catalog.ts`'s `worlds` for every hazard and zone to "its home world as teach; every later world as a
+   twist, in that world's art", and give the art gaps to the lead. Until then step 6's world table would rebuild the lock.
+2. **A stale line and a wrong stamp.** "The critic's deep pass ruled" #3 (L1881) makes the ladder amounts OPEN "until research-moves
+   reports (2:30 PM)"; "The move ladder's amounts ruled from the research" (L2032) rules them, stamped "~12:03 AM ET". Its commit,
+   3cdb07dd, is at 12:03 PM ET (`git log`), so the stamp is a typo for PM and L1881's "OPEN until 2:30" is stale. Mark it, or a helper
+   reads the amounts as open.
+3. **The every-later-world floor for signature pieces (M3) needs its cost named per world** before step 6's gate turns it on: today
+   push is in 4 stages, lift and warm air in 1, river logs in 7 (all W2), and a gate that reads "every later world" fails 8-9 worlds on
+   each from day one. The known list (L1619) must hold these as named misses with owners, not as a wall of red that hides new breaks.
+
+4. **"Declared a fixed composition" needs a closed list** (L1853, G #86: "judged over 200 rolls ... or the stage is declared a fixed
+   composition and judged on its one layout"). The source (R3:116-121) is sound, but as written any stage that fails gate 1's
+   diversity could be declared fixed. The list should name the set pieces only (STAGE-RULES §2 already names 4-3 and 4-7; add 7-4's
+   slide, 8-4's lantern run, 4-D, 5-M and the lairs), each with Matt's or the lead's ok, and a fixed stage still passes the
+   cross-stage look-alike gate.
+5. **Hanging under a branch: core, or Matt's call?** L1652 and the G row at L1833 make it core ("the most sloth move there is", D:1201);
+   L1808 sends "under-branch hang" to Matt as a new verb. Pick one before step 6 writes the move list.
+6. **Old lines still unmarked that a helper would follow:** L351 and L1075 (cool-down nodes) and 1-1's 12:45 data, which still lays a
+   cool-down before the end bank (L2186), against ruling 4's "finale at the exit ... unless the story brief says otherwise" (if 1-1's
+   brief is the exception, say so on the line); L503 (Easy "breather pad of 2-3 s between every node"), which C2 and G #83 replace;
+   L1462 "every world keeps its stages", partly overridden by L1806.
+
+### 11d. The trace, re-run against 3951b0f9
+
+How: every engine-relevant row that was not "used" at 7f4373c0 (846) was re-checked by four readers against 3951b0f9 (the new
+L1636-2287 read whole, the in-place edits from the diff), and the 58 "used" rows whose cited line was edited since were re-checked by a
+fifth. The other 201 "used" rows cite lines that did not change and keep their status. Rule for credit: the spec must now carry the rule,
+number or gate; a deferral ("to Matt", "a run decides") counts as partial. `CRITIC-TRACE.md` is rebuilt with each row's new status and
+its 7f4373c0 status in brackets; `node tools/engine/trace-check.mjs`: 1,632 of 1,632, exit 0.
+
+| Engine-relevant rows (1,105) | Used | Partial | Missing | Contradicted |
+|---|---|---|---|---|
+| at 7f4373c0 (this morning) | 259 (23%) | 512 (46%) | 288 (26%) | 46 (4%) |
+| **at 3951b0f9 (now)** | **340 (31%)** | **514 (47%)** | **218 (20%)** | **33 (3%)** |
+
+Of the 41 MISSING rows the readers scored 4 or 5 for repetition this morning, 10 are now used, 11 partial and **20 still missing**:
+- **the coverage table and least-used counts** for the piece library (LEDGER-ENGINE-PAPERS.md:93, :162, :220, :236): Matt's "more pieces"
+  has a count floor (C24) but no check that each entry, exit and tier has pieces;
+- **pinned hand-made moments** with the generator filling around them (PAPERS:100, :159, :255, :270);
+- **hazards timed against his moves** (LEDGER-ENGINE-GEMINI.md:127, :527);
+- **the hurry/patience tempo family**: each world's polarity, tempo inversion, slow-downs that send him up to a high road
+  (LEDGER-2026-11-02-full.md:109, :116, :273, :276, :291);
+- **the X-6 change of pace** (LEDGER-2026-11-02-full.md:358; ruling 4 lists slot jobs with "...");
+- **cause and effect between stages of a world** (LEDGER-2026-11-04-part2.md:59, :236, :237) and World 3's noise rule (:232).
+
+None of these blocks step 6 (they are generator and world-design work), but they are the research's remaining levers on "repetitive"
+and should be ruled (adopt, or not taken with a reason) before the world passes.
+
+### 11e. Verdict
+
+**NOT READY to build step 6 today; READY as soon as four edits land.** None of the four needs new research or a new run. Each one
+stops step 6 from building on data or lines that say the opposite of a ruling already made.
+
+The rulings themselves are root fixes. All eight ranked findings and the §9b/§10 findings were accepted with a change to the gate,
+the data or the code, not a lowered line. Two earlier re-wordings were undone (C18's Easy 0.61; the 10:09 teach ruling, C9). All nine
+stage-specific branches are gone from the code, and the gate is proved to catch them. Of the rest, three items are small re-words or
+conflicts to correct (11b: the float line, P9 against the acceptance test, C6's conditional cap), and everything else that is not
+yet in code is step 6's own work (the era/lookalike gate, the tested move table, the Profile fields, Move and Element, the locks).
+
+**The four edits, in order:**
+1. **Carry ruling 3 into the data and lines the engine reads**: LABELS §3's zone rows and `src/game/mixer/catalog.ts:102-108`'s
+   `worlds` (web [5], tide [6], geyser [9], bolt [10]) become "teach world, then every later world as a twist, in that world's art";
+   mark spec L1301-1305 and L1550-1561 "[revised: ruling 3]". Otherwise step 6's world table re-locks the hazards (11a row 3).
+2. **Mark every stale line a helper would follow** (11c 2, 6): the "OPEN until 2:30" line (L1881) and the "12:03 AM" stamp (L2032);
+   the cool-down nodes L351, L1075 and 1-1's cool-down at L2186 against ruling 4's finale at the exit; L503's Easy breather between
+   every node; L1462 against L1806.
+3. **Settle the two conflicts**: hanging under a branch is core (L1652, L1833) or Matt's call (L1808); and 1-1's fix rounds follow the
+   acceptance test ("data file only", "no engine change", L1685-1686), not P9's "or one engine change" (L2005).
+4. **Close the exits from gate 1 before it is built**: name the stages that may be "declared a fixed composition" (L1853), and make the
+   float line one thing (median or range, L1981-1983).
+
+**Then, inside step 6, the order the rulings already imply and the code confirms is not yet done:**
+- First, the move table rebuilt and tested (ruling 2). Today it is still 2 layouts and sees 0 of 13 gen2 water stages (re-run at
+  2da28800).
+- Next, the per-world locks recorded from main (`lockall.ts` exists, no lock recorded yet). World 1 still differs from main on 1-2, 1-3,
+  1-4, 1-6 and 1-9 on 6 of 6 builds, so World 1's lock waits for engine-core (D40).
+- Then the era/lookalike/bands gate on every builder (era still gives the mixer's 1-1 0.021 and 1-5 0.014), with today's misses on a
+  known list that only shrinks.
+- R-164.11's cause comes before any generator change.
