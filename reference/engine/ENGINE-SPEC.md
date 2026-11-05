@@ -180,6 +180,8 @@ Every idea is the same idea on Easy; only its numbers soften. On Easy:
 - no rise is more than **+40 px** onto a landing narrower than 220 px;
 - a landing after a rise of +40 is at least **110 px** wide;
 - a rise of +50 to +70 stays allowed only onto a landing of 220 px or more.
+- **[re-trace, `cp2/cp2-trace-easyfix.out`]** a rise of +35 to +40 has a gap of at most 80 px (at 90 px a flick gets 298 ms, just under
+  300). With this clause the Easy bough stair (250 px in seven steps) and stump hop pass every cell measured.
 
 This fixes bough stair (flicks 246-281 ms against Easy's 300 ms floor at +50 to +70) and stump hop step 1 (+50 onto a 60 px stone)
 without changing what the player does. On Easy the stair just climbs in more, smaller steps over the same height. The planner
