@@ -143,12 +143,22 @@ export function framing(cssW: number, cssH: number, vw: number): Framing {
  * instead of the usual, so the next branch 260-320 px up is on screen; the change eases in and out over CLIMB_LOOK.ease s. Upright the
  * view is tall enough already: nothing changes there.
  */
-export const CLIMB_LOOK = { feetAt: 0.78, ease: 0.4 } as const;
+export const CLIMB_LOOK = { feetAt: 0.78, ease: 0.4, deepest: 0.9 } as const;
 /** how far over to the climb's look-up the view is this frame (0..1), from last frame's */
 export function climbLook(prev: number, climbing: boolean, wide: boolean, dt: number): number {
   const want = climbing && wide ? 1 : 0;
   const step = dt / CLIMB_LOOK.ease;
   return want > prev ? Math.min(want, prev + step) : Math.max(want, prev - step);
+}
+/**
+ * On a tall climb, sideways, his feet go further down the view so the climb's top (the next ledge) is on screen under the HUD band: the
+ * place down the view that puts `topY` `band` px of world under the view's top, never higher than `base` (the climb's usual look-up)
+ * and never lower than CLIMB_LOOK.deepest (his feet stay on screen). The quality supervisor, 11-04: on 1-4's trunks, up to 430 px, the
+ * next ledge was still off screen with his feet at 78%.
+ */
+export function climbFeetAt(base: number, feetY: number, topY: number, viewH: number, band: number): number {
+  const want = (feetY - topY + band) / viewH;
+  return Math.max(base, Math.min(CLIMB_LOOK.deepest, want));
 }
 /** his feet's place down the view: the framing's, eased toward the climb's look-up by `k` (climbLook) */
 export const feetAtNow = (fr: Framing, k: number): number => fr.feetAt + (Math.max(fr.feetAt, CLIMB_LOOK.feetAt) - fr.feetAt) * k * k * (3 - 2 * k);
