@@ -1261,3 +1261,73 @@ Rules:
 **Fix needed in today's PLAN_11 before the 1-1 proof:** n2 and n5 deal `lily-pad hop` with no water zone, which breaks rule 1. Until
 the water zone is drawn, use `stump hop` or `bank hops` in its place. With the water zone, `lily-pad hop` goes back into n5's low road
 only, the creek.
+
+### [designer, 11-05 ~10:30 AM ET] The move ladder (Matt: "once you learn floating, you can float everywhere... once you learn how to go across ropes, that's more used")
+
+The planner's proposal is accepted:
+- **1. One source.** Where a move is taught comes from the game's own lesson lines, skills and Dot's tips.
+- **2. Known means allowed.** A move is allowed anywhere after its teach, and checkSpec refuses it before.
+- **4. Per-move fit rules in the library.**
+
+The designer sets point 3's amounts below. The **source for where things are today** is
+`tools/validate/mechtable.ts` (R-150.4, on ccr-0d59a91c-oy3imz). Its World 1 report is
+`reference/qa-reports/validator/mechanics-world1.md`. The planner runs it on all ten worlds, and that table is what the ladder gates
+read. The list below is the order as the designer reads the game today. Where the table disagrees, the table wins, and the
+difference comes to the designer.
+
+#### Pokey's moves, in teaching order
+
+| Move | Taught in | First required | Kind |
+|---|---|---|---|
+| run, jump, duck, punch | 1-1 (always known) | 1-1 | core |
+| mushroom bounce | 1-1 (n4, new plan) | 1-1 | core |
+| double jump | 1-1 (n7) | 1-1 (n9) | core |
+| stomp, kick, mega punch (the foe lesson) | 1-3 | 1-3 | core |
+| rope shimmy | clearing 1-3 | 1-4 | core |
+| trunk climb | 1-4 | 1-4 | core |
+| breaking / creaky branch | 1-5 | 1-5 | core |
+| liana swing | 1-6 | 1-6 | core |
+| push a log | 1-6 | 1-6 | core |
+| hide in a bush | 1-7 | 1-7 | core |
+| ride a river log | 2-1 | 2-1 | world (needs water) |
+| lift | 2-7 | 2-7 | world |
+| moving platform | the first stage before its first lair (today it first shows in 2-10, a lair: **it must be taught in a stage first**) | — | core after its teach |
+| leaf glide (floating) | clearing 4-1 | 4-7 (optional 4-2 to 4-6) | core |
+| warm air (glide up) | 4-7 | 4-7 | core once glide is known |
+| silk line | 5-4 | 5-4 | world |
+| swim | 6-7 (root well) | 6-7 | core (needs water) |
+| hold / freeze on the flash (R-2.7, planned) | 10-3 | 10-4 | core |
+
+**Hazards, zones and set pieces stay with their element or story, not "everywhere":**
+- the dark and spores (W3), thorn vines (W3), wind (W4), webs (W5), the tide (W6), crumbling floors (W7), geysers (W9) and bolts (W10);
+- the 1-8 chase and the boss lairs, which their own stages keep.
+
+They may come back in a later world only where the element fits: wind on a cliff, a crumbling floor in ruins.
+
+**Animals, once taught, go anywhere** (Matt's direction), but only on their element: caimans in water, harpies in open sky.
+
+#### "More used" amounts (per stage, counted on the main path, 16 rolls, the worst roll)
+
+The amounts are words with numbers. **A touch** is 1-2 uses. **Some** is 3-6 uses, with at least one required. **Lots** is 7 or
+more, or the stage's theme.
+
+| Rule | Line |
+|---|---|
+| The teach stage | the move is the theme: lots |
+| **Echo:** the next 2 stages after its teach (skipping lairs) | at least some, one of them required. Before `requiredFromStage` the uses are optional routes (skills.ts) |
+| **Its own world, after the echo** | at least a touch in every stage, and some in at least half of them |
+| **Every later world** | every core move appears in at least 1 of every 3 stages (a touch or more). The world's own move is lots |
+| **Mixing:** World 2 on | every stage uses at least 3 known core moves besides run and jump, and at least one of them is from an earlier world |
+| **Combining:** after the echo | at least one stage in the move's world joins it with another known move in one beat (a swing into a glide, a bounce onto a rope) |
+| Fit | a use that breaks the move's library fit rule (or the element table) doesn't count and fails the stage |
+| Easy | the same moves and the same counts; Easy's sizes apply |
+| Overrides | a stage's profile may set `none` for a move only with its reason, e.g. World 5's own kit, or no water for swim |
+
+**Gaps the ladder must close (from the World 1 table, "built once, never back"):**
+- **Hide in a bush** (1-7) and **push a log** (1-6) never come back in World 1. Under the echo rule, they come back in 1-8 and 1-9,
+  or in the first stages of World 2.
+- **Water** (1-6) comes back in World 2 by its theme.
+- The chase, the boa and the snake ring are set pieces and are exempt.
+
+The planner builds these lines as gates over the all-world table. 1-1's proof uses only its own rows: teach run, jump, bounce and
+double.
