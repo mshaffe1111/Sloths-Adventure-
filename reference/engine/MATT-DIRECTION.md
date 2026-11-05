@@ -25,6 +25,9 @@ repeats.
 ## 2026-11-05 ~12:50 AM ET (to the lead)
 "let them know they have Hugging Face if they need to get more stuff. And for platforms and other things, I can run that on Gemini
 too. But I would prefer Hugging Face first."
+- "this also goes for hills and other little areas to jump up on. So it's not just logs, it's anything that will add to the platform
+  type experience." Every platform family gets kinds and sizes: logs, and ground shapes (hills, mounds, rises, steps, ledges,
+  little perches).
 - New pieces can be made on Hugging Face: a picture list with its cost goes to the lead for approval first (PARTNER: the lead
   approves HF spend; $72 total, about $15 kept in reserve). Gemini only as the fallback for platforms and pieces, run by Matt.
 
