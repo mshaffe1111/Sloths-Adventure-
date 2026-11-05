@@ -361,6 +361,15 @@ as she walked. Follow her marks to the shrine"). Marks sit on trees, where she w
   either road of each fork; taking both roads is the reward for replaying.
 - Petal groups stay as planned (one per fork road, plus n6), and the seed stays out of reach.
 
+
+**[designer rulings, 11-05 ~12:50 AM ET, on the planner's build findings]**
+- **n9 push block:** the wall is about 190 px (a 100 px log plus a 90 px single-jump rise). The shipped 230 px wall needs a double, and
+  the level check allows doubles on 1-5 only through EARLY_DOUBLE. That is a game-wide rule this stage does not change; whether the
+  double comes back across World 1 is a move-ladder question for CP4.
+- **Gaps are sized by the level check's own functions** (`jumpOK`, `heldMaxGap`). CP2's real-engine ranges are only the upper bound.
+  Where a cap would make an idea lose its point, the planner tells the designer before working around it.
+- **Fork roads each keep their own height band**, so the two roads never cross.
+
 **The rules this plan meets by construction** (the mixer still checks every roll):
 - **Ideas:** 9 to 11 different ideas a roll. No idea twice in a row. Snap-twig dash comes twice (teach at n2, test at n6, not in a
   row), and the fork twice (n4, n10).
