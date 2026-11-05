@@ -7,7 +7,8 @@ Built the gates on 2026-11-01 (clipcheck, playerText.test, knowncheck, CI gates.
 - Candidate: kaizen-gates = the lead's frozen 727db7ba + version commit 05b4e248 (merge ae4e6c92), plus notes commits. Notes: reference/releases/0.9.5.md.
 - D32 (pixi's greeting broke build:store) found by this clerk; fixed by the lead (c41346d8, bf9d3cae). The clerk runs build:store in every §6.
 - The lead's full gate on 727db7ba: ALL PASS (2026-11-04 23:06 ET message); folded into the notes with §6 item 1 (clipcheck PASS, 83 known).
-- State: READY FOR MATT; Matt plays the test link first. The PR (kaizen-gates into main) waits for the lead's "open it"; this session never opens it.
+- HELD (the lead, 2026-11-04 23:12 ET): Matt holds 0.9.5 until tomorrow for R-164.1 (1-2 gap drop lands on the ledge below), R-164.2 (1-1 keeps one sky), R-164.3 (1-2 thin planks joined to trunks). kaizen-gates stays at 4b2f385b; tomorrow it takes the new candidate plus the version commit, then re-gate, re-run build:store and §6, and update the notes (the floating-planks known item goes once R-164.3 lands).
+- Was: READY FOR MATT; Matt plays the test link first. The PR (kaizen-gates into main) waits for the lead's "open it"; this session never opens it.
 - After the merge: deploy, gates, Pages, APK on Releases; send the lead the links.
 
 ## Done before: release-0.9.4
