@@ -33,7 +33,8 @@ generated:
 - **share:** the commonest piece's share no higher than the old 1-1's;
 - **run:** the longest run of one piece no longer than the old 1-1's;
 - **new:** something new at least as often as in the old 1-1;
-- **splits:** at least as many high/low route splits as the old 1-1;
+- **splits:** at least as many high/low route splits as today's 1-3 (designer ruling on CP1's conflict 1: the old 1-1 has 0 splits by
+  the rule, 1-3 has 7, and Matt praised 1-2 and 1-3 for branching);
 - **climb:** at least the old 1-1's climb and drop range;
 - **neighbours:** neighbouring stages share no more than half their main pieces.
 
@@ -93,6 +94,27 @@ generated:
   (MATT-DIRECTION check 2).
 - **Cost estimate.** About 0.8-1.2%.
 
+
+**[designer, 11-05, after CP1 and the planner's account of what Matt said] Additions to World 1's node ideas:**
+
+| Node idea | What the player does | Pieces that belong, in the order they lead | Entry → exit |
+|---|---|---|---|
+| Lily-pad hop | hops across water on pads of different sizes, some sinking | lily pads (small, big, sinking), a log to finish | bank → bank |
+| Rope crossing | goes hand over hand along a shimmy rope over a gap | shimmy rope (exists, PLAN.md E11), a bough or bank either end | mid or high → same |
+| Animal on the path | deals with one animal in the way: jump it, wait for it, or kick-roll it | the boa (kick-roll, 1-5), bank or bough with room around it | any → same height |
+
+Lily pads come back from the old 1-1, where Matt misses them ("at least we used to have the lily pads"). Gliding is not a World 1
+idea unless World 1 already teaches it; it is on the move ladder below.
+
+**"It keeps building" (Matt to the planner: "every move you learn keeps coming back... it just keeps building and building"):**
+a move ladder per world, as data. Each stage:
+- introduces at most one new move or idea;
+- reuses at least two earlier ones in a harder form: a higher risk target, a narrower window, or combined in a new idea;
+- never lets a move learned in the last three stages drop out of the world for more than two stages.
+
+*Check:* over the world's stages in order, count each idea's and each move's first use and every reuse after it. Each reuse must be
+at a higher job (teach, test, twist, master) or a higher risk target than the use before.
+
 ### CP3: the mixer, proven on the worst stage first (1-5) (owner: designer specs the mix rule, planner builds and runs)
 - **The mix rule (designer), [Matt, 11-05] ideas first, pieces inside an idea.**
   1. **The stage's story beat and theme come first** (STAGE-RULES and the story files). They pick the stage's job and look, never
@@ -141,8 +163,12 @@ Each rule has the planner's machine check under it; a rule that can't be checked
      stretch where nothing can hurt.
    - At most one heart per risky node, and fewer hearts than risky nodes.
 
-   *Check:* each heart's previous node has a heart- or life-costing miss, and its node risk is above zero. None in the first node
-   or the first 30 s. Hearts are fewer than risky nodes.
+   *Check:* each heart's previous node has a heart- or life-costing miss, and its node risk is above zero. None in the first node.
+   Hearts are fewer than risky nodes.
+   **[designer ruling, 11-05, on CP1's conflict 2]** The old 1-1 has a heart in its first 30 s (median 1 of 2). Matt's newer, explicit
+   words win: "hearts aren't given out the very first thing... if you're not going to lose a heart, don't put a heart there". So the
+   rule is tied to risk, not the clock: the fixed 30 s window is dropped, and "only after a risky node" is kept. The old 1-1's early
+   heart is a known exception, not a threshold to copy.
 3. **A checkpoint before the hard part, not everywhere.**
    - A checkpoint goes just before a node whose job is test, twist or master, or before the set piece. Never before a rest or a
      teach node.
