@@ -135,6 +135,9 @@ export interface Palette {
   end?: number;
   /** snap twigs in short runs (one or two) between solid pads, never two solid pads running: each run is a snap the player meets anew */
   alternate?: boolean;
+  /** (1-5's descent, the lead's ruling 2026-11-05) the surfaces drawn from short patterns of snap twigs (T) and solid pads (B), never
+   *  the pattern just used, never two solid pads running: in place of `alternate`'s strict twig/pad turn, the same phrase every bar */
+  deck?: string[];
 }
 
 /** the marks' slots in order */
@@ -157,6 +160,7 @@ export function fitSteps(spec: Omit<NodeSpec, 'steps'>, pal: Palette, R: Rng, tr
   for (let k = 0; k < tries; k++) {
     const steps: Step[] = [];
     let y = spec.y;
+    let pat: string[] = [], lastPat = -1;
     for (let i = 0; i < ms.length; i++) {
       const room = ((i + 1 < ms.length ? ms[i + 1] : total + 4) - ms[i]) * eighth;
       // (the take-off after this one: if it is a quick one (a hop, which goes down), leave room below to hop down into)
@@ -167,7 +171,18 @@ export function fitSteps(spec: Omit<NodeSpec, 'steps'>, pal: Palette, R: Rng, tr
         return !!f && f.t + 0.012 < room && y - dy >= pal.yMin && y - dy <= pal.yMax - footroom;
       };
       let surface = R.pick(pal.surfaces);
-      if (pal.alternate) {
+      if (pal.deck) {
+        if (!pat.length) {
+          const ks = [...pal.deck.keys()].filter((k) => k !== lastPat);
+          lastPat = R.pick(ks);
+          pat = [...pal.deck[lastPat]];
+        }
+        const a = steps[steps.length - 1]?.surface;
+        surface = pat.shift() === 'T' || a === 'branch' ? 'crumble' : 'branch';
+        // (the landing right after a rest (a gap of 9 eighths or more) is a solid pad: "a long wait, onto a short twig, quickly off it"
+        // was the one bar the validator found four times over, the repeat; 2026-11-05)
+        if (i > 0 && ms[i] - ms[i - 1] >= 9) surface = 'branch';
+      } else if (pal.alternate) {
         const a = steps[steps.length - 1]?.surface, b = steps[steps.length - 2]?.surface;
         surface = a === 'crumble' && b === 'crumble' ? 'branch' : a && a !== 'crumble' ? 'crumble' : R.chance(0.5) ? 'crumble' : 'branch';
       }
@@ -747,10 +762,34 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   const down = (end: number, snap: number): Palette => ({
     surfaces: snap >= 1 ? ['crumble'] : snap > 0 ? ['crumble', 'branch', 'crumble'] : ['branch'],
     alternate: snap > 0 && snap < 1,
+    deck: snap > 0 && snap < 1 ? ['TBT', 'TTB', 'BTT', 'TBTT', 'BTBTT', 'TTBTB'] : undefined,
     jumpDy: [-60, -50, -40, -30, -20, 0, 20], hopDy: [-30, -20], doubles: 0, yMin: Math.min(y, end) - 40, yMax: Math.max(y, end) + 30, end,
   });
   // (uneven gaps, a rest pad (9 eighths, about 1.3 s on a ledge) every seven or eight take-offs)
-  const broken = (n: number, set: readonly number[]) => Array.from({ length: n }, (_, i) => (i % 8 === 7 ? 9 : R.pick(set)));
+  const brokenFixed = (n: number, set: readonly number[]) => Array.from({ length: n }, (_, i) => (i % 8 === 7 ? 9 : R.pick(set)));
+  // (the descent's beat, broken by construction, the lead's ruling 2026-11-05: one SET and a rest every 8 take-offs made the same
+  // "J B J J" bar every bar, the validator's repeat on 4 of 16 layouts. Now a deck of broken motifs, a fresh order each node, never the
+  // motif just used and none over twice in a node; a rest (9 eighths) 6-9 take-offs after the last, rolled each time; `cap`: no gap
+  // over it, for the spike and the climax)
+  const MOTIFS = [[3, 5, 4, 6], [4, 3, 6, 5], [5, 3, 3, 6], [6, 4, 3, 4], [3, 6, 5, 3], [4, 5, 3, 5]];
+  const broken = (n: number, cap = 9) => {
+    const deck: number[] = [...MOTIFS.keys()].map((k) => [R.f(), k]).sort((a, b) => a[0] - b[0]).map((a) => a[1]);
+    const used = new Map<number, number>();
+    const out: number[] = [];
+    let last = -1, rest = 6 + Math.floor(R.f() * 4), since = 0;
+    while (out.length < n) {
+      const k = deck.find((d) => d !== last && (used.get(d) ?? 0) < 2) ?? deck.find((d) => d !== last)!;
+      deck.push(...deck.splice(deck.indexOf(k), 1));
+      used.set(k, (used.get(k) ?? 0) + 1);
+      last = k;
+      for (const g of MOTIFS[k]) {
+        if (out.length >= n) break;
+        if (++since > rest) { out.push(9); since = 0; rest = 6 + Math.floor(R.f() * 4); if (out.length >= n) break; }
+        out.push(Math.min(g, cap));
+      }
+    }
+    return out;
+  };
   // (each roll breaks the beat its own way, and leans on the snap twigs more or less)
   const SET = R.pick([[3, 4, 4, 5, 6], [3, 3, 5, 6, 6], [4, 4, 3, 5, 3, 6], [3, 5, 4, 6, 3]]);
   const SNAP = R.pick([0.5, 0.7, 0.85]);
@@ -790,7 +829,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   x = intro.tr.x1;
   y = intro.tr.yOut;
   // ---- the snap twig, taught: twigs over catch branches (a miss is a hop back up)
-  const teach = lay.traced('ramp', 'snap twig + jump (taught)', 'canopy', 1, x, y, barsFrom(broken(9, [4, 6, 8])), { ...down(y, 0), surfaces: ['crumble', 'branch'], alternate: true, jumpDy: [-20, 0, 20], end: undefined });
+  const teach = lay.traced('ramp', 'snap twig + jump (taught)', 'canopy', 1, x, y, barsFrom(brokenFixed(9, [4, 6, 8])), { ...down(y, 0), surfaces: ['crumble', 'branch'], alternate: true, jumpDy: [-20, 0, 20], end: undefined });
   // (taught safe: a catch branch under the far part of each gap, one hop below the far ledge: a jump that falls short lands on it, a walk
   // off the edge falls past it (about 70 px on at a run), so the jump is still the way)
   for (const g of teach.tr.gaps) {
@@ -812,15 +851,8 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   // Dot's line before it. Punches bounce off it ("TOUGH!"), a stomp bounces; a kick (a quick flick toward it) rolls it away along the
   // ledge and off its end. A flag at the ledge's start
   lay.begin('ramp', 'kick a coiled boa (taught)', 'canopy', 1, x, y);
-  // (two root knots on the way in, small steps up and down: the walk from the last twig to the boa read as dead, 2.8-3.7 s; the boa's
-  // own ground, from the second knot to the end, holds it and its roll)
-  lay.ledge(x, x + 20, y, 'apron');
-  lay.ledge(x + 20, x + 110, y - 28, 'branch');
-  lay.ledge(x + 110, x + 300, y, 'apron');
-  lay.ledge(x + 300, x + 390, y - 28, 'branch');
-  lay.ledge(x + 390, x + BOA_TEACH_W, y, 'apron');
-  // (Meeca's marks lead him to it, two on the way in: the boa's meeting is counted as a 2 s fight, and the walk on from it to the ramp's
-  // first jump read as dead, 3.7 s, unless moves came just before it, a burst's rest; the validator's dead walk, 2026-11-05)
+  lay.ledge(x, x + BOA_TEACH_W, y, 'apron');
+  // (Meeca's marks lead him to it, two on the way in: the walk from the last twig to the boa read as dead, 2.8 s)
   mark(x + 200, y);
   mark(x + 470, y);
   L.flags.push({ x: x + 200, y });
@@ -833,20 +865,20 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   x += BOA_TEACH_W;
   lay.end(x, BOA_TEACH_W / PHYS.maxRun + 2);
   // ---- ramp: down a tier, snaps and plain branches, the broken beat; then down another, the falls real now
-  const ramp = lay.traced('ramp', 'snap twig + jump (broken)', 'two', 1, x, y, barsFrom(broken(21, SET)), down(T.two, SNAP - 0.1));
+  const ramp = lay.traced('ramp', 'snap twig + jump (broken)', 'two', 1, x, y, barsFrom(broken(21)), down(T.two, SNAP - 0.1));
   mark(ramp.tr.ledges[4].x1 - 40, ramp.tr.ledges[4].y);
   // (a kick on the way down: the move 1-5 teaches, met again before the climax)
   boasOn(L.nodes.length - 1, ramp.tr, 2, 900);
   x = ramp.tr.x1;
   y = ramp.tr.yOut;
-  const ramp2 = lay.traced('ramp', 'snap twig + jump, over the drop (broken)', 'three', 1, x, y, barsFrom(broken(21, SET)), down(T.three, SNAP));
+  const ramp2 = lay.traced('ramp', 'snap twig + jump, over the drop (broken)', 'three', 1, x, y, barsFrom(broken(21)), down(T.three, SNAP));
   mark(ramp2.tr.ledges[5].x1 - 40, ramp2.tr.ledges[5].y);
   // (a kick on the way down: the move 1-5 teaches, met again before the climax)
   boasOn(L.nodes.length - 1, ramp2.tr, 2, 900);
   x = ramp2.tr.x1;
   y = ramp2.tr.yOut;
   // ---- spike: down another tier, all snaps, the quickest gaps
-  const spike = lay.traced('spike', 'snap twig + drop', 'four', 1, x, y, barsFrom(broken(22, SET.filter((g) => g < 6))), down(T.four, 0.9));
+  const spike = lay.traced('spike', 'snap twig + drop', 'four', 1, x, y, barsFrom(broken(22, 5)), down(T.four, 0.9));
   mark(spike.tr.ledges[5].x1 - 40, spike.tr.ledges[5].y);
   // (a kick on the way down: the move 1-5 teaches, met again before the climax)
   boasOn(L.nodes.length - 1, spike.tr, 1, 900);
@@ -886,7 +918,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   x += 900;
   lay.end(x, 900 / PHYS.maxRun + 1);
   // ---- climax: the carving chase, down two tiers to the floor, a carving every second ledge
-  const climax = lay.traced('climax', 'snap twig + drop + hop (the chase)', 'floor', 1, x, y, barsFrom(broken(26, SET.filter((g) => g < 6))), down(T.floor, SNAP));
+  const climax = lay.traced('climax', 'snap twig + drop + hop (the chase)', 'floor', 1, x, y, barsFrom(broken(26, 5)), down(T.floor, SNAP));
   // (the carving chase: closer and closer together toward the shrine)
   // (at each ledge's far end, just before the take-off, as on the way down: mid-ledge, the look left a walk after it)
   climax.tr.ledges.forEach((q, i) => { const n = climax.tr.ledges.length; if (i > 0 && i < n - 1 && i % (i < n / 2 ? 3 : 2) === 0) mark(q.x1 - 40, q.y); });
@@ -922,6 +954,9 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   y = climax.tr.yOut;
   lay.begin('cool', 'run', 'floor', 1, x, y);
   lay.ledge(x, x + 640, y, 'apron');
+  // (Meeca's last marks, on the way to the shrine: the run from the chase's last move to the shrine read as a dead walk, 3.9-4 s)
+  mark(x - 380, y);
+  mark(x + 280, y);
   L.exit = { x: x + 400, y };
   lay.end(x + 640, 640 / PHYS.maxRun);
   L.width = x + 660;

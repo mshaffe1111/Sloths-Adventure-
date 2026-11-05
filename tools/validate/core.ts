@@ -27,6 +27,8 @@ export interface Step {
   x: number;
   y: number;
   what: string;
+  /** seconds a fight keeps him busy from this step on (an animal met: punched, kicked, stomped; the beat's own fight time) */
+  fight?: number;
 }
 export type Setting = 'normal' | 'easy';
 
@@ -129,7 +131,7 @@ export function fromStage(id: string, layout: number, setting: Setting, sim: Rea
         else if (m === 'U') what = 'jump twice (the level check takes it on trust)';
         else if (m === 'J') what = 'jump (the level check takes it on trust)';
       }
-      if (m) steps.push({ m, t: b.t, x: Math.round(b.x), y: Math.round(b.y), what });
+      if (m) steps.push({ m, t: b.t, x: Math.round(b.x), y: Math.round(b.y), what, ...(b.letter === 'C' && b.dur > 0 ? { fight: b.dur } : {}) });
     }
     return steps.sort((a, b) => a.t - b.t);
   };
@@ -186,7 +188,10 @@ export function deadWalks(steps: readonly Step[], total: number, samples: readon
   for (let i = 1; i < ts.length; i++) {
     const t0 = ts[i - 1], t1 = ts[i];
     const pad = steps.filter((s) => s.m !== 'h' && s.t <= t0 && s.t > t0 - 6).length >= 3;
-    const busy = busyBetween(samples, t0, t1);
+    // (a fight met at t0 is the player busy, not walking: the lead's ruling (b), 2026-11-05; 1-5's teach boa, a 2 s fight, read as a
+    // dead walk after it)
+    const fought = Math.min(t1 - t0, steps.filter((s) => s.t === t0).reduce((n, s) => n + (s.fight ?? 0), 0));
+    const busy = busyBetween(samples, t0, t1) + fought;
     const secs = t1 - t0 - busy - (pad ? REST_PAD : 0);
     if (secs > limit) out.push({ t0, t1, x0: xAt(t0), x1: xAt(t1), secs: +secs.toFixed(1), pad, busy: +busy.toFixed(1) });
   }

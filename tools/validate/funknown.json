@@ -187,14 +187,7 @@
    "stage": "1-5",
    "setting": "easy",
    "rule": "repeat",
-   "layouts": 7,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-5",
-   "setting": "normal",
-   "rule": "dead walk",
-   "layouts": 2,
+   "layouts": 6,
    "owner": "World 1 rebuild (D26)"
   },
   {
