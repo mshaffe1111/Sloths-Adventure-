@@ -27,6 +27,8 @@ export interface Step {
   x: number;
   y: number;
   what: string;
+  /** seconds a fight keeps him busy from this step on (an animal met: punched, kicked, stomped; the beat's own fight time) */
+  fight?: number;
 }
 export type Setting = 'normal' | 'easy';
 
@@ -129,7 +131,7 @@ export function fromStage(id: string, layout: number, setting: Setting, sim: Rea
         else if (m === 'U') what = 'jump twice (the level check takes it on trust)';
         else if (m === 'J') what = 'jump (the level check takes it on trust)';
       }
-      if (m) steps.push({ m, t: b.t, x: Math.round(b.x), y: Math.round(b.y), what });
+      if (m) steps.push({ m, t: b.t, x: Math.round(b.x), y: Math.round(b.y), what, ...(b.letter === 'C' && b.dur > 0 ? { fight: b.dur } : {}) });
     }
     return steps.sort((a, b) => a.t - b.t);
   };
@@ -138,6 +140,11 @@ export function fromStage(id: string, layout: number, setting: Setting, sim: Rea
 
 /** the move string (small hops left out: they are walking with a bump in it, research §7's letters are the moves that count) */
 export const moveString = (steps: readonly Step[]) => steps.filter((s) => s.m !== 'h').map((s) => s.m).join('');
+/** each move's way, in moveString's order: u (up), d (down) or f (flat), from where the next move starts (the same as rhythmTokens) */
+export const moveDirs = (steps: readonly Step[]) => {
+  const moves = steps.filter((s) => s.m !== 'h');
+  return moves.map((s, i) => { const dy = moves[i + 1] ? moves[i + 1].y - s.y : 0; return dy < -15 ? 'u' : dy > 15 ? 'd' : 'f'; }).join('');
+};
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Checks on the move list (pure)
@@ -181,7 +188,10 @@ export function deadWalks(steps: readonly Step[], total: number, samples: readon
   for (let i = 1; i < ts.length; i++) {
     const t0 = ts[i - 1], t1 = ts[i];
     const pad = steps.filter((s) => s.m !== 'h' && s.t <= t0 && s.t > t0 - 6).length >= 3;
-    const busy = busyBetween(samples, t0, t1);
+    // (a fight met at t0 is the player busy, not walking: the lead's ruling (b), 2026-11-05; 1-5's teach boa, a 2 s fight, read as a
+    // dead walk after it)
+    const fought = Math.min(t1 - t0, steps.filter((s) => s.t === t0).reduce((n, s) => n + (s.fight ?? 0), 0));
+    const busy = busyBetween(samples, t0, t1) + fought;
     const secs = t1 - t0 - busy - (pad ? REST_PAD : 0);
     if (secs > limit) out.push({ t0, t1, x0: xAt(t0), x1: xAt(t1), secs: +secs.toFixed(1), pad, busy: +busy.toFixed(1) });
   }
@@ -245,10 +255,13 @@ export function repeats(str: string, steps: readonly Step[], bpm?: number): Repe
  * differently (the lead, 2026-11-04: folded into one, every jumping stage read as the same stage, and 1-1's pair, the jump and the
  * double, was invisible). Only a move the check can't name (Q) reads as a jump.
  */
-export function grams(str0: string, n = 3): Map<string, number> {
+export function grams(str0: string, n = 3, dirs?: string): Map<string, number> {
   const str = str0.replace(/Q/g, 'J');
+  // (dirs, moveDirs: the way each move goes. A jump down onto a snap twig and a climb up onto a creaking limb are both B by letter, but a
+  // thumb feels them apart; the lead's ruling (a), 2026-11-04: every stage's moves are compared letter and way together)
+  const toks = dirs && dirs.length === str.length ? [...str].map((c, i) => c + dirs[i]) : [...str];
   const m = new Map<string, number>();
-  for (let i = 0; i + n <= str.length; i++) m.set(str.slice(i, i + n), (m.get(str.slice(i, i + n)) ?? 0) + 1);
+  for (let i = 0; i + n <= toks.length; i++) { const k = toks.slice(i, i + n).join(''); m.set(k, (m.get(k) ?? 0) + 1); }
   return m;
 }
 export function cosine(a: Map<string, number>, b: Map<string, number>): number {

@@ -61,6 +61,17 @@ test('dead walk: a 4 s stretch with no move is flagged, 2 s stretches are not', 
   assert.equal(deadWalks(good, 6, samples).length, 0);
 });
 
+test('dead walk: a fight is the player busy, not walking (the lead\'s ruling (b), 2026-11-05: 1-5\'s teach boa, a 2 s fight, read as dead)', () => {
+  const samples = [{ x: 0, y: G, base: 0 }, { x: 2000, y: G, base: 7 }] as never;
+  // (each way: 4 s on from a 2 s fight is 2 s walking, no flag; the same 4 s on from a jump is a dead walk; a longer walk after a fight still is)
+  const fought: Step[] = [{ m: 'O', t: 1, x: 300, y: G, what: 'boa (coiled: kicked to roll)', fight: 2 }, { m: 'J', t: 5, x: 800, y: G, what: '' }];
+  const jumped: Step[] = [{ m: 'J', t: 1, x: 300, y: G, what: '' }, { m: 'J', t: 5, x: 1400, y: G, what: '' }];
+  const far: Step[] = [{ m: 'O', t: 1, x: 300, y: G, what: 'boa (coiled: kicked to roll)', fight: 2 }, { m: 'J', t: 7, x: 1800, y: G, what: '' }];
+  assert.equal(deadWalks(fought, 5, samples).filter((d) => d.t0 === 1).length, 0, 'the fight is not walking');
+  assert.equal(deadWalks(jumped, 5, samples).filter((d) => d.t0 === 1).length, 1, 'the same gap after a jump is');
+  assert.equal(deadWalks(far, 7, samples).filter((d) => d.t0 === 1).length, 1, 'a long walk on after a fight still is');
+});
+
 test('dead walk: time climbing a trunk or on a rope is not walking (1-4: its climbs read as 3.7 s dead walks)', () => {
   const two: Step[] = [{ m: 'C', t: 1, x: 300, y: G, what: '' }, { m: 'C', t: 5, x: 400, y: G - 300, what: '' }];
   const seg = (kind: string) => ({ kind }) as never;
@@ -108,6 +119,21 @@ test('similarity keeps the hop, the jump and the double jump apart (the lead, 20
   assert.ok(cosine(grams('JUJUJUJUJUJU'), grams('JJJJJJJJJJJJ')) < SIMILAR_MAX, 'jump and double against plain jumps: not alike');
   // (a move the check can't name still reads as a jump)
   assert.ok(cosine(grams('JQJQJQJQ'), grams('JJJJJJJJ')) > 0.99);
+});
+
+test('similarity reads each move with its way, up, down or flat (the lead\'s ruling (a), 2026-11-04: a snap twig dropped onto and a limb climbed up to are both B)', () => {
+  const s = 'BJBJBJBJBJBJ';
+  // (each way: the same moves the same way read alike; the same letters going down against going up do not)
+  assert.ok(cosine(grams(s, 3, 'dddddddddddd'), grams(s, 3, 'dddddddddddd')) > 0.99, 'the same moves the same way: alike');
+  assert.ok(cosine(grams(s, 3, 'dddddddddddd'), grams(s, 3, 'uuuuuuuuuuuu')) < SIMILAR_MAX, 'down against up: not alike');
+  assert.ok(cosine(grams(s, 3, 'dfdfdfdfdfdf'), grams(s, 3, 'dfdfdfdfdfdf')) > 0.99);
+  assert.ok(cosine(grams(s, 3, 'dfdfdfdfdfdf'), grams(s, 3, 'ufufufufufuf')) < SIMILAR_MAX);
+  // (no ways, or ways of the wrong length: the letters alone, as before)
+  assert.deepEqual(grams(s, 3, 'dd'), grams(s));
+  // (movesAlike reads the ways when a stage carries them)
+  const a = { str: s, quick: s, sdir: 'dddddddddddd', qdir: 'dddddddddddd' };
+  assert.ok(movesAlike(a, { ...a, sdir: 'uuuuuuuuuuuu', qdir: 'uuuuuuuuuuuu' }) < SIMILAR_MAX);
+  assert.ok(movesAlike(a, { ...a }) > 0.99);
 });
 
 // ---- pacing ----
