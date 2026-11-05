@@ -41,7 +41,7 @@ lianas (1-6); the bush (1-7). A stage may use only moves taught at or before it.
 - at least 2:00 at Matt's pace;
 - start clearance (no dressing within a body width of the spawn);
 - hearts only after real risk, a flag before every hard part, petals on the route;
-- the end on a bank.
+- the end piece carries the exit totem (main's goal object) and the clue, at the height the trend reaches (1-1: a long high log, as on main).
 
 **What makes stages differ (the engine rolls inside these, and the gates check them):**
 - each stage rolls its own **structure**: the order and kind of its sections (teach, practise, fork, rest, test, twist, end),
@@ -184,7 +184,7 @@ Kinds:
 **The JUDGMENT list [ruled 4:17 PM ET by the lead]:**
 1. **The quiet ending:** with Matt. The lead is putting it to him; my pick is (A), a calm arrival held to the rest rule.
 2. **Hearts only after real risk: MATT,** not judgment. MATT-DIRECTION 12:15 AM: "a heart only where the player can have lost one".
-3. **The end on a ground bank:** lead-approved under Matt's 1:20 PM rule (what starts the game, the lead approves).
+3. **The end [revised 4:24 PM ET, from main]:** 1-1 ends as main's old 1-1 does: a long high log with the exit totem, no shrine (1-1.md:23 "up in the high branches"). The "ground bank" pick is withdrawn. A stage's end piece is the one its brief's trend reaches, with the exit totem, and the story's clue on that piece.
 4. **Forks none 0 / some 1-2 / lots 3+:** lead-approved the same way. It's re-measured once a shipped-game count exists.
 
 **One research row not taken, on evidence:** LEDGER-2026-11-02-full.md:331-332 ("every 3-5 minute stage") is CONTRADICTED by the
