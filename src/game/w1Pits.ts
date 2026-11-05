@@ -54,6 +54,12 @@ export const FALL_BELOW = 200;
 export const SOFT_BELOW = 50;
 /** a soft pit's floor sits this far under the ground line, or more (and under FALL_BELOW): 1-3's, 130 down; a 75 px sunk step is not one */
 export const SOFT_FLOOR = 100;
+/** Pokey's body width (engine.ts: the hero is 44 px wide): a gap narrower than this he cannot fall into */
+const HERO_BODY = 44;
+/** a soft pit's floor runs no further than this past either wall (px): further, it is a lower road under open air (World 1's vault pits: 60) */
+export const SOFT_RUN_ON = 120;
+/** a floor this close under a soft pit's lower lip is its own way out: he walks or hops straight up onto the lip (the vault-pit rule) */
+export const SUNK_STEP = 75;
 /** a marked drop is nearly black this far under its lip (px) */
 export const DROP_DARK = 200;
 
@@ -130,7 +136,20 @@ export function findW1Pits(platforms: readonly Platform[]): PitGap[] {
       // (and a sunk step's own floor, under all of it, is its floor even with deeper ground below: the highest piece under most of it)
       const ov = (q: Platform) => Math.min(x1, q.x + q.width) - Math.max(x0, q.x);
       const most = fl.filter((q) => ov(q) >= 0.7 * (x1 - x0));
-      const floor = most.length ? Math.min(...most.map((q) => q.y)) : [...fl].sort((p, q) => ov(q) - ov(p))[0].y;
+      const floorQ = most.length ? most.reduce((a, b) => (b.y < a.y ? b : a)) : [...fl].sort((p, q) => ov(q) - ov(p))[0];
+      const floor = floorQ.y;
+      // (a soft pit is a hole in the ground: a bank of earth at both lips, its walls, and its floor ending at them (World 1's vault pits:
+      // within 60 px past each wall). A floor that runs on far under a lip is a lower road and the gap open air over it: a fork's high road
+      // over its low road (the mixer's 1-1, 21 such gaps over 16 layouts read as pits with no way out, and would have painted pit walls
+      // and a leaf bed over the low road). It is judged as a fall: a marked drop, or open air)
+      // (and a slit narrower than his body is no pit: he cannot fall into it (Easy's wider landings left 40 px between two banks))
+      const lower = x1 - x0 < HERO_BODY || !lip.lipL || !lip.lipR || x0 - floorQ.x > SOFT_RUN_ON || floorQ.x + floorQ.width - x1 > SOFT_RUN_ON;
+      // (only what would be a soft pit: a floor nearer than SOFT_FLOOR is a sunk step, no gap at all, as before)
+      if (lower && floor - G >= SOFT_FLOOR) {
+        const walls = marked ? pitWalls(platforms, x0, x1, top) : undefined;
+        out.push({ x0, x1, top, kind: 'fall', ...lip, ...(marked ? { drop: true } : {}), ...(walls ? { walls } : {}) });
+        continue;
+      }
       // (the steps out, and anything else standing in it: x, y, w, h)
       const steps = platforms.filter((q) => !q.broken && q.type !== 'fragile' && q.x < x1 && q.x + q.width > x0 && q.y > top + 4 && q.y < floor - 4).map((q) => [q.x, q.y, q.width, q.height, !!q.soil] as [number, number, number, number, boolean]);
       if (floor - G >= SOFT_FLOOR) out.push({ x0, x1, top, kind: 'soft', floor, ...lip, steps });

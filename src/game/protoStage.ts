@@ -126,7 +126,7 @@ export interface ProtoExtras {
   /** the stage places every petal itself (the mixer's stages): the petal pass adds none; mixer/post.ts ownPetals keeps the pass's rules */
   ownPetals?: boolean;
   /** scenery trunks behind the boughs (not climbs: protoArt.ts setDecoTrunks), the mixer's stages */
-  trunks?: Array<{ x: number; topY: number; bottomY: number; w?: number }>;
+  trunks?: Array<{ x: number; topY: number; bottomY: number; w?: number; holdY?: number }>;
   /** leafy clumps at the boughs' free ends, behind them (the mixer's stages; protoArt.ts setDecoTrunks) */
   leaves?: Array<{ x: number; y: number; w: number; flip?: boolean }>;
   /** far-off twinkles, dressing only (the mixer's 1-5 n9: "Something shiny, far away"), engine.ts drawGlint */

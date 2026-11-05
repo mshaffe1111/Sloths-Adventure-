@@ -17,6 +17,8 @@ import type { Collectible, LevelConfig, Platform, Vine } from '../types.ts';
 import { IDEAS, SHAPES, type BurstRecipe } from './library.ts';
 import { kitFor, type WorldKit } from './kits.ts';
 import { holds } from './support.ts';
+import { paintedBank } from '../w1Pits.ts';
+import { fitTrunks, FOOT_IN } from '../trunkFit.ts';
 import { w1DressFacing, w1DressWidth } from '../w1NewArt.ts';
 import type { StageSpec } from './spec.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
@@ -132,6 +134,8 @@ interface Lay {
   /** the last six landings' kind x size, as the variety gate reads them (cp1/measure2.py), so a burst picks a size that is new */
   recent: string[];
   glints: Array<{ x: number; y: number }>;
+  /** laying a recipe whose logs stand on stumps: its logs are thin (the kit's stumpLog height) */
+  stumping?: boolean;
   /** the creeks laid so far (waterRun): the stage's drawn water, proto.water */
   water: Array<{ x0: number; x1: number; y: number }>;
 }
@@ -153,7 +157,7 @@ function plat(L: Lay, k: string, x: number, y: number, w: number): Platform {
   if (k === 'bank') Object.assign(p, { style: 'moss_stone', height: 120 });
   // (50 px, the height World 1's painted rock is drawn for (protoArt.ts drawRockArt): at 40 it drew the grey placeholder slab, P-12)
   else if (k === 'stone') Object.assign(p, { style: 'moss_stone', height: 50 });
-  else if (k === 'log') Object.assign(p, { style: 'log', height: 90 });
+  else if (k === 'log') Object.assign(p, { style: 'log', height: L.stumping ? K.heights.stumpLog ?? 30 : 90 });
   else if (k === 'bridge') Object.assign(p, { style: 'canopy_bridge' });
   else if (k === 'creaky') {
     if (!L.creakyTaught) throw new Error('a creaky piece before the node that teaches creaky');
@@ -203,6 +207,9 @@ function gateGap(L: Lay, aY: number, b: { y: number; height: number; type: strin
   if (L.easy) max = Math.min(max, Math.floor(heldMaxGap(A, { id: 1, x: 100 + max, y: aY - dy, width: 100, height: b.height, type: b.type } as Platform, false)));
   return max;
 }
+
+/** how far a trunk's top goes into the underside of the piece it holds (px) */
+const UNDER_IN = 4;
 
 /** the pieces laid from cursor c on stand on stumps (supports draws a short trunk, no crown, for each): a ground high road */
 function markStumps(L: Lay, e: Cursor, c: Cursor): Cursor {
@@ -322,7 +329,7 @@ function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: num
     // a short piece stays short and the gate's kind x size variety holds; never under 90 px)
     if (d > L.riseCap) d = L.riseCap;
     const f = easyFit(L, d, width ?? Math.max(90, Math.round(R.r(bnd[0], bnd[1]))), 999);
-    const h = K.heights[k] ?? 24, type = k === 'creaky' || k === 'crumble' ? 'fragile' : 'solid';
+    const h = k === 'log' && L.stumping ? K.heights.stumpLog ?? 30 : K.heights[k] ?? 24, type = k === 'creaky' || k === 'crumble' ? 'fragile' : 'solid';
     let max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy);
     while (max < MIN_GAP + 10 && f.dy > 0) { f.dy -= 10; max = gateGap(L, y, { y: y - f.dy, height: h, type }, f.dy); }
     // (the gap is the dial's share of the gate's widest, give or take 8%; Easy's 80 px cap on a rise still holds)
@@ -386,7 +393,9 @@ function layRecipe(L: Lay, c: Cursor, R: Rng, rec: BurstRecipe, n: number): Curs
   const kinds = Array.isArray(ks[0]) ? R.pick(ks as string[][]) : (ks as string[]);
   const count = rec.n ? (L.easy ? rec.n.easy : rec.n.normal) : n - (rec.nLess ?? 0);
   const steps = (L.easy && rec.easySteps) || rec.steps;
+  if (rec.stumps) L.stumping = true;
   let e = burst(L, c, R, kinds, count, steps, rec.gap);
+  L.stumping = false;
   if (rec.stumps) e = markStumps(L, e, c);
   if (rec.then) e = layRecipe(L, e, R, rec.then, n);
   return e;
@@ -761,30 +770,45 @@ function crossings(L: Lay, hi: Platform[], lo: Platform[], job: string) {
  * own under its middle; a bridge gets a thin post at each end; the perch a short stump. Each trunk runs from just under its piece's top to the
  * first bank under it, or past the stage's bottom.
  */
-function supports(P: Platform[], height: number, clear: number[] = [], water: ReadonlyArray<{ x0: number; x1: number; y: number }> = []): { trunks: Array<{ x: number; topY: number; bottomY: number; w: number; art?: 'plain' }>; leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'bushTall' }> } {
-  type T = { x: number; topY: number; bottomY: number; w: number; art?: 'plain' };
+function supports(P: Platform[], height: number, clear: number[] = [], water: ReadonlyArray<{ x0: number; x1: number; y: number }> = []): { trunks: Array<{ x: number; topY: number; bottomY: number; w: number; art?: 'plain'; holdY?: number }>; leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'bushTall' }> } {
+  type T = { x: number; topY: number; bottomY: number; w: number; art?: 'plain'; holdY?: number };
   const out: T[] = [];
   const leaves: Array<{ x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'bushTall' }> = [];
+  // (the first solid surface under a trunk's top: the floor, a bank, a low-road piece or a creek's water, as the draw fits it (protoArt.ts
+  // fitTrunks); a stump stands on it and never runs on down through the low road (the designer's 12:52 condition 2). Before, only a
+  // bank of earth counted, so a trunk ran down through a log or a bough under it)
   const floorOf = (x: number, y: number) => {
-    const under = P.filter((q) => q.type !== 'bouncy' && q.style === 'moss_stone' && q.x <= x && q.x + q.width >= x && q.y > y + 30);
-    return under.length ? Math.min(...under.map((q) => q.y)) : null;
+    const under = P.filter((q) => q.type !== 'bouncy' && !q.broken && q.x - 2 <= x && q.x + q.width + 2 >= x && q.y > y + 8).map((q) => q.y);
+    for (const z of water) if (x > z.x0 && x < z.x1 && z.y > y + 8) under.push(z.y);
+    return under.length ? Math.min(...under) : null;
   };
   // (each tree its own width and, tree by tree, the vine-wrapped kapok or the bare one: never two neighbours alike (S-4))
   // (and a tree goes on up past its boughs, 320-420 px, to a leafy crown: the upright screen's top half holds the canopy, never empty sky
   // (P-6, S-7); a post, a stump or a lily's stem stops at its piece)
   const tree = (x: number, top: number, w: number, crown = true) => {
+    // (at the x it is drawn at: the surface under it is looked for there, never half a pixel off a piece's end)
+    x = Math.round(x);
     const fl = floorOf(x, top - 16);
     const k = out.length;
     // (a crown only where no other is within 360 px: a canopy line overhead, not a wall of leaves in front of the play, round-2 stills)
-    const room = crown && !leaves.some((l) => Math.abs(l.x - x) < 360);
-    const rise = room ? 400 + ((k * 53) % 4) * 20 : 0;
-    out.push({ x: Math.round(x), topY: Math.round(top - rise), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: w * (0.85 + ((k * 37) % 7) * 0.07), ...(k % 2 ? { art: 'plain' as const } : {}) });
+    const want = 400 + ((k * 53) % 4) * 20;
+    // (a crown only where nothing stands over it. Where a higher piece does, the tree rises to that piece's underside and holds it too,
+    // one trunk and boughs at two heights (S-4), with no crown: a crown grown on up behind it was cut off by the draw at that piece
+    // (fitTrunks), and a crownless trunk stopping at its bough read as a stump with a plank on it (the stills, 11-05))
+    const over = P.filter((q) => q.x - 2 <= x && q.x + q.width + 2 >= x && q.y + q.height <= top && q.y > top - want - 12).map((q) => q.y + q.height);
+    const room = crown && !leaves.some((l) => Math.abs(l.x - x) < 360) && !over.length;
+    const reach = crown && over.length ? top - (Math.max(...over) - UNDER_IN) : 0;
+    // (a tree kept from its leaves only by a crown near it still rises bare, as its neighbours do: stopping at its bough left a stump)
+    const rise = crown && !over.length ? want : reach >= 30 ? reach : 0;
+    out.push({ x: Math.round(x), topY: Math.round(top - rise), bottomY: Math.round(fl !== null ? fl + FOOT_IN : height + 200), w: w * (0.85 + ((k * 37) % 7) * 0.07), ...(k % 2 ? { art: 'plain' as const } : {}), ...(rise ? { holdY: Math.round(top) } : {}) });
     if (room) leaves.push({ x: Math.round(x), y: Math.round(top - rise + 30), w: 160 + ((k * 29) % 4) * 20, flip: k % 2 === 1, kind: 'bushWide' });
   };
   // (a piece in the creek, its middle over the water and its foot under the surface, stands in the water: a pad floats, a log or a reed
   // isle rises out of it; no stem and no trunk)
   const wet = (p: Platform) => water.some((z) => p.x + p.width / 2 > z.x0 && p.x + p.width / 2 < z.x1 && p.y + p.height > z.y);
-  const air = P.filter((p) => !wet(p) && p.type !== 'bouncy' && !(p as { catch?: boolean }).catch && !(p as { art?: string }).art
+  // (a piece the kit paints as a bank of earth (a 90 px log too) is ground, its body to the floor: no trunk, as the draw drops one under
+  // it (protoArt.ts fitTrunks))
+  const air = P.filter((p) => !wet(p) && !paintedBank(p) && p.type !== 'bouncy' && !(p as { catch?: boolean }).catch && !(p as { art?: string }).art
     && (p.style === 'branch' || p.style === 'canopy_bridge' || p.style === 'log' || p.style === 'ruin' || p.type === 'fragile')).sort((a, b) => a.x - b.x);
   // (a lily pad or a reed isle over the drop stands on a thin stem down to the ground (S-2: nothing above the water line floats))
   for (const p of P) if (!wet(p) && ((p as { lily?: boolean }).lily || (p.style === undefined && p.height === 30 && p.type === 'solid'))) tree(p.x + p.width / 2, p.y + 10, 0.45, false);
@@ -798,10 +822,12 @@ function supports(P: Platform[], height: number, clear: number[] = [], water: Re
     const p = air[i];
     if (done.has(p)) continue;
     const perch = !!(p as { perch?: boolean }).perch;
-    const top = (q: Platform) => q.y + (q.style === 'log' ? 50 : 16);
+    // (a trunk meets its piece's underside, a few px into it: a log of any height (the designer's 12:52 condition 1: at y + 50 a thin
+    // log hovered 20 px over its stump), a bough 16 px down)
+    const top = (q: Platform) => q.y + (q.style === 'log' ? q.height - UNDER_IN : 16);
     if (p.style === 'canopy_bridge') {
       // (a bridge hangs from a thin post at each end, P-11)
-      for (const x of [p.x + 12, p.x + p.width - 12]) { const fl = floorOf(x, p.y); out.push({ x: Math.round(x), topY: Math.round(top(p)), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: 0.5 }); }
+      for (const x of [Math.round(p.x + 12), Math.round(p.x + p.width - 12)]) { const fl = floorOf(x, p.y); out.push({ x: Math.round(x), topY: Math.round(top(p)), bottomY: Math.round(fl !== null ? fl + FOOT_IN : height + 200), w: 0.5 }); }
       continue;
     }
     if (perch) { tree(p.x + p.width / 2, top(p), 0.7, false); continue; }
@@ -809,7 +835,8 @@ function supports(P: Platform[], height: number, clear: number[] = [], water: Re
     if ((p as { stump?: boolean }).stump) { tree(p.x + p.width / 2, top(p), 0.8, false); continue; }
     // (two boughs side by side, a short gap and a step between them, grow from one tree standing in the gap (S-4: like the old 1-1's
     // canopy, one trunk and its boughs at two heights))
-    const q = air.slice(i + 1).find((o) => !done.has(o) && o.style !== 'canopy_bridge' && !(o as { perch?: boolean }).perch && o.x >= p.x + p.width - 10);
+    // (never a log on a stump: it has its own stump (the designer's 12:52 condition 1))
+    const q = air.slice(i + 1).find((o) => !done.has(o) && o.style !== 'canopy_bridge' && !(o as { perch?: boolean }).perch && !(o as { stump?: boolean }).stump && o.x >= p.x + p.width - 10);
     // (the designer's trunk rule after Matt's play, 11-05: boughs up to 220 px apart share one tree, and no more than 3 full trunks stand
     // in a screen's width; a bough past that hangs from a shared trunk on that screen and takes none of its own. Stills v9's
     // sideways bank end had six alike, evenly spaced: a forest of poles)
@@ -827,12 +854,12 @@ function supports(P: Platform[], height: number, clear: number[] = [], water: Re
   // floats. The designer's rule wants it hung from a shared trunk's side branch, which is art the kit does not have yet)
   for (const p of air) {
     if (p.style === 'canopy_bridge' || (p as { perch?: boolean }).perch) continue;
-    const m = p.x + p.width / 2;
+    const m = Math.round(p.x + p.width / 2);
     // (held only by a trunk within 220 px of it that reaches its height: the designer's label, the same rule E3's check reads (support.ts);
     // one 300 px off along x alone, whatever its height, left 1-5's creaky limbs over a trunk that stopped below them)
     if (out.some((t) => holds(t, p))) continue;
     const fl = floorOf(m, p.y);
-    out.push({ x: Math.round(m), topY: Math.round(p.y + 16), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: 0.55 });
+    out.push({ x: Math.round(m), topY: Math.round(p.y + 16), bottomY: Math.round(fl !== null ? fl + FOOT_IN : height + 200), w: 0.55 });
   }
   // (on the long banks where no tree stands within 500 px, a tree grows from the bank itself, set back, so the start, the rests and the
   // shrine have their canopy overhead too (S-7))
@@ -842,12 +869,17 @@ function supports(P: Platform[], height: number, clear: number[] = [], water: Re
       // (never in front of a flag, the start or the shrine: v5's start tree hid the first flag)
       if (clear.some((c) => Math.abs(c - x) < 200)) continue;
       if (crowded(x)) continue;
+      // (nothing over it up to its crown: the draw would stop it there, a stub hanging over the bank)
+      if (P.some((q) => q !== b && q.x - 2 <= x && q.x + q.width + 2 >= x && q.y < b.y && q.y > b.y - 572)) continue;
       const k = out.length;
-      out.push({ x: Math.round(x), topY: Math.round(b.y - 560), bottomY: Math.round(b.y + 20), w: 1.3 * (0.85 + ((k * 37) % 7) * 0.07), ...(k % 2 ? { art: 'plain' as const } : {}) });
+      out.push({ x: Math.round(x), topY: Math.round(b.y - 560), bottomY: Math.round(b.y + FOOT_IN), w: 1.3 * (0.85 + ((k * 37) % 7) * 0.07), ...(k % 2 ? { art: 'plain' as const } : {}) });
       if (!leaves.some((l) => Math.abs(l.x - x) < 360)) leaves.push({ x: Math.round(x), y: Math.round(b.y - 530), w: 180, flip: k % 2 === 1, kind: 'bushWide' });
     }
   }
-  return { trunks: out, leaves };
+  // (fitted as the draw fits them, by the one rule (trunkFit.ts): each on the nearest surface under its piece, none under a bank of earth,
+  // so a stage's trunks are drawn as they were laid; a crown's leaves go with its trunk)
+  const fit = fitTrunks(out, P, water) as T[];
+  return { trunks: fit, leaves: leaves.filter((l) => fit.some((t) => Math.abs(t.x - l.x) <= 1)) };
 }
 
 /**
