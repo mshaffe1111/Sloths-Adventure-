@@ -1151,3 +1151,50 @@ Each stage's section is signed by all three before any building starts. New help
   longest 1,540 px) or 21 (200 px; longest 2,280). Rebuilt 1-3 has 8, 14 or 18 under the same three rules. The floor log does count
   as the low road. Proposed rule: a road keeps going across gaps up to a Normal flat jump (157-185 px, PLAN.md table 2.1; use 180).
   The split floor then comes from old 1-1. Not checked yet: that both roads are reachable routes (the CP3 prover's job).
+
+### [designer ruling, 11-05 ~9:50 AM ET] 1-1 ground build (planner 098aff49): option (a), lines from 1-1's own profile
+
+The planner measured the ground-first 1-1, 16 rolls on Normal and 16 on Easy:
+- splits 2-4 (line 19);
+- two-road share 24-28% on Normal and 19-22% on Easy (line 40%);
+- Normal fast clock 109-119 s (aim 160-195 s);
+- variety 16/18, with the longest stretch with nothing new at 2,042 / 2,646 px;
+- the new feel lines all pass: boughs and creaky 11-12%, ground the commonest kind on 16/16, 6 of 13 ideas shared with 1-5.
+
+**Ruling: (a).** Matt asked for a feel profile per stage, with how much a stage branches set by that profile. A ground half can't
+honestly split 19 times, because a mound is solid down to the bottom. Options (b) and (c) bring back the boughs-over-floor feel Matt
+turned down. The old 1-1's 34 splits came from canopy over floor, and 1-1 keeps that in its tree half only.
+
+**1-1's lines (they replace the 19 / 40% lines for 1-1 only; 1-5 keeps them):**
+
+| Line | Now | Once hollow logs are wired |
+|---|---|---|
+| Splits, whole stage (180 px rule), 16/16 rolls | ≥ 10 | ≥ 12 |
+| Splits from n8-n11 (the tree half, canopy over floor as in the old 1-1) | ≥ 7 | ≥ 7 |
+| Two-road share, Normal | ≥ 25% | ≥ 25% |
+| Two-road share, Easy | ≥ 20% | ≥ 20% |
+
+- **Choice in the ground half** comes from the two forks, the hollow logs (once wired) and side pockets: a collectible tucked off the
+  line, behind a mound or under a log on a stump. Thin raised roads that read as boughs are not allowed.
+- **Not changed:** variety lines 18/18, and length. The nothing-new stretches at 2,042 and 2,646 px are a miss to trace and fix.
+  They come from the old 1-1, so they are not relaxed. The length is Normal fast 160-195 s and Easy at least 120 s, judged on 16/16
+  rolls. Length comes from more ground bursts (3 a node in n2-n7) and a longer tree half, never from flat padding (flat ≤ 1,351 px).
+
+**Pieces fit their element (Matt, via the planner) — a gate, written before the build:**
+- Every piece kind names its element: ground, water or tree. The mixer fails a stage where a piece stands outside its element.
+  - Lily pads and reeds are water.
+  - Stones stand on ground or rise from water.
+  - Boughs and creaky are tree.
+  - Logs on stumps, mounds, banks and mushrooms are ground.
+- No water piece goes in without a drawn water body. Until the engine draws a water zone, 1-1's creek crossing uses ground pieces
+  only: a log on stumps, or stones on a bank. Then lily pads return to the creek. The water zone is shared drawing (engine-render),
+  so it goes to the lead to assign.
+
+**Art for 1-1:**
+- **Squirrels and hollow logs** are painted and already packed in `w1-new.json`, but nothing loads that atlas. Wiring it is
+  engine-render work; the lead assigns it. No stand-ins. 1-1 does not go to Matt until the squirrels draw, because they are the
+  brief's opening.
+- **Bootprint:** no art exists in any sheet or atlas (checked against IN-GAME-UNUSED, NEVER-PACKED and UNUSED.md). It is the story's
+  clue, so it is painted, not code-drawn. That makes a one-picture list for Hugging Face. The lead approves the spend; Matt approves
+  the list. The art-gap rule applies, because this is a true gap.
+- **Morning light** is backdrop/lighting work (engine-side). The lead assigns it with the atlas wiring.
