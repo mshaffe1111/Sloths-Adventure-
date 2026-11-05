@@ -38,7 +38,7 @@
 | 15 | `w1-quiet-arrival` Quiet arrival | goal | 1 | walk | ledge → floor | a calm walk along a high branch down to the end bank, petals low, the shrine and the bootprint place on the bank | short or long | 1-1 | ends: quiet (1-1.md:23); end on a bank (JUDGMENT 3) |
 
 **Counts:**
-- 15 new sections: start 0, ki 6, sho 8, ten 2, rest 1, goal 1. (5 and 8 are teaches; some sections carry two phases.)
+- 15 new sections: start 0, ki 6 (1, 2, 5, 8, 13, 14), sho 7 (2, 3, 4, 6, 9, 12, 14), ten 2 (7, 10), rest 1 (11), goal 1 (15). (5 and 8 are teaches; some sections carry two phases.)
 - With old 1-1's harvested sections, this gives the step 2 pool. The pool-to-slot ratio is engine-core's table to measure (CHECK 2).
   If ten or rest still falls short of 3:1, I'll design more there first. The double chain and rest are the thinnest phases.
 
