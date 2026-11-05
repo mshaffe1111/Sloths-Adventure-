@@ -31,8 +31,10 @@ test('1-1: every roll keeps the plan (the spec\'s nodes in order), one exit, a s
     assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
     assert.equal(st.collectibles.filter((c) => c.type === 'seed').length, 1, `seed ${s}: one golden seed`);
     const seedC = st.collectibles.find((c) => c.type === 'seed')!;
-    // the seed is higher than a double jump reaches from the mushroom's ground, with a mushroom close below it
-    assert.ok(st.platforms.some((p) => p.type === 'bouncy' && Math.abs(p.x - seedC.x) < 260 && p.y - seedC.y > 200), `seed ${s}`);
+    // the seed is more than 200 px over the ground under it (main: G - seed.y > 200), with a mushroom within 260 px below it
+    const ground = st.platforms.filter((p) => p.type === 'solid' && p.height >= 90 && seedC.x >= p.x - 200 && seedC.x <= p.x + p.width + 200 && p.y > seedC.y).sort((a, b) => a.y - b.y)[0];
+    assert.ok(ground && ground.y - seedC.y > 200, `seed ${s}: ${ground ? ground.y - seedC.y : 'no ground'} px over the ground`);
+    assert.ok(st.platforms.some((p) => p.type === 'bouncy' && Math.abs(p.x - seedC.x) < 260 && p.y > seedC.y), `seed ${s}: no mushroom close below it`);
     const fast = modelAll(st).fast.total;
     assert.ok(fast >= EXPERT_SECONDS - 15, `seed ${s}: ${fast.toFixed(0)} s`);
   }
