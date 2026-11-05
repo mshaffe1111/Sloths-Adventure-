@@ -94,9 +94,11 @@ export default defineConfig(() => {
       }),
     ],
     resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
-      },
+      alias: [
+        { find: '@', replacement: path.resolve(__dirname, '.') },
+        // the Play Store build leaves the testers-only GPU layer out (src/game/gpuPixi.store.ts says why)
+        ...(store ? [{ find: /^\.\/gpuPixi\.ts$/, replacement: path.resolve(__dirname, 'src/game/gpuPixi.store.ts') }] : []),
+      ],
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
