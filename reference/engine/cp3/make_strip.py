@@ -19,7 +19,8 @@ tags = json.load(open('/home/user/Sloths-Adventure-/reference/engine/cp2/idea-ta
 ex = json.load(open(S + '/cp3-explain.json'))['1']
 newtags = []
 for e in ex:
-    lab = f"n{e['node']} {e['idea']}" + (' + canopy' if e.get('canopy') else '') + (f" ({e['road']} road)" if e.get('road') else '')
+    if e['node'] < 0: lab = e['idea']; newtags.append([e['x0'] - 200, e['x1'] + 200, lab]); continue
+    lab = f"n{e.get('nid') or e['node']} {e['idea']}" + (' + canopy' if e.get('canopy') else '') + (f" ({e['road']} road)" if e.get('road') else '')
     newtags.append([e['x0'], e['x1'], lab])
 stages = [
     ('old', "Old 1-1", "Matt's bar. A short cycle of bank hops, a bounce up and a canopy over the floor.", pick('cp1-old.json', 'old', '1-1'), tags['Old 1-1 (live)']),
@@ -28,7 +29,7 @@ stages = [
 ]
 def group(p):
     if p['type'] == 'bouncy': return 'mush'
-    if 'perch' in p['keys']: return 'mush'
+    if 'perch' in p['keys']: return 'bough'
     if p['type'] == 'fragile': return 'break'
     if p['lily'] or (p['style'] is None and p['h'] == 30): return 'water'
     if p['style'] == 'log': return 'log'
@@ -46,30 +47,33 @@ def numbers(r, tg):
         k = lab.split(' ', 1)[1] if lab.startswith('n') and lab[1].isdigit() else lab
         share[k.replace(' + canopy', '')] += b - a
     top = share.most_common(1)[0] if share else ('-', 0)
-    return {'width': W, 'kinds': m['kinds'], 'run': m['run'], 'splits': splits180(r), 'two': two, 'top': (top[0], top[1] / W), 'flat': m['flatPx'], 'updown': (m['up'] + m['down']) / (m['up'] + m['down'] + m['flat'])}
+    Ls = landings(r); kc = collections.Counter(q[3] for q in Ls)
+    return {'mush': sum(1 for p in r['platforms'] if p['type'] == 'bouncy'), 'creaky': (kc['creaking limb'] + kc['snap twig']) / len(Ls), 'width': W, 'kinds': m['kinds'], 'run': m['run'], 'splits': splits180(r), 'two': two, 'top': (top[0], top[1] / W), 'flat': m['flatPx'], 'updown': (m['up'] + m['down']) / (m['up'] + m['down'] + m['flat'])}
 def row_svg(r, tg, x0, sid):
     x1 = x0 + ROW
     ps = [p for p in r['platforms'] if p['x'] + p['w'] > x0 and p['x'] < x1 and not p['catchL'] and 'art' not in p['keys']]
     vs = [v for v in r['vines'] if x0 <= v['x'] <= x1]
     if not ps: return ''
     ys = [p['y'] for p in ps] + [v['top'] for v in vs]
-    top, bot = min(ys) - 260, max(p['y'] + min(p['h'], 60) for p in ps) + 40
+    top, bot = min(ys) - 450, max(p['y'] + min(p['h'], 60) for p in ps) + 40
     out = [f'<svg viewBox="{x0} {top} {ROW} {bot - top}" preserveAspectRatio="xMinYMin meet" role="img" aria-label="{html.escape(sid)} from {x0} to {x1} px">']
     for p in sorted(ps, key=lambda p: p['type'] == 'bouncy'):
         g = group(p)
         h = 30 if p['type'] == 'bouncy' else min(p['h'], 60)
         out.append(f'<rect class="g-{g}" x="{p["x"]}" y="{p["y"]}" width="{p["w"]}" height="{h}" rx="6"/>')
     for v in vs: out.append(f'<line class="vine" x1="{v["x"]}" y1="{v["top"]}" x2="{v["x"]}" y2="{v["bot"]}"/>')
-    lanes = [-1e9, -1e9]
+    lanes = [-1e9] * 4
     for a, b, lab in sorted(tg, key=lambda t: t[0]):
         if b < x0 or a > x1: continue
         tw = len(lab) * 44
         # (a label that would run past the row's end slides back so it ends inside the row)
         lx = max(x0 + 10, min(max(a, x0) + 10, x1 - 20 - tw))
-        lane = 0 if lanes[0] < lx else 1 if lanes[1] < lx else None
-        if lane is None: continue
+        # (never dropped: the first free lane of four, or else the one that frees soonest; the designer read two missing labels as missing
+        # nodes on the first map)
+        free = [k for k in range(4) if lanes[k] < lx]
+        lane = free[0] if free else min(range(4), key=lambda k: lanes[k])
         lanes[lane] = lx + tw + 60
-        ly = top + 90 + lane * 100
+        ly = top + 90 + lane * 95
         out.append(f'<line class="tick" x1="{max(a, x0)}" y1="{ly + 20}" x2="{max(a, x0)}" y2="{bot}"/><text x="{lx}" y="{ly}">{html.escape(lab)}</text>')
     out.append('</svg>')
     return ''.join(out)
@@ -83,10 +87,10 @@ for sid, name, blurb, r, tg in stages:
 def fmt(n, k):
     if k == 'two': return f"{n[k] * 100:.0f}%"
     if k == 'top': return f"{html.escape(n[k][0])} {n[k][1] * 100:.0f}%"
-    if k == 'updown': return f"{n[k] * 100:.0f}%"
+    if k in ('updown', 'creaky'): return f"{n[k] * 100:.0f}%"
     if k == 'width': return f"{n[k] / 1000:.1f}k px"
     return str(n[k])
-cols = [('width', 'Length'), ('kinds', 'Piece kinds'), ('run', 'Longest run of one piece'), ('splits', 'High/low splits'), ('two', 'Two roads side by side'), ('top', 'Biggest idea'), ('updown', 'Landings that step up or down'), ('flat', 'Longest flat stretch (px)')]
+cols = [('width', 'Length'), ('kinds', 'Piece kinds'), ('run', 'Longest run of one piece'), ('splits', 'High/low splits'), ('two', 'Two roads side by side'), ('top', 'Biggest idea'), ('updown', 'Landings that step up or down'), ('flat', 'Longest flat stretch (px)'), ('mush', 'Mushrooms'), ('creaky', 'Creaky or crumbling landings')]
 thead = '<tr><th scope="col">Measure</th>' + ''.join(f'<th scope="col">{html.escape(nm)}</th>' for nm, _ in table) + '</tr>'
 tbody = ''.join('<tr><th scope="row">' + lab + '</th>' + ''.join(f'<td>{fmt(n, k)}</td>' for _, n in table) + '</tr>' for k, lab in cols)
 legend = ''.join(f'<li><span class="sw g-{g}"></span>{lab}</li>' for g, lab, _ in GROUPS) + '<li><span class="sw vinesw"></span>Climbing vine</li>'

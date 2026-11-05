@@ -1,0 +1,28 @@
+draw check: 1-5 at q0, upright and sideways, 4 spots each
+[land 08:10:43] 1-5 land 177s 4 spots, 33 counted frames, 148 sites 
+[port 08:10:44] 1-5 port 181s 4 spots, 33 counted frames, 142 sites 
+
+✗ 1-5 port
+  ✗ gradients 6.00 at spot 1 (x 9694) > limit 2
+      src/game/terrain.ts:207 (earthBody) 0.48/frame  | const grad = ctx.createLinearGradient(0, y, 0, y + Math.min(depth, 420));
+      src/game/terrain.ts:220 (earthBody) 0.48/frame  | const ao = ctx.createLinearGradient(0, y, 0, y + 70);
+      src/game/terrain.ts:272 (earthBody) 0.48/frame  | const sh = ctx.createLinearGradient(x, 0, x + w, 0);
+      src/game/terrain.ts:643 (drawSlab) 0.24/frame  | const gr = ctx.createLinearGradient(0, p.y, 0, p.y + h);
+      src/game/terrain.ts:651 (drawSlab) 0.24/frame  | const ao = ctx.createLinearGradient(0, p.y, 0, p.y + h);
+  note shrunkOver2_5x 1.00 at spot 0 (x 260) (reported; fails over 32)
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 0.76/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+✗ 1-5 land
+  ✗ gradients 6.00 at spot 1 (x 9694) > limit 2
+      src/game/terrain.ts:207 (earthBody) 0.73/frame  | const grad = ctx.createLinearGradient(0, y, 0, y + Math.min(depth, 420));
+      src/game/terrain.ts:220 (earthBody) 0.73/frame  | const ao = ctx.createLinearGradient(0, y, 0, y + 70);
+      src/game/terrain.ts:272 (earthBody) 0.73/frame  | const sh = ctx.createLinearGradient(x, 0, x + w, 0);
+      src/game/terrain.ts:643 (drawSlab) 0.24/frame  | const gr = ctx.createLinearGradient(0, p.y, 0, p.y + h);
+      src/game/terrain.ts:651 (drawSlab) 0.24/frame  | const ao = ctx.createLinearGradient(0, p.y, 0, p.y + h);
+  note shrunkOver2_5x 24.89 at spot 0 (x 260) (reported; fails over 32)
+      src/game/protoArt.ts:519 (drawBranchArt) 8.55/frame  | for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c
+      src/game/sheetBake.ts:124 (drawSheet) 2.24/frame  | ctx.drawImage(b.cv, sx * r + ex, sy * r + ey, bw - 2 * ex, bh - 2 * ey, dx + ex * kx, dy +
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 2.03/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/protoArt.ts:249 (blit) 1.45/frame  | ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, w, h);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 0.76/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+
+FAIL: 2 breach(es) (201 s; raw results in /tmp/drawcheck-KSobyD)
