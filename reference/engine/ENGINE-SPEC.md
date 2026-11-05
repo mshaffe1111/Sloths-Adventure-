@@ -2416,7 +2416,7 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
 | water | `false`: no creek and no lily pads until the engine draws 1-1's water zone. n5's low road is stump hop and bank hops meanwhile | 9:56 ruling (b), element gate |
 | petals | `trail`: low, at marching height, on trunks, banks and branches beside the route, never high in the canopy (brief :26) | brief |
 | look | lead `ground`, art `w1`. The commonest piece is a ground piece. Boughs only from n8 | 9:20 ruling, brief |
-| length | Normal 160-195 s (2:40-3:15), Easy ≥ 120 s | CP4 length; C28 |
+| length | **Normal 120-150 s** [revised 3:38 PM ET: from Tropical Freeze 1-1's dev clocks, "1-1's taste lines re-based"], Easy ≥ 120 s | the re-based table |
 | core | the stage's top 3 landing kinds by share (a rank rule, #132). Expected: bank, log, then stone or branch | backlog #132 |
 | roll | `roll11` exactly as written in "1-2 and 1-5 measured" (hop families, gap 0.79-0.91 centre 0.82, rise families, p90 caps, bursts 5-20 s) | 12:48 ruling |
 
@@ -2485,7 +2485,7 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
    - every gate 16/16 on Normal and Easy;
    - stills P-1 to P-13 and S-1 to S-9 at 6 places, upright and sideways, passed by the designer, then the lead;
    - library-check green.
-2. **1-1's own lines:**
+2. **1-1's own lines** [3:38 PM ET: these are FLOORS, "no worse than old 1-1", not targets; see "1-1's taste lines re-based"]:
    - the median float share over rolls ≤ 25.3%;
    - boughs + creaky (catch branches count) ≤ 25.3%;
    - pickups in one view ≤ 4 upright and ≤ 7 sideways;
