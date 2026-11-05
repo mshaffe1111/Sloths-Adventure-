@@ -68,3 +68,4 @@ that do the best job get the follow-on work.
 - Bad art is replaced, not patched (Matt, 2026-11-05): a painted-in defect means a fresh Hugging Face picture and the old one deleted; never inpaint, cross-fade or mask it.
 - D38 (11-05): art tells the player a rule; judge what each thing tells the player, not only whether it reads as what it is (calm-water art on deadly water).
 - D39 (11-05): helpers read their messages between every job; a newer instruction stops the old plan at once; a change of plan is confirmed within 10 min or the lead interrupts.
+- D40 (11-05): game work starts from origin/main, never from the lead's working branch (it carried the rejected 11-04 rebuild into the engine).
