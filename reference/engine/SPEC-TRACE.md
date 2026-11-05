@@ -1,7 +1,7 @@
 # SPEC-TRACE: where every number and rule in ENGINE-SPEC.md comes from
 
-Source register for `reference/engine/ENGINE-SPEC.md` on `engine-spec`: lines 1-1635 as of 7f4373c0, and lines 1637-1714 added by
-2a030ddf-b34e7487 while this trace was being written (section 24). Line numbers are the current file's (b34e7487); lines 1-1635 did not move. Written
+Source register for `reference/engine/ENGINE-SPEC.md` on `engine-spec`: lines 1-1635 as of 7f4373c0, and lines 1637-1734 added by
+2a030ddf-2f3d6aac while this trace was being written (section 24). Line numbers are the current file's (b34e7487); lines 1-1635 did not move. Written
 2026-11-05 by an audit helper for the level designer, who reviews and commits it. ENGINE-SPEC.md was not edited. Nothing was fetched
 from the web.
 
@@ -44,7 +44,7 @@ spec's number actually rests on, and the difference is in the note (and in list 
 | ML | `tools/engine/moveladder.json` [origin/engine-mixer 7d9ad9a9] |
 | w1mix | `src/game/mixer/w1mix.ts` [origin/engine-mixer 7d9ad9a9] |
 
-Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unless named. Line numbers are pinned to: ccr = cbbc0230,
+Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unless named. Line numbers are pinned to: ccr = a42689e6 (MD, ST only appended since cbbc0230),
 engine-design = db3342a1, engine-mixer = 7d9ad9a9 (the branch has moved since; w1mix.ts lines differ on its HEAD), main = 68b31e66,
 engine-plan and w1-rhythm at their current heads. Every file:line in sections 1-24 and lists (a)-(b) was checked by
 `/tmp/claude-0/-home-user-Sloths-Adventure-/ae911ee5-4c11-5de9-a62f-5a201b1932ff/scratchpad/tools/citecheck.py` (see "Citation check" at the end).
@@ -671,7 +671,7 @@ engine-plan and w1-rhythm at their current heads. Every file:line in sections 1-
 | 1345-1346 | Fingerprints change on purpose; re-run 16/16 | MEASURED | 9e243098 (32/32, 18/18, splits 20-26, two-road 40.3-43.0%) | | |
 | 1350-1351 | Floating objects: "looks better ... too much junk" | MATT | MD:125-126 | | |
 | 1351 | Each kind gets mayFloat; each profile a float line with a cap | MATT | MD:132-134 ("The support rule is per piece") | | |
-| 1352-1356 | May float: stone, log, crumbling ledge, bough | MATT | MD:129-130 ("I don't mind floating logs"); stones/ledges/boughs are the designer's | Only logs and planks are Matt's | |
+| 1352-1356 | May float: stone, log, crumbling ledge, bough | MATT | MD:129-130 ("I don't mind floating logs"); stones/ledges/boughs are the designer's | Only logs and planks are Matt's; stone and slab superseded by ES 1716-1734 (Matt: rocks never float) | |
 | 1357-1358 | Never float: lily pads, reeds, banks, mounds, stumps, mushrooms, creaky, bridges, totems, shrine | MATT | MD:129-130 (lily pads "more in the water") | Others the designer's | |
 | 1363 | 1-1 float cap <= 15% | OPEN | none | | (ii) float share on old 1-1; (iii) Super Mario Bros. 1-1 floating-block share (Matt's "Mario type thing", MD:125) |
 | 1364-1365 | 1-5 and default <= 25% | OPEN | none | | (ii) float share on old 1-1; (iii) Super Mario Bros. 1-1 floating-block share |
@@ -760,7 +760,7 @@ engine-plan and w1-rhythm at their current heads. Every file:line in sections 1-
 | 1635 | The 55% ceiling (stop at 53%) | MATT | ST:973 (10:10 AM ET) | Lifted at 10:32 AM (MD:186-192, ST:982); ES 1635 is not marked revised; (b) C29 | |
 
 
-## 24. Added during this trace: every-world labels and the engine's acceptance test (ES 1637-1714)
+## 24. Added during this trace: every-world labels, the engine's acceptance test, rocks never float (ES 1637-1734)
 
 | ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
 |---|---|---|---|---|---|
@@ -792,6 +792,12 @@ engine-plan and w1-rhythm at their current heads. Every file:line in sections 1-
 | 1704 | Matt lifted the token ceiling: "It takes what it takes today... done right" | MATT | MD:186-192; ST:982 | | |
 | 1705-1706 | Line 1 and "1-2 doesn't fit" withdrawn; line 2, the fix rule, 0 engine changes and every gate stay for 1-1 and 1-2 | MATT | MD:192-193 ("the 1-1 pass line's cost line stays as an engine-quality measure") | | |
 | 1707-1714 | Order: inventory, critic, rulings, step 6, E3-E5, 1-1 timed, 1-2 timed | MATT | MD:190-192; ST:982 | | |
+| 1716-1722 | Rocks never float; replaces every earlier stone/slab float line (9:58 ruling, 9:59 labels, W7 crumble) | MATT | MD:197-199 [ccr a42689e6] ("Rocks can't float... A platform needs platforms") | ES 1352-1356, 1369-1371, 1399, 1403 are marked superseded inline (2f3d6aac) | |
+| 1725-1727 | May float = NO for every rock, stone, boulder, slab, crumbling stone ledge, mound, bank and earth piece; P-2 back in force | MATT | MD:200-201 [ccr a42689e6] | | |
+| 1728-1729 | May float = yes only for platform pieces (logs, planks, boughs), under the float cap | MATT | MD:198-199, MD:201 [ccr a42689e6] | | |
+| 1730 | Interim swaps are stones on a bank or the ground, never over open air or a pit | MATT | MD:200-201 [ccr a42689e6] | | |
+| 1731-1733 | Other worlds' stone kinds (W7 slabs, columns, floors; W8 karst; W9 heat rock; W3 cave ledges) are no-float; stone over a gap stands on a drawn column | DERIVED | MD:200 applied to the kinds listed at ES 1639-1647 | | |
+| 1734 | The E3 support check fails a no-float kind with nothing solid under it | MATT | MD:201-202 [ccr a42689e6] | | |
 
 ---
 
@@ -1038,28 +1044,57 @@ spec neither applies nor rejects them.
 | C28 | ES 1077 vs ES 333, 909 | 1-1 at "at least 20% under 1-5's median of about 4:05" | 1-5's own target was about 150 s (ES 333-334), accepted at 4:00-4:12 (ES 909); 1-1's band is set from a 1-5 that is far over its own plan | Internal (worth naming) |
 | C29 | ES 1635 | "against the 55% ceiling (stop at 53%)" | MD:186-192 and ST:982: Matt lifted the ceiling at 10:32 AM; ES 1704-1706 records it but ES 1635 is not marked revised | Later Matt direction, not marked |
 | C30 | ES 1678, 1683-1685 | 1-1's pass line is one third of 1-5's hand-mix (<= 1.7 h, then about 1.2 h at 0.9%/h) | RM:473 (R-163: "Stages built from a spec in about an hour") and ES 267 / 1103 (<= 1 hour a stage after the mixer exists): three time lines for one stage | Internal |
+| C31 | ES 1198-1199 | The bootprint picture list: "The lead approves the spend; Matt approves the list" | MD:204-207 [ccr a42689e6] (10:42 AM): "If anything needs a Hugging Face approval, you approve it" for the engine: the lead approves, Matt is told. Not marked revised | Later Matt direction, not marked |
 
 ---
 
 ## Summary count per tag
 
-Counted over every table row in sections 1-24 above (one tag per row).
+Counted over every table row in sections 1-24 above (one tag per row), after the citation check.
 
 | Tag | Rows | Share |
 |---|---|---|
 | MEASURED | 152 | 24% |
-| SOURCED | 153 | 25% |
-| MATT | 131 | 21% |
-| DERIVED | 25 | 4% |
-| OPEN | 160 | 26% |
-| **Total** | **621** | |
+| SOURCED | 152 | 24% |
+| MATT | 136 | 22% |
+| DERIVED | 26 | 4% |
+| OPEN | 161 | 26% |
+| **Total** | **627** | |
 
 - Of the MATT rows, 5 are "(relayed)": a commit or note credits Matt but his words are not saved anywhere I could open.
 - Every OPEN row carries a "how to settle" path: (i) a ledger or Gemini row, (ii) a run on our code, or (iii) a primary-source search.
   Most OPEN rows can be settled by a run (ii) on tools we already have (cp1 measures, cp2-trace.ts, split180.py, mechtable.ts,
   moveladder.ts, the first-timer bot); the ones that need (iii) are the dial's slopes, the move ladder's return rates, the float caps
   and the stage-length spread.
-- Lists: (a) 234 research rows or items unused (a8); (b) 30 contradictions.
+- Lists: (a) 234 research rows or items unused (a8); (b) 31 contradictions.
+
+## Citation errors inside ENGINE-SPEC (noted here; ENGINE-SPEC not edited)
+
+| ES | The spec cites | What the source holds | Correct citation |
+|---|---|---|---|
+| 333 | "the shipped size ranges on the CP2 sheet (p10-p90 widths per kind, `cp2/library.txt`)" | cp2/library.txt has counts, size names and worlds per kind, no widths | `cp2/sheet.html` (the "Pieces" table: short / typical / long px per kind, e.g. log 107 / 317 / 882) |
+| 558-559 | log bands "short about 110 px, mid about 320 px, long about 880 px: the shipped spread, `cp2/library.txt`" | as above | `cp2/sheet.html` (log 107 / 317 / 882) |
+| 631-632 | "That is STAGE-RULES §1b's rule that a new world eases in" | SR §1b (ccr:131-148) has no such rule | none: the start-at-the-middle rule is the dial's own (DERIVED from ES 628); see (b) C17 |
+| 644 | E[lives] dial notes "DESIGNER §2.3" | D:200 gives Normal W1 <= 1.0 rising about 0.5 a world, Easy <= 0.3 | D:200 for the World 1 values only; the d = 1 values are the designer's; see (b) C16 |
+| 1439 | "STAGE-RULES §0: taught in a safe spot before it can hurt" | that rule is §1 Teaching | SR §1 (ccr:109) |
+| all §0c cites (via the planner's tools) | STAGE-RULES §0c | the engine-spec branch's STAGE-RULES.md predates §0c | read SR on ccr (ccr:72-99) |
+
+## Citation check (method and result)
+
+Script: `/tmp/claude-0/-home-user-Sloths-Adventure-/ae911ee5-4c11-5de9-a62f-5a201b1932ff/scratchpad/tools/citecheck.py`, with
+`.../scratchpad/tools/eslabel.py` for the first-column spec lines. For every `file:line` (or short name `X:n`) it resolves the file
+(working tree, or `git show <pinned commit>:<path>`), prints the cited line(s) and checks that a number or key word from the row sits on
+exactly those lines (no slack). Heuristic misses were then read by eye one by one.
+
+| | Count |
+|---|---|
+| file:line citations checked | 861 |
+| first-column spec-line labels checked | 627 |
+| **Total checked** | **1,488** |
+| Lines matched by the script | 548 citations, 603 labels |
+| Script misses read by eye and found right (paraphrase, not a word match) | 313 citations, 24 labels |
+| **Fixed to the exact line** | **62** (25 wrong line numbers, 7 of them in rows added in this pass; 6 pinned to engine-mixer 7d9ad9a9 because that branch moved; 16 quoted or bare citations made explicit or removed; 15 spec-line labels off by one or two) |
+| **Downgraded to OPEN** | **1** (ES 790-792: the D:1037 cite was about something else) |
 
 ## Sources that should be fetched next (not fetched in this pass)
 

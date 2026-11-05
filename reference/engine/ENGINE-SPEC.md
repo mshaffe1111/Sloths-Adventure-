@@ -8,7 +8,7 @@ DESIGNER.md §13 (Option E, `engine-design`), PLAN.md (`engine-plan`), CRITIC.md
 
 **Matt's GO (2026-11-05 ~12:00 AM ET):** "let's start doing this engine... Let's not release anything that we did today. And let's
 see if we can fix what we have." Nothing from 11-04 ships. The engine mixes today's KEPT pieces so that no stage repeats. The
-references are the old 1-1 (live on `main`) and today's 1-3. The ceiling is **8% of Matt's week** for this run.
+references are the old 1-1 (live on `main`) and today's 1-3. The ceiling is **8% of Matt's week** for this run. **[revised: C15, "Contradictions ruled", 10:49 AM]**
 
 | | Signed |
 |---|---|
@@ -29,16 +29,16 @@ Each report starts with planned vs actual time and % of the week used so far.
 
 **The variety gate, used from checkpoint 3 on.** Its thresholds come from checkpoint 1 and are fixed before any stage is
 generated:
-- **mix:** at least as many piece kinds as the old 1-1;
+- **mix:** at least as many piece kinds as the old 1-1; **[revised: C24, "Contradictions ruled", 10:49 AM]**
 - **share:** the commonest piece's share no higher than the old 1-1's;
 - **run:** the longest run of one piece no longer than the old 1-1's;
 - **new:** something new at least as often as in the old 1-1;
 - **splits:** at least as many high/low route splits as the old 1-1 (designer ruling, 11-05, on the planner's re-run): a road
-  keeps going across any gap up to a Normal flat jump (180 px), and two roads at heights at least 120 px apart, running side by side,
+  keeps going across any gap up to a Normal flat jump (180 px), and two roads at heights at least 120 px apart, running side by side, **[revised: C27, "Contradictions ruled", 10:49 AM]**
   count as a split. On that rule, the old 1-1's canopy over the floor counts. Both roads must be walkable end to end, which the CP3
   prover checks;
 - **climb:** at least the old 1-1's climb and drop range;
-- **neighbours:** neighbouring stages share no more than half their main pieces.
+- **neighbours:** neighbouring stages share no more than half their main pieces. **[revised: C14, "Contradictions ruled", 10:49 AM]**
 
 ### CP1: the baseline, measured (owner: planner runs, designer defines the measures)
 - **Measures.** On the old 1-1 (`main`), today's 1-1 to 1-5 and today's 1-3 (counted as a reference), 16 layouts each where the
@@ -119,7 +119,7 @@ a move ladder per world, as data. Each stage:
 at a higher job (teach, test, twist, master) or a higher risk target than the use before.
 
 
-**[designer ruling, 11-05 ~12:22 AM ET, from Matt's newer words to the planner] One shared library, not a kit per world.**
+**[designer ruling, 11-05 ~12:22 AM ET, from Matt's newer words to the planner] One shared library, not a kit per world.** **[revised: C7, "Contradictions ruled", 10:49 AM]**
 Matt: "intermix the different worlds if you have to with the arts... if you have other stages where putting logs into it makes
 sense, use it from world one. Make as much and take as much as we can out of what we have. The only one that really plays
 differently is world five." This replaces "each world has its own kit":
@@ -130,7 +130,7 @@ differently is world five." This replaces "each world has its own kit":
 - **Coherence still holds.** Fit is now judged per idea and per neighbour, not per world: every piece inside an idea belongs to that
   idea, and two ideas side by side must read as one place (placement rule 1, with the art family checked per join). A stage's
   theme picks the art family for its joins and dressing.
-- **The variety gate counts the whole shared library.** Neighbouring stages share no more than half their ideas, wherever those ideas
+- **The variety gate counts the whole shared library.** Neighbouring stages share no more than half their ideas, wherever those ideas **[revised: C14, "Contradictions ruled", 10:49 AM]**
   came from.
 
 
@@ -225,16 +225,16 @@ So both ideas are marked **not ready**, and they change as follows:
 isles, bridge span and push block pass on Normal and Easy, the bridge span under the widened Easy gap clause. They join 1-5's pool for
 CP3.
 - **Crumbling ledge:** a first-timer who pauses on a tile has about 0.3 s spare at crumbleAfter 0.7 s. So on Easy a crumbling tile
-  waits **1.0 s**, and every crumbling ledge comes after its teach (a single tile over safe ground). CP3's first-timer run checks a
+  waits **1.0 s**, and every crumbling ledge comes after its teach (a single tile over safe ground). CP3's first-timer run checks a **[revised: C3, "Contradictions ruled", 10:49 AM]**
   pause.
 
 ### CP3: the mixer, proven on the worst stage first (1-5) (owner: designer specs the mix rule, planner builds and runs)
 - **The mix rule (designer), [Matt, 11-05] ideas first, pieces inside an idea.**
   1. **The stage's story beat and theme come first** (STAGE-RULES and the story files). They pick the stage's job and look, never
      its pieces' kit: the kit is the world's.
-  2. **The stage is a sequence of node ideas** from the world's list, chosen to suit the story beat. Neighbouring stages share no
+  2. **The stage is a sequence of node ideas** from the world's list, chosen to suit the story beat. Neighbouring stages share no **[revised: C14, "Contradictions ruled", 10:49 AM]**
      more than half their ideas.
-     **[designer ruling, 11-05, from tagging the old 1-1: `cp2/idea-tags.out`] "No idea twice" is withdrawn.** Matt's best stage
+     **[designer ruling, 11-05, from tagging the old 1-1: `cp2/idea-tags.out`] "No idea twice" is withdrawn.** Matt's best stage **[revised: C6, "Contradictions ruled", 10:49 AM]**
      is a cycle of three ideas: bank hops, then a bounce up, then the fork (the canopy over the floor), repeated about 8 times,
      with the fork 41% of its length. What makes it good is not many ideas, but a few that interlock: it is always going up or
      down, it always offers two roads, and no two repeats are the same size or height. So the rule is:
@@ -294,10 +294,10 @@ Each rule has the planner's machine check under it; a rule that can't be checked
    rule is tied to risk, not the clock: the fixed 30 s window is dropped, and "only after a risky node" is kept. The old 1-1's early
    heart is a known exception, not a threshold to copy.
 3. **A checkpoint before the hard part, not everywhere.**
-   - A checkpoint goes just before a node whose job is test, twist or master, or before the set piece. Never before a rest or a
+   - A checkpoint goes just before a node whose job is test, twist or master, or before the set piece. Never before a rest or a **[revised: C12, "Contradictions ruled", 10:49 AM]**
      teach node.
    - No two checkpoints with only easy nodes between them.
-   - After a loss, the replay back to where he fell is at most about 45 s (estimate).
+   - After a loss, the replay back to where he fell is at most about 45 s (estimate). **[revised: C10, "Contradictions ruled", 10:49 AM]**
 
    *Check:* each checkpoint's next node is a test, twist, master or set piece. There are no back-to-back checkpoints. The longest
    stretch on the quick route from a checkpoint to the next hard node is 45 s or less.
@@ -330,7 +330,7 @@ Each rule has the planner's machine check under it; a rule that can't be checked
 
 **Theme and frame (kept, designer ruling, 11-05):** today's 1-5 frame stays: the descent from the canopy to the forest floor at dusk, with Meeca's carvings as the goal. Matt: "the levels are built to go along with the story". The stage keeps going up and down node by node, like the old 1-1, but its overall trend is down: it starts in the canopy and ends on the floor. Its art family is the World 1 kit.
 
-**Sizes per idea:** each idea's pieces use the shipped size ranges on the CP2 sheet (p10-p90 widths per kind, `cp2/library.txt`), the heights its CP2 trace proved, and the CP2 Easy rules: rise cap +40, gap at most 80 px from +30, crumble 1.0 s. **Length:** from the nodes, with a target of about 150
+**Sizes per idea:** each idea's pieces use the shipped size ranges on the CP2 sheet (p10-p90 widths per kind, `cp2/library.txt`), the heights its CP2 trace proved, and the CP2 Easy rules: rise cap +40, gap at most 80 px from +30, crumble 1.0 s. **Length:** from the nodes, with a target of about 150 **[revised: C3, "Contradictions ruled", 10:49 AM]**
 s skilled.
 
 Each node lists its job, then a **deck**: the ideas it may roll, with one drawn per roll by a shuffle bag. Each idea's pieces and
@@ -339,7 +339,7 @@ sizes are rolled inside the idea. Decks are what make two rolls different stages
 | # | Job | Deck (one idea drawn per roll) | Entry → exit | Pickups and markers |
 |---|---|---|---|---|
 | n1 | warm-up | bough stair (level form: boughs at one height band), bank hops on the high boughs | high → high | petals as breadcrumbs only |
-| n2 | **teach** creaky (expose, then validate) | snap-twig dash, its teach form: one creaky twig over a bough just below, then two, with a catch bough under them and no pit | high → high | Dot's "Creaky branches!" line here; no heart |
+| n2 | **teach** creaky (expose, then validate) | snap-twig dash, its teach form: one creaky twig over a bough just below, then two, with a catch bough under them and no pit | high → high | Dot's "Creaky branches!" line here; no heart | **[revised: C9, "Contradictions ruled", 10:49 AM]**
 | n3 | a local rise | bounce up, the climb | high → higher (the stage's top) | — |
 | n4 | **the fork** | high road: crumbling ledge or bough run with creaky limbs; low road: down to the creek, lily-pad hop or reed isles. They rejoin at n5 | top → mid (two roads) | a petal group on each road, each asking for that road's own move |
 | n5 | rest | bank walk | mid → mid | Dot's wayside line ("These petals are fresher"); a checkpoint here, since n6 is a test |
@@ -391,7 +391,7 @@ it.**
     ideas: never the same idea twice in a row, and never the same burst twice in a stage. The teach node pairs its teach with bank
     hops between bursts, and the rest node stays one short walk.
   - **(c) Each idea varies inside.** Within a burst, the piece's kind or size band changes at least every 2 pieces. At least 4 of
-    every 5 landings step up or down, as the old 1-1 does (171 of 202).
+    every 5 landings step up or down, as the old 1-1 does (171 of 202). **[revised: C13, "Contradictions ruled", 10:49 AM]**
 - **The pass line is the old 1-1's own numbers** (CP1), on 16 rolls x 2 settings:
   - longest same piece in a row: 9 or fewer; same kind x size: 7 or fewer;
   - something new every 572 px or less, and never more than 1,516 px without;
@@ -411,7 +411,7 @@ it.**
 - **Pass line:** at least 19 splits (today's 1-3, Matt's second reference) on 16 of 16 rolls. The old 1-1's 34 is the target, and
   the report shows where each roll sits against both.
 
-**Easy's extra flags and hearts:** the old 1-1 has the same (15 and 15), so they come from the engine's Easy pass, not the mixer.
+**Easy's extra flags and hearts:** the old 1-1 has the same (15 and 15), so they come from the engine's Easy pass, not the mixer. **[revised: C19, "Contradictions ruled", 10:49 AM]**
 For CP3 the placement rules are judged on Normal, and Easy is reported as it is. Whether hearts and flags on Easy should follow the
 same rules is a separate item for Matt (his words, "hearts aren't given out the very first thing", hold on both settings). It goes
 on the list after CP4.
@@ -434,7 +434,7 @@ on the list after CP4.
 5. **A slip off a high road onto the low road:**
    - **Normal:** may cost a heart. That is the high road's risk, paid for by its harder marks, and it is counted in the stage's
      E[lives] (0.7 at d = 0.09).
-   - **Easy:** the roads sit within 400 px (under LONG_FALL), so a slip costs nothing.
+   - **Easy:** the roads sit within 400 px (under LONG_FALL), so a slip costs nothing. **[revised: C5, "Contradictions ruled", 10:49 AM]**
    - **Both:** never a life (P3).
 6. **n8's deck:** lily-pad hop, reed isles, stump hop or crumbling ledge, drawing one that the previous two nodes did not lay.
 
@@ -465,7 +465,7 @@ n10, n11, with a canopy over most floors. These must change before Matt sees it:
 4. **The bridge in the bough stair: confirmed only as the stair's top piece**, a short rope bridge from the last bough to the next tree.
    Never in the stair's middle.
 5. **The mushroom perch: fine for grey-box.** The painted stump or root goes on the art list before it ships.
-6. **Easy's landing:** Easy's dial width is set from the measured result after the engine's own Easy pass: 220 px at d = 0 down to 150
+6. **Easy's landing:** Easy's dial width is set from the measured result after the engine's own Easy pass: 220 px at d = 0 down to 150 **[revised: C4, "Contradictions ruled", 10:49 AM]**
    at d = 1. The size bands stay as they are.
 7. **Length:** 3:14-3:29 is accepted. Matt sets the floor at 2:00 with no cap. A and B add a little; cutting D's mushroom entries takes
    some away. 1-4 and 1-6 in CP4 sit at least 20% either side of 1-5's median.
@@ -506,18 +506,18 @@ n10, n11, with a canopy over most floors. These must change before Matt sees it:
   - **The teach bank in n2 is cut from 900 to 600 px.**
 - **The pass lines are the fun gate's own:**
   - Easy at 0.35-0.55 actions a second;
-  - no Easy run over 20 s without a 2-second rest (the plan's 5-20 s groups);
+  - no Easy run over 20 s without a 2-second rest (the plan's 5-20 s groups); **[revised: C2, "Contradictions ruled", 10:49 AM]**
   - no dead time over 2.5 s;
   - Normal's flags no worse than main.
 
 **The rules this plan meets by construction** (the mixer still checks every roll):
 - **Ideas:** 9 to 11 different ideas a roll. No idea twice in a row. Snap-twig dash comes twice (teach at n2, test at n6, not in a
   row), and the fork twice (n4, n10).
-- **The fork's share:** n4 and n10 at about 15-20% of the length each, so together about 30-40%, under the old 1-1's 41%. The planner
+- **The fork's share:** n4 and n10 at about 15-20% of the length each, so together about 30-40%, under the old 1-1's 41%. The planner **[revised: C11, "Contradictions ruled", 10:49 AM]**
   measures it; if it goes over, n10's roads shorten.
 - **Splits:** two forks, each with at least 3 crossings where the roads run apart. The floor is the old 1-1's number on the 180 px
   rule; if two forks fall short, n9's deck gains a third, small fork (the climb with a low bank road).
-- **Move ladder:** creaky is new (taught at n2, tested at n6, mastered at n10's high road). It reuses bounce, swing-free jumps and
+- **Move ladder:** creaky is new (taught at n2, tested at n6, mastered at n10's high road). It reuses bounce, swing-free jumps and **[revised: C9, "Contradictions ruled", 10:49 AM]**
   lily hops from 1-1 to 1-4 in harder forms.
 - **Placement:** checkpoints before n6 and n10 only, plus the stage start. Hearts only after n6 or n10, when the roll's risk there is
   above zero. The seed is out of reach on purpose.
@@ -628,7 +628,7 @@ get hills that read and play as hills.
 &nbsp;&nbsp;&nbsp;&nbsp;**d = (0.1·(w − 1) + 0.2·(s − 1)/8) / 1.1**
 
 - d is 0 at 1-1 and 1 at 10-9. Each world climbs 0.18.
-- Each new world's first stage starts at the previous world's middle, not its end. That is STAGE-RULES §1b's rule that a new world
+- Each new world's first stage starts at the previous world's middle, not its end. That is STAGE-RULES §1b's rule that a new world **[revised: C17, "Contradictions ruled", 10:49 AM]**
   eases in.
 - Examples: 1-1 0.00, 1-5 0.09, 1-9 0.18, 2-1 0.09, 2-9 0.27, 5-5 0.45, 10-1 0.82.
 
@@ -637,15 +637,15 @@ to be tuned on Matt's play.
 
 | Dial | Normal, d 0 → 1 | Easy, d 0 → 1 | Notes |
 |---|---|---|---|
-| Gap, as a share of the level check's limit at that height (`jumpOK`, `heldMaxGap`) | 0.55 → 0.92 | 0.45 → 0.80 | the gate stays the ceiling |
+| Gap, as a share of the level check's limit at that height (`jumpOK`, `heldMaxGap`) | 0.55 → 0.92 | 0.45 → 0.80 | the gate stays the ceiling | **[revised: C1, C20, "Contradictions ruled", 10:49 AM]**
 | Rise, as a share of the highest rise the gate allows | 0.50 → 0.95 | 0.40 → 0.80 | Easy's CP2 caps still apply |
-| Typical landing width (p50) | 220 → 110 px | 260 → 150 px | never under 90 px |
+| Typical landing width (p50) | 220 → 110 px | 260 → 150 px | never under 90 px | **[revised: C4, "Contradictions ruled", 10:49 AM]**
 | Risky pieces per burst (a miss costs a heart or a life) | 0-1 → 3-4 | 0 → 2 | rests and teach steps hold 0 |
-| Stage risk budget, E[lives] on a first run | 0.5 → 3.0 | 0.2 → 1.0 | DESIGNER §2.3; bots judge it |
+| Stage risk budget, E[lives] on a first run | 0.5 → 3.0 | 0.2 → 1.0 | DESIGNER §2.3; bots judge it | **[revised: C16, "Contradictions ruled", 10:49 AM]**
 | Taught animals per stage | 0-1 → 4-5 | 0-1 → 3 | only animals already taught |
-| Crumble delay | 0.9 → 0.5 s | 1.2 → 0.8 s | |
+| Crumble delay | 0.9 → 0.5 s | 1.2 → 0.8 s | | **[revised: C3, "Contradictions ruled", 10:49 AM]**
 | Timed windows (vines, waves, moving logs) | ×1.0 → ×0.75 | ×1.15 → ×0.9 | of each piece's proven window |
-| Bursts per node | 2 → 3 | 2 → 3 | more ideas mixed later on |
+| Bursts per node | 2 → 3 | 2 → 3 | more ideas mixed later on | **[revised: C21, "Contradictions ruled", 10:49 AM]**
 
 **What never moves with d** (the floors):
 - STAGE-RULES §1b's per-jump bot floors: Normal adult at least 70% in Worlds 1-5 and 50% in Worlds 6-10; Easy kid at least 85% everywhere.
@@ -655,7 +655,7 @@ to be tuned on Matt's play.
 The stage's job can raise its own nodes inside the dial (a test node sits higher than a warm-up), but never above the dial's d = 1
 value.
 
-**1-5 now: d = 0.09.** On Normal that gives gaps at 0.58 of the gate's limit, typical landings about 210 px, 0-1 risky pieces a
+**1-5 now: d = 0.09.** On Normal that gives gaps at 0.58 of the gate's limit, typical landings about 210 px, 0-1 risky pieces a **[revised: C1, "Contradictions ruled", 10:49 AM]**
 burst, and E[lives] about 0.7. This replaces the planner's fixed 70-90 px stand-in.
 
 
@@ -736,7 +736,7 @@ another roll.
 **[designer, 11-05 ~3:00 AM ET, on build 8c8cd997]**
 - **Accepted:** the cool down's deck is bank hops and stump hop; the first bough is creaky in vine and step canopy entries; the teach
   twigs sit at 40, 75 and 40 px; the teach bank is 720 px.
-- **No creaky piece before n2's teach.** Every canopy before the first teach twig uses solid boughs, because the first appearance of a
+- **No creaky piece before n2's teach.** Every canopy before the first teach twig uses solid boughs, because the first appearance of a **[revised: C9, "Contradictions ruled", 10:49 AM]**
   mechanic is taught. The mixer asserts it.
 - **P-12's fix:** the mixer's stone is laid at 50 px, the height World 1's rock art is painted for, so the painted rock draws.
 - **Polish order, if the budget forces a split** (the lead's call):
@@ -793,10 +793,10 @@ third Easy-only rest of 4-5 s goes after n3 (c). **This is a miss at the checkpo
 
 
 **[designer ruling, 11-05 ~3:45 AM ET, on the 16-roll pacing run (27345325)] A + B, and C for Normal's density only.**
-- **(A) A calmer Easy.** Easy has its own size bands, with landings about 300 px (settling CP3 item 6), and lays one fewer burst a node,
-  so the length holds. The aim is Easy at 0.55 or less. Easy is where children play, so this line is not loosened. If "something new"
+- **(A) A calmer Easy.** Easy has its own size bands, with landings about 300 px (settling CP3 item 6), and lays one fewer burst a node, **[revised: C4, "Contradictions ruled", 10:49 AM]**
+  so the length holds. The aim is Easy at 0.55 or less. Easy is where children play, so this line is not loosened. If "something new" **[revised: C18, "Contradictions ruled", 10:49 AM]**
   breaks on Easy, its gap is judged on Easy's own bands.
-- **(B) Normal breathes.** A 1.0-1.2 s pad after every second burst on Normal. Normal's longest run without a rest must be no worse than
+- **(B) Normal breathes.** A 1.0-1.2 s pad after every second burst on Normal. Normal's longest run without a rest must be no worse than **[revised: C2, "Contradictions ruled", 10:49 AM]**
   main's 29 s, on the 16-roll median and worst.
 - **(C) Normal's density only:** 0.80 against main's 0.57 is accepted as provisional (§0 row 2: the band is not calibrated). Matt
   played the busier mixer 1-5 and said "It played much better". Normal is judged on its longest run and dead time, not on matching
@@ -812,7 +812,7 @@ third Easy-only rest of 4-5 s goes after n3 (c). **This is a miss at the checkpo
   - The canopies kept are the forks' neighbours and every node right after a teach or test, so the two roads stay where they matter.
   - Pass lines on Easy, 16 rolls, median and worst:
     - splits at least 19;
-    - density at most 0.55;
+    - density at most 0.55; **[revised: C2, "Contradictions ruled", 10:49 AM]**
     - longest run without a rest at most 20 s;
     - nothing new for at most 1,516 px, on Easy's own bands;
     - a fast clock under 4:00.
@@ -936,10 +936,10 @@ fills, the designer sends the lead a small picture list.
 
 **Step 2: 1-1, "Into the Canopy"** (sprint: "Run the high branches of the kapok trees and reach the shrine").
 - **Its job:** the arrival, teaching run, jump and then the double jump.
-- **Its shape** (W1-REBUILD-PLAN's row, for meaning, not layout): the stage rises from the forest floor to the high kapok branches,
+- **Its shape** (W1-REBUILD-PLAN's row, for meaning, not layout): the stage rises from the forest floor to the high kapok branches, **[revised: C8, "Contradictions ruled", 10:49 AM]**
   and the backdrop changes with height.
 - **Its moment:** the first double-jump chain up into the canopy, then the view from the top branch.
-- **d = 0:** the dial's easiest values. Nothing is untaught: no creaky (1-5 teaches it), no crumbling and no animals.
+- **d = 0:** the dial's easiest values. Nothing is untaught: no creaky (1-5 teaches it), no crumbling and no animals. **[revised: C9, "Contradictions ruled", 10:49 AM]**
 - **The move ladder:** run, jump, double and bounce are taught here. Hop and climb come back later.
 - **Overall trend up** (1-5's goes down), so the two stages never share a shape.
 
@@ -962,7 +962,7 @@ the shipped story text, and every stage spec now carries a "feel" block like it.
   - **n7-n9, the rising courage.** The double jump is learned over safe ground, then used for real in the chain at n9, each jump higher
     than the last. That is the stage's emotional peak: the slow sloth finding he can climb. The rhythm quickens a little here, and it is
     the only place in 1-1 where a miss costs a setback.
-  - **n10-n11, arriving in the canopy.** He is up among the high branches, the backdrop opening as he rises. The stage ends at the
+  - **n10-n11, arriving in the canopy.** He is up among the high branches, the backdrop opening as he rises. The stage ends at the **[revised: C8, "Contradictions ruled", 10:49 AM]**
     shrine with the clue: **one deep bootprint in the moss, pointing north** (the shipped 1-1 clue: "They did not stop here"). It sits
     beside the path at the end, a story prop, not a pickup.
 - **Corrected against the story:** the "view from the top branch" belongs to **1-4** ("The View North: from the top of the kapok you can
@@ -1011,19 +1011,19 @@ construction, not just look different.
   - "Up the bank! Step to step" (n3);
   - "Look how high we are!" (n9's top);
   - "No soft moss up here!" (n10).
-- **Light and setting:** morning, at the home forest's edge, then deeper canopy as he climbs.
+- **Light and setting:** morning, at the home forest's edge, then deeper canopy as he climbs. **[revised: C8, "Contradictions ruled", 10:49 AM]**
 - **Owned by other stages, so kept out:**
   - Meeca's note and the hibiscus line (1-2);
   - the punch teach (1-3);
   - **the kapok climb and the view north (1-4):** so n8 draws bough stair or bounce up, never a long climb up a trunk;
   - the folded petals and the chase (1-5);
-  - lianas (1-6);
+  - lianas (1-6); **[revised: C9, "Contradictions ruled", 10:49 AM]**
   - the bush (1-7).
 - **The look (the lead, and Matt: "last time it was 90% branches that were tied to trees"):** mostly ground and low pieces. Banks,
   stepped mounds, roots, fallen and **hollow logs** (the unused W1 hollowlog-moss and -plain), stumps, rocks, mushrooms and knots, with
   boughs on trunks coming late as the reward. **The commonest piece is a ground piece.**
 
-## How a stage is made, from now on (agreed by the lead and the designer, 11-05; the planner's additions to follow)
+## How a stage is made, from now on (agreed by the lead and the designer, 11-05; the planner's additions to follow) **[revised: C25, "Contradictions ruled", 10:49 AM]**
 1. **The lead writes the story brief:** the beat, the feel, the story-led look, and what other stages own. Story and look only, never
    layout.
 2. **The level designer turns it into the node plan and its rules** in this spec.
@@ -1074,7 +1074,7 @@ Each stage's section is signed by all three before any building starts. New help
 | n10 | the canopy fork | high road: the top branches; low road: mid boughs. Rejoin | high → high (two roads) | the high road's petal group |
 | n11 | cool down, arriving in the canopy | one long high branch, the sky opening ahead (the far Highlands are 1-4's), to the shrine | high → shrine | Meeca's petals low on the trunks; at the end, the soldier's bootprint in the moss, pointing north |
 
-- **Length:** Normal's quick clock is 2:40-3:15. That is at least 20% under 1-5's median of about 4:05 (no more than 3:16), and over
+- **Length:** Normal's quick clock is 2:40-3:15. That is at least 20% under 1-5's median of about 4:05 (no more than 3:16), and over **[revised: C28, "Contradictions ruled", 10:49 AM]**
   the 2:00 floor. Easy is at least 2:00. Length comes from the nodes and bursts, never from a clock.
 - **Every rule built tonight applies:**
   - the variety lines, on the old 1-1's numbers;
@@ -1095,7 +1095,7 @@ Each stage's section is signed by all three before any building starts. New help
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
-  - Neighbouring stages share no more than half their main pieces.
+  - Neighbouring stages share no more than half their main pieces. **[revised: C14, "Contradictions ruled", 10:49 AM]**
   - Every node on every map is labelled by its idea; no idea twice in a row, and none over the old 1-1's top share.
   - The fun gate shows no new flags.
   - The designer has played each stage, upright and sideways, against the stage it replaces.
@@ -1195,7 +1195,7 @@ turned down. The old 1-1's 34 splits came from canopy over floor, and 1-1 keeps 
   engine-render work; the lead assigns it. No stand-ins. 1-1 does not go to Matt until the squirrels draw, because they are the
   brief's opening.
 - **Bootprint:** no art exists in any sheet or atlas (checked against IN-GAME-UNUSED, NEVER-PACKED and UNUSED.md). It is the story's
-  clue, so it is painted, not code-drawn. That makes a one-picture list for Hugging Face. The lead approves the spend; Matt approves
+  clue, so it is painted, not code-drawn. That makes a one-picture list for Hugging Face. The lead approves the spend; Matt approves **[revised: C31, "Contradictions ruled", 10:49 AM]**
   the list. The art-gap rule applies, because this is a true gap.
 - **Morning light** is backdrop/lighting work (engine-side). The lead assigns it with the atlas wiring.
 
@@ -1285,8 +1285,8 @@ difference comes to the designer.
 | stomp, kick, mega punch (the foe lesson) | 1-3 | 1-3 | core |
 | rope shimmy | clearing 1-3 | 1-4 | core |
 | trunk climb | 1-4 | 1-4 | core |
-| breaking / creaky branch | 1-5 | 1-5 | core |
-| liana swing | 1-6 | 1-6 | core |
+| breaking / creaky branch | 1-5 | 1-5 | core | **[revised: C9, "Contradictions ruled", 10:49 AM]**
+| liana swing | 1-6 | 1-6 | core | **[revised: C9, "Contradictions ruled", 10:49 AM]**
 | push a log | 1-6 | 1-6 | core |
 | hide in a bush | 1-7 | 1-7 | core |
 | ride a river log | 2-1 | 2-1 | world (needs water) |
@@ -1394,13 +1394,13 @@ core, and where it is allowed). This table is for the planner's library at engin
 | Kind | Element / footing | Floats | Uses | Teaches | Worlds | Core in | Allowed in |
 |---|---|---|---|---|---|---|---|
 | bank | ground / self | no | floor, landing, rest, fork bank, the shrine's ground | run | W1-W4, W6-W10 (every forest-floor world) | 1-1, 1-5 | every W1 stage |
-| log | ground / floor, stumps or banks | yes, short and low | landing, low rise, ground-fork high road on stumps, rest | — | W1-W4, W6 | 1-1 | every W1 stage |
+| log | ground / floor, stumps or banks | yes, short and low | landing, low rise, ground-fork high road on stumps, rest | — | W1-W4, W6 | 1-1 | every W1 stage | **[revised: C23, "Contradictions ruled", 10:49 AM]**
 | stump | ground / floor or bank | no | the post under a log, a small rise | — | W1-W4, W6 | 1-1 (if drawn: see note 1) | every W1 stage |
 | stone | ground / ground, or rising from water | **no** (10:39 AM: rocks never float) | a 50 px rise on a bank's end, a stepping stone | — | W1-W4, W6, W9 | — (1-5's look) | 1-1 as an extra, then all W1 |
 | mushroom | ground / floor, bank, stump or log | no | bounce up, a lift onto a mound or into the boughs | bounce (1-1 n4) | W1, W3, W6 | — | 1-1 from n4, then all W1 |
 | branch (bough) | tree / trunk within 220 px, or a post | yes, where it reads cleaner | landing, stair, canopy road, top branch | — | W1, W2's banks, W5, W6, W8 | 1-1 n8-n11, 1-5 | 1-1 from n8, then all W1 |
 | creaky | tree / trunk or bough | no | a landing that gives way, the canopy breakable | creaky (1-5 n2) | W1, W5, W6, W8 | 1-5 | from 1-5 |
-| crumble (stone slab) | ground / ground | **no** (10:39 AM) | a ledge that breaks a beat after landing | crumble (its first stage) | W1 (shrine stone, see note 2), W7 | — | from its teach; never in the canopy |
+| crumble (stone slab) | ground / ground | **no** (10:39 AM) | a ledge that breaks a beat after landing | crumble (its first stage) | W1 (shrine stone, see note 2), W7 | — | from its teach; never in the canopy | **[revised: C22, "Contradictions ruled", 10:49 AM]**
 | bridge (rope) | tree / both ends on posts or boughs | no | a span at a canopy stair's top | — | W1, W5, W6 | — | from 1-1 n8 |
 | lily | water / a drawn water zone | no | stepping across a creek | — | W1 creeks, W2, W6 | — | only where the water zone draws |
 | reed isle | water / a drawn water zone | no | a low landing in water | — | W1 creeks, W2, W6 | — | only where the water zone draws |
@@ -1432,7 +1432,7 @@ core, and where it is allowed). This table is for the planner's library at engin
 - 1-5's creaky node becomes an echo, not a teach. Its Dot line stays.
 - 1-6's lianas are a later use.
 
-**Trunk climb at 1-1 is the mixer's own 1-1, not the game.** 1-1's profile keeps climbing out: n8 is bough stair or bounce up. So
+**Trunk climb at 1-1 is the mixer's own 1-1, not the game.** 1-1's profile keeps climbing out: n8 is bough stair or bounce up. So **[revised: C26, "Contradictions ruled", 10:49 AM]**
 the mixer's 1-1 must lay no climbing vine. The ladder takes climb's taught-at from the shipped stages, which is 1-4 unless main's 1-2
 or 1-3 already has one. Planner: re-run that one row on main's 1-1 to 1-3 and tell me.
 
@@ -1632,7 +1632,7 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
   - corrections after the planner's glide and swim rows: about 0.5 h;
   - each world's object pass later: about 1 h a world, when that world is queued.
 - **The build cost** (world data, glide and swim rows, gates 1-6 as a report, the methods how-to) is the planner's estimate in % of the
-  week, against the 55% ceiling (stop at 53%).
+  week, against the 55% ceiling (stop at 53%). **[revised: C29, "Contradictions ruled", 10:49 AM]**
 
 **[designer, 11-05 ~10:24 AM ET] The element table and float caps cover every world, not just World 1 (the lead's check):**
 - Today the table names World 1's kinds and the hanging ones: vine, liana, rope, bough. It does **not** yet cover the other worlds' kinds:
@@ -1675,7 +1675,7 @@ We don't just go into the stage and fix it."
 | Line | Working | Result |
 |---|---|---|
 | Line 1: the budget | (8 − 6.5) ÷ 1 stage | ≤ 1.5% |
-| Line 2: clearly faster than mixing by hand | ≤ 1/3 of 1-5's hand-mix | ≤ 1.7 h wall and ≤ about 1.1% |
+| Line 2: clearly faster than mixing by hand | ≤ 1/3 of 1-5's hand-mix | ≤ 1.7 h wall and ≤ about 1.1% | **[revised: C30, "Contradictions ruled", 10:49 AM]**
 
 Line 2 binds.
 
@@ -1732,3 +1732,47 @@ This replaces every earlier line that lets a stone float:
   heat rock and W3 cave ledges are all no-float. A stone-looking platform over a gap must stand on a drawn column or pillar, or it
   isn't used. If a world needs a free-floating platform there, it uses that world's plank or log kin.
 - **Enforcement:** the planner's E3 support check runs on every built stage. A no-float kind with nothing solid under it fails.
+
+## Contradictions ruled (designer, 11-05 ~10:49 AM ET; the 31 in SPEC-TRACE.md §b)
+
+Every earlier line named here carries a "[revised: C#]" mark where it stands. Which side wins is decided by evidence, in this order:
+1. Matt's later words;
+2. a shipped decision;
+3. the research;
+4. our measurement;
+5. an older spec line.
+A number that no source settles goes to TRIAGE.md as a run (C) or research (R) item. It is never kept by judgment.
+
+| # | Wins | Ruling |
+|---|---|---|
+| C1 | research (D:48, D:180-187; R4:28) | Gap share is **not** the difficulty dial. The dial's gap-share row is withdrawn. Difficulty is the landing window plus what sits on the avoided lines. Its numbers are OPEN in TRIAGE (C run on bands.ts) |
+| C2 | research (D:188-193; R3 F13, W1) | No fixed 1.0-1.2 s pad. A rest is relative: about 2× the local median beat. Easy's "2-second rest" is withdrawn by the same rule |
+| C3 | research and the shipped rule doc (LEG E151; SR §0b.4) | Snap twig about 0.15 s; creak, Normal 0.67 s (shipped commonest 0.7 s); creak, Easy 1.2 s. The dial's crumble slopes and the 1.0 s Easy line are withdrawn |
+| C4 | shipped code (EASY_BS = 1.35) | Easy landing = Normal × 1.35 (DERIVED). The 260→150 and 220→150 px lines are withdrawn |
+| C5 | research (D:194-195; LEG E132) | Easy is one tier softer, never "costs nothing" after the first teach: a slip on Easy costs a fall to a catch, never a life |
+| C6 | both, split by unit | A **template** (a fixed section layout) appears at most twice a stage (SR §0c.2). An **idea** may recur, as in the old 1-1, under the idea-share cap (≤ 40%, never twice in a row) |
+| C7 | Matt (MD:127-130) | Pieces belong to their world. Sharing is only where LABELS.md's worlds column allows. "One shared library, World 5 the only exception" is withdrawn |
+| C8 | Matt (R-164.2) | 1-1 has one sunrise sky for the whole stage. "The backdrop changes with height" is withdrawn |
+| C9 | shipped (d272601f, 6dae405d) | 1-2 teaches lianas and creaky. Every "creaky taught at 1-5" and "lianas 1-6" line is revised |
+| C10 | the shipped rule doc (SR §0b.8; GV:165) | A checkpoint stands right before each hard part, so respawn is within about 2 s of it. The 45 s replay line is withdrawn |
+| C11 | the 1:35 AM withdrawals | The 2:45 AM block's fork share of 30-40%, the forks with 3 crossings, and the checkpoints only before n6 and n10 are struck |
+| C12 | the shipped rule doc (SR §0b.2) | Checkpoints sit **on** the rest before a hard part. "Never before a rest" is withdrawn |
+| C13 | needs a run | Two measures of one number (0.847 against the gate's 0.949). Run cp3/lines.py and cp1/table2 on the old 1-1 with one definition, then quote the gate's own number. TRIAGE (C) |
+| C14 | research (LEG E47, E127) and SR §0c.4 | Neighbours: idea-set Jaccard ≤ 0.42, and no template in more than 3 of a world's stages. "≤ half" is withdrawn. 1-1 against 1-5 is re-measured as a Jaccard |
+| C15 | the record (ST:962-966) | 8% was the lead's proposal, not Matt's. Matt has since lifted the ceiling. The cost lines are history |
+| C16 | the source (D:200; R3:42-44) | E[lives] on a first run: Normal ≤ 1.0 in World 1, rising about 0.5 a world; Easy ≤ 0.3. The misread 0.5→3.0 / 0.2→1.0 is withdrawn. The bots must be calibrated first (TRIAGE) |
+| C17 | the sources (SR §1b; GP:100) | Bands climb and may overlap a little, never by a whole world. A world's first stage sits slightly below the previous world's end. The half-world overlap is withdrawn, and the dial's numbers are re-run |
+| C18 | the shipped rule doc (SR §2: Easy 0.35-0.55) | Matt's yes on loosening is not recorded, so the line stands. 1-5's Easy 0.60-0.63 is a named miss, and it goes to Matt as one question through the lead |
+| C19 | Matt (MD:77-79) | No hearts in the first 30 s on either setting. The engine's Easy pass is fixed (an engine change, not a stage fix) |
+| C20 | needs a check | The level check's limit and the research's max reach may differ by a margin. Measure jumpOK's margin against the max reach (C run), then state the cap in one denominator |
+| C21 | the spec's own rule (ES 1230) | 1-1's 3 bursts in n2-n7 is an override, and its reason goes in the profile's  field: "length without a canopy" |
+| C22 | the later ruling (acf6e1e8) | The label table's "crumble slab in W1" is struck. LABELS.md supersedes it |
+| C23 | measurement (the inventory) | The worlds column comes from what ships (INVENTORY, da11cc4e), in LABELS.md. The spec's 9:59 AM worlds column is superseded |
+| C24 | Matt (MD:7; CLAUDE.md "more pieces") and SR §1c | The mix floor is at least 14 section types a world and at least 5 themes a stage, not "the old 1-1's 5 kinds" |
+| C25 | research (LCA:20-31) | The stage loop gains a premortem critic pass, separate from the designer and the planner, before the lead's check |
+| C26 | open measurement | The planner re-runs trunk climb's first use on main's 1-1 to 1-3. Until then, climb's taught-at stays 1-4, marked OPEN |
+| C27 | the gate's tool (split180.py:11) | The spec now states it: a split also needs a stretch over 300 px where both roads exist |
+| C28 | internal | 1-1's length band stands on its own profile (Normal fast 160-195 s). "20% under 1-5" is struck, because 1-5 is over its own plan |
+| C29 | Matt (lifted the ceiling) | Struck |
+| C30 | internal | One time line: the acceptance test (≤ 1/3 of 1-5's hand-mix, measured). R-163's "about an hour" is the target, not the test |
+| C31 | Matt (MD:206-208) | The lead approves Hugging Face for the engine, and Matt is told. "Matt approves the list" is struck |
