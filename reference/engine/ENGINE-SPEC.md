@@ -1712,3 +1712,23 @@ inventory will show whether any builder lays a stump you can stand on.
     5. E3-E5;
     6. 1-1, timed;
     7. 1-2, timed.
+
+### [designer ruling, 11-05 ~10:40 AM ET] Rocks never float (Matt, via the lead: "Rocks can't float... A platform needs platforms. Rocks shouldn't be floating")
+
+This replaces every earlier line that lets a stone float:
+- 9:58 AM ruling §1: "stone, as a stepping stone" and "crumbling ledge, as a floating slab";
+- the World 1 label table (9:59 AM): stone "floats: yes" and crumble "yes, low over ground and creek gaps";
+- the "a floating stone slab is no longer a fault" line;
+- the W7 crumble "may float yes".
+
+**The rule (MATT, MATT-DIRECTION.md):**
+- **May float = NO, always, in every world:** every rock, stone, boulder, slab, crumbling stone ledge, mound, bank and earth piece.
+  Each one sits on the ground, a bank, the water's drawn bed (rising from it, S-9) or its own drawn base down to something solid.
+  P-2 is back in force for all of them.
+- **May float = yes, only for platform pieces:** logs, planks, boughs where they read cleaner, and their kin, under the stage's float
+  cap.
+- **Interim swaps** ("stones until the water zone", 9:56 AM) are stones on a bank or the ground, never over open air or a pit.
+- **Kinds the inventory finds in other worlds** follow this too: W7 temple slabs, columns and crumbling floors, W8 karst ledges, W9
+  heat rock and W3 cave ledges are all no-float. A stone-looking platform over a gap must stand on a drawn column or pillar, or it
+  isn't used. If a world needs a free-floating platform there, it uses that world's plank or log kin.
+- **Enforcement:** the planner's E3 support check runs on every built stage. A no-float kind with nothing solid under it fails.

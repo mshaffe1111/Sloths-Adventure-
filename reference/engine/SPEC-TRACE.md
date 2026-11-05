@@ -120,13 +120,13 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 130-132 | Coherence per idea and per join, one art family per join | MATT | MD:76-79 ("they should all fit together") | | |
 | 133-134 | Variety gate counts the whole library; neighbours <= half their ideas | OPEN | none | Same "half" as ES 41 | (i) LEG E47/E127 (42%) |
 | 138-140 | An animal, once taught, may appear anywhere later | MATT | MD:58-60 | | |
-| 139-140 | An animal counts as a move on the ladder (harder form, absent <= 2 stages) | OPEN | none | Matt said "anywhere", not "must return within 2" | Same as ES 113-116 |
+| 139-140 | An animal counts as a move on the ladder (harder form, absent <= 2 stages) | OPEN | none | Matt said "anywhere", not "must return within 2" | (i) as ES 113-116 (SR §0.1, R1 L5, GV:105); (iii) Hayashida GDC 2012 on enemy re-use |
 | 141-142 | Unused art feeds the library | MATT | MD:61-64 | | |
 | 147 | 273 unused pieces | MEASURED | b461499b (tools/art/artuse.mjs, IN-GAME-UNUSED.md) | | |
 | 148-149 | Dressing stays dressing; boss frames stay with bosses | OPEN | none | | (i) SR §4 "Use ALL the art" (ccr:218); Matt to rule per item |
 | 154-172 | 17 unused-art ideas and their "exists?" column | MEASURED | cp2/mechanics-exist.md:10-31 (7 yes, 9 adapt, 1 new) | The table is the designer's; the verdicts are the planner's code check | |
 | 174-175 | Unused animal frames give a second behaviour, the "harder form" | OPEN | none | | (iii) search for shipped games that give each enemy a second behaviour later (e.g. Rayman Origins enemy variants, DKC Returns) |
-| 181 | Easy: no rise over +40 px onto a landing under 220 px | MEASURED | cp2/cp2-trace-easy.out (flicks 246-281 ms at +50..+70); cp2/cp2-trace-easyfix.out (+40: 298-386 ms) | The 220 px threshold itself is not traced | (220 px part) (ii) cp2-trace.ts at +50/+70 onto 160/220/280 px landings |
+| 181 | Easy: no rise over +40 px onto a landing under 220 px | MEASURED | cp2/cp2-trace-easy.out (flicks 246-281 ms at +50..+70); cp2/cp2-trace-easyfix.out (+40: 298-386 ms) | The 220 px threshold itself is not traced: settle with cp2-trace.ts at +50/+70 onto 160/220/280 px landings | |
 | 182 | A landing after +40 is >= 110 px | OPEN | none | Not in the trace outputs | (ii) cp2-trace.ts: Easy +40 onto 90/110/130 px landings |
 | 183 | +50 to +70 only onto >= 220 px | OPEN | none | Not traced | (ii) as ES 181 |
 | 183-184 | Rise >= +30 has a gap <= 80 px (90 px gives a 298 ms flick) | MEASURED | cp2/cp2-trace-easyfix.out (+35/90 px: 298 ms), cp2/cp2-trace-yes4.out (bridge +30/90: 298 ms); d5c44600, ccfa8f06 | | |
@@ -139,7 +139,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 194 | 24 of 90 stages have no animal | MEASURED | cp2/enemies.txt:13 | | |
 | 196-197 | Spread first: moving/drifting platforms, lilies, mushrooms, taught animals | DERIVED | cp2/library.txt; cp2/enemies.txt | | |
 | 201-206 | 7 on the sheet, 9 small builds, 1 parked | MEASURED | cp2/mechanics-exist.md:31 (7 yes, 9 adapt, 1 new) | Same 7 as the planner's "yes" rows | |
-| 204-205 | Matt picks which small builds to make | OPEN | none | MD:17 gives the designer "full say" on use; no saved Matt rule on who picks builds | Ask Matt once, as a multiple-choice question |
+| 204-205 | Matt picks which small builds to make | OPEN | none | MD:17 gives the designer "full say" on use; no saved Matt rule on who picks builds | (iii) not a research question: one multiple-choice question to Matt; (i) LD:18 (Matt sets the day's work) |
 | 208-209 | CP3's 1-5 draws only proven ideas; World 1's 14 ideas | OPEN | none | Count of 14 not listed anywhere (9 + 4 + turtle) | (ii) list the ideas in library.ts (98b08168) |
 | 213 | Boa passes Easy, misses Normal: 2-3 hits at one boa, 2-3 lives a run | MEASURED | cp2/cp2-animals-groups.out:2-3; cp2/cp2-animals.out:1-2 (lives 3, 2) | | |
 | 214 | Turtle line: up to 5-6 hits at one line for the kid on Easy | MEASURED | cp2/cp2-animals-groups.out:8, :12 (5, 6) | | |
@@ -278,7 +278,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 468 | Easy dial width 220 px at d = 0 down to 150 at d = 1 | OPEN | none | Conflicts with the dial table (260 -> 150, ES 642) and ruling A (about 300 px, ES 796); see (b) C4 | (i) LEG E105 / GE:173 (pads 3.5 to 7.0 sloth widths, 154-308 px) |
 | 470 | Length 3:14-3:29 accepted | MEASURED | cp3/CP3-REBUILD.md:21 | | |
 | 470 | Floor 2:00, no cap | MATT | MD:45-47 | | |
-| 471 | 1-4 and 1-6 sit >= 20% either side of 1-5's median | OPEN | none | | as ES 667 |
+| 471 | 1-4 and 1-6 sit >= 20% either side of 1-5's median | OPEN | none | | (ii) quick clock of old W1-W4 neighbours (stageTime.ts MODEL_FAST); (iii) stage clear-time spreads in a shipped world |
 | 476-477 | Splits fell to 11-17, two-road 33-38% (map v2) | MEASURED | 9da17a27 ("Splits now 11-17") | 33-38% not in a saved file | |
 | 478-483 | A floor idea joins each one-idea or climbing deck (n3, n6, n7, n9; n8 reeds pair a floor) | OPEN | none | | (ii) already re-measured: 8c8cd997 (splits 25-26, two-road 46-50%) |
 | 486-487 | All lines stay: splits >= 19, two-road >= 40%, creaky >= 15% top 3, old 1-1's variety lines | MEASURED | as ES 396-411, 424 | | |
@@ -311,7 +311,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 538-545 | Eight ideas and their estimates (0.1-2% each) | OPEN | none | Estimates | (ii) the meter on the first one built |
 | 547-548 | Backdrops and clip alternates are dressing and story | OPEN | none | | (i) SR §4 Use ALL the art (ccr:218) |
 | 551-552 | First pick: "Which log bites?", because logs are about half of every piece | MEASURED | cp2/library.txt:2 (9,095 of 19,651 = 46%) | | |
-| 553 | Second: mangrove roots | OPEN | none | | Matt's pick |
+| 553 | Second: mangrove roots | OPEN | none | | (ii) cost each on the meter; then Matt's pick between two costed options |
 
 ## 9. The log family (ES 556-590)
 
@@ -386,8 +386,8 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 668 | The set piece or finale is among the longest | OPEN | none | | (iii) shipped worlds: is the X-9 / finale stage the longest? |
 | 669-670 | Length from units, never from a clock | SOURCED | SR §0c.1 (ccr:77-78); R1:48-59 (L3); D:212-213 | | |
 | 672 | Every roll >= 2:00 on both settings | MATT | SR §1 Length (ccr:106, "on every roll") | | |
-| 673 | No two neighbours within 20% | OPEN | none | as ES 667-668 | as ES 667-668 |
-| 674 | A world's spread >= 2.5 minutes | OPEN | none | | as ES 667 |
+| 673 | No two neighbours within 20% | OPEN | none | as ES 667-668 | (ii) quick clock of old W1-W4 neighbours; (i) D:1256 (neighbour pulses differ >= 15%) |
+| 674 | A world's spread >= 2.5 minutes | OPEN | none | | (ii) quick clock of old W1-W4 neighbours (stageTime.ts MODEL_FAST); (iii) stage clear-time spreads in a shipped world |
 
 ## 13. The polish pass, P-1 to P-13, S-1 to S-9 (ES 677-794)
 
@@ -411,10 +411,10 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 737-738 | Teach twigs at 40, 75, 40 px; teach bank 720 px | MEASURED | 8c8cd997 (teach bank 720 px; fun gate dead walk 27.5 -> 4.7 s) | | |
 | 739-740 | No creaky piece before n2's teach | MATT | CLAUDE.md "the first appearance of a mechanic is taught" | Creaky's real teach is 1-2 (b) C9 | |
 | 741 | Stone at 50 px, the height World 1's rock art is painted for | MEASURED | fdabad42 (P-12, stones at 50 px) | | |
-| 742-745 | Polish order if the budget forces a split | OPEN | none | | lead's call |
+| 742-745 | Polish order if the budget forces a split | OPEN | none | | (i) the spec's own polish order rationale, ES 742-744; (ii) none needed: a scheduling call |
 | 749-753 | Easy density 0.67 vs 0.35-0.55 not accepted; fixes in order | MEASURED | 34c27751 (0.65), e68b6f4b | | |
 | 752-753 | Easy bursts 3 pieces, snap dash 5; rests 4-5 s with a petal arc | OPEN | none | | (i) GP:292-293 (Easy groups 6-8 s, 3-4 actions; rests 2.0-2.5 s) |
-| 754 | n7b's Dot line | OPEN | none | New line; SR §1 Story (ccr:118) needs "(new, needs Matt's approval)" | Matt approves the line |
+| 754 | n7b's Dot line | OPEN | none | New line; SR §1 Story (ccr:118) needs "(new, needs Matt's approval)" | (i) SR §1 Story (ccr:118): mark it "(new, needs Matt's approval)" |
 | 759-764 | Round 1 fixed: no grey slab, painted rocks, trunks, posts, x/10 | MEASURED | cp3/stills-v2/; 5a217b85 | | |
 | 766-767 | S-1 pit columns still under creek pieces | MEASURED | cp3/stills-v2/ | | |
 | 768-769 | S-2 grass blocks about 100 px over water | MEASURED | cp3/stills-v2/ | | |
@@ -444,14 +444,14 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 819 | Easy high-road boughs keep Normal's bands (the road is optional) | OPEN | none | | (i) SR §1b "Easy is gentler, never empty" (ccr:135-137) |
 | 820-822 | No breather pads on fork roads | MEASURED | b88f2ea2 (bot stall at the road-end breather) | | |
 | 826-829 | (i) Fork marks on the shared ground | MEASURED | 14ff1727 | | |
-| 829 | Goal stays 10 of 13 Normal, 8 Easy | OPEN | none | as ES 462 | as ES 462 |
+| 829 | Goal stays 10 of 13 Normal, 8 Easy | OPEN | none | as ES 462 | (i) LEG E120 (yield 0.85); (ii) first-timer bot marks per route (cp3-ft.ts) |
 | 830-831 | Easy clock 4:21-4:33 accepted; Matt's 2:00 floor, no cap | MATT | MD:45-47 | 4:21-4:33 measured in b88f2ea2 run | |
-| 831-832 | The 20% spread judged on Normal's quick clock | OPEN | none | | as ES 667 |
+| 831-832 | The 20% spread judged on Normal's quick clock | OPEN | none | | (ii) quick clock of old W1-W4 neighbours (stageTime.ts MODEL_FAST); (iii) stage clear-time spreads in a shipped world |
 | 833-834 | S-9: stepping stone <= 50 px above the water; taller ones are stumps | OPEN | none | | (ii) stills |
 | 836-838 | Stones stay in 1-5 on ground ("more pieces") | MATT | CLAUDE.md "Variety comes from more pieces" | | |
 | 851-852 | 18/18 variety lines; 32/32 level checks; bots 4/4 | MEASURED | 14ff1727 | | |
 | 854-857 | Easy density 0.60 calibrated on old 1-1 Easy | MEASURED | cp3/old11-main-pace16.txt | | |
-| 861-863 | Deep pits: dark follows the bank faces then fades over about 300 px; to Matt | OPEN | none | | Matt's pick (cp3/pit-fade-choice on ccr) |
+| 861-863 | Deep pits: dark follows the bank faces then fades over about 300 px; to Matt | OPEN | none | | (ii) the before/after stills exist (cp3/pit-fade-choice on ccr); (iii) dark-edge treatments in shipped painted platformers (Ori, Rayman Legends) |
 | 868-871 | Old 1-1 Easy density median 0.575 (0.53-0.66), longest run 25-119 s; new 1-5 0.61 / 0.63, 17-18 s | MEASURED | cp3/old11-main-pace16.txt (16 rolls); 213cbc4b | | |
 | 875 | Double breather adds about a minute (Easy about 5:20) | OPEN | none | Not run | (ii) build it once and clock it |
 | 877-878 | (a) double breather about 0.52; (b) keep 0.61 (designer's pick) | OPEN | none | (a)'s 0.52 not measured | (ii) as above; then Matt's pick |
@@ -474,7 +474,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 928 | "It's better." / "One first, then the rest." | MATT | ST:967 | | |
 | 931 | Boughs within 220 px share one tree | OPEN | none | Built and measured (a3bc093c) but the number is the designer's | (ii) bough-to-trunk spacing on old 1-1 (Matt's best) and main's kapok placement |
 | 932 | <= about 3 full trunks a screen width, both ways | OPEN | none | Window later 1,400 px (ES 1057, a3bc093c) | (ii) trunks per 1,400 px on old 1-1; (iii) DKC Returns / Rayman canopy screenshots per screen |
-| 933 | Further boughs hang from a shared trunk's side branch | OPEN | none | No side-branch art (ES 1057-1058); built as a thin post | Art list item |
+| 933 | Further boughs hang from a shared trunk's side branch | OPEN | none | No side-branch art (ES 1057-1058); built as a thin post | (ii) atlas search for a side-branch frame (tools/art/artuse.mjs); else an HF picture-list item |
 | 934 | No two neighbouring trunks share art or vine wrap | MEASURED | 27345325 (bare and vine-wrapped kapok alternate) | | |
 | 937-938 | 1-1 "Into the Canopy": run the high branches; arrival; teaches run, jump, double | SOURCED | dotLinesData.ts:94-98 [main] (run, jump, double coaching on 1-1) | | |
 | 939-940 | Rises from floor to high branches; backdrop changes with height | SOURCED | W1-REBUILD-PLAN row (as the spec says, not re-opened) | Matt asked for one sky on 1-1 (RM:475, R-164.2); see (b) C8 | |
@@ -589,12 +589,12 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | ES | Rule or number | Tag | Citation | Note | How to settle (OPEN) |
 |---|---|---|---|---|---|
 | 1204-1206 | Engine first; 1-1 parked at 72fe81a3 | MATT | MD:118-122 | | |
-| 1206-1207 | The planner may add fields, not remove any | OPEN | none | | lead's call |
+| 1206-1207 | The planner may add fields, not remove any | OPEN | none | | (i) the spec's own polish order rationale, ES 742-744; (ii) none needed: a scheduling call |
 | 1212-1230 | Profile fields (story, arc, elements, water, branching, pace, length, mechanics, hazards, owns, commonest, unlike, caps, look, dress, marks, dot, difficulty) | MATT | MD:25-32 (speed, looks, what's in it, branching, water), MD:34-37 (story) | Field list beyond Matt's six is the designer's | |
 | 1215 | 1-1 elements: ground >= 70% n1-n7, tree >= 60% n8-n11, water 0 | OPEN | none | | (ii) element share on the 098aff49 build |
 | 1219 | Length: never below 120 s | MATT | MD:45-47 | | |
 | 1224 | 1-1 vs 1-5 <= half their ideas | OPEN | none | | (i) LEG E47 |
-| 1225 | 1-1 caps: boughs + creaky <= 30% | OPEN | none | as ES 987 | as ES 987 |
+| 1225 | 1-1 caps: boughs + creaky <= 30% | OPEN | none | as ES 987 | (i) BR:46; (ii) old 1-1's bough share (cp1 measures2.json) |
 | 1228 | Marks 0 for a sprint | OPEN | none | | (i) GV:173 (collectible tiers by stage type) |
 | 1232-1233 | World default: today's 1-5 lines (splits 19, two-road 40%) | MEASURED | as ES 411, 424 | | |
 | 1233-1234 | A profile that lowers a default gives its reason | SOURCED | LAWS 5 (never loosen silently) | | |
@@ -670,7 +670,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1352-1356 | May float: stone, log, crumbling ledge, bough | MATT | MD:129-130 ("I don't mind floating logs"); stones/ledges/boughs are the designer's | Only logs and planks are Matt's | |
 | 1357-1358 | Never float: lily pads, reeds, banks, mounds, stumps, mushrooms, creaky, bridges, totems, shrine | MATT | MD:129-130 (lily pads "more in the water") | Others the designer's | |
 | 1363 | 1-1 float cap <= 15% | OPEN | none | | (ii) float share on old 1-1; (iii) Super Mario Bros. 1-1 floating-block share (Matt's "Mario type thing", MD:125) |
-| 1364-1365 | 1-5 and default <= 25% | OPEN | none | | as ES 1363 |
+| 1364-1365 | 1-5 and default <= 25% | OPEN | none | | (ii) float share on old 1-1; (iii) Super Mario Bros. 1-1 floating-block share |
 | 1367-1368 | A floating piece carries its own underside; never half hidden | SOURCED | GV:177 (silhouette legibility); SR §0b.7 (ccr:60-62) | | |
 | 1369-1371 | Revises P-2 and the 9:56 ruling; canopy breakables stay creaky | MATT | MD:124-130 | | |
 | 1373 | commonest becomes core; the commonest landing is a core piece | MATT | MD:127-128 ("label ... what levels they can be used on") | | |
@@ -678,7 +678,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1378 | 1-5 core: bough, creaky, bank | MEASURED | b7c38491 (creaky 20-25% top 3) | | |
 | 1380 | Core pieces >= 50% of landings | OPEN | none | | (ii) share of the top-3 kinds on old 1-1 (cp1 measures2.json) |
 | 1382-1384 | Themes: each kind names its worlds; checkSpec refuses off-theme ("no lava in the forest") | MATT | (relayed) e7089072 ("Matt, 11-05"); MD:127-129 ("look like they belong in that world") | "no lava" is not saved in Matt's words | |
-| 1385-1387 | The per-world object pass, world by world; World 1's 10 kinds done | OPEN | none | | lead's plan |
+| 1385-1387 | The per-world object pass, world by world; World 1's 10 kinds done | OPEN | none | | (ii) none needed: a scheduling call; (i) SR §0c.7 (ccr:93-99) for what each world's pass must decide |
 | 1391-1392 | Labels: element, footing, floats, uses, teaches, worlds, stages | MATT | MD:127-128, MD:134-136 | | |
 | 1396 | bank: W1-W4, W6-W10 | OPEN | none | cp2/library.txt:3 places banks in W1-W7, W9-W10 (none in W8) | (ii) settled by cp2/library.txt:3 plus the W8 object pass |
 | 1397 | log: W1-W4, W6 | OPEN | none | library.txt:2 has logs in all 10 worlds | (ii) settled by cp2/library.txt:2: W1-W10 |
@@ -693,7 +693,7 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1409-1411 | Fix 1: no stump kind; planner says which | OPEN | none | | (ii) the planner's library.ts |
 | 1412-1413 | Fix 2: crumble fits W1 only by the shrine stones | OPEN | none | Withdrawn at ES 1450; stale | (i) acf6e1e8 |
 | 1414-1416 | Fix 3: no ground log resting in the trees | MATT | MD:28 (lily pads on branches), MD:130-131 | | |
-| 1417-1419 | Fix 4: the worlds column above; later worlds closed until their pass | OPEN | none | | lead's plan |
+| 1417-1419 | Fix 4: the worlds column above; later worlds closed until their pass | OPEN | none | | (ii) none needed: a scheduling call; (i) SR §0c.7 (ccr:93-99) for what each world's pass must decide |
 | 1422-1425 | Correction: a floating log in open air allowed in the canopy under the float cap | MATT | MD:129 ("floating logs ... more Mario") | | |
 
 ## 22. The ladder against the all-world table (ES 1427-1456)
@@ -753,4 +753,283 @@ Commit hashes are on `origin/engine-mixer` (planner) or `origin/engine-spec` unl
 | 1619-1620 | Gate 6: today's misses a known list that only shrinks | SOURCED | CLAUDE.md (clipknown / knowncheck); LAWS 5 | | |
 | 1626-1629 | Order of the planner's steps | MATT | ST:968 | | |
 | 1631-1633 | Designer cost: 1.5 h, 0.5 h, 1 h a world | OPEN | none | | (ii) clock it |
-| 1635 | The 55% ceiling (stop at 53%) | OPEN | none | Not found in ST, RM, PARTNER or LD | Ask the lead/Matt for the source |
+| 1635 | The 55% ceiling (stop at 53%) | OPEN | none | Not found in ST, RM, PARTNER or LD | (iii) not in any file read; ask the lead for the source of 55%, or drop the line |
+
+---
+
+## (a) Research rows the spec never applies
+
+"Applied" means the spec states the rule or a rule that does the same job, even in another form. Rows the source itself decided
+against (status NO, or the ledger's "not taken") are listed in their own block so nothing is missed, but they are not counted as gaps.
+Purely descriptive rows (history, definitions, restatements) are counted, not listed one by one.
+
+### a1. GEMINI-LEDGER.md (56 rows)
+
+Applied (fully or in part): A1, A2, A3 (part: each stage's "moment", no per-world signature stage), A4, A5 (part: decks, no sub-blocks),
+A6 (part), C1, C4 (part: no twice in a row, no 2-level cooldown), C9, D1, D3, E1 (part), E2, E3, E4, F1 (part), F2 (part: the dial),
+F3, F5 (part: the 300 ms Easy window only), F7 (part), G8, H1, H2, H3 (part: morning / dusk per stage), H4, I3 (part: the profile).
+Decided against by the ledger: B1, I1 (shuffling), J1, J5.
+
+| Row | Line | Recommendation | Why it matters to the engine |
+|---|---|---|---|
+| A7 | GL:20 | Linked pairs: no tool without its receptor in the same or next chunk | Push block and puzzle beats return in CP4 with no pairing rule |
+| B2 | GL:27 | Build in memory; no mid-play create/destroy; pooling | Mixer output size per stage is not checked against PERFORMANCE-RULES |
+| C2 | GL:34 | Poisson spacing: min gap between same-kind pieces, max gap with nothing | The spec has per-view caps, not spacing |
+| C3 | GL:35 | Sockets with 3 variants each (81 a room) | No socket layer in ideas |
+| C5 | GL:37 | Expressive range over 200-1,000 rolls; D_sim >= 0.35 between rolls | **The spec never requires two rolls of a stage to differ** |
+| C6 | GL:38 | Weighted action strings | Not used by any gate |
+| C7 | GL:39 | 3-gram cosine and 18-beat windows across stages | Neighbour check is idea share only |
+| C8 | GL:40 | Horizontal mirroring | Cheap variety, unused |
+| C10 | GL:42 | Offline seed curation | Replaced on purpose by "never a reroll" (MATT); listed for completeness |
+| D2 | GL:49 | Per-difficulty jump margins 65% Easy / 82% Normal of max | The dial goes to 0.92 / 0.80 of the level check's limit (b) C20 |
+| D4 | GL:51 | Puzzles as symbolic zones | Push-block room in CP4 |
+| D5 | GL:52 | Softlock guarantee: a lost item respawns at its source | The pushed log returns in CP4 with no softlock rule |
+| D6 | GL:53 | Sockets bound to a platform id + t | Marks and petals are placed by the mixer's own rules |
+| F4 | GL:71 | Touch failure modes in the bot (drift, late lift-off, 8% short hops) | Not named as a gate input |
+| F5 (rest) | GL:72 | Peak stress per burst 2.5 / 5.5; puzzle depth; backtracking 1.0-1.25 / 1.15-1.6 | Only the window floor is used |
+| F6 | GL:73 | Kids' hints under 8-12 words; stuck = back-and-forth or 2 tries; 3-tier hints | Dot lines placed per node with no length rule |
+| G1-G7 | GL:80-86 | Coyote, buffer, ledge forgiveness, mantle, magnet, 30 fps stability, re-centring slider | Engine feel, not level rules; the spec's reach comes from the level check, which uses them |
+| I2 | GL:103 | The 6-pass pipeline | The mixer has its own passes; no mapping written |
+| J2-J4 | GL:111-113 | Camera lean, 500 x 750 px puzzle box, pan to a far gate | Puzzle rooms return in CP4 with no camera rule |
+
+### a2. GEMINI-PCG-RESEARCH.md items outside the ledger rows
+
+| Line | Recommendation | Why it matters |
+|---|---|---|
+| GP:219 | 35-50 small chunks per world, 3-5 sockets each | No library-size target per world |
+| GP:251-252 | 28-35 templates a world; 8 tiny obstacle sub-blocks per world | Same |
+| GP:276 | D_sim < 0.35 rejection against any earlier stage of the world | No cross-stage similarity number (R3 W7 says it has no source) |
+| GP:339-355 | Edge risk scores U_dist, U_land, U_time | The dial sets risk with no per-jump score |
+| GP:370-372 | Peak consecutive stress, puzzle depth, backtracking ratio | Unused |
+| GP:396 | Vertical corridor clamp Y in [-800, +1200] px | Arc field has bands but no clamp |
+| GP:323 | Source and receptor within 8 tiles on Ki chunks | Puzzle rooms |
+| GP:333-336 | Three visual sub-acts per world | Part: light per stage only |
+
+### a3. GEMINI-VARIETY (triage rows and the full report)
+
+| Row | Line | Recommendation | Why it matters |
+|---|---|---|---|
+| Pacing tags | GVs:14 | Tight / Flowing / Relaxed / Cerebral; never two Tight back to back | Jobs exist, but no "never two hard nodes in a row" rule |
+| Puzzle share | GVs:15 | About 25-30% of beats are puzzle beats | No puzzle share anywhere |
+| Moving-platform kinds | GVs:17 | Pendulum, ride-to-start, pulley, turning log, bobbing float | Ladder teaches "moving platform" as one move |
+| Lift momentum | GVs:18 | Platform speed carries into the jump (R-152.7) | Needed before moving platforms go "everywhere" |
+| Stage types | GVs:20 | Reshape 2-3 stages a world (MATT DECIDED, RM:404-410) | Profile has no stage-type field |
+| Tempo inversion | GV:7; SR §0b.3 (ccr:49-50) | Each mechanic a hurry and a patience version | `pace` field is a word, not a pair |
+| Branch sub-types | GV:13; SR §0b.4 (ccr:51-52) | Snap twig ~0.15 s, creaking limb ~0.6 s, tipping root | Dial crumble values ignore them (b) C3 |
+| Ten slot roles | GV:73-99; SR §0b.6 (ccr:56-59) | X-1 arrival ... X-9 run-up; neighbours never share tempo and camera direction | Under review in SR; the spec does not rule on it |
+| Wayside lines | GV:67 | Under 15 words a box | No length rule for Dot lines |
+| Checkpoint cadence | GV:165 | Respawn within 2 s of the hard part | Contradicted by the 45 s rule (b) C10 |
+| Read by shape | GV:177; SR §0b.7 (ccr:60-62) | Breakables share a notched underside and a 2-frame shake | Only "a floating piece carries its own underside" |
+
+### a4. R1-R4 findings
+
+| Note | Line | Finding | Why it matters |
+|---|---|---|---|
+| R1 L3 | R1:48 | Pool several times the slots, counted per phase after the teaching cut (SMBF about 10:1) | No pool-to-slot count per stage |
+| R1 L6 | R1:74 | One named surprise per stage, unique, with Wonder's three tests | 1-1 has a "moment"; no uniqueness or test |
+| R1 L9 | R1:90 | Fairness also from the hero's rescue tools | Unused |
+| R1 L10 | R1:95 | Build a world's first stage last; re-grade early stages | 1-1 is built second (Matt chose it, ST:967) |
+| R1 idea 2 | R1:514 | Save-wide ledger of shown units | Unused |
+| R1 idea 3 | R1:517 | `rare` (~5%) and `notBefore` tags | Unused |
+| R1 idea 4 | R1:519 | Five-value atomic parameters; subtractive variety; the variety matrix | Unused |
+| R1 idea 6 | R1:524 | An open grade board, re-graded after later stages | Unused |
+| R1 idea 7 | R1:527 | Shovel Knight's level budget (5 new enemies + 5 objects; "no unitaskers"; cooldown list) | Unused |
+| R1 idea 8 | R1:531 | Skill carried by level objects (one-thumb game) | Unused |
+| R1 idea 9 | R1:533 | Ratings from play, not the author | Dial values are authored |
+| R1 mistake 2 | R1:546 | Never re-roll when the player dies (layoutMemory) | The spec never says when a new roll is drawn |
+| R1 mistake 3 | R1:548 | Mismatched difficulty at joins | Joins checked for geometry only |
+| R2 L5 | R2:72 | A mechanic must be required, not just present | Teach nodes have no "cannot be skipped" gate |
+| R2 L7 | R2:87 | Stability under edits | Unused |
+| R2 idea 1 | R2:654 | Kinds per take-off K in the space, M in the roll | Only stage-level kind counts |
+| R2 idea 3 | R2:663 | Limited-agent gate on every teach node | Used only for hard collectibles (ES 311) |
+| R2 idea 4 | R2:671 | Measure the candidate space per node | Unused |
+| R2 idea 5 | R2:680 | Same as last time, relax if impossible | Unused |
+| R2 idea 6 | R2:684 | Cadence kinds at seams | Joins are "a short kit piece" only |
+| R2 idea 7 | R2:689 | Quality-diversity; generate for the empty cell | Unused |
+| R2 idea 8 | R2:694 | NCD of kind strings across a world | Feel check named, not measured |
+| R2 idea 10 | R2:700 | A jump's difficulty as its landing window | Unused |
+| R2 idea 12 | R2:707 | Take-offs on the tune's onsets | Matt ruled the rhythm is the player's (ST:958): decided against |
+| R3 F2 | R3:51 | Teach >= 0.97, first test ~0.85 / 0.92, practice >= 0.95 | Only teach <= 0.01 miss used |
+| R3 F3 | R3:66 | Population layer: who quits here | Unused |
+| R3 F4-F5 | R3:88, :103 | Leniency, linearity (form b) | Unused |
+| R3 F6 | R3:114 | ERA sd >= 0.05 over 200 rolls per stage | Unused (16 rolls only) |
+| R3 F7 | R3:125 | NCD calibrated 0.09-0.62; between rolls >= 0.35; novelty band | Unused |
+| R3 F8 | R3:148 | Gap entropy | Unused |
+| R3 F9 | R3:158 | Stuck share <= 0.05 Easy, <= 0.10 Normal | Bots stall 13-20 s at forks (cp3/cp3-stuck.out), no gate |
+| R3 F11 | R3:183 | Flow as above the stage's own average | Unused |
+| R3 F12 | R3:195 | nPVI per rhythm type (regular < 20, swing 45-75) | Rhythm types named (ES 1121), not measured |
+| R3 F13 | R3:205 | Relative rest boundary (2x local median and >= 1.0 / 2.0 s) | The spec uses fixed pads and "a 2-second rest" (b) C2 |
+| R3 F16-F17 | R3:244, :255 | Glicko-2 stage rating; knob elasticities | The dial has no measured slope |
+| R3 W5 | R3:300 | Easy can be harder than Normal on the bots | No "Easy never harder" check |
+| R3 W6 | R3:305 | Adult bot sigma 45 ms, not 30 | E[lives] and "bots 4/4" rest on the 30 ms thumb |
+| R3 W12 | R3:337 | 1-1 has 2 distinct strings in 16 rolls | Same gap as GL C5 |
+| R3 W13 | R3:342 | The two bots disagree on what is hard | E[lives] uses one bot |
+| R3 ideas 2-9, 12, 13 | R3:597-617 | (as F2-F17 above) | |
+| R4 L5 | R4:76 | The level gives the move, not the thumb | Unused |
+| R4 L7 / idea 4 | R4:98, :559 | Calibrate bots on the touch recordings before trusting them | **The dial's E[lives] budget is judged by uncalibrated bots** |
+| R4 idea 1 (b) | R4:547 | Fail when a palette option is laid 0 times in 16 rolls | Dead ideas or sizes would pass |
+| R4 idea 5 | R4:563 | Touch rules pinned in each stage's manifest | Unused |
+| R4 idea 7 | R4:570 | One RNG stream per node and layer | Unused in the spec text |
+| R4 idea 8 | R4:574 | Same ground, second goal, said plainly | Part: second fork road as replay reward |
+| R4 idea 10 | R4:580 | Flaky-gate policy | Unused |
+| R4 idea 11 | R4:583 | A readable stage catalog diffed in CI | Part: 96ac0259 fingerprints (hashes, not readable text) |
+
+### a5. LEDGER-ENGINE-GEMINI.md (E1-E249; the F1-F70 formula rows repeat the same GE lines)
+
+Applied: E1-E3, E6, E15, E16, E18, E20, E22, E36, E42, E43 (part), E44, E45 (part), E47 (part: three scales, but "half" not 42%),
+E48, E51, E54, E60, E77, E80, E102-E103 (the formula's form), E105 (part), E106, E108 (part), E122, E124, E136, E145, E187, E189, E196 (part).
+Decided against or flagged wrong by the ledger: E4, E9, E12, E23-E25, E38, E41, E46, E50, E55, E57, E59, E62, E75, E78, E86, E88,
+E97, E112, E127, E137-E139, E149, E152, E171, E176-E184, E186, E193, E195, E197, E213-E220, E235, E237. Restatement rows: E27-E35,
+E67-E74. Descriptive, "have", "keep ours" or worked-example rows: E8, E10, E11, E19, E61, E66, E76, E82, E89-E96, E98, E123,
+E129-E131, E153, E161-E168, E173, E175, E185, E198, E203, E249.
+
+| Rows | Lines (GE) | Recommendation | Why it matters |
+|---|---|---|---|
+| E5, E21, E109, E116 | 11, 29, 186, 203 | Pairwise threat cap: an enemy on a jump's landing is super-additive; eagle never over breakables | **The dial adds risky pieces and animals with no adjacency rule** |
+| E7, E37, E39, E191 | 13, 61, 463 | Map shapes (loop, high-low split, chimney, hub) as node boxes with entry/exit vectors | `arc` field only; no loops or chimneys |
+| E13-E14, E17 | 19, 21 | Hazard budget by distance; memorised geometry when only enemies vary | Unused |
+| E26, E199-E202 | 31, 489 | Local auto-heal before failing | The spec fails and names the hole instead (MATT's rule); heal rules unconsidered |
+| E40, E154, E192 | 61, 294, 465 | Deck lockout 4 draws | The spec locks out 1 (no twice in a row) |
+| E49, E52 | 63, 69 | Split closure: both roads' Σdx, Σdy equal at the merge | Forks rejoin with no closure rule |
+| E53, E125-E126 | 69, 217-219 | No repeated 3-move runs; bigram entropy >= 0.68 | Unused |
+| E56, E58 | 73 | Flow-ribbon representation; seam welding | Unused |
+| E63-E64 | 79 | Hazards in call-and-response with the jump | Unused |
+| E65, E205 | 81, 497 | Inscribed safe sightline box (both orientations) | Only the glint is checked both ways |
+| E79, E81 | 113, 117 | Groups 6-10 s, rests 1.5-2.2 s; one puzzle of 12-18 s in node 4 or 6 | Unused |
+| E83-E84 | 119-123 | First-timer time model (x1.22, +25 s branches) | Unused |
+| E85, E87 | 127-129 | Fatigue above 1.6 inputs a second; density shape T^1.15 | Unused |
+| E99-E101 | 161-165 | Off-apex second flick in the clumsy thumb; early-press margins | Unused |
+| E104 | 171 | Landing width from hitbox + early press + buffer(1-T) | The dial's landings are authored |
+| E107, E110, E111 | 182-190 | Snake deck >= 5 W, cat runway >= 8 W, spider above ropes | Animal ideas parked; no footprint numbers |
+| E113-E115, E117 | 197-203 | Enemies a minute by world; spacing; 1 s runway before a trigger | "Taught animals a stage" has no spacing |
+| E118-E121 | 207-211 | Goal 75%, 70/15/15, yield 0.85 | Marks goal set by hand (10 of 13) |
+| E128 | 225 | Similarity buffer under the cap | Unused |
+| E132-E135 | 237 | A miss always costs something; three miss tiers by tension | Contradicted on Easy (b) C5 |
+| E140-E144, E146 | 251-253 | Flow score parts (curve fidelity, beat alignment, variety, vertical, agency) | Unused |
+| E147, E157, E169-E170, E172 | 257, 307, 330-363 | Beat-relative patterns; max slope 28°; miss-floor field per step | Unused |
+| E148, E211-E212 | 261, 505 | Frame-harmonic tempos | Unused (rhythm now the player's) |
+| E150-E151 | 269-282 | Gust mutator; creak delay 36 / 20 frames | Dial crumble values differ (b) C3 |
+| E155-E160 | 300-312 | Spec fields mapShape, pair, puzzle node index, cause-effect flags | Part: profile fields |
+| E174, E190 | 377, 461 | Seed sub-streams so enemy edits never move platforms | Unused in the spec |
+| E188 | 454 | Modules under 150 lines, two files in context | Unused |
+| E194 | 469 | Decorator: roles, arcs, 3 seeds, 3-tier floors | Part |
+| E204, E206-E210 | 497-501 | Look-ahead both ways; camera anchors; gesture cooldown 267 ms; thumb zones | Unused |
+| E221-E223 | 529 | Earbud lag; asymmetric late window; visual beat pulse | Unused |
+| E224-E225 | 533 | Inverse velocity-threat law (slow zones never empty) | Unused; matters when mud, silk and water arrive |
+| E226-E227 | 537 | Contain cause-and-effect to bonus spots | Unused |
+| E228-E230 | 541 | 7,000-10,000 px stage; mount nodes i-1..i+1; <= 3 draw calls a node | Mixer 1-5 is about 45,000 px (cp3/cp3-forks.txt:4) |
+| E231-E248 | 549-582 | Plan targets (yield, similarity, rest, flow, tokens per stage) | Unused |
+
+### a6. LEDGER-ENGINE-PAPERS.md (rows 1-83; Carmo and Tanagra)
+
+Applied: rows 11 (part), 20, 27, 28, 32 (part), 33, 36, 41, 43, 49, 52, 53, 58, 63, 74, 77, 83 (the FDG paper was fetched, D:38). Decided
+against: 17, 19 (not tonight), 42 (keep ours), 78. Descriptive or evidence only: 1-10, 12-16, 18, 21-26, 29-30, 34, 37-38, 40, 44-45, 47,
+50-51, 54-55, 57, 60-61, 64, 66-67, 70-73, 75-76, 79, 82.
+
+| Row | Line | Recommendation | Why it matters |
+|---|---|---|---|
+| 31 | CA:712-746 | **Coverage table gate**: every (height x height x difficulty) combination needs a piece | No coverage table of idea x join x job |
+| 35 | CA:808-818 | A piece may declare several entry heights | Unused |
+| 39 | CA:861-875 | Vary where a stage's building starts | Unused |
+| 46, 48 | CA:1022-1073 | Piece-use spread over 200 rolls; report dead and hog pieces | Share cap catches hogs, nothing catches dead pieces |
+| 56 | CA:1211-1218 | Generate new pieces, then compose | Unused |
+| 59 | CA:1240-1255 | A gate may only err toward failing | Not stated for the mixer's gates |
+| 62 | CA:1278-1396 | Sorenson & Pasquier's challenge (anxiety) model | Unused |
+| 65, 81 | TA:113 | Pinned nodes and local retrace | Unused |
+| 68 | TA:113 | The designer changes pacing without touching geometry | Profile `pace` is a word; no edit-the-rhythm path |
+| 69 | TA:113 | Constraint search guarantees playability as it places | The mixer places by rule and checks after |
+| 80 | TA:113 | Error-steered search | Unused |
+
+### a7. GEMINI-CRITICAL-AGENTS / its ledger (process, not level rules)
+
+Applied: designer / planner split with both signing (ST:963); machines check what machines can (LCA:28-30, GC:119).
+Not applied (LCA:84-117): blind the designer; premortem critic in parallel personas; a falsifier on every objection; VERIFICATION_PASSED
+allowed; one round then a "still disagreed" table; consistency-illusion check; the lead's 5-minute spot check; the lead's sketch is
+not a judge. **The spec's stage workflow (ES 1026-1034) has no critic step at all**, though the critic role exists (engine-critic).
+
+### a8. Count of unused rows
+
+| Source | Rows or items | Applied (full or part) | Decided against | Descriptive / restated / "have" | Unused |
+|---|---|---|---|---|---|
+| GEMINI-LEDGER | 56 | 26 | 4 | 0 | 26 (A7, B2, C2, C3, C5, C6, C7, C8, C10, D2, D4, D5, D6, F4, F6, G1-G7, I2, J2, J3, J4) |
+| GEMINI-PCG items outside the ledger | 8 | 0 | 0 | 0 | 8 |
+| GEMINI-VARIETY (10 triage rows + 12 report items) | 22 | 7 | 2 | 2 (engine-feel items GV:15, GV:17) | 11 |
+| R1-R4 findings (R1 34, R2 20, R3 44, R4 19) | 117 | 56 | 1 | 10 (R3 ideas that repeat its F rows) | 50 |
+| LEDGER-ENGINE-GEMINI (E rows) | 249 | 33 | 50 | 53 | 113 |
+| LEDGER-ENGINE-PAPERS | 83 | 17 | 4 | 49 | 13 |
+| CRITICAL-AGENTS (LCA §0 changes + §2 checks) | 15 | 2 | 0 | 0 | 13 |
+| **Total** | **550** | **141** | **61** | **114** | **234** |
+
+The R1-R4 split counts the lessons, ideas, mistakes, formula rows and "wrong" rows (R2's §4 experiment findings are measurements, folded
+into its lessons). LEDGER-ENGINE-GEMINI's ledger marks many of its unused rows "consider", not "adopt"; they are counted because the
+spec neither applies nor rejects them.
+
+---
+
+## (b) Contradictions
+
+| # | Spec line(s) | The spec says | Against | Kind |
+|---|---|---|---|---|
+| C1 | ES 640, 658 | Gap share is a difficulty dial (0.55 -> 0.92 Normal) | D:48, D:180-187: "[11-05 overturned] γ is not a difficulty dial" (traced jumps carry almost no risk; difficulty is the landing window and what sits on the avoided lines); R4:28 (L1). D:275-277 also called a 0.55 start "tighter than anything QA has played" (on clumsy reach) | Research row |
+| C2 | ES 799, 509, 815 | Fixed Normal pad of 1.0-1.2 s after every second burst; "a 2-second rest" on Easy | D:49, D:188-193 and R3:265-271 (W1), R3:205-215 (F13): a fixed pad cuts phrases into single moves; the rest is relative (2x the local median) | Research row |
+| C3 | ES 646 vs ES 228, 333 | Dial: crumble Normal 0.9 -> 0.5 s, Easy 1.2 -> 0.8 s; ruling: Easy tile 1.0 s; CP3 sizes "crumble 1.0 s" | Each other (the dial, written later, does not mark the 1.0 s ruling revised); GV:13 and SR §0b.4 (snap ~0.15 s, creak ~0.6 s); LEG E151 (Easy 1.2, Normal 0.67); shipped 0.7 s commonest (cp2-trace.ts.txt:15) | Later ruling not marked; research row |
+| C4 | ES 642 vs ES 468 vs ES 796 | Easy typical landing 260 -> 150 px; then 220 -> 150 px; then about 300 px (EASY_BS 1.35) | Each other; none marks the earlier revised | Later ruling not marked |
+| C5 | ES 437 | Easy: a slip off the high road costs nothing | D:194-195 ("Easy one tier softer, never 'nothing' after the first teach"); LEG E132 (C_miss > 0) | Research row |
+| C6 | ES 237-244 | "No idea twice" withdrawn; old 1-1 repeats its cycle about 8 times | SR §0c.2 (ccr:79-80): "no template more than twice in a stage"; R1:39 (L2) and R1:550 (mistake 4); SR not marked revised | Shipped rule doc |
+| C7 | ES 122-134 | One shared library across worlds; World 5 the only exception | MD:127-130 (10:00 AM, later than the 12:20 words the ruling rests on): "It can't just be using any piece from any world... They have to look like they belong in that world"; SR §0c.7 (ccr:93-99) "a template belongs to one world"; D:412 (Dead Cells: rooms never shared between biomes). ES 1382-1387 (per-world tagging) reconciles in part but 122-134 is not marked revised | Later Matt direction |
+| C8 | ES 939-940, 965, 1014 | 1-1's backdrop changes with height; "deeper canopy as he climbs" | RM:475 (R-164.2), Matt 2026-11-04: "on level 1-1, let's not have the sky change. It's weird. I'd rather just have one sky." | Matt direction |
+| C9 | ES 342, 520-521, 739, 942, 1020, 1288-1289 | Creaky taught at 1-5 n2; lianas belong to 1-6 | ES 1429-1433 ruling (1-2 teaches both), shipped d272601f ("1-2 owns the lianas") and 6dae405d ("1-2 teaches crumbling"), ML first-use rows. The ruling does not edit the teach-order table or the earlier lines; BR:43 also still says lianas 1-6 | Later ruling not marked; shipped decision |
+| C10 | ES 300, 303 | Replay after a loss up to about 45 s | SR §0b.8 (ccr:64-65) "respawn within about 2 s of the hard part"; GV:165 | Shipped rule doc / research |
+| C11 | ES 516-519, 522 | Fork share 30-40%; two forks with 3 crossings; checkpoints "before n6 and n10 only" | ES 424-425 and 431 withdrew all three earlier (1:35 AM); the 2:45 AM "meets by construction" block re-states them | Later ruling contradicted by a still-later block |
+| C12 | ES 297-298 | Never a checkpoint before a rest node | SR §0b.2 (ccr:48): checkpoints sit ON the rests before parts 3 and 4 | Shipped rule doc (wording) |
+| C13 | ES 394, 396-399 | ">= 4 of every 5 landings step up or down, as the old 1-1 does (171 of 202)" | The gate's line is 0.949 (cp3/lines.py:12; cp3/CP3-CHECKPOINT.md:21); 171/202 = 0.847 (cp1/table2.txt:2). Two measures of one number | Measurement |
+| C14 | ES 41, 133-134, 235-236, 989, 1098 | Neighbours share <= half their ideas or pieces | LEG E47 / E127 (cross-stage Jaccard <= 42%); SR §0c.4 (ccr:83-84: no template in more than 3 of a world's stages) | Research / rule doc |
+| C15 | ES 11, 59, 97, 268, 1104, 1112 | 8% ceiling as Matt's; total 4.5-6.2% | ST:962, ST:964 (8% is the lead's proposal); CP3 cost 2-3% so far (cp3/CP3-CHECKPOINT.md:89) plus round 2 (cp3/CP3-ROUND2.md:82; ST:966: 5-6%, "over the 2-4% Matt allowed"). The spec's estimates are not updated | Measurement / record |
+| C16 | ES 644 | E[lives] Normal 0.5 -> 3.0, Easy 0.2 -> 1.0, citing "DESIGNER §2.3" | D:200 and R3:44: Normal World 1 <= 1.0 rising about 0.5 a world (World 10 about 5.5), Easy <= 0.3 | Misread source |
+| C17 | ES 631-632 | "a new world's first stage starts at the previous world's middle ... STAGE-RULES §1b's rule" | SR §1b (ccr:131-148) says bands climb and may overlap "a little, never by a whole world"; GP:100 says the first stage "drops slightly below the end of the previous world". The dial overlaps neighbours by half a world | Misread source |
+| C18 | ES 797 vs ES 888-892 | "this line is not loosened" (Easy <= 0.55); then the line becomes "no denser than the old 1-1's Easy range" | SR §2 Pacing (ccr:173) Easy 0.35-0.55; Matt's yes on the change is not recorded (ST:966 says "designer accepted") | Later ruling loosens a written line |
+| C19 | ES 414-417 | Easy hearts and flags left as the engine's Easy pass lays them (15-33 a stage, several in the first 30 s) | MD:77-79 ("hearts aren't given out the very first thing"), which the spec itself says holds on both settings | Matt direction (named, deferred) |
+| C20 | ES 640 | Gap share up to 0.92 Normal / 0.80 Easy of the level check's limit | GL D2, GP:75-76: required jumps under 82% Normal / 65% Easy of max. Different denominators (the level check may already hold a margin), so this needs one check, not a ruling | Research row (to check) |
+| C21 | ES 648 vs ES 1181 | Bursts a node 2 at d = 0 | 1-1 (d = 0) lays 3 bursts in n2-n7; ES 1230 asks any override to state its reason in the `difficulty` field, which ES 1181 does not | Internal |
+| C22 | ES 1403, 1412-1413 | W1 piece label: crumble slab in W1 by the shrine stones | ES 1450 (acf6e1e8: never World 7's slab in World 1) marks the 9:56 and 9:58 rulings revised but not the 9:59 label table | Later ruling not marked |
+| C23 | ES 1397, 1400-1402, 1404 | Worlds per kind (log W1-W4, W6; mushroom W1, W3, W6; bough W1, W2, W5, W6, W8; creaky W1, W5, W6, W8; bridge W1, W5, W6) | cp2/library.txt:2-11 (logs in all 10 worlds; mushrooms in 1, 3-5, 7-10; branches in all 10; crumble in 1, 5, 7-10; bridges in 5, 8-10). The spec says it rules ahead of each world's pass (ES 1417-1419) but does not note that it narrows what ships today | Measurement |
+| C24 | ES 32, 92 | Mix floor = old 1-1's 5 piece kinds | MD:7 ("a huge set of platforms to pick from"); SR §1c (ccr:156-158: >= 14 section types a world, >= 5 themes a stage); CLAUDE.md "more pieces ... never barely squeak past". The mixed 1-5 lays 11 kinds (cp3/cp3-lines.txt), so the floor is not binding, but the written line is the "barely squeak past" kind | Matt direction (weak floor) |
+| C25 | ES 1026-1034 | Stage loop: lead brief, designer, planner, lead check, Matt | LCA:20-31 (designer, planner and a premortem critic, in separate passes) and the critic role already used (engine-critic) | Research row |
+| C26 | ES 1435-1437, 1287 | Trunk climb taught at 1-4 | ML row trunk (first 1-1, on the mixer branch); the re-run on main's 1-1..1-3 was asked for and is not recorded | Open measurement |
+| C27 | ES 37 (and splits everywhere) | Split rule: road continues across <= 180 px gaps, heights >= 120 px apart | cp3/split180.py:11 also requires a stretch over 300 px, which the spec never states; a rule the gate applies that the spec doesn't say | Spec vs tool |
+| C28 | ES 1077 vs ES 333, 909 | 1-1 at "at least 20% under 1-5's median of about 4:05" | 1-5's own target was about 150 s (ES 333-334), accepted at 4:00-4:12 (ES 909); 1-1's band is set from a 1-5 that is far over its own plan | Internal (worth naming) |
+
+---
+
+## Summary count per tag
+
+Counted over every table row in sections 1-23 above (one tag per row).
+
+| Tag | Rows |
+|---|---|
+| MEASURED | 149 |
+| SOURCED | 151 |
+| MATT | 120 |
+| DERIVED | 18 |
+| OPEN | 155 |
+| **Total** | 593 |
+
+Of the MATT rows, 6 are "(relayed)": a commit or note credits Matt but his words are not saved anywhere I could open.
+
+## Sources that should be fetched next (not fetched in this pass)
+
+- Super Mario Bros. 1-1 and Mario Wonder course layouts, for the float share (ES 1363-1365) and the stage-length spread (ES 667).
+- Hayashida's GDC 2012 talk on Super Mario 3D Land (re-use spacing of a mechanic: the echo and "must keep returning" lines).
+- Shovel Knight's design deep dive (2020) for its "on cooldown" list and per-level budget (R1:527).
+- Rayman Legends / DKC Returns world maps for how often a mechanic recurs across worlds (ES 1535-1548).
+- The full Polymorph paper (Jennings-Teats et al.) for the pairwise adjacency numbers behind LEG E21 / E116.
+- Isaksen et al. FDG 2015 for a phone-touch timing spread, before the dial's risk numbers rest on a browser tap test.
+
+## Method update (LAWS 4)
+
+- What worked: reading the planner's commit messages first. Most measured numbers in the spec are only in commit bodies, not in a saved
+  output file; the register names the commit where no file exists.
+- What failed: the spec cites `cp2/library.txt` for widths it does not hold (they are in `cp2/sheet.html`), and the engine-spec copy of
+  STAGE-RULES has no §0c. A trace must read the ccr copy.
+- The exact edit for `reference/methods/` (the designer's call): "Every new number in ENGINE-SPEC carries its tag and cite in the same
+  line, and a ruling that changes an earlier number edits or strikes the earlier line in the same commit."
