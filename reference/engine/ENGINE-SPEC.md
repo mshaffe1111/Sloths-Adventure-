@@ -1650,7 +1650,7 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
   measured from the code (protoStage, w*Play, w*PropsData, the gen2 worlds, lairs, kits). The designer then labels every kind of every
   world in one pass, before the mixer reads the library.
 - **The hanging moves are core, because this is a sloth game.** Each gets its own row: vine (climb), liana (swing), rope (shimmy), and
-  the underside of a bough or trunk where Pokey hangs. Trunks are anchors, not landings. **[revised 1:14 PM ET: core = the hanging moves main ships: vine climb, liana swing, rope shimmy (skill.shimmy, 1-3). Main has no under-bough hang (no such move in src/game), so it is a new verb: Matt's call (L1808)]**
+  the underside of a bough or trunk where Pokey hangs. Trunks are anchors, not landings. **[revised 1:14 PM ET: core = the hanging moves main ships: vine climb, liana swing, rope shimmy (skill.shimmy, 1-3). Main has no under-bough hang (no such move in src/game), so it is a new verb: Matt's call (L1808)]** **[corrected 1:18 PM ET: Matt already decided it. PLAN-TO-80, approved by Matt 11-04 (via the lead 2:26 AM), makes it "Pokey's own move: hanging under branches... World 1 placements" (ROADMAP R-160.1, R-160.2 for W2-W10). That replaces his 10-30 pick of teaching it in 9-2 (STATUS c6b9b0a9f). So it is an APPROVED move, not yet built: no code on main, and no hang frames in heroAtlasData.ts. It goes on step 6's move list as approved-not-built; it is not a question for Matt]**
 - **Float caps per world** are set in the same pass. The default stays "some, ≤ 25% of landings" until a world's row says otherwise,
   with its reason.
 
@@ -1805,7 +1805,7 @@ cleared by re-wording a rule. Each is accepted with its spec change, or rejected
 | L1232: 1-5's lines are every stage's default | **ACCEPTED.** No default. Every profile states its own lines, each MEASURED from that world's shipped stages, or the profile is refused |
 | Slot order the same in every world (L1462 "every world keeps its stages") | **ACCEPTED in part.** The stages, names and story stay (Matt). Slot *roles* vary inside them, and Matt already decided to reshape 2-3 stages a world into other types (R-153) |
 | Timing variety: the same jump interval four times | **ACCEPTED.** It becomes a gate: no four take-offs in a row at the same interval (± 0.1 s) on the bot's route (LEDGER part2:43, :330) |
-| New verbs (camouflage, belly slide, under-branch hang) **[1:14 PM ET: this line governs the under-bough hang; L1652 and L1833 are revised to match]** | **Matt's call.** New moves are design scope, so the lead takes it to Matt as one question. Not ruled by me |
+| New verbs (camouflage, belly slide, under-branch hang) **[1:14 PM ET: this line governs the under-bough hang; L1652 and L1833 are revised to match]** **[corrected 1:18 PM ET: Matt already decided it. PLAN-TO-80, approved by Matt 11-04 (via the lead 2:26 AM), makes it "Pokey's own move: hanging under branches... World 1 placements" (ROADMAP R-160.1, R-160.2 for W2-W10). That replaces his 10-30 pick of teaching it in 9-2 (STATUS c6b9b0a9f). So it is an APPROVED move, not yet built: no code on main, and no hang frames in heroAtlasData.ts. It goes on step 6's move list as approved-not-built; it is not a question for Matt]** | **Matt's call.** New moves are design scope, so the lead takes it to Matt as one question. Not ruled by me |
 | Puzzle rooms that roll | **ACCEPTED as research (R).** Rooms stay as built until a run shows a rolled room passes the puzzle validator |
 | Neighbour length ±20% can't be met in parallel | **ACCEPTED.** Lengths are set per world before any of its stages is built: a world length plan with each stage's band, from the shipped world's measured spread |
 | L1458's 10:12 AM stamp against MATT-DIRECTION's 11:10 | **REJECTED, with evidence.** 0982e0dc's commit time is 15:12 UTC = 10:12 AM ET. MATT-DIRECTION's stamps from that hour ran up to an hour ahead, and the lead has since corrected them (lead, 10:34 AM) |
@@ -2331,7 +2331,7 @@ The verdict was **NOT READY for step 6 until four edits**. All four are made, in
 - L1462 is marked with L1806: stages, names and story stay; slot roles vary; R-153.
 
 **E3. The two conflicts settled.**
-- **Hanging under a branch is Matt's call** (L1808). Evidence: main ships vine climb, liana swing and rope shimmy (skill.shimmy, taught
+- **[corrected 1:18 PM ET: hanging under a branch is APPROVED by Matt, 11-04, R-160.1, World 1 placements; it's on step 6's move list as approved-not-built, with its HF art on R-149.6. Only camouflage and the belly slide remain new verbs for Matt]** ~~Hanging under a branch is Matt's call~~ (L1808). Evidence: main ships vine climb, liana swing and rope shimmy (skill.shimmy, taught
   1-3), and has no under-bough hang in src/game. So it's a new verb, not a core move that exists.
   - L1652 and L1833 are revised. Step 6's move list carries the three shipped hanging moves and not the under-bough hang until Matt
     rules.
