@@ -174,6 +174,26 @@ differently is world five." This replaces "each world has its own kit":
 Animals in the unused frames (the mantis "disguise", the eagle "glide", the caiman "retreat", the turtle "scurry") can give each
 animal a second behaviour. That is the harder form the move ladder asks for when a taught animal comes back.
 
+
+**[designer ruling, 11-05 ~12:32 AM ET, on the planner's CP2 traces (`cp2/cp2-trace*.out`)] Easy's rise cap.**
+Every idea is the same idea on Easy; only its numbers soften. On Easy:
+- no rise is more than **+40 px** onto a landing narrower than 220 px;
+- a landing after a rise of +40 is at least **110 px** wide;
+- a rise of +50 to +70 stays allowed only onto a landing of 220 px or more.
+
+This fixes bough stair (flicks 246-281 ms against Easy's 300 ms floor at +50 to +70) and stump hop step 1 (+50 onto a 60 px stone)
+without changing what the player does. On Easy the stair just climbs in more, smaller steps over the same height. The planner
+re-traces both on Easy after the change.
+
+**What the all-worlds count says for the mix** (`cp2/library.txt`, `enemies.txt`):
+- logs are 9,095 of about 19,000 placed pieces, so the old fault in numbers is logs everywhere;
+- moving platforms appear only 17 times in the whole game;
+- drifting logs and lily pads live only in World 2;
+- 24 of 90 stages have no animal.
+
+So the first pieces the mixer should spread are the ones most worlds lack: moving and drifting platforms, lilies, mushrooms, and the
+taught animals.
+
 ### CP3: the mixer, proven on the worst stage first (1-5) (owner: designer specs the mix rule, planner builds and runs)
 - **The mix rule (designer), [Matt, 11-05] ideas first, pieces inside an idea.**
   1. **The stage's story beat and theme come first** (STAGE-RULES and the story files). They pick the stage's job and look, never
