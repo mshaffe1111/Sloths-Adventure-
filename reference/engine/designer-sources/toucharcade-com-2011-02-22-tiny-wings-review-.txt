@@ -1,0 +1,27 @@
+https://toucharcade.com/2011/02/22/tiny-wings-review/
+TouchArcade Rating:
+
+In the iOS gaming world, sometimes the simpler a game is, the better. Sure I love more complex, “console-like” experiences, but it seems that the more boundaries a developer tries to push in adding complexity to an iOS game, the more chances that some aspects will fall short given the inherent limitations of the device. In that case, *Tiny Wings* [99¢] from first time iOS developer Andreas Illiger leaves very little room for falling short of expectations. Games doesn’t get much simpler than the one-touch mechanic found in *Tiny Wings*.  Combined with the fantastic art style, delightful music, and brilliant gameplay, *Tiny Wings* approaches what I would consider the perfect iOS game.
+
+In *Tiny Wings* you play as a bird who has been pecking a bit too much at the seed bell, making you a bit on the heavy side. You’re not able to fly like most normal birds, as your tiny wings can’t support your weight. But you dream about flying all the time, and with the help of your environment, you make this dream a reality. Using the hilly terrain to your advantage, you’ll gather speed sliding down the slope of a hill and then using the upslope of the neighboring hill as a launch ramp. No matter how hard you flap your little wings, you won’t be able to stay airborne for long, so you must continually land and relaunch yourself in order to keep flying.
+
+Your overweight avian will automatically move to the right, and not touching the screen at all causes him (or her?) to vigorously flap its wings trying desperately to stay in the air. Holding down on the screen ceases all flapping and causes your bird to become nothing more than dead weight. You’ll use this weight to accelerate into the downslopes while immediately letting go after an upslope to launch yourself in the air. This mechanic takes a few tries to fully “click", but works wonderfully well and there’s an almost zen-like rhythm to coasting in and out of the slopes of the terrain.
+
+Each journey starts at sunrise, and your score is based on how far you can make it to the right before nightfall. Collecting coins or perfectly hitting the curves of the hills can add to your score and increase your speed. The terrain is broken up into a series of islands which are procedurally generated and change in real time each day. Completing a short list of specific tasks will earn you a nest upgrade, which in turn increases your overall score multiplier. The required tasks change with each nest upgrade, adding a bunch of interesting goals to shoot for while you play.
+
+The simple gameplay in *Tiny Wings* is sublime, but there’s an intangible aspect to it that makes it a total joy to play. The charming graphics and music make me feel good, and I find myself rooting for the plump little bird and sharing in his jubilance each time he takes flight. It’s such a great feeling to hit several perfect slopes in a row, pick up a ton of speed and just soar through the air. All the while my birdie is yipping and hollering for joy, and I just feel happy for him. It sounds silly, but it’s unlike anything I’ve ever felt from an iOS game in recent memory.
+
+While I don’t hesitate to label *Tiny Wings* a 5 star game based on the initial release, some simple additions could serve to make it a more fulfilling experience. Currently OpenFeint offers a number of achievements and a single high score leaderboard, but Game Center integration is in the works along with additional leaderboards to cover a wider variety of statistics. More nest upgrades and possibly even additional bird types would be welcome as well. Retina Display support would be nice, but at the same time it might ruin the unique watercolor-esque look the game currently employs.
+
+I could go on saying more nice things about *Tiny Wings*, but I’d rather get back to playing. There are a ton of positive impressions in our forums, and I can’t think of the last time I’ve seen a game so universally loved by our members. *Tiny Wings* has found itself a permanent spot on my device nestled snugly next to games like *Solipskier* [99¢] and *SpikeDislike* [99¢/Lite] as simple to play, hard to master, and endlessly replayable titles that are perfectly suited to the platform. If these are the types of games that interest you, don’t even hesitate to give *Tiny Wings* a download.
+
+- # Tiny Wings
+
+  You have always dreamed of flying - but your wings are tiny. Luckily the world is full of beautiful hills. Use the hills…
+
+  TA Rating:
+
+  $1.99
+
+  Buy Now
+  Watch

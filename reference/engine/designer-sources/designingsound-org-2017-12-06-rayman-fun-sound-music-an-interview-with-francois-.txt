@@ -1,0 +1,40 @@
+https://designingsound.org/2017/12/06/rayman-fun-sound-music-an-interview-with-francois-dumas/
+François Dumas, now Audio Director at Ubisoft Annecy (Steep) – Credits: Ubi Blog
+
+Released in 2011 and 2013 (up until the recent Switch release), Rayman Origins and Legends were welcoming returns to the platforming genre for the armless hero, powered by Ubisoft’s own 2D engine, the magical UbiArt Framework. Sound-wise, while the crazy and catchy tunes wrote by Christophe Héral received numerous well-deserved praise among the years, I wanted today to talk with someone who was more on the sound design side of things and got in touch with François Dumas, at the time Lead Sound Designer on the two projects. Now Audio Director at Ubisoft Annecy, he agreed to answer a few questions about those projects and how he approached the notion of “fun” when working on them… while experiencing it himself.
+
+First of all, during the preproduction period, we try to establish a semantic field of “fun” sounds. What makes a sound fun for a player? We try to make a connexion with what convey fun and enjoyable feelings in our everyday life, and transpose that in the game.
+
+One of our main topic for inspiration is children, who are really great “fun catalysts”. For instance, a child playing with a balloon. What makes them laugh? It can be the balloon’s skin squeaking as it gets more and more inflated. Or the balloon’s noise as it’s whirling away. Or its “bang” when exploding. Or even the hissing as it’s deflating while someone’s pinching its neck. All those sounds are or at least were part of our lives. Using those kind of sound textures in a sound design project will act as a reminder of our childhood and, with it, all the associated good and “fun” moments.
+
+Another part of the fun comes from the rhythm of the game, the timing of the events happening. Playing too many elements at the same time will dilute the effect and the outcome won’t be as impactful. In a micro or macro way, I like the games I work on to have a certain sense of rhythm. Working with silences is paramount. It’s really important to give the game some breathing room in order to increase the impact one element will have on the player.
+
+What were the main challenges of these projects when designing their soundscapes?
+
+The main challenge we faced was finding the right and original tone for the game. Using old cartoons tricks would have been easy, but Michel Ancel was adamant about the fact that he wanted Rayman to have its own unique soundscape, especially regarding the voices.
+
+We iterated a lot of time on Rayman’s voice, for instance, from the beginning to the end of the production. And that’s despite Rayman not actually speaking, which makes the few vocal reactions he had even more important. A similar process was done for all the in game characters, playables or not.
+
+Could you talk a bit about creating the now famous musical levels in Rayman Legends?
+
+The idea of the musical levels came from Michel Ancel himself. One evening, he was playing a dev version of the game while listening to Trust’s “Antisocial”, and immediately, a synergy happened and he told us that we should definitely looking at putting as much emphasis as possible on the music/game synchronisation.
+
+Our tools already allowed us a certain synchonicity between music and game elements, but we had to think more global, at a full-level scale. Therefore, a system was put in place, allowing us to write kind of a music sheet which the level designers would be able to use as a grid in order to “rhythm” their levels.
+
+There is no foley artists per say at Ubi Montpellier. When we encountered specific foley needs, we just went in the recording booths and record the sounds we need ourselves. Every sound designer was in charge of features from the beginning to the end, from creating the sound to integrating them in game.
+
+How was the workflow with composer Christophe Héral? Did the music influence the sound design or was it the other way around?
+
+Christophe Héral was very involved in the game, and his music was a central part of the soundscape – it definitely gave the tone of the game. We spent a lot of time searching and iterating to find the right direction to go for each music.
+
+After that, the sound design of the in game elements has always been made in connexion with the music. The most obvious example for that are the sounds of the music world in Rayman Origins. Every sound was designed on the same scale as the music, in order for the whole soundscape to play like a melody. We also worked hard on the rhythmical aspect of those levels. For instance, the footsteps sounds were all getting snapped on the music’s semiquavers beat, resulting in a in-sync rhythm when running on a djembe.
+
+It’s hard to finish a game, there’s no ending to an artistic process. There is always something you would like to add, to do differently, or to improve. There is no regrets to have regarding Rayman Origins or Legends… sometimes, we would have liked to have better tools or more time, but that’s it.
+
+In the end, we always took our decisions while keeping in mind the player experience and the fun they would have when playing and listening to the game. The audio team who worked on both Raymans is very proud of what we achieved.
+
+You are now working as the audio director of Ubisoft Annecy. How many audio people are working there and, to conclude on the thematic, where do you find the “fun” in your everyday job?
+
+At Annecy, there is currently two sound designers and an audio director. As for your other question, “fun” is an integral part of my job. If I didn’t find any “fun” in it, I wouldn’t do it. It spans from conducting research and experimentations of new soundscapes to collaborating with the other teams to create interactive systems centered around audio.
+
+Finally, part of the “fun” is also connected to the fact that our field is always evolving, meaning that we always have to question ourselves in order to keep pushing technological boundaries.

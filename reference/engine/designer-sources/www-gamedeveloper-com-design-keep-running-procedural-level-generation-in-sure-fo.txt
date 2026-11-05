@@ -1,0 +1,99 @@
+https://www.gamedeveloper.com/design/keep-running-procedural-level-generation-in-sure-footing
+Featured Blog | This community-written post highlights the best of what the game industry has to offer. Read more like it on the Game Developer Blogs.
+
+# Keep Running | Procedural Level Generation in Sure Footing
+
+Building scalable and flexible level generation isn't easy. So I started a research project and wound up launching a game on Steam.
+
+In this piece I'm being a little bit selfish and talking about a game that I made for a change and how AI and procedural generation can build scalable and flexible level generation systems. Sure Footing is an infinite running platforming game developed by my company Table Flip Games and takes the infinite running template seen in flash and mobile games and expands upon it. The resulting game carries a dynamic, scaling and reactive procedural generation system that not only changes the world as you play, but makes decisions to change its own internal decision making and tweaks parameters based on player performance. The goal of Sure Footing is to allow for players to find a play style and pace that suits them as they race through the generated worlds: not just with the variety of characters, costumes and power-ups but also the difficulty of the level generation system itself - allowing players to treat it as a mild-paced platformer all the way to an intense twitch runner.
+
+In this piece I'm going to talk about how it all started, the academic research that inspired it, the AI that controls the bad guys and most importantly the procedural generation engine that powers the entire game. The engine manages not just how segments of the world are created, but how we modulate the scale of generation over time, how difficulty is encoded and makes changes at runtime to try and keep players engaged as best as possible.
+
+# Infinite Runners
+
+If you're not familiar infinite runner are a sub-genre of platforming games where the player is constantly running forwards and navigating a variety of platforms and obstacles that get in their way. It's largely popularised in western markets by flash and mobile games such as Canabalt, Temple Run, Subway Surfers and Jetpack Joyride. Infinite runners are largely reliant upon procedural generation or at minimum some basic pseudo random methods in order to continually construct new segments of environment for players to run through the longer they survive. This is why I chose it as a test-bed for a research project I started back in 2014 exploring how to manage the expressive power of a level generator. Procedural generators can build anything they want within the scope that they are constructed, but how do you model that in a framework that is open to user needs and designer influence? By controlling or at minimum constraining these aspects, we could effectively manipulate the scale of content and - provided the generated content is linked to gameplay challenge - potentially influence the perceived difficulty of the game. Infinite runners typically handle their difficulty curve with small design-driven tweaks of parameters such as running speed, the probability specific obstacles appear, as well as activating new effects that players won't see early on. But how do we maintain that whilst also ensuring a sense of variety and novelty over hours of gameplay? There isn't a huge amount of evidence in industry of how this is done through frameworks, pipelines and good practice, so I decided to try it myself.
+
+While Sure Footing is an infinite runner, the design of its level generation system is derived largely from classic platformers such as Super Mario Bros., Sonic the Hedhgehog and Rayman. However some of the smaller design choices are influenced by two infinite running games: Adam Saltsman's Canabalt and Jetpack Joyride by Halfbrick Studios for the orientation, shifting locales and city skylines. One of the reasons I focused on classic Mario-style platforming is that there is already a lot of research in this area. I covered some of the earliest work in this field a couple years back with the Mario AI competition, but has since been nurtured even more over time - a topic that I hope I can return to in the near future!
+
+One of the major influences behind the system was the LaunchPad project (Smith et al., 2011): a procedural generation system that developed Mario-style levels using a grammar system - developed by Gillian Smith and Mike Traenor - that is built on the idea of rhythm and beats, where the system procedurally generates levels based on actions the system wants players to do and constraints that dictate how they can be glued together.
+
+Meanwhile inspiration also came from work by Steve Dahlskog (Dahlskog and Togelius, 2012, 2013), a lecturer at the University of Malmo in Sweden who has looked at how encoding platforming level designs as patterns and how Super Mario Bros. in particular is reliant on specific patterns occurring frequently and at varying levels of challenge or difficulty. Steve has also experimented with letting machine learning algorithms create their own Mario levels using this pattern encoding. If you're interested in this work, be sure to check out my Legacy of Super Mario Bros. video already on AI and Games.
+
+Sure Footing marries these two principles together: we use the base idea of beats in a rhythm from LaunchPad, the constraint modelling process and encode the pattern formula at both the individual gameplay beats as well in the construction of overall levels. This is actually done on two levels of generation: action, followed by geometry, which I'll cover in a minute.
+
+# The Level Generation Framework
+
+Sure Footing has so many generators built into it I sometimes forget they're even in there. While the framework that places platforms is the primary system, we also use generators to
+
+* Generate the opening market street
+* Place the background geometry
+* Customise the census data players see on the welcome signs
+* Decorate the streets with NPCs and market stalls
+* Even the piles of crates you see in the streets are generated by their own procedural system.
+
+The game is actually rather barren before any of the code starts executing. Sure Footing is built in the Unity game engine and while in-game you'll see the market, the starting streets and all the game run quite seamlessly, as you can see in the editor view, only the empty start street and junction exist before the game starts. The rest of the game is built at run-time through a series of volume triggers and time-sliced routines that run the PCG in the background and place new content. What's critical to us is that the game does all of this without compromising frame-rate and mitigating just how much players see in advance. We actively try and ensure that players can't tell when the PCG systems are active as it not only generates new content in front of you, but also removes segments of play behind you.
+
+Sure Footing breaks up the level generation process into what we call 'sprints', these are the segments full of platforms in between each street area that we refer to as 'rest pieces'. The procedural generation engine is responsible for building a sprint, ensuring it is positioned correctly, generate a new rest piece, populate the rest piece with content, managing the increase in scale for the next sprint and then ensuring that the backgrounds all align correctly as well as activate or remove mutators that change the game to make it more challenging.
+
+In order for the sprint generation to ramp up and provide an interesting difficulty curve, we apply a number of constraints within a system on start up. These constraints are gradually relaxed during play, allowing it to generate more difficult sprints, but also inject some variety as it swaps out modes of generation and uses new tools at its disposal. I'm going to deep dive into two specific systems, the sprint generator and the sector generator - which is responsible for selecting the locales we visit while running and how the two interact with one another.
+
+## The Sprint Generator
+
+The sprint generator is responsible for looking at the current state of the game and building the next segment of platforming content. In order to do that, the sprint generator is broken down into two main subsystems I mentioned earlier: the action generator and the geometry generator.
+
+The action generator figures out what we want the player to experience in a more abstract sense during the next sprint. What are the sequences we'd like to glue together. Does the next sprint adhere to a particular theme such as running up a gradual incline? Running down hill? Continually forks into multiple paths? Or perhaps it's a nice chill route with a lot of flat runs.
+
+To do this the action generator adopts the principle of procedural grammars from LaunchPad: in this instance we encode actions we expect the player to complete, such as climbing a set of stairs, falling down a drop, bouncing upward on a spring or even just running a flat sprint. These terms or symbols can then be added to the lexicon of a unique grammar, with associated rules or costs attributed to them. The lexicon of a grammar, combined with the rules of construction sequences in that grammar, give us control over what decisions that generator makes. It allows us to decide what actions are valid for a given sprint, and even distinct contexts within a sprint: such as ensuring you don't have the same thing twice, or that we don't 'follow action X with action Y'. The system then drafts a sprint by running a search through the grammar while respecting the constraints that have been imposed, resulting in a finite sequence of specific actions it wants players to complete for that sprint.
+
+Meanwhile the geometry generator takes that encoding of the sprint and turns it into a sequence of platforms. This is achieved by having pre-built chunks of gameplay, much akin to the Dahlskog pattern model that represent the specific symbols used in the action generator grammar. As the designer that means I have to sit and make a stack of different variations of the same pattern: such as hopscotches, two and three-prong paths, stair wells, drops, spring sequences and more. The system then selects a corresponding pre-built chunk or prefab for each of the sprints generated actions.
+
+In order to gradually scale the challenge of the sprints, each subsystem is built on the principle of a 'budget': a cost value attributed to decisions made by the level generator systems constrains the size and intensity of levels, alongside the geometry that actually appears.
+
+In the action generator, the budget gives us control over not only how many actions are encoded within a given sprint, but also how soon certain actions can start to appear. Each action generator decides the cost or value of a given symbol in each grammar, meaning that in some instances a pattern such as a staircase will be more or less expensive in different action generators. Meanwhile in geometry generator, each variation of a given pattern is given its own cost. Hence I can sit and make different versions of the that staircase sequence and through the cost value can establish a continuum of the easier to harder versions of this segment. All of these budget values and the like are hand tweaked at design level, allowing for me to better balance parts of the game having play-tested it in the wild.
+
+In addition to all of this, there are multiple versions of each generator, with three geometry generators and 17 action generators at the time of this video. Geometry generators are used for specific circumstances in game. Meanwhile the action generators are swapped out at runtime by the level generator itself, with it dictating how frequently it changes mood and sometimes reacts to what the player has done in-game.
+
+## The Sector Generator
+
+So with the sprints in place, we wanted to add another layer to the game that helps players understand how far they're progressing. To do this we use sectors: fictional locations that change the aesthetic of the game, as well as potentially add a new layer of difficulty. At launch we have 10 unique locations in the world, with the player always starting in Cacheville in survival mode. The sector generation process is responsible for generating the backdrop art assets, activating mutators that change the world as well as triggering the behaviours in the sprint generation framework.
+
+Upon entering a sector, we check whether any new mutators are going to be added to the game, this includes visual occlusion, changing the camera orientation and adding elements such as fog. The sector generator places the background art assets for that sector - building the cityscapes, the trench and back wall in such a way that they click together. The skyline of each sector is always generated to ensure it lines up with the rest area at the end of the current sprint. Each sector is a certain number of sprints in length, once the threshold is reached, the generator will pick the next locale to visit. It then triggers two behaviours in the sprint generation system:
+
+* First up, the sprint and sector generator will build a custom sprint that we call a tunnel: this is a forced transition to a specific action and geometry generator that creates a slightly more difficulty run than usual. It's used to signify that a sector transition is about to occur: using a special tunnel background and audio occlusion to help identify the change.
+* Secondly, we queue up the removal of any and all mutators to occur at the same time mutators for the next sectors will be activated. Meaning a seamless transition between sectors.
+
+# NPC AI and The Running Pace System
+
+To round things up, I'll quickly cover two topics that are relevant to how we manage the overall gameplay experience: enemy AI and the difficulty system we refer to as 'The Running Pace'.
+
+## Enemy Character Behaviour
+
+We have two villains in our game, Deletion Dave who chases you throughout the game, as well as Ramrafstar, who acts as more of a boss battle and flies in to start destroying the platforms as you run across them. Each of them are actually fairly simple and operate in a simple finite state machine.
+
+Dave is almost always chasing you, with him gradually increasing in speed the longer you survive and can be made to slow down by having him hit active blue crates. But he does have some simple attack patterns and delays between attacks. Dave also has a state within which he will actually stop chasing you, but that's down to two things: Ramrafstar and difficulty settings.
+
+Ramrafstar has three states of behaviour, inactive, waiting and attacking: by default he won't start attacking until the level generator permits him to do it. Every sprint Ramrafstar checks whether the level generator will permit him to interrupt and attack the player. Once the level generator permits this - a decision driven by both difficulty settings as well as some other secrets about player behaviour - Ramrafstar will appear on a rest piece street. Upon passing him as he sits on the street, he'll come to life and attack for a predetermined period of time. In addition, based on the current difficulty, Deletion Dave may be asked to fall back into his inactive state. Though in higher difficulties, there's a good chance he won't!
+
+## Running Pace
+
+Speaking of difficulty, this has been a big part of the ongoing development of the generation framework: tweaking the system so it is more flexible for players. At the time of this video, the game provides custom configurations of the level generator that provide specific difficulty settings as well as the ability to create a custom loadout where players customise the difficult for individual components of the core design. This is all in an effort to improve the games accessibility.
+
+Accessibility has proven a really important issue during the games development, largely given how broad the demographic of players we've seen enjoying it. We've seen hardcore gamers, grandparents, toddlers, casual players have fun at many of the events we've showcased in the last couple years. Plus we've had really useful feedback when seeing how players with disabilities engage with the game and learning about how aspects of its design pose barriers that prevent them from enjoying it as much as they could!
+
+With over 30 unique parameters in the PCG, enemy AI and more that influence the overall state of play, we can look to customise them in ways that change the overall experience. So with that in mind we built running paces: these are essentially difficulty levels, but I don't like using that kind of terminology, given it can prove alienating to players if they are physically incapable of playing on the supposed 'normal' difficulty. Each running pace customises the movement speed of the player, the starting budget values of each generator system and the amount they increase by, constrains what types of obstacles can be spawned in by the generator, which action generators are enabled, whether sector tunnels can be used, what specific actions the action generator cannot do at the start of the game and whether those rules can relax over time and the levels of aggression of Dave and Ramrafstar, to the point that on their lowest settings they are completely disabled.
+
+What makes this even more useful is that for some players the gap between one running pace and another might be too extreme and they need to get used to it. So the custom running pace system allows players to pick and mix the setting for player movement, level generation, Deletion Dave and Ramrafstar. So if you like playing super fast speed, with easy geometry and Dave right on your tail? You can do that. Or if you want to play on the lowest speed and movement and way to try on slightly harder geometry, you can do that too.
+
+For me it's all about giving players choice and allowing for players of all ages and abilities to play the game in a manner that suits them. Otherwise, what's the point in building this whole level generation system if it is still implicitly biased against certain types of players? I'm still working on some new research into building an adaptive system for the custom difficulty, whereby it begins to tweak parameters at run-time based on performance, so as to push players a little harder the more they play and gradually train them up from one running pace tier to another. But only time will tell how well that works out.
+
+# Closing
+
+Sure Footing is out now Steam and Itch.io for PC and we're continuing to tweak and update the game over the next year. Meanwhile I'm porting the game to Mac, mobile platforms and bringing it to the Nintendo Switch and Xbox One in 2019. There is still more work to be done, given there are a lot of prototype ideas and experimental systems locked away in my development builds: some might make it into the final build, some might not. But for now, there's plenty to keep me busy and hopefully you too. So yeah, I should stop talking and maybe get back to working on the game, gotta keep running right?
+
+# References
+
+* Gillian Smith, Jim Whitehead, Michael Mateas, Mike Treanor, Jameka March, Mee Cha. Launchpad: A Rhythm-Based Level Generator for 2D Platformers. IEEE Transactions on Computational Intelligence and AI in Games (TCIAIG), vol. 3, iss. 1, March 2011.
+* Steve Dahlskog and Julian Togelius. Patterns and Procedural Content Generation: Revisiting Mario in World 1 Level 1. In: Proceedings of the First Workshop on Design Patterns in Games. ACM. 2012, p. 1.
+* Steve Dahlskog and Julian Togelius. Patterns as objectives for level generation. In: Proceedings of the Second Workshop on Design Patterns in Games, the 2013 Conference on the Foundations of Digital Games (FDG 2013). ACM, 2013.
+
+Read more about:

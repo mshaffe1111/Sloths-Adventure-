@@ -1,0 +1,87 @@
+https://tinysubversions.com/spelunkyGen2/
+Have you ever wondered how Spelunky's level generation works? This tool is a complete, working copy of Spelunky that has been
+modded to just show you the second part of the level generation algorithm: generating the individual rooms of a Spelunky level.
+before the traps, enemies, and treasures are added to the map. (Only works in Chrome.)
+
+* PRESS 'R' TO GENERATE A COMPLETELY NEW LEVEL
+* PRESS '1' TO KEEP THE ROOM TYPES, BUT PICK NEW ROOM TEMPLATES
+* PRESS '2' TO KEEP THE TYPES AND TEMPLATES, BUT PICK NEW OBSTACLE BLOCKS AND PROBABILISTIC TILES
+* PRESS '3' TO KEEP EVERYTHING, ONLY PICKING NEW PROBABILISTIC TILES
+
+SCROLL BELOW THE GAME FOR A DETAILED DESCRIPTION OF WHAT'S HAPPENING
+
+In the last lesson we learned how Spelunky lays out the optimal solution
+path—essentially, how the "maze" of the level gets created with a guaranteed solution. In this lesson I hope to demonstrate
+how individual rooms are laid out.
+
+### Spelunky is not Like Most Games
+
+In a traditional 2D tile-based platformer, you build a map using a level editor. It probably looks like this:  
+  
+In this kind of editor, you say things like "at position (64, 128) there will be a grass tile." Spelunky doesn't work that way.
+
+In the last lesson we learned that Spelunky has four basic room types. Each room type has typically 8 to 16 templates that it chooses from. These templates consist
+of basic room layouts, that include a mixture of static and probabilistic tiles, as well as obstacle blocks. I'll explain each of these now.
+
+### Room Templates
+
+Each room type has a bunch of different room templates. For example, look at the tool above and find a room of type "1". It'll be a room with a left/right exit (it may also
+have other exits, but definitely left/right). Now press the "1" key on your keyboard a few times. You'll see the room maintains its left/right exits, but the overall layout of the room changes pretty dramatically.
+This is because the engine is picking new templates each time. The templates dictate the overall room layout: whether it's wide open, or claustrophobic, or full of platforms, etc.
+
+This an example of what a template looks like:
+
+```
+              1100000000
+              40L6000000
+              11P0000000
+              11L0000000
+              11L5000000
+              1100000000
+              1100000000
+              1111111111
+```
+
+A template is a 10x8 grid of tiles. A "0" means empty space, a "1" means a 100% chance of a solid block, an "L" is a ladder and a "P" is a top-of-ladder platform. I'll explain the others below, but for now you can
+look at the template above and see that there is solid ground, a 2-tile-thick wall to the left with a tiny opening at the top, and a ladder leading up to the opening.
+
+### Static and Probabilistic Tiles
+
+The tiles I described just now are what I call the static tiles. These work like regular tiles in a level editor: you say "there is a block here" and there will always be a block there.
+
+The "4" tile above is an example of what I'm calling probabilistic tiles. A "4" means that there's a 25% chance of a pushblock at the top of the ladder. Veteran Spelunky players
+will instantly recognize this: sometimes you get to the top of a ladder and there's a block you have to push to the next room. And sometimes it's not there. Other probabilistic tiles say things like "there
+is a 33% chance of a spike here" or "there is a 50/50 chance of empty space or a solid block here".
+
+Try pressing "3" a bunch on the tool above. I've highlighted the probabilistic tiles in white, and if you keep your eye on them you'll notice that the rest of the room
+stays the same while the white tiles change.
+
+### Obstacle Blocks
+
+The "5" and "6" are examples of what I call obstacle blocks. An obstacle block is a 5x3 tile block that generally forms some kind of interesting structure for the player
+to maneuver around. Obstacle blocks themselves are often comprised of probabilistic tiles. Here's an example of a "5" obstacle block template, meant to be placed on the ground (the "6" is meant to be placed in the air):
+
+```
+              00000
+              00102
+              71177
+```
+
+The same tile rules apply here: a "0" is empty, a "1" is a solid brick. Immediately you can see that there's a small step-up being built. A "7" is a 33% chance of a spike tile, otherwise it's empty. So
+if the player got very unlucky there would be a bed of spikes on the ground where you'd need to jump onto the step-up in order to get over the spikes. The "2" is a 50/50 chance of an empty space or a
+solid brick. So there's the possibility of a helpful extra platform to get the player past the spikes. It's also possible that there are no spikes at all, and that this is just a little area that the player
+needs to jump past! You can see from this that a relatively small obstacle block, when designed well, can create numerous scenarios in the game itself.
+
+If you look at the tool above, you'll notice many 5x3 areas highlighted in red. These are the obstacle blocks. If you press "2" a lot, you'll notice the red areas don't move,
+but what's inside them changed pretty drastically. This is because we're keeping the room template, so those "5" and "6" tiles denoting obstacle block locations don't move at all. However, we're
+still letting the engine pick different obstacle block templates, so while one template might involve spikes on the ground, another might involve some floating platforms. If you press "3"
+a bunch, we stick with the same obstacle block templates. What this means is you see far less variation in the obstacle blocks. In fact, if you look closely you'll see it's only the white tiles inside
+the obstacle blocks that change (because those are probabilistic—the rest are static like our "1" tiles in the step-up above)!
+
+### That's It
+
+One last wrinkle I didn't mention: rooms also randomly get mirrored left/right. Most of the time you won't notice this because most rooms are symmetrical. But you might notice while pressing "3" a bunch
+that soom rooms seem to flip. These rooms are asymmetric, and that's what's going on there.
+
+So there you have it. That's how Spelunky generates its basic platforming layout. By using an elegant combination of handmade layouts and probabilistic tiles, the game generates human-feeling challenges
+while keeping things fresh. Stay tuned for the next installment when I'll show how enemies and traps are placed!

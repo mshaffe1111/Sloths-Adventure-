@@ -1,0 +1,42 @@
+https://mobilesyrup.com/2015/12/23/badland-2-is-similar-to-badland-and-thats-okay-an-interview-with-frogmind/
+Apps & Software 
+
+# Badland 2 shows there’s fun in the familiar: an interview with Frogmind
+
+By Patrick O'Rourke    Dec 23, 2015
+
+The sequel to Badland, one of the most impressive, award-winning mobile games of 2013, was released last week to resounding praise from both fans and critics.
+
+As Prune’s developer Joel McDonald alluded to when discussing his game’s success in our story about the issues surrounding mobile game discovery, Badland topped the charts on both the iOS App Store and Google Play Store because of its unique visual style, which helped make the game stand out from the deluge of other mobile titles available on iOS and Android.
+
+Badland 2 wastes no time immediately dropping players into its unique, silhouette-filled world a second time around. Those who played the first Badland will feel right at home with this sequel as they help the game’s strange, spherical hero and its multiple clones navigate through various precarious and dangerous obstacle courses.
+
+During a recent interview with MobileSyrup, Teemu Mäki-Patola, COO of Helsinki Finland-based developer Frogmind, the studio behind Badland, explained why there was such a significant gap between the release of Badland and Badland 2, a rarity in the mobile gaming world where games are often released brisk pace.
+
+“We were fully focusing on updating the original Badland for the first year after launch. Initially, Badland was made by only two people. Hiring more staff and getting things running as a company took some time as well, as did porting Badland to other mobile platforms, and eventually PC and console,” said Mäki-Patola.
+
+Following the success of Badland Mäki-Patola essentially built the entire studio from scratch, leaving him little time to retool focus and begin developing Badland 2.
+
+“Actually making Badland 2 took about a year and a half. Now we are 10 people at Frogmind,” he said.
+
+Despite the obvious similarities between Badland and its sequel, a common video game sequel trait, Badland 2 is a decidedly different game for one important reason. In the original Badland, touching any location on the screen flapped your character’s wings, causing it to rise up and move forward. But Badland 2 adds new variables, taking this simple control scheme and expanding it by allowing the character to move left and right, as well as up and down.
+
+“This increases possibilities for mazes that snake around, rather than being a pretty much up/down affair. As a result, the levels are much more intricate and open up a lot more. The camera now zooms in and out, and the levels scroll to all directions. Sometimes you fall down, sometimes you go high up,” said Mäki-Patola.
+
+Other new features added to the series in Badland 2 include different obstacles and environments to navigate through, such as fire, liquid magma and searing light, as well as a new rolling character that doesn’t have the ability to fly – which is used quite frequently in the game – and slow-motion, low-gravity stages. According to Mäki-Patola. Badland 2 also features a time trial mode allowing players to race against online ghosts.
+
+But even with all the above new features, Badland 2 finds a way to remain strikingly similar to its predecessor. In fact, if you only dabbled with the first entry in Frogmind’s series and didn’t play it extensively, you may find it difficult to differentiate between the two titles. However, Mäki-Patola noted this was the studio’s overall goal with Badland 2.
+
+“We wanted to make it a worthy sequel, not just more of the same, yet still familiar enough. We feel we’ve accomplished that here, and luckily the players and reviews seem to have felt that way too,” he said.
+
+Similar to the original Badland, Mäki-Patola says his studio plans to bring Badland 2 to Android as well as other platforms like the Apple TV at some point in the near future.
+
+“Timing for Apple TV has not been decided, but it’s very possible. We are also working on the next level pack update, which will be free for all owners. We will support Badland 2 with more updates after that as well,” concluded Mäki-Patola.
+
+In terms of the future, despite Frogmind’s modestly sized staff, the studio is divided into small teams, with some members working on creating new content for Badland 2, and others developing an entirely different, still-unannounced gaming experience.
+
+Badland 2 is available on iOS for $5.99 CAD.
+
+## The top technology news, delivered to your inbox every Friday.
+
+By submitting your information, you agree to receive electronic communications from MobileSyrup, containing news, updates and promotions regarding MobileSyrup's products. You may withdraw your consent at any time.
