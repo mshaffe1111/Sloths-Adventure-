@@ -233,3 +233,14 @@ for anything periodic and found the three causes in minutes: a rest forced every
 strict twig/branch alternation. Rule for every helper: if 20-30 minutes of variations don't move the measure, stop trying values,
 look for the structural cause (what in the code makes it come out this way every time?), and ask the lead for fresh eyes. The lead
 steps in at that point and reads the code itself, without waiting for the deadline.
+
+## 8k. Research and design helpers: the expectation in every brief (Matt, 2026-11-04: "make sure that when we're getting these researchers out, that you set the expectation that this is not supposed to be some half-assed job")
+The first engine designer finished a 90-minute brief in 11 minutes, on skimmed sources and search snippets. Every research, design,
+critic or planner brief now opens with this block, word for word:
+> This is not a quick job. Use the full time planned. Read every line of every source you're given and open the primary sources
+> yourself (talks, postmortems, papers, code); never stop at search snippets or summaries. Check every claim about our game in our
+> code, and run your key idea against the real code on at least one real stage, and show the output. Show your work: cite file:line
+> or a URL for every fact; mark every number as measured or an estimate. Your report starts with planned vs actual time. Finishing
+> under half the planned time is a red flag: the lead checks it before accepting it.
+The lead checks the first report against it before passing anything on: sources really opened, code really run, every fact cited,
+time honest. A shallow report goes back at once, or the helper is replaced with a fresh one at high effort.
