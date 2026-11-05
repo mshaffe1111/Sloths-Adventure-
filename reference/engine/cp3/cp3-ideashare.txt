@@ -1,4 +1,4 @@
-top idea share of length, Normal (cap ~0.40): (0.234, 'stump hop') (0.25, 'bank hops') (0.31, 'bank hops')
-flags laid by the mixer + LV-9, Normal: [11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 13]
-landing width p50 normal 149
-landing width p50 easy 185
+top idea share of length, Normal (cap ~0.40): (0.234, 'stump hop') (0.247, 'stump hop') (0.305, 'bank hops')
+flags laid by the mixer + LV-9, Normal: [11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 13, 13]
+landing width p50 normal 150
+landing width p50 easy 188

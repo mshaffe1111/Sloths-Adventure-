@@ -1,10 +1,4 @@
-ADULT layout 1: stuck x 806 y 275 20 s rescued "the way on is 155 px down" at n1 bank hops (canopy)
-ADULT layout 1: stuck x 12119 y 1011 0 s rescued "fell back down from here 3 times" at n5 crumbling ledge + creaky boughs/high|n5 lily-pad hop + reed isles/low
-ADULT layout 1: stuck x 32155 y 747 20 s rescued "a trunk beside him, the way on is 139 px down, on a trunk" at n12 crumbling ledge + bridge span/high|n12 bough stair + bank hops/low
-ADULT layout 2: stuck x 11198 y 308 12.6 s  "nothing in the way the bot can see" at n5 creaky boughs + crumbling ledge/high|n5 lily-pad hop + reed isles/low
-ADULT layout 2: stuck x 29860 y 525 14.6 s rescued "nothing in the way the bot can see" at n12 bridge span + crumbling ledge/high|n12 bough stair + bank hops/low
-ADULT layout 3: stuck x 10045 y 378 20 s rescued "nothing in the way the bot can see" at n5 creaky boughs + crumbling ledge/high|n5 lily-pad hop + reed isles/low
-ADULT layout 4: stuck x 31630 y 1180 8.6 s rescued "a drop of 43 px ahead" at n12 bridge span + crumbling ledge/high|n12 bough stair + bank hops/low
-ADULT layout 4: stuck x 31713 y 1524 0 s rescued "fell back down from here 3 times" at n12 bridge span + crumbling ledge/high|n12 bough stair + bank hops/low
-KID layout 2: stuck x 43085 y 784 20 s rescued "nothing in the way the bot can see" at n12 bridge span + crumbling ledge/high|n12 bank hops + stump hop/low
-KID layout 3: stuck x 16102 y 706 11.3 s rescued "in a dip 310 px deep" at n5 creaky boughs + crumbling ledge/high|n5 lily-pad hop + reed isles/low|n-1 crossings: step-down + climb up
+ADULT layout 2: stuck x 9764 y 358 14.3 s rescued "a drop of 300 px ahead, the way on is 104 px down" at n5 creaky boughs + crumbling ledge/high|n5 lily-pad hop + reed isles/low
+ADULT layout 2: stuck x 30425 y 575 15 s rescued "nothing in the way the bot can see" at n12 bridge span + crumbling ledge/high|n12 bough stair + bank hops/low
+ADULT layout 3: stuck x 9725 y 381 14.6 s rescued "nothing in the way the bot can see" at n5 creaky boughs + crumbling ledge/high|n5 lily-pad hop + reed isles/low
+ADULT layout 4: stuck x 30751 y 1153 15.2 s rescued "nothing in the way the bot can see" at n12 bridge span + crumbling ledge/high
