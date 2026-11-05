@@ -6,6 +6,7 @@
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
 import { drawW1Pits, paintedBank } from './w1Pits.ts';
+import { drawHollowLog } from './w1NewArt.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
 import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
 import { drawW7Face } from './w7FaceArt.ts';
@@ -814,6 +815,8 @@ export function paintedPlatforms(platforms: Platform[]): Set<number> {
     if (p.push) out.add(p.id);
     else if (p.height < 50 && (p.style === 'branch' || (ownKit() && thinKit(p)))) out.add(p.id);
     else if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') out.add(p.id);
+    // (a hollow log: Matt's painted hollow log, w1NewArt.ts)
+    else if (p.hollow) out.add(p.id);
   }
   return out;
 }
@@ -1293,6 +1296,7 @@ export function drawProtoScene(
   for (const p of platforms) {
     if (!vis(p)) continue;
     if (isPaintedRock(p)) drawRockArt(ctx, p);
+    else if (p.hollow) drawHollowLog(ctx, p);
   }
   for (const p of platforms) {
     if (!vis(p) || !p.push || p.art) continue; // (a pushed boulder is World 4's to paint: w4Play.ts)

@@ -38,6 +38,8 @@
  *   stage-art      the painted checkpoint post, hearts, power-ups, Thorn Gate, story finds and 4-8's netting (stageArt.ts): every stage
  *   gate:<w>       the world's painted exit gate, shut and open (stageArt.ts): every stage
  *   pit-water:<w>  Worlds 1, 3, 4 and 5's painted pit water (stageArt.ts): every stage in those worlds
+ *   w1-new         World 1's new painted pieces, the squirrels and hollow logs (w1NewArt.ts): 1-1
+ *   calm-water     the calm water's painted strips (calmWaterArt.ts), for a stage's drawn water zones (proto.water): 1-1
  *   pit-art:1      World 1's painted pits: the drop, the lip, the leaf bed and 1-8's high drop (w1Pits.ts, R-6.38): every World 1 stage
  *
  * (QA 2026-10-29, Android Chrome: 'blank wait' at 80 s and 179 s for the golden snake's heads and the snake sheet, at 201 s for the
@@ -206,6 +208,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (the mixer's 1-5 lays lily pads, drawn with World 2's painted pad (engine.ts paintedRivers): its sheet loads with the stage, so the
   // first frames never show the old code-drawn slab. 738 KB, so only for the stage that lays pads)
   if (built && cfg.id === '1-5') out.push('w2-props');
+  // (1-1: World 1's new pieces, its squirrels and hollow logs: w1NewArt.ts; the sheet is 1996x925, about 7 MB decoded, so only where laid)
+  if (built && cfg.id === '1-1') out.push('w1-new', 'calm-water');
   // the creatures it can draw, and their sheets (see foe: above)
   if (cfg.objectiveType === 'boss_lair') for (const f of BOSS_MINIONS[w] ?? []) out.push(`foe:${f}`);
   else if (!built) for (const f of genFoes(w)) out.push(`foe:${f}`);

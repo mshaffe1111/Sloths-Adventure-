@@ -183,6 +183,12 @@ export interface ProtoExtras {
   kitDecor?: import('./puzzleArt.ts').KitDecor[];
   /** far-off twinkles, dressing only (the mixer's 1-5 n9: "Something shiny, far away"), engine.ts drawGlint */
   glints?: Array<{ x: number; y: number }>;
+  /** dressing from World 1's new painted pieces (w1NewArt.ts, the mixer's stage spec `dress`): a frame name, its centre x and the ground
+   *  it stands on (1-1: the squirrels who watch him leave); a name with no picture yet (the bootprint) is not drawn */
+  mixDress?: Array<{ n: string; x: number; b: number; flip?: boolean }>;
+  /** drawn water a stage declares (World 1's painted pit water, engine.ts drawWaterZones): from x0 to x1, its surface at y. Lily pads
+   *  over it draw on its surface; falling in is the stage's own fall */
+  water?: Array<{ x0: number; x1: number; y: number }>;
   /** Worlds 1, 2 and 5: the bank, hanging and clutter sets (artDress.ts dressSets; pictures only) */
   dress?: import('./dressArt.ts').DressPiece[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */
