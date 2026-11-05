@@ -247,3 +247,7 @@ lines, neighbour check, one command per stage); then 1-1 and 1-2 from data, then
 POLISH (next week, nothing cut): new art and repaints (1-1 sunrise, creek repaint finish, rotten wood, side branch, kin pieces, keyscan
 remakes), render-stone, gen2-water and the swim speed, pieces 5-9 and the crate/seesaw fixes, the picture sheet's presentation,
 bootprint re-shoot.
+Matt, 12:40 PM ET, clarifying: "when I mean the polish, I mean redoing the pictures and backgrounds and other things like that. We just need to
+really focus on getting the engine done and then getting more levels done over the next few days."
+So POLISH = new or redone pictures and backgrounds (art). Gameplay pieces (root gate, secret tunnel, bat, stalactites, crate/seesaw
+fixes) are engine content: paused today for budget only, they resume as the levels that need them are built over the next days.
