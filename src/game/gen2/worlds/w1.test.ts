@@ -72,7 +72,7 @@ test("every W1 section has its content type (NODES.md §7.7), and every challeng
   (nb as { moves: string[] }).moves = ['walk', 'jump', 'double'];
   const CHALLENGE = ['ki', 'sho', 'ten', 'ketsu'];
   for (const s of W1_SECTIONS) {
-    assert.ok(s.content, `${s.id}: no content type`);
+    assert.ok(s.content && s.terrain, `${s.id}: no content type or terrain`);
     if (s.content === 'structural' || s.needs?.includes('rope') || !s.phases.some((p) => CHALLENGE.includes(p))) continue;
     // (the porter's measure: width at 285 px/s, plus 0.3 s a landing; three seeds, the shortest judged)
     for (const v of s.subBlocks![0].versions) {

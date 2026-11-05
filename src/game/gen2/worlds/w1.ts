@@ -30,6 +30,23 @@ export const W1_KIT = {
   corridor: { top: 580 - 900, bottom: 580 + 80, soft: 80 },
   /** the seed perch is laid on every 1-1 roll (the planner's `required`, pipeline.ts: never swapped out nor trimmed) */
   required: { '1-1': [{ section: 'w1-seed-perch' }] },
+  /**
+   * The rolled stage graph's data (NODES.md §4, §8.4; the planner's CHECK 3b; the shape is the porter's, for the planner's types):
+   * `list` the sprint graphs as code strings (the planner's parser reads them); `briefs` each stage's brief knobs (the designer's 1-1
+   * brief, f560b7916); `terrains` World 1's terrain families (§3); `chunkSeconds` the kit's mean section seconds on the FAST clock
+   * (width / the fast walk, 228 px/s, every 1-1 section's every version, seeds 1-3, measured through layLocal: 11.2 s; 12.9 s for the
+   * content sections alone); `maxPerStage` a section at most once a stage
+   */
+  graphs: {
+    list: { A: 'A T P F R X R S E', B: 'A T M F R C U X R S R L E', C: 'A P F X R W R D_ S E', D: 'A T P R U F X R S E' },
+    briefs: { '1-1': { ends: 'quiet', trend: 'up', branching: 'some', teaches: ['jump', 'double', 'bounce'] } },
+    terrains: ['floor-stones', 'raised-logs', 'mounds', 'boughs'],
+    chunkSeconds: 11.2,
+    maxPerStage: 1,
+  },
+  /** the per-roll dials, from the mixer's own (mixer/w1mix.ts buildMix: gap share 0.55 + 0.37 d, rise share 0.5 + 0.45 d on Normal;
+   *  Easy 0.45 + 0.35 d, 0.4 + 0.4 d; d from 0 to 1), and their centre (the lead's numbers, 11-05) */
+  rollRanges: { gap: { normal: [0.55, 0.92] as [number, number], easy: [0.45, 0.8] as [number, number] }, rise: { normal: [0.5, 0.95] as [number, number], easy: [0.4, 0.8] as [number, number] }, centre: { gap: 0.65, rise: 0.67 } },
   pit: 'soft' as const,
   pitDepth: 110,
   /** the planner's 4:27 PM: catch boughs laid 90 px under a canopy gap by the engine (floorRoll.catchDrop, engine-chunks types) */
@@ -60,11 +77,14 @@ export type W1Section = SectionTemplate & {
   jobs?: W1Job[];
   /** a version's own jobs where they differ from the section's (§8.8: #7's double version a test, its mushroom version a twist, B5) */
   versionJobs?: Record<string, W1Job[]>;
+  /** its terrain family (NODES.md §3 `terrain`, W1: floor and stones, raised logs, mounds, boughs): the porter's reading, for the designer */
+  terrain?: W1Terrain;
   /** its content type (NODES.md §7.7, the designer's tags, engine-spec d4526ee5e): the deal rolls the type first, then the chunk; a fork is a
    *  shape, so a fork section takes its low road's type; structural sections (start, rest, goal) never count toward the deal */
   content?: W1Content;
 };
 export type W1Content = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'structural';
+export type W1Terrain = 'floor-stones' | 'raised-logs' | 'mounds' | 'boughs';
 
 // ───────────────────────────── helpers (World 1's pieces, with the old builders' numbers) ─────────────────────────────
 
@@ -252,8 +272,9 @@ function renPlace(pl: SectionPiece['place'], f: (s: string) => string): SectionP
 
 /** old 1-1 Learn: rest(400-440), lowStumps, busy(1, [log]), three soft gaps, a flag (protoStage.ts on main 1414-1433) */
 const learn = section({
-  id: 'w1-learn', floor: 'hop', name: 'run and jump', phases: ['start', 'ki'], difficulty: 2, needs: ['jump'], teaches: 'gap', maxPerStage: 1,
-  versions: [3, 4].map((n) => ({ id: n === 3 ? 'old' : 'four-stumps', groups: [gRest([400, 440]), gLowStumps(n as 3 | 4), gBusy(['log']), (k: string, after: string | null) => { const g = gSoftGaps()(k, after); g.sockets.push(dot(`${k}gaps`, g.pieces[0].key, 0.1, 'gaps')); return g; }, gRest([260, 320], true)] })),
+  id: 'w1-learn', floor: 'hop', name: 'run and jump', phases: ['start', 'ki'], difficulty: 2, needs: ['jump'], teaches: 'jump', // (the move's name, as the brief's teaches: the designer's 1-1 brief, f560b7916)
+  maxPerStage: 1,
+  versions: [3, 4].map((n) => ({ id: n === 3 ? 'old' : 'four-stumps', groups: [gRest([400, 440]), gLowStumps(n as 3 | 4), gBusy(['log']), (k: string, after: string | null) => { const g = gSoftGaps()(k, after); g.sockets.push(dot(`${k}gaps`, g.pieces[0].key, 0.1, 'hint.1-1.gaps')); return g; }, gRest([260, 320], true)] })),
   feel: ['1-1'], not: NOT_11, rating: 2,
   source: "old 1-1 'Learn: run and jump' (protoStage.ts on main 1414-1433): rest 400-440, lowStumps, busy(1, ['log'], 240-290), soft gaps one x 0.35/0.45/0.55, a flag",
 });
@@ -510,7 +531,7 @@ const fallenTrunk = section({
 /** #8 */
 const doubleTeach = section({
   id: 'w1-double-teach', floor: 'hop', name: 'double over the dip', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', maxPerStage: 1,
-  versions: [4, 5].map((n) => ({ id: `gaps${n}`, groups: [(k, after) => { const g = gRest([300, 360])(k, after); g.sockets.push(dot(`${k}nice`, g.last, 0.2, 'coach.nice')); return g; }, gDoubleGaps(([[0.85, 0.89], [0.89, 0.93], [0.91, 0.95], [0.91, 0.95], [0.91, 0.95], [0.91, 0.95]] as R2[]).slice(0, n + 1)), (k: string, after: string | null) => { const g = gRest([200, 240])(k, after); g.sockets.push(dot(`${k}dbl`, g.last, 0.3, 'double')); return g; }] })),
+  versions: [4, 5].map((n) => ({ id: `gaps${n}`, groups: [(k, after) => { const g = gRest([300, 360])(k, after); g.sockets.push(dot(`${k}nice`, g.last, 0.2, 'coach.nice')); return g; }, gDoubleGaps(([[0.85, 0.89], [0.89, 0.93], [0.91, 0.95], [0.91, 0.95], [0.91, 0.95], [0.91, 0.95]] as R2[]).slice(0, n + 1)), (k: string, after: string | null) => { const g = gRest([200, 240])(k, after); g.sockets.push(dot(`${k}dbl`, g.last, 0.3, 'hint.1-1.double')); return g; }] })),
   feel: ['1-1'], not: NOT_11, rating: 3,
   source: 'W1-NEW-SECTIONS #8: one gap just past a single jump over a safe dip (soft pit: a floor under it, stair steps back, pipeline pitUnder/pitSteps), then two more (R2, the 3:11 ruling)',
 });
@@ -535,7 +556,7 @@ const boughStepup = section({
 const gRungs = (n: number, rise: R2, kind: 'jump' | 'double', share: R2, w: R2 = [200, 260]): G => (k) => {
   const pieces: W1Piece[] = [limb(`${k}r0`, { kind: 'start' }, [260, 320])];
   seq(n, (j) => pieces.push(limb(`${k}r${j + 1}`, { kind, after: `${k}r${j}`, dy: rise, share }, w)));
-  return { pieces, sockets: [dot(`${k}nomoss`, `${k}r0`, 0.7, 'noMoss')], last: `${k}r${n}` };
+  return { pieces, sockets: [dot(`${k}nomoss`, `${k}r0`, 0.7, 'hint.1-1.noMoss')], last: `${k}r${n}` };
 };
 /** #10 */
 const canopyRungs = section({
@@ -548,8 +569,8 @@ const canopyRungs = section({
 /** #11 */
 const highWalk = section({
   id: 'w1-high-walk', name: 'high branch, petals low', phases: ['rest'], difficulty: 1, needs: ['walk'], ports: ['ledge', 'ledge'], window: BOUGH_WINDOW,
-  versions: [{ id: 'long', groups: [(k) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, [420, 460]), limb(`${k}b`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, [380, 440]), lowLog(`${k}lo`, `${k}a`, [0.3, 0.4])], sockets: [dot(`${k}high`, `${k}a`, 0.4, 'high'), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 3, 140)], last: `${k}b` })] },
-    { id: 'step', groups: [(k) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, [360, 400]), limb(`${k}b`, { kind: 'walk', after: `${k}a`, dy: [-30, -20] }, [360, 420]), lowLog(`${k}lo`, `${k}a`, [0.3, 0.4])], sockets: [dot(`${k}high`, `${k}a`, 0.4, 'high'), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 3, 140)], last: `${k}b` })] }],
+  versions: [{ id: 'long', groups: [(k) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, [420, 460]), limb(`${k}b`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, [380, 440]), lowLog(`${k}lo`, `${k}a`, [0.3, 0.4])], sockets: [dot(`${k}high`, `${k}a`, 0.4, 'hint.1-1.high'), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 3, 140)], last: `${k}b` })] },
+    { id: 'step', groups: [(k) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, [360, 400]), limb(`${k}b`, { kind: 'walk', after: `${k}a`, dy: [-30, -20] }, [360, 420]), lowLog(`${k}lo`, `${k}a`, [0.3, 0.4])], sockets: [dot(`${k}high`, `${k}a`, 0.4, 'hint.1-1.high'), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 3, 140)], last: `${k}b` })] }],
   feel: ['1-1', '1-5'], not: NOT_11, rating: 1,
   source: 'W1-NEW-SECTIONS #11: a rest about 2x the beat (C2), a Dot spot; petals low on a low log under the branch (brief :26; the ruling 08c5a2944, trunks dropped)',
 });
@@ -579,7 +600,7 @@ const knotBank = section({ // (knots: dressing, the ruling 08c5a2944)
     const up = n * 45;
     if (down === 'step') { pieces.push(bankW(`${k}d`, prev, [up / 2 - 5, up / 2 + 5], [200, 240]), bankW(`${k}o`, `${k}d`, [up / 2 - 5, up / 2 + 5], [260, 320])); }
     else pieces.push({ ...floor(`${k}o`, [300, 360]), place: { kind: 'jump', after: prev, dy: [up - 5, up + 5], share: [0.25, 0.35] } });
-    return { pieces, sockets: [petals(`${k}pt`, prev, [0.3, 0.7], 2), dot(`${k}bank`, `${k}m0`, 0.3, 'bank')], last: `${k}o` };
+    return { pieces, sockets: [petals(`${k}pt`, prev, [0.3, 0.7], 2), dot(`${k}bank`, `${k}m0`, 0.3, 'hint.1-1.bank')], last: `${k}o` };
   })] }))),
   feel: ['1-1', '1-2'], not: NOT_11, rating: 2,
   source: 'W1-NEW-SECTIONS #13: stepped earth mounds (2-3) up to a top, a step or hop down ("hills and little areas to jump up on", ES 592, 619)',
@@ -630,7 +651,7 @@ const clearing = section({
 /** #19 */
 const boughBench = section({
   id: 'w1-bough-bench', name: 'high rest', phases: ['rest'], difficulty: 1, needs: ['walk'], ports: ['ledge', 'ledge'], window: BOUGH_WINDOW,
-  versions: ([[300, 340], [460, 520]] as R2[]).map((w, j) => ({ id: j ? 'long' : 'short', groups: [(k: string) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, [260, 300]), limb(`${k}b`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, w), lowLog(`${k}lo`, `${k}b`, [0.3, 0.4])], sockets: [dot(`${k}high`, `${k}a`, 0.3, 'high'), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}b` })] })),
+  versions: ([[300, 340], [460, 520]] as R2[]).map((w, j) => ({ id: j ? 'long' : 'short', groups: [(k: string) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, [260, 300]), limb(`${k}b`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, w), lowLog(`${k}lo`, `${k}b`, [0.3, 0.4])], sockets: [dot(`${k}high`, `${k}a`, 0.3, 'hint.1-1.high'), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}b` })] })),
   feel: ['1-1'], not: NOT_11, rating: 1,
   source: 'W1-NEW-SECTIONS #19: a long thick bough between two plain W1 trunks, after the moment (rulebook §4 rule 3); petals low on a low log under it (the ruling 08c5a2944)',
 });
@@ -712,7 +733,7 @@ const moundLog = section({
     const top = prev, up = n * 45;
     pieces.push(limb(`${k}L`, { kind: 'over', on: top, at: [0.15, 0.25], dy: [-24, -24] }, [200, 240], 'log', false));
     pieces.push(bankW(`${k}d`, top, [up / 2 - 5, up / 2 + 5], [200, 240]), bankW(`${k}o`, `${k}d`, [up / 2 - 5, up / 2 + 5], [260, 320]));
-    return { pieces, sockets: [petals(`${k}pl`, `${k}L`, [0.3, 0.7], 2), dot(`${k}bank`, `${k}m0`, 0.3, 'bank')], last: `${k}o` };
+    return { pieces, sockets: [petals(`${k}pl`, `${k}L`, [0.3, 0.7], 2), dot(`${k}bank`, `${k}m0`, 0.3, 'hint.1-1.bank')], last: `${k}o` };
   })] })),
   feel: ['1-1'], not: NOT_11, rating: 2,
   source: 'W1-NEW-SECTIONS #25: a stepped earth mound with a thin log lying across its top as a short high road (ES 619; the log rules)',
@@ -748,7 +769,7 @@ const twoAnswers = section({
   id: 'w1-two-answers', floor: 'hop', name: 'two answers', phases: ['ten'], difficulty: 6, needs: ['double'], uses: ['double'],
   versions: [true, false].map((m) => ({ id: m ? 'mushroom' : 'double', groups: [gRest([200, 240]), times(3, (k: string, after: string | null) => {
     const f = floor(`${k}f`, [500, 560], startOr(after));
-    const o = softGap(`${k}o`, f.key, [300, 360], [0.62, 0.7], 'double');
+    const o = softGap(`${k}o`, f.key, [300, 360], [0.85, 0.89], 'double') /* (a block: share 0.85+, the designer's 891908b5b) */;
     return { pieces: [f, ...(m ? perch(k, f.key, [0.7, 0.75]) : []), o], sockets: [{ id: `${k}arc`, role: 'arc', on: o.key, t: 0 }], last: o.key };
   })] })),
   feel: ['1-1'], not: NOT_11, rating: 6,
@@ -831,8 +852,21 @@ const CONTENT: Record<string, W1Content> = {
   'w1-bough-bench': 'structural', 'w1-sunlit-log': 'structural', 'w1-log-walk': 'structural', 'w1-last-step-up': 'structural',
 };
 /** every W1 section: the harvest, then the designer's new ones (and the planner's seed perch), each with its proposed jobs and its type */
+/** each section's terrain family: where most of its landings are (the porter's reading, for the designer to rule) */
+const TERRAIN: Record<string, W1Terrain> = {
+  'w1-learn': 'floor-stones', 'w1-stones': 'floor-stones', 'w1-cache-stones': 'floor-stones', 'w1-stump-stones': 'floor-stones', 'w1-stone-dips': 'floor-stones',
+  'w1-second-jump': 'floor-stones', 'w1-leap-stones': 'floor-stones', 'w1-stone-road': 'floor-stones', 'w1-meadow': 'floor-stones', 'w1-hop-bounce': 'mounds',
+  'w1-high-leaps': 'boughs', 'w1-bounce-run': 'boughs', 'w1-low-boughs': 'boughs', 'w1-ledges': 'mounds', 'w1-ropes': 'floor-stones',
+  'w1-stump-stile': 'floor-stones', 'w1-stone-zigzag': 'floor-stones', 'w1-log-road': 'raised-logs', 'w1-hollow-twoway': 'floor-stones', 'w1-mushroom-lift': 'mounds',
+  'w1-twin-bounce': 'mounds', 'w1-fallen-trunk': 'floor-stones', 'w1-double-teach': 'floor-stones', 'w1-bough-stepup': 'boughs', 'w1-canopy-rungs': 'boughs',
+  'w1-high-walk': 'boughs', 'w1-dropdown-stair': 'mounds', 'w1-knot-bank': 'mounds', 'w1-floor-dash': 'raised-logs', 'w1-quiet-arrival': 'boughs',
+  'w1-forest-edge': 'floor-stones', 'w1-fern-bank': 'floor-stones', 'w1-clearing': 'floor-stones', 'w1-bough-bench': 'boughs', 'w1-stump-towers': 'raised-logs',
+  'w1-bounce-double': 'raised-logs', 'w1-canopy-weave': 'boughs', 'w1-sunlit-log': 'boughs', 'w1-stump-descent': 'raised-logs', 'w1-mound-log': 'mounds',
+  'w1-log-walk': 'floor-stones', 'w1-stilt-logs': 'raised-logs', 'w1-two-answers': 'floor-stones', 'w1-bough-log': 'boughs', 'w1-last-step-up': 'boughs',
+  'w1-seed-perch': 'boughs',
+};
 const VERSION_JOBS: Record<string, Record<string, W1Job[]>> = { 'w1-fallen-trunk': { double: ['test'], mushroom: ['twist'] } };
-export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id], ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
+export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id], terrain: TERRAIN[q.id], ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
 
 /** the phases a stage's slots fill */
 export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten', 'ketsu', 'goal'];
