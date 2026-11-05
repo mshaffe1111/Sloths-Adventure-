@@ -29,6 +29,7 @@ import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
 import { landingKind } from '../../src/game/mixer/catalog.ts';
 import { propBreaches } from '../../src/game/mixer/propSupport.ts';
+import { stillSpots } from '../../src/game/mixer/stillSpots.ts';
 import { nodePieceBreaches, type RealisedNode } from '../../src/game/mixer/nodePieces.ts';
 import { botRun } from '../validate/play.ts';
 
@@ -318,15 +319,8 @@ if (fs.existsSync(testFile)) {
 const stillsDir = path.join(OUT, `${id}-stills`);
 const stillsDone: string[] = [];
 if (!process.argv.includes('--no-stills')) {
-  const st1 = buildRoll(cfg, 1) as unknown as { spawnX: number; exitTotemX: number; proto?: { beats: Array<[number, number, string]> }; collectibles: Array<{ type: string; x: number }> };
-  const beats = st1.proto?.beats ?? [];
-  const spots: Array<[string, number, string]> = [['start', st1.spawnX + 80, 'low']];
-  for (const b of beats) if (/fork/.test(b[2].split(':')[0]) && !/crossings/.test(b[2])) spots.push([`fork-${b[2].includes('high road') ? 'high' : 'low'}`, b[0] + 120, b[2].includes('high road') ? 'high' : 'low']);
-  const dbl = beats.find((b) => b[2].startsWith('teach double:'));
-  if (dbl) spots.push(['double-teach', dbl[0] + 60, 'low']);
-  const seed = st1.collectibles.find((c) => c.type === 'seed');
-  if (seed) spots.push(['golden-seed', seed.x - 100, 'low']);
-  spots.push(['end', st1.exitTotemX - 200, 'low']);
+  // (the spots: gen2's node meta when 1-1 builds on gen2, else the mixer's beats: mixer/stillSpots.ts)
+  const spots = stillSpots(buildRoll(cfg, 1) as never);
   const dist = fs.mkdtempSync('/tmp/stage-dist-');
   spawnSync('npx', ['vite', 'build', '--outDir', dist], { encoding: 'utf8', env: { ...process.env, NODE_ENV: 'development' } });
   if (!fs.existsSync(path.join(dist, 'index.html'))) gate('stills', ['the dev build made no index.html'], false);
