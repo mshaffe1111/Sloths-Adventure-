@@ -251,6 +251,7 @@ export type SocketRole =
   | 'source'     // the source half of a linked pair (A7): filled only together with its receptor
   | 'receptor'   // the receptor half (names its source in `link`)
   | 'objective'  // the stage's goal item (cage / relic / cocoon): filled from the mission graph's quota
+  | 'find'       // a hidden find off the main line (World 1's golden seed: rulebook §4 rule 12), filled once a stage, by the first one met
   | 'flag'       // a checkpoint (rests carry one)
   | 'tip'        // Dot's line about this section's mechanic (the first time it appears: the teaching rule)
   | 'decor';     // scenery only, from the world's decor set
@@ -378,6 +379,9 @@ export interface SectionTemplate {
    * pit's own floor stays as deep as its steps out allow (pitSteps): the deep floor of a jump run is the section's, not a pit's.
    */
   floor?: 'hop' | 'jump';
+  /** a stretch of the stage this section may stand in, as a share of the stage's chunks [from, to] (1-1's boughs, the late reward: the
+   *  designer's last third, [0.67, 1]); outside it the section is never drawn */
+  window?: [number, number];
   /** extra seconds a typical first-timer spends here beyond walking its length (a room, a fight) */
   extraSeconds?: number;
 }
