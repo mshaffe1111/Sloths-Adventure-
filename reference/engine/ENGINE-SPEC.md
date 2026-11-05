@@ -1634,7 +1634,7 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
 - **The build cost** (world data, glide and swim rows, gates 1-6 as a report, the methods how-to) is the planner's estimate in % of the
   week, against the 55% ceiling (stop at 53%).
 
-**[designer, 11-05 ~10:28 AM ET] The element table and float caps cover every world, not just World 1 (the lead's check):**
+**[designer, 11-05 ~10:24 AM ET] The element table and float caps cover every world, not just World 1 (the lead's check):**
 - Today the table names World 1's kinds and the hanging ones: vine, liana, rope, bough. It does **not** yet cover the other worlds' kinds:
   - W2: river logs, lifts and bank houses;
   - W3: thorn vines and cave ledges;
