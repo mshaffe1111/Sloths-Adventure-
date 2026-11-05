@@ -22,6 +22,19 @@ So today's pieces (logs, bridges, boughs, snap twigs, vines, stumps, rotten bran
 engine's library, look and feel included. The fault is the mix, not the pieces. The engine's first job is mixing them so no stage
 repeats.
 
+## 2026-11-05 ~12:15 AM ET (to the lead)
+"the pieces should all fit together. That even if it goes random, they should all fit together. We shouldn't have anything that is
+so weird that it feels out of place. Other things to look for is that hearts aren't given out the very first thing. You know, if
+you're not going to lose a heart, don't put a heart there. You don't need to gain health back if you're not going to lose a life.
+Checkpoints, reasonable. So, we don't have to have checkpoints everywhere if you're not going to use them. Collectibles. Where they
+make sense. If we want things to be hard for some collectibles, we need to have them in hard places. It should feel good playing it.
+It shouldn't just be a cluttered mess."
+- **Fit**: every piece in a world's kit fits with every other, so any roll looks like one place. Nothing out of place.
+- **Hearts**: a heart only where the player can have lost one, after real risk. Never at the very start, never where nothing can hurt.
+- **Checkpoints**: where they'll be used, before the hard parts. Not everywhere.
+- **Collectibles**: where they make sense. A hard-to-get collectible sits in a hard place, so getting it feels earned.
+- **Feel**: it should feel good to play. Not a cluttered mess.
+
 ## 2026-11-05 ~12:10 AM ET (to the lead)
 "The one thing that you're missing is that the levels are built to go along with the story. So they are themed, but a whole world
 should have its own pieces. So having themes shouldn't make that big of a difference. And varied is, I just don't want pieces thrown
