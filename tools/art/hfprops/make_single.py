@@ -3,6 +3,10 @@ own 1024 picture from a plain key canvas at strength 1.0 with the style model, s
 style model. Same light and line for all by the shared prompt tail. Cut by the largest blob (cut.py).
 
     python3 tools/art/hfprops/make_single.py <tag> <commit> <world>[,<world>...] [seeds, e.g. 5,17] [only, e.g. heron,crab]
+  --grey         paint on flat mid grey #808080 (start plain-grey.png) instead of the world's key: for a piece the magenta key
+                 bled into (W6 wetLeaves, 2026-11-05: a pink light beam painted beside it in the key's hue, cut into the sheet);
+                 cut.py's key_own measures each take's own background, so grey keys by distance
+  --desc=TEXT    the piece's description for this batch, in place of pieces.py's (a remade piece)
 """
 import json, sys
 from pathlib import Path
@@ -21,13 +25,15 @@ NEG = ('text, letters, numbers, watermark, frame, border, photo, 3d render, blur
 ANCHOR = '--anchor' in sys.argv
 SET2 = '--set2' in sys.argv
 SET3 = '--set3' in sys.argv
+GREY = '--grey' in sys.argv
+DESC = next((a[7:] for a in sys.argv if a.startswith('--desc=')), None)
 STRENGTH = next((float(a[11:]) for a in sys.argv if a.startswith('--strength=')), 1.0)
 sys.argv = [a for a in sys.argv if not a.startswith('--')]
 
 
 def prompt(world, desc, hang):
     spec = W[world]
-    key = 'green #00FF00' if spec['key'] == GRN else 'magenta #FF00FF'
+    key = 'mid grey #808080' if GREY else 'green #00FF00' if spec['key'] == GRN else 'magenta #FF00FF'
     where = ('one single isolated hanging piece, nothing above it, no branch, no tree, no ceiling, nothing else in the picture' if hang
              else 'standing on its own, nothing under it at all: no base, no pedestal, no ground slab, no rock under it, no puddle')
     if ANCHOR:
@@ -51,12 +57,12 @@ for w in worlds:
         if only and n not in only:
             continue
         for sd in seeds:
-            start = f'anchor-w{w}.png' if ANCHOR else 'plain-grn.png' if W[w]['key'] == GRN else 'plain-mag.png'
-            items.append({'name': f'w{w}-{n}-{sd}' + ('a' if ANCHOR else ''), 'start': start,
-                          'prompt': prompt(w, desc, job == 'hang'), 'strength': STRENGTH, 'seed': sd,
+            start = f'anchor-w{w}.png' if ANCHOR else 'plain-grey.png' if GREY else 'plain-grn.png' if W[w]['key'] == GRN else 'plain-mag.png'
+            items.append({'name': f'w{w}-{n}-{sd}' + ('a' if ANCHOR else '') + ('g' if GREY else ''), 'start': start,
+                          'prompt': prompt(w, DESC or desc, job == 'hang'), 'strength': STRENGTH, 'seed': sd,
                           'w': 1536 if ANCHOR else 1024, 'h': 1024, 'steps': 26,
-                          'loras': [['style', 0.8]], 'neg': NEG})
-spec = {'note': f'hf-props single-piece batch {tag}, 2026-10-31', 'q': 92,
+                          'loras': [['style', 0.8]], 'neg': NEG + (', light beam, sun rays, pink light, magenta' if GREY else '')})
+spec = {'note': f'hf-props single-piece batch {tag}' + (', grey key' if GREY else ''), 'q': 92,
         'base': f'{RAW}{sha}/reference/prop-sheets/qa-notes/hf-props/starts/',
         'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors']}, 'items': items}
 p = HERE / f'spec-{tag}.json'
