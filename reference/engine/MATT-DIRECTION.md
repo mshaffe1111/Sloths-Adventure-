@@ -200,3 +200,10 @@ platform needs platforms. Rocks shouldn't be floating."
 So: every rock, stone, boulder, mound and earth piece is labelled may float = NO, always, in every world; it sits on ground, a bank,
 the bed of the water, or its own base. Floating is for platform pieces (logs, planks and the like), under the float cap. The
 engine's support check fails a non-floating piece with open air under it.
+
+## 2026-11-05 10:42 AM ET (to the lead): the lead approves Hugging Face for the engine
+"If anything needs a Hugging Face approval, you approve it. I've been approving them so far, but if they need it for the engine, it
+gets approved."
+So: art the engine needs (a missing piece, a platform kind, a world's fit) is approved by the lead without asking Matt. The lead
+still checks each picture list (Hugging Face first, unused art before new), keeps the money inside what's left of the $72 with about
+$15 in reserve, and tells Matt what was spent.

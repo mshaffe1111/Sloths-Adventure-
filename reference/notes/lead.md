@@ -59,6 +59,7 @@ move the time, never the bar.
   guesses, tunnel vision across 5+ worlds, build-on-what-works, helper-ready, stage-specific code in the mixer, verdict. About 2.5 h
   from 10:15 AM ET. It does not read SPEC-TRACE until its own trace is written.
 - art-bootprint: under the designer. One HF picture, cap $3. The still comes to the lead before it's wired.
+- HF for the engine: the LEAD approves (Matt, 10:42 AM ET). Check the list (unused art first), stay inside the $72 with ~$15 reserve, tell Matt the spend.
 
 ## SUPERSEDED at 10:32 by "it takes what it takes": the order is critic, rulings, step 6, 1-1, 1-2 (all today). Was: Matt's call, 10:31 AM ET: option (A)
 1-1 is built TODAY on the W1 ladder, after the full library and labels (12:00), the pass line (11:15) and the critic rulings that touch it (1:30). Step 6
