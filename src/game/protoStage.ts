@@ -116,6 +116,11 @@ export interface StageHint {
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }
 
+/** what a stage's drawn water is, which picks its art: deadly and teaching water is the world's murky pit water, calm is swim water */
+export type WaterKind = 'calm' | 'deadly' | 'teaching';
+/** the art a kind of water draws with: one rule, read by the draw (engine.ts) and the mixer's element gate */
+export const waterArt = (kind: WaterKind | undefined): 'pit' | 'calm' => (kind === 'calm' ? 'calm' : 'pit');
+
 export interface ProtoExtras {
   hints: StageHint[];
   covers: LeafCover[];
@@ -188,9 +193,11 @@ export interface ProtoExtras {
   /** dressing from World 1's new painted pieces (w1NewArt.ts, the mixer's stage spec `dress`): a frame name, its centre x and the ground
    *  it stands on (1-1: the squirrels who watch him leave); a name with no picture yet (the bootprint) is not drawn */
   mixDress?: Array<{ n: string; x: number; b: number; flip?: boolean }>;
-  /** drawn water a stage declares (World 1's painted pit water, engine.ts drawWaterZones): from x0 to x1, its surface at y. Lily pads
-   *  over it draw on its surface; falling in is the stage's own fall */
-  water?: Array<{ x0: number; x1: number; y: number }>;
+  /** drawn water a stage declares (engine.ts drawWaterAndFlags): from x0 to x1, its surface at y, a body to below the ground. Its `kind`
+   *  picks its art (the designer, 11-05): 'deadly' (the default) and 'teaching' are the world's painted pit water (World 1's murky creek,
+   *  stageArt.ts drawPitWater), 'calm' is the clear swim water (calmWaterArt.ts), only where he swims, from 6-7 on. Lily pads over it draw
+   *  on its surface; falling in is a splash, then under it, then the stage's own fall */
+  water?: Array<{ x0: number; x1: number; y: number; kind?: WaterKind }>;
   /** Worlds 1, 2 and 5: the bank, hanging and clutter sets (artDress.ts dressSets; pictures only) */
   dress?: import('./dressArt.ts').DressPiece[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */

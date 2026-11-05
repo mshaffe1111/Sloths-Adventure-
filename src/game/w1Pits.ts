@@ -183,6 +183,8 @@ export function setW1PitWater(zones: ReadonlyArray<{ x0: number; x1: number; y: 
   pitWater = zones ?? [];
 }
 /** is this gap filled by the stage's water (its surface across the gap, no lower than where its dark comes in) */
+/** does the stage's drawn water lie across x0..x1 (any of it): the ground's pit shade is not drawn over water (protoArt.ts drawGround) */
+export const waterAcross = (x0: number, x1: number) => pitWater.some((z) => z.x0 < x1 && z.x1 > x0);
 export const inWater = (g: PitGap) => pitWater.some((z) => z.x0 <= g.x0 + 4 && z.x1 >= g.x1 - 4 && z.y <= g.top + DROP_DARK);
 const cache = new WeakMap<readonly Platform[], { gaps: PitGap[]; bottom: number }>();
 /** the stage's pits, and how far down its pieces reach (a drop is baked to there and a little more: below it the camera never looks) */

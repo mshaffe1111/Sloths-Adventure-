@@ -5,7 +5,7 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
-import { drawW1Pits, paintedBank } from './w1Pits.ts';
+import { drawW1Pits, paintedBank, waterAcross } from './w1Pits.ts';
 import { drawHollowLog } from './w1NewArt.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
 import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
@@ -53,9 +53,31 @@ type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bus
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
 /** the leafy clumps the boughs' free ends tuck into (1-1's canopy), drawn behind the boughs */
 let decoLeaves: ReadonlyArray<DecoLeaves> = [];
-export function setDecoTrunks(t: ReadonlyArray<DecoTrunk> | undefined, leaves?: ReadonlyArray<DecoLeaves>) {
-  decoTrunks = t ?? [];
+export function setDecoTrunks(t: ReadonlyArray<DecoTrunk> | undefined, leaves?: ReadonlyArray<DecoLeaves>, platforms?: readonly Platform[], water?: ReadonlyArray<{ x0: number; x1: number; y: number }>) {
+  decoTrunks = platforms ? fitTrunks(t ?? [], platforms, water ?? []) : t ?? [];
   decoLeaves = leaves ?? [];
+}
+/**
+ * Every trunk must have a reason to be there (Matt, 11-05: "If we have ground the whole way down, why do we need to put something over
+ * top of it?"). A trunk holds up the piece at its top. If that piece is a bank of earth, its soil already runs down out of sight and holds
+ * it, so the trunk is dropped. Otherwise it stands on the first ground or water under its top, and stops there: never on down over solid
+ * ground or through the water to the bottom.
+ */
+export function fitTrunks(trunks: ReadonlyArray<DecoTrunk>, platforms: readonly Platform[], water: ReadonlyArray<{ x0: number; x1: number; y: number }>): DecoTrunk[] {
+  const out: DecoTrunk[] = [];
+  for (const t of trunks) {
+    const at = (q: Platform) => t.x >= q.x - 2 && t.x <= q.x + q.width + 2;
+    // (the piece it holds: the one whose underside or body is at its top)
+    const held = platforms.find((q) => at(q) && !q.broken && q.y <= t.topY + 4 && q.y + q.height >= t.topY - 4);
+    if (held && paintedBank(held)) continue;
+    // (the first surface under its top: a piece's top, or a drawn water's surface)
+    let foot = t.bottomY;
+    for (const q of platforms) if (at(q) && !q.broken && q !== held && q.type !== 'bouncy' && q.y > t.topY + 8 && q.y < foot) foot = q.y + 6;
+    for (const z of water) if (t.x > z.x0 && t.x < z.x1 && z.y > t.topY + 8 && z.y < foot) foot = z.y + 10;
+    if (foot - t.topY < 20) continue;
+    out.push(foot === t.bottomY ? t : { ...t, bottomY: foot });
+  }
+  return out;
 }
 /** a step down to the next bank this short (px) is a plinth's: its painted end stops at the lower bank's top with no fade */
 const SHORT_STEP = 60;
@@ -1001,7 +1023,9 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
   }
   const shaded = new Set<string>();
   const shadeUpTo = (y: number) => {
-    for (const [k, o] of pits) if (!shaded.has(k) && o.top >= y - 2) { shaded.add(k); pitShade(ctx, o); }
+    // (a pit the stage's drawn water fills is water, not a dark hollow: its shade stood over the creek as a see-through box with straight
+    // sides, Matt's still, 11-05)
+    for (const [k, o] of pits) if (!shaded.has(k) && o.top >= y - 2) { shaded.add(k); if (!waterAcross(o.x0, o.x1)) pitShade(ctx, o); }
   };
   // (the lowest first: a pit's floor and its step go under the banks either side, whose faces then cover their ends)
   for (const p of [...banks].sort((a, b) => b.y - a.y)) {

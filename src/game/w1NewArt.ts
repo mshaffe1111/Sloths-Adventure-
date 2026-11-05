@@ -13,26 +13,11 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import type { Platform } from './types.ts';
+import FRAMES from '../assets/w1to4art/w1-new.json';
 
-/** the sheet's cells (copied from src/assets/w1to4art/w1-new.json, the cutter's own list; w1NewArt.test.ts holds them equal) */
-export const W1_NEW_FRAMES = {
-  'squirrel-sit': { x: 0, y: 0, w: 361, h: 420 },
-  'squirrel-wave': { x: 365, y: 0, w: 373, h: 420 },
-  'squirrel-haul': { x: 742, y: 0, w: 257, h: 420 },
-  'squirrel-tip': { x: 1003, y: 0, w: 388, h: 420 },
-  'squirrel-run': { x: 1395, y: 0, w: 420, h: 317 },
-  'root-gate-open': { x: 1819, y: 0, w: 177, h: 300 },
-  'root-gate-shut': { x: 0, y: 424, w: 177, h: 299 },
-  'acorn-slope': { x: 181, y: 424, w: 479, h: 279 },
-  'log-hide': { x: 664, y: 424, w: 534, h: 274 },
-  'knot-a': { x: 1202, y: 424, w: 300, h: 231 },
-  'hollowlog-moss': { x: 1506, y: 424, w: 446, h: 218 },
-  'knot-b': { x: 0, y: 727, w: 268, h: 198 },
-  'log-moss-shut': { x: 272, y: 727, w: 422, h: 196 },
-  'hollowlog-plain': { x: 698, y: 727, w: 432, h: 192 },
-  'vine-rope': { x: 1134, y: 727, w: 298, h: 88 },
-} as const;
-export type W1NewPiece = keyof typeof W1_NEW_FRAMES;
+/** the sheet's cells: the cutter's own list, read as it is (one source: the art-use gate counts its pieces there) */
+export const W1_NEW_FRAMES = FRAMES;
+export type W1NewPiece = keyof typeof FRAMES;
 const F: Record<string, { x: number; y: number; w: number; h: number }> = W1_NEW_FRAMES;
 
 /** the sheet's address (stagePreload.ts decodes it before a stage that asks for it starts) */
@@ -54,7 +39,7 @@ export function w1NewReady(): boolean {
 export const hasW1New = (n: string): n is W1NewPiece => n in F;
 
 /** how tall each kind of dressing stands (world px): a squirrel a little under Pokey's height (about 70), the gates and knots their own */
-const DRESS_H: Record<string, number> = { squirrel: 62, 'root-gate': 120, knot: 70, 'acorn-slope': 80, 'log-hide': 90, 'vine-rope': 26 };
+const DRESS_H: Record<string, number> = { squirrel: 62, 'root-gate': 120, knot: 70, 'acorn-slope': 80, 'log-hide': 90 };
 const dressH = (n: string) => DRESS_H[Object.keys(DRESS_H).find((k) => n.startsWith(k)) ?? ''] ?? 70;
 /** the share of each picture's height under its feet that is transparent margin (measured from the sheet's alpha: the squirrels' feet
  *  are 9 px over the cell's bottom of 420) */
@@ -95,8 +80,12 @@ export function drawW1Dress(ctx: CanvasRenderingContext2D, n: string, cx: number
   return true;
 }
 
-/** where the hollow logs' walkable top sits, as a share of the picture's height (measured from the sheet's alpha down the middle) */
+/** where the hollow logs' walkable top and the bark's bottom sit, as shares of the picture's height (measured from the sheet's alpha
+ *  down the middle: under the bark is transparent margin) */
 const HOLLOW_TOP: Record<'moss' | 'plain', number> = { moss: 24 / 218, plain: 12 / 192 };
+const HOLLOW_BOT: Record<'moss' | 'plain', number> = { moss: 206 / 218, plain: 181 / 192 };
+/** how far the bark's belly sits down into the floor's grass, so it rests on the ground, never over it (the designer, 11-05) */
+const HOLLOW_SINK = 6;
 /** how far the picture is drawn wider than the platform */
 const HOLLOW_GROW = 1.06;
 /**
@@ -104,14 +93,14 @@ const HOLLOW_GROW = 1.06;
  * only the shell's top, HOLLOW_SHELL thick; the painted log hangs from it down to the floor it rests on, `height` under its top, and
  * the inside is clear from the shell's underside to the floor (`clearance`; Pokey is 48 tall, so 56 or more walks him through standing).
  * The builder lays the platform at y = floor - height, HOLLOW_SHELL tall: then the top is `height` over the floor, the split's two roads.
- *   moss: 280 wide 125 high (101 clear), 300 wide 134 (110), 360 wide 162 (138); plain: 280 wide 120 (96), 300 wide 129 (105).
- *   The split's 120 px rule passes at 280 wide or more for either.
+ *   seated on the floor (its bark's belly HOLLOW_SINK into the grass): moss 310 wide 128 high (104 clear), 380 wide 158 (134);
+ *   plain 310 wide 123 (99), 380 wide 152 (128). The split's 120 px rule passes at 310 wide or more for either.
  */
 export const HOLLOW_SHELL = 24;
 export function hollowLogSize(kind: 'moss' | 'plain', width: number): { height: number; clearance: number } {
   const f = F[kind === 'moss' ? 'hollowlog-moss' : 'hollowlog-plain'];
   const h = (width * HOLLOW_GROW * f.h) / f.w;
-  const height = Math.round(h * (1 - HOLLOW_TOP[kind]) - 4);
+  const height = Math.round(h * (HOLLOW_BOT[kind] - HOLLOW_TOP[kind]) - HOLLOW_SINK);
   return { height, clearance: height - HOLLOW_SHELL };
 }
 /** is Pokey (x his left edge, y his feet) walking through the log, under its shell, between its ends */
@@ -129,12 +118,30 @@ export function drawHollowLog(ctx: CanvasRenderingContext2D, p: Platform, alpha 
   const n = kind === 'moss' ? 'hollowlog-moss' : 'hollowlog-plain';
   const f = F[n];
   const w = p.width * HOLLOW_GROW, h = (w * f.h) / f.w;
-  if (alpha < 1) {
-    ctx.save();
-    ctx.globalAlpha = alpha;
+  const x0 = p.x + p.width / 2 - w / 2, y0 = p.y - h * HOLLOW_TOP[kind], mid = p.x + p.width / 2;
+  ctx.save();
+  if (alpha < 1) ctx.globalAlpha = alpha;
+  else {
+    // (its contact shadow on the floor, soft, under its belly: a small code touch, STAGE-RULES §4)
+    const floor = p.y + hollowLogSize(kind, p.width).height;
+    ctx.fillStyle = 'rgba(20, 24, 10, 0.32)';
+    ctx.beginPath();
+    ctx.ellipse(mid, floor - 1, w * 0.46, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
   }
-  blit(ctx, n, p.x + p.width / 2 - w / 2, p.y - h * HOLLOW_TOP[kind], w, h, Math.abs(p.id) % 2 === 1);
-  if (alpha < 1) ctx.restore();
+  // (open at both ends, so it reads as a way through: the painted log's open half each side, mirrored about its middle, as one log)
+  ctx.beginPath();
+  ctx.rect(x0 - 2, y0 - 2, mid - x0 + 2, h + 4);
+  ctx.clip();
+  blit(ctx, n, x0, y0, w, h, false);
+  ctx.restore();
+  ctx.save();
+  if (alpha < 1) ctx.globalAlpha = alpha;
+  ctx.beginPath();
+  ctx.rect(mid, y0 - 2, x0 + w - mid + 2, h + 4);
+  ctx.clip();
+  blit(ctx, n, x0, y0, w, h, true);
+  ctx.restore();
   return true;
 }
 
@@ -148,5 +155,25 @@ export function padsOffWater(platforms: readonly Platform[], water: ReadonlyArra
     if (!p.lily) return false;
     const cx = p.x + p.width / 2, top = p.y + 8;
     return !water.some((z) => cx >= z.x0 && cx <= z.x1 && Math.abs(z.y - top) < 40) && !rivers.some((r) => cx >= r.x0 && cx <= r.x1 && Math.abs(r.surfaceY - top) < 40);
+  });
+}
+
+/** bank dressing (artDress.ts pieces: a name, its centre x and the ground it stands on) less what stands where a hollow log lies, its
+ *  width and 40 px either side, on its floor: a stump or a fallen log there drew over the log's body and in its mouths */
+export function clearOfHollowLogs<T extends { x: number; b: number }>(dress: T[], platforms: readonly Platform[]): T[] {
+  const logs = platforms.filter((p) => p.hollow).map((p) => ({ x0: p.x - 40, x1: p.x + p.width + 40, floor: p.y + hollowLogSize(p.hollow!, p.width).height }));
+  return dress.filter((d) => !logs.some((l) => d.x > l.x0 && d.x < l.x1 && Math.abs(d.b - l.floor) < 40));
+}
+
+/**
+ * Pieces sunk under a stage's drawn water (Matt, 11-05: "Why are logs underwater? What other than clutter does that provide?"): a solid
+ * piece whose middle is over a zone and whose top is under its surface. Nothing stands there: a stone or a stump rises out of the water
+ * (its top over the surface), a lily pad floats on it, and a catch branch under a gap has no place in a creek. Held to none by the tests.
+ */
+export function piecesUnderWater(platforms: readonly Platform[], water: ReadonlyArray<{ x0: number; x1: number; y: number }> = []): Platform[] {
+  return platforms.filter((p) => {
+    if (p.lily || p.broken) return false;
+    const cx = p.x + p.width / 2;
+    return water.some((z) => cx > z.x0 && cx < z.x1 && p.y > z.y + 2);
   });
 }
