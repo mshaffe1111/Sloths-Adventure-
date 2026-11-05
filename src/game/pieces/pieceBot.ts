@@ -112,3 +112,45 @@ export function noisy(rp: RealPlay, leg: Leg, setting: Difficulty, cueAt: (t: nu
   }
   return won / tries;
 }
+
+/**
+ * One unbroken run over a chain of hops (no resets between them): he stands at `start`, and for each hop waits until `ready(rp, i)` says
+ * the next piece is there to go to, reacts a moment late (THUMB), presses, holds, steers the way on in the air and lets go on landing,
+ * then must be standing on hop i's target. Returns how many hops he made (all of them: across).
+ */
+export function chain(rp: RealPlay, start: { x: number; y: number; t0: number }, hops: Array<{ to: number; dir: 1 | -1 }>, ready: (rp: RealPlay, i: number) => boolean, setting: Difficulty, r: () => number, waterY = Infinity): number {
+  rp.t = start.t0;
+  rp.stand(start.x, start.y);
+  rp.frame();
+  const th = THUMB[setting];
+  for (let i = 0; i < hops.length; i++) {
+    const h = hops[i];
+    // (first he walks to the edge he will go from, as the first-timer bot does: edgeAim 22 px Normal, 32 Easy)
+    const edge = setting === 'easy' ? 32 : 22;
+    let n = 0;
+    for (;;) {
+      const on = rp.platforms.find((p) => p.id === rp.standingOn);
+      if (!on || (h.dir === 1 ? rp.p.x >= on.x + on.width - edge : rp.p.x <= on.x + edge)) break;
+      rp.frame({ right: h.dir === 1, left: h.dir === -1 });
+      if (rp.died || rp.p.y > waterY || ++n > 90) return i;
+    }
+    rp.frame();
+    // (then waits for the cue, up to 12 s, standing still, carried by what he is on)
+    n = 0;
+    while (!ready(rp, i)) { rp.frame(); if (rp.died || rp.p.y > waterY || ++n > 360) return i; }
+    for (let k = 0; k < Math.round(Math.max(0, gauss(r, th.react[0], th.react[1])) / DT); k++) { rp.frame(); if (rp.died) return i; }
+    const hold = Math.max(0.04, gauss(r, th.hold[0], th.hold[1]));
+    let held = 0, air = false, landed = false;
+    for (let f = 0; f < 90; f++) {
+      rp.frame({ press: f === 0, jump: f > 0 && held < hold, right: h.dir === 1 && (!air || !rp.p.grounded), left: h.dir === -1 && (!air || !rp.p.grounded) });
+      held += DT;
+      if (!rp.p.grounded) air = true;
+      if (rp.died || rp.p.y > Math.min(100000, waterY)) return i;
+      if (air && rp.p.grounded) { landed = true; break; }
+    }
+    if (!landed || rp.standingOn !== h.to) return i;
+    for (let k = 0; k < 4; k++) rp.frame();
+    if (rp.standingOn !== h.to || rp.p.y > waterY) return i;
+  }
+  return hops.length;
+}

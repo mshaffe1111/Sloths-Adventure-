@@ -269,7 +269,7 @@ function drawReedWall(ctx: CanvasRenderingContext2D, x: number, top: number, bot
 }
 
 /** where each seesaw painting's round pivot is across its frame (atlas px, measured from puzzle-kit.webp) */
-const SEESAW_PIVOT: Record<'seesawLevel' | 'seesawUpR' | 'seesawUpL', number> = { seesawLevel: 105, seesawUpR: 105, seesawUpL: 90 };
+export const SEESAW_PIVOT: Record<'seesawLevel' | 'seesawUpR' | 'seesawUpL', number> = { seesawLevel: 105, seesawUpR: 105, seesawUpL: 90 };
 
 /** the active part: where it is, how big it is (Dot perches beside it after struggle; nothing is drawn on it), and which piece it is (none: the
  *  room's middle) */

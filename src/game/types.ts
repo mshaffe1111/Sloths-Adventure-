@@ -334,9 +334,13 @@ export interface Platform {
   /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts), and World 4's little mossy rocks to hop (`rock`, protoArt drawRockArt), the mailbox post at a porch's dead end in 2-6 (`post`, a knot: `lip`), and 6-8's ledges in World 6's pieces (`stilt`, w6StiltArt.ts) */
   art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog' | 'orchid' | 'kit' | 'rock' | 'post' | 'stilt' | 'hidden'
     // (the engine pieces, src/game/pieces/: each drawn by its own art there, pieces.ts drawPieces)
-    | 'sling';
+    | 'sling' | 'crate' | 'seesaw';
   /** a slung log: a 'moving' platform swinging on two ropes from a bough (src/game/pieces/sling.ts) */
   sling?: import('./pieces/sling.ts').SlingInfo;
+  /** a bobbing crate on still water: a 'moving' platform that tips and goes under on a cycle (src/game/pieces/crate.ts) */
+  crate?: import('./pieces/crate.ts').CrateInfo;
+  /** one half of a counterweight seesaw on the route: a 'moving' platform tipped by the weights on its two halves (src/game/pieces/seesaw.ts) */
+  seesaw?: import('./pieces/seesaw.ts').SeesawInfo;
   /** one of the Sky Sovereign's rock pillars in 4-10 (sovereignFight.ts): its index. It is a wall with a top to stand on; it cracks, and broken it is a stump */
   pillar?: number;
   /** a knot of wood standing at the end of a high branch (4-6; a mailbox post on 2-6's porches): a little wall, so he cannot walk off it

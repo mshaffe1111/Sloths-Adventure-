@@ -444,8 +444,9 @@ export class GameEngine {
   private drawPlats: Platform[] = [];
   /** the hand-built stage's painted props: the platforms they draw, and their state */
   private paintedPlats: Platform[] = [];
-  /** the stage lays engine pieces (src/game/pieces/) */
+  /** the stage lays engine pieces (src/game/pieces/), and what their frame step is told (one object, no allocation per frame) */
   private hasPieces = false;
+  private pieceEnv: { standingOn: number; grounded: boolean; platforms: readonly Platform[]; dt: number } = { standingOn: -1, grounded: false, platforms: [], dt: 0 };
   private swingVines: Vine[] = [];
   /** the vines the scene paints (a puzzle piece's climb, a kit vine, is the kit's own to draw) */
   private plainVines: Vine[] = [];
@@ -1568,13 +1569,16 @@ export class GameEngine {
 
     // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
     for (const plat of this.platforms) {
-      if (plat.type !== 'moving' || plat.broken) continue;
-      // the engine pieces that move (src/game/pieces/: the slung log), carried the same way
-      if (isPiece(plat)) {
-        const m = stepPiece(plat, this.gameTime);
+      // the engine pieces that move (src/game/pieces/: the slung log, the bobbing crates), carried the same way (a crate under the water is
+      // `broken` and still moves, so it comes back up)
+      if (plat.type === 'moving' && isPiece(plat)) {
+        const env = this.pieceEnv;
+        env.standingOn = this.standingOnId; env.grounded = p.grounded; env.platforms = this.platforms; env.dt = dt;
+        const m = stepPiece(plat, this.gameTime, env);
         if (p.grounded && this.standingOnId === plat.id) { p.x += m.dx; p.y += m.dy; }
         continue;
       }
+      if (plat.type !== 'moving' || plat.broken) continue;
       if (plat.lift) {
         // World 2's basket lift rides up and down, and carries whoever stands in it
         const ny = liftY(plat.lift, this.gameTime);
@@ -6393,8 +6397,8 @@ export class GameEngine {
     }
     // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
     if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
-    // the engine pieces (src/game/pieces/: the slung log), over the ground and the boughs they hang from or stand on
-    if (this.hasPieces) drawPieces(ctx, this.platforms, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
+    // the engine pieces (src/game/pieces/: the slung log, the crates), over the ground and the boughs they hang from or stand on
+    if (this.hasPieces) drawPieces(ctx, this.platforms, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.gameTime);
     // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
     for (const pl of this.platforms) if (pl.lift && this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) drawW2Lift(ctx, pl, !!pl.lift.postRight);
     // 2-6: the village's ladders where the climbs are

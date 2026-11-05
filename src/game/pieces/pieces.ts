@@ -9,28 +9,39 @@
  *   - pieceSheets: the sheets a stage's pieces draw from, so the stage asks for them before it starts (stageSheets.ts).
  */
 import type { Platform } from '../types.ts';
-import { blitPiece, piecesReady } from './pieceArt.ts';
+import { PIECE_FRAMES, blitPiece, piecesReady } from './pieceArt.ts';
 import { LOG_CELL, logScale, slingRopes, stepSling } from './sling.ts';
+import { CRATE_CELL, crateState, stepCrate } from './crate.ts';
+import { stepSeesaw, type PieceEnv } from './seesaw.ts';
+import { drawKitArt, kitArtReady, kitSize } from '../puzzleArt.ts';
+import { KIT_ART } from '../puzzleAtlasData.ts';
+import { SEESAW_PIVOT } from '../puzzlePlay.ts';
 import { drawRopeAlong, warmRopeKit } from '../ropeArt.ts';
 
 const still = { dx: 0, dy: 0 };
 /** move piece `p` to where it is at game time t; how far it moved (0, 0 for a piece that does not move) */
-export function stepPiece(p: Platform, t: number): { dx: number; dy: number } {
+export function stepPiece(p: Platform, t: number, env: PieceEnv): { dx: number; dy: number } {
   if (p.sling) return stepSling(p, t);
+  if (p.crate) return stepCrate(p, t);
+  if (p.seesaw) return stepSeesaw(p, env);
   return still;
 }
 /** whether the engine's moving-platform loop leaves this platform to stepPiece */
-export const isPiece = (p: Platform) => !!p.sling;
+export const isPiece = (p: Platform) => !!p.sling || !!p.crate || !!p.seesaw;
 
 /** the sheets a stage's pieces draw from (stagePreload.ts keys) */
 export function pieceSheets(platforms: readonly Platform[]): string[] {
-  return platforms.some(isPiece) ? ['pieces', 'rope'] : [];
+  const out: string[] = [];
+  if (platforms.some((p) => p.sling || p.crate)) out.push('pieces');
+  if (platforms.some((p) => p.sling)) out.push('rope');
+  if (platforms.some((p) => p.seesaw)) out.push('kit-pieces');
+  return out;
 }
 /** start loading what the pieces draw with (the engine asks as a stage starts) */
 export function warmPieces(platforms: readonly Platform[]): void {
-  if (!platforms.some(isPiece)) return;
-  piecesReady();
-  warmRopeKit();
+  if (platforms.some((p) => p.sling || p.crate)) piecesReady();
+  if (platforms.some((p) => p.sling)) warmRopeKit();
+  if (platforms.some((p) => p.seesaw)) kitArtReady();
 }
 
 interface View { x0: number; x1: number; y0: number; y1: number }
@@ -40,8 +51,10 @@ const seen = (x0: number, x1: number, y0: number, y1: number, v: View) => x1 > v
 const rope: Array<[number, number]> = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]];
 
 /** every piece on screen, in its painted art (nothing is drawn in its place while the sheet loads) */
-export function drawPieces(ctx: CanvasRenderingContext2D, platforms: readonly Platform[], v: View): void {
+export function drawPieces(ctx: CanvasRenderingContext2D, platforms: readonly Platform[], v: View, t = 0): void {
   for (const p of platforms) {
+    if (p.crate) { drawCrate(ctx, p, v, t); continue; }
+    if (p.seesaw) { if (p.seesaw.side === 0) drawSeesaw(ctx, p, platforms, v); continue; }
     if (p.broken || !p.sling) continue;
     const s = p.sling;
     const k = logScale(p.width);
@@ -63,3 +76,45 @@ export function drawPieces(ctx: CanvasRenderingContext2D, platforms: readonly Pl
   }
 }
 const ROPE4 = { length: 4, 0: rope[0], 1: rope[1], 2: rope[2], 3: rope[3] } as ArrayLike<readonly [number, number]>;
+
+/**
+ * A bobbing crate: World 2's painted crate (crate-up afloat, crate-down tipping), its top on the platform's top; only the part over the
+ * water is drawn (a rectangle clip at the surface: what is under reads as under), and World 2's painted foam where it cuts the water.
+ */
+function drawCrate(ctx: CanvasRenderingContext2D, p: Platform, v: View, t: number): void {
+  const c = p.crate!;
+  if (!seen(p.x - 30, p.x + p.width + 30, p.y - 30, c.surfaceY + 20, v)) return;
+  const { s } = crateState(c, t);
+  const cell = s === 'tip' ? CRATE_CELL.down : CRATE_CELL.up;
+  const k = p.width / (cell.right - cell.left);
+  const dw = cell.w * k, dh = cell.h * k;
+  const dx = p.x - cell.left * k, dy = p.y - cell.top * k;
+  // (the water line: a hair under the surface, so the foam covers the cut)
+  const cut = c.surfaceY + 3;
+  if (dy < cut) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(dx - 4, dy - 4, dw + 8, cut - dy + 4);
+    ctx.clip();
+    blitPiece(ctx, s === 'tip' ? 'crate-down' : 'crate-up', dx, dy, dw, dh, p.id % 2 === 1);
+    ctx.restore();
+  }
+  // the foam where it meets the water: wider and brighter as it goes under or comes up (a splash), calm afloat
+  const churn = s === 'afloat' ? 0 : 1;
+  const fw = p.width * (1.25 + 0.25 * churn), fh = fw * (PIECE_FRAMES.waterline.h / PIECE_FRAMES.waterline.w);
+  if (churn || p.y < c.surfaceY) blitPiece(ctx, 'waterline', p.x + p.width / 2 - fw / 2, c.surfaceY - fh * 0.5, fw, fh);
+}
+
+/** a seesaw: the kit's painted plank on its round pivot, by the pivot, stretched to the plank's length (as puzzlePlay.ts drawSeesaw) */
+function drawSeesaw(ctx: CanvasRenderingContext2D, p: Platform, platforms: readonly Platform[], v: View): void {
+  const s = p.seesaw!;
+  const peer = platforms.find((q) => q.id === s.peer);
+  if (!peer) return;
+  const w = p.width + peer.width;
+  if (!seen(s.pivotX - w / 2, s.pivotX + w / 2, s.y - s.rise - 40, s.y + 60, v)) return;
+  const n: 'seesawLevel' | 'seesawUpR' | 'seesawUpL' = s.show < -0.5 ? 'seesawUpR' : s.show > 0.5 ? 'seesawUpL' : 'seesawLevel';
+  const sz = kitSize(n);
+  const k = (w + 24) / sz.w;
+  const f = KIT_ART[n];
+  drawKitArt(ctx, n, s.pivotX + (f.ax - SEESAW_PIVOT[n]) * f.k * k, s.y + 10, { scale: k });
+}

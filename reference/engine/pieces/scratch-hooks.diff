@@ -1,0 +1,124 @@
+diff --git a/src/game/mixer/w1mix.ts b/src/game/mixer/w1mix.ts
+index 6b0e9faa8..9f73c21bd 100644
+--- a/src/game/mixer/w1mix.ts
++++ b/src/game/mixer/w1mix.ts
+@@ -24,6 +24,9 @@ import { fixPickups } from '../flowerReach.ts';
+ import { findForStage } from '../finds.ts';
+ import { heldMaxGap, jumpOK, validateStage } from '../levelCheck.ts';
+ import { reachGlide, reachJump } from '../physics.ts';
++import { slungLog } from '../pieces/sling.ts';
++import { link, seesawCrossing } from '../pieces/seesaw.ts';
++import { isPiece } from '../pieces/pieces.ts';
+ 
+ type Rng = { f: () => number; r: (a: number, b: number) => number; i: (a: number, b: number) => number; pick: <T>(xs: readonly T[]) => T };
+ /** one RNG stream per seed and salt (the same mix as w1Rhythm.ts rng): every node and layer draws from its own stream */
+@@ -1147,6 +1150,55 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
+     const y = Math.max(a.y, b.y) + 60;
+     L.P.push({ id: L.pid++, x: a.x + a.width - 30, y, width: b.x + 50 - (a.x + a.width - 30), height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
+   }
++  // SCRATCH (engine-pieces stills only, never committed): open a gap in the middle of a clear bank by moving everything past it on, and
++  // hang the piece over it
++  let scratchTrunks: Array<{ x: number; topY: number; bottomY: number; w: number }> = [];
++  {
++    const sp = (globalThis as { __piece?: string }).__piece ?? (typeof location !== 'undefined' ? new URLSearchParams(location.search).get('piece') : null);
++    const want = Number((typeof location !== 'undefined' ? new URLSearchParams(location.search).get('pieceAt') : null) ?? 3000);
++    if (sp === 'seesaw') {
++      const W = 360 + 260 + 480;
++      const clear = (b: Platform) => !L.P.some((q) => q !== b && q.x < b.x + b.width - 120 && q.x + q.width > b.x + 120 && q.y < b.y && b.y - q.y < 460);
++      const bank = L.P.filter((b) => b.style === 'moss_stone' && b.height >= 90 && b.width >= 380 && b.x > want && clear(b)).sort((a, b) => a.x - b.x)[0];
++      if (bank) {
++        const x0 = Math.round(bank.x + bank.width / 2);
++        const mv = <T extends { x: number }>(o: T) => { if (o.x >= x0) o.x += W; };
++        for (const q of L.P) if (q !== bank) mv(q);
++        for (const q of [...L.V, ...L.C, ...L.flags, ...L.marks, ...L.hints, ...L.glints] as Array<{ x: number }>) mv(q);
++        for (const e of L.explain) { if (e.x0 >= x0) e.x0 += W; if (e.x1 >= x0) e.x1 += W; }
++        mv(end); mv(exit);
++        const right = { ...bank, id: L.pid++, x: x0 + W, width: bank.x + bank.width - x0 };
++        bank.width = x0 - bank.x;
++        L.P.push(right);
++        const c = seesawCrossing({ x: x0, floorY: bank.y });
++        const ids = [L.pid++, L.pid++, L.pid++, L.pid++, L.pid++];
++        const ends = [{ id: ids[2], ...c.ends[0] } as Platform, { id: ids[3], ...c.ends[1] } as Platform];
++        link(ends[0], ends[1]);
++        L.P.push({ id: ids[0], ...c.floor } as Platform, { id: ids[1], ...c.log } as Platform, ends[0], ends[1], { id: ids[4], ...c.bank } as Platform);
++        (globalThis as { __pieceAt?: unknown }).__pieceAt = { x0, x1: x0 + 620, y: bank.y, logX: c.log.x };
++      }
++    }
++    if (sp === 'sling') {
++      const w = easy ? 225 : 180, gap = Math.round(2 * (60 + 230 * Math.sin(0.42)) + w);
++      const clear = (b: Platform) => !L.P.some((q) => q !== b && q.x < b.x + b.width - 120 && q.x + q.width > b.x + 120 && q.y < b.y && b.y - q.y < 460);
++      const bank = L.P.filter((b) => b.style === 'moss_stone' && b.height >= 90 && b.width >= 380 && b.x > want && clear(b)).sort((a, b) => a.x - b.x)[0];
++      if (bank) {
++        const x0 = Math.round(bank.x + bank.width / 2), x1 = x0 + gap;
++        const mv = <T extends { x: number }>(o: T) => { if (o.x >= x0) o.x += gap; };
++        for (const q of L.P) if (q !== bank) mv(q);
++        for (const q of [...L.V, ...L.C, ...L.flags, ...L.marks, ...L.hints, ...L.glints] as Array<{ x: number }>) mv(q);
++        for (const e of L.explain) { if (e.x0 >= x0) e.x0 += gap; if (e.x1 >= x0) e.x1 += gap; }
++        mv(end); mv(exit);
++        const right = { ...bank, id: L.pid++, x: x1, width: bank.x + bank.width - x0 };
++        bank.width = x0 - bank.x;
++        L.P.push(right);
++        const sl = slungLog({ x0, x1, bankY: bank.y, easy })!;
++        L.P.push({ id: L.pid++, ...sl.log } as Platform, ...sl.boughs.map((b) => ({ id: L.pid++, ...b, held: true }) as Platform));
++        scratchTrunks = sl.trunks;
++        (globalThis as { __pieceAt?: unknown }).__pieceAt = { x0, x1, y: bank.y };
++      }
++    }
++  }
+   // (every gap is a drop: World 1 paints an unmarked fall as water otherwise)
+   for (const p of L.P) if (p.type === 'solid' || p.type === 'fragile') (p as Platform & { pit?: string }).pit = 'drop';
+   const movedPickups = fixPickups({ platforms: L.P, vines: L.V, ropes: [] }, L.C);
+@@ -1160,7 +1212,8 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
+   // (nothing floats unless it floats (the designer's P-2, P-7, P-11; D16): every bough, log, crumbling ledge and creaky limb in the air
+   // stands on a painted kapok set back in the shade, as 1-2's logs do (protoArt.ts setDecoTrunks), down to the floor under it or past the
+   // stage's bottom; a bridge hangs from a post at each end; the mushroom's perch is a short stump on its bank. Dressing only: no surface)
+-  const { trunks, leaves } = supports(L.P, height, [100, exit.x, ...L.flags.map((f) => f.x)]);
++  const sup = supports(L.P.filter((q) => !(q as { held?: boolean }).held), height, [100, exit.x, ...L.flags.map((f) => f.x)]);
++  const trunks = [...sup.trunks, ...scratchTrunks], leaves = sup.leaves;
+   const beats: Array<[number, number, string]> = L.explain.map((e) => [e.x0, e.x1, `${e.job}: ${e.idea}${e.road ? ` (${e.road} road)` : ''}`]);
+   const stage = {
+     config: cfg, trees: [], platforms: L.P, vines: L.V, ropes: [], enemies: [], boss: null, collectibles: L.C,
+@@ -1197,7 +1250,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
+   const KIT = new Set(['moss_stone', 'log', 'branch', 'ruin', 'canopy_bridge']);
+   for (const p of stage.platforms) {
+     const q = p as Platform & { lily?: boolean };
+-    if (!(KIT.has(p.style as string) || q.lily || p.type === 'bouncy')) throw new Error(`${S.id}: piece ${p.id} at x ${p.x} (h ${p.height}, style ${p.style}) has no World 1 kit look`);
++    if (!(KIT.has(p.style as string) || q.lily || p.type === 'bouncy' || isPiece(p))) throw new Error(`${S.id}: piece ${p.id} at x ${p.x} (h ${p.height}, style ${p.style}) has no World 1 kit look`);
+   }
+   return stage;
+ }
+diff --git a/src/game/w2Stages.ts b/src/game/w2Stages.ts
+index eb3abc964..74eca4d0d 100644
+--- a/src/game/w2Stages.ts
++++ b/src/game/w2Stages.ts
+@@ -19,6 +19,7 @@ import { reachJump } from './physics.ts';
+ import { catchWindow, earlyCatch, jumpGrab, landWindow } from './protoCheck.ts';
+ import { buildKapok, EXPERT_SECONDS, G, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
+ import { gapFor, driftX, logLayout, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type RiverZone } from './river.ts';
++import { crateRow } from './pieces/crate.ts';
+ import type { W2Decor } from './riverArt.ts';
+ import { W2_FRAMES } from './w2PropsData.ts';
+ import type { GeneratedStage } from './stageGenerator.ts';
+@@ -482,6 +483,22 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
+     // (the last hop is up onto the bank, 34 px higher than the pads: a short one, so a hop that comes up short still lands on top
+     // instead of meeting the bank's face and sliding down it into the water)
+     px += Math.round(one * R.r(0.32, 0.4));
++    // SCRATCH (engine-pieces stills only, never committed): the first pond's pads become a row of bobbing crates
++    {
++      const g = globalThis as { __pieceAt?: unknown };
++      if (typeof location !== 'undefined' && new URLSearchParams(location.search).get('piece') === 'crate' && !g.__pieceAt) {
++        const easyC = (() => { try { return localStorage.getItem('sloth_difficulty') === 'easy'; } catch { return false; } })();
++        const cw = easyC ? 136 : 110;
++        let n = Math.max(2, Math.round((px - px0 - 66) / (cw + 66)));
++        let row = crateRow({ x0: px0, x1: px, surfaceY: SURFACE, n, easy: easyC });
++        if (!row) row = crateRow({ x0: px0, x1: px, surfaceY: SURFACE, n: n - 1, easy: easyC }) ?? crateRow({ x0: px0, x1: px, surfaceY: SURFACE, n: n + 1, easy: easyC });
++        if (row) {
++          for (let i = P.length - 1; i >= 0; i--) if (P[i].lily && P[i].x >= px0 && P[i].x < px) P.splice(i, 1);
++          for (const c of row) P.push({ id: pid++, ...c } as Platform);
++          g.__pieceAt = { x0: px0, x1: px, y: G };
++        }
++      }
++    }
+     // still water: no logs, so nothing drifts (speed 0)
+     rivers.push({ x0: px0, x1: px, surfaceY: SURFACE, dir: 1, speed: 0, ...(opts.safe ? { safe: { backX: px0 - 70, backY: G } } : {}) });
+     reeds(px0 - 20, G + 6);
