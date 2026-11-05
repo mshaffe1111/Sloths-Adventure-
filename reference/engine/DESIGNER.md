@@ -1,4 +1,8 @@
-# A level engine for Sloths: random, fun, replayable stages built from pieces (designer, 2026-11-04, redone)
+# DRAFT: a level engine for Sloths: random, fun, replayable stages built from pieces (designer, 2026-11-04, redone)
+
+**DRAFT (the lead, 2026-11-04 9:16 PM ET):** pushed as a draft. The redesign waits for the research team's notes in
+`reference/research/engine-2026-11-05/`. Sections 1-2 (the failures traced, the measurements and the calibration) are the code-side
+work the lead asked to keep; sections 4-11 will be redone from the team's sources.
 
 **What this is.** A game plan for the engine that lays out stages. Each stage is made of nodes. Each node rolls in from pieces. Every
 roll is different, every roll is fun, and every roll is right the first time. There are three different ways to build it (and a wild
