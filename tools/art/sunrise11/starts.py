@@ -2,7 +2,7 @@
 can end on a cut piece, so the repaint keeps a tree in a join band and the join cuts it (the old w1sunrise-mid's 268 px cut trunk; all
 8 of round M's takes failed cut.py's join check). Here the pieces are laid between two margins of plain ground band, every piece's both
 edges ragged, so each end of the start holds only ground and the join falls in a clearing.
-    python3 -I tools/art/sunrise11/starts.py <out dir> <name> <src stem> <grade> <seed> [margin px]
+    python3 -I tools/art/sunrise11/starts.py <out dir> <name> <src stem> <grade> <seed> [margin px] [grow %]
 """
 import random, sys
 from pathlib import Path
@@ -19,7 +19,7 @@ from starts2 import crowns, feather  # noqa: E402
 W, H = 2048, 1104
 
 
-def main(out, name, stem, grade, seed, margin=300):
+def main(out, name, stem, grade, seed, margin=300, grow=100):
     rnd = random.Random(seed)
     src = np.asarray(Image.open(ROOT / f'src/assets/backdrops/{stem}-mid.webp').convert('RGBA')).astype(np.float32)
     src = crowns(src, rnd, 0.0)
@@ -32,7 +32,8 @@ def main(out, name, stem, grade, seed, margin=300):
     x = 0
     end = 0
     for p in ps:
-        s = k * rnd.uniform(0.74, 0.88)
+        # (grow, in percent: taller pieces; the paste-up's own scale left round M2's crowns 100-300 px lower than W1's other mids)
+        s = k * rnd.uniform(0.74, 0.88) * grow / 100
         q = np.asarray(Image.fromarray(p.clip(0, 255).astype(np.uint8)).resize((max(8, round(p.shape[1] * s)), round(sh * s)), Image.LANCZOS)).astype(np.float32)
         q = feather(q, 90, True, True, rnd)
         ph, pw = q.shape[:2]
@@ -81,4 +82,4 @@ def main(out, name, stem, grade, seed, margin=300):
 
 if __name__ == '__main__':
     a = sys.argv[1:]
-    main(a[0], a[1], a[2], a[3], int(a[4]), *(int(v) for v in a[5:6]))
+    main(a[0], a[1], a[2], a[3], int(a[4]), *(int(v) for v in a[5:7]))

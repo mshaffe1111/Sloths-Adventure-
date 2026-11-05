@@ -13,7 +13,7 @@ for (const [w, h, o] of [[412, 915, 'up'], [915, 412, 'side']]) {
   await p.goto(`http://127.0.0.1:${process.env.PORT ?? 4301}/?lessons=off`);
   await p.waitForFunction(() => typeof window.__play === 'function', null, { timeout: 120000 });
   await p.evaluate(() => window.__play('1-1'));
-  await p.waitForTimeout(7000);
+  await p.waitForTimeout(12000); // (past the iris and the stage title card)
   for (const [name, at] of SPOTS) {
     if (at) {
       await p.evaluate(([x, y]) => {
