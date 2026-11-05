@@ -219,3 +219,10 @@ same gates (labels, support, rocks never float, the ladder, water, variety via e
    ladder: the set piece is not copied, but its idea returns later as a twist in that world's own art (the designer's option c).
 2. "Who picks which small extra pieces and art get made?" Matt: **"You."** The lead picks (with the designer's list and reasons as the
    input), inside the Hugging Face money, and tells Matt what was made and spent.
+
+## 2026-11-05 11:12 AM ET (to the lead): bad art is replaced, not patched
+"If we have bad art, get rid of the art. Spend the dollar or whatever it takes to get a better background and use that. We do not need
+to put time and work trying to fix background pictures when we can just craft one quickly that'll fix it."
+So: a background or piece with a defect painted into it (clutter, seams, cut edges, smears) is remade fresh on Hugging Face and the
+old one is removed, never inpainted, cross-faded or masked. The lead approves the spend (Hugging Face first), inside what's left of the
+$72 with about $15 kept back.

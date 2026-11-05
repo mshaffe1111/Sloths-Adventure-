@@ -65,3 +65,4 @@ that do the best job get the follow-on work.
 - D36 (11-05): a start-up print over ~2 KB is cut to a preview after compression; what must be read is in START-HERE.txt (printed first), and the lead opens its files with the Read tool, starting at reference/notes/lead.md.
 - D37 (11-05): judge a still object by object first (what holds it up? does it belong in this world?), then the feature; rocks never float (Matt).
 - D37 spread (11-05, engine-render): every object on screen has a reason and a support; check all of them, not just the thing you built.
+- Bad art is replaced, not patched (Matt, 2026-11-05): a painted-in defect means a fresh Hugging Face picture and the old one deleted; never inpaint, cross-fade or mask it.
