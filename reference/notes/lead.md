@@ -37,7 +37,7 @@ move the time, never the bar.
 | Planner | Whole-engine cost estimate | each step in % of the week, total vs 55% (stop at 53%), from measured history | 10:45 AM |
 | Planner + designer | 1-1/1-2 acceptance pass line | max wall time, max token cost, max fixes after first build; agreed by both, before 1-1 | 11:15 AM |
 | Planner | Every-world piece inventory | a table from the code: every platform, prop, climbable, air piece per world, file:line, counts | 11:15 AM |
-| Planner | Library extended + sheet by world (slip warned 11:08, accepted) | all inventoried kinds labelled, real stills grouped by world, staged ones marked, 85 flagged props judged by eye | 12:25 PM |
+| Planner | Library extended + sheet by world (slip warned 11:08, accepted) | all inventoried kinds labelled, real stills grouped by world, staged ones marked, 85 flagged props judged by eye | 12:45 PM |
 | Designer | Labels ruled, one pass | every kind: element, footing, floats, uses, worlds, teaches; float caps per world with reasons | 12:00 PM |
 | Designer | SPEC-TRACE tags | every spec number MEASURED/SOURCED/MATT/DERIVED/OPEN, with citations that check out | 11:45 AM |
 | engine-render | w1-new atlas stills | squirrels + hollow logs painted in play, upright + sideways, phone size, polish check | 11:00 AM |
@@ -56,7 +56,7 @@ move the time, never the bar.
 | engine-pieces (session_01FhBbYKusRP8mpek9qxLnF2) | lead-approved kinds 2-8: slung log, bobbing crates, seesaw, root gate, secret tunnel, sleeping bat, stalactites | atlas art first, reused behaviour, labelled catalog entry, tests + bots, stills + clip, all gates | 3:00 (2-4), 5:00 (5-6), 6:30 PM (7-8) |
 | engine-render | NEW 1-1 sunrise far/mid on HF (Matt: replace bad art) | seamless, no orchids, W1 style, <=4096 px, 2-3 candidates shown, artcheck + drawcheck green; old layers removed | 1:15 PM |
 | gen2-water (session_01FhBbYJtoeYdwkqJUvcP88i) | 6-7 two-waters root fix in gen2 W6 placement + W3 gate on all builders | W6-W8 lock first; 6-7 16/16 both settings; fingerprint changes explained; bots clear; all gates; stills both ways | 3:30 PM |
-| Lead | CHECKPOINT 1 for Matt (moved for the sheet) | library sheet by world, render stills, critic findings + rulings, OPEN triage, the 4 M questions, cost so far vs meter | 12:30 PM |
+| Lead | CHECKPOINT 1 for Matt (moved twice for the sheet) | library sheet by world, render stills, critic findings + rulings, OPEN triage, the 4 M questions, cost so far vs meter | 12:50 PM |
 | Planner | E3 element + SUPPORT check | every landing AND prop/dress on 102 stages x2 layouts x2 settings; may-float-no over air fails; water pieces only on zones; zone ends under banks; counts per world on a shrinking known list; float share measured; 1-1/1-5 0 breaches; 1-5 creek zone, pad test green | 1:45 PM |
 | Planner | W1 fixes from the rulings | stone/crumble no-float; crumble out of W1; tree ideas lay branch; vine/liana/rope kinds; no climbing vine 1-1; log jam out of 1-5 once water's back; snapshot changes named; 1-5 gates re-run | 2:30 PM |
 | Research helpers (lead starts 12:00) | the (R) OPEN groups settled from primary sources | each OPEN answered with a saved source + line, or proof of search | 3:00 PM |
