@@ -28,6 +28,7 @@ import { looksAlike } from '../inspect/lookalike.ts';
 import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
 import { landingKind } from '../../src/game/mixer/catalog.ts';
+import { botRun } from '../validate/play.ts';
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const id = process.argv[2];
@@ -123,8 +124,9 @@ if (ref?.view) {
     const rs = rows.filter((r) => r.setting === set);
     if (ref.boughShareMax !== undefined) {
       const share = rs.map((r) => { const L = r.platforms.filter((q) => !q.soil); return L.filter((q) => q.type === 'fragile' || (q.style === 'branch' && q.type !== 'bouncy')).length / Math.max(1, L.length); }).sort((a, b) => a - b);
-      const med = Math.round(share[Math.floor(share.length / 2)] * 1000) / 1000;
-      shown.push(line(`${set} boughs + creaky share of landings`, med, (x) => x <= ref.boughShareMax!, `<= ${ref.boughShareMax}`));
+      // (per roll, the lead's 4:30 PM line: every build at or under the float floor, so the worst roll is judged, never the median)
+      const worst = Math.round(share[share.length - 1] * 1000) / 1000;
+      shown.push(line(`${set} boughs + creaky share of landings (worst build)`, worst, (x) => x <= ref.boughShareMax!, `<= ${ref.boughShareMax} every build`));
     }
     // (the kinds count, R2 lesson 1: distinct surface kinds a build, CP1's kinds (measure2.py kind, line for line))
     if (ref.surfaceKindsMin !== undefined) {
@@ -139,7 +141,7 @@ if (ref?.view) {
     shown.push(line(`${set} ideas twice in a row (worst build)`, worst, (x) => x === 0, '0'));
   }
   gate('stage lines (§E.2: per view, float, ideas, floor numbers, surface kinds)', bad);
-  notMeasured.push('section kinds a build (gen2 meta, once 1-1 builds on gen2)', 'share of chunks cut from the old stage (gen2 meta, once 1-1 builds on gen2)');
+  notMeasured.push('cadence: section ratings ramp and cool (src/game/cadence.ts, on the gen2 build\'s slot ratings, once 1-1 builds on gen2)', 'era diversity over the stage graph and the node dials (the planner\'s graph and dials in the gen2 meta)', 'props and dressing over air (secondary objects, Matt 2026-11-05: support.ts judges platforms only)', 'every bough section starts in the stage\'s last third (its window [0.67, 1]: gen2 section ranges, once 1-1 builds on gen2)', 'section kinds a build (gen2 meta, once 1-1 builds on gen2)', 'share of chunks cut from the old stage (gen2 meta, once 1-1 builds on gen2)');
   linesShown.push(...shown);
   fs.rmSync(tmp, { recursive: true, force: true });
 }
@@ -196,7 +198,9 @@ if (fs.existsSync(OLD_FILE)) {
   gate(`against old ${id} (cosine < ${RULES.cosine}, no 20 s stretch alike; ${old.rolls.length} old rolls)`, bad);
 }
 
-// 5c. support: every landing on something that holds it (mixer/support.ts, the designer's labels: rocks never float, boughs on trunks)
+// 5c. support (mixer/support.ts, mixer/catalog.ts labels): a platform piece (bough, limb, shelf, log, plank) may stand in open air; a
+// secondary object (a stone, a mushroom, a pad, a prop) over air fails (Matt, 2026-11-05: "if they're part of the platforms, they can
+// float... I just don't want secondary objects like rocks and other things, lily pads, to be floating.")
 {
   const bad: string[] = [];
   for (let v = 1; v <= N; v++) {
@@ -206,6 +210,40 @@ if (fs.existsSync(OLD_FILE)) {
     if (breaches.length > 2) bad.push(`layout ${v}: and ${breaches.length - 2} more`);
   }
   gate(`support (${N} layouts, Normal)`, bad);
+}
+
+// 5d. REQUIRED-MOVE (NODES.md §1 `test`, R2 §2 L5: Nelson & Smith; Green et al. 2018): on each teach and test node, a bot without the
+// node's move fails the node (it never gets past the node's end) and the full bot passes it. The bot is the first-timer
+// (tools/validate/play.ts botRun), its limit `without` (no second jump, or every mushroom in the stretch plain solid), the way R2 §5
+// tried noHide. A node whose move the bot cannot be limited in (run, jump) is listed, never passed
+{
+  const NBOT = Number(arg('--bot-layouts', '4'));
+  const bad: string[] = [], shownRM: string[] = [], unjudged = new Set<string>();
+  const t0 = Date.now();
+  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= NBOT; v++) {
+    const st = buildRoll(cfg, v, setting === 'easy') as { meta?: { mix?: { explain: Array<{ node: number; job: string; x0: number; x1: number }> } } };
+    const ex = st.meta?.mix?.explain;
+    if (!ex) { bad.push(`${setting} ${v}: no node ranges in the build (meta.mix.explain): the gen2 build's section ranges are not wired yet`); continue; }
+    const nodes = new Map<number, { job: string; x0: number; x1: number }>();
+    for (const e of ex) { if (e.node < 0) continue; const q = nodes.get(e.node); nodes.set(e.node, q ? { job: q.job, x0: Math.min(q.x0, e.x0), x1: Math.max(q.x1, e.x1) } : { job: e.job, x0: e.x0, x1: e.x1 }); }
+    const full = botRun(id, v, setting);
+    for (const [n, q] of nodes) {
+      const m = q.job.match(/^(teach|test) (\w+)/);
+      if (!m) continue;
+      const move = (spec.nodes[n - 1]?.teaches as string | undefined) ?? m[2];
+      if (move !== 'double' && move !== 'bounce') { unjudged.add(`${q.job} (no bot without ${move})`); continue; }
+      const fullOK = full.run.end === 'shrine' || full.reachX >= q.x1;
+      const lim = botRun(id, v, setting, { without: { move, x0: q.x0, x1: q.x1 } });
+      const limFails = lim.run.end !== 'shrine' && lim.reachX < q.x1;
+      if (move === 'double' && lim.doubled.inside > 0) bad.push(`${setting} ${v} node ${n} (${q.job}): the limit did not hold (${lim.doubled.inside} second jumps inside)`);
+      if (!fullOK) bad.push(`${setting} ${v} node ${n} (${q.job}): the full bot stopped at x ${full.reachX}, before the node's end ${q.x1}`);
+      if (!limFails) bad.push(`${setting} ${v} node ${n} (${q.job}, x ${q.x0}-${q.x1}): a bot without ${move} gets past it (${lim.run.end}, reached x ${lim.reachX}): the ${move} is not required`);
+      shownRM.push(`${setting} ${v} n${n} ${move}: full ${fullOK ? 'passes' : 'stops'}, without ${limFails ? 'fails' : 'passes'}`);
+    }
+  }
+  if (unjudged.size) notMeasured.push(...[...unjudged].map((u) => `required-move: ${u}`));
+  linesShown.push(`required-move (${NBOT} layouts x 2, ${((Date.now() - t0) / 1000).toFixed(0)} s): ${shownRM.join('; ')}`);
+  gate(`required move (teach and test nodes, ${NBOT} layouts x 2)`, bad);
 }
 
 // 5d. the element gate: every landing a kind the library knows, and of this world (mixer/catalog.ts LANDINGS, the designer's LABELS.md)

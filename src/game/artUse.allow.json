@@ -102,115 +102,13 @@
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
-  "id": "src/game/boss910Data.ts#mug2",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
   "id": "src/game/boss910Data.ts#mug4",
   "owner": "boss art owner / lead",
   "world": "bosses",
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
-  "id": "src/game/boss910Data.ts#crust20",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust32",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust40",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
   "id": "src/game/boss910Data.ts#mug1",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust12",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust21",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust22",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust42",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust01",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust41",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust02",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#mug3",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust31",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust10",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust11",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust30",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/boss910Data.ts#crust00",
   "owner": "boss art owner / lead",
   "world": "bosses",
   "why": "unused on 2026-10-31 (start of the gate)"
@@ -240,19 +138,7 @@
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
-  "id": "src/game/crocAtlasData.ts#blast",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
   "id": "src/game/crocAtlasData.ts#rampage",
-  "owner": "boss art owner / lead",
-  "world": "bosses",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/crocAtlasData.ts#ambush",
   "owner": "boss art owner / lead",
   "world": "bosses",
   "why": "unused on 2026-10-31 (start of the gate)"
@@ -636,12 +522,6 @@
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
-  "id": "src/game/w4PropsData.ts#capNest",
-  "owner": "w1-4 builders (W4 grab bag)",
-  "world": "W4",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
   "id": "src/game/w4PropsData.ts#caveFall",
   "owner": "w1-4 builders (W4 grab bag)",
   "world": "W4",
@@ -750,18 +630,6 @@
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
-  "id": "src/game/w4PropsData.ts#wetSteps",
-  "owner": "w1-4 builders (W4 grab bag)",
-  "world": "W4",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/w4PropsData.ts#wetSteps2",
-  "owner": "w1-4 builders (W4 grab bag)",
-  "world": "W4",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
   "id": "src/game/w5PropsData.ts#cakeCherry",
   "owner": "w5-pieces helper",
   "world": "W5",
@@ -801,12 +669,6 @@
   "id": "src/game/w5PropsData.ts#wrappedArmchair",
   "owner": "w5-pieces helper",
   "world": "W5",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/game/w6PropsData.ts#gauge-post",
-  "owner": "lead (W6)",
-  "world": "W6",
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
@@ -1011,12 +873,6 @@
   "id": "src/assets/w6to10/gemini/w10c-set-dressing.json#spout",
   "owner": "w10-pieces helper",
   "world": "W10",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/gemini/w6b-water-room-take2.json#gauge-post",
-  "owner": "lead (W6)",
-  "world": "W6",
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
@@ -1284,12 +1140,6 @@
   "why": "unused on 2026-10-31 (start of the gate)"
  },
  {
-  "id": "src/assets/w6to10/props-made/w9c-b.json#ash-fern",
-  "owner": "w9-pieces helper",
-  "world": "W9",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
   "id": "src/assets/w6to10/props-made/w9c.json#young-tree",
   "owner": "w9-pieces helper",
   "world": "W9",
@@ -1303,12 +1153,6 @@
  },
  {
   "id": "src/assets/w6to10/props-made/w9c.json#charred-log",
-  "owner": "w9-pieces helper",
-  "world": "W9",
-  "why": "unused on 2026-10-31 (start of the gate)"
- },
- {
-  "id": "src/assets/w6to10/props-made/w9c.json#ash-fern",
   "owner": "w9-pieces helper",
   "world": "W9",
   "why": "unused on 2026-10-31 (start of the gate)"

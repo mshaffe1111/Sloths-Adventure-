@@ -6,6 +6,11 @@
  *
  * `tools/engine/catalog-check.ts` holds this file to the inventory: every measured kind maps to exactly one entry here, or the check fails.
  * The support check (E3) reads `mayFloat` and `footing`.
+ *
+ * Floating (Matt, 2026-11-05, through the lead): "if they're part of the platforms, they can float... I just don't want secondary objects
+ * like rocks and other things, lily pads, to be floating." So every platform he stands on that is a bough, a limb, a shelf, a log or a
+ * plank is `mayFloat: 'yes'` (creaky limb, frond ledge, orchid shelf, fungus shelf and roost limb moved from 'no'; the bough's 'no' in the
+ * stone-thin worlds is gone), and a secondary object (a stone, a mushroom, a pad, a prop, dressing) still stands on something.
  */
 import type { Platform } from '../types.ts';
 
@@ -49,12 +54,12 @@ export const LANDINGS: LandingKind[] = [
   { name: 'pillar', match: (p) => !!p.pillar, element: 'ground', footing: 'its drawn pillar', mayFloat: 'no', uses: "the 4-10 lair's pillars", worlds: [4], notes: 'a stone on a pillar is supported' },
   { name: 'bough', match: (p) => p.type === 'solid' && p.style === 'branch' && !art(p) && !p.pillar, element: 'tree', footing: 'a trunk within 220 px, or a post; or floating where it reads cleaner', mayFloat: 'yes',
     uses: 'landing, stair, canopy road, catch under a teach gap (catch), ledge lip (lip)', worlds: ALL, notes: 'trunk rule: at most 3 full trunks per 1,400 px' },
-  { name: 'frond ledge', match: (p) => art(p) === 'frond', element: 'tree', footing: 'a trunk', mayFloat: 'no', uses: "W4's frond ledge", worlds: [4], notes: 'theme-locked' },
-  { name: 'orchid shelf', match: (p) => art(p) === 'orchid', element: 'tree', footing: 'a trunk', mayFloat: 'no', uses: "W5's orchid shelves", worlds: [5], notes: 'theme-locked' },
+  { name: 'frond ledge', match: (p) => art(p) === 'frond', element: 'tree', footing: 'a trunk', mayFloat: 'yes', uses: "W4's frond ledge", worlds: [4], notes: 'theme-locked' },
+  { name: 'orchid shelf', match: (p) => art(p) === 'orchid', element: 'tree', footing: 'a trunk', mayFloat: 'yes', uses: "W5's orchid shelves", worlds: [5], notes: 'theme-locked' },
   { name: 'porch post lip', match: (p) => art(p) === 'post', element: 'built', footing: 'a porch post', mayFloat: 'no', uses: "W2's porch posts", worlds: [2], notes: 'theme-locked' },
   { name: 'rope bridge', match: (p) => p.type === 'solid' && p.style === 'canopy_bridge', element: 'tree', footing: 'a plank span; its ends on posts or boughs where drawn', mayFloat: 'yes',
     uses: 'span, canopy road', worlds: [1, 5, 8, 9, 10], notes: 'a rope or post end drawn dangling in air is a P-2 fault: draw posts, or planks only' },
-  { name: 'creaky limb', match: (p) => p.type === 'fragile' && p.style === 'branch', element: 'tree', footing: 'a trunk or a bough', mayFloat: 'no', uses: 'a landing that gives way; the canopy breakable',
+  { name: 'creaky limb', match: (p) => p.type === 'fragile' && p.style === 'branch', element: 'tree', footing: 'a trunk or a bough', mayFloat: 'yes', uses: 'a landing that gives way; the canopy breakable',
     worlds: [1, 7, 8, 10], notes: "taught 1-2 (SHIPPED 6dae405d); World 1's breakable is World 1's branch art (SHIPPED acf6e1e8)" },
   { name: 'bounce mushroom', match: (p) => p.type === 'bouncy' && !p.style, element: 'ground', footing: 'the floor, a bank, a stump or a log', mayFloat: 'no', uses: 'bounce up (taught 1-1 n4)', worlds: [1, 3, 4, 7] },
   { name: 'springy limb', match: (p) => p.type === 'bouncy' && (p.style === 'branch' || p.style === 'log' || p.style === 'canopy_bridge'), element: 'tree', footing: 'as its style', mayFloat: 'yes', uses: 'bounce off a springy limb', worlds: [5, 7, 8, 9, 10] },
@@ -73,8 +78,8 @@ export const LANDINGS: LandingKind[] = [
   { name: 'built set piece', match: (p) => !p.style && p.type === 'solid' && (['kit', 'porch', 'hidden'].includes(art(p) ?? '') || !!p.chase || !!p.crown), element: 'built', footing: 'as its art (kit: built ground; porch: built)', mayFloat: 'no',
     uses: 'puzzle rooms (kit), the bank village (porch), secrets (hidden), the 1-8 chase set piece (chase, crown)', worlds: ALL, notes: 'kept as built' },
   { name: 'lily pad', match: (p) => !!p.lily, element: 'water', footing: 'a drawn water zone', mayFloat: 'water', uses: 'a pad on the water', worlds: [1, 2, 6], notes: 'lily pads only on water (Matt); engine-render\'s padsOffWater test' },
-  { name: 'fungus shelf', match: (p) => p.style === 'fungus_shelf', element: 'tree', footing: 'a trunk (a bracket shelf)', mayFloat: 'no', uses: "W8's night-forest landing", worlds: [8], notes: 'theme-locked' },
-  { name: 'roost limb', match: (p) => p.style === 'roost_branch', element: 'tree', footing: 'a trunk (a roost limb)', mayFloat: 'no', uses: "W8's night-forest landing", worlds: [8], notes: 'theme-locked' },
+  { name: 'fungus shelf', match: (p) => p.style === 'fungus_shelf', element: 'tree', footing: 'a trunk (a bracket shelf)', mayFloat: 'yes', uses: "W8's night-forest landing", worlds: [8], notes: 'theme-locked' },
+  { name: 'roost limb', match: (p) => p.style === 'roost_branch', element: 'tree', footing: 'a trunk (a roost limb)', mayFloat: 'yes', uses: "W8's night-forest landing", worlds: [8], notes: 'theme-locked' },
   // (measured in the inventory, with no row in LABELS.md yet: open until the designer rules)
   // (the designer's LABELS §6, 11-05 10:57: a platform log or plank that gives way; creak Normal 0.67 s, Easy 1.2 s; laid in a new stage
   // only once its art shows the creak tell (a crack or a sag): open for the art)
@@ -154,7 +159,7 @@ export const STONE_THIN_WORLDS = [3, 4, 7, 9];
 export function mayFloatIn(p: Platform & Record<string, unknown>, world: number): MayFloat | undefined {
   const k = LANDINGS.find((q) => q.match(p));
   if (!k) return undefined;
-  if (k.name === 'bough' && STONE_THIN_WORLDS.includes(world)) return 'no';
+  // (no world-only rule for boughs: Matt, 2026-11-05, platform pieces may float in every world)
   return k.mayFloat;
 }
 export const landingKind = (p: Platform & Record<string, unknown>) => LANDINGS.filter((k) => k.match(p));

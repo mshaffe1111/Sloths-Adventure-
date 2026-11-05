@@ -299,8 +299,17 @@ export interface BotRecord {
   met: Met;
   /** his jumps: where he took off, where he landed, and whether the landing's near edge was in the camera's view at take-off */
   jumps: Array<{ x: number; y: number; landX: number; inView: boolean; ok: boolean }>;
+  /** the furthest x his feet reached in the run's own sim */
+  reachX: number;
+  /** second jumps he made in the run's own sim, and how many of them inside `without`'s stretch (0 when the limit holds) */
+  doubled: { all: number; inside: number };
 }
-export interface BotOpts { trial?: number; portrait?: boolean; noHide?: boolean; clumsy?: boolean }
+/**
+ * `without`: the limited agent (NODES.md §1 `test`, R2 §2 L5: Nelson & Smith; Green et al. 2018): inside [x0, x1] the bot has no second
+ * jump (every air jump past the coyote time is spent) or no bounce (every mushroom standing in the stretch is a plain solid piece). Its
+ * probes play under the same limit, so it plans as a player without the move would
+ */
+export interface BotOpts { trial?: number; portrait?: boolean; noHide?: boolean; clumsy?: boolean; without?: { move: 'double' | 'bounce'; x0: number; x1: number } }
 /** research §1's clumsy thumb: taps +-100 ms (a uniform +-0.1 s has sd 0.058), 15% less air control */
 export const CLUMSY = { tapSd: 0.058, air: 0.85 };
 
@@ -316,11 +325,26 @@ export function botRun(id: string, layout: number, setting: Setting, o: BotOpts 
   const cams = new Map<RealPlay, Array<{ t: number; x0: number; x1: number; y0: number; y1: number }>>();
   const state = new Map<RealPlay, Eng>();
   const brokeSeen = new Set<Platform>();
+  const reach = new Map<RealPlay, number>();
+  const dbl = new Map<RealPlay, { all: number; inside: number }>(), wasDbl = new Map<RealPlay, boolean>();
+  const W = o.without;
+  const limited = new WeakSet<RealPlay>();
   RealPlay.prototype.frame = function (this: RealPlay, pad?: unknown) {
     const p = this.p;
+    if (W) {
+      if (W.move === 'bounce' && !limited.has(this)) {
+        limited.add(this);
+        for (const q of this.platforms as Platform[]) if (q.type === 'bouncy' && q.x + q.width > W.x0 && q.x < W.x1) q.type = 'solid';
+      }
+      // (any jump in the air is the engine's second jump (engine.ts: not grounded, past the coyote time): none inside the stretch)
+      if (W.move === 'double' && p.x + p.width > W.x0 && p.x < W.x1 && !p.grounded && !((this.e as Eng).coyoteTimer > 0)) p.jumpsLeft = 0;
+    }
     const was = { vx: p.vx, air: !p.grounded, swing: !!p.isVineSwinging, climb: !!p.climbing, hang: !!p.hanging, bounce: !!p.bounce, cover: !!(this.e as Eng).input?.inCover && !!p.ducking, push: !!p.pushing };
     const r = (frame0 as (this: RealPlay, pad?: unknown) => unknown).call(this, pad);
     if (o.clumsy && was.air && !p.grounded && !p.isVineSwinging && !p.climbing && !p.hanging) p.vx = was.vx + (p.vx - was.vx) * CLUMSY.air;
+    reach.set(this, Math.max(reach.get(this) ?? -Infinity, p.x));
+    if (!wasDbl.get(this) && p.isDoubleJumping) { const d = dbl.get(this) ?? { all: 0, inside: 0 }; d.all++; if (W && p.x + p.width > W.x0 && p.x < W.x1) d.inside++; dbl.set(this, d); }
+    wasDbl.set(this, !!p.isDoubleJumping);
     const st = state.get(this) ?? {};
     if (!was.swing && p.isVineSwinging) met.swung++;
     if (!was.climb && p.climbing) met.climbed++;
@@ -387,7 +411,7 @@ export function botRun(id: string, layout: number, setting: Setting, o: BotOpts 
     const ly = land ? land.y : tr.land!.y;
     return { x: Math.round(tr.x), y: Math.round(tr.y), landX: Math.round(edge), inView: edge >= c.x0 && edge <= c.x1 && ly >= c.y0 && ly <= c.y1, ok: tr.ok };
   });
-  return { run, met, jumps };
+  return { run, met, jumps, reachX: Math.round(reach.get(mainSim) ?? run.x), doubled: dbl.get(mainSim) ?? { all: 0, inside: 0 } };
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------
