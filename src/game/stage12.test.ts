@@ -10,7 +10,7 @@ import { setLayoutVariant } from './stageGenerator.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { badPickups } from './flowerReach.ts';
 import { stageBpm } from './beatTrace.ts';
-import { T12, rhythmLayout } from './w1Rhythm.ts';
+import { ROAD_CUT, T12, TOP_DROP, rhythmLayout } from './w1Rhythm.ts';
 import { templateFlags, unitsOf } from '../../tools/validate/variety.ts';
 import { findW1Pits } from './w1Pits.ts';
 import { validateStage } from './levelCheck.ts';
@@ -111,10 +111,11 @@ test('1-2: petals 70/30 (Matt), on the stage as built (after the petal pass): th
     for (const d of ['normal', 'easy'] as const) {
       const st = built(v, d);
       const nodes = st.proto.rhythm.nodes as unknown as Array<{ tag: string; tier: string; pair: string; x0: number; x1: number; y: number }>;
-      const top = nodes.find((n) => n.tier === 'A' && n.pair.includes('rotten branches'))!, leg = nodes.find((n) => n.tier === 'B')!;
-      const splits = [{ x0: top.x0, x1: top.x1, line: top.y }, { x0: leg.x0, x1: leg.x1, line: T12.B }];
+      // (the one split, the lead's ruling 2026-11-04: the canopy's high branches over its base bough; the bough leg is one way)
+      const top = nodes.find((n) => n.tier === 'A' && n.pair.includes('rotten branches'))!;
+      const splits = [{ x0: top.x0, x1: top.x1, line: top.y }];
       const petals = st.collectibles.filter((c) => c.type === 'flower');
-      const road = (c: { x: number; y: number }) => { const sp = splits.find((q) => c.x > q.x0 && c.x < q.x1 && c.y >= q.line - 180 && c.y <= q.line + 10); return !sp ? 'shared' : c.y <= sp.line - 80 ? 'high' : 'low'; };
+      const road = (c: { x: number; y: number }) => { const sp = splits.find((q) => c.x > q.x0 && c.x < q.x1 && c.y >= q.line - 180 && c.y <= q.line + TOP_DROP + 10); return !sp ? 'shared' : c.y < sp.line - ROAD_CUT ? 'high' : 'low'; };
       const n = petals.length;
       const share = (r: string) => petals.filter((c) => road(c) === r).length / n;
       const shared = share('shared'), high = share('high'), low = share('low');
