@@ -893,6 +893,24 @@ longest run at most 29 s on median and worst.
 - **The canopy-end rest run is the last change before Matt plays.** After it, the stage is READY, or it is sent as it is with any miss
   named. There is no tuning until Matt has played it and given his meter reading.
 
+
+**[designer, 11-05 ~6:08 AM ET] CP3 READY FOR MATT at engine-mixer b7c38491** (stills v9, `cp3/stills-v9/`; table `pace16l.jsonl`;
+map v5).
+- **Passes on 16 rolls, Normal and Easy:**
+  - two-road share 41-45%;
+  - Normal's longest run 14.9 / 19.2 s;
+  - 18 of 18 variety lines;
+  - splits 26 / 20;
+  - creaky 20-25%, in the top 3;
+  - biggest idea 29-36%;
+  - the level check 32/32, with no jump under the floors;
+  - the draw check both ways up;
+  - both bots reach the shrine 4/4 with 13 of 13 marks.
+- **Accepted, with the reasons above:** Easy density 0.61 / 0.63 (within the old 1-1's range), and Normal's clock 4:00-4:12.
+- **One known rough spot, named, not hidden: trunk density.** The sideways bank-end frame shows six near-identical trunks evenly
+  spaced on one screen. Queued fix, after Matt's play: boughs share a trunk within 220 px, at most about 3 full trunks per screen
+  width, and further boughs hang from a shared trunk's side branch.
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
