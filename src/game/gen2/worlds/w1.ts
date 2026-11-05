@@ -852,17 +852,17 @@ const CONTENT: Record<string, W1Content> = {
   'w1-bough-bench': 'structural', 'w1-sunlit-log': 'structural', 'w1-log-walk': 'structural', 'w1-last-step-up': 'structural',
 };
 /** every W1 section: the harvest, then the designer's new ones (and the planner's seed perch), each with its proposed jobs and its type */
-/** each section's terrain family: where most of its landings are (the porter's reading, for the designer to rule) */
+/** each section's terrain family: where most of its landings are (ruled by the designer, 11-05: hollow-twoway, fallen-trunk and log-walk raised-logs) */
 const TERRAIN: Record<string, W1Terrain> = {
   'w1-learn': 'floor-stones', 'w1-stones': 'floor-stones', 'w1-cache-stones': 'floor-stones', 'w1-stump-stones': 'floor-stones', 'w1-stone-dips': 'floor-stones',
   'w1-second-jump': 'floor-stones', 'w1-leap-stones': 'floor-stones', 'w1-stone-road': 'floor-stones', 'w1-meadow': 'floor-stones', 'w1-hop-bounce': 'mounds',
   'w1-high-leaps': 'boughs', 'w1-bounce-run': 'boughs', 'w1-low-boughs': 'boughs', 'w1-ledges': 'mounds', 'w1-ropes': 'floor-stones',
-  'w1-stump-stile': 'floor-stones', 'w1-stone-zigzag': 'floor-stones', 'w1-log-road': 'raised-logs', 'w1-hollow-twoway': 'floor-stones', 'w1-mushroom-lift': 'mounds',
-  'w1-twin-bounce': 'mounds', 'w1-fallen-trunk': 'floor-stones', 'w1-double-teach': 'floor-stones', 'w1-bough-stepup': 'boughs', 'w1-canopy-rungs': 'boughs',
+  'w1-stump-stile': 'floor-stones', 'w1-stone-zigzag': 'floor-stones', 'w1-log-road': 'raised-logs', 'w1-hollow-twoway': 'raised-logs', 'w1-mushroom-lift': 'mounds',
+  'w1-twin-bounce': 'mounds', 'w1-fallen-trunk': 'raised-logs', 'w1-double-teach': 'floor-stones', 'w1-bough-stepup': 'boughs', 'w1-canopy-rungs': 'boughs',
   'w1-high-walk': 'boughs', 'w1-dropdown-stair': 'mounds', 'w1-knot-bank': 'mounds', 'w1-floor-dash': 'raised-logs', 'w1-quiet-arrival': 'boughs',
   'w1-forest-edge': 'floor-stones', 'w1-fern-bank': 'floor-stones', 'w1-clearing': 'floor-stones', 'w1-bough-bench': 'boughs', 'w1-stump-towers': 'raised-logs',
   'w1-bounce-double': 'raised-logs', 'w1-canopy-weave': 'boughs', 'w1-sunlit-log': 'boughs', 'w1-stump-descent': 'raised-logs', 'w1-mound-log': 'mounds',
-  'w1-log-walk': 'floor-stones', 'w1-stilt-logs': 'raised-logs', 'w1-two-answers': 'floor-stones', 'w1-bough-log': 'boughs', 'w1-last-step-up': 'boughs',
+  'w1-log-walk': 'raised-logs', 'w1-stilt-logs': 'raised-logs', 'w1-two-answers': 'floor-stones', 'w1-bough-log': 'boughs', 'w1-last-step-up': 'boughs',
   'w1-seed-perch': 'boughs',
 };
 const VERSION_JOBS: Record<string, Record<string, W1Job[]>> = { 'w1-fallen-trunk': { double: ['test'], mushroom: ['twist'] } };

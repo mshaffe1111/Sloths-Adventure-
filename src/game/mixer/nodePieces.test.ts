@@ -29,4 +29,6 @@ test('V18: a bounce node needs a seated mushroom, a floating node a floating pla
   const stair = stage([P({ x: 0, y: 1200, width: 200, height: 200, style: 'moss_stone' }), P({ x: 300, y: 1100, width: 200, style: 'log' }), P({ x: 600, y: 1000, width: 200, style: 'log' }), P({ x: 900, y: 900, width: 200, style: 'log' })]);
   assert.deepEqual(nodePieceBreaches(stair, 1, [{ token: 'Uc^', x0: 0, x1: 1100 }]), []);
   assert.match(nodePieceBreaches(stage([floor]), 1, [{ token: 'Uc^', x0: 0, x1: 1000 }]).join(';'), /MUST landings that each sit higher/);
+  const dip = stage([P({ x: 0, y: 1200, width: 200, height: 200, style: 'moss_stone' }), P({ x: 300, y: 1100, width: 200, style: 'log' }), P({ x: 600, y: 1150, width: 200, style: 'log' }), P({ x: 900, y: 1000, width: 200, style: 'log' }), P({ x: 1200, y: 900, width: 200, style: 'log' })]);
+  assert.match(nodePieceBreaches(dip, 1, [{ token: 'Uc^', x0: 0, x1: 1500 }]).join(';'), /no step down/, 'a dip inside a climb is not a stair');
 });

@@ -7,8 +7,9 @@
  * built stage itself over that range, so the check judges what is drawn, never what a node claims. Only the content letter is read
  * from a token (its second character, §8.1: `JOB content ...`), never the rest of the grammar.
  *
- * c's "landings that each sit higher than the last" is read as: over the node, the landing tops (left to right, each piece's top) rise
- * on at least two thirds of the steps between neighbours and end higher than they start (the porter's JUDGMENT, for the designer).
+ * c's "landings that each sit higher than the last" (ruled by the designer, engine-spec 4b7840b27): over the node, the landing tops (left
+ * to right) rise on at least two thirds of the steps between neighbours, no step goes down (a level rest landing within 10 px is fine),
+ * and the last is above the first.
  */
 import type { Platform } from '../types.ts';
 import { landingKind } from './catalog.ts';
@@ -55,7 +56,7 @@ export function nodePieceBreaches(st: StageIn, world: number, nodes: readonly Re
     } else if (c === 'c') {
       const tops = here.filter((p) => p.type !== 'bouncy').sort((a, b) => a.x - b.x).map((p) => p.y);
       const steps = tops.slice(1).map((y, j) => tops[j] - y);
-      need(tops.length >= 3 && steps.filter((d) => d > 0).length >= (2 / 3) * steps.length && tops[0] > tops[tops.length - 1], 'landings that each sit higher than the last');
+      need(tops.length >= 3 && steps.filter((d) => d > 10).length >= (2 / 3) * steps.length && steps.every((d) => d >= -10) && tops[0] > tops[tops.length - 1], 'landings that each sit higher than the last (no step down)');
       never(!o.climbOwner && vines.some((v) => v.vineType === 'tree_climb'), 'a vine climb (tree_climb) outside the stage that owns it');
     } else if (c === 'b') {
       need(has('bounce mushroom') && !airHere.some((b) => b.kind === 'bounce mushroom'), 'a mushroom seated on the floor, a bank, a stump or a log');
