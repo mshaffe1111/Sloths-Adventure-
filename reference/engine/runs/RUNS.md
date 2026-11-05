@@ -76,6 +76,11 @@ stages). The engine's ladder should be read from a 16-layout run.
 | #152 animal absences | no taught animal absent > 2 stages (ES 139-140) | longest absence in play order (any roll): boa 38 (1-9 -> 5-6), jaguar 27 (3-9 -> 6-5), ocelot 18 (3-9 -> 5-6), snake 13 (5-8 -> 7-2), eagle 13 (5-8 -> 7-2), caiman 12 (7-8 -> 9-1), harpy 8, tayra 5, turtle 3 (2-5 -> 2-9) and never again after 2-9 (83 stages); frog 1, spider 1 (but gone after 7-9 / 5-9). | **MISS** (9 of 11) | Animals are laid per world builder; nothing spaces them across worlds (as #126). |
 | #154 swim | 6-7 teaches; 6-8, 6-9 echo; W6-W8, W10 >= 1 in 3 | calm pools (`swim.ts` kitPools): 6-7 one pool every roll; 0 in every other stage of W6-W10. | **MISS** (teach PASS; echo 0/2; W7, W8, W10 0/9) | The only calm water is a puzzle room's raft well: `src/game/engine.ts:6019-6021` (`calmPools` = `kitPools(this.kit, ...)`), `src/game/swim.ts:8-9`. Drawn water zones (`proto.water`, `engine.ts:5501`) are laid by no builder at 021ef4e93 (0 on all 102 stages x 16 layouts). |
 
+**Easy, the same run** (`ladder-uses.ts --easy` -> `out/raw/ladder-uses-mixer-easy-16.json.gz`, `out/ladder-mixer-easy.txt`; the spec's
+"Easy: the same moves and the same counts"): every verdict above is the same on Easy. The counts differ only a little (1-5's creaky 45-52
+against Normal's 55-63; mushroom "some" in W1 after its echo 0/6 against 1/6), and the mixer's 1-1 trunks are not on every Easy roll
+(every-roll first trunk on Easy is 1-4).
+
 **Topic 1: 1 PASS, 7 MISS.**
 
 ## 2. Water (step 6)
