@@ -2443,6 +2443,18 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
 - **Nothing in 1-1 can cost a life [added 3:10 PM ET]:** main's old 1-1 promise (stage11.test.ts:30): every drop lands on moss, and every
   floor is above the water. It is the first stage, and it matches "every dip has a one-jump way out" (STAGE-RULES §2). No floorless
   drop anywhere in 1-1.
+- **How "nothing can cost a life" is laid [ruled 3:11 PM ET, the planner's R1 and R2]:**
+  - **R1, YES to a stage-wide `safe: true`, CHANGED in the means.**
+    - On the ground (n1-n7), the safe ground under a gap is the **moss floor itself**: a shallow dip whose floor is one jump below
+      the lips, so he hops straight out (STAGE-RULES §2).
+    - It is **never a catch branch** on the ground: catch branches count as boughs, 1-1's bough share is already over its 25.3% line
+      (#102, 27% of it catch branches), and 1-1 is ground-led.
+    - In the canopy (n8-n11), a fall lands on the forest floor where it's within LONG_FALL and has a way back on (D33). A catch bough
+      goes only where the floor is too far, and it counts in the bough share.
+  - **R2, YES.** Under n7's double gap, the safe ground sits about 140 px under the lips: past a single jump's reach to the far lip,
+    and stopping short of the far bank, with a one-jump step back up to the near bank. On the ground that safe ground is a moss dip
+    floor, as R1. Only the double crosses, and a miss costs nothing. The check: a single-jump bot never reaches the far bank by any
+    route, and a double-jump bot does on 16 of 16 layouts.
 - **Hearts:** only after real risk (n9).
 - **Flags:** before n9, and the flag rule decides the rest.
 - **The three lines marked "(hint.1-1.bank/high/noMoss)"** are Matt-approved (6dae405d8, 11-04) but not on main. **[revised 1:30 PM ET,
