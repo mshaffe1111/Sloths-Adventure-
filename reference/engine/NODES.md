@@ -421,7 +421,7 @@ All three pass V1-V18: the cap, the neighbour rule with its two exceptions, and 
 - A world's graph list (§4) is stored as code strings.
 - A roll is saved as its filled string, next to the seed. The ledger (§5) compares strings: the same skeleton means the same graph, and the same marks mean the same tempo profile.
 - One parser reads the strings and checks V1-V18, and fails with the rule and the token.
-- The engine-core porter builds the parser. Until then, these rules are the spec.
+- **The planner owns the parser**, inside gen2 (the graphs are its data; the lead, 5:22 PM). Engine-core only reads the realised string from meta. Until the parser exists, these rules are the spec.
 
 
 ### 8.7 The block rule: a teach's check and a test can't be walked round (designer, 11-05 5:32 PM; engine-core 8cb80cf25's required-move gate)
