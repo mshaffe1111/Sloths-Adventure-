@@ -16,6 +16,7 @@
  * frame for the gaps in view, behind the platforms (protoArt.ts drawProtoScene, after the ground). Nothing here touches the HUD.
  */
 import { trackAtlas } from './atlasLoader.ts';
+import { endFace } from './groundPaint.ts';
 import type { Platform } from './types.ts';
 
 const URL_OF = {
@@ -58,9 +59,31 @@ export const DROP_DARK = 200;
 
 /** `steps`: the pieces standing in a soft pit above its floor (its way out): never painted over */
 /** `drop`: a fall a builder marked as a painted drop (either bank's `pit: 'drop'`); an unmarked fall is water (1-6's) */
-export interface PitGap { x0: number; x1: number; top: number; kind: 'fall' | 'soft'; floor?: number; lipL: boolean; lipR: boolean; steps?: Array<[number, number, number, number, boolean]>; drop?: boolean }
+/**
+ * `walls`: a marked drop that is a real pit, the tops of the two banks of earth either side of it (R-164.6): only then is it painted. A
+ * drop beside a log, a stone slab or a branch, or with ground standing in it, is open air: nothing is painted there (Matt's stills
+ * 0224-0228: a black column hung down through the air under floating logs and slabs, and a dark box stood behind the bank he was on)
+ */
+export interface PitGap { x0: number; x1: number; top: number; kind: 'fall' | 'soft'; floor?: number; lipL: boolean; lipR: boolean; steps?: Array<[number, number, number, number, boolean]>; drop?: boolean; walls?: [number, number] }
 
 const floorish = (q: Platform) => !q.broken && q.type !== 'bouncy' && q.type !== 'fragile' && q.type !== 'drift' && q.type !== 'moving';
+/**
+ * a piece the ground painter draws as a bank of earth, its soil running down out of sight (protoArt.ts drawProtoScene's `banks`, which
+ * calls this: one rule for the ground and its pits)
+ */
+export const paintedBank = (q: Platform) => (q.height >= 90 || !!q.soil) && !q.push && !q.broken && !q.art;
+/**
+ * a marked drop's walls: a bank of earth ends at each side of it, and nothing that stands (a floor, a stone, a log) lies in it below its
+ * lip. Else undefined: the gap is open air
+ */
+function pitWalls(platforms: readonly Platform[], x0: number, x1: number, top: number): [number, number] | undefined {
+  const side = (right: boolean) => platforms.filter((q) => paintedBank(q) && Math.abs((right ? q.x : q.x + q.width) - (right ? x1 : x0)) < 3 && q.y <= top + 4 && q.y + q.height > top).sort((a, b) => a.y - b.y)[0];
+  const L = side(false), R = side(true);
+  if (!L || !R) return undefined;
+  // (a bank of earth over it at any height stands in it too: its soil runs on down out of sight, in front of the drop)
+  if (platforms.some((q) => floorish(q) && q.x < x1 - 4 && q.x + q.width > x0 + 4 && (q.y + q.height > top + 4 || paintedBank(q)))) return undefined;
+  return [L.y, R.y];
+}
 
 /**
  * The stage's pits, from its platforms. The ground line is the commonest top of its banks of earth. A spot is ground where a piece stands
@@ -98,7 +121,10 @@ export function findW1Pits(platforms: readonly Platform[]): PitGap[] {
     const top = Math.max(topAt(x0), topAt(x1));
     const lip = { lipL: bankAt(x0), lipR: bankAt(x1) };
     const marked = ground.some((q) => q.pit === 'drop' && (Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3));
-    if (!fl.length) out.push({ x0, x1, top, kind: 'fall', ...lip, ...(marked ? { drop: true } : {}) });
+    if (!fl.length) {
+      const walls = marked ? pitWalls(platforms, x0, x1, top) : undefined;
+      out.push({ x0, x1, top, kind: 'fall', ...lip, ...(marked ? { drop: true } : {}), ...(walls ? { walls } : {}) });
+    }
     else {
       // (the floor is the piece under most of the gap: the soil steps at a soft pit's walls are its way out, not its floor)
       // (and a sunk step's own floor, under all of it, is its floor even with deeper ground below: the highest piece under most of it)
@@ -110,8 +136,26 @@ export function findW1Pits(platforms: readonly Platform[]): PitGap[] {
       if (floor - G >= SOFT_FLOOR) out.push({ x0, x1, top, kind: 'soft', floor, ...lip, steps });
     }
   }
-  return out;
+  // (a stage that climbs and falls through many heights, the mixer's 1-5: one ground line finds only the gaps at its own height. A marked
+  // drop between two banks of earth at any height is judged against those two banks: their tops, and nothing standing in it)
+  const marked = platforms.filter((q) => paintedBank(q) && floorish(q) && q.pit === 'drop').sort((a, b) => a.x - b.x);
+  for (const a of marked) {
+    const x0 = a.x + a.width;
+    // (the next bank of earth to the right whose top is near a's: the gap's far wall)
+    const b = platforms.filter((q) => paintedBank(q) && floorish(q) && q.x - x0 >= 24 && q.x - x0 <= 1600 && Math.abs(q.y - a.y) <= OWN_STEP).sort((p, q) => p.x - q.x)[0];
+    if (!b) continue;
+    const x1 = b.x, top = Math.max(a.y, b.y);
+    // (inside a wider gap the ground line found, painted or not: a soft pit, water, a painted drop keep it; open air does not)
+    if (out.some((g) => g.x0 < x1 && g.x1 > x0 && (g.kind === 'soft' || !g.drop || g.walls))) continue;
+    // (anything between them at all, at their height or under it: it is not one clean drop, and the ground line's pass judges it)
+    if (platforms.some((q) => !q.broken && q !== a && q !== b && q.x < x1 - 4 && q.x + q.width > x0 + 4 && q.y + q.height > Math.min(a.y, b.y) - 40)) continue;
+    const walls = pitWalls(platforms, x0, x1, top);
+    if (walls) out.push({ x0, x1, top, kind: 'fall', lipL: a.height >= 90, lipR: b.height >= 90, drop: true, walls });
+  }
+  return out.sort((p, q) => p.x0 - q.x0);
 }
+/** a marked drop's two banks at any height (findW1Pits' own pass) are at most this far apart in height */
+const OWN_STEP = 120;
 
 /** 1-8: the holes between the chase's sections (and any branch at their height), with nothing under them within 400 px: falls */
 function chaseGaps(platforms: readonly Platform[], chase: readonly Platform[]): PitGap[] {
@@ -133,12 +177,79 @@ function chaseGaps(platforms: readonly Platform[], chase: readonly Platform[]): 
   return out;
 }
 
-const cache = new WeakMap<readonly Platform[], PitGap[]>();
+const cache = new WeakMap<readonly Platform[], { gaps: PitGap[]; bottom: number }>();
+/** the stage's pits, and how far down its pieces reach (a drop is baked to there and a little more: below it the camera never looks) */
 const pitsOf = (platforms: readonly Platform[]) => {
   let v = cache.get(platforms);
-  if (!v) cache.set(platforms, (v = findW1Pits(platforms)));
+  if (!v) cache.set(platforms, (v = { gaps: findW1Pits(platforms), bottom: Math.max(0, ...platforms.map((q) => q.y + q.height)) + DROP_BELOW }));
   return v;
 };
+/** a drop is baked this far under the stage's lowest piece */
+const DROP_BELOW = 400;
+/** the dark of a drop under DROP_DARK is baked at this fraction of world size (a flat fill: its edges lie under the banks' soil) */
+const DEEP_SCALE = 0.25;
+
+/**
+ * A drop between two banks of earth, following the ground (R-164.6, R-164.8): the region between the two banks' own painted end faces
+ * (groundPaint.ts endFace, the outline drawBankArt cuts their soil to), from the lip down; the drop's picture and torn top fading in
+ * over DROP_DARK, then near black on down. The faces wobble and lean, so a straight column showed open air either side of it and ran on
+ * through it under the banks; inside the faces the dark only ever meets soil. Baked once: the top at world size, the dark below at
+ * DEEP_SCALE. Where the faces close the gap (they lean in past each other) there is nothing to paint.
+ */
+function bakeDrop(g: PitGap, drop: HTMLImageElement, bottom: number): { top: HTMLCanvasElement | null; deep: HTMLCanvasElement | null; x: number } | null {
+  const [yl, yr] = g.walls!;
+  const H = Math.min(3000, bottom - g.top);
+  if (H <= 0) return null;
+  const outline = dropOutline(g, yl, yr, g.top + H);
+  const xs = outline.flatMap(([, a, b]) => (a < b ? [a, b] : []));
+  if (!xs.length) return null;
+  const X0 = Math.floor(Math.min(...xs)) - 1, X1 = Math.ceil(Math.max(...xs)) + 1;
+  const clipTo = (k: CanvasRenderingContext2D, sc: number, oy: number) => {
+    k.beginPath();
+    k.moveTo((outline[0][1] - X0) * sc, (outline[0][0] - oy) * sc);
+    for (const [y, a] of outline) k.lineTo((a - X0) * sc, (y - oy) * sc);
+    for (let i = outline.length - 1; i >= 0; i--) k.lineTo((outline[i][2] - X0) * sc, (outline[i][0] - oy) * sc);
+    k.closePath();
+    k.clip();
+  };
+  // (the top ends where the dark below begins: an overlap was darker twice, a line across the drop)
+  const topH = Math.min(H, DROP_DARK);
+  const tc = canvas(X1 - X0, topH);
+  const tk = tc?.getContext('2d');
+  const soft = bakeSoft({ ...g, x0: X0, x1: X1, floor: g.top + DROP_DARK }, drop);
+  if (tc && tk && soft) {
+    clipTo(tk, 1, g.top);
+    tk.drawImage(soft, 0, 0);
+  }
+  let dc: HTMLCanvasElement | null = null;
+  if (H > DROP_DARK) {
+    dc = canvas((X1 - X0) * DEEP_SCALE, (H - DROP_DARK) * DEEP_SCALE);
+    const dk = dc?.getContext('2d');
+    if (dc && dk) {
+      clipTo(dk, DEEP_SCALE, g.top + DROP_DARK);
+      dk.fillStyle = 'rgba(10,7,5,0.94)';
+      dk.fillRect(0, 0, dc.width, dc.height);
+    }
+  }
+  return { top: tc, deep: dc, x: X0 };
+}
+
+/** a drop's outline, every 8 px down from its lip: [y, the left bank's face x, the right bank's face x] (closed where they meet) */
+export function dropOutline(g: PitGap, yl: number, yr: number, bottom: number): Array<[number, number, number]> {
+  const fl = endFace(1, g.x0, yl, bottom, true), fr = endFace(1, g.x1, yr, bottom, false);
+  const at = (f: Array<[number, number]>, y: number) => {
+    if (y <= f[0][1]) return f[0][0];
+    for (let i = 1; i < f.length; i++) if (f[i][1] >= y) return f[i - 1][0] + ((f[i][0] - f[i - 1][0]) * (y - f[i - 1][1])) / (f[i][1] - f[i - 1][1] || 1);
+    return f[f.length - 1][0];
+  };
+  const out: Array<[number, number, number]> = [];
+  for (let y = g.top; ; y = Math.min(bottom, y + 8)) {
+    const a = at(fl, y), b = at(fr, y);
+    out.push(a < b ? [y, a, b] : [y, (a + b) / 2, (a + b) / 2]);
+    if (y >= bottom) break;
+  }
+  return out;
+}
 
 /** draw the pits in view (World 1 only: protoArt.ts calls it there); false while the pictures load */
 /** a steady pseudo-random number from a position (the same pit always looks the same) */
@@ -163,7 +274,7 @@ export const TORN = 16;
 /** 1-8: how far under the branch its gap is fully dark (px) */
 export const HIGH_DARK = 170;
 
-interface Baked { under: HTMLCanvasElement | null; over: HTMLCanvasElement | null; x: number; y: number; ox: number; oy: number }
+interface Baked { under: HTMLCanvasElement | null; over: HTMLCanvasElement | null; x: number; y: number; ox: number; oy: number; drop?: ReturnType<typeof bakeDrop> }
 const baked = new WeakMap<PitGap, Baked>();
 
 /** a soft pit's inside, baked once: the drop and its shade, under a torn top line that fades the backdrop into the dark */
@@ -297,7 +408,8 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
     for (const [sx, sy, sw, sh, soil] of g.steps ?? []) if (!soil) ctx.rect(sx + sw, sy - 2, -sw, sh + 4);
     ctx.clip('evenodd');
   };
-  for (const g of pitsOf(platforms)) {
+  const { gaps, bottom: stageBottom } = pitsOf(platforms);
+  for (const g of gaps) {
     if (g.x1 < view.x0 - 100 || g.x0 > view.x1 + 100) continue;
     let b = baked.get(g);
     if (!b) baked.set(g, (b = { under: null, over: null, x: 0, y: 0, ox: 0, oy: 0 }));
@@ -327,13 +439,14 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
           brokenEnd(ctx, true, g.x1 - 24, g.top + 2 - 29 * k, 225 * k, eh);
           ctx.restore();
         }
-      } else if (g.drop) {
-        // (a drop a builder marked, pit: 'drop' on a bank: the soft pit's look, then black to the view's bottom, and its lips)
+      } else if (g.drop && g.walls) {
+        // (a drop a builder marked, pit: 'drop' on a bank, between two banks of earth: the soft pit's look, then near black on down,
+        // inside the banks' faces (bakeDrop), and its lips. A marked drop with no walls is open air: nothing)
         if (layer === 'under') {
-          b.under ??= bakeSoft({ ...g, floor: g.top + DROP_DARK }, drop);
-          if (b.under) ctx.drawImage(b.under, g.x0, g.top);
-          ctx.fillStyle = 'rgba(10,7,5,0.94)';
-          if (bottom > g.top + DROP_DARK) ctx.fillRect(g.x0, g.top + DROP_DARK, g.x1 - g.x0, bottom - (g.top + DROP_DARK));
+          if (b.drop === undefined) b.drop = bakeDrop(g, drop, stageBottom);
+          const d = b.drop;
+          if (d?.top) ctx.drawImage(d.top, d.x, g.top);
+          if (d?.deep && bottom > g.top + DROP_DARK) ctx.drawImage(d.deep, d.x, g.top + DROP_DARK, d.deep.width / DEEP_SCALE, d.deep.height / DEEP_SCALE);
         } else lips(g);
       }
       // (an unmarked floorless gap is water, which Dot warns of by name on 1-6: it keeps its painted water)

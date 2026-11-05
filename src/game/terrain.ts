@@ -25,7 +25,7 @@ import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
 import './shelfArt.ts';
 import './worldLedges.ts';
 import { drawGroundBody, drawGroundCap } from './groundArt.ts';
-import { bankPainted, drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
+import { bankPainted, drawSwingLianaArt, paintedKitEnabled, rockPainted } from './protoArt.ts';
 import { drawSilkStrand } from './w5Look.ts';
 import { drawStep, drawPillar } from './columnArt.ts';
 import { drawBadWater, setBadWaterWorld } from './badWaterArt.ts';
@@ -1377,6 +1377,8 @@ export function renderWorldObjects(
       else drawRaft(ctx, p, look, time, r);
     } else if (p.style === 'canopy_bridge') {
       if (!drawThin(ctx, p, look, worldId, thinPlanFor(plan, p))) drawBridge(ctx, p, look, time, r);
+    } else if (rockPainted(p)) {
+      // (the painted boulder is the whole rock: protoArt.ts drawRockArt)
     } else if ((p.height >= 50 || p.soil) && bankPainted(p)) {
       // the painted ground covers this bank (protoArt.ts drawBankArt, its face undercut where it drops away): only what grows on top
       // (and nothing on a pit's wall, which stands under a bank)

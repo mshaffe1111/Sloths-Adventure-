@@ -5,7 +5,7 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
-import { drawW1Pits } from './w1Pits.ts';
+import { drawW1Pits, paintedBank } from './w1Pits.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
 import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
 import { drawW7Face } from './w7FaceArt.ts';
@@ -66,6 +66,12 @@ export function setGroundPaint(on: boolean) {
 /** a bank the painted ground covers whole (drawProtoScene's banks, not a moss floor), once its sheets are in */
 export function bankPainted(p: Platform): boolean {
   return groundOn && (p.height >= 90 || !!p.soil) && !p.push && !p.broken && !p.art && protoArtReady() && warmGround(kitWorld);
+}
+/** a rock the painted layer draws (drawProtoScene: a 50-unit moss stone, or art 'rock'): the drawn ground leaves it alone (terrain.ts),
+ *  or it drew a code earth body under the painted boulder, three gradients a stone a frame (the mixer's 1-5 n4 fork, drawcheck) */
+export const isPaintedRock = (p: Platform) => (p.height === 50 && p.style === 'moss_stone') || p.art === 'rock';
+export function rockPainted(p: Platform): boolean {
+  return groundOn && isPaintedRock(p) && !p.broken && protoArtReady();
 }
 /** whether a world has its own painted kit yet */
 export function hasKit(w: number): boolean {
@@ -1180,7 +1186,8 @@ export function drawProtoScene(
   // 200 over for the art that hangs past a platform's box)
   const vy0 = view.y0 ?? -Infinity, vy1 = view.y1 ?? Infinity;
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80 && p.y + p.height > vy0 - 200 && p.y < vy1 + 200;
-  const banks = platforms.filter((p) => (p.height >= 90 || p.soil) && !p.push && !p.broken && !p.art);
+  // (the banks of earth: w1Pits.ts paintedBank, the same rule its pits' walls are found by)
+  const banks = platforms.filter(paintedBank);
   // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
   if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'under');
   if (!drawGroundChunks(ctx, platforms, banks, view)) drawGround(ctx, platforms, banks, view);
@@ -1285,7 +1292,7 @@ export function drawProtoScene(
   }
   for (const p of platforms) {
     if (!vis(p)) continue;
-    if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') drawRockArt(ctx, p);
+    if (isPaintedRock(p)) drawRockArt(ctx, p);
   }
   for (const p of platforms) {
     if (!vis(p) || !p.push || p.art) continue; // (a pushed boulder is World 4's to paint: w4Play.ts)

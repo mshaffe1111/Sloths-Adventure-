@@ -5,7 +5,8 @@
 import './headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { findW1Pits } from './w1Pits.ts';
+import { dropOutline, findW1Pits, paintedBank } from './w1Pits.ts';
+import { endFace } from './groundPaint.ts';
 import { RealPlay } from './realPlay.ts';
 import type { Platform } from './types.ts';
 
@@ -78,4 +79,67 @@ test("a floorless gap is water unless a builder marks a bank `pit: 'drop'`: then
   assert.equal(water[0].drop, undefined);
   const drop = findW1Pits([P(1, 0, G, 600, 90, { pit: 'drop' }), P(2, 800, G, 600, 90)]);
   assert.equal(drop[0].drop, true);
+});
+
+test("a marked drop is painted only between two banks of earth with nothing standing in it; beside a slab, a branch or with ground in it, it is open air (R-164.6, R-164.8, Matt's stills 03-08)", () => {
+  const D = { pit: 'drop' } as Partial<Platform>;
+  // (two banks of earth, a slit between them: a real pit, painted)
+  const pit = findW1Pits([P(1, 0, G, 600, 120, D), P(2, 648, G, 600, 120, D)]);
+  assert.deepEqual([pit[0].drop, pit[0].walls], [true, [G, G]]);
+  // (a bank, then a 50 px stone slab: still 04's black column hung under the slab, through the air)
+  const slab = findW1Pits([P(1, 0, G, 600, 120, D), P(2, 700, G, 200, 50, D), P(3, 1000, G, 600, 120, D)]);
+  assert.ok(slab.length >= 1 && slab.every((g) => g.drop && !g.walls), JSON.stringify(slab));
+  // (a bank, then a branch: 1-3's and 1-2's dark box, its straight side standing in the air under the branch's end)
+  const branch = findW1Pits([P(1, 0, G, 600, 120, D), P(2, 900, G, 300, 24, { ...D, style: 'branch' }), P(3, 1200, G, 600, 120, D)]);
+  assert.ok(branch.some((g) => g.x0 === 600 && g.drop && !g.walls), JSON.stringify(branch));
+  // (ground standing in the gap: still 03's darkness box stood behind the stones he stood on)
+  const inGap = findW1Pits([P(1, 0, G, 600, 120, D), P(2, 660, G - 30, 190, 50, D), P(3, 1075, G, 600, 120, D)]);
+  assert.ok(inGap.every((g) => !g.walls), JSON.stringify(inGap));
+});
+
+test("a drop's dark follows its banks' own painted faces all the way down, and is closed where they meet (R-164.8)", () => {
+  const [g] = findW1Pits([P(1, 0, G, 600, 400, { pit: 'drop' }), P(2, 700, G, 600, 400)]);
+  const fl = endFace(1, g.x0, G, G + 1200, true), fr = endFace(1, g.x1, G, G + 1200, false);
+  const at = (f: Array<[number, number]>, y: number) => {
+    if (y <= f[0][1]) return f[0][0];
+    for (let i = 1; i < f.length; i++) if (f[i][1] >= y) return f[i - 1][0] + ((f[i][0] - f[i - 1][0]) * (y - f[i - 1][1])) / (f[i][1] - f[i - 1][1] || 1);
+    return f[f.length - 1][0];
+  };
+  const rows = dropOutline(g, G, G, G + 1200);
+  assert.ok(rows.length > 100 && rows[0][0] === G && rows[rows.length - 1][0] === G + 1200);
+  let leans = 0;
+  for (const [y, a, b] of rows) {
+    const l = at(fl, y), r = at(fr, y);
+    if (l < r) assert.deepEqual([a, b], [l, r], `at ${y}`);
+    else assert.equal(a, b, `closed at ${y}`);
+    // (the faces wobble and lean: a straight column from x0 to x1 left open air beside it here)
+    if (Math.abs(a - g.x0) > 4 || Math.abs(b - g.x1) > 4) leans++;
+  }
+  assert.ok(leans > 20, `the faces lean in ${leans} rows`);
+});
+
+test("World 1, 16 layouts: every painted drop has a bank of earth at both sides and nothing standing in it; 1-3's drops under its branches are open air (R-164.6)", () => {
+  for (const id of ['1-2', '1-3', '1-5', '1-9']) {
+    for (let s = 1; s <= 16; s++) {
+      const ps = new RealPlay(id, s).platforms;
+      for (const g of findW1Pits(ps)) {
+        if (!g.walls) continue;
+        for (const x of [g.x0, g.x1]) assert.ok(ps.some((q) => paintedBank(q) && (Math.abs(q.x + q.width - x) < 3 || Math.abs(q.x - x) < 3)), `${id} layout ${s}: the drop at ${Math.round(g.x0)} has no bank at ${Math.round(x)}`);
+        assert.ok(!ps.some((q) => !q.broken && q.type !== 'fragile' && q.type !== 'bouncy' && q.type !== 'drift' && q.type !== 'moving' && q.x < g.x1 - 4 && q.x + q.width > g.x0 + 4 && q.y + q.height > g.top + 4), `${id} layout ${s}: ground stands in the drop at ${Math.round(g.x0)}`);
+      }
+    }
+  }
+  // (Matt's 1-3 on main: the box at 23029-23606, layout 1, between two branches, painted dark with a straight side in the air)
+  const g13 = findW1Pits(new RealPlay('1-3', 1).platforms).find((g) => Math.round(g.x0) === 23029);
+  assert.ok(g13 && g13.drop && !g13.walls, JSON.stringify(g13));
+});
+
+test("a marked drop between two banks at any height is judged against its own two banks, not the stage's one ground line (the mixer's 1-5)", () => {
+  const D = { pit: 'drop' } as Partial<Platform>;
+  // (the commonest top is G; a pair of banks 300 higher, a 60 px slit between them, as the mixer's 1-5 climbs)
+  const ps = [P(1, 0, G, 2000, 120, D), P(2, 2100, G - 300, 500, 120, D), P(3, 2660, G - 320, 500, 120, D), P(4, 3300, G, 2000, 120, D)];
+  const g = findW1Pits(ps).find((q) => q.x0 === 2600);
+  assert.ok(g && g.drop && g.walls && g.top === G - 300, JSON.stringify(findW1Pits(ps)));
+  // (with a stone standing in it, it is open air)
+  assert.ok(!findW1Pits([...ps, P(5, 2610, G - 290, 40, 50, D)]).some((q) => q.x0 === 2600 && q.walls));
 });

@@ -1,7 +1,7 @@
 /**
  * The new HUD lets play show through (QA, v189: in 4-2 sideways a column of flowers sat behind the hearts and three more on the Menu
- * leaf). When something the player needs, a pickup, a platform top, an animal or Pokey himself, is under a HUD piece, that piece fades
- * to about 30% (CSS .vh-see). The HUD takes no touches but the Menu's, so touches already go through to play; the Menu leaf keeps its tap
+ * leaf). When something the player needs, a pickup, an animal or Pokey himself, is under a HUD piece, that piece fades to about 30%
+ * (CSS .vh-see). The world itself (a ledge, a log, a branch, the scenery) never does: the HUD stays over it (R-164.7). The HUD takes no touches but the Menu's, so touches already go through to play; the Menu leaf keeps its tap
  * while faded.
  *
  * Cheap: the pieces (each marked data-hud-fade) are measured at most every 0.4 s, and each frame is a few rect checks against what is
@@ -48,12 +48,8 @@ export function needsUnder(v: GuideView, x0: number, y0: number, x1: number, y1:
     const hw = (e.width ?? 50) / 2;
     if (over(e.x - hw, e.y - (e.height ?? 40), e.x + hw, e.y, wx0, wy0, wx1, wy1)) return true;
   }
-  // a platform top, where he would stand (not the body of a big block or the depth of the ground)
-  for (let i = 0; i < v.platforms.length; i++) {
-    const p = v.platforms[i];
-    if (p.broken) continue;
-    if (over(p.x, p.y - 8, p.x + p.width, p.y + 12, wx0, wy0, wx1, wy1)) return true;
-  }
+  // (never the world itself: a ledge, log or branch top under the hearts faded them to 30% and the logs and berries read as drawn over
+  // Matt's hearts and lives, 1-5, R-164.7. The HUD stays over the world; only a thing he must see through it fades it)
   return false;
 }
 
