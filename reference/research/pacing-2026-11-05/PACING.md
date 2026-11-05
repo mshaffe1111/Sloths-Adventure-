@@ -117,7 +117,7 @@ Rayman Legends puts it in the top 3 in 3 of 5 worlds. DKC Returns does the oppos
 usually near the bottom of their world. Across 15 worlds it holds in 10. The last ORDINARY stage is not reliably long anywhere (5 of
 15); Tropical Freeze's 3-6 and 5-6 are their worlds' shortest. So "the finale is among the longest" is a choice one studio makes
 (Retro on Tropical Freeze), not a rule every shipped game follows, and where it is true it is true of the boss or set piece, not of
-"the ninth stage". Our lairs (x-10) are closed-arena fights (stages.ts:51-54), like DKC Returns' bosses.
+"the ninth stage". Our lairs (x-10) are closed-arena fights (stages.ts:54-56), like DKC Returns' bosses.
 
 **#78, answered:** no shipped world I measured needs a 2.5-minute spread, and only 3 of 15 have one. The developer-clock worlds spread
 by a RATIO, longest to shortest 1.39 to 2.89 (median 2.41). A ratio is the right unit because it does not change with a world's base
@@ -125,6 +125,8 @@ length.
 
 **#75/#77/#91 (20% neighbours), answered from the same data:** the rule as written fails 13 of 15 shipped worlds. Shipped worlds do
 have neighbours within 20% of each other. They never have a long flat stretch: no world has 3 pairs in a row within 10%.
+#48 ("1-4 and 1-6 sit ≥ 20% either side of 1-5's median") is the same rule applied to one stage, and the same data does not
+support it as a requirement.
 
 **Yacht Club's view (the critic's saved quote, re-read in the primary).** "Each level should have about 26 regular rooms and 6 secret
 optional rooms. ... A consistent length means that every stage will take a similar amount of time and have a similarly digestible amount
@@ -137,7 +139,7 @@ the reference that fits his rule. Yacht Club's point (players learn a stage's ro
 
 ### 2.4 The run on our code (all 82 walk-through stages, World 1-10)
 
-Tool: `tools/lengths.ts` (this folder; it imports `tools/inspect/stages.ts` `stageList`, the inspector's own builder, and
+Tool: `tools/lengths.ts` (this folder; run from the scratchpad, the committed copy is identical; it imports `tools/inspect/stages.ts` `stageList`, the inspector's own builder, and
 `src/game/stageTime.ts` `modelStage`). Run at 11:30 AM on dd02825 (engine-spec head), seed 1:
 
 ```
@@ -147,10 +149,10 @@ npx tsx reference/research/pacing-2026-11-05/tools/lengths.ts 1-10 1 > ours-mode
 Output: `ours-modelled-lengths-seed1.tsv` (every stage, Normal and Easy, fast and typical model, the code's own target). These are
 MODEL seconds ("a MODEL of a first-time player, not a measurement of one", stageTime.ts:2), clean runs, no deaths (stageTime.ts:18).
 The hand-built ascents (1-4, 2-6, 3-4, 4-1, 4-3, 4-6, 6-8, 7-4) come out at 1-40 s because the model times an ascent from
-`meta.ascentChain` (stageTime.ts:218), which hand-built ascents do not record; they are left out below (a model gap, not a length).
-Boss lairs (x-10) are skipped by the builder (stages.ts:51-54) and not timed.
+`meta.ascentChain` (stageTime.ts:221), which hand-built ascents do not record; they are left out below (a model gap, not a length).
+Boss lairs (x-10) are skipped by the builder (stages.ts:54-56) and not timed.
 
-Quick clock = Normal, `MODEL_FAST` (stageTime.ts:44), the nearest thing we have to ES 663's "quick-route clock":
+Quick clock = Normal, `MODEL_FAST` (stageTime.ts:39), the nearest thing we have to ES 663's "quick-route clock":
 
 ```
 world  n  min    median max    max/min spread  x-9 (finale) rank  neighbours >=20%  longest run of pairs <10%
@@ -171,7 +173,7 @@ SRA W10 9 2:41.0 3:01.0 3:28.0 1.29     47 s   10-9 = 4/9            0/8        
   developer clocks (only DKC Returns' Cave, 1.39, is that flat; median 2.41). World 9 and World 10 have 5 near-equal pairs in a row
   (shipped maximum: 2). This is by construction: stageTime.ts:91
   `STAGE_DRIFT = [0.0, 0.03, 0.06, 0.02, 0.07, 0.01, 0.05, 0.04, 0.0]` sets each stage's target within 7% of the world's base, and
-  stageTime.ts:83-84 moves the base only from 135 s (W1) to 218 s (W10). The generator then "lands between this and 8% above it"
+  stageTime.ts:84-85 moves the base only from 135 s (W1) to 218 s (W10). The generator then "lands between this and 8% above it"
   (stageTime.ts:93). That is Yacht Club's consistent length, not Matt's "vary".
 - **Worlds 1-5 (hand-built) already vary like DKC** (1.62-3.44), except 4-7 (1:24 quick) is under the 2:00 floor (ES 663).
 - **The finale (x-9 gauntlet) is the shortest stage of World 1** (1-9, 2:06 quick, 2:45 typical), against 1-7 at 3:24.
@@ -203,6 +205,34 @@ Read from ft.json (`end` per run, tools/inspect/firsttimer.ts:469, 1600-1604; th
 So the simulated player agrees with the model on the ranking: World 1's finale (1-9) is its quickest stage to walk, and 1-7 its
 longest (over 360 s on the bot against 1-9's 96-132 s walk: a ratio above 2.7, wider than the model's 1.62). Two trials, one seed:
 a check of the ranking, not a measurement of the spread.
+
+### 2.6 Seeds 2 and 3 (is the flatness one roll's accident?)
+
+Same tool, seeds 2 and 3 (run 11:44 AM, both in parallel, about 2 min): `ours-modelled-lengths-seed2.tsv`, `-seed3.tsv`; counted with
+`tools/count15.py raw/ours_s{1,2,3}.tsv` (x-9 tagged as the world's last stage). Quick clock, longest ÷ shortest, and the longest run
+of neighbour pairs within 10% (measured, model):
+
+| World | seed 1 | seed 2 | seed 3 | Reading |
+|---|---|---|---|---|
+| W1 | 1.62, run 2 | 1.60, run 2 | 1.87, run 2 | varies like DKC |
+| W2 | 2.05, run 1 | 1.87, run 1 | 2.11, run 1 | varies |
+| W3 | 2.16, run 2 | 2.24, run 1 | 2.01, run 1 | varies |
+| W4 | 3.44, run 1 | 3.56, run 1 | 3.15, run 0 | varies (the 4-7 outlier: 82-84 s quick on all three seeds, under the 2:00 floor) |
+| W5 | 2.08, run 3 | 2.03, run 2 | 2.00, run 2 | varies; one flat stretch on seed 1 |
+| W6 | 1.27, run 2 | 1.23, run 1 | 1.32, run 2 | **flat on every seed** |
+| W7 | 1.20, run 2 | 1.49, run 3 | 1.60, run 2 | depends on the roll |
+| W8 | 1.38, run 3 | 1.70, run 2 | 1.55, run 4 | depends on the roll; flat stretches on 2 of 3 |
+| W9 | 1.22, run 5 | 1.22, run 5 | 1.22, run 5 | **flat on every seed** |
+| W10 | 1.29, run 5 | 1.29, run 5 | 1.29, run 5 | **flat on every seed** |
+
+1-9 is 126 s quick on all three seeds and 1-7 194-204 s, so World 1's finale is its shortest stage on every roll. The conclusion of
+§2.4 holds: the flat worlds are W6, W9 and W10 on every roll (W9 and W10 do not move at all between seeds), and W7-W8 on some.
+
+**A rough first-timer multiplier (estimate, for scale only).** HowLongToBeat gives Tropical Freeze "Main Story: 10½ hours" (via the
+DekuDeals listing, https://www.dekudeals.com/items/donkey-kong-country-tropical-freeze, read 11:51 AM; howlongtobeat.com itself was not
+reached). Its 42 main-path stages sum to 106.7 min on bronze and 83.7 min on gold (measured, `raw/tf_*_mainpath.tsv`). So a whole
+first play is about 5.9x the bronze clock (7.5x gold), including deaths, retries, the map and cutscenes. This is an upper bound for a
+hard game, not a number for ours.
 
 ## 3. Fix rounds before a generated level ships (#160)
 
@@ -289,7 +319,8 @@ measurement), **NO SOURCE** (searched; only Gemini or an estimate). Where I foun
 | #17, #18 | ≤ 2/3 turtles; ≤ 1 heart lost per animal | OURS (bots) | — |
 | #19, #20, #71 ES 227-228, 646 | crumble delay: Normal 0.9 → 0.5 s, Easy 1.2 → 0.8 s; 0.7 s and 1.0 s; ours 1.1 s | **PRIMARY: Celeste Classic 0.50 s at 30 fps**, gone for 2.0 s, then back | `src-celeste-classic-pico8.md`: `obj.delay=15--how long until it falls`, `this.delay=60--how long it hides for`, at 30 frames a second (dev-set, code). Ours: engine.ts:2428 `plat.crumbleAfter ?? 1.1`. Gemini E151 (36/20 frames) has no source. So Normal's 0.5 s end equals Celeste Classic; the 0.9-1.2 s starts are teaching margins (estimate). Also: Celeste Classic's floor comes back after 2 s; ours "only after half a minute or so, and only off screen" (engine.ts:2524 comment) |
 | #63, #64 | d formula; dials linear in d | NO SOURCE | Gemini's D(w,s) rejected (TRIAGE.md:145) |
-| #65, #66, #67 | gap share, rise share, landing p50 | NO SOURCE | Gemini E103/E105 only |
+| #65 ES 640 | gap share: Normal 0.55 → 0.92, Easy 0.45 → 0.80 | **PRIMARY, and lower than the spec's top** | Yacht Club: "Specter Knight can jump gaps that are up to 5 tiles wide, but we avoid building gaps that wide ... platforming challenges typically don't ask the player to jump more than 3 or 4 tiles" = 0.6-0.8 of the maximum; "most levels in Super Mario Bros never ask you to jump more than 2 or 3 tiles" of 4-10; "Avoiding that 5 or 6 tile distance also removes ambiguity ... Either we want you to jump there, and it's 3 or 4 tiles away, or we don't, and it's 7 or 8 tiles away" (`src-yachtclub-specter-deepdive-5-5.md`). The spec's 0.92 Normal top is above Yacht Club's 0.8 and inside the band they avoid on purpose |
+| #66, #67 | rise share, landing p50 | NO SOURCE | Gemini E103/E105 only; Yacht Club's "a few tiles of wiggle room" (same file) is the form, no width |
 | #68 | risky pieces a burst / falls a node | NO SOURCE | R4 estimates |
 | #69 | E[lives] per first run | NO SOURCE (estimate) + PRIMARY direction | Yacht Club: "We almost always make the game too difficult, then pull back and make it easier later in development. This is mostly because the longer we develop the game, the better we get at playing it!" (`...-3-5.md:131`); Lomas 2013: easier = more play |
 | #70 | taught animals a stage | NO SOURCE (number); PRIMARY (method) | Dead Cells sets monster count from combat length: "1 monster for every 5 tiles ... some monsters ... will count for 10 tiles" (L7; Bénard calls these "random numbers") |
@@ -337,6 +368,7 @@ through every gate**. Studios iterated the generator and its pieces over months,
 | ES 674 | "the world's spread is at least 2.5 minutes" | only 3 of 15 shipped worlds; shipped spreads are 32-174 s | "longest ÷ shortest ≥ 1.4" (§6 rule 2) |
 | ES 667 | "spread from about 2:00 to about 5:00" | a 2.5x ratio sits inside what developer clocks show (1.39-2.89) | fine as an outer bound, not a target |
 | ES 668 | "The world's set piece or finale is among its longest" | Tropical Freeze does it (6/6), DKC Returns does not (1/4); 10 of 15 overall; the last ordinary stage only 5 of 15 | name which stage (lair or set piece) and mark it a choice, not a shipped rule (§6 rule 4) |
+| ES 640 | gap share tops at 0.92 Normal, 0.80 Easy | Yacht Club keeps intended gaps at 0.6-0.8 of the maximum and avoids the 1.0-1.2 band so a reachable gap never looks unreachable (`src-yachtclub-specter-deepdive-5-5.md`) | the designer to weigh 0.92 against 0.8 (touches C1, C20) |
 | ES 1685 | "at most 2 rounds" | no source has a count; the unit of iteration is the generator and the pieces | keep as a budget, labelled "(designer's budget, no source)" |
 | ES 646 / 227-228 | crumble Normal 0.9 → 0.5 s | Celeste Classic (30 fps) is 0.5 s flat; our engine is 1.1 s (engine.ts:2428) | the 0.5 s end has a primary match; the start is a teaching margin (estimate) |
 | stageTime.ts:91 (code, not the spec) | STAGE_DRIFT 0-7% | makes W6-W10 flatter than any shipped world (§2.4) | the engine's targets need the ratio in §6 rule 2 |
@@ -348,18 +380,27 @@ through every gate**. Studios iterated the generator and its pieces over months,
 - **3D Mario not measured per course** (no per-course board or clock exists in the places searched; §2.1).
 - **DKC Returns: Worlds 1-4 only** (shiny tier from a community guide, checked against the wiki on World 1; Worlds 5-8 not found).
 - **Rayman Legends** numbers are world records with skips; used for ranks and the run test, not for the ratio floor.
-- **Our numbers are a model**, seed 1 only, hand-built ascents and lairs not timed. The first-timer bot run (§2.5) is the check.
+- **Our numbers are a model**, seeds 1-3, hand-built ascents and lairs not timed. The first-timer bot run (§2.5) checks the ranking on
+  three World 1 stages only.
 - Tropical Freeze's secret stages and temple are not in strict play order; the tests were run both with them (code order) and on the
   main path only, and the conclusions hold in both (`raw/tf_*_mainpath.tsv`, §2.3).
 
 ## 9. Saved sources (all in this folder) and blocked list
 
-Primary, read in full: `src-yachtclub-specter-deepdive-1-5.md`, `-2-5.md`, `-3-5.md`, `-4-5.md` (part 5/5: 404),
+Primary, read in full: `src-yachtclub-specter-deepdive-1-5.md`, `-2-5.md`, `-3-5.md`, `-4-5.md`, `-5-5.md` (live at the "-5-of-5" address; "-5-5/" is 404),
 `src-deadcells-benard-2017.md`, `src-deadcells-mcv-2018.md`, `src-spelunky-yu-book-excerpt.md`, `src-spelunky2-pcgamer-2021.md`,
 `src-surefooting-thompson-2018.md`, `src-gungeon-crooks-2016.md`, `src-celeste-classic-pico8.md`, `src-papers-checked.md` (Launchpad,
 Wilson 2019, Lomas 2013).
-Data: `raw/` (speedrun.com JSON, 79 Super Mario Wiki pages, tables `*.tsv`), `ours-modelled-lengths-seed1.tsv`.
-Scripts: `tools/lengths.ts`, `tools/spread.py`, `tools/esrules.py`, `tools/ilt.py`, `tools/medals.py`, `tools/unwrap.py`.
+Data: `raw/` (speedrun.com JSON, Super Mario Wiki pages, ludo.guide's DKCR table as `dkcr_shiny.tsv`, tables `*.tsv`, the bot's
+`firsttimer-1-1_1-7_1-9.json`), `ours-modelled-lengths-seed1.tsv`, `-seed2.tsv`, `-seed3.tsv`.
+Secondary, used once and labelled: DekuDeals' HowLongToBeat figure (§2.6).
+Scripts: `tools/lengths.ts`, `tools/count15.py`, `tools/spread.py`, `tools/esrules.py`, `tools/ilt.py`, `tools/medals.py`, `tools/unwrap.py`.
+
+**My own misses in this job (named, not hidden):** (1) two HowLongToBeat page ids I guessed (15183, 7550) returned other games; both were
+discarded and the figure was taken from a page found by search. (2) The second commit on this branch (the PACING.md draft) carries the
+wrong `Claude-Session` trailer (the designer's session link instead of mine); a force-push to fix it was refused, so history was left
+as is and later commits carry the right one. (3) My first answer to #76 (from Tropical Freeze alone) said the boss is the longest
+stage; DKC Returns overturned that and §2.3 was rewritten. The method file now says to measure two studios before calling a pattern.
 Blocked: YouTube search (empty body), splits.io (404), Sure Footing paper (pcgworkshop.com and t2thompson.com: unreachable), arro.anglia.ac.uk
 (unreachable), Edge 2021 Spelunky 2 feature (pressreader: empty), GMTK Spelunky transcript (amara.org: 403), Yu's full book (paywall),
 mariowiki Jungle_Hijinxs medal table (page returned without it), curl to every host (proxy 403).
@@ -374,7 +415,7 @@ FINISH_TIME_PLACEHOLDER
 - **Failed, and why:** `include_selectors: ["table.wikitable"]` on a 10-page wiki batch returned every table inline (about 60k tokens)
   instead of a file; leave batches unscoped so the tool writes them to a file, then parse. YouTube and splits.io cannot be used for
   per-level clocks from this container.
-- **The exact edit:** add to the research method file (none exists for a primary-source researcher; reference/methods/README.md lists the
-  others): "For a length or timing question, look first for numbers the developers set inside the game (medal clocks, code constants, open
-  source like Celeste Classic), then speedrun ILs, then first plays. Batch wiki fetches 10 at a time without selectors and parse the saved
-  file."
+- **The exact edit:** done. `reference/methods/primary-research.md` is new (no method existed for this kind of job; methods/README.md
+  rule 5), and its row is added to the index in `reference/methods/README.md`. Its core line: "For a length or timing question, look
+  first for numbers the developers set inside the game (medal clocks, code constants, open source like Celeste Classic), then developer
+  write-ups, papers, speedrun ILs, then first plays. Batch wiki fetches 10 at a time without selectors and parse the saved file."

@@ -57,3 +57,4 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Cutscene art and clips | `hf-cutscenes.md` | to write; source: tools/art/hfstory, the hf-cutscenes branch notes | next cutscene helper |
 | Props and sprite sheets (cutting, atlases, art-use) | `hf-props.md` | to write; source: tools/art/hfbatch, prop-sheets | next props helper |
 | Keeping the roadmap (numbering, sizing, closing with proof, the release sweep, roadmapcheck) | `roadmap.md` | written 11-01 (roadmap-keeper) | roadmap-keeper |
+| Primary-source research (developer-set numbers first, speedrun ILs, papers; what is blocked from this container; counts over every shipped world) | `primary-research.md` | written 11-05 (research-pacing) | next research helper |

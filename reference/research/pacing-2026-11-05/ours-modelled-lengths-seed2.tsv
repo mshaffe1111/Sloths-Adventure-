@@ -1,0 +1,103 @@
+id	world	source	type	normal_fast_s	normal_typical_s	easy_fast_s	easy_typical_s	target_typical_s	name
+1-1	1	hand	sprint	168	199	168	199	139	Into the Canopy
+1-2	1	hand	harvest	190	221	190	221	135	The Petal Trail
+1-3	1	hand	purge	157	205	135	172	141	Branch Snakes
+1-4	1	hand	ascent	9	13	5	7	140	Up the Kapok
+1-5	1	hand	harvest	156	188	156	188	134	Where She Walked
+1-6	1	hand	vine_runner	202	244	192	229	134	First Lianas
+1-7	1	hand	stealth	194	233	194	233	139	A Very Good Bush
+1-8	1	hand	sprint	192	231	188	225	139	The Long Branch
+1-9	1	hand	gauntlet	126	165	106	135	151	The Boa's Branches
+2-1	2	hand	sprint	259	287	259	287	145	Down to the River
+2-2	2	hand	harvest	160	187	160	187	144	Petals for the Crown
+2-3	2	hand	rescue	189	215	189	215	150	Stuck in the Reeds
+2-4	2	hand	vine_runner	256	285	256	285	149	Over the Water
+2-5	2	hand	purge	273	329	253	299	153	River Snappers
+2-6	2	hand	ascent	5	7	3	4	147	Up the Bank Houses
+2-7	2	hand	sprint	193	229	181	211	150	The Mailman's Route
+2-8	2	hand	rescue	146	166	142	160	151	Before the Water Rises
+2-9	2	hand	gauntlet	175	223	151	187	167	The River King's Court
+3-1	3	hand	sprint	151	185	151	185	153	Into the Grotto
+3-2	3	hand	stealth	162	194	162	194	163	Glowworm Path
+3-3	3	hand	purge	298	368	280	341	157	Footprints in a Circle
+3-4	3	hand	ascent	1	1	1	1	164	The Sinkhole
+3-5	3	hand	stealth	161	193	161	193	155	Sleeping Vines
+3-6	3	hand	relic_hunt	164	194	164	194	168	Grandma's Things
+3-7	3	hand	relic_hunt	133	160	133	160	166	Which Fern?
+3-8	3	hand	vine_runner	198	231	198	231	153	Thorn Vine Swing
+3-9	3	hand	gauntlet	223	284	205	257	169	The Prowler's Ring
+4-1	4	hand	ascent	1	1	1	1	174	The Broken Ledge
+4-2	4	hand	sprint	167	201	167	201	159	First Glide
+4-3	4	hand	ascent	1	1	1	1	171	Waterfall Steps
+4-4	4	hand	vine_runner	292	328	292	328	169	Crosswind
+4-5	4	hand	stealth	185	218	185	218	163	The Sovereign's Dive
+4-6	4	hand	ascent	1	1	1	1	163	Above the Mist
+4-7	4	hand	sprint	82	101	82	101	163	The Long Drop
+4-8	4	hand	rescue	274	317	274	317	179	Nests on the Cliff
+4-9	4	hand	gauntlet	261	316	261	316	183	The Aerie
+5-1	5	hand	sprint	192	244	178	223	173	The Loveliest Place
+5-2	5	hand	stealth	257	327	237	297	172	Don't Sit
+5-3	5	hand	harvest	180	228	168	210	172	Closing Orchids
+5-4	5	hand	vine_runner	294	346	282	328	177	Silk Bridges
+5-5	5	hand	rescue	204	258	190	237	189	Caught in Silk
+5-6	5	generated	relic_hunt	145	197	136	181	182	Where She Ran
+5-7	5	gen2	stealth	151	192	144	180	184	Don't Touch the Silk
+5-8	5	generated	ascent	151	187	147	181	174	Up the Bloom Trees
+5-9	5	gen2	gauntlet	198	259	179	231	199	The Queen's Garden
+6-1	6	gen2	vine_runner	191	229	192	229	187	The Root Maze
+6-2	6	gen2	stealth	157	201	144	181	192	Flat Water
+6-3	6	gen2	vine_runner	193	231	196	234	185	Root to Root
+6-4	6	gen2	sprint	168	205	165	199	188	Low Tide
+6-5	6	gen2	purge	163	209	146	184	183	The Spear
+6-6	6	gen2	sprint	189	225	193	229	184	Lights in the Roots
+6-7	6	gen2	vine_runner	193	228	198	234	188	Through the Roots
+6-8	6	hand	ascent	11	16	7	10	181	Stilt Climb
+6-9	6	gen2	gauntlet	171	224	148	190	199	Blackwater
+7-1	7	gen2	sprint	173	213	169	207	198	The Open Door
+7-2	7	generated	ascent	173	210	173	210	192	Brown Vines
+7-3	7	gen2	relic_hunt	174	218	166	206	208	Ten Chairs
+7-4	7	hand	ascent	33	40	33	40	198	The Way Up
+7-5	7	gen2	purge	174	223	160	201	190	Stone Sentries
+7-6	7	gen2	sprint	152	192	144	180	185	Falling Floors
+7-7	7	gen2	relic_hunt	174	214	170	208	204	The Photograph
+7-8	7	generated	ascent	172	214	170	211	202	The Upper Temple
+7-9	7	gen2	gauntlet	227	288	209	260	214	The Golem's Hall
+8-1	8	gen2	sprint	179	219	180	219	201	As the Light Goes
+8-2	8	gen2	harvest	177	218	181	223	200	Night Blooms
+8-3	8	gen2	vine_runner	174	214	172	210	200	Long Swings
+8-4	8	hand	sprint	195	232	195	232	199	Lantern Run
+8-5	8	gen2	vine_runner	186	228	187	229	212	Next Branch
+8-6	8	gen2	sprint	174	215	173	213	197	Glide by Moonlight
+8-7	8	generated	ascent	195	243	189	234	214	The Tallest Tree
+8-8	8	gen2	purge	169	219	151	192	202	Night Hunters
+8-9	8	gen2	gauntlet	288	362	265	328	230	Monarch's Wood
+9-1	9	generated	sprint	152	216	140	192	209	Pepper Air
+9-2	9	generated	ascent	186	230	182	224	221	Rising Heat
+9-3	9	generated	vine_runner	155	220	147	202	213	Ember Canopy
+9-4	9	generated	stealth	173	235	168	223	223	The Drake's Doorstep
+9-5	9	generated	sprint	178	225	172	213	205	Vent Riding
+9-6	9	generated	purge	170	235	147	197	219	Ash Fields
+9-7	9	generated	ascent	181	222	179	219	217	Lava Steps
+9-8	9	generated	relic_hunt	175	244	162	218	217	Pell's Thread
+9-9	9	generated	gauntlet	172	243	146	200	230	The Drake's Hoard
+10-1	10	generated	sprint	161	231	151	207	226	The Door Made for Him
+10-2	10	generated	ascent	190	235	184	226	220	The Thousand Steps
+10-3	10	generated	stealth	181	238	169	215	229	Thunder
+10-4	10	generated	ascent	193	238	189	232	227	Holding On
+10-5	10	generated	ascent	178	221	174	215	218	Halfway Up
+10-6	10	generated	vine_runner	168	223	158	202	218	The Iron Netting
+10-7	10	generated	purge	176	242	157	210	225	The Walls
+10-8	10	generated	ascent	208	257	202	248	231	The Last Steps
+10-9	10	generated	gauntlet	183	256	159	213	245	The Fortress Gate
+#skipped	1-10	Venom Fang's Lair	Boss lair: a fight in a closed arena, not a walk from start to exit, so beats al
+#skipped	2-10	Crocus Rex's Lair	Boss lair: a fight in a closed arena, not a walk from start to exit, so beats al
+#skipped	3-10	Shadow Prowler's Lair	Boss lair: a fight in a closed arena, not a walk from start to exit, so beats al
+#skipped	4-10	Sky Sovereign's Lair	Boss lair: a fight in a closed arena, not a walk from start to exit, so beats al
+#skipped	5-10	Tarantula Queen's Lair	Boss lair: a fight in a closed arena, not a walk from start to exit, so beats al
+#skipped	6-10	Marsh Reaver's Lair	Boss lair: a fight in a closed arena, not a walk from start to exit, so beats al
+#skipped	7-10	Stone Idol Golem's Lair	Boss lair: a fight in a closed arena, not a walk from start to exit, so beats al
+#skipped	8-10	Night-Wing Monarch's Lair	Boss lair: a fight in a closed arena, not a walk from start to exit, so beats al
+#skipped	9-10	Magma Drake's Lair	Boss lair: a fight in a closed arena, not a walk from start to exit, so beats al
+#skipped	10-10	General Iron-Claw's Lair	Boss lair: a fight in a closed arena, not a walk from start to exit, so beats al
+#skipped	4-D	Dot's Netting Flight	Dot flies it: there is no ground, no jumps and no shrine, and its own flight cod
+#skipped	5-M	On the March North	Meeca's stage: no shrine (it ends in a scene) and its carving and scenes live in
