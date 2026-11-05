@@ -2491,7 +2491,7 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
    - float 25.4%.
    If any is still there when the builder runs, it's an engine finding for the planner, never a reason to bend 1-1's data around it.
 
-## 1-2 for the builder: the one page to build 1-2 from (designer, 11-05 1:29 PM ET; DRAFT until the planner's answers to F and old 1-2's measure, R-165.43, due 3:30 PM ET; the brief's line numbers are re-checked then, since the brief was corrected at 1:36)
+## 1-2 for the builder: the one page to build 1-2 from (designer, 11-05 1:29 PM ET; lines set 1:37 PM from R-165.43; DRAFT only until the planner's answers to F; the brief's line numbers are re-checked against the corrected brief before it's final)
 
 Same rules as "1-1 for the builder":
 - this page wins over older lines;
@@ -2533,7 +2533,7 @@ with **no enemies, no vines and no breakables**.
 | water | `false` | brief |
 | petals | `trail`, low on bark and branches all along (the stage's name and clue, :25) | brief |
 | look | lead `ground` (roots, banks, hollow logs under the overhang), art `w1`, the rain backdrop `w1rain` (:31) | brief |
-| length | **from old 1-2's measured quick clock** (the world length plan, L1806). Asked of engine-runs; until it's measured, the floor is 120 s | — |
+| length | **Normal 169-217 s** (old 1-2's measured quick clock over 16 layouts, median 183 s), Easy ≥ 120 s | R-165.43, engine-runs f164b730 Addendum 4 |
 | core | top 3 landing kinds by share (#132). Expected: bank, log, hollow log | #132 |
 | taughtBefore | run, jump, double, bounce (1-1) | 1-1's page |
 
@@ -2545,11 +2545,11 @@ at n7 (1-1's at n9).
 |---|---|---|---|---|
 | n1 | warm-up, start | bank hops, stump hop; the safe start (no ground end, nothing that hurts, in the first 1,300 px) | floor | "Follow the petals" (hint.1-2.follow, shipped) |
 | n2 | practise | double gap, bank hops, log jam (thin logs on stumps) | floor | — |
-| n3 | the first high/low | high: bough hops in the rain; low: under the overhang, a hollow log (walk inside, run on top) and bank hops. Rejoin | two roads | "Stay on the petals, high or low" (hint.1-2.highlow, shipped) |
+| n3 | the first high/low | high: stump tops and log jam (thin logs on stumps), with bough hops for part of it (boughs stay ≤ 18.1% of landings, see E); low: under the overhang, a hollow log (walk inside, run on top) and bank hops. Rejoin | two roads | "Stay on the petals, high or low" (hint.1-2.highlow, shipped) |
 | n4 | rest | bank walk | low | Pokey's wayside line (way.1-2, shipped) |
 | n5 | **the roots (the stage's secret)** | low: under the overhang, through the open root gate (W1 root-gate-open as the arch he walks under: dressing, no mechanic), to the hidden note, a find; high: bough stair. Rejoin | two roads | "There's something down by the roots..." (hint.1-2.roots) |
 | n6 | climb up | bounce up, stump tops | low → mid | "The petals go up" (hint.1-2.up, shipped) |
-| n7 | the test | high: bough hops with doubles; low: bank hops and a double gap under the overhang. A flag before; a heart after (risk) | two roads | "Under the bough now. Watch the gaps!" (hint.1-2.under) |
+| n7 | the test | high: log jam and stump tops with doubles, boughs only for part of it; low: bank hops and a double gap under the overhang. A flag before; a heart after (risk) | two roads | "Under the bough now. Watch the gaps!" (hint.1-2.under) |
 | n8 | the end, quiet | back down to the low bark; the last petal low on the bark by the exit bank (the clue). The arrival keeps the rest rule (G #83), with no dead walk | mid → end bank | — |
 
 **Dot's lines:**
@@ -2578,13 +2578,34 @@ at n7 (1-1's at n9).
     arches and bridges in W1's own art are an art gap for the lead.
   - W1's vine-rope is NOT used: a rope that looks grabbable before 1-3 teaches the shimmy tells the player a false rule (D38).
 
-### E. The pass line
-- The same acceptance test as 1-1 (ES 1657).
-- The same family of lines, from **old 1-2's own references**, which engine-runs measures as it did old 1-1's: floats, boughs share,
-  pickups and standing kinds per view, upper half.
-- Until they're measured, 1-1's values are NOT borrowed. A line with no 1-2 reference yet is reported, not judged.
-- All the engine gates exactly as on 1-1's page, plus: at least 3 high/low splits that both roads can finish, and the note reachable
-  only from the low road.
+### E. The pass line (lines from old 1-2's own measure, R-165.43: engine-runs f164b730, RUNS.md Addendum 4, main 68b31e665, 16 layouts; checked by the lead and by me)
+- **The acceptance test**, as 1-1's (ES 1657), with the same held-art rule ("known held art": R-165.42).
+- **1-2's own lines.** Each is old 1-2's median over 16 layouts. By the 1:14 rule the line is the median, never the range.
+
+| Line | 1-2's value | Old 1-1's, for contrast |
+|---|---|---|
+| float share (median over rolls) | ≤ 0.181 | 0.253 |
+| boughs + creaky share | ≤ 0.181 | 0.253 |
+| floating rocks or ruin | 0 | 0 |
+| pickups in one view, upright / sideways | ≤ 5 / ≤ 8 | 4 / 7 |
+| standing kinds in one view | ≤ 4 | 4 |
+| upper-half share of upright views | ≥ 0.979 | 0.980 |
+| hazard or animal kinds in one view | 0 (none taught) | 0 |
+| splits at 120 px | ≥ 16 | — |
+| two-road share | ≥ 0.787 | — |
+
+- **What these numbers say about the plan:** old 1-2 is two roads 79% of the way with only 18% boughs. So its high roads ran on
+  ground and logs, not branches, which matches the brief's "Lead with roots... not boughs on trunks" (:50). n3's and n7's high roads
+  are therefore log and bank tops first, boughs second.
+- **Easy:** old 1-2's Easy equals its Normal on every measure, the same old fault as 1-1's. So Easy is not judged against these rows
+  as an Easy reference. Easy keeps C4 and C18 (the engine thins Easy itself), and the lines above are the Normal lines.
+- **The neighbour check:** old 1-1 and old 1-2 share a 20 s stretch on 16 of 16 rolls (out/era/era-main-W1.json). That's the old
+  fault, a baseline to beat, not a line to copy. The new 1-1 and the new 1-2 must pass the 20 s window (< 0.30) and the lookalike
+  (< 0.78) against each other.
+- **All the engine gates** as on 1-1's page. Plus:
+  - at least 3 high/low splits that both roads can finish;
+  - the note reachable only from the low road;
+  - each roll inside roll12's ranges.
 
 ### F. Engine findings before 1-2 can be built to its brief (for the planner; the builder never patches these in data)
 1. **No hollow-log idea in the mixer library.** LABELS §2 has the kind (a two-road split, walk inside and run on top), and the art is
