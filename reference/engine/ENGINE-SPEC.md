@@ -971,13 +971,33 @@ the shipped story text, and every stage spec now carries a "feel" block like it.
 - **For every later stage**, the spec opens with its story beat, the feel in one line, and how each node group carries it, drawn from
   the shipped story and clue text, before any node is laid.
 
+
+**[designer, 11-05 ~9:20 AM ET; Matt: "it should probably feel different when you're playing it, so it's not all branches like it was
+the last one"] 1-1 is a ground stage that becomes a tree stage.** 1-5 is mostly boughs and canopy, so 1-1 must play differently by
+construction, not just look different.
+- **The first half (n1-n7) is the forest floor,** with no canopy: banks, stones, logs, mushrooms, stumps, a stepped mound (the hill),
+  the creek with lily pads, and the log family's solid, mossy and broken logs.
+- **Two-road splits in the first half come from the ground itself, not from boughs.** A stepped mound's top against the floor beside
+  it, a log jam's top against its foot, a high bank against the creek bank. n5's fork is a ground fork:
+  - high road: the mound top and stump tops;
+  - low road: the floor and the creek.
+- **Boughs arrive only with the climb (n8 on),** so reaching the trees is the stage's change of feel, the story's "higher than he has
+  ever been". n4's bounce lifts him onto a mound top or a log jam, not a bough.
+- **Pass lines that make "different from 1-5" a number:**
+  - boughs and creaky pieces together are at most 30% of 1-1's landings (in 1-5 they are well over half);
+  - 1-1's commonest kind is not 1-5's commonest kind;
+  - 1-1 and 1-5 share no more than half their ideas (the neighbour rule, kept even though they are not neighbours);
+  - the old 1-1's floor numbers still hold (up and down on 4 of 5 landings, something new every 572 px).
+- **If the ground forks can't reach 19 splits,** the planner tells the designer the measured number before working around it. The
+  split floor is not lowered quietly.
+
 | # | Job | Deck | Entry → exit | Markers and lines (the shipped 1-1 lines, `dotLinesData.ts`) |
 |---|---|---|---|---|
 | n1 | **teach** run | flat forest-floor walk with low banks, no gaps | floor → floor | Dot's run coach line; no heart; the start flag |
 | n2 | **teach** jump (expose, then validate) | bank hops with small safe dips (no pit), then stump hop | floor → floor | "Jump the little gaps" |
 | n3 | practise | stump hop on stones and banks (stones on ground), bank hops | floor → low | "Hop from stone to stone" |
-| n4 | **teach** bounce | a mushroom beside the path up to a low bough, then bank hops (the walk past it never bounces) | low → low bough | — |
-| n5 | the first fork (gentle) | high road: low boughs; low road: bank hops on the floor. Rejoin | low → low (two roads) | marks per CP3's fork rule, on the shared ground |
+| n4 | **teach** bounce | a mushroom beside the path up onto a stepped mound or a log jam, then bank hops (the walk past it never bounces) | low → mound top | — |
+| n5 | the first fork, on the ground (gentle) | high road: the mound tops and stump tops; low road: the floor and the creek (lily pads). Rejoin | low → low (two roads) | marks per CP3's fork rule, on the shared ground |
 | n6 | rest | a bank walk | low → low | a Dot spot; a flag only if n7 follows hard |
 | n7 | **teach** double (expose, then validate) | one gap too wide for a single jump over safe ground, then two more safe ones; bank hops between bursts | low → low | "Nice jump! In the air, flick up again for a double jump" at the first double; "Flick up again in the air to jump twice" |
 | n8 | the climb up | bough stair, the climb, bounce up (one not used in n4) | low → mid | — |
