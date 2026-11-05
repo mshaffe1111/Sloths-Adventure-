@@ -1385,3 +1385,35 @@ and checkSpec refuses anything off-theme.
   designer rules on which worlds and places it belongs to and how it must look there.
 - It is done world by world, just before the engine first builds a stage of that world. World 1's 10 kinds are done. World 2 is
   next when its first stage is queued.
+
+### [designer, 11-05 ~11:15 AM ET] World 1 piece labels (Matt's priority: every piece labelled; the planner's sheet shows them before the mixer reads them)
+
+Labels per kind: element, footing, may float, **uses** (the jobs it does in a node), **teaches**, worlds, **stages** (where it is
+core, and where it is allowed). This table is for the planner's library at engine-mixer e7089072. A kind not listed here is not used.
+
+| Kind | Element / footing | Floats | Uses | Teaches | Worlds | Core in | Allowed in |
+|---|---|---|---|---|---|---|---|
+| bank | ground / self | no | floor, landing, rest, fork bank, the shrine's ground | run | W1-W4, W6-W10 (every forest-floor world) | 1-1, 1-5 | every W1 stage |
+| log | ground / floor, stumps or banks | yes, short and low | landing, low rise, ground-fork high road on stumps, rest | — | W1-W4, W6 | 1-1 | every W1 stage |
+| stump | ground / floor or bank | no | the post under a log, a small rise | — | W1-W4, W6 | 1-1 (if drawn: see note 1) | every W1 stage |
+| stone | ground / ground, or rising from water | yes | a 50 px rise on a bank's end, a stepping stone | — | W1-W4, W6, W9 | — (1-5's look) | 1-1 as an extra, then all W1 |
+| mushroom | ground / floor, bank, stump or log | no | bounce up, a lift onto a mound or into the boughs | bounce (1-1 n4) | W1, W3, W6 | — | 1-1 from n4, then all W1 |
+| branch (bough) | tree / trunk within 220 px, or a post | yes, where it reads cleaner | landing, stair, canopy road, top branch | — | W1, W2's banks, W5, W6, W8 | 1-1 n8-n11, 1-5 | 1-1 from n8, then all W1 |
+| creaky | tree / trunk or bough | no | a landing that gives way, the canopy breakable | creaky (1-5 n2) | W1, W5, W6, W8 | 1-5 | from 1-5 |
+| crumble (stone slab) | ground / ground | yes, low over ground and creek gaps | a ledge that breaks a beat after landing | crumble (its first stage) | W1 (shrine stone, see note 2), W7 | — | from its teach; never in the canopy |
+| bridge (rope) | tree / both ends on posts or boughs | no | a span at a canopy stair's top | — | W1, W5, W6 | — | from 1-1 n8 |
+| lily | water / a drawn water zone | no | stepping across a creek | — | W1 creeks, W2, W6 | — | only where the water zone draws |
+| reed isle | water / a drawn water zone | no | a low landing in water | — | W1 creeks, W2, W6 | — | only where the water zone draws |
+
+**Fixes in the library:**
+1. **Stump:** 1-1's ground forks are "logs on stumps", but there is no `stump` kind. If the engine draws the stump under the log as
+   its own piece (a landing), add the kind. If it is only drawing, 1-1's core is bank and log (and branch in n8-n11). Planner: say
+   which.
+2. **Crumble art:** it is World 7's carved slab. It fits World 1 only beside the shrine stones, where carved stone already belongs in
+   the story. So in World 1 it lays only on the ground and on low floats, never in the trees. World 7 is its home.
+3. **Logs in tree ideas:** `bough hops`, `bough stair` and `double chain` lay `log` up in the trees. A ground log in the canopy
+   breaks the element table. Those ideas lay `branch` instead. A log may appear there only as the bank or end piece on the
+   ground.
+4. **Worlds:** today W1's list covers forest, river, canopy-high and swamp for every kind. Use the worlds column above instead.
+   Whether a kind belongs in a world other than W1 is ruled in that world's object pass, so until then the planner may keep later
+   worlds closed.
