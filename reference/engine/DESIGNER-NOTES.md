@@ -33,3 +33,5 @@
    command itself (an unquoted heredoc only for that variable, or a python write that calls the clock). Messages copy the number from a
    clock read in the call just before. (11-05, 1:38 PM ET: the third typed-ahead time today, "1:38" on the 1-2 page when the clock read
    1:37; rule 1 as a note failed twice, so the countermeasure is mechanical.)
+12. **No new helper or sub-agent without the lead's OK** (Matt, 11-05 ~4:15 PM ET, via the lead: only the cold builder). Close any
+   running helper the moment its deliverable lands.
