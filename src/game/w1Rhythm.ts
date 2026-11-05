@@ -457,11 +457,16 @@ function vineChain(lay: Lay, edge: number, y: number, n: number, soft: boolean, 
 export const T12 = { A: 330, B: 630, C: 930 } as const;
 /** the canopy's palette from the height he is at (Easy's rises are lower, so its trail drifts down: the band follows him) */
 const PAL_A = (y: number): Palette => ({ surfaces: ['branch'], jumpDy: [-60, -40, -20, 0, 20, 40], hopDy: [-40, -30, -20], doubles: 0, yMin: Math.min(y, T12.A - 80), yMax: Math.max(y, T12.A + 90) });
+/** how far the swung beat leans (the long note, the short, in eighths) */
+const LEANS = [[6, 2], [4, 2], [10, 2], [6, 2], [4, 2]] as const;
+/** the floor's lean: no long note over 5 eighths (a step down is no move, so a 6-eighth note and a drop read as a 2.6 s dead walk on the
+ *  fun gate, 2026-11-04) */
+const LEANS_FLOOR = [[4, 2], [4, 2], [3, 2], [5, 2]] as const;
 /** the swung beat: a dotted half and a quarter (a long jump, a quick hop), now and then a whole bar's breath */
-const swung = (R: Rng, n: number, breath = 0.3) => {
+const swung = (R: Rng, n: number, breath = 0.3, lean: ReadonlyArray<readonly [number, number]> = LEANS) => {
   // (each node of each roll swings its own way: 3:1 (a dotted half and a quarter), 2:1 (the shuffle), 5:1, all long-short: the feel is
   // the stage's, how far it leans rolls)
-  const [long, short] = R.pick([[6, 2], [4, 2], [10, 2], [6, 2], [4, 2]] as const);
+  const [long, short] = R.pick(lean);
   const g: number[] = [];
   // (and a rest pad every five or six take-offs: a 10-eighth breath, about 1.7 s on a wide ledge, so no group runs past ~10 s,
   // STAGE-RULES §0b.1 and §2's rest pads)
@@ -490,6 +495,8 @@ export const TOP_DROP = 60;
 /** a petal this far over the split node's entry line, or more, is on the high road (the branches); under it, the base bough's low road */
 export const ROAD_CUT = 10;
 export const ROT_DEPTH = 170;
+/** the gaps to hop in 1-2's canopy base bough (px) */
+const BOUGH_GAP = 70;
 
 /**
  * 1-2's layout. Swung beat (dotted half + quarter: a long jump, a quick hop: "swing... land-hop"), the pair jump + vine swing.
@@ -510,18 +517,22 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
    * A roll whose liana the checks refuse goes on without it.
    */
   const midSwing = (tag: Tag, tier: string, x0: number, yy: number, tops?: [number, number]) => {
+    // (the take-off pad runs on from the node before's exit apron, so it is short; the landing pad is the next node's entrance apron too:
+    // a 200 px apron, a 240 px pad and a 260 px landing with another apron after read as 2.6-2.8 s dead walks, the fun gate 2026-11-04)
+    const PAD = lay.lastExit && Math.abs(lay.lastExit.x - x0) < 1 ? 100 : 240;
     lay.begin(tag, 'jump + vine swing', tier, 1, x0, yy);
-    lay.ledge(x0, x0 + 240, yy, 'apron');
-    L.flags.push({ x: x0 + 100, y: yy });
+    lay.ledge(x0, x0 + PAD, yy, 'apron');
+    L.flags.push({ x: x0 + Math.min(100, PAD / 2), y: yy });
     try {
-      const far = vineChain(lay, x0 + 240, yy, 1, easy, 260, yy, tops);
+      const far = vineChain(lay, x0 + PAD, yy, 1, easy, 260, yy, tops);
       lay.ledge(far, far + 260, yy, yy >= FLOOR_Y ? 'bank' : 'branch');
-      L.heartFalls.push({ x0: x0 + 240, x1: far });
+      L.heartFalls.push({ x0: x0 + PAD, x1: far });
       lay.end(far + 260, (far + 260 - x0) / 330 + 1.2);
+      lay.lastExit = { x: far + 260, y: yy };
       return far + 260;
     } catch {
-      lay.end(x0 + 240, 240 / PHYS.maxRun);
-      return x0 + 240;
+      lay.end(x0 + PAD, PAD / PHYS.maxRun);
+      return x0 + PAD;
     }
   };
   // ---- A: the canopy, rightwards
@@ -561,10 +572,13 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   // ---- the loop: the rest over the bough, then the high branches over a base bough (no gap a miss could fall through)
   const restX = x;
   lay.begin('rest', 'none (Dot; the note seen far below)', 'A', 1, x, y);
-  lay.ledge(x, x + 1180, y, 'apron');
+  // (the rest in two: a step up halfway, so the 4 s rest is a breath, never a dead walk on the fun gate, 2026-11-04)
+  lay.ledge(x, x + 560, y, 'apron');
+  lay.ledge(x + 560, x + 1180, y - 30, 'apron');
   L.flags.push({ x: x + 100, y });
   L.lines.push({ x: x + 200, y, text: "There's something down by the roots..." });
   x += 1180;
+  y -= 30;
   lay.end(x, 1180 / PHYS.maxRun + 1);
   // (the bough's leg is fitted first: the canopy's high branches over the loop must reach further back than it does)
   const PAL_B: Palette = { surfaces: ['branch'], jumpDy: [-60, -50, 50, 60, 80, 90], hopDy: [-40, -30, -20], doubles: 0, yMin: B - 120, yMax: B };
@@ -592,14 +606,38 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   L.lines.push({ x: rotten1.x0 - 260, y, text: 'Rotten wood! Don\'t stop on it!' });
   // (the base bough TOP_DROP under the node's entry: every branch 50 px or more over the entry is 110 px or more over the base bough, so
   // the low road's petals have room under the branches and clear of their jumps' arcs, the lead's ruling 2026-11-04)
-  lay.ledge(x, top.tr.x1, y + TOP_DROP, 'bough');
-  // (the split's flags on its base bough, the way everyone takes, every 2,200 px: none up on the high road, G8)
-  for (let fx = x + 2200; fx < top.tr.x1 - 600; fx += 2200) L.flags.push({ x: Math.round(fx), y: y + TOP_DROP });
+  // (the base bough in pieces, a 70 px gap to hop every 480-580 px: the low road is hops, never 17 s of plain walking (the fun gate's dead
+  // walk, the lead's item 4, 2026-11-04). A miss through a gap is a fall (fallZones), never a landing on the bough leg under it. No gap
+  // under a branch's end, where a drop from the high road comes down)
+  const ends = L.ledges.filter((q) => q.node === topNode && q.y < y + TOP_DROP - 20).flatMap((q) => [q.x0, q.x1]);
+  const gaps: number[] = [];
+  for (let gx = x + R.r(480, 580); gx < top.tr.x1 - 400; gx += R.r(480, 580)) {
+    // (the nearest place clear of the branch ends, either way, up to 280 px off)
+    const clear = (g: number) => !ends.some((e) => g < e + 110 && g + BOUGH_GAP > e - 110) && g > (gaps.at(-1) ?? x) + 320 && g < top.tr.x1 - 400;
+    const g = [0, 40, -40, 80, -80, 120, -120, 160, -160, 200, -200, 240, -240, 280, -280].map((d) => Math.round(gx) + d).find(clear);
+    if (g !== undefined) { gaps.push(g); gx = g; }
+  }
+  let bx = x;
+  for (const g of gaps) {
+    lay.ledge(bx, g, y + TOP_DROP, 'bough');
+    L.fallZones.push({ x0: g - 30, x1: g + BOUGH_GAP + 30, depth: ROT_DEPTH });
+    bx = g + BOUGH_GAP;
+  }
+  lay.ledge(bx, top.tr.x1, y + TOP_DROP, 'bough');
+  // (the split's flags on its base bough, the way everyone takes, every 2,200 px, clear of its gaps: none up on the high road, G8)
+  for (let fx = x + 2200; fx < top.tr.x1 - 600; fx += 2200) {
+    let f = Math.round(fx);
+    while (gaps.some((g) => f > g - 160 && f < g + BOUGH_GAP + 160)) f += 60;
+    L.flags.push({ x: f, y: y + TOP_DROP });
+  }
   const Rx = top.tr.x1;
   // turn 1: off the end, down onto the bough (B), whose right end is a trunk
   const bRight = Rx + 300;
   lay.ledge(Rx - 180, bRight, B, 'apron');
-  L.walls.push({ x0: bRight, x1: bRight + 90, y0: B - 360, y1: B + 40 });
+  // (the trunk stands well over the canopy's highest branch: under that, the canopy's end was a jump over it, past the whole bough leg
+  // and half the floor)
+  const canopyTop = Math.min(...L.ledges.filter((q) => q.x1 > Rx - 900).map((q) => q.y));
+  L.walls.push({ x0: bRight, x1: bRight + 90, y0: Math.min(B - 360, canopyTop - 300), y1: B + 40 });
   L.lines.push({ x: Rx - 160, y: B, text: 'Back the other way, up off the snakes!' });
   // ---- B: the bough, leftwards, ONE way (the lead's ruling 2026-11-04: no high road, so its petals are the shared path's): the bough
   // itself, with the rotten stretches and the snakes to hop on the swung beat. A rotten stretch is too long to walk before it goes
@@ -616,7 +654,8 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
     const w = rot ? Math.round(R.r(120, 160)) : 76;
     hz.push({ x0: hx - w, x1: hx, rot });
     // (the next hazard on the beat, never nearer than a landing's 150 px clear of a snake)
-    hx -= w + Math.max(rot ? 300 : 380, Math.round((beat[k % beat.length] ?? 6) * eighthPx));
+    // (and never more than 600 px on: 2 s of bough at a run, the dead walk's 2.5 s under it)
+    hx -= w + Math.min(600, Math.max(rot ? 300 : 380, Math.round((beat[k % beat.length] ?? 6) * eighthPx)));
   }
   // (the bough in pieces, rotten stretches between them; a snake in the middle of its stretch; a petal before each hop's take-off)
   let at = bRight;
@@ -645,25 +684,25 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   L.lines.push({ x: padL + 20, y: C, text: 'Under the bough now. Watch the gaps!' });
   const PAL_C: Palette = { surfaces: R.pick([['bank', 'bank', 'stump'], ['bank', 'stump', 'stump'], ['bank', 'stump', 'branch']] as Surface[][]), jumpDy: [-60, -30, 0, 30, 50], hopDy: [-40, -30, -20], doubles: 0, yMin: C - 100, yMax: C };
   x = Lx + 60;
-  const under1 = lay.traced('ramp', 'jump + hop (pits now)', 'C', 1, x, C, barsFrom(swung(R, 7, 0.4)), PAL_C);
+  const under1 = lay.traced('ramp', 'jump + hop (pits now)', 'C', 1, x, C, barsFrom(swung(R, 7, 0.15, LEANS_FLOOR)), PAL_C);
   // (a liana hung from under the bough, over the floor's pit)
   x = midSwing('ramp', 'C', under1.tr.x1, under1.tr.yOut, [B + 50, B + 70]);
-  const under = lay.traced('ramp', 'jump + hop (pits now)', 'C', 1, x, under1.tr.yOut, barsFrom(swung(R, 8, 0.4)), { ...PAL_C, yMin: Math.min(under1.tr.yOut, C) - 100, yMax: Math.max(under1.tr.yOut, C) });
+  const under = lay.traced('ramp', 'jump + hop (pits now)', 'C', 1, x, under1.tr.yOut, barsFrom(swung(R, 8, 0.15, LEANS_FLOOR)), { ...PAL_C, yMin: Math.min(under1.tr.yOut, C) - 100, yMax: Math.max(under1.tr.yOut, C) });
   // (under the loop the flags don't take: engine.ts keeps the furthest-right flag, so a fall here costs a heart, never a life)
   L.heartFalls.push({ x0: padL, x1: Math.max(under.tr.x1, bRight + 100) });
   // the note: on the floor right under the rest, where the view from the rest looks down on it (upright)
   L.find = { x: Math.round(Math.max(padL + 120, restX + 420)), y: C };
   x = under.tr.x1;
   y = under.tr.yOut;
-  const c1bars = barsFrom(swung(R, 9, 0.1));
+  const c1bars = barsFrom(swung(R, 9, 0.1, LEANS_FLOOR));
   const climax1 = lay.traced('climax', 'jump + hop + drop (swung, densest)', 'C', 1, x, y, c1bars, { ...PAL_C, yMin: Math.min(y, C) - 100, yMax: Math.max(y, C), surfaces: ['bank', 'stump', 'branch'] });
   x = midSwing('climax', 'C', climax1.tr.x1, climax1.tr.yOut);
   y = climax1.tr.yOut;
   // (the second half never plays the first half's bars again: the same template with the same numbers is nothing you feel change,
   // STAGE-RULES §0c.3, tools/validate/variety.ts templateFlags; it leans denser, fewer breaths)
   const bars1 = c1bars.join('|');
-  let bars2 = barsFrom(swung(R, 9, 0.05));
-  for (let k = 0; k < 12 && bars2.join('|') === bars1; k++) bars2 = barsFrom(swung(R, 9 + (k % 2), 0.05));
+  let bars2 = barsFrom(swung(R, 9, 0.05, LEANS_FLOOR));
+  for (let k = 0; k < 12 && bars2.join('|') === bars1; k++) bars2 = barsFrom(swung(R, 9 + (k % 2), 0.05, LEANS_FLOOR));
   const climax = lay.traced('climax', 'jump + hop + drop (swung, densest)', 'C', 1, x, y, bars2, { ...PAL_C, yMin: Math.min(y, C) - 100, yMax: Math.max(y, C), surfaces: ['bank', 'stump', 'branch'] });
   x = climax.tr.x1;
   y = climax.tr.yOut;
