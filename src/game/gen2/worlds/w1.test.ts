@@ -81,3 +81,11 @@ test("every W1 section has its content type (NODES.md §7.7), and every challeng
     }
   }
 });
+
+test("W1_KIT's graph and tempo rows fit the planner's manifest types, and every section's jobs are gen2's NodeJob", async () => {
+  const { W1_KIT } = await import('./w1.ts');
+  const M: Pick<import('../types.ts').WorldManifest, 'graphs' | 'rollRanges' | 'floorRoll'> = { graphs: W1_KIT.graphs, rollRanges: W1_KIT.rollRanges, floorRoll: W1_KIT.floorRoll };
+  assert.ok(M.graphs!.list.length === 4 && M.graphs!.briefs['1-1'].teaches!.join() === 'jump,double,bounce');
+  const jobs: import('../types.ts').NodeJob[] = W1_SECTIONS.flatMap((s) => s.jobs ?? []);
+  assert.ok(jobs.length > 0);
+});

@@ -12,9 +12,10 @@
  * enter and exit on 'ground' ports on the manifest's ground line; stones, stumps, logs and boughs are ordinary pieces over it. The
  * pipeline does not read this file until the planner's step 1 wires World 1 in.
  */
-import type { Phase, PortKind, SectionPiece, SectionTemplate, Socket } from '../types.ts';
+import type { NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket } from '../types.ts';
 import { DOUBLE_RISE, reachJump } from '../../physics.ts';
 import { hollowLogSize } from '../../w1NewArt.ts';
+import { SPRINT_GRAPHS } from '../graphs.ts';
 
 /**
  * World 1's manifest rows for its floor (the planner's correction, 11-05 4:19 PM: gen2's own ground IS the floor). `ground` is the
@@ -38,15 +39,21 @@ export const W1_KIT = {
    * content sections alone); `maxPerStage` a section at most once a stage
    */
   graphs: {
-    list: { A: 'A T P F R X R S E', B: 'A T M F R C U X R S R L E', C: 'A P F X R W R D_ S E', D: 'A T P R U F X R S E' },
-    briefs: { '1-1': { ends: 'quiet', trend: 'up', branching: 'some', teaches: ['jump', 'double', 'bounce'] } },
+    /** the sprint graphs A-D (gen2/graphs.ts SPRINT_GRAPHS, the planner's; NODES §8.4's code strings: A `A T P F R X R S E`, B `A T M F R C U X R S R L E`, C `A P F X R W R D_ S E`, D `A T P R U F X R S E`) */
+    list: [...SPRINT_GRAPHS],
+    briefs: { '1-1': { ends: 'quiet' as const, trend: 'up' as const, branching: 'some' as const, teaches: ['jump', 'double', 'bounce'] } },
     terrains: ['floor-stones', 'raised-logs', 'mounds', 'boughs'],
     chunkSeconds: 11.2,
     maxPerStage: 1,
   },
-  /** the per-roll dials, from the mixer's own (mixer/w1mix.ts buildMix: gap share 0.55 + 0.37 d, rise share 0.5 + 0.45 d on Normal;
-   *  Easy 0.45 + 0.35 d, 0.4 + 0.4 d; d from 0 to 1), and their centre (the lead's numbers, 11-05) */
-  rollRanges: { gap: { normal: [0.55, 0.92] as [number, number], easy: [0.45, 0.8] as [number, number] }, rise: { normal: [0.5, 0.95] as [number, number], easy: [0.4, 0.8] as [number, number] }, centre: { gap: 0.65, rise: 0.67 } },
+  /**
+   * The per-roll tempo (manifest rollRanges, the planner's type): 1-1 is calm and rolling (its profile), so the designer's measured old 1-1
+   * ranges (ENGINE-SPEC 53c0b9960, rs-main-11.json): every roll's median gap share across the whole 0.79-0.91 spread, centred 0.82 (old
+   * 1-1's median of roll medians), p90 at most 0.99; rises in the home band 0.65-0.69 (25 of 32 rolls), the hilly break 0.81-0.94 on 7 of
+   * 32. `centre` is what a section's own shares are scaled against (the lead's numbers, gap 0.65, rise 0.67): the roll's median is never
+   * under it, so a block's share (0.85+, NODES §8.7) is never scaled down
+   */
+  rollRanges: { gap: { min: 0.79, mode: 0.82, max: 0.91, p90: 0.99, centre: 0.65 }, rise: { home: [0.65, 0.69] as [number, number], hilly: [0.81, 0.94] as [number, number], hillyShare: 7 / 32, centre: 0.67 } },
   pit: 'soft' as const,
   pitDepth: 110,
   /** the planner's 4:27 PM: catch boughs laid 90 px under a canopy gap by the engine (floorRoll.catchDrop, engine-chunks types) */
@@ -60,8 +67,8 @@ export type W1Not = 'meeca-note' | 'hibiscus-trail' | 'punch' | 'combat' | 'kapo
 /** the brief's not-list for every section that is not that stage's (a section serving 1-3 drops 'punch'/'combat' from its own) */
 export const NOT_ELSEWHERE: readonly W1Not[] = ['meeca-note', 'hibiscus-trail', 'punch', 'combat', 'kapok-climb', 'view-north', 'folded-petals', 'chase', 'lianas', 'bush'];
 
-/** a node job (NODES.md §1, engine-spec f07d84e5e): what a section can do for the node it fills */
-export type W1Job = 'arrive' | 'teach' | 'practise' | 'test' | 'combine' | 'twist' | 'rest' | 'reward' | 'signature' | 'pressure' | 'climb' | 'descent' | 'fork' | 'puzzle' | 'arena' | 'flow' | 'story' | 'preview' | 'change' | 'finale' | 'exit' | 'cooldown-in-node' | 'choice-reward';
+/** a node job (NODES.md §1): gen2's own NodeJob (the planner's type, engine-chunks 83224cdc) */
+export type W1Job = NodeJob;
 
 type W1Piece = SectionPiece;
 export type W1Section = SectionTemplate & {
