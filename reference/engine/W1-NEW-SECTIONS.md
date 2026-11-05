@@ -308,3 +308,10 @@ Every section's versions differ in kinds or order, never only in sizes. All of t
 All existing W1 art; boughs only in the window; nothing from the brief's not-list; petals low, finds high.
 
 **Watch:** #53-#55 are a climb in flow's job. Each step is ≤ 80 px (the walk rise), so the stair is quick single jumps, not doubles.
+
+**FR7 (added 6:58 PM, from the planner's 6:58 PM answer: diversity reads the QUICKEST route's action string, i.e. its beats and their
+spacing, never piece kinds or heights; eraRoll.measureRoll, beats.ts, analyze.ts actionTokens).** A low road of plain walking is
+the quickest line, so it would become the measured route and read as one long "walk". **So each road's beats are as dense as the
+other's: no stretch of plain walk over about 1.5 s on either road**, and each road's beat string differs (FR4). Whichever road the
+quickest route takes, it reads moves. Versions must differ in the ORDER and SPACING of moves along the line; a change in height
+within one move reads the same.
