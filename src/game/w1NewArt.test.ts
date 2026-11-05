@@ -157,3 +157,11 @@ test("bank dressing never stands where a hollow log lies (it drew in the log's m
   const kept = clearOfHollowLogs([{ x: 1150, b: floor }, { x: 1600, b: floor }, { x: 1150, b: floor - 300 }], [log]);
   assert.deepEqual(kept.map((d) => d.x + ',' + d.b), [`1600,${floor}`, `1150,${floor - 300}`]);
 });
+
+test("a drawn water zone's kind picks its art (the designer, 11-05): deadly and teaching are the world's murky pit water, calm the swim water; deadly by default", async () => {
+  const { waterArt } = await import('./protoStage.ts');
+  assert.equal(waterArt(undefined), 'pit');
+  assert.equal(waterArt('deadly'), 'pit');
+  assert.equal(waterArt('teaching'), 'pit');
+  assert.equal(waterArt('calm'), 'calm');
+});

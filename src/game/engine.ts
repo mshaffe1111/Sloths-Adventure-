@@ -175,7 +175,7 @@ import { baseScale, bossViewWidth, bossViewX, keepInView } from './bossCamera.ts
 import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar } from './sovereignFight.ts';
 import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, setSovereignPillars } from './sovereignArt.ts';
 import { maxHearts } from './secret.ts';
-import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
+import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDepthView, setGroundPaint, setKitWorld, setDecoTrunks, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
@@ -5449,11 +5449,15 @@ export class GameEngine {
       const bottom = this.camera.y + this.camera.viewportHeight + 40;
       drawWater(ctx, world.id, x0, x1, waterY, bottom, t);
     }
-    // the water a stage declares (proto.water: 1-1's creek): a body of calm, clear water (calmWaterArt.ts, the water he swims in), its
-    // painted top and its deep filling down out of sight, behind the banks
-    for (const w of this.zonePools()) {
+    // the water a stage declares (proto.water: 1-1's creek), a body from its painted top down out of sight, behind the banks, in the art
+    // its kind asks for: the world's murky pit water (deadly, teaching), or the clear swim water (calm)
+    const zs = this.zonePools();
+    for (let i = 0; i < zs.length; i++) {
+      const w = zs[i];
       if (w.x1 < x0 || w.x0 > x1) continue;
-      if (!drawCalmWaterBack(ctx, w, t)) drawCalmWaterPlain(ctx, w, false);
+      if (waterArt(this.proto!.water![i].kind) === 'calm') {
+        if (!drawCalmWaterBack(ctx, w, t)) drawCalmWaterPlain(ctx, w, false);
+      } else drawWater(ctx, world.id, Math.max(x0, w.x0), Math.min(x1, w.x1), w.surfaceY, Math.min(w.bottomY, this.camera.y + this.camera.viewportHeight + 40), t);
     }
     for (const cp of this.currentStage.checkpoints ?? []) {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
@@ -5498,6 +5502,10 @@ export class GameEngine {
     });
   }
 
+  /** is x over a drawn water zone of the calm kind */
+  private calmAt(x: number): boolean {
+    return !!this.proto?.water?.some((z) => x >= z.x0 && x <= z.x1 && waterArt(z.kind) === 'calm');
+  }
   private zonePoolsOf: { from: unknown; pools: CalmPool[] } | null = null;
   /** the stage's drawn water zones as bodies of water: from each surface down to well under the stage's lowest ground */
   private zonePools(): CalmPool[] {
@@ -5517,8 +5525,10 @@ export class GameEngine {
   private drawZoneOver(ctx: CanvasRenderingContext2D) {
     const p = this.player;
     const cx = p.x + p.width / 2;
-    const w = this.zonePools().find((z) => cx > z.x0 && cx < z.x1 && p.y > z.surfaceY + 4);
-    if (!w) return;
+    const zs = this.zonePools();
+    const i = zs.findIndex((z) => cx > z.x0 && cx < z.x1 && p.y > z.surfaceY + 4);
+    if (i < 0) return;
+    const w = zs[i];
     let a = Math.max(w.x0, p.x - 40), b = Math.min(w.x1, p.x + p.width + 40);
     for (const q of this.platforms) {
       if (!paintedBank(q) || q.y > w.surfaceY + 10 || q.y + q.height < w.surfaceY) continue;
@@ -5527,7 +5537,17 @@ export class GameEngine {
     }
     if (b <= a) return;
     const under = Math.max(0, Math.min(1, (p.y - p.height - w.surfaceY) / 30 + 0.5));
-    drawCalmWaterOver(ctx, w, this.gameTime, { x0: a, x1: b }, { x: cx, headY: p.y - p.height, under, stroke: 0.6 });
+    if (waterArt(this.proto!.water![i].kind) === 'calm') {
+      drawCalmWaterOver(ctx, w, this.gameTime, { x0: a, x1: b }, { x: cx, headY: p.y - p.height, under, stroke: 0.6 });
+      return;
+    }
+    // (the murky pit water over him below its top: murky water hides him, as it should)
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(a, w.surfaceY + 6, b - a, w.bottomY - w.surfaceY);
+    ctx.clip();
+    drawWater(ctx, this.currentStage.config.worldIndex, a, b, w.surfaceY, Math.min(w.bottomY, this.camera.y + this.camera.viewportHeight + 40), this.gameTime);
+    ctx.restore();
   }
   /** the water zone he last went into (proto.water): one splash an entry */
   private splashedIn: { x0: number; x1: number; y: number } | null = null;
@@ -6395,8 +6415,8 @@ export class GameEngine {
       for (const pl of this.platforms) {
         if (!pl.lily || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) continue;
         const sy = this.lilySurface(pl);
-        // (on a drawn water zone, a slow ripple ring round it: the pad floats on the water, the designer's review)
-        if (sy !== pl.y + 8) drawCalmRing(ctx, pl.x + pl.width / 2, sy, pl.width * 1.2, this.gameTime);
+        // (on calm drawn water, a slow ripple ring round it; murky pit water carries its own painted rings)
+        if (sy !== pl.y + 8 && this.calmAt(pl.x + pl.width / 2)) drawCalmRing(ctx, pl.x + pl.width / 2, sy, pl.width * 1.2, this.gameTime);
         drawLily(ctx, pl.x + pl.width / 2, sy, pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
       }
     }

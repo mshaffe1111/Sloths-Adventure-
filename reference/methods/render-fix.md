@@ -44,6 +44,9 @@ On every still, upright and sideways, for EVERY object on screen, not just the t
 Write the list down in the report: each object, why it's there, what holds it up. A still that passes your item but fails this is not done.
 
 ## Pitfalls we already paid for
+- 2026-11-05: **paid jobs run on after a redirect.** The lead sent Matt's "if we have bad art, get rid of the art... craft one quickly"
+  three times while I ran two more inpaint rounds on the rejected approach ($0.35 spent on nothing; the backdrop went to another helper).
+  Now: ReadNotifications before every paid job and between jobs, and stop any plan a newer message crosses, then confirm before going on.
 - 2026-11-05: **checked only my own pieces.** A floating rock (left by my scratch edit), logs sunk under the water, a pit shade box,
   trunks over solid ground, a backdrop seam and huge painted orchids were all in stills I sent; Matt caught each. Do the whole-picture check.
 - A gap finder built on one ground line finds the wrong gaps on a stage that climbs (the mixer's 1-5). Judge each gap by its own two banks.
