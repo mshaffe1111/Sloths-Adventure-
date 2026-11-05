@@ -103,9 +103,9 @@
    "cropBottom": 0.1
   },
   "wetLeaves": {
-   "take": "w6-wetLeaves-17",
+   "take": "w6-wetLeaves-23g",
    "units": 40,
-   "cropBottom": 0.12
+   "cropBottom": 0.09
   }
  },
  "7": {
@@ -149,7 +149,7 @@
   "stoneLantern": {
    "take": "w7-stoneLantern-17",
    "units": 44,
-   "cropBottom": 0.05
+   "cropBottom": 0.09
   },
   "censer": {
    "take": "w7-censer-5",
@@ -254,7 +254,7 @@
   "fishTrap": {
    "take": "w2-fishTrap-17",
    "units": 66,
-   "cropBottom": 0.05
+   "cropBottom": 0.09
   },
   "raft": {
    "take": "w2-raft-17",

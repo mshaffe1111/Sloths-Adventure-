@@ -32,3 +32,14 @@ r3    6ae67edb0e0338d1bb7d4ba2  23:50Z  round 3: W4 2 hanging, W6 6 bank, W7 6 b
      beard has a sloth face: NONE KEPT. Lesson: never say "sticker"; keep "one single game prop ... no water, no puddle, no scenery".
      Round 3 is re-run tomorrow without that word (NEXT.md).
 SPEND TOTAL: ~$5.7 of the $14 cap.
+wl1   6aecaee8c78863f9c633716c  2026-11-05 16:29:28Z-16:31:48Z (~2.3 min, ~$0.11; cap $1; branch art-w6wetleaves)  W6 wetLeaves REMADE
+     (the lead's go: the old frame, take w6-wetLeaves-17, had a pink light beam in the magenta key's hue painted beside it and cut into
+     dressnew-w6.webp). make_single.py --set2 --grey --desc: 4 takes, seeds 5/11/17/23, strength 1.0, on flat mid grey #808080
+     (start plain-grey.png; "light beam, sun rays, pink light" added to the negative), spec at c5a081c8. KEPT: w6-wetLeaves-23g (one
+     broad olive leaf lying on mud, clear beaded drops, the sheet's ink line). THROWN: 5g (a curled stalk, twigs under it), 11g (a root
+     stub behind, the leaf melting into a puddle), 17g (a curl on top, a lump of roots under). The grey key left the leaf body half
+     see-through (olive sits ~80 from grey): cut.py key_own now makes a grey-keyed piece solid inside its ink outline. Cut by
+     cut.py --world 6 --fresh wetLeaves (only W6's sheet rebuilt; its other pieces taken back out of the sheet at their frames; every
+     other world's sheet and frames untouched), cropBottom 0.09, same units (40 -> drawn 52). Old frame gone. Review:
+     reference/prop-sheets/qa-notes/hf-props/wetleaves/ (before/after on 6-4's start bank, upright and sideways, contact-takes).
+SPEND TOTAL: ~$5.8 (this file's jobs); this remake ~$0.11 of its $1 cap.

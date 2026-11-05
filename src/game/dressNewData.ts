@@ -893,20 +893,20 @@ export const DRESS_NEW_FRAMES = {
   "units": 65,
   "world": 6
  },
- "w6WetLeaves": {
-  "x": 528,
-  "y": 1255,
-  "w": 208,
-  "h": 189,
-  "units": 52,
-  "world": 6
- },
  "w6Mudskipper": {
-  "x": 740,
+  "x": 528,
   "y": 1255,
   "w": 239,
   "h": 164,
   "units": 60,
+  "world": 6
+ },
+ "w6WetLeaves": {
+  "x": 771,
+  "y": 1255,
+  "w": 208,
+  "h": 131,
+  "units": 52,
   "world": 6
  },
  "w6Pods": {

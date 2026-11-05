@@ -1,6 +1,11 @@
 """Cut the picked hf-props takes into pieces, clean their edges, pack one small dressing sheet per world, and write the frame table.
 
-    python3 tools/art/hfprops/cut.py <takes dir>
+    python3 tools/art/hfprops/cut.py <takes dir> [--world N --fresh piece,piece]
+
+--world N --fresh a,b (2026-11-05, the W6 wetLeaves remake): only world N's sheet is rebuilt. Its pieces named in --fresh are cut from
+their (new) takes in <takes dir> as below; its other pieces are taken back out of the current sheet at their current frames (already
+cut and cleaned), so their old takes are not needed. Every other world's sheet and frames are left exactly as they are. The packed
+sheet, frame table and looks are rewritten the usual way, so a replaced piece's old frame is gone.
 
 picks.json: {"<world>": {"<piece>": {"take": "<take name>", "units": <width in game units>, "hang"?: true}}}. Each take is one piece
 on flat key colour (make_single.py); the cut is w1to4/cut.py's (key un-mixed from the edges, largest blob kept, then the fixed edge pass
@@ -54,6 +59,12 @@ def key_own(img, solo=False):
         keyish = np.clip(1 - (22 - dh) / 10, 0, 1)  # 0 within 12 degrees, 1 beyond 22
         keyish = np.maximum(keyish, np.clip((0.16 - sat) / 0.06, 0, 1))  # near-grey: left to the distance key
         alpha = np.minimum(alpha, keyish)
+    if (bg0.max() - bg0.min()) < 24:
+        # (a grey key, 2026-11-05, the W6 wetLeaves remake: an olive leaf sits only ~80 from mid grey, so the distance key left its
+        # body half see-through. A piece's ink outline closes it: everything inside the outline is solid, only the outline's own
+        # edge keeps the soft key)
+        solid = ndimage.binary_fill_holes(alpha > 0.35)
+        alpha = np.where(ndimage.binary_erosion(solid, iterations=2), 1.0, alpha)
     al = alpha[..., None]
     paint = np.where(al > 0.02, (a - (1 - al) * bgm) / np.maximum(al, 0.02), 0)
     rgb = np.where(al < 0.999, paint, a).clip(0, 255)
@@ -99,15 +110,33 @@ def review(pieces, world, path):
     S.convert('RGB').save(path, quality=86)
 
 
+def current_frames():
+    import re
+    ts = (ROOT / 'src/game/dressNewData.ts').read_text()
+    return json.loads(re.search(r'DRESS_NEW_FRAMES = (\{.*?\n\}) satisfies', ts, re.S).group(1))
+
+
 def main():
-    takes = Path(sys.argv[1])
+    args = sys.argv[1:]
+    only_w = int(args[args.index('--world') + 1]) if '--world' in args else None
+    fresh = set(args[args.index('--fresh') + 1].split(',')) if '--fresh' in args else set()
+    takes = Path(args[0])
     picks = json.loads((HERE / 'picks.json').read_text())
+    old = current_frames() if only_w else {}
     frames = {}
     for world, pp in sorted(picks.items(), key=lambda kv: int(kv[0])):
         w = int(world)
         key = [0, 255, 0] if w == 5 else [255, 0, 255]
+        if only_w and w != only_w:  # (left as it is: its frames copied, its sheet untouched)
+            frames.update({k: v for k, v in old.items() if v['world'] == w})
+            continue
+        sheet_now = Image.open(ROOT / f'src/assets/props/dressnew-w{w}.webp').convert('RGBA') if only_w else None
         pieces = []
         for n, p in pp.items():
+            if only_w and n not in fresh:
+                f = old[f'w{w}{n[0].upper()}{n[1:]}']
+                pieces.append((n, sheet_now.crop((f['x'], f['y'], f['x'] + f['w'], f['y'] + f['h']))))
+                continue
             img = Image.open(next(takes.glob(f"{p['take']}.*"))).convert('RGB')
             if p.get('box'):  # (the piece's own box in the take, as fractions: a hanging piece painted inside a tree scene)
                 bx = p['box']
