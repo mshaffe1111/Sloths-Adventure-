@@ -45,7 +45,8 @@ export const SPEC_15: StageSpec = {
 /**
  * CP4's 1-1, "Into the Canopy" (ENGINE-SPEC "CP4, stage by stage", the designer's node plan): the arrival, teaching run, jump, the
  * bounce and then the double jump (nothing untaught: no creaky, no crumbling, no animals). It rises from the forest floor to the high
- * kapok branches (1-5 goes down), its moment the first double-jump chain up into the canopy, then the view from the top branch. A sprint:
+ * kapok branches (1-5 goes down), its moment the first double-jump chain up into the canopy, ending in a calm resolve, not a triumph (the
+ * brief, 1-1.md:23: the bigger views belong to later stages; the designer's "1-1 for the builder" page is the design source). A sprint:
  * no marks; the goal is the shrine. Dot's lines are the shipped 1-1's (dotLinesData.ts hint.1-1.*).
  */
 export const SPEC_11: StageSpec = {

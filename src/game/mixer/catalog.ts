@@ -94,22 +94,31 @@ export const CLIMBS: ClimbKind[] = [
 ];
 
 /** zones, air, water bodies and set pieces (LABELS.md §2-3), by the array the stage keeps them in and their kind */
-export interface ZoneKind extends CatKind { arr: string; kinds?: string[] }
+export interface ZoneKind extends CatKind {
+  arr: string; kinds?: string[];
+  /** the worlds that have its art today: it is laid in world N only where N is here; a world in `worlds` but not in `artIn` is an art
+   *  gap, on a shrink-only known list, never drawn in another world's art (the designer and the critic, ENGINE-SPEC 0dffc84e1) */
+  artIn?: number[];
+  /** a set piece of one stage, which never returns (4-3's falls and tide lines) */
+  setPiece?: boolean;
+}
+/** from a hazard's teach world through World 10 (a taught hazard keeps returning: the designer's 1:14 ruling) */
+const fromW = (w: number) => Array.from({ length: 11 - w }, (_, i) => w + i);
 export const ZONES: ZoneKind[] = [
   { name: 'warm air', arr: 'updrafts', element: 'air', footing: 'open drop space under it', mayFloat: 'yes', uses: 'glide (taught 4-7)', worlds: [4, 8, 9], notes: 'needs the glide known' },
   { name: 'warm air (4-7 drafts)', arr: 'drafts47', kinds: ['across', 'bonus', 'rock', 'up'], element: 'air', footing: 'open drop space under it', mayFloat: 'yes', uses: 'glide (taught 4-7)', worlds: [4] },
-  { name: 'wind', arr: 'zones', kinds: ['wind'], element: 'air', footing: 'cliffs and tops', mayFloat: 'yes', uses: 'wind (taught 4-2)', worlds: [4, 8, 10] },
-  { name: 'dark', arr: 'zones', kinds: ['dark'], element: 'cave', footing: 'caves and the dark forest', mayFloat: 'yes', uses: 'dark (3-1)', worlds: [3, 5, 6, 8] },
-  { name: 'spore', arr: 'zones', kinds: ['spore'], element: 'cave', footing: 'caves', mayFloat: 'yes', uses: 'spore (3-1)', worlds: [3] },
-  { name: 'web', arr: 'zones', kinds: ['web'], element: 'tree', footing: 'between trunks', mayFloat: 'yes', uses: 'web (5-6)', worlds: [5] },
-  { name: 'tide', arr: 'zones', kinds: ['tide'], element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'tide (6-4)', worlds: [6] },
-  { name: '4-3 falls and tide', arr: 'falls43', kinds: ['plug', 'pool', 'surge', 'tide'], element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'the waterfall steps (4-3)', worlds: [4] },
-  { name: '4-3 tide line', arr: 'tides43', element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'the waterfall steps (4-3)', worlds: [4] },
-  { name: 'crumbling floor zone', arr: 'zones', kinds: ['crumble'], element: 'stone', footing: 'temple floors', mayFloat: 'no', uses: 'crumbling floor (7-1)', worlds: [7, 10] },
-  { name: 'geyser', arr: 'zones', kinds: ['geyser'], element: 'heat', footing: 'heat rock', mayFloat: 'no', uses: 'geyser (9-1)', worlds: [9] },
-  { name: 'bolt', arr: 'zones', kinds: ['bolt'], element: 'storm', footing: 'open sky', mayFloat: 'yes', uses: 'bolt (10-1)', worlds: [10] },
+  { name: 'wind', arr: 'zones', kinds: ['wind'], element: 'air', footing: 'cliffs and tops', mayFloat: 'yes', uses: 'wind (taught 4-2)', worlds: fromW(4), artIn: [4, 8, 10] },
+  { name: 'dark', arr: 'zones', kinds: ['dark'], element: 'cave', footing: 'caves and the dark forest', mayFloat: 'yes', uses: 'dark (3-1)', worlds: fromW(3), artIn: [3, 5, 6, 8] },
+  { name: 'spore', arr: 'zones', kinds: ['spore'], element: 'cave', footing: 'caves', mayFloat: 'yes', uses: 'spore (3-1)', worlds: fromW(3), artIn: [3] },
+  { name: 'web', arr: 'zones', kinds: ['web'], element: 'tree', footing: 'between trunks', mayFloat: 'yes', uses: 'web (5-6)', worlds: fromW(5), artIn: [5] },
+  { name: 'tide', arr: 'zones', kinds: ['tide'], element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'tide (6-4)', worlds: fromW(6), artIn: [6] },
+  { name: '4-3 falls and tide', arr: 'falls43', kinds: ['plug', 'pool', 'surge', 'tide'], element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'the waterfall steps (4-3)', worlds: [4], artIn: [4], setPiece: true },
+  { name: '4-3 tide line', arr: 'tides43', element: 'water', footing: 'a drawn water body', mayFloat: 'water', uses: 'the waterfall steps (4-3)', worlds: [4], artIn: [4], setPiece: true },
+  { name: 'crumbling floor zone', arr: 'zones', kinds: ['crumble'], element: 'stone', footing: 'temple floors', mayFloat: 'no', uses: 'crumbling floor (7-1)', worlds: fromW(7), artIn: [7, 10] },
+  { name: 'geyser', arr: 'zones', kinds: ['geyser'], element: 'heat', footing: 'heat rock', mayFloat: 'no', uses: 'geyser (9-1)', worlds: fromW(9), artIn: [9] },
+  { name: 'bolt', arr: 'zones', kinds: ['bolt'], element: 'storm', footing: 'open sky', mayFloat: 'yes', uses: 'bolt (10-1)', worlds: fromW(10), artIn: [10] },
   { name: 'river', arr: 'rivers', element: 'water', footing: 'a drawn river, its banks at both ends', mayFloat: 'water', uses: 'river logs (2-1)', worlds: [2, 6, 8] },
-  { name: 'thorn vine', arr: 'proto.thorns', element: 'tree', footing: 'hangs or swings from trunks', mayFloat: 'no', uses: 'thorns (3-4)', worlds: [3, 6, 10] },
+  { name: 'thorn vine', arr: 'proto.thorns', element: 'tree', footing: 'hangs or swings from trunks', mayFloat: 'no', uses: 'thorns (3-4)', worlds: fromW(3), artIn: [3] },
   { name: 'trunk', arr: 'trees', element: 'tree', footing: 'the floor', mayFloat: 'no', uses: 'an anchor for boughs, vines and lianas; never a landing', worlds: ALL, notes: 'at most 3 full trunks per 1,400 px' },
   { name: 'trunk (mixer)', arr: 'proto.trunks', element: 'tree', footing: 'the floor', mayFloat: 'no', uses: 'an anchor; never a landing', worlds: ALL },
   { name: 'hollow log', arr: 'proto.hollows', element: 'ground', footing: 'seated on the floor', mayFloat: 'no', uses: 'a two-road split: walk inside, run on top', worlds: [1, 3, 4, 6, 8], notes: 'two open ends or it is a hide spot only; no trunk within its width + 40 px' },
