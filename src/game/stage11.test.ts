@@ -8,7 +8,7 @@ import { RealReach } from './realReach.ts';
 import { RealPlay } from './realPlay.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import { maxRise } from './protoCheck.ts';
-import type { LevelConfig } from './types.ts';
+import type { LevelConfig, Platform } from './types.ts';
 
 const cfg = {
   worldIndex: 1, miniIndex: 1, id: '1-1', name: 'Into the Canopy', objectiveType: 'sprint', targetCount: 1, timeLimit: 0,
@@ -110,23 +110,49 @@ test('1-1 in the real engine: running into the mushroom bounces him up and on al
   }
 });
 
+/**
+ * The double teach's gap: walking the way's pieces from `tip` (a piece lying more than 80 px under the last kept one is below the way, such
+ * as a safe floor in the gap, and is skipped: the planner's proposal, so the floor ruled into the gap never hides the gap), the first gap
+ * within 1,500 px that a plain jump can't cross and a double can, with a piece under its middle above the death line. Undefined: none.
+ */
+function doubleGap(platforms: Platform[], tip: number, death: number): { a: Platform; b: Platform; safe: boolean } | undefined {
+  const way: Platform[] = [];
+  for (const p of platforms.filter((q) => q.type === 'solid' && q.x + q.width > tip).sort((a, b) => a.x - b.x)) {
+    if (way.length && p.y > way[way.length - 1].y + 80) continue;
+    way.push(p);
+  }
+  for (let i = 0; i + 1 < way.length; i++) {
+    const [a, b] = [way[i], way[i + 1]];
+    if (b.x - (a.x + a.width) < 40 || b.x > tip + 1500) continue;
+    if (jumpOK(a, b, false).ok || !jumpOK(a, b, true).ok) continue;
+    const mid = (a.x + a.width + b.x) / 2;
+    return { a, b, safe: platforms.some((p) => p !== a && p !== b && p.x <= mid && p.x + p.width >= mid && p.y > Math.max(a.y, b.y) && p.y < death) };
+  }
+  return undefined;
+}
+
 test('1-1: right after the double is taught, a gap only the second jump crosses (a miss lands him on safe ground under it)', () => {
   for (const seed of SEEDS.slice(0, 4)) {
     const st = buildProtoStage(cfg, seed, '1-1');
-    const tip = jobAt(st, 'teach double');
-    const solid = st.platforms.filter((p) => p.type === 'solid' && p.x + p.width > tip).sort((a, b) => a.x - b.x);
-    let found = false;
-    for (let i = 0; i + 1 < solid.length && !found; i++) {
-      const [a, b] = [solid[i], solid[i + 1]];
-      if (b.x - (a.x + a.width) < 40 || b.x > tip + 1500) continue;
-      if (jumpOK(a, b, false).ok || !jumpOK(a, b, true).ok) continue;
-      const mid = (a.x + a.width + b.x) / 2;
-      const death = st.waterY ?? st.config.levelHeight;
-      assert.ok(st.platforms.some((p) => p !== a && p !== b && p.x <= mid && p.x + p.width >= mid && p.y > Math.max(a.y, b.y) && p.y < death), `seed ${seed}: nothing under the double gap at ${Math.round(mid)}`);
-      found = true;
-    }
-    assert.ok(found, `seed ${seed}: no gap only the second jump crosses within 1,500 px of the teach`);
+    const g = doubleGap(st.platforms, jobAt(st, 'teach double'), st.waterY ?? st.config.levelHeight);
+    assert.ok(g, `seed ${seed}: no gap only the second jump crosses within 1,500 px of the teach`);
+    assert.ok(g.safe, `seed ${seed}: nothing under the double gap at ${Math.round(g.a.x + g.a.width)}`);
   }
+});
+
+test('the double-gap finder: sees a gap with a safe floor ruled into it, and finds none where a plain jump crosses every gap', () => {
+  const P = (id: number, x: number, w: number, y: number): Platform => ({ id, x, y, width: w, height: 120, type: 'solid', style: 'moss_stone' });
+  // (a double-only gap, 200 px (jumpOK: a plain jump fails from 120, a double from 240), with a moss floor 140 px down inside it and a
+  // one-jump step back by the near wall, R2)
+  const r2 = [P(1, 0, 400, 1000), P(2, 400, 200, 1140), P(3, 410, 60, 1080), P(4, 600, 400, 1000)];
+  const g = doubleGap(r2, 0, 2000);
+  // (from the lip or from the step back, 80 px down: either way the far bank needs the double, with the floor under it)
+  assert.ok(g && (g.a.id === 1 || g.a.id === 3) && g.b.id === 4 && g.safe, JSON.stringify(g && [g.a.id, g.b.id, g.safe]));
+  // (the same gap with no floor: found, and not safe)
+  const bare = doubleGap([P(1, 0, 400, 1000), P(4, 600, 400, 1000)], 0, 2000);
+  assert.ok(bare && !bare.safe);
+  // (planted: every gap a plain jump crosses, 45 px as today's 1-1 has: none found, so the 1-1 test fails)
+  assert.equal(doubleGap([P(1, 0, 400, 1000), P(2, 445, 400, 1000), P(3, 890, 400, 1000)], 0, 2000), undefined);
 });
 
 test('in the air against a wall too tall to catch, his drawing stands off the face (it is not a grab); his body does not move', () => {
