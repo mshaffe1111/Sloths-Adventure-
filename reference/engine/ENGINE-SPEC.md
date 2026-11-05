@@ -1072,7 +1072,7 @@ Each stage's section is signed by all three before any building starts. New help
 | n8 | the climb up (low boughs; the kapok climb is 1-4's) | bough stair, bounce up (one not used in n4) | low → mid | — |
 | n9 | **the moment (test)** | the double-jump chain: three or four rising doubles, bough to bough, up into the canopy, with catch boughs below | mid → high | a flag before it; a heart after it only if it has risk |
 | n10 | the canopy fork | high road: the top branches; low road: mid boughs. Rejoin | high → high (two roads) | the high road's petal group |
-| n11 | cool down, arriving in the canopy **[revised 1:14 PM ET: kept by ruling 4's own exception: 1-1's story brief ends on "the view from the top branch". Its finale is n9-n10, and n11 is the arrival, held to the rest rule (G #83) with no dead walk]** | one long high branch, the sky opening ahead (the far Highlands are 1-4's), to the shrine | high → shrine | Meeca's petals low on the trunks; at the end, the soldier's bootprint in the moss, pointing north |
+| n11 | cool down, arriving in the canopy **[revised 1:14 PM ET; reason corrected 1:17 PM ET (the critic): kept by ruling 4's own exception, because 1-1's story brief asks a quiet end, story-briefs/1-1.md:23: "End: up in the high branches, on the petal trail, pointed north. Resolve, not triumph. The bigger views belong to later stages". There is NO view here (:41, the view north is 1-4's). Its moment is n9-n10, and n11 is the arrival on the petal trail to the shrine and the bootprint, held to the rest rule (G #83) with no dead walk. My 1:14 reason, "the view from the top branch", came from a code comment (stages.ts), not the brief, and was wrong]** | one long high branch, the sky opening ahead (the far Highlands are 1-4's), to the shrine | high → shrine **[1:17 PM ET: "the sky opening ahead" is read as light through the leaves, not a view: the brief keeps the views for 1-4 (:23, :41)]** | Meeca's petals low on the trunks; at the end, the soldier's bootprint in the moss, pointing north |
 
 - **Length:** Normal's quick clock is 2:40-3:15. That is at least 20% under 1-5's median of about 4:05 (no more than 3:16), and over **[revised: C28, "Contradictions ruled", 10:49 AM]**
   the 2:00 floor. Easy is at least 2:00. Length comes from the nodes and bursts, never from a clock.
@@ -2323,7 +2323,7 @@ The verdict was **NOT READY for step 6 until four edits**. All four are made, in
 - L1881's "OPEN until 2:30": the amounts are ruled (M1-M8).
 - L2032's stamp: 12:03 PM, not AM (commit 3cdb07dd8).
 - L351, 1-5's cool-down: ruling 4's finale at the exit; 1-5's plan is redrawn.
-- L1075, 1-1's n11: kept, under ruling 4's own exception. 1-1's story brief ends on the view from the top branch.
+- L1075, 1-1's n11: kept, under ruling 4's own exception. **[corrected 1:17 PM ET: the brief's reason is :23, "Resolve, not triumph. The bigger views belong to later stages", not "the view from the top branch", which was a code comment's words; there's no view in 1-1 (:41)]**
   - Its finale is n9-n10, the double chain and the canopy fork.
   - n11 is the arrival, held to the rest rule (G #83, 2.0-2.5 s), with no dead walk.
   - My 12:45 note (the cool-down's deck gains bough hops) stands under that.
