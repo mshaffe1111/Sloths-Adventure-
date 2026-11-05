@@ -51,6 +51,7 @@ that do the best job get the follow-on work.
 - Research is read line by line before it shapes a plan: a ledger with one row per idea, checked by the lead against the source, every miss given a home. A summary is not a reading, and an answer about what the research says quotes it with the line number. (D29)
 - Rules go into the builder first: a stage rule lives in the formula file the generator builds from, and the checker reads the same file; before any big build, compare two or three approaches and have an unanchored critic attack the pick. (D30)
 - A supervisor with the technical duty runs whenever anyone builds; it is never cut to save tokens. The lead reads the code at the second report of the same problem instead of relaying rulings, and every success of the day becomes a procedure in reference/methods/ the same day. (D31)
+- A fall onto a surface below is a landing, never a death: a fall zone (or any respawn rule) is only laid over open air, and a test checks there is no solid surface within its depth under it. Never change play to satisfy a measuring ruler. (D33)
 
 - Phone measurements only come from the LIVE site's testers' link (#ctest): Matt can't measure on claude.ai test pages: their runs never reach the sheet, and his budget phone (the OnePlus) can't run the Claude app well enough to test there at all. Anything that needs phone numbers ships behind the testers-only switch first. (Matt, 11-04)
 
