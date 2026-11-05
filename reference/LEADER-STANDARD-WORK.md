@@ -52,3 +52,10 @@ three priorities from the plan, not from whatever arrived last.
 | Tokens and HF dollars per job | Lessons broken a second time (target 0) |
 | Jobs accepted per day | Supervisor greens that were really rough (audit misses) |
 | Releases shipped | Defects found after release |
+
+## End of every working day (D31, Matt graded 11-04 a D-)
+1. Supervisors were on the whole time builders built: yes or no, and why if no.
+2. Every defect today has a log line, a root cause and a changed standard.
+3. Every success today has become a procedure in reference/methods/ (what worked, so everyone does it).
+4. Every stuck problem got the lead's own eyes on the code by its second report.
+5. Tell Matt the day's grade you'd give yourself, and why, before he does.
