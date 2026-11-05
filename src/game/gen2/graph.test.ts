@@ -9,6 +9,7 @@ import assert from 'node:assert/strict';
 import '../headlessDom.ts';
 import { buildGen2Stage } from './pipeline.ts';
 import { SPRINT_GRAPHS } from './graphs.ts';
+import { formatToken, parseCode } from './nodeCode.ts';
 import { cfg, kit, manifest } from './toyWorld.ts';
 import type { GraphBrief, MissionNode, SectionTemplate, WorldKit, WorldManifest } from './types.ts';
 
@@ -67,6 +68,11 @@ test('the graphs vary roll to roll, and every roll keeps the order rules and the
       ids.add(g.id!);
       shapes.add(jobs(g.nodes).join(' '));
       orderRules(g.nodes, brief, `${JSON.stringify(brief)} seed ${s}`);
+      // (the realised node code: one token per node, a string that reads back, and the rules it breaks named in the meta)
+      assert.equal(st.gen2.code?.length, g.nodes.length, `seed ${s}: ${st.gen2.codeString}`);
+      assert.equal(parseCode(st.gen2.codeString!).map(formatToken).join(' '), st.gen2.codeString);
+      assert.ok(Array.isArray(st.gen2.codeErrors));
+      assert.ok(!st.gen2.codeErrors!.some((e) => /^V(1|2|4|5|6|7|9|10|13|16|17) /.test(e)), `seed ${s}: ${st.gen2.codeString}: ${st.gen2.codeErrors!.join('; ')}`);
     }
     assert.ok(ids.size >= 3, `${ids.size} graphs over 16 rolls`);
     assert.ok(shapes.size >= 4, `${shapes.size} skeletons over 16 rolls`);
@@ -116,11 +122,11 @@ test('a stage with no brief, or a world with no graphs, takes the SPINE', () => 
   assert.equal(plain.gen2.graph.nodes.length, 9);
 });
 
-// (chunkSeconds: the toy sections' measured mean on the fast player's clock, about 4.6 s each (the clock the length floor holds). A pool big enough for a hard no-repeat: the toy sections eight times over, under their own ids, at spread difficulties; one late
+// (chunkSeconds: the toy sections' measured mean on the fast player's clock, about 4.6 s each (the clock the length floor holds). A pool big enough for a hard no-repeat: the toy sections sixteen times over, under their own ids, at spread difficulties; one late
 // section held to the last third by its window)
 const late: SectionTemplate = { ...twoRoad, id: 'toy-late', jobs: undefined, phases: ['sho', 'ten', 'ketsu'], window: [0.67, 1], weight: 6 };
 const pool: SectionTemplate[] = [
-  ...[...manifest.sections, twoRoad].flatMap((t) => Array.from({ length: 8 }, (_, k) => ({
+  ...[...manifest.sections, twoRoad].flatMap((t) => Array.from({ length: 16 }, (_, k) => ({
     ...t, id: `${t.id}-${k}`, difficulty: Math.max(1, Math.min(9, t.difficulty + (k % 5) - 2)),
     // (the working sections take every working phase, so the toy pool is not the bottleneck the test would otherwise measure)
     ...(t.phases.includes('sho') || t.phases.includes('ten') ? { phases: [...new Set([...t.phases, 'ki', 'sho', 'ten', 'ketsu'] as const)] } : {}),
@@ -132,7 +138,7 @@ const chunked = (brief: GraphBrief): WorldKit => ({
   manifest: { ...manifest, sections: pool, graphs: { list: [...SPRINT_GRAPHS], briefs: { [ID]: brief }, terrains: ['floor', 'logs'], chunkSeconds: 4.6, maxPerStage: 1 } } as WorldManifest,
 });
 
-test('length from the chunk count: quiet nodes hold one section, every node at least one, no section twice (the hard no-repeat)', () => {
+test('length from the chunk count: quiet nodes and forks hold one section, every node at least one, no section twice (the hard no-repeat)', () => {
   const brief: GraphBrief = { ends: 'quiet', trend: 'up', branching: 'some', teaches: ['carry-0'] };
   for (const s of SEEDS) {
     const st = build(chunked({ ...brief, teaches: undefined }), s);
@@ -142,7 +148,7 @@ test('length from the chunk count: quiet nodes hold one section, every node at l
     for (const n of g.nodes) {
       const held = st.gen2.plan.filter((p) => p.node === n.id).length;
       assert.ok(held >= 1, `seed ${s}: ${n.job} ${n.id} holds nothing`);
-      if (n.role === 'start' || n.role === 'goal' || n.role === 'rest') assert.equal(held, 1, `seed ${s}: quiet ${n.job} ${n.id} holds ${held}`);
+      if (n.role === 'start' || n.role === 'goal' || n.role === 'rest' || n.job === 'fork') assert.equal(held, 1, `seed ${s}: ${n.job} ${n.id} holds ${held}`);
     }
     // (the first plan holds exactly the count; the length repair then adds or takes whole sections where the clock misses)
     const grown = st.gen2.repairs.filter((r) => r.kind === 'length' && /^one more section|^room for/.test(r.note ?? '')).length;
@@ -181,4 +187,51 @@ test('the cadence: a hard node climbs, then its last section cools', () => {
   }
   assert.ok(lastN > 5, `${lastN} hard nodes of three or more`);
   assert.ok(lastD / lastN < peakD / peakN - 0.5, `last section ${(lastD / lastN).toFixed(2)}, the one before it ${(peakD / peakN).toFixed(2)}`);
+});
+
+// (the content deal, NODES.md §7.5: the toy pool's working clones typed in turn ground, floating, climb, bounce; 1-1's deal and window)
+const TYPES = ['ground', 'floating', 'climb', 'bounce'] as const;
+// (the carry teachers stand in for 1-1's bounce: bounce sections come only after the carry is taught, `typeNeeds`)
+const typed: SectionTemplate[] = pool.map((t, k) => (t.teaches === 'carry' ? { ...t, content: 'bounce' as const } : t.phases.includes('sho') || t.phases.includes('ten') ? { ...t, content: TYPES[k % 4] } : { ...t, content: 'structural' as const }));
+const dealt = (brief: GraphBrief): WorldKit => ({
+  ...kit,
+  manifest: { ...manifest, sections: typed, graphs: { list: [...SPRINT_GRAPHS], briefs: { [ID]: brief }, chunkSeconds: 4.6, maxPerStage: 1, windows: { floating: [0.67, 1] }, typeNeeds: { bounce: 'carry' } } } as WorldManifest,
+});
+
+test('the content deal: every content node typed, the counts the deal\'s give or take 1, no type over 40% or on two neighbours, floating only late', () => {
+  const brief: GraphBrief = { ends: 'quiet', trend: 'up', branching: 'some', teaches: ['carry'], deal: { ground: 40, floating: 25, climb: 20, bounce: 15 } };
+  const strings = new Set<string>();
+  let loose = 0, slots = 0, clean = 0;
+  for (const s of SEEDS) {
+    const st = build(dealt(brief), s);
+    slots += st.gen2.plan.length;
+    const g = st.gen2.graph;
+    assert.ok(g.deal, `seed ${s}: no deal`);
+    for (const n of g.nodes) {
+      const content = ['teach', 'practise', 'fork', 'flow', 'combine', 'climb', 'descent', 'twist', 'test'].includes(n.job!);
+      assert.equal(!!n.content, content, `seed ${s}: ${n.job} ${n.id} typed ${n.content}`);
+      if (n.job === 'climb') assert.equal(n.content, 'climb');
+      // (each section laid in a typed node is of its type, or the meta names the slot the pool ran out at)
+      st.gen2.plan.forEach((p, i) => {
+        if (p.node !== n.id) return;
+        const t = typed.find((q) => q.id === p.template)!;
+        if (n.content && t.content !== 'structural' && t.content !== n.content) {
+          assert.ok(st.gen2.loosened?.some((l) => l.startsWith(`slot ${i + 1} `)), `seed ${s}: ${t.id} (${t.content}) in a ${n.content} node, unnamed`);
+          loose++;
+        }
+      });
+    }
+    // (the mix's rules hold on every roll the pool did not run out on; a loosened slot is named, and rare)
+    if (!st.gen2.loosened) {
+      clean++;
+      assert.ok(!st.gen2.codeErrors!.some((e) => /^V(3|1[124]) /.test(e)), `seed ${s}: ${st.gen2.codeString}: ${st.gen2.codeErrors!.join('; ')}`);
+    }
+    strings.add(st.gen2.codeString!);
+  }
+  assert.equal(strings.size, SEEDS.length, 'two rolls with the same code string');
+  // (the toy pool holds every type, so loosening is the rare case, never the rule)
+  assert.ok(loose <= 0.1 * slots, `${loose} of ${slots} slots loosened`);
+  // (and enough rolls ran clean for the rules above to have been checked: the toy pool is small for 40% ground at no repeats, which is
+  // the kit's sizing, measured by the loosened share, not the deal's)
+  assert.ok(clean >= 4, `${clean} of 16 rolls with no slot loosened`);
 });
