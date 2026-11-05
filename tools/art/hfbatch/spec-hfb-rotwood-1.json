@@ -1,0 +1,86 @@
+{
+ "note": "W1 rotten wood, round 1, 2026-11-05",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/art-w1-rotwood/tools/art/hfbatch/starts/w1rot/",
+ "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, ground, grass, perspective, seen from above, flowers, mushrooms, two logs, stack",
+ "items": [
+  {
+   "name": "whole-s55-5",
+   "start": "rot-whole.png",
+   "prompt": "slothadv style, painted storybook illustration, one short rotten log lying on the forest floor, seen exactly from the side for a side-scrolling platform game, clearly decayed and soft: sagging a little in the middle, dark cracks along the grain, torn bark with pale crumbly punk wood showing through in patches, a few flecks of green moss on top, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "whole-s55-11",
+   "start": "rot-whole.png",
+   "prompt": "slothadv style, painted storybook illustration, one short rotten log lying on the forest floor, seen exactly from the side for a side-scrolling platform game, clearly decayed and soft: sagging a little in the middle, dark cracks along the grain, torn bark with pale crumbly punk wood showing through in patches, a few flecks of green moss on top, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.55,
+   "seed": 11,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "whole-s65-5",
+   "start": "rot-whole.png",
+   "prompt": "slothadv style, painted storybook illustration, one short rotten log lying on the forest floor, seen exactly from the side for a side-scrolling platform game, clearly decayed and soft: sagging a little in the middle, dark cracks along the grain, torn bark with pale crumbly punk wood showing through in patches, a few flecks of green moss on top, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.65,
+   "seed": 5,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "whole-s65-11",
+   "start": "rot-whole.png",
+   "prompt": "slothadv style, painted storybook illustration, one short rotten log lying on the forest floor, seen exactly from the side for a side-scrolling platform game, clearly decayed and soft: sagging a little in the middle, dark cracks along the grain, torn bark with pale crumbly punk wood showing through in patches, a few flecks of green moss on top, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.65,
+   "seed": 11,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "creak-s55-5",
+   "start": "rot-creak.png",
+   "prompt": "slothadv style, painted storybook illustration, one short rotten log lying on the forest floor, seen exactly from the side for a side-scrolling platform game, clearly decayed and soft: sagging a little in the middle, dark cracks along the grain, torn bark with pale crumbly punk wood showing through in patches, a few flecks of green moss on top, a wide fresh split across the middle with pale splinters sticking up, about to snap in two, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "creak-s55-11",
+   "start": "rot-creak.png",
+   "prompt": "slothadv style, painted storybook illustration, one short rotten log lying on the forest floor, seen exactly from the side for a side-scrolling platform game, clearly decayed and soft: sagging a little in the middle, dark cracks along the grain, torn bark with pale crumbly punk wood showing through in patches, a few flecks of green moss on top, a wide fresh split across the middle with pale splinters sticking up, about to snap in two, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.55,
+   "seed": 11,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "creak-s65-5",
+   "start": "rot-creak.png",
+   "prompt": "slothadv style, painted storybook illustration, one short rotten log lying on the forest floor, seen exactly from the side for a side-scrolling platform game, clearly decayed and soft: sagging a little in the middle, dark cracks along the grain, torn bark with pale crumbly punk wood showing through in patches, a few flecks of green moss on top, a wide fresh split across the middle with pale splinters sticking up, about to snap in two, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.65,
+   "seed": 5,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "creak-s65-11",
+   "start": "rot-creak.png",
+   "prompt": "slothadv style, painted storybook illustration, one short rotten log lying on the forest floor, seen exactly from the side for a side-scrolling platform game, clearly decayed and soft: sagging a little in the middle, dark cracks along the grain, torn bark with pale crumbly punk wood showing through in patches, a few flecks of green moss on top, a wide fresh split across the middle with pale splinters sticking up, about to snap in two, a lush green rainforest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.65,
+   "seed": 11,
+   "w": 1024,
+   "h": 512
+  }
+ ]
+}
