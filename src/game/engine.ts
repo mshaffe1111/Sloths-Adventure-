@@ -85,10 +85,12 @@ import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater, drawBounceCaps } from './terrain.ts';
 import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LINE, SWIM_LINES, swimStep, underOf, type CalmPool, type SwimState } from './swim.ts';
-import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterPlain } from './calmWaterArt.ts';
+import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterOver, drawCalmWaterPlain } from './calmWaterArt.ts';
 import { swimHeadY } from './heroSwim.ts';
 import { drawHollowLog, drawW1Dress, insideHollow } from './w1NewArt.ts';
-import { setW1PitWater } from './w1Pits.ts';
+import { paintedBank, setW1PitWater } from './w1Pits.ts';
+/** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
+const ZONE_INSET = 14;
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { heard, NOISE } from './noise.ts';
@@ -5445,10 +5447,11 @@ export class GameEngine {
       const bottom = this.camera.y + this.camera.viewportHeight + 40;
       drawWater(ctx, world.id, x0, x1, waterY, bottom, t);
     }
-    // the water a stage declares (proto.water: 1-1's creek), the world's painted pit water from its surface down, behind the banks
-    for (const z of this.proto?.water ?? []) {
-      if (z.x1 < x0 || z.x0 > x1) continue;
-      drawWater(ctx, world.id, Math.max(x0, z.x0), Math.min(x1, z.x1), z.y, this.camera.y + this.camera.viewportHeight + 40, t);
+    // the water a stage declares (proto.water: 1-1's creek): a body of calm, clear water (calmWaterArt.ts, the water he swims in), its
+    // painted top and its deep filling down out of sight, behind the banks
+    for (const w of this.zonePools()) {
+      if (w.x1 < x0 || w.x0 > x1) continue;
+      if (!drawCalmWaterBack(ctx, w, t)) drawCalmWaterPlain(ctx, w, false);
     }
     for (const cp of this.currentStage.checkpoints ?? []) {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
@@ -5493,6 +5496,37 @@ export class GameEngine {
     });
   }
 
+  private zonePoolsOf: { from: unknown; pools: CalmPool[] } | null = null;
+  /** the stage's drawn water zones as bodies of water: from each surface down to well under the stage's lowest ground */
+  private zonePools(): CalmPool[] {
+    const zs = this.proto?.water;
+    if (!zs?.length) return [];
+    if (this.zonePoolsOf?.from !== zs) {
+      const bottom = Math.max(this.currentStage.config.levelHeight ?? 0, ...this.platforms.map((q) => q.y + q.height)) + 400;
+      this.zonePoolsOf = { from: zs, pools: zs.map((z) => ({ x0: z.x0, x1: z.x1, surfaceY: z.y, bottomY: bottom })) };
+    }
+    return this.zonePoolsOf.pools;
+  }
+  /**
+   * Under a drawn water zone's top (he fell in): the water drawn again over him, in a box round him that stays inside the open water
+   * between the banks (their faces lean a little: ZONE_INSET), so below the waterline he is under it; his ring and bubbles. He sinks on
+   * to the stage's own fall.
+   */
+  private drawZoneOver(ctx: CanvasRenderingContext2D) {
+    const p = this.player;
+    const cx = p.x + p.width / 2;
+    const w = this.zonePools().find((z) => cx > z.x0 && cx < z.x1 && p.y > z.surfaceY + 4);
+    if (!w) return;
+    let a = Math.max(w.x0, p.x - 40), b = Math.min(w.x1, p.x + p.width + 40);
+    for (const q of this.platforms) {
+      if (!paintedBank(q) || q.y > w.surfaceY + 10 || q.y + q.height < w.surfaceY) continue;
+      if (q.x + q.width <= cx) a = Math.max(a, q.x + q.width + ZONE_INSET);
+      else if (q.x >= cx) b = Math.min(b, q.x - ZONE_INSET);
+    }
+    if (b <= a) return;
+    const under = Math.max(0, Math.min(1, (p.y - p.height - w.surfaceY) / 30 + 0.5));
+    drawCalmWaterOver(ctx, w, this.gameTime, { x0: a, x1: b }, { x: cx, headY: p.y - p.height, under, stroke: 0.6 });
+  }
   /** the water zone he last went into (proto.water): one splash an entry */
   private splashedIn: { x0: number; x1: number; y: number } | null = null;
   /** a splash, painted: the splash crown where he went in, and puffs of spray thrown up out of it */
@@ -6628,6 +6662,8 @@ export class GameEngine {
     this.drawCalmWater(ctx, true);
     heroClipsLive(false);
     profMark(ctx, 'hero');
+    // (fallen into a drawn water zone: under its top, he is under the water)
+    if (this.proto?.water) this.drawZoneOver(ctx);
     // (inside a hollow log, walking through it low: the log over him, half see-through, so he reads as in it: w1NewArt.ts)
     if (this.paintKit) for (const pl of this.platforms) if (pl.hollow && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width) && insideHollow(pl, this.player)) drawHollowLog(ctx, pl, 0.6);
     if (this.proto?.bushes) this.drawBushes(ctx);

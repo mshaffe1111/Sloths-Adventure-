@@ -122,3 +122,13 @@ test('falling into a drawn water zone splashes once, then the fall goes on', () 
   assert.equal(splashes, 1);
   assert.ok(r.p.y > 1040 + 60, 'he went on down');
 });
+
+test('a drawn water zone is a body of water: its fill goes from its surface to below the stage\'s lowest ground, never a strip over a void', () => {
+  const r = new RealPlay('1-4', 1);
+  const e = r.e as unknown as { proto: { water?: Array<{ x0: number; x1: number; y: number }> } | null; zonePools(): Array<{ x0: number; x1: number; surfaceY: number; bottomY: number }> };
+  e.proto = { ...e.proto, water: [{ x0: 300, x1: 900, y: 1040 }] };
+  const [w] = e.zonePools();
+  const lowest = Math.max(...r.platforms.map((q) => q.y + q.height));
+  assert.equal(w.surfaceY, 1040);
+  assert.ok(w.bottomY > lowest, `fills to ${w.bottomY}, under the lowest ground ${lowest}`);
+});

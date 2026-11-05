@@ -195,6 +195,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'pit-art:1') {
       w1PitsReady();
       urls.push(...W1_PIT_URLS);
+    } else if (k === 'calm-water') {
+      calmWaterReady();
+      urls.push(CALM_WATER_URL);
     } else if (k === 'w1-new') {
       w1NewReady();
       urls.push(W1_NEW_URL);
