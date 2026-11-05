@@ -1,0 +1,166 @@
+URL: https://iwataasks.nintendo.com/interviews/wiiu/super-mario-3d-world/0/5/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Super Mario 3D World - Page 6
+---
+## It Had to Be Super Mario 3D World
+
+Iwata
+
+I requested that you include Miiverse20 functionality in Super Mario 3D World, and that led to something a little different.
+20. Miiverse: A network service that allows people all over the world to connect through their Mii characters and more fully enjoy video games integrated with the Wii U console at the system level. People can interact by sharing their thoughts in the plazas of their favorite games and by posting handwritten illustrations and comments.
+
+Hayashida
+
+You mean the stamps for use in Miiverse. You can post to Miiverse simply by using a stamp with the face of various characters on it. The stamps are hidden in the courses in hard to reach places.
+
+Iwata
+
+How did those come about?
+
+Hayashida
+
+We had always wanted to do something with Miiverse, and I tried posting, but the world is full of people who can draw well. I can't draw, so I couldn't get into it.
+
+Iwata
+
+I understand. That's a big difference between the two of us who are from a programming background and can't draw, and people like Miyamoto-san and Koizumi-san, who can draw really well.
+
+Hayashida
+
+So as I was programming, I was looking for a way to solve that. Then one day I was looking at some materials, and a line drawing of Mario caught my eye.
+
+Iwata
+
+Ok.
+
+Hayashida
+
+I wondered if I could use it and tried plugging in the graphics data for display in Miiverse. It came out pretty good, and the development staff liked it.
+
+Iwata
+
+It resonates with people who can't draw.
+
+Hayashida
+
+Right. You can really get something across just by stamping and writing a few words.
+
+Iwata
+
+The whole impression changes simply by adding a little illustration.
+
+Hayashida
+
+I thought it would fly, so I consulted the Miiverse team and we thought that since we had it, it should be for use in other games, not just Super Mario 3D World, and they implemented it.
+By the way, the Animal Crossing Plaza21, which is available as a free download, will get the stamps by the time this interview goes live.
+21. Animal Crossing Plaza: Downloadable software currently available on the Nintendo eShop on Wii U. Players can expand their Animal Crossing experience by posting Animal Crossing: New Leaf moments and learn about new characters and in-game tips. For more details please visit the official website.
+
+Miyamoto
+
+Using the stamps is like Mario Paint.22 You can write over things, erase, and fix parts.
+22. Mario Paint: Drawing tool software released for the Super NES in July 1992.
+
+Iwata
+
+So instead of just writing in balloons, you can use it various ways, like by adding things by hand to the stamp illustration.
+
+Miyamoto
+
+(to Hayashida-san) How many stamps are there in total?
+
+Hayashida
+
+Over 80. Some are rare ones that you get deep in the second half, so you should definitely post them to brag!
+
+Iwata
+
+And there are new kinds of gameplay that you can enjoy by connecting to the internet.
+
+Motokura
+
+There's something called a Ghost Mii Character. This time, Mario goes to the Sprixie Kingdom to rescue the Sprixie Princess. There, your Mii character or the Mii characters of other people online show up as Sprixies. When you clear a course, the ghost of the person who cleared it will replay through that gameplay.
+
+Iwata
+
+You can see other people's actions.
+
+Motokura
+
+There are Mii characters racing along on all fours, or they'll pop out of places that looked empty.
+
+Iwata
+
+It's surprising, like "Where'd you come from?!" (laughs)
+
+Motokura
+
+Yeah. But that's your clue that something might be there.
+
+Iwata
+
+Ah, right. The Mii characters can serve as a reference for strategies to beat the course.
+
+Hayashida
+
+It's even fun just to watch them. For example, if there's a cliff with a Mii character wandering around in front of it, you realize that person is hesitating over something.
+
+Motokura
+
+This is when we were working on the game, but when a new object was added, everyone would go check on it. I could see their Mii characters moving around those places with changes and checking it out. You can tell they were doing their jobs!
+
+Iwata
+
+(laughs)
+
+Hayashida
+
+Also a Time Attack Ghost will appear-the ghost of another player who's clear time is just a little faster than yours.
+
+Iwata
+
+So you can learn from somebody who is a little better than you are.
+
+Hayashida
+
+That's true. Another purpose is that sometimes that ghost has a gift, so if you chase it and take the gift, you get something.
+
+Iwata
+
+By the way, how did you arrive at the title of Super Mario 3D World? I heard that it was pointed out that including "3D" could be confusing since it isn't stereoscopic 3D.
+
+Miyamoto
+
+Yeah. But the team had a strong desire from the very start to call it "3D World."
+
+Iwata
+
+Oh.
+
+Miyamoto
+
+In the session of "Iwata Asks" about Super Mario 3D Land, Hayashida-san explained the concept of that game by talking about  the missing link between 2D Mario and 3D Mario. Super Mario 3D Land was a 3D Super Mario game with the strengths of 2D Super Mario, which anyone can play. This time, we aimed for accompanying that on a home console, so when I thought about the history of Super Mario, I realized that the name "Land" was for handhelds and "World" for home consoles.
+
+Iwata
+
+I see.
+
+Miyamoto
+
+Some opinions against it arose along the way, and there was a time when it looked like it wouldn't fly, but it's a name with a lot of thought behind it that suggests anyone can feel easy playing the game and that it's a culmination of all the fun of a 3D Super Mario game, so the name had to be Super Mario 3D World, and in the end that's what it is.
+
+Motokura
+
+The name "World" is one I became familiar with in my days gaming before becoming a developer, so when we decided on that, I was deeply moved, as well as a little nervous.
+
+Miyamoto
+
+Like getting jersey number 3 on the Giants?23
+23. The jersey number 3 on the Giants: Number 3 is the retired number of Shigeo Nagashima, a professional baseball player who played for the Yomiuri Giants.
+
+Motokura
+
+Exactly! (laughs)
+
+Everyone
+
+(laughs)

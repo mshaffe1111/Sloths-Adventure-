@@ -1,0 +1,50 @@
+URL: https://www.mariowiki.com/Shipwreck_Shore
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Shipwreck Shore
+---
+[Stripped: images, "Names in other languages" table.]
+
+Shipwreck Shore is the second level of Donkey Kong Country: Tropical Freeze and its Nintendo Switch port of the same name, located in the Lost Mangroves area. It is a forest area near water similar to Mangrove Cove, the previous stage.
+
+In Time Attack mode, a time of 1:05.00 is required to get a gold medal, a time of 1:25.00 for silver, and a time of 1:45.00 for bronze.
+
+## Overview
+
+The level starts out on a beach surrounded by trees and Pointy Tucks on the ground. An Item Handle hiding a Watermelon Fuse Bomb lies ahead, as well as climbing grass on the bottom of a long branch. After clearing some platforms and vines, the player can swing onto the large ship which contains Tucks, as well as a barrel for Dixie Kong. When the player brings her into the game, she swaps out with Diddy Kong for the second character (and vice versa when bringing in Diddy Kong). Following the ship, the player goes to an area with swinging platforms above water containing Finleys and another letter. After leaving there, the Kongs swing to a rocky shore (containing a secret where if the first rock wall is touched, it reveals a flying banana) containing a checkpoint, as well a Professor Chops, who tells the player that they can utilize DK and Dixie's special attack on enemies which gives them extra lives from defeated enemies. After going through the rocky shore area, the Kongs find Professor Chops underwater, who introduces another move: the ability to do a roll and break objects. After finding a Puzzle Piece and letter below the surface, the Kongs get back up by breaking a crate blocking the way, followed by another checkpoint which leads them to a similar rocky-shore area with Monocle Monicas and Punchy Paddies. After the Kongs swim underwater below the floating boxes, the game instructs the player to hold the [button] button, which allows the characters to swim through underwater vortexes that block the way. After swimming through a tunnel, the Kongs can come back to shore and hit a Slot Machine Barrel, ending the level.
+
+## KONG Letters
+* K: On the first swinging platform on the ship, obtained by using Dixie Kong's hair ability.
+* O: On a swinging platform above the water area after the ship.
+* N: Past the wooden barrier underwater, on top of the circular-like area formed by the rocks.
+* G: Above a platform with Monocle Monicas, obtained by grabbing the grass and using a Kong to collect it.
+
+## Puzzle Pieces
+1. Found after breaking the box right behind the level's starting point and pulling the plug underneath.
+2. In the water beneath the platform where the Dozy is, found under the boat.
+3. Underneath the Spinning Platform on the ship's floor, there is a bonus stage containing several bananas which must be collected in 30 seconds to receive the Puzzle Piece.
+4. Immediately after a row of three Tucks, the Kongs can cling on to a patch of climbing grass, go upward and jump to the left behind a rocky wall to collapse it and reveal a Puzzle Piece.
+5. Appears after throwing a Tuff Tucks into the Burlap Hanging Sack, which is in turn revealed by pounding the Plump Yellow Fruit on the climbing grass.
+6. After breaking some planks blocking the way in the following underwater portion, the player needs to collect all the bananas to reveal the piece.
+7. In the third crate found underwater, after breaking through the wooden barrier.
+8. Under the large floating lantern, in the Collapsible Underwater Grass.
+9. Appears after collecting all bananas while riding a raft that moves by itself.
+
+## Secret exit
+Right in the pit of water on which three crates (whereon several Punchy Paddies hop on) float, there is a trail of bananas going down. The player has to swim in the direction indicated by the bananas in order to enter the path to the secret exit, marked by two enormous chains; however, a strong propeller at the bottom of the path hinders the player from passing. In order to go through the water current, Dixie Kong is needed. Underwater, her ponytail transforms into an improvised propeller when the player holds [button] on the Wii U GamePad. The aforementioned path leads to a portal, which, in the end, warps the player into the room with a mysterious Slot Machine Barrel. Upon wrecking this barrel, the Kongs are allowed to go to Zip-Line Shrine, the first secret level of the game.
+
+## Enemies
+* Tucks
+* Tuff Tucks
+* Pointy Tucks
+* Dozies
+* Sour Dodos
+* Wild Wendells
+* Snaggles
+* Monocle Monicas
+* Punchy Paddies
+* Blue Finleys
+* Gordos
+
+Internal name: content/Worlds/w01_mangrove/l02_mangrove_dixie.pak (Mangrove Level 2: Dixie)
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Shipwreck_Shore&oldid=5240513"

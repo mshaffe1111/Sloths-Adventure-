@@ -1,0 +1,77 @@
+URL: https://www.mariowiki.com/Shadow-Play_Alley
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Shadow-Play Alley
+---
+(Stripped: site navbox, image gallery, "Names in other languages" table, reference list.)
+
+| Shadow-Play Alley | |
+| --- | --- |
+| Level code | World 2-3 |
+| World | World 2 |
+| Games | Super Mario 3D World, Super Mario 3D World + Bowser's Fury |
+| Primary power-up | Super Bell |
+| Time Limit | 400 seconds |
+| Music tracks | Underground Theme, Going All Out in the Mystery House, Super Bell Hill |
+| Level progression | Previous: Puffprod Peaks, Conkdor Canyon; Next: Really Rolling Hills |
+
+| Shadow-Play Alley (Captain Toad) | |
+| --- | --- |
+| World | Bonus |
+| Game | Captain Toad: Treasure Tracker |
+| Objective | Collected the Gold Mushroom! |
+| Target | 75 seconds |
+| Music track | Underground Theme |
+| Level progression | Previous: Conkdor Canyon; Next: Clear Pipe Cruise |
+
+Shadow-Play Alley, also known as World 2-3, is the ninth regular course and the third course of World 2 in Super Mario 3D World and its Nintendo Switch port Super Mario 3D World + Bowser's Fury. It is an inside course with a part of it taking place in the shadows. It is unlocked by completing Conkdor Canyon, and completion of either this level or Puffprod Peaks unlocks Really Rolling Hills. Shadow-Play Alley also appears in the Wii U version of Captain Toad: Treasure Tracker as an extra stage if the player's Wii U has save data for Super Mario 3D World.
+
+## Layout
+
+The course starts in an underground area with some Fuzzies and Piranha Plants. Some moving platforms and Fire Piranha Plants await, followed by the Checkpoint Flag. The next area is set in the shadows, where the player has to navigate through an area full of Fuzzies, Piranha Plants, and one Mega Piranha Plant until they reach the door leading them to another area. Here, the player must pass some enemies and moving platforms until they reach another door which leads them to the Goal Pole.
+
+## Collectables
+
+### Green Stars
+
+| Location |
+| --- |
+| Shown in the shadows at the very beginning of the level. |
+| The player will see a Mystery Box guarded by Blurkers immediately after exiting the 2-D shadow section. For the challenge, the player must hit the P-Switch to reveal a shadow of the Green Star. |
+| Before the door exit, there's a hidden gap that reveals Captain Toad scared by the shadow of a wooden cutout of Bowser. The player has to knock it down then Captain Toad will give the third Green Star. |
+
+### Stamp
+
+Under the ground during the shadow section, near the Big Piranha Plant (see picture above). To reach it, the player needs to be in Cat Form to claw the crates next to the stamp and reach it. The stamp is a Potted Piranha Plant.
+
+## Luigi Sightings
+
+### Super Mario 3D World
+
+The player needs to use the Cat Suit to climb up the wall at the beginning of the stage to find a shadow of an 8-bit Super Luigi sprite crouching in the top left corner.
+
+### Captain Toad: Treasure Tracker
+
+An 8-bit Luigi can be seen in one of the tunnels by moving to the right and looking inside the tunnel.
+
+## Enemies
+
+Super Mario 3D World
+
+| Name | Count |
+| --- | --- |
+| Piranha Plant | 5 |
+| Fuzzy | 25 |
+| Mega Piranha Plant | 1 |
+| Fire Piranha Plant | 5 |
+| Blurker | 24 |
+| Mini Goomba | 3 |
+
+Captain Toad: Treasure Tracker
+
+| Name | Count |
+| --- | --- |
+| Piranha Plant | 4 |
+| Fuzzy | 35 |
+| Big Piranha Plant | 1 |
+| Fire Piranha Plant | 5 |
+| Blurker | 24 |

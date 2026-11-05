@@ -1,0 +1,16 @@
+URL: https://www.mariowiki.com/Flaming_Tiki_Buzz
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Flaming Tiki Buzz
+---
+[Stripped: images, gallery, "Names in other languages" table, references.] [OMITTED FOR LENGTH: the paragraph on Tiki Tong's boss attacks using Flaming Tiki Buzzes.]
+
+Flaming Tiki Buzzes are enemies in Donkey Kong Country Returns (as well as its Nintendo 3DS port and its Nintendo Switch port). Like a regular Tiki Buzz, a Flaming Tiki Buzz is a drum-shaped Tiki with red wings, with the body carved such that it has a large nose and eyeholes containing yellow eyes. Unlike regular Tiki Buzzes, Flaming Tiki Buzzes have dark tail feathers and are on fire. Fire in Donkey Kong Country Returns indicates an immunity to all melee attacks, making a Flaming Tiki Buzz much harder to deal with than a regular Tiki Buzz. Flaming Tiki Buzzes are most common in levels of the Volcano, but they do appear elsewhere.
+
+Flaming Tiki Buzzes move in the same way that normal Tiki Buzzes do: They can be static, fly up and down in a set space, or fly left and right in a set space. They do not flap their wings when moving downward, and so they move down faster than they move up. Where a Tiki Buzz can be defeated by jumping on it or barrel-rolling into it, a Flaming Tiki Buzz cannot. In fact, no melee attack can harm a Flaming Tiki Buzz; contact with one in any way results in taking damage, even when using Rambi and his near-invincibility. Ranged attacks still work, so the player can throw a barrel at a Flaming Tiki Buzz to defeat it. Blowing on a Flaming Tiki Buzz temporarily puts out the fire, which makes it vulnerable to all melee attacks while also stunning it. Once Flaming Tiki Buzzes recover, they reignite themselves and resume their movement pattern if they have one. They can recover even while being blown on, but that will blow out their flames before they get the chance to move again. Flaming Tiki Buzzes are usually not close enough to the ground to be within range of Blow.
+
+In Tree Top Bop, there is a Flaming Tiki Buzz with a sparkle effect around it. Defeating it with the DK Barrel from earlier in the level rewards the player with three Red Balloons.
+
+## Levels
+Tree Top Bop; Crazy Cart; Longshot Launch; Prehistoric Path; Precarious Plateau; Handy Hazards; Roasting Rails; Red Red Rising; Tiki Tong Terror; Crushin' Columns; Spiky Surprise; Topsy Turvy
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Flaming_Tiki_Buzz&oldid=5463198"

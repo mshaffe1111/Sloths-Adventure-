@@ -1,0 +1,23 @@
+URL: https://www.gdcvault.com/play/1015833/Thinking-in-3D-The-Development
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Thinking In 3D: The Development of Super Mario 3D Land
+---
+NOTE: only the session abstract is public; the video is members-only (page showed "You've been logged out of GDC Vault since the maximum users allowed for this account has been reached"). No transcript available here.
+
+Session Name: Thinking In 3D: The Development of Super Mario 3D Land
+Overview:
+
+    Ever since Super Mario 64, the desire to make use of stereoscopic vision has been a part of the history of Nintendo's development of 3D Mario games. This desire impacted Nintendo 3DS development, and the Nintendo 3DS system brought new challenges to the development of a 3D Mario game.
+
+    These include:
+
+    How should developers use stereoscopic visuals in action games for Nintendo 3DS? What are the fundamental differences between playing a game in 2D and 3D? What game elements could best take advantage of these differences? Which elements could be incorporated while remaining true to an iconic game franchise?
+
+    Koichi Hayashida, game director, will lead a presentation that shares several "Miyamoto-sayings" (key development philosophies from Mario creator Shigeru Miyamoto) on how the development team for Super Mario 3D Land for Nintendo 3DS answered these questions, and how those answers helped make the game the fastest-selling hand-held Super Mario game in history.
+
+* GDC 2012
+* Koichi Hayashida
+* Nintendo
+* free content
+* Game Design
+* Design

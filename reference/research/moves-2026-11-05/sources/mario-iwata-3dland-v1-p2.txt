@@ -1,0 +1,132 @@
+URL: https://iwataasks.nintendo.com/interviews/3ds/super-mario-3d-land/0/1/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Volume 1: Super Mario 3D Land - Page 2
+---
+## The Missing Link Between 2D Mario and 3D Mario
+
+Hayashida
+
+I think there is a missing link4 between 2D and 3D Super Mario. To go back in the history of Super Mario, I feel like there is a chasm between Super Mario World5 and Super Mario 64.6 I wanted to make something that would bridge that gulf, and what did that was the goal pole.
+4. Missing Link: A term used to describe a gap of information or evidence in what is believed to be a continuous phenomenon.
+5. Super Mario World™: An action game released for the Super Famicom system in August 1991.
+6. Super Mario 64™: The first 3D action game in the Super Mario™ series. Released for the Nintendo 64™ system in September 1996.
+
+Iwata
+
+You returned to the old 2D Super Mario criteria for clearing a level, which was touching the goal pole. In 3D Super Mario games, you always had to get a Star.
+
+Hayashida
+
+That was a big change for us. Unlike the goal pole, which was always at the other end of the course, the Star could be hidden someplace unobvious.
+
+Iwata
+
+Like very deep inside the course.
+
+Hayashida
+
+That's the fun of a 3D Super Mario game, it has been that element of searching. The appeal was wandering around a broad game field and looking for the goal. But this time, we put that aside and decided to make a game that returns to the original idea of reaching a goal pole at the end of the course.
+
+Iwata
+
+That's a big change. Did (Shigeru) Miyamoto-san say anything about that?
+
+Hayashida
+
+I was pretty nervous when I proposed that to Miyamoto-san. But he was like, "Yes, the goal pole is synonymous with Mario." (laughs)
+
+Iwata
+
+He didn't know how you felt when you proposed it, but you were like, "I was a nervous wreck inside!"
+
+Hayashida
+
+Exactly! (laughs) He even suggested that, instead of having the flag rise to the top when you cleared the level, we have it only go up as far as you touched the pole. Apparently, he had wanted to do that in the first game, Super Mario Bros.7, 26 years ago, but hadn't been able to do it.
+7. Super Mario Bros.™: An action game released for the Nintendo Entertainment System™ in November 1985.
+
+Iwata
+
+The impression the goal pole makes has a big influence over the impression that the game makes. I suppose he thought this was an area that deserved effort.
+
+Hayashida
+
+Later, I asked (Yoshiaki) Koizumi-san8, and he said that they tried a goal pole once for Super Mario 64.
+
+Iwata
+
+Oh, is that so.
+8. Yoshiaki Koizumi: A member of the EAD Tokyo Software Development Department. Director of Super Mario Galaxy and producer of Super Mario Galaxy 2 and Super Mario 3D Land.
+
+Hayashida
+
+But at the time, when they thought about what was the most fun about playing in 3D, it was going to all sorts of places and looking for something, so they decided on players getting a Star.
+
+Iwata
+
+Wandering all around provides a lot of freedom but carries with it the problem of not knowing where to go and getting lost. In a 2D Super Mario game, you just keep going toward the right and the goal pole is sure to be there. You don't have to worry about whether you should keep heading in a certain direction.
+
+Hayashida
+
+That's right. So after that, we started to think about "how we can establish the game world" as we apply the original 2D Super Mario rules for 3D. In other words, we tried to imagine how we should make the courses.
+
+Iwata
+
+I see. Now, I would like to ask what you were careful about when it came to making the courses this time. How about you, Tsujimura-san?
+
+Tsujimura
+
+What we were careful about this time was making courses that would clearly guide the player. We basically designed the courses this time so you head to the right or advance deeper in to definitely reach a goal. We also put in arrows to guide you and made fences on the course. We devised various ways for you to reach the goal.
+
+Iwata
+
+You mean that you paid attention even to small details so that the player won't be confused over which way to go.
+
+Tsujimura
+
+Yes. We were making adjustments up to the very, very end on the smallest of details. For example, there's a scene showing you where, in the distance, the goal pole is. That way, you think, "Oh, that's where the goal is!"
+
+Iwata
+
+When making a course with a single path like that, as people who had worked on 3D Super Mario for so long, there must have been some tension as you wondered, "Will we lose what was great about 3D Super Mario?" How about that?
+
+Hayashida
+
+May I answer that?
+
+Tsujimura
+
+Go ahead.
+
+Iwata
+
+Please. (laughs)
+
+Hayashida
+
+Actually, the further you proceed in this game, the more the gameplay comes to resemble traditional 3D Super Mario. On the first stage, you just have to reach the goal pole, but…
+
+Iwata
+
+It's wrong to think that every level is a straight shot?
+
+Hayashida
+
+Exactly. We've prepared something called a Star Medal this time. They're like the items in New Super Mario Bros.9 called Star Coins.10 The reason we changed the name is that the Star Medals have the same function as the Stars in 3D Super Mario games up till now. We packed in gameplay that involves going various places around the game field in order to find them.
+9. New Super Mario Bros.™: An action game released for the Nintendo DS™ system in May 2006.
+10. Star Coin: Coins that appear in New Super Mario Bros. To completely clear the game, players must collect all the Star Coins in the game.
+
+Iwata
+
+To finish the level, all you have to do is reach the goal pole, but some players may not find that satisfying enough, so this is a sort of challenge to them to find all the Star Medals. It truly is something to provide the missing link.
+
+Hayashida
+
+That's right!
+
+Iwata
+
+Hmm, I can really sense in this your ambition to slowly but surely change players of 2D Mario into players of 3D Mario. (laughs)
+
+Everyone
+
+(laughs)

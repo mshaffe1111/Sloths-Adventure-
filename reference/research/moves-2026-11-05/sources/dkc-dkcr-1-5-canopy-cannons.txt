@@ -1,0 +1,32 @@
+URL: https://www.mariowiki.com/Canopy_Cannons
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Canopy Cannons
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: the long "Overview" walkthrough and K-O-N-G / Puzzle location prose. See URL.]
+
+Not to be confused with Canopy Chaos.
+
+"In the last level, blasting through barrels was like taking a shortcut, and now it's more like a… stunt show?" —Quinn's dad, Play Nintendo
+
+Canopy Cannons is the fifth level in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports, as well as the fifth level in the Jungle world. The level is optional because if the Kongs have a Map Key, they can access Sunset Shore instead. Whereas previous levels in the game use Barrel Cannons relatively sparingly, Canopy Cannons makes them its central feature, with the Kongs navigating obstacles and collecting items as they shoot through series of Barrel Cannons.
+
+## Summary
+
+Similarly to Barrel Cannon Canyon, the fifth level of Donkey Kong Country, Canopy Cannons involves Donkey Kong and Diddy Kong shooting through many Barrel Cannons to get across large gaps in the jungle; some of the Barrel Cannons move back and forth or tilt. There are many large stone structures which the Kongs must blast through, and most are in the path of the Barrel Cannons. Sometimes either a Banana Coin or a Red Balloon is between the Barrel Cannons, and the Kongs can obtain the items if their blast is properly timed. Even Puzzle Pieces and K-O-N-G Letters are obtained by using the cannons' alternate shooting trajectories. Other obstacles include large, spiky stone blocks that bounce on drum-like trampolines and big Screaming Pillars.
+
+In the Time Attack mode, a time of 1:02:00 is needed to get a gold medal, a time of 1:13:00 for silver, and a time of 1:35:00 for bronze.
+
+## Enemies
+| Name | Amount |
+| Awk | 5 |
+| Frogoon | 3 |
+| Rawk | 3 |
+| Screaming Pillar (big) | 5 |
+| Tiki Zing | 3 |
+
+## Items
+| Banana Coin | 7 | DK Barrel | 2 | Red Balloon | 1 |
+
+K-O-N-G Letters: K, O, N, G all present. Puzzle Pieces: 5.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Canopy_Cannons&oldid=5449454"

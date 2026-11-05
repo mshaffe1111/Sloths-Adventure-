@@ -1,0 +1,50 @@
+URL: https://www.mariowiki.com/Puffprod_Peaks
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Puffprod Peaks
+---
+(Stripped: site navbox, image gallery, "Names in other languages" table, reference list.)
+
+| Puffprod Peaks | |
+| --- | --- |
+| (image caption) | Luigi on the Propeller Platforms |
+| Level code | World 2-2 |
+| World | World 2 |
+| Games | Super Mario 3D World, Super Mario 3D World + Bowser's Fury |
+| Primary power-up | Fire Flower |
+| Time Limit | 400 seconds |
+| Music tracks | "Footlight Lane" "Underground Theme" "Rainbow Run" |
+| Level progression | Previous: Conkdor Canyon, Shadow-Play Alley; Next: Shadow-Play Alley, Really Rolling Hills |
+
+Puffprod Peaks, or World 2-2, is the eighth standard course of Super Mario 3D World and its Nintendo Switch port Super Mario 3D World + Bowser's Fury, and the second one in World 2. It is unlocked via completing Conkdor Canyon, and completion of either this level or Shadow-Play Alley unlocks Really Rolling Hills. Also when competing this level, a Warp Pipe leading to a Toad House is unlocked. 15 Green Stars are required to access this level. In the original Wii U version of the game, the player must use the Wii U GamePad to play this level. In the Nintendo Switch version of the game, the player must use the touch cursor or the touch screen depending on whether they are playing on a TV or in handheld mode respectively, and the Propeller Platforms are replaced by Lifts due to the console's lack of a microphone. The Lifts have identical paths to the original game, but move along them back and forth automatically.
+
+## Layout
+
+The level starts in an area which has a Touchstone which can be raised by touching it on the Wii U GamePad. After avoiding some Piranha Plants and Galoombas, the player reaches a set of platforms which must be activated through use of the GamePad. The Checkpoint Flag and a Propeller Platform which can be raised by blowing through the microphone on the GamePad await, followed by a Warp Box which leads the player to the next area. After a network of the aforementioned platforms and a Piranha Plant-infested area, the player reaches some more Touchstones that lead to the Goal Pole.
+
+## Collectables
+
+### Green Stars
+
+| Location |
+| --- |
+| The first Green Star is located on the left side of the crystal wall climb right before the Checkpoint Flag. It can be reached via Wall Jump. |
+| The players need to work their way on the fan platforms to reach a Cloud Cannon. The second Green Star is found at the end of the Coin Heaven. |
+| Near the end of the level, there are three crystal platforms. Underneath the third platform is a Propeller Platform that leads to the last Green Star. |
+
+### Stamp
+
+Near the beginning of the level, there are two levitating platforms. When the players levitates the platform on the right, they must go underneath it, leading to a room with the stamp and two Galoombas. The stamp is a Goomba.
+
+## Enemies
+
+| Name | Count |
+| --- | --- |
+| Piranha Plant | 12 |
+| Galoomba | 12 |
+| Mini Goomba | 9 |
+| Coin Coffer | 1 |
+
+## Notes
+
+* The music, while not exactly the same, shares similar instrumentation with the music from Cosmic Cove Galaxy from Super Mario Galaxy 2.
+* In Super Mario 3D World + Bowser's Fury, the miniature animated diorama for the course on the overworld map has the Propeller Platform replaced with a lift as in the course itself, though the sound effect for the Propeller Platform moving upwards can still be heard.

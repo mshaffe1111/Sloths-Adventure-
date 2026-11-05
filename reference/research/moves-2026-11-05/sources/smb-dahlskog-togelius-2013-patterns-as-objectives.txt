@@ -1,0 +1,618 @@
+URL: http://julian.togelius.com/Dahlskog2013Patterns.pdf
+Read: 2026-11-05 by sk/smb/tw fetch helper (TinyFish fetch_content)
+Title: Patterns as Objectives for Level Generation (Dahlskog & Togelius, DPG 2013 at FDG 2013)
+Note: PDF text as extracted (line breaks and hyphenation from the PDF columns kept).
+---
+Patterns as Objectives for Level Generation
+Steve Dahlskog
+Malmö University
+Östra Varvsgatan 11a
+205 06 Malmö, Sweden
+steve.dahlskog@mah.se
+Julian T ogelius
+IT University of Copenhagen
+Rued Langgaards Vej 7
+2300 Copenhagen, Denmark
+julian@togelius.com
+ABSTRACT
+This paper discusses how to use design patterns in procedu-
+ral level generation, with particular reference to the classic
+console game Super Mario Bros. In a previous paper, we an-
+alyzed the levels in this game to ﬁnd a set of recurring level
+design patterns, and discussed an implementation where lev-
+els were produced from concatenation of these patterns. In
+this paper, we instead propose using patterns as design ob-
+jectives. An implementation of this based on evolutionary
+computation is presented. In this implementation, levels are
+represented as a set of vertical slices from the original game,
+and the ﬁtness function count the number of patterns found.
+Qualitative analysis of generated levels is performed in order
+to identify strengths and challenges of this method.
+Keywords
+Game Design Patterns, Procedural Content Generation, Su-
+per Mario Bros., Genetic Algorithms
+1. INTRODUCTION
+This paper aims to combine design patterns and procedu-
+ral content generation (PCG) in the domain level design.
+Our approach is geared toward the classic 2-dimensional
+platformer type of game and especially the classic Super
+Mario Bros. (SMB) [27]. This approach is based on a previ-
+ous article where we analyzedSMB-levels to ﬁnd 23 diﬀerent
+reoccurring patterns of 5 “families”; Enemies, Gaps, Valleys,
+Multiple paths and Stairs. In that paper, we also used the
+suggested level patterns to implement a level generator that
+concatenated these patterns with some variation in height,
+length or diﬃculty. In this paper we consider a diﬀerent
+take on the relationship between patterns and PCG, seeing
+patterns not as building blocks but as objectives. This in-
+verts the relation between pattern generation and detection,
+and conceptually separates building blocks from design ob-
+jectives. In order to increase the variation of the content
+but still incorporate the suggested level design patterns of
+SMB we implemented a prototype based on evolutionary
+Permission to make digital or hard copies of all or part of this work for
+personal or classroom use is granted without fee provided that copies are
+not made or distributed for proﬁt or commercial advantage and that copies
+bear this notice and the full citation on the ﬁrst page. To copy otherwise, to
+republish, to post on servers or to redistribute to lists, requires prior speciﬁc
+permission and/or a fee.
+Second Workshop on Design Patterns in Games (DPG 2013) Co-located
+with FDG 2013 ’13 Chania, Crete, Greece
+Copyright 2013 ACM X-XXXXX-XX-X/XX/XX ...$15.00.
+computation. In this implementation the representation of
+level content is made by taking recurring pieces from SMB.
+These pieces are just one tile wide and thus we will refer
+to them as vertical slices. By chopping up Mario levels into
+ﬁner elements in this way, we can considerably increase the
+variety of generated levels while still only using existing ma-
+terial. The ﬁtness function for the evolutionary algorithm
+counts the number of patterns found in the candidate lev-
+els. This approach allows us to create levels that resemble
+the original Super Mario Bros levels both on a micro level,
+by using existing vertical slices, and on a macro level, by
+incorporating the same design patterns.
+2. BACKGROUND
+In this section we intend to clarify where our approach
+is grounded by shortly review patterns, design patterns in
+games and automatic generation of game content as well as
+what game content in games may be.
+2.1 Design patterns
+During the seventies, Alexander et al. developed a lan-
+guage of patterns for architectural use with the goal to allow
+others to express design abilities. “Each pattern describes
+a problem which occurs [...] in our environment, and then
+describes the core solution to that problem...” [4]. The ad-
+vantage of the pattern idea is the allow a designer to use a
+general pattern to solve reoccurring problems. This idea has
+gradually spread to other areas. In object oriented software
+development Gamma et al. have deﬁned a set of templates
+for solving general design and programming problems [16].
+2.1.1 Design patterns and games
+Design Patterns in digital games ( DPG) can be used for
+diﬀerent activities ranging from scholastic approaches to prac-
+tical development of (digital) games. Suggested use range
+from creative aid in design activities where DPG can support
+knowledge transfer between designers while they generate,
+communicate and modiﬁy design ideas and concepts. DPGs
+can also be used as an analytical tool as well as a learn-
+ing tool for scholars in both game analysis and game design
+activities. The design patterns may be used as a tool to
+understand player behavior during play-testing.
+Bj¨ork and Holopainen have extensively documented de-
+sign patterns for game design [7, 6]. Design patterns have
+also been explored in a variety of aspects, ranging from
+pattern-related design in relation to game mechanics [2] to
+speciﬁc game contexts, like old-school action games [9],
+RPGs [30], FPSs [18] and social network game applications
+
+in the style of “’Ville” games [22].
+2.2 Game content and game development
+Digital games can be seen as the union of two types of
+digital artifacts: game content and a game engines. The
+game engine’s purpose is to handle user input, to control
+AI-agents and to present the game content to the user. Typ-
+ically the game content consists of polygon meshes, tex-
+ture maps, level geometry, non-player characters, player-
+characters, missions, quests, items, etc.
+2.2.1 Cost drivers
+Digital games have become more expensive to develop [33,
+20], at least for the average commercial project. The driver
+of costs is primarily that the advancement of the techni-
+cal platform that runs the digital game (hardware and game
+engine) requires more labour to be spent in content develop-
+ment. Customers expect more media and with higher qual-
+ity [15] which in turn demands more of the engine that uses
+this media which therefore inherently becomes more com-
+plex and may even drive the cost to develop and maintain
+further.
+2.2.2 Game development and PCG
+Procedural content generation (PCG) is the process of au-
+tomatically or semi-automatically generating game content.
+Game developers used PCG successfully to generate game
+content for diﬀerent purposes. Examples range from sav-
+ing developer time with the game Darwinia [19], or saving
+money as for Just Cause [5], exploring possible game con-
+tent as with The Sentinel [14], to have variation and creating
+unique game content as with Minecraft [25] and to saving
+main memory as in Elite [1, 34].
+Lately PCG have spurred interest from researchers and
+several aspects have been explored as a result. Examples
+vary from search-based methods to ﬁnd maps for RTS
+games [37], levels for platform games [23], and answer set
+programming for generating mazes [29].
+PCG could be used in game design and game develop-
+ment in several diﬀerent ways, depending on whether the
+algorithm is seen as a tool, an expert, a designer in its own
+right etc [21].
+There are a couple of approaches that could combine PCG
+and design in fruitful ways. Firstly, we could use PCG for
+speciﬁc, well deﬁned (and therefore well tested) design tasks,
+as for instance inCivilization [24] where it is used to generate
+new world maps during run-time (i.e. online) or during
+development as to generate a large set of varying game items,
+like in Borderlands [17], where PCG were used in several
+aspects but put to extensively use for generating a large set
+of weapons. Secondly, we could let the PCG process be the
+central content provider to the whole title as inGalatic Arms
+Race, FTL, Terraria, Minecraft, Dwarf Fortress [13, 35, 28,
+25, 3]. A third approach would be to start with handcrafted
+content and letting the PCG process emulate or copy the
+designers choice with some kind of variation. This approach
+can be utilized both for online or oﬄine PCG. The oﬄine
+version could be used both during the principal development
+of the game title or after release in order to provide more
+content to generate more sales of the main title or it could be
+used to create add-on packages for players who has ﬁnished
+the main game.
+2.3 Fitting into the pattern
+Let us recall what level designers do; “Level designers use
+a toolkit or ‘level editor’ to develop new missions, scenar-
+ios, or quests for the players. They lay out the components
+that appear on the level or map and work closely with the
+game designer to make these ﬁt into the overall theme of
+the game.” [15]. In order to be able to do this together
+with PCG we have previously applied a content analysis
+based on a combination of heuristic analysis [12] and rhythm
+groups [10, 31] and we suggested a set of level design patterns
+for the game Super Mario Bros. (SMB) [27] and presented
+a prototype of a level generator 1 [11]. In the previous pro-
+totype, we used parameterized but fairly straight forward
+patterns taken from SMB that were randomly picked, mod-
+iﬁed for diﬃculty and placed in sequence to form a level. The
+level generator prototype was able to generate SMB levels
+with high similarity to the original game but some limits in
+the aspect of variation of the content. The only variation
+the prototype demonstrated was due to the parameteriza-
+tion (diﬀerent hight, diﬀerent length, amount of rewards,
+amount of risk) of the existing patterns.
+For the work-in-progress level generator that we present
+in this paper we try to approach the problem of generating
+content by using patterns as the objectives for the evolution-
+ary method rather than generating pattern building blocks
+as we did with a previous prototype. Our motivation to
+seeking this approach rather than the reverse is to allow for
+a greater “creative freedom” or in computer science terms; a
+larger2 design space for the PCG-engine than the previous
+prototype could.
+Our goal is to be able to produce a level generator that
+recreates the particular design and look-and-feel of the levels
+from the original SMB, while still being novel and oﬀering
+new challenges.
+2.3.1 Examples of patterns
+Due to the limited space in this paper we will only par-
+tially include the suggested patterns that we utilize to gen-
+erate content (see table 1, ﬁgures 1, 2, 4, 5 and [11]).
+2.4 Related work
+Previous work in the same are as ours is the Tanagra
+mixed-initiative level generator [32] founded in analysis of
+platform game levels by Smith et al. [31]. Tanagra is an
+interactive tool for level designers that utilize a constraint
+solver for the creation of level geometry according to a num-
+ber of patterns. The patterns are of two types, single-beat
+(like “gap pattern” and “spring pattern”) and composite pat-
+terns (like “valley” and “mesa”) which are implemented with
+some ﬂexibility that can be extended with the aid of the con-
+straint solver to ﬁt the the level. Another approach is the
+“occupancy-regulated extension” (ORE) [23], that works by
+adding bits and pieces of jigsaw-puzzle-like parts from levels
+in a compositional way to solve patterns in level generation.
+The use of patterns as objectives, e.g. as ﬁtness functions
+in search-based PCG similar to ours is the “choke point”
+evaluation function while evolving maps for StarCraft [8,
+37]. The function assigned a higher ﬁtness to maps that
+1Presented at the First Workshop on Design Patterns in
+Games, 2012.
+2But still more distinct and limited than full randomization
+of levels.
+
+Table 1: Examples of patterns for Super Mario Bros.
+Enemies
+Enemy A single enemy
+2-Horde Two enemies together
+3-Horde Three enemies together
+4-Horde Four enemies together
+Roof Enemies underneath a hanging
+platform making Mario bounce in
+the ceiling
+Multiple paths
+2-Path A hanging platform allowing Mario
+to choose diﬀerent paths
+3-Path 2 hanging platforms allowing Mario
+to choose diﬀerent paths
+Risk and Reward A multiple path where one path
+have a reward and a gap or enemy
+making it risky to go for the reward
+contains choke points and the result of the level generator is
+thus likely to have that pattern.
+3. MARIO
+The original SMB platform game, initially published by
+Nintendo in 1985, has been the inspiration for Markus“Notch”
+Persson’s public domain Java-based clone which in turn have
+been modiﬁed for the Mario AI and PCG competitions [36].
+In SMB Mario has to traverse 8 worlds with 4 levels each.
+The 4th level of each world is a “Boss-ﬁght”-level with dif-
+ferent layout than the other levels.
+3.1 The original representation
+The original game from Nintendo that was released in
+1985 (on NES-cartridge) is a bit problematic to analyze and
+use as a base for content generation since the implementation
+is optimized for space rather than readability. This basically
+means that in order to build something within the original
+implementation you have to ﬁrst know the “hex value” 3 of
+the geometry you want to build, in what page (each level
+is implemented as a string of pages) you want to place it
+and where you want to place it in this page. The ﬁrst
+level in SMB (World 1–Level 1, which we for future ref-
+erence purposes will call W1L1) contains 13 pages and ends
+a few tiles after the ﬂag pole4. The second piece of geometry
+you encounter as a player is (see ﬁgure 4) implemented as a
+horizontal brick with the length of ﬁve with two “Question
+mark”-block placed on top in the second and fourth tile (one
+containing a mushroom and the other a coin). This form of
+representation is eﬀective when representing the horizontal
+and vertical block lines (including rows of coins), pipes (dif-
+ferent heights), rock-stairs and the castles ﬂagpoles. In fact,
+some geometry and enemies have double functions, as in
+the underwater setting in W2L2 and W7L2 (which can be
+changed to a level on land by manipulating a few hex values).
+In this case the vertical underwater vegetation becomes ver-
+tical bricks and some Cheep-cheep enemies becomes Bul-
+let Bills . The horizontal green blocks becomes land-based
+3A value represented in a positional numeral system with a
+base of 16 (where the symbols usually are 0-9 and A-F). A
+byte value is conveniently represented as 00-FF instead of
+0-255.
+4Including the ﬁrst “empty” screen.
+blocks. The representation and optimization for SMB level
+geometry may have aﬀected the design of the levels in a
+similar way that the limited memory capacity of Atari 2600
+aﬀected the design of the games on that platform [26], since
+it is more costly in the SMB-representation (in terms of
+memory) to draw more objects and the cost of longer sec-
+tions are relatively cheap (low or no extra cost compared to
+draw a single tile).
+4. REPRESENTA TION AND GENOTYPE-TO-
+PHENOTYPE MAPPING
+In this section we present our approach to prototype a
+search-based level-generator forSMB. Our intentions were to
+apply an evolutionary algorithm that evolves levels contain-
+ing the identiﬁed patterns. Three diﬀerent representations
+were explored: ρ0, ρ1 and ρ2. Since the method we apply
+is in the realm of stochastic optimization and metaheuris-
+tics the problem of how to represent the genotype (the data
+structure that the evolutionary algorithm acts on) and its
+relation to the phenotypes (the data structure that is evalu-
+ated by the ﬁtness function) was given critical concern [38].
+We initially approached the representation problem in the
+most direct way, thinking of representing levels as two-dimen-
+sional matrices with integer values for each block mapping
+directly to the phenotype ( ρ0). This would lead to a very
+large search space with only a small region consisting of
+playable levels. This idea was therefore quickly discarded.
+Next, we considered viewing the geometry of SMB as a
+range of integers spanning from 0 (representing a hole in
+the ground) to 10 (the maximum height of an obstacle in
+SMB). This representation will be referred to as ρ1.
+However this idea was abandoned when we inspected and
+compared the levels of the original SMB with our generated
+levels and noticed the scarce presence of ground based ob-
+stacles. In the original SMB most non-moving obstacles are
+combinations of rocks, pipes and land-based or mushroom-
+based platforms 5. Apart from that, the enemies in SMB
+were not present in ρ1 but gave some food for thought for
+the next idea of how to represent the genotypes when we
+tried to introduce them in this representation. The fact
+that a Goomba is placed in a certain piece of elevated geom-
+etry suggest an explosion of possibilities concerning a speciﬁc
+type of the genotype. Simply put; the need to diﬀerentiate
+between a speciﬁc enemy type (11 diﬀerent ones) and the
+height (11 diﬀerent ones) of a geometry type (12 diﬀerent
+ones) grows towards a search space that is computationally
+expensive when we factor in the length of a level and the
+size of the population. This computational expensive so-
+lution may not pose a practical problem until one decide
+on applying this PCG solution in an online 6 situation with
+actual users and tries to generate content on the ﬂy.
+Thus, further studies of the original content of SMB (see
+section 3) led us to decide on a diﬀerent approach than in our
+previous prototype (see section 2.3) approaching the con-
+tent as individual pieces and thus keep with the pattern
+approach.
+4.1 V ertical slices
+5See SMB level W1L3 for an example of land-based plat-
+forms and level W4L3 for an example of mushroom-based
+platforms.
+6I.e. during runtime.
+
+Figure 1: A simple 2-Path-pattern instance in SMB
+to the left. This can be reproduced with only 2
+vertical slices indicated with black frames shown to
+the right.
+Our current solution (which we refer to as ρ2) is based
+on the idea to approach content from the perspective of
+Mario and not the view of the player. In the perspective
+of the player we travel from left to right but as Mario we
+travel forward one step at the time jumping onto objects
+with varying vertical placement. From this perspective the
+content of SMB can be viewed as vertical slices that together
+with other slices make up our previous suggested patterns.
+Level genotypes are represented as strings of length 200
+with an alphabet of 24 symbols. Each symbol corresponds to
+a vertical slice of Mario level with a length of 1 block and a
+height of 13 blocks. Levels (phenotypes) are constructed by
+simply appending vertical slices, giving all levels a length 200
+blocks. The 24 slices used for the alphabet are representative
+samples from patterns extracted from the original SMB.
+Initially, we were concerned that since the vertical slices
+are not always compatible with each other, we might need
+an extra constraint checking function that would be time
+consuming to design, implement and complex to maintain
+and debug. However, with the Mario-viewpoint and the
+more detailed analysis of the content in the originalSMB we
+concluded that the variation of vertical slices is surprisingly
+limited. If we observe ﬁgure 1 we have a section of SMB
+W1L1, that can be classiﬁed as a simple instance of the “2-
+path”-pattern. In our representation this section is simply
+a series of vertical slices of two types; the ﬁrst one is used
+three times (in position 1, 2 and 4) and the second one is
+used once (in position 3). The two types contains a ground
+block at the lowest hight of the level and a brick-block or
+a question mark-block at height 4. In order to separate the
+instance of the pattern from other instance we also need a
+simple piece of ground at height 1.
+See ﬁgure 3 for an explanation of how slices are appended
+to create levels.
+4.2 Putting pieces together
+In order to explain the vertical slices and how we combine
+them into patterns we will use an example with an instance
+of the Enemy: 3-Horde -pattern [11] (as in ﬁgure 2). The
+instance of the pattern could then be described as a sequence
+Figure 2: A 3-horde-pattern in the wild ( SMB
+World 8 Level 1).
+Figure 3: Adding vertical slices to form an instance
+of the pattern in ﬁgure 2.
+
+Figure 4: A 3-Path-pattern.
+Figure 5: Another 3-Path-pattern.
+of three identical vertical slices. Each of the slices are simple
+geometry (in the example; a ground-tile at “ground” level)
+with an enemy in a manner portrayed in ﬁgure 3.
+4.2.1 Example 1
+A simple 2-Path-pattern instance in SMB which can be
+reproduced with only 2 vertical slices (one slice with a brick-
+tile and one slices with a ?-block) see ﬁgure 1.
+4.2.2 Example 2
+By adding a vertical slice with two blocks (a brick-tile and
+?-block) and reusing two vertical slices from ﬁgure 1 we get
+this instance of a 3-Path-pattern in ﬁgure 4.
+4.2.3 Example 3
+By adding a vertical slice with two ?-blocks and reusing a
+vertical slice from ﬁgure 1 we get this instance of a 3-Path-
+pattern in ﬁgure 5.
+5. FITNESS FUNCTION
+In our implementation (see ﬁgure 6) we use a ﬁtness func-
+tion to decide which level is the best suited to generate oﬀ-
+spring and ﬁnally be chosen as the level to be played. In
+Figure 6: Principal execution of the level generator.
+Table 2: Patterns supported in the ﬁtness function.
+Enemies
+Enemy Low
+2-Horde Low
+3-Horde Low
+4-Horde Low
+Roof Medium
+Gaps
+Gaps Low
+Multiple gaps By stacking
+Variable gaps By stacking
+Gap enemy Low–Medium by stacking
+Pillar gap Pillar High
+Valleys
+Valley Low
+Pipe valley Medium
+Empty valley By stacking
+Enemy valley By stacking
+Roof valley By stacking
+Multiple paths
+2-Path Medium–High
+3-Path Medium–High
+Risk and Reward By stacking
+Stairs
+Stair up Low
+Stair down Low
+Empty stair valley Low
+Enemy stair valley By stacking
+Gap stair valley By stacking
+essence we perform a linear search through each member of
+the population and assign a ﬁtness value to each member,
+the higher the value is (indicated as low, medium, high in
+table 2), the greater the chance of surviving the next gen-
+eration is. Some patterns are only supported by stacking of
+beginning and endings of patterns where the parts add up
+to a higher value (use “medium–high” as a value to compare
+with other values in table 2) except for Gap enemy which
+only need low–medium.
+If a level sequence contains a pattern (see section 4.2) the
+individual population member gets a higher ﬁtness value.
+If a level contains a sequence of symbols representing three
+consecutive Goombas it is assigned a positive value. Simi-
+larly a sequence of rocks with increasing height is assigned
+a value depending on how long the sequence is. The ﬁt-
+ness value assigned is higher if the pattern is uncommon in
+a random sequence. Unplayable sequences are given a high
+negative number (but not −∞) allowing breeding with a
+lower chance of survival in order to allow mutation or cross-
+over keeping the good part of the genotype for another gen-
+eration. Uninteresting sequences are given a low negative
+
+Figure 7: One-point crossover, where parent 1 (in
+red) and parent 2 (in blue) result in mixed-colored
+oﬀspring child 1 and 2.
+number in order to remove uninteresting parts of levels. We
+allow some uninteresting sequences, like a string of simple
+ground blocks in order to keep some kind of beat-like 7 [32]
+expression generated from this search-based approach.
+The ﬁtness function also contain beginnings and endings
+of patterns thus allowing stacking of patterns on top of each
+other. A beginning or ending is typically rewarded less than
+a full complex sequence. However, if a beginning, a full
+pattern and perhaps another beginning or ending is in a
+sequence this will give a cumulative higher value and thus
+solving the suggested improvement of stacked patterns in
+the previous prototype [11].
+6. EVOLUTIONARY ALGORITHM
+In each evolutionary run, we use 200 levels as representa-
+tions of our population and each genotype is initialized as
+a uniformly random string of symbols drawn from the 24-
+character alphabet of vertical slices. We used a simple µ+ λ
+evolution strategy with µ = λ = 50 with a combination of
+mutation and one-point crossover as genetic operators 8.
+Before any evolution operation is performed on the pop-
+ulation it is evaluated according to a ﬁtness function (see
+section 5). After that the population of 200 members are
+ranked according to its ﬁtness value. The top 50 percent
+of the population are kept and the weakest 50 percent are
+discarded, thus leaving 100 level positions for evolutionary
+purposes.
+We then let the top 50 percent breed with each other and
+so utilizing the “empty” positions in our population. The
+breeding is executed as a one-point crossover between pairs
+in ranking order, in such way that the best ranked is breed
+with the second in ranking, resulting in two new oﬀspring,
+and so on. Our implementation of the one-point crossover
+has a ﬁxed place for the crossover point in the middle of the
+parents’ strings and from this point the strings are simply
+swapped with each other. In order to certify that we do not
+get stuck in a local maximum of the search-space we apply
+a simple mutation operation to the oﬀspring by inject a new
+random character from our alphabet in a random position.
+Since we have the opportunity to run the level generator in
+oﬄine mode our evolutionary search runs for 10.000 gener-
+ations in the current version of the implementation.
+7. EXAMPLES OF GENERA TED LEVELS
+The evolutionary approach together with vertical slices
+result in levels with both patterns, stacking of patterns and
+7A rhythmic variation between exciting parts and calm parts
+where the player can regain energy to tackle the next excit-
+ing section.
+8The one-point crossover is illustrated in ﬁgure 7.
+Figure 8: α-level showing tendencies to overﬁll lev-
+els.
+Figure 9: β-level showing tendencies to stack pat-
+terns.
+similarity to the original game (compare ﬁgure 8, 9, 10, and
+11). However, our current implementation does not sup-
+port the concept of beats well enough 9 where the content
+alternate between high-intense and low-intense parts of the
+levels. Adding better support to this might solve the ten-
+dencies to tightly stack patterns and overﬁlling game space
+as in ﬁgure 10 and 11. The reverse version of our approach
+α-level (see section 8) in ﬁgure 8 is overﬁlling the game space
+but at least our level generator does not do as bad.
+8. EV ALUA TION
+In order to get some feedback on our prototype we devised
+a simple play-test with three diﬀerent levels generated from
+three diﬀerent stand-points. We refer to the diﬀerent levels
+as α, β and γ. Level α was using a reversed version of our
+ﬁtness function that in principle, punished any form of pat-
+tern or beginning or end of a pattern. Level β was generated
+using our actual ﬁtness function and level γ used a combi-
+nation of our pattern-based prototype and imitated original
+content from SMB. The play-testers consisted of 24 experi-
+enced players (23 male, 1 female) in their twenties. The test
+platform consisted of ordinary but high-end PC:s with key-
+boards as control unit (UI). Our player feedback was gath-
+ered through a simple survey. In order to limit bias on pre-
+vious play-through of other versions three diﬀerent groups
+9According to some comments by the play-testers. See sec-
+tion 8 for more play-test feedback.
+
+Figure 10: β sometimes stack patterns too close.
+Figure 11: β almost overﬁll game space as α does.
+were created with 8 individuals each playing the levels in
+diﬀerent order (Group 1: α, β, γ, Group 2: β, α, γ, Group
+3: γ, β, α.). Apart from an open-ended question regard-
+ing the overall experience with the level and some questions
+covering general information the play-testers supplied level-
+speciﬁc information on three questions on a 6-value scale.
+The level-speciﬁc questions were on; 1) Boring–Fun, 2) Not
+similar–Similar and 3) Easy–Hard.
+The results show a marginal diﬀerence between the ap-
+proaches our search-based approach (β) seemed to be slightly
+more fun than the others, more similar to the original than
+α but easier to beat than γ (see table 3).
+9. DISCUSSION
+Table 3: Results by level.
+Version Avr. Median Standard
+deviation
+α Fun 3.75 4 1.041
+α Similar 4.125 4 1.062
+α Hard 3.5 3 0.791
+β 3.792 4 1.159
+β 4.625 5 0.906
+β 2.375 2 0.989
+γ 3.708 4 0.923
+γ 4.833 5 0.875
+γ 3.292 3 1.006
+Figure 12: Not similar–Similar, Blue = α, Red = β
+and Green = γ.
+Search-based optimization solutions like evolutionary ap-
+proaches work well with patterns in regards to variation and
+can in our implementation solve the issue of being able to
+stack patterns. However, the ﬁne-tuning of the ﬁtness func-
+tion may be problematic when introducing new patterns
+since the values for rewarding or punish the level can af-
+fect previous conﬁguration. We suggest that other content
+analysis methods are applied when utilizing building-blocks
+smaller than beats or patterns because this can give an ap-
+propriate frequency of reward, enemies and geometry.
+Since SMB has several levels with distinct look–and–feel
+in the diﬀerent worlds and levels we intend to implement a
+set of ﬁtness functions that allow for generating world and
+level speciﬁc content. We have planned and prepared the
+next phase of the prototyping projects which will include a
+frequency analysis of game content in order to ﬁne tune the
+ﬁtness functions according to the diﬀerent worlds and levels
+of the original SMB.
+10. CONCLUSION
+This paper has discussed how patterns can be used in pro-
+cedural level generation, and in particular how they can be
+used as objectives rather than building blocks. An imple-
+mentation of the idea of patterns as objectives for gener-
+ating levels for Super Mario Bros was presented. In this
+implementation, the original levels of Super Mario Bros re-
+cur in two ways: as the ﬁne-grained “vertical slices” that
+are recombined in the evolvable level representation, and
+the higher-level patterns that serve as objectives. Thus, the
+evolved levels retain much of the look and feel of original
+Mario levels, yet the generator can output a large range of
+diverse levels. An exploratory user study comparing lev-
+els that were generated with diﬀerent ﬁtness functions gave
+some indication that those that were evolved to maximize
+the number of patterns appear more similar to the original
+game.
+11. REFERENCES
+(reference list [1]-[38] as in the PDF; [11] is: S. Dahlskog and J. Togelius. Patterns and Procedural
+Content Generation: Revisiting Mario in World 1 Level 1. In Proceedings of the First Workshop on
+Design Patterns in Games, DPG '12, pages 1:1-1:8, New York, NY, USA, 2012. ACM.)
+NOTE BY FETCH HELPER: the reference list (38 entries) was read in full but is abbreviated here to the one entry cited by this research; nothing above this note is abbreviated.

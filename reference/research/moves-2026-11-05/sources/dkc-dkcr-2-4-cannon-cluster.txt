@@ -1,0 +1,28 @@
+URL: https://www.mariowiki.com/Cannon_Cluster
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Cannon Cluster
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: most of the walkthrough ("Overview"/"Layout") and K-O-N-G / Puzzle location prose, except kept lines quoted below. See URL.]
+
+This article is about the level in Donkey Kong Country Returns. For the level in Super Mario 3D World, see Cosmic Cannon Cluster.
+
+Cannon Cluster is the eleventh level in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports, as well as the fourth level in the Beach world.
+
+Located on the ocean shore of Donkey Kong Island, Cannon Cluster features many pirate ships that shoot cannonballs at Donkey and Diddy Kong. In many areas of the stage, the Kongs must dodge the cannonballs by simply running past them or taking shelter under large boards. Additionally, many wooden crates appear around the level, some of which block the Kongs' path or contain collectibles. The level is not entirely a beach area however; various piers and shipwrecks are also featured. Near the piers, Jellybobs often jump out attempting to attack the Kongs. Pinchlys and Snippys are found along the beach areas of the level.
+
+In the Time Attack mode, a time of 0:44:00 is needed for a shiny gold medal, a time of 0:50:00 for gold, a time of 1:01:00 for silver, and a time of 1:23:00 for bronze.
+
+(From Overview, kept:) "On the other side of the gap is a vessel part that floats on top of the water." "The gap that is located after this ship part has another Jellybob in it and leads to a small, buoyant platform."
+
+## Enemies
+| Jellybob | 6 |
+| Pinchly | 4 |
+| Snippys | 7 |
+| Tiki Buzz | 2 |
+
+## Items
+| Banana Coin | 8 | Barrel | 2 | DK Barrel | 1 | Heart | 1 | Red Balloon | 1 |
+
+K-O-N-G Letters: K, O, N, G all present. Puzzle Pieces: 7.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Cannon_Cluster&oldid=5527786"

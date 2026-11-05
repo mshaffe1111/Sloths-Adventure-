@@ -1,0 +1,17 @@
+URL: https://www.mariowiki.com/Tiki_Buzz
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Tiki Buzz
+---
+[Stripped: images, gallery, "Names in other languages" table, references.] [OMITTED: Smash Bros trophy table and WarioWare section.]
+
+Tiki Buzzes are members of the Tiki Tak Tribe and enemies in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports. They are tikis shaped like a bongo drum and are nearly the size of Diddy Kong. They have carved black eyeballs, a yellow beak, red wings and brown tail feathers, as well as three beaded strings attached to the bottom.
+
+## History
+### Donkey Kong Country Returns / Donkey Kong Country Returns 3D
+
+Tiki Buzzes fly in various patterns. Some do not move at all, some move from left to right while others move up and down. At the edges of their movement range they reverse direction. Tiki Buzzes do not flap their wings to move downward and are faster when doing so. The player takes damage when they collide with a Tiki Buzz's sides or bottom, but a Tiki Buzz can be defeated with any attack. The Kongs can jump on them to reach higher locations and cross wide gaps. Tiki Buzzes are common in Mine Cart levels, such as Crazy Cart, where the Kongs must often land their Mine Cart on them to reach higher rails. Their behavior is comparable to Flitters from Donkey Kong Country 2: Diddy's Kong Quest.
+
+## Levels (Donkey Kong Country Returns / 3D)
+Crazy Cart; Platform Panic; Poppin' Planks; Cannon Cluster; Tumblin' Temple; Wonky Waterway; Grip 'n' Trip; Vine Valley; Flutter Flyaway; Springy Spores; Blast & Bounce; Prehistoric Path; Weighty Way; Precarious Plateau; Crumble Canyon; Clifftop Climb; Foggy Fumes; Gear Getaway; Cog Jog; Music Madness; Treacherous Track; Furious Fire; Smokey Peak; Red Red Rising; Crushin' Columns (3D and HD); Gushin' Geysers (3D and HD); Spiky Surprise (3D and HD); Topsy Turvy (3D and HD); Tar Ball Fall (3D and HD); Golden Temple
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Tiki_Buzz&oldid=5519661"

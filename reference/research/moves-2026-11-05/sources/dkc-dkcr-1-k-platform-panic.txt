@@ -1,0 +1,34 @@
+URL: https://www.mariowiki.com/Platform_Panic
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Platform Panic
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: most of the "Overview" walkthrough (kept lines below) and Puzzle Piece location prose.]
+
+This article is about the level from Donkey Kong Country Returns. For the Coin Rush pack from New Super Mario Bros. 2, see Platform Panic Pack.
+
+Platform Panic is the seventh level in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports, as well as the seventh level in the Jungle world. It is the first Key Temple in the game, and all of the first world's K-O-N-G Letters must be collected to unlock it.
+
+Each of the temple's platforms do not appear until the Kongs approach the area where it will appear. These platforms disappear shortly after the Kongs step on them, so Donkey and Diddy Kong must constantly be moving. As the primates progress, many spikes begin to appear all around the level, and the Kongs also have to start bouncing on the heads of many Tiki Buzzes. Other enemies in this level include Tiki Zings, Tiki Goons, and Tiki Dooms. The player can earn many Banana Coins and some Red Balloons in this level by consecutively jumping on Tiki enemies without touching the ground.
+
+(From Overview, kept:) "The Kongs start the level heading straight towards three collapsible platforms."
+"Following the resting platform are three collapsing platforms with a Tiki Zing in between the second and third and another above the third platform."
+"At that last platform, the Kongs need to wait to have the platform to start falling before they can reach the lower platforms that were blocked off by the immobile wall."
+"After landing on the following platform, they need to bounce high off the tire ... After that, Donkey and Diddy Kong need to land and shoot out of the barrel to reach the final area where the first Rare Orb lies."
+
+## Enemies
+| Name | Amount |
+| Tiki Buzz | 35 |
+| Tiki Doom | 2 |
+| Tiki Goon | 7 |
+| Tiki Zing | 14 |
+| Tiki Zing (big) | 2 |
+
+## Items
+| Banana Coin | 1 |
+
+Puzzle Pieces: 5 (no K-O-N-G Letters section on page). Puzzle 3: "The player must stand on the first platform and wait for it to fall. Then they have to jump to the shorter platform to grab the third piece."
+
+## Time Attack times (Wii)
+Shiny Gold 1:06:00 | Gold 1:13:00 | Silver 1:30:00 | Bronze 1:47:00
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Platform_Panic&oldid=5527790"

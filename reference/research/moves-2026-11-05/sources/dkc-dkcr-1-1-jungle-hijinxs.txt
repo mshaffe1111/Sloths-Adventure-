@@ -1,0 +1,28 @@
+URL: https://www.mariowiki.com/Jungle_Hijinxs_(Donkey_Kong_Country_Returns)
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Jungle Hijinxs (Donkey Kong Country Returns)
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: the long "Overview" walkthrough (except kept lines) and K-O-N-G / Puzzle Piece location prose. See URL.]
+
+Jungle Hijinxs is the first level of Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports. It is located within the Jungle area of Donkey Kong Island. Similar to the identically-named level from the first Donkey Kong Country, this stage is rather basic, with very few pits.
+
+(From Overview, kept:) "After this, Donkey Kong encounters two pairs of Screaming Pillars: he can avoid the first pair by standing in the middle of them or running past, whereas the second pair features a Screaming Pillar atop another. Donkey Kong must wait for them to crash onto each other before he can pass."
+"Once they shoot to the background with the Barrel Cannon that appears, they land on top of some tall, pillar-like platforms that are pushed downwards when hit."
+
+## Enemies
+| Name | Amount |
+| Awk | 16 |
+| Frogoon | 3 |
+| Tiki Goon | 4 |
+| Screaming Pillar | 4 |
+| Rawk | 3 |
+
+## Items
+| Banana Coin | 9 | Barrel | 1 | DK Barrel | 1 | Heart | 4 | Red Balloon | 3 |
+
+K-O-N-G Letters: K, O, N, G all present. Puzzle Pieces: 9.
+
+## Time Attack times (Wii)
+Shiny Gold 0:53:00 | Gold 0:57:00 | Silver 1:17:00 | Bronze 1:45:00
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Jungle_Hijinxs_(Donkey_Kong_Country_Returns)&oldid=5485544"

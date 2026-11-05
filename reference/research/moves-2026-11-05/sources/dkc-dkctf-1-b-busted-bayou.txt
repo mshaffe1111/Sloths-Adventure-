@@ -1,0 +1,48 @@
+URL: https://www.mariowiki.com/Busted_Bayou
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Busted Bayou
+---
+[Stripped: images, "Names in other languages" table.]
+
+Busted Bayou is the second secret level of Lost Mangroves in Donkey Kong Country: Tropical Freeze and its port of the same name for the Nintendo Switch. This level has the same silhouetted visuals in levels such Sunset Shore from Donkey Kong Country Returns, this time with a green hue. It is unlocked after finding the secret exit in Canopy Chaos.
+
+In Time Attack mode, a time of 1:15.00 is required to get a gold medal, a time of 1:30.00 for silver, and a time of 1:45.00 for bronze.
+
+## Layout
+
+The level starts in a shadowy mangrove forest. The first part of the level is mostly flat. By continuing onward, Donkey Kong can find a DK Barrel on a raised piece of ground. Just ahead are some Dozies and then a small dip in the ground with a short vine which, when pulled, creates two platforms with bananas on them and part of a plane frame structure. Several other crashed airplanes can be seen in the background; among them, Samus Aran's Gunship from the Metroid series can be spotted. At the first pit afterward, there is a pair of platforms suspended from vines via a pulley system that the Kongs can use to get up on a slope and continue to the first checkpoint.
+
+Just after the checkpoint, the Kongs can optionally pull an Item Handle to reveal a thick vine with leaves on them. There is a frame structure of airplane wreckage that slowly tilts back and forth depending on how much weight is on it. Beds of spikes and enemies can be found on the structure, which can be avoided using the swinging vines. After this is a set of platforms held by vines and arranged as downward stairs. The Kongs must continue right until they reach a dead end. From there, they must Ground Pound through a pile of pebbles, and then Donkey Kong must pull another Item Handle so that all the surrounding wreckage collapses. This also reveals a long vine for the Kongs to climb down below to the next area with the second checkpoint.
+
+Several Mimics and Large Mimics appear during the second half. Some time after is another Item Handle that Donkey Kong can pull to reveal a giant vine with leaf platforms growing from it. The vine leads the Kongs to another DK Barrel and a series of platforms, one of which is powered by a propeller. If Donkey Kong pulls onto this one, the smaller platforms after it will align diagonally, allowing him to roll across them easily. After that, the Kongs end up on a flat platform with an Item Handle; they must pull it to create a large vine structure with platforms, allowing the Kongs to reach the Barrel Cannon.
+
+The Barrel Cannon launches the Kongs on another balancing plane structure in the background with the Slot Machine Barrel. This structure tilts more than the one before, and has a platform moving in the same direction as the plane, as well as a vine that triggers a pair of platforms, but also reveals two Large Mimics. Using these platforms, the Kongs can reach the goal.
+
+## KONG Letters
+* K: On the second of the two pulley platforms.
+* O: After the three platforms suspended by vines, there is a vine triggering three platforms that can be used to reach the letter.
+* N: At the end of the giant moving vine. It can be reached when it is at its highest point.
+* G: Just before the Slot Machine Barrel, on the first of the pair of vine-triggered platforms.
+
+## Puzzle Pieces
+1. If the Kongs head left at the beginning of the level, they will find a trailer with a Puzzle Piece inside.
+2. Revealed by pounding next to a Plump Yellow Fruit inside the first small structure. The Kongs can go inside by rolling into the left side of the structure.
+3. Just after the first checkpoint, there is a plug that produces a large vine with leaves as platforms, which can be used to reach a swinging vine. Using the vine, the Kongs can go on top of the plane structure where the Puzzle Piece is found.
+4. At the end of the first half of the level, there is a rock that reveals a plug with a flying Banana when broken. Obtaining all of its collectibles will make the Puzzle Piece appear.
+5. While grabbing onto the vine leading down to the second half of the level, the player should position Donkey Kong so the leaves in the foreground create a star-shaped opening. This will create two spinning rings of Bananas; once all of them are collected, the Puzzle Piece will appear.
+6. As soon as the Kongs reach the level's second half, they should head left to find a vine that activates a series of platforms leading to the Puzzle Piece.
+7. Just past the start of the level's second half, there is a plug that produces another large vine with platforms. The Puzzle Piece is on the top platform.
+8. Revealed after collecting all of the Bananas that appear after aligning the platforms using the propeller-powered platform plug.
+9. Revealed after collecting all of the Banana Bunches on the vine structure just before the Barrel Cannon.
+
+## Enemies
+* Dozies
+* Sour Dodos
+* Monocle Monicas
+* Punchy Paddies
+* Mimics
+* Large Mimics
+
+Internal name: content/Worlds/w01_mangrove/l0b_mangrove_silhouette.pak (Mangrove Level B: Silhouette)
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Busted_Bayou&oldid=5528849"

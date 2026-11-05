@@ -1,0 +1,112 @@
+URL: https://iwataasks.nintendo.com/interviews/3ds/super-mario-3d-land/0/3/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Volume 1: Super Mario 3D Land - Page 4
+---
+## "It's So High I'm Scared!"
+
+Iwata
+
+Changing the topic, tell me what was difficult and what made a lasting impression when it came to making a game in stereoscopic 3D for the first time.
+
+Hayashida
+
+The Nintendo 3DS system's 3D is good at making it look as if there is a world deep beyond the screen, so that is what we made from the start. With images that have lots of depth, there's a big discrepancy between the images sent to the right and left eyes. With a big difference like that, if you don't play holding the system directly in front of you, there's a big possibility that the images will look distorted. With a normal game, that isn't a problem, but people move their bodies when they play action games.
+
+Iwata
+
+The distance Mario jumps won't change if you move the controller, but you do this (moving his body) anyway. It isn't a Super Mario game if it doesn't make you do that! (laughs)
+
+Hayashida
+
+That's right. A good action game makes you move your body. But it's a problem if that distorts the visuals. Then Miyamoto-san said that Mario Kart 713 doesn't get blurry. I took a look, and it really didn't. I wondered why and came to understand it was because the player's kart was placed in a location where there is no binocular parallax. While driving, the players are looking at their own kart, so it doesn't look blurry. So what will people be looking at in Super Mario 3D Land?
+13. Mario Kart 7™: A racing game scheduled to be released for the Nintendo 3DS system in December 2011.
+
+Iwata
+
+Mario, of course.
+
+Hayashida
+
+Exactly. It's Mario. We call that place where there is no disparity between the left and right eyes the reference plane. We thought we would adjust the reference plane to Mario, so he would be less likely to blur. That gave birth to the Recommended View.
+
+Iwata
+
+That change came in when the game was nearly complete. I was surprised to hear that your team reworked the viewpoint this late in production.
+
+Hayashida
+
+We'd passed one month left at that point. (laughs) About 80 percent of people responded that the Normal View made it more comfortable. But about 10 or 20 percent said that it was better before. So we thought we would leave the previous view, and that became Deep View. You can change between the two views with the +Control Pad.
+
+Iwata
+
+How about you, Motokura-san?
+
+Motokura
+
+Design-wise, more data makes it easier to generate stereoscopy, but the eye may get tired easier. We cut down on this game's density and made easy-to-grasp graphics, so Normal View was welcome.
+
+Hayashida
+
+Actually, Motokura-san had suggested making Mario the reference plane toward the beginning of development, but when we did that, things popped out too much. So we gave up on it once.
+
+Iwata
+
+When Mario that is the reference is at the reference plane, anything in front of him would pop out, so without a significant amount of adjustment, your eyes would tend to get more tired.
+
+Hayashida
+
+That's right. But up till the very end, I kept hearing about how they had done it with Mario Kart 7. By weakening the strength of stereoscopy and changing the camera, things stopped leaping out too much.
+
+We also made it so that you can play it with the 3D Depth Slider turned off. For example, a rule in 3D Super Mario games is that if an object is in the air, there is a shadow directly beneath it. If you look at the shadow of a Coin or Block, you know that is where you should jump.
+
+Motokura
+
+That also goes for the shadows cast on top of enemies. In order that it would be easy to play even without 3D, we made it so that the player's shadow falls right on top of the enemies. That makes it easier to jump on them.
+
+Iwata
+
+Rather than making it comprehensible because it is 3D, you made it comprehensible even without 3D. Of course, it's easier to see because it's in stereoscopic 3D. On the other hand, what kinds of gameplay in it are tailored to the Nintendo 3DS system?
+
+Tsujimura
+
+There is gameplay that makes an impact precisely because it is on the Nintendo 3DS system—like avoiding the iron ball of a pendulum swinging back and forth and an iron club suddenly shooting forward from further back.
+
+Sugawara
+
+And like that part where Bowser breaths fire at you.
+
+Hayashida
+
+When it comes to stereoscopic 3D, everyone on the team wants to make stuff shoot out at you. (laughs) For example, on the first stage, a coin comes down the river and hops out. That movement is weird, but we…
+
+Iwata
+
+We wanted people to see that in 3D. (laughs)
+
+Tsujimura
+
+The game testers had some interesting opinions this time. Like for those common scenes in which Mario falls to the bottom of a pit, people said, "It's so high I'm scared!" So we readjusted the height once more.
+
+Iwata
+
+You changed it because it was scary? (laughs)
+
+Tsujimura
+
+That scene was also in past games in the series, but this was the first time that we had heard that opinion.
+
+Iwata
+
+That's a difference in how realistic it is.
+
+Hayashida
+
+And so far in the 3D Super Mario games, we have included jump aids like Hover Nozzle in Super Mario Sunshine and Spin in Super Mario Galaxy and Yoshi's Flutter Jump in Super Mario Galaxy 2. This time, it's easier because of the stereoscopy to see the position of the platforms, so we tried dropping the jump aids.
+
+Iwata
+
+That was decisive.
+
+Hayashida
+
+Yes. (laughs) But when Mario transforms into Tanooki Mario, he falls slowly, which is a sort of jump aid. I hope new players will use Tanooki Mario, while advanced players challenge themselves with the regular Mario.

@@ -1,0 +1,29 @@
+URL: https://www.mariowiki.com/Blowhole_Bound
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Blowhole Bound
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: most of the walkthrough ("Overview"/"Layout") and K-O-N-G / Puzzle location prose, except kept lines quoted below. See URL.]
+
+Blowhole Bound is the thirteenth level in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports, as well as the sixth level of the Beach world. The Kongs can only access the level by buying a Map Key from Cranky Kong's Shop.
+
+Blowhole Bound has a unique feature where Donkey Kong and Diddy Kong can ride on Blubbo the whale. After freeing it from an anchor (belonging to the wreck of the Scurvy Crew's ship from Peaceful Pier), the Kongs can ride on it to cross the water along the shore of the islands. The Kongs encounter Blubbo a few times on their journey. It is unsteady and often tilts along the water, allowing the Kongs to grab some collectibles hidden high in the air. Blubbo sometimes goes underwater, and the Kongs cannot swim underwater in the game, so they must use floating ship parts to progress. These ship parts are often destroyed by a fast-moving Blubbo, so the Kongs have to travel across them quickly. By hand-slapping the whale's blowhole, the Kongs can force the whale to send water out that they can use to reach pickups in higher areas. Additionally, Snippys sometimes hop along the backs of Blubbo to attack the Kongs.
+
+In the Time Attack mode, a time of 2:07:00 is needed for a shiny gold medal, a time of 2:10:00 for gold, a time of 2:17:00 for silver, and a time of 2:30:00 for bronze.
+
+(From Overview, kept:) "The Kongs must travel over the floating ship parts while dodging a few Snippys, before the whale destroys them and causes them to fall into the water."
+"It shoots them to three more floating ship parts, which the Kongs must quickly move across before the whale destroys them."
+
+## Enemies
+| Electrasquid | 10 |
+| Jellybob | 4 |
+| Pinchly | 3 |
+| Snippys | 19 |
+| Squidly | Indefinite |
+| Tiki Goon | 4 |
+
+## Items
+| Banana Coin | 9 | Barrel | 1 | DK Barrel | 2 | Red Balloon | 2 | Heart | 4 |
+
+K-O-N-G Letters: K, O, N, G all present. Puzzle Pieces: 5.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Blowhole_Bound&oldid=5475625"

@@ -1,0 +1,177 @@
+URL: https://iwataasks.nintendo.com/interviews/wii/donkey-kong-country-returns/0/2/
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Donkey Kong Country Returns - Page 3 (A Meeting at 5 AM)
+---
+[Note: the rating symbols in Tanabe's whiteboard description were images and did not survive extraction; they appear below as blanks, exactly as extracted.]
+
+## A Meeting at 5 AM
+
+Tanabe
+One reason the game got so much more fun toward the end was... (pointing at the monitor showing the Retro Studios staff) See how the whiteboard behind them is blank now?
+
+Iwata
+Yeah.
+
+Tanabe
+During development, all the names of the levels were written on it. We adopted a system of evaluating the status of the levels with symbols like or or and trying them over and over until they all had a mark. So whoever was in charge of a level without a would reapply himself in order to get a .
+
+Iwata
+An open rating system?
+
+Tanabe
+Yeah.
+
+Iwata
+That's strict! (laughs)
+
+Tabata
+(laughs)
+
+Tanabe
+But then all sorts of ideas started popping up for improving the levels. Kynan-san was in control of it, so he may have some comments on this.
+
+Iwata
+Kynan-san, in pulling the level designs into shape, wasn't it hard to improve the overall game using a method whereby good places and bad places were readily apparent to the eye?
+
+Kynan
+(nodding dramatically)
+
+Everyone
+(laughs)
+
+Kynan
+As Tanabe-san said, we were always trying to turn a into a and a into a , but it wasn't just hard—rather, I found that the system flowed well in that when a good idea came out, it served as motivation for coming up with an idea that was even more fun.
+
+Something funny happened with regard to the area called Cliff. After all the levels had been completed to a certain degree, I had Tanabe-san look at them and he said Cliff was the most fun. But then, after all the other levels had been redone, I had him try them out again, and he said Cliff was the least fun!
+
+Iwata
+(laughs)
+
+Kynan
+So we decided to remake the Cliff area, but that wasn't unpleasant at all. We wanted to deliver a real surprise to the other team members, and we had fun while we worked.
+
+Tom
+We competed with each other on the team, asking each other's opinions about our ideas, and had a strong desire to surprise each other. It was fun to see each other's reactions. That itself felt like playing a game, so we enjoyed ourselves as we worked.
+
+Iwata
+You say you had a good time, and I think that comes across in the game. While you three are all smiles now, though, I bet there were some real disagreements.
+
+Tom
+No, the three of us never really disagreed. Tanabe-san is a different story, though. (laughs)
+
+Tanabe
+Me? (laughs)
+
+Everyone
+(laughs)
+
+Tanabe
+What about Tabata-san?
+
+Tabata
+Huh? Me? (laughs)
+
+Tanabe
+Toward the end of development I had lower back pain and had to take a week off. During that time, Tabata-san took over everything, and afterward I continued to have her take on a substantive role in direction. So, during the worst of it, toward the end of development, I think the most demanding requests for changes must have come from her.
+
+Mike
+Yeah, I guess they did! (laughs)
+
+Tabata
+Sorry, I guess I was pretty tough on you guys. (laughs)
+
+Iwata
+(laughs) Can you give me an example?
+
+Mike
+For example, there was an enemy covered in tufts of hair. We made five of them stacked on top of each other. They fall over toward Donkey Kong when he gets close, and then he beats them by stomping on them, but when I showed Tabata-san what I had made, she said, "This isn't what I have in mind."
+
+Tabata
+At first, there was no tactical element to enjoy.
+
+Mike
+We remade it and had her look at it over and over again, but she always said it needed more work. There were a lot of technological tasks involved, but before I knew it, that spot was turning out to be as much work as making one boss!
+
+Tabata
+Ohhh...sorry about that.
+
+Mike
+Don't sweat it.
+
+Iwata
+(laughs)
+
+Mike
+In the end, we made it so that when Donkey Kong gets close, they slowly lean back, then swiftly attack a moment later.
+
+Tabata
+I wanted to generate a thrill—so if you don't get pretty close to them, nothing happens, but if you get too close and don't get away quickly enough, you're a goner.
+
+Iwata
+I see. Anything else to say about this, Tom-san?
+
+Tom
+I was making action parts for after you defeat a boss. Once you beat a boss, the Tiki Tak Tribe controlling him come out and Donkey Kong pounds on them to relieve your stress. When I showed what I'd made to Tabata-san, she'd say, "Can you do it more like this?" and throw in all kinds of ideas, and every time after that I'd have to hole up in my room.
+
+Tabata
+Ohhh...sorry...
+
+Tom
+Don't sweat it. But every time I fixed something, I was a little afraid something would bug up. (laughs)
+
+Tanabe
+So this time I think she must have looked stricter than I did.
+
+Tom
+No, no, that's not true! (laughs) Everyone knows about Miyamoto-san's chabudai gaeshi (upending the tea table), but with Tanabe-san it was more like tilting it a bit.
+
+Iwata
+Not upending it, just tipping it. (laughs)
+
+Everyone
+(laughs)
+
+Tom
+Yeah. He'd tilt the table, and all sorts of stuff would start to fall, but Tanabe-san would hold them so they wouldn't fall, and grab a falling orange juice, and surreptitiously switch it with a sandwich or something. (laughs)
+
+Iwata
+That's a funny way of putting it! (laughs)
+
+Tom
+Then, when he put the table down again, everything would be all different.
+
+Tabata
+Um...Tom-san said Tanabe-san tilted it a little, but I think it was much steeper than that.
+
+Iwata
+(laughs)
+
+Tom
+Another hard thing was the time difference. Toward the end of development, we were working all night more often, and about five o'clock in the morning here in Texas we'd have a telephone conference. We were absolutely exhausted, but Tabata-san was full of pep. It was, like, noon in Japan.
+
+Iwata
+(laughs)
+
+Tom
+She'd be brimming with life and enjoying herself immensely as she made immensely tough requests for us to change something.
+
+Everyone
+(laughs)
+
+Tom
+Of course, if we made those changes, the game would improve, but it was five in the morning for us, so I would think things like, "Could you tone it down a bit and not appear quite so eager?"
+
+Tabata
+Okay, I'll be more careful next time. (laughs)
+
+Tom
+(laughs)
+
+Kynan
+Those types of exchanges did occur, but we've worked with Tanabe-san and Tabata-san for a long time, so it's more like they're on the same team rather than from another company.
+
+Iwata
+Like teammates who just happen to be on the opposite side of the planet.
+
+Kynan
+Yeah. They're like family.

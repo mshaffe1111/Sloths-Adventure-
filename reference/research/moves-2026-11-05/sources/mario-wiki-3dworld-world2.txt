@@ -1,0 +1,38 @@
+URL: https://www.mariowiki.com/World_2_(Super_Mario_3D_World)
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: World 2 (Super Mario 3D World)
+---
+(Stripped: the site-wide Super Mario 3D World navigation box listing every character/enemy/object/music track in the whole game. The list of "enemies introduced in World 2" did not come through in the extraction; the page text reads "Many enemies are introduced in World 2:" followed directly by the Levels table.)
+
+# World 2 (Super Mario 3D World)
+
+From the Super Mario Wiki, the Mario encyclopedia
+
+Number of levels: 8
+World progression: Previous: World 1; Next: World 3
+
+World 2 is the second world of Super Mario 3D World and its Nintendo Switch port Super Mario 3D World + Bowser's Fury. It is a desert-themed island and has sand blocks around the map. It lies northeast of World 1, south of World 3, southeast of World 4, east of World 5, and below World 6, World 7, and World 8. It has ? Blocks and a 1-Up Mushroom scattered around the map. The world contains five standard courses, a Mystery House, a Sprixie House, and a Castle. The boss of this world is Boom Boom. After finishing the Castle, the yellow Sprixie Princess will create a Clear Pipe to World 3.
+
+Many enemies are introduced in World 2:
+
+## Levels
+
+| Level number | Level name | Description | Unlocks |
+| --- | --- | --- | --- |
+| World 2-1 | Conkdor Canyon | A desert level with Conkdors. | Shadow-Play Alley, Puffprod Peaks |
+| World 2-2 | Puffprod Peaks | A cosmic level with Touchstones. It requires 15 Green Stars to unlock. | |
+| World 2-3 | Shadow-Play Alley | An underground level that introduces shadow gameplay and the Potted Piranha Plant. | Really Rolling Hills, Mystery House Melee |
+| World 2-4 | Really Rolling Hills | A grassy level with colored blocks, Galoombas and Skipsqueaks. It also contains a Mario switch that yields a stamp once Mario presses it. | Big Galoomba Blockade |
+| World 2-A | Big Galoomba Blockade | A small rock arena with Big Galoombas surrounded by lava. | Double Cherry Pass |
+| World 2-5 | Double Cherry Pass | A pink grassy level that introduces the Double Cherry and the Blocksteppers. | Bowser's Bullet Bill Brigade |
+| World 2-Tank | Bowser's Bullet Bill Brigade | An auto-scrolling tank level located on a long trail, that also introduces Cannon Boxes and Boom Boom. | World 3 |
+| World 2-Mystery House | Mystery House Melee | The first Mystery House where the player has to beat five Mystery Box levels on time in order to continue. | N/A |
+| World 2-Sprixie House | Sprixie House | A level where the player gets a stamp of a Sprixie Princess. | N/A |
+
+## Notes
+* There is a black area/square visible in the World 2 map. By changing the camera to a certain way, and going to the correct area of the coast, the player can see this.[1]
+
+## References
+1. Mankalor (June 15, 2014). Super Mario 3D World - More Details You May Not Have Noticed. YouTube (English). Retrieved June 29, 2024.
+
+Categories: Deserts; Super Mario 3D World worlds

@@ -1,0 +1,43 @@
+URL: https://www.mariowiki.com/Rocket_Barrel
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Rocket Barrel
+---
+[Stripped: gallery, "Names in other languages" table, references, Super Mario Bros. Movie and Mario Kart World sections.]
+
+This article is about the large vehicle from Donkey Kong Country Returns.
+
+"Rocket what? In my day, we had to walk uphill both ways to get around the island!" —Cranky Kong, Donkey Kong Country Returns instruction booklet
+
+A Rocket Barrel is a flying barrel-based vehicle. Rocket Barrels are typically used as a mode of transportation, usually being ridden by characters. While a barrel-like rocket has been used in Donkey Kong Country 3: Dixie Kong's Double Trouble! before, Rocket Barrels work dramatically different in comparison.
+
+## Donkey Kong Country Returns (3D / HD)
+
+Rocket Barrels mark their first appearance in Donkey Kong Country Returns, its Nintendo 3DS port, and its Nintendo Switch port, serving as an aerial equivalent to a Mine Cart. Initially, a Rocket Barrel resembles a Barrel Cannon but with red hoops and no symbol on the front. When the player hops inside, they have to mash the [button] button to power it up. Each press sends out a loud blast of exhaust, and if the player does not press the button again soon enough, the Rocket Barrel resets back to its initial state. The Rocket Barrel launches after the button is pressed five times (three times in the 3DS version), which not only causes it to gain a rocket-like nose and red fins, but also brings the Kongs out of the craft to hold on from the outside. Once activated, Rocket Barrels move automatically across the entire level in autoscrolling scenarios, with the player steering to collect items and avoid hazards. Much like a Mine Cart, a Rocket Barrel explodes on contact with anything that is not an item or a balloon of a Mole Guard. This instantly defeats the player. In the New Mode of Donkey Kong Country Returns 3D and the Modern Mode of Donkey Kong Country Returns HD, an equipped Crash Guard can protect the Rocket Barrel from two hits. Mercy invincibility is provided as normal, but like Banana Juice the protection of a Crash Guard is not replenished if Donkey Kong dies after using them.
+
+The controls for a Rocket Barrel may vary based on the level. In more common side-scrolling levels, the player holds the [button] button or [button] button to rise up, and lets go of [button] to let the Rocket Barrel descend. At the top edge of the screen, the Rocket Barrel enters a holding pattern instead of leaving the screen. The bottom of the screen will destroy the barrel. Once the player approaches the final platform of the level, the Rocket Barrel runs out of gas and drops to the ground. While it explodes, this is an cutscene safely delivering the player to the area with the Slot Machine Barrel. In the much rarer vertical-scrolling levels, the player can use [left] or [right] to move left or right, though the controls are more slippery compared to when on foot. Holding the [button] or [button] button makes the Rocket Barrel boost higher on the screen. If the button for boosting is not held, the Rocket Barrel descends back to the bottom of the screen. The player cannot leave the screen, being held up by the bottom edge and repelled by all other edges. The bottom edge and top edge prevent the Rocket Barrel from getting as close to them. There are only two vertically scrolling Rocket Barrel levels: Lift-off Launch and Tiki Tong Terror. Both of them end arbitrarily: the first has the player rise into the clouds, while the second ends on a cutscene leading to the next part of the level. Lift-off Launch starts with the player entering a giant rocket that reacts to input like it is a Rocket Barrel, but the final input has the top half of the rocket open up to allow a Rocket Barrel to fly out.
+
+There are two themes associated with the Rocket Barrel. "Mine Menace" is used for most horizontally scrolling levels. Hot Rocket plays a different arrangement of "Mine Menace". "Mole Patrol" is used for Mole Patrol and Lift-off Launch. The latter has a variation, titled "Red Rockin'", which only plays in Tiki Tong Terror. This second composition associates "Mole Patrol" ever so slightly more with the vertically-scrolling levels. These themes only start when the Rocket Barrel launches, and have a lower intensity version that plays once the player lands.
+
+Levels
+* Peaceful Pier
+* Mole Patrol
+* Crowded Cavern
+* Gear Getaway
+* Lift-off Launch
+* Hot Rocket
+* Tiki Tong Terror (first part)
+
+## Donkey Kong Country: Tropical Freeze
+
+The Rocket Barrel appears next in Donkey Kong Country: Tropical Freeze and its Nintendo Switch port. It is mostly the same as in Donkey Kong Country Returns, but can take up to two hits before exploding (three in the Nintendo Switch port's Funky Mode), which can once again be further extended by means of the returning Crash Guard. Likewise, the player can collect Hearts on the way to restore part of the vehicle's hit points. In Hard Mode, the Rocket Barrel explodes from taking one hit, just like in Donkey Kong Country Returns.
+
+"Mine Menace" is once again utilized as the main music track in the majority of Rocket Barrel stages, appearing in all of them except for Rocket Rails. In addition, the theme's instrument composition varies between each level.
+
+Levels
+* Rodent Ruckus
+* Twilight Terror
+* Reckless Ride
+* Blurry Flurry
+* Rocket Rails
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Rocket_Barrel&oldid=5422609"

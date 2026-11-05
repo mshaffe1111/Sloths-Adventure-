@@ -1,0 +1,198 @@
+URL: https://iwataasks.nintendo.com/interviews/3ds/super-mario-3d-land/0/4/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Volume 1: Super Mario 3D Land - Page 5
+---
+## "Give Him a Tail! Give Him a Tail!"
+
+Iwata
+
+Tanooki Mario reminded me of the video we showed at Nintendo 3DS Conference 2011.13 Bowser had a tail. That was my first time to see it, so I was like, "What is this?!" I was astounded. (laughs)
+
+Everyone
+
+(laughs)
+13. Nintendo 3DS Conference 2011: A Nintendo 3DS presentation held in Japan on September 13, 2011 for the video game industry.
+
+Iwata
+
+I was baffled, like, "What's going on? Do all kinds of Bowsers show up?" (laughs)
+
+Tsujimura
+
+Ahh, those kinds of reactions make me happy!
+
+Iwata
+
+Let me ask about Bowser with a tail. How did he come about? How did you get approval?
+
+Motokura
+
+Approval… Well, the final determination was "Give him a tail! Give him a tail!"
+
+Everyone
+
+(laughs)
+
+Iwata
+
+"Give him tail! Give him a tail!" Really? (laughs)
+
+Motokura
+
+Yes. Before the tail, though, there was Tanooki Mario. Then, when we were thinking about how we would pull the design together and how we needed a new idea, I thought, "We'll put a tail on the Goombas." I did a sketch of a Goomba with a tail and took it to the enemy designer, and he said, "I was just thinking about doing that!"
+
+Iwata
+
+Huh? By coincidence?!
+
+Motokura
+
+Yes! I asked that designer to ask Hayashida-san, and Hayashida-san also…
+
+Hayashida
+
+Right away, I answered, "Great!" I said, "Give him a tail! Give him a tail!" (laughs)
+
+Iwata
+
+Oh, so that's where "Give him a tail! Give him a tail!" comes from! (laughs) But there's a big difference between the steps you take in giving the Goombas tails and giving Bowser a tail, isn't there?
+
+Motokura
+
+That's true. But by the time we had given Mario a tail, we had cleared the highest hurdle. Back in the first game, Super Mario Bros., if you hit Bowser with a fireball, he turned out to be a Goomba!, so we wanted to put in an homage to that. We thought we could have a Goomba use a Super Leaf to turn into a Tanooki-tailed Bowser. That's how we made those.
+
+Iwata
+
+I see. And you were nervous when you presented that to Miyamoto-san. How did he react?
+
+Motokura
+
+Surprisingly, he was totally okay with it.
+
+Everyone
+
+(laughs)
+
+Motokura
+
+(Takashi) Tezuka-san15, who has mainly worked on 2D Super Mario games, commented, "It'd be cool if more things had tails!"
+15. Takashi Tezuka: General Manager of the Software Development Department of Nintendo's Entertainment & Analysis Division. He has participated in creating and producing numerous titles, among them games in the  Super Mario and  The Legend of Zelda™ series.
+
+Iwata
+
+So he was also like, "Give them tails! Give them tails!" (laughs)
+
+Motokura
+
+The next thing I knew, the designer had been adding to Bullet Bill, Thwomp, and Boo, too!
+
+Iwata
+
+Even the logo design for Super Mario 3D Land has a tail. Did you add that after the series of changes?
+
+Motokura
+
+No, before.
+
+Iwata
+
+Oh, really! That tale just has control over you guys! (laughs)
+
+Motokura
+
+That logo is based on the silhouette of the tail in the logo for Super Mario Bros 3.16
+
+16. Super Mario Bros. 3: Released for the Nintendo Entertainment System in February 1990. The logo design of the Japanese version of the game showed the silhouette of a tail, foreshadowing the appearance of Tanooki Mario in the game.
+
+Iwata
+
+It is true that the logo design puts you in mind of Super Mario Bros. 3.
+
+Hayashida
+
+That's right. Miyamoto-san said that Tanooki Mario is inextricably linked with Super Mario Bros. 3, and the hardware this time is the Nintendo 3DS system, so it the title would be something like Super Mario 3DS, we were like, "It's a perfect fit!"
+
+Iwata
+
+Huh? Is that a play on the number three?!
+
+Everyone
+
+(laughs)
+
+Hayashida
+
+And when you talk about Tanooki Mario appearing, people always ask, "Will Statue Mario appear, too?"
+
+Motokura
+
+Hayashida-san was going around chanting, "Statue Mario…Statue Mario…" so we put it in.
+
+Iwata
+
+Like, "Put that in! Put that in!" (laughs)
+
+Hayashida
+
+But when told to put in Statue Mario this time, it was Sugawara-san as programmer who had the most trouble.
+
+Sugawara
+
+When Mario turns into Statue Mario, the enemies stop chasing him. The Goombas do chase Mario, though, but having them come after him as Statue Mario would be weird. So we had to make a big structural change by having the enemy characters ignore Statue Mario.
+
+Iwata
+
+That had an influence over the whole system of the game.
+
+Sugawara
+
+I repeated things like that over and over…
+
+Iwata
+
+And they just request it to Sugawara-san like it's nothing.
+
+Hayashida
+
+This is the first 3D Super Mario Bros. game. I wanted the transformations to carry over to the next stage. That meant that every stage had to respond to Statue Mario.
+
+Sugawara
+
+That's right. We ran into all kinds of situations that we had never imagined before, like what happens when Statue Mario does a Ground Pound, will it defeat a moray eel?
+
+Everyone
+
+(laughs)
+
+Sugawara
+
+We had to make stuff like that, too.
+
+Iwata
+
+You can count on the programmers! You could use this occasion to give him an apology, you know. (laughs)
+
+Hayashida
+
+Yes, I do think it must have been hard for the programmers. (laughs)
+
+Motokura
+
+In addition to Statue Mario, we had them add a Boomerang Mario and Propeller Block. Boomerang Mario is an homage to Hammer Mario17 in Super Mario Bros. 3. Unlike fire, the Boomerang goes through enemies and then returns. If you throw it once and miss, it comes back to Mario, so it is easier to hit enemies with it.
+17. Hammer Mario: This refers to Mario in Super Mario Bros. 3 after he gets a Hammer Suit and transforms, gaining the ability to attack enemies by throwing hammers.
+
+Hayashida
+
+And it's useful, because when Mario can't reach a Star Medal, he can use the Boomerang to get it.
+
+Motokura
+
+Visually, the Propeller Block is funny. It looks like you are wearing it!It looks amazing in 3D space, so I hope many people will play and enjoy it.
+
+Hayashida
+
+Visually it's funny? But didn't you want to make it?! (laughs) He's been mumbling about a Box Mario ever since Super Mario Galaxy.
+
+Motokura
+
+Oh, that's right! (laughs)

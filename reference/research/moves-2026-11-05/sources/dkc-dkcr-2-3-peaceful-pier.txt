@@ -1,0 +1,37 @@
+URL: https://www.mariowiki.com/Peaceful_Pier
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Peaceful Pier
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: parts of the Overview walkthrough. K-O-N-G and Puzzle Piece tables kept in full.]
+
+Peaceful Pier is the tenth level in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports, as well as the third level in the Beach world.
+
+This beach level is the first to feature a Rocket Barrel. Throughout the whole level, Donkey and Diddy Kong must ride on it over the water and coral reefs. The level does not contain many obstacles, and the pathway for the Kongs to ride through is very wide and empty, with only many bananas scatted throughout the air. A couple of Snaggles jump out of the water in the level, and a ship run by two of the members of the Scurvy Crew shoot several bombs at the Kongs. A single Tiki Torch appears at the start of the level.
+
+In the Time Attack mode, a time of 1:49:00 is needed to get a shiny gold medal, a time of 1:50:00 for gold, a time of 1:51:00 for silver, and a time of 1:58:00 for bronze.
+
+(From Overview, kept:) "Over a small island, the Tutorial Pig holds the only check point of the course so that the heroes can keep going just starting in that spot."
+"The first bomb shot explodes in the middle of the scene; the primates just have to avoid it. The second bomb explodes at greater height and the third at lower height. Just in that moment, the cannons begin to shoot more bombs: one at greater height and another at lower height. The cannon then shoots two bombs at the same time that explode both in the upper and lower parts of the scene. The Kongs must avoid these hazards by going in the middle."
+"The rocket then stops working and falls in another part of the beach, ending the rocket ride with the Slot Machine Barrel. A Blast Barrel past the platform takes the player to a bonus room."
+
+## Enemies
+| Snaggles | 2 |
+| Tiki Torch | 1 |
+
+## Items
+| Banana Coin | 5 | DK Barrel | 1 | Extra Life Balloon | 2 |
+
+### K-O-N-G Letters
+| K | The letter K can be found immediately after the Puzzle Piece and second line of bananas. |
+| O | As the Kongs fly over a Snaggles, they move along a line of bananas, which the letter O is at the end of. |
+| N | After the Kongs escape from the Scurvy Crew's first set of cannonballs, they come up to a line of bananas and the letter N. |
+| G | Shortly after the pirate ship is destroyed at the end of the level, the Kongs can find a line of bananas and the letter G. |
+
+### Puzzle Pieces
+| 1 | At the beginning of the level, the Kongs can find dandelions growing next to the pier. If they blow on them, a Puzzle Piece appears. |
+| 2 | If the Kongs grab all of the second line of bananas in the level, the second Puzzle Piece appears at the end of the line. |
+| 3 | After the letter N, when the pirates fire the first group of cannonballs at the top part of the screen, the Kongs must avoid them and pull up at the end of the blast remains to grab the third Puzzle Piece. |
+| 4 | Immediately after the third Puzzle Piece, the pirates shoot a second group of consecutive cannons at the bottom. The Kongs must fly high and then dive low to collect the fourth Puzzle Piece. |
+| 5 | At the end of the level, if the Kongs pass the Slot Machine Barrel, they can pound a spot on the ground to reach an underground area. There is a Blast Barrel that shoots them into a bonus room. In it, the Kongs must use a horizontally-moving Barrel Cannon to blast up to 57 bananas, two Banana Coins, and a Red Balloon for the last Puzzle Piece to appear. |
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Peaceful_Pier&oldid=5527784"

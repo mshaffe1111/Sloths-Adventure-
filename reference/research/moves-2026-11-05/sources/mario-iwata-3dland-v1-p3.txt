@@ -1,0 +1,149 @@
+URL: https://iwataasks.nintendo.com/interviews/3ds/super-mario-3d-land/0/2/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Volume 1: Super Mario 3D Land - Page 3
+---
+## Captivated by Super Mario in 3D
+
+Iwata
+
+You've designed the beginning of this game so that it is okay for people who insist on only playing Super Mario in 2D, but the next thing they know, they're captivated by the enjoyment of 3D Super Mario.
+
+Tsujimura
+
+That's right. Actually, once you clear all the normal stages and reach the end, there's a magnificent development waiting. There are so many of these essentially bonus special stages that they practically equal the number of normal stages!
+
+Iwata
+
+Huh?! How did it end up like that?!
+
+Tsujimura
+
+As we made the original stages, we began to feel as if we wanted to expand gameplay and make something more challenging. We had lots of fun ideas that never made it into the normal stages, and we had to make the normal stages paying attention to strict order, so…
+
+Iwata
+
+Yes, there are restrictions on the placement of elements in the normal stages. You think it would be cool to use certain transformations and actions at certain spots, but you can't put them in because they haven't shown up yet. If you put in too many elements from the start, players will get confused not knowing what to do.
+
+Tsujimura
+
+Exactly. You could say that the special stages let you have fun with all kinds of different variations of gameplay, and I think we did a solid job in preparing something quite challenging.
+
+Hayashida
+
+Earlier 3D Super Mario games are structured so that there are multiple scenarios for a single stage. There are various rules, like, "This time, I'm gonna get the Star," or "This time, collect the Red Coins."
+
+Iwata
+
+It's the same world, but you play different ways depending on the mission you get.
+
+Hayashida
+
+That's right. This time, we adopted that structure for the special stages. It's sort of like we prepared different scenarios for the same stages as gameplay for after the ending of the normal stages. So there's 3D Super Mario gameplay after the normal ending.
+
+Iwata
+
+The next thing you know, you're playing a 3D Super Mario game.
+
+Hayashida
+
+Which connects to what we discussed earlier. (laughs) In the original Super Mario Bros., once you cleared Level 8-4, you entered a second round. I wanted to adopt that structure. Once you clear the surface world, then the world behind it appears.
+
+Iwata
+
+That's why you needed the same number of normal and special stages.
+
+Hayashida
+
+What's more, there are some new stages among the special ones. The advanced stages that Tsujimura-san makes are really difficult! Tsujimura-san supervised all the special stages, so I hope advanced players will make it to those and experience the Tsujimura stages. (laughs)
+
+Iwata
+
+Tsujimura-san, that's a compliment, but you must have slightly complicated feelings about it. (laughs)
+
+Tsujimura
+
+No, I really wanted to deliver a challenge. (laughs)
+
+Motokura
+
+And Luigi appears in the special world. Like Luigi in Super Mario Galaxy, he can jump really high and a little harder to stop, but now he's easier to handle. We adjusted the game so players can enjoy it with either Mario or Luigi.
+
+Hayashida
+
+Well, we really wanted to make a game that's easy to get into, so we weren't planning on making it a game full of features. But once we started making it and included the special stages, it turned out to have quite a lot of volume.
+
+Iwata
+
+I agree that the volume is comparable with even the Super Mario Galaxy games so I'm not sure about it being compact. Sugawara-san, you worked on the programming, so if asked whether the density and volume are compact compared to Super Mario Galaxy, I bet you would think, "It's not compact at all!" How was it from the point of view of a programmer? (laughs)
+
+Sugawara
+
+Considering the original volume we aimed for, it ballooned to about double the size. To be honest, I thought, "That's not what you said at all!"
+
+Everyone
+
+(laughs loudly)
+
+Hayashida
+
+But to me that is how Mario games are made. When Miyamoto-san presented the original Super Mario Bros., he didn't say it went up to World 8, he said it went up to World 5.
+
+Iwata
+
+Right, I asked Nakago-san in a past Iwata Asks and they first explained that the game would go up to World 5, and then restructured existing maps for the latter half of the game and made up to World 8.
+
+Hayashida
+
+Yes. I analyzed Miyamoto-san's way of making games and tried to make Super Mario 3D Land the way he made 2D games. I showed everyone the minimum volume, started with what looked possible to make, and then added on. (laughs)
+
+Sugawara
+
+He totally tricked us! (laughs)
+
+Iwata
+
+Now that you've revealed your methods, you'll have trouble next time!
+
+Everyone
+
+(laughs)
+
+Iwata
+
+What kinds of gameplay await in the special world?
+
+Tsujimura
+
+Some stages are, of course, more difficult than the normal ones, but some feature fast-paced scrolling or continuous enemies, and the popular Cosmic Clone enemies—shadowy Marios—from Super Mario Galaxy 2 also show up.
+
+And as a reward for clearing the normal stages, there's Time Attack. You don't just clear the stage, but you can use the StreetPass11 feature to compete for the best time on all stages.
+11. StreetPass™: A feature that allows users who enable it to walk around with their Nintendo 3DS™ system turned on to exchange certain game data with other Nintendo 3DS users whom they pass on the street.
+
+Iwata
+
+Oh, so you can use StreetPass with this Super Mario game.
+
+Hayashida
+
+To be honest, it was so hard that at one point we gave up, but Koizumi-san said he definitely wanted to put it in. (laughs) After you clear the normal stages, you unlock the Time Attack mode and can see the times of people you have passed and determine whose skill level is like yours. You have a friendly race with people about your level and enjoy shaving away your times.
+
+Tsujimura
+
+Everyone in our office had a great time playing that.
+
+Hayashida
+
+And when players pass each other, they can exchange Mystery Boxes from the last time they played. Mystery Box is a kind of gameplay in which you may get a Star Medal by defeating all enemies in ten seconds. If you wipe out all enemies with a Mystery Box that you got through StreetPass, you are sure to get a Star Medal, but you can also get, as a bonus, a 1-Up Mushroom.
+
+Sugawara
+
+When you're running low on Marios or aren't making any progress because you can't get a Star on a certain stage, then try out StreetPass!
+
+Hayashida
+
+And this time, you can even pass by people who don't have the game! If you pass by someone's Mii character someplace like the StreetPass Mii Plaza12 application, you can receive an item from that Mii character at Toad's house. If you pass by the same Mii character again, you get something better.
+
+Iwata
+
+It's the first Mario game ever that allows you to also exchange data with people who don't even have the same game.
+12. StreetPass™ Mii Plaza™: Application built into the Nintendo 3DS system. Using the StreetPass feature, users' Mii™ characters can communicate with each other.

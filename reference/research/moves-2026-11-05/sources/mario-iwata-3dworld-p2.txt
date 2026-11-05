@@ -1,0 +1,213 @@
+URL: https://iwataasks.nintendo.com/interviews/wiiu/super-mario-3d-world/0/1/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Super Mario 3D World - Page 2
+---
+## "Function First"
+
+Iwata
+
+Cat Mario is a new power up that appears this time, isn't this a bit against the rules? He can climb walls, scratch-attacks enemies, and can climb the goal pole! I'm worried something as all-powerful as that could destroy the game balance of Super Mario. How about that?
+
+Miyamoto
+
+This has been a theme ever since we were making Super Mario 3D Land, but we figure it's okay if it's fun, and we make a lot with that as a priority.
+
+Hayashida and Motokura
+
+That's right.
+
+Miyamoto
+
+If you really attempt trying to balance everything out in the name of competition, you start adjusting parameters-editing capabilities by raising this while lowering that. But then, even if the character types are different, you have to make adjustments so their overall abilities are equal.
+
+Iwata
+
+Well, if you try for a solid balance, it can come off rigid and restrictive.
+
+Miyamoto
+
+Right. And the developer shouldn't push that. Rather, the players should have the freedom to determine it for themselves. We simply thought about how fun we could make it without any conflicting elements, and about how much we could pack in.
+
+Iwata
+
+Um, this is a simple question, but Mario changes into something new each time. Thinking about it for so long, don't you run out of ideas?
+
+Motokura
+
+No...I think we have about 1,000 more.
+
+Everyone
+
+(laughs)
+
+Hayashida
+
+Well, I'm actually kidding when I say 1,000, but we would all gather around for brainstorming sessions for Mario's transformations, so we have a mountain of ideas.
+
+Iwata
+
+Oh, you choose from a massive amount. Then I guess I don't have to worry about running out of ideas.
+
+Hayashida
+
+Yeah. Ultimately, what makes it in is about 1 out of 50 ideas, but even then I don't think we'll run out of ideas.
+
+Motokura
+
+This time, we prioritized on that great feeling you get when you run and jump. In that process we came up with two separate ideas - running on all fours, and climbing up a wall. Both were actions that Mario usually doesn't have, and those ideas triggered our decision.
+
+Iwata
+
+So you took two ideas that were originally separate and combined them into one. And you thought a cat would fit that concept perfectly?
+
+Motokura
+
+That's right.
+
+Iwata
+
+Oh... That's putting function first! Right, I'd forgotten. You're that kind of team. The outward form of a cat came later, after the function had been set.
+
+Koizumi
+
+I had them show it to me before we had settled on a cat. In the testing phase, the characters were simply running around on all fours with their regular appearance. I became really worried when I saw that. I couldn't keep my eyes on Princess Peach! (laughs)
+
+Iwata
+
+She was crawling around in her normal dress?
+
+Miyamoto
+
+She was moving so quickly!
+
+Everyone
+
+(laughs)
+
+Koizumi
+
+It was like a scene from a horror movie. But when we decided on a cat, various pieces snapped into place.
+
+Hayashida
+
+Yeah. In the end, we even came up with a Maneki-Neko Mario.
+
+Iwata
+
+You mean like the maneki-neko7 figures?
+7. Maneki-neko: Literally translates to "beckoning cat", it is also known as "lucky cat" or "dollar cat" in English. A maneki-neko is a common Japanese figurine typically displayed in storefronts and is said to bring good fortune and wealth to the business. Typically white with red accents, a maneki-neko usually has one arm raised up and out as if it is beckoning customers to come in.
+
+Motokura
+
+Yes. As a transformation, it forms a pair with Statue Mario8. When you turn into Cat Mario under a certain condition, he can make bonus coins appear with Ground Pounds.
+8. Statue Mario: This transformation has appeared in past titles like Super Mario Bros. 3 and Super Mario 3D Land. The power-up stops enemies from noticing Mario, doesn't take damage, and makes it possible for him to stomp on enemies that he usually can't.
+
+Iwata
+
+(laughs) But will people overseas understand what a "maneki-neko" is?
+
+Motokura
+
+I asked the localization team, and they said the phrase "lucky cat" exists in America.
+
+Iwata
+
+Hmm. I suppose a similar tradition exists overseas. And while it isn't exactly a transformation,
+Double Mario is an idea that seems like it would have come along before.
+
+Miyamoto
+
+Before we made that, we had always had the idea of one player moving multiple Marios, but we never tried it out because we thought it would be too taxing, control-wise, to move multiple characters all at once with one stick.
+
+Iwata
+
+That's right. The first time I saw it, I thought, "What? Can you control that yourself?"
+
+Miyamoto
+
+You control multiple characters, but they move in unison, so it's like there's one more stuck to you-like in an old shooting game.9
+9. Old shooting game: In this case Mr. Miyamoto is referring to Galaga. Released by Namco (now Namco Bandai Games Inc.) in 1981. If the player retrieved a spaceship captured by the enemy, it would appear next to the player's spaceship and move in sync with it, doubling the player's firepower.
+
+Iwata
+
+One spaceship would become two and you'd think, "I'm so tough!"
+
+Miyamoto
+
+Surprisingly, that works in 3D too, and it's easy to get a sense of the controls. The results of moving Double Mario are complex, but the player's actual actions are simple, so using it is intuitive.
+
+Iwata
+
+Did Double Mario also come from that deluge of ideas you got?
+
+Motokura
+
+Well actually...we discovered that when a staff member made a mistake with the placement tool and put in two player Marios.
+
+Iwata
+
+Huh? It was a mistake, but it worked?
+
+Motokura
+
+Yeah. When we saw that, we thought it was great! So we went ahead and put that in the game.
+
+Iwata
+
+Those things do happen! (laughs) It's amazing that the tool allowed placing two and having it work!
+
+Miyamoto
+
+Yeah, I'm surprised it worked too!
+
+Everyone
+
+(laughs)
+
+Motokura
+
+It was completely by chance.
+
+Iwata
+
+Rather than chance, it came from a developer's mistake!
+
+Hayashida
+
+That in itself is very like Super Mario!
+
+Miyamoto
+
+That's right. It's almost like a secret trick. If that person had fixed it because it was a mistake, it would never have seen the light of day!
+
+Iwata
+
+Yeah...that's true.
+
+Motokura
+
+You can combine Double Mario with Fire Mario, Boomerang Mario, Tanooki Mario and so on. It's quite something to see it in action.
+
+Koizumi
+
+You want to start hurling fireballs for no reason! (laughs)
+
+Iwata
+
+It's fun to see.
+
+Motokura
+
+And it's incredibly easy to get coins. It feels great to snag a bunch in one swipe!
+
+Hayashida
+
+In Super Mario games so far, no matter how much hardware performance improved, no matter how many objects and enemies appeared, Mario remained only one, so you basically had to handle things on your own.
+
+Iwata
+
+So you were like, "Let's get more of him!" (laughs)
+
+Motokura
+
+Right. The type of play expanded because of it. There's a panel that four players can get on in multiplayer mode, and it can now be used with Double Mario, so I think we were able to turn around a mistake and make something fun out of it!

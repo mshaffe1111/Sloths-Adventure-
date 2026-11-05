@@ -1,0 +1,60 @@
+URL: https://www.mariowiki.com/World_1_(Super_Mario_3D_World)
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: World 1 (Super Mario 3D World)
+---
+(Stripped: the site-wide Super Mario 3D World navigation box listing every character/enemy/object/music track in the whole game, which is nav, not this page's content. The list of "enemies introduced in World 1" did not come through in the extraction; the page text reads "Several enemies are introduced in World 1:" followed directly by the next paragraph.)
+
+# World 1 (Super Mario 3D World)
+
+From the Super Mario Wiki, the Mario encyclopedia
+
+Number of levels: 8
+World progression: Previous — ; Next: World 2
+
+World 1 is the first world of Super Mario 3D World and its Nintendo Switch port Super Mario 3D World + Bowser's Fury. It is a small grassy island with blocky bushes and flowers that lies southwest of World 2 and World 3, south of World 4, east of World 5, and below World 6, World 7, and World 8. ? Blocks and Coins are scattered throughout the map. It contains five standard courses, an Enemy Battle, and two Toad Houses; one normal house is north of the Enemy Battle, and the other hidden is in a large shrub in the back of the island, to the left of Bowser's Castle. It is hidden inside the black opening. The level also includes the first Lucky House (which is mistakenly not there in the Prima guide), Captain Toad's Adventures course, and castle. The boss of the world is Bowser in his Muscle Car.
+
+Several enemies are introduced in World 1:
+
+After completing the castle, the green Sprixie Princess will create a Clear Pipe to World 2. In World 5, there is a green Warp Pipe that can be created below the castle; the pipe takes players to a small island, where the lower green Warp Pipe will warp the player back to World 1, where it will remain open next to the castle.
+
+After the game is completed, the Sprixie Princesses will build a rocket at the beginning of the island that leads to World Star.
+
+## Levels
+
+| Level number | Level name | Description | Unlocks |
+| --- | --- | --- | --- |
+| World 1-1 | Super Bell Hill | A beginning course with grassy fields, Beanpoles, small ponds, and white wooden bridges. The Super Bell is introduced in this level. | Koopa Troopa Cave |
+| World 1-2 | Koopa Troopa Cave | An underground cave course with lamps that players can touch to reveal hidden coins. The stage contains Koopa Troopas and introduces the Fire Flower. | |
+| World 1-A | Chargin' Chuck Blockade | A small fortress arena with two Chargin' Chucks for the players to defeat. | Mount Beanpole, Captain Toad Goes Forth |
+| World 1-3 | Mount Beanpole | A tall, grassy mountain course with Beanpoles for the players to climb on, and colored blocks similar to those from Super Mario Bros. 3. | Plessie's Plunging Falls, Switch Scramble Circus |
+| World 1-4 | Plessie's Plunging Falls | A tropical course containing a large river that can only be crossed with the new creature, Plessie. There are plenty of waterfalls throughout the course as well. | Bowser's Highway Showdown |
+| World 1-5 | Switch Scramble Circus | A festival circus tent course with Switch Panels. | Bowser's Highway Showdown |
+| World 1-Castle | Bowser's Highway Showdown | The first Castle course, with Bowser in his car. It requires ten Green Stars to unlock, and must be unlocked to progress. | World 2 |
+| World 1-Captain Toad | Captain Toad Goes Forth | The first Captain Toad's Adventures level, which takes place in a grassy plain and contains Biddybuds and moving platforms. | N/A |
+
+## Profiles
+
+### Nintendo Today!
+
+* Guide to the world of Super Mario:
+  + English: The world where you Sprixie Kingdom adventure begins. Courses feature hills and underground caves, and you can also meet Plessie.
+  + German: Die Welt, in der dein Abenteuer im Feenland beginnt. Hier gibt es Level über Hügel und durch Höhlen, und außerdem kannst du Plessie treffen.
+  + Italian: Il mondo da cui ha inizio la tua avventura nel Regno delle fate. I livelli hanno colline e caverne sotterranee, e potrai anche incontrare Plessie.
+
+* Tip:
+  + English: There is a hidden pipe in WORLD 1-2 that you can't access without transforming into Cat Mario. Enter it to warp to WORLD 2.
+  + German: In WELT 1-2 gibt es eine versteckte Röhre, die du nur erreichen kannst, wenn du dich in Katzen-Mario verwandelst. Betritt sie, um zu WELT 2 zu erlangen.
+  + Italian: C'è un tubo nascosto nel MONDO 1-2 che è possibile raggiungere solo trasformandosi in Mario gatto. Entra per teletrasportarti nel MONDO 2.
+
+## Names in other languages
+
+| Language | Name | Meaning | Ref. |
+| --- | --- | --- | --- |
+| German | Welt 1 | World 1 | [1] |
+| Italian | Mondo 1 | World 1 | [2] |
+
+## References
+1. Nintendo Today!
+2. Nintendo Today!
+
+Categories: Grasslands; Super Mario 3D World worlds

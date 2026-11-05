@@ -1,0 +1,3 @@
+https://www.mariowiki.com/Tiki_Bomb — page_not_found (404) via TinyFish fetch_content, 2026-11-05
+https://www.mariowiki.com/Mine_Cart_Madness_(Donkey_Kong_Country_Returns) — page_not_found (404); no DKCR level by that name exists on mariowiki (Mine Cart Madness is a DKC 1994 level)
+https://www.mariowiki.com/Donkey_Kong_Island_(Donkey_Kong_Country:_Tropical_Freeze) — page_not_found (404) (DKCTF world 6 table not fetched)

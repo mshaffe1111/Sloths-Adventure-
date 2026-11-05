@@ -1,0 +1,25 @@
+URL: https://www.mariowiki.com/Tiki_Goon
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Tiki Goon
+---
+[Stripped: images, gallery, "Names in other languages" table, references.] [OMITTED: Donkey Kong Bananza, Mario Kart and WarioWare sections.]
+
+Tiki Goons are members of the Tiki Tak Tribe and basic enemies in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports. They are bongo-shaped tikis, featuring a cloth on their head and a square hole for a nose. They also have yellow pupils with black sclera and have a striped skirt. Four red feathers ornate each side of their heads.
+
+## History
+### Donkey Kong Country Returns (3D / HD)
+
+Tiki Goons are introduced in Jungle Hijinxs, a level in the Jungle area, and continue to appear commonly throughout the course of the game. Much like Kritters, Klomps and Kobbles from past Donkey Kong Country games, Tiki Goons move from side to side at a slow pace. Some of them turn around when they encounter the edge of a platform, while others continue walking ahead regardless. If the Kongs bump into one, they lose one heart from their health meter. However, Tiki Goons can be defeated with a roll, a jump, a barrel, or with Rambi.
+
+Tiki Goons are used in multiple contexts where generic members of the Tiki Tak Tribe are needed. Every boss battle, excluding Tiki Tong's, is spectated by a number of Tiki Goons, Tiki Tanks, and Tiki Torches. Similarly, these three enemies ride the Tiki airships in Lift-off Launch. Lastly, a Tiki Goon rides each balloon in Tiki Tong Terror.
+
+### Donkey Kong Country: Tropical Freeze
+A piece of concept artwork in Donkey Kong Country: Tropical Freeze shows two Tiki Goon carcasses lying at the base of a large rock. The artwork is unlocked in the image gallery after collecting all Puzzle Pieces in Grassland Groove.
+
+## Levels (Donkey Kong Country Returns (3D / HD))
+Jungle Hijinxs; Sunset Shore; Platform Panic; Blowhole Bound; Wonky Waterway; Button Bash; Mast Blast; Rickety Rails; Jagged Jewels; Vine Valley; Flutter Flyaway; Tippin' Totems; Springy Spores; Wigglevine Wonders; Precarious Plateau; Foggy Fumes; Treacherous Track; Furious Fire; Roasting Rails; Bobbing Basalt; Moving Melters; Red Red Rising; Crushin' Columns (3D and HD); Gushin' Geysers (3D and HD); Spiky Surprise (3D and HD); Tar Ball Fall (3D and HD); Lavawheel Volcano (3D and HD)
+
+## Profiles
+Prima's Official Strategy Guide: The Tiki Goon is the grunt of the Tikis. It moves along the ground and will try to run into you. Jump on top of them to get rid of them. Barrel rolls also work well when you need to take out a row of these guys.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Tiki_Goon&oldid=5463676"

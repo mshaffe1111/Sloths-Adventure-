@@ -1,0 +1,46 @@
+URL: https://www.mariowiki.com/Trunk_Twister
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Trunk Twister
+---
+[Stripped: images, "Names in other languages" table, references.]
+
+Trunk Twister is the fourth level of Donkey Kong Country: Tropical Freeze and its port of the same name for the Nintendo Switch, located in Lost Mangroves. It is the first minecart level, and takes place on a minecart traveling in twisting tracks in the forest, hence the name. The level's name is a pun on "tongue twister".
+
+In Time Attack mode, a time of 1:51.00 is required to get a gold medal, a time of 1:53.00 for silver, and a time of 1:55.00 for bronze.
+
+## Layout
+
+The level begins in an area similar to part of Canopy Chaos. It is inside a wrecked plane with a large crate of bananas serving as a wall on the left. Continuing on leads Donkey Kong to a slight dip in the ground leading to a ledge with a DD Barrel, a Thug Slug, and a piece of ground that can be Ground Pounded to reach a Bonus Area. The Kongs must jump from two tilting platforms, each with a Dozy, and then on a rickety structure leading to a Barrel Cannon. The Kongs must blast from it land into a minecart. After jumping into the cart, the Kongs ride down a slope, and must jump over a few gaps, while avoiding the penguins that walk on the rails, and riding along the wings of plane wreckages that get hoisted upwards as the Kongs pass by. They must avoid a Tucks and two Monocle Monicas along the way. After the next jump, the Kongs must ride along the tops of some banana crates, as they start sinking downwards, followed by a group of boxes suspended in midair by a rope, which can fall down on them if they do not move fast enough. Then comes a box to jump over, and another plane wreck to ride over. The first checkpoint is just up ahead, followed by a pit.
+
+After this, the Kongs come across a plane wreck lying in the trees, with its propellers on fire. They must duck under the propellers to avoid getting hurt. Following this is a penguin and a walrus, and then a brief segment where players must jump the minecart over some roots that stick out of a mangrove tree, where the camera briefly gives an over-the-shoulder view. After this is a large gap to hop over, followed by a hill to ride over. The hill leads to a section where the Kongs must move quickly over some rails that quickly get hoisted up into the canopy, and then the second checkpoint.
+
+Shortly after, DK enters the interior of a gigantic mangrove tree, riding a spiraling rail down to the bottom. On the way down, he must dodge some crates that block the path, hop over gaps, and duck under some crashed planes with flaming propellers. In this area of the track, the Kongs must avoid enemies such as Tucks and Waldoughs. The minecart starts to spiral around a tree trunk, where the Kongs must jump over some roots and duck under another flaming propeller along the way. After this, the Kongs must ride along a shipwreck with crates that slide as the platforms tilt. The Kongs can optionally jump onto some raised platforms just above the rails to get a few Banana Coins. After the following abyss, a group of boxes held up by a rope fall in front of the Kongs, launching them upwards briefly as it lands. After this is the end of the track, which crumbles and falls (showing a brief cutscene of the Kongs freaking out as they fall). The minecart lands on a lower set of rails, where the Kongs start by riding the interior of a large plane, then they exit into a short beach area. A submarine rises from the water, then the Kongs must ride along some crooked rail segments before the minecart drops, throwing them on a platform of a plane with the Slot Machine Barrel above.
+
+## KONG Letters
+* K: Right below a wood platform, jump with the cart must be timed correctly to get it.
+* O: Past the fiery blades soon after the checkpoint.
+* N: On a platform, after the twisting part of the track is over.
+* G: In between two of the barriers on the track, soon after where the third Puzzle Piece is.
+
+## Puzzle Pieces
+1. Under the flipping platform before the Diddy Kong barrel, there is a secret area where the Kongs must collect all the floating bananas via Barrel Cannons to receive the Puzzle Piece.
+2. High above the track, near the Monocle Monicas.
+3. Between two platforms, after the twisting track with the boxes
+4. Under the two fiery blades, found soon after falling to the water area
+5. Underwater below the end platform where the Slot Machine Barrel is.
+
+## Enemies
+* Thug Slugs
+* Dozies
+* Tucks
+* Painguin Tucks
+* Monocle Monicas
+* Waldoughs
+* Hootzes
+
+Internal name: content/Worlds/w01_mangrove/l04_mangrove_minecart.pak (Mangrove Level 4: Minecart)
+
+## Notes
+* A P-Wing emblem appears on the side of one of the planes at the start of the level.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Trunk_Twister&oldid=5528848"

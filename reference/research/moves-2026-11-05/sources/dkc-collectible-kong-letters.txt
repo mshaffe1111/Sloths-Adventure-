@@ -1,0 +1,33 @@
+URL: https://www.mariowiki.com/K-O-N-G_Letters (final title: KONG Letters)
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: KONG Letters
+---
+[Stripped: gallery, "Names in other languages" table, references, improvement banner. OMITTED FOR LENGTH: Donkey Konga 3, DK: Jungle Climber, Bananza, Super Nintendo World and Profiles sections.]
+
+"Keep your eyes open for those KONG Letters, they might be worth something!" —Cranky Kong, Donkey Kong Country Returns
+
+KONG Letters (alternatively formatted as K-O-N-G Letters, K O N G Letters, or KONG letters), also known as Golden Letters, KONG Golden Letters, Letter panels, or simply letters, are recurring collectible items in the Donkey Kong Country series and Donkey Kong Land series. They are a set of four square-shaped objects, each displaying a letter of "Kong," and they first appear in Donkey Kong Country. KONG Letters are in every level except boss levels. All four letters can be collected for a reward, usually an extra life; in some games, collecting them is mandatory. KONG Letters also serve as loose progress indicators, as the letter K usually appears at the start, the letters O and N appear midway through the level, and the letter G appears near the end.
+
+The original trilogy depicts KONG Letters as flat gold-lined objects with one of the four letters stamped on. In Donkey Kong Country Returns (as well as its Nintendo 3DS port and its Nintendo Switch port) and Donkey Kong Country: Tropical Freeze (as well as its Nintendo Switch port), the KONG Letters are redesigned with a more simplistic appearance, resembling plain red panels with yellow letters.
+
+## Donkey Kong Country / Donkey Kong Land trilogy
+
+KONG Letters appear in each stage, typically in plain sight, but some are hidden or in Bonus Areas. Some End of Level Targets in Donkey Kong Country 2: Diddy's Kong Quest include a G amongst the rewards, and a KONG Letter sometimes hides inside a treasure chest.
+
+Certain levels have two of the same letter, and collecting one makes the other disappear. For example, in Donkey Kong Country's Snow Barrel Blast, there are two letter G's, each appearing in a path that the Kongs can take. In Donkey Kong Country 2: Diddy's Kong Quest's Chain Link Chamber, there are two letter O's in the same area. North American releases of Donkey Kong Country 3: Dixie Kong's Double Trouble! do not have a letter G in Rocket Rush.
+
+## Donkey Kong Country Returns / 3D / HD
+
+In Donkey Kong Country Returns (as well as its Nintendo 3DS port and its Nintendo Switch port), KONG Letters are important collectible items, as progress for KONG Letters is tracked on the Level Selection Screen. All levels have exactly four KONG Letters, one of each. KONG Letter collection is saved only at checkpoints (hosted by the tutorial pig) and at the end of a level. KONG Letters collected before saving at one of these points revert to being uncollected should the player be defeated. Unlike in most games with collectible items that are tracked on their equivalent of a Level Selection Screen, and unlike Puzzle Pieces, KONG Letters that the player has already collected are not differentiated from KONG Letters that the player has not collected yet. KONG Letters do not appear in the Time Attack mode.
+
+When Donkey Kong and Diddy Kong obtain every letter in a level in the same playthrough, the level is marked with a KONG Letter icon: an orange pin with a black star. When the player has every KONG Letter icon in a world, Donkey Kong and Diddy unlock a Key Temple, a challenging level that lacks KONG Letters but ends with the player collecting one of the Rare Orbs. KONG Letters do not appear in boss levels, Lift-off Launch, or the Golden Temple. In Donkey Kong Country Returns 3D and Donkey Kong Country Returns HD, the Golden Temple's lack of KONG Letters extends to all of the levels in the Cloud world.
+
+Unlocking Mirror Mode requires collecting every KONG Letter due to cascading requirements from the Rare Orbs. In Mirror Mode, the letters on the KONG Letters are flipped like the other surroundings. In Donkey Kong Country Returns 3D and Donkey Kong Country Returns HD, collecting all the KONG Letters from a level in Mirror Mode changes the KONG Letter icon from orange to blue but has no further effect. This does not count for 200% completion.
+
+Prima Games refers to the KONG Letters individually as the K Block, O Block, N Block, and G Block.
+
+## Donkey Kong Country: Tropical Freeze
+
+In Donkey Kong Country: Tropical Freeze and its Nintendo Switch port, KONG Letters retain their appearance and role from Donkey Kong Country Returns. The Kongs must collect every KONG Letter in a world to unlock a temple level, which has a mysterious relic instead of a Rare Orb. On Hard Mode, the KONG Letters are colored blue; collecting them colors the star icon near a level's name from red to blue, although they are not required for 200% completion.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=KONG_Letters&oldid=5516862"

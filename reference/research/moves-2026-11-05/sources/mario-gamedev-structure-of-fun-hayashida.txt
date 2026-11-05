@@ -1,0 +1,153 @@
+URL: https://www.gamedeveloper.com/design/the-structure-of-fun-learning-from-i-super-mario-3d-land-i-s-director
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: The Structure of Fun: Learning from Super Mario 3D Land's Director
+---
+# The Structure of Fun: Learning from Super Mario 3D Land's Director
+
+How does Nintendo do it? In this extensive interview, Super Mario 3D Land director Koichi Hayashida discusses his career, the lessons he learned from Shigeru Miyamoto, and how he formulated his own philosophy for game design.
+
+Christian Nutt, Contributor
+
+April 13, 2012
+
+It's hard to pinpoint the most interesting thing about last year's release of Super Mario 3D Land for the Nintendo 3DS. Was it its successful proof-of-concept for stereoscopic 3D gameplay? Was it the fact that the game was the first portable Mario developed by the main Mario team?
+
+These things are important. But it might well be that the most interesting thing about the game is that it started over from scratch on the concept of what a 3D Mario game is. Director Koichi Hayashida, who works at Nintendo EAD Tokyo, developed the game as though it were the first 3D Mario game ever made, jettisoning much of the legacy of the series post-1996.
+
+At this year's GDC, he spoke about that process, and how developing the game during the 9.0 magnitude earthquake that shook Japan in 2011 helped him find the fun in making Mario games. In this interview, he discusses that, and explains how Nintendo draws on Japanese narrative tradition to structure its levels, as well as what he focuses on during play tests.
+
+You've worked at Nintendo since, I guess, the tail end of the NES days, but Super Mario Galaxy 2 was your debut as a director. I was wondering if you could talk a little bit about your path, and how you rose to become a director.
+
+KH: So on Super Mario Sunshine, Mr. Koizumi was the director. But when I look at my early beginnings, it was actually when I was working on the early Gamecube dev boards. I was creating the 3D library with EAD, and working on that kind of very foundational development there.
+
+The main programmer of Super Mario 64 was a Mr. Nishida, someone who I really respected. You may also have seen his work in the Super NES Zelda game, where he did the polygon Triforce that appeared in the opening screen. That was something that he had made.
+
+So he was studying the Nintendo 64 hardware, and became the main programmer on Super Mario 64, and I had been doing some work on that system at the time, and then became the programmer on Sunshine.
+
+I am a programmer at heart. I always have been interested in programming. Ever since I started making games on a Commodore VIC-20 when I was in fifth grade -- I guess that would be the start of my interest, but my interest in programming was always to the end that I wanted to make games, not that I was interested in programming for its own sake necessarily, so I guess that was the beginning of my career. And that takes us up to my work as main programmer on Super Mario Sunshine.
+
+And so after Super Mario Sunshine, I worked on Donkey Kong Jungle Beat as the assistant director, and I also did some level design on that game. After Donkey Kong Jungle Beat, I was the level design director on Super Mario Galaxy 1. On Super Mario Galaxy 2, Mr. Koizumi became the producer, and I took the lead, with another -- Mr. Motokura, who was in charge of program design, while I was the director. And then on Super Mario 3D Land, I was the director.
+
+I was interested to hear in your talk that you tried to imagine what 3D Mario would be like if you left behind the rules that had been established, because that's exactly what I thought when I played Super Mario 3D Land. Why did you decide to do it that way?
+
+KH: Well, every Mario game is, of course, made with all of the learnings in mind from the Mario games that preceded it. So, for example, we made Mario 64, and then Super Mario Sunshine. We were thinking what we had learned in Super Mario 64.
+
+And when we made Galaxy, we were thinking about what we had learned in Super Mario Sunshine. So, one example might have been taking some of the camera control out of the hands of players, so they wouldn't have to worry about that quite so much, when they were playing the game in Galaxy.
+
+But each time we see a little bit of innovation. And it's wonderful to have all of those elements to draw from, and choose from, to make a new game. But over time, some of those elements can develop their own demerits, such that you can't carry them forward consistently throughout, and just keep adding to a pot indefinitely.
+
+What you have to do is make an investigation at every new stage and say, "Okay, which of these elements is working well for us, and which of them do we need to think about minimizing, or removing entirely?
+
+And, when you think about the fact that we've made five games, starting with Super Mario 64, in the 3D Mario game series, but this is the first that's portable. Then that represents, at least to me, a really good opportunity to change things up a little bit.
+
+So, did you really start with a similar template to the Galaxy/64 lineage and then start removing elements, or did you actually start from scratch and add elements, and then see how they worked?
+
+KH: Well, we certainly tried a lot of things, and if you were at the presentation, then you must've seen that Mario 64 level that we tried to play through using a stereoscopic display to see if it would work or not.
+
+We tried other things involving Galaxy as well. For example, we played Super Mario Galaxy 2 on a very small TV, and what we noticed, of course, was Mario was very, very tiny on the screen, so it was difficult to play the game when he's that small. We realized we have to make Mario a little bit bigger. And that's just more of the technical side of things, I guess, that we were investigating.
+
+---
+
+I noticed also in the presentation that you gave the game to your son and saw how he reacted. There have also been discussions of similar things. Mr. Iwata discussed how Mr. Miyamoto would kidnap employees and make them play the games. Do you do formal playtests with focus groups, or do you rely more on small tests with friends, family, and co-workers?
+
+KH: Very often we will do our playtesting with family members of our staff, but it really is a case-by-case basis. For example, in the building next to ours in Tokyo, there was an older woman who was an office worker, and we had her do some playtesting for us.
+
+But what we realized was that she had a lot of trouble jumping across even a small gap. We thought, "Maybe if we give her the Tanooki Mario suit, she'll be able to do it if she's just right at the very edge." But there was something she struggled with so much.
+
+When we eventually had her use the P-wing to get to the end of the level, we thought, "Well, okay, she got through to the end of the level, but what we really wanted to see was her being able to jump this gap." And so that's the sort of thing that made us realize we need to put in some access to the Tanooki suit a little bit earlier, if people are having a particular amount of trouble with a certain stage.
+
+And that led us to the White Tanooki Mario suit, which gives players invincibility, as well as the ability to slow their fall after a jump, so they can make their landing easier.
+
+You talked about how Mr. Miyamoto put the P-wing in Super Mario Bros. 3, and so you did something similar. Obviously, hardcore gamers look down on this kind of thing.
+
+KH: I guess I would have to say, first, that in my experience I've seen hardcore gamers who try to play the game so that they never let the assist block appear at all, as if that was their goal. You may have noticed that you have those stars that appear next to your save file, you can get from one to five. If you play so that you never make an assist block appear, then you'll have five stars that are sparkling. And I would like to engender this mentality that if you can't do that, you can't call yourself an advanced player.
+
+Do the less experienced players really enjoy this stuff, and have you found detailed feedback that these things really help them get into your games? And as Mr. Miyamoto said regarding Super Mario Bros. 3, maybe go back and challenge the levels once the stress of completing them is taken away?
+
+KH: Some people on our development staff felt like having to die on a stage five times was even too much before an assist block would appear. They wanted us to lower it to maybe just three misses. But when I look back at, say, New Super Mario Bros. Wii, I believe you have die eight times before you would be able to see the Super Guide.
+
+But there are definitely those people on staff who suggested that we keep placing it earlier and earlier. But I'm a gamer, so it's hard for me to imagine people wanting that.
+
+But as it turns out, there are some people who might've been happy to play through a level for their very first time as White Tanooki Mario, just being invincible and focusing on the platform challenge. So, when I'm thinking about how we design games, I have to include those people in my thinking, too. I can't just write them off completely.
+
+Talking about level design, obviously the level designs in Mario games are polished -- very perfectly, so they perfectly fit together. If a design isn't working, are you more likely to try to refine it, or do you actually discard things that aren't working?
+
+KH: Well, we mock up stages very early, and these are very rough versions that we'll try and play through. And if something's bad, certainly we'll throw it out. But if something shows a bit of promise, we'll hold onto it and keep polishing it.
+
+Speaking of holding on to things, I noticed in Galaxy 2 you have the level from Mario 64, and that's the same level you used to test in 3D Land. Is there something special about that level specifically?
+
+KH: Yes, I guess we do keep using that as sort of our standard test for each new generation. I think one of the reasons for that is because it's a floating island -- the entire stage layout -- so that makes it something of an easy test case in terms of processing. But, of course I can't rule out the fact that I also just love it as a playable course.
+
+---
+
+Something that I noticed also with this game is that the levels are pretty quick to get through, if you want to play them. In fact, you even brought back time limits, and the game tracks your quickest completion time. But is that specifically for pacing on a portable gaming? And also, how did you determine what the right length of a level is?
+
+KH: Well, this might be a phenomenon that's probably more prevalent in Japan, but of course you do see people playing games on trains as they commute to or from school or work with their portable gaming devices. When you think about the fact that it would take people 10, 20, or even 30 minutes to play one stage in Galaxy, we knew we had to limit the playtime per stage based on the fact that so many people might be playing on trains.
+
+And so we thought about someone getting on a train and going for a couple of stations and then getting off, and decided that should be the length of time it takes to play one stage. Whether they get all the way through to the end of the stage successfully, or whether they get a Game Over, we want the playtime to fit within that interval.
+
+And when I talk a little about the reason that we decided to go back to time limits on stages, I feel like this is something that is kind of important in an action game. You have to make these instantaneous judgments about what your next action is going to be.
+
+It's not the sort of game where you walk around slowly and explore everything. I certainly enjoy those kind of games, but I don't feel like that's what we're going for with an action game of this type. It wasn't really our focus. So, having that time element challenge is also fun.
+
+Could you talk about the polishing process? We talked a little bit earlier about how you will, if a level has promise, work on it. How many times might a level may go through iteration? Like, a level designer will work on it and then you test it and then give them feedback? Is that how it works? Or is there something different?
+
+KH: Well, I think one thing that really helps a lot is playing through the level a lot. The more you do it, the better you get it, and your time starts to go down and down, and you start to realize what are the really important, fundamental things about that stage. When you're testing the level more broadly, maybe one of the important things is to get lets of different kinds of people to get their eyes on the game, so you get all sorts of different feedback.
+
+And, again, do you source those people just from around you from your families and friends, or maybe the woman who works in the office next door, or do you do formal focus tests?
+
+KH: In my experience, one thing I found that is really helpful is we also get a little bit of feedback from consumers when they see early versions of games at shows. That's something that I really enjoy spending a lot of time poring over the feedback from -- although it's not necessarily something that every developer does.
+
+Do you have them fill out questionnaires?
+
+KH: No, we don't use questionnaires. What we find is that they become too subjective. We rely more on the appearance of people actually playing the game. If, for example, you ask someone on-camera to taste something like a new food product, "Well, what do you think of it?" Chances are they're going to say, "Oh, this is really good. This is delicious!"
+
+Just because they have that pressure of being on-camera, they give you an answer that's not entirely honest, even though they don't realize it themselves. So, what we try to rely on is more of that objective feedback that we can see in the expressions on people's faces as they're playing our games. And that's the kind of thing we've learned about from Mr. Miyamoto, who is always really focused on seeing that face, and what's the expression, and what's their reaction.
+
+A lot of developers in the West go so far as to record the play sessions, match them with play data, and watch the eye-tracking, but it sounds like Nintendo goes a little bit more by feel, almost.
+
+KH: Well, of course, I guess the methodology is fairly basic. You just look at someone and see what their experience is of playing the game. But you can get all sorts of information about people playing games, and you have to exercise a lot of individual judgment about what sorts of information are helpful to the development process.
+
+And it's not the kind of thing that you can even design experiments for very well in some cases, because you might have this idea that you're going to get lots of very specifically useful information from a certain kind of test in the beginning, but once you actually try it, that might not necessarily be the case. The importance, I think, is on using what information you do get that is helpful to make the game better. That's a skill that all developers really should work hard to focus on.
+
+---
+
+I wanted to talk about the level design. In my impression, each level has a core gameplay concept that it's about. And you do that, and you enjoy that, and then the level's over. I was wondering if that's really the mentality you had when creating the game, or if that's just something I was thinking.
+
+KH: Yes, I do think it's really important to decide on a core concept in level design. When I think back in my own career, as to when I might have realized that this was important, I have to look back maybe first at Super Mario Galaxy 1, when I wasn't quite sure I had wrapped my head around that concept.
+
+So you would be going through a galaxy, and every time you get to a new planet, there would be some new thing to play with there -- some new concept. So you would end up with lots of different gameplay concepts in a single stage.
+
+Whereas, when I moved onto Super Mario Galaxy 2, I was starting to get a little clearer idea of how this level design philosophy should work: that is, we would start with a very clear concept on a stage and it would be maintained through, I think, the rest of the galaxy more consistently.
+
+But it wasn't really until Super Mario 3D Land that I think I really became a lot more rigorous about enforcing that in level design, where you have a clear concept in the beginning, and that's carried through absolutely all the way.
+
+Why do you think that that's important?
+
+KH: Well, I think it has a lot to do with the acquisition of a skill, which is something that often appears very similar to the way that a narrative can develop. So, if you take a single gameplay element, let's think about the steps that happen.
+
+First, you have to learn how to use that gameplay mechanic, and then the stage will offer you a slightly more complicated scenario in which you have to use it. And then the next step is something crazy happens that makes you think about it in a way you weren't expecting. And then you get to demonstrate, finally, what sort of mastery you've gained over it.
+
+It's very similar to a narrative structure that you find in four-panel comics. Something that's talked a lot about in Japanese manga, for example, is a phrase, kishoutenketsu, where you introduce a concept, and then in the next panel you develop the idea a little bit more; in the third panel there's something of a change-up, and then in the fourth panel you have your conclusion.
+
+So that's sort of what we try to do with the way people relate to gameplay concepts in a single level. We provide that concept, let them develop their skills, and then the third step is something of a doozy that throws them for a loop, and makes them think of using it in a way they haven't really before. And this is something that ends up giving the player a kind of narrative structure that they can relate to within a single level about how they're using a game mechanic.
+
+Did you actually seek to take that concept from manga and apply it to games, or did you just coincidentally realized that it fit after you'd already developed the concept in parallel?
+
+KH: Well, this is something that Mr. Miyamoto talks about. He drew comics as a kid, and so he would always talk about how you have to think about, what is that denouement going to be? What is that third step? That ten [twist] that really surprises people. That's something that has always been very close to our philosophy of level design, is trying to think of that surprise. But this realization, I have to admit, was something that occurred very recently for me. As I was describing earlier, even during development of Super Mario Galaxy 1, I don't think I had fully realized this concept yet.
+
+During your talk, you talked a lot about the earthquake, and what meant to the development of the game, and I found that your talk was very moving to me personally. But what I found really interesting is you talked about at some point you lost track of what it meant to enjoy making something -- and if you do, how it will become enjoyable.
+
+Was it just the earthquake that made you lose track of that, or was it something that you'd felt that you had slowly lost track of and then that moment, that insight, allowed you to regain that?
+
+KH: So, maybe I should offer a little of background about my thinking about this entire process, instead of feelings. Mr. Miyamoto sends out New Year's cards which are always kind of interesting. One of the things that you can see in the cards that he sends out is that he's rather severe with himself about his enforcement about the need to find fun in everything. And that's something that's expressed even in his year-end cards.
+
+And I don't know that I fully understood this myself to the same depth, but as the team leader, I felt like it was important for me to make sure that everyone had good morale, and keep up our levels of fun and interest in making games. And, of course, I myself was interested in making games, and I've always thought it was fun, but I never really dwelled on the importance of why that fun made a difference to our work.
+
+And so it was in that one moment, when my colleague gave me the answer that he got into this line of work simply because "making games is fun", that I was taken aback. I mean, his answer was so simple, and I thought to myself, "How can I convey this to the team? I really want to tell them all about this in a way that they understand." I think that's the moment when I had that realization of its importance.
+
+So, you can try and convey this to people in a number of ways: You can tell them a very detailed story about how turning swimming into a kind of game is a really good example of why enjoying everything is important, but it still might not sink in for some people. And I certainly know that, because that was the case for me.
+
+I didn't necessarily apply that same rigor to finding fun in the detail of every little moment of life until that moment, when my colleague gave me that answer. I think that was a much deeper realization for me.
+
+About the Author: Christian Nutt, Contributor. Christian Nutt is the former Blog Director of Gamasutra. Prior to joining the Gamasutra team in 2007, he contributed to numerous video game publications such as GamesRadar, Electronic Gaming Monthly, The Official Xbox Magazine, GameSpy and more.

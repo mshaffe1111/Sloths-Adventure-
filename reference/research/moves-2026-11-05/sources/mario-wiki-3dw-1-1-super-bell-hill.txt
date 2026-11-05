@@ -1,0 +1,81 @@
+URL: https://www.mariowiki.com/Super_Bell_Hill
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Super Bell Hill
+---
+(Stripped: site navbox, image gallery, "Names in other languages" table, reference list. Enemies table came from a second fetch of the same URL scoped to the Enemies section.)
+
+This article is about the level in Super Mario 3D World and the Wii U version of Captain Toad: Treasure Tracker. For its musical theme, see Super Bell Hill (theme).
+
+| Super Bell Hill | |
+| --- | --- |
+| Level code | World 1-1 |
+| World | World 1 |
+| Primary power-up | Super Bell |
+| Time Limit | 500 seconds |
+| Music tracks | Super Bell Hill (extended intro) Underground Theme |
+| Level progression | Previous — ; Next: Koopa Troopa Cave |
+
+Super Bell Hill, otherwise known as World 1-1, is the first course of Super Mario 3D World, its Nintendo Switch port Super Mario 3D World + Bowser's Fury, and the first course of the bonus episode in the Wii U version of Captain Toad: Treasure Tracker. Similarly to the World 1 map in Super Mario 3D World, the course takes place on grassy plains surrounded by water. Within the level, players can find grassy fields, small ponds, Super Bell-shaped trees, and a white wooden bridge. It is unlocked from the beginning and its completion unlocks Koopa Troopa Cave (in Super Mario 3D World).
+
+Super Bell Hill also appears in the background of the ground theme in the Super Mario 3D World game style for Super Mario Maker 2, with some differences in its design, such as a pipe at the topmost surface that is not in the original game.
+
+## Layout
+
+The level starts on a grassy field, with a set of white stairs that leads to a Goomba and a ? Block. To the right is a Clear Pipe, which leads the player to an area full of Goombas and another ? Block. Afterwards, there is a second Clear Pipe that leads to another set of Goombas and a wall that can be climbed with Cat Mario, with a series of hills as an alternate path.
+
+Following this area are two Clear Pipes, one of which brings the player to the Checkpoint Flag. This leads to a tree with a Super Bell, and a hill with a giant Rabbit that has a Mega Mushroom. Nearby is a pond with another smaller rabbit and a Warp Pipe. Past the pipe is a Cat Goomba, a series of Brick Blocks, and a white wooden bridge with stone blocks seen directly past it. A tunnel nearby contains wooden crates, and a passage under the bridge that has a 1-Up Mushroom. After this, a Clear Pipe leads the player to the Goal Pole.
+
+## Collectibles
+
+### Green Stars
+
+| # | Location |
+| --- | --- |
+| 1 | Near the beginning, the player will find a Clear Pipe. Through the top route of the pipe, the player will find the first Green Star. |
+| 2 | After the checkpoint, there is a Rabbit that circles around a small pond. When caught, it offers the second Green Star. |
+| 3 | The player needs to use the Mega Mushroom from a big Rabbit on a hill close to the Checkpoint Flag, then smash the stone Blocks directly after the white bridge to reveal the third Green Star. They can also drop down into the foreground, then use the Cat Suit to climb up into the space with the Green Star. |
+
+### Stamp
+
+Near the midpoint lies a Warp Pipe that leads to a room containing the course's stamp. The player will need to avoid destroying it with the Mega Mushroom. The stamp is Cat Mario.
+
+## Luigi sighting
+
+After dropping out of the Clear Pipe near the Checkpoint, the player can visit a Sprixie with a pair of binoculars who will show them the direction of the Goal Pole. In this binoculars view, it is possible to make out a tiny Luigi peeking over the fence across the yard to the right of the screen.
+
+## Appearance in Captain Toad: Treasure Tracker
+
+| World | Bonus |
+| Game | Captain Toad: Treasure Tracker |
+| Objective | Collected the Gold Mushroom! |
+| Target | 75 seconds |
+| Music track | Super Bell Hill (extended intro) |
+| Level progression | Previous: Wingo's Whackdown; Next: Conkdor Canyon |
+
+In Captain Toad: Treasure Tracker for the Wii U only, Captain Toad can play this level in the Bonus episode. The level is mostly the same, with a few added ladders, ramps, and Empty Blocks, as Captain Toad cannot jump.
+
+### Luigi sighting
+
+After the Clear Pipe Cannon, an 8-bit Luigi can be seen next to a ladder across the yard. However, like in Super Mario 3D World, it disappears when Captain Toad gets close.
+
+## Enemies
+
+Super Mario 3D World
+
+| Name | Count |
+| --- | --- |
+| Goomba | 7 |
+| Cat Goomba | 3 |
+
+Captain Toad: Treasure Tracker
+
+| Name | Count |
+| --- | --- |
+| Goomba | 5 |
+| Cat Goomba | 3 |
+
+## Notes
+
+* Super Bell Hill was used as a test level in an early build of Splatoon.[10]
+* In the beginning of the level, the player can see the rock that appears near the beginning of World 1. After the game is completed, the rock is replaced with a rocket ship, and if the level is re-entered, the rocket ship can be seen where the rock was.
+* Near the pool of water with coins after the Checkpoint Flag, there is an invisible pool of water on the side of the stage. This pool is removed in Super Mario 3D World + Bowser's Fury.[11]

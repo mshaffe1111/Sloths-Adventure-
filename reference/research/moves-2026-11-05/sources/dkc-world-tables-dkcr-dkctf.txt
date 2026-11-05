@@ -1,0 +1,120 @@
+URL: (several, one Read each) https://www.mariowiki.com/Cave_(Donkey_Kong_Country_Returns) ; https://www.mariowiki.com/Ruins ; https://www.mariowiki.com/Forest_(Donkey_Kong_Country_Returns) ; https://www.mariowiki.com/Cliff_(Donkey_Kong_Country_Returns) ; https://www.mariowiki.com/Factory_(Donkey_Kong_Country_Returns) ; https://www.mariowiki.com/Volcano_(Donkey_Kong_Country_Returns) ; https://www.mariowiki.com/Autumn_Heights ; https://www.mariowiki.com/Bright_Savannah ; https://www.mariowiki.com/Sea_Breeze_Cove ; https://www.mariowiki.com/Juicy_Jungle
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content, include_selectors "table.wikitable" so ONLY the level tables were extracted; prose of these world pages was not read)
+Title: Level tables of DKCR worlds 3-8 and DKCTF worlds 2-5 (Super Mario Wiki)
+---
+[Kept: the "Levels" table of each page verbatim (image column empty). Stripped: music, internal-name and language tables. Failed: https://www.mariowiki.com/Donkey_Kong_Island_(Donkey_Kong_Country:_Tropical_Freeze) 404 (see BLOCKED-dkc.txt), so DKCTF world 6 is missing.]
+
+=== DKCR Ruins (https://www.mariowiki.com/Ruins) ===
+| Code | Level | No. of Puzzle Pieces | Description |
+| 3-1 | Wonky Waterway | 7 | A basic and defining level of this world, starting near the beach and taking place among ruins. It introduces Tiki Bombers and Stilts. |
+| 3-2 | Button Bash | 7 | A stage primarily navigated by Barrel Cannons, arranged in a maze. |
+| 3-3 | Mast Blast | 7 | A maritime level taking place outside the ruins scene. It features a fleet of ships manned by Snippys and Pinchlys. |
+| 3-4 | Damp Dungeon | 9 | A level occurring inside a sombre, flooded dungeon, featuring water mills of various sizes. |
+| 3-5 | Itty Bitty Biters | 7 | A level that takes place in a Toothberry-infested shrine. |
+| 3-6 | Temple Topple | 5 | The second level in the game to feature Rambi. In the second half of the level, the Kongs would have to venture on a precarious road risen above a jungle. |
+| 3-K | Shifty Smashers | 5 | The third temple stage of the game. Its primary features are the solid golden blocks and walls shifting on rails, pushing into each other. |
+| 3-B | Ruined Roost | – | The third boss level of the game. It pits the Kongs against Stu. |
+
+=== DKCR Cave (https://www.mariowiki.com/Cave_(Donkey_Kong_Country_Returns)) ===
+| 4-1 | Rickety Rails | 5 | A stage where the Kongs have to trek a series of fragile railways inside a minecart. |
+| 4-2 | Grip & Trip | 5 | A level where the Kongs journey from minecarts to large locomotives that hold metallic girders, which ferry the Kongs over abysses. |
+| 4-3 | Bombs Away | 5 | A minecart stage where the Kongs venture inside a crystal mine. A Mole Guard throws bombs onto the railtrack in an attempt to hinder the characters. |
+| 4-4 | Mole Patrol | 5 | The second Rocket Barrel stage of the game, weaving through a mine populated by moles. |
+| 4-5 | Crowded Cavern | 5 | The third Rocket Barrel stage, located inside the home of the Squeekly family. |
+| 4-K | Jagged Jewels | 5 | The fourth temple stage of the game, featuring various spike mechanisms. |
+| 4-B | The Mole Train | – | The fourth boss stage in the game, taking place on a series of banana-filled minecarts. After fighting three waves of Mole Miners, the Kongs face their leader, Mole Miner Max. |
+
+=== DKCR Forest (https://www.mariowiki.com/Forest_(Donkey_Kong_Country_Returns)) ===
+| 5-1 | Vine Valley | 7 | A dense forest level, beginning inside an underground cavern. It is filled with Wiggles, Buzzbites, and other enemies, but its defining elements are the hanging vines and Ape-Eating Plants. |
+| 5-2 | Clingy Swingy | 5 | A level where, much like in King of Cling, the centric element is the grassy turf covering most objects and platforms. The Kongs can use it to climb logs and hanging huts. |
+| 5-3 | Flutter Flyaway | 7 | A stage featuring a harmless variant of Tiki Buzzes that can lift and carry the Kongs. |
+| 5-4 | Tippin' Totems | 7 | A level that features various moving totem poles. |
+| 5-5 | Longshot Launch | 7 | A stage where the Kongs make great use of Barrel Cannons. |
+| 5-6 | Springy Spores | 7 | This level contains broad mushrooms that are used as trampolines. |
+| 5-7 | Wigglevine Wonders | 7 | A level dedicated to Wigglevines, a species of levitating creatures that are able to carry the Kongs using the long vines attached to them. |
+| 5-8 | Muncher Marathon | 5 | A level crowded with spiders. For most of the level, the Kongs are chased by a growing hoard of munchers. |
+| 5-K | Blast & Bounce | 5 | The fifth temple stage of the game. The main obstacles here are the Tiki Zings and their bigger counterparts, and the Kongs would have to sneak between them using Barrel Cannons and bouncy tires. |
+| 5-B | Mangoruby Run | – | The fifth boss stage of the game. The Kongs are set against Mangoruby. |
+
+=== DKCR Cliff (https://www.mariowiki.com/Cliff_(Donkey_Kong_Country_Returns)) ===
+| 6-1 | Sticky Situation | 9 | A level taking place in a tar deposit. It introduces live skeletal creatures such as Skullyrexes and Bonehead Jeds. |
+| 6-2 | Prehistoric Path | 5 | The fifth minecart stage of the game. It has the Kongs journeying on sinking railways and tilting platforms. |
+| 6-3 | Weighty Way | 5 | A level where, in order to progress, the Kongs mostly rely on weighed platforms connected by ropes. |
+| 6-4 | Boulder Roller | 7 | A level where the main hazards are big thorny boulders that threaten to crush the Kongs. |
+| 6-5 | Precarious Plateau | 5 | The third level in the game to contain Rambi the Rhino. He can be used to scurry through spiky pendulums and other sturdy obstacles. |
+| 6-6 | Crumble Canyon | 9 | A level taking place in a frail portion of the Cliff, where rocks and platforms can easily fall apart. |
+| 6-7 | Tippy Shippy | 5 | A stage hosting the remains of a pirate fleet located high in the mountains. |
+| 6-8 | Clifftop Climb | 5 | A level with a focus on using Blast Barrels, swinging platforms and crumbly trampolines to scale a high rocky wall. |
+| 6-K | Perilous Passage | 5 | The sixth Key Temple stage of the game. The Kongs must progress through an upward passage as rising lava pursues them and enormous stones totter and fall. |
+| 6-B | Thugly's Highrise | – | The sixth boss stage of the game. It pits the Kongs against Thugly. |
+
+=== DKCR Factory (https://www.mariowiki.com/Factory_(Donkey_Kong_Country_Returns)) ===
+| 7-1 | Foggy Fumes | 7 | A silhouetted level filled with dull smoke clouds. |
+| 7-2 | Slammin' Steel | 5 | A level where the Kongs need to avoid getting slammed by large, metallic compressors. The level also features many conveyor belts that lead into spiky roller mills. |
+| 7-3 | Handy Hazards | 7 | A stage taking place in an area with robotic hands. They serve as platforms in a multitude of ways, but their movements can also impede, damage or instantly defeat the Kongs depending on the type of hand. A one-eyed robot follows the Kongs from the background. |
+| 7-4 | Gear Getaway | 7 | The fourth Rocket Barrel stage in the game. The vehicle has to be navigated through a series of compressors and enormous rotating gears. |
+| 7-5 | Cog Jog | 9 | A level containing girders connected to large cogwheels, which move them around the area. |
+| 7-6 | Switcheroo | 5 | A level whose main mechanic is switching between red and blue platforms and walls. |
+| 7-7 | Music Madness | 5 | A place where the machinery is worked by music. Machines here resemble musical instruments, such as drums and cymbals. |
+| 7-R | Lift-off Launch | – | The fifth Rocket Barrel stage of the game. It serves as an intermediary level between Music Madness and Feather Fiend and lacks K-O-N-G Letters and Puzzle Pieces, as well as a Slot Machine Barrel. |
+| 7-K | Treacherous Track | 5 | The seventh Key Temple stage of the game. It is set on a track navigated by a mechanical platform. |
+| 7-B | Feather Fiend | – | The seventh boss stage of the game. Here, the Kongs fight Colonel Pluck and his Stompybot 3000. |
+
+=== DKCR Volcano (https://www.mariowiki.com/Volcano_(Donkey_Kong_Country_Returns)) ===
+| 8-1 | Furious Fire | 5 | A level where a large number of Char-Chars and Rentamaguma are present. |
+| 8-2 | Hot Rocket | 5 | The fifth Rocket Barrel level in the game. The Kongs have to navigate through series of fiery obstacles. A wave of lava chases them near the end of the level. |
+| 8-3 | Roasting Rails | 5 | The sixth Mine Cart course of the game. The Kongs have to travel on a collapsing railtrack occupied by sizzling hazards. |
+| 8-4 | Smokey Peak | 5 | The fourth level to feature Rambi. The level is silhouetted in order to contrast with the lightened background. |
+| 8-5 | Bobbing Basalt | 7 | A course containing chunks of basalt that bob above the lava, with some immersing completely into it for a brief moment. |
+| 8-6 | Moving Melters | 5 | A stage that focuses on using various moving platforms to travel over a lava creek. |
+| 8-7 | Red Red Rising | 5 | A level where the Kongs have to scale a volcanic shaft while pressured by rising lava. |
+| 8-K | Five Monkey Trial | 5 | The eighth and last Key Temple stage of the game. The Kongs are challenged over the course of five trials. |
+| 8-B | Tiki Tong Terror | – | The final boss stage, where, after a Rocket Barrel sequence, the Kongs face Tiki Tong. |
+
+=== DKCTF Autumn Heights (https://www.mariowiki.com/Autumn_Heights) ===
+| 2-1 | Windmill Hills | 9 | A level in which the Kongs are venturing by and through many windmills. |
+| 2-2 | Mountain Mania | 7 | The first level in the game to have Rambi available. It also heavily features bell steeples which can be collapsed with Rambi's horn. |
+| 2-3 | Horn Top Hop | 5 | A level taking place in a musical forest, filled with birch trees, falling leaf platforms and alphorns played by Hootzes. |
+| 2-4 | Sawmill Thrill | 5 | A level where minecarts and even a sawed log of wood must be ridden through a series of sawmill hazards. |
+| 2-5 | Alpine Incline | 5 | A stage taking place right under and above the clouds, featuring numerous hot-air balloons that can be used as platforms. |
+| 2-6 | Wing Ding | 5 | A level taking place at high altitude, where Hootzes have presumably built a town. It takes the Kongs through a series of Zip-Line Vines. |
+| 2-A | Crumble Cavern | 7 | A damp cavern level with a lot of crumbly material. |
+| 2-B | Rodent Ruckus | 5 | A level that hosts the first Rocket Barrel ride sequence in the game. It takes place inside a cheese mine with a heavy population of Cheesy Chesters. |
+| 2-K | Bopopolis | 5 | The second Hidden Kong Temple stage. It emphasizes on precise jumping and stomping rows of enemies. |
+| 2-BOSS | Mountaintop Tussle | – | The second boss level in the game. It hosts the fight against Skowl, the leader of the Hootzes. |
+
+=== DKCTF Bright Savannah (https://www.mariowiki.com/Bright_Savannah) ===
+| 3-1 | Grassland Groove | 9 | An energetic savannah valley filled with shaking trees and teetering tribal puppets. Due to the invasion of the Snowmads, the wildlife here is in minority and only consists of Swooper Doopers. |
+| 3-2 | Baobab Bonanza | 7 | A forest of baobabs, which produce Giant Spiked Nuts that roll down inclines and have to be avoided. The stage also presents numerous Purple Flower Platforms, which tilt under the Kongs' added weight. Additionally, the level introduces the Buffaloafer enemy. |
+| 3-3 | Frantic Fields | 5 | A level that is themed around a tornado storm and marks the return of Rambi the Rhino. Porcupals debut within this level. |
+| 3-4 | Scorch 'n' Torch | 7 | A level in which the savannah is affected by a wildfire and presents numerous relevant traps such as cremated leaves, fire floor and flaming vines. Patches of tall grass that have caught fire can be extinguished with Water Sacks, which appear for the first time in this level. |
+| 3-5 | Twilight Terror | 5 | The second Rocket Barrel stage in the game, set above a canyon river. The river is inhabited by huge enemies called Horror Gills, which lunge at the protagonists in an attempt to impede them. Other obstacles include giant fish nets that are risen and lowered across the screen. |
+| 3-6 | Cannon Canyon | 5 | A stage that is mainly traversed using Barrel Cannons. On their way, the Kongs must avoid explosives, which also come in large numbers. |
+| 3-A | Rickety Rafters | 5 | A stage with a focus on activating switches in order to put platforms in motion and advance. Switches consist of vines, pressure plates and targets. |
+| 3-B | Bramble Scramble | 7 | A level that explores a bramble-filled environment. Chompettes are prevalent here. |
+| 3-K | Precarious Pendulums | 5 | The third Hidden Kong Temple stage of the game and the one to feature swaying pendulum-like platforms and obstacles. |
+| 3-BOSS | Triple Trouble | – | The third boss stage of the game, where the Kongs fight Ba-Boom, a trio of baboon brothers. |
+
+=== DKCTF Sea Breeze Cove (https://www.mariowiki.com/Sea_Breeze_Cove) ===
+| 4-1 | Deep Keep | 7 | This is the first level in the game which is primarily underwater. During this level, the Kongs explore submerged ruins while avoiding many underwater obstacles, such as fish enemies, retractile spikes and giant fans creating currents. |
+| 4-2 | High Tide Ride | 5 | The third mine cart stage in the game, where the Kongs often have to jump between tracks in order to avoid obstacles. |
+| 4-3 | Amiss Abyss | 9 | A silhouetted underwater level in which the Kongs can corkscrew into schools of bioluminescent fish in order to illuminate the area. |
+| 4-4 | Irate Eight | 5 | A level which marks the return of Squiddicus from Donkey Kong Country Returns, who chases the Kongs through tight passages, impeding them with its arms. Other significant obstacles found throughout the level include proximity mines. |
+| 4-5 | Sea Stack Attack | 7 | A level that takes place entirely above water. Bomb-throwing enemies, such as Boom Birds, form the primary danger of the level, along with swaying, spike covered traps operated by Fluffs. |
+| 4-6 | Current Capers | 5 | A level with many underwater currents, usually carrying urchin globes along set paths. |
+| 4-A | Rockin' Relics | 9 | A stage with ancient statues which use electricity from lightning to impel various objects, such as urchin balls and platforms, into the air. |
+| 4-B | Shoal Atoll | 5 | An underwater labyrinth focused on finding five colored keys. |
+| 4-K | Spinning Spines | 5 | The fourth Hidden Kong Temple stage of the game, where the Kongs need to travel past series of skewers and platform carousels. |
+| 4-BOSS | Fugu Face-Off | – | The fourth boss stage in the game and the one to contain a battle against Fugu. |
+
+=== DKCTF Juicy Jungle (https://www.mariowiki.com/Juicy_Jungle) ===
+| 5-1 | Harvest Hazards | 7 | The level showing how fruits in Juicy Jungle are harvested. The Kongs must avoid wooden claws picking up spiky berries from trees. Buckies and Bouncelisks are common in the level. |
+| 5-2 | Reckless Ride | 5 | The third Rocket Barrel level in the game, in which the Kongs are prompted to survive an onslaught of giant berries and knives. A Speedy Tucks operating Pengatcha 1-gō, a machine with extendable claws, also forms an important obstacle in the level. |
+| 5-3 | Fruity Factory | 5 | The stage in which fruit are first seen processed. Series of cuboid watermelons and citrus-like fruit that can be used as platforms are driven into cutting mechanisms, which are to be avoided. Chompasauruses are first encountered here. |
+| 5-4 | Panicky Paddles | 9 | A long level taking place both overworld and in pools of juice. Above the juice, fruit are attached to rotatable panels and carried across graters. Inside, there are numerous spiky berries and spinning blades that occasionally interfere with each other. Toucan'ts are introduced in this level. |
+| 5-5 | Jelly Jamboree | 7 | A level that focuses on bouncy jelly blocks. There are three types of jelly blocks within the level, each having distinct properties. |
+| 5-6 | Frosty Fruits | 5 | A level set inside an icy fruit storage, where big popsicles are used for platforming. Among the latter, there are also machines stocking piles of blocks of frozen juice, threatening to crush the Kongs, and also sharp drills coming down from ceiling tunnels. |
+| 5-A | Beehive Brawl | 7 | A beehive level that is centered on Buzzies, which live in suspended huts. |
+| 5-B | Jammin' Jams | 5 | A level featuring spiky fruit crushers as its main hazard, along with numerous extendable platforms lying above spikes. Lemmingtons are particularly common in this level. |
+| 5-K | Platform Problems | 5 | The fifth Hidden Kong Temple stage in the game. It is littered with platforms moving along metal tracks, either automatically or under the Kongs' weight. |
+| 5-BOSS | Punch Bowl | – | The fifth boss fight of the game, in which the Kongs confront Bashmaster. |

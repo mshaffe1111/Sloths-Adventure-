@@ -1,0 +1,21 @@
+URL: https://www.nintendolife.com/news/2012/04/super_mario_3d_land_director_shares_level_design_inspirations
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Super Mario 3D Land Director Shares Level Design Inspirations
+---
+Super Mario 3D Land has been the recipient of critical acclaim and big sales figures. It was also the first 3D Super Mario title developed exclusively for a handheld, posing interesting challenges for Director Koichi Hayashida and his team, such as finding a way to provide short levels that are also memorable and fun to play.
+
+Many topics are covered in Hayashida's interview with Gamasutra, but it was the description of the level design process that caught our eye, and the surprising source of inspiration. Below is what Hayashida had to say when addressing the importance of each level having a clear concept in place.
+
+> Well, I think it has a lot to do with the acquisition of a skill, which is something that often appears very similar to the way that a narrative can develop. So, if you take a single gameplay element, let's think about the steps that happen.
+>
+> First, you have to learn how to use that gameplay mechanic, and then the stage will offer you a slightly more complicated scenario in which you have to use it. And then the next step is something crazy happens that makes you think about it in a way you weren't expecting. And then you get to demonstrate, finally, what sort of mastery you've gained over it.
+>
+> It's very similar to a narrative structure that you find in four-panel comics. Something that's talked a lot about in Japanese manga, for example, is a phrase, kishoutenketsu, where you introduce a concept, and then in the next panel you develop the idea a little bit more; in the third panel there's something of a change-up, and then in the fourth panel you have your conclusion.
+>
+> So that's sort of what we try to do with the way people relate to gameplay concepts in a single level. We provide that concept, let them develop their skills, and then the third step is something of a doozy that throws them for a loop, and makes them think of using it in a way they haven't really before. And this is something that ends up giving the player a kind of narrative structure that they can relate to within a single level about how they're using a game mechanic.
+
+It's natural that game designers have a number of sources of inspiration, and the prominence of Koichi Hayashida in recent Super Mario titles means that these influences are likely to continue to shine through.
+
+[source gamasutra.com]
+
+(Author: Thomas Whitehead, published 2012-04-13)

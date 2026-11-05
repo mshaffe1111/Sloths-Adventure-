@@ -1,0 +1,30 @@
+URL: https://www.mariowiki.com/Stormy_Shore
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Stormy Shore
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: most of the walkthrough ("Overview"/"Layout") and K-O-N-G / Puzzle location prose, except kept lines quoted below. See URL.]
+
+Stormy Shore is the twelfth level of Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports, as well as the fifth level of the Beach world.
+
+Stormy Shore introduces Squiddicus, a huge octopus that first appears in the background. Throughout much of the level, the Kongs have to dodge Squiddicus, who sticks its arms in front of the primates and tries to knock them into the water. Since the heroes cannot swim, it is vital for them to stay on the floating platforms for the whole level. The weather becomes very stormy later in the level and the water causes the floating platforms to constantly shift around. Other than Squiddicus, the enemies in this level include electric jellyfish enemies known as Jellybobs, Snippys, Pinchlys, Squidlys, and Electrasquids.
+
+In the Time Attack mode, a time of 1:09:00 is needed for a shiny gold medal, a time of 1:11:00 for gold, a time of 1:26:00 for silver, and a time of 2:00:00 for bronze.
+
+(From Layout, kept:) "Once the enemy notices the primates, it tries to attack them, destroying platforms that they stand on too long. The platforms after this are composed of wood and float on top of the wavy water. Once they cross four of these wooden platforms that are moved up and down by the waves, they come up to a banana trail that includes a large Banana Bunch."
+"Between two of these platforms is a Barrel Cannon floating atop the waves. The Kongs must shoot to the following platform when the waves tilt it in the correct direction."
+"Two gaps are after the checkpoint. When the Kongs approach them, Squiddicus sticks its arms in them and waves the arms up and down, making the heroes jump over an even bigger obstacle."
+"The Slot Machine Barrel is over the Squiddicus ... Before Squiddicus attacks them, they must shoot into the barrel to complete the level."
+
+## Enemies
+| Jellybob | 6 |
+| Pinchly | 5 |
+| Snippys | 10 |
+| Squiddicus | 1 |
+| Squidly | 11 |
+
+## Items
+| Banana Coin | 15 | Barrel | 3 | DK Barrel | 2 | Heart | 2 | Red Balloon | 3 |
+
+K-O-N-G Letters: K, O, N, G all present. Puzzle Pieces: 5.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Stormy_Shore&oldid=5527788"

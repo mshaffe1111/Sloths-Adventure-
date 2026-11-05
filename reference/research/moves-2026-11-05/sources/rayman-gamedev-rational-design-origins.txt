@@ -1,0 +1,479 @@
+URL: https://www.gamedeveloper.com/design/rational-design-the-core-of-i-rayman-origins-i-
+Read: 2026-11-05 by rayman/ori fetch helper (TinyFish fetch_content)
+Title: Rational Design: The Core of Rayman Origins
+---
+* Design
+* Case Studies
+
+# Rational Design: The Core of *Rayman Origins*
+
+In this extensive design article, Chris McEntee, who worked on *Rayman Origins* as a designer at Ubisoft Montpelier, examines the company's core design philosophy and explores the techniques used to create the lauded platformer.
+
+March 27, 2012
+
+schedule1h 3m Read
+
+Author: by Chris McEntee
+
+[In this extensive design article, Chris McEntee, NHTV Game Architecture and Design student -- who worked on Rayman Origins as a designer at Ubisoft Montpelier -- examines the company's core design philosophy and explores the techniques used to create the lauded platformer.]
+
+"Form follows function" - Louis Sullivan
+
+"Less is more" - Ludwig Mies van der Rohe
+
+"Easy to learn and difficult to master" - Nolan Bushnell
+
+In my time with Ubisoft Montpellier, I have had the honor of working with a handful of talented designers who are experts in the process of rational design. Over the course of my internship and specialization, I have tried to absorb as much information on this design process as I possibly could.
+
+Paired with my extensive research into the subject, I feel that I have achieved a relatively decent grasp of the core concepts and have applied them in my own levels relatively well.
+
+Through this article I hope to provide a solid base on the idea of rational game design, as well as some personal insight and examples of my own so that perhaps more people can start to embrace the practice and produce - hopefully - more entertaining and thoroughly satisfying gameplay experiences.
+
+Conceived by Lionel Raynaud (Ubisoft worldwide content director) and Eric Couzian (Ubisoft game design conception director), and led by Olivier Palmieri (level design director on Rayman Origins), Ubisoft developed an internal Design Academy for training their designers in the field of rational game design. While on the development team of Rayman Origins, I was able to work directly alongside Olivier Palmieri in his task of implementing rational design methods in the development process of Rayman Origins and picked up a strong understanding of the methodology from him along the way.
+
+Rational design is all about eliminating unnecessary information, making things inherently readable, understandable and apparent, introducing mechanics in an orderly and easily digestible fashion, and preserving the learning and difficulty curves of a game, known as macro flow.
+
+In principle, it is best to provide a player with significantly interesting and deep mechanics that are well explored and exploited through clever rationalized level design, rather than injecting the game full of one-shot gameplay mechanics to feign depth. A good mechanic, such as the portal gun in the Valve game Portal, can carry an entire game by itself with the addition of proper gameplay elements to help emphasize the usefulness and depth of the mechanic.
+
+We try, as designers, to overstuff our games with content, ideas and objectives because we think that makes it more clever or fun. I have come to understand the meaning of the three quotes at the top of this page, and fully believe in what they preach. When we rationalize our game systems and keep things simple but deep, we can truly create a good and meaningful gameplay experience that is also efficient for the team and easy to troubleshoot through iterative play-testing. I feel that rationalization is one of the keys to success in the game design field.
+
+The pipes and platforms in the middle of the ravine are constantly falling, meaning there is no safe spot for the player other than the top of the mountain.
+
+# Objective
+
+For every game experience, a clearly defined objective or goal must be present; whether or not this goal strongly influences the player's actions directly is a different story, but the player must have a sense of purpose in the world they are traversing. In a platforming game like Rayman Origins, while there is a high-tier goal of "saving the world from darkness", there exist sub-objectives in every level that help to form a memorable and varied set of experiences throughout the game.
+
+Even in a game such as Minecraft where the player has free roam to explore and build whatever he wishes, he has goals that emerge from the game system that drive his experience in the game universe, such as building a mega-structure or stockpiling resources for later use.
+
+"…most game mechanics that don't feel deep enough feel that way because they have too many objectives and not enough meaningful skills." - Mike Stout, Evaluating Game Mechanics For Depth
+
+Make your objectives clear and explicit, and clearly mark the path to the objective with meaningful mechanics. Simple manipulation of time and space conditions can emphasize or set forth a new objective; a falling object sequence makes it clear that the player must climb rapidly, else he will fall down a ravine. His objective: climb without stopping. This is not told to him by an NPC, this is not explicitly stated, but it is made clear by the situation he has been faced with.
+
+Or take a different scenario where the player is in the belly of a beast, and he must escape before a column of fire burns him to a crisp; this is an objective, clear and concise, with clear consequences of failure, and gives him an immediate purpose: survive and escape. In the final section of this article, Motivation, it will become clear why the simple goal of survival works so easily in a game scenario.
+
+Many times in Rayman Origins did we force the player to move by pursuing him with a swarm of enemies, so as to change up the pacing and keep him moving and give him a more immediate and pressing objective. The opposite is true as well; there are chest chase maps where the player must chase down a treasure chest to obtain the treasure locked away inside. While the gameplay result is the same -- the player must be fast and keep moving -- the conceptual objective feels different. The player feels a drive to catch the chest that he does not feel while being pursued by a wall of flames, but the objective is clear.
+
+Objectives are all about what the player perceives as the purpose of his existence in the game world, and the feelings which the designer wishes him to associate with this experience.
+
+While the simplest way to access this golden collectible is by using the nearby bumper, players can choose to use the helping hands move on the safe ground directly under it, and stack their way to the same height.
+
+# Atomic Design
+
+Atomic design, like the unimaginably small particles after which it has been named, is a very low level in game design wherein the designer examines the small influential factors and finds clear ways to harness their power in the pursuit of creating a learnable, balanced, fun and exciting experience.
+
+One of the core principles of atomic design is considering at all times the required skills and inputs for a given in-game situation. By breaking down the number and difficulty of inputs and the complexity of the skills involved, it is easier to rationalize the way in which challenges are given to the player, keeping them from being stuck in a sequence which he cannot escape from due to the level of complexity required that he has not yet obtained.
+
+Inputs such as holding down on the left analog stick and pressing the attack button, in that order, can actually be more difficult than a designer would instinctively think. Many players confuse the order of the inputs, or have a hard time simply managing two things in sync.
+
+When we start to realize that some of our gameplay mechanics may be harder to execute, we think more critically about the frequency in which this mechanic is required, and find ways to best combat the barrier for entry. This is an example of breaking down and analyzing a mechanic which is the basis of atomic design; once we have deconstructed our mechanics into their base inputs and parameters, we can start to combine raw inputs to build new mechanics from scratch. By building mechanics in this way, we can more easily control the inherent difficulty to execute it and be better prepared for level design and defining the game system.
+
+A game system refers to the balanced relationship between all the gameplay and mechanics of a game; the game system is, in essence, the game as a whole. Gameplay by definition is a group of mechanics that are related to the same subject, such as, for example, navigation, shooting or swimming. Mechanics are challenges that evolve in difficulty depending on the implementation of proper atomic parameters.
+
+# Mechanics
+
+A game mechanic is a challenge based on a specific input and skill which can be altered by atomic parameters to increase the inherent difficulty of the challenge. To successfully define a mechanic, we must first define a skill to associate with it, so that we know what shall be challenged. A player skill is not the same as a character's skill or in-game abilities; player skills are something separate from the game world entirely, and are based on physical, mental or social actions that, when translated into proper inputs, allow the player to overcome a challenge.
+
+It is important to note that a mechanic by this definition is a challenge, and if no challenge is present, such as initiating dialogue with an NPC or accepting a choice within an interface, it is defined as an action instead. Mechanics are the critically important tools for developing good gameplay, flow and learning.
+
+---
+
+# Player Skills
+
+Physical skills are some of the most common skills challenged in games; they relate to pure physical endurance, timing and split second reaction times. The only limitation when given a physical challenge is the actual ability to execute the mechanic in the way required. Some examples of physical skills include quick reflexes, good timing, gauging of analog controls and understanding of the metrics of various mechanics, precision and endurance.
+
+Social skills challenge the player's ability to communicate and work together with other players; this is definitely important in a large multiplayer experience such as a massively multiplayer role playing game, but even in a couch multiplayer game like Rayman Origins, social skills can be useful and even challenged from time to time. Social skills include things such as cooperation with another player, leadership of a group toward a common goal, communication between players to either co-ordinate an action or debate on what to do next, known as negotiation.
+
+An interesting use of the players' social skills in Rayman Origins is what has been called the "helping hands" mechanic, where one character can raise their arms like a pedestal for another player to jump on, who can in turn perform the same action for a third and so on.
+
+In this way, through some social coordination between players on the couch, they can collaborate and create a stepladder to reach higher places without having to follow the otherwise predetermined path of the level.
+
+Players who do not wish to exert their social skills and prefer approaching the problem in the default fashion have the choice to do so, but it is good to provide options for multiple player types.
+
+Mental skills are brought into play for the more puzzle oriented experiences in games; things such as logic, memorization and association can be challenged and exploited to create a very complex puzzle.
+
+Mental skills are not only limited to puzzles, however; similar to social skills, in multiplayer games like real time strategy, mental skills like management, tactic and strategy comprise a large portion of what the player is doing during a match. Mental and social can be combined in this scenario, as a player not only has to analyze and manage his own resources, but also consider those of his allies, and cooperate to defeat the opposition swiftly.
+
+In deciding which skills we want to challenge and to what degree, we must break down the mechanic into its inputs and atomic parameters involved.
+
+# Inputs
+
+Inputs can be tricky when underestimated; many times a designer will take for granted the difficulty of a set of controls or an input type that is physically uncomfortable or difficult for a player. All of this must be taken into consideration when defining the inputs for each gameplay mechanic, and the difficulty of the input must be factored into the way the mechanic is challenged in the level design.
+
+Factors that determine the inherent difficulty of an input include the number of buttons that need to be pressed simultaneously, or in sequence (and if in a sequence, how much time allowance is there between button presses to register the input as a success), the use of an analog stick along with a button input and the accuracy involved in the input itself. Take the most complex move in Rayman Origins, for example: the tornado attack jump. This is an move that requires four specific inputs:
+
+* Holding down the right shoulder button to initiate sprinting
+* Gauging the analog stick in the direction the player wishes to move
+* Pressing the attack button
+* Pressing the jump button immediately after
+
+This level of complexity makes successfully executing this mechanic quite difficult in comparison to a simple sprint and jump, so if the designer is to challenge this mechanic he must take into consideration that it is difficult to execute, so perhaps the challenge itself might be slightly more forgiving to compensate.
+
+# Atomic Parameters
+
+Every mechanic contains at least one atomic parameter which upon alteration will influence the amount of challenge associated with the mechanic at that particular moment in the game. One mechanic can share multiple atomic parameters, though -- each having their own weight of significance on the challenge, but never in the same aspect as the others.
+
+To fully explore the use of an atomic parameter, it is useful to study five differing values for each relating to difficulty: No influence on difficulty (simply written as ˩), easy, normal, hard, and impossible (simply written as ∞). By exploring the non difficulty case and the impossible case, we can more easily understand how a situation is affected when this parameter is either in full effect or no effect; if an enemy's scale fills the entire screen, then the atomic parameter for accuracy when shooting is ˩, simply because there is no possibility of missing.
+
+This allows the designer to think of other ways to challenge the player to compensate for the ˩ of the accuracy parameter, such as forcing the use of stronger weaponry or having good timing based on a window of opportunity. Similarly, when a parameter is in ∞, such as an enemy having infinite health, it forces the player to take an alternate strategy for defeating them. With these five values, it is also important to quantify the parameters significantly, either in terms of metrics, percentages or times; there is no such thing as a vague atomic parameter.
+
+As mechanics are defined by skills and inputs, and skills and inputs are influenced by atomic parameters, in almost all cases multiple parameters are adjusted when gauging difficulty of a sequence or element. A useful method of analyzing the relationship between all of these factors is to create a skills versus inputs matrix which plots skills along one axis and inputs along the other. At the crossing cells, the related atomic parameters can be found. As they relate to player skills and not in-game actions, atomic parameters should always be factorized; if the parameter includes some form of syntax from the game context to define, then it is no longer a proper atomic parameter.
+
+An example of a skills versus inputs matrix. This is a good way to clarify the relationship between each input and how a skill is challenged by it.
+
+Atomic parameters, while applicable to gameplay ingredients, can also apply to level design patterns. The earliest level design patterns presented in game should be the easiest combination of atomic parameters; the player must get past the initial hill of understanding the mechanics in an easily achievable environment before moving on to more complex and challenging sequences. By simply adjusting one atomic parameter, the difficulty of the same sequence could be changed drastically.
+
+While many atomic parameters are injected in a static fashion, they can also appear dynamically to change up the rhythm or difficulty in an unpredicted and exciting way. One of the best examples of this form of atomic parameter in Rayman Origins is the King Lum collectible which, upon collection, will temporarily turn all Lums red and give the player twice the points when a Lum is grabbed. When the time runs out, the Lums return to their normal passive state. This alters the window of opportunity in which the player can complete a sequence filled with Lums that might have otherwise been in a ˩ state.
+
+It does not only have an effect on the number of Lums collected and the speed at which the player does it, however, as narrowing the window of opportunity also increases the player's input frequency to a level that he might not be comfortable with, and could potentially result in more accidental deaths. Atomic parameters are very small factors, but playing with them can have a large impact on the game system.
+
+---
+
+# Flow
+
+Flow is a mental state proposed by psychology professor Mihaly Csikszentmihalyi in which the person is at one with themselves and the task they are performing. They seemingly transcend time and space and effortlessly succeed in a state of peacefulness and serenity. This state of flow undoubtedly is extremely relevant to game design, and one might even go so far as to say it is the closest we can get to objectively defining the term "fun". Csikszentmihalyi breaks down how it feels to be in a state of flow:
+
+1. Completely involved in what we are doing - focused, concentrated
+
+2. A sense of ecstasy - of being outside everyday reality
+
+3. Great inner clarity - knowing what needs to be done, and how well we are doing
+
+4. Knowing that the activity is doable - that our skills are adequate to the task
+
+5. A sense of serenity - no worries about oneself, and a feeling of growing beyond the boundaries of the ego
+
+6. Timelessness - thoroughly focused on the present, hours seem to pass by in minutes
+
+7. Intrinsic motivation - whatever produces flow becomes its own reward"
+
+Csikszentmihalyi suggests that a human brain is incapable of processing more than about 110 bits of information in a second, and to listen to a person speaking and process what is being said, it requires about 60 bits per second already. When a person is in a state of extreme concentration and flow, he is devoting all of his brain power to the task at hand, leaving himself without the processing power to think about how he feels at the given time. Csikszentmihalyi even suggests that the person's existence is temporarily suspended during the true state of flow.
+
+In this sequence, the harmful roots are undulating, closing and re-opening the path for a short window. The player usually has all the time in the world to wait for the proper timing, but once the King Lum is in effect, they must move speedily through, risking the possible death due to bad timing.
+
+In the realm of games, there are a number of things a designer can keep in mind so as to help catalyze the process of reaching a state of flow. By providing challenges that constantly adapt to the increased skill level of the player, they are always kept on their toes, but understand that they have the tools to overcome the challenge.
+
+For this to happen, it is necessary to provide clear goals for everything; if the player loses sight of the purpose of a sequence, they might get confused, lost or even bored. With clear and immediate feedback for success and failure, a player can very easily perceive the consequences of their actions and adapt their play strategy accordingly. Good signs and feedback will be subconsciously understood, requiring less active brain power from the player, leaving more for concentration on the challenge itself. This process of maintaining difficulty and interest is known as the macro flow.
+
+A diagram depicting the relationship between skill, challenge and the state of flow based on the original by Mihaly Csikszentmihalyi.
+
+# Macro Flow
+
+Macro flow is the constant rise in difficulty to compete with the player's increasing skill level, maintaining the balance between boredom and anxiety. Macro flow refers to the entire gameplay experience from the beginning of the game until the end, and having a good macro flow will likely result in constant interest and intrinsic motivation on the part of the player throughout the course of the game. Maintaining a good macro flow requires proper management of a number of important factors:
+
+1. Learning - how the player is introduced to the gameplay elements and mechanics, and how a designer ensures that the player understands enough to be challenged.
+
+2. Difficulty - maintaining the level of challenge based on the rationalized minimal required skill level at a given point in the game.
+
+3. Pacing - managing the ebb and flow of the game, creating moments of tension as well as moments of relief and calm progression; proper pacing aids in avoiding boredom, and exposes the player to different emotional experiences every step of the way.
+
+4. Variety - breaking away from the game's norms and allowing the player to experience something fresh and exciting, as well as challenging their understanding of new inputs and challenge types.
+
+5. Motivation - understanding different player types and what motivates them, and implementing numerous motivators in the environment that will lead the player to an eventual state of flow and intrinsic motivation.
+
+The rational level design process allows for intelligent distribution of gameplay elements to keep all of these factors in constant balance so as not to upset the macro flow. A more in-depth breakdown of the rational learning process and managing difficulty will be discussed in a later section, as well as the concepts of variety and player motivation.
+
+The article titled Darwinian Difficulty: How Throwing Players In Headfirst Can Work proposes a contrasting method of teaching and in the process, a different macro flow structure. In it the author describes the technique of throwing the player into the game with the full level of difficulty presented at the start; through constant attempts to overcome these ridiculously demanding challenges, the player slowly gains strength and understanding of the mechanics at his disposal, and learns to better cope with the dangers of the wild he has been thrown headfirst into.
+
+What this results in is a constant level of difficulty throughout the experience, and as the player becomes more and more skilled, the difficulty level starts to decrease slightly in relation to the player's obtained skill level.
+
+The player must deal with constantly sliding downwards on the flowers as well as the walls, and try to do it in sequence to collect all the Lums before the King Lum timer is up.
+
+# Micro Flow
+
+Micro flow is short intense periods of flow that happen frequently, as well as the constant adaptation of the game's challenges to the player's increase in skill level. It is perpetuated by repeated successes in rapid succession, which provides positive emotional and tangible feedback encouraging the player to continue in the micro flow; this is known as a virtuous cycle. Through positive reinforcement they become more intrinsically motivated to play the game, and by playing well they are rewarded with more positive reinforcement.
+
+Micro flow is short intentionally, so that the player can experience it more frequently and easily recognize it as a strongly rewarding experience. By doing so, the designer can use similar signs and feedback among the many varied challenges in the game and help promote micro flow more frequently and easily.
+
+In many game systems, difficulty tolerance is increased when entering a successful chaining of inputs, so as to promote flow and help the player to maintain their flow more easily. Another way of inducing flow is by making the series of inputs required form a rhythmic tempo; this helps to condition their reflexes, as humans can feel rhythm quite easily and apply it with little effort.
+
+In his article, How to Make Difficult Fun: Donkey Kong Country Returns, Matt Arnold raises an interesting point about what he calls "conquerable mini challenges", which are small but satisfying challenges along the critical path separate from the macro challenge of reaching the end of the level. These micro challenges can be likened to the aforementioned definition of micro flow.
+
+In Rayman Origins, catching a King Lum and successfully collecting a full series Lums before the song stops can be seen as a mini challenge. What is interesting about these mini challenges is that they provide the player with frequent opportunities to demonstrate their skill in varying situations, and receive very satisfying positive feedback in doing so, potentially reducing the impact of failing the macro challenge and being forced to start over.
+
+Also interesting is the fact that while the player might have to repeat a large part of the level when he dies, he is given a second chance to master the mini challenges along the way that he might have failed in his first run. This provides him with time to practice useful moves, demonstrate his skill level and ultimately, reap greater rewards and positive feedback before the final satisfaction of finishing the level. These mini challenges are essential for giving the player a sense of accomplishment every step of the way.
+
+Games such as Super Meat Boy, which, in comparison to Rayman Origins or Donkey Kong Country Returns, have little to no mini challenges, provide the player with very small levels, making each one feel like its own mini challenge. The experiences are short and difficult, but the controls in Super Meat Boy are so tight that the player is constantly perfecting their ability to complete the level, which is rewarding in its own right.
+
+---
+
+# Accessibility and Difficulty
+
+"All the best games are easy to learn and difficult to master. They should reward the first quarter and the hundredth." - Nolan Bushnell
+
+In is essential for all players to properly learn how to play the game in a gradual way so as not to be initially overwhelmed or be fed too many similar tasks to repeat and quickly shut off the game out of boredom. As mentioned in the previous section, this is the goal of macro flow.
+
+Take the introduction of a simple gameplay element, such as a flower bumper in Rayman Origins. This gameplay element will automatically rebound a player along a defined trajectory once landed upon, and if the player performs a crush attack onto the bumper (down on the control stick andthe attack button), the increased downward force of the character will allow the bumper to propel him twice as high.
+
+This is a complex concept to teach a player, as the gameplay element not only has one behavior to learn, but two different behaviors, and with different methods of execution of varying difficulty.
+
+A level designer cannot simply put a flower bumper in the player's critical path in the first level and expect him to instinctively crush on it and fly to the only available safe platform on the screen; first, learning of the crush attack must occur, as well as learning of the initial behavior of the bumper.
+
+Only after the player has these two pieces of information can he infer what the result of a combination of the two might be.
+
+The way that this learning process needs to happen is through teasing the player with the existence of the gameplay element in a safe manner, then teaching the player how it is used and allowing multiple areas to practice safely before finally posing them with a master challenge to prove their understanding. These three stages can be described as exposition, validation and challenge, and they are the three stages of teaching a mechanic or gameplay element that need to be properly implemented throughout the entire gameplay experience.
+
+With a successful crush attack, the player will continue through to the bumper, exposing the secondary trajectory of the gameplay element, with a large bundle of Lums as a reward. The enemy on top of the bridge is a subtle way to indicate the significance of the bumper, as he is keeping the player away from it, with the intention of stirring their curiosity.
+
+# Exposition
+
+According to Sheri Graner Ray in her article Tutorials: Learning to Play, there are two distinct styles of acquisition when it comes to learning mechanics in a game: explorative acquisition and modeling acquisition. Explorative players tend to press every button on the controller until they know exactly what their character can do, and then they explore and learn to play the game as they go along.
+
+Modeling players need information beforehand to truly understand what they are getting themselves into before delving right into it. Understanding the distinction between the two can be extremely useful when preparing a method of teaching in the early stages of a game, to be certain all players are able to grasp the core concepts and actually play the game.
+
+For a level designer to ensure that modeling acquisition players can overcome an obstacle requiring a complex input, a tutorial box is a harmless way to give a helping hand. The best practice is to keep tutorial texts short and meaningful and contextual images for controller mapping are a big help for input recognition. An over abundance of tutorial boxes can have the detrimental effect of patronizing a player, by giving them the feeling that the game thinks they are incompetent, as well as the fact that it can be more confusing and intrusive than helpful.
+
+Tutorials take up a portion of the screen space or, in worse cases, pause the gameplay experience to force the player to read them, and these are ways of not only breaking immersion and concentration, but it most definitely breaks flow, the last thing a designer wants to be responsible for killing.
+
+To quote Graner Ray, "...a tutorial for the modeling learner should allow them to repeat the activity until they say they are ready to move on. If we only allow them to try something one time, it can make them feel rushed and even more uncomfortable than they did before they tried the action. The more uncomfortable a player is with learning a piece of software, the less likely it is they will stick with it or even use it at all... At the same time by providing the explorative learner the opportunity to "skip past" the modeling sections quickly and easily, we can ensure the explorative acquisition player doesn't get bored and shut the game off either."
+
+This is the core concept of the exposition phase of a mechanic or gameplay element. It is presented in a way that it is not obstructing the player's critical path, nor is it attracting too much attention away from the micro flow goal of the sequence. It will not impede the explorative acquisition player's speedier progression, but provides the modeling acquisition player with a safe playground for experimentation and understanding before he decides to proceed on his own terms.
+
+As the crush attack is one of the most difficult inputs required in Rayman Origins, a tutorial box was necessary -- as seen after numerous play tests.
+
+# Validation
+
+It is necessary to test the player and ensure that they have successfully understood the required mechanic to the degree that they can execute it in the middle of a challenge, and this is known as the validation stage in the rational level design learning process. Validation is most effective when done in a safe area, blocking the player's progression to force learning.
+
+Hopefully the exposition phase has already rendered this validation unnecessary for most players, but there will always be one player who has been oblivious to previous occurrences of the mechanic or gameplay element and the validation is their chance to learn. By keeping the area safe, the player is given total freedom from time and danger constraints to explore the situation and their range of possible inputs.
+
+It is also good practice to re-validate specific abilities or gameplay elements from time to time, typically to refresh the player's memory in preparation for a nearby challenge. One of the core mechanics required in the boss level "My Heartburn's for You" is the wall run, and as the level can be quite challenging, it is essential for the player to remember how the wall run functions and what signs indicate the use of the mechanic. By making use of an opening valve to break the curvature continuity of the wall, which would otherwise enable the use of the wall run, it is possible to indicate that the move has been successful, and that the player no longer needs to use it in this area to progress.
+
+# Challenge
+
+In the Rayman Origins level "Freaking Flipper", there is a situation in which the player encounters a blockage of stacked crates and bottles and must find a way to remove it to continue through the level. In the middle of the pile rests a single large crate with the word "TNT" painted on it.
+
+The red TNT painted on the side of the crate indicates danger, as well as TNT being a well-known explosive substance. This gameplay element requires no extra explanation; all the player needs to learn is how it affects them in game space.
+
+The player has two choices: deftly break their way through the blockage by tearing through the bottles under the TNT crate and activating it in the process, or attack the TNT head-on to activate it and back off until it explodes, opening the path for them. Either scenario forces the learning and understanding of the TNT crate, preparing them for the optional skull coin challenge to the right of the blockage. Not only the TNT crate is explained through completion of this simple challenge; by tearing through the blockage the player is also introduced to the unbreakable iron crate and its falling behavior.
+
+It is inferred that by passing this simple challenge, the player has understood the behavior of the three breakable types, and is prepared for the skull coin challenge presented nearby. The reward is in plain sight -- a large shiny Skull Coin -- but the danger elements are also clearly represented: two large TNT crates and a single iron crate suspended directly above the coin.
+
+By putting together the knowledge obtained from mere seconds ago, the crates will explode shortly after a simple attack, and once gone, will allow the iron crate to fall on top of the coin. This leaves the player with a window of opportunity to swim under the crate, collect the coin and escape before being crushed. While this can be considered quite a challenge, the player has been given all the necessary knowledge.
+
+Also interesting to note is the clear use of the concept of risk and reward, which will be discussed in detail in the following section. The reward is clearly shown, and the danger of the situation is clear, red and understandable, and it is entirely the player's choice to accept the challenge or walk away.
+
+A challenge is a test of a player's skill and knowledge, but just because it is a challenge does not mean danger must be involved.
+
+For the sake of the game's macro flow, the challenges must start as slightly more complex than a simple validation and progressively evolve into tough-as-nails split-second reaction reflex challenges at the end of the game. With a steady macro flow, majority of players will have acquired the level of skill necessary to complete even the trickiest challenge in the game thanks to a proper difficulty curve.
+
+---
+
+# Level Structure
+
+The aforementioned principles are important for any stage of the game, but what if the game has a more open world structure rather than a fully linear experience? How is a designer supposed to be able to guarantee that a player has been properly exposed to and taught how to use necessary gameplay elements before a master challenge when he has complete freedom to roam anywhere in the level?  
+  
+The answer lies in a combination of the two, where the level structure tapers into short linear sections of gameplay, and then opens back up into a more expansive environment offering freedom of exploration, movement and choice. The important thing is that the linear section allowed the designer to teach the necessary skills in a controlled environment before setting the player free into the world.
+
+Both levels are quite open at first glance, but the way they are structured forms a series of tapering linear moments with the contrasting sense of open world freedom.
+
+Games such as Metroid Prime or Resident Evilhave a similar structure to them; both the mansion in Resident Evil and the Ruins in Metroid Prime contain a large network of interconnected rooms, creating a very large environment with a lot of freedom of movement and choice.
+
+What is implemented by the designers, however, is a lock and key system, where the player is barred access to rooms with certain locks until he has found the right key; in Resident Evil this is quite literally the case, where one key will work on ten different rooms in the mansion, and finding the next key will open ten more. In Metroid Prime, the doors are only openable by specific weapons that the player must obtain.
+
+The player is left with room to breathe and significant amount of choice, but out of all the available options, the player is forced to find the specific item that will allow further progression, and the path to this special item is exactly the tool the designer needs to ensure learning has taken place.
+
+"…the game doesn't explicitly tell you to go south. This is not accidental, and is the main way the game communicates. Modern games tell you 'go south to get your sword'. Link's Awakening simply provides information and lets the player use their common sense and logical thinking to decide what to do next." - Starting the Perfect Adventure – Link’s Awakening, by Matt Arnold
+
+The best level designs guide the player indirectly with signs and points of interest that catch their attention and pique their curiosity. In games like Rayman Origins, the clear simplicity of always travelling from left to right is enough to keep players constantly aware of their required destination. It was important in Rayman Origins to reduce the amount of forced backtracking to not confuse the player, and every level of the game contains progression from left to right.
+
+In games like Half-Life 2 and Portal 2, the player is guided through characters, dialogue and environmental cues that attract attention, and give the player intrinsic motivation to seek them out and discover what the level has to tell them, but they are never taken out of playable situations for the sake of guidance or storytelling.
+
+The player has a limited time to slide down and jump from the wall to collect the coin before the bubble descends into the dangerous water; an obvious risk, with a clear reward.
+
+# Risk and Reward
+
+Rewards in games are essential for providing a positive feedback loop and, in the process, encouraging the player to maintain their interest and engagement in the game world. Rewards function essentially as catalysts of micro flow; by properly rewarding successful sequences in the game system, the player is satisfied, proud and motivated to further this feeling of accomplishment and ultimate satisfaction. The game must proportionately reward the player, however, for the level of challenge they have overcome, so as to not lessen the significance of the feeling of triumph the player experiences.
+
+This is described by the simple equation below, from Anjin Anhut's article Having a Satisfying Conversation.
+
+"Challenge - Support = Accomplishment… Accomplishment + Reward = Satisfaction"
+
+It is becoming a trend in modern games to extensively hold the player's hand throughout the experience so as to maintain a proper grip on the difficulty of the challenges and prevent the player from becoming unable to progress. While it is undeniably useful to keep a close eye on the player and guide them through rational level design, the more the player is supported by the game system, the lesser of an impact the successful completion of a challenge will have, ultimately bringing the player a lesser sense of accomplishment.
+
+If a child rides his bike while his father is holding it in balance, he will not truly have overcome the challenge of riding a bike, hence it will feel less satisfying. However, that moment when his father releases the bike and allows him to take full control is when he feels a true sense of accomplishment.
+
+The player is awarded an Electoon for reaching the end of the level. 150 Lums earn the player their second Electoon, and for 300 Lums they can even have a third.
+
+In a blog post entitled Extra Credit!, by Edmund McMillen, game designer and artist on the indie game hit Super Meat Boy, he breaks down the core concepts of risk and reward from older games such as Pac-Man and Super Mario Bros, and eventually analyzes the way he has applied these models to his own game.
+
+The core concept is: the greater the risk, the greater the reward; hard-to-reach collectibles tend to be the most valuable, and a good level designer will make sure to provide clear signs to the player from the start to give them a obvious indication that the path to the reward is perilous.
+
+Risk and reward ultimately needs to come down to player choice. As game designers, we should not impose many choices on the player, but rather we should provide them with an array of opportunities and give them the chance to gauge their own skill and take the risk for the sake of the reward, and it is our job to ensure that their efforts are properly rewarded.
+
+Simply being rewarded for completing a challenge, while somewhat satisfying, by itself can leave players wanting more of a sense of accomplishment. Therefore, a reward system which is based on how well the challenge was completed provides the player with a quantifiable reward that sums up their skill level in a way that allows them to understand that they were not perfect, and could potentially improve if they are interested in doing so.
+
+These "measurement achievements"\_ provide intrinsic motivation, a drive to perform better to achieve a higher score for a sense of personal satisfaction. The artificial ceiling that is created when restricting the measure of the rewards the player can earn, which once reached leaves a sense of no perceived possibility to exceed the level of performance displayed, can have the downside of disinclining the player to revisit a specific piece of gameplay, ultimately killing replay value.
+
+By making the maximum Lum count in Rayman Origins higher than the highest value associated with a physical in-game reward, from the player's perceived standpoint, the sky is the limit, and it is up to them to search every annex of every path in the level for the last hidden Lum that will increase their previous maximum count by one, leading to far more replay value than simply providing "three stars", as is done in smaller more casual games such as Angry Birds or Cut the Rope.
+
+The game celebrating the player’s achievement in the form of a disco party; loud music, bright lights and groovy dancing help to praise the player for a job well done.
+
+While it is easy to fall into the position of saying completion achievements should be avoided as much as possible and replaced with measurement achievements, it is important to recognize the significance of rewarding the simplest form of completion for the sake of validating a player who made it to the end.
+
+The Electoon system in Rayman Origins does a decent job of combining the simple completion reward with deeper, more measured rewards. At the end of the level the player is rewarded with an Electoon. When he finishes with enough Lums, he is given a second, and a third. The player is given the opportunity to earn greater rewards through better performance, but a reward is still available for the most basic form of completion.
+
+"A lot of games are stingy with their rewards, especially the emotional rewards, which is kind of stupid because they don't cost anything. If you give too big a treasure at the end of a quest, you'll have to rebalance the rest of the game, but there's no harm in giving big emotional rewards. When the player does well, celebrate!" - Ernest Adams, The Designers' Notebook, October 2010
+
+Ernest Adams makes a fascinating argument about the significance of emotional rewards for a player. It is always important to provide positive feedback all throughout the course of the game, and not all rewards need to come in the form of something tangible; sometimes a simple sound effect signifying the successful chaining of a string of enemies can be reward enough to raise the player's spirits before trudging on with the rest of the level.
+
+In a match of Marvel vs Capcom 3, the number of chained hits are counted in large satisfyingly bright letters across the screen, and when pulling off an especially tricky move, the player is rewarded with text such as "Great!", "Viewtiful!" or even "Dude!". These mean nothing tangible in the game world, but they have the same emotional impact of a crowd cheering at a football match, and drive the player to continue succeeding.
+
+The end-of-level score screen in Rayman Origins is a perfect example of extreme emotional rewards: the player must collect 300 Lums in a level to unlock two available Electoons -- valuable items that allow them to progress further through the game. However, it is always possible to collect more Lums than is required.
+
+When the player reaches 350 Lums in one level, the score screen literally celebrates the players' victory; confetti is thrown in the air, a giant gold medallion flies on screen, disco lights flash, and all the characters start dancing to funkadelic disco music. The game truly makes a celebration out of succeeding, and it manages to provide a real sense of accomplishment solely in the form of emotional reward; the medal means nothing in the greater scheme of things, but the way it is celebrated makes it feel far more rewarding.
+
+---
+
+"The best designers marry function with form to create intuitive experiences that we understand immediately… the ability to instill a sense of instant familiarity." - John Maeda, Laws of Simplicity
+
+Signs in games have the sole purpose of indicating to the player what the function of a specific element in the game world, is so as to prepare them for the result of their interaction with it. An enemy covered in thorns, for example, is likely to be harmful upon physical contact, which should lead the player to the realization that hand-to-hand combat is out of the question. Through one simple aesthetic choice on the part of the designer, the player now has an inherent understanding of the abilities the creature possesses, and has the logical tools to overcome the threat.
+
+Signs need to be self-explanatory, as well as unambiguous; if the enemy is covered in dull-tipped spikes, while they can clearly be seen as spikes, they could be mistaken as blunt and therefore harmless; designers must make an effort to keep signs simple, clear and perceptible, so as to have the highest chances of immediate understanding from the player.
+
+Signs can come in the form of sounds, special effects, textures, animations, vibrations, and even character design; almost every aspect of a game should be used for the sake of creating clear signs all throughout the game world.
+
+Feedback is the information given to a player after he has done something in the game world, such as a vibration upon crashing his car into a building, or the simultaneous explosion from the front end of the vehicle and the accompanying sound effect.
+
+Feedback should come from everything in the game, from player initiated character actions to gameplay element reactions, and even heads up displays. The best feedback is immediate, so as to create a clear and inherent correlation between the action or stimulus and the feedback of the reaction.
+
+With this unambiguous association, the player can begin to understand the game environment, and better execute actions intentionally and in a correct and coherent manner.
+
+While many different sound effects can be played at the same time, such as the background track, ambient sounds (signs) emanating from the nearby gameplay elements and the feedback from the player's last input, it is necessary to keep all these layers of feedback locally organized by balancing the volume of each sound layer to increase the impact of the feedback and not mask it by other environmental or ambient sounds. This is true of special effects and animation as well; all feedback on screen should maintain a good balance to maximize clarity and readability.
+
+# Color, Shape, and Scale
+
+Distinct colors form recognition and patterns; green elements become friendly with a similar purpose, as can be seen in the adjacent image. All platforms share a yellow-green color across all the different worlds, and the bumper objects, also similar in shape, have the same color palette to categorize them with the safety implied with the other platforms.
+
+Also, by keeping colors rare, they help to emphasize the significance of the specific object, as well as establish a clear contrast between itself and the surrounding environment. This principle holds quite true to the color composition of the playable characters as well; it is important that a game's characters not blend into the environment too well, otherwise they might be hard to keep track of.
+
+Not only color, but size can have a large influence on the clarity of a gameplay element; if an enemy is roughly the same scale as the player character, it is quite easily understood that they are of equal strength, and as such the player should be able to dispose of them with little effort.
+
+The flower bumper in Rayman Origins has two varieties, one default scale and one which is twice as large, as an indication of the fact that the supersized bumper has twice the launching power of the default-scaled one. Simply by making the asset larger, it becomes a clear sign for the player that this will not function in exactly the same manner as the smaller bumpers the player might have previously encountered.
+
+One principle that was well-implemented in Rayman Origins is the use of a strong recognizable silhouette for clear indication of danger. As can be seen by the adjacent image, all of the dangerous gameplay elements from all of the varied worlds in the game share a similar spiky silhouette as an indication of the inherent danger of the object.
+
+While these objects do not share a similar color palette to indicate their inherent danger, the silhouette alone serves as a clear enough sign for universal understanding. By combining a strong silhouette with color and scaling, a gameplay element can be extremely apparent, readable and clear almost immediately.
+
+# Variety
+
+"Too many games offer the same gameplay over and over. If you want to make a joyous game, fill it chock-full of wondrous things to see and do" - Ernest Adams, The Designers' Notebook, October 2010
+
+Variety is essential for breaking the repetitive nature of a core gameplay style, so as to keep the experience fresh and exciting for the player, as well as providing them with an experience which might require them to rethink their gameplay strategy to cope with the new conditions.
+
+In rational game design, the best way to implement variety in a game is to approach it in a subtractive way; rather than adding new mechanics and new learning, remove half of the mechanics the player has become comforted by over the course of the game so as to force them to learn to cope without them.
+
+"Simplicity is about subtracting the obvious and adding the meaningful" - John Maeda, Laws of Simplicity
+
+Variety in gameplay should change the player's rhythm significantly; the way they approach a challenge normally might not be an option in the current challenge, so they must learn to play in a different way if they mean to complete the sequence. Input frequency and types of inputs are key ingredients to creating good variety in level design; by forcing a slower rhythm, the sequence can force an otherwise speedy player to take it slow for a change, and give him a new sensation that he otherwise would never impose on himself.
+
+One example of this is the level "Skyward Sonata" in Rayman Origins, which has the player constantly running on top of a short snake-like flute that is flying through the air, which forcibly scrolls the camera forward outside of the player's control. The constraint of not only having a small safe area to stand on paired with a constantly scrolling camera adds a lot to a player's anxiety level independent from the actual gameplay challenges posed in the level itself.
+
+Because of this, I had to compensate and make the challenges quite simple, almost as simple as the challenges found in the second or third level of the game, but purely because the player is out of their comfort zone and constantly moving, the simplicity of the challenges balance it out and keep the level achievable but memorable.
+
+These moments of variety in a game must be tweaked in such a way as to not disrupt the macro flow of the game, however, as a drastic change in gameplay can be confusing for a player, and by making the level too challenging as well can throw off the delicate balance of the macro flow.
+
+Variety also comes in the form of different challenges displayed in a level, each with their own distinct risk and reward to help the player make a conscious decision on how to proceed. A Skull Coin can be placed on the upper path surrounded by spikes, while on the lower path the player is presented with a King Lum sequence.
+
+In essence, both paths can provide the player with the same physical reward (a Skull Coin is worth 25 Lums), but the clear difference in presentation the two paths makes the experience all the more unique. What is also interesting to note is that even if the player never ventures onto a certain path in the course of their play through, simply by catching the existence of the path in the corner of their eye provides a sense of depth, coherency and expansiveness to the game universe which only further facilitates the sense of immersion.
+
+Large contrast makes for highly memorable moments; the more extreme the difference of the in game conditions from the norm, the more memorable the variation will be. In the boss fight "My Heartburn's for You", the player is enclosed inside of a giant dragon's stomach and pursued by long flame trails. This situation removes the ability to do anything else, which results in clear emphasis of the importance of the wall-run mechanic and induces a stronger appreciation for it that the player might not have previously felt.
+
+While one must be cautious not to revisit the same unique game format too often with the risk of removing the uniqueness and memorability of the previous instances, repeating combinations and variations can provide the player with a feeling of understanding and recognition, meaning that their second chance at a specific level format can give them a feeling of superiority that had been taken away from them in the first instance.
+
+---
+
+# The Variety Matrix
+
+In the rational design process, a variety matrix is a very useful tool for quickly generating various gameplay situations that might otherwise not be considered due to the illogical combination of abilities. This is exactly what is wanted with variety gameplay: the one combination that nobody would ever consider basing a level around, the combination that forces the designer to think outside-the-box and ends up being the most memorable sequence in the game. A variety matrix can be created by listing all the abilities, tools, activities, time and space options, and then each row consists of x's and o's in a random configuration, with the result being the possible gameplay variant.
+
+A variety matrix for Rayman Origins, with the two rows at the bottom representing possible level formats. The combinations are endless, and by randomly assigning x’s and o’s variations a designer might never fathom could emerge and provide an extremely refreshing deviation from the norm.
+
+# A Silver Bullet
+
+Game design professor Anjin Anhut coins the term "Silver Bullet" in his article Lazy game design: Silver Bullet Combat when referring to a gameplay element that can one-hit-kill a certain enemy-type, so as to create a clear cut rock-paper-scissors dynamic wherein the player only needs find the proper counter and can then skill-lessly defeat the foe time and time again.
+
+Adding a silver bullet does not simply create variety, as it does not change the way the player approaches the combat, simply which tool he uses to get the job done.
+
+A silver bullet can work well to conclude a memorable boss fight, as the player has invested significant time and effort to weaken the boss and expose its weak point, so driving the stake into the heart of the creature brings a sense of guilty pleasure and reward, because the player has earned the right to do so.
+
+In this example, the silver bullet adds variety to the boss fight by giving the player a slightly different and strangely powerful action to perform at the end of a chain of more standard inputs.
+
+Games like Resident Evil 4 allow the player to buy rocket launchers throughout the game, and use them whenever they want, including during boss fights. The rocket launcher always results in a one-hit kill, ignoring the intricately designed boss patterns completely and giving the player no real challenge to overcome.
+
+This rocket launcher approach works in the context of Resident Evil 4, however, because there are multiple player types who play the game (see the section on motivation for more on player types), and not all of them are interested in long drawn-out encounters, but revel more in the sense of thrilling and horrific exploration and the stealthy tactical approach to avoid conflict. This rocket launcher allows the player to invest a significant amount of in game currency for the benefit of avoiding the would-be tedious boss encounter, but to have it, they must have enough money to purchase one. This is one case of a silver bullet that succeeds in injecting a little player-induced variety into the game experience.
+
+The fact that all the pipes in the center of the canyon are constantly descending sets the player at ill-ease, and requires him to climb faster than his usual pace. This is a simple modifier that not only changes the player’s input frequency, but also forms a memorable moment in the game.
+
+# Exotic Gameplay
+
+Exotic gameplay is a clear-cut method of injecting variety into an otherwise monotonous gameplay experience; exotic gameplay can consist of different character controls, mechanics, inputs, camera, as well as completely different gameplay situations to the ones the player is familiarized with, so as to wholly take them into a new realm of gameplay.
+
+Exotic, by definition, is a uniquely new experience, and for it to remain unique, it needs to be sparse in distribution throughout the game. Some exotic gameplay sequences only appear once over the course of an entire game, but they leave a significant and meaningful impact in the process. The shooter levels in Rayman Origins are a good example of exotic gameplay.
+
+As the core of Rayman is platforming, suddenly having full freedom of movement without the necessity to jump creates a paradigm shift for the player, and their goal no longer becomes platforming to the end of a level, but rather it evolves into quick and cautious navigation to avoid danger in a perpetually side-scrolling environment and shooting off incoming enemy swarms. Input frequency is changed, and the challenges associated with the joystick controls are entirely different from the norm; this is what makes the shooter levels successful exotic variety in Rayman Origins.
+
+An extremely simple challenge made difficult due to shifting ground and time pressure keeping the player slightly anxious.
+
+# Motivation
+
+"We are trying to exploit the psychology of the people that play our games all the time. We are trying to change their emotional state, and trying to predict what their emotional state will be based on what we are doing in the game world.
+
+What's compelling for people, like, 'Hey, they're getting a huge reward here, they are going to be happy. They are going to be challenged on the skills that we taught them here and that's going to be rewarding them.'" - Valve's Erik Johnson, Rewarding The Players: Valve On Portal 2
+
+Motivation is the force that drives human achievement. There exists internal motivation, which is driven by personal ambitions from within, and there is external motivation facilitated by outside factors. People are motivated by a diverse range of stimuli, and everybody is different, with their own ambitions and interests.
+
+At the lowest level, psychologist Abraham Maslow presents the idea that human motivation begins with the drive for sustainment and survival. Once the more base needs are satisfied, we then begin to move on to less external and more internal and personal motivating factors, such as a sense of accomplishment or being satisfied with one's life.
+
+This can be easily related to a game system, where the player enters with the base level of motivation: to reach the end and survive. This is simple, but it does the job of motivating most players to play the game. To keep their interest, however, more external motivators, such as collectibles or secret passages, need to be introduced into the system to form a personal drive to achieve, rather than mere survival.
+
+---
+
+# Player Types
+
+Richard Bartle, a professor, writer and game researcher, in his paper , presents us with a clear distinction between types of players that emerge when put in front of a gaming experience. Each player has his own personal taste and motivation when thrown into a game system, and this predisposition means that the game must have all the necessary tools for keeping this player personally engaged throughout.
+
+However, this also means that we cannot simply cater to this singular player type, as the others might miss out on the experience entirely. As a game designer, we must learn what kinds of players exist, and then analyze how we can best keep the controller in their hands and motivate them to proceed further with the experience.
+
+Bartle's proposed player types are as follows:
+
+- The explorer: someone who wants to explore and discover every single thing there is to know about the game world, as well as see every possible thing that exists in the game's universe. They do not particularly revel in the thrill of a challenge; their challenge is based on careful observation, as well as understanding how to access a point of interest that might not be initially apparent.
+
+- The achiever: he lives to exceed at in-game accomplishments, perfecting his grasp of the controls and mechanics, and collecting everything within his power. His greatest reward is something physical and clearly representative of his skillful achievement, and he is always willing to try to improve on his own personal best, just for the sake of it.
+
+- The social player: they enjoy interaction with other players, especially through in game or other means of communication. They enjoy discussing in game events and working through solutions with others.
+
+- The killer: these players revel in causing distress in other players; in a game such as Rayman Origins, a killer might simply enjoy following their co-op partner and kicking him into a spike at the last possible instant for the simple satisfaction of thwarting his friend's progress. He is most fulfilled when he is implicating others as a display of skill and superiority. He is inadvertently an achiever, but it is only fully satisfying for him if in the process he cuts down another player to steal the reward from him. The killer persona is clearly attracted to killing other player characters; killing an NPC brings him minimal satisfaction.
+
+Bartle's player types are the ones I have chosen to examine for the purposes of this paper, but it is interesting to note that another game designer, Mitch Krpata proposes his own taxonomy including his "tourist"similar to Bartle's explorer, and the "skill player" most closely relating to Bartle's achiever. He has fascinating insights into how his player types are differently defined and less vague than those of Bartle, but personally I find Bartle's theories to cover the necessary range of player types for this article.
+
+Running around the room is the only way to avoid being burned to a crisp by the deadly heartburn.
+
+# Player Types and Rewards
+
+Since there is a range of player types, each motivated by different stimuli and personal goals, to fully satisfy these endeavours a system of reward must be implemented. The player needs acknowledgement from the system to feel the sense of accomplishment, whether it be through quiet and patient exploration or through raw achievement. Different player types appreciate different emotional and physical rewards, so it becomes important to ensure that all of the available rewards fit cleanly into the in-game economy and other systems so as not to disrupt the delicate balance of the game. Rewards in Rayman Origins relating to respective player types consist of:
+
+- Lums - Lums are the generic collectible in the game, and they are present throughout the entire level for the player's collecting pleasure.
+
+"There are also goals which may not be stated, but exist because a designer constructed them. For instance, I don't think anybody ever tells you in Crackdown to collect all the agility orbs. But they're there, in interesting places to go, and many of us will do nothing but hunt them down for big chunks of time." - Joel Burgess, Motivating Players in Open World Games
+
+Nobody explicitly tells the player their goal is to collect Lums, but the allure of them is inherently strong, so every player will be drawn to them and tries to accumulate as many as possible. They are necessary for progressing to further worlds in the game, but a player can finish a level without a single Lum if they choose to do so.
+
+- Costumes - costumes are something along the lines of a trophy case for an achiever and explorer alike; they require dedication to unlock through Lum and Electoon collection, which can both be fulfilled through either exploration or hardcore achievement. Interestingly, the social gamer will strongly appreciate the reward of costumes, as each new character has a story to tell in the context of the game universe, and they are no doubt dying to read all about it.
+
+- Exotic bonus levels - chest chase maps in the game are an extra reward for the achiever in the form of a challenge; the challenge of overcoming a crazy difficult level is intrinsically motivating for the achiever in the same way a slap in the face when declaring a duel encourages the challenged to step up and prove himself superior. The level itself is a clear reward, but the emotional thrill the challenge of beating the level brings with it is all the more exhilarating to the achiever. An explorer will also be interested simply because it is another area of the game world to discover.
+
+- Information - in the hub map, the Snoring Tree, the player can pull on the beard of the Bubble Dreamer and he will proceed to tell some simple stories related to the chosen character; an explorer will revel in the chance to learn more about the game universe, and a social gamer will appreciate the communication with the Bubble Dreamer.
+
+- Cage maps - the explorer is rewarded for finding the entrance of a secret room, and the act of entering a hidden passage and being provided with a new gameplay experience makes the explorer feel like a great contribution in a party of different player types; because of him and his inherent sense of discovery, everyone in the party is treated to a unique moment of gameplay.
+
+- Skull Coins - these function as a clear indication of a dangerous and otherwise risky challenge; when a player sees a Skull Coin floating above him, he knows that there will be some danger involved, which further excites and motivates the achiever. Similarly, two Skull Coins are hidden on each level, providing the explorer with a similar sense of accomplishment, only in his case it is achievement through his own area of expertise.
+
+Motivation, as motioned in the earlier section entitled Flow, is extremely essential for bringing the player into the all important state of flow, and maintaining it for as much of the gameplay experience as possible. While the game has many devices for motivating the player, no sense of motivation is stronger than true intrinsic motivation; motivation to play the game simply because the experience of playing is extremely satisfying. This is what all designers should strive to instill in their players.
+
+# Closing Thoughts
+
+While the concept of rationalizing anything can make it sound calculated, planned and inherently boring, this article has hopefully explained how the process can produce anything but boring gameplay; rational design is merely a tool for facilitating solid learning and difficulty curves and even helps us to inject a lot of variety into the game experience to provide memorable moments and unforgettable scenarios. I strongly believe in the rational design process, and intend to make solid use of it on all of my future projects.
+
+Keep up with the latest News, Interviews, and Talk Coverage from GDC Festival of Gaming right here on Game Developer
+
+READ ON

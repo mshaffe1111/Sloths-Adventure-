@@ -1,0 +1,58 @@
+URL: https://www.mariowiki.com/Jungle_(Donkey_Kong_Country_Returns)
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Jungle (Donkey Kong Country Returns)
+---
+[Stripped: infobox images, media players, "Names in other languages" table, reference list.]
+
+Jungle. Games: Donkey Kong Country Returns (3D/HD), Donkey Kong Country: Tropical Freeze. Number of levels: 8. Previous: none. Next: Beach.
+
+"Don't you just love a nice sunset?" —Cranky Kong, Donkey Kong Country Returns
+
+The Jungle is the first world of Donkey Kong Country Returns, its Nintendo 3DS port and its Nintendo Switch port. Being the first world, the Jungle partly serves as a tutorial world. Tutorial Pig appears throughout, introducing the new and recurring mechanics of the game. Mugly is fought as the world's boss. The Jungle is covered with trees, many of them being large. There is a large waterfall coming down from a high cliff next to the Temple, and there are some rivers running through the trees. The Jungle itself is on a big peninsula, mostly bordered by a sandy coastline. The part that is not bordered by coastline is bordered by a very high, sheer cliff face, which goes up half the mountain to the Factory. More giant hills and cliffs appear later in the world, and the world boss, Mugly, is fought on the highest hill. Aside from its jungle theme, the Jungle features many ancient and dilapidated ruins. It also features a cavern area where Donkey Kong and Diddy Kong ride around on a Mine Cart.
+
+The Jungle can be considered the successor to Kongo Jungle from the original Donkey Kong Country, as both are the first world of their respective game and appear at the bottom of Donkey Kong Island. When asked if they were the same location, senior designer Kynan Pearson approved of the idea.
+
+The Jungle reappears in Donkey Kong Country: Tropical Freeze during the opening cinematic, where the Snowmads have turned the island into a snowscape. While the Jungle does not return as a world, it is featured as a representative level, Homecoming Hijinxs.
+
+## Levels
+
+| Code | Level | No. of Puzzle Pieces | Description |
+| 1-1 | Jungle Hijinxs | 9 | The first level of Donkey Kong Country Returns. Not only is it where DK's Tree House and its underlying banana hoard are located, but it also introduces some of the basic gameplay mechanics. |
+| 1-2 | King of Cling | 7 | The second level, which introduces a grassy, green turf that Donkey Kong can climb on. |
+| 1-3 | Tree Top Bop | 5 | The third level, featuring tilting trees. It is the first level to have Rambi. |
+| 1-4 | Sunset Shore | 5 | The fourth level. It is the first silhouetted level and takes place on a ridge by the seaside. |
+| 1-5 | Canopy Cannons | 5 | The fifth level, featuring several Barrel Cannons. |
+| 1-6 | Crazy Cart | 5 | The sixth level, which is the first level to feature Minecarts. |
+| 1-K | Platform Panic | 5 | The first secret level, featuring platforms that disappear shortly after being stepped on. |
+| 1-B | Mugly's Mound | – | The first boss level of Donkey Kong Country Returns, involving a boss fight against Mugly. |
+
+## Extras
+
+The Jungle diorama, unlocked after collecting all Puzzle Pieces in Platform Panic and defeating Mugly
+
+The following is extra content that can be unlocked in the Jungle. The unlockables can be seen in their respective galleries after selecting the "EXTRAS" option in a file's menu. For a full list of extras in the game, see List of extras in Donkey Kong Country Returns.
+
+### Images
+
+Images are unlocked by collecting all Puzzle Pieces in certain levels. All images that can be unlocked in the Jungle area are listed below, along with their titles and the levels wherein they can be unlocked (mentioned in parentheses).
+
+* Hut Exterior (Jungle Hijinxs)
+* Frogoon (King of Cling)
+* Jungle Waterfalls (Tree Top Bop)
+* Screaming Pillar (Sunset Shore)
+* Awk (Canopy Cannons)
+* Jungle Statues (Crazy Cart)
+
+### Music
+
+A soundtrack selection for this world can be unlocked after beating Mugly.
+
+Jungle Hijinxs - Plays in Jungle Hijinxs and Tree Top Bop. Contains an arrangement of the first part of "DK Island Swing" from Donkey Kong Country.
+King of Cling - Plays in King of Cling and Canopy Cannons. It also plays in Clingy Swingy, Springy Spores, and Crushin' Columns of later worlds. It is an arrangement of the second part of "DK Island Swing" from Donkey Kong Country.
+Palm Tree Groove - Plays in Sunset Shore; also plays in Foggy Fumes of the Factory world, and a rearrangement can be heard in Smokey Peak.
+
+## Profiles
+
+Prima Strategy Guide description (English): The Jungle is the first world. This is Donkey Kong's natural environment. There are lots of trees whose tops serve as platforms. Awks are one of the main enemies you face here, along with the tricky Frogoons. Of course, expect some of the Tikis, such as Tiki Goons and Tiki Dooms. This world is the least dangerous of the eight, so it is a great place for learning how to control Donkey Kong and experimenting with his various moves.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Jungle_(Donkey_Kong_Country_Returns)&oldid=5277505"

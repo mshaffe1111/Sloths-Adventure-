@@ -1,0 +1,51 @@
+URL: https://www.mariowiki.com/Canopy_Chaos
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Canopy Chaos
+---
+[Stripped: images, "Names in other languages" table.]
+
+Not to be confused with Canopy Cannons.
+
+Canopy Chaos is the third level of Donkey Kong Country: Tropical Freeze and its Nintendo Switch port of the same name, located in Lost Mangroves. It takes place in a rainforest area.
+
+In Time Attack mode, a time of 1:18.00 is required to get a gold medal, a time of 1:38.00 for silver, and a time of 1:45.00 for bronze.
+
+## Overview
+
+The level starts out in a rainforest similar to the one seen at the end of Shipwreck Shore. DK and Dixie Kong will go through it until finding another barrel, this one with the ability to bring in Cranky Kong (who switches out with Dixie). Professor Chops will then inform the player that they can bounce on surfaces by double-tapping the A button, which can sometimes break or hammer down objects. After defeating an Archy who shoots flying fish, the Kongs will bounce up a series of treetops leading up and containing enemies such as Monocle Monicas, Wild Wendells, and Archies, followed by some Barrel Cannons that blast them to a new area, this one similar to the forest below, except with several spike platforms that can be avoided by using the bounce move. At a waterwheel-powered sliding platform, like the one where the letter "K" was found, Professor Chops will remind the player that they can avoid and go under objects by doing a roll. After avoiding a row of spinning fans using the move, DK and Cranky use more Barrel Cannons to get to a higher area with a checkpoint and more treetops, as well as several Thug Slugs and the last letter. Following another series of cannons (where the shot must be timed correctly to avoid hitting a spinning gear), the Kongs will go to a platform with the Slot Machine Barrel, ending the level.
+
+### Secret exit
+Cranky or Dixie Kong are required for this secret exit. At the end of the level, Cranky or Dixie will need to utilize the crate on the right and high jump to the platforms above the Slot Machine Barrel. A hidden area with a portal will reveal itself once high enough. Through the portal is a small room containing the secret Slot Machine Barrel.
+
+Of note is that Cranky Kong's phonograph from the original Donkey Kong Country makes a reappearance in this hidden area. When a ground pound is done near the phonograph, it starts playing the main theme of the arcade Donkey Kong. This is a nod to the opening sequence of Donkey Kong Country.
+
+## Enemies
+* Wild Wendells
+* Dozies
+* Monocle Monicas
+* Archies
+* Thug Slugs
+
+## Items
+* Banana Coins: 5
+* DK Barrels: 3
+* Hearts: 4
+
+## KONG Letters
+* K: On a watermill to the right of a Monocle Monica.
+* O: On a small treetop, guarded by an enemy Archy.
+* N: To the right of two Monocle Monicas, in between two swinging vines.
+* G: To the right of a vine after the second bonus room.
+
+## Puzzle Pieces
+1. The Kongs must jump on the first Wild Wendell and throw it into a rock with the Plump Yellow Fruit. Inside, the Kongs have 30 seconds to acquire bananas floating near some vines. After all 100 are collected, the Kongs are rewarded with a Puzzle Piece, a Red Balloon, and a Banana Coin.
+2. Before jumping on the treetops, the second piece is automatically revealed when the Kongs approach some spikes, which can be avoided with a Cane Bounce.
+3. On the highest treetop platform, pops out after pounding next to the Plump Yellow Fruit on it.
+4. Right after the vines, Donkey Kong must jump on a Wild Wendell and throw its shell at a hanging bag.
+5. Behind a hidden rock wall that can be accessed if the Kongs jump to the right of the highest tree with a Thug Slug on it.
+6. In an area with the watermill, Wild Wendell, and Sour Dodo, the Kongs must follow the treetops up and to the left and enter the bonus room in a cave. Once all 100 bananas are collected there, a Puzzle Piece, a Red Balloon, and a Banana Coin are awarded.
+7. On the platform to the upper left of the Slot Machine Barrel. It can be reached by using Cranky's Cane Bounce on the crate to the far right.
+
+Internal name: content/Worlds/w01_mangrove/l03_mangrove_cranky.pak (Mangrove Level 3: Cranky)
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Canopy_Chaos&oldid=5367496"

@@ -1,0 +1,40 @@
+URL: https://www.mariowiki.com/Tree_Top_Bop
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Tree Top Bop
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: the long "Overview" walkthrough and most K-O-N-G / Puzzle Piece location prose. See URL.]
+
+Tree Top Bop is the third level of Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports, as well as the third level of the Jungle world.
+
+Taking place in a jungle canopy, Tree Top Bop features many obstacles, such as tilting trees and platforms, spikes, and plants. Some Blast Barrels are also located around the beginning of the level, and they help the Kongs escape from the lowest parts of the jungle and to the treetops. From there, the Kongs must jump from treetops and other platforms. Rambi the Rhino is introduced in the level, and the Rambi Crate is in a hidden area under a trapdoor after the checkpoint.
+
+(From Overview, kept:) "Farther ahead of this area is a long group of spikes with a tilting platform above it. Rambi can smash through the spikes, or the Kongs alone can climb up the platform to reach the platform in the center of the area. This platform does not tilt, but it has a Tiki Doom and an Awk on it." ... "A tilting tree is near it, but it is too high to reach easily, so they must tilt the platform up to make the jump."
+
+## Enemies
+
+| Name | Amount |
+| Awk | 16 |
+| Frogoon | 3 |
+| Hopgoon | 9 |
+| Tiki Doom | 3 |
+| Flaming Tiki Buzz | 1 |
+
+## Items
+
+| Name | Amount |
+| Banana Coin | 14 |
+| Barrel | 1 |
+| Heart | 3 |
+| DK Barrel | 2 |
+| Red Balloon | 1 |
+
+### K-O-N-G Letters
+K, O, N, G all present.
+
+### Puzzle Pieces
+5 Puzzle Pieces. Piece 2: "There, the Kongs must maneuver around many stationary platforms to grab 78 bananas and two Banana Coins within 30 seconds."
+
+## Time Attack times (Wii)
+Shiny Gold 0:46:00 | Gold 0:54:00 | Silver 1:25:00 | Bronze 2:07:00
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Tree_Top_Bop&oldid=5527776"

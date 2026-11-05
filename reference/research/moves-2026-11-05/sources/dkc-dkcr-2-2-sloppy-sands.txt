@@ -1,0 +1,33 @@
+URL: https://www.mariowiki.com/Sloppy_Sands
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Sloppy Sands
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: most of the walkthrough ("Overview"/"Layout") and K-O-N-G / Puzzle location prose, except kept lines quoted below. See URL.]
+
+Sloppy Sands is the ninth level in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports, as well as the second level in the Beach world.
+
+In the Time Attack mode, a time of 1:09:00 is needed for a shiny gold medal, a time of 1:22:00 for gold, a time of 1:31:00 for silver, and a time of 2:02:00 for bronze.
+
+## Summary
+
+Sloppy Sands takes place at the ocean shore, where Donkey and Diddy Kong encounter many Squidlys and Electrasquids shot from Squid Shots; both enemies debut in the level. The Kongs Squidlys can be bounced on to reach collectibles, although Electrasquids are electrified variants and can hurt the Kongs upon contact. The Kongs also encounter Snaggles and Snippys along the way. It is the first level with cannons that the Kongs can pound on to shoot out collectibles and help them find a single Puzzle Piece. The level also has wooden crates that, when Ground Pounded, activate another set of crates that appear from the sands.
+
+Near the end of the level, the Kongs must Ground Pound a switch with the DK emblem, which uproots a sunken castle. The Kongs must jump into a Barrel Cannon to launch to the bottom of the castle. The remainder of the level takes place in the castle, where the Kongs must use sand-filled wooden buckets as platforms and climb green surfaces while avoiding Squidlys throughout.
+
+In the Time Attack mode, a time of 1:11:00 is needed to get a gold medal, a time of 1:26:00 for silver, and a time of 1:57:00 for bronze.
+
+(From Layout, kept:) "Near the crate, a Snaggles jumps out of the water below and breaks through the boards, creating a gap that must be jumped over."
+
+## Enemies
+| Electrasquid | Infinite |
+| Pinchly | 4 |
+| Snaggles | 2 |
+| Snippys | 4 |
+| Squidly | Infinite |
+
+## Items
+| Banana Coin | 10 | Barrel | 2 | DK Barrel | 3 | Heart | 6 | Red Balloon | 1 |
+
+K-O-N-G Letters: K, O, N, G all present. Puzzle Pieces: 7.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Sloppy_Sands&oldid=5527783"

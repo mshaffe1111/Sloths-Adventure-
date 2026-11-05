@@ -1,0 +1,38 @@
+URL: https://www.mariowiki.com/King_of_Cling
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: King of Cling
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH (verbatim text not saved): the long "Overview" walkthrough section and the per-item location prose of the K-O-N-G and Puzzle Piece tables, except where kept below. See URL for them.]
+
+King of Cling is the second level of the Wii game Donkey Kong Country Returns and its enhanced Nintendo 3DS and Nintendo Switch ports—Donkey Kong Country Returns 3D and Donkey Kong Country Returns HD respectively—as well as the second level of the Jungle world. This level introduces a grassy, green turf that Donkey Kong can climb on. The level also features several obstacles seen in the first level, Jungle Hijinxs, such as spikes, dandelions (which can be blown on to reveal hidden items), and large, bouncy flowers. Additionally, the two levels share some of the same enemies, including the small, blue bird enemies, Awks and Frogoons. However, King of Cling introduces Tiki Zings and large, carnivorous plants known as Chomps (which are similar to Piranha Plants) that try to eat the Kongs. They are commonly placed in large gaps, which can only be crossed by using the grassy turf on ceilings. The turf is also placed on walls and around turning wheels for the Kongs to cling onto.
+
+## Enemies
+
+| Name | Amount |
+| Awk | 12 |
+| Chomp | 14 |
+| Frogoon | 3 |
+| Giant Chomp | 2 |
+| Tiki Zing | 2 |
+
+## Items
+
+| Name | Amount |
+| Banana Coin | 10 |
+| Heart | 4 |
+| DK Barrel | 4 |
+
+### K-O-N-G Letters
+K, O, N, G all present (location table on page).
+G: At the end of the level when the heroes bounce on flowers, the letter G can be found on one of the plants, which is guarded by a Tiki Zing.
+
+### Puzzle Pieces
+7 Puzzle Pieces (numbered 1-7 on page). Piece 4: "This barrel leads to a Bonus Level, where the primates must collect every banana in the area by using a bouncy platform. If all the items are collected, the Puzzle Piece appears."
+
+## Time Attack times (Wii)
+Shiny Gold 1:18:00 | Gold 1:21:00 | Silver 1:39:00 | Bronze 2:16:00
+
+## Naming
+The level's name appears to be a reference to DK: King of Swing.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=King_of_Cling&oldid=5479770"

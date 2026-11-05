@@ -1,0 +1,146 @@
+URL: https://iwataasks.nintendo.com/interviews/3ds/super-mario-3d-land/1/0/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Volume 2: The Producers - Page 1
+---
+## Like an Archeologist
+
+Iwata
+
+Today, I have gathered together a group essential to the Super Mario series. This is Hayashida-san's second time to appear. Last time, your names came up, so today I would like to ask in more detail about the game.
+
+Everyone
+
+We're looking forward to it.
+
+Iwata
+
+I'd like to jump right in. The Super Mario 3D Land game is finally going on sale. How did this project begin?
+
+Koizumi
+
+After the Super Mario Galaxy 21  game, Hayashida-san said that he wanted to make a game that would serve as a sort of introduction to all the Super Mario games in 3D so far. Hayashida-san, do you remember that?
+1. Super Mario Galaxy™ 2: A 3D action game released for the Wii™ console in May 2010. The second game in the Super Mario Galaxy series.
+
+Hayashida
+
+Yes, I remember.
+
+Iwata
+
+Last time in "Iwata Asks," I heard that this project was Hayashida-san's idea.
+
+Koizumi
+
+Yes, it was. We worked out the basic direction from summer to fall the year that we finished Super Mario Galaxy 2.
+
+Miyamoto
+
+In the autumn, we had a prototype with Mario running around, didn't we?
+
+Hayashida
+
+Yes. But at that time, we had just put together something simple showing the relation between the player-character and the landforms. We made landforms, put in some Coins and Blocks, and had Mario move around among them.
+
+Koizumi
+
+I feel like rather than Mario, it was something like a block jumping around.
+
+Hayashida
+
+Yes, that's right. To be exact, we tested it by moving around a square block instead of Mario himself.
+
+Koizumi
+
+When we made the Super Mario Galaxy2 game, it was a Mushroom.
+2. Super Mario Galaxy: A 3D action game released for the Wii console in November 2007. The first game in the Super Mario Galaxy series.
+
+Iwata
+
+Huh? You moved around a Mushroom?
+
+Koizumi
+
+Everyone pretended it was Mario, so a Mushroom was jumping around on the screen. (laughs)
+
+Iwata
+
+Really! What themes were you working with as you began making this game?
+
+Koizumi
+
+Early on, we established the theme of making a 3D Super Mario game that would be close to 2D so that anyone could play. One big difference between 2D and 3D is the camera. We made adjustments as we went to the parallel-track camera we used in Super Mario Galaxy 2 so it would be easy to play.
+
+Iwata
+
+A parallel-track camera moves in parallel to Mario at a set distance.
+
+Hayashida
+
+Yes. It was easy playing 3D Super Mario with that camera, so we decided to develop upon that from the start. We also thought we could make something fun by mixing everything that had built up so far in 3D Super Mario with the traditional 2D Super Mario rules.
+
+Iwata
+
+Last time, we used the expression of building a bridge between 2D Super Mario and 3D Super Mario. From the beginning, you conceived of this game as a good mixture of the appeal of both 2D and 3D Super Mario.
+
+Hayashida
+
+Yes. And while this may just be my own personal interest, I was incredibly curious about how Miyamoto-san and Tezuka-san had made Super Mario games in the past.
+
+Iwata
+
+You study that a lot. You even have a collection of Miyamoto-san's sayings.
+
+Hayashida
+
+Yes. I have it with me today!
+
+Miyamoto
+
+There's stuff in there even I don't remember saying! (laughs)
+
+Everyone
+
+(laughs)
+
+Hayashida
+
+I was an instructor at the Nintendo Game Seminar3 last year. I passed on Miyamoto-san's wisdom to the students and analyzed it for them. I did a point-by-point analysis of the Super Mario Bros. games4 on the Nintendo Entertainment System (NES) and tried to apply those points to this game. That really motivated me.
+3. Nintendo Game Seminar: A hands-on seminar hosted by Nintendo for about 10 months in Japan. It allows students to experience the wonder and depth of video game creation. This seminar is limited to resident students in the Kanto region of Japan.
+4. Super Mario Bros.™ game for the Nintendo Entertainment System™ (NES): The first game was released for the NES in September 1985. Later releases were Super Mario Bros. 2, Super Mario Bros. 3, and many other games.
+
+Koizumi
+
+You're like a scholar.
+
+Hayashida
+
+I suppose so! (laughs)
+
+Iwata
+
+After making Super Mario Galaxy 2, the latest 3D Super Mario game, you wondered if you could reflect 2D Super Mario development methods in a game for the newest hardware. Like an archeologist, you unearthed the past.
+
+Koizumi
+
+Call him Professor Hayashida, archeologist. (laughs)
+
+Hayashida
+
+Yes. (laughs) This may just be my own theory, but when I saw how the Super Mario Sunshine5 game was made, I thought that Koizumi-san is the type to probe into all sorts of new things one after the other, and I, too, was enjoying creating new things with him, but, at the same time, I also believe that we need to carry on in future Super Mario Games the unique game nature of the old Super Mario games that we played as children. I thought we should do a solid job of developing that sort of game. Oh…sorry to be so presumptuous!
+5. Super Mario Sunshine™: An action game released for the Nintendo GameCube system in August 2002.
+
+Koizumi
+
+Not at all. It's interesting—like a thesis paper. (laughs)
+
+Hayashida
+
+Sorry. (laughs) I wanted to convey to children today the fun that we had as children.
+
+Iwata
+
+You wanted people today to experience the feeling of wonder that you once did.
+
+Hayashida
+
+Yes. That was my desire.

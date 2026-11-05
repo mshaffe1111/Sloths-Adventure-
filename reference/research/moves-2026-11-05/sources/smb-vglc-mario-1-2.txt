@@ -1,0 +1,18 @@
+URL: https://raw.githubusercontent.com/TheVGLC/TheVGLC/master/Super%20Mario%20Bros/Processed/mario-1-2.txt
+Read: 2026-11-05 by sk/smb/tw fetch helper (curl via agent proxy; raw.githubusercontent.com was reachable, TinyFish not needed)
+Title: TheVGLC (Video Game Level Corpus) Super Mario Bros processed level text, mario-1-2.txt (one char per 16px tile; legend in smb-vglc-smb-json.txt)
+---
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+S-----SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS?SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS--------------------
+S-----------------------------------------------------SS--SSSSSS--SSSS------SSSS------------------------------------------------------------------------------
+S-----------------------------------------------------SS--SSSSSS--SSSS--E---SSSS------------------------------------------------------------XXX---------------
+S----------------------------------------oooo-------SS--------SS---S----SS----------oooooo-----------------------------------------------------------------XXX
+S-----------------------------o---------------------SS--------SS---S----SS------------------------------------------------------------------------------------
+S--------------------------------------S-SSSS-S-----SS--------SS---S----SS----------SSSSSS--------------------------------------------------------------------
+S----------------------------S---------SoS--SoS-----SS----ooooSS---So??-SS---E------SSSSSS--------------------E----------------------------------SSSSS??------
+S---------QQQQQ--------XXXX------------SSS--SSS-----SSSS--SSSSSS---SSS--SS--SSSS------------------------E----<>-------------------------XXX-------------------
+S--------------------XXXXXXXX--XX---------------------SS-------------------EE--------------------------<>----[]-----E-----SS-----------EXXX-XXX---------------
+S------------------XXXXXXXXXX--XXXX-------------------SS-----------------------------------------------[]----[]----<>-----SS---------EXXXXX-------------------
+S-------------EE-XXXXXXXXXXXXE-XXXX-------EE---------E------E--E--------------------------------E-EE---[]----[]--E-[]-----SS---------XXXXXX---------E---------
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX---XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX--XX--XXXXXXXXXXXX-------XXXXXXXX--XXX

@@ -1,0 +1,111 @@
+URL: https://iwataasks.nintendo.com/interviews/3ds/super-mario-3d-land/0/5/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Volume 1: Super Mario 3D Land - Page 6
+---
+## "It's Fun, So It's Okay!"
+
+Motokura
+
+On the theme of boxes, we also slipped in a Mario wearing a Question Block. With that on, you can chime out coins.
+
+Tsujimura
+
+It looks just like a regular Question Block, though. At first, I thought it was a bug! (laughs)
+
+Iwata
+
+What about the coins?
+
+Hayashida
+
+This time, the coins collect itself automatically.
+
+Iwata
+
+Oh, you get them automatically?
+
+Hayashida
+
+Yes. Until now in 3D Super Mario games, if I stepped on a Goomba, for example, and a coin came out, I would go back and get each one. Tezuka-san said that making the player go back was ungenerous. In the 2D Super Mario games that Tezuka-san made, when you stepped on a Goomba, a coin wouldn't come out, but your score would go up, so you just bomp along crushing them.
+
+Iwata
+
+The tempo is better that way. At first, it was just fun running around in 3D space, so going back to collect the coins was fine, but now that it's become normal, he pointed out that perhaps it just ruins the tempo.
+
+Hayashida
+
+That's right. We hadn't fully reset after all.
+
+Iwata
+
+Come to think of it, I heard that Tezuka-san said some pretty harsh things to you.
+
+Hayashida
+
+I think what Tezuka-san pays the most attention to in a video game is how fun it is, how good it feels. So I just recently realized that's the reason he doesn't want to go back and collect coins.
+
+Iwata
+
+Just recently…after working together for so long? (laughs)
+
+Hayashida
+
+In New Super Mario Bros. Mega Mario tromps along defeating enemies. That was an awful thing to do to the people who made the course!
+
+Iwata
+
+Because Mario is destroying game mechanics! (laughs)
+
+Hayashida
+
+But I think he just thinks, "It's fun, so it's okay!"
+
+Iwata
+
+The phrase, "It's fun, so it's okay!" really does fit Tezuka-san. (laughs)
+
+Tsujimura
+
+We also talked about Checkpoint Flags. In the 3D Super Mario games we've made, we placed Checkpoint Flags midway through the levels. Then, when you lose a Mario, you start again at that point.
+
+But in New Super Mario Bros., for some reason, just passing a Checkpoint Flag as Mini Mario returned you to the normal-sized Mario. Tezuka-san asked, "Why doesn't Mario get bigger this time?" And we asked back, "Why should he get bigger?"
+
+Iwata
+
+Yes. If you think about it…it doesn't make any sense. (laughs)
+
+Hayashida
+
+Tezuka-san answered that it was a bonus. We were like, "Bonus? Why a bonus?!" (laughs) Until then, we had focused, after the example of Miyamoto-san, on functionality. So we had established the Checkpoint Flags to function as a place where you could come back to the course.
+
+Iwata
+
+So you wondered why there was a bonus there. (laughs)
+
+Hayashida
+
+Exactly.
+
+Iwata
+
+But he was like, "It's fun, so it's okay!" (laughs)
+
+Tsujimura
+
+And that settles it.
+
+Hayashida
+
+Another thing Tezuka-san didn't like was mean placement—like an enemy right after a jump or an enemy right after a coin—so we fixed those things.
+
+Iwata
+
+He wants the players to enjoy playing the game. No dirty tricks!
+
+Tsujimura
+
+So we made the gameplay this time to be very straightforward. Putting in curveballs and challenging gameplay is the way people who are used to playing the game think. A lot of that simply looks mean-spirited to beginners. We regret that and are fixing it. But we're also putting a lot of it in the special stages. (laughs)
+
+Iwata
+
+Tezuka-san cautioned you against anything that would stress out or disappoint the players, so it turned out to be a game that players used to 2D Super Mario can play more naturally.

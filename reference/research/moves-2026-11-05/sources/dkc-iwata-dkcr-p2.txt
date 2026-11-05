@@ -1,0 +1,126 @@
+URL: https://iwataasks.nintendo.com/interviews/wii/donkey-kong-country-returns/0/1/
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Donkey Kong Country Returns - Page 2 (The Magic Moment)
+---
+## The Magic Moment
+
+Iwata
+Development of Donkey Kong Country Returns began with an opportunity ordained by fate, but that doesn't mean everything was smooth sailing right from the start.
+
+Tanabe
+Yes, we were floundering around at the beginning. With regard to the enemies, for example, some bosses would go well, but others wouldn't—like Mangoruby. Mike-san and I were fussing with that one for a long time.
+
+Iwata
+At one point, you said that if it kept on at that pace, the bosses would never be done on time.
+
+Tanabe
+Yes. The pace picked up once we got into 2010, but one year ago we'd only done about two of eight bosses. We really started pumping them out...
+
+Tabata
+I think it was just before E3.
+
+Mike
+Yes, that's right. I think the turning point was a few months before E3. About that time, we increased the number of people doing programming related to the bosses. Then the speed of development increased. Just like Tanabe-san said, Mangoruby was a bitter struggle.
+
+At first, we considered hanging down on a vine and swinging around during a boss battle. We tried it out, but it just wasn't fun, so we decided to change our approach. In this game, Donkey Kong can cling to grass on the ceiling or walls, so we started talking about whether we could have him grab onto a cylindrical ring instead of a vine. I drew up a prototype during my lunch break.
+
+Iwata
+During your lunch break? (laughs)
+
+Mike
+Yeah. Just a simple prototype. You could go back and forth between various rings, jump from one to the next, grab on and spin around, and so on. I showed that to Tanabe-san and he said he thought it would work. After we had that idea, development started going more smoothly, but Mangoruby was a struggle up to the very end.
+
+Iwata
+Watching from the sidelines, I got the impression that ideas starting appearing more rapidly during the final stage of development.
+
+Tanabe
+Yes, that's right.
+
+Iwata
+When a project starts going well, sometimes something suddenly kicks in. I felt like the game rapidly bloomed once you entered the final stretch.
+
+Tanabe
+Indeed, there was a speed-up during the final few months. We especially added lots of new elements after E3.
+
+Tabata
+That's right.
+
+Iwata
+Tanabe-san, what do you think was the reason it improved so rapidly?
+
+Tanabe
+Hmm...I think it's because before E3 we weren't always all on the same page with regard to what's fun. A lot of the time, they would come to me with something they thought was fun, but I would say, "No, think of something else." After E3, however, that improved dramatically. You could say they got the knack of it. Take, for example, the Beach level we showed at E3.
+
+Tabata
+Oh, Poppin' Planks.
+
+Tanabe
+We put tons of effort into that level so it could be played at E3, and we fixed it over and over again. We'd put so much effort into it that if we were to make the other levels equal to it, it looked like it was going to take an astounding amount of time, so I was really worried about whether we would finish in time, but after E3, even if we didn't put in quite such grueling effort, we started producing all sorts of great stuff.
+
+Iwata
+So even if you didn't give them lots of pointers, they knew what to do and made lots of good stuff.
+
+Tanabe
+Yeah. I wonder why that was? I feel like everything changed dramatically with E3, but as for the reason why, I'd like to ask Retro Studios.
+
+Iwata
+Go right ahead. This is now "Tanabe Asks."
+
+Kynan
+(laughs) We, too, noticed a dramatic change at a certain point. One reason is that over the course of many discussions Nintendo and Retro Studios had, we had come to share a certain philosophy with regards to how to make the game's levels and had achieved a common understanding of what makes a level fun. We learned the tempo necessary for a fun level and the kinds of elements to put in.
+
+Iwata
+When you say you shared a philosophy, that means Retro Studios and Nintendo now had matching values when it comes to making games, right?
+
+Kynan
+Yes. A lot of people might think that making a side-scrolling action level would be easy in 2D, but everything in that level is there for a reason. When we finally grasped that, making the levels started going smoothly.
+
+Tanabe
+And that doesn't just go for the levels. With regard to the controls as well, our opinions wouldn't match up at first. Tom-san, in particular, often held differing opinions, but I feel like in the very end he sorted everything together wonderfully.
+
+Iwata
+The expression on Tom-san's face on the monitor is speaking volumes. (laughs)
+
+Tom
+(laughs) I think every project is the same. At first, you work as hard as you can on the basic functions. Early in development, in order to make it feel right, you try all kinds of things, which is nothing more than nailing down the functions, so it's in a state lacking any sense of coherence as a product and you think, "Is this really gonna be a game?"
+
+But once we started to assemble all those parts that would allow us to try out various things, everything that was disjointed before suddenly came together, like magic, around the time of E3, and started to cohere as a game. It truly was a magic moment.
+
+Tanabe
+Oh! Well put! (laughs)
+
+Tabata
+Yeah. (laughs)
+
+Iwata
+It's difficult to translate the "magic moment" you just spoke of into Japanese, but you might say that the time had come. You'd been making disparate elements before, but at a certain point they came together beautifully in a major tipping point.
+
+Kynan
+And I think we're pretty good at fine-tuning a game and making it even more fun, so once we had firmly established the foundations, making the levels got a lot easier.
+
+Iwata
+Often it damages the efficiency of development when, partway through, you try to pull together an exhibition version of the game for events like E3, but in the case of Donkey Kong Country Returns, it was incredibly lucky that E3 came along when it did.
+
+Tanabe
+I think so, too. But if the magic moment had come about half a year earlier, the end stage of development would have been easier! (laughs)
+
+Everyone
+(laughs)
+
+Tanabe
+It's true for any game, but this time the last stretch was a real killer.
+
+Kynan, Mike and Tom
+(nodding in agreement)
+
+Iwata
+(laughs)
+
+Tanabe
+But even though it was so hard, we all looked like we were having fun.
+
+Kynan
+That's very true. Toward the end of development, we had some serious discussions. During that serious time, I was describing Donkey Kong's actions to you and Tabata-san using gestures and mimicking his voice—Oo ee! Oo ee!—and everyone suddenly bust up laughing! (laughs)
+
+Tanabe
+Yeah, that was really funny. (laughs)

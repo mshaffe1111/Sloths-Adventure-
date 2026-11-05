@@ -1,0 +1,42 @@
+URL: https://www.mariowiki.com/Zip-Line_Shrine
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Zip-Line Shrine
+---
+[Stripped: images, "Names in other languages" table.]
+
+Zip-Line Shrine is the first secret level of Lost Mangroves in Donkey Kong Country: Tropical Freeze and its Nintendo Switch port of the same name, and the first one overall. As its name implies, this level is dedicated in its entirety to Zip-Line Vines, objects that self-describe as straight inclined vines the Kongs can grab onto and slide along. It is unlocked after finding the secret exit in Shipwreck Shore.
+
+In Time Attack mode, a time of 1:50.00 is required to get a gold medal, a time of 2:00.00 for silver, and a time of 2:10.00 for bronze.
+
+## Overview
+
+The level starts in front of an entrance to a temple, which is opened by pulling the plug in the ground. Doing so also releases six flying bananas, which are later found throughout the level. Inside, Donkey Kong will find tilting platforms, and a DX Barrel. Once outside, the Kongs will encounter the first Zip-Line Vine. By pressing and holding ZL or ZR, the Kongs can grab hold of and travel along the vine and collect the bananas in its path. Shortly after that, there is another Zip-Line Vine, this time over a bottomless pit. Just past the pit are more tilting platforms, trampolines, and the first checkpoint.
+
+The Kongs will then encounter swinging vines, as well as more Zip-Line Vines and tilting platforms. The first pair of vines here force the player to release ZL/ZR (or press [button] at the right time) to drop down to the second one, as not doing so would lead the Kongs into a Blue Hootz, hurting them. After traversing the pit, there is a Barrel Cannon at the end leading to the second checkpoint. Another series of zip-lines lie past this point, but require more timing than before in order to avoid falling into the pit. The zip-lines lead to a pair of Barrel Cannons that launch the Kongs to a vine with an even larger swinging arc. While grabbing on, once the vine reaches the other side, the Kongs should jump off and into another series of Barrel Cannons that launch them towards the next checkpoint.
+
+Using the Barrel Cannon, the Kongs must time the launch so they land on the tilting platform. After that, they will enter a longer series of Zip-Line Vines that lead to a platform with a vine. Using it, the Kongs should reach another Barrel Cannon and blast themselves into a tower, where they will find the two remaining flying bananas and trampolines that will bounce them up to the Slot Machine Barrel.
+
+## KONG Letters
+* K: Right after the second Zip-Line Vine.
+* O: On a tree platform past the swinging vine after the first checkpoint.
+* N: At the end of the Zip-Line Vine before the first Barrel Cannon.
+* G: Above a Hootz underneath the tilting platform right after the third checkpoint.
+
+## Puzzle Pieces
+1. In a hidden area underneath the first Zip-Line Vine, accessed by pounding through a panel in the ground.
+2. Just before the first checkpoint, there is a plug that produces multiple bananas. Collecting them all before they disappear reveals the Puzzle Piece.
+3. Just before the first Barrel Cannon, there is a plug that reveals another Barrel Cannon leading to a Bonus Area. Collecting all the Bananas here will earn the Kongs the Puzzle Piece.
+4. While inside the moving Barrel Cannon after the large swinging vine, the Kongs should launch into the middle Barrel Cannon to collect it.
+5. Before entering the final Barrel Cannon at the end of the level, there is a plug that produces four Banana Bunches. Collecting them all reveals the Puzzle Piece.
+
+## Enemies
+* Hootzes
+* Blue Hootzes
+* Punchy Paddies
+* Dozies
+* Sour Dodos
+* Monocle Monicas
+
+Internal name: content/Worlds/w01_mangrove/l0a_mangrove_zips.pak (Mangrove Level A: Zips)
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Zip-Line_Shrine&oldid=5241235"

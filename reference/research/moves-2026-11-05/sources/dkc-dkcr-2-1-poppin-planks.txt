@@ -1,0 +1,30 @@
+URL: https://www.mariowiki.com/Poppin'_Planks
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Poppin' Planks
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: most of the walkthrough ("Overview"/"Layout") and K-O-N-G / Puzzle location prose, except kept lines quoted below. See URL.]
+
+Poppin' Planks is the eighth level in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports, as well as the first level of the Beach world.
+
+While some of this level takes place along the sandy beach, most of it involves Donkey and Diddy Kong jumping along a series of moving planks and shipwreck above the water. The Kongs cannot swim, so they must stay on the platforms. This level is also the first to feature lifts similar to those from Super Mario Bros., which lower when something stands on it and causes the platform on the opposite side of the weight to rise. As the first beach-themed level, Poppin' Planks is basic, to introduce treasure chests and wooden pegs that can be Ground Pounded to reveal items and bonuses.
+
+In the Time Attack mode, a time of 0:53:00 is needed for a shiny gold medal, a time of 1:03:00 for gold, a time of 1:25:00 for silver, and a time of 2:20:00 for bronze. In the Nintendo 3DS port, the time for shiny gold is 1.02.00 and in the Nintendo Switch port, the time for shiny gold is now 1:00:00.
+
+(From Overview, kept:) "One side of these weights tilt with the weight of the Kongs or any enemy on it, including the Pinchly that is placed on it; the enemy must be defeated to balance out the weight. Below the weights is another bridge, so the Kongs do not have to worry about sinking in this area."
+"The Kongs can break the ropes supporting it by pounding on it, causing the plank to fall and float over the water."
+"Near here is another wavy bridge. This bridge has spikes on it, but they flip over when the bridge creates a large wave that travels across it."
+"The Kongs must travel along the planks, which are attached by large cranes in the background, to advance to a lower area of these moving platforms."
+
+## Enemies
+| Pinchly | 13 |
+| Snaggles | 6 |
+| Snippys | 10 |
+| Tiki Buzz | 6 |
+| Yellow Snaggles | 3 |
+
+## Items
+| Banana Coin | 7 | Barrel | 1 | DK Barrel | 2 | Heart | 4 | Red Balloon | 1 |
+
+K-O-N-G Letters: K, O, N, G all present. Puzzle Pieces: 5.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Poppin%27_Planks&oldid=5527782"

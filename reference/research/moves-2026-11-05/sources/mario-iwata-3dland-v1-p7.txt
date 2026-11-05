@@ -1,0 +1,84 @@
+URL: https://iwataasks.nintendo.com/interviews/3ds/super-mario-3d-land/0/6/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Volume 1: Super Mario 3D Land - Page 7
+---
+## Advanced Players Do the Long Jump
+
+Iwata
+
+In addition to Normal View and Extended Depth, did Miyamoto-san say anything to you toward the end?
+
+Motokura
+
+Yes. This time, he was very particular about on making adjustments on how the game felt to the players.
+
+Hayashida
+
+Like jumps—stopping and jumping, and running and jumping.
+
+Motokura
+
+In 3D Super Mario games to that point, the difference between the height of a standing jump and the height of a running jump had been the same. But this time, Miyamoto-san said, "Let's make a running jump higher." But when I looked at an old strategy guide for previous games, I noticed such features were already there.
+
+Everyone
+
+(laughs)
+
+Motokura
+
+But from the flow of the conversation, it appeared Miyamoto-san had forgotten that.
+
+Hayashida
+
+But as he played it, Mr. Miyamoto felt weird, so he had to ask us, "Isn't this something Mario is supposed to do?" Then, when we actually compared, we saw that other previous games were made that way, too. It's amazing how he can pick up on that.
+
+Motokura
+
+He also talked about the Roll and Long Jump.
+
+Hayashida
+
+Oh, those.
+
+Motokura
+
+I think the Roll falls among those actions that Miyamoto-san said in a video at Nintendo 3DS Conference 2011* recently aren't necessary for clearing the game. Early on, you would run and crouch to slide forward. He said that those controls weren't intuitive. Crouching to do that didn't make immediate sense.
+(*Editor's note: The Nintendo 3DS Conference 2011 was a presentation that was held in Japan on September 13, 2011 where Nintendo Co., Ltd. announced upcoming plans in Japan.)
+
+Iwata
+
+Miyamoto-san is very critical of something that doesn't feel right physically. And it's a bodily sense that tells you a standing jump and a running jump should result in jumping different distances.
+
+Motokura
+
+So we used something else instead of running and crouching as the controls for the Roll. And at first, we had the idea of resetting everything in our mindset, so we weren't thinking about putting in the Long Jump, but Miyamoto-san wanted to, so we included it in such a way as to fit well with Super Mario in 3D.
+
+When you play it, the Roll and Long Jump serve distinct purposes, resulting in pleasantly broad gameplay. They may not look useful at first, but once you use them a lot, and try them in a Time Attack, there are places you can tear through faster than you can as Tanooki Mario.
+
+Iwata
+
+Even to those who like to play the game using standard techniques, it'll be surprising to see how much you can do after mastering them.
+
+Motokura
+
+Yes. There are all kinds of power-ups, but it's a fast and rewarding game to those who like to play the straightforward way.
+
+Hayashida
+
+In the history of 3D Super Mario games, the Long Jump is the most advanced action. If you can do the Long Jump, you're an advanced player of Super Mario in 3D. We made this game to keep that.
+
+Iwata
+
+When you can do several Wall Jumps in a row and the Long Jump, your physical skills have matured.
+
+Hayashida
+
+Yes. We made the Long Jump pretty solid as far as long jumps go, and this time we also made the Roll and Forward Roll-Long Jump to be advanced actions that surpass the Long Jump.
+
+Motokura
+
+Miyamoto-san said that features that allow players who are good at actions to just fly past a bunch of stuff on the stages are just fine for a Super Mario game.
+
+Iwata
+
+By putting in the Long Jump and Roll, you were able to put in plenty of elements that fans of 3D Super Mario games can enjoy.

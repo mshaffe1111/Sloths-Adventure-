@@ -1,0 +1,51 @@
+URL: https://www.mariowiki.com/Mangrove_Cove
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Mangrove Cove
+---
+[Stripped: images, "Names in other languages" table. OMITTED FOR LENGTH: middle part of the Layout walkthrough (kept lines below). KONG/Puzzle lists and Enemies kept in full.]
+
+Mangrove Cove is the very first level of Donkey Kong Country: Tropical Freeze and its Nintendo Switch port of the same name, appearing in the Lost Mangroves world.
+
+In Time Attack mode, a time of 1:50.00 is required to get a gold medal, a time of 2:10.00 for silver, and a time of 2:30.00 for bronze.
+
+## Layout (kept lines)
+
+"By continuing into the level, Donkey Kong first travels down a slope in a stream of water and into a lake, introducing the ability to swim in the game. At the bottom, the lake has mangrove roots and some Air Bubbles coming from a small pipe on a scuba helmet. Donkey Kong encounters a Blue Finley near the end of the lake. After jumping out of the lake, Donkey Kong goes through a beach area with Dozies, and Punchy Paddies. He jumps from some mangrove platforms and onto some large breakable rock platforms, where Professor Chops shows the controls for pounding."
+"By continuing, Donkey Kong continues to an Item Handle, and Professor Chops shows the buttons for pulling it. By pulling it, Donkey Kong breaks a thick, red vine entangling a metal platform, which drops for him to jump on."
+"By pulling it, a massive mangrove tree grows out from the ground. Two mangrove platforms grow at the bottom of the tree, and a Barrel Cannon appears at the top-right for the Kongs to jump into."
+"The Kongs blast around a large tree through many Barrel Cannons and Blast Barrels. When they reach the Blast Barrel near the very top, it blasts them far off into the trees. They bounce from a few treetops and land onto the mast of a Snowmad ship, which rocks back and forth for a moment."
+"Donkey Kong and Diddy Kong must jump from two swinging platforms, each hovering over a gap with spikes on the ground."
+
+## KONG Letters
+* K: Between two of the treetops on the beach after the first lake.
+* O: Under the tree above the second lake.
+* N: In the second jungle area, located in the air and must be obtained by going through a Barrel Cannon.
+* G: After throwing the Tuff Tucks from the swinging platform onto the pole, it will turn and reveal another platform where the letter is.
+
+## Puzzle Pieces
+1. Behind the red-blue metal chunk, found soon after jumping into the water.
+2. Found after jumping onto the high treetop from the swinging platform and pounding next to the Plump Yellow Fruit
+3. After opening the two platforms, the player must grab the flying banana which will turn into a puzzle piece.
+4. In an area revealed by pounding right under the first Venus Trap Platform in the metal-like area.
+5. After getting Diddy Kong, the player can go back and jump on top of the previously mentioned Venus Trap Platform and get the piece which is on a platform above it.
+6. Spinning in the air, the player must time their shot from a Barrel Cannon correctly to get it.
+7. Upon pounding on the crate after the second platform in the beach area with the pirate ship, there will be a secret underground area where five Professor Chops will toss the Kongs multiple bananas. If they collect all of them, a Puzzle Piece appears afterwards.
+8. Shooting through the barrel above the swinging platforms will reveal a secret area containing a large amount of bananas to collect in 30 seconds, after which the Kongs will get the Puzzle Piece.
+9. The final Puzzle Piece is obtained by going to past the end barrel and pulling the plug which will reveal it.
+
+## Enemies
+* Blue Finleys
+* Dozies
+* Sour Dodos
+* Punchy Paddies
+* Venus Trap Platforms
+* Wild Wendells
+* Tucks
+* Tuff Tucks
+* Painguin Tucks
+* Fluffs
+* Waldoughs
+
+Internal name: content/Worlds/w01_mangrove/l01_mangrove_diddy.pak (Mangrove Level 1: Diddy)
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Mangrove_Cove&oldid=5240410"

@@ -1,0 +1,48 @@
+URL: https://www.mariowiki.com/Plessie%27s_Plunging_Falls
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Plessie's Plunging Falls
+---
+(Stripped: site navbox, image gallery, "Names in other languages" table, reference list.)
+
+This article is about the level in Super Mario 3D World. For its musical theme, see Slider § Super Mario 3D World / Super Mario 3D World + Bowser's Fury.
+
+| Plessie's Plunging Falls | |
+| --- | --- |
+| Level code | World 1-4 |
+| World | World 1 |
+| Games | Super Mario 3D World, Super Mario 3D World + Bowser's Fury |
+| Time Limit | 400 seconds |
+| Music tracks | Plessie, Plessie's Plunging Falls |
+| Level progression | Previous: Mount Beanpole, Switch Scramble Circus; Next: Switch Scramble Circus, Bowser's Highway Showdown |
+
+Plessie's Plunging Falls, otherwise known as World 1-4, is the fourth standard course of World 1 in Super Mario 3D World and its Nintendo Switch port Super Mario 3D World + Bowser's Fury. It takes place in a large river, and introduces Plessie. It is unlocked by completing Mount Beanpole and its own completion unlocks Bowser's Highway Showdown if cleared before Switch Scramble Circus. The music that plays when riding on Plessie (which is named after the level in the soundtrack) is an arrangement of "Slider" from Super Mario 64.
+
+## Layout
+
+The course begins with the players on a wooden platform along with Plessie. The river itself contains many speed-boosting platforms and Splounders. A 1-Up Mushroom which requires good navigation to collect can also be found nearby. After some more Splounders and a zigzag water current, Plessie must fall down an abyss to reach a beach and a nearby pipe which contains the Goal Pole.
+
+## Collectables
+
+It is impossible to collect both the second Green Star and the Stamp in one run due to both being on different paths.
+
+### Green Stars
+
+| Location |
+| --- |
+| Near the beginning of the course, players will find a ramp that they must jump off to reach the first Green Star. |
+| Halfway through the course, players will find a thin, bright colored waterfall to the left of the twisty path that they must ride into to find the second Green Star. |
+| Near the end of the course, players will jump off a large cliff. At the start of the drop, players will find the final Green Star. |
+
+### Stamp
+
+Halfway through the course, at the end of the zig-zagging section of the river, lies the course's stamp. The stamp is Plessie.
+
+## Luigi sighting
+
+After the first Dash Panel, an 8-bit Luigi can be seen floating on the water. This is easier to see if the player jumps over the Dash Panel.
+
+## Enemies
+
+| Name | Count |
+| --- | --- |
+| Splounder | 29 |

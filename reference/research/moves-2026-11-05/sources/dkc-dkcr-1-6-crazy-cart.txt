@@ -1,0 +1,39 @@
+URL: https://www.mariowiki.com/Crazy_Cart
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Crazy Cart
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: most of the "Overview" walkthrough (kept lines below). K-O-N-G and Puzzle Piece tables kept in full.]
+
+Crazy Cart is the sixth level in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports, as well as the sixth level in the Jungle world. This level's musical theme is a remix of Mine Cart Madness from Donkey Kong Country. This is the first minecart level in the game, and it takes place in an underground mine shaft and in the jungle.
+
+(From Overview, kept:) "If this is pounded into the ground, many platforms begin to fall from the sky. The stone walls supporting the platforms build together like a puzzle, making the platforms completely solid. The Kongs can climb up these to reach a high ledge with the entrance to a mine area on it."
+"The cannon shoots them into a minecart, which begins to move as soon as it is entered."
+"The ramp sends the Kongs on a new track if they jump high enough; if not, they land on the jungle floor where they can run into a wall and lose a life instantly if they do not jump back on the track above them fast enough."
+
+## Enemies
+| Name | Amount |
+| Flaming Tiki Buzz | 8 |
+| Frogoon | 3 |
+| Mole Miner | 9 |
+| Tiki Buzz | 13 |
+
+## Items
+| Banana Coin | 11 | DK Barrel | 1 | Extra Life Balloon | 2 |
+
+### K-O-N-G Letters
+| K | When the Kongs approach three moles in minecarts, they should perform a high jump on the third mole to reach the letter K that is high in the air. |
+| O | Right after the third Puzzle Piece, the Kongs come towards a small hill. Before they begin to ride down it, they should jump up to grab the letter O. |
+| N | Shortly before exiting the mines, they Kongs can find the letter N at the end of the track. They can grab it and then immediately jump onto the track above to collect it safely. |
+| G | Just before the Kongs enter the deeper parts of the jungle where there is no track, the Kongs should jump at the end of the rails to grab the letter G. |
+
+### Puzzle Pieces
+| 1 | At the beginning of the level, the Kongs should head backwards into a hidden alcove to find a Puzzle Piece. |
+| 2 | After the Kongs finish pounding on a large switch in the jungle, platforms appear. They jump from them and go into the canopy to the left, which has a hidden area with a doorway leading to a Bonus Level. Donkey Kong and Diddy Kong have 30 seconds to collect 47 bananas, two Banana Coins, and a Red Balloon while moving along two large moving platforms; there is also a small, stationary platform. After collecting every item, the second Puzzle Piece appears. |
+| 3 | After the Kongs pass some flying Tiki foes, they come up to a mole in a minecart. They should jump over it, without landing on the track above them, to grab the third Puzzle Piece at the edge of the rails. |
+| 4 | Immediately after the letter O, the Kongs can find the fourth Puzzle Piece just before a small gap. They can jump a little earlier than usual to grab it and get over the gap safely. |
+| 5 | Shortly after the thorn plants, the camera zooms into the Kongs. After some bananas, the Kongs must quickly jump to reach the fifth and final Puzzle Piece. |
+
+## Time Attack times (Wii)
+Shiny Gold 1:42:00 | Gold 1:46:00 | Silver 1:48:00 | Bronze 2:21:00
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Crazy_Cart&oldid=5527780"

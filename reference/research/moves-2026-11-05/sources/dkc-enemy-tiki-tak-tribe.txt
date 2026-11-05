@@ -1,0 +1,27 @@
+URL: https://www.mariowiki.com/Tiki_Tak_Tribe
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Tiki Tak Tribe
+---
+[Stripped: images, Smash spirit table, gallery, "Names in other languages" table. OMITTED FOR LENGTH: History section (story/boss cutscenes) and the High-ranking commanders table. NOTE: the "Minions" table came back EMPTY from the extractor (rendered as image gallery), so the minion list is not in this file; see individual enemy files.]
+
+"Tiki" redirects here.
+
+"Tell those Tikis to keep it down! I'm an old ape, and I need my rest." —Cranky Kong, Donkey Kong Country Returns
+
+The Tiki Tak Tribe is an organization of wooden mask-like creatures known as Tikis led by Tiki Tong, who appear as the main antagonists in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports. Similar to the Kremling Krew from previous Donkey Kong Country installments, there are higher and lower-ranked members of the Tiki Tak Tribe. The higher-rank members are capable of hypnotizing other characters, such as other animals and a boss in each world. The lower-rank members make up the recurring enemies throughout the levels. The Tiki Tak Tribe has a wooden mask for their emblem, as shown on the Snippys' ship's sails, flags and bicorne and an icon in the image gallery.
+
+Both the higher and lower-rank tikis resemble a musical instrument; all of the lower-ranked ones resemble a drum. The particular instrument that a higher ranked tiki resembles is played in the background music of the associated boss fight.
+
+## Physical appearance
+
+Most of the Tiki Tak Tribe resemble floating wooden tiki masks and many are adorned with colored feathers. However, they come in a variety of colors and shapes, such as the Tiki Goons that resemble bongo drums or drums and Tiki Buzzes that resemble birds with wooden wings to their sides. The main servants of Tiki Tong have pairs of skinny twig-like arms.
+
+## Powers and abilities
+
+The Tikis have a variety of abilities. The higher ranked members are agile, have the ability to float in midair, and can hypnotize other creatures. This is done by playing music from their bodies, and while doing so their eyes show an expanding concentric circle pattern. Hypnotized characters have their eyes turn into spirals, but the eyes of bosses return to normal once the hypnosis is in effect. The Tiki Tak Tribe's hypnosis does not work on all characters, as Donkey Kong and Diddy Kong are mysteriously unaffected by it. The lower rank members have more distinctive traits from each other. For instance, the Tiki Buzzes can fly, Flaming Tiki Buzzes and Tiki Torches can produce fire (even though they are made up of wood), and Tiki Tanks wear a steel helmet to protect them from direct attacks.
+
+The Tikis use bananas as some kind of life source. In Feather Fiend, it is shown that a Tiki can come to life when mashed-up bananas are incorporated into a non-living body. This is further demonstrated in the final battle against Tiki Tong, where he spews juice grinded from a pile of bananas on the seven high-ranked tikis to turn them into his pair of hands. When said hands and Tiki Tong are destroyed, they explode into bananas.
+
+The Tiki Tak Tribe makes use of boats and Tiki airships, the latter of which are used to carry bananas. In Jungle Hijinxs, the Tiki Pilot flies through the background on a Tiki airship carrying many more bananas than normal. The level Tippy Shippy involves cannon fire from unmanned Tiki airships that do not carry bananas. The Tiki Tak Tribe arrives at Thugly's Highrise on Tiki airships, and one of them tracks the battle against Thugly from the background as its occupants spectate. In Lift-off Launch, the Rocket Barrel is at risk of colliding with several Tiki airships. The last ship is dropping bananas that the player can collect. In Tiki Tong Terror, the Tiki Tak Tribe attacks using balloons as the Kongs ascend Tiki Tong Tower on a Rocket Barrel.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Tiki_Tak_Tribe&oldid=5488589"

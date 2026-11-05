@@ -1,0 +1,166 @@
+URL: https://iwataasks.nintendo.com/interviews/wiiu/super-mario-3d-world/0/2/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Super Mario 3D World - Page 3
+---
+## "An Instinctively Good Feeling"
+
+Iwata
+
+Returning to the density of content, I feel like you have poured a lot of energy into preparing the courses for intensive gameplay. Was that a conscious effort?
+
+Motokura
+
+Yes. Being able to choose from among four characters to play a multiplayer mode is a big part of Super Mario 3D World, but the primary concept was to make sure that a single person could get full enjoyment from it. Multiplayer mode certainly offers the enjoyment that arises from people playing together, but we definitely wanted to avoid it being lackluster for single players.
+
+Hayashida
+
+Everyone on the staff paid a lot of attention to that. During test play, I always played alone, six or seven times to the ending, and I'm still not tired of it at all.
+
+Iwata
+
+Isn't it somewhat rare for a game to match density and volume with outstanding replayability?
+
+Hayashida
+
+Those who evaluated the game at NOA (Nintendo of America) also said it has high replay value.
+
+Iwata
+
+Even in taking down one course, you have four characters with different abilities10, which changes gameplay. So depending on how people play, there must be many ways to clear a course.
+10. Four characters with different abilities: In addition to Mario, players may choose to play Luigi, Toad or Princess Peach, each with distinct abilities.
+
+Miyamoto
+
+Deciding on a multiplayer mode immediately eliminated several options. We decided those things comparatively early on, like saying, "In light of multiplayer gameplay, we shouldn't use these types of cameras." You can't talk about the history of 3D Super Mario games without talking about "cameras," or the different perspectives used to view action in the game. So when it comes to what kind of camera to use, this is an expert team. Thanks to that, it was clear early on what ideas we could do and which ones we couldn't.
+
+Iwata
+
+Oh, I see. So in the end there wasn't any waste-no upending of the tea table. Everything you made went in.
+
+Miyamoto
+
+Yes. I think we could pack it all in because the team was able to design the functionality so quickly.
+
+Iwata
+
+Come to think of it, throughout the history of "Iwata Asks," I don't think we've discussed how much 3D Super Mario figures into the history of video game camera angles.
+
+Miyamoto
+
+Well, you could say the same thing about The Legend of Zelda.11 (laughs) When it comes to 3D action games, it's a history of continual battle against camera angles.
+11. The Legend of Zelda: In this context, it refers to the action-adventure series of games rendered in 3D polygons for home consoles, including The Legend of Zelda: Ocarina of Time (released for the Nintendo 64 system in November 1998) and later games.
+
+Iwata
+
+Koizumi-san, you have battled alongside Miyamoto-san against camera angles ever since The Legend of Zelda: Ocarina of Time for the Nintendo 64, haven't you?
+
+Koizumi
+
+Yes. Every time we made a new game, we would try all sorts of things out, thinking, "This would be so easy to play if we only had such-and-such camera angles!" But since Super Mario 3D Land, we've been pretty clear-cut, focusing on a parallel camera that keeps a set distance in a set direction from Mario.
+
+Iwata
+
+With a fixed camera from a set distance that doesn't revolve around the course, there's less chance of getting lost.
+
+Koizumi
+
+The team already went through that design process, so when we wondered what kind of camera angles should be used for a multiplayer game, we were aligned fairly quickly. We started by ruling out split-screen, and soon after that we were able to create an ideal format for everyone to play in a single screen. We knew that was it.
+
+Motokura
+
+What's more, in single-player mode, you can use the Free Camera Mode.12
+12. Free Camera Mode: This function uses the gyro sensor in the Wii U GamePad to detect movement and angle in order to change the point of view.
+
+Koizumi
+
+That's the controllable camera for advanced players who seek more immersion.
+
+Iwata
+
+You can clear the courses without mastering the camera angles, but it isn't a lukewarm game at all. You have also prepared deeper gameplay that is even more challenging.
+
+Motokura
+
+Yes.
+
+Iwata
+
+A dilemma arises every time between wanting to make a game anyone can play and not wanting advanced players to call it lukewarm. How did you address that this time?
+
+Hayashida
+
+We established the structure for that to some extent with Super Mario 3D Land. Reaching the goal is one object of playing, but in that game, searching for and collecting Star Medals13 is gameplay we've set aside for advanced players so they can go further in the game.
+13. Star Medals: Items hidden around the courses.
+
+Iwata
+
+Right.
+
+Hayashida
+
+This time, we replaced Star Medals with Green Stars. We made that change because as with gameplay since Super Mario 6414, we wanted gameplay that goes a step further, so that you take on a challenge and get something when you clear it. That way each person, advanced players as well, can enjoy all kinds of ways to play. It turned out so that players can enjoy a feeling closer to 3D Super Mario games.
+14. Super Mario 64: The first 3D Super Mario action game, released simultaneously with the Nintendo 64 system in June 1996.
+
+Iwata
+
+Everyone who tried it out at E3 reacted very favorably. As the developers, is there anything that you place the most care in?
+
+Motokura
+
+Well, for Super Mario Galaxy 2, Miyamoto-san and Koizumi-san talked about  resonance.
+
+Iwata
+
+That's right. A lot. That was a time when Miyamoto-san was talking about how he had finally understood the definition of the Super Mario character.
+
+Motokura
+
+The whole team shared "resonance" as a keyword, but personally, I focused on cuteness that resonates, so I asked everyone "What is cuteness?" until they were sick of it.
+
+Iwata
+
+Cuteness that resonates?
+
+Motokura
+
+Yes. I thought that viewing it in terms of the feeling you get from design, rather than directly in terms of design itself, would lead to greater resonance.
+
+Hayashida
+
+I've overheard his cuteness story dozens of times! (laughs)
+
+Motokura
+
+I made sure to talk to every person who joined the team about the concept of the game, and my thoughts on what factors makes things cute. It's easy to say something is "cute," but people sense completely different things.
+
+Iwata
+
+Within Japanese culture, "cute" (kawaii) is a special word that has, as a concept, assumed a variety of meanings.
+
+Motokura
+
+I wanted to connect those meanings and find mutual ground.
+
+Iwata
+
+Oh, I see. Earlier, we talked about the density of content. You wouldn't sense that unless each individual element resonated and moved your heart.
+
+Miyamoto
+
+Put another way, we based it on what feels good instinctively, rather than something that can be swayed by current trends or literal information. That's the reason why Super Mario transcends culture differences worldwide.
+
+Iwata
+
+It's true that Mario's actions themselves don't require localization.
+
+Miyamoto
+
+Right. I always say, "If Mario shouldn't touch something, make it sharp or on fire. The exact visuals don't matter." (laughs)
+
+Iwata
+
+People have a built-in sense for what will hurt or burn if touched.
+
+Miyamoto
+
+We shared that concept with the designers relatively early on and everyone understood, so not much went to waste.

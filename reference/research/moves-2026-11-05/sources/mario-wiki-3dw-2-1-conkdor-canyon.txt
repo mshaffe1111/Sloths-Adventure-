@@ -1,0 +1,81 @@
+URL: https://www.mariowiki.com/Conkdor_Canyon
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Conkdor Canyon
+---
+(Stripped: site navbox, image gallery, "Names in other languages" table, reference list.)
+
+This article is about the level in Super Mario 3D World. For its musical theme, see Conkdor Canyon (theme).
+
+| Conkdor Canyon | |
+| --- | --- |
+| (image caption) | Cat Peach running up a slope past six Conkdors |
+| Level code | World 2-1 |
+| World | World 2 |
+| Games | Super Mario 3D World, Super Mario 3D World + Bowser's Fury |
+| Primary power-up | Super Bell |
+| Time Limit | 400 seconds |
+| Music tracks | Conkdor Canyon, Lucky House |
+| Level progression | Previous: Bowser's Highway Showdown, Koopa Troopa Cave (Warp Zone); Next: Puffprod Peaks |
+
+Conkdor Canyon, or World 2-1, is the seventh regular course of Super Mario 3D World and its Nintendo Switch port Super Mario 3D World + Bowser's Fury, and the first one in World 2. It is unlocked via completing Bowser's Highway Showdown or by using the secret warp in Koopa Troopa Cave, and its own completion unlocks Puffprod Peaks and Shadow-Play Alley. It is set on an old-looking building and introduces Conkdors, the main enemies in the level, hence the name. Conkdor Canyon also appears in the Wii U version of Captain Toad: Treasure Tracker if the player's Wii U has save data for Super Mario 3D World.
+
+Conkdor Canyon additionally appears in the background in Super Mario Maker 2, in the desert theme of the Super Mario 3D World style.
+
+## Layout
+
+The first area contains a few Conkdors and Stingbies, as well as some ponds of quicksand and Jump Panels. Just after the third Conkdor encountered, atop a wall behind it there is a golden Warp Pipe that leads to a room with a gold P Switch. The Checkpoint Flag is found near a small oasis with grass, which has a small pond with coins in it, a palm tree and a Conkdor.
+
+Next, the player must cross a bridge made of moving tiles, and after that another bridge, this time a very narrow one, guarded by more Conkdors. The last part contains more Stingbies, a quicksand fall, and a long shifting and dangerous bridge that leads to the Goal Pole.
+
+In Super Mario 3D World + Bowser's Fury, the level's final bridge has had its shifting pattern changed to accommodate the player's faster movement speed.
+
+## Collectables
+
+### Green Stars
+
+| Location |
+| --- |
+| Above a high wall in the start of the course. The player can use the Cat transformation to reach the top. |
+| After the thin walkway, the player will see a Conkdor surrounded by four Grey Blocks. They must first avoid defeating it, then have it break the block facing north-east to get the second Green Star. |
+| Before the end of the level, the player must help out Captain Toad by defeating a Conkdor, who is attacking him to obtain the Green Star. |
+
+### Stamp
+
+Right before the set of shifting platforms that end on the Goal Pole. The stamp is Mario jumping.
+
+## Appearance in Captain Toad: Treasure Tracker
+
+| World | Bonus |
+| Game | Captain Toad: Treasure Tracker |
+| Objective | Collected the Gold Mushroom! |
+| Target | 70 seconds |
+| Music track | Conkdor Canyon |
+| Level progression | Previous: Super Bell Hill; Next: Shadow-Play Alley |
+
+In the Wii U version of Captain Toad: Treasure Tracker, Captain Toad can play this level in the Bonus episode, requiring 35 Super Gems to unlock it. The level is mostly the same with a few changes to accommodate Captain Toad such as added ladders, ramps, and the removal of some Conkdors. The level ends upon getting a Green Star, which is the third Green Star in Super Mario 3D World.
+
+## Enemies
+
+Super Mario 3D World
+
+| Name | Count |
+| --- | --- |
+| Conkdor | 18 |
+| Stingby | 7 |
+
+Captain Toad: Treasure Tracker
+
+| Name | Count |
+| --- | --- |
+| Conkdor | 14 |
+| Stingby | 7 |
+
+## Luigi Sightings
+
+### Super Mario 3D World
+
+The hidden Luigi is painted on the wall beneath the first shifting bridge, more clearly visible when looking through the binoculars the Sprixie provides to the right of the Checkpoint.
+
+### Captain Toad: Treasure Tracker
+
+8-bit Luigi can be seen behind the stage from the platform with the Gold Mushroom.

@@ -1,0 +1,197 @@
+URL: https://iwataasks.nintendo.com/interviews/wiiu/super-mario-3d-world/0/4/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Super Mario 3D World - Page 5
+---
+## The Origin of Multiplayer Gameplay
+
+Iwata
+
+In connection with characters, I'd like to ask something. Have you prepared something special this time for that certain green someone?
+
+Hayashida
+
+Of course! He gets special treatment by our team, too.
+
+Iwata
+
+Right. (laughs) What is it?
+
+Hayashida
+
+A little before your announcement of the Year of Luigi17 via Nintendo Direct, I was testing an NES game on Wii U. It was only a test, but it just happened to be Mario Bros.18
+17. The Year of Luigi: It has been 30 years since Luigi made his first appearance in 1983 in the arcade game Mario Bros. In an edition of Nintendo Direct released on February 14, 2013 called "Nintendo 3DS Direct Luigi Special" in Japan, Satoru Iwata appeared wearing a Luigi cap to announce 2013 as the Year of Luigi.
+18. Mario Bros. An action game released by Nintendo as an arcade game and for the Nintendo Entertainment System (NES) in 1983.
+
+Iwata
+
+Oh, the very origin of Luigi!
+
+Hayashida
+
+That's right. I thought this was an example of discovering the future in the past. So this time, I put Luigi in place of Mario as the main character to include a game called Luigi Bros. I rewrote the programming for everything myself-from the characters to the title. When you play it in two player mode, player 1 gets the modern Luigi color and player 2 gets the classic color that's true to the era, so you can create a duel of new and old Luigis.
+
+Iwata
+
+You went that far? How do you get to play that?
+
+Hayashida
+
+As with Rosalina, after you reach the ending once, it appears on the title screen so you can play it. But if you have save data for New Super Luigi U19, you can play it from the start.
+19. New Super Luigi U: Additional content for the New Super Mario Bros. U game made available for download from the Wii U Nintendo eShop in June 2013. In July, it was released as a packaged game and will only be available this year (2013).
+
+Iwata
+
+That is indeed special treatment! (laughs)
+
+Hayashida
+
+While I was doing that, the effects staff had planted pixel art of Luigi all over the place, so there's
+hidden pixel Luigis here and there. It's fun to find them, so I hope players will look for them.
+
+Iwata
+
+You've really taken it far...
+
+Motokura
+
+Well, Mario Bros. is without a doubt the origin of multiplayer Super Mario.
+
+Iwata
+
+Indeed. Cooperation and mutual interference mix within the same stage. That is the model for all kinds of multiplayer gameplay.
+
+Motokura
+
+Super Mario 3D World's multiplayer mode has gameplay somewhat similar to that. When you clear a course, the player who came in first receives a crown. A player who reaches the goal on the next course while wearing the crown gets a bonus.
+
+Iwata
+
+So a battle breaks out over that crown.
+
+Motokura
+
+That's right. You can do a Ground Pound and nab it, or get in each other's way. But when the number of remaining players drops, all of a sudden you start cooperating! (laughs)
+
+Iwata
+
+The interplay between interference and cooperation changes along with each player's intentions and situations.
+
+Motokura
+
+Yeah. When we were testing multiplayer gameplay, I couldn't help but say, "Hayashida-san! This is like Mario Bros.!" And it literally is!
+
+Everyone
+
+(laughs)
+
+Hayashida
+
+I was shocked. It's the same game, but gameplay completely changes.
+
+Iwata
+
+This time, the player-characters have different abilities, so the competition begins when selecting characters!
+
+Hayashida
+
+But there's also a random button that randomly assigns characters before each course.
+
+Iwata
+
+Oh, it automatically assigns characters?
+
+Hayashida
+
+Right. Anyone can hit the random button, so it's a handy feature in multiplayer mode.
+
+Iwata
+
+That way there's no resentment. (laughs)
+
+Motokura
+
+A secondary element is that it isn't easy to tell who is which character-which is useful when you pull dirty stunts on someone! (laughs)
+
+Iwata
+
+(laughs) I bet that really brings out one's personality-the choice between cooperating with everyone or getting in their way.
+
+Motokura
+
+A complicated psychological battle unfolds outside the screen. But as Miyamoto-san mentioned earlier, there are ability differences between the characters, as well as random character assignment, so it doesn't force bitter competition.
+
+Iwata
+
+It's open to competitive gameplay, but it isn't requisite. Gameplay changes depending on each player's style. That is a similarity with Mario Bros. when it comes to enjoying multiplayer gameplay.
+
+Motokura
+
+Well, among us developers-who are used to it-a battle for the crown is inevitable. Right before the goal we'd always get into little skirmishes!
+
+Everyone
+
+(laughs)
+
+Hayashida
+
+You can also battle over the Double Mario power. You can do a Ground Pound to steal someone's double power and pull off a sudden reversal of fortune!
+
+Iwata
+
+Is the random selection available in single-player mode as well?
+
+Hayashida
+
+Yes.
+
+Miyamoto
+
+I've played it alone using random selection, and the randomness is surprisingly fun. You're like, "Huh? I'm going to play with this?!" When you play with a character you usually wouldn't use, you make new discoveries.
+
+Iwata
+
+That is one way to enjoy it.
+
+Motokura
+
+Another new element this time is being able to carry or wear all sorts of things on the courses. You can carry along a potted Piranha Plant!
+
+Iwata
+
+What? You can carry it?
+
+Motokura
+
+Yeah! (laughs) It will eat enemies or obstruct other players.
+
+Iwata
+
+If you put a box on your head you can make use of all sorts of mechanisms.
+
+Motokura
+
+Yeah. You can even put on a cannon. If you put it on and walk, it fires all on its own. It's strong, but it will shoot other player-characters, too.
+
+Iwata
+
+(laughs) Now that's bothersome headwear!
+
+Motokura
+
+As a little extra, you can even don a Goomba!
+
+Iwata
+
+A...Goomba?
+
+Motokura
+
+Yeah! If you beat certain Goombas, they'll drop a Goomba mask. Wearing it stops the Goombas from noticing you.
+
+Iwata
+
+(laughs)
+
+Hayashida
+
+That's an idea that has come up every time we made a 3D Super Mario game, and now, after five, six years in reserve, we've finally done it!

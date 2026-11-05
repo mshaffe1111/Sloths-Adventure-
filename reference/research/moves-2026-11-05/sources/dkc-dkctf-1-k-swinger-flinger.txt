@@ -1,0 +1,35 @@
+URL: https://www.mariowiki.com/Swinger_Flinger
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Swinger Flinger
+---
+[Stripped: images, "Names in other languages" table, references.]
+
+Swinger Flinger is the temple level of Lost Mangroves in Donkey Kong Country: Tropical Freeze and its Nintendo Switch port of the same name, and the first temple level in the game. The level focuses on platforming with vines and avoiding spike traps. As with all temple levels in the game and Donkey Kong Country Returns, Swinger Flinger features no checkpoint booths.
+
+The music that plays in this level, and every second temple level after it, is a cover of the latter half of the "DK Island Swing" theme that first plays in Jungle Hijinxs in the original Donkey Kong Country.
+
+In Time Attack mode, a time of 1:31.00 is required to get a gold medal, a time of 1:42.00 for silver, and a time of 1:55.00 for bronze.
+
+## Overview
+
+In the first part of the level, the Kongs must jump between several swinging vines to get across the bottomless pit, while also avoiding the fireballs shot by Hot Hootzes below. The Kongs will then encounter more obstacles, including platforms that, once landed on, will start to roll along a track, and platforms suspended by ropes, which will burn and cause the platforms to fall once the Kongs make contact with one. There are also stationary spiked obstacles and swinging vines with spikes the Kongs must avoid by ducking or jumping over them, depending on the situation.
+
+After the halfway point, the Kongs will need to climb up some static vines to proceed further, while avoiding spikes that extend and retract from the walls. When the Kongs reach a series of four vines, they are forced to jump between them to avoid the spikes falling from the ceiling while climbing up. In the final section, the Kongs must swiftly jump from vine to vine (and occasionally on some Hootzes), as there is a moving boulder at the top that will cause any wooden beam suspending a vine it rolls over to collapse. After that, the Kongs will reach the final vine leading to the Barrel Cannon, which blasts them to the end of the stage, where the mysterious relic is held.
+
+## Puzzle Pieces
+1. Above some spikes on the second rail platform.
+2. Revealed after pulling the plug underneath the first swinging vine completely covered with spikes.
+3. Above a Hootz between the retracting spikes.
+4. Revealed after collecting all of the collectibles that appear in succession between the four vines.
+5. Inside the purple glass vase just before the end of the stage. It can be broken by pounding next to it.
+
+## Enemies
+* Hootzes
+* Hot Hootzes
+
+Internal name: content/Worlds/w0x_trophy/l01_trophy_platformbeads.pak (Trophy Level 1: Platformbeads)
+
+## Notes
+* In Super Smash Bros. for Wii U and Super Smash Bros. Ultimate, a song titled "Swinger Flinger" appears in the Jungle Hijinxs stage and every Donkey Kong series stage, respectively. However, this name is incorrect, as the song that plays is first heard in Bopopolis, the second temple level. This error is not present in the Japanese versions of Super Smash Bros. for Wii U and Super Smash Bros. Ultimate.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Swinger_Flinger&oldid=5241237"

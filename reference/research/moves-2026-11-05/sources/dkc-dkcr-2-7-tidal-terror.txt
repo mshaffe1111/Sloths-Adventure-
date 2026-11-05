@@ -1,0 +1,33 @@
+URL: https://www.mariowiki.com/Tidal_Terror
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Tidal Terror
+---
+[Stripped: images, "Names in other languages" table, references. OMITTED FOR LENGTH: most of the walkthrough ("Overview"/"Layout") and K-O-N-G / Puzzle location prose, except kept lines quoted below. See URL.]
+
+Tidal Terror is the fourteenth level in Donkey Kong Country Returns and its Nintendo 3DS and Nintendo Switch ports, as well as the seventh and final regular level of the Beach world.
+
+In the Time Attack mode, a time of 0:50:00 is needed for a shiny gold medal, a time of 0:57:00 for gold, a time of 1:20:00 for silver, and a time of 1:42:00 for bronze.
+
+## Summary
+
+Tidal Terror involves large waves that constantly come from the background. These waves will cause the player to lose a life on contact, as well as knocking away any items or enemies in their path. The player should avoid the waves by taking shelter behind large rock pillars. Some pillars have to be Ground Pounded up, as indicated by a large red button where the pillar will be sprung up when pounded. The waves ravage the shoreline quickly, so the player must quickly move between walls, some of which crumble when hit by the waves. Near the end, there is a ship wreckage that the player must enter, though the waves still move through the windows. Enemies in the level include Snippys, Pinchlys, Snaggles, and Squidlys.
+
+(From Overview, kept:) "Crab enemies run around the button, which can be hit to reveal a barrier that only sticks out of the ground for a few seconds."
+
+## Enemies
+| Pinchly | 7 |
+| Snaggles | 6 |
+| Snippys | 15 |
+| Squidly | Indefinite |
+
+## Items
+| Banana Coin | 10 | Barrel | 1 | DK Barrel | 1 | Red Balloon | 1 |
+
+K-O-N-G Letters: K, O, N, G all present. Puzzle Pieces: 5.
+
+## Notes
+
+* In a 2021 interview, Kynan Pearson, a senior designer for Donkey Kong Country Returns, stated that Tidal Terror's tidal wave mechanic was inspired by a level from Super Ghouls 'n Ghosts, in which waves come in from the background and destroy the foreground to hinder progression.
+* In version 1.1.0 of Donkey Kong Country Returns HD, the rain textures have been edited, where larger downpours fall rather than the smaller showers.
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Tidal_Terror&oldid=5485924"
