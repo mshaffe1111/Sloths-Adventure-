@@ -114,24 +114,8 @@ export interface StageSpec {
   lay: { startY: number; end: { kind: string; w: number }; burstMin?: number; burstMax?: number };
 }
 
-/** the pass lines a profile sets for its own stage (the fixed floors every stage shares are kept on top of these) */
-export interface StageLines {
-  splitsMin: number;
-  twoRoadMin: { normal: number; easy: number };
-  upDownMin: number;
-  densityEasyMax: number;
-  longestRunMax: { normal: number; easy: number };
-  length: Profile['length'];
-}
-
-/** a profile's pass lines (the designer's numbers for 1-5 and 1-1, 11-05; a new profile word gets its numbers from the designer) */
-export function linesFor(p: Profile): StageLines {
-  const split = { none: 0, light: 4, moderate: 10, heavy: 19 }[p.branching];
-  const two = { none: { normal: 0, easy: 0 }, light: { normal: 0.1, easy: 0.08 }, moderate: { normal: 0.25, easy: 0.2 }, heavy: { normal: 0.4, easy: 0.4 } }[p.branching];
-  const upDown = { flat: 0.6, rolling: 0.85, hilly: 0.949 }[p.hills];
-  const run = { calm: { normal: 25, easy: 18 }, steady: { normal: 29, easy: 20 }, brisk: { normal: 35, easy: 24 } }[p.tempo];
-  return { splitsMin: split, twoRoadMin: two, upDownMin: upDown, densityEasyMax: 0.55, longestRunMax: run, length: { normal: p.length.normal, easyMin: Math.max(120, p.length.easyMin) } };
-}
+// (a stage's pass lines come from its measured reference row, never from these profile words: passLines.ts, the designer's 12:48
+// ruling)
 
 /** every problem with a spec, in plain words, before anything is built (an empty list: the engine can build it) */
 export function checkSpec(s: StageSpec, ideas: Record<string, { element: Element; needs: Move[]; teaches?: Move }>, pieces?: Record<string, { worlds: Theme[] }>, ideaKinds?: Record<string, string[]>): string[] {

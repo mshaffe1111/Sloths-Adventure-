@@ -4,6 +4,7 @@
 //   spec        mixer/spec.ts checkSpec (moves taught before used, decks, theme, length floor)
 //   level       tools/inspect/eraRoll.ts buildRoll + checkRoll: the level check, every build
 //   length      stageTime.ts modelAll (fast): Normal inside the profile's band, Easy at or over its floor
+//   lines       passLines.ts: the stage's measured reference row (1-1: old 1-1's medians on main), never its profile words
 //   quiet       eraRoll.ts measureRoll longestQuiet <= RULES.quietMax ("Dead time")
 //   neighbours  the 200-roll tool's sameness test (eraRoll.ts RULES): against every other stage of the world, no roll pair with a
 //               3-gram cosine over RULES.cosine (analyze.ts cosine) or a 20 s stretch closer than LOOK.alike (lookalike.ts looksAlike)
@@ -23,6 +24,7 @@ import { modelAll } from '../../src/game/stageTime.ts';
 import { buildRoll, checkRoll, measureRoll, RULES, type RollResult } from '../inspect/eraRoll.ts';
 import { cosine } from '../inspect/analyze.ts';
 import { looksAlike } from '../inspect/lookalike.ts';
+import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const id = process.argv[2];
@@ -64,6 +66,14 @@ for (let v = 1; v <= N; v++) {
 gate(`level check (${N} x 2)`, levelBad);
 gate(`length (Normal ${range(secs.normal)} s in ${lo}-${hi}; Easy ${range(secs.easy)} s >= ${spec.profile.length.easyMin})`, lenBad);
 gate(`quiet stretches (<= ${RULES.quietMax} s)`, quietBad);
+
+// 4b. the stage's pass lines, from its measured reference row (passLines.ts), never from its profile words
+const ref = REFERENCE[id];
+if (ref) {
+  const m = Array.from({ length: N }, (_, i) => splitsOf(buildRoll(cfg, i + 1) as never));
+  const ss = m.map((q) => q.splits).sort((a, b) => a - b), tt = m.map((q) => q.twoRoad).sort((a, b) => a - b);
+  gate(`pass lines (splits median ${ss[Math.floor(N / 2)]} >= ${ref.splitsMin}; two-road median ${tt[Math.floor(N / 2)]} >= ${ref.twoRoadMin})`, judgeLines(id, m));
+} else gate('pass lines', ['no measured reference row for this stage (passLines.ts REFERENCE)'], false);
 
 // 5. the neighbour check: every other stage of the world, NB rolls each, against this stage's N Normal rolls
 const world = cfg.worldIndex;
