@@ -24,6 +24,27 @@ Then ReadNotifications, then check that the 30-min check-in is armed (list_trigg
   checkpoints.
 - Ceiling: 55% of the week (Matt, 10:10 AM ET, at 45%). Everyone stops at 53%. Ask Matt for his meter at checkpoints.
 
+## THE BOARD: deadlines and what success looks like (set 10:26 AM ET; Matt: "You set the standards... deadlines... what success looks like. And you hold them to it... catch mistakes early, not late")
+Every check-in compares each line below with the clock. A missed time gets a send-back at once with the lesson (8i: bring options
+that still make the deadline, never "tomorrow"). Only the lead moves a deadline, and says why to Matt.
+| Who | Deliverable | Success looks like | Due (ET) |
+|---|---|---|---|
+| Planner | Whole-engine cost estimate | each step in % of the week, total vs 55% (stop at 53%), from measured history | 10:45 AM |
+| Planner + designer | 1-1/1-2 acceptance pass line | max wall time, max token cost, max fixes after first build; agreed by both, before 1-1 | 11:15 AM |
+| Planner | Every-world piece inventory | a table from the code: every platform, prop, climbable, air piece per world, file:line, counts | 11:15 AM |
+| Planner | Library extended + sheet by world | all inventoried kinds labelled (draft), real stills grouped by world, staged ones marked | 12:00 PM |
+| Designer | Labels ruled, one pass | every kind: element, footing, floats, uses, worlds, teaches; float caps per world with reasons | 12:00 PM |
+| Designer | SPEC-TRACE tags | every spec number MEASURED/SOURCED/MATT/DERIVED/OPEN, with citations that check out | 11:45 AM |
+| engine-render | w1-new atlas stills | squirrels + hollow logs painted in play, upright + sideways, phone size, polish check | 11:00 AM |
+| engine-render | Water zone + splash stills | painted water, pads ON it bobbing, splash, pad-off-water test fails; drawcheck green | 12:30 PM |
+| engine-render | 1-1 one-sky test + all gates | test in, tsc/tests/build/drawcheck/clipcheck green, report | 2:00 PM |
+| Bootprint (designer's helper) | Still on the shrine bank | phone size, both ways, belongs in the W1 kit, spend reported (cap $3) | 11:30 AM |
+| Critic | Interim: the trace half-done | row count traced / total, first MISSING items ranked | 11:30 AM |
+| Critic | CRITIC-SPEC.md + trace-check.mjs + verdict | every section of its brief, every fact cited | 12:45 PM |
+| Designer | Rulings on the critic's findings | each finding: accepted with the spec change, or rejected with evidence | 1:30 PM |
+| Lead | CHECKPOINT 1 for Matt | library sheet by world, render stills, critic interim, cost so far vs meter | 12:15 PM |
+| Lead | CHECKPOINT 2 for Matt | critic verdict + rulings, water stills, the build plan for 1-1 with its pass line | 2:15 PM |
+
 ## Who (cloud sessions)
 - Level designer (leads design): session_01FhBbYPKnBYCweHg8duJSu2, branch engine-spec (ENGINE-SPEC.md, SPEC-TRACE.md coming).
 - Planner (builds the engine): session_01FhBbYJaUqNUPxNUvbHdHeN, branch engine-mixer (src/game/mixer/, tools/engine/).
