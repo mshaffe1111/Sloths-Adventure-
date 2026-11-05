@@ -1653,3 +1653,46 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
   the underside of a bough or trunk where Pokey hangs. Trunks are anchors, not landings.
 - **Float caps per world** are set in the same pass. The default stays "some, ≤ 25% of landings" until a world's row says otherwise,
   with its reason.
+
+### [designer with the planner, 11-05 ~10:31 AM ET] The engine's acceptance test: 1-1's pass line (agreed before 1-1 is built)
+
+Matt: "we use 1-1 and then 1-2 as the test... If 1-1 takes too long and it still needs a lot of pieces fixed, the engine gets fixed.
+We don't just go into the stage and fix it."
+
+**Inputs (MEASURED unless stated).** All from the planner's message of 10:36 AM ET, from engine-mixer commit times.
+
+| Input | Value |
+|---|---|
+| 1-5 hand-mix, 78da6ddb (first build) to b7c38491 (accepted) | 5.2 h wall, 28 commits, 9 fix rounds, all engine code and none data-only (a 10th, 9e243098, after) |
+| 1-1 grey-box | about 3.75 h, never finished |
+| Team spend rate | about 0.63% of the week an hour (STATUS 39% at 12:40 AM, the lead's 45% at about 10:05 AM) |
+| Cost of 1-5's 5.2 h (DERIVED) | about 3.3% |
+| Budget left under Matt's 53% stop | 8% |
+| The engine's remaining steps without 1-1 | about 6.5% (the planner's estimate) |
+
+**Two derived lines:**
+
+| Line | Working | Result |
+|---|---|---|
+| Line 1: the budget | (8 − 6.5) ÷ 1 stage | ≤ 1.5% |
+| Line 2: clearly faster than mixing by hand | ≤ 1/3 of 1-5's hand-mix | ≤ 1.7 h wall and ≤ about 1.1% |
+
+Line 2 binds.
+
+**1-1 passes the engine's test only if all of these hold:**
+1. **Time:** at most 1.7 h wall, from the planner's commit "1-1 data written" to the commit where every gate is green (commit times).
+2. **Cost:** at most about 1.1% of the week, team spend at the measured rate over the same hours.
+3. **Fixes:** at most 2 rounds after the first full gate run. Each is a change to 1-1's data file only (story, profile, plan).
+4. **Engine changes:** none made for 1-1. Any mixer-core change needed to make 1-1 pass fails the test. The engine is then fixed, and
+   1-1 is rebuilt from data as a second, separately measured attempt.
+5. **Gates:**
+   - every gate green on 16/16 rolls, Normal and Easy;
+   - the stills review P-1 to P-13 and S-1 to S-9, 6 places upright and sideways, passed by the designer, then the lead;
+   - "no stage id in the mixer core" (tools/engine/library-check.ts, 2afed23b).
+
+**What the budget says plainly:** 1-2 does not fit under 53% beside the engine's remaining steps. After 1-1, the second test stage
+needs Matt to choose between more budget and stopping at 1-1. A failed 1-1 attempt also eats the margin, which is about 0.4%
+between line 1 and line 2.
+
+**The stump:** it is drawing only, never a landing by itself. 1-1's core is bank and log, plus branch in n8-n11. The every-world
+inventory will show whether any builder lays a stump you can stand on.
