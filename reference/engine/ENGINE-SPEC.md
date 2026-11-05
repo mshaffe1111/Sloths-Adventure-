@@ -353,7 +353,7 @@ sizes are rolled inside the idea. Decks are what make two rolls different stages
 
 **The goal: Meeca's marks** (designer ruling, 11-05 ~12:46 AM ET; 1-5 is a relic hunt, `stagePlan.ts:39`: "Meeca marked the trees
 as she walked. Follow her marks to the shrine"). Marks sit on trees, where she would have walked:
-- one mark in each of the 7 nodes that are not forks (n1-n3, n5-n9 less the forks, n11), on the main route, each on the trunk or
+- one mark in each of the 9 nodes that are not forks (n1-n3, n5-n9, n11), on the main route, each on the trunk or
   bough the idea already uses;
 - one mark on each road of each fork (n4 and n10): 4 marks in all. The high road's mark sits where the road is hardest, as
   collectible rule 4 asks.
