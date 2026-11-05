@@ -26,4 +26,6 @@ Use for any "what do shipped games actually do" question (TRIAGE R rows, ENGINE-
 8. **Report per question:** the number, the saved file and line, the URL; or "no source" with what was searched. Then the rule it
    supports (a proposal: the designer rules) and the spec lines it contradicts. Mark every number measured / dev-reported / wiki /
    estimate. Wiki enemy lists are floors.
-9. Start the report with planned vs actual time; finishing under half the planned time is a red flag the lead checks.
+9. **Before reporting, run an adversarial checker** (a helper at high effort, given the report and the files only): it re-opens every
+   cited line and re-runs every script. On 11-05 it found 16 defects in the first draft, one a regex bug that changed a whole-game table.
+10. Start the report with planned vs actual time; finishing under half the planned time is a red flag the lead checks.

@@ -1,25 +1,27 @@
-Super Mario 3D World: 70 courses W1-W8 (no Captain Toad / houses); 78 enemy kinds
-kinds in exactly one course: 27 of 78
+Super Mario 3D World: 75 courses W1-W8 (no Captain Toad / houses); 80 enemy kinds
+kinds in exactly one course: 26 of 80
 
 | enemy kind | first | courses | share of later | longest absence | later worlds | 3-course windows with none | ES window | staple | signature |
 |---|---|---|---|---|---|---|---|---|---|
-| Goomba | 1-1 | 15 | 20% | 10 | 7/7 | 32/67 | FAIL | FAIL | pass |
-| Fire Bro | 2-5 | 10 | 16% | 9 | 6/6 | 31/55 | FAIL | FAIL | pass |
-| Piranha Plant | 1-3 | 9 | 12% | 25 | 4/7 | 44/64 | FAIL | FAIL | pass |
-| Mini Goomba | 1-2 | 8 | 10% | 26 | 4/7 | 49/66 | FAIL | FAIL | FAIL |
-| Fire Piranha Plant | 2-3 | 8 | 12% | 17 | 4/6 | 39/58 | FAIL | FAIL | pass |
-| Para-Biddybud | 1-5 | 7 | 9% | 33 | 3/7 | 46/62 | FAIL | FAIL | FAIL |
-| Goomba Tower | 1-2 | 6 | 7% | 27 | 4/7 | 51/66 | FAIL | FAIL | FAIL |
-| Galoomba | 2-2 | 6 | 8% | 24 | 2/6 | 46/59 | FAIL | FAIL | FAIL |
-| Parabones | 6-7 | 6 | 23% | 4 | 2/2 | 7/20 | FAIL | FAIL | pass |
-| Stingby | 1-5 | 5 | 6% | 27 | 4/7 | 52/62 | FAIL | FAIL | FAIL |
-| Coin Coffer | 2-2 | 5 | 7% | 28 | 3/6 | 48/59 | FAIL | FAIL | FAIL |
-| Mega Piranha Plant | 1-3 | 4 | 5% | 30 | 3/7 | 55/64 | FAIL | FAIL | FAIL |
-| Biddybud | 1-5 | 4 | 5% | 43 | 2/7 | 55/62 | FAIL | FAIL | FAIL |
-| Thwomp | 1-C | 4 | 5% | 34 | 3/7 | 52/61 | FAIL | FAIL | FAIL |
-| Bullet Bill | 2-T | 4 | 5% | 22 | 3/6 | 45/54 | FAIL | FAIL | pass |
-| Bully | 6-2 | 4 | 10% | 11 | 2/2 | 20/27 | FAIL | FAIL | pass |
-| Hammer Bro | 6-T | 4 | 14% | 10 | 2/2 | 10/19 | FAIL | FAIL | pass |
+| Goomba | 1-1 | 16 | 20% | 11 | 7/7 | 34/72 | FAIL | FAIL | pass |
+| Fire Bro | 2-5 | 12 | 18% | 9 | 6/6 | 33/60 | FAIL | FAIL | pass |
+| Piranha Plant | 1-3 | 10 | 13% | 23 | 5/7 | 46/69 | FAIL | FAIL | pass |
+| Mini Goomba | 1-2 | 9 | 11% | 19 | 5/7 | 51/71 | FAIL | FAIL | pass |
+| Fire Piranha Plant | 2-3 | 9 | 12% | 19 | 4/6 | 41/63 | FAIL | FAIL | pass |
+| Para-Biddybud | 1-5 | 8 | 10% | 33 | 4/7 | 48/67 | FAIL | FAIL | FAIL |
+| Goomba Tower | 1-2 | 7 | 8% | 16 | 5/7 | 53/71 | FAIL | FAIL | pass |
+| Parabones | 6-7 | 7 | 25% | 5 | 2/2 | 7/22 | FAIL | FAIL | pass |
+| Galoomba | 2-2 | 6 | 8% | 26 | 2/6 | 51/64 | FAIL | FAIL | FAIL |
+| Coin Coffer | 2-2 | 6 | 8% | 30 | 3/6 | 50/64 | FAIL | FAIL | FAIL |
+| Biddybud | 1-5 | 5 | 6% | 43 | 3/7 | 57/67 | FAIL | FAIL | FAIL |
+| Stingby | 1-5 | 5 | 6% | 29 | 4/7 | 56/67 | FAIL | FAIL | FAIL |
+| Thwomp | 1-C | 5 | 6% | 37 | 3/7 | 54/66 | FAIL | FAIL | FAIL |
+| Hammer Bro | 6-B | 5 | 16% | 11 | 2/2 | 12/23 | FAIL | FAIL | pass |
+| Chargin' Chuck | 1-A | 4 | 4% | 33 | 1/7 | 61/70 | FAIL | FAIL | FAIL |
+| Mega Piranha Plant | 1-3 | 4 | 4% | 33 | 3/7 | 60/69 | FAIL | FAIL | FAIL |
+| Blockstepper | 2-5 | 4 | 5% | 37 | 2/6 | 54/60 | FAIL | FAIL | FAIL |
+| Bullet Bill | 2-T | 4 | 5% | 25 | 3/6 | 50/59 | FAIL | FAIL | pass |
+| Bully | 6-2 | 4 | 10% | 12 | 2/2 | 22/29 | FAIL | FAIL | pass |
 
-(rows shown: kinds in 4+ courses.) All 76 kinds with 6+ later courses: ES window passes 0, staple envelope 0, signature envelope 14
-share of later courses over those kinds: median 2%, max 23%; kinds at >= 33%: 0
+(rows shown: kinds in 4+ courses.) All 78 kinds with 6+ later courses: ES window passes 0, staple envelope 0, signature envelope 17
+share of later courses over those kinds: median 3%, max 25%; kinds at >= 33%: 0

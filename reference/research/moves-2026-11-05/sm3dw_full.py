@@ -11,14 +11,14 @@ with contextlib.redirect_stdout(io.StringIO()):
 order=list(t.order); at=collections.defaultdict(list,{k:list(v) for k,v in t.at.items()})
 txt=open('sources/mario-wiki-3dw-world4-8-enemy-tables.txt').read()
 NOTAB={'4-A':'Brolder','5-A':"Chargin' Chuck",'6-A':'Prince Bully','7-A':'Brolder','7-B':'Prince Bully',
-       '4-B':'Fire Bro','5-B':'Fire Bro','6-B':'Fire Bro','7-C':'Fire Bro','5-T':None,'6-C':None,'8-A':None}
-for m in re.finditer(r'^=== (.+?) \(([0-9]-[A-Za-z0-9]+)[^)]*\)(?: enemies)? ===\n(.*?)(?=^===|\Z)',txt,re.M|re.S):
+       '4-B':'Fire Bro','5-B':'Fire Bro','6-B':['Fire Bro','Hammer Bro','Boomerang Bro'],'7-C':'Fire Bro','5-T':None,'6-C':None,'8-A':None}
+for m in re.finditer(r'^=== ([^\n]+?) \(([0-9]-[A-Za-z0-9]+)[^)\n]*\)(?: enemies)? ===\n(.*?)(?=^===|\Z)',txt,re.M|re.S):
     name,code,body=m.groups()
     if 'level table' in name: continue
     order.append(code)
     if '(no enemies table' in body:
-        k=NOTAB.get(code); 
-        if k: at[k].append(code)
+        k=NOTAB.get(code)   # 6-B's level-table line: "one Fire Bro along with two Hammer Bros. and two Boomerang Bros." (:127)
+        for kk in ([k] if isinstance(k,str) else (k or [])): at[kk].append(code)
         continue
     ks={r.group(1).strip() for r in re.finditer(r'^\| ([^|]+) \| ([^|]*)',body,re.M) if 'boss' not in r.group(2).lower() and r.group(1).strip()!='Name'}
     for k in ks: at[k].append(code)

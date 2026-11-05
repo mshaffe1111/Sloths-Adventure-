@@ -11,7 +11,7 @@ Brief: the R rows of `reference/engine/TRIAGE.md` (engine-spec 3fde9966): §1.1 
 **Method** (now written down as `reference/methods/research.md`, law 4):
 1. TinyFish `fetch_content` tested first (Iwata Asks 3D Land p2: OK, 17 s). curl gets a proxy 403 on most hosts; raw.githubusercontent.com works.
 2. My own searches, then five fetch helpers (Mario; DKC; Rayman/Ori; Shovel Knight/SMB/Tiny Wings; later 3D World W4-W8) saved every page
-   as text in `sources/` with its URL and the date read (101 files). I opened and read the primary pages myself (§9 lists which I read
+   as text in `sources/` with its URL and the date read (154 source files, plus 15 VGLC level files and the BLOCKED notes). I opened and read the primary pages myself (§9 lists which I read
    in full). Every failure is in `sources/BLOCKED-*.txt`.
 3. The per-level tables are **built by scripts from the saved pages**, not typed: `dkcr_table.py`, `sm3dw_table.py`, `stairs_vglc.py`
    (outputs `ours-*.txt`). Our side is measured on our code: `ladder_stats.py` and `returncheck.py` on `tools/engine/moveladder.json`
@@ -22,7 +22,7 @@ Brief: the R rows of `reference/engine/TRIAGE.md` (engine-spec 3fde9966): §1.1 
 Mario Wiki / IGN / RayWiki (fan-maintained; their enemy lists can miss an appearance, so wiki shares are a floor, not exact);
 "estimate" = mine. Line numbers are of the saved file in `sources/` unless a repo path is given.
 
-**The single biggest limit:** YouTube is blocked and no image host is reachable from the container (BLOCKED-rayman-ori.txt), so nothing
+**The single biggest limit:** YouTube is blocked (BLOCKED-mario.txt) and no image host is reachable from the container (BLOCKED-rayman-ori.txt), so nothing
 here is timed from a longplay video, and no pit screenshot was measured. Every seconds figure that needed video is marked "no source".
 
 ---
@@ -54,14 +54,15 @@ here is timed from a longplay video, and no pit screenshot was measured. Every s
 |---|---|---|---|
 | Super Mario 3D World W1-W2 (14 courses), enemies | 1-4, mean 2.1 | 0-3 | `ours-sm3dw-table-output.txt` (wiki enemy tables) |
 | Super Mario 3D World W3 (9 courses), enemies | 0-4 (3-1:2, 3-3:3, 3-5:3, 3-7:2, 3-T:4; four courses 0) | — | same |
-| Shovel Knight: Specter, per level | about 5 enemies + 5 objects planned new (staples excluded) | staples every level | `sk-...-1of5.txt:108` (dev-reported) |
+| Shovel Knight: Specter, per level | about 5 enemies + 5 objects planned (staples "don't count") | staples every level | `sk-...-1of5.txt:108` (dev-reported) |
 | Ours, W1 (moveladder 7d9ad9a9) | 1-1:3, 1-2:3, 1-3:3, 1-4:1, 1-6:1, 1-7:2, 1-8:1, 1-9:2 | — | `ours/ladder-stats-7d9ad9a9.txt` |
 
 **Longest gap before a taught element returns (measured):** 3D World W1-W3 enemies: median absence 4 courses, longest 15; 27 of 43 kinds
 appear in one course only (`ours-sm3dw-table-output.txt`, last block). DKC Returns: see #150's table (longest absences 7-42 levels).
 
 **Answer.** No primary source gives "<= 1 new a stage" or "absent <= 2 stages". The sources point the other way on both:
-- Shipped courses bring **2-4 new elements**, not <= 1 (3D World measured; Shovel Knight's planned 5 + 5). What stays at one is the
+- Shipped courses often bring **more than one** new element: 3D World measured 0-4 new enemy kinds a course (W1-W2 1-4, mean 2.1; four
+  W1-W2 courses add exactly 1; four W3 courses add 0); Shovel Knight plans about 5 enemies + 5 objects a level. What stays at one is the
   course's **core concept** (Hayashida). So "<= 1 new **core idea** a stage" has a source; "<= 1 new **thing**" does not.
 - Shipped games **retire** elements ("shuffled away", Yacht Club `2of5:114`; 27/43 one-course enemies in 3D World). A per-element "never
   absent more than 2 stages" is not what any measured game does (§1 #125 below: 1 of 15 DKCR elements and 4 of 29 3D World enemy kinds
@@ -78,13 +79,13 @@ Measured home-world spacing of enemies:
 - DKC Returns (71 levels, wiki lists): the commonest enemies' longest absence is 7 (Tiki Goon) and 8 (Tiki Buzz) levels; less common
   ones 19-42 (Tiki Zing 19, Doom 27, Flaming Buzz 30, Torch 42) (`ours-dkcr-table-output.txt`).
 
-- 3D World whole game (70 courses): the Goomba's longest absence is 10 courses, Fire Bro 9, every other kind 17-43
-  (`ours-sm3dw-full-output.txt`).
+- 3D World whole game (75 courses): the Goomba's longest absence is 11 courses, Fire Bro 9; of the kinds in 4+ courses only the
+  late-game Parabones (5), Hammer Bro (11) and Bully (12) are near that, the rest 16-43 (`ours-sm3dw-full-output.txt`).
 
 **Answer:** "absent <= 2 stages" is stricter than every measured game, even for their most common enemy. The measured envelope for a
 game's staple enemy is "longest absence <= 8 levels, in every later world"; for a world's own enemy it is "comes back one or more
 worlds later, or never". STAGE-RULES:19-20's world-level rule ("comes back in every later world, harder or combined") is the one with
-shipped support; DKCR's two commonest enemies meet it (7/7 later worlds), its other Tikis do not (2/7-4/7).
+shipped support; DKCR's two commonest enemies meet it (7/7 later worlds), its other Tikis do not (Zing 4/7, Flaming Buzz 4/7, Doom 2/7, Torch 2/6, Tank 2/5).
 
 ### #11 ES 174-175 — "unused animal frames give a second behaviour, the harder form"
 
@@ -93,19 +94,19 @@ shipped support; DKCR's two commonest enemies meet it (7/7 later worlds), its ot
 | Base | Later form | What changes | First level of base -> form | Source |
 |---|---|---|---|---|
 | Tiki Goon (walks, 1 hit) | Tiki Doom | size, **3 stomps** to beat (stats) | 1-1 -> 1-3 | `dkc-enemy-tiki-doom.txt:9`, `dkc-enemy-tiki-goon.txt:20` |
-| Tiki Goon | Tiki Torch | on fire: **blow it out first** (a new verb) | 1-1 -> 2-3 | `dkc-enemy-tiki-torch.txt:11-13` |
+| Tiki Goon | Tiki Torch | on fire: **blow it out first** (a new verb) | 1-1 -> 2-3 | `dkc-enemy-tiki-torch.txt:11,14` |
 | Tiki Torch | Tiki Bomber | **throws fireballs both ways** (new attack) | 2-3 -> W3 ("first encountered in the Ruins world") | `dkc-enemy-tiki-bomber.txt:7` |
-| Tiki Goon | Tiki Tank | stone armour: **ground-pound to flip, then stomp** | 1-1 -> 3-2 | `dkc-enemy-tiki-tank.txt:7-9,13` |
+| Tiki Goon | Tiki Tank | stone armour: **ground-pound to flip, then stomp** | 1-1 -> 3-2 | `dkc-enemy-tiki-tank.txt:7-9,14` |
 | Tiki Buzz (flies) | Flaming Tiki Buzz | **immune to every melee attack**: throw a barrel | 1-6 -> 1-3 (form first!) | `dkc-enemy-flaming-tiki-buzz.txt:7-13` |
-| Tiki Zing (saw) | big / metallic / inflamed | size; metallic **rolls along platforms** | 1-2 -> W5 / W7 / W6 | `dkc-enemy-tiki-zing.txt:11`, `dkc-enemy-tiki-zing-big.txt`, `dkc-enemy-tiki-zing-foggy-fumes.txt` |
+| Tiki Zing (saw) | big / metallic / inflamed | size; metallic **rolls along platforms** | 1-2 -> W5 / W7 / W6 | `dkc-enemy-tiki-zing.txt:11`, `dkc-enemy-tiki-zing-big.txt`, `dkc-enemy-tiki-zing-foggy-fumes.txt:9` |
 
 Rayman: Origins adds "Lividstones with spiky hats" (`rayman-raywiki-lividstone.txt:62`; Jungle Run's level is named "Beware the Spiked
-Helmets!", `:69`): you can no longer jump on them. Legends' toads carry a "wooden shield" that breaks with any attack (`rayman-raywiki-toad-legends.txt:45`)
+Helmets!", `:69`; both are image captions, and what the spikes change is not stated: my estimate is that they block a stomp). Legends' toads carry a "wooden shield" that breaks with any attack (`rayman-raywiki-toad-legends.txt:45`)
 and "come in three other common variants: Red Toads, who can breathe fire, use flamethrowers and wear jetpacks; Underwater Toads, who fire
 electric projectiles ... and Spy Toads" (`:32`). RayWiki's level and world lists for these were Cloudflare-blocked (BLOCKED-rayman-ori.txt),
 so the world each form first appears in is not sourced.
 
-**Answer:** 5 of the 7 DKCR later forms change **what the player must do** (blow out, flip, use a barrel, dodge a new attack), 2 change
+**Answer:** of the 7 DKCR later forms with a sourced change (the inflamed Zing is only named, `dkc-enemy-tiki-zing.txt:11`), 5 change **what the player must do** (blow out, flip, use a barrel, dodge a new attack), 2 change
 only stats/size. Five forms arrive **0-2 worlds after the base** (same world: Doom, Flaming Buzz; 1 world: Torch after the Goon, Bomber after the Torch; 2: Tank);
 the Tiki Zing's forms come 4-6 worlds later (big W5, inflamed W6, metallic W7). This
 supports ES 174-175's idea (a second behaviour as the harder form), with one sharpening the sources give: the later form changes the
@@ -119,7 +120,7 @@ appears **7-29 times** (1-1 Goomba 7, 1-2 Koopa 12, 1-3 Piranha 14, 1-4 Splounde
 Thwomp 3, Kick Bomb 2). Of 44 (kind, course) counts: 24 are 7+, 9 are 3-6, 11 are 1-2. Yacht Club's frog arc in one level is
 "6 frogs" (`sk-...-2of5.txt:162`), Grapps about 5 rooms (`:39-100`).
 
-**Answer:** the bands have support: a course's main gimmick is used **7+ times (median about 14)**, a guest **1-3**. Hayashida's four steps
+**Answer:** the bands have support: a course's main gimmick is used **7+ times (median 16)**, a guest **1-3**. Hayashida's four steps
 need at least 4 uses of the core concept in a course (one per step, `structure-of-fun:129`). "Some = 3-6" sits where Shovel Knight's
 6-frog arc and 3D World's second kinds sit. Where ours sit: old W1 per stage, `ours/mechtable-w1-engine-mixer-021ef4e9.md` (e.g. 1-5
 breaking branch 55-60, 1-7 bushes 26-32, 1-6 liana 18-31: our themes are far above "lots").
@@ -139,7 +140,7 @@ breaking branch 55-60, 1-7 bushes 26-32, 1-6 liana 18-31: our themes are far abo
 
 **Answer:** no source has a 2-stage echo. Measured games mostly do **not** echo a new element in the next 2 levels; they teach and
 master it inside its own level (Hayashida's four steps; Yacht Club's teach-test-cooldown-mix-final rooms, `2of5:39-100`), then bring it
-back later. The echo in ES is our own construction to satisfy Matt's "it keeps building" (ES:110); that is Matt's direction and stands
+back later. The echo in ES is our own construction to satisfy Matt's "it keeps building" (ES:112); that is Matt's direction and stands
 (law 22), but it should not be presented as research-backed.
 
 ### #150 ES 1535-1548 (and #127 ES 1319) — return rates ">= 1 in 3; 1 in 4 for push and hide; >= 2-3 stages for world moves"
@@ -164,26 +165,27 @@ collapsing/sinking platforms 1-K, 2-K, 6-6, 8-5 (31); silhouette 1-4, 7-1, 8-4 (
 Tropical Freeze, same pattern faster: carts 1-4, 2-4, 4-2; rockets 2-B, 3-5, 5-2; Rambi 2-2, 3-3; silhouette 1-B, 4-3
 (`dkc-world-lost-mangroves-dkctf.txt:19,21`, `dkc-world-tables-dkcr-dkctf.txt:76,78,82,89,91,101,112`): about once a world.
 
-**The whole-game table, Super Mario 3D World (70 courses W1-W8, 78 enemy kinds), measured** (`sm3dw_full.py` ->
+**The whole-game table, Super Mario 3D World (75 courses W1-W8, 80 enemy kinds), measured** (`sm3dw_full.py` ->
 `ours-sm3dw-full-output.txt`; W4-W8 tables `sources/mario-wiki-3dw-world4-8-enemy-tables.txt`), kinds in 4+ courses:
 
 | Enemy kind | First | Courses | Share of later | Longest absence | Later worlds | 3-course windows with none |
 |---|---|---|---|---|---|---|
-| Goomba | 1-1 | 15 | 20% | 10 | 7/7 | 32/67 |
-| Fire Bro | 2-5 | 10 | 16% | 9 | 6/6 | 31/55 |
-| Piranha Plant | 1-3 | 9 | 12% | 25 | 4/7 | 44/64 |
-| Mini Goomba | 1-2 | 8 | 10% | 26 | 4/7 | 49/66 |
-| Fire Piranha Plant | 2-3 | 8 | 12% | 17 | 4/6 | 39/58 |
-| Para-Biddybud | 1-5 | 7 | 9% | 33 | 3/7 | 46/62 |
-| Goomba Tower | 1-2 | 6 | 7% | 27 | 4/7 | 51/66 |
-| Galoomba | 2-2 | 6 | 8% | 24 | 2/6 | 46/59 |
-| Parabones | 6-7 | 6 | 23% | 4 | 2/2 | 7/20 |
-| Stingby | 1-5 | 5 | 6% | 27 | 4/7 | 52/62 |
-| (7 more kinds in 4 courses) | | | 5-14% | 10-43 | | |
+| Goomba | 1-1 | 16 | 20% | 11 | 7/7 | 34/72 |
+| Fire Bro | 2-5 | 12 | 18% | 9 | 6/6 | 33/60 |
+| Piranha Plant | 1-3 | 10 | 13% | 23 | 5/7 | 46/69 |
+| Mini Goomba | 1-2 | 9 | 11% | 19 | 5/7 | 51/71 |
+| Fire Piranha Plant | 2-3 | 9 | 12% | 19 | 4/6 | 41/63 |
+| Para-Biddybud | 1-5 | 8 | 10% | 33 | 4/7 | 48/67 |
+| Goomba Tower | 1-2 | 7 | 8% | 16 | 5/7 | 53/71 |
+| Parabones | 6-7 | 7 | 25% | 5 | 2/2 | 7/22 |
+| Galoomba | 2-2 | 6 | 8% | 26 | 2/6 | 51/64 |
+| Coin Coffer | 2-2 | 6 | 8% | 30 | 3/6 | 50/64 |
+| (9 more kinds in 4-5 courses) | | | 4-16% | 11-43 | | |
 
-27 of 78 kinds are in one course only. Of 76 kinds with 6+ later courses: **0** reach a 1/3 share (median 2%, max 23%), **0** pass
-ES's window, 0 pass the DKCR staple envelope, 14 pass the signature envelope. Mario's variety comes from many short-lived kinds; its
-one staple, the Goomba, is in a fifth of later courses and absent up to 10 in a row.
+26 of 80 kinds are in one course only. Of 78 kinds with 6+ later courses: **0** reach a 1/3 share (median 3%, max 25%), **0** pass
+ES's window, 0 pass the DKCR staple envelope, 17 pass the signature envelope. Mario's variety comes from many short-lived kinds; its
+one staple, the Goomba, is in a fifth of later courses and absent up to 11 in a row. (An earlier run of this script dropped the
+five X-1 courses of W4-W8 through a regex that ran across lines; the checker caught it; fixed and re-run.)
 
 **Rayman Legends, Teensies in Trouble (one world), from the IGN level pages' text** (wiki-grade; RayWiki's level and enemy
 sections were blocked, so this is what each walkthrough *names*, an undercount):
@@ -205,9 +207,9 @@ not an enemy or a piece. RayWiki's infobox gives the world as 10 levels and 90 T
 
 **Answer to "settles our >= 1 in 3":**
 - Read as a **share** (>= 1/3 of later stages), it is what DKCR's **two commonest enemies** reach (30%, 35%), nothing else; in 3D
-  World no enemy kind reaches it (best 23%, Goomba 20%).
+  World no enemy kind reaches it (best 25%, Goomba 20%).
 - Read as a **sliding window** (no 3 stages in a row without it), **no element of either game passes** (DKCR's two commonest have 23
-  and 10 empty windows; 3D World 0 of 76). ES 1319 is written as the window ("at least 1 of every 3 stages").
+  and 10 empty windows; 3D World 0 of 78). ES 1319 is written as the window ("at least 1 of every 3 stages").
 - What the two games do have in every stage is the **verbs** (run, jump, roll / stomp, the cling grass and barrel cannons that the
   level lists do not count): ES's "core moves" for us are verbs (jump, double jump, liana, climb), so the window can still be met for
   those, as gaps, liana and trunk climb nearly do in our run below. For animals and pieces it has no shipped precedent.
@@ -260,8 +262,8 @@ height you can step off). No sink time can be cited.
   after 60 seconds" (`rayman-ign-legends-once-upon-a-time-invasion.txt:15,21`); the Murfy chases Dungeon Dash / Dungeon Chase and the
   music run Castle Rock have **3** (`...dungeon-dash.txt:19`, `...dungeon-chase.txt:19`, `...castle-rock.txt:19`).
 
-**Answer:** every measured sprint/chase stage carries collectibles: about **80% of a normal level's count** in DKC (5 vs 6.3 pieces,
-full letters) and **30%** in Rayman (3 vs 10), placed on the run line or as a time-gated reward. Zero has no source. In our plan this
+**Answer:** every measured sprint/chase stage carries collectibles except a transit stage (DKCR 7-R, which lacks letters and pieces): about **80% of a normal level's count** in DKC (5 vs 6.3 pieces,
+full letters) and **30%** in Rayman (3 vs 10), placed on the run line or as a time-gated reward. Zero has a source only for a short connector stage between two levels (7-R), not for a sprint level. In our plan this
 matters more than it looks: `stagePlan.ts` types **18 stages 'sprint'**, including 1-1 itself (engine-mixer `src/game/stagePlan.ts:34`;
 ES:937 calls 1-1 "sprint").
 
@@ -271,17 +273,20 @@ ES:937 calls 1-1 "sprint").
   as "tightly placed platforms, blocks or pipes with increasing height" (`smb-dahlskog-togelius-2012-patterns.txt:389-397,583-603`);
   **they give no step counts**. Launchpad's staircase rule is "the height of each gap in the staircase must be equal" (our own
   LEDGER-ENGINE-PAPERS.md:84-85).
-- Measured from the SMB level text (TheVGLC, `sources/vglc/`, `stairs_vglc.py` -> `ours-stairs-vglc-output.txt`, 15 levels): 25 stairs;
-  rises per stair **2:3, 3:4, 4:7, 5:5, 6:3, 8:3**. The three 8s are end-of-level flag stairs (1-1, 4-1, 7-1), which D&T say exist "so
-  that Mario may reach the highest point on the flagpole" (`:597-599`). Mid-level stairs: **2-6 rises, median 4**; 1-1's two pyramids
-  are 4 up / 4 down. Every SMB step is **1 block**, and Mario's standing jump is **4 blocks** (a player's machine measurement,
-  `smb-reddit-mariomaker-jump-height-machine.txt:36`): a step is a quarter of a jump, equal every time.
+- Measured from the SMB level text (TheVGLC, `sources/vglc/`; `python3 -I stairs_vglc.py sources/vglc` -> `ours-stairs-vglc-output.txt`,
+  15 levels): 25 stairs. The last up-stair within 40 columns of a level's end leads to the flagpole (D&T: stairs exist "so that Mario
+  may reach the highest point on the flag-pole", `:597-599`): 9 of those, rises 3-8 (four of 8). The **16 mid-level stairs: rises
+  2:2, 3:2, 4:6, 5:3, 6:3, median 4**; 1-1's two pyramids are 4 up / 4 down. The script counts only exact one-block changes, so the
+  equal 1-block step is how SMB stairs are built (the level text has no half steps), not a finding of the count; the count is the
+  number of rises. Mario's standing jump is **4 blocks** (a player's machine measurement,
+  `smb-reddit-mariomaker-jump-height-machine.txt:36`): a step is a quarter of a jump. (Fixed after review: the first run counted three
+  flag stairs as mid-level and split 3-1's flag stair at an enemy drawn in a step cell.)
 - Ours, measured (`stairscan.ts` on W1, W2, W5 of engine-mixer, `ours/stairscan-w1-w2-w5-engine-mixer-021ef4e9.txt`; a heuristic:
   landings within 60 px rising 16-108 px): 304 rising runs, rises per run **2:199, 3:66, 4:32, 5:4, 6:2, 7:1**; step height median
   **55 px = 0.51 of JUMP_RISE** (108 px, `src/game/physics.ts:133`), p10 30, p90 75; and steps are **unequal** (the common pair is
   55 then 75).
 
-**Answer:** "2-4 rises" covers 14 of SMB's 22 mid-level stairs (2-6, median 4). What makes an SMB stair read as a slope is the small,
+**Answer:** "2-4 rises" covers 10 of SMB's 16 mid-level stairs (2-6, median 4). What makes an SMB stair read as a slope is the small,
 **equal** step (1/4 of a jump), which ours do not have (1/2 of a jump, unequal). If a mound is meant to read as a hill, the sourced
 shape is about 4 rises of equal height at about a quarter to a third of a jump; that is the designer's ruling.
 
@@ -324,12 +329,12 @@ day one. No source gives a cost for adding slopes to an existing flat-collision 
 1. **One core concept per stage, taught in the stage's own four steps** (introduce, develop, twist, master), with at least 4 uses of
    it, one per step. Source: Hayashida, `structure-of-fun:117-133`. Matches STAGE-RULES §0b.2 already.
 2. **Count new things per stage by kind**: <= 1 new *core concept*; new *pieces* (animals, props) may be 2-4 a stage. Source: 3D World
-   measured 1-4 new enemy kinds a course; Yacht Club 5 + 5 planned. Staples used everywhere "don't count" (`sk 1of5:108`).
+   measured 0-4 new enemy kinds a course (mean 2.1 in W1-W2); Yacht Club plans about 5 + 5. Staples used everywhere "don't count" (`sk 1of5:108`).
 3. **Two return classes, not one** (measured, DKCR):
    - *verbs* (run, jump, double jump, liana, trunk climb): every stage or nearly (no shipped number needed: both games' verbs are in
      every level; ours measured 58-100%);
    - *staples* (the commonest animal of each element): in every later world, in 20-35% of later stages, longest absence <= 8-10
-     stages (DKCR Tiki Goon/Buzz 30-35%, <= 8; 3D World Goomba 20%, <= 10);
+     stages (DKCR Tiki Goon/Buzz 30-35%, <= 8; 3D World Goomba 20%, <= 11);
    - *signature pieces* (a world's own move, vehicles and set pieces, animals of one element): back in >= 3/7 of the later worlds,
      longest absence <= 25 stages. This is where SR:19-20's "comes back in every later world" is the stricter house rule.
 4. **The harder form changes the verb** (blow out, flip, use a barrel, a new attack), usually within 0-2 worlds of the base (5 of 7
@@ -346,22 +351,22 @@ day one. No source gives a cost for adding slopes to an existing flat-collision 
 | ES line | It says | What the sources show |
 |---|---|---|
 | 113-116 | <= 1 new move or idea a stage | Shipped courses add 1-4 new kinds (3D World measured); only the core concept is one (Hayashida). Wrong if "idea" includes animals and pieces. |
-| 115-116 | a move from the last 3 stages never absent > 2 stages | No measured game does this: 1/15 DKCR elements and 4/29 3D World kinds return within 2. Yacht Club: elements are "shuffled away, and revisited" (`2of5:114`). Matt's "keeps building" is the real source; label it so. |
+| 116 | a move from the last 3 stages never absent > 2 stages | No measured game does this: 1/15 DKCR elements and 4/29 3D World kinds return within 2. Yacht Club: elements are "shuffled away, and revisited" (`2of5:114`). Matt's "keeps building" is the real source; label it so. |
 | 139-140 | a taught animal "must not drop out for more than two stages" | Same; DKCR's commonest enemy is absent up to 7-8 levels, others 19-42. |
 | 1317 | Echo in the next 2 stages | No source; measured games teach and master inside the stage, then return worlds later. |
 | 1319 / 1535 | every core move in >= 1 of every 3 stages | As a sliding window, stricter than any element of DKCR (even Tiki Buzz has 10 empty windows) or 3D World (0 of 76 kinds); as a share, only DKCR's top 2 enemies reach it. Holds for verbs only. Our run: 2 of 40 mechanics pass. |
-| 1540, 1541 | push and hide >= 1 in 4 | No source for 1 in 4. |
+| 1541, 1542 | push and hide >= 1 in 4 | No source for 1 in 4. |
 | 575 | sinking log: skip, "same feel" as cracking | Sinking is a whole-stage theme that returns in DKCR (2-K, 6-2, 8-5) and Rayman (Quick Sand); it is a different feel (continuous, recoverable), not the same. |
-| 597-599 | a hill = 2-4 rises | SMB mid-level stairs 2-6, median 4, and the step is equal and 1/4 of a jump; ES gives no step size. |
+| 597-599 | a hill = 2-4 rises | SMB mid-level stairs 2-6 rises, median 4 (2-4 covers 10 of 16), each step one block = 1/4 of a jump; ES gives no step size. |
 | 861-863 | fades over about 300 px | No source for the distance or for following the bank faces; source only for "dark toward the pit". |
-| 1228 | marks 0 for a sprint | Every measured sprint keeps collectibles (DKCR full letters + 5 pieces; Rayman 3 Teensies). With 18 'sprint' stages incl. 1-1, this line empties a sixth of the game. |
+| 1228 | marks 0 for a sprint | Every measured sprint level keeps collectibles (only DKCR's 7-R transit rocket has none) (DKCR full letters + 5 pieces; Rayman 3 Teensies). With 18 'sprint' stages incl. 1-1, this line empties a sixth of the game. |
 | 174-175 | unused frames give "a second behaviour" | Supported; sharpen to "changes the verb" (5 of 7 DKCR forms). |
 
 ## 9. Cross-check with our earlier research (done after the first source list)
 
 - **R1** (`reference/research/engine-2026-11-05/R1-shipped-pipelines.md`, engine-mixer): R1:328-360 had Shovel Knight's 26 rooms,
-  5 + 5 and "on cooldown" and R1:527 read the 5 + 5 as a level budget: **agrees** with `sk 1of5:107-108`. R1 did not have the
-  "no one-offs ... magic trick once" line (`1of5:113`) or "never removed ... brain might start to hurt" (`2of5:110`), which bear on
+  5 + 5 and "on cooldown" and R1:527 read the 5 + 5 as a level budget: **agrees** with `sk 1of5:107-108`. R1:40-41 had "You can't show the same magic
+  trick twice!" and "no gameplay concepts should overstay their welcome"; it did not have the "no ... one-offs" half of `1of5:113` or "never removed ... brain might start to hurt" (`2of5:110`), which bear on
   ES 113-116. R1:354-355 already quoted the pit fade (`4of5:53`). R1:21 said deep dive part 5 was 404; it is at
   `.../deep-dive-5-of-5/` (`sk-specter-level-design-5of5.txt`).
 - **GEMINI-PCG-RESEARCH.md:42** ("One-Off Wonder": silhouettes, rhythmic sinking platforms as a stage's single twist): the DKCR level
@@ -377,7 +382,8 @@ day one. No source gives a cost for adding slopes to an existing flat-collision 
 Read in full by me: Shovel Knight deep dive parts 1 and 2 (`sk-specter-level-design-1of5.txt`, `2of5`), Hayashida's Gamasutra
 interview's level-design section (`mario-gamedev-structure-of-fun-hayashida.txt:113-140`), Iwata Asks DKCR pages 1-3, Iwata Asks 3D Land
 vol. 1 p2, the Kotaku GDC report, the D&T 2012 pattern tables, every DKCR/DKCTF level and enemy table used, every 3D World enemy
-table used, the Rayman IGN level pages' openings and Teensy counts, the Tiny Wings / Alto files' relevant sections. Searched, not read
+table used, the Rayman IGN level pages' openings and Teensy counts, the three Illiger interviews (Kill Screen, AppAgent, Making Games), the
+Alto files' relevant sections, the HonestGamers Lich Yard walkthrough. Searched, not read
 line by line (helpers saved them; I grepped them for every keyword of the brief): the rest of Iwata Asks 3D Land / 3D World, Wonder parts
 2-4, Shovel Knight parts 3-5, the Rayman Origins walkthrough, Rational Design (R1 covered it).
 
@@ -390,6 +396,10 @@ every image host; Semantic Scholar).
 - Every number in §1-§6 was re-run from the saved files by the scripts named beside it; the outputs are committed next to them.
 - Checked against our code, not memory: JUMP_RISE (`physics.ts:133`), 18 'sprint' stages (`stagePlan.ts`), the ladder (moveladder.json
   7d9ad9a9), W1 counts (mechtable on 021ef4e9).
+- An independent checker re-opened about 150 cited lines and re-ran every script (11-05, ~11:50 AM ET). It found 16 defects, all fixed
+  here: a regex in `sm3dw_full.py` that dropped five courses (figures re-run), three SMB flag stairs counted as mid-level, a misread
+  (Tiny Wings' 7 months), overstatements ("2-4 new", "every sprint", "0-2 worlds"), a Lividstone claim with no source, wrong ES and
+  source line numbers. Every committed output matches its script.
 - Rough spots named, not hidden: wiki enemy lists are floors; the stair scan is a heuristic; no seconds figure from video; Rayman's
   per-form worlds and the pit distance have no source.
 
@@ -399,4 +409,6 @@ every image host; Semantic Scholar).
   wrong parse shows (the first VGLC run dropped every row starting with "-" and found 3 stairs; fixed to 25, `stairs_vglc.py:20-22`).
 - Failed: helpers that fetched 15-20 pages ran out before writing their report (three of four returned no report; their files were
   complete, and I read the files instead). Next time: ask for the file list first, the report second, and cap a helper at about 12 pages.
+- Worked: an **adversarial checker on the finished draft** (given the report and the files, not my conclusions) found 16 defects in 6
+  minutes, including a parse bug that changed a headline table. Make it a step before every research report (added to the method).
 - New method file: `reference/methods/research.md`.
