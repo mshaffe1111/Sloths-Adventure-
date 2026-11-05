@@ -97,7 +97,7 @@ engine first; Matt decided, so now do it his way, well.
 ## BASE BRANCH WARNING (12:24 PM ET)
 The lead branch ccr-0d59a91c-oy3imz STILL CARRIES the 11-04 World 1 rebuild Matt rejected (w1Rhythm.ts, w1Rise.ts, w1Sections.ts, 1-9 bowl gate,
 R-159.x). Never branch helpers from it for game code, and never release its src/. Game work starts from origin/main. The engine moves to
- (from main, the planner, due 1:45 PM, lock proves only 1-1/1-5 differ from main); helpers port their own files onto it.
+engine-core (from main, the planner, due 1:45 PM, lock proves only 1-1/1-5 differ from main); helpers port their own files onto it.
 
 ## My own pitfalls (and the countermeasure)
 - STILL REVIEW CHECKLIST (D37, Matt caught a floating boulder I passed): before judging the feature, go object by object through the
