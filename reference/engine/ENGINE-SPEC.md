@@ -446,6 +446,15 @@ so a run of same-size logs fails the gate even when the logs are scattered.
 - **For about 0.5% more** (hollow, mossy, broken, jam, cracking, all on art that already exists and mechanics that already exist): 8 kinds.
 - **The three that feel most different** each take real work: slung (about 0.5-1%), rolling (to be checked) and biting (about 1-1.5%).
 
+
+**New art (Matt, 11-05, via the lead):**
+- New pictures come from Hugging Face first; Gemini is the fallback, and Matt runs it himself.
+- A picture is made only for a gap that the unused and never-packed art can't fill.
+- The designer sends the lead a small picture list aimed at the gaps the variety gate shows: each picture, its use, the worlds it
+  fits and its HF cost. The lead approves the spend (about $70 left in total, about $15 kept in reserve).
+- The method is `reference/methods/hf-backdrops.md` with its floor check. The HF token never goes in code, commits or messages.
+- Today the existing art covers every idea in this spec, so no picture list is needed yet.
+
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
