@@ -1454,3 +1454,177 @@ breakables use "World 1's branch art, never World 7's ruin slab".
 - If no rotten-wood art exists, the ground breakable is a true art gap. It goes on a picture list for the lead, and until then 1-5's low
   roads use stump hop and bank hops with no breakable.
 - Until one of those is done, the theme check names the slab in World 1 as a breach.
+
+## The whole-game plan (designer, 11-05 ~12:20 PM ET; Matt: "the engine plans the WHOLE game"; the lead's five bars)
+
+Data the engine reads, which the planner builds into `worlds.ts` and `ladder.ts`. The source for "where things are today" is the
+planner's all-world table, `tools/engine/moveladder.json` (engine-mixer 7d9ad9a9: 102 stages, 40 mechanics). **Build on what works:**
+- every world keeps its stages, names, special stages, rooms, bosses and art;
+- the plan only says what each stage must carry, and what must come back;
+- a world the engine touches gets a regression lock like 1-5's before anything in it changes.
+
+### A. What the table shows today (why the game feels repetitive)
+
+The worst ones have a move taught, then dropped. "Longest absence" counts stages, starting from the first use.
+
+| Move or thing | First | Stages using it | Longest absence |
+|---|---|---|---|
+| warm air (glide up) | 4-7 | 1 | 63 (never again) |
+| lift | 2-7 | 1 | 83 (never again) |
+| river logs | 2-1 | 7, all in W2 | 81 |
+| silk line | 5-4 | 2 | 55 |
+| push a log | 1-6 | 4 | 61 |
+| breaking branch | 1-2 | 22 | 41 (1-7 to 5-8) |
+| rope shimmy | 1-3 | 13 | 35 (4-7 to 8-2) |
+| hide in a bush | 1-7 | 8 | 28 (8-3 to the end) |
+| moving platform | 2-10 (a lair) | 10 | 29 |
+| mushroom bounce | 1-1 | 26 | 13 |
+
+These are the ones that already work:
+- the liana (longest absence 4);
+- the trunk climb (5);
+- the tayra (5);
+- the harpy (8);
+- finds (3).
+
+**The leaf glide and swimming have no row in the table** (MECHS doesn't count them). The planner adds both rows: glide from the
+leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Until then their absences are unknown.
+
+### B. The worlds: element, kit, own move, hazards that live there, special stages
+
+| W | Place (biomes.ts) | Elements | Its own move (lots here) | Its hazards and zones (stay home; return only where they fit) | Special stages (kept as built) |
+|---|---|---|---|---|---|
+| 1 | home kapok forest | ground, tree, creek (drawn water, costs a life) | bounce, double, rope, climb, liana, creaky, hide, push | — | 1-8 chase, 1-10 lair, puzzle rooms |
+| 2 | tidal river mouth, bank village | water (costs a life), ground, built (bank houses) | river logs, lift; moving platform taught in 2-7 (R-164.9) | water | 2-3 and 2-8 cages, 2-10 lair |
+| 3 | dark forest and limestone cave | ground, cave, pools | thorn swing (3-8) | dark, spores, thorns | 3-6 and 3-7 searches, 3-10 lair |
+| 4 | cliffs and waterfalls | cliff, ground, falls | leaf glide (4-1), warm air (4-7) | wind | 4-1 the ledge gives way, 4-7 the long drop, 4-10 lair |
+| 5 | orchid understory, webs | **the exception world: its own kit** | silk line (5-4) | webs | 5-M, 5-10 lair |
+| 6 | blackwater swamp | water, roots, ground | **swim (6-7)** | tide | the whole swimming stage (R-5.22, see D), 6-10 lair |
+| 7 | temple city taken by roots | built stone, roots, pools | — | crumbling floors | 7-4 slide, 7-7 search and its secret gate, 7-10 lair |
+| 8 | karst towers, caves, figs, night | cliff, cave, tree, ponds | long swings, moonlight glide (8-6) | dark (from W3) | 8-10 lair |
+| 9 | young lava, the first trees | heat rock, scorched ground | warm air again (9-5 Vent Riding) | geysers, heat (lava only here) | 9-10 lair |
+| 10 | the felled war camp, the thousand steps | built (towers, netting), stumps, rain | hold (10-3, R-2.7) | bolts | 10-10 lair |
+
+**Element rules for the whole game:**
+- lava only in W9 (Matt);
+- webs only in W5;
+- swim only where water is drawn deep enough, and only from 6-7;
+- before 6-7, water costs a life everywhere ("Falling in costs a life", lesson.water), on replay too.
+
+### C. The core-move ladder, W1-W10
+
+**Core moves** (they go everywhere their fit rule allows):
+- jump, double, bounce;
+- liana, climb, rope;
+- creaky branch, hide, push;
+- the moving platform (after 2-7);
+- the leaf glide (after 4-1);
+- swim (after 6-7, in water worlds only).
+
+**World moves** go only where their element is:
+
+| Move | Where it may come back |
+|---|---|
+| river logs | W2, W6, W8 ponds |
+| lift | built places: W2, W7, W10 |
+| warm air | W4, W9's vents, W8's cave mouths |
+| silk line | W5 only |
+
+| Move | Taught | Echo (some, one required) | Must keep returning | Today's worst gap → the fix |
+|---|---|---|---|---|
+| bounce | 1-1 | 1-2, 1-3 | ≥ 1 of every 3 stages in every world but W5 | 13 (W3-W4) → W3 and W4 get bounces |
+| double | 1-1 | 1-2, 1-3 | in jump content everywhere (the gates check it as a need) | — |
+| liana | 1-2 | 1-3, 1-4 | ≥ 1 in 3 | already passes |
+| creaky / breaking branch | 1-2 | 1-3, 1-4 | ≥ 1 in 3 in tree worlds (W1, W3, W4, W6, W8, W10) | 41 → W2-W4 get them |
+| rope | clearing 1-3 | 1-4, 1-5 | ≥ 1 in 3 | 35 → W5-W7 get ropes (W7: temple ropes; W5: its own kit's rope) |
+| climb | 1-4 | 1-5, 1-6 | ≥ 1 in 3 | passes |
+| push | 1-6 | 1-7, 1-8 | ≥ 1 in 4, often as a puzzle beat | 61 → every world gets push beats |
+| hide | 1-7 | 1-8, 1-9 | ≥ 1 in 4, in each world's stealth stages at least | 28 → W9 and W10 stealth stages use bushes or cover |
+| moving platform | 2-7 (planned) | 2-8, 2-9 | ≥ 1 in 3 from W3 on | 29 → W3, W4 |
+| leaf glide | clearing 4-1 | 4-2, 4-3 | ≥ 1 in 3 from W4 on, wherever there's a drop | unknown until its row exists |
+| warm air | 4-7 | 4-8, 4-9 | W8 and W9 (≥ 3 stages each) | 63 → 8-6, 9-5 and others |
+| swim | 6-7 | 6-8, 6-9 | ≥ 1 in 3 in W6-W8 and W10 where water is drawn; none in W9 | unknown until its row exists |
+| lift | 2-7 | 2-8 | ≥ 2 stages in W7 and W10 | 83 → W7, W10 |
+| river logs | 2-1 | 2-2, 2-3 | ≥ 2 stages each in W6 and W8 | 81 → W6, W8 |
+
+**World hazards** (they return only where the element fits; each return is taught again only if it's a new variant):
+
+| Hazard | Comes back in |
+|---|---|
+| dark | W3, W8 caves |
+| wind | W4, W8 tower tops, W10 the thousand steps |
+| thorns | W3, W6 roots, W10 the camp's wire |
+| spores | W3, and W6's peat if art fits |
+| tide | W6, and W2's tidal river (only after 6-4, so never in W2's first play: tide stays a W6 teach) |
+| crumbling floors | W7, W10 fortress |
+| geysers | W9 only |
+| bolts | W10 only |
+
+**Animals:**
+- Once taught, an animal goes anywhere its element fits: snakes in trees, caimans in water, harpies in open sky, jaguars and ocelots on
+  the ground.
+- Today's gaps the plan fixes: the snapper leaves W2 for W6 (water); spiders stay W5's; frogs go to W8's ponds; the boa returns in
+  W3-W4 trees.
+
+**Mixing (World 2 on):**
+- Every stage uses at least 3 core moves besides run and jump, at least one of them from an earlier world.
+- Every world has one stage that joins its own move with an older one in one beat:
+
+| W | The joined beat |
+|---|---|
+| 2 | a river log into a rope |
+| 3 | a thorn swing into a liana |
+| 4 | a glide off a liana |
+| 5 | a silk line into a glide |
+| 6 | a swim to a rope |
+| 7 | a push onto a lift |
+| 8 | a moonlight glide onto a liana |
+| 9 | warm air into a rope |
+| 10 | the hold on a moving platform |
+
+### D. Water and swims (GEMINI-VARIETY row "Water", R-5.22; swimming is built, 87f1e2f6)
+
+- **The spec declares water.** A stage profile names its `water`: none, a creek, a river, a pool, a swamp or a tide. Each body has
+  x-range, surface y, depth, and `swim: no | yes`. Shallow or pre-6-7 water is `swim: no`, so it costs a life and is drawn only.
+- **Swim beats are quick in-and-out** (the research's rules, adopted):
+  - at most 15-20 s under before a surface or an exit;
+  - wide, clear exits, at least 3-4 body widths of bank or a ramp out;
+  - no slow drag: Pokey is fast in water (Matt's "suddenly fast");
+  - currents and bubbles as the variety;
+  - rising and falling water from the tide zone, already built.
+
+  The gate measures each swim beat's time under on the bot run and fails over 20 s.
+- **Where swims are laid:**
+  - 6-7 teaches, in the root well as built;
+  - 6-8 and 6-9 echo;
+  - then W6-W8 and W10 at least 1 stage in 3 where water is drawn. W7's temple pools, W8's karst ponds and W10's camp river are the
+    candidates. None in W9.
+- **The whole swimming stage (R-5.22)** goes in World 6 after 6-7, a reshaped existing stage, not a new one (R-153). Which stage is the
+  lead's call with the story; 6-8 "Stilt Climb" or 6-9's approach are the designer's suggestions.
+- **World 1 to 6-6:** water is drawing and a life-costing hazard only (the engine-render water zone). Lily pads, reeds, stones and
+  logs stand on it per the element table.
+
+### E. Gates that read this plan
+
+1. **Untaught move:** a stage uses a move before its taught-at. Fail.
+2. **Dropped move:** a core move absent longer than its "must keep returning" line. Fail, naming the stretch.
+3. **Off-element:** a world move or hazard in a world its row doesn't list. Fail.
+4. **Mixing:** fewer than 3 known core moves, or none from an earlier world (W2 on). Fail.
+5. **Swim beat:** more than 20 s under, or an exit narrower than 3 body widths. Fail.
+6. **Today's misses are a known list.** It only shrinks (like `clipknown.json`). A world is cleared off it when the engine rebuilds that
+   world's stages.
+
+### F. Order and cost (for the lead)
+
+- **Order:**
+  - This plan is the spec's step before 1-1 is rebuilt from data, as the lead asked.
+  - The planner's steps: lock 1-5, stage as data, the tagged library with the element gate and water zone, the **world table and
+    ladder data, plus gates 1-6 run as a report over all 102 stages (new)**, the profile pass lines and the neighbour check, one
+    command a stage, then 1-1 from data.
+  - Worlds 2-10 are not rebuilt now. The gates report on them, and the known list records their misses.
+- **The designer's cost:**
+  - this plan: about 1.5 h, done;
+  - corrections after the planner's glide and swim rows: about 0.5 h;
+  - each world's object pass later: about 1 h a world, when that world is queued.
+- **The build cost** (world data, glide and swim rows, gates 1-6 as a report, the methods how-to) is the planner's estimate in % of the
+  week, against the 55% ceiling (stop at 53%).
