@@ -1,0 +1,9 @@
+march  128.2 gaps 82/82/82/73 px | ledges 184/185/185/357 px | air share of the room 22% | longest run 1.02 s | dead walks >2.5 s: 0
+march  98    gaps 82/82/82/73 px | ledges 266/267/267/440 px | air share of the room 18% | longest run 1.31 s | dead walks >2.5 s: 0
+march  68    gaps 82/82/82/73 px | ledges 420/421/421/594 px | air share of the room 13% | longest run 1.85 s | dead walks >2.5 s: 0
+swung  128.2 gaps 27/73/27/73 px | ledges 173/260/173/424 px | air share of the room 14% | longest run 1.25 s | dead walks >2.5 s: 0
+swung  98    gaps 27/73/27/73 px | ledges 234/363/235/527 px | air share of the room 11% | longest run 1.61 s | dead walks >2.5 s: 0
+swung  68    gaps 27/73/27/73 px | ledges 350/555/351/719 px | air share of the room 8% | longest run 2.29 s | dead walks >2.5 s: 0
+sparse 128.2 gaps 82/64/91 px | ledges 451/470/606 px | air share of the room 12% | longest run 1.87 s | dead walks >2.5 s: 0
+sparse 98    gaps 82/64/91 px | ledges 615/634/771 px | air share of the room 10% | longest run 2.45 s | dead walks >2.5 s: 0
+sparse 68    gaps 82/64/91 px | ledges 923/942/1079 px | air share of the room 7% | longest run 3.53 s | dead walks >2.5 s: 3

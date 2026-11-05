@@ -1,0 +1,78 @@
+== exp1a: one room, three worlds: kinds vs numbers ==
+march      kinds [jFb jFb jFb jUb]
+   128.2N: dens 1.07 secs 5.2 gaps 82/82/82/73
+   128.2E: dens 1.07 secs 5.2 gaps 53/53/53/46 kinds≠
+   94N: dens 0.78 secs 6.5 gaps 82/82/82/73
+   94E: dens 0.78 secs 6.5 gaps 53/53/53/46 kinds≠
+   98N: dens 0.82 secs 6.3 gaps 82/82/82/73
+   98E: dens 0.82 secs 6.3 gaps 53/53/53/46 kinds≠
+   102N: dens 0.85 secs 6.1 gaps 82/82/82/73
+   102E: dens 0.85 secs 6.1 gaps 53/53/53/46 kinds≠
+   68N: dens 0.57 secs 8.5 gaps 82/82/82/73
+   68E: dens 0.57 secs 8.5 gaps 53/53/53/46 kinds≠
+stairs     kinds [jUb jUb jUb]
+   128.2N: dens 0.80 secs 5.2 gaps 64/64/64
+   128.2E: dens 0.80 secs 5.2 gaps 38/38/38
+   94N: dens 0.59 secs 6.5 gaps 64/64/64
+   94E: dens 0.59 secs 6.5 gaps 38/38/38
+   98N: dens 0.61 secs 6.3 gaps 64/64/64
+   98E: dens 0.61 secs 6.3 gaps 38/38/38
+   102N: dens 0.64 secs 6.1 gaps 64/64/64
+   102E: dens 0.64 secs 6.1 gaps 38/38/38
+   68N: dens 0.42 secs 8.5 gaps 64/64/64
+   68E: dens 0.42 secs 8.5 gaps 38/38/38
+swung      kinds [hDs jUb hDs jUb]
+   128.2N: dens 1.07 secs 5.2 gaps 27/73/27/73
+   128.2E: dens 1.07 secs 5.2 gaps 24/46/24/46 kinds≠
+   94N: dens 0.78 secs 6.5 gaps 27/73/27/73
+   94E: dens 0.78 secs 6.5 gaps 24/46/24/46 kinds≠
+   98N: dens 0.82 secs 6.3 gaps 27/73/27/73
+   98E: dens 0.82 secs 6.3 gaps 24/46/24/46 kinds≠
+   102N: dens 0.85 secs 6.1 gaps 27/73/27/73
+   102E: dens 0.85 secs 6.1 gaps 24/46/24/46 kinds≠
+   68N: dens 0.57 secs 8.5 gaps 27/73/27/73
+   68E: dens 0.57 secs 8.5 gaps 24/46/24/46 kinds≠
+doublepit  kinds [dFb jDb]
+   128.2N: dens 0.53 secs 5.2 gaps 193/91
+   128.2E: dens 0.53 secs 5.2 gaps 169/64
+   94N: dens 0.39 secs 6.5 gaps 193/91
+   94E: dens 0.39 secs 6.5 gaps 169/64
+   98N: dens 0.41 secs 6.3 gaps 193/91
+   98E: dens 0.41 secs 6.3 gaps 169/64
+   102N: dens 0.42 secs 6.1 gaps 193/91
+   102E: dens 0.42 secs 6.1 gaps 169/64
+   68N: dens 0.28 secs 8.5 gaps 193/91
+   68E: dens 0.28 secs 8.5 gaps 169/64
+drop3      kinds [jDb jDb jDb]
+   128.2N: dens 0.80 secs 5.2 gaps 100/100/91
+   128.2E: dens 0.80 secs 5.2 gaps 73/73/64
+   94N: dens 0.59 secs 6.5 gaps 100/100/91
+   94E: dens 0.59 secs 6.5 gaps 73/73/64
+   98N: dens 0.61 secs 6.3 gaps 100/100/91
+   98E: dens 0.61 secs 6.3 gaps 73/73/64
+   102N: dens 0.64 secs 6.1 gaps 100/100/91
+   102E: dens 0.64 secs 6.1 gaps 73/73/64
+   68N: dens 0.42 secs 8.5 gaps 100/100/91
+   68E: dens 0.42 secs 8.5 gaps 73/73/64
+halfnotes  kinds []
+   128.2N:THROW
+   128.2E: dens 1.07 secs 5.2 gaps 53/161/64/53 kinds≠
+   94N: dens 0.78 secs 6.5 gaps 82/183/91/82 kinds≠
+   94E: dens 0.78 secs 6.5 gaps 53/161/64/53 kinds≠
+   98N: dens 0.82 secs 6.3 gaps 82/183/91/82 kinds≠
+   98E: dens 0.82 secs 6.3 gaps 53/161/64/53 kinds≠
+   102N: dens 0.85 secs 6.1 gaps 82/182/91/82 kinds≠
+   102E: dens 0.85 secs 6.1 gaps 53/160/64/53 kinds≠
+   68N: dens 0.57 secs 8.5 gaps 82/183/91/82 kinds≠
+   68E: dens 0.57 secs 8.5 gaps 53/161/64/53 kinds≠
+
+== exp1b: the same 8-room roll at W1 128.2 vs W2 98 BPM: the kind strings are identical by construction ==
+kind string: jFbjFbjFbjUb|hDsjUbhDsjUb|jUbjUbjUb|dFbjDb|jDbjDbjDb|jFbdUbjDbjFb|hDsjUbhDsjUb|jFbjFbjFbjUb
+NCD(W1 roll, W2 roll) = 0.07 (self); vs a shuffle of its own tokens:
+  NCD(roll, shuffled) = 0.52
+
+== exp1c: seams. Rooms chained on one shared 200 px apron; take-off times across the join ==
+Normal 128.2 BPM: 14 take-offs over 15.2 s; gaps at the 3 seams 1.64, 1.87, 2.58 s; rests found 2; longest phrase 7.0 s; median interval 0.94 s
+Normal 98 BPM: 14 take-offs over 19.2 s; gaps at the 3 seams 1.92, 2.23, 3.15 s; rests found 1; longest phrase 13.6 s; median interval 1.22 s
+Easy   128.2 BPM: 14 take-offs over 15.2 s; gaps at the 3 seams 1.64, 1.87, 2.58 s; rests found 1; longest phrase 10.8 s; median interval 0.94 s
+Easy   98 BPM: 14 take-offs over 19.2 s; gaps at the 3 seams 1.92, 2.23, 3.15 s; rests found 1; longest phrase 13.6 s; median interval 1.22 s

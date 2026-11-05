@@ -1,0 +1,12 @@
+stair up then drop   128.2: entry y 600, exit Normal 600, Easy 648 (differ 48 px); exit x Normal 1467 Easy 1467
+stair up then drop   98: entry y 600, exit Normal 600, Easy 648 (differ 48 px); exit x Normal 1796 Easy 1796
+stairs (branch)      128.2: entry y 600, exit Normal 480, Easy 516 (differ 36 px); exit x Normal 1467 Easy 1467
+stairs (branch)      98: entry y 600, exit Normal 480, Easy 516 (differ 36 px); exit x Normal 1796 Easy 1796
+swung                128.2: entry y 600, exit Normal 600, Easy 612 (differ 12 px); exit x Normal 1467 Easy 1467
+swung                98: entry y 600, exit Normal 600, Easy 612 (differ 12 px); exit x Normal 1796 Easy 1796
+
+(b) gen2 shipped rolls: worst repeat of one section in one stage
+6-2: 16 rolls, 16 use one section 3+ times; worst 5x (w6-reed-run~)
+8-6: 16 rolls, 16 use one section 3+ times; worst 9x (w8-glide-prowl~)
+8-9: 16 rolls, 16 use one section 3+ times; worst 14x (w8-guard-night)
+7-3: 16 rolls, 15 use one section 3+ times; worst 5x (w7-gallery)

@@ -1,0 +1,23 @@
+// CRITIC exp2: DESIGNER §5.7 shared-apron joins vs the beat grid. Chain proven rooms on one shared 200 px apron (the next room's
+// entrance apron is the previous exit apron) and measure each take-off's offset from the nearest eighth of ONE stage-wide grid.
+import { traceNode, type Step, type NodeSpec } from './src/game/beatTrace.ts';
+import { PHYS } from './src/game/physics.ts';
+const S = (move: Step['move'], dy: number, surface: Step['surface']): Step => ({ move, dy, surface });
+const P = [
+  { bars: ['x...x...', 'x...x...'], steps: [S('jump', 0, 'bank'), S('jump', 0, 'bank'), S('jump', 0, 'bank'), S('jump', 20, 'branch')] },
+  { bars: ['x..o....', 'x..o....'], steps: [S('hop', -20, 'stump'), S('jump', 20, 'branch'), S('hop', -20, 'stump'), S('jump', 20, 'branch')] },
+  { bars: ['x...x...', 'x.......'], steps: [S('jump', 40, 'branch'), S('jump', 40, 'branch'), S('jump', 40, 'branch')] },
+  { bars: ['x...x...', 'x.......'], steps: [S('jump', -60, 'branch'), S('jump', -60, 'branch'), S('jump', -40, 'bank')] },
+];
+console.log(`maxRun ${PHYS.maxRun} px/s; apron 200 px = ${(200 / PHYS.maxRun).toFixed(3)} s`);
+for (const bpm of [128.2, 94, 98, 102, 68]) {
+  const eighth = 30 / bpm; let x = 0, y = 600, t0 = 0; const off: string[] = []; let worst = 0;
+  for (let r = 0; r < P.length; r++) {
+    const tr = traceNode({ bpm, x, y, bars: P[r].bars, steps: P[r].steps } as NodeSpec);
+    const first = t0 + tr.landings[0].t;
+    const ph = ((first % eighth) + eighth) % eighth; const d = Math.min(ph, eighth - ph);
+    if (r > 0) { off.push(`room ${r + 1} first take-off ${(d * 1000).toFixed(0)} ms off the grid (${(d / eighth * 100).toFixed(0)}% of an eighth)`); worst = Math.max(worst, d); }
+    t0 += tr.seconds - 200 / PHYS.maxRun; x = tr.x1 - 200; y = tr.yOut;
+  }
+  console.log(`${bpm} BPM (eighth ${(eighth * 1000).toFixed(0)} ms): ${off.join('; ')}; worst ${(worst * 1000).toFixed(0)} ms vs one 30 fps frame 33 ms`);
+}

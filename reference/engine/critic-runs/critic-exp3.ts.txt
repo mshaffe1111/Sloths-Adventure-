@@ -1,0 +1,15 @@
+// CRITIC exp3: what a slower world tempo changes in a proven room: gaps, ledge lengths (walking), dead walks.
+import { traceNode, deadWalks, type Step, type NodeSpec } from './src/game/beatTrace.ts';
+const S = (move: Step['move'], dy: number, surface: Step['surface']): Step => ({ move, dy, surface });
+const rooms = {
+  march: { bars: ['x...x...', 'x...x...'], steps: [S('jump', 0, 'bank'), S('jump', 0, 'bank'), S('jump', 0, 'bank'), S('jump', 20, 'branch')] },
+  swung: { bars: ['x..o....', 'x..o....'], steps: [S('hop', -20, 'stump'), S('jump', 20, 'branch'), S('hop', -20, 'stump'), S('jump', 20, 'branch')] },
+  sparse: { bars: ['x.......', 'x.......', 'x.......'], steps: [S('jump', 0, 'bank'), S('jump', 40, 'branch'), S('jump', -40, 'bank')] },
+};
+for (const [name, r] of Object.entries(rooms)) for (const bpm of [128.2, 98, 68]) {
+  const tr = traceNode({ bpm, x: 0, y: 600, bars: r.bars, steps: r.steps } as NodeSpec);
+  const L = tr.ledges.filter((l) => l.surface !== 'apron').map((l) => Math.round(l.x1 - l.x0));
+  const G = tr.gaps.map((g) => Math.round(g.x1 - g.x0));
+  const gapShare = G.reduce((a, b) => a + b, 0) / (tr.x1 - tr.x0);
+  console.log(`${name.padEnd(6)} ${String(bpm).padEnd(5)} gaps ${G.join('/')} px | ledges ${L.join('/')} px | air share of the room ${(gapShare * 100).toFixed(0)}% | longest run ${Math.max(...tr.walks.map((w) => w.s), 0).toFixed(2)} s | dead walks >2.5 s: ${deadWalks(tr).length}`);
+}

@@ -1,0 +1,69 @@
+// CRITIC exp1: does re-tracing a proven room at another world's tempo change what the player SEES (kinds), or only numbers?
+// And: what a shared-apron join does to phrases (R3 F13 relative boundary), and Easy density vs Normal (easyNode keeps the beats).
+import { traceNode, easyNode, checkTrace, type Step, type NodeSpec, type Trace } from './src/game/beatTrace.ts';
+import { deflateSync } from 'node:zlib';
+const S = (move: Step['move'], dy: number, surface: Step['surface']): Step => ({ move, dy, surface });
+type Piece = { name: string; bars: string[]; steps: Step[] };
+// the six pieces DESIGNER §2.4 reports clean at every tempo (copied from reference/engine/designer-measure.ts.txt:37-44)
+const P: Piece[] = [
+  { name: 'march', bars: ['x...x...', 'x...x...'], steps: [S('jump', 0, 'bank'), S('jump', 0, 'bank'), S('jump', 0, 'bank'), S('jump', 20, 'branch')] },
+  { name: 'stairs', bars: ['x...x...', 'x.......'], steps: [S('jump', 40, 'branch'), S('jump', 40, 'branch'), S('jump', 40, 'branch')] },
+  { name: 'swung', bars: ['x..o....', 'x..o....'], steps: [S('hop', -20, 'stump'), S('jump', 20, 'branch'), S('hop', -20, 'stump'), S('jump', 20, 'branch')] },
+  { name: 'doublepit', bars: ['x.......', 'x.......'], steps: [S('double', 0, 'bank'), S('jump', -40, 'branch')] },
+  { name: 'drop3', bars: ['x...x...', 'x.......'], steps: [S('jump', -60, 'branch'), S('jump', -60, 'branch'), S('jump', -40, 'bank')] },
+  { name: 'halfnotes', bars: ['h...h...', 'h...h...'], steps: [S('jump', 0, 'bank'), S('double', 40, 'branch'), S('jump', -40, 'bank'), S('jump', 0, 'bank')] },
+];
+const kind = (s: Step) => s.move[0] + (s.dy > 15 ? 'U' : s.dy < -15 ? 'D' : 'F') + s.surface[0];
+const C = (s: string) => deflateSync(Buffer.from(s)).length;
+const ncd = (a: string, b: string) => (C(a + b) - Math.min(C(a), C(b))) / Math.max(C(a), C(b));
+const W1 = 128.2, W2 = [94, 98, 102], W7 = 68;
+console.log('== exp1a: one room, three worlds: kinds vs numbers ==');
+for (const pc of P) {
+  const row: string[] = [];
+  let k0 = '';
+  for (const bpm of [W1, ...W2, W7]) {
+    for (const easy of [false, true]) {
+      const spec: NodeSpec = { bpm, x: 0, y: 600, bars: pc.bars, steps: pc.steps };
+      let tr: Trace;
+      try { tr = traceNode(easy ? easyNode(spec) : spec); } catch (e) { row.push(`${bpm}${easy ? 'E' : 'N'}:THROW`); continue; }
+      const bad = checkTrace(tr, (easy ? easyNode(spec) : spec).steps, easy);
+      const k = (easy ? easyNode(spec) : spec).steps.map(kind).join(' ');
+      if (!easy && bpm === W1) k0 = k;
+      const gaps = tr.gaps.map((g) => Math.round(g.x1 - g.x0)).join('/');
+      row.push(`${bpm}${easy ? 'E' : 'N'}: dens ${tr.density.toFixed(2)} secs ${tr.seconds.toFixed(1)} gaps ${gaps}${bad.length ? ' BAD' : ''}${k === k0 ? '' : ' kinds≠'}`);
+    }
+  }
+  console.log(`${pc.name.padEnd(10)} kinds [${k0}]\n   ` + row.join('\n   '));
+}
+// exp1b: a stage of the six rooms at W1 vs the same rooms at W2: kind-string NCD (R3 F7 calibration self ~0.09, shuffle ~0.62)
+const order = [0, 2, 1, 3, 4, 5, 2, 0];
+const ks = order.map((i) => P[i].steps.map(kind).join('')).join('|');
+console.log('\n== exp1b: the same 8-room roll at W1 128.2 vs W2 98 BPM: the kind strings are identical by construction ==');
+console.log(`kind string: ${ks}\nNCD(W1 roll, W2 roll) = ${ncd(ks, ks).toFixed(2)} (self); vs a shuffle of its own tokens:`);
+const tok = ks.replace(/\|/g, '').match(/.{3}/g)!; let sh = [...tok];
+for (let i = sh.length - 1; i > 0; i--) { const j = (i * 7919) % (i + 1); [sh[i], sh[j]] = [sh[j], sh[i]]; }
+console.log(`  NCD(roll, shuffled) = ${ncd(tok.join(''), sh.join('')).toFixed(2)}`);
+// exp1c: two proven rooms joined on a shared apron (DESIGNER §5.7): is the join a rest by R3 F13's relative boundary?
+console.log('\n== exp1c: seams. Rooms chained on one shared 200 px apron; take-off times across the join ==');
+function chain(ids: number[], bpm: number, easy: boolean) {
+  let x = 0, y = 600, t0 = 0; const ts: number[] = []; const seams: number[] = [];
+  for (const i of ids) {
+    const spec: NodeSpec = { bpm, x, y, bars: P[i].bars, steps: P[i].steps };
+    const tr = traceNode(easy ? easyNode(spec) : spec);
+    for (const l of tr.landings) ts.push(t0 + l.t);
+    // shared apron: the next room's entrance apron IS this exit apron, so the next room starts one apron (200 px) earlier
+    x = tr.x1 - 200; y = tr.yOut; t0 += tr.seconds - 200 / 285; seams.push(ts.length);
+  }
+  return { ts, seams };
+}
+for (const easy of [false, true]) for (const bpm of [W1, 98]) {
+  const { ts, seams } = chain([0, 2, 1, 4], bpm, easy);
+  const iv = ts.slice(1).map((t, i) => t - ts[i]);
+  const minRest = easy ? 2.0 : 1.0;
+  const rests = iv.map((g, i) => { const nb = [...iv.slice(Math.max(0, i - 3), i), ...iv.slice(i + 1, i + 4)].sort((a, b) => a - b); const med = nb[Math.floor(nb.length / 2)] ?? g; return g >= 2 * med && g >= minRest; });
+  const seamGaps = seams.slice(0, -1).map((s) => iv[s - 1]);
+  let run = 0, longest = 0, start = ts[0];
+  for (let i = 0; i < iv.length; i++) { if (rests[i]) { longest = Math.max(longest, ts[i] - start); start = ts[i + 1]; } }
+  longest = Math.max(longest, ts[ts.length - 1] - start);
+  console.log(`${easy ? 'Easy  ' : 'Normal'} ${bpm} BPM: ${ts.length} take-offs over ${(ts[ts.length - 1] - ts[0]).toFixed(1)} s; gaps at the 3 seams ${seamGaps.map((g) => g.toFixed(2)).join(', ')} s; rests found ${rests.filter(Boolean).length}; longest phrase ${longest.toFixed(1)} s; median interval ${[...iv].sort((a, b) => a - b)[iv.length >> 1].toFixed(2)} s`);
+}

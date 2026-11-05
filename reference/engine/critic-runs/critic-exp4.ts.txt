@@ -1,0 +1,25 @@
+// CRITIC exp4: (a) Easy vs Normal exit height of one room (DESIGNER §5.7 seams "at the same band");
+// (b) gen2 template repeats per stage on shipped rolls (R1 Run C re-run on three stages, the base A builds on, §5.6)
+import { traceNode, easyNode, type Step, type NodeSpec } from './src/game/beatTrace.ts';
+import { GEN2_SEEDS } from './src/game/gen2/seeds.ts';
+const S = (move: Step['move'], dy: number, surface: Step['surface']): Step => ({ move, dy, surface });
+const rooms: Record<string, { bars: string[]; steps: Step[] }> = {
+  'stair up then drop': { bars: ['x...x...', 'x...x...'], steps: [S('jump', 40, 'stump'), S('jump', 40, 'stump'), S('jump', 40, 'stump'), S('jump', -120, 'bank')] },
+  'stairs (branch)': { bars: ['x...x...', 'x.......'], steps: [S('jump', 40, 'branch'), S('jump', 40, 'branch'), S('jump', 40, 'branch')] },
+  'swung': { bars: ['x..o....', 'x..o....'], steps: [S('hop', -20, 'stump'), S('jump', 20, 'branch'), S('hop', -20, 'stump'), S('jump', 20, 'branch')] },
+};
+for (const [n, r] of Object.entries(rooms)) for (const bpm of [128.2, 98]) {
+  const spec = { bpm, x: 0, y: 600, bars: r.bars, steps: r.steps } as NodeSpec;
+  try { const a = traceNode(spec), b = traceNode(easyNode(spec));
+    console.log(`${n.padEnd(20)} ${bpm}: entry y 600, exit Normal ${a.yOut}, Easy ${b.yOut} (differ ${Math.abs(a.yOut - b.yOut)} px); exit x Normal ${Math.round(a.x1)} Easy ${Math.round(b.x1)}`);
+  } catch (e) { console.log(`${n} ${bpm}: THROW ${(e as Error).message.slice(0, 90)}`); }
+}
+console.log('\n(b) gen2 shipped rolls: worst repeat of one section in one stage');
+for (const id of ['6-2', '8-6', '8-9', '7-3']) {
+  const e: any = (GEN2_SEEDS as any)[id]; if (!e) { console.log(id, 'none'); continue; }
+  let over2 = 0, worst = 0, wid = '';
+  for (const s of e.seeds) { const secs: string[] = Array.isArray(s.sections) ? s.sections : String(s.sections ?? '').split(/[ ,>|]+/).filter(Boolean);
+    const c = new Map<string, number>(); for (const x of secs) c.set(x, (c.get(x) ?? 0) + 1);
+    const m = Math.max(0, ...c.values()); if (m > 2) over2++; if (m > worst) { worst = m; wid = [...c].find(([, v]) => v === m)![0]; } }
+  console.log(`${id}: ${e.seeds.length} rolls, ${over2} use one section 3+ times; worst ${worst}x (${wid})`);
+}

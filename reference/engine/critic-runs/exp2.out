@@ -1,0 +1,6 @@
+maxRun 285 px/s; apron 200 px = 0.702 s
+128.2 BPM (eighth 234 ms): room 2 first take-off 2 ms off the grid (1% of an eighth); room 3 first take-off 4 ms off the grid (2% of an eighth); room 4 first take-off 6 ms off the grid (3% of an eighth); worst 6 ms vs one 30 fps frame 33 ms
+94 BPM (eighth 319 ms): room 2 first take-off 127 ms off the grid (40% of an eighth); room 3 first take-off 129 ms off the grid (40% of an eighth); room 4 first take-off 65 ms off the grid (20% of an eighth); worst 129 ms vs one 30 fps frame 33 ms
+98 BPM (eighth 306 ms): room 2 first take-off 129 ms off the grid (42% of an eighth); room 3 first take-off 41 ms off the grid (13% of an eighth); room 4 first take-off 48 ms off the grid (16% of an eighth); worst 129 ms vs one 30 fps frame 33 ms
+102 BPM (eighth 294 ms): room 2 first take-off 66 ms off the grid (23% of an eighth); room 3 first take-off 48 ms off the grid (16% of an eighth); room 4 first take-off 132 ms off the grid (45% of an eighth); worst 132 ms vs one 30 fps frame 33 ms
+68 BPM (eighth 441 ms): room 2 first take-off 78 ms off the grid (18% of an eighth); room 3 first take-off 105 ms off the grid (24% of an eighth); room 4 first take-off 153 ms off the grid (35% of an eighth); worst 153 ms vs one 30 fps frame 33 ms

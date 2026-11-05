@@ -1,0 +1,28 @@
+the truer rules gate: 1-1, 1-2, 1-4, 1-5; the rest on the old rules, the truer count beside:
+  (truer rule) 1-3 easy "pacing": gated on the old rule at 16 layouts, 5 by the truer rule
+  (truer rule) 1-3 easy "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-3 normal "pacing": gated on the old rule at 16 layouts, 7 by the truer rule
+  (truer rule) 1-3 normal "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-6 easy "pacing": gated on the old rule at 16 layouts, 0 by the truer rule
+  (truer rule) 1-6 easy "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-6 normal "pacing": gated on the old rule at 16 layouts, 2 by the truer rule
+  (truer rule) 1-6 normal "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-7 easy "map like the stage before": gated on the old rule at 0 layouts, 2 by the truer rule
+  (truer rule) 1-7 easy "nothing bites": gated on the old rule at 16 layouts, 11 by the truer rule
+  (truer rule) 1-7 easy "pacing": gated on the old rule at 16 layouts, 2 by the truer rule
+  (truer rule) 1-7 easy "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-7 normal "map like the stage before": gated on the old rule at 0 layouts, 2 by the truer rule
+  (truer rule) 1-7 normal "nothing bites": gated on the old rule at 16 layouts, 11 by the truer rule
+  (truer rule) 1-7 normal "pacing": gated on the old rule at 16 layouts, 11 by the truer rule
+  (truer rule) 1-7 normal "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-9 easy "nothing bites": gated on the old rule at 16 layouts, 7 by the truer rule
+  (truer rule) 1-9 easy "pacing": gated on the old rule at 16 layouts, 15 by the truer rule
+  (truer rule) 1-9 easy "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+  (truer rule) 1-9 normal "nothing bites": gated on the old rule at 16 layouts, 7 by the truer rule
+  (truer rule) 1-9 normal "pacing": gated on the old rule at 16 layouts, 15 by the truer rule
+  (truer rule) 1-9 normal "template repeat": gated on the old rule at 0 layouts, 16 by the truer rule
+PASS (75 known, 1061 stage-layout flags, World 1, 16 layouts, Normal and Easy; 61 s)
+
+real	1m3.925s
+user	1m14.437s
+sys	0m1.317s
