@@ -64,3 +64,4 @@ that do the best job get the follow-on work.
 - D35 (11-05): a spec the build reads must trace every research row (used where, or not taken and why); counted by trace-check, reviewed by an independent critic before build. Matt: "Nothing guessed. Nothing tunnel visioned."
 - D36 (11-05): a start-up print over ~2 KB is cut to a preview after compression; what must be read is in START-HERE.txt (printed first), and the lead opens its files with the Read tool, starting at reference/notes/lead.md.
 - D37 (11-05): judge a still object by object first (what holds it up? does it belong in this world?), then the feature; rocks never float (Matt).
+- D37 spread (11-05, engine-render): every object on screen has a reason and a support; check all of them, not just the thing you built.
