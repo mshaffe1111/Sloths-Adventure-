@@ -6,10 +6,11 @@
  */
 import type { StageGraphDef } from './types.ts';
 
-export const SPRINT_GRAPHS: readonly StageGraphDef[] = [
-  // (NODES.md §4 as fixed at 5:17 PM: A and C gained the rest after a test or twist, B and D a signature; cooldown is not a node)
-  { id: 'sprint-A', archetype: 'sprint', jobs: ['arrive', 'teach', 'practise', 'fork', 'rest', 'test', 'rest', 'signature', 'exit'] },
-  { id: 'sprint-B', archetype: 'sprint', jobs: ['arrive', 'teach', 'flow', 'fork', 'rest', 'combine', 'climb', 'test', 'rest', 'signature', 'rest', 'finale', 'exit'] },
-  { id: 'sprint-C', archetype: 'sprint', jobs: ['arrive', 'practise', 'fork', 'test', 'rest', 'twist', 'rest', 'descent', 'signature', 'exit'] },
-  { id: 'sprint-D', archetype: 'sprint', jobs: ['arrive', 'teach', 'practise', 'rest', 'climb', 'fork', 'test', 'rest', 'signature', 'exit'] },
-];
+/** NODES.md §8.4's sprint graphs in the node code, as fixed at 5:17 PM and 5:22 PM (B's fork for V17) */
+export const SPRINT_CODES: Readonly<Record<string, string>> = {
+  'sprint-A': 'A T P F R X R S E',
+  'sprint-B': 'A T M F R C U X R S R L E',
+  'sprint-C': 'A P F X R W R D_ S E',
+  'sprint-D': 'A T P R U F X R S E',
+};
+export const SPRINT_GRAPHS: readonly StageGraphDef[] = Object.entries(SPRINT_CODES).map(([id, code]) => ({ id, archetype: 'sprint', code }));

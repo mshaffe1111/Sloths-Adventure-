@@ -146,6 +146,12 @@ export interface WorldManifest {
     chunkSeconds?: number;
     /** the hard no-repeat (STAGE-RULES §0c.2), a construction rule: a section's cap when it names none (World 1: 1) */
     maxPerStage?: number;
+    /** the world's content mix (NODES.md §7.3), shares of its content nodes, when a brief names no deal of its own */
+    mix?: Readonly<Partial<Record<ContentType, number>>>;
+    /** where a content type may stand, as a share of the stage's nodes (V12; 1-1's floating: [0.67, 1]) */
+    windows?: Readonly<Partial<Record<ContentType, readonly [number, number]>>>;
+    /** the move a content type needs taught first (V3; W1: bounce needs the bounce): never dealt to a node before that move's teach */
+    typeNeeds?: Readonly<Partial<Record<ContentType, string>>>;
   };
   /** the vertical corridor clamp (Part 3 §1): the route's ground stays between these world y's; inside `soft` px of an edge the
    *  selector leans toward sections that drift back */
@@ -412,6 +418,8 @@ export interface SectionTemplate {
   /** the world's terrain family it belongs to (NODES.md §3: W1's floor and stones, raised logs, mounds, boughs): a node's terrain dial
    *  weighs its own family up */
   terrain?: string;
+  /** its content type (NODES.md §7.2; a fork takes its low road's), read by the deal and written into the node code's content letter */
+  content?: ContentType | 'structural';
   /** extra seconds a typical first-timer spends here beyond walking its length (a room, a fight) */
   extraSeconds?: number;
 }
@@ -481,6 +489,8 @@ export interface MissionNode {
   teaches?: string;
   /** a rolled graph's node with `chunkSeconds`: how many sections it holds */
   count?: number;
+  /** a content node's type, from the stage's deal (NODES.md §7.5): its sections are drawn from that type first */
+  content?: ContentType;
 }
 
 /** a node's job (NODES.md §1, §8.0's key): what it asks of the player. The graphs roll arrive to exit; the rest are LATER nodes (§6), or
@@ -493,8 +503,8 @@ export type NodeShape = 'flat' | 'rising' | 'falling' | 'two-road';
 /** a node's rolled dials (NODES.md §3): tempo (hurry or patience, even odds), density (climbing through the stage), height (up, level
  *  or down inside the node, from its shape), terrain (a family from the world's list), rating (1-10, the cadence: ramps and cools) */
 export interface NodeDials { tempo: 'hurry' | 'patience'; density: 'low' | 'medium' | 'high'; height: 'up' | 'level' | 'down'; terrain?: string; rating: number }
-/** a stage graph (NODES.md §4): an ordered list of jobs, one of an archetype's several */
-export interface StageGraphDef { id: string; archetype: Archetype; jobs: NodeJob[] }
+/** a stage graph (NODES.md §4), one of an archetype's several, stored as its node code (§8.4: jobs and shapes, `A T P F R X R S E`) */
+export interface StageGraphDef { id: string; archetype: Archetype; code: string }
 /** the parts of a stage's brief (WORLD-RULEBOOK §5) the graph reads */
 export interface GraphBrief {
   ends: 'quiet' | 'finale';
@@ -502,7 +512,12 @@ export interface GraphBrief {
   branching: 'none' | 'some' | 'lots';
   /** the moves this stage teaches, in order (a section's `teaches`); absent, the world's `lessons` for this stage */
   teaches?: string[];
+  /** the stage's content deal (NODES.md §7.3, 1-1: ground 40, floating 25, climb 20, bounce 15), shares of its content nodes; absent,
+   *  the world's mix (`graphs.mix`) */
+  deal?: Readonly<Partial<Record<ContentType, number>>>;
 }
+/** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
+export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';
 
 export interface MissionGraph {
   archetype: Archetype;
@@ -511,6 +526,8 @@ export interface MissionGraph {
   nodes: MissionNode[];
   /** the rolled graph's id (manifest `graphs`); absent on the SPINE */
   id?: string;
+  /** the content deal it was dealt (NODES.md §7.5): content nodes per type */
+  deal?: Partial<Record<ContentType, number>>;
 }
 
 // ───────────────────────────── pass 3-4: what was placed ─────────────────────────────
@@ -608,6 +625,8 @@ export interface PlanSlot {
   versions?: Record<string, string>;
   /** the slot's stream salt (a swap at this slot moved it): Easy rolls the slot's geometry from the same stream */
   salt?: number;
+  /** a rolled graph's slot filled past its rule (the pool ran out): why */
+  loose?: string;
 }
 
 /** a key for a sub-block version, as WorldOnce and BuildRequest.usedVersions hold it */
@@ -623,6 +642,13 @@ export interface Gen2Meta {
   repairs: Repair[];
   budget: StageBudget;
   graph: MissionGraph;
+  /** a rolled graph's realised node code (NODES.md §8.1-8.2): one token per node, and the stage string they make; the validity rules
+   *  it breaks (§8.3, "V5 at token 9: ..."), empty when it is valid. Absent on the SPINE */
+  code?: string[];
+  codeString?: string;
+  codeErrors?: string[];
+  /** a rolled graph's slots filled past their rule because the pool ran out (pipeline layStage: the dealt type, then the job) */
+  loosened?: string[];
   sections: Array<Pick<PlacedSection, 'uid' | 'template' | 'node' | 'phase' | 'tension' | 'mirrored' | 'x0' | 'x1' | 'seconds'>>;
   fills: FilledSocket[];
   /** the sections the roll's theme favoured (pipeline THEME; absent when it favoured them all) */

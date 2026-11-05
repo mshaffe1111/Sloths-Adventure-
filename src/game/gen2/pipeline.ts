@@ -28,6 +28,7 @@ import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../t
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
+import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
 import {
   EASY_ENEMY_SHARE,
   EASY_LANDING,
@@ -56,6 +57,7 @@ import {
   type NodeShape,
   type NodeDials,
   type GraphBrief,
+  type ContentType,
   type Move,
   type Phase,
   type PlacedSection,
@@ -387,7 +389,11 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   if (!list.length) return null;
   const r = rngFor(seed, 67);
   const g = list[Math.floor(r() * list.length)];
-  let jobs: NodeJob[] = [...g.jobs];
+  // (the graph's code, read and checked: a graph that breaks a rule is the world's data at fault, named with its rule and token)
+  const parsed = parseCode(g.code);
+  const bad = checkCode(parsed, {});
+  if (bad.length) throw new Error(`gen2 ${budget.id}: graph ${g.id} "${g.code}": ${bad.join('; ')}`);
+  let jobs: NodeJob[] = parsed.map((t) => JOB_OF[t.job]);
   // (ends: a quiet brief drops the finale, and the rest that led to it, so the stage walks on to its quiet arrival, NODES.md §8.4's
   // B under 1-1; a finale brief gets one before the exit)
   if (brief.ends === 'quiet') {
@@ -448,9 +454,12 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   });
   const total = nodes.reduce((s, n) => s + n.share, 0);
   for (const n of nodes) n.share /= total;
-  // (length from the chunk count: a quiet node one section, the working nodes the rest by share, each at least one, largest remainder)
+  const deal = dealContent(nodes, M, brief, budget.id, r);
+  // (length from the chunk count: a quiet node or a fork one section, the working nodes the rest by share, each at least one, largest
+  // remainder)
   if (G.chunkSeconds) {
-    const quiet = (n: MissionNode) => n.role === 'start' || n.role === 'goal' || n.role === 'rest';
+    // (a quiet node holds one section; so does a fork, whose two roads are one two-road section, one content node, NODES.md §8.2)
+    const quiet = (n: MissionNode) => n.role === 'start' || n.role === 'goal' || n.role === 'rest' || n.job === 'fork';
     const work = nodes.filter((n) => !quiet(n));
     const chunks = Math.max(nodes.length, Math.round(budget.seconds.target / G.chunkSeconds));
     const left = Math.max(work.length, chunks - (nodes.length - work.length));
@@ -461,7 +470,143 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
     for (const k of raw.map((x, k) => [x - Math.floor(x), k] as const).sort((a, b) => b[0] - a[0]).map(([, k]) => k)) if (spare-- > 0) got[k]++;
     for (const n of nodes) n.count = quiet(n) ? 1 : got[work.indexOf(n)];
   }
-  return { archetype: budget.archetype, flow: 'right', nodes, id: g.id };
+  return { archetype: budget.archetype, flow: 'right', nodes, id: g.id, ...(deal ? { deal } : {}) };
+}
+
+/** the jobs a content node holds (NODES.md §7.1: structural nodes, and the signature, sit outside the mix) */
+const CONTENT_JOBS: ReadonlySet<NodeJob> = new Set(['teach', 'practise', 'fork', 'flow', 'combine', 'climb', 'descent', 'twist', 'test']);
+
+/**
+ * The content deal (NODES.md §7.5, the lead's 5:08 PM order): the stage's content nodes get their TYPES first, so a type's chunk count
+ * never becomes its weight. The counts are DEALT, never rolled node by node: the brief's deal (or the world's mix) by largest remainder
+ * over the content nodes, then one moved on the seed's jitter (±1). Fixed first: a climb is `climb` (V8), a teach takes its teacher's
+ * type. Then the open nodes are filled in order under the caps (§7.4, V11: no type over 40% of the content nodes; never one type on two
+ * neighbouring content nodes, but a practise after its own teach and a teach after anything) and the windows (V12), the type with the
+ * most left first; a few re-deals on the seed keep the one that breaks the fewest. A world with no mix deals nothing.
+ */
+function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, stageId: string, r: Rng): Partial<Record<ContentType, number>> | undefined {
+  const shares = brief.deal ?? M.graphs?.mix;
+  if (!shares) return undefined;
+  const slots = nodes.map((n, i) => ({ n, i })).filter((x) => CONTENT_JOBS.has(x.n.job!));
+  const N = slots.length;
+  if (!N) return undefined;
+  // (the fixed ones: a climb is a climb; a teach is its teacher's type)
+  const fixed = new Map<number, ContentType>();
+  for (const { n, i } of slots) {
+    if (n.job === 'climb') fixed.set(i, 'climb');
+    if (n.job === 'teach' && n.teaches) {
+      const c = M.sections.find((t) => t.teaches === n.teaches && t.content && t.content !== 'structural')?.content;
+      if (c && c !== 'structural') fixed.set(i, c);
+    }
+  }
+  const types = [...new Set([...(Object.keys(shares) as ContentType[]).filter((t) => (shares[t] ?? 0) > 0), ...fixed.values()])];
+  const sum = types.reduce((a, t) => a + (shares[t] ?? 0), 0);
+  // (largest remainder, then the jitter: one node moved from one type to another on half the seeds)
+  const raw = types.map((t) => (N * (shares[t] ?? 0)) / sum);
+  const deal = new Map(types.map((t, k) => [t, Math.floor(raw[k])]));
+  let spare = N - [...deal.values()].reduce((a, b) => a + b, 0);
+  for (const k of raw.map((x, k) => [x - Math.floor(x), k] as const).sort((a, b) => b[0] - a[0]).map(([, k]) => k)) if (spare-- > 0) deal.set(types[k], deal.get(types[k])! + 1);
+  // (the fixed nodes are in the deal: a type has at least as many as are fixed to it, the rest taken from the type with the most)
+  const fixedN = (t: ContentType) => [...fixed.values()].filter((c) => c === t).length;
+  for (const t of types) while (deal.get(t)! < fixedN(t)) {
+    const most = types.filter((u) => u !== t && deal.get(u)! > fixedN(u)).sort((a, b) => deal.get(b)! - deal.get(a)!)[0];
+    if (!most) break;
+    deal.set(most, deal.get(most)! - 1);
+    deal.set(t, deal.get(t)! + 1);
+  }
+  if (types.length > 1 && r() < 0.5) {
+    const from = types.filter((t) => deal.get(t)! > fixedN(t)), to = types.filter((t) => (shares[t] ?? 0) > 0);
+    const a = from[Math.floor(r() * from.length)], b = to[Math.floor(r() * to.length)];
+    if (a && b && a !== b) { deal.set(a, deal.get(a)! - 1); deal.set(b, deal.get(b)! + 1); }
+  }
+  const cap = Math.max(1, Math.round(0.4 * N));
+  const win = M.graphs?.windows ?? {};
+  const inWin = (t: ContentType, i: number) => { const w = win[t]; return !w || ((i + 0.5) / nodes.length >= w[0] && (i + 0.5) / nodes.length <= w[1]); };
+  // (a windowed type gets no more than its window has room for: the open content nodes inside it, never two side by side, so half of
+  // them rounded up; the rest go to the unwindowed types by share)
+  for (const t of types) {
+    if (!win[t]) continue;
+    const room = Math.ceil(slots.filter(({ i }) => inWin(t, i) && (!fixed.has(i) || fixed.get(i) === t)).length / 2);
+    while (deal.get(t)! > Math.max(room, fixedN(t))) {
+      const to = types.filter((u) => !win[u] && (shares[u] ?? 0) > 0).sort((a, b) => (shares[b] ?? 0) / Math.max(1, deal.get(b)!) - (shares[a] ?? 0) / Math.max(1, deal.get(a)!))[0];
+      if (!to) break;
+      deal.set(t, deal.get(t)! - 1);
+      deal.set(to, deal.get(to)! + 1);
+    }
+  }
+  // (a type that needs a move comes only after that move's teach node, or when an earlier stage taught it)
+  const needs = M.graphs?.typeNeeds ?? {};
+  const known = new Set(Object.entries(M.lessons ?? {}).filter(([, st]) => stageOrder(st) < stageOrder(stageId)).map(([m]) => m));
+  const taughtBy = (t: ContentType, i: number) => { const m = needs[t]; return !m || known.has(m) || nodes.some((q, k) => k < i && q.job === 'teach' && q.teaches === m); };
+  const neighbourOK = (prev: { n: MissionNode; c: ContentType } | undefined, n: MissionNode, c: ContentType) =>
+    !prev || prev.c !== c || n.job === 'teach' || (prev.n.job === 'teach' && n.job === 'practise');
+  let best: Map<number, ContentType> | null = null, bestBad = Infinity;
+  for (let tryN = 0; tryN < 12 && bestBad > 0; tryN++) {
+    const left = new Map(deal), used = new Map<ContentType, number>(), got = new Map<number, ContentType>();
+    for (const [i, c] of fixed) { left.set(c, (left.get(c) ?? 0) - 1); used.set(c, (used.get(c) ?? 0) + 1); }
+    let bad = 0;
+    let prev: { n: MissionNode; c: ContentType } | undefined;
+    for (let k = 0; k < slots.length; k++) {
+      const { n, i } = slots[k];
+      let c = fixed.get(i);
+      if (!c) {
+        const nextFixed = slots[k + 1] && fixed.get(slots[k + 1].i);
+        const ok = (t: ContentType) => (used.get(t) ?? 0) < cap && inWin(t, i) && taughtBy(t, i) && neighbourOK(prev, n, t) && !(nextFixed === t && slots[k + 1].n.job !== 'teach' && !(n.job === 'teach' && slots[k + 1].n.job === 'practise'));
+        const pool = [...new Set([...types, ...fixed.values()])];
+        const order = (xs: ContentType[]) => xs.map((t) => [t, (left.get(t) ?? 0) + r() * 0.5] as const).sort((a, b) => b[1] - a[1]).map(([t]) => t);
+        c = order(pool.filter((t) => (left.get(t) ?? 0) > 0 && ok(t)))[0] ?? order(pool.filter(ok))[0];
+        if (!c) { bad++; c = order(pool)[0]; }
+        left.set(c, (left.get(c) ?? 0) - 1);
+        used.set(c, (used.get(c) ?? 0) + 1);
+      } else if (prev && !neighbourOK(prev, n, c)) bad++;
+      got.set(i, c);
+      prev = { n, c };
+    }
+    for (const [t, k] of left) if (Math.abs(k) > 1) bad++;
+    if (bad < bestBad) { best = got; bestBad = bad; }
+  }
+  for (const { n, i } of slots) n.content = best!.get(i);
+  return Object.fromEntries(deal);
+}
+
+/** a content type's letter in the node code (§8.0) */
+const CONTENT_LETTER: Readonly<Record<string, string>> = { ground: 'g', floating: 'f', climb: 'c', bounce: 'b', rope: 'r', crumble: 'k', water: 'w', hazard: 'h' };
+
+/**
+ * A rolled graph's realised node code (NODES.md §8.1-8.2), one token per node from what was laid there: the job's letter; for a content
+ * job the content letter (the node's first section's type), the move digit (2 when a section there needs or uses the double; none on a
+ * bounce with no double, as `Tb`), the shape mark and the tempo mark; a fork as `F[high|low]`, its high road rising with the find, its
+ * low road the section's own type. The string is checked against §8.3 (V18 reads the laid pieces, elsewhere).
+ */
+function realisedCode(graph: MissionGraph, plan: readonly PlanSlot[], M: WorldManifest, budget: StageBudget): Pick<Gen2Meta, 'code' | 'codeString' | 'codeErrors'> {
+  const byId = new Map(M.sections.map((t) => [t.id, t]));
+  const tokens: CodeToken[] = [];
+  for (const n of graph.nodes) {
+    const secs = plan.filter((p) => p.node === n.id).map((p) => byId.get(p.template)).filter((t): t is SectionTemplate => !!t);
+    const letter = LETTER_OF[n.job!] ?? 'P';
+    if (letter === 'A' || letter === 'R' || letter === 'E' || letter === 'L' || letter === 'Y') { tokens.push({ job: letter, shape: '' }); continue; }
+    const first = secs[0];
+    const content = first?.content && first.content !== 'structural' ? CONTENT_LETTER[first.content] : n.content ? CONTENT_LETTER[n.content] : undefined;
+    const dbl = secs.some((t) => t.teaches === 'double' || (t.uses ?? []).includes('double') || (t.needs ?? []).includes('double'));
+    const move = dbl ? '2' : content === 'b' ? undefined : '1';
+    const tempo = n.dials ? (n.dials.tempo === 'hurry' ? '>' : '<') : undefined;
+    const marks = { ...(content ? { content } : {}), ...(move ? { move: move as '1' | '2' } : {}) };
+    if (letter === 'F') {
+      tokens.push({ job: 'F', shape: '', roads: [[{ job: 'P', shape: '^', find: true, ...(move ? { move: move as '1' | '2' } : {}) }], [{ job: 'P', shape: '', ...marks }]], ...(tempo ? { tempo } : {}) });
+      continue;
+    }
+    tokens.push({ job: letter, shape: n.job === 'climb' ? '^' : MARK_OF[n.shape ?? 'flat'], ...marks, ...(tempo ? { tempo } : {}) });
+  }
+  const brief = M.graphs?.briefs[budget.id];
+  const code = tokens.map(formatToken);
+  const codeErrors = checkCode(tokens, {
+    teaches: graph.nodes.filter((n) => n.job === 'teach').length,
+    needsFork: !!brief && brief.branching !== 'none',
+    mini: budget.stage,
+    ...(M.graphs?.windows ? { windows: Object.fromEntries(Object.entries(M.graphs.windows).map(([t, w]) => [CONTENT_LETTER[t], w!])) } : {}),
+    ...(graph.deal ? { deal: Object.fromEntries(Object.entries(graph.deal).map(([t, k]) => [CONTENT_LETTER[t], k!])) } : {}),
+  });
+  return { code, codeString: code.join(' '), codeErrors };
 }
 
 // ───────────────────────────── pass 3: sections, stitched ─────────────────────────────
@@ -763,6 +908,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
 /** everything pass 3 hands on */
 export interface Laid {
   sections: PlacedSection[];
+  /** a rolled graph's nodes filled past their rule (no section of the dealt type left: by job only; none for the job: by phase) */
+  loosened?: string[];
   plan: PlanSlot[];
   platforms: Platform[];
   /** the gaps of the route (inner and seams), for the arcs and the repair */
@@ -962,16 +1109,19 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   // (a rolled graph's slot chosen fresh inside a kept plan counts the kept slots after it too: the cap holds over the whole stage)
   const ahead = (id: string, i: number) => (graph.id && opt.plan ? opt.plan.filter((p, k) => k > i && !opt.open?.has(k) && p.template === id).length : 0);
   const teachHere = new Set(graph.nodes.flatMap((n) => (n.job === 'teach' && n.teaches ? [n.teaches] : [])));
-  const jobFits = (t: SectionTemplate, n: MissionNode, loose: boolean) => {
+  // (`loose`: 0 the node's job and its dealt type; 1 its job only, when no section of its type is left; 2 its phase only)
+  const jobFits = (t: SectionTemplate, n: MissionNode, loose: 0 | 1 | 2) => {
     if (!n.job) return t.phases.includes(n.phase);
     // (a teach node with no move named, a brief that names none: any section that teaches a move not yet taught)
-    if (n.job === 'teach' && !loose) return n.teaches ? t.teaches === n.teaches : !!t.teaches && !taught.has(t.teaches);
+    if (n.job === 'teach' && loose < 2) return (n.teaches ? t.teaches === n.teaches : !!t.teaches && !taught.has(t.teaches)) && !(loose === 0 && n.content && t.content && t.content !== n.content);
     if (t.teaches && teachHere.has(t.teaches) && !taught.has(t.teaches)) return false;
-    // (a fork is two roads: only a section that names the job; loosened, the node is a plain practise by its phase)
-    if (n.job === 'fork' && !loose) return !!t.jobs?.includes('fork');
-    return !loose && t.jobs ? t.jobs.includes(n.job) : t.phases.includes(n.phase);
+    // (the deal's type: a section of another type never fills a typed node; one with no type may)
+    if (loose === 0 && n.content && t.content && t.content !== n.content) return false;
+    // (a fork is two roads: only a section that names the job; loosened all the way, the node is a plain practise by its phase)
+    if (n.job === 'fork' && loose < 2) return !!t.jobs?.includes('fork');
+    return loose < 2 && t.jobs ? t.jobs.includes(n.job) : t.phases.includes(n.phase);
   };
-  const fits = (t: SectionTemplate, n: MissionNode, i: number, loose = false) =>
+  const fits = (t: SectionTemplate, n: MissionNode, i: number, loose: 0 | 1 | 2 = 0) =>
     jobFits(t, n, loose) &&
     (t.archetypes === 'any' || t.archetypes.includes(budget.archetype)) &&
     (t.needs ?? []).every((m) => budget.moves.includes(m)) &&
@@ -983,9 +1133,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     !opt.bans?.get(i)?.has(t.id) &&
     !opt.bans?.get(-1)?.has(t.id);
 
+  let lastLoose = '';
   // (the slot's place in its node, for the cadence: a hard node ramps through its sections, then its last one cools)
   let inNode = { k: 0, of: 0 };
   const choose = (n: MissionNode, i: number): SectionTemplate => {
+    lastLoose = '';
     // (a section this stage must hold comes first, at the first slot of the first node it fits: placed by the plan, not by weight)
     for (const r of must) {
       const t = byId.get(r.section);
@@ -998,10 +1150,17 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     let cands = M.sections.filter((t) => fits(t, n, i) && !must.some((r) => r.section === t.id));
     // (no section named for the node's job is left, a swap having banned it: the node takes what fits its phase; a teach node so loosened
     // teaches nothing, and the required-move gate names it)
-    if (!cands.length && n.job) cands = M.sections.filter((t) => fits(t, n, i, true) && !must.some((r) => r.section === t.id));
+    if (!cands.length && n.job && n.content) {
+      cands = M.sections.filter((t) => fits(t, n, i, 1) && !must.some((r) => r.section === t.id));
+      if (cands.length) lastLoose = `${n.id} ${n.job}: no ${n.content} section left, filled by its job`;
+    }
+    if (!cands.length && n.job) {
+      cands = M.sections.filter((t) => fits(t, n, i, 2) && !must.some((r) => r.section === t.id));
+      if (cands.length) lastLoose = `${n.id} ${n.job}: no section for the job left, filled by its phase`;
+    }
     if (!cands.length) {
       // (the hard no-repeat's own failure, named: every section that would fit here is already laid)
-      const spent = M.sections.filter((t) => jobFits(t, n, true) && (used.get(t.id) ?? 0) >= (t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity)).length;
+      const spent = M.sections.filter((t) => jobFits(t, n, 2) && (used.get(t.id) ?? 0) >= (t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity)).length;
       throw new Error(`gen2 ${budget.id}: no section fits node ${n.id} (${n.phase})${spent ? `: the pool is spent (${spent} that fit are laid already, slot ${i + 1})` : ''}`);
     }
     // (a rolled node's rating dial is its want, its density a tenth either way; the SPINE's want is its tension in the band)
@@ -1246,7 +1405,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       placed.seconds = sectionSeconds(L, tpl, budget) + dx / budget.walkSpeed;
       secs += placed.seconds;
       sections.push(placed);
-      plan.push({ template: tpl.id, mirrored, node: n.id, join, ...(Object.keys(L.versions).length ? { versions: L.versions } : {}), ...(salt ? { salt } : {}) });
+      // (a slot filled past its rule keeps its note with the plan, so a kept slot still says so)
+      const loose = fixed ? fixed.loose : lastLoose;
+      plan.push({ template: tpl.id, mirrored, node: n.id, join, ...(Object.keys(L.versions).length ? { versions: L.versions } : {}), ...(salt ? { salt } : {}), ...(loose ? { loose } : {}) });
       cool.use(tpl.id);
       used.set(tpl.id, (used.get(tpl.id) ?? 0) + 1);
       if (must.some((r) => r.section === tpl.id)) placedReq.add(tpl.id);
@@ -1280,6 +1441,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   clearClimbs(vines, platforms);
   return {
     sections,
+    ...(plan.some((p) => p.loose) ? { loosened: plan.flatMap((p, k) => (p.loose ? [`slot ${k + 1} (${p.loose})`] : [])) } : {}),
     plan,
     platforms,
     gaps,
@@ -1936,6 +2098,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     repairs: [],
     budget,
     graph,
+    ...(graph.id ? realisedCode(graph, laid.plan, req.kit.manifest, budget) : {}),
+    ...(laid.loosened ? { loosened: laid.loosened } : {}),
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
     ...(laid.theme ? { theme: laid.theme } : {}),
@@ -2195,14 +2359,15 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
 
 /** the plan with one more slot, chosen fresh (its index is returned as `open`), at the end of the node before the shrine's */
 export function growPlan(plan: readonly PlanSlot[], graph: MissionGraph, byId?: ReadonlyMap<string, SectionTemplate>): { plan: PlanSlot[]; open: number } {
-  // (a rolled graph grows a working node, never a rest, a cooldown or the arrival, so its quiet end stays quiet: the last one whose new
+  // (a rolled graph grows a working node, never a rest, the arrival, the exit or a fork (one two-road section), so its quiet end stays
+  // quiet: the last one whose new
   // section leaves every windowed section inside its window on the longer stage)
   if (graph.id) {
     const inWindow = (p: readonly PlanSlot[]) => p.every((q, i) => {
       const w = byId?.get(q.template)?.window;
       return !w || ((i + 0.5) / p.length >= w[0] && (i + 0.5) / p.length <= w[1]);
     });
-    const works = [...graph.nodes].reverse().filter((n) => n.role !== 'rest' && n.role !== 'start' && n.role !== 'goal' && plan.some((p) => p.node === n.id));
+    const works = [...graph.nodes].reverse().filter((n) => n.role !== 'rest' && n.role !== 'start' && n.role !== 'goal' && n.job !== 'fork' && plan.some((p) => p.node === n.id));
     let first: { plan: PlanSlot[]; open: number } | null = null;
     for (const work of works) {
       const at = plan.reduce((k, p, i) => (p.node === work.id ? i + 1 : k), -1);
