@@ -5,8 +5,8 @@
  *
  *   - dressing a stage lays (protoStage.ts ProtoExtras.mixDress: a frame name, its centre x and the ground it stands on), drawn behind
  *     Pokey (engine.ts);
- *   - a log platform marked `hollow` (types.ts Platform.hollow), drawn as the painted hollow log fitted to its box, its top where he
- *     stands (protoArt.ts drawProtoScene; terrain.ts and the painted ground leave it alone).
+ *   - a hollow log (types.ts Platform.hollow): its platform is the shell's top, the painted log hanging from it to the floor, its inside
+ *     clear to walk through (hollowLogSize); drawn by protoArt.ts drawProtoScene, and over Pokey while he is inside (engine.ts).
  *
  * Every draw returns false until the sheet has loaded (stagePreload.ts decodes it first on a stage that asks for it: stageSheets.ts
  * 'w1-new'); nothing is ever drawn in its place.
@@ -86,14 +86,56 @@ export function drawW1Dress(ctx: CanvasRenderingContext2D, n: string, cx: number
 
 /** where the hollow logs' walkable top sits, as a share of the picture's height (measured from the sheet's alpha down the middle) */
 const HOLLOW_TOP: Record<'moss' | 'plain', number> = { moss: 24 / 218, plain: 12 / 192 };
+/** how far the picture is drawn wider than the platform */
+const HOLLOW_GROW = 1.06;
+/**
+ * A hollow log is two roads (the designer, 11-05): its top to run along, and its inside to walk through on the floor. Its platform is
+ * only the shell's top, HOLLOW_SHELL thick; the painted log hangs from it down to the floor it rests on, `height` under its top, and
+ * the inside is clear from the shell's underside to the floor (`clearance`; Pokey is 48 tall, so 56 or more walks him through standing).
+ * The builder lays the platform at y = floor - height, HOLLOW_SHELL tall: then the top is `height` over the floor, the split's two roads.
+ *   moss: 280 wide 125 high (101 clear), 300 wide 134 (110), 360 wide 162 (138); plain: 280 wide 120 (96), 300 wide 129 (105).
+ *   The split's 120 px rule passes at 280 wide or more for either.
+ */
+export const HOLLOW_SHELL = 24;
+export function hollowLogSize(kind: 'moss' | 'plain', width: number): { height: number; clearance: number } {
+  const f = F[kind === 'moss' ? 'hollowlog-moss' : 'hollowlog-plain'];
+  const h = (width * HOLLOW_GROW * f.h) / f.w;
+  const height = Math.round(h * (1 - HOLLOW_TOP[kind]) - 4);
+  return { height, clearance: height - HOLLOW_SHELL };
+}
+/** is Pokey (x his left edge, y his feet) walking through the log, under its shell, between its ends */
+export function insideHollow(p: Platform, who: { x: number; y: number; width: number }): boolean {
+  if (!p.hollow) return false;
+  const cx = who.x + who.width / 2;
+  const { height } = hollowLogSize(p.hollow, p.width);
+  return cx > p.x && cx < p.x + p.width && who.y > p.y + HOLLOW_SHELL && who.y <= p.y + height + 6;
+}
 /** a hollow log platform, drawn as Matt's painted hollow log: a little wider than its box, its top where he stands, its mouth to the left
- *  (flipped every other piece, by id) */
-export function drawHollowLog(ctx: CanvasRenderingContext2D, p: Platform): boolean {
+ *  (flipped every other piece, by id); `alpha` for the copy over him while he walks through it */
+export function drawHollowLog(ctx: CanvasRenderingContext2D, p: Platform, alpha = 1): boolean {
   const kind = p.hollow;
   if (!kind || !w1NewReady()) return false;
   const n = kind === 'moss' ? 'hollowlog-moss' : 'hollowlog-plain';
   const f = F[n];
-  const w = p.width * 1.06, h = (w * f.h) / f.w;
+  const w = p.width * HOLLOW_GROW, h = (w * f.h) / f.w;
+  if (alpha < 1) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+  }
   blit(ctx, n, p.x + p.width / 2 - w / 2, p.y - h * HOLLOW_TOP[kind], w, h, Math.abs(p.id) % 2 === 1);
+  if (alpha < 1) ctx.restore();
   return true;
+}
+
+/**
+ * The lily pads a stage lays that are not on water (Matt, 11-05: "lily pads only on water"): a pad is on water when its middle is over a
+ * water zone the stage declares (proto.water) or a river, with the surface within 40 px of its top. The tests hold every built stage to
+ * none, and the mixer's element gate can ask the same.
+ */
+export function padsOffWater(platforms: readonly Platform[], water: ReadonlyArray<{ x0: number; x1: number; y: number }> = [], rivers: ReadonlyArray<{ x0: number; x1: number; surfaceY: number }> = []): Platform[] {
+  return platforms.filter((p) => {
+    if (!p.lily) return false;
+    const cx = p.x + p.width / 2, top = p.y + 8;
+    return !water.some((z) => cx >= z.x0 && cx <= z.x1 && Math.abs(z.y - top) < 40) && !rivers.some((r) => cx >= r.x0 && cx <= r.x1 && Math.abs(r.surfaceY - top) < 40);
+  });
 }

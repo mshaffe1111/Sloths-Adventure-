@@ -326,8 +326,8 @@ export interface Platform {
   crown?: boolean;
   /** World 2: a cluster of lily pads floating on still water (painted from Matt's river sheet, riverArt.ts) */
   lily?: boolean;
-  /** a hollow log (World 1, Matt's painted hollowlog-moss / -plain, w1NewArt.ts drawHollowLog): a log platform drawn as the hollow log, its
-   *  top where he stands */
+  /** a hollow log (World 1, Matt's painted hollowlog-moss / -plain, w1NewArt.ts): the platform is its shell's top (HOLLOW_SHELL tall), the
+   *  painted log hanging from it to the floor, its inside clear to walk through: w1NewArt.ts hollowLogSize gives its height and clearance */
   hollow?: 'moss' | 'plain';
   /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
   lift?: import('./lift.ts').LiftInfo;

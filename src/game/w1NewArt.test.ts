@@ -6,7 +6,7 @@ import './headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { W1_NEW_FRAMES, hasW1New } from './w1NewArt.ts';
+import { HOLLOW_SHELL, W1_NEW_FRAMES, hasW1New, hollowLogSize, insideHollow, padsOffWater } from './w1NewArt.ts';
 import { paintedPlatforms } from './protoArt.ts';
 import { paintedBank } from './w1Pits.ts';
 import { stageSheets } from './stageSheets.ts';
@@ -60,4 +60,65 @@ test("1-1 keeps one sky all stage: its sunrise set, and no climb turns the backd
     assert.equal(e.proto?.rise, undefined, `layout ${s}: no rise`);
     assert.ok(!e.proto?.chase && e.currentStage.config.objectiveType !== 'ascent', `layout ${s}: nothing else turns the canopy`);
   }
+});
+
+test("a hollow log is two roads: its top over the floor by 120 or more and its inside clear for Pokey (48 tall), from 280 wide (the designer's split rule)", () => {
+  for (const kind of ['moss', 'plain'] as const) {
+    const s = hollowLogSize(kind, 280);
+    assert.ok(s.height >= 120 && s.clearance >= 56, `${kind} 280: ${JSON.stringify(s)}`);
+    assert.equal(s.clearance, s.height - HOLLOW_SHELL);
+  }
+  // (and he walks through it in the real engine: a floor, the log's shell over it, walking right from one end to the other)
+  const r = new RealPlay('1-4', 1);
+  const floorY = 1000, { height } = hollowLogSize('moss', 300);
+  const log = { id: 2, x: 600, y: floorY - height, width: 300, height: HOLLOW_SHELL, type: 'solid', style: 'log', hollow: 'moss' } as Platform;
+  r.bare([{ id: 1, x: 0, y: floorY, width: 2000, height: 120, type: 'solid', style: 'moss_stone' } as Platform, log]);
+  r.stand(450, floorY);
+  let inside = false;
+  for (let i = 0; i < 120 && r.p.x < 1000; i++) {
+    r.frame({ right: true });
+    if (insideHollow(log, r.p)) inside = true;
+  }
+  assert.ok(r.p.x >= 1000 && Math.abs(r.p.y - floorY) < 2, `walked through at floor level: x ${Math.round(r.p.x)} y ${Math.round(r.p.y)}`);
+  assert.ok(inside, 'inside it on the way');
+  // (and its top holds him: the high road)
+  r.stand(700, log.y);
+  r.wait(0.5);
+  assert.ok(Math.abs(r.p.y - log.y) < 2 && r.p.grounded, `stands on its top: y ${r.p.y}`);
+});
+
+test("every lily pad a built stage lays is on water: a zone the stage draws, or a river (Matt, 11-05: 'lily pads only on water')", () => {
+  const off: string[] = [];
+  for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9', '2-1', '2-2', '2-3', '2-4', '2-6', '2-8', '2-9']) {
+    for (const s of [1, 2, 3]) {
+      const r = new RealPlay(id, s);
+      const e = r.e as unknown as { proto?: { water?: Array<{ x0: number; x1: number; y: number }> }; currentStage: { rivers?: Array<{ x0: number; x1: number; surfaceY: number }> } };
+      const n = padsOffWater(r.platforms, e.proto?.water, e.currentStage.rivers).length;
+      if (n) off.push(`${id} layout ${s}: ${n}`);
+    }
+  }
+  assert.deepEqual(off, [], 'pads off the water');
+  // (the checker itself: a pad over a zone passes, one beside it fails)
+  const pad = { id: 1, x: 100, y: 962, width: 80, height: 12, type: 'solid', lily: true } as Platform;
+  assert.equal(padsOffWater([pad], [{ x0: 0, x1: 400, y: 970 }]).length, 0);
+  assert.equal(padsOffWater([pad], [{ x0: 300, x1: 400, y: 970 }]).length, 1);
+});
+
+test('falling into a drawn water zone splashes once, then the fall goes on', () => {
+  const r = new RealPlay('1-4', 1);
+  const e = r.e as unknown as { proto: { water?: Array<{ x0: number; x1: number; y: number }> } | null; spawnWaterSplash(x: number, y: number): void };
+  const own = e.proto;
+  r.bare([{ id: 1, x: 0, y: 1000, width: 300, height: 120, type: 'solid', style: 'moss_stone' } as Platform]);
+  e.proto = { ...own, water: [{ x0: 300, x1: 900, y: 1040 }] };
+  let splashes = 0;
+  const orig = e.spawnWaterSplash.bind(e);
+  e.spawnWaterSplash = (x: number, y: number) => {
+    splashes++;
+    assert.equal(y, 1040, 'at the surface');
+    orig(x, y);
+  };
+  r.fly(500, 900, 0, 0);
+  for (let i = 0; i < 40; i++) r.frame();
+  assert.equal(splashes, 1);
+  assert.ok(r.p.y > 1040 + 60, 'he went on down');
 });

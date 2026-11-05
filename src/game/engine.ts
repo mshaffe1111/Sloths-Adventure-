@@ -87,7 +87,7 @@ import { renderWorldObjects, drawWater, drawBounceCaps } from './terrain.ts';
 import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LINE, SWIM_LINES, swimStep, underOf, type CalmPool, type SwimState } from './swim.ts';
 import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterPlain } from './calmWaterArt.ts';
 import { swimHeadY } from './heroSwim.ts';
-import { drawW1Dress } from './w1NewArt.ts';
+import { drawHollowLog, drawW1Dress, insideHollow } from './w1NewArt.ts';
 import { setW1PitWater } from './w1Pits.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
@@ -2501,6 +2501,14 @@ export class GameEngine {
       }
       // (open air a fall goes through, fallZones: 1-1's finale, high over the forest floor; the height of the ground he last stood on)
       if (this.currentStage.fallZones?.length && (p.grounded || p.climbing)) this.fallFromY = p.y;
+      // (the water a stage draws, proto.water: a splash where he goes in, once, then the stage's own fall)
+      const zone = this.proto?.water?.find((z) => p.x > z.x0 && p.x < z.x1);
+      if (zone && this.splashedIn !== zone && !p.grounded && p.vy >= 0 && p.y > zone.y + 4 && p.y < zone.y + 120) {
+        this.splashedIn = zone;
+        this.spawnWaterSplash(p.x, zone.y);
+        sound.playSplash(1);
+      }
+      if (this.splashedIn && (p.grounded || p.climbing || p.y < this.splashedIn.y - 30)) this.splashedIn = null;
       // Pits and water: falling below the surface costs a life (Mario-style)
       const waterY = this.currentStage.waterY;
       const river = this.currentStage.rivers?.find((r) => p.x > r.x0 && p.x < r.x1);
@@ -5485,6 +5493,8 @@ export class GameEngine {
     });
   }
 
+  /** the water zone he last went into (proto.water): one splash an entry */
+  private splashedIn: { x0: number; x1: number; y: number } | null = null;
   /** a splash, painted: the splash crown where he went in, and puffs of spray thrown up out of it */
   private spawnWaterSplash(x: number, y: number) {
     this.emit({ x, y: y + 6, vx: 0, vy: 0, color: '', size: 96, life: 0.55, maxLife: 0.55, type: 'splash' });
@@ -6618,6 +6628,8 @@ export class GameEngine {
     this.drawCalmWater(ctx, true);
     heroClipsLive(false);
     profMark(ctx, 'hero');
+    // (inside a hollow log, walking through it low: the log over him, half see-through, so he reads as in it: w1NewArt.ts)
+    if (this.paintKit) for (const pl of this.platforms) if (pl.hollow && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width) && insideHollow(pl, this.player)) drawHollowLog(ctx, pl, 0.6);
     if (this.proto?.bushes) this.drawBushes(ctx);
     // (World 8's bat roosts hang in front of the roost tree's hollows: after the hides)
     if (this.proto?.watch && this.currentStage.config.worldIndex === 8) this.drawRoosts(ctx);
