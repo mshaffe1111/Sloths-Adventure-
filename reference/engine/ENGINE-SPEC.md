@@ -2149,3 +2149,61 @@ Each cell is p10-p90 across rolls, and no number is chosen.
 4. **The squared root-earth column under a dried perch** is the shared soft-pit look already on main. It is accepted for this fix, and
    named on the art list for a curved underside later.
 5. **The exception that isn't built** (a dividing bank plus Pokey's "two waters" line) is right: it needs Matt's approval of the line.
+
+## 1-1 for the timed test: the spec as data (designer, 11-05 12:45 PM ET; Matt at 60%: "get the core engine in there so we can do multiple levels over the next couple of days and really test it out")
+
+These are changes to `SPEC_11` (engine-mixer stages.ts) and its types (spec.ts), so the per-roll draws are data the mixer reads, not
+mixer code. Every number comes from the per-roll rows of main's old 1-1, 32 rolls, Normal (rs-main-11.json, engine-runs 2c72ebe6f).
+
+**1. Profile words: only those with a reference.**
+- `tempo`: `'calm' | 'brisk'` (centres 0.82 old 1-1 and 0.84 old 1-3). `'steady'` goes until a reference is measured.
+- `hills`: `'flat' | 'rolling'` (home bands from old 1-3 and old 1-1). The hilly break is a share inside every profile, not a word.
+- **1-1 changes to `hills: 'rolling'`.** The data said rolling, and `'hilly'` was my word, not the measurement. The rise to the canopy
+  is the `trend: 'up'` and the node bands, not the hills word.
+
+**2. The per-roll draw, as data on the profile** (a new `roll` field; the mixer draws one per build from the build's seed):
+
+```ts
+roll: {
+  // the roll picks one family by its share, then draws its hop share h/(h+J) inside it
+  hop: [ { range: [0.43, 0.51], share: 11 / 32 }, { range: [0.74, 0.80], share: 11 / 32 }, { range: [0.99, 1.00], share: 10 / 32 } ],
+  // median gap share of jumpOK's widest single jump at that rise; the whole spread every roll, centred by the tempo
+  gap: { range: [0.79, 0.91], centre: 0.82, p90Max: 0.99 },
+  // rise share of the gate's highest rise (80 px): a home band most rolls sit in, and a break to the hilly family
+  rise: { home: [0.65, 0.69], breakRange: [0.81, 0.94], breakShare: 7 / 32, p90Max: 0.95 },
+  // a burst is a group of 5-20 s at the bot's pace; a node lays as many as its units need (never a count)
+  burstSecs: [5, 20],
+}
+```
+
+- **The draws are independent.** The references disagree on any link between hop family and gap.
+- **Easy** keeps C4's widths and its own rise caps. It doesn't copy these, because old 1-1's Easy is the same as its Normal, the old
+  fault.
+
+**3. Lay fixes on 1-1:**
+- **`end: { kind: 'bank', w: 640 }`** (ruled 11:04 AM: the shrine on its bank, the bootprint on the bank's top band).
+  - Today's `kind: 'log'` worked around the gate's "nothing new" stretch (2,106 px with three long pieces of one kind in a row).
+  - Law 22: the gate isn't dodged by changing the end piece. The cool-down lays a different piece before the bank (its deck gains
+    `bough hops`, with the top branch kept last), so the stretch is broken by a new kind.
+- **`burstMin: 5, burstMax: 6` go.** Bursts are by time (`roll.burstSecs`).
+
+**4. The library (library.ts PIECES) against LABELS rule 1, "rocks never float":**
+- `stone: mayFloat: false`. It's a mossy boulder: it sits on a bank or the floor.
+- `crumble: mayFloat: false, worlds: ['ruins']`. W7's carved slab leaves W1 (C22, acf6e1e8). W1's breakable is the creaky limb.
+- `log` stays `mayFloat: true` (a platform). `branch` stays `true`, but in W3, W4, W7 and W9 a thin piece draws as stone (LABELS §8).
+
+**5. Confirmed (w1mix.ts:928, "for the designer to confirm"):**
+- The warm-up lays one burst, so the first hard node starts inside LV-9's 4,000 px and the second flag stands before it.
+- The warm-up's burst draws only taught, no-risk ideas: no ground end and nothing that hurts in the first 1,300 px (SR safe start).
+
+**6. Pass lines for the timed test** (each judged on 32 rolls, then 200 for the diversity floor):
+- era diversity ≥ 0.35;
+- each roll's measured hop share, gap and rise inside the ranges above;
+- 1-1's length band and the 120 s floor;
+- E3 (footingOf);
+- the variety gates (lookalike < 0.78, 20 s window < 0.30).
+
+**7. Still needed before 1-2 and 1-5 can draw the same way:**
+- 1-2 and 1-5 have no reference. 1-5's `tempo: 'steady'` and `hills: 'hilly'` have no measured meaning.
+- engine-runs measures main's old 1-2 and old 1-5 with the same tool (rollshares.ts, 32 rolls, Normal and Easy). Each stage's `roll`
+  then comes from its own rows. Nothing is guessed meanwhile.
