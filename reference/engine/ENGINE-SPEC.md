@@ -389,7 +389,7 @@ it.**
 - **The rule is (a)+(c):**
   - **(a) Bursts.** A node lays 2-3 short bursts of 4-6 pieces each, drawn from its deck. Bursts alternate between the deck's
     ideas: never the same idea twice in a row, and never the same burst twice in a stage. The teach node pairs its teach with bank
-    hops between bursts, and the rest node stays one short walk.
+    hops between bursts, and the rest node stays one short walk. **[revised: critic §10, 11:21 AM]**
   - **(c) Each idea varies inside.** Within a burst, the piece's kind or size band changes at least every 2 pieces. At least 4 of
     every 5 landings step up or down, as the old 1-1 does (171 of 202). **[revised: C13, "Contradictions ruled", 10:49 AM]**
 - **The pass line is the old 1-1's own numbers** (CP1), on 16 rolls x 2 settings:
@@ -1426,7 +1426,7 @@ core, and where it is allowed). This table is for the planner's library at engin
 
 ### [designer ruling, 11-05 ~10:09 AM ET] The move ladder against the all-world table (planner 7d9ad9a9)
 
-**(a) Lianas and breaking branches are taught in 1-2. The table is right.** Shipped decisions already say so: "1-2 owns the lianas"
+**(a) Lianas and breaking branches are taught in 1-2. The table is right.** Shipped decisions already say so: "1-2 owns the lianas" **[revised: critic §10, 11:21 AM]**
 (d272601f) and "1-2 teaches crumbling" (6dae405d).
 - The ladder's taught-at for both is 1-2.
 - 1-5's creaky node becomes an echo, not a teach. Its Dot line stays.
@@ -1871,3 +1871,13 @@ candidates, for the world passes:
 
 The ladder data carries rows for "chase", "boa" and "ring" with the "must keep returning" line. **Who picks the small builds: the
 LEAD** (Matt: "You"), inside the Hugging Face money. The designer sends the ranked list with reasons.
+
+## The critic's deep pass ruled (designer, 11-05 ~11:21 AM ET; CRITIC-SPEC §10, engine-critic-spec d66a7f57)
+
+| # | Finding (§10) | Ruling | Spec change |
+|---|---|---|---|
+| 1 | era.ts on all 10 worlds: 39 of 90 judged stages under 0.35; on about 60, more than half the rolls play like another stage of the same world; worst at the end (W9 median 0.27, W10 0.17; 9-2 and 9-7 match on 16 of 16); the mixer's W1 is the least varied at 0.06 | **ACCEPTED** | The whole-game era and lookalike gates (critic ruling 1) run in step 6 on **every builder's output**. Today's misses go on a known list that only shrinks, and each world's misses are fixed at the root when the engine reaches it. **Order, argued from this table:** after the 1-1 / 1-2 acceptance test proves the engine, the next worlds are the least varied, W10 then W9, before W2-W8. That changes the order the lead set, so it goes to the lead (and to Matt if the lead wants) as a recommendation, not decided here |
+| 2 | The old-1-1 lines pass 0 of 27 working W2-W4 stages | **ACCEPTED** (extends the L1232 ruling) | Pass lines are measured **per world and per stage kind** (canopy, ground, climb, river, sprint, slide...), with each world's working stages as the floor. Nothing is copied from 1-1. The engine-runs session measures them (TRIAGE C rows) |
+| 3 | Ladder amounts (echo, ≥ 1 in 3, ≥ 1 in 4, touch/some/lots) are far above what ships (breaking branch 0/28, boa 0/28, rope 4/28) | **ACCEPTED** | The amounts in "More used" (L1311-1321) and §C are **OPEN** until research-moves reports (2:30 PM). The shape stays: taught things return as the twist, without re-teaching (R1:68; Yacht Club "no one-offs"; GV:105). The size of the work is named: "≥ 1 in 3" for breaking branches alone means about 9-10 of W2-W4's 28 stages |
+| 4 | On **main**, lianas are taught in 1-6 and breaking branches in 1-5. My 10:09 ruling rested on 11-04's unshipped 1-2 | **ACCEPTED. My ruling was wrong.** d272601f and 6dae405d are 11-04 work, not on main, and "nothing from 11-04 ships" (L10) | **The 10:09 ruling and C9 are reversed:** creaky is taught in **1-5**, lianas in **1-6**, as on main and as the original teach table (L1288-1289) said. Taught-at always comes from **main**, the shipped game, never from an unshipped branch. The ladder data is re-derived on main |
+| 5 | Smith 2009 holds, but R2 credits it to Launchpad 2011 and says "14 jump kinds" where the paper's Fig. 13 says 13. Smith §5 allows one exact repeat of a rhythm group before a rest, against L392 "never the same burst twice" | **ACCEPTED** | SPEC-TRACE and R2 citations are corrected to Smith et al. 2009 (13 jump types). L392 becomes: **a rhythm group may repeat once, exactly, right before a rest** (Smith 2009 §5; LEDGER-2026-11-02-full C4), and never otherwise. Smith's "rhythm is what the player feels with his hands" is added as the source for L1120 (the player's rhythm, not the song) |
