@@ -1,3 +1,8 @@
 1-1 sunrise redo (art-1-1-sunrise, 2026-11-05). rtx-pro-6000 at ~$2.75/h. Times UTC (ET = UTC-5).
 sun11-F 6aecb69ac78863f9c6337597  far + sky text to image, 4 seeds (stillsgpu.py)          started 17:02Z
 sun11-M 6aecb69ec78863f9c633759d  middle strip img2img, 3 starts, 8 takes (img2imggpu.py)  started 17:02Z
+  F finished 17:06Z (~4 min, ~$0.19); M finished 17:08Z (~6 min, ~$0.27).
+  Far takes: 23 rain streaks (reject); 41 and 59 fail the seam check (hard cloud edge / floating smudge, also at join bands 240 and 420); 7 clean.
+  Mid takes: all 8 fail cut.py's join check (a tree in a join band; starts2.py lays its first piece at x=0). New starts: sunrise11/starts.py.
+sun11-M2  6aecb95b0e0338d1bb809451  middle strip img2img from starts.py starts E/F/G, 12 takes   started 17:14Z
+sun11-hdF 6aecb965c78863f9c63376e1  native pass, far + sky takes 7/41/59 (striphdgpu.py)        started 17:14Z
