@@ -2491,7 +2491,7 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
    - float 25.4%.
    If any is still there when the builder runs, it's an engine finding for the planner, never a reason to bend 1-1's data around it.
 
-## 1-2 for the builder: the one page to build 1-2 from (designer, 11-05 1:29 PM ET; lines set 1:37 PM from R-165.43; DRAFT only until the planner's answers to F; brief line numbers checked against the corrected brief at 1:38 PM ET)
+## 1-2 for the builder: the one page to build 1-2 from (designer, 11-05 1:29 PM ET; lines set 1:37 PM from R-165.43; DRAFT only until the planner's answers to F; brief line numbers checked against the corrected brief at 1:37 PM ET)
 
 Same rules as "1-1 for the builder":
 - this page wins over older lines;
