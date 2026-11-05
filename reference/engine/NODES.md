@@ -36,6 +36,7 @@ Kinds of source: RESEARCH (file:line or the R-file's lesson), MATT, MEASURED, JU
 | `exit` | arrive | the end piece where the trend reaches, the exit totem, the clue | main stageGenerator.ts:2136; WORLD-RULEBOOK §2 |
 | **added:** `cooldown-in-node` | the last beat of a hard node eases | every hard node ramps, then cools at its end | R1 L4 (SMBF and Shovel Knight cadence) |
 | **added:** `choice-reward` | the harder road pays | the high road of a fork holds a FIND (the golden seed, a keepsake), never petals: petals are the story's trail, low at marching height (1-1.md:26-27). The same holds in any world whose trail is story (W5's carvings, Meeca's messages) | LEDGER-2026-11-04-part1.md:317 ("upper harder with collectible") |
+| **added (Matt, LATER, not 1-1):** `ending-fork` | choose how the stage ends | the last node before the exit: a high road to a denser finale with a find on it, or a quiet low road to the arrival; both reach the same exit. Code `F[L^+\|R_] E` (§8) | MATT (via the lead, 11-05); NODE-MIX-RESEARCH §E |
 
 ## 2. Node shapes
 
@@ -70,7 +71,7 @@ signature in the last third; finale or quiet exit by `ends`.
 
 | Archetype | Graphs (each one a different skeleton) |
 |---|---|
-| sprint | **A** arrive, teach, practise, fork, rest, test, signature, exit · **B** arrive, teach, flow, rest, combine, climb, test, rest, finale, exit · **C** arrive, practise, fork, test, rest, twist, descent, signature, exit · **D** arrive, teach, practise, rest, climb, fork, test, cooldown, exit |
+| sprint | **A** arrive, teach, practise, fork, rest, test, rest, signature, exit · **B** arrive, teach, flow, rest, combine, climb, test, rest, signature, rest, finale, exit · **C** arrive, practise, fork, test, rest, twist, rest, descent, signature, exit · **D** arrive, teach, practise, rest, climb, fork, test, rest, signature, exit (fixed 5:17 PM: the 4:56 PM lists broke two of their own rules, which writing them in the §8 code showed: A and C missed a rest after a test or twist, and B and D had no signature. Cooldown is not a node: every hard node cools at its end, §1) |
 | relic_hunt / rescue | **A** arrive, teach, hub (alcove), rest, fork (alcove), test, rest, finale, exit · **B** arrive, practise, loop-back with two alcoves, rest, twist, exit · **C** arrive, teach, two-road with a reward on each, rest, signature, exit |
 | stealth | **A** arrive, teach (hide), practise, rest, pressure, rest, signature, exit · **B** arrive, change (dark), practise, twist, rest, finale, exit |
 | vine_runner | **A** arrive, teach (swing), flow, rest, combine, test, finale, exit · **B** arrive, practise, shaft, rest, twist, signature, exit |
@@ -107,9 +108,9 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
 ## 6. What 1-1 needs NOW, and what waits (D44)
 
 **NOW (1-1 alone can prove these):**
-- **Jobs:** arrive, teach (with the safe validation step), practise, fork, rest, flow, combine (bounce + double), climb, test (the
+- **Jobs:** arrive, teach (with the safe validation step), practise, fork, rest, flow, combine (bounce + double), climb, twist, descent, test (the
   required-move gate), signature (the double chain), cooldown-in-node, choice-reward (the golden seed), and a quiet exit.
-- **Shapes:** flat, rising, two-road.
+- **Shapes:** flat, rising, falling, two-road. (Added 5:17 PM: sprint C needs `twist` and `descent`, so both jobs and the falling shape join NOW, or 1-1 rolls 3 graphs, not 4. Both are section data, not new engine: a twist is a taught move turned; a descent is a drop off a log, already in old 1-1's flow.)
 - **Dials:** tempo, density, height, terrain, rating. Creatures and hazard are none.
 - **Stage graphs:** sprint A-D, rolled under 1-1's brief (teaches, ends quiet, trend up). This replaces the SPINE for 1-1 only,
   behind the lock, with every other stage byte-identical.
@@ -120,6 +121,7 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
 
 **LATER:**
 - the world ledger and its caps (needs a second W1 stage: D44);
+- the `ending-fork` (Matt, 11-05: later stages; 1-1 ends on the quiet arrival);
 - the neighbour N = 2 check;
 - puzzle, arena, pressure, preview and change nodes;
 - loop-back, shaft and hub shapes;
@@ -236,3 +238,145 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
   - bounce: #5, #6, #21;
   - fork: #4, #14, #22, #28;
   - structural: #11, #15, #16, #17, #18, #19, #23, #26, #30.
+
+## 8. The node code (designer, 11-05 5:17 PM; Matt, via the lead: "our own compact notation", so every stage plan reads as a short string and variety shows at a glance)
+
+### 8.1 One token per node
+
+A token is written `JOB content move shape find tempo`, with no spaces. Only the JOB is always there.
+- `Tg1^<` = teach, on the ground, the jump, rising, patience.
+- `Xf2>` = test, on floating pieces, the double jump, flat, hurry.
+
+**JOB: one capital letter (§1).**
+
+| Letter | Job | Letter | Job | Letter | Job |
+|---|---|---|---|---|---|
+| A | arrive | T | teach | P | practise |
+| X | test | C | combine | W | twist |
+| R | rest (holds a Dot spot) | S | signature (set piece) | F | fork |
+| U | climb (up) | D | descent (down) | M | flow (momentum run) |
+| H | hidden alcove (reward) | K | chase (pressure) | Z | puzzle room |
+| B | arena (battle) | Y | story beat | V | boss preview |
+| G | change of pace | L | finale | E | exit (the arrival) |
+
+- `cooldown-in-node` has no letter: every hard node cools at its end (§1).
+- `choice-reward` is the `+` mark below.
+- `ending-fork` is a pattern, `F[L^+|R_] E`, not a letter.
+
+**content: one small letter (§7.2).** Only content jobs carry one. A, R, Y, L and E are structural and never do (§7.1).
+
+| Letter | Type | Letter | Type | Letter | Type |
+|---|---|---|---|---|---|
+| g | ground jump run | f | floating pieces | w | water crossing |
+| r | rope and vine | c | climb (stair) | b | bounce |
+| k | crumble | e | creature | h | hazard |
+
+- The puzzle, pressure, fork and setpiece types are written by their job letter alone (Z, K, F, S).
+- After S, the letters say what the set piece uses. S is still its own type and never counts in the mix (§7.6).
+
+**move: a digit.** 1 is the jump, 2 is the double, as the node needs it. Bounce is the `b` content. Run is the arrive's.
+
+**shape (§2): flat is no mark.**
+
+| Mark | Shape |
+|---|---|
+| `^` | rising |
+| `_` | falling |
+| `^^` | shaft (straight up) |
+| `@` | loop-back |
+| `*` | hub |
+| `F[ \| ]` | two-road |
+
+The height dial (§3) shares `^` and `_`: a node's height and its rising or falling shape say the same thing, so the code keeps one mark.
+
+**find: `+`.** A find sits on this node: the golden seed or a keepsake, never petals (§1 `choice-reward`).
+
+**tempo: `>` hurry, `<` patience.**
+- Every content token carries one, because tempo is rolled and never a default (§3).
+- On a fork, the mark after the bracket covers both roads.
+
+**Not in the string, kept in the data:**
+- the rating (1-10), which the cadence check reads (optional long form: `Xf2>:7`);
+- density;
+- the terrain family.
+The string stays short enough to read on a phone.
+
+### 8.2 A stage string
+
+A stage string is the tokens in order, with spaces between them.
+
+A fork is written `F[high road|low road]`:
+- each road is its own run of tokens;
+- the high road comes first;
+- both roads end at the next token after the bracket (they rejoin);
+- the fork counts as ONE `fork` content node, and its roads' tokens don't count again in the deal.
+
+Example: `F[Pb2^+|Pg1]<` is a fork, patience on both roads.
+- The high road practises a bounce into the double, rising, with the find.
+- The low road practises the jump on the ground.
+
+### 8.3 Validity rules
+
+The engine rejects a string that breaks one of these rules and names the rule and token, for example "V5 at token 9".
+
+| # | Rule | Source |
+|---|---|---|
+| V1 | Content letters only on content jobs. A, R, Y, L and E take none, and their shape is flat | §7.1 |
+| V2 | **T is flat or rising, never inside a fork, and its move appears for the first time.** One T per move in the brief's `teaches`, in the teach order (run is A's) | §1; WORLD-RULEBOOK §4; CoachOverlay.tsx:10 |
+| V3 | P, X, C, W, M, U and S use only moves already taught earlier in the string. X's move is required (the limited-bot gate) | §1 |
+| V4 | W only after at least one X | §1 |
+| V5 | **Right after X, W or S comes R**, or E when it is the stage's last node. The quiet arrival is flat with no hard input, which meets the rest rule | §1; WORLD-RULEBOOK §4 |
+| V6 | Exactly one S, in the last third of the stage's time | §1; §4 |
+| V7 | F has two roads that both finish and rejoin. The high road carries `+`. No T inside | §1 fork, choice-reward |
+| V8 | U is `c` and rising. `^^` only in a stage that owns the shaft (W1: 1-4) | §1 climb |
+| V9 | D is falling (`_`) | §1 descent |
+| V10 | Shapes the stage may use. 1-1 NOW: flat, `^`, `_` and the fork. `^^`, `@` and `*` are LATER | §6 |
+| V11 | **No type over 40%** of the stage's content tokens (S and the structural letters don't count). **No type on two neighbouring content tokens.** Structural tokens between them don't separate them. The one exception is a P right after its own T | §7.4 |
+| V12 | Windows. In 1-1, `f` only in the last third (window [0.67, 1]) | §7.3; W1-NEW-SECTIONS |
+| V13 | Slot jobs: K never in a world's first stage; V only at X-9; G at X-6 (a world's story moves these) | §1; supervisor's notes in §6 |
+| V14 | **The type counts match the stage's deal, give or take 1** (the seed's jitter). F slots take `fork`, and no other slot does | §7.5 |
+| V15 | `ending-fork` `F[L^+\|R_] E` is the last node before E. LATER, not 1-1 | §1 (Matt, 11-05) |
+
+### 8.4 The sprint graphs in code, and under 1-1's brief
+
+A graph is jobs and shapes only; the deal fills in the content (§7.5).
+
+| Graph | Code | Under 1-1's brief (teaches jump, double, bounce; ends quiet; trend up) |
+|---|---|---|
+| A | `A T P F R X R S E` | `A T T T P F R X R S E` |
+| B | `A T M R C U X R S R L E` | `A T T T M R C U X R S E` (quiet: `R L` goes) |
+| C | `A P F X R W R D_ S E` | `A T T T P F X R W R D_ S E` (the brief forces the teaches in) |
+| D | `A T P R U F X R S E` | `A T T T P R U F X R S E` |
+
+- Under 1-1's brief, the T slot becomes three teaches: jump, double, bounce.
+- V11 then forces the double onto a different type from the jump. The double is taught on the stair (`Tc2^`), so the three teaches read `Tg1 Tc2^ Tb`.
+
+Variety at a glance: the four skeletons differ in where the fork, the climb, the flow and the twist sit, and in how many rests there are.
+
+### 8.5 Three example 1-1 rolls
+
+1-1's deal is ground 40, floating 22, climb 15, bounce 13, fork 10, over its content slots, give or take 1, under the caps.
+
+**Roll 1 (graph A):** `A Tg1< Tc2^< Tb> Pg2> F[Pb2^+|Pg1]< R Xf2> R Sf2> E`
+- Types: ground 2, climb 1, bounce 1, fork 1, floating 1.
+- Floating comes only at the test, in the last third. The set piece is the double chain on floating logs.
+
+**Roll 2 (graph B):** `A Tg1> Tc2^< Tb< Mg2> R Cb2< Uc^> Xf2> R Sf2< E`
+- Types: ground 2, climb 2, bounce 2, floating 1. This graph has no fork slot, so fork deals 0 (V14).
+- The combine is bounce then double (the stage's pair). The flow is a hurry run of doubles.
+
+**Roll 3 (graph D):** `A Tg1< Tc2^> Tb> Pg2< R Uc^< F[Pb2^+|Pg1]> Xf2> R Sf2< E`
+- Types: ground 2, climb 2, bounce 1, fork 1, floating 1.
+- It climbs before it splits, then ends on a floating test and the double chain.
+
+Reading the three together on a phone:
+- Roll 1 splits early.
+- Roll 2 runs a flow and has no split.
+- Roll 3 climbs, then splits.
+- Their tempo strings differ (`<<>><>>`, `><<><>><`, `<>><<>><`), and no tempo profile repeats (§5).
+
+### 8.6 In the data
+- A world's graph list (§4) is stored as code strings.
+- A roll is saved as its filled string, next to the seed. The ledger (§5) compares strings: the same skeleton means the same graph, and the same tempo marks mean the same tempo profile.
+- One parser reads the strings and checks V1-V15, and fails with the rule and the token.
+- The engine-core porter builds the parser. Until then, these rules are the spec.
