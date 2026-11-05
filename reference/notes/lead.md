@@ -48,6 +48,14 @@ move the time, never the bar.
 | Critic | CRITIC-SPEC.md + trace-check.mjs + verdict | every section of its brief, every fact cited | 12:45 PM |
 | Designer | Rulings on the critic's findings | each finding: accepted with the spec change, or rejected with evidence | 1:30 PM |
 | Lead | CHECKPOINT 1 for Matt | library sheet by world, render stills, critic interim, cost so far vs meter | 12:15 PM |
+| Planner | E3 element + SUPPORT check | every landing AND prop/dress on 102 stages x2 layouts x2 settings; may-float-no over air fails; water pieces only on zones; zone ends under banks; counts per world on a shrinking known list; float share measured; 1-1/1-5 0 breaches; 1-5 creek zone, pad test green | 1:45 PM |
+| Planner | W1 fixes from the rulings | stone/crumble no-float; crumble out of W1; tree ideas lay branch; vine/liana/rope kinds; no climbing vine 1-1; log jam out of 1-5 once water's back; snapshot changes named; 1-5 gates re-run | 2:30 PM |
+| Research helpers (lead starts 12:00) | the (R) OPEN groups settled from primary sources | each OPEN answered with a saved source + line, or proof of search | 3:00 PM |
+| Planner | Step 6 whole-game data + 6 gates | worlds.ts + ladder.ts (W1-W10, glide/swim rows measured), 6 gates as a 102-stage report, critic findings + OPEN answers applied, W2-10 misses on the known list | 4:00 PM |
+| Planner | E4 + E5 | pass lines from the spec; neighbour check (>half shared ideas fails); `tools/engine/stage.ts <id>` builds, gates 16x2, stills, map, report; regression lock per world | 5:30 PM |
+| Planner | 1-1 from data, timed | pass line b726b737; clock starts at "1-1 data written" after step 6 | 7:30 PM |
+| Planner | 1-2 from data, timed | same line, from story-briefs/1-2.md | 10:00 PM |
+| Lead | CHECKPOINTS 3-5 for Matt | progress vs this board, stills, numbers, meter | 4:15, 6:15, 8:15 PM |
 | Lead | CHECKPOINT 2 for Matt | critic verdict + rulings, water stills, the build plan for 1-1 with its pass line | 2:15 PM |
 
 ## Who (cloud sessions)
