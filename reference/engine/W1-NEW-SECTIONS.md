@@ -106,5 +106,5 @@
 **The count for 1-1:**
 - 11 harvested sections are usable for 1-1 (15, less stone-road, low-boughs, ledges and ropes), plus my 25: **36 for 12 slots,
   3:1.**
-- By phase: start 3, ki 10, sho 12, ten 6, ketsu 6, rest 5, goal 2, counting sections tagged for two phases in each.
+- By phase: start 3, ki 10, sho 13, ten 7, ketsu 5, rest 5, goal 2 (counted from the tables; a section tagged for two phases counts in each).
 - engine-core's CHECK 2 table counts against slots per phase. If any phase is under 3:1, tell me the phase and I'll add there.
