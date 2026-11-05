@@ -1113,3 +1113,14 @@ exactly those lines (no slack). Heuristic misses were then read by eye one by on
   STAGE-RULES has no §0c. A trace must read the ccr copy.
 - The exact edit for `reference/methods/` (the designer's call): "Every new number in ENGINE-SPEC carries its tag and cite in the same
   line, and a ruling that changes an earlier number edits or strikes the earlier line in the same commit."
+
+## Correction from the critic's deep pass (§10c, 11-05 ~11:22 AM ET)
+
+- The R2 notes credit "14 different kinds of geometry for jumps" to Launchpad (2011; R2:524, :644). The source is **Smith et al. 2009**
+  (rhythm-based level generation, FDG 2009; saved at reference/research/critic-2026-11-05/smith-2009-rhythm-based-fdg.md), and its own
+  Fig. 13 says **13** jump types. Any row of this trace that uses that number is to be read that way.
+- Smith 2009 §5 ("Rhythm groups can optionally be repeated before this rest area") is the source for the revised ES 391: one exact
+  repeat of a group, right before a rest.
+- Smith 2009's abstract ("that which the player feels with his hands") is a source for ES 1120 (the player's rhythm, not the song).
+- ES 1429-1433 (lianas and creaky taught in 1-2) was **MEASURED on an unshipped branch**. On main, creaky is taught in 1-5 and lianas in
+  1-6. Ruling reversed (ENGINE-SPEC, "The critic's deep pass ruled", #4).

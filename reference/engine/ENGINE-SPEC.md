@@ -388,8 +388,8 @@ it.**
   - about a third of the old 1-1's ups and downs.
 - **The rule is (a)+(c):**
   - **(a) Bursts.** A node lays 2-3 short bursts of 4-6 pieces each, drawn from its deck. Bursts alternate between the deck's
-    ideas: never the same idea twice in a row, and never the same burst twice in a stage. The teach node pairs its teach with bank
-    hops between bursts, and the rest node stays one short walk. **[revised: critic §10, 11:21 AM]**
+    ideas: never the same idea twice in a row, and never the same burst twice in a stage. The teach node pairs its teach with bank **[revised: critic §10, 11:21 AM]**
+    hops between bursts, and the rest node stays one short walk.
   - **(c) Each idea varies inside.** Within a burst, the piece's kind or size band changes at least every 2 pieces. At least 4 of
     every 5 landings step up or down, as the old 1-1 does (171 of 202). **[revised: C13, "Contradictions ruled", 10:49 AM]**
 - **The pass line is the old 1-1's own numbers** (CP1), on 16 rolls x 2 settings:
