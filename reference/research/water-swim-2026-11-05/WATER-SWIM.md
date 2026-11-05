@@ -283,3 +283,42 @@ Numbers marked (est.) are my estimate, to be tested in play. Everything else is 
   - add a third clip at 1.25x (0.87 s across the well, 12 px a frame);
   - if possible, film each speed on a long scratch pool of about 1,500 px. At 1.25x that is about 4.2 s of swimming, enough to feel the speed.
 - **My recommendation stays C:** a quarter faster than his run, plus long water on the swim stage (3,500-5,000 px a beat, b5). Real sloths are 3.4x (F20), but 1.8x is 17 px a frame at 30 fps, which is hard to follow on a phone.
+
+---
+
+## g. The recovered Gemini "water laws" against the shipped-game sources (added 2026-11-05, after the lead's recovery)
+
+**The source:** `reference/research/GEMINI-VARIETY-2026-11-02-paste1.txt` (branch ccr-0d59a91c-oy3imz, bb70b81c), Section 3, lines 54-72, read in full.
+
+**There are three laws, not four.** Line 58 promises "four core design laws", but only Law 1 (line 59), Law 2 (line 66) and Law 3 (line 68) follow before Section 4 begins at line 73. The header (line 4) says Section 3 is complete, so no fourth law was cut off. This partly answers C1: the "in and out" line has a source. "No slow drag" and "wide clear exits" are Laws 1 and 2.
+
+| Law (paste1 line) | What it says | Backed by | Contradicted by / caveat | Our code |
+|---|---|---|---|---|
+| Preamble (55-58) | Water fails when it strips the moveset, adds drag, "stressful oxygen timers or cramped spike mazes". DKTF, Rayman Legends and Ori water is "universally praised". | Timers: F4, F8, F18. Drag: F5, F18. Moveset: Rogers asks "Can the player do any actions underwater that they can do on land?" (S22). | **"Universally praised" is wrong for two of its three examples.** DKTF's breath meter was attacked (F8) and it costs health (F7). Ori's rising-water escape was called "needlessly punishing" (F10). No source read here supports Rayman Legends either way (F16). | No timer (M2). On land moves in water: he can climb out and leap (M4), but no punch while swimming (swim.ts has none). |
+| Law 1 (59-65): buoyancy, never sluggish drag | Buoyancy > 1 (1.3-1.8) floats him up. Jump gives a dolphin arc. Damping at the waterline (no jitter). A fast jump breaches the surface "onto high ledges". Buoyancy = 1 gives 360° free glide. | **No drag:** F5, F18, every series' fast mode (F7, F9, F11, F12, F15), sloths (F20), Matt R-5.22. **Floats up:** Celeste's rise to the top (F3). **Leap out:** Celeste (F3), Ori Swim Dash (F11). | **Base swims elsewhere ARE slower than a run:** SMB3 0.60, Celeste 0.67-0.89 (F2, F3). Speed comes from boosts on top. **Mario and Kirby sink, they don't float** (F1, F12), so floating up is a choice, not a law. **360° free glide** is DKTF's (S09:53), but Kirby cut underwater for control reasons (F12). Keep it one-thumb on a phone (b12). The 1.3-1.8 multiplier has no source. | Floats at the top with a soft spring (swim.ts:31, 39-40). **Speed is 0.53 of a run: this law and our code disagree** (M1). Flick up gives a full jump (M4) but not "onto high ledges" (leapV = PHYS.jumpV, swim.ts:47). |
+| Law 2 (66-67): no cheap hazards at the water's edge | No spikes, enemies or pixel-tight jumps at the water-to-land exit. The transition zone is wide and clear. | Rogers: exits clearly marked (F19). Celeste's ledge pop at the edge (F3). The player complaint about squeezing past a shark at a wall (S04:14). | Nothing read contradicts it. No source gives a width. | 6-7's exits: lips 8 px, aprons 220/300 px, nothing hazardous on them (`rules-on-6-7.out.txt`). |
+| Law 3 (68-72): "in-and-out" hybrid stages | "Never trap the player underwater for an entire 3-minute stage. The best water stages alternate every 15–20 seconds between underwater pockets, air caverns, and overhead vines." Plus three patterns: dolphin-chain loops (current, then launch, then vine, then the next pool); rising and draining puzzles; slipstreams and rising bubbles that carry him. | **Alternation:** F18 ("interrupted by equally long above water"), F6 (change of pace, not "a bunch in a row"), the praised DKC2 changing water level (S04:13). **Rising and draining:** F6, F11, uliwitness's drain the water and see the place twice (S01:10). **Bubbles as lifts:** F11, F14. | **No shipped source gives the number 15-20 s.** The nearest are Sonic's first warning at 5 s (F4) and Ori's air pockets "long before you run out" (F10). The same 15-20 s appears in our papers as the chase group (C6). It is Gemini's own figure. | 6-7's rise and fall is built (w6Rooms.ts:6-13). No currents, no tunnels (Pokey floats at the top), no rising bubbles. The whole swim is 2.2 s (M3). |
+
+### What Law 3's 15-20 s means for my rule b5
+
+- **Law 3 times the switch between kinds of play, not a dive.** That is how the spec misread it into "15-20 s under" (spec:1590). Every 15-20 s the stage changes between swimming (pockets), the surface (air caverns) and the air (vines).
+- **One leg of 15-20 s is about one rhythm group plus its rest.** Our sourced groups are 10-14 s on Normal and 6-8 s on Easy, then a rest pad (C6, STAGE-RULES:173). On the swim stage, the 15-20 s chase group is the closest match (C6).
+- **b5 changes from:**
+  - *old:* "one swim beat lasts 10-14 s Normal, 6-8 s Easy, followed by at least as long on land"
+  - *new:* **"no swim leg runs past 20 s before the play changes to the surface or the air (Law 3). A leg is 10-14 s Normal and 6-8 s Easy in ordinary stages (one rhythm group, C6), and up to 15-20 s on the swim stage 6-9. Each swim leg is followed by a surface, air or vine leg before the next pool."**
+- **Dropped from the old b5:** "equal land" (uliwitness, F18). That was one writer's taste; Law 3 asks for an alternation, not equal lengths.
+- **Gate:** in the real engine, time each continuous stretch spent in calm water. It fails over 20 s on any difficulty, over 14 s on Normal (outside 6-9) and over 8 s on Easy. It also fails if two swim legs touch with no surface, air or vine leg between them.
+
+### The other rules, checked against the laws
+
+| My rule | How it stands |
+|---|---|
+| b1 (no breath meter) | Agrees with the preamble. |
+| b2 (dive) | Untouched. |
+| b3 (one kind of water per screen) | Not in the laws; it stays on Rogers (F19), M10 and M11. |
+| b4 (speed ≥ a run) | Law 1 backs it. |
+| b6 (exits) | Law 2 backs it, and now has a second source. |
+| b8 (currents) | Law 3's slipstreams back it, as currents that help. |
+| b9 (rising water) | Law 3 backs it. |
+| b11 (bubbles carry him) | Law 3 backs it. |
+| b12 (one thumb) | Disagrees with Law 1's 360° glide. Keep b12 for phones (F12, F17). |
