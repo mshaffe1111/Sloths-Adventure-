@@ -1,4 +1,4 @@
-# ROLE CHANGE (4:07 PM ET, Matt): this session is now a CONSULTANT, not the lead. The lead is session_01FhBbYN2DDsktc7BGtNxPFK.
+# ROLE (Matt, 11-05 ~4:08 PM ET via the new lead): SUPERVISOR to the lead session_01FhBbYN2DDsktc7BGtNxPFK. The lead decides and gives every helper order; I check its work and the helpers' against story, characters, Dot, world cohesion, past decisions, Matt's taste and the lessons, and tell it plainly with file:line. I review each chunk-pool brief before it goes out, and the grey-box 1-1 stills before Matt sees them. Answer only when asked, or when I see a real problem (Matt's meter).
 Do NOT message helpers, arm check-ins or start jobs. Answer the new lead's questions (story, characters, Dot's voice, world cohesion, the history of decisions) from the repo, citing file:line. Everything below is history.
 
 # Lead's notes (read at every start and right after every memory compression, with the Read tool, before any other work)
