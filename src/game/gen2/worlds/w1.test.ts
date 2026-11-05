@@ -64,3 +64,20 @@ test('every W1 section carries its node jobs (NODES.md §1), and a teach section
     if (s.jobs!.includes('teach')) assert.ok(s.teaches, `${s.id}: a teach job with nothing taught`);
   }
 });
+
+test("every W1 section has its content type (NODES.md §7.7), and every challenge section's every version runs at least 10 s (the designer's ruling, 08c5a2944)", async () => {
+  const { layLocal, planBudget, rngFor } = await import('../pipeline.ts');
+  const { cfg, manifest } = await import('../toyWorld.ts');
+  const nb = planBudget(cfg('1-1', 'stealth'), manifest, 'normal');
+  (nb as { moves: string[] }).moves = ['walk', 'jump', 'double'];
+  const CHALLENGE = ['ki', 'sho', 'ten', 'ketsu'];
+  for (const s of W1_SECTIONS) {
+    assert.ok(s.content, `${s.id}: no content type`);
+    if (s.content === 'structural' || s.needs?.includes('rope') || !s.phases.some((p) => CHALLENGE.includes(p))) continue;
+    // (the porter's measure: width at 285 px/s, plus 0.3 s a landing; three seeds, the shortest judged)
+    for (const v of s.subBlocks![0].versions) {
+      const secs = Math.min(...[1, 2, 3].map((seed) => { const L = layLocal(s, nb, rngFor(seed), false, { versions: { body: v.id } }); return L.width / 285 + 0.3 * L.pieces.filter((p) => p.landing).length; }));
+      assert.ok(secs >= 10, `${s.id}/${v.id}: ${secs.toFixed(1)} s`);
+    }
+  }
+});
