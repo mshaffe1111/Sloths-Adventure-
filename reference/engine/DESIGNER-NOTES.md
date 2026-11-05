@@ -25,3 +25,7 @@
    lead's branch), not only the code (11-05, 1:18 PM ET: I sent the under-bough hang to Matt when he had approved it on 11-04, R-160.1).
 9. **A quote attributed to a brief is copied from the brief's file, with its line number** (11-05, 1:17 PM ET: I credited 1-1's brief
    with "the view from the top branch", a code comment's words; the brief says the opposite at :23 and :41).
+10. **What needs Matt (Matt, 11-05 ~1:20 PM ET, via the lead):** "anything that we would use to start the game, we can approve it. If
+   it can wait the next week because it's on like a later world, then it can go in the roadmap." So the engine, World 1, 1-1 and 1-2
+   are approved by the lead and me without going to Matt; anything for a later world gets an R-id and waits for next week. Before
+   routing anything to Matt, check it against this line.
