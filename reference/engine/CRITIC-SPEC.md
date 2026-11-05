@@ -880,3 +880,16 @@ lines"), checked against the source lines:** all six adopted, none re-worded.
 - **L3 hazards on the beat grid, L4 hurry/patience tags weighted equally, L5 X-6 as a slot job, L6 one cause-and-effect link a world
   with a save check first:** each matches its source line (LEG:127, :527; LEDGER-2026-11-02-full.md:109, :116, :273, :276, :291, :358;
   part2:59, :232, :236, :237). Each is still to be built; that's World 1's pass and later, not step 6.
+
+**Two corrections since, checked (engine-spec 1dbf26e9, 1fc246ec):**
+- **L1075 re-cited** to `story-briefs/1-1.md:23` ("Resolve, not triumph") with no view (:41). The misquote is fixed; my condition 2 is
+  met.
+- **Hanging under a branch is approved, not Matt's open call.** I passed "Matt's call" at 1:14; the designer corrected it. ROADMAP.md on
+  ccr-0d59a91c-oy3imz: R-160.1 "Pokey's own move: hanging under branches ... New move, World 1 placements", and R-160.2's row records
+  "Matt 2026-11-04 (approved reference/PLAN-TO-80.md)". An approved plan item, not 11-04 code, so "nothing from 11-04 ships" does not
+  touch it. It goes on step 6's move list as approved-not-built. My pass of the 1:14 line was wrong: I checked that the line had been
+  marked, not whether Matt had already decided. Lesson for the method: when a ruling sends a thing "to Matt", search ROADMAP and
+  MATT-DIRECTION for his earlier decision before accepting it.
+
+**Verdict stands: READY TO BUILD step 6**, with one condition left: catalog.ts's hazard worlds (teach world to W10) land first, with a
+check that fails if they shrink (with the planner).
