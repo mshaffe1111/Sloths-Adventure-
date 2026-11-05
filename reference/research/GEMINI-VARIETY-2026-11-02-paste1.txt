@@ -1,0 +1,106 @@
+# Gemini research paste 1 of 2026-11-02 (~7:14 PM ET; transcript timestamp 2026-11-03T00:14:28.064Z), recovered verbatim from the lead session's transcript on 2026-11-05
+# Why: GEMINI-VARIETY-2026-11-02.md's triage was made from THIS paste, but only its one-line summary was saved (D29 pattern, LEAD-PLAYBOOK 8h.1).
+# The text below is exactly what reached the session: 20000 characters. The paste stopped at 20,000 characters, so its end may be cut off.
+# Section 3 (water) is complete. GEMINI-VARIETY-2026-11-02-full.txt is a DIFFERENT, later paste.
+
+Some research 
+___
+
+The Gemini platform router did not attach the interactive Deep Research confirmation widget (Start research button) to this turn—which happens when a conversation hits the per-thread Deep Research tool limit or when the UI toggle switches back to standard chat—and I will not fake a non-functional button or roleplay a UI state.
+Instead, I have laid out the full, structured Deep Research Plan below and executed the multi-source research directly across academic level-generation literature, physics implementation frameworks, and AAA 2D platformer postmortems to give you the complete, uncondensed encyclopedic report right now.
+Part 1: Structured Deep Research Plan
+Objective
+Investigate how AAA 2D platformers and puzzle-platformers achieve high mechanical variety, kinetic flow, and spatial puzzle depth across 100+ stages using only basic movement inputs (Run, Jump, Grab), and establish a formal engineering and design methodology for breaking levels into playable, non-repetitive Nodes and Chunks.
+Research Sub-Questions & Methodology
+ * AAA Comparative Gap Analysis: Analyze Donkey Kong Country: Tropical Freeze, Super Mario Bros. Wonder, Rayman Legends, Celeste, and Limbo to identify the systemic level-design layers missing from a basic obstacle-course platformer.
+ * Moving Platform & Kinetic Geometry Taxonomy: Categorize moving platform systems beyond simple horizontal/vertical sliders—including spline tracks, pendulum/catapult systems, weight-reactive fulcrums, and momentum-transfer (lift boost) physics.
+ * 2D Water & Buoyancy Level Design: Investigate why traditional water levels fail in 2D platformers and extract the mathematical buoyancy models (Archimedes force, submergence thresholds, surface damping) and level-design rules that make water stages in Tropical Freeze and Rayman Legends high-energy highlights.
+ * Zero-Button Environmental Puzzle Architecture: Examine how puzzle-platformers (Limbo, Super Mario Bros. Wonder Search Party/Wonder stages, Celeste) construct cerebral spatial puzzles where Jump and Move act as state-manipulation tools rather than mere gap-clearing reflexes.
+ * Graph-to-Chunk Node Architecture & Playability Validation: Synthesize academic frameworks on graph-based level decomposition (G = (V, E)), non-terminal to terminal node rewriting, lock-and-key node insertion, and automated reachability/pacing validation.
+ * The Psychology of Addictive Challenge vs. Quit Triggers: Analyze checkpoint spacing, failure-recovery loops, visual sightlines, and cognitive-load separation that compel players to keep trying rather than quitting.
+Part 2: Complete Deep Research Report
+Section 1: The Diagnostic Audit — Why Levels Feel Redundant & What AAA Platformers Do Differently
+When a 2D platformer relies solely on static platforms, breaking branches, vines, wind, and slow-down zones, it suffers from Single-Mode Traversal Fatigue. Every obstacle asks the player's brain to perform the exact same cognitive operation: calculate a parabolic jump arc across a gap while accounting for a timing delay or velocity drag. Over 100 levels, even if the background art changes, the player experiences mechanical monotony because the relationship between the avatar and the geometry never changes.
+Research across benchmark 2D platformers reveals five structural systems present in AAA games that are missing from a standard static-hazard platformer:
+1. Kinetic "World-as-a-Machine" Geometry (Donkey Kong Country: Tropical Freeze)
+In Tropical Freeze, platforms rarely sit detached in empty air; they are visibly anchored to the environment as moving parts of a larger ecological or mechanical system—rotating waterwheels, swaying pendulums, zip-lines, sinking ships, or rebounding foliage. Furthermore, the level geometry actively changes state in response to the player's weight and impact, turning traversal into a continuous chain of kinetic cause-and-effect rather than passive jumping.
+2. Structural Archetype Alternation (Super Mario Bros. Wonder)
+To prevent 100-level campaign fatigue, Super Mario Bros. Wonder refuses to make every stage a standard left-to-right obstacle course. Instead, each world alternates between six distinct stage structures:
+ * Standard Traversal Stages featuring a mid-level Wonder Effect that fundamentally alters the physics, camera perspective, or rules of the stage halfway through.
+ * Search Party Stages: Non-linear single-hub puzzle rooms where the player must discover five hidden tokens using environmental clues, invisible blocks, and spatial deduction rather than reflex jumping.
+ * Break Time! Stages: Ultra-short (30–45 second) single-gimmick micro-puzzles or rhythm toys that reset the player's mental fatigue between long stages.
+ * Badge Challenge Stages: Focused mastery tests built around a single movement modifier (such as Parachute Cap gliding, Wall-Climb jumping, or Grappling Vine momentum) where failing does not punish lives.
+ * Races / Tempo Gauntlets (Wiggler Races): High-speed flow stages where the geometry is wide and forgiving, shifting the challenge from "surviving pits" to "optimizing momentum lines" against a rival clock.
+3. Choreographed Flow & Musical Sync (Rayman Legends)
+Rayman Legends eliminates the feeling of clumsy stop-and-go platforming by designing stage layouts around continuous momentum curves. Slopes, bounce pads, wall-runs, and swinging ropes are spaced at exact distances matching the player's max-velocity jump arc, so holding forward and hitting jumps on the beat produces a seamless, dance-like flow.
+4. Single-Screen Micro-Mastery & Forgiveness (Celeste)
+Celeste treats every individual screen (Node) as a discrete, self-contained spatial puzzle using a single primary mechanic per screen and layering complexity across the chapter. Crucially, Celeste eliminates traversal tedium by removing lives entirely and respawning the player in under one second at the exact entrance of the screen where they failed.
+5. Jumping as a Puzzle Tool rather than a Reflex Test (Limbo & Inside)
+As documented in level-design analyses of Limbo, there is a fundamental difference between a game about jumping (where you must execute harder and harder reflex jumps) and a puzzle-platformer (where jumping is simply the physical input used to manipulate objects, trigger switches, bait hazards, and test hypotheses). In Limbo, no single puzzle ever repeats itself with the same variables; even familiar tools (like bear traps, crates, ropes, or water levels) are recombined so the first encounter teaches what the object does, and the second encounter requires using the object against another system.
+Section 2: Missing System #1 — The Complete Moving Platform & Kinetic Geometry Taxonomy
+Moving platforms are essential because they introduce dynamic spatial topology: the distance and height between Node A and Node B change over time (t), forcing the player to read velocity vectors rather than static coordinates. Without adding a single new button to your game, you can implement eight distinct classes of moving platforms:
+| Moving Platform Class | Mechanical & Physics Behavior | How It Transforms Gameplay |
+|---|---|---|
+| 1. Harmonic / Pendulum Swings | Platforms or hanging cages suspended from a pivot that swing along a sinusoidal arc (\theta(t) = \theta_{max} \cos(\omega t)). | Combines horizontal and vertical movement; jumping at the upswing apex transfers upward and forward Lift Momentum to the player's jump. |
+| 2. Touch-Activated Spline Coasters | Platforms resting on vine-tracks or rails that remain stationary until the player lands on them, then accelerate along a curved path. | Eliminates annoying waiting cycles (the platform is always ready when you arrive) and creates high-speed rollercoaster sequences where you duck and jump over track barriers while riding. |
+| 3. Weight-Reactive Counterweights (Pulleys) | Two platforms linked over an overhead pulley. Standing on Platform A applies downward mass, lowering A at velocity v while raising Platform B at -v. | Creates instant physics puzzles: the player must weigh down Platform A (or jump repeatedly to reduce average contact time) to position Platform B at the exact height needed to reach an upper ledge. |
+| 4. Jump-Synchronized ("Beat-Swap") Platforms | Platforms that shift position along a track or rotate 90^\circ only when the player presses Jump. | Removes independent timer frustration and turns movement into a turn-based spatial puzzle where every jump advances the room's machinery by one step. |
+| 5. Rotational Mill Wheels & Rotating Logs | Circular wheels fitted with 3 or 4 flat leaf-paddles rotating around a central axle. | Forces continuous repositioning: the player cannot stand still for long before their paddle rotates vertical, requiring rhythmic upward hopping from paddle to paddle. |
+| 6. Buoyant / Spring-Damped Platforms | Platforms floating on water, geysers, or elastic vines that dip sharply down when landed on (F = -kx - cv) and rebound upward above their resting height. | Landing from a high branch compresses the platform deep into the water/spring, and timing your jump at the peak of its upward rebound launches you to high secret paths. |
+| 7. Enemy-Carried / Living Platforms | Harmless armored beetles, flying birds, or swimming turtles that patrol along water surfaces, walls, or air currents. | Blends creature ecology with geometry; the platform reacts to environmental stimuli (e.g., moving toward light or fleeing loud noises) so the player can herd their own bridge across a chasm. |
+| 8. Catapult / See-Saw Fulcrums | Long rigid beams balanced on a central pivot where dropping a heavy object (or falling from height) onto one end launches whatever is on the opposite end. | Enables multi-step room puzzles: climb high to drop a boulder/seed onto the left side of a root-beam, or stand on the right side while an enemy stomps the left side to fling yourself upward. |
+Crucial Engineering Rule for Moving Platforms: Lift Momentum Storage
+A classic mistake in indie platformers is resetting the player's horizontal velocity to standard walk speed the instant they jump off a fast-moving platform. As documented in Maddy Thorson's physics architecture for Celeste, moving platforms must apply Lift Boost (Momentum Storage): when a platform moves at velocity \vec{V}_{platform} and the player jumps off it, the engine adds \vec{V}_{platform} to the player's takeoff velocity—and crucially stores that peak velocity for 5 to 8 frames after the platform stops or reverses. This makes jumping off a fast coaster, pulley, or swinging vine feel exhilarating and intuitive rather than abrupt and stiff.
+Section 3: Missing System #2 — How to Design Water & Swimming Levels That Are Actually Fun
+Water levels have a notorious reputation in mediocre platformers for two specific reasons discovered in player and design analyses:
+ * They strip away 90% of the player's land moveset (jumping, vine swinging, branch running) and replace it with a single sluggish, repetitive button-mash.
+ * They slow movement down into tedious drag while adding stressful oxygen timers or cramped spike mazes.
+By contrast, Donkey Kong Country: Tropical Freeze, Rayman Legends, and Ori feature universally praised water levels because they follow four core design laws:
+Law 1: Use Buoyancy & Fluid Dash Physics (Never Sluggish Drag)
+Instead of making water feel like molasses, implement Archimedes Buoyancy Physics:
+ * Define a submergence ratio (0.0\text{ to }1.0) and a buoyancy multiplier:
+   
+   * When buoyancy = 1.0, gravity is completely negated underwater, giving effortless 360^\circ free-flight glide.
+   * When buoyancy > 1.0 (e.g., 1.3 to 1.8), the character naturally floats upward toward the surface, and pressing Jump/Dive propels them smoothly forward and downward in a graceful sinusoidal dolphin arc.
+ * Apply depthScale and localDampingForce near the water surface so the character doesn't jitter at the waterline, while allowing a high-speed jump press at the surface boundary to breach/dolphin-leap out of the water onto high ledges.
+Law 2: Never Put Cheap Hazards at the Water Surface Transition
+A golden rule of 2D water level design: never place spikes, enemies, or pixel-tight jumps right at the water-to-land exit boundary. Entering and exiting water changes the physics state (SnapToGround vs. Swimming), so the transition zone should always be wide and clear, placing the actual challenge cleanly underwater or cleanly above water.
+Law 3: Build Amphibious "In-and-Out" Hybrid Levels (Not 3-Minute Underwater Slogs)
+Never trap the player underwater for an entire 3-minute stage. The best water stages alternate every 15–20 seconds between underwater pockets, air caverns, and overhead vines:
+ * Dolphin-Chain Loops: Swim through an underwater tunnel accelerated by a water current (or underwater thermal jet), launch out of the water surface at 45^\circ to grab a swinging vine in mid-air, swing over a dry rock island, and dive into the next pool.
+ * Rising & Draining Water Puzzles: Use water as a dynamic floor height. When a room floods, hazards on the floor are submerged far below while floating logs carry Pokey up to ceiling switches; when the room drains, heavy stone doors open on the riverbed.
+ * Floating Air Bubbles & Currents: Place underwater slipstreams (acting like underwater wind tunnels) that rocket the player smoothly through curved coral/root tubes, paired with rising air bubbles that carry the player vertically when touched.
+Section 4: Missing System #3 — Designing Challenging Puzzles Without Changing Core Controls
+To make your levels feel smart and varied, roughly 25% to 30% of your Nodes should be Spatial Puzzle Nodes rather than pure reflex jumps. In a puzzle-platformer, the player's controls (Run, Jump, Grab) stay 100% identical, but the room contains a Lock-and-Key State Machine.
+Here are six proven puzzle architectures you can drop directly into your worlds:
+ * The "Rule Discovery" Two-Step Puzzle (Limbo Method):
+   * How it works: Introduce a new interactive prop in complete isolation where the player's first instinct fails safely (or with an instant 0.5s respawn), forcing an "Aha!" moment. For example, in Limbo, two bear traps are placed side-by-side so they are too wide to jump over in one leap; because nothing else is on screen, the player discovers they can push/pull the trap or trigger it with a branch.
+   * In your game: Place a ledge too high to jump to, with a breaking branch above a seesaw root. The player realizes that intentionally breaking the upper branch drops a heavy log onto the seesaw, locking the other end upward as a permanent ramp.
+ * State-Inversion / "One-Key" Routing Puzzles:
+   * How it works: A single room contains a movable key object (a heavy root-stone, a glowing lantern jar, or a rolling seed pod) that must be used in two different ways to exit the room.
+   * Example: First, you push the heavy stone onto Floor Plate A to lower a wooden drawbridge; then you must pick the stone back up from the other side of the bridge and throw it into a water basin to displace the water level high enough to float a log to the exit.
+ * Light/Fire / Extinguish Puzzles:
+   * How it works: Borrowing from elemental puzzle-platformers, certain vines or thorny barriers block the path while other dry bridges are needed to walk across.
+   * Example: In World 8 or 9, carrying an ember or guiding a fire-spitting hazard burns away a wall of dead thorns to open a secret path—but in the next room, you must avoid letting the ember touch a dry vine bridge, or dip into a waterfall to extinguish it before crossing so you don't burn your own floor out from under you.
+ * Enemy Manipulation & Ecological Baiting:
+   * How it works: Instead of treating enemies as things to dodge or punch, make the enemy the only tool capable of altering the room's geometry.
+   * Example: A heavy charging beetle or snapping turtle is the only thing strong enough to shatter a cracked stone pillar or snap a thick anchor rope; the player must stand in front of the pillar, bait the charge, and jump at the last second so the enemy breaks the obstacle for them.
+ * Timed Fuse / Chain-Reaction Puzzles:
+   * How it works: Triggering Switch A starts a visible physical chain reaction across the screen (a rolling boulder on an overhead track, a burning fuse vine, or a line of domino-collapsing stones). The player must race or manipulate the environment (e.g., pulling a vine lever to bridge a gap in the overhead track) so the rolling boulder/fuse reaches the locked door at the end of the room.
+ * "Search Party" Observational Micro-Hubs (Mario Wonder Method):
+   * How it works: Once per world (e.g., Stage X-7), replace the linear start-to-goal race with a single large multi-tiered room containing 5 hidden tokens/keepsakes. Each token is hidden behind a different observational clue—one behind a waterfall silhouette, one revealed by standing still for glowworms, one reached by riding a hidden updraft, and one unlocked by ringing bells in pitch order.
+Section 5: How to Break Levels Into "Nodes" and Guarantee They Play Fun
+Recent academic research on Graph-and-Chunk Procedural and Manual Level Design (Procedural Level Generation For 2D Platformer Games Based On Graph And Chunk, Sept 2026) and mixed-initiative mission-space grammars provides an exact mathematical workflow for breaking levels into nodes and ensuring playability.
+Step 1: Separate the "Mission Graph" from the "Physical Chunk Layout"
+Never design platform geometry and level flow at the same time. Instead, build every level in two stages:
+ * The Abstract Graph (G = (V, E)): A level begins as a directed graph where Vertices/Nodes (V) represent distinct player tasks/challenges (e.g., Start, Normal Traversal, Key Node, Lock Node, Puzzle, Secret/Collectible, Goal) and Edges (E) represent the directional connectors between them (Left-to-Right, Bottom-to-Top climb, Top-to-Bottom drop, or Portal branch).
+ * Graph Rewriting Rules (Inserting Variety Automatically): Start with Start -> Goal and apply graph-transformation rules so no level is just a straight line:
+   * Lock-and-Key Insertion Rule: Take two adjacent normal nodes (n_1, n_2), insert a Lock Node between them, and branch a Key Node (a puzzle, switch, or counterweight room) off n_1 (either above, below, or behind a hazard loop). Now the player cannot mindlessly hold Right—they must visit n_1 \rightarrow n_{key} \rightarrow n_1 \rightarrow n_{lock} \rightarrow n_2.
+   * Parallel Risk-Reward Branch Rule: Split n_2 into two parallel nodes (n_{2a} High Skill / Fast and n_{2b} Safe / Puzzle) that reconverge at n_3.
+Step 2: Standardize Chunk Connectors and Pacing Labels
+Each Node in your graph is then mapped to a physical Level Chunk (a self-contained room or 10-to-20-second screen segment). To ensure chunks connect seamlessly without impossible jumps or awkward dead ends:
+ * Connector Standardization: Every chunk has explicitly defined Entry and Exit ports (Left-Low, Left-Mid, Left-High, Top-Shaft, Bottom-Drop) with guaranteed flat landing aprons of at least 3\text{ to }4\text{ body-widths} so the player never transitions between two nodes mid-blind-jump.
+ * Pacing Tag Alternation (Tight, Flowing, Relaxed, Cerebral): Tag every node template with a pacing label. Enforce a grammar constraint that no two Tight (high-precision reflex) nodes can ever be placed back-to-back without a Relaxed (rest/story beat), Flowing (high-speed low-punishment slide/swing), or Cerebral (puzzle) node in between.
+Step 3: Automated Playability & Fun Validation (How to Prove a Node Works)
+Once nodes are assembled into a stage, validate playability using a three-layer check before a human ever gets frustrated:
+ * Kinematic Reachability Graph (BFS / A Physics Validator):* Do not just check if tiles are near each other; run a Breadth-First Search (BFS) or kinematic parabola solver across all platforms in the chunk using Pokey's exact gravity (g
