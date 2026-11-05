@@ -15,6 +15,7 @@
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
 import { rollLook } from '../artRoll.ts';
+import { hollowLogSize } from '../w1NewArt.ts';
 import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
 import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { DOUBLE_RISE, JUMP_RISE, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED } from '../physics.ts';
@@ -721,9 +722,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           x: R(x),
           y: R(y),
           width: R(w),
-          height: shape === 'bank' ? Math.max(M.ground.bankH, R(baseline - y)) : shape === 'branch' ? 24 : shape === 'stone' ? 22 : R(h),
+          height: shape === 'bank' ? Math.max(M.ground.bankH, R(baseline - y)) : shape === 'branch' ? 24 : shape === 'stone' ? 22 : shape === 'hollow' ? hollowLogSize('moss', R(w)).height : R(h),
           type: shape === 'bouncy' ? 'bouncy' : 'solid',
-          style: style ?? (shape === 'bank' ? M.ground.style : shape === 'branch' ? 'branch' : 'moss_stone'),
+          style: style ?? (shape === 'bank' ? M.ground.style : shape === 'branch' ? 'branch' : shape === 'hollow' ? 'log' : 'moss_stone'),
+          ...(shape === 'hollow' ? { hollow: 'moss' as const } : {}),
         };
     platforms.push(p);
     return p;
@@ -733,6 +735,23 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const ropes: Rope[] = [];
   const zones: Zone[] = [];
   const heartFalls: Laid['heartFalls'] = [];
+  // (World 1's floor families, M.floorRoll: the roll's hop family, drawn from its own stream (no other world draws it), sets how deep
+  // this slot's soft pits lie; every other world's pits are M.pitDepth as before)
+  const FR = M.floorRoll;
+  let fam = 0;
+  if (FR) {
+    const fr = rngFor(seed, 53);
+    let w = fr() * FR.hop.reduce((a, f) => a + f.weight, 0), pick = FR.hop[0];
+    for (const f of FR.hop) { if (w < f.weight) { pick = f; break; } w -= f.weight; }
+    fam = pick.range[0] + fr() * (pick.range[1] - pick.range[0]);
+  }
+  let depthNow = M.pitDepth;
+  // (a catch bough under a ledge gap, World 1's canopy: never in water, never where a pit already lies under it)
+  const catchUnder = (x0: number, x1: number, lowerLip: number) => {
+    if (!FR?.catchDrop || x1 - x0 < 20) return;
+    const c = mk(x0 - 30, lowerLip + FR.catchDrop, x1 - x0 + 80, 'branch', 24, 'branch');
+    (c as Platform & { catch?: boolean }).catch = true;
+  };
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
     const hop = riseLimit(false, budget.riseShare) * PIT.hop;
@@ -746,13 +765,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40 && (budget.world === 9 || floor - (q.y + q.height) > 48)) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
     };
     if (back) {
-      const out = backPit(x0, x1, lipY, farY, M.pitDepth, hop);
+      const out = backPit(x0, x1, lipY, farY, depthNow, hop);
       deepen(out.floor);
       mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
       for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
       return;
     }
-    const out = pitSteps(x0, x1, lipY, farY, M.pitDepth, hop);
+    const out = pitSteps(x0, x1, lipY, farY, depthNow, hop);
     deepen(out.floor);
     mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
     for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
@@ -822,6 +841,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const endY = cur.y + t.exitDy;
       if (endY < room.top || endY > room.bottom) return 0;
       if (lean !== 0) w *= Math.sign(t.exitDy) === lean ? 3 : t.exitDy === 0 ? 1 : 0.3;
+      // (World 1's floor families: the roll's hop family weighs its hop and jump sections; a world without floorRoll never sees it)
+      if (FR && t.floor) w *= t.floor === 'hop' ? 0.1 + 1.9 * fam : 0.1 + 1.9 * (1 - fam);
       return w;
     };
     // the node's bag holds its candidates by weight; the cooldown passes over the ones used just now
@@ -860,7 +881,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const flip = tpl.mirrorable ? srng() : 1;
       // (a section that swings is never flipped: its perch is sized for a swing toward it, the way the stage runs)
       const mirrored = fixed ? fixed.mirrored : flip < 0.5 && !hangsNeed(tpl).includes('swing');
-      const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: M.pitDepth });
+      // (the slot's floor depth: a hop roll shallow, a jump roll deep, a mixed roll by the slot's own draw against the family)
+      if (FR) depthNow = fam >= FR.hopRoll ? FR.shallow : fam <= FR.jumpRoll ? FR.deep : rngFor(seed, 59, i)() < fam ? FR.shallow : FR.deep;
+      const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow });
       // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
       const jrng = rngFor(seed, 13, i);
       let join: PlanSlot['join'];
@@ -868,8 +891,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (cur.kind === 'ground' && L.entry.kind === 'ground') {
         const quiet = n.phase === 'start' || n.phase === 'rest' || n.phase === 'goal' || (tpl.room && true);
         const pitW = quiet ? 0 : n.tension * 1.2;
-        const r0 = jrng() * (1 + 0.6 + pitW);
-        join = fixed ? fixed.join : r0 < 1 ? 'walk' : r0 < 1.6 ? 'step' : 'pit';
+        // (World 1's floor families lean the join: a hop roll toward steps, a jump roll toward pits; the draw is the same one)
+        const stepW = FR ? 0.6 + 1.4 * fam : 0.6, pitW2 = FR ? pitW + 1.2 * (1 - fam) : pitW;
+        const r0 = jrng() * (1 + stepW + pitW2);
+        join = fixed ? fixed.join : r0 < 1 ? 'walk' : r0 < 1 + stepW ? 'step' : 'pit';
       } else join = fixed ? fixed.join : 'jump';
       const j = jrng();
       let dx = 0;
@@ -945,6 +970,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       }
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
+      if (dx > 0 && join === 'jump') { const before = platforms.length; catchUnder(cur.x, ox, Math.max(cur.y, oy)); placed.seam.push(...platforms.slice(before)); }
       for (const g of L.gaps) {
         const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
@@ -955,6 +981,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           if (g.back && M.heartFalls && budget.pit !== 'soft' && !g.soft) heartFalls.push({ x0: R(g0.x0), x1: R(g0.x1) });
           else if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
           else pitUnder(g0.x0, g0.x1, g0.y, g0.y, false, g.soft);
+          placed.seam.push(...platforms.slice(before));
+        } else if (!g.water && FR?.catchDrop) {
+          const before = platforms.length;
+          catchUnder(g0.x0, g0.x1, g0.y);
           placed.seam.push(...platforms.slice(before));
         }
       }

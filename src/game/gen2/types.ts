@@ -112,6 +112,17 @@ export interface WorldManifest {
   /** how deep a soft pit's floor lies under its lips at most (px): a pit too narrow for wide steps out is shallower, its floor one
    *  plain hop under the far lip (pipeline pitSteps: every dip has a one-jump way out, every step a tread a thumb can land on) */
   pitDepth: number;
+  /**
+   * World 1's floor families (the planner's floor road, engine-floorroad 4fd9e992; the designer's floor ruling, WORLD-RULEBOOK 9a22b846):
+   * each roll draws a hop family by weight. A hop roll (h >= `hopRoll`) keeps every soft pit's floor `shallow` under its lips and leans
+   * its ground joins to steps (the route reads hops); a jump roll (h <= `jumpRoll`) lays every soft pit's floor `deep` (past the route's
+   * 200 px, so it reads jumps) and leans its joins to pits; a roll between mixes them, slot by slot. The stairs out are pitSteps' own.
+   * Absent, the world's pits are `pitDepth` on every roll, as before.
+   */
+  floorRoll?: { hop: Array<{ range: [number, number]; weight: number }>; shallow: number; deep: number; hopRoll: number; jumpRoll: number;
+    /** a catch bough under every gap that is not a pit (a jump between ledges, the canopy's: the designer's ac7a233c, 60-120 px), this far
+     *  under the gap's lower lip, reaching from 30 px under the near ledge to 50 px under the far one; one jump back up */
+    catchDrop?: number };
   /** the vertical corridor clamp (Part 3 §1): the route's ground stays between these world y's; inside `soft` px of an edge the
    *  selector leans toward sections that drift back */
   corridor: { top: number; bottom: number; soft: number };
@@ -151,7 +162,9 @@ export interface WorldManifest {
 // ───────────────────────────── a section ─────────────────────────────
 
 /** a platform, or one of the two hanging pieces: a `liana` (a swing, placed by `swing`) and a `vine` (a climb, placed by `climb`) */
-export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine';
+/** 'hollow': World 1's painted hollow log (w1NewArt.ts), its shell the landing and its inside clear to walk through: its height is the
+ *  art's own (hollowLogSize), whatever the section says */
+export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine' | 'hollow';
 
 /**
  * A liana's own swing (Matt, 2026-10-28): it swings by itself, `amp` radians either side of hanging straight down, one there-and-back
@@ -358,6 +371,13 @@ export interface SectionTemplate {
   mirrorable: boolean;
   /** how often the bag holds it (default 1) */
   weight?: number;
+  /**
+   * World 1's floor families (manifest floorRoll): a 'hop' section keeps to the floor road, its gaps hops with the floor near under
+   * them; a 'jump' section runs stones or logs over the floor road laid deep under them (more than 200 px, so the route reads jumps),
+   * entering and leaving on the ground. The roll's hop family weighs them: a hop roll draws hop sections, a jump roll jump sections. A
+   * pit's own floor stays as deep as its steps out allow (pitSteps): the deep floor of a jump run is the section's, not a pit's.
+   */
+  floor?: 'hop' | 'jump';
   /** extra seconds a typical first-timer spends here beyond walking its length (a room, a fight) */
   extraSeconds?: number;
 }
