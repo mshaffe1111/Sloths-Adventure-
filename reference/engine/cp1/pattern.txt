@@ -1,0 +1,7 @@
+stage | commonest pair share | commonest pair | longest repeating pattern px | kinds per screen (median)
+old 1-1 | 0.273 | log>bank | 3221 | 2
+new 1-1 | 0.702 | branch>branch | 10275 | 1.0
+new 1-2 | 0.149 | bridge>bridge | 3986 | 2.0
+new 1-3 | 0.192 | log>bank | 2296 | 3
+new 1-4 | 0.292 | branch>branch | 524 | 7
+new 1-5 | 0.172 | creaking limb>creaking limb | 3208 | 2.0
