@@ -16,6 +16,12 @@ Earlier the same night:
   a variety. Like, at least we used to have the lily pads and everything else."
 - "the designer has full say in how the pieces get used and how the engine gets built."
 
+## 2026-11-04 ~11:1x PM ET (said to the planner directly)
+"I liked all the pieces... They all looked good. They all played well. They were redundant."
+So today's pieces (logs, bridges, boughs, snap twigs, vines, stumps, rotten branches, the climb and the split) are KEPT in the
+engine's library, look and feel included. The fault is the mix, not the pieces. The engine's first job is mixing them so no stage
+repeats.
+
 ## The reference: the OLD 1-1 (live on main), Matt's best stage
 The generator is aimed at the way the old 1-1 is built, not the rebuilt one. It is the bar every generated stage is measured against.
 
