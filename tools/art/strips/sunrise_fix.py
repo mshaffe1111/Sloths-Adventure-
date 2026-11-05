@@ -248,6 +248,18 @@ def farjoin(out, band=160, y0=774):
     out = Path(out)
     f = np.asarray(Image.open(out / 'w1sunrise-far.webp').convert('RGB'), np.float32)
     H, W = f.shape[:2]
+    # (the original branch's tip at the right end's bottom: its brown goes to the canopy's teal, softened, or the mirror puts a brown
+    # peak at the seam)
+    for xs in (slice(W - 260, W), slice(0, 260)):
+        tip = f[1100:, xs].copy()
+        # (the branch: browner or mauver than the teal canopy round it: red at or over green)
+        brown = (tip[..., 0] >= tip[..., 1] - 2)
+        if not brown.any():
+            continue
+        tip[brown] = (30, 56, 52)
+        sm = np.asarray(Image.fromarray(np.clip(tip, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(6)), np.float32)
+        near = np.asarray(Image.fromarray((brown * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(4)), np.float32)[..., None] / 255
+        f[1100:, xs] = near * sm + (1 - near) * f[1100:, xs]
     t = (np.arange(band, dtype=np.float32) + 0.5) / band
     t = t * t * (3 - 2 * t)
     rows = np.clip((np.arange(H, dtype=np.float32) - y0) / 60, 0, 1)[:, None]

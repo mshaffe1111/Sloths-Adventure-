@@ -13,26 +13,11 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import type { Platform } from './types.ts';
+import FRAMES from '../assets/w1to4art/w1-new.json';
 
-/** the sheet's cells (copied from src/assets/w1to4art/w1-new.json, the cutter's own list; w1NewArt.test.ts holds them equal) */
-export const W1_NEW_FRAMES = {
-  'squirrel-sit': { x: 0, y: 0, w: 361, h: 420 },
-  'squirrel-wave': { x: 365, y: 0, w: 373, h: 420 },
-  'squirrel-haul': { x: 742, y: 0, w: 257, h: 420 },
-  'squirrel-tip': { x: 1003, y: 0, w: 388, h: 420 },
-  'squirrel-run': { x: 1395, y: 0, w: 420, h: 317 },
-  'root-gate-open': { x: 1819, y: 0, w: 177, h: 300 },
-  'root-gate-shut': { x: 0, y: 424, w: 177, h: 299 },
-  'acorn-slope': { x: 181, y: 424, w: 479, h: 279 },
-  'log-hide': { x: 664, y: 424, w: 534, h: 274 },
-  'knot-a': { x: 1202, y: 424, w: 300, h: 231 },
-  'hollowlog-moss': { x: 1506, y: 424, w: 446, h: 218 },
-  'knot-b': { x: 0, y: 727, w: 268, h: 198 },
-  'log-moss-shut': { x: 272, y: 727, w: 422, h: 196 },
-  'hollowlog-plain': { x: 698, y: 727, w: 432, h: 192 },
-  'vine-rope': { x: 1134, y: 727, w: 298, h: 88 },
-} as const;
-export type W1NewPiece = keyof typeof W1_NEW_FRAMES;
+/** the sheet's cells: the cutter's own list, read as it is (one source: the art-use gate counts its pieces there) */
+export const W1_NEW_FRAMES = FRAMES;
+export type W1NewPiece = keyof typeof FRAMES;
 const F: Record<string, { x: number; y: number; w: number; h: number }> = W1_NEW_FRAMES;
 
 /** the sheet's address (stagePreload.ts decodes it before a stage that asks for it starts) */
@@ -54,7 +39,7 @@ export function w1NewReady(): boolean {
 export const hasW1New = (n: string): n is W1NewPiece => n in F;
 
 /** how tall each kind of dressing stands (world px): a squirrel a little under Pokey's height (about 70), the gates and knots their own */
-const DRESS_H: Record<string, number> = { squirrel: 62, 'root-gate': 120, knot: 70, 'acorn-slope': 80, 'log-hide': 90, 'vine-rope': 26 };
+const DRESS_H: Record<string, number> = { squirrel: 62, 'root-gate': 120, knot: 70, 'acorn-slope': 80, 'log-hide': 90 };
 const dressH = (n: string) => DRESS_H[Object.keys(DRESS_H).find((k) => n.startsWith(k)) ?? ''] ?? 70;
 /** the share of each picture's height under its feet that is transparent margin (measured from the sheet's alpha: the squirrels' feet
  *  are 9 px over the cell's bottom of 420) */
