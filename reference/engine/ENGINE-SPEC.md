@@ -2452,8 +2452,9 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
     ruling);
   - the bootprint at the end, a flush decal on the end bank's top band, toe east, just past the shrine's door (11:04 ruling).
     **[1:30 PM ET, the lead: its art is HELD to next week, R-165.31, and is not in engine-core.]** The builder sets `dress.clue:
-    'bootprint'` in the data, reports the missing art once, and draws no stand-in. Because it is held on purpose, the missing art is
-    a known item, not a fix round and not a fail of the pass line.
+    'bootprint'` in the data, and draws no stand-in. **The lead agrees (1:38 PM) that it doesn't count against the test:** the
+    builder's report lists it under **"known held art"** with R-165.31. It's not an engine miss, not a fix round, and not a fail of the
+    pass line.
 
 ### E. The pass line (all of it must hold)
 1. **The acceptance test** (ES 1657):
@@ -2554,8 +2555,9 @@ at n7 (1-1's at n9).
 **Dot's lines:**
 - Approved by the lead and me under Matt's 1:20 rule, since 1-2 opens the game: **hint.1-2.roots** and **hint.1-2.under** (11-04,
   1bab7dac0, on engine-mixer's dotLinesData.ts:125, :128). Both are true of 1-2 as planned. **[revised 1:32 PM ET: co-signed by the lead
-  (1:36 PM); the lead's route: the builder adds the two rows as 1-2's stage data, word for word from the corrected brief, and writes no
-  other line]**
+  (1:36 PM); the lead's final route (1:38 PM): engine-core carries both, R-165.41 (five rows: 1-1's three and these two)]** The
+  builder checks both are in engine-core's dotLinesData.ts, word for word. It never copies or writes a line, and reports a missing one
+  as an engine finding.
 - **Not used:**
   - hint.1-2.back ("up off the snakes"): snakes are untaught in 1-2;
   - hint.1-2.rotten ("Rotten wood!"): breaking wood is 1-5's on main, and that line was marked "needs Matt".
@@ -2565,7 +2567,8 @@ at n7 (1-1's at n9).
 - **The iron-collared snake at the start (:26):** a story cameo out of reach, drawn as scenery, never on the route and never able to
   hurt. If no W1 pose of that snake exists that reads as "more bluster than bite", report it. No stand-in, and never an enemy.
 - **Art gaps, R-165.42 (lead, 1:36 PM ET): approved, held to art week.** The builder reports each missing piece once and draws no
-  stand-in, the same rule as 1-1's bootprint, so they are known items, not fix rounds. (The brief is corrected: it no longer offers
+  stand-in, the same rule as 1-1's bootprint. The builder's report lists them under **"known held art"** with R-165.42. They are
+  not engine misses, not fix rounds, and not pass-line fails (the lead, 1:38 PM). (The brief is corrected: it no longer offers
   W3's or W6's art.)
 - **The pink bell (:21, :30):** there is no W1 pink bell. The painted pink bell is World 5's (engine.ts:6116, Pell's note), and the
   theme lock keeps it out of W1. It's an art gap for the lead. The note is placed meanwhile, and the bell is reported.
