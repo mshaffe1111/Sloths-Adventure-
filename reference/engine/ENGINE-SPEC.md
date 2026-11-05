@@ -2262,3 +2262,26 @@ roll15 = { hop: [{range:[0.36,0.41],share:13/32},{range:[0.85,0.95],share:19/32}
 - **Easy:** old 1-2's Easy gaps run a little lower (median from 0.65). Easy still keeps C4's widths and caps, not these rows.
 - **Bursts:** 5-20 s for all three. The old stages carry no node plan, so no burst length is measured, and the Launchpad range stands
   (G #38).
+
+## 1-1's ground-fork high road: thin logs on stumps (designer, 11-05 12:51 PM ET; the planner's E3 ask; w1Pits "vault pits" on layouts 1-3)
+
+**The root cause:** a 90 px log on a stump draws as an earth column (terrain draws any piece of 50 px or taller as ground down to the
+floor). So two high-road logs read as pit walls, and the low road's step-down between them reads as a sealed pit floor. The colliders
+don't trap him, but the picture does (D38), and the test reads it right.
+
+**Ruling (a): YES, thin logs.** `stump tops` and `log jam` lay `heights: { log: 30 }`, each log on its drawn stump. That's what the
+library row says the piece is ("a fallen log... on a stump in a ground fork"), and how a log on a stump looks. These conditions are
+part of the ruling:
+1. **The stump meets the log's underside.** supports() today sets a log's stump top at `p.y + 50` (w1mix.ts `top()`, written for 50+
+   px logs). A 30 px log would then hover 20 px over its stump. The top becomes `p.y + p.height` less a few px of overlap, for every
+   log height.
+2. **The stump stands on the first solid surface under it**: the floor, a bank, or a low-road piece. It never runs down through the
+   low road's pieces. Today `floorOf` finds only moss_stone ground. Every stump's foot is checked by E3's footingOf like any other
+   support.
+3. **The stumps draw behind him** (the trunk layer), so walking the low road past a stump reads as passing behind it, never through.
+4. **A gap between two high-road logs** is a hop on the high road. A fall from it lands on the low road, which always walks on to the
+   fork's end, so there is no pit. w1Pits' vault-pit test must pass on all 16 layouts, not just the three that failed.
+5. **1-1's fingerprints change on purpose.** Every 1-1 gate is re-run: E3, the variety and lookalike gates, length, the fun gate, and
+   stills upright and sideways.
+
+(b) isn't needed: steps or a minimum gap would treat the symptom, and the cause is the art.
