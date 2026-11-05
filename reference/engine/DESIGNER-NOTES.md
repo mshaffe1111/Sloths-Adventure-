@@ -13,3 +13,5 @@
    only).
 5. **In shell heredocs, quote the EOF (<<'EOF') or escape backticks.** An unquoted heredoc ran backtick words as commands and ate text
    from the spec twice.
+6. **A range is set from the per-roll rows, never from a min/p10/p90 summary alone** (11-05, 12:35 PM ET: I split the measured
+   gap and rise spreads into thirds; the per-roll rows showed every roll fills the whole gap spread and rises come in families).
