@@ -121,6 +121,54 @@ generated:
 - **Time per stage (lead, from Matt's "a stage in about an hour, not a day").** Each stage's helper time from spec to gated grey-box, and its retries, are recorded. Pass line: a stage takes 1 hour or less after the mixer exists (1-5 in CP3 is allowed to take longer, as the first build).
 - **Cost estimate.** About 1.5-2%.
 
+### Placement rules for the mixer and the pickups (designer, from Matt 11-05 ~12:15 AM ET; built in CP3, held in CP4)
+
+Matt: "the pieces should all fit together. That even if it goes random, they should all fit together... hearts aren't given out
+the very first thing... if you're not going to lose a heart, don't put a heart there... Checkpoints, reasonable... Collectibles.
+Where they make sense... It should feel good playing it. It shouldn't just be a cluttered mess."
+
+Each rule has the planner's machine check under it; a rule that can't be checked by machine is judged by Matt on the map.
+
+1. **Everything in a kit fits everything else.** Every idea's entry and exit uses the world's small set of joins (high, mid, low,
+   two roads), and the join itself is a short piece of the same kit, sized to the next idea's first move, never a bare gap.
+   Every piece in a kit is drawn in one art family, so any roll reads as one place. A piece that would look out of place in any
+   other idea of its world is not in the kit.
+   *Check:* every pair of ideas the stage puts side by side joins (exit = entry). Run over every pair in the kit, not just the
+   rolled ones. Over 16 rolls, no seam has a gap or step outside the kit's join sizes.
+2. **A heart only after real risk.**
+   - Hearts never in the first node or the first 30 s.
+   - A heart only right after a node where a miss costs a heart or a life (a hazard, a pit, an animal), and never in or after a
+     stretch where nothing can hurt.
+   - At most one heart per risky node, and fewer hearts than risky nodes.
+
+   *Check:* each heart's previous node has a heart- or life-costing miss, and its node risk is above zero. None in the first node
+   or the first 30 s. Hearts are fewer than risky nodes.
+3. **A checkpoint before the hard part, not everywhere.**
+   - A checkpoint goes just before a node whose job is test, twist or master, or before the set piece. Never before a rest or a
+     teach node.
+   - No two checkpoints with only easy nodes between them.
+   - After a loss, the replay back to where he fell is at most about 45 s (estimate).
+
+   *Check:* each checkpoint's next node is a test, twist, master or set piece. There are no back-to-back checkpoints. The longest
+   stretch on the quick route from a checkpoint to the next hard node is 45 s or less.
+4. **Collectibles where they make sense; hard ones in hard places.**
+   - Petals are the route's breadcrumbs. They sit only on the idea's own surfaces and arcs, and show the way and the safe landing.
+   - Each stage's harder collectibles (the upper road's petals, Meeca's carvings, a bonus) go only in a test, twist or master
+     node, or on the high road of a fork. A player earns them with the skill that node is about.
+   - None floats in a place no move reaches naturally.
+
+   *Check:* every petal lies on its node's planned route, or on the arc of a jump in it. Every hard collectible sits in a node of
+   job test or above, or on a fork's high road, and is reachable only by the idea's own move. That uses the limited-agent bot: the
+   bot without the move can't reach it.
+5. **No clutter.** In any one phone view (upright 400 x 880 and sideways 1100 x 540):
+   - at most about 8 pickups (estimate);
+   - at most 2 kinds of hazard or animal;
+   - at most 3 kinds of standing piece;
+   - every landing has clear space above it for his jump arc.
+
+   *Check:* a sliding view over the built stage counts these and fails over the limits. The limits are set from the old 1-1 in
+   CP1: it must pass its own limits.
+
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
