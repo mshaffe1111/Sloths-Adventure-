@@ -18,7 +18,7 @@ import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
 import { isRich } from './rainforest.ts';
-import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted, revealSet, FADE_IN_MS, type PaintedSet } from './paintedBackdrops.ts';
+import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted, FADE_IN_MS, type PaintedSet } from './paintedBackdrops.ts';
 import { w5Mood, type W5Mood } from './w5Backdrop.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
@@ -2263,16 +2263,8 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
       if (fa < 1) drawStrip(ctx, waitingSky(look), 'far', 0.05, camX, vw, vh, s, yo * 0.3);
       ctx.globalAlpha = fa;
       drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, farScale(set.sky, vh, ps, yo * 0.3), yo * 0.3, set.sky ?? null, farScale(set.sky, vh, ps, farMax));
-      // (1-1: up in its canopy the far view turns to the one over the treetops, as the canopy strips fade in; the sunrise far's painted
-      // orchids in its lower corners showed between the boughs, huge and pale, the lead's polish review 2026-11-04)
-      const cFar = cano && k > 0.01 && backdropStage() === '1-1' ? revealSet({ far: 'w1-far', mid: 'w1c-mid', near: 'w1c-near' }) : null;
-      if (cFar) {
-        // (it is all the way in by k 0.05, the first bough's height, before any orchid corner can show: at k 0.15-0.3 a half-faded
-        // sunrise far still showed them, pale, the lead's review 2026-11-04; one short fade keeps the tile overlaps out of the sky)
-        ctx.globalAlpha = Math.min(1, k / 0.05) * fa;
-        drawStrip(ctx, cFar.far, 'far', 0.05, camX, vw, vh, farScale(cFar.sky, vh, ps, yo * 0.3), yo * 0.3, cFar.sky ?? null, farScale(cFar.sky, vh, ps, farMax));
-        ctx.globalAlpha = fa;
-      }
+      // (1-1 keeps its one sunrise sky the whole stage: Matt, 11-04, "I'd rather just have one sky", R-164.2; its far view no longer
+      // turns to the treetops one up in the canopy)
       if (rv) {
         ctx.globalAlpha = rk;
         drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, farScale(rv.sky, vh, ps, yo * 0.3), yo * 0.3, rv.sky, farScale(rv.sky, vh, ps, farMax));

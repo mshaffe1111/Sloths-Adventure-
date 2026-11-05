@@ -87,6 +87,8 @@ import { renderWorldObjects, drawWater, drawBounceCaps } from './terrain.ts';
 import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LINE, SWIM_LINES, swimStep, underOf, type CalmPool, type SwimState } from './swim.ts';
 import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterPlain } from './calmWaterArt.ts';
 import { swimHeadY } from './heroSwim.ts';
+import { drawW1Dress } from './w1NewArt.ts';
+import { setW1PitWater } from './w1Pits.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { heard, NOISE } from './noise.ts';
@@ -931,6 +933,8 @@ export class GameEngine {
     setKitWorld(config.worldIndex);
     // (1-1's canopy: the kapok trunks its boughs grow from, scenery only)
     setDecoTrunks(this.proto?.trunks, this.proto?.leaves);
+    // (the water it declares fills World 1's drops under it: w1Pits.ts paints none there)
+    setW1PitWater(this.proto?.water);
     // the stage's painted backdrop (World 5's light changes through the world: w5Backdrop.ts)
     setBackdropStage(config.id);
     // a stage that hangs its vines from painted boughs (2-4) draws no leafy clump at each liana's top
@@ -5380,6 +5384,13 @@ export class GameEngine {
   /** World 2's painted water, logs and lily pads: World 2, the control test's river stretches (built on World 1's ground), and any stage
    *  that lays lily pads (the mixer's 1-5): with no painted pad, terrain.ts drew each as a code-drawn floating slab or earth island, three
    *  gradients a pad a frame (drawcheck) and Matt's "grey slab floating over the pond" (his stills 01, 07, 09) */
+  /** where a lily pad's surface is drawn: on the water a stage declares when it floats over it (proto.water), so it sits on the surface
+   *  and bobs with it, never in the air; else its own top, as World 2's river pads always were */
+  private lilySurface(pl: Platform): number {
+    const cx = pl.x + pl.width / 2;
+    const z = this.proto?.water?.find((w) => cx >= w.x0 && cx <= w.x1 && Math.abs(w.y - (pl.y + 8)) < 40);
+    return z ? z.y : pl.y + 8;
+  }
   private paintedRivers(worldId: number): boolean {
     return worldId === 2 || !!this.proto?.mix || this.laysLilies();
   }
@@ -5425,6 +5436,11 @@ export class GameEngine {
     if (waterY !== undefined) {
       const bottom = this.camera.y + this.camera.viewportHeight + 40;
       drawWater(ctx, world.id, x0, x1, waterY, bottom, t);
+    }
+    // the water a stage declares (proto.water: 1-1's creek), the world's painted pit water from its surface down, behind the banks
+    for (const z of this.proto?.water ?? []) {
+      if (z.x1 < x0 || z.x0 > x1) continue;
+      drawWater(ctx, world.id, Math.max(x0, z.x0), Math.min(x1, z.x1), z.y, this.camera.y + this.camera.viewportHeight + 40, t);
     }
     for (const cp of this.currentStage.checkpoints ?? []) {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
@@ -6305,6 +6321,8 @@ export class GameEngine {
     // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
     if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats), this.camera, this.gameTime);
     profMark(ctx, 'ground');
+    // World 1's new painted dressing a stage lays (proto.mixDress: 1-1's squirrels), standing on the ground behind Pokey (w1NewArt.ts)
+    for (const d of this.proto?.mixDress ?? []) if (this.onScreen(d.x, d.b - 40, 160)) drawW1Dress(ctx, d.n, d.x, d.b, d.flip);
     // 6-8: its ledges in Matt's other World 6 pieces (over the roots that top out on them, as the kit's planks are)
     if (this.proto?.stiltLedges) drawStiltLedges(ctx, this.proto.stiltLedges, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 6-8's crown: a warm light behind him as the view pulls back, so he stands out against the ruins at dusk (the lead's review)
@@ -6328,7 +6346,7 @@ export class GameEngine {
     }
     // World 2: lily pads on the water, then the village and the reeds behind Pokey (riverArt.ts)
     if (this.paintedRivers(this.currentStage.config.worldIndex) && riverArtReady()) {
-      for (const pl of this.platforms) if (pl.lily && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawLily(ctx, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
+      for (const pl of this.platforms) if (pl.lily && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawLily(ctx, pl.x + pl.width / 2, this.lilySurface(pl), pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
     }
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);

@@ -71,7 +71,7 @@ const floorish = (q: Platform) => !q.broken && q.type !== 'bouncy' && q.type !==
  * a piece the ground painter draws as a bank of earth, its soil running down out of sight (protoArt.ts drawProtoScene's `banks`, which
  * calls this: one rule for the ground and its pits)
  */
-export const paintedBank = (q: Platform) => (q.height >= 90 || !!q.soil) && !q.push && !q.broken && !q.art;
+export const paintedBank = (q: Platform) => (q.height >= 90 || !!q.soil) && !q.push && !q.broken && !q.art && !q.hollow;
 /**
  * a marked drop's walls: a bank of earth ends at each side of it, and nothing that stands (a floor, a stone, a log) lies in it below its
  * lip. Else undefined: the gap is open air
@@ -177,6 +177,13 @@ function chaseGaps(platforms: readonly Platform[], chase: readonly Platform[]): 
   return out;
 }
 
+/** the water the stage declares (engine.ts sets it at the stage's start: proto.water): a drop it fills is water, never painted dark */
+let pitWater: ReadonlyArray<{ x0: number; x1: number; y: number }> = [];
+export function setW1PitWater(zones: ReadonlyArray<{ x0: number; x1: number; y: number }> | undefined) {
+  pitWater = zones ?? [];
+}
+/** is this gap filled by the stage's water (its surface across the gap, no lower than where its dark comes in) */
+export const inWater = (g: PitGap) => pitWater.some((z) => z.x0 <= g.x0 + 4 && z.x1 >= g.x1 - 4 && z.y <= g.top + DROP_DARK);
 const cache = new WeakMap<readonly Platform[], { gaps: PitGap[]; bottom: number }>();
 /** the stage's pits, and how far down its pieces reach (a drop is baked to there and a little more: below it the camera never looks) */
 const pitsOf = (platforms: readonly Platform[]) => {
@@ -411,6 +418,8 @@ export function drawW1Pits(ctx: CanvasRenderingContext2D, platforms: readonly Pl
   const { gaps, bottom: stageBottom } = pitsOf(platforms);
   for (const g of gaps) {
     if (g.x1 < view.x0 - 100 || g.x0 > view.x1 + 100) continue;
+    // (a drop the stage's water fills is the water's: engine.ts draws it)
+    if (inWater(g)) continue;
     let b = baked.get(g);
     if (!b) baked.set(g, (b = { under: null, over: null, x: 0, y: 0, ox: 0, oy: 0 }));
     if (g.kind === 'fall') {
