@@ -22,6 +22,11 @@ So today's pieces (logs, bridges, boughs, snap twigs, vines, stumps, rotten bran
 engine's library, look and feel included. The fault is the mix, not the pieces. The engine's first job is mixing them so no stage
 repeats.
 
+## 2026-11-05 ~1:05 AM ET (to the lead)
+"minimum 2 minutes, but if it goes over 5, I'm okay with that too. It varies. And it should vary the length of stages. 2 minutes is
+the minimum."
+- Every stage at least 2:00 for a skilled player straight through; no upper cap (over 5:00 is fine); stage lengths vary across a world.
+
 ## 2026-11-05 ~12:50 AM ET (to the lead)
 "let them know they have Hugging Face if they need to get more stuff. And for platforms and other things, I can run that on Gemini
 too. But I would prefer Hugging Face first."
