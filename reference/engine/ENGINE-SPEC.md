@@ -348,7 +348,7 @@ sizes are rolled inside the idea. Decks are what make two rolls different stages
 | n8 | creek | lily-pad hop, reed isles, stump hop (not the one n4 rolled) | low → low | — |
 | n9 | puzzle beat | push block, bough stair, the climb (not the one n3 rolled) | low → mid | the golden seed shown above, out of reach: "too far, for now" |
 | n10 | **master**, the second fork | high road: crumbling ledge or bridge span; low road: stump hop or bank hops on the floor; rejoin before n11 | mid → low (two roads) | a checkpoint before it; the fourth petal group, with its harder half on the high road |
-| n11 | cool down | bank hops on the forest floor | low → shrine | — |
+| n11 | cool down **[revised 1:14 PM ET: ruling 4: a 15-20 s finale at the exit; 1-5's plan is redrawn]** | bank hops on the forest floor | low → shrine | — |
 
 
 **The goal: Meeca's marks** (designer ruling, 11-05 ~12:46 AM ET; 1-5 is a relic hunt, `stagePlan.ts:39`: "Meeca marked the trees
@@ -500,7 +500,7 @@ n10, n11, with a canopy over most floors. These must change before Matt sees it:
   - **A second rest node, n7b, after the rotten-branch drop,** on both settings. It is one short flat pad on the forest floor and the
     stage's second Dot spot. A flag goes there only if a hard node follows. The stage then breathes before its creek and its master
     fork, as Shovel Knight's ramp-and-cool asks.
-  - **On Easy, a breather pad of 2-3 s between every node.** It is flat, safe ground with no pickups but breadcrumb petals.
+  - **[revised 1:14 PM ET: replaced by C2 (a rest is about 2× the local median beat) and G #83 (rests of 2.0-2.5 s); no pad between every node]** ~~On Easy, a breather pad of 2-3 s between every node.~~ It is flat, safe ground with no pickups but breadcrumb petals.
   - **On Easy, bursts are one piece shorter** (3-5 pieces). Easy asks for fewer moves a second, not the same moves with wider gaps
     (§2.5's finding, R3 W2).
   - **The teach bank in n2 is cut from 900 to 600 px.**
@@ -1072,7 +1072,7 @@ Each stage's section is signed by all three before any building starts. New help
 | n8 | the climb up (low boughs; the kapok climb is 1-4's) | bough stair, bounce up (one not used in n4) | low → mid | — |
 | n9 | **the moment (test)** | the double-jump chain: three or four rising doubles, bough to bough, up into the canopy, with catch boughs below | mid → high | a flag before it; a heart after it only if it has risk |
 | n10 | the canopy fork | high road: the top branches; low road: mid boughs. Rejoin | high → high (two roads) | the high road's petal group |
-| n11 | cool down, arriving in the canopy | one long high branch, the sky opening ahead (the far Highlands are 1-4's), to the shrine | high → shrine | Meeca's petals low on the trunks; at the end, the soldier's bootprint in the moss, pointing north |
+| n11 | cool down, arriving in the canopy **[revised 1:14 PM ET: kept by ruling 4's own exception: 1-1's story brief ends on "the view from the top branch". Its finale is n9-n10, and n11 is the arrival, held to the rest rule (G #83) with no dead walk]** | one long high branch, the sky opening ahead (the far Highlands are 1-4's), to the shrine | high → shrine | Meeca's petals low on the trunks; at the end, the soldier's bootprint in the moss, pointing north |
 
 - **Length:** Normal's quick clock is 2:40-3:15. That is at least 20% under 1-5's median of about 4:05 (no more than 3:16), and over **[revised: C28, "Contradictions ruled", 10:49 AM]**
   the 2:00 floor. Easy is at least 2:00. Length comes from the nodes and bursts, never from a clock.
@@ -1298,7 +1298,7 @@ difference comes to the designer.
 | swim | 6-7 (root well) | 6-7 | core (needs water) |
 | hold / freeze on the flash (R-2.7, planned) | 10-3 | 10-4 | core |
 
-**Hazards, zones and set pieces stay with their element or story, not "everywhere":**
+**Hazards, zones and set pieces stay with their element or story, not "everywhere":** **[revised 1:14 PM ET: ruling 3 (L1794): every hazard and zone, once taught, returns in every later world as a twist, in that world's own art; see "The critic's re-review ruled"]**
 - the dark and spores (W3), thorn vines (W3), wind (W4), webs (W5), the tide (W6), crumbling floors (W7), geysers (W9) and bolts (W10);
 - the 1-8 chase and the boss lairs, which their own stages keep.
 
@@ -1459,7 +1459,7 @@ breakables use "World 1's branch art, never World 7's ruin slab".
 
 Data the engine reads, which the planner builds into `worlds.ts` and `ladder.ts`. The source for "where things are today" is the
 planner's all-world table, `tools/engine/moveladder.json` (engine-mixer 7d9ad9a9: 102 stages, 40 mechanics). **Build on what works:**
-- every world keeps its stages, names, special stages, rooms, bosses and art;
+- every world keeps its stages, names, special stages, rooms, bosses and art; **[revised 1:14 PM ET: L1806: the stages, names and story stay, but slot roles vary inside them, and Matt's R-153 reshapes 2-3 stages a world]**
 - the plan only says what each stage must carry, and what must come back;
 - a world the engine touches gets a regression lock like 1-5's before anything in it changes.
 
@@ -1547,7 +1547,7 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
 | lift | 2-7 | 2-8 | ≥ 2 stages in W7 and W10 | 83 → W7, W10 |
 | river logs | 2-1 | 2-2, 2-3 | ≥ 2 stages each in W6 and W8 | 81 → W6, W8 |
 
-**World hazards** (they return only where the element fits; each return is taught again only if it's a new variant):
+**World hazards** (they return only where the element fits; each return is taught again only if it's a new variant): **[revised 1:14 PM ET: ruling 3 (L1794): every hazard and zone, once taught, returns in every later world as a twist, in that world's own art; see "The critic's re-review ruled"]** The right-hand column is now only examples of each return's art, never the list of worlds it may go in.
 
 | Hazard | Comes back in |
 |---|---|
@@ -1650,7 +1650,7 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
   measured from the code (protoStage, w*Play, w*PropsData, the gen2 worlds, lairs, kits). The designer then labels every kind of every
   world in one pass, before the mixer reads the library.
 - **The hanging moves are core, because this is a sloth game.** Each gets its own row: vine (climb), liana (swing), rope (shimmy), and
-  the underside of a bough or trunk where Pokey hangs. Trunks are anchors, not landings.
+  the underside of a bough or trunk where Pokey hangs. Trunks are anchors, not landings. **[revised 1:14 PM ET: core = the hanging moves main ships: vine climb, liana swing, rope shimmy (skill.shimmy, 1-3). Main has no under-bough hang (no such move in src/game), so it is a new verb: Matt's call (L1808)]**
 - **Float caps per world** are set in the same pass. The default stays "some, ≤ 25% of landings" until a world's row says otherwise,
   with its reason.
 
@@ -1805,7 +1805,7 @@ cleared by re-wording a rule. Each is accepted with its spec change, or rejected
 | L1232: 1-5's lines are every stage's default | **ACCEPTED.** No default. Every profile states its own lines, each MEASURED from that world's shipped stages, or the profile is refused |
 | Slot order the same in every world (L1462 "every world keeps its stages") | **ACCEPTED in part.** The stages, names and story stay (Matt). Slot *roles* vary inside them, and Matt already decided to reshape 2-3 stages a world into other types (R-153) |
 | Timing variety: the same jump interval four times | **ACCEPTED.** It becomes a gate: no four take-offs in a row at the same interval (± 0.1 s) on the bot's route (LEDGER part2:43, :330) |
-| New verbs (camouflage, belly slide, under-branch hang) | **Matt's call.** New moves are design scope, so the lead takes it to Matt as one question. Not ruled by me |
+| New verbs (camouflage, belly slide, under-branch hang) **[1:14 PM ET: this line governs the under-bough hang; L1652 and L1833 are revised to match]** | **Matt's call.** New moves are design scope, so the lead takes it to Matt as one question. Not ruled by me |
 | Puzzle rooms that roll | **ACCEPTED as research (R).** Rooms stay as built until a run shows a rolled room passes the puzzle validator |
 | Neighbour length ±20% can't be met in parallel | **ACCEPTED.** Lengths are set per world before any of its stages is built: a world length plan with each stage's band, from the shipped world's measured spread |
 | L1458's 10:12 AM stamp against MATT-DIRECTION's 11:10 | **REJECTED, with evidence.** 0982e0dc's commit time is 15:12 UTC = 10:12 AM ET. MATT-DIRECTION's stamps from that hour ran up to an hour ahead, and the lead has since corrected them (lead, 10:34 AM) |
@@ -1830,7 +1830,7 @@ are named at the end.
 | 1441 (#146) | Moving platforms from World 2, then back in every world. The kinds come from GVs:17: pendulum branch, ride-to-start vine track, pulley and the like. Lift momentum (R-152.7) is built before a lift moves the player | SR:25; GVs:17-18 |
 | 1516 (#148) | Each core move is counted in the pairs table (the 15 pairs of the six things, widened to the full list) | GV:5; SR:54 |
 | 1526 (#149) | A world move returns only if it changes something you feel, paired with that world's own mechanic, in that world's art (ruling 3) | SR:93-96 |
-| 1652 (#156) | Hanging under a branch and shimmying are core: "the most sloth move there is" | D:1201 |
+| 1652 (#156) | Hanging under a branch and shimmying are core: "the most sloth move there is" **[revised 1:14 PM ET: shimmying on a rope is core (shipped); hanging under a bough is a new verb for Matt (L1808)]** | D:1201 |
 | 341 (#32) | Part 1 of a stage shows its mechanic safely: a miss lands on solid ground, in 5-10 s groups | SR:45-46 |
 | 390 (#38) | Bursts are judged by time (groups of 5, 10, 15 or 20 s), not piece count. A rest is ≥ 2× the local median beat and ≥ 1.0 s Normal / 2.0 s Easy | SR:43-44; R3:199-213 |
 | 752 (#83) | Easy: 3-4 actions a burst in 6-8 s groups. A rest of 2.0-2.5 s is the target, and 4-5 s is allowed only as a floor | GP:292-293; R3:212-213 |
@@ -1850,7 +1850,7 @@ are named at the end.
 | 148, 547 (#10, #56) | Use all the art: every made frame has a place in the game. Whether an item is dressing or a piece is decided item by item | SR:218-219 |
 | 1249 (#118) | Nothing grows out of the air: stumps, roots, creaky limbs and vine tops all attach to something solid | SR:602-603 |
 | 667 (#74) | Each stage takes 2-5 min for a first-timer, and never under 2 min for a skilled player. A first-timer takes 20-25 min for World 1 | SR:36-38 (Matt) |
-| 790 (#86) | A generator is judged over 200 rolls (sd of each metric ≥ 0.05), or the stage is declared a fixed composition and judged on its one layout. 16 rolls stays the quick check | R3:116-121 (F6) |
+| 790 (#86) | A generator is judged over 200 rolls (sd of each metric ≥ 0.05), or the stage is declared a fixed composition and judged on its one layout **[revised 1:14 PM ET: only a stage on the closed list in "The critic's re-review ruled" (E4) may be declared fixed]**. 16 rolls stays the quick check | R3:116-121 (F6) |
 | 819 (#89) | Easy softens the high road too (wider and more forgiving), never Normal's bands unchanged | SR:135-137 |
 | 282 (#24) | Pairwise adjacency is checked in the builder: a gap and an enemy on its landing add up, and the pair is capped | LEG:485, :469 (E21, E5) |
 | 754 (#84) | Any new Dot line is marked "(new, needs Matt's approval)" | SR:118 |
@@ -1878,7 +1878,7 @@ LEAD** (Matt: "You"), inside the Hugging Face money. The designer sends the rank
 |---|---|---|---|
 | 1 | era.ts on all 10 worlds: 39 of 90 judged stages under 0.35; on about 60, more than half the rolls play like another stage of the same world; worst at the end (W9 median 0.27, W10 0.17; 9-2 and 9-7 match on 16 of 16); the mixer's W1 is the least varied at 0.06 | **ACCEPTED** | The whole-game era and lookalike gates (critic ruling 1) run in step 6 on **every builder's output**. Today's misses go on a known list that only shrinks, and each world's misses are fixed at the root when the engine reaches it. **Order, argued from this table:** after the 1-1 / 1-2 acceptance test proves the engine, the next worlds are the least varied, W10 then W9, before W2-W8. That changes the order the lead set, so it goes to the lead (and to Matt if the lead wants) as a recommendation, not decided here |
 | 2 | The old-1-1 lines pass 0 of 27 working W2-W4 stages | **ACCEPTED** (extends the L1232 ruling) | Pass lines are measured **per world and per stage kind** (canopy, ground, climb, river, sprint, slide...), with each world's working stages as the floor. Nothing is copied from 1-1. The engine-runs session measures them (TRIAGE C rows) |
-| 3 | Ladder amounts (echo, ≥ 1 in 3, ≥ 1 in 4, touch/some/lots) are far above what ships (breaking branch 0/28, boa 0/28, rope 4/28) | **ACCEPTED** | The amounts in "More used" (L1311-1321) and §C are **OPEN** until research-moves reports (2:30 PM). The shape stays: taught things return as the twist, without re-teaching (R1:68; Yacht Club "no one-offs"; GV:105). The size of the work is named: "≥ 1 in 3" for breaking branches alone means about 9-10 of W2-W4's 28 stages |
+| 3 | Ladder amounts (echo, ≥ 1 in 3, ≥ 1 in 4, touch/some/lots) are far above what ships (breaking branch 0/28, boa 0/28, rope 4/28) | **ACCEPTED** | The amounts in "More used" (L1311-1321) and §C are **OPEN** until research-moves reports (2:30 PM). **[revised 1:14 PM ET: ruled at 12:03 PM ET in "The move ladder's amounts ruled from the research" (M1-M8); no longer open]** The shape stays: taught things return as the twist, without re-teaching (R1:68; Yacht Club "no one-offs"; GV:105). The size of the work is named: "≥ 1 in 3" for breaking branches alone means about 9-10 of W2-W4's 28 stages |
 | 4 | On **main**, lianas are taught in 1-6 and breaking branches in 1-5. My 10:09 ruling rested on 11-04's unshipped 1-2 | **ACCEPTED. My ruling was wrong.** d272601f and 6dae405d are 11-04 work, not on main, and "nothing from 11-04 ships" (L10) | **The 10:09 ruling and C9 are reversed:** creaky is taught in **1-5**, lianas in **1-6**, as on main and as the original teach table (L1288-1289) said. Taught-at always comes from **main**, the shipped game, never from an unshipped branch. The ladder data is re-derived on main |
 | 5 | Smith 2009 holds, but R2 credits it to Launchpad 2011 and says "14 jump kinds" where the paper's Fig. 13 says 13. Smith §5 allows one exact repeat of a rhythm group before a rest, against L392 "never the same burst twice" | **ACCEPTED** | SPEC-TRACE and R2 citations are corrected to Smith et al. 2009 (13 jump types). L392 becomes: **a rhythm group may repeat once, exactly, right before a rest** (Smith 2009 §5; LEDGER-2026-11-02-full C4), and never otherwise. Smith's "rhythm is what the player feels with his hands" is added as the source for L1120 (the player's rhythm, not the song) |
 
@@ -1979,7 +1979,7 @@ on every stage, the drawcheck and clipcheck gates, and stills both ways up of 2 
   for the planner: creaky limbs and bridges get their posts or trunks, and the slab leaves W1 (already ruled).
 
 **1-1's float line:** my 15% was judgment, so it is withdrawn. 1-1's line is the old 1-1's measured 25.3% (the interim line, LABELS
-§4), and the mixer's 1-1 meets it (25.4% is within the old 1-1's range, 1.0-28.2). Its 3 floating rope bridges a build still fail
+§4), and the mixer's 1-1 meets it (25.4% is within the old 1-1's range, 1.0-28.2). **[revised 1:14 PM ET: the line is one thing: a stage's median float share over its rolls is ≤ the old 1-1's median, 25.3%. The range is not the line. The mixer's 1-1 at 25.4% MISSES by 0.1, and the engine is fixed (law 22)]** Its 3 floating rope bridges a build still fail
 (bridges never float).
 
 **Art gaps found by the same run, for the lead's picture list:**
@@ -2002,7 +2002,7 @@ walk-through stages (stageTime.ts MODEL_FAST, seeds 1-3).
 | P6 | **The climax is a choice.** Tropical-Freeze style, the world's lair or named set piece is among its 3 longest. It is never "the x-9". **OPEN** until the lairs are timed (PACING §6.4, "cannot be checked until lairs are timed") | TF 6/6; DKCR 1/4; x-9 only 5 of 15 | ES 668 |
 | P7 | **Crumble:** at its first appearance, a teaching margin (estimate, calibrated on the bots); later, Normal settles at **0.5 s** (Celeste Classic, code, 30 fps). Easy is longer (estimate, OPEN). A fallen crumbling piece **comes back after 2 s** (Celeste), and a required one is whole again on respawn (Matt). Snap twigs stay at about 0.15 s (SR §0b.4) | Celeste Classic `obj.delay=15`, `this.delay=60`; MATT (crumbling pieces whole on respawn); SR §0b.4 | C3's Normal 0.67 s and Easy 1.2 s (Gemini E151, which has no source); engine.ts:2428's 1.1 s and the ~30 s off-screen return are engine fixes | **[11:57 AM ET, the lead: a big feel change, so it waits as a ruling until Matt plays a 1.1 s vs 0.5 s clip pair (CLAUDE.md "Show first"); nothing is built before his OK]** **[MATT 12:32 PM ET: "I like crumbling #2 which looks faster" (the 0.5 s clip). P7 stands: Normal 0.5 s, back after 2 s, whole on respawn, a calibrated first-appearance margin, Easy from the bots]**
 | P8 | **Gaps:** on Normal, intended gaps are ≤ 0.8 of the maximum reach, and **no gap sits in the ambiguous band of 0.85-1.15 of the maximum**: a gap is clearly a jump or clearly not | Yacht Club ("3 or 4 tiles" of 5; "removes ambiguity"); GP:75-76 (≤ 0.82) | ES 640's 0.92 top, and the G row's 0.75; C20's denominator check still runs |
-| P9 | **Fix rounds:** "≤ 2" is the designer's **budget**, with no source. A round is **one change to data, or one engine change, run through every gate**. Studios iterate the generator and its pieces, never one generated stage | PACING §3 (Sure Footing, Dead Cells, Spelunky 2, Gungeon, Yacht Club) | ES 1685's wording; Matt's "fix the engine" stands |
+| P9 | **Fix rounds:** "≤ 2" is the designer's **budget**, with no source. A round is **one change to data, or one engine change, run through every gate**. **[revised 1:14 PM ET: for a stage's acceptance test, the test's words govern (L1685-1686): a round is a change to that stage's data file only. An engine change is never one of the stage's rounds; it ends the attempt, the engine is fixed, and the stage is re-run as a fresh, separately measured attempt]** Studios iterate the generator and its pieces, never one generated stage | PACING §3 (Sure Footing, Dead Cells, Spelunky 2, Gungeon, Yacht Club) | ES 1685's wording; Matt's "fix the engine" stands |
 
 **Defects the run found (engine fixes, each with a lock first):**
 - **stageTime.ts:91, STAGE_DRIFT 0-7%,** makes W6-W10 flatter than any shipped world. P2 fails in W6-W10 (ratios 1.20-1.38), and P3 fails
@@ -2029,7 +2029,7 @@ source. They stay as estimates and are calibrated by the bots (TRIAGE C rows), n
 | #49 | Today's numbers for 1-5: splits **26** (26-27) Normal / **20** Easy; two-road **41.1%** (40.3-43.0) Normal / 26.7% Easy (74c0f6de). The 46-50% quoted from 8c8cd997 is stale | MEASURED | written |
 | #134-#141, #143 | The 9:59 AM World 1 label table (ES ~1395-1419) is **superseded by reference/engine/LABELS.md**, keyed to the measured inventory. The old rows stay only as history | designer | marked |
 
-## The move ladder's amounts ruled from the research (designer, 11-05 ~12:03 AM ET; MOVES.md, research-moves ee102bdd)
+## The move ladder's amounts ruled from the research (designer, 11-05 ~12:03 PM ET [stamp corrected 1:14 PM: commit 3cdb07dd8 is 12:03 PM]; MOVES.md, research-moves ee102bdd)
 
 The earlier amounts (the 2-stage echo, "≥ 1 in 3", "≥ 1 in 4", "absent ≤ 2", "≤ 1 new a stage") are replaced. Only 2 of our 40
 mechanics pass "≥ 1 in 3" as a window, and no enemy in DKCR, Tropical Freeze or 3D World does. They are replaced by the measured
@@ -2304,3 +2304,69 @@ a set piece (one rulebook over all builders, Matt 11:06 AM).
     w1FlowerBush move clear, rather than leaving 1-1's start bare, if the pass can move them. Otherwise they're listed.
   - The shipped stages take it when the shared pass runs over them, behind each world's regression lock (fingerprints change on
     purpose, each change explained). That's not today's core work. It goes on the roadmap with an R-id from the lead.
+
+## The critic's re-review ruled (designer, 11-05 1:14 PM ET; CRITIC-SPEC.md §11, engine-critic-spec f3ee2e43; every cited line opened)
+
+The verdict was **NOT READY for step 6 until four edits**. All four are made, in place, each line marked "[revised 1:14 PM ET]".
+
+**E1. Ruling 3 carried into the lines and data the engine reads.**
+- L1301-1305 and the hazard table L1550-1562 are marked. The table's right column is now art examples only.
+- LABELS §3's zone and thorn rows now read: **teach world, then every later world as a twist, in that world's own art.**
+- **For the planner, catalog.ts:102-108:** each hazard's and zone's `worlds` becomes its teach world through W10:
+  - web [5..10], tide [6..10], geyser [9, 10], bolt [10];
+  - dark and spore [3..10], wind [4..10], crumble [7..10], thorns [3..10].
+- **A new field, `artIn`, lists the worlds that have its art today.** The engine lays a twist in world N only with N's own art.
+  - A world in `worlds` but not in `artIn` is an art gap. It's listed on the known list (it only shrinks) and goes to the lead's
+    picture list. It is never filled with another world's art, and it's never a reason to drop the mechanic.
+
+**E2. Stale lines marked.**
+- L1881's "OPEN until 2:30": the amounts are ruled (M1-M8).
+- L2032's stamp: 12:03 PM, not AM (commit 3cdb07dd8).
+- L351, 1-5's cool-down: ruling 4's finale at the exit; 1-5's plan is redrawn.
+- L1075, 1-1's n11: kept, under ruling 4's own exception. 1-1's story brief ends on the view from the top branch.
+  - Its finale is n9-n10, the double chain and the canopy fork.
+  - n11 is the arrival, held to the rest rule (G #83, 2.0-2.5 s), with no dead walk.
+  - My 12:45 note (the cool-down's deck gains bough hops) stands under that.
+- L503's Easy breather between every node is struck. C2 and G #83 replace it.
+- L1462 is marked with L1806: stages, names and story stay; slot roles vary; R-153.
+
+**E3. The two conflicts settled.**
+- **Hanging under a branch is Matt's call** (L1808). Evidence: main ships vine climb, liana swing and rope shimmy (skill.shimmy, taught
+  1-3), and has no under-bough hang in src/game. So it's a new verb, not a core move that exists.
+  - L1652 and L1833 are revised. Step 6's move list carries the three shipped hanging moves and not the under-bough hang until Matt
+    rules.
+  - The lead takes it to Matt as one question, with the other new verbs (camouflage, belly slide).
+- **1-1's fix rounds follow the acceptance test** (L1685-1686): data file only, no engine change. P9 is marked.
+  - An engine change ends the attempt. The engine is fixed, then 1-1 is re-run as a fresh, separately measured attempt (Matt: "the
+    engine gets fixed").
+
+**E4. Gate 1's exits closed.**
+- **The fixed-composition list is closed.** Only these may be declared a fixed composition and judged on one layout:
+  - 4-3 Waterfall Steps and 4-7 The Long Drop (STAGE-RULES §2, the lead 10-28);
+  - 7-4's slide, 8-4's lantern run, 4-D, 5-M and 6-8's Stilt Climb;
+  - the 1-8 chase and the ten lairs (X-10).
+  - Each stays on the list only with Matt's or the lead's OK recorded by its name.
+  - A fixed stage still passes the cross-stage look-alike gate against every stage of its world and every earlier world, and every
+    other rule.
+  - No stage built by the mixer or gen2 can be declared fixed. A stage that rolls, and fails diversity, is a miss: it goes on the
+    known list (it only shrinks), and its builder is fixed.
+- **For the lead, under law 22: 4-6 (0.20) and 4-9 (0.27)** are generated stages "accepted below the target" on 10-29. That's a
+  lowered line, not a fixed composition. My recommendation: they move to the known list as misses with owners. It's the lead's to
+  re-rule, since the lead made the 10-29 call.
+- **The float line is one thing:** the stage's median float share over its rolls is ≤ the old 1-1's median, 25.3%.
+  - The mixer's 1-1 at 25.4% misses by 0.1, and the engine is fixed. The range isn't a pass.
+
+**The critic's watch items (11b):**
+- P8 now binds through jumpOK alone, and that is stated. Gap difficulty is C1's work (the landing window), which stays OPEN.
+- C6's 40% cap is not a passed line until ruling 8's run. That stands as written.
+- 11c item 3, the M3 every-later-world floor for signature pieces, costs a red wall on day one. Before step 6 turns it on, each world's
+  miss is a named entry on the known list with an owner (L1619): push, lift, warm air and river logs, per world.
+
+**The six research levers still MISSING** don't block step 6 (the critic agrees). I rule each before World 1 passes, from the source
+lines, by 3:00 PM ET:
+- coverage table and least-used counts (PAPERS:93, :162, :220, :236);
+- pinned moments (PAPERS:100, :159, :255, :270);
+- hazards timed against his moves (LEG:127, :527);
+- the hurry/patience tempo family (LEDGER-11-02:109, :116, :273, :276, :291);
+- X-6 change of pace (:358);
+- cause and effect between stages (part2:59, :236, :237, :232).

@@ -63,15 +63,15 @@ ruling (ENGINE-SPEC), INV (the inventory row), or SHIPPED (a commit).
 | Kind (INV) | Element | Footing / rule | Worlds | Teaches |
 |---|---|---|---|---|
 | updrafts, drafts47 (across, bonus, rock, up) | air | open drop space under it; needs the glide | W4 now; the ladder adds W8 and W9 vents | warm air (4-7) |
-| zones: wind | air | cliffs and tops | W4; returns W8 tops and W10 steps | wind (4-2) |
-| zones: dark, spore | cave | caves and the dark forest | dark: W3, W5 (1), W6, W8; spore: W3 | 3-1 |
-| zones: web | W5 | between trunks | W5 only | 5-6 |
-| zones: tide; water tides43; falls43 (plug, pool, surge, tide) | water | a drawn water body | W6 (tide); W4 (4-3 falls) | 6-4; 4-3 |
-| zones: crumble | stone | temple floors | W7; returns W10 fortress | 7-1 |
-| zones: geyser | heat | heat rock | W9 only | 9-1 |
-| zones: bolt | storm | open sky | W10 only | 10-1 |
+| zones: wind | air | cliffs and tops | W4; returns W8 tops and W10 steps — **[revised 1:14 PM ET, ruling 3] teach world, then every later world as a twist, in that world's own art (an art gap is listed, never filled with another world's art)** | wind (4-2) |
+| zones: dark, spore | cave | caves and the dark forest | dark: W3, W5 (1), W6, W8; spore: W3 — **[revised 1:14 PM ET, ruling 3] teach world, then every later world as a twist, in that world's own art (an art gap is listed, never filled with another world's art)** | 3-1 |
+| zones: web | W5 | between trunks | W5 only — **[revised 1:14 PM ET, ruling 3] teach world, then every later world as a twist, in that world's own art (an art gap is listed, never filled with another world's art)** | 5-6 |
+| zones: tide; water tides43; falls43 (plug, pool, surge, tide) | water | a drawn water body | W6 (tide); W4 (4-3 falls) — **[revised 1:14 PM ET, ruling 3] teach world, then every later world as a twist, in that world's own art (an art gap is listed, never filled with another world's art)** | 6-4; 4-3 |
+| zones: crumble | stone | temple floors | W7; returns W10 fortress — **[revised 1:14 PM ET, ruling 3] teach world, then every later world as a twist, in that world's own art (an art gap is listed, never filled with another world's art)** | 7-1 |
+| zones: geyser | heat | heat rock | W9 only — **[revised 1:14 PM ET, ruling 3] teach world, then every later world as a twist, in that world's own art (an art gap is listed, never filled with another world's art)** | 9-1 |
+| zones: bolt | storm | open sky | W10 only — **[revised 1:14 PM ET, ruling 3] teach world, then every later world as a twist, in that world's own art (an art gap is listed, never filled with another world's art)** | 10-1 |
 | rivers | water | a drawn river; its banks at both ends | W2 now; W6 and W8 | river logs 2-1 |
-| proto.thorns | tree (thorn vine) | hangs or swings from trunks | W3 now; returns W6 roots, W10 wire | 3-4 |
+| proto.thorns | tree (thorn vine) | hangs or swings from trunks | W3 now; returns W6 roots, W10 wire — **[revised 1:14 PM ET, ruling 3] teach world, then every later world as a twist, in that world's own art (an art gap is listed, never filled with another world's art)** | 3-4 |
 | fallZones, proto.catches, proto.covers, glints, leaves, lanes, links, bowlGates, stilt (6-8 dressing set), stiltLedges | engine helpers or set dressing | kept as built | as INV | — |
 | pickups (collectibles: flower, heart, find, relic, seed, cage, exit_totem, thorn_gate, power-ups) | — | over a standable piece or on a path's arc, never inside a piece; hearts only after risk; the exit totem on a long ground piece | as INV | as their lessons |
 | animals (enemies) | as the animal | on their element: snakes, boas and tayras on boughs or ground; caimans, turtles and frogs at water; harpies and eagles in open sky; jaguars and ocelots on ground; spiders on webs (W5) | anywhere taught, where the element fits | as the ladder |
