@@ -325,11 +325,12 @@ fs.writeFileSync(path.join(OUT, 'world1.json'), JSON.stringify({ base, layouts: 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // 5. the overview (World 1 in order), when every stage was run
 if (W1.every((id) => ONLY.includes(id))) {
-  const { cosine, grams } = await import('./core.ts');
+  const { cosine } = await import('./core.ts');
+  const { strGrams } = await import('./evaluate.ts');
   const evs = W1.map((id) => per[id].normal[0]);
   const grid = `<table class="grid"><tr><th></th>${W1.map((id) => `<th>${id}</th>`).join('')}</tr>${evs.map((a) => `<tr><th>${a.id}</th>${evs.map((b) => {
     if (a === b) return '<td>-</td>';
-    const c = cosine(grams(a.str), grams(b.str));
+    const c = cosine(strGrams(a), strGrams(b));
     return `<td style="background:${c > 0.55 ? 'rgba(185,28,28,.35)' : c > 0.45 ? 'rgba(217,119,6,.3)' : 'transparent'}">${Math.round(c * 100)}</td>`;
   }).join('')}</tr>`).join('')}</table>`;
   const { lookOf, lookAlike } = await import('./look.ts');

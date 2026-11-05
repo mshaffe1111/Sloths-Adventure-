@@ -233,7 +233,27 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     let tx: number, lx: number;
     if (bx0 >= ax1) { tx = ax1; lx = bx0; }
     else if (bx1 <= ax0) { tx = ax0; lx = bx1; }
-    else { tx = clamp(at.x, Math.max(ax0, bx0), Math.min(ax1, bx1)); lx = tx; }
+    else {
+      tx = clamp(at.x, Math.max(ax0, bx0), Math.min(ax1, bx1)); lx = tx;
+      // (down onto ground right under this ground: he can't fall through it, he walks off one of its ends, into the air past it, over the
+      // ground below. An end that runs on into ground at its own height, or into a trunk's face, is no way down: 1-2's route fell through
+      // its bough onto the floor under it, past the trunk at the bough's end, and skipped the bough leg, 2026-11-04)
+      if (B.y - A.y > 40 && A.type !== 'drift' && A.type !== 'moving') {
+        const zonesHere = (stage as { fallZones?: { x0: number; x1: number; depth: number }[] }).fallZones ?? [];
+        const open = (e: number, dir: 1 | -1) => !zonesHere.some((z) => e > z.x0 && e < z.x1 && B.y - A.y > z.depth) && e >= bx0 - 40 && e <= bx1 + 40 && !stage.platforms.some((c) => c !== A && !c.broken
+          && c.x < e + (dir > 0 ? 24 : 2) && c.x + c.width > e - (dir > 0 ? 2 : 24)
+          && (Math.abs(c.y - A.y) <= 16 || (c.type === 'solid' && c.height >= 50 && c.y < A.y - 10 && c.y + c.height > A.y - 10)))
+          // (and nothing in between catches the fall first)
+          && !stage.platforms.some((c) => c !== A && c !== B && !c.broken && c.y > A.y + 16 && c.y < B.y - 16
+            && c.x < e + dir * 4 + 20 && c.x + c.width > e + dir * 4 - 20);
+        const ends = [[ax0, -1], [ax1, 1]].filter(([e, d]) => open(e, d as 1 | -1)).map(([e, d]) => e + d * 4);
+        if (ends.length) {
+          tx = ends.reduce((m, e) => (Math.abs(e - at.x) < Math.abs(m - at.x) ? e : m));
+          lx = clamp(tx, bx0, bx1);
+          tx = clamp(tx, ax0, ax1);
+        } else penalty += 60;
+      }
+    }
     if (A.type === 'drift' || A.type === 'moving') tx = clamp(lx, ax0, ax1);
     if (B.type === 'drift' || B.type === 'moving') lx = clamp(tx, bx0, bx1);
     walkTo(tx, A.y);
@@ -269,6 +289,16 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     // route's choice is weighed, not its time: 5-4's quick route dropped through every pit under its silk lines, 2026-10-31)
     if ((k === 'drop' || k === 'hop' || k === 'jump' || k === 'swing') && rise < -60 && (B.style === 'moss_stone' || B.style === 'branch')
       && stage.vines.some((v) => isLiana(v) && v.x > lx - 300 && v.x < lx + 420 && v.bottomY < B.y - 60)) penalty += 6;
+    // (down past ground that lies under the way down, near the landing: he lands on that first. The level check's reach doesn't look
+    // between, so 1-2's route jumped from its canopy through the base bough and the bough leg onto the floor, 2026-11-04)
+    if (B.y - A.y > 40 && k !== 'swing' && k !== 'rope' && k !== 'glide') {
+      const m0 = Math.min((tx + lx) / 2, lx - 10), m1 = Math.max((tx + lx) / 2, lx + 10);
+      if (stage.platforms.some((c) => c !== A && c !== B && !c.broken && c.type !== 'drift' && c.type !== 'moving' && c.y > A.y + 16
+        && c.y < B.y - 16 && c.x < m1 && c.x + c.width > m0)) penalty += 60;
+    }
+    // (a fall through open air the stage marks as a fall, fallZones (1-2's rotten bough, 1-1's finale), is a respawn, never a way down)
+    const zones = (stage as { fallZones?: { x0: number; x1: number; depth: number }[] }).fallZones ?? [];
+    if (B.y - A.y > 40 && zones.some((z) => Math.max((tx + lx) / 2, lx) > z.x0 && Math.min((tx + lx) / 2, lx) < z.x1 && B.y - A.y > z.depth)) penalty += 60;
     segs.push({ kind: k, x0: tx, y0: A.y, x1: lx, y1: B.y, dt, plat: B, from: A, note: kind === 'graph' ? undefined : 'added' });
     return { segs, at: { x: lx, y: B.y }, cost: sum(segs) + penalty };
   }
