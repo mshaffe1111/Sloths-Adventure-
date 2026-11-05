@@ -35,3 +35,5 @@
    1:37; rule 1 as a note failed twice, so the countermeasure is mechanical.)
 12. **No new helper or sub-agent without the lead's OK** (Matt, 11-05 ~4:15 PM ET, via the lead: only the cold builder). Close any
    running helper the moment its deliverable lands.
+13. **In a python write, backticks are written plainly, never as \`** (escaped only inside a shell heredoc that isn't quoted). After any
+   write, `grep -c '\\`'` the file must print 0 (11-05: three stray-backslash commits).
