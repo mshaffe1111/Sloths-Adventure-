@@ -58,6 +58,7 @@ import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
 import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { buildRhythmStage, rhythmOwnPetals, rhythmPetalGoal } from './w1Rhythm.ts';
 import { buildFromSpec } from './mixer/w1mix.ts';
+import { w1DressWidth } from './w1NewArt.ts';
 import { specFor } from './mixer/stages.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildIntoCanopy, clearDress } from './w1Rise.ts';
@@ -475,6 +476,22 @@ function splitPetals(st: GeneratedStage & { proto: ProtoExtras }) {
   for (const r of roads) for (let x = s0; x < s1 && r.have < want; x += 60) tryAt(r, x, 30);
 }
 
+/** Pokey's body width (engine.ts: the hero is 44 px wide) */
+const HERO_W = 44;
+/** a dressing piece clear of the spawn (one body width either side of his body) and of the stage's own set dressing */
+export function dressClear(d: { n: string; x: number; b: number }, st: { spawnX: number; spawnY: number; proto?: ProtoExtras }): boolean {
+  let w = 60, h = 60;
+  try { ({ w, h } = dressSize(d.n as never)); } catch { /* a piece with no frame: 60 px */ }
+  const x0 = d.x - w / 2, x1 = d.x + w / 2;
+  // (the spawn's clear zone: his body, x .. x + 44, and one body width either side; only pieces near his feet's height)
+  if (x1 > st.spawnX - HERO_W && x0 < st.spawnX + 2 * HERO_W && Math.abs(d.b - st.spawnY) < 120) return false;
+  for (const m of st.proto?.mixDress ?? []) {
+    const mw = w1DressWidth(m.n) || 60;
+    if (x1 > m.x - mw / 2 && x0 < m.x + mw / 2 && Math.abs(d.b - m.b) < 80) return false;
+  }
+  return true;
+}
+
 /**
  * Worlds 1, 2, 5 and 8-10: the dressing sets (artDress.ts dressSets), on any of their stages (hand-built, World 2's, the new
  * generator's, and Worlds 8-10's old-generator stages, which have no `proto`: theirs go on the stage's own `dress`)
@@ -488,6 +505,11 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
   // (a stomp vault's run-up and lip stay bare: on the teach the snake is the only thing to read, the lead 2026-11-04 on clip-7)
   const vaults = st.enemies.filter((e) => e.vaultHome).map((e) => e.vaultHome!.x);
   if (vaults.length) ds = ds.filter((d) => !vaults.some((vx) => d.x > vx - 340 && d.x < vx + 30));
+  // (nothing stands on Pokey at the start, and nothing on a stage's own set dressing: no piece within one body width (44 px) of his
+  // spawn, none overlapping a set piece such as 1-1's squirrels (the lead, 11-05: the frog sat on a squirrel). On every stage the engine
+  // builds from its spec; the shipped stages' 60 start pieces (hollows, logs, cages at some worlds' starts) wait on the designer's ruling,
+  // as some may be designed start scenes)
+  if (specFor(c.id)) ds = ds.filter((d) => dressClear(d, st));
   if (!ds.length) return;
   if (st.proto) st.proto.dress = ds;
   else st.dress = ds;
