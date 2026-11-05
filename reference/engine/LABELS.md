@@ -427,3 +427,38 @@ laid until then.
 3. **waterSigns** is the warning sign post at a stage's first water (waterTeach.ts:103, engine.ts:5187-5196), **not a water-surface
    piece**. It is built ground, on the bank about 40 px before the water: a water teach marker. My first family (water) was wrong, and
    it is corrected in props.py OV.
+
+## 7. Rulings on engine-pieces' new labels (designer, 11-05 12:39 PM ET; engine-pieces 3da8d8945, its stills and clips opened frame by frame)
+
+1. **bobbing crate** (catalog.ts, open until this ruling): **approved, with these changes.**
+   - **Worlds: W2 only for now.** Its art is World 2's own painted crate-up and crate-down (rule 4, theme lock).
+     - W10 may have it once a W10 crate exists in its own art (w10Crate) **with a tipping frame for the tell**. That's an art gap for
+       the lead's picture list.
+     - W6 has no crate art of its own, so it has no crate until it does.
+   - **Element:** water; it floats only on a drawn still water surface. May float: on water only.
+   - **The water under it is named, and its art tells its rule** (D38; water rule W3):
+     - The first row a player meets sits over a **teaching river** (river.ts `safe`): going under puts him back on the bank with no
+       life lost, and a line names the tell.
+     - After that, the crates sit over the stage's own drawn water, whose art reads as its kind.
+     - Before 6-7 (the swim teach) no crate water is swim water: water rules W7 and W10.
+   - **Tell:** the tip lasts 0.67 s on Normal. It is never shorter than the crumble's 0.5 s (P7), so a breaking thing always shows
+     itself first. It reads at phone size in the stills (crate-normal-side-t1).
+   - **Fix before it ships:** at the start bank, a reed clump draws in front of him (crate-normal-side-t0). Dressing stays out of the
+     hero's lane and never covers him (rule 6 of §0; P-6).
+2. **counterweight seesaw** (catalog.ts, open until this ruling): **approved, with these conditions.**
+   - **Element:** ground; its painted round pivot stands on the floor. May float: no.
+   - **Use:** the step up a bank too high to jump; the log's weight holds the near end down. Taught by 1-6's rooms, and on the route
+     only after 1-6.
+   - **Worlds:** W1, W2, W3, W4, W6 and W8. The planks are wood, and wood landings are in every world (§1 solid log). The weight is
+     that world's own push log.
+   - **Nothing stands in the push log's path:** no trunk, post or prop within the log's width + 40 px of its run. That's the hollow-log
+     rule (§2). In seesaw-normal-side the push log passes through a scenery trunk at the start, which reads as a log stuck in a tree.
+   - **Nothing stands on the plank:** no checkpoint, sign or prop on a piece that tilts (D16, every prop stands on something solid).
+     In the clip (2.5-5.7 s) the checkpoint post rides the tilting plank.
+   - **The stills must show the piece doing its job:**
+     - the log on the near end, the far end up, and him on it;
+     - upright as well as sideways. seesaw-*-up-* do not show the seesaw at all.
+3. **The HUD reads "11/10"** in seesaw-normal-side.mp4 from 2.5 s. A count past its total is a defect. If it comes from the scratch
+   hooks (scratch-hooks.diff), the shots are re-taken without it. If not, it goes to the lead as a defect with an R-number.
+4. **breaking log or plank** (catalog.ts "no label yet"): it was ruled in §6.1 above (the fragile log and plank: a platform; taught
+   by the creak; laid only where the art shows the creak tell). The catalog row takes that ruling.
