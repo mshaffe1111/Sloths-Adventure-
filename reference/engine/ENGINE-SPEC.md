@@ -455,6 +455,38 @@ so a run of same-size logs fails the gate even when the logs are scattered.
 - The method is `reference/methods/hf-backdrops.md` with its floor check. The HF token never goes in code, commits or messages.
 - Today the existing art covers every idea in this spec, so no picture list is needed yet.
 
+
+## The ground and perch family (designer, 11-05 ~1:05 AM ET, Matt: "hills and other little areas to jump up on... anything that will add to the platform type experience")
+
+Same treatment as the logs: kinds with their own feel, in size bands, counted as kind x size by the gate.
+
+**Fact that shapes this:** the engine has no true slopes. Every surface is a flat-topped rectangle (a search of the engine and the
+stage builders finds no slope; World 5's "mound pair" is stepped). So a hill is built as a **stepped mound**: two to four rises that
+the player hops up and down, drawn as one hill shape. A real slope you can run up is new engine work, sized below, and not needed to
+get hills that read and play as hills.
+
+| Kind | Feel | Exists today? | Art | Work and estimate |
+|---|---|---|---|---|
+| Bank (raised ground) | a step up or down out of a dip, the old 1-1's backbone | yes, everywhere (3,934 placed) | World 1-10 | none |
+| Stone step | a small hard step, 50-420 px | yes (1,567 placed) | mossy stone, World 1-10 | none |
+| Stepped mound (a hill) | up two to four rises, a top to stand on, then down; the high/low choice in small | in World 5 only (`w5a-mound-pair`) | World 5 mound; World 1's bank art drawn as one hill | build as a shared idea from banks: about 0.2-0.3% |
+| Stump perch (three heights) | small high spots to hop between | yes as stone and bank; stumps exist in art | W6 kit-15 low stump (never packed), W5 fernStump (unused) | pack: about 0.1-0.2% |
+| Broken stump ledge | a high ledge on a broken stump | no | W6 kit-06 (never packed) | pack: about 0.1% |
+| Rock shelf | a ledge sticking out of a wall, short or long | in World 3's art only | W3 shelf-long/-short (packed, unused) | place as a perch: about 0.1% |
+| Wet steps | stone steps by a waterfall | no | W4 wetSteps, wetSteps2, ledgeA/B, ledgeTrickle (packed, unused) | place: about 0.1-0.2% |
+| Floating ledge | a ledge with nothing under it, for a high road | no | W4 floatLedge (packed, unused) | place: about 0.1% |
+| Fungus shelf | a shelf fungus on a trunk, a perch up a tree | yes, World 8 only (53 placed) | World 8 | none: joins the shared library |
+| Root platform | a mossy top on prop roots, over mud or water | no | W6 kit-03 (never packed) | pack: about 0.2% (with the mangrove kit) |
+| Boulder | a big or small round rock to hop onto | no | W4 boulderBig, boulderSmall (packed, unused) | place: about 0.1% |
+| Bounce mushroom | springs him up a tier | yes (330 placed) | World 1-3 | none |
+| True slope (hill you run up) | running up and down a real incline | **no, new engine work** | needs new ground art | collision, feet and camera, plus art: about 3-5% plus HF. My pick: not now; stepped mounds give hills for under 0.3% |
+
+**Summary for Matt:**
+- **Today:** 4 ground kinds (bank, stone step, bounce mushroom, fungus shelf in World 8).
+- **For about 1-1.5% more, all from art we already have:** stepped hills, stump perches, broken stump ledges, rock shelves, wet steps,
+  floating ledges, root platforms and boulders. That makes 12 kinds.
+- **New Hugging Face art:** none needed for any of these. A real slope is the one big item, and I recommend leaving it for later.
+
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
