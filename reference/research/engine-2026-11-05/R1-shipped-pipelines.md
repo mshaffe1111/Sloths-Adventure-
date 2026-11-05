@@ -11,10 +11,13 @@ Tags used on every number: **(measured)** = I ran it or counted it myself; **(de
 ## 1. Planned vs actual time
 
 - Planned: about 75 minutes.
-- Actual: started 02:17 UTC (09:17 pm ET, 11-04), finished about 02:58 UTC (09:58 pm ET): about 41 minutes **(measured, `date`
-  in the shell at start and end)**. That is over half the plan, but under it. Where the time went: 61 pages and 3 code
-  repositories opened and read (section 6); 5 measurement scripts run against our real gen2 and World 1 code (section 3.0);
-  writing. What I did NOT get to, plainly: the Celeste GDC 2017 level-design talk itself (GDC Vault was in maintenance and
+- Actual: started 02:17 UTC (09:17 pm ET, 11-04), finished 02:52 UTC (09:52 pm ET): about 35 minutes **(measured, `date` in the
+  shell at start and end)**. That is UNDER half the plan, the red flag the brief names, so the lead should check it. My honest
+  account: the fetch tool returned pages in seconds, so opening 61 pages took far less than planned; I spent the rest on measuring
+  our own code (10 scripts, section 3.0), which turned up the main finding. Not every page was read line by line: the SMBF reviews,
+  Game Informer's Hollow Knight piece and Wired were read in full; the N++ retrospective, the two Alto's pages, Nintendo Life's NSMBU
+  Deluxe review and Time's Super Mario Run interview were read by searching their text for level, design, chunk, repeat and tool
+  passages (section 6 marks them). The lead's lesson for the next brief: give a source count AND name the must-read sources. What I did NOT get to, plainly: the Celeste GDC 2017 level-design talk itself (GDC Vault was in maintenance and
   YouTube is blocked by the proxy, see section 6 "could not open"), Shovel Knight deep dive part 5 (404), and the Dead Cells GDC
   2019 talk (Vault down). Where Celeste is concerned I used only Maddy Thorson's own written words.
 
@@ -29,7 +32,7 @@ Ranked by how directly each one fights "every stage feels the same" and the 12-h
 `scrRoomGen.gml:26-47`). Dead Cells' unit is a hand-designed room per biome and purpose, placed by a hand-drawn graph: "the key for
 us was in having the algorithm involved in the most restrained way possible" (Bénard). Super Meat Boy Forever's unit is a whole
 Super Meat Boy-sized level, "designed and decorated by hand... played through it to give it a par and a difficulty rating", and the
-generator only picks 8 of them and orders them (Refenes). For us: the engine's job is choosing and ordering whole designed beats, not
+generator only picks 8 of them (6 in another of his examples) and orders them (Refenes). For us: the engine's job is choosing and ordering whole designed beats, not
 inventing geometry. Our gen2 section is already this shape (`src/game/gen2/types.ts:325-362`); World 1's beat stages are not (they
 are 1,349 + 602 lines of bespoke TypeScript, section 3.0).
 
@@ -46,7 +49,8 @@ first, then the cap as a construction rule, then length from the units, not a cl
 between 70 and 100 Chunks that it can choose from" for 8 used, about 10 to 1 (estimate from dev-reported numbers). Spelunky Classic:
 8 to 16 templates per room type plus 16 ground and 10 air obstacle blocks in the Mines alone (counted in code, section 3.1). Ours:
 a gen2 stage fills 16-27 slots from 6-13 distinct templates (measured); the kits hold 15-76 templates, but only 12-40 fit the
-stage's archetype, and per phase it is as few as 2-4 (8-6: 4 for its 5 ki slots). Pass 3 then fills "each node... with sections
+stage's archetype, and after the teaching order only 8-18 are usable, as few as 1-4 per phase (8-6: 2 for its 5 ki slots, 4 for
+its 9 ten slots; 3.0 Run H). Pass 3 then fills "each node... with sections
 until its share of the seconds is met" (`pipeline.ts:702`), which is the clock-filling our own STAGE-RULES §0c.1 retired ("Length
 comes from nodes, never from filling a clock", line 77). **Measured what-if: capping every template at 2 uses a stage makes 0 of 48
 rolls of 6-2, 8-6 and 8-9 build ("no section fits node n3 (sho)"); removing the theme cut changes nothing** (3.0 Run F). So the
@@ -99,7 +103,8 @@ always better at making levels, so we also loop back around to revisit earlier a
 
 ### 3.0 Our own code, measured against the main idea (L1-L4)
 
-I ran six scratch scripts (not committed; in my scratchpad) through `npx tsx` from the repo, building each stage with the game's
+I ran ten scratch scripts (not committed; in my scratchpad; a first copy of `fits()` missed the in-stage teaching and gave numbers
+that did not match the shipped picks, so it is replaced by Run H) through `npx tsx` from the repo, building each stage with the game's
 own entry `buildGen2ForGame` (`src/game/gen2/game.ts:134`) on Normal, or `buildGen2Stage` with the shipped seed for the what-ifs.
 
 **Run A, pool vs slots, roll 0 (a first play), Worlds 6-8** (measured; output trimmed to the per-stage lines):
@@ -152,12 +157,24 @@ The theme cut is not binding here (a node's bag is topped up to one more than th
 candidates per phase that keeps nearly all of them). Run G (measured, every gen2 stage of Worlds 6-8, roll 0) counted slots per
 phase against templates that fit the phase, the archetype and the world's moves only: on that loose count the stages are short just
 4 templates in all for "at most twice" and 35 for "no repeats" (8-6: `ki 5/4, sho 5/7, rest 5/2, ten 9/9`). Since the real
-build still fails under a cap of 2, the binding cut is in the filters that count leaves out (`pipeline.ts:792-800`: lessons taught
-before this stage via `uses`, hang needs, bans) and the corridor clamp (`pipeline.ts:818-820`). I did not pin down which one in the
-time; a second script that copied those filters did not reproduce the shipped picks, so I am not reporting its numbers. The real cause: each node is filled to its share of the clock
-(`pipeline.ts:702`) from 2-9 candidates, so the pieces must repeat, and with our own cap of 2 the stage cannot be built at all.
-SMBF and Shovel Knight start from the other end: the number of distinct designed units fixes the level's length (8 chunks; about
-26 rooms), never a clock.
+build still fails under a cap of 2, the binding cut is one the loose count leaves out. Run H copies `fits()` (`pipeline.ts:792-800`)
+with the lessons taught before the stage plus those its own sections teach as they are placed (`taught.add`, `pipeline.ts:1027`);
+hang needs and the corridor clamp (`pipeline.ts:821-823`) are not modelled, so it is still an upper bound. It now matches the shipped
+picks (8-6: 10 fit, 8 used; 6-2: 9 fit, 7 used; 8-9: 8 fit, 6 used) (measured):
+
+```
+6-2: slots/candidates by phase: start 1/3, ki 3/2, sho 4/3, rest 4/3, ten 7/3, ketsu 3/2, goal 1/3; 9 fit in all; 7 archetype-fitting templates excluded because they use a lesson not yet taught
+8-6: slots/candidates by phase: start 1/3, ki 5/2, sho 5/3, rest 5/2, ten 9/4, ketsu 1/4, goal 1/2; 10 fit in all; 5 archetype-fitting templates excluded because they use a lesson not yet taught
+8-9: slots/candidates by phase: start 1/3, ki 2/1, sho 2/3, rest 4/2, ten 5/3, ketsu 4/3, goal 1/2; 8 fit in all; 4 archetype-fitting templates excluded because they use a lesson not yet taught
+7-3: slots/candidates by phase: start 1/3, ki 3/5, sho 3/12, rest 6/3, ten 7/12, ketsu 3/8, goal 1/3; 18 fit in all; 7 archetype-fitting templates excluded because they use a lesson not yet taught
+```
+
+So the cause, measured: after the archetype and the teaching order, a stage has 8-18 usable templates, as few as 1-4 per phase
+(8-6's 9 ten slots draw on 4), and each node is filled until its share of the clock is met (`pipeline.ts:702`). Pieces must repeat,
+and with our own cap of 2 no roll of 6-2, 8-6 or 8-9 can be built. The teaching gate is right (it is Shovel Knight's "5 enemies and
+5 objects planned" per level, and our "first appearance is taught"); what is missing is enough pieces per stage behind it. SMBF and
+Shovel Knight start from the other end: the number of distinct designed units fixes the level's length (8 chunks; about 26 rooms),
+never a clock. 7-3 shows the healthy case: 12 candidates for 7 ten slots.
 
 **Run C, our own rule against every shipped roll** (measured, 368 rolls built, all of `GEN2_SEEDS`):
 
@@ -211,9 +228,9 @@ SMBF's fix (3.3); a safe start (STAGE-RULES §1c step 3), like Spelunky's arrow 
   bottom... 3... top" (Kazemi part 1). "Each room type has typically 8 to 16 templates" (Kazemi part 2). Derek Yu: "Each room is
   selected from a set of room templates. Which set it's selected from depends on where the room lies on the path from the entrance
   to the exit. There are randomized 'chunks' in each room template that add some variation." (makegames, "The Full Spelunky on
-  Spelunky"). Counted in the Mines code (measured, `scrRoomGen.gml:54-300`: start room line 54, end room 71, side 86, top-exit 153, drop 220, ground obstacle 266,
-  air obstacle 288): start room 8 templates, end room 6, left-right path
-  rooms 12, top-exit path rooms 8, side rooms 11, drop rooms 12, then 16 ground and 10 air obstacle blocks.
+  Spelunky"). Counted in the Mines code (measured, `scrRoomGen.gml`: start room
+  at line 54, end room 71, side 86, top-exit 153, drop 220, ground obstacle 266, air obstacle 288): start room 8 templates, end
+  room 6, left-right path rooms 12, top-exit path rooms 8, side rooms 11, drop rooms 12, then 16 ground and 10 air obstacle blocks.
 - **Variety.** Four nested dice: room type, template within type, obstacle block within template, tile within block. Kazemi's tool
   lets you re-roll each layer alone; "a relatively small obstacle block, when designed well, can create numerous scenarios". Spelunky
   2 adds tags: "!flip Flip the following template to make another", "!rare The next template is rare (only 5% chance of a rare
@@ -277,7 +294,14 @@ two buttons, hand chunks assembled by seed.
   them back down, and then finish with a bang" (GamingBolt 2017). A checkpoint after every chunk (gemsbok). Critics still hit the
   join: "the level chunk approach means you can get stuck with an extremely difficult section only to get another one that's a
   cakewalk. The inconsistency really puts a hamper on the whole experience" (GamingTrend); "Zero flair and zero soul" (GameCritics).
-  The defence (gemsbok): "at least one new mechanic is introduced in almost every single light world level."
+  The defence (gemsbok): "at least one new mechanic is introduced in almost every single light world level", because "these segments
+  are grouped by mechanics, difficulty level, and aesthetics... Segment groups for later levels then include mechanics introduced in
+  isolation in earlier levels", and each chunk has "its own trial or par time and... its own matching dark world version" (a harder
+  twin authored per chunk). Two more critic points worth keeping: longer stages made of chunks dilute the finish, "There simply isn't
+  the same amount of joy when one finally trudges across the finish line after finishing a level in chunks like this" (GameCritics);
+  and the fixed, hand-made bosses were the praised part, "The boss enemies are the only things that aren't procedurally generated,
+  which means the hand-crafted moments of the first game are back", with the con "Procedural generation doesn't add much to the
+  experience" (GamingTrend).
 - **Speed.** "there's about 7200 levels to make. So that take a lot of time and decoration" (Refenes 2019); "I... grossly
   underestimated the amount of time"; about four years "at a really healthy pace" (dev-reported).
 - **For us.** Our "stage keeps its layout until cleared" (`layoutMemory.ts:7-13`) is SMBF's fix already. What is new: a pool many
@@ -291,7 +315,7 @@ two buttons, hand chunks assembled by seed.
   holistically, which is a fancy-sounding word for figuring it out as we go... We're always zooming in and out from level to area to
   full game perspectives to re-evaluate our work, and a lot gets cut or repurposed" (GDC 2017 Level Design Workshop preview).
   The engine is deliberately simple: "All colliders are axis-aligned bounding boxes... All collider positions, widths, and heights are
-  integer numbers" (Celeste & TowerFall Physics), which makes every screen's numbers exact and reusable.
+  integer numbers" (Celeste & TowerFall Physics); my reading: that makes every screen's distances exact and repeatable.
 - **Fairness.** Forgiveness in code, not in levels: coyote time, jump buffering, half gravity at the peak, corner correction, "Wide
   Wall-Jump Window... 2 pixels from a wall", stamina refunds: "All are centered around widening timing/positioning windows, so that
   everything is fudged a tiny bit in the player's favor" (Celeste & Forgiveness). Our ledger has these (LEDGER-ENGINE-GEMINI E10;
@@ -364,6 +388,10 @@ The most concrete written method from a shipped hand-made platformer I found.
   "because they all had that same pedigree and simplicity, when it came time to move those things together, nothing was discordant."
   A cut for the player's head, not the schedule: the Bone Forest went because "potentially another very, very large area was just
   pushing people too far".
+- **Reuse with a state change.** The first area returns changed: "'The Forgotten Crossroads' becomes 'The Infected Crossroads,' now
+  filled with a corrupting orange goo that blocks off well-travelled routes and mutates enemies into deadlier... variations"; "We
+  were relatively restrained with the idea, only majorly changing one area" (Game Informer 2018). The same geometry, a felt change:
+  this is what our STAGE-RULES §0c.3/§0c.7 allow for a reused piece.
 
 ### 3.8 Ori (Moon Studios, 2015, 2020)
 
@@ -405,13 +433,18 @@ The most concrete written method from a shipped hand-made platformer I found.
 - **1985 tools and speed.** "We would draw the stage layout on graph paper and hand it to the programmers. The next day, it would come
   back as a playable level... For corrections, like 'move this block up one space,' we would place tracing paper over the original."
   "They almost never clicked on the first try... when you build it yourself, you inevitably make it too hard. The basic stage known
-  as 1-1 was actually something we came up with at the very end" (Tezuka, shmuplations). Whole game about six months.
+  as 1-1 was actually something we came up with at the very end" (Tezuka, shmuplations). Whole game about six months (the
+  interviewer's figure, "only about six months from planning"; Tezuka did not dispute it).
 - **Maker.** Born from the tools team: "the idea behind Mario Maker came from our internal tools team. They were working on a
   prototype for a Mario course editor... started playing with that and thought it was really fun" (Tezuka, NWR). Miyamoto: the
   internal tools "use a keyboard and mouse" and the Maker tools "are probably 10 times, even 100 times more powerful than those
   original course-making tools" (Time 2015). Instant edit-play is the speed: "you can be playing and pause and make a change and
   resume playing right there". And the lesson Tezuka drew at GDC 2024: players had the same parts, yet "some of them were not very
   good!" — "whether they come alive or fall flat is dependent on the level designer" (Eurogamer).
+- **Rhythm as the frame, tried and dropped.** Miyamoto on the Wii one-button prototype: "we looked at taking that idea and applying it
+  in a rhythm-style music game where you try to have Mario jump in rhythm. We felt that, yeah, this could make a fun game, but there's
+  not really a need for it to be a Mario game" (Wired 2016). Rhythm came back years later as one course and one badge in Wonder (the
+  "Ninji Jump Party", below), a spice, not the frame.
 - **Run (phone, one thumb).** From speedrun videos: "they tend to run all the way through the course without ever stopping". Skill
   through objects, not inputs: "having those styles of jump be controlled not through a combination of controls but through special
   blocks that enable Mario to do special jumps at certain times in the level" (Miyamoto, Wired). Replay of one course by coin sets:
@@ -532,6 +565,13 @@ Checked by grep over `reference/` (`*.md`, `*.txt`) for each name or term; each 
     Spelunky generate for replay and against rote learning, and both still hand-make every unit. SMBF made "literally thousands" of
     chunks by hand. The engine saves layout effort only if the units are made once and used without repeats.
 12. **Running out of ideas with the same pieces** (N++ after 4,500 levels needed "fresh blood": new enemies). Matt's rule already.
+13. **A long stage assembled from units, where the finish stops feeling earned** (SMBF: "There simply isn't the same amount of joy when
+    one finally trudges across the finish line after finishing a level in chunks like this"). Our stages must last 2 minutes or more
+    (CLAUDE.md); the risk is real for us. Shipped answers: a fixed, hand-made set piece at the end (SMBF's bosses were its praised
+    part), and Shovel Knight's "all the ideas combine for one really tough challenge" before the boss.
+14. **Making the music's beat the frame of every stage** (Nintendo prototyped a jump-in-rhythm one-button Mario and dropped it as the
+    frame, "not really a need for it to be a Mario game"; Wonder later used rhythm for one course and a badge). A caution for our beat-traced World 1 (`w1Rhythm.ts`, scenes' per-stage tempo): the shipped
+    games used the beat as one stage's twist, not every stage's skeleton. This is a point to discuss with Matt, not a ruling.
 
 ---
 
@@ -543,7 +583,7 @@ Code (cloned and read; untrusted copies kept in my scratchpad, not in the repo):
 2. Spelunky 2 level-file format, community tool: https://github.com/spelunky-fyi/modlunky2 — read `crates/ml2_levels/tests/fixtures/test-level-in.lvl` (268 lines). A test fixture in the game's own format, not Mossmouth's file.
 3. Our repo (gen2, World 1, layoutMemory, STAGE-RULES, ledgers), cited by file:line above.
 
-Pages (all opened with the fetch tool and read in full unless noted):
+Pages (all opened with the fetch tool; read in full unless marked "read by search"):
 4. https://tinysubversions.com/spelunkyGen/
 5. https://tinysubversions.com/spelunkyGen2/
 6. https://www.tumblr.com/makegames (Derek Yu's blog: "The Full Spelunky on Spelunky", "Firm, But Fair", the book post)
@@ -595,15 +635,15 @@ Pages (all opened with the fetch tool and read in full unless noted):
 52. http://www.nintendoworldreport.com/interview/37850/interview-with-takashi-tezuka-on-yoshis-woolly-world-mario-maker
 53. https://www.gamedeveloper.com/design/lessons-of-game-design-learned-from-super-mario-maker (a player-designer's blog; secondary)
 54. https://www.wired.com/2016/12/miyamoto-interview-2/
-55. https://time.com/4594652/super-mario-run-shigeru-miyamoto-interview-iphone-apple-2016/
+55. https://time.com/4594652/super-mario-run-shigeru-miyamoto-interview-iphone-apple-2016/ (read by search)
 56. https://www.dualanalog.com/review-new-super-mario-bros-u-new-console-same-mario/
-57. https://www.nintendolife.com/reviews/nintendo-switch/new_super_mario_bros_u_deluxe
-58. https://www.gamedeveloper.com/audio/journey-of-4-thousand-5-hundred-days
+57. https://www.nintendolife.com/reviews/nintendo-switch/new_super_mario_bros_u_deluxe (read by search)
+58. https://www.gamedeveloper.com/audio/journey-of-4-thousand-5-hundred-days (read by search)
 59. https://www.utoronto.ca/news/ninja-n-video-game-takes-n-whole-new-level-make-2360-levels
 60. https://www.gamedeveloper.com/design/postmortem-gaijin-games-i-bit-trip-beat-i-
-61. http://www.harrynesbitt.com/blog/the-making-of-altos-adventure/
-62. https://www.gamedeveloper.com/design/alto-s-adventure-case-study
-63. https://80.lv/articles/altos-adventure-a-game-with-style
+61. http://www.harrynesbitt.com/blog/the-making-of-altos-adventure/ (read by search)
+62. https://www.gamedeveloper.com/design/alto-s-adventure-case-study (read by search)
+63. https://80.lv/articles/altos-adventure-a-game-with-style (read by search)
 64. https://www.youtube.com/watch?v=4RlpMhBKNr0 (page loaded, no transcript in it)
 
 Could not open (tried): https://www.gdcvault.com/play/1024307/Level-Design-Workshop-Designing-Celeste (Vault maintenance);

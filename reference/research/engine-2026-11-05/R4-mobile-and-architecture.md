@@ -12,10 +12,10 @@ game is quoted from a primary source opened in this session (section 7). Every c
 |---|---|
 | Planned | about 75 minutes |
 | Started | 02:17 UTC (9:17 PM ET, Nov 4) |
-| Finished | 02:47 UTC (9:47 PM ET); actual about 30 minutes, under the 75 planned. The work ran faster than planned because the scripts are quick (the slowest single run, the fun gate, took 2 minutes); I used the rest on two extra measurements (5.5, 5.6) and on re-checking every file:line and quote. The lead should check the result with that in mind. |
-| Sources opened | 60 URLs opened and read (59 entries in section 7; 6 of them gave only an abstract or part of the page); 8 more failed to open (listed) |
+| Finished | 02:51 UTC (9:51 PM ET); actual about 34 minutes against 75 planned. The scripts ran faster than planned (the slowest single run, the fun gate, took 2 minutes), so I spent the rest on extra measurements (5.5-5.7), on a sixth source group (Brogue CE), and on re-checking every file:line and quote against the source. Under the 75 planned: the lead should check the result with that in mind. |
+| Sources opened | 65 URLs opened and read (64 entries in section 7; 6 of them gave only an abstract or part of the page); 8 more failed to open (listed) |
 | Code read | `beatTrace.ts` (all 668 lines), `w1Rhythm.ts` (lines 1-520 and 1000-1349 read; 520-1000 skimmed by grep), `gen2/DESIGN.md` 1-140, `gen2/game.ts` 1-60, `gen2/seeds.ts` 25-75, `engine.ts` 830-860, `stageGenerator.ts` 2835-2880, `protoStage.ts` 495-515, `tools/validate/funcheck.ts` (all), `tools/inspect/firsttimer.ts` header, `tools/qa/touchReplay.ts` header |
-| Ran | the fun gate twice (two commits), one stage's build timed per layer, a node's trace timed, a rejection report, a proposer fix experiment, a survival estimate, a palette-coverage count, a roll-distance count |
+| Ran | the fun gate twice (two commits), one stage's build timed per layer, a node's trace timed, a rejection report, a proposer fix experiment, a survival estimate, a palette-coverage count, a roll-distance count, a gen2 section-coverage count, and the real-engine first-timer bot on 1-2 and 1-5 |
 
 Honest note: the GDC talks I most wanted (Fumoto's Downwell talk, McEntee's UbiArt talk, Purho's Noita talk) are video only; the GDC
 Vault pages and the RPS write-up give their abstracts, not their content, so I cite them only for what those pages say. The Sea of
@@ -27,7 +27,8 @@ Thieves talk (Masella, GDC 2019) has its full speaker notes in the slide PDF, wh
 
 1. **Our beat-traced stages carry almost no timing risk, and the gate agrees (measured).** A player with the timing spread Isaksen
    measured in real people (σ 35.9-61.1 ms, Isaksen FDG 2015 §3.1) lands every traced take-off of 1-2 and 1-5 97-100% of runs with
-   no fall in the whole stage (section 5.4). Our own fun gate says the same thing in its own words on today's HEAD: 1-1 Normal
+   no fall in the whole stage (section 5.4), and our real-engine first-timer bot lost no heart and no life on 1-2 Normal in two
+   full runs despite 14-19 missed jumps each (section 5.7). Our own fun gate says the same thing in its own words on today's HEAD: 1-1 Normal
    "82% of the beats after the first 30 s cost nothing when missed" (section 5.1). The tracer was built to make every jump safe for a
    clumsy thumb (`beatTrace.ts:325-341`, `:405-427`), and it succeeded: so difficulty cannot come from jump geometry on these
    stages, it has to come from what the beat puts on the avoided lines (`hazardSpots`, `beatTrace.ts:571`), the snap twigs' hold
@@ -95,8 +96,8 @@ Thieves talk (Masella, GDC 2019) has its full speaker notes in the slide PDF, wh
    the dead palette options are invisible to every gate we run.
 
 7. **Calibrate the bots on people, the way King does, before trusting their numbers.** King's bot predicts a new Candy Crush level's
-   difficulty "in less than a minute... compare[d] to the previous 7 days needed with human playtesting on each new episode of 15
-   levels", because they fit the bot's success rate to real players' success rate with binomial regression ("We have the level
+   difficulty "in less than a minute... This compares to the previous 7 days needed with human playtesting on each new episode of
+   15 levels", because they fit the bot's success rate to real players' success rate with binomial regression ("We have the level
    difficulty, and we have the bot estimate... we will find a linear pattern, which is an indication that it is playing the game like
    a human", Asadi, GamesIndustry.biz 2024; Gudmundsson et al. 2018). Our first-timer bot's noise, N(+30, 30) ms adult and
    N(+90, 65) ms kid (`tools/inspect/firsttimer.ts:62-64`, `:115-120`), came from Gemini's research (`reference/GEMINI-LEDGER.md:70`,
@@ -156,7 +157,7 @@ Format per game: structure and reuse / how touch shaped the levels / variety / d
 - **Variety.** One new mechanic per batch of ten; themed worlds; Invasion remixes.
 - **Difficulty.** IGN: "your ability to master each stage depends on how comfortable you are with the often trial-by-error design...
   I unlocked the 'collect 100 Lums' achievement and the 'died 20 times in one stage' achievement in back to back stages." Fiesta Run
-  sold "helpful gadgets", including "revealing the optimal path... you still have to perform every jump... exactly when the cue pops
+  lets you "spend the Lums you've collected on helpful gadgets", including "revealing the optimal path... you still have to perform every jump... exactly when the cue pops
   up" (IGN).
 - **What failed.** Adventures: "levels cannot be replayed" (TouchArcade 2015) and "bound to repeat the same levels that are just
   disguised as being different" (Simbasible). Jungle Run: "trial-by-error" spikes.
@@ -343,6 +344,17 @@ Format per game: structure and reuse / how touch shaped the levels / variety / d
   reaction "τ = 288 ms", "an average 7.7 actions per second"; difficulty from the decay rate of the score histogram. "getting Mario's
   jump to feel right is more about adjusting parameters than coding accurate physics." Used in section 5.4.
 
+### Brogue CE: a seed catalog diffed in CI, and recorded games replayed headless (GitHub, `test/`)
+- `compare_seed_catalog.py` prints the dungeons of the first 25 seeds (`--print-seed-catalog 1 25 {max_level}`), diffs them against a
+  checked-in text catalog, and fails: "Test run failure, seed catalog has changed. If this was intentional, update the seed catalogs by
+  running update_seed_catalogs.py." `run_regression_tests.py` replays every recorded game (`.broguerec`) headless (`-vn`) and fails on
+  any that no longer plays out. The CHANGELOG shows why it matters: "Fixed more causes of out-of-sync errors", "Dungeon generation on
+  ARM processors is now the same as with x86."
+- **For us.** We have the hash half: `tools/inspect/stageHash.mts` prints a 16-hex hash per stage, setting and layout "Run on two
+  branches and diff the outputs" (its header), by hand. A readable catalog (per layout: node tags, bars, each step's move/dy/surface,
+  ledge widths, petals, goal) checked in and diffed in CI would show *what* a generator change did to which layouts, which a hash
+  cannot, and would turn "is this change intended?" into a reviewable diff (section 6, idea 11).
+
 ### Anthropic, Claude Code best practices (engineering blog)
 - "Claude stops when the work looks done. If it has nothing to run that tells it whether the work actually *is* done, 'looks done' is
   all it has to go on." "Give Claude something it can run that comes back pass or fail." "The check can be... A script that diffs
@@ -502,6 +514,28 @@ work that players never see. And in 8-8 and 8-9 a roll lays about 20 sections fr
 Leap Day lays about 28 chunks a level (two per checkpoint for 14 checkpoints, then an End Zone) from a pool of 700-800. This is Matt's "more pieces" rule measured: the pieces
 exist on disk; the curated rolls do not use them.
 
+### 5.7 Cross-check of 5.4 in the real engine: our first-timer bot (measured, `ftrun.ts`, `firstTimer` from `tools/inspect/firsttimer.ts:1915`)
+The bot plays `engine.ts` a 30 fps frame at a time, with short flicks ("Never a run-up and never the full held jump",
+`firsttimer.ts:10-11`). Layouts 1-2, one trial each, fresh phone, 26 s for all eight runs:
+```
+1-2 ADULT normal layout 1: end shrine in 203 s, 107 jumps tried, 14 failed or hurt, harms 0 (lives 0), rescues 1, soft falls 0; edges tried 3+ times 2, under the gate 1 at x 25739 (0%)
+1-2 ADULT normal layout 2: end sealed door in 203 s, 101 jumps tried, 19 failed or hurt, harms 0 (lives 0), rescues 2, soft falls 3; edges tried 3+ times 2, under the gate 1 at x 20797 (25%)
+1-2 KID   easy   layout 1: end shrine in 212 s, 95 jumps tried, 15 failed or hurt, harms 0 (lives 0), rescues 3, soft falls 4
+1-2 KID   easy   layout 2: end shrine in 238 s, 117 jumps tried, 23 failed or hurt, harms 0 (lives 0), rescues 2, soft falls 3; under the gate 2 at x 21204 (67%), 22039 (33%)
+1-5 ADULT normal layout 1: end shrine in 201 s, 127 jumps tried, 5 failed or hurt, harms 1 (lives 1), rescues 0; harm x: 30309; causes: pit
+1-5 ADULT normal layout 2: end shrine in 202 s, 125 jumps tried, 5 failed or hurt, harms 0 (lives 0), rescues 0
+1-5 KID   easy   layout 1: end shrine in 193 s, 127 jumps tried, 10 failed or hurt, harms 1 (lives 0), rescues 1, soft falls 5; harm x: 9219; causes: foe:boa
+1-5 KID   easy   layout 2: end shrine in 193 s, 123 jumps tried, 5 failed or hurt, harms 0 (lives 0), rescues 0, soft falls 1
+```
+Reading: in the real engine, 1-2 cost the Normal adult **no hearts and no lives in two full runs**, although 14-19 of his jumps
+failed: a missed jump on 1-2 costs nothing (the bough under the canopy catches him). 1-5 cost one life in two runs. This is the same
+answer as the timing model (0.00-0.03 expected falls) and the gate ("nothing bites"), reached a third way. Two things the model did
+not show: the adult was "rescued" 1-2 times on 1-2 (stuck 20 s with no progress, or back at the same spot 5 times, then put further
+on, `firsttimer.ts:20-21`); one jump edge per layout is under the 70% survival gate (x 25739 at 0%, x 20797 at 25%, edges tried 3+
+times); and on layout 2 he "reached the shrine short of the goal" (`firsttimer.ts:2012`, end "sealed door"). So 1-2's problem on
+Normal is not risk but a place or two where a first-timer's short flick does not get on at all, and a petal goal he missed; those
+x positions are where a helper should look first. (Two layouts, one trial each: a small sample.)
+
 ---
 
 ## 6. Ideas none of our research mentions
@@ -546,6 +580,12 @@ Checked against `reference/research/README.md`, all six ledgers in `reference/re
 10. **Flaky-gate policy from Rare.** Retry a failed gate once; publish a weekly "top failing checks" list; quarantine a check that fails
     repeatedly and give it an owner and a deadline. Our known-lists only shrink (`tools/perf/knowncheck.mjs`), which is the debt side;
     nothing tracks checks that flicker.
+11. **A readable stage catalog in CI (Brogue's seed catalog).** For the beat stages and the gen2 stages, print a one-screen text per
+    layout (node list with bars, steps as move/dy/surface, ledge widths, goal), check it in, and fail CI on any diff with the message
+    "if this was intentional, regenerate the catalog". `stageHash.mts` already proves which stages changed; the catalog shows how, and
+    is the cheapest way for the lead to review a helper's generator change without opening the game. Pair it with Brogue's replay
+    test: replay the testers' recorded sessions through the touch rules on every commit (`tools/qa/touchReplay.ts` already does the
+    replay by hand).
 
 ---
 
@@ -613,6 +653,11 @@ Engine architecture, testing, tools
 57. https://www.ea.com/seed/news/automated-game-testing-deep-reinforcement-learning
 58. http://www.nealen.net/papers/exploring-game-space-FDG2015.pdf (Isaksen et al., sections 1-4 read)
 59. https://www.anthropic.com/engineering/claude-code-best-practices
+60. https://github.com/tmewett/BrogueCE/blob/master/CHANGELOG.md
+61. https://github.com/tmewett/BrogueCE/tree/master/test
+62. https://raw.githubusercontent.com/tmewett/BrogueCE/master/test/compare_seed_catalog.py
+63. https://raw.githubusercontent.com/tmewett/BrogueCE/master/test/run_regression_tests.py
+64. https://raw.githubusercontent.com/tmewett/BrogueCE/master/test/update_seed_catalogs.py
 
 Failed to open (not used): https://www.forbes.com/sites/davidthier/2016/12/16/super-mario-runs-pink-purple-and-black-coins-will-drive-me-mad/ (403),
 https://www.raymanpc.com/wiki/en/Rayman_Fiesta_Run (blocked), https://tcrf.net/Rayman_Jungle_Run (blocked),
