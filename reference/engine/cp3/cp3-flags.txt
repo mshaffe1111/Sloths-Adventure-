@@ -1,0 +1,4 @@
+flags per roll, Normal: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11]
+longest span spawn..flags..exit (LV-9: 4000): 3900
+flag pairs with only easy ground between: 0 []
+flags on a rest node: 0

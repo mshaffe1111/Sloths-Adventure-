@@ -1,0 +1,65 @@
+<title>Sloth 1-5 Strip Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap">
+<style>
+  :root {
+    --bg: #f6f4ec; --panel: #fffdf6; --fg: #23261f; --muted: #5d6356; --rule: #ddd8c6; --tick: #b9b39c;
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4; --s6: #008300; --vine: #4b5a36;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #181a16; --panel: #20231d; --fg: #eeeee6; --muted: #b5b8a8; --rule: #353a30; --tick: #59604f;
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300; --vine: #a8bb85; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #181a16; --panel: #20231d; --fg: #eeeee6; --muted: #b5b8a8; --rule: #353a30; --tick: #59604f;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300; --vine: #a8bb85; color-scheme: dark;
+  }
+  body { background: var(--bg); color: var(--fg); font-family: Nunito, system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.5;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; }
+  main { max-width: 860px; margin: 0 auto; display: grid; gap: 28px; }
+  h1 { font-size: 1.7rem; font-weight: 800; margin: 0; text-wrap: balance; line-height: 1.2; }
+  h2 { font-size: 1.2rem; font-weight: 800; margin: 0; }
+  .kicker { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.75rem; color: var(--muted); font-weight: 600; margin: 0 0 6px; }
+  .lede { color: var(--muted); max-width: 62ch; margin: 8px 0 0; }
+  .card { background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; padding: 16px; min-width: 0; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.84rem; }
+  @media (max-width: 480px) { th, td { padding: 6px 5px; } table { font-size: 0.78rem; } }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead th { font-weight: 800; }
+  tbody th { font-weight: 600; color: var(--muted); }
+  td { font-variant-numeric: tabular-nums; }
+  ul.legend { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.88rem; }
+  ul.legend li { display: flex; align-items: center; gap: 7px; }
+  .sw { width: 22px; height: 10px; border-radius: 3px; display: inline-block; }
+  .vinesw { height: 3px; background: var(--vine); }
+  .g-ground { fill: var(--s1); background: var(--s1); } .g-log { fill: var(--s2); background: var(--s2); } .g-water { fill: var(--s3); background: var(--s3); }
+  .g-bough { fill: var(--s4); background: var(--s4); } .g-mush { fill: var(--s5); background: var(--s5); } .g-break { fill: var(--s6); background: var(--s6); }
+  svg rect { stroke: var(--panel); stroke-width: 6; }
+  .stage { display: grid; gap: 6px; }
+  .blurb { color: var(--muted); margin: 0 0 6px; }
+  .row { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 6px 8px 4px; min-width: 0; }
+  .rx { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
+  .row svg { display: block; width: 100%; height: auto; max-height: 260px; }
+  .row svg text { font: 600 76px Nunito, system-ui, sans-serif; fill: var(--fg); }
+  .row svg .tick { stroke: var(--tick); stroke-width: 5; stroke-dasharray: 18 18; }
+  .row svg .vine { stroke: var(--vine); stroke-width: 14; stroke-linecap: round; }
+  .note { font-size: 0.85rem; color: var(--muted); max-width: 66ch; margin: 0; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px; }
+  nav a { color: var(--fg); text-decoration: none; border: 1px solid var(--rule); border-radius: 999px; padding: 6px 14px; font-weight: 600; font-size: 0.9rem; background: var(--panel); min-height: 44px; display: inline-flex; align-items: center; }
+</style>
+<main>
+  <header>
+    <p class="kicker">Engine checkpoint 3 · grey-box · layout 1, Normal</p>
+    <h1>1-5 side by side with the old 1-1</h1>
+    <p class="lede">Three side maps on the same scale. Each strip is the stage cut into 3,000 px rows, read left to right, top to bottom. The labels over each row name the idea that part of the stage is built from.</p>
+  </header>
+  <nav aria-label="Jump to a stage"><a href="#old">Old 1-1</a><a href="#today">Today's 1-5</a><a href="#mix">New 1-5</a></nav>
+  <div class="card scroll">{{TABLE}}</div>
+  <div class="card"><ul class="legend">{{LEGEND}}</ul></div>
+  {{SECTIONS}}
+  <p class="note">Built from the engine's own stage data (the same build the game plays). The old 1-1 and today's 1-5 labels come from the CP2 idea tagger. The new 1-5 labels are the mixer's own record of what it laid. Splits use the 180 px rule: a road carries on across a gap of one plain jump, and two roads at least 120 px apart count. This is grey-box geometry, not the painted look.</p>
+</main>

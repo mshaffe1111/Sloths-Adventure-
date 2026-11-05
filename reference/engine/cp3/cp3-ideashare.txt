@@ -1,1 +1,4 @@
-top idea share of length, Normal (line: under the old 1-1 top share, about 40%): (0.594, 'canopy over floor') (0.63, 'canopy over floor') (0.651, 'canopy over floor')
+top idea share of length, Normal (cap ~0.40): (0.204, 'bank hops') (0.278, 'bank hops') (0.353, 'bank hops')
+flags laid by the mixer + LV-9, Normal: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 11, 11, 11]
+landing width p50 normal 196
+landing width p50 easy 194

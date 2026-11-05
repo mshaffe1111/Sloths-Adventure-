@@ -1,4 +1,3 @@
-easy roll 2: PASS width 41707 px, 245 platforms; bank hops > canopy over floor > snap teach > bank hops > the climb > canopy over floor > crumbling ledge + creaky boughs(h) > reed isles + lily-pad hop(l) > bank walk > snap dash > canopy over floor > rotten-branch drop > canopy over floor > stump hop > canopy over floor > bough stair > canopy over floor > bridge span + crumbling ledge(h) > bank hops + stump hop(l) > canopy over floor
 level check: 32/32 pass
-fast player (stageTime.ts MODEL_FAST), normal: 242-259 s, median 250 s (floor 120)
-fast player (stageTime.ts MODEL_FAST), easy: 233-250 s, median 241 s (floor 120)
+fast player (stageTime.ts MODEL_FAST), normal: 194-209 s, median 197 s (floor 120)
+fast player (stageTime.ts MODEL_FAST), easy: 188-202 s, median 190 s (floor 120)
