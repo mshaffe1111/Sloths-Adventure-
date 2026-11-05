@@ -241,10 +241,18 @@ if (fs.existsSync(OLD_FILE)) {
     const st = buildRoll(cfg, v, setting === 'easy') as { meta?: { mix?: { explain: Array<{ node: number; job: string; x0: number; x1: number }> } } };
     const ex = st.meta?.mix?.explain;
     if (!ex) { bad.push(`${setting} ${v}: no node ranges in the build (meta.mix.explain): the gen2 build's section ranges are not wired yet`); continue; }
-    const nodes = new Map<number, { job: string; x0: number; x1: number }>();
+    const nodes = new Map<number, { job: string; x0: number; x1: number; moves?: Array<'double' | 'bounce'> }>();
     for (const e of ex) { if (e.node < 0) continue; const q = nodes.get(e.node); nodes.set(e.node, q ? { job: q.job, x0: Math.min(q.x0, e.x0), x1: Math.max(q.x1, e.x1) } : { job: e.job, x0: e.x0, x1: e.x1 }); }
     const full = botRun(id, v, setting);
     for (const [n, q] of nodes) {
+      // (a twist with two answers, NODES §8.7 B5: without both moves the bot fails it, without either one alone it passes)
+      if (/^twist\b/.test(q.job) && q.moves?.length === 2) {
+        const both = botRun(id, v, setting, { without: { move: q.moves, x0: q.x0, x1: q.x1 } });
+        if (both.run.end === 'shrine' || both.reachX >= q.x1) bad.push(`${setting} ${v} node ${n} (${q.job}): a bot without ${q.moves.join(' and ')} still gets past it (reached x ${both.reachX})`);
+        for (const one of q.moves) { const r = botRun(id, v, setting, { without: { move: one, x0: q.x0, x1: q.x1 } }); if (r.run.end !== 'shrine' && r.reachX < q.x1) bad.push(`${setting} ${v} node ${n} (${q.job}): without ${one} alone the bot is stuck at x ${r.reachX}: the other answer does not work`); }
+        shownRM.push(`${setting} ${v} n${n} twist ${q.moves.join('+')}`);
+        continue;
+      }
       const m = q.job.match(/^(teach|test) (\w+)/);
       if (!m) continue;
       const move = (spec.nodes[n - 1]?.teaches as string | undefined) ?? m[2];

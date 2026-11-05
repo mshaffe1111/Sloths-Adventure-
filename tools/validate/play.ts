@@ -306,10 +306,10 @@ export interface BotRecord {
 }
 /**
  * `without`: the limited agent (NODES.md §1 `test`, R2 §2 L5: Nelson & Smith; Green et al. 2018): inside [x0, x1] the bot has no second
- * jump (every air jump past the coyote time is spent) or no bounce (every mushroom standing in the stretch is a plain solid piece). Its
+ * jump (every air jump past the coyote time is spent) or no bounce (every mushroom in the stretch taken away, its stump kept: B6). Its
  * probes play under the same limit, so it plans as a player without the move would
  */
-export interface BotOpts { trial?: number; portrait?: boolean; noHide?: boolean; clumsy?: boolean; without?: { move: 'double' | 'bounce'; x0: number; x1: number } }
+export interface BotOpts { trial?: number; portrait?: boolean; noHide?: boolean; clumsy?: boolean; without?: { move: 'double' | 'bounce' | Array<'double' | 'bounce'>; x0: number; x1: number } }
 /** research §1's clumsy thumb: taps +-100 ms (a uniform +-0.1 s has sd 0.058), 15% less air control */
 export const CLUMSY = { tapSd: 0.058, air: 0.85 };
 
@@ -328,16 +328,20 @@ export function botRun(id: string, layout: number, setting: Setting, o: BotOpts 
   const reach = new Map<RealPlay, number>();
   const dbl = new Map<RealPlay, { all: number; inside: number }>(), wasDbl = new Map<RealPlay, boolean>();
   const W = o.without;
+  const noMove = (m: 'double' | 'bounce') => !!W && (Array.isArray(W.move) ? W.move.includes(m) : W.move === m);
   const limited = new WeakSet<RealPlay>();
   RealPlay.prototype.frame = function (this: RealPlay, pad?: unknown) {
     const p = this.p;
     if (W) {
-      if (W.move === 'bounce' && !limited.has(this)) {
+      if (noMove('bounce') && !limited.has(this)) {
         limited.add(this);
-        for (const q of this.platforms as Platform[]) if (q.type === 'bouncy' && q.x + q.width > W.x0 && q.x < W.x1) q.type = 'solid';
+        // (NODES §8.7 B6: the mushroom is taken away and its stump kept; a solid cap would be a step no player ever has, and a double
+        // off it outreaches the bounce)
+        const ps = this.platforms as Platform[];
+        for (let i = ps.length - 1; i >= 0; i--) if (ps[i].type === 'bouncy' && ps[i].x + ps[i].width > W.x0 && ps[i].x < W.x1) ps.splice(i, 1);
       }
       // (any jump in the air is the engine's second jump (engine.ts: not grounded, past the coyote time): none inside the stretch)
-      if (W.move === 'double' && p.x + p.width > W.x0 && p.x < W.x1 && !p.grounded && !((this.e as Eng).coyoteTimer > 0)) p.jumpsLeft = 0;
+      if (noMove('double') && p.x + p.width > W.x0 && p.x < W.x1 && !p.grounded && !((this.e as Eng).coyoteTimer > 0)) p.jumpsLeft = 0;
     }
     const was = { vx: p.vx, air: !p.grounded, swing: !!p.isVineSwinging, climb: !!p.climbing, hang: !!p.hanging, bounce: !!p.bounce, cover: !!(this.e as Eng).input?.inCover && !!p.ducking, push: !!p.pushing };
     const r = (frame0 as (this: RealPlay, pad?: unknown) => unknown).call(this, pad);
