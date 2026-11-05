@@ -29,6 +29,7 @@ import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
 import { landingKind } from '../../src/game/mixer/catalog.ts';
 import { propBreaches } from '../../src/game/mixer/propSupport.ts';
+import { nodePieceBreaches, type RealisedNode } from '../../src/game/mixer/nodePieces.ts';
 import { botRun } from '../validate/play.ts';
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -227,6 +228,22 @@ if (fs.existsSync(OLD_FILE)) {
   }
   if (unl.size) bad.push(`props no label covers (cannot be judged, so not passed): ${[...unl].join(', ')}`);
   gate(`secondary objects over air (props and dressing, ${N} layouts x 2${n ? `, ${n} found` : ''})`, bad);
+}
+
+// 5c''. V18 (NODES.md §8.3, §8.0 PIECES): each realised node's pieces match its content row in the key (mixer/nodePieces.ts), from
+// gen2's meta (meta.gen2.nodes: each node's token and x-range, the planner's), every layout, both settings
+{
+  const bad: string[] = [];
+  let judged = 0;
+  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) {
+    const st = buildRoll(cfg, v, setting === 'easy') as { meta?: { gen2?: { nodes?: RealisedNode[] } } };
+    const nodes = st.meta?.gen2?.nodes;
+    if (!nodes) break; // (a build without gen2 meta: none of this stage's builds carry it)
+    judged++;
+    for (const b of nodePieceBreaches(st as never, cfg.worldIndex, nodes, { stage: id, climbOwner: id === '1-4' }).slice(0, 3)) bad.push(`${setting} ${v}: ${b}`);
+  }
+  if (judged) gate(`node pieces, V18 (${judged} builds)`, bad);
+  else notMeasured.push('node pieces, V18 (mixer/nodePieces.ts, on gen2 meta.gen2.nodes: once 1-1 builds on gen2)');
 }
 
 // 5d. REQUIRED-MOVE (NODES.md §1 `test`, R2 §2 L5: Nelson & Smith; Green et al. 2018): on each teach and test node, a bot without the
