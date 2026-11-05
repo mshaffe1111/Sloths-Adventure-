@@ -114,7 +114,7 @@ Step 0 is measured to the hour tonight, and its real cost becomes the yardstick 
 it, never guessed. What fits this week: Step 0, Step 1 (1-2), and Step 2's data for World 1. The rest is next week, in this order.
 
 ## Art
-Existing art first: 273 unused packed pieces plus every world's kit. Hugging Face on the lead's approval, inside what is left (about $50, Matt 11-05 evening) with about $15
+Existing art first: 273 unused packed pieces plus every world's kit. Hugging Face on the lead's approval, inside what is left ($71.83 per Matt, 11-05) with about $15
 kept back, with the spend told to Matt (Matt deferred this to the lead, 11-04 and 11-05 10:42). Next week's polish is new pictures and
 backgrounds, as Matt planned (12:40 PM).
 
