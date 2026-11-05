@@ -13,19 +13,34 @@ export interface PieceKind {
   stands: 'ground' | 'trunk' | 'water' | 'self';
   /** what it is, in a line (for the menu and the report) */
   what: string;
+  /** the worlds (themes) it belongs to: a stage never draws a piece from another world's set (Matt, 11-05: "I don't want to use a lava
+   *  pit or lava stones in the forest") */
+  worlds: Theme[];
+  /** whether it may stand free of its footing where the stage's look allows (Matt, 11-05: "I don't mind having certain floating
+   *  objects... too much junk... is harder to understand"): a log or a stone may float; water never leaves the water */
+  mayFloat: boolean;
 }
 
+/** the worlds' themes, the art sets their pieces come from */
+export type Theme = 'forest' | 'river' | 'cavern' | 'canopy-high' | 'swamp' | 'lava' | 'ice' | 'ruins' | 'sky' | 'storm';
+
+// (the designer's element table, 11-05: what each kind is and what it rests on; `mayFloat` is Matt's: some free-standing pieces read
+// better than a forest of supports, so a log, a stone, a bough or a ledge may float where the stage's look allows; water never leaves
+// the water, and the floor is the floor)
+const W1: Theme[] = ['forest', 'river', 'canopy-high', 'swamp'];
 export const PIECES: Record<string, PieceKind> = {
-  bank: { element: 'ground', stands: 'self', what: 'a bank of earth, the floor' },
-  stone: { element: 'ground', stands: 'ground', what: 'a mossy boulder, a small rise on a bank\'s end' },
-  log: { element: 'ground', stands: 'ground', what: 'a fallen log on the floor, or on a stump in a ground fork' },
-  mushroom: { element: 'ground', stands: 'ground', what: 'a bounce mushroom on its perch' },
-  crumble: { element: 'ground', stands: 'trunk', what: 'a crumbling stone ledge' },
-  branch: { element: 'tree', stands: 'trunk', what: 'a bough on a kapok' },
-  creaky: { element: 'tree', stands: 'trunk', what: 'a creaky limb that gives way' },
-  bridge: { element: 'tree', stands: 'trunk', what: 'a rope bridge between posts' },
-  lily: { element: 'water', stands: 'water', what: 'a lily pad on the water' },
-  reed: { element: 'water', stands: 'water', what: 'a reed isle in the water' },
+  bank: { element: 'ground', stands: 'self', what: 'a bank of earth, the floor', worlds: W1, mayFloat: false },
+  stone: { element: 'ground', stands: 'ground', what: 'a mossy boulder, a small rise on a bank\'s end', worlds: W1, mayFloat: true },
+  log: { element: 'ground', stands: 'ground', what: 'a fallen log on the floor, or on a stump in a ground fork', worlds: W1, mayFloat: true },
+  mushroom: { element: 'ground', stands: 'ground', what: 'a bounce mushroom on its perch', worlds: W1, mayFloat: false },
+  // (tagged from its art: World 7's crumble tile, src/assets/w7/crumble.webp, a carved stone slab with roots through it, so ground,
+  // per the designer's rule; 1-5 lays it in the air on trunks, a named breach waiting on the designer's ruling)
+  crumble: { element: 'ground', stands: 'ground', what: 'a crumbling carved stone ledge', worlds: ['forest', 'ruins'], mayFloat: true },
+  branch: { element: 'tree', stands: 'trunk', what: 'a bough on a kapok', worlds: W1, mayFloat: true },
+  creaky: { element: 'tree', stands: 'trunk', what: 'a creaky limb that gives way', worlds: W1, mayFloat: false },
+  bridge: { element: 'tree', stands: 'trunk', what: 'a rope bridge between posts', worlds: W1, mayFloat: false },
+  lily: { element: 'water', stands: 'water', what: 'a lily pad on the water', worlds: ['forest', 'river', 'swamp'], mayFloat: false },
+  reed: { element: 'water', stands: 'water', what: 'a reed isle in the water', worlds: ['forest', 'river', 'swamp'], mayFloat: false },
 };
 
 /** an idea: a short run of pieces with one job, the unit a node draws from */
@@ -42,6 +57,8 @@ export interface Idea {
   floor?: boolean;
   /** what it is, in a line */
   what: string;
+  /** the worlds it belongs to (its pieces' worlds, narrowed where the idea itself is a world's own) */
+  worlds?: Theme[];
 }
 
 export const IDEAS: Record<string, Idea> = {
@@ -68,6 +85,17 @@ export const IDEAS: Record<string, Idea> = {
   'crumbling ledge': { content: 'breakable', element: 'ground', needs: ['jump'], teaches: 'crumble', what: 'crumbling ledges and branches' },
   'rotten-branch drop': { content: 'breakable', element: 'tree', needs: ['creaky'], what: 'a drop down through a creaky limb to a catch' },
   'push block': { content: 'hazards', element: 'ground', needs: ['run'], what: 'a log to push (out of the mixer for now)' },
+};
+
+/** the piece kinds each idea lays (the theme check follows an idea to its pieces; library-check holds it to the mixer) */
+export const IDEA_KINDS: Record<string, string[]> = {
+  'floor walk': ['bank', 'log'], 'bank hops': ['bank', 'stone', 'log'], 'stump hop': ['stone', 'bank', 'log'], 'bank walk': ['bank', 'log'],
+  'bounce mound': ['bank', 'mushroom', 'log'], 'stump tops': ['log'], 'log jam': ['log'], 'double gap': ['bank', 'log'],
+  'lily-pad hop': ['lily', 'log'], 'reed isles': ['reed', 'lily'], 'bounce up': ['bank', 'mushroom', 'branch', 'bridge'],
+  'the climb': ['bank', 'branch'], 'bough stair': ['branch', 'log', 'bridge'], 'bough hops': ['branch', 'log'],
+  'double chain': ['bank', 'branch', 'log', 'bridge'], 'top branch': ['branch'], 'bridge span': ['bridge', 'creaky'],
+  'snap teach': ['bank', 'creaky'], 'snap dash': ['creaky', 'branch'], 'creaky boughs': ['branch', 'creaky'], 'crumbling ledge': ['crumble', 'branch'],
+  'rotten-branch drop': ['branch', 'creaky'], 'push block': ['log'],
 };
 
 /** contents the menu names that the library has no idea for yet: a spec that asks for them is told so, plainly */

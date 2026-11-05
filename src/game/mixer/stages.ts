@@ -17,7 +17,7 @@ export const SPEC_15: StageSpec = {
   id: '1-5', name: 'The Folded Petals',
   story: { beat: 'down from the canopy to the forest floor at dusk, on Meeca\'s trail', feel: 'the chase tightens; creaky limbs give way' },
   profile: { trend: 'down', tempo: 'steady', hills: 'hilly', branching: 'heavy', water: true, petals: 'scattered', look: { lead: 'tree', art: 'w1' },
-    length: { normal: [200, 260], easyMin: 120 }, mix: { jumps: 'lots', breakable: 'lots', bounces: 'some', climbing: 'some', water: 'some' } },
+    length: { normal: [200, 260], easyMin: 120 }, mix: { jumps: 'lots', breakable: 'lots', bounces: 'some', climbing: 'some', water: 'some' }, theme: 'forest', core: ['branch', 'creaky', 'bank'] },
   nodes: PLAN_15.map(asSpec), goal: { kind: 'marks', count: 13, normal: 10, easy: 8 },
 };
 
@@ -25,7 +25,7 @@ export const SPEC_11: StageSpec = {
   id: '1-1', name: 'Into the Canopy',
   story: { beat: 'two days after the soldiers took Meeca, Pokey leaves the home forest: slow, and coming anyway', feel: 'a small, determined start that grows: low, safe and a little comic, then higher than he has ever climbed' },
   profile: { trend: 'up', tempo: 'calm', hills: 'hilly', branching: 'moderate', water: false, petals: 'trail', look: { lead: 'ground', art: 'w1' },
-    length: { normal: [160, 195], easyMin: 120 }, mix: { jumps: 'lots', bounces: 'some', climbing: 'some', water: 'none' } },
+    length: { normal: [160, 195], easyMin: 120 }, mix: { jumps: 'lots', bounces: 'some', climbing: 'some', water: 'none' }, theme: 'forest', core: ['bank', 'log', 'stone'] },
   nodes: PLAN_11.map(asSpec), goal: { kind: 'sprint' }, dress: { start: ['squirrel-sit', 'squirrel-wave', 'squirrel-tip'], clue: 'bootprint' },
 };
 

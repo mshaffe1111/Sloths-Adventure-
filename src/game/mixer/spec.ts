@@ -8,6 +8,8 @@
  * asks. `checkSpec` names every problem in plain words before anything is built, so a helper fixes the spec, not the code.
  */
 
+import type { Theme } from './library.ts';
+
 /** where a piece belongs (the designer's element gate, 11-05): a piece outside its element fails the build */
 export type Element = 'ground' | 'water' | 'tree';
 
@@ -35,6 +37,11 @@ export interface Profile {
   /** what the stage is made of, by how much (Matt's example, 11-05: "an enemy stage with a single branch, lots of jumps, vines and
    *  climbing"). The engine draws its ideas in these shares, and rolls a different stage inside them every time */
   mix: Partial<Record<Content, Amount>>;
+  /** the world's theme: only pieces of this theme's set may be drawn (no lava in the forest) */
+  theme: Theme;
+  /** the core pieces this stage uses most, for continuity (Matt, 11-05: "these are the core objects from this level, use these the most");
+   *  others only where they keep the same feel. The commonest landing must be one of these */
+  core: string[];
 }
 
 /** how much of a thing a stage has */
@@ -102,8 +109,14 @@ export function linesFor(p: Profile): StageLines {
 }
 
 /** every problem with a spec, in plain words, before anything is built (an empty list: the engine can build it) */
-export function checkSpec(s: StageSpec, ideas: Record<string, { element: Element; needs: Move[]; teaches?: Move }>): string[] {
+export function checkSpec(s: StageSpec, ideas: Record<string, { element: Element; needs: Move[]; teaches?: Move }>, pieces?: Record<string, { worlds: Theme[] }>, ideaKinds?: Record<string, string[]>): string[] {
   const err: string[] = [];
+  // (every piece an idea lays belongs to the stage's theme, and every core piece too)
+  if (pieces && ideaKinds) {
+    for (const k of s.profile.core) if (!pieces[k]) err.push(`core piece "${k}" is not a piece kind the engine knows`); else if (!pieces[k].worlds.includes(s.profile.theme)) err.push(`core piece "${k}" is not of the ${s.profile.theme} theme`);
+    const used = new Set(s.nodes.flatMap((n) => (Array.isArray(n.deck) ? n.deck : [...n.deck.high, ...n.deck.low])));
+    for (const name of used) for (const k of ideaKinds[name] ?? []) if (pieces[k] && !pieces[k].worlds.includes(s.profile.theme)) err.push(`"${name}" lays ${k}, which is not of the ${s.profile.theme} theme`);
+  }
   const known = new Set<Move>(TAUGHT_BEFORE[s.id] ?? []);
   if (!s.nodes.length) err.push('the spec has no nodes');
   if (s.profile.length.normal[0] < 120) err.push(`Normal's length starts at ${s.profile.length.normal[0]} s; every stage takes at least 120 s`);
