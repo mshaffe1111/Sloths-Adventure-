@@ -778,6 +778,8 @@ another roll.
   - **S-5. The same Dot tip in 4 of 6 stills** ("Flick up just before the edge"). A tip shows once, at its first need, and then it is
     done for the stage.
   - **S-6. Hard darkness (P-10)** still shows in the creek stills, with the engine-render helper.
+  - **S-8. Dot's bubble covers the ground ahead** (round-1 frame 1; D10). A bubble sits clear of the route ahead, above it or on the
+    side he has left, upright and sideways. The flag tip also shows twice; every tip shows once per stage (S-5).
   - **S-7. The upright top half (P-6)** is still mostly sky over the start and the shrine.
 - These go back to the planner (S-2 to S-5, S-7) and the engine-render helper (S-1, S-6). Round 2 of the stills comes back to the
   designer before the lead.
