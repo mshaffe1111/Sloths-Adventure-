@@ -251,3 +251,10 @@ Matt, 12:40 PM ET, clarifying: "when I mean the polish, I mean redoing the pictu
 really focus on getting the engine done and then getting more levels done over the next few days."
 So POLISH = new or redone pictures and backgrounds (art). Gameplay pieces (root gate, secret tunnel, bat, stalactites, crate/seesaw
 fixes) are engine content: paused today for budget only, they resume as the levels that need them are built over the next days.
+
+## 2026-11-05 01:20 PM ET (to the lead): approve what starts the game; later worlds go on the roadmap
+"So anything that we would use to start the game, we can approve it. If it can wait the next week because it's on like a later world,
+then it can go in the roadmap."
+So: the lead (with the designer) approves what the opening of the game needs now (the engine, World 1, 1-1 and 1-2) without asking
+Matt. Anything for a later world goes on ROADMAP with its R-id, held to next week. Applied at once: the belly slide (taught in W2) is held
+to the roadmap; the under-bough hang is approved for W1 (Matt's PLAN-TO-80).

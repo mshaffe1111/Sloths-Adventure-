@@ -112,4 +112,5 @@ engine-core (from main, the planner, due 1:45 PM, lock proves only 1-1/1-5 diffe
 - GATES (D42): briefs name reference/methods/gates.md + .github/workflows/gates.yml as THE list; reports list each gate PASS/NOT RUN by name; check against gates.yml before accepting 'full gate'.
 - Combined git fetch aborts on one missing ref: fetch each branch on its own.
 - Never type a time; read the clock. (Broke it again 11-05 ~10:30: stamped 10:38-11:15 on events at 10:10-10:32; the designer caught it. Countermeasure: run `TZ=America/New_York date` in the same command that writes any time.)
+- Matt 1:20 PM ET: what STARTS the game (engine, W1, 1-1/1-2) the lead approves now; later-world items go on ROADMAP, held to next week. Don't ask Matt about either.
 - Never design. Report a design problem with evidence; the designer fixes it.
