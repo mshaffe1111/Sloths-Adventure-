@@ -402,3 +402,19 @@ and only a sample was read. Every row has now been checked against its real art:
 
 **One art defect found:** w6WetLeaves has a pink smear in its top-left corner, on the sheet. It is named for an art fix, and it is not
 laid until then.
+
+## 6. Rulings on the planner's coverage check (designer, 11-05 ~10:57 AM ET; 428 kinds, 4 unmapped)
+
+1. **fragile log, fragile canopy_bridge** (12 and 4 placed, first at 5-8; W5, W7-W10):
+   - **Element:** platform (log or plank). **May float:** yes, under the cap (Matt: "floating logs... a platform needs platforms").
+   - **Use:** a landing that gives way, the creak mechanic taught in 1-2. Creak timing follows C3: Normal 0.67 s, Easy 1.2 s.
+   - **Worlds:** as shipped (W5, W7-W10).
+   - **Laid in new stages only if its art shows the creak tell** (a crack or sag, read by shape: SR §0b.3 and acf6e1e8's W1 rule that
+     a creaking limb shows its crack). If it draws as a plain log or plank, it is unreadable. Then it is OPEN for art, and not laid.
+     Engine-render checks which.
+2. **W2 villagers in proto.decor** (po.carry_stand, tc.hat_shout, tc.scroll): a family of their own, **villager**.
+   - Ground; stands on a porch or the ground, never in open air. World 2's bank village only.
+   - Dressing, never a landing, and never in the hero's lane.
+3. **waterSigns** is the warning sign post at a stage's first water (waterTeach.ts:103, engine.ts:5187-5196), **not a water-surface
+   piece**. It is built ground, on the bank about 40 px before the water: a water teach marker. My first family (water) was wrong, and
+   it is corrected in props.py OV.
