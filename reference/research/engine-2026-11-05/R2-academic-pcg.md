@@ -525,7 +525,7 @@ node 12: DFS prefix check = Normal trace: found ... in 13/20 runs; median 11, ma
    once a node has a rise or fall target.
 5. **On the floor the tracer does reject: about half of what `fitSteps` draws (accepted 56-62% per try) [measured], and all 304-352
    rejections per node are one rule**, MIN_GAP: "the gap is N px: no jump at all" (beatTrace.ts:446). That rejection is
-   predictable from the step alone (a flat or downward jump whose landing comes down too close to, or over, the ledge it left), so it can be filtered when the candidate is made,
+   largely predictable from the step itself (a flat or downward jump whose landing comes down too close to, or over, the ledge it left), so it can be filtered when the candidate is made,
    WFC's "propagate before you choose" (3.12), instead of discovered by a full trace.
 6. **A search is not faster than `fitSteps` today, and a naive one is worse.** Random retry needs 1.6-1.8 tries [measured], each 2
    traces + 2 checks, so about 3-4 trace-equivalents a node [estimate]. A depth-first search that prunes on the Normal trace alone
