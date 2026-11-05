@@ -1,3 +1,6 @@
 https://www.mariowiki.com/Tiki_Bomb — page_not_found (404) via TinyFish fetch_content, 2026-11-05
 https://www.mariowiki.com/Mine_Cart_Madness_(Donkey_Kong_Country_Returns) — page_not_found (404); no DKCR level by that name exists on mariowiki (Mine Cart Madness is a DKC 1994 level)
 https://www.mariowiki.com/Donkey_Kong_Island_(Donkey_Kong_Country:_Tropical_Freeze) — page_not_found (404) (DKCTF world 6 table not fetched)
+https://iwataasks.nintendo.com/interviews/wii/donkey-kong-country-returns/0/6/ — target_http_error 403 (likely no 7th page; the interview has 6 pages, last one ends with closing remarks)
+https://shinesparkers.net/interviews/interview-kynan-pearson/ — READ OK but NOT SAVED: off-topic (Metroid Prime 2/3 only; only DKC content is one line that he took part in Iwata Asks DKCR). Nothing quoted from it.
+https://www.mariowiki.com/Krockhead_Klamber — disambiguation page only (no content); DKC2 level page not followed

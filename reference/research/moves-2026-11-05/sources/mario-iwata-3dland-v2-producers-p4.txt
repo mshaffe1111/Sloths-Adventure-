@@ -1,0 +1,177 @@
+URL: https://iwataasks.nintendo.com/interviews/3ds/super-mario-3d-land/1/3/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Volume 2: The Producers - Page 4
+---
+## What Is Stomping?
+
+Iwata
+
+Now I'd like to talk concretely about Super Mario 3D Land. What do you recommend about it?
+
+Hayashida
+
+This game offers some assistance. An Invincibility Leaf comes out of an Assist Block, and Tezuka-san really loved that! (laughs)
+
+Tezuka
+
+Yes. I'm not that good at playing video games. A leaf to make me invincible came in really handy when I got stuck. It helped out to just the right degree, so you still have to work hard to clear it, and then you feel like trying to clear it without that assistance the next time.
+
+And the courses themselves are compact, so the tension level stays high. The Invincibility Leaf is an item that responds to a player's demand that there be something to help from one particular point to another.
+
+Iwata
+
+How did the Invincibility Leaf come about?
+
+Miyamoto
+
+It came from a comment by a tester.
+
+Hayashida
+
+Yes. One of the testers simply could not get past one spot, and when we suggested using the P-Wing to fly over it, the tester said, "I didn't want to fly over it. I wanted to play the spot." We thought the tester could go up to that spot by continuously being Tanooki Mario, and then, if in invincible mode, move on. Tezuka-san said it was really great, so we knew it would work.
+
+Tezuka
+
+Usually, that kind of ability is too strong, but to people who aren't very good at video games, these kinds of lenient elements are surprisingly effective.
+
+Iwata
+
+What are the conditions for its appearance?
+
+Hayashida
+
+It comes out after you lose Mario five times. That was something else we worked out with Tezuka-san. At first, we were planning on eight times.
+
+Tezuka
+
+Playing it eight times felt like a lot. Trusting my instinct as a player, I suggested five.
+
+Iwata
+
+That reminds me of the intense discussion we had about how many times it should take for the Super Guide to come out in the New Super Mario Bros. Wii7 game. Was that game the reason you had eight in mind?
+7. New Super Mario Bros. Wii™: An action game released for the Wii console in December 2009.
+
+Hayashida
+
+That's right. Taking our example from New Super Mario Bros. Wii, we were going to have the Invincibility Leaf come out after 8 times and the P-Wing come out after 16.
+
+Iwata
+
+But people might give up before they reach 16 times.
+
+Hayashida
+
+Yes. (laughs) Then Tezuka-san suggested 5 times, and 5 and 10 started sounding good and that's what we settled on. The Invincibility Leaf allows you to destroy anything, so it's like Mega Mario in New Super Mario Bros. for the Nintendo DS system.8
+
+8. Mega Mario in New Super Mario Bros. for the Nintendo DS™ system: New Super Mario Bros. was an action game released for the Nintendo DS system in May 2006. If Mario gets a Mega Mushroom, he transforms into Mega Mario. Mega Mario destroys blocks and pipes and, of course, enemies when he runs into them.
+
+Iwata
+
+A clear example of Tezuka-san's "It's fun, so it's okay!" (laughs)
+
+Hayashida
+
+It probably struck a chord with him.
+
+Iwata
+
+This time, you did a user's viewpoint evaluation.9  What kind of opinions did you receive?
+9. User's viewpoint evaluation: A system Nintendo has for evaluating new products. Veteran employees in the Manufacturing Division play the game from the users' viewpoint and write evaluation reports.
+
+Hayashida
+
+We received all kinds of opinions from beginner players on up and I realized all over again how effective the Invincibility Leaf and P-Wing are. I think players who have found the series to be difficult so far will be able to play to the end.
+
+Miyamoto
+
+The user's viewpoint reports really give us confidence. Some reports convey the writer, who can be long-term employees who may not be necessarily used to games, his desire to get a point across, which is moving.
+
+Hayashida
+
+We're grateful for them.
+
+Iwata
+
+Miyamoto-san, what did you find satisfying about the game?
+
+Miyamoto
+
+The action of stomping. In the series of 3D Super Mario games so far, we paid attention to making them hold together as 3D games. But this time, we wanted to make an action game in which you could enjoy stomping on things, so we consciously put effort into the movement.
+
+Iwata
+
+You redefined what stomping is.
+
+Miyamoto
+
+Yes. It's really hard to clearly define what it is. In order to have the player feel that they have stomped on something, it's better to fudge a little rather than stick to realistic 3D movement.
+
+Iwata
+
+That will feel more natural to the players.
+
+Miyamoto
+
+That's right. In Super Mario 3D Land, Mario can change direction while he's in the air. That is an impossible action in the real world, but it was incredibly important for making it feel as if you have really stomped on something.
+
+I used to be against putting in movements that felt unusual. I said that allowing a jumping Mario to change direction in the air was a no-no. But as I played, I realized it would be a big plus and gradually came to allow it.
+
+Hayashida
+
+If I may add to that, in the original Super Mario Bros., if you tried to go back in the middle of a jump, Mario still faced the same way, but starting with Super Mario Bros. 3, you could change direction.
+
+That's probably because Super Mario Bros. 3 had Tanooki Mario. If you tried to change direction in midair with Tanooki Mario but he just kept cruising by looking in the same direction, it would be weird, so we had to put in that kind of movement. And putting that into Super Mario 3D Land made it easier to stomp on Goombas and other things.
+
+Miyamoto
+
+It was satisfying how, once we had corrected Mario's movement like that from the point of view of the players, it felt more like 2D Super Mario than 3D Super Mario. That's why Super Mario 3D Land is a 2D Super Mario-like 3D game. I think we can do a lot with that in the future.
+
+Iwata
+
+It's interesting to see you so deep into the programming.
+
+Miyamoto
+
+This is Super Mario in stereoscopic 3D, so it was fun attempting a bunch of things for the first time.
+
+Iwata
+
+The fun of racing along a road where there is no road.
+
+Miyamoto
+
+That's right. I'm so happy about the new things we came up with that I can barely stand it. It was like I fed on that as we worked.
+
+Iwata
+
+Doesn't hearing that remind you of when the two of you made Super Mario 64 and other games together?
+Koizumi:
+Yes, it does. When it comes to new things, there's no right answer because no one has done those things before. So the dilemma arises of whatever you do looking right. But Miyamoto-san decides what is right, so I relied on him on decision-making.
+
+Iwata
+
+How did the game feel to you, Tezuka-san?
+
+Tezuka
+
+Well, the first time I played it, I thought it might be impossible to clear. As you play, you tend to move the Nintendo 3DS system, so the stereoscopic Mario blurred. But as came up in our last session of "Iwata Asks," we put in the Normal View on Miyamoto-san's suggestion, and then the stereoscopic 3D was much more satisfying.
+
+Hayashida
+
+I'm glad he pointed that out. We were used to playing with the system fixed, so we hadn't noticed. It is extremely good that in the end we found an answer for making it a 3D action game in which Mario doesn't blur.
+
+Tezuka
+
+I learned a lot, especially since I was about to give up easily.
+
+Iwata
+
+So says a veteran of the Super Mario series. (laughs)
+
+Miyamoto
+
+Tezuka-san is General Manager of the EAD Software Development Department, but he says, "I finally understand Nintendo 3DS." Oh well. That distance is perfect for him.
+
+Everyone
+
+(laughs)

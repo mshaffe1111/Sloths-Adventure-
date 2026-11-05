@@ -1,0 +1,67 @@
+URL: https://app2top.com/industry/development-history-altos-adventure-71839.html
+Read: 2026-11-05 by sk/smb/tw fetch helper (TinyFish fetch_content)
+Title: Development History: Alto's Adventure (App2top, Irina Smirnova, 2015-12-29; an English rendering of Ryan Cash's interview with 80.lv. Page language tagged "ru"; wording is a translation, not Cash's original English.)
+---
+Industry
+29.12.2015 14:48
+
+# Development History: Alto’s Adventure
+
+### Published by Irina Smirnova
+
+### Tags:
+
+* Alto`s Adventure,
+* Snowman
+
+Ryan Cash from a small indie company Snowman talked to the resource 80.lv about the mobile game Alto’s Adventure. Cash spoke about how the project was created, about the choice of style and about the biggest problems of indie development.
+
+**Introduction**
+
+I created Snowman in 2012 with my childhood friend Jordan Rosenberg. We had worked together a couple of times before, in high school, and I had long wanted to work with him on something else. For a while, we kept turning the idea of an iPhone app in our heads, but it never turned into something definite.
+
+In the middle of 2011, I had an idea that I finally wanted to finish. I then tried out the Reminders feature in the iOS 5 developer preview, and I really liked the location-specific reminders. It quickly became clear that Apple’s reminder creation process was rather inconvenient and that it could be improved. I clearly remember how it dawned on me. I was driving the car at that moment, and I had to park immediately. After that, I called Jordan and told him that we needed to meet. We crossed paths, started discussing my idea, then went to me and began to make the first sketches. And so Checkmark appeared – the first application created in Snowman.
+
+The **story of Alto’s Adventure**
+
+We started working on Alto’s Adventure at the end of December 2012. Jordan and I discussed the idea of creating a snowboarding game-after he insisted that I play Tiny Wings. At that time, I was not interested in games at all – I stopped playing them 7 or 8 years ago, because I became an “adult”.
+
+Tiny Wings has proved that a mobile game can be beautiful – a work of art. Jordan also let me play Ski Safari, and I really liked it, but left the impression that from the point of view of style and physics there is something to work on. Since Jordan and I have been snowboarding since childhood, we began to explore this topic.
+
+I had an artist in mind, with whom I talked a couple of times, and which I then periodically recalled. This artist was an incredibly talented Harry Nesbitt, and fortunately, he was interested in our project.
+
+Here, in my blog, is a fairly detailed article about the history of the creation of Alto’s Adventure.
+
+**Style**
+
+In fact, only Harry worked on the visual component. Jordan and I wanted the game to be minimalistic and almost a “living picture” – otherwise it wouldn’t have been worth starting – and Harry’s style just embodied what I imagined. We left the visual component entirely to Harry. When you work with such a talented and enthusiastic person like him, this approach works.
+
+After I played Tiny Wings, it became clear to me that video games (especially mobile ones) do not necessarily have to be created in the same “cartoon” style. You know, like in Cut the Rope, Angry Birds or Subway Surfers. Not that I have anything against these games – they are all very good, high-quality, and in many ways set the standards for mobile games. I just thought we could make another game. A game that will look different.
+
+**Creating a living breathing world**
+
+I think that’s the goal we set ourselves from the very beginning. We wanted to create a world in which we could immerse ourselves and – enjoy. Not a game that you play for a couple of seconds while standing in line, but one that you would savor like a good book – sitting on the couch with a cup of coffee. One in which you could practically get lost. We wanted the game to be fun, even if you are not trying to achieve something in it or are not competing with other players. A game you play just to relax.
+
+We spent a lot of time – almost a year – on small details. Things like dynamic lighting, weather, all sorts of subtleties, like rainbows after rain. In general, we have come a long way in creating just such a world.
+
+The best example is fireflies. Right after the release, I was giving an interview to a gaming website, and I was asked about the “small details”. I talked to Harry,” he mentioned fireflies. I myself didn’t even know that there were fireflies in the game and that they had been in front of my eyes for two years. And this speaks more eloquently than any words about small details.
+
+We also spent a lot of time on sound design together with the great guys from Kpow.
+
+**Time**
+
+It took two years to create Alto’s Adventure – from the moment of the idea to the launch. In total, about 27 months.
+
+The **Council**
+
+Absolutely everything matters. Even if you manage to create a cool game, but everything else in it will not be at the proper level, then you will not see success. Take companies like Apple or Starbucks. These companies strive to ensure that every piece of the puzzle – the interaction of the buyer with the brand – is perfect. In the case of games, such details are gameplay, art, marketing, sound, music, proper technical support (including compatibility with the most advanced and significant technologies, such as Apple TV, iCloud, and so on).
+
+And yes – it will never work out to fit into the schedule. To understand how much time it will take to create a game, write down how many months you think it should take. Then add five months. Then multiply by two.
+
+**Frituplay vs Premium**
+
+We really wanted to make a game that we would like ourselves. We discussed the possibility of launching a shareware game, but we could not accept this idea. I think games like TwoDots and Crossy Road proved that you can make a nice frituplay, but at that moment it seemed more acceptable to us to launch a paid project.
+
+***Ryan Cash, SnowmanA source:***
+
+*Its cost is $0.99.*

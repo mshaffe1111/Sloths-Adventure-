@@ -1,0 +1,52 @@
+URL: https://www.mariowiki.com/Bowser%27s_Bullet_Bill_Brigade
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Bowser's Bullet Bill Brigade
+---
+(Stripped: site navbox, image gallery, "Names in other languages" table, reference list.)
+
+This article is about the level in Super Mario 3D World. For its musical theme, see Bowser's Bullet Bill Brigade (theme).
+
+| Bowser's Bullet Bill Brigade | |
+| --- | --- |
+| Level code | World 2-Tank |
+| World | World 2 |
+| Games | Super Mario 3D World, Super Mario 3D World + Bowser's Fury |
+| Primary power-up | Fire Flower |
+| Time Limit | 400 seconds |
+| Boss | Boom Boom |
+| Music tracks | Bowser's Bullet Bill Brigade, Bowser's Minions, Victory Parade |
+| Level progression | Previous: Double Cherry Pass; Next: Snowball Park |
+
+Bowser's Bullet Bill Brigade, or World 2-Tank, is the first tank course of Super Mario 3D World and its Nintendo Switch port Super Mario 3D World + Bowser's Fury, the first autoscrolling level and the final level of World 2. It is unlocked via completing Double Cherry Pass, and its own completion frees the yellow Sprixie Princess who builds a Clear Pipe to World 3.
+
+## Layout
+
+The level starts with the player near some Blocksteppers and a Tank, with a ? Block on top of it. The second tank features some Bullet Bills, Crates, and Coins with some Blocksteppers following. The third has a Cannon Box and a Red Ring. After passing some Fire Piranha Plants, another barrage of tanks and Blocksteppers appear. The final tank appears with a pipe on it. The pipe leads the player to the boss of World 2, Boom Boom. After defeating him, a circle of coins and a Warp Box appear. The box leads the player to a + Clock, a Goal Pole and a yellow Sprixie Princess.
+
+## Collectables
+
+### Green Stars
+
+| Location |
+| --- |
+| After the first row of tanks, the first Green Star is guarded by a group of three Fire Piranha Plants. |
+| The second Green Star is inside a crate on a small tank in the second row of tanks. |
+| After the stamp, there is a large wooden wall with Bowser's face on it. The player can destroy this wall with a cannonball to reveal the third Green Star. |
+
+### Stamp
+
+The level's stamp is located above a metal gate blocked off by some wooden crates. The stamp is Boom Boom.
+
+## Luigi sighting
+
+At the very beginning, an 8-bit Luigi can be seen on the ground on the right side.
+
+## Enemies
+
+| Name | Count |
+| --- | --- |
+| Blockstepper | 25 |
+| Bullet Bill | (infinitely spawned) |
+| Cannon | 2 |
+| Fire Piranha Plant | 4 |
+| Boom Boom | (boss) |

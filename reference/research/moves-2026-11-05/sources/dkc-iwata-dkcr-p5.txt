@@ -1,0 +1,107 @@
+URL: https://iwataasks.nintendo.com/interviews/wii/donkey-kong-country-returns/0/4/
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Donkey Kong Country Returns - Page 5 (A Two-player Mode Unlike that of New Super Mario Bros. Wii)
+---
+## A Two-player Mode Unlike that of New Super Mario Bros. Wii
+
+Iwata
+This time, one of the big challenges was creating two-person simultaneous gameplay, wasn't it?
+
+Tanabe
+Yes.
+
+Iwata
+Why did you decide to include a two-player mode?
+
+Tanabe
+Whenever I begin a new project, I try to think about what we can do that's new and hasn't appeared before or about what kind of inventive game mechanics we can include. That's something that Miyamoto-san beat into me when I was in the Entertainment Analysis and Development Division.
+
+Iwata
+That's the most important thing he told me when I was making Kirby.
+
+Tanabe
+Exactly! (laughs) When work on Donkey Kong Country Returns began, Tabata-san and I talked about what new elements we could give the game. Donkey Kong Jungle Beat10 had come out not long before, so we thought it was necessary to establish a clear difference with that. The bare minimum we wanted to include was two-person, simultaneous play. Two people could play the Donkey Kong series, but only one at a time.
+
+Iwata
+You had to take turns.
+10. Donkey Kong Jungle Beat: A side-scrolling action game released for the Nintendo GameCube in December 2004. It was compatible for use with the DK Bongos controller. Later, the Wii version was released in November 2008.
+
+Tanabe
+Right. Donkey Kong and Diddy Kong could tag each other to play in turns. We decided to make two-person, simultaneous play, but Miyamoto-san said it's really hard to make a game that is fun for both one or two people so we should, at least for the time being, focus on one player, but I think I actually told Retro Studios to make it for two players pretty early on.
+
+Iwata
+Did Retro Studios know that Miyamoto-san had told you to focus on a single-player game?
+
+Tanabe
+I told you, right?
+
+Kynan
+Yeah.
+
+Iwata
+Even so, when Tanabe-san told you to make a two-player game, did you follow along without any worries?
+
+Kynan, Mike and Tom
+(nodding in unison)
+
+Iwata
+Wow, what an amazing team! (laughs)
+
+Kynan
+But to be honest, the first one to give us direction was Miyamoto-san, and he said to start by making a single-player game. And we did give that first priority, but then one day, all of a sudden, Tanabe-san said to make it multiplayer. We were caught between the two opinions and were a little unsure of what to do. (laughs)
+
+Iwata
+I can understand that! (laughs)
+
+Kynan
+It wasn't easy to achieve, but in the end I think including a two-player mode was the right thing to do.
+
+Iwata
+When you try to create two-person play, it's hard to adjust the difficulty for both one player and two players. How did you deal with that?
+
+Tabata
+We didn't make a particular effort to change the difficulty that much. But when two people play, you expend a lot of turns, called Balloons, so we talked about making up for that by making it easier to get more of them, but we never really changed much just for single or dual play.
+
+Iwata
+And the game turned out with just the right balance?
+
+Tanabe
+One thing that's different from the New Super Mario Bros. Wii multiple-player mode is we haven't used collision detection between players. So if you play together with someone at about the same skill level as you, you can double up and advance at an incredible speed, which allows you to enjoy a speed and feeling that's different from Mario games.
+
+What's more, Retro Studios made it possible for Diddy Kong to ride on Donkey Kong, so if someone who isn't very good at the game chooses to play Diddy Kong...
+
+Iwata
+Donkey Kong can just carry Diddy Kong along.
+
+Tanabe
+Right. So not using collision detection was one factor for why in the end it was all right not to be too concerned with separate difficulties for single and dual play.
+
+Iwata
+By the way, it's been 16 years since the game Donkey Kong Country came out.
+
+Tanabe
+Yes. It was released in 1994.
+
+Iwata
+I would imagine that lots of people who played it back then are parents now.
+
+Tanabe
+I am, too! (laughs)
+
+Iwata
+I think one way to enjoy the game is for parents to play it together with their children. And, of course, friends can play together, or you can play alone.
+
+Tanabe
+I've got daughters, so Metroid Prime was a little difficult, but we'll be able to play this game together. (laughs)
+
+Iwata
+(laughs) Do any of you at Retro Studios want to play together with your family?
+
+Mike
+I've got a 14-year-old son and a 17-year-old daughter, and they're both eagerly awaiting this game and keep saying they can't wait to play it.
+
+Kynan
+I've got a son who's four. I was really busy toward the end of development and was working late a lot, so I didn't have much time to spend with him.
+
+Iwata
+No matter how busy you get, the time you spend with your family is important.

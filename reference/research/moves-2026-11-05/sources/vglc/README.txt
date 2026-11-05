@@ -1,0 +1,1 @@
+URL base: https://raw.githubusercontent.com/TheVGLC/TheVGLC/master/Super%20Mario%20Bros/Processed/mario-<level>.txt ; Read 2026-11-05 by the moves researcher (curl via agent proxy). One char per 16px tile; legend smb-vglc-smb-json.txt

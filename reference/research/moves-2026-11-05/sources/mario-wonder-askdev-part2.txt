@@ -1,0 +1,148 @@
+URL: https://www.nintendo.com/us/whatsnew/ask-the-developer-vol-11-super-mario-bros-wonder-part-2/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Ask the Developer Vol. 11, Super Mario Bros. Wonder—Part 2 - News - Nintendo Official Site
+---
+# Ask the Developer Vol. 11, Super Mario Bros. Wonder—Part 2
+
+* This article has been translated from the original Japanese content.
+* Some of the images and videos shown in text were created during development.
+
+In this eleventh volume of Ask the Developer, an interview series in which Nintendo developers convey in their own words Nintendo's thoughts about creating products and the specific points they are particular about, we're talking to the developers behind the *Super Mario Bros.™ Wonder* game for the Nintendo Switch™ system, which launches on Friday, **October 20**.
+
+---
+
+## Check out the rest of the interview:
+
+---
+
+## Part 2: Bringing the details to life
+
+**In this game, Mario and his friends have richer facial expressions, and each character's movements are more animated. I can imagine The Super Mario Bros. Movie having had some influence on development. Was that the case?**
+
+**Sato:** We're often asked about the film's influence on the game, but we didn't hear anything about the film's content during development. I think Tezuka-san and Kondo-san were the only members here who knew the details.
+
+**I see. So the new elements are unrelated to the movie?**
+
+**Sato:** Yes. New Super Mario Bros. was the first 2D Mario game to use 3D models. The adoption of 3D models provided a natural change and was seen as a significant evolution in 2006 when it was released. In addition to the visual changes we incorporated back then, we wanted to implement more engaging and functional ways of using 3D models in this 2D platformer. Therefore, at an early stage of development, we set ourselves the goal of discovering how this could be achieved.
+
+**Tezuka:** During development, we didn't know when the movie would be released, but we were sure some people would play the game because they watched the movie. This is why we were conscious of creating a game that wouldn't disappoint them. So for this game, we dedicated ample budget and time to create the characters with even more care and attention and in greater detail.
+
+**Hayashida:** Also, with Nintendo Switch's technology, we were able to make movements and facial expressions more dynamic than before. The number of joints (12) has also increased considerably. The more joints there are, the broader the range of motion and the greater the variety of movements that can be expressed.
+
+**(12)** *Joints connect individual parts in a 3D model.*
+
+**Sato:** Both joints and animations have more than doubled in number since the previous title. Facial expressions that are difficult to express using joints were created by replacing the models with new ones.
+
+**Even the movements of the small characters were depicted in great detail, and I thought that was really cute.**
+
+**Sato:** The game's animation has the role of communicating the character's state to the player. In this game, we revisited Mario's iconic poses from the days of pixel graphics. We took a look at each of them, including a jumping motion with arms extended and a sudden stop after running. As a result, we believe we've been able to create characters that leave a strong impression.
+
+**Kondo:** I remember being very surprised at how the expressiveness of the animation kept improving during development.
+
+**Sato:** However, while it was good that the characters were more expressive, another challenge surfaced when we tried to turn their faces toward players to show their expressions. It's a well-known story within the company that Miyamoto-san said designing Mario's nose to be big back in the day of the very first pixelated Mario made it easier to see which direction Mario was facing. But if we set Mario's nose to face the direction of travel, like we used to, with a modern 3D model, you wouldn't be able to see his facial expressions.
+
+**So by trying to make it easier for players to see where Mario's headed, you make it impossible for them to see the facial expressions you worked so hard to create.**
+
+**Sato:** That's right. On the other hand, if we turned Mario's face toward players so they could see his facial expressions, it would be difficult to tell which direction he's moving. Therefore, we had to find the right balance to make it easy for players to see both the character's expressions and where they're headed.
+
+**So you made the direction their body's facing indicate their direction of travel, while their face, showing their expressions, is easily visible from the player's point of view.**
+
+**Sato:** Yes. So here's the final outcome.
+
+**Oh my, look at this Mario facing toward us...**
+
+**Sato:** I know. If you look at the picture on the right, you'll see that Mario's face is distorted when seen from the direction he's traveling toward. However, if you look at the picture on the left, you can see how Mario appears on-screen. During gameplay, players can see both the direction Mario is heading and his facial expressions. In fact, we've made these kinds of adjustments not only to the facial expressions but to the entire body.
+
+**I see. So you needed to adjust how Mario's 3D model appears so that the visual is optimized during gameplay.**
+
+**Hayashida:** I think the sound effects have also evolved greatly, along with the advancement of facial expressions and movements.
+
+**Kondo:** I agree. We gave each character a distinctive jump sound and deliberately created sounds that would help convey the characters' movements to players. Also, we wanted to give it a fresh feel by integrating the sounds of musical instruments into the sound effects, so in this game, we used an electric ukulele made of Yezo spruce for Mario's jump sound. Using strings to accompany the traditional action of running before jumping to increase jump distance has enabled us to add sounds of varying dynamics to better express the feeling of ascending. This is the first time the jump sound changes based on how the player jumps, just like how string instruments make different sounds depending on how strongly or softly a musician plucks the strings.
+
+**So advancements not only in graphics but also in sound have had a significant impact on the gameplay experience.**
+
+**Sato:** But I'm sure many of the sound effects must have been difficult to create because this game has more movement patterns than previous titles.
+
+**Kondo:** Many of the movements weren't in past titles, so we couldn't always simply apply previous sound effects. Let's take, for example, a character entering a pipe.
+
+In this game, the character always performs an action before they enter a pipe. So when we triggered the sound effect right as the player pressed the button, as we'd always done in previous games, it didn't match what was happening on-screen. So we ended up readjusting the timing for this sound effect. It was fun to look closely at the characters' expressions and movements and notice those kinds of details.
+
+**Hayashida:** As I tested the prototype every day, I tried different ways of playing the game. Sometimes I played like a beginner and sometimes like an advanced player. Every day, there were surprises and discoveries that made me think, "I never knew these sounds or visuals were in the game!"
+
+**You wouldn't have made those discoveries if not so much effort had gone into creating the game with such details.**
+
+**Sato:** You're right. Since we knew we had ample budget to develop the game, we didn't have to worry about the amount of resources we'd spend to craft even small details.
+
+**Speaking of which, it seems that not only playable characters but also enemies have become much more expressive in this game.**
+
+**Hayashida:** You can see Goombas greeting each other as they meet or sleeping peacefully, for example.
+
+**Sato:** Even before development on Super Mario Bros. Wonder was confirmed, we were looking to broaden the range of expressions that enemies had. It wasn't possible to completely change the behavior of the well-known enemies in this game without altering the gameplay, but we wanted to be able to demonstrate to fans that we'd made some adjustments to them.
+
+**Tezuka:** Such trial and error in character design inspired those in charge of course creation to make a world that matched those designs.
+
+**Hayashida:** Since the designers had created fed-up expressions for Goombas caught in gaps, we thought we'd better develop nice gaps for the Goombas to get stuck in at the right time.
+
+**Were the developers able to discuss such matters anytime across the entire team, regardless of their roles and responsibilities?**
+
+**Tezuka:** We've always valued team-wide discussions, but remote work may have also had a major impact. Since meetings now took place online, we no longer had to limit the number of participants due to limited space in meeting rooms, so we made it a rule to open meetings to the entire development team so that anyone could join at any time.
+
+**Hayashida:** We let members join online meetings without turning on their cameras so that they could just listen in while multitasking. I'm glad we were able to share information widely across the team in this way. Of course, there were difficulties developing a game in an unfamiliar, work-from-home environment, but we were able to take advantage of the situation and work on new approaches.
+
+**I see. It's certainly difficult to get dozens of people into a physical meeting room, but any number of people can join online. It sounds like these online meetings were something people could casually listen to while working on other things—a bit like background music. (Laughs)**
+
+**Sato:** We talked about the evolution of hardware earlier—I heard that someone once asked Miyamoto-san why Mario takes damage when he bumps into a Goomba from the side in the original Super Mario Bros. game. Apparently, he answered, "It's because the Goombas bite him."
+
+**Mouri:** Even if that was what was happening, due to hardware limitations at the time, the graphics weren't capable of showing that much detail.
+
+**Sato:** That's right. But now we are able to show those expressions.
+
+**Hayashida:** Goombas have a biting expression the moment they do damage.
+
+**Sato:** Yes, and when they bite you, they'll do it with a smile on their face! (Laughs)
+
+**Tezuka:** Oh, and Koopa Troopas faced you when you bumped into them from behind, right? We tried to express them biting the player by making them turn around.
+
+**Sato:** During the development of New Super Mario Bros., I simply thought these were the established rules for expressing these characters. But when I heard this story, I thought, "We can actually make these expressions come alive with today's hardware. I want to bring those details to life." This illustrates the evolution that the development team was able to accomplish with this game.
+
+**Hayashida:** Speaking of evolution, you'll see new foes called Rolla Koopas in this game. (Laughs) The first course in Super Mario World (13) for the Super Nintendo Entertainment System (Super NES) featured Unshelled Koopas going down a slope and then later you see them flying around with capes. With the transition from NES to Super NES, developers apparently discussed how the look of the Koopa Troopas would evolve, and that was the end result. (Laughs)
+
+**(13)** *A Super NES game released in August 1991 in North America. In this side-scrolling 2D platformer, the adventure unfolds in Dinosaur Land.*
+
+**Sato:** With this anecdote in mind, we were brainstorming during the idea-sharing session how we should express the evolution of this well-known enemy in this game, and one of the designers came up with the idea of making the Koopa Troopas roll around on roller skates. (Laughs)
+
+**That's an interesting turn of events. (Laughs) Speaking of major changes in appearance, the new transformation Elephant Mario, which** **appeared in the trailer****, left quite an impression. Where did that idea come from?**
+
+**Mouri:** Elephant Mario was another idea that came out of the idea-sharing session, but before we arrived at this idea, we first discussed what kind of gameplay we wanted and what we needed to do to achieve it. First, we wanted to make the body bigger. Having a bigger body makes stepping on enemies, hitting blocks, and collecting coins easier, adding ease of play. Also, we wanted the characters to be able to hit blocks from the side and to spray water. We thought these two features would provide more variety to the gameplay. What checks all three of those boxes? An elephant, of course! (Laughs)
+
+**I assumed that the design for Elephant Mario came first, but now I realize it was designed based on the gameplay you wanted to implement. And tell me, this water-spraying action is a gameplay mechanic that has never been seen in previous 2D Mario games, right?**
+
+**Hayashida:** That's right. With the ability to spray water, you can make withered flowers bloom that in turn generate a variety of things. So I thought this ability would enable us to create new secrets and wonders. Also, I was involved in the development of Super Mario Sunshine (14) alongside Mouri-san. I remember spraying quite a bit of water in that game. (Laughs)
+
+**(14)** *A Nintendo GameCube™ game released in August 2002 in North America. Mario has a water pump strapped to his back, and players can use it to perform actions such as splashing enemies with water and flying.*
+
+**Mouri:** That gameplay mechanic was fun and unique.
+
+**Hayashida:** It was great to work with Mouri-san once again after 21 years to create another Mario game where we can spray water. (Laughs)
+
+**I see. When I think of a Mario game that involves the action of spraying water, Super Mario Sunshine certainly comes to mind, and Hayashida-san and Mouri-san were both involved in the development of that game.**
+
+**Tezuka:** Just when I was thinking that something was missing, Mouri-san suggested Elephant Mario, and I liked it. The "boing" sound it makes when you hit something with your trunk is quite impactful. I also like that coins appear when you spray water.
+
+**Hayashida:** Another idea we had was to blow up shells with the trunk. We gave it a lot of thought, thinking, "Having an inflated shell would be cute, but how can we use this large shell to make the game more interesting?" After much deliberation, we ended up not going for it...
+
+**Sato:** We were also saying that an elephant would be powerful enough to move through the course with several characters on its back. (Laughs)
+
+**Hayashida:** But the idea of being able to carry big things is still there.
+
+**Kondo:** We also worked on the sound in various ways to make this new elephant transformation distinctive. When a character collects an Elephant Fruit and transforms, you hear "wowie zowie," a phrase unique to the elephant transformation that wasn't in past games. In addition, the background music's arrangement changes when a character transforms into an elephant. We've also paid a lot of attention to the sounds of footsteps, jumps, and sucking up water.
+
+**Wow, it's clear that a lot of thought has gone into creating the sound, right down to the smallest detail.**
+
+**Kondo:** The sound effects of the elephant footsteps were the very first things we created. For us, the elephant transformation was that special. We came up with tons of different ideas for the gameplay, design, characters, and sound, and we reviewed every single one of them. It was within the final six months to a year of development that a unified direction for the game took shape as we considered its world and story. I remember thinking, "Now here's a team that knows how to put things together."
+
+Read more in **Part 3: Complete it your way**
+
+Mild Fantasy Violence
+
+In-Game Purchases

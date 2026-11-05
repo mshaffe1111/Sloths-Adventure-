@@ -1,0 +1,457 @@
+URL: https://www.kodeco.com/2723-how-to-create-a-game-like-tiny-wings-with-cocos2d-2-x-part-1  (page 1)
+URL: https://www.kodeco.com/2723-how-to-create-a-game-like-tiny-wings-with-cocos2d-2-x-part-1/page/2  (page 2)
+Read: 2026-11-05 by sk/smb/tw fetch helper (TinyFish fetch_content)
+Title: How To Create A Game Like Tiny Wings with Cocos2D 2.X Part 1 (Kodeco, formerly raywenderlich.com; original post by Ray Wenderlich, update by Ali Hafizji 2013-05-18; based on a demo by Sergey Tikhonov)
+WARNING: THIS IS A THIRD-PARTY RECONSTRUCTION (a clone tutorial). It is NOT Andreas Illiger's word and does not claim to be how Tiny Wings itself generates hills.
+Note: both pages verbatim; the repeated "Sign up/Sign in" boxes appear once per page as on the site. Later pages (texturing the hills) were not fetched.
+---
+========== PAGE 1 ==========
+# How To Create A Game Like Tiny Wings with Cocos2D 2.X Part 1
+
+Learn how to create a game like Tiny Wings with Cocos2D 2.X in this tutorial series – including dynamic terrain generation and game physics! By Ali Hafizji.
+
+### Sign up/Sign in
+
+With a free Kodeco account you can download source code, track your progress, bookmark, personalise your learner profile and more!
+
+Create account
+
+Already a member of Kodeco? Sign in
+
+## Contents
+
+## How To Create A Game Like Tiny Wings with Cocos2D 2.X Part 1
+
+20 mins
+
+Update 5/18/2013 Fully updated for Cocos2D 2.X. (original post by Ray Wenderlich, update by Ali Hafizji).
+
+Tiny Wings is an extremely popular game by Andreas Illiger involving a bird who tries to fly by catching a ride on hills.
+
+At first glance, the gameplay of Tiny Wings looks very simple, but there are a lot of tricks going on under the hood. The hills and their textures are dynamically generated, and the game uses Box2D physics to simulate the movement of the bird.
+
+Due to the popularity of the game and the cool technical tricks within, a lot of developers have been curious about how things are implemented.
+
+Including you guys! You guys said you wanted this tutorial updated – well you want it, you got it! :]
+
+This tutorial series is based on an excellent demo project written by Sergey Tikhonov that demonstrates how to implement some of the trickiest features of Tiny Wings. Thanks Sergey!
+
+This tutorial series is split into three parts:
+
+0. Prerequisite: First review the How To Create Dynamic Textures with CCRenderTexture in Cocos2D 2.X tutorial, which shows you how to create the hill and background textures you’ll be using in this tutorial.
+1. Part 1: You are here! This part will show you how to create the dynamic hills that you’ll need for a game like Tiny Wings.
+2. Part 2: The second part will show you how to add the Box2D gameplay that you’ll need for a game like Tiny Wings.
+
+This tutorial assumes you are familiar with Cocos2D. If you are new to Cocos2D, you should check out some of the other Cocos2D tutorials on this site first.
+
+## Getting Started
+
+If you don’t have it already, download the sample project where you left off in the previous tutorial.
+
+Next, create a class for the terrain by going to File\New\New File, choosing iOS\Cocoa Touch\Objective-C class, and clicking Next. Name the class Terrain and make sure it it a subclass of CCNode. Click next and create the file.
+
+Then open up Terrain.h and replace its contents with the following:
+
+```
+@class HelloWorldLayer;
+
+@interface Terrain : CCNode
+
+@property (retain) CCSprite * stripes;
+- (void) setOffsetX:(float)newOffsetX;
+
+@end
+```
+
+Next you’re going to start implementing Terrain.m. I’m going to explain it step by step, so go ahead and delete everything currently in Terrain.m and add the following code section by section.
+
+```
+#import "Terrain.h"
+#import "HelloWorldLayer.h"
+
+#define kMaxHillKeyPoints 1000
+
+@interface Terrain() {
+    int _offsetX;
+    CGPoint _hillKeyPoints[kMaxHillKeyPoints];
+    CCSprite *_stripes;
+}
+@end
+
+@implementation Terrain
+
+@end
+```
+
+This declares an array called _hillKeyPoints where you’ll store all of the points representing the peak of each hill, and an offset for how far the terrain is currently being scrolled. Next add the following method in the implementation section.
+
+```
+- (void) generateHills {
+
+    CGSize winSize = [CCDirector sharedDirector].winSize;
+    float x = 0;
+    float y = winSize.height / 2;
+    for(int i = 0; i < kMaxHillKeyPoints; ++i) {
+        _hillKeyPoints[i] = CGPointMake(x, y);
+        x += winSize.width/2;
+        y = (random() % (int) winSize.height);
+    }
+
+}
+```
+
+This is a method to generate the key points for some random hills. This is an extremely simple implementation just so you can have a starting point.
+
+The first point is the left-side of the screen, in the middle along the y-axis. Each point after that moves half the width of the screen along the x-axis, and is set to a random value along the y-axis, from 0 up to the height of the screen.
+
+Next add the following methods below the
+
+```
+generateHills
+```
+
+method
+
+```
+- (id)init {
+    if ((self = [super init])) {
+        [self generateHills];
+    }
+    return self;
+}
+
+- (void) draw {
+
+    for(int i = 1; i < kMaxHillKeyPoints; ++i) {
+        ccDrawLine(_hillKeyPoints[i-1], _hillKeyPoints[i]);
+    }
+}
+```
+
+The
+
+```
+init
+```
+
+method calls
+
+```
+generateHills
+```
+
+to set up the hills, and the
+
+```
+draw
+```
+
+method simply draws lines between each of the points for debugging, so you can easily visualize them on the screen.
+
+```
+//Add these methods below the draw method
+- (void) setOffsetX:(float)newOffsetX {
+    _offsetX = newOffsetX;
+    self.position = CGPointMake(-_offsetX*self.scale, 0);
+}
+
+- (void)dealloc {
+    [_stripes release];
+    _stripes = NULL;
+    [super dealloc];
+}
+```
+
+Think about how the terrain moves - as our hero advances along the x-axis of the terrain, the terrain is sliding to the left. So we have to multiply the offset by -1 here - and don't forget to take into consideration the scale!
+
+Almost time to test this. Switch to HelloWorldLayer.mm and make the following changes:
+
+```
+// Add to top of file
+#import "Terrain.h"
+
+// Add inside @interface
+Terrain * _terrain;
+
+// Add inside onEnter BEFORE the call to genBackground
+_terrain = [Terrain node];
+[self addChild:_terrain z:1];
+
+// Add at bottom of update
+[_terrain setOffsetX:offset];
+
+// Modify genBackground to the following
+- (void)genBackground {
+
+    [_background removeFromParentAndCleanup:YES];
+
+    ccColor4F bgColor = [self randomBrightColor];
+    _background = [self spriteWithColor:bgColor textureWidth:IS_IPHONE_5 ? 1024:512 textureHeight:512];
+
+    CGSize winSize = [CCDirector sharedDirector].winSize;
+    _background.position = ccp(winSize.width/2, winSize.height/2);
+    ccTexParams tp = {GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT};
+    [_background.texture setTexParameters:&tp];
+
+    [self addChild:_background];
+
+    ccColor4F color3 = [self randomBrightColor];
+    ccColor4F color4 = [self randomBrightColor];
+    CCSprite *stripes = [self stripedSpriteWithColor1:color3 color2:color4
+                              textureWidth:IS_IPHONE_5 ? 1024:512    textureHeight:512 stripes:4];
+    ccTexParams tp2 = {GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_CLAMP_TO_EDGE};
+    [stripes.texture setTexParameters:&tp2];
+    _terrain.stripes = stripes;
+
+}
+```
+
+Note this sets the stripes texture on the Terrain to a new random stripes texture each time you tap, which is handy for testing.
+
+Also, when calling
+
+```
+setTextureRect
+```
+
+on _background in update, you might wish to multiply the offset by 0.7 to get the background to scroll slower than the terrain.
+
+And that's it! Compile and run your code, and now you should see some lines drawn across the scene representing where the tops of your hills will eventually be:
+
+As you watch your hills scroll by, you'll probably realize pretty quickly that these wouldn't work very well for a Tiny Wings game. Due to picking the y-coordinate randomly, sometimes the hills are too big and sometimes they are too small. There's also not enough variance in the x-axis.
+
+But now that you have this test code working and a good way to visualize and debug it, it's simply a matter of dreaming up a better algorithm!
+
+You can either take a few moments and come up with your own hill algorithm, replacing the code in
+
+```
+generateHills
+```
+
+, or you can use Sergey's implementation, shown in the next section!
+
+========== PAGE 2 ==========
+# How To Create A Game Like Tiny Wings with Cocos2D 2.X Part 1
+
+Learn how to create a game like Tiny Wings with Cocos2D 2.X in this tutorial series – including dynamic terrain generation and game physics! By Ali Hafizji.
+
+## A Better Hills Algorithm
+
+If you choose to use Sergey's implementation, replace
+
+```
+generateHills
+```
+
+in Terrain.m with the following:
+
+```
+- (void) generateHills {
+
+    CGSize winSize = [CCDirector sharedDirector].winSize;
+
+    float minDX = 160;
+    float minDY = 60;
+    int rangeDX = 80;
+    int rangeDY = 40;
+
+    float x = -minDX;
+    float y = winSize.height/2;
+
+    float dy, ny;
+    float sign = 1; // +1 - going up, -1 - going  down
+    float paddingTop = 20;
+    float paddingBottom = 20;
+
+    for (int i=0; i<kMaxHillKeyPoints; i++) {
+        _hillKeyPoints[i] = CGPointMake(x, y);
+        if (i == 0) {
+            x = 0;
+            y = winSize.height/2;
+        } else {
+            x += rand()%rangeDX+minDX;
+            while(true) {
+                dy = rand()%rangeDY+minDY;
+                ny = y + dy*sign;
+                if(ny < winSize.height-paddingTop && ny > paddingBottom) {
+                    break;
+                }
+            }
+            y = ny;
+        }
+        sign *= -1;
+    }
+}
+```
+
+The strategy in this algorithm is the following:
+
+* Increment x-axis in the range of 160 + a random number between 0-40
+* Increment y-axis in the range of 60 + a random number between 0-40
+* Except: reverse the y-axis offset every other time.
+* Don't let the y value get too close to the top or bottom (paddingTop, paddingBottom)
+* Start offscreen to the left, and hardcode the second point to (0, winSize.height/2), so there's a hill coming up from the left offscreen.
+
+Compile and run, and now you'll see a much better hill algorithm, that looks like maybe a properly motivated seal might be able to fly off these!
+
+## Drawing Part at a Time
+
+Before you go much further, you need to make a major performance optimization. Right now, you're drawing all 1000 key points of the hills, even though only a few of them are visible on the screen at once!
+
+So you could save a lot of time by simply calculating which key points to display based on the screen area, and display just those, as you can see below:
+
+Let's try this out. Start by adding two instance variables to Terrain.m:
+
+```
+int _fromKeyPointI;
+int _toKeyPointI;
+```
+
+Then add a new method called
+
+```
+resetHillVertices
+```
+
+above the
+
+```
+init
+```
+
+method
+
+```
+- (void)resetHillVertices {
+
+    CGSize winSize = [CCDirector sharedDirector].winSize;
+
+    static int prevFromKeyPointI = -1;
+    static int prevToKeyPointI = -1;
+
+    // key points interval for drawing
+    while (_hillKeyPoints[_fromKeyPointI+1].x < _offsetX-winSize.width/8/self.scale) {
+        _fromKeyPointI++;
+    }
+    while (_hillKeyPoints[_toKeyPointI].x < _offsetX+winSize.width*12/8/self.scale) {
+        _toKeyPointI++;
+    }
+
+}
+```
+
+Here you loop through each of the key points (starting with 0) and look at their x-coordinates.
+
+Whatever the current offset is set to, maps to the left edge of the screen. So you take that and subtract the winSize.width/8. If the value is less than that, you keep advancing till you find one that's greater. That's your from keypoint, a similar process is followed for the toKeypoint.
+
+Now let's see if this works! Modify your
+
+```
+draw
+```
+
+method to the following:
+
+```
+- (void) draw {
+
+    for(int i = MAX(_fromKeyPointI, 1); i <= _toKeyPointI; ++i) {
+        ccDrawColor4F(1.0, 0, 0, 1.0);
+        ccDrawLine(_hillKeyPoints[i-1], _hillKeyPoints[i]);
+    }
+
+}
+```
+
+Now instead of drawing all of the points, you only draw the visible ones by using the indices you calculated earlier. You also change the color of the line to red to make it a bit easier to see.
+
+Next make a few more mods to Terrain.m to call
+
+```
+resetHillVertices:
+```
+
+```
+// Add at bottom of init
+[self resetHillVertices];
+
+// Add at bottom of setOffsetX
+[self resetHillVertices];
+```
+
+One more thing - to make this easy to see, go to the bottom of your onEnter method in HelloWorldLayer.mm and add the following:
+
+```
+self.scale = 0.25;
+```
+
+Compile and run your code, and you should see the line segments pop in when it is time for them to be drawn!
+
+## Making Smooth Slopes
+
+So far so good, but there is one big problem - those don't look like hills at all! In real life, hills don't go up and down in straight lines - they have slopes.
+
+But how can you make your hills curved? Well one way to do it is with our friend cosine that we learned about back in high school!
+
+Note: This tutorial covers the basics of trigonometry that you need to know to make this game, but if you'd like to learn more, check out our Trigonometry for Game Programming series!
+
+As a quick refresher, here's what a cosine curve looks like:
+
+So it starts at 1, and every PI it curves down to -1.
+
+But how can you make use of this function to create a nice curve connecting the keypoints? Let's think about just two of them, as shown in the diagram below:
+
+First, you need to draw the line in segments, so you'll create one segment every 10 points. Similarly, you want a complete cosine curve, so you can divide PI by the number of segments to get the delta angle at each point.
+
+Then, you'll want to map cos(0) to the y-coordinate of p0, and cos(PI) to the y-coordinate of p1. To do this, you'll call cos(angle), and multiply the result by half the distance between p1 and p0 (called ampl in the diagram).
+
+Since cos(0) = 1 and cos(PI) = -1, this gives us ampl at p0 and -ampl at p1. You can add that to the position of the midpoint to give you the y-coordinate you need!
+
+Let's see what this looks like in code. First add the definition of the segment length to the top of Terrain.m:
+
+```
+#define kHillSegmentWidth 10
+```
+
+Then add the following to your draw method, right after the call to
+
+```
+ccDrawLine
+```
+
+:
+
+```
+ccDrawColor4F(1.0, 1.0, 1.0, 1.0);
+
+CGPoint p0 = _hillKeyPoints[i-1];
+CGPoint p1 = _hillKeyPoints[i];
+int hSegments = floorf((p1.x-p0.x)/kHillSegmentWidth);
+float dx = (p1.x - p0.x) / hSegments;
+float da = M_PI / hSegments;
+float ymid = (p0.y + p1.y) / 2;
+float ampl = (p0.y - p1.y) / 2;
+
+CGPoint pt0, pt1;
+pt0 = p0;
+for (int j = 0; j < hSegments+1; ++j) {
+
+    pt1.x = p0.x + j*dx;
+    pt1.y = ymid + ampl * cosf(da*j);
+
+    ccDrawLine(pt0, pt1);
+
+    pt0 = pt1;
+
+}
+```
+
+This runs through the strategy we outlined in the diagram above. Take a minute and think through the code and make sure you understand how this works, because you'll be building on this from here.
+
+One last thing - you don't need to zoom out anymore, so back in HelloWorldLayer.mm replace the scale in init back to 1.0:
+
+```
+self.scale = 1.0;
+```
+
+Compile and run, and now you should see a curvy line connecting the hills!

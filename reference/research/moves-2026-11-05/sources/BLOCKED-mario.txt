@@ -1,0 +1,11 @@
+Blocked / unusable pages for the mario fetch helper, 2026-11-05 (TinyFish fetch_content)
+
+https://www.gamedeveloper.com/design/the-secret-to-mario-level-design -- redirected to the generic gamedeveloper.com/design index (wrong slug); the real article is at /design/the-secret-to-i-mario-i-level-design and was saved.
+https://www.gdcvault.com/play/1015833/Thinking-in-3D-The-Development -- only the session abstract is public; video is members-only ("maximum users allowed for this account has been reached"). No transcript or slides found. Abstract saved as mario-gdcvault-thinking-in-3d.txt.
+https://www.youtube.com/watch?v=dBmIkEvEBtA -- returned only YouTube footer text (164 chars); no transcript.
+https://amara.org/videos/C3EjNnCn5QqI/en/ -- HTTP 403 (target_http_error). (Video id guessed from a truncated "amara.org/v/C3..." link in the YouTube description snippet; may also be the wrong id.)
+https://youtubetranscript.com/?v=dBmIkEvEBtA -- returned only the site's placeholder landing text, no transcript.
+https://www.youtube-transcript.io/videos/dBmIkEvEBtA -- returned only site chrome, no transcript.
+https://iwataasks.nintendo.com/interviews/3ds/super-mario-3d-land/1/5/ -- HTTP 403. Probably does not exist (Volume 2 page 5 is the closing "Lastly..." page).
+https://iwataasks.nintendo.com/interviews/3ds/super-mario-3d-land/1/6/ -- HTTP 403. Probably does not exist.
+Not attempted / not found: any Polygon or Kotaku write-up of the GDC 2012 talk quoting Hayashida on gimmick counts or return spacing; no source found that gives a number of gimmicks per course or a spacing rule for when a gimmick returns.

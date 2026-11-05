@@ -1,0 +1,46 @@
+URL: https://www.mariowiki.com/Chargin%27_Chuck_Blockade
+URL: https://www.mariowiki.com/Big_Galoomba_Blockade
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Chargin' Chuck Blockade / Big Galoomba Blockade (two short pages saved together)
+---
+(Stripped: site navbox, "Names in other languages" tables, reference lists.)
+
+=== https://www.mariowiki.com/Chargin%27_Chuck_Blockade ===
+
+| Chargin' Chuck Blockade | |
+| --- | --- |
+| Level code | World 1-A |
+| World | World 1 |
+| Games | Super Mario 3D World, Super Mario 3D World + Bowser's Fury |
+| Time Limit | 200 seconds |
+| Music track | Blockade |
+| Level progression | Previous: Koopa Troopa Cave; Next: Mount Beanpole |
+
+Chargin' Chuck Blockade, otherwise known as World 1-A, is the Enemy Course of World 1 in Super Mario 3D World and its Nintendo Switch port Super Mario 3D World + Bowser's Fury. The course consists of two Chargin' Chucks in a yellow caged room.
+
+## Green Star
+
+Present after the Chargin' Chucks in the course are defeated.
+
+=== https://www.mariowiki.com/Big_Galoomba_Blockade ===
+
+| Big Galoomba Blockade | |
+| --- | --- |
+| Level code | World 2-A |
+| World | World 2 |
+| Games | Super Mario 3D World, Super Mario 3D World + Bowser's Fury |
+| Time Limit | 200 seconds |
+| Music track | Blockade |
+| Level progression | Previous: Really Rolling Hills; Next: Double Cherry Pass |
+
+Big Galoomba Blockade, otherwise known as World 2-A, is the Enemy Battle of World 2 in Super Mario 3D World and its Nintendo Switch port Super Mario 3D World + Bowser's Fury. The course takes place on a small piece of rock surrounded by lava, and the enemies in this course are three Big Galoombas.
+
+## Green Star
+
+Present after the Big Galoombas in the course are defeated.
+
+## Enemies
+
+| Name | Count |
+| --- | --- |
+| Big Galoomba | 3 |

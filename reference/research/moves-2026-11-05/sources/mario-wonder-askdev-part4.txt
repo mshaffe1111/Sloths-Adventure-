@@ -1,0 +1,82 @@
+URL: https://www.nintendo.com/us/whatsnew/ask-the-developer-vol-11-super-mario-bros-wonder-part-4/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Ask the Developer Vol. 11, Super Mario Bros. Wonder—Part 4 - News - Nintendo Official Site
+---
+# Ask the Developer Vol. 11, Super Mario Bros. Wonder—Part 4
+
+* This article has been translated from the original Japanese content.
+* Some of the images and videos shown in text were created during development.
+
+In this eleventh volume of Ask the Developer, an interview series in which Nintendo developers convey in their own words Nintendo's thoughts about creating products and the specific points they are particular about, we're talking to the developers behind the *Super Mario Bros.™ Wonder* game for the Nintendo Switch™ system, which launches on Friday, **October 20**.
+
+---
+
+## Check out the rest of the interview:
+
+---
+
+## **Part 4: A casual connection**
+
+**In this title, there’s a feature in which other players are displayed as live player shadows during online play (19). Is this designed to give people the feeling of playing together with others?**
+
+**(19)** *Any Nintendo Switch Online membership (sold separately) and Nintendo Account required for online features. Membership auto-renews after initial term at the then-current price unless canceled. Not available in all countries. Internet access required for online features. Terms apply.* *nintendo.com/online*
+
+**Mouri:** From the initial concept, we wanted to develop a Mario game that's also fun to play online. However, while playing online with people from around the world can be fun, we believe there are also some challenges. For example, in competitive games, more-skilled players can have multiple wins and feel satisfied, while newcomers give up early because they keep losing. In co-op games, those who aren't skilled at games can drag the team down. Also, there's a very small percentage of players who behave inappropriately and cause trouble. I’ve always wanted to create fun online gameplay, free from those sorts of worries. That's how we landed on the key phrase “a casual connection.”
+
+**A casual connection? Can you elaborate on that?**
+
+**Mouri:** Basically, you can enjoy the game as if you're playing solo. You don’t have to be on standby while you’re matched up with other players; matching takes place automatically behind the scenes during single player, so there’s no waiting around. If someone in the world is playing the same course as you at the same time, you can connect and play online together. And so, we came up with ideas to form this casual connection with players worldwide. We call other online players "live player shadows," and if you greet them, they might greet you back, give you an extra item if they have one, or even help you when you make a mistake. But they can't attack or disturb you. We wanted to create gameplay where only things that benefit the player can happen, and that resulted in the current design.
+
+**Indeed, with the current design, you don’t have to worry about someone else being there and can focus on enjoying the course.**
+
+**Mouri:** Because you can connect with players around the world, we thought it’d be good to have lots of characters to choose from. This is one of the reasons why we decided to have the 12-character lineup from the initial stage of development. Even the world map is designed with the idea that players from all over the world keep popping up and wander around together freely.
+
+**I have the impression that ever since New Super Mario Bros. Wii, 2D Mario games have been associated with the idea of "playing together." Did you make a conscious effort in this title to demonstrate the evolution of this concept?**
+
+**Mouri:** Yes, we were very conscious of creating a variety of ways to enjoy multiplayer. "Not only can you enjoy online multiplayer, but up to four players can play together in local co-op (20) as in the previous titles, and as a new feature of local multiplayer, if someone is playing as Yoshi, you can even ride on their back.
+
+**(20)** *Additional accessories may be required for multiplayer mode. Sold separately.*
+
+**Hayashida:** In this title, Yoshis can carry other players on their backs, so I’d be especially happy to see parents and kids playing together. If parents are better at games than their kids, they can play as Yoshi and carry their kids on their backs.
+
+**Mouri:** No one has to fight over who gets to be the princess this time, since Peach and Daisy are both playable characters! Those are the sorts of things we paid attention to so that everyone can play together.
+
+**In the** **Ask the Developer interview featuring Pikmin 4****, I remember Miyamoto-san commenting that he’d love to see the game being played in the living room. Listening to everyone's stories today, I can imagine this game being played by families in the living room too.**
+
+**Mouri:** Yes, I agree. I'd love to see everyone playing this game together with their family as well. I hope newcomers try joining in as Yoshi or Nabbit, who don’t take damage. If you play in local co-op, lives are shared among the group, so you can play the game with a sense of togetherness to help one another. Even if one person makes a mistake, your group won’t lose a life immediately as long as somebody comes to their rescue by the count of five, during which they appear as a ghost. I think it's become easier to play with others.
+
+**Tezuka:** Looking at the team members playing this game, everyone was having fun and shouting with excitement, even more so than I've seen in previous multiplayer games, and this filled me with confidence that this feature can be highly recommended.
+
+**Mouri:** If you’re playing in local co-op, discussing and choosing a badge together adds to the fun. You can ramp up the challenge with badges like Invisibility or Jet Run. Conversely, it can also be fun to discuss with everybody the most effective badge to take on a challenging course. Being able to choose any course on the world map may be another exciting element. I also recommend being bold and picking a challenging course or a badge that ups the difficultly for multiplayer and enjoying the chaos that ensues.
+
+**I see that you paid a lot of attention to making this a fun multiplayer experience as well as creating an enjoyable casual connection online with players around the world. Let's conclude this volume with a closing remark from everyone.**
+
+**Kondo:** This new Mario title has so much new gameplay, and I think we accomplished Tezuka-san's goal of creating a foundation for future 2D Mario games. From a sound perspective, there's a badge called Rhythm Jump where you jump on every fourth beat. This feels satisfying in any course, so I hope everyone will try it out. And lastly, I think the casual connection during online play is the most significant innovation we've made for this title. I have a Nintendo Switch Online membership, but I’m no good at competing, so I’ve mainly been playing NES games that don't involve online matches… (Laughs) But with this casual connection, I feel more comfortable stepping into the world of online this time.
+
+**Sato:** We've made each character's facial expressions, including Mario's, much richer to convey their charm. If you look closely, I’m sure you’ll keep discovering new things, like, “Oh, they move like that too?” And the adventure takes place in the all-new location of the Flower Kingdom, so I hope everyone will enjoy a fresh 2D Mario experience. I hope you'll pay attention to those details as well, and it would be great if you got more interested in 2D Mario games and the Mario characters as a result.
+
+**Hayashida:** In the same year that Nintendo Switch launched, the 3D Mario title Super Mario Odyssey was released, and I'm sure for some, that game was their first Mario experience. I hope this game will be a good opportunity for those players to discover the fun of 2D Mario games. Personally, I think we've created a game where the surprises keep on coming and the fun never stops—and one which will satisfy even those with happy memories of playing 3D Mario games. Also, the world map for this game is in 3D, and it's open for exploration. Some team members were also involved in the development of 3D Mario games, and we worked on the map together. So I hope everyone will spend some time exploring it. What's more, there’s a hidden character who appears in some of the recent 3D Mario games, so please try looking for them.
+
+**Mouri:** Above all, I really hope everyone will play this game their way. Whether you play solo, in local co-op, or online, how you play is entirely up to you. You're free to choose any course and whether or not you activate the Wonder effect during the course. And, naturally, it's up to you which badge to equip. If you find it too difficult, try picking Yoshi or Nabbit, who don’t take any damage, or you could go online, where I’m sure you'll find other players who'll help you out since it's only possible for them to do things that benefit you. Please give it a go and try to clear the game.
+
+**Tezuka:** As for the online play, there’s a Free 7-day Trial of Nintendo Switch Online Individual Membership (21) for new customers, so I hope you'll experience it for yourself. We’ve talked about 2D Mario versus 3D Mario, but I hope people will ditch any preconceptions they may have and give it a go. We will continue to create Mario gameplay, regardless of whether it's 2D or 3D, so I hope everyone will continue to enjoy it. And also, we were talking about my tendency to ask the impossible (laughs), but as Kondo-san mentioned, in order to create fun gameplay within the limitations of the hardware, it takes great creativity and ingenuity to go beyond those constraints. I believe fun gameplay is what comes out of such an environment. I hope to continue creating games while building a good relationship with other team members so that my "impossible" suggestions don't end up as such, but rather create opportunities for everyone to pitch in with their own solutions. Well, that last comment was directed at the development team members. (Laughs)
+
+**(21)** *Nintendo Switch Online membership (sold separately) and Nintendo Account required for online features. Free trial automatically converts to 1-month auto-renewing membership at the then-current price unless automatic renewal is turned off by the end of the free trial. Credit card/PayPal account required for 18+. Free trial cannot be redeemed for a Nintendo Switch Online – Expansion Pack membership nor by a Nintendo Account with an active Individual Membership or Family Membership. Not available in all countries. Internet access required for online features. Terms apply.* *nintendo.com/online*
+
+**Sato:** That reminds me, I wrote down some of the things that Tezuka-san said during development on sticky notes and kept them on my desk. I brought them with me today.
+
+**Tezuka:** Really? (Laughs)
+
+**Sato:** I think what he just said is related to what’s on the sticky notes.
+
+**Tezuka:** Yeah, all of what's written here has been achieved!
+
+**Hayashida:** Curiously enough, when you bounce ideas off each other, it leads to even more ideas. I've grown confident that there's still so much more Mario gameplay that we can create.
+
+**Tezuka:** Mario games have a bright future ahead of them!
+
+**The world of Mario has evolved in this iteration with new changes and discoveries. I look forward to enjoying it with everyone. Thank you very much!**
+
+Mild Fantasy Violence
+
+In-Game Purchases

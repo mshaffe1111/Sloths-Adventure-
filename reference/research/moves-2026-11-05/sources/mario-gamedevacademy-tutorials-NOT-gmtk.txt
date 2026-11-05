@@ -1,0 +1,102 @@
+URL: https://gamedevacademy.org/game-tutorials-guide/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Game Design: Making Intuitive Tutorials For Your Games - GameDev Academy
+NOTE: the Transcript on this page is GameDev Academy's own course video, NOT the GMTK video; it only links the GMTK video.
+---
+***You can access the full course here: Intro to Game Design***
+
+### Creating In-Game Tutorials
+
+In creating our games, we always need to keep in mind how we’re going to teach the player the mechanics of the game. How are we going to teach them how to control the player, how to engage with the game’s systems, and what the story of the game is?
+
+Probably the easiest way of teaching the player is through **Text Tutorials**.
+
+#### Text Tutorials
+
+These are pop-up text boxes (as shown below from *The Witcher 3*) that tell you what to do, which is the easiest way of teaching the player but also the worst in the sense that it can take you out of the experience. It takes away all of the amazing opportunities you have to add in tutorials based on the design of your levels and how intuitive they are.
+
+The Witcher 3: Wild Hunt © CD Projekt Red
+
+#### When to Use Them?
+
+Text boxes should be used in games with complex mechanics, e.g. strategy games. In strategy games, such as *Crusader King’s 3,* it’s generally not easy to intuitively figure out game mechanics without text instructions.
+
+Crusader Kings III © Paradox Interactive
+
+To teach through the level design and the mechanics themselves being intuitive, we need to stick to this **Three-step process**.
+
+#### 3 Step Process
+
+In the first step, we introduce the mechanic to the player in a **safe environment**. The player should not be in danger, and there are no other distractions present. If it’s something like an enemy, we’ll see the enemy and preview what the enemy is going to do in a scripted encounter.
+
+The next step of the process is to allow the player to use the mechanic in a **real situation**. The player should now be able to interact with the mechanic as they would normally. There may be a danger now where they can be damaged.
+
+And the third step is to combine the mechanic with others. This allows the player to further understand the **emergent systems** of your game. If your game is quite emergent with various turn systems that can interact with each other, then this is a great step to add as it can further reinforce both the new mechanic and the old mechanic that is now interacting.
+
+#### Example: Half-Life 2
+
+*Half-Life 2* is a great example of teaching the player through the game’s design. The only time text appears on screen is telling you what buttons to press to move, jump, and shoot. Apart from that, all of the game’s emergent systems are taught to you through the levels themselves, and through actually interacting with them.
+
+The enemy called **Barnacle** hangs from ceilings and pulls up anything that touches it. So how is this taught to us in the game?
+
+The first time the barnacle appears in the game is when it is displayed to the player through a **scripted encounter**. A bird flies into the barnacle’s tentacle, which then sucks it up. So in this case, the player is not in danger at all when they learn about the danger of barnacles.
+
+Half-Life 2 © Valve
+
+Not too long after this moment, we have the third step, which has a large number of barnacles that the player cannot cross nor shoot, so their only choice is to pick up **explosive barrels** and throw them into the barnacles. Then the player will see the barnacle eating this explosive barrel and killing all of the other barnacles around it. The player now has a more refined knowledge of these two systems.
+
+Half-Life 2 © Valve
+
+So this is how Half-Life 2 uses this three-step process in teaching us a mechanic without necessarily having a text box appear and listing out exactly what it does. Whilst they could’ve explained that in a text box, the level is set up in a way so that the player has to be the one engaging with the mechanic to learn it, thus magnifying the experience of discovering it by the player themselves.
+
+Half-Life 2 © Valve
+
+#### Challenge!
+
+* Think of a game you’ve played recently.
+* How were the game’s systems and mechanics taught to you?
+* What improvements would you make to the tutorial?
+
+As a bit of a challenge, go ahead and think of a game you’ve played recently, and then think about how the game’s systems and mechanics were taught to you.
+
+#### Want to Learn More?
+
+If you want to learn more, you can look into the video by Game Maker’s Toolkit on how a similar process is done in Super Mario 3D Worlds. And if you haven’t played Half-Life 2 already, we highly recommend it as the entire game is filled to the brim with great game design decisions.
+
+[Video] **Super Mario 3D World’s 4 Step Level Design** by Game Maker’s Toolkit
+
+* https://www.youtube.com/watch?v=dBmIkEvEBtA
+
+### Transcript
+
+In creating our games, we always need to keep in mind how we are going to teach the player the mechanics of the game okay? How are we gonna teach them how to control the player, how are we gonna teach them how to engage with the game systems and what the story of the game is. Well, this can be done for a number of different methods.
+
+Probably the most easiest method of this is through text tutorials okay? These are pop-up text boxes that tell you what to do. Now, this is the easiest way of teaching the player but it’s also probably the worst in the sense that it can take you out of the experience and it takes away all the amazing opportunities you have to add in tutorials based on the design of your levels and how intuitive they are okay?
+
+Now with text tutorials there are cases where they should be used for example, in strategy games. It’s normally not that easy to intuitively figure out strategy game mechanics, so in those cases, then they are probably needed as well as more complex game mechanics that can not be taught for the level of design.
+
+But what do I mean about teaching through the level design and the mechanics themselves being intuitive? Well, there is a three-step process and many games follow this three-step process. If you’ve ever played a game where a mechanic is introduced to you, then there is a chance that this is what has happened okay?
+
+So first step we teach the player the mechanic in a safe environment, okay? The player is not in danger and there are no other distractions present. Normally if it’s something like an enemy we’ll see the enemy and we’ll actually be able to preview what the enemy is gonna do in a scripted encounter. So maybe another NPC will go out and the enemy will defeat them in a certain way so that we then know, okay, this is how the enemy functions, let’s go in and use that knowledge against them.
+
+The next step of the process is allow the player to use the mechanic in a real situation, and the player is now able to interact with the mechanic as they would normally okay? So there is that danger now where they can be damaged or they will be affected by it, but hopefully in the previous step they now have informed themselves on what this mechanic is and how it can be used.
+
+And the third step is to combine the mechanic with others and this allows the player to further understand the emergent systems of your game. If your game is quite emergent with various turn systems that can interact with each other then this is a great step to add as it can further reinforce both the new mechanic and the old mechanic that is now interacting.
+
+So, let’s look at Half-Life 2 because Half-Life 2 is a great example of both game design and teaching the player for the game design itself okay? If you’ve ever played Half-Life 2 before you’ll notice that the only time text appears on screen is telling you what buttons depressed to move, to jump and to shoot. Apart from that, all of the games emergent systems are taught to you through the levels themselves and through actually interacting with them.
+
+So let’s look at the Half-Life 2 barnacle enemy, okay? This enemy hangs from ceilings and pulls up anything that touches it. So how is this taught to us in game? The first time the barnacle appears in the game its mechanic is displayed to the player through a scripted encounter. A bird actually flies into the barnacles tentacle which then sucks it up. So in this case, the player is not in danger at all, they see this and they then realize, okay, if an object or a person interacts with the barnacle it will begin to suck them up.
+
+So the player now has this knowledge. So the next time they interact with the barnacle it is now in a situation where they can choose to either avoid the barnacle or go ahead and try and shoot it down okay? And there is that danger of them being grabbed. And then later on, not too long after this moment we have the third step, which has a large amount of barnacles that the player can not cross and cannot shoot.
+
+So their only choice is to actually pick up these explosive barrels and throw them into the barnacles. And what the player finds out then is that when the barnacle basically eats this explosive barrel it explodes killing all of the other barnacles around it okay? So the player now has a much more refined knowledge of these two systems okay? He knows the barnacle can pick up any object and it will eat it, so it’ll interact with it and the play also knows that, okay, these explosive barrels can be used against these barnacles.
+
+So this is how Half-Life 2 uses this three-step process in actually teaching us a mechanic without necessarily having a text box appear and listing out exactly what it does okay? It could have done that, it could have said, “Okay, this is the barnacle, “it sucks things up when it touches the tentacle. “If you throw an explosive barrel in it, “it’ll also explode”. Now they could have done that and it might’ve been easier for the player to notice that at the start but at the same time, it doesn’t give that player the experience of discovering it by themselves. The level is set up in a way so that the player has to be the one engaging with the mechanic in order to learn it okay?
+
+So the three-step process, again we have the first step, which is teach the player the mechanic in a safe environment, like we have here. We then allow the player to use the mechanic in a real situation and we then combine the mechanic with others okay? Further reinforcing the emergent systems of their game.
+
+As a bit of a challenge, I want you to think of a game you’ve played recently and then think to yourself how was the game’s systems and mechanics taught to you, okay? There is obviously mechanics in games and systems that you learned, how did you learn those? And what improvements would you make to the tutorial okay? Would you remove the text and somehow integrate a much more Half-Life 2 style of teaching, where it has a three-step process of teaching you in a safe environment, then teaching you the mechanic in a normal environment, and then teaching you how to combine different systems together okay?
+
+So if you wanna learn more, there’s a great video by Game Maker’s Toolkit on how a similar process is done in Super Mario 3D Worlds and if you haven’t played Half-Life 2 already I highly recommend it as the entire game is filled to the brim with great game design decisions, it’s an immersive experience, and it has many moments where it teaches the player new mechanics, just like it done with the barnacle okay? So it’s a great game to analyze and to further reinforce your game design principles. Thank you for watching.
+
+**Interested in continuing?  Check out our all-access plan which includes 250+ courses, guided curriculums, new courses monthly, access to expert course mentors, and more!**

@@ -1,0 +1,49 @@
+URL: https://www.vg247.com/donkey-kong-country-tropical-freeze-full-e3-interview
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Donkey Kong Country Tropical Freeze Full E3 Interview (USgamer via VG247, Jeremy Parish, Jun 27, 2013)
+---
+[OMITTED FOR LENGTH (not saved verbatim): the middle Q&A on Rare's Twycross studio, Jungle Beat ground-pound, Mario/DK 2D-vs-3D history, Dixie/third-character guessing, Stanley the Bugman, and the image captions. Kept verbatim below: the intro and the Q&As on what is different, camera and level design, core mechanics, difficulty, and closing goals.]
+
+This article first appeared on USgamer, a partner publication of VG247. Some content, such as this article, has been migrated to VG247 for posterity after USgamer's closure - but it has not been edited or further vetted by the VG247 team.
+
+This year at E3, we met with Donkey Kong Country Tropical Freeze producer Kensuke Tanabe, director Risa Tabata, and Retro Studios' Michael Kelbaugh shortly after the announcement of the game to discuss their unexpected Donkey Kong sequel. Among our topics: Its secret Super Mario Bros. 2 connection, Shigeru Miyamoto's ever-present influence, and love for Stanley the Bugman.
+
+USgamer: What's different about this game, as far as differences over the original and of course over the Super NES games?
+
+Kensuke Tanabe: As you heard in our software showcase explanation earlier, one thing we're doing is camera work. Compared to the traditional side-scrolling camera, we're using what we call a rotating camera, which allows you to see things from different angles. Having the rotating camera itself isn't anything rare or unusual, but how it impacts gameplay I think really is for us. If you've played the demo, you've seen what I'm talking about.
+
+USG: Yeah. I've seen the rotating camera style done in two- or two-and-a-half-dimensional platformers since the PlayStation days, with games like Klonoa. But I'm curious about, as developers – how have you felt this impacting your approach to the level design and the things you put into the game?
+
+Risa Tabata: One thing we found that's bringing something completely different, although it may sound very simple… For example, if you're going along side-scrolling, you've got the camera here, and you're aiming at something, all you have is this axis. You're just aiming up or down. If you bring the camera back here, now you have the ability to hit targets moving left or right as well as up or down. The vertical and horizontal axes come into play. That's something that, again, impacts everything in gameplay.
+
+Michael Kelbaugh: We also had to fill more space with more stuff. Instead of just side-scrolling and shooting in the background and foreground, there are also elements in between them. From a level layout standpoint, it's allowed us to introduce more elements and use that space. It's not just background and foreground gameplay. We also take advantage of the real estate between them. It's a bigger experience. We have more stuff to incorporate into it.
+
+USG: Have you made any significant changes to the basic mechanics of the game? Are there things that you haven't mentioned in the demo that you're adding to help differentiate the core play from Donkey Kong Country Returns, or have you stuck to that as the baseline?
+
+KT: The basic core mechanics are pretty similar, I think. One thing that we've done that I think you'll find interesting, though it's not available on the show floor here, is that we've added Dixie as one of the buddy characters. Previously, you know, you could jump here, but if you have Dixie as your buddy and you jump, you'll be able to elevate a bit in mid-jump. I think just even adding that, as you're moving through obstacles and jumping from platform to platform and navigating your way through the field, you're going to see that just the addition of Dixie and that mid-jump elevation change brings a huge change to the gameplay. We also have the plucking.
+
+MK: I like plucking, because it's kind of an old-school feature that Tanabe worked on with Super Mario Bros. 2. When he said, "You know, it would be cool to put that into Freeze," I thought it would be a great kind of legacy feature that we'd love to bring back. I was really happy to see that.
+
+[... omitted section, see header ...]
+
+MK: When people say, "How come Donkey Kong Country Returns is so difficult," to me, I think, "You're crazy." You forget what the original Donkey Kong Country was like. It was a hard game. To us, we want to stay true to the franchise. The people that say, "This is really hard, this is really hard," they need to go back and play the original Donkey Kong Country, because the similarities as far as difficulty level is concerned are very close.
+
+[... omitted section, see header ...]
+
+RT: Well, not so much this time around. That story was from the making of Donkey Kong Country Returns on the Wii. I wonder if you remember, from that game, where Donkey Kong takes a deep breath and blows? That's Mr. Miyamoto. That came from him.
+
+MK: When we first started… He didn't just give it to us. We had to earn it, right? We had to put together demos. We had to prove ourselves worthy of the Donkey Kong franchise. I remember him saying, "This is my baby. You'd better get it right." This was before we started the demo. He was exceptionally passionate about Donkey Kong. Along the way, he'd give us tips and a little bit of advice. It was all about being able to prove whether or not Retro could handle continuing his vision.
+
+[... omitted section, see header ...]
+
+USG: What do you hope to accomplish with this game and with the series? What experience do you hope to provide that people have never seen before?
+
+RT: For myself, I knew that Retro was working on the rotating camera, but the first time I saw it, I believed it was on a micro-stage. I knew that the camera was implemented, but the first time I was able to experience it for myself, I actually went, "Whoa!" I was a little surprised. This is hypothetical, because I don't remember exactly, but if picture looking at a roller coaster, if you watch a roller coaster from the side doing this, you're going to get a completely different experience when all of a sudden you're looking at the roller coaster this way and doing this. The difference that illustrates is one of the differences we're bringing to the game with the camera.
+
+KT: As I think you know, this series is known as a difficult series. For the fans of the series, I don't want to betray that expectation of a real challenge. But of course, I want to make the game as accessible as I can to casual players, people who haven't had an opportunity to try the series yet.
+
+So one of the things that we've done is, we've taken a feature from the 3DS version of Donkey Kong Country Returns, which is the green balloon. We brought it back in this version. It basically allows the player, as you know, to fall to what is normally a loss of life. The green balloon lifts them up and they can place themselves where they want and let go. It gives the power to use or not use it to the player, though. Basically, we're just providing a system for players who want to use it if they want to. They can go purchase this item in-game and use it, but of course they don't have to. It's just giving those people a chance to get into the game a little easier and make it more accessible. You have the standard Donkey Kong challenge for our veteran players who are really into it, and we've got some aids that are available for people who maybe aren't as used to the series that will allow them to have some of the same experiences as other players.
+
+MK: I think as well, just due to the capabilities of the Wii U… It's quite a powerhouse. We've been able to do a lot of great stuff that we hadn't been able to do before. A lot of translucency in the ice. The water is just phenomenal. A lot of the shading technology that's new to the Wii U, a lot of the lighting. It's quite a box. We've been able to bring some really nice visuals to it that we couldn't before. I think people will really like seeing it in HD.
+
+RT: Underwater is fantastic. You saw that Donkey Kong does the breaststroke? Retro was very picky about getting that animation just right. Not only does it feel very natural, it feels really good to be in the water. You get that sense of resistance from the water. It feels like you're swimming. It looks great, but you also get that resistance. It's a good feel. That's something we didn't have in the old Super NES games.

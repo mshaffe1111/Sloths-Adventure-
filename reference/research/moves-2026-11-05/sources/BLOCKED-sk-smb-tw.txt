@@ -1,0 +1,9 @@
+Blocked / failed fetches by the sk/smb/tw fetch helper, 2026-11-05
+---
+https://www.yachtclubgames.com/blog/specter-of-torment-level-design-deep-dive-5-5/ : TinyFish page_not_found (404). Real URL is .../deep-dive-5-of-5/ (fetched OK).
+https://julian.togelius.com/Dahlskog2012Patterns.pdf : TinyFish target_unreachable over https (the http:// URL fetched OK).
+https://www.semanticscholar.org/paper/Patterns-and-procedural-content-generation%3A-Mario-1-Dahlskog-Togelius/9e896d6083ab72a368bec1dbe244defc159f07a5 : TinyFish bot_blocked.
+https://www.academia.edu/1768681/Patterns_and_Procedural_Content_Generation_Revisiting_Mario_in_World_1_Level_1 : fetched, but only abstract, figure captions and site boilerplate (no full text); not saved, full text came from julian.togelius.com instead.
+https://mau.diva-portal.org/smash/record.jsf?pid=diva2:1420357 : only an anti-bot (anubis) challenge page; no full text.
+curl (Bash) to yachtclubgames.com, killscreen.com, appagent.com : proxy CONNECT 403. curl to julian.togelius.com : could not resolve host. curl to raw.githubusercontent.com worked (VGLC files).
+NOT ATTEMPTED (time/budget): Dahlskog & Togelius 2014 "A multi-level level generator" (CIG 2014) and "Procedural content generation using patterns as objectives" (EvoGames 2014, Springer); Game Informer 2014 Shovel Knight feature; mariowiki World 1-1 page; superlevel.de / Making Games / TouchArcade / Pocket Tactics Illiger interviews.

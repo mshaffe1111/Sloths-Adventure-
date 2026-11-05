@@ -1,0 +1,33 @@
+URL: https://en.wikipedia.org/wiki/Rayman_Legends
+Read: 2026-11-05 by rayman/ori fetch helper (TinyFish fetch_content)
+Title: Rayman Legends - Wikipedia
+PARTIAL SAVE: the lead, infobox and Gameplay section are verbatim below. The Plot, Development, Reception, Remake, Notes, References and category sections were read but NOT transcribed here (off-topic for this research); re-fetch the URL for them.
+---
+# Rayman Legends
+
+| Rayman Legends |
+| --- |
+| Developer | Ubisoft Montpellier[a] |
+| Publisher | Ubisoft |
+| Director | Michel Ancel |
+| Producers | Abdelhak Elguess Pierre-Arnaud Lambert |
+| Designer | Emile Morel |
+| Programmer | Guillaume Gernez |
+| Artist | Jean-Christophe Alessandri |
+| Composers | Christophe Héral Billy Martin |
+| Series | Rayman |
+| Engine | UbiArt Framework |
+
+Rayman Legends is a 2013 platform game developed by Ubisoft Montpellier and published by Ubisoft. It is the fifth main title in the Rayman series and the direct sequel to the 2011 game Rayman Origins. The game was released for Microsoft Windows, PlayStation 3, Xbox 360, Wii U, and PlayStation Vita platforms in August and September 2013. PlayStation 4 and Xbox One versions were released on February 18, 2014,[3] with a Stadia version released in November 2021.[4] A Nintendo Switch port, titled Rayman Legends Definitive Edition, was released in North America, Europe and Australia on September 12, 2017.[5]
+
+Rayman Legends was announced at E3 2012 for Wii U and was planned for release during the console's launch window. However, the game was delayed to February 2013 in order to put the finishing touches to the game, and due to the financial failure of ZombiU, the release was delayed again by six months and the game was made multi-platform.
+
+Rayman Legends received critical acclaim upon release. Critics praised the game's visuals, level design, controls, soundtrack, overall gameplay, and the large amount of content. The game experienced slow sales on release but sold over a million copies by 2014. A remake, Rayman Legends Retold, is scheduled to be released on December 3, 2026.
+
+## Gameplay
+
+The game carries on the style of gameplay from Rayman Origins in which up to four players (depending on the format) simultaneously make their way through various levels. Lums can be collected by touching them, defeating enemies, or freeing captured Teensies. Collecting Teensies unlocks new worlds, which can be played in any order once they are available. Along with Rayman, Globox, and the Teensies returning as playable characters, players can now control the new female character Barbara the Barbarian Princess, her sister and their cousins, once they are rescued from certain stages.[6]
+
+In addition to the main playable characters, Murfy the greenbottle, who first appeared in Rayman 2: The Great Escape, appears as an assist character. Murfy can perform various actions such as cutting through ropes, activating mechanisms, grabbing hold of enemies and assisting in gathering Lums. These offer a range of levels in which co-operation is required to progress.[7] In the Wii U, PlayStation Vita, and PlayStation 4 versions of the game, an additional player can control Murfy directly with touch controls, using the Wii U GamePad, the Vita's front touch screen, and the DualShock 4 touchpad respectively.[8] In single-player mode, control will switch over to Murfy during certain sections whilst the computer controls the player's character.[9] In the PlayStation 3, Xbox 360, Xbox One, and PC versions of the game, Murfy moves automatically and can be prompted to interact with certain objects with button controls.[10] Other new features include sections where players can fire projectile fists at enemies and rhythm based levels set to covers of songs such as "Black Betty", "Eye of the Tiger", and "Woo-Hoo".
+
+The game features over one hundred twenty levels, including forty remastered levels from the original Rayman Origins, which are unlocked by obtaining Lucky Tickets, which can also win additional Lums and Teensies.[11] Some levels feature remixed 'Invaded' versions, which must be completed as quickly as possible. The game also offers daily and weekly challenge stages, in which players can compete with other players via leaderboards in challenges such as collecting a certain number of Lums in a short time or surviving the longest on a stage. More challenge stages can be accessed by raising the player's 'awesomeness' rating, which increases by collecting trophies earned by rescuing Teensies, collecting a high number of Lums in each level or by having a high leaderboard position at the end of a challenge. A local multiplayer football game, Kung Foot, is also featured, in which players use attacks to knock a football into the opponent's goal.

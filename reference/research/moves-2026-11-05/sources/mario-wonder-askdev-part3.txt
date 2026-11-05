@@ -1,0 +1,148 @@
+URL: https://www.nintendo.com/us/whatsnew/ask-the-developer-vol-11-super-mario-bros-wonder-part-3/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Ask the Developer Vol. 11, Super Mario Bros. Wonder—Part 3 - News - Nintendo Official Site
+---
+# Ask the Developer Vol. 11, Super Mario Bros. Wonder—Part 3
+
+* This article has been translated from the original Japanese content.
+* Some of the images and videos shown in text were created during development.
+
+In this eleventh volume of Ask the Developer, an interview series in which Nintendo developers convey in their own words Nintendo's thoughts about creating products and the specific points they are particular about, we're talking to the developers behind the *Super Mario Bros.™ Wonder* game for the Nintendo Switch™ system, which launches on Friday, **October 20**.
+
+---
+
+## **Check out the rest of the interview:**
+
+---
+
+## **Part 3: Complete it your way**
+
+**This is the first 2D Mario game in about 11 years, but I’m sure for some Nintendo Switch players, it'll be their first side-scrolling 2D Mario platformer. Did this influence the game's development?**
+
+**Hayashida:** We discussed a lot about what kind of 2D Mario would be appropriate for this day and age.
+
+**Tezuka:** We ventured into this project with a sense of crisis from the beginning.
+
+**A sense of crisis?**
+
+**Tezuka:** Compared to 3D Mario games, 2D Mario games may seem to have less visual variation and be more challenging to complete. But then we made a small discovery when developing the smartphone app Super Mario Run (15). One of the development team members who wasn't that skilled at Mario platformers told us, “I want to see more of the game, but I can't progress because I'm not that good at this type of game.”
+
+**(15)** A smartphone app released in December, 2016. Tap Mario as he continues to run, and aim for Bowser's Castle.
+
+**Sato:** I heard that, in the course where you need to jump on mushroom platforms consecutively at the start, this person kept falling into the pit.
+
+**Tezuka:** We didn’t think it was that challenging, so we hadn't realized you'd feel discouraged from continuing the game if it felt too difficult. So we started to think about what we could do to make players want to advance. Then we thought, maybe there isn't enough freedom. For example, I feel that Super Mario Odyssey is designed so that all players can reach the ending, no matter how they progress through the game.
+
+**Hayashida:** I think that this gameplay is adapted to modern times. Tezuka-san suggested we could perhaps use 3D Mario platformers as a reference point, since their gameplay is designed for players to reach the end.
+
+**I see. Here, too, you took inspiration from how 3D Mario games are developed.**
+
+**Tezuka:** I felt that 2D Mario games often had the reputation of being unforgiving. Compared to 3D Mario games, just one mistimed action can lead to a bigger mistake, since you have fewer options in terms of movement. In this game, we've changed that. We've designed it so that players can conquer the game with their ideas and use their heads, not just their skills, to progress.
+
+**Hayashida:** With all that in mind, we felt that a 2D Mario game adapted to the times would be one that you could complete your way. For example, up until now, 2D Mario games have been in a format where players complete each course in sequence. But in this title, players who want a challenge can start with a difficult course, and beginners can start with an easier one. Each course has its difficulty indicated too.
+
+We even implemented a method used in 3D Mario games by which you can unlock specific courses with key items that you collect. That key item is what’s called the Wonder Seed.
+
+You can obtain Wonder Seeds upon reaching the end of each course, but even if you can't complete a course, you can still buy them at the Poplin Shop by collecting flower coins.
+
+**Mouri:** We’ve also increased the number of playable characters to 12, and players can freely choose what ability to add to their own character.
+
+**Yoshi and Nabbit have slightly different abilities from the others in that neither takes damage, but Mario, Luigi, Peach, Daisy, and the others play the same, right? Was that intentional?**
+
+**Mouri:** Yes, some of the previous Mario games had different characteristics for each character. For example, Luigi could jump higher, and Peach could float. But that meant that there were things that could only be done with a specific character. If you wanted to jump higher, you'd have to choose Luigi. We wanted to remove that in this game so that players can pick their favorite character and ability. So, we kept characters and abilities separate by implementing a badge system, where players can attach a badge that has the ability they want to their favorite character.
+
+**Tezuka:** The badge system is packed with Mouri-san’s passion.
+
+**Mouri:** We ended up with over 20 different badges. These were the top picks from more than 50 prototypes. In fact, if a specific ability is tied to a character, players must choose that particular character depending on the course. So, it was difficult to apply an edgy ability. Since we were able to separate out abilities in the form of badges, not only can players equip badges that make it easier to clear courses, but we could also create abilities that let skilled players do challenge runs. For example, a badge that makes you run nonstop or one that makes your character invisible to both you and enemies.
+
+**So the freedom to switch badges broadens the gameplay possibilities, right?**
+
+**Mouri:** Some badges alter actions, like jumping higher after crouching, while others are aimed at beginners, like one that automatically bounces your character back out of pits. Switching badges lets you experience the same course differently or at varying difficulty levels. I think the game is designed to be cleared more easily, even for players who used to quit 2D Mario games halfway because they found them too difficult. It also led to a new gameplay element to collect badges. During multiplayer (16), different gameplay styles become available, like boldly choosing badges that require some skill. Everyone can become invisible, for example. (Laughs)
+
+**(16)** *Additional accessories may be required for multiplayer mode. Sold separately.*
+
+**Hayashida:** Come to think of it, at one point, Tezuka-san said, “I wonder if we can create a mechanism that lets you freely change the difficulty level during play.” At the time, I thought, “That’s impossible,” but I guess the badge system does the job, so it somehow worked out in the end. (Laughs)
+
+**Mouri:** Tezuka-san initially asked whether we could place a bar on the screen to adjust the difficulty level on the spot. I thought, there’s no way... (Laughs)
+
+**Do you mean the difficulty level of the entire course would change in real time? Indeed, that's hard to imagine. (Laughs)**
+
+**Tezuka:** Well, you never know, right? Maybe it’ll be in the next game.
+
+**Everyone:** (Laughs)
+
+**Sato:** I always had to be on my toes, since I never knew when Tezuka-san might show up and ask the impossible. (Laughs)
+
+**Mouri:** Tezuka-san also once asked, “Can’t we have live commentary?” I had absolutely no clue what he meant. (Laughs) But I interpreted it as a desire for a new experience, even if it’s not necessarily in the form of live commentary.
+
+**When you say live commentary, do you mean like in soccer or baseball games? You considered doing that in a Mario game?**
+
+**Hayashida:** We actually spent about six months seriously developing live commentary. We tried adding voices to match the player's actions. Even though we'd added various voices, questions like, “Who’s doing this commentary?” started to pop up amongst the team. Something about it just didn’t feel right. (Laughs)
+
+**Tezuka:** I was quite a fan of it. (Laughs)
+
+**Mouri:** Even the team was evenly split between those in favor and those against. (Laughs) The default voice was very generic, like a newscaster, but you had the option to switch it to a Tsundere (17) commentary.
+
+**(17)***Tsundere is an adjective term in Japanese that is used to describe a personality or a person who usually has a cold and harsh attitude but on the other hand shows a glimpse of affection.*
+
+**Wait, a Tsundere commentary?**
+
+**Mouri:** In fact, according to our play test records, quite a few people were switching to the Tsundere commentary. (Laughs)
+
+**Everyone:** (Laughs)
+
+**Tezuka:** But if we were to do this commentary feature seriously, just the process of creating voice variations alone would've involved a tremendous amount of work. So, unfortunately, we had to let it go.
+
+Still, it would've been a shame to shut down the whole experiment. So we brought in an additional team member to dedicate themselves to this feature full-time.
+
+**Mouri:** Around the same time, there was a discussion about setting the game in the Flower Kingdom, and we were able to incorporate the idea of live commentary in the form of Talking Flowers that would match the game's world. It's a version of live commentary that fits the world of Mario.
+
+**Hayashida:** It's nice that you're never lonely when the Talking Flowers are there. If you were all alone in a course, it might feel like it was you against the world, but the Talking Flowers speak to you at just the right time.
+
+**Sato:** They've got some funny lines like, “Make sure you're getting your veggies!” as a parent might say. (Laughs) I think it's a fun experience for those watching the player too.
+
+**Indeed, the Talking Flowers give hints during the course and say what the player might already be thinking. I think that's going to make it feel less of a lonely battle.**
+
+**Tezuka:** We thought the gameplay might be more enjoyable if the Talking Flowers speak to you and you can resonate with what they're saying. Of course, there's an option to turn off the chatter, but we hope as many people as possible will give it a listen.
+
+**Mouri:** And by making them something that exists in the course, we were able to create a new type of Mario gameplay. For example, searching for a hidden Talking Flower or catching a glimpse of one above you and working out how you can reach it.
+
+**Kondo:** While discussing difficulty levels and live commentary, there was mention of Tezuka-san "asking the impossible." I felt like there might have been a disparity between the world of Mario that Tezuka-san and I envisioned and the world of Mario that the rest of the team had in mind. The developers found creative ways to pack every gameplay idea they could think of into each of the Mario games up until now, within the specifications and limitations of each successive hardware. For the development staff who grew up playing Mario games, they see the world depicted in those games as the world of Mario. And they try to carry that over to future games. But the world of Mario that Tezuka-san and I think of is actually much broader, and we're allowed to incorporate anything we think would be fun. So maybe that's why they thought we were "asking the impossible."
+
+**I see. So the world of Mario is a safe place to keep exploring lots of new possibilities. By the way, you mentioned that the sound team also joined in brainstorming new gameplay ideas. Was that unusual?**
+
+**Kondo:** Whenever a new member joins the sound team, I always tell them, “You may be in charge of music or sound effects, but above all else, you're a game creator, so bring various ideas to the table, and if there’s anything in the game that you find strange, don’t hesitate to speak up.” This time, we were able to work together more closely and felt that we were truly involved in the game's creation.
+
+**Tezuka:** The sound team has limited resources, so in many cases, we have them join from the middle of development when we need them, rather than from the beginning. Plus, it’s impossible to imagine what kinds of sounds to create unless the art direction is established to a certain degree.
+
+**Kondo:** Until now, we've typically joined during the latter half of development, and even if I thought it would be fun for the visuals to change in response to the sound, it wasn't something we could really implement. So I was itching for a chance to do it. In the previous game too, I joined in the final phase of development, so the most I could do was make Goombas jump in time with the background music.
+
+We got involved from the early development stages of this game to come up with gameplay ideas, and the programmers also worked together to create prototypes for sound-related areas.
+
+**When you acquire a Wonder Flower, the landscape changes suddenly and dramatically midcourse. That must have had quite an impact on the sound too.**
+
+**Kondo:** Yes, it did. I’ve always wanted to try something along the lines of having the entire course come alive like a musical. To begin with, we tested it out by having Piranha Plants come out of their pipes in sync with the music, and the level designers created a course where the pipes and the platforms move. This went down well with the development team, so we adjusted it so that various enemies and stage elements would move to the rhythm. But the level designers didn’t know much about beat or meter, and the sound team wasn’t familiar with level design (18), so it was hard going.
+
+**(18)***Designing a course by placing objects and such.*
+
+**Tezuka:** The sound leads and level designers spent a lot of time adjusting that, didn’t they?
+
+**Kondo:** We held briefing sessions for both parties, and the sound team had a chance to get hands-on with the level design. And by actually stepping into each other’s shoes, we deepened our understanding of each other's areas of expertise.
+
+**Sato:** You did a lot of tests at the Wonder prototype meeting too, didn’t you? In fact, there were times when a new Wonder gameplay element was born from sound.
+
+**Kondo:** Yes, the “Ninji Jump Party.”
+
+When various things started moving to the music on-screen, it made me want to move along with it too. (Laughs) That’s how we came up with a course where you make your character jump on every fourth beat.
+
+**Sato:** This was also very well received and gave birth to the Rhythm Jump Badge so that the same thing can be enjoyed on other courses.
+
+**Tezuka:** We had the theme of creating a foundation for future 2D Mario games, and I actually feel that the changes we've made to our development approach have borne fruit.
+
+**I see. So there was a significant change—or indeed a wonder—in the development process, as you applied methods used in 3D Mario games to a 2D Mario game and achieved cross-functional collaboration with the sound team to create new gameplay.**
+
+Read more in Part 4: A casual connection
+
+Mild Fantasy Violence
+
+In-Game Purchases

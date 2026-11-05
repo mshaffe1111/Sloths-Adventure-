@@ -1,0 +1,17 @@
+URL: https://www.mariowiki.com/Platform_Perils
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content; tables excluded by selector)
+Title: Platform Perils (Donkey Kong Country, 1994)
+---
+[Stripped: images, empty headings. OMITTED FOR LENGTH: the Layout walkthrough (kept lines below), Bonus Levels, Key items.]
+
+This article is about the level in Donkey Kong Country. For the minigame in the Mario Party series, see Platform Peril.
+
+Platform Perils is the thirty-third level and final non-boss level in Donkey Kong Country. It is also the final level of Chimp Caverns. In the Game Boy Color version, Platform Perils is the thirty-fourth level, as the result of the remake's new level, Necky Nutmare. Platform Perils is a walkway level with several challenges. As the name suggests, Donkey Kong and Diddy Kong primarily traverse the level by moving on small arrow platforms, which previously appeared in Blackout Basement. The level features the only instance of gray Krushas, which are usually on the arrow platforms, and can only be defeated from having a barrel thrown at it. They can throw a nearby Vine Barrel at them to defeat them (or TNT Drums in the European version). The first part of Platform Perils involves going across the walkways, with Armies and Klumps appearing along the way. Later on, the rest of the level takes place on moving arrow platforms, most of which are guarded by gray Krushas.
+
+(From Layout, kept:) "A Zinger flies around both sides of the two platform, which both descend and then fall when touched."
+"Gnawties walk along each of them, and the primates can avoid making the platforms drop by bouncing on these foes."
+
+## Profiles
+Prima Official Game Guide (GBA): This is by far the most challenging stage in all of Kongdom. It features shuddering platforms that disappear in seconds, and leaps of complete and blind faith in many different directions. In addition, you must knock invincible Krushas off tiny platforms with Wooden Barrels! You've got to time every jump perfectly, and utilize Donkey at the end of the level—where real platform players are separated from the amateurs!
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Platform_Perils&oldid=5480621"

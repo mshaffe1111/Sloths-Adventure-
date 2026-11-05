@@ -1,0 +1,58 @@
+URL: https://www.voxgroovy.is/archives/11788
+Read: 2026-11-05 by rayman/ori fetch helper (TinyFish fetch_content)
+Title: Art behind Ori and the Blind Forest
+---
+…I would have never thought that a project of this scale and complexity would be manageable over the Internet.
+
+Johannes Figlhuber – a freelance artist based in Berlin, Germany – was given the role of lead artist on Ori and the Blind Forest. Johannes received a Bachelor of Arts in Multimedia Art and majored in 3D Animation at the Salzburg University of Applied Sciences. Having done odd jobs for studios in different countries, Johannes thought it was time to settle in, so he moved to Berlin and became part of Airborn Studios – a collective of artists specializing in game art. Johannes had chance to collaborate with many individuals, and together they were able to develop an art direction like no other.
+
+What were the initial ideas that were thrown back and forth after everyone had read the plot of Ori and the Blind Forest, and how did they change over the course of the four years that you’ve spent working on the game?
+
+The basic idea and the “feel” of the game was there very quickly and most of the production was spent on refining and expanding the core ideas.
+
+The focus wasn’t so much on the script in the early stages of the production. During the first year, a very small team focused almost entirely on perfecting the controls and animations respectively. We had great ambitions and wanted to get it just right. The story played a bigger part later on, once the art direction and characters became more important. The story wasn’t finished until very late in the production. The basic themes and major plot points were there for years, but some crucial details weren’t worked on until very late. I think that is telling for the entirety of the production. Most things—no matter if it’s design, features or art—went through lots of iterations and refinement before we were happy with it.
+
+Ori and the Blind Forest boasts a unique art direction, how did you and the team at Airborn Studios develop it overtime?
+
+Similarly to other things, art went through a lot iterations before we were happy with it. We quickly agreed on the general direction we wanted to take. It had to be vibrant, colorful, and most of all, it had to look like a place as opposed to geometrical layouts with some artwork laid atop it. Our biggest inspirations were the films by master filmmaker Hayao Miyazaki and several Walt Disney Movies such as Bambi or Lion King. Each had amazing backgrounds. As well as that, we also looked at nature itself; there was all sorts of forestry and plants. After all, nature is still the greatest source of inspiration.
+
+In the beginning we were looking at how other games did backgrounds and that limited both, us and our thinking. It took some time to get rid of that mindset and work out our own unique solutions together with our tech team. The whole production was a constant back and forth, with more and more features being added over time.
+
+Cover Artwork – Ori and the Blind Forest
+
+Ori is set in the Forest of Nibel, walk us through the world-building process that you and the team undertook when creating the setting?
+
+One of the biggest challenges was to create the forest setting without it looking all samey after a while. We decided to split the map up into several smaller areas, and gave each of those areas a unique theme and worked with varying color palettes. Within those larger themes—like the swamp or the misty woods—we created variations, or small points of interest if you will. We wanted there to be landmarks, and interesting little stories for the player to discover in the background.
+
+Everything we had designed had to fit into the world and the story that we’ve developed. Contextualizing some of the more exotic puzzles (so they fit into their surroundings) was a huge struggle.
+
+Ori is the main protagonist in Ori and the Blind Forest, tell us a little bit about what went into Ori’s design?
+
+Ori’s character design was one of the first things I did for the game. The only requirements were that Ori had to be a smallish white creature that could jump really well. To start off, I did a lot of sketches on paper, just to get ideas out as quickly as possible. A lot of the early sketches had something rodent-like, but also with elements of bats and stags. In essence, I wanted to combine features of different woodland animals to show off the core abilities that Ori has, but also to make it look fantastic and mythological.
+
+I kept refining the sketches whilst working very closely with the animator, seeing the angles from which Ori would look best, and making sure that the silhouette would work well in-game. Making the silhouette read well was one of the most crucial things when designing the character and it did not stop when the design was done and approved. Later in the production I made lots of quick silhouette sketches for animation to make sure it would always read optimally.
+
+Sketches of Ori by J. Figlhuber
+
+Describe one of the challenges that you were met with whilst working on Ori, and how you overcame it.
+
+There were lots of challenges, especially early on in production, due to the fact that we’re a new team, and because the Unity Engine didn’t have the necessary tools for creating a 2D game at the time. In general, the process was that the art team tried to narrow down what they wanted to do, and the tech team figured out a way to do it. In the end, we had an array of tools that we combined with functions to make our lives a lot easier.
+
+One of the biggest challenges for me personally were the cinematics and story sequences. We had limited resources when it came to telling the story that we wanted to tell. And because of that, we had to be very efficient with how we told that story. It took a lot of time and rewriting until we had something that worked. I think one of the most important processes was drawing up storyboards for it all. They are a fairly fast and risk free way to see how a sequence or story development might look.
+
+Ori and the Blind Forest – Concept art
+
+Tell us about how the team at Airborn Studios collaborated with Moon Studios and others who were involved in the making of the game.
+
+The way in which the development team was structured is unlike anything else in game development; I guess it’s much more common for modders. There was no physical studio, instead, everyone was in different places all around the world. We communicated and shared data over the Internet. Well, it was like that for almost everyone apart from the art team. Most of the art team was based in Berlin, Germany, and was working in the Airborn Studios office. In the beginning, the art team consisted of two artists, Maximilian Degen and myself. The team grew and there were six artists who helped finish the game. All in all, having the majority of the art team in one place made it easier to talk about things.
+
+Having said that, I am still surprised by how well everything worked out in the end considering the circumstances. I would never have thought that a project of this scale and complexity could be managed over the Internet. Just a few years earlier, this would not be possible due to bandwidth limitations. I think that this opens up completely new ways of developing games, and I am looking forward to seeing more games created this way.
+
+By VoxGroovy staff writer;
+
+Slide: Ori and the Blind Forest – Concept art; All images used with permission by the artist;
+© Airborn Studios (or) their respective copyright holder.
+
+On-site and freelance artists involved in the creation of concepts, game assets, set dressing, 3d art, Ui, effects and animation in alphabetical order: Anna Jasinski, Herdis Jakobsen, Johannes Figlhuber, Kaja Reinki, Max Degen, Rahel Brunold, Simon Kopp, Steffen Unger; Additional 2d art by Daniel Alekow; Main Animator at Moon Studios James Nicholas Benson;
+
+Article in Slovak language;

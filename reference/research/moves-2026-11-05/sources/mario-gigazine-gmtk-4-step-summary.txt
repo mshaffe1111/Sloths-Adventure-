@@ -1,0 +1,88 @@
+URL: https://gigazine.net/gsc_news/en/20160920-super-mario-3d-world-4-step-level-design/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Learning from "Super Mario 3D World" Movie that understands the game design that incorporates "entrance registration"
+NOTE: This is GIGAZINE's (machine-translated from Japanese) walk-through of the Game Maker's Toolkit video "Super Mario 3D World's 4 Step Level Design". It is NOT the GMTK transcript; the GMTK transcript itself could not be fetched (see BLOCKED-mario.txt). "Entrance registration"/"entrance transformation"/"getting on and off" are mistranslations of kishoutenketsu (ki-shou-ten-ketsu).
+---
+Sep 20, 2016 07:00:00
+
+# Learning from "Super Mario 3D World" Movie that understands the game design that incorporates "entrance registration"
+
+Mr. Koichi Hayashida, who served as director at "Super Mario 3D World", has adopted a method of adopting "entrance transformation" into game design, understanding such as "what to do next" just by playing It is said that it is configured so that it can do. A movie with Japanese subtitles that clearly explains the game design of "Super Mario 3D World" that was created without any tutorials in a complicated game system is "Super Mario 3D World's 4 Step Level Design"is.
+
+Game Maker's Toolkit, which posted videos for game makers, will explain about Super Mario 3D World's "Four Step Game Design".
+
+The Super Mario 3D World contains various ideas.
+
+"Tsukkondoru" that attacks when trying to pass in front of you
+
+"Flip panel" where color changes when walking on the top
+
+"Double cherry" to make Mario part of Mario
+
+"Houbai box" to carry and attack
+
+"Switch board" going in the direction of riding
+
+Block to repeat disappearing and appearing
+
+It is becoming a game full of new systems such as "aerial swing" that you can grasp and jump like a pendulum. Why does not it become useless, it becomes difficult to understand, and it does not become full of tutorial while incorporating only this system?
+
+Koichi Hayashida most familiar with this question. Mr. Hayashida is also a director who was in charge of "Super Mario Galaxy" series and so on and invented a design philosophy of "Introducing new elements in a row" from his experience of game development.
+
+Mr. Hayashida's design philosophy is to divide one stage into four parts. It is basically based on incorporating new elements into the stage that can be cleared in about 5 minutes, teaching what kind of system it is, developing it, and making a change by making a change. Each stage is first introduced from a safe environment ......
+
+As you go a little, the stage's "gimmick" will appear. In the following stages, we need to jump the steps in order to go ahead, but as you jump, you can learn that panels tilt in conjunction.
+
+In the early stage, you just learn that "When you jump the panel turns over", if you fall it will never die.
+
+As we move forward, a developed form of "gimmick" that we learned appears, and it will die if it falls.
+
+Furthermore, as the scene climbing a cliff from the plane continues, difficulty level will go up as it is with direction.
+
+Beyond the cliff, modulation begins and a different "gimmick" is added ....
+
+When it comes close to the end of the story, it will change to content that makes you think from another perspective, such as multiple entries appearing at once in such a way as to appear so far.
+
+At the end there is also a test of skillfully manipulating the panel to take the flag, leading to the end.
+
+Mr. Hayashida said in an interview with the game developer magazine Gamasutra that these concepts were said to have been influenced by "getting on and off".
+
+Basically the same for all stages, it is composed of "introduction, development, transformation, ending".
+
+In the stage below we introduce "explosion ball" which kicks and fly and explodes ... ...
+
+It will lead to the conclusion that it will be utilized to overrule the boss fight's kick.
+
+In addition, it is also possible to make a mechanism introduced once on another stage, and it is also possible that some stage of experiences will come out in the final stage of the game.
+
+Mr. Hayashida is also in charge of the director of "Super Mario Galaxy" before Super Mario 3D World, but the concept of entrance into and out is not adopted.
+
+For example, "fluffy grass" which can fly in the early stage will appear ... ...
+
+The means of transportation becomes a crown from the middle, and at the end it competes with rabbits. What is unpredictable is a play experience that is quite different from Super Mario 3D World, but it is also an advantage of Super Mario Galaxy.
+
+Meanwhile, it also implies that you can not fully utilize the system, and players often get confused by the number of gimmicks introduced at a time. Therefore, there are some scenes that rely on ordinary tutorial methods.
+
+Mr. Hayashida also said that at the director's "Super Mario Galaxy 2" there are many stages dealing with a single trick. Here, the concept of entrance and relocation began to appear, including safe introduction / deployment of gimmicks, simple transposition and so on.
+
+The philosophy of Mr. Hayashida is adopted more strongly is "Super Mario 3D land". It is said that gimmicks that appear every stage are gathered. In the 3D World released next time, it is clear that the transition has been made more clearly.
+
+Although this notion is not applied very strictly, it can also be experienced by the "advance! Kinopio" command of the spin-off work.
+
+In addition, the style that Mario's works let the player learn how to play in a natural way can be seen from the first Super Mario.
+
+Mr. Shigeru Miyamoto who is the creator of Super Mario has been devised to teach "mushrooms = ally" "cribo = enemy" in an easy-to-understand manner.
+
+When mushrooms are brought out on the first stage, mushrooms are brought forward towards the player, bouncing off the clay pipe.
+
+I am trying to avoid mushrooms by jumping in first play where this is not an enemy or a friend ... ...
+
+It is configured to hit the overhead block and hit the mushrooms. Then Mario got bigger and it automatically knows that it was "not an enemy".
+
+There was also a disposable idea such as "Kuribo's shoes" which appears only once ... ...
+
+Basically Nintendo has developed a convenient structure that can be reused even if it becomes another title. "Entrusive transformation" is a simple way to use anyone, but "application of good ideas" and "funny transformation" are required for application.
+
+There is also a movie with Japanese subtitles analyzing how Game Maker's Toolkit who made this explanation makes a "Nintendo-like stage" using Mario Maker.
+
+Sep 20, 2016 07:00:00 in Video, Game, Design, Posted by darkhorse_log

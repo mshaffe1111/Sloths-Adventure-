@@ -1,0 +1,196 @@
+URL: http://www.aymericlamboley.fr/blog/create-a-game-like-tiny-wings/
+Read: 2026-11-05 by sk/smb/tw fetch helper (TinyFish fetch_content)
+Title: Create a game like Tiny Wings | Aymeric Lamboley (2012-10-29; Citrus Engine + Nape tutorial; hill algorithm credited to Lorenzo Nuvoletta)
+WARNING: THIRD-PARTY RECONSTRUCTION (clone tutorial). NOT Andreas Illiger's word.
+Note: prose verbatim. The page shows each code listing twice (once in a line-numbered table, once plain); only the plain copy is kept here. The Main and GameState listings are omitted (setup code, no hill logic); the Hills class and HillsTexture listings are kept verbatim.
+---
+Tiny Wings is really a cute game and very fun to play thanks to physics content! It uses Box2D. If you’ve never played the game, give it a quick look :
+
+Generate those type of hills with a physics engine is complicated for a novice. You’ll find cool tutorials on Emanuele Feronato’s website using Box2D and an other on Lorenzo Nuvoletta’s website using Nape.
+
+Someone asks me if it was possible to create this type of game with the Citrus Engine, absolutely! So let’s go for a quick tutorial.
+
+Firstly, all hails to Lorenzo! The physics hills and the sprites creation come from his algorithm.
+This is what you will get : demo.
+To see the physics debug view, open the console with the key tab, then write :
+
+```
+set nape visible true
+```
+
+And press enter. You will see Nape’s debug view and the hero. You can jump with a click.
+All the source code is accessible on the new CE’s GitHub for examples.
+
+I won’t explain the algorithm. If you have any questions on it, ask Lorenzo. He will certainly answer better than me. However I’ll explain how it has been added to the Citrus Engine.
+
+This the Main class :
+[listing omitted, see note]
+
+The GameState. Here you init your physics world, and create the hero and the hills :
+[listing omitted, see note; it contains: var hills:HillsManagingGraphics = new HillsManagingGraphics("hills", {sliceHeight:200, sliceWidth:70, currentYPoint:350, registration:"topLeft", view:_hillsTexture});]
+
+Now let’s focus on the Hills creation. Hills is a new Nape’s object added to the Core of the Citrus Engine. It extends NapePhysicsObject. Since the Citrus Engine separates logic/physics from view/art, we don’t want to manage graphics in this core class. So we remove all the content related to graphics :
+
+package com.citrusengine.objects.platformer.nape {
+import nape.geom.Vec2;
+import nape.phys.Body;
+import nape.phys.BodyType;
+import nape.shape.Polygon;
+import com.citrusengine.objects.NapePhysicsObject;
+/**
+* This class creates perpetual hills like the games Tiny Wings, Ski Safari...
+* Write a class to manage graphics, and extends this one to call graphics function.
+* For more information, check out CE's Tiny Wings example.
+* Thanks to <a href="http://www.lorenzonuvoletta.com/create-an-infinite-scrolling-world-with-starling-and-nape/">Lorenzo Nuvoletta</a>.
+*/
+public class Hills extends NapePhysicsObject {
+/**
+* This is the height of a slice.
+*/
+public var sliceHeight:uint = 600;
+/**
+* This is the width of a slice.
+*/
+public var sliceWidth:uint = 30;
+/**
+* This is the height of the first point.
+*/
+public var currentYPoint:Number = 200;
+/**
+* This is the width of the hills visible. Most of the time your stage width.
+*/
+public var widthHills:Number = 550;
+/**
+* This is the physics object from which the Hills read its position and create/delete hills.
+*/
+public var rider:NapePhysicsObject;
+protected var _slicesCreated:uint;
+protected var _currentAmplitude:Number;
+protected var _nextYPoint:Number;
+protected var _slicesInCurrentHill:uint;
+protected var _indexSliceInCurrentHill:uint;
+protected var _slices:Vector.<Body>;
+protected var _sliceVectorConstructor:Vector.<Vec2>;
+public function Hills(name:String, params:Object = null) {
+super(name, params);
+}
+override public function initialize(poolObjectParams:Object = null):void {
+super.initialize(poolObjectParams);
+_prepareSlices();
+}
+protected function _prepareSlices():void {
+_slices = new Vector.<Body>();
+// Generate a rectangle made of Vec2
+_sliceVectorConstructor = new Vector.<Vec2>();
+_sliceVectorConstructor.push(new Vec2(0, sliceHeight));
+_sliceVectorConstructor.push(new Vec2(0, 0));
+_sliceVectorConstructor.push(new Vec2(sliceWidth, 0));
+_sliceVectorConstructor.push(new Vec2(sliceWidth, sliceHeight));
+// fill the stage with slices of hills
+for (var i:uint = 0; i < widthHills / sliceWidth * 1.2; ++i) {
+_createSlice();
+}
+}
+protected function _createSlice():void {
+// Every time a new hill has to be created this algorithm predicts where the slices will be positioned
+if (_indexSliceInCurrentHill >= _slicesInCurrentHill) {
+_slicesInCurrentHill = Math.random() * 40 + 10;
+_currentAmplitude = Math.random() * 60 - 20;
+_indexSliceInCurrentHill = 0;
+}
+// Calculate the position of the next slice
+_nextYPoint = currentYPoint + (Math.sin(((Math.PI / _slicesInCurrentHill) * _indexSliceInCurrentHill)) * _currentAmplitude);
+_sliceVectorConstructor[2].y = _nextYPoint - currentYPoint;
+var slicePolygon:Polygon = new Polygon(_sliceVectorConstructor);
+_body = new Body(BodyType.STATIC);
+_body.shapes.add(slicePolygon);
+_body.position.x = _slicesCreated * sliceWidth;
+_body.position.y = currentYPoint;
+_body.space = _nape.space;
+_pushHill();
+}
+protected function _pushHill():void {
+_slicesCreated++;
+_indexSliceInCurrentHill++;
+currentYPoint = _nextYPoint;
+_slices.push(_body);
+}
+protected function _checkHills():void {
+if (!rider)
+rider = _ce.state.getFirstObjectByType(Hero) as Hero;
+var length:uint = _slices.length;
+for (var i:uint = 0; i < length; ++i) {
+if (rider.body.position.x - _slices[i].position.x > widthHills * 0.5 + 100) {
+_deleteHill(i);
+--i;
+_createSlice();
+} else
+break;
+}
+}
+protected function _deleteHill(index:uint):void {
+_nape.space.bodies.remove(_slices[index]);
+_slices.splice(index, 1);
+}
+override public function update(timeDelta:Number):void {
+super.update(timeDelta);
+_checkHills();
+}
+/**
+* Bodies are generated automatically, those functions aren't needed.
+*/
+override protected function defineBody():void {
+}
+override protected function createBody():void {
+}
+override protected function createMaterial():void {
+}
+override protected function createShape():void {
+}
+override protected function createFilter():void {
+}
+override protected function createConstraint():void {
+}
+}
+}
+
+We’ve cutted the algorithm in several methods to be able to manage graphics from a subclass.
+This is the class which manage graphics :
+
+package games.tinywings {
+import com.citrusengine.objects.platformer.nape.Hills;
+/**
+* @author Aymeric
+*/
+public class HillsManagingGraphics extends Hills {
+public function HillsManagingGraphics(name:String, params:Object = null) {
+super(name, params);
+}
+override protected function _prepareSlices():void {
+if (view)
+(view as HillsTexture).init(sliceWidth, sliceHeight);
+super._prepareSlices();
+}
+override protected function _pushHill():void {
+if (view)
+(view as HillsTexture).createSlice(_body, _nextYPoint, currentYPoint);
+super._pushHill();
+}
+override protected function _deleteHill(index:uint):void {
+(view as HillsTexture).deleteHill(index);
+super._deleteHill(index);
+}
+}
+}
+
+We just make some calls to view’s functions. And so finally, the view class :
+[HillsTexture listing omitted: it draws one image per slice, sheared by (nextYPoint - currentYPoint) / _sliceWidth; no hill-shape logic]
+
+And that’s it! Our scrollable world with hills is working!
+
+To have exactly the same feeling that Tiny Wings there is always lots of work to achieve :
+– make the terrain more rolling.
+– don’t apply a linear velocity to your hero, just a basic force and then change its mass between screen touched or not.
+– create nice graphics using procedural palettes algorithms.
+
+When I’ve some time, I will work on the Box2D version thanks to Emanuele’s tutorial and polish this version.

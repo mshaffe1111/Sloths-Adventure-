@@ -1,0 +1,228 @@
+URL: http://www.harrynesbitt.com/blog/the-making-of-altos-adventure/
+Read: 2026-11-05 by sk/smb/tw fetch helper (TinyFish fetch_content)
+Title: The Making of Alto's Adventure (Harry Nesbitt's blog, posted 3rd April 2015)
+Note: the article body below is verbatim in full. The comment section (about 90 comments, much of it SEO spam) is NOT copied in full: only the comments that ask about terrain/level generation or physics, and every reply by harrynesbitt, are copied verbatim under "Comments (excerpt)".
+---
+#### The Making of Alto's Adventure
+
+###### Posted on 3rd April 2015  |   Catagories: Game Development, Unity
+
+93 comments
+
+A few weeks ago, I reached the end of a long and exciting journey.
+Alto’s Adventure – a project that I’ve
+poured my absolute heart and soul into over the last two years – was finally released to the
+public.
+
+It’s been a wild ride, and I’m not sure I can adequately put into words
+how I feel about everything that’s happened so far, but I’ll start by saying a huge
+thank you to everyone who’s downloaded and played the game. You’ve made it all worth
+while.
+
+In addition to that, I’ve been thinking about putting
+together a series of posts detailing our experiences and some of the challenges we faced.
+It’s hard to know exactly the kind of things that would be of interest, or how much detail to
+go into, so for now I’ll start with a quick introduction.
+
+Alto’s Adventure is an endless snowboarding odyssey set against a
+beautiful and ever-changing alpine landscape. You play as a young shepherd, tasked with rescuing
+your runaway llamas while boarding down a variety of fun and challenging terrain. The game features
+fluid physics based gameplay and a fully dynamic time-of-day lighting and weather system. You can
+check out the launch trailer and some screenshots below:
+
+The game was built in
+collaboration between myself and
+Snowman –
+an independent software studio based in Canada consisting of founders
+Ryan Cash and Jordan Rosenberg, who
+took on a directorial role for the project.
+
+I worked as the sole artist and developer and was
+responsible for all the game’s programming, visual design, animation, 2D and 3D assets, UI /
+UX as well as the website and trailers. The game was built in Unity and was my first experience working as a
+game developer.
+
+The sound was produced by
+Kpow Audio, and the music
+was written by Brian Crawford aka
+ShinnyMetal.
+
+Right!
+That’s the formal stuff out of the way…
+
+Let’s begin :P
+
+---
+
+#### A Brief History
+
+Ryan’s early gameplay
+sketch
+
+Ryan first reached out to me back in January 2013 with the seed of an idea: to
+create an endless 2D snowboarding game that involved landing backflips and jumping
+chasms.
+
+Apart from a few rough sketches, the game was pretty much a blank canvas, and Ryan was
+keen to give me creative freedom to design the entire look and feel, including characters,
+environments, items and animations.
+
+It was an incredibly enticing proposition, but I have to
+admit that initially I was unsure. I know almost nothing about snowboarding, and I’m typically not
+a fan of extreme sports games, so at first glance it all left me feeling rather cold (if you’ll
+pardon the pun) and I began to wonder if I was really the right guy for the job.
+
+But the more
+I thought about it, the more I wondered how the game could look if we took a more sensitive,
+stylised approach – to try and capture the feeling of being high up in the mountains, where
+the environment and characters felt like just a small part of a much larger world, with it’s
+own history and culture. And finally, to tie it all together with a bold, minimalist art style that
+conveyed a lighthearted charm and a little hidden depth…
+
+Now, that was the kind of
+snowboarding game I could really get excited about!
+
+Fortunately, this was exactly the
+approach Ryan and Jordan were looking to take and work began almost immediately, with these
+being among some of the first sketches I produced to try and establish the overall tone:
+
+---
+
+#### From Art to Code
+
+By now, you may be wondering how someone with a
+background in illustration and no prior experience in game development also ended up working as
+sole programmer for an iOS game. Well, to be honest, I’m still not entirely sure!
+
+Cocos2D
+Prototype
+
+Early on, there was a discussion about building the game in Cocos2D
+with another developer – we even got as a far as a playable prototype with placeholder art
+and simple mechanics.
+
+But gradually, it became clear that it was going to be a real challenge
+to achieve the level of detail, depth and visual complexity we were looking for using a solely 2D
+engine.
+
+Prior to all this, I’d been learning to use Unity – a highly accessible,
+cross platform 3D game engine. I’d found it surprisingly fun and easy to grasp the basics, and
+my experience with web development made working with UnityScript (syntactically similar to
+JavaScript), and eventually C#, much smoother than it might have been otherwise. I was able to
+create a few interesting experiments (you can see a couple of them
+here and
+here),
+but nothing that could be considered a game. I certainly didn’t think I’d be a suitable
+developer for this project at the time.
+
+But curiosity got the better of me – one rainy
+weekend, I fired up a new project in Unity to see what was possible.
+
+To my surprise, within
+a couple of days, I was able to implement a bunch of key features that were proving difficult with
+the previous engine e.g. procedurally generated terrain, foreground and background parallax (made
+trivial in 3D), camera zooming, particle effects and scarf dynamics. I was pretty excited by the
+potential, particular how quickly it had all come together, so decided to show it to Ryan and gauge
+his reaction.
+
+Alto Unity Prototype
+
+It’s fair to say he was
+enthusiastic – so much so that by September 2013 I was working as full time developer, with
+the intention of shipping by Christmas of that year (let’s just say missing that deadline was
+the first of many tough lessons).
+
+I can’t even begin to thank Ryan enough for taking this
+chance on me. By all accounts it was a risky move – even I spent all but the last few months
+of development unsure if I had what it took to finish the game!
+
+:   September 2013
+
+:   February 2015
+
+However, fast forward
+18 months and we
+*did* eventually launch – it took us about 4 times longer than we initially expected,
+but with every month that went by we saw the game evolving into something more and more exciting.
+I’ve often described our process as a slow burn – being a small team, we had no choice but
+to take our time and allow the project to mature at it’s own pace, watching and waiting for the
+right ideas to suggest themselves naturally, sometimes many months down the line.
+
+Thankfully,
+the launch has been a huge success so far. We’ve received some incredible press and reviews
+on just about every major gaming and tech website, giving us a combined aggregate score of
+92 on Metacritic! But most importantly we’ve seen an overwhelmingly
+positive reaction from players all around the world – it’s incredibly humbling to know
+people are out there simply playing and enjoying the game.
+
+We’ve even seen
+some fantastic artwork being created and shared by fans – here are just a few of my
+favourites so far!
+
+:   jakkios.tumblr.com
+
+:   @thuygia via Instagram
+
+:   @JacopoMoruzzi
+
+:   @ImCalledDave
+
+Another exciting
+thing to come from the launch was our last minute decision to attend the annual Game Developers
+Conference (GDC) in San Francisco. Not only was this my first time in the US, but also my first time
+meeting Ryan and Jordan in person. It was great to be able to hang out together, explore the city
+and meet some inspiring people – I get the feeling that Alto is just the first of many
+adventures together!
+
+---
+
+#### Get in touch!
+
+I hope that this has been of some interest to at least a few people reading –
+more then anything it’s a great way for me to look back and take stock of what has been a
+pretty life changing experience. But as I mentioned, I’m keen to follow up with a little more
+detail on certain aspect of the project, such as how the art style evolved and some of the
+technical challenges we faced, so if you have any questions in particular, please feel free to let
+me know in the comments below, or get in touch at
+hello@harrynesbitt.com!
+
+All the
+best, and happy snowboarding!
+
+---
+Comments (excerpt, verbatim):
+
+* Vlad V.
+
+  Inspiring piece of work. Would love to read more about Unity physics challenges that you faced and gradual designing environment process for this game (choice of colours, backgrounds, main character, hidden details…) Thank you for sharing!
+
+  + harrynesbitt
+
+    Thanks Vlad! Interesting you mention the physics – trying to get this to work smoothly was easily one of the biggest challenges we faced. Definitely keen to talk about this some more!
+
+* mralexhay
+
+  Great article and beautiful game. Can’t stop playing.
+  Would definitely be interested in more details behind the development and how you worked out the natural-feeling procedural environment. Thanks!
+
+* GiHub
+
+  Nice article but I would expect you give Ski Safari a nod as an obvious piece of “inspiration”. I do think Alto’s Adventure is different enough and fun in its own right but one should give credit.
+
+  + harrynesbitt
+
+    Thanks for commenting! Ski Safari was undeniably an influence, as were many other games and artists. I’m planning to talk about inspiration in a future post, both for myself personally and the team in general – we each came to the project with very different reference points, so merging these ideas was a big part of the story.
+
+* Tomo
+
+  One more thing that I really would like to know: How is the level generation done? What I noticed are repeating parts throughout the level. So I am guessing there are some prebuild parts (e.g. hill combinations and chasm combinations) which are getting sticked together randomly when proceeding the level?
+
+  (no reply from harrynesbitt shown on the page)
+
+* Gerard Harrison (excerpt of comment)
+
+  ... The two things I really, really want to know about the most is how you pulled off the fore and background parallax and how you created the endless mountain. If you want to throw in the jump mechanics be my guest.
+
+  (no reply shown)
+
+Other harrynesbitt replies on the page (to Joel Andrew Glovier about Git/BitBucket, Bjørn Egil Hansen about Android, Michael Theiler about sound) are off-topic for terrain and were not copied.

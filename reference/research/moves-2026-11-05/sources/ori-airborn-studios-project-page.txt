@@ -1,0 +1,67 @@
+URL: https://www.airborn-studios.com/projects/ori/
+Read: 2026-11-05 by rayman/ori fetch helper (TinyFish fetch_content)
+Title: Ori
+---
+Back to projects
+
+### Moon Studios
+
+# Ori and the Blind Forest
+
+Millions of gamers joined this challenging journey of a young guardian spirit – the visuals of which got crafted by Airborn Studios.
+
+*Ori and the Blind Forest is a 2D platformer developed by Moon Studios and published by Microsoft Game Studios. It follows the titular character, a guardian spirit on a quest to save the Spirit Tree and the forest it provides for.*
+
+Client
+
+Moon Studios
+
+Genre
+
+Adventure Platformer
+
+Team size
+
+9
+
+Services
+
+Visual Development, Concept Art, 3D Art, Level Art, Art Direction
+
+Platforms
+
+Xbox One, Nintendo Switch, PC
+
+Links
+
+Official Website
+
+Artstation
+
+### Building the look of a new IP
+
+Airborn Studios was aboard from the early stages on to take charge of the art side of things; defining the visual style of the game and then taking care of the art production later on, i.e. delivering concepts, 2D in-game art as well as 3D work.
+
+*Moon Studios* took a very iterative approach, using rough blockouts to test and refine the gameplay. And thus, our artists could create artwork already knowing what the specific purpose and behavior of the respective elements would be.
+
+Our team worked directly in Unity to define the look and compose everything, tackling the challenge to employ an engine that was not really built for extremely complex 2D games at that time.
+
+Concepts for characters and creatures were handed over to the 3D artists and animators who created 3D models, animated them, and rendered the result as sprites.
+
+The result of the combined effort of our art team was what one might describe as a layered painterly look that has depth to it and doesn’t look as flat as 2D games often do. While remaining very readable, the outcome is always at the service of the gameplay.
+
+1 / 9
+
+# Mission accomplished
+
+*Ori and the Blind Forest* was originally released on Xbox One and PC in 2015 and was lauded for its design and atmosphere. Among other accolades, *Ori*’s graphics were honored at the *BAFTAs*, *The Game Awards*, *D.I.C.E*., and *Game Developers Choice Awards*. Beyond its critical acclaim (Metacritic: 88), the game was also a hit with players and ended up receiving a Definitive Edition and Nintendo Switch version later on.
+
+# If you want to see some more of the work we did on Ori, please head over to our ArtStation gallery!
+
+ Visit Artstation
+
+### Get in Touch
+
+# If you’d like to collaborate with us on a project of yours - hit the button below and let us know!
+
+ Contact

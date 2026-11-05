@@ -1,0 +1,19 @@
+Blocked or failed reads, 2026-11-05, rayman/ori fetch helper
+https://rayman.fandom.com/wiki/Teensies_in_Trouble - TinyFish fetch_content: bot_blocked (twice); curl: proxy CONNECT 403
+https://rayman.fandom.com/wiki/Toad_Story - TinyFish fetch_content: bot_blocked
+https://rayman.fandom.com/api.php?action=parse&page=Teensies_in_Trouble&prop=wikitext&format=json - fetch_content: page_not_found 404
+https://rayman-legends.fandom.com/wiki/Teensies_in_Trouble - fetch_content: bot_blocked
+https://raymanpc.com/wiki/en/Teensies_in_Trouble - fetch_content: bot_blocked (later read partly via run_web_automation, see rayman-raywiki-teensies-in-trouble-world.txt; agent reports Cloudflare blocked the Levels/enemies sections)
+https://raymanpc.com/wiki/en/Toad_Story - fetch_content: bot_blocked
+https://raymanpc.com/wiki/script-en/api.php?action=parse&page=Teensies_in_Trouble&prop=wikitext&format=json - fetch_content: bot_blocked
+https://raymanpc.com/wiki/en/Toad_(Rayman_Legends) - fetch_content: bot_blocked (read via run_web_automation instead)
+https://raymanpc.com/wiki/en/Red_Toad - fetch_content: bot_blocked (not retried)
+https://raymanpc.com/wiki/en/Lividstone - fetch_content: bot_blocked (read via run_web_automation instead)
+https://web.archive.org/web/2024/https://rayman.fandom.com/wiki/Teensies_in_Trouble - fetch_content: page_not_found 404; curl: proxy CONNECT 403
+https://web.archive.org/web/2024/https://rayman.fandom.com/wiki/Toad_Story - fetch_content: page_not_found 404
+https://www.playstationtrophies.org/forum/topic/196814-rayman-legends-teensies-guide/ - fetch_content: bot_blocked
+https://www.ign.com/wikis/rayman-legends/Enemies - fetch_content: page_not_found 404
+https://xboxwire.thesourcemediaassets.com/sites/2/49.jpg - curl: proxy CONNECT rejected (000); fetch_content: empty_content
+https://xboxwire.thesourcemediaassets.com/sites/2/101372622Image32RESIZED.jpg - curl: proxy CONNECT rejected (000)
+https://upload.wikimedia.org/wikipedia/en/2/2b/Ori_and_the_Blind_Forest_Logo.jpg - curl: proxy CONNECT rejected (000) (test of image host access)
+Note: no image host was reachable from the container, so no screenshots were saved in img/.

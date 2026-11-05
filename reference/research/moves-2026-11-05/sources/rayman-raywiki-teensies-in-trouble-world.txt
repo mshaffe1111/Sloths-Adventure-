@@ -1,0 +1,58 @@
+URL: https://raymanpc.com/wiki/en/Teensies_In_Trouble
+Read: 2026-11-05 by rayman/ori fetch helper (TinyFish run_web_automation, stealth browser; fetch_content returned bot_blocked)
+Title: Teensies In Trouble - RayWiki, the Rayman wiki
+CAVEAT: the browser agent hit Cloudflare checks and says (see its note at the end, kept verbatim) that part of this text came from the Fandom wiki copy of the page and that the levels/enemies sections were NOT captured. Treat as partial; the source URL of each paragraph is not certain.
+---
+# Teensies In Trouble
+
+**Infobox:**
+- Boss: Grunderbite
+- Levels: 10
+- Teensies: 90
+- Music Level: Castle Rock
+- Princess 1: Barbara
+- Princess 2: Elysia
+- Predecessor: Main Gallery
+- Successor: Toad Story
+
+**Quote:**
+"Where best to start an adventure than in the middle of a forest with magic all around? Of course whoever says adventure means princesses to rescue, powerful dragons and haunted castle [sic] to explore! Well, be ready because Teensies are in trouble and waiting for their knight in shining armor to rescue them, and guess who this knight is: you!"
+
+Teensies In Trouble, also known as Medieval Mayhem in Rayman Adventures, is the first world of paintings in Rayman Legends, the first world to be unlocked in Rayman Adventures, and the second board in Rayman: The Board Game. It features five different themes, which are known as Enchanted Forest, Dark Dungeon, Castle Ramparts, Phantom Manor, and Quicksand. Four of these themes appear in Rayman Legends and four appear in Rayman Adventures.
+
+## Themes
+
+### Enchanted Forest Theme
+The Enchanted Forest theme, not to be confused with the level Enchanted Forest in Rayman Legends, is the most commonly found theme in Teensies in Trouble. The theme greatly resembles Jibberish Jungle from Rayman Origins in that it takes place in a forest environment. There is usually large amounts of grass on the ground, with moss and vines clinging onto walls and cliffs. This makes these areas predominantly green, as almost everything has vegetation of some sort on it. Additionally, the background is filled with trees and dense foliage. Sometimes strange creatures similar to rabbits, squirrels, and owls can be seen. Some sections also resemble murky swamps, featuring pools of water to swim in and waterfalls in the background. In some levels in Rayman Adventures, the heroes can also go through tree trunks.
+
+The forest also has many parts of it which appear to be alive, and can thus move. This can be anything from what appears to be a big hill, to a bunch of branches, to tree roots, and even entire land masses. These moving chunks of land sometimes appear to be held and moved by tree roots, and are often used as obstacles which the heroes have to jump across or avoid in order to not be crushed. In several stages Murfy can be used to interact with these in various ways. Another main component of these areas are vines, which the heroes can swing on to cross gaps or avoid enemies. There are also yellow mushrooms, which, although they do not affect the heroes in anyway, appear to release a cloud of gas upon being hit. Almost all levels with this theme contain small pink flower buds which the heroes can hit, rewarding one lum each. The main enemies of this area are Lividstones. In several stages, blue butterflies can reveal secret passages.
+
+This theme first appears in the beginning of Once upon a Time, the first level of Rayman Legends. It later appears at the end of Creepy Castle. It again appears throughout the entirety of the level Enchanted Forest. Its final appearance in this game is in the level Ropes Course. It later appears in Medieval Mayhem in Rayman Adventures.
+
+### Dark Dungeon Theme
+The Dark Dungeon theme, also known as Castle Interior, takes place inside of old medieval themed castles and dungeons. Old spiderwebs and coffins can usually be seen on the walls. In Rayman Legends, Murfy is often used to interact with the environment, such as cutting ropes, while in Rayman Adventures there are usually switches which can be activated. More death traps appear in Rayman Adventures, such as moving walls closing in on the player and water streams pushing the player away. Several stages in Rayman Adventures allow the player to, by using switches, rise the water level to reveal new secrets and progress forward.
+
+### Castle Ramparts Theme
+The Castle Ramparts theme, also known as Castle Exterior, is introduced in How to Shoot your Dragon and used for the rest of the levels. It has a medieval setting with mythical creatures like forest dragons, as well as castles.
+
+### Phantom Manor Theme
+The Phantom Manor theme, also known as Haunted Castle, is a theme exclusive to Rayman Adventures. It is heavily inspired by the unused Drak's Nightmare world from Rayman Legends. It takes place inside of old haunted castles, with many painting hanging on the walls, some of which use assets from Rayman Legends. Many switches appear, some of which can reveal secrets behind the paintings. The most common enemies here are Lividstones and Ghosts.
+
+### Quicksand Theme
+The level Quick Sand uses its own unique theme which was later reused for Up, Up and Get Away!, Up, Up and Escape! and the Infinite Tower. It takes place in a desert with many collapsing towers.
+
+## Description
+Rayman Legends begins with the heroes sleeping high up on a tree with Murfy waking them up to tell them about the new nightmares which are appearing. The heroes then begin their journey in the Enchanted Forest environment, with them quickly entering an old castle in the Dark Dungeon environment. Together with Murfy's help, who can cut ropes and move obstacles, they make their way through. The next level, Creepy Castle, has them visiting yet another castle, this time without the help of Murfy.
+
+After that they make it out of the castle and into the Enchanted Forest. This is where they first start seeing the moving parts of the forest, which makes traversing it much more dangerous as certain grassy blocks will continuously move up and down. In the next level, Ropes Course, they once again team up with Murfy who this time serves useful at scaring away certain enemies.
+
+After that they meet up with the first Dark Teensy, who's kidnapped a Teensie. The heroes then set out across a large desert with collapsing towers, to eventually catch up with him and save the Teensie. After this, in How to Shoot your Dragon, they go through yet another dungeon to then end up outside of a castle with a group of Dragons. With Murfy's help, who shoots the them using a slingshot, they make it across a field of collapsing platforms, to then finish the level. The next level, Breathing Fire!, has them confronting this world's boss, Grunderbite, outside of a castle filled with Lividstones.
+
+The final level, Castle Rock, takes place on the remains of the castle walls and has the heroes running to the beat of the song, which is a parody of the song "Black Betty" by Ram Jam.
+
+## Gallery
+[Image: TIT2.png]
+
+---
+
+**Note:** The raymanpc.com wiki version of the page (accessed successfully) contains additional sections beyond what was captured from the Fandom wiki: **Rayman Legends** (with Levels and Soundtracks subsections), **Rayman Adventures**, **Rayman: The Board Game**, **Rayman Legends Retold**, and **Trivia**. Due to Cloudflare verification blocks on the raymanpc.com site, the complete content from those additional sections (including the full levels list table, enemies lists, soundtracks list, and trivia) was not fully extractable. The Fandom wiki version lacked those later sections. The content above represents the complete article body text available from both sources.

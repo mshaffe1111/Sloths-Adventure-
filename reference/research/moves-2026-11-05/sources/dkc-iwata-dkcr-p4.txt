@@ -1,0 +1,161 @@
+URL: https://iwataasks.nintendo.com/interviews/wii/donkey-kong-country-returns/0/3/
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Donkey Kong Country Returns - Page 4 (White-knuckled Action)
+---
+## White-knuckled Action
+
+Iwata
+You had all worked on the 3D action games of the Metroid Prime series, and then, made a 2D side-scrolling action game. What's more, it was a new installment of the Donkey Kong Country franchise, a big hit not just in America, but in Japan as well. You had to carry on the series' attractive elements and the hardware was changing from the Super NES to the Wii console, so you had to find a means of expression suitable to a new generation.
+
+What did you at Retro Studios try to keep from the past series and what new challenges did you undertake?
+
+Kynan
+I think the original games in the Donkey Kong Country series are packed full of all kinds of good elements that we needed to carry on. For example, it's a side-scrolling action game, so...
+
+Iwata
+A lot of the action— like shooting around in barrels and wild rides in mine carts. —makes a striking impression.
+
+Kynan
+Yes. And it's a game with broad appeal that all sorts of people can play, so I thought we needed to keep that approachability. At the same time, I thought it's important the game be a little difficult.
+
+Iwata
+What I remember most about playing the Super NES version is falling off the course over and over again in the mine cart and thinking, "Argh! I was almost to the goal!" (laughs) I think it's incredibly important to preserve that kind of white-knuckled suspense for this game. What did you hold in mind with regard to that?
+
+Mike
+I thought it was extremely important that the game be challenging. When this project began, I played the Super NES version again and was a little irked at how hard it was!
+
+Iwata
+(laughs)
+
+Mike
+I only remembered that it was fun. (laughs)
+
+Iwata
+You only had fun memories of it, but when you played it for the first time in a long while, you remembered how it's a difficult enough game to tick you off a bit.
+
+Mike
+Yeah. I thought it's really important to make the game tough, but in a good way. I wanted to make a game that was not simply difficult, but possessed a kind of difficulty that made players want to try it again.
+
+To be more concrete, when there's a place where you have to jump, I thought it was important that, rather than make players angry, the game makes players feel that even if they fail, they will be able to jump better next time.
+
+Iwata
+It's important to make it so that when players mess up, their frustration causes them to want to improve their playing.
+
+Tom
+Right. It's easy to make something difficult. For example, when Donkey Kong is jumping, you can just drop a rock or boulder on his head.
+
+Iwata
+I suppose so! (laughs)
+
+Tom
+What you should do is make it so the players can clearly understand what they need to do at that place. We tried to make a game that would tell players that certain ways of playing will keep them moving forward.
+
+Tabata
+But when you create that certain degree of difficulty that is the Donkey Kong Country tradition, some people won't be able to move forward. For that reason, we made it so that after you've failed several times, you access a Super Guide. and can move on to the next level.
+
+It's the same kind of system as in the game New Super Mario Bros. Wii6. A super cute pig appears and asks if you want to activate the Super Guide. That was one new challenge this time.
+6. New Super Mario Bros. Wii: An action game released for the Wii console on December 3, 2009. If you miss eight times on the same course, Luigi will appear to show you the "Super Guide".
+
+Kynan
+Another big challenge pertained to the way the game looks. We preserved the overall graphic appearance of the previous games in the series and at the same time significantly increased the number of elements appearing in one screen.
+
+Tanabe
+We made the background entirely of polygons, so you can really enjoy some dynamic scenes when all sorts of things start moving, breaking and falling down.
+
+Iwata
+In the days of the Super NES, we used technology called pre-rendering7, so we couldn't move the background very much.
+7. Pre-rendering: Displaying complex 3D images that would not be possible to process in real-time by the game console hardware. This is done by processing the 3D polygon models during development and converting them into 2D image files that could be used in the game.
+
+Tanabe
+Right. In the days of the Super NES, the technology couldn't keep up with rendering polygon models in real-time. Most of the game's capacity was used for characters' animation patterns and the background was restricted to a still image. This time, however, we could draw everything, including the background, in real-time, so we could prepare lots of ways for a moving background and characters to interact.
+
+Kynan
+Because of that, the levels are a lot of fun simply to walk around in.
+
+Iwata
+What are Donkey's Kong's abilities like?
+
+Tabata
+You can choose to use the Wii Remote controller sideways or the Nunchuk controller, whichever you please, but Donkey Kong's behavior and abilities are basically the same.
+
+Tanabe
+One new ability for Donkey Kong is the ability to blow out his breath. For example, if he blows on dandelion puffs, an item can appear.
+
+Iwata
+Whose idea was that?
+
+Tanabe
+Miyamoto-san's. He told us early on in development that he definitely wanted us to put that in. He also said he didn't want us to change the music.And you said that, too.
+
+Iwata
+Right. (laughs) I remember telling you during the first meeting to treat the music with care. The music for Donkey Kong Country is in my iPod and I often listen to it even today. I don't often do that, but Donkey Kong Country had so many memorable tracks that I bought the soundtrack CD.
+
+I think one reason so many people loved the Super NES version is that the music—in addition to the amazing graphics and fun gameplay—really spoke to them. We don't have anyone here today who worked on the music directly, but could I ask each of you to say something about the music?
+
+Tom
+I think it's great music. Donkey Kong Country was such a unique game, and when people talk about the game, many of them mention the music. I think the music is an extremely representative element of the game.
+
+Kynan
+I also really like the music, and many on our team are fans of it.
+
+Tom
+But I think it must have been hard work for Yamamoto-san8, who did the music. Nintendo did the basic background music and Retro Studios did the sound effects. Yamamoto-san remade the old sound and also had to make new music appropriate to the atmosphere of this particular game.
+
+Mike
+That's right. At first, Yamamoto-san made music that would fit the atmosphere of a certain level, but—like we mentioned earlier—we fiddled with the levels up to the very end in order to make them even better, so after some time had passed, the music wouldn't fit anymore. Then he'd have to remake the song. I bet that was hard.
+8. Kenji Yamamoto: Software Planning and Development, Nintendo. He worked on the sound for Super Metroid and the Metroid Prime series, as well as for older games such as Punch-Out!! and Famicom Tantei Club.
+
+Iwata
+Tabata-san, what do you think of the music?
+
+Tabata
+I had actually never played Donkey Kong Country until this project began, so to be honest, I didn't really begin with any special feelings toward the music.
+
+Iwata
+The idea that everyone has a special affection for the music is an assumption by fans of the previous games, but it's actually better for people who have experienced the original and people who haven't to work together on a game. Both people who have memories and project them into the game as well as people seeing it for the first time, like you, are necessary. That's because people in both categories will play this game.
+
+Tabata
+Thank you for saying that. When I became involved with this project, I knew the people who were already passionate about the series would shoulder the load when it came to incorporating what had been good in the older game, so I knew I could focus all my attention on making something as fun as possible, something no one had ever seen before.
+
+Iwata
+You decided to be the person in charge of thinking up new things.
+
+Tabata
+Yes. To return to the topic of the music, a lot of people around me had played the series, and when they heard the music in Donkey Kong Country Returns, they looked really pleased and said things like "This song was good" and "It takes me back to the day." I think it's great we were able to draw upon such memorable sound this time.
+
+Iwata
+Tanabe-san, what do you think about the music?
+
+Tanabe
+It makes me remember 16, 17 years ago. When I was working on the localization of the Super NES version, I went to Rare9 in England. Rare, which made Donkey Kong Country, was in...
+
+Iwata
+Twycross.
+9. Rare, Ltd.: A video game developer based in England. This company developed the Donkey Kong Country series, as well as Banjo-Kazooie and GoldenEye 007 for the Nintendo 64 console.
+
+Tanabe
+Yes. I think it took a little over four hours by car from London. It was a long ride and I found the scenery peaceful, with rolling hills and lots of sheep and wooden fences along the road. And that went on for hours. It never changed.
+
+Iwata
+You spent the whole time watching sheep. (laughs)
+
+Tanabe
+Yeah. (laughs) Rare is headquartered in a refurbished horse stable in a country town with an old church. When I got there, they handed me a huge key like you might see in a fantasy game and gave me a room, where I worked. In my mind, the music overlaps with scenes like that.
+
+Iwata
+Do you think the music turned out the way it did because the people who made it live in a peaceful area like that?
+
+Tanabe
+You could say that. Of course, there's also the atmosphere of London...
+
+Iwata
+They mix together.
+
+Tanabe
+Yeah. That music conjures up the image of another country for me. I was young at the time, so it brings back memories, and, while I can't go into details, I got into all kinds of trouble in London during my time off. The music brings all that back for me. (laughs)
+
+Tom
+I've never heard that story. Tell me about it sometime. (laughs)
+
+Iwata
+Be sure to ask Tanabe-san about it next time you see him. (laughs)

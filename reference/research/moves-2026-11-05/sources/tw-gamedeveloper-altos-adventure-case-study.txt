@@ -1,0 +1,80 @@
+URL: https://www.gamedeveloper.com/design/alto-s-adventure-case-study
+Read: 2026-11-05 by sk/smb/tw fetch helper (TinyFish fetch_content)
+Title: Alto's Adventure: Case Study (Game Developer member blog by Bencin Studios, 2019-07-03; third-party commentary, NOT Snowman/Nesbitt's own words)
+---
+* Design
+* Commentary
+
+# Alto's Adventure: Case Study
+
+case study of mobile game development, we will be discussing Alto’s adventure, a popular iOS and Android game released by the indie game company, Snowman. We will be looking at its gameplay, monetization, user retention strategies, and its estimated cos
+
+Bencin Studios,Blogger
+
+July 3, 2019
+
+schedule7 Min Read
+
+Introduction
+In this case study of mobile game development, we will be discussing Alto’s adventure, a popular iOS and Android game released by the indie game company, Snowman. We will be looking at its gameplay, monetization, user retention strategies, and its estimated cost to develop. By analyzing these topics, we will look to define why Alto’s Adventure found success in such a competitive market and what we can apply to our own mobile game development.
+
+In 2013, Snowman founders Ryan Cash and Jordan Rosenberg set out to create an endless 2D snowboarding game that involved landing backflips and jumping chasms. The idea stemmed from their love of snowboarding and their desire to relive the feeling of being isolated on a mountain. Snowman hired UK artist Harry Nesbitt in September 2013 as the sole artist and game developer with the intention of releasing the game by Christmas, but the game wasn’t finished until February of 2015. At release the game was a hit on the app charts and has remained a popular game over the past four years.
+
+Gameplay
+At its core Alto’s Adventure is a simple endless runner, but its style and atmosphere set it apart from other games in the genre. Plug in some earbuds and Alto’s Adventure transports you to its peaks with pristine sound effects and serene music that captures the isolated adventure of downhill snowboarding. All great games are hard to put down and Alto’s Adventure keeps players wondering what’s on the other side of the next big chasm. Pass by a town at night and you may be so lucky to see paper lanterns floating across the horizon. Skate through some trees and you’ll see birds scatter. These interactions are simple but feel meaningful because of the game’s atmosphere and minimalistic style.
+
+It’s no surprise the developers added a “Zen Mode” to the game that allows players to experience its gameplay without the fear of a Game Over or the distractions of score and objectives. This ability to capture the player’s attention amongst the distractions of a typical mobile gaming environment is what makes Alto’s Adventure special.
+
+Monetization
+Alto’s Adventures monetization strategy is interesting because the developers used different strategies for iOS and Android. For iOS, the game costs $4.99 and contains no ads or microtransactions, while the Android version of the game was released 1 year later as a free to play game with ads and in-app purchases. According to Ryan Cash, the reason they decided to go with the free to play model on Android was because other developers were only seeing between 5 and 15% revenue on Android compared to iOS.
+
+The reason for the revenue difference may be because it’s easier for iOS developers to create a consistent experience for players on the platform. On Android there are hundreds of different models made by many different manufacturers, while on iOS there just a few different models per year, all made by Apple. iOS users are also more likely to be on the latest update for the operating system: combine this with Apple’s strict curation of the App Store and it’s an ecosystem where users are more likely to pay up front because they expect a quality game in return. Contrary to iOS devices, Android phones have a lower cost to entry and more devices on the market, especially internationally. It is also much easier to install pirated versions of games on Android phones than on iOS.
+
+Snowman turned these differences to their advantage by making the game free to play on Android. What they lost in up-front revenue they made up for in ad revenue and in-app purchases. The Android version of Alto’s Adventure even beat the iOS version to 30 million downloads despite being released one year later. By removing the $4.99 price tag they were able to reach a much larger audience.
+
+Alto’s Adventure onboards its players with two minutes of gameplay that teaches the controls and core concepts. Upon completing the tutorial an ad plays, after which the player is prompted to purchase an ad-free version of the game for $4.99. If the player decides to continue with the free to play version, the monetization is as follows:
+
+* After every few games a 15-30 second advertisement is played.
+* If the player dies during a longer game, they are prompted with the option to watch an ad to continue
+* Players can purchase upgrades for their snowboarder using the in-game currency (coins). These coins are earned by playing the game but can also be earned by watching an ad.
+* Players can use real money to purchase coins and other premium upgrades in the game’s store.
+
+Shopify Gift Shop
+
+Alto’s Adventure was one of the first games to utilize the Shopify SDK (software development kit) in their app, allowing users to easily purchase merchandise (T-shirts, socks, stuffed llamas) without closing the app. The success of Alto’s Adventure’s in-app gift shop has shown that mobile gamers are willing to spend their money on more than in-app purchases if given the opportunity.
+
+User Retention
+
+User Retention in mobile games is a key metric for analyzing the success of an app. Good retention allows the user base to grow and is an indicator of good gameplay. Thus, user retention is directly tied to revenue. Great retention rates for a mobile game are 40% for Day 1, 20% for Day 7, and 7% for Day 28. These rates signify that after the first day 40% of users that install the app are still using it, and after a month only 7% of users are still engaging with the app.
+
+One way to raise a game’s retention is by creating a good first impression through smooth onboarding. Alto’s Adventure does this with its two-minute tutorial. It quickly brings the player from install to understanding the game, and makes him or her more likely to return to the app.
+
+Another way to increase retention in mobile games is to provide a reason for the player to come back every day. This can be through rewards, progression, or social interaction. Although Alto’s Adventure doesn’t have daily rewards or social elements such as a leaderboard, it is an excellent example of using progression to retain its player base.
+
+Alto’s Adventure uses several methods that keep the game feeling fresh on every play. Each run is unique because the mountain is procedurally generated and the weather and time of day are always changing. In addition, at the start of a run the player is assigned three objectives to accomplish while playing. For example, the objectives may be to catch 4 llamas, jump over 2 rocks, and make it 500 meters without crashing. Once all the objectives are met, the player is assigned a new set of goals to complete. Players also progress through the game by spending in-game currency to unlock new characters and upgrades that introduce new mechanics. This keeps players coming back because there’s always something new to unlock.
+
+Conclusion
+
+In summary, we believe that Alto’s Adventure found success for the following reasons:
+
+* The gameplay in Alto’s Adventure is not groundbreaking, but itâ€™s minimalistic style and immersive atmosphere grabs players attention and doesn't let go.
+* Although the game was only available on iOS initially, the developers reached a much wider market by porting the game to Android and releasing it as free to play.
+* Despite missing the original release deadline by 18 months, the developers believed in their game and committed to releasing the it when it was ready, rather than shipping an unfinished product.
+
+We can learn from Alto’s Adventure by asking ourselves these three questions when developing games:
+
+1. Does our game provide an escape for players? Can they pick up their phone and instantly be immersed in its gameplay for a few minutes before going back to their busy lives?
+2. Are we considering different pricing models for the iOS and Android versions of the game? Successfully adapting to the differences between the userbases can open new opportunities and markets.
+3. Are we retaining our users by providing them with goals to achieve and rewards for progression? Keeping players engaged with the game allows the userbase to grow and increases revenue.
+
+## Get your gaming project started today!
+
+### Let's start a conversation. Give us a call @ 615-505-4447
+
+### Ask us Anything: [email protected]
+
+Read more about:
+
+Blogs
+
+## About the Author

@@ -1,0 +1,44 @@
+URL: https://www.styledex.games/game/ori-and-the-blind-forest-definitive-edition
+Read: 2026-11-05 by rayman/ori fetch helper (TinyFish fetch_content)
+Title: Ori and the Blind Forest: Definitive Edition art style (#0378)
+Page description (meta): Lush painted forest side-scroller with deep layered parallax, heavy foreground blur, and a tiny glowing white spirit character. Dominant teals and deep blues lit by glowing plants and god rays, punctuated by fiery orange-red sections.
+---
+## Every tag on this entry
+
+Strongest first. Spot one that doesn't fit? Flag it and we'll review it.
+
+**Rendering technique**:   * Hand-painted 2D
+    * Mixed 2D/3D
+
+**Shading model**:   * Painterly
+    * Soft gradient
+
+**Line work**:   * No outlines
+
+**Texture and surface treatment**:   * Cinematic depth of field
+
+**Palette character**:   * Cool dominant
+    * Dark / low-key
+    * High contrast
+
+**Character proportions**:   * Cute rounded
+
+**Detail density**:   * Detailed
+
+**Dimension**:   * 2.5D
+
+**Camera and perspective**:   * Side-scrolling
+
+**Art influence**:   * Concept art painting
+
+**Setting and theme**:   * Nature spirits / animist
+
+**Mood and tone**:   * Wondrous
+    * Mysterious
+    * Melancholic
+
+**Game type**:   * Metroidvania
+
+**Platform**:   * PC
+
+Keyboard: ← and → for neighbouring entries, R for a random one.

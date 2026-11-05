@@ -1,0 +1,181 @@
+URL: https://iwataasks.nintendo.com/interviews/3ds/super-mario-3d-land/1/2/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Iwata Asks - Volume 2: The Producers - Page 3
+---
+## Rivals
+
+Iwata
+
+The development period wasn't that long this time, but I feel like the game has the substantial volume and is really dense in content. Why do you think you were able to achieve that?
+
+Hayashida
+
+This time, we, the Tokyo Software Development Department, decided to develop as if it were a short-distance race rather than a long-distance race. At first, we were like, "Let's make the best game in a short timeframe."
+
+Iwata
+
+Okay.
+
+Hayashida
+
+But then all we could think was "How can we make it in a short time?" and no positive ideas came forth. For example, we thought of cutting out cinematics or cutting out boss battles. Then, we were like, "Well, that's no good!" and took a different approach. Instead of "Let's make the best game in a short time!" we were like, "What can we do to in the short timeframe to make the best game possible?"
+
+Iwata
+
+Did rephrasing it like that make such a big difference?
+
+Hayashida
+
+Yes! For example, instead of cutting cinematics, we re-thought about how a cinematics should be to get the point across, and we changed the combination of landforms or move to make a completely different kind of fun gameplay when fighting the same enemies. We made it like Super Mario Bros. for the NES.
+
+Iwata
+
+The original Super Mario Bros. is indeed a good example of a game that plays totally differently just by rearranging the various elements.
+
+Hayashida
+
+Yes. This time, we decided to make full use of the game pieces, so I think we were able to concentrate without straying during development.
+
+Miyamoto
+
+In game development, even if the total development time is different, the time you spend really concentrating on a game is relatively the same for whatever game. Of course, the time does differ by game genre, but this time was particularly free of wasted time and effort.
+
+Iwata
+
+I get the impression you strayed very little during the initial approach to the project.
+
+Miyamoto
+
+That's right. Ever since our experience with Super Mario Galaxy 2, we've known what kinds of elements may end up going to waste, so we were able to concentrate on what we should.
+
+Tezuka
+
+And, of course, we owe it to the team's strength. While we almost always need to create a new team with new members whenever we start a new project, the Tokyo Software Development Department has had the same members for a long time and has evolved in a unique way, so I think the bond between coworkers and their high performance because of it was one of the factors.
+
+Iwata
+
+I see. Nonetheless, it turned out to hold a lot more than I first imagined. Why is that? Is it because having a good idea of the direction you were headed allowed you to add in new elements one after the next?
+
+Hayashida
+
+I think so. I'm the type to say, "Put that in! Put that in!" as we work, so as the result of throwing in all kinds of suggestions from the staff, it built up into something with considerable volume.
+
+Iwata
+
+That's just like "Give him a tail! Give him a tail!" (laughs) From your point of view, Koizumi-san, when did the big breakthrough occur?
+
+Koizumi
+
+This time, Hayashida-san was out in front and I watched over from behind, serving as a sort of anchor. At first, I told him to put in interesting elements from Super Mario Galaxy 2 and to push it through in the short timespan. I even told him that he didn't have to put in that much new stuff. The plan was to only include one power-up for Mario.
+
+Hayashida
+
+To start with Tanooki Mario.
+
+Koizumi
+
+That's right. But rather than just sticking with Tanooki Mario and the fun of stereoscopic 3D, we set aside some time for reviewing how good the software could become and the staff came up with the idea of Boomerang Mario. When I saw all the young staff members voluntarily putting in all their new ideas like that, I thought, "They've really grown."
+
+Iwata
+
+Usually when you put in new material, the development period drags out. Why didn't that happen this time?
+
+Koizumi
+
+One reason is that Hayashida-san can see what isn't necessary. If something doesn't look like it will bear fruit, he doesn't pursue it very far.
+
+Hayashida
+
+Well, a lot of ideas came from me, so I really stewed over them. (laughs)
+
+Koizumi
+
+But your own ideas are the hardest ones to scrap. I was impressed that he could do that. I think he managed time well in that way.
+
+Hayashida
+
+One task was making the most effective game possible within the time constraints, so we hit upon that concept of using different combinations of game elements. For example, we had to create Flying Mario for Super Mario Galaxy, from nothing, so it took a long time, but combining Fire Mario's movement with the enemy's Boomerang gave birth to Boomerang Mario, a new power-up for him. That's how I always pick and choose things.
+
+Iwata
+
+Huh…this method is…
+
+Miyamoto
+
+See, that's how I think!
+
+Hayashida
+
+I'm not as good as you are… (laughs) A large reason I hit on that was my experience teaching at the game seminar. Analyzing and teaching the way that Miyamoto-san makes games helped me organize my own thoughts and I was then able to put them into practice. I wouldn't be much of a teacher if I couldn't do what I taught the students! (laughs)
+
+Miyamoto
+
+So teaching put pressure on you? (laughs)
+
+Hayashida
+
+Yes. (laughs)
+
+Iwata
+
+Explaining things to others is incredibly important. Once you explain knowledge you have picked up, you notice how your understanding was full of holes. One goal of the game seminar is, by becoming a teacher, to acquire greater skill, get a deeper understanding by collecting your thoughts in making games, in addition to finding and nurturing new talents.
+
+Hayashida
+
+Yes. I think we were able to make a game with this much volume within the time constraints because of that step.
+
+Iwata
+
+Since you taught at the game seminar, you had to walk your talk. Perhaps that's why you were able to so calmly make such tough decisions. It's an efficient method of game development that came about because of the game seminar.
+
+Hayashida
+
+I think being able to test play the game every day is another reason we were able to keep up the pace. I was able to play a new build of it each day, so I looked forward to coming to work. It was fun.
+
+Miyamoto
+
+When a game is developed with a good tempo, that cheers up the developers. In addition, Tokyo Software Development team has really high mobility. When I went to Tokyo from Kyoto to check on the game and gave them various corrections to make, they would fix all sorts of stuff that very day, so I could check a lot in one day. We could handle it right there, without waiting, so the work proceeded quickly.
+
+Hayashida
+
+I think time spent waiting is the biggest problem. Aside from working hard as an individual, I think it's important to reduce the amount of time that goes to waste as much as possible.
+
+Iwata
+
+That's right. A project is all about how you can cut down on the time that opens up between one person and the next.
+
+Hayashida
+
+I paid close attention to that.
+
+Tezuka
+
+If I contact Hayashida-san, the corrections come back right away. That rapid back-and-forth was enjoyable.
+
+Iwata
+
+Yes, work is fun when feedback comes fast.
+
+Miyamoto
+
+It was a good example of how work should go.
+
+Iwata
+
+Hayashida-san, I'm quite a Miyamoto-watcher, but you are, too! It's interesting that both of us who are studying Miyamoto-san have a background in programming. We're rivals! (laughs)
+
+Hayashida
+
+Well… (laughs)
+
+Miyamoto
+
+You both point out different things, which makes me want to improve myself! (laughs)
+
+Iwata
+
+Today's discussion is extremely practical.
+
+Miyamoto
+
+Is that all right? It's like a business book more than an interview about games! (laughs)

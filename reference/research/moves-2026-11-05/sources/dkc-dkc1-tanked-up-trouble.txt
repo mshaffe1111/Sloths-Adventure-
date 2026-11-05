@@ -1,0 +1,12 @@
+URL: https://www.mariowiki.com/Tanked_Up_Trouble
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content; tables excluded by selector)
+Title: Tanked Up Trouble (Donkey Kong Country, 1994)
+---
+[Stripped: image-request banner, images, empty headings. OMITTED FOR LENGTH: the Layout walkthrough (kept lines below), Bonus Level, Naming and Notes detail.]
+
+Tanked Up Trouble is the twenty-ninth level of Donkey Kong Country and the first level of Chimp Caverns. Donkey Kong and Diddy Kong must stand on a moving platform to progress through the level. The platform is similar to those in Trick Track Trek, as it moves slowly on a set path. However, the platforms of Tanked Up Trouble are mainly different in that they run on limited fuel, and the Kongs must provide it with Fuel Canisters to keep it running. The platform starts entirely fueled, and its fuel gauge is represented by five circles on the side of the platform. The circles start out green, but as the fuel depletes, the circles slowly change to red. If the circles are orange, it means that the platform is fueled halfway. The Kongs cannot skip a Fuel Canister because it usually results in the platform running out of fuel before coming within distance of another Fuel Canister. Zingers are the main enemy in the level, and they are encountered during the latter half of the level. Some Kritters are on the small boardwalk platforms which hang from the ceiling. The Kongs also encounter some Neckys, mostly during the first half of the level. If the platform runs out of fuel, it falls off the track with the Kongs.
+
+(From Layout, kept:) "The platform then leads them down a few sharp turns to a Necky, who is followed by a thin, black platform with an arrow on it; this platform slowly drops after being stood on."
+"At this point, the mobile platform begins to drain fuel faster and gain less fuel for the barrels."
+
+Retrieved from "https://www.mariowiki.com/index.php?title=Tanked_Up_Trouble&oldid=5424610"

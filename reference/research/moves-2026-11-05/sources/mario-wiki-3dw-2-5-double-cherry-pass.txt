@@ -1,0 +1,52 @@
+URL: https://www.mariowiki.com/Double_Cherry_Pass
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Double Cherry Pass
+---
+(Stripped: site navbox, image gallery, "Names in other languages" table, reference list.)
+
+This article is about the level in Super Mario 3D World. For its musical theme, see Double Cherry Pass (theme).
+Not to be confused with Double Cherry Palace.
+
+| Double Cherry Pass | |
+| --- | --- |
+| Level code | World 2-5 |
+| World | World 2 |
+| Games | Super Mario 3D World, Super Mario 3D World + Bowser's Fury |
+| Primary power-up | Fire Flower, Double Cherry |
+| Time Limit | 400 seconds |
+| Music track | Double Cherry Pass |
+| Level progression | Previous: Big Galoomba Blockade; Next: Bowser's Bullet Bill Brigade |
+
+Double Cherry Pass, otherwise named World 2-5, is the fifth course in World 2 from Super Mario 3D World and its Nintendo Switch port Super Mario 3D World + Bowser's Fury. This level consists of green mountains with pink grass and many colorful block hills, and introduces the Double Cherry item. It is unlocked by clearing Big Galoomba Blockade, and clearing it unlocks the world's tank level, Bowser's Bullet Bill Brigade.
+
+## Layout
+
+The first section of the level is a path leading to a Double Cherry. After the first Double Cherry, there is a simple pathway containing two Galoombas. After that section, there is a Clear Pipe and a few crates, one of which contains a Double Cherry. On the far right, there is a long ? Block that contains a Fire Flower. If the player decides to enter the Clear Pipe, the player will find a Warp Pipe at the end of the section, warping the player(s) to a tunnel with an army of Blocksteppers. There are two P Switches that require two Double Cherry clones to activate the P Switch. Past this tunnel are two Clear Pipes; the left and middle one are connected, containing Hidden Coins. On the left of the connected Clear Pipe, there is a hidden long ? Block containing a Double Cherry. If the player decides to enter the Clear Pipe, the player will see a Checkpoint Flag.
+
+After the Checkpoint Flag, there are more hills similar to the first section of the level, except there are Blocksteppers. The second group of Blocksteppers has a Double Cherry. There is a Red Ring on one of the hills. On the far right, there is another hidden long ? Block containing another Double Cherry. On the top hill on the left, there are three ? Blocks, with one containing another Double Cherry. After the second hill section with the Blocksteppers comes an alley with hills and a Fire Bro, who must be defeated in order to reveal a Warp Pipe to the Goal Pole. After the player enters the Warp Pipe, the goal pole can be seen. Before the final set of hills, there is the final hidden long ? Block which also contains a Double Cherry. There is a Multi-Vator requiring four Double Cherry clones (or alternatively all players if playing with four players). After that, the last hill can be seen. Finally, the player(s) walk to the top of the hill to touch the top of the Goal Pole.
+
+## Collectables
+
+### Green Stars
+
+| Location |
+| --- |
+| Inside a crate in the first area explored. |
+| Right after the Blocksteppers, Double Mario or two players must step on two P Panels at the same time, revealing the Green Star in front of them. |
+| Next to the Goal Pole, a four-character Multi-Vator needs to be operated. When this happens, the platform will rise to the third Green Star. Alternatively, it can also be obtained by bringing in a Super Bell from another level or having four players in multiplayer. |
+
+### Stamp
+
+On the left corner in the colorful blocks section, a ? Block expands upward if it is hit, giving a player (or clone) who is on it access to the stamp. Alternatively, the player can simply climb up to the stamp with the Cat Suit. The stamp is Fire Peach.
+
+## Luigi sighting
+
+A very small 8-bit Luigi can be seen at the end on the fence post closest to the wall.
+
+## Enemies
+
+| Name | Count |
+| --- | --- |
+| Galoomba | 2 |
+| Blockstepper | 18 |
+| Fire Bro | 1 |

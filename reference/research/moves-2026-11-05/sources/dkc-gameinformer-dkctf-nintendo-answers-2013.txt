@@ -1,0 +1,57 @@
+URL: https://gameinformer.com/games/donkey_kong_country_tropical_freeze/b/wii_u/archive/2013/12/24/nintendo-answers-our-donkey-kong-country-tropical-freeze-questions
+Read: 2026-11-05 by dkc fetch helper (TinyFish fetch_content)
+Title: Donkey Kong Country: Tropical Freeze Preview: Nintendo Answers Our Burning Questions (Game Informer, Ben Reeves, Dec 24, 2013)
+---
+[Stripped: share/follow buttons, product box, app ad.]
+
+Even after getting our hands on Nintendo's upcoming platformer we still didn't have all our questions answered, so we turned to Retro Studios CEO Michael Kelbaugh and Nintendo producer Kensuke Tanabe for a few more details about what is sure to be one of next year's early hits.
+
+What is the story for Donkey Kong Country: Tropical Freeze?
+Kensuke Tanabe: When Donkey Kong and his friends are having a party, a fleet of Viking ships suddenly appears near the DK Island. The Vikings, known as Snowmads, are planning to take over the island. The Snowmad boss commands his minions to have his giant horn brought to him and blows into it, summoning an Ice Dragon. Sensing danger, the Kongs step outside their hut and are blown out to sea by the gust of wind created by the Dragon.The Dragon draws thick clouds to the island, turning Donkey Kong's tropical island into a frozen island. The Vikings land their ship on top of the island and declare takeover.
+
+What kinds of new enemies will we see in the game? How do they affect gameplay?
+Kensuke Tanabe: In Donkey Kong Country Returns, we had the Tiki Tak Tribe, a mysterious group that emerged from deep under the ground. In this game, we have a group of Vikings called the Snowmads, giving a completely new look to the enemies. Some Snowmads wear helmets, and some hold shields and spears. Players must tackle the enemies in certain ways depending on how they are armed.
+
+Michael Kelbaugh: We had a lot of fun developing the Snowmad characters. We spent a great deal of time on the slightest of details of even the smallest of them. You may notice that they are very animated and very detailed. We wanted to give them a lot of personality and character. They do a lot of funny and entertaining things.
+
+How does Dixie Kong change up the DK formula? What can she do that the boys can't?
+Kensuke Tanabe: Dixie Kong can spin her ponytail and fly. Her ponytail can also be used underwater; it works like a propeller and she can swim against a strong current. This ability is unique to Dixie.
+
+How are you taking advantage of the Wii U's hardware? Are you doing anything special with the touchscreen?
+Kensuke Tanabe: Because we want everyone to enjoy not only gameplay, but also to focus on the on-screen visuals, we decided not to implement GamePad features which would require the player to often switch between the two screens. We have added off-TV play so that players can play the game with the GamePad only if they want, so that they can enjoy the game anytime even when the TV cannot be used.
+
+Michael Kelbaugh: Technically the Wii U is a very powerful device. It allowed us to make the transition into HD which was a huge step in overall graphical and animation quality. We hope you like seeing Donkey Kong and all his friends in HD.
+
+With a name like Tropical Freeze we expect to see a lot of ice levels, but what other kinds of themed environments can we look forward to seeing?
+Kensuke Tanabe: There are environments like the Mangrove jungle, Savannah, and Fruit Juice Factory. Ice-themed levels can be found on Donkey Kong Island.
+
+We've heard that you've done some work on the game's camera; what's new with that?
+Kensuke Tanabe: It's not really new technology, but because our levels and character models are in 3D, we can show everything from different camera angles. This rotating camera was used to create not only dramatic effects but also to provide a whole new gameplay experience. Players can see this in several levels such as the Mine Cart and Rocket Barrel levels, as well as in the Barrel Cannon levels.
+
+Michael Kelbaugh: The use of the 3D camera was something we wanted to do in Donkey Kong Country Returns however; we just didn't have the time to refine it and get it to where we really liked it. With Donkey Kong Country: Tropical Freeze, it was a feature we knew we wanted from the beginning and we had a little more time to make it look great. We're really happy with how it turned out.
+
+How do you shake up the core gameplay to help keep things interesting?
+Kensuke Tanabe: We have not made significant changes to the core gameplay. We have kept the base of the game and added new elements like the rotating cameras, new partner characters, and special moves that can be used with partner characters which we call Kong Pow. We have been able to keep the gameplay experience fresh and interesting by creating level designs and gameplay mechanics based on these new ideas.
+
+How do you balance the game so that it's fun for multiplayer and single player? Will the game support more than two players?
+Kensuke Tanabe: There is no collision detection between players, it's as if players can enjoy the game in two-player multiplayer as if playing in single player mode. In effect, we feel that as long as we maintain a game balance for single player, the game can be just as fun for multiplayer.
+
+Also, Donkey Kong and his partner character can be joined together or separated during multiplayer, which allows a more advanced player to carry the less experienced player and together clear the level with the help of the better player. We hope parents will enjoy the game with their children, but the children may be better players.
+
+How has the game's delayed release benefited its development?
+Kensuke Tanabe: The game itself was almost complete, so we were able to take more time to polish areas not directly related to gameplay. There are also some interesting details, like the Snowmads in the background. Just watching them move around is fun.
+
+Michael Kelbaugh: The extra time was really a blessing for us. It allowed us more time to refine and polish and to add that little bit of extra love Nintendo games are so famous for. It really made a difference. We made extra polish passes on particles and FX, animation and artwork. And, let's not forget it gave David Wise and Kenji Yamamoto a little extra time to make adjustments to the amazing soundtrack!
+
+How does the team at Retro work with Nintendo headquarters in Japan? How does that developmental process work?
+Kensuke Tanabe: Game development, such as coding and data creation, is done entirely at Retro, and although we work from separate locations, we function as one team. NCL/SPD works with Retro on game concepts and specifications right from the earliest phase of the project. We maintain constant communication until the completion of the project, including reviewing the latest versions, making improvements and modifications, and discussing new ideas to incorporate into the game. Phone and video conferences are often held but we also visit the Retro team in Austin, TX a few times a year and stay up to 10 days each time for extensive meetings. We have been doing this for over 10 years now. Retro understands and practices Nintendo's development style, so in that respect one can say that Retro is a Texas based Nintendo development group.
+
+Michael Kelbaugh: I agree with Tanabe-san completely. Though Retro Studios and SPD reside at different locations, we are one team and we are extremely proud to be a Nintendo game developer. This is a great sense of pride for us. It's really a unique experience working here. Many of our colleagues, including Tanabe-san, worked on the original franchises many grew up playing and share those experiences through mentorship and guidance daily.
+
+Would you consider porting this title to the 3DS? Would that be a hard process?
+Kensuke Tanabe: Minneapolis-based developer Monster Games ported the Wii version of Donkey Kong Country Returns to Nintendo 3DS with Donkey Kong Country Returns 3D. Even Retro praised Monster Games for successfully porting the game without compromising its quality. In fact, Monster Games was involved in some of the level design, art, and engineering of Donkey Kong Country: Tropical Freeze; they did a phenomenal job. However, if we were to port Donkey Kong Country: Tropical Freeze to Nintendo 3DS, it would be extremely difficult to not lose quality, even for Monster Games, because of the huge differences in the 3DS and Wii U technical specifications – more so than Wii.
+
+Michael Kelbaugh: Monster Games did a phenomenal job bringing Donkey Kong Country Returns to the 3DS. We're very proud, and a bit jealous, of their efforts. So much that we asked them to help us with Donkey Kong Country: Tropical Freeze. It would be a monumental task taking this new game from the Wii U to the 3DS because of the technology used in the Wii U version. However, if it could be done, I'd like to play it.
+
+You guys did a great job taking the Metroid formula and shaking it up while staying true to its core concept. Would you eventually like to do the same thing with Donkey Kong – take it into a different genre or change the formula that Rare established on the SNES?
+Kensuke Tanabe: Indeed, Retro has turned 2D Metroid into a 3D game and created a fun, new style of First-Person game. Although we didn't greatly change the basic style of the game with Donkey Kong Country Returns, I feel that we did not betray the fans' expectations while bringing something new to the game. I also think that moving on to the Donkey Kong Country series from the Metroid Prime series came as a big surprise for Retro fans; but this is Retro and Nintendo's testament to developing different genres of games rather than sticking to the same. That being said, we may consider not just the Donkey Kong Country series but a broader range of possibilities for Retro's next project.

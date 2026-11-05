@@ -1,0 +1,152 @@
+URL: https://www.nintendo.com/us/whatsnew/ask-the-developer-vol-11-super-mario-bros-wonder-part-1/
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Ask the Developer Vol. 11, Super Mario Bros. Wonder—Part 1 - News - Nintendo Official Site
+---
+# Ask the Developer Vol. 11, Super Mario Bros. Wonder—Part 1
+
+* This article has been translated from the original Japanese content.
+* Some of the images and videos shown in text were created during development.
+
+In this eleventh volume of Ask the Developer, an interview series in which Nintendo developers convey in their own words Nintendo's thoughts about creating products and the specific points they are particular about, we're talking to the developers behind the *Super Mario Bros.™ Wonder* game for the Nintendo Switch™ system, which launches on Friday, **October 20**.
+
+---
+
+## **Check out the rest of the interview:**
+
+---
+
+## **Part 1: The theme of "transformation"**
+
+**First, could you briefly introduce yourselves?**
+
+**Takashi Tezuka** (referred to as Tezuka from this point on): Hello. I'm Takashi Tezuka. I've been involved in 2D Mario (1) games in many ways for a long time, but I joined as the producer for this title. This year marks the 39th year that I've been involved in the development of Mario games.
+
+**(1)** *A term* t*hat refers to a side-scrolling 2D platformer in the Super Mario series. In contrast, 3D Mario games refer to Mario platformers in which Mario moves around in a 3D space.*
+
+**Shiro Mouri** (referred to as Mouri from this point on): Hello, I'm Shiro Mouri. I joined as the programming director for New Super Mario Bros. U (2) and the director for New Super Mario Bros. U Deluxe. For this title, I served as the director again.
+
+**(2)** *A Wii U™ game released in November 2012 in North America and Europe. This side-scrolling 2D platformer offers a unique gameplay experience on the Wii U GamePad, which can be used as a second screen with touch-screen functionality. Yoshis, with various abilities, support their adventure. New Super Mario Bros. U Deluxe for Nintendo Switch, which included new characters and New Super Luigi U, was released in January 2019.*
+
+**Koichi Hayashida** (referred to as Hayashida from this point on): Hi! I'm Koichi Hayashida, and I worked on the game design. I've served as a director for games including Super Mario 3D World (3) and as a producer for Super Mario Odyssey (4) and other games. My mission in this project was to apply my experiences from the development of 3D Mario games to a 2D Mario game.
+
+**(3)** *A Wii U game released in November 2013. In this 3D platformer, up to four players can explore the Sprixie Kingdom, a land full of surprises, where new transformations, such as Cat Mario and Double Mario, were introduced. Additional accessories may be required for multiplayer mode. Sold separately.* *Super Mario 3D World + Bowser's Fury**, which includes new modes, was released on Nintendo Switch in February 2021.*
+
+**(4)** *A Nintendo Switch game released in October 2017. In this 3D platformer, players join Mario and his hat-shaped ally Cappy on a globe-trotting adventure, exploring ancient ruins, big cities, and much more.*
+
+**Masanobu Sato** (referred to as Sato from this point on): Hi, I'm Masanobu Sato, the art director for this game. My first involvement in the development of 2D Mario games was when I created animation for the Koopalings, the bosses in New Super Mario Bros. Wii (5). I've been involved as the design leader since New Super Mario Bros. U.
+
+**(5)** *A Wii™ game released in November 2009 in North America and Europe. In this 2D side-scrolling platformer, new transformations such as Propeller Mario, Ice Mario, and Penguin Mario were introduced.*
+
+**Koji Kondo** (referred to as Kondo from this point on): Hello, I’m Koji Kondo. As the sound director for this title, I was responsible for the approach we took for the sound and for making the final judgment on its quality. I also composed some of the game's music myself. I've been involved in Super Mario games since the first Nintendo Entertainment System (6) game.
+
+**(6)** *A video-game console released in 1985 in North America. It came bundled with two controllers featuring a Control Pad and A and B buttons. Players could swap game cartridges to play a variety of games.*
+
+**Thank you very much. Mouri-san, could you give us a brief introduction to this new game, Super Mario Bros. Wonder?**
+
+**Mouri:** Sure. Super Mario Bros. Wonder is the first entirely new installment in the side-scrolling Super Mario Bros. series in almost 11 years. Whenever you collect the new item, the Wonder Flower, the course and its gameplay transform dramatically, and a variety of "wonders" occur that would've been unimaginable in previous titles in the series.
+
+**So it's been almost 11 years since the release of the previous title, New Super Mario Bros. U.**
+
+**Mouri:** Yes. While Super Mario Maker (7), Super Mario Maker 2, and New Super Mario Bros. U Deluxe were released after the launch of the previous title, this is the first new 2D Mario game in almost 11 years.
+
+**(7)** *A Wii U game released in September 2015. In this 2D platformer, players can create and play their own courses by combining different parts. The sequel, Super Mario Maker 2, was released on Nintendo Switch in June 2019.*
+
+**Where did you get the idea for this new game, which has been a long time coming?**
+
+**Tezuka:** I was already thinking about what kind of Mario game we should make next when we were developing Super Mario Maker 2. At the time, some journalists and players were saying that Super Mario Maker had eliminated the need for another 2D Mario game. But I kept saying that the next Mario game would be completely different from Super Mario Maker, so there was no need to worry. In hindsight, those kinds of sentiments may have been what motivated me to come up with ideas for this game.
+
+**So during Super Mario Maker 2's development, you were already confident that you could create something completely fresh.**
+
+**Tezuka:** Well, yes.
+
+**Hayashida:** No, no, I wasn't! (Laughs) Players have created so many different courses in Super Mario Maker and Super Mario Maker 2 that I was worried about whether we could do anything new that would go beyond that. ...But apparently, Tezuka-san thought it would be fine. (Laughs)
+
+**Tezuka:** I'm an optimist. (Laughs)
+
+**Hayashida:** Yes, I remember Mouri-san saying during the early stages of development that we shouldn't use the same game engine as in the New Super Mario Bros. series but rather create a new game engine that would serve as a foundation for future 2D Mario games. Thankfully, Tezuka-san also told us to prioritize content over schedule.
+
+**Tezuka:** We wanted to create a game with much more to offer than ever before, so this time, we didn't set a fixed time period for development, which is usually decided before we kick off. To create something truly enjoyable, we decided to take our time and dedicate ample budget for development without having to worry about the production schedule. So at first, we only had a small group working on the development.
+
+**With a small number of people and no set deadline, I imagine the development team felt a bit uneasy. Did you have a clear direction of what you wanted to achieve?**
+
+**Hayashida:** Tezuka-san gave us the task of creating a Mario game full of hidden surprises and wonders.
+
+**Mouri:** When I think back to the first time I played the original Super Mario Bros. (8) game, I remember feeling that it was full of hidden surprises and wonders. Coins would come out when you hit the blocks, and your body would grow bigger with Super Mushrooms. Back then, everything was new and packed with unexpected delights. However, now that the Super Mario games have been enjoyed by players for many years, those things have somehow become ordinary. That's why Tezuka-san's goal was to create moments that even modern players would find unexpected and wondrous.
+
+**(8)** *A game released in 1985 for the Nintendo Entertainment System. It is the first title in the Super Mario series, which continues today.*
+
+**Hayashida:** What used to be wondrous back then is no longer wondrous today, neither for players nor for us developers.
+
+**Mouri:** But the reality of coming up with something that would elicit a sense of wonder from a modern audience was quite difficult. We did a lot of prototyping, but because the development team was small then, it took us time to find the core of what we wanted to achieve. Previous 2D Mario games featured variations of challenges that would scale up in difficulty as players progressed. This time, though, we decided not to focus on creating such variations but rather on offering a large number of surprises that we thought would be fun. Frankly speaking, I wanted to include at least one element in each course that would surprise or delight players. So I decided to consult Hayashida-san who had been involved in the development of 3D Mario games and ask him how he included such elements in *Super Mario Odyssey*.
+
+**Hayashida:** 3D Mario games are sometimes described by the media and players as a "toy box of ideas," so I decided to apply some of the ideas we used to create 3D Mario games to a 2D Mario game. With these things in mind, we decided to have an idea-sharing session. Everyone from programmers to designers and sound designers joined in and wrote down gameplay ideas on sticky notes, which could be unrelated to their field of expertise, and we made prototypes on the spot. There were just so many ideas. Before this interview, I counted the number of sticky notes we had, and there were over 2,000! (Laughs)
+
+**Wow, over 2,000! With so many ideas, could you find the core element you felt was right for this game?**
+
+**Mouri:** Sato-san proposed the idea of players warping to another world by collecting an item. This is what he came up with.
+
+**Mouri:** When I was playing Super Mario Bros. on the NES, I was amazed that you could warp to different places. You could go underground by entering a pipe or go up to the sky by climbing up vines that appear when you hit a block. So I wanted to utilize this idea to create a game with new wonders.
+
+**I remember getting really excited about entering a pipe and warping somewhere else. What was Tezuka-san's reaction to that idea?**
+
+**Mouri:** Tezuka-san said, "Warping somewhere else would be no different from previous games. Can't we make it so that the course itself transforms without players having to warp?" I was like, "No, no, how is that even possible?" (Laughs)
+
+**Hayashida:** I also thought it was asking the impossible to make the course itself move. (Laughs) But then I remembered that we had come up with the idea of twisting and bending the pipes, so we made a prototype, and it turned out to be quite an interesting gameplay mechanic.
+
+**Mouri:** This got me thinking, let's make huge changes in a way that would have been unimaginable in previous 2D Mario games!
+
+**Twisting and bending pipes are certainly things we've not seen in past Super Mario games. Was this how the concept of Wonder started?**
+
+**Mouri:** Yes. We went through a lot of prototyping, and once we finally discovered the "core" of this game, the team became more confident and started to move forward. This is a rather drastic approach, but first, you've got to take everything to the extreme. If you think you've gone too far, you can make adjustments later.
+
+**Kondo:** I also contributed a lot of suggestions at the idea-sharing session.
+
+**You shared ideas too, Kondo-san?**
+
+**Kondo:** Yes. I shared the idea of an eight-heads-tall, life-sized, live-action Mario humming along with the background music as he goes along.
+
+**Eight-heads-tall, life-sized Mario?!**
+
+**Kondo:** Yes. When he jumps, he says to himself, "Boing!" ...The idea was never used, though.
+
+**Everyone:** (Laughs)
+
+**Kondo:** I felt I had to take the lead in going to the extreme. (Laughs)
+
+**Maybe an eight-heads-tall, life-sized Mario was a step too far, but I see how you've expanded the gameplay through trial and error. However, if you take an idea too far, it could break the standards you've established over time for the world of 2D Mario games. Wasn't that a concern from an art-direction perspective?**
+
+**Sato:** Yes, there are some deviations from the rules of the Mario world we've seen in the past. For example, we all know pipes are solid, so we're confident that shells we kick will bounce back if they hit one. We also know that we can safely jump on pipes. Keeping this feeling of trust in a side-scrolling 2D Mario game was crucial.
+
+**Then came along the idea of twisting and bending pipes...**
+
+**Sato:** Yes. But we didn't want to give up on an idea that people had spent a lot of energy on, just because it wouldn't fit in and look right. So we took great pains to create a world that could incorporate this idea. We decided to incorporate this major transformation as a mysterious phenomenon called the "Wonder effect" and use unconventional visuals.
+
+**Hayashida:** From then on, we held Wonder prototype meetings, where we selected ideas from the more-than-2,000 sticky notes and other materials produced in the idea-sharing session and created prototypes that matched the world of Wonder. Various ideas were incorporated into the game as we went along.
+
+**Kondo:** We were also conscious of this major transformation when creating the sound. To make the sound of activating the Wonder effects more unconventional, we used a lot of up-tempo background music. We also made the environmental sounds and sound effects more dynamic to give a sense of complete change from the regular course. The course background music has also been redesigned. Instead of the analog synthesizer-like (9) sounds used in New Super Mario Bros. (10), we've incorporated the sounds of musical instruments and digital synthesizers (11) to introduce a musical genre that has never been heard in Mario history.
+
+**(9)** An instrument that synthesizes sounds using electronic circuits. It generates simple sounds like those used in Super NES™ games.
+
+**(10)** A Nintendo DS™ game released in May 2006. Simple controls using the +Control Pad and two (A and B) buttons are all it takes to experience this side-scrolling 2D action platformer.
+
+**(11)** An instrument that synthesizes sound by processing sound data digitally using a computer.
+
+**Mouri:** Looking back, I remember Kondo-san also talking about this “major transformation” in the idea-sharing meeting, even before we aligned on the concept of Wonder effects.
+
+**Kondo:** Huh? I did?
+
+**Mouri:** Yes, it was when the idea for Elephant Mario came up. We were experimenting with the water-spraying action and trying out ideas for sprinkling water, and Kondo-san said, “Wouldn't it be better to transform the entire screen more dramatically so that we get heavy rainfall?”
+
+**Kondo:** Oh yes, I did say that.
+
+**Hayashida:** I felt that transforming the entire screen fit in well with Tezuka-san's theme of "transformation." There's the world of Mario that Tezuka-san and Kondo-san have in mind, and if you don’t have a clear understanding of their vision, it might seem like they're asking the impossible. However, there is a clear goal at the end.
+
+**Sato:** I’m sure that from the producer’s point of view, he knew that players wouldn’t see much difference if we didn’t do something as drastic as what he'd asked. I believe he didn't want us to do just what we were told but rather to come up with our own ideas that aligned with his vision. I was always thinking about his intent as I worked on the game.
+
+**Mouri:** In hindsight, "asking the impossible" was exactly what we needed.
+
+Read more in **Part 2: Bringing the details to life**
+
+Mild Fantasy Violence
+
+In-Game Purchases
