@@ -1,0 +1,125 @@
+// World 1's floor in gen2 (CHUNK-POOL-BRIEF step 1): the manifest's floorRoll, read only where a world declares it. On the toy world:
+// a roll's hop family sets how deep its soft pits' floors lie (shallow on a hop roll, deep on a jump roll), every pit keeps its steps out,
+// a ledge gap gets a catch bough, World 1's hollow log is a piece shape with the art's own height, and a mushroom perches on a stump by
+// `on`. That every shipped world builds as before is the every-stage lock's proof (tools/engine/lockall.ts: 102/102 unchanged).
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import '../headlessDom.ts';
+import { buildGen2Stage } from './pipeline.ts';
+import { cfg, kit, manifest } from './toyWorld.ts';
+import { hollowLogSize } from '../w1NewArt.ts';
+import type { SectionTemplate, WorldKit, WorldManifest } from './types.ts';
+import type { Platform } from '../types.ts';
+
+const hollowPerch: SectionTemplate = {
+  id: 'toy-w1-hollow',
+  name: 'hollow log and a perched mushroom',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu', 'ki'],
+  difficulty: 3,
+  pieces: [
+    { key: 'bank', shape: 'bank', w: [420, 480], place: { kind: 'start' } },
+    { key: 'stump', shape: 'block', w: [60, 60], h: 46, place: { kind: 'on', on: 'bank', at: [0.7, 0.7], h: [46, 46] }, main: false },
+    { key: 'mush', shape: 'bouncy', w: [70, 70], h: 30, place: { kind: 'on', on: 'stump', at: [0, 0], h: [30, 30] }, main: false },
+    { key: 'log', shape: 'hollow', w: [320, 320], place: { kind: 'walk', after: 'bank', dy: [0, 0] } },
+  ],
+  entry: { piece: 'bank', kind: 'ground' },
+  exit: { piece: 'log', kind: 'ground' },
+  exitDy: 0,
+  sockets: [],
+  mirrorable: false,
+};
+const ledges: SectionTemplate = {
+  id: 'toy-w1-ledges',
+  name: 'two boughs over a gap',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu', 'ki'],
+  difficulty: 4,
+  pieces: [
+    { key: 'a', shape: 'bank', w: [300, 300], place: { kind: 'start' } },
+    { key: 'b1', shape: 'branch', w: [200, 200], place: { kind: 'jump', after: 'a', dy: [-40, -40], share: [0.6, 0.6] }, landing: true },
+    { key: 'b2', shape: 'branch', w: [220, 220], place: { kind: 'jump', after: 'b1', dy: [0, 0], share: [0.6, 0.6] }, landing: true },
+    { key: 'c', shape: 'bank', w: [300, 300], place: { kind: 'jump', after: 'b2', dy: [40, 40], share: [0.5, 0.5] } },
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
+  exitDy: 0,
+  sockets: [],
+  mirrorable: false,
+};
+const FLOOR = { shallow: 70, deep: 240, hopRoll: 0.9, jumpRoll: 0.55, catchDrop: 90 };
+const withRoll = (hop: Array<{ range: [number, number]; weight: number }>): WorldKit => ({
+  ...kit,
+  manifest: { ...manifest, sections: [...manifest.sections, hollowPerch, ledges], floorRoll: { hop, ...FLOOR } } as WorldManifest,
+});
+const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
+const build = (k: WorldKit, seed: number) => buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: 'normal' });
+
+/** each soft floor: the block the pit laid under a gap between two banks, and how far under the lower lip it lies */
+function pitFloors(ps: Platform[]): number[] {
+  const out: number[] = [];
+  // (the lips are the ground's banks of earth, never a stone standing on one)
+  const banks = ps.filter((p) => p.type === 'solid' && p.height >= 120).sort((a, b) => a.x - b.x);
+  for (let i = 1; i < banks.length; i++) {
+    const a = banks[i - 1], b = banks[i], x0 = a.x + a.width, x1 = b.x;
+    if (x1 - x0 < 40) continue;
+    const lo = Math.max(a.y, b.y);
+    const under = ps.filter((q) => q.x <= (x0 + x1) / 2 && q.x + q.width >= (x0 + x1) / 2 && q.y > lo + 8 && !(q as { catch?: boolean }).catch);
+    if (under.length) out.push(Math.max(...under.map((q) => q.y)) - lo);
+  }
+  return out;
+}
+
+test('a hop roll keeps its soft floors at its shallow depth, not the world\'s pitDepth (the toy world\'s is 130)', () => {
+  // (shallow 30 here: the toy world's narrow pits already lie 38-70 px down, so a 70 would not show the roll's depth at work)
+  const base = withRoll([{ range: [0.99, 1.0], weight: 1 }]);
+  const hop: WorldKit = { ...base, manifest: { ...base.manifest, floorRoll: { ...base.manifest.floorRoll!, shallow: 30 } } };
+  // (a back pit, under a liana or a glide, keeps its own floor: deep enough that the take-off perch is a double over it (pipeline
+  // backPit), whatever the roll: so nine in ten, not every one)
+  let nh = 0, nShallow = 0, deeper = 0;
+  for (const s of SEEDS) {
+    const h = pitFloors(build(hop, s).platforms);
+    nh += h.length;
+    nShallow += h.filter((d) => d <= 32).length;
+    deeper += pitFloors(build(kit, s).platforms).filter((d) => d > 32).length;
+  }
+  assert.ok(nh > 0, 'no pit laid');
+  assert.ok(nShallow >= 0.9 * nh, `${nShallow} of ${nh} floors at the hop roll's depth`);
+  assert.ok(deeper > 0, 'the plain toy world never lays a floor deeper than the shallow one: the test would not see the roll');
+});
+
+test('the roll\'s family weighs the floor sections: a hop roll draws hop sections, a jump roll jump sections', () => {
+  const tag = (id: string, floor: 'hop' | 'jump'): SectionTemplate => ({ ...manifest.sections.find((t) => t.id === 'toy-stumps')!, id, floor, phases: ['sho', 'ten', 'ketsu', 'ki', 'rest'] });
+  const fam = (hop: Array<{ range: [number, number]; weight: number }>): WorldKit => ({
+    ...kit, manifest: { ...manifest, sections: [...manifest.sections, tag('toy-hop', 'hop'), tag('toy-jump', 'jump')], floorRoll: { hop, ...FLOOR } } as WorldManifest,
+  });
+  const count = (k: WorldKit, id: string) => SEEDS.reduce((n, s) => n + (build(k, s).gen2?.sections ?? []).filter((x: { template: string }) => x.template === id).length, 0);
+  const hopK = fam([{ range: [0.99, 1.0], weight: 1 }]), jumpK = fam([{ range: [0.43, 0.51], weight: 1 }]);
+  const [hh, hj, jh, jj] = [count(hopK, 'toy-hop'), count(hopK, 'toy-jump'), count(jumpK, 'toy-hop'), count(jumpK, 'toy-jump')];
+  assert.ok(hh > hj && jj > jh, `hop roll: hop ${hh}, jump ${hj}; jump roll: hop ${jh}, jump ${jj}`);
+});
+
+test('a ledge gap has a catch bough under it; the hollow log is the art\'s own height; a mushroom perches on its stump', () => {
+  const k = withRoll([{ range: [0.74, 0.8], weight: 1 }]);
+  let catches = 0, hollows = 0, perched = 0;
+  for (const s of SEEDS) {
+    const ps = build(k, s).platforms;
+    catches += ps.filter((p) => (p as { catch?: boolean }).catch).length;
+    for (const p of ps.filter((q) => q.hollow)) {
+      hollows++;
+      assert.equal(p.height, hollowLogSize('moss', p.width).height, `seed ${s}: hollow at x ${p.x}`);
+      assert.equal(p.style, 'log');
+    }
+    for (const m of ps.filter((q) => q.type === 'bouncy')) {
+      const stump = ps.find((q) => q !== m && q.type === 'solid' && Math.abs(q.y - (m.y + m.height)) <= 1 && q.x <= m.x + 1 && q.x + q.width >= m.x + m.width - 1 && q.width <= 80);
+      if (stump) perched++;
+    }
+  }
+  assert.ok(catches > 0, 'no catch bough under any ledge gap');
+  assert.ok(hollows > 0, 'no hollow log laid');
+  assert.ok(perched > 0, 'no mushroom perched on a stump');
+});
+
+test('a world without floorRoll builds exactly as before (the toy world, 16 seeds)', () => {
+  for (const s of SEEDS) assert.deepEqual(build(kit, s).platforms, build({ ...kit, manifest: { ...manifest } }, s).platforms);
+});
