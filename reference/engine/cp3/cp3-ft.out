@@ -1,8 +1,8 @@
-ADULT normal layout 1: end shrine in 167 s, goal 11/11, harms 0 (lives 0) , rescues 1, stuck 1
-ADULT normal layout 2: end sealed door in 166 s, goal 10/11, harms 2 (lives 1) [pit, other], rescues 1, stuck 1
-ADULT normal layout 3: end shrine in 160 s, goal 11/11, harms 1 (lives 0) [other], rescues 1, stuck 1
-ADULT normal layout 4: end shrine in 138 s, goal 11/11, harms 1 (lives 0) [other], rescues 0, stuck 0
-KID easy   layout 1: end shrine in 141 s, goal 9/8, harms 0 (lives 0) , rescues 0, stuck 0
-KID easy   layout 2: end shrine in 153 s, goal 10/8, harms 0 (lives 0) , rescues 2, stuck 1
-KID easy   layout 3: end shrine in 129 s, goal 11/8, harms 0 (lives 0) , rescues 0, stuck 0
-KID easy   layout 4: end shrine in 141 s, goal 11/8, harms 0 (lives 0) , rescues 0, stuck 1
+ADULT normal layout 1: end sealed door in 197 s, goal 8/10, harms 0 (lives 0) , rescues 2, stuck 2
+ADULT normal layout 2: end sealed door in 187 s, goal 8/10, harms 1 (lives 1) [pit], rescues 1, stuck 1
+ADULT normal layout 3: end sealed door in 171 s, goal 8/10, harms 6 (lives 3) [other, pit], rescues 1, stuck 0
+ADULT normal layout 4: end sealed door in 165 s, goal 7/10, harms 1 (lives 0) [other], rescues 1, stuck 1
+KID easy   layout 1: end shrine in 189 s, goal 9/8, harms 0 (lives 0) , rescues 0, stuck 0
+KID easy   layout 2: end shrine in 191 s, goal 10/8, harms 0 (lives 0) , rescues 0, stuck 0
+KID easy   layout 3: end shrine in 187 s, goal 11/8, harms 0 (lives 0) , rescues 0, stuck 0
+KID easy   layout 4: end shrine in 202 s, goal 11/8, harms 0 (lives 0) , rescues 1, stuck 2

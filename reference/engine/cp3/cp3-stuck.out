@@ -1,5 +1,6 @@
-ADULT layout 1: stuck x 29623 y 1286 18 s rescued "an open drop ahead" at n10 crumbling ledge + bridge span/high|n10 bank hops + stump hop/low
-ADULT layout 2: stuck x 26545 y 1272 14.9 s rescued "nothing in the way the bot can see" at n10 bridge span + crumbling ledge/high|n10 bough stair + bank hops/low
-ADULT layout 3: stuck x 10630 y 372 20 s rescued "nothing in the way the bot can see" at n4 crumbling ledge + creaky boughs/high|n4 reed isles + bank hops/low
-KID layout 2: stuck x 24510 y 1338 18.3 s rescued "nothing in the way the bot can see" at n10 bridge span + crumbling ledge/high
-KID layout 4: stuck x 10039 y 590 13.3 s  "nothing in the way the bot can see" at n4 creaky boughs + crumbling ledge/high|n4 lily-pad hop + reed isles/low
+ADULT layout 1: stuck x 806 y 275 20 s rescued "the way on is 155 px down" at n1 bank hops (canopy)
+ADULT layout 1: stuck x 28260 y 750 20 s rescued "the way on is 116 px down" at n12 crumbling ledge + bridge span/high|n12 bough stair + bank hops/low
+ADULT layout 2: stuck x 25706 y 505 14.3 s rescued "nothing in the way the bot can see" at n12 bridge span + crumbling ledge/high
+ADULT layout 4: stuck x 26373 y 1215 20 s rescued "nothing in the way the bot can see" at n12 bridge span + crumbling ledge/high|n12 bough stair + bank hops/low
+KID layout 4: stuck x 36190 y 940 9.3 s rescued "the way on is 300 px down" at n12 bridge span + crumbling ledge/high|n12 bough stair + bank hops/low
+KID layout 4: stuck x 36191 y 1240 0 s rescued "fell back down from here 3 times" at n12 bridge span + crumbling ledge/high|n12 bough stair + bank hops/low

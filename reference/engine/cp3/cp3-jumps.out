@@ -1,2 +1,3 @@
-normal: jumps on the route 1602 over 16 rolls; under the floor 0; worst jump per roll 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00
-easy: jumps on the route 1561 over 16 rolls; under the floor 0; worst jump per roll 0.96 0.97 0.98 0.98 0.98 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 1.00
+  normal roll 4: jump at x 9415 y 314 gap 11 rise -340 landW 98 rate null unflyable true dbl false why no clean jump makes it in this model
+normal: jumps on the route 1988 over 16 rolls; under the floor 1; worst jump per roll 0.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00
+easy: jumps on the route 2106 over 16 rolls; under the floor 0; worst jump per roll 0.98 0.98 0.98 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99
