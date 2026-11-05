@@ -1633,3 +1633,23 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
   - each world's object pass later: about 1 h a world, when that world is queued.
 - **The build cost** (world data, glide and swim rows, gates 1-6 as a report, the methods how-to) is the planner's estimate in % of the
   week, against the 55% ceiling (stop at 53%).
+
+**[designer, 11-05 ~10:28 AM ET] The element table and float caps cover every world, not just World 1 (the lead's check):**
+- Today the table names World 1's kinds and the hanging ones: vine, liana, rope, bough. It does **not** yet cover the other worlds' kinds:
+  - W2: river logs, lifts and bank houses;
+  - W3: thorn vines and cave ledges;
+  - W4: cliff ledges and warm air;
+  - W5: silk lines and webs;
+  - W6: roots and stilts;
+  - W7: temple slabs, columns, crumbling floors and slides;
+  - W8: karst ledges;
+  - W9: heat rock and vents;
+  - W10: towers, netting and steps;
+  - moving platforms, cages and push blocks.
+- **This revises "the object pass is done world by world, later" (9:58 AM).** The planner first takes an inventory of every piece kind,
+  measured from the code (protoStage, w*Play, w*PropsData, the gen2 worlds, lairs, kits). The designer then labels every kind of every
+  world in one pass, before the mixer reads the library.
+- **The hanging moves are core, because this is a sloth game.** Each gets its own row: vine (climb), liana (swing), rope (shimmy), and
+  the underside of a bough or trunk where Pokey hangs. Trunks are anchors, not landings.
+- **Float caps per world** are set in the same pass. The default stays "some, ≤ 25% of landings" until a world's row says otherwise,
+  with its reason.
