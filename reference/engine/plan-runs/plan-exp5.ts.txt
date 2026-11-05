@@ -1,0 +1,43 @@
+// E8: the risk dial's headroom. For every take-off of the proven 1-2 rooms (Normal, 128.2 BPM): the real take-off window (ms) that still lands
+// on the traced pad (full hold, full air, 1/60 slices; a take-off up to coyote 0.133 s past the ledge's end allowed, physics.ts FORGIVE), and
+// P(miss) for a human timing spread (Isaksen sigma 36 / 61 ms) aimed at the planned take-off. Compared with STAGE-RULES §1b's fairness floor
+// (a window under 167 ms Normal is unfair).
+import { traceNode, flight, type Step, type NodeSpec } from './src/game/beatTrace.ts';
+import { PHYS } from './src/game/physics.ts';
+import { barsFrom } from './src/game/w1Rhythm.ts';
+const J = (dy: number, s: Step['surface'] = 'branch'): Step => ({ move: 'jump', dy, surface: s });
+const H = (dy: number, s: Step['surface'] = 'branch'): Step => ({ move: 'hop', dy, surface: s });
+const D = (dy: number, s: Step['surface'] = 'branch'): Step => ({ move: 'double', dy, surface: s });
+const rooms = [
+  { id: 'w1-canopy-intro', y: 330, gaps: [8, 6, 9, 8, 6, 9, 8], steps: [J(0), J(20), J(0), J(-20), J(20), J(0), J(-20), J(0)] },
+  { id: 'w1-canopy-swung', y: 330, gaps: [6, 2, 6, 2, 8, 6, 2], steps: [J(40), H(-30), J(20), H(-20), J(0), J(40), H(-40), J(0)] },
+  { id: 'w1-floor-pits', y: 930, gaps: [4, 2, 4, 2, 5, 2, 3], steps: [J(30, 'stump'), H(-30, 'bank'), J(0, 'bank'), H(-20, 'bank'), J(30, 'stump'), H(-30, 'bank'), J(50, 'stump'), J(-60, 'bank')] },
+  { id: 'w1-floor-double', y: 930, gaps: [4, 2, 6, 2, 4, 2], steps: [J(30, 'stump'), H(-30, 'bank'), D(0, 'bank'), H(-20, 'bank'), J(50, 'stump'), H(-40, 'bank'), J(-60, 'bank')] },
+];
+const COYOTE = 0.133, LAND = 8;
+const phi = (z: number) => 0.5 * (1 + Math.tanh(Math.sqrt(2 / Math.PI) * (z + 0.044715 * z ** 3)));
+const pmiss = (lo: number, hi: number, s: number) => 1 - (phi(hi / s) - phi(lo / s));
+for (const r of rooms) {
+  const steps = r.steps;
+  const tr = traceNode({ bpm: 128.2, bars: barsFrom(r.gaps), x: 0, y: r.y, steps, noOverhang: true, faceMargin: 30 } as NodeSpec);
+  const wins: number[] = []; let e36 = 0, e61 = 0;
+  for (const l of tr.landings) {
+    const st = steps[l.step];
+    const to = tr.ledges.find((q) => q.step === l.step)!;
+    const from = tr.ledges.find((q) => q.x1 >= l.fromX - 1 && q.x0 <= l.fromX + 1 && Math.abs(q.y - l.fromY) < 1)!;
+    const f = flight({ move: st.move, dy: st.dy, vx: PHYS.maxRun })!;
+    let lo = Infinity, hi = -Infinity;
+    for (let ms = -400; ms <= 400; ms += 2) {
+      const sx = l.fromX + PHYS.maxRun * ms / 1000;
+      if (sx < from.x0 || sx > from.x1 + PHYS.maxRun * COYOTE) continue;
+      const lx = sx + f.dx;
+      if (lx >= to.x0 - LAND && lx <= to.x1 + LAND) { lo = Math.min(lo, ms); hi = Math.max(hi, ms); }
+    }
+    wins.push(hi - lo);
+    e36 += pmiss(lo / 1000, hi / 1000, 0.036); e61 += pmiss(lo / 1000, hi / 1000, 0.061);
+  }
+  const s = [...wins].sort((a, b) => a - b);
+  console.log(`${r.id.padEnd(16)} ${wins.length} take-offs: window ms min ${s[0]} median ${s[Math.floor(s.length / 2)]} max ${s[s.length - 1]}; expected falls sigma 36 ms ${e36.toFixed(3)}, sigma 61 ms ${e61.toFixed(3)}`);
+}
+// the dial: what P(miss) a jump has at the fairness floor and at a few windows, sigma 61 (Isaksen loose)
+for (const w of [167, 200, 250, 300, 400]) console.log(`  a centred ${w} ms window: P(miss) sigma 36 ${(pmiss(-w / 2000, w / 2000, 0.036) * 100).toFixed(1)}%, sigma 61 ${(pmiss(-w / 2000, w / 2000, 0.061) * 100).toFixed(1)}%`);

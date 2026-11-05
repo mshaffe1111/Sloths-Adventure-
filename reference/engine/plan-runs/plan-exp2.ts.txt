@@ -1,0 +1,22 @@
+// E5: how many non-zigzag versions of 1-2's swung canopy room prove over World 1's whole range, both settings (seeded, deterministic)
+import { traceNode, checkTrace, easyNode, type Step, type NodeSpec } from './src/game/beatTrace.ts';
+import { barsFrom, rng } from './src/game/w1Rhythm.ts';
+const bars = barsFrom([6, 2, 6, 2, 8, 6, 2]);
+const hopAt = new Set([1, 3, 6]);
+const R = rng(7, 'plan-e5');
+const bpms = [126, 127, 128, 128.2, 129, 130, 131, 132, 133, 134];
+const zig = (st: Step[]) => { let f = 0, p = 0; for (let i = 1; i < st.length; i++) { const a = Math.sign(st[i - 1].dy), b = Math.sign(st[i].dy); if (a && b) { p++; if (a !== b) f++; } } return p ? f / p : 0; };
+let drawn = 0, zigOk = 0, p1 = 0, full = 0; const t0 = Date.now(); const keep: string[] = []; const reasons: Record<string, number> = {};
+for (let k = 0; k < 600; k++) {
+  const steps: Step[] = Array.from({ length: 8 }, (_, i) => hopAt.has(i) ? { move: 'hop', dy: R.pick([-30, -20, 20, 30]), surface: 'branch' } : { move: 'jump', dy: R.pick([-40, -20, 0, 20, 40]), surface: 'branch' });
+  drawn++;
+  if (zig(steps) > 0.45) continue;
+  zigOk++;
+  const prove = (bpm: number, easy: boolean) => { const b: NodeSpec = { bpm, bars, x: 0, y: 330, steps, noOverhang: true, faceMargin: 30 }; const s = easy ? easyNode(b) : b; try { const tr = traceNode(s); const bad = checkTrace(tr, s.steps, easy); if (bad.length) { reasons[bad[0].replace(/-?\d+/g, '#')] = (reasons[bad[0].replace(/-?\d+/g, '#')] ?? 0) + 1; return false; } return true; } catch (e) { const m = String((e as Error).message).replace(/-?\d+/g, '#'); reasons[m] = (reasons[m] ?? 0) + 1; return false; } };
+  if (!(prove(128.2, false) && prove(128.2, true))) continue;
+  p1++;
+  if (bpms.every((b) => prove(b, false) && prove(b, true))) { full++; if (keep.length < 3) keep.push(steps.map((s) => `${s.move[0]}${s.dy}`).join(' ')); }
+}
+console.log(`drawn ${drawn}, zigzag <=45%: ${zigOk}, prove at 128.2 N+E: ${p1}, prove 126-134 N+E (20 traces): ${full}  (${Date.now() - t0} ms)`);
+console.log('examples:', keep.join(' | '));
+console.log('refusals:', Object.entries(reasons).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([m, n]) => `${n} x ${m}`).join('\n          '));

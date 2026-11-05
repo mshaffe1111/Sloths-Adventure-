@@ -1,0 +1,8 @@
+// E7: 1-2's real node list from the engine's own builder (w1Rhythm.ts rhythmLayout), layouts 1-3, Normal and Easy: the concept graph's measured base
+import { rhythmLayout } from './src/game/w1Rhythm.ts';
+for (const easy of [false, true]) for (const seed of [1, 2, 3]) {
+  const L = rhythmLayout('1-2', seed, easy, 128.2);
+  const tot = L.nodes.reduce((a, n) => a + n.seconds, 0);
+  console.log(`1-2 ${easy ? 'Easy  ' : 'Normal'} layout ${seed}: ${L.nodes.length} nodes, expert ${L.expert.toFixed(0)} s (sum ${tot.toFixed(0)}), rerolls ${L.reroll}, petals ${L.petals.length} (high ${L.petals.filter(p=>p.road==='high').length}, low ${L.petals.filter(p=>p.road==='low').length}), vines ${L.vines.length}, snakes ${L.snakes.length}`);
+  if (seed === 1) L.nodes.forEach((n, i) => console.log(`   n${String(i + 1).padStart(2)} ${n.tag.padEnd(7)} ${n.tier} ${n.dir > 0 ? '->' : '<-'} ${String(n.seconds).padStart(5)} s  dens ${n.density.toFixed(2)}  y ${n.y}  ${n.pair}`));
+}

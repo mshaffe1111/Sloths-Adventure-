@@ -1,0 +1,3 @@
+drawn 600, zigzag <=45%: 276, prove at 128.2 N+E: 26, prove 126-134 N+E (20 traces): 26  (365 ms)
+examples: j-20 h-20 j0 h-30 j40 j0 h-20 j-40 | j40 h-30 j-40 h-30 j-20 j-20 h-30 j0 | j-20 h-30 j-20 h-20 j-20 j20 h-20 j0
+refusals: 250 x step #: the branch at # hangs over the take-off ledge's end (#)

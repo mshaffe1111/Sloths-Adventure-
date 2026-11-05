@@ -1,0 +1,9 @@
+w1-canopy-intro  8 take-offs: window ms min 520 median 522 max 524; expected falls sigma 36 ms 0.000, sigma 61 ms 0.000
+w1-canopy-swung  8 take-offs: window ms min 394 median 486 max 522; expected falls sigma 36 ms 0.000, sigma 61 ms 0.004
+w1-floor-pits    8 take-offs: window ms min 412 median 512 max 620; expected falls sigma 36 ms 0.000, sigma 61 ms 0.001
+w1-floor-double  7 take-offs: window ms min 392 median 482 max 626; expected falls sigma 36 ms 0.000, sigma 61 ms 0.004
+  a centred 167 ms window: P(miss) sigma 36 2.0%, sigma 61 17.1%
+  a centred 200 ms window: P(miss) sigma 36 0.5%, sigma 61 10.1%
+  a centred 250 ms window: P(miss) sigma 36 0.0%, sigma 61 4.0%
+  a centred 300 ms window: P(miss) sigma 36 0.0%, sigma 61 1.4%
+  a centred 400 ms window: P(miss) sigma 36 0.0%, sigma 61 0.1%

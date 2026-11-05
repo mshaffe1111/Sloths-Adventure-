@@ -1,0 +1,40 @@
+1-2 Normal layout 1: 17 nodes, expert 179 s (sum 179), rerolls 0, petals 242 (high 77, low 103), vines 11, snakes 0
+   n 1 intro   A -> 18.25 s  dens 0.53  y 330  run + jump
+   n 2 ramp    A -> 10.06 s  dens 0.85  y 410  jump + hop (swung)
+   n 3 ramp    A ->  3.48 s  dens 0.00  y 420  jump + vine swing
+   n 4 ramp    A -> 15.68 s  dens 0.60  y 420  jump + hop (swung)
+   n 5 spike   A -> 11.92 s  dens 0.00  y 360  jump + vine swing
+   n 6 spike   A ->  7.02 s  dens 1.25  y 360  vine landing + hop (swung)
+   n 7 rest    A ->  3.11 s  dens 0.00  y 360  none (Dot; the note seen far below)
+   n 8 ramp    A -> 27.61 s  dens 0.88  y 330  jump up + down over a bough (rotten branches, taught)
+   n 9 counter B <-    25 s  dens 0.00  y 630  hop the rot + hop the snakes (the bough, leftward)
+   n10 ramp    C -> 12.64 s  dens 0.71  y 930  jump + hop (pits now)
+   n11 ramp    C ->  3.44 s  dens 0.00  y 890  jump + vine swing
+   n12 ramp    C ->  8.19 s  dens 1.20  y 890  jump + hop (pits now)
+   n13 climax  C -> 10.06 s  dens 1.07  y 790  jump + hop + drop (swung, densest)
+   n14 climax  C ->  3.43 s  dens 0.00  y 850  jump + vine swing
+   n15 climax  C -> 10.06 s  dens 1.07  y 850  jump + hop + drop (swung, densest)
+   n16 climax  C ->  6.84 s  dens 0.00  y 760  jump + vine swing (over the chasm)
+   n17 cool    C ->  2.25 s  dens 0.00  y 760  run
+1-2 Normal layout 2: 17 nodes, expert 167 s (sum 167), rerolls 0, petals 172 (high 51, low 52), vines 11, snakes 0
+1-2 Normal layout 3: 17 nodes, expert 162 s (sum 163), rerolls 0, petals 184 (high 46, low 69), vines 11, snakes 1
+1-2 Easy   layout 1: 17 nodes, expert 187 s (sum 187), rerolls 0, petals 174 (high 51, low 59), vines 11, snakes 0
+   n 1 intro   A -> 18.25 s  dens 0.53  y 330  run + jump
+   n 2 ramp    A -> 10.06 s  dens 0.85  y 422  jump + hop (swung)
+   n 3 ramp    A ->  3.48 s  dens 0.00  y 458  jump + vine swing
+   n 4 ramp    A -> 15.68 s  dens 0.60  y 458  jump + hop (swung)
+   n 5 spike   A -> 11.92 s  dens 0.00  y 452  jump + vine swing
+   n 6 spike   A ->  7.02 s  dens 1.25  y 452  vine landing + hop (swung)
+   n 7 rest    A ->  3.11 s  dens 0.00  y 440  none (Dot; the note seen far below)
+   n 8 ramp    A -> 27.61 s  dens 0.88  y 410  jump up + down over a bough (rotten branches, taught)
+   n 9 counter B <-    25 s  dens 0.00  y 630  hop the rot + hop the snakes (the bough, leftward)
+   n10 ramp    C -> 12.64 s  dens 0.71  y 930  jump + hop (pits now)
+   n11 ramp    C ->  3.43 s  dens 0.00  y 962  jump + vine swing
+   n12 ramp    C -> 13.81 s  dens 0.69  y 962  jump + hop (pits now)
+   n13 climax  C -> 10.06 s  dens 1.07  y 998  jump + hop + drop (swung, densest)
+   n14 climax  C ->  3.35 s  dens 0.00  y 985  jump + vine swing
+   n15 climax  C -> 11.94 s  dens 0.89  y 985  jump + hop + drop (swung, densest)
+   n16 climax  C ->  6.92 s  dens 0.00  y 962  jump + vine swing (over the chasm)
+   n17 cool    C ->  2.25 s  dens 0.00  y 962  run
+1-2 Easy   layout 2: 17 nodes, expert 162 s (sum 162), rerolls 1, petals 150 (high 42, low 38), vines 11, snakes 1
+1-2 Easy   layout 3: 17 nodes, expert 167 s (sum 167), rerolls 3, petals 148 (high 33, low 48), vines 11, snakes 2

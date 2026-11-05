@@ -1,0 +1,32 @@
+== E1: palette rises, proposer (fits: one full-hold flight) vs tracer (all TRIES), 1-2 palettes w1Rhythm.ts:478,606,617,707
+  PAL_A  -60:PNE  -40:PNE  -20:PNE  0:PNE  20:PNE  40:PNE
+  PAL_B  -60:PNE  -50:PNE  50:PNE  60:PNE  80:P-E!  90:P--!
+  top    -50:PNE  -40:PNE  40:PNE  50:PNE  80:P-E!  90:P--!
+  PAL_C  -60:PNE  -30:PNE  0:PNE  30:PNE  50:PNE
+  (P proposer says yes, N tracer Normal yes, E tracer Easy (rise cut by easyNode) yes, ! = the two models disagree)
+  highest rise hop   : proposer 49, tracer Normal 46, tracer Easy 39 px
+  highest rise jump  : proposer 102, tracer Normal 77, tracer Easy 56 px
+  highest rise double: proposer 175, tracer Normal 165, tracer Easy 134 px
+
+== E2: 1-2 rooms as data, proven at every whole BPM of World 1 (126-134, plus 1-2's own 128.2), Normal and Easy
+  w1-canopy-intro   intro  x.......|x.....x.|.......o|.......o|.....o..|......x.|......x.|........  proven 20/20  density 0.53-0.56/s  seconds 15.73-16.64  exit y N 330 E 342 (drift 12 px)  spare pad px p10/min 256/244
+  w1-canopy-swung   ramp   x.....x.|x.....x.|x.......|x.....x.|x.......  proven 19/20  density 0.84-0.89/s  seconds 10.36-10.93  exit y N 320 E 350 (drift 30 px)  spare pad px p10/min 32/27  FAILS at 134N: step # (slot #): still in the air from the last take-off (slot #), # ms late
+  w1-canopy-stair0  ramp   x.....x.|x.....x.|x.......|x.....x.|x.......  proven 0/20  density -/s  seconds -  exit y N  E  (drift NaN px)  spare pad px p10/min -  FAILS at 126N,126E,127N,127E,128N,128E,128.2N,128.2E,129N,129E,130N,130E,131N,131E,132N,132E,133N,133E,134N,134E: step # (slot #): still in the air from the last take-off (slot #), # ms late
+  w1-canopy-stair   ramp   x.....x.|x.....x.|x.......|x.....x.|x.......  proven 0/20  density -/s  seconds -  exit y N  E  (drift NaN px)  spare pad px p10/min -  FAILS at 126N,126E,127N,127E,128N,128E,128.2N,128.2E,129N,129E,130N,130E,131N,131E,132N,132E,133N,133E,134N,134E: step #: the branch at # hangs over the take-off ledge's end (#)
+  w1-floor-pits     ramp   x...x.x.|..x.x...|.o.o..x.|........  proven 10/20  density 1.05-1.12/s  seconds 8.57-9.02  exit y N 960 E  (drift NaN px)  spare pad px p10/min 36/29  FAILS at 126E,127E,128E,128.2E,129E,130E,131E,132E,133E,134E: step #: the gap is # px: no jump at all (make it a drop, a rise, or a bigger move)
+  w1-floor-double   climax x...x.x.|....x.x.|..x.x...  proven 19/20  density 1.23-1.30/s  seconds 6.78-7.12  exit y N 1000 E 1032 (drift 32 px)  spare pad px p10/min 31/26  FAILS at 134N: step # (slot #): still in the air from the last take-off (slot #), # ms late
+
+== E3: landing kinds (move x up/flat/down x surface) and zigzag share per room
+  w1-canopy-intro   kinds 3  top-two share 75%  zigzag 100% of 1 up/down pairs
+  w1-canopy-swung   kinds 3  top-two share 75%  zigzag 100% of 4 up/down pairs
+  w1-canopy-stair0  kinds 4  top-two share 63%  zigzag 75% of 4 up/down pairs
+  w1-canopy-stair   kinds 4  top-two share 63%  zigzag 50% of 4 up/down pairs
+  w1-floor-pits     kinds 4  top-two share 75%  zigzag 100% of 5 up/down pairs
+  w1-floor-double   kinds 4  top-two share 71%  zigzag 75% of 4 up/down pairs
+
+== E4: a room joined on a shared apron: next room's first take-off off the stage's eighth grid (ms)
+  128.2 BPM eighth 234 ms: fixed 200 px apron 0 ms off;  3 eighths = 200 px apron 0.3 ms off (rounding to a whole px)
+  94    BPM eighth 319 ms: fixed 200 px apron 63 ms off;  3 eighths = 273 px apron 0.4 ms off (rounding to a whole px)
+  98    BPM eighth 306 ms: fixed 200 px apron 90 ms off;  3 eighths = 262 px apron 0.9 ms off (rounding to a whole px)
+  102   BPM eighth 294 ms: fixed 200 px apron 114 ms off;  3 eighths = 251 px apron 1.7 ms off (rounding to a whole px)
+  68    BPM eighth 441 ms: fixed 200 px apron 181 ms off;  2 eighths = 251 px apron 1.7 ms off (rounding to a whole px)

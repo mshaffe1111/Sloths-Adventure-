@@ -1,0 +1,17 @@
+// E9: the first step, prototyped in a scratch copy of w1Rhythm.ts (src/game/w1RhythmPlan.ts): fitSteps' `fits` also asks the tracer's own
+// reach predicate (every TRIES row, Normal and Easy). 1-2 and 1-5, layouts 1-16, Normal and Easy, base vs fixed: rejected tries by rule,
+// jump heights laid, and the expert clock.
+import { rhythmLayout, TALLY, LAID, setFix } from './src/game/w1RhythmPlan.ts';
+for (const fix of [false, true]) {
+  setFix(fix);
+  for (const id of ['1-2', '1-5'] as const) for (const easy of [false, true]) {
+    for (const k of Object.keys(TALLY)) delete TALLY[k];
+    for (const k of Object.keys(LAID)) delete LAID[k];
+    const t0 = Date.now(); const clocks: number[] = []; let rr = 0;
+    for (let s = 1; s <= 16; s++) { const L = rhythmLayout(id, s, easy, id === '1-2' ? 128.2 : 136); clocks.push(L.expert); rr += L.reroll; }
+    const tot = Object.values(TALLY).reduce((a, b) => a + b, 0);
+    console.log(`${fix ? 'FIXED' : 'BASE '} ${id} ${easy ? 'Easy  ' : 'Normal'}: ${tot} rejected tries, ${rr} whole re-rolls, expert ${Math.min(...clocks).toFixed(0)}-${Math.max(...clocks).toFixed(0)} s, ${Date.now() - t0} ms`);
+    for (const [m, n] of Object.entries(TALLY).sort((a, b) => b[1] - a[1]).slice(0, 4)) console.log(`      ${String(n).padStart(5)} ${((100 * n) / tot).toFixed(1).padStart(5)}%  ${m.slice(0, 120)}`);
+    console.log(`      jump dy laid: ${Object.entries(LAID).sort((a, b) => +a[0] - +b[0]).map(([d, n]) => `${d}:${n}`).join(' ')}`);
+  }
+}

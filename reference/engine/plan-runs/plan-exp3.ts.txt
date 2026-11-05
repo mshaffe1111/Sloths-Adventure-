@@ -1,0 +1,20 @@
+// E6: defect (a). The inspector's Easy (tools/inspect/stages.ts:64,86: buildProtoStage with no easy flag, then easyStage) vs the engine's Easy
+// (stageGenerator.ts generateStage: buildProtoStage(..., easy = true) for RHYTHM_STAGES and EASY_BUILT)
+import { generateAllLevels } from './src/game/worldsData.ts';
+import { buildProtoStage, HAND_STAGES } from './src/game/protoStage.ts';
+import { capFlagSpans, easyStage } from './src/game/easyMode.ts';
+import { withGoals } from './src/game/goals.ts';
+const levels = generateAllLevels();
+for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5']) {
+  const c = levels.find((l) => l.id === id)!;
+  const row: string[] = [];
+  for (const seed of [1, 2, 3]) {
+    const insp = easyStage(withGoals((() => { const s = buildProtoStage({ ...c, unlocked: true }, seed, HAND_STAGES[id]); capFlagSpans(s as never); return s; })()));
+    const eng = (() => { const s = buildProtoStage({ ...c, unlocked: true }, seed, HAND_STAGES[id], true); capFlagSpans(s as never); return s; })();
+    const key = (p: { x: number; y: number; width: number }) => `${Math.round(p.x)},${Math.round(p.y)},${Math.round(p.width)}`;
+    const a = new Set(insp.platforms.map(key)), b = new Set(eng.platforms.map(key));
+    const same = [...a].filter((k) => b.has(k)).length;
+    row.push(`L${seed}: inspector ${insp.platforms.length} platforms, engine ${eng.platforms.length}, identical ${same} (${Math.round((100 * same) / Math.max(a.size, b.size))}%)`);
+  }
+  console.log(`${id} Easy  ${row.join('  ')}`);
+}

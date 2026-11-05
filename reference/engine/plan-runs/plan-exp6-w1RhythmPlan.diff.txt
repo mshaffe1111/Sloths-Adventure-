@@ -1,0 +1,54 @@
+--- src/game/w1Rhythm.ts	2026-11-05 03:39:52.878745936 +0000
++++ src/game/w1RhythmPlan.ts	2026-11-05 03:46:22.416028951 +0000
+@@ -116,6 +116,22 @@
+   };
+ }
+ type Rng = ReturnType<typeof rng>;
++// ---- PLANNER PROTOTYPE (scratch copy, not the repo file): one reach predicate (the tracer's TRIES) in the proposer, and a tally of rejections
++import { TRIES as __TRIES, SHORT_HOLD as __SH } from './beatTrace.ts';
++export const TALLY: Record<string, number> = {};
++export const LAID: Record<string, number> = {};
++export let FIX = false;
++export const setFix = (v: boolean) => { FIX = v; };
++const __reach = (move: Move, dy: number, easy: boolean) => {
++  const hold = easy ? 0.7 : 1;
++  for (const tr of __TRIES) for (const dt of [1 / 60, 1 / 30]) {
++    const h = tr.short && move === 'jump' ? (easy ? __SH.easy : __SH.normal) : hold;
++    if (!flight({ move, dy, vx: PHYS.maxRun, air: tr.air, dt, hold: h })) return false;
++  }
++  return true;
++};
++const __easyDy = (dy: number, surface: string) => (dy > 0 ? Math.round(dy * (surface === 'stump' || surface === 'bank' ? 0.6 : 0.7)) : dy);
++
+ 
+ // ------------------------------------------------------------------ steps that fit the beat ------------------------------------------------------------------
+ 
+@@ -168,6 +184,7 @@
+       const footroom = nextRoom < 0.6 ? 30 : 0;
+       const fits = (move: Move, dy: number) => {
+         const f = flight({ move, dy, vx: PHYS.maxRun });
++        if (FIX && !(__reach(move, dy, false) && __reach(move, __easyDy(dy, 'branch'), true) && __reach(move, __easyDy(dy, 'stump'), true))) return false;
+         return !!f && f.t + 0.012 < room && y - dy >= pal.yMin && y - dy <= pal.yMax - footroom;
+       };
+       let surface = R.pick(pal.surfaces);
+@@ -218,9 +235,11 @@
+       const tr = traceNode({ ...spec, steps, noOverhang: true, faceMargin: FACE_MARGIN });
+       const es = easyNode({ ...spec, steps, noOverhang: true, faceMargin: FACE_MARGIN });
+       const easy = traceNode(es);
+-      if (checkTrace(tr, steps).length || checkTrace(easy, es.steps, true).length) continue;
++      if (checkTrace(tr, steps).length || checkTrace(easy, es.steps, true).length) { TALLY['checkTrace'] = (TALLY['checkTrace'] ?? 0) + 1; continue; }
++      for (const st of steps) if (st.move === 'jump') LAID[st.dy] = (LAID[st.dy] ?? 0) + 1;
+       return { steps, tr, easy };
+     } catch (e) {
++      const m = String((e as Error).message).replace(/-?\d+/g, '#'); TALLY['trace: ' + m] = (TALLY['trace: ' + m] ?? 0) + 1;
+       last = e as Error;
+     }
+   }
+@@ -1011,6 +1030,7 @@
+     try {
+       return { ...f(seed + k * 7919, easy, bpm), reroll: k };
+     } catch (e) {
++      const m = String((e as Error).message).replace(/-?\d+/g, '#'); TALLY['layout: ' + m.slice(0, 90)] = (TALLY['layout: ' + m.slice(0, 90)] ?? 0) + 1;
+       last = e as Error;
+     }
+   }

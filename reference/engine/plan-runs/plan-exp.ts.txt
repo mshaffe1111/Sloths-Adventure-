@@ -1,0 +1,95 @@
+// engine PLAN experiments (planner, 2026-11-04). Read-only use of the real code at origin/ccr-0d59a91c-oy3imz.
+import { flight, traceNode, checkTrace, easyNode, TRIES, SHORT_HOLD, CLUMSY, APRON, type Step, type Move, type NodeSpec } from './src/game/beatTrace.ts';
+import { PHYS } from './src/game/physics.ts';
+import { barsFrom } from './src/game/w1Rhythm.ts';
+
+// ---- E1: one reach predicate = exactly the tracer's TRIES (what traceNode:393-397 demands), vs fitSteps' fits (w1Rhythm.ts:169-171)
+function reachable(move: Move, dy: number, easy: boolean): boolean {
+  const hold = easy ? 0.7 : 1;
+  for (const tr of TRIES) for (const dt of [1 / 60, 1 / 30]) {
+    const h = tr.short && move === 'jump' ? (easy ? SHORT_HOLD.easy : SHORT_HOLD.normal) : hold;
+    if (!flight({ move, dy, vx: PHYS.maxRun, air: tr.air, dt, hold: h })) return false;
+  }
+  return true;
+}
+const fitsReach = (move: Move, dy: number) => !!flight({ move, dy, vx: PHYS.maxRun });
+const easyDy = (dy: number, surface: string) => (dy > 0 ? Math.round(dy * (surface === 'stump' || surface === 'bank' ? 0.6 : 0.7)) : dy);
+console.log('== E1: palette rises, proposer (fits: one full-hold flight) vs tracer (all TRIES), 1-2 palettes w1Rhythm.ts:478,606,617,707');
+const pals: Record<string, number[]> = { PAL_A: [-60, -40, -20, 0, 20, 40], PAL_B: [-60, -50, 50, 60, 80, 90], top: [-50, -40, 40, 50, 80, 90], PAL_C: [-60, -30, 0, 30, 50] };
+for (const [name, dys] of Object.entries(pals)) {
+  const rows = dys.map((dy) => {
+    const p = fitsReach('jump', dy), n = reachable('jump', dy, false), e = reachable('jump', easyDy(dy, 'branch'), true);
+    return `${dy}:${p ? 'P' : '-'}${n ? 'N' : '-'}${e ? 'E' : '-'}${p !== n ? '!' : ''}`;
+  });
+  console.log(`  ${name.padEnd(6)} ${rows.join('  ')}`);
+}
+console.log('  (P proposer says yes, N tracer Normal yes, E tracer Easy (rise cut by easyNode) yes, ! = the two models disagree)');
+for (const mv of ['hop', 'jump', 'double'] as Move[]) {
+  let maxP = -999, maxN = -999, maxE = -999;
+  for (let dy = -200; dy <= 200; dy++) { if (fitsReach(mv, dy)) maxP = dy; if (reachable(mv, dy, false)) maxN = dy; if (reachable(mv, dy, true)) maxE = dy; }
+  console.log(`  highest rise ${mv.padEnd(6)}: proposer ${maxP}, tracer Normal ${maxN}, tracer Easy ${maxE} px`);
+}
+
+// ---- E2: 1-2 rooms written as data (no dice), proven over World 1's tempo range and both settings
+// Room shapes taken from layout12's own recipes (w1Rhythm.ts:561-728): the swung lean [6,2] etc via barsFrom; steps written by hand.
+interface Room { id: string; job: string; gaps: number[]; lead?: number; steps: Step[]; y: number }
+const J = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'jump', dy, surface });
+const H = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'hop', dy, surface });
+const D = (dy: number, surface: Step['surface'] = 'branch'): Step => ({ move: 'double', dy, surface });
+const rooms: Room[] = [
+  // intro: 8 level-ish jumps on 6/8/9-eighth gaps (layout12 intro, :561), canopy palette heights
+  { id: 'w1-canopy-intro', job: 'intro', y: 330, gaps: [8, 6, 9, 8, 6, 9, 8], steps: [J(0), J(20), J(0), J(-20), J(20), J(0), J(-20), J(0)] },
+  // ramp: swung long-short (dotted half + quarter), jump then hop (layout12 ramp1, :567); a rise every jump, hop down: zigzag by design
+  { id: 'w1-canopy-swung', job: 'ramp', y: 330, gaps: [6, 2, 6, 2, 8, 6, 2], steps: [J(40), H(-30), J(20), H(-20), J(0), J(40), H(-40), J(0)] },
+  // the same ramp, rewritten to break the zigzag (the critic and R2: 66% zigzag): a stair up, a flat, a stair down
+  { id: 'w1-canopy-stair0', job: 'ramp', y: 330, gaps: [6, 2, 6, 2, 8, 6, 2], steps: [J(20), H(-20), J(40), J(0), J(20), J(-40), H(-20), J(0)] },
+  // the author's fix the prover's message asks for: a hop where the next mark is 2 eighths on, and hops that rise (no zigzag)
+  { id: 'w1-canopy-stair', job: 'ramp', y: 330, gaps: [6, 2, 6, 2, 8, 6, 2], steps: [J(20), H(20), J(0), H(20), J(-40), J(-20), H(20), J(0)] },
+  // floor: banks and stumps over pits (PAL_C :707; LEANS_FLOOR [4,2] etc)
+  { id: 'w1-floor-pits', job: 'ramp', y: 930, gaps: [4, 2, 4, 2, 5, 2, 3], steps: [J(30, 'stump'), H(-30, 'bank'), J(0, 'bank'), H(-20, 'bank'), J(30, 'stump'), H(-30, 'bank'), J(50, 'stump'), J(-60, 'bank')] },
+  // climax: densest, a double over a wide pit and a drop (spike/climax recipe)
+  { id: 'w1-floor-double', job: 'climax', y: 930, gaps: [4, 2, 6, 2, 4, 2], steps: [J(30, 'stump'), H(-30, 'bank'), D(0, 'bank'), H(-20, 'bank'), J(50, 'stump'), H(-40, 'bank'), J(-60, 'bank')] },
+];
+const bpms = [126, 127, 128, 128.2, 129, 130, 131, 132, 133, 134];
+console.log('\n== E2: 1-2 rooms as data, proven at every whole BPM of World 1 (126-134, plus 1-2\'s own 128.2), Normal and Easy');
+for (const r of rooms) {
+  const bars = barsFrom(r.gaps, r.lead ?? 0);
+  let ok = 0, n = 0; const why = new Set<string>(); const failAt: string[] = []; const dens: number[] = [], secs: number[] = [], exitN: number[] = [], exitE: number[] = [], win: number[] = [];
+  for (const bpm of bpms) for (const easy of [false, true]) {
+    n++;
+    const base: NodeSpec = { bpm, bars, x: 0, y: r.y, steps: r.steps, noOverhang: true, faceMargin: 30 };
+    const spec = easy ? easyNode(base) : base;
+    try {
+      const tr = traceNode(spec);
+      const bad = checkTrace(tr, spec.steps, easy);
+      if (bad.length) { why.add(bad[0].replace(/\d+/g, '#')); failAt.push(bpm + (easy ? 'E' : 'N')); continue; }
+      ok++; dens.push(tr.density); secs.push(tr.seconds);
+      (easy ? exitE : exitN).push(tr.yOut);
+      if (!easy) for (const l of tr.landings) { const to = tr.ledges.find((q) => q.step === l.step)!; win.push((to.x1 - to.x0) - (l.longX - l.shortX)); }
+    } catch (e) { why.add(String((e as Error).message).replace(/\d+/g, '#')); failAt.push(bpm + (easy ? 'E' : 'N')); }
+  }
+  const rng = (a: number[]) => a.length ? `${Math.min(...a).toFixed(2)}-${Math.max(...a).toFixed(2)}` : '-';
+  const exitDrift = exitN.length && exitE.length ? Math.max(...exitE) - Math.min(...exitN) : NaN;
+  console.log(`  ${r.id.padEnd(17)} ${r.job.padEnd(6)} ${bars.join('|')}  proven ${ok}/${n}  density ${rng(dens)}/s  seconds ${rng(secs)}  exit y N ${[...new Set(exitN)].join(',')} E ${[...new Set(exitE)].join(',')} (drift ${exitDrift} px)  spare pad px p10/min ${win.length ? [...win].sort((a, b) => a - b)[Math.floor(win.length * 0.1)] + '/' + Math.min(...win) : '-'}${why.size ? '  FAILS at ' + failAt.join(',') + ': ' + [...why].join(' ; ') : ''}`);
+}
+
+// ---- E3: kinds and zigzag per room (the kind gate, R2 §5 idea 1)
+console.log('\n== E3: landing kinds (move x up/flat/down x surface) and zigzag share per room');
+for (const r of rooms) {
+  const k = r.steps.map((s) => `${s.move[0]}${s.dy > 0 ? 'U' : s.dy < 0 ? 'D' : 'F'}-${s.surface}`);
+  let flips = 0, pairs = 0;
+  for (let i = 1; i < r.steps.length; i++) { const a = Math.sign(r.steps[i - 1].dy), b = Math.sign(r.steps[i].dy); if (a && b) { pairs++; if (a !== b) flips++; } }
+  const counts: Record<string, number> = {}; k.forEach((x) => (counts[x] = (counts[x] ?? 0) + 1));
+  const top2 = Object.values(counts).sort((a, b) => b - a).slice(0, 2).reduce((a, b) => a + b, 0) / k.length;
+  console.log(`  ${r.id.padEnd(17)} kinds ${Object.keys(counts).length}  top-two share ${(top2 * 100).toFixed(0)}%  zigzag ${pairs ? ((flips / pairs) * 100).toFixed(0) : '-'}% of ${pairs} up/down pairs`);
+}
+
+// ---- E4: tempo-correct apron (critic §5 alt 4): a shared apron of k whole eighths vs the fixed 200 px
+console.log('\n== E4: a room joined on a shared apron: next room\'s first take-off off the stage\'s eighth grid (ms)');
+for (const bpm of [128.2, 94, 98, 102, 68]) {
+  const eighth = 30 / bpm, fixedS = APRON / PHYS.maxRun;
+  const offFixed = ((fixedS / eighth) % 1) * eighth * 1000; const offFixedMin = Math.min(offFixed, eighth * 1000 - offFixed);
+  const k = Math.ceil(fixedS / eighth - 1e-9); const px = Math.round(k * eighth * PHYS.maxRun);
+  const offK = Math.abs((px / PHYS.maxRun) / eighth - k) * eighth * 1000;
+  console.log(`  ${String(bpm).padEnd(5)} BPM eighth ${(eighth * 1000).toFixed(0)} ms: fixed 200 px apron ${offFixedMin.toFixed(0)} ms off;  ${k} eighths = ${px} px apron ${offK.toFixed(1)} ms off (rounding to a whole px)`);
+}
