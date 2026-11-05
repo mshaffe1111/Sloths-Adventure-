@@ -7,6 +7,7 @@ style model. Same light and line for all by the shared prompt tail. Cut by the l
                  bled into (W6 wetLeaves, 2026-11-05: a pink light beam painted beside it in the key's hue, cut into the sheet);
                  cut.py's key_own measures each take's own background, so grey keys by distance
   --desc=TEXT    the piece's description for this batch, in place of pieces.py's (a remade piece)
+  --neg=TEXT     more for the negative prompt (the W6 lantern remake: its old glow halo)
 """
 import json, sys
 from pathlib import Path
@@ -27,6 +28,7 @@ SET2 = '--set2' in sys.argv
 SET3 = '--set3' in sys.argv
 GREY = '--grey' in sys.argv
 DESC = next((a[7:] for a in sys.argv if a.startswith('--desc=')), None)
+NEG_ADD = next((a[6:] for a in sys.argv if a.startswith('--neg=')), '')
 STRENGTH = next((float(a[11:]) for a in sys.argv if a.startswith('--strength=')), 1.0)
 sys.argv = [a for a in sys.argv if not a.startswith('--')]
 
@@ -61,7 +63,7 @@ for w in worlds:
             items.append({'name': f'w{w}-{n}-{sd}' + ('a' if ANCHOR else '') + ('g' if GREY else ''), 'start': start,
                           'prompt': prompt(w, DESC or desc, job == 'hang'), 'strength': STRENGTH, 'seed': sd,
                           'w': 1536 if ANCHOR else 1024, 'h': 1024, 'steps': 26,
-                          'loras': [['style', 0.8]], 'neg': NEG + (', light beam, sun rays, pink light, magenta' if GREY else '')})
+                          'loras': [['style', 0.8]], 'neg': NEG + (', light beam, sun rays, pink light, magenta' if GREY else '') + (', ' + NEG_ADD if NEG_ADD else '')})
 spec = {'note': f'hf-props single-piece batch {tag}' + (', grey key' if GREY else ''), 'q': 92,
         'base': f'{RAW}{sha}/reference/prop-sheets/qa-notes/hf-props/starts/',
         'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors']}, 'items': items}
