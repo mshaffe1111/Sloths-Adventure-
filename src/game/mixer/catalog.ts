@@ -132,6 +132,16 @@ export const PROP_FAMILIES: PropFamily[] = [
 export const PICKUP_RULE = 'over a standable piece or on a path\'s arc, never inside a piece; hearts only after risk; the exit totem on a long ground piece';
 export const ANIMAL_RULE = 'on their element: snakes, boas and tayras on boughs or ground; caimans, turtles and frogs at water; harpies and eagles in open sky; jaguars and ocelots on ground; spiders on webs (W5)';
 
+/** the worlds whose kit draws a thin piece (a 'branch' frame) as stone, which never floats (the designer's LABELS §8, 11-05: W3 mossy
+ *  slab, W4 slate, W7 carved ruin, W9 basalt); elsewhere it is a bough, a plank, a stump, a log or a grate, which may */
+export const STONE_THIN_WORLDS = [3, 4, 7, 9];
+/** whether a landing may stand with open air under it, in its world: its kind's label, with a thin piece's element from its art (§8) */
+export function mayFloatIn(p: Platform & Record<string, unknown>, world: number): MayFloat | undefined {
+  const k = LANDINGS.find((q) => q.match(p));
+  if (!k) return undefined;
+  if (k.name === 'bough' && STONE_THIN_WORLDS.includes(world)) return 'no';
+  return k.mayFloat;
+}
 export const landingKind = (p: Platform & Record<string, unknown>) => LANDINGS.filter((k) => k.match(p));
 export const climbKind = (arr: 'vines' | 'ropes', v: Record<string, unknown>) => CLIMBS.filter((k) => k.match(arr, v));
 export const propFamily = (name: string) => PROP_FAMILIES.find((f) => f.rx.test(name));
