@@ -69,6 +69,13 @@ export function floorWater(stage: Stage): WaterSpot[] {
       end = Math.max(end, b);
     }
   }
+  // (the water a stage draws, proto.water (the mixer's creeks): deadly unless it is a teaching pool or calm swim water; the near bank is the
+  // floor piece whose end the water reaches in under)
+  for (const z of stage.proto?.water ?? []) {
+    if (z.kind === 'calm' || z.kind === 'teaching' || covered(z.x0, z.x1)) continue;
+    const near = stage.platforms.filter((p) => p.x < z.x0 && p.x + p.width >= z.x0 && p.y < z.y).sort((p, q) => p.y - q.y)[0];
+    out.push({ x0: near ? near.x + near.width : z.x0, x1: z.x1, bankY: near?.y ?? bankAt(z.x0), river: false });
+  }
   return out.sort((a, b) => a.x0 - b.x0);
 }
 

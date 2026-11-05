@@ -18,6 +18,10 @@ export interface WorldKit {
   mushroomCap: number;
   /** the platform styles its kit paints (anything else falls back to terrain's code-drawn island: a build that lays one throws) */
   styles: string[];
+  /** the world's creek, where a stage has water (the profile's `water`): how far under a bank's top the drawn surface lies, how far each
+   *  water piece's top stands over that surface (a lily pad floats on it; a log or a reed isle rises out of it), and how far the drawn
+   *  water reaches in under each bank, so its edge is hidden by the bank's face. No row: the world lays no water idea */
+  water?: { depth: number; top: Record<string, number>; inset: number };
 }
 
 export const KITS: Record<number, WorldKit> = {
@@ -33,6 +37,10 @@ export const KITS: Record<number, WorldKit> = {
     limit: { yMin: 300, yMax: 1400 },
     mushroomCap: 14,
     styles: ['moss_stone', 'log', 'branch', 'ruin', 'canopy_bridge'],
+    // (a pad's top 8 px over the surface, where the engine draws it on the water (engine.ts lily surface, padsOffWater); a log 30 and a
+    // reed isle 40 over it, so no landing sits flat with the one before (FLAT 20); the bank's face 60 px over the water; the water 40 px
+    // in under each bank, inside the face's lean (engine.ts ZONE_INSET))
+    water: { depth: 60, top: { lily: 8, log: 30, reed: 40 }, inset: 40 },
   },
 };
 
