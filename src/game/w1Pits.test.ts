@@ -10,6 +10,8 @@ import { RealPlay } from './realPlay.ts';
 import type { Platform } from './types.ts';
 
 const G = 580;
+/** a floor this close under the lower lip is its own way out (findW1Pits: 'A sunk step (75 px) is not a pit') */
+const SUNK_STEP = 75;
 const P = (id: number, x: number, y: number, width: number, height: number, more: Partial<Platform> = {}): Platform => ({ id, x, y, width, height, type: 'solid', style: 'moss_stone', ...more }) as Platform;
 
 test('a soft pit (a floor 130 down) is found with its steps; a 75 px sunk step is not a pit; a floorless gap is a fall', () => {
@@ -38,6 +40,15 @@ test('a tall stump standing on the ground is ground, not a gap; a breaking branc
   assert.deepEqual(g.map((q) => [q.x0, q.x1, q.kind]), [[1260, 1460, 'fall']]);
 });
 
+test('the way out of a soft pit: a step in it, or a floor within a sunk step of its lower lip; deeper with no step is a trap', () => {
+  const lowLip = [P(1, 0, G, 700, 300), P(2, 700, G + 100, 400, 90), P(3, 1100, G + 50, 400, 300)];
+  const q1 = findW1Pits(lowLip).find((q) => q.kind === 'soft')!;
+  assert.ok(q1 && !(q1.steps ?? []).length && q1.floor! - q1.top <= SUNK_STEP, JSON.stringify(q1));
+  const trap = [P(1, 0, G, 700, 300), P(2, 700, G + 160, 400, 90), P(3, 1100, G, 400, 300)];
+  const q2 = findW1Pits(trap).find((q) => q.kind === 'soft')!;
+  assert.ok(q2 && !(q2.steps ?? []).length && q2.floor! - q2.top > SUNK_STEP, JSON.stringify(q2));
+});
+
 test("1-8's long branch: the holes between the chase's sections are falls", () => {
   const ps = [P(1, 0, 455, 500, 24, { chase: true } as Partial<Platform>), P(2, 600, 455, 500, 24, { chase: true } as Partial<Platform>), P(3, 1300, 470, 300, 24, { chase: true } as Partial<Platform>)];
   const g = findW1Pits(ps);
@@ -51,7 +62,9 @@ test('World 1, layout 1: the vault pits are soft pits with steps; the only unmar
     soft[id] = g.filter((q) => q.kind === 'soft').length;
     // (unmarked floorless gaps, read as water: a builder's marked drop, `pit: 'drop'`, is a pit and is not counted here)
     falls[id] = g.filter((q) => q.kind === 'fall' && !q.drop).length;
-    for (const q of g.filter((q) => q.kind === 'soft')) assert.ok((q.steps ?? []).length >= 1, `${id} ${q.x0}: a soft pit with no step out`);
+    // (a way out: a step standing in the pit, or the floor itself within a sunk step (75 px, findW1Pits' own rule) of the lower lip,
+    // so he walks or hops straight out: 1-2's rebuilt root tier, layout 1, floor 930 against the bank at 880; the lead, 2026-11-04)
+    for (const q of g.filter((q) => q.kind === 'soft')) assert.ok((q.steps ?? []).length >= 1 || q.floor! - q.top <= SUNK_STEP, `${id} ${q.x0}: a soft pit with no step out`);
   }
   // (1-5 rebuilt on the beat, w1Rhythm.ts: its pits are real drops under the snap twigs, painted as drops, never soft or water:
   // stage15.test.ts "every floor gap paints as a drop")
