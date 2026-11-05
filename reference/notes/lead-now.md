@@ -33,6 +33,7 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 - DECIDED (Matt ~5:15 PM ET): 1-1 ends on the quiet arrival. Later stages get an ending FORK the player chooses (a high road to a finale
   with a find, or a quiet low road), NODE-MIX-RESEARCH §E. Matt wants a NODE CODE (TJ = teach jump, TFJ = teach fork jump): the designer is
   writing NODES.md §8, the planner stores graphs as code strings, and stage.ts prints each roll's code.
+- For Matt LATER (not 1-1): in W3/W4/W7/W9 a thin floating platform is drawn as a stone slab, which reads as a floating rock. Likely answer: render-stone's world-kin pieces (cave log, driftwood, lashed plank, charred log; branch render-stone 7da53035). Show him a still when those worlds come up.
 - Owed: the end-of-day review reference/daily/2026-11-05.md.
 - Owed (law 21): R-ids on ROADMAP for today's direction change (chunk pool on gen2, roll dials, window, new gates) and for the
   supervisor role, and gen2 faults to roadmap: theme lock hijacks teaching (w6Ground.ts:23), Easy fallback plan + `best` returned +
