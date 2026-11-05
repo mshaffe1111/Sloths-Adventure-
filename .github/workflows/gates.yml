@@ -31,6 +31,9 @@ jobs:
       - run: node tools/roadmapcheck.mjs
       # the fun gate: World 1's validator flags may only shrink (tools/validate/funcheck.ts, reference/methods/validator.md)
       - run: npx tsx tools/validate/funcheck.ts
+      # the Play Store build and its check (PLAY-STORE-RULES §6; the APK workflow runs the same, so a breach here would leave no APK on
+      # Releases after the merge: 0.9.5's GPU layer carried Pixi's address, found by the release clerk, 2026-11-04)
+      - run: npm run build:store
       # the browser the clip check drives (Chrome's safe-area override needs a recent one); not a project dependency
       - run: npm install --no-save --no-audit --no-fund --legacy-peer-deps playwright@1.63.0 && npx playwright install --with-deps chromium
       # shell: bash runs with pipefail, so the check's exit code survives the tee (the default shell here has no pipefail: a crash
