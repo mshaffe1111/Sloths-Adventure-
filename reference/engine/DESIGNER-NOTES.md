@@ -29,3 +29,7 @@
    it can wait the next week because it's on like a later world, then it can go in the roadmap." So the engine, World 1, 1-1 and 1-2
    are approved by the lead and me without going to Matt; anything for a later world gets an R-id and waits for next week. Before
    routing anything to Matt, check it against this line.
+11. **A time written into a file is inserted by the shell, never typed:** `$(TZ=America/New_York date +"%-I:%M %p")` inside the write
+   command itself (an unquoted heredoc only for that variable, or a python write that calls the clock). Messages copy the number from a
+   clock read in the call just before. (11-05, 1:38 PM ET: the third typed-ahead time today, "1:38" on the 1-2 page when the clock read
+   1:37; rule 1 as a note failed twice, so the countermeasure is mechanical.)
