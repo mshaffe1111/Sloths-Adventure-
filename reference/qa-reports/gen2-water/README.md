@@ -80,3 +80,19 @@ rolls: deadly dirty water 483-634 px from the calm well.
   engine-mixer emits `proto.water` (1-1 builds with none). It is proven on a fixture, and will catch engine-render's 1-1 creek the day
   a builder emits it.
 - No other stage in the game has calm water, so the known list starts empty (nothing outside W6 misses).
+
+## PAUSED 2026-11-05 ~12:50 PM ET (the lead: Matt at 60% of his week; resume after 1-1 passes tonight)
+
+Where it stopped, and what is left, in order:
+1. **W3 fix and gate:** done and pushed (above). Gates not yet run on the final head: **drawcheck and clipcheck** (stopped mid-run
+   for the pause; drawcheck had passed 1-4, 2-6, 3-3 with no breach printed). Run both before the report.
+2. **The first-timer bot on 6-7**, base vs fix: script ready (seeds 1-3, kid Easy and adult Normal, trials 0-1), not run.
+3. **The designer's rulings (engine-spec 2f4d708ad):** (1) W3_SCREEN from the engine's own zoom at the calm pool (room, swim and stage
+   zoom) over the widest sideways shape the game supports, recorded in waterRule.ts; 1,203 is the floor, never lowered. (3) the dried
+   pit's step drawn with W6's painted lowStump or hollowStump (w6.ts:143, :147) on the pit floor, not the generic moss-stone block;
+   if neither can be a landing, say why (art ask). Then re-shoot stills, Normal and Easy, upright and sideways.
+4. **The designer's floating slabs in 6-7's water room** (w6Rooms.ts:8-19, :108-110: the root shelf with Dot's stone pile reads as a
+   grey slab in open air upright): find what draws it, fix in the kit or room placement, stills. Not started.
+5. **The lead's swim speed: 1.25x the run** (swim.ts:35, data where the speed lives), then the W6-W8 lock and explanations, bank exits,
+   W5 legs, no wall clipping, jump bots and swim behaviour, and clips of the well and a ~1,500 px scratch pool. Not started.
+6. The 10-line report to the lead (planned vs actual: started 11:25 AM ET; paused at about 1 h 25 min).
