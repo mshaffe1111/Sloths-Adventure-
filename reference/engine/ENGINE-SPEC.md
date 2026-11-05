@@ -319,6 +319,51 @@ Each rule has the planner's machine check under it; a rule that can't be checked
    *Check:* a sliding view over the built stage counts these and fails over the limits. The limits are set from the old 1-1 in
    CP1: it must pass its own limits.
 
+
+### CP3 design: the 1-5 node plan (designer, 11-05 ~12:42 AM ET; the planner builds it)
+
+**Story beat** (from the shipped lines, `dotLinesData.ts:123-125, 147`):
+- 1-5 teaches creaky branches ("Creaky branches! Grab the petals and keep moving");
+- each petal group needs a different move;
+- a golden seed is seen "too far, for now";
+- Meeca passed here not long ago ("These petals are fresher").
+
+**Theme:** the canopy and creek of World 1; its art family is the World 1 kit. **Length:** from the nodes, with a target of about 150
+s skilled.
+
+Each node lists its job, then a **deck**: the ideas it may roll, with one drawn per roll by a shuffle bag. Each idea's pieces and
+sizes are rolled inside the idea. Decks are what make two rolls different stages; sizes are what make two uses of one idea different.
+
+| # | Job | Deck (one idea drawn per roll) | Entry → exit | Pickups and markers |
+|---|---|---|---|---|
+| n1 | warm-up | bank hops, stump hop | ground → ground | petals as breadcrumbs only |
+| n2 | **teach** creaky (expose, then validate) | snap-twig dash, its teach form: one creaky twig low over a bank, then two over safe ground, no pit | ground → mid | Dot's "Creaky branches!" line here; no heart |
+| n3 | climb up | bounce up, the climb | mid → high | — |
+| n4 | **the fork** | high road: crumbling ledge or bough run with creaky limbs; low road: lily-pad hop or reed isles. They rejoin at n5 | high → mid (two roads) | a petal group on each road, each asking for that road's own move |
+| n5 | rest | bank walk | mid → mid | Dot's wayside line ("These petals are fresher"); a checkpoint here, since n6 is a test |
+| n6 | **test** creaky | snap-twig dash, the full form: over a real gap | mid → high | the third petal group; a heart only after it, if n6 has life risk |
+| n7 | twist | rotten-branch drop | high → low | — |
+| n8 | creek | lily-pad hop, reed isles, stump hop (not the one n4 rolled) | low → low | — |
+| n9 | puzzle beat | push block, bough stair, the climb (not the one n3 rolled) | low → high | the golden seed shown above, out of reach: "too far, for now" |
+| n10 | **master**, the second fork | high road: crumbling ledge or bridge span; low road: bough stair or bank hops; rejoin before n11 | high → mid (two roads) | a checkpoint before it; the fourth petal group, with its harder half on the high road |
+| n11 | cool down | bank hops | mid → ground → shrine | — |
+
+**The rules this plan meets by construction** (the mixer still checks every roll):
+- **Ideas:** 9 to 11 different ideas a roll. No idea twice in a row. Snap-twig dash comes twice (teach at n2, test at n6, not in a
+  row), and the fork twice (n4, n10).
+- **The fork's share:** n4 and n10 at about 15-20% of the length each, so together about 30-40%, under the old 1-1's 41%. The planner
+  measures it; if it goes over, n10's roads shorten.
+- **Splits:** two forks, each with at least 3 crossings where the roads run apart. The floor is the old 1-1's number on the 180 px
+  rule; if two forks fall short, n9's deck gains a third, small fork (the climb with a low bank road).
+- **Move ladder:** creaky is new (taught at n2, tested at n6, mastered at n10's high road). It reuses bounce, swing-free jumps and
+  lily hops from 1-1 to 1-4 in harder forms.
+- **Placement:** checkpoints before n6 and n10 only, plus the stage start. Hearts only after n6 or n10, when the roll's risk there is
+  above zero. The seed is out of reach on purpose.
+- **Kept out until their teach steps are built** (the lead): the boa and the turtle line.
+
+**What Matt sees at the checkpoint:** three side maps stacked (the old 1-1, today's 1-5, the new 1-5 roll 1), each node labelled
+with its idea; then the new 1-5 as a grey-box build on the test link.
+
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
