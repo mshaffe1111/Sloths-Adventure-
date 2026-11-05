@@ -1,0 +1,24 @@
+layout 1: 1-1 t 82s vs 1-2 t 12s: distance 0.126 (ALIKE)
+   1-1: J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p h|hop|level|s J|short|level|p J|short|level|p J|short|level|p
+   1-2: J|short|level|p J|short|level|p W J|short|level|p J|short|level|p W J|short|level|p J|short|level|s J|short|level|p h|hop|level|s J|short|level|p W J|short|level|p J|short|level|s
+layout 2: 1-1 t 56s vs 1-2 t 12s: distance 0.264 (ALIKE)
+   1-1: J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|jump|level|p J|short|level|p J|short|level|p J|jump|level|p h|hop|down|s h|hop|level|s
+   1-2: J|short|level|p W J|short|level|p J|short|level|p J|short|level|p W J|short|level|p J|short|level|s J|short|level|p h|hop|level|s J|short|level|p W J|short|level|p J|short|level|s J|short|level|p
+layout 3: 1-1 t 80s vs 1-2 t 0s: distance 0.306 (apart)
+   1-1: h|hop|level|s h|hop|level|s h|hop|level|s h|hop|level|s h|hop|level|s h|hop|level|s J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|jump|level|s
+   1-2: h|hop|level|s h|hop|level|s W h|hop|level|s W h|hop|level|s J|short|level|p W J|short|level|p J|short|level|p W J|short|level|p W J|short|level|p J|short|level|p
+layout 4: 1-1 t 54s vs 1-2 t 90s: distance 0.281 (ALIKE)
+   1-1: J|second|up|s J|short|level|p J|short|level|p J|short|level|p J|second|level|s J|short|level|p J|short|level|p J|jump|level|p J|jump|up|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p
+   1-2: h|hop|level|s W W J|short|level|p J|short|level|p J|short|level|p J|short|level|p W J|short|level|p J|short|level|p J|short|level|p J|short|level|p W J|short|level|p J|short|level|p
+layout 1: 1-1 t 86s vs 1-5 t 132s: distance 0.174 (ALIKE)
+   1-1: J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p h|hop|level|s J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p
+   1-5: J|short|level|p J|short|level|p W h|hop|level|s J|short|level|p J|short|level|p W h|hop|level|s J|short|up|p J|short|level|p J|short|level|p J|short|level|p h|hop|level|s J|short|up|p
+layout 2: 1-1 t 54s vs 1-5 t 156s: distance 0.294 (ALIKE)
+   1-1: J|jump|up|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|short|level|p J|jump|level|p J|short|level|p J|short|level|p J|jump|level|p h|hop|down|s
+   1-5: h|hop|level|s J|short|level|p J|short|level|p W h|hop|level|s J|short|level|p J|short|level|p W h|hop|level|s J|short|up|p J|short|up|p J|short|up|p J|short|level|p J|jump|level|p J|short|up|p
+layout 3: 1-1 t 52s vs 1-5 t 130s: distance 0.272 (ALIKE)
+   1-1: J|short|level|p J|short|level|p J|short|level|p h|hop|up|s J|second|level|s J|short|level|p J|short|level|p J|second|level|p J|second|up|p J|short|level|p J|short|level|p J|short|level|p
+   1-5: h|hop|level|s J|short|level|p J|short|level|p W h|hop|level|s J|short|level|p J|short|level|p J|short|level|p W J|short|level|p h|hop|level|s J|short|level|p h|hop|level|s J|short|level|p
+layout 4: 1-1 t 44s vs 1-5 t 134s: distance 0.278 (ALIKE)
+   1-1: h|hop|level|s h|hop|level|s h|hop|level|s J|short|level|p J|short|level|p J|short|level|p J|second|up|s J|short|level|p J|short|level|p J|short|level|p J|second|level|s J|short|level|p J|short|level|p
+   1-5: W h|hop|level|s J|short|level|p J|short|level|p J|short|up|p J|short|level|p h|hop|level|s J|short|up|p h|hop|level|s J|short|level|p h|hop|level|s J|short|level|p J|short|level|p
