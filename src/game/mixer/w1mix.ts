@@ -114,6 +114,8 @@ const MUSHROOM_CAP = 14;
 /** where the way is: the end of the last piece laid, its top, and the kind of piece it was */
 interface Cursor { x: number; y: number }
 
+/** a phone screen's width of the stage, sideways (the stills): the trunk cap counts within it */
+const SCREEN = 1400;
 const GROUND = 900;
 const LIMIT = { yMin: 300, yMax: 1400 };
 /** the band the way must stay in right now (a fork's road keeps to its own, so the two roads never meet) */
@@ -653,6 +655,11 @@ function supports(P: Platform[], height: number, clear: number[] = []): { trunks
     && (p.style === 'branch' || p.style === 'canopy_bridge' || p.style === 'log' || p.style === 'ruin' || p.type === 'fragile')).sort((a, b) => a.x - b.x);
   // (a lily pad or a reed isle over the drop stands on a thin stem down to the ground (S-2: nothing above the water line floats))
   for (const p of P) if ((p as { lily?: boolean }).lily || (p.style === undefined && p.height === 30 && p.type === 'solid')) tree(p.x + p.width / 2, p.y + 10, 0.45, false);
+  // (would a full trunk at x put 4 in some screen's width, anywhere it is seen? every 1,400 px window that holds x)
+  const crowded = (x: number) => {
+    const xs = out.filter((t) => t.w >= 0.9 && Math.abs(t.x - x) < SCREEN).map((t) => t.x);
+    return xs.some((a) => a <= x && xs.filter((b) => b >= a && b < a + SCREEN).length >= 3 && x < a + SCREEN) || xs.filter((b) => b >= x && b < x + SCREEN).length >= 3;
+  };
   const done = new Set<Platform>();
   for (let i = 0; i < air.length; i++) {
     const p = air[i];
@@ -668,13 +675,27 @@ function supports(P: Platform[], height: number, clear: number[] = []): { trunks
     // (two boughs side by side, a short gap and a step between them, grow from one tree standing in the gap (S-4: like the old 1-1's
     // canopy, one trunk and its boughs at two heights))
     const q = air.slice(i + 1).find((o) => !done.has(o) && o.style !== 'canopy_bridge' && !(o as { perch?: boolean }).perch && o.x >= p.x + p.width - 10);
-    if (q && q.x - (p.x + p.width) <= 120 && Math.abs(q.y - p.y) <= 140) {
+    // (the designer's trunk rule after Matt's play, 11-05: boughs up to 220 px apart share one tree, and no more than 3 full trunks stand
+    // in a screen's width; a bough past that hangs from a shared trunk on that screen and takes none of its own. Stills v9's
+    // sideways bank end had six alike, evenly spaced: a forest of poles)
+    if (q && q.x - (p.x + p.width) <= 220 && Math.abs(q.y - p.y) <= 140) {
       done.add(q);
-      tree((p.x + p.width + q.x) / 2, Math.min(top(p), top(q)), 1.25);
+      const x = (p.x + p.width + q.x) / 2;
+      if (!crowded(x)) tree(x, Math.min(top(p), top(q)), 1.25);
       continue;
     }
     if (out.some((t) => Math.abs(t.x - (p.x + p.width / 2)) < 160 && Math.abs(t.topY - top(p)) < 80)) continue;
+    if (crowded(p.x + p.width / 2)) continue;
     tree(p.x + p.width / 2, top(p), 1.15);
+  }
+  // (a bough the trunk cap left far from every tree (more than 300 px past its end) stands on a thin post, half a trunk wide: nothing
+  // floats. The designer's rule wants it hung from a shared trunk's side branch, which is art the kit does not have yet)
+  for (const p of air) {
+    if (p.style === 'canopy_bridge' || (p as { perch?: boolean }).perch) continue;
+    const m = p.x + p.width / 2;
+    if (out.some((t) => Math.abs(t.x - m) < p.width / 2 + 300)) continue;
+    const fl = floorOf(m, p.y);
+    out.push({ x: Math.round(m), topY: Math.round(p.y + 16), bottomY: Math.round(fl !== null ? fl + 30 : height + 200), w: 0.55 });
   }
   // (on the long banks where no tree stands within 500 px, a tree grows from the bank itself, set back, so the start, the rests and the
   // shrine have their canopy overhead too (S-7))
@@ -683,6 +704,7 @@ function supports(P: Platform[], height: number, clear: number[] = []): { trunks
       if (out.some((t) => Math.abs(t.x - x) < 500)) continue;
       // (never in front of a flag, the start or the shrine: v5's start tree hid the first flag)
       if (clear.some((c) => Math.abs(c - x) < 200)) continue;
+      if (crowded(x)) continue;
       const k = out.length;
       out.push({ x: Math.round(x), topY: Math.round(b.y - 560), bottomY: Math.round(b.y + 20), w: 1.3 * (0.85 + ((k * 37) % 7) * 0.07), ...(k % 2 ? { art: 'plain' as const } : {}) });
       if (!leaves.some((l) => Math.abs(l.x - x) < 360)) leaves.push({ x: Math.round(x), y: Math.round(b.y - 530), w: 180, flip: k % 2 === 1, kind: 'bushWide' });
