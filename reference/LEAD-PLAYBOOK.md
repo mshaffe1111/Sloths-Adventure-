@@ -259,3 +259,5 @@ time honest. A shallow report goes back at once, or the helper is replaced with 
    This takes ten minutes, and it is done before anything is passed on.
 5. *We fed it our own research first, so it repeated the same games.* The helper gets the question and the hard facts about our
    game, then searches on its own. Our earlier research goes in only after its first list of sources, as a cross-check.
+6. *Matt couldn't see them.* Research helpers run as cloud sessions (create_session), one per researcher, so Matt can watch them in
+   his session list. Local background helpers don't appear there (Matt, 2026-11-04: "I don't see it running").
