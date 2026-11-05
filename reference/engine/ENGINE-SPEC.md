@@ -1890,7 +1890,7 @@ LEAD** (Matt: "You"), inside the Hugging Face money. The designer sends the rank
 |---|---|---|---|
 | W1 | **No breath meter and no drowning in calm water, ever** | F1, F3, F9, F12, F14 (no air meter); F4, F8, F18 (air that kills is the most hated); C3 ("zero oxygen-timer stress"); built (M2) | No calm water body deals damage or starts a timer |
 | W2 | **A dive is short**: down held takes him under ≤ 3 s, then he floats up (built, 3.27 s measured). Any underwater passage reaches a surface or air pocket within one rhythm group | M2; C6; F4, F10 | The longest time with no surface above him is ≤ 14 s Normal, ≤ 8 s Easy |
-| W3 | **Each kind of water reads at a glance.** Calm swims; dirty or fast water costs a life. They never share one screen (844 px sideways) unless a drawn bank divides them **and** the stage has already shown both, with Pokey's "two waters" line | F19 (Rogers: "water within a single environment should be one or the other"), F10, F13 | The nearest open deadly column to any calm pool is > 844 px, or the divided-and-taught case holds |
+| W3 | **Each kind of water reads at a glance.** Calm swims; dirty or fast water costs a life. They never share one screen (844 px sideways [revised 12:41 PM ET: "one screen" is the widest world view the engine can show at that spot, see the gen2-water ruling below]) unless a drawn bank divides them **and** the stage has already shown both, with Pokey's "two waters" line | F19 (Rogers: "water within a single environment should be one or the other"), F10, F13 | The nearest open deadly column to any calm pool is > 844 px, or the divided-and-taught case holds |
 | W4 | **Swim speed is at least a run.** The number is Matt's (12:30), with the research's recommendation C, 1.25×. A faster swim needs **long water**: today's 330 px well is crossed in 0.67-1.07 s at 1.0-1.8× | Matt R-5.22; F5, F18, F20; C3; M9 | Steady swim speed ≥ the chosen multiple of PHYS.maxRun |
 | W5 | **Swim legs** (revised 11:25 AM ET, the researcher's §g, 58ef1de4): no swim leg runs past 20 s before the play changes to the surface or air. A leg is 10-14 s on Normal and 6-8 s on Easy, and up to 15-20 s on 6-9, the swim stage. Each swim leg is followed by a surface, air or vine leg. ("Then equal land" is dropped as unsourced.) The 15-20 s figure is **Gemini's own** (the recovered paste's Law 3, one of its 3 laws), with no further source behind it | C6 (SR:173: 10-14 s / 6-8 s rhythm groups); paste1 Law 3 (Gemini's own 15-20 s); research-water-swim §g | Each swim leg's time in water is inside its band (Normal 10-14 s, Easy 6-8 s, 6-9 ≤ 20 s), and is followed by a surface, air or vine leg |
 | W6 | **Wide, clear exits**: a bank lip ≤ 70 px over the water (SWIM.climbOut), drawn as a ledge or ramp, then a landing ≥ 3 body widths (114 px; body 38 px) | F19, F3; swim.ts:49, :51 | Lip ≤ 70 px and apron ≥ 114 px at every exit (6-7 passes today) |
@@ -2128,3 +2128,24 @@ Each cell is p10-p90 across rolls, and no number is chosen.
     nothing is guessed. Until then the mixer uses these measured ranges, because they are what Matt has played and liked.
 - **Easy keeps its own softening:** its widths are Normal × 1.35 (C4), and its rises keep the Easy caps. The old 1-1's Easy is identical
   to its Normal, which is the old fault, not a reference for Easy.
+
+## Rulings on gen2-water (designer, 11-05 12:41 PM ET; gen2-water d837bb349, its README and stills opened)
+
+1. **W3's "one screen" is the widest world view the engine can show at that spot, never one phone's width.**
+   - 844 was a phone's CSS width, so it was wrong; gen2-water was right to reject it.
+   - Its 1,203 (Matt's Pixel, 998 x 448) is still one phone. The engine shows `w x WORLD_VIEW_H / h` world px sideways
+     (engine.ts applyZoom :1103), so a wider phone shows more. A 21:9 phone shows about 1,260, and a foldable's cover screen more.
+   - The well is a room and a swim, and `roomZoom` and `swimZoom` may pull the view back further there.
+   - **The fix:** W3_SCREEN is computed from the engine's own zoom code at the calm pool, including room, swim and stage `view` zoom,
+     over the widest sideways shape the game supports. The device list states that shape. The constant is that number with its
+     source, recorded in waterRule.ts. Until that run, 1,203 stands as the floor, and it is not lowered.
+2. **The W7 lock is approved:** no animal, no zone, no crumbling tile and no life-costing fall within a screen of the first calm pool,
+   on all 32 builds.
+3. **The dried-pit step must not ship as the generic block.** It's the dark box in sideways-x7354-after, and the pale grey slab in
+   easy-upright-near-after. Both fail P-1 (no grey placeholder ships) and law 15 beside the painted roots.
+   - The W6 kit already has painted stumps: `lowStump` and `hollowStump` (w6.ts:143, :147).
+   - The step is drawn as one of those, standing on the pit floor, at no HF cost.
+   - Only if neither can serve as a landing does it go to the lead as an art ask.
+4. **The squared root-earth column under a dried perch** is the shared soft-pit look already on main. It is accepted for this fix, and
+   named on the art list for a curved underside later.
+5. **The exception that isn't built** (a dividing bank plus Pokey's "two waters" line) is right: it needs Matt's approval of the line.
