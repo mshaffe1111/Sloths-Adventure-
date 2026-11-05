@@ -57,7 +57,7 @@ import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
 import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { buildRhythmStage, rhythmOwnPetals, rhythmPetalGoal } from './w1Rhythm.ts';
-import { buildMix15 } from './mixer/w1mix.ts';
+import { buildMix11, buildMix15 } from './mixer/w1mix.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildIntoCanopy, clearDress, splitPetals as splitPetals11 } from './w1Rise.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
@@ -490,7 +490,8 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
 
 /** `easy`: built for Easy (only the control test's long jumps differ, gaps; the rest of Easy is easyMode.ts on the built stage) */
 function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = false): GeneratedStage & { proto: ProtoExtras } {
-  if (plan === '1-1') return buildIntoCanopy(config, seed, easy);
+  // (engine-mixer branch, CP4 grey-box: 1-1 from the level designer's node plan, by the same mixer as 1-5, src/game/mixer/w1mix.ts)
+  if (plan === '1-1') return buildMix11(config, seed, easy);
   if (plan === '1-4') return buildKapok(config, seed, false, false, false, false, easy);
   if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
