@@ -14,6 +14,7 @@ import { cosine, deadWalks, fromStage, grams, moveOf, moveString, pacing, paceFl
 import { branchOutrunWith, cameraOn, chaseOutrunWith, eagleOutrunWith, towardShrine } from './play.ts';
 import { hazardsScore, newScore, newThatCounts } from './score.ts';
 import { artKey, lookAlike, lookOf } from './look.ts';
+import { findRoute } from '../inspect/route.ts';
 import { gatedFlags, judgeAgainst, keyOf, measure, truerBeside } from './funcheck.ts';
 import { movesAlike } from './evaluate.ts';
 import { fallBites, FALL_BITE_PX, pairsMet, waitAt, WAIT_MIN } from './mechanics.ts';
@@ -58,6 +59,17 @@ test('dead walk: a 4 s stretch with no move is flagged, 2 s stretches are not', 
   const samples = [{ x: 0, y: G, base: 0 }, { x: 2000, y: G, base: 7 }] as never;
   assert.equal(deadWalks(bad, 6.5, samples).length, 1);
   assert.equal(deadWalks(good, 6, samples).length, 0);
+});
+
+test('dead walk: a fight is the player busy, not walking (the lead\'s ruling (b), 2026-11-05: 1-5\'s teach boa, a 2 s fight, read as dead)', () => {
+  const samples = [{ x: 0, y: G, base: 0 }, { x: 2000, y: G, base: 7 }] as never;
+  // (each way: 4 s on from a 2 s fight is 2 s walking, no flag; the same 4 s on from a jump is a dead walk; a longer walk after a fight still is)
+  const fought: Step[] = [{ m: 'O', t: 1, x: 300, y: G, what: 'boa (coiled: kicked to roll)', fight: 2 }, { m: 'J', t: 5, x: 800, y: G, what: '' }];
+  const jumped: Step[] = [{ m: 'J', t: 1, x: 300, y: G, what: '' }, { m: 'J', t: 5, x: 1400, y: G, what: '' }];
+  const far: Step[] = [{ m: 'O', t: 1, x: 300, y: G, what: 'boa (coiled: kicked to roll)', fight: 2 }, { m: 'J', t: 7, x: 1800, y: G, what: '' }];
+  assert.equal(deadWalks(fought, 5, samples).filter((d) => d.t0 === 1).length, 0, 'the fight is not walking');
+  assert.equal(deadWalks(jumped, 5, samples).filter((d) => d.t0 === 1).length, 1, 'the same gap after a jump is');
+  assert.equal(deadWalks(far, 7, samples).filter((d) => d.t0 === 1).length, 1, 'a long walk on after a fight still is');
 });
 
 test('dead walk: time climbing a trunk or on a rope is not walking (1-4: its climbs read as 3.7 s dead walks)', () => {
@@ -107,6 +119,21 @@ test('similarity keeps the hop, the jump and the double jump apart (the lead, 20
   assert.ok(cosine(grams('JUJUJUJUJUJU'), grams('JJJJJJJJJJJJ')) < SIMILAR_MAX, 'jump and double against plain jumps: not alike');
   // (a move the check can't name still reads as a jump)
   assert.ok(cosine(grams('JQJQJQJQ'), grams('JJJJJJJJ')) > 0.99);
+});
+
+test('similarity reads each move with its way, up, down or flat (the lead\'s ruling (a), 2026-11-04: a snap twig dropped onto and a limb climbed up to are both B)', () => {
+  const s = 'BJBJBJBJBJBJ';
+  // (each way: the same moves the same way read alike; the same letters going down against going up do not)
+  assert.ok(cosine(grams(s, 3, 'dddddddddddd'), grams(s, 3, 'dddddddddddd')) > 0.99, 'the same moves the same way: alike');
+  assert.ok(cosine(grams(s, 3, 'dddddddddddd'), grams(s, 3, 'uuuuuuuuuuuu')) < SIMILAR_MAX, 'down against up: not alike');
+  assert.ok(cosine(grams(s, 3, 'dfdfdfdfdfdf'), grams(s, 3, 'dfdfdfdfdfdf')) > 0.99);
+  assert.ok(cosine(grams(s, 3, 'dfdfdfdfdfdf'), grams(s, 3, 'ufufufufufuf')) < SIMILAR_MAX);
+  // (no ways, or ways of the wrong length: the letters alone, as before)
+  assert.deepEqual(grams(s, 3, 'dd'), grams(s));
+  // (movesAlike reads the ways when a stage carries them)
+  const a = { str: s, quick: s, sdir: 'dddddddddddd', qdir: 'dddddddddddd' };
+  assert.ok(movesAlike(a, { ...a, sdir: 'uuuuuuuuuuuu', qdir: 'uuuuuuuuuuuu' }) < SIMILAR_MAX);
+  assert.ok(movesAlike(a, { ...a }) > 0.99);
 });
 
 // ---- pacing ----
@@ -486,4 +513,49 @@ test('miss cost: a vine snake (G) bites a grab of its liana, a heart: a setback,
   const c = missCost(b);
   assert.equal(c.length, 1);
   assert.equal(c[0].cost, 'setback');
+});
+
+// ---- the route takes only the ways the game allows (the lead's ruling, 2026-11-04: 1-2's route fell through its bough, past the trunk
+// at its end, and skipped 20 s of play) ----
+const branch = (x0: number, x1: number, y: number, id: number, more: Partial<Platform> = {}): Platform => ({ id, x: x0, y, width: x1 - x0, height: 24, type: 'solid', style: 'branch', ...more } as Platform);
+const onTop = (r: RealPlay, y: number) => Object.assign(r.stage as Stage & Record<string, any>, { spawnY: y });
+
+test('route: down onto ground right under his own, he walks off an open end, never through it, and never through a trunk at the end', () => {
+  // (a branch over the floor, a trunk at its right end: the only way down is off its left end)
+  const r = bare([floor(0, 2400, 1), branch(100, 1400, 380, 2), { ...floor(1400, 1490, 3, 0), height: 420, style: 'moss_stone' }], 2200);
+  onTop(r, 380);
+  const route = findRoute(r.stage as Stage);
+  const down = route.segs.filter((g) => g.y1 > g.y0 + 40);
+  assert.ok(down.length >= 1, 'it gets down');
+  for (const g of down) assert.ok(g.x0 <= 110, `down at x ${g.x0}: through the branch or past the trunk, not off its open left end`);
+});
+
+test('route: a jump down past ground in between lands on that ground first', () => {
+  // (a ledge high up, the floor beyond a gap, and a ledge in between under the way down: he comes down onto the middle one)
+  const r = bare([branch(100, 600, 280, 1), branch(640, 760, 430, 2), floor(700, 2400, 3)], 2200);
+  onTop(r, 280);
+  const route = findRoute(r.stage as Stage);
+  assert.ok(route.segs.some((g) => g.y1 === 430), `the middle ledge is on the way: ${route.segs.map((g) => `${g.kind} ${Math.round(g.x0)},${g.y0}->${Math.round(g.x1)},${g.y1}`).join(' | ')}`);
+});
+
+test('route: a fall deeper than a fall zone allows, inside the zone, is a respawn, never the way down', () => {
+  // (a branch over the floor, its right end inside a fall zone 150 px deep and 200 px over the floor: the way down is its left end)
+  const r = bare([floor(0, 2400, 1), branch(100, 800, 380, 2)], 2200);
+  onTop(r, 380);
+  (r.stage as Stage & Record<string, any>).spawnX = 700;
+  (r.stage as Stage & Record<string, any>).fallZones = [{ x0: 600, x1: 1000, depth: 150 }];
+  const down = findRoute(r.stage as Stage).segs.filter((g) => g.y1 > g.y0 + 40);
+  for (const g of down) assert.ok(g.x0 <= 110, `down at x ${g.x0}, inside the fall zone`);
+  // (and without the zone the right end, the nearer way to the shrine, is taken: the fixture shows the zone is what moved it)
+  delete (r.stage as Stage & Record<string, any>).fallZones;
+  assert.ok(findRoute(r.stage as Stage).segs.some((g) => g.y1 > g.y0 + 40 && g.x0 >= 790), 'without the zone, off the right end');
+});
+
+test('beats: rotten wood that goes before a run gets across it is a hop; rotten wood that holds a run is walked', () => {
+  const rot = (creak: number) => {
+    const r = bare([floor(100, 600, 1), { ...floor(600, 760, 2), height: 24, type: 'fragile', style: 'branch', creak } as Platform, floor(760, 2200, 3)], 2000);
+    return fromStage('fixture', 1, 'normal', r, r.stage as Stage).steps.filter((s) => /rotten wood/.test(s.what)).length;
+  };
+  assert.equal(rot(0.25), 1, 'a 160 px stretch that holds 0.25 s (0.56 s to run it) is a hop');
+  assert.equal(rot(1.0), 0, 'one that holds 1 s is walked');
 });

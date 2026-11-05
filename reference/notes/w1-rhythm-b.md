@@ -83,3 +83,26 @@ No stage-build method file exists (stage-fix.md points to a `stage-build.md` tha
 - The validator's grams() kept a hop, a jump and a double jump as one move, so every jumping stage read as alike to every other (old 1-7
   read 93-96% like the new 1-1). Now three moves (the lead's ruling): 18 fun-gate entries lower or gone, none rose; 1-7 vs 1-1 max 50%.
   Next (not done): label a confirmed double jump U in the move string.
+
+## Pickup point (6:30 PM ET, 2026-11-04): ACCEPTED by the lead; stopped for the day
+- 1-1 and 1-4 done on branch w1-rhythm-b (final head pushed); w1-rhythm assembles it. Answer only its merge questions.
+- Open for a later round (named, not done):
+  1. The canopy mid/near strips' cross-fade shows their 1 px tile overlaps as faint lines mid-fade (every canopy climb: 1-1, 1-4's top,
+     1-8): fade the whole layer as one; before/after on 1-4 and 1-8.
+  2. The validator labels a confirmed double jump J (only unconfirmed ones are U): label it U, measured on its own (touches every rule).
+  3. w1sunrise-far's corner orchids: repaint (the lead, Hugging Face); then 1-1's canopy far swap can be reconsidered.
+  4. A faint tile join on the scenery kapoks (the trunk picture's segment cap).
+  5. w1-rhythm's rhythmRollDistance hook: plug 1-1 and 1-4 in (assembly).
+  6. The own-petals flag (w1-rhythm): wire 1-1/1-4 once the builder applies the petal rules itself.
+- Tomorrow: engine-era designer (the lead's brief).
+
+## 1-5 fun-gate pass and ruler (a), 2026-11-04 evening ET
+- Ruler (a), the lead's ruling: move 3-grams read each move with its way (u/d/f, core.ts moveDirs, grams' third argument;
+  evaluate.ts strGrams/quickGrams in movesAlike, the old-rule alike and "nothing new"; world1.ts overview). Fixture in validate.test.ts.
+  Gone with it: 1-2 like-before (N 2, E 1), 1-6 like-earlier (5, 5), 1-7 like-earlier (4, 4), 1-9 E like-earlier (1). None rose.
+- 1-5: kick teach moved up after the twig teach (Easy keeps it); Dot's boa line 260 px before the teach ledge (she holds lines
+  while an animal is within 300 px); two root knots and two of Meeca's marks lead in (the boa's 2 s fight read as walking);
+  coiled boas on the way down (boasOn); rest moved before the climax; teach catches end against a stone face (dips test).
+- Open: 1-5 Normal repeat on 4 layouts (known 1), "Jwf Bhf Jqd Jw" = a node opening or rest onto a short twig and quickly off it.
+  w1-rhythm's head alone shows 3 (from the shared trace change). Rerolls only move it; it needs a new section type. Told the lead.
+- Stills: reference/qa-reports/w1-rhythm-b/15-boa-teach/.
