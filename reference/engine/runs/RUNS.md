@@ -613,7 +613,7 @@ What exists:
 If the designer defines them in units these tools measure (for example tempo as beats a minute on era's route, and hills as the share
 of route jumps rising over 20 px), I can run them on main's old 1-1, 1-2, 1-3 and 1-5 in a few minutes.
 
-## Addendum 4, R-165.43, 1:37-1:45 PM ET: old 1-2 measured the way old 1-1 was (the lead, for the designer)
+## Addendum 4, R-165.43, finished 1:33 PM ET (this machine's clock): old 1-2 measured the way old 1-1 was (the lead, for the designer)
 
 **Built from origin/main** (`68b31e665`, the main worktree; not the lead branch), 16 layouts x 2 settings. The tools and commands are
 the same ones that gave old 1-1's numbers today:
@@ -647,4 +647,4 @@ Each value is the median (min-max) over 16 layouts.
 - **Old 1-2's Easy is its Normal** on every measure here, except the "something new" mean (vary.py: 506 px Easy, 513 Normal).
 - The views are the world px the real camera shows at clipcheck's phone sizes inside the insets (`out/views.txt`).
 - Other old-1-2 numbers already measured today: per-roll hop, gap and rise ranges (Addendum 3), era look-alike (old 1-1 / 1-2 share a
-  20 s stretch on 16/16 rolls, `out/era/era-main-W1.json`), and splits and two-road share (`out/old12/layout.txt`).
+  20 s stretch on 16/16 rolls, `out/era/era-main-W1.json`), and splits and two-road share (`out/old12/layout.txt`: 16 (13-25) splits at 120 px, two-road 0.787 (0.425-0.828), both settings).
