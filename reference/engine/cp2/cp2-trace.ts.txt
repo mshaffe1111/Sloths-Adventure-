@@ -11,7 +11,12 @@ import { setDifficulty } from './src/game/difficulty.ts';
 if (process.env.MODE === 'easy') setDifficulty('easy'); // the engine then plays Easy's forgiveness (engine.ts:842, FORGIVE.easy)
 console.log('setting:', process.env.MODE === 'easy' ? 'EASY' : 'NORMAL');
 type Part = [string, number, number, number];
-const IDEAS: Record<string, Part[]> = {
+const IDEAS: Record<string, Part[]> = process.env.SET === 'easyfix' ? {
+  // the designer's Easy rule (ENGINE-SPEC, 11-05 ~12:30 AM): no rise over +40 onto a landing under 220 px, and a landing after a +40 rise
+  // at least 110 px. Bough stair: the same 250 px of height in seven smaller steps. Stump hop: step 1 is +40 onto a 110 px stone.
+  'Bough stair (Easy)': [['stone', 120, 0, 90], ['branch', 120, 40, 80], ['branch', 150, 40, 70], ['branch', 130, 35, 90], ['branch', 160, 35, 80], ['branch', 120, 35, 90], ['branch', 140, 35, 80], ['branch', 430, 30, 0]],
+  'Stump hop (Easy)': [['bank', 150, 0, 90], ['stone', 110, 40, 80], ['stone', 120, 40, 90], ['stone', 233, -70, 90], ['bank', 220, -20, 0]],
+} : {
   'Bough stair': [['stone', 120, 0, 90], ['branch', 110, 70, 80], ['branch', 220, 60, 70], ['branch', 160, 70, 90], ['branch', 430, 50, 0]],
   'Rotten-branch drop': [['branch', 220, 0, 60], ['creaking limb', 225, -40, 120], ['catch branch', 110, -150, 80], ['bank', 150, -120, 0]],
   'Stump hop': [['bank', 150, 0, 90], ['stone', 60, 50, 80], ['stone', 120, 40, 90], ['stone', 233, -70, 90], ['bank', 220, -20, 0]],

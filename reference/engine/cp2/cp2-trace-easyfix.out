@@ -1,0 +1,14 @@
+setting: EASY
+== Bough stair (Easy)
+   stone -> branch (rise +40, gap 90 px): full/run-up: 474 ms | full/from its start: 474 ms | flick/run-up: 316 ms | flick/from its start: 316 ms
+   branch -> branch (rise +40, gap 80 px): full/run-up: 509 ms | full/from its start: 509 ms | flick/run-up: 351 ms | flick/from its start: 351 ms
+   branch -> branch (rise +35, gap 70 px): full/run-up: 544 ms | full/from its start: 544 ms | flick/run-up: 386 ms | flick/from its start: 386 ms
+   branch -> branch (rise +35, gap 90 px): full/run-up: 456 ms | full/from its start: 474 ms | flick/run-up: 298 ms | flick/from its start: 316 ms
+   branch -> branch (rise +35, gap 80 px): full/run-up: 509 ms | full/from its start: 491 ms | flick/run-up: 333 ms | flick/from its start: 316 ms
+   branch -> branch (rise +35, gap 90 px): full/run-up: 474 ms | full/from its start: 474 ms | flick/run-up: 298 ms | flick/from its start: 316 ms
+   branch -> branch (rise +30, gap 80 px): full/run-up: 509 ms | full/from its start: 509 ms | flick/run-up: 351 ms | flick/from its start: 351 ms
+== Stump hop (Easy)
+   bank -> stone (rise +40, gap 90 px): full/run-up: 456 ms | full/from its start: 456 ms | flick/run-up: 298 ms | flick/from its start: 298 ms
+   stone -> stone (rise +40, gap 80 px): full/run-up: 509 ms | full/from its start: 491 ms | flick/run-up: 351 ms | flick/from its start: 333 ms
+   stone -> stone (rise -70, gap 90 px): full/run-up: 561 ms | full/from its start: 526 ms | flick/run-up: 474 ms | flick/from its start: 474 ms
+   stone -> bank (rise -20, gap 90 px): full/run-up: 526 ms | full/from its start: 544 ms | flick/run-up: 439 ms | flick/from its start: 404 ms
