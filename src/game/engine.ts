@@ -5377,9 +5377,17 @@ export class GameEngine {
   private riverLogsPainted(worldId: number): boolean {
     return this.paintedRivers(worldId) && (!!this.currentStage.rivers?.length || this.platforms.some((p) => p.lily)) && riverArtReady();
   }
-  /** World 2's painted water, logs and lily pads: World 2, and the control test's river stretches (built on World 1's ground) */
+  /** World 2's painted water, logs and lily pads: World 2, the control test's river stretches (built on World 1's ground), and any stage
+   *  that lays lily pads (the mixer's 1-5): with no painted pad, terrain.ts drew each as a code-drawn floating slab or earth island, three
+   *  gradients a pad a frame (drawcheck) and Matt's "grey slab floating over the pond" (his stills 01, 07, 09) */
   private paintedRivers(worldId: number): boolean {
-    return worldId === 2 || !!this.proto?.mix;
+    return worldId === 2 || !!this.proto?.mix || this.laysLilies();
+  }
+  private lilyOf: { from: Platform[]; any: boolean } | null = null;
+  /** does this stage lay lily pads (kept between frames, found again when the platforms change) */
+  private laysLilies(): boolean {
+    if (this.lilyOf?.from !== this.platforms) this.lilyOf = { from: this.platforms, any: this.platforms.some((p) => p.lily) };
+    return this.lilyOf.any;
   }
   private noLogs: { from: Platform[]; out: Platform[] } | null = null;
   /** the platforms the drawn layer paints, less the drifting logs and lily pads when the painted ones draw instead (kept between frames) */
