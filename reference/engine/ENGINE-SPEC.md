@@ -877,6 +877,13 @@ quietly, so this goes to Matt as one question in the CP3 report, with the design
 - (a) the double breather, about 0.52 and about 5:20;
 - (b) keep 0.61, within the old 1-1's own range, with far more rests. **This is the designer's pick.**
 
+
+**[designer, ~5:57 AM ET] The two-road share's worst roll (38.5%), traced:** ruling B's Normal rest pads added about 4,000 px of
+single-road ground a stage. The catch branches change it by 0.003; the fork-bank pad by about 1%. **The fix keeps B:** on Normal, a
+canopy's own end piece is the rest (520-560 px flat, then a short step), so the rest sits under both roads. There is no separate pad
+after a canopied burst; the pad after every second plain burst stays. Pass lines: two-road share at least 40% on every roll; Normal's
+longest run at most 29 s on median and worst.
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
