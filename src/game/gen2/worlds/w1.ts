@@ -215,6 +215,8 @@ const gHighLeaps = (n: number, dbl: boolean): G => (k, after) => {
     sockets.push(petals(`p-${key}`, key, [0.3, 0.7], 2));
     prev = key;
   }
+  // (Round 4 FR4: the floor road's own beat, low stumps under the boughs, 177 px+ head room, with petals)
+  [0.35, 0.65].forEach((at, j) => { const q = stump(`${k}lo${j}`, f.key, [at, at + 0.02], [34, 40], [154, 220]); pieces.push(q); sockets.push(petals(`p-${q.key}`, q.key, 0.5, 1)); });
   return { pieces, sockets, last: f.key };
 };
 /** bounceWall (protoStage.ts:1248 on main): a mushroom, a cliff 225-240 tall and 330-400 long with a rock on it, a dip where he lands */
@@ -377,7 +379,7 @@ const lowBoughs = section({
 });
 const ledges = section({
   id: 'w1-ledges', floor: 'hop', name: 'ledges and walls', phases: ['sho', 'ten'], difficulty: 4, needs: ['jump'],
-  versions: [{ id: 'ledges', groups: [gRest([150, 210]), gLedge(), gBusy(['log']), gLedge()] }, { id: 'walls', groups: [gRest([150, 210]), gLowBoughs(3, 130), gBounceWall(), gBusy(['dip'])] }],
+  versions: [{ id: 'ledges', groups: [gRest([150, 210]), gLedge(), gBusy(['log']), gLedge()] }, { id: 'walls', groups: [gRest([150, 210]), gLowBoughs(3, 150), gBounceWall(), gBusy(['dip'])] }], // (Round 4 FR2: boughs 150 up)
   feel: ['1-3'], not: NOT_13, rating: 4, // (Round 2 (b): not 1-1 for now; its 'ledges' version may return with version-level feel)
   source: "w1Sections '1-3' 'ledge'/'ledges'/'walls' (on main 389, 394, 396): snakeLedge, busy(1), snakeLedge; snakeBranches, bounceWall, snakeWalk, bounceWall; snakes left out; feel '1-1' proposed",
 });
@@ -420,8 +422,8 @@ const times = (n: number, g: G): G => (k, after) => {
   return out;
 };
 /** a low log off the route under a canopy piece, its petals at marching height (the ruling: petals low on low logs, never a petal road in
- *  the boughs); its top 100 px under the bough's, head room 76 px under the bough */
-const lowLog = (key: string, over: string, at: R2): W1Piece => limb(key, { kind: 'over', on: over, at, dy: [96, 104] }, [180, 220], 'log', false);
+ *  the boughs); its top 136-144 px under the bough's: 110 px+ head room (Round 4 FR2, FR5: the mid road) */
+const lowLog = (key: string, over: string, at: R2): W1Piece => limb(key, { kind: 'over', on: over, at, dy: [136, 144] }, [180, 220], 'log', false);
 /** the exit totem's socket on the end log (the ruling: an `objective` socket; main's stageGenerator.ts:2136 gen.item('exit_totem')) */
 const totem = (on: string): Socket => ({ id: 'exit-totem', role: 'objective', on, t: 0.85, allow: ['exit_totem'] });
 /** 1-1's clue, the bootprint, on the end log's walking line 200-260 px WEST of the totem, so he walks over it before the door (the lead,
@@ -451,17 +453,19 @@ const gZigzag = (tiers: 2 | 3, log: boolean): G => (k, after) => {
   return { pieces, sockets: tops.map((p) => petals(`p-${p.key}`, p.key, 0.5, 1)), last };
 };
 /** #3 / #14: a road of thin logs on posts over the floor, 100-120 px up (head room 76-96 >= Pokey's 48 + 20) */
-const gLogRoad = (n: number, ends: boolean, hops = false, withFind = false): G => (k, after) => {
+const gLogRoad = (n: number, ends: boolean, hops = false, withFind = false, postH: R2 = [76, 86], rockW: R2 = [120, 154]): G => (k, after) => {
   const pieces: W1Piece[] = []; const sockets: Socket[] = [];
   let prev = after;
   if (ends) { const a = floor(`${k}a`, [200, 240], startOr(after)); const st = bankW(`${k}st`, a.key, [-45, -35], [170, 200]); pieces.push(a, st); prev = st.key; }
-  const f: W1Piece = ends ? bankW(`${k}f`, prev!, [35, 45], [n * 300 + 100, n * 320 + 120]) : floor(`${k}f`, [n * 300 + 100, n * 320 + 120], startOr(prev));
+  // (the high road's logs 110 px over the floor road (Round 4 FR2) are narrower, so they sit closer: a gap a single crosses, 130 px or so)
+  const tall = postH[0] >= 100, FW: R2 = tall ? [n * 280 + 100, n * 285 + 110] : [n * 300 + 100, n * 320 + 120];
+  const f: W1Piece = ends ? bankW(`${k}f`, prev!, [35, 45], FW) : floor(`${k}f`, FW, startOr(prev));
   pieces.push(f);
   seq(n, (j) => {
-    const p = post(`${k}p${j}`, f.key, [(j + 0.5) / n - 0.02, (j + 0.5) / n], j === n - 1 && n > 3 ? [92, 96] : [76, 86]);
-    const l = logOn(`${k}l${j}`, p.key, [180, 240], !hops);
+    const p = post(`${k}p${j}`, f.key, [(j + 0.5) / n - 0.02, (j + 0.5) / n], j === n - 1 && n > 3 && postH[0] < 100 ? [92, 96] : postH);
+    const l = logOn(`${k}l${j}`, p.key, postH[0] >= 100 ? [140, 160] : [180, 240], !hops);
     pieces.push(p, l); sockets.push(petals(`p-${l.key}`, l.key, [0.3, 0.7], 2, 100));
-    if (hops && j < n - 1) { const s = stump(`${k}h${j}`, f.key, [(j + 1) / n - 0.02, (j + 1) / n], [34, 46], [120, 154]); pieces.push(s); sockets.push(petals(`p-${s.key}`, s.key, 0.5, 1)); }
+    if (hops && j < n - 1) { const fw = (FW[0] + FW[1]) / 2, mid = (((j + 1) / n) * (fw - 50) + 25 - (rockW[0] + rockW[1]) / 4) / (fw - (rockW[0] + rockW[1]) / 2); const s = stump(`${k}h${j}`, f.key, [mid - 0.005, mid + 0.005], [34, 46], rockW); pieces.push(s); sockets.push(petals(`p-${s.key}`, s.key, 0.5, 1)); }
   });
   if (withFind) sockets.push(find(`${k}find`, `${k}l${n - 1}`));
   let last = f.key;
@@ -488,7 +492,7 @@ const stoneZigzag = section({
 /** #3 */
 const logRoad = section({
   id: 'w1-log-road', floor: 'hop', name: 'raised log road', phases: ['sho'], difficulty: 3, needs: ['jump'],
-  versions: [4, 5, 6].map((n) => ({ id: `logs${n}`, groups: [gRest([140, 180]), gLogRoad(n, true)] })),
+  versions: [4, 5, 6].map((n) => ({ id: `logs${n}`, groups: [gRest([140, 180]), gLogRoad(n, true, true, false, [110, 114], [40, 50])] })), // (Round 4 FR1-FR4: logs 110 px over the floor road, low rocks between them)
   feel: ['1-1', '1-2', '1-5'], not: NOT_11, rating: 3,
   source: 'W1-NEW-SECTIONS #3: thin logs on stumps 100-120 px up, a bank step each end (the 12:51 and 3:40 rulings, Q1); the floor road',
 });
@@ -553,17 +557,18 @@ const doubleTeach = section({
 });
 /** #9 */
 const boughStepup = section({
-  id: 'w1-bough-stepup', name: 'into the boughs', phases: ['sho'], difficulty: 4, needs: ['jump'], ports: ['ground', 'ledge'], exitDy: -410, window: BOUGH_WINDOW,
+  id: 'w1-bough-stepup', name: 'into the boughs', phases: ['sho'], difficulty: 4, needs: ['jump'], ports: ['ground', 'ledge'], exitDy: -449, window: BOUGH_WINDOW,
   versions: [5].flatMap((n) => [false, true].map((log) => ({ id: `${n}${log ? '-log' : ''}`, groups: [gRest([160, 200]), gStile([40, 76, 40]), (k: string, after: string | null) => {
     const f = floor(`${k}f`, [n * 260 + 500, n * 280 + 560], startOr(after));
-    const pieces: W1Piece[] = [f, bough(`${k}b0`, f.key, [0.25, 0.3], [-100, -90], [200, 240], true)];
+    const pieces: W1Piece[] = [f, bough(`${k}b0`, f.key, [0.25, 0.3], [-140, -136], [200, 240], true), stump(`${k}lo0`, f.key, [0.56, 0.58], [34, 40], LAND), stump(`${k}lo1`, f.key, [0.8, 0.82], [34, 40], LAND)];
     let prev = `${k}b0`;
     seq(n - 1, (j) => {
       const key = `${k}b${j + 1}`;
-      if (log && j === 0) { pieces.push(post(`${k}P`, f.key, [0.5, 0.55], [150, 165]), logOn(key, `${k}P`)); } else pieces.push(limb(key, { kind: 'jump', after: prev, dy: [-90, -70], share: [0.4, 0.5] }, [200, 240]));
+      // (the log version's second step a log that floats, laid as the boughs are: Round 4 FR2 head room over the floor road's stumps)
+      pieces.push(limb(key, { kind: 'jump', after: prev, dy: [-90, -70], share: [0.4, 0.5] }, [200, 240], log && j === 0 ? 'log' : 'branch'));
       prev = key;
     });
-    return { pieces, sockets: [petals(`${k}pf`, f.key, [0.6, 0.9], 2)], last: prev };
+    return { pieces, sockets: [petals(`p-${k}lo0`, `${k}lo0`, 0.5, 1), petals(`p-${k}lo1`, `${k}lo1`, 0.5, 1)], last: prev };
   }] }))),
   feel: ['1-1', '1-5'], not: NOT_11, rating: 4,
   source: 'W1-NEW-SECTIONS #9: low boughs on one plain W1 trunk (the planner lays it; not the kapok, no climb, no view) rising from the floor road; LATE only (window); "a ground stage that becomes a tree stage" (9:20 ruling)',
@@ -572,7 +577,9 @@ const boughStepup = section({
 const gRungs = (n: number, rise: R2, kind: 'jump' | 'double', share: R2, w: R2 = [200, 260]): G => (k) => {
   const pieces: W1Piece[] = [limb(`${k}r0`, { kind: 'start' }, [260, 320])];
   seq(n, (j) => pieces.push(limb(`${k}r${j + 1}`, { kind, after: `${k}r${j}`, dy: rise, share }, w)));
-  return { pieces, sockets: [dot(`${k}nomoss`, `${k}r0`, 0.7, 'hint.1-1.noMoss')], last: `${k}r${n}` };
+  // (Round 4 FR6 for the set piece: a mid road of low logs under the approach and the run-out only, never past the chain)
+  pieces.push(lowLog(`${k}lo0`, `${k}r0`, [0.2, 0.3]), lowLog(`${k}lo1`, `${k}r${n}`, [0.4, 0.5]));
+  return { pieces, sockets: [dot(`${k}nomoss`, `${k}r0`, 0.7, 'hint.1-1.noMoss'), petals(`${k}p0`, `${k}lo0`, [0.3, 0.7], 2), petals(`${k}p1`, `${k}lo1`, [0.3, 0.7], 2)], last: `${k}r${n}` };
 };
 /** #10 */
 const canopyRungs = section({
@@ -584,10 +591,17 @@ const canopyRungs = section({
   source: "W1-NEW-SECTIONS #10: the brief's double chain (1-1.md:21-22); catch boughs 60-120 under each gap are the engine's (floorRoll.catchDrop 90, the planner's); left or right leaning by the mirror",
 });
 /** #11 */
+/** a canopy rest's two roads (Round 4 FR5): the bough `a`, a level gap a hop crosses, the bough `b`; the MID road a low log 136-144 under
+ *  `a` with the petals, and a log step 66-74 under the gap's middle, so the mid road climbs back up to `b` (FR3, steps under 88) */
+const gRestRoads = (aw: R2, bw: R2, line?: string): G => (k) => {
+  const a = limb(`${k}a`, { kind: 'start' }, aw);
+  const b = limb(`${k}b`, { kind: 'jump', after: `${k}a`, dy: [-2, 2], share: [0.86, 0.9] }, bw);
+  const step = limb(`${k}st`, { kind: 'jump', after: `${k}a`, dy: [66, 74], share: [0.15, 0.2] }, [50, 60], 'log', false);
+  return { pieces: [a, b, step, lowLog(`${k}lo`, `${k}a`, [0.15, 0.25])], sockets: [petals(`${k}p`, `${k}lo`, [0.3, 0.7], 3, 140), ...(line ? [dot(`${k}high`, `${k}a`, 0.4, line)] : [])], last: `${k}b` };
+};
 const highWalk = section({
   id: 'w1-high-walk', name: 'high branch, petals low', phases: ['rest'], difficulty: 1, needs: ['walk'], ports: ['ledge', 'ledge'], window: BOUGH_WINDOW,
-  versions: [{ id: 'long', groups: [(k) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, [420, 460]), limb(`${k}b`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, [380, 440]), lowLog(`${k}lo`, `${k}a`, [0.3, 0.4])], sockets: [dot(`${k}high`, `${k}a`, 0.4, 'hint.1-1.high'), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 3, 140)], last: `${k}b` })] },
-    { id: 'step', groups: [(k) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, [360, 400]), limb(`${k}b`, { kind: 'walk', after: `${k}a`, dy: [-18, -12] }, [360, 420]), lowLog(`${k}lo`, `${k}a`, [0.3, 0.4])], sockets: [dot(`${k}high`, `${k}a`, 0.4, 'hint.1-1.high'), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 3, 140)], last: `${k}b` })] }],
+  versions: [{ id: 'long', groups: [gRestRoads([420, 460], [380, 440], 'hint.1-1.high')] }, { id: 'short', groups: [gRestRoads([340, 380], [340, 380], 'hint.1-1.high')] }],
   feel: ['1-1', '1-5'], not: NOT_11, rating: 1,
   source: 'W1-NEW-SECTIONS #11: a rest about 2x the beat (C2), a Dot spot; petals low on a low log under the branch (brief :26; the ruling 08c5a2944, trunks dropped)',
 });
@@ -668,7 +682,7 @@ const clearing = section({
 /** #19 */
 const boughBench = section({
   id: 'w1-bough-bench', name: 'high rest', phases: ['rest'], difficulty: 1, needs: ['walk'], ports: ['ledge', 'ledge'], window: BOUGH_WINDOW,
-  versions: ([[300, 340], [460, 520]] as R2[]).map((w, j) => ({ id: j ? 'long' : 'short', groups: [(k: string) => ({ pieces: [limb(`${k}a`, { kind: 'start' }, [260, 300]), limb(`${k}b`, { kind: 'walk', after: `${k}a`, dy: [0, 0] }, w), lowLog(`${k}lo`, `${k}b`, [0.3, 0.4])], sockets: [dot(`${k}high`, `${k}a`, 0.3, 'hint.1-1.high'), petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}b` })] })),
+  versions: ([[300, 340], [460, 520]] as R2[]).map((w, j) => ({ id: j ? 'long' : 'short', groups: [gRestRoads([300, 340], w, 'hint.1-1.high')] })),
   feel: ['1-1'], not: NOT_11, rating: 1,
   source: 'W1-NEW-SECTIONS #19: a long thick bough between two plain W1 trunks, after the moment (rulebook §4 rule 3); petals low on a low log under it (the ruling 08c5a2944)',
 });
@@ -688,9 +702,11 @@ const stumpTowers = section({
 const bounceDouble = section({
   id: 'w1-bounce-double', name: 'bounce, then fly', phases: ['ten'], difficulty: 6, needs: ['double'], uses: ['bounce', 'double'], ports: ['ground', 'ledge'], exitDy: -295,
   versions: ([[-290, -270], [-320, -300]] as R2[]).map((dy, j) => ({ id: j ? 'high' : 'low', groups: [gRest([200, 240]), gStile([40, 76, 100, 76, 40]), (k: string, after: string | null) => {
-    const f = floor(`${k}f`, [700, 780], startOr(after));
-    const L = limb(`${k}L`, { kind: 'over', on: f.key, at: [0.7, 0.75], dy }, [400, 480], 'log');
-    return { pieces: [f, ...perch(k, f.key, [0.2, 0.25]), L], sockets: [petals(`${k}pl`, L.key, [0.3, 0.7], 2)], last: L.key };
+    // (Round 4 FR1-FR4: the floor road runs on under the high log, its own beat low stumps with the petals)
+    const f = floor(`${k}f`, [1200, 1260], startOr(after));
+    const L = limb(`${k}L`, { kind: 'over', on: f.key, at: [0.42, 0.44], dy }, [400, 480], 'log');
+    const lo = [stump(`${k}lo0`, f.key, [0.5, 0.52], [34, 40], LAND), stump(`${k}lo1`, f.key, [0.78, 0.8], [34, 40], LAND)];
+    return { pieces: [f, ...perch(k, f.key, [0.12, 0.16]), L, ...lo], sockets: [...lo.map((q) => petals(`p-${q.key}`, q.key, 0.5, 1)), find(`${k}find`, L.key)], last: L.key };
   }] })),
   feel: ['1-1'], not: NOT_11, rating: 6,
   source: 'W1-NEW-SECTIONS #21: a perched mushroom\'s bounce, then a double onto a high log road (LEDGER-11-02:33); a stump stile before it for the 10 s; the high log floats (platforms may)',
@@ -702,8 +718,8 @@ const canopyWeave = section({
     const pieces: W1Piece[] = [limb(`${k}a`, { kind: 'start' }, [260, 320])];
     let hi = `${k}a`, mid = `${k}a`;
     seq(n, (j) => {
-      pieces.push(limb(`${k}h${j}`, { kind: 'double', after: hi, dy: j ? [-6, 6] : [-140, -136], share: j ? [0.55, 0.65] : [0.3, 0.45] }, [200, 240]));
-      pieces.push(limb(`${k}m${j}`, { kind: 'jump', after: mid, dy: j ? [-10, 10] : [25, 35], share: [0.45, 0.55] }, [200, 240], 'branch', false));
+      pieces.push(limb(`${k}h${j}`, { kind: 'double', after: hi, dy: j ? [-3, 3] : [-140, -136], share: j ? [0.55, 0.65] : [0.3, 0.45] }, [200, 240]));
+      pieces.push(limb(`${k}m${j}`, { kind: 'jump', after: mid, dy: j ? [-3, 3] : [25, 35], share: [0.45, 0.55] }, [200, 240], 'branch', false));
       hi = `${k}h${j}`; mid = `${k}m${j}`;
     });
     pieces.push(limb(`${k}o`, { kind: 'jump', after: hi, dy: [136, 140], share: [0.3, 0.4] }, [260, 320]));
@@ -801,8 +817,8 @@ const boughLog = section({
     seq(n - 1, (j) => pieces.push(limb(`${k}b${j + 1}`, { kind: 'double', after: `${k}b${j}`, dy: [-140, -136], share: [0.3, 0.45] }, [520, 600])));
     const top = `${k}b${n - 1}`;
     pieces.push(span ? limb(`${k}S`, { kind: 'walk', after: top, dy: [0, 0] }, [380, 440], 'log') : limb(`${k}S`, { kind: 'double', after: top, dy: [-10, 0], share: [0.55, 0.65] }, [200, 240]));
-    pieces.push(limb(`${k}o`, { kind: 'walk', after: `${k}S`, dy: [0, 0] }, [200, 240]));
-    return { pieces, sockets: [], last: `${k}o` };
+    pieces.push(limb(`${k}o`, { kind: 'walk', after: `${k}S`, dy: [0, 0] }, [200, 240]), lowLog(`${k}lo`, `${k}b0`, [0.2, 0.3]));
+    return { pieces, sockets: [petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2)], last: `${k}o` };
   }] }))),
   feel: ['1-1'], not: NOT_11, rating: 5,
   source: 'W1-NEW-SECTIONS #29: boughs stepping up two plain W1 trunks, then a thick log held at both ends by the top boughs (LABELS §1; Round 3: no rope)',
