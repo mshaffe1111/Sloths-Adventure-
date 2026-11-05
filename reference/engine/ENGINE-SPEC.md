@@ -1747,7 +1747,7 @@ A number that no source settles goes to TRIAGE.md as a run (C) or research (R) i
 |---|---|---|
 | C1 | research (D:48, D:180-187; R4:28) | Gap share is **not** the difficulty dial. The dial's gap-share row is withdrawn. Difficulty is the landing window plus what sits on the avoided lines. Its numbers are OPEN in TRIAGE (C run on bands.ts) |
 | C2 | research (D:188-193; R3 F13, W1) | No fixed 1.0-1.2 s pad. A rest is relative: about 2× the local median beat. Easy's "2-second rest" is withdrawn by the same rule |
-| C3 | research and the shipped rule doc (LEG E151; SR §0b.4) | Snap twig about 0.15 s; creak, Normal 0.67 s (shipped commonest 0.7 s); creak, Easy 1.2 s. The dial's crumble slopes and the 1.0 s Easy line are withdrawn |
+| C3 | research and the shipped rule doc (LEG E151; SR §0b.4) | Snap twig about 0.15 s; creak, Normal 0.67 s (shipped commonest 0.7 s); creak, Easy 1.2 s. The dial's crumble slopes and the 1.0 s Easy line are withdrawn | **[revised: pacing P7/P8]**
 | C4 | shipped code (EASY_BS = 1.35) | Easy landing = Normal × 1.35 (DERIVED). The 260→150 and 220→150 px lines are withdrawn |
 | C5 | research (D:194-195; LEG E132) | Easy is one tier softer, never "costs nothing" after the first teach: a slip on Easy costs a fall to a catch, never a life |
 | C6 | both, split by unit | A **template** (a fixed section layout) appears at most twice a stage (SR §0c.2). An **idea** may recur, as in the old 1-1, under the idea-share cap (≤ 40%, never twice in a row) |
@@ -1840,10 +1840,10 @@ are named at the end.
 | 1385, 1417 (#133, #144) | Each world's pass decides its own pieces and its fingerprint (beat mix, camera directions, mechanic pairs, piece set), and is checked against every earlier world | SR:93-99 |
 | 1550 (#151) | Hazards return as the twist "without retraining", paired with the later world's own mechanic and in its art (ruling 3) | GV:105; SR:93-96 |
 | 219 (#16) | Before an enemy trigger: a flat runway of ≥ 1.0 s (about 285 px). The boa's ledge is ≥ 3.5 body widths from the entry | LEG:572, :581 (E108, E117) |
-| 640 (#65) | Single-jump gap share Normal 0.35-0.75, Easy 0.25-0.50 (calibrated on what shipped); doubles Normal 0.50-0.78, Easy 0.40-0.60; never above 0.82 Normal / 0.65 Easy. Gap share shapes the stride, not the difficulty (C1) | D:177, D:48; LEG:567 (E103); GP:75-76 |
+| 640 (#65) | Single-jump gap share Normal 0.35-0.75, Easy 0.25-0.50 (calibrated on what shipped); doubles Normal 0.50-0.78, Easy 0.40-0.60; never above 0.82 Normal / 0.65 Easy. Gap share shapes the stride, not the difficulty (C1) | D:177, D:48; LEG:567 (E103); GP:75-76 | **[revised: pacing P7/P8]**
 | 642, 468 (#67, #47) | Landing pads 3.5 body widths (about 154 px, Normal climax) to 7.0 (about 308 px, Easy intro). Normal's 110 px end is withdrawn. Easy = Normal × 1.35 stays as the code's rule (C4) inside this range | LEG:569 (E105) |
 | 644 (#69) | E[lives], first run: Normal ≤ 1.0 in World 1, rising about 0.5 a world; Easy ≤ 0.3. The bots are calibrated on touch recordings before any goal rests on them | R3:42-44; D:200; R4:559-562 |
-| 646, 228 (#71, #20) | Creak: Easy 1.2 s, Normal 0.67 s; snap twig about 0.15 s (C3) | LEG:615 (E151); SR:51-52 |
+| 646, 228 (#71, #20) | Creak: Easy 1.2 s, Normal 0.67 s; snap twig about 0.15 s (C3) | LEG:615 (E151); SR:51-52 | **[revised: pacing P7/P8]**
 | 300, 522 (#26, #54) | Checkpoints sit on the rests before parts 3 and 4, and respawn is within about 2 s of the hard part (C10, C11, C12) | SR:48, :64-65; GV:165 |
 | 360, 462, 828 (#36, #45, #90) | Normal goals 75-87.5% of what's reachable (13 marks: 10 or 11). The Easy goal is set by the first-timer kid bot (a C run) | LEG:582, :584; SR:115 |
 | 1177 (#112) | Choice in the ground half: an alternate entrance or an optional vertical branch for the second collectible tier | GV:173 |
