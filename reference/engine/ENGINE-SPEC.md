@@ -13,7 +13,7 @@ references are the old 1-1 (live on `main`) and today's 1-3. The ceiling is **8%
 | | Signed |
 |---|---|
 | Level designer | checkpoint list: signed 2026-11-05 12:0x AM ET (DRAFT until the planner signs) |
-| Planner | — |
+| Planner | checkpoint list: signed 2026-11-05 12:02 AM ET, with amendments P1-P4 below (each is a test or a scope line, none changes the design) |
 
 ---
 
@@ -111,3 +111,21 @@ generated:
 - Mix rule: CP3.
 - Rhythm: the player's rhythm, not the song (Matt, 11-04; DESIGNER.md §13.3, PLAN.md). Every node draws its rhythm pattern
   (regular, swing, broken, wait-and-go) the same way it draws pieces.
+
+---
+
+## Planner's amendments to the checkpoint list (signed with these; the designer may reject any one by a run)
+
+- **P1, CP1 reads the engine's own Easy.** The inspector builds a different Easy from the game's: 0-20% of platforms identical on
+  1-1..1-5 (PLAN.md run E6, `tools/inspect/stages.ts:64,86` vs `stageGenerator.ts:2857`). CP1's script builds every stage the way the
+  engine does (`buildProtoStage(..., easy)` / `generateStage(cfg, setting)`), never through the inspector. The inspector fix itself
+  (PLAN.md M0, about 1 hour) lands before CP3 judges anything on Easy.
+- **P2, CP2's "traces clean" covers only what the tracer can trace.** The tracer knows hop, jump and double onto bank, branch, stump
+  and crumble (`beatTrace.ts:48-50`). Vines, ropes, lily pads and logs that move are proven in the real engine (`realPlay.ts`), the way
+  PLAN.md runs E11 and E12 did, not by the tracer. CP2 lists for each piece which proof it carries.
+- **P3, R-164.1's countermeasure is a CP3 and CP4 pass line.** Matt lost lives dropping onto a ledge he was meant to reach (fall
+  zones, `w1Rhythm.ts:645, :689`). Test: for every span that costs a life, the first-timer's drop through it never lands on a
+  standable ledge below. Any such drop fails the stage.
+- **P4, one model of a jump.** The mixer asks the tracer itself whether a jump is reachable. It never uses its own copy, which is
+  what cost 94% of 1-2's rolls (PLAN.md E1/E9: 932 -> 41 rejections once one predicate was shared). CP3's pass line adds: "can't
+  reach" rejections = 0 across 16 rolls.
