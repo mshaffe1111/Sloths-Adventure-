@@ -70,6 +70,10 @@ export interface NodeSpec {
   /** refuse a branch up over the end of the ledge he jumps from (he'd stand under it, his head through it; the level check reads it as
    *  no way up). Off by default, so a builder's fixed steps keep tracing as they did (w1Rise.ts); w1Rhythm.ts fitSteps turns it on */
   noOverhang?: boolean;
+  /** px more inside the reach for a gap whose landing is a faced piece (a bank or a stump: 50 px or more of wall under its lip): a short
+   *  flick that lands a little short there hits the face and drops into the pit, where a branch's thin lip would still have taken him
+   *  (0% for the clumsy thumb at 1-2's stump-to-bank drop, x 26112 on layout 1, 2026-11-04). Off by default; w1Rhythm.ts fitSteps sets it */
+  faceMargin?: number;
 }
 
 /** a ledge the node needs, left to right (an apron, or the surface under one landing) */
@@ -418,7 +422,8 @@ export function traceNode(spec: NodeSpec): Trace {
     if (lcReach < 0) throw new Error(`step ${i + 1}: the level check's ${st.move} can't reach ${st.dy} px up (levelCheck.ts reachJump)`);
     // (and FT_MARGIN inside it: the widest gap the check allows is one the first-timer's shortest flick misses every time, 0% at three
     // 115 px drops on 1-2, the validator's clumsy thumb and the fixed first-timer bot, 2026-11-04)
-    if (!wallUp) near = Math.min(near, Math.floor(edge + lcReach * LC_MARGIN - TAKEOFF_SLACK - 2 - FT_MARGIN));
+    const faced = !wallUp && (st.surface === 'stump' || st.surface === 'bank') ? spec.faceMargin ?? 0 : 0;
+    if (!wallUp) near = Math.min(near, Math.floor(edge + lcReach * LC_MARGIN - TAKEOFF_SLACK - 2 - FT_MARGIN - faced));
     else if (near - edge > lcReach * LC_MARGIN - TAKEOFF_SLACK) throw new Error(`step ${i + 1}: the ${st.surface}'s face is ${near - edge} px out, past the level check's reach (${Math.round(lcReach * LC_MARGIN - TAKEOFF_SLACK)})`);
     const ny = y - st.dy;
     for (const tr of toTry) {

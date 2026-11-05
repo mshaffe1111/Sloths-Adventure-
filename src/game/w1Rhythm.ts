@@ -195,8 +195,8 @@ export function fitSteps(spec: Omit<NodeSpec, 'steps'>, pal: Palette, R: Rng, tr
     if (steps.length !== ms.length) continue;
     if (pal.end !== undefined && Math.abs(y - pal.end) > 30) continue;
     try {
-      const tr = traceNode({ ...spec, steps, noOverhang: true });
-      const es = easyNode({ ...spec, steps, noOverhang: true });
+      const tr = traceNode({ ...spec, steps, noOverhang: true, faceMargin: FACE_MARGIN });
+      const es = easyNode({ ...spec, steps, noOverhang: true, faceMargin: FACE_MARGIN });
       const easy = traceNode(es);
       if (checkTrace(tr, steps).length || checkTrace(easy, es.steps, true).length) continue;
       return { steps, tr, easy };
@@ -249,6 +249,8 @@ function clearAbove(safe: Trace['safe'], x: number, floor: number, range: number
 }
 
 /** a snap twig holds this long past his run on it on the beat (s): Normal, Easy */
+/** px more inside the reach for a gap down onto a bank or stump (beatTrace.ts NodeSpec.faceMargin) */
+export const FACE_MARGIN = 30;
 export const SNAP_SPARE = 0.35;
 export const SNAP_EASY = 0.75;
 
@@ -416,7 +418,8 @@ function vineChain(lay: Lay, edge: number, y: number, n: number, soft: boolean, 
   const R = lay.R;
   for (let tries = 0; tries < 16; tries++) {
     const easy = soft || tries > 8;
-    const d0 = R.r(170, 200);
+    // (a short flick at a run carries 120-150 px: the clumsy thumb grabbed a liana 183 px out 60% of the time, 1-2's chasm, 2026-11-04)
+    const d0 = R.r(140, 165);
     const xs = [edge + d0];
     for (let k = 1; k < n; k++) xs.push(xs[k - 1] + (easy ? R.r(300, 330) : R.r(315, 350)));
     const farX = Math.round(xs[n - 1] + R.r(200, 240));
