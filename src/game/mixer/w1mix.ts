@@ -186,7 +186,23 @@ function clearPiece(L: Lay, ps: Platform[]): Platform | undefined {
   const road = ps.filter((p) => !(p as { bough?: boolean }).bough && !(p as { perch?: boolean }).perch && !(p as { crossing?: boolean }).crossing);
   const mid = road.length >> 1;
   const order = road.map((p, i) => [Math.abs(i - mid), p] as const).sort((a, b) => a[0] - b[0]).map(([, p]) => p);
-  return order.find((p) => p.type !== 'bouncy' && !L.P.some((q) => q !== p && q.x < p.x + p.width / 2 + 40 && q.x + q.width > p.x + p.width / 2 - 40 && q.y < p.y && p.y - q.y < 110));
+  const clear = (p: Platform) => p.type !== 'bouncy' && !L.P.some((q) => q !== p && q.x < p.x + p.width / 2 + 40 && q.x + q.width > p.x + p.width / 2 - 40 && q.y < p.y && p.y - q.y < 110);
+  // (where both roads meet: no bough over it at any height, so a player on the canopy and one on the floor both pass it. Under a
+  // canopy a mark on the floor is one road's, and the bots on the boughs missed 3-4 of the 9 main-way marks, so a first timer met the
+  // sealed door with Normal's one mark of slack gone (layout 3: 7 of 10))
+  // (no bough within 250 px either side, at any height: a jump between two boughs flies over the floor between them. Letting boughs
+  // behind it in (a canopy's end) was tried: the adult bot's marks fell from 7-8 of 10 to 5-7)
+  const open = (p: Platform) => !L.P.some((q) => (q as { bough?: boolean }).bough && q.x < p.x + p.width / 2 + 250 && q.x + q.width > p.x + p.width / 2 - 250 && q.y < p.y);
+  // (and one he cannot jump over: the gap before it, the piece and the gap after it together 380 px or more, past a double jump's
+  // reach at a run, so whoever goes this way lands on it. A short piece between short gaps is jumped over, mark and all: layout 1's
+  // adult bot passed 4 of its 9)
+  const span = (p: Platform) => {
+    const solid = L.P.filter((q) => q !== p && q.type !== 'bouncy' && Math.abs(q.y - p.y) < 160);
+    const before = Math.max(...solid.filter((q) => q.x + q.width <= p.x + 10).map((q) => q.x + q.width), -1e9);
+    const after = Math.min(...solid.filter((q) => q.x >= p.x + p.width - 10).map((q) => q.x), 1e9);
+    return after - before;
+  };
+  return order.find((p) => clear(p) && open(p) && span(p) >= 380) ?? order.find((p) => clear(p) && span(p) >= 380) ?? order.find((p) => clear(p) && open(p)) ?? order.find(clear);
 }
 
 /** each piece kind's widths by size band (short under 150 px, medium 150-300, long over 300), inside the shipped p10-p90 (cp2/library.txt)
@@ -752,7 +768,9 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     }
     // (on the node's last solid piece, over its middle, never over the gap past it: markers stand on the path, P-5)
     if (n.heartAfter && !easy) {
-      const lastP = [...L.P.slice(from)].reverse().find((q) => q.type === 'solid' && !(q as { bough?: boolean }).bough && q.width >= 100);
+      // (and not the piece a mark stands on: the two would overlap, which the level check fails)
+      const marked = (q: Platform) => [...L.marks, ...forkMarks].some((m) => m.x >= q.x && m.x <= q.x + q.width && Math.abs(m.y - q.y) < 2);
+      const lastP = [...L.P.slice(from)].reverse().find((q) => q.type === 'solid' && !(q as { bough?: boolean }).bough && q.width >= 100 && !marked(q));
       const hx = lastP ? lastP.x + lastP.width / 2 : c.x - 60, hy = lastP ? lastP.y : c.y;
       L.C.push({ id: L.cid++, type: 'heart', x: Math.round(hx), y: hy - 60, collected: false, bobPhase: 0 } as Collectible);
     }
