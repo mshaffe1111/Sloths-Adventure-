@@ -368,6 +368,10 @@ as she walked. Follow her marks to the shrine"). Marks sit on trees, where she w
   double comes back across World 1 is a move-ladder question for CP4.
 - **Gaps are sized by the level check's own functions** (`jumpOK`, `heldMaxGap`). CP2's real-engine ranges are only the upper bound.
   Where a cap would make an idea lose its point, the planner tells the designer before working around it.
+- **n9 golden seed:** a glint far up and away, as dressing only (a code-drawn sparkle, not a pickup), with Dot's "Something shiny, far
+  away... too far, for now". The real seed is laid in the stage that teaches the glide. Not a reachable seed: doubles don't count on
+  1-5, and a seed he could reach would make "for now" untrue. No gate change. The glint must be visible upright and sideways from
+  n9's route.
 - **Fork roads each keep their own height band**, so the two roads never cross.
 
 **The rules this plan meets by construction** (the mixer still checks every roll):
