@@ -62,7 +62,30 @@ generated:
   - its entry and exit contract;
   - the moves it asks for;
   - the gap or reach range it is proven over, Normal and Easy.
+- **[Matt, 11-05 ~12:10 AM ET] Grouped per world kit, as node ideas.** Matt: "a whole world should have its own pieces... I just
+  don't want pieces thrown together. I want it to make sense. Nodes that, you know, make sense." So the sheet has two layers:
+  - **the world's kit:** its pieces, which belong to that world only (World 1: the canopy and creek of the opening);
+  - **the kit's node ideas:** each idea is one thing the player does, written in one line a player would say. It lists the pieces
+    that belong to it, the order they lead into each other, its entry and exit, and what it must teach first.
+
+  **Draft node ideas for World 1** (designer; each one built only from kept pieces):
+
+  | Node idea | What the player does | Pieces that belong, in the order they lead | Entry → exit |
+  |---|---|---|---|
+  | Bough stair | climbs a tree branch by branch, each bough a different length | boughs (short, medium, long), stump to start | ground → high |
+  | Creek crossing | crosses water on things that float | lily pads, a log, a stump in the stream, bank | bank → bank |
+  | Snap-twig dash | keeps moving because the twigs break under him | snap twigs, then a solid bough to land the run | any → mid or high |
+  | The fork | picks the high road or the low road; they rejoin | 1-2's split: boughs and vines up top, logs and lilies down low | mid → mid (two roads) |
+  | Vine relay | swings from vine to vine over a gap | vines, a bough or stump either end | high → high or mid |
+  | Rotten-branch drop | rides a breaking branch down to a lower path | rotten branch, a catch bough or bank below | high → low |
+  | The climb | goes straight up a trunk or vine, then out along a bough | climb, bough at the top | low → high |
+  | Bridge walk | crosses a long rope bridge with something to watch for | bridge (one only), stumps or boughs either end | mid → mid |
+  | Stump hop | crosses broken ground on stumps of different heights | stumps (3 heights), bank | ground → ground |
+
+  This list is checked against CP1's measures of the old 1-1 and 1-3: every kind of section those two stages have must appear as
+  an idea, or be added.
 - **Pass line.**
+  - Every node idea is named, in one line a player would understand, and shows its pieces in order on the sheet.
   - The library holds at least the old 1-1's count of piece kinds and of distinct sizes (from CP1).
   - Every piece and size traces clean in a grey test strip, on both settings.
   - Any piece that doesn't trace is named, with its reason.
@@ -71,8 +94,17 @@ generated:
 - **Cost estimate.** About 0.8-1.2%.
 
 ### CP3: the mixer, proven on the worst stage first (1-5) (owner: designer specs the mix rule, planner builds and runs)
-- **The mix rule (designer).** A stage is built from its node plan, and every node draws pieces from the library through a
-  shuffle bag. Construction rules enforce, with the thresholds from CP1:
+- **The mix rule (designer), [Matt, 11-05] ideas first, pieces inside an idea.**
+  1. **The stage's story beat and theme come first** (STAGE-RULES and the story files). They pick the stage's job and look, never
+     its pieces' kit: the kit is the world's.
+  2. **The stage is a sequence of node ideas** from the world's list, chosen to suit the story beat. No idea appears twice in a
+     stage, and neighbouring stages share no more than half their ideas. A stage that teaches something new opens with the idea
+     that teaches it.
+  3. **Inside an idea, pieces come only from that idea's own list**, in its order, drawn through a shuffle bag for sizes and
+     heights, so each roll of the idea differs but always makes sense.
+  4. Each node hands over to the next at its exit (the next idea's entry must match: high, mid, low, or two roads).
+
+  The construction rules then hold across the whole stage, with the thresholds from CP1:
   - the share cap;
   - the run cap;
   - the "something new within N" rule;
@@ -82,6 +114,8 @@ generated:
 - **Pass line.**
   - 1-5 rebuilt from today's pieces passes the variety gate on 16 of 16 rolls, Normal and Easy.
   - Its traces stay clean, and the fun gate shows no new flags for 1-5.
+  - **Coherence (Matt judges this on the map; the variety gate alone can be passed by random soup):** every node is labelled on
+    the map by its idea, every piece in a node belongs to that idea, and Matt can say what each node is about in one look.
 - **Matt sees.** 1-5's side map next to the old 1-1's, and next to today's 1-5 ("just cracking logs"), plus a grey-box test link
   of the new 1-5.
 - **Time per stage (lead, from Matt's "a stage in about an hour, not a day").** Each stage's helper time from spec to gated grey-box, and its retries, are recorded. Pass line: a stage takes 1 hour or less after the mixer exists (1-5 in CP3 is allowed to take longer, as the first build).
@@ -91,6 +125,7 @@ generated:
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
   - Neighbouring stages share no more than half their main pieces.
+  - Every node on every map is labelled by its idea; no idea twice in a stage.
   - The fun gate shows no new flags.
   - The designer has played each stage, upright and sideways, against the stage it replaces.
 - **Matt sees.** Five maps beside the old 1-1, and a grey-box test link of all five.
