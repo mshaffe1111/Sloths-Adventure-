@@ -22,6 +22,11 @@ So today's pieces (logs, bridges, boughs, snap twigs, vines, stumps, rotten bran
 engine's library, look and feel included. The fault is the mix, not the pieces. The engine's first job is mixing them so no stage
 repeats.
 
+## 2026-11-05 ~9:15 AM ET (Matt to the designer)
+Matt asked whether each stage's feel is explained from the story. Now a rule: every stage spec opens with its story beat and how it
+should feel, before any node is laid (1-1: Pokey has just left home, slow but vowing to come; a small, determined start that grows
+into the first climb, ending in the high branches with the bootprint clue; the view north stays 1-4's).
+
 ## 2026-11-05 ~2:16 AM ET (Matt played the mixer's 1-5 on his phone)
 "It played much better. Needs polish.. was kind of ugly... Example" (reference/engine/cp3/matt-1-5-mixer-0216.png, upright).
 In the still: a thin grey slab floating over the water with nothing under it (D16); the bank ends in a hard straight cliff; the
