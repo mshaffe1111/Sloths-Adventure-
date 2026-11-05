@@ -763,6 +763,9 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
  * (the keepsake seen on a high branch across the drop) -> counter-melody (jump + vine) -> climax: the carving chase (snaps, drops,
  * carvings every second ledge, to the floor) -> cool-down to the shrine.
  */
+/** 1-5's snap twigs: seconds more than the beat's run and the spare, for a first-timer's pause on landing */
+export const FT_PAUSE_15 = 0.3;
+
 export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   const R = rng(seed, '1-5');
   const lay = new Lay('1-5', bpm, R, easy);
@@ -793,7 +796,10 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   // "J B J J" bar every bar, the validator's repeat on 4 of 16 layouts. Now a deck of broken motifs, a fresh order each node, never the
   // motif just used and none over twice in a node; a rest (9 eighths) 6-9 take-offs after the last, rolled each time; `cap`: no gap
   // over it, for the spike and the climax)
-  const MOTIFS = [[3, 5, 4, 6], [4, 3, 6, 5], [5, 3, 3, 6], [6, 4, 3, 4], [3, 6, 5, 3], [4, 5, 3, 5]];
+  // (Normal's motifs have no 3-eighth gap: it left a pad of about 110 px, and the first-timer adult, who pauses on landing, ran off its
+  // end or stood on its twig as it broke, 2-4 lives at one spot, 2026-11-05; Easy's beat is slower and keeps its quick ones)
+  const MOTIFS = easy ? [[3, 5, 4, 6], [4, 3, 6, 5], [5, 3, 3, 6], [6, 4, 3, 4], [3, 6, 5, 3], [4, 5, 3, 5]]
+    : [[4, 5, 6, 4], [5, 4, 7, 5], [6, 4, 5, 7], [4, 6, 4, 5], [7, 5, 4, 6], [5, 7, 4, 4]];
   const broken = (n: number, cap = 9) => {
     const deck: number[] = [...MOTIFS.keys()].map((k) => [R.f(), k]).sort((a, b) => a[0] - b[0]).map((a) => a[1]);
     const used = new Map<number, number>();
@@ -817,7 +823,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   const SNAP = R.pick([0.5, 0.7, 0.85]);
   /**
    * coiled boas on the way down after the kick is taught (node `ni`, trace `tr`): on its widest ledges, never its first or last, `max` at
-   * most, `apart` px apart. Each 215 px past where the jump onto its ledge lands (the validator's landing sits a little past the trace's;
+   * most, `apart` px apart. Each 265 px past where the jump onto its ledge lands (the validator's landing sits a little past the trace's;
    * research 11-04: never within 150 px of a landing), 150 px or more short of the next ledge, and clear of every safe spot (the level
    * check's SAFE_APPROACH: the flags so far and the next node's at this one's end). A twig with a boa holds the kick's time too.
    */
@@ -828,7 +834,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
     let n = 0;
     for (const q of [...mine.slice(1, -1)].sort((a, b) => (b.x1 - b.x0) - (a.x1 - a.x0))) {
       if (n >= max) break;
-      const bx = land(q) + BOA_CLEAR + 40;
+      const bx = land(q) + BOA_CLEAR + 90;
       if (L.boas.some((b) => Math.abs(b.x - bx) < apart)) continue;
       if (safeNow.some((f) => Math.abs(f.y - q.y) < 400 && Math.abs(f.x - bx) < SAFE_APPROACH + SNAKE_RANGE + 40)) continue;
       const next = mine[mine.indexOf(q) + 1];
@@ -860,8 +866,12 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
     // (ending against a stone face under the far ledge's near end, as the opening's catches do: 60 px under the far ledge with no face,
     // a player holding the way on walked under it and off the catch's end into the drop; dips test 2026-11-05)
     const x1 = far ? far.x0 + 50 : g.x1 + 60;
-    if (x1 - (g.x0 + 80) >= 60) {
-      lay.ledge(g.x0 + 80, x1, cy, 'catch');
+    // (every gap of the teach has its catch: a narrow one's, started at x0 + 80, was under 60 px and was left out, and the first-timer
+    // adult lost three lives in it, 2026-11-05; its open top runs at least 50-60 px to the face, never under the near ledge)
+    const open = far ? far.x0 : x1;
+    const c0 = Math.max(g.x0 + 2, Math.min(g.x0 + 80, open - 60));
+    if (open - c0 >= 50) {
+      lay.ledge(c0, x1, cy, 'catch');
       if (far) L.ledges[L.ledges.length - 1].wall = [far.x0, far.y];
     }
   }
@@ -874,7 +884,8 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   // ledge and off its end. A flag at the ledge's start
   lay.begin('ramp', 'kick a coiled boa (taught)', 'canopy', 1, x, y);
   lay.ledge(x, x + BOA_TEACH_W, y, 'apron');
-  // (Meeca's marks lead him to it, two on the way in: the walk from the last twig to the boa read as dead, 2.8 s)
+  // (Meeca's marks lead him to it, three on the way in: the walk from the last twig to the boa read as dead, 2.8-3.6 s)
+  mark(x - 300, y);
   mark(x + 200, y);
   mark(x + 470, y);
   L.flags.push({ x: x + 200, y });
@@ -981,6 +992,9 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   mark(x + 280, y);
   L.exit = { x: x + 400, y };
   lay.end(x + 640, 640 / PHYS.maxRun);
+  // (every snap twig holds 0.3 s more than its run on the beat and the spare: the first-timer adult pauses on landing, and twigs of
+  // 0.56-0.83 s broke under him on the way down, 13 lives on one roll; the lead, 2026-11-05: about 4 at most, Normal jumps 70%+)
+  for (const q of L.ledges) if (q.surface === 'crumble') q.hold = +((q.hold ?? 0.6) + FT_PAUSE_15).toFixed(2);
   L.width = x + 660;
   L.height = Math.max(...L.ledges.map((q) => q.y)) + 120;
   L.petals = apart(L.petals);
