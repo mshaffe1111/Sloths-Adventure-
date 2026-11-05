@@ -85,6 +85,8 @@ interface Lay {
   /** how the last canopy was entered, and how many mushrooms the stage has (the designer's review D: no more than the old 1-1's) */
   entry?: Entry;
   mushrooms: number;
+  /** creaky has been taught (n2's first twig is laid): no creaky piece before it (STAGE-RULES: the first appearance is taught) */
+  creakyTaught: boolean;
   /** the last six landings' kind x size, as the variety gate reads them (cp1/measure2.py), so a burst picks a size that is new */
   recent: string[];
   glints: Array<{ x: number; y: number }>;
@@ -105,10 +107,14 @@ const MIN_GAP = 40;
 function plat(L: Lay, k: string, x: number, y: number, w: number): Platform {
   const p: Platform & Record<string, unknown> = { id: L.pid++, x: Math.round(x), y: Math.round(y), width: Math.round(w), height: 24, type: 'solid', style: 'branch' } as never;
   if (k === 'bank') Object.assign(p, { style: 'moss_stone', height: 120 });
-  else if (k === 'stone') Object.assign(p, { style: 'moss_stone', height: 40 });
+  // (50 px, the height World 1's painted rock is drawn for (protoArt.ts drawRockArt): at 40 it drew the grey placeholder slab, P-12)
+  else if (k === 'stone') Object.assign(p, { style: 'moss_stone', height: 50 });
   else if (k === 'log') Object.assign(p, { style: 'log', height: 90 });
   else if (k === 'bridge') Object.assign(p, { style: 'canopy_bridge' });
-  else if (k === 'creaky') Object.assign(p, { type: 'fragile', creak: L.easy ? 1.2 : 0.88 });
+  else if (k === 'creaky') {
+    if (!L.creakyTaught) throw new Error('1-5: a creaky piece before n2 teaches it');
+    Object.assign(p, { type: 'fragile', creak: L.easy ? 1.2 : 0.88 });
+  }
   else if (k === 'crumble') Object.assign(p, { type: 'fragile', style: 'ruin', crumbleAfter: L.easy ? 1.0 : 0.7 });
   else if (k === 'catch') Object.assign(p, { catch: true });
   else if (k === 'lily') Object.assign(p, { style: undefined, height: 12, lily: true });
@@ -178,7 +184,7 @@ const BANDS: Record<string, Array<[number, number]>> = {
   bank: [[110, 148], [160, 290], [310, 360]], stone: [[60, 140], [160, 233]], log: [[180, 290], [310, 420]], branch: [[110, 148], [160, 290]],
   bridge: [[112, 148], [160, 300]], creaky: [[110, 148], [150, 170]], crumble: [[110, 110]], lily: [[82, 102]], reed: [[150, 190]],
 };
-const HEIGHT: Record<string, number> = { bank: 120, stone: 40, log: 90 };
+const HEIGHT: Record<string, number> = { bank: 120, stone: 50, log: 90 };
 /** a landing steps up or down (the designer's (c): at least 4 of 5 landings do) */
 const STEPS = [40, 30, 50, -30, -40, -60];
 /** (a step of 20 px or less reads as flat: the variety gate's up/flat/down, cp1/measure2.py) */
@@ -239,6 +245,7 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     case 'bank hops': return burst(L, c, R, R.pick([['bank', 'stone', 'log'], ['log', 'bank'], ['stone', 'bank', 'log']]), n);
     case 'stump hop': return burst(L, c, R, ['stone', 'bank'], n, [40, -40, -70, 30, -30]);
     case 'snap teach': {
+      L.creakyTaught = true;
       // (expose, then validate: a creaky twig low over a long bank, then two over safe ground; nothing to fall into)
       // (720 px, the twigs closer together: the 900 px bank was a 3 s walk with nothing to do, the fun gate's longest dead walk)
       const bank = step(L, c, R, 'bank', 720);
@@ -383,14 +390,14 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     // (the first bough is short, 130-160 px, so the creaky limbs after it fill the canopy)
     // (off a climb vine or a bough step the first bough is creaky too: he steps on from the vine or the step, as the old 1-1's trees hand
     // him to a limb; a mushroom's bounce lands on a bough that holds)
-    const b0 = plat(L, way !== 'mushroom' ? 'creaky' : s === 1 ? 'bridge' : 'branch', bx, by, Math.round(R.r(130, 160)));
+    const b0 = plat(L, way !== 'mushroom' && L.creakyTaught ? 'creaky' : s === 1 ? 'bridge' : 'branch', bx, by, Math.round(R.r(130, 160)));
     let bc: Cursor = { x: b0.x + b0.width, y: by };
     // (the boughs step between the band's top and bottom, 50 px or more apart, so no two sit flat)
     for (let guard = 0; guard < 6 && bc.x < xEnd - 100; guard++) {
       const to = bc.y > (band.yMin + band.yMax) / 2 ? band.yMin : band.yMax;
       // (every bough after the first is a creaky limb: the stage's theme (the designer's review E), over floor, so a snap drops him onto
       // the low road, never into a pit; the first, where he lands from the entry, holds)
-      bc = burst(L, bc, R, ['creaky'], 1, [bc.y - to], undefined, Math.round(R.r(120, 170)));
+      bc = burst(L, bc, R, [L.creakyTaught ? 'creaky' : 'branch'], 1, [bc.y - to], undefined, Math.round(R.r(120, 170)));
     }
     // (the last bough ends over the floor: trimmed back to 90 px into it, never under 100 px)
     for (const q of L.P.slice(L.P.indexOf(b0))) (q as Platform & { bough?: boolean }).bough = true;
@@ -466,7 +473,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   // (Easy's wider landings come from the engine's own Easy pass, easyMode.ts easyStage, which widens a ledge by its jump; the mixer widening
   // them too doubled it and pushed medium pieces into long, which broke the gate's "something new". Measured after that pass)
   const wScale = 1;
-  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, dial: d, mushrooms: 0, glints: [], recent: [] };
+  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, dial: d, mushrooms: 0, glints: [], recent: [], creakyTaught: false };
   // (the highest rise the gate allows: the largest step up a plain jump makes across a real gap, measured with the gate itself)
   let maxRise = 0;
   for (let dy = 10; dy <= 200; dy += 5) if (gateGap(L, 800, { y: 800 - dy, height: 24, type: 'solid' }, dy) >= MIN_GAP + 10) maxRise = dy;
