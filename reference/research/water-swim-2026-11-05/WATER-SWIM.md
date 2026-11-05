@@ -209,3 +209,77 @@ Numbers marked (est.) are my estimate, to be tested in play. Everything else is 
 - `sources/S01-S28*.txt`: 24 saved sources, each with URL, read date and verbatim text or excerpts. numbers S13, S14, S15 and S17 are unused (empty, blocked, 404 or off-topic fetches); S22 holds only the water passages of a copyrighted book.
 - `measure/swim-measure.ts`: real-engine measures. Run with `npx tsx reference/research/water-swim-2026-11-05/measure/swim-measure.ts [--rules|--speed]`. It changes nothing in the game; `--speed` overrides `SWIM` in memory only.
 - `measure/swim-measure.out.txt`, `measure/rules-on-6-7.out.txt`, `measure/speed-trial.out.txt`: the outputs quoted above.
+
+---
+
+## f. Added at the lead's request (11:2x AM ET): the water rows on the designer's list (`reference/engine/TRIAGE.md` §1.2, origin/engine-spec), and the speed clips
+
+### A new finding first (M11): World 1's drawn creek uses the swim water's art, and it costs a life
+
+- **engine-render's water zone uses the calm swim water's painted strips.** Its stills README says the 1-1 creek is drawn with "the swim water's painted strips: lit top, ripple, glints, deep teal fill". Stills 09-10 show him "sinking on to the stage's fall" (`origin/engine-render:reference/engine/engine-render-11/README.md:15, 18`). I checked still 04 by eye: clear, light, still water with lily pads.
+- **The spec says that water kills:** World 1 is "creek (drawn water, costs a life)" (ENGINE-SPEC:1497).
+- **The art is meant for the opposite.** `calmWaterArt.ts` (engine-render) says it is "the calm, clean water Pokey can swim in [...] the opposite of the deadly water".
+- **So a child learns two opposite rules from the same picture:** in World 1, clear calm water kills; in World 6, clear calm water is safe to swim.
+- **This breaks rule b3** (Rogers, F19: players can't tell safe water from deadly; "water within a single environment should be one or the other"). It is worse here than M10, because the same art carries both meanings across the game.
+- **For the designer and the lead (not a rule change):**
+  - give World 1's lethal creek the deadly look (`badWaterArt.ts`) or a third look of its own;
+  - or make World 1's creek a safe splash-back, as 2-1's teaching river is (`engine.ts:2515-2527`).
+
+### Row #5 (ES 104): lily-pad hop, small, big and sinking pads (tag C). Answered from the code.
+
+- **Built:** one kind of pad, a solid piece with `lily: true` (`types.ts:327-328`), laid by `protoStage.ts:2604-2617` (main).
+  - Each pad is 84-104 px wide (`R.r(84, 104)`), 12 px tall, and sits 8 px over the surface.
+  - Pads are spaced at 0.42-0.55 of a one-jump reach.
+- **Not built:**
+  - **No sinking pad.** No "sink" anywhere in the pad code; ES 575 agrees.
+  - **No small and big kinds.** Only that 84-104 px spread.
+- **The water under the pads is safe:** a teaching river with `safe: { backX, backY }` (`protoStage.ts:2619`), so falling in puts him back on the bank (`engine.ts:2515-2523`).
+- **Pass rule as the triage states it:**
+  - the spec names "lily pads, 84-104 px, not sinking" today;
+  - small, big and sinking go on the build list.
+  - The sinking pad's research is the other researcher's row (#59).
+
+### Row #92 (ES 833-834): a stepping stone at most 50 px over the water; taller ones are stumps (tag C)
+
+- **Not settled here.** It needs stills of the drawn water zone at 30, 50 and 70 px stone tops, upright and sideways. The engine-render scratch patch that draws the creek "was never committed" (README:4-10), so those stills belong to the render helper, who has that patch.
+- **What the research and code give the designer:**
+  - **Reach is not the limit.** His jump peaks at about 108 px (PHYS jumpV 640, gravUp 1900: 640² / (2·1900); arithmetic, `physics.ts:18-22`). So 50 px is about 46% of a jump, and even 70 px (about 65%) is an easy hop.
+  - **The real test is reading.** No source I read gives a number for how tall a stone in water may stand.
+  - **The look rule is sourced:** a stone must read as standing in the water, not floating (P-2 and S-9, spec:693-695, 783-785). Rogers asks for exits marked clearly as ledges or ramps (F19).
+- **Suggested pass, the triage's own:** at 50 px the stone's drawn base still meets the waterline with a ripple ring, in both orientations, on Matt's phone frame.
+
+### Row #163 (ES 1596): the swim gate fails over 20 s under (tagged G)
+
+- **It should not be G.** GVs:19 is the lead's own one-line summary of a report whose water section is not saved anywhere in the repo (C1). The only Gemini text we hold calls W6 water a slow-down (C2).
+- **The gate can never fail (measured):**
+  - the validator's bot has no swimming (M7);
+  - a real player cannot be under more than about 3.3 s (M2).
+- **Replace it with two gates, both run in the real engine** (`RealPlay`, as `w6Swim.test.ts` and `measure/swim-measure.ts` do):
+  - **(1) Beat length:** each swim beat lasts 10-14 s on Normal and 6-8 s on Easy (C6), followed by at least as long on land or at a rest (F18). That is rule b5.
+  - **(2) Exits:** each lip ≤ 70 px over the water, and each landing ≥ 114 px wide (rule b6).
+  - 6-7 passes (2) on all 16 rolls. It "fails" (1) as a swim beat, at 2.2 s, but 6-7 is the teach and not a swim beat, so (1) applies from 6-8 onward.
+
+### Row #154 (ES 1598-1601): swimming taught at 6-7, echoed at 6-8 and 6-9, then at least 1 stage in 3 in W6-W8 and W10, none in W9 (tag C)
+
+- **Teach:** 6-7, as built (`w6Rooms.ts:6-13`; `W6_SWIM_STAGES = ['6-7']`, asserted in `w6Swim.test.ts`).
+- **Echo:**
+  - **6-8 cannot echo.** It is the hand-built Stilt Climb over deadly rising water (`risingTide.ts:2`), and ES 1606 says so. ES 1546 and 1598 must drop it.
+  - **The echo is 6-9,** the whole swim stage (ES 1602).
+  - So W6 has 2 swim stages of 10.
+- **Return:**
+  - "1 in 3" has no source for water. It is an estimate copied from the core-move ladder.
+  - Add "never two swim-heavy stages in a row" (F6, F18).
+  - It can only count where calm-water art is drawn. Today that is W6 only (`calmWaterArt.ts`, from Matt's W6 sheet). W7's temple pools, W8's karst ponds and W10's camp river (ES 1600) each need their own drawn calm water first.
+- **W9:** none, by Matt's lava-only rule (ES 1509).
+- **What the check can read:** today `mechtable.ts` has no swim row (ES 1490-1491). The check needs that row, filled from `W6_SWIM_STAGES` and the future swim zones.
+
+### The two speed clips (6-7 at half a run and at 1.8x): the recommendation that goes with them
+
+- **What the clips will show (measured in the same well, M9):**
+  - at half a run, the whole swim is 1.9 s;
+  - at 1.8x it is 0.67 s, which is barely a splash and a climb out.
+- **The 1.8x clip will not show "suddenly fast".** It will show "suddenly over".
+- **Suggestions for the designer** (their clips, their choice):
+  - add a third clip at 1.25x (0.87 s across the well, 12 px a frame);
+  - if possible, film each speed on a long scratch pool of about 1,500 px. At 1.25x that is about 4.2 s of swimming, enough to feel the speed.
+- **My recommendation stays C:** a quarter faster than his run, plus long water on the swim stage (3,500-5,000 px a beat, b5). Real sloths are 3.4x (F20), but 1.8x is 17 px a frame at 30 fps, which is hard to follow on a phone.
