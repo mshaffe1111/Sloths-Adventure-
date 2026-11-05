@@ -2491,7 +2491,7 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
    - float 25.4%.
    If any is still there when the builder runs, it's an engine finding for the planner, never a reason to bend 1-1's data around it.
 
-## 1-2 for the builder: the one page to build 1-2 from (designer, 11-05 1:29 PM ET; lines set 1:37 PM from R-165.43; DRAFT only until the planner's answers to F; the brief's line numbers are re-checked against the corrected brief before it's final)
+## 1-2 for the builder: the one page to build 1-2 from (designer, 11-05 1:29 PM ET; lines set 1:37 PM from R-165.43; DRAFT only until the planner's answers to F; brief line numbers checked against the corrected brief at 1:38 PM ET)
 
 Same rules as "1-1 for the builder":
 - this page wins over older lines;
@@ -2510,7 +2510,7 @@ with **no enemies, no vines and no breakables**.
   (:20-21).
 - **End:** another petal low on the bark, "where you would not have to look up". Her care for him, not a thrill (:22). So the end is
   quiet, ruling 4's exception, like 1-1's, and for the same kind of reason.
-- **Kept out (:34-41), plus what main teaches later** (nothing untaught):
+- **Kept out (:36-43), plus what main teaches later** (nothing untaught):
   - no snakes or any animal on the route (combat is 1-3);
   - no ropes (shimmy is 1-3's skill);
   - no kapok climb (1-4);
@@ -2519,20 +2519,20 @@ with **no enemies, no vines and no breakables**.
   - no bush (1-7);
   - no water;
   - no squirrels, first petal or bootprint (1-1's).
-- **Vines (:40-41, "the designer's call"): none in 1-2.** Main teaches every vine after 1-2, and 1-2's own place is the roots, which
+- **Vines (:42-43, "the designer's call"): none in 1-2.** Main teaches every vine after 1-2, and 1-2's own place is the roots, which
   keeps it unlike 1-6.
 
 ### B. The profile
 
 | Field | Value | Source |
 |---|---|---|
-| trend | `level`: the trail runs high and low and ends low on the bark | brief :22, :46 |
+| trend | `level`: the trail runs high and low and ends low on the bark | brief :22, :48 |
 | tempo / hills | `steady` / `flat` (descriptive) | 12:48 ruling |
 | roll | `roll12` exactly ("1-2 and 1-5 measured") | 12:48 ruling |
-| branching | `heavy`: the trail is high AND low most of the way ("the trail high and low", :46) | brief |
+| branching | `heavy`: the trail is high AND low most of the way ("the trail high and low", :48) | brief |
 | water | `false` | brief |
 | petals | `trail`, low on bark and branches all along (the stage's name and clue, :25) | brief |
-| look | lead `ground` (roots, banks, hollow logs under the overhang), art `w1`, the rain backdrop `w1rain` (:31) | brief |
+| look | lead `ground` (roots, banks, hollow logs under the overhang), art `w1`, the rain backdrop `w1rain` (:33) | brief |
 | length | **Normal 169-217 s** (old 1-2's measured quick clock over 16 layouts, median 183 s), Easy ≥ 120 s | R-165.43, engine-runs f164b730 Addendum 4 |
 | core | top 3 landing kinds by share (#132). Expected: bank, log, hollow log | #132 |
 | taughtBefore | run, jump, double, bounce (1-1) | 1-1's page |
@@ -2570,10 +2570,10 @@ at n7 (1-1's at n9).
   stand-in, the same rule as 1-1's bootprint. The builder's report lists them under **"known held art"** with R-165.42. They are
   not engine misses, not fix rounds, and not pass-line fails (the lead, 1:38 PM). (The brief is corrected: it no longer offers
   W3's or W6's art.)
-- **The pink bell (:21, :30):** there is no W1 pink bell. The painted pink bell is World 5's (engine.ts:6116, Pell's note), and the
+- **The pink bell (:21, :32):** there is no W1 pink bell. The painted pink bell is World 5's (engine.ts:6116, Pell's note), and the
   theme lock keeps it out of W1. It's an art gap for the lead. The note is placed meanwhile, and the bell is reported.
-- **The hibiscus near miss (:32, "can"):** there's no W1 hibiscus art, so it's left out until the art exists.
-- **The roots (:47-48, :52-54):** W1 has root-gate-open/shut, knots and the hollow logs.
+- **The hibiscus near miss (:34, "can"):** there's no W1 hibiscus art, so it's left out until the art exists.
+- **The roots (:48-51, :55-57):** W1 has root-gate-open/shut, knots and the hollow logs.
   - The brief's W3 rootBridge and rootLadder and W6's mangrove arches are other worlds' art, and LABELS rule 4 forbids them in W1. Root
     arches and bridges in W1's own art are an art gap for the lead.
   - W1's vine-rope is NOT used: a rope that looks grabbable before 1-3 teaches the shimmy tells the player a false rule (D38).
@@ -2595,7 +2595,7 @@ at n7 (1-1's at n9).
 | two-road share | ≥ 0.787 | — |
 
 - **What these numbers say about the plan:** old 1-2 is two roads 79% of the way with only 18% boughs. So its high roads ran on
-  ground and logs, not branches, which matches the brief's "Lead with roots... not boughs on trunks" (:50). n3's and n7's high roads
+  ground and logs, not branches, which matches the brief's "Lead with roots... not boughs on trunks" (:53). n3's and n7's high roads
   are therefore log and bank tops first, boughs second.
 - **Easy:** old 1-2's Easy equals its Normal on every measure, the same old fault as 1-1's. So Easy is not judged against these rows
   as an Easy reference. Easy keeps C4 and C18 (the engine thins Easy itself), and the lines above are the Normal lines.
