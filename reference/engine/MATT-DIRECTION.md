@@ -296,3 +296,11 @@ So, for every engine step from now:
 Then 1-2 is the second test."
 So: all work, messages and checkpoints today are about 1-1. 1-2 is parked (the designer's draft page stays as it is; the planner's five
 1-2 questions wait) until 1-1 has passed and Matt has played it. The lead stops mentioning 1-2 in plans until then.
+
+## 2026-11-05 2:40 PM ET (to the lead): nothing built as if the engine works
+"We're already doing work as if the engine's working. We don't even know if the engine's going to work. So why are we doing stuff
+that could be redundant?"
+So: until 1-1 has proved the engine, the only work is fixing a MEASURED 1-1 failure (each item names its failing 1-1 number) plus the
+checks that prove the live game didn't break (the lock, the draw check). Cut from today and held on the roadmap: C18 (1-5 Easy) and
+all 1-5 work, the two 1-2 Dot rows, the era/lookalike gate wired into every builder (it runs in stage.ts on the stage being built),
+the other stages' profile pass lines, and anything else not on 1-1's path.
