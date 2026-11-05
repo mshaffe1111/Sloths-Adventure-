@@ -14,11 +14,15 @@ def kind(p):
     if p['style'] == 'moss_stone': return 'ground' if p['h'] > 60 else 'stone'
     if p['lily']: return 'lily pad'
     return 'ground'
-band = lambda w: 'short' if w < 150 else 'medium' if w <= 300 else 'long'
+# (Easy's own size bands on the mixed 1-5, the designer's pacing ruling A, 11-05: Normal's times w1mix.ts EASY_BS; every other stage and
+# setting reads on Normal's)
+EASY_BS = 1.35
+band = lambda w, s=1: 'short' if w < 150 * s else 'medium' if w <= 300 * s else 'long'
 def landings(r):
-    L = [(p['x'], p['x'] + p['w'], p['y'], kind(p), band(p['w'])) for p in r['platforms'] if kind(p)]
+    s = EASY_BS if r.get('tag') == 'mix' and r.get('setting') == 'easy' else 1
+    L = [(p['x'], p['x'] + p['w'], p['y'], kind(p), band(p['w'], s)) for p in r['platforms'] if kind(p)]
     L += [(v['x'], v['x'], v['bot'], 'climb' if v['type'] == 'tree_climb' else 'liana', '-') for v in r['vines']]
-    L += [(q['x0'], q['x1'], q['y'], 'rope', band(q['x1'] - q['x0'])) for q in r['ropes']]
+    L += [(q['x0'], q['x1'], q['y'], 'rope', band(q['x1'] - q['x0'], s)) for q in r['ropes']]
     return sorted(L, key=lambda q: (q[0] + q[1]) / 2)
 def runs(seq, L):
     best = bestpx = 0; i = 0
