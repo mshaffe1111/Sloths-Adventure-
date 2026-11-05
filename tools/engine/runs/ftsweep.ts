@@ -23,7 +23,7 @@ for (let v = from; v <= to; v++) for (const who of [FT_ADULT, FT_KID]) {
     tries: r.tries.map((q) => ({ x: Math.round(q.x), y: Math.round(q.y), t0: Math.round(q.t0 * 10) / 10, kind: q.kind, ok: q.ok, hurt: q.hurt })),
     stuck: r.stuck.map((s: any) => ({ x: Math.round(s.x), y: Math.round(s.y), what: s.what ?? s.why ?? '' })),
     mix: st.meta?.mix?.explain ?? null, hearts: (st.collectibles ?? []).filter((q: any) => q.type === 'heart' || q.type === 'super_heart').map((q: any) => Math.round(q.x)),
-    checkpoints: (st.checkpoints ?? []).map((q: any) => Math.round(q.x)), ms: Date.now() - t0 });
+    checkpoints: (st.checkpoints ?? []).map((q: any) => Math.round(q.x)), enemies: (st.enemies ?? []).map((q: any) => ({ t: q.type, x: Math.round(q.x), y: Math.round(q.y) })), ms: Date.now() - t0 });
   process.stderr.write(`${id} L${v} ${who.name} ${r.end} ${Math.round(r.time)}s ${Date.now() - t0}ms\n`);
 }
 process.stdout.write(JSON.stringify(out));

@@ -1,0 +1,6 @@
+1-5 normal d 0: clock 251 s (243-258); bursts laid 16; largest rise 320 px (max 400); jump bot mean 1.000, worst jump 1.000 (min 0.980), jumps under the floor 0 (max 0)
+1-5 normal d 0.45: clock 257 s (249-265); bursts laid 16; largest rise 336 px (max 390); jump bot mean 1.000, worst jump 1.000 (min 0.990), jumps under the floor 0 (max 0)
+1-5 normal d 1: clock 322 s (314-327); bursts laid 19; largest rise 350 px (max 520); jump bot mean 1.000, worst jump 1.000 (min 0.990), jumps under the floor 0 (max 0)
+1-5 easy d 0: clock 261 s (256-268); bursts laid 16; largest rise 75 px (max 280); jump bot mean 1.000, worst jump 0.995 (min 0.930), jumps under the floor 0 (max 0)
+1-5 easy d 0.45: clock 263 s (258-270); bursts laid 16; largest rise 200 px (max 290); jump bot mean 1.000, worst jump 0.995 (min 0.955), jumps under the floor 0 (max 0)
+1-5 easy d 1: clock 313 s (305-322); bursts laid 18; largest rise 230 px (max 290); jump bot mean 1.000, worst jump 0.990 (min 0.945), jumps under the floor 0 (max 0)

@@ -1,0 +1,10 @@
+== NORMAL: the highest rise the gate allows 80 px
+  d 0: rise share 0.50, gap share 0.55 | flat (rise 0, gap 54): full 667 ms, flick 509 ms | top rise (rise 40, gap 45): full 632 ms, flick 474 ms
+  d 0.09: rise share 0.54, gap share 0.58 | flat (rise 0, gap 58): full 632 ms, flick 474 ms | top rise (rise 43, gap 46): full 632 ms, flick 439 ms
+  d 0.5: rise share 0.72, gap share 0.74 | flat (rise 0, gap 73): full 596 ms, flick 439 ms | top rise (rise 58, gap 53): full 561 ms, flick 368 ms
+  d 1: rise share 0.95, gap share 0.92 | flat (rise 0, gap 91): full 544 ms, flick 368 ms | top rise (rise 76, gap 51): full 509 ms, flick 316 ms
+== EASY: the highest rise the gate allows 30 px
+  d 0: rise share 0.40, gap share 0.45 | flat (rise 0, gap 40): full 614 ms, flick 544 ms | top rise (rise 30, gap 40): full 632 ms, flick 474 ms
+  d 0.09: rise share 0.44, gap share 0.48 | flat (rise 0, gap 40): full 614 ms, flick 544 ms | top rise (rise 30, gap 40): full 632 ms, flick 474 ms
+  d 0.5: rise share 0.60, gap share 0.63 | flat (rise 0, gap 44): full 614 ms, flick 544 ms | top rise (rise 30, gap 40): full 632 ms, flick 474 ms
+  d 1: rise share 0.80, gap share 0.80 | flat (rise 0, gap 56): full 649 ms, flick 509 ms | top rise (rise 30, gap 44): full 632 ms, flick 474 ms

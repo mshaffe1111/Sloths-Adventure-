@@ -1,0 +1,63 @@
+== splits and two-road share (CP3 rule), and the split distance (#1)
+mix 1-1 easy: splits at 80/120/160/200 px: 7 (6-8) / 4 / 3 (3-4) / 3 (3-4); two-road share (120 px) 0.232 (0.213-0.244); splits inside n8-n11 2
+mix 1-1 normal: splits at 80/120/160/200 px: 10 (8-12) / 4 (4-5) / 3 (3-4) / 3; two-road share (120 px) 0.317 (0.297-0.334); splits inside n8-n11 2
+mix 1-3 easy: splits at 80/120/160/200 px: 19 (17-19) / 16 (14-17) / 5 (3-6) / 3 (3-4); two-road share (120 px) 0.401 (0.378-0.421)
+mix 1-3 normal: splits at 80/120/160/200 px: 18 (16-19) / 19 (17-19) / 6 (4-9) / 4 (3-6); two-road share (120 px) 0.427 (0.417-0.444)
+mix 1-5 easy: splits at 80/120/160/200 px: 20 (20-21) / 20 / 15 (11-16) / 2; two-road share (120 px) 0.267 (0.259-0.272)
+mix 1-5 normal: splits at 80/120/160/200 px: 26 (26-27) / 26 / 26 / 8 (6-13); two-road share (120 px) 0.411 (0.403-0.43)
+old 1-1 easy: splits at 80/120/160/200 px: 34 (14-51) / 34 (14-51) / 25 (1-41) / 25 (1-41); two-road share (120 px) 0.61 (0.193-0.681)
+old 1-1 normal: splits at 80/120/160/200 px: 34 (14-51) / 34 (14-51) / 25 (1-41) / 25 (1-41); two-road share (120 px) 0.61 (0.193-0.681)
+old 1-3 easy: splits at 80/120/160/200 px: 15 (7-30) / 14 (6-29) / 12 (4-16) / 12 (4-16); two-road share (120 px) 0.542 (0.158-0.676)
+old 1-3 normal: splits at 80/120/160/200 px: 15 (7-30) / 14 (6-29) / 12 (4-16) / 12 (4-16); two-road share (120 px) 0.542 (0.158-0.676)
+old 1-5 easy: splits at 80/120/160/200 px: 20 (13-36) / 21 (18-36) / 15 (4-29) / 15 (4-29); two-road share (120 px) 0.804 (0.575-0.832)
+old 1-5 normal: splits at 80/120/160/200 px: 20 (13-36) / 21 (18-36) / 15 (4-29) / 15 (4-29); two-road share (120 px) 0.804 (0.575-0.829)
+
+== forks (#37 #52 #53): per fork node, the gap between its two roads' height bands (px), share of the stage, crossings
+  mix 1-1 easy n3 practise (fork): gap between the roads' height bands 180 (150-210) px; length share 0.099 (0.084-0.103); crossing pieces 1 (0-2)
+  mix 1-1 easy n5 the fork: gap between the roads' height bands 190 (140-230) px; length share 0.108 (0.1-0.111); crossing pieces 1 (0-2)
+  mix 1-1 easy n10 canopy fork: gap between the roads' height bands 210 (170-240) px; length share 0.086 (0.081-0.089); crossing pieces 1
+  mix 1-1 normal n3 practise (fork): gap between the roads' height bands 230 (200-250) px; length share 0.111 (0.097-0.121); crossing pieces 1 (0-1)
+  mix 1-1 normal n5 the fork: gap between the roads' height bands 240 (210-270) px; length share 0.122 (0.112-0.133); crossing pieces 1 (1-2)
+  mix 1-1 normal n10 canopy fork: gap between the roads' height bands 240 (220-300) px; length share 0.099 (0.091-0.106); crossing pieces 1 (0-2)
+  mix 1-5 easy n4 the fork: gap between the roads' height bands 200 (180-230) px; length share 0.055 (0.047-0.058); crossing pieces 1 (1-2)
+  mix 1-5 easy n10 master (fork): gap between the roads' height bands 180 (100-210) px; length share 0.06 (0.058-0.07); crossing pieces 1 (1-2)
+  mix 1-5 normal n4 the fork: gap between the roads' height bands 240 (190-270) px; length share 0.071 (0.062-0.088); crossing pieces 1 (0-2)
+  mix 1-5 normal n10 master (fork): gap between the roads' height bands 210 (170-254) px; length share 0.079 (0.061-0.083); crossing pieces 1 (0-2)
+
+== elements per node range (#114), 1-1: ground / tree / water share of landings
+  mix 1-1 easy: ground in n1-n7 0.728 (0.715-0.74); tree in n8-n11 0.595 (0.575-0.628); water pieces 0
+  mix 1-1 normal: ground in n1-n7 0.693 (0.685-0.707); tree in n8-n11 0.593 (0.558-0.614); water pieces 0
+
+== ground ends by drop (#79): bank and ground-log ends (h >= 60) and the drop under each end
+  mix 1-1 easy: per build 174.6 ends, 102.6 over a drop of more than 120 px
+  mix 1-1 normal: per build 248.8 ends, 128.1 over a drop of more than 120 px
+  mix 1-3 easy: per build 169.1 ends, 122.3 over a drop of more than 120 px
+  mix 1-3 normal: per build 161.6 ends, 118.8 over a drop of more than 120 px
+  mix 1-5 easy: per build 178.4 ends, 137.8 over a drop of more than 120 px
+  mix 1-5 normal: per build 192.8 ends, 137.2 over a drop of more than 120 px
+  old 1-1 easy: per build 285.2 ends, 203.5 over a drop of more than 120 px
+  old 1-1 normal: per build 285.2 ends, 203.5 over a drop of more than 120 px
+  old 1-3 easy: per build 148.0 ends, 110.1 over a drop of more than 120 px
+  old 1-3 normal: per build 148.0 ends, 110.1 over a drop of more than 120 px
+  old 1-5 easy: per build 147.6 ends, 128.5 over a drop of more than 120 px
+  old 1-5 normal: per build 147.6 ends, 128.5 over a drop of more than 120 px
+
+== per phone view (#28 #29 #30 #81 #97), max over the stage per build, then median (min-max) over builds
+  mix 1-1 easy: upright pickups 5 (4-5); upright hazard/animal kinds 0; upright standing kinds 5 (5-6); upright full trunks 2 (1-3); upright views with play in the upper half 0.94 (0.926-0.951); sideways pickups 7 (7-8); sideways hazard/animal kinds 0; sideways standing kinds 5 (5-6); sideways full trunks 3 (2-3)
+  mix 1-1 normal: upright pickups 2 (2-3); upright hazard/animal kinds 0; upright standing kinds 5 (5-6); upright full trunks 2; upright views with play in the upper half 0.938 (0.916-0.952); sideways pickups 5 (4-5); sideways hazard/animal kinds 0; sideways standing kinds 5; sideways full trunks 3 (2-3)
+  mix 1-3 easy: upright pickups 4 (4-5); upright hazard/animal kinds 1; upright standing kinds 4; upright full trunks 0; upright views with play in the upper half 0.945 (0.897-0.959); sideways pickups 7 (7-9); sideways hazard/animal kinds 1; sideways standing kinds 4; sideways full trunks 0
+  mix 1-3 normal: upright pickups 4 (4-5); upright hazard/animal kinds 1; upright standing kinds 4; upright full trunks 0; upright views with play in the upper half 0.939 (0.932-0.96); sideways pickups 7 (6-9); sideways hazard/animal kinds 1; sideways standing kinds 4; sideways full trunks 0
+  mix 1-5 easy: upright pickups 5 (5-6); upright hazard/animal kinds 2 (1-2); upright standing kinds 6 (6-7); upright full trunks 2 (2-3); upright views with play in the upper half 0.942 (0.928-0.961); sideways pickups 6 (6-8); sideways hazard/animal kinds 2 (1-2); sideways standing kinds 7 (6-7); sideways full trunks 3
+  mix 1-5 normal: upright pickups 3 (2-3); upright hazard/animal kinds 2 (1-2); upright standing kinds 6 (6-7); upright full trunks 2 (2-3); upright views with play in the upper half 0.961 (0.946-0.975); sideways pickups 5 (5-6); sideways hazard/animal kinds 2; sideways standing kinds 6 (5-6); sideways full trunks 3
+  old 1-1 easy: upright pickups 4 (3-4); upright hazard/animal kinds 0; upright standing kinds 4; upright full trunks 0; upright views with play in the upper half 0.98 (0.972-0.981); sideways pickups 7 (6-8); sideways hazard/animal kinds 0; sideways standing kinds 4; sideways full trunks 0
+  old 1-1 normal: upright pickups 4 (3-4); upright hazard/animal kinds 0; upright standing kinds 4; upright full trunks 0; upright views with play in the upper half 0.98 (0.972-0.981); sideways pickups 7 (6-8); sideways hazard/animal kinds 0; sideways standing kinds 4; sideways full trunks 0
+  old 1-3 easy: upright pickups 4 (3-4); upright hazard/animal kinds 1; upright standing kinds 3 (3-4); upright full trunks 0; upright views with play in the upper half 0.969 (0.96-0.984); sideways pickups 6 (5-7); sideways hazard/animal kinds 1; sideways standing kinds 4 (3-5); sideways full trunks 0
+  old 1-3 normal: upright pickups 4 (3-4); upright hazard/animal kinds 1; upright standing kinds 3 (3-4); upright full trunks 0; upright views with play in the upper half 0.969 (0.96-0.984); sideways pickups 6 (5-7); sideways hazard/animal kinds 1; sideways standing kinds 4 (3-5); sideways full trunks 0
+  old 1-5 easy: upright pickups 5 (4-5); upright hazard/animal kinds 1; upright standing kinds 4 (4-5); upright full trunks 1; upright views with play in the upper half 0.976 (0.967-0.979); sideways pickups 7 (7-8); sideways hazard/animal kinds 1 (1-2); sideways standing kinds 5 (4-6); sideways full trunks 2 (1-2)
+  old 1-5 normal: upright pickups 5 (4-5); upright hazard/animal kinds 1; upright standing kinds 4; upright full trunks 1; upright views with play in the upper half 0.976 (0.967-0.979); sideways pickups 7 (7-8); sideways hazard/animal kinds 1 (1-2); sideways standing kinds 5 (4-6); sideways full trunks 2 (1-2)
+
+== boughs and trunks (#85 #96), the mixer's stages (old stages carry no trunks in their data): boughs per trunk, boughs within 220 px on different trunks
+  mix 1-1 easy: trunks holding 0/1/2/3/4+ boughs: 673 / 75 / 31 / 10 / 0 (of 789); bough pairs within 220 px: 67, on different trunks or none 32
+  mix 1-1 normal: trunks holding 0/1/2/3/4+ boughs: 899 / 94 / 35 / 7 / 0 (of 1035); bough pairs within 220 px: 120, on different trunks or none 54
+  mix 1-5 easy: trunks holding 0/1/2/3/4+ boughs: 705 / 168 / 414 / 23 / 1 (of 1311); bough pairs within 220 px: 602, on different trunks or none 260
+  mix 1-5 normal: trunks holding 0/1/2/3/4+ boughs: 941 / 422 / 252 / 15 / 0 (of 1630); bough pairs within 220 px: 1109, on different trunks or none 653

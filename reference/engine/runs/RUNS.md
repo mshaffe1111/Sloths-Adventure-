@@ -43,8 +43,8 @@ stages). The engine's ladder should be read from a 16-layout run.
 
 | Row | Line | Measured | Result | Root cause (file:line) |
 |---|---|---|---|---|
-| #121 breaking / creaky at 1-5 | table = ML | engine-mixer: first **1-2** on every roll (11-21 creaky limbs), also 1-4 (9 every roll), 1-5 55-63. main: first 1-5 (8-24). | **MISS** (table matches main, not today's build) | 1-2's rhythm builder lays creaky limbs: `src/game/w1Rhythm.ts:1192` (`type: 'fragile', creak: q.hold ?? 0.6`); 1-4's kapok lays them: `src/game/protoStage.ts:6175`, `:6392` (`CREAK_S` 0.6 s, `:5655`). |
-| #122 liana at 1-6 | table = ML | engine-mixer: first **1-2** (11 lianas every roll), 1-4 2, 1-6 18-31. main: first 1-6. | **MISS** | `src/game/w1Rhythm.ts:453` and `:1213` (`vineType: 'swing_liana'`) on 1-2. |
+| #121 breaking / creaky at 1-5 | table = ML | engine-mixer: first **1-2** on every roll (11-21 creaky limbs), also 1-4 (9 every roll), 1-5 55-63. main: first 1-5 (8-24). | **MISS** (the table text matches main, not today's build) | The build is what ruling C9 says ships ("1-2 teaches lianas and creaky", ENGINE-SPEC:1756, d272601f, 6dae405d); the table row still reads 1-5 under its `[revised: C9]` tag (ENGINE-SPEC:1288). So the fix is the table's text, not the build. Where it is laid: 1-2's rhythm builder lays creaky limbs: `src/game/w1Rhythm.ts:1192` (`type: 'fragile', creak: q.hold ?? 0.6`); 1-4's kapok lays them: `src/game/protoStage.ts:6175`, `:6392` (`CREAK_S` 0.6 s, `:5655`). |
+| #122 liana at 1-6 | table = ML | engine-mixer: first **1-2** (11 lianas every roll), 1-4 2, 1-6 18-31. main: first 1-6. | **MISS** (the table text) | As #121: C9 rules 1-2 teaches lianas; the table row still reads 1-6 (ENGINE-SPEC:1289). Laid at `src/game/w1Rhythm.ts:453` and `:1213` (`vineType: 'swing_liana'`). |
 | #123 leaf glide row | row exists, echo/return per ES 1317-1319 | no glide row anywhere: MECHS has none (`tools/validate/mechanics.ts:18-41`), so moveladder.json has none; only warm air (`updraft`, first 4-7, 1 stage). | **MISS** | Gliding is a held input with no placed object, and MECHS counts placed objects only. Needs a glide measure (e.g. gaps a first-timer can cross only by gliding); not written here because a new mechanic count is the planner's tool. |
 | #126 own world after the echo | a touch every stage, some in half; spec >= old world | engine-mixer W1-W5 (worst roll): mushroom touch 2/6, some 1/6; rope 1/3, 0/3; trunk 2/3, 0/3; breaking 0/2; liana 0/1; push 0/1; drift (W2) 4/6, 4/6; silk (W5) 0/3. main W1-W4: the same shape (mushroom 2/6 0/6, rope 1/3, trunk 2/3, breaking 0/2, liana 0/1, push 0/1, drift 4/6). Echo (next 2 stages "some"): 0/2 for rope, breaking, push, bush, lift, warm air, swim. | **MISS** (no move meets "a touch every stage" in its own world, on either build) | No builder reads the ladder: "ladder" appears in `src/game/mixer/` only in notes (`catalog.ts:44`, `:48`, `:91`); every shipped stage lays its own kit. Old W1-W4 (main) shows the same gaps, so "no lower than the old world" holds trivially while the spec's own floor fails. |
 | #127 every later world >= 1 in 3 | SR:19-20 floor (>= 1 stage a world) and 1-in-3 | any roll, non-lair stages: liana PASS both (W2 4/9 ... W10 9/9); trunk floor PASS, 1-in-3 MISS (W5 3/10); mushroom W2 0/9, W6 0/9; rope W5-W7 0/10, 0/9, 0/9; breaking W2-W4 and W6 0; push only W4 (3/10); bush W2, W5, W7, W9, W10 0; moving W3, W4, W6-W8 0; swim W7-W10 0. | **MISS** (7 of 9 core moves miss the SR floor; 8 of 9 miss 1-in-3) | As #126. |
@@ -110,10 +110,15 @@ era finds a 20 s look-alike between main's 1-1 and 1-2 on 16 of 16 rolls: the ne
 | #139 creaky: W1, W5, W6, W8 | table = library | creaking limbs (fragile branch with a creak) **W1 only**; other breakables: snap twigs W1, W5, W7-W10. None in W6. | **MISS** | — |
 | #140 crumble slab: the row reads W7 only | the row says W7 only | the spec table still reads "W1 (shrine stone, see note 2), W7" (ENGINE-SPEC:1402). Built: the ruin slab is laid in **W1** (1-5's crumbling ledges, 0.4% of W1's landings: `w1mix.ts:161` `style: 'ruin'`), W7, W8, W9, W10. | **MISS** (the row still names W1, and the build still lays the slab in W1, which ES 1446-1452 calls a breach) | `src/game/mixer/w1mix.ts:161`; the art is World 7's (`src/game/crumbleArt.ts:1-3`). |
 | #141 bridge: W1, W5, W6 | table = library | bridges in **W1, W2, W5, W8, W9, W10**; none in W6. | **MISS** | — |
-| #142 Fix 1: no stump kind; the planner says which | the fix names the kind the code has | the code has **no stump kind**: a stump is a flag on a log (`w1mix.ts:208`) drawn as a post (`w1mix.ts:798`), 1.5% of W1's landings. So the fix's "only drawing" branch holds: 1-1's core is bank and log. The spec still reads "Planner: say which" (ENGINE-SPEC:1409-1411). | **MISS** (answer above; the spec text is not updated) | — |
+| #142 Fix 1: no stump kind; the planner says which | the fix names the kind the code has | the code has **no stump kind**: a stump is a flag on a log (`w1mix.ts:208`) drawn as a post (`w1mix.ts:798`), 1.5% of W1's landings. The spec answers it later in the same words: "The stump: it is drawing only, never a landing by itself. 1-1's core is bank and log" (ENGINE-SPEC:1697-1698), though Fix 1 at :1409-1411 still reads "Planner: say which". | **PASS** (the spec's answer at :1697 is the code's) | — |
 | #143 Fix 2: crumble by the shrine stones only | the fix is struck | not struck: ENGINE-SPEC:1412-1413 still reads it; the correction sits apart at :1446-1452. | **MISS** | — |
 
-**Topic 3: 4 PASS (#22, #40, #44, #46), 22 MISS.**
+Note on #134-#141: ruling C23 (ENGINE-SPEC:1770) moves the worlds column to LABELS.md, now `src/game/mixer/catalog.ts`. Against the
+measured inventory at 16 layouts (`out/kind-worlds-16.txt`) the catalogue's own worlds differ too: crumbling floor (catalogue W7-W10;
+laid W1, W7, W9, W10, none in W8), drift log (W2, W6, W8; laid W2 only), lily pad (W1, W2, W6; **none laid anywhere**), bounce mushroom
+(W1, W3, W4, W7; laid W1, W4, W7). The committed inventory (2 layouts) is what the catalogue was checked against.
+
+**Topic 3: 5 PASS (#22, #40, #44, #46, #142), 21 MISS.**
 
 ## 4. The support check and floating (step 6)
 
@@ -137,3 +142,129 @@ upper bound. Command: `python3 -I tools/engine/runs/support.py <dumps of all 10 
 | #98 further boughs hang from a shared trunk's side branch | an atlas side-branch frame, else an HF list item | no frame matching side branch / limbSide / forkBranch; W1's only branch frames are `branch` and `branchCreak` (`out/atlas-find2.txt`). | **MISS: an art gap** (for the picture list) | — |
 
 **Topic 4: 1 PASS (#80, flags only; its stills not shot), 7 MISS (#120 counts as a MISS: it is a rule for every stage, and it passes only for 1-1 and 1-5).**
+
+## 5. Pacing and rests
+
+Commands (engine-mixer worktree): the first-timer sweep `SID=<id> npx tsx tools/engine/runs/ftsweep.ts 1 16` (the real-engine bot,
+tools/inspect/firsttimer.ts; adult on Normal, kid on Easy) -> `out/bots/ft-mixer-<id>-16.json`, read per node by
+`python3 -I tools/engine/runs/ftnodes.py` -> `out/bots/ftnodes-mixer.txt`; the arc `python3 -I tools/engine/runs/arc.py` ->
+`out/arc.txt`; the fun gate's own dead-walk measure with its limit at 0 `SID=<id> npx tsx tools/engine/runs/deadwalk.ts` ->
+`out/fun/deadwalk-mixer.txt`.
+
+| Row | Line | Measured | Result | Root cause (file:line) |
+|---|---|---|---|---|
+| #31 up and down node by node, overall trend down (1-5) | the trend matches the profile on every roll, and no two neighbouring nodes move the same way | 1-5 ends lower than it starts on **16/16** rolls both settings (Normal +111 to +922 px, Easy +204 to +1,188). Neighbouring nodes moving the same way, per roll: Normal 0-5 (median 3; 0 on 1 roll), Easy 1-9 (median 4). (1-1, profile "up": ends 390-615 px higher on 16/16, with 2-6 same-way neighbours.) | **MISS** (trend PASS; alternation MISS on 15/16 Normal rolls) | — (n1-n3 all climb on most rolls: n1 up 14/16, n2 13/16, n3 9/16) |
+| #33 n3 a local rise (1-5) | the rise visible both ways; n3's time inside its group length (5-20 s) | n3 rises (> 20 px) on 9/16 Normal rolls (by 40-178 px), is level on 5, falls on 2; it is the stage's first rise on 1/16 (n1 rises first on 14). The bot spends 12.1-21.3 s in n3 on Normal, 14.3-22.9 s on Easy. | **MISS** (not a rise on 7/16; over 20 s on 1 Normal and 7 Easy rolls) | — |
+| #39 1-5's teach pairs with bank hops; the rest is one short walk | n2's longest eventless walk <= 2.0 s Normal / 3.0 s Easy (GP:291) | n2: Normal **1.8 s** worst (1.7 median), Easy **3.1 s** worst (2.8 median). | **MISS** (Easy by 0.1 s) | n2's 600 px bank (`w1mix.ts:369`) at Easy's x1.35 width. |
+| #50 n2's teach bank 900 -> 600 px | eventless walk <= 3.0 s Easy / 2.0 s Normal at 600 (built) and 720 | built at **600** (`w1mix.ts:369`): Normal 1.8 s, Easy 3.1 s, as #39. 720 is not built; making it would be an edit to src/game, which is the planner's. | **MISS** (Easy at 600) | as #39 |
+| #94 the double breather adds about a minute (Easy about 5:20) | the measured minute replaces the estimate | **Not run**: the double breather is not built at 021ef4e93 (no such node or option in `stages.ts`); building it is the planner's. For reference, today's Easy quick clock: 1-5 261 s (256-268), 1-1 163 s (155-171) (`out/bots/dial-1-5.txt`, `-1-1.txt`, d 0 row = today's build within its 0.09 dial). | **NOT RUN** | — |
+| #95 (a) double breather about 0.52; (b) keep 0.61 | measure (a)'s Easy pacing number | **Not run**, as #94. | **NOT RUN** | — |
+| #104 n9 (1-1) the moment: 3-4 rising doubles, catch boughs below | first-test success about 0.85 Normal adult / 0.92 Easy kid (R3:60-61), and every miss lands on a catch bough | n9's jump tries that land: adult **0.789** (128 tries, 16 runs), kid **0.538** (106). Misses that cost a life: adult **1.06 a run** in n9, all falls into the pit (17 in 16 runs); kid 0 lives (Easy turns falls into soft falls). | **MISS** (both bots under their line; adult misses are not caught) | the catch bough under each rising double is `g + 80` px wide, 60 px under the take-off (`src/game/mixer/w1mix.ts:440`); 17 adult falls pass it. |
+
+**Topic 5: 0 PASS, 5 MISS, 2 not run (the double breather is not built).**
+
+## 6. Difficulty and the dial
+
+| Row | Line | Measured | Result | Root cause (file:line) |
+|---|---|---|---|---|
+| #17 turtles <= 2 in a line on Easy, 3 on Normal | <= 1 heart lost per line | cp2-animals.ts's measure on the shipped 2-5 and 2-9, 16 layouts (`tools/engine/runs/animals.py` -> `out/bots/animals.txt`; turtles within 400 px = a line; only turtles he reached): Normal has lines of **4** (54 in 2-5, 48 in 2-9); <= 1 heart lost per line: 1s 112/113, 2s 42/43, 3s 18/18, 4s 51/54 (2-5). Easy lines are 1-2 long; lines of 2: **33/56** (2-5) and 32/39 (2-9) lose <= 1. | **MISS** (Normal lays lines of 4; Easy loses 2+ hearts on 41% of 2-5's pairs) | 2-5 and 2-9's shipped builders (the W2 turtle stages; not traced to a line here) |
+| #18 past each animal with <= 1 heart lost | first test ~0.85 Normal adult / ~0.92 Easy kid with none lost (R3:60-61) | animals passed with **no** heart lost, every meeting (not only the first): adult Normal boa 1.00, snake 0.91, turtle 0.91 (2-5) / 0.92 (2-9); kid Easy boa 0.91, snake 0.88, turtle **0.38** (2-5) / **0.62** (2-9). With <= 1 lost: >= 0.95 everywhere. | **MISS** (Easy: snake 0.88, turtles 0.38 and 0.62 under 0.92) | as #17 |
+| #19 a first-timer pausing has about 0.3 s spare at 0.7 s | the spare time >= 0.3 s | the engine breaks a tile exactly `crumbleAfter` after he lands on it (`engine.ts:2484`, `:2592-2594`): 0.7 s Normal, 1.0 s Easy (`w1mix.ts:161`). The first-timer's stop-and-go *(estimate from its own parameters, `firsttimer.ts:114-121`)*: the adult's stopReact 0.30 + thumb 0.03 + late lift about 0.03 = 0.36 s, so **0.34 s spare** at 0.7; the kid's 0.40 + 0.09 + about 0.07 = 0.56 s, so **0.44 s spare** at Easy's 1.0 (0.14 s at 0.7). No FT_PAUSE probe exists (TRIAGE names one; none in tools/). In 32 runs of 1-5 neither bot lost a life or a heart to a crumbling tile (`out/bots/ft-mixer-1-5-16.json`). | **PASS** *(estimate)* | — |
+| #63 d = (0.1(w-1) + 0.2(s-1)/8) / 1.1 | bands.ts score rises with every stage inside a world; no stage above the next world's first (SR:133) | `npx tsx tools/inspect/inspect.ts --worlds 1-4 --firsttimer` (seed 1, 2 first-timer trials: the tool's own mode) on main and today's -> `out/bands/inspect-*-W1W4.json`; `python3 -I tools/engine/runs/bandfit.py` -> `out/bands/bandfit.txt`. Old W1-W4 Normal: the score falls from one stage to the next **13** times; **12** stages sit above the next world's first; score = 17.3 + 31.9 d, r = 0.46 (Easy r = 0.16). Today's: 13 falls, 15 above, r = 0.42 (Easy 0.08). | **MISS** (the measured difficulty does not follow d: it rises only loosely with the world and not stage by stage) | the stages are not built to a dial (only the mixer reads d, `w1mix.ts:884`) |
+| #64 each dial linear in d | the bots' success falls with d on every knob | `SID=<id> npx tsx tools/engine/runs/dial.ts` (the same plan built at d 0 / 0.45 / 1 through the config; `out/bots/dial-1-5.txt`, `-1-1.txt`): jump-bot mean success on 1-5 Normal 1.000 / 1.000 / 1.000, worst jump 0.98 / 0.99 / 0.99; Easy 1.000 / 1.000 / 1.000, worst 0.93 / 0.955 / 0.945; 1-1 Normal 0.999 at all three. The knobs cannot be moved one at a time without an edit to src/game (they all read one d, `w1mix.ts:884-896`). | **MISS** (success does not fall with d; the bot barely sees the dial) | Easy's rise cap is pinned: the gate's highest Easy rise is **30 px** (`out/bots/flick.txt`), so `max(30, 30 x share)` = 30 px at every d (`w1mix.ts:895-896`); Normal's gap share moves the gap only 54 -> 91 px. |
+| #66 rise share Normal 0.50 -> 0.95, Easy 0.40 -> 0.80 | flick window >= 167 ms Normal / 300 ms Easy at the top of each band (GL:72) | the real engine, CP2's window measure (`tools/engine/runs/flick.ts` -> `out/bots/flick.txt`) on the mixer's own pair at each d: Normal at d 1 (rise 76 px, gap 51): full 509 ms, **flick 316 ms**; Easy at d 1 (rise 30, gap 44): full 632 ms, **flick 474 ms**. | **PASS** | — (Easy's top rise is 30 px at every d, as #64) |
+| #68 risky pieces a burst | expected falls per node in R4's bands: intro 0, spike 0.2-0.4, climax 0.3-0.6 Normal | lives lost a run per node, adult Normal (`out/bots/ftnodes-mixer.txt`): 1-1 n1-n3 0-0.06, **n4 teach bounce 0.81**, n5-n8 0, **n9 (climax) 1.06**, n10 0; 1-5 n4 fork 0.25, n6 0.06, n8 0.06, **n10 master 0.00** (0.19 hits). | **MISS** (1-1's teach and climax over their bands; 1-5's climax under) | 1-1 n4: the bounce mound starts 30 px past its pad over an open drop (`w1mix.ts:407`), 13 of 16 runs lose a life there; n9 as #104. |
+| #70 taught animals a stage | >= 35% animal-free nodes, and no fewer than old W1-W4 at the same d | animals per stage, median of 16 layouts (`out/animals-per-stage.txt`): mixer 1-1 0, **1-5 0**; old 1-1 0, old 1-5 1; old W1: 0, 0, 23, 1, 1, 2, 0, 5, 17; W2 0, 0, 0, 0, 21, 2, 1, 0, 30; W3 0, 0, 18, 2, 0, 0, 0, 0, 21; W4 0, 0, 0, 0, 0, 1, 0, 0, 0. Animal-free nodes: 1-5 100%. | **MISS** (1-5 has 0 against old 1-5's 1) | 1-5's spec lays no animal (`stages.ts:8-41`). |
+| #72 timed windows Normal x1.0 -> x0.75, Easy x1.15 -> x0.9 | every piece's window at d 1 >= 300 ms Easy / 167 ms Normal | the timed pieces do not read the dial: creak 0.88 s Normal / 1.2 s Easy (`w1mix.ts:159`), crumble 0.7 / 1.0 s (`w1mix.ts:161`), at every d. So at d 1 they are 880 / 1,200 ms and 700 / 1,000 ms, all over the floors. | **PASS** on the floor (and a finding: the x0.75 line is not built) | `w1mix.ts:159`, `:161` (fixed holds) |
+| #73 bursts a node 2 -> 3 | length inside SR:36-38 (2-5 min first-timer) | 1-5 quick clock at d 0 / 0.45 / 1: Normal 251 / 257 / **322 s**, Easy 261 / 263 / **313 s** (bursts 16 / 16 / 19); 1-1 173 / 179 / 186 s (its bursts are fixed at 3, `stages.ts`, so 14 at every d). See the note under this table on reading the quick clock against the first-timer. | **MISS** (1-5 at d 1 is over 5 min on the quick clock alone) | `w1mix.ts:946` (`Math.round(2 + L.dial)`) |
+| #100 n7-n9 the only place in 1-1 where a miss costs a setback | only n7-n9 | adult Normal lives lost a run: n3 0.06, **n4 0.81**, n9 1.06; none elsewhere. Kid Easy: 0 lives; rescues 4.3 a run, soft falls 2.5 a run (no x recorded for soft falls). | **MISS** (n4 and n3 cost lives too) | as #68 (`w1mix.ts:407`) |
+
+Note on #73: the first-timer's own clock is not always slower than the quick clock: on today's 1-5 the first-timer's median run is 217 s
+Normal / 214 s Easy against a quick clock of 252 / 261 s (`out/bots/ft-mixer-1-5-16.json`, `out/clock/clock-mixer-W1W4.txt`), because
+the quick clock prices both fork roads' extras. So 322 s at d 1 is read on the quick clock; a first-timer run at d 1 needs the stage built
+at d 1 in the bot, which the bot cannot be handed without an edit (`firstTimer(id, seed)` builds the stage itself).
+
+**Topic 6: 2 PASS (#66, #72), 1 PASS by estimate (#19), 8 MISS.**
+
+## 7. Rewards and pickups
+
+| Row | Line | Measured | Result | Root cause (file:line) |
+|---|---|---|---|---|
+| #25 <= 1 heart per risky node; fewer hearts than risky nodes | no heart in a node where the first-timer never loses a heart (MD:77-78) | Normal: 1-1 lays **0** hearts; 1-5 lays 2 (one in n6, where the adult loses 0.06 lives a run, and one at n10's end, where he takes 0.19 hits) against 4 risky nodes. Easy: the kid loses **no** heart on either stage (0 hits, 0 lives in 32 runs), yet Easy lays about 21 hearts a build on 1-1 and 28 on 1-5, in every node (`out/bots/ftnodes-mixer.txt`, hearts column). | **MISS** (Easy) | Easy's pass puts a heart beside every flag (`src/game/easyMode.ts:8`, `:222-224` heartBy); ruling C19 (ENGINE-SPEC:1766) already calls fixing it an engine change. |
+| #28 <= about 8 pickups a view | <= old 1-1's max per orientation | pickups in one view (world px the camera shows at clipcheck's sizes inside the insets: **440 x 900 upright, 1,073 x 512 sideways**, `out/views.txt`), max over the stage, median of 16: old 1-1 upright 4 (3-4), sideways 7 (6-8). Mixer 1-1 Normal 2 / 5, **Easy 5 / 7**; 1-5 Normal 3 / 5, **Easy 5 / 6**. | **MISS** (Easy upright, 5 against 4) | — |
+| #35 one mark per non-fork node (9), one per fork road (4) | each route's marks reachable on Easy | 1-5 lays 13 marks. The level check finds every pickup reachable (era's validate, `out/era/era-mixer-W1.json` 1-5 `errorKinds` {}); the kid bot collects **13/13 on 11 layouts and 12/13 on 5** (goal 8), the adult 13/13 on 15 (`out/bots/ft-mixer-1-5-16.json`). | **PASS** | — |
+
+**Topic 7: 1 PASS, 2 MISS.**
+
+## 8. Layout and geometry
+
+Commands: `python3 -I tools/engine/runs/layout.py <cp1 dir> <W1 dumps>` -> `out/layout-W1.txt` (CP3's split and two-road rule, its
+distance a parameter; fork bands; elements; drops; views); the camera's views `npx tsx tools/engine/runs/views.ts` -> `out/views.txt`; the
+jump bot on one rise `npx tsx tools/engine/runs/risewidth.ts` -> `out/bots/risewidth.txt`.
+
+| Row | Line | Measured | Result | Root cause (file:line) |
+|---|---|---|---|---|
+| #1 two roads >= 120 px apart count as a split | the count at the chosen distance matches what Matt sees as two roads on a still | splits (two tops that far apart within 90 px, for over 300 px), at 80 / 120 / 160 / 200 px: old 1-1 34 / 34 / 25 / 25 (14-51 at 120); today's 1-3 18 / 19 / 6 / 4 Normal; mixer 1-5 26 / 26 / 26 / 8; mixer 1-1 10 / 4 / 3 / 3. | **NOT SETTLED** (numbers for the still; the line is Matt's eye, and no still was shot) | — |
+| #12 a landing after +40 is >= 110 px | kid success >= 0.92 at the chosen width | the Easy kid's jump bot, +40 onto 90 / 110 / 130 / 150 / 220 / 300 px: **0.985-0.995** at every width (gaps 80 and 110). | **PASS** (90 px already clears it) | — (the jump bot's landing rule does not depend on width in this range, so it cannot pick a width; CP2's real-engine windows, `cp2/cp2-trace-easyfix.out`, are the finer measure) |
+| #13 +50 to +70 only onto >= 220 px | as #12 at +50 / +60 / +70 onto 150 / 220 / 300 | kid: +50 0.98-0.995, +60 0.965-0.99, +70 **0.92-0.97**, the same at 90-300 px; adult 0.995-1.0. | **PASS** (150 px clears it; +70 over a 110 px gap is at the line, 0.920) | as #12 |
+| #27 phone views | the spec's caps use clipcheck's two viewports minus insets | the spec now names them (ENGINE-SPEC:313: "upright 412 x 915 and sideways 915 x 412, with insets, as ... clipcheck.mjs:54-55"). In world px the camera shows **440 x 900** upright and **1,073 x 512** sideways inside the insets on 1-1 and 1-5 (zoom 0.936 / 0.763; 1-3 405 x 829 upright), read off the real engine's applyZoom (`engine.ts:1095-1117`). | **PASS** | — |
+| #29 <= 2 kinds of hazard or animal a view | <= old 1-1's max | kinds of breakable or animal in one view: old 1-1 **0** both ways; mixer 1-1 0; mixer 1-5 **2** (1-2) both ways; today's 1-3 1. | **MISS** on the row's line (1-5's creaky and crumble are its theme; the spec's own 2 passes) | — |
+| #30 <= 3 kinds of standing piece a view | <= old 1-1's max per orientation | kinds standing in one view (CP1's kinds, in the play band): old 1-1 4 both ways; mixer 1-1 **5** (5-6); 1-5 **6-7**; today's 1-3 4. | **MISS** (also over the spec's 3 everywhere, old 1-1 included) | — |
+| #37 fork roads keep their own height band | the bands never come within the split distance (120 px) | gap between the two roads' height bands (crossing, step-down, catch and perch pieces left out): 1-1 Normal n3 200-250, n5 210-270, n10 220-300; Easy 140-240; 1-5 Normal n4 190-270, n10 170-254; **1-5 Easy n10 100-210**. | **MISS** (1-5 Easy n10's worst roll, 100 px) | the Easy fork keeps its roads within 400 px of each other and 240 px apart at the fork bank (`w1mix.ts:1008`, `ly = hy + 240` on Easy, and the road bands after it); a road's own steps eat into that. |
+| #49 a floor idea joins each one-idea or climbing deck | the numbers are in the spec with the commit | the decks carry it (`stages.ts`: n3 `bounce up, the climb, stump hop`; n6 `snap dash, bank hops, log jam`; n7 `rotten-branch drop, stump hop`; n9 `bough stair, the climb, bank hops, log jam`). Today's numbers: 1-5 splits **26** (26-27) Normal / 20 Easy; two-road **41.1%** (40.3-43.0) / 26.7%. The spec's quoted 46-50% (8c8cd997) is not today's. | **MISS** (the spec's number is stale) | — |
+| #52 fork share n4 + n10 15-20% each | struck or replaced by the measured line | today's 1-5: n4 **7.1%** (6.2-8.8), n10 7.9% Normal; Easy 5.5%, 6.0%. (The fork's x span over the stage's width.) The line stands unstruck at ENGINE-SPEC:516-517; C11 struck the 30-40% one. | **MISS** | — |
+| #53 two forks with >= 3 crossings | (struck by C11) | crossing pieces per fork: **1** (0-2) on 1-1 and 1-5. | **MISS** against the line (C11 struck it, ENGINE-SPEC:1758) | — |
+| #79 P-3 ground ends dressed; check drops over 120 px | every drop over 120 px shows a dressed end in stills | per build, bank and ground-log ends over a drop of more than 120 px: mixer 1-1 128 (Normal) / 103 (Easy); 1-5 137 / 138; old 1-1 204. **The stills were not shot**, and the end dressing (`proto.mixDress`) was not dumped. | **NOT RUN** (counts only) | — |
+| #87 on Easy about 6 nodes keep the canopy, 3-4 drop it | the number in the spec with its commit | 1-5 Easy: **6** nodes carry a canopy burst on 16/16 rolls; 5 do not (3 of them rests, which never carry one). Normal: 8 and 2. | **PASS** (6 kept) | — |
+| #88 kept canopies: fork neighbours and the node after a teach or test | Easy two-road share >= 20% (ES 1175) | Easy two-road share: 1-5 **26.7%** (25.9-27.2); 1-1 23.2% (21.3-24.4). (With and without the rule needs a build switch, an edit to src/game.) | **PASS** (as built) | — |
+| #101 splits in the first half from the ground | the number with its commit (ES 1158: 098aff49, splits 2-4) | 1-1 splits 4 (4-5) Normal, 4 Easy, 2 of them in n8-n11, so **2** in n1-n7. | **PASS** | — |
+| #108 splits whole stage >= 10 | >= 10 on 16/16 | 1-1: **4** (4-5) Normal, 4 Easy. (At 80 px: 10 (8-12).) | **MISS** | the ground half lays its splits only from its two ground forks; the hollow logs are not wired (ES 1172's ">= 12 with hollow logs"). |
+| #109 splits n8-n11 >= 7 | >= 7 | **2** on 16/16, both settings. | **MISS** | n8-n11 is one climb, the double chain and one canopy fork (`stages.ts`); only the fork splits. |
+| #110 two-road Normal >= 25% | >= 25% | 1-1 Normal **31.7%** (29.7-33.4). | **PASS** | — |
+| #111 two-road Easy >= 20% | >= 20% | 1-1 Easy **23.2%** (21.3-24.4). | **PASS** | — |
+| #114 1-1 elements: ground >= 70% n1-n7, tree >= 60% n8-n11, water 0 | shares printed per node range | ground in n1-n7: Normal **69.3%** (68.5-70.7), Easy 72.8%; tree in n8-n11: Normal **59.3%** (55.8-61.4), Easy 59.5% (57.5-62.8); water pieces 0. | **MISS** (Normal ground, both settings' tree, by 0.5-0.7 points on the median) | the catch branches under n1-n7's gaps count as tree (`w1mix.ts:1045`, `:1065`, `:1148`); in n8-n11 the logs of the double chain (`w1mix.ts:438`) count as ground. |
+| #162 world default pass lines: today's 1-5 (splits 19, two-road 40%) | the default is no higher than the lowest stage Matt has approved | splits / two-road: old 1-1 34 (14-51) / 61.0%; today's 1-3 Normal 19 (17-19) / 42.7%, **Easy 16 (14-17) / 40.1% (37.8-42.1)**; mixer 1-5 26 / 41.1%, Easy 20 / 26.7%. | **MISS** (today's 1-3 on Easy is under 19 splits and, on its worst roll, under 40%) | — |
+
+**Topic 8: 8 PASS, 10 MISS, 1 not settled (#1), 1 not run (#79).**
+
+## 9. Art and look (the rows not in topic 4)
+
+| Row | Line | Measured | Result | Root cause (file:line) |
+|---|---|---|---|---|
+| #81 P-6 the upright screen is never half empty | >= old 1-1's share of views with play in the upper half | a sliding upright view (440 x 900 world px), the upper half over the play line holding a landing, a pickup, a vine top or a trunk (dressing is not in the stage data, so it is left out for both): old 1-1 **98.0%**; mixer 1-1 93.8% Normal, 94.0% Easy; 1-5 96.1% / 94.2%. All over the spec's 3 views of 4. | **MISS** on the row's line (under old 1-1's 98%) | — |
+| #85 S-4 boughs share a tree (2-3 boughs) | 2-3 boughs on a shared tree | old 1-1 cannot be counted (its kapoks are scenery, not in the stage data). Mixer, trunks holding 0 / 1 / 2 / 3 / 4+ boughs: 1-1 Normal 899 / **94** / 35 / 7 / 0; 1-5 Normal 941 / **422** / 252 / 15 / 0. Of the trunks that hold a bough, 69% (1-1) and 61% (1-5) hold one. | **MISS** | — |
+| #96 boughs within 220 px share one tree | every such pair on one trunk | pairs of boughs within 220 px on different trunks (or none): 1-1 **54 of 120**; 1-5 **653 of 1,109** (16 builds). | **MISS** | — |
+| #97 <= about 3 full trunks a screen width | <= 3 (old 1-1 has no trunks in its data to compare) | trunks a view (the mixer's trunks at width 1 or more, and stage trees): 1-1 upright 2, sideways **3** (2-3); 1-5 upright 2 (2-3), sideways **3**. | **PASS** | — |
+
+**Topic 9: 1 PASS, 3 MISS.**
+
+## 10. Length
+
+Command: `npx tsx tools/engine/runs/clock.ts <tree> 1-4` (cp3-lengths.ts's quick clock, at 16 layouts) -> `out/clock/clock-mixer-W1W4.txt`,
+`out/clock/clock-main-W1W4.txt`. **The quick clock does not model the climbing and puzzle stages**: it gives 1-4 3 s, 2-6 5 s, 3-4 5 s,
+4-1 1 s, 4-3 1 s, 4-6 3 s (stageTime.ts: an ascent sums the steps the generator recorded, `stageTime.ts:17-18`, and these record none).
+Pairs touching those are left out below.
+
+| Row | Line | Measured | Result | Root cause (file:line) |
+|---|---|---|---|---|
+| #48 1-4 and 1-6 sit >= 20% either side of 1-5's median | the spread old worlds show, floored by #75 | today's 1-5 252 s (245-259); 1-6 215 s: 1-5 is **17%** longer. 1-4: not on the clock (3 s). | **MISS** | — |
+| #75 neighbours differ by >= 20% on the quick clock | set from the measured spread of old W1-W4 | old W1-W4 (main), the 21 modelled neighbour pairs: median step **11%**; 10 of 21 reach 20% (32, 26, 40, 28, 35, 28, 40, 24, 62, 61). Today's W1, the 6 modelled pairs: 9, 8, 17, 9, 4, 18%: **0 of 6** reach 20%; median 9%. | **MISS** (today's W1 sits under old worlds' own spread as well as under 20%) | — |
+| #77 no two neighbours within 20% | as #75 | as #75 | **MISS** | — |
+| #91 the 20% spread judged on Normal's quick clock | as #75 | as #75 (Normal) | **MISS** | — |
+
+**Topic 10: 0 PASS, 4 MISS.**
+
+## 11. Checks
+
+| Row | Line | Measured | Result | Root cause (file:line) |
+|---|---|---|---|---|
+| #51 Normal's flags no worse than main | the fun gate's flag count <= main's for the same stage | main (68b31e665) has no fun gate (`tools/validate/funcheck.ts` absent), so the baseline is the gate's own known list, which recorded World 1 before the mixer (`tools/validate/funknown.json`). `npx tsx tools/validate/funcheck.ts` on today's (`out/fun/funcheck-mixer.txt`): **FAIL, 12 worse or new**. 1-1 Normal: known 32 stage-layout flags (one tempo 16, repeat 16), now about 71 (+ pacing 9, template repeat 16, dead walk 14); 1-5 Normal: known 33, now about 67 (repeat 1 -> 16, + nothing new 16, + dead walk 3). | **MISS** | 1-1: "the '1-1 bank hops' template 3 times in the stage (§0c.2: at most twice)"; 1-5: "the same four moves 'PJJJ' 11 times" (the gate's own words) |
+| #161 both lines kept; judged on whichever fails first | report both lines after the run | a time and cost line (ENGINE-SPEC:1699-1702: line 2, <= 1/3 of 1-5's hand-mix, about 1.2 h, <= 1.1%), not a code measure; nothing to run. | **NOT RUN** (a meter and clock reading) | — |
+
+**Topic 11: 0 PASS, 1 MISS, 1 not run.**
+
+## 12. Process and cost
+
+#3, #4, #23, #55, #57, #58, #61, #106, #107, #155, #158 are readings of Matt's usage meter or a wall clock ("Meter", "Meter on the first one
+built", "Clock the first world's pass"). No code run can read the meter, and ruling C15 (ENGINE-SPEC:1762) makes the cost lines history.
+**All 11: NOT RUN** (not a code measure). Named here so none is hidden.
