@@ -856,6 +856,12 @@ third Easy-only rest of 4-5 s goes after n3 (c). **This is a miss at the checkpo
   - If the old 1-1's Easy is at or above about 0.60, the line becomes "no denser than the old 1-1's Easy", and the new 1-5 passes.
   - If it is under, the double breather (a) is built.
 
+
+**[designer, 11-05 ~5:40 AM ET] Deep pits (the engine-render helper's still 11).** Below a bank's painted end piece, the pit's dark
+widens into a hard, stepped cave shape that reads as a hole cut out of the picture. The designer's pick: the dark follows the bank faces
+down to where the end piece stops, then fades out over about 300 px so the forest shows, with no widening and no stepped edge. It changes
+every World 1 bank end, so it goes to Matt as one question with a before/after pair. Built only on his pick.
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
