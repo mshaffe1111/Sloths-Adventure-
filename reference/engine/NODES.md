@@ -19,11 +19,11 @@ Kinds of source: RESEARCH (file:line or the R-file's lesson), MATT, MEASURED, JU
 | `test` | a taught move under pressure | **the move must be required**: a bot without it fails the node, the full bot passes | R2 §2 L5 (Nelson & Smith; Green et al. 2018) |
 | `combine` | two taught moves on one beat | the stage's pair | LEDGER-2026-11-02-full.md:24, :33 |
 | `twist` | a taught move turned (break the rhythm just learned) | after at least one test; its rhythm differs from the part before | LEDGER-2026-11-02-full.md:72 |
-| `rest` | breathe | about 2× the local beat; no hard input; a Dot spot; after every test, twist and set piece | C2; LEDGER-2026-11-02-full.md:330 |
+| `rest` | breathe | about 2× the local beat; no hard input; after every test, twist and set piece. It holds a Dot SPOT, a place: a line is set there only when a Matt-approved line fits, never one at every rest | C2; LEDGER-2026-11-02-full.md:330 |
 | `reward` (secret alcove) | look off the line | a find, proven reachable, off the main route | LEDGER-2026-11-02-full.md:439; R1 §4.7 (secrets per stage) |
 | `signature` (set piece) | the stage's one surprise | one per stage, unique in the game, passing Wonder's 3 tests (it links before and during; he can suddenly do something new; it can be said in one phrase) | R1 L6; R1 §4.5 |
 | `pressure` (chase) | move on, don't stop | X-8's moving pressure; never in a first stage | LEDGER-2026-11-02-full.md:124 |
-| `climb` | go up | a shaft or a rising stair, taught moves only | LEDGER-2026-11-04-part1.md:315-316 (chimney) |
+| `climb` | go up | a rising stair of landings, taught moves only; a vertical trunk climb or shaft only in a world or stage that owns it (in W1 that's 1-4: 1-1.md:41) | LEDGER-2026-11-04-part1.md:315-316 (chimney) |
 | `descent` | go down | every world has a going-down stretch | LEDGER-2026-11-02-full.md:54 |
 | `fork` | choose high or low | both roads finish and rejoin; both judged by the gates | LEDGER-2026-11-04-part1.md:317; WORLD-RULEBOOK §7.10 |
 | `puzzle` (room) | think, not reflex | hand-built room; stays as built | the rooms rule (ES "Puzzle rooms that roll") |
@@ -35,7 +35,7 @@ Kinds of source: RESEARCH (file:line or the R-file's lesson), MATT, MEASURED, JU
 | `finale` | everything taught, dense | 15-20 s at the exit, unless the brief ends quiet | LEDGER-2026-11-02-full.md:78, :204 |
 | `exit` | arrive | the end piece where the trend reaches, the exit totem, the clue | main stageGenerator.ts:2136; WORLD-RULEBOOK §2 |
 | **added:** `cooldown-in-node` | the last beat of a hard node eases | every hard node ramps, then cools at its end | R1 L4 (SMBF and Shovel Knight cadence) |
-| **added:** `choice-reward` | the harder road pays | the high road of a fork holds the petals or a find | LEDGER-2026-11-04-part1.md:317 ("upper harder with collectible") |
+| **added:** `choice-reward` | the harder road pays | the high road of a fork holds a FIND (the golden seed, a keepsake), never petals: petals are the story's trail, low at marching height (1-1.md:26-27). The same holds in any world whose trail is story (W5's carvings, Meeca's messages) | LEDGER-2026-11-04-part1.md:317 ("upper harder with collectible") |
 
 ## 2. Node shapes
 
@@ -125,3 +125,8 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
 - loop-back, shaft and hub shapes;
 - the other archetypes' graphs;
 - creature and hazard dials.
+
+### The supervisor's notes, applied (designer, 11-05 4:58 PM ET)
+- **Slot roles** (X-6 change of pace, X-8 pressure, X-9 boss preview) are the research's defaults. A world's story briefs override
+  them per world: W1's chase is 1-5's, not 1-8's slot by default.
+- **World 5 gets its own graph list** (its sewing-box world and its story trail) before any W5 change uses §4's lists.
