@@ -81,7 +81,7 @@ export function clearDress(st: { platforms: Platform[]; collectibles: Collectibl
 /**
  * The secret golden seed (main's 1-1 mushroomCache, protoStage.ts on main: the rule the designer kept, ENGINE-SPEC 4279fc12d): in the node
  * a spec names (`post.seed.job`, off the main line), a mushroom on a perch over its widest bank, 46 px up and beside the lane so walking on
- * passes under it (the mixer's own canopied perch), a bough higher than a double jump reaches from the bank, the seed over the bough. Only
+ * passes under it (the mixer's own canopied perch), a bough higher than a double jump reaches from the bank, the seed on the bough (34 px over its top, as a petal sits). Only
  * the bounce gets him there. A scenery trunk holds the bough (every bough has a trunk, the designer's P-2; trunkFit stands it on the bank).
  */
 export function placeSeed(st: GeneratedStage & { proto: ProtoExtras }, job: string): void {
@@ -94,10 +94,12 @@ export function placeSeed(st: GeneratedStage & { proto: ProtoExtras }, job: stri
   const perch: Platform = { id: pid++, x: bank.x + 105, y: bank.y - 46, width: 80, height: 24, type: 'solid', style: 'branch', pit: 'drop' };
   (perch as Platform & { perch?: boolean }).perch = true;
   const mush: Platform = { id: pid++, x: bank.x + 110, y: perch.y - 30, width: 70, height: 30, type: 'bouncy' };
-  // (higher than a double jump reaches from the bank, as main's cache: DOUBLE_RISE + 70)
-  const by = Math.round(bank.y - DOUBLE_RISE - 70);
+  // (higher than a double jump reaches from the bank, DOUBLE_RISE + 50 (at + 30 the level check finds a double reaches it; + 40 is the least that holds), and low enough that the bough and the seed on it stay in a
+  // sideways phone's view clear of the HUD while he stands on the bank: main's DOUBLE_RISE + 70 put them behind the HUD plate, the lead's
+  // stills 11-05)
+  const by = Math.round(bank.y - DOUBLE_RISE - 50);
   const bough: Platform = { id: pid++, x: mush.x - 40, y: by, width: 270, height: 24, type: 'solid', style: 'branch', pit: 'drop' };
   st.platforms.push(perch, mush, bough);
-  st.collectibles.push({ id: cid++, type: 'seed', x: mush.x + 150, y: by - 70, collected: false, bobPhase: 1, findId: 'seed-1' } as Collectible);
+  st.collectibles.push({ id: cid++, type: 'seed', x: mush.x + 150, y: by - 34, collected: false, bobPhase: 1, findId: 'seed-1' } as Collectible);
   (st.proto.trunks ??= []).push({ x: bough.x + bough.width - 60, topY: by + 12, bottomY: bank.y + 6, w: 1 });
 }
