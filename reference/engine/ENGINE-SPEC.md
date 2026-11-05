@@ -991,6 +991,45 @@ construction, not just look different.
 - **If the ground forks can't reach 19 splits,** the planner tells the designer the measured number before working around it. The
   split floor is not lowered quietly.
 
+
+**[designer, 11-05 ~9:30 AM ET] 1-1's feel, corrected from the lead's story brief** (`reference/engine/story-briefs/1-1.md` on
+`ccr-0d59a91c-oy3imz`). The brief is the source; where it and the designer's draft above disagree, the brief wins.
+- **No bootprint.** The trail is Meeca's petals, pressed flat and placed **low, at marching height**, on trunks and branches where she
+  could reach with a soldier on each arm. 1-1's petals sit low on the trunks and banks beside the route (breadcrumbs), never high in
+  the canopy. The first is the one he peels off in the arrival scene.
+- **The feel, by node group:**
+  - n1-n3: small and close to home, a little funny. The squirrels, at the forest's edge, watch him leave (the unused squirrel poses:
+    sit, wave, haul, tip, run; dressing, not pickups). Gentle ground.
+  - n4-n6: "I can actually do this", the first real step up off the floor.
+  - n7-n9: Pokey surprising himself. The double-jump chain is the moment ("I didn't know you could do that" pays off in 1-2's letter).
+  - n10-n11: resolve, not triumph. Up in the high branches, on the petal trail pointing north. No big view (1-4's).
+- **Dot's shipped 1-1 lines,** placed where they are true:
+  - the run, jump and double coaching (n1, n2, n7);
+  - "Up the bank! Step to step" (n3);
+  - "Look how high we are!" (n9's top);
+  - "No soft moss up here!" (n10).
+- **Light and setting:** morning, at the home forest's edge, then deeper canopy as he climbs.
+- **Owned by other stages, so kept out:**
+  - Meeca's note and the hibiscus line (1-2);
+  - the punch teach (1-3);
+  - **the kapok climb and the view north (1-4):** so n8 draws bough stair or bounce up, never a long climb up a trunk;
+  - the folded petals and the chase (1-5);
+  - lianas (1-6);
+  - the bush (1-7).
+- **The look (the lead, and Matt: "last time it was 90% branches that were tied to trees"):** mostly ground and low pieces. Banks,
+  stepped mounds, roots, fallen and **hollow logs** (the unused W1 hollowlog-moss and -plain), stumps, rocks, mushrooms and knots, with
+  boughs on trunks coming late as the reward. **The commonest piece is a ground piece.**
+
+## How a stage is made, from now on (agreed by the lead and the designer, 11-05; the planner's additions to follow)
+1. **The lead writes the story brief:** the beat, the feel, the story-led look, and what other stages own. Story and look only, never
+   layout.
+2. **The level designer turns it into the node plan and its rules** in this spec.
+3. **The planner builds and measures** it: 16 rolls, both settings, every line.
+4. **The lead checks it** against the bar and the story.
+5. **Matt plays it.**
+
+Each stage's section is signed by all three before any building starts. New helpers work inside this loop.
+
 | # | Job | Deck | Entry → exit | Markers and lines (the shipped 1-1 lines, `dotLinesData.ts`) |
 |---|---|---|---|---|
 | n1 | **teach** run | flat forest-floor walk with low banks, no gaps | floor → floor | Dot's run coach line; no heart; the start flag |
@@ -1000,10 +1039,10 @@ construction, not just look different.
 | n5 | the first fork, on the ground (gentle) | high road: the mound tops and stump tops; low road: the floor and the creek (lily pads). Rejoin | low → low (two roads) | marks per CP3's fork rule, on the shared ground |
 | n6 | rest | a bank walk | low → low | a Dot spot; a flag only if n7 follows hard |
 | n7 | **teach** double (expose, then validate) | one gap too wide for a single jump over safe ground, then two more safe ones; bank hops between bursts | low → low | "Nice jump! In the air, flick up again for a double jump" at the first double; "Flick up again in the air to jump twice" |
-| n8 | the climb up | bough stair, the climb, bounce up (one not used in n4) | low → mid | — |
+| n8 | the climb up (low boughs; the kapok climb is 1-4's) | bough stair, bounce up (one not used in n4) | low → mid | — |
 | n9 | **the moment (test)** | the double-jump chain: three or four rising doubles, bough to bough, up into the canopy, with catch boughs below | mid → high | a flag before it; a heart after it only if it has risk |
 | n10 | the canopy fork | high road: the top branches; low road: mid boughs. Rejoin | high → high (two roads) | the high road's petal group |
-| n11 | cool down, arriving in the canopy | one long high branch, the sky opening ahead (the far Highlands are 1-4's), to the shrine | high → shrine | the bootprint clue beside the path |
+| n11 | cool down, arriving in the canopy | one long high branch, the sky opening ahead (the far Highlands are 1-4's), to the shrine | high → shrine | Meeca's petals low on the trunks, pointing on north |
 
 - **Length:** Normal's quick clock is 2:40-3:15. That is at least 20% under 1-5's median of about 4:05 (no more than 3:16), and over
   the 2:00 floor. Easy is at least 2:00. Length comes from the nodes and bursts, never from a clock.
