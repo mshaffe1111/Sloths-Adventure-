@@ -22,7 +22,7 @@ Then ReadNotifications, then check that the 30-min check-in is armed (list_trigg
   never the stage.
 - The lead does NOT design. The lead checks, approves, sends back, writes story briefs (story and look), and runs the team and the
   checkpoints.
-- Ceiling: 55% of the week (Matt, 10:10 AM ET, at 45%). Everyone stops at 53%. Ask Matt for his meter at checkpoints.
+- NO CEILING today (Matt, 10:45 AM ET: "It takes what it takes today... not going to rush or shortcut token-wise"). Costs are still reported and the meter read at checkpoints; no waste.
 
 ## THE BOARD: deadlines and what success looks like (set 10:26 AM ET; Matt: "You set the standards... deadlines... what success looks like. And you hold them to it... catch mistakes early, not late")
 Every check-in compares each line below with the clock. A missed time gets a send-back at once with the lesson (8i: bring options
@@ -60,7 +60,7 @@ move the time, never the bar.
   from 10:15 AM ET. It does not read SPEC-TRACE until its own trace is written.
 - art-bootprint: under the designer. One HF picture, cap $3. The still comes to the lead before it's wired.
 
-## Matt's call, 10:38 AM ET: option (A)
+## SUPERSEDED at 10:45 by "it takes what it takes": the order is critic, rulings, step 6, 1-1, 1-2 (all today). Was: Matt's call, 10:38 AM ET: option (A)
 1-1 is built TODAY on the W1 ladder, after the full library and labels (12:00), the pass line (11:15) and the critic rulings that touch it (1:30). Step 6
 (whole-game data and gates) runs after the critic; 1-1 is re-run through it when it lands. 1-2 next budget. The lead argued for the whole
 engine first; Matt decided, so now do it his way, well.

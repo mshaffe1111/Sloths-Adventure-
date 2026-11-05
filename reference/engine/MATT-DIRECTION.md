@@ -182,3 +182,13 @@ What the lead holds everyone to:
    slow, or too many fixes: the engine is changed and the stage rebuilt from data.
 3. **After the engine:** stage helpers (level designers) compose stages creatively from the inputs and polish. They don't build
    machinery.
+
+## 2026-11-05 ~10:45 AM ET (to the lead): no token ceiling today; it takes what it takes
+"It takes what it takes today. This needs to be done right. And I'm not going to rush or shortcut token-wise getting this engine
+right. This is too important. The whole game is this engine... This engine fails, the game fails. Period. This is, today is make it
+or break it."
+So: the 55% ceiling is lifted for the engine. Option (A) existed only because of the budget, so the order goes back to right-first:
+the critic, then the designer's rulings, then step 6 (the whole-game worlds and ladder data and the gates over 102 stages), then 1-1 from data as the
+timed test, then 1-2 from data as the second test, today. The deadlines and checkpoints stay (accountability, not budget); the 1-1
+pass line's cost line stays as an engine-quality measure (one third of 1-5's 5.2 h / 9 rounds). Not a licence to waste: every
+step still reports its cost, and the meter is still read at each checkpoint.
