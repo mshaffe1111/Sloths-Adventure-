@@ -130,3 +130,109 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
 - **Slot roles** (X-6 change of pace, X-8 pressure, X-9 boss preview) are the research's defaults. A world's story briefs override
   them per world: W1's chase is 1-5's, not 1-8's slot by default.
 - **World 5 gets its own graph list** (its sewing-box world and its story trail) before any W5 change uses §4's lists.
+
+## 7. Content types and world mixes (designer, 11-05 5:09 PM ET; NODE-MIX-RESEARCH.md on ccr-23292c36-550qmt; Matt: every node's content typed, with per-world percentages rolled per seed)
+
+### 7.1 A node is job × content type × shape × dials
+- **Job** (§1) is its role in a mechanic's arc: teach, practise, test, twist, finale (Hayashida's four steps, NODE-MIX §A).
+- **Content type** (§7.2) is what fills it: a family with a difficulty ladder inside it (Dahlskog & Togelius: 23 patterns in 5
+  families).
+- **Shape** (§2) and **dials** (§3) as above.
+- **Structural nodes sit OUTSIDE the percentages:** `arrive`, `rest`, `story`, `exit` and `finale` / `arrival` (Smith 2009's
+  rest areas). Graphs (§4) name content SLOTS, and the world's mix fills them.
+
+### 7.2 The content-type catalogue (families, then variants; for our worlds)
+
+| Family | Variants | Worlds (teach) |
+|---|---|---|
+| `ground` jump run | hops, gap jumps, doubles, stone runs, stump stiles, mounds | all (1-1) |
+| `floating` pieces | boughs, floating logs, plank spans; moving lifts | all; lifts from W2 (2-7) |
+| `water` crossing | lily pads, stones on the bed, drifting logs, rafts, rising water | W1 creek (where water draws), W2, W6 |
+| `rope` and vine | shimmy rope, swing, liana, ladder vine, sinking vine, thorn vine | rope 1-3, liana 1-6, thorn W3 |
+| `climb` | rising stair of landings; shaft or trunk only where owned | stair 1-1; kapok climb 1-4 |
+| `bounce` | perched mushroom, twin bounce, bounce then double | 1-1 |
+| `crumble` | snap twig, creaky limb, tipping root, crumbling floor (W7) | creaky 1-5 |
+| `creature` | patrol, stomp, timed, watcher, swarm (by behaviour) | 1-3 on |
+| `hazard` | the world's taught hazards (ruling 3: they return in later worlds) | per world |
+| `puzzle` | the hand-built rooms | W1 rooms; W2 more |
+| `pressure` | chase, rising water, closing light | 1-5 (W1's chase, by story) |
+| `fork` / risk-reward | a high/low split whose harder road holds a FIND | all |
+| `secret` | an alcove off the line | all |
+| `setpiece` | the stage's signature (unique in the game) | per stage |
+
+### 7.3 World 1's MIX (real), and World 2's (DRAFT for Matt)
+
+**World 1, shares of content nodes across the world:**
+
+| Type | W1 share | Arc (0 until taught, a peak over 2-3 stages, then a floor) | Source |
+|---|---|---|---|
+| ground | 30 | 1-1 on; peak 1-1 to 1-3; floor 15 | MATT ("World 1 = jumping, climbing, learning"); ES M3 L2045 (a staple is about a third or more) |
+| floating | 18 | 1-1 (late window) on; peak 1-4 to 1-6 | the float floor: floating + crumble ≤ 25.3% (old 1-1, LABELS §4). 18 + 7 = 25 |
+| climb | 12 | stair 1-1; kapok 1-4; peak 1-4 to 1-6 | MATT ("climbing"); the ladder (1-4) |
+| rope | 12 | shimmy 1-3, liana 1-6; peak 1-6 to 1-8 | the ladder (moveLadder.ts; main's taught-at) |
+| bounce | 8 | 1-1; peak 1-1 to 1-2; floor 4 | main's 1-1 (mushroom on 16/16 layouts) |
+| crumble | 7 | creaky 1-5; peak 1-5 to 1-7 | the ladder (creaky 1-5, C9) |
+| creature | 6 | 1-3 on (combat); peak 1-3 to 1-5 | the ladder (punch 1-3); NODE-MIX §C (5) |
+| puzzle | 4 | the W1 rooms only | the rooms rule (hand-built) |
+| fork | 3 | all | NODE-MIX §C (forks and secrets 5, split with secret) |
+| secret | 0 as content; it rides as a `reward` job on forks and rests | — | §1 choice-reward |
+| pressure | 0 as content; 1-5's chase is a set piece by story | — | ES slot roles (the story overrides) |
+
+- These shares are mine, set from the sources listed. No shipped game publishes a per-type mix (NODE-MIX §C gives examples only), so
+  the split between types is **JUDGMENT, anchored to Matt's words and our measured floors**, and is measured over many seeds against
+  this target (NODE-MIX §B.8).
+- **1-1's own deal**, from 1-1's teaches and window: ground 40 (at the cap), floating 22 (last third only), climb 15, bounce 13,
+  fork 10.
+
+**World 2 (DRAFT for Matt to see; "lighter, more puzzles"):**
+
+| Type | puzzle | water (drift logs, pads, stones) | rope (swing) | floating (incl. lifts) | ground | climb | crumble | creature | fork | bounce |
+|---|---|---|---|---|---|---|---|---|---|---|
+| W2 share | 18 | 22 | 10 | 14 | 10 | 8 | 5 | 5 | 4 | 4 |
+
+- "Lighter" comes mostly from the dials: tempo toward patience, low density (NODE-MIX §C, the researcher's own call, unsourced).
+- The W1 floor below holds from W2 on.
+
+### 7.4 Caps, rarity and floors
+- **Per stage:** no type takes more than 40% of a stage's content nodes (NODE-MIX §B.4).
+- **Neighbours:** the same type never fills two neighbouring content nodes, except a `practise` right after its own `teach`.
+- No "pick it again" bonus.
+- **Rarity tiers** per chunk:
+  - common;
+  - uncommon;
+  - rare (about 5% of draws);
+  - unique (the set piece, once in the game).
+  Plus a `hard` flag for a world's second half only (Spelunky 2's !rare and !hard).
+- **Floor for older worlds' types (from W2 on):** each staple type taught in an earlier world appears in at least about a third of
+  the later world's stages, with its longest absence ≤ 8 stages (ES M3 L2045; STAGE-RULES rule 1, "comes back in every later world").
+
+### 7.5 The mechanics
+1. **Roll the TYPE first, then the chunk inside it.** Otherwise the type with the most chunks wins: pool size silently becomes weight
+   (NODE-MIX §B.1).
+2. **DEAL the counts per stage:** largest remainder over the stage's content slots, then a ±1 jitter on the seed. Never roll each node
+   on its own, because small samples drift (Smith 2009's chi-square critic).
+3. **A BAG across the world:** each stage draws from the world's bag (Tetris 7-bag), so the world's total holds its mix while each
+   stage swings.
+4. **Order:** the deal assigns types to slots under the caps and the neighbour rule. Then each slot draws a chunk of its type, job and
+   phase, under the window and rarity rules.
+
+### 7.6 Two different "signatures"
+- **The world's signature mechanic** is its largest-share type (W1: ground jump run) and its identity across the world.
+- **The stage's signature** is the `setpiece` job (§1): one per stage, unique in the game, passing Wonder's 3 tests. It is never
+  counted in the mix.
+
+### 7.7 Content-type tags for w1.ts (for engine-core)
+- **Harvested:**
+  - ground: w1-learn, w1-stones, w1-stump-stones, w1-stone-dips, w1-second-jump, w1-leap-stones, w1-stone-road;
+  - floating: w1-high-leaps, w1-low-boughs;
+  - bounce: w1-cache-stones, w1-hop-bounce, w1-bounce-run;
+  - climb: w1-ledges;
+  - rope: w1-ropes;
+  - structural: w1-meadow.
+- **Mine (W1-NEW-SECTIONS):**
+  - ground: #1, #2, #7, #8, #24;
+  - floating: #3, #10, #20, #27;
+  - climb: #9, #12, #13, #25, #29;
+  - bounce: #5, #6, #21;
+  - fork: #4, #14, #22, #28;
+  - structural: #11, #15, #16, #17, #18, #19, #23, #26, #30.
