@@ -1,6 +1,6 @@
 # TRIAGE: how each OPEN item in SPEC-TRACE.md gets settled, and what the unused research is for
 
-Written 2026-11-05 (10:50-11:50 AM ET) by a triage helper for the level designer, who reviews and commits it. Input:
+Written 2026-11-05 (10:48 AM-11:06 AM ET) by a triage helper for the level designer, who reviews and commits it. Input:
 `reference/engine/SPEC-TRACE.md` as it stood at 10:50 AM ET (1,115 lines; another helper was fixing its citation line numbers at the same
 time) and re-read before finishing. ENGINE-SPEC.md and SPEC-TRACE.md were not edited. The 30 contradictions in SPEC-TRACE (b) are NOT
 ruled on here; where an item touches one, the row names it (C1, C3 ...) and leaves it to the designer.
@@ -310,7 +310,7 @@ extract (1) iteration rounds per generated level before ship, (2) time to build 
 | Process and cost | 18 | 2 | 11 | 2 | 3 |
 | **Total** | **163** | **39** | **106** | **14** | **4** |
 
-Counted by script over the tables above (every #1-#161 appears exactly once). Of the trace's 161 "how to settle" hints, these
+Counted by script over the tables above (every #1-#163 appears exactly once). Of the trace's 161 "how to settle" hints, these
 pointed at a line that, opened, does not answer the item, so the row moved to C or R: #2/#8/#21/#103/#105/#115 (LEG E47's 42% is
 declined by its own ledger at LEG:591), #29 (LEG E5/E21), #33 (SR §0b.2), #35 (LEG E118), #37 (LEG E52), #88 (GV:69), #129 (R1:572),
 #159's D:1043, #24's R4:51, #112's R1:524.
@@ -639,4 +639,45 @@ check". The rows below say what that pass must carry.
 
 ## 2.8 Part 2 counts
 
-PART2_COUNTS_PLACEHOLDER
+| Source | Rows here | USE | NOT TAKEN | NEEDS RUN |
+|---|---|---|---|---|
+| GEMINI-LEDGER (26 + F5's unused part) | 27 | 13 | 10 | 4 |
+| GEMINI-PCG items | 8 | 7 | 1 | 0 |
+| GEMINI-VARIETY | 11 | 10 | 1 | 0 |
+| R1 | 13 | 9 | 3 | 1 |
+| R2 | 11 | 8 | 1 | 2 |
+| R3 | 17 | 13 | 0 | 4 |
+| R4 | 9 | 6 | 2 | 1 |
+| LEDGER-ENGINE-GEMINI | 115 | 54 | 43 | 18 |
+| LEDGER-ENGINE-PAPERS | 13 | 9 | 4 | 0 |
+| CRITICAL-AGENTS | 13 | 11 | 2 | 0 |
+| **Total** | **237** | **140** | **67** | **30** |
+
+Counted by script over the tables. Why 237 and not 234: this part gives every row the trace's (a) tables list, one line each. That
+includes three rows the trace counts as "decided against" but lists in its unused tables (R2 idea 12, E235, E237; all NOT TAKEN here
+for the source's own reason), F5's unused part (the trace counts F5 as applied in part), and R4 L7 / idea 4 split into two rows. The
+LEG table in the trace names 116 row ids with one listed twice (115 distinct); all 115 are here. Nothing the trace lists is left out
+(checked by script against SPEC-TRACE (a5)).
+
+**The largest themes, for the designer:**
+- **Kit rooms placed whole** (GL A7, D4, D5, D6, J2, J4): one USE rule keeps six shipped puzzle guarantees when the mixer lays a room.
+- **Roll-to-roll variety** (GL C5, R3 F4-F7, W12, GP:276, R4 idea 1(b), LEP 46/48): the spec still never requires two rolls of a
+  stage to differ; these rows give the rule and the tool (era.ts, NCD calibrated 0.09-0.62).
+- **Bots before numbers** (R4 L7 and idea 4, R3 W5, W6, W13, F9): every bot-derived pass line waits on fitting the bots to touchReplay.
+- **Profile fields** (GVs pacing tags, stage types, tempo pair; R1 L6 signature; E37/E155/E156/E158 shape, pair, puzzle index).
+- **Song coupling is out** (R2 idea 12, E64, E148, E211, E212, E221-E223, E235): ST:958; hazards and checks use the PLAY tempo instead
+  (E63, E142, R3 F12).
+- **One NOT TAKEN that conflicts with a law:** R4 idea 10 (quarantine a flaky gate) against LAWS.md:30.
+
+---
+
+## Method update (LAWS 4)
+
+- **Worked:** extracting every OPEN row by script (tag column = OPEN) and checking coverage by script both ways (every #n once; every
+  trace (a) row id present). That is what caught the two rows that turned OPEN between 10:50 and 11:03 AM ET.
+- **Worked:** opening each "how to settle" line before trusting it. 11 of the trace's hints did not answer their item once opened
+  (listed under 1.13), and one ruling (C14) leans on a ledger row the ledger itself marks "not taken" (1.14). A triage that copied the
+  hints would have passed those on as answers.
+- **Failed / to fix:** the trace has no row ids, so this triage numbers rows itself (#1-#163) and the numbers shift if the trace gains
+  rows mid-edit. Edit for `reference/methods/` (research-ledger or the spec-trace method): give every SPEC-TRACE row a stable id
+  (section.row) so later triage and rulings can cite it.

@@ -1812,3 +1812,6 @@ cleared by re-wording a rule. Each is accepted with its spec change, or rejected
 | SPEC-TRACE disagreements (L1305, L1302, L1590-1596, L1592, L1461, L1232, L424, L242, L1462) | **ACCEPTED.** SPEC-TRACE is corrected to the critic's tags on these rows: L1305 CONTRADICTED; L1302 a measured fact, not a rule; the swim rows a misread summary (OPEN); L1461 measured by an untested tool; L1232 and L424 OPEN; L242 gets R1's contradicting row |
 | §0c.7: the validator compares every stage against every stage of every earlier world, built before World 2 is rebuilt | **ACCEPTED.** It is gate (a)(2) of finding 1 |
 | The stage loop has no critic step (LCA) | Already ruled (C25): a premortem critic pass |
+- **1-1's end piece is a bank, not a log (11:04 AM ET, the lead's bar for the bootprint: "on the shrine bank where the clue says").** In 1-1's
+  data (`MIX11.end` kind bank, 640 px), the shrine stands on a bank, and the bootprint is a flush decal on the bank's top band, toe east,
+  a little past the shrine's door so Pokey's feet never cover it. This is a data change for the 1-1 rebuild, not engine code.
