@@ -1,0 +1,125 @@
+URL: https://www.mariowiki.com/Donkey_Kong_Country:_Tropical_Freeze ; https://www.mariowiki.com/Lost_Mangroves ; https://www.mariowiki.com/Autumn_Heights ; https://www.mariowiki.com/Bright_Savannah ; https://www.mariowiki.com/Sea_Breeze_Cove ; https://www.mariowiki.com/Juicy_Jungle ; https://www.mariowiki.com/Donkey_Kong_Island_(world) ; https://www.mariowiki.com/Secret_Seclusion ; https://www.mariowiki.com/Tucks ; https://www.mariowiki.com/Tuff_Tucks ; https://www.mariowiki.com/Pointy_Tucks ; https://www.mariowiki.com/Painguin_Tucks ; https://www.mariowiki.com/Archy ; https://www.mariowiki.com/Boom_Bird ; https://www.mariowiki.com/Fluff_(enemy) ; https://www.mariowiki.com/Hootz ; https://www.mariowiki.com/Puffton ; https://www.mariowiki.com/Waldough ; https://www.mariowiki.com/Lemmington ; https://www.mariowiki.com/Blue_Finley
+Read: 2026-11-05 by a DKCTF fetch helper (TinyFish fetch_content)
+Title: Tropical Freeze enemy level lists and world level tables (Super Mario Wiki)
+NOTE: EXCERPT: level tables and each enemy's level list copied verbatim; everything else left out. World tables keep the Code, Name and No. of Puzzle Pieces columns (Image and Description columns left out). Enemy list chosen from the Enemies section of the game page (the List_of_..._enemies page is 404). World 7 (Secret Seclusion) added for completeness.
+---
+=== World 1 level table === (https://www.mariowiki.com/Lost_Mangroves)
+| Code | Name | No. of Puzzle Pieces |
+| 1-1 | Mangrove Cove | 9 |
+| 1-2 | Shipwreck Shore | 9 |
+| 1-3 | Canopy Chaos | 7 |
+| 1-4 | Trunk Twister | 5 |
+| 1-A | Zip-Line Shrine | 5 |
+| 1-B | Busted Bayou | 9 |
+| 1-K | Swinger Flinger | 5 |
+| 1-BOSS | Big Top Bop | – |
+
+=== World 2 level table === (https://www.mariowiki.com/Autumn_Heights)
+| Code | Name | No. of Puzzle Pieces |
+| 2-1 | Windmill Hills | 9 |
+| 2-2 | Mountain Mania | 7 |
+| 2-3 | Horn Top Hop | 5 |
+| 2-4 | Sawmill Thrill | 5 |
+| 2-5 | Alpine Incline | 5 |
+| 2-6 | Wing Ding | 5 |
+| 2-A | Crumble Cavern | 7 |
+| 2-B | Rodent Ruckus | 5 |
+| 2-K | Bopopolis | 5 |
+| 2-BOSS | Mountaintop Tussle | – |
+
+=== World 3 level table === (https://www.mariowiki.com/Bright_Savannah)
+| Code | Name | No. of Puzzle Pieces |
+| 3-1 | Grassland Groove | 9 |
+| 3-2 | Baobab Bonanza | 7 |
+| 3-3 | Frantic Fields | 5 |
+| 3-4 | Scorch 'n' Torch | 7 |
+| 3-5 | Twilight Terror | 5 |
+| 3-6 | Cannon Canyon | 5 |
+| 3-A | Rickety Rafters | 5 |
+| 3-B | Bramble Scramble | 7 |
+| 3-K | Precarious Pendulums | 5 |
+| 3-BOSS | Triple Trouble | – |
+
+=== World 4 level table === (https://www.mariowiki.com/Sea_Breeze_Cove)
+| Code | Name | No. of Puzzle Pieces |
+| 4-1 | Deep Keep | 7 |
+| 4-2 | High Tide Ride | 5 |
+| 4-3 | Amiss Abyss | 9 |
+| 4-4 | Irate Eight | 5 |
+| 4-5 | Sea Stack Attack | 7 |
+| 4-6 | Current Capers | 5 |
+| 4-A | Rockin' Relics | 9 |
+| 4-B | Shoal Atoll | 5 |
+| 4-K | Spinning Spines | 5 |
+| 4-BOSS | Fugu Face-Off | – |
+
+=== World 5 level table === (https://www.mariowiki.com/Juicy_Jungle)
+| Code | Name | No. of Puzzle Pieces |
+| 5-1 | Harvest Hazards | 7 |
+| 5-2 | Reckless Ride | 5 |
+| 5-3 | Fruity Factory | 5 |
+| 5-4 | Panicky Paddles | 9 |
+| 5-5 | Jelly Jamboree | 7 |
+| 5-6 | Frosty Fruits | 5 |
+| 5-A | Beehive Brawl | 7 |
+| 5-B | Jammin' Jams | 5 |
+| 5-K | Platform Problems | 5 |
+| 5-BOSS | Punch Bowl | – |
+
+=== World 6 level table === (https://www.mariowiki.com/Donkey_Kong_Island_(world))
+| Code | Name | No. of Puzzle Pieces |
+| 6-1 | Homecoming Hijinxs | 5 |
+| 6-2 | Seashore War | 5 |
+| 6-3 | Aqueduct Assault | 5 |
+| 6-4 | Blurry Flurry | 7 |
+| 6-5 | Forest Folly | 5 |
+| 6-6 | Cliffside Slide | 5 |
+| 6-7 | Frozen Frenzy | 5 |
+| 6-8 | Meltdown Mayhem | 5 |
+| 6-A | Dynamite Dash | 5 |
+| 6-B | Icicle Arsenal | 7 |
+| 6-K | Slippy Spikes | 5 |
+| 6-BOSS | Volcano Dome | – |
+
+=== World 7 level table === (https://www.mariowiki.com/Secret_Seclusion)
+| Code | Name | No. of Puzzle Pieces |
+| 7-1 | Levitation Station | 5 |
+| 7-2 | Rocket Rails | 5 |
+| 7-3 | Crazy Clouds | 5 |
+
+=== Tucks (https://www.mariowiki.com/Tucks) ===
+Mangrove Cove; Shipwreck Shore; Trunk Twister; Windmill Hills; Horn Top Hop; Alpine Incline; Wing Ding; Crumble Cavern; Bopopolis; Grassland Groove; Baobab Bonanza; Frantic Fields; Scorch 'n' Torch; Twilight Terror; Cannon Canyon; Rickety Rafters; Bramble Scramble; Precarious Pendulums; Deep Keep; High Tide Ride; Sea Stack Attack; Rockin' Relics; Shoal Atoll; Spinning Spines; Harvest Hazards; Fruity Factory; Jelly Jamboree; Frosty Fruits; Beehive Brawl; Platform Problems; Homecoming Hijinxs; Aqueduct Assault; Forest Folly; Cliffside Slide; Meltdown Mayhem; Dynamite Dash; Icicle Arsenal; Slippy Spikes; Crazy Clouds
+
+=== Tuff Tucks (https://www.mariowiki.com/Tuff_Tucks) ===
+Mangrove Cove; Shipwreck Shore; Windmill Hills; Horn Top Hop; Alpine Incline; Wing Ding; Crumble Cavern; Baobab Bonanza; Rickety Rafters; Bramble Scramble; Deep Keep; Amiss Abyss; Current Capers; Fruity Factory; Panicky Paddles; Jelly Jamboree; Jammin' Jams; Seashore War; Aqueduct Assault; Blurry Flurry; Forest Folly; Volcano Dome; Rocket Rails
+
+=== Pointy Tucks (https://www.mariowiki.com/Pointy_Tucks) ===
+Shipwreck Shore; Windmill Hills; Horn Top Hop; Alpine Incline; Wing Ding; Crumble Cavern; Grassland Groove; Baobab Bonanza; Frantic Fields; Scorch 'n' Torch; Rickety Rafters; Sea Stack Attack; Current Capers; Rockin' Relics; Spinning Spines; Harvest Hazards; Fruity Factory; Beehive Brawl; Seashore War; Aqueduct Assault; Forest Folly; Frozen Frenzy; Icicle Arsenal
+
+=== Painguin Tucks (https://www.mariowiki.com/Painguin_Tucks) ===
+Mangrove Cove; Trunk Twister; Horn Top Hop; Crumble Cavern; Grassland Groove; Baobab Bonanza; Rickety Rafters; Amiss Abyss; Sea Stack Attack; Current Capers; Rockin' Relics; Harvest Hazards; Frosty Fruits; Jammin' Jams; Homecoming Hijinxs; Seashore War; Aqueduct Assault; Blurry Flurry; Frozen Frenzy; Icicle Arsenal; Slippy Spikes; Rocket Rails
+
+=== Archy (https://www.mariowiki.com/Archy) ===
+Canopy Chaos; Wing Ding; Frantic Fields; Rickety Rafters; Sea Stack Attack; Harvest Hazards; Fruity Factory; Frosty Fruits; Jammin' Jams; Homecoming Hijinxs; Aqueduct Assault; Icicle Arsenal
+
+=== Boom Bird (https://www.mariowiki.com/Boom_Bird) ===
+Cannon Canyon; Sea Stack Attack; Panicky Paddles; Frosty Fruits; Seashore War; Cliffside Slide; Icicle Arsenal
+
+=== Fluff (https://www.mariowiki.com/Fluff_(enemy)) ===
+Mangrove Cove; Mountain Mania; Crumble Cavern; Grassland Groove; Baobab Bonanza; Scorch 'n' Torch; Cannon Canyon; Sea Stack Attack; Seashore War; Dynamite Dash
+
+=== Hootz (https://www.mariowiki.com/Hootz) ===
+Trunk Twister; Zip-Line Shrine; Swinger Flinger; Windmill Hills; Horn Top Hop; Alpine Incline; Wing Ding; Crumble Cavern; Bopopolis; Mountaintop Tussle; Baobab Bonanza; Frantic Fields; Rickety Rafters; Bramble Scramble; Precarious Pendulums; Rockin' Relics; Spinning Spines; Harvest Hazards; Fruity Factory; Jelly Jamboree; Frosty Fruits; Jammin' Jams; Platform Problems; Homecoming Hijinxs; Seashore War; Aqueduct Assault; Forest Folly; Cliffside Slide; Frozen Frenzy; Meltdown Mayhem; Dynamite Dash; Icicle Arsenal; Slippy Spikes; Levitation Station; Crazy Clouds
+
+=== Puffton (https://www.mariowiki.com/Puffton) ===
+Windmill Hills; Mountain Mania; Horn Top Hop; Sawmill Thrill; Wing Ding; Bopopolis; Grassland Groove; Rickety Rafters; Bramble Scramble (Donkey Kong Country: Tropical Freeze); Spinning Spines; Jelly Jamboree; Frosty Fruits; Jammin' Jams; Aqueduct Assault; Cliffside Slide; Meltdown Mayhem; Levitation Station; Crazy Clouds
+
+=== Waldough (https://www.mariowiki.com/Waldough) ===
+Mangrove Cove; Trunk Twister; Mountain Mania; Alpine Incline; Bopopolis; Grassland Groove; Baobab Bonanza; Frantic Fields; Twilight Terror; Rickety Rafters; Rockin' Relics; Frosty Fruits; Aqueduct Assault; Cliffside Slide; Frozen Frenzy; Meltdown Mayhem
+
+=== Lemmington (https://www.mariowiki.com/Lemmington) ===
+Horn Top Hop; Bramble Scramble; Beehive Brawl; Jammin' Jams; Cliffside Slide; Icicle Arsenal
+
+BLOCKED: https://www.mariowiki.com/List_of_Donkey_Kong_Country:_Tropical_Freeze_enemies 404 page_not_found
+BLOCKED: https://www.mariowiki.com/Donkey_Kong_Island_(Donkey_Kong_Country:_Tropical_Freeze) 404 page_not_found (used Donkey_Kong_Island_(world) instead)
+BLOCKED: https://www.mariowiki.com/Blue_Finley page has no Levels list (Finley is a disambiguation page); 12th enemy not saved

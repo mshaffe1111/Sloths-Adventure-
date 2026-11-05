@@ -6,17 +6,33 @@ Brief: the R rows of `reference/engine/TRIAGE.md` (engine-spec 3fde9966): §1.1 
 
 ## 0. Time, method, what is measured and what is not
 
-**Planned vs actual:** planned about 2.5 h (11:05 AM-2:30 PM ET). Actual: TIME-LINE-FILLED-AT-THE-END.
+**Planned vs actual:** planned about 2.5 h (to 2:30 PM ET). **Actual: about 50 min of my wall time (11:08 AM-11:58 AM ET), under half:
+a red flag, so here is why.** The fetching ran in parallel: six fetch helpers and one checker used about 65 helper-minutes (16, 16, 21,
+16, 2, 2 min of fetching; 6.5 min of checking), and every table is a script over saved files rather than hand counting. Nothing was cut
+for time. What is still unanswered (sink seconds, pit fade distance, Tiny Wings' own hill method, Rayman's per-form worlds) needs a
+longplay video, a screenshot or a wiki that is blocked from this container, not more hours here (§0 limit, BLOCKED-*.txt). If the lead
+can open a route to video or images, those four are the next work.
+
+**In one paragraph.** Shipped games teach one core concept inside a stage (Hayashida's four steps) but add 0-4 new pieces a stage; they
+rarely echo a new piece in the next two stages (DKCR 1/15, 3D World 4/29; ours already 22/40); only verbs and a game's one or two staple
+foot soldiers come back at "1 in 3" (Tropical Freeze's Tucks 61%; DKCR's Tikis 30-35%; Mario's Goomba 20%), and no enemy in three
+whole games meets ES's 1-in-3 *window*; signature pieces return every 2-3 worlds (DKCR) or about once a world (Tropical Freeze). Harder
+forms change the verb (5 of 7 DKCR forms). Sprint levels keep collectibles (DKCR 5 pieces + 4 letters; Rayman 3 Teensies), so ES's
+"marks 0 for a sprint" has no source and would empty 18 of our stages. SMB stairs have 2-6 equal one-block rises (median 4); ours are
+twice as steep and unequal. Sinking platforms are whole-stage themes that return (DKCR, Rayman, Shovel Knight), with no published sink
+time. Death pits darken toward the drop (Yacht Club); no source for 300 px.
 
 **Method** (now written down as `reference/methods/research.md`, law 4):
 1. TinyFish `fetch_content` tested first (Iwata Asks 3D Land p2: OK, 17 s). curl gets a proxy 403 on most hosts; raw.githubusercontent.com works.
-2. My own searches, then five fetch helpers (Mario; DKC; Rayman/Ori; Shovel Knight/SMB/Tiny Wings; later 3D World W4-W8) saved every page
-   as text in `sources/` with its URL and the date read (154 source files, plus 15 VGLC level files and the BLOCKED notes). I opened and read the primary pages myself (§9 lists which I read
+2. My own searches, then six fetch helpers (Mario; DKC; Rayman/Ori; Shovel Knight/SMB/Tiny Wings; later 3D World W4-W8 and Tropical
+   Freeze enemies) saved every page
+   as text in `sources/` with its URL and the date read (154 source files, plus 15 VGLC level files and the BLOCKED notes). I opened and read the primary pages myself (§10 lists which I read
    in full). Every failure is in `sources/BLOCKED-*.txt`.
-3. The per-level tables are **built by scripts from the saved pages**, not typed: `dkcr_table.py`, `sm3dw_table.py`, `stairs_vglc.py`
+3. The per-level tables are **built by scripts from the saved pages**, not typed: `dkcr_table.py`, `dkctf_table.py`, `sm3dw_table.py`,
+   `sm3dw_full.py`, `stairs_vglc.py`
    (outputs `ours-*.txt`). Our side is measured on our code: `ladder_stats.py` and `returncheck.py` on `tools/engine/moveladder.json`
    (commit 7d9ad9a9, engine-mixer), `tools/validate/mechtable.ts` and a new `stairscan.ts` run on engine-mixer 021ef4e9 (outputs in `ours/`).
-4. Only after the first source list: cross-check with `reference/research/ledger/*.md`, `GEMINI-PCG-RESEARCH.md`, R1-R4 (§8).
+4. Only after the first source list: cross-check with `reference/research/ledger/*.md`, `GEMINI-PCG-RESEARCH.md`, R1-R4 (§9).
 
 **Marking.** "measured" = counted by a script from a saved page or our code; "dev-reported" = a developer's own words; "wiki" = Super
 Mario Wiki / IGN / RayWiki (fan-maintained; their enemy lists can miss an appearance, so wiki shares are a floor, not exact);
@@ -165,6 +181,27 @@ collapsing/sinking platforms 1-K, 2-K, 6-6, 8-5 (31); silhouette 1-4, 7-1, 8-4 (
 Tropical Freeze, same pattern faster: carts 1-4, 2-4, 4-2; rockets 2-B, 3-5, 5-2; Rambi 2-2, 3-3; silhouette 1-B, 4-3
 (`dkc-world-lost-mangroves-dkctf.txt:19,21`, `dkc-world-tables-dkcr-dkctf.txt:76,78,82,89,91,101,112`): about once a world.
 
+**Tropical Freeze's enemies, whole game (63 levels W1-W7 incl. A/B/K and bosses), measured** (`dkctf_table.py` ->
+`ours-dkctf-table-output.txt`; wiki level lists of 11 enemies, `sources/dkc-dkctf-enemy-levels.txt`):
+
+| Enemy | First | Levels | Share of later | Longest absence | Later worlds | 3-level windows with none |
+|---|---|---|---|---|---|---|
+| Tucks (the basic penguin) | 1-1 | 39 | 61% | 4 | 6/6 | 3/60 |
+| Hootz (owl) | 1-4 | 35 | 58% | 7 | 6/6 | 6/57 |
+| Tuff Tucks | 1-1 | 23 | 35% | 6 | 6/6 | 17/60 |
+| Pointy Tucks | 1-2 | 23 | 36% | 7 | 5/6 | 16/59 |
+| Painguin Tucks | 1-1 | 22 | 34% | 6 | 6/6 | 14/60 |
+| Puffton | 2-1 | 18 | 31% | 10 | 5/5 | 18/52 |
+| Waldough | 1-1 | 16 | 24% | 9 | 5/6 | 26/60 |
+| Archy | 1-3 | 12 | 18% | 10 | 5/6 | 28/58 |
+| Fluff | 1-1 | 10 | 15% | 16 | 4/6 | 37/60 |
+| Boom Bird | 3-6 | 7 | 15% | 8 | 3/4 | 20/37 |
+| Lemmington | 2-3 | 6 | 10% | 18 | 3/5 | 37/50 |
+
+Tropical Freeze leans on its villains' foot soldiers far more than DKCR did: five kinds are in over a third of later levels, and the
+basic Tucks is never absent more than 4 levels. The 11 kinds were picked as the common ones (the list page 404'd), so this table is
+the top of the game, not all of it.
+
 **The whole-game table, Super Mario 3D World (75 courses W1-W8, 80 enemy kinds), measured** (`sm3dw_full.py` ->
 `ours-sm3dw-full-output.txt`; W4-W8 tables `sources/mario-wiki-3dw-world4-8-enemy-tables.txt`), kinds in 4+ courses:
 
@@ -206,13 +243,15 @@ inside the world; the helper character (Murfy) is in 3 of 6 normal levels (1, 4,
 not an enemy or a piece. RayWiki's infobox gives the world as 10 levels and 90 Teensies (`rayman-raywiki-teensies-in-trouble-world.txt:10-11`).
 
 **Answer to "settles our >= 1 in 3":**
-- Read as a **share** (>= 1/3 of later stages), it is what DKCR's **two commonest enemies** reach (30%, 35%), nothing else; in 3D
-  World no enemy kind reaches it (best 25%, Goomba 20%).
-- Read as a **sliding window** (no 3 stages in a row without it), **no element of either game passes** (DKCR's two commonest have 23
-  and 10 empty windows; 3D World 0 of 78). ES 1319 is written as the window ("at least 1 of every 3 stages").
+- Read as a **share** (>= 1/3 of later stages), it is what each DKC game's **staple enemies** reach (DKCR 30-35%, two kinds;
+  Tropical Freeze 34-61%, five kinds) and nothing else in those games; in 3D World no enemy kind reaches it (best 25%, Goomba 20%).
+- Read as a **sliding window** (no 3 stages in a row without it), **no enemy in the three games passes strictly**. The nearest is
+  Tropical Freeze's Tucks, empty in 3 of 60 windows, then Hootz 6/57; DKCR's best has 10 empty, 3D World's best 7 (of 22, late-game
+  Parabones). ES 1319 is written as the window ("at least 1 of every 3 stages").
 - What the two games do have in every stage is the **verbs** (run, jump, roll / stomp, the cling grass and barrel cannons that the
   level lists do not count): ES's "core moves" for us are verbs (jump, double jump, liana, climb), so the window can still be met for
-  those, as gaps, liana and trunk climb nearly do in our run below. For animals and pieces it has no shipped precedent.
+  those, as gaps, liana and trunk climb nearly do in our run below. For animals, a shipped precedent exists only for a game's one or
+  two staple foot soldiers (Tropical Freeze's Tucks), not for every taught animal or piece.
 - A signature piece (vehicle, animal buddy, level theme) returns in DKCR at **4-10% of later levels, about every 2-3 worlds**
   (longest absence 20-25), and in Tropical Freeze about once a world.
 - "1 in 4 for push and hide" and ">= 2-3 stages for world moves": no source has these numbers; DKCR's signature-piece envelope
@@ -333,8 +372,9 @@ day one. No source gives a cost for adding slopes to an existing flat-collision 
 3. **Two return classes, not one** (measured, DKCR):
    - *verbs* (run, jump, double jump, liana, trunk climb): every stage or nearly (no shipped number needed: both games' verbs are in
      every level; ours measured 58-100%);
-   - *staples* (the commonest animal of each element): in every later world, in 20-35% of later stages, longest absence <= 8-10
-     stages (DKCR Tiki Goon/Buzz 30-35%, <= 8; 3D World Goomba 20%, <= 11);
+   - *staples* (the commonest animal of each element): in every later world, in about a third or more of later stages, longest
+     absence about 4-8 stages (Tropical Freeze Tucks 61% / 4, Hootz 58% / 7; DKCR Tiki Goon/Buzz 30-35% / 7-8; Mario runs leaner,
+     Goomba 20% / 11);
    - *signature pieces* (a world's own move, vehicles and set pieces, animals of one element): back in >= 3/7 of the later worlds,
      longest absence <= 25 stages. This is where SR:19-20's "comes back in every later world" is the stricter house rule.
 4. **The harder form changes the verb** (blow out, flip, use a barrel, a new attack), usually within 0-2 worlds of the base (5 of 7
@@ -354,7 +394,7 @@ day one. No source gives a cost for adding slopes to an existing flat-collision 
 | 116 | a move from the last 3 stages never absent > 2 stages | No measured game does this: 1/15 DKCR elements and 4/29 3D World kinds return within 2. Yacht Club: elements are "shuffled away, and revisited" (`2of5:114`). Matt's "keeps building" is the real source; label it so. |
 | 139-140 | a taught animal "must not drop out for more than two stages" | Same; DKCR's commonest enemy is absent up to 7-8 levels, others 19-42. |
 | 1317 | Echo in the next 2 stages | No source; measured games teach and master inside the stage, then return worlds later. |
-| 1319 / 1535 | every core move in >= 1 of every 3 stages | As a sliding window, stricter than any element of DKCR (even Tiki Buzz has 10 empty windows) or 3D World (0 of 76 kinds); as a share, only DKCR's top 2 enemies reach it. Holds for verbs only. Our run: 2 of 40 mechanics pass. |
+| 1319 / 1535 | every core move in >= 1 of every 3 stages | As a sliding window, stricter than any enemy in DKCR, Tropical Freeze or 3D World (the closest, TF's Tucks, misses 3 of 60 windows); as a share, only the DKC games' staple foot soldiers reach it (2 kinds in DKCR, 5 in TF). Holds for verbs and at most a game's one or two staples. Our run: 2 of 40 mechanics pass. |
 | 1541, 1542 | push and hide >= 1 in 4 | No source for 1 in 4. |
 | 575 | sinking log: skip, "same feel" as cracking | Sinking is a whole-stage theme that returns in DKCR (2-K, 6-2, 8-5) and Rayman (Quick Sand); it is a different feel (continuous, recoverable), not the same. |
 | 597-599 | a hill = 2-4 rises | SMB mid-level stairs 2-6 rises, median 4 (2-4 covers 10 of 16), each step one block = 1/4 of a jump; ES gives no step size. |

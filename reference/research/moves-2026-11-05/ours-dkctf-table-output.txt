@@ -1,0 +1,15 @@
+DKCTF: 63 levels (W1-W7 incl. A/B/K and bosses); 11 enemies; names not in the level tables (3D/Switch-only or spelling): {}
+
+| enemy | first | levels | share of later | longest absence | later worlds | 3-level windows with none | staple env. | signature env. |
+|---|---|---|---|---|---|---|---|---|
+| Tucks | 1-1 | 39 | 61% | 4 | 6/6 | 3/60 | pass | pass |
+| Hootz | 1-4 | 35 | 58% | 7 | 6/6 | 6/57 | pass | pass |
+| Tuff Tucks | 1-1 | 23 | 35% | 6 | 6/6 | 17/60 | pass | pass |
+| Pointy Tucks | 1-2 | 23 | 36% | 7 | 5/6 | 16/59 | FAIL | pass |
+| Painguin Tucks | 1-1 | 22 | 34% | 6 | 6/6 | 14/60 | pass | pass |
+| Puffton | 2-1 | 18 | 31% | 10 | 5/5 | 18/52 | FAIL | pass |
+| Waldough | 1-1 | 16 | 24% | 9 | 5/6 | 26/60 | FAIL | pass |
+| Archy | 1-3 | 12 | 18% | 10 | 5/6 | 28/58 | FAIL | pass |
+| Fluff | 1-1 | 10 | 15% | 16 | 4/6 | 37/60 | FAIL | pass |
+| Boom Bird | 3-6 | 7 | 15% | 8 | 3/4 | 20/37 | FAIL | pass |
+| Lemmington | 2-3 | 6 | 10% | 18 | 3/5 | 37/50 | FAIL | pass |
