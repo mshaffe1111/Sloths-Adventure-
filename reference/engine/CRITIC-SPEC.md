@@ -851,3 +851,22 @@ yet in code is step 6's own work (the era/lookalike gate, the tested move table,
 - Then the era/lookalike/bands gate on every builder (era still gives the mixer's 1-1 0.021 and 1-5 0.014), with today's misses on a
   known list that only shrinks.
 - R-164.11's cause comes before any generator change.
+
+---
+
+## 12. The four edits, checked (1:16 PM ET; engine-spec 0dffc84e, LABELS.md there, engine-mixer add1c18a)
+
+| Edit | Checked in the file | Holds? |
+|---|---|---|
+| 1. Ruling 3 into lines and data | Spec L1301 and L1550 marked "[revised 1:14 PM ET: ruling 3 ...]"; LABELS.md L66-74 (wind, dark/spore, web, tide, crumble, geyser, bolt, thorns) now read "teach world, then every later world as a twist, in that world's own art" | **Yes in the spec and LABELS.** **Not yet in code:** `src/game/mixer/catalog.ts:102, :107` at add1c18a still give web `worlds: [5]`, geyser `[9]` (the planner's change, announced by the designer). Step 6's world table must not read catalog.ts until it lands; a catalog-check line that fails when any taught hazard's worlds stop short of W10 would hold it |
+| 2. Stale lines | L351 (1-5's cool-down → finale), L503 struck, L1462 marked with L1806, L1881 marked, L2032's stamp corrected | **Yes**, with one exception below |
+| 2b. L1075, 1-1's cool-down kept as "ruling 4's own exception" | The mark reads: "1-1's story brief ends on 'the view from the top branch'". The brief (`reference/engine/story-briefs/1-1.md` on ccr-0d59a91c-oy3imz) says at L23: "End: up in the high branches, on the petal trail, pointed north. Resolve, not triumph. The bigger views belong to later stages", and at L41: "the view north belong[s] to 1-4". The spec's own correction says the same (L968-970, L1008: "No big view (1-4's)") | **The exception rests on a misquote.** "Resolve, not triumph" may still justify a calm ending; if so, cite L23. As written, a reason the brief denies keeps a node the ruling removed |
+| 3. Hanging: Matt's call; P9 defers to the acceptance test | L1653, L1808, L1833 marked; L2005 "[revised 1:14 PM ET: ... An engine change is never one of the stage's rounds ...]" | **Yes** |
+| 4. Fixed-composition list closed; float line one thing | L1853 marked (closed list: 4-3, 4-7, 7-4, 8-4, 4-D, 5-M, 6-8, 1-8, the lairs; each with a recorded OK; each still passes look-alike); L1982 "the median ... 25.3%. The range is not the line. The mixer's 1-1 at 25.4% MISSES" | **Yes** |
+
+**Verdict: READY TO BUILD step 6**, on two conditions:
+1. Its first task is catalog.ts's hazard worlds (teach world to W10, plus artIn) with a check that fails if they shrink.
+2. L1075's citation is corrected before 1-1 is rebuilt; this doesn't block step 6, which is whole-game data and gates.
+
+Everything listed in §11e as "inside step 6" stays the order: the tested move table first, the locks from main (World 1's after
+engine-core), then the era/lookalike/bands gate on every builder, and R-164.11's cause before any generator change.
