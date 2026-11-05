@@ -2000,7 +2000,7 @@ walk-through stages (stageTime.ts MODEL_FAST, seeds 1-3).
 | P4 | The ~2:00-~5:00 band is an outer bound, not a target | PACING §7 | ES 667 |
 | P5 | **Length comes from units,** not longer runs: a long stage gets more units | Yacht Club (26 rooms); SMBF (8 chunks); Dead Cells (graph) | confirms ES 670-671 |
 | P6 | **The climax is a choice.** Tropical-Freeze style, the world's lair or named set piece is among its 3 longest. It is never "the x-9". **OPEN** until the lairs are timed (PACING §6.4, "cannot be checked until lairs are timed") | TF 6/6; DKCR 1/4; x-9 only 5 of 15 | ES 668 |
-| P7 | **Crumble:** at its first appearance, a teaching margin (estimate, calibrated on the bots); later, Normal settles at **0.5 s** (Celeste Classic, code, 30 fps). Easy is longer (estimate, OPEN). A fallen crumbling piece **comes back after 2 s** (Celeste), and a required one is whole again on respawn (Matt). Snap twigs stay at about 0.15 s (SR §0b.4) | Celeste Classic `obj.delay=15`, `this.delay=60`; MATT (crumbling pieces whole on respawn); SR §0b.4 | C3's Normal 0.67 s and Easy 1.2 s (Gemini E151, which has no source); engine.ts:2428's 1.1 s and the ~30 s off-screen return are engine fixes | **[11:57 AM ET, the lead: a big feel change, so it waits as a ruling until Matt plays a 1.1 s vs 0.5 s clip pair (CLAUDE.md "Show first"); nothing is built before his OK]**
+| P7 | **Crumble:** at its first appearance, a teaching margin (estimate, calibrated on the bots); later, Normal settles at **0.5 s** (Celeste Classic, code, 30 fps). Easy is longer (estimate, OPEN). A fallen crumbling piece **comes back after 2 s** (Celeste), and a required one is whole again on respawn (Matt). Snap twigs stay at about 0.15 s (SR §0b.4) | Celeste Classic `obj.delay=15`, `this.delay=60`; MATT (crumbling pieces whole on respawn); SR §0b.4 | C3's Normal 0.67 s and Easy 1.2 s (Gemini E151, which has no source); engine.ts:2428's 1.1 s and the ~30 s off-screen return are engine fixes | **[11:57 AM ET, the lead: a big feel change, so it waits as a ruling until Matt plays a 1.1 s vs 0.5 s clip pair (CLAUDE.md "Show first"); nothing is built before his OK]** **[MATT 12:32 PM ET: "I like crumbling #2 which looks faster" (the 0.5 s clip). P7 stands: Normal 0.5 s, back after 2 s, whole on respawn, a calibrated first-appearance margin, Easy from the bots]**
 | P8 | **Gaps:** on Normal, intended gaps are ≤ 0.8 of the maximum reach, and **no gap sits in the ambiguous band of 0.85-1.15 of the maximum**: a gap is clearly a jump or clearly not | Yacht Club ("3 or 4 tiles" of 5; "removes ambiguity"); GP:75-76 (≤ 0.82) | ES 640's 0.92 top, and the G row's 0.75; C20's denominator check still runs |
 | P9 | **Fix rounds:** "≤ 2" is the designer's **budget**, with no source. A round is **one change to data, or one engine change, run through every gate**. Studios iterate the generator and its pieces, never one generated stage | PACING §3 (Sure Footing, Dead Cells, Spelunky 2, Gungeon, Yacht Club) | ES 1685's wording; Matt's "fix the engine" stands |
 
@@ -2098,3 +2098,31 @@ Anything else floats. E3 calls footingOf and nothing else, so there is one defin
 - it gives the same result as support.py on every family support.py sees correctly (banks drawn to the bottom, drawn trunks);
 - it finds the art-only supports support.py misses (gen2's columns, 1-2's scenery kapoks);
 - stills of 3 disputed pieces, both ways up, show the verdict matches the screen.
+
+## Per-roll ranges: each roll draws its own tempo (designer, 11-05 ~12:32 PM ET; R-164.11; engine-runs 2c72ebe6f, RUNS.md Addendum 2, out/r16411/)
+
+**The root cause (planner, R-164.11):** the mixer fixes gap and rise per stage (w1mix.ts:885-886), and every gap sits within ±8% of one
+width (w1mix.ts:338). So every roll plays the same hop and jump mix (1-1: diversity 0.042). The old 1-1 reaches 0.384-0.396 because its
+mix swings from roll to roll. **The fix is that each roll draws its own tempo inside its profile's range.**
+
+**The ranges are measured** on Matt's two references, main's old 1-1 and old 1-3, over 32 rolls, Normal. Easy is the same on old 1-1.
+Each cell is p10-p90 across rolls, and no number is chosen.
+
+| Profile word | What a roll draws | Range | From |
+|---|---|---|---|
+| **Hop share (every tempo)** | the roll's hop share h/(h+J), drawn from **three families**: hop-heavy 0.43-0.51, even 0.74-0.80, jump-light 0.99-1.00 (old 1-1's measured families: 11, 11 and 10 of 32 rolls). A roll's lean is then about −0.33, 0 or +0.23 | 0.45-1.00 | old 1-1 (three families); old 1-3 0.55-0.94 within it |
+| **tempo: calm / steady / brisk** | the roll's median gap share (of jumpOK's widest single jump at that rise) in the lower, middle or upper third of the references' range | calm 0.79-0.83, steady 0.83-0.87, brisk 0.87-0.91; each roll's p90 gap ≤ 0.99 | references' roll-median gap share 0.79-0.91; roll p90 0.95-0.99 |
+| **hills: flat / rolling / hilly** | the roll's median rise share (of the gate's highest rise, 80 px) in the lower, middle or upper third | flat 0.50-0.65, rolling 0.65-0.80, hilly 0.80-0.94; each roll's p90 rise ≤ 0.95 | references' roll-median rise 0.50-0.94; p90 0.94-0.95 |
+| **bursts** | by time, never by count: groups of 5-20 s; a node lays as many as its units need | — | Launchpad (G #38); no tool on main measures bursts (engine-runs) |
+
+**Checks that come with it:**
+- **The variety floor:** a stage's rolls reach era diversity ≥ 0.35 (SR §2), judged over 200 rolls (R3 F6), with 32 as the quick check.
+  If draws inside these ranges can't reach it, the ranges are too narrow. That's a finding for the designer, never a reroll.
+- **A conflict to settle before it ships (C20 and pacing P8):**
+  - The references' gaps run at 0.79-0.91 median (p90 up to 0.99) of **jumpOK's** widest.
+  - P8 (Yacht Club) keeps intended gaps ≤ 0.8 of the **true maximum** and out of the 0.85-1.15 band.
+  - If jumpOK already holds a margin below the true maximum (C20's run), the two agree in true terms.
+  - If it does not, Matt's own bar sits inside the research's "ambiguous" band. Then it goes to Matt as one question with a clip, and
+    nothing is guessed. Until then the mixer uses these measured ranges, because they are what Matt has played and liked.
+- **Easy keeps its own softening:** its widths are Normal × 1.35 (C4), and its rises keep the Easy caps. The old 1-1's Easy is identical
+  to its Normal, which is the old fault, not a reference for Easy.
