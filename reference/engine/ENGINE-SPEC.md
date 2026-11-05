@@ -633,6 +633,54 @@ burst, and E[lives] about 0.7. This replaces the planner's fixed 70-90 px stand-
   - over a world, no two neighbours are within 20% of each other;
   - the world's spread is at least 2.5 minutes.
 
+
+## The polish pass (designer, 11-05 ~2:35 AM ET; Matt played the mixer's 1-5: "It played much better. Needs polish... was kind of ugly")
+
+Evidence: Matt's still, upright (`reference/engine/cp3/matt-1-5-mixer-0216.png` on `ccr-0d59a91c-oy3imz`). It shows five faults:
+1. a thin grey slab floats over the water with nothing under it;
+2. the bank ends in a hard, straight cliff face;
+3. the foliage band is cut off in a straight horizontal line over the pond;
+4. a flag stands on top of the foliage, not on the path;
+5. the top half of the upright screen is empty sky.
+
+The play is the win. From now on every piece the mixer lays must look placed, not stamped. Polish is part of every mixer stage's bar,
+next to the five design faults above.
+
+**Rules the mixer follows (each with a machine check where it can have one):**
+- **P-1. Every piece has painted art. A grey placeholder never ships.** Each piece kind maps to a painted sprite from the library: log,
+  bough on its trunk, lily pad, reed isle, stone, stump, bridge. *Check:* no platform in a built stage draws with a fallback or plain
+  fill; the planner names the kind behind the grey slab.
+- **P-2. Nothing floats unless it floats** (D16). Over water there are only floating pieces (lily pad, reed isle, drifting log) or
+  supported ones (a stump in the stream, posts, roots). In the air there are only boughs on a trunk, or pieces hung from a rope or vine.
+  *Check:* every surface's underside meets a holder, water or ground.
+- **P-3. Ground ends are dressed, never cut.** A bank ends in an end piece:
+  - a root-fringed lip, a sloped crumble of earth, or a stump;
+  - from the library: W5 `bankEnd-b` (unused), the W6 mangrove kit's broken stump ledge and low stump, the W1 knots.
+
+  A sheer face only where the idea wants a wall (the climb). *Check:* every ground end with a drop over 120 px carries an end piece.
+- **P-4. The foliage band follows the ground.** It ends where its ground ends, with a fern or leaf end piece (the leaf atlas has unused
+  big leaves: `big_B05..B15`, `C03`, `C11`), never a straight crop over water or a gap. *Check:* no foliage band spans a gap or water.
+- **P-5. Flags, marks and hearts stand on the path.** They sit on the surface he stands on, never on dressing or in the backdrop band.
+  *Check:* each marker's base is within 4 px of a standable top.
+- **P-6. The upright screen is never half empty.** Upright, the space above the play line holds play (canopy boughs, the high road) or
+  dressing that belongs: hanging vines (W1 `vine-rope`, the W7 `liana-a1..a4` anchors, both unused), overhanging boughs, a trunk
+  (`trunkPlain`, unused). *Check:* in a sliding upright view, the upper half has a piece of play or dressing in at least 3 views of 4.
+  This also feeds the clutter cap, so it is dressing, not noise.
+- **P-7. The mushroom on its perch gets a stump.** W6 kit-15 low stump or W5 fernStump, both never used; no new art.
+
+**What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
+- the start;
+- a fork, with both roads in view;
+- a creek crossing;
+- the creaky test;
+- a bank's end over water;
+- the shrine.
+
+Each pair is checked against P-1 to P-7 by the designer before it goes to the lead. A still that fails is fixed, not explained.
+
+**Art:** the library above covers every rule. No Hugging Face spend is needed for this pass; if a still shows a gap that nothing
+fills, the designer sends the lead a small picture list.
+
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
