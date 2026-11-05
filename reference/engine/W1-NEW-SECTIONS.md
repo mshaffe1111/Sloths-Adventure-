@@ -140,7 +140,7 @@ Every phase is at least 3:1.
 - Petals sit LOW on trunks at marching height in #19, #22, #23 (1-1.md:26-27), as #11 does. No petal road in the boughs.
 - #18 has no sky opening and no long view north (1-1.md:41).
 - #23's exit totem is sourced to stageGenerator.ts:2136 on main.
-- **Placement rule \`lateOnly: 'lastThird'\`** goes on every bough section: #9, #10, #11, #15, #19, #22, #23, #29, #30, and the
+- **Placement rule `lateOnly: 'lastThird'`** goes on every bough section: #9, #10, #11, #15, #19, #22, #23, #29, #30, and the
   harvested w1-high-leaps and w1-bounce-run. The generator may lay one only in the stage's last third (1-1.md:46-52, boughs as the
   reward). It's an engine field for the planner to add to SectionTemplate.
 - **Bough share:** the stage's boughs + creaky landings stay ≤ 25.3% (the float floor). The lastThird rule keeps boughs to about a
