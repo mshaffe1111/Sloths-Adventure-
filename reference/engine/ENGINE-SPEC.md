@@ -2225,7 +2225,7 @@ finish"). I computed both on engine-mixer 452fc9f83 (single jump, maxRun 285, ju
 and well out of its 0.85-1.15 band. So C20 and P8 agree, the per-roll gap ranges stand, and nothing goes to Matt. The 70 px takeoff
 slack is what keeps the margin, and it stays (P8's own reason: no jump needs a take-off at the very edge).
 
-## 1-2 and 1-5 measured; each stage's numbers come from its own reference (designer, 11-05 12:50 PM ET; engine-runs 7dafdeeb0, RUNS.md Addendum 3, rs-main-12.json and rs-main-15.json, every row read)
+## 1-2 and 1-5 measured; each stage's numbers come from its own reference (designer, 11-05 12:48 PM ET; engine-runs 7dafdeeb0, RUNS.md Addendum 3, rs-main-12.json and rs-main-15.json, every row read)
 
 **What the rows show:** each old stage has its own centre. Gap-share centres: old 1-5 0.77, old 1-1 0.82, old 1-2 0.83, old 1-3 0.84.
 1-5 is calmer than "calm". So a profile word can't carry a fixed number without guessing.

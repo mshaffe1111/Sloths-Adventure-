@@ -4,7 +4,9 @@
 
 1. **Every time I write, in a message, a file or the spec, is read from `TZ=America/New_York date` in a tool call made just before
    it.** Never estimated, never carried forward. **One read covers one message:** a second message needs its own read, even a minute
-   later (12:42 PM ET: two messages stamped 12:44 from a 12:40 read plus a guess). (Defect: 11-05 I wrote times 4-120 min ahead, twice; the second time the fix covered
+   later (12:42 PM ET: two messages stamped 12:44 from a 12:40 read plus a guess). **Read the clock in its own tool call first, then
+   copy the number it printed into the text.** Never type a time in the same call as the read (12:48: a heading typed as 12:50 in the call
+   that read 12:48). (Defect: 11-05 I wrote times 4-120 min ahead, twice; the second time the fix covered
    file writes but not messages.)
 2. **Taught-at and every "what ships" fact comes from main**, the shipped game, never from an unshipped branch (11-05: the 1-2
    teach ruling rested on 11-04's unshipped 1-2).
