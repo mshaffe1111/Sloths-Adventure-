@@ -132,7 +132,7 @@ export interface ProtoExtras {
   /** far-off twinkles, dressing only (the mixer's 1-5 n9: "Something shiny, far away"), engine.ts drawGlint */
   glints?: Array<{ x: number; y: number }>;
   /** dressing from World 1's new painted pieces (w1NewArt.ts, the mixer's stage spec `dress`): a frame name, its centre x and the ground
-   *  it stands on (1-1: the squirrels who watch him leave); a name with no picture yet (the bootprint) is not drawn */
+   *  it stands on (1-1: the squirrels who watch him leave); the bootprint clue is its own decal, flush on the piece top at b (w1NewArt.ts drawW1Clue) */
   mixDress?: Array<{ n: string; x: number; b: number; flip?: boolean }>;
   /** drawn water a stage declares (engine.ts drawWaterAndFlags): from x0 to x1, its surface at y, a body to below the ground. Its `kind`
    *  picks its art (the designer, 11-05): 'deadly' (the default) and 'teaching' are the world's painted pit water (World 1's murky creek,

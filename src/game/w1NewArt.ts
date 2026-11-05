@@ -35,8 +35,37 @@ export function w1NewReady(): boolean {
   load();
   return ready && !!img;
 }
-/** whether the sheet has a piece by this name (the bootprint, the 1-1 clue, has none yet: a known art gap, never drawn as a stand-in) */
+/** whether the sheet has a piece by this name (the bootprint, the 1-1 clue, is its own picture: drawW1Clue) */
 export const hasW1New = (n: string): n is W1NewPiece => n in F;
+
+/**
+ * 1-1's clue (R-165.31): the soldier's bootprint, a flush decal toe east (src/assets/props/w1-bootprint.webp, 300x74, painted on
+ * Hugging Face from World 1's bank art: art-bootprint f57eac784). It lies in the moss of the end log's top, drawn 75x18 game px with
+ * its top edge on the log's top line, behind Pokey and under the HUD (engine.ts draws it with the stage's dressing). Only a stage that
+ * reports a clue place lays it (proto.mixDress, the name CLUE_NAME); it loads with the w1-new sheet (stagePreload.ts).
+ */
+export const CLUE_NAME = 'bootprint';
+export const W1_CLUE_URL = new URL('../assets/props/w1-bootprint.webp', import.meta.url).href;
+export const CLUE_W = 75, CLUE_H = 18;
+let clueImg: HTMLImageElement | null = null;
+let clueReady = false;
+export function w1ClueReady(): boolean {
+  if (!clueImg && typeof Image !== 'undefined') {
+    const im = new Image();
+    clueImg = im;
+    trackAtlas(im, W1_CLUE_URL, () => { clueReady = true; }, () => { clueImg = null; }, () => { clueImg = null; clueReady = false; });
+  }
+  return clueReady && !!clueImg;
+}
+/** where the decal lies for a clue place (its centre x and the landing's top): flush in the moss, its top edge on the top line */
+export const cluePlace = (cx: number, top: number) => ({ x: cx - CLUE_W / 2, y: top, w: CLUE_W, h: CLUE_H });
+/** the bootprint at its place; false (nothing drawn, never a stand-in) until the picture has loaded */
+export function drawW1Clue(ctx: CanvasRenderingContext2D, cx: number, top: number): boolean {
+  if (!w1ClueReady()) return false;
+  const r = cluePlace(cx, top);
+  ctx.drawImage(clueImg!, r.x, r.y, r.w, r.h);
+  return true;
+}
 
 /** how tall each kind of dressing stands (world px): a squirrel a little under Pokey's height (about 70), the gates and knots their own */
 const DRESS_H: Record<string, number> = { squirrel: 62, 'root-gate': 120, knot: 70, 'acorn-slope': 80, 'log-hide': 90 };

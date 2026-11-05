@@ -85,7 +85,7 @@ import { renderWorldObjects, drawWater, drawBounceCaps } from './terrain.ts';
 import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LINE, SWIM_LINES, swimStep, underOf, type CalmPool, type SwimState } from './swim.ts';
 import { drawCalmRing, drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterOver, drawCalmWaterPlain } from './calmWaterArt.ts';
 import { swimHeadY } from './heroSwim.ts';
-import { clearOfHollowLogs, drawHollowLog, drawW1Dress, insideHollow } from './w1NewArt.ts';
+import { CLUE_NAME, clearOfHollowLogs, drawHollowLog, drawW1Clue, drawW1Dress, insideHollow } from './w1NewArt.ts';
 import { drawMudSplash, drawW1Creek } from './w1Creek.ts';
 import { paintedBank, setW1PitWater } from './w1Pits.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
@@ -6129,7 +6129,8 @@ export class GameEngine {
     if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats), this.camera, this.gameTime);
     profMark(ctx, 'ground');
     // World 1's new painted dressing a stage lays (proto.mixDress: 1-1's squirrels), standing on the ground behind Pokey (w1NewArt.ts)
-    for (const d of this.proto?.mixDress ?? []) if (this.onScreen(d.x, d.b - 40, 160)) drawW1Dress(ctx, d.n, d.x, d.b, d.flip);
+    // (1-1's clue, the bootprint, lies flush in the end log's moss: its own picture, drawW1Clue, only where a stage reports its place)
+    for (const d of this.proto?.mixDress ?? []) if (this.onScreen(d.x, d.b - 40, 160)) { if (d.n === CLUE_NAME) drawW1Clue(ctx, d.x, d.b); else drawW1Dress(ctx, d.n, d.x, d.b, d.flip); }
     // 6-8: its ledges in Matt's other World 6 pieces (over the roots that top out on them, as the kit's planks are)
     if (this.proto?.stiltLedges) drawStiltLedges(ctx, this.proto.stiltLedges, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 6-8's crown: a warm light behind him as the view pulls back, so he stands out against the ruins at dusk (the lead's review)
