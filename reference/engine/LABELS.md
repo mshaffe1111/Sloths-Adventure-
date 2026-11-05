@@ -29,7 +29,7 @@ ruling (ENGINE-SPEC), INV (the inventory row), or SHIPPED (a commit).
 | solid log art=steps | log art=steps | built / bank village | no | stairs up the bank houses | W2 | kept |
 | solid log art=poolLog | log art=poolLog | water / a drawn pool | no (on water) | pool crossing | W4 (4-3) | water rule 3 |
 | drift log | drift log drift | water / a river surface | no (on water) | the river crossing that moves | W2 now; the ladder returns it in W6 and W8 ponds | needs a drawn river (rivers row) |
-| solid branch (bough) | branch, branch pit=drop, branch catch (pit=drop), branch lip | tree / a trunk within 220 px, or a post; or floating where it reads cleaner | **yes** (platform) | landing, stair, canopy road, catch under a teach gap (catch), ledge lip (lip) | all W1-W10 (INV: 58 stages) | trunk rule (≤ 3 full trunks per 1,400 px) |
+| solid branch (bough) [revised 12:43 PM ET: in W3, W4, W7 and W9 a thin piece is DRAWN as stone, so rule 1 applies there; see §8] | branch, branch pit=drop, branch catch (pit=drop), branch lip | tree / a trunk within 220 px, or a post; or floating where it reads cleaner | **yes** (platform) | landing, stair, canopy road, catch under a teach gap (catch), ledge lip (lip) | all W1-W10 (INV: 58 stages) | trunk rule (≤ 3 full trunks per 1,400 px) |
 | branch art=frond / art=orchid / art=post lip | | tree / frond and orchid on a trunk; post lip on a porch post | no | W4 frond ledge; W5 orchid shelves; W2 porch posts | W4, W5, W2 respectively (each its own art) | theme-locked |
 | solid branch pillar / moss_stone pillar | | ground / stands on its drawn pillar | no | the 4-10 lair's pillars | W4 | stone on a pillar is supported |
 | canopy_bridge | canopy_bridge (+ catch, pit=drop, hidden) | tree / plank span; ends on posts or boughs where drawn | **yes, as planks** | span, canopy road | W1, W5, W8, W9, W10 | a rope or post end drawn dangling in air is a P-2 fault: draw posts, or plank only |
@@ -462,3 +462,27 @@ laid until then.
    hooks (scratch-hooks.diff), the shots are re-taken without it. If not, it goes to the lead as a defect with an R-number.
 4. **breaking log or plank** (catalog.ts "no label yet"): it was ruled in §6.1 above (the fragile log and plank: a platform; taught
    by the creak; laid only where the art shows the creak tell). The catalog row takes that ruling.
+
+## 8. A thin piece's element follows the art it is drawn with (designer, 11-05 12:43 PM ET; render-stone's finding, checked against the kits)
+
+In W2-W10, every thin piece (height < 50) is drawn with its world kit's `branch` frame, whatever its data style
+(protoArt.ts :821, :1330 on render-stone; frames in kitAtlasData.ts). So the label follows the frame, not the data word. I cropped each
+kit's frame from src/assets/kits/w<N>.webp: `labels/sheets/kit-branch-frames.jpg`.
+
+| World | Its `branch` frame (looked at) | Element | May float |
+|---|---|---|---|
+| W1 | W1's own wood bough (protoAtlas) | tree | yes, under the cap |
+| W2 | wooden planks lashed with rope | built (wood) | yes, as planks |
+| W3 | a mossy stone slab | **stone** | **no**: held, column or kin (render-stone's stoneHold) |
+| W4 | a slate slab with grass | **stone** | **no**: held, column or kin |
+| W5 | no `branch` frame: falls back to W1's wood bough | tree | yes. W5's own thin art is an art gap (ENGINE-SPEC floating-stone ruling) |
+| W6 | a grey root stump, roots splayed down | wood (root) | yes, as wood. **Open:** a rooted stump hovering in the air reads as roots reaching for nothing (D37). Named for the lead's art list, not ruled away here |
+| W7 | a carved ruin slab | **stone** | **no**: held, column or kin |
+| W8 | a purple log with leaves | tree (log) | yes |
+| W9 | a cracked basalt slab | **stone** | **no**: held, column or kin |
+| W10 | a black metal grate | built (metal) | yes, as a built platform under the cap (Matt: "floating logs and platforms" are fine) |
+
+- **The kin for a stone piece over a deep drop** is its world's own platform art, never W1's log (12:30 ruling). W3, W4 and W7 keep the
+  column until that art exists.
+- E3 and the catalog read the element from this table, by world, for thin pieces. The planner's catalog row "solid branch (bough)"
+  takes the per-world element from here.
