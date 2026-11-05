@@ -110,10 +110,10 @@ generated:
 idea unless World 1 already teaches it; it is on the move ladder below.
 
 **"It keeps building" (Matt to the planner: "every move you learn keeps coming back... it just keeps building and building"):**
-a move ladder per world, as data. Each stage:
+a move ladder per world, as data. Each stage: **[revised: move ladder M1-M8, 12:03 AM]**
 - introduces at most one new move or idea;
 - reuses at least two earlier ones in a harder form: a higher risk target, a narrower window, or combined in a new idea;
-- never lets a move learned in the last three stages drop out of the world for more than two stages.
+- never lets a move learned in the last three stages drop out of the world for more than two stages. **[revised: move ladder M1-M8, 12:03 AM]**
 
 *Check:* over the world's stages in order, count each idea's and each move's first use and every reuse after it. Each reuse must be
 at a higher job (teach, test, twist, master) or a higher risk target than the use before.
@@ -136,7 +136,7 @@ differently is world five." This replaces "each world has its own kit":
 
 **[designer, 11-05 ~12:25 AM ET, from Matt via the planner] Animals and unused art.**
 - "Once you introduce them, they can be anywhere": an animal, once taught, joins the shared library for every later stage and every
-  later world, inside any idea where it makes sense. The move ladder counts it as a move: after its teach, it must come back in a
+  later world, inside any idea where it makes sense. The move ladder counts it as a move: after its teach, it must come back in a **[revised: move ladder M1-M8, 12:03 AM]**
   harder form, and must not drop out for more than two stages.
 - "Look at the library of art and see what we've created that's not been used": the planner's unused-art inventory feeds the
   library. Every unused piece of art that can carry a node idea becomes a library entry, tagged with the worlds it fits.
@@ -171,7 +171,7 @@ differently is world five." This replaces "each world has its own kit":
 | Scaffold climb | climbs scaffold, balconies and iron stairs | W10 scaffold, balcony, iron-stair | W10 | climb exists |
 | Bridge span and fallen column | crosses a broken span, then walks a fallen column | W7 bridge-span, fallen-column | W7, W9 | static: yes |
 
-Animals in the unused frames (the mantis "disguise", the eagle "glide", the caiman "retreat", the turtle "scurry") can give each
+Animals in the unused frames (the mantis "disguise", the eagle "glide", the caiman "retreat", the turtle "scurry") can give each **[revised: move ladder M1-M8, 12:03 AM]**
 animal a second behaviour. That is the harder form the move ladder asks for when a taught animal comes back.
 
 
@@ -572,7 +572,7 @@ so a run of same-size logs fails the gate even when the logs are scattered.
 | Cracking log | cracks a beat after you land, then falls (the crumble rule, on log art) | the crumble exists (twigs, W7 tiles) | W4 brokenLog as its "after" frame | about 0.3% |
 | Rolling log | rolls down a slope at you, so you jump it or hide | unclear: W1 chaseDebris is packed, never drawn | W1 chaseDebris | the planner checks the 1-8 chase code first; about 0.5-1% if new |
 | Biting log | one log in a row is a moss-log caiman: the eye opens, then it snaps | no | W6 moss-log caiman, 17-frame snap (never packed) | a new hazard with a tell: about 1-1.5% |
-| Sinking log | sinks slowly while you stand on it | no (lily pads don't sink either) | any log art | a new surface rule: about 0.5-1%. My pick is to skip it for now; the cracking log gives the same "keep moving" feel for less |
+| Sinking log | sinks slowly while you stand on it | no (lily pads don't sink either) | any log art | a new surface rule: about 0.5-1%. My pick is to skip it for now; the cracking log gives the same "keep moving" feel for less | **[revised: move ladder M1-M8, 12:03 AM]**
 
 **Summary for Matt:**
 - **Today:** 3 log kinds (solid, drifting, pushed) in 3 sizes.
@@ -594,7 +594,7 @@ so a run of same-size logs fails the gate even when the logs are scattered.
 Same treatment as the logs: kinds with their own feel, in size bands, counted as kind x size by the gate.
 
 **Fact that shapes this:** the engine has no true slopes. Every surface is a flat-topped rectangle (a search of the engine and the
-stage builders finds no slope; World 5's "mound pair" is stepped). So a hill is built as a **stepped mound**: two to four rises that
+stage builders finds no slope; World 5's "mound pair" is stepped). So a hill is built as a **stepped mound**: two to four rises that **[revised: move ladder M1-M8, 12:03 AM]**
 the player hops up and down, drawn as one hill shape. A real slope you can run up is new engine work, sized below, and not needed to
 get hills that read and play as hills.
 
@@ -858,7 +858,7 @@ third Easy-only rest of 4-5 s goes after n3 (c). **This is a miss at the checkpo
 
 
 **[designer, 11-05 ~5:40 AM ET] Deep pits (the engine-render helper's still 11).** Below a bank's painted end piece, the pit's dark
-widens into a hard, stepped cave shape that reads as a hole cut out of the picture. The designer's pick: the dark follows the bank faces
+widens into a hard, stepped cave shape that reads as a hole cut out of the picture. The designer's pick: the dark follows the bank faces **[revised: move ladder M1-M8, 12:03 AM]**
 down to where the end piece stops, then fades out over about 300 px so the forest shows, with no widening and no stepped edge. It changes
 every World 1 bank end, so it goes to Matt as one question with a before/after pair. Built only on his pick.
 
@@ -1225,7 +1225,7 @@ may add fields the gates need, but not remove any.
 | `caps` | per-kind landing caps (1-1: boughs + creaky ≤ 30%) | landing share |
 | `look` | kit, light (morning / noon / dusk / night), backdrop | stills review |
 | `dress` | start, end and clue dressing (painted art only; a missing one blocks Matt's build, never a stand-in) | art check |
-| `marks`, `petals` | Meeca's marks (0 for a sprint); petals low or in arcs | collectibles check |
+| `marks`, `petals` | Meeca's marks (0 for a sprint); petals low or in arcs | collectibles check | **[revised: move ladder M1-M8, 12:03 AM]**
 | `dot` | Dot's lines, each pinned to a node (start or end) | story review |
 | `difficulty` | the dial's d from world and stage; any override stated with its reason | difficulty dial |
 
@@ -1314,9 +1314,9 @@ more, or the stage's theme.
 | Rule | Line |
 |---|---|
 | The teach stage | the move is the theme: lots |
-| **Echo:** the next 2 stages after its teach (skipping lairs) | at least some, one of them required. Before `requiredFromStage` the uses are optional routes (skills.ts) |
+| **Echo:** the next 2 stages after its teach (skipping lairs) | at least some, one of them required. Before `requiredFromStage` the uses are optional routes (skills.ts) | **[revised: move ladder M1-M8, 12:03 AM]**
 | **Its own world, after the echo** | at least a touch in every stage, and some in at least half of them |
-| **Every later world** | every core move appears in at least 1 of every 3 stages (a touch or more). The world's own move is lots |
+| **Every later world** | every core move appears in at least 1 of every 3 stages (a touch or more). The world's own move is lots | **[revised: move ladder M1-M8, 12:03 AM]**
 | **Mixing:** World 2 on | every stage uses at least 3 known core moves besides run and jump, and at least one of them is from an earlier world |
 | **Combining:** after the echo | at least one stage in the move's world joins it with another known move in one beat (a swing into a glide, a bounce onto a rope) |
 | Fit | a use that breaks the move's library fit rule (or the element table) doesn't count and fails the stage |
@@ -1532,13 +1532,13 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
 
 | Move | Taught | Echo (some, one required) | Must keep returning | Today's worst gap → the fix |
 |---|---|---|---|---|
-| bounce | 1-1 | 1-2, 1-3 | ≥ 1 of every 3 stages in every world but W5 | 13 (W3-W4) → W3 and W4 get bounces |
+| bounce | 1-1 | 1-2, 1-3 | ≥ 1 of every 3 stages in every world but W5 | 13 (W3-W4) → W3 and W4 get bounces | **[revised: move ladder M1-M8, 12:03 AM]**
 | double | 1-1 | 1-2, 1-3 | in jump content everywhere (the gates check it as a need) | — |
 | liana | 1-2 | 1-3, 1-4 | ≥ 1 in 3 | already passes |
 | creaky / breaking branch | 1-2 | 1-3, 1-4 | ≥ 1 in 3 in tree worlds (W1, W3, W4, W6, W8, W10) | 41 → W2-W4 get them |
 | rope | clearing 1-3 | 1-4, 1-5 | ≥ 1 in 3 | 35 → W5-W7 get ropes (W7: temple ropes; W5: its own kit's rope) |
 | climb | 1-4 | 1-5, 1-6 | ≥ 1 in 3 | passes |
-| push | 1-6 | 1-7, 1-8 | ≥ 1 in 4, often as a puzzle beat | 61 → every world gets push beats |
+| push | 1-6 | 1-7, 1-8 | ≥ 1 in 4, often as a puzzle beat | 61 → every world gets push beats | **[revised: move ladder M1-M8, 12:03 AM]**
 | hide | 1-7 | 1-8, 1-9 | ≥ 1 in 4, in each world's stealth stages at least | 28 → W9 and W10 stealth stages use bushes or cover |
 | moving platform | 2-7 (planned) | 2-8, 2-9 | ≥ 1 in 3 from W3 on | 29 → W3, W4 |
 | leaf glide | clearing 4-1 | 4-2, 4-3 | ≥ 1 in 3 from W4 on, wherever there's a drop | unknown until its row exists |
@@ -2028,3 +2028,42 @@ source. They stay as estimates and are calibrated by the bots (TRIAGE C rows), n
 | #81 | Upright views with play in the upper half ≥ the old 1-1's **98.0%** | MEASURED | mixer 1-1 93.8%, 1-5 96.1% → **MISS**, W1 fixes |
 | #49 | Today's numbers for 1-5: splits **26** (26-27) Normal / **20** Easy; two-road **41.1%** (40.3-43.0) Normal / 26.7% Easy (74c0f6de). The 46-50% quoted from 8c8cd997 is stale | MEASURED | written |
 | #134-#141, #143 | The 9:59 AM World 1 label table (ES ~1395-1419) is **superseded by reference/engine/LABELS.md**, keyed to the measured inventory. The old rows stay only as history | designer | marked |
+
+## The move ladder's amounts ruled from the research (designer, 11-05 ~12:03 AM ET; MOVES.md, research-moves ee102bdd)
+
+The earlier amounts (the 2-stage echo, "≥ 1 in 3", "≥ 1 in 4", "absent ≤ 2", "≤ 1 new a stage") are replaced. Only 2 of our 40
+mechanics pass "≥ 1 in 3" as a window, and no enemy in DKCR, Tropical Freeze or 3D World does. They are replaced by the measured
+envelopes of shipped games, with Matt's "everything builds on everything" (SR §0.1) as the house floor where it is stricter.
+
+| # | Rule | Source |
+|---|---|---|
+| M1 | **One core concept a stage,** taught in the stage's own four steps (introduce, develop, twist, master), with at least 4 uses, one per step | Hayashida (structure-of-fun:117-133); SR §0b.2 |
+| M2 | **New things a stage, by kind:** ≤ 1 new **core concept**; new **pieces** (animals, props) 2-4 a stage. Staples used everywhere don't count | 3D World (0-4 new enemy kinds a course, mean 2.1); Yacht Club (about 5 enemies + 5 objects a level, "staples don't count") |
+| M3 | **Three return classes**, each with its own line, measured per stage on 16 rolls: | |
+| | • **Verbs** (run, jump, double, climb, liana, rope, glide and swim once taught, where their element is drawn): in most stages, and never below today's measured share (58-100%). Nothing in research asks for more | DKCR / TF (the verbs are in every level); ours measured |
+| | • **Staples** (each element's commonest taught animal, plus the interactive staples: creaky branch, bounce mushroom, moving platform): in **every later world**, in about a third or more of later stages, **longest absence ≤ 8 stages** | TF Tucks 61% / 4, Hootz 58% / 7; DKCR Tiki Goon/Buzz 30-35% / 7-8; Mario's Goomba 20% / 11 (leaner) |
+| | • **Signature pieces** (a world's own move or kit: push, hide, lift, river log, silk, warm air, the hazards and zones, set pieces' ideas): back in **every later world** (Matt's house rule, stricter than the research's ≥ 3/7), **as a twist**, harder or combined, in that world's art | SR §0.1 (MATT); research measured ≥ 3/7 later worlds, longest absence ≤ 25 stages; GV:105 |
+| M4 | **The harder form changes the verb** (blow it out, flip it, use it, a new attack), usually within 0-2 worlds of the base | DKCR Tiki forms (5 of 7) |
+| M5 | **Sprints keep collectibles:** fewer, and on the run line. A sprint has about 3-5 where a normal stage has 6-10. **1-1's "marks 0" is withdrawn**: 1-1 carries 3-5 of Meeca's marks or petals, placed on the run line | DKCR (5 vs 6.3); Rayman (3 vs 10); "marks 0" emptied a sixth of the game |
+| M6 | **A stepped mound or stair has equal rises,** each about a quarter to a third of a jump, about 4 of them (2-6) | SMB measured (2-6, median 4, one block = ¼ jump); Launchpad's equal-step rule |
+| M7 | **A death pit reads darker than a safe drop.** The fade distance is Matt's pick, from stills | Yacht Club (4of5:53). The 300 px has no source |
+| M8 | **Set pieces:** the exact "magic trick" is shown once (Yacht Club), and **its idea returns as a twist** (Matt, 11:36 AM, "Yes"). The two agree: the copy never comes back, but the idea does | Yacht Club (1of5:113); MATT |
+
+**Spec lines corrected (each marked where it stands):**
+- **ES 113-116:** "≤ 1 new move or idea a stage" becomes M2.
+- **ES 116 and 139-140:** "absent ≤ 2 stages" is withdrawn. It is no shipped game's line, and Matt's "keeps building" is carried by
+  M3's every-later-world floor.
+- **ES 1317:** the 2-stage echo is withdrawn. Teach and master happen inside the stage (M1), and the move returns in later worlds (M3).
+- **ES 1319 / 1535:** "≥ 1 in 3" becomes M3's classes.
+- **ES 1541-1542:** push and hide "≥ 1 in 4" become M3 signature pieces.
+- **ES 575:** the sinking log is not "the same feel" as cracking. It is a returning whole-stage theme (DKCR 2-K, 6-2, 8-5). The lead
+  has decided it is not built now: it is listed for W2/W6, with its sink time set by Matt's play.
+- **ES 597-599:** hills follow M6.
+- **ES 861-863:** the pit fade follows M7.
+- **ES 1228:** marks follow M5.
+- **ES 174-175:** "a second behaviour" sharpens to M4's "changes the verb".
+
+**Engine fixes these imply (each under its world's lock):**
+- **Stairs:** today they step at about half a jump, and unequally (MOVES §5). The builder makes equal rises per M6.
+- **1-1's data** gets 3-5 marks on the run line (M5).
+- **The ladder gate** reads M3's three classes, each move tagged with its class in the library.
