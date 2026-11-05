@@ -2486,3 +2486,99 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
    - upper half 93.8%;
    - float 25.4%.
    If any is still there when the builder runs, it's an engine finding for the planner, never a reason to bend 1-1's data around it.
+
+## 1-2 for the builder: the one page to build 1-2 from (designer, 11-05 1:29 PM ET; DRAFT until the engine findings in F are answered)
+
+Same rules as "1-1 for the builder":
+- this page wins over older lines;
+- you change 1-2's data only;
+- a question this page can't answer is logged as a gap.
+
+Read the brief first: `reference/engine/story-briefs/1-2.md` (lead's branch). Every fact about what main ships comes from main
+(68b31e665 or later), built with eraRoll.ts on 3 layouts: old 1-2 is banks (moss_stone 514), logs 210, mushrooms 78 and boughs 73,
+with **no enemies, no vines and no breakables**.
+
+### A. The story and the feel (brief line numbers)
+- **Start:** purpose. He knows now where she is and what's at stake. The iron-collared snake gives a small comic jolt (:17; the scene
+  :13).
+- **Middle:** following her. The petals are her voice, "she went this way". The rain is starting (:18-19).
+- **The low road under the roots:** quieter, closer, a secret. The hidden note "Written walking" sits in plain sight by a pink bell
+  (:20-21).
+- **End:** another petal low on the bark, "where you would not have to look up". Her care for him, not a thrill (:22). So the end is
+  quiet, ruling 4's exception, like 1-1's, and for the same kind of reason.
+- **Kept out (:34-41), plus what main teaches later** (nothing untaught):
+  - no snakes or any animal on the route (combat is 1-3);
+  - no ropes (shimmy is 1-3's skill);
+  - no kapok climb (1-4);
+  - no breaking or rotten wood (1-5 teaches it on main);
+  - no lianas (1-6);
+  - no bush (1-7);
+  - no water;
+  - no squirrels, first petal or bootprint (1-1's).
+- **Vines (:40-41, "the designer's call"): none in 1-2.** Main teaches every vine after 1-2, and 1-2's own place is the roots, which
+  keeps it unlike 1-6.
+
+### B. The profile
+
+| Field | Value | Source |
+|---|---|---|
+| trend | `level`: the trail runs high and low and ends low on the bark | brief :22, :46 |
+| tempo / hills | `steady` / `flat` (descriptive) | 12:48 ruling |
+| roll | `roll12` exactly ("1-2 and 1-5 measured") | 12:48 ruling |
+| branching | `heavy`: the trail is high AND low most of the way ("the trail high and low", :46) | brief |
+| water | `false` | brief |
+| petals | `trail`, low on bark and branches all along (the stage's name and clue, :25) | brief |
+| look | lead `ground` (roots, banks, hollow logs under the overhang), art `w1`, the rain backdrop `w1rain` (:31) | brief |
+| length | **from old 1-2's measured quick clock** (the world length plan, L1806). Asked of engine-runs; until it's measured, the floor is 120 s | — |
+| core | top 3 landing kinds by share (#132). Expected: bank, log, hollow log | #132 |
+| taughtBefore | run, jump, double, bounce (1-1) | 1-1's page |
+
+### C. The node plan (n1-n8)
+The shape differs from 1-1's on purpose: forks at n3, n5 and n7 (1-1's are n3, n5, n10), the rest at n4 (1-1's at n6), and the spike
+at n7 (1-1's at n9).
+
+| # | Job | Deck | Height | Dot or Pokey line |
+|---|---|---|---|---|
+| n1 | warm-up, start | bank hops, stump hop; the safe start (no ground end, nothing that hurts, in the first 1,300 px) | floor | "Follow the petals" (hint.1-2.follow, shipped) |
+| n2 | practise | double gap, bank hops, log jam (thin logs on stumps) | floor | — |
+| n3 | the first high/low | high: bough hops in the rain; low: under the overhang, a hollow log (walk inside, run on top) and bank hops. Rejoin | two roads | "Stay on the petals, high or low" (hint.1-2.highlow, shipped) |
+| n4 | rest | bank walk | low | Pokey's wayside line (way.1-2, shipped) |
+| n5 | **the roots (the stage's secret)** | low: under the overhang, through the open root gate (W1 root-gate-open as the arch he walks under: dressing, no mechanic), to the hidden note, a find; high: bough stair. Rejoin | two roads | "There's something down by the roots..." (hint.1-2.roots) |
+| n6 | climb up | bounce up, stump tops | low → mid | "The petals go up" (hint.1-2.up, shipped) |
+| n7 | the test | high: bough hops with doubles; low: bank hops and a double gap under the overhang. A flag before; a heart after (risk) | two roads | "Under the bough now. Watch the gaps!" (hint.1-2.under) |
+| n8 | the end, quiet | back down to the low bark; the last petal low on the bark by the exit bank (the clue). The arrival keeps the rest rule (G #83), with no dead walk | mid → end bank | — |
+
+**Dot's lines:**
+- Approved by the lead and me under Matt's 1:20 rule, since 1-2 opens the game: **hint.1-2.roots** and **hint.1-2.under** (11-04,
+  1bab7dac0, on engine-mixer's dotLinesData.ts:125, :128). Both are true of 1-2 as planned. Carry them word for word.
+- **Not used:**
+  - hint.1-2.back ("up off the snakes"): snakes are untaught in 1-2;
+  - hint.1-2.rotten ("Rotten wood!"): breaking wood is 1-5's on main, and that line was marked "needs Matt".
+
+### D. Lay and dressing
+- `end: { kind: 'bank', w: 640 }`. Bursts by time.
+- **The iron-collared snake at the start (:26):** a story cameo out of reach, drawn as scenery, never on the route and never able to
+  hurt. If no W1 pose of that snake exists that reads as "more bluster than bite", report it. No stand-in, and never an enemy.
+- **The pink bell (:21, :30):** there is no W1 pink bell. The painted pink bell is World 5's (engine.ts:6116, Pell's note), and the
+  theme lock keeps it out of W1. It's an art gap for the lead. The note is placed meanwhile, and the bell is reported.
+- **The hibiscus near miss (:32, "can"):** there's no W1 hibiscus art, so it's left out until the art exists.
+- **The roots (:47-48, :52-54):** W1 has root-gate-open/shut, knots and the hollow logs.
+  - The brief's W3 rootBridge and rootLadder and W6's mangrove arches are other worlds' art, and LABELS rule 4 forbids them in W1. Root
+    arches and bridges in W1's own art are an art gap for the lead.
+  - W1's vine-rope is NOT used: a rope that looks grabbable before 1-3 teaches the shimmy tells the player a false rule (D38).
+
+### E. The pass line
+- The same acceptance test as 1-1 (ES 1657).
+- The same family of lines, from **old 1-2's own references**, which engine-runs measures as it did old 1-1's: floats, boughs share,
+  pickups and standing kinds per view, upper half.
+- Until they're measured, 1-1's values are NOT borrowed. A line with no 1-2 reference yet is reported, not judged.
+- All the engine gates exactly as on 1-1's page, plus: at least 3 high/low splits that both roads can finish, and the note reachable
+  only from the low road.
+
+### F. Engine findings before 1-2 can be built to its brief (for the planner; the builder never patches these in data)
+1. **No hollow-log idea in the mixer library.** LABELS §2 has the kind (a two-road split, walk inside and run on top), and the art is
+   in the w1-new atlas.
+2. **No "under the overhang" idea:** a low road under a high bank or bough road, with clear head room.
+3. **Dressing that spans a road** (the open root gate as an arch he walks under) has no rule in the dressing pass.
+4. **The rain backdrop per stage** (`w1rain`): is it data in the spec? If not, an engine field.
+5. **A find with its own place** (the note, low road only): check that the spec can say it.
