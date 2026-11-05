@@ -1,0 +1,27 @@
+mix 1-1 easy: float share, planner's rule (mayFloat 'yes' pieces with open air, of catalogue landings) 0.500 (0.470-0.524); support.py 0.239 (0.219-0.252); pieces judged by both 2645 over 16 builds, disagreeing 1612
+       916  planner OPEN / support.py ground             mossy stone
+       414  planner OPEN / support.py ground             solid log
+       281  planner OPEN / support.py trunk              bough
+         1  planner held / support.py float              bough
+mix 1-1 normal: float share, planner's rule (mayFloat 'yes' pieces with open air, of catalogue landings) 0.592 (0.584-0.617); support.py 0.254 (0.239-0.277); pieces judged by both 3805 over 16 builds, disagreeing 2357
+      1064  planner OPEN / support.py ground             mossy stone
+       856  planner OPEN / support.py ground             solid log
+       437  planner OPEN / support.py trunk              bough
+mix 1-5 easy: float share, planner's rule (mayFloat 'yes' pieces with open air, of catalogue landings) 0.441 (0.401-0.474); support.py 0.196 (0.166-0.228); pieces judged by both 3389 over 16 builds, disagreeing 2509
+       923  planner OPEN / support.py ground             mossy stone
+       560  planner OPEN / support.py trunk              creaky limb
+       539  planner OPEN / support.py trunk              bough
+       482  planner OPEN / support.py ground             solid log
+         3  planner held / support.py float              creaky limb
+         2  planner held / support.py float              bough
+mix 1-5 normal: float share, planner's rule (mayFloat 'yes' pieces with open air, of catalogue landings) 0.481 (0.456-0.498); support.py 0.294 (0.272-0.326); pieces judged by both 4182 over 16 builds, disagreeing 2710
+       985  planner OPEN / support.py ground             mossy stone
+       760  planner OPEN / support.py trunk              bough
+       537  planner OPEN / support.py ground             solid log
+       428  planner OPEN / support.py trunk              creaky limb
+old 1-1 easy: float share, planner's rule (mayFloat 'yes' pieces with open air, of catalogue landings) 0.355 (0.112-0.409); support.py 0.253 (0.010-0.282); pieces judged by both 2842 over 16 builds, disagreeing 1737
+      1220  planner OPEN / support.py ground             mossy stone
+       517  planner OPEN / support.py ground             solid log
+old 1-1 normal: float share, planner's rule (mayFloat 'yes' pieces with open air, of catalogue landings) 0.355 (0.112-0.409); support.py 0.253 (0.010-0.282); pieces judged by both 2842 over 16 builds, disagreeing 1737
+      1220  planner OPEN / support.py ground             mossy stone
+       517  planner OPEN / support.py ground             solid log

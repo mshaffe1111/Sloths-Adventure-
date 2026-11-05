@@ -360,3 +360,49 @@ uncommitted scratch worktree.
 ## Closing
 
 Last push 12:16 PM ET: about 1 h 8 min of the planned 3 h (see the time note at the top). Branch `engine-runs`.
+
+## Addendum, 12:22-12:45 PM ET: E3's two support rules side by side (the lead's request)
+
+**Why:** two tools measure E3 with different rules. The planner's is `tools/engine/stonesupport.ts`, arrived with engine-mixer
+`76b7c846c`; it does not change `src/game` from `021ef4e93`. Mine is `tools/engine/runs/support.py`. The designer is to pick ONE rule.
+
+**Method:**
+- Both rules run on the same builds: the stage as stonesupport.ts reads it, through the real engine (`tools/engine/runs/simdump.ts`).
+  That gives 16 layouts x 2 settings of old 1-1 (main) and the mixer's 1-1 and 1-5.
+- The planner's per-piece test is copied verbatim (`stonesupport.ts:36-44`): open air means nothing solid, no water surface and not the
+  stage floor within 8 px under the collider's bottom, anywhere along its width.
+- Command: `python3 -I tools/engine/runs/e3compare.py out/e3/e3 <simdumps>`. It writes `out/e3/e3-summary.txt` and
+  **`out/e3/e3-pieces.txt`**, which lists every piece the two disagree on: stage, setting, layout, x, y, w, h, kind, each rule's call.
+- support.py gives the same shares here as on the dumps (old 1-1 0.253, mixer 1-1 0.254), so the builds match.
+
+**Float share, median (min-max) over 16 layouts.** The planner's share counts pieces the catalogue marks "may float" with open air
+under them, over all catalogue landings. support.py's counts pieces it finds nothing holding, over all landings.
+
+| Stage | Planner's rule | support.py | Pieces both judge (16 builds) | Disagree |
+|---|---|---|---|---|
+| old 1-1 Normal (Easy the same) | **0.355** (0.112-0.409) | **0.253** (0.010-0.282) | 2,842 | 1,737 |
+| mixer 1-1 Normal | 0.592 (0.584-0.617) | 0.254 (0.239-0.277) | 3,805 | 2,357 |
+| mixer 1-1 Easy | 0.500 (0.470-0.524) | 0.239 (0.219-0.252) | 2,645 | 1,612 |
+| mixer 1-5 Normal | 0.481 (0.456-0.498) | 0.294 (0.272-0.326) | 4,182 | 2,710 |
+| mixer 1-5 Easy | 0.441 (0.401-0.474) | 0.196 (0.166-0.228) | 3,389 | 2,509 |
+
+**Where they disagree.** The disagreements fall into three families:
+1. **Deep ground blocks (most of every disagreement).** These are moss_stone banks 120 px deep and solid logs 90 px deep. The
+   planner's rule calls them open, mostly over a pit (for example the mixer's 1-1 spawn bank at x 0, y 1260, 520 x 120, a gap of 490 px;
+   old 1-1's floor logs at x 0, 640, 883, y 580, 90 deep, a gap of 230 px). support.py calls them ground.
+   - On screen they are ground. W1 draws these blocks as earth down to the screen's bottom. See the stills
+     `out/stills/79-end-mixer-1-1-L1-x740-*`, `-x1160-*` (the logs at x 809 and 1218 there are earth banks) and the flag stills
+     (spawn and floor banks).
+   - The planner's header names it: "GEOMETRY ONLY: a piece's collider, not its drawn body. A bank of 50 px or more is drawn with earth
+     under it" (`stonesupport.ts:9-11`). But its float share still counts the 90 px "solid log" blocks, because the catalogue gives logs
+     mayFloat "yes". That is most of the gap between 0.355 and 0.253 on old 1-1.
+2. **Boughs and creaky limbs on a drawn trunk.** The planner calls these open; support.py credits the trunk (`proto.trunks`): 281-760
+   pieces per stage over 16 builds, mixer only. On screen they hang from their trunks (`out/stills/79-end-mixer-1-5-L1-x24410-*`).
+3. **A top 5-8 px under a piece:** 6 pieces in all, all on Easy. The planner calls it held (8 px window); support.py calls it floating
+   (its "rests" window is -2 to +4 px).
+
+**For the designer's one rule:**
+- The planner's collider-only rule disagrees with what the player sees on every deep W1 block and every trunk-held bough.
+- support.py matches the screen on those, but cannot see supports that are only drawn (its blind spot, stated in topic 4).
+- A rule that reads the renderer's own footing (stonesupport.ts:11 says E3's gate will) would settle both. Until then, the 0.253 old
+  1-1 number is the one that matches what is on screen.
