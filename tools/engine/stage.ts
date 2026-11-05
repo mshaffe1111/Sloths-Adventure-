@@ -28,6 +28,7 @@ import { looksAlike } from '../inspect/lookalike.ts';
 import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
 import { landingKind } from '../../src/game/mixer/catalog.ts';
+import { propBreaches } from '../../src/game/mixer/propSupport.ts';
 import { botRun } from '../validate/play.ts';
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -141,7 +142,7 @@ if (ref?.view) {
     shown.push(line(`${set} ideas twice in a row (worst build)`, worst, (x) => x === 0, '0'));
   }
   gate('stage lines (§E.2: per view, float, ideas, floor numbers, surface kinds)', bad);
-  notMeasured.push('cadence: section ratings ramp and cool (src/game/cadence.ts, on the gen2 build\'s slot ratings, once 1-1 builds on gen2)', 'era diversity over the stage graph and the node dials (the planner\'s graph and dials in the gen2 meta)', 'props and dressing over air (secondary objects, Matt 2026-11-05: support.ts judges platforms only)', 'every bough section starts in the stage\'s last third (its window [0.67, 1]: gen2 section ranges, once 1-1 builds on gen2)', 'section kinds a build (gen2 meta, once 1-1 builds on gen2)', 'share of chunks cut from the old stage (gen2 meta, once 1-1 builds on gen2)');
+  notMeasured.push('cadence: section ratings ramp and cool (src/game/cadence.ts, on the gen2 build\'s slot ratings, once 1-1 builds on gen2)', 'era diversity over the stage graph and the node dials (the planner\'s graph and dials in the gen2 meta)', 'every bough section starts in the stage\'s last third (its window [0.67, 1]: gen2 section ranges, once 1-1 builds on gen2)', 'section kinds a build (gen2 meta, once 1-1 builds on gen2)', 'share of chunks cut from the old stage (gen2 meta, once 1-1 builds on gen2)');
   linesShown.push(...shown);
   fs.rmSync(tmp, { recursive: true, force: true });
 }
@@ -210,6 +211,22 @@ if (fs.existsSync(OLD_FILE)) {
     if (breaches.length > 2) bad.push(`layout ${v}: and ${breaches.length - 2} more`);
   }
   gate(`support (${N} layouts, Normal)`, bad);
+}
+// 5c'. secondary objects (Matt's rule's other half): every prop and dressing piece stands on what its family's label says holds it
+// (mixer/propSupport.ts propBreaches, the judging tools/engine/propsupport.ts measured all 102 stages with), every layout, both settings;
+// the landings' own secondaries (stones, mushrooms, lily pads) are the support gate's above
+{
+  const bad: string[] = []; const unl = new Set<string>(); const onS: Record<string, number> = {};
+  let n = 0;
+  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) {
+    const st = buildRoll(cfg, v, setting === 'easy') as never;
+    const b = propBreaches(st, { unlabelled: unl, onStructure: onS });
+    n += b.length;
+    for (const q of b.slice(0, 2)) bad.push(`${setting} ${v}: ${q.n} (${q.family}, ${q.list}) at x ${q.x}, foot ${q.b}: ${q.why}`);
+    if (b.length > 2) bad.push(`${setting} ${v}: and ${b.length - 2} more`);
+  }
+  if (unl.size) bad.push(`props no label covers (cannot be judged, so not passed): ${[...unl].join(', ')}`);
+  gate(`secondary objects over air (props and dressing, ${N} layouts x 2${n ? `, ${n} found` : ''})`, bad);
 }
 
 // 5d. REQUIRED-MOVE (NODES.md §1 `test`, R2 §2 L5: Nelson & Smith; Green et al. 2018): on each teach and test node, a bot without the
