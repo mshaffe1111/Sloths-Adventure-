@@ -10,10 +10,12 @@ variety and difficulty row's number, sourced".
 | | Planned | Actual (ET, from `TZ=America/New_York date` in this session) |
 |---|---|---|
 | Start | brief received | 11:08 AM |
-| Due | 2:30 PM, about 2.5 h | see the last line of this section |
+| Due | 2:30 PM, about 2.5 h | finished 11:50 AM, about 42 min (under half the plan: see §9) |
 | Risk warning | by 2:10 PM if at risk | not needed |
 
 Finish time and total are filled in at the end of §9 (written last, so it is true).
+The clock was read at 11:08, 11:16, 11:20, 11:23, 11:33, 11:36, 11:42, 11:46, 11:49 and 11:50; a "read at" minute on any one
+source is placed between those readings and is approximate (a few minutes either way).
 
 **What is measured and what is an estimate.** Every number below is tagged **(measured)** (counted by me from a saved source or a run
 in this session), **(dev-set)** (a number the developers typed into their game, such as a Time Attack medal clock or a code constant),
@@ -229,7 +231,7 @@ of neighbour pairs within 10% (measured, model):
 §2.4 holds: the flat worlds are W6, W9 and W10 on every roll (W9 and W10 do not move at all between seeds), and W7-W8 on some.
 
 **A rough first-timer multiplier (estimate, for scale only).** HowLongToBeat gives Tropical Freeze "Main Story: 10½ hours" (via the
-DekuDeals listing, https://www.dekudeals.com/items/donkey-kong-country-tropical-freeze, read 11:51 AM; howlongtobeat.com itself was not
+DekuDeals listing, https://www.dekudeals.com/items/donkey-kong-country-tropical-freeze, read about 11:48 AM; howlongtobeat.com itself was not
 reached). Its 42 main-path stages sum to 106.7 min on bronze and 83.7 min on gold (measured, `raw/tf_*_mainpath.tsv`). So a whole
 first play is about 5.9x the bronze clock (7.5x gold), including deaths, retries, the map and cutscenes. This is an upper bound for a
 hard game, not a number for ours.
@@ -258,7 +260,7 @@ What this means for ES 1685 (for the designer to rule on):
   pool** (Sure Footing, Dead Cells, Spelunky 2, Gungeon), never a stage-by-stage patch. ES 1685's "each is a change to 1-1's data file only"
   matches the first half (data, not the stage's layout), and Matt's rule matches the second (engine changes go to the engine).
 - **No source gives a number of rounds.** Searched: Sure Footing (blog, read; paper https://www.pcgworkshop.com/archive/dewsbury2016scalable.pdf
-  and t2thompson.com copy: BLOCKED, target_unreachable, 11:57 AM), Dead Cells (Bénard 2017, MCV 2018, Game Developer 2018 stream page:
+  and t2thompson.com copy: BLOCKED, target_unreachable, about 11:44 AM), Dead Cells (Bénard 2017, MCV 2018, Game Developer 2018 stream page:
   read), Spelunky 2 (PC Gamer 2021: read; Shacknews 2019: read, video only; Edge "Over And Over And Over" 2021-03-25: BLOCKED, empty;
   GMTK transcript on amara.org: BLOCKED, 403; Yu's book: two passages read, full book paywalled), Gungeon (read). R1's Shovel Knight and
   SMBF entries agree (cross-checked after my own list).
@@ -405,7 +407,15 @@ Blocked: YouTube search (empty body), splits.io (404), Sure Footing paper (pcgwo
 (unreachable), Edge 2021 Spelunky 2 feature (pressreader: empty), GMTK Spelunky transcript (amara.org: 403), Yu's full book (paywall),
 mariowiki Jungle_Hijinxs medal table (page returned without it), curl to every host (proxy 403).
 
-FINISH_TIME_PLACEHOLDER
+**Finish (true):** 11:50 AM ET, about 42 minutes after the 11:08 start, against about 150 planned (due 2:30 PM). That is
+**under half the planned time, which the brief names as a red flag for the lead to check.** What the time went on, so it can be
+checked: 1 fetch test; 60 Tropical Freeze stage pages, 8 DKCR pages and 2 ludo.guide pages, 4 speedrun.com games' level and record
+APIs, 5 Yacht Club articles (about 15,000 words, read in full), 9 process sources, Celeste Classic's source, 3 papers; the model on all
+82 stages at 3 seeds and the first-timer bot on 3 stages; every count re-run from saved tables by a committed script. What I did not do
+for lack of a route, not of time: first-play clocks (YouTube, splits.io blocked), per-course 3D Mario clocks (none exist where I
+looked), DKC Returns Worlds 5-8 (ludo.guide part 40 re-lists World 1, https://www.ludo.guide/guide/donkey-kong-country-returns/donkey-kong-country-returns-part-40,
+read about 11:50 AM). Nothing was cut and no check was skipped to finish early; if the lead wants more depth, those three gaps are where it
+would go.
 
 ## Method update (LAWS 4)
 

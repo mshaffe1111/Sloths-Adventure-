@@ -1,5 +1,5 @@
 URL: https://www.yachtclubgames.com/blog/specter-of-torment-level-design-deep-dive-5-of-5/
-Read: 2026-11-05 ~11:50 AM ET via TinyFish fetch_content, whole article read (the "-5-5/" URL is 404; this is the live address). Verbatim excerpts:
+Read: 2026-11-05 ~11:48 AM ET via TinyFish fetch_content, whole article read (the "-5-5/" URL is 404; this is the live address). Verbatim excerpts:
 
 > Well, it's not just one thing, sometimes it feels like a thousand tiny things constantly buzzing around in our brains! But polishing levels isn't done by "feel", it's done by establishing and adhering to a set of guidelines.
 > Specter Knight can jump gaps that are up to 5 tiles wide, but we avoid building gaps that wide into our level design. If the player is intended to jump somewhere, they should be able to jump there comfortably, with a few tiles of wiggle room. In fact, platforming challenges typically don't ask the player to jump more than 3 or 4 tiles.
