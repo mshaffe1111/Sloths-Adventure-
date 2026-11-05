@@ -1,0 +1,86 @@
+{
+ "tag": "er-sun2",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/3265d6b89fedb24ff252ab0883f61f85d865fe95/reference/prop-sheets/qa-notes/engine-render/starts/",
+ "neg": "flowers, orchid, blossoms, petals, log, branch in foreground, broken branch, spikes, frame, border, text, letters, watermark, photo, 3d render, blurry, people, animals, sloth, rain, straight edge, cut off",
+ "items": [
+  {
+   "name": "farlow-s78-321",
+   "start": "far-start3.png",
+   "prompt": "a painted view over a misty rainforest at sunrise: rounded dark treetops and slim palms in soft green haze, layers of canopy, the same flat cartoon painting style, no branch or log, nothing close to the viewer, no flowers",
+   "strength": 0.78,
+   "seed": 321,
+   "w": 912,
+   "h": 528
+  },
+  {
+   "name": "farlow-s78-322",
+   "start": "far-start3.png",
+   "prompt": "a painted view over a misty rainforest at sunrise: rounded dark treetops and slim palms in soft green haze, layers of canopy, the same flat cartoon painting style, no branch or log, nothing close to the viewer, no flowers",
+   "strength": 0.78,
+   "seed": 322,
+   "w": 912,
+   "h": 528
+  },
+  {
+   "name": "farlow-s86-321",
+   "start": "far-start3.png",
+   "prompt": "a painted view over a misty rainforest at sunrise: rounded dark treetops and slim palms in soft green haze, layers of canopy, the same flat cartoon painting style, no branch or log, nothing close to the viewer, no flowers",
+   "strength": 0.86,
+   "seed": 321,
+   "w": 912,
+   "h": 528
+  },
+  {
+   "name": "farlow-s86-322",
+   "start": "far-start3.png",
+   "prompt": "a painted view over a misty rainforest at sunrise: rounded dark treetops and slim palms in soft green haze, layers of canopy, the same flat cartoon painting style, no branch or log, nothing close to the viewer, no flowers",
+   "strength": 0.86,
+   "seed": 322,
+   "w": 912,
+   "h": 528
+  },
+  {
+   "name": "midcorner-s60-321",
+   "start": "mid-start2.png",
+   "prompt": "the rounded leafy crown of a big old rainforest tree, its left end round and finished with leafy bumps and dark outlines, on a flat plain magenta background, flat cartoon painting",
+   "strength": 0.6,
+   "seed": 321,
+   "w": 384,
+   "h": 320
+  },
+  {
+   "name": "midcorner-s60-322",
+   "start": "mid-start2.png",
+   "prompt": "the rounded leafy crown of a big old rainforest tree, its left end round and finished with leafy bumps and dark outlines, on a flat plain magenta background, flat cartoon painting",
+   "strength": 0.6,
+   "seed": 322,
+   "w": 384,
+   "h": 320
+  },
+  {
+   "name": "midcorner-s72-321",
+   "start": "mid-start2.png",
+   "prompt": "the rounded leafy crown of a big old rainforest tree, its left end round and finished with leafy bumps and dark outlines, on a flat plain magenta background, flat cartoon painting",
+   "strength": 0.72,
+   "seed": 321,
+   "w": 384,
+   "h": 320
+  },
+  {
+   "name": "midcorner-s72-322",
+   "start": "mid-start2.png",
+   "prompt": "the rounded leafy crown of a big old rainforest tree, its left end round and finished with leafy bumps and dark outlines, on a flat plain magenta background, flat cartoon painting",
+   "strength": 0.72,
+   "seed": 322,
+   "w": 384,
+   "h": 320
+  }
+ ]
+}
