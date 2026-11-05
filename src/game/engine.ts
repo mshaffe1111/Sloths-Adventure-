@@ -85,9 +85,9 @@ import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater, drawBounceCaps } from './terrain.ts';
 import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LINE, SWIM_LINES, swimStep, underOf, type CalmPool, type SwimState } from './swim.ts';
-import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterOver, drawCalmWaterPlain } from './calmWaterArt.ts';
+import { drawCalmRing, drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterOver, drawCalmWaterPlain } from './calmWaterArt.ts';
 import { swimHeadY } from './heroSwim.ts';
-import { drawHollowLog, drawW1Dress, insideHollow } from './w1NewArt.ts';
+import { clearOfHollowLogs, drawHollowLog, drawW1Dress, insideHollow } from './w1NewArt.ts';
 import { paintedBank, setW1PitWater } from './w1Pits.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
@@ -934,9 +934,11 @@ export class GameEngine {
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
     // (1-1's canopy: the kapok trunks its boughs grow from, scenery only)
-    setDecoTrunks(this.proto?.trunks, this.proto?.leaves);
+    setDecoTrunks(this.proto?.trunks, this.proto?.leaves, this.platforms, this.proto?.water);
     // (the water it declares fills World 1's drops under it: w1Pits.ts paints none there)
     setW1PitWater(this.proto?.water);
+    // (no bank dressing stands where a hollow log lies: it drew over the log's body and in its mouths, the designer's review)
+    if (this.proto?.dress && this.platforms.some((pl) => pl.hollow)) this.proto.dress = clearOfHollowLogs(this.proto.dress, this.platforms);
     // the stage's painted backdrop (World 5's light changes through the world: w5Backdrop.ts)
     setBackdropStage(config.id);
     // a stage that hangs its vines from painted boughs (2-4) draws no leafy clump at each liana's top
@@ -6390,7 +6392,13 @@ export class GameEngine {
     }
     // World 2: lily pads on the water, then the village and the reeds behind Pokey (riverArt.ts)
     if (this.paintedRivers(this.currentStage.config.worldIndex) && riverArtReady()) {
-      for (const pl of this.platforms) if (pl.lily && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawLily(ctx, pl.x + pl.width / 2, this.lilySurface(pl), pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
+      for (const pl of this.platforms) {
+        if (!pl.lily || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) continue;
+        const sy = this.lilySurface(pl);
+        // (on a drawn water zone, a slow ripple ring round it: the pad floats on the water, the designer's review)
+        if (sy !== pl.y + 8) drawCalmRing(ctx, pl.x + pl.width / 2, sy, pl.width * 1.2, this.gameTime);
+        drawLily(ctx, pl.x + pl.width / 2, sy, pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
+      }
     }
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);

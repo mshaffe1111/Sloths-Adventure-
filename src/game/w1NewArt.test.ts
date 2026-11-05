@@ -6,7 +6,7 @@ import './headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { HOLLOW_SHELL, W1_NEW_FRAMES, hasW1New, hollowLogSize, insideHollow, padsOffWater } from './w1NewArt.ts';
+import { HOLLOW_SHELL, W1_NEW_FRAMES, clearOfHollowLogs, hasW1New, hollowLogSize, insideHollow, padsOffWater, piecesUnderWater } from './w1NewArt.ts';
 import { paintedPlatforms } from './protoArt.ts';
 import { paintedBank } from './w1Pits.ts';
 import { stageSheets } from './stageSheets.ts';
@@ -62,10 +62,10 @@ test("1-1 keeps one sky all stage: its sunrise set, and no climb turns the backd
   }
 });
 
-test("a hollow log is two roads: its top over the floor by 120 or more and its inside clear for Pokey (48 tall), from 280 wide (the designer's split rule)", () => {
+test("a hollow log is two roads: its top over the floor by 120 or more and its inside clear for Pokey (48 tall), from 310 wide (the designer's split rule)", () => {
   for (const kind of ['moss', 'plain'] as const) {
-    const s = hollowLogSize(kind, 280);
-    assert.ok(s.height >= 120 && s.clearance >= 56, `${kind} 280: ${JSON.stringify(s)}`);
+    const s = hollowLogSize(kind, 310);
+    assert.ok(s.height >= 120 && s.clearance >= 56, `${kind} 310: ${JSON.stringify(s)}`);
     assert.equal(s.clearance, s.height - HOLLOW_SHELL);
   }
   // (and he walks through it in the real engine: a floor, the log's shell over it, walking right from one end to the other)
@@ -131,4 +131,29 @@ test('a drawn water zone is a body of water: its fill goes from its surface to b
   const lowest = Math.max(...r.platforms.map((q) => q.y + q.height));
   assert.equal(w.surfaceY, 1040);
   assert.ok(w.bottomY > lowest, `fills to ${w.bottomY}, under the lowest ground ${lowest}`);
+});
+
+test("nothing sits sunk under a stage's drawn water (Matt, 11-05: 'Why are logs underwater?'): every built stage, and the checker itself", () => {
+  const sunk: string[] = [];
+  for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9']) {
+    for (const s of [1, 2, 3]) {
+      const r = new RealPlay(id, s);
+      const e = r.e as unknown as { proto?: { water?: Array<{ x0: number; x1: number; y: number }> } };
+      const n = piecesUnderWater(r.platforms, e.proto?.water).length;
+      if (n) sunk.push(`${id} layout ${s}: ${n}`);
+    }
+  }
+  assert.deepEqual(sunk, []);
+  const zone = [{ x0: 0, x1: 1000, y: 1000 }];
+  const P = (id: number, y: number, more: Partial<Platform> = {}) => ({ id, x: 400, y, width: 150, height: 24, type: 'solid', style: 'branch', ...more }) as Platform;
+  assert.equal(piecesUnderWater([P(1, 1060)], zone).length, 1, 'a catch branch under the surface');
+  assert.equal(piecesUnderWater([P(2, 960, { style: 'moss_stone', height: 50 })], zone).length, 0, 'a stone rising out of it');
+  assert.equal(piecesUnderWater([P(3, 992, { lily: true, height: 12 })], zone).length, 0, 'a pad on it');
+});
+
+test("bank dressing never stands where a hollow log lies (it drew in the log's mouths)", () => {
+  const log = { id: 1, x: 1000, y: 870, width: 300, height: HOLLOW_SHELL, type: 'solid', style: 'log', hollow: 'moss' } as Platform;
+  const floor = log.y + hollowLogSize('moss', 300).height;
+  const kept = clearOfHollowLogs([{ x: 1150, b: floor }, { x: 1600, b: floor }, { x: 1150, b: floor - 300 }], [log]);
+  assert.deepEqual(kept.map((d) => d.x + ',' + d.b), [`1600,${floor}`, `1150,${floor - 300}`]);
 });
