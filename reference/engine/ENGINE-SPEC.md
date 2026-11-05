@@ -884,6 +884,15 @@ canopy's own end piece is the rest (520-560 px flat, then a short step), so the 
 after a canopied burst; the pad after every second plain burst stays. Pass lines: two-road share at least 40% on every roll; Normal's
 longest run at most 29 s on median and worst.
 
+
+**[designer ruling, 11-05 ~6:00 AM ET, at the lead's budget stop] Easy is accepted at d27c5acd.**
+- **Why:** the new 1-5's Easy density (0.61 median, 0.63 worst) sits within the old 1-1's own range (0.575 median, 0.66 worst), and
+  is calmer on its worst roll. It rests 4-6 times more often (longest run 18 s, against the old 1-1's 25-119 s). The double breather
+  would add about a minute of walking for children.
+- **The line becomes "Easy no denser than the old 1-1's Easy range".** Matt is told plainly that the median is 0.035 over the old 1-1's.
+- **The canopy-end rest run is the last change before Matt plays.** After it, the stage is READY, or it is sent as it is with any miss
+  named. There is no tuning until Matt has played it and given his meter reading.
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
