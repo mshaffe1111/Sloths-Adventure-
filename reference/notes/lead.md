@@ -108,6 +108,7 @@ engine-core (from main, the planner, due 1:45 PM, lock proves only 1-1/1-5 diffe
   print is small and points here; I READ the files above with the Read tool.
 - After ANY change to LAWS/LESSONS/START-HERE/settings/CLAUDE.md: have every active base branch (engine-spec, engine-mixer) take the files from the lead branch the same hour, or helpers read old laws (11-05: Law 22 missing on engine-spec, caught by the pacing researcher).
 - ROADMAP (Matt 11-05: 'none of this slips through the cracks'): every finding, decision, pause or new job gets its R-id THE SAME TURN (law 21), with owner and state; held items say who holds them. Each check-in ends with roadmapcheck green.
+- PAUSES (D41): after telling helpers to pause, run list_sessions within 5 min; anything still RUNNING on paused work gets interrupt_session + a re-tell. While Matt is pulling back, tell him before starting any new helper.
 - Combined git fetch aborts on one missing ref: fetch each branch on its own.
 - Never type a time; read the clock. (Broke it again 11-05 ~10:30: stamped 10:38-11:15 on events at 10:10-10:32; the designer caught it. Countermeasure: run `TZ=America/New_York date` in the same command that writes any time.)
 - Never design. Report a design problem with evidence; the designer fixes it.
