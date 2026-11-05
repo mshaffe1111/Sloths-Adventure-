@@ -47,3 +47,64 @@
 2. (Withdrawn: the floor is gen2's `ground` port, the planner's correction.)
 3. A perched `bouncy` on a stump: check that gen2's `on` rule can seat it.
 4. Catch boughs under canopy gaps (section 10) need a place rule. gen2's pit and soft cover the ground only.
+
+## Round 2 (designer, 11-05 4:27 PM ET; the lead's (a)-(d) on engine-core 942d79ce3's harvest)
+
+### (c) Teach order: main's, which is moveLadder's: run, jump, double, bounce
+- **Evidence on main:**
+  - The touch coach's sequence is run → jump → **nice**, and "nice" is "Nice jump! In the air, flick up again for a double jump", shown
+    right after the first jump (CoachOverlay.tsx:10; touchCoach.test.ts:48: ['run', null, 'jump', 'nice', null]).
+  - The first mushroom (lesson.bounce, lessons.ts:490) comes at about x 6,450 of about 32,500, on 4 of 4 layouts.
+  - moveLadder.ts:2-14 lists the same order.
+- **So:** the double is taught early, in `ki`, over safe ground, by **#8 `w1-double-teach` (ki)**. Harvested `w1-second-jump` is the
+  double's first TEST (`ten`): change `teaches: 'double'` to `uses: ['double']`. The bounce stays taught in `sho` by
+  `w1-hop-bounce`, after the double, as on main.
+
+### (b) The two 1-3 picks
+- **`w1-low-boughs`: not for 1-1.** Drop '1-1' from its feel. It lays boughs in `sho`, and 1-1's boughs come late, as the reward
+  (1-1.md:46-52). 1-1's boughs come from #9 (late), #10, `w1-high-leaps` and `w1-bounce-run`.
+- **`w1-ledges`: not for 1-1 for now.** Its 'walls' version lays low boughs mid-stage. If the engine gains version-level feel tags,
+  its 'ledges' version can return to 1-1 (an ENGINE finding, not a must).
+
+### (d) The step 2 table, harvested sections (rating = difficulty unless noted)
+
+| Section | Phases (1-1) | Rating | feel 1-1? | Ruling |
+|---|---|---|---|---|
+| w1-learn | start, ki | 2 | yes | OK |
+| w1-stones | ki, sho | 3 | yes | OK. The support gate must show every stone seated on the floor or a bank (rocks never float) |
+| w1-cache-stones | **sho** | 3 | yes | **drop 'rest'**: a rest has no hard input and rates 1 (C2). Same stone check |
+| w1-stump-stones | ki, sho | 3 | yes | OK |
+| w1-stone-dips | sho | 3 | yes | OK. Stone check |
+| w1-second-jump | ten | 5 | yes | **`uses: ['double']`**, not teaches (see c) |
+| w1-leap-stones | ten, ketsu | 6 | yes | OK |
+| w1-high-leaps | ten, ketsu | 6 | yes | OK (boughs late) |
+| w1-hop-bounce | sho, ketsu | 4 | yes | OK; teaches bounce (after the double, as on main) |
+| w1-bounce-run | ketsu | 6 | yes | OK |
+| w1-stone-road | ketsu, goal | 3 | **no** | not for 1-1: it brings him back to the ground at the end, against `trend: up` and "up in the high branches" (1-1.md:23). Keep it for 1-3 |
+| w1-meadow | rest, start (**not goal**) | 1 | yes | drop 'goal' for 1-1 (the end is the high log) |
+| w1-low-boughs | — | 3 | **no** | see (b) |
+| w1-ledges | — | 4 | **no** | see (b) |
+| w1-ropes | — | 5 | no (1-3 only) | OK as tagged (shimmy is taught at 1-3) |
+
+**My 15 (#1-15) as ruled at 4:24:** ratings as their `Diff` column, with #9 tagged late.
+
+### (a) Ten more sections for the thin phases (ground port, W1 kit, no new art)
+
+| # | id / name | Phase | Diff | Needs | Ports | Pieces | Sub-blocks | Source |
+|---|---|---|---|---|---|---|---|---|
+| 16 | `w1-forest-edge` The forest's edge | start | 1 | walk | — → ground | flat home-edge banks with the squirrels' dressing spot clear of the spawn; no gaps in the first 1,300 px; coach.run | 2 or 3 banks; one low step | brief :19 (start, home, gentle); STAGE-RULES:161 safe start |
+| 17 | `w1-fern-bank` Fern bank | rest | 1 | walk | ground → ground | a long flat bank, ferns and a fallen-log seat (dressing); petals low on a trunk beside; one low stump step | long or short; the step or none | C2 (rest ≈ 2× beat); petals low (brief :26) |
+| 18 | `w1-clearing` Sunlit clearing | rest | 1 | walk | ground → ground | two long banks joined by a one-step dip (no gap); a Dot spot | the dip or a step up | C2; a Dot spot at a rest (LEDGER-11-02:336) |
+| 19 | `w1-bough-bench` High rest | rest | 1 | walk | ledge → ledge | a long thick bough between two plain W1 trunks, after the moment; petals on the trunks | length | C2; after every test, a rest (rulebook §4 rule 3) |
+| 20 | `w1-stump-towers` Stump towers | ten | 5 | double | ground → ground | stumps of rising height, each a double up; the floor runs below (a fall is a walk back) | 3 or 4 towers | the floor road; a test of the double |
+| 21 | `w1-bounce-double` Bounce, then fly | ten | 6 | double | ground → ledge | a perched mushroom's bounce, then a double in the air onto a high log road | high road at two heights | the pair on one beat (LEDGER-11-02:33) |
+| 22 | `w1-canopy-weave` Canopy weave | ketsu | 6 | double | ledge → ledge | two roads in the boughs (high boughs, mid boughs) that rejoin; catch boughs under each gap | the high road's length; which road holds the petals | high/low split (LEDGER-11-04 part1:317); catch boughs (3:11 ruling) |
+| 23 | `w1-sunlit-log` Onto the high log | goal | 1 | walk | ledge → ledge | a two-step bough walk-on to the long high log with the exit totem; the bootprint place in its moss (held art) | one step or two | main's 1-1 end; 1-1.md:23 |
+| 24 | `w1-stump-descent` Stumps down | sho | 3 | jump | ground → ground | stumps stepping down to the floor, then a log jam (thin logs on stumps) back up | 3 or 4 down; up by 2 or 3 | up and down (old 1-1 floor); the log road rules |
+| 25 | `w1-mound-log` Log over the mound | ki | 2 | jump | ground → ground | a stepped earth mound with a thin log across its top as a short high road; the floor round it | mound 2 or 3 steps | stepped mounds (ES 619); the log rules |
+
+**The count for 1-1:**
+- 11 harvested sections are usable for 1-1 (15, less stone-road, low-boughs, ledges and ropes), plus my 25: **36 for 12 slots,
+  3:1.**
+- By phase: start 3, ki 10, sho 12, ten 6, ketsu 6, rest 5, goal 2, counting sections tagged for two phases in each.
+- engine-core's CHECK 2 table counts against slots per phase. If any phase is under 3:1, tell me the phase and I'll add there.
