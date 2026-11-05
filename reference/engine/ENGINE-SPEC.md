@@ -708,6 +708,30 @@ next to the five design faults above.
   This also feeds the clutter cap, so it is dressing, not noise.
 - **P-7. The mushroom on its perch gets a stump.** W6 kit-15 low stump or W5 fernStump, both never used; no new art.
 
+
+**[designer, 11-05 ~2:55 AM ET] Polish rules P-8 to P-13**, from Matt's 8 more stills (`reference/engine/cp3/matt-stills-0224-0228/`
+on `ccr-0d59a91c-oy3imz`). The designer viewed stills 03 and 08 directly. Each rule has a machine check, so the fault can't come back on
+another roll.
+- **P-8. Pit art only where there is a pit** (engine work). The World 1 pit painter draws its black drop column only under a gap the
+  mixer marks as a pit: a gap with no floor below it, inside the stage's pit zones. Never through open air above a floor, and never
+  through solid ground (still 08 shows it through a bank). *Check:* for every pit column drawn, no standable top or ground body lies
+  inside its x range below the gap's lip.
+- **P-9. The HUD is always on top** (engine work). No world piece, fruit cluster or log draws over the hearts, lives or marks (still 03:
+  a berry cluster and a log cover the hearts). *Check:* a still test, upright and sideways, at the 6 places finds no world pixel inside
+  the HUD's boxes.
+- **P-10. No hard-edged darkness** (engine work). The cave or darkness layer fades in over at least 200 px and follows the ground
+  (still 03: a sheer dark rectangle covers half the screen, with a straight vertical edge). A seam line down a bank face is a tiling
+  fault, so the bank face tiles seamlessly. *Check:* no darkness edge sharper than the fade width; one bank face is drawn as one piece
+  or seamless tiles.
+- **P-11. Bridges hang from posts on the ground at both ends** (stills 02, 07, 08: rope bridges float in the sky). A bridge's ends sit
+  on a bough, a bank or posts that reach the ground, and grass blocks with dangling roots stand on something (P-2). *Check:* every
+  bridge end is within 4 px of a standable top or carries a post down to a surface.
+- **P-12. No placeholder stone.** The grey slab with a dark spike under it is the placeholder stone drawing (stills 01, 04, 07, 09).
+  Stones use the painted mossy-stone art, sitting on ground or in shallow water (P-1).
+- **P-13. The marks counter matches the goal.** The HUD reads "x/11" (stills 03, 08), but the stage lays 13 marks with a goal of 10 on
+  Normal. It must show the real goal and total, so the player knows when the shrine opens. *Check:* the HUD's goal equals the stage
+  record's goal.
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
