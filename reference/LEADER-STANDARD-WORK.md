@@ -58,4 +58,6 @@ three priorities from the plan, not from whatever arrived last.
 2. Every defect today has a log line, a root cause and a changed standard.
 3. Every success today has become a procedure in reference/methods/ (what worked, so everyone does it).
 4. Every stuck problem got the lead's own eyes on the code by its second report.
-5. Tell Matt the day's grade you'd give yourself, and why, before he does.
+5. Write reference/daily/<date>.md: the grade WITH evidence (why it was a good or bad day, measured), the fixes, and the proof that
+   yesterday's fixes were applied today (Matt, 2026-11-04: "Grading with validation... You can't just write notes and never use
+   them"). The SessionStart hook prints the latest one, and the next day starts by applying it.
