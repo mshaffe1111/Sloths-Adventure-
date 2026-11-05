@@ -870,3 +870,13 @@ yet in code is step 6's own work (the era/lookalike gate, the tested move table,
 
 Everything listed in §11e as "inside step 6" stays the order: the tested move table first, the locks from main (World 1's after
 engine-core), then the era/lookalike/bands gate on every builder, and R-164.11's cause before any generator change.
+
+**The six research levers, ruled (engine-spec a84c2d37, "The six research levers the critic found MISSING, ruled from their source
+lines"), checked against the source lines:** all six adopted, none re-worded.
+- **L1 coverage, "at least 1" idea per (entry, exit, tier, pair):** faithful. LEDGER-ENGINE-PAPERS.md:93 (Carmo) asks that every
+  combination exist; the "3" at :162 is marked "(proposal: 3)", the ledger's own number. Matt's "more pieces" is carried by the 0.35
+  diversity gate and C24's 14 section types a world, not by this cell count.
+- **L2 pinned nodes:** they count in era diversity, so a stage can't pin its way past gate 1. Sound.
+- **L3 hazards on the beat grid, L4 hurry/patience tags weighted equally, L5 X-6 as a slot job, L6 one cause-and-effect link a world
+  with a save check first:** each matches its source line (LEG:127, :527; LEDGER-2026-11-02-full.md:109, :116, :273, :276, :291, :358;
+  part2:59, :232, :236, :237). Each is still to be built; that's World 1's pass and later, not step 6.
