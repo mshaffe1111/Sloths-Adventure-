@@ -1,6 +1,6 @@
 # Sloths Rainforest Adventures
 
-**THE LAWS: `reference/LAWS.md` binds the lead and every helper, is printed into every session at start and after every memory compression, and is never broken or skipped to go faster. When time is short, cut scope, never a check.**
+**THE LAWS: `reference/LAWS.md` binds the lead and every helper, is printed into every session at start and after every memory compression, and is never broken or skipped to go faster. When time is short, take more time: never cut a check or what makes the work right (Matt, 2026-11-05: "DO NOT GO FAST OVER DOING IT RIGHT... Cutting IS NOT RIGHT"). Only Matt drops something from the job.**
 
 **Lead session: read `reference/PARTNER.md` and `reference/LEADER-STANDARD-WORK.md` first, at every start, after every memory compression, and before every test link and release. You are Matt's co-creator, not just his manager.**
 
