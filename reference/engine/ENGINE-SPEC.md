@@ -386,6 +386,32 @@ as she walked. Follow her marks to the shrine"). Marks sit on trees, where she w
 **What Matt sees at the checkpoint:** three side maps stacked (the old 1-1, today's 1-5, the new 1-5 roll 1), each node labelled
 with its idea; then the new 1-5 as a grey-box build on the test link.
 
+
+## Library additions from never-packed art, with their packing work (designer, 11-05 ~12:55 AM ET; not part of CP3)
+
+Source: the lead's part 2, `reference/engine/unused-art/NEVER-PACKED.md` on `ccr-0d59a91c-oy3imz`, 60 rows. These need packing (cut
+cells into an atlas, plus wiring) before any stage can use them. Each is a CP of its own on the plan, with its cost estimated, and
+Matt picks the order. Costs are rough estimates in % of the week; none needs Hugging Face spend (the art is already painted).
+
+| New idea | What the player does | Art (never packed) | Fits worlds | Work | Estimate |
+|---|---|---|---|---|---|
+| Mangrove roots | hops across aerial-root platforms and mossy logs over mud and water | W6 kit-03, -05, -06, -15 | 2, 6, 1's creek | pack 4 platform cells; `w6.ts` already has the keys | 0.2-0.4% |
+| Root den and hollow stump | hides from a watcher inside a root den or stump | W6 kit-11, -14 | 1, 2, 6 | pack 2 cells; uses today's hide | 0.2% |
+| Climbing pole | climbs a knobbed pole, then out along a bough | W6 kit-16 | 1, 2, 6 | pack 1 cell; uses today's climb | 0.1% |
+| Which log bites? | crosses logs where one is a moss-log caiman that opens its eye and snaps | W6 caiman-items-01..08 plus the 17-frame snap clip | every world with logs (most), after its teach | pack the clip; a new hazard with a tell (eye opens, then snap) | 1-1.5% |
+| Otter patrol | gets past spear otters that scamper, swim and jab | W6 runners-01..16 plus scamper, swim and jab clips | 2, 6, 8 | pack the clips; a new creature behaviour (patrol, then jab with a tell) | 1.5-2% |
+| Wave and whirlpool | times a crossing between breaking waves, or skirts a whirlpool | W6 water-03, -07, -08, -13, -14 | 2, 6 | pack; timed hazards on today's water | 0.5-1% |
+| Root wall | finds the gap in a wall of roots, high or low | W6 water root wall with a gap | 2, 6 | pack; a static piece | 0.1% |
+| Lever and plates | a second World 7 look for the puzzle room | W7 puzzle take 1 | 7 | pack; uses today's puzzle room | 0.2% |
+
+The backdrops (6-4 mudflats, 6-6 fireflies, World 5's orchid dawn) and the clip alternates (crab, piranha, beetle, Flicker loops,
+Butler, Meeca carry) are dressing and story, not node ideas. They go to the art owner's list.
+
+**Designer's pick for first after CP4, for Matt to approve:**
+1. **Which log bites?** Logs are about half of every piece in the game, so a log that might bite changes the most stages for one
+   piece of work.
+2. **Mangrove roots**, which gives the creeks a second platform family.
+
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
