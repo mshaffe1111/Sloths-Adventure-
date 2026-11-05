@@ -909,7 +909,74 @@ const morningPath = rhythmic({
 });
 // (the arrival's squirrels sit on its first floor, clear of the spawn: the brief's must; the start's Dot line, coach.run)
 morningPath.sockets = [decor('sq', 'in', [0.6, 0.7]), dot('tip', 'in', 0.1, 'coach.run')];
-const ROUND4 = [stepStonesTeach, logTeach, dipDoubleTeach, bankDoubleTeach, mushroomBankTeach, morningPath];
+/**
+ * A fork on the floor road (Round 4's FR1-FR4): one floor `f` the whole length is the LOW road, with its own beats standing on it (low
+ * stumps h, mushrooms b, low logs l, a low stair c: each step at most 88 px) and the petals; the HIGH road's pieces stand over it (a
+ * bough or log `over` f), the lowest 180 px up so a 46 px stump under it leaves 110 px of head room, the find on its last piece. The high
+ * road rejoins by dropping back to the floor. Beats are placed by their share along f (`at`), so both roads span the same stretch.
+ */
+type LowBeat = ['h' | 'b' | 'l' | 'c', number, number?];
+type HighBeat = { at: number; dy: number; w?: R2; mush?: boolean; style?: 'branch' | 'log' };
+const gFork = (fw: R2, low: LowBeat[], high: HighBeat[]): G => (k, after) => {
+  const f = floor(`${k}f`, fw, startOr(after));
+  const pieces: W1Piece[] = [f]; const sockets: Socket[] = [];
+  low.forEach(([t, at, h], j) => {
+    const key = `${k}lo${j}`, A: R2 = [at, at + 0.01];
+    if (t === 'b') pieces.push(mushroom(key, f.key, A));
+    else if (t === 'l') { pieces.push({ key, shape: 'block', w: [200, 240], place: { kind: 'on', on: f.key, at: A, h: [30, 34] }, style: 'log', landing: true }); sockets.push(petals(`p-${key}`, key, 0.5, 1)); }
+    else { const hh = h ?? 40; pieces.push(stump(key, f.key, A, [hh - 3, hh + 3], LAND)); sockets.push(petals(`p-${key}`, key, 0.5, 1)); }
+  });
+  high.forEach((q, j) => {
+    const key = `${k}hi${j}`;
+    pieces.push(limb(key, { kind: 'over', on: f.key, at: [q.at, q.at + 0.005], dy: [q.dy - 3, q.dy + 3] }, q.w ?? [200, 240], q.style ?? 'branch', false));
+    if (q.mush) pieces.push(mushroom(`${key}m`, key, [0.1, 0.2]));
+  });
+  sockets.push(find(`${k}find`, `${k}hi${high.length - 1}`), petals(`${k}pf`, f.key, [0.85, 0.95], 2));
+  return { pieces, sockets, last: f.key };
+};
+const FW: R2 = [1500, 1560];
+/** #36 (fork, bounce low road): a mushroom up onto the high road and a double along it, or the floor's own mushroom and hops */
+/** (each fork's floor road carries a hop before it and a hop and a dip after: 10 s by repetition of the low road's own beats) */
+const mushroomFork = section({
+  id: 'w1-mushroom-fork', floor: 'hop', name: 'mushroom or the long way', phases: ['sho'], difficulty: 3, uses: ['bounce'],
+  versions: [
+    { id: 'a', groups: [gRest([200, 240]), gLogHop(), (k, after) => { const g = gFork(FW, [['b', 0.03], ['b', 0.62], ['h', 0.76], ['h', 0.88]], [{ at: 0.09, dy: -195 }, { at: 0.37, dy: -195 }])(k, after); return g; }, gLogHop(), gDip()] },
+    { id: 'b', groups: [gRest([200, 240]), gLogHop(), gFork(FW, [['b', 0.03], ['h', 0.6], ['b', 0.74]], [{ at: 0.09, dy: -195 }, { at: 0.27, dy: -265 }, { at: 0.45, dy: -335 }]), gLogHop(), gDip()] },
+  ],
+  feel: ['1-1'], not: NOT_11, rating: 3,
+  source: 'Round 4 #36 (0164dff4f): V7, FR3-FR4 (petals low); high a `b d +`, low [`b h h`]; high b `b c c +`, low [`h b w`]',
+});
+/** #37 (fork, bounce): two mushrooms up (one on the high road's first bough), or a jump and the floor's mushroom */
+const twinMushroomFork = section({
+  id: 'w1-twin-mushroom-fork', floor: 'hop', name: 'two mushrooms', phases: ['sho'], difficulty: 4, uses: ['bounce'],
+  versions: [
+    { id: 'a', groups: [gRest([200, 240]), gLogHop(), gFork(FW, [['b', 0.02], ['b', 0.55], ['h', 0.7]], [{ at: 0.1, dy: -195, w: [260, 300], mush: true }, { at: 0.3, dy: -380 }]), gLogHop(), gDip()] },
+    { id: 'b', groups: [gRest([200, 240]), gLogHop(), gDip(), gFork(FW, [['b', 0.02], ['b', 0.6], ['h', 0.78]], [{ at: 0.1, dy: -195 }, { at: 0.39, dy: -195 }]), gLogHop(), gDip()] },
+  ],
+  feel: ['1-1', '1-5'], not: NOT_11, rating: 4,
+  source: 'Round 4 #37: as #36, #6 twin bounce; high a `b b +` / low [`b j`]; high b `b d +` / low [`j b w`]',
+});
+/** #38 (fork, climb low road): a stump stair up to a log road with a double, or a low stair of stumps on the floor (each step 40 px) */
+const stairFork = section({
+  id: 'w1-stair-fork', floor: 'hop', name: 'the stump stair or the floor', phases: ['sho'], difficulty: 4, needs: ['double'],
+  versions: [
+    { id: 'a', groups: [gRest([200, 240]), gLogHop(), gFork(FW, [['c', 0.02, 70], ['c', 0.11, 140], ['c', 0.62, 40], ['h', 0.74], ['c', 0.86, 40]], [{ at: 0.25, dy: -185, style: 'log' }, { at: 0.54, dy: -185, style: 'log' }]), gLogHop(), gDip()] },
+    { id: 'b', groups: [gRest([200, 240]), gLogHop(), gFork(FW, [['c', 0.02, 70], ['c', 0.64, 40], ['c', 0.76, 80], ['h', 0.9]], [{ at: 0.17, dy: -185, style: 'log' }, { at: 0.34, dy: -255, style: 'log' }]), gLogHop(), gDip()] },
+  ],
+  feel: ['1-1'], not: NOT_11, rating: 4,
+  source: 'Round 4 #38: V7, FR3; high a `c c d +` / low [`c h c`]; high b `c d c +` / low [`c c w`]; every low step <= 88 px',
+});
+/** #39 (fork, climb): bank steps up to a bough road, or hops and a low stair */
+const bankStairFork = section({
+  id: 'w1-bank-stair-fork', floor: 'hop', name: 'bank steps, two ways', phases: ['sho'], difficulty: 3, needs: ['jump'],
+  versions: [
+    { id: 'a', groups: [gRest([200, 240]), gLogHop(), gFork(FW, [['c', 0.02, 60], ['c', 0.1, 120], ['h', 0.58], ['c', 0.7, 40], ['c', 0.82, 80]], [{ at: 0.25, dy: -185 }, { at: 0.49, dy: -185 }]), gLogHop(), gDip()] },
+    { id: 'b', groups: [gRest([200, 240]), gLogHop(), gFork(FW, [['c', 0.02, 70], ['c', 0.6, 40], ['h', 0.72], ['c', 0.84, 40]], [{ at: 0.17, dy: -200 }, { at: 0.34, dy: -270 }]), gLogHop(), gDip()] },
+  ],
+  feel: ['1-1', '1-2'], not: NOT_11, rating: 3,
+  source: 'Round 4 #39: stepped mounds (#24 kin); high a `c c j +` / low [`h c c`]; high b `d c +` / low [`c j c`]',
+});
+const ROUND4 = [stepStonesTeach, logTeach, dipDoubleTeach, bankDoubleTeach, mushroomBankTeach, morningPath, mushroomFork, twinMushroomFork, stairFork, bankStairFork];
 
 /** the designer's sections entered (all 30) and the planner's seed perch */
 export const W1_NEW: readonly W1Section[] = [stumpStile, stoneZigzag, logRoad, hollowTwoway, mushroomLift, twinBounce, fallenTrunk, doubleTeach, boughStepup, canopyRungs, highWalk, dropdownStair, knotBank, floorDash, quietArrival, forestEdge, fernBank, clearing, boughBench, stumpTowers, bounceDouble, canopyWeave, sunlitLog, stumpDescent, moundLog, logWalk, stiltLogs, twoAnswers, boughLog, lastStepUp, seedPerch, ...ROUND4];
@@ -933,7 +1000,7 @@ const JOBS: Record<string, W1Job[]> = {
   'w1-canopy-weave': ['fork', 'choice-reward'], 'w1-sunlit-log': ['exit'], 'w1-stump-descent': ['descent', 'practise'], 'w1-mound-log': ['practise'],
   'w1-log-walk': ['rest'], 'w1-stilt-logs': ['test'], 'w1-two-answers': ['twist'], 'w1-bough-log': ['climb'], 'w1-last-step-up': ['exit'],
   'w1-seed-perch': ['reward'],
-  'w1-step-stones-teach': ['teach'], 'w1-log-teach': ['teach'], 'w1-dip-double-teach': ['teach'], 'w1-bank-double-teach': ['teach'], 'w1-mushroom-bank-teach': ['teach'], 'w1-morning-path': ['arrive'],
+  'w1-step-stones-teach': ['teach'], 'w1-log-teach': ['teach'], 'w1-dip-double-teach': ['teach'], 'w1-bank-double-teach': ['teach'], 'w1-mushroom-bank-teach': ['teach'], 'w1-morning-path': ['arrive'], 'w1-mushroom-fork': ['fork'], 'w1-twin-mushroom-fork': ['fork'], 'w1-stair-fork': ['fork'], 'w1-bank-stair-fork': ['fork'],
 };
 /** the designer's content tags (NODES.md §7.7, engine-spec d4526ee5e; forks retagged by their low road). The seed perch is the porter's
  *  reading ('bounce': its find is reached by the perched mushroom), for the designer to rule */
@@ -947,7 +1014,7 @@ const CONTENT: Record<string, W1Content> = {
   'w1-mushroom-lift': 'bounce', 'w1-twin-bounce': 'bounce', 'w1-bounce-double': 'bounce', 'w1-seed-perch': 'bounce',
   'w1-high-walk': 'structural', 'w1-quiet-arrival': 'structural', 'w1-forest-edge': 'structural', 'w1-fern-bank': 'structural', 'w1-clearing': 'structural',
   'w1-bough-bench': 'structural', 'w1-sunlit-log': 'structural', 'w1-log-walk': 'structural', 'w1-last-step-up': 'structural',
-  'w1-step-stones-teach': 'ground', 'w1-log-teach': 'ground', 'w1-dip-double-teach': 'ground', 'w1-bank-double-teach': 'ground', 'w1-mushroom-bank-teach': 'bounce', 'w1-morning-path': 'structural',
+  'w1-step-stones-teach': 'ground', 'w1-log-teach': 'ground', 'w1-dip-double-teach': 'ground', 'w1-bank-double-teach': 'ground', 'w1-mushroom-bank-teach': 'bounce', 'w1-morning-path': 'structural', 'w1-mushroom-fork': 'bounce', 'w1-twin-mushroom-fork': 'bounce', 'w1-stair-fork': 'climb', 'w1-bank-stair-fork': 'climb',
 };
 /** every W1 section: the harvest, then the designer's new ones (and the planner's seed perch), each with its proposed jobs and its type */
 /** each section's terrain family: where most of its landings are (ruled by the designer, 11-05: hollow-twoway, fallen-trunk and log-walk raised-logs) */
@@ -962,7 +1029,7 @@ const TERRAIN: Record<string, W1Terrain> = {
   'w1-bounce-double': 'raised-logs', 'w1-canopy-weave': 'boughs', 'w1-sunlit-log': 'boughs', 'w1-stump-descent': 'raised-logs', 'w1-mound-log': 'mounds',
   'w1-log-walk': 'raised-logs', 'w1-stilt-logs': 'raised-logs', 'w1-two-answers': 'floor-stones', 'w1-bough-log': 'boughs', 'w1-last-step-up': 'boughs',
   'w1-seed-perch': 'boughs',
-  'w1-step-stones-teach': 'floor-stones', 'w1-log-teach': 'raised-logs', 'w1-dip-double-teach': 'floor-stones', 'w1-bank-double-teach': 'mounds', 'w1-mushroom-bank-teach': 'mounds', 'w1-morning-path': 'floor-stones',
+  'w1-step-stones-teach': 'floor-stones', 'w1-log-teach': 'raised-logs', 'w1-dip-double-teach': 'floor-stones', 'w1-bank-double-teach': 'mounds', 'w1-mushroom-bank-teach': 'mounds', 'w1-morning-path': 'floor-stones', 'w1-mushroom-fork': 'boughs', 'w1-twin-mushroom-fork': 'boughs', 'w1-stair-fork': 'raised-logs', 'w1-bank-stair-fork': 'mounds',
 };
 const VERSION_JOBS: Record<string, Record<string, W1Job[]>> = { 'w1-fallen-trunk': { double: ['test'], mushroom: ['twist'] } };
 export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id], terrain: TERRAIN[q.id], ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
