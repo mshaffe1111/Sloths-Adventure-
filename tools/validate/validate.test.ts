@@ -14,6 +14,7 @@ import { cosine, deadWalks, fromStage, grams, moveOf, moveString, pacing, paceFl
 import { branchOutrunWith, cameraOn, chaseOutrunWith, eagleOutrunWith, towardShrine } from './play.ts';
 import { hazardsScore, newScore, newThatCounts } from './score.ts';
 import { artKey, lookAlike, lookOf } from './look.ts';
+import { findRoute } from '../inspect/route.ts';
 import { gatedFlags, judgeAgainst, keyOf, measure, truerBeside } from './funcheck.ts';
 import { movesAlike } from './evaluate.ts';
 import { fallBites, FALL_BITE_PX, pairsMet, waitAt, WAIT_MIN } from './mechanics.ts';
@@ -486,4 +487,49 @@ test('miss cost: a vine snake (G) bites a grab of its liana, a heart: a setback,
   const c = missCost(b);
   assert.equal(c.length, 1);
   assert.equal(c[0].cost, 'setback');
+});
+
+// ---- the route takes only the ways the game allows (the lead's ruling, 2026-11-04: 1-2's route fell through its bough, past the trunk
+// at its end, and skipped 20 s of play) ----
+const branch = (x0: number, x1: number, y: number, id: number, more: Partial<Platform> = {}): Platform => ({ id, x: x0, y, width: x1 - x0, height: 24, type: 'solid', style: 'branch', ...more } as Platform);
+const onTop = (r: RealPlay, y: number) => Object.assign(r.stage as Stage & Record<string, any>, { spawnY: y });
+
+test('route: down onto ground right under his own, he walks off an open end, never through it, and never through a trunk at the end', () => {
+  // (a branch over the floor, a trunk at its right end: the only way down is off its left end)
+  const r = bare([floor(0, 2400, 1), branch(100, 1400, 380, 2), { ...floor(1400, 1490, 3, 0), height: 420, style: 'moss_stone' }], 2200);
+  onTop(r, 380);
+  const route = findRoute(r.stage as Stage);
+  const down = route.segs.filter((g) => g.y1 > g.y0 + 40);
+  assert.ok(down.length >= 1, 'it gets down');
+  for (const g of down) assert.ok(g.x0 <= 110, `down at x ${g.x0}: through the branch or past the trunk, not off its open left end`);
+});
+
+test('route: a jump down past ground in between lands on that ground first', () => {
+  // (a ledge high up, the floor beyond a gap, and a ledge in between under the way down: he comes down onto the middle one)
+  const r = bare([branch(100, 600, 280, 1), branch(640, 760, 430, 2), floor(700, 2400, 3)], 2200);
+  onTop(r, 280);
+  const route = findRoute(r.stage as Stage);
+  assert.ok(route.segs.some((g) => g.y1 === 430), `the middle ledge is on the way: ${route.segs.map((g) => `${g.kind} ${Math.round(g.x0)},${g.y0}->${Math.round(g.x1)},${g.y1}`).join(' | ')}`);
+});
+
+test('route: a fall deeper than a fall zone allows, inside the zone, is a respawn, never the way down', () => {
+  // (a branch over the floor, its right end inside a fall zone 150 px deep and 200 px over the floor: the way down is its left end)
+  const r = bare([floor(0, 2400, 1), branch(100, 800, 380, 2)], 2200);
+  onTop(r, 380);
+  (r.stage as Stage & Record<string, any>).spawnX = 700;
+  (r.stage as Stage & Record<string, any>).fallZones = [{ x0: 600, x1: 1000, depth: 150 }];
+  const down = findRoute(r.stage as Stage).segs.filter((g) => g.y1 > g.y0 + 40);
+  for (const g of down) assert.ok(g.x0 <= 110, `down at x ${g.x0}, inside the fall zone`);
+  // (and without the zone the right end, the nearer way to the shrine, is taken: the fixture shows the zone is what moved it)
+  delete (r.stage as Stage & Record<string, any>).fallZones;
+  assert.ok(findRoute(r.stage as Stage).segs.some((g) => g.y1 > g.y0 + 40 && g.x0 >= 790), 'without the zone, off the right end');
+});
+
+test('beats: rotten wood that goes before a run gets across it is a hop; rotten wood that holds a run is walked', () => {
+  const rot = (creak: number) => {
+    const r = bare([floor(100, 600, 1), { ...floor(600, 760, 2), height: 24, type: 'fragile', style: 'branch', creak } as Platform, floor(760, 2200, 3)], 2000);
+    return fromStage('fixture', 1, 'normal', r, r.stage as Stage).steps.filter((s) => /rotten wood/.test(s.what)).length;
+  };
+  assert.equal(rot(0.25), 1, 'a 160 px stretch that holds 0.25 s (0.56 s to run it) is a hop');
+  assert.equal(rot(1.0), 0, 'one that holds 1 s is walked');
 });

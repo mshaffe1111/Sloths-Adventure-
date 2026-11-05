@@ -104,6 +104,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
   // ---- moves ----
   let t = 0;
   let prevFragile = false;
+  let lastRot: Seg["plat"] = undefined;
   for (let si = 0; si < route.segs.length; si++) {
     const s = route.segs[si];
     // a move keeps him busy while it lasts; a climb only for its first 2.5 s (a long plain climb past that is quiet)
@@ -122,6 +123,13 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
       case 'lift': raw.push({ ...at, letter: 'V', what: 'ride the basket lift' }); break;
       case 'draft': raw.push({ ...at, letter: 'V', what: 'ride the warm air' }); break;
       default: break;
+    }
+    // (walked onto rotten wood that goes before a run gets across it (its creak under its width at a run): no one walks it, it is a hop
+    // over it (1-2's bough leg read as 20 s of walking, 2026-11-04)
+    const before = route.segs[si - 1];
+    if (s.kind === 'walk' && before?.kind === 'walk' && before.plat !== s.plat && before.plat?.type !== 'fragile' && s.plat?.type === 'fragile' && s.plat.creak !== undefined && s.plat.creak < s.plat.width / RUN && s.plat !== lastRot) {
+      raw.push({ ...at, letter: 'h', what: 'small hop over rotten wood' });
+      lastRot = s.plat;
     }
     t += s.dt;
     const fragile = !!s.plat && s.plat.type === 'fragile' && s.kind !== 'walk';
