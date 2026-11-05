@@ -73,3 +73,4 @@ that do the best job get the follow-on work.
 - D41 (11-05): a pause isn't done until list_sessions shows it; interrupt whoever keeps running.
 - D42 (11-05): 'all gates' means the list in .github/workflows/gates.yml, gate by gate, PASS or NOT RUN; never a copied list.
 - D43 (11-05): a story brief's 'shipped' is checked with git show origin/main:<file>, never the lead branch; art suggestions come only from that world's own kit (LABELS rule 4).
+- D44 (11-05): never build ahead of proof. Until the test stage passes, every job names the measured failure it fixes or the live-game check it runs; the rest waits.

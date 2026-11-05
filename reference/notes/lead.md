@@ -120,4 +120,5 @@ engine-core (from main, the planner, due 1:45 PM, lock proves only 1-1/1-5 diffe
 - Matt 1:22 PM ET: 1-1 and 1-2 are built by a FRESH helper (cold proof); planner + designer supervise, never build it. Start it only after step 6 + E4/E5 + the how-to (R-165.40). Data-only.
 - Matt 1:20 PM ET: what STARTS the game (engine, W1, 1-1/1-2) the lead approves now; later-world items go on ROADMAP, held to next week. Don't ask Matt about either.
 - STORY BRIEFS (D43): every 'shipped' claim checked with `git show origin/main:<file>`; every art suggestion from that world's own kit (LABELS rule 4). The 1-1/1-2 briefs broke both.
+- BOARD GATE (D44, Matt: 'that's how we got 5 bad stages yesterday'): at EVERY check-in, each board line must name the failing 1-1 number it fixes or the live-game check it runs. Anything else goes to R-165.45, held.
 - Never design. Report a design problem with evidence; the designer fixes it.
