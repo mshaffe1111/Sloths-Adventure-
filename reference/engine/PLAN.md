@@ -1,5 +1,8 @@
 # PLAN: the level engine, buildable tomorrow morning (engine planner, 2026-11-04 night)
 
+**Planned vs actual time:** planned 75 minutes (due time later moved to 12:45 AM ET by the lead); started 10:38 PM ET, final at
+11:00 PM ET: **about 0 minutes, under half the plan. Red flag: check it with that in mind** (why, and what was done with it: §0).
+
 Inputs: CRITIC.md (engine-critic), DESIGNER.md Options A-D and **Option E** (engine-design db3342a1, §13), LEAD-SKETCH.md, R1-R4 and
 the engine ledgers (ccr-0d59a91c-oy3imz), the code at **727db7ba** (that branch's head), STAGE-RULES, LAWS, PERFORMANCE-RULES.
 Short names: BT = `src/game/beatTrace.ts`, WR = `src/game/w1Rhythm.ts`, D = DESIGNER.md, E = D §13, SR = STAGE-RULES.md.
@@ -42,10 +45,10 @@ with the air family and hang-under, proven against the real engine, in 2 hours (
 | Started | 10:38 PM ET (`TZ=America/New_York date`), 2026-11-04 |
 | Draft 1 | pushed 10:49 PM ET (181a15ec): the parts that did not need E |
 | E landed | at 10:49 PM ET (db3342a1, ahead of its 11:45 due time); read in full (§13, 310 lines) |
-| Final | (stamped at commit, below in "Method used") |
+| Final | 11:00 PM ET (this commit) |
 | Red flag check | **The clock ran short against the plan.** Most of the work is runs that take 0.5-13 s each and file reading; I did not pad. What I did with the time: 12 runs (E1-E12: 8 on the tracer and builder, 1 inspector-vs-engine, 1 rope model, 2 in the real engine), a prototype of the first step's idea, and a real-engine check of E's newest claim. The lead should check this report with the short clock in mind |
 | Read in full | CRITIC.md; D (1,425 lines on engine-design, in parts, including all of §13); LEAD-SKETCH; R4 §1-§2, §5-§6; R1 §2; R2 §2; R3 §2 (F1-F4) and §3 (W1-W14); LEDGER-ENGINE-GEMINI §6-§7; BT (all 668 lines); WR 1-330, 440-770, 1007-1030; `tools/inspect/stages.ts` (all); `tools/validate/funcheck.ts` (all); gen2 `DESIGN.md` Parts A-B12; `gen2/types.ts:300-372`; `stageGenerator.ts:2835-2875`; `rope.ts` (all); `realPlay.ts:1-320`; `engine.ts:4960-4990`; SR §0-§2, §5-§5b; LAWS (all) |
-| Not read in full, plainly | R1 §3-§6, R2 §3-§6, R3 §4-§6 (I used their numbers only through D's and the critic's cites, which the lead checked), LEDGER-ENGINE-PAPERS, gen2 `pipeline.ts` beyond lines 73, 702, 798, PERFORMANCE-RULES past §0. No outside source fetched: every external claim here is R1-R4's or D's |
+| Not read in full, plainly | R1 §3 and §6-§7, R2 §3-§4 and §6, R3 §4 and §6 (their numbers used only through D's and the critic's cites, which the lead checked; R1 §4-§5, R2 §5 and R3 §5 were read in full, §10), LEDGER-ENGINE-PAPERS, gen2 `pipeline.ts` beyond lines 73, 702, 798, PERFORMANCE-RULES past §0. No outside source fetched: every external claim here is R1-R4's or D's |
 
 ---
 
@@ -377,6 +380,24 @@ for example by reusing a world's set-piece kit. That is an estimate until step 7
 - **Tests that catch it instead of people:** the envelope test (M2) is exactly the check that would have caught E1; the named-hole
   failure (M5) replaces a human noticing a repeat; the floor test (M4) replaces a human noticing an unfair jump.
 - **What the supervisor reads at each step:** §7's list: test prints and text first, stills once.
+
+## 10. The research's "ideas none of our research mentions", checked against this plan
+
+Read in full tonight: R1 §4-§5, R2 §5, R3 §5, R4 §6. None changes the pick; these have a home in the build:
+- **Knob elasticities** (R3 §5 #12): E12's `realPlay` window tables are exactly that (Δ window per px of ledge); M4 stores them.
+- **A wait verb** (R2 §5 #2): E's `wait-and-go` phrase and its `wait` move; it is time on one ledge, so the prover can check it.
+- **Measure the space, sample it uniformly** (R2 §5 #4): E5 is that count for one 1-2 room (600 draws, 26 prove); M5's named hole is
+  its runtime form.
+- **Stability under edits** (R2 §5 #5, R4 §6 idea 7): M7's per-node streams.
+- **A limited-agent gate** (R2 §5 #3): every `MoveDef.teach.validate` step (E §13.2.4); added to M12's test for 1-2's two teaches
+  (vine-over-drop at n5, rotten wood at n8).
+- **Frustration from standing still** (R3 §5 #5): read from the first-timer strip at §7 step 6 (1-2 Easy stuck 0.10-0.14 today).
+- **A save-wide ledger, rare and position tags** (R1 §4 #2-3): E's kind-string ledger; tags on phrases. Not needed for the 1-2 proof.
+- **A grade board re-graded after later stages** (R1 §4 #6): the lead's, after step 7.
+- **Grey approval before art** (R1 §4 #10, §5 #10): the build has no art step before §7 step 6; no Hugging Face spend in this plan.
+- **Onsets of the tune** (R2 §5 #12): dropped by Matt's 10:40 PM ruling.
+- **Procedural locomotion fails** (R1 §5 #7, Ori): E's moves are hand-made controllers (the rope, the jump); only their placement is
+  computed. Hang-under reusing the shipped rope fits this.
 
 ---
 
