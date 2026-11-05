@@ -27,7 +27,8 @@ import './worldLedges.ts';
 import { drawGroundBody, drawGroundCap } from './groundArt.ts';
 import { bankPainted, drawSwingLianaArt, paintedKitEnabled, rockPainted } from './protoArt.ts';
 import { drawSilkStrand } from './w5Look.ts';
-import { drawStep, drawPillar } from './columnArt.ts';
+import { drawStep, drawPillar, drawSupportColumn, supportKind } from './columnArt.ts';
+import { stoneHoldInStage } from './stoneHold.ts';
 import { drawBadWater, setBadWaterWorld } from './badWaterArt.ts';
 import { drawPitWater } from './stageArt.ts';
 
@@ -1313,6 +1314,12 @@ function i3(id: number) {
   return Math.abs(id) % 2 === 0;
 }
 
+/** the looks painted as stone (the support rule holds them: stoneHold.ts) */
+const STONE_LOOKS = new Set<string>(['stone', 'ruin', 'slate', 'basalt', 'steps']);
+function supportColumns(ctx: CanvasRenderingContext2D, p: Platform, cols: ReadonlyArray<{ x: number; w: number; bottom: number }>, look: Look, world: number) {
+  for (const c of cols) drawSupportColumn(ctx, c.x, c.w, p.y + p.height * 0.5, c.bottom, supportKind(world), look, world, p.id);
+}
+
 // ───────────────────────────── public ─────────────────────────────
 
 export function renderWorldObjects(
@@ -1364,7 +1371,14 @@ export function renderWorldObjects(
       const tp = thinPlanFor(plan, p);
       const [dx, dy] = shakeOffset(p, time);
       // (World 7's crumbling tiles: Matt's painted crumble frames, crumbleArt.ts; the kit plank until the sheet loads)
-      if (!drawCrumbleTile(ctx, p, time, dx, dy) && !drawThin(ctx, p, look, worldId, tp, dy, dx)) drawPlanks(ctx, p, look, r);
+      // (a crumbling stone over open air: on columns to the ground near under it, else a crumbling plank, its kin: stoneHold.ts)
+      const hold = p.crumbleAfter !== undefined || STONE_LOOKS.has(tp.look) ? stoneHoldInStage(p) : null;
+      if (hold?.kind === 'kin') {
+        if (!drawThin(ctx, p, look, worldId, { look: 'plank', variant: tp.variant % VARIANTS.plank }, dy, dx)) drawPlanks(ctx, p, look, r);
+      } else {
+        if (hold?.kind === 'column') supportColumns(ctx, p, hold.cols, look, worldId);
+        if (!drawCrumbleTile(ctx, p, time, dx, dy) && !drawThin(ctx, p, look, worldId, tp, dy, dx)) drawPlanks(ctx, p, look, r);
+      }
     } else if (p.type === 'drift' && p.drift) {
       // a log rides between its banks, bobbing; clipped to the river so it slides out from under one bank and under the other
       ctx.beginPath();
@@ -1406,7 +1420,14 @@ export function renderWorldObjects(
         if (curRig) dapples(ctx, curRig, p, left, right, time);
       }
     } else {
-      const tp = thinPlanFor(plan, p);
+      let tp = thinPlanFor(plan, p);
+      // a stone look never floats (Matt, 2026-11-05): over open air it stands on columns to the ground near under it, or takes its kin,
+      // the log (stoneHold.ts)
+      if (STONE_LOOKS.has(tp.look)) {
+        const hold = stoneHoldInStage(p);
+        if (hold?.kind === 'kin') tp = { look: 'log', variant: tp.variant % VARIANTS.log };
+        else if (hold?.kind === 'column') supportColumns(ctx, p, hold.cols, look, worldId);
+      }
       if (tp.look === 'island' || !drawThin(ctx, p, look, worldId, tp)) {
         // the floating island: the original live-drawn earth platform
         const v = Math.abs(p.id * 7 + Math.floor(p.width / 40)) % 6;

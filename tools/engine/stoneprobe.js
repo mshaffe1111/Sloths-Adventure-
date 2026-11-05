@@ -65,7 +65,7 @@
     const plats = e.platforms;
     const land = (p) => !p.soil && !p.decorative && !p.isDecor && !p.ghost && !p.lily && !p.lilyPad && p.type !== 'drift' && !p.broken;
     const rockish = (p) => (p.height === 50 && p.style === 'moss_stone') || p.art === 'rock';
-    const cands = plats.filter((p) => land(p) && (p.height < 50 || rockish(p)) && p.type !== 'moving');
+    const cands = plats.filter((p) => land(p) && (p.height < 50 || rockish(p)) );
     // the plan terrain.ts draws its thin pieces from (the same list engine.ts hands renderWorldObjects)
     let drawn = plats;
     try { drawn = e.withoutPaintedLogs(world, e.paintKit ? e.paintedPlats : e.drawPlats); } catch { /* */ }
@@ -169,7 +169,8 @@
           else if ((open += step) > (opts.gap || 12)) break;
         }
         if (y >= y1 - 4) held = true;
-        r.held = held;
+        // (a piece that moves is in the air by its nature)
+        r.held = held && p.type !== 'moving';
         // (paint above it too: a wall or a blanket layer behind it, looked at by eye, never taken on trust)
         r.backed = covered(p.y - 50) && covered(p.y - 90);
         r.run = Math.round(y - p.y);

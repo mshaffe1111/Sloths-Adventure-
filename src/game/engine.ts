@@ -84,6 +84,7 @@ import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater, drawBounceCaps } from './terrain.ts';
+import { setStoneStage } from './stoneHold.ts';
 import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LINE, SWIM_LINES, swimStep, underOf, type CalmPool, type SwimState } from './swim.ts';
 import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterOver, drawCalmWaterPlain } from './calmWaterArt.ts';
 import { swimHeadY } from './heroSwim.ts';
@@ -937,6 +938,8 @@ export class GameEngine {
     setKitWorld(config.worldIndex);
     // (1-1's canopy: the kapok trunks its boughs grow from, scenery only)
     setDecoTrunks(this.proto?.trunks, this.proto?.leaves);
+    // (what holds each stone piece up is judged against the whole stage: stoneHold.ts; the stage's kapoks stand as trunks)
+    setStoneStage(this.platforms, this.vines, [...(this.proto?.trunks ?? []), ...(this.currentStage.trees ?? []).map((t) => ({ x: t.x, topY: t.topY, bottomY: t.groundY, w: t.trunkWidth / 84 }))]);
     // (the water it declares fills World 1's drops under it: w1Pits.ts paints none there)
     setW1PitWater(this.proto?.water);
     // the stage's painted backdrop (World 5's light changes through the world: w5Backdrop.ts)

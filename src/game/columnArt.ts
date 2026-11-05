@@ -499,3 +499,61 @@ export function drawPillar(ctx: C, p: Platform, gp: GroundPlan, look: Look, worl
 
 void lighten;
 void darken;
+
+/**
+ * a column under a stone piece that would otherwise float (stoneHold.ts): the shaft of its world's material from just under the piece's
+ * top down to the ground's top, sinking into shadow with depth, on a footing a little wider than it. The piece is drawn over its top.
+ */
+export function drawSupportColumn(ctx: C, x: number, w: number, top: number, bottom: number, kind: Kind, look: Look, world: number, id: number) {
+  const pal = paletteFor(look, world);
+  const v = Math.abs(id) % 3;
+  const sh = kind === 'stone' ? COURSE : kind === 'wood' ? WOOD_TILE : ROOT_TILE;
+  const cw = Math.round(w);
+  const pat = shaftPattern(ctx, `shaft:${kind}:${v}:${cw}:${world}`, cw, sh, (c) => {
+    if (kind === 'stone') stoneShaft(c, cw, pal, v);
+    else if (kind === 'wood') woodShaft(c, cw, sh, pal, v);
+    else earthShaft(c, cw, sh, look, pal, v);
+  });
+  const x0 = Math.round(x), y0 = Math.round(top), y1 = Math.round(bottom) + 4;
+  if (y1 <= y0) return;
+  pat.setTransform(new DOMMatrix().translate(x0, y0).scale(1 / RES));
+  ctx.fillStyle = pat;
+  ctx.fillRect(x0, y0, cw, y1 - y0);
+  // in the piece's shadow at the top, and darker toward the ground (one gradient per outline colour, shifted: PERFORMANCE-RULES §2.3)
+  const outline = look.ground.outline;
+  let gr = sinkGrads.get(outline);
+  if (!gr) {
+    gr = ctx.createLinearGradient(0, 40, 0, 260);
+    gr.addColorStop(0, rgba(outline, 0));
+    gr.addColorStop(1, rgba(outline, 0.62));
+    sinkGrads.set(outline, gr);
+  }
+  ctx.fillStyle = rgba(outline, 0.35);
+  ctx.fillRect(x0, y0, cw, Math.min(14, y1 - y0));
+  if (y1 - y0 > 40) {
+    ctx.translate(0, y0);
+    ctx.fillStyle = gr;
+    ctx.fillRect(x0, 40, cw, y1 - y0 - 40);
+    ctx.translate(0, -y0);
+  }
+  // the footing: a flat stone (or a root flare) set into the ground
+  ctx.fillStyle = kind === 'stone' ? pal.stone.mid : pal.bark.deep;
+  ctx.strokeStyle = rgba(pal.outline, 0.85);
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.roundRect(x0 - 5, y1 - 11, cw + 10, 11, [4, 4, 1, 1]);
+  ctx.fill();
+  ctx.stroke();
+  ctx.strokeStyle = rgba(pal.outline, 0.85);
+  ctx.beginPath();
+  ctx.moveTo(x0, y0);
+  ctx.lineTo(x0, y1 - 11);
+  ctx.moveTo(x0 + cw, y0);
+  ctx.lineTo(x0 + cw, y1 - 11);
+  ctx.stroke();
+}
+
+/** the column material for a world's stone pieces: carved stone under every stone slab, a root under World 1's (its forest) */
+export function supportKind(world: number): Kind {
+  return world === 1 ? 'root' : 'stone';
+}

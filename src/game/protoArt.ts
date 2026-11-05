@@ -24,6 +24,9 @@ import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { canvasLost } from './canvasLost.ts';
 import { drawW8Fungus } from './w8FungusArt.ts';
 import { drawRoostBough } from './batArt.ts';
+import { stoneHold } from './stoneHold.ts';
+import { drawSupportColumn, supportKind } from './columnArt.ts';
+import { lookFor } from './scenery.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -246,8 +249,10 @@ export function protoArtReady() {
 
 type Name = keyof typeof PROTO_FRAMES;
 /** the picture and the rect of piece `n`: this world's own when it has one, else World 1's */
+/** (World 1's own frame even in another world's kit: a stone piece drawn as its platform kin, stoneHold.ts) */
+let forceW1 = false;
 function frameOf(n: Name): { img: HTMLImageElement; f: ProtoFrame } {
-  const own = kitWorld !== 1 ? KIT_FRAMES[kitWorld]?.[n] : undefined;
+  const own = kitWorld !== 1 && !forceW1 ? KIT_FRAMES[kitWorld]?.[n] : undefined;
   if (own && ready.has(kitWorld)) return { img: imgs.get(kitWorld)!, f: own };
   return { img: imgs.get(1)!, f: PROTO_FRAMES[n] };
 }
@@ -1172,6 +1177,61 @@ function paintTile(platforms: Platform[], banks: Platform[], cx: number, cy: num
 }
 
 /**
+ * a column under a stone piece in a world with its own kit: the kit's painted pillar (`bankEnd`: World 7's fluted column, 9's basalt
+ * column, 4's slate stack, 3's mossy stone), its worn top cut off (under the piece), its foot on the ground; the code-drawn column
+ * (columnArt.ts) where a world has none
+ */
+function drawStonePillar(ctx: CanvasRenderingContext2D, p: Platform, c: { x: number; w: number; bottom: number }) {
+  const top = p.y + p.height * 0.5, g = c.bottom + 6 - top;
+  const own = KIT_FRAMES[kitWorld]?.bankEnd;
+  if (!own || !ready.has(kitWorld) || g <= 0) {
+    drawSupportColumn(ctx, c.x, c.w, top, c.bottom, supportKind(stageWorld), lookFor(stageWorld), stageWorld, p.id);
+    return;
+  }
+  const img = imgs.get(kitWorld)!;
+  const sh0 = own.h * 0.75;
+  const nat = (c.w * sh0) / own.w;
+  // (shorter than the pillar at this width: only its foot shows; taller: the whole shaft, drawn longer)
+  const sh = g < nat ? (g / nat) * sh0 : sh0;
+  ctx.drawImage(img, own.x, own.y + own.h - sh, own.w, sh, c.x, top, c.w, g);
+  // in the piece's shadow where it meets it
+  ctx.fillStyle = 'rgba(10, 12, 20, 0.32)';
+  ctx.fillRect(c.x, top, c.w, Math.min(16, g));
+}
+
+/** the kits whose thin piece (`branch`) is painted as a stone slab: World 3's mossy stone, 4's slate, 7's carved ruin, 9's basalt */
+const STONE_KITS = new Set([3, 4, 7, 9]);
+
+/**
+ * a stone piece over open air drawn as its platform kin (stoneHold.ts): Matt's painted World 1 log, which may float ("I understand the
+ * floating logs... a platform needs platforms"); a piece that breaks (creaking, crumbling) is World 1's creaking bough, its crack the cue
+ */
+function drawKin(ctx: CanvasRenderingContext2D, p: Platform, st: ProtoSceneState, t: number) {
+  forceW1 = true;
+  try {
+    if (p.type === 'fragile' || p.crumbleAfter !== undefined) {
+      if (p.broken) {
+        if (!st.brokeAt.has(p.id)) st.brokeAt.set(p.id, t);
+        drawBranchArt(ctx, p, 'snapped', t - st.brokeAt.get(p.id)!);
+      } else {
+        st.brokeAt.delete(p.id);
+        const [dx, dy] = p.crumbleAfter !== undefined ? shakeOffset(p, t) : [0, 0];
+        drawBranchArt(ctx, { ...p, x: p.x + dx, y: p.y + dy }, 'creak', 0);
+      }
+      return;
+    }
+    if (p.broken) return;
+    // the log's bark top on the walkable top (its moss a touch above), as thick as the art keeps it at that length
+    const f = frameOf('log').f;
+    const w = p.width * 1.06;
+    const h = Math.min(64, Math.max(34, (w * f.h) / f.w));
+    blit(ctx, 'log', p.x + p.width / 2 - w / 2, p.y - h * 0.2, w, h);
+  } finally {
+    forceW1 = false;
+  }
+}
+
+/**
  * The painted layer of the hand-built stage, drawn after the ground: the bank tops, the moss floors and the root wall over the drawn
  * ground, then the branches, perches, the rock and the log. Returns false (draw nothing) until the atlas is loaded.
  */
@@ -1262,6 +1322,8 @@ export function drawProtoScene(
       }
     }
   }
+  // (the worlds whose kit's thin piece is a stone slab: tools/engine/stoneprobe.js KIT_MAT, by eye from the sheets)
+  const stoneKit = kitWorld === stageWorld && STONE_KITS.has(kitWorld) && ready.has(kitWorld);
   // branches (a perch where a climb trunk ends under one)
   const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope);
   for (const p of platforms) {
@@ -1274,6 +1336,14 @@ export function drawProtoScene(
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);
       continue;
     }
+    // a stone piece never floats (Matt, 2026-11-05): World 3, 4, 7 and 9's thin piece is their kit's stone slab, and the crumble frames
+    // are carved stone; over open air it stands on columns down to the ground near under it, or is drawn as its kin, a log (stoneHold.ts)
+    const hold = stoneKit || p.crumbleAfter !== undefined ? stoneHold(p, platforms, vines, decoTrunks) : null;
+    if (hold?.kind === 'kin') {
+      drawKin(ctx, p, st, t);
+      continue;
+    }
+    if (hold?.kind === 'column' && !p.broken) for (const c of hold.cols) drawStonePillar(ctx, p, c);
     // (World 7's crumbling tiles: Matt's painted crumble frames, crumbleArt.ts; their falling pieces are zoneArt's drawCrumbleTiles)
     if (p.crumbleAfter !== undefined && !p.broken) {
       const [dx, dy] = shakeOffset(p, t);
@@ -1295,7 +1365,14 @@ export function drawProtoScene(
   }
   for (const p of platforms) {
     if (!vis(p)) continue;
-    if (isPaintedRock(p)) drawRockArt(ctx, p);
+    if (isPaintedRock(p)) {
+      const hold = stoneHold(p, platforms, vines, decoTrunks);
+      if (hold?.kind === 'kin') drawKin(ctx, p, st, t);
+      else {
+        if (hold?.kind === 'column') for (const c of hold.cols) drawStonePillar(ctx, p, c);
+        drawRockArt(ctx, p);
+      }
+    }
     else if (p.hollow) drawHollowLog(ctx, p);
   }
   for (const p of platforms) {
