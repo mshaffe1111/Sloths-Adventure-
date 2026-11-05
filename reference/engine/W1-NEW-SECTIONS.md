@@ -94,12 +94,12 @@
 |---|---|---|---|---|---|---|---|---|
 | 16 | `w1-forest-edge` The forest's edge | start | 1 | walk | — → ground | flat home-edge banks with the squirrels' dressing spot clear of the spawn; no gaps in the first 1,300 px; coach.run | 2 or 3 banks; one low step | brief :19 (start, home, gentle); STAGE-RULES:161 safe start |
 | 17 | `w1-fern-bank` Fern bank | rest | 1 | walk | ground → ground | a long flat bank, ferns and a fallen-log seat (dressing); petals low on a trunk beside; one low stump step | long or short; the step or none | C2 (rest ≈ 2× beat); petals low (brief :26) |
-| 18 | `w1-clearing` Sunlit clearing | rest | 1 | walk | ground → ground | two long banks joined by a one-step dip (no gap); a Dot spot | the dip or a step up | C2; a Dot spot at a rest (LEDGER-11-02:336) |
-| 19 | `w1-bough-bench` High rest | rest | 1 | walk | ledge → ledge | a long thick bough between two plain W1 trunks, after the moment; petals on the trunks | length | C2; after every test, a rest (rulebook §4 rule 3) |
+| 18 | `w1-clearing` Sunlit clearing | rest | 1 | walk | ground → ground | two long banks joined by a one-step dip (no gap); a Dot spot; **no sky opening or long view north** (1-4 owns the view, 1-1.md:41) | the dip or a step up | C2; a Dot spot at a rest (LEDGER-11-02:336) |
+| 19 | `w1-bough-bench` High rest | rest | 1 | walk | ledge → ledge | a long thick bough between two plain W1 trunks, after the moment; petals LOW on the trunks at marching height, below the bough, seen from above (never a petal road in the boughs: 1-1.md:26-27) | length | C2; after every test, a rest (rulebook §4 rule 3) |
 | 20 | `w1-stump-towers` Stump towers | ten | 5 | double | ground → ground | stumps of rising height, each a double up; the floor runs below (a fall is a walk back) | 3 or 4 towers | the floor road; a test of the double |
 | 21 | `w1-bounce-double` Bounce, then fly | ten | 6 | double | ground → ledge | a perched mushroom's bounce, then a double in the air onto a high log road | high road at two heights | the pair on one beat (LEDGER-11-02:33) |
-| 22 | `w1-canopy-weave` Canopy weave | ketsu | 6 | double | ledge → ledge | two roads in the boughs (high boughs, mid boughs) that rejoin; catch boughs under each gap | the high road's length; which road holds the petals | high/low split (LEDGER-11-04 part1:317); catch boughs (3:11 ruling) |
-| 23 | `w1-sunlit-log` Onto the high log | goal | 1 | walk | ledge → ledge | a two-step bough walk-on to the long high log with the exit totem; the bootprint place in its moss (held art) | one step or two | main's 1-1 end; 1-1.md:23 |
+| 22 | `w1-canopy-weave` Canopy weave | ketsu | 6 | double | ledge → ledge | two roads in the boughs (high boughs, mid boughs) that rejoin; catch boughs under each gap | the high road's length; the petals LOW on the trunks under both roads (1-1.md:26-27) | high/low split (LEDGER-11-04 part1:317); catch boughs (3:11 ruling) |
+| 23 | `w1-sunlit-log` Onto the high log | goal | 1 | walk | ledge → ledge | a two-step bough walk-on to the long high log with the exit totem; the bootprint place in its moss (held art); any petals LOW on the trunks below (1-1.md:26-27) | one step or two | main's 1-1 end: the exit totem from stageGenerator.ts:2136 (`gen.item('exit_totem', ...)`), on a 685 px log at y 580 (eraRoll build, layout 1); 1-1.md:23 |
 | 24 | `w1-stump-descent` Stumps down | sho | 3 | jump | ground → ground | stumps stepping down to the floor, then a log jam (thin logs on stumps) back up | 3 or 4 down; up by 2 or 3 | up and down (old 1-1 floor); the log road rules |
 | 25 | `w1-mound-log` Log over the mound | ki | 2 | jump | ground → ground | a stepped earth mound with a thin log across its top as a short high road; the floor round it | mound 2 or 3 steps | stepped mounds (ES 619); the log rules |
 
@@ -135,3 +135,13 @@ under it (E3 footingOf: a log in the canopy is held by its trunks, never on air)
 | goal | 3 | 1 | 3:1 |
 
 Every phase is at least 3:1.
+
+### Story fixes, round 2 (designer, 11-05 4:29 PM ET; the supervisor via the lead)
+- Petals sit LOW on trunks at marching height in #19, #22, #23 (1-1.md:26-27), as #11 does. No petal road in the boughs.
+- #18 has no sky opening and no long view north (1-1.md:41).
+- #23's exit totem is sourced to stageGenerator.ts:2136 on main.
+- **Placement rule \`lateOnly: 'lastThird'\`** goes on every bough section: #9, #10, #11, #15, #19, #22, #23, #29, #30, and the
+  harvested w1-high-leaps and w1-bounce-run. The generator may lay one only in the stage's last third (1-1.md:46-52, boughs as the
+  reward). It's an engine field for the planner to add to SectionTemplate.
+- **Bough share:** the stage's boughs + creaky landings stay ≤ 25.3% (the float floor). The lastThird rule keeps boughs to about a
+  third of the stage by length. The gate is the measure, and a roll over it fails.
