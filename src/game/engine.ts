@@ -221,7 +221,7 @@ const HELD_RECENT = 0.35;
 /** how fast Pokey pushes a hollow log (px/s): slower than a walk, so it reads as effort */
 const PUSH_SPEED = 120;
 
-const WORLD_VIEW_H = 540;
+export const WORLD_VIEW_H = 540;
 /** world units across a portrait screen */
 /**
  * In the air against a wall too tall to catch the lip of, he slides down it: his drawing stands this far off the face, so his reaching paw

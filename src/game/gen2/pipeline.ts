@@ -26,6 +26,7 @@ import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, 
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
+import { calmSpans, distTo, openColumns, W3_SCREEN, w3Misses } from '../waterRule.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import {
   EASY_ENEMY_SHARE,
@@ -395,6 +396,12 @@ export interface LayLocalOptions {
   once?: WorldOnce<string>;
   /** the world's soft pit depth (manifest.pitDepth): a perch past a liana keeps clear of the steps out of the pit under it */
   pitDepth?: number;
+  /**
+   * the section's gaps (by their order in it) that lie within a screen of calm water (the water rule W3, layDry): each is laid as
+   * soft mud, as a soft world's falls are (a swing's or a glide's climbing back to its take-off), whatever the world's falls. Nothing
+   * else changes and nothing more is drawn from the stream: the plan, the versions and the sockets stay the roll's
+   */
+  dry?: ReadonlySet<number>;
 }
 
 /**
@@ -445,6 +452,10 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
   const dblOK = budget.moves.includes('double');
   const shareFor = (s: Range | undefined) => Math.min(1, s === undefined ? 0.5 + 0.3 * budget.heat + 0.1 * rng() : roll(rng, s));
   const versions = chooseVersions(tpl, lo.pickRng ?? rng, lo.once, lo.versions);
+  // (a dry gap is soft mud: LayLocalOptions.dry, by the index the gap is about to take)
+  const dryNow = () => !!lo.dry?.has(gaps.length);
+  const wet = (pl: SectionPiece['place']) => 'water' in pl && !!pl.water && !dryNow();
+  const softOf = (pl: SectionPiece['place']) => ('soft' in pl && !!pl.soft) || (dryNow() && (pl.kind === 'pit' || pl.kind === 'rope' || pl.kind === 'land' || ('water' in pl && !!pl.water)));
   const chosen = (tpl.subBlocks ?? []).map((sb) => sb.versions.find((v) => v.id === versions[sb.id])!);
   const all: SectionPiece[] = [...tpl.pieces, ...chosen.flatMap((v) => v.pieces)];
   const sockets: Socket[] = [...tpl.sockets, ...chosen.flatMap((v) => v.sockets ?? [])];
@@ -497,8 +508,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       x = a.x + a.w + gap;
       y = a.y + dy;
       // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
-      const back = glide && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
+      const back = glide && !wet(pl) ? { back: { lips: [a.y, y] as [number, number] } } : {};
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || softOf(pl), ...(wet(pl) ? { water: true } : {}), ...(softOf(pl) && !wet(pl) ? { soft: true } : {}), ...back });
     } else if (pl.kind === 'rope') {
       // a ledge past a gap no jump or glide clears, a shimmy rope across (rope.ts; the rope itself is hung once both are placed: layStage)
       // (its gap is a liana's, `back` (World 8, 2026-10-31): a soft pit climbing back to `after`, or World 8 Normal's heart fall)
@@ -506,7 +517,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const gap = Math.max(ROPE_MIN_GAP + 90, roll(rng, pl.gap));
       x = a.x + a.w + gap;
       y = a.y;
-      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, pit: true, back: { lips: [a.y, y] }, ...(pl.soft ? { soft: true } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, pit: true, back: { lips: [a.y, y] }, ...(softOf(pl) ? { soft: true } : {}) });
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -531,7 +542,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const minFor = (dy: number) => {
         const perchY = a.y + dy;
         let min = a.x + a.w + jumpLinkGap(-dy, budget.world, budget.stage) + 20;
-        if ((budget.pit === 'soft' || pl.soft) && !pl.water) {
+        if ((budget.pit === 'soft' || softOf(pl)) && !wet(pl)) {
           const pit = backPit(a.x + a.w, a.x + a.w + 4000, a.y, perchY, lo.pitDepth ?? 0, riseLimit(false, budget.riseShare) * PIT.hop);
           for (const st of [{ x: a.x + a.w, top: pit.floor, w: 0 }, ...pit.steps]) {
             const g = jumpLinkGap(st.top - perchY, budget.world, budget.stage);
@@ -562,7 +573,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y + dy;
       lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, { x, y, w }, budget.difficulty);
       lv.hang.gap = [a.x + a.w, x];
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(wet(pl) ? { water: true } : {}), ...(softOf(pl) && !wet(pl) ? { soft: true } : {}) });
     } else if (pl.kind === 'climb') {
       const a = ref(pl.on);
       if (pc.shape !== 'vine') throw new Error(`gen2 section ${tpl.id}: ${pc.key} climbs, so its shape is 'vine'`);
@@ -631,7 +642,7 @@ export interface Laid {
   plan: PlanSlot[];
   platforms: Platform[];
   /** the gaps of the route (inner and seams), for the arcs and the repair */
-  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean }>;
+  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean; slot?: [number, number] }>;
   /** the zones the sections lay (a tide, darkness) */
   zones: Zone[];
   /** the gaps a fall into costs a heart, not a life (WorldManifest.heartFalls: World 8 Normal's swings and glides), no pit under them */
@@ -661,6 +672,8 @@ export interface LayOptions {
   recent?: readonly string[];
   /** sub-block versions (versionKey) the world's earlier stages used */
   usedVersions?: readonly string[];
+  /** slot -> its gaps laid dry (LayLocalOptions.dry; -1: the gap before it): within a screen of calm water (layDry, the water rule W3) */
+  dry?: ReadonlyMap<number, ReadonlySet<number>>;
 }
 
 /** the start runway (nothing can hurt in the first seconds) and the shrine's bank */
@@ -860,7 +873,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const flip = tpl.mirrorable ? srng() : 1;
       // (a section that swings is never flipped: its perch is sized for a swing toward it, the way the stage runs)
       const mirrored = fixed ? fixed.mirrored : flip < 0.5 && !hangsNeed(tpl).includes('swing');
-      const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: M.pitDepth });
+      const dryGaps = opt.dry?.get(i);
+      const dryHere = !!dryGaps?.has(-1);
+      const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: M.pitDepth, ...(dryGaps ? { dry: dryGaps } : {}) });
       // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
       const jrng = rngFor(seed, 13, i);
       let join: PlanSlot['join'];
@@ -908,7 +923,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       };
       if (dx > 0) {
         const before = platforms.length;
-        pitUnder(cur.x, ox, cur.y, oy);
+        pitUnder(cur.x, ox, cur.y, oy, false, dryHere);
         placed.seam.push(...platforms.slice(before));
       }
       for (const lp of L.pieces) {
@@ -944,9 +959,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         placed.beats.push({ x: l.x + l.width, letter: 'V' });
       }
       const entryP = pieceOf(L.entry.piece);
-      if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
-      for (const g of L.gaps) {
-        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
+      if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid, slot: [i, -1], ...(dryHere && budget.pit !== 'soft' ? { soft: true } : {}) });
+      for (const [k, g] of L.gaps.entries()) {
+        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, slot: [i, k] as [number, number], ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
         if (g.pit && !g.water) {
           const before = platforms.length;
@@ -1654,8 +1669,38 @@ export function keptFoes(st: Gen2Stage): Map<string, string> {
   return new Map(st.gen2.fills.filter((f) => f.role === 'enemy' && f.socket !== 'topup' && f.what && at.has(R(f.x))).map((f) => [`${f.section}/${f.socket}`, f.what!]));
 }
 
+/**
+ * Pass 3's water rule (W3, waterRule.ts): deadly water never within a screen (W3_SCREEN) of calm water. The stage is laid; every gap
+ * with an open column (nothing laid: the deadly water shows and a fall meets it) within a screen of a room's calm pool is laid again
+ * dry (LayLocalOptions.dry: soft mud, a swing's climbing back to its take-off), and so on until none is left (a dry gap's perch can
+ * move further out, moving what follows it). The plan, the versions and every other gap stay the roll's: only the ground under the
+ * gaps beside the calm water changes. A stage with no calm water is laid once, as before.
+ */
+export function layDry(budget: StageBudget, graph: MissionGraph, kit: WorldKit, seed: number, opt: LayOptions = {}): Laid {
+  const dry = new Map<number, Set<number>>([...(opt.dry ?? [])].map(([i, ks]) => [i, new Set(ks)]));
+  for (let pass = 0; ; pass++) {
+    const laid = layStage(budget, graph, kit, seed, dry.size ? { ...opt, dry } : opt);
+    const pools = calmSpans(laid.sections.flatMap((s) => (s.room ? [s.room] : [])), laid.platforms);
+    if (!pools.length || !(budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water))) return laid;
+    const near = openColumns(laid.platforms, laid.width).filter((x) => pools.some((w) => distTo(x, w) <= W3_SCREEN));
+    // (each open column is the gap's it lies in: that gap is laid dry next time; none left, or a column in no gap (nothing a dry gap
+    // can mend): checkStage names what is left, and the roll is repaired or rerolled)
+    let fresh = 0;
+    for (const x of near) {
+      const g = laid.gaps.find((q) => q.slot && x >= q.x0 - 1 && x <= q.x1 + 1);
+      if (!g?.slot) continue;
+      const [i, k] = g.slot;
+      const ks = dry.get(i) ?? new Set<number>();
+      if (!ks.has(k)) fresh++;
+      ks.add(k);
+      dry.set(i, ks);
+    }
+    if (!fresh || pass >= 8) return laid;
+  }
+}
+
 function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, seed: number, opt: LayOptions, normalFoes?: ReadonlyMap<string, string>): Built {
-  const laid = layStage(budget, graph, req.kit, seed, opt);
+  const laid = layDry(budget, graph, req.kit, seed, opt);
   // the quota items of each node, shared among its sections that have an objective socket
   const objectives = new Map<string, number>();
   for (const n of graph.nodes) {
@@ -1747,6 +1792,10 @@ export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<
   const cfg = st.config;
   const held = budget.quota.check === cfg.targetCount ? st : { ...st, config: { ...cfg, targetCount: budget.quota.check } };
   const res = validateStage(held);
+  // (the water rule W3: deadly water never within a screen of calm water; layDry keeps to it as it lays, so this only names a roll it
+  // could not mend: an open column it does not lay)
+  const w3 = w3Misses(st).map((m) => `water rule W3: deadly water (${m.what} at x ${m.at}) ${m.dist} px from the calm pool at ${m.pool.x0}-${m.pool.x1} (a screen is ${W3_SCREEN} px)`);
+  if (w3.length) return { ...res, ok: false, errors: [...res.errors, ...w3] };
   // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
   // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
   if (!st.platforms.some((p) => p.type === 'fragile')) return res;
