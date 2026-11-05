@@ -1,0 +1,26 @@
+import json, re, sys
+r = json.load(open(sys.argv[1]))['rows']
+W = lambda pw: ','.join(f'W{i+1}' for i, n in enumerate(pw) if n)
+rules = [
+  ('fly', r'Morpho|Firefly|Butterfly(?!Bush)|Ladybug|Smoke|CattailFly|Feather|Petals$', 'air (dressing)', 'drifts or flies; may float', 'yes'),
+  ('hang', r'Hang|Curtain|Drip|BellVine|VineHang|LeafHang|BellHang|BellOne|Lanterns$|mossCurtain|stalactite|AirPlants|OrchidSpray|NestBasket|WeaverNest|laundry|Chime', 'tree (hanging)', 'hangs from a bough, the canopy, a roof or a line; never open sky', 'no'),
+  ('water', r'Lily|Reed|reed(?!-hide)|waterSigns|Canoe|Raft|FishTrap|Turtle|Otter|Heron|Crab|Mud|Cattail|cattails|WaterJar|Driftwood|DriftRoot|OysterRoot|pool|basin|trickle|Mooring|mooring', 'water (edge or surface)', 'on a drawn water surface or its bank edge', 'no'),
+  ('stone', r'Stone|stone|Boulder|boulder|Rock|rock|Pebble|Cairn|Obsidian|Geode|Crystal|Fossil|Shards|Slate|Stalag|stalag|Pillar|pillar|Altar|Idol|Statue|Tablet|Urn|Block|Head|Totem|clawRock|ringWall|wallTile|slab|Slab|Coins|Offering|GlowStone|Ball|bones|dais|throne|gong|Brazier', 'ground (stone)', 'on the ground, a ledge or its own drawn base; never floats (Matt)', 'no'),
+  ('animal', r'Coati|Snail|Beetle|Frog|Lizard|Marmot|Cricket|Capuchin|Mudskipper|Termites|Macaw|Toucan|Kingfisher|squirrel|Monkey', 'ground or tree (creature)', 'stands on the ground or a bough; perches never in open air', 'no'),
+  ('plant', r'Fern|fern|Bush|bush|Bromeliad|Heliconia|Mushroom|mushroom|Shroom|Sprig|Grass|Thistle|Shrub|Flower|Moss|Glow|Pitcher|Pods|NutPod|SeedPods|Acorns|Pinecone|LeafLitter|WetLeaves|Fiddle|Fungus|Bead|Root|Tree|tree|grotto|tall|wide|glow|canopy|lantern-flower|moss-|root-|reed-hide|log-hide', 'ground (plant)', 'grows from the ground, a bank or a trunk', 'no'),
+  ('wood', r'Log|log|Stump|stump|Post|post|pole|Hollow|Nest|Rack|Crate|Cage|Banner|banner|Bench|Pots|Pot|Spool|Teacups|TeaTin|Thimbles|WateringCan|Wheelbarrow|Birdbath|BookStack|Buttons|Ribbon|Sugar|Bank|Clut|Sign|sign|mailbox|door|Door|window|porch|rooftop|chimney|archway|steps|swingFrame|bridge|Gate|Bucket|Gourd|Basket|Censer|StakeLantern|Bundle|bootprint|pawprint|lilyCarpet|limbShort|logShort|lantern|bell|stilt|rope|arch|mound', 'ground (built or wood)', 'on the ground, a porch, a bank or a ledge', 'no'),
+]
+out, miss = [], []
+for x in r:
+    if x['cat'] != 'prop': continue
+    k = x['key'] or '(none)'
+    for name, rx, el, foot, fl in rules:
+        if re.search(rx, k):
+            pre = re.match(r'w(\d+)', k)
+            worlds = W(x['perWorld'])
+            lock = f"W{pre.group(1)} only (its own art)" if pre else f"where shipped: {worlds}"
+            out.append(f"| {x['arr']} | {k} | {el} | {foot} | {fl} | dressing (never a landing) | {lock} | {worlds} | {x['first']} |")
+            break
+    else:
+        miss.append(f"{x['arr']}:{k}:{W(x['perWorld'])}")
+print('\n'.join(out)); print('MISS', len(miss), ' '.join(miss), file=sys.stderr)
