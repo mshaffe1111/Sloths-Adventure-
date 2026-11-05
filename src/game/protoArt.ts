@@ -66,6 +66,12 @@ export function setGroundPaint(on: boolean) {
 export function bankPainted(p: Platform): boolean {
   return groundOn && (p.height >= 90 || !!p.soil) && !p.push && !p.broken && !p.art && protoArtReady() && warmGround(kitWorld);
 }
+/** a rock the painted layer draws (drawProtoScene: a 50-unit moss stone, or art 'rock'): the drawn ground leaves it alone (terrain.ts),
+ *  or it drew a code earth body under the painted boulder, three gradients a stone a frame (the mixer's 1-5 n4 fork, drawcheck) */
+export const isPaintedRock = (p: Platform) => (p.height === 50 && p.style === 'moss_stone') || p.art === 'rock';
+export function rockPainted(p: Platform): boolean {
+  return groundOn && isPaintedRock(p) && !p.broken && protoArtReady();
+}
 /** whether a world has its own painted kit yet */
 export function hasKit(w: number): boolean {
   return w === 1 || !!KIT_FRAMES[w];
@@ -1283,7 +1289,7 @@ export function drawProtoScene(
   }
   for (const p of platforms) {
     if (!vis(p)) continue;
-    if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') drawRockArt(ctx, p);
+    if (isPaintedRock(p)) drawRockArt(ctx, p);
   }
   for (const p of platforms) {
     if (!vis(p) || !p.push || p.art) continue; // (a pushed boulder is World 4's to paint: w4Play.ts)

@@ -133,3 +133,13 @@ test("World 1, 16 layouts: every painted drop has a bank of earth at both sides 
   const g13 = findW1Pits(new RealPlay('1-3', 1).platforms).find((g) => Math.round(g.x0) === 23029);
   assert.ok(g13 && g13.drop && !g13.walls, JSON.stringify(g13));
 });
+
+test("a marked drop between two banks at any height is judged against its own two banks, not the stage's one ground line (the mixer's 1-5)", () => {
+  const D = { pit: 'drop' } as Partial<Platform>;
+  // (the commonest top is G; a pair of banks 300 higher, a 60 px slit between them, as the mixer's 1-5 climbs)
+  const ps = [P(1, 0, G, 2000, 120, D), P(2, 2100, G - 300, 500, 120, D), P(3, 2660, G - 320, 500, 120, D), P(4, 3300, G, 2000, 120, D)];
+  const g = findW1Pits(ps).find((q) => q.x0 === 2600);
+  assert.ok(g && g.drop && g.walls && g.top === G - 300, JSON.stringify(findW1Pits(ps)));
+  // (with a stone standing in it, it is open air)
+  assert.ok(!findW1Pits([...ps, P(5, 2610, G - 290, 40, 50, D)]).some((q) => q.x0 === 2600 && q.walls));
+});

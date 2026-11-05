@@ -80,7 +80,8 @@ function pitWalls(platforms: readonly Platform[], x0: number, x1: number, top: n
   const side = (right: boolean) => platforms.filter((q) => paintedBank(q) && Math.abs((right ? q.x : q.x + q.width) - (right ? x1 : x0)) < 3 && q.y <= top + 4 && q.y + q.height > top).sort((a, b) => a.y - b.y)[0];
   const L = side(false), R = side(true);
   if (!L || !R) return undefined;
-  if (platforms.some((q) => floorish(q) && q.x < x1 - 4 && q.x + q.width > x0 + 4 && q.y + q.height > top + 4)) return undefined;
+  // (a bank of earth over it at any height stands in it too: its soil runs on down out of sight, in front of the drop)
+  if (platforms.some((q) => floorish(q) && q.x < x1 - 4 && q.x + q.width > x0 + 4 && (q.y + q.height > top + 4 || paintedBank(q)))) return undefined;
   return [L.y, R.y];
 }
 
@@ -135,8 +136,26 @@ export function findW1Pits(platforms: readonly Platform[]): PitGap[] {
       if (floor - G >= SOFT_FLOOR) out.push({ x0, x1, top, kind: 'soft', floor, ...lip, steps });
     }
   }
-  return out;
+  // (a stage that climbs and falls through many heights, the mixer's 1-5: one ground line finds only the gaps at its own height. A marked
+  // drop between two banks of earth at any height is judged against those two banks: their tops, and nothing standing in it)
+  const marked = platforms.filter((q) => paintedBank(q) && floorish(q) && q.pit === 'drop').sort((a, b) => a.x - b.x);
+  for (const a of marked) {
+    const x0 = a.x + a.width;
+    // (the next bank of earth to the right whose top is near a's: the gap's far wall)
+    const b = platforms.filter((q) => paintedBank(q) && floorish(q) && q.x - x0 >= 24 && q.x - x0 <= 1600 && Math.abs(q.y - a.y) <= OWN_STEP).sort((p, q) => p.x - q.x)[0];
+    if (!b) continue;
+    const x1 = b.x, top = Math.max(a.y, b.y);
+    // (inside a wider gap the ground line found, painted or not: a soft pit, water, a painted drop keep it; open air does not)
+    if (out.some((g) => g.x0 < x1 && g.x1 > x0 && (g.kind === 'soft' || !g.drop || g.walls))) continue;
+    // (anything between them at all, at their height or under it: it is not one clean drop, and the ground line's pass judges it)
+    if (platforms.some((q) => !q.broken && q !== a && q !== b && q.x < x1 - 4 && q.x + q.width > x0 + 4 && q.y + q.height > Math.min(a.y, b.y) - 40)) continue;
+    const walls = pitWalls(platforms, x0, x1, top);
+    if (walls) out.push({ x0, x1, top, kind: 'fall', lipL: a.height >= 90, lipR: b.height >= 90, drop: true, walls });
+  }
+  return out.sort((p, q) => p.x0 - q.x0);
 }
+/** a marked drop's two banks at any height (findW1Pits' own pass) are at most this far apart in height */
+const OWN_STEP = 120;
 
 /** 1-8: the holes between the chase's sections (and any branch at their height), with nothing under them within 400 px: falls */
 function chaseGaps(platforms: readonly Platform[], chase: readonly Platform[]): PitGap[] {
@@ -193,7 +212,8 @@ function bakeDrop(g: PitGap, drop: HTMLImageElement, bottom: number): { top: HTM
     k.closePath();
     k.clip();
   };
-  const topH = Math.min(H, DROP_DARK + 12);
+  // (the top ends where the dark below begins: an overlap was darker twice, a line across the drop)
+  const topH = Math.min(H, DROP_DARK);
   const tc = canvas(X1 - X0, topH);
   const tk = tc?.getContext('2d');
   const soft = bakeSoft({ ...g, x0: X0, x1: X1, floor: g.top + DROP_DARK }, drop);
