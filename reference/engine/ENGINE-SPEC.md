@@ -2450,7 +2450,9 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
     - It is **never a catch branch** on the ground: catch branches count as boughs, 1-1's bough share is already over its 25.3% line
       (#102, 27% of it catch branches), and 1-1 is ground-led.
     - In the canopy (n8-n11), a fall lands on the forest floor where it's within LONG_FALL and has a way back on (D33). A catch bough
-      goes only where the floor is too far, and it counts in the bough share.
+      goes only where the floor is too far, and it counts in the bough share. Up 900 px, that's the planner's (a): catch boughs 60-120 px
+      under each canopy gap, each one jump back up to the route (D33). A climb vine back up from the floor (b) is never used: climbing a
+      trunk is 1-4's.
   - **R2, YES.** Under n7's double gap, the safe ground sits about 140 px under the lips: past a single jump's reach to the far lip,
     and stopping short of the far bank, with a one-jump step back up to the near bank. On the ground that safe ground is a moss dip
     floor, as R1. Only the double crosses, and a miss costs nothing. The check: a single-jump bot never reaches the far bank by any
