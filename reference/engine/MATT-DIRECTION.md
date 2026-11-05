@@ -136,3 +136,31 @@ What this means for the engine:
   float, how it can be used (stand, climb, hang, crumble, bounce, hide), which worlds and stages it belongs to, and what it teaches.
   The mixer may only pick a piece labelled for that world, and the element gate rejects a piece out of its element.
 - **This is priority one in the engine work** (the planner's step 2-3), ahead of pass lines and the one-command build.
+
+## 2026-11-05 ~11:10 AM ET (to the lead): the engine plans the WHOLE game, not World 1
+"When all the special moves come in, how it needs to plan water when we start heading where you can swim. I don't think there's
+anything in the engine that calls for water. And they should be quick in and out things. We already did the research on that. And how
+to inject once we have special moves and we taught something, that it continues to go through the engine. The engine is the core. This
+is where the time needs to be spent. This can't be rushed. It needs to be done right. It needs to be thought through. It needs to be
+planned for how the game's going to play out. It can't just be looking at level one. Has to think through how is the whole game playing
+and has to account for it. Once this is done, we should be able just to put 3 or 4 helpers on things and tell it to build stages based
+upon what this stage is going to feel like, and they should know how to use this engine. And then it should just be cleanup afterwards.
+That is your priority, to ensure this engine doesn't fail and we don't have another day like we did yesterday."
+"And remember, most of the game works. It's just repetitive. Let's not break everything we've done. Let's build on what we've done
+successfully. Continuous improvement."
+What this means for the engine (the designer decides how; these are the bars the lead checks):
+1. **A whole-game move and element plan, as data the engine reads:** every move (run, jump, double, bounce, climb, hang, swing, punch,
+   glide, swim, slide and the rest) with where it is taught, where it first comes back, and how often it keeps coming back in every
+   later world (taught once means it keeps running through the engine). Every world's elements (ground, tree, water, air), its kit,
+   and its special stages. A gate fails a stage that uses an untaught move, or drops a taught one for too long.
+2. **Water and swimming planned from the research** (GEMINI-VARIETY 2026-11-02 row "Water", R-5.22): no slow drag, in and out of the
+   water every 15-20 s, wide clear exits, currents and bubbles, rising and falling water. Swimming is built (87f1e2f6, 6-7's root well).
+   The engine declares water zones and swim stretches; in World 1 the water is drawing only, and where swimming is taught the engine
+   lays swims as quick in-and-out beats.
+3. **Build on what works, don't break it:** most of the game works and is only repetitive. The engine reuses the existing stages'
+   pieces, sections, special stages, puzzle rooms, bosses and art, and adds variety to them. It's not a rewrite. The 1-5 regression
+   lock pattern applies to every world it touches.
+4. **Helper-ready:** when done, 3-4 stage helpers can each be handed a stage's feel brief (the lead's story brief plus the profile) and
+   build it with the engine alone, with one command and the gates. Then it's cleanup. So the engine ships with its own how-to
+   (reference/methods/), proved by one helper building a stage from it cold.
+5. **Not rushed:** time goes here. The checkpoints and Matt's 55% ceiling still hold; a checkpoint shows progress, not a finished world.
