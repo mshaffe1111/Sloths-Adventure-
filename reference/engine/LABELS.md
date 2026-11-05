@@ -96,7 +96,7 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | array | key | element | footing | floats | use | worlds allowed | ships in (INV) | first |
 |---|---|---|---|---|---|---|---|---|
 | dress | w10Banner | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W10 only (its own art) | W10 | 10-2 |
-| dress | w10Brazier | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W10 only (its own art) | W10 | 10-1 |
+| dress | w10Brazier | ground (metal) | on the ground; never floats | no | dressing (never a landing) | W10 only (its own art) | W10 | 10-1 |
 | dress | w10Cage | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W10 only (its own art) | W10 | 10-1 |
 | dress | w10Crate | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W10 only (its own art) | W10 | 10-1 |
 | dress | w10Crates | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W10 only (its own art) | W10 | 10-2 |
@@ -119,26 +119,26 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | dress | w5FernPot | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-6 |
 | dress | w5Hang1 | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-8 |
 | dress | w5Hang2 | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-8 |
-| dress | w5Ladybug | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W5 only (its own art) |  | 5-6 |
+| dress | w5Ladybug | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W5 only (its own art) |  | 5-6 |
 | dress | w5Lanterns | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-6 |
-| dress | w5Petals | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W5 only (its own art) |  | 5-6 |
+| dress | w5Petals | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W5 only (its own art) |  | 5-6 |
 | dress | w5Pots | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-6 |
 | dress | w5Spool | water (edge or surface) | on a drawn water surface or its bank edge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-6 |
 | dress | w5Teacups | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-6 |
 | dress | w5TeaTin | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-6 |
 | dress | w5Thimbles | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-6 |
 | dress | w5WateringCan | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-6 |
-| dress | w7Banner | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W7 only (its own art) | W7 | 7-2 |
+| dress | w7Banner | tree (hanging) | hangs from a bough, the canopy, a roof, a hook or a cave ceiling; never open sky | no | dressing (never a landing) | W7 only (its own art) | W7 | 7-2 |
 | dress | w7BellVine | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | W7 only (its own art) | W7 | 7-2 |
 | dress | w7Capuchin | ground or tree (creature) | stands on the ground or a bough; perches never in open air | no | dressing (never a landing) | W7 only (its own art) | W7 | 7-2 |
-| dress | w7Censer | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W7 only (its own art) | W7 | 7-2 |
+| dress | w7Censer | tree (hanging) | hangs from a bough, the canopy, a roof, a hook or a cave ceiling; never open sky | no | dressing (never a landing) | W7 only (its own art) | W7 | 7-2 |
 | dress | w7FrogIdol | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W7 only (its own art) |  | 7-2 |
 | dress | w7LizardBlock | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W7 only (its own art) |  | 7-2 |
 | dress | w7MonkeyStatue | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W7 only (its own art) | W7 | 7-2 |
 | dress | w7StoneLantern | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W7 only (its own art) |  | 7-2 |
 | dress | w7Tablet | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W7 only (its own art) | W7 | 7-2 |
 | dress | w8Curtain | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-7 |
-| dress | w8FireflyB | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W8 only (its own art) | W8 | 8-7 |
+| dress | w8FireflyB | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-7 |
 | dress | w8FlowersB | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-7 |
 | dress | w8NestB | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-7 |
 | dress | w9Fern | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W9 only (its own art) | W9 | 9-1 |
@@ -147,27 +147,27 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | dress | w9LogB | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W9 only (its own art) | W9 | 9-4 |
 | dress | w9Obsidian | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W9 only (its own art) | W9 | 9-1 |
 | dress | w9ObsidianB | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W9 only (its own art) | W9 | 9-2 |
-| dress | w9Smoke | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W9 only (its own art) | W9 | 9-3 |
-| dress | w9SmokeB | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W9 only (its own art) | W9 | 9-4 |
+| dress | w9Smoke | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W9 only (its own art) | W9 | 9-3 |
+| dress | w9SmokeB | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W9 only (its own art) | W9 | 9-4 |
 | dress | w9Tree | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W9 only (its own art) | W9 | 9-1 |
 | dress | w9TreeB | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W9 only (its own art) | W9 | 9-2 |
-| proto.bushes | fern | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | where shipped: W1,W4 | W1,W4 | 1-7 |
-| proto.bushes | grotto | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | where shipped: W3 | W3 | 3-2 |
-| proto.bushes | tall | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | where shipped: W1,W4,W6,W8 | W1,W4,W6,W8 | 1-7 |
-| proto.bushes | wide | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | where shipped: W1,W4,W6,W8 | W1,W4,W6,W8 | 1-7 |
+| proto.bushes | fern | ground (plant) | grows from the ground, a bank or a trunk | no | hide cover (taught 1-7; a hide bush, never a landing) | where shipped: W1,W4 | W1,W4 | 1-7 |
+| proto.bushes | grotto | ground (plant) | grows from the ground, a bank or a trunk | no | hide cover (taught 1-7; a hide bush, never a landing) | where shipped: W3 | W3 | 3-2 |
+| proto.bushes | tall | ground (plant) | grows from the ground, a bank or a trunk | no | hide cover (taught 1-7; a hide bush, never a landing) | where shipped: W1,W4,W6,W8 | W1,W4,W6,W8 | 1-7 |
+| proto.bushes | wide | ground (plant) | grows from the ground, a bank or a trunk | no | hide cover (taught 1-7; a hide bush, never a landing) | where shipped: W1,W4,W6,W8 | W1,W4,W6,W8 | 1-7 |
 | proto.decor | archway | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-9 |
 | proto.decor | banner | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-9 |
 | proto.decor | bell | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-6 |
-| proto.decor | canopy | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | where shipped: W2 | W2 | 2-4 |
+| proto.decor | canopy | tree (hanging) | hangs from a bough, the canopy, a roof, a hook or a cave ceiling; never open sky | no | dressing (never a landing) | where shipped: W2 | W2 | 2-4 |
 | proto.decor | chimney | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-1 |
-| proto.decor | dais | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | where shipped: W2 | W2 | 2-9 |
+| proto.decor | dais | water (edge or surface) | on a drawn water surface or its bank edge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-9 |
 | proto.decor | door | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-1 |
 | proto.decor | doorRoof | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-6 |
 | proto.decor | gong | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | where shipped: W2 | W2 | 2-9 |
-| proto.decor | lantern | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-6 |
+| proto.decor | lantern | tree (hanging) | hangs from a bough, the canopy, a roof, a hook or a cave ceiling; never open sky | no | dressing (never a landing) | where shipped: W2 | W2 | 2-6 |
 | proto.decor | laundry | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | where shipped: W2 | W2 | 2-1 |
 | proto.decor | lilyCarpet | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-9 |
-| proto.decor | limbShort | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-4 |
+| proto.decor | limbShort | tree (on a trunk or bough) | fixed to a trunk or bough | no | dressing (never a landing) | where shipped: W2 | W2 | 2-4 |
 | proto.decor | logShort | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-1 |
 | proto.decor | mailbox | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-1 |
 | proto.decor | pole | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W2 | W2 | 2-1 |
@@ -195,7 +195,7 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | proto.dress | w1Hang2 | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-2 |
 | proto.dress | w1Heliconia | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1LeafLitter | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
-| proto.dress | w1Morpho | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
+| proto.dress | w1Morpho | ground or tree (creature) | stands on its own drawn base on the ground or a bough | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1MossBoulder | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1Mushroom | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1MushroomDim | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
@@ -206,18 +206,18 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | proto.dress | w1Pebble | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1Pinecone | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1SeedPods | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
-| proto.dress | w1Snail | ground or tree (creature) | stands on the ground or a bough; perches never in open air | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
+| proto.dress | w1Snail | ground or tree (creature) | stands on its own drawn base on the ground or a bough | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1Sprig | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1Stones | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1Stump | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
-| proto.dress | w1Termites | ground or tree (creature) | stands on the ground or a bough; perches never in open air | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
+| proto.dress | w1Termites | ground (earth mound) | on the ground; never floats | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1Toucan | ground or tree (creature) | stands on the ground or a bough; perches never in open air | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1TrailPost | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1TreeFrog | ground or tree (creature) | stands on the ground or a bough; perches never in open air | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w1WoodStump | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W1 only (its own art) | W1 | 1-1 |
 | proto.dress | w2BasketHang | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | W2 only (its own art) | W2 | 2-6 |
 | proto.dress | w2Canoe | water (edge or surface) | on a drawn water surface or its bank edge | no | dressing (never a landing) | W2 only (its own art) | W2 | 2-1 |
-| proto.dress | w2CattailFly | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W2 only (its own art) | W2 | 2-1 |
+| proto.dress | w2CattailFly | water (edge or surface) | on a drawn water surface or its bank edge | no | dressing (never a landing) | W2 only (its own art) | W2 | 2-1 |
 | proto.dress | w2Crab | water (edge or surface) | on a drawn water surface or its bank edge | no | dressing (never a landing) | W2 only (its own art) | W2 | 2-3 |
 | proto.dress | w2Driftwood | water (edge or surface) | on a drawn water surface or its bank edge | no | dressing (never a landing) | W2 only (its own art) | W2 | 2-1 |
 | proto.dress | w2Fern | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W2 only (its own art) | W2 | 2-2 |
@@ -254,8 +254,8 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | proto.dress | w3GlowShrooms | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W3 only (its own art) | W3 | 3-1 |
 | proto.dress | w3GlowStalks | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W3 only (its own art) | W3 | 3-1 |
 | proto.dress | w3GlowStone | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W3 only (its own art) | W3 | 3-1 |
-| proto.dress | w3GlowWorms | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W3 only (its own art) | W3 | 3-1 |
-| proto.dress | w3OldNest | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W3 only (its own art) | W3 | 3-1 |
+| proto.dress | w3GlowWorms | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W3 only (its own art) | W3 | 3-1 |
+| proto.dress | w3OldNest | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W3 only (its own art) | W3 | 3-1 |
 | proto.dress | w3Pebbles | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W3 only (its own art) | W3 | 3-1 |
 | proto.dress | w3RootBoulder | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W3 only (its own art) | W3 | 3-1 |
 | proto.dress | w3RootGlow | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W3 only (its own art) | W3 | 3-3 |
@@ -265,7 +265,7 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | proto.dress | w4BellOne | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-1 |
 | proto.dress | w4BoulderMoss | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-2 |
 | proto.dress | w4Cairn | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-1 |
-| proto.dress | w4Feather | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W4 only (its own art) | W4 | 4-1 |
+| proto.dress | w4Feather | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-1 |
 | proto.dress | w4FernTuft | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-2 |
 | proto.dress | w4LeafHang | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-1 |
 | proto.dress | w4Lizard | ground or tree (creature) | stands on the ground or a bough; perches never in open air | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-2 |
@@ -275,7 +275,7 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | proto.dress | w4SeedGrass | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-2 |
 | proto.dress | w4SlateChips | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-2 |
 | proto.dress | w4Thistle | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-2 |
-| proto.dress | w4Totem | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-2 |
+| proto.dress | w4Totem | ground (wood post, eagle carving) | on the ground | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-2 |
 | proto.dress | w4VineHang | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-1 |
 | proto.dress | w4WindShrub | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W4 only (its own art) | W4 | 4-2 |
 | proto.dress | w5BankA1 | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-1 |
@@ -296,8 +296,8 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | proto.dress | w5ClutB2 | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-1 |
 | proto.dress | w5ClutB3 | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-1 |
 | proto.dress | w5FernPot | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-1 |
-| proto.dress | w5Ladybug | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W5 only (its own art) | W5 | 5-1 |
-| proto.dress | w5Petals | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W5 only (its own art) | W5 | 5-2 |
+| proto.dress | w5Ladybug | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-1 |
+| proto.dress | w5Petals | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-2 |
 | proto.dress | w5Pots | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-1 |
 | proto.dress | w5Ribbon | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-2 |
 | proto.dress | w5Spool | water (edge or surface) | on a drawn water surface or its bank edge | no | dressing (never a landing) | W5 only (its own art) | W5 | 5-1 |
@@ -338,16 +338,16 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | proto.dress | w7StoneLantern | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W7 only (its own art) | W7 | 7-1 |
 | proto.dress | w7Tablet | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W7 only (its own art) | W7 | 7-1 |
 | proto.dress | w7UrnTall | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | W7 only (its own art) | W7 | 7-1 |
-| proto.dress | w8Firefly | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W8 only (its own art) | W8 | 8-2 |
-| proto.dress | w8FireflyB | air (dressing) | drifts or flies; may float | yes | dressing (never a landing) | W8 only (its own art) | W8 | 8-1 |
+| proto.dress | w8Firefly | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-2 |
+| proto.dress | w8FireflyB | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-1 |
 | proto.dress | w8Flowers | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-1 |
 | proto.dress | w8FlowersB | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-1 |
-| proto.dress | w8Fungus | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-1 |
+| proto.dress | w8Fungus | tree (on a trunk or bough) | fixed to a trunk or bough | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-1 |
 | proto.dress | w8Hollow | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-1 |
 | proto.dress | w8HollowB | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-2 |
 | proto.dress | w8Nest | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-2 |
 | proto.dress | w8NestB | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | W8 only (its own art) | W8 | 8-1 |
-| proto.kitDecor | basin | water (edge or surface) | on a drawn water surface or its bank edge | no | dressing (never a landing) | where shipped: W3 | W3 | 3-1 |
+| proto.kitDecor | basin | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | where shipped: W3 | W3 | 3-1 |
 | proto.kitDecor | branchGate | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W1 | W1 | 1-6 |
 | proto.kitDecor | bridge | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W4 | W4 | 4-2 |
 | proto.kitDecor | bridgeBroken | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W4 | W4 | 4-1 |
@@ -367,8 +367,8 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | proto.w3decor | bones | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | where shipped: W3 | W3 | 3-7 |
 | proto.w3decor | clawRock | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | where shipped: W3 | W3 | 3-2 |
 | proto.w3decor | fern | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | where shipped: W3 | W3 | 3-1 |
-| proto.w3decor | glowLit | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | where shipped: W3 | W3 | 3-1 |
-| proto.w3decor | grottoMouth | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | where shipped: W3 | W3 | 3-1 |
+| proto.w3decor | glowLit | tree (hanging) | hangs from a bough, the canopy, a roof, a hook or a cave ceiling; never open sky | no | dressing (never a landing) | where shipped: W3 | W3 | 3-1 |
+| proto.w3decor | grottoMouth | ground (stone) | on the ground, a ledge or its own drawn base; never floats (Matt) | no | dressing (never a landing) | where shipped: W3 | W3 | 3-1 |
 | proto.w3decor | mossCurtain | tree (hanging) | hangs from a bough, the canopy, a roof or a line; never open sky | no | dressing (never a landing) | where shipped: W3 | W3 | 3-2 |
 | proto.w3decor | mushrooms | ground (plant) | grows from the ground, a bank or a trunk | no | dressing (never a landing) | where shipped: W3 | W3 | 3-2 |
 | proto.w3decor | pawprint | ground (built or wood) | on the ground, a porch, a bank or a ledge | no | dressing (never a landing) | where shipped: W3 | W3 | 3-1 |
@@ -383,8 +383,22 @@ never hang from open sky; fliers are the only dressing that may sit in open air.
 | waterSigns | waterSigns | water (edge or surface) | on a drawn water surface or its bank edge | no | dressing (never a landing) | where shipped: W1,W2,W3,W4,W5 | W1,W2,W3,W4,W5 | 1-3 |
 | proto.decor | (none) | — | an unnamed decor entry in W2 | — | dressing | W2 | W2 | — |
 
-Classified by `reference/engine/labels/props.py` (run on tools/engine/inventory.json, da11cc4e) (key-name families). The designer read every family's members. Exceptions:
-- `w5Ladybug` sits on a leaf, never in the air.
-- `w10Brazier` is metal (no-float, on the ground).
-- `w6SnailRock` is a rock (no-float).
-- Any key whose family is wrong in a still is corrected by name here.
+**How §5 was checked (designer, 11-05 ~10:47 AM ET, after Matt's "not half-ass anything").** The first cut sorted by key-name families,
+and only a sample was read. Every row has now been checked against its real art:
+- contact sheets of every frame, with key names and the atlas's own  flag, in ;
+- the sources were dressNewData (W1-W7), dressAtlasData (W1, W2, W5, W8-W10), w2PropsData, w3PropsData and puzzleAtlasData;
+- the 4 hide bushes were checked from engine.ts drawBushArt and drawW3Fern.
+
+**28 rows were corrected from the art.** The overrides are in  OV.
+- Drawn on a base, not flying: w1Morpho, w4Feather, w5Petals, w5Ladybug, w8Firefly, w8FireflyB.
+- Creature on its own base: w1Snail.
+- Earth or stone, not creature or plant: w1Termites, w3OldNest, w3GlowWorms, grottoMouth, basin.
+- Water edge: w2CattailFly, dais, trickle.
+- Hanging: w7Banner, w7Censer, lantern, canopy, glowLit.
+- Fixed to a trunk or bough: w8Fungus, limbShort.
+- On the ground: w4Totem (a wood post with an eagle), w9Smoke and w9SmokeB (vents on the ground), w10Banner (on a pole), w10Brazier
+  (metal).
+- The 4 proto.bushes are marked as hide cover.
+
+**One art defect found:** w6WetLeaves has a pink smear in its top-left corner, on the sheet. It is named for an art fix, and it is not
+laid until then.
