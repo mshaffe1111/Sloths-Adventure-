@@ -943,6 +943,34 @@ fills, the designer sends the lead a small picture list.
 - **The move ladder:** run, jump, double and bounce are taught here. Hop and climb come back later.
 - **Overall trend up** (1-5's goes down), so the two stages never share a shape.
 
+
+**[designer, 11-05 ~9:15 AM ET; Matt: "Are you also explaining how it should feel based on the story?"] How 1-1 should feel, from
+the story.** Until now the 1-1 plan said what the stage teaches and how it is shaped, but not how it should feel. This adds that, from
+the shipped story text, and every stage spec now carries a "feel" block like it.
+- **Where Pokey is in the story** (prologue and World 1 arrival, `reference/story-rewrite/pilot-prologue-w1-v2.md`):
+  - two days after the soldiers took Meeca, he has just left the home forest;
+  - he is slow, and he has promised anyway: "Hang on, Meeca. I'm slow. But I'm coming";
+  - the petal on his wrist points north;
+  - the squirrels came to watch him leave, and he is "not very far away".
+- **The feel:** a small, determined start that grows. The stage opens low, safe and a little comic, and ends with him higher than he
+  has ever climbed. It is a first step taken on his own, not a chase.
+- **How the layout carries it:**
+  - **n1-n3, gentle and close to the ground.** The home forest's floor, with short safe hops and wide landings, at a calm rhythm (a
+    march, steady, never rushed). He is learning that he can do this. Nothing bites.
+  - **n4-n6, the first lift.** The bounce lifts him off the floor for the first time, and the first fork lets him choose to stay low or
+    try higher. The rest at n6 is a breath before he commits.
+  - **n7-n9, the rising courage.** The double jump is learned over safe ground, then used for real in the chain at n9, each jump higher
+    than the last. That is the stage's emotional peak: the slow sloth finding he can climb. The rhythm quickens a little here, and it is
+    the only place in 1-1 where a miss costs a setback.
+  - **n10-n11, arriving in the canopy.** He is up among the high branches, the backdrop opening as he rises. The stage ends at the
+    shrine with the clue: **one deep bootprint in the moss, pointing north** (the shipped 1-1 clue: "They did not stop here"). It sits
+    beside the path at the end, a story prop, not a pickup.
+- **Corrected against the story:** the "view from the top branch" belongs to **1-4** ("The View North: from the top of the kapok you can
+  see the Highlands"). 1-1 ends in the high branches, not the very top, with the sky opening ahead but the far Highlands not yet shown,
+  so 1-4 keeps its moment. n11 changes to match.
+- **For every later stage**, the spec opens with its story beat, the feel in one line, and how each node group carries it, drawn from
+  the shipped story and clue text, before any node is laid.
+
 | # | Job | Deck | Entry → exit | Markers and lines (the shipped 1-1 lines, `dotLinesData.ts`) |
 |---|---|---|---|---|
 | n1 | **teach** run | flat forest-floor walk with low banks, no gaps | floor → floor | Dot's run coach line; no heart; the start flag |
@@ -955,7 +983,7 @@ fills, the designer sends the lead a small picture list.
 | n8 | the climb up | bough stair, the climb, bounce up (one not used in n4) | low → mid | — |
 | n9 | **the moment (test)** | the double-jump chain: three or four rising doubles, bough to bough, up into the canopy, with catch boughs below | mid → high | a flag before it; a heart after it only if it has risk |
 | n10 | the canopy fork | high road: the top branches; low road: mid boughs. Rejoin | high → high (two roads) | the high road's petal group |
-| n11 | cool down and the view | one long top branch, the backdrop wide open, to the shrine | high → shrine | — |
+| n11 | cool down, arriving in the canopy | one long high branch, the sky opening ahead (the far Highlands are 1-4's), to the shrine | high → shrine | the bootprint clue beside the path |
 
 - **Length:** Normal's quick clock is 2:40-3:15. That is at least 20% under 1-5's median of about 4:05 (no more than 3:16), and over
   the 2:00 floor. Easy is at least 2:00. Length comes from the nodes and bursts, never from a clock.
