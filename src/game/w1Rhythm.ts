@@ -888,7 +888,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   mark(x - 300, y);
   mark(x + 200, y);
   mark(x + 470, y);
-  L.flags.push({ x: x + 200, y });
+  L.flags.push({ x: x + 100, y });
   // (Dot's line 260 px before the teach ledge: she holds a line while an animal is within 300 px (engine.ts guide env danger), and from
   // x + 140 the boa already was, so the line waited until he was past it, on the lianas)
   L.lines.push({ x: x - 260, y, text: BOA_LINE });
@@ -1239,6 +1239,22 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     if (c.type !== 'flower') continue;
     for (const o of C) if (o !== c && o.type !== 'flower' && o.type !== 'exit_totem' && Math.hypot(o.x - c.x, o.y - c.y) < PICKUP_APART) c.y = o.y - PICKUP_APART - 4;
   }
+  // (1-2's canopy boughs, the great logs, floated in mid-air over the water with nothing holding them (the quality supervisor's recording,
+  // 2026-11-04, D16): each stands on a kapok behind it, as 1-1's boughs do (protoArt.ts setDecoTrunks), down past the water's edge; a
+  // surface the same height lying inside a log's span (a bridge laid on it) is drawn by the log alone. Dressing only: nothing moves)
+  const trunks: Array<{ x: number; topY: number; bottomY: number; w: number }> = [];
+  if (id === '1-2') {
+    const logs = P.filter((q) => q.style === 'log' && q.height === 40);
+    for (const lg of logs) {
+      for (const q of P) if (q !== lg && !q.art && q.type === 'solid' && Math.abs(q.y - lg.y) < 4 && q.x >= lg.x - 2 && q.x + q.width <= lg.x + lg.width + 2) q.art = 'hidden';
+      // (one kapok under a log, two under a long one, a third of the way in from each end; never two kapoks closer than 260 px)
+      const at = lg.width >= 700 ? [lg.x + lg.width / 3, lg.x + (2 * lg.width) / 3] : [lg.x + lg.width / 2];
+      for (const x of at) {
+        if (trunks.some((t) => Math.abs(t.x - x) < 260 && t.topY <= lg.y + 30)) continue;
+        trunks.push({ x: Math.round(x), topY: lg.y + 24, bottomY: bottom + 200, w: 1.3 + ((Math.round(x) * 7) % 5) * 0.08 });
+      }
+    }
+  }
   const hints: StageHint[] = L.lines.map((l) => ({ x: l.x, text: l.text, pad: l.text, keys: l.text, ...(l.y >= 600 ? { belowY: l.y - 60 } : { aboveY: l.y + 60 }) }));
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: [] }, C);
   const cfg: LevelConfig = { ...config, levelWidth: L.width, levelHeight: L.height, ...(L.marks.length ? { targetCount: Math.max(1, Math.round(L.marks.length * (easy ? 0.65 : 0.85))) } : id === '1-2' ? { targetCount: petalGoal(L.petals.length, easy ? PETAL_SHARE.easy : PETAL_SHARE.normal) } : {}) };
@@ -1267,7 +1283,7 @@ function rhythmStage(config: LevelConfig, seed: number, easy: boolean): Generate
     // the goal is always in reach whichever road he takes (splitPetals); checked against the fixed first-timer bots' runs)
     ...(id === '1-2' ? { normalGoal: petalGoal(L.petals.length, PETAL_SHARE.normal), easyGoal: petalGoal(L.petals.length, PETAL_SHARE.easy) } : {}),
     meta: { attempt: seed, chunks: L.nodes.map((n) => n.tag), width: L.width, pieces: L.nodes.map((n) => ({ k: `${id} ${n.tag} ${n.tier}`, x0: n.x0, x1: n.x1 })), timing: { layoutSeconds: L.expert, decorSeconds: 0, route: L.width } },
-    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, bpm, ownPetals: true, rhythm: { bpm, nodes: L.nodes, reroll: L.reroll, tiers: L.tiers } },
+    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, ...(trunks.length ? { trunks } : {}), movedPickups, bpm, ownPetals: true, rhythm: { bpm, nodes: L.nodes, reroll: L.reroll, tiers: L.tiers } },
   } as GeneratedStage & { proto: ProtoExtras };
 }
 
