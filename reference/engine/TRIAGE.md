@@ -24,8 +24,9 @@ says so and is tagged C or R instead. Line numbers are those files' as pinned in
 **R** primary-source research (what to search, what to extract). **M** (added, used sparingly): not a research or measurement question
 at all, only Matt's call or a scheduling call; the row says what to ask. M rows are counted separately, not hidden inside G/C/R.
 
-**Count note.** The trace's summary says 160 OPEN; the file read at 10:50 AM ET has 161 rows tagged OPEN (numbered #1-#161 below, in
-file order). All 161 are here.
+**Count note.** The trace's summary says 160 OPEN; the file read at 10:50 AM ET had 161 rows tagged OPEN (numbered #1-#161 below, in
+file order). The re-read at 11:03 AM ET found two more rows tagged OPEN (ES 1232-1233 and ES 1596, both with an empty "how to
+settle"); they are #162 and #163. All 163 are here. The #numbers are this triage's, not the trace's (the trace has no row numbers).
 
 ---
 
@@ -69,6 +70,7 @@ vs a guest gimmick; report as numbers with the page and line.*
 | ES 104 (#5) | Lily-pad hop: small, big, sinking pads | C | protoStage lilyPads (main :2294-2305, per trace) has no sink. Read the engine-render water zone code and list which pad kinds exist; pass = the spec names only built kinds, or the sinking pad goes on the build list. (ES 575 says pads don't sink.) |
 | ES 575 (#59) | Sinking log: skip; cracking log gives the same feel for less | R | GP:42 (opened) lists "rhythmic sinking platforms" as a stage's single focal twist ("One-Off Wonder" rule), so research does not say skip. Search: DKC Tropical Freeze / DKC Returns sinking-platform stages (and Rayman Legends' sinking platforms); extract whether a sinking piece is a stage's theme or a passing piece, and its sink time. |
 | ES 833-834 (#92) | S-9: stepping stone <= 50 px above the water; taller ones are stumps | C | Stills of the water zone at 30, 50, 70 px tops, upright and sideways; pass = at 50 px the stone still reads as "in the water" on Matt's phone frame. |
+| ES 1596 (#163) | Swim gate fails over 20 s under | G | GVs:19 (opened): water "no slow drag, in-and-out every 15-20 s, wide clear exits ... ADOPT as the swimming brief's rules". 20 s is the top of that band; the gate may also check the 15 s low end as a target. (Row tagged OPEN in the 11:03 AM re-read.) |
 | ES 1598-1601 (see #154 in 1.1) | Swim teach and return | (C) | Counted once, under 1.1. |
 
 Research brief (water and swimming): *From DKC Tropical Freeze, DKC Returns and Rayman Legends, list every stage whose theme is a sinking or
@@ -197,6 +199,7 @@ Research brief (rewards): *For chase and sprint stages in DKC Returns, Tropical 
 | ES 1174 (#110) | Two-road Normal >= 25% | C | 16 rolls on the finished 1-1 (measured 24-28%). |
 | ES 1175 (#111) | Two-road Easy >= 20% | C | As #110 (measured 19-22%). |
 | ES 1177-1178 (#112) | Choice in the ground half from forks, hollow logs and side pockets; no thin raised roads | G | GV:173: the second collectible tier "require[s] the player to identify an alternate cell entrance or ascend an optional vertical branch structure". Answers side pockets and branches as the place for choice; "no thin raised roads" is Matt's (BR:46 context). R1:524 (grade board) does not bear on it. |
+| ES 1232-1233 (#162) | World default pass lines: today's 1-5 (splits 19, two-road 40%) | C | Run the split and two-road measures on old 1-1, today's 1-3 and the mixer's 1-5 (16 rolls each); pass rule = the default is no higher than the lowest stage Matt has approved, so a stage is not failed for matching his references. (Row tagged OPEN in the 11:03 AM re-read.) |
 | ES 1215 (#114) | 1-1 elements: ground >= 70% n1-n7, tree >= 60% n8-n11, water 0 | C | Element share on the 098aff49 build; pass = shares printed per node range. |
 
 Research brief (layout): *From Dahlskog & Togelius 2012 and Super Mario Bros. 1-1/1-2 maps, give each stair/hill's number of rises and
@@ -294,21 +297,346 @@ extract (1) iteration rounds per generated level before ship, (2) time to build 
 | Topic | Rows | G | C | R | M |
 |---|---|---|---|---|---|
 | Moves and teaching | 21 | 6 | 8 | 6 | 1 |
-| Water and swimming | 3 | 0 | 2 | 1 | 0 |
+| Water and swimming | 4 | 1 | 2 | 1 | 0 |
 | Pacing and rests | 11 | 4 | 7 | 0 | 0 |
 | Variety and repetition | 32 | 6 | 26 | 0 | 0 |
 | Difficulty and the dial | 16 | 5 | 11 | 0 | 0 |
 | Rewards, pickups and hearts | 9 | 5 | 3 | 1 | 0 |
-| Layout and geometry | 21 | 1 | 19 | 1 | 0 |
+| Layout and geometry | 22 | 1 | 20 | 1 | 0 |
 | Art, look and floating | 16 | 3 | 12 | 1 | 0 |
 | Length | 7 | 1 | 4 | 2 | 0 |
 | Easy vs Normal | 4 | 4 | 0 | 0 | 0 |
 | Checks and bots | 3 | 1 | 2 | 0 | 0 |
 | Process and cost | 18 | 2 | 11 | 2 | 3 |
-| **Total** | **161** | **38** | **105** | **14** | **4** |
+| **Total** | **163** | **39** | **106** | **14** | **4** |
 
 Counted by script over the tables above (every #1-#161 appears exactly once). Of the trace's 161 "how to settle" hints, these
 pointed at a line that, opened, does not answer the item, so the row moved to C or R: #2/#8/#21/#103/#105/#115 (LEG E47's 42% is
 declined by its own ledger at LEG:591), #29 (LEG E5/E21), #33 (SR §0b.2), #35 (LEG E118), #37 (LEG E52), #88 (GV:69), #129 (R1:572),
 #159's D:1043, #24's R4:51, #112's R1:524.
 
+
+## 1.14 Part 1 rows the designer's rulings (ES 1736 on, 10:49 AM ET) have since touched
+
+The designer's "Contradictions ruled" block arrived while this triage was written. It does not change the settle-by above, but these
+rows now have a ruling standing on them: #20, #71 (C3); #47, #67 (C4); #26 (C10); #52, #53, #54 (C11); #65 (C1); #69 (C16); #83 (C2);
+#121, #122 (C9); #73 (C21); #140, #143 (C22); #134-#141 (C23, LABELS.md); #145 (C26); #1 (C27); #159 (C30); #3, #4, #23, #106, #107,
+#55, #58, #61 (C15, cost lines are history).
+
+**One caution for the designer, from opening the lines:** ruling C14 rests on "LEG E47, E127" for a Jaccard cap of 0.42. LEG:511 (E47)
+does say "cross-stage Jaccard < 42%", but LEG:591 (E127), the row that defines that formula ("Sim = 0.5 Levenshtein part + 0.5 4-gram
+Jaccard <= 0.42"), is marked **"NOT | not taken: cap our own metric instead"**, and LEG:705 (E241, "similarity <= 42% max pairwise")
+says "measure on our metric". The ledger therefore supports a cap but not Gemini's 0.42 on our idea sets; #2/#8/#21/#103/#105/#115
+stay C (calibrate on old 1-1 vs 1-3).
+
+---
+
+# Part 2. The 234 unused research rows
+
+Each row: **USE** (the spec line or gate it belongs in, and a one-line rule), **NOT TAKEN** (the reason, cited), or **NEEDS RUN** (the
+run). Grouped by source, in SPEC-TRACE (a)'s order. Spec lines are ENGINE-SPEC.md's as of 11:00 AM ET (headings: ES 20 checkpoints and
+variety gate, ES 61 CP2 library, ES 231 CP3 mix rule, ES 270 placement rules, ES 624 dial, ES 662 length, ES 1026 how a stage is made,
+ES 1208 stage profile, ES 1235 element table, ES 1265 move ladder, ES 1458 whole-game plan, ES 1612 plan gates, ES 1657 acceptance
+test). Where the trace groups rows (e.g. "G1-G7"), each row is given separately here.
+
+## 2.1 GEMINI-LEDGER.md (26 rows, plus F5's unused part)
+
+Most of these are already IN the engine as code (GL's own status column); the gap the trace names is that the mixer spec does not say
+it keeps them. That is answered per row.
+
+| Row | Source line | Verdict | Where, and the rule (or the reason / the run) |
+|---|---|---|---|
+| A7 | GL:20 (IN, puzzleCheck.ts) | USE | CP4 push block / puzzle beats (ES 1235 element table): a tool is laid only inside a puzzle-kit room that carries its receptor; the mixer places kit rooms whole, never splits them. |
+| B2 | GL:27 (PART, no pooling audit) | USE | Acceptance test (ES 1657): every mixer-built stage passes `drawcheck.mjs` and `artcheck.mjs` (CLAUDE.md checks; PERFORMANCE-RULES §1 budget) before its checkpoint, both orientations. |
+| C2 | GL:34 (poissonPlace built, unused) | NEEDS RUN | Measure old 1-1's minimum same-kind spacing and its longest stretch with nothing (poissonPlace's validator); then a placement rule (ES 270) with those two numbers. Gemini gives no number. |
+| C3 | GL:35 (2-3 authored versions in W1) | USE | CP2 library (ES 61): every idea carries >= 3 parameter variants (SR:83-84 requires the same, Matt's "10-30" rule). |
+| C5 | GL:37 (era.ts being built) | USE | Variety gate (ES 20-41): two rolls of a stage must differ: NCD between rolls >= 0.35 judged in the calibrated range 0.09-0.62 (R3:130-131), over 200 rolls, or the profile declares the stage a fixed composition (R3:120-121). |
+| C6 | GL:38 (IN, beats.ts) | NOT TAKEN | A measuring tool's weights, already in `tools/inspect/beats.ts` (GL:38); no spec rule needs them. |
+| C7 | GL:39 (IN, inspector) | NOT TAKEN | D:54: the 3-gram cosine "sits at 0.00-0.10 between every World 1 neighbour while Matt says everything feels the same, so it cannot see the sameness". Replaced by NCD (R2 idea 8) and kinds per take-off (R2 idea 1). |
+| C8 | GL:40 (NOT) | USE | Mix rule (ES 231): an idea may be laid mirrored (its inside order flipped) as one of its variants; light stays upper-left (GL:40). SR:81-82 lists "mirrored" as a change you feel. |
+| C10 | GL:42 (NOT) | NOT TAKEN | ES:259 ("fails with the missing piece named, never a reroll") and SR:84-85 (short of pieces, "build more pieces ... never to reroll"). |
+| D2 | GL:49 (PART, one margin) | USE | Dial (ES 624): required jumps stay under 65% of max reach on Easy, 82% on Normal (GP:75-76) as the hard cap, stated in the denominator C20's run fixes. |
+| D4 | GL:51 (IN, puzzleCheck.ts) | USE | Same rule as A7: kit rooms placed whole, so puzzleCheck's symbolic zones still prove them. |
+| D5 | GL:52 (IN, reset post) | USE | Same rule as A7: the pushed log or carried item respawns at its source (kit reset post); a mixer room without one fails. |
+| D6 | GL:53 (IN, anchors {on, at, dx}) | USE | Marks and petals in kit rooms use the kit's anchors; the mixer's pickup rules (ES 270) apply outside kit rooms only. |
+| F4 | GL:71 (IN, first-timer bot) | NOT TAKEN | Already in the first-timer bot (GL:71: drift, late lift-off, short hops); the open question is calibration, R4 L7 below. |
+| F5 (rest) | GL:72, GP:370-372 | USE | Profile pass lines (ES 1208): peak stress per burst <= 2.5 Easy / 5.5 Normal (GP:370); puzzle depth 1-2 Easy / 2-4 Normal (GP:371; SR:113-114 says 1-2 and 2-3+); backtracking 1.0-1.25 / 1.15-1.6 (GP:372). The first-timer bot already reports all three (GL:72). |
+| F6 | GL:73 (PART) | USE | Story lines (ES 754 and every Dot line): <= 12 words on Easy (GL:73: "under 8-12 words, grade 2-3 reading"), <= 15 words a box (GV:67); "stuck" = back-and-forth or 2 failed tries, not a clock. |
+| G1 | GL:80 (IN, FORGIVE coyote 133/167 ms) | NOT TAKEN | Engine feel already shipped and tested (forgive.test.ts, GL:80); the level check reads it. Pinned per stage by R4 idea 5 below. |
+| G2 | GL:81 (IN, buffer 133/200 ms) | NOT TAKEN | As G1 (GL:81). |
+| G3 | GL:82 (IN, landPx 8/12) | NOT TAKEN | As G1 (GL:82). |
+| G4 | GL:83 (IN, head-bonk and mantle) | NOT TAKEN | As G1 (GL:83). |
+| G5 | GL:84 (PART, "check the ratio") | NEEDS RUN | Measure Easy vs Normal tap reach (`useReach`) against 1.6x / 1.25x; a kit-room tuning check, not a level rule. |
+| G6 | GL:85 (NOT checked) | NEEDS RUN | Jump height and length at 33 ms vs 45 ms frames; if they differ, every reach number the level check uses is wrong on a stuttering phone. Pass = equal within 1 px. |
+| G7 | GL:86 (PART, re-anchor 30 px, in the bot) | NOT TAKEN | Input feel, already modelled in the first-timer bot (GL:86); not a level rule. |
+| I2 | GL:103 (gen2 pipeline) | NOT TAKEN | The gen2 6-pass pipeline is a different engine; the mixer's passes are ES 231-268. A mapping would be documentation only. |
+| J2 | GL:111 (IN, puzzleCamera.ts) | USE | Same rule as A7: kit rooms keep their camera lean. |
+| J3 | GL:112 (PART, not checked by size) | NEEDS RUN | Check each kit room's box against clipcheck's 412 x 915 / 915 x 412 viewports (clipcheck.mjs:54-55) at the game's zoom; 750 px tall cannot fit 412 px sideways at 1:1, so the run decides the rule. |
+| J4 | GL:113 (IN) | USE | Same rule as A7: kit rooms keep their first-open pan or visible conduit. |
+
+## 2.2 GEMINI-PCG-RESEARCH.md items outside the ledger rows (8)
+
+| Item | Source line | Verdict | Where, and the rule (or the reason / the run) |
+|---|---|---|---|
+| Library size per world | GP:219 | USE | Per-world object pass (ES 1385): count a world's pieces against GP:219's 35-50 small chunks (3-5 sockets each) and D:55's "about 50-70 rooms a world"; short of the floor = build more pieces (SR:84-85). Sits beside C24's 14 section types. |
+| Templates and sub-blocks | GP:251-252 | USE | Same pass: 28-35 templates a world (GP:251) and 8 small obstacle sub-blocks a world (GP:252), counted per world. |
+| D_sim < 0.35 rejection | GP:276 | USE | Variety gate (ES 20-41) as a FAIL, not a re-roll (ES:259): a stage whose action string is more than 65% the same as any earlier stage of its world fails, naming the shared stretch; measured as calibrated NCD (R3:130-131). |
+| Edge risk scores | GP:339-355 | USE | Dial (ES 624, as ruled C1 "difficulty is the landing window"): each jump edge scored by U_dist (reach used), U_land (landing width, 1-tile peg ~1.0, 6-tile floor 0.0, GP:350) and U_time (window share of the cycle, GP:355). |
+| Stress, depth, backtracking | GP:370-372 | USE | Same rule as GL F5 (rest), above. |
+| Vertical clamp | GP:396 | USE | Stage profile `arc` (ES 1208): running height stays within -800 to +1200 px of the start; past +800 the mixer draws a descending idea (GP:396). |
+| Co-visibility of source and receptor | GP:323 | USE | Kit rooms (ES 1235): a lever/acorn source and its gate/basket within 8 tiles, on screen together, on Easy and in teach rooms. |
+| Three visual sub-acts | GP:333-336 | NOT TAKEN | The look is the lead's story brief (ES 1026 step 1: "the story-led look"); per-stage light is already applied (GL H3, trace a1); 1-1 has one sky (C8, Matt R-164.2). |
+
+## 2.3 GEMINI-VARIETY (11)
+
+| Row | Source line | Verdict | Where, and the rule (or the reason / the run) |
+|---|---|---|---|
+| Pacing tags | GVs:14 ("ADOPT") | USE | Stage profile and mix rule (ES 1208, ES 231): each node tagged Tight / Flowing / Relaxed / Cerebral; never two Tight nodes back to back. |
+| Puzzle share | GVs:15 ("ADOPT as a target") | USE | Profile pass line (ES 1208): about 25-30% of a stage's beats are puzzle beats (jump as a tool), unless the profile names a reason (a teach stage, a sprint). |
+| Moving-platform kinds | GVs:17 ("ADOPT 4-5") | USE | Move ladder (ES 1265): "moving platform" becomes 4-5 kinds (pendulum branch, ride-to-start vine track, pulley, turning log, bobbing float), each taught at its first use. |
+| Lift momentum | GVs:18 (MISSING, R-152.7) | USE | Plan gates (ES 1612): no stage that requires a moving platform builds until platform speed carries into the jump (R-152.7 shipped). |
+| Stage types | GVs:20 (MATT DECIDED 11-02) | USE | Stage profile (ES 1208): a `type` field (normal / short break / search hub / race / mastery); 2-3 stages a world reshaped (Matt). |
+| Tempo inversion | GV:7; SR:49-50 | USE | Stage profile `pace` (ES 1208) becomes a pair: each mechanic's hurry and patience version; a stage that asks for only one tempo fails (SR:50). |
+| Branch sub-types | GV:13; SR:51-52 | USE | Element table (ES 1235): creaky splits into snap twig (~0.15 s, keep running), creaking limb (Normal 0.67 s / Easy 1.2 s, ruling C3) and tipping root (tips by where he stands). |
+| Ten slot roles | GV:73-99; SR:56-59 | NOT TAKEN | SR:58-59 marks the slot order "UNDER REVIEW: ... the ledger decides how this changes". Only its "neighbours never share a tempo and camera direction" (SR:58) is used (Part 1 #99). |
+| Wayside lines | GV:67 | USE | Same rule as GL F6: a Dot line under 15 words a box. |
+| Checkpoint cadence | GV:165 | USE | ES 300 as ruled C10: a checkpoint on the rest right before each hard part, respawn within about 2 s of it. |
+| Read by shape | GV:177; SR:60-62 | USE | Element table (ES 1235) art rule: every breakable shares a notched underside and a 2-frame shake on touchdown; thorn vines show barbs; checked on stills both orientations. |
+
+## 2.4 R1-R4 findings (50)
+
+### R1 (13)
+
+| Row | Source line | Verdict | Where, and the rule (or the reason / the run) |
+|---|---|---|---|
+| R1 L3 | R1:48-50 | USE | Per-world object pass (ES 1385): the pool is several times the slots (SMBF 70-100 chunks for 8 used), counted per (job x phase after the teaching cut), >= 2 eligible pieces a slot (D:55). |
+| R1 L6 | R1:74-76, :522-523 | USE | Stage profile (ES 1208): a `signature` field, one named surprise, unique across the game, passing Wonder's three tests (links before and during; you can suddenly do something new; says itself in one phrase). |
+| R1 L9 | R1:90-93 | NOT TAKEN | Covered: the hero's rescue tools are FORGIVE (GL:80-83) and the catch boughs under misses (ES 1073; ruling C5 "a slip on Easy costs a fall to a catch"). |
+| R1 L10 | R1:95-96 | NOT TAKEN | Build order is Matt's: "CP4 one stage at a time, the trunk fix then 1-1 first" (ST:967). The re-grade half is taken as R1 idea 6. |
+| R1 idea 2 | R1:514-516 | NOT TAKEN | Covered at build time: no template in more than 3 of a world's stages (SR:83-84) and the neighbour cap (C14); stages are built from data before ship, so a play-time save-wide ledger is not needed. |
+| R1 idea 3 | R1:517-518 | USE | CP2 library (ES 61): `notBefore` = the ladder's taught-at (gate E1, ES 1612); `rare` = an idea laid in at most 1 of 16 rolls, so its appearance feels special. |
+| R1 idea 4 | R1:519-521 | USE | Whole-game plan (ES 1458): a variety matrix (moves x stages, random x/o rows) forcing pairs nobody picked (SR:54-55's pairs), and subtractive stages (half the moves taken away) as a stage `type`. |
+| R1 idea 6 | R1:524-526 | USE | How a stage is made (ES 1026): after each stage ships, re-run the quality grade (funcheck, bands.ts) of the world's earlier stages; a stage that drops is re-opened. |
+| R1 idea 7 | R1:527-530 | USE | Move ladder (ES 1265): "no unitaskers" (every element interacts with the others) and an "on cooldown" list of exhausted ideas; the per-level counts wait for Part 1 #6's research. |
+| R1 idea 8 | R1:531-532 | USE | Move ladder (ES 1265): an advanced move is given by a level object (mushroom, warm air, lift), never a new gesture combination (CLAUDE.md: touch only). |
+| R1 idea 9 | R1:533-535 | USE | Dial (ES 624, as ruled C1): an idea's difficulty is rated from the bots' measured deaths and time, never authored. |
+| R1 mistake 2 | R1:546-547 | USE | Spec (ES 231 mix rule): a stage's roll is drawn once and kept until cleared (`layoutMemory.ts:7-13`); never a new roll on death. |
+| R1 mistake 3 | R1:548-549 | NEEDS RUN | bands.ts per node on 16 rolls of 1-5: the biggest difficulty step between neighbouring nodes; then a mix-rule cap at the joins set from it. |
+
+### R2 (11)
+
+| Row | Source line | Verdict | Where, and the rule (or the reason / the run) |
+|---|---|---|---|
+| R2 L5 | R2:72-74 | USE | Plan gates (ES 1612): a teach node fails if the route bot with that move switched off still clears it (R2:663-665); it would have caught 1-2's optional catch. |
+| R2 L7 | R2:87-89 | USE | How a stage is made (ES 1026): a one-node edit keeps every other node's solved values unless none exists (R2:680-682, "same as last time, relax if impossible"). |
+| R2 idea 1 | R2:654-656 | NEEDS RUN | Count kinds (move x surface x hazard) per take-off in the candidate space (K) and in the roll (M) on old 1-1 and 1-3 (Matt's references); then a per-node variety line at those values (D:54 names the measure). |
+| R2 idea 3 | R2:663-665 | USE | Same rule as R2 L5. |
+| R2 idea 4 | R2:671-673 | USE | Planner's stage report (ES 1026 step 3): each node's candidate-space size, valid share and kind count, printed before rolling. |
+| R2 idea 5 | R2:680-682 | USE | Same rule as R2 L7 (seed each node's search with its previous steps). |
+| R2 idea 6 | R2:684-686 | USE | Placement rule 1 joins (ES 270): a small set of cadence kinds (a drop, a vine catch, a stop-and-look) instead of one flat apron; no two neighbouring joins the same kind. |
+| R2 idea 7 | R2:689-691 | USE | Variety gate (ES 20-41): a niche grid (kind mix x height range x density) over the rolls; an empty cell names the piece to build (Matt's "more pieces"). |
+| R2 idea 8 | R2:694-696 | NEEDS RUN | gzip NCD of kind strings between the stages of old W1 (Matt: "All the levels are exactly the same", ST:961) and between old 1-1 and 1-3; set the world-level floor between them. |
+| R2 idea 10 | R2:700-702 | USE | Dial (ES 624, as ruled C1): a jump's difficulty is its landing window: pad spare width over (longX - shortX) and take-off spare in ms (beatTrace.ts:103-106). |
+| R2 idea 12 | R2:707-709 | NOT TAKEN | ST:958 (MATT DECIDED 11-04): the beat is the play rhythm, "NOT synced to the song ... no music-BPM or onset coupling". |
+
+### R3 (17)
+
+| Row | Source line | Verdict | Where, and the rule (or the reason / the run) |
+|---|---|---|---|
+| R3 F2 | R3:51-61 | USE | Plan gates (ES 1612): beats tagged teach / first test / practice; bot success >= 0.97 teach, ~0.85 Normal adult / ~0.92 Easy kid first test, >= 0.95 practice. |
+| R3 F3 | R3:66-70, :599-600 | NEEDS RUN | A simulated player population on the bots (skill, persistence, boredom, learning; run once in R3 §4.7) per stage, after the bots are fitted (R4 L7); report the share that would quit. |
+| R3 F4 | R3:88-92 | USE | Variety gate (ES 20-41): leniency (Smith's formula, R3:90-91) is one of the two ERA metrics over the rolls (rule GL C5). |
+| R3 F5 | R3:103-106 | USE | Same gate: linearity (form b, R3:105-106) is the second ERA metric. |
+| R3 F6 | R3:114-123 | USE | Same rule as GL C5: sd of each ERA metric over 200 rolls >= 0.05, or declared a fixed composition. |
+| R3 F7 | R3:125-131 | USE | Same rule as GL C5 (NCD between rolls >= 0.35 in the calibrated 0.09-0.62 range), plus a novelty BAND measured on Matt's favourite stages (R3:607-608), not only a cap. |
+| R3 F8 | R3:148-152 | NEEDS RUN | Gap entropy H_g on old 1-1 vs the mixer's 1-5; adopt as a line only if it separates what Matt calls good from bad (Pedersen: gap count correlates negatively with challenge). |
+| R3 F9 | R3:158-166 | USE | Plan gates (ES 1612): first-timer stuck share (stuck >= 8 s) <= 0.05 Easy, <= 0.10 Normal in Worlds 1-3 (R3:165). It flags the bots' 13-20 s fork stalls. |
+| R3 F11 | R3:183-187, :605-606 | NEEDS RUN | Flow windows (challenge and bot success both above the stage's own mean) on old 1-1, today's 1-3 and the mixer's 1-5; an even stage scores zero (the D26 complaint). Adopt if it ranks them as Matt does. |
+| R3 F12 | R3:195-202 | USE | Rhythm check (ES 1208 `pace`): each group's named type confirmed on the play intervals: regular nPVI < 20, swing 45-75 (play rhythm per ST:958). |
+| R3 F13 | R3:205-214 | USE | Applied by ruling C2 (rest = >= 2x the local median and >= 1.0 s Normal / 2.0 s Easy); listed so the row is closed. |
+| R3 F16 | R3:244-248, :601-602 | NEEDS RUN | Glicko-2 ratings from bot tiers as phantom matches, compared with bands.ts's 0-100 score on old W1-W4; keep whichever ranks Matt's order better. |
+| R3 F17 | R3:255-259 | USE | Dial (ES 624): every knob carries a measured Δ(bot success) per unit (Part 1 #64), so a target is hit by arithmetic, not by rolling. |
+| R3 W5 | R3:300-303 | USE | Plan gates (ES 1612): Easy is never harder than Normal on the same stage (kid bot P(no costly miss) >= adult bot's, and no Easy jump under the kid's first-test target). |
+| R3 W6 | R3:305-309 | USE | Bots (ES 1657 acceptance test): adult thumb sigma 45 ms, rising with hazard speed, until fitted to recordings (R4 L7). |
+| R3 W12 | R3:337-340 | USE | Same rule as GL C5: 1-1 (2 distinct strings in 16 rolls) either meets the between-roll line or its profile names it a fixed composition. |
+| R3 W13 | R3:342-346 | USE | Dial and pass lines (ES 624, ES 1657): a difficulty number uses both bots (jump bots and first-timer), as bands.ts:43-51 already weighs them; never one bot alone. |
+
+R3 ideas 2-9, 12, 13 (R3:597-617) were opened: each restates an F or W row above (2 = F2, 3 = F3, 4 = F16, 5 = F9, 6 = F11, 7-8 = F7,
+9 = F12/F13, 12 = F17, 13 = W6; ideas 1, 10 and 11 are rows the spec applies or the trace counts as applied), so they carry the same verdicts and are not counted again (the trace counts them as restated).
+
+### R4 (9)
+
+| Row | Source line | Verdict | Where, and the rule (or the reason / the run) |
+|---|---|---|---|
+| R4 L5 | R4:76-78 | USE | Same rule as R1 idea 8 (Miyamoto: special jumps "controlled ... through special blocks"). |
+| R4 L7 | R4:98-100 | USE | Acceptance test (ES 1657): no bot-derived pass line (E[lives], goals, stuck share) is final until the bots are fitted to real play. |
+| R4 idea 4 | R4:559-562 | NEEDS RUN | Fit the first-timer's `thumb` and `hold` (firsttimer.ts:115-120) to the touchReplay recordings (touchReplay.ts:2-14); report the fit (King reports MAE 4.0-6.6%). Ruling C16 already asks for it. |
+| R4 idea 1 (b) | R4:547-550 | USE | Variety gate (ES 20-41): fail when an idea or size in the palette is laid 0 times over the 16 rolls, and print the rejection tally per rule (fail when one rule eats over half a node's tries). |
+| R4 idea 5 | R4:563-566 | USE | Stage as data (ES 1208): each stage's manifest pins the FORGIVE table and gesture constants; a change to either re-runs that stage's checks. |
+| R4 idea 7 | R4:570-573 | USE | Mixer (ES 231): one RNG stream per node and per layer (steps, surfaces, hazards, pickups), so an enemy edit never moves a platform (same as LEG E174, E190). |
+| R4 idea 8 | R4:574-576 | NOT TAKEN | SR:86-89 (Matt, 11-04): rearranged petals and pickups "never count as variety"; a second goal on the same ground is not a new stage. Optional only if Matt asks for replay goals. |
+| R4 idea 10 | R4:580-582 | NOT TAKEN | Quarantining a flaky check conflicts with LAWS.md:30 (law 5: "Never skip, disable, loosen or 'expected-fail' a check"). A flaky gate is a defect to fix. |
+| R4 idea 11 | R4:583-584 | USE | CI (gates.yml): a readable one-screen text catalog per stage and setting (node list, steps, ledge widths, goal) checked in; any diff fails CI until accepted. |
+
+## 2.5 LEDGER-ENGINE-GEMINI.md (E rows, 113 by the trace's count; every row the trace's table lists is here)
+
+| Row | Source line | Verdict | Where, and the rule (or the reason / the run) |
+|---|---|---|---|
+| E5 | LEG:469 | USE | Placement rules (ES 270): the "every pair" check (ES 282-283) also covers hazards: no hazard pair that makes an unavoidable hit. |
+| E21 | LEG:485 | USE | Same: a gap then an animal on its landing counts as one harder beat (LANDING_CLEAR 150 px, mechanics.ts:247, is the floor). |
+| E109 | LEG:573 | USE | Element table (ES 1235): eagle only over open canopy (no ceiling for 4.0 s) and never over breakables. |
+| E116 | LEG:580 | NEEDS RUN | Define H_pair = w_move x w_e x runway from bot runs (Gemini gives no w_move or H_max); then a cap per d in the dial. |
+| E7 | LEG:471 | NOT TAKEN | Stages run one way (gen2 runs right only, LEG:471), so rooms cannot overlap; revisit only if loops (E37) are built. |
+| E37 | LEG:501 | USE | Stage profile (ES 1208): a `shape` field (high_low_split, chimney, loop_back, hub); only shapes the engine can build are allowed. |
+| E39 | LEG:503 | USE | Mixer (ES 231): each node is a non-overlapping box with entry and exit vectors (needed for chimneys, culling E230, and splits). |
+| E191 | LEG:655 | USE | Same rule as E37/E39 (the topology module). |
+| E13 | LEG:477 | NOT TAKEN | Covered: the dial (ES 624) and the node plan's arc set risk per node; LEG:477 "have". |
+| E14 | LEG:478 | NOT TAKEN | Covered by SR:86-89: a node only counts as different when what he stands on, faces or uses changes. |
+| E17 | LEG:481 | NOT TAKEN | Covered by SR:60-62 (read by shape) and SR:63-65 (feel); LEG:481 is a note. |
+| E26 | LEG:490 | NOT TAKEN | Evidence row ("numbers unverified"); the spec fails and names the hole (ES:259). |
+| E199 | LEG:663 | NOT TAKEN | "Have by construction": pads are sized from every clumsy try (LEG:663). |
+| E200 | LEG:664 | USE | Mix rule (ES 231) as a construction rule, not a repair: a flat run over the eventless-walk limit (GP:291: 3.0 s Easy / 2.0 s Normal) gets a kit hop when laid. |
+| E201 | LEG:665 | NOT TAKEN | Swapping a node for the runner-up is a reroll; ES:259 fails and names the piece instead. |
+| E202 | LEG:666 | NOT TAKEN | Unproven claim (LEG:666 "unproven"). |
+| E40 | LEG:504 | USE | Mix rule (ES 231): an idea's deck is locked out for 4 draws (Part 1 #34, #42). |
+| E154 | LEG:618 | USE | Same rule (lockoutCooldownDraws 4; CooldownQueue exists). |
+| E192 | LEG:656 | USE | Same rule, extended to beat patterns (LEG:656 "extend"). |
+| E49 | LEG:513 | USE | Same rule as E52 (closure is the fix for the merge weak point). |
+| E52 | LEG:516 | USE | Splits (ES 37-39): both fork roads reach the merge at one x with equal net rise (Σdx, Σdy equal), checked by the tracer. |
+| E53 | LEG:517 | USE | Variety gate: moves i..i+2 never equal i+3..i+5 (flag 2 back-to-back runs). |
+| E125 | LEG:589 | USE | Same gate: no symbol 3 times running in the kind string. |
+| E126 | LEG:590 | NEEDS RUN | Bigram entropy H_2 on old 1-1, 1-3 and the mixer's 1-5 (Gemini's own example scores 0.56 under its 0.68); set the floor from them. |
+| E56 | LEG:520 | NOT TAKEN | A representation choice for the planner's code; E39's node boxes carry the same information. |
+| E58 | LEG:522 | NOT TAKEN | LEG:522: "have the apron; welding not needed yet". |
+| E63 | LEG:527 | USE | Element table (ES 1235): timed hazards run on the node's PLAY tempo (ST:958), so a hazard answers the jump (call and response), never the song. |
+| E64 | LEG:528 | NOT TAKEN | Audio, not level layout; the music's mood layers exist (audio/adaptive.ts, LEG:528), and ST:958 rules out coupling to the song. |
+| E65 | LEG:529 | USE | Placement (ES 270): every landing and hazard ahead is in view in BOTH orientations before the take-off (the safe sightline box); fold the path (vine, lift) when it would leave. |
+| E205 | LEG:669 | USE | Same rule, with the box as a named constant: the overlap of clipcheck's 412 x 915 and 915 x 412 views minus insets (clipcheck.mjs:54-55). |
+| E79 | LEG:543 | NOT TAKEN | Superseded by ruling C2 (relative rests) and SR:43-44 (5-20 s groups). |
+| E81 | LEG:545 | USE | Stage profile (ES 1208): a stage with a puzzle room has one puzzle beat of 12-18 s, in the develop or twist part. |
+| E83 | LEG:547 | NOT TAKEN | Covered: the first-timer bot measures this directly (tools/inspect/firsttimer.ts); LEG:547 "the bot rules". |
+| E84 | LEG:548 | NOT TAKEN | Worked example, "unproven" (LEG:548). |
+| E85 | LEG:549 | NOT TAKEN | LEG:549: "unproven; keep ours" (TIGHT_RATE 1.15). |
+| E87 | LEG:551 | USE | Dial (ES 624): density per node follows ρ_min + (ρ_max - ρ_min)·T^1.15, with SR §2's bounds (Easy 0.35-0.55, ruling C18). |
+| E99 | LEG:563 | USE | Level check: add an off-apex second flick to the tracer's clumsy tries (TRIES). |
+| E100 | LEG:564 | NOT TAKEN | An explanation of margins, not a rule (LEG:564). |
+| E101 | LEG:565 | NEEDS RUN | Re-run the margin with 167 ms early press on Easy in our physics (LEG:565: gives ~0.50-0.53 Easy); compare with GP:75's 0.65. |
+| E104 | LEG:568 | NEEDS RUN | Compute W_plat >= hitbox + 2·δ_early·v + buffer·(1-T) per node with our physics and compare with the clumsy-spread pads (BT:402-476); Normal widths are still OPEN after C4. |
+| E107 | LEG:571 | NEEDS RUN | cp2-animals.ts with the snake on 4/5/6 W decks and 1.0/1.5 W runways; set the snake idea's footprint from the hits. |
+| E110 | LEG:574 | NEEDS RUN | Same run for the prowlers (ocelot, jaguar, tayra): >= 8 W runway with an escape vine or mushroom. |
+| E111 | LEG:575 | NEEDS RUN | Check the spider's silk drop exists in code before any rule ("silk drop not found", LEG:575). |
+| E113 | LEG:577 | NEEDS RUN | Count enemies a minute on old W1-W4 (cp2/enemies.txt and stage clocks) against E_cpm's form. |
+| E114 | LEG:578 | NEEDS RUN | Same count against Easy 3.5-6.65 / Normal 5.5-11.35 a minute, checked against >= 35% animal-free nodes (D:207). |
+| E115 | LEG:579 | USE | Placement (ES 270): animals spaced in time, floors 4.5 s Easy / 2.5 s Normal between triggers. |
+| E117 | LEG:581 | USE | Placement (ES 270): a 1.0 s (about 285 px) flat runway before any enemy trigger on Easy and Normal (Part 1 #16). |
+| E118 | LEG:582 | USE | Pickups (ES 270): the marks goal is set from the bots' single-pass yield, about 75% of total (Part 1 #36). |
+| E119 | LEG:583 | USE | Pickups (ES 270): on a fork, petals split 70% shared / 15% high road / 15% low road (IN on RISE; the mixer must keep it). |
+| E120 | LEG:584 | USE | Pickups pass line: single-pass yield 0.85 x total (the test exists; the mixer must pass it). |
+| E121 | LEG:585 | NOT TAKEN | Arithmetic from E118 and E120 ("have"), no separate rule. |
+| E128 | LEG:592 | NEEDS RUN | Set the neighbour cap a buffer below where players notice sameness, measured on our metric (after Part 1 #2's run). |
+| E132 | LEG:596 | USE | Applied by ruling C5 (every miss costs something; on Easy a fall to a catch). |
+| E133 | LEG:597 | USE | Miss tier 1 for low-tension nodes: drop to a catch bough or bank, a 5-8 s climb back, no damage (matches C5). |
+| E134 | LEG:598 | NOT TAKEN | Needs mud, silk or bramble worlds that are not built; LEG:598 flags its 10 s slow against E152. Revisit in those worlds' passes. |
+| E135 | LEG:599 | USE | Miss tier 3 on Normal climaxes: -1 heart, respawn at the start of the current group (the checkpoint before the hard part, C10). |
+| E140 | LEG:604 | NEEDS RUN | Compute the flow score on Matt's ranked stages; keep it only if it ranks them as he does (LEG:604 "after calibrating on Matt's ratings"). |
+| E141 | LEG:605 | USE | Planner's stage report (ES 1026 step 3): measured vs planned tension per node, as one number. |
+| E142 | LEG:606 | USE | Rhythm check: the share of the bot's take-offs on the node's PLAY beat (ST:958), with a realistic window (the thumb's ±100 ms), minus dead walks. |
+| E143 | LEG:607 | NOT TAKEN | Duplicates H_2 (E126) and the similarity cap (C14). |
+| E144 | LEG:608 | NOT TAKEN | Covered by the climb line (ES 40, yRange) and shapeOf (LEG:608 PART). |
+| E146 | LEG:610 | NOT TAKEN | LEG:610 "later": waits for E140's calibration. |
+| E147 | LEG:611 | USE | Stage as data (ES 1208): idea patterns written in beats and body widths, px derived from the node's tempo and the dial. |
+| E157 | LEG:621 | NOT TAKEN | Covered by our bars strings (BT:9-10); LEG:621 "use our bars form". |
+| E169 | LEG:633 | USE | CP2 library (ES 61): each idea's header lists its required moves (read by the ladder gates, ES 1612) and its move signature; the 28° slope limit applies when slopes arrive (ES 615). |
+| E170 | LEG:634 | USE | Same: each idea step names its beat, move, surface, role and pickup arc. |
+| E172 | LEG:636 | USE | Same: each step names its miss floor (where a miss lands and how he gets back), checked by the tracer (C5). |
+| E148 | LEG:612 | NOT TAKEN | ST:958: no music-BPM coupling. |
+| E211 | LEG:675 | NOT TAKEN | ST:958; LEG:675 itself calls it small against the thumb's ±100 ms. |
+| E212 | LEG:676 | NOT TAKEN | ST:958. |
+| E150 | LEG:614 | USE | Whole-game plan (ES 1458): W4's wind as a mutator slot in data (4-bar cycle, telegraph 24 frames), not hand code. |
+| E151 | LEG:615 | USE | Applied by ruling C3 (creak 36 / 20 frames). |
+| E155 | LEG:619 | USE | Stage profile (ES 1208): stageId, worldId, seed and shape (with E37). |
+| E156 | LEG:620 | USE | Stage profile: a `pair` field (primary and secondary mechanic, support moves), read by the mixing gate (ES 1612 gate 4). |
+| E158 | LEG:622 | USE | Stage profile: puzzle room id and node index, split node index. |
+| E159 | LEG:623 | NOT TAKEN | A cross-stage flag that changes the main path multiplies layouts to check (E226, LEG:690). |
+| E160 | LEG:624 | NOT TAKEN | Same (E226). |
+| E174 | LEG:638 | USE | Same rule as R4 idea 7 (seed sub-streams; rngFor exists). |
+| E190 | LEG:654 | USE | Same rule. |
+| E188 | LEG:652 | NOT TAKEN | Code-structure guidance for the planner's modules, not a level rule; outside the spec's scope. |
+| E194 | LEG:658 | USE | Mixer (ES 231): a decorator pass after geometry lays roles, the 70/15/15 arcs (E119), seeds and the 3-tier miss floors (E133, E135). |
+| E204 | LEG:668 | NEEDS RUN | Measure look-ahead time ahead of a jump, upright vs sideways, on the mixer's 1-5 (LEG:668 "measure ours before believing it"). |
+| E206 | LEG:670 | NEEDS RUN | A camera-anchor mock-up shown to Matt first (a big screen change, CLAUDE.md "show first"); then measure look-ahead with it. |
+| E207 | LEG:671 | NEEDS RUN | Test the gesture recogniser with a flick followed by a tap within 0.8 s (ρ > 1.2); a rule only if it misreads. |
+| E208 | LEG:672 | USE | Placement (ES 270): upright, no hazard or landing under the right thumb's bottom-right 20% at the moment it matters. |
+| E209 | LEG:673 | NOT TAKEN | No attacks are traced yet (LEG:673 "adopt when combat is traced"). |
+| E210 | LEG:674 | NEEDS RUN | As E206: a mock-up of Pokey at 55% height upright with a thumb zone, shown to Matt before any rule. |
+| E221 | LEG:685 | NOT TAKEN | Earbud lag only matters if jumps sync to the song; ST:958 rules that out. |
+| E222 | LEG:686 | NOT TAKEN | Same reason; coyote time already exists (GL:80). |
+| E223 | LEG:687 | NOT TAKEN | A pulse on the music's beat is song coupling (ST:958). |
+| E224 | LEG:688 | USE | Element table (ES 1235): a slow zone (mud, silk, water) always adds a decision; never a plain slow walk (SR:21-22, every hazard must matter). |
+| E225 | LEG:689 | USE | Same: a slow zone sits under a faster route or pairs with a rhythmic dodge; a validator flag when it is an empty corridor. |
+| E226 | LEG:690 | USE | Whole-game plan (ES 1458): cause and effect never changes the main path. |
+| E227 | LEG:691 | USE | Same: it is contained to bonus spots (a hazard becomes a shortcut, a hidden find opens). |
+| E228 | LEG:692 | NOT TAKEN | Length is set in minutes (SR:36-38); px follows from the moves (LEG:692 "check before using"). |
+| E229 | LEG:693 | NEEDS RUN | drawcheck on the mixer's 1-5 (about 45,000 px) on a mid-range phone profile; pass = PERFORMANCE-RULES §1 budget. |
+| E230 | LEG:694 | NOT TAKEN | An implementation choice once node boxes (E39) exist; drawcheck's limits (tools/perf/limits.json) are the gate. |
+| E231 | LEG:695 | NOT TAKEN | The work order is Matt's (ST:968: "1-5 regression lock, stage as data, ... then 1-1 from data, then 1-2"). |
+| E232 | LEG:696 | NOT TAKEN | Unproven targets (LEG:696). |
+| E233 | LEG:697 | NOT TAKEN | Same as E231 (ST:968). |
+| E234 | LEG:698 | USE | Per-world object pass (ES 1385): consider the 4 puzzle blueprints (pulley counterweight, vine-switch gate, rotten-floor sequence, wind/water redirect) as kit rooms. |
+| E235 | LEG:699 | NOT TAKEN | The ledger declined it; and ST:958 (no music BPMs). |
+| E236 | LEG:700 | USE | Whole-game plan (ES 1458): each world's mutator as data (wind, rising water, sticky silk, rolling fruit, sight radius), mapped to our worlds. |
+| E237 | LEG:701 | NOT TAKEN | The ledger: "not now". |
+| E238 | LEG:702 | USE | Plan gates (ES 1612): one command builds and checks every stage x Easy and Normal (the gates over all stages). |
+| E239 | LEG:703 | NOT TAKEN | LEG:703 "later"; drawcheck is the gate. |
+| E240 | LEG:704 | NOT TAKEN | Unproven (LEG:704). |
+| E241 | LEG:705 | NEEDS RUN | "Measure on our metric" (LEG:705): world-mean and max pairwise similarity of old W1 and the mixer stages; feeds C14's cap. |
+| E242 | LEG:706 | USE | Same rules as E53 and E125 (no repeated 3-4 runs); H_2 waits for E126's run. |
+| E243 | LEG:707 | USE | Element table: 100% of slow-downs active (a slow zone always matters, SR:21-22). Its 2.2 s rest is superseded by C2. |
+| E244 | LEG:708 | NOT TAKEN | "Have": SR:36-38 sets the length targets. |
+| E245 | LEG:709 | USE | Acceptance test (ES 1657): 0 blind leaps upright or sideways on mixer stages, as the tracer already proves on beat stages. |
+| E246 | LEG:710 | USE | Same rule as E120. |
+| E247 | LEG:711 | NOT TAKEN | Uncalibrated, and its own 80 vs 82 disagree (LEG:711). |
+| E248 | LEG:712 | NEEDS RUN | Read tokens (and the meter) per stage built from data; compare with R-163's "about an hour" (RM:473). |
+
+## 2.6 LEDGER-ENGINE-PAPERS.md (13)
+
+| Row | Source line | Verdict | Where, and the rule (or the reason / the run) |
+|---|---|---|---|
+| 31 | LEP:220 (CA:712-746) | USE | Variety gate / per-world object pass: a coverage table of (entry join x exit join x difficulty); every combination a world needs has at least one piece, or the gap is named as a piece to build. |
+| 35 | LEP:224 (CA:808-818) | USE | CP2 library (ES 61): an idea may declare several entry joins (placement rule 1, ES 270). |
+| 39 | LEP:228 (CA:861-875) | NOT TAKEN | Our stages start from a node plan whose first part is the safe teach (SR:45-46); WFC's random first slot does not apply. |
+| 46 | LEP:235 (CA:1022-1033) | USE | Variety gate: piece-use counts over the rolls per stage and per world. |
+| 48 | LEP:237 (CA:1061-1073) | USE | Same gate: report dead (0 use) and hog pieces; dead fails (R4 idea 1(b)), hogs are caught by the share cap. |
+| 56 | LEP:245 (CA:1211-1218) | NOT TAKEN | MD:20-23 (Matt): today's pieces are KEPT, "The fault is the mix, not the pieces"; new pieces are painted art (CLAUDE.md polish rule), not generated geometry. |
+| 59 | LEP:248 (CA:1240-1255) | USE | gates.md and the acceptance test (ES 1657): every mixer gate may only err toward failing (no false pass). |
+| 62 | LEP:251 (CA:1278-1396) | NOT TAKEN | A reference list; the challenge curve is covered by expected falls per node (R4:555-557) and the profile's arc. |
+| 65 | LEP:254 (T113) | USE | Same rule as R2 L7: pinned nodes and local retrace. |
+| 81 | LEP:270 (T113) | USE | Same rule (designer-modified pieces stay pinned). |
+| 68 | LEP:257 (T113) | USE | How a stage is made (ES 1026): pacing (a node's bars) can be edited without touching other geometry; only that node retraces. |
+| 69 | LEP:258 (T113) | USE | Mixer (ES 231): the proposer calls the same reach predicate as the checker, so it never places an unplayable step (R4:551-554 idea 2). |
+| 80 | LEP:269 (T113) | NOT TAKEN | Covered by the fitSteps loop (w1Rhythm 147, LEP:269) and fail-and-name (ES:259). |
+
+## 2.7 GEMINI-CRITICAL-AGENTS / its ledger (13)
+
+Ruling C25 (ES 1736 block) has since added "a premortem critic pass, separate from the designer and the planner, before the lead's
+check". The rows below say what that pass must carry.
+
+| Row | Source line | Verdict | Where, and the rule (or the reason / the run) |
+|---|---|---|---|
+| §0.2 hide opinions | LCA:29-30 | USE | How a stage is made (ES 1026): the designer's brief carries no lead sketch, no "Matt likes", no favoured words. |
+| §0.3 premortem critic | LCA:31-33 | USE | Applied by C25: the critic runs as a premortem ("it shipped and failed"), allowed to pass. |
+| §0.5 one round | LCA:36-37 | USE | ES 1026: designer -> planner -> critics -> planner repairs once -> lead decides; disagreements written, not argued. |
+| §2.1 blind by file list | LCA:86-89 | USE | Critic and designer briefs list files they may not open; one `list_events` grep checks it. |
+| §2.2 no opinion words | LCA:90-92 | USE | Same as §0.2. |
+| §2.3 three options that differ | LCA:93-95 | NOT TAKEN | The engine direction is decided (Matt's GO, ST:964); the rule applies to new design questions, not to each stage. |
+| §2.4 parallel premortem personas | LCA:96-100 | USE | C25's critic pass runs 3 personas (player, engine, cost) as separate subagents, merged after. |
+| §2.5 falsifier per objection | LCA:101-103 | USE | Each critic objection names the spec line and the stage/seed/move string that breaks it; tool-checkable ones are run, not argued. |
+| §2.6 a pass is allowed | LCA:104-105 | USE | The critic may write VERIFICATION_PASSED; a critic that fails everything with no falsifiers goes back. |
+| §2.7 one round, "Still disagreed" | LCA:106-107 | USE | Same as §0.5: a "Still disagreed" table for the lead or Matt. |
+| §2.8 consistency-illusion | LCA:108-109 | USE | Where designer and critic agree, the planner writes each one's reason; same answer, different reasons is flagged to the lead. |
+| §2.9 lead's 5-minute spot check | LCA:110-114 | USE | ES 1026 step 4 (the lead checks): open 5 cited lines at random; one wrong cite is a send-back. |
+| §2.10 sketch not a judge | LCA:115-117 | NOT TAKEN | Superseded: "the lead no longer designs. A dedicated level designer leads design ... the lead checks and approves only" (ST:962). |
+
+## 2.8 Part 2 counts
+
+PART2_COUNTS_PLACEHOLDER
