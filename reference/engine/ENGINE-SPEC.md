@@ -2444,7 +2444,13 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
   floor is above the water. It is the first stage, and it matches "every dip has a one-jump way out" (STAGE-RULES §2). No floorless
   drop anywhere in 1-1.
 - **How "nothing can cost a life" is laid [ruled 3:11 PM ET, the planner's R1 and R2]:**
-  - **R1, YES to a stage-wide `safe: true`, CHANGED in the means.**
+  - **[REVISED 3:42 PM ET: the planner's 4:00 breakdown. Old 1-1's diversity (0.384), 36 splits and 0.61 two-road share all come from ONE
+    continuous moss floor about 240 px under its stepping stones; the one-jump dips below make every ground gap a lone hop, and no
+    trial passes 0.10. So 1-1's ground is laid over a CONTINUOUS FLOOR: stone runs above it, or hop steps on it, chosen per roll
+    section. The floor is a road in its own right, walkable to the section's end and joining the next, never a dead end, so a fall
+    to it costs nothing and is a route, not a pit (STAGE-RULES §2 holds: it's not a dip). The raised logs (Q1) stand over this same
+    floor. Exception, R2: under the double-teach gap, the safe ground still stops short of the far bank with a step back, so only the
+    double crosses. The moss-dip rule below is replaced]** ~~R1, YES to a stage-wide `safe: true`, CHANGED in the means.~~
     - On the ground (n1-n7), the safe ground under a gap is the **moss floor itself**: a shallow dip whose floor is one jump below
       the lips, so he hops straight out (STAGE-RULES §2).
     - It is **never a catch branch** on the ground: catch branches count as boughs, 1-1's bough share is already over its 25.3% line

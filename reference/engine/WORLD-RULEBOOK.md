@@ -33,7 +33,9 @@ lianas (1-6); the bush (1-7). A stage may use only moves taught at or before it.
 
 **Hard rules, every roll:**
 - rocks never float; every piece and prop stands on what holds it (E3 footingOf);
-- every dip has a one-jump way out; a fall lands on something (a moss dip on the ground, a catch bough in the canopy);
+- every dip has a one-jump way out, and a fall lands on something: on the ground, **a continuous moss floor under the stepping
+  stones, a road of its own** (the source of old 1-1's variety, the planner's 4:00 breakdown); in the canopy, a catch bough. A teach
+  gap keeps its own safe ground that only the taught move crosses (R2);
 - a stage whose brief says `teaches` puts each new move's first use over safe ground, with nothing else new beside it;
 - nothing in a W1 stage costs a life before its world's first real danger is taught (1-1: nothing at all);
 - at least 2:00 at Matt's pace;
@@ -70,4 +72,4 @@ research where they exist:** length 120-150 s for a first stage (TF 1-1).
 
 **Why this is also the diversity answer:** a fixed 11-node plan with fixed shapes makes every roll the same stage. That's today's
 0.083 against 0.35. A structure rolled from a grammar is the lever the old 1-1 shows: its mix swings from roll to roll (0.396). The
-planner's 4:00 breakdown will say how much each part adds. That number goes here when it lands.
+planner's 4:00 breakdown (3:42 PM ET) says where old 1-1's 0.384 comes from: one continuous moss floor about 240 px under its stepping stones. That makes two roads everywhere, and each roll's mix swings between them. A rolled structure laid over that floor is World 1's variety engine.
