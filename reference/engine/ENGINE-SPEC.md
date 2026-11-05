@@ -924,6 +924,57 @@ Each pair is checked against P-1 to P-7 by the designer before it goes to the le
 **Art:** the library above covers every rule. No Hugging Face spend is needed for this pass; if a still shows a gap that nothing
 fills, the designer sends the lead a small picture list.
 
+
+## CP4, stage by stage (Matt, 11-05: "It's better." / "One first, then the rest.")
+
+**Step 1, shared:** the trunk fix from CP3's named rough spot.
+- Boughs within 220 px share one tree.
+- At most about 3 full trunks per screen width, upright and sideways.
+- Further boughs hang from a shared trunk's side branch.
+- No two neighbouring trunks share trunk art or vine wrap (S-4).
+- *Check:* a sliding view counts full trunks, and 1-5's 16 rolls stay green on every line.
+
+**Step 2: 1-1, "Into the Canopy"** (sprint: "Run the high branches of the kapok trees and reach the shrine").
+- **Its job:** the arrival, teaching run, jump and then the double jump.
+- **Its shape** (W1-REBUILD-PLAN's row, for meaning, not layout): the stage rises from the forest floor to the high kapok branches,
+  and the backdrop changes with height.
+- **Its moment:** the first double-jump chain up into the canopy, then the view from the top branch.
+- **d = 0:** the dial's easiest values. Nothing is untaught: no creaky (1-5 teaches it), no crumbling and no animals.
+- **The move ladder:** run, jump, double and bounce are taught here. Hop and climb come back later.
+- **Overall trend up** (1-5's goes down), so the two stages never share a shape.
+
+| # | Job | Deck | Entry → exit | Markers and lines (the shipped 1-1 lines, `dotLinesData.ts`) |
+|---|---|---|---|---|
+| n1 | **teach** run | flat forest-floor walk with low banks, no gaps | floor → floor | Dot's run coach line; no heart; the start flag |
+| n2 | **teach** jump (expose, then validate) | bank hops with small safe dips (no pit), then stump hop | floor → floor | "Jump the little gaps" |
+| n3 | practise | stump hop on stones and banks (stones on ground), bank hops | floor → low | "Hop from stone to stone" |
+| n4 | **teach** bounce | a mushroom beside the path up to a low bough, then bank hops (the walk past it never bounces) | low → low bough | — |
+| n5 | the first fork (gentle) | high road: low boughs; low road: bank hops on the floor. Rejoin | low → low (two roads) | marks per CP3's fork rule, on the shared ground |
+| n6 | rest | a bank walk | low → low | a Dot spot; a flag only if n7 follows hard |
+| n7 | **teach** double (expose, then validate) | one gap too wide for a single jump over safe ground, then two more safe ones; bank hops between bursts | low → low | "Nice jump! In the air, flick up again for a double jump" at the first double; "Flick up again in the air to jump twice" |
+| n8 | the climb up | bough stair, the climb, bounce up (one not used in n4) | low → mid | — |
+| n9 | **the moment (test)** | the double-jump chain: three or four rising doubles, bough to bough, up into the canopy, with catch boughs below | mid → high | a flag before it; a heart after it only if it has risk |
+| n10 | the canopy fork | high road: the top branches; low road: mid boughs. Rejoin | high → high (two roads) | the high road's petal group |
+| n11 | cool down and the view | one long top branch, the backdrop wide open, to the shrine | high → shrine | — |
+
+- **Length:** Normal's quick clock is 2:40-3:15. That is at least 20% under 1-5's median of about 4:05 (no more than 3:16), and over
+  the 2:00 floor. Easy is at least 2:00. Length comes from the nodes and bursts, never from a clock.
+- **Every rule built tonight applies:**
+  - the variety lines, on the old 1-1's numbers;
+  - coherent nodes drawn from their own decks, each with a floor idea;
+  - placement (hearts, flags, petals, clutter);
+  - safe drops (P3);
+  - P-1 to P-13 and S-1 to S-9;
+  - the Easy rules (+40 cap, 80 px gaps, breathers, Easy bands);
+  - pacing judged over 16 rolls, median and worst.
+- **Splits at least 19;** the two-road share at least 40%.
+- **No idea over 40%,** none twice in a row, and at least 4 ideas.
+- **The real cost is recorded for 1-1 alone:** wall time, retries, and the planner's % estimate.
+- **Matt sees stills the designer has checked, then a test-link build he plays.** 1-2 to 1-4 wait for his OK on 1-1. A miss stops
+  the work.
+- **The bar for Matt's pick:** the new 1-1 against the old 1-1, which is his best stage. It has to win side by side, or it doesn't
+  replace it.
+
 ### CP4: the same mixer on 1-1 to 1-4 (owner: planner builds and runs, designer reviews every map)
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
