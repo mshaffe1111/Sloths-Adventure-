@@ -66,3 +66,4 @@ that do the best job get the follow-on work.
 - D37 (11-05): judge a still object by object first (what holds it up? does it belong in this world?), then the feature; rocks never float (Matt).
 - D37 spread (11-05, engine-render): every object on screen has a reason and a support; check all of them, not just the thing you built.
 - Bad art is replaced, not patched (Matt, 2026-11-05): a painted-in defect means a fresh Hugging Face picture and the old one deleted; never inpaint, cross-fade or mask it.
+- D38 (11-05): art tells the player a rule; judge what each thing tells the player, not only whether it reads as what it is (calm-water art on deadly water).
