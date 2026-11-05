@@ -49,6 +49,7 @@ that do the best job get the follow-on work.
 **Reaching Matt**
 - A test link or preview reaches Matt only when it is opened for him (Artifact open) and its link is the first line of the message; a URL buried in a report is not delivered. (D28)
 - Research is read line by line before it shapes a plan: a ledger with one row per idea, checked by the lead against the source, every miss given a home. A summary is not a reading, and an answer about what the research says quotes it with the line number. (D29)
+- Rules go into the builder first: a stage rule lives in the formula file the generator builds from, and the checker reads the same file; before any big build, compare two or three approaches and have an unanchored critic attack the pick. (D30)
 
 - Phone measurements only come from the LIVE site's testers' link (#ctest): Matt can't measure on claude.ai test pages: their runs never reach the sheet, and his budget phone (the OnePlus) can't run the Claude app well enough to test there at all. Anything that needs phone numbers ships behind the testers-only switch first. (Matt, 11-04)
 

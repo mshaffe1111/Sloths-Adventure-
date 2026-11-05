@@ -408,7 +408,8 @@ function splitPetals(L: Layout, splits: ReadonlyArray<{ x0: number; x1: number; 
   for (const sp of splits) {
     for (const q of L.ledges) {
       if (q.surface !== 'bough' || Math.abs(q.y - sp.line) > TOP_DROP + 2 || q.x1 < sp.x0 || q.x0 > sp.x1) continue;
-      for (let x = Math.max(q.x0, sp.x0) + 60; x <= Math.min(q.x1, sp.x1) - 60; x += 40) {
+      // (35 px in from a piece's ends: the base bough's pieces are its hops' take-offs and landings, a petal at each, 2026-11-04)
+      for (let x = Math.max(q.x0, sp.x0) + 35; x <= Math.min(q.x1, sp.x1) - 35; x += 40) {
         if (L.ledges.some((c) => c.surface === 'crumble' && c.y === q.y && x > c.x0 - 120 && x < c.x1 + 120)) continue;
         if (L.snakes.some((sn) => Math.abs(sn.y - q.y) < 20 && Math.abs(sn.x - x) < 140)) continue;
         if (L.flags.some((f) => Math.abs(f.y - q.y) < 20 && Math.abs(f.x - x) < 100)) continue;
@@ -513,6 +514,8 @@ export const TOP_DROP = 60;
 /** a petal this far over the split node's entry line, or more, is on the high road (the branches); under it, the base bough's low road */
 export const ROAD_CUT = 10;
 export const ROT_DEPTH = 170;
+/** 1-2's rest over the loop, Dot's stop (px): 2.1 s at a run */
+const REST_W = 600;
 /** the gaps to hop in 1-2's canopy base bough (px) */
 const BOUGH_GAP = 70;
 
@@ -590,14 +593,15 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   // ---- the loop: the rest over the bough, then the high branches over a base bough (no gap a miss could fall through)
   const restX = x;
   lay.begin('rest', 'none (Dot; the note seen far below)', 'A', 1, x, y);
-  // (the rest in two: a step up halfway, so the 4 s rest is a breath, never a dead walk on the fun gate, 2026-11-04)
-  lay.ledge(x, x + 560, y, 'apron');
-  lay.ledge(x + 560, x + 1180, y - 30, 'apron');
+  // (the rest: REST_W at a run is under the 2.5 s no-input rule (the lead, 2026-11-04: no rest is exempt), a step up halfway; Dot's line
+  // near its start, where a player who stops to look down reads it)
+  lay.ledge(x, x + REST_W / 2, y, 'apron');
+  lay.ledge(x + REST_W / 2, x + REST_W, y - 30, 'apron');
   L.flags.push({ x: x + 100, y });
-  L.lines.push({ x: x + 200, y, text: "There's something down by the roots..." });
-  x += 1180;
+  L.lines.push({ x: x + 160, y, text: "There's something down by the roots..." });
+  x += REST_W;
   y -= 30;
-  lay.end(x, 1180 / PHYS.maxRun + 1);
+  lay.end(x, REST_W / PHYS.maxRun + 1);
   // (the bough's leg is fitted first: the canopy's high branches over the loop must reach further back than it does)
   const PAL_B: Palette = { surfaces: ['branch'], jumpDy: [-60, -50, 50, 60, 80, 90], hopDy: [-40, -30, -20], doubles: 0, yMin: B - 120, yMax: B };
   const barsB = barsFrom(swung(R, 12, 0.2));
@@ -605,7 +609,7 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   const wB = (easy ? fitB.easy : fitB.tr).x1;
   let gapsTop = 10;
   const eighthPx = (30 / bpm) * PHYS.maxRun;
-  while (gapsTop < 40 && (gapsTop * 4 + 8) * eighthPx + 400 < wB + 620 - 1180 + 300 + 200) gapsTop += 2;
+  while (gapsTop < 40 && (gapsTop * 4 + 8) * eighthPx + 400 < wB + 620 - REST_W + 300 + 200) gapsTop += 2;
   // (rotten wood taught here, where it is safe: a rotten branch high over the canopy's solid base bough holds his run on the beat and a
   // little more, and a hesitant player drops 50-120 px onto the base bough, nothing lost (STAGE-RULES: taught in a safe spot before it
   // can hurt). The bough leg's rotten stretches come next, and bite)
@@ -624,14 +628,14 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   L.lines.push({ x: rotten1.x0 - 260, y, text: 'Rotten wood! Don\'t stop on it!' });
   // (the base bough TOP_DROP under the node's entry: every branch 50 px or more over the entry is 110 px or more over the base bough, so
   // the low road's petals have room under the branches and clear of their jumps' arcs, the lead's ruling 2026-11-04)
-  // (the base bough in pieces, a 70 px gap to hop every 480-580 px: the low road is hops, never 17 s of plain walking (the fun gate's dead
+  // (the base bough in pieces, a 70 px gap to hop every 300-360 px (1.1-1.3 s at a run): the low road is hops, never 17 s of plain walking (the fun gate's dead
   // walk, the lead's item 4, 2026-11-04). A miss through a gap is a fall (fallZones), never a landing on the bough leg under it. No gap
   // under a branch's end, where a drop from the high road comes down)
   const ends = L.ledges.filter((q) => q.node === topNode && q.y < y + TOP_DROP - 20).flatMap((q) => [q.x0, q.x1]);
   const gaps: number[] = [];
-  for (let gx = x + R.r(480, 580); gx < top.tr.x1 - 400; gx += R.r(480, 580)) {
+  for (let gx = x + R.r(300, 360); gx < top.tr.x1 - 400; gx += R.r(300, 360)) {
     // (the nearest place clear of the branch ends, either way, up to 280 px off)
-    const clear = (g: number) => !ends.some((e) => g < e + 110 && g + BOUGH_GAP > e - 110) && g > (gaps.at(-1) ?? x) + 320 && g < top.tr.x1 - 400;
+    const clear = (g: number) => !ends.some((e) => g < e + 110 && g + BOUGH_GAP > e - 110) && g > (gaps.at(-1) ?? x) + 240 && g < top.tr.x1 - 400;
     const g = [0, 40, -40, 80, -80, 120, -120, 160, -160, 200, -200, 240, -240, 280, -280].map((d) => Math.round(gx) + d).find(clear);
     if (g !== undefined) { gaps.push(g); gx = g; }
   }
@@ -759,6 +763,9 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
  * (the keepsake seen on a high branch across the drop) -> counter-melody (jump + vine) -> climax: the carving chase (snaps, drops,
  * carvings every second ledge, to the floor) -> cool-down to the shrine.
  */
+/** 1-5's snap twigs: seconds more than the beat's run and the spare, for a first-timer's pause on landing */
+export const FT_PAUSE_15 = 0.3;
+
 export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   const R = rng(seed, '1-5');
   const lay = new Lay('1-5', bpm, R, easy);
@@ -789,7 +796,10 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   // "J B J J" bar every bar, the validator's repeat on 4 of 16 layouts. Now a deck of broken motifs, a fresh order each node, never the
   // motif just used and none over twice in a node; a rest (9 eighths) 6-9 take-offs after the last, rolled each time; `cap`: no gap
   // over it, for the spike and the climax)
-  const MOTIFS = [[3, 5, 4, 6], [4, 3, 6, 5], [5, 3, 3, 6], [6, 4, 3, 4], [3, 6, 5, 3], [4, 5, 3, 5]];
+  // (Normal's motifs have no 3-eighth gap: it left a pad of about 110 px, and the first-timer adult, who pauses on landing, ran off its
+  // end or stood on its twig as it broke, 2-4 lives at one spot, 2026-11-05; Easy's beat is slower and keeps its quick ones)
+  const MOTIFS = easy ? [[3, 5, 4, 6], [4, 3, 6, 5], [5, 3, 3, 6], [6, 4, 3, 4], [3, 6, 5, 3], [4, 5, 3, 5]]
+    : [[4, 5, 6, 4], [5, 4, 7, 5], [6, 4, 5, 7], [4, 6, 4, 5], [7, 5, 4, 6], [5, 7, 4, 4]];
   const broken = (n: number, cap = 9) => {
     const deck: number[] = [...MOTIFS.keys()].map((k) => [R.f(), k]).sort((a, b) => a[0] - b[0]).map((a) => a[1]);
     const used = new Map<number, number>();
@@ -813,7 +823,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   const SNAP = R.pick([0.5, 0.7, 0.85]);
   /**
    * coiled boas on the way down after the kick is taught (node `ni`, trace `tr`): on its widest ledges, never its first or last, `max` at
-   * most, `apart` px apart. Each 215 px past where the jump onto its ledge lands (the validator's landing sits a little past the trace's;
+   * most, `apart` px apart. Each 265 px past where the jump onto its ledge lands (the validator's landing sits a little past the trace's;
    * research 11-04: never within 150 px of a landing), 150 px or more short of the next ledge, and clear of every safe spot (the level
    * check's SAFE_APPROACH: the flags so far and the next node's at this one's end). A twig with a boa holds the kick's time too.
    */
@@ -824,7 +834,7 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
     let n = 0;
     for (const q of [...mine.slice(1, -1)].sort((a, b) => (b.x1 - b.x0) - (a.x1 - a.x0))) {
       if (n >= max) break;
-      const bx = land(q) + BOA_CLEAR + 40;
+      const bx = land(q) + BOA_CLEAR + 90;
       if (L.boas.some((b) => Math.abs(b.x - bx) < apart)) continue;
       if (safeNow.some((f) => Math.abs(f.y - q.y) < 400 && Math.abs(f.x - bx) < SAFE_APPROACH + SNAKE_RANGE + 40)) continue;
       const next = mine[mine.indexOf(q) + 1];
@@ -856,8 +866,12 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
     // (ending against a stone face under the far ledge's near end, as the opening's catches do: 60 px under the far ledge with no face,
     // a player holding the way on walked under it and off the catch's end into the drop; dips test 2026-11-05)
     const x1 = far ? far.x0 + 50 : g.x1 + 60;
-    if (x1 - (g.x0 + 80) >= 60) {
-      lay.ledge(g.x0 + 80, x1, cy, 'catch');
+    // (every gap of the teach has its catch: a narrow one's, started at x0 + 80, was under 60 px and was left out, and the first-timer
+    // adult lost three lives in it, 2026-11-05; its open top runs at least 50-60 px to the face, never under the near ledge)
+    const open = far ? far.x0 : x1;
+    const c0 = Math.max(g.x0 + 2, Math.min(g.x0 + 80, open - 60));
+    if (open - c0 >= 50) {
+      lay.ledge(c0, x1, cy, 'catch');
       if (far) L.ledges[L.ledges.length - 1].wall = [far.x0, far.y];
     }
   }
@@ -870,7 +884,8 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   // ledge and off its end. A flag at the ledge's start
   lay.begin('ramp', 'kick a coiled boa (taught)', 'canopy', 1, x, y);
   lay.ledge(x, x + BOA_TEACH_W, y, 'apron');
-  // (Meeca's marks lead him to it, two on the way in: the walk from the last twig to the boa read as dead, 2.8 s)
+  // (Meeca's marks lead him to it, three on the way in: the walk from the last twig to the boa read as dead, 2.8-3.6 s)
+  mark(x - 300, y);
   mark(x + 200, y);
   mark(x + 470, y);
   L.flags.push({ x: x + 200, y });
@@ -977,6 +992,9 @@ export function layout15(seed: number, easy: boolean, bpm: number): Layout {
   mark(x + 280, y);
   L.exit = { x: x + 400, y };
   lay.end(x + 640, 640 / PHYS.maxRun);
+  // (every snap twig holds 0.3 s more than its run on the beat and the spare: the first-timer adult pauses on landing, and twigs of
+  // 0.56-0.83 s broke under him on the way down, 13 lives on one roll; the lead, 2026-11-05: about 4 at most, Normal jumps 70%+)
+  for (const q of L.ledges) if (q.surface === 'crumble') q.hold = +((q.hold ?? 0.6) + FT_PAUSE_15).toFixed(2);
   L.width = x + 660;
   L.height = Math.max(...L.ledges.map((q) => q.y)) + 120;
   L.petals = apart(L.petals);

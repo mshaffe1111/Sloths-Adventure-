@@ -226,3 +226,10 @@ Every brief says it in these words. A helper that hits a wall brings the lead op
 correct version, a different route, help it needs), never "push it to tomorrow" as the first answer. The quality bar and the
 checks do not move to make a deadline (laws: cut scope, never a check); the helper finds the way. Only the lead moves a deadline,
 and says why to Matt.
+
+## 8j. Stuck means stop and find the cause, then fresh eyes (2026-11-04: 1-5's repeat)
+A helper spent 40 minutes trying variations (marks, spacing, heights) that only moved a repeat between layouts. The lead read the code
+for anything periodic and found the three causes in minutes: a rest forced every 8th take-off, one gap set per roll for every node, a
+strict twig/branch alternation. Rule for every helper: if 20-30 minutes of variations don't move the measure, stop trying values,
+look for the structural cause (what in the code makes it come out this way every time?), and ask the lead for fresh eyes. The lead
+steps in at that point and reads the code itself, without waiting for the deadline.

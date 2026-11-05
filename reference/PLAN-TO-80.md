@@ -84,3 +84,21 @@ already rotates). The report's facts about our game are checked before use (it s
 ## What it costs
 Phase A is sized by the roadmap keeper from measured history; Phases B and C are sized from Phase A's real hours. Quality sets the date
 (Matt, 11-02). Expect the launch to move: the honest range is unknown until World 1 is measured.
+
+## The design team after the engine (Matt, 2026-11-04 evening)
+- **Who:** world designers, plus a special-stage designer and a boss designer later. Each is blind to the others' work, so each
+  world gets its own voice ("keep them from looking at each other's codes... unique with their thoughts").
+- **The same designers, rotated (Matt: "we continue to use those over and over. We just rotate which level they work on"):** a
+  designer is a lasting helper with its own notes file. It takes one world, then the next free one, and carries its lessons
+  with it. The cross-world check stops a designer repeating its own earlier world.
+- **Three at a time** ("That should keep our budget low on tokens"), with a small push as each one completes, so there is a steady
+  run of accomplishments.
+- **Order:** the repetitive layouts first. Special stages and bosses are hand-built and come later.
+- **All of them share the one engine.** They write data (the world profile, section patterns, art choices, stage specs), never
+  their own engine code. Each world is judged by a reviewer who didn't design it.
+
+## The engine's core win (Matt, 2026-11-04: "the core win is that we cannot spend full days on just a level or two. It's kind of painful to watch.")
+The engine plan's first acceptance criterion, measured on its first real stage: one stage from description to accepted in about
+an hour of wall-clock time, at a small fraction of the tokens of a hand-built stage today (target ~0.3% of the week or less), coming
+out right on the first pass (the self-fixer and blame log handle the rest). If the first stage misses this by a wide margin, the
+design is wrong and gets rethought, not pushed through.

@@ -63,3 +63,17 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 
 **Best measured result (Matt, 2026-11-04):** every method file keeps a "Best measured result" line (time and tokens for one job of its kind, with the commit and helper). A helper that beats it updates the method with proof; the lead merges it the same day, and everyone works that way from then on.
 - `research-ledger.md`: breaking research into a line-by-line ledger before it shapes a plan (D29)
+
+## Learned from successes, 2026-11-04 (spread to every helper; Matt: "That's how we learn from our successes")
+- **Prove a new tool against the real engine before trusting it** (beatTrace: checked against RealPlay first, then fixtures built to
+  fail). It made the tool right first time, and three builders reused it.
+- **Measure on what ships:** judge flags on the assembled candidate, not on your own branch (w1-rhythm-b, w8-rope2), which saved two
+  needless redesigns.
+- **Find the source before fixing:** the orchids were painted into the sky picture; the checker treated hop/jump/double as one move
+  and ignored direction. Hooking the real draw and reading the measure found them, where guessing would have lost hours.
+- **Guarantee rules by construction and test every roll:** 70/15/15 and "goal <= shared + smaller road - 5%" on all layouts and both
+  settings, with no single-seed proof.
+- **Ruler changes come with a fixture each way and a full before/after** (pickup credit, grams direction): it keeps a ruler honest
+  and the known list shrink-only.
+- **Bring options early, with the deadline still in reach** (1-2's petal geometry at 7:39, 1-5's ruler at 7:35), not a miss at the
+  deadline.
