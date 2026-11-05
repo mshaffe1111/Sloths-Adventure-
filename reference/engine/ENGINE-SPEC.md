@@ -2224,3 +2224,41 @@ finish"). I computed both on engine-mixer 452fc9f83 (single jump, maxRun 285, ju
 **Ruling:** the references' gaps, which Matt has played and liked, run at 0.35-0.56 of the true maximum. That's under P8's ≤ 0.8
 and well out of its 0.85-1.15 band. So C20 and P8 agree, the per-roll gap ranges stand, and nothing goes to Matt. The 70 px takeoff
 slack is what keeps the margin, and it stays (P8's own reason: no jump needs a take-off at the very edge).
+
+## 1-2 and 1-5 measured; each stage's numbers come from its own reference (designer, 11-05 12:50 PM ET; engine-runs 7dafdeeb0, RUNS.md Addendum 3, rs-main-12.json and rs-main-15.json, every row read)
+
+**What the rows show:** each old stage has its own centre. Gap-share centres: old 1-5 0.77, old 1-1 0.82, old 1-2 0.83, old 1-3 0.84.
+1-5 is calmer than "calm". So a profile word can't carry a fixed number without guessing.
+
+**Ruling (revises 12:35 and 12:45 in one respect):**
+- **The numbers live only in each stage's `roll`, from its reference's per-roll rows.** A W1 stage's reference is its own old stage on
+  main, which Matt has played. A new stage with no old stage of its own names one (`ref: '1-1'`). It never invents numbers.
+- **`tempo` and `hills` stay as descriptive words in the spec** and set no numbers. The planner need not change their types; my 12:45
+  type change is withdrawn.
+  - Words that fit the rows: 1-1 calm / rolling, 1-2 steady / flat, 1-5 calm / rolling.
+  - 1-5's spec words change from steady / hilly to calm / rolling.
+- **Rise is drawn by families too, like hop share**, so one shape fits every stage: `rise: { fam: [...], p90Max }`.
+- **engine-runs' offer to define "steady" and "hilly" in measured units isn't needed.** The words set nothing.
+
+```ts
+// 1-1 (old 1-1, 32 rolls Normal): rise rewritten in the family shape; the rest as at 12:45
+roll11 = { hop: [{range:[0.43,0.51],share:11/32},{range:[0.74,0.80],share:11/32},{range:[0.99,1.00],share:10/32}],
+  gap: {range:[0.79,0.91],centre:0.82,p90Max:0.99},
+  rise: {fam:[{range:[0.65,0.69],share:25/32},{range:[0.81,0.94],share:7/32}], p90Max:0.95}, burstSecs:[5,20] }
+// 1-2 (old 1-2): three hop families; two rise homes; some rises past one jump (p90 1.12 on 12 rolls)
+roll12 = { hop: [{range:[0.47,0.50],share:12/32},{range:[0.78,0.82],share:12/32},{range:[0.98,0.98],share:8/32}],
+  gap: {range:[0.73,0.88],centre:0.83,p90Max:1.00},
+  rise: {fam:[{range:[0.38,0.38],share:16/32},{range:[0.45,0.56],share:16/32}], p90Max:1.12}, burstSecs:[5,20] }
+// 1-5 (old 1-5): two hop families (jump-heavy and hop-heavy)
+roll15 = { hop: [{range:[0.36,0.41],share:13/32},{range:[0.85,0.95],share:19/32}],
+  gap: {range:[0.68,0.83],centre:0.77,p90Max:1.00},
+  rise: {fam:[{range:[0.57,0.57],share:2/32},{range:[0.65,0.69],share:28/32},{range:[0.75,0.75],share:2/32}], p90Max:1.12}, burstSecs:[5,20] }
+```
+
+- **Shares over 1** (the p90Max 1.12 cases) are rises a single jump can't make: bounces and climbs (Addendum 2). They are allowed only
+  where the stage has taught the move that makes them. That's E4, the teach order.
+- **Hop family and gap stay independent.** Across the four stages the link goes both ways: 1-1 and 1-5 show hop-heavy rolls with
+  narrower gaps (about 0.06), 1-2 shows none, and 1-3 the reverse. So no link is built.
+- **Easy:** old 1-2's Easy gaps run a little lower (median from 0.65). Easy still keeps C4's widths and caps, not these rows.
+- **Bursts:** 5-20 s for all three. The old stages carry no node plan, so no burst length is measured, and the Launchpad range stands
+  (G #38).
