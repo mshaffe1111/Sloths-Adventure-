@@ -1,0 +1,50 @@
+URL: https://www.mariowiki.com/Really_Rolling_Hills
+Read: 2026-11-05 by mario fetch helper (TinyFish fetch_content)
+Title: Really Rolling Hills
+---
+(Stripped: site navbox, image gallery, "Names in other languages" table, reference list.)
+
+| Really Rolling Hills | |
+| --- | --- |
+| (image caption) | Mario, Toad, Peach, and Luigi running through the level |
+| Level code | World 2-4 |
+| World | World 2 |
+| Games | Super Mario 3D World, Super Mario 3D World + Bowser's Fury |
+| Primary power-up | Super Bell |
+| Time Limit | 500 seconds |
+| Music tracks | Super Bell Hill, Underground Theme, Light the Color Panels!, Mario's Color Panels |
+| Level progression | Previous: Puffprod Peaks, Shadow-Play Alley; Next: Big Galoomba Blockade |
+
+Really Rolling Hills, or World 2-4, is the tenth regular course of Super Mario 3D World and its Nintendo Switch port, Super Mario 3D World + Bowser's Fury, and the fourth level of World 2. It is unlocked by completing either Puffprod Peaks or Shadow-Play Alley, and its own completion unlocks Big Galoomba Blockade. The main gimmick of this level is the hills that constantly turn in circles, hence the name. A different version of this level titled Night Falls on Really Rolling Hills appears in World Mushroom.
+
+## Layout
+
+The level starts in a grassy plain inhabited by Galoombas and Skipsqueaks, with a nearby ? Block giving the player a power-up. After passing some more enemies, rolling hills, and a Red Ring, the player reaches the Checkpoint Flag. A nearby pipe leads the player to an underground area infested with Galoombas, Spiny Skipsqueaks, and cog-like platforms. After navigating through the area, the player comes upon a pipe which leads them to the Goal Pole.
+
+## Collectables
+
+### Green Stars
+
+| Location |
+| --- |
+| Near the very beginning, the player must use the Cat form to climb a cliff between two clear pipes. In the Nintendo Switch port, the player can alternatively do a Ground Pound Jump, Wall Jump off the wall, and do a midair roll while facing the wall. |
+| During the underground portion of the level, there is a green Warp Pipe that's partially blocked by Crystal Blocks. The pipe leads to an odd room with Color Panels that, when all activated, will reveal the second Green Star. |
+| Near the ending of the level, the player must fall between the rotating wheels to find the third Green Star. |
+
+### Stamp
+
+At the beginning, there is a Character Switch that only Mario can activate. That switch reveals the stamp. The stamp is Small Mario.
+
+## Luigi sightings
+
+Imprinted on the largest rolling hill shortly after the Red Ring is a faint 8-bit Luigi. Another Luigi can be seen if the player waits until the in-game timer says 104, in which case a Luigi will exit the first pipe, and go back in at 99 on the timer.
+
+## Enemies
+
+| Name | Count |
+| --- | --- |
+| Skipsqueak | 11 |
+| Galoomba | 13 |
+| Mini Goomba | 8 |
+| Spiny Skipsqueak | 8 |
+| Goomba | 2 |

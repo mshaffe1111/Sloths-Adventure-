@@ -1,0 +1,66 @@
+URL: https://80.lv/articles/a-talk-with-ori-and-the-blind-forests-concept-artist
+Read: 2026-11-05 by rayman/ori fetch helper (TinyFish fetch_content)
+Title: A Talk with Ori and the Blind Forest Concept Artist
+---
+# A Talk with Ori and the Blind Forest’s Concept Artist
+
+Simon Kopp is a talented concept artist who has made amazing artwork for Ori and the Blind Forest, Mooncrest, and Albion Online. He tells us about his start in the industry, tips on his incredible art and world building, and some advice when it comes to working with clients.
+
+#### Simon Kopp is a talented concept artist who has made amazing artwork for Ori and the Blind Forest, Mooncrest, and Albion Online. He tells us about his start in the industry, tips on his incredible art and world building, and some advice when it comes to working with clients.
+
+### Simon Kopp
+
+### simon-kopp-mooncrest-big-80lv
+
+I have always been a kid that preferred staying at home and playing with my Legos. When I got a new set of Legos I built it up and got bored immediately. I was never much about playing than creating. Sometimes I tore the thing down immediately afterwards and built something else. When I got too ‘cool’ for Legos this passion transferred on to PC and games. I played a lot of games on my PC, but still, most of the time I wanted to find a way to modify them to my liking. I started out with Unreal, Unreal Tournament and Warcraft 3. Those editors were my home for many years and in my youth I always switched between ideation, concepting and 3d modeling and texturing. At some point I decided that it was way more fun to design and paint stuff rather than clicking in a 3d software. Most of the projects in my youth were way too ambitious, but it helped me to learn the basics.
+
+### World Building
+
+I have two worlds in which I tend to create content regularly. One is ‘Axculho’ – I created this one for my Bachelor Thesis from scratch. The other one is Airborn – Pino’s Journey. This is a project I’ve joined about five years ago. It started as a portfolio project of some friends and I was eager to help and design in this world myself. At some point they invited me to join and since then it has also become my baby.
+
+When you’re building a world of your own for yourself you should really stick to something that really interests you. This may sound weird, but I saw a lot of people doing ‘something’ just for the sake of doing something. If you’re doing it for yourself, do something you like or are really interested in getting into more. The most important part is research and doing it properly will teach you a lot in that field. So lets say, you want to create a story set in a baroque chinese influenced state in a ~medieval world. You really need to dig into baroque and chinese architecture, décor, time and arts and understand the fundamentals in order to be able to find a link. The link should be something that can connect both themes in form and content. Building a world is all about research in the first place. It’s like the preliminary drawing of a painting – the base has to be solid.
+
+### Visual Representation
+
+### walltown-gr-80lv
+
+I don’t think its important at all to have a visual representation of a world you created. That is basically just eye candy for lazy people! So many books build worlds and do not show them in any visual way at all. The Lord of the Rings books I read did not have a single image in them, yet I knew exactly what it looked like in my head.
+
+But – a visual representation can make a lot of things clear. Tolkien wrote his books on his own, he had no one he had to describe or show his world to and get a ‘Go!’ from this person. I think it becomes very important to have a clear visual when you’re working in a team. It’s crucial to put every team member on the same level in order to progress with ideation and/or production. If Team A thinks that the baroque chinese interiors are all red, but Team B think they are all green – thats a receipt for disaster. There is no difference here for game developers or for example the film industry. You need to nail the most important things down and then scale up from there.
+
+It has also become so much more important to please the audience not only with good game design and stories. The technical and thus visual fidelity and standards have grown so much that it has become really important to deliver pleasing visuals. Some games are created only for showing off the best new graphics and techniques.
+
+### A Clear Image for the Art
+
+### glottshop-gr-80lv
+
+I think the skill here is finding good references – but for that you need a clear image of what you want to achieve. This can be really simple like a gothic cathedral or house. All you have to do is search for lots of references and most importantly understand them. Don’t just copy what you see but look behind the reference. How and why is a gothic window built up the way it is? What where the intentions of the great architects of that time – and does it even fit my theme? You can go very far with this, but most of the time you don’t really have the budget to do that.
+
+To be honest, characters mostly don’t play a big role in my paintings. I’m really more of an environment guy and I am way more interested in architecture, nature and settings than in portraying characters. They are mostly only there to keep the viewer interested in the artwork and not browse over it in a heartbeat.
+
+### The Use of Colors
+
+### borderlands-b-80lv
+
+Especially in my personal work colors are mostly dictated by either ‘I like that color’ or the mood I want to create. I generally don’t think about colors as much as about values and composition. But this depends very much on what I’m doing. So, in case the artwork is for a job, for example a game there is most likely a certain color coding to a faction, mood or landscape. Its really important to have a good color key from the start. The player will navigate and make decisions based on them. The best example for this is Quake Live. I love watching competitive Quake Live. The maps are mostly reds, browns, blues, greys – a lot of dull colors. The enemies are portrayed in bright green. The levels are not animated – the players bounce around a lot. It’s those contrasts, especially with color here that make it easier for the player.
+
+### The Client Knows Best… Sometimes
+
+### sandbox-b-80lv
+
+To be honest, I’m still learning a lot in this field and I learn a ton with every new job. But what I got so far is, that it’s really important to listen and not to listen to your client. Some clients have a very narrow range of expectations and really only want to see what they gave you with their references – if at all existing. You need to deliver close to their expectations or you’ll have a dissatisfied client. But there are also clients that hire me for stuff they have not seen before. They don’t have a clear visual in mind and they just want to discover possibilities. You still need information about the game and what it’ll be about, but you’re way more free in what to do. This is what I really like. I can really dig down on whatever I feel suitable for the game and do proper research.
+
+Sometimes you also need to not listen to the doubts of your client and go through with a direction he/she isn’t so fond of and show them the possibilities. This is a risk, but showing great confidence in your product can still convince them.
+There are no different ‘rules’ for creating a world or art for myself or a studio. It’s kind of the same, I’m just a bit more free in what to do when working for my own.
+
+### Evolution of Game Art
+
+### simon-kopp-env-entrance2-wip1-mid-80lv
+
+Visuals have become way more important. Perhaps not so much for the game itself, but at least for the money. A good game is fun without any visuals. Back when Ori and the Blind Forest was in its first stages of development Thomas Mahler and the team of Moon Studios experimented a lot with the controls and abilities of Ori. I still enjoy just walking, jumping and blasting around with that little white guy. Its just fun, the game is fun – even without visuals.
+
+But visuals are a big draw for users to this game – and this is where the money comes in. Art in games, especially in AAA has become so top notch and kind of over the top that its hard to reach the standards set there without ruining your studio or health. You can see a big gap between independent developers and AAA Studios in visual fidelity. Most indie developers stray away from 3d or at least realistic 3d for a very stylized look. The amount of detail you need for a proper shooter in a realistic setting is just absurd. The amount of artists necessary to fill 8 hours of game time is huge. I still think its half of a miracle that we made Ori and the Blind Forest look like it does – but it really was a grand effort.
+
+### Tools of Preference
+
+That’s basically only two. A 3d program sometimes for a rough block out to get the perspective and composition right and then Photoshop all the way. That’s really it. Designing and painting isn’t really about the tools. I tried other programs than Photoshop, but I never felt home.

@@ -1,0 +1,70 @@
+Note: two short pages about the same GDC 2014 talk, each with its own header, each verbatim.
+
+URL: https://www.gamedeveloper.com/design/video-the-tools-used-to-design-i-rayman-legends-i-
+Read: 2026-11-05 by rayman/ori fetch helper (TinyFish fetch_content)
+Title: Video: The tools used to design Rayman Legends
+---
+* Design
+* News
+
+# Video: The tools used to design *Rayman Legends*
+
+In this 2014 GDC session Ubisoft Montpellier's Chris McEntee describes the design team's approach to creating the worlds of *Rayman Legends*.
+
+Game Developer,Staff
+
+January 31, 2018
+
+schedule1 Min Read
+
+Rayman Legends owes a lot of its success to the UbiArt Framework, an engine originally developed for the game's predecessor, Rayman Origins. Originally created to bridge the gap between clear artistic vision and gameplay direction, the tool has evolved into a smoother way of working for artists and designers.
+
+In this 2014 GDC session, Ubisoft Montpellier's Chris McEntee describes the design team's approach to creating the worlds of Rayman Legends, and discusses the strengths and weaknesses of the UbiArt Framework.
+
+McEntee also goes into length about the UbiArt engine's role in improving prototyping and level design pre-production processes. Through the aid of case studies and in-engine demonstration videos, he highlights a few of the key features that allowed designers to work at a rapid pace.
+
+Designers who are curious about the development of Rayman Legends can now
+
+# About the GDC Vault
+
+In addition to this presentation, the GDC Vault and its accompanying YouTube channel offers numerous other free videos, audio recordings, and slides from many of the recent Game Developers Conference events, and the service offers even more members-only content for GDC Vault subscribers.
+
+Those who purchased All Access passes to recent events like GDC or VRDC already have full access to GDC Vault, and interested parties can apply for the individual subscription via a GDC Vault subscription page. Group subscriptions are also available: game-related schools and development studios who sign up for GDC Vault Studio Subscriptions can receive access for their entire office or company by contacting staff via the GDC Vault group subscription page. Finally, current subscribers with access issues can contact GDC Vault technical support.
+
+Gamasutra and GDC are sibling organizations under parent UBM Americas.
+
+## About the Author
+
+Keep up with the latest News, Interviews, and Talk Coverage from GDC Festival of Gaming right here on Game Developer
+
+READ ON
+
+==========
+URL: https://www.gdcvault.com/play/1020398/Rayman-Legends-The-Design-Process
+Read: 2026-11-05 by rayman/ori fetch helper (TinyFish fetch_content)
+Title: Rayman Legends: The Design Process Within the UbiArt Framework
+---
+You've been logged out of GDC Vault since the maximum users allowed for this account has been reached.
+To access Members Only content on GDC Vault, please log out of GDC Vault from the computer which last accessed
+this account.
+
+
+Click **here** to find out about GDC Vault Membership options for
+more users.
+
+
+close
+
+## The Number One Educational Resource for the Game Industry
+
+**### Session Name:**:   Rayman Legends: The Design Process Within the UbiArt Framework
+**### Overview:**:   The critically acclaimed Rayman Legends owes much of its success to the flexibility and power of the UbiArt Framework, an engine originally developed for the game's predecessor, Rayman Origins. This session will describe the design team's approach to creating the distinctive worlds in Rayman Legends, and the strengths and weaknesses of this unique tool. The engine's role in improving prototyping and level design pre-production processes will be demonstrated through case studies, and multiple in-engine demonstration videos will showcase a few of the key features that allow designers to work at a rapid pace.
+
+Did you know free users get access to 30% of content from the last 2 years?
+
+* GDC 2014
+* Chris McEntee
+* Ubisoft Montpellier
+* free content
+* Visual Arts
+* Visual Arts
