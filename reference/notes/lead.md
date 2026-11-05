@@ -37,7 +37,7 @@ move the time, never the bar.
 | Planner | Whole-engine cost estimate | each step in % of the week, total vs 55% (stop at 53%), from measured history | 10:45 AM |
 | Planner + designer | 1-1/1-2 acceptance pass line | max wall time, max token cost, max fixes after first build; agreed by both, before 1-1 | 11:15 AM |
 | Planner | Every-world piece inventory | a table from the code: every platform, prop, climbable, air piece per world, file:line, counts | 11:15 AM |
-| Planner | Library extended + sheet by world | all inventoried kinds labelled (draft), real stills grouped by world, staged ones marked | 12:00 PM |
+| Planner | Library extended + sheet by world (slip warned 11:08, accepted) | all inventoried kinds labelled, real stills grouped by world, staged ones marked, 85 flagged props judged by eye | 12:25 PM |
 | Designer | Labels ruled, one pass | every kind: element, footing, floats, uses, worlds, teaches; float caps per world with reasons | 12:00 PM |
 | Designer | SPEC-TRACE tags | every spec number MEASURED/SOURCED/MATT/DERIVED/OPEN, with citations that check out | 11:45 AM |
 | engine-render | w1-new atlas stills | squirrels + hollow logs painted in play, upright + sideways, phone size, polish check | 11:00 AM |
@@ -53,7 +53,7 @@ move the time, never the bar.
 | research-moves (session_01FhBbYNX54T972gBWAGDBAz) | MOVES.md: TRIAGE R rows on moves, returns, enemy variants, stairs, sinking, sprint marks, pit look, slope | each row answered with a saved source + line, or proof of search; rule + spec line wrong | 2:30 PM |
 | research-pacing (session_01FhBbYNM6H5Ssg4zpEHMD8g) | PACING.md: TRIAGE R rows on pacing, variety, difficulty, length spread, Easy, checks, fix rounds | same | 2:30 PM |
 | engine-runs (session_01FhBbYNVv6Zweq51VCpwLyx) | RUNS.md: all 106 TRIAGE C rows run on our code (existing tools, 16x2) | command, output, number, PASS/MISS, root cause for misses; step-6 topics first, pushed per topic | 3:00 PM |
-| Lead | CHECKPOINT 1 for Matt | library sheet by world, render stills, critic interim, cost so far vs meter | 12:15 PM |
+| Lead | CHECKPOINT 1 for Matt (moved for the sheet) | library sheet by world, render stills, critic findings + rulings, OPEN triage, the 4 M questions, cost so far vs meter | 12:30 PM |
 | Planner | E3 element + SUPPORT check | every landing AND prop/dress on 102 stages x2 layouts x2 settings; may-float-no over air fails; water pieces only on zones; zone ends under banks; counts per world on a shrinking known list; float share measured; 1-1/1-5 0 breaches; 1-5 creek zone, pad test green | 1:45 PM |
 | Planner | W1 fixes from the rulings | stone/crumble no-float; crumble out of W1; tree ideas lay branch; vine/liana/rope kinds; no climbing vine 1-1; log jam out of 1-5 once water's back; snapshot changes named; 1-5 gates re-run | 2:30 PM |
 | Research helpers (lead starts 12:00) | the (R) OPEN groups settled from primary sources | each OPEN answered with a saved source + line, or proof of search | 3:00 PM |
