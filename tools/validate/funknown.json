@@ -11,13 +11,6 @@
   {
    "stage": "1-1",
    "setting": "easy",
-   "rule": "pacing",
-   "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-1",
-   "setting": "easy",
    "rule": "repeat",
    "layouts": 16,
    "owner": "World 1 rebuild (D26)"
@@ -27,13 +20,6 @@
    "setting": "normal",
    "rule": "one tempo",
    "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-1",
-   "setting": "normal",
-   "rule": "pacing",
-   "layouts": 12,
    "owner": "World 1 rebuild (D26)"
   },
   {
@@ -59,13 +45,6 @@
   },
   {
    "stage": "1-2",
-   "setting": "easy",
-   "rule": "pacing",
-   "layouts": 15,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-2",
    "setting": "normal",
    "rule": "dead walk",
    "layouts": 16,
@@ -82,7 +61,7 @@
    "stage": "1-2",
    "setting": "normal",
    "rule": "pacing",
-   "layouts": 14,
+   "layouts": 1,
    "owner": "World 1 rebuild (D26)"
   },
   {
@@ -143,13 +122,6 @@
   },
   {
    "stage": "1-4",
-   "setting": "easy",
-   "rule": "pacing",
-   "layouts": 14,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-4",
    "setting": "normal",
    "rule": "dead walk",
    "layouts": 16,
@@ -160,13 +132,6 @@
    "setting": "normal",
    "rule": "one tempo",
    "layouts": 16,
-   "owner": "World 1 rebuild (D26)"
-  },
-  {
-   "stage": "1-4",
-   "setting": "normal",
-   "rule": "pacing",
-   "layouts": 14,
    "owner": "World 1 rebuild (D26)"
   },
   {

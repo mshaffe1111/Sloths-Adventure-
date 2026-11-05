@@ -233,3 +233,31 @@ for anything periodic and found the three causes in minutes: a rest forced every
 strict twig/branch alternation. Rule for every helper: if 20-30 minutes of variations don't move the measure, stop trying values,
 look for the structural cause (what in the code makes it come out this way every time?), and ask the lead for fresh eyes. The lead
 steps in at that point and reads the code itself, without waiting for the deadline.
+
+## 8k. Research and design helpers: the expectation in every brief (Matt, 2026-11-04: "make sure that when we're getting these researchers out, that you set the expectation that this is not supposed to be some half-assed job")
+The first engine designer finished a 90-minute brief in 11 minutes, on skimmed sources and search snippets. Every research, design,
+critic or planner brief now opens with this block, word for word:
+> This is not a quick job. Use the full time planned. Read every line of every source you're given and open the primary sources
+> yourself (talks, postmortems, papers, code); never stop at search snippets or summaries. Check every claim about our game in our
+> code, and run your key idea against the real code on at least one real stage, and show the output. Show your work: cite file:line
+> or a URL for every fact; mark every number as measured or an estimate. Your report starts with planned vs actual time. Finishing
+> under half the planned time is a red flag: the lead checks it before accepting it.
+The lead checks the first report against it before passing anything on: sources really opened, code really run, every fact cited,
+time honest. A shallow report goes back at once, or the helper is replaced with a fresh one at high effort.
+
+**Why research kept failing (Matt asked, 2026-11-04 ~9:25 PM ET), and the fixes that are now part of every brief:**
+1. *The tool that works was never named.* From a cloud container, `curl` gets a 403 at the proxy, and many sites block automated
+   fetches. The first designer had only search snippets, and it "researched" from them. The tool that does work is TinyFish
+   `fetch_content` (and `search`). Every brief names it, and the helper tests one fetch first, before it plans anything.
+2. *Research and design were one brief.* A helper asked to research and design rushes to the design. Research is its own helper
+   (or its own phase), with its own file of notes. The designer gets that file.
+3. *No proof was asked for.* Every source used is saved as text with its URL and the date read (`designer-sources/`,
+   `research/<topic>/`), and every quote in the report can be found in that saved text. Blocked sources are listed, not skipped
+   in silence.
+4. *The lead didn't check until Matt noticed.* At the helper's first report, the lead counts its fetch calls in its activity log
+   (`list_events`; the calls are TinyFish `fetch_content`, not WebFetch) and spot-checks three quotes against the saved text.
+   This takes ten minutes, and it is done before anything is passed on.
+5. *We fed it our own research first, so it repeated the same games.* The helper gets the question and the hard facts about our
+   game, then searches on its own. Our earlier research goes in only after its first list of sources, as a cross-check.
+6. *Matt couldn't see them.* Research helpers run as cloud sessions (create_session), one per researcher, so Matt can watch them in
+   his session list. Local background helpers don't appear there (Matt, 2026-11-04: "I don't see it running").

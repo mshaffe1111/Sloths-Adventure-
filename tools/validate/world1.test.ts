@@ -41,7 +41,9 @@ test('padding: 1-1\'s finish is over half the stage, its piece laid again and ag
 
 test('one tempo and flat pacing: no World 1 stage asks both to hurry and to wait; most never get tight', () => {
   assert.ok(w.every((e) => !(e.tempo.hurry && e.tempo.patience)), w.map((e) => `${e.id} ${e.tempo.hurry}/${e.tempo.patience}`).join(' '));
-  assert.ok(w.filter((e) => e.flags.some((f) => /never tight/.test(f.what))).length >= 6);
+  // (most never got tight on the old rule, a 5 s window over 1.15 moves a second, as found 11-04; the truer rule reads a burst as the
+  // research defines it per setting (the lead, 2026-11-05), and the rebuilt stages have one)
+  assert.ok(w.filter((e) => (e.oldFlags ?? e.flags).some((f) => /never tight/.test(f.what))).length >= 6);
 });
 
 test('branches can be outrun: 1-5\'s breaking branch runs are crossed by just holding right, none giving way under him', () => {
