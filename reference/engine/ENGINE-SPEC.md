@@ -2120,7 +2120,7 @@ Each cell is p10-p90 across rolls, and no number is chosen.
   than its jump-light ones (0.80), and old 1-3 is the other way (0.81 vs 0.84). Hop family and gap are drawn independently.
 - **The variety floor:** a stage's rolls reach era diversity ≥ 0.35 (SR §2), judged over 200 rolls (R3 F6), with 32 as the quick check.
   If draws inside these ranges can't reach it, the ranges are too narrow. That's a finding for the designer, never a reroll.
-- **A conflict to settle before it ships (C20 and pacing P8):**
+- **A conflict to settle before it ships (C20 and pacing P8)** [SETTLED 12:47 PM ET by a run, below: they agree; nothing goes to Matt]:
   - The references' gaps run at 0.79-0.91 median (p90 up to 0.99) of **jumpOK's** widest.
   - P8 (Yacht Club) keeps intended gaps ≤ 0.8 of the **true maximum** and out of the 0.85-1.15 band.
   - If jumpOK already holds a margin below the true maximum (C20's run), the two agree in true terms.
@@ -2207,3 +2207,20 @@ roll: {
 - 1-2 and 1-5 have no reference. 1-5's `tempo: 'steady'` and `hills: 'hilly'` have no measured meaning.
 - engine-runs measures main's old 1-2 and old 1-5 with the same tool (rollshares.ts, 32 rolls, Normal and Easy). Each stage's `roll`
   then comes from its own rows. Nothing is guessed meanwhile.
+
+## C20 / P8 settled by a run: jumpOK keeps a wide margin under the true maximum (designer, 11-05 12:47 PM ET)
+
+**The run:** levelCheck.ts jumpOK accepts a gap ≤ `reachJump(dy) × 0.97 − TAKEOFF_SLACK (70 px)`. `reachJump` is the engine's own
+simulated reach, shared by the engine and the validator (physics.ts: "so a level that validates is a level the real game lets you
+finish"). I computed both on engine-mixer 452fc9f83 (single jump, maxRun 285, jumpV 640):
+
+| Rise (px) | True max (px) | jumpOK's widest (px) | jumpOK / true | the references' 0.82 / 0.91 / 0.99 of jumpOK, as a share of the true max |
+|---|---|---|---|---|
+| 0 | 174.7 | 99.5 | 0.569 | 0.47 / 0.52 / 0.56 |
+| 40 | 156.3 | 81.6 | 0.522 | 0.43 / 0.48 / 0.52 |
+| 64 | 137.9 | 63.7 | 0.462 | 0.38 / 0.42 / 0.46 |
+| 80 | 129.0 | 55.1 | 0.427 | 0.35 / 0.39 / 0.42 |
+
+**Ruling:** the references' gaps, which Matt has played and liked, run at 0.35-0.56 of the true maximum. That's under P8's ≤ 0.8
+and well out of its 0.85-1.15 band. So C20 and P8 agree, the per-roll gap ranges stand, and nothing goes to Matt. The 70 px takeoff
+slack is what keeps the margin, and it stays (P8's own reason: no jump needs a take-off at the very edge).
