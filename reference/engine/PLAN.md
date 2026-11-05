@@ -1,7 +1,7 @@
 # PLAN: the level engine, buildable tomorrow morning (engine planner, 2026-11-04 night)
 
 **Planned vs actual time:** planned 75 minutes (due time later moved to 12:45 AM ET by the lead); started 10:38 PM ET, final at
-11:00 PM ET: **about 0 minutes, under half the plan. Red flag: check it with that in mind** (why, and what was done with it: §0).
+11:00 PM ET: **about 22 minutes, under half the plan. Red flag: check it with that in mind** (why, and what was done with it: §0).
 
 Inputs: CRITIC.md (engine-critic), DESIGNER.md Options A-D and **Option E** (engine-design db3342a1, §13), LEAD-SKETCH.md, R1-R4 and
 the engine ledgers (ccr-0d59a91c-oy3imz), the code at **727db7ba** (that branch's head), STAGE-RULES, LAWS, PERFORMANCE-RULES.
