@@ -760,10 +760,11 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   L.ledges[L.ledges.length - 1].wall = [x + BURST_GAP, y];
   x += BURST_GAP;
   lay.end(x, BURST_TWIGS * 0.75);
+  // (the chasm's apron 360 px: the burst lands him on it, and a run-up of 200 was a swing the clumsy thumb made 65% of the time)
   lay.begin('climax', 'jump + vine swing (over the chasm)', 'C', 1, x, y);
-  lay.ledge(x, x + 200, y, 'apron');
+  lay.ledge(x, x + 360, y, 'apron');
   L.flags.push({ x: x + 100, y });
-  const far3 = swings(lay, x + 200, y, 3, easy, 240, 300);
+  const far3 = swings(lay, x + 360, y, 3, easy, 240, 300);
   lay.end(far3, (far3 - x) / 360 + 1);
   x = far3;
   // cool-down: a short run out of the chasm to the shrine
