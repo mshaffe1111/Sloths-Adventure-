@@ -41,13 +41,19 @@ export type Idea =
   | 'bank hops' | 'stump hop' | 'snap teach' | 'snap dash' | 'bounce up' | 'the climb' | 'crumbling ledge' | 'creaky boughs'
   | 'lily-pad hop' | 'reed isles' | 'bank walk' | 'rotten-branch drop' | 'push block' | 'bough stair' | 'bridge span'
   // (1-1's, CP4: the designer's node plan for "Into the Canopy")
-  | 'floor walk' | 'bough hops' | 'double gap' | 'double chain' | 'top branch';
+  | 'floor walk' | 'bough hops' | 'double gap' | 'double chain' | 'top branch'
+  // (1-1's ground half, the designer's "a ground stage that becomes a tree stage", 11-05)
+  | 'bounce mound' | 'stump tops' | 'log jam';
 /** the floor ideas a canopy is laid over (the designer's ruling 1 on the CP3 miss: "boughs run above bank hops, stump hops or the creek") */
 export const FLOOR: readonly Idea[] = ['bank hops', 'stump hop', 'lily-pad hop'];
 export interface Fork { high: Idea[]; low: Idea[] }
 export interface NodePlan { id?: string; easyOnly?: boolean;
   /** one burst only (1-1's run teach: a flat walk, no gaps) */
-  one?: boolean; job: string; deck: Idea[] | Fork; not?: number; notLast?: number; hint?: string; padHint?: string; flagBefore?: boolean; heartAfter?: boolean; seed?: boolean;
+  one?: boolean;
+  /** no canopy over its floor idea (1-1's n1-n7: the forest floor; boughs arrive with the climb) */
+  ground?: boolean;
+  /** Dot's line at the node's end, not its start (1-1's "Look how high we are!" at the chain's top) */
+  hintAtEnd?: boolean; job: string; deck: Idea[] | Fork; not?: number; notLast?: number; hint?: string; padHint?: string; flagBefore?: boolean; heartAfter?: boolean; seed?: boolean;
   /** a catch branch under every gap of the node's floor road: a teach whose misses cost nothing (1-1) */
   safe?: boolean;
   /** the band the node's way keeps to, top and bottom (1-1 rises node by node; 1-5's nodes share the stage's whole band) */
@@ -85,25 +91,33 @@ export const PLAN_15: NodePlan[] = [
  * A sprint: no marks; the goal is the shrine. Dot's lines are the shipped 1-1's (dotLinesData.ts hint.1-1.*).
  */
 export const PLAN_11: NodePlan[] = [
-  { job: 'teach run', deck: ['floor walk'], one: true, band: [1180, 1320] },
-  { job: 'teach jump', deck: ['bank hops', 'stump hop'], hint: 'Jump the little gaps', safe: true, band: [1150, 1320] },
-  { job: 'practise', deck: ['stump hop', 'bank hops'], hint: 'Hop from stone to stone', padHint: 'Flick up to hop stone to stone.', band: [1100, 1300] },
-  // (its floor is stump hop, not the plan's bank hops: bank hops ran to 47% of the length, over the 40% cap; for the designer to confirm)
-  { job: 'teach bounce', deck: ['bounce up', 'stump hop'], band: [1000, 1250] },
-  { job: 'the fork', deck: { high: ['bough hops', 'bough stair'], low: ['bank hops', 'stump hop'] }, band: [950, 1150] },
-  { job: 'rest', deck: ['bank walk'], flagBefore: false, band: [950, 1150] },
-  { job: 'teach double', deck: ['double gap', 'bank hops'], hint: 'Flick up again in the air to jump twice', padHint: 'Press Jump again in the air', safe: true, band: [900, 1100] },
-  { job: 'climb up', deck: ['bough stair', 'the climb', 'bounce up'], not: 4, band: [650, 950] },
-  { job: 'test double', deck: ['double chain'], flagBefore: true, band: [380, 750] },
-  { job: 'canopy fork', deck: { high: ['bough hops', 'bough stair'], low: ['bough hops', 'stump hop'] }, band: [380, 560] },
-  { job: 'cool down', deck: ['top branch'], hint: 'Look how high we are!', band: [340, 480] },
+  // (n1-n7, the forest floor at the home forest's edge, no canopy: the lead's story brief and the designer's ground-stage ruling, 11-05)
+  { job: 'teach run', deck: ['floor walk'], one: true, ground: true, band: [1180, 1320] },
+  { job: 'teach jump', deck: ['bank hops', 'stump hop'], hint: 'Jump the little gaps', safe: true, ground: true, band: [1150, 1320] },
+  { job: 'practise', deck: ['stump hop', 'bank hops'], hint: 'Up the bank! Step to step', ground: true, band: [1100, 1300] },
+  // (the bounce lifts him onto a mound top, not a bough)
+  { job: 'teach bounce', deck: ['bounce mound', 'stump hop'], ground: true, band: [1000, 1250] },
+  // (a ground fork: the high road on stump tops and a log jam, the low road on the floor and the creek)
+  { job: 'the fork', deck: { high: ['stump tops', 'log jam'], low: ['bank hops', 'lily-pad hop'] }, ground: true, band: [950, 1150] },
+  { job: 'rest', deck: ['bank walk'], flagBefore: false, ground: true, band: [950, 1150] },
+  { job: 'teach double', deck: ['double gap', 'bank hops'], hint: 'Flick up again in the air to jump twice', padHint: 'Press Jump again in the air', safe: true, ground: true, band: [900, 1100] },
+  // (n8 on, the trees: bough stair or a bounce up into the boughs; the kapok climb is 1-4's)
+  { job: 'climb up', deck: ['bough stair', 'bounce up'], band: [650, 950] },
+  { job: 'test double', deck: ['double chain'], flagBefore: true, hint: 'Look how high we are!', hintAtEnd: true, band: [380, 750] },
+  { job: 'canopy fork', deck: { high: ['bough hops', 'bough stair'], low: ['bough hops', 'stump hop'] }, hint: 'No soft moss up here!', band: [380, 560] },
+  { job: 'cool down', deck: ['top branch'], band: [340, 480] },
 ];
 
 /** a stage the mixer builds: its plan, where it starts, how many of Meeca's marks it lays (0 for a sprint), and its last piece */
-export interface MixSpec { id: string; plan: NodePlan[]; startY: number; marks: number; end: { kind: string; w: number }; burstMax?: number }
+export interface MixSpec { id: string; plan: NodePlan[]; startY: number; marks: number; end: { kind: string; w: number }; burstMax?: number;
+  /** petals low, at marching height on the pieces, never in arcs over the gaps (1-1: Meeca's pressed petals, the lead's brief) */
+  lowPetals?: boolean;
+  /** the dressing and the clue prop at the stage's ends (1-1: the squirrels at the start, the bootprint at the shrine) */
+  dress?: { start?: string[]; clue?: string } }
 export const MIX15: MixSpec = { id: '1-5', plan: PLAN_15, startY: 460, marks: 13, end: { kind: 'bank', w: 640 } };
 // (the shrine stands on a long log at the top branch's end: three long pieces of one kind in a row ran the gate's "nothing new" to 2,106 px)
-export const MIX11: MixSpec = { id: '1-1', plan: PLAN_11, startY: 1260, marks: 0, end: { kind: 'log', w: 640 } };
+export const MIX11: MixSpec = { id: '1-1', plan: PLAN_11, startY: 1260, marks: 0, end: { kind: 'log', w: 640 }, lowPetals: true,
+  dress: { start: ['squirrel-sit', 'squirrel-wave', 'squirrel-tip'], clue: 'bootprint' } };
 
 interface Lay {
   /** the difficulty dial's gap, as a share of the gate's widest (ENGINE-SPEC "The difficulty dial") */
@@ -131,6 +145,8 @@ interface Lay {
   mushrooms: number;
   /** bursts laid so far on Normal (normalPad) */
   nb?: number;
+  /** petals at marching height on the pieces (MixSpec.lowPetals) */
+  lowPetals?: boolean;
   /** the most pieces a Normal burst lays (1-1: 4, for its 2:40-3:15 clock; 1-5: 5) */
   burstMax?: number;
   /** whether a mushroom's bounce has been taught yet (1-1's n4): no canopy is entered by one before it */
@@ -218,6 +234,12 @@ function gateGap(L: Lay, aY: number, b: { y: number; height: number; type: strin
   return max;
 }
 
+/** the pieces laid from cursor c on stand on stumps (supports draws a short trunk, no crown, for each): a ground high road */
+function markStumps(L: Lay, e: Cursor, c: Cursor): Cursor {
+  for (const p of L.P) if (p.x >= c.x - 2 && p.style === 'log') (p as Platform & { stump?: boolean }).stump = true;
+  return e;
+}
+
 /** a gap a double jump makes and a single does not (1-1's double nodes): the gate's widest single plus 40-60 px, held inside 80% of
  *  the double's widest, from a ledge at aY to one dy higher */
 function doubleGap(L: Lay, aY: number, dy: number): number {
@@ -242,6 +264,12 @@ function petalsOver(L: Lay, from: number, to = L.P.length) {
     const a = ps[i - 1], b = ps[i];
     const gx = (a.x + a.width + b.x) / 2;
     if (b.x - (a.x + a.width) < 30) continue;
+    if (L.lowPetals) {
+      // (on the landing, 40 px over it: where he walks, low)
+      const lx = b.x + Math.min(70, b.width / 2);
+      L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: 'orchid', x: Math.round(lx), y: b.y - 40, collected: false, bobPhase: (lx * 0.031) % 6.28 } as Collectible);
+      continue;
+    }
     L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: i % 3 ? 'orchid' : 'hibiscus', x: Math.round(gx), y: Math.min(a.y, b.y) - 80, collected: false, bobPhase: (gx * 0.031) % 6.28 } as Collectible);
   }
 }
@@ -396,6 +424,24 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
       const b = plat(L, 'branch', vx + 13, bank.y - rise, Math.round(R.r(240, 300)));
       return { x: b.x + b.width, y: b.y };
     }
+    // (1-1's bounce teach: a mushroom beside the path lifts him onto a mound top, two banks stepping up; the mound steps back down to the
+    // floor. The walk past the mushroom never bounces: it stands on its own short perch beside the bank, as 1-5's do)
+    case 'bounce mound': {
+      L.bounceTaught = true;
+      const pad = step(L, c, R, 'bank', Math.round(300 * L.wScale));
+      // (on a perch 46 px over the bank near its end, as 1-5's canopy entries: walking passes under it, a hop onto it bounces him up to
+      // the mound, which starts 30 px past the bank's end, 170-200 px up: too high for a plain jump, so the bounce is the way)
+      const perch = plat(L, 'branch', pad.x + pad.width - 125, pad.y - 46, 80);
+      (perch as Platform & { perch?: boolean }).perch = true;
+      plat(L, 'mushroom', pad.x + pad.width - 120, perch.y - 30, 70);
+      L.mushrooms++;
+      const top = plat(L, 'bank', pad.x + pad.width + 30, pad.y - Math.round(R.r(170, 200)), Math.round(R.r(240, 300) * L.wScale));
+      return burst(L, { x: top.x + top.width, y: top.y }, R, ['bank', 'log'], 2, [-40, -50]);
+    }
+    // (logs on stumps: a fork's ground high road, raised pieces with a stump under each, over the floor road)
+    case 'stump tops': return markStumps(L, burst(L, c, R, ['log', 'log'], n, [30, -30, 40, -40]), c);
+    // (a log jam: logs at two heights, close together, on stumps)
+    case 'log jam': return markStumps(L, burst(L, c, R, ['log'], n, [50, -50, 40, -40]), c);
     // (1-1's run teach: low banks touching, small steps up and down, no gap to jump)
     case 'floor walk': return burst(L, c, R, ['bank', 'log'], n, [30, -30], 0);
     // (boughs and logs in the air: 1-1's low fork road and its canopy roads)
@@ -764,6 +810,8 @@ function supports(P: Platform[], height: number, clear: number[] = []): { trunks
       continue;
     }
     if (perch) { tree(p.x + p.width / 2, top(p), 0.7, false); continue; }
+    // (a log on a stump: a short trunk under its middle, no crown, never a tree)
+    if ((p as { stump?: boolean }).stump) { tree(p.x + p.width / 2, top(p), 0.8, false); continue; }
     // (two boughs side by side, a short gap and a step between them, grow from one tree standing in the gap (S-4: like the old 1-1's
     // canopy, one trunk and its boughs at two heights))
     const q = air.slice(i + 1).find((o) => !done.has(o) && o.style !== 'canopy_bridge' && !(o as { perch?: boolean }).perch && o.x >= p.x + p.width - 10);
@@ -831,7 +879,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
   // (the designer's pacing ruling A, 11-05: a calmer Easy, its landings about 300 px on its own size bands, Normal's times EASY_BS. The
   // fixed pieces (canopy hosts and ends) scale with it; the boughs over them do not: the high road is the optional one)
   const wScale = easy ? EASY_BS : 1;
-  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, bs: easy ? EASY_BS : 1, dial: d, mushrooms: 0, glints: [], recent: [], padSet: new Set(), creakyTaught: false, burstMax: S.burstMax, ...(S.plan.some((n) => Array.isArray(n.deck) && n.deck.includes('bounce up') && n.job.startsWith('teach')) ? { bounceTaught: false } : {}) };
+  const L: Lay = { P: [], V: [], C: [], hints: [], flags: [], marks: [], explain: [], pid: 1, cid: 1, easy, gapShare, riseCap: 999, wScale, bs: easy ? EASY_BS : 1, dial: d, mushrooms: 0, glints: [], recent: [], padSet: new Set(), creakyTaught: false, burstMax: S.burstMax, lowPetals: S.lowPetals, ...(S.plan.some((n) => Array.isArray(n.deck) && n.deck.includes('bounce up') && n.job.startsWith('teach')) ? { bounceTaught: false } : {}) };
   // (the highest rise the gate allows: the largest step up a plain jump makes across a real gap, measured with the gate itself)
   let maxRise = 0;
   for (let dy = 10; dy <= 200; dy += 5) if (gateGap(L, 800, { y: 800 - dy, height: 24, type: 'solid' }, dy) >= MIN_GAP + 10) maxRise = dy;
@@ -872,7 +920,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
     // (and none right after another: a fork's rejoin already ends on Easy's breather, and two pads in a row ran the gate's "nothing new"
     // to 2,366 px on 1-1)
     if (L.easy && i > 0 && n.job !== 'rest' && PLAN[i - 1].job !== 'rest' && !L.padSet.has(L.P[L.P.length - 1])) c = breather(L, c, R);
-    if (n.hint) L.hints.push({ x: c.x + 60, text: n.hint, pad: n.padHint ?? n.hint, keys: n.padHint ?? n.hint, ...(c.y >= 600 ? { belowY: c.y - 60 } : { aboveY: c.y + 60 }) } as StageHint);
+    if (n.hint && !n.hintAtEnd) L.hints.push({ x: c.x + 60, text: n.hint, pad: n.padHint ?? n.hint, keys: n.padHint ?? n.hint, ...(c.y >= 600 ? { belowY: c.y - 60 } : { aboveY: c.y + 60 }) } as StageHint);
     const from = L.P.length;
     if (Array.isArray(n.deck)) {
       // (the designer's ruling (a), CP3: a node lays its bursts from its deck, never the same idea twice in a row; the dial sets how
@@ -912,7 +960,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
         if (!n.deck.includes(pick) && !(n.job.startsWith('teach') && pick === 'bank hops')) throw new Error(`1-5 n${i + 1} drew ${pick}, not in its deck`);
         const bx = c.x;
         // (a floor idea outside a fork and the rest carries a canopy)
-        const over = FLOOR.includes(pick) && n.job !== 'rest' && !bare;
+        const over = FLOOR.includes(pick) && n.job !== 'rest' && !bare && !n.ground;
         // (and between a node's bursts, so no Easy run goes 20 s without a 2 s rest)
         if (L.easy && k > 0) c = breather(L, c, R);
         c = over ? canopied(L, pick, c, R) : idea(L, pick, c, R);
@@ -1002,6 +1050,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
       }
     }
     if (Array.isArray(n.deck)) petalsOver(L, from);
+    if (n.hint && n.hintAtEnd) L.hints.push({ x: c.x - 120, text: n.hint, pad: n.padHint ?? n.hint, keys: n.padHint ?? n.hint, ...(c.y >= 600 ? { belowY: c.y - 60 } : { aboveY: c.y + 60 }) } as StageHint);
     // one of Meeca's marks in each non-fork node, on the main route, on a piece the idea laid (its middle one)
     // (n7b, the second rest, lays no mark: the designer's 13 marks are the plan's nine nodes and the forks' four, and the goal is 10 of them)
     if (S.marks && Array.isArray(n.deck) && !n.id) { const m = clearPiece(L, L.P.slice(from)); if (m) L.marks.push({ x: (m as Platform & { markX?: number }).markX ?? m.x + m.width / 2, y: m.y }); }
@@ -1103,7 +1152,9 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
     checkpoints: L.flags.map((f) => ({ x: f.x, y: f.y, reached: false })).sort((a, b) => a.x - b.x),
     easyGoal: Math.max(1, goalE), normalGoal: Math.max(1, goalN),
     meta: { attempt: seed, chunks: L.explain.map((e) => e.idea), width, pieces: L.explain.map((e) => ({ k: `${S.id} ${e.idea}`, x0: e.x0, x1: e.x1 })), mix: { explain: L.explain } },
-    proto: { hints: L.hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, ownPetals: true, glints: L.glints, trunks, leaves },
+    proto: { hints: L.hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, ownPetals: true, glints: L.glints, trunks, leaves,
+      // (the dressing the stage asks for, by the w1-new atlas's frame names; drawn once engine-render wires that atlas: nothing draws it yet)
+      ...(S.dress ? { mixDress: [...(S.dress.start ?? []).map((n, k) => ({ n, x: 180 + k * 110, b: S.startY })), ...(S.dress.clue ? [{ n: S.dress.clue, x: end.x + end.width - 140, b: end.y }] : [])] } : {}) },
   } as unknown as GeneratedStage & { proto: ProtoExtras };
   // (petals the shared judge can't reach come off: a petal over a gap between the canopy and the floor below it marks no jump anyone
   // makes. The level check names each one; only petals are taken off, never a mark, a heart or the exit)
