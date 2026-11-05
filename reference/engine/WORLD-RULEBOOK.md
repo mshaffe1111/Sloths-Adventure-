@@ -194,8 +194,8 @@ measured dev clocks (Tropical Freeze 1-1 1:50-2:30). Measurement outranks the cl
 
 Each rule's source rows are listed in WORLD-TRACE.md's "ADOPT candidates".
 
-1. **Dead time:** outside \`arrive\`, \`rest\` and \`arrival\`, more than 2.5 s with nothing to do fails the roll (the game code's 2.5 s; ES L510).
-2. **Map shapes:** a stage's 16 judged rolls show at least 3 map shapes where its \`branching\` allows 3 (P1:206).
+1. **Dead time:** outside `arrive`, `rest` and `arrival`, more than 2.5 s with nothing to do fails the roll (the game code's 2.5 s; ES L510).
+2. **Map shapes:** a stage's 16 judged rolls show at least 3 map shapes where its `branching` allows 3 (P1:206).
 3. **Landing in view:** at every take-off the landing is on screen, upright and sideways; if it wouldn't be, the path folds.
 4. **Timing:** no four take-offs in a row at the same interval (± 0.1 s) (ES L1807).
 5. **Animals (from the stage that teaches them):**
