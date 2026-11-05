@@ -11,4 +11,4 @@ source read: SMBF Refenes).
 Pitfalls I hit: the persisted STAGE-RULES read had a 3-line offset (wc header): cite STAGE-RULES lines from grep -n, never from a saved
 dump. STAGE-RULES on ccr-0d59a91c-oy3imz is newer than engine-spec's copy (§0c exists only on ccr).
 
-Done 10:56 AM ET: §9 added for the lead's (a) and (b); re-checked on engine-mixer da11cc4e and engine-spec e0f4f978. Anything later is not reviewed.
+Done 10:56 AM ET: §9 (the lead's a, b). Done 11:20 AM ET: §10 (era all worlds both settings, CP1 + move counts on old W2-W4, Smith 2009 fetched). Next: re-review of the designer's rulings 1:00-1:45 PM ET (send_later trigger trig_01XJPM2rS5CWvmBGDR9x5u6Y). Local-only patch in both worktrees: eraRoll.ts:264,:344 ERA_EASY switch.

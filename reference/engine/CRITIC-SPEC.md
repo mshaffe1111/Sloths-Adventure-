@@ -14,8 +14,8 @@ I did not read `reference/engine/SPEC-TRACE.md` before writing §1 and §2 (the 
   reading the whole spec plus its files (run times 408, 478, 542, 550, 557, 688, 716 and 950 s: **about 81 reader-minutes**, ~1.9 M
   tokens). I read MATT-DIRECTION, the whole spec, STAGE-RULES, the mixer code and the gates myself, made eleven runs (§6), opened one
   primary source, and audited two random samples of the readers' rows (24 rows: 21 held, 3 corrected). What I did **not** do in the
-  time: open more primary sources beyond SMBF (A6 found two R2 claims not in the saved texts; in `reference/engine/critic-runs/readers/A6-notes.md`), re-run the
-  planner's CP1 measures, or run era.ts beyond World 1.
+  time: open more primary sources beyond SMBF (A6 found one R2 claim and one R1 claim resting on unsaved texts; both fetched since, §10c), re-run the
+  planner's CP1 measures, or run era.ts beyond World 1 (all three done since, at the lead's request: §10).
 - **After the first report (10:51 AM ET, e0d2023b):** I read the lead's three queued messages (10:21, 10:27, 10:33 AM ET) and added §9
   (a source for every guess; every stage-specific branch), two more runs (12, 13), one more primary source (Yacht Club), and re-checked
   everything against engine-mixer da11cc4e and engine-spec e0f4f978. Finished 10:56 AM ET (`date`). Total wall time about 40 minutes;
@@ -59,6 +59,11 @@ important first; each has its evidence in the section named.
    range; past the research's gap margin from about World 8), the 45 s replay against the research's 2 s, the neighbour rules (50% shared,
    20% length) and the three different Easy landing widths. §9a names the source that answers each one; §9b lists every stage-specific
    branch that stops a stage being fixed through its data file alone (the lead's two additions).
+
+**Added by the deeper runs (§10):** the old-1-1 default lines (L1232) fail all 27 working stages of Worlds 2-4, so defaults must be
+measured per world (item 8); the whole-game baseline puts the worst repetition in Worlds 9-10 (diversity medians 0.27 and 0.17), which
+should weigh on the order of work (item 1); and the 10:09 ruling that lianas and breaking branches are taught in 1-2 rests on 11-04's
+unshipped 1-2 (on main they are taught in 1-6 and 1-5).
 
 What is ready and should be kept: the placement rules (hearts after risk, flags before hard parts, clutter caps, petals on the route),
 the polish rules P-1 to P-13 and S-1 to S-9, the element and float rules with "rocks never float", the "a node that can't meet a line
@@ -606,3 +611,101 @@ yet true in practice.** Every stage-specific branch I found:
 1-5 ...'` and `` `1-5 n${...}` `` pass. It reads only `w1mix.ts`, so `protoStage.ts:388, :401, :494, :511` and `spec.ts:110-116` are
 outside it. Run (§6 run 12): the same pattern over the comment-stripped `w1mix.ts` finds 0 quoted ids, while 2 throw lines name 1-5 and
 6 identifiers are stage-named (`SPEC_11`, `SPEC_15`, `buildMix11`, `buildMix15`).
+
+---
+
+## 10. Deeper runs the lead asked for (message of 10:59 AM ET): the whole-game baseline, the old W2-W4, the unsaved sources
+
+### 10a. era.ts on every world, both settings: the variety baseline the engine must beat
+
+`tools/inspect/era.ts --worlds N --rolls 16 --bots 0 --look 16`, W1-W10 on main 68b31e66, W1 again on engine-mixer da11cc4e (the
+mixer's 1-1 and 1-5). era.ts measures Normal only, so for Easy I added a local switch in the worktrees (not committed):
+`buildRoll(cfg, variant, process.env.ERA_EASY === "1")` at `tools/inspect/eraRoll.ts:264, :344`. Summaries by
+`tools/engine/critic/erasum.py`; every stage's row is in `reference/engine/critic-runs/era-all-main.txt` and `era-w1-mix-both.txt`.
+Lairs are not judged by era (one designed layout). Lines are STAGE-RULES §2's, as era.ts reads them (`rules`: diversity ≥0.35 between
+rolls, look-alike cosine <0.78 and 20 s window <0.30 against the world's other stages, ≥120 s, no quiet stretch over 4 s).
+
+| World | Normal: median diversity, stages under 0.35 | Easy: median, under 0.35 | Normal: stages where a roll breaks quiet / dead time |
+|---|---|---|---|
+| 1 (main, the old stages) | 0.31, 6 of 9 | 0.29, 5 of 9 | 1 / 4 |
+| 1 (engine-mixer) | **0.06, 8 of 9** | **0.06, 7 of 9** | 5 / 3 |
+| 2 | 0.42, 3 of 9 | 0.38, 4 of 9 | |
+| 3 | 0.38, 2 of 9 | 0.42, 2 of 9 | |
+| 4 | 0.39, 4 of 9 | 0.39, 4 of 9 | |
+| 5 | 0.51, 2 of 9 | 0.48, 2 of 9 | |
+| 6 | 0.44, 1 of 9 | 0.43, 1 of 9 | |
+| 7 | 0.40, 3 of 9 | 0.36, 4 of 9 | (7-4, the slide: diversity 0.00, one layout by design) |
+| 8 | 0.40, 2 of 9 | 0.37, 3 of 9 | |
+| 9 | **0.27, 8 of 9** | 0.31, 7 of 9 | **8 / 7** (both on all 16 rolls: 9-1, 9-3, 9-4, 9-5, 9-6, 9-8, 9-9) |
+| 10 | **0.17, 8 of 9** | 0.26, 7 of 9 | **7 / 5** (both on all 16 rolls: 10-1, 10-3, 10-6, 10-7, 10-9) |
+
+**The whole game (main, 90 judged stages):** 39 under the 0.35 line on each setting (median 0.37); on **62** (Normal) / 60 (Easy) stages
+more than half the rolls look like another stage of the same world (80 of 90 have a 20 s window that plays alike); 22 / 35 stages have
+a roll with a quiet stretch over 4 s; 25 / 39 a dead-time share over the line; 2 / 5 a roll under 120 s.
+
+**What it means for the engine.**
+- The repetition Matt feels is worst at the end of the game, not the start: Worlds 9 and 10 (the old generator's worlds) are the least
+  varied, and the only ones where most stages break the quiet and dead-time lines on every roll (7 of 9 in W9, 5 of 9 in W10). 9-2 and 9-7 match each other on 16 of
+  16 rolls; 10-2, 10-4, 10-5 and 10-8 match each other on 14-15 of 16. A plan that starts with World 1 and leaves Worlds 2-10 "not
+  rebuilt now" (L1629) leaves the worst of it for last; the order should be argued from this table.
+- The mixer's World 1 is now the least varied world in the game by this measure (median 0.06, against W10's 0.17).
+- This is the bar a new engine stage must beat on its own world: at least 0.35 between rolls, no stage it plays like on over half its
+  rolls, no quiet or dead-time break. The engine has no gate for it (§1a item 1).
+
+### 10b. CP1's measures and the move counts on the old Worlds 2-4: what the ladder and the default lines would ask of working stages
+
+Two runs on the old stages (16 layouts, Normal; W2-W4 build the same on main and engine-mixer, run 4):
+- CP1's own measures (`reference/engine/cp1/measure2.py`'s `measure`, unchanged, via `tools/engine/critic/cp1w.py`; dumps by
+  `cp1/cp1-dump.ts.txt` on main) plus the split rule CP3 uses (`splitsweep.py`, 120 px): `critic-runs/cp1-w1-4.txt`, `splits-w2-4.txt`.
+  Caveat: CP1's piece classifier (`measure2.py` `kind`) is World 1's, so outside W1 "kinds" and "share" are rough; runs, flat
+  stretches, height range, "something new" spacing and splits are geometric and hold.
+- How much each mechanic is used per stage (`tools/validate/mechanics.ts`'s MECHS counts, median of 16, `tools/engine/critic/mechcount.ts`
+  and `ladderbase.py`): `critic-runs/ladderbase.txt` (old W1 from main, W2-W4).
+
+**The old-1-1 lines the spec makes every stage's default (L1232, with L30-41 and L395-400) against the 27 working stages of W2-W4:**
+
+| Line (the old 1-1's number) | Old W2-W4 stages that pass |
+|---|---|
+| splits ≥19 (180 px rule) | 3 of 27 (4-2, 4-8, 4-9); all of W2 has 0-1 |
+| something new every ≤572 px | 4 of 27 (2-6, 3-4, 4-1, 4-6: the climbs) |
+| never over 1,516 px without something new | 4 of 27 |
+| longest flat ≤1,351 px | 11 of 27 |
+| longest run of one kind ≤9 | 18 of 27 |
+| **all of them** | **0 of 27** |
+
+So as written the defaults would fail every working stage in Worlds 2-4. The old 1-1's numbers are World 1's canopy numbers, and the
+spec's own ruling for 1-1 (L1155-1175, "a ground half can't honestly split 19 times") already found that one stage's numbers don't fit
+another kind of stage. The defaults must be measured per world and per stage kind, with each world's working stages as the floor.
+
+**The ladder amounts (L1311-1321) against what ships** (old W1-W4, 37 stages, lairs out):
+
+| Rule | What the shipped stages do |
+|---|---|
+| "The teach stage: lots (7+)" | holds for most: breaking branch 18 at its teach, liana 17, trunk climb 20, mushroom 13.5, river logs 51, bushes 32, snake 23. Not for rope 3, push 4, lift 2, cage 5, puzzle room 2 |
+| "Echo: the next 2 stages, at least some, one required" | almost nothing echoes today: in the two stages after the teach, boa, jaguar, turtle, bush, eagle, push, lift, cage and warm air are 0 and 0; liana 0 then 9; breaking branch 1 then 0 |
+| "Every later world: ≥1 in 3 stages" | met today only by trunk climb (13 of 28 later stages), water (17 of 28), finds (15 of 28) and puzzle rooms (10 of 28). Breaking branch 0 of 28, boa 0 of 28, mushroom 2 of 28, rope 4 of 28, push 3 of 28, river logs 0 of 19, lift 0 of 19 |
+
+So the amounts are not a measured baseline: they are new targets well above what ships. Research gives their shape, not their size:
+R1:68 (L5, Ubisoft's three steps: teach, a safe locked door, test), Yacht Club "no gameplay concepts should only show up as one-offs"
+and its "on cooldown" list (fetched, §9a), GEMINI-VARIETY full L105 ("return later ... without retraining ... as the twist"). The
+numbers stay OPEN; what this run settles is the cost: meeting "≥1 in 3" for breaking branches alone means placing them in about 9-10
+of W2-W4's 28 stages, where today there are none. That is the size of the work the ladder implies, world by world.
+
+**A ruling that rests on unshipped work.** The spec's 10:09 ruling (L1429-1433) says lianas and breaking branches are taught in 1-2,
+"The table is right". On main, the shipped game, 1-2 has neither (median 0 lianas, 0 breaking pieces; 1-5 has 18 breaking, 1-6 has 17
+lianas: `mechcount` on main). The table's 1-2 was measured on engine-mixer, where 1-2 is 11-04's rebuilt stage (fingerprints differ
+on 6 of 6 builds, run 4), and the spec says "Nothing from 11-04 ships" (L10). On the shipped game, creaky is taught in 1-5 and lianas in
+1-6, as the ladder table L1288-1289 said before the ruling.
+
+### 10c. The unsaved primary sources: fetched, saved, checked
+
+I first wrote "two R2 claims" in §0; precisely it was **one R2 claim and one R1 claim** (reader A6's notes):
+1. **R2:37-38, :524, :644, Smith et al. 2009, "14 different kinds of geometry for jumps ..."**: fetched
+   (https://eis.ucsc.edu/papers/smith-fdg-09.pdf), saved at `reference/research/critic-2026-11-05/smith-2009-rhythm-based-fdg.md`.
+   **Holds verbatim** (§8.2). Two corrections: the paper's own Fig. 13 says "13 different jump types", and R2:524 and :644 credit the
+   number to Launchpad (2011) when it is the 2009 generator's. The rest of R2 §3.3 (1,000 candidates, the two critics, "playable, but
+   they were visually unappealing and not much fun", "a distinct peak far from the lowest value") holds verbatim too. Two lines bear on
+   the spec: the abstract defines rhythm as "that which the player feels with his hands", which **supports Matt's L1120 ruling** ("the
+   player's rhythm, not the song"); §5, "Rhythm groups can optionally be repeated before this rest area", supports one exact repeat
+   (LEDGER-2026-11-02-full.md C4) against L392's "never the same burst twice".
+2. **R1:39, SMBF "We keep track to avoid duplicates"**: fetched and saved earlier (`smbf-refenes-gamingbolt.md`). **Holds verbatim.**

@@ -1,0 +1,28 @@
+=== mix, normal ===
+stage    div   win acts seqs lkal  short quiet dead valid  look-alike with (rolls of 16)
+1-1     0.02  0.37   16    1   16      0     7    0     0  1-2:16, 1-5:15, 1-7:3
+1-2     0.06  0.47   16   10   16      0     9   16     0  1-1:16, 1-5:14, 1-7:3
+1-3     0.03  0.36   16    6   14      0    16   15     0  1-9:13, 1-6:2
+1-4     0.03  0.24    9    5    0      0     0    0     0  
+1-5     0.01  0.36   16    6   16      0     0    0     0  1-1:15, 1-2:14
+1-6     0.26  0.65   16   15    5      0    11    0     0  1-3:2, 1-9:2, 1-7:1
+1-7     0.37  0.50   16    4    3      0     0   16     0  1-1:3, 1-2:3, 1-9:2
+1-8     0.07  0.19   15   11    0      0     0    0     0  
+1-9     0.34  0.53   16    7   13      0     6    0     0  1-3:13, 1-6:2, 1-7:2
+-- W1: median diversity 0.06; under 0.35: 8/9; skipped 1
+
+=== mix, easy ===
+stage    div   win acts seqs lkal  short quiet dead valid  look-alike with (rolls of 16)
+1-1     0.01  0.37   16    1   16      0    10   16     0  1-2:16, 1-5:8, 1-7:3
+1-2     0.09  0.47   16   12   16      0    13   16     0  1-1:16, 1-5:3, 1-7:1
+1-3     0.03  0.37   16    5    8      0    16    7     0  1-9:6, 1-6:2
+1-4     0.03  0.24    9    3    0      0     0    0     0  
+1-5     0.05  0.50   16   16    8      0     0   16     0  1-1:8, 1-2:3
+1-6     0.25  0.66   16   15    5      0    11    2     0  1-3:2, 1-9:2, 1-7:1
+1-7     0.37  0.50   16    4    3      0     0   16     0  1-1:3, 1-9:2, 1-2:1
+1-8     0.06  0.18   16   11    0      0     0    0     0  
+1-9     0.44  0.58   16    5   10      0     9    6     0  1-3:6, 1-6:2, 1-7:2
+-- W1: median diversity 0.06; under 0.35: 7/9; skipped 1
+
+mix normal: 9 stages; diversity under 0.35: 8 (median 0.06); stages where over half the rolls look like another stage of the world: 5; a roll breaking quiet (>4 s): 5, dead-time share: 3, short (<120 s): 0
+mix easy: 9 stages; diversity under 0.35: 7 (median 0.06); stages where over half the rolls look like another stage of the world: 3; a roll breaking quiet (>4 s): 5, dead-time share: 7, short (<120 s): 0
