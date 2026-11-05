@@ -176,10 +176,10 @@ function gateGap(L: Lay, aY: number, b: { y: number; height: number; type: strin
 }
 
 /** a petal over the middle of each gap between neighbouring route pieces from index `from` on (an arc that shows where the jump goes) */
-function petalsOver(L: Lay, from: number) {
+function petalsOver(L: Lay, from: number, to = L.P.length) {
   // (one road's petals, the floor's, where the marks are: petals on both roads of a canopy traced a way no one takes, up to the boughs
   // and down again, and the inspector's pickup route counted every one of those hops)
-  const ps = L.P.slice(from).filter((p) => p.type !== 'bouncy' && !(p as { bough?: boolean }).bough && !(p as { perch?: boolean }).perch);
+  const ps = L.P.slice(from, to).filter((p) => p.type !== 'bouncy' && !(p as { bough?: boolean }).bough && !(p as { perch?: boolean }).perch);
   for (let i = 1; i < ps.length; i++) {
     const a = ps[i - 1], b = ps[i];
     const gx = (a.x + a.width + b.x) / 2;
@@ -429,10 +429,10 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     // (the creek's stretch is a lily pad and a log after the host; the others one wide piece of their own kinds)
     const from = L.P.length;
     const ks = fk.kinds[(turn + s) % fk.kinds.length];
-    // (on Easy the end piece is a rest (the designer's pacing ruling A): its first part 720-800 px, about 2.5-2.8 s at a run, then a short
+    // (on Easy the end piece is a rest (the designer's pacing ruling A): its first part about 600-640 px, 2.0-3.0 s of quiet, then a short
     // second part 30 px up; a canopy ran 27-30 s on Easy with no 2 s rest)
-    // (720-800 px: the boughs end 110 px into it, so off the boughs it is still 2 s and more; 600-680 read under Easy's 2 s split there)
-    const endW = () => Math.round(L.easy ? R.r(900, 970) : R.r(330, 380));
+    // (about 600-640 px: 2.0-3.0 s of quiet off either road; at 720-800 it read 3.4 s, over the gate's 3 s dead walk)
+    const endW = () => Math.round(L.easy ? R.r(770, 820) : R.r(330, 380));
     let end = burst(L, { x: host.x + host.width, y: host.y }, R, [ks[0]], 1, [-30, -40], undefined, ks[0] === 'lily' ? undefined : endW());
     if (ks[0] === 'lily') end = burst(L, end, R, ['log'], 1, [-30, -40], undefined, endW());
     // (the long end piece is two, touching, the second 30 px up: a hop to make on the walk out from under the canopy, never a gap to
@@ -441,6 +441,8 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     const full = m1.width;
     // (60/40, so the second half is short and the first medium: two sizes, the gate's "something new")
     m1.width = L.easy ? full - Math.round(R.r(160, 190)) : Math.round(full * 0.6);
+    // (on Easy the rest is one of the pads `padLogs` may turn to a log where the gate would run too long with nothing new)
+    if (L.easy) L.padSet.add(m1);
     const m2 = plat(L, ks[0] === 'lily' ? 'log' : ks[0], m1.x + m1.width, m1.y - 30, full - m1.width);
     end = { x: m2.x + m2.width, y: m2.y };
     const floor = L.P.slice(from).concat(host);
@@ -513,8 +515,14 @@ function padLogs(L: Lay) {
     for (let i = 0; i < ls.length && !fixed; i++) {
       if (ls.slice(Math.max(0, i - 6), i).some((q) => q.k === ls[i].k)) continue;
       if (last >= 0 && ls[i].m - ls[last].m > 1400) {
-        const pad = ls.slice(last + 1, i).find((q) => q.p && L.padSet.has(q.p) && q.p.style === 'moss_stone');
-        if (pad?.p) { Object.assign(pad.p, { style: 'log', height: 90 }); fixed = true; }
+        // (a long log, or a bank where a long log is among the six before it: whichever is new there)
+        for (let j = last + 1; j < i && !fixed; j++) {
+          const q = ls[j];
+          if (!q.p || !L.padSet.has(q.p)) continue;
+          const before = ls.slice(Math.max(0, j - 6), j).map((o) => o.k);
+          const to = !before.includes('log l') && q.p.style !== 'log' ? { style: 'log', height: 90 } : !before.includes('ground l') && q.p.style !== 'moss_stone' ? { style: 'moss_stone', height: 120 } : null;
+          if (to) { Object.assign(q.p, to); fixed = true; }
+        }
       }
       last = i;
     }
@@ -768,7 +776,8 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       const second = (deck: Idea[], first: Idea): Idea => deck.find((d) => d !== first && !prev.has(d)) ?? (first === 'bank hops' ? 'stump hop' : 'bank hops');
       const hi2 = second(n.deck.high, hi), lo2 = second(n.deck.low, lo);
       rolled[i] = [hi, lo, hi2, lo2];
-      const forkBank = step(L, c, R, 'bank', 240);
+      // (on Normal the fork bank is a rest pad, 400-440 px (ruling B): the roads carry no pad, and a fork ran 30-31 s without one)
+      const forkBank = step(L, c, R, 'bank', L.easy ? 240 : Math.round(R.r(400, 440)));
       // (each road keeps to its own band, 200 px apart, so they never meet: the high road no lower than 60 px under the fork bank,
       // the low road no higher than 60 px over its start)
       // (head room: the high road never comes down toward the low one and the low one never rises toward it, so the roads stay 260 px
@@ -798,23 +807,31 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       const rejoin = plat(L, 'log', rx, ry, Math.max(320, hiEnd.x + 240 - rx));
       L.explain.push({ node: i + 1, nid: nid(i), job: n.job, idea: `${hi} + ${hi2}` as Idea, road: 'high', x0, x1: hiEnd.x, why: `high road from [${n.deck.high.join(', ')}]` });
       L.explain.push({ node: i + 1, nid: nid(i), job: n.job, idea: `${lo} + ${lo2}` as Idea, road: 'low', x0: lowStart.x, x1: loEnd.x, why: `low road from [${n.deck.low.join(', ')}]` });
-      petalsOver(L, lowFrom);
-      // (Meeca's marks, the designer's ruling: one on each road; the high road's at its hardest spot, its middle piece)
+      // (the fork's petals on the high road only: its reward is the stage's hardest petal group (the designer's ruling (i), 11-05), and a
+      // route never has to change roads for one)
+      petalsOver(L, forkFrom, lowFrom);
       const hiPs = L.P.slice(forkFrom, lowFrom), loPs = L.P.slice(lowFrom, L.P.length - 1);
       crossings(L, hiPs.filter((q) => q.type !== 'bouncy'), loPs.filter((q) => q.type !== 'bouncy'), n.job);
-      // (the high road's mark before the step-down and the low road's after it, so one way through (high road, step down, low road) passes
-      // both in order: a route to both marks went round the crossings three times (the inspector's Easy route on layout 2, 78-127 s))
-      const sd = L.P.find((q) => (q as { crossing?: boolean; stepDown?: boolean }).stepDown && q.x >= forkBank.x);
-      const mid = (q: Platform) => q.x + q.width / 2;
-      const hm = (sd && clearPiece(L, hiPs.filter((q) => mid(q) < sd.x - 60))) || clearPiece(L, hiPs);
-      const lm = (sd && clearPiece(L, loPs.filter((q) => mid(q) > sd.x + sd.width + 60))) || clearPiece(L, loPs);
-      if (hm) forkMarks.push({ x: hm.x + hm.width / 2, y: hm.y });
-      if (lm) forkMarks.push({ x: lm.x + lm.width / 2, y: lm.y });
+      // (the low road is the fork's lowest ground: under each of its gaps a catch branch 60 px below the lower lip, reaching 50 px under the
+      // far piece, so a missed hop lands on it and a hop goes back up, never down to the stage's bottom. The adult bot lost 3 lives at one
+      // n10 gap, and 1.5 a run in all, over the dial's 0.7)
+      const lows = loPs.filter((q) => q.type !== 'bouncy').sort((a, b) => a.x - b.x);
+      for (let k = 1; k < lows.length; k++) {
+        const a = lows[k - 1], b = lows[k];
+        if (b.x - (a.x + a.width) < 20) continue;
+        const y = Math.max(a.y, b.y) + 60;
+        L.P.push({ id: L.pid++, x: a.x + a.width - 30, y, width: b.x + 50 - (a.x + a.width - 30), height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
+      }
+      // (the fork's two marks where both roads meet: one on the fork bank before the split, one on the rejoin log after it (the designer's
+      // ruling (i), 11-05). One per road, joined by crossings, sent every route that took both round the fork again and again, the bots'
+      // fork stall and the inspector's Easy loops)
+      forkMarks.push({ x: forkBank.x + forkBank.width / 2, y: forkBank.y });
+      forkMarks.push({ x: rejoin.x + rejoin.width / 2, y: rejoin.y });
       c = { x: rejoin.x + rejoin.width, y: ry };
       if (L.easy) c = breather(L, c, R);
       else { L.nb = 1; c = normalPad(L, c, R); }
     }
-    petalsOver(L, from);
+    if (Array.isArray(n.deck)) petalsOver(L, from);
     // one of Meeca's marks in each non-fork node, on the main route, on a piece the idea laid (its middle one)
     // (n7b, the second rest, lays no mark: the designer's 13 marks are the plan's nine nodes and the forks' four, and the goal is 10 of them)
     if (Array.isArray(n.deck) && !n.id) { const m = clearPiece(L, L.P.slice(from)); if (m) L.marks.push({ x: m.x + m.width / 2, y: m.y }); }
@@ -884,16 +901,16 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   }
   if (easy) padLogs(L);
   // (nothing hurts in the first seconds (STAGE-RULES §2 "Opening seconds"), as w1Rhythm.ts rhythmStage lays it: a catch branch 60 px
-  // under the lower lip of every gap met in the first 6.5 s at a run, ending against a stone face under the far ledge, so a short jump
-  // drops onto it and a hop goes back up)
+  // under the lower lip of every gap met in the first 6.5 s at a run, reaching 50 px under the far ledge, so a short jump drops onto it
+  // and a hop goes back up. No stone face under the far ledge: rocks stand only on ground or in water (the designer's S-3, round 2: the
+  // faces read as big mossy rocks on posts over the gap), and a face only ever repeated the ledge's own top. The floor road only)
   const openTo = 100 + 6.5 * 285;
-  const opening = L.P.filter((q) => q.type !== 'bouncy' && q.x < openTo && !(q as { catch?: boolean }).catch).sort((a, b) => a.x - b.x);
+  const opening = L.P.filter((q) => q.type !== 'bouncy' && q.x < openTo && !(q as { catch?: boolean; bough?: boolean; perch?: boolean }).catch && !(q as { bough?: boolean }).bough && !(q as { perch?: boolean }).perch).sort((a, b) => a.x - b.x);
   for (let k = 1; k < opening.length; k++) {
     const a = opening[k - 1], b = opening[k];
     if (b.x - (a.x + a.width) < 20) continue;
     const y = Math.max(a.y, b.y) + 60;
     L.P.push({ id: L.pid++, x: a.x + a.width - 30, y, width: b.x + 50 - (a.x + a.width - 30), height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
-    L.P.push({ id: L.pid++, x: b.x, y: b.y, width: 50, height: y - b.y, type: 'solid', style: 'moss_stone', art: 'rock' } as Platform);
   }
   // (every gap is a drop: World 1 paints an unmarked fall as water otherwise)
   for (const p of L.P) if (p.type === 'solid' || p.type === 'fragile') (p as Platform & { pit?: string }).pit = 'drop';
