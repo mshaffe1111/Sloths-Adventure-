@@ -1,0 +1,8 @@
+>>> START HERE (this block is printed FIRST because long start-up output is cut to a ~2 KB preview after a memory compression; D36) <<<
+STOP. Before any other work, open these with the Read tool (the rest of this print may be cut off):
+- EVERYONE: reference/LAWS.md, then reference/LESSONS.md. Helpers: your own reference/notes/<your-name>.md.
+- THE LEAD: reference/notes/lead.md FIRST. It lists the rest in order (PARTNER, LEADER-STANDARD-WORK, CONTINUOUS-IMPROVEMENT,
+  engine/MATT-DIRECTION, roles/LEVEL-DESIGNER, STATUS tail, LEAD-PLAYBOOK 8h-8k, the latest daily review) and today's job.
+Matt, 2026-11-05: "make sure you're reading all your notes when you get compressed without me having to beg you to do it."
+>>> END START HERE <<<
+
