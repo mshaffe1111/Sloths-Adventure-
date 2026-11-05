@@ -214,6 +214,10 @@ function clearPiece(L: Lay, ps: Platform[]): Platform | undefined {
     const after = Math.min(...solid.filter((q) => q.x >= p.x + p.width - 10).map((q) => q.x), 1e9);
     return after - before;
   };
+  // (first a canopy's rest on Normal: its far end, past the boughs, is where both roads walk (the boughs end 260 px before it), so the
+  // mark goes 110 px from that end, clear of every bough; a short floor piece under a canopy is jumped over, mark and all)
+  const rest = order.find((p) => L.padSet.has(p) && p.width >= 400 && clear(p) && !L.P.some((q) => (q as { bough?: boolean }).bough && q.x < p.x + p.width - 110 + 60 && q.x + q.width > p.x + p.width - 110 - 60 && q.y < p.y));
+  if (rest) { (rest as Platform & { markX?: number }).markX = rest.x + rest.width - 110; return rest; }
   return order.find((p) => clear(p) && open(p) && span(p) >= 380) ?? order.find((p) => clear(p) && span(p) >= 380) ?? order.find((p) => clear(p) && open(p)) ?? order.find(clear);
 }
 
@@ -450,7 +454,9 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     // (on Easy the end piece is a rest (the designer's pacing ruling A): its first part about 600-640 px, 2.0-3.0 s of quiet, then a short
     // second part 30 px up; a canopy ran 27-30 s on Easy with no 2 s rest)
     // (about 600-640 px: 2.0-3.0 s of quiet off either road; at 720-800 it read 3.4 s, over the gate's 3 s dead walk)
-    const endW = () => Math.round(L.easy ? R.r(770, 820) : R.r(330, 380));
+    // (on Normal too, the designer's two-road fix, 11-05: its rest is this piece, 520-560 px flat then the short step, about 1.1 s of quiet
+    // off the boughs, so the rest keeps both roads over it; no separate pad follows a canopied burst)
+    const endW = () => Math.round(L.easy ? R.r(770, 820) : R.r(650, 700));
     let end = burst(L, { x: host.x + host.width, y: host.y }, R, [ks[0]], 1, [-30, -40], undefined, ks[0] === 'lily' ? undefined : endW());
     if (ks[0] === 'lily') end = burst(L, end, R, ['log'], 1, [-30, -40], undefined, endW());
     // (the long end piece is two, touching, the second 30 px up: a hop to make on the walk out from under the canopy, never a gap to
@@ -458,9 +464,10 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     const m1 = L.P[L.P.length - 1];
     const full = m1.width;
     // (60/40, so the second half is short and the first medium: two sizes, the gate's "something new")
-    m1.width = L.easy ? full - Math.round(R.r(160, 190)) : Math.round(full * 0.6);
-    // (on Easy the rest is one of the pads `padLogs` may turn to a log where the gate would run too long with nothing new)
-    if (L.easy) L.padSet.add(m1);
+    m1.width = full - Math.round(L.easy ? R.r(160, 190) : R.r(120, 150));
+    // (on Easy the rest is one of the pads `padLogs` may turn to a log where the gate would run too long with nothing new; on Normal it
+    // is a rest a mark may stand at the end of, `clearPiece`)
+    L.padSet.add(m1);
     const m2 = plat(L, ks[0] === 'lily' ? 'log' : ks[0], m1.x + m1.width, m1.y - 30, full - m1.width);
     end = { x: m2.x + m2.width, y: m2.y };
     const floor = L.P.slice(from).concat(host);
@@ -468,7 +475,9 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     band = { yMin: lo - 215, yMax: hi - 135 };
     // (the boughs end 110 px into the stretch's long end piece, its two halves 330-380 px in all: a running jump off their end carries
     // about 240 px, and lands on that floor, never in the gap past it (cp3-ft: the adult's pit lives after the first rebuild))
-    const xEnd = m1.x + 110;
+    // (on Normal the boughs run on over the rest, ending 260 px before its end, so the rest keeps two roads and a running jump off them
+    // (about 240 px) still lands on it)
+    const xEnd = L.easy ? m1.x + 110 : Math.max(m1.x + 110, m1.x + m1.width - 260);
     const by = entryY ?? Math.round(Math.max(band.yMin, Math.min(band.yMax, hi - R.r(150, 175))));
     // (boughs at the dial's typical landing, 170-240 px; not widened on Easy, where the high road is the optional one and wider boughs
     // all fell in one size band, which broke the gate's "something new")
@@ -480,7 +489,7 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     const b0 = plat(L, way !== 'mushroom' && L.creakyTaught ? 'creaky' : s === 1 ? 'bridge' : 'branch', bx, by, Math.round(R.r(130, 160)));
     let bc: Cursor = { x: b0.x + b0.width, y: by };
     // (the boughs step between the band's top and bottom, 50 px or more apart, so no two sit flat)
-    for (let guard = 0; guard < 6 && bc.x < xEnd - 100; guard++) {
+    for (let guard = 0; guard < 9 && bc.x < xEnd - 100; guard++) {
       const to = bc.y > (band.yMin + band.yMax) / 2 ? band.yMin : band.yMax;
       // (every bough after the first is a creaky limb: the stage's theme (the designer's review E), over floor, so a snap drops him onto
       // the low road, never into a pit; the first, where he lands from the entry, holds)
@@ -777,7 +786,8 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
         // (and between a node's bursts, so no Easy run goes 20 s without a 2 s rest)
         if (L.easy && k > 0) c = breather(L, c, R);
         c = over ? canopied(L, pick, c, R) : idea(L, pick, c, R);
-        c = normalPad(L, c, R);
+        // (a canopied burst rests on its own end pieces; the pad comes after every second plain burst)
+        if (!over) c = normalPad(L, c, R);
         L.explain.push({ node: i + 1, nid: nid(i), job: n.job, idea: pick, ...(over ? { canopy: true } : {}), x0: bx, x1: c.x, why: `burst ${k + 1} of ${bursts}${over ? ', a canopy over it' : ''}` });
         laid.push(pick);
         last = pick;
@@ -852,7 +862,7 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     if (Array.isArray(n.deck)) petalsOver(L, from);
     // one of Meeca's marks in each non-fork node, on the main route, on a piece the idea laid (its middle one)
     // (n7b, the second rest, lays no mark: the designer's 13 marks are the plan's nine nodes and the forks' four, and the goal is 10 of them)
-    if (Array.isArray(n.deck) && !n.id) { const m = clearPiece(L, L.P.slice(from)); if (m) L.marks.push({ x: m.x + m.width / 2, y: m.y }); }
+    if (Array.isArray(n.deck) && !n.id) { const m = clearPiece(L, L.P.slice(from)); if (m) L.marks.push({ x: (m as Platform & { markX?: number }).markX ?? m.x + m.width / 2, y: m.y }); }
     // (n9's golden seed: the designer's ruling (b), CP3: no seed on 1-5; Dot's line plays here, the seed waits for the stage that teaches
     // the glide. The far-off glint is dressing only: a twinkle 420 px over the node's highest piece, out of every jump's reach)
     if (n.seed) {
