@@ -801,6 +801,23 @@ third Easy-only rest of 4-5 s goes after n3 (c). **This is a miss at the checkpo
 - **The bot's fork stall** is not counted as layout dead time once traced (rolls with stalls at n4 and n10). The fork crossings (CP3 item
   1) should end it. If it persists, the planner tells the designer.
 
+
+**[designer ruling, 11-05 ~4:32 AM ET, on A + B (dcb75adf)] Option 3 for Easy, and no breathers on fork roads.**
+- **Measured:** B passes (Normal's longest run 23.9 s median, 30.5 s worst, against main's 29.3 s). Easy's density passes on the
+  median (0.54) but not the worst roll (0.57). The cost was Easy's clock reaching about 5:00 and its "nothing new" stretch 2,094 px.
+- **The ruling, (3):** on Easy, about 6 nodes keep their canopy (both bursts) and 3-4 drop it, laying their own idea alone.
+  - The canopies kept are the forks' neighbours and every node right after a teach or test, so the two roads stay where they matter.
+  - Pass lines on Easy, 16 rolls, median and worst:
+    - splits at least 19;
+    - density at most 0.55;
+    - longest run without a rest at most 20 s;
+    - nothing new for at most 1,516 px, on Easy's own bands;
+    - a fast clock under 4:00.
+  - Easy boughs on the high road stay unwidened. That road is optional, so its bough sizes are judged on Normal's bands.
+- **No breather pads on fork roads.** On Easy, the breather between nodes goes after the roads rejoin, never at the end of a road. The
+  bot's stall comes from it stepping off the high road's breather onto the low road. With no pad at a road's end, the road carries
+  straight into the crossing or the rejoin.
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
