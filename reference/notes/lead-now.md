@@ -31,7 +31,9 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 - Hugging Face: $71.83 left (Matt checked the balance, 11-05 ~4:55 PM ET); keep about $15 back. The lead approves engine art and tells Matt the spend.
 - Matt: "the focus of getting the engine done and right over playing around with something we're not even going to keep." No
   throwaway trials: everything built is engine code or kit data that stays.
-- Judgment item 1: does 1-1 end on a quiet arrival? (designer's pick: yes).
+- DECIDED (Matt ~5:15 PM ET): 1-1 ends on the quiet arrival. Later stages get an ending FORK the player chooses (a high road to a finale
+  with a find, or a quiet low road), NODE-MIX-RESEARCH §E. Matt wants a NODE CODE (TJ = teach jump, TFJ = teach fork jump): the designer is
+  writing NODES.md §8, the planner stores graphs as code strings, and stage.ts prints each roll's code.
 - Owed: the end-of-day review reference/daily/2026-11-05.md.
 - Owed (law 21): R-ids on ROADMAP for today's direction change (chunk pool on gen2, roll dials, window, new gates) and for the
   supervisor role, and gen2 faults to roadmap: theme lock hijacks teaching (w6Ground.ts:23), Easy fallback plan + `best` returned +
