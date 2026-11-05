@@ -102,18 +102,15 @@ export interface StageSpec {
   goal: { kind: 'sprint' } | { kind: 'marks'; count: number; normal: number; easy: number };
   /** dressing and the end's clue prop, by the art atlas's frame names (drawn only once that atlas is wired) */
   dress?: { start?: string[]; clue?: string };
+  /** the moves taught before this stage (by the stages before it), which any node may use (the game's move ladder replaces this list,
+   *  step 6) */
+  taughtBefore: Move[];
+  /** what runs on the built stage after the petal pass and the dressing: the dressing kept off the play line (no piece over the shrine,
+   *  none in the air he walks or jumps through, none with nothing to grow from) */
+  post?: { clearDress?: boolean };
   /** where the stage starts (the spawn bank's y, px) and its last piece; bursts a node lays when the dial decides (min-max) */
   lay: { startY: number; end: { kind: string; w: number }; burstMin?: number; burstMax?: number };
 }
-
-/** the moves every stage after the tutorial may take as known (taught in World 1's earlier stages), by stage order */
-export const TAUGHT_BEFORE: Record<string, Move[]> = {
-  '1-1': [],
-  '1-2': ['run', 'jump', 'double', 'bounce'],
-  '1-3': ['run', 'jump', 'double', 'bounce'],
-  '1-4': ['run', 'jump', 'double', 'bounce'],
-  '1-5': ['run', 'jump', 'double', 'bounce', 'climb'],
-};
 
 /** the pass lines a profile sets for its own stage (the fixed floors every stage shares are kept on top of these) */
 export interface StageLines {
@@ -143,7 +140,7 @@ export function checkSpec(s: StageSpec, ideas: Record<string, { element: Element
     const used = new Set(s.nodes.flatMap((n) => (Array.isArray(n.deck) ? n.deck : [...n.deck.high, ...n.deck.low])));
     for (const name of used) for (const k of ideaKinds[name] ?? []) if (pieces[k] && !pieces[k].worlds.includes(s.profile.theme)) err.push(`"${name}" lays ${k}, which is not of the ${s.profile.theme} theme`);
   }
-  const known = new Set<Move>(TAUGHT_BEFORE[s.id] ?? []);
+  const known = new Set<Move>(s.taughtBefore);
   if (!s.nodes.length) err.push('the spec has no nodes');
   if (s.profile.length.normal[0] < 120) err.push(`Normal's length starts at ${s.profile.length.normal[0]} s; every stage takes at least 120 s`);
   s.nodes.forEach((n, i) => {

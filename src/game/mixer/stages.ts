@@ -36,6 +36,7 @@ export const SPEC_15: StageSpec = {
     { job: 'cool down', deck: ['bank hops', 'stump hop', 'log jam'] },
   ],
   goal: { kind: 'marks', count: 13, normal: 10, easy: 8 },
+  taughtBefore: ['run', 'jump', 'double', 'bounce', 'climb'],
   lay: { startY: 460, end: { kind: 'bank', w: 640 } },
 };
 
@@ -73,8 +74,12 @@ export const SPEC_11: StageSpec = {
   ],
   goal: { kind: 'sprint' },
   dress: { start: ['squirrel-sit', 'squirrel-wave', 'squirrel-tip'], clue: 'bootprint' },
+  taughtBefore: [],
+  post: { clearDress: true },
   // (the shrine stands on a long log at the top branch's end: three long pieces of one kind in a row ran the gate's "nothing new" to 2,106 px)
   lay: { startY: 1260, end: { kind: 'log', w: 640 }, burstMin: 5, burstMax: 6 },
 };
 
 export const SPECS: StageSpec[] = [SPEC_11, SPEC_15];
+/** the stage the engine builds from data, by its id (undefined: a stage the mixer does not build yet) */
+export const specFor = (id: string): StageSpec | undefined => SPECS.find((s) => s.id === id);

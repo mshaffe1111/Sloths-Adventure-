@@ -57,9 +57,10 @@ import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
 import { w1Chase, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { buildRhythmStage, rhythmOwnPetals, rhythmPetalGoal } from './w1Rhythm.ts';
-import { buildMix11, buildMix15 } from './mixer/w1mix.ts';
+import { buildFromSpec } from './mixer/w1mix.ts';
+import { specFor } from './mixer/stages.ts';
 import { W4Roll } from './w4Sections.ts';
-import { buildIntoCanopy, clearDress, splitPetals as splitPetals11 } from './w1Rise.ts';
+import { buildIntoCanopy, clearDress } from './w1Rise.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
@@ -390,8 +391,6 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       if (bank) bank.pit = 'drop';
     }
   }
-  // (1-1: the petals split 70/15/15 between the shared path and the choice's two roads, once the petal pass has laid them)
-  if (plan === '1-1') splitPetals11(st);
   // (5-3's quota is a share of the flowers it holds: of those the petal pass kept)
   if (plan === '5-3') st.config = { ...st.config, targetCount: Math.round(st.collectibles.filter((c) => c.type === 'flower').length * W5_HARVEST_SHARE) };
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
@@ -403,8 +402,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   // then the dressing, once the stage is final
   const out = st;
   addDress(out, seed);
-  // (1-1: the dressing off the play line and the shrine)
-  if (plan === '1-1') clearDress(out, (n) => dressSize(n as never));
+  // (a stage built from its spec says whether its dressing is kept off the play line and the shrine: stages.ts `post`)
+  if (specFor(plan)?.post?.clearDress) clearDress(out, (n) => dressSize(n as never));
   return out;
 }
 
@@ -496,8 +495,9 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
 
 /** `easy`: built for Easy (only the control test's long jumps differ, gaps; the rest of Easy is easyMode.ts on the built stage) */
 function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = false): GeneratedStage & { proto: ProtoExtras } {
-  // (engine-mixer branch, CP4 grey-box: 1-1 from the level designer's node plan, by the same mixer as 1-5, src/game/mixer/w1mix.ts)
-  if (plan === '1-1') return buildMix11(config, seed, easy);
+  // (engine-mixer branch: a stage with a spec (src/game/mixer/stages.ts) is built from its data by the mixer; nothing here per stage)
+  const spec = specFor(plan);
+  if (spec) return buildFromSpec(config, seed, easy, spec);
   if (plan === '1-4') return buildKapok(config, seed, false, false, false, false, easy);
   if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
@@ -514,7 +514,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   if (plan === '1-8') return buildLongBranch(config, seed);
   // 1-2 and 1-5: built node by node on the music's beat (w1Rhythm.ts, W1-REBUILD-PLAN.md)
   // (engine-mixer branch, CP3 grey-box: 1-5 from the level designer's node plan, src/game/mixer/w1mix.ts)
-  if (plan === '1-5') return buildMix15(config, seed, easy);
   if (plan === '1-2') return buildRhythmStage(config, seed, easy);
   const R = stream(seed);
   const P: Platform[] = [];

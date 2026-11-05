@@ -17,7 +17,6 @@ import type { Collectible, LevelConfig, Platform, Vine } from '../types.ts';
 import { IDEAS } from './library.ts';
 import { w1DressFacing, w1DressWidth } from '../w1NewArt.ts';
 import type { StageSpec } from './spec.ts';
-import { SPEC_11, SPEC_15 } from './stages.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import { fixPickups } from '../flowerReach.ts';
@@ -500,7 +499,8 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
       band = save;
       return e;
     }
-    case 'push block': throw new Error('push block is out of 1-5 for CP3 (the designer\'s ruling)');
+    // (the library holds it, the mixer does not lay it yet: a spec that draws it is refused by checkSpec, and the build throws)
+    case 'push block': throw new Error('push block is in the library but the mixer does not lay it yet');
     case 'bough stair':
       // (CP2, with Easy's rule: Normal steps +50 to +70; Easy +30 to +40, gaps 80 or less: easyFit and the gate cap them)
       // (the bridge only as the stair's top piece, a short rope bridge from the last bough on (the designer's ruling 4))
@@ -838,16 +838,11 @@ function supports(P: Platform[], height: number, clear: number[] = []): { trunks
 }
 
 /**
- * Build 1-5 from its node plan. Normal and Easy draw the same ideas from the same streams (Easy only changes sizes), so a roll is the
- * same stage in both settings.
+ * A stage from its spec (stages.ts): every stage the engine builds goes through here, nothing is built per stage. Normal and Easy draw the
+ * same ideas from the same streams (Easy only changes sizes), so a roll is the same stage in both settings.
  */
-export function buildMix15(config: LevelConfig, seed: number, easy: boolean): GeneratedStage & { proto: ProtoExtras } {
-  return buildMix(config, seed, easy, mixOf(SPEC_15));
-}
-
-/** 1-1 from its node plan (CP4), by the same mixer */
-export function buildMix11(config: LevelConfig, seed: number, easy: boolean): GeneratedStage & { proto: ProtoExtras } {
-  return buildMix(config, seed, easy, mixOf(SPEC_11));
+export function buildFromSpec(config: LevelConfig, seed: number, easy: boolean, spec: StageSpec): GeneratedStage & { proto: ProtoExtras } {
+  return buildMix(config, seed, easy, mixOf(spec));
 }
 
 /** Pokey's body width (engine.ts: the hero is 44 px wide): no dressing stands within one body width of his spawn */
@@ -969,7 +964,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
         }
         if (!cand.length) break;
         const pick = R.pick(cand);
-        if (!n.deck.includes(pick) && !(n.job.startsWith('teach') && pick === 'bank hops')) throw new Error(`1-5 n${i + 1} drew ${pick}, not in its deck`);
+        if (!n.deck.includes(pick) && !(n.job.startsWith('teach') && pick === 'bank hops')) throw new Error(`${S.id} n${i + 1} drew ${pick}, not in its deck`);
         const bx = c.x;
         // (a floor idea outside a fork and the rest carries a canopy)
         const over = FLOOR.includes(pick) && n.job !== 'rest' && !bare && !n.ground;
