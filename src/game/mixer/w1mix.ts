@@ -15,6 +15,7 @@
  */
 import type { Collectible, LevelConfig, Platform, Vine } from '../types.ts';
 import { IDEAS } from './library.ts';
+import { w1DressFacing, w1DressWidth } from '../w1NewArt.ts';
 import type { StageSpec } from './spec.ts';
 import { SPEC_11, SPEC_15 } from './stages.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
@@ -849,6 +850,32 @@ export function buildMix11(config: LevelConfig, seed: number, easy: boolean): Ge
   return buildMix(config, seed, easy, mixOf(SPEC_11));
 }
 
+/** Pokey's body width (engine.ts: the hero is 44 px wide): no dressing stands within one body width of his spawn */
+const BODY_W = 44;
+/**
+ * The start's dressing, from the stage's brief (1-1: "the squirrels came to watch him leave"): the first stands behind his spawn at the
+ * forest's edge where there is room; the rest (all of them, where there is none) stand a few steps apart ahead along the start bank,
+ * turned to face him as he sets off. None stands within one body
+ * width of his spawn or off the bank. Asserted: a layout that breaks either throws, in every build.
+ */
+function startDress(names: string[], spawnX: number, bank: Platform): Array<{ n: string; x: number; b: number; flip?: boolean }> {
+  const clear0 = spawnX - BODY_W, clear1 = spawnX + BODY_W + BODY_W;
+  const out: Array<{ n: string; x: number; b: number; flip?: boolean }> = [];
+  let ahead = clear1 + 16;
+  names.forEach((n, k) => {
+    const w = w1DressWidth(n) || 60;
+    // (behind him only where it fits between the bank's end and the clear zone: at 1-1's spawn (x 100) a squirrel is 53 px and the gap 52)
+    if (k === 0 && clear0 - 8 - bank.x >= w + 4) out.push({ n, x: Math.round(clear0 - 8 - w / 2), b: bank.y });
+    else { out.push({ n, x: Math.round(ahead + w / 2), b: bank.y, ...(w1DressFacing(n) === 'right' ? { flip: true } : {}) }); ahead += w + 34; }
+  });
+  for (const d of out) {
+    const w = w1DressWidth(d.n) || 60, x0 = d.x - w / 2, x1 = d.x + w / 2;
+    if (x1 > clear0 && x0 < clear1) throw new Error(`start dressing ${d.n} at x ${d.x} stands within one body width of the spawn (${clear0}-${clear1})`);
+    if (x0 < bank.x || x1 > bank.x + bank.width) throw new Error(`start dressing ${d.n} at x ${d.x} stands off the start bank`);
+  }
+  return out;
+}
+
 /** a stage from its node plan */
 function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec): GeneratedStage & { proto: ProtoExtras } {
   const PLAN = S.plan;
@@ -1143,7 +1170,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
     meta: { attempt: seed, chunks: L.explain.map((e) => e.idea), width, pieces: L.explain.map((e) => ({ k: `${S.id} ${e.idea}`, x0: e.x0, x1: e.x1 })), mix: { explain: L.explain } },
     proto: { hints: L.hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, ownPetals: true, glints: L.glints, trunks, leaves,
       // (the dressing the stage asks for, by the w1-new atlas's frame names; drawn once engine-render wires that atlas: nothing draws it yet)
-      ...(S.dress ? { mixDress: [...(S.dress.start ?? []).map((n, k) => ({ n, x: 180 + k * 110, b: S.startY })), ...(S.dress.clue ? [{ n: S.dress.clue, x: end.x + end.width - 140, b: end.y }] : [])] } : {}) },
+      ...(S.dress ? { mixDress: [...startDress(S.dress.start ?? [], 100, start), ...(S.dress.clue ? [{ n: S.dress.clue, x: end.x + end.width - 140, b: end.y }] : [])] } : {}) },
   } as unknown as GeneratedStage & { proto: ProtoExtras };
   // (petals the shared judge can't reach come off: a petal over a gap between the canopy and the floor below it marks no jump anyone
   // makes. The level check names each one; only petals are taken off, never a mark, a heart or the exit)

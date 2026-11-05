@@ -20,6 +20,9 @@
    ],
    "first": "4-7",
    "stageCount": 1,
+   "stageList": [
+    "4-7"
+   ],
    "at": ""
   },
   {
@@ -40,6 +43,9 @@
    ],
    "first": "4-7",
    "stageCount": 1,
+   "stageList": [
+    "4-7"
+   ],
    "at": ""
   },
   {
@@ -60,6 +66,9 @@
    ],
    "first": "4-7",
    "stageCount": 1,
+   "stageList": [
+    "4-7"
+   ],
    "at": ""
   },
   {
@@ -80,6 +89,9 @@
    ],
    "first": "4-7",
    "stageCount": 1,
+   "stageList": [
+    "4-7"
+   ],
    "at": ""
   },
   {
@@ -100,6 +112,9 @@
    ],
    "first": "4-7",
    "stageCount": 1,
+   "stageList": [
+    "4-7"
+   ],
    "at": "W4 src/game/protoStage.ts:5762"
   },
   {
@@ -120,6 +135,31 @@
    ],
    "first": "1-9",
    "stageCount": 23,
+   "stageList": [
+    "1-9",
+    "5-6",
+    "5-8",
+    "7-2",
+    "7-3",
+    "7-6",
+    "7-9",
+    "8-3",
+    "8-6",
+    "8-9",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
    "at": "W1 src/game/protoStage.ts:2397, W5 src/game/stageGenerator.ts:559, W7 src/game/stageGenerator.ts:559, W8 src/game/gen2/pipeline.ts:1336, W9 src/game/stageGenerator.ts:559, W10 src/game/stageGenerator.ts:559"
   },
   {
@@ -140,6 +180,25 @@
    ],
    "first": "6-4",
    "stageCount": 17,
+   "stageList": [
+    "6-4",
+    "6-5",
+    "6-9",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
    "at": "W6 src/game/gen2/pipeline.ts:1336, W9 src/game/stageGenerator.ts:565, W10 src/game/stageGenerator.ts:565"
   },
   {
@@ -160,6 +219,31 @@
    ],
    "first": "5-6",
    "stageCount": 23,
+   "stageList": [
+    "5-6",
+    "5-8",
+    "7-2",
+    "7-8",
+    "8-7",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
    "at": "W5 src/game/stageGenerator.ts:658, W7 src/game/stageGenerator.ts:658, W8 src/game/stageGenerator.ts:658, W9 src/game/stageGenerator.ts:658, W10 src/game/stageGenerator.ts:658"
   },
   {
@@ -180,6 +264,23 @@
    ],
    "first": "6-1",
    "stageCount": 15,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-9",
+    "7-1",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W6 src/game/gen2/pipeline.ts:1336, W7 src/game/gen2/pipeline.ts:1336"
   },
   {
@@ -200,6 +301,28 @@
    ],
    "first": "7-8",
    "stageCount": 20,
+   "stageList": [
+    "7-8",
+    "8-7",
+    "8-8",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
    "at": "W7 src/game/stageGenerator.ts:585, W8 src/game/stageGenerator.ts:585, W9 src/game/stageGenerator.ts:585, W10 src/game/stageGenerator.ts:585"
   },
   {
@@ -220,6 +343,28 @@
    ],
    "first": "3-3",
    "stageCount": 20,
+   "stageList": [
+    "3-3",
+    "3-9",
+    "7-8",
+    "8-7",
+    "8-9",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
    "at": "W3 src/game/protoStage.ts:2968, W7 src/game/stageGenerator.ts:552, W8 src/game/stageGenerator.ts:552, W9 src/game/stageGenerator.ts:552, W10 src/game/stageGenerator.ts:552"
   },
   {
@@ -240,6 +385,38 @@
    ],
    "first": "3-3",
    "stageCount": 30,
+   "stageList": [
+    "3-3",
+    "3-9",
+    "5-6",
+    "5-8",
+    "6-3",
+    "6-5",
+    "6-9",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "8-2",
+    "8-3",
+    "8-7",
+    "8-8",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-5",
+    "10-7",
+    "10-9"
+   ],
    "at": "W3 src/game/protoStage.ts:2968, W5 src/game/stageGenerator.ts:546, W6 src/game/gen2/pipeline.ts:1336, W7 src/game/stageGenerator.ts:546, W8 src/game/gen2/pipeline.ts:1336, W9 src/game/stageGenerator.ts:546, W10 src/game/stageGenerator.ts:546"
   },
   {
@@ -260,6 +437,41 @@
    ],
    "first": "1-3",
    "stageCount": 33,
+   "stageList": [
+    "1-3",
+    "1-4",
+    "1-6",
+    "1-8",
+    "1-9",
+    "2-2",
+    "2-6",
+    "2-7",
+    "2-8",
+    "4-6",
+    "5-6",
+    "5-8",
+    "7-2",
+    "7-8",
+    "8-7",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
    "at": "W1 src/game/protoStage.ts:635, W2 src/game/w2Stages.ts:172, W4 src/game/protoStage.ts:5756, W5 src/game/stageGenerator.ts:540, W7 src/game/stageGenerator.ts:540, W8 src/game/stageGenerator.ts:540, W9 src/game/stageGenerator.ts:540, W10 src/game/stageGenerator.ts:540"
   },
   {
@@ -280,6 +492,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/w5Stages.ts:329"
   },
   {
@@ -300,6 +521,43 @@
    ],
    "first": "5-6",
    "stageCount": 35,
+   "stageList": [
+    "5-6",
+    "5-8",
+    "6-3",
+    "6-5",
+    "6-7",
+    "6-8",
+    "6-9",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "8-5",
+    "8-7",
+    "8-8",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
    "at": "W5 src/game/stageGenerator.ts:571, W6 src/game/gen2/pipeline.ts:1336, W7 src/game/stageGenerator.ts:571, W8 src/game/gen2/pipeline.ts:1336, W9 src/game/stageGenerator.ts:571, W10 src/game/stageGenerator.ts:571"
   },
   {
@@ -320,6 +578,10 @@
    ],
    "first": "2-5",
    "stageCount": 2,
+   "stageList": [
+    "2-5",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:198"
   },
   {
@@ -340,6 +602,14 @@
    ],
    "first": "1-3",
    "stageCount": 6,
+   "stageList": [
+    "1-3",
+    "1-7",
+    "1-9",
+    "9-1",
+    "9-5",
+    "10-1"
+   ],
    "at": ""
   },
   {
@@ -360,6 +630,15 @@
    ],
    "first": "1-4",
    "stageCount": 7,
+   "stageList": [
+    "1-4",
+    "2-6",
+    "3-4",
+    "4-1",
+    "4-6",
+    "8-2",
+    "9-8"
+   ],
    "at": ""
   },
   {
@@ -380,6 +659,64 @@
    ],
    "first": "1-2",
    "stageCount": 56,
+   "stageList": [
+    "1-2",
+    "1-4",
+    "1-6",
+    "1-8",
+    "1-10",
+    "2-4",
+    "2-7",
+    "2-10",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-8",
+    "3-9",
+    "3-10",
+    "4-4",
+    "4-5",
+    "4-10",
+    "5-6",
+    "5-8",
+    "5-10",
+    "6-1",
+    "6-3",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-10",
+    "7-2",
+    "7-5",
+    "7-8",
+    "7-9",
+    "7-10",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-7",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
    "at": "W1 src/game/w1Rhythm.ts:1213, W2 src/game/w2Stages.ts:568, W3 src/game/protoStage.ts:615, W4 src/game/protoStage.ts:615, W5 src/game/stageForks.ts:88, W6 src/game/gen2/pipeline.ts:925, W7 src/game/stageGenerator.ts:2509, W8 src/game/gen2/pipeline.ts:925, W9 src/game/stageGenerator.ts:899, W10 src/game/stageForks.ts:88"
   },
   {
@@ -400,6 +737,10 @@
    ],
    "first": "5-4",
    "stageCount": 2,
+   "stageList": [
+    "5-4",
+    "5-5"
+   ],
    "at": "W5 src/game/w5Stage54.ts:179"
   },
   {
@@ -420,6 +761,79 @@
    ],
    "first": "1-1",
    "stageCount": 71,
+   "stageList": [
+    "1-1",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-10",
+    "2-2",
+    "2-3",
+    "2-6",
+    "2-10",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-9",
+    "3-10",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-5",
+    "4-6",
+    "4-8",
+    "4-9",
+    "4-10",
+    "5-M",
+    "5-6",
+    "5-8",
+    "5-10",
+    "6-1",
+    "6-3",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-10",
+    "7-1",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-7",
+    "7-8",
+    "7-9",
+    "7-10",
+    "8-1",
+    "8-5",
+    "8-7",
+    "8-8",
+    "8-9",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "9-10",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:727, W2 src/game/w2Stages.ts:506, W3 src/game/protoStage.ts:620, W4 src/game/protoStage.ts:5737, W5 src/game/meecaStage.ts:222, W6 src/game/gen2/pipeline.ts:925, W7 src/game/gen2/pipeline.ts:925, W8 src/game/gen2/pipeline.ts:925, W9 src/game/stageForks.ts:206, W10 src/game/stageForks.ts:206"
   },
   {
@@ -440,6 +854,9 @@
    ],
    "first": "5-M",
    "stageCount": 1,
+   "stageList": [
+    "5-M"
+   ],
    "at": "W5 src/game/meecaStage.ts:189"
   },
   {
@@ -460,6 +877,10 @@
    ],
    "first": "5-M",
    "stageCount": 2,
+   "stageList": [
+    "5-M",
+    "8-1"
+   ],
    "at": ""
   },
   {
@@ -480,6 +901,11 @@
    ],
    "first": "4-8",
    "stageCount": 3,
+   "stageList": [
+    "4-8",
+    "4-9",
+    "8-4"
+   ],
    "at": "W4 src/game/protoStage.ts:5189, W8 src/game/w8Lantern.ts:185"
   },
   {
@@ -500,6 +926,17 @@
    ],
    "first": "1-1",
    "stageCount": 9,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9",
+    "3-1",
+    "4-5",
+    "7-7"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:167, W3 src/game/protoStage.ts:1302, W4 src/game/protoStage.ts:1302, W7 src/game/stageGenerator.ts:2971"
   },
   {
@@ -520,6 +957,15 @@
    ],
    "first": "5-8",
    "stageCount": 7,
+   "stageList": [
+    "5-8",
+    "7-8",
+    "8-7",
+    "9-4",
+    "9-7",
+    "9-8",
+    "9-9"
+   ],
    "at": "W5 src/game/stageGenerator.ts:379, W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379"
   },
   {
@@ -540,6 +986,13 @@
    ],
    "first": "5-8",
    "stageCount": 5,
+   "stageList": [
+    "5-8",
+    "8-7",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
    "at": "W5 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -560,6 +1013,17 @@
    ],
    "first": "7-2",
    "stageCount": 9,
+   "stageList": [
+    "7-2",
+    "9-2",
+    "9-4",
+    "9-7",
+    "9-8",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
    "at": "W7 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -580,6 +1044,23 @@
    ],
    "first": "5-8",
    "stageCount": 15,
+   "stageList": [
+    "5-8",
+    "7-2",
+    "7-8",
+    "8-7",
+    "8-9",
+    "9-2",
+    "9-4",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
    "at": "W5 src/game/stageGenerator.ts:379, W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -600,6 +1081,19 @@
    ],
    "first": "7-2",
    "stageCount": 11,
+   "stageList": [
+    "7-2",
+    "7-8",
+    "8-7",
+    "9-2",
+    "9-5",
+    "9-7",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
    "at": "W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -620,6 +1114,15 @@
    ],
    "first": "2-1",
    "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:355"
   },
   {
@@ -640,6 +1143,14 @@
    ],
    "first": "7-2",
    "stageCount": 6,
+   "stageList": [
+    "7-2",
+    "8-7",
+    "9-3",
+    "9-7",
+    "10-1",
+    "10-3"
+   ],
    "at": "W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -660,6 +1171,10 @@
    ],
    "first": "1-2",
    "stageCount": 2,
+   "stageList": [
+    "1-2",
+    "1-4"
+   ],
    "at": "W1 src/game/w1Rhythm.ts:1192"
   },
   {
@@ -680,6 +1195,9 @@
    ],
    "first": "1-6",
    "stageCount": 1,
+   "stageList": [
+    "1-6"
+   ],
    "at": "W1 src/game/w1Rhythm.ts:1192"
   },
   {
@@ -700,6 +1218,9 @@
    ],
    "first": "1-5",
    "stageCount": 1,
+   "stageList": [
+    "1-5"
+   ],
    "at": "W1 src/game/w1Rhythm.ts:1192"
   },
   {
@@ -720,6 +1241,13 @@
    ],
    "first": "5-8",
    "stageCount": 5,
+   "stageList": [
+    "5-8",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
    "at": "W5 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -740,6 +1268,18 @@
    ],
    "first": "5-8",
    "stageCount": 10,
+   "stageList": [
+    "5-8",
+    "7-8",
+    "8-7",
+    "9-2",
+    "9-5",
+    "9-7",
+    "10-1",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
    "at": "W5 src/game/stageGenerator.ts:379, W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -760,6 +1300,17 @@
    ],
    "first": "5-8",
    "stageCount": 9,
+   "stageList": [
+    "5-8",
+    "7-8",
+    "8-7",
+    "9-2",
+    "9-7",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
    "at": "W5 src/game/stageGenerator.ts:379, W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -780,6 +1331,17 @@
    ],
    "first": "7-8",
    "stageCount": 9,
+   "stageList": [
+    "7-8",
+    "9-2",
+    "9-6",
+    "9-7",
+    "10-1",
+    "10-2",
+    "10-4",
+    "10-5",
+    "10-8"
+   ],
    "at": "W7 src/game/gen2/pipeline.ts:728, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -800,6 +1362,11 @@
    ],
    "first": "7-1",
    "stageCount": 3,
+   "stageList": [
+    "7-1",
+    "7-5",
+    "7-6"
+   ],
    "at": "W7 src/game/gen2/pipeline.ts:728"
   },
   {
@@ -820,6 +1387,9 @@
    ],
    "first": "1-5",
    "stageCount": 1,
+   "stageList": [
+    "1-5"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:167"
   },
   {
@@ -840,6 +1410,9 @@
    ],
    "first": "2-7",
    "stageCount": 1,
+   "stageList": [
+    "2-7"
+   ],
    "at": "W2 src/game/w2Stages.ts:689"
   },
   {
@@ -860,6 +1433,10 @@
    ],
    "first": "2-10",
    "stageCount": 2,
+   "stageList": [
+    "2-10",
+    "8-10"
+   ],
    "at": "W2 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379"
   },
   {
@@ -880,6 +1457,11 @@
    ],
    "first": "5-10",
    "stageCount": 3,
+   "stageList": [
+    "5-10",
+    "6-10",
+    "9-10"
+   ],
    "at": "W5 src/game/stageGenerator.ts:379, W6 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379"
   },
   {
@@ -900,6 +1482,11 @@
    ],
    "first": "9-5",
    "stageCount": 3,
+   "stageList": [
+    "9-5",
+    "10-1",
+    "10-3"
+   ],
    "at": "W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -920,6 +1507,11 @@
    ],
    "first": "7-10",
    "stageCount": 3,
+   "stageList": [
+    "7-10",
+    "10-1",
+    "10-10"
+   ],
    "at": "W7 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -940,6 +1532,9 @@
    ],
    "first": "1-9",
    "stageCount": 1,
+   "stageList": [
+    "1-9"
+   ],
    "at": "W1 src/game/protoStage.ts:2423"
   },
   {
@@ -960,6 +1555,28 @@
    ],
    "first": "1-4",
    "stageCount": 20,
+   "stageList": [
+    "1-4",
+    "1-6",
+    "2-3",
+    "2-8",
+    "2-9",
+    "3-2",
+    "4-1",
+    "4-6",
+    "4-8",
+    "5-M",
+    "5-9",
+    "6-3",
+    "6-6",
+    "6-7",
+    "7-3",
+    "7-7",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-5"
+   ],
    "at": "W1 src/game/puzzleKit.ts:344, W2 src/game/puzzleKit.ts:344, W3 src/game/puzzleKit.ts:337, W4 src/game/puzzleKit.ts:344, W5 src/game/puzzleKit.ts:327, W6 src/game/puzzleKit.ts:333, W7 src/game/puzzleKit.ts:340, W8 src/game/puzzleKit.ts:340"
   },
   {
@@ -980,6 +1597,10 @@
    ],
    "first": "2-7",
    "stageCount": 2,
+   "stageList": [
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:644"
   },
   {
@@ -1000,6 +1621,9 @@
    ],
    "first": "1-8",
    "stageCount": 1,
+   "stageList": [
+    "1-8"
+   ],
    "at": "W1 src/game/flowerReach.ts:65"
   },
   {
@@ -1020,6 +1644,9 @@
    ],
    "first": "1-8",
    "stageCount": 1,
+   "stageList": [
+    "1-8"
+   ],
    "at": "W1 src/game/flowerReach.ts:65"
   },
   {
@@ -1040,6 +1667,9 @@
    ],
    "first": "1-8",
    "stageCount": 1,
+   "stageList": [
+    "1-8"
+   ],
    "at": "W1 src/game/flowerReach.ts:65"
   },
   {
@@ -1060,6 +1690,11 @@
    ],
    "first": "2-1",
    "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-3",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:466"
   },
   {
@@ -1080,6 +1715,66 @@
    ],
    "first": "1-2",
    "stageCount": 58,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-6",
+    "1-7",
+    "1-9",
+    "1-10",
+    "2-2",
+    "2-3",
+    "2-6",
+    "2-10",
+    "3-1",
+    "3-3",
+    "3-4",
+    "3-9",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-7",
+    "4-8",
+    "4-9",
+    "5-M",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "6-7",
+    "6-10",
+    "7-2",
+    "7-7",
+    "7-8",
+    "8-2",
+    "8-3",
+    "8-5",
+    "8-7",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:1038, W2 src/game/w2Stages.ts:517, W3 src/game/protoStage.ts:553, W4 src/game/protoStage.ts:5732, W5 src/game/meecaStage.ts:217, W6 src/game/gen2/pipeline.ts:728, W7 src/game/stageGenerator.ts:379, W8 src/game/gen2/pipeline.ts:728, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -1100,6 +1795,9 @@
    ],
    "first": "4-1",
    "stageCount": 1,
+   "stageList": [
+    "4-1"
+   ],
    "at": ""
   },
   {
@@ -1120,6 +1818,11 @@
    ],
    "first": "5-3",
    "stageCount": 3,
+   "stageList": [
+    "5-3",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/w5Stages.ts:660"
   },
   {
@@ -1140,6 +1843,9 @@
    ],
    "first": "2-6",
    "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
    "at": ""
   },
   {
@@ -1160,6 +1866,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": ""
   },
   {
@@ -1180,6 +1889,9 @@
    ],
    "first": "1-2",
    "stageCount": 1,
+   "stageList": [
+    "1-2"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:1038"
   },
   {
@@ -1200,6 +1912,10 @@
    ],
    "first": "1-1",
    "stageCount": 2,
+   "stageList": [
+    "1-1",
+    "1-5"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:1038"
   },
   {
@@ -1220,6 +1936,9 @@
    ],
    "first": "4-6",
    "stageCount": 1,
+   "stageList": [
+    "4-6"
+   ],
    "at": "W4 src/game/protoStage.ts:5732"
   },
   {
@@ -1240,6 +1959,9 @@
    ],
    "first": "4-10",
    "stageCount": 1,
+   "stageList": [
+    "4-10"
+   ],
    "at": "W4 src/game/protoStage.ts:5732"
   },
   {
@@ -1260,6 +1982,12 @@
    ],
    "first": "1-1",
    "stageCount": 4,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:1038"
   },
   {
@@ -1280,6 +2008,29 @@
    ],
    "first": "1-2",
    "stageCount": 21,
+   "stageList": [
+    "1-2",
+    "5-6",
+    "5-8",
+    "8-7",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:167, W5 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -1300,6 +2051,9 @@
    ],
    "first": "1-2",
    "stageCount": 1,
+   "stageList": [
+    "1-2"
+   ],
    "at": ""
   },
   {
@@ -1320,6 +2074,9 @@
    ],
    "first": "1-2",
    "stageCount": 1,
+   "stageList": [
+    "1-2"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:167"
   },
   {
@@ -1340,6 +2097,10 @@
    ],
    "first": "1-1",
    "stageCount": 2,
+   "stageList": [
+    "1-1",
+    "1-5"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:167"
   },
   {
@@ -1360,6 +2121,11 @@
    ],
    "first": "8-2",
    "stageCount": 3,
+   "stageList": [
+    "8-2",
+    "8-3",
+    "8-5"
+   ],
    "at": "W8 src/game/gen2/pipeline.ts:728"
   },
   {
@@ -1380,6 +2146,98 @@
    ],
    "first": "1-2",
    "stageCount": 90,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-6",
+    "1-7",
+    "1-9",
+    "1-10",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9",
+    "2-10",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "3-10",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-8",
+    "4-9",
+    "4-10",
+    "5-M",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "5-10",
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-9",
+    "6-10",
+    "7-2",
+    "7-8",
+    "7-10",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-7",
+    "8-8",
+    "8-9",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "9-10",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:167, W2 src/game/w2Stages.ts:140, W3 src/game/protoStage.ts:548, W4 src/game/protoStage.ts:5765, W5 src/game/meecaStage.ts:240, W6 src/game/gen2/pipeline.ts:728, W7 src/game/stageGenerator.ts:379, W8 src/game/gen2/pipeline.ts:728, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -1400,6 +2258,9 @@
    ],
    "first": "4-3",
    "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
    "at": "W4 src/game/w4Stage43.ts:323"
   },
   {
@@ -1420,6 +2281,11 @@
    ],
    "first": "2-1",
    "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:608"
   },
   {
@@ -1440,6 +2306,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": ""
   },
   {
@@ -1460,6 +2329,13 @@
    ],
    "first": "1-1",
    "stageCount": 5,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-9"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:167"
   },
   {
@@ -1480,6 +2356,9 @@
    ],
    "first": "1-6",
    "stageCount": 1,
+   "stageList": [
+    "1-6"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:167"
   },
   {
@@ -1500,6 +2379,84 @@
    ],
    "first": "1-2",
    "stageCount": 76,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-9",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-8",
+    "2-9",
+    "2-10",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "3-10",
+    "4-2",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-10",
+    "5-M",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "5-10",
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9",
+    "7-1",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "8-7",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "9-10",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:167, W2 src/game/w2Stages.ts:857, W3 src/game/protoStage.ts:610, W4 src/game/protoStage.ts:563, W5 src/game/meecaStage.ts:182, W6 src/game/gen2/pipeline.ts:728, W7 src/game/gen2/pipeline.ts:728, W8 src/game/gen2/pipeline.ts:728, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -1520,6 +2477,9 @@
    ],
    "first": "4-3",
    "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
    "at": "W4 src/game/w4Stage43.ts:347"
   },
   {
@@ -1540,6 +2500,14 @@
    ],
    "first": "1-2",
    "stageCount": 6,
+   "stageList": [
+    "1-2",
+    "4-2",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W1 src/game/w1Rhythm.ts:1180, W4 src/game/w4Stage49.ts:197"
   },
   {
@@ -1560,6 +2528,9 @@
    ],
    "first": "4-10",
    "stageCount": 1,
+   "stageList": [
+    "4-10"
+   ],
    "at": "W4 src/game/protoStage.ts:563"
   },
   {
@@ -1580,6 +2551,11 @@
    ],
    "first": "1-1",
    "stageCount": 3,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-5"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:167"
   },
   {
@@ -1600,6 +2576,10 @@
    ],
    "first": "4-8",
    "stageCount": 2,
+   "stageList": [
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/protoStage.ts:563"
   },
   {
@@ -1620,6 +2600,29 @@
    ],
    "first": "1-3",
    "stageCount": 21,
+   "stageList": [
+    "1-3",
+    "1-6",
+    "1-7",
+    "1-9",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "4-2",
+    "4-4",
+    "4-5",
+    "4-8",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:167, W3 src/game/protoStage.ts:610, W4 src/game/protoStage.ts:563, W5 src/game/meecaStage.ts:182"
   },
   {
@@ -1640,6 +2643,9 @@
    ],
    "first": "8-1",
    "stageCount": 1,
+   "stageList": [
+    "8-1"
+   ],
    "at": "W8 src/game/gen2/pipeline.ts:728"
   },
   {
@@ -1660,6 +2666,32 @@
    ],
    "first": "5-6",
    "stageCount": 24,
+   "stageList": [
+    "5-6",
+    "7-2",
+    "7-4",
+    "7-8",
+    "8-7",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
    "at": "W5 src/game/stageGenerator.ts:379, W7 src/game/stageGenerator.ts:379, W8 src/game/stageGenerator.ts:379, W9 src/game/stageGenerator.ts:379, W10 src/game/stageGenerator.ts:379"
   },
   {
@@ -1680,6 +2712,9 @@
    ],
    "first": "7-4",
    "stageCount": 1,
+   "stageList": [
+    "7-4"
+   ],
    "at": ""
   },
   {
@@ -1700,6 +2735,9 @@
    ],
    "first": "1-9",
    "stageCount": 1,
+   "stageList": [
+    "1-9"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:878"
   },
   {
@@ -1720,6 +2758,9 @@
    ],
    "first": "4-3",
    "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
    "at": ""
   },
   {
@@ -1740,6 +2781,9 @@
    ],
    "first": "4-3",
    "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
    "at": ""
   },
   {
@@ -1760,6 +2804,9 @@
    ],
    "first": "4-3",
    "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
    "at": ""
   },
   {
@@ -1780,6 +2827,9 @@
    ],
    "first": "4-3",
    "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
    "at": ""
   },
   {
@@ -1800,6 +2850,9 @@
    ],
    "first": "1-2",
    "stageCount": 1,
+   "stageList": [
+    "1-2"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:878"
   },
   {
@@ -1820,6 +2873,21 @@
    ],
    "first": "5-6",
    "stageCount": 13,
+   "stageList": [
+    "5-6",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
    "at": "W5 src/game/meecaStage.ts:202, W9 src/game/stageGenerator.ts:1631, W10 src/game/stageGenerator.ts:1631"
   },
   {
@@ -1840,6 +2908,9 @@
    ],
    "first": "7-4",
    "stageCount": 1,
+   "stageList": [
+    "7-4"
+   ],
    "at": "W7 src/game/gen2/pipeline.ts:595"
   },
   {
@@ -1860,6 +2931,10 @@
    ],
    "first": "4-1",
    "stageCount": 2,
+   "stageList": [
+    "4-1",
+    "4-6"
+   ],
    "at": "W4 src/game/protoStage.ts:5762"
   },
   {
@@ -1880,6 +2955,13 @@
    ],
    "first": "1-6",
    "stageCount": 5,
+   "stageList": [
+    "1-6",
+    "1-7",
+    "4-4",
+    "4-5",
+    "4-9"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:878, W4 src/game/protoStage.ts:5762"
   },
   {
@@ -1900,6 +2982,9 @@
    ],
    "first": "1-5",
    "stageCount": 1,
+   "stageList": [
+    "1-5"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:878"
   },
   {
@@ -1920,6 +3005,12 @@
    ],
    "first": "1-4",
    "stageCount": 4,
+   "stageList": [
+    "1-4",
+    "3-4",
+    "4-1",
+    "4-6"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:878, W3 src/game/protoStage.ts:646, W4 src/game/protoStage.ts:5762"
   },
   {
@@ -1940,6 +3031,10 @@
    ],
    "first": "1-1",
    "stageCount": 2,
+   "stageList": [
+    "1-1",
+    "1-5"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:773"
   },
   {
@@ -1960,6 +3055,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:748"
   },
   {
@@ -1980,6 +3078,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:748"
   },
   {
@@ -2000,6 +3101,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:748"
   },
   {
@@ -2020,6 +3124,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:748"
   },
   {
@@ -2040,6 +3147,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:748"
   },
   {
@@ -2060,6 +3170,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:748"
   },
   {
@@ -2080,6 +3193,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:763"
   },
   {
@@ -2100,6 +3216,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:748"
   },
   {
@@ -2120,6 +3239,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:748"
   },
   {
@@ -2140,6 +3262,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:748"
   },
   {
@@ -2160,6 +3285,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:748"
   },
   {
@@ -2180,6 +3308,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:705"
   },
   {
@@ -2200,6 +3331,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:705"
   },
   {
@@ -2220,6 +3354,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:656"
   },
   {
@@ -2240,6 +3377,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:723"
   },
   {
@@ -2260,6 +3400,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:723"
   },
   {
@@ -2280,6 +3423,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/w6Stages.ts:723"
   },
   {
@@ -2300,6 +3446,13 @@
    ],
    "first": "3-4",
    "stageCount": 5,
+   "stageList": [
+    "3-4",
+    "3-5",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:646"
   },
   {
@@ -2320,6 +3473,11 @@
    ],
    "first": "1-1",
    "stageCount": 3,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-5"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:878"
   },
   {
@@ -2340,6 +3498,16 @@
    ],
    "first": "2-1",
    "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:224"
   },
   {
@@ -2360,6 +3528,65 @@
    ],
    "first": "1-4",
    "stageCount": 57,
+   "stageList": [
+    "1-4",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-10",
+    "2-2",
+    "2-3",
+    "2-6",
+    "2-10",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-9",
+    "3-10",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-5",
+    "4-6",
+    "4-8",
+    "4-9",
+    "4-10",
+    "5-M",
+    "5-6",
+    "5-8",
+    "5-10",
+    "6-8",
+    "6-10",
+    "7-2",
+    "7-8",
+    "7-10",
+    "8-4",
+    "8-7",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "9-10",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9",
+    "10-10"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:878, W2 src/game/w2Stages.ts:224, W3 src/game/protoStage.ts:646, W4 src/game/protoStage.ts:5762, W5 src/game/meecaStage.ts:202, W6 src/game/gen2/pipeline.ts:595, W7 src/game/gen2/pipeline.ts:595, W8 src/game/gen2/pipeline.ts:595, W9 src/game/stageGenerator.ts:1631, W10 src/game/stageGenerator.ts:1631"
   },
   {
@@ -2380,6 +3607,11 @@
    ],
    "first": "2-3",
    "stageCount": 3,
+   "stageList": [
+    "2-3",
+    "2-8",
+    "4-8"
+   ],
    "at": "W2 src/game/w2Stages.ts:985, W4 src/game/protoStage.ts:5181"
   },
   {
@@ -2400,6 +3632,98 @@
    ],
    "first": "1-1",
    "stageCount": 90,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-9",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-7",
+    "4-8",
+    "4-9",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-9",
+    "7-1",
+    "7-2",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-7",
+    "8-8",
+    "8-9",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:1068, W2 src/game/w2Stages.ts:1151, W3 src/game/protoStage.ts:5601, W4 src/game/protoStage.ts:7089, W5 src/game/w5Stages.ts:1461, W6 src/game/gen2/pipeline.ts:1691, W7 src/game/gen2/pipeline.ts:1691, W8 src/game/gen2/pipeline.ts:1691, W9 src/game/stageGenerator.ts:475, W10 src/game/stageGenerator.ts:475"
   },
   {
@@ -2420,6 +3744,55 @@
    ],
    "first": "1-2",
    "stageCount": 47,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-8",
+    "2-2",
+    "2-3",
+    "2-5",
+    "2-8",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-8",
+    "4-2",
+    "4-3",
+    "4-6",
+    "4-8",
+    "4-9",
+    "5-2",
+    "5-5",
+    "5-6",
+    "5-8",
+    "5-9",
+    "6-2",
+    "6-3",
+    "6-5",
+    "6-6",
+    "6-8",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-8",
+    "8-2",
+    "8-3",
+    "8-5",
+    "8-6",
+    "8-8",
+    "9-2",
+    "9-3",
+    "9-5",
+    "9-6",
+    "9-8",
+    "10-2",
+    "10-3",
+    "10-5",
+    "10-8"
+   ],
    "at": "W1 src/game/w1Rhythm.ts:1233, W2 src/game/w2Sections.ts:548, W3 src/game/protoStage.ts:5565, W4 src/game/stageGenerator.ts:3048, W5 src/game/w5Stages.ts:983, W6 src/game/stageGenerator.ts:3048, W7 src/game/stageGenerator.ts:3048, W8 src/game/stageGenerator.ts:3048, W9 src/game/stageGenerator.ts:3048, W10 src/game/stageGenerator.ts:3048"
   },
   {
@@ -2440,6 +3813,98 @@
    ],
    "first": "1-1",
    "stageCount": 90,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-9",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-7",
+    "4-8",
+    "4-9",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-9",
+    "7-1",
+    "7-2",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-7",
+    "8-8",
+    "8-9",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:238, W2 src/game/w2Stages.ts:144, W3 src/game/protoStage.ts:624, W4 src/game/protoStage.ts:5751, W5 src/game/w5Stages.ts:252, W6 src/game/gen2/pipeline.ts:1208, W7 src/game/gen2/pipeline.ts:1208, W8 src/game/gen2/pipeline.ts:1208, W9 src/game/stageGenerator.ts:432, W10 src/game/stageGenerator.ts:432"
   },
   {
@@ -2460,6 +3925,103 @@
    ],
    "first": "1-2",
    "stageCount": 95,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9",
+    "1-10",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9",
+    "2-10",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "3-10",
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-7",
+    "4-8",
+    "4-9",
+    "4-10",
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "5-10",
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-9",
+    "6-10",
+    "7-1",
+    "7-2",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-8",
+    "7-9",
+    "7-10",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-8",
+    "8-9",
+    "8-10",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "9-10",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-9",
+    "10-10"
+   ],
    "at": "W1 src/game/protoStage.ts:242, W2 src/game/w2Stages.ts:163, W3 src/game/protoStage.ts:242, W4 src/game/protoStage.ts:242, W5 src/game/protoStage.ts:242, W6 src/game/easyMode.ts:234, W7 src/game/easyMode.ts:234, W8 src/game/easyMode.ts:234, W9 src/game/stageGenerator.ts:475, W10 src/game/stageGenerator.ts:475"
   },
   {
@@ -2480,6 +4042,20 @@
    ],
    "first": "9-1",
    "stageCount": 12,
+   "stageList": [
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
    "at": "W9 src/game/stageGenerator.ts:475, W10 src/game/stageGenerator.ts:475"
   },
   {
@@ -2500,6 +4076,26 @@
    ],
    "first": "5-6",
    "stageCount": 18,
+   "stageList": [
+    "5-6",
+    "7-2",
+    "9-1",
+    "9-2",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-7",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-8",
+    "10-9"
+   ],
    "at": "W5 src/game/stageGenerator.ts:475, W7 src/game/stageGenerator.ts:475, W9 src/game/stageGenerator.ts:475, W10 src/game/stageGenerator.ts:475"
   },
   {
@@ -2520,6 +4116,16 @@
    ],
    "first": "5-6",
    "stageCount": 8,
+   "stageList": [
+    "5-6",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9"
+   ],
    "at": "W5 src/game/stageGenerator.ts:475, W9 src/game/stageGenerator.ts:475"
   },
   {
@@ -2540,6 +4146,15 @@
    ],
    "first": "1-5",
    "stageCount": 7,
+   "stageList": [
+    "1-5",
+    "3-6",
+    "3-7",
+    "5-6",
+    "7-3",
+    "7-7",
+    "9-8"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:1065, W3 src/game/protoStage.ts:3606, W5 src/game/stageGenerator.ts:475, W7 src/game/gen2/pipeline.ts:1352, W9 src/game/stageGenerator.ts:475"
   },
   {
@@ -2560,6 +4175,30 @@
    ],
    "first": "1-4",
    "stageCount": 22,
+   "stageList": [
+    "1-4",
+    "1-6",
+    "1-7",
+    "1-8",
+    "1-9",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9",
+    "3-4",
+    "4-1",
+    "4-2",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-8",
+    "4-9"
+   ],
    "at": "W1 src/game/protoStage.ts:5981, W2 src/game/w2Stages.ts:214, W3 src/game/w3Sections.ts:318, W4 src/game/protoStage.ts:5981"
   },
   {
@@ -2580,6 +4219,21 @@
    ],
    "first": "5-6",
    "stageCount": 13,
+   "stageList": [
+    "5-6",
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9",
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
    "at": "W5 src/game/stageGenerator.ts:475, W9 src/game/stageGenerator.ts:475, W10 src/game/stageGenerator.ts:475"
   },
   {
@@ -2600,6 +4254,9 @@
    ],
    "first": "7-7",
    "stageCount": 1,
+   "stageList": [
+    "7-7"
+   ],
    "at": "W7 src/game/stageGenerator.ts:2973"
   },
   {
@@ -2620,6 +4277,12 @@
    ],
    "first": "10-2",
    "stageCount": 4,
+   "stageList": [
+    "10-2",
+    "10-4",
+    "10-6",
+    "10-8"
+   ],
    "at": "W10 src/game/artDress.ts:301"
   },
   {
@@ -2640,6 +4303,15 @@
    ],
    "first": "10-1",
    "stageCount": 7,
+   "stageList": [
+    "10-1",
+    "10-2",
+    "10-3",
+    "10-4",
+    "10-6",
+    "10-7",
+    "10-8"
+   ],
    "at": "W10 src/game/artDress.ts:360"
   },
   {
@@ -2660,6 +4332,13 @@
    ],
    "first": "10-1",
    "stageCount": 5,
+   "stageList": [
+    "10-1",
+    "10-3",
+    "10-5",
+    "10-7",
+    "10-9"
+   ],
    "at": "W10 src/game/artDress.ts:301"
   },
   {
@@ -2680,6 +4359,14 @@
    ],
    "first": "10-1",
    "stageCount": 6,
+   "stageList": [
+    "10-1",
+    "10-3",
+    "10-5",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
    "at": "W10 src/game/artDress.ts:301"
   },
   {
@@ -2700,6 +4387,12 @@
    ],
    "first": "10-2",
    "stageCount": 4,
+   "stageList": [
+    "10-2",
+    "10-4",
+    "10-6",
+    "10-8"
+   ],
    "at": "W10 src/game/artDress.ts:301"
   },
   {
@@ -2720,6 +4413,13 @@
    ],
    "first": "10-1",
    "stageCount": 5,
+   "stageList": [
+    "10-1",
+    "10-3",
+    "10-5",
+    "10-7",
+    "10-9"
+   ],
    "at": "W10 src/game/artDress.ts:301"
   },
   {
@@ -2740,6 +4440,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -2760,6 +4463,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -2780,6 +4486,10 @@
    ],
    "first": "5-6",
    "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -2800,6 +4510,10 @@
    ],
    "first": "5-6",
    "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -2820,6 +4534,10 @@
    ],
    "first": "5-6",
    "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -2840,6 +4558,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -2860,6 +4581,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -2880,6 +4604,10 @@
    ],
    "first": "5-6",
    "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -2900,6 +4628,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -2920,6 +4651,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -2940,6 +4674,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -2960,6 +4697,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -2980,6 +4720,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -3000,6 +4743,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -3020,6 +4766,10 @@
    ],
    "first": "5-6",
    "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
    "at": "W5 src/game/artDress.ts:340"
   },
   {
@@ -3040,6 +4790,10 @@
    ],
    "first": "5-6",
    "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -3060,6 +4814,9 @@
    ],
    "first": "5-8",
    "stageCount": 1,
+   "stageList": [
+    "5-8"
+   ],
    "at": "W5 src/game/artDress.ts:340"
   },
   {
@@ -3080,6 +4837,9 @@
    ],
    "first": "5-8",
    "stageCount": 1,
+   "stageList": [
+    "5-8"
+   ],
    "at": "W5 src/game/artDress.ts:340"
   },
   {
@@ -3100,6 +4860,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -3120,6 +4883,10 @@
    ],
    "first": "5-6",
    "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
    "at": "W5 src/game/artDress.ts:340"
   },
   {
@@ -3140,6 +4907,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -3160,6 +4930,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -3180,6 +4953,10 @@
    ],
    "first": "5-6",
    "stageCount": 2,
+   "stageList": [
+    "5-6",
+    "5-8"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -3200,6 +4977,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -3220,6 +5000,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -3240,6 +5023,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -3260,6 +5046,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -3280,6 +5069,10 @@
    ],
    "first": "7-2",
    "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
    "at": "W7 src/game/artDress.ts:340"
   },
   {
@@ -3300,6 +5093,10 @@
    ],
    "first": "7-2",
    "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
    "at": "W7 src/game/artDress.ts:340"
   },
   {
@@ -3320,6 +5117,10 @@
    ],
    "first": "7-2",
    "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -3340,6 +5141,10 @@
    ],
    "first": "7-2",
    "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
    "at": "W7 src/game/artDress.ts:340"
   },
   {
@@ -3360,6 +5165,10 @@
    ],
    "first": "7-2",
    "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -3380,6 +5189,10 @@
    ],
    "first": "7-2",
    "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -3400,6 +5213,10 @@
    ],
    "first": "7-2",
    "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -3420,6 +5237,10 @@
    ],
    "first": "7-2",
    "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -3440,6 +5261,10 @@
    ],
    "first": "7-2",
    "stageCount": 2,
+   "stageList": [
+    "7-2",
+    "7-8"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -3460,6 +5285,9 @@
    ],
    "first": "8-7",
    "stageCount": 1,
+   "stageList": [
+    "8-7"
+   ],
    "at": "W8 src/game/artDress.ts:340"
   },
   {
@@ -3480,6 +5308,9 @@
    ],
    "first": "8-7",
    "stageCount": 1,
+   "stageList": [
+    "8-7"
+   ],
    "at": "W8 src/game/artDress.ts:301"
   },
   {
@@ -3500,6 +5331,9 @@
    ],
    "first": "8-7",
    "stageCount": 1,
+   "stageList": [
+    "8-7"
+   ],
    "at": "W8 src/game/artDress.ts:301"
   },
   {
@@ -3520,6 +5354,9 @@
    ],
    "first": "8-7",
    "stageCount": 1,
+   "stageList": [
+    "8-7"
+   ],
    "at": "W8 src/game/artDress.ts:301"
   },
   {
@@ -3540,6 +5377,13 @@
    ],
    "first": "9-1",
    "stageCount": 5,
+   "stageList": [
+    "9-1",
+    "9-3",
+    "9-5",
+    "9-7",
+    "9-9"
+   ],
    "at": "W9 src/game/artDress.ts:301"
   },
   {
@@ -3560,6 +5404,12 @@
    ],
    "first": "9-2",
    "stageCount": 4,
+   "stageList": [
+    "9-2",
+    "9-4",
+    "9-6",
+    "9-8"
+   ],
    "at": "W9 src/game/artDress.ts:301"
   },
   {
@@ -3580,6 +5430,11 @@
    ],
    "first": "9-3",
    "stageCount": 3,
+   "stageList": [
+    "9-3",
+    "9-5",
+    "9-9"
+   ],
    "at": "W9 src/game/artDress.ts:360"
   },
   {
@@ -3600,6 +5455,10 @@
    ],
    "first": "9-4",
    "stageCount": 2,
+   "stageList": [
+    "9-4",
+    "9-8"
+   ],
    "at": "W9 src/game/artDress.ts:360"
   },
   {
@@ -3620,6 +5479,13 @@
    ],
    "first": "9-1",
    "stageCount": 5,
+   "stageList": [
+    "9-1",
+    "9-3",
+    "9-5",
+    "9-7",
+    "9-9"
+   ],
    "at": "W9 src/game/artDress.ts:301"
   },
   {
@@ -3640,6 +5506,12 @@
    ],
    "first": "9-2",
    "stageCount": 4,
+   "stageList": [
+    "9-2",
+    "9-4",
+    "9-6",
+    "9-8"
+   ],
    "at": "W9 src/game/artDress.ts:301"
   },
   {
@@ -3660,6 +5532,11 @@
    ],
    "first": "9-3",
    "stageCount": 3,
+   "stageList": [
+    "9-3",
+    "9-5",
+    "9-9"
+   ],
    "at": "W9 src/game/artDress.ts:360"
   },
   {
@@ -3680,6 +5557,10 @@
    ],
    "first": "9-4",
    "stageCount": 2,
+   "stageList": [
+    "9-4",
+    "9-8"
+   ],
    "at": "W9 src/game/artDress.ts:360"
   },
   {
@@ -3700,6 +5581,13 @@
    ],
    "first": "9-1",
    "stageCount": 5,
+   "stageList": [
+    "9-1",
+    "9-3",
+    "9-5",
+    "9-7",
+    "9-9"
+   ],
    "at": "W9 src/game/artDress.ts:301"
   },
   {
@@ -3720,6 +5608,12 @@
    ],
    "first": "9-2",
    "stageCount": 4,
+   "stageList": [
+    "9-2",
+    "9-4",
+    "9-6",
+    "9-8"
+   ],
    "at": "W9 src/game/artDress.ts:301"
   },
   {
@@ -3740,6 +5634,10 @@
    ],
    "first": "1-7",
    "stageCount": 2,
+   "stageList": [
+    "1-7",
+    "4-5"
+   ],
    "at": "W1 src/game/protoStage.ts:2191, W4 src/game/protoStage.ts:2191"
   },
   {
@@ -3760,6 +5658,10 @@
    ],
    "first": "3-2",
    "stageCount": 2,
+   "stageList": [
+    "3-2",
+    "3-7"
+   ],
    "at": "W3 src/game/protoStage.ts:2191"
   },
   {
@@ -3780,6 +5682,14 @@
    ],
    "first": "1-7",
    "stageCount": 6,
+   "stageList": [
+    "1-7",
+    "4-5",
+    "6-2",
+    "6-3",
+    "6-7",
+    "8-2"
+   ],
    "at": "W1 src/game/protoStage.ts:2191, W4 src/game/protoStage.ts:2191, W6 src/game/gen2/worlds/w6.ts:293, W8 src/game/gen2/worlds/w8.ts:269"
   },
   {
@@ -3800,27 +5710,15 @@
    ],
    "first": "1-7",
    "stageCount": 6,
-   "at": "W1 src/game/protoStage.ts:2191, W4 src/game/protoStage.ts:2191, W6 src/game/gen2/worlds/w6.ts:293, W8 src/game/gen2/worlds/w8.ts:269"
-  },
-  {
-   "cat": "prop",
-   "arr": "proto.decor",
-   "key": "",
-   "perWorld": [
-    0,
-    6,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
+   "stageList": [
+    "1-7",
+    "4-5",
+    "6-2",
+    "6-3",
+    "6-7",
+    "8-2"
    ],
-   "first": "2-1",
-   "stageCount": 3,
-   "at": "W2 src/game/w2Stages.ts:224"
+   "at": "W1 src/game/protoStage.ts:2191, W4 src/game/protoStage.ts:2191, W6 src/game/gen2/worlds/w6.ts:293, W8 src/game/gen2/worlds/w8.ts:269"
   },
   {
    "cat": "prop",
@@ -3840,6 +5738,9 @@
    ],
    "first": "2-9",
    "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -3860,6 +5761,9 @@
    ],
    "first": "2-9",
    "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -3880,6 +5784,9 @@
    ],
    "first": "2-6",
    "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
    "at": "W2 src/game/protoStage.ts:6754"
   },
   {
@@ -3900,6 +5807,9 @@
    ],
    "first": "2-4",
    "stageCount": 1,
+   "stageList": [
+    "2-4"
+   ],
    "at": "W2 src/game/w2Stages.ts:585"
   },
   {
@@ -3920,6 +5830,10 @@
    ],
    "first": "2-1",
    "stageCount": 2,
+   "stageList": [
+    "2-1",
+    "2-7"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -3940,6 +5854,9 @@
    ],
    "first": "2-9",
    "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -3960,6 +5877,11 @@
    ],
    "first": "2-1",
    "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-4",
+    "2-7"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -3980,6 +5902,9 @@
    ],
    "first": "2-6",
    "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
    "at": "W2 src/game/protoStage.ts:6746"
   },
   {
@@ -4000,6 +5925,9 @@
    ],
    "first": "2-9",
    "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -4020,6 +5948,10 @@
    ],
    "first": "2-6",
    "stageCount": 2,
+   "stageList": [
+    "2-6",
+    "2-9"
+   ],
    "at": "W2 src/game/protoStage.ts:6747"
   },
   {
@@ -4040,6 +5972,13 @@
    ],
    "first": "2-1",
    "stageCount": 5,
+   "stageList": [
+    "2-1",
+    "2-4",
+    "2-6",
+    "2-7",
+    "2-8"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -4060,6 +5999,9 @@
    ],
    "first": "2-9",
    "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -4080,6 +6022,9 @@
    ],
    "first": "2-4",
    "stageCount": 1,
+   "stageList": [
+    "2-4"
+   ],
    "at": "W2 src/game/w2Stages.ts:563"
   },
   {
@@ -4100,6 +6045,10 @@
    ],
    "first": "2-1",
    "stageCount": 2,
+   "stageList": [
+    "2-1",
+    "2-3"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -4120,7 +6069,36 @@
    ],
    "first": "2-1",
    "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-6",
+    "2-7"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "po.carry_stand",
+   "perWorld": [
+    0,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 2,
+   "stageList": [
+    "2-1",
+    "2-7"
+   ],
+   "at": "W2 src/game/w2Stages.ts:709"
   },
   {
    "cat": "prop",
@@ -4140,6 +6118,11 @@
    ],
    "first": "2-1",
    "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-4"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -4160,6 +6143,10 @@
    ],
    "first": "2-7",
    "stageCount": 2,
+   "stageList": [
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:648"
   },
   {
@@ -4180,6 +6167,16 @@
    ],
    "first": "2-1",
    "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:227"
   },
   {
@@ -4200,6 +6197,17 @@
    ],
    "first": "2-1",
    "stageCount": 9,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:227"
   },
   {
@@ -4220,6 +6228,17 @@
    ],
    "first": "2-1",
    "stageCount": 9,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:227"
   },
   {
@@ -4240,6 +6259,9 @@
    ],
    "first": "2-6",
    "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
    "at": "W2 src/game/protoStage.ts:6753"
   },
   {
@@ -4260,6 +6282,12 @@
    ],
    "first": "2-1",
    "stageCount": 4,
+   "stageList": [
+    "2-1",
+    "2-6",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -4280,6 +6308,11 @@
    ],
    "first": "2-1",
    "stageCount": 3,
+   "stageList": [
+    "2-1",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:621"
   },
   {
@@ -4300,7 +6333,57 @@
    ],
    "first": "2-7",
    "stageCount": 1,
+   "stageList": [
+    "2-7"
+   ],
    "at": "W2 src/game/w2Stages.ts:555"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "tc.hat_shout",
+   "perWorld": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-6",
+   "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
+   "at": "W2 src/game/protoStage.ts:6755"
+  },
+  {
+   "cat": "prop",
+   "arr": "proto.decor",
+   "key": "tc.scroll",
+   "perWorld": [
+    0,
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "first": "2-1",
+   "stageCount": 2,
+   "stageList": [
+    "2-1",
+    "2-7"
+   ],
+   "at": "W2 src/game/w2Stages.ts:735"
   },
   {
    "cat": "prop",
@@ -4320,6 +6403,9 @@
    ],
    "first": "2-9",
    "stageCount": 1,
+   "stageList": [
+    "2-9"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -4340,6 +6426,12 @@
    ],
    "first": "2-1",
    "stageCount": 4,
+   "stageList": [
+    "2-1",
+    "2-4",
+    "2-6",
+    "2-7"
+   ],
    "at": "W2 src/game/w2Stages.ts:236"
   },
   {
@@ -4360,6 +6452,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4380,6 +6481,14 @@
    ],
    "first": "1-2",
    "stageCount": 6,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:360"
   },
   {
@@ -4400,6 +6509,10 @@
    ],
    "first": "1-5",
    "stageCount": 2,
+   "stageList": [
+    "1-5",
+    "1-8"
+   ],
    "at": "W1 src/game/artDress.ts:340"
   },
   {
@@ -4420,6 +6533,14 @@
    ],
    "first": "1-1",
    "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4440,6 +6561,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4460,6 +6590,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4480,6 +6619,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4500,6 +6648,13 @@
    ],
    "first": "1-2",
    "stageCount": 5,
+   "stageList": [
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-8"
+   ],
    "at": "W1 src/game/artDress.ts:340"
   },
   {
@@ -4520,6 +6675,13 @@
    ],
    "first": "1-1",
    "stageCount": 5,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
    "at": "W1 src/game/artDress.ts:360"
   },
   {
@@ -4540,6 +6702,14 @@
    ],
    "first": "1-1",
    "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4560,6 +6730,12 @@
    ],
    "first": "1-2",
    "stageCount": 4,
+   "stageList": [
+    "1-2",
+    "1-4",
+    "1-5",
+    "1-8"
+   ],
    "at": "W1 src/game/artDress.ts:340"
   },
   {
@@ -4580,6 +6756,12 @@
    ],
    "first": "1-2",
    "stageCount": 4,
+   "stageList": [
+    "1-2",
+    "1-4",
+    "1-5",
+    "1-8"
+   ],
    "at": "W1 src/game/artDress.ts:340"
   },
   {
@@ -4600,6 +6782,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4620,6 +6811,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:360"
   },
   {
@@ -4640,6 +6840,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:360"
   },
   {
@@ -4660,6 +6869,14 @@
    ],
    "first": "1-1",
    "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4680,6 +6897,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4700,6 +6926,13 @@
    ],
    "first": "1-1",
    "stageCount": 5,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
    "at": "W1 src/game/artDress.ts:360"
   },
   {
@@ -4720,6 +6953,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4740,6 +6982,12 @@
    ],
    "first": "1-2",
    "stageCount": 4,
+   "stageList": [
+    "1-2",
+    "1-4",
+    "1-5",
+    "1-8"
+   ],
    "at": "W1 src/game/artDress.ts:340"
   },
   {
@@ -4760,6 +7008,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:360"
   },
   {
@@ -4780,6 +7037,11 @@
    ],
    "first": "1-4",
    "stageCount": 3,
+   "stageList": [
+    "1-4",
+    "1-5",
+    "1-8"
+   ],
    "at": "W1 src/game/artDress.ts:340"
   },
   {
@@ -4800,6 +7062,16 @@
    ],
    "first": "1-1",
    "stageCount": 8,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-4",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4820,6 +7092,13 @@
    ],
    "first": "1-1",
    "stageCount": 5,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:360"
   },
   {
@@ -4840,6 +7119,14 @@
    ],
    "first": "1-1",
    "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:360"
   },
   {
@@ -4860,6 +7147,14 @@
    ],
    "first": "1-1",
    "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:360"
   },
   {
@@ -4880,6 +7175,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4900,6 +7204,12 @@
    ],
    "first": "1-1",
    "stageCount": 4,
+   "stageList": [
+    "1-1",
+    "1-3",
+    "1-5",
+    "1-7"
+   ],
    "at": "W1 src/game/artDress.ts:360"
   },
   {
@@ -4920,6 +7230,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4940,6 +7259,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4960,6 +7288,14 @@
    ],
    "first": "1-1",
    "stageCount": 6,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -4980,6 +7316,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -5000,6 +7345,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -5020,6 +7374,15 @@
    ],
    "first": "1-1",
    "stageCount": 7,
+   "stageList": [
+    "1-1",
+    "1-2",
+    "1-3",
+    "1-5",
+    "1-6",
+    "1-7",
+    "1-9"
+   ],
    "at": "W1 src/game/artDress.ts:301"
   },
   {
@@ -5040,6 +7403,9 @@
    ],
    "first": "2-6",
    "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
    "at": "W2 src/game/artDress.ts:340"
   },
   {
@@ -5060,6 +7426,14 @@
    ],
    "first": "2-1",
    "stageCount": 6,
+   "stageList": [
+    "2-1",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5080,6 +7454,16 @@
    ],
    "first": "2-1",
    "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5100,6 +7484,13 @@
    ],
    "first": "2-3",
    "stageCount": 5,
+   "stageList": [
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:360"
   },
   {
@@ -5120,6 +7511,16 @@
    ],
    "first": "2-1",
    "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5140,6 +7541,10 @@
    ],
    "first": "2-2",
    "stageCount": 2,
+   "stageList": [
+    "2-2",
+    "2-4"
+   ],
    "at": "W2 src/game/artDress.ts:360"
   },
   {
@@ -5160,6 +7565,15 @@
    ],
    "first": "2-1",
    "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5180,6 +7594,12 @@
    ],
    "first": "2-4",
    "stageCount": 4,
+   "stageList": [
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:360"
   },
   {
@@ -5200,6 +7620,9 @@
    ],
    "first": "2-6",
    "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
    "at": "W2 src/game/artDress.ts:340"
   },
   {
@@ -5220,6 +7643,9 @@
    ],
    "first": "2-6",
    "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
    "at": "W2 src/game/artDress.ts:340"
   },
   {
@@ -5240,6 +7666,9 @@
    ],
    "first": "2-6",
    "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
    "at": "W2 src/game/artDress.ts:340"
   },
   {
@@ -5260,6 +7689,14 @@
    ],
    "first": "2-1",
    "stageCount": 6,
+   "stageList": [
+    "2-1",
+    "2-4",
+    "2-5",
+    "2-6",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5280,6 +7717,16 @@
    ],
    "first": "2-1",
    "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5300,6 +7747,16 @@
    ],
    "first": "2-1",
    "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5320,6 +7777,14 @@
    ],
    "first": "2-1",
    "stageCount": 6,
+   "stageList": [
+    "2-1",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5340,6 +7805,9 @@
    ],
    "first": "2-6",
    "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
    "at": "W2 src/game/artDress.ts:340"
   },
   {
@@ -5360,6 +7828,9 @@
    ],
    "first": "2-6",
    "stageCount": 1,
+   "stageList": [
+    "2-6"
+   ],
    "at": "W2 src/game/artDress.ts:340"
   },
   {
@@ -5380,6 +7851,16 @@
    ],
    "first": "2-1",
    "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5400,6 +7881,15 @@
    ],
    "first": "2-1",
    "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5420,6 +7910,16 @@
    ],
    "first": "2-1",
    "stageCount": 8,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5440,6 +7940,14 @@
    ],
    "first": "2-2",
    "stageCount": 6,
+   "stageList": [
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5460,6 +7968,15 @@
    ],
    "first": "2-1",
    "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5480,6 +7997,14 @@
    ],
    "first": "2-2",
    "stageCount": 6,
+   "stageList": [
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5500,6 +8025,10 @@
    ],
    "first": "2-4",
    "stageCount": 2,
+   "stageList": [
+    "2-4",
+    "2-5"
+   ],
    "at": "W2 src/game/artDress.ts:360"
   },
   {
@@ -5520,6 +8049,15 @@
    ],
    "first": "2-1",
    "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5540,6 +8078,15 @@
    ],
    "first": "2-1",
    "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5560,6 +8107,10 @@
    ],
    "first": "2-2",
    "stageCount": 2,
+   "stageList": [
+    "2-2",
+    "2-4"
+   ],
    "at": "W2 src/game/artDress.ts:360"
   },
   {
@@ -5580,6 +8131,15 @@
    ],
    "first": "2-1",
    "stageCount": 7,
+   "stageList": [
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:301"
   },
   {
@@ -5600,6 +8160,11 @@
    ],
    "first": "2-3",
    "stageCount": 3,
+   "stageList": [
+    "2-3",
+    "2-7",
+    "2-9"
+   ],
    "at": "W2 src/game/artDress.ts:360"
   },
   {
@@ -5620,6 +8185,9 @@
    ],
    "first": "3-4",
    "stageCount": 1,
+   "stageList": [
+    "3-4"
+   ],
    "at": "W3 src/game/artDress.ts:340"
   },
   {
@@ -5640,6 +8208,16 @@
    ],
    "first": "3-1",
    "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:301"
   },
   {
@@ -5660,6 +8238,9 @@
    ],
    "first": "3-4",
    "stageCount": 1,
+   "stageList": [
+    "3-4"
+   ],
    "at": "W3 src/game/artDress.ts:340"
   },
   {
@@ -5680,6 +8261,16 @@
    ],
    "first": "3-1",
    "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:301"
   },
   {
@@ -5700,6 +8291,16 @@
    ],
    "first": "3-1",
    "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:360"
   },
   {
@@ -5720,6 +8321,16 @@
    ],
    "first": "3-1",
    "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:301"
   },
   {
@@ -5740,6 +8351,16 @@
    ],
    "first": "3-1",
    "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:360"
   },
   {
@@ -5760,6 +8381,16 @@
    ],
    "first": "3-1",
    "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:360"
   },
   {
@@ -5780,6 +8411,16 @@
    ],
    "first": "3-1",
    "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:301"
   },
   {
@@ -5800,6 +8441,16 @@
    ],
    "first": "3-1",
    "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:301"
   },
   {
@@ -5820,6 +8471,16 @@
    ],
    "first": "3-1",
    "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:360"
   },
   {
@@ -5840,6 +8501,17 @@
    ],
    "first": "3-1",
    "stageCount": 9,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:301"
   },
   {
@@ -5860,6 +8532,14 @@
    ],
    "first": "3-1",
    "stageCount": 6,
+   "stageList": [
+    "3-1",
+    "3-3",
+    "3-5",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:360"
   },
   {
@@ -5880,6 +8560,17 @@
    ],
    "first": "3-1",
    "stageCount": 9,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:301"
   },
   {
@@ -5900,6 +8591,10 @@
    ],
    "first": "3-3",
    "stageCount": 2,
+   "stageList": [
+    "3-3",
+    "3-4"
+   ],
    "at": "W3 src/game/artDress.ts:340"
   },
   {
@@ -5920,6 +8615,15 @@
    ],
    "first": "3-1",
    "stageCount": 7,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:360"
   },
   {
@@ -5940,6 +8644,17 @@
    ],
    "first": "3-1",
    "stageCount": 9,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:301"
   },
   {
@@ -5960,6 +8675,13 @@
    ],
    "first": "4-1",
    "stageCount": 5,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-6",
+    "4-7",
+    "4-8"
+   ],
    "at": "W4 src/game/artDress.ts:340"
   },
   {
@@ -5980,6 +8702,16 @@
    ],
    "first": "4-1",
    "stageCount": 8,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-5",
+    "4-6",
+    "4-7",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:340"
   },
   {
@@ -6000,6 +8732,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:301"
   },
   {
@@ -6020,6 +8760,15 @@
    ],
    "first": "4-1",
    "stageCount": 7,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:301"
   },
   {
@@ -6040,6 +8789,15 @@
    ],
    "first": "4-1",
    "stageCount": 7,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:301"
   },
   {
@@ -6060,6 +8818,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:360"
   },
   {
@@ -6080,6 +8846,13 @@
    ],
    "first": "4-1",
    "stageCount": 5,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-7",
+    "4-8"
+   ],
    "at": "W4 src/game/artDress.ts:340"
   },
   {
@@ -6100,6 +8873,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:301"
   },
   {
@@ -6120,6 +8901,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:301"
   },
   {
@@ -6140,6 +8929,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:360"
   },
   {
@@ -6160,6 +8957,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:301"
   },
   {
@@ -6180,6 +8985,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:360"
   },
   {
@@ -6200,6 +9013,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:360"
   },
   {
@@ -6220,6 +9041,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:301"
   },
   {
@@ -6240,6 +9069,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:301"
   },
   {
@@ -6260,6 +9097,13 @@
    ],
    "first": "4-1",
    "stageCount": 5,
+   "stageList": [
+    "4-1",
+    "4-2",
+    "4-6",
+    "4-7",
+    "4-8"
+   ],
    "at": "W4 src/game/artDress.ts:340"
   },
   {
@@ -6280,6 +9124,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-8",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:301"
   },
   {
@@ -6300,6 +9152,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6320,6 +9181,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6340,6 +9210,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6360,6 +9239,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6380,6 +9268,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6400,6 +9297,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6420,6 +9326,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6440,6 +9355,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6460,6 +9384,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6480,6 +9413,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6500,6 +9442,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6520,6 +9471,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6540,6 +9500,14 @@
    ],
    "first": "5-2",
    "stageCount": 6,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6560,6 +9528,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6580,6 +9557,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6600,6 +9586,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6620,6 +9615,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6640,6 +9644,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6660,6 +9673,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6680,6 +9702,14 @@
    ],
    "first": "5-2",
    "stageCount": 6,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6700,6 +9730,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6720,6 +9759,14 @@
    ],
    "first": "5-2",
    "stageCount": 6,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6740,6 +9787,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6760,6 +9816,13 @@
    ],
    "first": "5-2",
    "stageCount": 5,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6780,6 +9843,14 @@
    ],
    "first": "5-2",
    "stageCount": 6,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6800,6 +9871,14 @@
    ],
    "first": "5-2",
    "stageCount": 6,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6820,6 +9899,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:360"
   },
   {
@@ -6840,6 +9928,15 @@
    ],
    "first": "5-1",
    "stageCount": 7,
+   "stageList": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6860,6 +9957,13 @@
    ],
    "first": "5-2",
    "stageCount": 5,
+   "stageList": [
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-7",
+    "5-9"
+   ],
    "at": "W5 src/game/artDress.ts:301"
   },
   {
@@ -6880,6 +9984,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/artDress.ts:340"
   },
   {
@@ -6900,6 +10007,16 @@
    ],
    "first": "6-1",
    "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
    "at": "W6 src/game/artDress.ts:301"
   },
   {
@@ -6920,6 +10037,16 @@
    ],
    "first": "6-1",
    "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
    "at": "W6 src/game/artDress.ts:360"
   },
   {
@@ -6940,6 +10067,12 @@
    ],
    "first": "6-2",
    "stageCount": 4,
+   "stageList": [
+    "6-2",
+    "6-3",
+    "6-6",
+    "6-9"
+   ],
    "at": "W6 src/game/artDress.ts:360"
   },
   {
@@ -6960,6 +10093,16 @@
    ],
    "first": "6-1",
    "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
    "at": "W6 src/game/artDress.ts:301"
   },
   {
@@ -6980,6 +10123,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/artDress.ts:340"
   },
   {
@@ -7000,6 +10146,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/artDress.ts:340"
   },
   {
@@ -7020,6 +10169,16 @@
    ],
    "first": "6-1",
    "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
    "at": "W6 src/game/artDress.ts:301"
   },
   {
@@ -7040,6 +10199,16 @@
    ],
    "first": "6-1",
    "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
    "at": "W6 src/game/artDress.ts:301"
   },
   {
@@ -7060,6 +10229,15 @@
    ],
    "first": "6-1",
    "stageCount": 7,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
    "at": "W6 src/game/artDress.ts:360"
   },
   {
@@ -7080,6 +10258,15 @@
    ],
    "first": "6-1",
    "stageCount": 7,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
    "at": "W6 src/game/artDress.ts:360"
   },
   {
@@ -7100,6 +10287,16 @@
    ],
    "first": "6-1",
    "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
    "at": "W6 src/game/artDress.ts:301"
   },
   {
@@ -7120,6 +10317,16 @@
    ],
    "first": "6-1",
    "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
    "at": "W6 src/game/artDress.ts:301"
   },
   {
@@ -7140,6 +10347,9 @@
    ],
    "first": "6-8",
    "stageCount": 1,
+   "stageList": [
+    "6-8"
+   ],
    "at": "W6 src/game/artDress.ts:340"
   },
   {
@@ -7160,6 +10370,16 @@
    ],
    "first": "6-1",
    "stageCount": 8,
+   "stageList": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-9"
+   ],
    "at": "W6 src/game/artDress.ts:360"
   },
   {
@@ -7180,6 +10400,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -7200,6 +10429,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -7220,6 +10458,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:360"
   },
   {
@@ -7240,6 +10487,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -7260,6 +10516,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:360"
   },
   {
@@ -7280,6 +10545,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -7300,6 +10574,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -7320,6 +10603,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -7340,6 +10632,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -7360,6 +10661,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:360"
   },
   {
@@ -7380,6 +10690,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -7400,6 +10719,14 @@
    ],
    "first": "7-1",
    "stageCount": 6,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:360"
   },
   {
@@ -7420,6 +10747,14 @@
    ],
    "first": "7-1",
    "stageCount": 6,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7"
+   ],
    "at": "W7 src/game/artDress.ts:360"
   },
   {
@@ -7440,6 +10775,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -7460,6 +10804,14 @@
    ],
    "first": "7-1",
    "stageCount": 6,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -7480,6 +10832,15 @@
    ],
    "first": "7-1",
    "stageCount": 7,
+   "stageList": [
+    "7-1",
+    "7-3",
+    "7-4",
+    "7-5",
+    "7-6",
+    "7-7",
+    "7-9"
+   ],
    "at": "W7 src/game/artDress.ts:301"
   },
   {
@@ -7500,6 +10861,12 @@
    ],
    "first": "8-2",
    "stageCount": 4,
+   "stageList": [
+    "8-2",
+    "8-4",
+    "8-6",
+    "8-8"
+   ],
    "at": "W8 src/game/artDress.ts:301"
   },
   {
@@ -7520,6 +10887,16 @@
    ],
    "first": "8-1",
    "stageCount": 8,
+   "stageList": [
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-8",
+    "8-9"
+   ],
    "at": "W8 src/game/artDress.ts:301"
   },
   {
@@ -7540,6 +10917,16 @@
    ],
    "first": "8-1",
    "stageCount": 8,
+   "stageList": [
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-8",
+    "8-9"
+   ],
    "at": "W8 src/game/artDress.ts:360"
   },
   {
@@ -7560,6 +10947,12 @@
    ],
    "first": "8-1",
    "stageCount": 4,
+   "stageList": [
+    "8-1",
+    "8-3",
+    "8-5",
+    "8-9"
+   ],
    "at": "W8 src/game/artDress.ts:301"
   },
   {
@@ -7580,6 +10973,12 @@
    ],
    "first": "8-1",
    "stageCount": 4,
+   "stageList": [
+    "8-1",
+    "8-3",
+    "8-5",
+    "8-9"
+   ],
    "at": "W8 src/game/artDress.ts:360"
   },
   {
@@ -7600,6 +10999,12 @@
    ],
    "first": "8-1",
    "stageCount": 4,
+   "stageList": [
+    "8-1",
+    "8-3",
+    "8-5",
+    "8-9"
+   ],
    "at": "W8 src/game/artDress.ts:360"
   },
   {
@@ -7620,6 +11025,12 @@
    ],
    "first": "8-2",
    "stageCount": 4,
+   "stageList": [
+    "8-2",
+    "8-4",
+    "8-6",
+    "8-8"
+   ],
    "at": "W8 src/game/artDress.ts:360"
   },
   {
@@ -7640,6 +11051,12 @@
    ],
    "first": "8-2",
    "stageCount": 4,
+   "stageList": [
+    "8-2",
+    "8-4",
+    "8-6",
+    "8-8"
+   ],
    "at": "W8 src/game/artDress.ts:301"
   },
   {
@@ -7660,6 +11077,16 @@
    ],
    "first": "8-1",
    "stageCount": 8,
+   "stageList": [
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-8",
+    "8-9"
+   ],
    "at": "W8 src/game/artDress.ts:301"
   },
   {
@@ -7680,6 +11107,10 @@
    ],
    "first": "3-1",
    "stageCount": 2,
+   "stageList": [
+    "3-1",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:122"
   },
   {
@@ -7700,6 +11131,9 @@
    ],
    "first": "1-6",
    "stageCount": 1,
+   "stageList": [
+    "1-6"
+   ],
    "at": "W1 src/game/artDress.ts:82"
   },
   {
@@ -7720,6 +11154,12 @@
    ],
    "first": "4-2",
    "stageCount": 4,
+   "stageList": [
+    "4-2",
+    "4-4",
+    "4-6",
+    "4-8"
+   ],
    "at": "W4 src/game/artDress.ts:166"
   },
   {
@@ -7740,6 +11180,13 @@
    ],
    "first": "4-1",
    "stageCount": 5,
+   "stageList": [
+    "4-1",
+    "4-3",
+    "4-5",
+    "4-7",
+    "4-9"
+   ],
    "at": "W4 src/game/artDress.ts:166"
   },
   {
@@ -7760,6 +11207,11 @@
    ],
    "first": "3-2",
    "stageCount": 3,
+   "stageList": [
+    "3-2",
+    "3-6",
+    "3-8"
+   ],
    "at": "W3 src/game/artDress.ts:122"
   },
   {
@@ -7780,6 +11232,13 @@
    ],
    "first": "3-1",
    "stageCount": 5,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:122"
   },
   {
@@ -7800,6 +11259,9 @@
    ],
    "first": "3-7",
    "stageCount": 1,
+   "stageList": [
+    "3-7"
+   ],
    "at": "W3 src/game/artDress.ts:101"
   },
   {
@@ -7820,6 +11282,9 @@
    ],
    "first": "1-4",
    "stageCount": 1,
+   "stageList": [
+    "1-4"
+   ],
    "at": "W1 src/game/artDress.ts:81"
   },
   {
@@ -7840,6 +11305,11 @@
    ],
    "first": "1-4",
    "stageCount": 3,
+   "stageList": [
+    "1-4",
+    "1-6",
+    "1-7"
+   ],
    "at": "W1 src/game/artDress.ts:84"
   },
   {
@@ -7860,6 +11330,13 @@
    ],
    "first": "3-2",
    "stageCount": 5,
+   "stageList": [
+    "3-2",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:122"
   },
   {
@@ -7880,6 +11357,10 @@
    ],
    "first": "3-2",
    "stageCount": 2,
+   "stageList": [
+    "3-2",
+    "3-8"
+   ],
    "at": "W3 src/game/artDress.ts:122"
   },
   {
@@ -7900,6 +11381,12 @@
    ],
    "first": "3-1",
    "stageCount": 4,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:122"
   },
   {
@@ -7920,6 +11407,13 @@
    ],
    "first": "3-2",
    "stageCount": 5,
+   "stageList": [
+    "3-2",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/artDress.ts:122"
   },
   {
@@ -7940,6 +11434,9 @@
    ],
    "first": "1-1",
    "stageCount": 1,
+   "stageList": [
+    "1-1"
+   ],
    "at": ""
   },
   {
@@ -7960,6 +11457,9 @@
    ],
    "first": "1-1",
    "stageCount": 1,
+   "stageList": [
+    "1-1"
+   ],
    "at": ""
   },
   {
@@ -7980,6 +11480,9 @@
    ],
    "first": "1-1",
    "stageCount": 1,
+   "stageList": [
+    "1-1"
+   ],
    "at": ""
   },
   {
@@ -8000,6 +11503,9 @@
    ],
    "first": "1-1",
    "stageCount": 1,
+   "stageList": [
+    "1-1"
+   ],
    "at": ""
   },
   {
@@ -8020,6 +11526,10 @@
    ],
    "first": "3-7",
    "stageCount": 2,
+   "stageList": [
+    "3-7",
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:5585"
   },
   {
@@ -8040,6 +11550,14 @@
    ],
    "first": "3-2",
    "stageCount": 6,
+   "stageList": [
+    "3-2",
+    "3-4",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:5585"
   },
   {
@@ -8060,6 +11578,15 @@
    ],
    "first": "3-1",
    "stageCount": 7,
+   "stageList": [
+    "3-1",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:5585"
   },
   {
@@ -8080,6 +11607,16 @@
    ],
    "first": "3-1",
    "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:5591"
   },
   {
@@ -8100,6 +11637,9 @@
    ],
    "first": "3-1",
    "stageCount": 1,
+   "stageList": [
+    "3-1"
+   ],
    "at": "W3 src/game/protoStage.ts:3375"
   },
   {
@@ -8120,6 +11660,14 @@
    ],
    "first": "3-2",
    "stageCount": 6,
+   "stageList": [
+    "3-2",
+    "3-4",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:5591"
   },
   {
@@ -8140,6 +11688,14 @@
    ],
    "first": "3-2",
    "stageCount": 6,
+   "stageList": [
+    "3-2",
+    "3-4",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:5585"
   },
   {
@@ -8160,6 +11716,12 @@
    ],
    "first": "3-1",
    "stageCount": 4,
+   "stageList": [
+    "3-1",
+    "3-3",
+    "3-5",
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:5585"
   },
   {
@@ -8180,6 +11742,9 @@
    ],
    "first": "3-9",
    "stageCount": 1,
+   "stageList": [
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:4143"
   },
   {
@@ -8200,6 +11765,9 @@
    ],
    "first": "3-9",
    "stageCount": 1,
+   "stageList": [
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:4147"
   },
   {
@@ -8220,6 +11788,9 @@
    ],
    "first": "3-9",
    "stageCount": 1,
+   "stageList": [
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:4146"
   },
   {
@@ -8240,6 +11811,9 @@
    ],
    "first": "3-9",
    "stageCount": 1,
+   "stageList": [
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:4144"
   },
   {
@@ -8260,6 +11834,14 @@
    ],
    "first": "3-1",
    "stageCount": 6,
+   "stageList": [
+    "3-1",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:5591"
   },
   {
@@ -8280,6 +11862,16 @@
    ],
    "first": "3-1",
    "stageCount": 8,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-4",
+    "3-5",
+    "3-6",
+    "3-8",
+    "3-9"
+   ],
    "at": "W3 src/game/protoStage.ts:5585"
   },
   {
@@ -8300,6 +11892,9 @@
    ],
    "first": "3-4",
    "stageCount": 1,
+   "stageList": [
+    "3-4"
+   ],
    "at": "W3 src/game/w3Sections.ts:425"
   },
   {
@@ -8320,6 +11915,9 @@
    ],
    "first": "3-4",
    "stageCount": 1,
+   "stageList": [
+    "3-4"
+   ],
    "at": ""
   },
   {
@@ -8340,6 +11938,30 @@
    ],
    "first": "1-3",
    "stageCount": 22,
+   "stageList": [
+    "1-3",
+    "1-6",
+    "1-9",
+    "2-1",
+    "2-2",
+    "2-3",
+    "2-4",
+    "2-5",
+    "2-7",
+    "2-8",
+    "2-9",
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-8",
+    "3-9",
+    "4-4",
+    "4-5",
+    "5-6"
+   ],
    "at": "W1 src/game/mixer/w1mix.ts:878, W2 src/game/w2Stages.ts:224, W3 src/game/protoStage.ts:646, W4 src/game/protoStage.ts:5762, W5 src/game/meecaStage.ts:202"
   },
   {
@@ -8360,6 +11982,9 @@
    ],
    "first": "4-3",
    "stageCount": 1,
+   "stageList": [
+    "4-3"
+   ],
    "at": "W4 src/game/protoStage.ts:5762"
   },
   {
@@ -8380,6 +12005,13 @@
    ],
    "first": "10-1",
    "stageCount": 5,
+   "stageList": [
+    "10-1",
+    "10-3",
+    "10-6",
+    "10-7",
+    "10-9"
+   ],
    "at": ""
   },
   {
@@ -8400,6 +12032,11 @@
    ],
    "first": "7-1",
    "stageCount": 3,
+   "stageList": [
+    "7-1",
+    "7-5",
+    "7-6"
+   ],
    "at": ""
   },
   {
@@ -8420,6 +12057,25 @@
    ],
    "first": "3-1",
    "stageCount": 17,
+   "stageList": [
+    "3-1",
+    "3-2",
+    "3-3",
+    "3-5",
+    "3-6",
+    "3-7",
+    "3-9",
+    "5-M",
+    "6-6",
+    "8-1",
+    "8-2",
+    "8-3",
+    "8-4",
+    "8-5",
+    "8-6",
+    "8-8",
+    "8-9"
+   ],
    "at": ""
   },
   {
@@ -8440,6 +12096,15 @@
    ],
    "first": "9-1",
    "stageCount": 7,
+   "stageList": [
+    "9-1",
+    "9-3",
+    "9-4",
+    "9-5",
+    "9-6",
+    "9-8",
+    "9-9"
+   ],
    "at": ""
   },
   {
@@ -8460,6 +12125,13 @@
    ],
    "first": "3-1",
    "stageCount": 5,
+   "stageList": [
+    "3-1",
+    "3-3",
+    "3-6",
+    "3-7",
+    "3-9"
+   ],
    "at": ""
   },
   {
@@ -8480,6 +12152,11 @@
    ],
    "first": "6-4",
    "stageCount": 3,
+   "stageList": [
+    "6-4",
+    "6-5",
+    "6-9"
+   ],
    "at": ""
   },
   {
@@ -8500,6 +12177,9 @@
    ],
    "first": "5-6",
    "stageCount": 1,
+   "stageList": [
+    "5-6"
+   ],
    "at": ""
   },
   {
@@ -8520,6 +12200,14 @@
    ],
    "first": "4-2",
    "stageCount": 6,
+   "stageList": [
+    "4-2",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-8",
+    "4-9"
+   ],
    "at": ""
   }
  ],

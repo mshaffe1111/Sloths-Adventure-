@@ -5,7 +5,7 @@ Every kind each world's builder lays today, read off the built stages: 102 stage
 how many stages lay it on any layout. "Laid at" is the first lines in `src/` that pushed one while the stage built (traced; a kind made another way shows none). A landing's key is
 its type, style, art and flags. Nothing here is typed by hand. Built on branch engine-mixer: its 1-1 and 1-5 are the mixer's, every other stage is the shipped builder's.
 
-426 kinds; 0 builds failed.
+428 kinds; 0 builds failed.
 
 ## air
 
@@ -231,7 +231,6 @@ its type, style, art and flags. Nothing here is typed by hand. Built on branch e
 | proto.bushes | grotto |  |  | 10 |  |  |  |  |  |  |  | 3-2 | 2 | W3 src/game/protoStage.ts:2191 |
 | proto.bushes | tall | 19 |  |  | 4 |  | 48 |  | 1 |  |  | 1-7 | 6 | W1 src/game/protoStage.ts:2191, W4 src/game/protoStage.ts:2191, W6 src/game/gen2/worlds/w6.ts:293, W8 src/game/gen2/worlds/w8.ts:269 |
 | proto.bushes | wide | 12 |  |  | 4 |  | 47 |  | 1 |  |  | 1-7 | 6 | W1 src/game/protoStage.ts:2191, W4 src/game/protoStage.ts:2191, W6 src/game/gen2/worlds/w6.ts:293, W8 src/game/gen2/worlds/w8.ts:269 |
-| proto.decor | (none) |  | 6 |  |  |  |  |  |  |  |  | 2-1 | 3 | W2 src/game/w2Stages.ts:224 |
 | proto.decor | archway |  | 2 |  |  |  |  |  |  |  |  | 2-9 | 1 | W2 src/game/w2Stages.ts:236 |
 | proto.decor | banner |  | 7 |  |  |  |  |  |  |  |  | 2-9 | 1 | W2 src/game/w2Stages.ts:236 |
 | proto.decor | bell |  | 1 |  |  |  |  |  |  |  |  | 2-6 | 1 | W2 src/game/protoStage.ts:6754 |
@@ -247,6 +246,7 @@ its type, style, art and flags. Nothing here is typed by hand. Built on branch e
 | proto.decor | limbShort |  | 41 |  |  |  |  |  |  |  |  | 2-4 | 1 | W2 src/game/w2Stages.ts:563 |
 | proto.decor | logShort |  | 2 |  |  |  |  |  |  |  |  | 2-1 | 2 | W2 src/game/w2Stages.ts:236 |
 | proto.decor | mailbox |  | 40 |  |  |  |  |  |  |  |  | 2-1 | 3 | W2 src/game/w2Stages.ts:236 |
+| proto.decor | po.carry_stand |  | 3 |  |  |  |  |  |  |  |  | 2-1 | 2 | W2 src/game/w2Stages.ts:709 |
 | proto.decor | pole |  | 11 |  |  |  |  |  |  |  |  | 2-1 | 3 | W2 src/game/w2Stages.ts:236 |
 | proto.decor | porch |  | 62 |  |  |  |  |  |  |  |  | 2-7 | 2 | W2 src/game/w2Stages.ts:648 |
 | proto.decor | reedLean |  | 73 |  |  |  |  |  |  |  |  | 2-1 | 8 | W2 src/game/w2Stages.ts:227 |
@@ -256,6 +256,8 @@ its type, style, art and flags. Nothing here is typed by hand. Built on branch e
 | proto.decor | sign |  | 23 |  |  |  |  |  |  |  |  | 2-1 | 4 | W2 src/game/w2Stages.ts:236 |
 | proto.decor | steps |  | 3 |  |  |  |  |  |  |  |  | 2-1 | 3 | W2 src/game/w2Stages.ts:621 |
 | proto.decor | swingFrame |  | 2 |  |  |  |  |  |  |  |  | 2-7 | 1 | W2 src/game/w2Stages.ts:555 |
+| proto.decor | tc.hat_shout |  | 1 |  |  |  |  |  |  |  |  | 2-6 | 1 | W2 src/game/protoStage.ts:6755 |
+| proto.decor | tc.scroll |  | 2 |  |  |  |  |  |  |  |  | 2-1 | 2 | W2 src/game/w2Stages.ts:735 |
 | proto.decor | throne |  | 1 |  |  |  |  |  |  |  |  | 2-9 | 1 | W2 src/game/w2Stages.ts:236 |
 | proto.decor | window |  | 14 |  |  |  |  |  |  |  |  | 2-1 | 4 | W2 src/game/w2Stages.ts:236 |
 | proto.dress | w1Acorns | 12 |  |  |  |  |  |  |  |  |  | 1-1 | 7 | W1 src/game/artDress.ts:301 |

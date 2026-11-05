@@ -74,6 +74,17 @@ function blit(ctx: CanvasRenderingContext2D, n: string, x: number, y: number, w:
   ctx.restore();
 }
 
+/** how wide a piece of dressing draws (world px), at its drawn height: what a layout keeps clear around it */
+export function w1DressWidth(n: string): number {
+  const f = F[n];
+  return f ? (dressH(n) * f.w) / f.h : 0;
+}
+/** which way a picture faces as painted (read off the sheet, 11-05): the sitting and waving squirrels face the viewer; the tipping,
+ *  hauling and running ones face right. A layout flips a right-facing one to face left */
+export function w1DressFacing(n: string): 'front' | 'right' {
+  return /^squirrel-(tip|haul|run)$/.test(n) ? 'right' : 'front';
+}
+
 /** a piece of dressing standing on the ground at `bottom`, centred on `cx`; `flip` faces it the other way. False if it has no picture
  *  or the sheet is loading */
 export function drawW1Dress(ctx: CanvasRenderingContext2D, n: string, cx: number, bottom: number, flip = false): boolean {
