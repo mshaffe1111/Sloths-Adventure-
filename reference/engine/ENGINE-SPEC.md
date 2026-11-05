@@ -133,6 +133,14 @@ differently is world five." This replaces "each world has its own kit":
 - **The variety gate counts the whole shared library.** Neighbouring stages share no more than half their ideas, wherever those ideas
   came from.
 
+
+**[designer, 11-05 ~12:25 AM ET, from Matt via the planner] Animals and unused art.**
+- "Once you introduce them, they can be anywhere": an animal, once taught, joins the shared library for every later stage and every
+  later world, inside any idea where it makes sense. The move ladder counts it as a move: after its teach, it must come back in a
+  harder form, and must not drop out for more than two stages.
+- "Look at the library of art and see what we've created that's not been used": the planner's unused-art inventory feeds the
+  library. Every unused piece of art that can carry a node idea becomes a library entry, tagged with the worlds it fits.
+
 ### CP3: the mixer, proven on the worst stage first (1-5) (owner: designer specs the mix rule, planner builds and runs)
 - **The mix rule (designer), [Matt, 11-05] ideas first, pieces inside an idea.**
   1. **The stage's story beat and theme come first** (STAGE-RULES and the story files). They pick the stage's job and look, never
