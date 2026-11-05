@@ -408,7 +408,8 @@ function splitPetals(L: Layout, splits: ReadonlyArray<{ x0: number; x1: number; 
   for (const sp of splits) {
     for (const q of L.ledges) {
       if (q.surface !== 'bough' || Math.abs(q.y - sp.line) > TOP_DROP + 2 || q.x1 < sp.x0 || q.x0 > sp.x1) continue;
-      for (let x = Math.max(q.x0, sp.x0) + 60; x <= Math.min(q.x1, sp.x1) - 60; x += 40) {
+      // (35 px in from a piece's ends: the base bough's pieces are its hops' take-offs and landings, a petal at each, 2026-11-04)
+      for (let x = Math.max(q.x0, sp.x0) + 35; x <= Math.min(q.x1, sp.x1) - 35; x += 40) {
         if (L.ledges.some((c) => c.surface === 'crumble' && c.y === q.y && x > c.x0 - 120 && x < c.x1 + 120)) continue;
         if (L.snakes.some((sn) => Math.abs(sn.y - q.y) < 20 && Math.abs(sn.x - x) < 140)) continue;
         if (L.flags.some((f) => Math.abs(f.y - q.y) < 20 && Math.abs(f.x - x) < 100)) continue;
@@ -513,6 +514,8 @@ export const TOP_DROP = 60;
 /** a petal this far over the split node's entry line, or more, is on the high road (the branches); under it, the base bough's low road */
 export const ROAD_CUT = 10;
 export const ROT_DEPTH = 170;
+/** 1-2's rest over the loop, Dot's stop (px): 2.1 s at a run */
+const REST_W = 600;
 /** the gaps to hop in 1-2's canopy base bough (px) */
 const BOUGH_GAP = 70;
 
@@ -590,14 +593,15 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   // ---- the loop: the rest over the bough, then the high branches over a base bough (no gap a miss could fall through)
   const restX = x;
   lay.begin('rest', 'none (Dot; the note seen far below)', 'A', 1, x, y);
-  // (the rest in two: a step up halfway, so the 4 s rest is a breath, never a dead walk on the fun gate, 2026-11-04)
-  lay.ledge(x, x + 560, y, 'apron');
-  lay.ledge(x + 560, x + 1180, y - 30, 'apron');
+  // (the rest: REST_W at a run is under the 2.5 s no-input rule (the lead, 2026-11-04: no rest is exempt), a step up halfway; Dot's line
+  // near its start, where a player who stops to look down reads it)
+  lay.ledge(x, x + REST_W / 2, y, 'apron');
+  lay.ledge(x + REST_W / 2, x + REST_W, y - 30, 'apron');
   L.flags.push({ x: x + 100, y });
-  L.lines.push({ x: x + 200, y, text: "There's something down by the roots..." });
-  x += 1180;
+  L.lines.push({ x: x + 160, y, text: "There's something down by the roots..." });
+  x += REST_W;
   y -= 30;
-  lay.end(x, 1180 / PHYS.maxRun + 1);
+  lay.end(x, REST_W / PHYS.maxRun + 1);
   // (the bough's leg is fitted first: the canopy's high branches over the loop must reach further back than it does)
   const PAL_B: Palette = { surfaces: ['branch'], jumpDy: [-60, -50, 50, 60, 80, 90], hopDy: [-40, -30, -20], doubles: 0, yMin: B - 120, yMax: B };
   const barsB = barsFrom(swung(R, 12, 0.2));
@@ -605,7 +609,7 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   const wB = (easy ? fitB.easy : fitB.tr).x1;
   let gapsTop = 10;
   const eighthPx = (30 / bpm) * PHYS.maxRun;
-  while (gapsTop < 40 && (gapsTop * 4 + 8) * eighthPx + 400 < wB + 620 - 1180 + 300 + 200) gapsTop += 2;
+  while (gapsTop < 40 && (gapsTop * 4 + 8) * eighthPx + 400 < wB + 620 - REST_W + 300 + 200) gapsTop += 2;
   // (rotten wood taught here, where it is safe: a rotten branch high over the canopy's solid base bough holds his run on the beat and a
   // little more, and a hesitant player drops 50-120 px onto the base bough, nothing lost (STAGE-RULES: taught in a safe spot before it
   // can hurt). The bough leg's rotten stretches come next, and bite)
@@ -624,14 +628,14 @@ export function layout12(seed: number, easy: boolean, bpm: number): Layout {
   L.lines.push({ x: rotten1.x0 - 260, y, text: 'Rotten wood! Don\'t stop on it!' });
   // (the base bough TOP_DROP under the node's entry: every branch 50 px or more over the entry is 110 px or more over the base bough, so
   // the low road's petals have room under the branches and clear of their jumps' arcs, the lead's ruling 2026-11-04)
-  // (the base bough in pieces, a 70 px gap to hop every 480-580 px: the low road is hops, never 17 s of plain walking (the fun gate's dead
+  // (the base bough in pieces, a 70 px gap to hop every 300-360 px (1.1-1.3 s at a run): the low road is hops, never 17 s of plain walking (the fun gate's dead
   // walk, the lead's item 4, 2026-11-04). A miss through a gap is a fall (fallZones), never a landing on the bough leg under it. No gap
   // under a branch's end, where a drop from the high road comes down)
   const ends = L.ledges.filter((q) => q.node === topNode && q.y < y + TOP_DROP - 20).flatMap((q) => [q.x0, q.x1]);
   const gaps: number[] = [];
-  for (let gx = x + R.r(480, 580); gx < top.tr.x1 - 400; gx += R.r(480, 580)) {
+  for (let gx = x + R.r(300, 360); gx < top.tr.x1 - 400; gx += R.r(300, 360)) {
     // (the nearest place clear of the branch ends, either way, up to 280 px off)
-    const clear = (g: number) => !ends.some((e) => g < e + 110 && g + BOUGH_GAP > e - 110) && g > (gaps.at(-1) ?? x) + 320 && g < top.tr.x1 - 400;
+    const clear = (g: number) => !ends.some((e) => g < e + 110 && g + BOUGH_GAP > e - 110) && g > (gaps.at(-1) ?? x) + 240 && g < top.tr.x1 - 400;
     const g = [0, 40, -40, 80, -80, 120, -120, 160, -160, 200, -200, 240, -240, 280, -280].map((d) => Math.round(gx) + d).find(clear);
     if (g !== undefined) { gaps.push(g); gx = g; }
   }
