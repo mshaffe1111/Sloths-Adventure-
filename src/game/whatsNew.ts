@@ -20,6 +20,20 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.9.5',
+    date: '2026-11-04',
+    title: 'A new World 1',
+    items: [
+      'World 1’s first five stages are rebuilt, each moving to its own music’s beat.',
+      'Punch a snake to daze it, then hop on it.',
+      'Meet the coiled boa in 1-5. Flick sideways fast to kick it.',
+      'On Normal, a long fall in the new stages costs a heart.',
+      '1-6 is now Snake Vines: some snakes hide on the vines.',
+      'In 1-1, a slip near the end costs a heart and puts you back at the gap.',
+      'In 1-9, the snake you vault over comes back when you start again from a flag.',
+    ],
+  },
+  {
     version: '0.9.4',
     date: '2026-11-04',
     title: 'Painted all over',
