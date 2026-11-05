@@ -22,7 +22,10 @@ for (const id of idsArg.split(',')) {
       platforms: s.platforms.map((p) => ({ x: Math.round(p.x), y: Math.round(p.y), w: Math.round(p.width), h: Math.round(p.height), type: p.type, style: p.style ?? null, deco: !!(p.decorative || p.isDecor || p.ghost), lily: !!(p.lily || p.lilyPad), soil: !!p.soil, creak: p.creak ?? null, pit: p.pit ?? null, catchL: !!p.catch, bare: !!p.bare, drift: !!p.drift, crumble: p.crumbleAfter ?? null, keys: Object.keys(p).filter((k) => !['id', 'x', 'y', 'width', 'height', 'type', 'style'].includes(k)).join('|') })),
       vines: (s.vines ?? []).map((q) => ({ x: Math.round(q.x), top: Math.round(q.topY), bot: Math.round(q.bottomY), type: q.vineType })),
       ropes: (s.ropes ?? []).map((r) => ({ x0: Math.round(r.x0), x1: Math.round(r.x1), y: Math.round(r.y) })),
-      enemies: (s.enemies ?? []).map((e) => e.type),
+      enemies: (s.enemies ?? []).map((e) => ({ t: e.type, x: Math.round(e.x), y: Math.round(e.y) })),
+      collect: ((st as any).collectibles ?? []).map((c: any) => ({ t: c.type, x: Math.round(c.x), y: Math.round(c.y) })),
+      checkpoints: ((st as any).checkpoints ?? []).map((c: any) => ({ x: Math.round(c.x), y: Math.round(c.y) })),
+      spawnX: (st as any).spawnX ?? null,
     });
   }
 }
