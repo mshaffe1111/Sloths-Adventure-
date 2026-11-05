@@ -5,6 +5,8 @@ north"): pasted up from World 1's own painted art on magenta, for bootgpu.py (fu
                  above, and pressed into it one heavy military boot print, toe up the picture (north): dark earth from the W1 earth
                  texture, chevron lugs on the forefoot, bars on the heel, a shadowed upper-left inner wall (light from the upper left)
                  and a lit lower-right wall, a pushed-up rim. Foreshortened (the toe end narrower) so it reads as seen from above.
+  bootprint-low.png  round 2: the same laid down for the side view (build_low): the face squashed and narrowed to the far side, a band
+                 of W1 earth under its front lip, so it sits on the bank instead of standing up like a disc.
 """
 import sys
 from pathlib import Path
@@ -59,12 +61,11 @@ def sole(cx, top, length, width):
                 hw = 0.78 * k
             persp = 0.86 + 0.14 * v        # the far (toe) end a touch narrower
             x = cx + side * hw * width / 2 * persp
-            # the inner edge of a right boot bows in at the waist
             pts.append((x, top + v * length))
     return pts
 
 
-def build():
+def build(L=372, Wd=196, top=70):
     base = Image.new('RGB', (W, H), MAG)
     # the moss mound: an irregular ellipse
     m = Image.new('L', (W, H), 0)
@@ -90,7 +91,7 @@ def build():
     ring = ImageChops.subtract(m, m.filter(ImageFilter.MinFilter(25)))
     base.paste(EARTH.crop((300, 300, 300 + W, 300 + H)), (0, 0), ImageChops.multiply(ring, edge.point(lambda v: min(255, v * 2))))
 
-    cx, top, L, Wd = W / 2 + 6, 70, 372, 196
+    cx = W / 2 + 6
     pts = sole(cx, top, L, Wd)
     # the pushed-up rim: a lighter moss ridge just outside the print
     rim = Image.new('L', (W, H), 0)
@@ -130,8 +131,42 @@ def build():
         px, py = cx + np.cos(a) * Wd * 0.62, top + L / 2 + np.sin(a) * L * 0.56
         r = rng.uniform(4, 8)
         tr.ellipse((px - r, py - r * 0.7, px + r, py + r * 0.7), fill=(78, 104, 44))
-    return base.filter(ImageFilter.GaussianBlur(0.7))
+    return base.filter(ImageFilter.GaussianBlur(0.7)), m
 
 
-build().save(OUT / 'bootprint.png')
+def build_low():
+    """Round 2: the same moss bed and print laid down in the game's side view: the top face squashed to 0.62 of its height (the print drawn longer and narrower first, so it stays a boot) and narrowed
+    at the far (toe) side, so the print lies flat and its toe runs away north; under its front edge a band of the W1 earth (the bed's
+    side, with the texture's roots), so it reads as a slab of moss sitting on the bank."""
+    top, m = build(L=410, Wd=150, top=52)
+    hh = round(H * 0.62)
+    # QUAD maps the output box to the source corners (upper left, lower left, lower right, upper right): the far edge drawn narrower
+    quad = (-W * 0.10, 0, 0, H, W, H, W * 1.10, 0)
+    face = top.transform((W, hh), Image.QUAD, quad, Image.BICUBIC)
+    fm = m.transform((W, hh), Image.QUAD, quad, Image.BICUBIC)
+    y0 = 60
+    base = Image.new('RGB', (W, H), MAG)
+    side = Image.new('L', (W, H), 0)
+    for dy in range(0, 50, 2):
+        side.paste(255, (0, y0 + dy), fm)
+    earth = EARTH.crop((200, 1100, 200 + W, 1100 + H))
+    yy = np.mgrid[0:H, 0:W][0]
+    dark = np.clip(0.95 - (yy - (y0 + hh * 0.6)) / 260.0, 0.45, 0.95)
+    earth = Image.fromarray(np.clip(np.asarray(earth).astype(np.float32) * dark[..., None], 0, 255).astype(np.uint8))
+    base.paste(earth, (0, 0), side)
+    # the outline under the side, as the kit's pieces have
+    ol = ImageChops.subtract(side.filter(ImageFilter.MaxFilter(7)), side)
+    base.paste((40, 26, 24), (0, 0), ol)
+    # the face's own shadow line on the earth just under its front lip
+    lip = Image.new('L', (W, H), 0); lip.paste(fm, (0, y0 + 10))
+    base.paste((48, 32, 26), (0, 0), ImageChops.subtract(lip, ImageChops.offset(lip, 0, -10)).filter(ImageFilter.GaussianBlur(3)))
+    full = Image.new('L', (W, H), 0); full.paste(fm, (0, y0))
+    base.paste(face, (0, y0), fm)
+    fo = ImageChops.subtract(full.filter(ImageFilter.MaxFilter(5)), full)
+    base.paste((40, 26, 24), (0, 0), ImageChops.multiply(fo, ImageChops.invert(side)))
+    return base.filter(ImageFilter.GaussianBlur(0.6))
+
+
+build()[0].save(OUT / 'bootprint.png')
+build_low().save(OUT / 'bootprint-low.png')
 print('ok', OUT)
