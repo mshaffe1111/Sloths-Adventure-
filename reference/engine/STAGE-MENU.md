@@ -15,8 +15,10 @@ enemy stage with a single branch, lots of jumps, vines and climbing"). It writes
 
 The helper fixes what the report names. The helper never places a piece by hand.
 
-**Status (11-05, 9:55 AM ET):** this file and `spec.ts` are the contract, written first. The engine is being moved onto it now (the
-planner's steps E2-E5). Each variable says whether the engine **does** it today or it is **coming**.
+**Status (11-05, afternoon ET):** this file and `spec.ts` are the contract. Step E2 is done: a stage *is* its spec in
+`src/game/mixer/stages.ts`, and the mixer reads nothing else stage-specific. The library check fails if the mixer's code names a stage.
+1-1 and 1-5 build from their specs exactly as before (snapshot 64/64 unchanged). Each variable below says whether the engine **does** it
+today or it is **coming**.
 
 ## 1. The feel (`profile`)
 
@@ -54,6 +56,16 @@ The designer's node plan, one row per node:
 - Dot's `line`: a shipped line, at the node's start or end;
 - `flagBefore`, `heartAfter`, `safe`: misses cost nothing here;
 - `height`: a share of the climb, 0 the floor and 1 the top.
+- `lay`: the engine's knobs for the node, the designer's until the profile sets them (step E8):
+  - `band`: the y band in px;
+  - `bursts`;
+  - `one`: one flat burst;
+  - `ground`: no canopy;
+  - `easyOnly`;
+  - `not` / `notLast`: never repeat an idea;
+  - `seed`: a hidden find's glint.
+
+A stage-level `lay` gives the start's y, the last piece and the burst range.
 
 ## 4. Rules the engine holds whatever a spec asks
 

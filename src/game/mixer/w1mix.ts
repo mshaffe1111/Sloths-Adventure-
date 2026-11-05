@@ -15,6 +15,8 @@
  */
 import type { Collectible, LevelConfig, Platform, Vine } from '../types.ts';
 import { IDEAS } from './library.ts';
+import type { StageSpec } from './spec.ts';
+import { SPEC_11, SPEC_15 } from './stages.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import { fixPickups } from '../flowerReach.ts';
@@ -63,72 +65,25 @@ export interface NodePlan { id?: string; easyOnly?: boolean;
   /** the band the node's way keeps to, top and bottom (1-1 rises node by node; 1-5's nodes share the stage's whole band) */
   band?: [number, number] }
 
-/** CP3's 1-5 plan, row by row (ENGINE-SPEC "CP3 design"); `not`: never the idea node `not` rolled; `notLast`: never one the last n nodes laid */
 /** a node's name on the map: its plan id, or its number counting only the nodes without one (n7b sits between n7 and n8) */
 const nidOf = (plan: NodePlan[], i: number): string => plan[i].id ?? String(plan.slice(0, i + 1).filter((q) => !q.id).length);
-export const PLAN_15: NodePlan[] = [
-  { job: 'warm-up', deck: ['bank hops', 'stump hop', 'log jam'] },
-  { job: 'teach creaky', deck: ['snap teach'], hint: 'Creaky branches! Grab the petals and keep moving' },
-  // (each deck gains a floor idea, the old 1-1's cycle: the designer's ruling (a) on the review, 11-05 ~2:35 AM)
-  { job: 'climb up', deck: ['bounce up', 'the climb', 'stump hop'] },
-  // (Easy's third rest, the designer's option (c) for Easy's density, 11-05: Easy only)
-  { id: '3b', easyOnly: true, job: 'rest', deck: ['bank walk'] },
-  // (the designer's ruling (b), 11-05: the high road's breakables are creaky limbs (a stone slab on a kapok trunk floats, P-2), and no
-  // lily pads until the engine draws water (the element gate): the low road is ground)
-  { job: 'the fork', deck: { high: ['creaky boughs', 'bough hops'], low: ['stump hop', 'crumbling ledge'] } },
-  { job: 'rest', deck: ['bank walk'], hint: 'These petals are fresher. She came this way not long ago.', flagBefore: false },
-  { job: 'test creaky', deck: ['snap dash', 'bank hops', 'log jam'], flagBefore: true, heartAfter: true },
-  { job: 'twist', deck: ['rotten-branch drop', 'stump hop'] },
-  // (the second rest, the designer's ruling on the fun gate, 11-05 ~2:26 AM: a short flat pad and a Dot spot after the drop; its flag
-  // only if a hard node follows, which the flag rule decides; Dot's line is the designer's)
-  { id: '7b', job: 'rest', deck: ['bank walk'], hint: 'Down on the forest floor now. Her marks go on past the creek.' },
-  // (the designer's ruling 6 on the CP3 miss: n8 draws one that the previous two nodes did not lay)
-  // (the creek's lily pads and reeds come back on real water once the engine draws it; until then its ground: ruling (b))
-  { job: 'creek', deck: ['stump hop', 'bank hops', 'crumbling ledge'], notLast: 2 },
-  // (push block leaves n9 for CP3, the designer's ruling: the level check walks a pushed log only inside a puzzle room; back in CP4)
-  { job: 'puzzle beat', deck: ['bough stair', 'the climb', 'bank hops', 'log jam'], not: 3, seed: true, hint: 'Something shiny, far away...', padHint: 'Something shiny, far away... too far, for now.' },
-  { job: 'master (fork)', deck: { high: ['creaky boughs', 'bridge span'], low: ['bough stair', 'stump hop'] }, flagBefore: true, heartAfter: true },
-  { job: 'cool down', deck: ['bank hops', 'stump hop', 'log jam'] },
-];
 
-/**
- * CP4's 1-1, "Into the Canopy" (ENGINE-SPEC "CP4, stage by stage", the designer's node plan): the arrival, teaching run, jump, the
- * bounce and then the double jump, at d = 0 (nothing untaught: no creaky, no crumbling, no animals). It rises from the forest floor to the
- * high kapok branches (1-5 goes down), its moment the first double-jump chain up into the canopy, then the view from the top branch.
- * A sprint: no marks; the goal is the shrine. Dot's lines are the shipped 1-1's (dotLinesData.ts hint.1-1.*).
- */
-export const PLAN_11: NodePlan[] = [
-  // (n1-n7, the forest floor at the home forest's edge, no canopy: the lead's story brief and the designer's ground-stage ruling, 11-05)
-  { job: 'teach run', deck: ['floor walk'], one: true, ground: true, band: [1180, 1320] },
-  // (1-1's profile, the designer, 11-05: branching moderate, ground forks early and canopy forks late; hilly ground rising to the canopy;
-  // a calm march, quicker only at n9. The ground teaches lay 3 bursts each, for the length a canopy gave 1-5)
-  { job: 'teach jump', deck: ['bank hops', 'stump hop', 'log jam'], hint: 'Jump the little gaps', safe: true, ground: true, bursts: 3, band: [1150, 1320] },
-  // (the first of the early ground forks: logs on stumps over the stump hops and banks)
-  { job: 'practise (fork)', deck: { high: ['stump tops', 'log jam'], low: ['stump hop', 'bank hops'] }, hint: 'Up the bank! Step to step', ground: true, band: [1100, 1300] },
-  // (the bounce lifts him onto a mound top, not a bough)
-  { job: 'teach bounce', deck: ['bounce mound', 'stump hop', 'bank hops'], ground: true, bursts: 3, band: [1000, 1250] },
-  // (a ground fork: the high road on stump tops and a log jam, the low road on the floor and the creek)
-  // (its low road is the creek's once the engine draws a water zone: lily pads then, stump hop until then (the designer's element gate, 11-05))
-  { job: 'the fork', deck: { high: ['stump tops', 'log jam'], low: ['bank hops', 'stump hop'] }, ground: true, band: [950, 1150] },
-  { job: 'rest', deck: ['bank walk'], flagBefore: false, ground: true, band: [950, 1150] },
-  { job: 'teach double', deck: ['double gap', 'bank hops', 'stump hop'], hint: 'Flick up again in the air to jump twice', padHint: 'Press Jump again in the air', safe: true, ground: true, bursts: 3, band: [900, 1100] },
-  // (n8 on, the trees: bough stair or a bounce up into the boughs; the kapok climb is 1-4's)
-  { job: 'climb up', deck: ['bough stair', 'bounce up'], band: [650, 950] },
-  { job: 'test double', deck: ['double chain'], flagBefore: true, hint: 'Look how high we are!', hintAtEnd: true, band: [380, 750] },
-  { job: 'canopy fork', deck: { high: ['bough hops', 'bough stair'], low: ['bough hops', 'stump hop'] }, hint: 'No soft moss up here!', band: [380, 560] },
-  { job: 'cool down', deck: ['top branch'], band: [340, 480] },
-];
-
-/** a stage the mixer builds: its plan, where it starts, how many of Meeca's marks it lays (0 for a sprint), and its last piece */
-export interface MixSpec { id: string; plan: NodePlan[]; startY: number; marks: number; end: { kind: string; w: number }; burstMin?: number; burstMax?: number;
-  /** petals low, at marching height on the pieces, never in arcs over the gaps (1-1: Meeca's pressed petals, the lead's brief) */
-  lowPetals?: boolean;
-  /** the dressing and the clue prop at the stage's ends (1-1: the squirrels at the start, the bootprint at the shrine) */
+/** a stage the mixer builds, read from its spec: its plan, where it starts, how many of Meeca's marks it lays (0 for a sprint), its last
+ *  piece, and its petals low on the pieces for a trail (1-1: Meeca's pressed petals, the lead's brief) */
+interface MixSpec { id: string; plan: NodePlan[]; startY: number; marks: number; end: { kind: string; w: number }; burstMin?: number; burstMax?: number; lowPetals?: boolean;
   dress?: { start?: string[]; clue?: string } }
-export const MIX15: MixSpec = { id: '1-5', plan: PLAN_15, startY: 460, marks: 13, end: { kind: 'bank', w: 640 } };
-// (the shrine stands on a long log at the top branch's end: three long pieces of one kind in a row ran the gate's "nothing new" to 2,106 px)
-export const MIX11: MixSpec = { id: '1-1', plan: PLAN_11, startY: 1260, marks: 0, end: { kind: 'log', w: 640 }, burstMin: 5, burstMax: 6, lowPetals: true,
-  dress: { start: ['squirrel-sit', 'squirrel-wave', 'squirrel-tip'], clue: 'bootprint' } };
+
+/** a stage spec in the mixer's own terms (nothing stage-specific lives in this file: every stage is its spec, stages.ts) */
+export function mixOf(S: StageSpec): MixSpec {
+  const plan: NodePlan[] = S.nodes.map((n) => ({
+    ...(n.id ? { id: n.id } : {}), job: n.job, deck: n.deck as NodePlan['deck'],
+    ...(n.line ? { hint: n.line.text, ...(n.line.pad ? { padHint: n.line.pad } : {}), ...(n.line.at === 'end' ? { hintAtEnd: true } : {}) } : {}),
+    ...(n.flagBefore !== undefined ? { flagBefore: n.flagBefore } : {}), ...(n.heartAfter !== undefined ? { heartAfter: n.heartAfter } : {}),
+    ...(n.safe ? { safe: true } : {}), ...(n.lay ?? {}),
+  }));
+  return { id: S.id, plan, startY: S.lay.startY, marks: S.goal.kind === 'marks' ? S.goal.count : 0, end: S.lay.end, burstMin: S.lay.burstMin, burstMax: S.lay.burstMax,
+    lowPetals: S.profile.petals === 'trail' || undefined, dress: S.dress };
+}
 
 interface Lay {
   /** the difficulty dial's gap, as a share of the gate's widest (ENGINE-SPEC "The difficulty dial") */
@@ -199,7 +154,7 @@ function plat(L: Lay, k: string, x: number, y: number, w: number): Platform {
   else if (k === 'log') Object.assign(p, { style: 'log', height: 90 });
   else if (k === 'bridge') Object.assign(p, { style: 'canopy_bridge' });
   else if (k === 'creaky') {
-    if (!L.creakyTaught) throw new Error('1-5: a creaky piece before n2 teaches it');
+    if (!L.creakyTaught) throw new Error('a creaky piece before the node that teaches creaky');
     Object.assign(p, { type: 'fragile', creak: L.easy ? 1.2 : 0.88 });
   }
   else if (k === 'crumble') Object.assign(p, { type: 'fragile', style: 'ruin', crumbleAfter: L.easy ? 1.0 : 0.7 });
@@ -886,12 +841,12 @@ function supports(P: Platform[], height: number, clear: number[] = []): { trunks
  * same stage in both settings.
  */
 export function buildMix15(config: LevelConfig, seed: number, easy: boolean): GeneratedStage & { proto: ProtoExtras } {
-  return buildMix(config, seed, easy, MIX15);
+  return buildMix(config, seed, easy, mixOf(SPEC_15));
 }
 
 /** 1-1 from its node plan (CP4), by the same mixer */
 export function buildMix11(config: LevelConfig, seed: number, easy: boolean): GeneratedStage & { proto: ProtoExtras } {
-  return buildMix(config, seed, easy, MIX11);
+  return buildMix(config, seed, easy, mixOf(SPEC_11));
 }
 
 /** a stage from its node plan */

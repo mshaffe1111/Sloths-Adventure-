@@ -65,6 +65,30 @@ export interface NodeSpec {
   safe?: boolean;
   /** the height band the node keeps to, as a share of the stage's climb (0 the floor, 1 the canopy top) */
   height?: [number, number];
+  /** a short name on the map, for a node set between two others (1-5's "7b" between n7 and n8) */
+  id?: string;
+  /** the engine's knobs for this node, the designer's until the profile sets them (E8) */
+  lay?: NodeLay;
+}
+
+/** how the mixer lays one node (each one optional; the profile's dials decide the rest) */
+export interface NodeLay {
+  /** on Easy only (an extra rest) */
+  easyOnly?: boolean;
+  /** one burst only (a flat walk, no gaps: 1-1's run teach) */
+  one?: boolean;
+  /** bursts the node lays, over the dial's */
+  bursts?: number;
+  /** no canopy over its floor idea (a ground node) */
+  ground?: boolean;
+  /** the y band its way keeps to, top and bottom, in px (until `height` shares replace it) */
+  band?: [number, number];
+  /** never the idea node `not` rolled (1-based, counting nodes without an id) */
+  not?: number;
+  /** never an idea one of the last n nodes laid */
+  notLast?: number;
+  /** a hidden find's seed glint here */
+  seed?: boolean;
 }
 
 export interface StageSpec {
@@ -78,6 +102,8 @@ export interface StageSpec {
   goal: { kind: 'sprint' } | { kind: 'marks'; count: number; normal: number; easy: number };
   /** dressing and the end's clue prop, by the art atlas's frame names (drawn only once that atlas is wired) */
   dress?: { start?: string[]; clue?: string };
+  /** where the stage starts (the spawn bank's y, px) and its last piece; bursts a node lays when the dial decides (min-max) */
+  lay: { startY: number; end: { kind: string; w: number }; burstMin?: number; burstMax?: number };
 }
 
 /** the moves every stage after the tutorial may take as known (taught in World 1's earlier stages), by stage order */
