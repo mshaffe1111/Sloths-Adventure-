@@ -328,7 +328,9 @@ Each rule has the planner's machine check under it; a rule that can't be checked
 - a golden seed is seen "too far, for now";
 - Meeca passed here not long ago ("These petals are fresher").
 
-**Theme:** the canopy and creek of World 1; its art family is the World 1 kit. **Length:** from the nodes, with a target of about 150
+**Theme and frame (kept, designer ruling, 11-05):** today's 1-5 frame stays: the descent from the canopy to the forest floor at dusk, with Meeca's carvings as the goal. Matt: "the levels are built to go along with the story". The stage keeps going up and down node by node, like the old 1-1, but its overall trend is down: it starts in the canopy and ends on the floor. Its art family is the World 1 kit.
+
+**Sizes per idea:** each idea's pieces use the shipped size ranges on the CP2 sheet (p10-p90 widths per kind, `cp2/library.txt`), the heights its CP2 trace proved, and the CP2 Easy rules: rise cap +40, gap at most 80 px from +30, crumble 1.0 s. **Length:** from the nodes, with a target of about 150
 s skilled.
 
 Each node lists its job, then a **deck**: the ideas it may roll, with one drawn per roll by a shuffle bag. Each idea's pieces and
@@ -336,17 +338,17 @@ sizes are rolled inside the idea. Decks are what make two rolls different stages
 
 | # | Job | Deck (one idea drawn per roll) | Entry → exit | Pickups and markers |
 |---|---|---|---|---|
-| n1 | warm-up | bank hops, stump hop | ground → ground | petals as breadcrumbs only |
-| n2 | **teach** creaky (expose, then validate) | snap-twig dash, its teach form: one creaky twig low over a bank, then two over safe ground, no pit | ground → mid | Dot's "Creaky branches!" line here; no heart |
-| n3 | climb up | bounce up, the climb | mid → high | — |
-| n4 | **the fork** | high road: crumbling ledge or bough run with creaky limbs; low road: lily-pad hop or reed isles. They rejoin at n5 | high → mid (two roads) | a petal group on each road, each asking for that road's own move |
+| n1 | warm-up | bough stair (level form: boughs at one height band), bank hops on the high boughs | high → high | petals as breadcrumbs only |
+| n2 | **teach** creaky (expose, then validate) | snap-twig dash, its teach form: one creaky twig over a bough just below, then two, with a catch bough under them and no pit | high → high | Dot's "Creaky branches!" line here; no heart |
+| n3 | a local rise | bounce up, the climb | high → higher (the stage's top) | — |
+| n4 | **the fork** | high road: crumbling ledge or bough run with creaky limbs; low road: down to the creek, lily-pad hop or reed isles. They rejoin at n5 | top → mid (two roads) | a petal group on each road, each asking for that road's own move |
 | n5 | rest | bank walk | mid → mid | Dot's wayside line ("These petals are fresher"); a checkpoint here, since n6 is a test |
 | n6 | **test** creaky | snap-twig dash, the full form: over a real gap | mid → high | the third petal group; a heart only after it, if n6 has life risk |
 | n7 | twist | rotten-branch drop | high → low | — |
 | n8 | creek | lily-pad hop, reed isles, stump hop (not the one n4 rolled) | low → low | — |
-| n9 | puzzle beat | push block, bough stair, the climb (not the one n3 rolled) | low → high | the golden seed shown above, out of reach: "too far, for now" |
-| n10 | **master**, the second fork | high road: crumbling ledge or bridge span; low road: bough stair or bank hops; rejoin before n11 | high → mid (two roads) | a checkpoint before it; the fourth petal group, with its harder half on the high road |
-| n11 | cool down | bank hops | mid → ground → shrine | — |
+| n9 | puzzle beat | push block, bough stair, the climb (not the one n3 rolled) | low → mid | the golden seed shown above, out of reach: "too far, for now" |
+| n10 | **master**, the second fork | high road: crumbling ledge or bridge span; low road: stump hop or bank hops on the floor; rejoin before n11 | mid → low (two roads) | a checkpoint before it; the fourth petal group, with its harder half on the high road |
+| n11 | cool down | bank hops on the forest floor | low → shrine | — |
 
 **The rules this plan meets by construction** (the mixer still checks every roll):
 - **Ideas:** 9 to 11 different ideas a roll. No idea twice in a row. Snap-twig dash comes twice (teach at n2, test at n6, not in a
