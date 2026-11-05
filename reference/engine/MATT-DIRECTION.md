@@ -237,3 +237,13 @@ option C, and real sloths do swim faster than they climb. "Suddenly fast" needs 
 So the designer's P7 stands: on Normal a crumbling piece gives way 0.5 s after he lands (Celeste Classic's timing), comes back after
 2 s, and a required one is whole on respawn. Its first appearance keeps the calibrated teaching margin (P7). Easy's timing comes from the bots'
 calibration, never guessed.
+
+## 2026-11-05 12:40 PM ET (at 60% of the week): core engine now, polish next week
+"So some of this may have to get pushed to next week and we get the core engine in there so we can do multiple levels over the next
+couple of days and really test it out. The polish that goes on things can all happen next week."
+CORE (now): engine-core on main; footingOf + E3 support check; the per-roll tempo fix and the stage-specific code made data; the
+W1 gameplay fixes (crumble 0.5 s, 1-5 Easy, 1-1's lost-life spots); step 6 (whole-game ladder and water data + gates); E4/E5 (pass
+lines, neighbour check, one command per stage); then 1-1 and 1-2 from data, then more stages over the next days to test it.
+POLISH (next week, nothing cut): new art and repaints (1-1 sunrise, creek repaint finish, rotten wood, side branch, kin pieces, keyscan
+remakes), render-stone, gen2-water and the swim speed, pieces 5-9 and the crate/seesaw fixes, the picture sheet's presentation,
+bootprint re-shoot.
