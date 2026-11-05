@@ -44,3 +44,14 @@ only way you can hold budgets and understand true hours of work.")**
 - **Quicker than expected gets celebrated (Matt, 2026-11-04: "if things are quicker, then we celebrate... people get their kudos when they're doing things better than expected, so that there's feel-good moments").** Tell the helper by name what it beat and by how much, put it in the digest's first lines, and capture HOW in its method (standard work), so the win spreads.
 - The digest leads with the jobs that are over, with cause and fix, and the wins. The real hours go to the roadmap keeper at the end of each job, so
   the next estimate of that kind is truer.
+
+## Technical duty: fresh eyes on the code (Matt, 2026-11-04: "why don't we have our supervisors doing this?")
+The supervisor is not only process. It is the builders' fresh eyes:
+- **Unsticking:** when a builder reports the same problem twice, or 20-30 minutes of variations don't move a measure, the supervisor
+  reads the code itself, finds the structural cause ("what in the code makes it come out this way every time?"), and hands the builder
+  the fix with file and line. (1-5's repeat on 11-04: two hours of rerolls; the cause, a rest every 8th take-off, one gap set per roll,
+  a strict twig/branch alternation, took the lead minutes to find once it read layout15.)
+- **Reviewing:** it reads each builder's diff adversarially before the lead sees it, looking for hidden periodic patterns, duplicated
+  logic, a measure that is gamed instead of met, and a fix that only moves a problem.
+- **Always on while builders build.** It is never cut to save tokens: it is what keeps builders from burning them (lead's rule after
+  the 11-04 cut).
