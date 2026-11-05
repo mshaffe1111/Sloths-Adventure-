@@ -5,7 +5,7 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
-import { drawW1Pits } from './w1Pits.ts';
+import { drawW1Pits, paintedBank } from './w1Pits.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
 import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
 import { drawW7Face } from './w7FaceArt.ts';
@@ -1179,7 +1179,8 @@ export function drawProtoScene(
   // 200 over for the art that hangs past a platform's box)
   const vy0 = view.y0 ?? -Infinity, vy1 = view.y1 ?? Infinity;
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80 && p.y + p.height > vy0 - 200 && p.y < vy1 + 200;
-  const banks = platforms.filter((p) => (p.height >= 90 || p.soil) && !p.push && !p.broken && !p.art);
+  // (the banks of earth: w1Pits.ts paintedBank, the same rule its pits' walls are found by)
+  const banks = platforms.filter(paintedBank);
   // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
   if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'under');
   if (!drawGroundChunks(ctx, platforms, banks, view)) drawGround(ctx, platforms, banks, view);

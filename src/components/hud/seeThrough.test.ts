@@ -23,7 +23,7 @@ function view() {
   return v;
 }
 
-test('a HUD piece fades when a pickup, a platform top, an animal or Pokey is under it, and comes back when clear (QA v189, 4-2 at 918x370)', () => {
+test('a HUD piece fades when a pickup, an animal or Pokey is under it, and comes back when clear (QA v189, 4-2 at 918x370)', () => {
   const v = view();
   const heart = el();
   const menu = el();
@@ -42,15 +42,12 @@ test('a HUD piece fades when a pickup, a platform top, an animal or Pokey is und
   v.collectibles = [{ x: 1000 + 70 / 0.75, y: 200 + 20 / 0.75, type: 'flower', collected: true }];
   assert.equal(fadeCovered(v, pieces), 0);
   assert.ok(!heart.cls.has('vh-see'));
-  // a snake, a ledge top and Pokey himself under the Menu leaf all fade it
+  // a snake and Pokey himself under the Menu leaf fade it
   const wx = 1000 + 880 / 0.75;
   const wy = 200 + 40 / 0.75;
   v.enemies = [{ x: wx, y: wy + 10, type: 'snake', defeated: false, width: 60, height: 40 }];
   assert.ok(needsUnder(v, 860, 4, 906, 66));
   v.enemies = [];
-  v.platforms = [{ x: wx - 100, y: wy, width: 300, height: 40, type: 'solid' }];
-  assert.ok(needsUnder(v, 860, 4, 906, 66));
-  v.platforms = [];
   v.px = wx;
   v.py = wy + 20;
   assert.ok(needsUnder(v, 860, 4, 906, 66));
@@ -67,4 +64,25 @@ test('the fade is off while no stage runs', () => {
   const a = el();
   v.collectibles = [{ x: 1000 + 70 / 0.75, y: 200 + 20 / 0.75, type: 'flower', collected: false }];
   assert.equal(fadeCovered(v, [{ el: a, x0: 60, y0: 8, x1: 82, y1: 30, on: false }]), 0);
+});
+
+test("a log, a bank or a branch top under the hearts never fades them: the HUD stays over the world (R-164.7, Matt's still 03, 1-5)", () => {
+  // (Matt's 1-5, 2:27 AM: two high logs' tops lay under the fourth and fifth hearts and the lives plate, which faded to 30%, so the logs
+  // and a berry cluster read as drawn over his hearts and lives)
+  const v = view();
+  const heart = el(), lives = el();
+  const pieces: FadePiece[] = [
+    { el: heart, x0: 120, y0: 8, x1: 150, y1: 34, on: false },
+    { el: lives, x0: 30, y0: 40, x1: 100, y1: 70, on: false },
+  ];
+  v.platforms = [
+    { x: 1000 + 60 / 0.75, y: 200 + 22 / 0.75, width: 240, height: 90, type: 'solid' },
+    { x: 1000 - 40, y: 200 + 50 / 0.75, width: 200, height: 24, type: 'solid' },
+  ];
+  assert.equal(fadeCovered(v, pieces), 0, 'a ledge top is the world, not something the HUD hides');
+  assert.ok(!heart.cls.has('vh-see') && !lives.cls.has('vh-see'));
+  // (Pokey climbing up there still shows through, as before)
+  v.px = 1000 + 125 / 0.75;
+  v.py = 200 + 30 / 0.75;
+  assert.equal(fadeCovered(v, pieces), 1);
 });
