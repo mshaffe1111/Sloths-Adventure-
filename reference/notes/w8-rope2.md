@@ -101,3 +101,10 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
   Also open: wire easy through generateStage for every hand-built stage (only EASY_BUILT / RHYTHM_STAGES today); stage tests that build
   with easy=true outside 1-3 still test a stage that does not ship. 1-3 Easy's high-road snake on its longest branches sits near the
   150 px line; re-check after any high-road change.
+
+## 2026-11-04, evening close (9:40 PM ET)
+- 1-1 orchids: the canopy far swap is all the way in by blend 0.05 (lead ACCEPTED).
+- 1-1 true route (lead's ruling (a)): one spike gap in three is guarded open air; a root knot past the low road's first mushroom landing.
+  The dead walk's real cause: the goal route bounced, turned on the landing bough and dropped back for the high road (not the apron walk;
+  the apron knot was tried, did nothing, and was removed). Merged with the lead branch; funcheck PASS (75 known). Lead merged it; stood down.
+- Lesson: trace the route's samples for a flag before placing a fix; the first guess (the ledge named in the flag) was wrong.

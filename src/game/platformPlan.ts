@@ -255,6 +255,8 @@ function planThin(platforms: readonly Platform[], world: number, out: StagePlan)
   }
 
   // variants: a use-count penalty so neighbours of one look rarely match
+  const restsNear = (p: Platform) =>
+    platforms.some((q) => q !== p && (q.type === 'solid' || q.type === 'fragile') && q.x < p.x + p.width && q.x + q.width > p.x && q.y >= p.y + p.height - 2 && q.y <= p.y + p.height + 120);
   const recent = new Map<ThinLook, number[]>();
   for (let i = 0; i < n; i++) {
     const p = thin[i];
@@ -266,6 +268,9 @@ function planThin(platforms: readonly Platform[], world: number, out: StagePlan)
     for (let v = 0; v < nv; v++) {
       const minW = MIN_W[look]?.[v] ?? 0;
       if (p.width < minW) continue;
+      // (the twin log, a second shorter log lashed on underneath (thinArt drawLog), only on a log resting near ground: up in the air it
+      // read as two logs overlapping, 1-2's canopy, the quality supervisor's recording 2026-11-04)
+      if (look === 'log' && v === 3 && !restsNear(p)) continue;
       let score = h01(p.id, v, world, 5) * 1.5;
       if (used.length && used[used.length - 1] === v) score += 4;
       score += used.slice(-3).filter((u) => u === v).length * 1.1;
