@@ -74,7 +74,7 @@ generated:
   | Node idea | What the player does | Pieces that belong, in the order they lead | Entry → exit |
   |---|---|---|---|
   | Bough stair | climbs a tree branch by branch, each bough a different length | boughs (short, medium, long), stump to start | ground → high |
-  | Creek crossing | crosses water on things that float | lily pads, a log, a stump in the stream, bank | bank → bank |
+  | Creek crossing | crosses water on things that float | a log, a stump in the stream, bank (lily pads only if Matt confirms which stage had them: no old World 1 stage on main does, planner's count) | bank → bank |
   | Snap-twig dash | keeps moving because the twigs break under him | snap twigs, then a solid bough to land the run | any → mid or high |
   | The fork | picks the high road or the low road; they rejoin | 1-2's split: boughs and vines up top, logs and lilies down low | mid → mid (two roads) |
   | Vine relay | swings from vine to vine over a gap | vines, a bough or stump either end | high → high or mid |
@@ -100,10 +100,11 @@ generated:
 | Node idea | What the player does | Pieces that belong, in the order they lead | Entry → exit |
 |---|---|---|---|
 | Lily-pad hop | hops across water on pads of different sizes, some sinking | lily pads (small, big, sinking), a log to finish | bank → bank |
+| Bounce up | bounces off a mushroom up into the canopy | mushroom, then the first bough of the canopy | low → high |
 | Rope crossing | goes hand over hand along a shimmy rope over a gap | shimmy rope (exists, PLAN.md E11), a bough or bank either end | mid or high → same |
 | Animal on the path | deals with one animal in the way: jump it, wait for it, or kick-roll it | the boa (kick-roll, 1-5), bank or bough with room around it | any → same height |
 
-Lily pads come back from the old 1-1, where Matt misses them ("at least we used to have the lily pads"). Gliding is not a World 1
+**Corrected (planner's count):** no old World 1 stage on `main` has a lily pad, though the piece exists (`protoStage.ts:2294`, World 2's river). Which stage Matt meant goes to him through the lead; the lily-pad hop idea waits for his answer. Gliding is not a World 1
 idea unless World 1 already teaches it; it is on the move ladder below.
 
 **"It keeps building" (Matt to the planner: "every move you learn keeps coming back... it just keeps building and building"):**
@@ -119,8 +120,19 @@ at a higher job (teach, test, twist, master) or a higher risk target than the us
 - **The mix rule (designer), [Matt, 11-05] ideas first, pieces inside an idea.**
   1. **The stage's story beat and theme come first** (STAGE-RULES and the story files). They pick the stage's job and look, never
      its pieces' kit: the kit is the world's.
-  2. **The stage is a sequence of node ideas** from the world's list, chosen to suit the story beat. No idea appears twice in a
-     stage, and neighbouring stages share no more than half their ideas. A stage that teaches something new opens with the idea
+  2. **The stage is a sequence of node ideas** from the world's list, chosen to suit the story beat. Neighbouring stages share no
+     more than half their ideas.
+     **[designer ruling, 11-05, from tagging the old 1-1: `cp2/idea-tags.out`] "No idea twice" is withdrawn.** Matt's best stage
+     is a cycle of three ideas: bank hops, then a bounce up, then the fork (the canopy over the floor), repeated about 8 times,
+     with the fork 41% of its length. What makes it good is not many ideas, but a few that interlock: it is always going up or
+     down, it always offers two roads, and no two repeats are the same size or height. So the rule is:
+     - no idea twice **in a row**;
+     - no idea over the old 1-1's top share (about 40%);
+     - every repeat of an idea is a new kind x size (CP1's "new in the last 6" measure, applied inside the idea);
+     - a stage has at least 4 ideas.
+
+     Today's 1-1, 1-2, 1-4 and 1-5 fail this: one idea takes 54-76%, or one pair of ideas alternates the whole stage. The tagger
+     is a first pass (it reads kind, width and height); the planner checks its names against the surface fields. A stage that teaches something new opens with the idea
      that teaches it.
   3. **Inside an idea, pieces come only from that idea's own list**, in its order, drawn through a shuffle bag for sizes and
      heights, so each roll of the idea differs but always makes sense.
@@ -199,7 +211,7 @@ Each rule has the planner's machine check under it; a rule that can't be checked
 - **Pass line.**
   - All five stages pass the variety gate on 16 of 16 rolls, both settings.
   - Neighbouring stages share no more than half their main pieces.
-  - Every node on every map is labelled by its idea; no idea twice in a stage.
+  - Every node on every map is labelled by its idea; no idea twice in a row, and none over the old 1-1's top share.
   - The fun gate shows no new flags.
   - The designer has played each stage, upright and sideways, against the stage it replaces.
 - **Matt sees.** Five maps beside the old 1-1, and a grey-box test link of all five.
