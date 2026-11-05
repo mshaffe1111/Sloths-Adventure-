@@ -119,7 +119,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, climbLook, feetAtNow, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, climbFeetAt, climbLook, feetAtNow, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -731,6 +731,8 @@ export class GameEngine {
   private fallFromY = Infinity;
   /** how far the view has turned to look up a climb, sideways (0..1: cameraFollow.ts climbLook) */
   private camClimbK = 0;
+  /** the top of the trunk or vine he climbs (world y), for the sideways look up it */
+  private climbTopY: number | undefined = undefined;
   private softAt: { x: number; y: number } | null = null;
   private checkpoint = { x: 0, y: 0 };
   /** on a stage with flagsInOrder, the index of the flag he respawns at (-1: the start) */
@@ -1880,6 +1882,8 @@ export class GameEngine {
       const vertHeld = this.input.state.up || this.input.state.down || this.climbAssist > 0;
       this.climbSideTimer = sideHeld && !vertHeld && this.climbGrace <= 0 ? this.climbSideTimer + dt : 0;
       p.climbing = true;
+      // (the climb's top, for the camera's look up it, sideways: cameraFollow.ts climbFeetAt)
+      this.climbTopY = nearTreeVine.topY;
       p.isVineSwinging = false;
       p.grounded = false;
       p.vx = 0;
@@ -5512,7 +5516,12 @@ export class GameEngine {
     this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * FRAME.across + this.camLookX + runX;
     // (sideways, on a climb, the view looks up: cameraFollow.ts climbLook)
     this.camClimbK = climbLook(this.camClimbK, !!p.climbing, this.viewCssW > this.viewCssH, dt);
-    this.camera.targetY = this.camAnchorY - vh * feetAtNow(fr, this.camClimbK);
+    // (and on a tall climb the view goes up further, so the climb's top, the next ledge, shows under the HUD: cameraFollow.ts climbFeetAt)
+    const feetAt = feetAtNow(fr, this.camClimbK);
+    const climbTop = p.climbing ? this.climbTopY : undefined;
+    this.camera.targetY = this.camAnchorY - vh * (climbTop !== undefined && this.camClimbK > 0
+      ? feetAt + (climbFeetAt(feetAt, this.camAnchorY, climbTop, vh, ((HUD_BAND.land + 40) * vh) / this.viewCssH) - feetAt) * this.camClimbK
+      : feetAt);
     // World 1's kicked boa (w1Tricks.ts): while it rolls the view runs ahead with it, so what it hits is in view (the lead's call, upright
     // above all, where the view is narrow), never so far that he leaves the screen's near edge
     // (and a bowl gate that has just opened is kept in view a moment: the roll is short, and the view eases over more slowly than it rolls)

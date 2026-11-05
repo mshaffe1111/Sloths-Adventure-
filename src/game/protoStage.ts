@@ -1732,7 +1732,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
      * (a real drop where `real`, never on Easy), its flag on the entrance apron; fight snakes on its wider ledges (`snakes` of them,
      * each met punch on the quarter, hop on the next half)
      */
-    function traced(bars: string[], steps: Step[], o: { real?: boolean; snakes?: number; y?: number } = {}): Trace {
+    function traced(bars: string[], steps: Step[], o: { real?: boolean; snakes?: number; y?: number; stumpStyle?: Platform['style'] } = {}): Trace {
       const x0 = x;
       const y = o.y ?? G;
       close();
@@ -1777,7 +1777,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
           bank(l.x0, l.x1, l.y);
           groundEnd = l.x1;
         } else if (l.surface === 'stump') {
-          P.push({ id: pid++, x: Math.round(l.x0), y: l.y, width: Math.round(l.x1 - l.x0), height: Math.max(24, G + BANK_H - l.y), type: 'solid', style: 'moss_stone' });
+          P.push({ id: pid++, x: Math.round(l.x0), y: l.y, width: Math.round(l.x1 - l.x0), height: Math.max(24, G + BANK_H - l.y), type: 'solid', style: o.stumpStyle ?? 'moss_stone' });
         } else {
           branch(l.x0, l.x1, l.y);
         }
@@ -1858,10 +1858,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     beat('Intro: the sleeping snake', () => {
       // (nothing can hurt in the first five seconds: the first-timer bot walked into a snake 2.5 s in, 2026-10-28)
       rest(R.r(380, 420));
-      // (two patterns, the roll's pick: about 0.4 take-offs a second, the research's intro)
+      // (two patterns, the roll's pick: about 0.4 take-offs a second, the research's intro; its stumps earthen banks, not 1-1's opening
+      // hop stones: the quality supervisor, 11-04, 1-3's first 30 s looked like 1-1's start)
       const tr = R.chance(0.5)
-        ? traced(['h.......', '........', 'h...h...', '........', 'h.......', '....h...'], [J(40), J(-40, 'bank'), J(30, 'stump'), J(-30, 'bank'), J(40, 'stump')])
-        : traced(['h.......', '....h...', '........', 'h.......', '....h...', '........'], [J(30), J(-30, 'bank'), J(40, 'stump'), J(-40, 'bank')]);
+        ? traced(['h.......', '........', 'h...h...', '........', 'h.......', '....h...'], [J(40), J(-40, 'bank'), J(30, 'stump'), J(-30, 'bank'), J(40, 'stump')], { stumpStyle: 'log' })
+        : traced(['h.......', '....h...', '........', 'h.......', '....h...', '........'], [J(30), J(-30, 'bank'), J(40, 'stump'), J(-40, 'bank')], { stumpStyle: 'log' });
       // the sleeping snake on the first, widest branch, Dot's tip before it
       const b = tr.ledges.find((l) => l.surface === 'branch')!;
       // (far enough along it that her line has been up about two seconds when he reaches it: at 60% the fixed first-timer bot, taking a

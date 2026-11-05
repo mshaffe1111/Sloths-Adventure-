@@ -192,3 +192,16 @@ test('sideways, a climb looks up: the feet go down the view over 0.4 s, and come
   assert.equal(u, 0);
   assert.equal(feetAtNow(up, u), up.feetAt);
 });
+
+test("sideways, on a tall climb the view looks further up, so the climb's top is under the HUD band; his feet never past 90%; a short climb keeps the usual look-up", async () => {
+  const { climbFeetAt, CLIMB_LOOK } = await import('./cameraFollow.ts');
+  const viewH = 540, band = 210;
+  // (1-4's tallest trunk, 428 px, from its foot: the top at 428 + 210 px of world under the view's top needs his feet further down)
+  const tall = climbFeetAt(CLIMB_LOOK.feetAt, 6000, 6000 - 428, viewH, band);
+  assert.equal(tall, CLIMB_LOOK.deepest);
+  // (part way up, the top 200 px over him: the usual 78% already shows it)
+  assert.equal(climbFeetAt(CLIMB_LOOK.feetAt, 6000, 6000 - 200, viewH, band), CLIMB_LOOK.feetAt);
+  // (between: just far enough down that the top sits on the band's edge)
+  const mid = climbFeetAt(CLIMB_LOOK.feetAt, 6000, 6000 - 260, viewH, band);
+  assert.ok(Math.abs(mid * viewH - (260 + band)) < 1e-9 && mid > CLIMB_LOOK.feetAt && mid < CLIMB_LOOK.deepest, `${mid}`);
+});
