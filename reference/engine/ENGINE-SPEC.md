@@ -441,6 +441,35 @@ on the list after CP4.
 **The miss stops the work until Matt has seen why** (LEVEL-DESIGNER.md). The rulings above are written, and the planner rebuilds only
 after the lead's go.
 
+
+**[designer review of the CP3 rebuild map, node by node, 11-05 ~2:25 AM ET]**
+
+The rebuild passes every number. Reading the map node by node, the order in the strip map is n1, n2, n3, n4, (no n5), n6, n7, n8, n9,
+n10, n11, with a canopy over most floors. These must change before Matt sees it:
+- **A. n5, the rest, is missing.** It is the stage's breath: Dot's "These petals are fresher", and the flag before the test. Restore it
+  as one short burst.
+- **B. n6 is not the creaky test.** It laid "stump hop + canopy". The plan's n6 is the snap-twig dash in its full form, over a real gap:
+  the test of what n2 teaches. Without it, creaky is taught and never tested. Restore it; the heart after it stays.
+- **C. n3 drew lily-pad hop**, which is not in its deck (bounce up, or the climb). Each node draws only from its own deck.
+- **D. Too many mushrooms.** The strip map draws 56 against the old 1-1's 14 or so, because every canopy is entered by a bounce. Cap
+  mushrooms at the old 1-1's count. The other canopies are entered another way: a climb vine, a bough stair step, or a stump stack. No
+  two canopies in a row enter the same way.
+- **E. Creaky is the stage's theme and is thin:** 17 creaky or crumbling pieces in about 230. It must show in n2 (teach), n4's high
+  road, n6 (test) and n10's high road. Creaky or crumbling is at least 15% of landings, and among the stage's 3 commonest kinds.
+
+**Rulings on the planner's seven items:**
+1. **Crossings, yes.** Each fork gets a step-down halfway (high, a middle ledge, low) and a climb from the low road back up.
+2. **The marks goal:** Normal needs **10 of 13** and Easy **8 of 13**. That leaves one miss of slack on any single route of 11, and
+   the second road's marks stay the replay reward.
+3. **Warm-up as one burst: confirmed.**
+4. **The bridge in the bough stair: confirmed only as the stair's top piece**, a short rope bridge from the last bough to the next tree.
+   Never in the stair's middle.
+5. **The mushroom perch: fine for grey-box.** The painted stump or root goes on the art list before it ships.
+6. **Easy's landing:** Easy's dial width is set from the measured result after the engine's own Easy pass: 220 px at d = 0 down to 150
+   at d = 1. The size bands stay as they are.
+7. **Length:** 3:14-3:29 is accepted. Matt sets the floor at 2:00 with no cap. A and B add a little; cutting D's mushroom entries takes
+   some away. 1-4 and 1-6 in CP4 sit at least 20% either side of 1-5's median.
+
 **The rules this plan meets by construction** (the mixer still checks every roll):
 - **Ideas:** 9 to 11 different ideas a roll. No idea twice in a row. Snap-twig dash comes twice (teach at n2, test at n6, not in a
   row), and the fork twice (n4, n10).
