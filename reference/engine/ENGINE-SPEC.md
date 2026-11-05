@@ -821,6 +821,26 @@ third Easy-only rest of 4-5 s goes after n3 (c). **This is a miss at the checkpo
   bot's stall comes from it stepping off the high road's breather onto the low road. With no pad at a road's end, the road carries
   straight into the crossing or the rejoin.
 
+
+**[designer rulings, 11-05 ~5:00 AM ET, on option 3 (b88f2ea2) and round-2 stills (`cp3/stills-v6/`)]**
+- **(i) Fork marks move to the shared ground: yes.** One goes on the fork bank before the split, one on the rejoin after it. Taking one
+  road per fork is then a free choice, and no route has to double back. The high road keeps its reward as the stage's hardest petal
+  group, which is collectible rule 4 still met. The goal stays 10 of 13 on Normal and 8 on Easy; every route now passes 13, which
+  leaves room for misses.
+- **(ii) Easy keeps its 19+ splits, and its clock is accepted at 4:21-4:33.** Matt: "minimum 2 minutes... if it goes over 5, I'm okay
+  with that". The two roads are what he asked for. The 4:00 aim was the designer's own, and it is withdrawn for Easy. The 20% spread
+  between neighbouring stages is judged on Normal's quick clock.
+- **S-9:** both. The engine-render helper draws a stone's base down past the water line. The mixer lays a stepping stone no more than
+  50 px above the water, and a taller one as a stump in the stream.
+- **S-8** (Dot's bubble) goes to the engine-render helper, as engine UI.
+- **S-5** is closed: the tip shows once in real play. The repeat came from the still script.
+- **Round 2, the designer's review:**
+  - **Better:** nearby boughs now grow from shared big trees (S-4 fixed); the grey slab, pits and the dark box are gone; bridges stand
+    on posts; the HUD and the shrine agree ("9 more" at 1 of 10).
+  - **Still failing:** **S-3**, in the last sideways frame (the start): big mossy rocks still sit on posts over the gap. Rocks stand on
+    ground or in water only, never on posts.
+  - Round 2 goes to the lead once S-3 is fixed and (i) is built, with the 16-roll table re-run.
+
 **What Matt sees before his next play:** stills of the new 1-5, upright and sideways, at 6 places:
 - the start;
 - a fork, with both roads in view;
