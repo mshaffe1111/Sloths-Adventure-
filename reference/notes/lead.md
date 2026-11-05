@@ -18,6 +18,7 @@ Before I send anything, ask: does this move 1-1 forward today? If not, it goes o
 Not today: 1-2, other worlds, art, polish, whole-game data, new helpers (except the cold builder).
 
 ## Read now, in this order (Matt, 2026-11-05: "make sure you're reading all your notes when you get compressed without me having to beg")
+0. reference/LEAD-HANDOFF.md (the whole takeover picture; keep it current at every checkpoint)
 1. reference/LAWS.md, reference/LESSONS.md
 2. reference/PARTNER.md, reference/LEADER-STANDARD-WORK.md, reference/CONTINUOUS-IMPROVEMENT.md (the table's last 5 rows)
 3. reference/engine/MATT-DIRECTION.md: ALL of it. These are Matt's engine bars, in his words.
