@@ -21,7 +21,7 @@ export const SPEC_15: StageSpec = {
     // (the designer's ruling (b), 11-05: the high road's breakables are creaky limbs (a stone slab on a kapok trunk floats, P-2), and no
     // lily pads until the engine draws water (the element gate): the low road is ground)
     // (the designer's 10:09 ruling: World 7's crumbling slab leaves World 1 (SHIPPED acf6e1e8), and World 1 has no ground rotten-wood
-    // art yet, so the low roads lay stump hop and bank hops with no breakable until it is painted (on the picture list))
+    // art yet, so the low roads lay stump hop and bank hops with no breakable until it is painted (R-165.30, held to art week))
     { job: 'the fork', deck: { high: ['creaky boughs', 'bough hops'], low: ['stump hop', 'bank hops'] } },
     { job: 'rest', deck: ['bank walk'], line: { text: 'These petals are fresher. She came this way not long ago.' }, flagBefore: false },
     { job: 'test creaky', deck: ['snap dash', 'bank hops', 'log jam'], flagBefore: true, heartAfter: true },
