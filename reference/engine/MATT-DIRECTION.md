@@ -290,3 +290,9 @@ So, for every engine step from now:
 - 1-1 is the test of the engine. 1-2 does not start until 1-1 has passed its pass line, the designer's and the lead's checks, and
   Matt has played it on the test link. Anything Matt finds is an engine fix first.
 - Nothing reaches main until Matt has played it (as always).
+
+## 2026-11-05 2:39 PM ET (to the lead): one test at a time; 1-1 only
+"Why do we care about 1-2? We shouldn't care about 1-2 until 1-1's done. I feel like we're all over the place here. 1-1's our test.
+Then 1-2 is the second test."
+So: all work, messages and checkpoints today are about 1-1. 1-2 is parked (the designer's draft page stays as it is; the planner's five
+1-2 questions wait) until 1-1 has passed and Matt has played it. The lead stops mentioning 1-2 in plans until then.
