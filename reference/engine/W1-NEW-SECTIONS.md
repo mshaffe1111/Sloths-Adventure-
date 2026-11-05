@@ -108,3 +108,30 @@
   3:1.**
 - By phase: start 3, ki 10, sho 13, ten 7, ketsu 5, rest 5, goal 2 (counted from the tables; a section tagged for two phases counts in each).
 - engine-core's CHECK 2 table counts against slots per phase. If any phase is under 3:1, tell me the phase and I'll add there.
+
+### Round 3 (designer, 11-05 4:28 PM ET; the lead: rest +1, ten +2, ketsu +1, goal +1 against engine-core's slots at 150 s)
+
+| # | id / name | Phase | Diff | Needs | Ports | Pieces and what holds each | Sub-blocks | Source |
+|---|---|---|---|---|---|---|---|---|
+| 26 | `w1-log-walk` Along the fallen log | rest | 1 | walk | ground → ground | a long fallen log lying ON the floor (held by the ground), a calm walk along its top; W1 mushroom dressing (not bouncy) beside it; petals low on a stump | the log's length; a short second log | C2 (rest ≈ 2× beat); LABELS §1 solid log (floor-held) |
+| 27 | `w1-stilt-logs` High stump logs | ten | 5 | double | ground → ground | thin logs (h 30), each on its own stump down to the floor (the stump meets the log, 12:51 ruling), at rising heights, each a double from the last; the floor road runs below | 3 or 4 logs; rising or up-and-down | the log rules (12:51, 3:40); a double test over the floor |
+| 28 | `w1-two-answers` Two answers | ten | 6 | double | ground → ground | a gap past a single jump over the floor; on the near bank, a perched mushroom seated on a stump as the other way across (bounce, then a jump) | the mushroom or none; the far side a bank or a log on stumps | the pair on one beat (LEDGER-11-02:33); two ways over one obstacle |
+| 29 | `w1-bough-bridge` Bough stair and bridge | ketsu | 5 | double | ledge → ledge | boughs stepping up two plain W1 trunks, then a short rope bridge between posts that stand on the top boughs (no end hangs in the air: LABELS canopy_bridge, P-2); catch boughs under each gap | 3 or 4 boughs; the bridge or one more bough | LABELS §1 canopy_bridge (W1); catch boughs (3:11 ruling) |
+| 30 | `w1-last-step-up` The last step up | goal | 1 | jump | ledge → ledge | from a lower bough, one easy hop up onto the long high log with the exit totem; the bootprint place in its moss (held art) | the hop from the left or a short bough walk first | main's 1-1 end; 1-1.md:23 |
+
+**Seating, for every high end log (#15, #23, #30):** the long high log that carries the exit totem stands on two drawn plain W1 trunks
+under it (E3 footingOf: a log in the canopy is held by its trunks, never on air). It's the same log main's 1-1 ends on.
+
+**The count for 1-1, against engine-core's slots** (start 1, ki 1, sho 2, rest 2, ten 3, ketsu 2, goal 1):
+
+| Phase | Sections | Slots | Ratio |
+|---|---|---|---|
+| start | 3 | 1 | 3:1 |
+| ki | 10 | 1 | 10:1 |
+| sho | 13 | 2 | 6.5:1 |
+| rest | 6 | 2 | 3:1 |
+| ten | 9 | 3 | 3:1 |
+| ketsu | 6 | 2 | 3:1 |
+| goal | 3 | 1 | 3:1 |
+
+Every phase is at least 3:1.
