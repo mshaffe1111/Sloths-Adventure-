@@ -91,3 +91,13 @@ Updated: 2026-11-04 08:00 ET. Base: origin/ccr-0d59a91c-oy3imz at 4d458021.
   fights kept on Easy (Enemy.easyKeep). Lesson: the moves-alike cosine is dominated by "JJJ" (all jumps count alike); a stage stands apart
   only when its own move breaks every run of jumps. And a snake must be 150 px clear of BOTH landings near it (its ledge's and the next
   one's when at the same height), measured from the route's landing, not the trace's.
+- ACCEPTED (the lead, 2026-11-04 ~7:20 PM ET): R-159.1, the 1-3 rebuild and the 1-6 re-aim; gate on my head 2376/0, every gate green but
+  the fun gate, which is judged on w1-rhythm's merged head (1-3: 0 fun flags, 0 landing flags there). Stopped for today.
+- TOMORROW (the lead's list):
+  1. 1-9 rework: master stretch; its trunks/walls/leaps flavours to Matt's 75% band (the bot never climbs the trunk to the boa's perch;
+     the ring's two branch snakes are left up high); 1-9's Easy soft pit, only once its tests build as the engine does.
+  2. The 1-5 kick-teach piece (for fix-petals / w1-rhythm's 1-5).
+  3. Vine snakes in 1-8.
+  Also open: wire easy through generateStage for every hand-built stage (only EASY_BUILT / RHYTHM_STAGES today); stage tests that build
+  with easy=true outside 1-3 still test a stage that does not ship. 1-3 Easy's high-road snake on its longest branches sits near the
+  150 px line; re-check after any high-road change.
