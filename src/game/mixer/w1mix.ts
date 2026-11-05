@@ -873,6 +873,9 @@ function startDress(names: string[], spawnX: number, bank: Platform): Array<{ n:
 
 /** a stage from its node plan */
 function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec): GeneratedStage & { proto: ProtoExtras } {
+  // (the band starts at the stage's limits on every build: it was left over from the stage built before, so 1-5 after 1-1 was a different
+  // stage from 1-5 built fresh, same seed (found 11-05, tools/engine/probe-order.ts); the snapshot's order check holds it)
+  band = { ...LIMIT };
   const PLAN = S.plan;
   const nid = (i: number) => nidOf(PLAN, i);
   // (the difficulty dial, ENGINE-SPEC: d from the world and stage; the gap is this share of the gate's widest)
