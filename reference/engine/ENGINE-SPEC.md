@@ -2489,6 +2489,12 @@ this spec disagrees with this page, **this page wins.** Every older line it repl
    - standing kinds 5;
    - upper half 93.8%;
    - float 25.4%.
+   - **[added 2:43 PM ET, the engine-core porter on efb425f50 (same on engine-mixer d4dbadae8)]** layout 1's soft pit at x 20242 with no
+     step out (w1Pits), whose fix is the 12:51 thin-logs ruling;
+   - **[same time]** dips around x 28862-32929 that a single jump never leaves (firsttimer plainWalk), against STAGE-RULES §2,
+     "every dip has a one-jump way out". This is an engine fix: the lay gives every dip a one-jump way out. It's never accepted
+     because the double is taught by then.
+
    If any is still there when the builder runs, it's an engine finding for the planner, never a reason to bend 1-1's data around it.
 
 ## 1-2 for the builder: the one page to build 1-2 from (designer, 11-05 1:29 PM ET; lines set 1:37 PM from R-165.43; DRAFT only until the planner's answers to F; brief line numbers checked against the corrected brief at 1:37 PM ET)
