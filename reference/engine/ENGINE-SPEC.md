@@ -141,6 +141,39 @@ differently is world five." This replaces "each world has its own kit":
 - "Look at the library of art and see what we've created that's not been used": the planner's unused-art inventory feeds the
   library. Every unused piece of art that can carry a node idea becomes a library entry, tagged with the worlds it fits.
 
+
+**[designer, 11-05 ~12:30 AM ET] Node ideas from the unused art (the lead's inventory part 1,
+`reference/engine/unused-art/IN-GAME-UNUSED.md` on `ccr-0d59a91c-oy3imz`).**
+- The 273 unused pieces are read for what a player could *do* with them. Set dressing (leaves, banners, signs, story faces) stays
+  dressing, and boss frames stay with their bosses.
+- These become shared-library ideas, tagged with the worlds whose art they come from, and usable wherever they fit (World 5's own
+  pieces stay World 5's).
+- "Mechanic" says whether the engine already does what the idea needs; the planner checks every "exists?" against the code before
+  the idea goes on the sheet.
+
+| Idea | What the player does | Unused art it uses | Fits | Mechanic |
+|---|---|---|---|---|
+| Hollow-log crawl | slides through a hollow log to pass under a hazard or hide from the eagle | W1 hollowlog-moss/-plain, Matt's three painted hollow logs (never cut) | W1, W2, W6 | hide exists (eagle); crawl-through exists? |
+| Root gate | finds what opens a gate of roots, then comes back through it | W1 root-gate-open/-shut, W2 reed-gate, W3 rootLadder | W1-W3 | gates exist in puzzle rooms? |
+| Bobbing crates | crosses water on crates and barrels that ride up and down | W2 crate-up/-down, barrel-up/-down, W10 crate | W2, W6, W10 | bobbing platform exists? |
+| Reed isles | hops small floating isles of reeds | W2 reed-isle-a/-b, W6 lily-pads, W9 pumice-raft | W2, W6, W9 | floating static: yes |
+| Falling stalactites | waits for the drip, then runs under before they fall | W3 stalactite-fall/-shards | W3, W7, any cave | falling hazard exists? |
+| Sleeping bat | creeps past a bat without waking it | W3 bat-asleep/-stir/-flap | W3, W8 | new animal |
+| Counterweight lift | stands on one side to raise the other | W3 counterweight, root-basket | W3, W7 | seesaw exists (W6) |
+| Updraft ride | rides warm air up a cliff | W4 updraft-1/2/3 | W4, W8, W9 | glide exists (W8); updraft? |
+| Slung log | jumps onto a log slung from ropes as it swings | W4 slung-log, rope-anchor | W1, W2, W4 | swinging platform exists? |
+| Crumbling ledge | crosses a ledge that cracks and falls a beat after landing | W4 ledge-whole/-cracking/-gone, W3 crack-whole/-cracking, W7 cracked-ledge | all but W5 | crumble exists |
+| Behind the falls | finds a path behind a waterfall veil, a hidden high or low road | W4 veil-closed/-parting, fall-narrow/-medium/-wide | W2, W4, W6 | new |
+| Push block | pushes a block to make a step up | W7 push-block | W3, W7, W10 | push exists? |
+| Hanging planks | crosses a chain of hanging planks that dip under him | W7 hanging-platform, W9 plank-hanging/-ring, W10 hanging-iron | W7, W9, W10 | new |
+| Hot rocks | crosses rocks that heat on a cycle | W9 hot-platform, vent-rock, smoke-crack | W9 | timed hazard exists? |
+| Secret tunnel | breaks a cracked floor and drops into a hidden low road | shared secret-cracks, secret-tunnel-kit, sunk-stone, flooded-strip | any | secrets exist? |
+| Scaffold climb | climbs scaffold, balconies and iron stairs | W10 scaffold, balcony, iron-stair | W10 | climb exists |
+| Bridge span and fallen column | crosses a broken span, then walks a fallen column | W7 bridge-span, fallen-column | W7, W9 | static: yes |
+
+Animals in the unused frames (the mantis "disguise", the eagle "glide", the caiman "retreat", the turtle "scurry") can give each
+animal a second behaviour. That is the harder form the move ladder asks for when a taught animal comes back.
+
 ### CP3: the mixer, proven on the worst stage first (1-5) (owner: designer specs the mix rule, planner builds and runs)
 - **The mix rule (designer), [Matt, 11-05] ideas first, pieces inside an idea.**
   1. **The stage's story beat and theme come first** (STAGE-RULES and the story files). They pick the stage's job and look, never
