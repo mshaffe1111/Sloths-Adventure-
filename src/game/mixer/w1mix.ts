@@ -43,9 +43,11 @@ export type Idea =
 /** the floor ideas a canopy is laid over (the designer's ruling 1 on the CP3 miss: "boughs run above bank hops, stump hops or the creek") */
 export const FLOOR: readonly Idea[] = ['bank hops', 'stump hop', 'lily-pad hop'];
 export interface Fork { high: Idea[]; low: Idea[] }
-export interface NodePlan { job: string; deck: Idea[] | Fork; not?: number; notLast?: number; hint?: string; padHint?: string; flagBefore?: boolean; heartAfter?: boolean; seed?: boolean }
+export interface NodePlan { id?: string; job: string; deck: Idea[] | Fork; not?: number; notLast?: number; hint?: string; padHint?: string; flagBefore?: boolean; heartAfter?: boolean; seed?: boolean }
 
 /** CP3's 1-5 plan, row by row (ENGINE-SPEC "CP3 design"); `not`: never the idea node `not` rolled; `notLast`: never one the last n nodes laid */
+/** a node's name on the map: its plan id, or its number counting only the nodes without one (n7b sits between n7 and n8) */
+const nid = (i: number): string => PLAN_15[i].id ?? String(PLAN_15.slice(0, i + 1).filter((q) => !q.id).length);
 export const PLAN_15: NodePlan[] = [
   { job: 'warm-up', deck: ['bank hops', 'stump hop'] },
   { job: 'teach creaky', deck: ['snap teach'], hint: 'Creaky branches! Grab the petals and keep moving' },
@@ -55,6 +57,9 @@ export const PLAN_15: NodePlan[] = [
   { job: 'rest', deck: ['bank walk'], hint: 'These petals are fresher. She came this way not long ago.', flagBefore: false },
   { job: 'test creaky', deck: ['snap dash', 'bank hops'], flagBefore: true, heartAfter: true },
   { job: 'twist', deck: ['rotten-branch drop', 'stump hop'] },
+  // (the second rest, the designer's ruling on the fun gate, 11-05 ~2:26 AM: a short flat pad and a Dot spot after the drop; its flag
+  // only if a hard node follows, which the flag rule decides. The line is the planner's draft, for the designer)
+  { id: '7b', job: 'rest', deck: ['bank walk'], hint: 'Catch your breath. Her marks go on past the creek.' },
   // (the designer's ruling 6 on the CP3 miss: n8 draws one that the previous two nodes did not lay)
   { job: 'creek', deck: ['lily-pad hop', 'reed isles', 'stump hop', 'crumbling ledge'], notLast: 2 },
   // (push block leaves n9 for CP3, the designer's ruling: the level check walks a pushed log only inside a puzzle room; back in CP4)
@@ -78,13 +83,15 @@ interface Lay {
   hints: StageHint[];
   flags: Array<{ x: number; y: number }>;
   marks: Array<{ x: number; y: number }>;
-  explain: Array<{ node: number; job: string; idea: string; road?: 'high' | 'low'; canopy?: boolean; x0: number; x1: number; why: string }>;
+  explain: Array<{ node: number; nid?: string; job: string; idea: string; road?: 'high' | 'low'; canopy?: boolean; x0: number; x1: number; why: string }>;
   pid: number;
   cid: number;
   easy: boolean;
   /** how the last canopy was entered, and how many mushrooms the stage has (the designer's review D: no more than the old 1-1's) */
   entry?: Entry;
   mushrooms: number;
+  /** Easy's breather pads laid so far (they alternate log and bank) */
+  pads?: number;
   /** creaky has been taught (n2's first twig is laid): no creaky piece before it (STAGE-RULES: the first appearance is taught) */
   creakyTaught: boolean;
   /** the last six landings' kind x size, as the variety gate reads them (cp1/measure2.py), so a burst picks a size that is new */
@@ -180,8 +187,9 @@ function clearPiece(L: Lay, ps: Platform[]): Platform | undefined {
 
 /** each piece kind's widths by size band (short under 150 px, medium 150-300, long over 300), inside the shipped p10-p90 (cp2/library.txt)
  *  and CP2's proven sizes */
+// (short stones stop at 120 px: Easy's own pass widens a ledge by its jump, and a 140 px stone came out medium, easyMode.ts)
 const BANDS: Record<string, Array<[number, number]>> = {
-  bank: [[110, 148], [160, 290], [310, 360]], stone: [[60, 140], [160, 233]], log: [[180, 290], [310, 420]], branch: [[110, 148], [160, 290]],
+  bank: [[110, 148], [160, 290], [310, 360]], stone: [[60, 120], [160, 233]], log: [[180, 290], [310, 420]], branch: [[110, 148], [160, 290]],
   bridge: [[112, 148], [160, 300]], creaky: [[110, 148], [150, 170]], crumble: [[110, 110]], lily: [[82, 102]], reed: [[150, 190]],
 };
 const HEIGHT: Record<string, number> = { bank: 120, stone: 50, log: 90 };
@@ -240,23 +248,25 @@ function step(L: Lay, c: Cursor, R: Rng, k: string, w: number): Platform {
 /** one idea's burst, laid from the cursor; returns the way's end */
 function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
   // (a burst is 4-6 pieces, the designer's (a); 1-5 sits at 4-5 for its 2:30-3:00 aim, ENGINE-SPEC "Stage length")
-  const n = R.i(4, 5);
+  // (Easy one piece shorter, 3-4, the designer's ruling on the fun gate)
+  const n = L.easy ? R.i(3, 4) : R.i(4, 5);
   switch (name) {
     case 'bank hops': return burst(L, c, R, R.pick([['bank', 'stone', 'log'], ['log', 'bank'], ['stone', 'bank', 'log']]), n);
-    case 'stump hop': return burst(L, c, R, ['stone', 'bank'], n, [40, -40, -70, 30, -30]);
+    // (a log as its third kind: on Easy its stones and banks all widen into one size, and the gate's "something new" ran out)
+    case 'stump hop': return burst(L, c, R, ['stone', 'bank', 'log'], n, [40, -40, -70, 30, -30]);
     case 'snap teach': {
       L.creakyTaught = true;
       // (expose, then validate: a creaky twig low over a long bank, then two over safe ground; nothing to fall into)
-      // (720 px, the twigs closer together: the 900 px bank was a 3 s walk with nothing to do, the fun gate's longest dead walk)
-      const bank = step(L, c, R, 'bank', 720);
+      // (600 px, the twigs close together: the designer's ruling on the fun gate (the 900 px bank was a 3 s walk with nothing to do))
+      const bank = step(L, c, R, 'bank', 600);
       // (low, higher, low: 40, 75 and 40 px over the bank, each a step up or down from the last, never flat)
-      plat(L, 'creaky', bank.x + 160, bank.y - 40, 150);
-      plat(L, 'creaky', bank.x + 370, bank.y - 75, 140);
-      plat(L, 'creaky', bank.x + 560, bank.y - 40, 130);
+      plat(L, 'creaky', bank.x + 110, bank.y - 40, 150);
+      plat(L, 'creaky', bank.x + 280, bank.y - 75, 140);
+      plat(L, 'creaky', bank.x + 440, bank.y - 40, 130);
       return { x: bank.x + bank.width, y: bank.y };
     }
     // (the test of n2's teach in its full form (the designer's review B): six pieces, three of them creaky, every gap a real one)
-    case 'snap dash': return burst(L, c, R, ['creaky', 'branch'], 6);
+    case 'snap dash': return burst(L, c, R, ['creaky', 'branch'], L.easy ? 5 : 6);
     case 'bounce up': {
       // (the old 1-1's highRoad: a mushroom on the ground, branches 170-200 px over it, proven there)
       const pad = step(L, c, R, 'bank', 300);
@@ -374,7 +384,8 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     // fall in (the fun gate's dead walks: a 2 s walk with nothing to do, 12 of them at canopy ends))
     const m1 = L.P[L.P.length - 1];
     const full = m1.width;
-    m1.width = Math.round(full * 0.55);
+    // (60/40, so the second half is short and the first medium: two sizes, the gate's "something new")
+    m1.width = Math.round(full * 0.6);
     const m2 = plat(L, ks[0] === 'lily' ? 'log' : ks[0], m1.x + m1.width, m1.y - 30, full - m1.width);
     end = { x: m2.x + m2.width, y: m2.y };
     const floor = L.P.slice(from).concat(host);
@@ -407,6 +418,19 @@ function canopied(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
     e = end;
   }
   return e;
+}
+
+/**
+ * Easy's breather (the designer's ruling on the fun gate, 11-05 ~2:26 AM): a flat, safe pad, 640 px, about 2.2 s at a run (a rest of 2 s
+ * or more, under the gate's 2.5 s of dead time), with breadcrumb petals only.
+ */
+function breather(L: Lay, c: Cursor, R: Rng): Cursor {
+  L.pads = (L.pads ?? 0) + 1;
+  // (a bank: logs would crowd out creaky, the stage's theme, from its 3 commonest kinds; the bank's width turns, 600-680, so no two pads
+  // are one size twice running)
+  const pad = step(L, c, R, 'bank', L.pads % 2 ? 600 : 680);
+  for (let px = pad.x + 120; px < pad.x + pad.width - 80; px += 170) L.C.push({ id: L.cid++, type: 'flower', botanicalVariant: 'orchid', x: Math.round(px), y: pad.y - 40, collected: false, bobPhase: (px * 0.031) % 6.28 } as Collectible);
+  return { x: pad.x + pad.width, y: pad.y };
 }
 
 /**
@@ -496,6 +520,8 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       const pad = step(L, c, R, 'log', 280);
       c = { x: pad.x + pad.width, y: pad.y };
     }
+    // (Easy's breathers between nodes; none next to a rest node, which is one)
+    if (L.easy && i > 0 && n.job !== 'rest' && PLAN_15[i - 1].job !== 'rest') c = breather(L, c, R);
     if (n.hint) L.hints.push({ x: c.x + 60, text: n.hint, pad: n.padHint ?? n.hint, keys: n.padHint ?? n.hint, ...(c.y >= 600 ? { belowY: c.y - 60 } : { aboveY: c.y + 60 }) } as StageHint);
     const from = L.P.length;
     if (Array.isArray(n.deck)) {
@@ -534,8 +560,10 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
         const bx = c.x;
         // (a floor idea outside a fork and the rest carries a canopy)
         const over = FLOOR.includes(pick) && n.job !== 'rest';
+        // (and between a node's bursts, so no Easy run goes 20 s without a 2 s rest)
+        if (L.easy && k > 0) c = breather(L, c, R);
         c = over ? canopied(L, pick, c, R) : idea(L, pick, c, R);
-        L.explain.push({ node: i + 1, job: n.job, idea: pick, ...(over ? { canopy: true } : {}), x0: bx, x1: c.x, why: `burst ${k + 1} of ${bursts}${over ? ', a canopy over it' : ''}` });
+        L.explain.push({ node: i + 1, nid: nid(i), job: n.job, idea: pick, ...(over ? { canopy: true } : {}), x0: bx, x1: c.x, why: `burst ${k + 1} of ${bursts}${over ? ', a canopy over it' : ''}` });
         laid.push(pick);
         last = pick;
       }
@@ -562,20 +590,22 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
       const forkFrom = L.P.length;
       // (each road lays two bursts, its deck's two ideas in turn, so the fork is a real stretch of the stage: the plan's 15-20% each)
       lastIdea = lo2;
-      const hiEnd = idea(L, hi2, idea(L, hi, { x: forkBank.x + forkBank.width, y: hy }, R), R);
+      // (on Easy a breather between each road's two bursts, as between a node's)
+      const gap = (e: Cursor) => (L.easy ? breather(L, e, R) : e);
+      const hiEnd = idea(L, hi2, gap(idea(L, hi, { x: forkBank.x + forkBank.width, y: hy }, R)), R);
       // (the low road starts under the gap off the fork bank's end, so running off that end drops him onto it)
       const lowStart = { x: forkBank.x + forkBank.width - 90, y: ly };
       band = { yMin: ly, yMax: ly + (L.easy ? 60 : 160) };
       const lowFrom = L.P.length;
-      const loEnd = idea(L, lo2, idea(L, lo, lowStart, R), R);
+      const loEnd = idea(L, lo2, gap(idea(L, lo, lowStart, R)), R);
       band = { ...LIMIT };
       // (rejoin: one long bank 30 px over the low road's end, a gap the gate allows on from it, and long enough to run on under the high
       // road's end, which drops onto it)
       const ry = Math.max(LIMIT.yMin, loEnd.y - 30);
       const rx = loEnd.x + Math.min(70, gateGap(L, loEnd.y, { y: ry, height: 120, type: 'solid' }, loEnd.y - ry) - 4);
       const rejoin = plat(L, 'bank', rx, ry, Math.max(320, hiEnd.x + 240 - rx));
-      L.explain.push({ node: i + 1, job: n.job, idea: `${hi} + ${hi2}` as Idea, road: 'high', x0, x1: hiEnd.x, why: `high road from [${n.deck.high.join(', ')}]` });
-      L.explain.push({ node: i + 1, job: n.job, idea: `${lo} + ${lo2}` as Idea, road: 'low', x0: lowStart.x, x1: loEnd.x, why: `low road from [${n.deck.low.join(', ')}]` });
+      L.explain.push({ node: i + 1, nid: nid(i), job: n.job, idea: `${hi} + ${hi2}` as Idea, road: 'high', x0, x1: hiEnd.x, why: `high road from [${n.deck.high.join(', ')}]` });
+      L.explain.push({ node: i + 1, nid: nid(i), job: n.job, idea: `${lo} + ${lo2}` as Idea, road: 'low', x0: lowStart.x, x1: loEnd.x, why: `low road from [${n.deck.low.join(', ')}]` });
       petalsOver(L, lowFrom);
       // (Meeca's marks, the designer's ruling: one on each road; the high road's at its hardest spot, its middle piece)
       const hiPs = L.P.slice(forkFrom, lowFrom), loPs = L.P.slice(lowFrom, L.P.length - 1);

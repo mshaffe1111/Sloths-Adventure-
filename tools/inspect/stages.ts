@@ -9,8 +9,9 @@
  */
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 import { buildProtoStage, HAND_STAGES, type ProtoExtras } from '../../src/game/protoStage.ts';
+import { RHYTHM_STAGES } from '../../src/game/w1Rhythm.ts';
 import { buildW2Stage, W2_STAGES } from '../../src/game/w2Stages.ts';
-import { generateStage, setLayoutVariant, type GeneratedStage } from '../../src/game/stageGenerator.ts';
+import { EASY_BUILT, generateStage, setLayoutVariant, type GeneratedStage } from '../../src/game/stageGenerator.ts';
 import { isGen2Stage } from '../../src/game/gen2/game.ts';
 import { capFlagSpans, easyStage } from '../../src/game/easyMode.ts';
 import { w4Normal } from '../../src/game/w4Normal.ts';
@@ -61,7 +62,13 @@ export function stageList(worlds: number[], seed: number): { stages: StageEntry[
     const make = (cfg: LevelConfig, easy: boolean): Stage => {
       // (with the game's own cap on the room between flags, as generateStage builds them: easyMode.ts capFlagSpans, LV-9)
       // (and World 4's Normal numbers, Normal only: w4Normal.ts, LV-2)
-      if (HAND_STAGES[c.id]) return easy ? capped(buildProtoStage(cfg, seed, HAND_STAGES[c.id])) : w4Normal(capped(buildProtoStage(cfg, seed, HAND_STAGES[c.id])));
+      // (PLAN.md M0, engine plan E6: a hand-built stage whose builder lays Easy itself (1-1 to 1-5) was inspected from its Normal build on
+      // both settings, so Easy's pacing was judged on Normal's ground. Its builder is now given Easy as generateStage gives it,
+      // stageGenerator.ts:2857: only the stages that lay Easy themselves)
+      if (HAND_STAGES[c.id]) {
+        const own = easy && (RHYTHM_STAGES.has(c.id) || EASY_BUILT.has(c.id));
+        return easy ? capped(buildProtoStage(cfg, seed, HAND_STAGES[c.id], own)) : w4Normal(capped(buildProtoStage(cfg, seed, HAND_STAGES[c.id])));
+      }
       if (W2_STAGES[c.id]) return capped(buildW2Stage(cfg, seed, W2_STAGES[c.id]));
       if (!gen2) return generateStage(cfg);
       // (as the engine builds it on entry: the layout number, then generateStage on the difficulty played)

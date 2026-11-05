@@ -2840,7 +2840,7 @@ const flagsCapped = (st: GeneratedStage): GeneratedStage => {
 
 /** the hand-built stages whose builder lays Easy itself (the rest are made gentler on the built stage alone: easyMode.ts): w1-rhythm-b's
  *  1-1 and 1-4, w8-rope2's 1-3 (the lead, 11-04); w1Rhythm.ts's RHYTHM_STAGES (1-2, 1-5) pass it too */
-const EASY_BUILT: ReadonlySet<string> = new Set(['1-1', '1-3', '1-4']);
+export const EASY_BUILT: ReadonlySet<string> = new Set(['1-1', '1-3', '1-4']);
 
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
