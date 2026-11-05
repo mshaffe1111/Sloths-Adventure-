@@ -10,7 +10,7 @@ ruling (ENGINE-SPEC), INV (the inventory row), or SHIPPED (a commit).
 1. **Rocks never float.** This covers every rock, stone, boulder, slab, ruin block, mound, bank and earth piece, in every world. Each
    sits on the ground, a bank, a drawn water bed, a drawn column or its own base down to something solid. (MATT 11-05; ENGINE-SPEC
    10:39 AM.)
-2. **Platform pieces may float, under the stage's float cap:** logs, planks, boughs, bridges' planks and their kin. (MATT 11-05: "I
+2. **Platform pieces may float, in every world** (re-set 5:31 PM to MATT 11-05, via the lead: "if they're part of the platforms, they can float... I just don't want secondary objects like rocks and other things, lily pads, to be floating"; matches engine-core's catalog.ts 8cb80cf25). Every platform he stands on (a bough, limb, shelf, log or plank) may float. A secondary object (a stone, a mushroom, a pad, a prop, dressing) still stands on something. 1-1's 25.3% float line is 1-1's own line, not a cap on other stages (NODES §7.3). Was: **Platform pieces may float, under the stage's float cap:** logs, planks, boughs, bridges' planks and their kin. (MATT 11-05: "I
    understand the floating logs... A platform needs platforms.")
 3. **Water pieces only on a drawn water zone:** lily, reed, drift logs and pool logs. (MATT: "lily pads only on water"; engine-render's
    padsOffWater test.)
@@ -29,11 +29,11 @@ ruling (ENGINE-SPEC), INV (the inventory row), or SHIPPED (a commit).
 | solid log art=steps | log art=steps | built / bank village | no | stairs up the bank houses | W2 | kept |
 | solid log art=poolLog | log art=poolLog | water / a drawn pool | no (on water) | pool crossing | W4 (4-3) | water rule 3 |
 | drift log | drift log drift | water / a river surface | no (on water) | the river crossing that moves | W2 now; the ladder returns it in W6 and W8 ponds | needs a drawn river (rivers row) |
-| solid branch (bough) [revised 12:43 PM ET: in W3, W4, W7 and W9 a thin piece is DRAWN as stone, so rule 1 applies there; see §8] | branch, branch pit=drop, branch catch (pit=drop), branch lip | tree / a trunk within 220 px, or a post; or floating where it reads cleaner | **yes** (platform) | landing, stair, canopy road, catch under a teach gap (catch), ledge lip (lip) | all W1-W10 (INV: 58 stages) | trunk rule (≤ 3 full trunks per 1,400 px) |
-| branch art=frond / art=orchid / art=post lip | | tree / frond and orchid on a trunk; post lip on a porch post | no | W4 frond ledge; W5 orchid shelves; W2 porch posts | W4, W5, W2 respectively (each its own art) | theme-locked |
+| solid branch (bough) [re-set 5:31 PM: may float in every world (rule 2); the stone-thin-world 'no' is gone; see §8's open point] | branch, branch pit=drop, branch catch (pit=drop), branch lip | tree / a trunk within 220 px, or a post; or floating where it reads cleaner | **yes** (platform) | landing, stair, canopy road, catch under a teach gap (catch), ledge lip (lip) | all W1-W10 (INV: 58 stages) | trunk rule (≤ 3 full trunks per 1,400 px) |
+| branch art=frond / art=orchid / art=post lip | | tree / frond and orchid on a trunk; post lip on a porch post | **yes** for frond and orchid (platforms; re-set 5:31 PM, rule 2); the post lip stands on its post | W4 frond ledge; W5 orchid shelves; W2 porch posts | W4, W5, W2 respectively (each its own art) | theme-locked |
 | solid branch pillar / moss_stone pillar | | ground / stands on its drawn pillar | no | the 4-10 lair's pillars | W4 | stone on a pillar is supported |
 | canopy_bridge | canopy_bridge (+ catch, pit=drop, hidden) | tree / plank span; ends on posts or boughs where drawn | **yes, as planks** | span, canopy road | W1, W5, W8, W9, W10 | a rope or post end drawn dangling in air is a P-2 fault: draw posts, or plank only |
-| fragile branch creak (creaky) | fragile branch, creak, crumbleAfter, pit=drop creak | tree / trunk or bough | no | a landing that gives way; the canopy breakable | W1 (taught 1-2; SHIPPED 6dae405d), W7, W8, W10 | W1's breakable art is W1 branch art (SHIPPED acf6e1e8) |
+| fragile branch creak (creaky) | fragile branch, creak, crumbleAfter, pit=drop creak | tree / trunk or bough | **yes** (platform; re-set 5:31 PM, rule 2) | a landing that gives way; the canopy breakable | W1 (taught 1-2; SHIPPED 6dae405d), W7, W8, W10 | W1's breakable art is W1 branch art (SHIPPED acf6e1e8) |
 | bouncy (mushroom) | bouncy - | ground / the floor, a bank, stump or log | no | bounce up (taught 1-1 n4) | W1, W3, W4, W7 | |
 | bouncy branch / log / canopy_bridge | | tree or plank, as its style | yes, as its style | bounce off a springy limb | W5, W7-W10 | |
 | solid moss_stone | moss_stone, moss_stone pit=drop, soil, art=rock | **ground (stone) / the floor, a bank or its own base** | **NO** | step, rise, landing; `soil` = earth under it | all W1-W10 (INV: 76 stages, about 2,800 placed) | **The largest no-float kind in the game.** Any one with nothing solid under it breaks rule 1, so E3 must count them (section 4) |
@@ -44,7 +44,7 @@ ruling (ENGINE-SPEC), INV (the inventory row), or SHIPPED (a commit).
 | moving log / canopy_bridge (moveRange), moving art=lift | | built or plank / a track or rope | yes, as a platform that moves | moving platform (planned teach 2-7, R-164.9); the lift (2-7) | W2, W5, W6, W8, W9 | |
 | moving moss_stone / moving ruin | | stone that moves through the air | **NO: breaks rule 1** | — | W7, W9, W10 today (INV) | **Not used in new stages.** Today's 5 placements go on the known list; their moving-platform job goes to a log, plank or lift kin |
 | solid - art=kit / porch / lily / hidden / chase / crown | kit (puzzle-kit pieces), porch (W2 houses), lily (water), hidden (secret), chase (1-8), crown (1-8) | as their art: kit = built ground, porch = built, lily = water | no | puzzle rooms; the bank village; lily pads; secrets; the 1-8 chase set piece | as INV | kept as built; lily on water only |
-| fungus_shelf / roost_branch | | tree / a trunk (a bracket shelf, a roost limb) | no | W8 night-forest landings | W8 | theme-locked |
+| fungus_shelf / roost_branch | | tree / a trunk (a bracket shelf, a roost limb) | **yes** (platforms; re-set 5:31 PM, rule 2) | W8 night-forest landings | W8 | theme-locked |
 
 ## 2. Climb, hang and swing
 
@@ -473,13 +473,13 @@ kit's frame from src/assets/kits/w<N>.webp: `labels/sheets/kit-branch-frames.jpg
 |---|---|---|---|
 | W1 | W1's own wood bough (protoAtlas) | tree | yes, under the cap |
 | W2 | wooden planks lashed with rope | built (wood) | yes, as planks |
-| W3 | a mossy stone slab | **stone** | **no**: held, column or kin (render-stone's stoneHold) |
-| W4 | a slate slab with grass | **stone** | **no**: held, column or kin |
+| W3 | a mossy stone slab | **stone** | yes, as a platform (re-set 5:31 PM, rule 2). **OPEN for Matt:** this frame is drawn as stone, so a floating one shows a floating slab |
+| W4 | a slate slab with grass | **stone** | yes, as a platform (re-set 5:31 PM, rule 2). **OPEN for Matt:** this frame is drawn as stone, so a floating one shows a floating slab |
 | W5 | no `branch` frame: falls back to W1's wood bough | tree | yes. W5's own thin art is an art gap (ENGINE-SPEC floating-stone ruling) |
 | W6 | a grey root stump, roots splayed down | wood (root) | yes, as wood. **Open:** a rooted stump hovering in the air reads as roots reaching for nothing (D37). Named for the lead's art list, not ruled away here |
-| W7 | a carved ruin slab | **stone** | **no**: held, column or kin |
+| W7 | a carved ruin slab | **stone** | yes, as a platform (re-set 5:31 PM, rule 2). **OPEN for Matt:** this frame is drawn as stone, so a floating one shows a floating slab |
 | W8 | a purple log with leaves | tree (log) | yes |
-| W9 | a cracked basalt slab | **stone** | **no**: held, column or kin |
+| W9 | a cracked basalt slab | **stone** | yes, as a platform (re-set 5:31 PM, rule 2). **OPEN for Matt:** this frame is drawn as stone, so a floating one shows a floating slab |
 | W10 | a black metal grate | built (metal) | yes, as a built platform under the cap (Matt: "floating logs and platforms" are fine) |
 
 - **The kin for a stone piece over a deep drop** is its world's own platform art, never W1's log (12:30 ruling). W3, W4 and W7 keep the

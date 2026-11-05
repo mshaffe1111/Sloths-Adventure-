@@ -270,7 +270,7 @@ LATER means it is not built yet and not in 1-1.
 | M | Flow | A run of quick beats at the roll's tempo, never more than 2.5 s of dead time (WORLD-RULEBOOK §7.1) | A run where every jump leads straight into the next, without stopping. |
 | E | Exit (the arrival) | The end piece where the stage's trend reaches. 1-1: a long high log with the exit totem (main stageGenerator.ts:2136); the clue. A quiet exit is held to the rest rule | You walk out along a long high log to the totem, calm, and the stage is done. |
 | L | Finale | 15-20 s at the exit, everything taught, dense. Not in 1-1 (it ends quiet) | The last stretch throws everything you've learned at you, fast. |
-| H | Hidden alcove (LATER) | A find off the main route, proven reachable | A sneaky spot off the path with something to find, if you look. |
+| H | Hidden alcove (reward) | A find off the main route, proven reachable. NOW in 1-1 as the planner's `w1-seed-perch` (the golden seed; `required` on every 1-1 roll), re-set 5:32 PM | A sneaky spot off the path with something to find, if you look. |
 | K | Chase (LATER) | Moving pressure. Never in a world's first stage. W1's is 1-5's, by story | Something is coming. Keep moving and don't stop. |
 | Z | Puzzle room (LATER) | A hand-built room that stays as built | A room where you stop and work out how to get through. |
 | B | Arena (LATER) | A fight in a held space; the combat ladder | You hold one spot and deal with the creatures that come. |
@@ -423,3 +423,70 @@ All three pass V1-V18: the cap, the neighbour rule with its two exceptions, and 
 - One parser reads the strings and checks V1-V18, and fails with the rule and the token.
 - The engine-core porter builds the parser. Until then, these rules are the spec.
 
+
+### 8.7 The block rule: a teach's check and a test can't be walked round (designer, 11-05 5:32 PM; engine-core 8cb80cf25's required-move gate)
+
+**The finding (engine-core).** On today's mixed 1-1, a bot with NO double and NO bounce finishes all 8 runs. The safe floors and the
+fork roads leave a way round, so nothing teaches or tests anything. The root is the data, not the gate (Law 22): no section says
+where the way is BLOCKED.
+
+**The physics (physics.ts on engine-core):**
+- a single jump rises `JUMP_RISE` ≈ 108 px;
+- a jump then a double rises `DOUBLE_RISE` ≈ 185 px;
+- a mushroom bounce (bounceV 830) rises about 181 px above the cap and leaves one air jump (engine.ts:4885 `jumpsLeft = 1`), so bounce
+  then jump reaches about 258 px above the cap;
+- at full run, a single jump's airtime is about 0.63 of a jump-then-double's (0.63 s against 1.01 s from jumpV, doubleV and the two
+  gravities), so a single jump crosses about **0.63** of the double's reach.
+
+**The rule.**
+
+| # | Rule |
+|---|---|
+| B1 | **Every T's safe check and every X holds a BLOCK:** a place where the way on needs the node's move. Nothing bypasses it: not the floor road, a catch bough, a fork road, a stone, a stump, a dressing piece. A miss still lands safe, but BEFORE the block (the floor road returns him to the start of the check), never past it. The floor road resumes after the block |
+| B2 | **A double block** is one of: (a) a rise of **130-165 px** from the take-off top to the next landing top, with nothing standable between (over 108 + a 20 px margin, under 185 − 20); or (b) a gap of **0.74-0.86 of the double's reach** (past the single's 0.63 with margin; a teach takes the low end) whose pit leads BACK only: its steps climb to the near side, and its far wall stands at least 130 px over the pit floor |
+| B3 | **A bounce block** is a lip **200-225 px above the floor at the mushroom** (over a double from the floor, 185 + 15). The bounce clears it from the cap with room to land. Standing on the perch stump (46-56 px) and doubling must not reach it: lip ≥ stump top + 185 + 15 |
+| B4 | **A catch bough** sits at least 130 px under the NEXT landing, so it is never a stair past the block. It only returns him to the take-off |
+| B5 | **A fork is never a T or an X.** Both roads finish by design (V7), so the low road is a way round. A section with two answers (#7's mushroom version, #28) is a `twist`, and the gate runs it with BOTH moves taken away (it must fail) and with each one alone (it must pass) |
+| B6 | **The gate's model of "without the bounce" removes the mushroom, keeping its stump.** Today it makes the mushroom plain solid. A player can never stand on a mushroom (landing on one always bounces), so a solid cap is a step that doesn't exist in play. With a solid cap, a double off it (185) beats the bounce itself (181), and no bounce could ever be required. For engine-core (play.ts `without`) |
+
+**Fixes in the data (W1-NEW-SECTIONS, for engine-core to enter in w1.ts):**
+
+| Section | Way round now | Fix |
+|---|---|---|
+| #5 `w1-mushroom-lift` | "walking passes under" the log road; the mound's lip at about 160 px is within a double (185) | **The floor ENDS at the face of a bank whose lip is 200-225 px up (B3).** The mound version: bankW dy [-225, -200], exitDy about -210. The log-road version: the log road starts on that bank's top, and the floor doesn't run under it |
+| #8 `w1-double-teach` | gaps at shares [0.6, 0.64], [0.66, 0.7], [0.7, 0.74]: the first two are about what a single jump crosses (0.63) | Shares **[0.74, 0.78], [0.78, 0.82], [0.80, 0.84]** (B2b). The pit's steps lead back only, and its far wall is ≥ 130 px over the pit floor |
+| `w1-second-jump`, `w1-leap-stones` (harvest) | the [0.62, 0.66] gap is crossable by a single jump | Every `gDoubleGaps` share ≥ **0.74**. The leap-stones one-gap version becomes [0.74, 0.78] |
+| #20 `w1-stump-towers` | each rise is 115-125 px, only 7-17 px over a single jump, with the floor road running under | Rise **[-150, -130]** per tower (B2a). The soft pits under them lead back only (B2b); the out floor's face stands ≥ 130 px over the pit floor |
+| #27 `w1-stilt-logs` | each rise is 110-115 px, within a single jump's tolerance | Rise **[-150, -130]** per log (B2a), with the pits as #20 |
+| #10, #22, #29 (canopy rungs, weave, bough stair) | catch boughs could stair past a rise | Each rise 130-165 px (B2a); each catch bough ≥ 130 px under the next landing (B4) |
+| #21 `w1-bounce-double` | none, but the 'high' version [-360, -340] may be past bounce then jump from the cap (about 258 + cap height) | 'low' **[-290, -270]**, 'high' **[-320, -300]**: over a double from the stump top (about 56 + 185 = 241), under bounce then jump. The full bot proves it |
+| #7, #28 (two answers) | each answer bypasses the other | Tag `twist` (B5); the gate runs both moves removed |
+
+The numbers are mine, from physics.ts (JUDGMENT on the 15-20 px margins). The full bot and the move-less bot prove each version
+on 16 layouts. **For the planner:** B1-B4 need one place rule, a "block" a section names, which the gate reads: either a rise or a
+gap past the single jump, and a pit whose steps lead back only. B2b's shares assume `share` is the fraction of the double's TRUE
+reach. If gen2's `share` is of a safe reach, please give me the mapping.
+
+### 8.8 Rulings on engine-core's cadence and job tags (designer, 11-05 5:32 PM)
+
+**Cadence (cadence.ts):** all three accepted, anchored to R1 L4 (the SMBF and Shovel Knight cadence: ramp, then cool). The values are
+JUDGMENT, to re-check on 16 layouts once 1-1 builds on gen2.
+- **No flat run:** 4 slots in a row whose ratings span ≤ 1, counted from slot 3 (the arrive and the first teaches sit low on purpose).
+- **A peak cools by 2 within 2 slots.** V5's rest after every X, W and S does this by itself.
+- **The hardest slot is never in the first third.** This matches V6, the set piece in the last third.
+
+**Job tags (w1.ts JOBS), ruled:**
+
+| Section | Proposed | Ruling |
+|---|---|---|
+| `w1-learn` | arrive, teach | **teach** only. Its soft gaps are ground ends, which an arrive can't have (§1: none in the first 1,300 px). The arrive is `w1-forest-edge` or `w1-meadow` |
+| `w1-cache-stones` | practise, choice-reward | **practise.** A choice-reward is a fork's high road (§1). If the cache is off the line, it's `reward` |
+| `w1-stone-zigzag`, `w1-log-road`, `w1-mound-log` | practise, fork | **practise.** `fork` only on a section whose high road holds a find socket (V7): #4, #14, #22. The floor road under a raised road counts toward the two-road floors as SHAPE, not as an F node |
+| `w1-floor-dash` (#14) | fork, flow | fork, flow, **if** its high road carries the find socket (V7). Otherwise practise, flow |
+| `w1-fallen-trunk` (#7) | test | the 'double' version is **test**; the 'mushroom' version is **twist** (B5) |
+| `w1-two-answers` (#28) | combine, test | **twist** (B5). A combine is both moves on one beat; this is either move |
+| `w1-seed-perch` | reward | **reward**, and H moves to NOW in the key (it's `required` on every 1-1 roll) |
+| every other row | as proposed | **accepted** |
+
+**One flag for Matt (LABELS §8):** in W3, W4, W7 and W9 a thin platform is DRAWN as a stone slab. Under the new floating rule it may
+float, which puts a floating slab on screen, and rocks don't float. It needs his look at a still. It's not a 1-1 matter.
