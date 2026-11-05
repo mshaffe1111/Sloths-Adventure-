@@ -169,7 +169,7 @@ The ledger is world data the generator reads, saved as stages are built (R1 §4.
 
 | Type | W1 share | Arc (0 until taught, a peak over 2-3 stages, then a floor) | Source |
 |---|---|---|---|
-| ground | 32 | 1-1 on; peak 1-1 to 1-3; floor 15 | MATT ("the first world is a lot more jumping, climbing, and learning the mechanics", 11-05 ~5:00 PM); ES M3 L2045 (a staple is about a third or more) |
+| ground | 32 | 1-1 on; peak 1-1 to 1-3; floor 15 | MATT ("World 1 = jumping, climbing, learning"); ES M3 L2045 (a staple is about a third or more) |
 | floating | 22 | low in 1-1 (last third only); peak at 1-5 (boughs on kapok trunks) and 1-4 to 1-6 | the stage briefs' looks: 1-1.md:51 (boughs late), the 1-2 brief :45-47 (1-5's boughs on kapok). Old 1-1's 25.3% float line is **1-1's line only**, not a world cap (MATT 3:3x PM: "how else are you going to get variety if you're still judging everything off of one stage?") |
 | climb | 13 | stair 1-1; kapok 1-4; peak 1-4 to 1-6 | MATT ("climbing"); the ladder (1-4) |
 | rope | 13 | shimmy 1-3, liana 1-6; peak 1-6 to 1-8 | the ladder (moveLadder.ts; main's taught-at); 1-6 is lianas |
