@@ -1381,6 +1381,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const type: Collectible['type'] = budget.archetype === 'rescue' ? 'cage' : 'relic';
         C.push({ id: sink.nextCollectibleId(), type, x: k.x, y: k.piece.y - (s.dn ?? 30), collected: false, bobPhase: 0, ...(type === 'cage' ? { cageHp: 2 } : {}) });
         fills.push({ section: sec.uid, socket: s.id, role: 'objective', what: type, x: k.x, y: k.y });
+      } else if (s.role === 'find') {
+        // (a hidden find, the golden seed: once a stage, by construction where its section's socket stands (the section is placed by
+        // manifest.required, so every roll holds one))
+        if (C.some((c) => c.type === 'seed')) continue;
+        C.push({ id: sink.nextCollectibleId(), type: 'seed', x: k.x, y: k.piece.y - (s.dn ?? 30), collected: false, bobPhase: 0 });
+        fills.push({ section: sec.uid, socket: s.id, role: 'find', what: 'seed', x: k.x, y: k.y });
       }
     }
   }

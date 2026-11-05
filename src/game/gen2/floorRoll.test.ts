@@ -10,6 +10,7 @@ import { cfg, kit, manifest } from './toyWorld.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import type { SectionTemplate, WorldKit, WorldManifest } from './types.ts';
 import type { Platform } from '../types.ts';
+import { DOUBLE_RISE } from '../physics.ts';
 
 const hollowPerch: SectionTemplate = {
   id: 'toy-w1-hollow',
@@ -122,4 +123,29 @@ test('a ledge gap has a catch bough under it; the hollow log is the art\'s own h
 
 test('a world without floorRoll builds exactly as before (the toy world, 16 seeds)', () => {
   for (const s of SEEDS) assert.deepEqual(build(kit, s).platforms, build({ ...kit, manifest: { ...manifest } }, s).platforms);
+});
+
+test('the golden seed (a \'find\' socket in a required section): one a roll, more than 200 px up past a double, a mushroom within 260 px under it', () => {
+  const perch: SectionTemplate = {
+    id: 'toy-w1-seedperch', name: 'the golden seed over a mushroom', archetypes: 'any', phases: ['sho', 'ten', 'ketsu', 'ki', 'rest'], difficulty: 3,
+    pieces: [
+      { key: 'bank', shape: 'bank', w: [520, 560], place: { kind: 'start' } },
+      { key: 'stump', shape: 'block', w: [80, 80], h: 46, place: { kind: 'on', on: 'bank', at: [0.3, 0.3], h: [46, 46] }, main: false },
+      { key: 'mush', shape: 'bouncy', w: [70, 70], h: 30, place: { kind: 'on', on: 'stump', at: [0, 0], h: [30, 30] }, main: false },
+      { key: 'bough', shape: 'branch', w: [270, 270], place: { kind: 'over', on: 'bank', at: [0.3, 0.3], dy: [-(DOUBLE_RISE + 70), -(DOUBLE_RISE + 70)] }, main: false },
+    ],
+    entry: { piece: 'bank', kind: 'ground' }, exit: { piece: 'bank', kind: 'ground' }, exitDy: 0,
+    sockets: [{ id: 'seed', role: 'find', on: 'bough', t: 0.5, dn: 70 }],
+    mirrorable: false,
+  };
+  const k: WorldKit = { ...kit, manifest: { ...manifest, sections: [...manifest.sections, perch], required: { '5-7': [{ section: 'toy-w1-seedperch' }] } } as WorldManifest };
+  for (const s of SEEDS) {
+    const st = build(k, s);
+    const seeds = st.collectibles.filter((c) => c.type === 'seed');
+    assert.equal(seeds.length, 1, `seed ${s}: ${seeds.length} golden seeds`);
+    const sd = seeds[0];
+    const ground = st.platforms.filter((p) => p.type === 'solid' && p.x <= sd.x && p.x + p.width >= sd.x && p.height >= 90).sort((a, b) => a.y - b.y)[0];
+    assert.ok(ground && ground.y - sd.y > 200 && ground.y - sd.y > DOUBLE_RISE, `seed ${s}: the seed ${ground ? ground.y - sd.y : '?'} px over the ground under it`);
+    assert.ok(st.platforms.some((p) => p.type === 'bouncy' && Math.abs(p.x - sd.x) < 260 && p.y > sd.y), `seed ${s}: no mushroom within 260 px under the seed`);
+  }
 });
