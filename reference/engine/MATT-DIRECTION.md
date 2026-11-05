@@ -137,7 +137,7 @@ What this means for the engine:
   The mixer may only pick a piece labelled for that world, and the element gate rejects a piece out of its element.
 - **This is priority one in the engine work** (the planner's step 2-3), ahead of pass lines and the one-command build.
 
-## 2026-11-05 ~11:10 AM ET (to the lead): the engine plans the WHOLE game, not World 1
+## 2026-11-05 ~10:08 AM ET (to the lead): the engine plans the WHOLE game, not World 1
 "When all the special moves come in, how it needs to plan water when we start heading where you can swim. I don't think there's
 anything in the engine that calls for water. And they should be quick in and out things. We already did the research on that. And how
 to inject once we have special moves and we taught something, that it continues to go through the engine. The engine is the core. This
@@ -165,7 +165,7 @@ What this means for the engine (the designer decides how; these are the bars the
    (reference/methods/), proved by one helper building a stage from it cold.
 5. **Not rushed:** time goes here. The checkpoints and Matt's 55% ceiling still hold; a checkpoint shows progress, not a finished world.
 
-## 2026-11-05 ~10:20 AM ET (to the lead): nothing is a guess; 1-1 and 1-2 test the ENGINE; fix the engine, never the stage
+## 2026-11-05 ~10:19 AM ET (to the lead): nothing is a guess; 1-1 and 1-2 test the ENGINE; fix the engine, never the stage
 "There's been a million games that have been made. So we shouldn't have to guess about anything... We have hundreds of thousands of
 words with even code put into it from Gemini on how to build things. We've done our own research on how to build things. Nothing's a
 guess. This engine needs to be concrete. Needs to be right the first time. And we use 1-1 and then 1-2 as the test. How quick things get
@@ -183,7 +183,7 @@ What the lead holds everyone to:
 3. **After the engine:** stage helpers (level designers) compose stages creatively from the inputs and polish. They don't build
    machinery.
 
-## 2026-11-05 ~10:45 AM ET (to the lead): no token ceiling today; it takes what it takes
+## 2026-11-05 ~10:32 AM ET (to the lead): no token ceiling today; it takes what it takes
 "It takes what it takes today. This needs to be done right. And I'm not going to rush or shortcut token-wise getting this engine
 right. This is too important. The whole game is this engine... This engine fails, the game fails. Period. This is, today is make it
 or break it."

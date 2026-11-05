@@ -22,12 +22,12 @@ Then ReadNotifications, then check that the 30-min check-in is armed (list_trigg
   never the stage.
 - The lead does NOT design. The lead checks, approves, sends back, writes story briefs (story and look), and runs the team and the
   checkpoints.
-- NO CEILING today (Matt, 10:45 AM ET: "It takes what it takes today... not going to rush or shortcut token-wise"). Costs are still reported and the meter read at checkpoints; no waste.
+- NO CEILING today (Matt, 10:32 AM ET: "It takes what it takes today... not going to rush or shortcut token-wise"). Costs are still reported and the meter read at checkpoints; no waste.
 
 ## THE BOARD: deadlines and what success looks like (set 10:26 AM ET; Matt: "You set the standards... deadlines... what success looks like. And you hold them to it... catch mistakes early, not late")
 Every check-in compares each line below with the clock. A missed time gets a send-back at once with the lesson (8i: bring options
 that still make the deadline, never "tomorrow"). Only the lead moves a deadline, and says why to Matt.
-Matt, 10:33 AM ET: "if they miss a deadline, you're on them... look how I've put pressure on you. That's how I expect you to put
+Matt, 10:30 AM ET: "if they miss a deadline, you're on them... look how I've put pressure on you. That's how I expect you to put
 pressure on them. And we do not shortcut anything... Not done fast and sloppy to get it done. Done right." A miss gets an immediate,
 plain message: what was due, what success was, what arrived, the lesson broken, the new time and what happens if it's missed again
 (replaced by a fresh helper at high effort). A deadline never buys a shortcut: if right won't fit the time, they say so early and I
@@ -60,7 +60,7 @@ move the time, never the bar.
   from 10:15 AM ET. It does not read SPEC-TRACE until its own trace is written.
 - art-bootprint: under the designer. One HF picture, cap $3. The still comes to the lead before it's wired.
 
-## SUPERSEDED at 10:45 by "it takes what it takes": the order is critic, rulings, step 6, 1-1, 1-2 (all today). Was: Matt's call, 10:38 AM ET: option (A)
+## SUPERSEDED at 10:32 by "it takes what it takes": the order is critic, rulings, step 6, 1-1, 1-2 (all today). Was: Matt's call, 10:31 AM ET: option (A)
 1-1 is built TODAY on the W1 ladder, after the full library and labels (12:00), the pass line (11:15) and the critic rulings that touch it (1:30). Step 6
 (whole-game data and gates) runs after the critic; 1-1 is re-run through it when it lands. 1-2 next budget. The lead argued for the whole
 engine first; Matt decided, so now do it his way, well.
@@ -68,7 +68,7 @@ engine first; Matt decided, so now do it his way, well.
 ## Held / waiting
 - HELD: anything built from ENGINE-SPEC sections A-F (worlds/ladder data, six gates) until the critic reports and the designer
   rules on its findings. The planner works on plumbing only.
-- SENT BACK 10:30: the library sheet was World-1-only (no climb/hang/swing, no air); redo from a code inventory of every world.
+- SENT BACK 10:24: the library sheet was World-1-only (no climb/hang/swing, no air); redo from a code inventory of every world.
 - Waiting: the planner's cost estimate vs 55%; the 1-1/1-2 pass line (time, cost, fixes) for Matt to OK; the critic's verdict;
   Matt's pick on the deep-pit look (stills sent 11-05 morning).
 - Lead to write: the 1-3 and 1-4 story briefs; 6-9's brief (the swimming stage) when the engine reaches W6.
@@ -77,5 +77,5 @@ engine first; Matt decided, so now do it his way, well.
 - The start-up print was 34 KB and was cut to a 2 KB preview after compression, so I didn't really get my notes (D36). Now the
   print is small and points here; I READ the files above with the Read tool.
 - Combined git fetch aborts on one missing ref: fetch each branch on its own.
-- Never type a time; read the clock.
+- Never type a time; read the clock. (Broke it again 11-05 ~10:30: stamped 10:38-11:15 on events at 10:10-10:32; the designer caught it. Countermeasure: run `TZ=America/New_York date` in the same command that writes any time.)
 - Never design. Report a design problem with evidence; the designer fixes it.
