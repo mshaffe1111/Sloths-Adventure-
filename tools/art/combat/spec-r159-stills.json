@@ -1,0 +1,93 @@
+{
+ "tag": "r159-stills",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/950e43720e8bbb0d1fcdfbeb0a021bc37793ad8d/tools/art/combat/starts/",
+ "items": [
+  {
+   "name": "r159-vine-hang-s55-7",
+   "start": "vine-hang.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite: a sly vine snake hanging head-down, its body the colour and texture of a jungle liana, olive green-brown with fibrous woody bark-like scales and faint twisting ridges like a vine, a few tiny leaf-like scales, its head small and pointed, two big round eyes half-closed and sly, it could pass for a hanging liana until it moves, soft cel shading, thin dark outline, light from the upper left, side view, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, extra heads, extra tails, legs, human, leaves on the background",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "r159-vine-hang-s55-23",
+   "start": "vine-hang.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite: a sly vine snake hanging head-down, its body the colour and texture of a jungle liana, olive green-brown with fibrous woody bark-like scales and faint twisting ridges like a vine, a few tiny leaf-like scales, its head small and pointed, two big round eyes half-closed and sly, it could pass for a hanging liana until it moves, soft cel shading, thin dark outline, light from the upper left, side view, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, extra heads, extra tails, legs, human, leaves on the background",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "r159-vine-hang-s65-7",
+   "start": "vine-hang.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite: a sly vine snake hanging head-down, its body the colour and texture of a jungle liana, olive green-brown with fibrous woody bark-like scales and faint twisting ridges like a vine, a few tiny leaf-like scales, its head small and pointed, two big round eyes half-closed and sly, it could pass for a hanging liana until it moves, soft cel shading, thin dark outline, light from the upper left, side view, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, extra heads, extra tails, legs, human, leaves on the background",
+   "strength": 0.65,
+   "seed": 7,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "r159-vine-hang-s65-23",
+   "start": "vine-hang.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite: a sly vine snake hanging head-down, its body the colour and texture of a jungle liana, olive green-brown with fibrous woody bark-like scales and faint twisting ridges like a vine, a few tiny leaf-like scales, its head small and pointed, two big round eyes half-closed and sly, it could pass for a hanging liana until it moves, soft cel shading, thin dark outline, light from the upper left, side view, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, extra heads, extra tails, legs, human, leaves on the background",
+   "strength": 0.65,
+   "seed": 23,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "r159-boa-ball-s50-7",
+   "start": "boa-ball.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite: a fat tan boa constrictor with brown blotches curled up tight into a round ball, rolling, its head tucked in, the coils packed into a neat sphere, soft cel shading, thin dark outline, light from the upper left, side view, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, extra heads, extra tails, legs, human, leaves on the background",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "r159-boa-ball-s50-23",
+   "start": "boa-ball.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite: a fat tan boa constrictor with brown blotches curled up tight into a round ball, rolling, its head tucked in, the coils packed into a neat sphere, soft cel shading, thin dark outline, light from the upper left, side view, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, extra heads, extra tails, legs, human, leaves on the background",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "r159-boa-ball-s60-7",
+   "start": "boa-ball.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite: a fat tan boa constrictor with brown blotches curled up tight into a round ball, rolling, its head tucked in, the coils packed into a neat sphere, soft cel shading, thin dark outline, light from the upper left, side view, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, extra heads, extra tails, legs, human, leaves on the background",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "r159-boa-ball-s60-23",
+   "start": "boa-ball.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite: a fat tan boa constrictor with brown blotches curled up tight into a round ball, rolling, its head tucked in, the coils packed into a neat sphere, soft cel shading, thin dark outline, light from the upper left, side view, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, extra heads, extra tails, legs, human, leaves on the background",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

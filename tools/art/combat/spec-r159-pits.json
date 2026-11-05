@@ -1,0 +1,173 @@
+{
+ "tag": "r159-pits",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/49181d3a26c1fb0f5fa8f2317c47ccac9df6834d/tools/art/combat/starts/",
+ "items": [
+  {
+   "name": "r159-pit-drop-s52-7",
+   "start": "pit-drop.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game texture, side view of the inside wall of a deep pit in a jungle floor: dark earth packed with roots and stones, getting darker and darker going down until it is pitch black at the bottom, deep and dangerous, it reads as a long fall, seamless left to right, no ground line, no sky, no text",
+   "neg": "perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, sky, plants, flowers, animals, characters, light at the bottom",
+   "strength": 0.52,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "r159-pit-drop-s52-23",
+   "start": "pit-drop.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game texture, side view of the inside wall of a deep pit in a jungle floor: dark earth packed with roots and stones, getting darker and darker going down until it is pitch black at the bottom, deep and dangerous, it reads as a long fall, seamless left to right, no ground line, no sky, no text",
+   "neg": "perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, sky, plants, flowers, animals, characters, light at the bottom",
+   "strength": 0.52,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "r159-pit-drop-s60-7",
+   "start": "pit-drop.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game texture, side view of the inside wall of a deep pit in a jungle floor: dark earth packed with roots and stones, getting darker and darker going down until it is pitch black at the bottom, deep and dangerous, it reads as a long fall, seamless left to right, no ground line, no sky, no text",
+   "neg": "perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, sky, plants, flowers, animals, characters, light at the bottom",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "r159-pit-drop-s60-23",
+   "start": "pit-drop.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game texture, side view of the inside wall of a deep pit in a jungle floor: dark earth packed with roots and stones, getting darker and darker going down until it is pitch black at the bottom, deep and dangerous, it reads as a long fall, seamless left to right, no ground line, no sky, no text",
+   "neg": "perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, sky, plants, flowers, animals, characters, light at the bottom",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "r159-pit-lip-s55-7",
+   "start": "pit-lip.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game sprite, side view: the torn edge of the jungle ground where it ends at a deep pit, a mossy grass top, dark earth breaking away below it, long thin roots hanging down into the dark, the earth darkening downward, thin dark outline, on one flat plain pure magenta background, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, animals, characters, sky",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "r159-pit-lip-s55-23",
+   "start": "pit-lip.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game sprite, side view: the torn edge of the jungle ground where it ends at a deep pit, a mossy grass top, dark earth breaking away below it, long thin roots hanging down into the dark, the earth darkening downward, thin dark outline, on one flat plain pure magenta background, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, animals, characters, sky",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "r159-pit-lip-s65-7",
+   "start": "pit-lip.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game sprite, side view: the torn edge of the jungle ground where it ends at a deep pit, a mossy grass top, dark earth breaking away below it, long thin roots hanging down into the dark, the earth darkening downward, thin dark outline, on one flat plain pure magenta background, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, animals, characters, sky",
+   "strength": 0.65,
+   "seed": 7,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "r159-pit-lip-s65-23",
+   "start": "pit-lip.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game sprite, side view: the torn edge of the jungle ground where it ends at a deep pit, a mossy grass top, dark earth breaking away below it, long thin roots hanging down into the dark, the earth darkening downward, thin dark outline, on one flat plain pure magenta background, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, animals, characters, sky",
+   "strength": 0.65,
+   "seed": 23,
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "name": "r159-pit-bed-s50-7",
+   "start": "pit-bed.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game sprite, side view: a soft springy heap of big fresh green jungle leaves and moss at the bottom of a shallow pit, plump and cushiony like a leaf mattress, inviting and safe, thin dark outline, on one flat plain pure magenta background, no ground, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, animals, characters, sky",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "r159-pit-bed-s50-23",
+   "start": "pit-bed.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game sprite, side view: a soft springy heap of big fresh green jungle leaves and moss at the bottom of a shallow pit, plump and cushiony like a leaf mattress, inviting and safe, thin dark outline, on one flat plain pure magenta background, no ground, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, animals, characters, sky",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "r159-pit-bed-s60-7",
+   "start": "pit-bed.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game sprite, side view: a soft springy heap of big fresh green jungle leaves and moss at the bottom of a shallow pit, plump and cushiony like a leaf mattress, inviting and safe, thin dark outline, on one flat plain pure magenta background, no ground, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, animals, characters, sky",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "r159-pit-bed-s60-23",
+   "start": "pit-bed.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game sprite, side view: a soft springy heap of big fresh green jungle leaves and moss at the bottom of a shallow pit, plump and cushiony like a leaf mattress, inviting and safe, thin dark outline, on one flat plain pure magenta background, no ground, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, animals, characters, sky",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "r159-pit-high-s55-7",
+   "start": "pit-high.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game background strip, side view from high in the canopy looking across a deep drop: the tops of distant jungle trees, a band of white mist below them, and under the mist the drop falls away into deep shadow and then pitch black, it reads as a very long fall, seamless left to right, no text",
+   "neg": "perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, animals, characters, ground, floor, water, light at the bottom",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "r159-pit-high-s55-23",
+   "start": "pit-high.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game background strip, side view from high in the canopy looking across a deep drop: the tops of distant jungle trees, a band of white mist below them, and under the mist the drop falls away into deep shadow and then pitch black, it reads as a very long fall, seamless left to right, no text",
+   "neg": "perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, animals, characters, ground, floor, water, light at the bottom",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "r159-pit-high-s65-7",
+   "start": "pit-high.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game background strip, side view from high in the canopy looking across a deep drop: the tops of distant jungle trees, a band of white mist below them, and under the mist the drop falls away into deep shadow and then pitch black, it reads as a very long fall, seamless left to right, no text",
+   "neg": "perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, animals, characters, ground, floor, water, light at the bottom",
+   "strength": 0.65,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "r159-pit-high-s65-23",
+   "start": "pit-high.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, light from the upper left, a 2D game background strip, side view from high in the canopy looking across a deep drop: the tops of distant jungle trees, a band of white mist below them, and under the mist the drop falls away into deep shadow and then pitch black, it reads as a very long fall, seamless left to right, no text",
+   "neg": "perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, animals, characters, ground, floor, water, light at the bottom",
+   "strength": 0.65,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

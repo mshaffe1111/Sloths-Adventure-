@@ -2,7 +2,7 @@
  * Which music plays where. Pure functions, so the mapping can be tested without any audio.
  */
 import { hashStr } from './theory.ts';
-import { BOSS_THEME, WORLD_THEME } from './themes.ts';
+import { BOSS_THEME, WORLD_THEME, themeById } from './themes.ts';
 import { composeStageFull, stageThemeId } from './composer.ts';
 import { PACE_CODE, PACE_TEMPO, paceFor } from './orchestrate.ts';
 import { actOfWorld } from './acts.ts';
@@ -156,7 +156,48 @@ export function meecaStageMusic(): SceneChoice {
   return meecaPick;
 }
 
+/**
+ * The stages built on the music's beat (src/game/beatTrace.ts, World 1's rebuild, W1-REBUILD-PLAN.md): their platforms sit where Pokey
+ * lands jumping on the beat of the stage's own music, so that music must play at that beat whatever piece the session's salt picks.
+ */
+export const BEAT_STAGES: ReadonlySet<string> = new Set(['1-1', '1-2', '1-3', '1-4', '1-5']);
+/** a beat stage's piece may be played this much faster or slower than written to meet the stage's beat; a piece further off is skipped */
+export const BEAT_ROOM = 0.06;
+
+/**
+ * A beat stage's beat (BPM): the speed its music plays at with salt 0 (the piece and tempo the stage was built to). beatTrace.ts stageBpm
+ * reads it from here. NaN for a stage that isn't built on the beat.
+ */
+export function stageBeatBpm(world: number, levelId: string, mini: number, objective?: string): number {
+  if (!BEAT_STAGES.has(levelId)) return NaN;
+  const c = freeStageMusic(world, levelId, mini, 0, objective);
+  const th = themeById(c.id);
+  return th ? th.bpm * (c.tempo ?? 1) : NaN;
+}
+
+/**
+ * The music for a stage. On a beat stage (BEAT_STAGES) the session's salt still picks the piece, so the music changes between sessions,
+ * but it plays at the stage's beat (stageBeatBpm): tempo = beat / the piece's own BPM. A piece that would need more than BEAT_ROOM is
+ * skipped for the next salt's piece (up to 64 tries). Measured 2026-11-04 over 400 salts: 1-4 (beat 125.1) skips its pieces written at 134
+ * (21 of 400), 1-5 (beat 136.0) those at 126-128 (137 of 400); 1-1, 1-2, 1-3 skip none. Every other stage is as before.
+ */
 export function stageMusic(world: number, levelId: string, mini: number, salt = 0, objective?: string): SceneChoice {
+  const free = freeStageMusic(world, levelId, mini, salt, objective);
+  if (!BEAT_STAGES.has(levelId)) return free;
+  const beat = stageBeatBpm(world, levelId, mini, objective);
+  if (!(beat > 0)) return free;
+  for (let k = 0; k < 64; k++) {
+    const c = k === 0 ? free : freeStageMusic(world, levelId, mini, (salt + k * 0x9e3779b1) >>> 0, objective);
+    const th = themeById(c.id);
+    if (!th) continue;
+    const tempo = beat / th.bpm;
+    if (Math.abs(tempo - 1) <= BEAT_ROOM) return { ...c, tempo: Math.round(tempo * 100000) / 100000 };
+  }
+  return free;
+}
+
+/** the music for a stage as the salt picks it, at the speed its world allows (styles.ts paceRoom): every stage before the beat stages */
+export function freeStageMusic(world: number, levelId: string, mini: number, salt = 0, objective?: string): SceneChoice {
   if (levelId === MEECA_MUSIC_STAGE) return meecaStageMusic();
   const seed = (levelId ? hashStr(levelId) ^ (salt >>> 0) : 0) >>> 0;
   // what the stage is about sets how the music moves: a run, a fight, a climb, a sneak (see orchestrate.ts)

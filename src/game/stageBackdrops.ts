@@ -17,7 +17,8 @@ export const FAR_BY_STAGE: Record<number, Record<number, string>> = {
   // strips, and the runs split so no two neighbouring stages share a set: Matt, "make things look varied as many places as possible".
   // Each world still follows its story light: its early mood first, its late mood last.)
   // (1-6: w1b, the world's own far and sky with a second painted middle strip, so 1-4 and 1-6 don't show the same three trees)
-  1: { 1: 'w1sunrise', 2: 'w1rain', 3: 'w1sunrise', 5: 'w1rain', 6: 'w1b', 7: 'w1kapok', 8: 'w1rain', 9: 'w1kapok' },
+  // (1-3: w1kapok, the tall kapoks, not 1-1's sunrise forest: the quality supervisor, 11-04, its first 30 s looked like 1-1's start)
+  1: { 1: 'w1sunrise', 2: 'w1rain', 3: 'w1kapok', 5: 'w1rain', 6: 'w1b', 7: 'w1kapok', 8: 'w1rain', 9: 'w1kapok' },
   2: { 1: 'w2mist', 3: 'w2mist', 4: 'w2rapids', 6: 'w2rapids', 7: 'w2evening', 8: 'w2rapids', 9: 'w2evening' },
   3: { 2: 'w3crystal', 4: 'w3sinkhole', 5: 'w3crystal', 6: 'w3sinkhole', 7: 'w3cavern', 8: 'w3crystal', 9: 'w3cavern' },
   4: { 1: 'w4terraces', 2: 'w4storm', 3: 'w4terraces', 5: 'w4storm', 7: 'w4mist', 8: 'w4storm', 9: 'w4mist' },

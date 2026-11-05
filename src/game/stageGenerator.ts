@@ -1,3 +1,4 @@
+import { RHYTHM_STAGES } from './w1Rhythm.ts';
 import { petalPass } from './petalPass.ts';
 import { w4Normal } from './w4Normal.ts';
 import { groundToFloor } from './groundFloor.ts';
@@ -82,12 +83,22 @@ export interface GeneratedStage {
   waterSigns?: Array<{ x: number; y: number }>;
   safeWater?: Array<{ x0: number; x1: number; backX: number; backY: number }>;
   waterHint?: { x: number; text: string; passX: number; shown?: boolean };
+  /** World 1's bowl gates (R-159.1, w1Tricks.ts): a coiled boa on its ground, a plate at the ground's end and a gate beyond it under a
+   *  stone pillar; the boa kicked into a roll presses the plate and the gate opens (a boa lost another way coils there again) */
+  bowlGates?: import('./w1Tricks.ts').BowlGate[];
+  /**
+   * open air a fall goes through (1-1's finale, w1Rise.ts): over this x span, falling more than `depth` px under the last ground he stood on
+   * is a fall at once (engine.ts: Easy's soft fall or World 8's heart fall first, else a life), not a long drop to the stage's bottom
+   */
+  fallZones?: Array<{ x0: number; x1: number; depth: number }>;
   /** World 2: rivers with drifting logs (their water, and the surface that is fatal) */
   rivers?: import('./river.ts').RiverZone[];
   /** Worlds 3 and 4: spore clouds and wind gusts that wake on a rhythm (see zones.ts) */
   zones?: import('./zones.ts').Zone[];
   /** World 8 Normal's swing and glide gaps (gen2 heartFalls): a fall there costs a heart and sets him back on the ledge he left */
   heartFalls?: Array<{ x0: number; x1: number }>;
+  /** the flags take in the order of `checkpoints` (the way's order), not by x: a stage whose way turns back on itself (1-2's loop, w1Rhythm.ts) */
+  flagsInOrder?: boolean;
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
   /**
@@ -105,6 +116,9 @@ export interface GeneratedStage {
   kit?: import('./puzzleKit.ts').KitExtras;
   /** the goal Easy keeps: the stage's own quota, before goals.ts raised it to Normal's share of what the stage holds */
   easyGoal?: number;
+  /** the stage's Easy goal was counted on Easy's own stage (the kid first-timer's route after Easy's thinning, 1-3 and 1-9, R-159.1):
+   *  Easy keeps it as it is, never scaled down again (easyMode.ts), only capped at the animals Easy keeps */
+  easyGoalCounted?: boolean;
   /** Normal's goal, set with easyGoal (goals.ts withGoals): Easy scales it to the animals it keeps (easyMode.ts) */
   normalGoal?: number;
   /** Easy's goal before LV-6 (goals.ts withGoals): Easy's goal never goes under it */
@@ -2824,6 +2838,10 @@ const flagsCapped = (st: GeneratedStage): GeneratedStage => {
   return st;
 };
 
+/** the hand-built stages whose builder lays Easy itself (the rest are made gentler on the built stage alone: easyMode.ts): w1-rhythm-b's
+ *  1-1 and 1-4, w8-rope2's 1-3 (the lead, 11-04); w1Rhythm.ts's RHYTHM_STAGES (1-2, 1-5) pass it too */
+const EASY_BUILT: ReadonlySet<string> = new Set(['1-1', '1-3', '1-4']);
+
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
@@ -2836,7 +2854,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) {
-    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
+    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && (RHYTHM_STAGES.has(config.id) || EASY_BUILT.has(config.id))));
     addMissingFind(st);
     return difficulty === 'normal' ? w4Normal(st) : st;
   }

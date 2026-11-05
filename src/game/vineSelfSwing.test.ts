@@ -56,7 +56,9 @@ function thumbs(r: RealPlay, hands: Hands, k: number) {
 }
 
 function firstLiana(r: RealPlay): Vine {
-  return r.vines.find((q) => q.vineType !== 'tree_climb')!;
+  // (the first liana with no vine snake on it: 1-6 opens on vine snakes since R-159.1; the swing's own checks are on a plain liana)
+  const snaked = new Set((r.e.enemies as Array<{ trick?: string; vineId?: number }>).filter((m) => m.trick === 'vine').map((m) => m.vineId));
+  return r.vines.find((q) => q.vineType !== 'tree_climb' && !snaked.has(q.id))!;
 }
 
 test('self-swing: under any frame timing and any thumb, the vine swings exactly its own swing for 20 s (never wider, never faster)', () => {

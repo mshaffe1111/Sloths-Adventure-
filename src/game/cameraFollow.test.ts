@@ -173,3 +173,35 @@ test('the camera snaps to whole device pixels', () => {
   assert.equal(snapCam(10.4, 3), 31 / 3);
   assert.equal(snapCam(10.2, 1), 10);
 });
+
+test('sideways, a climb looks up: the feet go down the view over 0.4 s, and come back once he is off; upright nothing changes', async () => {
+  const { climbLook, feetAtNow, CLIMB_LOOK, framing } = await import('./cameraFollow.ts');
+  const side = framing(915, 412, 1199), up = framing(412, 915, 405);
+  let k = 0;
+  for (let i = 0; i < 6; i++) k = climbLook(k, true, true, 1 / 30);
+  assert.ok(k > 0.4 && k < 0.6, `half way after 0.2 s (${k})`);
+  for (let i = 0; i < 12; i++) k = climbLook(k, true, true, 1 / 30);
+  assert.equal(k, 1);
+  assert.equal(feetAtNow(side, k), CLIMB_LOOK.feetAt);
+  for (let i = 0; i < 14; i++) k = climbLook(k, false, true, 1 / 30);
+  assert.equal(k, 0);
+  assert.equal(feetAtNow(side, 0), side.feetAt);
+  // upright, climbing or not, the view never turns
+  let u = 0;
+  for (let i = 0; i < 30; i++) u = climbLook(u, true, false, 1 / 30);
+  assert.equal(u, 0);
+  assert.equal(feetAtNow(up, u), up.feetAt);
+});
+
+test("sideways, on a tall climb the view looks further up, so the climb's top is under the HUD band; his feet never past 90%; a short climb keeps the usual look-up", async () => {
+  const { climbFeetAt, CLIMB_LOOK } = await import('./cameraFollow.ts');
+  const viewH = 540, band = 210;
+  // (1-4's tallest trunk, 428 px, from its foot: the top at 428 + 210 px of world under the view's top needs his feet further down)
+  const tall = climbFeetAt(CLIMB_LOOK.feetAt, 6000, 6000 - 428, viewH, band);
+  assert.equal(tall, CLIMB_LOOK.deepest);
+  // (part way up, the top 200 px over him: the usual 78% already shows it)
+  assert.equal(climbFeetAt(CLIMB_LOOK.feetAt, 6000, 6000 - 200, viewH, band), CLIMB_LOOK.feetAt);
+  // (between: just far enough down that the top sits on the band's edge)
+  const mid = climbFeetAt(CLIMB_LOOK.feetAt, 6000, 6000 - 260, viewH, band);
+  assert.ok(Math.abs(mid * viewH - (260 + band)) < 1e-9 && mid > CLIMB_LOOK.feetAt && mid < CLIMB_LOOK.deepest, `${mid}`);
+});

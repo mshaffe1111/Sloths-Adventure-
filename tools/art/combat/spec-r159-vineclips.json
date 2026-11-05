@@ -1,0 +1,80 @@
+{
+ "tag": "r159-vineclips",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "r159-vine-hang-s3",
+   "src": "starts/vine-take.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain magenta background, smooth weighty motion, a slim olive green-brown vine snake with bark-like striped scales hanging head-down, its body as still as a jungle liana, it hangs almost still, swaying very gently like a vine in the breeze, its eyes half closed, a slow calm repeating cycle, side view the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 480,
+   "h": 832
+  },
+  {
+   "name": "r159-vine-hang-s11",
+   "src": "starts/vine-take.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain magenta background, smooth weighty motion, a slim olive green-brown vine snake with bark-like striped scales hanging head-down, its body as still as a jungle liana, it hangs almost still, swaying very gently like a vine in the breeze, its eyes half closed, a slow calm repeating cycle, side view the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 480,
+   "h": 832
+  },
+  {
+   "name": "r159-vine-tell-s3",
+   "src": "starts/vine-take.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain magenta background, smooth weighty motion, a slim olive green-brown vine snake with bark-like striped scales hanging head-down, its body as still as a jungle liana, its sleepy eyes snap wide open, it flicks its forked tongue in and out twice, and its head lifts and sways side to side, a warning, side view the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 480,
+   "h": 832
+  },
+  {
+   "name": "r159-vine-tell-s11",
+   "src": "starts/vine-take.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain magenta background, smooth weighty motion, a slim olive green-brown vine snake with bark-like striped scales hanging head-down, its body as still as a jungle liana, its sleepy eyes snap wide open, it flicks its forked tongue in and out twice, and its head lifts and sways side to side, a warning, side view the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 480,
+   "h": 832
+  },
+  {
+   "name": "r159-vine-stiffen-s3",
+   "src": "starts/vine-take.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain magenta background, smooth weighty motion, a slim olive green-brown vine snake with bark-like striped scales hanging head-down, its body as still as a jungle liana, it is hit, and its whole body goes rigid and straightens out into a stiff straight pole, its eyes dazed and spinning, then it holds still and straight, side view the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 480,
+   "h": 832
+  },
+  {
+   "name": "r159-vine-stiffen-s11",
+   "src": "starts/vine-take.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain magenta background, smooth weighty motion, a slim olive green-brown vine snake with bark-like striped scales hanging head-down, its body as still as a jungle liana, it is hit, and its whole body goes rigid and straightens out into a stiff straight pole, its eyes dazed and spinning, then it holds still and straight, side view the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 480,
+   "h": 832
+  },
+  {
+   "name": "r159-vine-bite-s3",
+   "src": "starts/vine-take.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain magenta background, smooth weighty motion, a slim olive green-brown vine snake with bark-like striped scales hanging head-down, its body as still as a jungle liana, it lunges its head forward fast, its mouth opening wide to bite, then it snaps back to hanging, side view the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 480,
+   "h": 832
+  },
+  {
+   "name": "r159-vine-bite-s11",
+   "src": "starts/vine-take.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain magenta background, smooth weighty motion, a slim olive green-brown vine snake with bark-like striped scales hanging head-down, its body as still as a jungle liana, it lunges its head forward fast, its mouth opening wide to bite, then it snaps back to hanging, side view the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 480,
+   "h": 832
+  }
+ ]
+}

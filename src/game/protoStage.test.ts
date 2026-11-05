@@ -7,7 +7,7 @@ import { modelStage, MODEL_SLOW } from './stageTime.ts';
 import type { LevelConfig } from './types.ts';
 
 const cfg = {
-  worldIndex: 1, miniIndex: 6, id: '1-6', name: 'First Lianas', objectiveType: 'vine_runner', targetCount: 1, timeLimit: 270,
+  worldIndex: 1, miniIndex: 6, id: '1-6', name: 'Snake Vines', objectiveType: 'vine_runner', targetCount: 1, timeLimit: 270,
   levelWidth: 16100, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
 } as LevelConfig;
 const SEEDS = Array.from({ length: 24 }, (_, i) => 1 + i * 37);

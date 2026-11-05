@@ -53,7 +53,9 @@ test('World 1, layout 1: the vault pits are soft pits with steps; the only unmar
     falls[id] = g.filter((q) => q.kind === 'fall' && !q.drop).length;
     for (const q of g.filter((q) => q.kind === 'soft')) assert.ok((q.steps ?? []).length >= 1, `${id} ${q.x0}: a soft pit with no step out`);
   }
-  assert.ok(soft['1-3'] >= 3 && soft['1-5'] >= 3 && soft['1-9'] >= 3, JSON.stringify(soft));
+  // (1-5 rebuilt on the beat, w1Rhythm.ts: its pits are real drops under the snap twigs, painted as drops, never soft or water:
+  // stage15.test.ts "every floor gap paints as a drop")
+  assert.ok(soft['1-3'] >= 3 && soft['1-9'] >= 3, JSON.stringify(soft));
   assert.ok(falls['1-8'] >= 10, JSON.stringify(falls));
   for (const id of ['1-1', '1-2', '1-3', '1-4', '1-5', '1-7', '1-9']) assert.equal(falls[id], 0, `${id}: ${falls[id]} floorless gaps`);
 });

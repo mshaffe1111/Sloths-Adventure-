@@ -104,6 +104,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
   // ---- moves ----
   let t = 0;
   let prevFragile = false;
+  let lastRot: Seg["plat"] = undefined;
   for (let si = 0; si < route.segs.length; si++) {
     const s = route.segs[si];
     // a move keeps him busy while it lasts; a climb only for its first 2.5 s (a long plain climb past that is quiet)
@@ -123,6 +124,13 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
       case 'draft': raw.push({ ...at, letter: 'V', what: 'ride the warm air' }); break;
       default: break;
     }
+    // (walked onto rotten wood that goes before a run gets across it (its creak under its width at a run): no one walks it, it is a hop
+    // over it (1-2's bough leg read as 20 s of walking, 2026-11-04)
+    const before = route.segs[si - 1];
+    if (s.kind === 'walk' && before?.kind === 'walk' && before.plat !== s.plat && before.plat?.type !== 'fragile' && s.plat?.type === 'fragile' && s.plat.creak !== undefined && s.plat.creak < s.plat.width / RUN && s.plat !== lastRot) {
+      raw.push({ ...at, letter: 'h', what: 'small hop over rotten wood' });
+      lastRot = s.plat;
+    }
     t += s.dt;
     const fragile = !!s.plat && s.plat.type === 'fragile' && s.kind !== 'walk';
     if (fragile && !prevFragile) raw.push({ base: t, dur: 0, act: 0, x: s.x1, y: s.y1, count: 1, letter: 'Z', what: 'crumbling branch' });
@@ -134,13 +142,19 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
   for (const e of stage.enemies) {
     let b: Box;
     if (e.type === 'eagle') b = { x0: e.x - 220, x1: e.x + 220, y0: e.y - 100, y1: e.y + 520 };
+    // (World 1's vine snake hangs on its liana, not on the ground: met where the swing reaches it, R-159.1)
+    else if (e.trick === 'vine') b = { x0: e.x - 140, x1: e.x + 140, y0: e.y - 240, y1: e.y + 220 };
     else {
       const sf = surfaceOf(e);
       b = { x0: e.patrolMinX - 60, x1: e.patrolMaxX + 60, y0: sf - 130, y1: sf + 60 };
     }
     const i = firstIn(samples, b);
     if (i < 0) { off('animals'); continue; }
-    add(i, 'C', e.type === 'eagle' ? 'eagle swoops' : `${e.type === 'turtle' ? 'snapper' : e.type}${e.asleep ? ' (asleep)' : ''}`, e.type === 'eagle' ? MODEL_FAST.fightFlier : MODEL_FAST.fightGround);
+    // (World 1's tricks, R-159.1: the game tags its snakes and boas as it loads, w1Tricks.ts tagWorld1, so they are named here by world
+    // and kind: a snake is dazed then stomped, a coiled boa is kicked to roll, a vault's snake springs him across)
+    const w1 = cfg.worldIndex === 1 && (e.type === 'snake' || e.type === 'boa') && !e.asleep;
+    const trick = !w1 ? '' : e.trick === 'vine' ? ' (vine snake: punched stiff)' : e.vaultHome ? ' (stomp vault)' : e.type === 'snake' ? ' (dazed, then stomped)' : ' (coiled: kicked to roll)';
+    add(i, 'C', e.type === 'eagle' ? 'eagle swoops' : `${e.type === 'turtle' ? 'snapper' : e.type}${e.asleep ? ' (asleep)' : ''}${trick}`, e.type === 'eagle' ? MODEL_FAST.fightFlier : MODEL_FAST.fightGround);
   }
   const ring = stage.proto?.ring;
   if (ring) {

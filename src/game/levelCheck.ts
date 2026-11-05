@@ -110,8 +110,14 @@ export function heldMaxGap(a: Platform, b: Platform, allowDouble: boolean): numb
   const r = allowDouble ? Math.max(reachJumpHeld(dyJ, false), reachJumpHeld(dyJ, true)) : reachJumpHeld(dyJ, false);
   return r < 0 ? -1 : r * MARGIN - TAKEOFF_SLACK;
 }
-/** the validator's rule for whether a double jump may be counted on a stage (it is taught by stage 6, 1-6) */
-export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6;
+/**
+ * the stages before 1-6 that count the double jump: the World 1 stages rebuilt on the beat whose builders have turned it on (1-1 teaches
+ * the second jump on its practice shelf before any gap needs it, so it is in the player's kit from then on; the lead's ruling, 11-04).
+ * 1-2, 1-3 and 1-5 join as their rebuilds land (their old builds' petal counts move with it: stage12/15.test.ts).
+ */
+export const EARLY_DOUBLE: ReadonlySet<string> = new Set(['1-1', '1-4']);
+/** the validator's rule for whether a double jump may be counted on a stage: from stage 6 (1-6's practice spot), and EARLY_DOUBLE */
+export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6 || EARLY_DOUBLE.has(`${cfg.worldIndex}-${cfg.miniIndex}`);
 
 /** Can the player get from platform a to platform b with jumps (and a double jump)? */
 export function jumpOK(a: Platform, b: Platform, allowDouble = true): { ok: boolean; gap: number } {
@@ -457,7 +463,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   const pid = (p: Platform) => keys.get(p) ?? `p${p.id}`;
   const vid = (v: Vine) => `v${v.id}`;
 
-  // a double jump is a tool the player may need from mission 6 on; before that every gap is a plain jump
+  // a double jump is a tool the player may need from 1-1 on (it teaches it), and from mission 6 in the old reckoning
   const allowDouble = doubleAllowed(cfg);
   // the leaf glide, from the stage everyone who gets there has learned it (skills.ts): it carries a falling jump much further
   const allowGlide = skillGuaranteedAt('glide', (cfg.worldIndex - 1) * 10 + cfg.miniIndex);
@@ -709,7 +715,8 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   for (const cp of stage.checkpoints ?? []) {
     const p = plats.find((q2) => cp.x >= ext(q2)[0] && cp.x <= ext(q2)[1] && Math.abs(q2.y - cp.y) < 6);
     if (!p || !reach(p)) errors.push(`checkpoint at x=${Math.round(cp.x)} is not on a reachable platform`);
-    if (cfg.objectiveType !== 'ascent' && cp.x <= lastX) errors.push('checkpoints are out of order');
+    // (a stage whose way turns back keeps its flags in the way's order, not by x: engine.ts flagsInOrder, 1-2's loop)
+    if (cfg.objectiveType !== 'ascent' && !stage.flagsInOrder && cp.x <= lastX) errors.push('checkpoints are out of order');
     lastX = cp.x;
   }
 

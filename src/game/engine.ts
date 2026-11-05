@@ -23,6 +23,7 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isGen2Stage } from './gen2/game.ts';
 import { difficulty, easeInShare, isEasy } from './difficulty.ts';
+import { BEAT_STAGES } from '../audio/scenes.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
 import { withGoals } from './goals.ts';
@@ -73,6 +74,7 @@ import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
 import { drawGoldSnake } from './goldSnake.ts';
+import { drawKitArt } from './puzzleArt.ts';
 import { drawTayraSprite } from './tayraSprite.ts';
 import { drawHarpyFallback, drawHarpySprite } from './harpySprite.ts';
 import { drawOcelotSprite } from './ocelotSprite.ts';
@@ -117,7 +119,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, climbFeetAt, climbLook, feetAtNow, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -145,6 +147,8 @@ import { sound } from './audio.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
+import { BOWL, TRICK, bowlPressed, dazeFor, placeVineSnake, recoil, stepVineSnake, tagWorld1, trickHit, trickStompBounces, vineSnakeAwake, type TrickHit } from './w1Tricks.ts';
+import { drawCoilGlint, drawRollingBall, drawTrickStars, drawVineSnake, rollAngle, withCoilSqueeze } from './w1TrickDraw.ts';
 import { drawTurtle, drawTurtleSprite } from './turtleArt.ts';
 import { drawGuardSprite } from './guardArt.ts';
 import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
@@ -170,7 +174,7 @@ import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDepthView, setGroundPaint, setKitWorld, setDecoTrunks, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -224,6 +228,8 @@ const WALL_OFF = 9;
 const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
 /** how fast the shift that shows a landing across a gap eases in and out (per second), and for a landing still out of the view */
+/** a free fall longer than this (px) hurts on landing, on the rebuilt stages (longFallLanding) */
+export const LONG_FALL = 400;
 const LAND_EASE = { rate: 4.5, fast: 10 } as const;
 /**
  * Meeca's thin logs (5-M): a jump whose top leaves her feet this far under a log's top, her middle this far inside its ends, and rising
@@ -491,6 +497,12 @@ export class GameEngine {
   private isRunning: boolean = false;
   /** the first time a snapper hides, Dot's line says what to do about it */
   private turtleTold = false;
+  /** World 1's lianas held stiff this frame (their vine snake punched, w1Tricks.ts) */
+  private stiffVines = new Set<number>();
+  /** Dot has said the coiled boa is too tough to punch (World 1, w1Tricks.ts) */
+  private coilTold = false;
+  /** Dot has said a liana was a snake (World 1's vine snake) */
+  private vineTold = false;
   /** the first time a guard of the river king blocks (2-9) */
   private guardTold = false;
   /** 2-8: when each rising river began to rise (game time), and whether Dot has warned about it */
@@ -715,8 +727,16 @@ export class GameEngine {
    * `softAt`: that ground (null until he has stood somewhere); `softOn`: whether this stage has them.
    */
   private softOn = false;
+  /** the height of the ground he last stood on, on a stage with fallZones (a fall that far under it, in a zone, is a fall) */
+  private fallFromY = Infinity;
+  /** how far the view has turned to look up a climb, sideways (0..1: cameraFollow.ts climbLook) */
+  private camClimbK = 0;
+  /** the top of the trunk or vine he climbs (world y), for the sideways look up it */
+  private climbTopY: number | undefined = undefined;
   private softAt: { x: number; y: number } | null = null;
   private checkpoint = { x: 0, y: 0 };
+  /** on a stage with flagsInOrder, the index of the flag he respawns at (-1: the start) */
+  private flagOrder = -1;
   /** the dark circle opening on him at the flag after a respawn (s left): it replaced a white flash (AN-1) */
   private irisOpen = 0;
   /** a life just lost: the world holds while he goes down and the dark closes in, then he comes back at the flag (AN-1; null otherwise) */
@@ -824,6 +844,10 @@ export class GameEngine {
     this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
     // (gen2 lays real soft pits on Easy; a boss's arena and 1-8's chase keep their own rules)
     this.softOn = isEasy() && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena;
+    // long falls hurt on the stages rebuilt on the beat (Matt, 2026-11-04; the other worlds when they are rebuilt)
+    this.longFalls = BEAT_STAGES.has(config.id) && !config.secret;
+    this.longFallSoft = isEasy();
+    this.fallTop = Infinity;
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
@@ -835,6 +859,8 @@ export class GameEngine {
     this.enemies = this.currentStage.enemies;
     // hunters may chase past their own patch, but only along ground that is really there
     assignTerritories(this.enemies, this.platforms, (e) => e.y + (isPredator(e.type) ? FEET[e.type] : 0));
+    // World 1's one trick per animal (w1Tricks.ts, R-159.1)
+    tagWorld1(this.enemies, config.worldIndex);
     this.boss = this.currentStage.boss;
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.skyPillars = this.bossDef?.pillars && this.currentStage.arena ? makePillars(this.currentStage.arena.left) : null;
@@ -866,6 +892,7 @@ export class GameEngine {
     setJarHero(jarImg ? { img: jarImg, frame: jarFrame } : null);
     this.revealZoom = 1;
     this.revealHeard = false;
+    this.fallFromY = Infinity;
     setReveal(0, null);
     this.tideSet = isEasy() ? TIDE.easy : TIDE.normal;
     this.tideWarned = Infinity;
@@ -902,6 +929,8 @@ export class GameEngine {
       : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
+    // (1-1's canopy: the kapok trunks its boughs grow from, scenery only)
+    setDecoTrunks(this.proto?.trunks, this.proto?.leaves);
     // the stage's painted backdrop (World 5's light changes through the world: w5Backdrop.ts)
     setBackdropStage(config.id);
     // a stage that hangs its vines from painted boughs (2-4) draws no leafy clump at each liana's top
@@ -921,6 +950,7 @@ export class GameEngine {
       perfNote(`stage ${config.id} started`);
     }
     this.checkpoint = { x: this.currentStage.spawnX, y: this.currentStage.spawnY };
+    this.flagOrder = -1;
     if (this.proto?.slide) this.startSlide(this.proto.slide);
     this.camLedge = null;
     this.camLand = null;
@@ -1433,9 +1463,17 @@ export class GameEngine {
     this.irisOpen = Math.max(0, this.irisOpen - dt);
     this.vineClock += dt;
     // every liana swings on its own (the climbing vines hang still): it is drawn, and caught, where its swing puts it now
+    // (World 1's vine snake, w1Tricks.ts: a liana whose snake is punched stiff hangs straight and still, a pole to climb, while it is
+    // stiff, and stays stiff while he is on it)
+    this.stiffVines.clear();
+    for (const e of this.enemies) {
+      if (e.trick !== 'vine' || e.defeated || e.vineId === undefined || !((e.stagger ?? 0) > 0)) continue;
+      if (this.player.climbing && this.nearTreeVine?.id === e.vineId) e.stagger = Math.max(e.stagger ?? 0, 0.3);
+      this.stiffVines.add(e.vineId);
+    }
     for (const v of this.vines) {
       if (v.vineType === 'tree_climb') continue;
-      v.swingAngle = vineAngle(v, this.vineClock);
+      v.swingAngle = this.stiffVines.has(v.id) ? 0 : vineAngle(v, this.vineClock);
       v.isSwingingVine = true;
     }
     if (this.introT < INTRO_ZOOM_SECS) {
@@ -1771,7 +1809,7 @@ export class GameEngine {
         continue;
       }
 
-      if (v.vineType === 'tree_climb') {
+      if (v.vineType === 'tree_climb' || this.stiffVines.has(v.id)) {
         if (v.off) continue;
       if (Math.abs(p.x - v.x) < (p.climbing ? 60 : 54) && p.y >= v.topY - 12 && p.y <= v.bottomY + 25) {
           nearTreeVine = v;
@@ -1844,6 +1882,8 @@ export class GameEngine {
       const vertHeld = this.input.state.up || this.input.state.down || this.climbAssist > 0;
       this.climbSideTimer = sideHeld && !vertHeld && this.climbGrace <= 0 ? this.climbSideTimer + dt : 0;
       p.climbing = true;
+      // (the climb's top, for the camera's look up it, sideways: cameraFollow.ts climbFeetAt)
+      this.climbTopY = nearTreeVine.topY;
       p.isVineSwinging = false;
       p.grounded = false;
       p.vx = 0;
@@ -1936,7 +1976,8 @@ export class GameEngine {
         !p.isVineSwinging &&
         !p.grounded &&
         (this.input.state.up || Math.abs(p.vx) > 25 || this.input.state.left || this.input.state.right) &&
-        (this.vineCooldownTimer <= 0 || nearSwingVine.id !== this.lastReleasedVineId)
+        (this.vineCooldownTimer <= 0 || nearSwingVine.id !== this.lastReleasedVineId) &&
+        !this.vineSnakeBites(nearSwingVine)
       ) {
         p.isVineSwinging = true;
         p.climbing = false;
@@ -2434,7 +2475,7 @@ export class GameEngine {
           // Fragile branch interaction
           if (plat.type === 'fragile') {
             if (plat.fragileTimer === undefined) {
-              plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+              plat.fragileTimer = plat.crumbleAfter ?? plat.creak ?? 1.1; // generous 1.1s before breaking (ruin tiles and creaking limbs set their own)
               // a boss's cracking ledge: Dot says so the first time he stands on one
               if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
               if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
@@ -2454,6 +2495,8 @@ export class GameEngine {
         const g = this.platforms.find((q) => q.id === this.standingOnId);
         if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y };
       }
+      // (open air a fall goes through, fallZones: 1-1's finale, high over the forest floor; the height of the ground he last stood on)
+      if (this.currentStage.fallZones?.length && (p.grounded || p.climbing)) this.fallFromY = p.y;
       // Pits and water: falling below the surface costs a life (Mario-style)
       const waterY = this.currentStage.waterY;
       const river = this.currentStage.rivers?.find((r) => p.x > r.x0 && p.x < r.x1);
@@ -2492,6 +2535,13 @@ export class GameEngine {
         sound.playSplash(0);
         this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
+      } else if (!this.isGameOver && this.currentStage.fallZones?.some((z) => p.x > z.x0 && p.x < z.x1 && p.y > this.fallFromY + z.depth)) {
+        // a fall into open air: at once, not after a long drop to the stage's bottom (Easy's soft fall first, as any pit)
+        this.fallFromY = Infinity;
+        if (!this.heartFall() && !this.softFall()) {
+          sound.playPlayerHurt();
+          this.loseLife('pit');
+        }
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
         if (this.lanternRun) this.lanternFall();
         else if (!this.heartFall() && !this.softFall()) {
@@ -2501,13 +2551,17 @@ export class GameEngine {
       }
 
       // Checkpoints
-      for (const cp of this.currentStage.checkpoints ?? []) {
+      const cps = this.currentStage.checkpoints ?? [];
+      for (const cp of cps) {
         if (!cp.reached && Math.abs(p.x - cp.x) < 70 && p.y > cp.y - 150 && p.y < cp.y + 40) {
           cp.reached = true;
           recorder.event('checkpoint', Math.round(cp.x));
-          // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
-          const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
+          // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down;
+          // a stage whose way turns back on itself, 1-2's loop, keeps its flags in the order the way meets them: flagsInOrder)
+          const order = this.currentStage.flagsInOrder ? cps.indexOf(cp) : -1;
+          const further = this.currentStage.flagsInOrder ? order > this.flagOrder : this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
           if (further) {
+            this.flagOrder = order;
             this.checkpoint = { x: cp.x, y: cp.y };
             // the Android app keeps it, so a run cut off by the phone comes back here (flagResume.ts)
             if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y);
@@ -2558,6 +2612,13 @@ export class GameEngine {
       if (e.hitFlashTimer > 0) e.hitFlashTimer -= dt;
       // a hit animal flinches, slides back and may stand dazed (no moves, no damage) for a moment
       if (this.reactToHits(e, dt)) continue;
+      // World 1's vine snake rides its liana's swing and watches for him (w1Tricks.ts); it hurts only when its liana is grabbed
+      if (e.trick === 'vine') {
+        const v = this.vines.find((q) => q.id === e.vineId);
+        if (v) placeVineSnake(e, v);
+        stepVineSnake(e, p, dt);
+        continue;
+      }
 
       // Distinct enemy movement & attack policies:
       if (e.type === 'eagle') {
@@ -2663,6 +2724,12 @@ export class GameEngine {
           this.knockOut(e, (e.slideDir ?? 1) as 1 | -1, 'BONK!');
           continue;
         }
+        // World 1's kicked boa (w1Tricks.ts) has rolled to the end of its ground: it is out of the fight, and counts
+        if (e.trick === 'coil' && e.state === 'rolled') {
+          e.hp = 0;
+          this.knockOut(e, (e.slideDir ?? 1) as 1 | -1, 'BONK!');
+          continue;
+        }
         // the tree snake has no call of its own: it hisses like the boa
         // (the night harpy chitters and thumps like the tayra)
         const call = e.type === 'snake' ? 'boa' : e.type === 'harpy' ? 'tayra' : e.type === 'turtle' ? 'caiman' : e.type;
@@ -2723,11 +2790,39 @@ export class GameEngine {
 
     // a kicked snapper shell slides along the bank and knocks over whatever it meets
     for (const s of this.enemies) {
-      if (s.defeated || s.type !== 'turtle' || s.state !== 'slide') continue;
+      if (s.defeated || !((s.type === 'turtle' && s.state === 'slide') || (s.trick === 'coil' && s.state === 'roll'))) continue;
       for (const o of this.enemies) {
         if (o === s || o.defeated || o.type === 'eagle' || Math.abs(o.x - s.x) > 34 || Math.abs(o.y - s.y) > 30) continue;
         o.hp = 0;
         this.knockOut(o, (s.slideDir ?? 1) as 1 | -1, 'BOWLED OVER!');
+      }
+    }
+    // World 1's bowl gates (w1Tricks.ts): the rolling boa on the plate opens the gate; a boa lost another way coils there again
+    for (const g of this.currentStage.bowlGates ?? []) {
+      if (g.open) {
+        g.openT = (g.openT ?? 0) + dt;
+        continue;
+      }
+      const b = this.enemies.find((q) => q.id === g.boaId);
+      if (!b) continue;
+      if (bowlPressed(g, b)) {
+        g.open = true;
+        g.openT = 0;
+        b.x = g.plateX;
+        b.state = 'rolled';
+        const gp = this.platforms.find((q) => q.id === g.gatePlat);
+        if (gp) gp.y += 5000;
+        this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
+        sound.playHitImpact(true, 'armor');
+        this.addFloatingText('CLICK!', g.plateX, g.groundY - 40, '#fef08a');
+        continue;
+      }
+      if (b.defeated) {
+        g.lostT = (g.lostT ?? 0) + dt;
+        if (g.lostT >= BOWL.respawn && b.koTimer > (b.koLife ?? 0)) {
+          g.lostT = 0;
+          recoil(b, g);
+        }
       }
     }
     separateHunters(this.enemies, dt);
@@ -3220,6 +3315,7 @@ export class GameEngine {
       p.powerUpTimer
     );
 
+    if (this.longFalls) this.longFallLanding(groundedBefore);
     this.updateSound(dt, groundedBefore, vyBefore, distanceRatio);
     this.markWayDodge(dt);
   }
@@ -3287,6 +3383,34 @@ export class GameEngine {
     else if (side === 'r' && sx > w * 0.62) side = 'l';
     if (root.wayBoss !== side) root.wayBoss = side;
     return true;
+  }
+
+  /**
+   * Long falls hurt (Matt, 2026-11-04: "make long fall hurt"): landing after a free fall of more than LONG_FALL px, from the fall's
+   * highest point, costs a heart on Normal (the usual hurt: flash, sound, knock) and is a stumble on Easy (a squash and a thud, nothing
+   * lost). Not while gliding, swinging, on a rope or a trunk, or off a mushroom's bounce (and a fall into a fallZone is a pit, not this).
+   */
+  private longFalls = false;
+  /** Easy, as the stage was built: a long fall is a stumble */
+  private longFallSoft = false;
+  private fallTop = Infinity;
+  private fallFree = true;
+  private longFallLanding(groundedBefore: boolean) {
+    const p = this.player;
+    if (p.grounded || p.climbing || p.isVineSwinging || p.hanging) {
+      if (p.grounded && !groundedBefore && this.fallFree && p.y - this.fallTop > LONG_FALL && !this.isGameOver) {
+        if (this.longFallSoft) {
+          p.squashX = 1.35;
+          p.squashY = 0.62;
+          sound.playLand(1);
+        } else this.damagePlayer(1, p.x);
+      }
+      this.fallTop = p.y;
+      this.fallFree = true;
+      return;
+    }
+    if (this.glide.on || this.launched) this.fallFree = false;
+    this.fallTop = Math.min(this.fallTop, p.y);
   }
 
   /** landings, footsteps and the music's intensity (calm while exploring, fuller near danger) */
@@ -4158,6 +4282,13 @@ export class GameEngine {
         return;
       }
     }
+    // World 1's one trick per animal (w1Tricks.ts): a punch dazes the lunge snake or stiffens the vine snake, the coiled boa shrugs off
+    // a punch and rolls away from a kick
+    const th = trickHit(e, m.kind);
+    if (th) {
+      this.trickBlow(e, th, m, box, hr, a, dir);
+      return;
+    }
     const wasCommitted = isCommitted(e);
     const res = resolveMelee(e, m, dir);
     applyHit(e, res);
@@ -4204,6 +4335,94 @@ export class GameEngine {
     if (res.interrupt && isPredator(e.type)) staggerPredator(e);
     const label = res.armored ? 'TOUGH!' : wasCommitted ? 'STOPPED!' : this.comboCount >= 3 ? `${this.comboCount} HITS!` : 'HIT!';
     this.addFloatingText(label, e.x, e.y - 24, res.armored ? '#cbd5e1' : '#fef08a');
+  }
+
+  /** grabbing a liana an awake vine snake hangs on: it bites, and he does not get the liana (w1Tricks.ts). True when it bit. */
+  private vineSnakeBites(v: Vine): boolean {
+    const e = vineSnakeAwake(this.enemies, v.id);
+    if (!e) return false;
+    const p = this.player;
+    e.state = 'bite';
+    e.stateT = 0;
+    e.facing = p.x >= e.x ? 1 : -1;
+    this.vineCooldownTimer = 0.5;
+    this.lastReleasedVineId = v.id;
+    this.damagePlayer(1, e.x);
+    if (!this.vineTold) this.guide('That vine is a snake! Punch it stiff first.', 3);
+    this.vineTold = true;
+    return true;
+  }
+
+  /** a blow on a World 1 trick animal (w1Tricks.ts trickHit): no harm done, but it is dazed, stiff, shrugs it off, or rolls away */
+  private trickBlow(e: Enemy, th: NonNullable<TrickHit>, m: MoveSpec, box: Rect, hr: Rect, a: NonNullable<GameEngine['atk']>, dir: 1 | -1) {
+    const p = this.player;
+    a.connected = true;
+    const cp = contactPoint(box, hr);
+    const kick = m.kind === 'kick';
+    if (kick) this.statKicks++;
+    else this.statPunches++;
+    e.hitFlashTimer = 0.18;
+    e.recoil = 1;
+    e.recoilDir = dir;
+    if (th === 'tough') {
+      // the coil is armour: the blow bounces off, and he is pushed back a little
+      this.hitstopTimer = Math.max(this.hitstopTimer, 0.05);
+      this.camera.trauma = Math.min(1, this.camera.trauma + m.shake * 0.5);
+      sound.playHitImpact(false, 'armor');
+      this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
+      p.vx -= p.facing * 60;
+      if (!this.coilTold) this.guide('Too tough to punch while it is coiled. Kick it!', 3);
+      else this.hitWord(e, 'TOUGH!', e.x, e.y - 64, '#cbd5e1');
+      this.coilTold = true;
+      return;
+    }
+    if (th === 'stagger') {
+      // a punch on the boa mid-attack: it is knocked back into its coil, unhurt (only a kick breaks it)
+      this.hitstopTimer = Math.max(this.hitstopTimer, 0.06);
+      this.camera.trauma = Math.min(1, this.camera.trauma + m.shake * 0.6);
+      sound.playHitImpact(false, 'armor');
+      this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
+      e.stagger = e.staggerMax = 0.35;
+      staggerPredator(e);
+      this.hitWord(e, 'STOPPED!', e.x, e.y - 64, '#cbd5e1');
+      return;
+    }
+    if (th === 'nothing') {
+      // already dazed: the blow does nothing and the daze is not made longer (only a stomp finishes it)
+      this.hitstopTimer = Math.max(this.hitstopTimer, 0.03);
+      sound.playHitImpact(false, materialFor(e.type));
+      return;
+    }
+    this.hitstopTimer = Math.max(this.hitstopTimer, m.hitstop);
+    this.camera.trauma = Math.min(1, this.camera.trauma + m.shake);
+    sound.playHitImpact(m.heavy, materialFor(e.type));
+    if (kick) this.spawnKickHitBurst(cp.x, cp.y);
+    else this.spawnClawHitSparks(cp.x, cp.y, m.heavy);
+    this.comboCount++;
+    this.comboResetTimer = 2.0;
+    const pts = calculateHitScore(e.type, false, this.comboCount) * (kick ? 2 : 1);
+    this.runScore += pts;
+    if (m.id === 'airKick') {
+      p.vy = -420;
+      p.jumpsLeft = Math.max(p.jumpsLeft, 1);
+      p.isDoubleJumping = false;
+      this.launched = true;
+    }
+    if (th === 'roll') {
+      // the coil breaks: it rolls away as a ball along its ground (predatorAI.ts 'roll'), bowling over what it meets
+      e.state = 'roll';
+      e.stateT = 0;
+      e.slideDir = dir;
+      e.stagger = 0;
+      this.hitWord(e, 'WHOOSH!', e.x, e.y - 64, '#fef08a');
+      return;
+    }
+    // dazed (stars) or stiff: it does nothing (the game holds it, not stepping its brain) until the time runs out
+    e.stagger = e.staggerMax = dazeFor(e.trick ?? 'lunge', isEasy());
+    e.vx = 0;
+    staggerPredator(e);
+    // (the word above the stars, not on them)
+    this.hitWord(e, th === 'stiffen' ? 'STIFF!' : 'DAZED!', e.x, e.y - 100, '#fef08a');
   }
 
   private hitBoss(b: BossEntity, m: MoveSpec, box: Rect, hr: Rect) {
@@ -4438,7 +4657,7 @@ export class GameEngine {
     e.koTimer = 0;
     e.koAngle = 0;
     e.koLanded = false;
-    p.enemiesDefeated++;
+    if (!e.vaultHome?.back) p.enemiesDefeated++;
     if (e.groundY === undefined) e.groundY = e.y;
     if (isPredator(e.type)) staggerPredator(e); // open crouch pose, then the hop and flop
     const ko = koLaunch(e, dir);
@@ -4568,8 +4787,13 @@ export class GameEngine {
     if (this.stompBoss(vyNow, prevFeet)) return;
     for (const e of this.enemies) {
       if (e.defeated) continue;
-      const r = stompTest({ x: p.x, y: p.y, vy: vyNow }, prevFeet, e, diving);
-      if (!r) continue;
+      // (World 1's vine snake hangs on its liana in the air: it is punched stiff, never stood on; a flick out of the pit under its swing
+      // came down on it and bounced, plainWalk.test.ts)
+      if (e.trick === 'vine') continue;
+      const r0 = stompTest({ x: p.x, y: p.y, vy: vyNow }, prevFeet, e, diving);
+      if (!r0) continue;
+      // (World 1's coiled boa, w1Tricks.ts: its coil is armour, a stomp only bounces off it)
+      const r: NonNullable<typeof r0> = trickStompBounces(e) ? { kind: 'bounce' } : r0;
       this.fallVy = 0;
       p.grounded = false;
       recorder.event('stomp', e.type);
@@ -4585,7 +4809,8 @@ export class GameEngine {
         p.vy = -430;
         sound.playHitImpact(false, 'armor');
         this.spawnSparkBurst(p.x, head.y, '#cbd5e1');
-        this.addFloatingText('ARMORED!', e.x, head.y - 14, '#cbd5e1');
+        if (e.trick) this.hitWord(e, 'ARMORED!', e.x, head.y - 14, '#cbd5e1');
+        else this.addFloatingText('ARMORED!', e.x, head.y - 14, '#cbd5e1');
         return;
       }
       const dir: 1 | -1 = p.vx >= 0 ? 1 : -1;
@@ -4593,7 +4818,8 @@ export class GameEngine {
       const wasCommitted = isCommitted(e);
       const res = resolveMelee(e, hs, dir);
       applyHit(e, res);
-      p.vy = r.damage >= 2 ? -700 : this.input.state.jumpHeld ? -620 : -460;
+      // (World 1's lunge snake with jump held: the stomp vault, a spring past any jump, w1Tricks.ts)
+      p.vy = r.damage >= 2 ? -700 : this.input.state.jumpHeld ? (e.trick === 'lunge' ? -TRICK.vaultV : -620) : -460;
       this.stompChain++;
       this.statStomps++;
       this.statMaxStompChain = Math.max(this.statMaxStompChain, this.stompChain);
@@ -5002,7 +5228,11 @@ export class GameEngine {
     if (!flag) return; // the stage changed since (a new build): start at the beginning
     const ascent = this.currentStage.config.objectiveType === 'ascent';
     const descent = !!this.proto?.w4?.descent;
-    for (const cp of cps) if (ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
+    const inOrder = !!this.currentStage.flagsInOrder;
+    cps.forEach((cp, i) => {
+      if (inOrder ? i <= cps.indexOf(flag) : ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
+    });
+    if (inOrder) this.flagOrder = cps.indexOf(flag);
     this.checkpoint = { x: flag.x, y: flag.y };
     // (Meeca's stage: the trunks behind the flag were cut on that run)
     this.mc?.resumeAt(flag.x);
@@ -5042,6 +5272,14 @@ export class GameEngine {
     }
     // every animal loses its lock on him: whatever got him goes back to its business (it re-notices if he is still in range)
     for (const e of this.enemies) e.alertT = 0;
+    // a stomp vault's snake comes back at its spot, or the drop it springs him over could not be crossed again (R-159.1; as crumbling
+    // planks come back, above)
+    for (const e of this.enemies) {
+      const h = e.vaultHome;
+      if (!h || !e.defeated) continue;
+      Object.assign(e, { defeated: false, hp: e.maxHp, x: h.x, y: h.y, vx: 0, vy: 0, koTimer: 0, koAngle: 0, koLanded: false, stagger: 0, state: 'patrol', stateT: 0, groundY: undefined });
+      h.back = true;
+    }
     p.hp = p.maxHp;
     p.x = this.checkpoint.x;
     p.y = this.checkpoint.y;
@@ -5276,7 +5514,24 @@ export class GameEngine {
     this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
     this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * FRAME.across + this.camLookX + runX;
-    this.camera.targetY = this.camAnchorY - vh * fr.feetAt;
+    // (sideways, on a climb, the view looks up: cameraFollow.ts climbLook)
+    this.camClimbK = climbLook(this.camClimbK, !!p.climbing, this.viewCssW > this.viewCssH, dt);
+    // (and on a tall climb the view goes up further, so the climb's top, the next ledge, shows under the HUD: cameraFollow.ts climbFeetAt)
+    const feetAt = feetAtNow(fr, this.camClimbK);
+    const climbTop = p.climbing ? this.climbTopY : undefined;
+    this.camera.targetY = this.camAnchorY - vh * (climbTop !== undefined && this.camClimbK > 0
+      ? feetAt + (climbFeetAt(feetAt, this.camAnchorY, climbTop, vh, ((HUD_BAND.land + 40) * vh) / this.viewCssH) - feetAt) * this.camClimbK
+      : feetAt);
+    // World 1's kicked boa (w1Tricks.ts): while it rolls the view runs ahead with it, so what it hits is in view (the lead's call, upright
+    // above all, where the view is narrow), never so far that he leaves the screen's near edge
+    // (and a bowl gate that has just opened is kept in view a moment: the roll is short, and the view eases over more slowly than it rolls)
+    const ball = this.enemies.find((e) => e.trick === 'coil' && e.state === 'roll' && !e.defeated && Math.abs(e.x - p.x) < 900);
+    const opened = (this.currentStage.bowlGates ?? []).find((g) => g.open && (g.openT ?? 0) < 1.4 && Math.abs(g.gateX - p.x) < 700);
+    const lookAt = ball ? ball.x + (ball.slideDir ?? 1) * 140 : opened ? opened.gateX + 60 : null;
+    if (lookAt !== null) {
+      const want = Math.min(Math.max((p.x + lookAt) / 2 - vw / 2, p.x - vw * 0.9), p.x - vw * 0.06);
+      this.camera.targetX = want;
+    }
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
     if (look) {
@@ -5946,7 +6201,9 @@ export class GameEngine {
     const lair = this.currentStage.arena && this.bossDef?.lair ? this.bossDef.lair : null;
     const ownScene = !!lair && lairOwnsScene(lair);
     // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
-    setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
+    // (and 1-1's climb from the forest floor into the trees: proto.rise, the heights it turns over between)
+    const rise = this.proto?.rise;
+    setCanopy(this.proto?.chase ? 1 : rise ? (rise.y0 - this.player.y) / (rise.y0 - rise.y1) : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
     // (the backdrop shakes with the world, each layer by its own depth, so the layers never slide against each other)
     // (upright, the painted strips are drawn at the size sideways uses for the same width of world, so they are as sharp and as close
     // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
@@ -6179,21 +6436,36 @@ export class GameEngine {
       }
     }
 
+    // World 1's bowl gates (w1Tricks.ts): the World 1 kit's plate (pressed once the ball is on it) and its woven gate under the pillar
+    for (const g of this.currentStage.bowlGates ?? []) {
+      if (!this.onScreen(g.plateX, g.groundY, 500)) continue;
+      drawKitArt(ctx, g.open ? 'platePressed' : 'plate', g.plateX, g.groundY + 4, { scale: 1.15 });
+      drawKitArt(ctx, g.open ? 'gateOpen' : 'gateShut', g.gateX, g.groundY + 2, { w: 100, h: 120 });
+    }
+
     // Render Enemies
     this.enemies.forEach((enemy) => {
       if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
       if (!this.onScreen(enemy.x, enemy.y, 400)) return;
-      if (!enemy.defeated) {
+      // (a kicked boa rolling away cannot hurt him: no ember rim on it, World 1's tricks)
+      // (nor on a vine snake while it hides among the lianas: its tell gives it away, from a jump's length, and the rim with it)
+      if (!enemy.defeated && !(enemy.trick === 'coil' && (enemy.state === 'roll' || enemy.state === 'rolled')) && !(enemy.trick === 'vine' && enemy.state === 'hang')) {
         // the ember rim (see readable.ts): everything that can hurt you wears it
         ctx.save();
-        ctx.translate(enemy.x, enemy.y);
-        drawAura(ctx, 'danger', world.id, enemy.width * 0.8, enemy.height * 0.8, this.gameTime, enemy.id * 1.7);
+        // (a vine snake's painted body lies beside its liana, toward its head: the rim goes on the body, not as a streak up the liana)
+        const vine = enemy.trick === 'vine';
+        ctx.translate(enemy.x + (vine ? (enemy.facing > 0 ? 1 : -1) * 38 : 0), enemy.y);
+        drawAura(ctx, 'danger', world.id, vine ? 40 : enemy.width * 0.8, vine ? 72 : enemy.height * 0.8, this.gameTime, enemy.id * 1.7);
         ctx.restore();
       }
       const draw = (ctx: CanvasRenderingContext2D) => {
         if (enemy.type === 'snake') {
-          if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
+          // (World 1's vine snake: its own painted frames, w1TrickDraw.ts)
+          if (enemy.trick === 'vine') drawVineSnake(ctx, enemy, this.gameTime);
+          else if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
           if (enemy.state === 'sleep') this.drawSleepZ(ctx, enemy);
+          // (World 1's dazed lunge snake, w1TrickDraw.ts: the stun's stars)
+          if (enemy.trick) drawTrickStars(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'eagle') {
           if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
@@ -6203,7 +6475,26 @@ export class GameEngine {
         } else if (enemy.type === 'jaguar') {
           if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'boa') {
-          if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
+          if (enemy.trick === 'coil' && (enemy.state === 'roll' || enemy.state === 'rolled') && drawRollingBall(ctx, enemy)) {
+            // (World 1's kicked boa rolling: the painted ball, turning, w1TrickDraw.ts)
+          } else if (enemy.trick === 'coil' && (enemy.state === 'roll' || enemy.state === 'rolled')) {
+            // (until the ball's picture has loaded: its coil turned as a wheel)
+            ctx.save();
+            ctx.translate(enemy.x, enemy.y + 2);
+            ctx.rotate(rollAngle(enemy));
+            ctx.translate(-enemy.x, -enemy.y - 2);
+            const st = enemy.state;
+            enemy.state = 'coil';
+            if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
+            enemy.state = st;
+            ctx.restore();
+          } else if (enemy.trick === 'coil') {
+            // (World 1's armoured coil: a glint, and its tell is the coil squeezing tight, w1TrickDraw.ts)
+            withCoilSqueeze(ctx, enemy, enemy.y + 16, () => {
+              if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
+            });
+            drawCoilGlint(ctx, enemy, this.gameTime);
+          } else if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
           // (8-1's dozing boa: a slow "z" drifting up while it sleeps, batArt's roost tell)
           if (enemy.state === 'sleep') drawDozeZ(ctx, enemy.x, enemy.y - 30, this.gameTime);
         } else if (enemy.type === 'caiman') {
@@ -6867,11 +7158,20 @@ export class GameEngine {
       }
       y = Math.max(cam.y + fs + 7, y);
       placed.push({ x0: x - half, x1: x + half, y });
+      // (a hit word pops in: a touch bigger for its first 0.15 s, so a replaced word still reads as a new hit)
+      const pop = ft.owner === undefined ? 1 : 1 + 0.3 * Math.max(0, 1 - (ft.maxLife - ft.life) / 0.15);
+      if (pop > 1) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(pop, pop);
+        ctx.translate(-x, -y);
+      }
       ctx.lineWidth = 3;
       ctx.strokeStyle = 'rgba(20, 14, 24, 0.7)';
       ctx.strokeText(ft.text, x, y);
       ctx.fillStyle = ft.color;
       ctx.fillText(ft.text, x, y);
+      if (pop > 1) ctx.restore();
     }
     ctx.restore();
   }
@@ -8045,6 +8345,14 @@ export class GameEngine {
     this.stageHint = null;
     this.bossGuideUp = false;
     this.callbacks.onGuide?.('', 0);
+  }
+
+  /** a hit word on one animal (World 1's tricks): it replaces that animal's last word, with a small pop, so mashing never builds a
+   *  column of TOUGH! TOUGH! STOPPED! over it (QS, R-159.1) */
+  private hitWord(e: Enemy, text: string, x: number, y: number, color: string) {
+    // (the boa's words sit above his head, not across his face: he punches it from close by)
+    this.floatingTexts = this.floatingTexts.filter((ft) => ft.owner !== e.id);
+    this.floatingTexts.push({ id: Math.random(), text, x, y, color, life: 0.8, maxLife: 0.8, scale: 1, owner: e.id });
   }
 
   private addFloatingText(text: string, x: number, y: number, color: string, life = 0.8) {

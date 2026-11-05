@@ -1,0 +1,32 @@
+{
+ "tag": "r159-clips",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "r159-boa-tighten-s3",
+   "src": "starts/boa-coil.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain magenta background, smooth weighty motion, a fat tan boa constrictor with brown blotches lying coiled on the ground, its coils slowly squeezing tighter and tighter into a hard, packed, armoured knot, its muscles bunching, its head drawn back low inside the coil, ready to strike, then holding tight and still, side view the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "r159-boa-tighten-s11",
+   "src": "starts/boa-coil.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain magenta background, smooth weighty motion, a fat tan boa constrictor with brown blotches lying coiled on the ground, its coils slowly squeezing tighter and tighter into a hard, packed, armoured knot, its muscles bunching, its head drawn back low inside the coil, ready to strike, then holding tight and still, side view the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}

@@ -202,7 +202,7 @@ export function easyKeep(enemies: Enemy[]): Set<Enemy> {
   for (const e of [...enemies].sort((a, b) => a.x - b.x)) {
     const n = seen.get(e.type) ?? 0;
     seen.set(e.type, n + 1);
-    if (n === 0 || n % 2 === 0) keep.add(e);
+    if (n === 0 || n % 2 === 0 || e.easyKeep) keep.add(e);
   }
   return keep;
 }
@@ -262,7 +262,9 @@ export const FLAG_SPAN_MAX = 4000;
  */
 export function capFlagSpans(stage: Stage, max = FLAG_SPAN_MAX, reached?: readonly number[]): number {
   const kind = stage.config.objectiveType;
-  if (kind === 'ascent' || kind === 'boss_lair' || stage.boss) return 0;
+  // (a stage whose way turns back on itself keeps its flags in the way's order, and lays them itself at most 3,000 px apart along the
+  // way: w1Rhythm.ts, engine.ts flagsInOrder. Sorting them by x here would scramble that order)
+  if (kind === 'ascent' || kind === 'boss_lair' || stage.boss || stage.flagsInOrder) return 0;
   // (a chase's branch is whole again at every restart from a flag, chase.ts restartAt: it may hold one)
   const chase = !!stage.proto?.chase;
   const cps = (stage.checkpoints ??= []);
@@ -449,7 +451,9 @@ export function easyStage(stage: Stage): Stage {
     stage.enemies = stage.enemies.filter((e) => keep.has(e));
     const ring = stage.proto?.ring;
     if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
-    if ((kind === 'purge' || kind === 'gauntlet') && before > 0) {
+    if ((kind === 'purge' || kind === 'gauntlet') && stage.easyGoalCounted && stage.easyGoal !== undefined) {
+      stage.config = { ...stage.config, targetCount: Math.max(1, Math.min(stage.enemies.length, stage.easyGoal)) };
+    } else if ((kind === 'purge' || kind === 'gauntlet') && before > 0) {
       // (LV-6: Normal's goal scaled to the animals Easy keeps, then Easy's share of that (65%), never under the goal this fight had
       // before (0.6 of the old Easy goal). Not a share of Easy's goal for the whole stage: that asked 2-5's kids for 16 of the 21
       // snappers Easy keeps)
@@ -493,7 +497,8 @@ export function easyStage(stage: Stage): Stage {
   let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
   const next = () => cid++;
   const cps = (stage.checkpoints ??= []);
-  if (!climb && !chase) {
+  // (a stage with its flags in the way's order lays its own: w1Rhythm.ts)
+  if (!climb && !chase && !stage.flagsInOrder) {
     const reach = new Set(reached ?? validateStage(stage, { rooms: false }).reachableIds);
     const marks = [stage.spawnX, ...cps.map((c) => c.x), stage.exitTotemX].sort((a, b) => a - b);
     for (let i = 0; i + 1 < marks.length; i++) {

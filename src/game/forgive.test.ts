@@ -13,8 +13,8 @@ import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
-import { ASSIST, FORGIVE, JUMP_RISE, reachJump, reachJumpHeld, EASY_HOLD } from './physics.ts';
-import { easyHoldCheck, validateStage } from './levelCheck.ts';
+import { ASSIST, DOUBLE_RISE, FORGIVE, JUMP_RISE, reachJump, reachJumpHeld, EASY_HOLD } from './physics.ts';
+import { doubleAllowed, easyHoldCheck, validateStage } from './levelCheck.ts';
 import { easyHoldSoften } from './easyMode.ts';
 import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
 import { levelConfig } from './realPlay.ts';
@@ -151,11 +151,14 @@ test('G8 the validator: an Easy step that needs a full-hold jump fails; one a 70
     });
     return st;
   };
-  const HARD = Math.round(0.95 * JUMP_RISE); // (a face: the lip's hoist, levelCheck.ts HOLD_MANTLE, takes the held jump a little higher)
+  // (1-3 counts the second jump since 2026-11-04, levelCheck doubleAllowed: 1-1 teaches it. So the step is measured against the
+  // jump and the second jump together: the full hold climbs it, a 70% hold does not)
+  const RISE = doubleAllowed(levelConfig('1-3')) ? DOUBLE_RISE : JUMP_RISE;
+  const HARD = Math.round(0.95 * RISE); // (a face: the lip's hoist, levelCheck.ts HOLD_MANTLE, takes the held jump a little higher)
   const hard = make(HARD);
   assert.ok(validateStage(hard).ok, `the full jump climbs it: ${validateStage(hard).errors.join('; ')}`);
   assert.ok(easyHoldCheck(hard).length > 0, 'a 70% hold does not');
-  const fine = make(Math.round(0.5 * JUMP_RISE));
+  const fine = make(Math.round(0.5 * RISE));
   assert.deepEqual(easyHoldCheck(fine), []);
   assert.equal(EASY_HOLD, 0.7);
   // Easy softens the hard one: a step halfway up in front of the face, which is still there at its height

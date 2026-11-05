@@ -19,7 +19,7 @@ import { reachJump, TAKEOFF_SLACK } from '../../src/game/physics.ts';
 import { type Beat, type Sample } from '../inspect/beats.ts';
 import type { Stage } from '../inspect/stages.ts';
 
-export type Move = 'J' | 'j' | 'U' | 'Q' | 'V' | 'B' | 'K' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'E' | 'D' | 'X' | 'h' | 'Z';
+export type Move = 'J' | 'j' | 'U' | 'Q' | 'V' | 'B' | 'K' | 'W' | 'S' | 'C' | 'P' | 'M' | 'R' | 'F' | 'N' | 'O' | 'Y' | 'G' | 'E' | 'D' | 'X' | 'h' | 'Z';
 export interface Step {
   m: Move;
   /** seconds from the start on the quick route's clock (the inspector's beat clock: movement plus fights and waits) */
@@ -27,13 +27,15 @@ export interface Step {
   x: number;
   y: number;
   what: string;
+  /** seconds a fight keeps him busy from this step on (an animal met: punched, kicked, stomped; the beat's own fight time) */
+  fight?: number;
 }
 export type Setting = 'normal' | 'easy';
 
 /** what each move letter means, for the pages */
 export const MOVE_NAMES: Record<Move, string> = {
   J: 'jump (a real fall under it)', j: 'safe hop over a gap', U: 'jump twice (a gap or rise only the second jump covers)', Q: "jump the level check can't confirm", V: 'vine swing', B: 'breaking branch', K: 'the chase: the branch collapses behind him', W: 'wind', S: 'slow-down', C: 'climb', P: 'puzzle', M: 'mushroom bounce', R: 'rope',
-  F: 'fight an animal', E: 'eagle / watcher', D: 'dark', X: 'river / moving logs', h: 'small hop', Z: 'other timed hazard',
+  F: 'fight an animal', N: 'daze a snake, then stomp it (World 1)', O: 'kick a coiled boa to roll it (World 1)', Y: 'stomp vault off a snake (World 1)', G: 'a vine snake: punch it stiff, then climb its liana (World 1)', E: 'eagle / watcher', D: 'dark', X: 'river / moving logs', h: 'small hop', Z: 'other timed hazard',
 };
 
 /** a beat's move letter, from what the inspector says it is (beats.ts `what`), one to one */
@@ -57,6 +59,10 @@ export function moveOf(b: Pick<Beat, 'letter' | 'what' | 'count'>): Move | null 
   if (/web|spore|sleep|slow/.test(w)) return 'S';
   if (/eagle sweep|watching|eaglets|sleeping bats/.test(w)) return 'E';
   if (/dark/.test(w)) return 'D';
+  if (b.letter === 'C' && /\(vine snake: punched stiff\)/.test(w)) return 'G';
+  if (b.letter === 'C' && /\(stomp vault\)/.test(w)) return 'Y';
+  if (b.letter === 'C' && /\(dazed, then stomped\)/.test(w)) return 'N';
+  if (b.letter === 'C' && /\(coiled: kicked to roll\)/.test(w)) return 'O';
   if (b.letter === 'C') return 'F';
   if (b.letter === 'P') return 'P';
   if (b.letter === 'J') return 'J';
@@ -125,7 +131,7 @@ export function fromStage(id: string, layout: number, setting: Setting, sim: Rea
         else if (m === 'U') what = 'jump twice (the level check takes it on trust)';
         else if (m === 'J') what = 'jump (the level check takes it on trust)';
       }
-      if (m) steps.push({ m, t: b.t, x: Math.round(b.x), y: Math.round(b.y), what });
+      if (m) steps.push({ m, t: b.t, x: Math.round(b.x), y: Math.round(b.y), what, ...(b.letter === 'C' && b.dur > 0 ? { fight: b.dur } : {}) });
     }
     return steps.sort((a, b) => a.t - b.t);
   };
@@ -134,6 +140,11 @@ export function fromStage(id: string, layout: number, setting: Setting, sim: Rea
 
 /** the move string (small hops left out: they are walking with a bump in it, research §7's letters are the moves that count) */
 export const moveString = (steps: readonly Step[]) => steps.filter((s) => s.m !== 'h').map((s) => s.m).join('');
+/** each move's way, in moveString's order: u (up), d (down) or f (flat), from where the next move starts (the same as rhythmTokens) */
+export const moveDirs = (steps: readonly Step[]) => {
+  const moves = steps.filter((s) => s.m !== 'h');
+  return moves.map((s, i) => { const dy = moves[i + 1] ? moves[i + 1].y - s.y : 0; return dy < -15 ? 'u' : dy > 15 ? 'd' : 'f'; }).join('');
+};
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Checks on the move list (pure)
@@ -177,7 +188,10 @@ export function deadWalks(steps: readonly Step[], total: number, samples: readon
   for (let i = 1; i < ts.length; i++) {
     const t0 = ts[i - 1], t1 = ts[i];
     const pad = steps.filter((s) => s.m !== 'h' && s.t <= t0 && s.t > t0 - 6).length >= 3;
-    const busy = busyBetween(samples, t0, t1);
+    // (a fight met at t0 is the player busy, not walking: the lead's ruling (b), 2026-11-05; 1-5's teach boa, a 2 s fight, read as a
+    // dead walk after it)
+    const fought = Math.min(t1 - t0, steps.filter((s) => s.t === t0).reduce((n, s) => n + (s.fight ?? 0), 0));
+    const busy = busyBetween(samples, t0, t1) + fought;
     const secs = t1 - t0 - busy - (pad ? REST_PAD : 0);
     if (secs > limit) out.push({ t0, t1, x0: xAt(t0), x1: xAt(t1), secs: +secs.toFixed(1), pad, busy: +busy.toFixed(1) });
   }
@@ -188,26 +202,48 @@ export function deadWalks(steps: readonly Step[], total: number, samples: readon
 export const RUN4_MAX = 3;
 export const RUN3_BACK = 3;
 export interface RepeatFlag { kind: '4-run' | '3-back'; run: string; n: number; at: number[] }
-export function repeats(str: string, steps: readonly Step[]): RepeatFlag[] {
+/**
+ * a beat-traced stage's moves as tokens a thumb tells apart (the lead's ruling, 2026-11-04): each move's letter, the note value since the
+ * move before it on the stage's beat (q a quarter or less, h a half, w a whole or more) and which way it goes (u up, d down, f level, from
+ * where it is to where the next move starts). A hop down on a half note and a jump up on a whole note are not the same move to a thumb.
+ */
+export function rhythmTokens(steps: readonly Step[], bpm: number): string[] {
   const moves = steps.filter((s) => s.m !== 'h');
+  const beat = 60 / bpm;
+  return moves.map((s, i) => {
+    const dt = i ? (s.t - moves[i - 1].t) / beat : 4;
+    const nv = dt < 1.5 ? 'q' : dt < 3 ? 'h' : 'w';
+    const next = moves[i + 1];
+    const dy = next ? next.y - s.y : 0;
+    const dir = dy < -15 ? 'u' : dy > 15 ? 'd' : 'f';
+    return `${s.m}${nv}${dir}`;
+  });
+}
+
+/** `bpm`: a beat-traced stage's beat (its moves are counted as rhythm tokens, rhythmTokens); otherwise the letters alone */
+export function repeats(str: string, steps: readonly Step[], bpm?: number): RepeatFlag[] {
+  const moves = steps.filter((s) => s.m !== 'h');
+  const toks = bpm ? rhythmTokens(steps, bpm) : [...str];
+  const key = (i: number, n: number) => toks.slice(i, i + n).join(' ');
+  const shown = (i: number, n: number) => str.slice(i, i + n);
   const out: RepeatFlag[] = [];
   // the same 4-move run, anywhere in the stage, counted without overlaps
   const seen = new Map<string, number[]>();
-  for (let i = 0; i + 4 <= str.length; i++) {
-    const k = str.slice(i, i + 4);
+  for (let i = 0; i + 4 <= toks.length; i++) {
+    const k = key(i, 4);
     const at = seen.get(k) ?? [];
     if (!at.length || i >= at[at.length - 1] + 4) at.push(i);
     seen.set(k, at);
   }
-  for (const [run, at] of seen) if (at.length > RUN4_MAX && new Set(run).size > 1) out.push({ kind: '4-run', run, n: at.length, at: at.map((i) => moves[i].x) });
+  for (const [k, at] of seen) if (at.length > RUN4_MAX && new Set(k.split(' ')).size > 1) out.push({ kind: '4-run', run: bpm ? k : shown(at[0], 4), n: at.length, at: at.map((i) => moves[i].x) });
   // (a run of one move, JJJJ, is the same idea at its plainest: counted as a 3-run back to back below)
   // a 3-move run repeated back to back
-  for (let i = 0; i + 3 <= str.length; ) {
-    const k = str.slice(i, i + 3);
+  for (let i = 0; i + 3 <= toks.length; ) {
+    const k = key(i, 3);
     let n = 1;
-    while (str.slice(i + 3 * n, i + 3 * n + 3) === k) n++;
+    while (key(i + 3 * n, 3) === k && i + 3 * n + 3 <= toks.length) n++;
     if (n >= RUN3_BACK) {
-      out.push({ kind: '3-back', run: k, n, at: [moves[i].x] });
+      out.push({ kind: '3-back', run: bpm ? k : shown(i, 3), n, at: [moves[i].x] });
       i += 3 * n;
     } else i++;
   }
@@ -215,13 +251,17 @@ export function repeats(str: string, steps: readonly Step[]): RepeatFlag[] {
 }
 
 /**
- * the move 3-grams of a string, counted. A safe hop and a jump read as the same move here (a player feels both as "jump"; whether a miss
- * costs anything is the miss-cost check's job, mechanics.ts), so 1-2's safe hops and 1-1's jumps are compared as what they are.
+ * the move 3-grams of a string, counted. A hop (j), a jump (J) and a double jump (U) are three moves here: a thumb feels them
+ * differently (the lead, 2026-11-04: folded into one, every jumping stage read as the same stage, and 1-1's pair, the jump and the
+ * double, was invisible). Only a move the check can't name (Q) reads as a jump.
  */
-export function grams(str0: string, n = 3): Map<string, number> {
-  const str = str0.replace(/[jQU]/g, 'J');
+export function grams(str0: string, n = 3, dirs?: string): Map<string, number> {
+  const str = str0.replace(/Q/g, 'J');
+  // (dirs, moveDirs: the way each move goes. A jump down onto a snap twig and a climb up onto a creaking limb are both B by letter, but a
+  // thumb feels them apart; the lead's ruling (a), 2026-11-04: every stage's moves are compared letter and way together)
+  const toks = dirs && dirs.length === str.length ? [...str].map((c, i) => c + dirs[i]) : [...str];
   const m = new Map<string, number>();
-  for (let i = 0; i + n <= str.length; i++) m.set(str.slice(i, i + n), (m.get(str.slice(i, i + n)) ?? 0) + 1);
+  for (let i = 0; i + n <= toks.length; i++) { const k = toks.slice(i, i + n).join(''); m.set(k, (m.get(k) ?? 0) + 1); }
   return m;
 }
 export function cosine(a: Map<string, number>, b: Map<string, number>): number {

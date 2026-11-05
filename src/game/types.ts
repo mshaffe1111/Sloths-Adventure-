@@ -230,6 +230,16 @@ export interface Enemy {
   groundY?: number;
   /** a river snapper's shell, kicked: which way it slides (predatorAI.ts) */
   slideDir?: 1 | -1;
+  /** World 1's one trick per animal (w1Tricks.ts, R-159.1): set only by World 1's placements, so no other world changes */
+  trick?: import('./w1Tricks.ts').Trick;
+  /** a stomp vault's snake (R-159.1): the only way across its drop, so it comes back at its spot when he respawns; once back, finishing
+   *  it again does not count toward the stage's goal (no farming the count at a flag) */
+  /** Easy keeps this animal too (easyMode.ts easyKeep keeps every other one): 1-3's climax chain, its punch-daze-stomp between hops */
+  easyKeep?: boolean;
+  vaultHome?: { x: number; y: number; back?: boolean };
+  /** World 1's vine snake: the liana it hangs on, and how far down it from the top */
+  vineId?: number;
+  hangLen?: number;
   /** 2-9: a snapper of the river king's guard: stands upright with a spear, jabs further, blocks a blow to the front instead of hiding,
    *  and is staggered back by a kick (it shares the snapper's brain, predatorAI.ts) */
   royal?: boolean;
@@ -282,6 +292,17 @@ export interface Platform {
   fragileTimer?: number;
   /** World 7 ruin tiles: seconds the tile holds once stepped on (instead of the usual 1.1) */
   crumbleAfter?: number;
+  /** a creaking limb (1-4 on, World 1's own branch art): seconds it holds once stepped on (instead of the usual 1.1); unlike crumbleAfter it
+   *  keeps the branch's look (the notch and the shake), not World 7's tiles */
+  creak?: number;
+  /** drawn as bare bark: the branch picture without its bromeliad and moss (1-1's canopy: one plant stamped on every bough read as
+   *  repeated; draw only) */
+  bare?: boolean;
+  /** the branch picture drawn this much thicker or thinner (0.8-1.3; draw only, the walkable top is unchanged) */
+  thick?: number;
+  /** draw only: the painted bough cut at these world x (a neighbour's end a hop away: their painted ends overlapped, 1-1) */
+  drawX0?: number;
+  drawX1?: number;
   /** a boss ledge that starts cracking (becomes fragile) from this phase of the fight */
   crackFrom?: number;
   broken?: boolean;
@@ -319,6 +340,8 @@ export interface Platform {
   soil?: boolean;
   /** World 1: a floorless gap beside this bank is a painted drop, a fall, not water (w1Pits.ts, R-6.38: a builder sets it on either bank) */
   pit?: 'drop';
+  /** a catch a builder lays under a gap (w1Rhythm.ts): a fall's floor, left with a hop; the dips test checks each one (plainWalk.test.ts) */
+  catch?: boolean;
 }
 
 /**
@@ -425,6 +448,8 @@ export interface Collectible {
   isLocked?: boolean;
   /** the sanctuary door, sealed, with the new HUD (beta): how many of the goal are still missing (the door shows it) */
   missing?: number;
+  /** a relic drawn as one of Meeca's trail marks (1-5 Where She Walked, w1Rhythm.ts): her M cut in a slab of bark, glowing */
+  mark?: 'meeca';
   /** a story find (note, book or keepsake): which one (see finds.ts) */
   findId?: string;
   /** World 3: one of Grandma's things hidden in a fern (a relic with `hidden`): what it is, for the words when it turns up */
@@ -480,6 +505,8 @@ export interface FloatingText {
   life: number;
   maxLife: number;
   scale: number;
+  /** the animal a hit word belongs to: a new word on it replaces this one (World 1's tricks: words never stack) */
+  owner?: number;
 }
 
 export interface Camera {

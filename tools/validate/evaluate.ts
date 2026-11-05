@@ -2,7 +2,7 @@
  * The fun validator's judgement: every check on a built stage, as flags in plain words, each with its rule's source (fun-validator).
  * Structure checks run on any layout (cheap); play checks (play.ts) run on a few layouts and are merged in by world1.ts.
  */
-import { build, cosine, deadWalks, grams, moveString, pacing, pacingStrip, paceFlags, repeats, SIMILAR_MAX, type Built, type Setting } from './core.ts';
+import { build, cosine, deadWalks, grams, moveDirs, moveString, pacing, pacingStrip, paceFlags, repeats, SIMILAR_MAX, type Built, type Setting } from './core.ts';
 import { lookAlike, lookOf } from './look.ts';
 import { enemyJobs, ENEMY_FREE_TARGET, mechRow, missCost, padding, pairsMet, pairsOf, sixThings, tempoOf, waitAt, type Beat2 } from './mechanics.ts';
 import { rhythmOf, shapeAlike, shapeOf, SHAPE_ALIKE_MAX, tempoAlike, templateFlags, unitsOf } from './variety.ts';
@@ -11,6 +11,8 @@ export interface Flag { rule: string; what: string; x?: number; source: string }
 export interface StageEval {
   id: string; layout: number; setting: Setting;
   str: string; quick: string; total: number; strip: string;
+  /** each move's way (moveDirs), for str and quick */
+  sdir?: string; qdir?: string;
   costs: { nothing: number; setback: number; life: number; unknown: number; afterTeach: number; beats: Beat2[] };
   padding: ReturnType<typeof padding>;
   tempo: { hurry: number; patience: number };
@@ -58,7 +60,7 @@ export function judge(b: Built & { quick?: { m: string }[] }, truer = true): Sta
   // dead walking
   for (const d of deadWalks(b.steps, b.total, b.samples)) flags.push({ rule: 'dead walk', what: `${d.secs} s of walking with nothing to do${d.pad ? ' (after the rest pad a burst earns)' : ''}`, x: d.x0, source: SRC.dead });
   // repeats
-  for (const r of repeats(str, b.steps)) flags.push({ rule: 'repeat', what: r.kind === '4-run' ? `the same four moves "${r.run}" ${r.n} times` : `"${r.run}" ${r.n} times back to back`, x: r.at[0], source: SRC.repeat });
+  for (const r of repeats(str, b.steps, (b.stage as { proto?: { bpm?: number } }).proto?.bpm)) flags.push({ rule: 'repeat', what: r.kind === '4-run' ? `the same four moves "${r.run}" ${r.n} times` : `"${r.run}" ${r.n} times back to back`, x: r.at[0], source: SRC.repeat });
   // pacing
   const pc = pacing(b.steps, b.total);
   for (const f of paceFlags(pc, truer, { steps: b.steps, setting: b.setting })) flags.push({ rule: 'pacing', what: f.what, source: SRC.pace });
@@ -85,7 +87,7 @@ export function judge(b: Built & { quick?: { m: string }[] }, truer = true): Sta
   if (truer) for (const f of templateFlags(unitsOf(b.stage as never))) flags.push({ rule: 'template repeat', what: f.what, x: f.x, source: SRC.template });
   const six = sixThings(b.stage as never, b.sim.e as never);
   return {
-    id: b.id, layout: b.layout, setting: b.setting, str, quick: (b.quick ?? []).map((s) => s.m).filter((m) => m !== 'h').join(''), total: Math.round(b.total), strip: pacingStrip(pc),
+    id: b.id, layout: b.layout, setting: b.setting, str, quick: (b.quick ?? []).map((s) => s.m).filter((m) => m !== 'h').join(''), sdir: moveDirs(b.steps), qdir: moveDirs(b.quick ?? []), total: Math.round(b.total), strip: pacingStrip(pc),
     costs: { ...c, afterTeach: late.length, beats }, padding: pad, tempo, enemies: en, mech: mechRow(b), six, pairs: truer ? pairsMet(b) : pairsOf(six), flags, built: b,
   };
 }
@@ -96,8 +98,11 @@ export function judge(b: Built & { quick?: { m: string }[] }, truer = true): Sta
  * assume that rearranging petals that you collect is going to make the game feel different." So a stage built on the same pieces with
  * its petals somewhere else reads as alike, while real new terrain reads as new on both routes.
  */
-export function movesAlike(a: { str: string; quick: string }, b: { str: string; quick: string }): number {
-  return Math.max(cosine(grams(a.str), grams(b.str)), a.quick && b.quick ? cosine(grams(a.quick), grams(b.quick)) : 0);
+type Moves = { str: string; quick: string; sdir?: string; qdir?: string };
+export const strGrams = (a: Moves) => grams(a.str, 3, a.sdir);
+export const quickGrams = (a: Moves) => grams(a.quick, 3, a.qdir);
+export function movesAlike(a: Moves, b: Moves): number {
+  return Math.max(cosine(strGrams(a), strGrams(b)), a.quick && b.quick ? cosine(quickGrams(a), quickGrams(b)) : 0);
 }
 
 /** the rules on how a stage's moves compare with the stages before it: like the stage before, like an earlier stage, nothing new */
@@ -110,7 +115,7 @@ export const MOVE_RULES = ['like the stage before', 'like an earlier stage', 'no
  */
 export function movesFlags(ev: StageEval, out: readonly StageEval[], truer: boolean): Flag[] {
   const flags: Flag[] = [];
-  const alike = (a: StageEval, b: StageEval) => (truer ? movesAlike(a, b) : cosine(grams(a.str), grams(b.str)));
+  const alike = (a: StageEval, b: StageEval) => (truer ? movesAlike(a, b) : cosine(strGrams(a), strGrams(b)));
   const prev = out[out.length - 1];
   if (prev) {
     const c = alike(ev, prev);
@@ -125,10 +130,10 @@ export function movesFlags(ev: StageEval, out: readonly StageEval[], truer: bool
   const mine = truer ? ev.quick : ev.str;
   const seenMoves = new Set(out.flatMap((p) => (truer ? [...p.str, ...p.quick] : [...p.str])));
   const seenPairs = new Set(out.flatMap((p) => p.pairs));
-  const seenGrams = new Set(out.flatMap((p) => (truer ? [...grams(p.str).keys(), ...grams(p.quick).keys()] : [...grams(p.str).keys()])));
+  const seenGrams = new Set(out.flatMap((p) => (truer ? [...strGrams(p).keys(), ...quickGrams(p).keys()] : [...strGrams(p).keys()])));
   const newMoves = [...new Set(mine)].filter((m) => !seenMoves.has(m));
   const newPairs = ev.pairs.filter((p) => !seenPairs.has(p));
-  const newGrams = [...grams(mine).keys()].filter((k) => !seenGrams.has(k));
+  const newGrams = [...(truer ? quickGrams(ev) : strGrams(ev)).keys()].filter((k) => !seenGrams.has(k));
   if (truer) (ev as StageEval & { adds?: unknown }).adds = { moves: newMoves, pairs: newPairs, grams: newGrams.length };
   if (out.length && !newMoves.length && !newPairs.length) flags.push({ rule: 'nothing new', what: `no move or pairing an earlier World 1 stage didn't already ask (${newGrams.length} new 3-move runs of old moves)`, source: SRC.newer });
   return flags;
