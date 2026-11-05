@@ -1,0 +1,8 @@
+URL: https://gamingbolt.com/donkey-kong-country-tropical-freeze-wiki
+Read: 2026-11-05 (TinyFish). Martin Toney, GamingBolt, 2013-10-17 (pre-release). Water paragraph verbatim.
+
+"A returning gameplay mechanic that was missing from Donkey Kong Country Returns is the ability to swim, but it has been further refined
+and improved than its previous iterations. When the player is swimming under water they have the option of attacking the foe with a
+spinning attack as a means of defence. As soon as the players character enteres the water, an oxygen gauge will appear on screen that
+will depict how much air the Kongs have left, if they wish to survive underwater with resurfacing the player must touch bubbles in order
+to gain more O2, similar to the means of replenishing oxygen in Sonic the Hedgehog."

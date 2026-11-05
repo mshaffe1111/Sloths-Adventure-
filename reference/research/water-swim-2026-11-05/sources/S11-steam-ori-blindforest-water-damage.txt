@@ -1,0 +1,14 @@
+URL: https://steamcommunity.com/app/261570/discussions/0/617330406652930195/
+Read: 2026-11-05 (TinyFish). Steam discussion, Ori and the Blind Forest, 2015-03-14. Verbatim excerpts. Post #10 is by a Moon Studios
+staff member ("Sofie": "threw it onto our level designer").
+
+#2 its_just_Rat: "If you've finished the ginso tree there shouldn't be a problem swimming out of that area. You will be able to hit an
+air pocket long before you run out of breath. Remember to hold A to swim faster if you're using a controller"
+#4 its_just_Rat: "Huh, so you can actually get to that part without purifying the waters? [...] So when you go into the water you just
+take continual damage?"
+#6 Saldon: "The Water's been purified, usually it is purplish in color."
+#8 its_just_Rat: "if you HAVE to take damage to go somewhere, you probably aren't supposed to be there yet."
+#10 Sofie (Moon Studios): "I took note of the problem and threw it onto our level designer to have it fixed in the near future :) [...]
+By the way, fun fact: because you're not supposed to get there before the water is cleansed, we didn't bother making it a purple version"
+Reading (mine): in Blind Forest, dirty (purple) water deals continual damage until the Ginso Tree is cleansed; the clean water then
+swims, with a breath limit and "air pockets" placed so you reach one "long before you run out of breath"; a hold-to-swim-faster button.

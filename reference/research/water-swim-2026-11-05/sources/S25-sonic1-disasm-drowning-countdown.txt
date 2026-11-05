@@ -1,0 +1,21 @@
+URL: https://raw.githubusercontent.com/sonicretro/s1disasm/master/_incObj/0A%20LZ%20Drowning%20Countdown.asm
+(path found with: gh api search/code q='drown repo:sonicretro/s1disasm'). Read 2026-11-05 (TinyFish). PRIMARY SOURCE: the community
+disassembly of Sonic the Hedgehog (1991), object 0A. Lines kept verbatim from Drown_Countdown (the rest of the file is bubble drawing).
+
+move.w #60-1,drown_numtime(a0) ; reset timer to one second (60 frames)
+move.w (v_air).w,d0 ; check seconds of air remaining
+cmpi.w #25,d0 ; 25 seconds left?        -> .warningSound
+cmpi.w #20,d0 ; 20 seconds left?        -> .warningSound
+cmpi.w #15,d0 ; 15 seconds left?        -> .warningSound
+cmpi.w #12,d0 ; 12 seconds left?
+move.w #bgm_Drowning,d0 ; set countdown music
+move.w #sfx_Warning,d0 ; set "ding-ding" warning sound
+subq.w #1,(v_air).w ; subtract 1 second from air remaining
+; Sonic drowns here
+move.b #$81,(f_playerctrl).w ; lock controls and disable object interaction
+move.w #2*60,drown_restarttime(a0) ; wait 2 seconds before changing to Sonic_Death state
+move.b #6,(v_player+obRoutine).w ; set Sonic to Sonic_Death to deduct life and restart level
+
+Reading (mine): air is counted in whole seconds; the warning dings come at 25, 20 and 15 s left, the drowning music at 12 s left, and at
+0 the controls lock and he loses a life 2 s later. With air starting at 30 s (StrategyWiki S02: "18 seconds, with warning bells after 5,
+10, and 15 seconds", then "about 12 seconds"), the first warning is 5 s after going under. Same numbers in both sources.

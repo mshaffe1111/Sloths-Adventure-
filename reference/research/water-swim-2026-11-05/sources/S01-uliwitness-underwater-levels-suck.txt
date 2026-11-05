@@ -1,0 +1,48 @@
+URL: https://uliwitness.github.io/why-underwater-levels-suck-so-often/
+Read: 2026-11-05 (TinyFish fetch_content). Author: uliwitness, published 2023-11-26. Full article text, verbatim.
+
+# Why Underwater Levels Suck So Often
+
+The Escapist let a bunch of people go, and their big names like Ben "Yahtzee" Croshaw of "Zero Punctuation" fame and JM8 from "Design Delve" quit in solidarity and started a new venue, "Second Wind".
+
+The newest post on Design Delve is about under-water levels: Designing an Underwater Temple That Doesn't Suck. It made me think of what it is that often makes me unhappy about under-water sections in games, and why I prefer them as occasional places where optional secrets can be hidden, or where you're given a clear directive that this is the only way to approach an enemy base, and it's one special set piece that doesn't take too long.
+
+I also enjoy underwater section as (again, short, or interrupted by equally long "above water") areas where you go in, find out how to drain the water, and thereby get two radically different views of the same location.
+
+To me, the following things make water levels annoying sometimes:
+
+## Water only as an obstacle
+
+In many games, water sections are strictly more restrictive than the base game — often I can't use weapons, sometimes I can't even hide. There are currents that push me back even if the game doesn't have wind to do the same above ground. And to top it all off, water levels are also often slower due to having to move through "thick" water instead of "thin" air. Just viscerally, all these things often conspire to make it feel like someone just tried to increase the difficulty without giving me any other reward for it. To stretch out game time.
+
+## Increase in Complexity
+
+By our nature, humans are "bolted to the floor" and need appropriate ways (hand-holds, ladders, elevators etc.) for vertical movement. Water sections, by nature, are 3D: Humans can use buoyancy to ascend vertically. So water sections become more complex to navigate due to a 3rd dimension, instead of being just 2D with ground level deciding where you are, and maybe a grappling hook. Enemies can also get me from more angles under water, as they can be above and below me much more easily.
+
+## The Physics of Water
+
+Water is an unfortunate element to be in, for a human. Sound carries farther due to the increased mass, so a developer either ignores that fact like most games, or ends up overwhelming players (and, possibly, their game engine's audio systems) with sounds from far away that make it difficult to tell how close enemies are. In contrast, water bends light, so I don't see as far. Moreover, if the developer is emulating natural surroundings, the water should by all means contain small particulate matter (especially during combat, when impacts stir up the soil nearby), further impeding view distance and reducing visible light. In many games, approximating that means that everything looks blueish or greenish, low-contrast and blurry, and I can't see far nor make out details well, and often it's quite dark.
+
+## Slave to the Cooldown
+
+Often the need for having to get air in under-water levels means I'm much more subject to that particular cooldown, and the end result is usually instant death. If I mis-judge any other cooldown, it usually just means I lose a few HP or don't do damage for a second, but here, all my progress so far is undone. So many relaxing, explorative games suddenly become hectic by basically putting you on a timer.
+
+## Water as an Afterthought
+
+Water sections are often not the focus of the game, but rather just one level among many. This means a lot of systems that can be re-used between levels have to be customized. Often, a few are missed, so I get weird things like characters speaking normally under water and "above water" animations playing that make no sense, or just having no animations to avoid that instead of bothering creating replacements for each character just for one water level.
+
+## All of the Above
+
+The lighting, breath time limit and a lack of gameplay hints also often combine to make it difficult to judge whether where I'm going is just tightly timed and I have to be quicker, or whether I'm being level-gated and it's impossible to get to the end/the next air bubble at the moment. Leading to a bunch of frustrating deaths and reloads in situations where I could have just skipped the location until later.
+
+Repeated deaths just take me out of the story in most games, because it's a "this is not really what happened — rewind!" moment that reminds me it's a game. It also often feels like the game is "punishing" me for a death, because it takes a while for the last save point before the death to load back in. Few games e.g. place you back at an earlier safe location with low health and let you continue immediately, instead of triggering a full reload.
+
+## So Under-water levels suck?
+
+No. Underwater levels are like anything else in a game: One location, one trope, one tool in your toolkit that you can take advantage of. They are an easy way to add some style and beauty to a level, or to make a level stand out from the others, or to make a level feel dangerous, unknown and oppressive. However, as you see above, they have quite some inherent difficulty in them. So whenever you implement one, it might be a good idea to consider if you really have the time (i.e. budget) to implement it, and how you can avoid the downsides above.
+
+Can you make your character a faster swimmer? Can you give them a re-breather to avoid the infinite deaths of the out-of-air mechanic? Can you make your character comment on level gates so the player doesn't needlessly try to go down a long tunnel without enough lung capacity? Can you make the water more stylized (e.g. blue tint + parallax bubbles?), so it still "reads" like water, but doesn't hamper readability of details? Does the player's entire toolkit still work under water? Or can you modify the player's toolkit in interesting ways that make it feel more fun under water?
+
+And most importantly: Does this location really need to be in the game, and does it support the story and the development of the player's abilities? Can players transfer things they learn under water to the world above the surface?
+
+Or should it maybe not be a full-on water level, but rather a mechanic that pops up for short stretches in other levels, as a hindrance or an alternate/fallback route, that is a bigger challenge, but is also quickly over so people can get back to their usual gameplay before they start loathing water?

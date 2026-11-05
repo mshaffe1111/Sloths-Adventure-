@@ -1,0 +1,22 @@
+URL 1: https://en.wikipedia.org/wiki/Sloth  (oldid=1374804819)
+URL 2: https://www.worldwildlife.org/resources/facts/why-are-sloths-slow-and-6-other-sloth-facts/
+Read: 2026-11-05 (TinyFish). Verbatim excerpts (Wikipedia "Activity" section and its references; WWF item 7).
+
+Wikipedia, Activity:
+"Sloths move only when necessary and even then, very slowly. They usually move at an average speed of 4 m (13 ft) per minute but can
+move at a marginally higher speed of 4.5 m (15 ft) per minute if they are in immediate danger from a predator. [...] On the ground, the
+maximum speed of sloths is 3 m (9.8 ft) per minute."
+"Sloths are surprisingly strong swimmers and can reach speeds of 13.5 m (44 ft) per minute.[38] They use their long arms to paddle
+through the water and can cross rivers and swim between islands.[39] Sloths can reduce their already slow metabolism even further and
+slow their heart rate to less than a third of normal, allowing them to hold their breath underwater for up to 40 minutes.[40]"
+"Muscle mass makes up only 25 to 30 percent of their total body weight. Most other mammals have a muscle mass that makes up 40 to 45
+percent of their total body weight.[35]"
+[38] Goffart, M. (1971). "Function and Form in the sloth". International Series of Monographs in Pure and Applied Biology. 34: 94-95.
+[40] Britton, S. W. (1941). "Form and Function in the Sloth". The Quarterly Review of Biology 16 (1): 13-34. doi:10.1086/394620.
+
+WWF, "7. Can sloths swim?": "Surprisingly, sloths are strong swimmers. They will sometimes drop from their treetop perches into the
+water and use their extended arms to propel themselves through it."
+
+Arithmetic (mine): swim 13.5 m/min vs usual tree speed 4 m/min = 3.4x; vs ground maximum 3 m/min = 4.5x. So "three times faster"
+(MATT-RESEARCH-2026-11-04-full.txt:372, 653) matches the cited figures if "land" means its usual climbing pace. Note the Gemini text's
+"30% Muscle-Mass" label: the real figure is that muscle is 25-30% of body weight, not a swimming fact.

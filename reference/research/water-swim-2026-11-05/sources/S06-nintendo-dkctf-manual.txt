@@ -1,0 +1,26 @@
+URL: https://www.nintendo.com/eu/media/downloads/games_8/emanuals/wii_u_6/donkey_kong_country__tropical_freeze/ElectronicManual_WiiU_DonkeyKongCountryTropicalFreeze_EN.pdf
+Read: 2026-11-05 (TinyFish, PDF text). Official Nintendo electronic manual, (c) 2014. PRIMARY SOURCE. Water-relevant passages verbatim
+(page numbers are the manual's section numbers; controller glyphs were lost in PDF extraction and show as blanks).
+
+§10 Single-Player Mode, "Air meter":
+"This is only displayed when you are in water, and it will decrease little by little while you are submerged. Be careful! If you run
+out of air, you'll start taking damage. You can restore the air meter by touching bubbles or getting out of the water."
+
+§11 Multiplayer: "Donkey Kong and his partner have individual health and air meters." / "If the partner is on Donkey Kong's back while
+you are in water, then a single air meter will be displayed."
+
+§12 Basic Actions: "Move / Swim ... Depending on how much you tilt [stick], your speed changes."
+Underwater Actions: "Speed Swim [button] while swimming"; "Corkscrew ... Spin while swimming to deal damage to enemies in your path.
+You can also use this move to destroy barrels and find hidden objects."
+
+§13 Joint Actions, underwater:
+"Jet Blast: Press and hold [button] while swimming. The jet blast from Diddy Kong's back gives you a speed boost for a certain period of time."
+"Ponytail Propeller: Press and hold [button] while swimming. Dixie Kong can spin her ponytail like a propeller to give you a constant
+speed boost. There are also places where you can swim against the flow of water only by using this ability."
+"Kong Corkscrew: ... both characters can spin while swimming, damaging any enemies in their path."
+
+§16 Barrels: "Kong Barrel: Throw the barrel to break it open, freeing the partner inside. This also fully restores your health (and your
+air meter, when underwater)."
+
+§17 Items (Funky's shop): "Blue Balloons: These save you from running out of air by refilling your air meter. They only work once each
+and are automatically activated when you run out of air."

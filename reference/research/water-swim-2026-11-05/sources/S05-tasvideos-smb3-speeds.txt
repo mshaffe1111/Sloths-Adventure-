@@ -1,0 +1,15 @@
+URL: https://tasvideos.org/GameResources/NES/SuperMarioBros3
+Read: 2026-11-05 (TinyFish). Excerpt verbatim: the speed section (rest of page is glitch tricks, not water).
+
+Speed (0x00BD) is measured in subpixels per frame. A value of 40 means 40 16ths of a pixel, or 2.5 pixels per frame.
+Mario has a different max speed in various situations:
+| Situation | Max | Pix/Frame |
+| Wall ejecting | 16 | 1 |
+| Flying | 23 | 1.958 |
+| Walking/swimming | 24 | 1.5 |
+| Run-no P | 40 | 2.5 |
+| Run+P | 56 | 3.5 |
+| Sliding | 63 | 3.938 |
+
+Derived (mine, arithmetic): SMB3 swim max = walk max = 1.5 px/frame; = 0.60 of run (no P), 0.43 of P-run.
+(kb.speeddemosarchive.com/Super_Mario_Bros was also tried for SMB1: HTTP 403. Not used.)

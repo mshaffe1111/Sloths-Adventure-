@@ -1,0 +1,14 @@
+Extract of S18 (Celeste Player.cs, https://raw.githubusercontent.com/NoelFB/Celeste/master/Source/Player/Player.cs), lines as numbered
+in S18-celeste-Player.cs.txt. Read 2026-11-05. PRIMARY SOURCE (shipped game code).
+
+L28   public const float MaxRun = 90f;
+L3141 private const float SwimYSpeedMult = .5f;      // vertical speed halved on entry (SwimBegin, L3171-3174)
+L3142 private const float SwimMaxRise = -60;         // auto-rise toward surface when no up/down input (L3214-3217)
+L3144 private const float SwimMax = 80f;             // at the surface: 80/90 = 0.89 of run
+L3145 private const float SwimUnderwaterMax = 60f;   // fully under: 60/90 = 0.67 of run
+L3148 private const float SwimDashSpeedMult = .75f;
+SwimBegin (L3171-3174): "Stamina = ClimbMaxStamina;"  -> entering water refills climb stamina.
+SwimUpdate: "if (CanDash) { ... return StDash; }" -> the full dash works in water.
+"//Rise if close to the surface and not pressing a direction"; "//Popping up onto ledge ... ClimbHop();"; "if (Input.Jump.Pressed &&
+SwimJumpCheck()) { Jump(); return StNormal; }" -> jump straight out at the surface.
+grep of the whole file for "drown|breath": no matches -> Celeste has no air limit.

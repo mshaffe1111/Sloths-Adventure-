@@ -1,0 +1,120 @@
+SOURCE: Scott Rogers, Level Up! The Guide to Great Video Game Design (Wiley, 2010), Level 5 'The Three Cs, Part 1: Character',
+pp. 97-98 and 108-109, and Level 6 camera, pp. 140-141. Text read from the PDF at
+https://eclass.uoa.gr/modules/document/file.php/DI413/%CE%94%CE%B9%CE%AC%CF%86%CE%BF%CF%81%CE%B1/Rogers_LevelUp_2010videogame-design.pdf
+Read 2026-11-05 (TinyFish). Copyrighted book: only the water passages are kept here, verbatim, for research citation.
+
+-----
+ you 
+should ask yourself is: what is the speed of my gameplay? Fast or slow? 
+If your game is fast, then the majority of your gameplay should be fast. This 
+includes: 
+• Running • Bouncing 
+• Jumping • Fighting 
+• Spinning• Flying • Falling • Driving 
+• Shooting 
+Slow - moving moves include: 
+• Walking • Swimming 
+• Ducking • Hiding 
+• Crouching • Hoisting 
+• Sneaking • Climbing 
+5 Which seems to be a running theme in this chapter, doesn ’ t it?
+
+c05.indd   98 5/12/2010   4:56:44 PM
+98 LEVEL 5 The Three Cs, Part 1—Character 
+I ﬁnd it best to alternate between fast experiences and slow ones to keep the 
+game ’ s pacing interesting. 
+When thinking about running, ask what is it being used for? I prefer 
+gameplay where the run speed is drastically different than the walk. The 
+Resident Evil series uses the run not only as a way to move fast but as a 
+way for the player to push through and escape from slow - moving zombies. 
+The dash is the run ’ s cousin. A dash is usually a faster run that expires after 
+a time limit. It is often used to get through timing puzzles such as closing 
+doorways and ﬁre jets, or as a 
+combat move either to escape an 
+enemy ’ s attack or drive home an 
+extr
+-----
+a player if a shadow shows up underwater.
+
+c05.indd   108 5/12/2010   4:57:10 PM
+108 LEVEL 5 The Three Cs, Part 1—Character 
+  The Water ’ s Fine …  or is it? 
+Speaking of water, swimming can still be a difﬁcult thing to design gameplay 
+around. In the earlier days of game design, water traversal was avoided 
+altogether, resulting in a long tradition of  “ water = death ” in video games. 
+If you choose to go that route, keep your messaging consistent otherwise 
+the player will get confused. Don ’ t expect players to be able to differentiate 
+between water that is safe and water that is deadly. My rule of thumb is that 
+water within a single environment should be one or the other. There is no 
+deep end to the pool. It ’ s either all shallow/safe or deep/deadly. If you 
+must have transitional water, give your player adequate cues and warnings 
+of the danger of swimming too far. One game I worked on had a shark 
+ﬁn appear and swim near the player when they strayed out too far. If 
+they ignored the warning and kept going, they got chomped on by a 
+great white! 
+However, water gameplay can be quite interesting as it lends itself to 
+exploration and exotic environments. But you must always consider several 
+gameplay rules when considering swimming: 
+• 	 How does the player enter/exit water? Always make sure water entrances 
+and exits are clearly marked for the player. This can take the form of 
+clearly marked ledges, sloping ramp geometry, or those little pool 
+ladders — just as long as the player can tell  “ this is where I get out. ” 
+• 	 Can the player swim under water or just on the surface? Sometimes the 
+ability to dive isn ’ t given to the player until later in the game. Sometimes 
+not at all. 
+• 	 If the player can swim underwater, can they stay underwater for an 
+extended period of time? Is there some sort of a timer that gauges air 
+supply or pressure that prevents the player from staying underwater for 
+extended periods of time? 
+• 	 Does air matter? Can a player die due to lack of air? Do they need to 
+collect power- ups or have some other method to sustain their air supply? 
+• 	 Can the player attack underwater? Do they carry their weapon and swim 
+at the same time? A typical swim stroke may look strange or cause 
+sorting issues if the player is carrying a weapon at the same time.
+
+c05.indd   109 5/12/2010   4:57:12 PM
+Be Kind to Our Four-Legged Friends 109
+ • 	 How does the player react when they reach the bottom? Can they glide 
+along the bottom? Or do they bob back towards the surface? 
+• 	 Can the player do any actions underwater that they can do on land? 
+Can they pull switches, or operate those submarine hatches you always 
+seem to ﬁnd in underwater levels? 
+• 	 Does the player travel at a consistent speed or can they “ swim faster? ” 
+• 	 Changing directions or elevation underwater can cause problems for the 
+camera as it attempts to match the player ’ s orientation. Quick 
+underwater moves can cause a camera to ﬂip around as it struggles to 
+keep up with the character. 
+Be Kind to Our Four - Legged Friends 
+Not every game features a bipedal character. The beauty of video games 
+is that a player can be a dog, a spider or a spider - dog  … just about 
+anything. But when creating non - bipedal characters, there are a few things 
+-----
+ras 
+OK, so you ’ ve decided on what camera to use for your game. You ’ re ready 
+to go, right? Wrong! What about the camera for special instances? 
+Designing a camera to work underwater or while ﬂying adds another layer of 
+complexity. 
+Here are a few red ﬂags and tricks to keep in mind when adding these extra 
+layers to your own game: 
+• 	 Make sure your camera is always moving along with the player while 
+ﬂying or swimming. Don ’ t let the player rise or fall off screen. 
+• 	 If your player ﬂies or swims straight up or down, make sure your camera 
+doesn ’ t sort through ﬂoor geometry.
+
+c06.indd   141 5/12/2010   4:58:29 PM
+Camera Shot Guide	 141
+ • 	 While swimming, keep your camera underwater with the player. Don ’ t 
+have it pop out of the water unless the player is swimming on the 
+surface. Try to keep a clear distinction between  “ in water ” and “ on 
+land. ” 
+• 	 Try to resist the urge to have your camera realistically bob while 
+underwater. It ’ s effects like this that make players suffer from DIMS. 
+  Tunnel Vision 
+Another tricky camera angle is when the player is moving through 
+environments like caves, sewers, or dungeons. Low ceilings, narrow 
+passageways, and tight doorways can cause all sorts of trouble to the 
+camera. 
+I ﬁnd that if you restrict the movement of the camera using a rail camera in 
+these troublesome locations, not only do you alleviate any camera 
+problems, but it also helps maintain the feeling of claustrophobia. Avoid low 
+angles, rather kee

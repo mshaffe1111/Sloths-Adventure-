@@ -1,0 +1,6 @@
+# speed trial (SWIM.speed overridden in memory; acc scaled with it so the time to top speed stays 1/6 s)
+x0.53 of a run = 151 px/s (5.0 px a frame): climbed out onto floor B after 1.90 s from x=952; frames pinned against the bank 0
+x1.00 of a run = 285 px/s (9.5 px a frame): climbed out onto floor B after 1.07 s from x=953; frames pinned against the bank 0
+x1.25 of a run = 356 px/s (11.9 px a frame): climbed out onto floor B after 0.87 s from x=951; frames pinned against the bank 0
+x1.50 of a run = 428 px/s (14.3 px a frame): climbed out onto floor B after 0.77 s from x=949; frames pinned against the bank 0
+x1.80 of a run = 513 px/s (17.1 px a frame): climbed out onto floor B after 0.67 s from x=946; frames pinned against the bank 0

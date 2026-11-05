@@ -1,0 +1,10 @@
+URL: https://www.ign.com/wikis/shovel-knight/Iron_Whale
+Read: 2026-11-05 (TinyFish). Brendan Graeber, IGN guide, 2014-06-26 (updated 2015-04-25). Water-relevant excerpts verbatim.
+(shovelknight.fandom.com was bot-blocked; its search snippet read: "Most of the stage takes place underwater, with the water resistance
+increasing jumps while making falls slower." Snippet only, not read in full.)
+
+"The Iron Whale is an underwater-themed stage in the Shovel Knight game. [...] Enemies tend to be of underwater variant, ranging from
+deadly squid tentacles, shellfish, and a giant fish with a particularly sneaky lure."
+"In this area, hop across the bubbles to the chest to get several gems" / "Ride it to the top and leap across the bubble platforms"
+Note: the guide never mentions an air meter or drowning anywhere in the stage text. Shovel Knight does not swim: he walks and jumps
+underwater with a higher, floatier jump (neoseeker walkthrough snippet: "Like most water levels, you can jump further in the water.").

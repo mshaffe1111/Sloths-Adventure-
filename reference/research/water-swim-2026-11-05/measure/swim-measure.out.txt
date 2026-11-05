@@ -1,0 +1,28 @@
+# swim-measure (real engine, RealPlay, dt = 1/30 s), run at 2026-11-05T16:13:26.160Z
+run: measured 276 px/s over 0.2 s of held right (PHYS.maxRun = 285)
+well: 330 px wide (8.7 body widths of 38 px); water up: 330 px wide, 72 px deep (SWIM.minDepth 56)
+banks: floor A top 580, floor B top 580, water top 588: climb-out 8 / 8 px over the water (SWIM.climbOut 70)
+first swim: in after 11 frames; the no-steer moment lasted 2.10 s (SWIM.firstFor 2.1)
+crossing: 317 px from x=948 in 1.93 s, out on floor B; top swim speed 150 px/s = 0.53 of a run
+  feet under the top while swimming: 46-46 px; hurt box is 38 px tall (fight.ts:260), so its top is 8 px under the water line
+dive, down held 8 s: under (under > 0.05) for 3.23 s, deepest 0.60 of the dive (40 px); back at the top by himself at 3.27 s (SWIM.diveFor 3)
+after a 1 s dive, let go: back at the top in 0.27 s
+flick up: swim ended, vy -640 px/s (PHYS.jumpV 640)
+  landed on floor B after 0.57 s; died: false, hp 5/5
+6-7 shipped rolls (16):
+  seed 186666: water 330 px wide x 72 px deep at x 6678-7008 of 34150 (1.0% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 570728: water 330 px wide x 72 px deep at x 6707-7037 of 34575 (1.0% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 383373: water 330 px wide x 72 px deep at x 6773-7103 of 33436 (1.0% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 666521: water 330 px wide x 72 px deep at x 6939-7269 of 32801 (1.0% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 421946: water 330 px wide x 72 px deep at x 6549-6879 of 36284 (0.9% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 536133: water 330 px wide x 72 px deep at x 6826-7156 of 34155 (1.0% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 57160: water 330 px wide x 72 px deep at x 6583-6913 of 33897 (1.0% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 731356: water 330 px wide x 72 px deep at x 6721-7051 of 32242 (1.0% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 221539: water 330 px wide x 72 px deep at x 6418-6748 of 35859 (0.9% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 415146: water 330 px wide x 72 px deep at x 6686-7016 of 35126 (0.9% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 695166: water 330 px wide x 72 px deep at x 6327-6657 of 34400 (1.0% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 675160: water 330 px wide x 72 px deep at x 6785-7115 of 34435 (1.0% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 892989: water 330 px wide x 72 px deep at x 6478-6808 of 34642 (1.0% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 863465: water 330 px wide x 72 px deep at x 6714-7044 of 35544 (0.9% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 974111: water 330 px wide x 72 px deep at x 6582-6912 of 34219 (1.0% of the stage); swim time across at 150 px/s = 2.2 s
+  seed 15170: water 330 px wide x 72 px deep at x 6560-6890 of 34484 (1.0% of the stage); swim time across at 150 px/s = 2.2 s

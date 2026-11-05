@@ -1,0 +1,8 @@
+URL: https://www.mariowiki.com/Dolphin_Kick  (oldid=5412070)
+Read: 2026-11-05 (TinyFish, main content). Verbatim.
+"The Dolphin Kick Badge in Super Mario Bros. Wonder [...] is an Action Badge that allows players to burst forward in a single direction
+while swimming in water; this provides a speed boost while also allowing for much more precise turning movement. The badge's effects can
+be activated by pressing [button] or shaking the controller. If a player collides with Brick Blocks while performing a dolphin kick, the
+blocks will be broken without slowing the player down. The speed boost from the badge is powerful enough to allow the player to easily
+swim against currents without the aid of a shell. The effects emulate the enhanced swimming abilities of Frog Mario and Penguin Mario,
+as well as Nabbit and Toadette in the New Super Mario Bros. series."

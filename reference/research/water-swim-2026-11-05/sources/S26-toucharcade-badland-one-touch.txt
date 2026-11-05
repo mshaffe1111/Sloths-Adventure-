@@ -1,0 +1,11 @@
+URL: https://toucharcade.com/2013/04/12/badland-review/
+Read: 2026-11-05 (TinyFish, article only). Joseph Leray, TouchArcade, 2013-04-12. Verbatim excerpts. (Wikipedia's Badland page,
+https://en.wikipedia.org/wiki/Badland_(video_game), was also read: it has no water mechanic and no control description.)
+
+"It is, like so many App Store games, a one-button physics game: touching the screen causes a troupe of silhouetted gremlins [...] to
+fly forward and upward; releasing your finger allows them to float to the ground."
+"The one-touch control scheme is ideal for iOS games generally, but Badland's capricious physics engine and controls are fine-tuned in
+such a way that no two runs are ever feel quite the same, and similar-seeming inputs don't always produce the intended effects on-screen."
+"Badland is never particularly forthcoming in explaining its various mechanics or in telegraphing traps or dangers."
+Reading (mine): Badland has no swimming, but its whole control is the swim pattern of 2D Mario / Kirby's Dream Land (press = rise,
+release = sink, S09, S19), done with one touch; the review's complaint is unpredictable floaty physics, not the one-touch idea.

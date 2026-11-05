@@ -1,0 +1,7 @@
+URL: https://strategywiki.org/wiki/Sonic_the_Hedgehog/Labyrinth
+Read: 2026-11-05 (TinyFish). Page last edited 2026-01-30. Full page text, verbatim (stub page).
+(Sonic Retro's Air_bubbles page was also tried: it returned an anti-bot "Anubis" wall, no content. Not used.)
+
+Labyrinth Zone is a ruin-like maze partially submerged in water. It features many spikes and water-driven contraptions. The greatest hazard of this zone is not the enemies or the traps, but the water. Unlike real hedgehogs, Sonic is terrible at swimming. After staying underwater for a limited amount of time (18 seconds, with warning bells after 5, 10, and 15 seconds) a countdown starts (5 breaths/about 12 seconds), at the end of which Sonic drowns, causing the player to instantly lose a life. The music that plays when Sonic is about to drown is designed to induce panic, making it potentially harder to save him. Collecting air bubbles found in certain points resets the counter and prevents Sonic from drowning.
+
+At the end of Act 3, Sonic has to follow Dr. Robotnik through an ascending passage filling with water. Robotnik's craft can be destroyed; however, this is extremely hard without use of cheats and is not required to complete the level, nor does it offer any sort of bonus.

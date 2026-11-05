@@ -1,0 +1,10 @@
+URL: https://gamecola.net/2016/09/the-lost-art-of-good-game-design-donkey-kong-country-tropical-freeze/
+Read: 2026-11-05 (TinyFish). Nathaniel Hoover, GameCola, 2016-09-28. (This is source 8 in the Gemini variety report's works cited,
+GEMINI-VARIETY-2026-11-02-full.txt:181.) Water-relevant passage verbatim, plus the pacing thesis it sits in.
+
+"Not even the water levels are safe; after an entire trilogy where the heroes could hold their breath indefinitely, Donkey Kong now has
+the lung capacity of an airsickness bag and must constantly seek out air bubbles to keep from drowning."
+"What is this, a breath meter? I haven't breathed since the late '80s!"
+"Tropical Freeze is adamant about never giving you a safe place to stand or a moment to rest."
+"Save for a few pops of adrenaline (e.g., mine carts, chase sequences, rocket barrels, and boss fights), the gameplay of the DKC trilogy
+is characterized by a pacing that is largely determined by the player."
