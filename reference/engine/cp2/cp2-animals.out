@@ -1,0 +1,25 @@
+1-9 boa    ADULT normal layout 1: end sealed door in 132 s; boa hits 9, lives 3 at x 1700,3600,6100,7000,9200,10100,13400,14000,13300,14700,17500,18100; all harms 19 (foe:boa, foe:snake)
+1-9 boa    ADULT normal layout 2: end sealed door in 116 s; boa hits 10, lives 2 at x 1800,3600,6100,7000,10000,13200,14600,15200,17500; all harms 16 (foe:boa, foe:snake)
+1-9 boa    KID easy   layout 1: end sealed door in 96 s; boa hits 3, lives 0 at x 6100,10100,14700; all harms 8 (foe:snake, foe:boa)
+1-9 boa    KID easy   layout 2: end sealed door in 97 s; boa hits 4, lives 0 at x 1800,6100,10000,14600; all harms 9 (foe:boa, foe:snake)
+2-5 turtle ADULT normal layout 1: end sealed door in 178 s; turtle hits 15, lives 2 at x 2500,2800,6900,7300,9000,7900,10000,12000,12900,14500,16300,16400,17800,19100,19200; all harms 19 (foe:turtle, water)
+2-5 turtle ADULT normal layout 2: end sealed door in 315 s; turtle hits 8, lives 0 at x 7000,7500,8500,16000,22300,24600,26900,29200; all harms 40 (water, foe:turtle)
+2-5 turtle KID easy   layout 1: end sealed door in 118 s; turtle hits 28, lives 3 at x 2800,4300,4600,5800,6100,7000,7300,8200,9000,10000,10300,11900,12900,13200,14200,14300,16100,16400,17300,19100,19400,19200; all harms 34 (foe:turtle, water)
+2-5 turtle KID easy   layout 2: end sealed door in 304 s; turtle hits 10, lives 0 at x 1600,2800,7100,8600,9000,13700,19100,24600,29200,33900; all harms 47 (foe:turtle, water)
+2-9 turtle ADULT normal layout 1: end sealed door in 120 s; turtle hits 6, lives 1 at x 6700,10200,12300,14000,17200; all harms 7 (foe:turtle)
+2-9 turtle ADULT normal layout 2: end sealed door in 201 s; turtle hits 4, lives 0 at x 1900,7100,12200,12400; all harms 10 (foe:turtle, water)
+2-9 turtle KID easy   layout 1: end sealed door in 103 s; turtle hits 21, lives 1 at x 800,2000,6200,6800,6700,9100,10200,10500,12400,12700,12500,14200,15500,15800,15600,17200,17500; all harms 25 (foe:turtle, water)
+2-9 turtle KID easy   layout 2: end sealed door in 94 s; turtle hits 10, lives 0 at x 800,1900,7100,7600,12300,12600,14600,17500,20000,22500; all harms 10 (foe:turtle)
+--- most hits at one animal (harms within 400 px grouped)
+1-9 ADULT normal L1: 11 animals that hurt him; most at one: 2; over 1 heart at 1 of them
+1-9 ADULT normal L2: 9 animals that hurt him; most at one: 3; over 1 heart at 2 of them
+1-9 KID easy L1: 3 animals that hurt him; most at one: 1; over 1 heart at 0 of them
+1-9 KID easy L2: 4 animals that hurt him; most at one: 1; over 1 heart at 0 of them
+2-5 ADULT normal L1: 11 animals that hurt him; most at one: 3; over 1 heart at 5 of them
+2-5 ADULT normal L2: 8 animals that hurt him; most at one: 1; over 1 heart at 0 of them
+2-5 KID easy L1: 13 animals that hurt him; most at one: 5; over 1 heart at 8 of them
+2-5 KID easy L2: 10 animals that hurt him; most at one: 1; over 1 heart at 0 of them
+2-9 ADULT normal L1: 5 animals that hurt him; most at one: 3; over 1 heart at 1 of them
+2-9 ADULT normal L2: 3 animals that hurt him; most at one: 2; over 1 heart at 1 of them
+2-9 KID easy L1: 10 animals that hurt him; most at one: 6; over 1 heart at 6 of them
+2-9 KID easy L2: 9 animals that hurt him; most at one: 2; over 1 heart at 1 of them
