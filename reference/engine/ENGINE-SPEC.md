@@ -1508,7 +1508,7 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
 **Element rules for the whole game:**
 - lava only in W9 (Matt);
 - webs only in W5;
-- swim only where water is drawn deep enough, and only from 6-7;
+- swim only where water is drawn deep enough, and only from 6-7; **[revised: water ruling, 11:23 AM]**
 - before 6-7, water costs a life everywhere ("Falling in costs a life", lesson.water), on replay too.
 
 ### C. The core-move ladder, W1-W10
@@ -1543,7 +1543,7 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
 | moving platform | 2-7 (planned) | 2-8, 2-9 | ≥ 1 in 3 from W3 on | 29 → W3, W4 |
 | leaf glide | clearing 4-1 | 4-2, 4-3 | ≥ 1 in 3 from W4 on, wherever there's a drop | unknown until its row exists |
 | warm air | 4-7 | 4-8, 4-9 | W8 and W9 (≥ 3 stages each) | 63 → 8-6, 9-5 and others |
-| swim | 6-7 | 6-8, 6-9 | ≥ 1 in 3 in W6-W8 and W10 where water is drawn; none in W9 | unknown until its row exists |
+| swim | 6-7 | 6-8, 6-9 | ≥ 1 in 3 in W6-W8 and W10 where water is drawn; none in W9 | unknown until its row exists | **[revised: water ruling, 11:23 AM]**
 | lift | 2-7 | 2-8 | ≥ 2 stages in W7 and W10 | 83 → W7, W10 |
 | river logs | 2-1 | 2-2, 2-3 | ≥ 2 stages each in W6 and W8 | 81 → W6, W8 |
 
@@ -1585,17 +1585,17 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
 ### D. Water and swims (GEMINI-VARIETY row "Water", R-5.22; swimming is built, 87f1e2f6)
 
 - **The spec declares water.** A stage profile names its `water`: none, a creek, a river, a pool, a swamp or a tide. Each body has
-  x-range, surface y, depth, and `swim: no | yes`. Shallow or pre-6-7 water is `swim: no`, so it costs a life and is drawn only.
-- **Swim beats are quick in-and-out** (the research's rules, adopted):
-  - at most 15-20 s under before a surface or an exit;
+  x-range, surface y, depth, and `swim: no | yes`. Shallow or pre-6-7 water is `swim: no`, so it costs a life and is drawn only. **[revised: water ruling, 11:23 AM]**
+- **Swim beats are quick in-and-out** (the research's rules, adopted): **[revised: water ruling, 11:23 AM]**
+  - at most 15-20 s under before a surface or an exit; **[revised: water ruling, 11:23 AM]**
   - wide, clear exits, at least 3-4 body widths of bank or a ramp out;
-  - no slow drag: Pokey is fast in water (Matt's "suddenly fast");
-  - currents and bubbles as the variety;
-  - rising and falling water from the tide zone, already built.
+  - no slow drag: Pokey is fast in water (Matt's "suddenly fast"); **[revised: water ruling, 11:23 AM]**
+  - currents and bubbles as the variety; **[revised: water ruling, 11:23 AM]**
+  - rising and falling water from the tide zone, already built. **[revised: water ruling, 11:23 AM]**
 
-  The gate measures each swim beat's time under on the bot run and fails over 20 s.
+  The gate measures each swim beat's time under on the bot run and fails over 20 s. **[revised: water ruling, 11:23 AM]**
 - **Where swims are laid:**
-  - 6-7 teaches, in the root well as built;
+  - 6-7 teaches, in the root well as built; **[revised: water ruling, 11:23 AM]**
   - 6-8 and 6-9 echo;
   - then W6-W8 and W10 at least 1 stage in 3 where water is drawn. W7's temple pools, W8's karst ponds and W10's camp river are the
     candidates. None in W9.
@@ -1615,7 +1615,7 @@ leafdrop and leafbonus pieces and the glide skill, swim from the swim zones. Unt
 2. **Dropped move:** a core move absent longer than its "must keep returning" line. Fail, naming the stretch.
 3. **Off-element:** a world move or hazard in a world its row doesn't list. Fail.
 4. **Mixing:** fewer than 3 known core moves, or none from an earlier world (W2 on). Fail.
-5. **Swim beat:** more than 20 s under, or an exit narrower than 3 body widths. Fail.
+5. **Swim beat:** more than 20 s under, or an exit narrower than 3 body widths. Fail. **[revised: water ruling, 11:23 AM]**
 6. **Today's misses are a known list.** It only shrinks (like `clipknown.json`). A world is cleared off it when the engine rebuilds that
    world's stages.
 
@@ -1881,3 +1881,45 @@ LEAD** (Matt: "You"), inside the Hugging Face money. The designer sends the rank
 | 3 | Ladder amounts (echo, ≥ 1 in 3, ≥ 1 in 4, touch/some/lots) are far above what ships (breaking branch 0/28, boa 0/28, rope 4/28) | **ACCEPTED** | The amounts in "More used" (L1311-1321) and §C are **OPEN** until research-moves reports (2:30 PM). The shape stays: taught things return as the twist, without re-teaching (R1:68; Yacht Club "no one-offs"; GV:105). The size of the work is named: "≥ 1 in 3" for breaking branches alone means about 9-10 of W2-W4's 28 stages |
 | 4 | On **main**, lianas are taught in 1-6 and breaking branches in 1-5. My 10:09 ruling rested on 11-04's unshipped 1-2 | **ACCEPTED. My ruling was wrong.** d272601f and 6dae405d are 11-04 work, not on main, and "nothing from 11-04 ships" (L10) | **The 10:09 ruling and C9 are reversed:** creaky is taught in **1-5**, lianas in **1-6**, as on main and as the original teach table (L1288-1289) said. Taught-at always comes from **main**, the shipped game, never from an unshipped branch. The ladder data is re-derived on main |
 | 5 | Smith 2009 holds, but R2 credits it to Launchpad 2011 and says "14 jump kinds" where the paper's Fig. 13 says 13. Smith §5 allows one exact repeat of a rhythm group before a rest, against L392 "never the same burst twice" | **ACCEPTED** | SPEC-TRACE and R2 citations are corrected to Smith et al. 2009 (13 jump types). L392 becomes: **a rhythm group may repeat once, exactly, right before a rest** (Smith 2009 §5; LEDGER-2026-11-02-full C4), and never otherwise. Smith's "rhythm is what the player feels with his hands" is added as the source for L1120 (the player's rhythm, not the song) |
+
+## Water and swimming ruled from the research (designer, 11-05 ~11:23 AM ET; WATER-SWIM.md, research-water-swim 1fcc7410; the 11-02 paste recovered, bb70b81c)
+
+§D's swim lines are replaced by these. "F", "C" and "M" refer to WATER-SWIM.md's sourced findings, our research and our measurements.
+
+| # | Rule | Source | Gate (real engine, RealPlay; the validator's bot can't swim, M7) |
+|---|---|---|---|
+| W1 | **No breath meter and no drowning in calm water, ever** | F1, F3, F9, F12, F14 (no air meter); F4, F8, F18 (air that kills is the most hated); C3 ("zero oxygen-timer stress"); built (M2) | No calm water body deals damage or starts a timer |
+| W2 | **A dive is short**: down held takes him under ≤ 3 s, then he floats up (built, 3.27 s measured). Any underwater passage reaches a surface or air pocket within one rhythm group | M2; C6; F4, F10 | The longest time with no surface above him is ≤ 14 s Normal, ≤ 8 s Easy |
+| W3 | **Each kind of water reads at a glance.** Calm swims; dirty or fast water costs a life. They never share one screen (844 px sideways) unless a drawn bank divides them **and** the stage has already shown both, with Pokey's "two waters" line | F19 (Rogers: "water within a single environment should be one or the other"), F10, F13 | The nearest open deadly column to any calm pool is > 844 px, or the divided-and-taught case holds |
+| W4 | **Swim speed is at least a run.** The number is Matt's (12:30), with the research's recommendation C, 1.25×. A faster swim needs **long water**: today's 330 px well is crossed in 0.67-1.07 s at 1.0-1.8× | Matt R-5.22; F5, F18, F20; C3; M9 | Steady swim speed ≥ the chosen multiple of PHYS.maxRun |
+| W5 | **Beat length and cadence.** One swim beat (enter to leave, or to a floating rest) lasts one rhythm group: 10-14 s Normal, 6-8 s Easy. It is followed by at least as long on land or at a rest. This fits the recovered paste's Law 3 ("alternate every 15-20 seconds between underwater pockets, air caverns, and overhead vines"): that is a **cadence of water and land**, never a cap on time under. The researcher's reconciliation (12:15) can tighten the numbers, not the shape | C6 (SR:173); F18, F6, F19; paste1 Law 3 | Each beat's time in water is inside the band |
+| W6 | **Wide, clear exits**: a bank lip ≤ 70 px over the water (SWIM.climbOut), drawn as a ledge or ramp, then a landing ≥ 3 body widths (114 px; body 38 px) | F19, F3; swim.ts:49, :51 | Lip ≤ 70 px and apron ≥ 114 px at every exit (6-7 passes today) |
+| W7 | **The first swim is taught with zero risk**: a floored first pool, no hazard in it, and Pokey says what calm water is | C5 (GP:35); F10, F16; built in 6-7's well | The teaching stage has no deadly piece within its first calm pool |
+| W8 | **Currents are taught going with him first, and can always be beaten**: an opposing current never brings net speed below 0.5 of a run without a burst that beats it | F18, F7, F15 | Net upstream speed ≥ 0.5 × maxRun, or a teach line plus a burst source in the same section |
+| W9 | **Rising water pushes the pace but never catches a moving player**, and each stage's first rise is safe | F4, F10, F6, F11; built in 6-8 and 2-8 | A bot that never stops is never caught; the first rise is safe |
+| W10 | **Swimming returns:** a core move from 6-7, in W6, W7, W8 and W10 where calm water is drawn; **never two swim-heavy stages in a row**; none in W9. The 1-in-3 amount is OPEN with the other ladder amounts (research-moves, 2:30) | F6, F18 ("not in a row"); Matt's element rule | The dropped-move gate, reading a real swim row (finding 2's table rebuild) |
+| W11 | **Bubbles are never air**: they are launch pads, platforms or a current's marker | F11, F14 | — (a design note for the piece list) |
+| W12 | **Touch stays one-thumb**: steer with the left thumb, flick up to leap out. No 360° steering; a burst is a flick | F12, F6, F17; built (M4) | — |
+
+**Corrections to earlier lines (each marked where it stands):**
+- **L1511-1512 / L1588 ("before 6-7, water costs a life everywhere"; "shallow or pre-6-7 water is swim: no, so it costs a life") are
+  wrong.** Teaching pools, 2-1's teaching river and 2-8's rising teaching river cost no life (engine.ts:2503-2527), and shallow calm
+  water is a wade (swim.ts:28-29). Each water body carries two separate fields: `swim` (yes/no) and `deadly` (yes/no).
+- **L1589-1590, L1596, L1618:** the "15-20 s under" rule and its gate are replaced by W2 and W5. The old gate could never fail
+  (M2, M7).
+- **L1592:** "fast" is replaced by W4: Matt's number and long water.
+- **L1593:** no currents exist in calm water today. W8 governs any that are built.
+- **L1594:** the tide zone is a mudflat that sweeps him back, not swim water (M6). What rises and falls today is 6-7's well (a puzzle),
+  6-8's deadly tide and 2-8's basins. A calm rising swim is new work.
+- **L1546 / L1598 vs L1606:** 6-8 cannot echo swimming (it is the Stilt Climb over deadly water). Swimming's echo is **6-9** (the swim
+  stage), plus one other W6 stage with calm water that isn't next to 6-9 (W10 "not in a row"). Which one comes from the W6 pass.
+- **6-9's beats** are long water: 3,500-5,000 px a beat at about 1.25×, chained with floating rests. They need new calm-water art and
+  layout, which is engine work for when the engine reaches World 6.
+
+**The 6-7 fail (M10): deadly dirty water 483-634 px from the calm well, on all 16 rolls.** Law 22: the rule stays, and the root is fixed.
+- The root is gen2's World 6 placement: it lays deadly open columns near the teaching room with no spacing rule.
+- **The fix goes in the builder, not by hand in 6-7:** gen2's W6 room and section placement keeps every deadly open column > 844 px
+  from any calm pool, unless a drawn bank divides them and the stage has already shown both (W3).
+- 6-7, as the teach stage, must also meet W7: nothing deadly within its first calm pool's screen.
+- The W3 gate runs on all 23 gen2 stages and the hand stages. Today's misses go on the known list until fixed.
+- It is engine work for the builder that owns gen2 under one rulebook. The lead assigns it, with a W6 regression lock first.
