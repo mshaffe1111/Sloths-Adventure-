@@ -1,0 +1,8 @@
+phase jump2 end x 1583 y 670 grounded true
+NORMAL second jump double: log pushed to x 1224 (wall foot 1225); on top at 2.2 s after the push
+phase jump2 end x 1481 y 864 grounded false
+NORMAL second jump single: log pushed to x 1224 (wall foot 1225); never on top
+phase jump2 end x 1611 y 670 grounded true
+EASY   second jump double: log pushed to x 1224 (wall foot 1225); on top at 2.3 s after the push
+phase jump2 end x 1481 y 864 grounded false
+EASY   second jump single: log pushed to x 1224 (wall foot 1225); never on top

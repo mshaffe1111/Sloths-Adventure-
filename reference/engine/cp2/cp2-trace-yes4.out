@@ -1,0 +1,32 @@
+setting: NORMAL
+== Crumbling ledge
+   bank -> crumble (rise 0, gap 80 px): full/run-up: 526 ms | full/from its start: 526 ms | flick/run-up: 421 ms | flick/from its start: 421 ms
+   crumble -> crumble (rise +20, gap 80 px): full/run-up: 474 ms | full/from its start: 439 ms | flick/run-up: 368 ms | flick/from its start: 368 ms
+   crumble -> crumble (rise -20, gap 80 px): full/run-up: 439 ms | full/from its start: 404 ms | flick/run-up: 456 ms | flick/from its start: 439 ms
+   crumble -> bank (rise 0, gap 80 px): full/run-up: 526 ms | full/from its start: 526 ms | flick/run-up: 439 ms | flick/from its start: 439 ms
+== Bridge span
+   bank -> bridge (rise 0, gap 90 px): full/run-up: 544 ms | full/from its start: 544 ms | flick/run-up: 386 ms | flick/from its start: 386 ms
+   bridge -> bridge (rise +30, gap 90 px): full/run-up: 456 ms | full/from its start: 456 ms | flick/run-up: 298 ms | flick/from its start: 298 ms
+   bridge -> bridge (rise -30, gap 90 px): full/run-up: 474 ms | full/from its start: 456 ms | flick/run-up: 404 ms | flick/from its start: 404 ms
+   bridge -> bank (rise 0, gap 90 px): full/run-up: 526 ms | full/from its start: 491 ms | flick/run-up: 404 ms | flick/from its start: 404 ms
+== Reed isles
+   bank -> reed (rise +20, gap 85 px): full/run-up: 509 ms | full/from its start: 509 ms | flick/run-up: 351 ms | flick/from its start: 351 ms
+   reed -> reed (rise 0, gap 90 px): full/run-up: 544 ms | full/from its start: 526 ms | flick/run-up: 386 ms | flick/from its start: 368 ms
+   reed -> reed (rise -20, gap 80 px): full/run-up: 474 ms | full/from its start: 439 ms | flick/run-up: 439 ms | flick/from its start: 439 ms
+   reed -> bank (rise -20, gap 90 px): full/run-up: 526 ms | full/from its start: 526 ms | flick/run-up: 439 ms | flick/from its start: 439 ms
+setting: EASY
+== Crumbling ledge
+   bank -> crumble (rise 0, gap 80 px): full/run-up: 526 ms | full/from its start: 526 ms | flick/run-up: 421 ms | flick/from its start: 421 ms
+   crumble -> crumble (rise +20, gap 80 px): full/run-up: 526 ms | full/from its start: 491 ms | flick/run-up: 368 ms | flick/from its start: 368 ms
+   crumble -> crumble (rise -20, gap 80 px): full/run-up: 439 ms | full/from its start: 439 ms | flick/run-up: 456 ms | flick/from its start: 439 ms
+   crumble -> bank (rise 0, gap 80 px): full/run-up: 526 ms | full/from its start: 526 ms | flick/run-up: 439 ms | flick/from its start: 439 ms
+== Bridge span
+   bank -> bridge (rise 0, gap 90 px): full/run-up: 544 ms | full/from its start: 544 ms | flick/run-up: 386 ms | flick/from its start: 386 ms
+   bridge -> bridge (rise +30, gap 90 px): full/run-up: 456 ms | full/from its start: 456 ms | flick/run-up: 298 ms | flick/from its start: 298 ms
+   bridge -> bridge (rise -30, gap 90 px): full/run-up: 474 ms | full/from its start: 491 ms | flick/run-up: 404 ms | flick/from its start: 404 ms
+   bridge -> bank (rise 0, gap 90 px): full/run-up: 526 ms | full/from its start: 491 ms | flick/run-up: 404 ms | flick/from its start: 404 ms
+== Reed isles
+   bank -> reed (rise +20, gap 85 px): full/run-up: 509 ms | full/from its start: 509 ms | flick/run-up: 351 ms | flick/from its start: 351 ms
+   reed -> reed (rise 0, gap 90 px): full/run-up: 544 ms | full/from its start: 526 ms | flick/run-up: 386 ms | flick/from its start: 368 ms
+   reed -> reed (rise -20, gap 80 px): full/run-up: 509 ms | full/from its start: 474 ms | flick/run-up: 439 ms | flick/from its start: 439 ms
+   reed -> bank (rise -20, gap 90 px): full/run-up: 526 ms | full/from its start: 526 ms | flick/run-up: 439 ms | flick/from its start: 439 ms

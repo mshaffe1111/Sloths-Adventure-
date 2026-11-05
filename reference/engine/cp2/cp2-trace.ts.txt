@@ -11,7 +11,13 @@ import { setDifficulty } from './src/game/difficulty.ts';
 if (process.env.MODE === 'easy') setDifficulty('easy'); // the engine then plays Easy's forgiveness (engine.ts:842, FORGIVE.easy)
 console.log('setting:', process.env.MODE === 'easy' ? 'EASY' : 'NORMAL');
 type Part = [string, number, number, number];
-const IDEAS: Record<string, Part[]> = process.env.SET === 'easyfix' ? {
+const IDEAS: Record<string, Part[]> = process.env.SET === 'yes4' ? {
+  // four YES ideas for 1-5, from shipped pieces: World 7's crumbling tile (110 px, crumbleAfter 0.7 s: the commonest shipped), the bridge
+  // span at the shipped median 182 px, reed isles as small floating pads (120 px; World 2's lily sizes 82-102 px are the floor)
+  'Crumbling ledge': [['bank', 220, 0, 80], ['crumble', 110, 0, 80], ['crumble', 110, 20, 80], ['crumble', 110, -20, 80], ['bank', 220, 0, 0]],
+  'Bridge span': [['bank', 220, 0, 90], ['bridge', 182, 0, 90], ['bridge', 300, 30, 90], ['bridge', 112, -30, 90], ['bank', 220, 0, 0]],
+  'Reed isles': [['bank', 200, 0, 85], ['reed', 120, 20, 90], ['reed', 120, 0, 80], ['reed', 120, -20, 90], ['bank', 200, -20, 0]],
+} : process.env.SET === 'easyfix' ? {
   // the designer's Easy rule (ENGINE-SPEC, 11-05 ~12:30 AM): no rise over +40 onto a landing under 220 px, and a landing after a +40 rise
   // at least 110 px. Bough stair: the same 250 px of height in seven smaller steps. Stump hop: step 1 is +40 onto a 110 px stone.
   'Bough stair (Easy)': [['stone', 120, 0, 90], ['branch', 120, 40, 80], ['branch', 150, 40, 70], ['branch', 130, 35, 90], ['branch', 160, 35, 80], ['branch', 120, 35, 90], ['branch', 140, 35, 80], ['branch', 430, 30, 0]],
@@ -27,6 +33,9 @@ const plat = (id: number, k: string, x: number, y: number, w: number): Platform 
   if (k === 'creaking limb') p.creak = 0.88; // as 1-5 ships it; fragileTimer is left unset: the engine starts it on landing (engine.ts:2477)
   if (k === 'lily') p.lily = true;
   if (k === 'catch branch') p.catch = true;
+  if (k === 'crumble') { p.type = 'fragile'; p.crumbleAfter = 0.7; p.style = 'ruin'; }
+  if (k === 'bridge') p.style = 'canopy_bridge';
+  if (k === 'reed') p.style = undefined;
   return p as Platform;
 };
 const r = new RealPlay('3-5', 1);
