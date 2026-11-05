@@ -192,3 +192,11 @@ the critic, then the designer's rulings, then step 6 (the whole-game worlds and 
 timed test, then 1-2 from data as the second test, today. The deadlines and checkpoints stay (accountability, not budget); the 1-1
 pass line's cost line stays as an engine-quality measure (one third of 1-5's 5.2 h / 9 rounds). Not a licence to waste: every
 step still reports its cost, and the meter is still read at each checkpoint.
+
+## 2026-11-05 10:39 AM ET (to the lead, on a floating boulder in a still): rocks never float
+"Why does the one picture in the middle have a floating rock over the lily pad? That's the polish." "Rocks can't float. That
+doesn't look good in the game. I understand the floating logs, because that's kind of the core mechanism of the platforms. A
+platform needs platforms. Rocks shouldn't be floating."
+So: every rock, stone, boulder, mound and earth piece is labelled may float = NO, always, in every world; it sits on ground, a bank,
+the bed of the water, or its own base. Floating is for platform pieces (logs, planks and the like), under the float cap. The
+engine's support check fails a non-floating piece with open air under it.
