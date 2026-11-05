@@ -62,6 +62,7 @@ GP = `reference/GEMINI-PCG-RESEARCH.md`, SR = `reference/STAGE-RULES.md`, LEG = 
 | 17 | §10 ranking | re-checked: same order, C weaker, A changed | A, then B, C, D | A stays first and the evidence for it is stronger. B stays second, as a hole-filler under pins. C drops from "an option" to parts inside A. See 10.0 | all four |
 | 18 | §10.3 "music's score as the layout" | reopened | rejected: the music changes per session | Our themes are symbolic, so take-offs could sit on a selection of the stage theme's own onsets. Whether a stage's theme is fixed needs a check against LEG:415 before this stays rejected | R2 §3.20, §5 idea 12 |
 | 19 | §11.3-11.4 | new | build order and gates | Step 0 (any option): one reach predicate shared by proposer and tracer, with a test; a rejection and coverage report; one double-jump rule in the validator. New gates: kind count, limited agent, risk budget, never-laid option, relative group boundary, a stage catalog diffed in CI | R4 §6 ideas 1-2, 11; R3 §3 W3; R2 §5 ideas 1, 3 |
+| 20 | §13 (new) | new | — | Option E, a clean-sheet engine: move vocabulary as core data, play rhythm as data, risk set by inverting a timing model, kinds counted by construction; compared with the critic's "A, reordered" | lead's brief from Matt, 11-05; CRITIC.md on engine-critic; R1-R4 |
 
 ---
 
@@ -1109,3 +1110,316 @@ fail the kind gate. R2's numbers say they will: 1-2 kinds on the canopy, 66% zig
 - **[11-05 new] Not done by me tonight, on the lead's instruction:**
   - no new experiments; every new number above is the research team's, cited to its note;
   - the notes' source lists were not re-opened by me. The lead checked 32 of their quotes against the fetched pages.
+
+---
+
+## 13. [11-05 new] Option E: a clean-sheet engine, designed as if we had no code
+
+Asked for by the lead from Matt's direction tonight: "the whole point was to make the engine not based upon what we already have, but
+what the best way of doing it." Options A-D all start from our code. E starts from the best way known (R1-R4, the critic's findings in
+`reference/engine/CRITIC.md` on `engine-critic`, and the sources of sections 3 and 3b), and only in 13.7 asks what of ours fits.
+Everything numeric below is either from a cited source or marked **(estimate)**; no new experiment was run (written 10:44-11:30 PM ET).
+
+### 13.1 The idea in five lines
+
+1. **The core data is the move vocabulary**, not rooms and not geometry: every way Pokey can get across something is one pluggable
+   entry with its own reach envelope, timing window, risk model, teaching steps, art needs and tests.
+2. **The "beat" is the player's rhythm, not the song** (Matt, tonight): rhythm groups (regular, swing, broken, wait-and-go) are data
+   that ask for *kinds* of move at *intervals*, and a stage's pulse is set by its moves, not by its music.
+3. **A node is computed, by construction, from rhythm x moves x surfaces x job x risk budget**: kinds are drawn first (counted, so
+   variety is guaranteed), then each event's geometry is solved from its move's envelope *inverted at a target miss chance* (so
+   difficulty is set on purpose).
+4. **Shipped structure on top**: nodes by job (teach, test, twist, master), no unit twice in a stage and none again in a save until the
+   pool is spent, a hand-made set piece per stage, grey approval before any art.
+5. This is Launchpad's architecture (rhythm tier, then a geometry grammar, constructive, R2 §3.3-3.4) with three things no shipped or
+   published system had together: a pluggable move library, risk-targeted sizing from a measured human timing model (Isaksen, R3 F1),
+   and kind quotas as a construction rule (R2 L1).
+
+### 13.2 The move vocabulary: one entry per move, nothing else to change
+
+**The contract.** A `MoveDef` answers six questions the rest of the engine asks generically. The placer, the prover, the checker and
+the bots call these functions and never know which move they hold, so adding a move is one entry plus its tests (13.2.4). The envelope
+is *measured* from the engine's own controller once (one source of truth; the R4 §5.3 proposer/verifier drift cannot happen because
+there is only one model), and stored as a table the placer inverts.
+
+```ts
+interface MoveDef {
+  id: string;                         // 'jump', 'hang-under', 'ride-log'
+  family: 'ground' | 'air' | 'attached' | 'carried' | 'fluid';
+  needs: { from: SurfaceTag[]; to: SurfaceTag[] };     // which surfaces it starts and ends on (contracts, 13.2.3)
+  input: Gesture;                     // the one touch it takes ('flick-up', 'hold', 'release', 'none'); touch rules are level data (R4 §6 idea 5)
+  envelope(dy: number, s: Setting): Envelope;           // reach set: dx range at this height change, duration, and the spread of landings
+  window(e: Placed, s: Setting): Window;                // the timing slack the player has, in ms, for each input of this placement
+  pMiss(w: Window, thumb: Thumb): number;               // chance a player with this thumb misses it (13.4); one formula per family
+  missCost: 'none' | 'retry' | 'setback' | 'heart' | 'life';   // what a miss does here (decided by what is under it, 13.2.3)
+  teach: { expose: Spec; validate: Spec; challenge: Spec };    // the three teaching steps (R1 L5), each a tiny phrase (13.3)
+  kind(e: Placed): KindToken;         // what the player perceives: move x direction x surface x hazard (R2 §5 idea 1)
+  art: { needs: ArtNeed[]; holder: HolderRule };        // what must be drawn, and what holds every surface up (§1 failure 2)
+  tests: TestCase[];                  // envelope matches the engine within 1 frame; every teach step passes the limited-agent bot
+  duration(e: Placed): number;        // seconds it occupies the rhythm (so rhythm intervals pick moves, 13.3)
+}
+```
+
+#### 13.2.1 Three examples (the first two from our physics; hang-under is new and its numbers are estimates to measure)
+
+```yaml
+jump:                                    # ballistic; numbers are table 2.1, measured from physics.ts
+  family: air        input: flick-up    needs: { from: [stand], to: [stand] }
+  envelope: ballistic(v0=640, run=285, gravUp=1900, gravDown=2500, hold=[0.8..1.0])  # dx 157-185 at dy 0; max rise ~100 (Easy ~60)
+  window:  takeoff = (ledge run left in px)/285 + coyote 0.133 s;  landing = (pad px - landing spread)/285
+  pMiss:   timing(takeoff, sigma) + landing(pad, spread(hold sigma))      # 13.4
+  duration: 0.40-0.65 s air               kind: J{up|flat|down}·{surface}
+  teach:   expose 'one jump over a dry dip, nothing under' | validate 'three in a row, catch under' | challenge 'a gap with a cost'
+  art:     surfaces from the world kit; holder required for every pad
+hang-under:                              # SLOTH-NATIVE, new: grip the underside of a bough, shimmy, let go
+  family: attached   input: hold (grip) / release (drop)   needs: { from: [stand, air], to: [underside] }
+  envelope: grab from a jump's apex within grabReach (~40 px, estimate) of the underside; shimmy at shimmyV (~120 px/s, estimate:
+            slow on purpose, a sloth's pace); release = a drop arc from the bough (fall under gravDown, dx = carried vx)
+  window:  grab = the time the apex stays within grabReach (from the jump's own arc, ms); release = (drop zone px)/shimmyV,
+           which is long because shimmyV is slow: hang-under is a *patience* move by construction
+  pMiss:   grab: timing(grabWindow, sigma); release: landing(drop zone, spread)
+  duration: shimmy length / shimmyV (1-4 s): a long rhythm interval is filled by a hang, never by a longer walk (critic #3)
+  missCost: decided by what is under it (soft ground = retry, thorns = heart)    kind: H{shimmy-length band}·{under: what}
+  teach:   expose 'a bough too low to stand under; grip it' | validate 'shimmy to the end over safe ground' | challenge 'let go on the
+           mark over thorns'
+  art:     a bough with a clear underside, grip pose, shimmy cycle (4-6 frames), drop pose; holder: trunk at one end at least
+ride-log:                                # carried: the surface moves, the player times the board and the leave
+  family: carried    input: none to ride; flick-up to leave       needs: { from: [stand], to: [moving] }
+  envelope: board = a jump whose landing is the log's position at landing time t (surface path p(t)); leave = a jump from p(t)
+  window:  board = the time the log's top is inside the jump's landing spread; leave = the time the log is inside the next jump's reach
+  pMiss:   timing(board window, sigma) + timing(leave window, sigma)
+  duration: ride length / current speed     kind: R{current dir}·{leave: up|flat|down}     missCost: water below = setback (W2)
+  teach:   expose 'a log at rest to stand on' | validate 'a slow log, bank either side' | challenge 'leave on the mark onto a reed'
+  art:     log with bark top (the stand line), wake ripple; holder: water (it floats)
+```
+
+#### 13.2.2 The whole list, and whether each fits a sloth
+
+| Move | Family | Fits a sloth? | First world (estimate) |
+|---|---|---|---|
+| run, hop, jump, double | ground / air | yes (exist) | 1 |
+| **hang under and shimmy** | attached | **the most sloth move there is**: other platformers have ceiling-hang zones (DKC Returns' grass ceilings), but none we read makes it the hero's core move; a signature for the game | 1-2 |
+| swing (liana) | attached | yes (exists); its phase becomes the room's, not the stage's (critic #7) | 1 |
+| climb (vine, trunk) | attached | yes (exists) | 1 |
+| wall-kick | air | **no, as a wall-jump.** A sloth does not spring off walls. The fitting version is a **trunk push**: climb a trunk, then push off it sideways (one gesture, a fixed impulse) | 3+ |
+| ride (log, raft) | carried | yes | 2 |
+| float (leaf, seed glide) | air | yes (World 8's glide exists) | 4+ |
+| swim, current | fluid | yes: sloths swim well (true of real sloths) | 2 |
+| crumble (snap twig) | surface rule | yes (exists) | 1 |
+| bounce (mushroom, net) | air | yes (exists) | 1-3 |
+| carried by an animal (capybara, toucan) | carried | yes: "skill carried by level objects" (R1 idea 8, Super Mario Run; R4 L5) | 2+ |
+| wait (for a thing to pass) | none | yes: patience is the sloth's whole character | 1 |
+
+#### 13.2.3 Surfaces are entries too
+
+```ts
+interface SurfaceDef { id: string; tags: SurfaceTag[];   // stand | underside | climbable | moving | floats | crumbles | bouncy
+  motion?: (t: number) => Vec;      // static, a path (log, raft), a sink (lily), a fall (crumble) — time-indexed, the critic's #1 fix
+  holder: HolderRule;               // what holds it up (trunk, posts, water, rope); a surface with no holder cannot be placed
+  under: 'safe' | 'water' | 'pit' | 'thorns';          // decides every move's missCost here
+  art: ArtNeed[] }
+```
+
+#### 13.2.4 What "adding a move adds one entry" means in practice
+
+The placer (13.4) asks every move only for `envelope`, `window`, `pMiss`, `duration` and `kind`; the prover replays the placement in
+the real engine; the checker reads `kind`; the bots read `input`. So a new move is: the `MoveDef`, its controller code in the engine
+(unavoidable: the engine must be able to do it), its art, and its `tests`. The tests are generic: the measured envelope matches the
+engine within one 30 fps frame at 5 heights x 2 settings; each teach step passes the limited-agent gate (bot without the move fails
+validate, bot with it passes; R2 L5). Nothing else in the generator, checker or bots is edited.
+
+### 13.3 The play rhythm as data (the player's rhythm, not the song)
+
+Matt tonight: the beat is "a rhythm the player falls into". The research says the same: rhythm groups are "short, nonoverlapping sets
+of components ... analogous to musical phrases ... culminate in a cadence" (R2 §3.2, Smith 2008); Launchpad's types regular / swing /
+random, lengths 5-20 s, densities low / medium / high (R3 F12). The critic showed what goes wrong when the song is the frame: tempo
+only stretches the walk between identical jumps (critic #3), and the seams fall off the grid at every tempo but World 1's (critic #5).
+
+```ts
+interface Phrase {                    // one rhythm group: the unit of rhythm, 5-20 s
+  type: 'regular' | 'swing' | 'broken' | 'wait-and-go';
+  pulse: number;                      // seconds per count, from the stage (0.40-0.80, 13.3.1), not from BPM
+  events: Array<{ at: number;         // in counts from the phrase start, e.g. 0, 1, 2, 3.5 ...
+                  slot: KindSlot }>;  // what kind of move is wanted here: 'any-air', 'patience', 'carried', a named kind, or 'rest'
+  cadence: 'drop' | 'catch' | 'stop-look' | 'stair' | 'land';   // how it ends (R2 §5 idea 6)
+}
+// Examples (counts):
+//   regular  : 0 1 2 3 | cadence land                       — four even take-offs
+//   swing    : 0 1.5 2 3.5 4 | cadence drop                  — long-short (nPVI target 45-75, R3 F12)
+//   broken   : 0 1 1.5 3 | cadence catch                     — a rhythm that changes mid-phrase (the "twist" phrase)
+//   wait-and-go: 0 (patience, 2-4 counts) 3 3.5 4 | stop-look — hold still, then a quick run of moves
+```
+
+**13.3.1 How intervals pick moves (the step A-D lack).** Each event's interval to the next is filled by a move whose `duration` fits
+it, so a long interval becomes a hang-under shimmy, a ride or a wait, never a longer run-up. This is why E's variety across worlds is
+not "longer walks": a slow stage *changes which moves it uses*. A stage's pulse is chosen per stage (0.40-0.80 s per count,
+**estimate**, from the moves' own durations in 13.2.1), with a rule that neighbouring stages differ by at least 15% (SR §0b.6:
+neighbours "must not share a tempo"). The song may still play; matching it is optional polish (a phrase's accents can be nudged to the
+music's downbeats when they are within one frame), never a constraint. That also settles the open "score as layout" question (§10.3,
+critic V6: the song changes between sessions, so geometry must not depend on it).
+
+**13.3.2 Rests, density and groups by construction.** A rest is a phrase boundary, so groups are 5-20 s by construction, not measured
+after (R3 W1, W14). Density per phrase = events / phrase seconds, set by the node's job; Easy uses fewer events per phrase, not
+Normal's events with wider gaps (the measured Easy failure, §2.5 finding 1, critic V4).
+
+### 13.4 Difficulty on purpose: invert the risk model
+
+For each placed event the engine knows its `window` (ms) and, from Isaksen's measured player model (R3 F1, R4 §4), the miss chance of
+a timing-only input is p = 2(1 − Φ(W / 2σ)). Inverted, the window that gives a target miss chance p is
+
+&nbsp;&nbsp;&nbsp;&nbsp;**W(p, σ) = 2σ · Φ⁻¹(1 − p/2)**
+
+which at our three thumbs gives (computed tonight, arithmetic only):
+
+| target miss chance p | σ 36 ms (sharp adult) | σ 45 ms (proposed adult bot, R3 W6) | σ 61 ms (loose adult / kid-like) |
+|---|---|---|---|
+| 0.01 | 185 ms | 232 ms | 314 ms |
+| 0.03 | 156 ms | 195 ms | 265 ms |
+| 0.05 | 141 ms | 176 ms | 239 ms |
+| 0.10 | 118 ms | 148 ms | 201 ms |
+| 0.15 | 104 ms | 130 ms | 176 ms |
+
+At a full run of 285 px/s, 239 ms is 68 px of take-off zone (estimate). So a Normal spike event aimed at p = 0.10 for a σ 45 ms player
+gets a 148 ms window, about 42 px; a teach event aimed at p ≤ 0.01 gets 232 ms, about 66 px. The landing side works the same way with
+the landing spread from hold error (the bots miss mostly by overshooting, R3 §4.3), so `pMiss` = 1 − (1 − p_takeoff)(1 − p_landing).
+
+**The budget, set per node and summed per stage:**
+- node job targets, Normal: teach ≤ 0.01 per event, test ≈ 0.05-0.10, twist ≈ 0.05, master ≈ 0.10-0.15 (estimates, between Wilson's
+  85% and Lomas's "easier is played longer", R3 F2);
+- stage: E[lives] = Σ p_i · [missCost = life] ≤ the world's budget (Normal World 1 ≤ 1.0, +0.5 a world; Easy ≤ 0.3; R3 F1);
+- Easy is the same generator with σ = the kid's thumb and Easy's budget, so Easy can never be denser or harder than Normal by accident.
+
+This is the opposite of today's tracer, which widens every pad until every clumsy try lands and so pins risk to about zero (critic #2,
+CONFIRMED). In E, "fair" means *the clean input always works and the miss chance is what the spec asked for*, not "nothing can miss".
+The real-engine prover replays the clean input (must pass) and the late and short tries (must miss at about the targeted rate). The
+bots are calibrated on the testers' recordings before their σ is trusted (R4 §2.7, idea 4); until then σ 36-61 ms from Isaksen is the
+range and every risk number carries that band.
+
+### 13.5 How a stage is made, and how variety is guaranteed by counting
+
+```
+stage: 2-4 "Under the Mangroves"            pulse: 0.62 s (neighbours 2-3 at 0.52, 2-5 at 0.74)
+world pool (themed, R4 idea 9): moves {jump, hop, hang-under, ride-log, swim}  surfaces {mangrove-root, log, reed}  hazards {snapper, current}
+risk: normal 1.5 lives, easy 0.4                 signature: "let go of the root right as the log slides under you"
+nodes (job, phrase type, kind quota):
+  n1 teach  hang-under   regular      quota: hang ×2, jump ×2              p ≤ 0.01
+  n2 test   hang-under   swing        quota: hang ×2, jump, hop            p 0.05
+  n3 teach  ride-log     wait-and-go  quota: ride, wait, jump              p ≤ 0.01
+  n4 test   ride-log     broken       quota: ride ×2, hop, swim            p 0.08
+  n5 rest   —            land
+  n6 twist  hang→ride    broken       quota: hang then release onto ride  p 0.05   # the pair: a new verb from two old ones
+  n7 master all          swing        quota: ≥5 kinds, no kind > 25%       p 0.12
+  n8 SET PIECE (hand)    "the long root over the river, log passing under"            # one per stage, hand-made, near the end
+  n9 cool   —            regular      quota: jump ×3                        p ≤ 0.01
+easy: same nodes, kid σ, easy budget, one event fewer per phrase
+```
+
+**The algorithm for one node** (constructive, no search, after Launchpad R2 §3.3-3.4):
+1. Take the node's phrase type and draw a phrase from the world's phrase pool with a shuffle bag and cooldown.
+2. **Assign kinds to the events from the quota first** (a shuffle bag of kind tokens, filtered by interval: a slot's interval picks only
+   moves whose `duration` fits). This is where variety is decided, *before* any pixel.
+3. For each event in order, solve its geometry from the move's `envelope` at the window the risk target asks for (13.4), choosing dy
+   inside the world's height band with a rule against zigzag (no more than 2 flips of up/down in a row; R2 exp. 2's 66%).
+4. Surfaces from the pool with their holders; hazards on the avoided lines of the late try (so a hazard bites a late thumb on purpose).
+5. Prove: replay the clean input in the real engine; replay late/short tries and check the miss rate is near target; real-engine route
+   equals the planned route (one route, §1 failure 8).
+
+If step 2 or 3 cannot realise a quota (no move of the pool fits an interval), the node fails with the named hole ("n4: no carried move
+fits a 2.4 s interval at pulse 0.62") and that hole is a move or phrase to add, never a reroll (Matt's "more pieces"; Bazzaz & Cooper's
+blocklist, R2 §3.19).
+
+**Variety guaranteed by counting kinds.** A kind is `move x direction x surface x hazard` (R2 §5 idea 1; the critic used the same
+tokens). Because kinds are assigned from quotas before geometry, these are construction rules, not after-checks:
+- per node: at least 3 distinct kinds in every test/master node; per stage: the two commonest kinds together ≤ 35% of all events.
+  (The critic showed A's 50% passes 1-2 at 48% and 1-5 at 39%, both stages Matt calls samey, critic A-10; 35% is below both,
+  **estimate** to tune on Matt's ranking.)
+- per stage: at least 1 kind the previous stage did not use, and the stage's signature kind used in no other stage of the world;
+- per world: the kind-string compression distance between any two stages inside the calibrated band (self ≈ 0.09, shuffle ≈ 0.62,
+  R3 F7), aimed at the middle (novelty as a band, R3 F7 / Shu et al.);
+- the counting is cheap and exact because the kinds are the generator's own tokens; the checker reads the same tokens (no second
+  vocabulary, §1 failure 7).
+
+**Combinatorics against the dry pool (critic #6).** A's library of 50-70 rooms runs dry after 5.6-7.8 stages of a world on a first
+pass (critic #6). E's unit is computed: with, say, 12 phrases per type x 4 types and a 5-move pool, a 5-event phrase has 48 x 5⁵ ≈
+150,000 kind assignments before geometry (estimate), and the save-wide ledger tracks *kind strings*, not rooms, so "no unit twice in a
+save" holds for the life of the game. The risk is the opposite one, "procedural oatmeal" (R4 §4: the survey's free-text complaint):
+many combinations that read alike. The answer is that the counted unit is the *kind*, which is what players perceive (R2 L1), and the
+hand set piece per stage carries the memorable moment (R1 L6, SMBF's praised bosses, R1 §3.3).
+
+### 13.6 What E takes from the games that did it best
+
+| Shipped practice | Source | In E |
+|---|---|---|
+| Rooms by job, a restrained algorithm | Dead Cells, Spelunky (R1 L1, §3.1-3.2) | nodes by job (teach/test/twist/master/rest/cool); the algorithm only assigns kinds and solves sizes |
+| No unit twice in a level, none again in a save | SMBF (R1 L2, §3.3) | kind-string ledger per save; no phrase twice in a stage |
+| Rated units in a ramp-and-cool cadence | SMBF, Shovel Knight (R1 L4) | risk targets by job; master peaks, rest and cool after |
+| Teach in three steps, the middle safe and blocking | Rayman's rational design (R1 L5) | every `MoveDef.teach` has expose / validate / challenge, and the limited-agent test |
+| One named surprise per stage | Wonder, DKC Returns (R1 L6) | `signature`, unique per game, Wonder's three tests; the hand set piece |
+| Grey first, approved, then art | Hollow Knight, Ori (R1 L7) | a stage is approved from its text catalog and a grey render before any Hugging Face spend (critic #4's lever) |
+| A level gives the move, not the thumb | Super Mario Run, Rayman Jungle Run (R4 L5) | carried and object-given moves (capybara, launching log) as `MoveDef`s with gesture 'none' |
+| Themed pools per level | Leap Day (R4 §3, idea 9) | each stage draws 4-6 moves, 2-3 surfaces, 2 hazards from the world |
+| Same ground, second goal | Super Mario Run, Fiesta Run (R4 L4) | a cleared stage's seed returns with a second goal (no falls, Meeca's carvings), said plainly |
+| Many tiny fast tests, a few golden-path tests | Sea of Thieves (R4 §4) | per-move envelope tests in ms; per-stage real-engine proof; catalog diff in CI (Brogue, R4 idea 11) |
+
+### 13.7 Only now: what of ours fits
+
+| Our piece | Verdict | Reason |
+|---|---|---|
+| `physics.ts` (PHYS, FORGIVE, controller) | **keep** | it is the one source every envelope is measured from; nothing in E second-guesses it |
+| `beatTrace.ts` `flight` and its slice-exact simulation | **adapt** | becomes the `envelope` of the air family (jump, hop, double, bounce); proven, frame-exact |
+| `beatTrace.ts` `TRIES` (clumsy thumb), `checkTrace` | **adapt** | the thumb model becomes σ-parameterised (13.4), used to *aim* a miss chance, not to widen every pad to zero risk (critic #2) |
+| `beatTrace.ts` bars `x o h .`, BPM grid, fixed 200 px aprons | **replace** | by `Phrase` (counts at a stage pulse, kind slots, cadences); the song stops being the frame (critic #3, #5; Matt tonight) |
+| `beatTrace.ts` `hazardSpots` | **adapt** | inverted: a hazard sits on the late try's path on purpose, at the risk target |
+| `w1Rhythm.ts` (layout12, layout15, fitSteps, palettes) | **replace** | bespoke code per stage, the proposer/verifier drift (R4 §5.3) and the zigzag palettes (R2 exp. 2); its stage *designs* become E specs |
+| gen2 `ShuffleBag`, `CooldownQueue`, `WorldOnce`, per-slot RNG streams, `mirrorable` | **keep** | exactly the variety plumbing E needs (bags of kinds, of phrases) |
+| gen2 sections, sockets, sub-blocks | **adapt** | sections become hand set pieces and cadence rooms; sockets carry dressing |
+| gen2 pipeline Pass 3 (fill to the clock), curation of 16 rolls | **replace** | length comes from phrases (R1 L3); rolls are right by construction, so no curation pass |
+| validator move letters, 3-gram cosine | **replace** | by the generator's own kind tokens and the counts of 13.5 (R3 W11: the cosine sits at 0.00-0.10) |
+| validator gates (dead walk, nothing bites, pacing), funcheck known lists | **keep, re-pointed** | the same questions asked of E's stages; "nothing bites" becomes a risk-budget check |
+| first-timer bot | **keep, calibrate** | it judges *finding* the route, which no envelope can (R3 W13); fit its noise to `touchReplay` recordings (R4 idea 4) |
+| inspector noisy jump bots | **adapt** | become the empirical check of 13.4's analytic miss chances (prover step 5) |
+| `layoutMemory` (keep a layout until cleared) | **keep** | SMBF's fix, already ours (R1 §3.3) |
+| `easyMode` softening after build, `EASY_BUILT` | **replace** | Easy is an input (kid σ, Easy budget, fewer events), never a pass after (§1 failure 5) |
+| liana `swingSetup` phase from stage order | **adapt** | phase owned by the node that places the vine, so a node's proof survives the roll (critic #7) |
+| tests, perf, clip, roadmap gates | **keep** | unchanged |
+
+New to write: the `MoveDef`/`SurfaceDef`/`Phrase` types, the envelope tables for the air family (from `flight`), the hang-under and
+ride moves in the engine (controller + art), the constructive placer, the risk inverter, the catalog. **Hang-under is the one piece of
+real engine work E adds that no option had**, and it is the move that would make the game feel like a sloth game.
+
+### 13.8 E against "A, reordered" (the critic's best alternative), and which I would build
+
+"A, reordered" (CRITIC.md §5): grow the tracer's alphabet to World 2's moving and water surfaces with a per-tension risk dial; fix the
+aprons to the beat grid; prove and time 3 World 2 rooms; then size the room library, judged in grey from a catalog diff.
+
+| | A, reordered | E, clean sheet |
+|---|---|---|
+| Unit | hand-written room (steps fixed by an author) | computed node from a phrase, a kind quota and move envelopes; hand set piece per stage |
+| World 2's vocabulary (critic #1) | added to the tracer as new surface types | the core of the design: every move and surface is an entry with a contract |
+| Risk (critic #2) | per-tension `TRIES` set | a target miss chance per event, inverted into window sizes (13.4) |
+| "Different per world" (critic #3) | still tempo on the same rooms, plus World 2 rooms | a slow pulse picks different moves (hangs, rides, waits), not longer walks |
+| Seams (critic #5) | aprons sized to whole eighths | phrases end in cadence kinds; no fixed apron, no song grid to fall off |
+| Pool (critic #6) | 50-70 rooms, dry after 5.6-7.8 stages on a first pass | combinatorial; the save ledger counts kind strings; risk is sameness of feel, answered by kind counts |
+| Judging cost (critic #4) | catalog diff + grey approval | the same (it is the measured slow part; neither option escapes it) |
+| Build size | smaller: extends what exists | larger: a new placer, new types, two new engine moves (estimate 6-9 days before World 2's first stage) |
+| Risk of failure | World 2 ships as World 1's alphabet plus surfaces; rooms still author-limited | procedural feel (Dead Cells' first prototype "illogical, chaotic", R1 §3.2); new moves need art and tuning |
+| Fits Matt's ask | "what we already have, improved" | "the best way of doing it" |
+
+**Which I would build: E's foundation first, because A-reordered's first step already is it, then decide the unit by a measurement.**
+- The critic's step 1 for A (grow the alphabet, add a risk dial) is E's 13.2 and 13.4. Building it as E's pluggable `MoveDef` contract
+  instead of more cases inside `beatTrace.ts` costs about the same and leaves both paths open.
+- Then the one real fork, *who writes a node's steps*, is settled on World 2 by the critic's own test: build 3 World 2 nodes both ways
+  (3 hand rooms, 3 computed nodes from phrases), and measure (a) kinds per node and the two-commonest share, (b) helper minutes per
+  node, (c) the risk the first-timer and the noisy bots actually meet against target, (d) Matt's 4-choice pick between pairs (R3 F15).
+- My expectation, stated so it can be proven wrong: E wins on (a) and (c) and on cost per stage after the first world, and A wins on
+  (d) for the set piece. So the likely end state is **E's computed nodes for teach/test/master, with A's hand rooms only as the set
+  piece and the twist** — Spelunky's and Dead Cells' split of "dumb, restrained generator over hand-made big moments", with the
+  generator made exact by the move contract.
+
+**What would make me drop E:** the computed World 2 nodes lose Matt's pairwise pick to hand rooms in more than 2 of 3 pairs; or the
+aimed miss chances miss their targets by more than 2x on the calibrated bots (the risk model is wrong); or a new move entry needs edits
+outside its entry, engine controller, art and tests (the plug-in contract failed).
+
+**Unproven in E, plainly:** hang-under's numbers (grabReach ~40 px, shimmyV ~120 px/s are estimates; the move does not exist in the
+engine); the pulse range 0.40-0.80 s; the 35% two-kind cap; the job miss-chance targets; that Isaksen's σ (a web-browser tap test,
+R3 F1) transfers to a phone flick; and every cost figure.
