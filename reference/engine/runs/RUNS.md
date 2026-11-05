@@ -4,7 +4,31 @@ Engine measurement helper, 2026-11-05. Input: `reference/engine/TRIAGE.md` on `o
 TRIAGE's own numbering). Every row below names the command, the saved output (`reference/engine/runs/out/`), the measured number, and
 PASS or MISS against the row's own line. Lines were not moved (LAWS 22): a run that misses its line is reported as a MISS.
 
-**Time.** Planned about 3 h (11:08 AM-3:00 PM ET). Actual: see the end of this file.
+**Time: planned vs actual.** Planned about 3 h (due 3:00 PM ET). Actual: started 11:08 AM ET, last push at the time in the closing
+section below. **This finished well under half the plan.** Why, so the lead can check it: the bots and builds are fast on this machine
+(a first-timer run is about 1 s, a 16-layout dump of a world under a minute, moveladder at 16 layouts 3 min 39 s, era at 200 rolls
+4 min 11 s), and four runs went in parallel. Depth was not cut: every row has a run or a named reason. The extra time went on 200-roll
+era, a second seed for the bands, the Easy ladder, stills for the four still rows, and tracing root causes.
+
+**Summary: 106 rows. 21 PASS, 69 MISS, 2 NOT SETTLED (stills shot; Matt's eye: #1, #79), 3 NOT RUN (#94 and #95: the double breather
+is not built; #161: a clock line), 11 NOT RUN (process: meter readings, C15).**
+
+| Topic | PASS | MISS | Not settled / not run |
+|---|---|---|---|
+| 1 Move ladder | 1 | 7 | |
+| 2 Water | 1 | 1 | |
+| 3 Variety | 5 | 21 | |
+| 4 Support and floating | 1 | 7 | |
+| 5 Pacing | 0 | 5 | 2 not run |
+| 6 Difficulty and the dial | 3 | 8 | |
+| 7 Rewards | 1 | 2 | |
+| 8 Layout | 8 | 10 | 2 not settled |
+| 9 Art | 1 | 3 | |
+| 10 Length | 0 | 4 | |
+| 11 Checks | 0 | 1 | 1 not run |
+| 12 Process | 0 | 0 | 11 not run |
+
+The step-6 findings in ten lines are at the end ("What the runs say").
 
 **What was built and measured.**
 - **engine-mixer at `021ef4e93`** (the mixer's 1-1 and 1-5, and the shipped builders for every other stage), in a clean detached
@@ -274,3 +298,56 @@ below. (A finding for the clock's owner: the length rows cannot be judged on the
 #3, #4, #23, #55, #57, #58, #61, #106, #107, #155, #158 are readings of Matt's usage meter or a wall clock ("Meter", "Meter on the first one
 built", "Clock the first world's pass"). No code run can read the meter, and ruling C15 (ENGINE-SPEC:1762) makes the cost lines history.
 **All 11: NOT RUN** (not a code measure). Named here so none is hidden.
+
+---
+
+## What the runs say, for step 6 (the planner and the designer)
+
+1. **No builder reads the ladder.** Every core move but liana misses its own world's "touch every stage" and the later worlds' floor
+   (#126, #127); animals go 5-38 stages unseen (#152); swim lives only in 6-7's well (#154). The committed moveladder.json is from 2
+   layouts; read it from 16.
+2. **The table text lags its rulings.** #121, #122 (C9: 1-2 teaches creaky and lianas), #134-#141 (C23: LABELS.md), #140/#143 (C22),
+   #49/#52 (stale numbers): the build is often right and the spec's row is not.
+3. **1-1 and 1-5 play alike, and 1-1 plays like 1-2** (#2, #103: 45 and 49 of 50 rolls at 200 rolls). The cause is the floor ideas'
+   +-30-50 px steps, which the look measure reads as one short level jump (`w1mix.ts:362-415` against `lookalike.ts:76`).
+4. **Catch branches are most of 1-1's "boughs" and "floats"** (#102, #130, #114): 27% of its landings, each hanging over its gap with
+   nothing under it. Whether a catch counts as a bough or a float is the designer's call; counted as both here, as CP1 counts kinds.
+5. **Never-float kinds float in 1-5**: about 40 creaky limbs, rope bridges and W7 slabs a Normal build (#131); the slab is also the wrong
+   world's art in W1 (#119, #140).
+6. **1-1's misses that cost a life are not where the spec puts them**: n4's bounce mound (`w1mix.ts:407`, a 30 px drop at its foot) and
+   n9's doubles past their catch boughs (#68, #100, #104).
+7. **The dial is barely felt**: Easy's rise cap is 30 px at every d, the timed holds don't read d, and the bots' success does not fall
+   with it (#64, #72); measured difficulty does not follow d stage by stage on old or new worlds (#63, r 0.31-0.46 Normal).
+8. **Splits**: 1-1 has 4 against the spec's 10 (#108), 2 in n8-n11 against 7 (#109); at 120 px the rule also counts a bough stair as a
+   split (#1, still).
+9. **A fork-road draw outside its deck**: 58 of 1,600 draws (`w1mix.ts:998`, #43).
+10. **Tools to fix before the next run**: the quick clock does not time climbs (`stageTime.ts:152`, `:221`); MECHS has no glide (#123);
+    there is no E3 support check in the engine (support.py is an upper bound); the bots cannot finish 2-5 or 2-9 (all adult runs end at
+    the sealed door), so W2's animal rows are not judged.
+
+## Polish check
+
+No game screen was changed. The 36 stills under `out/stills/` were each opened and looked at as a phone shows them before their verdicts
+were written (#92: the three stone heights, both ways; #80: the flag at 0 / 4 / 8 px, both ways; #1 and #79: the split and drop-end
+spots, both ways). Seen in passing and named, not judged here: in the 8 px flag still two catch branches drawn as logs hang over their
+pits with nothing under them (the #130 finding on screen); the upright water still shows a mist band across the play line at 1-1's
+start.
+
+## Gates
+
+`npx tsc --noEmit -p .` clean (tools/ is outside the tsconfig). `node tools/perf/artcheck.mjs` PASS, `node tools/perf/knowncheck.mjs`
+PASS. `node tools/roadmapcheck.mjs` **FAILS on the base already**: "reference/methods/render-fix.md is not listed in
+reference/methods/README.md" (the same on a clean engine-mixer 021ef4e93 worktree; not this branch's file). No file under `src/` is
+changed on this branch (`git diff origin/engine-mixer --stat -- src` is empty); the one scratch line for the stills lived only in an
+uncommitted scratch worktree.
+
+## Method update
+
+- New method file: `reference/methods/engine-runs.md` (added to the methods index): frozen worktrees, one proven dump, existing
+  measures first, the validator's bot-count rule, the stills page hook, and the pitfalls this run paid for.
+- Worked better: proving the dump against a number already on record before any row (CP1's old 1-1 row, exact), and copying CP2's
+  tagger verbatim and proving it on CP2's own output; both made every later number comparable with the references.
+- Failed and fixed: (1) the first support pass read the old stages' kapok-held logs as floating, because the dump left out
+  `stage.trees`; re-dumped with trees. (2) Bot numbers were first read over every run; the validator method counts only runs that reach
+  the shrine with 3 rescues or fewer, which made 2-5 and 2-9 "not judged" and cut 1-1's kid to 3 runs. (3) A scratch scene put into the
+  running engine from the page did not draw (the draw caches its plan at load); a build-time page hook did.

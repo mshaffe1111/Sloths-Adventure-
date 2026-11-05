@@ -4,7 +4,7 @@
 // swim.ts kitPools) and drawn water zones (proto.water, engine.ts zonePools). Normal, per layout. A new measure only because none exists.
 // --root <tree> builds another tree's stages (main, for the old 1-1 to 1-3 of #145) with this tree's MECHS counts; play.ts's sim is
 // setDifficulty + new RealPlay(id, layout), done here from the root's own src/game.
-//   npx tsx tools/engine/runs/ladder-uses.ts --layouts 16 --from 0 --to 102 [--root /path/to/tree] > out.json
+//   npx tsx tools/engine/runs/ladder-uses.ts --layouts 16 --from 0 --to 102 [--root /path/to/tree] [--easy] > out.json
 import { MECHS } from '../../validate/mechanics.ts';
 const ri = process.argv.indexOf('--root');
 const root = ri >= 0 ? process.argv[ri + 1] : new URL('../../..', import.meta.url).pathname;
@@ -17,13 +17,14 @@ const kitPools = (swim.kitPools ?? (() => [])) as (k: unknown, p: unknown) => un
 const sim = (id: string, v: number, s: 'normal' | 'easy') => { setDifficulty(s); return new RealPlay(id, v); };
 const arg = (k: string, d: number) => { const i = process.argv.indexOf(k); return i >= 0 ? Number(process.argv[i + 1]) : d; };
 const L = arg('--layouts', 16), FROM = arg('--from', 0), TO = arg('--to', 999);
+const SET = (process.argv.includes('--easy') ? 'easy' : 'normal') as 'normal' | 'easy';
 const stages = generateAllLevels().filter((c: any) => !c.secret).slice(FROM, TO);
 const out: Record<string, { lair: boolean; counts: Record<string, number[]> ; fail?: string }> = {};
 for (const c of stages) {
   const counts: Record<string, number[]> = {};
   let fail: string | undefined;
   for (let v = 1; v <= L; v++) {
-    let s; try { s = sim(c.id, v, 'normal'); } catch (e) { fail = String((e as Error).message).slice(0, 100); break; }
+    let s; try { s = sim(c.id, v, SET); } catch (e) { fail = String((e as Error).message).slice(0, 100); break; }
     const st = s.stage as any, e = s.e as any;
     for (const m of MECHS) (counts[m.id] ??= []).push(m.count(st, e));
     (counts['swim'] ??= []).push(kitPools(e.kit, e.platforms).length);
