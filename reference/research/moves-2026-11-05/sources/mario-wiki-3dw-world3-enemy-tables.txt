@@ -1,0 +1,65 @@
+URL: https://www.mariowiki.com/World_3_(Super_Mario_3D_World)   (level table)
+URL: https://www.mariowiki.com/Snowball_Park ; /Chain-Link_Charge ; /Shifty_Boo_Mansion ; /Pretty_Plaza_Panic ; /Magikoopa_Blockade ;
+     /Pipeline_Lagoon ; /Mount_Must_Dash ; /Switchboard_Falls ; /The_Bullet_Bill_Express ; /A_Banquet_with_Hisstocrat
+Read: 2026-11-05 by the moves researcher (TinyFish fetch_content, include_selectors "table.wikitable": only the pages' tables were extracted)
+Title: Super Mario 3D World, World 3: level table and each course's Enemies table (Super Mario Wiki)
+NOTE: EXCERPT. Kept verbatim: the World 3 level table, and each course's "Name | Count" enemies table (image column dropped). Left out:
+Green Star / stamp location tables and "Names in other languages" tables. Magikoopa Blockade's page has no enemies table; the level
+table says "three Magikoopas". The train course's Pom Pom (boss) and the Hisstocrat boss course are kept but not counted as enemies.
+---
+=== World 3 level table ===
+| Level number | Level name | Description | Unlocks |
+| World 3-1 | Snowball Park | A snow/ice level with snowballs, Ice Skates, and a Propeller Box. This level introduces the Super Leaf. | Chain-Link Charge Shifty Boo Mansion |
+| World 3-2 | Chain-Link Charge | An auto-scrolling sky level with moving fences. This level requires 30 Green Stars to unlock. | Pretty Plaza Panic |
+| World 3-3 | Shifty Boo Mansion | The first Ghost House level that features moving staircases and Boos. | Pretty Plaza Panic Captain Toad Makes a Splash |
+| World 3-4 | Pretty Plaza Panic | A bright pink grass level with only 100 seconds to reach the Goal Pole. It contains a Princess Peach switch that yields a stamp when Princess Peach stands on it. | Magikoopa Blockade |
+| World 3-A | Magikoopa Blockade | A small fortress arena with three Magikoopas for Mario to defeat. | Pipeline Lagoon |
+| World 3-5 | Pipeline Lagoon | An underwater level with Cheep Cheeps and Porcupuffers. This is also the second appearance of the Cannon Box. | Mount Must Dash Switchboard Falls |
+| World 3-6 | Mount Must Dash | A Super Mario Kart-styled mountain level with Dash Panels and Spring Platforms. | N/A |
+| World 3-7 | Switchboard Falls | An autumn-themed forest level with Switchboards. | The Bullet Bill Express Toad House |
+| World 3-Train | The Bullet Bill Express | A boss level that takes place on a Bowser train. This level introduces Pom Pom. | A Banquet with Hisstocrat |
+| World 3-B | A Banquet with Hisstocrat | A circus tent-like boss arena featuring Hisstocrat and his minions. | World 4 |
+
+=== Snowball Park (3-1) enemies ===
+| Snow Pokey | 6 |
+| Para-Biddybud | 9 |
+| Skating Goomba | 4 |
+| Mini Goomba | 4 |
+| Biddybud | 7 |
+=== Chain-Link Charge (3-2) enemies ===
+| Biddybud | 4 |
+| Para-Biddybud | 7 |
+=== Shifty Boo Mansion (3-3) enemies ===
+| Boo | 13 |
+| Big Boo | 3 |
+| Peepa | 34 |
+=== Pretty Plaza Panic (3-4) enemies ===
+| Goomba | 11 |
+| Mini Goomba | 5 |
+| Piranha Plant | 3 |
+=== Magikoopa Blockade (3-A) ===
+(no enemies table; level table: "three Magikoopas")
+=== Pipeline Lagoon (3-5) enemies ===
+| Innertube Goomba | 5 |
+| Cheep Cheep | 12 |
+| Porcupuffer | 13 |
+| Coin Coffer | 4 |
+=== Mount Must Dash (3-6) enemies ===
+| Piranha Plant | 5 |
+| Para-Biddybud | 28 |
+=== Switchboard Falls (3-7) enemies ===
+| Stingby | 10 |
+| Fizzlit | 7 |
+| Fuzzler | 5 |
+| Coin Coffer | 1 |
+=== The Bullet Bill Express (3-Train) enemies ===
+| Bullet Bill | (infinitely spawned) |
+| Flopter | 5 |
+| Cat Bullet Bill | (infinitely spawned) |
+| Cat Banzai Bill | (infinitely spawned) |
+| Goomba | 5 (all found on a Goomba Tower) |
+| Goomba Tower | 1 |
+| Fire Bro | 2 |
+| Pom Pom | 1 (boss) |
+=== A Banquet with Hisstocrat (3-B) ===
+| Hisstocrat | 1 | Boss |

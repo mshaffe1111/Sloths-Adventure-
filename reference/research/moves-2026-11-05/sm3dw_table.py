@@ -51,3 +51,24 @@ print(f"  all enemy-kind counts per course (n={len(allc)}): {dict(b)}")
 # echo: does a kind return in the next 2 regular courses (blockades 1-A/2-A and the castle/tank count as courses here)?
 ech=sum(1 for e,st in at.items() if any(0<idx[s]-idx[st[0]]<=2 for s in st)); 
 print(f"  echo: {ech} of {len(at)} kinds appear again within the next 2 courses after their first")
+
+# --- World 3 added (sources/mario-wiki-3dw-world3-enemy-tables.txt): do W1-W2 kinds come back one world later? ---
+w3=open('sources/mario-wiki-3dw-world3-enemy-tables.txt').read()
+W3=[('3-1','Snowball Park'),('3-2','Chain-Link Charge'),('3-3','Shifty Boo Mansion'),('3-4','Pretty Plaza Panic'),('3-A','Magikoopa Blockade'),
+    ('3-5','Pipeline Lagoon'),('3-6','Mount Must Dash'),('3-7','Switchboard Falls'),('3-T','The Bullet Bill Express')]
+for c,name in W3:
+    sec=w3.split(f'=== {name} (')[1].split('\n===')[0]
+    ks={m.group(1).strip() for m in re.finditer(r'^\| ([^|]+) \|',sec,re.M) if 'boss' not in m.group(0)}
+    if c=='3-A': ks={'Magikoopa'}
+    order.append(c); idx[c]=len(order)-1
+    for e in ks: at[e].append(c)
+w12={e for e,st in at.items() if st[0][0] in '12'}
+back=sorted(e for e in w12 if any(s[0]=='3' for s in at[e]))
+print(f"\nWith World 3 ({len(order)} courses): of {len(w12)} kinds first met in W1-W2, {len(back)} appear again in W3: {', '.join(back)}")
+one=[e for e,st in at.items() if len(st)==1]
+print(f"  kinds seen in exactly one course over W1-W3: {len(one)} of {len(at)}")
+gaps=[]
+for e,st in at.items():
+    gaps+= [idx[b]-idx[a]-1 for a,b in zip(st,st[1:])]
+gaps.sort(); print(f"  absences between appearances (courses), all kinds: n={len(gaps)} median {gaps[len(gaps)//2]} max {gaps[-1]}; {sum(g<=2 for g in gaps)} of {len(gaps)} are <= 2")
+print("  new kinds per W3 course: "+', '.join(f"{c}:{sum(1 for e,st in at.items() if st[0]==c)}" for c,_ in W3))

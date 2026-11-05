@@ -50,3 +50,8 @@ Uses per course (wiki enemy counts; 'main' = the course's most numerous kind):
   2-T: main Blockstepper x25; others: Fire Piranha Plant x4, Cannon x2
   all enemy-kind counts per course (n=44): {'lots 7+': 24, 'some 3-6': 9, 'touch 1-2': 11}
   echo: 4 of 29 kinds appear again within the next 2 courses after their first
+
+With World 3 (23 courses): of 29 kinds first met in W1-W2, 11 appear again in W3: Biddybud, Bullet Bill, Coin Coffer, Fire Bro, Goomba, Goomba Tower, Magikoopa, Mini Goomba, Para-Biddybud, Piranha Plant, Stingby
+  kinds seen in exactly one course over W1-W3: 27 of 43
+  absences between appearances (courses), all kinds: n=34 median 4 max 15; 14 of 34 are <= 2
+  new kinds per W3 course: 3-1:2, 3-2:0, 3-3:3, 3-4:0, 3-A:0, 3-5:3, 3-6:0, 3-7:2, 3-T:4

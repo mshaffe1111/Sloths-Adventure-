@@ -1,0 +1,12 @@
+URL: https://kotaku.com/how-do-you-make-a-super-mario-game-at-a-time-of-nationa-5891437
+Read: 2026-11-05 by the moves researcher (TinyFish fetch_content), read in full.
+Title: How Do You Make a Super Mario Game At a Time of National Tragedy? - Kotaku (Stephen Totilo, 2012-03-07), a same-day report of Hayashida's GDC 2012 talk "Thinking in 3D"
+NOTE: EXCERPT. The whole article was read; the lines on the talk's design content are copied verbatim. The report says nothing about
+gimmicks per course, reuse or return spacing: by this account the talk covered stereoscopic 3D, the early "end" of the game, his son's
+play and the earthquake. The kishoutenketsu course structure comes from the separate Gamasutra interview (mario-gamedev-structure-of-fun-hayashida.txt), not from the talk.
+---
+**The middle of Hayashida's talk was about game design ideas:** how Nintendo worked to make Mario play well in 3D and how to make a fun portable Mario game.
+
+The stereoscopic 3D was intended to make jumping through a *Mario* game easier. But not everyone could see the 3D in *3D Land* prototypes the same way. Some needed the graphics to pop more or to recess. The developers tested 3D in a version of *Super Mario 64*'s Whomp's Fortress level. They tried a few styles of 3D that they left in the game (you can switch them in the menu and adjust them with the system slider).
+
+The game was intended to court advanced and beginner players. To do that, Hayashida put the "end" of the game earlier than he normally would. He left the hard levels in the back half of the game, after the credits rolled.

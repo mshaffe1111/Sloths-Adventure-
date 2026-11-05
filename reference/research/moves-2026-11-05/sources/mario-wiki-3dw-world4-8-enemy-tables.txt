@@ -1,0 +1,323 @@
+URL: https://www.mariowiki.com/World_4_(Super_Mario_3D_World) ; https://www.mariowiki.com/World_5_(Super_Mario_3D_World) ; https://www.mariowiki.com/World_6_(Super_Mario_3D_World) ; https://www.mariowiki.com/World_7_(Super_Mario_3D_World) ; https://www.mariowiki.com/World_8_(Super_Mario_3D_World)   (level tables)
+URL: https://www.mariowiki.com/Ant_Trooper_Hill ; /Piranha_Creeper_Creek ; /Brolder_Blockade ; /Beep_Block_Skyway ; /Big_Bounce_Byway ; /Spike%27s_Lost_City ; /Fire_Bros._Hideout_%231 ; /Lava_Rock_Lair ;
+     /Sunshine_Seaside ; /Tricky_Trapeze_Theater ; /Backstreet_Bustle ; /Chargin%27_Chuck_Blockade_Is_Back ; /Sprawling_Savanna ; /Bob-ombs_Below ; /Cakewalk_Flip ; /Searchlight_Sneak ; /Fire_Bros._Hideout_%232 ; /Coin_Express ; /King_Ka-thunk%27s_Castle ;
+     /Clear_Pipe_Cruise ; /Spooky_Seasick_Wreck ; /Hands-On_Hall ; /Deep_Jungle_Drift ; /Prince_Bully_Blockade ; /Ty-Foo_Flurries ; /Bullet_Bill_Base ; /Fire_Bros._Hideout_%233 ; /Fuzzy_Time_Mine ; /Bowser%27s_Bob-omb_Brigade ; /Motley_Bossblob%27s_Big_Battle ;
+     /Fort_Fire_Bros. ; /Switchblack_Ruins ; /Red-Hot_Run ; /Boiling_Blue_Bully_Belt ; /Brolder_Blockade_Is_Back ; /Prince_Bully_Blockade_Is_Back ; /Fire_Bros._Hideout_%234 ; /Trick_Trap_Tower ; /Rammerhead_Reef ; /Simmering_Lava_Lake ; /Bowser%27s_Lava_Lake_Keep ;
+     /Spiky_Spike_Bridge ; /Plessie%27s_Dune_Downhill ; /Cookie_Cogworks ; /The_Bowser_Express ; /Footlight_Lane ; /Deepwater_Dungeon ; /A_Beam_in_the_Dark ; /Grumblump_Inferno ; /Motley_Bossblob%27s_Encore ; /Hisstocrat_Returns ; /The_Great_Tower_of_Bowser_Land
+Read: 2026-11-05 by a 3D World fetch helper (TinyFish fetch_content, include_selectors "table.wikitable")
+Title: Super Mario 3D World, Worlds 4-8: level tables and each course's Enemies table (Super Mario Wiki)
+NOTE: EXCERPT. Kept verbatim: the World 4-8 level tables (Preview column dropped), and each course's "Name | Count" enemies table (image column dropped;
+a Notes column is kept only where the page filled it). Left out: Green Star / stamp location tables and "Names in other languages" tables, and the
+Captain Toad, Mystery House, Sprixie House and Toad House entries. World 7 is "World Castle" and World 8 is "World Bowser" on the wiki; codes below use
+7-x / 8-x. Codes: letters (A, B, C) follow the wiki's own level numbers (so 4-B, 5-B, 6-B, 7-C are Fire Bros. Hideouts and 6-C is a boss course);
+"Castle" = castle course; T = Train (5-T, 8-T) or Tank (6-T). Blockades, Fire Bros. Hideouts and Motley Bossblob courses have no enemies table;
+the five fetches marked BLOCKED at the end returned no wikitable at all. Clear Pipe Cruise has two enemies tables on its page; both kept, in page order.
+---
+=== World 4 level table ===
+| Level number | Level name | Description | Unlocks |
+| World 4-1 | Ant Trooper Hill | A canyon level, where Ant Troopers make their debut. | Piranha Creeper Creek |
+| World 4-2 | Piranha Creeper Creek | A forest level with toxic water and many Piranha Creepers. | Brolder Blockade World 5 (via World Warp Pipe) |
+| World 4-A | Brolder Blockade | An Enemy Blockade with three Brolders on a small, rock-like platform surrounded by lava. | Beep Block Skyway Big Bounce Byway |
+| World 4-3 | Beep Block Skyway | A technologic-style course located in space with many Beep Blocks. | Spike's Lost City Fire Bros. Hideout #1 |
+| World 4-4 | Big Bounce Byway | A grass and athletic level with orange trampolines and hordes of Para-Biddybuds. | Spike's Lost City Mystery House Mad Dash Fire Bros. Hideout #1 |
+| World 4-5 | Spike's Lost City | A ruins level with Spikes and Galoombas. | Lava Rock Lair |
+| World 4-B | Fire Bros. Hideout #1 | The first Fire Bros. Hideout, featuring three of them in a small fortress arena. There are 100 seconds on the timer. | N/A |
+| World 4-Castle | Lava Rock Lair | A castle course full of lava. The boss is Boss Brolder. 50 Green Stars are required to open this level. | World 5 |
+
+=== Ant Trooper Hill (4-1) enemies ===
+| Ant Trooper | 35 | Excludes indefinitely spawned ones |
+| Horned Ant Trooper | 23 |
+| Big Ant Trooper | – | Infinitely spawned |
+=== Piranha Creeper Creek (4-2) enemies ===
+| Piranha Creeper | 26 |
+| Stingby | 3 |
+=== Brolder Blockade (4-A) ===
+(no enemies table; level table: "An Enemy Blockade with three Brolders on a small, rock-like platform surrounded by lava.")
+=== Beep Block Skyway (4-3) enemies ===
+| Boomerang Bro | 7 |
+=== Big Bounce Byway (4-4) enemies ===
+| Biddybud | 4 |
+| Para-Biddybud | 55 |
+| Spiny | 5 |
+| Hop-Chops | 9 |
+=== Spike's Lost City (4-5) enemies ===
+| Spike | 14 |
+| Galoomba | 8 |
+=== Fire Bros. Hideout #1 (4-B) ===
+(no enemies table; level table: "The first Fire Bros. Hideout, featuring three of them in a small fortress arena. There are 100 seconds on the timer.")
+=== Lava Rock Lair (4-Castle) enemies ===
+| Brolder | 6 (can infinitely respawn, and infinitely spawned by Boss Brolder) |
+| Goomba | 11 (all found on Goomba Towers) |
+| Goomba Tower | 3 |
+| Lava Bubble | 25 |
+| Boss Brolder | (boss) |
+
+=== World 5 level table ===
+| Level number | Level name | Description | Unlocks |
+| World 5-1 | Sunshine Seaside | A beach level with Koopa Troopas, where five Key Coins are required to proceed to a water section with Plessie. | Tricky Trapeze Theater Backstreet Bustle |
+| World 5-2 | Tricky Trapeze Theater | A circus level with trapezes and a Mega Mushroom section. | Chargin' Chuck Blockade Is Back |
+| World 5-3 | Backstreet Bustle | A very short underground course with blue Lava, Double Cherries, and 100 seconds on the timer. Requires 80 green stars to access. It contains a Toad switch that yields a stamp once Toad presses it. | Chargin' Chuck Blockade Is Back Toad House |
+| World 5-A | Chargin' Chuck Blockade Is Back | An Enemy Battle similar to Chargin' Chuck Blockade, but with five Chargin' Chucks instead of two, while still taking place in the same small fortress arena. | Sprawling Savanna |
+| World 5-4 | Sprawling Savanna | A large savanna-themed mountain with Rabbits and Ant Troopers. | Bob-ombs Below Cakewalk Flip |
+| World 5-5 | Bob-ombs Below | An underground course with Bob-ombs and many POW Blocks. | Searchlight Sneak Sprixie House |
+| World 5-6 | Cakewalk Flip | A cake-themed course with Red-Blue Panels and the occasional Double Cherry. | Searchlight Sneak |
+| World 5-7 | Searchlight Sneak | A fortress level with spotlights, Hop-Chops, and lots of Cat Bullet Bills. | King Ka-thunk's Castle |
+| World 5-B | Fire Bros. Hideout #2 | The second Fire Bros. Hideout in the game, featuring one of them above a Goomba Tower and two rising stone platforms on top of a much larger and flatter rock-like floor surrounded by lava. There are 100 seconds on the timer. | N/A |
+| World 5-Train | Coin Express | A Gold Train with a large amount of coins. Accessible by a secret pipe south of King Ka-thunk's Castle. Visible from the northeast corner of World 5. Cannot be played again until 25 more levels are cleared. | N/A |
+| World 5-Castle | King Ka-thunk's Castle | A ruins/temple-styled Castle course with Ka-thunks. The boss is King Ka-thunk. | World 6 |
+
+=== Sunshine Seaside (5-1) enemies ===
+| Koopa Troopa | 10 |
+| Unshelled Koopa | 10 (from Koopa Troopas) |
+| Biddybud | 22 |
+| Para-Biddybud | 4 |
+| Chargin' Chuck | 4 |
+| Mini Goomba | 6 |
+| Splounder | 4 |
+| Coin Coffer | 3 |
+=== Tricky Trapeze Theater (5-2) enemies ===
+| Fizzlit | 4 |
+| Piranha Plant | 16 |
+| Mega Piranha Plant | 4 |
+=== Backstreet Bustle (5-3) enemies ===
+| Fire Piranha Plant | 2 |
+| Goomba | 2 |
+| Lava Bubble | 2 |
+=== Chargin' Chuck Blockade Is Back (5-A) ===
+(no enemies table; level table: "An Enemy Battle similar to Chargin' Chuck Blockade, but with five Chargin' Chucks instead of two, while still taking place in the same small fortress arena.")
+=== Sprawling Savanna (5-4) enemies ===
+| Ant Trooper | 1 (excluding infinitely spawned ones) |
+| Big Ant Trooper | 1 |
+| Fuzzy | 23 |
+| Coin Coffer | 1 |
+=== Bob-ombs Below (5-5) enemies ===
+| Bob-omb | 3 | Excludes indefinitely spawned ones |
+| Goomba | 14 | All found on Goomba Towers |
+| Goomba Tower | 4 |
+| Piranha Plant | 5 |
+| Fire Piranha Plant | 2 |
+| Baddie Box | 6 |
+=== Cakewalk Flip (5-6) enemies ===
+| Goomba | 6 |
+| Piranha Plant | 8 |
+| Fire Piranha Plant | 2 |
+| Ring Burner | 4 |
+=== Searchlight Sneak (5-7) enemies ===
+| Cat Bullet Bill | (infinitely spawned) |
+| Hop-Chop | 8 |
+| Goomba | 1 |
+=== Fire Bros. Hideout #2 (5-B) ===
+(no enemies table; level table: "The second Fire Bros. Hideout in the game, featuring one of them above a Goomba Tower and two rising stone platforms on top of a much larger and flatter rock-like floor surrounded by lava. There are 100 seconds on the timer.")
+=== Coin Express (5-T, train) ===
+(no enemies table; level table: "A Gold Train with a large amount of coins.")
+=== King Ka-thunk's Castle (5-Castle) enemies ===
+| Ka-thunk | 8 (excluding infinitely spawned ones) |
+| Chargin' Chuck | 6 |
+| King Ka-thunk | (boss) |
+
+=== World 6 level table ===
+| Level number | Level name | Description | Unlocks |
+| World 6-1 | Clear Pipe Cruise | A mountain-themed level with many Clear Pipes and Fuzzies. | Spooky Seasick Wreck |
+| World 6-2 | Spooky Seasick Wreck | A level taking place on top of multiple haunted ships with many Bullies and Peepas, and an underwater section. | Hands-On Hall Deep Jungle Drift |
+| World 6-3 | Hands-On Hall | An Oriental-styled level featuring the Goomba Mask. Requires 100 Green Stars to unlock. | Prince Bully Blockade |
+| World 6-4 | Deep Jungle Drift | A Jungle-themed level with purple, poisonous water and many gates to climb. | Prince Bully Blockade |
+| World 6-A | Prince Bully Blockade | A small fortress arena with Clear Pipes, where Prince Bully is fought for the first time. | Ty-Foo Flurries Bullet Bill Base |
+| World 6-5 | Ty-Foo Flurries | A snow-themed level with many Ty-foos, spikes and ice skates. | Fuzzy Time Mine Toad House |
+| World 6-6 | Bullet Bill Base | A mechanical level with many conveyor belts and Bullet Bills. | Fuzzy Time Mine |
+| World 6-B | Fire Bros. Hideout #3 | A small fortress arena with one Fire Bro along with two Hammer Bros. and two Boomerang Bros. There are 100 seconds on the timer. | N/A |
+| World 6-7 | Fuzzy Time Mine | A vertical, auto-scrolling mine level where a swarm of Fuzzies chases the player. | Bowser's Bob-omb Brigade Mystery House Throwdown |
+| World 6-Tank | Bowser's Bob-omb Brigade | The second Tank course, featuring Boom Boom as a boss again. | Motley Bossblob's Big Battle |
+| World 6-C | Motley Bossblob's Big Battle | A circus tent level where players battle against Motley Bossblob. | World Castle |
+
+=== Clear Pipe Cruise (6-1) enemies ===
+(table 1)
+| Fire Piranha Plant | 4 |
+| Piranha Plant | 17 |
+| Fuzzy | 28 |
+| Spike ball | 19 |
+(table 2)
+| Fire Piranha Plant | 4 |
+| Piranha Plant | 8 |
+| Fuzzy | 28 |
+| Spike ball | 12 |
+=== Spooky Seasick Wreck (6-2) enemies ===
+| Bully | 5 |
+| Boo | 4 |
+| Peepa | 12 |
+=== Hands-On Hall (6-3) enemies ===
+| Goomba | 23 |
+| Spike | 11 |
+| Galoomba | 3 |
+| Thwomp | 4 |
+| Coin Coffer | 1 |
+=== Deep Jungle Drift (6-4) enemies ===
+| Stingby | 6 |
+| Fire Piranha Plant | 4 |
+| Piranha Creeper | 4 |
+=== Prince Bully Blockade (6-A) ===
+(no enemies table; level table: "A small fortress arena with Clear Pipes, where Prince Bully is fought for the first time.")
+=== Ty-Foo Flurries (6-5) enemies ===
+| Ty-foo | 15 |
+| Walleye | 4 |
+| Skating Goomba | 8 |
+| Mini Goomba | 3 |
+=== Bullet Bill Base (6-6) enemies ===
+| Galoomba | 6 |
+| Bullet Bill | (infinitely spawned) |
+| Banzai Bill | (infinitely spawned) |
+=== Fire Bros. Hideout #3 (6-B) ===
+(no enemies table; level table: "A small fortress arena with one Fire Bro along with two Hammer Bros. and two Boomerang Bros. There are 100 seconds on the timer.")
+=== Fuzzy Time Mine (6-7) enemies ===
+| Fuzzy Horde | 3 |
+| Goomba | 5 |
+| Parabones | 3 |
+=== Bowser's Bob-omb Brigade (6-T, tank) enemies ===
+| Blockstepper | 16 |
+| Fire Bro | 4 |
+| Hammer Bro | 3 |
+| Baddie Box | 5 |
+| Bob-omb | (infinitely spawned) |
+| Boom Boom | (boss) |
+=== Motley Bossblob's Big Battle (6-C, boss course) ===
+(no enemies table; level table: "A circus tent level where players battle against Motley Bossblob.")
+
+=== World 7 level table ===
+| Level number | Level name | Description | Unlocks |
+| World Castle-1 | Fort Fire Bros. | A blue lava-filled course with Fire Bros and many Clear Pipes. | Switchblack Ruins Red-Hot Run |
+| World Castle-2 | Switchblack Ruins | An underground temple-like course with Switch Panels and Fire Piranha Plants. | Boiling Blue Bully Belt Toad House |
+| World Castle-3 | Red-Hot Run | A 100-second lava level with Dash Panels and Donut Blocks. | Boiling Blue Bully Belt Sprixie House |
+| World Castle-4 | Boiling Blue Bully Belt | A course with Bullies and blue lava. | Brolder Blockade Is Back Prince Bully Blockade Is Back |
+| World Castle-A | Brolder Blockade Is Back | A blockade featuring Brolders and Boss Brolder on a large rock-like floor surrounded by lava. | Trick Trap Tower |
+| World Castle-B | Prince Bully Blockade Is Back | A blockade featuring Prince Bully in a small fortress arena. This time he shoots out three blue fireballs at a time and his shoes are blue. | Rammerhead Reef |
+| World Castle-C | Fire Bros. Hideout #4 | The final Enemy Battle of the game with seven Fire Bros in a small fortress arena. There are 100 seconds on the timer. | N/A |
+| World Castle-5 | Trick Trap Tower | A tower surrounded by lava with Thwomps and Fizzlits. | Simmering Lava Lake Captain Toad Gets Thwomped |
+| World Castle-6 | Rammerhead Reef | An underwater course with Rammerheads. | Simmering Lava Lake |
+| World Castle-7 | Simmering Lava Lake | A volcano course with rising and sinking lava with Fire Bros. | Bowser's Lava Lake Keep |
+| World Castle-Castle | Bowser's Lava Lake Keep | A castle course filled with lava featuring the second encounter with Bowser, in his Muscle Car. Unlocking this course requires 130 Green Stars. | World Bowser |
+
+=== Fort Fire Bros. (7-1) enemies ===
+| Fire Bro | 6 |
+| Blue Lava Bubble | 22 |
+| Goomba | 14 (all found on Goomba Towers) |
+| Goomba Tower | 4 |
+| Fire Bar | 2 |
+| Thwomp | 3 |
+| Blockstepper | 12 |
+=== Switchblack Ruins (7-2) enemies ===
+| Spiny | 11 |
+| Fire Piranha Plant | 4 |
+=== Red-Hot Run (7-3) enemies ===
+| Goomba | 24 |
+=== Boiling Blue Bully Belt (7-4) enemies ===
+| Bully | 6 |
+| Parabones | 5 |
+| Spiked roller (spinning) | 14 |
+| Swinging spikes | 6 |
+=== Brolder Blockade Is Back (7-A) ===
+(no enemies table; level table: "A blockade featuring Brolders and Boss Brolder on a large rock-like floor surrounded by lava.")
+=== Prince Bully Blockade Is Back (7-B) ===
+(no enemies table; level table: "A blockade featuring Prince Bully in a small fortress arena. This time he shoots out three blue fireballs at a time and his shoes are blue.")
+=== Fire Bros. Hideout #4 (7-C) ===
+(no enemies table; level table: "The final Enemy Battle of the game with seven Fire Bros in a small fortress arena. There are 100 seconds on the timer.")
+=== Trick Trap Tower (7-5) enemies ===
+| Thwomp | 4 |
+| Parabones | 2 |
+| Magikoopa | 3 |
+| Fizzlit | 6 |
+=== Rammerhead Reef (7-6) enemies ===
+| Rammerheads | 4 (excluding infinitely spawned ones) |
+| Small Rammerheads | 19 |
+| Blooper | 8 |
+| Madpole | 8 |
+| Koopa Troopa | 1 |
+| Unshelled Koopa | 1 (from the Koopa Troopa) |
+| Spike ball | 2 |
+=== Simmering Lava Lake (7-7) enemies ===
+| Parabones | 7 |
+| Splorch | 7 (can infinitely respawn) |
+| Charvaargh | 8 |
+=== Bowser's Lava Lake Keep (7-Castle) enemies ===
+| Boomerang Bro | 3 |
+| Flopter | 6 |
+| Ka-thunk | 4 |
+| Fire Bro | 2 |
+| Lava Bubble | 22 |
+| Hammer Bro | 2 |
+| Kick Bomb | (infinitely spawned) |
+| Bowser | (boss) |
+
+=== World 8 level table ===
+| Level number | Level name | Description | Unlocks |
+| World Bowser-1 | Spiky Spike Bridge | A rainy outdoor fortress course with Spikes and Parabones. | Plessie's Dune Downhill Cookie Cogworks |
+| World Bowser-2 | Plessie's Dune Downhill | A desert course with Plessie. | The Bowser Express |
+| World Bowser-3 | Cookie Cogworks | A cookie-themed course with spinning cookies. | The Bowser Express |
+| World Bowser-Train | The Bowser Express | A train course with Pom Pom as the boss. | Footlight Lane Deepwater Dungeon |
+| World Bowser-4 | Footlight Lane | An outdoor fortress course at night with blue invisible platforms, small sections of which appear when the player stands on them. | A Beam in the Dark |
+| World Bowser-5 | Deepwater Dungeon | An underwater fortress course, and the second in World Bowser where Plessie can be ridden, though only in a small segment of the course. | A Beam in the Dark |
+| World Bowser-6 | A Beam in the Dark | A dark Ghost House with Light Boxes. It also contains a Luigi switch that yields a stamp once Luigi steps on it. | Grumblump Inferno |
+| World Bowser-7 | Grumblump Inferno | A lava course with several Grumblumps, large crystal blocks with faces; they start slowly rolling when the player walks on them and will go faster when ground-pounded on. | Motley Bossblob's Encore Hisstocrat Returns |
+| World Bowser-A | Motley Bossblob's Encore | A rematch with a now golden Motley Bossblob, though still taking place in the same circus tent-like arena. | The Great Tower of Bowser Land (unlocks after also completing Hisstocrat Returns) |
+| World Bowser-B | Hisstocrat Returns | A boss battle with the magenta Hisstocrat taking place in a circus tent-like course. | The Great Tower of Bowser Land (unlocks after also completing Motley Bossblob's Encore) |
+| World Bowser-Castle | The Great Tower of Bowser Land | The final main level in the game where the final boss, Meowser, is fought. The level itself takes place in the carnival area surrounding the very tall tower in the center of it. 170 Green Stars are required to unlock this level. | World Star |
+
+=== Spiky Spike Bridge (8-1) enemies ===
+| Parabones | 18 |
+| Fire Bro | 3 |
+=== Plessie's Dune Downhill (8-2) enemies ===
+| Splounder | 10 |
+| Para-Biddybud | 10 |
+=== Cookie Cogworks (8-3) enemies ===
+| Spiny Skipsqueak | 14 |
+| Piranha Plant | 16 |
+| Mega Piranha Plant | 4 |
+| Horned Ant Trooper | 24 |
+=== The Bowser Express (8-T, train) enemies ===
+| Skipsqueak | 4 |
+| Goomba | 5 (including 4 from stacks) |
+| Goomba Tower | 1 |
+| Swinging spikes | 3 |
+| Conkdor | 8 |
+| Bully | 3 |
+| Madpole | 4 |
+| Horned Ant Trooper | 16 |
+| Mini Goomba | 6 |
+| Hammer Bro | 1 |
+| Fire Bro | 1 |
+| Pom Pom | 1 (boss) |
+=== Footlight Lane (8-4) enemies ===
+| Thwomp | 5 |
+| Parabones | 11 |
+| Bullet Bill | (infinitely spawned) |
+| Cat Bullet Bill | (infinitely spawned) |
+| Spiked roller | 11 |
+=== Deepwater Dungeon (8-5) enemies ===
+| Madpole | 19 |
+| Para-Biddybud | 13 |
+=== A Beam in the Dark (8-6) enemies ===
+| Boo | 10 |
+| Big Boo | 2 |
+| Peepa | 44 |
+| Parabones | 10 |
+=== Grumblump Inferno (8-7) enemies ===
+| Grumblump | 4 |
+| Skipsqueak | 6 |
+| Fire Piranha Plant | 3 |
+| Hammer Bro | 4 |
+| Splorch | 5 (can infinitely respawn) |
+=== Motley Bossblob's Encore (8-A, boss course) ===
+(no enemies table; level table: "A rematch with a now golden Motley Bossblob, though still taking place in the same circus tent-like arena.")
+=== Hisstocrat Returns (8-B, boss course) enemies ===
+| Volcanic bomb | (infinitely spawned) |
+| Hisstocrat (pink) | (boss) |
+=== The Great Tower of Bowser Land (8-Castle) enemies ===
+| Fire Bro | 3 |
+| Cat Goomba | 5 |
+| Bully | 4 |
+| Volcanic bomb | (infinitely spawned) |
+| Meowser | (boss) |
+
+BLOCKED: https://www.mariowiki.com/Fire_Bros._Hideout_%231 selector_not_matched (no table.wikitable on the page)
+BLOCKED: https://www.mariowiki.com/Fire_Bros._Hideout_%232 selector_not_matched (no table.wikitable on the page)
+BLOCKED: https://www.mariowiki.com/Fire_Bros._Hideout_%233 selector_not_matched (no table.wikitable on the page)
+BLOCKED: https://www.mariowiki.com/Fire_Bros._Hideout_%234 selector_not_matched (no table.wikitable on the page)
+BLOCKED: https://www.mariowiki.com/Coin_Express selector_not_matched (no table.wikitable on the page)
