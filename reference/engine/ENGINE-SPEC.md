@@ -118,6 +118,21 @@ a move ladder per world, as data. Each stage:
 *Check:* over the world's stages in order, count each idea's and each move's first use and every reuse after it. Each reuse must be
 at a higher job (teach, test, twist, master) or a higher risk target than the use before.
 
+
+**[designer ruling, 11-05 ~12:22 AM ET, from Matt's newer words to the planner] One shared library, not a kit per world.**
+Matt: "intermix the different worlds if you have to with the arts... if you have other stages where putting logs into it makes
+sense, use it from world one. Make as much and take as much as we can out of what we have. The only one that really plays
+differently is world five." This replaces "each world has its own kit":
+- **The library is every piece and idea that ships in any world:** World 1's, World 2's lily pads, logs and river, ropes, and gen2's
+  World 6-8 sections. Each is tagged with the worlds it fits (by its art and by what it asks of the player).
+- **A world's stages draw from every idea tagged for that world.** The world's own new ideas lead, and pieces from other worlds fill in
+  where they make sense. World 5 plays differently and is the exception: it keeps its own set.
+- **Coherence still holds.** Fit is now judged per idea and per neighbour, not per world: every piece inside an idea belongs to that
+  idea, and two ideas side by side must read as one place (placement rule 1, with the art family checked per join). A stage's
+  theme picks the art family for its joins and dressing.
+- **The variety gate counts the whole shared library.** Neighbouring stages share no more than half their ideas, wherever those ideas
+  came from.
+
 ### CP3: the mixer, proven on the worst stage first (1-5) (owner: designer specs the mix rule, planner builds and runs)
 - **The mix rule (designer), [Matt, 11-05] ideas first, pieces inside an idea.**
   1. **The stage's story beat and theme come first** (STAGE-RULES and the story files). They pick the stage's job and look, never
