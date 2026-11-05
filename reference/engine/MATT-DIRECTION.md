@@ -280,3 +280,13 @@ follow tomorrow on a proven engine, so nothing built for them is redone if 1-1 f
 row, main taught-at, the 1-1 lock) still land first. The lead's check-ins are tied to the helpers' deadlines (about hourly), each still a
 full quality check on the real screens; the lead tells Matt only at checkpoints and decisions; every helper goes idle the moment its
 work is accepted. Nothing is cut: the order changes, not the bar.
+
+## 2026-11-05 2:28 PM ET (to the lead): test it works first; never assume
+"The plan should be test it works first... Not assume it does and break things potentially."
+So, for every engine step from now:
+- A change is proved before anything builds on it. The data lock shows only the intended stages changed, and a draw check
+  (side-by-side stills, upright and sideways) shows every other stage draws the same as live. A shared-draw change such as
+  trunkFit.ts needs the draw check on stages from every world, not only the data lock.
+- 1-1 is the test of the engine. 1-2 does not start until 1-1 has passed its pass line, the designer's and the lead's checks, and
+  Matt has played it on the test link. Anything Matt finds is an engine fix first.
+- Nothing reaches main until Matt has played it (as always).

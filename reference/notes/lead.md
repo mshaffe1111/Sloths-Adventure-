@@ -23,6 +23,7 @@ Then ReadNotifications, then check that the 30-min check-in is armed (list_trigg
 - The lead does NOT design. The lead checks, approves, sends back, writes story briefs (story and look), and runs the team and the
   checkpoints.
 - METER: 64% at 2:23 PM ET (60% at 12:37; about 2.3%/h with 3 helpers). Projected ~90% by midnight with the 1-1 and 1-2 tests. Ask for it at every checkpoint.
+- MATT 2:28 PM ET: TEST IT WORKS FIRST: every engine change proved (data lock + draw stills on every world) before the next step builds on it; 1-2 waits until 1-1 passes AND Matt plays it.
 - MATT 2:27 PM ET: finish tonight UNDER 90% ("leaves 10 for 5 days"). Prove first: no W2-W10 step-6 work today. Check-ins at helper deadlines only (3:30, 4:15, 5:00, 6:15, 6:40, 7:00, then the 1-1 test), each a full quality check. Tell Matt only at checkpoints and decisions. Helpers idle the moment their work is accepted. No new helpers except the cold builder.
 - (superseded by the line above for cost) NO CEILING today (Matt, 10:32 AM ET: "It takes what it takes today... not going to rush or shortcut token-wise"). Costs are still reported and the meter read at checkpoints; no waste.
 
