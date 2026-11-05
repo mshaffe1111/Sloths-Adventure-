@@ -1,0 +1,16 @@
+room / step / move dy: target W ms -> predicted p(miss) at sigma 61 ms, measured in 200 real-engine take-offs
+  w1-canopy-intro step 1 jump 0: on-time lands yes dx 184 px | W 239: real window -220..225 ms, predicted 5.0%, measured 0.0% | W 167: real window -190..190 ms, predicted 17.1%, measured 1.0%
+  w1-canopy-intro step 2 jump +20: on-time lands yes dx 176 px | W 239: real window -220..195 ms, predicted 5.0%, measured 0.0% | W 167: real window -190..160 ms, predicted 17.1%, measured 1.5%
+  w1-canopy-intro step 3 jump 0: on-time lands yes dx 189 px | W 239: real window -210..240 ms, predicted 5.0%, measured 0.0% | W 167: real window -185..195 ms, predicted 17.1%, measured 0.0%
+  w1-canopy-intro step 4 jump -20: on-time lands NO dx 189 px | W 239: real window -210..280 ms, predicted 5.0%, measured 0.0% | W 167: real window -180..240 ms, predicted 17.1%, measured 0.0%
+  w1-canopy-intro step 5 jump +20: on-time lands yes dx 178 px | W 239: real window -230..205 ms, predicted 5.0%, measured 0.0% | W 167: real window -185..175 ms, predicted 17.1%, measured 0.5%
+  w1-canopy-intro step 6 jump 0: on-time lands yes dx 186 px | W 239: real window -230..245 ms, predicted 5.0%, measured 0.0% | W 167: real window -200..195 ms, predicted 17.1%, measured 0.0%
+  w1-canopy-intro step 7 jump -20: on-time lands NO dx 193 px | W 239: real window -220..275 ms, predicted 5.0%, measured 0.0% | W 167: real window -180..235 ms, predicted 17.1%, measured 0.0%
+  w1-canopy-intro step 8 jump 0: on-time lands yes dx 193 px | W 239: real window -200..250 ms, predicted 5.0%, measured 0.0% | W 167: real window -165..200 ms, predicted 17.1%, measured 0.0%
+  w1-floor-pits step 1 jump +30: on-time lands yes dx 166 px | W 239: real window -220..160 ms, predicted 5.0%, measured 0.5% | W 167: real window -190..130 ms, predicted 17.1%, measured 0.5%
+  w1-floor-pits step 3 jump 0: on-time lands yes dx 190 px | W 239: real window -205..245 ms, predicted 5.0%, measured 0.0% | W 167: real window -170..210 ms, predicted 17.1%, measured 0.5%
+  w1-floor-pits step 5 jump +30: on-time lands yes dx 172 px | W 239: real window -220..165 ms, predicted 5.0%, measured 0.5% | W 167: real window -185..135 ms, predicted 17.1%, measured 1.0%
+  w1-floor-pits step 7 jump +50: on-time lands yes dx 165 px | W 239: real window -205..145 ms, predicted 5.0%, measured 0.5% | W 167: real window -155..115 ms, predicted 17.1%, measured 5.5%
+  w1-floor-pits step 8 jump -60: on-time lands NO dx 192 px | W 239: real window -265..310 ms, predicted 5.0%, measured 0.0% | W 167: real window -235..260 ms, predicted 17.1%, measured 0.0%
+real windows on geometry built for 239 / 167 ms: 445,415,450,490,435,475,495,450,380,450,385,350,575 / 380,350,380,420,360,395,415,365,320,380,320,270,495
+mean over 26 (jump, W) cells: predicted 11.1%, measured 0.5%

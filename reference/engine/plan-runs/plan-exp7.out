@@ -1,0 +1,5 @@
+rope 146 px over the ledge (feet in 46-88): full apex 103 px, grab 217 ms | short flick N apex 82 px, grab 400 ms | Easy hold apex 71 px, grab 333 ms | Easy short apex 61 px, grab 267 ms
+rope 120 px over the ledge (feet in 20-62): full apex 103 px, grab 167 ms | short flick N apex 82 px, grab 200 ms | Easy hold apex 71 px, grab 250 ms | Easy short apex 61 px, grab 417 ms
+rope 160 px over the ledge (feet in 60-102): full apex 103 px, grab 350 ms | short flick N apex 82 px, grab 317 ms | Easy hold apex 71 px, grab 233 ms | Easy short apex 61 px, grab 83 ms
+rope 180 px over the ledge (feet in 80-122): full apex 103 px, grab 317 ms | short flick N apex 82 px, grab 100 ms | Easy hold apex 71 px, grab 0 ms | Easy short apex 61 px, grab 0 ms
+release onto a drop zone: window = zone / ROPE_SPEED (120 px/s): 30 px 250 ms, 60 px 500 ms, 120 px 1000 ms; grab past a rope's end up to ROPE_GRAB 40 px

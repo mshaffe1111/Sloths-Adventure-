@@ -1,0 +1,8 @@
+held frames : frame he caught the rope after the press (- = never), real engine, 30 fps
+rope 100 px up: 1f:1  2f:1  3f:1  4f:1  6f:1  8f:1  30f:1
+rope 120 px up: 1f:1  2f:1  3f:1  4f:1  6f:1  8f:1  30f:1
+rope 146 px up: 1f:-  2f:3  3f:3  4f:3  6f:3  8f:3  30f:3
+rope 160 px up: 1f:-  2f:-  3f:4  4f:4  6f:4  8f:4  30f:4
+rope 170 px up: 1f:-  2f:-  3f:-  4f:5  6f:5  8f:5  30f:5
+rope 180 px up: 1f:-  2f:-  3f:-  4f:7  6f:5  8f:5  30f:5
+rope 190 px up: 1f:-  2f:-  3f:-  4f:-  6f:7  8f:7  30f:7

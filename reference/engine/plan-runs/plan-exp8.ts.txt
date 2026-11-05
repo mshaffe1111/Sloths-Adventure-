@@ -1,0 +1,30 @@
+// E11: Option E's hang-under in the REAL engine (realPlay.ts, engine.ts's own rope grab, 30 fps): Pokey runs on a long ledge at y 1000 and
+// jumps straight into a rope hung `rise` px over it (as levels hang them, ROPE_RISE 146), holding the jump for `hold` frames then letting go.
+// Does he catch the rope, and how many frames after the press? (the envelope a MoveDef test would hold the table to)
+import './src/game/headlessDom.ts';
+import { RealPlay } from './src/game/realPlay.ts';
+import { ROPE_RISE } from './src/game/rope.ts';
+import type { Platform, Rope } from './src/game/types.ts';
+const out: string[] = [];
+for (const rise of [100, 120, ROPE_RISE, 160, 170, 180, 190]) {
+  const row: string[] = [];
+  for (const hold of [1, 2, 3, 4, 6, 8, 30]) {
+    const r = new RealPlay('3-5', 1);
+    (r.e as unknown as { skills: Set<string> }).skills.add('shimmy');
+    const run: Platform = { id: 1, x: 0, y: 1000, width: 3000, height: 24, type: 'solid', style: 'branch' } as Platform;
+    const rope: Rope = { id: 7, x0: 1050, x1: 1900, y: 1000 - rise, g0: 1000, g1: 1000, required: true } as Rope;
+    r.bare([run], [], [rope]);
+    r.stand(700, 1000);
+    let caught = -1, pressedAt = -1;
+    for (let i = 0; i < 120 && caught < 0; i++) {
+      if (pressedAt < 0 && r.p.x >= 1100) { pressedAt = i; r.frame({ right: true, press: true }); continue; }
+      const held = pressedAt >= 0 && i - pressedAt < hold;
+      r.frame({ right: true, jump: held });
+      if ((r.p as unknown as { hanging?: boolean }).hanging) caught = i - pressedAt;
+    }
+    row.push(caught >= 0 ? `${hold}f:${caught}` : `${hold}f:-`);
+  }
+  out.push(`rope ${rise} px up: ${row.join('  ')}`);
+}
+console.log('held frames : frame he caught the rope after the press (- = never), real engine, 30 fps');
+console.log(out.join('\n'));

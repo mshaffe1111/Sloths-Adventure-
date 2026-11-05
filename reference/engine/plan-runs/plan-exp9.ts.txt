@@ -1,0 +1,65 @@
+// E12: Option E's risk inversion, W(p, sigma) = 2 sigma Phi^-1(1 - p/2) (D §13.4), tested in the REAL engine (realPlay.ts, 30 fps) on the jumps
+// of a 1-2 room (w1-canopy-intro and w1-floor-pits as traced at 128.2 BPM). For each jump: the take-off ledge is cut so a take-off up to W/2 late
+// (with the engine's own coyote time) still jumps, and the landing pad starts where a take-off W/2 early lands (the engine's own landing,
+// calibrated with an on-time jump). Then 200 take-offs with timing error N(0, sigma): the miss rate against E's predicted p.
+import './src/game/headlessDom.ts';
+import { RealPlay } from './src/game/realPlay.ts';
+import { traceNode, type Step } from './src/game/beatTrace.ts';
+import { barsFrom, rng } from './src/game/w1Rhythm.ts';
+import type { Platform } from './src/game/types.ts';
+const RUN = 285, COYOTE = 0.133, LANDPX = 8;
+const J = (dy: number, s: Step['surface'] = 'branch'): Step => ({ move: 'jump', dy, surface: s });
+const H = (dy: number, s: Step['surface'] = 'branch'): Step => ({ move: 'hop', dy, surface: s });
+const rooms = [
+  { id: 'w1-canopy-intro', y: 330, gaps: [8, 6, 9, 8, 6, 9, 8], steps: [J(0), J(20), J(0), J(-20), J(20), J(0), J(-20), J(0)] },
+  { id: 'w1-floor-pits', y: 930, gaps: [4, 2, 4, 2, 5, 2, 3], steps: [J(30, 'stump'), H(-30, 'bank'), J(0, 'bank'), H(-20, 'bank'), J(30, 'stump'), H(-30, 'bank'), J(50, 'stump'), J(-60, 'bank')] },
+];
+const phi = (z: number) => 0.5 * (1 + Math.tanh(Math.sqrt(2 / Math.PI) * (z + 0.044715 * z ** 3)));
+const R = rng(11, 'plan-e12');
+const gauss = () => { let u = 0, v = 0; while (u === 0) u = R.f(); v = R.f(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+const r = new RealPlay('3-5', 1);
+type Res = { landed: boolean; x: number };
+/** one jump in a bare world: run from far back, press when his middle passes `pressX`, hold `hold` frames (full: 30) */
+function jump(fromEnd: number, fromY: number, pad: Platform, pressX: number, hold: number): Res {
+  const run: Platform = { id: 1, x: fromEnd - 1400, y: fromY, width: 1400, height: 24, type: 'solid', style: 'branch' } as Platform;
+  r.bare([run, pad]);
+  r.stand(fromEnd - 1100 + R.f() * 9.5, fromY);
+  let pressed = -1;
+  for (let i = 0; i < 200; i++) {
+    if (pressed < 0 && r.p.x >= pressX) { pressed = i; r.frame({ right: true, press: true }); continue; }
+    r.frame({ right: true, jump: pressed >= 0 && i - pressed < hold });
+    if (pressed >= 0 && i - pressed > 2 && r.p.grounded) return { landed: Math.abs(r.p.y - pad.y) < 2, x: r.p.x };
+    if (r.p.y > Math.max(fromY, pad.y) + 200) return { landed: false, x: r.p.x };
+  }
+  return { landed: false, x: r.p.x };
+}
+console.log('room / step / move dy: target W ms -> predicted p(miss) at sigma 61 ms, measured in 200 real-engine take-offs');
+let tP = 0, tM = 0, n = 0; const realW: number[] = [];
+for (const room of rooms) {
+  const tr = traceNode({ bpm: 128.2, bars: barsFrom(room.gaps), x: 0, y: room.y, steps: room.steps, noOverhang: true, faceMargin: 30 });
+  for (const l of tr.landings) {
+    if (l.move !== 'jump') continue;
+    // (the engine's own on-time landing, on a long pad: calibration)
+    const cal = jump(l.fromX + 400, l.fromY, { id: 2, x: l.fromX + 60, y: l.toY, width: 1200, height: 24, type: 'solid', style: 'branch' } as Platform, l.fromX, 30);
+    const dx = cal.x - l.fromX;
+    const row: string[] = [];
+    for (const W of [239, 167]) {
+      const half = W / 2000;
+      const fromEnd = Math.round(l.fromX + RUN * (half - COYOTE));
+      const near = Math.round(l.fromX - RUN * half + dx - LANDPX);
+      const pad = { id: 2, x: near, y: l.toY, width: 600, height: 24, type: 'solid', style: 'branch' } as Platform;
+      let miss = 0;
+      for (let k = 0; k < 200; k++) if (!jump(fromEnd, l.fromY, pad, l.fromX + RUN * 0.061 * gauss(), 30).landed) miss++;
+      const pred = 2 * (1 - phi(W / 2 / 61));
+      // (the engine's real window on this geometry: a deterministic sweep of the take-off time, 5 ms steps)
+      let lo = Infinity, hi = -Infinity;
+      for (let ms = -500; ms <= 500; ms += 5) if (jump(fromEnd, l.fromY, pad, l.fromX + RUN * ms / 1000, 30).landed) { lo = Math.min(lo, ms); hi = Math.max(hi, ms); }
+      realW.push(hi - lo);
+      tP += pred; tM += miss / 200; n++;
+      row.push(`W ${W}: real window ${lo}..${hi} ms, predicted ${(pred * 100).toFixed(1)}%, measured ${(miss / 2).toFixed(1)}%`);
+    }
+    console.log(`  ${room.id} step ${l.step + 1} jump ${l.toY < l.fromY ? '+' : ''}${l.fromY - l.toY}: on-time lands ${cal.landed ? 'yes' : 'NO'} dx ${dx.toFixed(0)} px | ${row.join(' | ')}`);
+  }
+}
+console.log(`real windows on geometry built for 239 / 167 ms: ${realW.filter((_, i) => i % 2 === 0).join(',')} / ${realW.filter((_, i) => i % 2 === 1).join(',')}`);
+console.log(`mean over ${n} (jump, W) cells: predicted ${(100 * tP / n).toFixed(1)}%, measured ${(100 * tM / n).toFixed(1)}%`);
