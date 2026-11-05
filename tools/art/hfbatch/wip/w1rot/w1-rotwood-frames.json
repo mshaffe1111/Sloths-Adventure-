@@ -1,0 +1,29 @@
+{
+ "note": "W1 rotten wood (rotwoodcut.py, 2026-11-05): frames in src/assets/props/w1-rotwood.webp for protoArt.ts drawBranchArt (whole / creak / snapped halves), as PROTO_FRAMES.branch, branchCreak, snapL, snapR are; not wired yet (engine-render)",
+ "frames": {
+  "rotWood": {
+   "x": 0,
+   "y": 0,
+   "w": 600,
+   "h": 206
+  },
+  "rotWoodCreak": {
+   "x": 608,
+   "y": 0,
+   "w": 600,
+   "h": 206
+  },
+  "rotSnapL": {
+   "x": 0,
+   "y": 214,
+   "w": 341,
+   "h": 189
+  },
+  "rotSnapR": {
+   "x": 349,
+   "y": 214,
+   "w": 301,
+   "h": 176
+  }
+ }
+}

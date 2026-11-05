@@ -328,3 +328,8 @@ hfb-w8glowcaps-g1  6ae656aac78863f9c62f4ad5 rtx-pro-6000 20:59Z-21:00Z (~1.5 min
   (the fungus scenery's 'glow-mushrooms' look had no frame), 0.60 and 0.72, seeds 5 and 17. KEPT: glowcaps-s72-17 (the caps glowing,
   painted outlines). THROWN: the 0.60s (still the start's flat caps), s72-5 (a muddy clump). Cut by glowcut.py into
   src/assets/w6to10/props-made/w8glowcaps.webp. Running total ~$0.15 of $15.
+
+W1 rotten wood (2026-11-05, the designer, cap $0.50, branch art-w1-rotwood; WIP, paused at 12:44 PM ET for the engine day):
+hfb-w1rot-r1  6aecbeb80e0338d1bb8097f2 rtx-pro-6000 17:36:56Z-17:39:01Z (~2.1 min, ~$0.10): 8 takes, whole and creak, 0.55 / 0.65,
+  seeds 5 and 11. Picked (to be judged on a stage): whole-s65-5 + creak-s65-5. Cut (WIP) by rotwoodcut.py into
+  tools/art/hfbatch/wip/w1rot/ (rotWood, rotWoodCreak, rotSnapL, rotSnapR). Next steps: wip/w1rot/NEXT.md. Running total ~$0.10 of $0.50.
