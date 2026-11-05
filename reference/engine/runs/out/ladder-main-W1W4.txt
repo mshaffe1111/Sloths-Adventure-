@@ -1,0 +1,79 @@
+== first stage, measured (any roll) vs the spec table (#121 #122 #123)
+  mushroom  table 1-1   measured first (any roll) 1-1  (every roll) 1-1  PASS
+  rope      table 1-4   measured first (any roll) 1-3  (every roll) 1-3  MISS
+  trunk     table 1-4   measured first (any roll) 1-4  (every roll) 1-4  PASS
+  breaking  table 1-5   measured first (any roll) 1-5  (every roll) 1-5  PASS
+  liana     table 1-6   measured first (any roll) 1-6  (every roll) 1-6  PASS
+  push      table 1-6   measured first (any roll) 1-6  (every roll) 1-6  PASS
+  bush      table 1-7   measured first (any roll) 1-7  (every roll) 1-7  PASS
+  drift     table 2-1   measured first (any roll) 2-1  (every roll) 2-1  PASS
+  lift      table 2-7   measured first (any roll) 2-7  (every roll) 2-7  PASS
+  updraft   table 4-7   measured first (any roll) 4-7  (every roll) 4-7  PASS
+  silk      table 5-4   measured first (any roll) None  (every roll) None  MISS
+  swim      table 6-7   measured first (any roll) None  (every roll) None  MISS
+  glide     table clearing 4-1: MECHS has no glide row (tools/validate/mechanics.ts:18-41), moveladder.json has none: MISS
+
+== teach stage, echo and own world (#126; ENGINE-SPEC "More used": teach lots, echo some x2, own world a touch every stage and some in half)
+  mushroom  teach 1-1: worst 1 any 20 (NOT lots)
+            echo 1-2:17-54, 1-3:0-7  some on worst roll: 1/2
+            own world after echo (6 stages): touch every stage 2/6, some 0/6 (needs >= 3)  MISS
+              per stage worst-any: 1-4:0-0 1-5:1-15 1-6:0-4 1-7:0-21 1-8:0-0 1-9:1-10
+  rope      teach 1-4: worst 8 any 9 (lots)
+            echo 1-5:1-2, 1-6:0-0  some on worst roll: 0/2
+            own world after echo (3 stages): touch every stage 1/3, some 0/3 (needs >= 2)  MISS
+              per stage worst-any: 1-7:1-1 1-8:0-0 1-9:0-2
+  trunk     teach 1-4: worst 20 any 22 (lots)
+            echo 1-5:2-12, 1-6:4-9  some on worst roll: 1/2
+            own world after echo (3 stages): touch every stage 2/3, some 0/3 (needs >= 2)  MISS
+              per stage worst-any: 1-7:1-1 1-8:2-5 1-9:0-9
+  breaking  teach 1-5: worst 8 any 24 (lots)
+            echo 1-6:1-1, 1-7:0-0  some on worst roll: 0/2
+            own world after echo (2 stages): touch every stage 0/2, some 0/2 (needs >= 1)  MISS
+              per stage worst-any: 1-8:0-0 1-9:0-0
+  liana     teach 1-6: worst 16 any 32 (lots)
+            echo 1-7:0-0, 1-8:4-13  some on worst roll: 1/2
+            own world after echo (1 stages): touch every stage 0/1, some 0/1 (needs >= 1)  MISS
+              per stage worst-any: 1-9:0-0
+  push      teach 1-6: worst 4 any 4 (NOT lots)
+            echo 1-7:0-0, 1-8:0-0  some on worst roll: 0/2
+            own world after echo (1 stages): touch every stage 0/1, some 0/1 (needs >= 1)  MISS
+              per stage worst-any: 1-9:0-0
+  bush      teach 1-7: worst 26 any 48 (lots)
+            echo 1-8:0-0, 1-9:0-0  some on worst roll: 0/2
+            own world after echo: no stages left in the world
+  drift     teach 2-1: worst 6 any 77 (NOT lots)
+            echo 2-2:1-75, 2-3:0-15  some on worst roll: 0/2
+            own world after echo (6 stages): touch every stage 4/6, some 4/6 (needs >= 3)  MISS
+              per stage worst-any: 2-4:3-48 2-5:3-78 2-6:0-0 2-7:9-51 2-8:0-19 2-9:3-36
+  lift      teach 2-7: worst 2 any 10 (NOT lots)
+            echo 2-8:0-0, 2-9:0-0  some on worst roll: 0/2
+            own world after echo: no stages left in the world
+  updraft   teach 4-7: worst 11 any 11 (lots)
+            echo 4-8:0-0, 4-9:0-0  some on worst roll: 0/2
+            own world after echo: no stages left in the world
+
+== every later world (#127; SR:19-20 floor >= 1 stage a world; spec >= 1 in 3 stages)
+  mushroom  from 1-1: W2:0/9 W3:2/9(0) W4:2/10(0) W5:0/0 W6:0/0 W7:0/0 W8:0/0 W9:0/0 W10:0/0   SR floor MISS, 1-in-3 MISS
+  rope      from 1-4: W2:1/9 W3:1/9 W4:2/10 W5:0/0 W6:0/0 W7:0/0 W8:0/0 W9:0/0 W10:0/0   SR floor MISS, 1-in-3 MISS
+  trunk     from 1-4: W2:4/9(1) W3:8/9(2) W4:8/10(7) W5:0/0 W6:0/0 W7:0/0 W8:0/0 W9:0/0 W10:0/0   SR floor MISS, 1-in-3 PASS
+  breaking  from 1-5: W2:0/9 W3:0/9 W4:0/10 W5:0/0 W6:0/0 W7:0/0 W8:0/0 W9:0/0 W10:0/0   SR floor MISS, 1-in-3 MISS
+  liana     from 1-6: W2:4/9(2) W3:8/9(1) W4:4/10(1) W5:0/0 W6:0/0 W7:0/0 W8:0/0 W9:0/0 W10:0/0   SR floor MISS, 1-in-3 PASS
+  push      from 1-6: W2:0/9 W3:0/9 W4:3/10 W5:0/0 W6:0/0 W7:0/0 W8:0/0 W9:0/0 W10:0/0   SR floor MISS, 1-in-3 MISS
+  bush      from 1-7: W2:0/9 W3:2/9 W4:1/10 W5:0/0 W6:0/0 W7:0/0 W8:0/0 W9:0/0 W10:0/0   SR floor MISS, 1-in-3 MISS
+  swim      from 6-7: W7:0/0 W8:0/0 W9:0/0 W10:0/0   SR floor MISS, 1-in-3 PASS
+  moving    from 2-10: W3:0/9 W4:0/10 W5:0/0 W6:0/0 W7:0/0 W8:0/0 W9:0/0 W10:0/0   SR floor MISS, 1-in-3 MISS
+   (W:a/n = stages using it on any roll / non-lair stages; (b) = on every roll when it differs)
+
+== animals: longest absence in play order after first showing (#152; ES 139-140 limit: absent <= 2 stages)
+  boa      first 1-9   last 1-9   in   1 stages; longest absence 0 stages ( -> ); after its last 32  PASS
+  jaguar   first 3-3   last 3-9   in   2 stages; longest absence 5 stages (3-3 -> 3-9); after its last 12  MISS
+  ocelot   first 3-3   last 3-9   in   3 stages; longest absence 4 stages (3-4 -> 3-9); after its last 12  MISS
+  snake    first 1-3   last 4-6   in  15 stages; longest absence 12 stages (2-8 -> 4-1); after its last 4  MISS
+  turtle   first 2-5   last 2-9   in   2 stages; longest absence 3 stages (2-5 -> 2-9); after its last 22  MISS
+
+== swim (#154: 6-7 teaches, 6-8/6-9 echo, W6-W8 and W10 >= 1 in 3, none in W9)
+  W6: 
+  W7: 
+  W8: 
+  W9: 
+  W10: 

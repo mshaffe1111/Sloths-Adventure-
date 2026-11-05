@@ -1,0 +1,6284 @@
+{
+ "generated": "2026-11-05T16:20:45.518Z",
+ "seconds": 116.114,
+ "redrawn": false,
+ "rolls": 16,
+ "worlds": [
+  1
+ ],
+ "jobs": 2,
+ "bots": 16,
+ "look": 16,
+ "rules": {
+  "minSeconds": 120,
+  "climbShort": 20,
+  "quietMax": 4,
+  "deadShare": 0.2,
+  "cosine": 0.78,
+  "window": 0.3,
+  "diversity": 0.35,
+  "kidHot": 0.85,
+  "adultHot": 0.7
+ },
+ "stages": [
+  {
+   "id": "1-1",
+   "world": 1,
+   "name": "Into the Canopy",
+   "type": "sprint",
+   "source": "hand",
+   "climb": false,
+   "rolls": 16,
+   "ms": 16520,
+   "floor": 120,
+   "target": 140,
+   "stats": {
+    "quick": {
+     "min": 162.21430921052635,
+     "p10": 164.96218932748548,
+     "med": 169.364437134503,
+     "p90": 173.47952486716846,
+     "max": 175.6005782757121,
+     "mean": 168.6826121188678
+    },
+    "played": {
+     "min": 162.21430921052635,
+     "p10": 164.96218932748548,
+     "med": 169.364437134503,
+     "p90": 175.6005782757121,
+     "max": 183.10331582082082,
+     "mean": 169.34391790481823
+    },
+    "designer": {
+     "min": 0,
+     "p10": 0,
+     "med": 0,
+     "p90": 0,
+     "max": 0,
+     "mean": 0
+    },
+    "dead": {
+     "min": 5.354385964912276,
+     "p10": 7.1157894736842024,
+     "med": 11.311505861320372,
+     "p90": 13.750670758912221,
+     "max": 14.855365510443182,
+     "mean": 10.485887736474966
+    },
+    "longestQuiet": {
+     "min": 2.487719298245614,
+     "p10": 2.7649122807017505,
+     "med": 3.8350877192982438,
+     "p90": 4.8035087719298275,
+     "max": 5.1017543859649095,
+     "mean": 3.7285087719298238
+    },
+    "perMin": {
+     "min": 35.04830855338916,
+     "p10": 35.53519049466066,
+     "med": 36.37197120419339,
+     "p90": 36.99901803336211,
+     "max": 37.007249154709925,
+     "mean": 36.29796210601555
+    },
+    "linearity": {
+     "min": 0.22457515939214578,
+     "p10": 0.2753729746384155,
+     "med": 0.3293734546197219,
+     "p90": 0.4347075290616632,
+     "max": 0.44108932823403324,
+     "mean": 0.33835113706369135
+    },
+    "leniency": {
+     "min": -0.25462962962962965,
+     "p10": 0.18,
+     "med": 0.235,
+     "p90": 0.25728155339805825,
+     "max": 0.2669902912621359,
+     "mean": 0.19854848835958958
+    },
+    "vertical": {
+     "min": 992,
+     "p10": 1146,
+     "med": 1228,
+     "p90": 1347,
+     "max": 1389,
+     "mean": 1222.625
+    },
+    "platforms": {
+     "min": 230,
+     "p10": 235,
+     "med": 239,
+     "p90": 244,
+     "max": 244,
+     "mean": 238.375
+    },
+    "routePlatforms": {
+     "min": 103,
+     "p10": 107,
+     "med": 109,
+     "p90": 114,
+     "max": 115,
+     "mean": 109.5625
+    },
+    "props": {
+     "min": 2,
+     "p10": 2,
+     "med": 2,
+     "p90": 2,
+     "max": 2,
+     "mean": 2
+    },
+    "styles": {
+     "min": 5,
+     "p10": 5,
+     "med": 5,
+     "p90": 5,
+     "max": 5,
+     "mean": 5
+    }
+   },
+   "mix": {
+    "h": 53.25,
+    "J": 49.1875
+   },
+   "distinct": {
+    "geometry": 16,
+    "actions": 16,
+    "sequences": 1,
+    "pieces": 16,
+    "layouts": 16,
+    "attempts": 16,
+    "looks": 1
+   },
+   "diversity": {
+    "cosine": 0.0209227172777925,
+    "window": 0.36654818700918396,
+    "alike": 0.9790772827222075,
+    "nearest": 0.9990988977537214
+   },
+   "heat": {
+    "linLen": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      2,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      3,
+      6,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ],
+    "lenDead": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      11,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "props": {
+    "pickup:exit_totem": 16,
+    "pickup:flower": 16
+   },
+   "rooms": {},
+   "pieceKinds": {
+    "1-1 floor walk": 16,
+    "1-1 bank hops": 16,
+    "1-1 log jam": 16,
+    "1-1 stump hop": 16,
+    "1-1 stump tops + bank hops": 16,
+    "1-1 bank hops + stump hop": 11,
+    "1-1 crossings: climb up": 2,
+    "1-1 bounce mound": 16,
+    "1-1 stump tops + log jam": 10,
+    "1-1 crossings: step-down + climb up": 15,
+    "1-1 bank walk": 16,
+    "1-1 double gap": 16,
+    "1-1 bounce up": 6,
+    "1-1 double chain": 16,
+    "1-1 bough hops + bough stair": 7,
+    "1-1 bough hops + stump hop": 9,
+    "1-1 top branch": 16,
+    "1-1 stump hop + bank hops": 12,
+    "1-1 bough stair": 10,
+    "1-1 bough stair + bough hops": 9,
+    "1-1 stump hop + bough hops": 7,
+    "1-1 log jam + stump tops": 6,
+    "1-1 crossings: step-down + climb up (vine and ledge)": 5
+   },
+   "judged": true,
+   "notJudged": null,
+   "firstErrors": [],
+   "fails": {
+    "short": 0,
+    "quiet": 7,
+    "dead": 0,
+    "validator": 0,
+    "lookalike": 16,
+    "lookRolls": 16,
+    "lookMix": 14,
+    "lookWindow": 16,
+    "botRolls": 16,
+    "hotKid": 16,
+    "hotAdult": 11
+   },
+   "errorKinds": {},
+   "lookalikeWith": {
+    "1-2": 16,
+    "1-5": 15,
+    "1-7": 3
+   },
+   "worst": [
+    {
+     "variant": 306482,
+     "layout": 306481,
+     "score": 3.666666666666668,
+     "why": [
+      "4.7 s with nothing to do",
+      "8 jump(s) the kid bot makes under 85% (worst 37.5%)",
+      "2 jump(s) the adult bot makes under 70%",
+      "same action mix as another stage of its world"
+     ],
+     "quick": 162.63267002791812,
+     "longestQuiet": 4.666666666666671
+    },
+    {
+     "variant": 355022,
+     "layout": 355021,
+     "score": 3.617543859649123,
+     "why": [
+      "4.5 s with nothing to do",
+      "6 jump(s) the kid bot makes under 85% (worst 0.5%)",
+      "2 jump(s) the adult bot makes under 70%",
+      "same action mix as another stage of its world"
+     ],
+     "quick": 166.82558479532167,
+     "longestQuiet": 4.470175438596492
+    },
+    {
+     "variant": 648998,
+     "layout": 648997,
+     "score": 3.617543859649123,
+     "why": [
+      "4.5 s with nothing to do",
+      "5 jump(s) the kid bot makes under 85% (worst 0.0%)",
+      "1 jump(s) the adult bot makes under 70%",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 164.96218932748548,
+     "longestQuiet": 4.470175438596492
+    },
+    {
+     "variant": 544269,
+     "layout": 544268,
+     "score": 3.6043859649122805,
+     "why": [
+      "4.4 s with nothing to do",
+      "3 jump(s) the kid bot makes under 85% (worst 54.0%)",
+      "3 jump(s) the adult bot makes under 70%",
+      "same action mix as another stage of its world"
+     ],
+     "quick": 175.6005782757121,
+     "longestQuiet": 4.417543859649122
+    },
+    {
+     "variant": 691868,
+     "layout": 691867,
+     "score": 3.599122807017544,
+     "why": [
+      "4.4 s with nothing to do",
+      "4 jump(s) the kid bot makes under 85% (worst 3.0%)",
+      "1 jump(s) the adult bot makes under 70%",
+      "same action mix as another stage of its world"
+     ],
+     "quick": 168.05842470760234,
+     "longestQuiet": 4.396491228070175
+    }
+   ],
+   "traced": {
+    "check": 16
+   }
+  },
+  {
+   "id": "1-2",
+   "world": 1,
+   "name": "The Petal Trail",
+   "type": "harvest",
+   "source": "hand",
+   "climb": false,
+   "rolls": 16,
+   "ms": 14164,
+   "floor": 120,
+   "target": 140,
+   "stats": {
+    "quick": {
+     "min": 157.8908161157275,
+     "p10": 178.8281541320472,
+     "med": 185.89323464645227,
+     "p90": 205.64695077778026,
+     "max": 211.7365301917011,
+     "mean": 186.58226477757128
+    },
+    "played": {
+     "min": 157.8908161157275,
+     "p10": 178.8281541320472,
+     "med": 185.89323464645227,
+     "p90": 205.64695077778026,
+     "max": 211.7365301917011,
+     "mean": 186.58226477757128
+    },
+    "designer": {
+     "min": 155.43572567783096,
+     "p10": 160.2447182349814,
+     "med": 166.736759702286,
+     "p90": 174.42221424774058,
+     "max": 179.01844497607652,
+     "mean": 166.65534722222222
+    },
+    "dead": {
+     "min": 39.43368627863788,
+     "p10": 42.893215761452666,
+     "med": 49.89789947408437,
+     "p90": 55.35238523076371,
+     "max": 55.62925530704286,
+     "mean": 48.54790943511816
+    },
+    "longestQuiet": {
+     "min": 3.5342099179985667,
+     "p10": 3.7368421052631504,
+     "med": 4.163003069184171,
+     "p90": 7.755985525324505,
+     "max": 8.241631037539833,
+     "mean": 4.922845472814101
+    },
+    "perMin": {
+     "min": 26.436974016129838,
+     "p10": 27.598934108665787,
+     "med": 29.460050736503057,
+     "p90": 30.311796406488774,
+     "max": 31.73755607459835,
+     "mean": 28.978439959189416
+    },
+    "linearity": {
+     "min": 0.4348073225856496,
+     "p10": 0.45456132395294024,
+     "med": 0.5209166082837426,
+     "p90": 0.5612569379432666,
+     "max": 0.6269865028213419,
+     "mean": 0.5158771519325901
+    },
+    "leniency": {
+     "min": -0.1813186813186813,
+     "p10": -0.12727272727272726,
+     "med": -0.07236842105263158,
+     "p90": 0.16304347826086957,
+     "max": 0.16842105263157894,
+     "mean": -0.03288283232661463
+    },
+    "vertical": {
+     "min": 640,
+     "p10": 650,
+     "med": 660,
+     "p90": 720,
+     "max": 730,
+     "mean": 672.5
+    },
+    "platforms": {
+     "min": 141,
+     "p10": 146,
+     "med": 154,
+     "p90": 164,
+     "max": 170,
+     "mean": 152.9375
+    },
+    "routePlatforms": {
+     "min": 95,
+     "p10": 105,
+     "med": 111,
+     "p90": 120,
+     "max": 137,
+     "mean": 112.375
+    },
+    "props": {
+     "min": 4,
+     "p10": 4,
+     "med": 5,
+     "p90": 5,
+     "max": 5,
+     "mean": 4.5625
+    },
+    "styles": {
+     "min": 5,
+     "p10": 5,
+     "med": 5,
+     "p90": 5,
+     "max": 5,
+     "mean": 5
+    }
+   },
+   "mix": {
+    "h": 35.0625,
+    "J": 40.3125,
+    "V": 9.75,
+    "Z": 5.125
+   },
+   "distinct": {
+    "geometry": 16,
+    "actions": 16,
+    "sequences": 10,
+    "pieces": 1,
+    "layouts": 16,
+    "attempts": 16,
+    "looks": 2
+   },
+   "diversity": {
+    "cosine": 0.0634989850314724,
+    "window": 0.4679552106121481,
+    "alike": 0.9365010149685276,
+    "nearest": 0.9759169290534135
+   },
+   "heat": {
+    "linLen": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      2,
+      8,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      4,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ],
+    "lenDead": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      3,
+      3,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "props": {
+    "pickup:exit_totem": 16,
+    "pickup:find": 16,
+    "pickup:flower": 16,
+    "pickup:heart": 16,
+    "animal:snake": 9
+   },
+   "rooms": {},
+   "pieceKinds": {
+    "1-2 intro A": 16,
+    "1-2 ramp A": 16,
+    "1-2 spike A": 16,
+    "1-2 rest A": 16,
+    "1-2 counter B": 16,
+    "1-2 ramp C": 16,
+    "1-2 climax C": 16,
+    "1-2 cool C": 16
+   },
+   "judged": false,
+   "notJudged": "a hand-built stage checked by its pieces and the swing checks (stage12.test.ts: protoCheck, flowerReach.ts), not the level check",
+   "firstErrors": [],
+   "fails": {
+    "short": 0,
+    "quiet": 9,
+    "dead": 16,
+    "validator": 0,
+    "lookalike": 16,
+    "lookRolls": 16,
+    "lookMix": 14,
+    "lookWindow": 16,
+    "botRolls": 16,
+    "hotKid": 1,
+    "hotAdult": 0
+   },
+   "errorKinds": {},
+   "lookalikeWith": {
+    "1-1": 16,
+    "1-5": 14,
+    "1-7": 3
+   },
+   "worst": [
+    {
+     "variant": 373040,
+     "layout": 373039,
+     "score": 4.060407759384958,
+     "why": [
+      "8.2 s with nothing to do",
+      "53 s of dead time",
+      "1 jump(s) the kid bot makes under 85% (worst 84.0%)",
+      "same action mix as another stage of its world"
+     ],
+     "quick": 180.0027688367591,
+     "longestQuiet": 8.241631037539833
+    },
+    {
+     "variant": 205913,
+     "layout": 205912,
+     "score": 2.938996381331126,
+     "why": [
+      "7.8 s with nothing to do",
+      "50 s of dead time",
+      "same action mix as another stage of its world"
+     ],
+     "quick": 157.8908161157275,
+     "longestQuiet": 7.755985525324505
+    },
+    {
+     "variant": 51588,
+     "layout": 51587,
+     "score": 2.820690073313987,
+     "why": [
+      "7.3 s with nothing to do",
+      "55 s of dead time",
+      "same action mix as another stage of its world"
+     ],
+     "quick": 205.35335832831743,
+     "longestQuiet": 7.282760293255947
+    },
+    {
+     "variant": 592978,
+     "layout": 592977,
+     "score": 2.7356023540157395,
+     "why": [
+      "6.9 s with nothing to do",
+      "54 s of dead time",
+      "same action mix as another stage of its world"
+     ],
+     "quick": 186.10299336823454,
+     "longestQuiet": 6.942409416062958
+    },
+    {
+     "variant": 758971,
+     "layout": 758970,
+     "score": 2.1994481762459337,
+     "why": [
+      "4.8 s with nothing to do",
+      "50 s of dead time",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 178.8281541320472,
+     "longestQuiet": 4.797792704983735
+    }
+   ],
+   "traced": {
+    "presumed": 1,
+    "check": 13,
+    "extended": 2
+   }
+  },
+  {
+   "id": "1-3",
+   "world": 1,
+   "name": "Branch Snakes",
+   "type": "purge",
+   "source": "hand",
+   "climb": false,
+   "rolls": 16,
+   "ms": 7071,
+   "floor": 120,
+   "target": 140,
+   "stats": {
+    "quick": {
+     "min": 181.44213867772703,
+     "p10": 183.01228916228828,
+     "med": 189.21742400342018,
+     "p90": 194.71364973143852,
+     "max": 195.20411700876988,
+     "mean": 188.75419632711575
+    },
+    "played": {
+     "min": 198.22291907488392,
+     "p10": 204.1704835171344,
+     "med": 210.69100845577904,
+     "p90": 214.78291877994567,
+     "max": 220.89064496784198,
+     "mean": 209.6716420455167
+    },
+    "designer": {
+     "min": 159.18754230320621,
+     "p10": 161.88191820817974,
+     "med": 165.0745273154764,
+     "p90": 168.63772010203436,
+     "max": 169.1391611351458,
+     "mean": 164.48418997232568
+    },
+    "dead": {
+     "min": 37.76846941189834,
+     "p10": 42.341432187866666,
+     "med": 46.735471000355275,
+     "p90": 51.369366986063575,
+     "max": 54.47576225295719,
+     "mean": 45.89637863541876
+    },
+    "longestQuiet": {
+     "min": 4.480701754385976,
+     "p10": 4.557894736842101,
+     "med": 4.656140350877166,
+     "p90": 4.775438596491227,
+     "max": 4.7991703930229335,
+     "mean": 4.6554071905213945
+    },
+    "perMin": {
+     "min": 25.729778995850403,
+     "p10": 26.333988140029394,
+     "med": 26.760271021061676,
+     "p90": 27.30479143234832,
+     "max": 27.447462825996613,
+     "mean": 26.6810438988666
+    },
+    "linearity": {
+     "min": 0.6903944409899592,
+     "p10": 0.695339401412483,
+     "med": 0.7020607797633045,
+     "p90": 0.705308350946398,
+     "max": 0.7152110426836691,
+     "mean": 0.7007780177264018
+    },
+    "leniency": {
+     "min": 0.10416666666666667,
+     "p10": 0.14285714285714285,
+     "med": 0.1686746987951807,
+     "p90": 0.2125,
+     "max": 0.2345679012345679,
+     "mean": 0.16785831936228243
+    },
+    "vertical": {
+     "min": 498,
+     "p10": 504,
+     "med": 528,
+     "p90": 536,
+     "max": 554,
+     "mean": 522.6875
+    },
+    "platforms": {
+     "min": 174,
+     "p10": 177,
+     "med": 180,
+     "p90": 184,
+     "max": 185,
+     "mean": 179.5
+    },
+    "routePlatforms": {
+     "min": 78,
+     "p10": 81,
+     "med": 83,
+     "p90": 86,
+     "max": 86,
+     "mean": 82.8125
+    },
+    "props": {
+     "min": 5,
+     "p10": 5,
+     "med": 5,
+     "p90": 5,
+     "max": 5,
+     "mean": 5
+    },
+    "styles": {
+     "min": 4,
+     "p10": 4,
+     "med": 4,
+     "p90": 4,
+     "max": 4,
+     "mean": 4
+    }
+   },
+   "mix": {
+    "h": 38.5625,
+    "C": 27.3125,
+    "J": 27.375
+   },
+   "distinct": {
+    "geometry": 16,
+    "actions": 16,
+    "sequences": 6,
+    "pieces": 1,
+    "layouts": 16,
+    "attempts": 16,
+    "looks": 1
+   },
+   "diversity": {
+    "cosine": 0.031642217008552284,
+    "window": 0.36258516861248863,
+    "alike": 0.9683577829914477,
+    "nearest": 0.9892759464663461
+   },
+   "heat": {
+    "linLen": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      8,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ],
+    "lenDead": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      11,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "props": {
+    "animal:snake": 16,
+    "pickup:exit_totem": 16,
+    "pickup:find": 16,
+    "pickup:flower": 16,
+    "pickup:heart": 16
+   },
+   "rooms": {},
+   "pieceKinds": {
+    "rest": 16,
+    "traced": 16,
+    "stumps": 16,
+    "vault": 16,
+    "highrun": 16,
+    "snakes": 16
+   },
+   "judged": false,
+   "notJudged": "the tested roll already fails it (exit platform 180 is not reachable); its own tests use another check",
+   "firstErrors": [
+    "exit platform 180 is not reachable",
+    "checkpoint at x=22712 is not on a reachable platform",
+    "checkpoint at x=22892 is not on a reachable platform"
+   ],
+   "fails": {
+    "short": 0,
+    "quiet": 16,
+    "dead": 15,
+    "validator": 0,
+    "lookalike": 14,
+    "lookRolls": 16,
+    "lookMix": 0,
+    "lookWindow": 14,
+    "botRolls": 16,
+    "hotKid": 1,
+    "hotAdult": 0
+   },
+   "errorKinds": {
+    "exit platform is not reachable": 16,
+    "checkpoint at x= is not on a reachable platform": 16,
+    "flower # at (, ) is out of reach": 16,
+    "heart # at (, ) is out of reach": 16
+   },
+   "lookalikeWith": {
+    "1-6": 2,
+    "1-9": 13
+   },
+   "worst": [
+    {
+     "variant": 1,
+     "layout": 0,
+     "score": 3.1368421052631597,
+     "why": [
+      "4.5 s with nothing to do",
+      "44 s of dead time",
+      "2 jump(s) the kid bot makes under 85% (worst 84.0%)",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 191.12658884589194,
+     "longestQuiet": 4.547368421052639
+    },
+    {
+     "variant": 166577,
+     "layout": 166576,
+     "score": 2.193859649122807,
+     "why": [
+      "4.8 s with nothing to do",
+      "48 s of dead time",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 185.04503556025543,
+     "longestQuiet": 4.775438596491227
+    },
+    {
+     "variant": 51588,
+     "layout": 51587,
+     "score": 2.1872946230833534,
+     "why": [
+      "4.7 s with nothing to do",
+      "50 s of dead time",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 181.44213867772703,
+     "longestQuiet": 4.749178492333414
+    },
+    {
+     "variant": 421256,
+     "layout": 421255,
+     "score": 2.184210526315791,
+     "why": [
+      "4.7 s with nothing to do",
+      "51 s of dead time",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 192.91902550105172,
+     "longestQuiet": 4.736842105263165
+    },
+    {
+     "variant": 544269,
+     "layout": 544268,
+     "score": 2.1807017543859644,
+     "why": [
+      "4.7 s with nothing to do",
+      "47 s of dead time",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 189.21742400342018,
+     "longestQuiet": 4.7228070175438575
+    }
+   ],
+   "traced": {
+    "presumed": 16
+   }
+  },
+  {
+   "id": "1-4",
+   "world": 1,
+   "name": "Up the Kapok",
+   "type": "ascent",
+   "source": "hand",
+   "climb": true,
+   "rolls": 16,
+   "ms": 12960,
+   "floor": 100,
+   "target": 140,
+   "stats": {
+    "quick": {
+     "min": 142.9846685567425,
+     "p10": 145.74215436958326,
+     "med": 147.80906003888336,
+     "p90": 156.58971512091543,
+     "max": 157.3841846787953,
+     "mean": 148.9690373097754
+    },
+    "played": {
+     "min": 142.9846685567425,
+     "p10": 145.74215436958326,
+     "med": 147.80906003888336,
+     "p90": 156.58971512091543,
+     "max": 157.3841846787953,
+     "mean": 148.9690373097754
+    },
+    "designer": {
+     "min": 128.46069008175238,
+     "p10": 128.6166530846432,
+     "med": 129.2990424738992,
+     "p90": 129.97881072582712,
+     "max": 130.24648771283404,
+     "mean": 129.2960147531327
+    },
+    "dead": {
+     "min": 0,
+     "p10": 3.0331040669856293,
+     "med": 3.1312699362041343,
+     "p90": 3.266277910685787,
+     "max": 3.279515550239225,
+     "mean": 2.7423332834928145
+    },
+    "longestQuiet": {
+     "min": 0,
+     "p10": 3.0331040669856293,
+     "med": 3.1312699362041343,
+     "p90": 3.266277910685787,
+     "max": 3.279515550239225,
+     "mean": 2.7423332834928145
+    },
+    "perMin": {
+     "min": 22.492730176318357,
+     "p10": 22.9900156419606,
+     "med": 23.274480114683893,
+     "p90": 23.918648303491338,
+     "max": 23.935625956992748,
+     "mean": 23.344144105991035
+    },
+    "linearity": {
+     "min": 0,
+     "p10": 0,
+     "med": 0,
+     "p90": 0,
+     "max": 0,
+     "mean": 0
+    },
+    "leniency": {
+     "min": -0.15454545454545454,
+     "p10": -0.14285714285714285,
+     "med": -0.13157894736842105,
+     "p90": -0.11607142857142858,
+     "max": -0.10526315789473684,
+     "mean": -0.13079567703212788
+    },
+    "vertical": {
+     "min": 5561,
+     "p10": 5583,
+     "med": 5626,
+     "p90": 5691,
+     "max": 5698,
+     "mean": 5627.6875
+    },
+    "platforms": {
+     "min": 66,
+     "p10": 67,
+     "med": 67,
+     "p90": 67,
+     "max": 67,
+     "mean": 66.875
+    },
+    "routePlatforms": {
+     "min": 56,
+     "p10": 56,
+     "med": 57,
+     "p90": 59,
+     "max": 59,
+     "mean": 57.1875
+    },
+    "props": {
+     "min": 11,
+     "p10": 11,
+     "med": 11,
+     "p90": 11,
+     "max": 11,
+     "mean": 11
+    },
+    "styles": {
+     "min": 5,
+     "p10": 5,
+     "med": 5,
+     "p90": 5,
+     "max": 5,
+     "mean": 5
+    }
+   },
+   "mix": {
+    "V": 21.75,
+    "J": 23.75,
+    "P": 2,
+    "Z": 7,
+    "h": 3.1875,
+    "C": 0.25
+   },
+   "distinct": {
+    "geometry": 16,
+    "actions": 9,
+    "sequences": 5,
+    "pieces": 1,
+    "layouts": 9,
+    "attempts": 16,
+    "looks": 1
+   },
+   "diversity": {
+    "cosine": 0.030590245101636986,
+    "window": 0.24392834762774834,
+    "alike": 0.969409754898363,
+    "nearest": 1
+   },
+   "heat": {
+    "linLen": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      16,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ],
+    "lenDead": [
+     [
+      0,
+      0,
+      0,
+      0,
+      16,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "props": {
+    "animal:snake": 16,
+    "kit:basket": 16,
+    "kit:item/acorn": 16,
+    "kit:lift": 16,
+    "kit:reset": 16,
+    "kit:source/acorn": 16,
+    "pickup:exit_totem": 16,
+    "pickup:find": 16,
+    "pickup:flower": 16,
+    "pickup:heart": 16,
+    "pickup:seed": 16
+   },
+   "rooms": {
+    "squirrel-lift": 16
+   },
+   "pieceKinds": {
+    "trunks": 16,
+    "zigzag": 16,
+    "swing": 16,
+    "trunk-limbs": 16,
+    "fork": 16,
+    "across": 16,
+    "lift-rope": 16,
+    "rope-limb": 16,
+    "crown-climb": 16,
+    "crown": 16
+   },
+   "judged": false,
+   "notJudged": "the tested roll already fails it (checkpoint at x=905 is not on a reachable platform); its own tests use another check",
+   "firstErrors": [
+    "checkpoint at x=905 is not on a reachable platform",
+    "checkpoint at x=1869 is not on a reachable platform",
+    "checkpoint at x=2552 is not on a reachable platform"
+   ],
+   "fails": {
+    "short": 0,
+    "quiet": 0,
+    "dead": 0,
+    "validator": 0,
+    "lookalike": 0,
+    "lookRolls": 16,
+    "lookMix": 0,
+    "lookWindow": 0,
+    "botRolls": 16,
+    "hotKid": 0,
+    "hotAdult": 0
+   },
+   "errorKinds": {
+    "checkpoint at x= is not on a reachable platform": 16
+   },
+   "lookalikeWith": {},
+   "worst": [],
+   "traced": {
+    "check": 16
+   }
+  },
+  {
+   "id": "1-5",
+   "world": 1,
+   "name": "Where She Walked",
+   "type": "relic_hunt",
+   "source": "hand",
+   "climb": false,
+   "rolls": 16,
+   "ms": 16721,
+   "floor": 120,
+   "target": 140,
+   "stats": {
+    "quick": {
+     "min": 229.05175471823497,
+     "p10": 231.53954744816608,
+     "med": 233.41912608571315,
+     "p90": 237.32109449760773,
+     "max": 237.32520467836258,
+     "mean": 233.9451144732608
+    },
+    "played": {
+     "min": 231.53954744816608,
+     "p10": 233.86480111304164,
+     "med": 239.3380117835892,
+     "p90": 242.06110726625207,
+     "max": 242.3868385065153,
+     "mean": 238.37104564629823
+    },
+    "designer": {
+     "min": 0,
+     "p10": 0,
+     "med": 0,
+     "p90": 0,
+     "max": 0,
+     "mean": 0
+    },
+    "dead": {
+     "min": 2.1052631578947327,
+     "p10": 2.1052631578947363,
+     "med": 2.1052631578947363,
+     "p90": 4.415958218813284,
+     "max": 6.143859649122813,
+     "mean": 3.14079152635927
+    },
+    "longestQuiet": {
+     "min": 2.1052631578947327,
+     "p10": 2.1052631578947363,
+     "med": 2.1052631578947363,
+     "p90": 2.1451239963070634,
+     "max": 2.3106950609185475,
+     "mean": 2.1205939542344945
+    },
+    "perMin": {
+     "min": 37.70414210537556,
+     "p10": 37.7140978805816,
+     "med": 38.433672838724135,
+     "p90": 38.683092487945885,
+     "max": 38.690955989037526,
+     "mean": 38.29505801478945
+    },
+    "linearity": {
+     "min": 0.16065482108908702,
+     "p10": 0.3375133054056366,
+     "med": 0.4472499366267214,
+     "p90": 0.6355675914419294,
+     "max": 0.635916215369277,
+     "mean": 0.4364694652943132
+    },
+    "leniency": {
+     "min": -0.36451612903225805,
+     "p10": -0.3443708609271523,
+     "med": -0.3181818181818182,
+     "p90": -0.15172413793103448,
+     "max": -0.13793103448275862,
+     "mean": -0.30275059141210325
+    },
+    "vertical": {
+     "min": 512,
+     "p10": 654,
+     "med": 835,
+     "p90": 1203,
+     "max": 1247,
+     "mean": 867.1875
+    },
+    "platforms": {
+     "min": 252,
+     "p10": 256,
+     "med": 261,
+     "p90": 266,
+     "max": 268,
+     "mean": 260.0625
+    },
+    "routePlatforms": {
+     "min": 134,
+     "p10": 136,
+     "med": 139,
+     "p90": 141,
+     "max": 144,
+     "mean": 138.375
+    },
+    "props": {
+     "min": 5,
+     "p10": 5,
+     "med": 5,
+     "p90": 5,
+     "max": 5,
+     "mean": 5
+    },
+    "styles": {
+     "min": 7,
+     "p10": 7,
+     "med": 7,
+     "p90": 7,
+     "max": 7,
+     "mean": 7
+    }
+   },
+   "mix": {
+    "h": 37.46875,
+    "J": 95.375,
+    "P": 13,
+    "Z": 5.5625,
+    "V": 0.75
+   },
+   "distinct": {
+    "geometry": 16,
+    "actions": 16,
+    "sequences": 6,
+    "pieces": 16,
+    "layouts": 16,
+    "attempts": 16,
+    "looks": 1
+   },
+   "diversity": {
+    "cosine": 0.014310247340677037,
+    "window": 0.35966745533750555,
+    "alike": 0.985689752659323,
+    "nearest": 0.9968588790886663
+   },
+   "heat": {
+    "linLen": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      1,
+      1,
+      2,
+      8,
+      2,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ],
+    "lenDead": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      16,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "props": {
+    "pickup:exit_totem": 16,
+    "pickup:find": 16,
+    "pickup:flower": 16,
+    "pickup:heart": 16,
+    "pickup:relic": 16
+   },
+   "rooms": {},
+   "pieceKinds": {
+    "1-5 bank hops": 16,
+    "1-5 snap teach": 16,
+    "1-5 bounce up": 11,
+    "1-5 stump hop": 16,
+    "1-5 creaky boughs + bough hops": 9,
+    "1-5 stump hop + crumbling ledge": 10,
+    "1-5 crossings: step-down + climb up": 16,
+    "1-5 bank walk": 16,
+    "1-5 snap dash": 16,
+    "1-5 log jam": 16,
+    "1-5 rotten-branch drop": 16,
+    "1-5 crumbling ledge": 16,
+    "1-5 the climb": 12,
+    "1-5 creaky boughs + bridge span": 7,
+    "1-5 bough stair + stump hop": 4,
+    "1-5 bough hops + creaky boughs": 7,
+    "1-5 bough stair": 9,
+    "1-5 bridge span + creaky boughs": 9,
+    "1-5 stump hop + bank hops": 9,
+    "1-5 crumbling ledge + stump hop": 6,
+    "1-5 stump hop + bough stair": 3,
+    "1-5 crossings: step-down + climb up (vine and ledge)": 4
+   },
+   "judged": true,
+   "notJudged": null,
+   "firstErrors": [],
+   "fails": {
+    "short": 0,
+    "quiet": 0,
+    "dead": 0,
+    "validator": 0,
+    "lookalike": 16,
+    "lookRolls": 16,
+    "lookMix": 0,
+    "lookWindow": 16,
+    "botRolls": 16,
+    "hotKid": 4,
+    "hotAdult": 0
+   },
+   "errorKinds": {},
+   "lookalikeWith": {
+    "1-1": 15,
+    "1-2": 14
+   },
+   "worst": [
+    {
+     "variant": 1,
+     "layout": 0,
+     "score": 1.5,
+     "why": [
+      "1 jump(s) the kid bot makes under 85% (worst 64.0%)",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 233.35163211057957,
+     "longestQuiet": 2.1052631578947363
+    },
+    {
+     "variant": 821391,
+     "layout": 821390,
+     "score": 1.5,
+     "why": [
+      "1 jump(s) the kid bot makes under 85% (worst 84.5%)",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 233.41912608571315,
+     "longestQuiet": 2.1052631578947363
+    },
+    {
+     "variant": 421256,
+     "layout": 421255,
+     "score": 1.5,
+     "why": [
+      "1 jump(s) the kid bot makes under 85% (worst 64.5%)",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 236.2361093554035,
+     "longestQuiet": 2.1052631578947363
+    },
+    {
+     "variant": 544269,
+     "layout": 544268,
+     "score": 1.5,
+     "why": [
+      "1 jump(s) the kid bot makes under 85% (worst 63.0%)",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 231.78808545986175,
+     "longestQuiet": 2.1451239963070634
+    },
+    {
+     "variant": 64763,
+     "layout": 64762,
+     "score": 0.5,
+     "why": [
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 231.53954744816608,
+     "longestQuiet": 2.1052631578947327
+    }
+   ],
+   "traced": {
+    "check": 16
+   }
+  },
+  {
+   "id": "1-6",
+   "world": 1,
+   "name": "Snake Vines",
+   "type": "vine_runner",
+   "source": "hand",
+   "climb": false,
+   "rolls": 16,
+   "ms": 33862,
+   "floor": 120,
+   "target": 140,
+   "stats": {
+    "quick": {
+     "min": 146.7543890629196,
+     "p10": 149.95865524122067,
+     "med": 159.90471386159737,
+     "p90": 165.7292402805168,
+     "max": 168.01495687894575,
+     "mean": 157.67120453555017
+    },
+    "played": {
+     "min": 167.68372917537346,
+     "p10": 171.06389355362896,
+     "med": 177.5925989460907,
+     "p90": 184.6407611888482,
+     "max": 186.11271241134787,
+     "mean": 177.29072214229294
+    },
+    "designer": {
+     "min": 146.80912365068153,
+     "p10": 149.84533368641092,
+     "med": 152.11242702449672,
+     "p90": 158.89623185168008,
+     "max": 159.20329053819012,
+     "mean": 152.27585739017704
+    },
+    "dead": {
+     "min": 21.066318098991303,
+     "p10": 22.018971155110936,
+     "med": 27.794226081731445,
+     "p90": 33.51288292639312,
+     "max": 35.58083171358811,
+     "mean": 27.545634793825787
+    },
+    "longestQuiet": {
+     "min": 2.797504594255443,
+     "p10": 3.046882153543603,
+     "med": 4.586731103503695,
+     "p90": 6.283215621234596,
+     "max": 6.302170745309365,
+     "mean": 4.584642648077979
+    },
+    "perMin": {
+     "min": 26.308126713008,
+     "p10": 27.180234434011545,
+     "med": 28.055755864050802,
+     "p90": 30.053204939665633,
+     "max": 30.220845950114168,
+     "mean": 28.257440616963546
+    },
+    "linearity": {
+     "min": 0.6230917112466287,
+     "p10": 0.6259797213266559,
+     "med": 0.634938426523969,
+     "p90": 0.6667070992620032,
+     "max": 0.6850502856382752,
+     "mean": 0.6420800025342266
+    },
+    "leniency": {
+     "min": 0.38235294117647056,
+     "p10": 0.39080459770114945,
+     "med": 0.5189873417721519,
+     "p90": 0.5723684210526315,
+     "max": 0.6139240506329114,
+     "mean": 0.4903613617462846
+    },
+    "vertical": {
+     "min": 400,
+     "p10": 400,
+     "med": 452,
+     "p90": 452,
+     "max": 452,
+     "mean": 439.75
+    },
+    "platforms": {
+     "min": 138,
+     "p10": 141,
+     "med": 154,
+     "p90": 159,
+     "max": 161,
+     "mean": 150.25
+    },
+    "routePlatforms": {
+     "min": 61,
+     "p10": 64,
+     "med": 69,
+     "p90": 84,
+     "max": 86,
+     "mean": 71.75
+    },
+    "props": {
+     "min": 7,
+     "p10": 7,
+     "med": 7,
+     "p90": 7,
+     "max": 7,
+     "mean": 7
+    },
+    "styles": {
+     "min": 5,
+     "p10": 5,
+     "med": 5,
+     "p90": 6,
+     "max": 6,
+     "mean": 5.3125
+    }
+   },
+   "mix": {
+    "V": 21.5,
+    "C": 6.5625,
+    "h": 21.6875,
+    "J": 26.8125,
+    "P": 7
+   },
+   "distinct": {
+    "geometry": 16,
+    "actions": 16,
+    "sequences": 15,
+    "pieces": 8,
+    "layouts": 16,
+    "attempts": 16,
+    "looks": 2
+   },
+   "diversity": {
+    "cosine": 0.25672171011246053,
+    "window": 0.6532684323344746,
+    "alike": 0.7432782898875394,
+    "nearest": 0.9372606708292122
+   },
+   "heat": {
+    "linLen": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      11,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ],
+    "lenDead": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      3,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      5,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "props": {
+    "animal:snake": 16,
+    "kit:reset": 16,
+    "kit:seesaw": 16,
+    "pickup:exit_totem": 16,
+    "pickup:flower": 16,
+    "pickup:heart": 16,
+    "pickup:seed": 16
+   },
+   "rooms": {
+    "seesaw-show": 16,
+    "seesaw": 16,
+    "seesaw-twist": 16
+   },
+   "pieceKinds": {
+    "rest": 16,
+    "hollow": 16,
+    "stumps": 16,
+    "kapok": 16,
+    "highrun": 10,
+    "log": 16,
+    "canopy": 16,
+    "snakes": 16,
+    "gorge": 16
+   },
+   "judged": false,
+   "notJudged": "the tested roll already fails it (exit platform 153 is not reachable); its own tests use another check",
+   "firstErrors": [
+    "exit platform 153 is not reachable",
+    "checkpoint at x=14177 is not on a reachable platform",
+    "checkpoint at x=16956 is not on a reachable platform"
+   ],
+   "fails": {
+    "short": 0,
+    "quiet": 11,
+    "dead": 0,
+    "validator": 0,
+    "lookalike": 5,
+    "lookRolls": 16,
+    "lookMix": 0,
+    "lookWindow": 5,
+    "botRolls": 16,
+    "hotKid": 0,
+    "hotAdult": 0
+   },
+   "errorKinds": {
+    "exit platform is not reachable": 8,
+    "checkpoint at x= is not on a reachable platform": 8,
+    "flower # at (, ) is out of reach": 8,
+    "seed # at (, ) is out of reach": 16,
+    "heart # at (, ) is out of reach": 8,
+    "flower # at (, ) is inside platform": 3,
+    "enemy # stands too close to a safe spot at x=": 2
+   },
+   "lookalikeWith": {
+    "1-3": 2,
+    "1-7": 1,
+    "1-9": 2
+   },
+   "worst": [
+    {
+     "variant": 648998,
+     "layout": 648997,
+     "score": 2.014918048545419,
+     "why": [
+      "6.1 s with nothing to do",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 168.01495687894575,
+     "longestQuiet": 6.059672194181676
+    },
+    {
+     "variant": 205913,
+     "layout": 205912,
+     "score": 1.9401749624433435,
+     "why": [
+      "5.8 s with nothing to do",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 160.7243587299123,
+     "longestQuiet": 5.760699849773374
+    },
+    {
+     "variant": 821391,
+     "layout": 821390,
+     "score": 1.5755426863273412,
+     "why": [
+      "6.3 s with nothing to do"
+     ],
+     "quick": 150.58034527080198,
+     "longestQuiet": 6.302170745309365
+    },
+    {
+     "variant": 421256,
+     "layout": 421255,
+     "score": 1.570803905308649,
+     "why": [
+      "6.3 s with nothing to do"
+     ],
+     "quick": 159.90471386159737,
+     "longestQuiet": 6.283215621234596
+    },
+    {
+     "variant": 355022,
+     "layout": 355021,
+     "score": 1.5361972496983487,
+     "why": [
+      "6.1 s with nothing to do"
+     ],
+     "quick": 157.45065537166462,
+     "longestQuiet": 6.144788998793395
+    }
+   ],
+   "traced": {
+    "presumed": 8,
+    "extended": 8
+   }
+  },
+  {
+   "id": "1-7",
+   "world": 1,
+   "name": "A Very Good Bush",
+   "type": "stealth",
+   "source": "hand",
+   "climb": false,
+   "rolls": 16,
+   "ms": 44276,
+   "floor": 120,
+   "target": 140,
+   "stats": {
+    "quick": {
+     "min": 175.89444768296613,
+     "p10": 177.36058439344342,
+     "med": 201.10229986978933,
+     "p90": 218.92004962892128,
+     "max": 221.1521215560286,
+     "mean": 197.20421058168333
+    },
+    "played": {
+     "min": 196.23483047429,
+     "p10": 197.10012310956324,
+     "med": 214.31785896569428,
+     "p90": 233.15095974126737,
+     "max": 233.507137728427,
+     "mean": 214.3812622127337
+    },
+    "designer": {
+     "min": 207.9475002048432,
+     "p10": 208.34253475661066,
+     "med": 211.09885538092956,
+     "p90": 216.70546466149625,
+     "max": 216.94985042994534,
+     "mean": 211.67662223457683
+    },
+    "dead": {
+     "min": 47.08725443853654,
+     "p10": 49.183256584120656,
+     "med": 53.567069545228726,
+     "p90": 74.02649107282909,
+     "max": 82.24055554129836,
+     "mean": 58.645577982285346
+    },
+    "longestQuiet": {
+     "min": 3.5613673249309556,
+     "p10": 3.590657743211338,
+     "med": 3.6393783292211737,
+     "p90": 3.7531654164602486,
+     "max": 3.868028680358961,
+     "mean": 3.65223680962608
+    },
+    "perMin": {
+     "min": 26.919998140859093,
+     "p10": 27.57559133819487,
+     "med": 28.76251859854059,
+     "p90": 29.38687810083427,
+     "max": 29.500970263660477,
+     "mean": 28.467936752584034
+    },
+    "linearity": {
+     "min": 0.6230293420478961,
+     "p10": 0.6272195411862346,
+     "med": 0.7067398097937994,
+     "p90": 0.8773961372908625,
+     "max": 0.8797885534953912,
+     "mean": 0.7625322847965473
+    },
+    "leniency": {
+     "min": -0.15048543689320387,
+     "p10": -0.14563106796116504,
+     "med": 0.6808510638297872,
+     "p90": 0.7209302325581395,
+     "max": 0.7215909090909091,
+     "mean": 0.5357193033075283
+    },
+    "vertical": {
+     "min": 290,
+     "p10": 290,
+     "med": 370,
+     "p90": 376,
+     "max": 376,
+     "mean": 336.0625
+    },
+    "platforms": {
+     "min": 114,
+     "p10": 116,
+     "med": 129,
+     "p90": 197,
+     "max": 205,
+     "mean": 149.0625
+    },
+    "routePlatforms": {
+     "min": 89,
+     "p10": 90,
+     "med": 97,
+     "p90": 113,
+     "max": 113,
+     "mean": 98.8125
+    },
+    "props": {
+     "min": 8,
+     "p10": 8,
+     "med": 8,
+     "p90": 8,
+     "max": 8,
+     "mean": 8
+    },
+    "styles": {
+     "min": 3,
+     "p10": 3,
+     "med": 4,
+     "p90": 4,
+     "max": 4,
+     "mean": 3.5625
+    }
+   },
+   "mix": {
+    "Z": 15.5625,
+    "h": 60.09375,
+    "J": 24.1875,
+    "P": 2
+   },
+   "distinct": {
+    "geometry": 16,
+    "actions": 16,
+    "sequences": 4,
+    "pieces": 16,
+    "layouts": 16,
+    "attempts": 16,
+    "looks": 2
+   },
+   "diversity": {
+    "cosine": 0.3677980856672934,
+    "window": 0.4966216507921703,
+    "alike": 0.6322019143327067,
+    "nearest": 0.9967438965972344
+   },
+   "heat": {
+    "linLen": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      7,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ],
+    "lenDead": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      7,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "props": {
+    "kit:item/acorn": 16,
+    "kit:reset": 16,
+    "kit:source/acorn": 16,
+    "pickup:exit_totem": 16,
+    "pickup:flower": 16,
+    "pickup:heart": 16,
+    "pickup:seed": 16,
+    "set:bushes": 16
+   },
+   "rooms": {
+    "acorns": 16
+   },
+   "pieceKinds": {
+    "rest": 16,
+    "highrun": 9,
+    "snakes": 16,
+    "stumps": 7
+   },
+   "judged": true,
+   "notJudged": null,
+   "firstErrors": [],
+   "fails": {
+    "short": 0,
+    "quiet": 0,
+    "dead": 16,
+    "validator": 0,
+    "lookalike": 3,
+    "lookRolls": 16,
+    "lookMix": 3,
+    "lookWindow": 3,
+    "botRolls": 16,
+    "hotKid": 0,
+    "hotAdult": 0
+   },
+   "errorKinds": {},
+   "lookalikeWith": {
+    "1-1": 3,
+    "1-2": 3,
+    "1-6": 1,
+    "1-9": 2
+   },
+   "worst": [
+    {
+     "variant": 205913,
+     "layout": 205912,
+     "score": 1,
+     "why": [
+      "47 s of dead time",
+      "same action mix as another stage of its world"
+     ],
+     "quick": 221.1521215560286,
+     "longestQuiet": 3.590657743211338
+    },
+    {
+     "variant": 306482,
+     "layout": 306481,
+     "score": 1,
+     "why": [
+      "49 s of dead time",
+      "same action mix as another stage of its world"
+     ],
+     "quick": 218.8413807057165,
+     "longestQuiet": 3.5659175477651956
+    },
+    {
+     "variant": 355022,
+     "layout": 355021,
+     "score": 1,
+     "why": [
+      "51 s of dead time",
+      "same action mix as another stage of its world"
+     ],
+     "quick": 218.92004962892128,
+     "longestQuiet": 3.6393783292211737
+    },
+    {
+     "variant": 1,
+     "layout": 0,
+     "score": 0.5,
+     "why": [
+      "52 s of dead time"
+     ],
+     "quick": 213.5107720852249,
+     "longestQuiet": 3.7187569417598496
+    },
+    {
+     "variant": 64763,
+     "layout": 64762,
+     "score": 0.5,
+     "why": [
+      "59 s of dead time"
+     ],
+     "quick": 177.36058439344342,
+     "longestQuiet": 3.666436794651375
+    }
+   ],
+   "traced": {
+    "check": 16
+   }
+  },
+  {
+   "id": "1-8",
+   "world": 1,
+   "name": "The Long Branch",
+   "type": "sprint",
+   "source": "hand",
+   "climb": false,
+   "rolls": 16,
+   "ms": 11531,
+   "floor": 120,
+   "target": 140,
+   "stats": {
+    "quick": {
+     "min": 146.07238671908834,
+     "p10": 146.27156528565982,
+     "med": 146.59061601325396,
+     "p90": 148.98578593462182,
+     "max": 149.0313495264767,
+     "mean": 147.1872014254002
+    },
+    "played": {
+     "min": 147.33535491079735,
+     "p10": 147.6500401969514,
+     "med": 148.17397219892806,
+     "p90": 150.56346640363265,
+     "max": 150.6651762808627,
+     "mean": 148.65165628389633
+    },
+    "designer": {
+     "min": 129.32366817027741,
+     "p10": 129.5657721437433,
+     "med": 129.68964193980275,
+     "p90": 130.48249426447637,
+     "max": 130.50656523363202,
+     "mean": 129.80053242711412
+    },
+    "dead": {
+     "min": 5.291228070175443,
+     "p10": 5.291228070175443,
+     "med": 5.291228070175443,
+     "p90": 5.291228070175443,
+     "max": 5.291228070175443,
+     "mean": 5.291228070175441
+    },
+    "longestQuiet": {
+     "min": 3.1157894736842096,
+     "p10": 3.1157894736842096,
+     "med": 3.1157894736842096,
+     "p90": 3.1157894736842096,
+     "max": 3.1157894736842096,
+     "mean": 3.1157894736842096
+    },
+    "perMin": {
+     "min": 47.13224047721542,
+     "p10": 47.820365537401614,
+     "med": 49.40138872819497,
+     "p90": 49.89676101870474,
+     "max": 49.964045698898985,
+     "mean": 49.04615410274379
+    },
+    "linearity": {
+     "min": 0.6768736993137727,
+     "p10": 0.6845413019601085,
+     "med": 0.7129634834132801,
+     "p90": 0.7207116316531925,
+     "max": 0.7281184426886564,
+     "mean": 0.7082235356133487
+    },
+    "leniency": {
+     "min": -0.46311475409836067,
+     "p10": -0.46311475409836067,
+     "med": -0.45121951219512196,
+     "p90": -0.3442622950819672,
+     "max": -0.3442622950819672,
+     "mean": -0.4221971230272191
+    },
+    "vertical": {
+     "min": 341,
+     "p10": 345,
+     "med": 354,
+     "p90": 366,
+     "max": 391,
+     "mean": 355.5625
+    },
+    "platforms": {
+     "min": 124,
+     "p10": 124,
+     "med": 130,
+     "p90": 130,
+     "max": 130,
+     "mean": 128.5
+    },
+    "routePlatforms": {
+     "min": 119,
+     "p10": 120,
+     "med": 124,
+     "p90": 126,
+     "max": 126,
+     "mean": 123.4375
+    },
+    "props": {
+     "min": 5,
+     "p10": 5,
+     "med": 5,
+     "p90": 5,
+     "max": 5,
+     "mean": 5
+    },
+    "styles": {
+     "min": 2,
+     "p10": 2,
+     "med": 2,
+     "p90": 2,
+     "max": 2,
+     "mean": 2
+    }
+   },
+   "mix": {
+    "h": 6.5,
+    "J": 19.375,
+    "Z": 80.6875,
+    "C": 5.5625,
+    "V": 9.375
+   },
+   "distinct": {
+    "geometry": 16,
+    "actions": 15,
+    "sequences": 11,
+    "pieces": 1,
+    "layouts": 15,
+    "attempts": 16,
+    "looks": 1
+   },
+   "diversity": {
+    "cosine": 0.06915031263241143,
+    "window": 0.189596627820274,
+    "alike": 0.9308496873675886,
+    "nearest": 0.9995683520256833
+   },
+   "heat": {
+    "linLen": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      9,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ],
+    "lenDead": [
+     [
+      0,
+      0,
+      0,
+      0,
+      16,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "props": {
+    "animal:snake": 16,
+    "pickup:exit_totem": 16,
+    "pickup:find": 16,
+    "pickup:flower": 16,
+    "pickup:seed": 16
+   },
+   "rooms": {},
+   "pieceKinds": {},
+   "judged": false,
+   "notJudged": "the tested roll already fails it (flower #17 at (7458, 390) is inside platform 33); its own tests use another check",
+   "firstErrors": [
+    "flower #17 at (7458, 390) is inside platform 33",
+    "flower #36 at (16440, 344) is inside platform 71",
+    "flower #23 and seed #24 overlap"
+   ],
+   "fails": {
+    "short": 0,
+    "quiet": 0,
+    "dead": 0,
+    "validator": 0,
+    "lookalike": 0,
+    "lookRolls": 16,
+    "lookMix": 0,
+    "lookWindow": 0,
+    "botRolls": 16,
+    "hotKid": 0,
+    "hotAdult": 0
+   },
+   "errorKinds": {
+    "flower # at (, ) is inside platform": 16,
+    "flower # and seed # overlap": 16,
+    "enemy # stands too close to a safe spot at x=": 16,
+    "find # at (, ) is inside platform": 7
+   },
+   "lookalikeWith": {},
+   "worst": [],
+   "traced": {
+    "check": 16
+   }
+  },
+  {
+   "id": "1-9",
+   "world": 1,
+   "name": "The Boa's Branches",
+   "type": "gauntlet",
+   "source": "hand",
+   "climb": false,
+   "rolls": 16,
+   "ms": 20004,
+   "floor": 120,
+   "target": 140,
+   "stats": {
+    "quick": {
+     "min": 147.09156687497287,
+     "p10": 148.07047703245144,
+     "med": 182.61207879741895,
+     "p90": 200.2053653958243,
+     "max": 200.2309242883657,
+     "mean": 174.47748809250263
+    },
+    "played": {
+     "min": 146.1684446673562,
+     "p10": 146.987652409701,
+     "med": 182.61207879741895,
+     "p90": 200.2053653958243,
+     "max": 200.2309242883657,
+     "mean": 174.31424458644966
+    },
+    "designer": {
+     "min": 148.7963252278404,
+     "p10": 149.06171224493238,
+     "med": 152.94053568064908,
+     "p90": 168.22821839036305,
+     "max": 174.43356347066083,
+     "mean": 155.7205455129139
+    },
+    "dead": {
+     "min": 12.75504402092588,
+     "p10": 14.761915662460964,
+     "med": 14.986053768383528,
+     "p90": 19.719662541982387,
+     "max": 21.961545380673243,
+     "mean": 15.971753796609722
+    },
+    "longestQuiet": {
+     "min": 3.507079970331013,
+     "p10": 3.532792132603589,
+     "med": 3.778541424913854,
+     "p90": 4.343044869432212,
+     "max": 4.3614131538343415,
+     "mean": 3.867219842070346
+    },
+    "perMin": {
+     "min": 23.335553829913415,
+     "p10": 25.636665647341104,
+     "med": 29.58641856762248,
+     "p90": 29.96540130514009,
+     "max": 29.969226789389246,
+     "mean": 27.656447780130293
+    },
+    "linearity": {
+     "min": 0.6263922088286822,
+     "p10": 0.6284837984350302,
+     "med": 0.6437530696480747,
+     "p90": 0.7931563185493952,
+     "max": 0.7934610930796586,
+     "mean": 0.6843537973716536
+    },
+    "leniency": {
+     "min": -0.34831460674157305,
+     "p10": -0.3333333333333333,
+     "med": 0.08823529411764706,
+     "p90": 0.3769230769230769,
+     "max": 0.38461538461538464,
+     "mean": -0.026348564837807172
+    },
+    "vertical": {
+     "min": 242,
+     "p10": 245,
+     "med": 265,
+     "p90": 357,
+     "max": 365,
+     "mean": 286.5
+    },
+    "platforms": {
+     "min": 102,
+     "p10": 102,
+     "med": 111,
+     "p90": 119,
+     "max": 121,
+     "mean": 110.1875
+    },
+    "routePlatforms": {
+     "min": 45,
+     "p10": 47,
+     "med": 69,
+     "p90": 76,
+     "max": 76,
+     "mean": 63.4375
+    },
+    "props": {
+     "min": 6,
+     "p10": 6,
+     "med": 6,
+     "p90": 6,
+     "max": 6,
+     "mean": 6
+    },
+    "styles": {
+     "min": 5,
+     "p10": 5,
+     "med": 5,
+     "p90": 5,
+     "max": 5,
+     "mean": 5
+    }
+   },
+   "mix": {
+    "h": 23.3125,
+    "C": 27.625,
+    "J": 28.875,
+    "V": 1
+   },
+   "distinct": {
+    "geometry": 16,
+    "actions": 16,
+    "sequences": 7,
+    "pieces": 10,
+    "layouts": 16,
+    "attempts": 16,
+    "looks": 1
+   },
+   "diversity": {
+    "cosine": 0.34338728212107816,
+    "window": 0.5282509935995229,
+    "alike": 0.6566127178789218,
+    "nearest": 0.9953899517272512
+   },
+   "heat": {
+    "linLen": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ],
+    "lenDead": [
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      6,
+      2,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      3,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "props": {
+    "animal:boa": 16,
+    "animal:snake": 16,
+    "pickup:exit_totem": 16,
+    "pickup:flower": 16,
+    "pickup:heart": 16,
+    "pickup:seed": 16
+   },
+   "rooms": {},
+   "pieceKinds": {
+    "rest": 16,
+    "snakes": 16,
+    "vault": 16,
+    "bowl": 16,
+    "kapok": 2,
+    "highrun": 10
+   },
+   "judged": false,
+   "notJudged": "the tested roll already fails it (exit platform 102 is not reachable); its own tests use another check",
+   "firstErrors": [
+    "exit platform 102 is not reachable",
+    "flower #41 at (19340, 427) is out of reach",
+    "flower #42 at (19402, 427) is out of reach"
+   ],
+   "fails": {
+    "short": 0,
+    "quiet": 6,
+    "dead": 0,
+    "validator": 0,
+    "lookalike": 13,
+    "lookRolls": 16,
+    "lookMix": 0,
+    "lookWindow": 13,
+    "botRolls": 16,
+    "hotKid": 0,
+    "hotAdult": 0
+   },
+   "errorKinds": {
+    "exit platform is not reachable": 16,
+    "flower # at (, ) is out of reach": 16,
+    "enemy # stands too close to a safe spot at x=": 16,
+    "checkpoints are out of order": 9,
+    "not enough enemies for the quota": 4
+   },
+   "lookalikeWith": {
+    "1-3": 13,
+    "1-6": 2,
+    "1-7": 2
+   },
+   "worst": [
+    {
+     "variant": 592978,
+     "layout": 592977,
+     "score": 1.585761217358053,
+     "why": [
+      "4.3 s with nothing to do",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 184.49216583587747,
+     "longestQuiet": 4.343044869432212
+    },
+    {
+     "variant": 166577,
+     "layout": 166576,
+     "score": 1.5769805688289011,
+     "why": [
+      "4.3 s with nothing to do",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 198.58925178009338,
+     "longestQuiet": 4.307922275315605
+    },
+    {
+     "variant": 648998,
+     "layout": 648997,
+     "score": 1.5683267010320865,
+     "why": [
+      "4.3 s with nothing to do",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 200.2309242883657,
+     "longestQuiet": 4.273306804128346
+    },
+    {
+     "variant": 758971,
+     "layout": 758970,
+     "score": 1.5615009741130201,
+     "why": [
+      "4.2 s with nothing to do",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 200.2053653958243,
+     "longestQuiet": 4.2460038964520805
+    },
+    {
+     "variant": 355022,
+     "layout": 355021,
+     "score": 1.5612709725256835,
+     "why": [
+      "4.2 s with nothing to do",
+      "a 20 s stretch matches another stage of its world"
+     ],
+     "quick": 184.54413424594355,
+     "longestQuiet": 4.245083890102734
+    }
+   ],
+   "traced": {
+    "presumed": 16
+   }
+  }
+ ],
+ "skipped": [
+  {
+   "id": "1-10",
+   "why": "boss lair: one designed arena, no roll"
+  }
+ ],
+ "rollsBrief": [
+  {
+   "id": "1-1",
+   "v": 1,
+   "q": 172.5,
+   "d": 7.2,
+   "lq": 2.5,
+   "lin": 0.384,
+   "len": -0.255,
+   "ok": true,
+   "pm": 35.7,
+   "a": "hhJhhhJhhhhhhhhJhhhhhJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJhJJJJJJJJJJJJhJhhhhhJhhhJhJJJJJJJJJJJJJJJJJJJJJJJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 64763,
+   "q": 162.2,
+   "d": 7.1,
+   "lq": 2.6,
+   "lin": 0.435,
+   "len": 0.235,
+   "ok": true,
+   "pm": 37,
+   "a": "JJhhhhhhhhhhhhhhhhJhhhhhhhhhhhhJJJJJJJhJJJJJJJJJhhhhJhhJJJJJJJJhhhhJhhhhhhJJJJJJJJJJJJhhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 821391,
+   "q": 167.2,
+   "d": 12.9,
+   "lq": 2.8,
+   "lin": 0.441,
+   "len": 0.267,
+   "ok": true,
+   "pm": 37,
+   "a": "JhhhhhhhhhhJhhhhhhJhhhhhhhhhhJJJhJJJJhJJJJJJJJJhhhhhJhhhJJJJJJJJhhJhhhhhhhJJJJJJJJJJJJJhhhhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 421256,
+   "q": 173.5,
+   "d": 11.3,
+   "lq": 3.2,
+   "lin": 0.324,
+   "len": 0.25,
+   "ok": true,
+   "pm": 37,
+   "a": "hhhhhhhhhhhhhhhhhhhhJJJhhhJhhJJJhJJJJJJJJJJJJJJJJhhhhhhhhhhhhJJJJJJJJhhhJhhhJhhhJhJJJJJJJJJJJhhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 51588,
+   "q": 172.4,
+   "d": 14.9,
+   "lq": 5.1,
+   "lin": 0.379,
+   "len": 0.245,
+   "ok": true,
+   "pm": 36.9,
+   "a": "hhhhhhhhhhhhhhhhhhhhhhJhhhhhhhhhhhJJJhJJJJJJJJJJJJJJhhhhhhhhhJJJJJJJJhJJhhhJhhhJJJJJJJJJJJJJhhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 205913,
+   "q": 165.4,
+   "d": 6,
+   "lq": 3.8,
+   "lin": 0.402,
+   "len": 0.23,
+   "ok": true,
+   "pm": 37,
+   "a": "JhhhhhhhhhhhhhhhhhJhhhhhhhhhhJJJhJJJJJJJJJJJJJJhhhhhhJhhhJJJJJJJJhhJhhhhhhhhJJJJJJJJJJJJhhhhhhhhhJJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 544269,
+   "q": 175.6,
+   "d": 8.8,
+   "lq": 4.4,
+   "lin": 0.275,
+   "len": 0.243,
+   "ok": true,
+   "pm": 35.5,
+   "a": "hhJJhhhhhhJhhhhhhhhhJJhhhhhhJhJJJJJJJhJJJJJJJJJJJhhhhhhJhhhJJJJJJJJhhJhhhhhJhhJhJJJJJJJJJhhhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 691868,
+   "q": 168.1,
+   "d": 13.5,
+   "lq": 4.4,
+   "lin": 0.321,
+   "len": 0.24,
+   "ok": true,
+   "pm": 35.7,
+   "a": "hhhhhhhhhhhhhhhhhhhhJhhJhhhhhhJJJhJJJJJJJJJJJJJJJhhhhhhhhhJJJJJJJJhhJhhhJhhJJJJJJJJJJJJhhhhhJhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 306482,
+   "q": 162.6,
+   "d": 13.8,
+   "lq": 4.7,
+   "lin": 0.361,
+   "len": 0.211,
+   "ok": true,
+   "pm": 35,
+   "a": "hJhJhhhhhhhhhhhhhhJhhhhhJhhJJJJJJJJJJJJJJJJhhhhhhJhhhJJJJJJJJhJJhhhhhhJJJJJJJJJJJJhhhJhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 758971,
+   "q": 170.1,
+   "d": 9.9,
+   "lq": 3.1,
+   "lin": 0.265,
+   "len": 0.248,
+   "ok": true,
+   "pm": 36.7,
+   "a": "JJhhhhhhhhhhhhhhhJJhhhhhhhhhJJJJJJJhJJJJJJJJJJJhhhhhhhhhhJJJJJJJJhhhhhhhhhhhhhJhJJJJJJJJJJhhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 592978,
+   "q": 170.8,
+   "d": 7.8,
+   "lq": 3.3,
+   "lin": 0.225,
+   "len": 0.194,
+   "ok": true,
+   "pm": 36.2,
+   "a": "JhhhhJJhhhhhhhhhhJhhhhhhhhhhhJJJJJJJJJJJJJJJJJJhhhhhhhhhhhhJJJJJJJJhJJhhhhhhhJJJJJJJJJJJJJhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 373040,
+   "q": 169.6,
+   "d": 13.1,
+   "lq": 3.2,
+   "lin": 0.401,
+   "len": 0.18,
+   "ok": true,
+   "pm": 35.4,
+   "a": "hJhhhhJhhhhhhhhJhhhhJJhhhhJhJJJhJJJJJJJJJJJJJJhhhhhhhhhJJJJJJJJhhJhhhhJhhJJJJJJJJJJJJJhhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 377801,
+   "q": 167.7,
+   "d": 5.4,
+   "lq": 2.9,
+   "lin": 0.304,
+   "len": 0.257,
+   "ok": true,
+   "pm": 36.9,
+   "a": "hhhJhhhhhhhhhhhhhJJhhhhhhhhhJJJhJJJJJJJJJJJJhhhhhhhJhhhJJJJJJJJhhJhhhhhhhhJJJJJJJJJJJJJhhhhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 355022,
+   "q": 166.8,
+   "d": 12.8,
+   "lq": 4.5,
+   "lin": 0.278,
+   "len": 0.228,
+   "ok": true,
+   "pm": 36.3,
+   "a": "hJhhhhhhhhhhhhhhhhhhJJhJhhhhhJJJhJJJJJJJJJJJJhhhhhhhhhhhJJJJJJJJhhJhhhhhhJJJJJJJJJJJJJhhhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 648998,
+   "q": 165,
+   "d": 13.6,
+   "lq": 4.5,
+   "lin": 0.329,
+   "len": 0.227,
+   "ok": true,
+   "pm": 36.4,
+   "a": "hhhhhhhhhhhhhhhhhhJJhhhhhhhJJJhJJJJJJJJJJJJJJJJhhhJhJJJJJJJJhhhhhhJJhhJhJJJJJJJJJJJJhhhhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-1",
+   "v": 166577,
+   "q": 169.4,
+   "d": 9.9,
+   "lq": 4.8,
+   "lin": 0.288,
+   "len": 0.176,
+   "ok": true,
+   "pm": 36.1,
+   "a": "hhhhhhhhhhhhhhhhhhhhhJJhhhhhhhhJJJJJJJJJJJJJJJJJJhhhhhhJhhJJJJJJJJhhJhhhJhhhJJJJJJJJJJJJJhhhhhhhhhJJJJ"
+  },
+  {
+   "id": "1-2",
+   "v": 1,
+   "q": 183.3,
+   "d": 50.7,
+   "lq": 4.5,
+   "lin": 0.503,
+   "len": -0.134,
+   "ok": true,
+   "pm": 29.5,
+   "a": "hhhJJJJJJJJJhJJJJVJJJJJhJJJJhVVVVJJJJJhJhhZhhZhhZJJhZhhZJJJJhJJJJJJhhJJJhhhJJhhhVJhhhhJVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 64763,
+   "q": 179.7,
+   "d": 40.4,
+   "lq": 4.2,
+   "lin": 0.561,
+   "len": 0.023,
+   "ok": true,
+   "pm": 29.7,
+   "a": "hhhhJJJJJJJJJJhJJVJJJJJJJJJJhVVVVJhJJJJJhhZhhZhhZhJhZhhZhhhhhhhJVhhhJhhhhJhhhhhVJJJJhJVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 821391,
+   "q": 168.1,
+   "d": 47.1,
+   "lq": 4,
+   "lin": 0.554,
+   "len": -0.07,
+   "ok": true,
+   "pm": 28.5,
+   "a": "hhhhJJJJJJJJJJJJJVJhJJJJJJJJhVVVVJhJJJJJhhZJhhhhhZhhZhhZhhhhhJJhhJhJhJVJhhhJJVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 421256,
+   "q": 193.5,
+   "d": 42.9,
+   "lq": 4,
+   "lin": 0.53,
+   "len": -0.051,
+   "ok": true,
+   "pm": 27.6,
+   "a": "hhhJJJJJJJhJJJJJJVJJhJJJJJJJhVVVVJJJJhJJhhZJJJJJhZJhJhhhZhhhJJhhhhhVhhhhJJJhJhJVJJhhJhVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 51588,
+   "q": 205.4,
+   "d": 55.4,
+   "lq": 7.3,
+   "lin": 0.437,
+   "len": -0.075,
+   "ok": true,
+   "pm": 29.5,
+   "a": "hhhhJJJJJJhJhJJJJVJJJJJJJJJJhVVVVJhJJJJJhJJJJhhZhhZhhZhhZhhZhhZJhhhhhhhhhhhhhVJhJhhJhJJJhJhVhJhJJJVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 205913,
+   "q": 157.9,
+   "d": 50,
+   "lq": 7.8,
+   "lin": 0.627,
+   "len": -0.118,
+   "ok": true,
+   "pm": 27.7,
+   "a": "hhhhJJJJJJJJJJJJJVJJJJJhJJJJhVVVVJhJhJJJhhZhhZhhZhhZhhhhhhhJJJJVJhJJhJVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 544269,
+   "q": 185.2,
+   "d": 47.2,
+   "lq": 3.8,
+   "lin": 0.523,
+   "len": -0.181,
+   "ok": true,
+   "pm": 29.8,
+   "a": "hhhhJJJJJJJJJJJJJVJJJJJJhJJJhVVVVJJJJJJJhJJJJJJJJhhZhhZhhZhhZhhZhJJJhhJJhhhJhJJJJJVhhJhJhVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 691868,
+   "q": 185.9,
+   "d": 46.1,
+   "lq": 3.9,
+   "lin": 0.519,
+   "len": -0.122,
+   "ok": true,
+   "pm": 29,
+   "a": "hhhhJJJJJJJJJJJJJVJhJJJJhJJJhVVVVJJhJJJJhhZhhZhhZJJhZhhZJJJJJZhJJJJJVhhhhhJJhhJhVhJhhJJVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 306482,
+   "q": 211.7,
+   "d": 55.6,
+   "lq": 3.9,
+   "lin": 0.528,
+   "len": -0.127,
+   "ok": true,
+   "pm": 31.7,
+   "a": "hhhhJJJJJJJJJhJJJVJJJJJJhJJJhVVVVJJJJJJJhhZJZJhhZJJJJhhZhJJJhhZhhZhJJJJJJhhZhhZhhZhhZhJhhhJhhhhhJJJhJVJhhhJJJVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 758971,
+   "q": 178.8,
+   "d": 49.9,
+   "lq": 4.8,
+   "lin": 0.435,
+   "len": -0.112,
+   "ok": true,
+   "pm": 28.5,
+   "a": "hhhhJJJJJJhJJJJJJVJJJJJJJJJJhVVVVJJhJJJJhhZJJJJJZhJJZhhZhhZhhZhhhJhhhJJJhhJVhhhJJhVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 592978,
+   "q": 186.1,
+   "d": 54.3,
+   "lq": 6.9,
+   "lin": 0.521,
+   "len": -0.072,
+   "ok": true,
+   "pm": 26.4,
+   "a": "hhhhJJJJJJJJJJJJJVVJJJJJJJJJhVVVVJJJhJJJhhZJhhZJhhhhhhhhhhhVJhhJhhhJJJhhVhhhJJJVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 373040,
+   "q": 180,
+   "d": 53,
+   "lq": 8.2,
+   "lin": 0.52,
+   "len": -0.078,
+   "ok": true,
+   "pm": 27,
+   "a": "hhhhJJJJJJJJJJJJJVJJhJJJJJJJhVVVVJJJhJJJhhZhhZhhZhhZhhhhhhJVhhhhJJJJhhJVhhhJhJVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 377801,
+   "q": 205.6,
+   "d": 53.3,
+   "lq": 3.5,
+   "lin": 0.455,
+   "len": 0.136,
+   "ok": true,
+   "pm": 30.1,
+   "a": "hhhhJJJJJJJJJJJJJVJhJJJJJJJJhVVVVJhJJJJJhhZhhZhhZhJhZhhZhhhJhZhhZhhhhhhhhhJhhhhJVhhhhhJJhJJhJVVhhhhJVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 355022,
+   "q": 196.3,
+   "d": 44.6,
+   "lq": 3.7,
+   "lin": 0.509,
+   "len": 0.163,
+   "ok": true,
+   "pm": 28.1,
+   "a": "hhhhJJJJJJJhJJJJJVJhJhJJJJJJhVVVVJJJJJJJhhZhhZhhZhhZhhhhhhhhhhhhhJhhhhVJhhhhJhhhJVhhhJJhhVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 648998,
+   "q": 179.7,
+   "d": 46.9,
+   "lq": 3.6,
+   "lin": 0.53,
+   "len": 0.124,
+   "ok": true,
+   "pm": 30,
+   "a": "hhhhJJJJJJJJJJhJJVJJJJJhJJJJhVVVVJJJJhJJhhZhhZhhhhhZhhhhZhhZhhhZhhJVhhhhJhhhJhhJVhhhhJhVVV"
+  },
+  {
+   "id": "1-2",
+   "v": 166577,
+   "q": 188,
+   "d": 39.4,
+   "lq": 4.6,
+   "lin": 0.503,
+   "len": 0.168,
+   "ok": true,
+   "pm": 30.3,
+   "a": "hhhhJJJJJJJJhJJhJVJJhJJhJJJJhVVVVJJJJJJJhhZhhZhhZhJhZhhZhhhhhhhhhhhJhhhhVhhhhhhJJJJhVhhhhhJJVVV"
+  },
+  {
+   "id": "1-3",
+   "v": 1,
+   "q": 191.1,
+   "d": 44.4,
+   "lq": 4.5,
+   "lin": 0.704,
+   "len": 0.162,
+   "ok": false,
+   "pm": 26.7,
+   "a": "hChhhhhhChhChChhhhChChhChCCJhJJhCJJCJJhJCJhJChJCJhJhhChJChhhhhJCJCJCJChChJhJCJJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 64763,
+   "q": 183,
+   "d": 46.8,
+   "lq": 4.6,
+   "lin": 0.695,
+   "len": 0.189,
+   "ok": false,
+   "pm": 26.3,
+   "a": "hChhhhhhChChhChhhhChhChChCJhJChJJhJCJJhJChJCJhJhhChJChhhhhJCJCJCJChChJJJhJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 821391,
+   "q": 188.9,
+   "d": 44.6,
+   "lq": 4.7,
+   "lin": 0.698,
+   "len": 0.123,
+   "ok": false,
+   "pm": 26.5,
+   "a": "hChhhhhChChChhChhhhChChChhCCJhJJhCJJCJJJJChJhJCJCJhJhhChJChhhhhJCJCJCJChChJCJCJJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 421256,
+   "q": 192.9,
+   "d": 51.4,
+   "lq": 4.7,
+   "lin": 0.703,
+   "len": 0.158,
+   "ok": false,
+   "pm": 26.8,
+   "a": "hChhhhhChChhChChhhhChChChhCCJhJJhCJJhJCJJhJhJChJJhJCJhJhhChJChhhhhJCJCJCJChChJJJCJJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 51588,
+   "q": 181.4,
+   "d": 49.8,
+   "lq": 4.7,
+   "lin": 0.703,
+   "len": 0.171,
+   "ok": false,
+   "pm": 26.7,
+   "a": "hChhhhhChhChhChhhhhChChhChCJhJJhCJJJJCCJJhJChJCJhJhhChJChhhhhJCJCJCJChChJCJhJJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 205913,
+   "q": 186.7,
+   "d": 42.1,
+   "lq": 4.6,
+   "lin": 0.69,
+   "len": 0.104,
+   "ok": false,
+   "pm": 25.7,
+   "a": "hChhhhChChhChChhhhhChChhCCJJJhCJJJJCJhJCJCJhJhhChJChhhhhJCJCJCJChChJCJCJJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 544269,
+   "q": 189.2,
+   "d": 46.7,
+   "lq": 4.7,
+   "lin": 0.7,
+   "len": 0.2,
+   "ok": false,
+   "pm": 26.8,
+   "a": "hChhhhChChChhChhhhhChChChhCCJhJJhhhJCJJhJCJChJChJJhJCJhJhhChJChhhhhJCJCJCJChChJhJCJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 691868,
+   "q": 183,
+   "d": 44.5,
+   "lq": 4.8,
+   "lin": 0.699,
+   "len": 0.235,
+   "ok": false,
+   "pm": 26.9,
+   "a": "hChhhhChhChChhhhhhChhChChCJhJJhChJhhJhCJJhCJCJhJCJCJhJhhChJChhhhhJCJCJCJChChJhJhJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 306482,
+   "q": 194.4,
+   "d": 54.5,
+   "lq": 4.7,
+   "lin": 0.697,
+   "len": 0.146,
+   "ok": false,
+   "pm": 26.3,
+   "a": "hChhhhChChhChChhhhhChChhChCCJhJJhCJJCJJCJJChJJChJJChJJhJhhChJChhhhhJCJCJCJChChJCJhJJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 758971,
+   "q": 189.6,
+   "d": 43.1,
+   "lq": 4.6,
+   "lin": 0.7,
+   "len": 0.175,
+   "ok": false,
+   "pm": 26.9,
+   "a": "hChhhhChChChhChhhhhChhChChCJhJJhhhJCJJhJCJChJChJJhJCJhJhhChJChhhhhJCJCJCJChChJCJCJJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 592978,
+   "q": 187.4,
+   "d": 49.3,
+   "lq": 4.6,
+   "lin": 0.693,
+   "len": 0.167,
+   "ok": false,
+   "pm": 25.9,
+   "a": "hChhhhChChhChChhhhhChChhChCJhJJhCJJCJJCJhJCJJChJJhJhhChJChhhhhJCJCJCJChChJhJCJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 373040,
+   "q": 195.2,
+   "d": 37.8,
+   "lq": 4.5,
+   "lin": 0.705,
+   "len": 0.169,
+   "ok": false,
+   "pm": 27.3,
+   "a": "hChhhhhChChhChChhhhhChChhChCCJhJJhCJCJhCJChJhhJChhJCJhJhhChJChhhhhJCJCJCJChChJCJCJJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 377801,
+   "q": 194.7,
+   "d": 42.3,
+   "lq": 4.7,
+   "lin": 0.703,
+   "len": 0.143,
+   "ok": false,
+   "pm": 26.8,
+   "a": "hChhhhhChhChhChhhhChChhChCJhJJhCJhCJJCJCJJhJCJhJCJhJhhChJChhhhhJCJCJCJChChJCJCJJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 355022,
+   "q": 187.5,
+   "d": 46.8,
+   "lq": 4.7,
+   "lin": 0.702,
+   "len": 0.212,
+   "ok": false,
+   "pm": 27.1,
+   "a": "hChhhhhChChhChChhhhChChChhCCJhJJhhhJCJJhJCJChJChJJhJCJJJhhChJChhhhhJCJCJCJChChJhJhJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 648998,
+   "q": 190,
+   "d": 42.7,
+   "lq": 4.6,
+   "lin": 0.715,
+   "len": 0.16,
+   "ok": false,
+   "pm": 27.4,
+   "a": "hChhhhhChChhChChhhhhChChhChCCJhJJhhJCJJhCJCJhhJCJhJCJhJhhChJChhhhhJCJCJCJChChJCJJJJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-3",
+   "v": 166577,
+   "q": 185,
+   "d": 47.6,
+   "lq": 4.8,
+   "lin": 0.704,
+   "len": 0.171,
+   "ok": false,
+   "pm": 26.5,
+   "a": "hChhhhChChhChhhhhChChChhCCJhJJhhJCJJJCJChJChJJhJCJhJhhChJChhhhhJCJCJCJChChJhJJJCJhhJCJCJCJCh"
+  },
+  {
+   "id": "1-4",
+   "v": 1,
+   "q": 148.3,
+   "d": 0,
+   "lq": 0,
+   "lin": 0,
+   "len": -0.123,
+   "ok": false,
+   "pm": 23.5,
+   "a": "VVVVVVVJVJVPVVJZJJZJJhVJZJJhVVhJJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 64763,
+   "q": 156.6,
+   "d": 3,
+   "lq": 3,
+   "lin": 0,
+   "len": -0.142,
+   "ok": false,
+   "pm": 23,
+   "a": "VVVVVVJJJVJVPVVJZJJZJJhVJZJJhVVJJJJCVPVVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 821391,
+   "q": 155.1,
+   "d": 3.2,
+   "lq": 3.2,
+   "lin": 0,
+   "len": -0.119,
+   "ok": false,
+   "pm": 23.2,
+   "a": "VVVVVVJJhVJVPVVJZJJZJJhVJZJJhVVJJJJCVPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 421256,
+   "q": 146.6,
+   "d": 3.1,
+   "lq": 3.1,
+   "lin": 0,
+   "len": -0.143,
+   "ok": false,
+   "pm": 23.3,
+   "a": "VVVVVVVJVJVPVVJZJJZJJhVJZJJhVVJJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 51588,
+   "q": 145.4,
+   "d": 3,
+   "lq": 3,
+   "lin": 0,
+   "len": -0.132,
+   "ok": false,
+   "pm": 23.9,
+   "a": "VVVVVVJJJVJVPVVJZJJZJJhVJZJJhVVJJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 205913,
+   "q": 147.8,
+   "d": 3.1,
+   "lq": 3.1,
+   "lin": 0,
+   "len": -0.143,
+   "ok": false,
+   "pm": 23.1,
+   "a": "VVVVVVVJVJVPVVJZJJZJJhVJZJJhVVJJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 544269,
+   "q": 145.7,
+   "d": 3.1,
+   "lq": 3.1,
+   "lin": 0,
+   "len": -0.105,
+   "ok": false,
+   "pm": 23.9,
+   "a": "VVVVVVJJJVJVPVVJZJJZJJhVJZJJhVVJJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 691868,
+   "q": 146.9,
+   "d": 3,
+   "lq": 3,
+   "lin": 0,
+   "len": -0.143,
+   "ok": false,
+   "pm": 23.3,
+   "a": "VVVVVVVJVJVPVVJZJJZJJhVJZJJhVVJJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 306482,
+   "q": 147.6,
+   "d": 3.3,
+   "lq": 3.3,
+   "lin": 0,
+   "len": -0.116,
+   "ok": false,
+   "pm": 23.2,
+   "a": "VVVVVVVJVJVPVVJZJJZJJhVJZJJhVVJJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 758971,
+   "q": 145.8,
+   "d": 3.2,
+   "lq": 3.2,
+   "lin": 0,
+   "len": -0.132,
+   "ok": false,
+   "pm": 23.9,
+   "a": "VVVVVVJJJVJVPVVJZJJZJJhVJZJJhVVJJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 592978,
+   "q": 148.1,
+   "d": 0,
+   "lq": 0,
+   "lin": 0,
+   "len": -0.123,
+   "ok": false,
+   "pm": 23.5,
+   "a": "VVVVVVVJVJVPVVJZJJZJJhVJZJJhVVhJJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 373040,
+   "q": 154.3,
+   "d": 3.1,
+   "lq": 3.1,
+   "lin": 0,
+   "len": -0.149,
+   "ok": false,
+   "pm": 22.9,
+   "a": "VVVVVVJJJVJVPJVJZJJZJJJhVJZJJhVVJJCVPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 377801,
+   "q": 147,
+   "d": 3.1,
+   "lq": 3.1,
+   "lin": 0,
+   "len": -0.155,
+   "ok": false,
+   "pm": 23.3,
+   "a": "VVVVVVVJVJVPJVJZJJZJJJhVJZJJhVVJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 355022,
+   "q": 147.8,
+   "d": 3.3,
+   "lq": 3.3,
+   "lin": 0,
+   "len": -0.116,
+   "ok": false,
+   "pm": 23.1,
+   "a": "VVVVVVVJVJVPVVJZJJZJJhVJZJJhVVJJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 648998,
+   "q": 143,
+   "d": 3.3,
+   "lq": 3.3,
+   "lin": 0,
+   "len": -0.116,
+   "ok": false,
+   "pm": 23.9,
+   "a": "VVVVVVJJVJVPVVJZJJZJJhVJZJJhVVJJJJPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-4",
+   "v": 166577,
+   "q": 157.4,
+   "d": 3.1,
+   "lq": 3.1,
+   "lin": 0,
+   "len": -0.138,
+   "ok": false,
+   "pm": 22.5,
+   "a": "VVVVVVVJVJVPVVJZJJZJJhVJZJJhVVJJJJCVPJVVVZJhVJZJVJJZVVJJZJV"
+  },
+  {
+   "id": "1-5",
+   "v": 1,
+   "q": 233.4,
+   "d": 2.1,
+   "lq": 2.1,
+   "lin": 0.37,
+   "len": -0.334,
+   "ok": true,
+   "pm": 38.2,
+   "a": "hhhhJPhJJhJJJPhJJhJJhJhJJJJJJJJPhJJhJJhJPJJhZJJJJJJhPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJPhJJhJJhJJJJhJhJJPhJJhJJhJVJJJPhJJhJJhJJPJJJZJJJhJZJhhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 64763,
+   "q": 231.5,
+   "d": 2.1,
+   "lq": 2.1,
+   "lin": 0.636,
+   "len": -0.138,
+   "ok": true,
+   "pm": 37.7,
+   "a": "hhhhhPhJJhJJJPhJJhJJhJVJJJhJJPhJJhJPhhhhhhhhhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJPhJJhJJhJJJJhJhJhJJPhJJhJJhJJJJJJJPhJJhJJhJJPhhhhhhhhhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 821391,
+   "q": 233.4,
+   "d": 2.1,
+   "lq": 2.1,
+   "lin": 0.161,
+   "len": -0.313,
+   "ok": true,
+   "pm": 38.6,
+   "a": "hhhhhPhJJhJJJPhJJhJJhJhJJJJJJJJPhJJhJJhJPJJJZhJJJJhhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJhJJPhJJhJJJJhJhJJPhJJhJJhJVJJJhJJPhJJhJJPJJJZhJJJJZJhhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 421256,
+   "q": 236.2,
+   "d": 4.2,
+   "lq": 2.1,
+   "lin": 0.338,
+   "len": -0.351,
+   "ok": true,
+   "pm": 38.4,
+   "a": "hhhhhPhJJhJJJhJJPhJJhJhJJJJJJJJPhJJhJJhJPJJJZJJJJJJJhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJPhJJhJJhJJJJhJhJJPhJJhJJhJJJJJJJPhJJhJJhJJPJJJZJhJJZJJhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 51588,
+   "q": 235.5,
+   "d": 2.1,
+   "lq": 2.1,
+   "lin": 0.418,
+   "len": -0.321,
+   "ok": true,
+   "pm": 38.7,
+   "a": "hhhhJPhJJhJJJPhJJhJJhJhJJJJJJJJPhJJhJJhJPJJJJhJJZJhhhhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJhJJPhJJhJJJJhJhJJPhJJhJJhJVJJJPhJJhJJhJJPJJJZJJJhJZJJhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 205913,
+   "q": 237.3,
+   "d": 2.1,
+   "lq": 2.1,
+   "lin": 0.424,
+   "len": -0.304,
+   "ok": true,
+   "pm": 38.2,
+   "a": "hhhhJPhJJhJJJPhJJhJJhJhJJJJJJJPhJJhJJhJPJJJZJhJJJJhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJhJJPhJJhJJJJhJhJhJJPhJJhJJhJVJJJPhJJhJJhJJPJJJZhJJJZhhhhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 544269,
+   "q": 231.8,
+   "d": 4.3,
+   "lq": 2.1,
+   "lin": 0.559,
+   "len": -0.337,
+   "ok": true,
+   "pm": 38.6,
+   "a": "hhhhJPhJJhJJJPhJJhJJhJhJJJJJJPhJJhJJhJPJJJZJJJJhJJhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJPhJJhJJhJJJJhJhJJPhJJhJJhJVJJJPhJJhJJhJJPJJJZJJJJJZJJhJPJJhJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 691868,
+   "q": 236.8,
+   "d": 2.1,
+   "lq": 2.1,
+   "lin": 0.485,
+   "len": -0.304,
+   "ok": true,
+   "pm": 38.6,
+   "a": "hhhhhPhJJhJJJPhJJhJJhJVJJJhJJPhJJhJPJJhZJJJJJJhhhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJPhJJhJJhJJJJhJhJhJJPhJJhJJhJJJJJJJJPhJJhJJhJJPJJJZhJJJJZJhhhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 306482,
+   "q": 237.3,
+   "d": 2.1,
+   "lq": 2.1,
+   "lin": 0.477,
+   "len": -0.365,
+   "ok": true,
+   "pm": 38.7,
+   "a": "hhhhJPhJJhJJJPhJJhJJhJhJJJJJJJPhJJhJJhJPJJJJhJJJZJhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJPhJJhJJhJJJJhJhJhJJPhJJhJJhJJJJJJJJPhJJhJJhJJPJJJZJJJJJZJhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 758971,
+   "q": 231,
+   "d": 4.4,
+   "lq": 2.3,
+   "lin": 0.473,
+   "len": -0.326,
+   "ok": true,
+   "pm": 37.9,
+   "a": "hhhhJPhJJhJJJPhJJhJJhJVJJJhJJPhJJhJPJJJJJJJJZJhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJhJJPhJJhJJJJhJhJJPhJJhJJhJJJJJJJPhJJhJJhJJPJJJZJJhhhZhhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 592978,
+   "q": 229.1,
+   "d": 2.1,
+   "lq": 2.1,
+   "lin": 0.223,
+   "len": -0.315,
+   "ok": true,
+   "pm": 37.7,
+   "a": "hhhhJPhJJhJJJPhJJhJJhJhJJJJJJPhJJhJJhJPJJJJhJJhhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJPhJJhJJhJJJJhJhJJPhJJhJJhJVJJJPhJJhJJhJJPJJhZJJJJZJhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 373040,
+   "q": 236.1,
+   "d": 4.1,
+   "lq": 2.1,
+   "lin": 0.447,
+   "len": -0.318,
+   "ok": true,
+   "pm": 38.7,
+   "a": "hhhhhPhJJhJJJPhJJhJJhJhJJJJJJPhJJhJJhJPJJJZJhJJJJhPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJPhJJhJJhJJJJhJhJhJJPhJJhJJhJJJJJJJPhJJhJJhJJPJJJZJJJhJZJhhhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 377801,
+   "q": 236.4,
+   "d": 4.1,
+   "lq": 2.1,
+   "lin": 0.411,
+   "len": -0.325,
+   "ok": true,
+   "pm": 38.2,
+   "a": "hhhhhPhJJhJJJPhJJhJJhJVJJJPhJJhJJhJPJJJJJJJJZJJhhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJPhJJhJJhJJJJhJhJJPhJJhJJhJJJJJJJJPhJJhJJhJJPJJJZJhJJZJJhhJPJJhJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 355022,
+   "q": 232.7,
+   "d": 6.1,
+   "lq": 2.1,
+   "lin": 0.407,
+   "len": -0.344,
+   "ok": true,
+   "pm": 38.6,
+   "a": "hhhhJPhJJhJJJPhJJhJJhJhJJJJJJJPhJJhJJhJPJJJJhJJZJhhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJPhJJhJJhJJJJhJhJJPhJJhJJhJJJJJJJPhJJhJJhJJPJJJZJJhJJZJhPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 648998,
+   "q": 232.3,
+   "d": 4.1,
+   "lq": 2.1,
+   "lin": 0.519,
+   "len": -0.298,
+   "ok": true,
+   "pm": 38.2,
+   "a": "hhhhhPhJJhJJJhJJPhJJhJVJJJhJJPhJJhJPJJJZJhJJhhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJhJJPhJJhJJJJhJhJJPhJJhJJhJJJJJJJJPhJJhJJhJJPJJJZJhJJZJhhJhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-5",
+   "v": 166577,
+   "q": 232.3,
+   "d": 2.1,
+   "lq": 2.1,
+   "lin": 0.636,
+   "len": -0.152,
+   "ok": true,
+   "pm": 37.7,
+   "a": "hhhhhPhJJhJJJPhJJhJJhJhJJJJJJJJPhJJhJJhJPJhhhhhhhJPJJJPJJZJJJJZJJJJPhJJhJJhJJZJJJJPhJJhJJhJJJJhJhJJPhJJhJJhJVJJJhJJPhJJhJJPhhhhhhhhhJPJJJhJJPhJJhJ"
+  },
+  {
+   "id": "1-6",
+   "v": 1,
+   "q": 164.6,
+   "d": 26.8,
+   "lq": 3,
+   "lin": 0.632,
+   "len": 0.391,
+   "ok": false,
+   "pm": 30.2,
+   "a": "VCVhhVCVVhhJJhJhhhJJJVVhJJJJJhJhhhJhJJJJPJJhCJPPhPPJJhJVJhhJhJJJJJJJChJJhJVVPJJPJhJVCVVVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 64763,
+   "q": 160.8,
+   "d": 22,
+   "lq": 2.9,
+   "lin": 0.685,
+   "len": 0.562,
+   "ok": false,
+   "pm": 28.1,
+   "a": "VCVhhVCVVJJhVVVJJJhVVhChChChhCPJJhJPPhPPJJhJVJJhhJhChChChhChhhhJVVPJJPJhJVCVVhVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 821391,
+   "q": 150.6,
+   "d": 33.5,
+   "lq": 6.3,
+   "lin": 0.623,
+   "len": 0.428,
+   "ok": false,
+   "pm": 27,
+   "a": "VCVhhVCVVJJJhJhJhJhVVVJJVJJVVPJJhCPPhJPPJJhJVJJJhJVVJJhJJhCVVPJJPJhJVCVVVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 421256,
+   "q": 159.9,
+   "d": 27.8,
+   "lq": 6.3,
+   "lin": 0.651,
+   "len": 0.572,
+   "ok": false,
+   "pm": 26.3,
+   "a": "VCVhhVCVVJJhJhJhhVVVVVVVPJJhCPPJhPPJJhJVJJhJVVVhChhJVVPJJPJhJVCVVVVVVVJVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 51588,
+   "q": 165.7,
+   "d": 28.3,
+   "lq": 4.9,
+   "lin": 0.63,
+   "len": 0.395,
+   "ok": false,
+   "pm": 30.1,
+   "a": "VCVhhVCVVhhJJhJhhJJVVhJJJJJhJhhhJhJJJJPJJJhPPJhPPJJhJVJhJhJhJJJJJJJJJhCVVPJJPJhJVCVVhVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 205913,
+   "q": 160.7,
+   "d": 30.1,
+   "lq": 5.8,
+   "lin": 0.663,
+   "len": 0.5,
+   "ok": false,
+   "pm": 28.1,
+   "a": "VCVhhVCVVJJhhhJhJhhVVhChChChhCPJJhJPPhPPJJhJVJJhhJhChChChhChJJhJVVPJJPJhJVCVVhVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 544269,
+   "q": 153.1,
+   "d": 28.2,
+   "lq": 5,
+   "lin": 0.653,
+   "len": 0.614,
+   "ok": false,
+   "pm": 27.7,
+   "a": "VCVhhVCVVhhJJhJhJJJVVhVVVVPJJJhPPJhPPJJhJVJJhhJVVVhhhhhCVVPJJPJhJVCVVVVVhJVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 691868,
+   "q": 154.4,
+   "d": 25.5,
+   "lq": 4.6,
+   "lin": 0.658,
+   "len": 0.541,
+   "ok": false,
+   "pm": 27.2,
+   "a": "VCVJVCVVJJhJhJhVVhVVVVVPJJhCJPPhPPJJhJVJJhJhJVVhhChJhJVVPJJPJhJVCVVVVJhVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 306482,
+   "q": 163.4,
+   "d": 32.3,
+   "lq": 4.1,
+   "lin": 0.633,
+   "len": 0.429,
+   "ok": false,
+   "pm": 29.7,
+   "a": "VCVhhVCVVJJhhhhJhhhVVhJJJJJhJhhhJhJJJJPJJhCJPPhPPJJhJVhhhJhJJJJJJJChhJhhVVPJJPJhJVCVVVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 758971,
+   "q": 159.2,
+   "d": 21.8,
+   "lq": 2.8,
+   "lin": 0.636,
+   "len": 0.383,
+   "ok": false,
+   "pm": 29.8,
+   "a": "VCVhhVCVVJJhVVVJJVVhJJJJJhJJhhJJJJJJhPJJhJPPhPPJJhJVJJhhhhJJJJJJJhJhCVVPJJPJhJVCVVVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 592978,
+   "q": 161.2,
+   "d": 30.2,
+   "lq": 3.2,
+   "lin": 0.667,
+   "len": 0.548,
+   "ok": false,
+   "pm": 27.6,
+   "a": "VCVJVCVVJJJhVVhhJhJVVhVVVVVPJJhCPPhJPPJJhJVhJCJhhJVVVhChhhhJVVPJJPJhJVCVVVVVhhVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 373040,
+   "q": 147,
+   "d": 21.1,
+   "lq": 4.4,
+   "lin": 0.626,
+   "len": 0.519,
+   "ok": false,
+   "pm": 28.1,
+   "a": "VCVhhVCVVJJhhhhJJVVVJJVJJVVhPJJhJPPhPPJJhJVJJJJhJVVVJJhJhhJhCVVPJJPJhJVCVVVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 377801,
+   "q": 150,
+   "d": 27.5,
+   "lq": 3.5,
+   "lin": 0.635,
+   "len": 0.487,
+   "ok": false,
+   "pm": 27.3,
+   "a": "VCVhhVCVVJJhVVhJhhhVVJJVJJVVPJJhPPhJPPJJhJVJCJJhJVVVJJhChJhVVPJJPJhJVCVVhVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 355022,
+   "q": 157.5,
+   "d": 23.2,
+   "lq": 6.1,
+   "lin": 0.623,
+   "len": 0.549,
+   "ok": false,
+   "pm": 27.7,
+   "a": "VCVhhVCVVJhhhJhJhJJVVhVVVVPhJhCPPhJPPJJhJVJJJCJhJVVVhChJJVVPJJPJhJVCVVVVVhhhVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 648998,
+   "q": 168,
+   "d": 35.6,
+   "lq": 6.1,
+   "lin": 0.628,
+   "len": 0.382,
+   "ok": false,
+   "pm": 29.3,
+   "a": "VCVhhVCVVJJJhJhJhVVhJJJJJhJhhhJhJJJJPJJhJPPhPPJJhJVJJChhhJhJJJJJJJChJJhVVPJJPJhJVCVVhVCVVhh"
+  },
+  {
+   "id": "1-6",
+   "v": 166577,
+   "q": 146.8,
+   "d": 26.8,
+   "lq": 4.3,
+   "lin": 0.63,
+   "len": 0.546,
+   "ok": false,
+   "pm": 27.9,
+   "a": "VCVhhVCVVJJhhhhJJhVVVJJVJJVVPJJhPPhJPPJJhJVhhhJVVJhhChhJJhVVPJJPJhJVCVVhVCVVhh"
+  },
+  {
+   "id": "1-7",
+   "v": 1,
+   "q": 213.5,
+   "d": 51.5,
+   "lq": 3.7,
+   "lin": 0.701,
+   "len": 0.708,
+   "ok": true,
+   "pm": 28.8,
+   "a": "ZhhhhhZhhZJhhJhZhhhJhhZhhJZPhPZhhhJJhJhZhhhJJhJhZhhhJJZhhhJhhJhZhhhJhhJhhJJZhhhJhhJhhJhhJJZhhhJJhJJhJJZhhhJhhh"
+  },
+  {
+   "id": "1-7",
+   "v": 64763,
+   "q": 177.4,
+   "d": 59.5,
+   "lq": 3.7,
+   "lin": 0.871,
+   "len": 0.674,
+   "ok": true,
+   "pm": 28,
+   "a": "ZhhhhhZhhhZJhhhhJZhhhZhhJhZPhPZhhZhhhhZhhhJhZhhhZhhhhZhhhZhhhhhJZhhhZhhhhhhZhhhhZhhhZhhhJhhh"
+  },
+  {
+   "id": "1-7",
+   "v": 821391,
+   "q": 176.8,
+   "d": 61.2,
+   "lq": 3.6,
+   "lin": 0.871,
+   "len": 0.676,
+   "ok": true,
+   "pm": 27.8,
+   "a": "ZhhhhhZhhhZJhhhhJZhhhZhhJhZPhPZhhZhhhhhJZhhhhZhhhZhhhhZhhhhhZhhhZhhhJhZhhhZhhhhZhhhZhhhhhhh"
+  },
+  {
+   "id": "1-7",
+   "v": 421256,
+   "q": 206.4,
+   "d": 49.7,
+   "lq": 3.6,
+   "lin": 0.704,
+   "len": 0.722,
+   "ok": true,
+   "pm": 29.5,
+   "a": "ZhhhhhZhhZJhhJhZhhhJhhZhJJhZPhPZhhhJhhJhZhhhJJhJhZhhhJJhJhhJhZhhhJhhJhZhhhJhhJJhJJhJhZhhhJhZhhhJhhJhZhhhJhhh"
+  },
+  {
+   "id": "1-7",
+   "v": 51588,
+   "q": 183.5,
+   "d": 82.2,
+   "lq": 3.9,
+   "lin": 0.88,
+   "len": 0.681,
+   "ok": true,
+   "pm": 26.9,
+   "a": "ZhhhhhZhhhZJhhhhZhhhZhhJZPhPZhhZhhhZhhhhhZhhhhZhhhhhZhhhhZhhhZhhhJhhZhhhZhhhhZhhhZhhhhhZhhhhhh"
+  },
+  {
+   "id": "1-7",
+   "v": 205913,
+   "q": 221.2,
+   "d": 47.1,
+   "lq": 3.6,
+   "lin": 0.627,
+   "len": -0.15,
+   "ok": true,
+   "pm": 29.4,
+   "a": "ZhhhhhZhhZJhhJJJJJZhhhJJJJJZhhJZPhPZhhhJJJJJJZhhZhhhJJJJJJhJJJJJJJJJJJhJJJJJJJZhZhhhJJJJJJhJJJJJJJJJJJZhhhJJJJJJhh"
+  },
+  {
+   "id": "1-7",
+   "v": 544269,
+   "q": 175.9,
+   "d": 71.1,
+   "lq": 3.6,
+   "lin": 0.867,
+   "len": 0.678,
+   "ok": true,
+   "pm": 27.4,
+   "a": "ZhhhhhZhhhZJhhhhZhhhZhJJhZPhPZhhZhhhZhhhhZhhhhhJZhhhhZhhhZhhhhhZhhhZhhhhhhZhhhhZhhhZhhhhhh"
+  },
+  {
+   "id": "1-7",
+   "v": 691868,
+   "q": 200.9,
+   "d": 53.6,
+   "lq": 3.6,
+   "lin": 0.707,
+   "len": 0.721,
+   "ok": true,
+   "pm": 29.1,
+   "a": "ZhhhhhZhhZJhhJhZhhhJhZhJJhZPhPZhhhJhhJhZhhhJhhJhZhhhJhZhhhJhhJhZhhhJJhJhhJhZhhhJhhJhZhhhJhhJhhJJZhhhJhhJ"
+  },
+  {
+   "id": "1-7",
+   "v": 306482,
+   "q": 218.8,
+   "d": 49.2,
+   "lq": 3.6,
+   "lin": 0.624,
+   "len": -0.15,
+   "ok": true,
+   "pm": 29.3,
+   "a": "ZhhhhhZhhZJhhJJJJJZhhhJJJJJZhhJZPhPZhhhJJJJJJJZhhJJJJJJJJJJJZhhhJJJJJJhJJJJJJZhhZhhhJJJJJJhJJJJJJJJJJJZhhhJJJJJJhh"
+  },
+  {
+   "id": "1-7",
+   "v": 758971,
+   "q": 180.1,
+   "d": 65.8,
+   "lq": 3.7,
+   "lin": 0.869,
+   "len": 0.677,
+   "ok": true,
+   "pm": 27.8,
+   "a": "ZhhhhhZhhhZJhhJhhZhhhZhhJhZPhPZhhZhhhJhhZhhhZhhhJZhhhhhZhhhZhhhhZhhhhhZhhhZhhhhZhhhhhJZhhhhhh"
+  },
+  {
+   "id": "1-7",
+   "v": 592978,
+   "q": 186.5,
+   "d": 72.2,
+   "lq": 3.6,
+   "lin": 0.87,
+   "len": 0.684,
+   "ok": true,
+   "pm": 28.1,
+   "a": "ZhhhhhZhhhZJhhhhhZhhhZhJJhZPhPZhhZhhhhhhZhhhhZhhhZhhhJhhZhhhhZhhhZhhhhZhhhJhhZhhhZhhhhhZhhhZhhhhhh"
+  },
+  {
+   "id": "1-7",
+   "v": 373040,
+   "q": 201.1,
+   "d": 47.8,
+   "lq": 3.6,
+   "lin": 0.701,
+   "len": 0.714,
+   "ok": true,
+   "pm": 28.9,
+   "a": "ZhhhhZhhZJhhJhZhhhJhhZhhJZPhPZhhhJJhJhZhhhJhhJhZhhhJhhJhhJhZhhhJhhJhZhhhJJZhhhJhhJhZhhhJhhJhhJJZhhhJJhh"
+  },
+  {
+   "id": "1-7",
+   "v": 377801,
+   "q": 206.9,
+   "d": 49.7,
+   "lq": 3.6,
+   "lin": 0.702,
+   "len": 0.707,
+   "ok": true,
+   "pm": 29.1,
+   "a": "ZhhhhZhhZJhhJJZhhhJhhZhJJhZPhPZhhZhhhJhhJhhJJhJhZhhhJJZhhhJhhJJhJhhJhZhhhJhhJhhJJhJhZhhhJJZhhhJhhJhZhhhJhhh"
+  },
+  {
+   "id": "1-7",
+   "v": 355022,
+   "q": 218.9,
+   "d": 50.7,
+   "lq": 3.6,
+   "lin": 0.623,
+   "len": -0.146,
+   "ok": true,
+   "pm": 29.3,
+   "a": "ZhhhhZhhZJhhJJJJJZhhhJJJJJZhhJhZPhPZhhhJJJJJJJJJJJZhhhJJJJJJhJJJJJJZhhZhhhJJJJJJhJJJJJJJJJJJhJJJJJJZhhZhhhJJJJJJhh"
+  },
+  {
+   "id": "1-7",
+   "v": 648998,
+   "q": 184.6,
+   "d": 74,
+   "lq": 3.8,
+   "lin": 0.877,
+   "len": 0.677,
+   "ok": true,
+   "pm": 27.6,
+   "a": "ZhhhhhZhhhZJhhhhhZhhhZhJJhZPhPZhhZhhhhhZhhhZhhhhZhhhZhhhhZhhhJhZhhhhZhhhZhhhhhhZhhhhZhhhZhhhJhhh"
+  },
+  {
+   "id": "1-7",
+   "v": 166577,
+   "q": 202.8,
+   "d": 53.1,
+   "lq": 3.6,
+   "lin": 0.706,
+   "len": 0.7,
+   "ok": true,
+   "pm": 28.5,
+   "a": "ZhhhhhZhhZJhhJhZhhhJJhZhhJZPhPZhhhJhhJJZhhhJhhJhZhhhJhZhhhJhhJJhJJhJJZhhhJJZhhhJhhJhZhhhJhhJhhJJZhhhJhhh"
+  },
+  {
+   "id": "1-8",
+   "v": 1,
+   "q": 146.6,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.728,
+   "len": -0.463,
+   "ok": false,
+   "pm": 49.5,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZZJZhhZJZCZZZJZZJZZCZZJZZZJZZVZZZJZZVZZZJZZJZZZCZZJZZJZZVZZZJZZJZZZJZZJZZCZZJZZJZZZVZZZJZZZZZJZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 64763,
+   "q": 146.4,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.719,
+   "len": -0.463,
+   "ok": false,
+   "pm": 49.6,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZZJZhhZJZCZZZJZZJZZCZZJZZZJZZVZZZJZZVZZZJZZJZZCZZJZZZJZZVZZZJZZJZZJZZZJZZCZZJZZJZZVZZZJZZZZZJZZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 821391,
+   "q": 146.3,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.721,
+   "len": -0.451,
+   "ok": false,
+   "pm": 49.9,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZJZZhhZhZJZCZZJZZJZZCZZJZZZJZZVZZZJZZVZZZJZZJZZZCZZJZZJZZVZZZJZZZJZZJZZJZZCZZJZZZJZZVZZZJZZZZZJZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 421256,
+   "q": 147.8,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.718,
+   "len": -0.344,
+   "ok": false,
+   "pm": 49,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZJZZhhZhZJCZZZVZZZJZZVZZZCZZVZZZJZZVZZZVZZZVZZZJZZVZZZCZZVZZZJZZZVZZZJZZVZZZJZZVZZZCZZVZZZZZZJZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 51588,
+   "q": 149,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.682,
+   "len": -0.419,
+   "ok": false,
+   "pm": 47.1,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZZJZhhZJZCZZVZZZZCZZJZZJZZJZZCZZJZZVZZZVZZZCZZJZZZJZZJZZCZZVZZZVZZZJZZCZZJZZVZZZJZZZCZZZZJZZZV"
+  },
+  {
+   "id": "1-8",
+   "v": 205913,
+   "q": 146.4,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.71,
+   "len": -0.463,
+   "ok": false,
+   "pm": 49.4,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZZJZhhZZJCZZZJZZJZZCZZJZZZJZZVZZZJZZVZZZJZZJZZZCZZJZZJZZVZZZJZZZJZZJZZJZZCZZJZZZJZZVZZZJZZZZZJZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 544269,
+   "q": 147.6,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.709,
+   "len": -0.354,
+   "ok": false,
+   "pm": 48.4,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZJZZhhZJZCZZZVZZZJZZVZZZCZZVZZZJZZVZZZVZZZVZZZJZZVZZZCZZVZZZJZZVZZZJZZZVZZZJZZVZZZCZZVZZZZZJZZZV"
+  },
+  {
+   "id": "1-8",
+   "v": 691868,
+   "q": 149,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.685,
+   "len": -0.408,
+   "ok": false,
+   "pm": 47.8,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZJZhZhZhZJCZZZVZZZCZZJZZJZZJZZCZZZJZZVZZVZZZZCZZJZZJZZJZZCZZVZZZVZZZJZZCZZJZZVZZZJZZZCZZZZJZZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 306482,
+   "q": 146.3,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.713,
+   "len": -0.451,
+   "ok": false,
+   "pm": 49.9,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZJZZhhZhZJCZZZJZZJZZCZZJZZZJZZVZZZJZZVZZZJZZJZZZCZZJZZJZZVZZZJZZJZZZJZZJZZCZZJZZZJZZVZZZJZZZZZJZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 758971,
+   "q": 147.8,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.719,
+   "len": -0.344,
+   "ok": false,
+   "pm": 49,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZZJZhhZhZJZCZZVZZZJZZVZZZCZZVZZZJZZVZZZVZZZVZZZJZZVZZZCZZZVZZZJZZVZZZJZZVZZZJZZVZZZCZZVZZZZZZJZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 592978,
+   "q": 146.1,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.709,
+   "len": -0.463,
+   "ok": false,
+   "pm": 49.3,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZJZhZhZJZCZZZJZZJZZCZZJZZJZZVZZZZJZZVZZZJZZJZZCZZJZZZJZZVZZZJZZJZZJZZJZZZCZZJZZJZZVZZZJZZZZZJZZZV"
+  },
+  {
+   "id": "1-8",
+   "v": 373040,
+   "q": 148.9,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.677,
+   "len": -0.408,
+   "ok": false,
+   "pm": 47.8,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZJZZhhZhZJCZZZVZZZCZZJZZJZZJZZCZZJZZZVZZVZZZZCZZJZJZZZJZZCZZVZZZVZZZJZZCZZJZZVZZZJZZZCZZZZJZZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 377801,
+   "q": 146.1,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.706,
+   "len": -0.451,
+   "ok": false,
+   "pm": 50,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZZJZhhZhZJZCZZJZZJZZCZZJZZZJZZVZZZJZZVZZZJZZJZZZCZZJZZJZZVZZZJZZJZZZJZZJZZCZZJZZJZZZVZZZJZZZZZJZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 355022,
+   "q": 146.4,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.717,
+   "len": -0.463,
+   "ok": false,
+   "pm": 49.6,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZJZhZhZJZCZZZJZZJZZCZZJZZJZZZVZZZJZZVZZZJZZJZZCZZJZZZJZZVZZZJZZJZZJZZJZZZCZZJZZJZZVZZZJZZZZZJZZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 648998,
+   "q": 146.5,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.716,
+   "len": -0.463,
+   "ok": false,
+   "pm": 49.5,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZJZhZhZJZCZZZJZZJZZCZZJZZJZZZVZZZJZZVZZZJZZJZZCZZJZZZJZZVZZZJZZJZZJZZZJZZCZZJZZJZZZVZZZJZZZZZJZZVZ"
+  },
+  {
+   "id": "1-8",
+   "v": 166577,
+   "q": 147.7,
+   "d": 5.3,
+   "lq": 3.1,
+   "lin": 0.703,
+   "len": -0.344,
+   "ok": false,
+   "pm": 49,
+   "a": "hhJhJhZZZJCZZZJZZVZZZVZZZJZZhhZhZJCZZZVZZZJZZVZZZCZZVZZZJZZVZZZVZZZVZZZJZZVZZZCZZVZZZJZZZVZZZJZZVZZZJZZVZZZCZZVZZZZZZJZZVZ"
+  },
+  {
+   "id": "1-9",
+   "v": 1,
+   "q": 147.7,
+   "d": 19.7,
+   "lq": 3.6,
+   "lin": 0.792,
+   "len": 0.262,
+   "ok": false,
+   "pm": 25.8,
+   "a": "hhhChChhChChCJJChChChJhChChChCCCCCCCJJhhhJChChChChCJChChChCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 64763,
+   "q": 178.9,
+   "d": 15.1,
+   "lq": 3.5,
+   "lin": 0.644,
+   "len": 0.088,
+   "ok": false,
+   "pm": 23.3,
+   "a": "hhhChChVCJJhChCVCJJhChJVJCJVCJJhChCCCCCCCJJhhVJCJhCVCJJhCVJChVCJJCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 821391,
+   "q": 163.2,
+   "d": 12.8,
+   "lq": 3.6,
+   "lin": 0.728,
+   "len": 0.377,
+   "ok": false,
+   "pm": 26.9,
+   "a": "hhhChChJhhChChJJhChChJhJhhChCJJChCCCCCCCJJhhhJhhChChJhJhChChChJhhChCCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 421256,
+   "q": 148.4,
+   "d": 22,
+   "lq": 3.8,
+   "lin": 0.793,
+   "len": 0.27,
+   "ok": false,
+   "pm": 25.6,
+   "a": "hhhChChhChChCJJChChChJhChChChCCCCCCCJJhhhJChChChChChChChChCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 51588,
+   "q": 148.1,
+   "d": 15.4,
+   "lq": 3.7,
+   "lin": 0.793,
+   "len": 0.282,
+   "ok": false,
+   "pm": 26.1,
+   "a": "hhhChChhChChCJJCJChChJhChChChCCCCCCCJJhhhhhChChChChChChChChCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 205913,
+   "q": 183.6,
+   "d": 14.8,
+   "lq": 3.5,
+   "lin": 0.626,
+   "len": -0.333,
+   "ok": false,
+   "pm": 29.7,
+   "a": "JhhChCJhJJCJJCJhJJCJJCJhChChJCJJJCJJCJJhCCCCCCChJhJJJJJJJCJJCJhJJJChChJJCJJCJJhJJCJJCJCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 544269,
+   "q": 182.6,
+   "d": 12.8,
+   "lq": 3.5,
+   "lin": 0.628,
+   "len": -0.302,
+   "ok": false,
+   "pm": 29.9,
+   "a": "JhhChChhJJCJJCJhJJCJJCJhChChJCJJJCJJCJJhCCCCCCChJhJJJJJJJCJJCJJJhhChChJJCJJCJJhJJCJJCJCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 691868,
+   "q": 183.2,
+   "d": 15,
+   "lq": 4.4,
+   "lin": 0.631,
+   "len": -0.247,
+   "ok": false,
+   "pm": 29.8,
+   "a": "hhhChChhJJCJJCJhJJCJJCJhChChJChJJCJJCJJhCCCCCCChhhJJJJJJJCJJCJJJhhChChJJCJJCJJhJJCJJCJCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 306482,
+   "q": 178,
+   "d": 19.4,
+   "lq": 3.5,
+   "lin": 0.644,
+   "len": 0.088,
+   "ok": false,
+   "pm": 23.5,
+   "a": "hhhChChVCJJhChCVCJJhChJVJCJVCJJhChCCCCCCCJJhhVJChhCVJCJVCJJVJCJhCCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 758971,
+   "q": 200.2,
+   "d": 14.8,
+   "lq": 4.2,
+   "lin": 0.63,
+   "len": -0.348,
+   "ok": false,
+   "pm": 30,
+   "a": "hJhChCJhJJCJJCJhJJCJJCJhChChJChJJCJJCJJhCCCCCCChhhJJJJJJJhChChJJCJJCJJhJJCJJCJhJJCJJCJJhJJCJJCJCJChJ"
+  },
+  {
+   "id": "1-9",
+   "v": 592978,
+   "q": 184.5,
+   "d": 14.9,
+   "lq": 4.3,
+   "lin": 0.63,
+   "len": -0.278,
+   "ok": false,
+   "pm": 29.6,
+   "a": "hJhChChhJJCJJCJhJJCJJCJhChChJChJJCJJCJJhCCCCCCChhhJJJJJJJCJJCJJJJCJJCJJhJhJChChJJCJJCJCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 373040,
+   "q": 162.8,
+   "d": 17.4,
+   "lq": 3.8,
+   "lin": 0.73,
+   "len": 0.385,
+   "ok": false,
+   "pm": 26.9,
+   "a": "hhhChChJhhChChJhhChChJhJhhChCJJChCCCCCCCJJhhhJhhChChJhhChChJhJhChChCCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 377801,
+   "q": 147.1,
+   "d": 16.9,
+   "lq": 3.5,
+   "lin": 0.788,
+   "len": 0.254,
+   "ok": false,
+   "pm": 25.9,
+   "a": "hhhChChhChChCJJCJChChJhChChChCCCCCCCJJhhhJChChChJChChChChCCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 355022,
+   "q": 184.5,
+   "d": 15,
+   "lq": 4.2,
+   "lin": 0.628,
+   "len": -0.327,
+   "ok": false,
+   "pm": 29.6,
+   "a": "hJJChCJhJJCJJCJhJJCJJCJhChChJChJJCJJCJJhCCCCCCChJhJJJJJJJCJJCJJJhhChChJJCJJCJJhJJCJJCJCJChh"
+  },
+  {
+   "id": "1-9",
+   "v": 648998,
+   "q": 200.2,
+   "d": 14.9,
+   "lq": 4.3,
+   "lin": 0.63,
+   "len": -0.337,
+   "ok": false,
+   "pm": 30,
+   "a": "hhhChChhJJCJJCJhJJCJJCJhChChJChJJCJJCJJhCCCCCCChJhJJJJJJJCJJCJJhJJJChChJJCJJCJJJJCJJCJJhJJCJJCJCJCJh"
+  },
+  {
+   "id": "1-9",
+   "v": 166577,
+   "q": 198.6,
+   "d": 14.9,
+   "lq": 4.3,
+   "lin": 0.631,
+   "len": -0.256,
+   "ok": false,
+   "pm": 29.9,
+   "a": "hJhChChhJJCJJCJhJJCJJCJhChChJChJJCJJCJJhCCCCCCChhhJJJJJJhJChChJJCJJCJJhJJCJJCJJJJCJJCJJhJhhChCCJCJh"
+  }
+ ]
+}

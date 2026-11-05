@@ -1,0 +1,5 @@
+1/9 batches  15 s  (about 116 s to go)   2/9 batches  17 s  (about 59 s to go)   3/9 batches  22 s  (about 43 s to go)   4/9 batches  30 s  (about 37 s to go)   5/9 batches  38 s  (about 31 s to go)   6/9 batches  64 s  (about 32 s to go)   7/9 batches  75 s  (about 22 s to go)   8/9 batches  83 s  (about 10 s to go)   9/9 batches  95 s  (about 0 s to go)   
+look-alikes compared in 20 s
+9 stages x 16 rolls in 116 s
+wrote /home/user/Sloths-Adventure-/reference/engine/runs/out/era/era-mixer-W1.json
+wrote /tmp/claude-0/-home-user-Sloths-Adventure-/578fdac9-f477-5f9f-882f-9175f9cf7146/scratchpad/era-mixer.html

@@ -1,0 +1,45 @@
+
+move ladder: 102 stages, 16 layouts each; 40 mechanics in use; 0 stages could not build
+  gaps to jump                 first 1-1    in 101 stages
+  mushroom bounce              first 1-1    in 36 stages
+  liana swing                  first 1-2    in 64 stages
+  trunk climb                  first 1-1    in 77 stages
+  silk line                    first 5-4    in 2 stages
+  rope shimmy                  first 1-3    in 16 stages
+  warm air (glide)             first 4-7    in 1 stages
+  moving platform              first 2-10   in 15 stages
+  lift                         first 2-7    in 1 stages
+  river logs                   first 2-1    in 8 stages
+  breaking branch              first 1-2    in 31 stages
+  collapsing branch (chase)    first 1-8    in 1 stages
+  eagle / watcher              first 1-7    in 10 stages
+  bushes to hide in            first 1-7    in 8 stages
+  thorn vine                   first 3-4    in 5 stages
+  water / river                first 1-3    in 24 stages
+  wind                         first 4-2    in 7 stages
+  web                          first 5-6    in 1 stages
+  spore                        first 3-1    in 6 stages
+  dark                         first 3-1    in 18 stages
+  tide                         first 6-4    in 3 stages
+  crumbling floor              first 7-1    in 5 stages
+  geyser                       first 9-1    in 7 stages
+  bolt                         first 10-1   in 5 stages
+  snake                        first 1-2    in 38 stages
+  boa                          first 1-9    in 33 stages
+  snapper                      first 2-5    in 2 stages
+  frog                         first 6-1    in 15 stages
+  ocelot                       first 3-3    in 39 stages
+  jaguar                       first 3-3    in 27 stages
+  spider                       first 5-1    in 7 stages
+  tayra                        first 5-6    in 38 stages
+  eagle (swooper)              first 5-6    in 23 stages
+  caiman                       first 6-2    in 24 stages
+  harpy                        first 6-5    in 24 stages
+  snake ring                   first 1-9    in 2 stages
+  log / boulder to push        first 1-6    in 4 stages
+  puzzle room                  first 1-4    in 24 stages
+  cage to free                 first 2-3    in 3 stages
+  hidden find                  first 1-2    in 50 stages
+real	3m38.546s
+user	3m55.199s
+sys	0m2.927s
