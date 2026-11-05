@@ -22,6 +22,16 @@ So today's pieces (logs, bridges, boughs, snap twigs, vines, stumps, rotten bran
 engine's library, look and feel included. The fault is the mix, not the pieces. The engine's first job is mixing them so no stage
 repeats.
 
+## 2026-11-05 ~12:10 AM ET (to the lead)
+"The one thing that you're missing is that the levels are built to go along with the story. So they are themed, but a whole world
+should have its own pieces. So having themes shouldn't make that big of a difference. And varied is, I just don't want pieces thrown
+together. I want it to make sense. Nodes that, you know, make sense."
+- Stages follow the story; each stage has its story beat and theme.
+- Each WORLD has its own set of pieces (its kit). A stage's theme shapes how it looks and what it's about, but variety comes from
+  the world's kit, so the theme alone shouldn't make a big difference.
+- Variety must make sense: no pieces thrown together at random. Each node is a coherent idea: its pieces belong together and to the
+  place, and lead into each other in a way a player understands.
+
 ## 2026-11-04 ~11:5x PM ET (to the planner)
 "Maybe the best level was 1-3. I think 1-2 was broken... but it branched out."
 So today's 1-3 is a second reference beside the old 1-1, and 1-2's branching shape is kept as a piece. 1-2's known break: drops to
