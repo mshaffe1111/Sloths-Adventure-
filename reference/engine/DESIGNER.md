@@ -4,6 +4,17 @@
 `reference/research/engine-2026-11-05/`. Sections 1-2 (the failures traced, the measurements and the calibration) are the code-side
 work the lead asked to keep; sections 4-11 will be redone from the team's sources.
 
+**Folded in (designer, 2026-11-04, 10:06-10:20 PM ET):** the research team's four notes are read in full and folded in. They are
+`reference/research/engine-2026-11-05/R1-shipped-pipelines.md`, `R2-academic-pcg.md`, `R3-fun-by-math.md` and
+`R4-mobile-and-architecture.md`, on branch `ccr-0d59a91c-oy3imz`, cited below as R1-R4 plus their section. Parts that still hold
+are left as written. Every number or claim the notes change carries a mark in place:
+- **[11-05 changed]**: a number or claim revised;
+- **[11-05 overturned]**: a claim the notes show is wrong;
+- **[11-05 confirmed]**: a claim a note measured again and found true;
+- **[11-05 new]**: an addition the notes require.
+
+Section 0 lists every mark in one table. The ranking of the options is re-checked in 10.0.
+
 **What this is.** A game plan for the engine that lays out stages. Each stage is made of nodes. Each node rolls in from pieces. Every
 roll is different, every roll is fun, and every roll is right the first time. There are three different ways to build it (and a wild
 card), each specified far enough to build, then the one I recommend, with its data formats, its maths, its build order and the
@@ -28,6 +39,32 @@ GP = `reference/GEMINI-PCG-RESEARCH.md`, SR = `reference/STAGE-RULES.md`, LEG = 
 
 ---
 
+## 0. What the 11-05 research changed (every mark in this file, in one place)
+
+| # | Where | Mark | Was | Now | Evidence |
+|---|---|---|---|---|---|
+| 1 | §1 failure table | new | eight failures | Three more, of the same root ("two descriptions"): (a) gen2 breaks its own "no template more than twice" rule on 355 of 368 shipped rolls, because Pass 3 fills each node to a clock; (b) WR's step proposer and the tracer model one jump two ways, so 94-95% of 1-2's rejected tries are one rule and two palette rises are never laid; (c) the validator labels most double jumps as single jumps | R1 §2 L2, §3.0 Runs C/F/H; R4 §2.2, §5.3; R3 §3 W3 |
+| 2 | §2.2 rule 3, §2.3 density | changed | Normal band 0.75-1.15 / 0.45-1.15 take-offs a second, from SR:173 / GP:290 | The table behind that band contradicts itself (its bursts are slower than its own rests). World 1 Normal ships at 0.26-0.41 moves a second on the quick route, inside Easy's band, and Easy plays at Normal's tempo. The band is provisional until it is calibrated on the stages Matt ranks best. Density and difficulty become two separate dials | R3 §2 F13, §3 W1-W2 |
+| 3 | §2.3 gap share | overturned | gap share γ follows tension, as a difficulty dial | Traced jumps carry almost no risk for an adult (97-100% clean, 0.00-0.03 expected falls a stage). γ shapes the look and the stride, not the difficulty. Difficulty comes from a per-node expected-falls budget and what sits on the avoided lines; a jump's own difficulty is its landing window | R4 §2.1, §5.4, §5.7; R3 §2 F1, §4.3; R2 §2 L6 |
+| 4 | §2.3 rest | changed | fixed rest pad of 1.0-1.2 s Normal / 2.0-2.5 s Easy | A fixed pad cuts every World 1 Normal stage into single moves, so "groups of 5-20 s" is never measured. A rest is a gap of at least 2x the local median interval and at least 1.0 s Normal / 2.0 s Easy. Measured that way, 8 of 9 World 1 stages hold a phrase over 20 s with no rest | R3 §2 F13, §3 W1, W14, §4.5 |
+| 5 | §2.3 miss cost | new | a miss cost by tension tier only | Plus a stage survival budget, E[lives] = Σ(1 − s_i) from bot rates, and a node budget for expected falls: Normal World 1 E[lives] ≤ 1.0, Easy ≤ 0.3 (estimates); intro 0, spike 0.2-0.4, climax 0.3-0.6. Practice success ≈ 0.85 / 0.92 / 0.97 | R3 §2 F1-F2, §5 items 1-2; R4 §6 idea 3 |
+| 6 | §2.5 finding 5, §2.5b A and B | overturned | Easy's re-rolls show where the constraints are tight, so Easy's pieces need the strictest proof | Easy's re-rolls are mostly one mismatch: the proposer checks a rise with a full-hold jump, while the tracer also demands the short flick. 2,228 of 2,346 Easy rejections are "can't reach 80/90 px up", and those rises are laid 0 times in 16 layouts. The cause is a bug in the proposer, not a tight constraint | R4 §5.3 |
+| 7 | §2.5b B | confirmed, extended | random 1.0-1.3 traces vs backtracking 6-12 on canopy nodes | Same on canopy (100% accepted). On floor nodes random accepts 56-62%: about 3-4 trace-equivalents, against 18-24 for a search that prunes on Normal and Easy prefixes. A naive search fails 5-7 of 20 runs. A search pays only once pins, rise targets or kind quotas are added | R2 §4 output and "What it shows" 5-6 |
+| 8 | §2.5b C | confirmed, cause found | 13 of 56 kinds of node; 256 of 272 run right | A stage speaks 8-9 landing words, and the two commonest are 39-48%. 66% of 1-2's landings zigzag up and down, because every hop in the palettes goes down and the floor band is 100 px. The canopy palette has one surface. One rhythm admits 3,366 to about 290 million geometries in 1-2 kinds per take-off | R2 §2 L1, §4 experiments 1-2; R4 §5.5 |
+| 9 | §2.6 variety maths | changed | measured on the validator's move 3-gram cosine; floor 8 moves, 4 rooms per job | The cosine sits at 0.00-0.10 between every World 1 neighbour while Matt says everything feels the same, so it cannot see the sameness. The floor of 8 moves stands as a floor. The measure becomes kinds per take-off, plus a kind-string compression distance calibrated on our string lengths (self ≈ 0.09, shuffle ≈ 0.62), plus tempo, leniency and look | R3 §3 W11, §2 F7; R2 §5 ideas 1, 8 |
+| 10 | §2.6 point 3, §5.1 step 3, §10.2 | changed | 28 rooms a world (4 per job); drop A if a world needs more than about 45 | Shipped pools run several times the slots. Super Meat Boy Forever has 70-100 chunks for 8 used; Spelunky 8-16 per room type; Barrett: "make 81". What binds is the count left per phase after the teaching cut: gen2 has as few as 1-4. Coverage is now counted per (job x phase after teaching) at no fewer than 2 eligible rooms a slot (estimate). A world target is about 50-70 rooms, and the drop condition counts minutes per room, not rooms | R1 §2 L3, §3.0 Run H, §3.3; R4 §2.3 |
+| 11 | §3 SMBF row | changed | "40-60 chunks per level" | 40-60 was 2017; later 70-100 per level for 8 used, no chunk repeated across a save, a chunk rated by its par and difficulty, and critics on mismatched neighbours and a diluted finish | R1 §3.3 |
+| 12 | §3c (new) | new | — | Rhythm as every stage's frame: Nintendo prototyped and dropped it; a music-driven runner study found every-beat-a-jump monotonous. An open direction question for Matt, not a ruling | R1 §5 item 14, §3.10; R2 §2 L8, §3.18; R4 §3 Alto's |
+| 13 | §5.1, §5.5, §11 | new | room fields and stage check | Every room gets per-step kinds, cost and risk measured by bots (not the author), a wait mark, a cadence kind and rarity/position tags. Teach rooms must pass a limited-agent gate. Stages need a validation beat, a named signature, and a ramp-and-cool cadence. Each node gets its own RNG stream (stability under edits) | R1 §2 L4-L6, §4 ideas 2-3, 9; R2 §2 L5, §5 ideas 2-3, 5-6; R4 §6 ideas 7, 9 |
+| 14 | §5.7 seams | changed | the shared flat apron is the only universal piece, and safe | Safe still (Barrett's edge contract), but a single cadence: every node ends the same way. Cadence kinds become small proven rooms | R2 §3.2, §5 idea 6; R4 §4 Noita/Barrett |
+| 15 | §6.2 B's spec | overturned | "length: solve until skilled clock >= 135 s" | That is the clock-filling that makes gen2 repeat; length comes from the node count | R1 §2 L3 |
+| 16 | §7 C | changed | bots judge the archive | The two bots disagree on which stage is hard; the adult bot's thumb is steadier than any measured human; no bot is fitted to recorded play. C cannot be trusted to judge fun until the bots are calibrated. Its archive survives as A's coverage tool | R3 §3 W6, W13; R4 §2.7 |
+| 17 | §10 ranking | re-checked: same order, C weaker, A changed | A, then B, C, D | A stays first and the evidence for it is stronger. B stays second, as a hole-filler under pins. C drops from "an option" to parts inside A. See 10.0 | all four |
+| 18 | §10.3 "music's score as the layout" | reopened | rejected: the music changes per session | Our themes are symbolic, so take-offs could sit on a selection of the stage theme's own onsets. Whether a stage's theme is fixed needs a check against LEG:415 before this stays rejected | R2 §3.20, §5 idea 12 |
+| 19 | §11.3-11.4 | new | build order and gates | Step 0 (any option): one reach predicate shared by proposer and tracer, with a test; a rejection and coverage report; one double-jump rule in the validator. New gates: kind count, limited agent, risk budget, never-laid option, relative group boundary, a stage catalog diffed in CI | R4 §6 ideas 1-2, 11; R3 §3 W3; R2 §5 ideas 1, 3 |
+
+---
+
 ## 1. The problem, as an outsider would put it
 
 1. A phone platformer needs 85 more stages; making 5 cost about 8-10% of a week's AI budget and over 12 hours.
@@ -48,12 +85,19 @@ GP = `reference/GEMINI-PCG-RESEARCH.md`, SR = `reference/STAGE-RULES.md`, LEG = 
 | Two copies of the same placement tool | three `splitPetals` (protoStage.ts:409, WR:391, w1Rise.ts:511; "w1Rise's splitPetals as splitPetals11 beside 1-3's", 310de821); two beatTrace.ts copies on two branches (LEG:417-419) | Parallel helpers each write their own; nothing owns a job |
 | The checker treating hop/jump/double as one move, and ignoring direction | grams folded j, Q, U into J (core.ts before d42b4400); direction added to repeats only for beat stages (c9e385ff) | The checker has its own vocabulary, re-derived from the built stage, separate from the builder's |
 | A route that walked through solid ground, hiding 20 s | "1-2's route fell through its bough past the trunk and skipped 20 s of play" (abd5a588) | The checker's route is its own approximation of movement, not the builder's planned route |
+| **[11-05 new]** The same template over and over in one stage | 355 of 368 shipped gen2 rolls (Worlds 5-8) use a template 3+ times, against STAGE-RULES §0c.2's "no more than twice". The worst is 14 times (8-9, `w8-guard-night`). With a cap of 2, none of 48 rolls of 6-2, 8-6 and 8-9 builds (R1 §3.0 Runs C, F) | Pass 3 fills each node "until its share of the seconds is met" (`pipeline.ts:702`). After the archetype and the teaching order, only 1-4 templates are left per phase (R1 §3.0 Run H). The rule and the builder disagree about where length comes from |
+| **[11-05 new]** Dice spent on options that never land | 94-95% of 1-2's rejected tries are "a clumsy jump (air 1) can't reach 80/90 px up". Those two rises are laid 0 times in 16 layouts (R4 §5.3) | The proposer (`fitSteps` `fits`, WR:169-171) checks a rise with a full-hold jump; the tracer also demands the short flick (BT `TRIES` row 7). Two models of one jump |
+| **[11-05 new]** Double jumps counted as single jumps | J steps that need the double, by the validator's own reach rule: 1-1 14 of 15, 1-6 27 of 34 (R3 §3 W3) | The inspector's route has no double kind (`tools/inspect/route.ts:23`); `toSteps` relabels only Q. Failure 7 above is not fully closed |
 
 Four of the eight share one root: **two descriptions of the same stage that are allowed to disagree** (the layout vs the petal pass,
 the builder's moves vs the checker's letters, the builder's route vs the inspector's route, Easy vs Normal). Two more are **pieces
 with no contract** (nothing says what holds a branch up or what art it may wear). One is **chance doing design work** (random steps),
 one is **ownership** (copies). An engine that fixes these has: one description of a stage that every pass reads; pieces that carry
 their own contract and proof; randomness only inside proven ranges; one owner per job.
+
+**[11-05 confirmed]** The three failures the notes added are all the first root, two descriptions that may disagree: the rule vs the
+filler, the proposer vs the tracer, the validator vs the inspector. The new countermeasure for all three is the same: one function
+that both sides call, with a test that asserts they agree (R4 §6 idea 2).
 
 ---
 
@@ -81,6 +125,12 @@ What it means for layout: a level jump spans 157-185 px (clumsy to clean): a 28 
 hop can't climb past about +40; a jump past about +100 (Easy +60); a double past about +140. The double adds about 113 px on the flat.
 These are the only legal (dx, dy) pairs any engine may place, per move and per setting.
 
+**[11-05 changed]** "Legal" must be one function that the proposer, the prover and the tracer all call. This table is a measurement
+of that function, not a second copy of it. R4 §5.3 shows what a hand copy does: a proposer that tested only the full hold spent
+94% of 1-2's dice on 80-90 px rises the tracer refuses, because the tracer also tries the short flick (hold 0.8). A second hand
+copy, written to fix it, still drifted at 80 px. The clumsy column above is the 85%-air try only; the binding row for a rise is
+the short-flick try.
+
 ### 2.2 The beat grid per world (the music's own tempo range, src/audio/styles.ts via LEG:203-207)
 
 | World | BPM | eighth (s) | run px per eighth | a jump spans (eighths) | a double spans | whole frames per beat at (BPM) |
@@ -105,6 +155,12 @@ Three consequences no research text gave us:
 3. **Density must be written in actions a second, never marks a bar.** `x...x...` is 1.08 take-offs a second in World 1 (inside the
    Normal band 0.75-1.15, SR:173) but 0.57 in World 7 (a near-rest). A piece is filtered by its density at the stage's tempo:
    ρ = marks per bar x BPM / 240.
+   **[11-05 changed]** The band itself is not sound. GP:290's table puts 8-12 actions in 10-14 s, which is 1.33 s between moves:
+   longer than its own 1.0-1.2 s rest. Eight actions in 14 s with a rest averages 0.53 a second, under its own 0.75 floor (R3 §2
+   F13). What ships is lower still. World 1 Normal runs 0.26-0.41 moves a second on the quick route outside 1-5 (0.68) and 1-8
+   (0.80), which is inside Easy's band (R3 §3 W2, §4.1). (R3 counts a whole stage on the quick route with small hops left out; 2.5
+   below counts take-offs inside a node's own seconds, so the two numbers differ by the rests and are both true.) The rule
+   "density is written in actions a second at the stage's tempo" stands. The numbers in the band are provisional.
 
 Worlds 3 and 8 are in 12-time; the tracer's bars are 8 eighths (BT:200-205 throws otherwise; LEG:349-350). Every option needs a
 12-slot bar for those two worlds.
@@ -120,14 +176,40 @@ For node i with tension T_i ∈ [0, 1] on setting D (Normal or Easy), in world w
   **calibrated on what shipped (2.5): Normal γ 0.35-0.75, Easy 0.25-0.50**. (GE:167-169 gives the form; its own shares were tighter
   than anything QA has played.) The spread of γ inside a stage is checked (p10-p90 at least 0.25 wide on Normal). The tracer then
   sizes the ledges (BT: shortest-to-longest clumsy landing + INSIDE 8 + SLOP 10, minimum 90 px).
+  **[11-05 overturned] γ is not a difficulty dial.** Under Isaksen's measured human timing spread (σ 36-61 ms), every traced
+  take-off of 1-2 and 1-5 lands 97-100% of whole-stage runs with no fall: 0.00-0.03 expected falls (R4 §5.4). The real-engine
+  first-timer lost no heart and no life on 1-2 Normal in two runs, despite 14-19 failed jumps each (R4 §5.7). The tracer makes
+  geometry safe by construction, so γ shapes the stride and the look only. The risk the model does find is the kid's late thumb on
+  short hops onto narrow pads (27-37 px gaps; 0.98-1.58 expected falls on 1-2 Easy). The bots' misses are mostly "overshot the
+  landing", not a late take-off (R3 §4.3). So a jump's difficulty number is its **landing window**: the pad's spare width over the
+  tracer's (longX − shortX), plus the take-off ledge's spare run in ms. BT already computes both, as `Landing.shortX/longX/lateX`,
+  and uses them only as pass/fail (R2 §2 L6, §5 idea 10).
 - **Rest** after a group: Normal 1.0-1.2 s, Easy 2.0-2.5 s (SR:173), in px = 285 · seconds (285-340 px Normal).
+  **[11-05 changed]** A fixed pad cannot find groups. With it, World 1 Normal's biggest group is 1-4 moves, so every stage reads as
+  single beats with rests and `GROUP_MAX = 20` cannot fire (R3 §3 W1, W14). The boundary is relative: a gap is a rest when it is at
+  least 2x the median of the 3 intervals each side **and** at least 1.0 s Normal / 2.0 s Easy (R3 §2 F13). Measured that way, phrases
+  are 5-12 moves and 4-24 s, but 8 of 9 World 1 stages hold one phrase over 20 s with no rest (R3 §4.5). The 2x ratio is a choice,
+  to calibrate on the stages Matt ranks best paced.
 - **Miss cost** by tension: T ≤ 0.45 a catch (no life), 0.45-0.8 a setback or a heart, above 0.8 a life on Normal (GE:237's tiers, our
   validator's FALL_BITE_PX 200 / 4 s, mechanics.ts:109-110). Easy one tier softer, never "nothing" after the first teach.
+- **[11-05 new] Risk budget**, the second dial. Density says how much the thumb does; the risk budget says what a miss costs, summed
+  over the stage. Per challenge i with bot success s_i: E[misses] = Σ(1 − s_i), E[lives] = Σ(1 − s_i)·[a miss costs a life],
+  P(clean) = Π s_i (R3 §2 F1). Per-jump floors (70% / 85%, SR:148) do not bound a stage: 32 life-costing jumps at the 70% floor
+  would be 9.6 expected lives (R3 §3 W4). These first budgets are estimates, to tune on Matt's play:
+  - stage: Normal World 1 E[lives] ≤ 1.0, rising about 0.5 a world; Easy ≤ 0.3 (R3 §2 F1);
+  - node expected falls on Normal: intro 0, spike 0.2-0.4, climax 0.3-0.6 (R4 §6 idea 3);
+  - success targets: first test of a new move ≈ 0.85 Normal / 0.92 Easy, the teaching beat ≥ 0.97, practised moves ≥ 0.95 (R3 §2 F2:
+    between Wilson's learning optimum and Lomas's finding that easier play is played longer).
+
+  The two dials are set separately. The way to raise density without raising risk is lenient actions: hops, petal arcs over safe
+  ground, rides and animal tricks (R3 §3 W2).
 - **Enemy spacing**: none within 150 px of a landing (mechanics.ts:247), none on a rest, at least 35% of nodes animal-free (MR:481-484).
 - **Liana period** locked to the beat: period = k · beat with k chosen so it lands in [2.6, 3.4] s (our calm swing is 2.85 s Normal,
   3.3 Easy, physics.ts:453, 471). At 130 BPM 6 beats = 2.77 s; at 68 BPM 3 beats = 2.65 s. Then a liana leap lands on the beat like a jump.
 - **Stage length**: T_skilled = Σ_nodes Σ_bars (240/b) + Σ waits ≥ 120 s, target 150 s (SR:36-38). That is about 65 bars at World 1's
   tempo and 34 at World 7's: a World 7 stage has half the bars, each twice as long.
+  **[11-05 changed]** Length is the sum of the units' clocks, never a clock to fill. Filling to a clock from too few units is what
+  makes gen2 repeat (R1 §2 L3). If Σ falls short, the engine names the missing rooms and refuses; it never adds a repeat.
 
 ### 2.4 Proof of the core claim: pieces written as beat data survive every tempo
 
@@ -154,6 +236,10 @@ traces, `beatTrace.traceNode` + `checkTrace`):
 This is the single most important measurement in this file: it says the unit can be **proven once, over a range, and reused safely
 anywhere in that range**. The three options below all lean on it.
 
+**[11-05 confirmed]** R2 §4 measures the same thing from the other side. On 1-2's canopy nodes, 100% of the step lists the proposer
+can draw pass the full tracer, the Easy trace and `checkTrace` (exhaustive over 3,366 and 3,930 sequences). Adding crumble and stump
+to the palette kept acceptance at 99-100% (R2 §4 experiment 3). Physics is not what limits a well-written piece; the palette is.
+
 ### 2.5 Calibration: what our own hand-tuned beat stages actually ship
 
 `rhythmLayout` (WR) for 1-2 (128.2 BPM) and 1-5 (136.0 BPM), 16 layouts each, Normal and Easy, read node by node
@@ -176,6 +262,10 @@ What it says:
 1. **1-5's Easy is denser than its Normal** (spike 0.99 vs 0.87, climax 0.96 vs 0.89 take-offs a second), about twice the Easy band
    (0.35-0.55, SR:173). Easy narrows the gaps (median 0.34 vs 0.52) but keeps every beat, so it asks for more inputs a second, not
    fewer. This is the Easy failure in another form, found by measuring, and the formula must set Easy's density from its own band.
+   **[11-05 confirmed, wider]** It holds across World 1: Easy's median gap between moves is within 0.5 s of Normal's on every stage
+   (R3 §3 W2, §4.2). And Easy can be harder than Normal on the bots. On 1-1, the Easy kid's P(no costly miss) is 0.61 against the
+   Normal adult's 0.75, and one 1-1 Easy jump (x 29277) succeeds in 6% of 200 trials (R3 §3 W5, §4.3). Whether that jump is real is
+   still open, because the two bots disagree on it (R3 §4.7).
 2. **1-5's gaps are all the same share**: 80% of its gaps sit between 0.49 and 0.55 of the clumsy reach. A stage can pass every rule
    and still feel like one jump repeated. The engine must make the gap share follow tension (2.3) and the checker must report its
    spread (target: p10-p90 at least 0.25 wide on Normal).
@@ -186,6 +276,11 @@ What it says:
    QA has played).
 5. **Random step search needs re-rolls** (1-2 Easy up to 3 per layout, WR:149), and 1-2 throws "no steps fit" if the tempo is wrong
    (it did when this script first read the wrong BPM). Written pieces never re-roll: they either prove over their range or they don't.
+   **[11-05 overturned, the cause]** The re-rolls do not mean the constraints are tight. 94.4% of 1-2 Normal's rejected tries and
+   95.0% of Easy's (2,228 of 2,346) come from one rule, "a clumsy jump (air 1) can't reach 80/90 px up". The proposer offers rises
+   the tracer always refuses, and those rises are laid 0 times in 16 layouts (R4 §5.3). 1-5's few rejections are all GAP_REPEAT, a
+   variety rule. The conclusion holds and gets stronger: written pieces never re-roll. The proposer should call the tracer's own
+   reach test.
 
 ### 2.5b Each option's core idea, run on real stage 1-2 (`reference/engine/designer-cores.ts.txt`)
 
@@ -202,6 +297,8 @@ What it says:
 The real stage's nodes are portable across its world's tempo range: every layout builds at every tempo. Two costs show: **Easy leans
 on re-rolls** (8-18 across the 16 layouts, against 0-1 on Normal), so Easy's pieces are where the proof must be strictest; and **the
 clock falls about 10 s from 126 to 134 BPM**, so a stage's length must be checked at the fast end of its tempo range, not its middle.
+**[11-05 overturned]** The first cost was misread. Easy's 8-18 re-rolls are the proposer's dead 80/90 px rises, not a tight Easy
+(R4 §5.3, and 2.5 finding 5 above). Easy still needs its own proof, but this table is not evidence that its pieces are fragile.
 
 **B's core (search instead of random steps):** for four 3-bar nodes of 1-2's kind (canopy branches, WR's PAL_A palette), random step
 lists found a clean trace in **1.0-1.3 traces** on average (20/20 within fitSteps' 160), while backtracking on traced prefixes used
@@ -209,12 +306,27 @@ lists found a clean trace in **1.0-1.3 traces** on average (20/20 within fitStep
 `fitSteps` is not wasted work; it is that chance decides the motif, which is how 1-5's "long wait, onto a short twig" came back four
 times (acd556ab). This weakens B's case and my own first-draft claim that search would be "faster and exact": a search is needed only
 where constraints are tight (the Easy re-rolls above), and what random needs is control (decks with a lockout), not replacement.
+**[11-05 confirmed, extended; one example withdrawn]** R2 §4 measured the same on canopy nodes and added the floor. On the floor,
+random accepts 56-62% a try (about 3-4 trace-equivalents a node). A search that prunes on both Normal and Easy prefixes found an
+answer 60 of 60 times in 18-24 calls; one that prunes on Normal alone failed in 5-7 of 20 runs, because Easy and `checkTrace` only
+bite at the leaves. So a search is worth it only once the constraints get tight: pinned moments, a rise or fall target per node,
+kind quotas. When it is used, it must check every rule on prefixes. "The Easy re-rolls above" is withdrawn as an example of tight
+constraints (R4 §5.3).
 
 **C's core (an archive of kinds):** 1-2's 272 nodes over 16 layouts, binned by direction x density band x job: **13 of 56 cells
 filled, and 256 of 272 nodes run right** (the only left nodes are the bough leg's counter-melody). The 16 layouts differ in detail
 inside the same 13 kinds. This is the measured form of "the rolls barely differ" (SR:303): replay variety today comes from the details
 of the same kinds of node. Any option must change the KIND of node per roll (direction, density band, job's room), and C's archive
 is the one tool that would show it. Whatever engine is chosen, this binning belongs in its gates.
+**[11-05 confirmed; the cause found]** By landing kind (surface x up/flat/down), a whole beat-built stage speaks 8-9 words, and its
+two commonest are 39-48% of all landings (R2 §4 experiment 2). The pattern players see is a zigzag: 66% of 1-2's consecutive
+landings flip up/down, against about 42% if the directions were independent. It has two causes in the palettes:
+- every hop goes down (`hopDy [-40, -30, -20]`, WR:478, 606, 707);
+- the floor band is 100 px, so after one or two rises the only fit is down.
+
+Among roll-to-roll distances, "what he lands on" is the smallest part, because the canopy palette has one surface, `['branch']`
+(R4 §5.5). One rhythm admits millions of geometries (about 3.0 million for the 9-take-off intro), but only 1-2 kinds per take-off
+on the canopy and 5 on the floor (R2 §2 L1, §4). The rolls vary numbers; players see kinds.
 
 ### 2.6 How many pieces a world needs: the variety maths
 
@@ -249,6 +361,39 @@ What it says:
    LEG:420-421). It sets the floor, not the bar. The look-alike measure (SR:176, 0.30) and the quality supervisor's in-order play stay
    the judge.
 
+**[11-05 changed] What this simulation can and cannot claim.**
+- **Point 1 is confirmed from three sides.** R2 §2 L1: the sameness is in the vocabulary, not the dice. Launchpad's grammar offers
+  14 jump kinds and 5 move kinds; Dahlskog's concatenation generator varied only by "different height, different length, amount of
+  rewards, amount of risk", which is our 1-2.
+- **The measure it ran on is blind to what Matt feels.** The validator's move 3-gram cosine is 0.00-0.10 for every World 1
+  neighbour pair, and compression distance 0.64-0.85 sits at the shuffle baseline: by move order no stage resembles its neighbour.
+  Yet the complaint is "everything feels the same" (R3 §3 W11). The known list agrees: "one tempo" is flagged on all 16 layouts of
+  all 9 stages in both settings, and "like the stage before" on one layout of one stage. So the alike-percentages in the table are
+  an upper bound on one kind of sameness only, and a zero is not a pass.
+- **The gate becomes four numbers:**
+  1. kinds per take-off in each node's valid space (at least K) and in the chosen roll (at least M) (R2 §5 idea 1);
+  2. compression distance of the stage kind strings across a world, judged inside our calibrated range (self ≈ 0.09, own shuffle
+     ≈ 0.62; R3 §2 F7);
+  3. tempo and density per stage (R3 W2, W11);
+  4. leniency and the look.
+- **Novelty is a band, not a cap.** Too similar bores, too different reads as "odd connections"; set the band from Matt's favourite
+  stages (R3 §2 F7, Shu et al.).
+
+**[11-05 changed] Point 3's room count is a floor, not the target.**
+- **The arithmetic floor.** A world of 9 stages x about 8 nodes is about 72 slots. With no room twice in a stage and none in more
+  than 3 stages (SR §0c.2, §0c.4), 4 rooms per job is only about 1:1 with the slots.
+- **Shipped games run well above 1:1.**
+  - Super Meat Boy Forever: 70-100 chunks per level for 8 used, about 10:1, and no chunk shown twice in a save (R1 §3.3).
+  - Spelunky's Mines: 8-16 templates per room type, plus 26 obstacle blocks (R1 §3.1).
+  - Leap Day: 700-800 chunks, in daily themed pools (R4 §3).
+  - Barrett, on tile sets: "if you thought you wanted about 64... just make 81" (R4 §2.3).
+- **What binds is the count per phase after the teaching cut.** gen2's kits hold 15-76 templates, but a stage can use only 8-18,
+  and as few as 1-4 per phase (R1 §3.0 Run H).
+- **So coverage is counted per (job x phase x lessons taught so far):** at least 2 eligible rooms per slot (estimate, half-way to
+  SMBF's 10:1). A world's target is about 50-70 rooms, plus hazard blocks and hero rooms.
+
+This replaces "28 rooms" as the plan's number. Matt's "more pieces" rule says the count is the point, not a cost to avoid.
+
 ---
 
 ## 3. Ten platformers, read for how their levels are made
@@ -264,7 +409,7 @@ Three were picked because critics called them repetitive: Super Meat Boy Forever
 |---|---|---|---|
 | **Spelunky** | 4 room types by guaranteed exits; 8-16 templates per type, 10x8 tiles; probabilistic tiles ("4" = 25% pushblock); 5x3 "obstacle blocks" filled from their own small library; random mirroring (Kazemi, spelunkyGen, spelunkyGen2) | a walker draws the solution path (roll 1-5: left, right, down), then rooms are filled by type | **Variety lives in three nested rolls: path, template, obstacle block.** Kazemi's demo: keeping the block template fixed visibly kills variety. Our pieces need slots filled from a separate hazard library |
 | **Dead Cells** | hand-made room "tiles" per biome, each with a purpose and entrance/exit counts; a concept graph per biome (length, specials, how labyrinthine) | "for each node, the algorithm tries a random room ... if it doesn't match, the algorithm tries another"; enemy count from combat length, with per-monster rules (Bénard, 2017) | **Keep the algorithm "involved in the most restrained way possible"**: fixed frame by hand, rooms by purpose, rooms never shared between biomes ("rooms used in the prison aren't reused in the sewers"), so each biome has identity |
-| **Super Meat Boy Forever** (criticised) | "a pool of 40-60 mini-levels or chunks ... PER LEVEL", each "designed with a difficulty in mind" (Refenes) | chunks picked "based on their difficulty which was presented in a certain cadence" (start slow, ramp, back down, finish with a bang) | Nintendo Life: it "robs the game of the wonderfully exacting little one-screen death chambers", "we miss being able to learn levels", and "times when the procedural generation ... dishes you out a section of platforming that's impossible to pass". **Lessons: a difficulty cadence works; a stage made only of chunks has no landmark; joins must be proven, not trusted; and a stage you are learning must stay put** (our layoutMemory already keeps a layout until cleared) |
+| **Super Meat Boy Forever** (criticised) | "a pool of 40-60 mini-levels or chunks ... PER LEVEL", each "designed with a difficulty in mind" (Refenes). **[11-05 changed]** 40-60 is the 2017 figure; later "Each Level has between 70 and 100 Chunks" for 8 used, each chunk played "to give it a par and a difficulty rating", and "We keep track to avoid duplicates" across the save (R1 §3.3) | chunks picked "based on their difficulty which was presented in a certain cadence" (start slow, ramp, back down, finish with a bang) | Nintendo Life: it "robs the game of the wonderfully exacting little one-screen death chambers", "we miss being able to learn levels", and "times when the procedural generation ... dishes you out a section of platforming that's impossible to pass". **Lessons: a difficulty cadence works; a stage made only of chunks has no landmark; joins must be proven, not trusted; and a stage you are learning must stay put** (our layoutMemory already keeps a layout until cleared) |
 | **BIT.TRIP RUNNER** | every obstacle placed to the song by hand | fixed run speed, so distance is song time | Ludus Novus: one rhythm ("one, and-three") appears eight times in a level with **different obstacles demanding the same buttons**: "Try this. Okay, now the same thing, but harder." Neuse cut moves: "Being able to do too much detracted from the experience". **A rhythm motif repeated with changed dressing teaches; the same dressing repeated bores** |
 | **Geometry Dash** (phone) | levels placed by hand in the public editor | fixed speed per mode | the editor's Guideline Creator: "click 'Record' and then click to the song ... vertical lines will be shown in the editor"; a BPM finder. **Beat guides as authoring data: big moments go on the music's strong beats** |
 | **Badland** (phone) | every stage hand-built in Frogmind's iPad editor | physics props (chains, saws, clone/shrink pickups) | Badland 2 opened the maze "to snake around, rather than being a pretty much up/down affair" and "Sometimes you fall down, sometimes you go high up". **Direction is the cheapest variety** |
@@ -294,6 +439,41 @@ TFDG); look and sound count (Canossa & Smith); filtering after the fact leaves u
 path (Spelunky), a purpose graph (Dead Cells), a beat (RUNNER, Rayman, Geometry Dash) or a second use of a place (Pizza Tower). The
 ones called repetitive either had no landmark and unproven joins (SMBF) or reused look, music and ideas (NSMB). Phone games keep
 controls tiny, so variety must come from what the world does, the direction you travel, and the beat.
+
+### 3c. [11-05 new] What the research team's notes add to sections 3 and 3b
+
+The notes opened about 150 more primary sources: R1 §6 lists 61 pages and 3 code repositories, R2 §6 25 papers, R3 §6 26 and R4 §7
+64. I do not copy them here. These are the points that change this design.
+
+- **Hand-made big units, a small dumb generator** (R1 §2 L1). Spelunky's 10x8 room, Dead Cells' room by purpose, SMBF's whole
+  level-sized chunk. "the key for us was in having the algorithm involved in the most restrained way possible" (Bénard). Option A's
+  shape.
+- **Difficulty is a cadence of rated units, ramping and cooling at every scale** (R1 §2 L4: SMBF, Shovel Knight). gen2's 8-6 sits at
+  author-rated 6-7 from its third slot to the end, apart from rests (R1 §3.0 Run D). Ratings must come from play, not the author
+  (R1 §4 idea 9; SMBF's critics: "an extremely difficult section only to get another one that's a cakewalk").
+- **Teach in three steps, the middle one safe and blocking** (R1 §2 L5, Ubisoft's rational design: "exposition, validation and
+  challenge"). **And a mechanic must be required, not just present** (R2 §2 L5: Green et al.; Nelson & Smith). Tried on our three
+  hide-teach stages: a bot that never hides finishes all 9 layouts, and is faster on 7 (R2 §4 experiment 4).
+- **One named surprise per stage, with a test** (R1 §2 L6). Wonder's filters: a link before and during, "suddenly be able to do
+  something they couldn't before", and "explained simply with one short phrase"; DKC Returns: "a memorable moment in every level".
+  This sharpens A's hero room into a stage field with those three tests.
+- **Grey first, judged, then art** (R1 §2 L7: Hollow Knight's black tiles, Ori's "design approved" stamp). The proof and the bots
+  pass in grey before any Hugging Face art is chosen.
+- **Same ground, a second goal, said plainly** (R4 §2.4: Super Mario Run's colour coins, Fiesta Run's Invasion levels). Cheap
+  replay on a beaten roll. The failure is "the same levels that are just disguised as being different".
+- **Themed pools per stage** (R4 §2.3 and §6 idea 9, Leap Day). Each stage draws a small pool from the world (two hazards, one
+  surface family), so a stage feels like one idea and the world's pieces rotate.
+- **Rhythm as every stage's frame is a risk the notes name, and a direction question for Matt, not a ruling.**
+  - Nintendo prototyped a jump-in-rhythm Mario and dropped it as the frame: "not really a need for it to be a Mario game". Wonder
+    later used rhythm for one course and one badge (R1 §3.10, §5 item 14).
+  - A music-driven runner study: when every beat is a jump, "the feeling for the user would be very monotonous" (R2 §2 L8, §3.18).
+  - Alto's made its music irregular so it is never memorised; we lock jumps to the beat, which makes the beat itself the repeating
+    unit (R4 §3 Alto's).
+  - Measured on ours: "one tempo" is flagged on every World 1 stage and layout (R3 §3 W11).
+
+  What this means for the plan: the beat stays the proof of timing (2.4 holds). But a stage should take its take-offs from a
+  *selection* of its theme's onsets, not every beat (R2 §3.20, Dance Dance Convolution's placement vs selection). And at least one
+  stage a world should break the beat on purpose. Every option below inherits this; it is the open question in 10.0.
 
 ---
 
@@ -330,6 +510,13 @@ No two rows share two cells.
    ask for. From the variety maths (2.6), each world needs at least **8 distinguishable moves** (move x note value x direction), at
    least **4 rooms per job** (28 rooms for 7 jobs), at least **8 hazard blocks**, and one hero room per stage. A hole is a room to
    write. "Fits anywhere" rooms capped at 2 a world (CA:831-833).
+   **[11-05 changed]** The table is counted per (job x door x direction x **lessons taught by then**), at no fewer than 2 eligible
+   rooms per slot. The teaching cut is what starves gen2's phases to 1-4 templates (R1 §3.0 Run H; 2.6 above). The world target is
+   about 50-70 rooms, not 28. The coverage gate also fails on any room, palette option or section that **no shipped roll lays**:
+   1-2's 80/90 px rises, 1-5's -60, and the 28 of World 8's 80 sections that are in no curated roll (R4 §5.3, §5.6, §6 idea 1).
+   **[11-05 new]** Two tags from Spelunky 2 (R1 §3.1, §4 idea 3):
+   - `rare`: drawn about 5% of the time, so a stage feels special when it appears;
+   - `notBefore`: kept out of a world's early stages, so a world grows without a new mechanic.
 4. **A stage is a spec** (about 20 lines): map shape, the node list with each node's job and tension, the pair, the hero room (hand-made
    for this stage only), the deck of allowed rooms per node.
 5. **The roll**: for each node, draw from its deck with a shuffle bag and cooldown (gen2/variety.ts already has both), filter by door
@@ -340,9 +527,28 @@ No two rows share two cells.
 6. **The stage check is arithmetic plus seams**: length = Σ room clocks ≥ 120 s; petals: Σ shared ≥ goal and goal ≤ shared + smaller
    road - 5%; no room twice; no 3-move run shared with the neighbour stage; 4+ move kinds and one the neighbour lacks; the measured
    stage clock within 5% of the sum of room clocks (or the room that differs is named).
+   **[11-05 new]** Eight more checks the notes require, all on room metadata or cheap bot runs:
+   - **kinds:** at least K landing kinds per take-off across the stage, and no two kinds over 50% together (R2 §5 idea 1; today
+     39-48% for one pair);
+   - **zigzag:** no more than about 45% of consecutive landings flip up/down (estimate, near the 42% independent rate; 1-2 is 66%,
+     R2 §4);
+   - **risk budget:** Σ room risks inside the stage budget of 2.3 (R3 F1);
+   - **cadence:** room costs ramp and cool. A peak is followed by a lower node, and the stage's last third holds its highest cost
+     (R1 §2 L4);
+   - **groups:** phrases found with the relative boundary of 2.3 sit within 5-20 s (R3 §4.5);
+   - **taught twice:** each new mechanic gets a safe validation room that blocks progress, before the first test that costs anything
+     (R1 §2 L5);
+   - **limited agent:** with the taught move switched off, the bot must fail the teach room or pay a set cost, and the full bot must
+     pass it (R2 §5 idea 3; `noHide` already exists, `tools/validate/play.ts:303`);
+   - **save-wide:** no room the player has seen in this save is drawn again until the world's pool is spent (R1 §4 idea 2; SMBF).
 
 Because every room was proven in its range, a roll can run **at load, on the phone, every time the player replays**, in milliseconds,
 and still be right. That is the "random, replayable" part done safely.
+
+**[11-05 new]** The roll gives each node and each layer (room, hazard block, mirror) its own RNG stream. Kazemi's layer-locked
+rerolls then work as a debug switch, and changing one node leaves the rest of the stage alone (R4 §4 Spelunky, §6 idea 7). Tanagra
+does the same: "the value of a variable should be the same as the last time", relaxed only when no solution exists (R2 §5 idea 5).
+WR today shares one stream, so a change to one palette reshuffles every later node.
 
 ### 5.2 Sample stage spec (World 2, about 20 lines)
 ```
@@ -374,6 +580,10 @@ return only changed and paired with the new world's mechanic (SR:93-99), so it r
 ### 5.4 The moment a player remembers
 The hero room: one per stage, made by hand for it, placed where the spec says, on the stage's strongest beat (Geometry Dash's
 guideline idea). SMBF's lesson is that chunks alone never build to a landmark; here the rolled nodes exist to deliver the player to it.
+**[11-05 changed]** The hero room carries a `signature`: one short phrase, unique across the game. It must pass Wonder's three
+tests: it ties to what came before; the player can suddenly do something they couldn't; it says itself in one short phrase (R1 §2
+L6). SMBF's critics praised the fixed bosses and said a chunked finish "trudges" (R1 §3.3, §5 item 13). So the hero room sits at or
+near the end, and the stage's ideas combine there (Shovel Knight).
 
 ### 5.5 How today's failures become impossible
 | Failure | Why it can't happen |
@@ -384,7 +594,9 @@ guideline idea). SMBF's lesson is that chunks alone never build to a landmark; h
 | A stage like the one before | Rooms are named in the spec and the roll filters by the neighbour's runs; no chance at stage level |
 | Easy not reaching the builder | No room exists without an Easy proof; setting is a required argument of the roll and the trace |
 | Two copies of a placement tool | Rooms are data; one tracer, one roll function, one prover |
-| Hop/jump/double as one, no direction | A room's steps carry move + direction; the checker's tokens are generated from the same type |
+| Hop/jump/double as one, no direction | A room's steps carry move + direction; the checker's tokens are generated from the same type. **[11-05 confirmed still live]**: the validator still labels 14 of 15 of 1-1's doubles and 27 of 34 of 1-6's as J (R3 §3 W3), so this fix is needed, not done |
+| **[11-05 new]** A template repeated to fill a clock | Length is Σ room clocks. A short stage is refused with the list of missing rooms; a cap of 2 per stage is a build rule, not a check after |
+| **[11-05 new]** Dice spent on options that never land | Rooms are written, not proposed, so there is no proposer. The prover and the tracer call one reach function, and a coverage gate fails on any option, room or section no shipped roll lays |
 | A route through ground | A room's route is proven in the real engine once; a stage's route is the rooms' routes joined at doors |
 
 ### 5.6 What A keeps from gen2, and what it changes (checked in gen2/types.ts and gen2/DESIGN.md B3-B6)
@@ -419,12 +631,35 @@ s Normal) only if the join is shortened. So **the aprons are shared**: the exit 
 200 px apron, 0.7 s), which is inside the pad. And because Carmo shows that too many universal connectors lower variety (CA:831-833),
 the apron is the only universal piece, and its look is the world's, rolled by the dressing pass.
 
+**[11-05 confirmed; changed on cadence]**
+- **Safety is confirmed.** This is Barrett's herringbone edge contract with one edge colour: with an edge every piece meets,
+  "the filling algorithm is trivial", with no backtracking (R4 §4 Noita/Barrett).
+- **But one edge is one cadence.** Every node ends on the same flat apron, so every rhythm group ends the same way. A rhythm group
+  should end in "a cadence ... where the rhythm of the player's movement significantly changes" (R2 §3.2, §5 idea 6).
+- **The change.** The apron stays the only universal *edge*. Cadence kinds (a drop, a vine catch, a stop-and-look, a rising stair)
+  become small proven rooms of job `cadence`, drawn per seam and counted by the kind check.
+- **One finding against "flat is enough".** On 1-2, the first-timer never got onto one take-off edge per layout (0% and 25% at x
+  25739 and 20797) and needed 1-2 rescues a run (R4 §5.7). The prover's real-engine run must use the first-timer's short flick, not
+  only the tracer's thumb.
+
 ### 5.8 Cost (estimates, unmeasured, against today's ~1.6-2% of a week per stage)
 Build: 3-4 days (room format, tracer extended to vines/ropes/mushrooms/wind and 12-time bars, prover, coverage table, roll, stage
 check), much of it on gen2's existing assembly (5.6). Per world: 28 rooms + 8 hazard blocks + 9 hero rooms (2.6), about 20-30 min a
 room with its proof run: 15-20 h, about 3% of a week. Per
 stage: spec 15 min, hero room 45 min, gates 15 min: about 1.25 h, 0.3-0.4% of a week. Risk: rooms memorised (Rogue Legacy, GE:19) if
 the library is thin; answered by tempo re-trace, mirrors, hazard blocks, 4-per-job decks with 8+ distinguishable moves (2.6), and the in-order QA recording as judge.
+**[11-05 changed]** Two numbers change.
+- **Per world:** about 50-70 rooms, not 28 (2.6). At 20-30 min a room that is about 17-35 h of helper time, roughly double the
+  figure above. Still an estimate.
+- **The measured baseline the cost is judged against** (R1 §3.0, §3.13, from git): 1-2 and 1-5 together are 1,349 lines in 32
+  commits over about 7.6 h; 1-1 is 602 lines in 13 commits over about 7.5 h. Building a stage takes 0.1-0.4 s. The slow part is
+  judging, not the machine (R1 §2 L7; R4 §5.2).
+- **For scale** (R1 §3.13):
+  - Rayman Jungle Run: 11 designers made most of 40 levels in about a week, on finished tools, so about 3-4 a designer-week.
+  - Hollow Knight: an area took 2 days of grey tiles plus 4 days of art.
+
+The case for A is that the room is the reusable part: the 7.6 h we now spend on two stages would buy about 15-20 rooms that serve
+every stage of the world.
 
 ---
 
@@ -441,6 +676,11 @@ the library is thin; answered by tempo re-trace, mirrors, hazard blocks, 4-per-j
    does it: choose a motif (the pattern), let the tracer place it (the instantiation), check; on failure, in Tanagra's order: relax
    the placement, try another motif, regenerate the neighbouring beat (TFDG §5.5). Beam width 8, a hard time cap per node (Tanagra:
    "typically, solutions are found within 5 milliseconds ... stops itself from searching after 500 milliseconds", TFDG §5.1).
+   **[11-05 changed]** Every rule must be checked on prefixes: the Normal trace, the Easy trace and the cheap checks. Pruning on
+   Normal alone failed to find any answer in 5-7 of 20 runs (R2 §4). Filter the rules a step can break on its own (MIN_GAP's "no
+   jump at all") when the candidate is made, as WFC propagates before it chooses (R2 §3.12, §4 point 5). Draw from the valid space
+   uniformly by counting (memoised by mark and height), not one step at a time; the per-step draw biases net climb by 8-25 px
+   (R2 §4 point 4).
 4. **Hard constraints while placing**: reach by setting (table 2.1); landing on screen both ways (BT VIEWS); a holder for every
    surface; no 3-4 move run from this stage or the neighbour; no gap repeated 4 times; density inside the node's band at this tempo;
    petals owed by the node fit on its surfaces; animals only on surfaces with their footprint.
@@ -464,6 +704,8 @@ petals: goal from the shared path; split roads 15% each inside their own motifs
 miss: n2-n4 setback; n6-n8 a life on Normal
 length: solve until skilled clock >= 135 s
 ```
+**[11-05 overturned]** The last line is the clock-filling that makes gen2 repeat (R1 §2 L3, `pipeline.ts:702`). It is replaced by
+`length: from the 9 nodes; refuse below 120 s and name the node to lengthen`.
 
 ### 6.3 World 7 vs World 2
 World 2's grammar is water and rope at 94-102 BPM: swung motifs, pendulum vines, reeds, moving logs. World 7's is stone that keeps
@@ -485,6 +727,9 @@ route is the tracer's own simulated route with collisions.
 Build: 6-8 days (all of A's tracer work, plus the shape pass, the solver, relaxation logs). Per world: 40 motifs, 4-6 h. Per stage:
 about 1 h when the solver succeeds; the risk is the stage it can't solve: "debugging an over-constrained CSP ('UNSAT at Beat 47') is
 notoriously opaque for an AI coding assistant" (GE:69). Countermeasure: a relaxation log that names the constraint and the beat.
+**[11-05 confirmed]** A survey of 120 developers ranks "Debugging difficulty" third of all PCG concerns, at 41.7% (Endrovski,
+Dormans & Bidarra 2026, via R4 §2.2, §4). R2 §4 also shows B buys no speed until there are pins and quotas. B's value is that it
+makes kinds and pins *exact*, not that it is cheaper.
 
 ---
 
@@ -539,6 +784,21 @@ Build: 5-7 days (archive, descriptor code, the third bot, batch runner). Compute
 node means hours per world on a machine (no AI tokens). Per stage: 30 min of spec and review. Risk: the bots judge what bots can
 measure; fun that bots can't see is lost, and a bot bug (D15: the first-timer can't climb mushroom walls) silently empties cells.
 This is "roll, check, reroll" made smarter, which is the loop that cost World 8 13 hours (SR:150-152), only with the AI out of it.
+
+**[11-05 changed] C's judge is not ready, and its archive moves into A.**
+- **The bots disagree.** The noisy jump bots rate 1-6 among World 1's easiest. The first-timer finds it the hardest by far: 2.7
+  lives a minute, 3 game overs a run, 23-29% of the stage stuck (R3 §3 W13).
+- **The adult bot is too steady.** Its 30 ms thumb is steadier than the steadiest measured human (Isaksen: 35.9-61.1 ms) (R3 §3
+  W6).
+- **No bot is fitted to recorded people,** as King fits its bot to players (R4 §2.7). The answer swings from 0.0 to 1.6 expected
+  falls a stage on the two noise settings alone (R4 §5.4).
+- **Bots judging fun is the weakest link.** Even King and Rovio rate difficulty with bots, not fun, and only after fitting them to
+  players (R3 §2 F3).
+- **What survives, inside A:**
+  - the archive as a coverage tool. Keep the best roll per cell of a kind grid, and ask the engine *for* an empty cell, with a time
+    box and a blocklist that becomes a piece-list item (Bazzaz & Cooper 2025, R2 §3.19, §5 idea 7);
+  - the bots as the source of every room's `cost` and `risk`, once they are calibrated on testers' recordings
+    (`tools/qa/touchReplay.ts`; R4 §6 idea 4).
 
 ---
 
@@ -615,6 +875,21 @@ world a cast, a body and 8-12 deeds with art and story lines (each needs Matt's 
 
 ## 10. The recommendation: Option A, Proven Rooms
 
+### 10.0 [11-05 new] Re-ranked against the four notes: the same order, for stronger reasons, with A changed
+
+| Option | What the notes say | Rank |
+|---|---|---|
+| **A. Proven Rooms** | Every shipped hybrid made the unit big, hand-made and whole, and kept the generator small (R1 §2 L1). Variety at scale came from many small authored pieces plus a few rules, never from rerolling a few (R4 §2.3). An edge contract makes joins unable to fail (R4 §4 Barrett). Build by construction; checks are the backstop (R2 §2 L2). Against it: A today assumes 28 rooms a world, and the notes show that is about 1:1 with the slots | **1st, unchanged, stronger.** It changes in six ways: (1) pools of about 50-70 rooms a world, counted after the teaching cut; (2) a room's cost and risk from bots, not the author; (3) kinds per step and a kind gate; (4) a risk budget beside density; (5) cadence rooms at the seams; (6) a signature hero room near the end |
+| **B. Beat Grammar Solver** | Search pays only once pins, rise targets and kind quotas make the constraints tight (R2 §4). Pattern first, numbers second (R2 §2 L3), but "Debugging difficulty" is a top developer complaint (R4 §2.2). Its clock-filling spec repeats gen2's failure (R1 §2 L3) | **2nd, narrowed.** Not a whole engine. A prefix-pruned solver that composes a *candidate* room for a coverage hole, under pins, for a person to approve |
+| **C. Bot-Judged Archive** | The bots disagree with each other, are steadier than people, and are not fitted to recorded play (R3 W6, W13; R4 §2.7). Bots judging fun is the step no source has shown | **3rd, folded into A.** The archive and the generate-for-the-empty-cell process become A's coverage tool; bot ratings become A's room costs once calibrated |
+| **D. The One Who Went Ahead** | Not tested by the notes. "Skill carried by level objects" (Super Mario Run's special blocks, R1 §4 idea 8) and "the level gives the move, not the thumb" (R4 §2.5) support its core: deeds that give Pokey new moves without new inputs | **Wild card, unchanged.** Worth a single World 6 prototype after A's World 1 |
+
+**The one thing the notes put in doubt for every option, and that only Matt can decide:** whether every stage should be locked to
+the music's beat. Nintendo dropped rhythm as the frame. A music-driven runner study found every-beat-a-jump monotonous. Our own
+gate flags "one tempo" on all of World 1 (3c; R1 §5 item 14; R2 §2 L8; R3 W11). My view: keep the beat as the timing proof
+everywhere, but take-offs follow a selection of the tune's onsets, and one stage a world breaks the beat as its twist. That
+question goes to Matt as one multiple-choice question before World 2 is specced.
+
 ### 10.1 Why A
 
 - **It is the only option where a roll can happen on the phone, every replay, and be right by proof.** Rooms are proven over their
@@ -625,6 +900,8 @@ world a cast, a body and 8-12 deeds with art and story lines (each needs Matt's 
 - **It puts the AI's hours into pieces Matt wants more of** (his 2026-10-30 rule), and into one hand-made hero room per stage.
 - **The research and the games agree with it**: Spelunky and Dead Cells shipped this shape; SMBF shows what happens without the hero
   room and without proven joins; NSMB shows what happens when a world reuses another's look.
+- **[11-05 confirmed]** R1 §2 L1 (every hybrid that shipped), R2 §2 L2 (build by construction) and R4 §2.3 (many small authored
+  pieces) all point the same way. 10.0 has the changes A takes on from them.
 - B is my second choice and its parts are not wasted: A's prover IS B's constraint checker run once per room, and B's solver can later
   fill a coverage hole by composing a candidate room for a human to approve.
 
@@ -633,6 +910,15 @@ world a cast, a body and 8-12 deeds with art and story lines (each needs Matt's 
   between neighbours in more than 1 pair in 5, or the quality supervisor's verdict), with hero rooms in place.
 - Proving a room takes more than about 30 minutes of helper time on average, or a world needs more than about 45 rooms (against 2.6's floor of 28 + 9 hero rooms) to fill its
   coverage table, so a stage costs more than about 1.5 hours.
+  **[11-05 changed]** The room-count half of this condition is withdrawn. Shipped games use several times more units than slots
+  (R1 §2 L3; R4 §2.3), and Matt's rule wants more pieces. The count would fire by design at about 50-70 rooms. The condition is now
+  on time only: more than about 30 minutes a room on average, or more than about 1.5 h a stage once a world's rooms exist.
+- **[11-05 new]** The bots cannot be calibrated: after fitting to the testers' recordings (R4 §6 idea 4), the first-timer's
+  per-stage lives still miss the testers' by more than about 25%. Rooms' costs and risks would then be guesses, and the cadence and
+  risk budget would rest on nothing.
+- **[11-05 new]** Option A's own kind gate fails on built stages: two kinds over 50% of landings, or zigzag over about 45%, on more
+  than 1 stage in 5 after the World 1 coverage table has no holes. That would mean hand rooms still speak a few words, and the
+  vocabulary must come from a grammar (B's tier) rather than from more rooms.
 - Re-tracing across a world's tempo range breaks more than 1 room in 5 (section 2.4 measured 1 in 8 tempo-dependent, 2 in 8 broken
   everywhere and caught at authoring), which would mean rooms are really pixels.
 
@@ -645,6 +931,15 @@ world a cast, a body and 8-12 deeds with art and story lines (each needs Matt's 
 - **An AI writing each stage's geometry by hand**: the 400-1,200 lines a stage we pay for today (LEG:112-115), and the source of
   most of today's bugs.
 - **The music's score as the layout** (Gemini's wild card, GE:77-81): our music changes per session (LEG:415).
+  **[11-05 reopened]** R2 points out that our themes are symbolic (bars of tokens, `src/audio/form.ts:31-56`), so each note onset of
+  a stage's theme is known exactly. Take-offs placed on a *selection* of those onsets (accents for jumps, held notes for swings or
+  waits) would give each stage a rhythm that differs because its tune differs (R2 §3.20, §5 idea 12). The rejection stands only if
+  a stage's theme really changes from session to session. That needs one check of LEG:415 against `styles.ts` / `form.ts` before
+  World 2's specs. Not checked tonight (no experiments, per the lead).
+- **[11-05 new] Learning from examples (n-grams, GANs) and ASP solvers as the generator.** We have a handful of beat-built stages,
+  not a corpus, and learning from them would copy the sameness. ASP cannot express our floating-point physics (R2 §3.11, §3.16).
+- **[11-05 new] A genetic algorithm on pacing.** Hours a run (R2 §3.6), and a periodic fitness gives levels "much more regular than
+  what is observed" (R2 §2 L6).
 - **One fixed tension curve copied into every spec** (GE:133-150): the curve itself becomes the pattern (LEG:442-444; L04b item 10).
 - **Gemini's difficulty formula** (GE:243-245): World 2's stage 8 harder than World 4's first (LEG:228-232), against SR §1b.
 
@@ -683,12 +978,25 @@ interface Room {
   problem: string;                   // Dahlskog's record: what the player could otherwise do without risk ("walk under the branches")
   solution: string;                  // how this room forces the skill ("the floor ends: the only way on is the swing")
   cost: number;                      // Sure Footing's cost: the room's difficulty, measured by the bots, so tension picks rooms by number
+  // [11-05 new] fields the notes require
+  kinds: string[];                   // per step: move x up/flat/down x surface x hazard, e.g. 'jU-branch' (R2 §5 idea 1); the kind gate reads these
+  risk: { normal: number; easy: number };   // expected falls, from calibrated bots (R3 F1, R4 §6 idea 3); never typed by the author
+  window: number[];                  // per step: landing-pad spare px over the tracer's (longX - shortX) (R2 §5 idea 10)
+  cadence?: 'drop' | 'vine-catch' | 'stop-look' | 'stair';   // job 'cadence' rooms: how a group ends (R2 §5 idea 6)
+  validates?: string;                // the safe, blocking second step of teaching a mechanic (R1 §2 L5)
+  rare?: boolean; notBefore?: number;      // Spelunky 2's !rare (about 5%) and !hard (R1 §3.1)
 }
+// [11-05 new] bars also take 'w': wait on this ledge until something passes (Launchpad's wait-move; R2 §3.3, §5 idea 2).
+// A wait is time on one ledge, so the tracer can check it.
 
 // one per stage (about 20 lines): section 5.2
 interface StageSpec { id: string; shape: Shape; pair: string; feel: string;
   nodes: Array<{ job: Job; tension: number; deck: string[] | { high: string[]; low: string[] } }>;
   hero: string; petals: { goalShare: number }; length: { skilledMin: 120; target: 150 } }
+// [11-05 new] on StageSpec: signature (one short phrase, unique across the game; Wonder's three tests, R1 §2 L6);
+// risk: { normal: number; easy: number } (the stage's E[lives] budget, R3 F1); pool (the stage's themed draw from the
+// world: two hazards, one surface family; R4 §6 idea 9). On WorldProfile: density bands marked provisional until calibrated
+// on Matt's ranked stages (R3 F13, W2; F15 for how to ask him).
 ```
 
 ### 11.2 Modules (each small enough that a helper loads two files: `engine/types.ts` and the one it edits)
@@ -707,8 +1015,26 @@ interface StageSpec { id: string; shape: Shape; pair: string; feel: string;
 
 `splitPetals` (three copies) and `fitSteps` retire: petals are room data; steps are written, never drawn at random.
 
+**[11-05 new]** Four more modules:
+
+| Module | Job | Owner rule |
+|---|---|---|
+| `engine/reach.ts` (inside trace.ts) | `reachable(move, dy, setting)`: exactly the tracer's `TRIES`. Everything that asks "can he get there" calls it (R4 §6 idea 2) | a property test runs every palette and room option against it |
+| `engine/report.ts` | counts every rejection by rule, and every option, room and section by how often shipped rolls lay it (R4 §5.3, §6 idea 1) | a gate: one rule over half of a node's tries, or an option never laid, fails |
+| `engine/catalog.ts` | a one-screen text per layout (nodes, bars, steps as move/dy/surface, ledges, petals, goal), checked in and diffed in CI: "if this was intentional, regenerate the catalog" (Brogue CE, R4 §4, §6 idea 11) | the lead reviews a generator change as a text diff |
+| `engine/rate.ts` | room cost and risk from calibrated bots; stage ratings and a world's band (Glicko-2 with phantom matches, R3 §2 F16) | the only source of `cost` and `risk` |
+
 ### 11.3 Build order (each step has a number that says it worked)
 
+0. **[11-05 new] Fixes to today's code that hold under any option** (on hold with the rest, while Matt's week budget is past its
+   limit; listed so they are not lost):
+   - one reach predicate shared by `fitSteps` and `traceNode`, with a test over every WR palette (R4 §6 idea 2);
+   - the rejection and coverage report (R4 §6 idea 1);
+   - one double-jump rule shared by the validator and the inspector (R3 §3 W3);
+   - one relative group boundary in `groupsOf` (R3 §2 F13).
+
+   *Done when:* 1-2's rejected tries fall well below half (from 932 Normal / 2,346 Easy), no palette option is laid 0 times,
+   1-6's J-needs-double count matches the inspector's `dblNeeded`, and World 1's phrases are measured.
 1. **Merge the two tracers into `engine/trace.ts`** and add the shared token type; the validator's tokens come from it. *Done when:*
    both W1 branches' tests pass on the one tracer; `grep` finds one `traceNode`.
 2. **Room format + prover, on what already exists**: cut 1-2's and 1-5's nodes (WR) into rooms; prove each over W1's range and Easy.
@@ -720,6 +1046,12 @@ interface StageSpec { id: string; shape: Shape; pair: string; feel: string;
 4. **Coverage table for World 1**; write the missing rooms. *Done when:* no hole; 4+ rooms per job, 8+ distinguishable moves, 8+
    hazard blocks (2.6); the expressive-range run (16 rolls x 9 stages) shows neighbour cosine under 0.45 on 95% of pairs and the
    look-alike measure under 0.30, measured on the built stages, not the simulation.
+   **[11-05 changed]** "4+ rooms per job" becomes "at least 2 eligible rooms per slot after the teaching cut" (2.6). The cosine
+   target is kept but no longer counts as evidence, since it already sits at 0.00-0.10 (R3 W11). *Done when* adds:
+   - the kind gate passes (no two kinds over 50%, zigzag at or under about 45%);
+   - the kind-string compression distance between stages sits inside the calibrated 0.09-0.62 range, at a band set from Matt's
+     ranked stages;
+   - every teach room fails the limited-agent bot.
 5. **Tracer growth**: vines with the beat-locked period (2.3), ropes, mushrooms, wind, 12-time bars. *Done when:* each new move has
    a proven test room at every tempo of the worlds that use it.
 6. **World 2 end to end** (the research's own bar: World 1 AND World 2 before scaling, L04b item 15). *Done when:* the quality
@@ -734,10 +1066,25 @@ interface StageSpec { id: string; shape: Shape; pair: string; feel: string;
 - per stage: Easy density inside Easy's band; Normal gap-share spread at least 0.25 (p10-p90); the engine's expressive range over
   16 rolls of every stage (LP §V, TFDG §7: measure the generator, not one output);
 - the existing gates (CLAUDE.md: tsc, tests, vite build, perf, clip, known, roadmap, fun).
+- **[11-05 new]**
+  - the reach property test (proposer = prover = tracer);
+  - the rejection/coverage report, failing on a dead option or on one rule eating over half of a node's tries;
+  - the kind gate and the zigzag cap;
+  - the risk budget per node and per stage;
+  - phrases by the relative boundary inside 5-20 s;
+  - the limited-agent gate on every teach room;
+  - the stage catalog diff;
+  - a flaky check retried once before it turns red, with a weekly list of checks that flicker (Sea of Thieves, R4 §4, §6 idea 10).
+
+  Speed matters as much as coverage: a per-node check runs in milliseconds (a node traces in 4-7 ms, R4 §5.2), so a helper gets
+  pass/fail before the 2-minute fun gate. As R4 §4 quotes: "Give Claude something it can run that comes back pass or fail".
 
 ### 11.5 The first measurable step (tomorrow, about 2 hours)
 Steps 1 and 2 above on 1-2 only: one tracer, 1-2 cut into rooms, every room proven. The number: how many of 1-2's nodes prove clean
 over World 1's tempo range on both settings, and how long cutting and proving took.
+**[11-05 changed]** Step 0's reach predicate comes first in the same 2 hours, because the prover must use it. A second number is
+added: the kinds per take-off and the zigzag share of the cut rooms. That shows on day one whether 1-2's rooms, as written, already
+fail the kind gate. R2's numbers say they will: 1-2 kinds on the canopy, 66% zigzag.
 
 ---
 
@@ -751,3 +1098,14 @@ over World 1's tempo range on both settings, and how long cutting and proving to
   10.2 decides); that bots can fill Option C's archive; the Tiny Wings hill algorithm (Illiger's interview page was blocked); the
   Jetpack Joyride chunk format (the GDC page has no detail).
 - **The 12-time bar** for Worlds 3 and 8 is engine work none of the code does today.
+- **[11-05 new] Unproven after the notes, and what decides each:**
+  - every risk and success target in 2.3 (estimates; Matt's play and calibrated bots decide);
+  - the 2x relative group ratio (R3 §4.5: 1.5x and 2.5x give different phrases; Matt's ranking decides);
+  - the "2 eligible rooms per slot" target and the 50-70 room estimate (no source gives it for a beat game; the coverage table
+    decides);
+  - whether the 1-1 Easy 6% jump is real (the two bots disagree; one look on a phone decides, R3 §4.7);
+  - whether a stage's theme is fixed, which reopens 10.3 (one code check);
+  - whether the beat should frame every stage (Matt decides, 10.0).
+- **[11-05 new] Not done by me tonight, on the lead's instruction:**
+  - no new experiments; every new number above is the research team's, cited to its note;
+  - the notes' source lists were not re-opened by me. The lead checked 32 of their quotes against the fetched pages.
