@@ -416,6 +416,31 @@ For CP3 the placement rules are judged on Normal, and Easy is reported as it is.
 same rules is a separate item for Matt (his words, "hearts aren't given out the very first thing", hold on both settings). It goes
 on the list after CP4.
 
+
+**[designer rulings on the CP3 MISS, 11-05 ~1:35 AM ET, `cp3/CP3-CHECKPOINT.md`]**
+1. **The canopy is laid over another idea's floor (a).** Boughs run above bank hops, stump hops or the creek, as in the old 1-1.
+   The share counts the floor's idea for the length, and the canopy counts as a split over it, so no idea needs over 40%. The 40%
+   cap stays.
+2. **Forks are judged by the two-road share, not by n4 and n10 alone.** Two roads run side by side for at least 40% of the stage (the
+   old 1-1 is 61%, the target). The planned 30-40% for the forks alone is withdrawn: it was written before canopies counted as splits.
+3. **Checkpoints follow the shipped LV-9 spacing** (at most 4,000 px between flags), and the placement rule works inside it:
+   - each flag sits at the nearest safe spot before the next hard node in its 4,000 px window;
+   - never two flags with only easy ground between them;
+   - never on a rest node unless a hard node follows it.
+
+   The rule "start, n6 and n10 only" is withdrawn.
+4. **The mushroom sits off the floor's lane, on a stump or a bank beside it**, so bouncing up is a choice. Walking on along the low
+   road never bounces him. The adult bot's 7-11 loops must go to 0.
+5. **A slip off a high road onto the low road:**
+   - **Normal:** may cost a heart. That is the high road's risk, paid for by its harder marks, and it is counted in the stage's
+     E[lives] (0.7 at d = 0.09).
+   - **Easy:** the roads sit within 400 px (under LONG_FALL), so a slip costs nothing.
+   - **Both:** never a life (P3).
+6. **n8's deck:** lily-pad hop, reed isles, stump hop or crumbling ledge, drawing one that the previous two nodes did not lay.
+
+**The miss stops the work until Matt has seen why** (LEVEL-DESIGNER.md). The rulings above are written, and the planner rebuilds only
+after the lead's go.
+
 **The rules this plan meets by construction** (the mixer still checks every roll):
 - **Ideas:** 9 to 11 different ideas a roll. No idea twice in a row. Snap-twig dash comes twice (teach at n2, test at n6, not in a
   row), and the fork twice (n4, n10).
