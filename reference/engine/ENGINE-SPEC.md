@@ -33,8 +33,10 @@ generated:
 - **share:** the commonest piece's share no higher than the old 1-1's;
 - **run:** the longest run of one piece no longer than the old 1-1's;
 - **new:** something new at least as often as in the old 1-1;
-- **splits:** at least as many high/low route splits as today's 1-3 (designer ruling on CP1's conflict 1: the old 1-1 has 0 splits by
-  the rule, 1-3 has 7, and Matt praised 1-2 and 1-3 for branching);
+- **splits:** at least as many high/low route splits as the old 1-1 (designer ruling, 11-05, on the planner's re-run): a road
+  keeps going across any gap up to a Normal flat jump (180 px), and two roads at heights at least 120 px apart, running side by side,
+  count as a split. On that rule, the old 1-1's canopy over the floor counts. Both roads must be walkable end to end, which the CP3
+  prover checks;
 - **climb:** at least the old 1-1's climb and drop range;
 - **neighbours:** neighbouring stages share no more than half their main pieces.
 
