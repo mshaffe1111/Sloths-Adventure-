@@ -1949,3 +1949,6 @@ LEAD** (Matt: "You"), inside the Hugging Face money. The designer sends the rank
 
 - **[11:25 AM ET, research §g] Also struck as unsourced:** Gemini's buoyancy multiplier (no number is taken from it), and 360° water glide
   (it conflicts with W12's one-thumb rule).
+- **[MATT, 11:26 AM ET via the lead] Swim speed: 1.25× the run** ("I thought he swam faster than he ran"). W4's gate: steady swim speed
+  ≥ 1.25 × PHYS.maxRun (about 356 px/s). gen2-water builds it in swim.ts under the W6-W8 lock. Long water (6-9, 3,500-5,000 px a beat)
+  comes with it, so the speed can be felt.
