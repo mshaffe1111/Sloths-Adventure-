@@ -135,7 +135,9 @@ function plat(L: Lay, k: string, x: number, y: number, w: number): Platform {
   else if (k === 'crumble') Object.assign(p, { type: 'fragile', style: 'ruin', crumbleAfter: L.easy ? 1.0 : 0.7 });
   else if (k === 'catch') Object.assign(p, { catch: true });
   else if (k === 'lily') Object.assign(p, { style: undefined, height: 12, lily: true });
-  else if (k === 'reed') Object.assign(p, { style: undefined, height: 30 });
+  // (a reed isle is a low bank of earth in the creek, which World 1's kit paints (paintedBank, h 90); styleless at 30 px it was drawn as
+  // terrain's code island, 3 gradients a frame: engine-render's trace of the draw check, 11-05)
+  else if (k === 'reed') Object.assign(p, { style: 'moss_stone', height: 90 });
   else if (k === 'mushroom') Object.assign(p, { type: 'bouncy', style: undefined, height: 30 });
   L.P.push(p);
   L.recent.push(sizeKey(k, p.width, L.boughing ? 1 : L.bs));
@@ -238,6 +240,21 @@ function burst(L: Lay, c: Cursor, R: Rng, kinds: string[], n: number, steps: num
   let { x, y } = c;
   for (let i = 0; i < n; i++) {
     const k = kinds[Math.floor(i / 2) % kinds.length];
+    // (a stone sits on ground (the designer's S-3/S-9, and "keep the stones", 11-05): it is a 50 px rise on the far end of a bank, its
+    // foot on the bank's top, never a rock on nothing. A bank is laid first when the piece before is not one)
+    if (k === 'stone' && width === undefined) {
+      let base = L.P[L.P.length - 1];
+      // (never on a rest pad, whose petals lie along its top)
+      if (!(base && base.style === 'moss_stone' && base.height >= 90 && !L.padSet.has(base) && Math.abs(base.x + base.width - x) < 2 && Math.abs(base.y - y) < 2)) {
+        const e = burst(L, { x, y }, R, ['bank'], 1, steps, fixedGap);
+        x = e.x; y = e.y; base = L.P[L.P.length - 1];
+      }
+      const sw = Math.round(R.r(70, 110) * L.bs);
+      if (base.width < sw + 90) base.width = sw + 90;
+      const st = plat(L, 'stone', base.x + base.width - sw, base.y - 50, sw);
+      x = st.x + st.width; y = st.y;
+      continue;
+    }
     const bands = (BANDS[k] ?? [[110, 200]]).map(([a, b]) => [Math.round(a * L.bs), Math.round(b * L.bs)] as [number, number]);
     // (the size band turns every piece, so two of a kind side by side are two sizes: "something new" comes often)
     // (and of the bands, the first in that turn whose size is new against the last six landings, the gate's "something new")
@@ -284,7 +301,8 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
   // (Easy at 3 pieces: the designer's second fix for Easy's density; the snap dash keeps 5 for its teach-to-test job)
   const n = L.easy ? 3 : R.i(4, 5);
   switch (name) {
-    case 'bank hops': return burst(L, c, R, R.pick([['bank', 'stone', 'log'], ['log', 'bank'], ['stone', 'bank', 'log']]), n);
+    // (every list lays stones, a small rise on a bank's end: the designer, 11-05, "stone" stays among 1-5's kinds)
+    case 'bank hops': return burst(L, c, R, R.pick([['bank', 'stone', 'log'], ['log', 'stone', 'bank'], ['stone', 'bank', 'log']]), n);
     // (a log as its third kind: on Easy its stones and banks all widen into one size, and the gate's "something new" ran out)
     case 'stump hop': return burst(L, c, R, ['stone', 'bank', 'log'], n, [40, -40, -70, 30, -30]);
     case 'snap teach': {
@@ -937,6 +955,12 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
   } as unknown as GeneratedStage & { proto: ProtoExtras };
   // (petals the shared judge can't reach come off: a petal over a gap between the canopy and the floor below it marks no jump anyone
   // makes. The level check names each one; only petals are taken off, never a mark, a heart or the exit)
+  // (a petal inside a piece sits 40 px over its top: a bank widened under a stone, or a pad laid after the petals, can cover one)
+  for (const q of stage.collectibles) {
+    if (q.type !== 'flower') continue;
+    const inside = L.P.find((p) => q.x > p.x && q.x < p.x + p.width && q.y > p.y - 20 && q.y < p.y + p.height);
+    if (inside) q.y = inside.y - 40;
+  }
   const chk = validateStage(stage, { rooms: false });
   const out = new Set(chk.errors.map((e) => /^flower #(\d+) .* out of reach/.exec(e)?.[1]).filter(Boolean).map(Number));
   stage.collectibles = stage.collectibles.filter((q) => !(q.type === 'flower' && out.has(q.id)));
@@ -948,6 +972,13 @@ export function buildMix15(config: LevelConfig, seed: number, easy: boolean): Ge
     const cand = L.P.filter((p) => ok.has(p.id) && p.type === 'solid' && p.width >= 100 && !L.P.some((q) => q !== p && q.x < p.x + p.width / 2 + 40 && q.x + q.width > p.x + p.width / 2 - 40 && q.y < p.y && p.y - q.y < 140))
       .sort((a, b) => Math.abs(a.x + a.width / 2 - m.x) - Math.abs(b.x + b.width / 2 - m.x));
     if (cand[0]) { m.x = cand[0].x + cand[0].width / 2; m.y = cand[0].y - 34; }
+  }
+  // (every piece has a look World 1's kit paints: a bank, stone, log, branch, ruin, bridge, lily pad or mushroom; anything else falls back
+  // to terrain's code-drawn island, 3 gradients a frame (engine-render's suggestion, 11-05))
+  const KIT = new Set(['moss_stone', 'log', 'branch', 'ruin', 'canopy_bridge']);
+  for (const p of stage.platforms) {
+    const q = p as Platform & { lily?: boolean };
+    if (!(KIT.has(p.style as string) || q.lily || p.type === 'bouncy')) throw new Error(`1-5: piece ${p.id} at x ${p.x} (h ${p.height}, style ${p.style}) has no World 1 kit look`);
   }
   return stage;
 }

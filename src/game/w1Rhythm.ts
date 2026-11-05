@@ -1104,7 +1104,9 @@ export function rhythmOwnPetals(st: GeneratedStage & { proto: ProtoExtras }): vo
       for (let x = xs[i - 1] + 300; x < xs[i] - 200; x += 300) {
         const q = ledges.filter((p) => x > p.x + 30 && x < p.x + p.width - 30).sort((a, b) => a.y - b.y)[0];
         const v = !q ? st.vines.find((vn) => Math.abs(vn.x - x) < 150) : undefined;
-        if (v) accept({ id: id++, type: 'flower', botanicalVariant: 'orchid', x: v.x, y: v.bottomY + 10, collected: false, bobPhase: (v.x * 0.031) % 6.28 });
+        // (at a climb vine's foot; where the foot stands on a ledge, over the ledge's top, never 10 px into it: the mixer's 1-5)
+        const foot = v ? st.platforms.find((p) => v.x >= p.x && v.x <= p.x + p.width && Math.abs(p.y - v.bottomY) <= 20) : undefined;
+        if (v) accept({ id: id++, type: 'flower', botanicalVariant: 'orchid', x: v.x, y: foot ? foot.y - 45 : v.bottomY + 10, collected: false, bobPhase: (v.x * 0.031) % 6.28 });
         else if (q) accept({ id: id++, type: 'flower', botanicalVariant: 'orchid', x, y: q.y - 45, collected: false, bobPhase: (x * 0.031) % 6.28 });
       }
     }
