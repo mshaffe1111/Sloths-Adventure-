@@ -20,6 +20,7 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
 | 8 | `node tools/roadmapcheck.mjs` | the roadmap out of step: an item without an R-number, a stale total, a broken table row, a known-defect entry with no item | seconds / in gates.yml |
 | 9 | `node tools/art/icons/checkbase.mjs <qa dir>` | an 'after' sheet shot on a stale base (D23): every still must carry the base commit stamp | seconds / report gate |
 | 10 | `npx tsx tools/validate/funcheck.ts` | World 1 made worse by the fun validator's structure checks (dead walks, repeats, pacing, nothing bites, padding, one tempo, enemies by a landing, moves-like and looks-like an earlier stage, nothing new): a (stage, setting, rule) flagged on more of the 16 layouts than `tools/validate/funknown.json` holds, or a new one; also fails a count that fell until it is lowered | about 45 s here / in gates.yml |
+| 11 | `node tools/engine/stonecheck.mjs` | a stone piece the game DRAWS with open air under it (Matt 2026-11-05: "Rocks can't float"): the real game in Chromium draws its world layers alone (engine.ts `supportProbe`, dev only), each piece's material is read from the frame it is painted with (a W9 "branch" is a basalt slab, a W8 "moss_stone" a purple log), its support from the pixels under it; 102 stages, layouts 1-2, both settings. Known list `tools/engine/stoneknown.json` only shrinks. `STONE_LAYOUTS=16` for the full measure (about 25 min with 3 pages); `STONE_STILL=id:layout:setting:x,y,w,h:tag` shoots the probe draw beside the game draw. The build lock beside it: `npx tsx tools/engine/stonelock.ts` (all 3,264 builds identical) | about 4 min / own CI job |
 
 In CI (`.github/workflows/deploy.yml`): the test shards and `gates.yml` (artcheck, knowncheck and clipcheck on one runner; drawcheck on its own runner) run side by side. `publish` needs all of them, so a failing gate blocks the live site.
 
@@ -46,6 +47,7 @@ The lists:
 - `src/game/playerText.known.json` (`key`, `kind`, `owner`).
 - `tools/perf/limits.json` (`art.knownOver4096`, `blends.allowlist`).
 - `src/game/artUse.allow.json`.
+- `tools/engine/stoneknown.json`: `<stage> <setting> <layout> #<piece id>` of each floating stone piece the fix has not reached (stonecheck.mjs fails a listed piece that is held now).
 - `tools/validate/funknown.json` (`stage`, `setting`, `rule`, `layouts`, `owner`): World 1's fun debt behind D26, owner the World 1 rebuild. knowncheck counts one id per layout, so a raised count fails like an added entry. After a rebuild clears flags, run `FUNCHECK_WRITE=1 npx tsx tools/validate/funcheck.ts` to lower the counts in the same commit.
 
 When you fix a known defect, delete its entry in the same commit, or the gate fails.
