@@ -3,7 +3,14 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 4:58 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 5:02 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+
+## 5:02 PM: the lead's 5:01 PM rulings
+- tester-page PASSES (the lead's look at its stills). It arrives inside engine-core's final; I merge tester-page myself only if the final
+  does not contain 4320a9b25 (checked at the merge with `git merge-base --is-ancestor`).
+- The lazy-seeds contingency: applied ONLY if the final's main JS is over 4 MiB (4,194,304 B); otherwise a roadmap item with its numbers.
+- CoachOverlay.tsx stays in 0.9.5; the pad's two old coach titles are logged for the next release (player text, Matt's words). Same as
+  live today, not a regression.
 
 ## 4:58 PM: CoachOverlay.tsx (the lead, 4:53 PM) and the gate moved to ~6:30-7:15
 - **CoachOverlay.tsx can NOT go with the old-1-1 patch: it is still read by the live game.** It no longer draws anything (no component);
@@ -189,7 +196,7 @@ the stage11gen2 todo, and 1-5 back to main (clears stage15's three).
 | 11 | lockall --check | baseline recorded and deterministic; trial 99/102: 1-1 intended, 1-5 and 4-9 NOT intended yet |
 
 ## Questions for the lead
-1. Has tester-page passed? Has engine-chunks passed? (I merge each only on your word, here or in STATUS.md. engine-chunks needs its
+1. (answered: tester-page and engine-chunks passed, both arrive in engine-core's final) Has tester-page passed? Has engine-chunks passed? (I merge each only on your word, here or in STATUS.md. engine-chunks needs its
    provenSeeds.ts re-generated on the merge.)
 2. 1-5 stays out: confirm, and name who puts main's 1-5 back (engine-core, I'd say: it's their code).
 3. 4-9 layout 4's moved find: take it (intended) or hold it?
