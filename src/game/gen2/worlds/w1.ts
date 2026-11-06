@@ -601,7 +601,8 @@ const boughStepup = section({
 /** canopy boughs: `n` rises each a double (share past a single) from a start bough; catch boughs under the gaps are the engine's (catchDrop) */
 const gRungs = (n: number, rise: R2, kind: 'jump' | 'double', share: R2, w: R2 = [200, 260]): G => (k) => {
   const pieces: W1Piece[] = [limb(`${k}r0`, { kind: 'start' }, [260, 320])];
-  seq(n, (j) => pieces.push({ ...limb(`${k}r${j + 1}`, { kind, after: `${k}r${j}`, dy: rise, share }, w), ...(kind === 'double' ? { block: 'double' as const } : {}) }));
+  // (Round 11, the designer 11-06: the rungs alternate bough and log, so the thin landings are not all branch)
+  seq(n, (j) => pieces.push({ ...limb(`${k}r${j + 1}`, { kind, after: `${k}r${j}`, dy: rise, share }, w, j % 2 ? 'branch' : 'log'), ...(kind === 'double' ? { block: 'double' as const } : {}) }));
   // (Round 4 FR6 for the set piece: a mid road of low logs under the approach and the run-out only, never past the chain)
   pieces.push(lowLog(`${k}lo0`, `${k}r0`, [0.2, 0.3]), lowLog(`${k}lo1`, `${k}r${n}`, [0.4, 0.5]));
   return { pieces, sockets: [dot(`${k}nomoss`, `${k}r0`, 0.7, 'hint.1-1.noMoss'), petals(`${k}p0`, `${k}lo0`, [0.3, 0.7], 2), petals(`${k}p1`, `${k}lo1`, [0.3, 0.7], 2)], last: `${k}r${n}` };
@@ -874,7 +875,8 @@ const seedPerch = section({
   id: 'w1-seed-perch', name: 'the seed perch', phases: ['sho', 'ten'], difficulty: 4, needs: ['double'], uses: ['bounce', 'double'], maxPerStage: 1, window: BOUGH_WINDOW,
   versions: [{ id: 'perch', groups: [gRest([200, 240]), (k, after) => {
     const f = floor(`${k}f`, [640, 720], startOr(after));
-    const b = bough(`${k}b`, `${k}st`, [0.2, 0.4], [-(Math.round(DOUBLE_RISE) + 50), -(Math.round(DOUBLE_RISE) + 50)], [200, 240]);
+    // (Round 11: the seed's perch is a log, floating: Matt's rule, walked-on logs may float)
+    const b: W1Piece = { ...bough(`${k}b`, `${k}st`, [0.2, 0.4], [-(Math.round(DOUBLE_RISE) + 50), -(Math.round(DOUBLE_RISE) + 50)], [200, 240]), style: 'log' };
     // (FR9b: a 50-56 px stump on the floor past the perch, a wall he hops: the perch itself is under 50, no beat, and the floor ran 4-5.6 s quiet)
     return { pieces: [f, ...perch(k, f.key, [0.3, 0.35]), b, stumpL(`${k}w`, f.key, [0.74, 0.8], [50, 56])], sockets: [{ id: 'seed', role: 'find', on: b.key, t: 0.5, dn: 70 }], last: f.key };
   }, gStile([40, 76, 100, 76, 40])] },
@@ -882,7 +884,8 @@ const seedPerch = section({
   // the same height, so it fits a low route; the seed's promise kept (stage11: more than 200 px up, past a double, a mushroom within 260))
   { id: 'low', groups: [gRest([200, 240]), (k, after) => {
     const c1 = bankW(`${k}c1`, after!, [-78, -62], [260, 320]), c2 = bankW(`${k}c2`, c1.key, [-78, -62], [640, 720]);
-    const b = bough(`${k}b`, `${k}st`, [0.2, 0.4], [-(Math.round(DOUBLE_RISE) + 50), -(Math.round(DOUBLE_RISE) + 50)], [200, 240]);
+    // (Round 11: the seed's perch is a log, floating: Matt's rule, walked-on logs may float)
+    const b: W1Piece = { ...bough(`${k}b`, `${k}st`, [0.2, 0.4], [-(Math.round(DOUBLE_RISE) + 50), -(Math.round(DOUBLE_RISE) + 50)], [200, 240]), style: 'log' };
     const n1 = bankW(`${k}n1`, c2.key, [62, 78], [260, 320]), n2 = bankW(`${k}n2`, n1.key, [62, 78], [360, 420]);
     return { pieces: [c1, c2, ...perch(k, c2.key, [0.3, 0.35]), b, stumpL(`${k}w`, c2.key, [0.74, 0.8], [50, 56]), n1, n2, stumpL(`${k}w2`, n2.key, [0.45, 0.55], [50, 56])], sockets: [{ id: 'seed', role: 'find', on: b.key, t: 0.5, dn: 70 }, petals(`${k}p`, c1.key, [0.3, 0.6], 1)], last: n2.key };
   }, gStile([40, 76, 40])] }],
@@ -1040,8 +1043,8 @@ const mushroomFork = section({
 const twinMushroomFork = section({
   id: 'w1-twin-mushroom-fork', floor: 'hop', name: 'two mushrooms', phases: ['sho'], difficulty: 4, uses: ['bounce'],
   versions: [
-    { id: 'a', groups: [gRest([200, 240]), gLogHop(), gFork(FW, [['b', 0.02], ['b', 0.55], ['h', 0.7]], [{ at: 0.1, dy: -195, w: [260, 300], mush: true }, { at: 0.3, dy: -380 }]), gLogHop(), gDip()] },
-    { id: 'b', groups: [gRest([200, 240]), gLogHop(), gDip(), gFork(FW, [['b', 0.02], ['b', 0.6], ['h', 0.78]], [{ at: 0.1, dy: -195 }, { at: 0.39, dy: -195 }]), gLogHop(), gDip()] },
+    { id: 'a', groups: [gRest([200, 240]), gLogHop(), gFork(FW, [['b', 0.02], ['b', 0.55], ['h', 0.7]], [{ at: 0.1, dy: -195, w: [260, 300], mush: true, style: 'log' }, { at: 0.3, dy: -380, style: 'log' }]), gLogHop(), gDip()] },
+    { id: 'b', groups: [gRest([200, 240]), gLogHop(), gDip(), gFork(FW, [['b', 0.02], ['b', 0.6], ['h', 0.78]], [{ at: 0.1, dy: -195, style: 'log' }, { at: 0.39, dy: -195, style: 'log' }]), gLogHop(), gDip()] },
   ],
   feel: ['1-1', '1-5'], not: NOT_11, rating: 4,
   source: 'Round 4 #37: as #36, #6 twin bounce; high a `b b +` / low [`b j`]; high b `b d +` / low [`j b w`]',
@@ -1216,7 +1219,7 @@ const mushroomChainBack = section({
     const f = floor(`${k}f`, [520, 580], startOr(after));
     const b0 = limb(`${k}b0`, { kind: 'over', on: f.key, at: [0.75, 0.755], dy: [-202, -198] }, [360, 420]);
     const ps: W1Piece[] = [f, mushroom(`${k}m`, f.key, [0.55, 0.6]), b0]; let prev = b0.key;
-    ([[-140, -136], [-140, -136], [136, 140], [136, 140]] as R2[]).forEach((dy, j) => { const key = `${k}c${j}`; ps.push(limb(key, dy[0] < 0 ? { kind: 'double', after: prev, dy, share: [0.3, 0.4] } : { kind: 'jump', after: prev, dy, share: [0.5, 0.6] }, [340, 400])); prev = key; });
+    ([[-140, -136], [-140, -136], [136, 140], [136, 140]] as R2[]).forEach((dy, j) => { const key = `${k}c${j}`; ps.push(limb(key, dy[0] < 0 ? { kind: 'double', after: prev, dy, share: [0.3, 0.4] } : { kind: 'jump', after: prev, dy, share: [0.5, 0.6] }, [340, 400], dy[0] < 0 ? 'branch' : 'log')); prev = key; }); // (Round 11: the down legs logs)
     return { pieces: ps, sockets: [petals(`${k}pf`, f.key, [0.1, 0.4], 2)], last: prev };
   }] }],
   feel: ['1-1'], not: NOT_11, rating: 7,
