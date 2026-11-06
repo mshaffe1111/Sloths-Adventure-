@@ -152,3 +152,33 @@ test("recorder 'dot': the first-run coach's line (its old words, which the revie
   // (the browser run of 11-06 logged it as quoted words: the review's plain-words table does not hold the coach's lines)
   assert.equal(dotLogId('Touch anywhere and slide to run. You do not have to touch Pokey. Put your thumb down anywhere on the screen and slide sideways. Slide the other way to turn around.', '1-1'), 'coach.run');
 });
+
+test("recorder versions: the 'env' and every 'gen2' moment carry the build's commit, the seed list's version and the test round", async () => {
+  const { runVersions, seedListVersion, TEST_ROUND, GIT_COMMIT } = await import('./testRound.ts');
+  const { PROVEN_SEEDS } = await import('./gen2/provenSeeds.ts');
+  assert.match(runVersions('1-1'), /^build \S+ list [0-9a-f]{8} round .+$/);
+  assert.ok(TEST_ROUND.length > 0 && GIT_COMMIT.length > 0);
+  // the list's version follows the list: the same list the same, a changed one different
+  assert.equal(seedListVersion('1-1'), seedListVersion('1-1'));
+  assert.ok((PROVEN_SEEDS as Record<string, unknown>)['1-1'], '1-1 has a proven list');
+  assert.equal(seedListVersion('no-such-stage'), 'none');
+  // the gen2 moment, as the engine sends it: the versions ride after it, and the survey's run line is the same
+  const lines: unknown[][] = [];
+  const rec = recorder as unknown as { on: boolean; push: (l: unknown[]) => void; lastRun: string };
+  const was = { on: rec.on, push: rec.push };
+  rec.on = true;
+  rec.push = (l) => lines.push(l);
+  try {
+    recorder.event('gen2', '1-1 seed 88 normal');
+  } finally {
+    rec.on = was.on;
+    rec.push = was.push;
+  }
+  const g = lines.find((l) => l[2] === 'gen2');
+  assert.ok(g, JSON.stringify(lines));
+  assert.equal(g![3], `1-1 seed 88 normal ${runVersions('1-1')}`);
+  assert.equal(rec.lastRun, g![3]);
+  // the env moment: written by start() with the same three (read from the source, start() needs a whole page)
+  const src = (await import('node:fs')).readFileSync(new URL('./playRecorder.ts', import.meta.url), 'utf8');
+  assert.match(src, /'env', `\$\{envDetail\(\)\} \| \$\{runVersions\(\)\}`/);
+});

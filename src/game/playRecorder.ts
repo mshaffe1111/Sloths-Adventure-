@@ -27,6 +27,7 @@ import { controlStyle, padSide, subscribeControls } from './controlPrefs.ts';
 import { BlinkWatch, ErrSeen, errLine, errWhere, RateLimiter } from './glitchWatch.ts';
 import { browserShort, envDetail } from './deviceInfo.ts';
 import { sectionLabel } from '../components/ctestStretches.ts';
+import { runVersions } from './testRound.ts';
 
 /** a store build (the Android app) carries no collector at all: the address and key fold away at build time (appShell.ts storeBuild) */
 const STORE = (import.meta as unknown as { env?: { VITE_STORE_BUILD?: string } }).env?.VITE_STORE_BUILD === '1';
@@ -178,7 +179,8 @@ class PlayRecorder {
     this.on = true;
     const controls = () => (controlStyle() === 'pad' ? `pad on the ${padSide()}` : 'screen gestures');
     this.push(['e', 0, 'start', `${window.innerWidth}x${window.innerHeight}; ${controls()}`]);
-    this.push(['e', 0, 'env', envDetail()]);
+    // (and which build, seed list and test round this run is: testRound.ts)
+    this.push(['e', 0, 'env', `${envDetail()} | ${runVersions()}`]);
     // a tester who switches to the thumb pad (or back) part way through
     subscribeControls(() => this.event('controls', controls()));
     this.timer = window.setInterval(() => void this.flush(false), FLUSH_MS);
@@ -362,7 +364,11 @@ class PlayRecorder {
 
   event(what: string, detail?: string | number) {
     if (!this.on) return;
-    if (what === 'gen2') this.lastRun = String(detail ?? '');
+    // (a rolled stage's start, `<stage> seed <n> <setting>`: the build, the seed list and the round go with it, testRound.ts)
+    if (what === 'gen2') {
+      detail = `${detail ?? ''} ${runVersions(String(detail ?? '').split(' ')[0])}`;
+      this.lastRun = detail;
+    }
     this.push(detail === undefined ? ['e', this.now(), what] : ['e', this.now(), what, detail]);
     if (what === 'finish' || what === 'survey' || what === 'quit') void this.flush(false);
   }

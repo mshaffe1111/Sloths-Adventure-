@@ -92,7 +92,8 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 | `rules` | `refined` or `old` touch rules |
 | `difficulty` | the difficulty picked |
 | `mix` | the test stage's layout seed (`?mix=<seed>` rebuilds it) |
-| `gen2` | at each start of a rolled (gen2) stage: `<stage> seed <seed> <easy|normal>`, so that run can be built again (from builds after 2026-11-06; the testers' link plays gen2 1-1, a fresh proven seed each run) |
+| `env` | once a run, at Start: the system version, graphics chip, memory, cores, language and screen settings (`src/game/deviceInfo.ts`), then (from builds after 2026-11-06) ` \| build <git commit> list <seed list version> round <test round>`. See "Which build" below |
+| `gen2` | at each start of a rolled (gen2) stage: `<stage> seed <seed> <easy\|normal>`, so that run can be built again (from builds after 2026-11-06; the testers' link plays gen2 1-1, a fresh proven seed each run), then the same `build <commit> list <version> round <label>`. Rebuild a run with that seed AND that list version: a rebuilt list changes what seed N builds |
 | `look` | at each stage start: `help teach`, `help reminders` or `help quiet` (Dot's help setting). Before 2026-10-26 it also said `newLook 1` or `newLook 0`; the new HUD and Dot is now the only look. |
 | `section` | the stretch of the test stage Pokey entered (from builds after 2026-10-26: only once he is 40 px into it and has stayed 0.5 s, and not while still swinging, so a swing over the line no longer flips it back and forth; `src/game/sectionTrack.ts`). From builds after 2026-11-06, a rolled (gen2) stage's stretch reads `<plain words> \| <section id>:<phase>`, e.g. `The stepping stones \| w1-stones:ki` or `Walking \| w1-meadow:rest`: the plain words are the same ones the end survey's "What felt hardest?" offers (`src/components/ctestStretches.ts`), so an answer lines up with where he lost lives |
 | `checkpoint` | checkpoint reached (its x) |
@@ -186,3 +187,13 @@ order they are most telling:
 - touch style: quick flicks (a `d`, a few `m`, a `u` within about 150 ms) against slow drags that the rules do not take as jumps (`i`
   lines missing where the thumb went up).
 Read it from these signals together, never one alone, and never ask the player.
+
+## Which build (from builds after 2026-11-06)
+
+The sheet's Version column is the build TIME. The `env` moment (once a run) and every `gen2` moment also carry:
+- `build`: the git short commit the build was made from (`dev` on a local dev server), so a run is tied to exact code;
+- `list`: the proven seed list's version (`src/game/testRound.ts`, a hash of the stage's list in `src/game/gen2/provenSeeds.ts`). Two
+  runs on the same seed are the same level only when their `list` matches;
+- `round`: the test round, `TEST_ROUND` in `src/game/testRound.ts`, BUMPED BY HAND for each round of testing (e.g. `1-1 gen2 r1`, then
+  `r2`). The testers' front page shows it in small print at the bottom, so testers can say which round they played.
+Compare rounds by `round`, and within a round by `build`, to see how a change moved the numbers.

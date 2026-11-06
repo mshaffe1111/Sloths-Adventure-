@@ -7,6 +7,7 @@ import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
 import { Plaque } from './KitParts.tsx';
 import { STD_ATLAS_SIZE, STD_FRAMES, STD_STAND_H } from '../game/heroStandardData.ts';
 import { stretchChoices } from './ctestStretches.ts';
+import { GIT_COMMIT, TEST_ROUND } from '../game/testRound.ts';
 
 /*
  * The testers' link (#ctest): the front page, the end questions and the sent screen, in the game's own menu kit (the lead and Matt,
@@ -208,6 +209,10 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
         <p className="ct-ledger ct-close">
           <span aria-hidden="true">✕</span>
           <span>When you're done, please close the browser tab. That stops the test.</span>
+        </p>
+        {/* which test round this is (testRound.ts: bumped by hand), so Matt can tell testers which round they are on */}
+        <p className="ct-small ct-center ct-round">
+          Test round: {TEST_ROUND} · build {GIT_COMMIT}
         </p>
       </form>
     </Scene>
