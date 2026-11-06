@@ -57,8 +57,8 @@ reference/notes/planner-wip/.
 ### Held: the branch bar (Round 11, open)
 
 - branch-bar.patch holds three things:
-  - W1 manifest  (passed through w1World);
-  - ;
+  - W1 manifest `branchMax: 0.3` (passed through w1World);
+  - `floorRoll.catchStyles: ['log', 'branch']`;
   - the verdict in applyVerdicts (gen2.branchMiss, folded by rollErrors), with branchShare.test.
 - **My measure:** branch / every platform 60 px tall or less (not broken, bouncy, drift or soil), catches included: median 24%, worst 29% on
   16 proven seeds with catchStyles. engine-core measures 30 px or less and gets a median of 38% even with catchStyles.
