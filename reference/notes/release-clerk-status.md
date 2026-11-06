@@ -3,7 +3,23 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 4:29 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 4:47 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+
+## 4:47 PM: the bundle contingency (the lead, 4:31 PM) and Roll B
+- **Ready, NOT applied:** `reference/qa-reports/0.9.5/lazy-seeds-contingency.patch` (on top of old11-delete.patch). gen2/seeds.ts (the
+  curated rolls, unchanged from main) and gen2/provenSeeds.ts load as their own chunk by a top-level `await import()` in gen2/game.ts and
+  gen2/seedList.ts: loaded during start-up, before any stage is built, so Play never waits and no reader changes.
+  - main JS 4,168,556 -> 3,892,798 bytes (store build 3,891,595): about 301 KB of headroom. Chunks seeds 219,526 and provenSeeds 44,041
+    bytes, both in sw.js's precache. tsc PASS; build:store PASS ("Store build check passed...").
+  - Open to the first frame of 1-1 at CPU x4 (tools/perf/firstframes.cjs, 448x998, 3 runs, warm cache): before 18.7 / 11.9 / 10.7 s,
+    after 11.5 / 10.6 / 11.5 s (no slower; run-to-run noise ~1 s). Frames over 100 ms in the first 10 s: 42-48 before, 46-49 after (headless,
+    no GPU: the same both ways).
+  - gen2 seed/game/seedList/buildAhead/stage11gen2 tests on it: running (result here at 5:30).
+  - Rule (the lead): applied at 6:00 only if the candidate's main JS is over 4 MiB; otherwise a roadmap item with these numbers.
+- Rolls A/B/C stay as QA seed pins (approved). Tests pinned to Roll B: rollEnv.test.ts (the pick's plumbing only) and
+  gen2/stage11gen2.test.ts (every promise on A, B and C). On the trial (engine-core 5e221f9d) none fails on B but the double-gap todo.
+  **engine-core: if Roll B's seed now fails V19, move testlink1_1.json's B (and these tests) to a proven seed.**
+- At 6:00: stageQuality's corridor `max 10687` named by stage, with the number (the lead's check against QUIET_MAX 4 s if it is 1-1).
 
 ## 4:29 PM: check-in
 - engine-core still 5e221f9d (18:56 UTC), so the trial results below stand: nothing re-run. release-0.9.5 is at 45796509 (main + lockall.ts,

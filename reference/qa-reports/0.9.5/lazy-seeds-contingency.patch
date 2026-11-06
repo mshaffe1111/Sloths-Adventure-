@@ -1,0 +1,50 @@
+From 3566be00d56ac1a1ae905aa20f8ea6abb277f40f Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Fri, 6 Nov 2026 21:45:31 +0000
+Subject: [PATCH] Contingency (0.9.5 bundle headroom): gen2's curated rolls and
+ proven seeds load as their own chunk at start-up (top-level await)
+
+Main JS 4,168,556 -> 3,892,798 bytes (store build 3,891,595); seeds 219,526 and provenSeeds 44,041 in their own files, both in the
+offline precache. First frame of 1-1 at CPU x4 (firstframes.cjs, 3 runs): before 18.7/11.9/10.7 s, after 11.5/10.6/11.5 s.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01FhBbYNbiMMD4wtzGED2iUK
+---
+ src/game/gen2/game.ts     | 5 ++++-
+ src/game/gen2/seedList.ts | 4 +++-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/src/game/gen2/game.ts b/src/game/gen2/game.ts
+index 02837d375..9c324beb7 100644
+--- a/src/game/gen2/game.ts
++++ b/src/game/gen2/game.ts
+@@ -15,7 +15,10 @@ import { kidMedian } from '../goals.ts';
+ import type { Difficulty } from '../difficulty.ts';
+ import type { LevelConfig } from '../types.ts';
+ import { provenGen2Stage } from './pipeline.ts';
+-import { GEN2_SEEDS, type Gen2Seed } from './seeds.ts';
++import type { Gen2Seed } from './seeds.ts';
++// (the curated rolls are data, about 220 KB: their own chunk, loaded while the app starts and before any stage is built, so the main
++// bundle stays under the 4 MiB per-file cache limit; a top-level await, so every reader below sees it loaded: 0.9.5 bundle headroom)
++const { GEN2_SEEDS } = await import('./seeds.ts');
+ import type { Gen2Stage, WorldKit } from './types.ts';
+ import { w5Kit } from './worlds/w5.ts';
+ import { w5ArenaKit } from './worlds/w5Arena.ts';
+diff --git a/src/game/gen2/seedList.ts b/src/game/gen2/seedList.ts
+index 6f44dff29..c91258f33 100644
+--- a/src/game/gen2/seedList.ts
++++ b/src/game/gen2/seedList.ts
+@@ -7,7 +7,9 @@
+  * in CI, holds every seed to both, so an engine or kit change that stales the list fails until the list is rebuilt.
+  */
+ import { buildGen2Stage, provenGen2Stage } from './pipeline.ts';
+-import { PROVEN_SEEDS } from './provenSeeds.ts';
++// (the proven seeds and their packed plans are data: their own chunk, loaded at start-up before any stage is built, with the curated
++// rolls (game.ts); a top-level await, so provenSeeds()/provenPlan() always see it)
++const { PROVEN_SEEDS } = await import('./provenSeeds.ts');
+ import type { BuildRequest, Gen2Stage, PlanSlot, WorldKit } from './types.ts';
+ import type { LevelConfig } from '../types.ts';
+ import type { Difficulty } from '../difficulty.ts';
+-- 
+2.43.0
+
