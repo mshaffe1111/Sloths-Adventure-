@@ -105,6 +105,8 @@ After 1-1 is proven, these run as their own lanes, one engine.ts holder at a tim
   look at the thing before saying it's done.
 
 ## For the roadmap (owed R-ids, law 21)
+- LIVE dips to judge (engine-core relative finder, 11-06; reference/qa-reports/engine-core/live-dips-to-judge.txt on engine-core): 1-2 s1 x12725 (80 px, never out); 1-6 s1 x21024; 1-6 s3 x16441-19651 (never out); 1-7 s3 x15479-19003 (never out); 2-2 s2 nine 200 px floors; 2-3 s1 seven 200 px floors (maybe room floors or river beds). Judge each, then fix or clear.
+- LIVE 4-9 L4 dead log stair (ids 86-89) under a road; a game-wide risk reading for H1 (hearts follow risk); clipcheck didn't open #ctest screens (fixed by tester-page).
 - 1-3 Easy: 14 floor dressing pieces tuck behind Easy's low step branches (engine-core dressThroughPlatform, e7331c41e). A live-game
   defect: Easy step placement vs dressing spacing. Owner later.
 - Art follow-ups (art-1-1-sunrise-2 95ce83f2d README): R-165.25 still says paused (now done for 1-1); 1-3 moves off w1sunrise after its own
