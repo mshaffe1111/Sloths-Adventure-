@@ -15,8 +15,10 @@ stage11 tests, and the stills. Make it FAIL-CLOSED:
    codeErrors), and push only if Rolls A/B/C still build (the lead's word on republishing).
 2. Art swap §3.2-3.5 (painted stump, log and boulder frames): WAITS on the lead's word after the red team (sameness risk: every stone
    one boulder). Step 1 (ownLook, e33d65cf9) is accepted.
-3. Round 6 leftovers: (d) #20/#27 "exit unreachable" at the test slot, waiting on the planner's seed and slot (suspect: tempo scales
-   un-tagged rises); (e) the B7 data audit (nothing standable within 175 across / 185 below a block's lip on the approach side).
+3. Round 6 leftovers: (d) #20/#27 "exit unreachable" at the test slot. The planner's repro (10:53 PM; w1World on c2710323, Normal,
+   buildGen2Stage): seed 55434 slot s10 w1-stump-towers (exit platform 192, checkpoint x 31589); seed 95029 slot s10 w1-stilt-logs
+   (exit 168, checkpoint x 28802) and w1-stump-towers (exit 168, checkpoint x 28751). Print the slot's tempo and the last piece's
+   laid y against the out floor's (suspect: T.rise scales the rises, not the out floor's drop); (e) the B7 data audit (nothing standable within 175 across / 185 below a block's lip on the approach side).
 4. FR9 over the older sections (every floor h a 50 px wall, no plain floor over 4 s): the designer's pass, from the planner's list.
 
 ## Open findings handed on (engine: the planner)
