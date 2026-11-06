@@ -3,7 +3,7 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 3:38 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 4:00 PM ET (shards 2 and 3 in); before that 3:38 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
 
 ## 3:40 PM: engine-chunks
 - The lead (3:38 PM): engine-chunks 75472091 PASSES the Law 5 check (rolledFlags, forks11, catchStyles planted both ways; stageVariety
@@ -95,9 +95,26 @@ Shard 1/3 (done, exit 1):
 | requiredMove.test.ts:8 the limited bot stops short on 1-6 without the bounce | `without the bounce: shrine, bounced 1` | engine-core (likely the shared levelCheck/engine change; 1-6 itself is lock-identical, so the bot or engine changed) |
 | stage15.test.ts:83 1-5: creaking branches, a seed waits for the glide | `seed 1: a glide seed` | 1-5 (goes away if 1-5 stays out) |
 | stage15.test.ts:59, :71 (todo-marked) | `seed 1: a rope`; the fern | 1-5 (same) |
-Shard 2/3 (running): `on the generated stages of every world the plan meets the variety targets` red (detail when it ends).
-Shard 3/3 (running): `5-9's Easy goal rests on the kid's runs: re-measured, they are still the ones recorded (gen2/game.ts KID_RUNS_59)`
-red (5-9 is lock-identical, so a shared bot/engine change moved the kid's runs).
+Shard 2/3 (done 3:55 PM, exit 1: 734 tests, 733 pass, 1 fail, 0 todo):
+| Test | Failure | Cause / owner |
+|---|---|---|
+| platformPlan.test.ts:108 the plan meets the variety targets | `1-1: branch is 41% of 51 platforms` | gen2 1-1's look mix. The lead: should clear with engine-chunks (platformPlan judges only old-generator stages, gen2's held by the stageVariety ruler). I re-check at the final merge |
+
+Shard 3/3 (done 3:57 PM, exit 1: 771 tests, 763 pass, 6 fail, 2 todo):
+| Test | Failure | Cause / owner |
+|---|---|---|
+| firstTimerBot.test.ts:176 5-9's Easy goal rests on the kid's runs | `the kid bot or 5-9 changed: re-measure` (runs now include 3 and 7) | engine-core: 5-9 is lock-identical, so the kid bot or the engine changed. Re-measure and set the goal from the new runs, or find what moved the bot |
+| stageQuality.test.ts:86 one to three forks | `1-1@null: 0 forks` | gen2 1-1 judged by the old-generator rule: clears with engine-chunks (builtOnGen2; forks11 replaces it) |
+| stageQuality.test.ts:186 no long empty corridors | `max 10687` (over every old-generator stage, 1-1 included) | almost surely gen2 1-1 (engine-chunks names "free stretches to 5.6k"): clears with engine-chunks if so; I check which stage at the final merge |
+| stageQuality.test.ts:207 checkpoints 900-1900 apart | `1-1: flags 366 px apart` | gen2 1-1: clears with engine-chunks (rolledFlags) |
+| stageQuality.test.ts:221 four styles, none over 40% | `1-1: 3 styles` | gen2 1-1: clears with engine-chunks (catchStyles) |
+| w1NewArt.test.ts:25 1-1's dressing names pieces the sheet has | `[{"n":"bootprint","x":36695,"b":419}]` | engine-core: gen2 1-1 lays a "bootprint" dressing the 1-1 sheet has no frame for (or the sheet isn't preloaded) |
+| todo (red): gen2/stage11gen2.test.ts:62 the double-gap promise | as before | engine-core removes the todo (the lead: breaking rolls leave the proven list) |
+| todo (red): w4RealReach.test.ts:26 4-3 | the wall-check todo | on main already, not new |
+
+**What engine-core must fix by 5:00 (if engine-chunks clears its four):** artUse (8 unused W1 cut pieces), levels flag gap (if not
+covered by rolledFlags), w1Pits (1-1: 11 floorless gaps), requiredMove (1-6 bounce bot), firstTimerBot 5-9 kid runs, w1NewArt bootprint,
+the stage11gen2 todo, and 1-5 back to main (clears stage15's three).
 
 ## Old 1-1 path: what is deleted once gen2 1-1 ships (step 6; deleted only after engine-core's final commit)
 - testlink1_1.ts: the 'old' and 'A'/'B'/'C' picks, `skip11Spec`, `roll11Seed`, `pickerOn`, testlink1_1.json (Rolls A/B/C); keep only Play's
@@ -115,9 +132,9 @@ red (5-9 is lock-identical, so a shared bot/engine change moved the kid's runs).
 | # | Gate | Result |
 |---|---|---|
 | 1 | tsc | NOT RUN on the candidate [trial: PASS, 7 s] |
-| 2 | tests, 3 shards | NOT RUN on the candidate [trial: shard 1 FAIL (7 red), 2 and 3 running, 1 red each so far] |
+| 2 | tests, 3 shards | NOT RUN on the candidate [trial: FAIL: shard 1 7 red + 2 todo, shard 2 1 red, shard 3 6 red + 2 todo] |
 | 3 | vite build (no asset over 4 MiB) | NOT RUN |
-| 4 | npm run build:store | NOT RUN |
+| 4 | npm run build:store | NOT RUN on the candidate [trial: PASS; bundle 4,168,597 B, 25.7 KB under 4 MiB] |
 | 5 | artcheck | NOT RUN |
 | 6 | knowncheck | NOT RUN |
 | 7 | clipcheck | NOT RUN |
