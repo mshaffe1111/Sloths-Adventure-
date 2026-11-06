@@ -1402,7 +1402,8 @@ export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?:
   //  Roll 5's upright still; a plank may float)
   const onGround = (p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>) => st.platforms.some((q) => q !== p && q.type === 'solid' && Math.abs(q.y - (p.y + p.height)) <= 6 && q.x <= p.x + p.width / 2 && q.x + q.width >= p.x + p.width / 2);
   for (const p of st.platforms) if (p.type === 'solid') { const c = pickCut(p); if (c && (W1_CUT[c].kind === 'log' || onGround(p))) p.cut = c; }
-  w1Squirrels(st as never);
+  // (a built roll only: a toy stage of bare platforms, w1CutArt.test's, has no spawn or sections to dress)
+  if ((st as { gen2?: unknown }).gen2) w1Squirrels(st as never);
   return st;
 }
 
