@@ -27,6 +27,8 @@ import { cosine } from '../inspect/analyze.ts';
 import { looksAlike } from '../inspect/lookalike.ts';
 import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
+import { setPick11 } from '../../src/game/testlink1_1.ts';
+import { asQaBuildForTest } from '../../src/game/playRecorder.ts';
 import { landingKind } from '../../src/game/mixer/catalog.ts';
 import { dressOverDoor, dressThroughPlatform, propBreaches } from '../../src/game/mixer/propSupport.ts';
 import { stillSpots } from '../../src/game/mixer/stillSpots.ts';
@@ -39,6 +41,13 @@ const id = process.argv[2];
 const N = Number(arg('--layouts', '16'));
 const NB = Number(arg('--neighbours', '4'));
 const OUT = arg('--out', 'reference/engine/stage-reports');
+// (--roll A|B|C: 1-1 as the test link's picker builds it, gen2 from World 1's kit on that roll's seed (testlink1_1.ts); every layout is
+// the same roll, so run it with --layouts 1. TEST-LINK ONLY, goes with the picker)
+const ROLL = arg('--roll', '');
+if (ROLL) {
+  if (id !== '1-1' || !['A', 'B', 'C'].includes(ROLL)) { console.error('stage.ts: --roll A|B|C is for 1-1 only'); process.exit(2); }
+  asQaBuildForTest(true); setPick11(ROLL as 'A' | 'B' | 'C');
+}
 const spec = id ? specFor(id) : undefined;
 if (!spec) { console.error(`stage.ts: no spec for "${id}" (mixer/stages.ts SPECS)`); process.exit(2); }
 const levels = generateAllLevels();
