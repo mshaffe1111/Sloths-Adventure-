@@ -177,3 +177,16 @@ Colours: "cold dark slate and iron, rain-wet, storm light".
 | W10-03 | iron poles and chains hanging from the top, full height | T | replaces the plain drawn poles |
 | W10-04 | a fortress wall alcove and a fallen shield or cart to hide under | S | hiding spot |
 | W10-05 | a tall fortress wall with ledges and chains built in, one piece | T | one-piece vertical |
+
+## REDO: re-rolls from the 2026-11-05 sheets (art director, 11-06; details in reference/art/cut/README.md)
+Same master prompt. Attach the original sheet so Gemini keeps the look, and add the fix in the "Fix" column.
+| # | Sheet / piece | Fix | Size |
+|---|---|---|---|
+| R-01 | 10 thin rope | pink got painted into the strands: ask on a GREEN background (#00FF00), "plain brown jungle rope, no pink or red" | T |
+| R-02 | 10 vine columns, ropes, monstera and flowering vines, fungus vine | too small (~150-200 px): 3 per image, full height | T |
+| R-03 | 42 fungus trunk B (the spiral steps) | the crown is cut off at the top: "leave empty space above the crown" | T |
+| R-04 | 17 and 18 hollow logs | drawn at an angle: "seen exactly from the side, horizontal, opening facing left" | L |
+| R-05 | 19 diagonal post, 20 roped log, 13 diagonal lashed log | angled: "horizontal, flat-on" (or drop them) | L |
+| R-06 | 20 X-frame, 08 rope beam | three-quarter view: "flat-on, side view" | S |
+| R-07 | 21 and 23 lily pads | top-down: already W1-21 above (side view at the water line) | L |
+| R-08 | 22 logs in water | angled: "horizontal, half sunk, water line level at the bottom" | L |

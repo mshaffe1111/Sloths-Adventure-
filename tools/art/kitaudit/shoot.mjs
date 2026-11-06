@@ -31,7 +31,7 @@ for (let i = 0; i < 120 && !/Local:|ready in/.test(vout); i++) await sleep(500);
 const browser = await chromium.launch();
 const ORIENTS = [
   { id: 'land', viewport: { width: 844, height: 390 }, fr: [0.2, 0.5, 0.8] },
-  { id: 'port', viewport: { width: 390, height: 844 }, fr: [0.5] },
+  { id: 'port', viewport: { width: 390, height: 844 }, fr: (process.env.PORT_FR || '0.5').split(',').map(Number) },
 ];
 for (const o of ORIENTS) {
   const ctx = await browser.newContext({ viewport: o.viewport, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
