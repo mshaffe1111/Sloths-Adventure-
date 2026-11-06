@@ -679,3 +679,10 @@ Gate (planner): on 16 seeds, both settings, end ≥ window start + 150 and ≤ c
 - **V19e: the end log is the stage's HIGHEST standing point, or within one single jump (108 px) of it.** No earlier landing sits higher than the end. So a roll can't peak mid-window and then end lower than where he has already been, which would read as coming down at the end (story-briefs/1-1.md:23, :47-52).
 - It stays a quiet height, not a vista: "the bigger views belong to later stages" (:23), so nothing opens a long view north.
 - The planner gates V19c, V19d and V19e together, on every roll.
+
+**The double teach's gap, in PIXELS (12:23 PM; the planner's 12:48 trace: Roll A's #33 teach gaps lay at 227 px, and the first-timer bot misses both).**
+- Share 0.70-0.75 would lay about 161-173 px, which a single jump (175) crosses. Then there's no block, and the required-move gate fails, so that's not the fix.
+- **The fix: a TEACH's double gap is 195-205 px** (single + 20 to +30): the narrowest gap that still needs the double.
+- **A TEST's double gap is 205-230 px.**
+- These apply to #8, #33 and #34 and every `gDoubleGaps` on a T; tests (X) keep the wider band. The engine places them by pixels (the planner's block check reads pixels), whatever share that takes.
+- **The teach also gets a wide far bank** (≥ 3.5 body widths, G L1844's landing band), so a just-made double lands safely.
