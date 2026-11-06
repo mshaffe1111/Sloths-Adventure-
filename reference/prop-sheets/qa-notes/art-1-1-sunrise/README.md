@@ -10,6 +10,20 @@ Branch art-1-1-sunrise-2 (from origin/engine-core). Lead: session_01FhBbYN2DDskt
   starts2.py laying a tree at x=0 (countermeasure: tools/art/sunrise11/cut.py mid refuses a take with paint in a join band; starts.py
   lays pieces between ground-only margins; join.py pads a short clearing with the strip's own ground).
 
+## Gates (2026-11-05, ~7:40 PM ET, on art-1-1-sunrise-2)
+- tsc PASS; vite build PASS (nothing over 4 MiB); build:store PASS; artcheck PASS; knowncheck PASS; roadmapcheck PASS (full history);
+  drawcheck PASS (its 7 scenarios; 1-1 is not one of them, so 1-1 was also measured by a throwaway copy with scenarios ['1-1']:
+  PASS both ways, and the same numbers as the old w1sunrise set); clipcheck PASS (83 known).
+- tests: 2335, 2326 pass, 7 FAIL, 2 todo. The 7 (stage11.test.ts 1-1 floor/mushroom/double, stage15.test.ts 1-5 x3, plainWalk.test.ts
+  dips) fail identically on the clean base 5aeb66bb2 without this branch's changes: engine-core's, not this lane's.
+- funcheck FAIL (56 worse or new): identical on the clean base 5aeb66bb2: engine-core's layout work, not this lane's.
+
+## Final files (sha256, first 16)
+bb93a5b82fdaee27  w1sun2-far.webp
+b8fc0fc004c525f9  w1sun2-mid.webp
+85b0f79f9d32c642  w1sun2-near.webp
+bfabbf7e1ff10ec9  w1sun2-sky.webp
+
 ## Follow-ups (for the lead to number on ROADMAP.md, law 21)
 - 1-3 still plays w1sunrise (with the orchids and the cut trunk): move it to w1sun2, or its own set, after its own stills check
   (the lead, 11-05). Then delete w1sunrise-far/-sky/-mid/-near (new replaces old).
