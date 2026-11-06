@@ -592,3 +592,11 @@ a 100 px floor, and the end log never does. The quiet arrival is kept: no beat o
 **The supervisor's check of Round 10: PASS (10:39 AM).** About 3 s of calm walk onto main's 685 px log reads as "up in the high branches... pointed north. Resolve, not triumph" (1-1.md:23). Two keep-checks, held on every roll:
 - nothing to jump or dodge on the walk-on or the log, beyond the single soft step;
 - **the bootprint place is in view, upright and sideways at phone size, before he reaches the totem** (the clue at t 0.47-0.56 of the log, the totem at t 0.85). A still at the walk-on's end checks it.
+
+**Round 10's numbers, set to the exact cap (10:48 AM; the planner measured main 68b31e66's 1-1 end):** main's end log is 686 px, with the totem
+on it, and its walk-on is a 129 px stone (a step down onto the log). **Cap = 815 px. Every goal's walk-on, in total, is 100-130 px:**
+- #15: one bough of 100-130 (its soft-step version the same);
+- #23 steps1: 100-130; steps2: 50-65 + a 50-65 step;
+- #30 hop: 100-130; walk-first: 50-65 + 50-65.
+
+Outro = 785-815 px.
