@@ -3,8 +3,10 @@
 // Every measure is an existing one, imported, never a new one (the lead, 11-05):
 //   spec        mixer/spec.ts checkSpec (moves taught before used, decks, theme, length floor)
 //   level       tools/inspect/eraRoll.ts buildRoll + checkRoll: the level check, every build
-//   length      stageTime.ts modelAll (fast): Normal inside the profile's band, Easy at or over its floor
-//   lines       passLines.ts: the stage's measured reference row (1-1: old 1-1's medians on main), never its profile words
+//   length      stageTime.ts modelAll (fast): Normal inside the profile's band, Easy at or over its floor; a rolled stage (1-1): its
+//               pipeline's floors on gen2.modelled, no cap (rulers.ts lengthBreaches)
+//   lines       passLines.ts: the stage's measured reference row, never its profile words; 1-1: splits over reachable tops against
+//               old 1-1's median (rulers.ts REACHABLE_REF), two-road reported
 //   quiet       eraRoll.ts measureRoll longestQuiet <= RULES.quietMax ("Dead time")
 //   neighbours  the 200-roll tool's sameness test (eraRoll.ts RULES): against every other stage of the world, no roll pair with a
 //               3-gram cosine over RULES.cosine (analyze.ts cosine) or a 20 s stretch closer than LOOK.alike (lookalike.ts looksAlike)
@@ -31,8 +33,8 @@ import { roll11Seed, setPick11 } from '../../src/game/testlink1_1.ts';
 import { cameraReachBreaches } from '../../src/game/cameraReach.ts';
 import { endAboveWindow, rawTextIds, seedPromise, teachOrder } from '../../src/game/storyChecks.ts';
 import { dotLine } from '../../src/game/dotLines.ts';
-import { stageVariety, varietyBreaches, VARIETY_BARS } from '../../src/game/stageVariety.ts';
-import { buildGen2Stage } from '../../src/game/gen2/pipeline.ts';
+import { distinctness, pieceTokens, stageVariety, varietyBreaches, VARIETY_BARS } from '../../src/game/stageVariety.ts';
+import { buildGen2Stage, planBudget } from '../../src/game/gen2/pipeline.ts';
 import { w1World } from '../../src/game/gen2/worlds/w1.ts';
 import { asQaBuildForTest } from '../../src/game/playRecorder.ts';
 import { landingKind } from '../../src/game/mixer/catalog.ts';
@@ -41,6 +43,9 @@ import { stillSpots } from '../../src/game/mixer/stillSpots.ts';
 import { distinctTokens, overlapSummary } from '../../src/game/mixer/codeVariety.ts';
 import { nodePieceBreaches, v19Breaches, type RealisedNode } from '../../src/game/mixer/nodePieces.ts';
 import { botRun } from '../validate/play.ts';
+import { validateStage } from '../../src/game/levelCheck.ts';
+import type { Platform, Rope } from '../../src/game/types.ts';
+import { requiredMoveBreaches, reachableSplits, REACHABLE_REF, againstOldBreaches, lengthBreaches } from './rulers.ts';
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const id = process.argv[2];
@@ -84,28 +89,47 @@ const levelBad: string[] = [], lenBad: string[] = [], quietBad: string[] = [];
 const secs = { normal: [] as number[], easy: [] as number[] };
 const rolls: RollResult[] = [];
 const [lo, hi] = spec.profile.length.normal;
+/** the rolled stages and the kit each rolls from (stageGenerator.ts: 1-1 from World 1's) */
+const ROLLED_KITS: Record<string, () => { manifest: Parameters<typeof planBudget>[1] }> = { '1-1': w1World };
 for (let v = 1; v <= N; v++) {
   const r = measureRoll(cfg, v, { bots: false } as never);
   rolls.push(r);
   if (!r.ok) levelBad.push(`normal ${v}: ${r.errors[0]}`);
   if (r.longestQuiet > RULES.quietMax) quietBad.push(`normal ${v}: ${r.longestQuiet.toFixed(1)} s quiet (max ${RULES.quietMax})`);
-  const n = modelAll(buildRoll(cfg, v) as never).fast.total;
+  const nb = buildRoll(cfg, v);
+  const n = modelAll(nb as never).fast.total;
   secs.normal.push(n);
-  if (n < lo || n > hi) lenBad.push(`normal ${v}: ${n.toFixed(0)} s (band ${lo}-${hi})`);
   const e = buildRoll(cfg, v, true);
   const ce = checkRoll(e);
   if (!ce.ok) levelBad.push(`easy ${v}: ${ce.errors[0]}`);
   const es = modelAll(e as never).fast.total;
   secs.easy.push(es);
+  // (a rolled stage, the lead 12:15 (c), Matt "at least 2:00, no cap": its own pipeline's floors on its own time model (planBudget
+  // seconds, gen2.modelled), never the mixer profile's band; rulers.ts lengthBreaches, planted in rulers.test.ts)
+  const kit = ROLLED_KITS[id];
+  const gN = gen2Of<{ modelled?: { typical: number; fast: number } }>(nb), gE = gen2Of<{ modelled?: { typical: number; fast: number } }>(e);
+  if (kit && gN?.modelled && gE?.modelled) {
+    for (const [d, g] of [['normal', gN], ['easy', gE]] as const) lenBad.push(...lengthBreaches(g.modelled!, planBudget(cfg, kit().manifest, d).seconds, `${d} ${v}`));
+    continue;
+  }
+  if (n < lo || n > hi) lenBad.push(`normal ${v}: ${n.toFixed(0)} s (band ${lo}-${hi})`);
   if (es < spec.profile.length.easyMin) lenBad.push(`easy ${v}: ${es.toFixed(0)} s (floor ${spec.profile.length.easyMin})`);
 }
 gate(`level check (${N} x 2)`, levelBad);
-gate(`length (Normal ${range(secs.normal)} s in ${lo}-${hi}; Easy ${range(secs.easy)} s >= ${spec.profile.length.easyMin})`, lenBad);
+gate(ROLLED_KITS[id] ? `length (the pipeline's floors, typical >= target and fast >= floor on both settings, no cap; era model Normal ${range(secs.normal)} s, Easy ${range(secs.easy)} s)` : `length (Normal ${range(secs.normal)} s in ${lo}-${hi}; Easy ${range(secs.easy)} s >= ${spec.profile.length.easyMin})`, lenBad);
 gate(`quiet stretches (<= ${RULES.quietMax} s)`, quietBad);
 
 // 4b. the stage's pass lines, from its measured reference row (passLines.ts), never from its profile words
-const ref = REFERENCE[id];
-if (ref) {
+const ref = REFERENCE[id], rref = REACHABLE_REF[id];
+if (rref) {
+  // (the lead 12:15 (a): splits over the tops he can reach (levelCheck's reachableIds); old 1-1's unreachable bough decks made 29 of its 36
+  // splits. Two-road is reported, not judged, for 1-1: rulers.ts REACHABLE_REF)
+  const m = Array.from({ length: N }, (_, i) => { const st = buildRoll(cfg, i + 1) as never as { platforms: Platform[]; ropes?: Rope[] }; return reachableSplits(st, new Set(validateStage(st as never, { rooms: false }).reachableIds)); });
+  const ss = m.map((q) => q.splits).sort((a, b) => a - b), tt = m.map((q) => q.twoRoad).sort((a, b) => a - b);
+  const sMed = ss[Math.floor(N / 2)];
+  linesShown.push(`two-road share over reachable tops (reported for ${id}): median ${tt[Math.floor(N / 2)]}, old ${id} ${rref.twoRoadReport}`);
+  gate(`pass lines (splits over reachable tops, median ${sMed} >= ${rref.splitsMin}, old ${id}'s median)`, sMed >= rref.splitsMin ? [] : [`splits over reachable tops: median ${sMed}, line ${rref.splitsMin} (old ${id}, main 68b31e66, 16 layouts)`]);
+} else if (ref) {
   const m = Array.from({ length: N }, (_, i) => splitsOf(buildRoll(cfg, i + 1) as never));
   const ss = m.map((q) => q.splits).sort((a, b) => a - b), tt = m.map((q) => q.twoRoad).sort((a, b) => a - b);
   gate(`pass lines (splits median ${ss[Math.floor(N / 2)]} >= ${ref.splitsMin}; two-road median ${tt[Math.floor(N / 2)]} >= ${ref.twoRoadMin})`, judgeLines(id, m));
@@ -238,7 +262,16 @@ if (fs.existsSync(OLD_FILE)) {
   }
   const bad = [...(worst > RULES.cosine ? [`cosine ${worst.toFixed(2)} over ${RULES.cosine}`] : []), ...(alike ? [`${alike} of ${pairs} roll pairs with a 20 s stretch alike (first: ${first})`] : [])];
   nbClosest.push(`old ${id} (${old.source}): max cosine ${worst.toFixed(2)}, ${alike} of ${pairs} roll pairs alike`);
-  gate(`against old ${id} (cosine < ${RULES.cosine}, no 20 s stretch alike; ${old.rolls.length} old rolls)`, bad);
+  // (the lead 12:15 (b): the h:J cosine measured how ALIKE the new plays the old and is retired as the judge where the old stage's pieces
+  // are measured; it is reported. The judge: each new roll differs from old's rolls by at least old's own spread: rulers.ts againstOldBreaches)
+  const PIECES_FILE = `tools/engine/old${id.replace('-', '')}-pieces.json`;
+  if (fs.existsSync(PIECES_FILE)) {
+    const op: { source: string; rolls: Array<{ variant: number; tokens: string[] }> } = JSON.parse(fs.readFileSync(PIECES_FILE, 'utf8'));
+    const oldT = op.rolls.map((r) => r.tokens), spread = Math.round(distinctness(oldT).mean * 1000) / 1000;
+    const mine = Array.from({ length: N }, (_, i) => ({ id: `layout ${i + 1}`, tokens: pieceTokens((buildRoll(cfg, i + 1) as never as { platforms: Platform[] }).platforms) }));
+    linesShown.push(`against old ${id}, reported (the retired cosine judge): ${bad.join('; ') || 'none over'}`);
+    gate(`against old ${id} (each roll's pieces distinctness from old's ${oldT.length} rolls >= old's own spread ${spread}; ${op.source})`, againstOldBreaches(mine, oldT, spread));
+  } else gate(`against old ${id} (cosine < ${RULES.cosine}, no 20 s stretch alike; ${old.rolls.length} old rolls)`, bad);
 }
 
 // 5c. support (mixer/support.ts, mixer/catalog.ts labels): a platform piece (bough, limb, shelf, log, plank) may stand in open air; a
@@ -437,13 +470,16 @@ const codeRows: string[] = [];
       if (!m) continue;
       const move = (g2 ? undefined : (spec.nodes[n - 1]?.teaches as string | undefined)) ?? m[2];
       if (move !== 'double' && move !== 'bounce') { unjudged.add(`${q.job} (no bot without ${move})`); continue; }
-      const fullOK = full.run.end === 'shrine' || full.reachX >= q.x1;
       const lim = botRun(id, v, setting, { without: { move, x0: q.x0, x1: q.x1 } });
-      const limFails = lim.run.end !== 'shrine' && lim.reachX < q.x1;
       if (move === 'double' && lim.doubled.inside > 0) bad.push(`${setting} ${v} node ${n} (${q.job}): the limit did not hold (${lim.doubled.inside} second jumps inside)`);
-      if (!fullOK) bad.push(`${setting} ${v} node ${n} (${q.job}): the full bot stopped at x ${full.reachX}, before the node's end ${q.x1}`);
-      if (!limFails) bad.push(`${setting} ${v} node ${n} (${q.job}, x ${q.x0}-${q.x1}): a bot without ${move} gets past it (${lim.run.end}, reached x ${lim.reachX}): the ${move} is not required`);
-      shownRM.push(`${setting} ${v} n${n} ${move}: full ${fullOK ? 'passes' : 'stops'}, without ${limFails ? 'fails' : 'passes'}`);
+      // (the rescue gate, the lead 12:49 PM: a limited run carried past the node by the bot's rescue or a soft fall inside it did not pass
+      // it; the full bot rescued in a TEACH is its own breach: rulers.ts requiredMoveBreaches, planted in rulers.test.ts)
+      const says = (r: typeof lim) => ({ end: r.run.end, reachX: r.reachX, rescueXs: r.run.rescueXs, softFallXs: r.run.softFallXs });
+      const job = m[1] as 'teach' | 'test';
+      for (const b of requiredMoveBreaches({ job, move, x0: q.x0, x1: q.x1 }, says(full), says(lim))) bad.push(`${setting} ${v} node ${n}: ${b}`);
+      const carried = [...lim.run.rescueXs, ...lim.run.softFallXs].filter((x) => x >= q.x0 && x <= q.x1).length;
+      const fullRescued = full.run.rescueXs.filter((x) => x >= q.x0 && x <= q.x1).length;
+      shownRM.push(`${setting} ${v} n${n} ${job} ${move}: full ${full.run.end === 'shrine' || full.reachX >= q.x1 ? 'passes' : 'stops'}${fullRescued ? ` (${fullRescued} rescues inside)` : ''}, without ${lim.run.end !== 'shrine' && lim.reachX < q.x1 ? 'fails' : carried ? `carried (${carried} rescues/soft falls inside)` : 'passes'}`);
     }
   }
   if (unjudged.size) notMeasured.push(...[...unjudged].map((u) => `required-move: ${u}`));
