@@ -1,6 +1,5 @@
 import { TextGlyph } from './icons/TextGlyph.tsx';
-import { setPick11 } from '../game/testlink1_1.ts';
-import { qaBuild } from '../game/playRecorder.ts';
+import { newPlay11, pickerOn, setPick11 } from '../game/testlink1_1.ts';
 import { starsPossible } from './mapStars.ts';
 import { newLookSoon } from '../game/newLookSoon.ts';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -342,13 +341,13 @@ export const WorldMap: React.FC<WorldMapProps> = ({
               )}
             </div>
             {pickedOpen && (
-              <button type="button" className="gx-plank gx-plank-gold wm-play" onClick={() => { setPick11('mixer'); onSelectLevel(picked); }} data-start="true">
+              <button type="button" className="gx-plank gx-plank-gold wm-play" onClick={() => { setPick11('play'); if (picked.id === '1-1') newPlay11(); onSelectLevel(picked); }} data-start="true">
                 <PaintedIcon name="play" size={24} />
                 {picked.completed ? 'Replay' : 'Play'}
               </button>
             )}
-            {pickedOpen && picked.id === '1-1' && qaBuild() && (
-              // (the test link's 1-1 picker, QA builds only (testlink1_1.ts): Old 1-1 as main builds it, or gen2 1-1's Rolls A, B, C)
+            {pickedOpen && picked.id === '1-1' && pickerOn() && (
+              // (Matt's 1-1 picker, a QA build with its flag only (testlink1_1.ts pickerOn): Old 1-1 as main builds it, or gen2 1-1's Rolls A, B, C)
               <div className="wm-pick11" role="group" aria-label="Test link: which 1-1">
                 {(['old', 'A', 'B', 'C'] as const).map((p) => (
                   <button key={p} type="button" className="gx-plank wm-pick11-btn" onClick={() => { setPick11(p); onSelectLevel(picked); }}>

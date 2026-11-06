@@ -6,7 +6,7 @@ import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
-import { pick11, roll11Seed, skip11Spec } from './testlink1_1.ts';
+import { pick11, play11Seed, roll11Seed, skip11Spec } from './testlink1_1.ts';
 import { provenGen2Stage } from './gen2/pipeline.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
@@ -2841,7 +2841,8 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
   // (the test link's 1-1 picker: a gen2 roll skips the hand-built path, testlink1_1.ts)
-  const gen2Roll11 = config.id === '1-1' && !config.secret && ['A', 'B', 'C'].includes(pick11());
+  // (1-1's Play is gen2 from the proven list: only Matt's Old 1-1 pick takes the hand-built path)
+  const gen2Roll11 = config.id === '1-1' && !config.secret && pick11() !== 'old';
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled() && !gen2Roll11) {
     // (a stage the mixer builds from its spec, 1-1 and 1-5, lays Easy itself: mixer/w1mix.ts; the rest are made gentler on the built
     // stage alone, easyMode.ts)
@@ -2858,9 +2859,10 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   }
   // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below; and the test link's
   // 1-1 picker's gen2 rolls (testlink1_1.ts: QA builds only, World 1's kit gen2/worlds/w1.ts w1World, the roll's seed)
-  const roll11 = config.id === '1-1' && !config.secret ? pick11() : 'mixer';
-  if (isGen2Stage(config) || roll11 === 'A' || roll11 === 'B' || roll11 === 'C') {
-    const stage = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? w1Finish(provenGen2Stage({ config, kit: w1World(), seed: roll11Seed(roll11), difficulty })) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
+  const roll11 = gen2Roll11 ? pick11() : null;
+  if (isGen2Stage(config) || roll11) {
+    const seed11 = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? roll11Seed(roll11) : play11Seed(layoutVariant ?? 1);
+    const stage = roll11 ? w1Finish(provenGen2Stage({ config, kit: w1World(), seed: seed11, difficulty })) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
     // (Easy's own goal for the stage, as the first-timer kid bot measured it: easyStage sets it, withGoals leaves it)
     const easyGoal = GEN2_STAGES[config.id]?.easyGoal;
     if (difficulty === 'easy' && easyGoal !== undefined) stage.easyGoal = Math.min(easyGoal, stage.enemies.length);
