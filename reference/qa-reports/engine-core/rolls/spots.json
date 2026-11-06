@@ -21,12 +21,12 @@
    [
     "golden-seed",
     15611,
-    44
+    640
    ],
    [
     "end-log-bootprint",
     35461,
-    -9
+    587
    ]
   ],
   "types": [
@@ -110,23 +110,23 @@
   "at": {
    "double-teach-block": [
     4871,
-    559
+    1155
    ],
    "bounce-block": [
     9146,
-    559
+    1155
    ],
    "fork-FP1Pg1-13899": [
     14019,
-    189
+    785
    ],
    "golden-seed": [
     15621,
-    78
+    674
    ],
    "end-log-bootprint": [
     35461,
-    -9
+    587
    ]
   }
  },
@@ -157,12 +157,12 @@
    [
     "golden-seed",
     17596,
-    -91
+    506
    ],
    [
     "end-log-bootprint",
     35846,
-    -237
+    360
    ]
   ],
   "types": [
@@ -241,27 +241,27 @@
   "at": {
    "double-teach-block": [
     6483,
-    460
+    1057
    ],
    "bounce-block": [
     9570,
-    132
+    729
    ],
    "fork-FPPb-16037": [
     16157,
-    137
+    734
    ],
    "fork-FP2Pc2-19588": [
     19708,
-    191
+    788
    ],
    "golden-seed": [
     17596,
-    137
+    734
    ],
    "end-log-bootprint": [
     35846,
-    -237
+    360
    ]
   }
  },
@@ -287,12 +287,12 @@
    [
     "golden-seed",
     18751,
-    277
+    1170
    ],
    [
     "end-log-bootprint",
     36411,
-    163
+    1056
    ]
   ],
   "types": [
@@ -376,23 +376,23 @@
   "at": {
    "double-teach-block": [
     7020,
-    580
+    1473
    ],
    "bounce-block": [
     10112,
-    580
+    1473
    ],
    "fork-FP1Pg1-17033": [
     17153,
-    421
+    1314
    ],
    "golden-seed": [
     18761,
-    311
+    1204
    ],
    "end-log-bootprint": [
     36411,
-    163
+    1056
    ]
   }
  }
