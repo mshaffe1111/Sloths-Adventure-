@@ -454,3 +454,9 @@ I scanned all 16 laid seeds (buildGen2Stage, w1World, engine-core 4ec76da73; scr
 **The lead's rulings on Round 7 (8:34 AM):**
 - `hint.1-1.bounce` with main's shipped words: YES.
 - **Hearts follow risk (rule H1, every stage): a heart is laid only after a real risk, a spot where a miss or a creature costs something.** This is Matt's own rule ("a heart only after real risk", 11-05 12:15 AM). **1-1 has no damage, so it gets 0 hearts.** Later stages get them where their risk is.
+
+**The supervisor's check of Round 7: PASS (8:40 AM). One fix:**
+- **The bounce is taught by the LESSON CARD `lesson.bounce`, not a Dot line.** The card fires on any stage at the first mushroom near Pokey (lessons.ts:423, the `bounce` topic). A Dot line on top would say the same thing twice, against Dot's "no repeated tips".
+- **So `hint.1-1.bounce` is withdrawn** (TT3's bounce row), and no new row is needed.
+- On the words' source: they are both `ctest.bounce` (dotLinesData.ts:493) and the hint main's protoStage `bounceWall(first)` lays (protoStage.ts:1251 on main; the red team saw it in old 1-1's build).
+- The double has no lesson card (lessons.ts LessonId has no `double`), so its two Dot lines (TT3) stay.
