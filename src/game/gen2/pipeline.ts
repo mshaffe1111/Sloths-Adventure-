@@ -2423,6 +2423,9 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   // rule and never a re-roll. The stage is still returned, for the report; its errors say why it fails)
   if (st.gen2.loosened?.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...st.gen2.loosened.map((l) => `pool short at ${l.replace(/, filled by its (job|phase)\)$/, ')')}`)];
   if (st.gen2.missing?.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...st.gen2.missing];
+  // (the red team, RT-ENGINE #6: a V-rule breach in the realised node code fails the roll too, by name; it was only written to
+  // codeErrors, so a roll breaking V1-V20 with every slot filled would have reached the game as clean)
+  if (st.gen2.codeErrors?.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...st.gen2.codeErrors.map((e) => `node code: ${e}`)];
   return st;
 }
 

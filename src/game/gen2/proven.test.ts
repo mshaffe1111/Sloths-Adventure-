@@ -51,3 +51,16 @@ test("Easy is Normal's stage or fails by name: never a plan of its own (the red 
     if (n.gen2.errors?.length) assert.ok(e.gen2.errors?.length, `seed ${seed}: Normal fails but Easy is called clean`);
   }
 });
+
+// (the red team, RT-ENGINE #6: realisedCode writes the V-rule breaches to gen2.codeErrors, but only `loosened` and `missing` were folded
+// into gen2.errors, so a roll breaking V1-V20 with every slot filled would reach the game as clean. Each breach fails the roll, by name)
+test('every V-rule breach is a roll error (1-1 seeds that carry them)', () => {
+  let seen = 0;
+  for (let i = 0; i < 40 && seen < 3; i++) {
+    const st = buildGen2Stage({ config: c, kit: w1World(), seed: 1 + i * 37, difficulty: 'normal' });
+    if (!st.gen2.codeErrors?.length) continue;
+    seen++;
+    for (const e of st.gen2.codeErrors) assert.ok((st.gen2.errors ?? []).some((x) => x.includes(e)), `seed ${1 + i * 37}: the breach "${e}" is not a roll error`);
+  }
+  assert.ok(seen > 0, 'no seed of 40 breaks a V-rule: the test would not see the rule');
+});
