@@ -28,8 +28,9 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 | Who | Deliverable | Success looks like | Due |
 |---|---|---|---|
 | ALL HELPERS | IDLE for the night (since about 8:55 PM ET, 11-05) | | |
-| Lead | The test link v2 is live (https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb, from engine-core c2710323b): Old 1-1 plus Rolls A/B/C (79191/110867/118786); camera, stones and door fixed | Matt plays and sends notes | tonight |
+| Lead | DONE 11-05 ~9:05 PM ET: Matt played the link (v2, engine-core c2710323b). His verdict: "a real win"; ranks B, C, A; "they all could be their own level". Negatives: some pieces must be removed and redone (flat cartoon leaf platform, flat grass-topped earth blocks, the small cartoon log on a block, the striped grass-strip platform); on C, 2 petals on a low log under the ground road couldn't be reached (the level check passed them: a reach-model hole). Screenshots: Matt's 9:00/9:01/9:05 PM. Earlier: a backdrop seam/pillar render defect, game-wide | | |
 | TOMORROW 1 | Matt's notes, then ONE question: the variety measure (keep h:J, or a richer vocabulary plus the node code; Law 22, his call) | his answer | first |
+| TOMORROW 1b | Engine-core: C's unreachable petals (seed 118786): why the level check passed them; a gate first, planted failure. The art audit: list every code-drawn flat piece in 1-1's pool (leaf platform, grass blocks, small log, grass strip) to retire or repaint on HF; the seam render defect game-wide (R-id) | gate fails on C's petals; the list with stills | |
 | TOMORROW 2 | engine-core: `block: 'double'` tags in w1.ts; the planner: the required-move gap (reach model vs the bot) | the no-double bot FAILS the teach | |
 | TOMORROW 3 | The planner: Roll A's 10.8 s quiet stretch; on-blocks under 50 px drawn as island art; B Easy's x28776 stone (the deepen threshold); the bouncy style | stage.ts PASS | |
 | TOMORROW 4 | The designer: pool shortages (reward, signature, seed perch) so 16/16 build; the fork `high:` tags | 16/16 clean | |
