@@ -38,6 +38,15 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 | TOMORROW 4 | The designer: pool shortages (reward, signature, seed perch) so 16/16 build; the fork `high:` tags | 16/16 clean | |
 | TOMORROW 5 | The art helper: replace the near layer on HF (the painted mushrooms), cap $1 | stills both ways | |
 
+
+## THE OPERATING AGREEMENT (Matt, 11-05 ~10:10 PM ET, his words in short: "I'm letting you run this team")
+Matt backs off. He pops in with ideas, says when something is broken, plays at the stars. The lead decides the rest.
+- What goes to Matt: playing at each star; taste calls he wants; Hugging Face spend lists; "push"; anything that changes his game's identity. One question at a time.
+- His ideas go on reference/notes/IDEAS.md (triaged by the lead, never built on arrival): hide by walking UNDER platforms (sloth move, ties to R-160.1 the hang); a special stage running in the trees; a REAL chase special stage.
+- Research enters only through the plan: one idea at a time, as a measured dial, kept only if proved (his read: "I dumped so much research on the past lead that I scrambled his core competency").
+- His history: the team got 100 stages fast; it broke down when polish was pushed into the system mid-build. So: engine proven, stages built and stamped "design approved" (Matt plays), THEN art and polish per stage, never re-engineering under a built stage.
+- TEAM (lead's call, from reference/research/STUDIO-PRACTICE.md): builders pitch blind (one core idea per stage, one page), the lead pools and cuts; builders own a world; everything after the pitch is shared (rules sheet, art style guide, side-by-side play review at check-ins); proof on the real page; grow from 1 builder toward 8 by measured cost; a boss builder and a specials builder when their turn comes; an art director and a player-data role as standing roles.
+
 ## Open with Matt (one question at a time)
 - How far tonight: he decides once he trusts how I run the team. Meter 67% at 4:23 PM ET (1.5%/h since 2:23 PM).
 - Hugging Face: $71.83 left (Matt checked the balance, 11-05 ~4:55 PM ET); keep about $15 back. The lead approves engine art and tells Matt the spend.
