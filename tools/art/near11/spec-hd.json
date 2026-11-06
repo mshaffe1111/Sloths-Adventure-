@@ -1,0 +1,43 @@
+{
+ "tag": "near11-hd",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1sun3-nearA-s62-23-x-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/8e9fa34447348f824cdab2620e37cc913640a526/reference/prop-sheets/qa-notes/near11/keyed/w1sun3-nearA-s62-23-x.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail. a very wide side-scrolling game background layer of the near ground seen straight from the side, the rainforest floor at sunrise: big round moss-covered boulders, a low arch of tangled tree roots, round leafy monstera and fern bushes, a pointed mossy rock, all standing on a continuous strip of earthy forest floor along the bottom edge, every top soft and rounded, no flat tops, low warm pink-gold sunrise light from the left, rich painted texture like a storybook, evenly lit, on one flat plain grey background, no text",
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam, mushrooms"
+  },
+  {
+   "name": "w1sun3-nearA-s68-23-x-hd",
+   "pre": "esrgan",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/8e9fa34447348f824cdab2620e37cc913640a526/reference/prop-sheets/qa-notes/near11/keyed/w1sun3-nearA-s68-23-x.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail. a very wide side-scrolling game background layer of the near ground seen straight from the side, the rainforest floor at sunrise: big round moss-covered boulders, a low arch of tangled tree roots, round leafy monstera and fern bushes, a pointed mossy rock, all standing on a continuous strip of earthy forest floor along the bottom edge, every top soft and rounded, no flat tops, low warm pink-gold sunrise light from the left, rich painted texture like a storybook, evenly lit, on one flat plain grey background, no text",
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam, mushrooms"
+  }
+ ]
+}
