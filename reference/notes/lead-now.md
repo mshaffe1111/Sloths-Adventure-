@@ -27,11 +27,13 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 ## The board (owner, deliverable, success, due ET). Update at every check-in
 | Who | Deliverable | Success looks like | Due |
 |---|---|---|---|
-| Planner (session_01FhBbYJaUqNUPxNUvbHdHeN, engine-chunks) | DONE: floor, seed, tempo (7c1b0f2a8), graph + length + window + no-repeat + cadence (pushing). NOW: (1) node code + parser V1-V17 + meta tokens (~6:45); (2) content deal; (3) block, with block pieces EXEMPT from tempo (sent 5:57); (4) CHECK 3b on 1-1 | lock 102/102 each push | ~9:35 PM |
-| engine-core (session_01FhBbYNa68MoMsiQdv2EJXg, engine-core) | DONE: secondary-object gate (45867ab68), B6/B5, block data, W1_KIT.graphs, V18 (6a7d8b237), stills spots (c1768a5ce). NOW: bootprint DRAW at gen2's reported place; then the stage.ts gen2 path on the planner's push | gates PASS/FAIL 16x2 | after planner |
-| Designer (session_01FhBbYPKnBYCweHg8duJSu2, engine-spec) | DONE: NODES.md §1-8, key + pieces (d4526ee5e). Next: the 1-1 brief for gen2 fields; judge 1-1 stills | signed, cited | after engine-core's field list |
-| art-1-1-sunrise (session_01FhBbYLCL8LqBfmTZgPBHoG, new branch art-1-1-sunrise-2 from engine-core) | DONE 7:32 PM: sunrise w1sun2 wired for 1-1 (95ce83f2d), bootprint 110x28 deep take 1 handed to engine-core; spend ~$2.55 + ~$0.28. IDLE | accepted | done |
-| Lead | Node key page for Matt (https://claude.ai/artifact/K3c5jywonpSVroHJ2dyenL, done); 3 rolls + old 1-1 on the test link, checked object by object, supervisor arc check | Matt plays | ~10:30-11 PM |
+| ALL HELPERS | IDLE for the night (since about 8:55 PM ET, 11-05) | | |
+| Lead | The test link v2 is live (https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb, from engine-core c2710323b): Old 1-1 plus Rolls A/B/C (79191/110867/118786); camera, stones and door fixed | Matt plays and sends notes | tonight |
+| TOMORROW 1 | Matt's notes, then ONE question: the variety measure (keep h:J, or a richer vocabulary plus the node code; Law 22, his call) | his answer | first |
+| TOMORROW 2 | engine-core: `block: 'double'` tags in w1.ts; the planner: the required-move gap (reach model vs the bot) | the no-double bot FAILS the teach | |
+| TOMORROW 3 | The planner: Roll A's 10.8 s quiet stretch; on-blocks under 50 px drawn as island art; B Easy's x28776 stone (the deepen threshold); the bouncy style | stage.ts PASS | |
+| TOMORROW 4 | The designer: pool shortages (reward, signature, seed perch) so 16/16 build; the fork `high:` tags | 16/16 clean | |
+| TOMORROW 5 | The art helper: replace the near layer on HF (the painted mushrooms), cap $1 | stills both ways | |
 
 ## Open with Matt (one question at a time)
 - How far tonight: he decides once he trusts how I run the team. Meter 67% at 4:23 PM ET (1.5%/h since 2:23 PM).
