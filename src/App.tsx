@@ -1055,6 +1055,7 @@ export default function App() {
   const heroPoint = useCallback(() => engineRef.current?.heroScreenPoint() ?? null, []);
 
   const pauseGame = () => {
+    recorder.event('pause');
     engineRef.current?.pause();
     sound.playPause(true);
     setScreen('paused');
@@ -1540,7 +1541,10 @@ export default function App() {
           onAskHint={activeLevel.id === MEECA_STAGE_ID ? () => engineRef.current?.meecaHint() ?? null : undefined}
           onToggleMute={handleToggleMute}
           onResume={resumeGame}
-          onRestart={restartLevel}
+          onRestart={() => {
+            recorder.event('restart', 'menu');
+            restartLevel();
+          }}
           onContinue={continueRun}
           fails={failsRef.current[activeLevel.id] ?? 0}
           onTakeHelp={() => {

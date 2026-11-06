@@ -20,7 +20,7 @@ import { BossHud } from '../BossHud.tsx';
 import { bloomUpdate, bloomView, newBloom, nextBloomEdge, showsSlots, type HudValues } from './bloom.ts';
 import { bossRect, centreGeo, centrePlace, counterW, heartsShown, hudGeo, hudMode, hudSafeRect, type Insets } from './hudLayout.ts';
 import { goalInfo } from './goalInfo.ts';
-import { fallbackSafeArea, setGuideSafeArea } from '../../game/dotGuidePerch.ts';
+import { clearOfInsets, fallbackSafeArea, setGuideSafeArea } from '../../game/dotGuidePerch.ts';
 import { Bolt, GoalPic, Heart, Leaf, MenuLines, Star, Tick, Vine, vineY } from './hudArt.tsx';
 import { GoalCard } from './GoalCard.tsx';
 import { PaintedVine, PlateArt, Piece, Tendril, fillStyle, useHudArt } from './painted.tsx';
@@ -233,7 +233,9 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
     setGuideSafeArea((w, h) => {
       const f = fallbackSafeArea(w, h);
       const s = hudSafeRect(w, h, { boss: isBoss, hearts: nHearts, counter: cw, insets: ins });
-      return { rect: { ...f.rect, y0: Math.max(16, s.bandBottom + 6) }, keepOut: f.keepOut };
+      // (and clear of the phone's own insets, the notch and the gesture bar: sideways the bubble's Skip tips sat inside the right 48 px,
+      // clipcheck's testers walk, 11-06; the fallback's 16 px gutter knows nothing of them)
+      return { rect: clearOfInsets({ ...f.rect, y0: Math.max(16, s.bandBottom + 6) }, ins, w, h), keepOut: f.keepOut };
     });
     return () => setGuideSafeArea(null);
   }, [isBoss, nHearts, cw, ins]);

@@ -24,11 +24,21 @@ const base = process.env.BASE_PATH || '/';
 // the Play Store build (npm run build:store): no service worker, no web manifest, no tester collector (reference/PLAY-STORE.md)
 const store = process.env.VITE_STORE_BUILD === '1';
 
+// the git short commit of the build (testRound.ts: the testers' runs say which build they came from); GAME_GIT_COMMIT overrides it
+function gitCommit(): string {
+  if (process.env.GAME_GIT_COMMIT) return process.env.GAME_GIT_COMMIT;
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+  } catch {
+    return '';
+  }
+}
+
 export default defineConfig(() => {
   const buildTime = lastUpdate();
   return {
     base,
-    define: { __BUILD_TIME__: JSON.stringify(buildTime), __APP_VERSION__: JSON.stringify(JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version) },
+    define: { __GIT_COMMIT__: JSON.stringify(gitCommit()), __BUILD_TIME__: JSON.stringify(buildTime), __APP_VERSION__: JSON.stringify(JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version) },
     plugins: [
       react(),
       // the published stamp an open copy of the game compares itself with (src/game/updates.ts)

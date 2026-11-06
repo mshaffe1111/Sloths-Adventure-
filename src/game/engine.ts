@@ -16,6 +16,7 @@ import { newTide, onHeld, restartTide, stepTide, surging, TIDE, type TideSetting
 import { drawBadWater } from './badWaterArt.ts';
 import { drawStiltDecor, drawStiltLedges } from './w6StiltArt.ts';
 import { recorder } from './playRecorder.ts';
+import { dotLogId } from './recorderLabels.ts';
 import { liftY, pickFloor } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
 import { W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts';
@@ -863,6 +864,7 @@ export class GameEngine {
     if (g2seed !== undefined) recorder.event('gen2', `${this.currentStage.config.id} seed ${g2seed} ${isEasy() ? 'easy' : 'normal'}`);
     // Dot's help setting, so the QA team can compare first-timers by it
     recorder.event('look', `help ${dotHelp()}`);
+    recorder.stageStart();
     this.ring = { state: 'idle', wave: 0, ids: [] };
     this.ringDrops = [];
     this.chase = this.proto?.chase ? newChase(this.proto.chase) : null;
@@ -2206,6 +2208,7 @@ export class GameEngine {
             p.vy = secondJumpV(p.vy, PHYS.doubleV * (1 + ASSIST.doubleJump * assist) * (this.flightClear ? 1 : drowsyJump(this.drowsy)) * this.dragJump);
             p.jumpsLeft = 0;
             p.isDoubleJumping = true;
+            recorder.moveOnce('double', p.x);
             p.somersaultAngle = 0;
             this.jumpBufferTimer = 0;
             this.input.state.jumpPressed = false;
@@ -2919,6 +2922,7 @@ export class GameEngine {
         // a golden seed: a secret, saved on the device (protoStage.ts)
         if (distance2D(p.x, p.y - 20, c.x, c.y) < 38) {
           c.collected = true;
+          recorder.event('pickup', `seed ${Math.round(c.x)}`);
           const id = this.currentStage.config.id;
           const n = c.findId ?? 'seed';
           const again = seedFound(id, n);
@@ -2950,6 +2954,7 @@ export class GameEngine {
           continue;
         }
         c.collected = true;
+        recorder.event('pickup', `${c.type} ${Math.round(c.x)}`);
 
         if (c.type === 'flower' || c.type === 'leaf' || c.type === 'fruit') {
           p.fruitsCollected++;
@@ -4889,6 +4894,7 @@ export class GameEngine {
   private bounceOff() {
     const p = this.player;
     p.vy = -PHYS.bounceV;
+    recorder.moveOnce('bounce', p.x);
     this.launched = true;
     p.grounded = false;
     p.jumpsLeft = 1;
@@ -8160,6 +8166,8 @@ export class GameEngine {
 
   /** a guiding line: kept as the stage hint (one at a time), and handed to the app for Dot to say */
   private guide(text: string, seconds: number) {
+    // (which of Dot's lines was really shown, for the testers' "did Dot's tips help?": recorderLabels.ts)
+    if (recorder.on && text) recorder.event('dot', dotLogId(text, this.currentStage.config.id));
     // (the tips just marked sent are kept on the phone once this line has been shown: tipMemory.ts)
     bindSent(text);
     this.stageHint = { text, life: seconds };

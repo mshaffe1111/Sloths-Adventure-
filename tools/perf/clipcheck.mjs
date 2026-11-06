@@ -15,7 +15,9 @@
  *   done    every stage cleared with play records, every find, scene and creature, every medal
  * Screens: the start screen; Settings and every tab (Save / Load and the New Game question); About and its pop-ups; How to Play and
  * its tabs; the World Map, every world and the Worlds pop-up; every Satchel tab with the find reader, a keepsake, a medal close-up and
- * a creature's story; every Journal page; Pause in a stage. Every scroll box on a screen is also judged scrolled to the bottom.
+ * a creature's story; every Journal page; Pause over a live stage (with a planted 26 px button that must be caught); on the fresh save
+ * Dot's first tip with its Skip button over 1-3, and the testers' link (?ctest=1): its front page, the "I'm
+ * done" badge, the end questions and the sent screen, with a planted 26 px button that must be caught every run. Every scroll box on a screen is also judged scrolled to the bottom.
  * Phone insets are set through Chrome's own safe-area override (upright: 48 px top, 24 px bottom; sideways: 48 px each side, 21 px
  * bottom), so env(safe-area-inset-*) in the CSS gets real numbers.
  *
@@ -128,8 +130,10 @@ async function seed(page, kind) {
 
 // ---- the judge, run in the page ---------------------------------------------------------------------------------------------------
 // returns the breaches on screen now; with scrolled=true every scroll box was first scrolled to its end
-function audit({ minTap, insets }) {
+// (scope: a selector to judge only inside, for a screen laid over another one: the testers' end questions over the stopped level)
+function audit({ minTap, insets, scope }) {
   const W = innerWidth, H = innerHeight, TOL = 2;
+  const within = (scope && document.querySelector(scope)) || document.body;
   const vis = (el) => {
     for (let e = el; e && e !== document.documentElement; e = e.parentElement) {
       const cs = getComputedStyle(e);
@@ -160,7 +164,7 @@ function audit({ minTap, insets }) {
     const r = box || el.getBoundingClientRect();
     out.push({ kind, sel: s, text, detail, box: [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)] });
   };
-  const all = [...document.body.querySelectorAll('*')].filter((el) => !el.closest('[data-clipcheck-skip],svg,canvas,script,style,.cc-overlay'));
+  const all = [...within.querySelectorAll('*')].filter((el) => !el.closest('[data-clipcheck-skip],svg,canvas,script,style,.cc-overlay'));
   for (const el of all) {
     const t = ownText(el);
     if (!t || !vis(el)) continue;
@@ -206,7 +210,7 @@ function audit({ minTap, insets }) {
   }
   // tappables
   const TAP = 'button, a[href], input:not([type=hidden]), select, textarea, [role=button], [role=tab], [role=switch], [role=slider], [role=checkbox], [role=link], [role=radio]';
-  for (const el of document.body.querySelectorAll(TAP)) {
+  for (const el of within.querySelectorAll(TAP)) {
     if (el.closest('[data-clipcheck-skip],.cc-overlay') || el.disabled || el.getAttribute('aria-disabled') === 'true' || !vis(el)) continue;
     if (el.parentElement?.closest(TAP)) continue; // a tappable inside another tappable: the outer one is the target
     if (getComputedStyle(el).pointerEvents === 'none') continue;
@@ -272,6 +276,8 @@ async function walk(browser, base, save, size) {
   const missed = [];
   let shotN = 0;
   const settle = (ms = 550) => page.waitForTimeout(ms);
+  // (judge only inside this, when set: a screen laid over another)
+  let scope = '';
 
   const judge = async (screen) => {
     if (ONLY && !screen.includes(ONLY)) return;
@@ -281,7 +287,7 @@ async function walk(browser, base, save, size) {
         Promise.all([...document.images].filter((i) => !i.complete).map((i) => new Promise((r) => { i.onload = i.onerror = r; }))).then(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished.catch(() => {})))),
         new Promise((r) => setTimeout(r, 2500)),
       ]));
-      const b = await page.evaluate(audit, { minTap: MIN_TAP, insets: size.insets });
+      const b = await page.evaluate(audit, { minTap: MIN_TAP, insets: size.insets, scope });
       if (!b.length) return;
       // the contact sheet: outline each breach, number it, shoot the screen
       const file = path.join(out, 'shots', `${save}-${size.id}-${String(++shotN).padStart(2, '0')}.png`);
@@ -448,14 +454,84 @@ async function walk(browser, base, save, size) {
     }
   });
 
-  // Pause, over a stage
+  // a planted failure on the screen up now: a 26 px button inside `within` must be caught by the small-tap rule, or the check is broken
+  const plant = async (name, within) => {
+    if (ONLY && !name.includes(ONLY)) return;
+    await page.evaluate((w) => { const b = document.createElement('button'); b.className = 'cc-plant'; b.textContent = 'planted'; b.style.cssText = 'height:26px;width:120px;padding:0;display:block'; (document.querySelector(w) ?? document.body).appendChild(b); }, within);
+    const caught = (await page.evaluate(audit, { minTap: MIN_TAP, insets: size.insets, scope })).some((x) => x.kind === 'small' && /cc-plant/.test(x.sel));
+    await page.evaluate(() => document.querySelector('.cc-plant')?.remove());
+    if (!caught) missed.push(`${name}: the planted 26 px button was NOT caught: the small-tap rule is broken`);
+  };
+
+  // Pause, over a live stage: opened with the game's own route (?autostart=1&level=1-1: the built game has no window.__play, so until
+  // 11-06 this step judged the start screen). Fails closed: no pause card up is a screen that could not be opened
   await tryStep('pause', async () => {
-    await home();
-    await page.evaluate(() => window.__play && window.__play('1-1'));
+    await page.goto(`${base}/?lessons=off&autostart=1&level=1-1`);
+    await page.locator('canvas').first().waitFor({ state: 'attached', timeout: 30000 });
     await settle(7000);
     await page.keyboard.press('Escape');
+    await page.locator('.pm-card').first().waitFor({ state: 'visible', timeout: 15000 });
     await settle(900);
     await judge('pause');
+    await plant('pause: planted', '.pm-card');
+  });
+
+  // Dot's very first tip, with its Skip tips button (once per device, never on 1-1: dotGuideHelp.ts offersSkip): 1-3 on the fresh save,
+  // lessons on, says "Run through petals" within its first seconds. Judged inside her layer only. Sideways its Skip sat inside the right
+  // 48 px inset until 11-06 (VineHud's guide safe area now keeps the phone's insets). Fails closed: no Skip up is a screen not opened
+  if (save === 'fresh') await tryStep("Dot's first tip", async () => {
+    await page.goto(`${base}/?autostart=1&level=1-3`);
+    await page.locator('.dg-skip').first().waitFor({ state: 'attached', timeout: 30000 });
+    await settle(1200);
+    scope = '.dg-root';
+    await judge("play: Dot's first tip");
+    scope = '';
+  });
+
+  // the testers' link (?ctest=1, as #ctest): the front page, the "I'm done" badge over the level, the end questions (blank, and with
+  // "looked wrong" opened), and the sent screen. On the fresh save only: the link starts from nothing. A 26 px "I'm done" slipped
+  // past because these screens were never walked (tester-page, 11-06)
+  if (save === 'fresh') await tryStep('testers link', async () => {
+    await page.goto(`${base}/?lessons=off&ctest=1`);
+    await page.locator('#ctest-name').waitFor({ state: 'visible', timeout: 30000 });
+    await settle(900);
+    await judge('testers: front page');
+    await page.fill('#ctest-name', 'clipcheck');
+    await click('button[type=submit]');
+    await settle(7000);
+    // (the level under the badge is the game's own HUD, judged by Pause; only the badge is the testers' page)
+    if (!ONLY || 'testers: done badge'.includes(ONLY)) {
+      const b = (await page.evaluate(audit, { minTap: MIN_TAP, insets: size.insets })).filter((x) => /done|Tap again/i.test(x.text));
+      if (b.length) {
+        const file = path.join(out, 'shots', `${save}-${size.id}-${String(++shotN).padStart(2, '0')}.png`);
+        await page.screenshot({ path: file });
+        b.forEach((x, i) => found.push({ ...x, n: i + 1, screen: 'testers: done badge', save, size: size.id, shot: file }));
+      }
+    }
+    // Dot's first tip over the level, a fresh save's (with its Skip tips button): inside her layer only. The walk above opens stages with
+    // lessons off, so this is where her bubble is really up
+    scope = '.dg-root';
+    await judge("testers: Dot's bubble");
+    scope = '';
+    await click('button:has-text("I\'m done")');
+    await click('button:has-text("Tap again to finish")');
+    await page.locator('button:text-is("Send")').waitFor({ timeout: 20000 });
+    await settle(900);
+    // (the end questions lie over the stopped level: only the testers' card is judged; the level's HUD is Pause's)
+    scope = '.fixed.inset-0.z-\\[60\\]';
+    await judge('testers: end questions');
+    // the planted failure, every run: a 26 px button on the end questions must be caught, or the check itself is broken
+    if (!ONLY || 'testers: planted'.includes(ONLY)) {
+      await page.evaluate(() => { const b = document.createElement('button'); b.className = 'cc-plant'; b.textContent = 'planted'; b.style.cssText = 'height:26px;width:120px;padding:0;display:block'; document.querySelector('#ctest-note')?.before(b); });
+      const caught = (await page.evaluate(audit, { minTap: MIN_TAP, insets: size.insets, scope })).some((x) => x.kind === 'small' && /cc-plant/.test(x.sel));
+      await page.evaluate(() => document.querySelector('.cc-plant')?.remove());
+      if (!caught) missed.push('testers: the planted 26 px button was NOT caught: the small-tap rule is broken');
+    }
+    await click('[role=group][aria-label="Did anything look wrong or out of place?"] button:text-is("Yes")');
+    await judge('testers: end questions, looked wrong');
+    await click('button:text-is("Send")');
+    await judge('testers: sent');
+    scope = '';
   });
 
   await ctx.close();
