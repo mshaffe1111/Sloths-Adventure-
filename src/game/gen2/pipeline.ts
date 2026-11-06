@@ -963,6 +963,8 @@ export interface Laid {
   missing?: string[];
   /** a rolled graph's sections whose laid exit left the corridor (a version that ends far from its declared exitDy): swapped */
   strays?: Array<{ uid: string; y: number }>;
+  /** V19's late rise as laid: each mustRise node, the height it had to end above (minus 20 px) and where it ended */
+  rise?: Array<{ node: string; to: number; exitY: number }>;
   /** a rolled graph's blocks (NODES.md §8.7): each teach or test section's block pieces, as laid */
   blocks?: Array<{ uid: string; key: string; kind: 'double' | 'bounce'; landing: Platform }>;
   /** a rolled graph's nodes filled past their rule (no section of the dealt type left: by job only; none for the job: by phase) */
@@ -1197,9 +1199,24 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     }
     return e;
   };
+  // (an up stage: its graph marks the node after a late descent mustRise, or its brief's trend is up; V19's heights, below)
+  const upStage = graph.nodes.some((q) => q.mustRise) || M.graphs?.briefs?.[budget.id]?.trend === 'up';
+  // (the window part, V19b, is a stage's own promise: its brief's endHigh; every up stage keeps V19, above where a late descent began)
+  const endHigh = upStage && !!M.graphs?.briefs?.[budget.id]?.endHigh;
+  let windowY: number | undefined, descentY: number | undefined, riseTo: number | undefined;
+  const rise: Array<{ node: string; to: number; exitY: number }> = [];
+  /** the node that must climb: the one after a late descent (mustRise), or with no late descent the signature (V19b: the end above the
+   *  bough window's start) */
+  const needsRise = (n: MissionNode) => upStage && (!!n.mustRise || (endHigh && n.job === 'signature' && descentY === undefined));
+  /** where the next section enters: the join clamps it into the corridor */
+  const entryY = () => Math.max(M.corridor.top, Math.min(M.corridor.bottom, cur.y));
   const fits = (t: SectionTemplate, n: MissionNode, i: number, loose: 0 | 1 | 2 = 0) =>
     jobFits(t, n, loose) &&
     (!n.mustRise || loose === 2 || exitDyOf(t) < 0) &&
+    // (V19 and V19b on an up stage, 11-06: the node after a late descent (or, with none, the signature) ends higher than both where the
+    // descent began and where the bough window begins, 20 px clear; rising at all was weaker than the line, and stage.ts's V19 / V19b failed on Roll A. Nothing that fits: the slot
+    // loosens and the roll fails by name)
+    (riseTo === undefined || loose === 2 || !needsRise(n) || entryY() + exitDyOf(t) <= riseTo - 20) &&
     (t.archetypes === 'any' || t.archetypes.includes(budget.archetype)) &&
     (t.needs ?? []).every((m) => budget.moves.includes(m)) &&
     hangsNeed(t).every((m) => budget.moves.includes(m)) &&
@@ -1296,6 +1313,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   };
 
   for (const n of graph.nodes) {
+    // (the heights V19 holds the late rise to: where the bough window begins (the route as the slots reach two thirds), and where a late
+    // descent began)
+    if (upStage && chunkTotal) {
+      if (windowY === undefined && (slot + 0.5) / stageLen >= 2 / 3) windowY = cur.y;
+      if (n.job === 'descent' && windowY !== undefined) descentY = Math.min(descentY ?? Infinity, cur.y);
+      if (windowY !== undefined) riseTo = endHigh ? Math.min(windowY, descentY ?? Infinity) : descentY;
+    }
+    const riseFor = needsRise(n) && riseTo !== undefined ? riseTo : undefined;
     let secs = 0;
     const want = n.share * budget.seconds.target * aim;
     let first = true;
@@ -1521,6 +1546,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (a fork is one two-road section and the H node its one find, in every mode, as the arrival and the exit are one each)
       if (n.phase === 'start' || n.phase === 'goal' || n.job === 'fork' || n.job === 'reward') break;
     }
+    if (riseFor !== undefined) {
+      rise.push({ node: n.id, to: R(riseFor), exitY: R(cur.y) });
+      // (as laid, not as estimated: a section's exit is chosen on its median lay, so a lay that ends short of the rise fails by name)
+      const last = plan[plan.length - 1];
+      if (cur.y > riseFor - 20 && last && last.node === n.id && !last.loose) last.loose = `${n.id} ${n.job}: the late rise ended at y ${R(cur.y)}, not 20 px above y ${R(riseFor)} (V19)`;
+    }
   }
   // (a rolled graph's required section that found no node FAILS the roll with why, never an exception: the missing piece named, Law 22)
   const missing: string[] = [];
@@ -1591,6 +1622,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     ropes,
     zones,
     heartFalls,
+    ...(rise.length ? { rise } : {}),
     width: R(shrine.x + shrine.width + 40),
     bottom: baseline + shiftedDown,
     nextId: pid,
@@ -2284,6 +2316,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(graph.id ? realisedCode(graph, laid, req.kit.manifest, budget) : {}),
     ...(laid.loosened ? { loosened: laid.loosened } : {}),
     ...(laid.missing ? { missing: laid.missing } : {}),
+    ...(laid.rise ? { rise: laid.rise } : {}),
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
     ...(laid.theme ? { theme: laid.theme } : {}),

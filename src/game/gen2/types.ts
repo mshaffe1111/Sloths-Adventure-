@@ -533,6 +533,9 @@ export interface GraphBrief {
   /** the stage's content deal (NODES.md §7.3, 1-1: ground 40, floating 25, climb 20, bounce 15), shares of its content nodes; absent,
    *  the world's mix (`graphs.mix`) */
   deal?: Readonly<Partial<Record<ContentType, number>>>;
+  /** the end stands higher than the route where the bough window begins (V19b, 1-1's story promise: "up in the high branches"): the
+   *  node that climbs late (after a late descent, or with none the signature) ends above the window's start too */
+  endHigh?: boolean;
 }
 /** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
 export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';
@@ -658,6 +661,8 @@ export interface Gen2Meta {
   /** the game's road (provenGen2Stage): the seed it was asked for, the seed it played (the first on its walk that both settings lay
    *  cleanly) and how many it tried; only when it walked off the asked seed */
   proven?: { asked: number; used: number; tried: number };
+  /** V19's late rise as laid (an up stage): each node after a late descent, the height it had to end above (less 20 px), where it ended */
+  rise?: Array<{ node: string; to: number; exitY: number }>;
   /** the section sequence: Easy lays Normal's; curation compares neighbouring stages' plans (C4) */
   plan: PlanSlot[];
   /** whole-stage re-rolls used (0: the first roll passed) */

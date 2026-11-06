@@ -42,7 +42,7 @@ export const W1_KIT = {
   graphs: {
     /** the sprint graphs A-D (gen2/graphs.ts SPRINT_GRAPHS, the planner's; NODES §8.4's code strings: A `A T P F R X R S E`, B `A T M F R C U X R S R L E`, C `A P F X R W R D_ S E`, D `A T P R U F X R S E`) */
     list: [...SPRINT_GRAPHS],
-    briefs: { '1-1': { ends: 'quiet' as const, trend: 'up' as const, branching: 'some' as const, teaches: ['jump', 'double', 'bounce'], deal: { ground: 40, floating: 25, climb: 20, bounce: 15 } } },
+    briefs: { '1-1': { ends: 'quiet' as const, trend: 'up' as const, endHigh: true, branching: 'some' as const, teaches: ['jump', 'double', 'bounce'], deal: { ground: 40, floating: 25, climb: 20, bounce: 15 } } },
     /** floating pieces only in the last third (NODES V12; the designer's bough window) */
     windows: { floating: [0.67, 1] as const },
     /** a bounce node only once the bounce is taught (V3): the move's name as the sections' `teaches` */
