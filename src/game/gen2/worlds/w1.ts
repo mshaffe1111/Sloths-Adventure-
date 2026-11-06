@@ -448,7 +448,8 @@ const clue = (on: string): Socket => ({ id: 'clue', role: 'decor', on, t: [0.47,
 /** #1 stump stile: stumps stepping up then down (or down then up) over the floor */
 const gStile = (hs: number[]): G => (k, after) => {
   const f = floor(`${k}f`, [hs.length * 250 + 260, hs.length * 270 + 300], startOr(after));
-  const ps = hs.map((h, j) => stumpL(`${k}s${j}`, f.key, [(j + 0.5) / hs.length - 0.04, (j + 0.5) / hs.length - 0.01], [h, h + 6]));
+  // (FR9b, the designer 11-06: every floor stump 50 px or more, a wall he hops; a 40 px one was walked through, no beat)
+  const ps = hs.map((h, j) => stumpL(`${k}s${j}`, f.key, [(j + 0.5) / hs.length - 0.04, (j + 0.5) / hs.length - 0.01], [Math.max(h, 50), Math.max(h, 50) + 6]));
   return { pieces: [f, ...ps], sockets: ps.map((p) => petals(`p-${p.key}`, p.key, 0.5, 1)), last: f.key };
 };
 /** #2 stone zigzag: stones at two (or three) heights, every upper one seated on a mound (a bank top), the floor walk beside */
@@ -798,8 +799,8 @@ const logWalk = section({
   id: 'w1-log-walk', floor: 'hop', name: 'along the fallen log', phases: ['rest'], difficulty: 1, needs: ['walk'],
   versions: [false, true].map((two) => ({ id: two ? 'two-logs' : 'one-log', groups: [(k: string, after: string | null) => {
     const a = floor(`${k}a`, [1000, 1100], startOr(after));
-    const L: W1Piece = { key: `${k}L`, shape: 'block', w: two ? [520, 580] : [640, 720], place: { kind: 'on', on: a.key, at: [0.1, 0.15], h: [30, 34] }, style: 'log', landing: true };
-    const L2: W1Piece[] = two ? [{ key: `${k}L2`, shape: 'block', w: [240, 280], place: { kind: 'on', on: a.key, at: [0.85, 0.9], h: [30, 34] }, style: 'log', landing: true }] : [];
+    const L: W1Piece = { key: `${k}L`, shape: 'block', w: two ? [520, 580] : [640, 720], place: { kind: 'on', on: a.key, at: [0.1, 0.15], h: [50, 56] }, style: 'log', landing: true };
+    const L2: W1Piece[] = two ? [{ key: `${k}L2`, shape: 'block', w: [240, 280], place: { kind: 'on', on: a.key, at: [0.85, 0.9], h: [50, 56] }, style: 'log', landing: true }] : [];
     const s = stump(`${k}s`, a.key, [0.98, 1], [34, 40], LAND);
     const b = bankW(`${k}b`, a.key, [0, 0], [240, 280]);
     return { pieces: [a, L, ...L2, s, b], sockets: [{ ...decor(`${k}fern`, a.key, [0.05, 0.1]), allow: ['w1Fern'] }, { ...decor(`${k}lit`, a.key, [0.6, 0.7]), allow: ['w1LeafLitter'] }, petals(`${k}p`, s.key, 0.5, 2)], last: b.key };
@@ -895,7 +896,7 @@ const BEATS: Record<string, G> = {
   /** a very low root (24-36 px) on the floor: the arrival's hop */
   r: (k, after) => { const f = floor(`${k}f`, [400, 460], startOr(after)); const q = stump(`${k}r`, f.key, [0.45, 0.55], [24, 36], LAND); return { pieces: [f, q], sockets: [petals(`${k}p`, q.key, 0.5, 1)], last: f.key }; },
   /** a low log lying on the floor (30-34 px) */
-  l: (k, after) => { const f = floor(`${k}f`, [420, 500], startOr(after)); const q: W1Piece = { key: `${k}l`, shape: 'block', w: [200, 240], place: { kind: 'on', on: f.key, at: [0.4, 0.5], h: [30, 34] }, style: 'log', landing: true }; return { pieces: [f, q], sockets: [petals(`${k}p`, q.key, 0.5, 1)], last: f.key }; },
+  l: (k, after) => { const f = floor(`${k}f`, [420, 500], startOr(after)); const q: W1Piece = { key: `${k}l`, shape: 'block', w: [200, 240], place: { kind: 'on', on: f.key, at: [0.4, 0.5], h: [50, 56] }, style: 'log', landing: true }; return { pieces: [f, q], sockets: [petals(`${k}p`, q.key, 0.5, 1)], last: f.key }; },
   /** a jump block: a bank face 66-78 px with no lower step beside it, the floor ending at it (B1), then a step back down */
   K: (k, after) => { const u = bankW(`${k}u`, after!, [-78, -66], [300, 360]); const dn = bankW(`${k}n`, u.key, [66, 78], [240, 280]); return { pieces: [u, dn], sockets: [petals(`${k}p`, u.key, [0.4, 0.7], 2)], last: dn.key }; },
   /** a jump block of a log: a fallen log 62-80 px tall across the floor, nothing beside it */
@@ -995,8 +996,9 @@ const gFork = (fw: R2, low: LowBeat[], high: HighBeat[]): G => (k, after) => {
   low.forEach(([t, at, h], j) => {
     const key = `${k}lo${j}`, A: R2 = [at, at + 0.01];
     if (t === 'b') pieces.push(mushroom(key, f.key, A));
-    else if (t === 'l') { pieces.push({ key, shape: 'block', w: [200, 240], place: { kind: 'on', on: f.key, at: A, h: [30, 34] }, style: 'log', landing: true }); sockets.push(petals(`p-${key}`, key, 0.5, 1)); }
-    else { const hh = h ?? 40; pieces.push(stump(key, f.key, A, [hh - 3, hh + 3], LAND)); sockets.push(petals(`p-${key}`, key, 0.5, 1)); }
+    else if (t === 'l') { pieces.push({ key, shape: 'block', w: [200, 240], place: { kind: 'on', on: f.key, at: A, h: [50, 56] }, style: 'log', landing: true }); sockets.push(petals(`p-${key}`, key, 0.5, 1)); }
+    // (FR9b: a low-road stump 50-56 px, a wall he hops (under 50 he walked through it); a taller stair step keeps its height)
+    else { const hh = Math.max(h ?? 53, 53); pieces.push(stump(key, f.key, A, [hh - 3, hh + 3], LAND)); sockets.push(petals(`p-${key}`, key, 0.5, 1)); }
   });
   high.forEach((q, j) => {
     const key = `${k}hi${j}`;
@@ -1006,7 +1008,7 @@ const gFork = (fw: R2, low: LowBeat[], high: HighBeat[]): G => (k, after) => {
   // (Round 4 FR7: the low road keeps its beats dense: a low stump in any stretch of plain floor longer than about 0.24 of the floor, so
   //  no walk runs past about 1.4 s; every high piece is 185 px+ up, so a 42 px stump under one keeps 118 px+ of head room)
   const ats = [0, ...low.map(([, at]) => at), 1].sort((x, y) => x - y);
-  ats.slice(1).forEach((at, j) => { const g = at - ats[j]; if (g > 0.19) { const fill = Math.ceil(g / 0.18) - 1; for (let i = 1; i <= fill; i++) { const m = ats[j] + (g * i) / (fill + 1); pieces.push(stump(`${k}fl${j}_${i}`, f.key, [m, m + 0.005], [36, 42], [120, 140])); } } });
+  ats.slice(1).forEach((at, j) => { const g = at - ats[j]; if (g > 0.19) { const fill = Math.ceil(g / 0.18) - 1; for (let i = 1; i <= fill; i++) { const m = ats[j] + (g * i) / (fill + 1); pieces.push(stump(`${k}fl${j}_${i}`, f.key, [m, m + 0.005], [50, 56], [120, 140])); } } });
   sockets.push(find(`${k}find`, `${k}hi${high.length - 1}`), petals(`${k}pf`, f.key, [0.85, 0.95], 2));
   return { pieces, sockets, last: f.key };
 };
