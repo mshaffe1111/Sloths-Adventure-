@@ -588,3 +588,7 @@ calm walking (V5's "a real breath"). Only the walk-on shrinks: **each goal's wal
 
 Outro = walk-on (140-200) + the end log (685) = **825-885 px**. If the planner's exact cap is lower, the walk-on shrinks further, to
 a 100 px floor, and the end log never does. The quiet arrival is kept: no beat on the end log (the FR9/FR10 goal exemption) and nothing hard on the walk-on.
+
+**The supervisor's check of Round 10: PASS (10:39 AM).** About 3 s of calm walk onto main's 685 px log reads as "up in the high branches... pointed north. Resolve, not triumph" (1-1.md:23). Two keep-checks, held on every roll:
+- nothing to jump or dodge on the walk-on or the log, beyond the single soft step;
+- **the bootprint place is in view, upright and sideways at phone size, before he reaches the totem** (the clue at t 0.47-0.56 of the log, the totem at t 0.85). A still at the walk-on's end checks it.
