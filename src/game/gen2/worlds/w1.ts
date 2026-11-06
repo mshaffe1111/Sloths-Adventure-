@@ -123,7 +123,9 @@ const squirrels = (id: string, on: string, t: Socket['t']): Socket => ({ id, rol
 const floor = (key: string, w: SectionPiece['w'], place: SectionPiece['place'] = { kind: 'start' }): W1Piece => ({ key, shape: 'bank', w, place, style: 'moss_stone', main: true, landing: true });
 /** the floor after a soft gap a plain jump crosses (`share` of the widest gap the difficulty allows) */
 // (a double gap's landing is a double BLOCK (NODES §8.7 B1): the engine swaps a teach or test whose block a single jump reaches, blockBreaches)
-const softGap = (key: string, after: string, w: SectionPiece['w'], share: [number, number], jump: 'jump' | 'double' = 'jump'): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump, share, soft: true }, style: 'moss_stone', main: true, landing: true, ...(jump === 'double' ? { block: 'double' as const } : {}) });
+/** the designer's double bands in px (11-06, engine-spec 174d7ddae): a TEACH's double gap 195-205 px (laid 195-203: a level double reaches 204 on these budgets), a TEST's 205-228 (the second jump's test, #20), laid exactly (gapPx); every other double gap the teach band */
+const DOUBLE_TEACH: [number, number] = [195, 203], DOUBLE_TEST: [number, number] = [205, 228];
+const softGap = (key: string, after: string, w: SectionPiece['w'], share: [number, number], jump: 'jump' | 'double' = 'jump', gapPx?: [number, number]): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump, share, soft: true, ...(jump === 'double' ? { gapPx: gapPx ?? DOUBLE_TEACH } : {}) }, style: 'moss_stone', main: true, landing: true, ...(jump === 'double' ? { block: 'double' as const } : {}) });
 /** a mossy stump or rock standing on `on` (one easy hop: lowStumps 36-76, logHop 34-46) */
 const stump = (key: string, on: string, at: SectionPiece['w'], h: SectionPiece['w'], w: SectionPiece['w'] = [130, 170]): W1Piece => ({ key, shape: 'block', w, place: { kind: 'on', on, at, h }, style: 'moss_stone', landing: true });
 /** a stepping stone: a jump from `after`, `dy` up (negative) or down; it stands on the floor (pillars: 110-160 wide) */
@@ -214,10 +216,10 @@ const gShelf = (): G => (k, after) => {
   return { pieces: [f, sh, r], sockets: [tip(f.key, 0.1), petals(`${k}psh`, sh.key, [0.25, 0.75], 2, 80), petals(`${k}pr`, r.key, 0.5, 1)], last: f.key };
 };
 /** gapRun(widths) of the second jump (twist 'gaps': reachTwo x 0.62 / 0.72 / 0.82, a run of 220-300 after each) */
-const gDoubleGaps = (shares: Array<[number, number]>): G => (k, after) => {
+const gDoubleGaps = (shares: Array<[number, number]>, px: [number, number] = DOUBLE_TEACH): G => (k, after) => {
   const pieces: W1Piece[] = []; const sockets: Socket[] = [];
   let prev = after!;
-  shares.forEach((sh, j) => { const p = softGap(`${k}g${j}`, prev, [220, 300], sh, 'double'); pieces.push(p); sockets.push({ id: `${k}arc${j}`, role: 'arc', on: p.key, t: 0 }); prev = p.key; });
+  shares.forEach((sh, j) => { const p = softGap(`${k}g${j}`, prev, [220, 300], sh, 'double', px); pieces.push(p); sockets.push({ id: `${k}arc${j}`, role: 'arc', on: p.key, t: 0 }); prev = p.key; });
   return { pieces, sockets, last: prev };
 };
 /** highLeaps(n, dbl) (protoStage.ts:1300 on main): a mushroom, boughs 170-230 at G - 236..246, the floor on under them */
@@ -342,7 +344,7 @@ const developStoneDips = section({
 /** w1Sections '1-1' twist: 'gaps', 'highLeaps', 'stoneLeaps' (on main 272-302); 'highLeaps' and 'stoneLeaps' ran 24-36 s, so cut */
 const twistGaps = section({
   id: 'w1-second-jump', floor: 'jump', name: 'the second jump', phases: ['ten'], difficulty: 5, needs: ['double'], uses: ['double'], maxPerStage: 1, // (Round 2 (c): the double's first test; #8 teaches it)
-  versions: [{ id: 'old', groups: [gShelf(), gDoubleGaps([[0.85, 0.89], [0.89, 0.93], [0.91, 0.95]]), gRest([200, 260]), gStones([60, 70, 50], [0.6, 0.72], true)] }],
+  versions: [{ id: 'old', groups: [gShelf(), gDoubleGaps([[0.85, 0.89], [0.89, 0.93], [0.91, 0.95]], DOUBLE_TEST), gRest([200, 260]), gStones([60, 70, 50], [0.6, 0.72], true)] }],
   feel: ['1-1'], not: NOT_11, rating: 5,
   source: "w1Sections '1-1' twist 'gaps' (on main 273-280): practiceShelf, gapRun(reachTwo x 0.62/0.72/0.82), a run of 200-260, pillars [60,70,50] dbl at 0.6-0.72",
 });
@@ -576,7 +578,7 @@ const fallenTrunk = section({
 /** #8 */
 const doubleTeach = section({
   id: 'w1-double-teach', floor: 'hop', name: 'double over the dip', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double', maxPerStage: 1,
-  versions: [4, 5].map((n) => ({ id: `gaps${n}`, groups: [(k, after) => { const g = gRest([300, 360])(k, after); g.sockets.push(dot(`${k}nice`, g.last, 0.2, 'coach.nice')); return g; }, gDoubleGaps(([[0.85, 0.89], [0.89, 0.93], [0.91, 0.95], [0.91, 0.95], [0.91, 0.95], [0.91, 0.95]] as R2[]).slice(0, n + 1)), (k: string, after: string | null) => { const g = gRest([200, 240])(k, after); g.sockets.push(dot(`${k}dbl`, g.last, 0.3, 'hint.1-1.double')); return g; }] })),
+  versions: [4, 5].map((n) => ({ id: `gaps${n}`, groups: [(k, after) => { const g = gRest([300, 360])(k, after); g.sockets.push(dot(`${k}nice`, g.last, 0.2, 'coach.nice')); return g; }, gDoubleGaps(([[0.85, 0.89], [0.89, 0.93], [0.91, 0.95], [0.91, 0.95], [0.91, 0.95], [0.91, 0.95]] as R2[]).slice(0, n + 1), DOUBLE_TEACH), (k: string, after: string | null) => { const g = gRest([200, 240])(k, after); g.sockets.push(dot(`${k}dbl`, g.last, 0.3, 'hint.1-1.double')); return g; }] })),
   feel: ['1-1'], not: NOT_11, rating: 3,
   source: 'W1-NEW-SECTIONS #8: one gap just past a single jump over a safe dip (soft pit: a floor under it, stair steps back, pipeline pitUnder/pitSteps), then two more (R2, the 3:11 ruling)',
 });
@@ -903,6 +905,8 @@ const BEATS: Record<string, G> = {
   h: gLogHop(),
   j: gDip(),
   d: gDoubleGaps([[0.85, 0.89]]),
+  /** a TEACH's double gap (#33): the designer's teach band, 195-205 px */
+  t: gDoubleGaps([[0.85, 0.89]], DOUBLE_TEACH),
   /** a climb step: a bank one hop up (62-78 px), the route stays up */
   c: (k, after) => { const b = bankW(`${k}c`, after!, [-78, -62], [260, 320]); return { pieces: [b], sockets: [petals(`${k}p`, b.key, [0.3, 0.6], 1)], last: b.key }; },
   /** a very low root (24-36 px) on the floor: the arrival's hop */
@@ -970,7 +974,7 @@ const logTeach = rhythmic({
 /** #33 (teach double): the double gap past a single, share 0.85+ (the Easy rise version is the planner's, no per-setting version) */
 const dipDoubleTeach = rhythmic({
   id: 'w1-dip-double-teach', floor: 'hop', name: 'the wide dip', phases: ['ki'], difficulty: 3, needs: ['double'], teaches: 'double',
-  versions: { a: ['w j d w j d w', 'w j d w'], b: ['w d j j d j j', 'w d j j'] }, // (the rhythm twice: 10 s by repetition, the ruling 08c5a2944)
+  versions: { a: ['w j t w j t w', 'w j d w'], b: ['w t j j t j j', 'w d j j'] }, // (t: the teach band, 195-205 px) // (the rhythm twice: 10 s by repetition, the ruling 08c5a2944)
   feel: ['1-1'], not: NOT_11, rating: 3,
   source: 'Round 4 #33: R2 (3:11); NODES §8.7 (a gap at share 0.85+, back-only pit: the planner\'s block rule)',
 });
