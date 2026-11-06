@@ -18,14 +18,15 @@ const pockets = (ps: Platform[]) => {
   return banks.filter((p) => isPocket(p, banks));
 };
 
-test("gen2 1-1 Roll B's dip pockets are found (x 3671, 4070, ...), each narrow and closed in by higher banks", () => {
+test("gen2 1-1 Roll B's dip pockets are found, each narrow and closed in by higher banks", () => {
+  // (no x positions pinned: Roll B is a QA seed pin that moves when the proven list is rebuilt, 0.9.5's 110867 -> 15458; the pocket
+  // rule itself is planted below, with and without ownLook)
   asQaBuildForTest(true);
   setPick11('B');
   try {
     const st = generateStage(generateAllLevels().find((l) => l.id === '1-1' && !l.secret)!, 'normal');
     const found = pockets(st.platforms);
     assert.ok(found.length >= 4, `${found.length} pockets`);
-    assert.ok(found.some((p) => Math.round(p.x) === 3671) && found.some((p) => Math.round(p.x) === 4070), found.map((p) => Math.round(p.x)).join(' '));
     for (const p of found) assert.ok(p.width < POCKET_W && p.ownLook);
   } finally {
     setPick11('play');
