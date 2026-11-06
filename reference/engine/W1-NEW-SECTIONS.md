@@ -625,7 +625,7 @@ integration of those cuts.
 | **the joins** (planner) | a bough each | **the next section's own entry kind** (a log, an earth ledge or a bough, as that section starts), so a join never adds a third kind; in the window, alternate bough and log |
 | #10 canopy-rungs (and level) | every rung a bough | **alternate bough and log** (`b l b l`). It's still the double chain up the canopy, and the eye reads a rhythm of kinds |
 | #45 mushroom-chain-back | up 2 boughs, down 2 boughs | the up legs stay boughs; **the down legs are logs** |
-| #37 twin-mushroom-fork, the high road | boughs | **logs on stumps** (the old 1-1 high road: logs on stump-posts, LABELS §1) |
+| #37 twin-mushroom-fork, the high road | boughs | **floating logs, with no stumps under them** (Matt, 11-06, see below) |
 | seed-perch | boughs to the perch | the perch itself is **a log** (the painted log frame); the approach stays boughs |
 | #44 log-chain, its catches | catch boughs | **logs** (platforms may float). The chain itself is logs, as its name says |
 | every B4 catch bough elsewhere (#10, #22, #29) | boughs | **logs, alternating with boughs** |
@@ -641,3 +641,9 @@ reports the per-roll share. Diagonal branches stay dressing only (art director, 
   - The swaps above (rungs alternating, chain-back logs, catches logs, joins taking the next entry kind) take about 10-14 boughs off such a roll. The porter's per-roll report proves it.
   - 1-1.md:52 ("its commonest piece should be a ground piece") holds as a second check: ground pieces above branch on every roll.
 - **YES:** rungs alternating bough and log keep the double chain. The moment is the chain, not the material (1-1.md:21-22).
+
+**Matt's floating rule, his words via the lead (11:29 AM): "platforms can float. As long as you're walking on it and it's a part of the core gameplay... Rocks, things that shouldn't be floating, don't float. But if we have branches and other things that he walks on, I'm okay if they float. I actually think it looks cleaner."** Applied to Round 11 and every later round:
+- Walked-on boughs, logs and planks may float with **no trunk, stump or post under them**. Supports are OPTIONAL, and **no new support is added.** This replaces "logs on stumps" in #37 and FR5's mid road of "low logs on stumps": both are now floating logs.
+- Rocks, stones, pads, props and dressing never float.
+- A trunk, stump or post that IS drawn reaches the ground.
+- Earth chunks: no floating earth until Matt answers the lead's open A/B question.
