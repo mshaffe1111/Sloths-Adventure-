@@ -335,6 +335,9 @@ export interface Platform {
   pit?: 'drop';
   /** a catch a builder lays under a gap (the mixer's 'catch' piece): a fall's floor, left with a hop */
   catch?: boolean;
+  /** drawn as its own kind, never given another look for variety (platformPlan.ts planThin): a world whose painted kit draws its pieces,
+   *  where variety comes from the sections (W1-ART-AUDIT §3.1, Matt's approval 11-05: gen2 World 1) */
+  ownLook?: boolean;
 }
 
 /**

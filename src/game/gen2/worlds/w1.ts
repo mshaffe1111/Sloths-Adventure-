@@ -1270,6 +1270,13 @@ export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map((q)
 /** the phases a stage's slots fill */
 export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten', 'ketsu', 'goal'];
 
+/** what World 1 does to a built gen2 stage (GEN2_STAGES `finish`; the test link's picker calls it too): every piece keeps its own kind,
+ *  never re-labelled for variety (W1-ART-AUDIT §3.1, Matt's approval 11-05: the leaf ledge, the frond strip and the stone drawn as a log came
+ *  from that swap, not from w1.ts). A finished stage is returned for chaining */
+export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean }> }>(st: T): T {
+  for (const p of st.platforms) p.ownLook = true;
+  return st;
+}
 /**
  * World 1's gen2 kit (the planner, 11-05: one kit for the game, stage.ts and the CHECK 3b harness): W1_KIT's rows as a WorldManifest with
  * World 1's pool. 1-1 lays no creatures, props or rooms; its dressing comes after the build (protoStage.ts addDress), as on gen2's other
