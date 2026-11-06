@@ -20,6 +20,7 @@ import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } fr
 import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
+import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
@@ -1316,7 +1317,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // (the heights V19 holds the late rise to: where the bough window begins (the route as the slots reach two thirds), and where a late
     // descent began)
     if (upStage && chunkTotal) {
-      if (windowY === undefined && (slot + 0.5) / stageLen >= 2 / 3) windowY = cur.y;
+      if (windowY === undefined && (slot + 0.5) / stageLen >= WINDOW_AT) windowY = cur.y;
       if (n.job === 'descent' && windowY !== undefined) descentY = Math.min(descentY ?? Infinity, cur.y);
       if (windowY !== undefined) riseTo = endHigh ? Math.min(windowY, descentY ?? Infinity) : descentY;
     }
@@ -2493,7 +2494,7 @@ export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] 
  * A built roll's errors, everything that fails it by name: its own (a check that failed), a tip with no words, a slot filled past its rule
  * (Law 22), a required section with no node, and every V-rule breach in its realised node code (the red team's RT-ENGINE #6)
  */
-export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loosened' | 'missing' | 'codeErrors'>): string[] {
+export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loosened' | 'missing' | 'codeErrors' | 'windowMiss'>): string[] {
   const st = { gen2: { ...g, errors: [...(g.errors ?? [])] } };
   // (a tip whose id has no Dot line fails the roll: it was never shown)
   const unsaid = [...new Set(st.gen2.fills.filter((f) => f.role === 'tip' && f.unsaid).map((f) => f.what))];
@@ -2505,6 +2506,7 @@ export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loos
   // (the red team, RT-ENGINE #6: a V-rule breach in the realised node code fails the roll too, by name; it was only written to
   // codeErrors, so a roll breaking V1-V20 with every slot filled would have reached the game as clean)
   if (st.gen2.codeErrors?.length) st.gen2.errors.push(...st.gen2.codeErrors.map((e) => `node code: ${e}`));
+  if (st.gen2.windowMiss) st.gen2.errors.push(st.gen2.windowMiss);
   return st.gen2.errors;
 }
 
@@ -2514,6 +2516,13 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const pool = stagePool(M0, req.config.id);
   if (pool.length !== M0.sections.length) req = { ...req, kit: { ...req.kit, manifest: { ...M0, sections: pool } } };
   const st = buildRolled(req);
+  // (V19b judged on the built stage by the gate's own definition, storyChecks endAboveWindow: the slot estimate in layStage steers the lay,
+  // this is the verdict, so the pipeline and stage.ts never disagree; the lead 12:57 PM, 11-06. A window start over a gap has no height:
+  // a miss, as stage.ts reads it)
+  if (req.kit.manifest.graphs?.briefs?.[req.config.id]?.endHigh) {
+    const w = endAboveWindow(st as never);
+    if (!w.pass) st.gen2.windowMiss = `V19b: the end log at y ${w.endY} is not above y ${w.windowY}, where the bough window begins (x ${w.windowX})`;
+  }
   st.gen2.errors = rollErrors(st.gen2);
   return st;
 }

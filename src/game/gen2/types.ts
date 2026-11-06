@@ -675,6 +675,8 @@ export interface Gen2Meta {
   code?: string[];
   codeString?: string;
   codeErrors?: string[];
+  /** V19b as stage.ts judges it (storyChecks endAboveWindow, the one window definition): the miss, by name; a stage with an endHigh brief only */
+  windowMiss?: string;
   /** the brief the rolled graph was rolled under (manifest graphs.briefs) */
   brief?: GraphBrief;
   /** each node as laid, for the gates that read the built stage (V18's nodePieces.ts, the stills spots): its token, the x-range its
