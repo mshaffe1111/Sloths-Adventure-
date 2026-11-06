@@ -51,7 +51,7 @@ Everything else falls through to code.
    A tall bank block (a K face over 80 px) draws as the painted `bank`/`bankEnd`.
 3. **Thin logs → the painted `log` frame** (the push log's art, protoAtlasData `log`). Every thin `log` piece (log chain, rungs,
    exits, low logs) draws painted. This replaces (c) and the grass log on a post. The end log of #15, #23 and #30 is in this
-   family too, and already reads as painted on main's 1-1.
+   family too. Not checked yet: main's own 1-1 end log is a tall `log` piece drawn as ground, so it's code-drawn there as well.
 4. **Thin stones → the painted `boulder`** (moss_stone at 50 px), on the floor only. Rocks never float (LABELS rule 1), so a
    stepping stone that would sit lower than 50 px stands on the floor at 50, its top where the section put it. That re-sits the
    stone road under the beats' heights (h ≤ 80 rule), which the porter lays.
