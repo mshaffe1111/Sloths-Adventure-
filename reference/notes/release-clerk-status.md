@@ -3,7 +3,16 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 3:30 PM ET, 2026-11-06.
+Last update: 3:35 PM ET, 2026-11-06.
+
+## 3:35 PM addendum
+- The container restarted at about 3:24 PM and killed shards 2 and 3 on the trial merge (shard 1 had finished). Restarted 3:27 PM; I
+  then stopped them by mistake at 3:31 PM (I read a 3-branch `git log -1` as engine-core moving; it was engine-chunks) and restarted
+  them at 3:33 PM on the same trial (engine-core 5e221f9d, unchanged). Results expected around 4:05 PM.
+- engine-chunks is now 75472091 (3 commits past engine-core, it does NOT contain engine-core 5e221f9d's tip; tester-page 17110e7b does).
+  Its commit makes `builtOnGen2(cfg)` and has levels.test, stageQuality.test and platformPlan.test judge only the old generator's stages
+  (gen2 1-1's flags move to rolledFlags.test, on your 2:37 PM ruling). That narrows three tests' scope: for your Law 5 check when you
+  pass engine-chunks (the replacement tests exist and are planted both ways, per its message; I have not verified that yet).
 
 ## HEADLINE for the lead (3:30 PM)
 1. **engine-core 5e221f9d is NOT ready: 8+ red tests (shard 1 alone: 7 red + 2 todo-masked), listed below with causes.** Shards 2 and 3
