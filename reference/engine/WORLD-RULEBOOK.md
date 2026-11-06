@@ -219,3 +219,19 @@ are 3.5 body widths (about 154 px, Normal's climax) to 7.0 (about 308 px, Easy's
 
 **For the planner's generatePlan:** rules 1-4, 9, 10 and 12 are gates or draw rules it encodes now. 5-7 bind once a W1 stage places
 animals, ropes or marks. 11 is a library floor.
+
+## Ruling: is 1-1 supposed to branch like old 1-1? (designer, 11-06 11:44 AM ET, for the lead's 1:00 PM classification)
+
+**No. 1-1's splits ≥ 34 and two-road ≥ 0.61 are an OLD-ERA RULER for 1-1, so they're reported, not pass/fail. They belong to 1-2.**
+
+Evidence:
+- **1-1's story brief never asks for roads or choices.** It asks for "gentle, safe ground" at the start, "the first real step up, off the forest floor", and "up in the high branches" at the end (story-briefs/1-1.md:19-23). Its look is "the forest EDGE and FLOOR rising into the canopy… its commonest piece should be a ground piece" (:47-52). One climb, not two roads.
+- **1-2 is the road stage.** "1-1 is learning: four moves taught in a row; 1-2 is choosing: a road decision again and again" (BRIEF-1-2.md:40), with boughs as "the HIGH road all along" (:39). Holding 1-1 to old 1-1's 0.61 two-road share would pull 1-1 toward 1-2, against NODES §5 (neighbours differ on thinking load).
+- **Old 1-1 got its 0.61 from how it was built,** logs on posts over one continuous floor (the planner's 4:00 PM 11-05 measure), not from its brief. I adopted it as a floor on 11-05 for variety. The planner has since shown that diversity is read from the quickest route alone (measureRoll), not from two-road, so the floor isn't needed for variety either. (This reverses my own 11-05 floor; the lead confirms it.)
+- **The teach and test blocks can't be two-road** (B1-B6), and 1-1 is mostly teaches.
+
+**What 1-1 is held to instead:**
+- `branching: some` as F nodes (V17: at least one fork in every 1-1 graph; the rulebook's 1-2 forks);
+- the variety gates (era diversity ≥ 0.35 on the quickest route, lookalike < 0.78, no 20 s window alike);
+- the floor road under raised pieces where the job allows (FR1-FR8). It keeps old 1-1's FEEL (Matt: old 1-1's look and flow as a feel) without a share line.
+- The splits and two-road numbers stay in the stage report as information. **1-2's brief sets its own two-road line**, the cold helper's to find.
