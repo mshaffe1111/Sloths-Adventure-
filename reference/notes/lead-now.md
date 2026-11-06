@@ -117,6 +117,7 @@ After 1-1 is proven, these run as their own lanes, one engine.ts holder at a tim
 - 1-1's map card text: "Run the high branches of the kapok trees" (the kapok is 1-4's). Story wording, for the supervisor.
 
 ## My traps (read every time)
+- New helpers: create_session with permission_mode "auto" (as the team runs), NEVER acceptEdits: acceptEdits blocks send_message on an approval only Matt can give (11-06: art director and tester-page stuck ~25 min).
 - Read the real thing, not the report: open the commit, the file, the still. A helper's "done" isn't done until I've looked.
 - Helpers' fast work gets the same check as slow work.
 - Never type a time; paste it from `date`. Never build from origin/ccr-0d59a91c-oy3imz src/ (rejected rebuild, D40).
