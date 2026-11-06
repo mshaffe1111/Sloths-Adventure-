@@ -76,6 +76,8 @@ Full suite on these changes: 2,440 tests, 12 fail, plus the known TODOs, 16 line
    - 4:20 PM: setting the pocket's `soil` or `hollow` flag, or its height to 400, changes nothing on screen, but removing the pocket
      removes the pane. So the pane is drawn by a path that ignores those fields. The green strip with root lines looks like the moss
      strip (drawBankArt `moss`) or a terrain.ts ledge, not the painted ground.
+   - Also ruled out: w1Pits.ts. Its findW1Pits finds no pit on Roll B between x 3000 and 11000, so neither its soft-pit look nor its leaf
+     bed draws these.
    - That is where the ground owner should look next.
    - **Slips past 5:00** (the art deadline moved to 5:00); the boulders and the end log are done.
 3. **End log (686 px): DONE.**
