@@ -74,7 +74,7 @@ QA link, and retrospects. The lead: no helpers running; at most a light check if
 the player-data job (with his new recordings), then 1-2 by a cold helper.
 
 ## Open with Matt (one question at a time)
-- METER: 80% at ~9:55 AM ET 11-06 (2% in ~1.5 h with 4 helpers: about 1.4%/h). 78% at 8:30 AM ET 11-06 (67% 11-05 4:23 PM; ~14% burned on 11-05). Week goal under 90%: about 12% left until the reset. Matt 8:40 AM: "we can use a bit more today": hard stop ~85% (keeps 5% under 90). Art director STARTED 8:37 AM (session_01FhBbYLmXQhDLjAzTexXzo3, branch art-director: the 10-world kit audit by 12:30 PM, then cut Matt's keepers; no HF spend without the lead). Player-data helper still waits.
+- METER: 83% at ~1:00 PM ET 11-06 (about 1%/h with 5 helpers). 80% at ~9:55 AM ET 11-06 (2% in ~1.5 h with 4 helpers: about 1.4%/h). 78% at 8:30 AM ET 11-06 (67% 11-05 4:23 PM; ~14% burned on 11-05). Week goal under 90%: about 12% left until the reset. Matt 8:40 AM: "we can use a bit more today": hard stop ~85% (keeps 5% under 90). Art director STARTED 8:37 AM (session_01FhBbYLmXQhDLjAzTexXzo3, branch art-director: the 10-world kit audit by 12:30 PM, then cut Matt's keepers; no HF spend without the lead). Player-data helper still waits.
 - Hugging Face: $71.83 left (Matt checked, 11-05 ~4:55 PM ET); keep about $15 back. Matt 11-06 9:13 AM: "use Hugging Face when needed". The lead OKs each job in writing (one-line ask with cost); the art director logs every job in reference/art/HF-SPEND.md; the lead tells Matt the running total.
 - Matt: "the focus of getting the engine done and right over playing around with something we're not even going to keep." No
   throwaway trials: everything built is engine code or kit data that stays.
