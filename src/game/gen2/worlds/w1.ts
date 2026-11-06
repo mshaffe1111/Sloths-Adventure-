@@ -621,9 +621,9 @@ const canopyRungs = section({
 /** #11 */
 /** a canopy rest's two roads (Round 4 FR5): the bough `a`, a level gap a hop crosses, the bough `b`; the MID road a low log 136-144 under
  *  `a` with the petals, and a log step 66-74 under the gap's middle, so the mid road climbs back up to `b` (FR3, steps under 88) */
-const gRestRoads = (aw: R2, bw: R2, line?: string): G => (k) => {
+const gRestRoads = (aw: R2, bw: R2, line?: string, rise: R2 = [-2, 2]): G => (k) => {
   const a = limb(`${k}a`, { kind: 'start' }, aw);
-  const b = limb(`${k}b`, { kind: 'jump', after: `${k}a`, dy: [-2, 2], share: [0.86, 0.9] }, bw);
+  const b = limb(`${k}b`, { kind: 'jump', after: `${k}a`, dy: rise, share: rise[0] < -10 ? [0.45, 0.55] : [0.86, 0.9] }, bw);
   const step = limb(`${k}st`, { kind: 'jump', after: `${k}a`, dy: [66, 74], share: [0.15, 0.2] }, [50, 60], 'log', false);
   return { pieces: [a, b, step, lowLog(`${k}lo`, `${k}a`, [0.15, 0.25])], sockets: [petals(`${k}p`, `${k}lo`, [0.3, 0.7], 3, 140), ...(line ? [dot(`${k}high`, `${k}a`, 0.4, line)] : [])], last: `${k}b` };
 };
@@ -1253,12 +1253,53 @@ const homeBanks = rhythmic({
   source: 'Round 7 (c) #68 (designer 11-06 8:32 AM): the brief\'s start (the squirrels: 1-1.md must); STAGE-RULES:161 (flat and safe)',
 });
 homeBanks.sockets = [squirrels('sq', 'in', [0.6, 0.7]), dot('tip', 'in', 0.1, 'coach.run')];
+/**
+ * Round 12 (the designer 11-06, engine-spec): rising versions for the late rise (V19), each its own section since a section's versions
+ * share one exit: #11 and #19 'up' (the second limb 50-80 px up, a plain hop, no hard input), #22 'rise' (both roads climb two doubles of
+ * 130-145), #44 'rise' (three doubles rising, then a level log). Jobs, content and terrain are their bases' (R6_BASE)
+ */
+const highWalkUp = section({
+  id: 'w1-high-walk-up', name: 'high branch, a step up', phases: ['rest'], difficulty: 1, needs: ['jump'], ports: ['ledge', 'ledge'], window: BOUGH_WINDOW, exitDy: -65,
+  versions: [{ id: 'up', groups: [gRestRoads([420, 460], [380, 440], 'hint.1-1.high', [-80, -50])] }],
+  feel: ['1-1'], not: NOT_11, rating: 1, source: 'Round 12: #11 up, its second limb 50-80 px up',
+});
+const boughBenchUp = section({
+  id: 'w1-bough-bench-up', name: 'high rest, a step up', phases: ['rest'], difficulty: 1, needs: ['jump'], ports: ['ledge', 'ledge'], window: BOUGH_WINDOW, exitDy: -65,
+  versions: [{ id: 'up', groups: [gRestRoads([300, 340], [460, 520], 'hint.1-1.high', [-80, -50])] }],
+  feel: ['1-1'], not: NOT_11, rating: 1, source: 'Round 12: #19 up, its second limb 50-80 px up',
+});
+const canopyWeaveRise = section({
+  id: 'w1-canopy-weave-rise', name: 'canopy weave, rising', phases: ['ketsu'], difficulty: 6, needs: ['double'], uses: ['double'], ports: ['ledge', 'ledge'], window: BOUGH_WINDOW, exitDy: -276,
+  versions: [{ id: 'rise', groups: [(k: string) => {
+    const pieces: W1Piece[] = [limb(`${k}a`, { kind: 'start' }, [260, 320])];
+    let hi = `${k}a`, mid = `${k}a`;
+    ([[-140, -136], [-140, -136], [-3, 3], [-3, 3]] as R2[]).forEach((dy, j) => {
+      pieces.push({ ...limb(`${k}h${j}`, { kind: 'double', after: hi, dy, share: dy[0] < -100 ? [0.3, 0.45] : [0.55, 0.65] }, [200, 240]), ...(dy[0] < -100 ? { block: 'double' as const } : {}) });
+      // (the mid road climbs too, about 100 px under the high one, its own two doubles)
+      pieces.push(limb(`${k}m${j}`, { kind: dy[0] < -100 ? 'double' : 'jump', after: mid, dy: j === 0 ? [-40, -30] : dy[0] < -100 ? [-140, -136] : [-3, 3], share: [0.45, 0.55] }, [200, 240], 'branch', false));
+      hi = `${k}h${j}`; mid = `${k}m${j}`;
+    });
+    pieces.push(limb(`${k}o`, { kind: 'jump', after: hi, dy: [-3, 3], share: [0.3, 0.4] }, [420, 480]));
+    pieces.push(lowLog(`${k}lo`, `${k}m0`, [0.2, 0.3]));
+    return { pieces, sockets: [petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2), find(`${k}find`, hi)], last: `${k}o` };
+  }] }],
+  feel: ['1-1'], not: NOT_11, rating: 6, source: 'Round 12: #22 rise, both roads climbing two doubles of 130-145',
+});
+const logChainRise = section({
+  id: 'w1-log-chain-rise', name: 'the log chain, rising', phases: ['ketsu'], difficulty: 7, needs: ['double'], uses: ['double'], exitDy: -414, ports: ['ledge', 'ledge'], window: BOUGH_WINDOW, maxPerStage: 1,
+  versions: [{ id: 'rise', groups: [(k) => { const ps = [limb(`${k}a`, { kind: 'start' }, [460, 520], 'log'), lowLog(`${k}lo`, `${k}a`, [0.2, 0.3])];
+    const dys: R2[] = [[-140, -136], [-140, -136], [-140, -136], [-4, 4]]; let prev = `${k}a`;
+    dys.forEach((dy, j) => { const key = `${k}c${j}`; ps.push(limb(key, { kind: 'double', after: prev, dy, share: dy[0] < -100 ? [0.3, 0.4] : [0.86, 0.9] }, [400, 460], 'log')); prev = key; });
+    return { pieces: ps, sockets: [petals(`${k}p`, `${k}lo`, [0.3, 0.7], 2), dot(`${k}nomoss`, `${k}a`, 0.1, 'hint.1-1.noMoss')], last: prev }; }] }],
+  feel: ['1-1'], not: NOT_11, rating: 7, source: 'Round 12: #44 rise, d d d rising then a level log', rhythms: { rise: 'd d d g' },
+});
+const ROUND12 = [highWalkUp, boughBenchUp, canopyWeaveRise, logChainRise];
 const ROUND7 = [homeBanks];
 const ROUND5 = [w47, w48, w49, w50, w51, w52, w53, w54, w55, w56, w57, w58, w59, w60, w61, w62];
 const ROUND4 = [stepStonesTeach, logTeach, dipDoubleTeach, bankDoubleTeach, mushroomBankTeach, morningPath, mushroomFork, twinMushroomFork, stairFork, bankStairFork, stairTest, logStairTest, backstepTwist, dippingBoughsTwist, logChain, mushroomChain];
 
 /** the designer's sections entered (all 30) and the planner's seed perch */
-export const W1_NEW: readonly W1Section[] = [stumpStile, stoneZigzag, logRoad, hollowTwoway, mushroomLift, twinBounce, fallenTrunk, doubleTeach, boughStepup, canopyRungs, highWalk, dropdownStair, knotBank, floorDash, quietArrival, forestEdge, fernBank, clearing, boughBench, stumpTowers, bounceDouble, canopyWeave, sunlitLog, stumpDescent, moundLog, logWalk, stiltLogs, twoAnswers, boughLog, lastStepUp, seedPerch, ...ROUND4, ...ROUND5, ...ROUND6, ...ROUND7];
+export const W1_NEW: readonly W1Section[] = [stumpStile, stoneZigzag, logRoad, hollowTwoway, mushroomLift, twinBounce, fallenTrunk, doubleTeach, boughStepup, canopyRungs, highWalk, dropdownStair, knotBank, floorDash, quietArrival, forestEdge, fernBank, clearing, boughBench, stumpTowers, bounceDouble, canopyWeave, sunlitLog, stumpDescent, moundLog, logWalk, stiltLogs, twoAnswers, boughLog, lastStepUp, seedPerch, ...ROUND4, ...ROUND5, ...ROUND6, ...ROUND7, ...ROUND12];
 
 const HARVEST: readonly W1Section[] = [learn, developStones, cacheStones, developStumpStones, developStoneDips, twistGaps, twistLeapStones, twistHighLeaps, finishHopBounce, finishBounceRun, finishStoneRoad, meadow, lowBoughs, ledges, ropes];
 /**
@@ -1318,7 +1359,7 @@ const TERRAIN: Record<string, W1Terrain> = {
 const ANSWERS: Record<string, Array<'double' | 'bounce'>> = { 'w1-fallen-trunk': ['double', 'bounce'], 'w1-two-answers': ['double', 'bounce'], 'w1-long-bounce-twist': ['double', 'bounce'] };
 const VERSION_JOBS: Record<string, Record<string, W1Job[]>> = { 'w1-fallen-trunk': { double: ['test'], mushroom: ['twist'] } };
 /** Round 6's level and net-zero sections take the content and terrain of the section they are a version of */
-const R6_BASE: Record<string, string> = { 'w1-canopy-rungs-level': 'w1-canopy-rungs', 'w1-stair-test-back': 'w1-stair-test', 'w1-log-stair-test-back': 'w1-log-stair-test', 'w1-bank-stair-test-back': 'w1-bank-stair-test', 'w1-mushroom-chain-back': 'w1-mushroom-chain', 'w1-bounce-stair-level': 'w1-bounce-stair-combine', 'w1-two-lifts': 'w1-mushroom-bank-teach', 'w1-bounce-wall': 'w1-mushroom-bank-teach' };
+const R6_BASE: Record<string, string> = { 'w1-high-walk-up': 'w1-high-walk', 'w1-bough-bench-up': 'w1-bough-bench', 'w1-canopy-weave-rise': 'w1-canopy-weave', 'w1-log-chain-rise': 'w1-log-chain', 'w1-canopy-rungs-level': 'w1-canopy-rungs', 'w1-stair-test-back': 'w1-stair-test', 'w1-log-stair-test-back': 'w1-log-stair-test', 'w1-bank-stair-test-back': 'w1-bank-stair-test', 'w1-mushroom-chain-back': 'w1-mushroom-chain', 'w1-bounce-stair-level': 'w1-bounce-stair-combine', 'w1-two-lifts': 'w1-mushroom-bank-teach', 'w1-bounce-wall': 'w1-mushroom-bank-teach' };
 /** Round 6's new combines: their content (NODES §7.7) and terrain */
 const R6_KIND: Record<string, [W1Content, W1Terrain]> = { 'w1-home-banks': ['structural', 'floor-stones'], 'w1-bounce-over-dip': ['ground', 'mounds'], 'w1-mushroom-log': ['ground', 'raised-logs'], 'w1-mushroom-stair': ['bounce', 'mounds'] };
 /**
@@ -1346,7 +1387,7 @@ function teachLines(q: W1Section): W1Section {
   });
   return { ...q, mirrorable: false, subBlocks: [{ ...sub, versions }] };
 }
-export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(teachLines).map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id] ?? CONTENT[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[0], terrain: TERRAIN[q.id] ?? TERRAIN[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[1], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
+export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(teachLines).map((q) => ({ ...q, jobs: JOBS[q.id] ?? JOBS[R6_BASE[q.id]], content: CONTENT[q.id] ?? CONTENT[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[0], terrain: TERRAIN[q.id] ?? TERRAIN[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[1], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
 
 /** the phases a stage's slots fill */
 export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten', 'ketsu', 'goal'];
