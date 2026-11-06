@@ -267,3 +267,7 @@ Evidence:
   2. **`w1-mound-log` (#25) is retagged content `ground`,** as knot-bank was: a mound with a log over it, up then down, isn't a stair.
   3. The mirrored breaches go to the planner's no-mirror rule.
   4. **leap-stones' "rock in the air" (3) is a real defect:** a rock never floats (LABELS rule 1). Each `gStones` stone in it stands on the floor or a bank down to the ground. The porter seats them.
+- **(g), round 2 (1:54 PM; the porter's V18 data at engine-core c8019ae1d):**
+  1. **mound-log goes to `ground`, and the stair runs #53-#55 also take the `practise` job** (jobs `['flow', 'climb', 'practise']`). The practise × climb cell then holds 3 climb-type sections, so it doesn't run dry (52 of 120 builds failed without it), and mound-log's 12 step-down breaches go.
+  2. **V18 judges a climb from its FIRST climb step to its summit.** Floor hops in the approach before the first step aren't part of the stair, the same logic as the run-out after the summit. Inside the stair (between climb steps) a floor `h` becomes `a` (the level gap jump). So bank-run a becomes `w h h c c a c`, and zigzag-run's inner hop becomes `a`. The stair tests' `w h h` openings are approach, not breaches.
+  3. **high-step-twist (#56): its double goes ACROSS at the same height,** to a level stair, not a lower one. The twist is a double across instead of up; there's no step down.
