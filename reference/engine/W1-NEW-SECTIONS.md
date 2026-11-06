@@ -482,3 +482,7 @@ I scanned all 16 laid seeds (buildGen2Stage, w1World, engine-core 4ec76da73; scr
 | about 20 walk-through stumps a roll | covered by FR9: every hop stump is ≥ 50 px (`gLowStumps`, `stumpL`, Round 7 (d)) |
 
 **For the porter:** `held/double-tags.patch` (the block tags) goes in with this, so the planner's backPit binds (engine-chunks 31b14a2f).
+
+**The supervisor's check of Round 7 (d): PASS (8:48 AM). Two amendments:**
+- **The goal section is exempt from FR10 and FR9:** #15, #23 and #30, the walk-on to the end log and the totem. Its calm walk is the brief's "resolve, not triumph" (1-1.md:23), so it gets no beat stumps. The quiet gate counts the stage only up to the goal section's entry.
+- **The canopy rests' soft beat (#11 `w1-high-walk`, #19 `w1-bough-bench`) is a short step between boughs:** a ≤ 80 px rise or a small gap, never a stump on a bough. Stumps stand on the ground.
