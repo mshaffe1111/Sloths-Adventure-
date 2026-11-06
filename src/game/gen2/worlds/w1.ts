@@ -114,6 +114,9 @@ const dot = (id: string, on: string, t: Socket['t'], line: string): Socket => ({
 /** a find on a fork's high road (NODES §8.8, V7: a fork is a fork only when its high road holds a find) */
 const find = (id: string, on: string): Socket => ({ id, role: 'find', on, t: 0.5, dn: 34 });
 const decor = (id: string, on: string, t: Socket['t']): Socket => ({ id, role: 'decor', on, t, chance: 0.6 });
+/** the brief's squirrels ("the squirrels came to watch him leave", 1-1.md must; Round 7 (c)): an arrival's `sq` socket, one of the three, always */
+const SQUIRRELS = ['squirrel-sit', 'squirrel-wave', 'squirrel-tip'];
+const squirrels = (id: string, on: string, t: Socket['t']): Socket => ({ id, role: 'decor', on, t, allow: SQUIRRELS });
 /** a stretch of the moss floor: a bank on the ground line (old 1-1's ground at G) */
 const floor = (key: string, w: SectionPiece['w'], place: SectionPiece['place'] = { kind: 'start' }): W1Piece => ({ key, shape: 'bank', w, place, style: 'moss_stone', main: true, landing: true });
 /** the floor after a soft gap a plain jump crosses (`share` of the widest gap the difficulty allows) */
@@ -151,7 +154,8 @@ const gRest = (w: SectionPiece['w'], withFlag = false): G => (k, after) => ({
 });
 /** lowStumps (protoStage.ts:1149 on main): 3-4 stumps 130-170 wide, h 40-50 then +40/+50/-30 within 36-76, gaps 70-105 */
 const gLowStumps = (n: 3 | 4): G => (k, after) => {
-  const hs = n === 3 ? [[40, 50], [76, 76], [46, 46]] : [[40, 50], [76, 76], [46, 46], [36, 40]];
+  // (FR9, Round 7 (d): every hop stump a wall, 50 px or more (engine.ts walls only at 50 px; a 36-42 px stump was walked through))
+  const hs = n === 3 ? [[50, 56], [76, 80], [54, 60]] : [[50, 56], [76, 80], [54, 60], [50, 56]];
   const f = floor(`${k}f`, [n === 3 ? 760 : 900, n === 3 ? 840 : 980], startOr(after));
   const ps = hs.map((h, j) => stump(`${k}s${j}`, f.key, [(j + 0.5) / n - 0.06, (j + 0.5) / n - 0.02], h as [number, number]));
   return { pieces: [f, ...ps], sockets: ps.map((p) => petals(`p-${p.key}`, p.key, 0.5, 1)), last: f.key };
@@ -298,7 +302,7 @@ function renPlace(pl: SectionPiece['place'], f: (s: string) => string): SectionP
 const learn = section({
   id: 'w1-learn', floor: 'hop', name: 'run and jump', phases: ['start', 'ki'], difficulty: 2, needs: ['jump'], teaches: 'jump', // (the move's name, as the brief's teaches: the designer's 1-1 brief, f560b7916)
   maxPerStage: 1,
-  versions: [3, 4].map((n) => ({ id: n === 3 ? 'old' : 'four-stumps', groups: [gRest([400, 440]), gLowStumps(n as 3 | 4), gBusy(['log']), (k: string, after: string | null) => { const g = gSoftGaps()(k, after); g.sockets.push(dot(`${k}gaps`, g.pieces[0].key, 0.1, 'hint.1-1.gaps')); return g; }, gRest([260, 320], true)] })),
+  versions: [3, 4].map((n) => ({ id: n === 3 ? 'old' : 'four-stumps', groups: [gRest([200, 260]), gLowStumps(n as 3 | 4), gBusy(['log']), (k: string, after: string | null) => { const g = gSoftGaps()(k, after); g.sockets.push(dot(`${k}gaps`, g.pieces[0].key, 0.1, 'hint.1-1.gaps')); return g; }, gRest([260, 320], true)] })),
   feel: ['1-1'], not: NOT_11, rating: 2,
   source: "old 1-1 'Learn: run and jump' (protoStage.ts on main 1414-1433): rest 400-440, lowStumps, busy(1, ['log'], 240-290), soft gaps one x 0.35/0.45/0.55, a flag",
 });
@@ -371,9 +375,10 @@ const finishStoneRoad = section({
 });
 /** old 1-1's rests between beats and its home run: the meadow (rest 400-440 + a flag; busy and low stumps on it) */
 const meadow = section({
-  id: 'w1-meadow', floor: 'hop', name: 'home meadow', phases: ['rest', 'start'], difficulty: 1, // (Round 2 (d): not goal; 1-1 ends on the high log)
+  id: 'w1-meadow', floor: 'hop', name: 'home meadow', phases: ['rest'], // (Round 7 (c): not an arrival, it needs a jump and has a dip; it stays a rest)
+  difficulty: 1, // (Round 2 (d): not goal; 1-1 ends on the high log)
   needs: ['jump'],
-  versions: [{ id: 'stumps', groups: [gRest([400, 440], true), gLowStumps(3), gBusy(['log', 'dip', 'log'])] }, { id: 'rocks', groups: [gRest([400, 440], true), gBusy(['log', 'log', 'dip']), gLowStumps(3)] }],
+  versions: [{ id: 'stumps', groups: [gRest([200, 260], true), gLowStumps(3), gBusy(['log', 'dip', 'log'])] }, { id: 'rocks', groups: [gRest([200, 260], true), gBusy(['log', 'log', 'dip']), gLowStumps(3)] }],
   feel: ['1-1', '1-2', '1-3', '1-5'], not: NOT_11, rating: 1,
   source: "old 1-1's rests (rest 400-440, flag) with busy and lowStumps around them (protoStage.ts on main), and homeRun's open run",
 });
@@ -450,12 +455,12 @@ const gZigzag = (tiers: 2 | 3, log: boolean): G => (k, after) => {
   const f = floor(`${k}f`, [320, 380], startOr(after));
   const m1 = bankW(`${k}m1`, f.key, [-55, -45], [340, 400]);
   const f2 = bankW(`${k}g2`, m1.key, [45, 55], [320, 380]);
-  const up: W1Piece[] = log ? [post(`${k}u1`, m1.key, [0.45, 0.55], [30, 40]), logOn(`${k}l1`, `${k}u1`)] : [stumpL(`${k}u1`, m1.key, [0.4, 0.6], [40, 50])];
-  const pieces = [f, stumpL(`${k}s0`, f.key, [0.5, 0.65], [40, 50]), m1, ...up, f2, stumpL(`${k}s2`, f2.key, [0.4, 0.6], [40, 50])];
+  const up: W1Piece[] = log ? [post(`${k}u1`, m1.key, [0.45, 0.55], [30, 40]), logOn(`${k}l1`, `${k}u1`)] : [stumpL(`${k}u1`, m1.key, [0.4, 0.6], [50, 60])];
+  const pieces = [f, stumpL(`${k}s0`, f.key, [0.5, 0.65], [50, 60]), m1, ...up, f2, stumpL(`${k}s2`, f2.key, [0.4, 0.6], [50, 60])];
   let last = f2.key;
   if (tiers === 3) {
     const m2 = bankW(`${k}m2`, f2.key, [-85, -75], [340, 400]), f3 = bankW(`${k}g3`, m2.key, [75, 85], [300, 360]);
-    pieces.push(m2, stumpL(`${k}u2`, m2.key, [0.4, 0.6], [40, 50]), f3);
+    pieces.push(m2, stumpL(`${k}u2`, m2.key, [0.4, 0.6], [50, 60]), f3);
     last = f3.key;
   }
   const tops = pieces.filter((p) => p.key.includes('s') || p.key.includes('u2') || p.key.includes('l1') || (!log && p.key.endsWith('u1')));
@@ -515,7 +520,7 @@ const hollowTwoway = section({
     const hh = hollowLogSize('moss', len).height;
     const step = stumpL(`${k}s`, f.key, [0.08, 0.1], [50, 56]);
     const H: W1Piece = { key: `${k}H`, shape: 'hollow', w: [len, len], place: { kind: 'on', on: f.key, at: [0.3, 0.32], h: [hh, hh] }, landing: true };
-    const a = after === 'stump' ? stumpL(`${k}a`, f.key, [0.92, 0.95], [40, 50]) : stump(`${k}a`, f.key, [0.92, 0.95], [30, 36], LAND);
+    const a = after === 'stump' ? stumpL(`${k}a`, f.key, [0.92, 0.95], [50, 60]) : stump(`${k}a`, f.key, [0.92, 0.95], [30, 36], LAND);
     const mid = stump(`${k}mid`, f.key, [0.72, 0.74], [30, 36], [120, 140]);
     return { pieces: [f, step, H, mid, a], sockets: [petals(`${k}ph`, H.key, [0.3, 0.7], 2, 120), petals(`${k}pa`, a.key, 0.5, 1), find(`${k}find`, H.key)], last: f.key };
   })] }))),
@@ -666,8 +671,8 @@ const quietArrival = section({
 /** #16 */
 const forestEdge = section({
   id: 'w1-forest-edge', floor: 'hop', name: "the forest's edge", phases: ['start'], difficulty: 1, needs: ['walk'], maxPerStage: 1,
-  versions: [{ id: 'two', groups: [(k) => { const a = floor(`${k}a`, [640, 700]); const b = bankW(`${k}b`, a.key, [0, 0], [660, 720]); return { pieces: [a, b], sockets: [dot(`${k}tip`, a.key, 0.1, 'coach.run'), decor(`${k}sq`, a.key, [0.6, 0.7]), petals(`${k}p`, b.key, [0.3, 0.6], 2)], last: b.key }; }] },
-    { id: 'three-step', groups: [(k) => { const a = floor(`${k}a`, [440, 480]); const b = bankW(`${k}b`, a.key, [-30, -24], [440, 480]); const c = bankW(`${k}c`, b.key, [24, 30], [440, 480]); return { pieces: [a, b, c], sockets: [dot(`${k}tip`, a.key, 0.1, 'coach.run'), decor(`${k}sq`, a.key, [0.6, 0.7]), petals(`${k}p`, b.key, [0.3, 0.6], 2)], last: c.key }; }] }],
+  versions: [{ id: 'two', groups: [(k) => { const a = floor(`${k}a`, [640, 700]); const b = bankW(`${k}b`, a.key, [0, 0], [660, 720]); /* (Round 7 (d): one 50-56 px stump on the bank, a soft beat; no ground end) */ const st = stump(`${k}st`, b.key, [0.45, 0.55], [50, 56], LAND); return { pieces: [a, b, st], sockets: [dot(`${k}tip`, a.key, 0.1, 'coach.run'), squirrels(`${k}sq`, a.key, [0.6, 0.7]), petals(`${k}p`, b.key, [0.3, 0.6], 2)], last: b.key }; }] },
+    { id: 'three-step', groups: [(k) => { const a = floor(`${k}a`, [440, 480]); const b = bankW(`${k}b`, a.key, [-30, -24], [440, 480]); const c = bankW(`${k}c`, b.key, [24, 30], [440, 480]); return { pieces: [a, b, c], sockets: [dot(`${k}tip`, a.key, 0.1, 'coach.run'), squirrels(`${k}sq`, a.key, [0.6, 0.7]), petals(`${k}p`, b.key, [0.3, 0.6], 2)], last: c.key }; }] }],
   feel: ['1-1'], not: NOT_11, rating: 1,
   source: "W1-NEW-SECTIONS #16: flat home-edge banks, no gaps in the first 1,300 px, the squirrels' spot clear of the spawn, coach.run (brief :19; STAGE-RULES:161)",
 });
@@ -676,7 +681,8 @@ const fernBank = section({
   id: 'w1-fern-bank', floor: 'hop', name: 'fern bank', phases: ['rest'], difficulty: 1, needs: ['walk'],
   versions: [[true, [760, 840]], [false, [520, 600]]].map(([step, w]) => ({ id: step ? 'long-step' : 'short', groups: [(k: string, after: string | null) => {
     const a = floor(`${k}a`, w as R2, startOr(after)); const b = bankW(`${k}b`, a.key, [0, 0], [260, 300]);
-    const s = step ? [stump(`${k}s`, a.key, [0.6, 0.7], [34, 40], LAND)] : [];
+    // (Round 7 (d), FR9: one 50-56 px stump at about the middle on both versions, a soft beat in the rest)
+    const s = [stump(`${k}s`, a.key, step ? [0.6, 0.7] : [0.45, 0.55], [50, 56], LAND)];
     return { pieces: [a, ...s, b], sockets: [decor(`${k}fern`, a.key, [0.1, 0.3]), decor(`${k}seat`, a.key, [0.4, 0.5]), petals(`${k}p`, s.length ? s[0].key : a.key, 0.5, 2)], last: b.key };
   }] })),
   feel: ['1-1'], not: NOT_11, rating: 1,
@@ -971,7 +977,7 @@ const morningPath = rhythmic({
   source: 'Round 4 #46: the brief\'s start (the squirrels: 1-1.md must); STAGE-RULES:161 (flat and safe)',
 });
 // (the arrival's squirrels sit on its first floor, clear of the spawn: the brief's must; the start's Dot line, coach.run)
-morningPath.sockets = [decor('sq', 'in', [0.6, 0.7]), dot('tip', 'in', 0.1, 'coach.run')];
+morningPath.sockets = [squirrels('sq', 'in', [0.6, 0.7]), dot('tip', 'in', 0.1, 'coach.run')];
 /**
  * A fork on the floor road (Round 4's FR1-FR4): one floor `f` the whole length is the LOW road, with its own beats standing on it (low
  * stumps h, mushrooms b, low logs l, a low stair c: each step at most 88 px) and the petals; the HIGH road's pieces stand over it (a
@@ -1215,11 +1221,20 @@ const w64 = rhythmic({ id: 'w1-mushroom-log', floor: 'hop', name: 'mushroom by t
 const w65 = rhythmic({ id: 'w1-mushroom-stair', floor: 'hop', name: 'mushroom stair', phases: ['sho', 'ten'], difficulty: 6, needs: ['double'], uses: ['bounce', 'double'], exitDy: -70, ports: ['ground', 'ledge'], ...R5, rating: 6,
   versions: { a: ['w H B X n n w', 'B D n n'], b: ['w B H X n n w', 'B h D n n'] }, source: 'Round 6 #65 (designer 10:17 PM): a bounce block, a double across a level gap 195+ to a bank, a 2-step stair down' });
 const ROUND6 = [canopyRungsLevel, w40back, w41back, w49back, mushroomChainBack, w61level, w66, w67, w63, w64, w65];
+/** #68 (Round 7 (c), arrive): the home banks, flat, no ground end in the first 1,300 px (STAGE-RULES:161), one 50 px stump about 900 px
+ *  in (FR9: no plain floor over 4 s), the squirrels and Dot's run line at its start; a third arrival now the meadow is a rest only */
+const homeBanks = rhythmic({
+  id: 'w1-home-banks', floor: 'hop', name: 'the home banks', phases: ['start'], difficulty: 1, needs: ['walk'], maxPerStage: 1, exitDy: 0,
+  versions: { a: ['w w H w', 'w w h w'], b: ['w H w w', 'w h w w'] }, feel: ['1-1'], not: NOT_11, rating: 1,
+  source: 'Round 7 (c) #68 (designer 11-06 8:32 AM): the brief\'s start (the squirrels: 1-1.md must); STAGE-RULES:161 (flat and safe)',
+});
+homeBanks.sockets = [squirrels('sq', 'in', [0.6, 0.7]), dot('tip', 'in', 0.1, 'coach.run')];
+const ROUND7 = [homeBanks];
 const ROUND5 = [w47, w48, w49, w50, w51, w52, w53, w54, w55, w56, w57, w58, w59, w60, w61, w62];
 const ROUND4 = [stepStonesTeach, logTeach, dipDoubleTeach, bankDoubleTeach, mushroomBankTeach, morningPath, mushroomFork, twinMushroomFork, stairFork, bankStairFork, stairTest, logStairTest, backstepTwist, dippingBoughsTwist, logChain, mushroomChain];
 
 /** the designer's sections entered (all 30) and the planner's seed perch */
-export const W1_NEW: readonly W1Section[] = [stumpStile, stoneZigzag, logRoad, hollowTwoway, mushroomLift, twinBounce, fallenTrunk, doubleTeach, boughStepup, canopyRungs, highWalk, dropdownStair, knotBank, floorDash, quietArrival, forestEdge, fernBank, clearing, boughBench, stumpTowers, bounceDouble, canopyWeave, sunlitLog, stumpDescent, moundLog, logWalk, stiltLogs, twoAnswers, boughLog, lastStepUp, seedPerch, ...ROUND4, ...ROUND5, ...ROUND6];
+export const W1_NEW: readonly W1Section[] = [stumpStile, stoneZigzag, logRoad, hollowTwoway, mushroomLift, twinBounce, fallenTrunk, doubleTeach, boughStepup, canopyRungs, highWalk, dropdownStair, knotBank, floorDash, quietArrival, forestEdge, fernBank, clearing, boughBench, stumpTowers, bounceDouble, canopyWeave, sunlitLog, stumpDescent, moundLog, logWalk, stiltLogs, twoAnswers, boughLog, lastStepUp, seedPerch, ...ROUND4, ...ROUND5, ...ROUND6, ...ROUND7];
 
 const HARVEST: readonly W1Section[] = [learn, developStones, cacheStones, developStumpStones, developStoneDips, twistGaps, twistLeapStones, twistHighLeaps, finishHopBounce, finishBounceRun, finishStoneRoad, meadow, lowBoughs, ledges, ropes];
 /**
@@ -1242,7 +1257,7 @@ const JOBS: Record<string, W1Job[]> = {
   'w1-seed-perch': ['reward'],
   'w1-step-stones-teach': ['teach'], 'w1-log-teach': ['teach'], 'w1-dip-double-teach': ['teach'], 'w1-bank-double-teach': ['teach'], 'w1-mushroom-bank-teach': ['teach'], 'w1-morning-path': ['arrive'], 'w1-mushroom-fork': ['fork'], 'w1-twin-mushroom-fork': ['fork'], 'w1-stair-fork': ['fork'], 'w1-bank-stair-fork': ['fork'], 'w1-stair-test': ['test'], 'w1-log-stair-test': ['test'], 'w1-backstep-twist': ['twist'], 'w1-dipping-boughs-twist': ['twist'], 'w1-log-chain': ['signature'], 'w1-mushroom-chain': ['signature'],
   'w1-mushroom-fork-dip': ['fork'], 'w1-root-stair-fork': ['fork'], 'w1-bank-stair-test': ['test'], 'w1-bough-descent': ['descent'], 'w1-log-steps-descent': ['descent'], 'w1-canopy-drop': ['descent'], 'w1-stair-run': ['flow', 'climb'], 'w1-bank-run': ['flow', 'climb'], 'w1-zigzag-run': ['flow', 'climb'], // (Round 6: climb x climb x sho outside the window)
-  'w1-canopy-rungs-level': ['signature', 'test'], 'w1-stair-test-back': ['test'], 'w1-log-stair-test-back': ['test'], 'w1-bank-stair-test-back': ['test'], 'w1-mushroom-chain-back': ['signature'], 'w1-bounce-stair-level': ['combine'], 'w1-two-lifts': ['test'], 'w1-bounce-wall': ['test'], 'w1-bounce-over-dip': ['combine'], 'w1-mushroom-log': ['combine'], 'w1-mushroom-stair': ['combine'], 'w1-high-step-twist': ['twist'], 'w1-stair-gap-twist': ['twist'], 'w1-drop-bounce-twist': ['twist'], 'w1-long-bounce-twist': ['twist'], 'w1-dip-bounce-twist': ['twist'], 'w1-bounce-stair-combine': ['combine'], 'w1-bounce-bough-combine': ['combine'],
+  'w1-canopy-rungs-level': ['signature', 'test'], 'w1-stair-test-back': ['test'], 'w1-log-stair-test-back': ['test'], 'w1-bank-stair-test-back': ['test'], 'w1-mushroom-chain-back': ['signature'], 'w1-bounce-stair-level': ['combine'], 'w1-two-lifts': ['test'], 'w1-bounce-wall': ['test'], 'w1-home-banks': ['arrive'], 'w1-bounce-over-dip': ['combine'], 'w1-mushroom-log': ['combine'], 'w1-mushroom-stair': ['combine'], 'w1-high-step-twist': ['twist'], 'w1-stair-gap-twist': ['twist'], 'w1-drop-bounce-twist': ['twist'], 'w1-long-bounce-twist': ['twist'], 'w1-dip-bounce-twist': ['twist'], 'w1-bounce-stair-combine': ['combine'], 'w1-bounce-bough-combine': ['combine'],
 };
 /** the designer's content tags (NODES.md §7.7, engine-spec d4526ee5e; forks retagged by their low road). The seed perch is the porter's
  *  reading ('bounce': its find is reached by the perched mushroom), for the designer to rule */
@@ -1281,7 +1296,7 @@ const VERSION_JOBS: Record<string, Record<string, W1Job[]>> = { 'w1-fallen-trunk
 /** Round 6's level and net-zero sections take the content and terrain of the section they are a version of */
 const R6_BASE: Record<string, string> = { 'w1-canopy-rungs-level': 'w1-canopy-rungs', 'w1-stair-test-back': 'w1-stair-test', 'w1-log-stair-test-back': 'w1-log-stair-test', 'w1-bank-stair-test-back': 'w1-bank-stair-test', 'w1-mushroom-chain-back': 'w1-mushroom-chain', 'w1-bounce-stair-level': 'w1-bounce-stair-combine', 'w1-two-lifts': 'w1-mushroom-bank-teach', 'w1-bounce-wall': 'w1-mushroom-bank-teach' };
 /** Round 6's new combines: their content (NODES §7.7) and terrain */
-const R6_KIND: Record<string, [W1Content, W1Terrain]> = { 'w1-bounce-over-dip': ['ground', 'mounds'], 'w1-mushroom-log': ['ground', 'raised-logs'], 'w1-mushroom-stair': ['bounce', 'mounds'] };
+const R6_KIND: Record<string, [W1Content, W1Terrain]> = { 'w1-home-banks': ['structural', 'floor-stones'], 'w1-bounce-over-dip': ['ground', 'mounds'], 'w1-mushroom-log': ['ground', 'raised-logs'], 'w1-mushroom-stair': ['bounce', 'mounds'] };
 /**
  * Round 7 (a), the teach lines (TT1-TT3, the designer 11-06 8:32 AM, the supervisor's PASS): a T section is never mirrored (mirroring
  * reversed #8's order: "Nice!" before the gaps, the teach after), and its lines are said in walking order: the entry line on its ENTRY piece

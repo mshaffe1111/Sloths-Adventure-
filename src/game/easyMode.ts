@@ -514,6 +514,12 @@ export function easyStage(stage: Stage): Stage {
   }
   // (no hearts on Meeca's stage: nothing there hurts her, and a heart is only picked up when hurt, so Easy's hearts by the flags just
   // sat there, QA 2026-10-31 "not picked up")
-  if (!(stage as Stage & { proto?: { meeca?: unknown } }).proto?.meeca) for (const cp of cps) heartBy(stage, cp, next);
+  // (H1, hearts follow risk, every stage (Matt 11-05 12:15 AM; the lead's Round 7 ruling): nor where nothing costs anything, no creature,
+  // no water, no fall that costs a life (gen2 1-1 had 23 on Easy and no damage); Meeca's stage was the first such case)
+  const px = stage as Stage & { proto?: { meeca?: unknown; water?: Array<{ kind?: string }> }; heartFalls?: unknown[] };
+  const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!px.heartFalls?.length || !!px.proto?.water?.some((z) => z.kind === 'deadly') || (stage.rivers ?? []).length > 0 || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
+  // (scoped to gen2 stages for now, whose risks this reads in full: on the live stages it missed thorns and hazards and took 12 stages'
+  // hearts, so the every-stage pass needs a full reading of risk first, the lead's to schedule)
+  if (!px.proto?.meeca && (risky || !gen2)) for (const cp of cps) heartBy(stage, cp, next);
   return stage;
 }
