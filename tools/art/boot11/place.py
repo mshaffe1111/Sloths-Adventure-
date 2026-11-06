@@ -12,7 +12,8 @@ shots, out = Path(sys.argv[1]), Path(sys.argv[2])
 out.mkdir(parents=True, exist_ok=True)
 # the cameras endshot.mjs printed (BACK=260: Pokey at x 37266 on the end bank, top y 722; the door at x 37526)
 CAMS = {'up': (37134.0, 184.55, 824 / 440), 'side': (36586.73, 425.0, 1830 / 1199.27)}
-WX, LINE, MID_DY = 37392, 722, 0
+# (the decal hangs from the walking line: the bank top is seen edge-on, so anything above the line sits on the background)
+WX, LINE = 37392, 722
 for arg in sys.argv[3:]:
     name, path = arg.split('=')
     P = Image.open(path).convert('RGBA')
@@ -20,7 +21,7 @@ for arg in sys.argv[3:]:
     for o, (cx, cy, k) in CAMS.items():
         im = Image.open(shots / f'end-{o}.png').convert('RGBA')
         w, h = round(gw * k), round(gh * k)
-        x, y = round((WX - gw / 2 - cx) * k), round((LINE + MID_DY - gh / 2 - cy) * k)
+        x, y = round((WX - gw / 2 - cx) * k), round((LINE - 1 - cy) * k)
         im.alpha_composite(P.resize((w, h), Image.LANCZOS), (x, y))
         # the close-up: 4x of the spot, the frame the player sees beside it
         zw, zh = round(w * 2.2), round(h * 3.4)
