@@ -70,3 +70,15 @@ Lead's read:
 - Engineering note for the art director: a wall with painted ledges is a SET PIECE. Each ledge's top line must be measured and become
   a platform at exactly that height, and the section is built around the wall (its gaps checked against the jump). Grey background:
   cut by hand or with a matte (not magenta), so allow time.
+
+## Batch 6 (11-06 ~12:30 AM ET): sheets 41-43, climbing trunks
+- W1-24 exactly: a tall trunk whose SHELF FUNGI and stub boughs are the steps. 42 (the spiral of fungus steps, the big fungus shelf)
+  is the best; 41 adds loose fungus shelves (floating platforms), forked stumps and a bird's nest (dressing). Same set-piece
+  engineering as the walls: measure each step's top line.
+- 43 (the tree with hanging lanterns) is World 2 village (made things); its loose pieces (moss rocks, a log, root clumps) fit W1.
+
+## Using art in other worlds (lead's rule, for the art director)
+Yes, much of tonight's art can serve other worlds, but by KIN, not copies: the same piece re-tinted to that world's palette and
+given its own dressing (Matt's rule: a piece stays in its world unless it adds something). Every piece gets world tags when it is
+cut, e.g. the earth wall W1 (+ W3 re-tinted darker), the stone wall W3, the lantern W2. The same picture in every world would make
+the worlds look alike, the sameness we are fixing.
