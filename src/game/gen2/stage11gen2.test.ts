@@ -128,3 +128,57 @@ test('gen2 1-1: every dip is left with single flicks (no double or perfect jump 
   assert.ok(n > 10, `${n} dips`);
   assert.deepEqual(bad, []);
 });
+
+/** the engine's lesson pick, run for real (RealPlay skips it as cosmetic): the lessons it calls for, with where he was */
+function withLessons(sim: RealPlay, on = true): Array<{ id: string; x: number }> {
+  const got: Array<{ id: string; x: number }> = [];
+  // (a fresh save as the game starts 1-1: the touch coach teaches the first gap, so the gap's lesson is marked seen, engine.ts start)
+  localStorage.setItem('sloth_lessons', JSON.stringify(['gap']));
+  const e = sim.e as Record<string, any>;
+  e.lessonSeen = null;
+  // (RealPlay keeps him invincible, and a lesson waits while he blinks as if hurt, engine.ts safeToStop: a real player is not)
+  sim.safe = false;
+  if (on) {
+    const proto = Object.getPrototypeOf(e);
+    e.lessonTick = proto.lessonTick.bind(e);
+    e.updateCamera = proto.updateCamera.bind(e);
+  }
+  e.callbacks.onLesson = (id: string) => got.push({ id, x: e.player.x });
+  return got;
+}
+/** walked in from the left (on ground 700 px before the first mushroom, right held): where the bounce lesson came, and where he first left it */
+function bounceLessonWalk(sim: RealPlay, got: Array<{ id: string; x: number }>): { m: Platform; at?: number; bouncedAt?: number } {
+  const m = sim.platforms.filter((p) => p.type === 'bouncy').sort((a, b) => a.x - b.x)[0];
+  const g = sim.platforms.filter((p) => p.type === 'solid' && !p.broken && p.height >= 60 && p.x < m.x - 700 && p.x + p.width > m.x - 1000 && p.y > m.y - 40)
+    .sort((a, b) => b.x + b.width - (a.x + a.width))[0];
+  sim.stand(Math.min(g.x + g.width - 40, m.x - 700), g.y);
+  for (let f = 0; f < 90; f++) sim.frame({});
+  let bouncedAt: number | undefined, still = 0, hold = 0;
+  for (let f = 0; f < 30 * 12 && bouncedAt === undefined; f++) {
+    // (a face in the way: a flick, as a player would, once he has stood still a moment)
+    still = sim.p.grounded && Math.abs(sim.p.vx) < 0.1 ? still + 1 : 0;
+    const press = still > 6 && hold <= -3;
+    if (press) hold = 7;
+    sim.frame({ right: true, press, jump: hold > 0 });
+    hold--;
+    if (sim.p.y < m.y - 150 && Math.abs(sim.p.x - (m.x + m.width / 2)) < m.width + 120) bouncedAt = sim.p.x;
+  }
+  return { m, at: got.find((l) => l.id === 'bounce')?.x, bouncedAt };
+}
+
+test('gen2 1-1, a fresh save: walking in from the left, the bounce lesson comes before he reaches the first mushroom (lesson.bounce; planted: no lesson pick FAILS)', () => {
+  const bad: string[] = [];
+  for (const r of ROLLS) {
+    const sim = roll(r);
+    const got = withLessons(sim);
+    const { m, at, bouncedAt } = bounceLessonWalk(sim, got);
+    if (at === undefined) bad.push(`Roll ${r}: no bounce lesson (lessons ${got.map((l) => `${l.id}@${Math.round(l.x)}`).join(' ') || 'none'})`);
+    else if (at >= m.x - 40) bad.push(`Roll ${r}: the bounce lesson at x ${Math.round(at)}, at or past the mushroom (x ${Math.round(m.x)})`);
+    if (bouncedAt === undefined) bad.push(`Roll ${r}: he never bounced on the mushroom at x ${Math.round(m.x)}`);
+  }
+  assert.deepEqual(bad, []);
+  // (planted: the same walk with the lesson pick left out has no lesson, so the check above fails)
+  const sim = roll('B');
+  const got = withLessons(sim, false);
+  assert.equal(bounceLessonWalk(sim, got).at, undefined);
+});
