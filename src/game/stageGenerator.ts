@@ -2870,9 +2870,10 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     // clear of the stumps and pickups around the flag (easyMode.ts heartBy): a rolled stage's flag can stand beside anything)
     // (H1, hearts follow risk (Matt 11-05 12:15 AM, "a heart only after real risk"; the lead's Round 7 ruling): a stage where nothing costs
     // anything, no creature, no water, no fall that costs a life, lays none (gen2 1-1: it had 6 hearts and no damage)
-    const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!stage.heartFalls?.length || !!(stage as { proto?: { water?: Array<{ kind?: string }> } }).proto?.water?.some((z) => z.kind === 'deadly') || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
+    const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!stage.heartFalls?.some((z) => !z.soft) || !!(stage as { proto?: { water?: Array<{ kind?: string }> } }).proto?.water?.some((z) => z.kind === 'deadly') || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
     let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
-    if (risky) [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
+    // (H1 is for the unshipped gen2 1-1 only, the lead 11-06: the live gen2 worlds keep their hearts as they are)
+    if (risky || GEN2_STAGES[config.id]) [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
     const done = finishStage(stage, validateStage(stage, { rooms: false }).reachableIds);
     // (World 5's dressing sets, once the pickups are all placed, so none is covered: artDress.ts dressSets)
     addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);
