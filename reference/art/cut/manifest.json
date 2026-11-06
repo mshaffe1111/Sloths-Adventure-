@@ -588,12 +588,10 @@
    ],
    "job": "small log platform",
    "worlds": [
-    "W1",
-    "W6~grey-wet",
-    "W8~blue-night"
+    "W2"
    ],
    "status": "keep",
-   "note": ""
+   "note": "rope-lashed (a made thing): W2 only (lead 11-06 11:12 AM ET)"
   },
   {
    "file": "w1-frame-a.png",
@@ -847,7 +845,7 @@
     484,
     249
    ],
-   "job": "thin branch platform",
+   "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
    "worlds": [
     "W1",
     "W6~grey-wet",
@@ -864,7 +862,7 @@
     456,
     164
    ],
-   "job": "thin branch platform",
+   "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
    "worlds": [
     "W1",
     "W6~grey-wet",
@@ -898,7 +896,7 @@
     462,
     151
    ],
-   "job": "thin branch platform",
+   "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
    "worlds": [
     "W1",
     "W6~grey-wet",
@@ -1072,7 +1070,7 @@
     351,
     320
    ],
-   "job": "hide spot (gap at base)",
+   "job": "PERCH only (narrow top) + hide spot",
    "worlds": [
     "W1",
     "W6~grey-wet",
@@ -1178,7 +1176,7 @@
     506,
     440
    ],
-   "job": "hollow stump hide spot",
+   "job": "PERCH only (narrow top) + hide spot",
    "worlds": [
     "W1",
     "W6~grey-wet",
@@ -1225,7 +1223,7 @@
    "item": 2,
    "size": [
     244,
-    151
+    150
    ],
    "job": "wall corner cap",
    "worlds": [
@@ -1452,7 +1450,7 @@
    "sheet": "36-earth-wall-kit-A.jpg",
    "item": 15,
    "size": [
-    97,
+    93,
     62
    ],
    "job": "dressing",
@@ -1585,7 +1583,7 @@
    "sheet": "39-earth-wall-kit-C.jpg",
    "item": 1,
    "size": [
-    457,
+    467,
     910
    ],
    "job": "ONE-PIECE WALL (variant C)",
@@ -1636,7 +1634,7 @@
    "item": 2,
    "size": [
     489,
-    1000
+    994
    ],
    "job": "ONE-PIECE CLIMB TRUNK: measure each shelf top",
    "worlds": [
@@ -1734,7 +1732,7 @@
    "item": 14,
    "size": [
     100,
-    65
+    61
    ],
    "job": "dressing",
    "worlds": [
@@ -1838,7 +1836,7 @@
    "item": 7,
    "size": [
     129,
-    94
+    84
    ],
    "job": "dressing",
    "worlds": [
@@ -1854,8 +1852,8 @@
    "sheet": "42-fungus-trunk-kit-B.jpg",
    "item": 12,
    "size": [
-    112,
-    79
+    107,
+    77
    ],
    "job": "dressing",
    "worlds": [

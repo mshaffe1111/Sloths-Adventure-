@@ -367,10 +367,9 @@
     "name": "w1-log-lashed-short",
     "job": "small log platform",
     "worlds": [
-     "W1",
-     "W6~grey-wet",
-     "W8~blue-night"
-    ]
+     "W2"
+    ],
+    "note": "rope-lashed (a made thing): W2 only (lead 11-06 11:12 AM ET)"
    },
    {
     "item": 5,
@@ -525,7 +524,7 @@
    {
     "item": 1,
     "name": "w1-branch-long-a",
-    "job": "thin branch platform",
+    "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
     "worlds": [
      "W1",
      "W6~grey-wet",
@@ -535,7 +534,7 @@
    {
     "item": 2,
     "name": "w1-branch-leafy",
-    "job": "thin branch platform",
+    "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
     "worlds": [
      "W1",
      "W6~grey-wet",
@@ -555,7 +554,7 @@
    {
     "item": 4,
     "name": "w1-branch-knotted",
-    "job": "thin branch platform",
+    "job": "DRESSING only (drawn diagonal); flat re-roll on the redo list",
     "worlds": [
      "W1",
      "W6~grey-wet",
@@ -661,7 +660,7 @@
    {
     "item": 7,
     "name": "w1-hide-stump-hollow",
-    "job": "hide spot (gap at base)",
+    "job": "PERCH only (narrow top) + hide spot",
     "worlds": [
      "W1",
      "W6~grey-wet",
@@ -731,7 +730,7 @@
    {
     "item": 1,
     "name": "w1-hide-stump-hollow-tall",
-    "job": "hollow stump hide spot",
+    "job": "PERCH only (narrow top) + hide spot",
     "worlds": [
      "W1",
      "W6~grey-wet",
@@ -983,10 +982,18 @@
     "box": [
      0,
      0,
-     716,
+     726,
      1024
     ],
-    "note": "set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)"
+    "note": "set piece: each ledge/shelf top line must be measured and become a platform at that height (integration waits on the lead)",
+    "erase": [
+     [
+      712,
+      302,
+      1024,
+      470
+     ]
+    ]
    },
    {
     "item": 8,

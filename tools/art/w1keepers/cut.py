@@ -89,6 +89,11 @@ def cut_item(rgb, alpha, kind, lab, sl, idx, box=None, erase=()):
         core = ndimage.binary_erosion(a > 0.5, iterations=1)
         a = np.minimum(a, ndimage.gaussian_filter(core.astype(np.float32), 0.7) * 1.2)
         a = np.clip(a, 0, 1)
+    # drop specks: islands under 150 px left by a box split or the key (wall C's fleck beside its top-right ledge)
+    lab2, n2 = ndimage.label(a > 0.03)
+    if n2 > 1:
+        sz = ndimage.sum(np.ones_like(a), lab2, range(1, n2 + 1))
+        a = a * np.isin(lab2, [i + 1 for i in range(n2) if sz[i] >= 150])
     rgba = np.dstack([c, a * 255]).astype(np.uint8)
     ys, xs = np.nonzero(a > 0.03)
     return Image.fromarray(rgba[ys.min():ys.max() + 1, xs.min():xs.max() + 1])

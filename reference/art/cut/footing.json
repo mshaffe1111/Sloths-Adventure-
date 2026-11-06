@@ -216,7 +216,7 @@
     351,
     320
    ],
-   "note": "tall stump, cut top is narrow; the gap at its base is a hide spot",
+   "note": "PERCH only (narrow top, lead 11-06); the gap at its base is a hide spot",
    "footing": [
     {
      "y": 9,
@@ -235,7 +235,7 @@
     506,
     440
    ],
-   "note": "tallest: hollow trunk, ragged top; narrow footing",
+   "note": "PERCH only (narrow ragged top, lead 11-06)",
    "footing": [
     {
      "y": 17,
@@ -311,7 +311,7 @@
     247,
     126
    ],
-   "note": "lashed bundle (rope: a made thing; fine in W1 as a fallen bundle?) lead call",
+   "note": "W2 ONLY: rope-lashed, a made thing (lead 11-06: not in the home forest)",
    "footing": [
     {
      "y": 54,
@@ -598,10 +598,10 @@
   "w1-wall-earth-C": {
    "kind": "wall",
    "size": [
-    457,
+    467,
     910
    ],
-   "note": "variant with two small middle ledges (y 250, 367): check them in a still; a SET PIECE: one platform per ledge at exactly these heights",
+   "note": "variant with two small middle ledges (y 250, 367): check them in a still; right ledge tips re-cut whole 11-06; a SET PIECE: one platform per ledge at exactly these heights",
    "footing": [
     {
      "y": 46,
@@ -636,7 +636,7 @@
     {
      "y": 523,
      "x0": 222,
-     "x1": 455
+     "x1": 462
     },
     {
      "y": 645,
@@ -646,12 +646,12 @@
     {
      "y": 750,
      "x0": 220,
-     "x1": 445
+     "x1": 460
     }
    ],
    "pokey_h": 5.0,
    "drawn_game_h": 240,
-   "drawn_game_w": 121,
+   "drawn_game_w": 123,
    "footing_game_y": [
     12.1,
     47.7,

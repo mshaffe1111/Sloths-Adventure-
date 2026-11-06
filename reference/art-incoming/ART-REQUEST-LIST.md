@@ -190,3 +190,4 @@ Same master prompt. Attach the original sheet so Gemini keeps the look, and add 
 | R-06 | 20 X-frame, 08 rope beam | three-quarter view: "flat-on, side view" | S |
 | R-07 | 21 and 23 lily pads | top-down: already W1-21 above (side view at the water line) | L |
 | R-08 | 22 logs in water | angled: "horizontal, half sunk, water line level at the bottom" | L |
+| R-09 | 16 branches (long, knotted, leafy) | drawn on a diagonal, so they can't be platforms: "horizontal, perfectly level, flat on top, seen from the side" (lead 11-06) | L |

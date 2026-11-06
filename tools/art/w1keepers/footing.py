@@ -33,13 +33,13 @@ PIECES = {
     'w1-rock-roots': ('stone', 1.5, 0.45, 'uneven top: short stand span'),
     # stumps: 3+ heights including the wide one
     'w1-stump-wide': ('stump', 1.6, 0.6, 'the wide flat stump (Matt\'s favourite)'),
-    'w1-hide-stump-hollow': ('stump', 2.4, 0.3, 'tall stump, cut top is narrow; the gap at its base is a hide spot'),
-    'w1-hide-stump-hollow-tall': ('stump', 3.0, 0.25, 'tallest: hollow trunk, ragged top; narrow footing'),
+    'w1-hide-stump-hollow': ('stump', 2.4, 0.3, 'PERCH only (narrow top, lead 11-06); the gap at its base is a hide spot'),
+    'w1-hide-stump-hollow-tall': ('stump', 3.0, 0.25, 'PERCH only (narrow ragged top, lead 11-06)'),
     'w1-post-tall-vine': ('stump', 4.0, 0.6, 'tall cut log standing up: a pillar with a flat top'),
     # thin logs and branches
     'w1-log-plank-a': ('log', 0.5, 0.6, 'thin log platform'),
     'w1-log-plank-b': ('log', 0.55, 0.6, 'thin log platform'),
-    'w1-log-lashed-short': ('log', 0.7, 0.55, 'lashed bundle (rope: a made thing; fine in W1 as a fallen bundle?) lead call'),
+    'w1-log-lashed-short': ('log', 0.7, 0.55, 'W2 ONLY: rope-lashed, a made thing (lead 11-06: not in the home forest)'),
     'w1-plank-ledge-a': ('log', 0.3, 0.6, 'mossy plank ledge'),
     'w1-plank-ledge-b': ('log', 0.3, 0.6, 'mossy plank ledge'),
     'w1-plank-ledge-c': ('log', 0.3, 0.6, 'mossy plank ledge'),
@@ -58,7 +58,7 @@ OVERRIDE = {'w1-ground-chunk': (10, 8, 210)}
 WALLS = {
     'w1-wall-earth-A': (5.0, 'master', [(44, 20, 440), (180, 10, 225), (287, 215, 448), (412, 10, 240), (521, 222, 460), (642, 5, 235), (745, 220, 462)]),
     'w1-wall-earth-B': (5.0, 'variant, more roots', [(46, 20, 440), (183, 10, 225), (289, 220, 448), (418, 10, 235), (524, 222, 458), (640, 5, 235), (750, 220, 458)]),
-    'w1-wall-earth-C': (5.0, 'variant with two small middle ledges (y 250, 367): check them in a still', [(46, 20, 440), (181, 10, 210), (250, 175, 270), (288, 220, 447), (367, 160, 280), (420, 10, 235), (523, 222, 455), (645, 5, 235), (750, 220, 445)]),
+    'w1-wall-earth-C': (5.0, 'variant with two small middle ledges (y 250, 367): check them in a still; right ledge tips re-cut whole 11-06', [(46, 20, 440), (181, 10, 210), (250, 175, 270), (288, 220, 447), (367, 160, 280), (420, 10, 235), (523, 222, 462), (645, 5, 235), (750, 220, 460)]),
 }
 
 

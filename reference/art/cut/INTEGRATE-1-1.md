@@ -15,11 +15,11 @@ Lead 10:36 AM ET: so 1-1's art swap uses several painted kinds, not one boulder.
 | Kind | Pieces | Notes |
 |---|---|---|
 | stone (10) | rock-boulder-moss, rock-boulder-moss-big, boulder-grey-moss, boulder-grey-moss-b, rock-block-big, rock-root-block, rock-slabs-stacked, rock-slabs-stacked-big, rock-slabs-low, rock-roots | 4 kinds: round boulders (stand span = flat middle only), flat blocks (best platforms), stacked slabs, grey boulders |
-| stump (4 heights) | stump-wide 1.6 P, hide-stump-hollow 2.4 P, hide-stump-hollow-tall 3.0 P, post-tall-vine 4.0 P | + the kit stump. The two hollow stumps have NARROW tops (footing spans ~25-30% of width): a perch, not a floor |
-| log (6) | log-plank-a, log-plank-b, log-lashed-short, plank-ledge-a/b/c | thin logs; log-lashed-short has rope lashing (a made thing): lead call for the home forest |
+| stump (4 heights) | stump-wide 1.6 P, hide-stump-hollow 2.4 P, hide-stump-hollow-tall 3.0 P, post-tall-vine 4.0 P | + the kit stump. The two hollow stumps are PERCHES ONLY (lead 11-06): narrow tops, never a floor |
+| log (5 for W1) | log-plank-a, log-plank-b, plank-ledge-a/b/c | thin logs. log-lashed-short is W2 ONLY (rope-lashed, a made thing; lead 11-06): not in 1-1 |
 | ledge (4, may float) | ledge-earth-long, ledge-earth-a, ledge-overhang-big, ground-chunk | ledge-earth-a is a small cut: upscale before a big draw |
-| wall (3) | wall-earth-A (master), B, C | 7 / 7 / 9 standable tops each; C has two small middle ledges (y 250, 367) and its right ledge tips touch the cut edge |
-| branch | branch-long-a, branch-knotted, branch-leafy | NOT platforms: drawn DIAGONAL in Gemini's sheet (no footing). Dressing only, or Matt re-rolls them flat (redo R-05 kind) |
+| wall (3) | wall-earth-A (master), B, C | 7 / 7 / 9 standable tops each; C has two small middle ledges (y 250, 367); its right ledge tips were re-cut whole on 11-06 (now 467 px wide) |
+| branch | branch-long-a, branch-knotted, branch-leafy | NOT platforms: drawn DIAGONAL in Gemini's sheet (no footing). Dressing only (lead 11-06); flat re-roll is redo R-09 |
 
 ## The earth-wall tint (use these in 1-1)
 `<name>-w1.png` for the walls, caps, feet, earth ledges and ground chunk: the soil moved to World 1's bank soil colour (props-atlas `bank`),
@@ -33,3 +33,6 @@ subtle. Strength 1.0 is one flag away if the lead wants more. The originals stay
 - Fixed while measuring: the big overhang ledge was cut wrong (a box clipped most of it), re-cut whole; the ground chunk's auto line took
   half the top, set by eye. Bush names were swapped earlier, fixed.
 - Not yet: any of this in the running game (that is engine-core's integration), and the drawcheck budget for more painted pieces.
+
+## Rulings applied (lead, 11-06 11:12 AM ET)
+Lashed log W2 only; hollow stumps perches only; diagonal branches dressing only + R-09; wall C re-cut with whole ledge tips (and a speck filter now drops islands under 150 px on every cut); wall tint kept at 0.85.
