@@ -1062,18 +1062,6 @@
   "why": "painted by Matt, never cut or packed"
  },
  {
-  "id": "src/assets/w1to4art/w1-new.json#squirrel-haul",
-  "owner": "gen2 W1 builder",
-  "world": "W1",
-  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
- },
- {
-  "id": "src/assets/w1to4art/w1-new.json#squirrel-run",
-  "owner": "gen2 W1 builder",
-  "world": "W1",
-  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
- },
- {
   "id": "src/assets/w1to4art/w1-new.json#root-gate-open",
   "owner": "gen2 W1 builder",
   "world": "W1",
