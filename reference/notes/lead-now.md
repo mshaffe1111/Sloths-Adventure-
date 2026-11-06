@@ -53,6 +53,11 @@ Matt backs off. He pops in with ideas, says when something is broken, plays at t
 - His history: the team got 100 stages fast; it broke down when polish was pushed into the system mid-build. So: engine proven, stages built and stamped "design approved" (Matt plays), THEN art and polish per stage, never re-engineering under a built stage.
 - TEAM (lead's call, from reference/research/STUDIO-PRACTICE.md): builders pitch blind (one core idea per stage, one page), the lead pools and cuts; builders own a world; everything after the pitch is shared (rules sheet, art style guide, side-by-side play review at check-ins); proof on the real page; grow from 1 builder toward 8 by measured cost; a boss builder and a specials builder when their turn comes; an art director and a player-data role as standing roles.
 
+## THE PAUSE (Matt 11-06 ~10:25 AM ET): after today's test link, the team goes QUIET until the weekly reset, WED 11-11 2:00 AM ET
+(rate_limit resetsAt). Matt plays (the new 1-1 link and the whole game, as he did for the 100 stages), gets testers (kids) on the
+QA link, and retrospects. The lead: no helpers running; at most a light check if Matt asks. After the reset, first: Matt's notes, then
+the player-data job (with his new recordings), then 1-2 by a cold helper.
+
 ## Open with Matt (one question at a time)
 - METER: 80% at ~9:55 AM ET 11-06 (2% in ~1.5 h with 4 helpers: about 1.4%/h). 78% at 8:30 AM ET 11-06 (67% 11-05 4:23 PM; ~14% burned on 11-05). Week goal under 90%: about 12% left until the reset. Matt 8:40 AM: "we can use a bit more today": hard stop ~85% (keeps 5% under 90). Art director STARTED 8:37 AM (session_01FhBbYLmXQhDLjAzTexXzo3, branch art-director: the 10-world kit audit by 12:30 PM, then cut Matt's keepers; no HF spend without the lead). Player-data helper still waits.
 - Hugging Face: $71.83 left (Matt checked, 11-05 ~4:55 PM ET); keep about $15 back. Matt 11-06 9:13 AM: "use Hugging Face when needed". The lead OKs each job in writing (one-line ask with cost); the art director logs every job in reference/art/HF-SPEND.md; the lead tells Matt the running total.
