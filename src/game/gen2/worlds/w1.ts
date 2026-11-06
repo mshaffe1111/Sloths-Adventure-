@@ -1331,7 +1331,9 @@ function teachLines(q: W1Section): W1Section {
   });
   return { ...q, mirrorable: false, subBlocks: [{ ...sub, versions }] };
 }
-export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(teachLines).map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id] ?? CONTENT[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[0], terrain: TERRAIN[q.id] ?? TERRAIN[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[1], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
+/** the stair tests climb: laid mirrored, an up stair (its D double rises) became a drop run, no beat, 7-9 s quiet (seeds 1, 7920, 47515) */
+const NEVER_MIRRORED = new Set(['w1-stair-test', 'w1-stair-test-back', 'w1-log-stair-test', 'w1-log-stair-test-back', 'w1-bank-stair-test', 'w1-bank-stair-test-back']);
+export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(teachLines).map((q) => ({ ...q, ...(NEVER_MIRRORED.has(q.id) ? { mirrorable: false } : {}), jobs: JOBS[q.id], content: CONTENT[q.id] ?? CONTENT[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[0], terrain: TERRAIN[q.id] ?? TERRAIN[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[1], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
 
 /** the phases a stage's slots fill */
 export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten', 'ketsu', 'goal'];
