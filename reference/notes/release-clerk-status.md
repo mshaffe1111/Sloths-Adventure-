@@ -3,7 +3,7 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 5:45 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 5:58 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
 
 ## 5:45 PM: ready for the final (the lead's 5:31 order) + funcheck on the candidate shape
 - Order at the final: merge engine-core -> `old11-delete.py` -> vite build, `lazy-seeds.py` only if main JS > 4 MiB -> `release-prep.py`
@@ -127,6 +127,15 @@ Last update: 5:45 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3
   Its commit makes `builtOnGen2(cfg)` and has levels.test, stageQuality.test and platformPlan.test judge only the old generator's stages
   (gen2 1-1's flags move to rolledFlags.test, on your 2:37 PM ruling). That narrows three tests' scope: for your Law 5 check when you
   pass engine-chunks (the replacement tests exist and are planted both ways, per its message; I have not verified that yet).
+
+## >>> THE CANDIDATE: release-0.9.5 @ bf3684ec147b888714fc71be9ec25c6afcd361fc (pushed 5:56 PM ET) <<<
+Build the test link from bf3684ec. Commits after it on this branch are notes only (this file), no code.
+- = origin/main 68b31e66 (0.9.4) + engine-core 94a31ca0 (the final; contains 6c5232ec and engine-chunks 25d2d115) + tester-page 4320a9b25
+  (merged by me: the final does not contain it; the lead passed it 5:01 PM) + the old-1-1 deletion (old11-delete.py) + version 0.9.5,
+  What's New, funcheck's list from main (release-prep.py; roadmap needed no edit: the final already cites engine-core/NEXT.md).
+- tsc PASS. seedList, whatsNew, buildAhead tests: 10/10 pass. vite build PASS: main JS 4,162,639 B (31.7 KB under 4 MiB), no file over
+  4 MiB, so **lazy-seeds.py NOT applied** (the lead's rule).
+- The full gate on bf3684ec: starting now (results below as they come).
 
 ## HEADLINE for the lead (3:30 PM)
 1. **engine-core 5e221f9d is NOT ready: 8+ red tests (shard 1 alone: 7 red + 2 todo-masked), listed below with causes.** Shards 2 and 3
