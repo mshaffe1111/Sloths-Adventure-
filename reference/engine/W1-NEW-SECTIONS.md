@@ -460,3 +460,25 @@ I scanned all 16 laid seeds (buildGen2Stage, w1World, engine-core 4ec76da73; scr
 - **So `hint.1-1.bounce` is withdrawn** (TT3's bounce row), and no new row is needed.
 - On the words' source: they are both `ctest.bounce` (dotLinesData.ts:493) and the hint main's protoStage `bounceWall(first)` lays (protoStage.ts:1251 on main; the red team saw it in old 1-1's build).
 - The double has no lesson card (lessons.ts LessonId has no `double`), so its two Dot lines (TT3) stay.
+
+### Round 7 (d), filled: the plain-floor spans (designer, 11-06 8:46 AM ET; the planner's 8:47 AM list, 16 rolls after the catch fix)
+
+**The cause is mostly a JOIN of two plain ends:** a section's exit floor plus the next one's entry floor. So the systemic rule:
+- **FR10: a section's entry and exit plain runs are each at most 430 px** (1.5 s at 285 px/s), so two of them joined stay under 3 s;
+- **inside a section, plain floor between beats is at most 850 px** (3 s), rests included (a soft beat: a 50-56 px stump or a small dip);
+- a step-down is never counted as a beat.
+
+| Span (planner) | Fix |
+|---|---|
+| `w1-twin-mushroom-fork` low road: a 1543 px floor, stumps 36-42 | its stumps go to 50-56 (FR9); one beat every ≤ 600 px on the low road (`h h j h`, FR8) |
+| `w1-meadow` + joins (5.6-8.4 s; Roll A with long-bounce-twist, 2000 px of 43-70 px step-downs) | `gLowStumps` to ≥ 50 (Round 7 (d)); meadow's lead rest [400, 440] → **[200, 260]**; one of its step-downs becomes a dip (`j`). Long-bounce-twist's entry plain ≤ 430 (FR10) |
+| `w1-fern-bank` + seed-perch (7.2-7.5 s) | fern-bank gets one 50-56 px stump at t 0.5. Seed-perch's lead rest [200, 240] is fine; its exit floor is capped at 430 px |
+| `w1-forest-edge` + learn (4.9-7.3 s) | forest-edge: one 50-56 px stump on its bank at t 0.5. That's no ground end, so STAGE-RULES:161 holds, and the squirrels' socket stays on the first floor. Learn's lead rest [400, 440] → **[200, 260]** |
+| `w1-seed-perch` + bounce-run (5.8-6.2 s) | the seed-perch exit floor ≤ 430 px (FR10) |
+| `w1-stair-test` (6.4-7.0 s) | the run-out after the summit is `n h n` (a stump hop between the steps down), not a plain walk; its entry ≤ 430 |
+| `w1-stone-dips` + bank-stair-test (7.2-8.6 s) | stone-dips' tail stumps to ≥ 50 (FR9) and its exit floor ≤ 430; bank-stair-test's entry ≤ 430 |
+| `w1-ledges` (4.3-4.7 s) | a 50-56 px stump between its two ledges (`gBusy(['log'])` stays); both versions |
+| `w1-bough-descent` b: a 'walk' join of two 680 px boughs, 4.7 s | each level bough ≤ 400 px, with a `j` (a gap) between them, not a walk join |
+| about 20 walk-through stumps a roll | covered by FR9: every hop stump is ≥ 50 px (`gLowStumps`, `stumpL`, Round 7 (d)) |
+
+**For the porter:** `held/double-tags.patch` (the block tags) goes in with this, so the planner's backPit binds (engine-chunks 31b14a2f).
