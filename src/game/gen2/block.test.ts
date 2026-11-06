@@ -67,8 +67,10 @@ test('on a rolled graph, a teach whose block is walked round is swapped out of i
     const job = new Map(st.gen2.graph.nodes.map((n) => [n.id, n.job]));
     assert.ok(!st.gen2.plan.some((p) => p.template === 'toy-step-up-stair' && (job.get(p.node) === 'teach' || job.get(p.node) === 'test')), `seed ${seed}: the walkable teach was laid as a teach or test`);
     if (st.gen2.plan.some((p) => p.template === 'toy-step-up')) kept++;
+    // (the holding teach may be swapped for another reason, a climb out of the toy's corridor, never for its block)
+    assert.ok(!st.gen2.repairs.some((r) => /toy-step-up swapped out: the block is walked round/.test(r.note)), `seed ${seed}: the holding block was called walked round`);
     if (st.gen2.repairs.some((r) => /toy-step-up-stair swapped out: the block is walked round/.test(r.note))) swapped++;
   }
-  assert.ok(kept >= 10, `the holding teach laid on ${kept} of 12`);
+  assert.ok(kept >= 6, `the holding teach laid on ${kept} of 12`);
   assert.ok(swapped > 0, 'the walkable teach was never drawn, so the test did not see the rule');
 });

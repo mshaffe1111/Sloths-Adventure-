@@ -652,10 +652,12 @@ export interface Gen2Meta {
   codeString?: string;
   codeErrors?: string[];
   /** each node as laid, for the gates that read the built stage (V18's nodePieces.ts, the stills spots): its token, the x-range its
-   *  sections cover, and its first block's landing x (NODES.md §8.7) when it has one */
-  nodes?: Array<{ token: string; x0: number; x1: number; block?: number }>;
+   *  sections cover, its first block's landing x (NODES.md §8.7) when it has one, and a twist's two answers (B5) */
+  nodes?: Array<{ token: string; x0: number; x1: number; block?: number; moves?: Array<'double' | 'bounce'> }>;
   /** a rolled graph's slots filled past their rule because the pool ran out (pipeline layStage: the dealt type, then the job) */
   loosened?: string[];
+  /** a rolled graph's required sections that found no node, and why (the roll fails: gen2.errors names them) */
+  missing?: string[];
   sections: Array<Pick<PlacedSection, 'uid' | 'template' | 'node' | 'phase' | 'tension' | 'mirrored' | 'x0' | 'x1' | 'seconds'>>;
   fills: FilledSocket[];
   /** the sections the roll's theme favoured (pipeline THEME; absent when it favoured them all) */

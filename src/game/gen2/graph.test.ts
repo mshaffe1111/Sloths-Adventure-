@@ -229,6 +229,8 @@ test('the content deal: every content node typed, the counts the deal\'s give or
         }
       });
     }
+    // (a slot the rules could not fill fails the roll, the missing piece named: never a quietly looser rule, Law 22)
+    for (const l of st.gen2.loosened ?? []) assert.ok(st.gen2.errors.some((e) => e.startsWith('pool short at ') && l.includes(e.slice('pool short at '.length, 'pool short at '.length + 8))), `seed ${s}: ${l} is not a failure`);
     // (the mix's rules hold on every roll the pool did not run out on; a loosened slot is named, and rare)
     if (!st.gen2.loosened) {
       clean++;
@@ -242,4 +244,53 @@ test('the content deal: every content node typed, the counts the deal\'s give or
   // (and enough rolls ran clean for the rules above to have been checked: the toy pool is small for 40% ground at no repeats, which is
   // the kit's sizing, measured by the loosened share, not the deal's)
   assert.ok(clean >= 4, `${clean} of 16 rolls with no slot loosened`);
+});
+
+test('a required section stands in its own reward node (the key\'s H), after the last rest before the signature, in the last third', () => {
+  const perch: SectionTemplate = { ...twoRoad, id: 'toy-perch', jobs: ['reward'], phases: ['sho', 'ten'], window: [0.67, 1] };
+  const k: WorldKit = { ...chunked({ ends: 'quiet', trend: 'up', branching: 'some' }) };
+  k.manifest = { ...k.manifest, sections: [...k.manifest.sections, perch], required: { [ID]: [{ section: 'toy-perch' }] } } as WorldManifest;
+  for (const s of SEEDS) {
+    const st = build(k, s);
+    const js = st.gen2.graph.nodes.map((n) => n.job);
+    const h = js.indexOf('reward');
+    assert.ok(h > 0 && js[h + 1] === 'signature', `seed ${s}: ${js.join(' ')}`);
+    const i = st.gen2.plan.findIndex((p) => p.template === 'toy-perch');
+    assert.equal(st.gen2.plan[i]?.node, st.gen2.graph.nodes[h].id, `seed ${s}: the perch is not in the reward node`);
+    assert.ok((i + 0.5) / st.gen2.plan.length >= 0.67, `seed ${s}: the perch at slot ${i + 1} of ${st.gen2.plan.length}`);
+  }
+});
+
+test('a section whose laid exit leaves the corridor is swapped, never kept, whatever exitDy it declares', () => {
+  // (it declares a level exit and drops 700 px: the corridor reads the laid exit, and a stray is swapped)
+  const drop: SectionTemplate = {
+    id: 'toy-drop', name: 'a long way down', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 3, weight: 20,
+    pieces: [
+      { key: 'a', shape: 'bank', w: [300, 300], place: { kind: 'start' } },
+      { key: 'b', shape: 'bank', w: [300, 300], place: { kind: 'walk', after: 'a', dy: [700, 700] } },
+    ],
+    entry: { piece: 'a', kind: 'ground' }, exit: { piece: 'b', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+  };
+  const k = withGraphs({ ends: 'quiet', trend: 'level', branching: 'none' });
+  k.manifest = { ...k.manifest, sections: [...k.manifest.sections, drop] } as WorldManifest;
+  for (const s of SEEDS.slice(0, 8)) {
+    const st = build(k, s);
+    const M = k.manifest;
+    for (const q of st.gen2.sections) {
+      const sec = st.gen2.sections.find((x) => x.uid === q.uid)!;
+      assert.notEqual(sec.template, 'toy-drop', `seed ${s}: the stray section was kept (corridor ${M.corridor.top}-${M.corridor.bottom})`);
+    }
+  }
+});
+
+test('a roll its rules cannot fill FAILS, the missing piece named (Law 22): a required section whose move is never taught, never an exception', () => {
+  // (the perch uses a move no section teaches: the build returns, its errors name the perch and why; it never throws or re-rolls)
+  const perch: SectionTemplate = { ...twoRoad, id: 'toy-perch-x', jobs: ['reward'], phases: ['sho', 'ten'], uses: ['glide-x'] };
+  const k: WorldKit = { ...chunked({ ends: 'quiet', trend: 'up', branching: 'some' }) };
+  k.manifest = { ...k.manifest, sections: [...k.manifest.sections, perch], required: { [ID]: [{ section: 'toy-perch-x' }] } } as WorldManifest;
+  for (const s of SEEDS.slice(0, 4)) {
+    const st = build(k, s);
+    assert.ok(st.gen2.errors.some((e) => /the required section toy-perch-x fits no node: glide-x never taught/.test(e)), `seed ${s}: ${st.gen2.errors.join('; ')}`);
+    assert.ok(st.gen2.errors.some((e) => e.startsWith('pool short at ') && / reward: /.test(e)), `seed ${s}: the empty H node is not named`);
+  }
 });
