@@ -20,6 +20,16 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.9.5',
+    date: '2026-11-06',
+    title: 'A brand-new first stage',
+    items: [
+      'Into the Canopy, the very first stage, is built all over again.',
+      'It’s laid out a little differently every time you play.',
+      'Dot has new things to say as you climb.',
+    ],
+  },
+  {
     version: '0.9.4',
     date: '2026-11-04',
     title: 'Painted all over',
