@@ -73,6 +73,8 @@ After 1-1 is proven, these run as their own lanes, one engine.ts holder at a tim
 - The w1sun2-near (and w1sunrise-near) backdrop has two painted mushrooms on its log line. Through a pit gap they can line up
   behind a catch branch and read as a mushroom in the air (parallax). Tonight: accepted as background. Tomorrow: REPLACE the near layer
   on HF (Matt: bad art is replaced, not patched; no inpainting).
+- 6-1 (12) and 8-1 (16): platforms at y 170-224 put Pokey's head behind the HUD band (engine-core cameraReach, 4ec2dac23). A live-game
+  defect in the World 6 and World 8 kits. Owner later.
 - 1-1's map card text: "Run the high branches of the kapok trees" (the kapok is 1-4's). Story wording, for the supervisor.
 
 ## My traps (read every time)
