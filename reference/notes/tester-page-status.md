@@ -1,5 +1,34 @@
 # tester-page status (the lead reads this; no send_message until further notice)
 
+## ANSWER (4:16 PM ET): does Dot teach the double on the real page? NO, not in any run I tried
+
+Method:
+- The real testers' page (#ctest), gen2 1-1, a FRESH save (localStorage cleared, then a reload).
+- Pokey stood 250 px before the double-jump teach section, then a real touch slide was held right (CDP touch, as a thumb does).
+- Every line Dot showed was polled for 20 s.
+- 5 runs, both orientations, seeds 218, 118, 158, 113, 111, 113, 454, 100, 171, 158 and 286 (a fresh seed each Start).
+
+What I saw:
+- Both lines are in every stage: "Nice jump! In the air, flick up again for a double jump." at the teach start +27 to +30 px, and
+  "Flick up again in the air to jump twice" at +80 to +500 px.
+- **Most runs: he walks up to the teach section's first step and stops.** The step is 70 to 75 px up (w1-double-teach,
+  w1-bank-double-teach, w1-dip-double-teach), and both trigger points are PAST it. A first-timer who can't get up never reaches them, so
+  Dot says NOTHING (20 s+ standing there; no "still stuck" line either).
+  - Example: seed 171, x 4553 against a 75 px step at x 4572.
+  - Example: seed 286, x 6548 against a 70 px step at x 6567.
+  - Still: `reference/qa/tester-page-1106/dbl/dblteach-stuck-side-run0.png`.
+- **One run, seed 158 upright: he got past BOTH trigger points (x 6680 and 7129) and Dot still showed neither line within 20 s.**
+  Not yet explained: it isn't tip memory (fresh save) and the lines have no below/above/before limits. It needs the engine owner.
+  - Stills: `dbl/dblteach-up-run0.png`, `dbl/dblteach-stuck-up-run0.png`.
+- The bot jumps the step, so it never sees this.
+
+My recommendation: move "Nice jump! ..." to just BEFORE the first step (with `beforeX` so it isn't said late). Then find out why the
+lines don't show once he is past them (seed 158).
+
+Not yet done: a still exactly at the first teach gap in every run, because he never got there by walking. The stills show where he
+stops.
+
+
 ## Tester code (the lead's ~3:10 PM job): DONE
 
 - `testerId()` in `src/game/playRecorder.ts`: 6 letters from `ABCDEFGHJKLMNPQRSTUVWXYZ23456789` (no 0/O, 1/I), made once and kept
