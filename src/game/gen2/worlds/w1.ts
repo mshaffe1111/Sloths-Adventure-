@@ -123,7 +123,7 @@ const squirrels = (id: string, on: string, t: Socket['t']): Socket => ({ id, rol
 const floor = (key: string, w: SectionPiece['w'], place: SectionPiece['place'] = { kind: 'start' }): W1Piece => ({ key, shape: 'bank', w, place, style: 'moss_stone', main: true, landing: true });
 /** the floor after a soft gap a plain jump crosses (`share` of the widest gap the difficulty allows) */
 // (a double gap's landing is a double BLOCK (NODES §8.7 B1): the engine swaps a teach or test whose block a single jump reaches, blockBreaches)
-/** the designer's double bands in px (11-06, engine-spec 174d7ddae): a TEACH's double gap 195-205 px (laid 195-203: a level double reaches 204 on these budgets), a TEST's 205-228 (the second jump's test, #20), laid exactly (gapPx); every other double gap the teach band */
+/** the designer's double bands in px (11-06, engine-spec 174d7ddae): a TEACH's double gap 195-205 px (laid 195-203: a level double reaches 204 on these budgets), a TEST's 205-228 (held: a level double reaches 204 on Easy and on some Normal budgets, so it waits on the planner's per-version Easy swap), laid exactly (gapPx); every double gap the teach band for now */
 const DOUBLE_TEACH: [number, number] = [195, 203], DOUBLE_TEST: [number, number] = [205, 228];
 const softGap = (key: string, after: string, w: SectionPiece['w'], share: [number, number], jump: 'jump' | 'double' = 'jump', gapPx?: [number, number]): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump, share, soft: true, ...(jump === 'double' ? { gapPx: gapPx ?? DOUBLE_TEACH } : {}) }, style: 'moss_stone', main: true, landing: true, ...(jump === 'double' ? { block: 'double' as const } : {}) });
 /** a mossy stump or rock standing on `on` (one easy hop: lowStumps 36-76, logHop 34-46) */
@@ -344,7 +344,7 @@ const developStoneDips = section({
 /** w1Sections '1-1' twist: 'gaps', 'highLeaps', 'stoneLeaps' (on main 272-302); 'highLeaps' and 'stoneLeaps' ran 24-36 s, so cut */
 const twistGaps = section({
   id: 'w1-second-jump', floor: 'jump', name: 'the second jump', phases: ['ten'], difficulty: 5, needs: ['double'], uses: ['double'], maxPerStage: 1, // (Round 2 (c): the double's first test; #8 teaches it)
-  versions: [{ id: 'old', groups: [gShelf(), gDoubleGaps([[0.85, 0.89], [0.89, 0.93], [0.91, 0.95]], DOUBLE_TEST), gRest([200, 260]), gStones([60, 70, 50], [0.6, 0.72], true)] }],
+  versions: [{ id: 'old', groups: [gShelf(), gDoubleGaps([[0.85, 0.89], [0.89, 0.93], [0.91, 0.95]]), gRest([200, 260]), gStones([60, 70, 50], [0.6, 0.72], true)] }],
   feel: ['1-1'], not: NOT_11, rating: 5,
   source: "w1Sections '1-1' twist 'gaps' (on main 273-280): practiceShelf, gapRun(reachTwo x 0.62/0.72/0.82), a run of 200-260, pillars [60,70,50] dbl at 0.6-0.72",
 });
