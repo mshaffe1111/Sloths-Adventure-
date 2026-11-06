@@ -23,7 +23,16 @@
 
   - So the line comes 240 to 310 px before the first gap that needs the double.
   - Stills: `reference/qa/tester-page-1106/dbl2/walked-{side,up}-run*-seed*.png`.
-- **Stuck 20 s at the step, walked runs: not measured this round.** My walking script jumps at the first stall, so it never stood
+- **Two more walked runs (5:44 PM): both PASS.** The double line was shown at the teach's entry, before the first double gap:
+  - sideways, seed 3576: said at x 5443, teach 5407, first gap 5695;
+  - upright, seed 3834: said at x 5326, teach 5293, first gap 5619.
+  - In all, **8 of 8 walked runs pass.**
+- **Seed 158: NOT run.** I tried to force the page's seed draw to the list's index 7 (seed 158), but the page drew 3576 and 3834
+  instead. My override doesn't reach the real draw, and I ran out of time to find it. Seed 158 is still owed.
+- **Stuck 20 s at the step, walked (these two runs): Dot said NOTHING** in both, upright and sideways. He stood just before the teach's
+  first step: x 5388 against an entry of 5407, and x 5274 against 5293. This is now a walked result, not the teleport artefact: a real
+  stuck first-timer gets no help line there (the roadmap item).
+- (Older note, kept:) **Stuck 20 s at the step, the first 6 walked runs: not measured.** My walking script jumps at the first stall, so it never stood
   there. The earlier "Dot said nothing" came from the teleported runs, so it may be the same artefact. It needs a re-check.
 - **Lesson** (for CONTINUOUS-IMPROVEMENT): a real-page check must reach the spot the way a player does. A teleport left Dot's guide
   dropping every bubble, and I reported that as the game's fault for an hour. Countermeasure: walk from the start, or at least
