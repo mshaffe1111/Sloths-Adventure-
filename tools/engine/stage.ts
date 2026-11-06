@@ -29,6 +29,9 @@ import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
 import { setPick11 } from '../../src/game/testlink1_1.ts';
 import { cameraReachBreaches } from '../../src/game/cameraReach.ts';
+import { stageVariety, varietyBreaches, VARIETY_BARS } from '../../src/game/stageVariety.ts';
+import { buildGen2Stage } from '../../src/game/gen2/pipeline.ts';
+import { w1World } from '../../src/game/gen2/worlds/w1.ts';
 import { asQaBuildForTest } from '../../src/game/playRecorder.ts';
 import { landingKind } from '../../src/game/mixer/catalog.ts';
 import { dressOverDoor, dressThroughPlatform, propBreaches } from '../../src/game/mixer/propSupport.ts';
@@ -157,7 +160,7 @@ if (ref?.view) {
     shown.push(line(`${set} ideas twice in a row (worst build)`, worst, (x) => x === 0, '0'));
   }
   gate('stage lines (§E.2: per view, float, ideas, floor numbers, surface kinds)', bad);
-  notMeasured.push('cadence: section ratings ramp and cool (src/game/cadence.ts, on the gen2 build\'s slot ratings, once 1-1 builds on gen2)', 'era diversity over the stage graph and the node dials (the planner\'s graph and dials in the gen2 meta)', 'every bough section starts in the stage\'s last third (its window [0.67, 1]: gen2 section ranges, once 1-1 builds on gen2)', 'section kinds a build (gen2 meta, once 1-1 builds on gen2)', 'share of chunks cut from the old stage (gen2 meta, once 1-1 builds on gen2)');
+  notMeasured.push('cadence: section ratings ramp and cool (src/game/cadence.ts, on the gen2 build\'s slot ratings, once 1-1 builds on gen2)', 'every bough section starts in the stage\'s last third (its window [0.67, 1]: gen2 section ranges, once 1-1 builds on gen2)', 'section kinds a build (gen2 meta, once 1-1 builds on gen2)', 'share of chunks cut from the old stage (gen2 meta, once 1-1 builds on gen2)');
   linesShown.push(...shown);
   fs.rmSync(tmp, { recursive: true, force: true });
 }
@@ -254,6 +257,28 @@ if (fs.existsSync(OLD_FILE)) {
   }
   gate(`nothing dressed over the exit door or through a platform (${N} layouts x 2)`, bad);
 }
+// 5c'-variety. the stage variety measure (stageVariety.ts, the planner's: the realised pieces and the node code; it replaces era's h:J
+// diversity as the judge, the lead 11-05 9:32 PM, Matt's choice A): over this stage's N layouts on Normal, and for 1-1 also over gen2 1-1's
+// 16 rolls (World 1's kit, seeds 1-16: the rolls the game would pick from)
+{
+  const one = (rolls: Array<{ id: string; platforms: any[]; code?: string[] }>, what: string) => {
+    const v = stageVariety(rolls);
+    linesShown.push(`variety, ${what}: pieces distinct ${v.pieceDistinct.toFixed(3)} (line ${VARIETY_BARS.distinct}), inner min ${v.pieceInnerMin.toFixed(3)} (line ${VARIETY_BARS.inner})${v.codeDistinct !== undefined ? `, code distinct ${v.codeDistinct.toFixed(3)} (line ${VARIETY_BARS.codeDistinct})` : ''}`);
+    gate(`variety, ${what} (stageVariety.ts: distinct, inner, repeat, code distinct, code run)`, varietyBreaches(rolls).slice(0, 8));
+  };
+  // (one roll, or a --roll run where every layout is the same roll, cannot be told from another: not run, never a pass)
+  if (N < 2 || ROLL) notMeasured.push(`variety over this stage's layouts (${ROLL ? `--roll ${ROLL}: every layout is one roll` : 'one layout'})`);
+  else one(Array.from({ length: N }, (_, i) => { const st = buildRoll(cfg, i + 1) as any; return { id: `layout ${i + 1}`, platforms: st.platforms, code: gen2Of<{ code?: string[] }>(st)?.code }; }), `${N} layouts`);
+  if (id === '1-1') {
+    const rolls: Array<{ id: string; platforms: any[]; code?: string[] }> = []; const threw: string[] = [];
+    for (let seed = 1; seed <= 16; seed++) {
+      try { const st: any = buildGen2Stage({ config: cfg, kit: w1World(), seed, difficulty: 'normal' }); rolls.push({ id: `seed ${seed}`, platforms: st.platforms, code: st.gen2?.code }); } catch (e) { threw.push(`seed ${seed}: ${String((e as Error).message).slice(0, 80)}`); }
+    }
+    one(rolls, `gen2 1-1, ${rolls.length} of 16 rolls built`);
+    if (threw.length) linesShown.push(`variety, gen2 1-1: ${threw.length} rolls did not build: ${threw.join('; ')}`);
+  }
+}
+
 // 5c'-reach. inside the camera's reach (the lead, 11-05, gen2 1-1 Roll B's end log and totem at y -237, off the top of the view): every
 // platform, pickup, dressing piece and the totem where the clamped camera shows it, upright and sideways (cameraReach.ts)
 {
