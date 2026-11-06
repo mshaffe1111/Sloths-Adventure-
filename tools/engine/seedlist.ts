@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import '../../src/game/headlessDom.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 import { buildGen2Stage, keptFoes } from '../../src/game/gen2/pipeline.ts';
-import { w1World } from '../../src/game/gen2/worlds/w1.ts';
+import { w1Finish, w1World } from '../../src/game/gen2/worlds/w1.ts';
 import { packPlan, provenSeeds, QUIET_MAX, seedListBreaches, SEED_LIST_MIN } from '../../src/game/gen2/seedList.ts';
 import { PROVEN_SEEDS } from '../../src/game/gen2/provenSeeds.ts';
 import { floorlessGaps, promiseBreaches11 } from '../../src/game/gen2/promises11.ts';
@@ -30,9 +30,15 @@ if (process.argv.includes('--check')) {
   const b = seedListBreaches(cfg, kit, provenSeeds(id), SEED_LIST_MIN, L ? { dict: L.dict, plans: L.plans } : undefined);
   // (the quiet line BINDS, the lead 11-06: every listed seed's longest quiet stretch on Normal, the outro excluded, at most QUIET_MAX s)
   for (const seed of provenSeeds(id)) { const q = quietOf(buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'normal' })).quiet; if (q > QUIET_MAX) b.push(`${id} seed ${seed}: ${q} s quiet, over the line ${QUIET_MAX} s (the outro excluded)`); }
+  if (id === '1-1') for (const seed of provenSeeds(id)) if (!dresses(...(['normal', 'easy'] as const).map((difficulty) => buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty })))) b.push(`${id} seed ${seed}: too few squirrels find a spot (w1Finish)`);
   if (L && L.plans.length !== L.seeds.length) b.push(`${id}: ${L.seeds.length} seeds but ${L.plans.length} plans`);
   console.log(b.length ? `seedlist ${id}: FAIL\n  ${b.slice(0, 20).join('\n  ')}` : `seedlist ${id}: PASS (${provenSeeds(id).length} seeds, each clean on both settings)`);
   process.exit(b.length ? 1 : 0);
+}
+
+/** both settings' builds take their squirrels (w1Finish throws when fewer than SQUIRREL_MIN find a clear spot; it only dresses and marks the cut art, so the build is used as it is after) */
+function dresses(...sts: Array<ReturnType<typeof buildGen2Stage>>): boolean {
+  try { for (const st of sts) w1Finish(st as never); return true; } catch { return false; }
 }
 
 /** the quiet line, reported: the longest quiet stretch on Normal before the goal section's entry (the outro excluded), and the outro's px */
@@ -75,6 +81,8 @@ for (const seed of tries) { // (1-1's promises and the quiet line keep few rolls
   if (e.gen2.errors?.length) continue;
   // (1-1's player promises, the lead 11-06: no unmarked floorless gap on either setting, the double needed right after its teach on Normal)
   if (id === '1-1' && (promiseBreaches11(n as never).length || floorlessGaps(e as never).length)) continue;
+  // (1-1's squirrels, the lead 11-06: Play finishes the roll with w1Finish, which throws when too few find a spot; such a roll is never listed)
+  if (id === '1-1' && !dresses(n, e)) continue;
   const q = quietOf(n);
   if (q.quiet > quietMax) { quietOut++; continue; }
   seeds.push(seed); quiet.push(q.quiet); outro.push(q.outro);
