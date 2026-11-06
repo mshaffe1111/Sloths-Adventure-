@@ -4,7 +4,7 @@ import { buildProtoStage, EXPERT_SECONDS } from './protoStage.ts';
 import { specFor } from './mixer/stages.ts';
 import { modelAll } from './stageTime.ts';
 import { badPickups } from './flowerReach.ts';
-import { reachJump, JUMP_RISE } from './physics.ts';
+import { reachJump, JUMP_RISE, DOUBLE_RISE } from './physics.ts';
 import type { LevelConfig } from './types.ts';
 
 const cfg = {
@@ -80,7 +80,7 @@ test('1-5: the keepsake hides in a fern up a tree', { todo: "known: the mixer la
   }
 });
 
-test('1-5: creaking branches over safe ground, a seed waits for the glide (the keepsake: the test before)', () => {
+test('1-5: creaking branches over safe ground; no seed, but a glint out of reach where Dot says "Something shiny" (ruling (b)); the keepsake: the test before', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-5');
     const death = deathOf(st);
@@ -90,12 +90,15 @@ test('1-5: creaking branches over safe ground, a seed waits for the glide (the k
       const mid = p.x + p.width / 2;
       assert.ok(st.platforms.some((q) => q !== p && q.type !== 'fragile' && q.y > p.y && q.y < death && q.x <= mid && q.x + q.width >= mid), `seed ${s}: nothing safe under the creaking branch at ${p.x}`);
     }
-    // the far seed: past a double jump from the ledge before it, inside a glide
-    const far = st.collectibles.find((c) => c.type === 'seed' && !st.platforms.some((p) => p.type === 'bouncy' && Math.abs(p.x - c.x) < 260));
-    assert.ok(far, `seed ${s}: a glide seed`);
-    const ledge = st.platforms.find((p) => far!.x >= p.x && far!.x <= p.x + p.width && Math.abs(p.y - (far!.y + 34)) < 2)!;
-    const lookout = st.platforms.filter((p) => p.type === 'solid' && p.x + p.width < ledge.x && p.y <= ledge.y).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
-    const gap = ledge.x - (lookout.x + lookout.width);
-    assert.ok(gap > reachJump(lookout.y - ledge.y, true) * 1.15, `seed ${s}: a double jump falls short (${gap})`);
+    // (the seed waits for the glide, the designer's ruling (b) at CP3, restated 11-06: 1-5 lays no seed, and SHOWS it: a glint at the
+    // puzzle beat, out of every jump's reach, where Dot says "Something shiny, far away...")
+    assert.equal(st.collectibles.filter((c) => c.type === 'seed').length, 0, `seed ${s}: 1-5 lays no seed`);
+    const puzzle = st.proto.beats.filter((b) => b[2].startsWith('puzzle beat'));
+    const inPuzzle = (x: number) => puzzle.some(([x0, x1]) => x >= x0 - 200 && x <= x1 + 200);
+    const glint = (st.proto.glints ?? []).find((g) => inPuzzle(g.x));
+    assert.ok(glint, `seed ${s}: a glint at the puzzle beat`);
+    const near = st.platforms.filter((p) => p.x <= glint!.x + 200 && p.x + p.width >= glint!.x - 200);
+    assert.ok(near.every((p) => p.y - glint!.y > DOUBLE_RISE + 60), `seed ${s}: the glint out of reach (y ${glint!.y})`);
+    assert.ok((st.proto.hints ?? []).some((h) => /Something shiny/.test(h.text) && inPuzzle(h.x)), `seed ${s}: Dot's "Something shiny" at the puzzle beat`);
   }
 });

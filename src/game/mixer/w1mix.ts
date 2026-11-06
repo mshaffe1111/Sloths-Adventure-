@@ -26,7 +26,7 @@ import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import { fixPickups } from '../flowerReach.ts';
 import { findForStage } from '../finds.ts';
 import { heldMaxGap, jumpOK, validateStage } from '../levelCheck.ts';
-import { reachGlide, reachJump } from '../physics.ts';
+import { DOUBLE_RISE, reachGlide, reachJump } from '../physics.ts';
 
 type Rng = { f: () => number; r: (a: number, b: number) => number; i: (a: number, b: number) => number; pick: <T>(xs: readonly T[]) => T };
 /** one RNG stream per seed and salt (the same mix as w1Rhythm.ts rng): every node and layer draws from its own stream */
@@ -1132,7 +1132,13 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
     if (n.seed) {
       const ps = L.P.slice(from);
       const top = Math.min(...ps.map((q) => q.y));
-      L.glints.push({ x: Math.round((x0 + c.x) / 2), y: Math.max(40, top - 420) });
+      const y = Math.max(40, top - 420);
+      // (where the clamp at the stage's top leaves it within a double of a high piece near it (a canopy bridge 134 px under it, seed 1),
+      // it moves along the node to where nothing within 200 px is that high: out of every jump's reach, as ruled)
+      const clearAt = (x: number) => !L.P.some((q) => q.x <= x + 200 && q.x + q.width >= x - 200 && q.y - y <= DOUBLE_RISE + 60);
+      const mid = Math.round((x0 + c.x) / 2);
+      const xs = Array.from({ length: Math.floor((c.x - x0) / 40) + 1 }, (_, k) => Math.round(x0 + k * 40)).sort((a, b) => Math.abs(a - mid) - Math.abs(b - mid));
+      L.glints.push({ x: xs.find(clearAt) ?? mid, y });
     }
     // (on the node's last solid piece, over its middle, never over the gap past it: markers stand on the path, P-5)
     if (n.heartAfter && !easy) {
