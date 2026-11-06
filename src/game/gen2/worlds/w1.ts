@@ -125,6 +125,8 @@ const stone = (key: string, after: string, dy: SectionPiece['w'], share: [number
 const bough = (key: string, on: string, at: SectionPiece['w'], dy: SectionPiece['w'], w: SectionPiece['w'], main = false): W1Piece => ({ key, shape: 'branch', w, place: { kind: 'over', on, at, dy }, style: 'branch', main, landing: true });
 /** the mushroom (70 wide, 30 tall: bounceWall, highLeaps) standing on `on` */
 const mushroom = (key: string, on: string, at: SectionPiece['w']): W1Piece => ({ key, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on, at, h: [30, 30] } });
+/** a bounce lip (the planner's bounce place, engine-chunks 3919248e): its rise clamped to the bounce's reach from mushroom `m`'s cap, not a walk's */
+const lip = (p: W1Piece, m: string): W1Piece => ({ ...p, block: 'bounce', from: m });
 
 const ONE = reachJump(0, false);
 const TWO = reachJump(0, true);
@@ -229,7 +231,7 @@ const gBounceWall = (): G => (k, after) => {
   const r = stump(`${k}r`, w.key, [0.55, 0.65], [34, 46], [120, 150]);
   const b: W1Piece = { ...floor(`${k}b`, [160, 220]), place: { kind: 'walk', after: w.key, dy: [225, 240] } };
   const c = softGap(`${k}c`, b.key, [260, 320], [0.4, 0.5]);
-  return { pieces: [a, mushroom(`${k}m`, a.key, [0.7, 0.75]), w, r, b, c], sockets: [petals(`${k}pw`, w.key, [0.15, 0.35], 2), petals(`${k}pr`, r.key, 0.5, 1)], last: c.key };
+  return { pieces: [a, mushroom(`${k}m`, a.key, [0.7, 0.75]), lip(w, `${k}m`), r, b, c], sockets: [petals(`${k}pw`, w.key, [0.15, 0.35], 2), petals(`${k}pr`, r.key, 0.5, 1)], last: c.key };
 };
 /** snakeBranches(n, y) with its snakes left out (w1Sections '1-3' on main): n low boughs 100-150 over the floor */
 const gLowBoughs = (n: number, up: number): G => (k, after) => {
@@ -520,8 +522,8 @@ const hollowTwoway = section({
 const mushroomLift = section({
   id: 'w1-mushroom-lift', name: 'first lift', phases: ['sho'], difficulty: 2, teaches: 'bounce', ports: ['ground', 'ledge'], exitDy: -210,
   versions: [
-    { id: 'mound', groups: [gRest([160, 200]), gStile([40, 76, 100, 76, 40]), (k, after) => { const f = floor(`${k}f`, [520, 600], startOr(after)); const L = bankW(`${k}L`, f.key, [-220, -200], [330, 400]); /* (B3 as amended: the floor ends at the bank face, its lip 200-220 up) */ return { pieces: [f, mushroom(`${k}m`, f.key, [0.7, 0.8]), L], sockets: [tip(f.key, 0.05), petals(`${k}pl`, L.key, [0.3, 0.7], 2)], last: L.key }; }] },
-    { id: 'log-road', groups: [gRest([160, 200]), gStile([40, 76, 100, 76, 40]), (k, after) => { const f = floor(`${k}f`, [520, 600], startOr(after)); const B = bankW(`${k}B`, f.key, [-220, -200], [300, 340]); const P = post(`${k}P`, B.key, [0.6, 0.7], [70, 80]); const L = logOn(`${k}L`, P.key, [240, 300]); return { pieces: [f, mushroom(`${k}m`, f.key, [0.7, 0.8]), B, P, L], sockets: [tip(f.key, 0.05), petals(`${k}pl`, L.key, [0.3, 0.7], 2)], last: L.key }; }] },
+    { id: 'mound', groups: [gRest([160, 200]), gStile([40, 76, 100, 76, 40]), (k, after) => { const f = floor(`${k}f`, [520, 600], startOr(after)); const L = bankW(`${k}L`, f.key, [-220, -200], [330, 400]); /* (B3 as amended: the floor ends at the bank face, its lip 200-220 up) */ return { pieces: [f, mushroom(`${k}m`, f.key, [0.7, 0.8]), lip(L, `${k}m`)], sockets: [tip(f.key, 0.05), petals(`${k}pl`, L.key, [0.3, 0.7], 2)], last: L.key }; }] },
+    { id: 'log-road', groups: [gRest([160, 200]), gStile([40, 76, 100, 76, 40]), (k, after) => { const f = floor(`${k}f`, [520, 600], startOr(after)); const B = bankW(`${k}B`, f.key, [-220, -200], [300, 340]); const P = post(`${k}P`, B.key, [0.6, 0.7], [70, 80]); const L = logOn(`${k}L`, P.key, [240, 300]); /* (back down to the lip's height off the log's end: the exit is the lip's, exitDy -210) */ const o = bankW(`${k}o`, L.key, [90, 104], [220, 280]); return { pieces: [f, mushroom(`${k}m`, f.key, [0.7, 0.8]), lip(B, `${k}m`), P, L, o], sockets: [tip(f.key, 0.05), petals(`${k}pl`, L.key, [0.3, 0.7], 2)], last: o.key }; }] },
   ],
   feel: ['1-1'], not: NOT_11, rating: 2,
   source: 'W1-NEW-SECTIONS #5: the brief\'s "first lift" (1-1.md:20); the perch rule (Q2). sho (the ruling, 08c5a2944: the bounce taught after the double); a stump stile before the lift for the 10 s',
@@ -532,9 +534,10 @@ const twinBounce = section({
   versions: [3, 4].flatMap((n) => (['stair', 'drop'] as const).map((down) => ({ id: `${n}-${down}`, groups: [(k: string) => {
     const pieces: W1Piece[] = [{ key: `${k}L0`, shape: 'bank', w: [300, 360], place: { kind: 'start' }, style: 'moss_stone', main: true, landing: true }];
     const sockets: Socket[] = [];
-    seq(n, (j) => { pieces.push(...perch(`${k}${j}`, `${k}L${j}`, [0.5, 0.6]), bankW(`${k}L${j + 1}`, `${k}L${j}`, [-130, -110], [260, 320])); sockets.push(petals(`p${k}${j}`, `${k}L${j + 1}`, [0.3, 0.7], 2)); });
+    seq(n, (j) => { pieces.push(...perch(`${k}${j}`, `${k}L${j}`, [0.5, 0.6]), lip(bankW(`${k}L${j + 1}`, `${k}L${j}`, [-130, -110], [260, 320]), `${k}${j}m`)); sockets.push(petals(`p${k}${j}`, `${k}L${j + 1}`, [0.3, 0.7], 2)); });
+    // (down by stair or drop, both to the climb's foot plus 100 (exitDy 100): the stair's three steps 120 + rise / 2 - 10 twice)
     const top = `${k}L${n}`, rise = n * 120;
-    if (down === 'stair') { pieces.push(bankW(`${k}d1`, top, [110, 130], [200, 240]), bankW(`${k}d2`, `${k}d1`, [rise / 2 - 10, rise / 2 + 10], [200, 240]), bankW(`${k}o`, `${k}d2`, [rise / 2 + 90, rise / 2 + 110], [260, 300])); return { pieces, sockets, last: `${k}o` }; }
+    if (down === 'stair') { pieces.push(bankW(`${k}d1`, top, [110, 130], [200, 240]), bankW(`${k}d2`, `${k}d1`, [rise / 2 - 20, rise / 2], [200, 240]), bankW(`${k}o`, `${k}d2`, [rise / 2 - 20, rise / 2], [260, 300])); return { pieces, sockets, last: `${k}o` }; }
     pieces.push({ ...floor(`${k}o`, [300, 360]), place: { kind: 'jump', after: top, dy: [rise + 90, rise + 110], share: [0.25, 0.35] } });
     return { pieces, sockets, last: `${k}o` };
   }, gStile([40, 76, 40])] }))),
@@ -895,7 +898,7 @@ const BEATS: Record<string, G> = {
   /** a bough a single away, level (the bough form of g) */
   G: (k, after) => { const q = limb(`${k}G`, { kind: 'jump', after: after!, dy: [-6, 6], share: [0.5, 0.6], soft: true }, [300, 360]); return { pieces: [q], sockets: [], last: q.key }; },
   /** a bounce block: the mushroom on the floor before a bank lip 200-220 px up (B3 as amended), the route stays up */
-  B: (k, after) => { const f = floor(`${k}f`, [360, 420], startOr(after)); const L = bankW(`${k}B`, f.key, [-220, -200], [300, 360]); return { pieces: [f, mushroom(`${k}m`, f.key, [0.7, 0.8]), L], sockets: [petals(`${k}p`, L.key, [0.3, 0.6], 2)], last: L.key }; },
+  B: (k, after) => { const f = floor(`${k}f`, [360, 420], startOr(after)); const L = bankW(`${k}B`, f.key, [-220, -200], [300, 360]); return { pieces: [f, mushroom(`${k}m`, f.key, [0.7, 0.8]), lip(L, `${k}m`)], sockets: [petals(`${k}p`, L.key, [0.3, 0.6], 2)], last: L.key }; },
 };
 const fromRhythm = (r: string): G[] => r.split(' ').map((t) => { const g = BEATS[t]; if (!g) throw new Error(`w1.ts: no beat '${t}'`); return g; });
 /** a section from rhythm strings: versions { id: [built beats, the designer's rhythm] } */
@@ -933,7 +936,7 @@ const bankDoubleTeach = rhythmic({
   feel: ['1-1'], not: NOT_11, rating: 3,
   source: 'Round 4 #34: NODES §8.7 B2a (a rise block 136-140 px onto a bank, the floor ending at its face)',
 });
-/** #35 (teach bounce): the mushroom on the floor, the lip 200-220 px (lays short today: the named exitDy failure) */
+/** #35 (teach bounce): the mushroom on the floor, the lip 200-220 px (the bounce place, its rise from the mushroom's cap) */
 const mushroomBankTeach = rhythmic({
   id: 'w1-mushroom-bank-teach', floor: 'hop', name: 'the bounce bank', phases: ['sho'], difficulty: 2, teaches: 'bounce', exitDy: -210,
   versions: { a: ['w h h B w h', 'w b w h'], b: ['w h h h B j', 'w h b j'] }, // (more hops before the lip: 10 s by repetition)
@@ -1207,20 +1210,7 @@ const TERRAIN: Record<string, W1Terrain> = {
 /** the two-answer twists (B5): #7's mushroom version, #28, #59 (the designer, 11-05) */
 const ANSWERS: Record<string, Array<'double' | 'bounce'>> = { 'w1-fallen-trunk': ['double', 'bounce'], 'w1-two-answers': ['double', 'bounce'], 'w1-long-bounce-twist': ['double', 'bounce'] };
 const VERSION_JOBS: Record<string, Record<string, W1Job[]>> = { 'w1-fallen-trunk': { double: ['test'], mushroom: ['twist'] } };
-/**
- * HELD until the planner's bounce-rise place exists (the designer, 11-05: a bounce lip laid as a walk is an 80 px step, a single jump
- * clears it, so the bounce has no block): whole sections whose block is a bounce lip, and the wall versions of two others. Not in the pool.
- */
-export const W1_HELD: Record<string, string> = {
-  'w1-mushroom-lift': "#5's bounce lip 200-220 px (lays 80 as a walk)", 'w1-twin-bounce': "#6's lifted banks 110-130 px", 'w1-mushroom-bank-teach': "#35's bounce lip",
-  'w1-hop-bounce': 'its bounce walls 225-240 px', 'w1-bounce-run/three-wall': 'its bounce wall', 'w1-ledges/walls': 'its bounce wall',
-};
-const held = (q: W1Section): W1Section | null => {
-  if (W1_HELD[q.id]) return null;
-  const keep = q.subBlocks![0].versions.filter((v) => !W1_HELD[`${q.id}/${v.id}`]);
-  return keep.length === q.subBlocks![0].versions.length ? q : { ...q, subBlocks: [{ ...q.subBlocks![0], versions: keep }] };
-};
-export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(held).filter((q): q is W1Section => !!q).map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id], terrain: TERRAIN[q.id], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
+export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id], terrain: TERRAIN[q.id], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
 
 /** the phases a stage's slots fill */
 export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten', 'ketsu', 'goal'];

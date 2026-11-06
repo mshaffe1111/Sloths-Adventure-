@@ -103,6 +103,6 @@ test("every W1 section's every version lays its exit where its exitDy says (with
       if (Math.abs(y - s.exitDy) > 25) { off.push(`${s.id}/${v.id}: exitDy ${s.exitDy}, laid ${Math.round(y)}`); break; }
     }
   }
-  // (today's breaches are the bounce walls and lips layLocal clamps to a walk's rise, about 80 px: the planner's bounce place is asked for)
+  // (the bounce lips lay on the planner's bounce place, their rise from the mushroom's cap: engine-chunks 3919248e)
   assert.deepEqual(off, []);
 });
