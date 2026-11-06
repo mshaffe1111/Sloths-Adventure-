@@ -1747,6 +1747,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // flags: at the rests, wherever 35 s passed without one, and wherever the next section's end would leave more than FLAG_SPAN.max px
   // with none (a slow stealth stage's 35 s can be 6000 px). A flag goes in first, so it is a pad: the creatures' patches and the
   // top-up keep clear of it (the safe spots below), and a flag can always land
+  // (the section the golden seed belongs to: the first laid section the manifest requires that holds a find socket)
+  const reqIds = new Set((kit.manifest.required?.[budget.id] ?? []).map((r) => r.section));
+  const seedHome = laid.sections.find((q) => reqIds.has(q.template) && q.sockets.some((k) => k.socket.role === 'find'))?.uid;
   let lastFlagT = 0;
   let t = 0;
   const flagSpot = (s: PlacedSection): { x: number; piece: Platform } | null => {
@@ -1918,6 +1921,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       } else if (s.role === 'find') {
         // (a hidden find, the golden seed: once a stage, by construction where its section's socket stands (the section is placed by
         // manifest.required, so every roll holds one))
+        // (and only there when a required section holds a find, 11-06: a fork's high road has a find socket too, and the first find on
+        // the stage took the one seed, 34 px over a fork log far from its perch, so the perch's own socket was never filled: the seed's
+        // promise failed on Rolls A and C)
+        if (seedHome && sec.uid !== seedHome) continue;
         if (C.some((c) => c.type === 'seed')) continue;
         C.push({ id: sink.nextCollectibleId(), type: 'seed', x: k.x, y: k.piece.y - (s.dn ?? 30), collected: false, bobPhase: 0 });
         fills.push({ section: sec.uid, socket: s.id, role: 'find', what: 'seed', x: k.x, y: k.y });
