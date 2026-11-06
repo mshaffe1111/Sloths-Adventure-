@@ -2498,7 +2498,10 @@ export function provenGen2Stage(req: BuildRequest, walk: number = PROVEN.walk): 
   let first: string[] | undefined;
   for (let k = 0; k < walk; k++) {
     const seed = req.seed + k * PROVEN.stride;
-    const st = buildGen2Stage({ ...req, seed });
+    // (a build can throw, not only fail by name, e.g. "the pool is spent": that seed has failed too, and the walk goes on; a play is
+    // never handed the throw, 11-06)
+    let st: Gen2Stage;
+    try { st = buildGen2Stage({ ...req, seed }); } catch (e) { first ??= [`seed ${seed} threw: ${(e as Error).message}`]; continue; }
     if (st.gen2.errors?.length) { first ??= st.gen2.errors; continue; }
     // (recorded only when the walk moved off the asked seed: a seed played as asked carries nothing new)
     if (k > 0) st.gen2.proven = { asked: req.seed, used: seed, tried: k + 1 };
