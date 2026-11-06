@@ -5,6 +5,11 @@ Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
 Last update: 3:38 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
 
+## 3:40 PM: engine-chunks
+- The lead (3:38 PM): engine-chunks 75472091 PASSES the Law 5 check (rolledFlags, forks11, catchStyles planted both ways; stageVariety
+  ruler). It is NOT merged separately: engine-core merges it, re-generates provenSeeds.ts with seedlist.ts, and it arrives in engine-core's
+  final commit. I check at the final merge that shard 2's variety red has cleared, and flag it if not.
+
 ## 3:38 PM: the lead's answers (3:31 PM message) and what I did
 - tester-page, engine-chunks: NOT passed; I wait for the lead's word on each.
 - 1-5 stays out (engine-core restores main's 1-5). 4-9 held (engine-core limits roofedDrop to builtOnGen2 stages). The lock must read
