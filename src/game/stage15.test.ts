@@ -37,16 +37,14 @@ test('1-5: every roll keeps the plan (the spec\'s nodes in order), asks for its 
   }
 });
 
-test('1-5: the test asks for every move so far: a climb, a rope, a double jump, a bounce and a punch', () => {
+test('1-5: the test asks for every move so far: a climb, a double jump and a bounce (the rope and the punch: the next test)', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-5');
     const tests = st.proto.beats.filter((b) => b[2].startsWith('test '));
     assert.ok(tests.length, `seed ${s}: no test node`);
     const inside = (x: number) => tests.some(([x0, x1]) => x >= x0 && x <= x1);
     assert.ok(st.vines.some((v) => v.vineType === 'tree_climb' && inside(v.x)), `seed ${s}: a climb`);
-    assert.ok((st.ropes ?? []).some((r) => inside(r.x0)), `seed ${s}: a rope`);
     assert.ok(st.platforms.some((p) => p.type === 'bouncy' && inside(p.x)), `seed ${s}: a bounce`);
-    assert.ok(st.enemies.some((e) => inside(e.x)), `seed ${s}: something to punch`);
     // pickups higher than one jump reaches from the piece under them, with nothing to stand on near them: double-jump pickups
     const high = st.collectibles.filter((c) => (c.type === 'flower' || c.type === 'relic') && inside(c.x) && (() => {
       const under = st.platforms.filter((p) => c.x >= p.x && c.x <= p.x + p.width && p.y > c.y).sort((a, b) => a.y - b.y)[0];
@@ -56,7 +54,33 @@ test('1-5: the test asks for every move so far: a climb, a rope, a double jump, 
   }
 });
 
-test('1-5: creaking branches over safe ground, the keepsake hides in a fern up a tree, a seed waits for the glide', () => {
+// (the lead, 11-06 9:21 AM, and the designer: the mixer has no rope idea and no punch idea, and gets no new beat (it is being retired). The
+// promise stays, run and reported as a known failure by name, carried to 1-5's move to gen2 (the designer's rope-gap spec is on file))
+test('1-5: the test asks for a rope and a punch', { todo: "known: the mixer's library has no rope or punch idea; carried to 1-5's gen2 move (lead 11-06 9:21 AM)" }, () => {
+  for (const s of SEEDS) {
+    const st = buildProtoStage(cfg, s, '1-5');
+    const tests = st.proto.beats.filter((b) => b[2].startsWith('test '));
+    const inside = (x: number) => tests.some(([x0, x1]) => x >= x0 && x <= x1);
+    assert.ok((st.ropes ?? []).some((r) => inside(r.x0)), `seed ${s}: a rope`);
+    assert.ok(st.enemies.some((e) => inside(e.x)), `seed ${s}: something to punch`);
+  }
+});
+
+// (the old 1-5's keepsake in a Hush Fern up a tree (protoStage.ts lookout): the mixer lays the find at the end and gets no new beat (the
+// lead, 11-06 9:21 AM); run and reported as a known failure by name, carried to 1-5's gen2 move)
+test('1-5: the keepsake hides in a fern up a tree', { todo: "known: the mixer lays the find at the stage's end, no fern-tree beat; carried to 1-5's gen2 move (lead 11-06 9:21 AM)" }, () => {
+  for (const s of SEEDS) {
+    const st = buildProtoStage(cfg, s, '1-5');
+    const fern = st.collectibles.filter((c) => c.type === 'find');
+    assert.equal(fern.length, 1, `seed ${s}`);
+    assert.equal(fern[0].findId, 'w1_keepsake');
+    assert.equal(fern[0].hidden, true);
+    const floor = st.platforms.filter((p) => fern[0].x >= p.x && fern[0].x <= p.x + p.width && p.y > fern[0].y).sort((a, b) => b.y - a.y)[0];
+    assert.ok(floor && floor.y - fern[0].y > 200, `seed ${s}: up a tree`);
+  }
+});
+
+test('1-5: creaking branches over safe ground, a seed waits for the glide (the keepsake: the test before)', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-5');
     const death = deathOf(st);
@@ -66,12 +90,6 @@ test('1-5: creaking branches over safe ground, the keepsake hides in a fern up a
       const mid = p.x + p.width / 2;
       assert.ok(st.platforms.some((q) => q !== p && q.type !== 'fragile' && q.y > p.y && q.y < death && q.x <= mid && q.x + q.width >= mid), `seed ${s}: nothing safe under the creaking branch at ${p.x}`);
     }
-    const fern = st.collectibles.filter((c) => c.type === 'find');
-    assert.equal(fern.length, 1, `seed ${s}`);
-    assert.equal(fern[0].findId, 'w1_keepsake');
-    assert.equal(fern[0].hidden, true);
-    const floor = st.platforms.filter((p) => fern[0].x >= p.x && fern[0].x <= p.x + p.width && p.y > fern[0].y).sort((a, b) => b.y - a.y)[0];
-    assert.ok(floor && floor.y - fern[0].y > 200, `seed ${s}: up a tree`);
     // the far seed: past a double jump from the ledge before it, inside a glide
     const far = st.collectibles.find((c) => c.type === 'seed' && !st.platforms.some((p) => p.type === 'bouncy' && Math.abs(p.x - c.x) < 260));
     assert.ok(far, `seed ${s}: a glide seed`);

@@ -7,6 +7,7 @@
  */
 import { drawW1Pits, paintedBank, waterAcross } from './w1Pits.ts';
 import { drawHollowLog } from './w1NewArt.ts';
+import { drawCutArt } from './w1CutArt.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
 import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
 import { drawW7Face } from './w7FaceArt.ts';
@@ -820,6 +821,8 @@ export function paintedPlatforms(platforms: Platform[]): Set<number> {
     else if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') out.add(p.id);
     // (a hollow log: Matt's painted hollow log, w1NewArt.ts)
     else if (p.hollow) out.add(p.id);
+    // (a cut World 1 piece: the art director's, w1CutArt.ts)
+    else if (p.cut) out.add(p.id);
   }
   return out;
 }
@@ -1300,7 +1303,8 @@ export function drawProtoScene(
   }
   for (const p of platforms) {
     if (!vis(p)) continue;
-    if (isPaintedRock(p)) drawRockArt(ctx, p);
+    if (p.cut) drawCutArt(ctx, p);
+    else if (isPaintedRock(p)) drawRockArt(ctx, p);
     else if (p.hollow) drawHollowLog(ctx, p);
   }
   for (const p of platforms) {

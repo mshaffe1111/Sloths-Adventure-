@@ -841,11 +841,15 @@ export default function App() {
     const launchAt = performance.now();
     // (the mode this run is played on: a change in the menu applies from the next stage, so this is the one its results are kept with)
     startRun(lvl.id);
+    // (the 'launch' moment, the lead 11-06: each phase from the tap to the first frame, so testers' real phones give the true split)
+    const at = { ready: 0, timer: 0, built: 0 };
     void readyToStart(lvl, canvasRef.current, inPlay).then(() => {
+      at.ready = performance.now();
       if (seq !== launchSeq.current) return;
       // Slight delay to allow canvas element mounting
       launchTimer.current = window.setTimeout(() => {
         if (!canvasRef.current || !inputEngineRef.current) return;
+        at.timer = performance.now();
         // The input engine outlives each stage, so drop any direction left over from the last one.
         inputEngineRef.current.clearAll();
 
@@ -966,12 +970,15 @@ export default function App() {
           return;
         }
 
+        at.built = performance.now();
         engineRef.current?.stop();
         engineRef.current = engine;
         // the built stage's every sheet, loaded, decoded, drawn once and baked under the title card before the first frame of play
         // (stageReady.ts: QA's freezes after 'hud-atlas', 'crumble', 'props2' and the creatures' sheets arrived mid-run)
         const go = () => {
           if (seq !== launchSeq.current || engineRef.current !== engine) return;
+          const now = performance.now(), ms = (a: number, b: number) => Math.round(b - a);
+          recorder.event('launch', `${lvl.id} sheets ${ms(launchAt, at.ready)} timer ${ms(at.ready, at.timer)} build ${ms(at.timer, at.built)} ready ${ms(at.built, now)} total ${ms(launchAt, now)}`);
           engine.start();
           // (the screen's iris opens once the stage is drawing: ScreenVeil.tsx)
           window.dispatchEvent(new Event(STAGE_LIVE_EVENT));

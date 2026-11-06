@@ -8,7 +8,7 @@
  */
 import ROLLS from './testlink1_1.json';
 import { qaBuild } from './playRecorder.ts';
-import { provenSeedFor } from './gen2/seedList.ts';
+import { provenSeedFor, provenSeeds } from './gen2/seedList.ts';
 
 export type Pick11 = 'play' | 'old' | 'A' | 'B' | 'C';
 let pick: Pick11 = 'play';
@@ -29,10 +29,51 @@ export const skip11Spec = (id: string): boolean => id === '1-1' && pick11() === 
 let playSeed: number | null = null;
 /** the next play's seed, drawn ahead so its stage can be built while the map is up (buildAhead.ts); Play takes it */
 let nextSeed: number | null = null;
-export const peekPlay11 = (rand: () => number = Math.random): number => (nextSeed ??= provenSeedFor('1-1', Math.floor(rand() * 1e9)));
+/**
+ * Which proven entry a play gets (the lead, 11-06: no repeat until the whole list has been played): each device keeps a shuffled order of
+ * the list in local storage and takes the next one at each Play; a new list (another length) is shuffled afresh, and a new round never
+ * starts with the entry that ended the last. Storage blocked: a fresh shuffle each session, the same rule within it
+ */
+const ORDER_KEY = 'sloth_play11_order';
+let memOrder: { n: number; order: number[]; i: number } | null = null;
+function readOrder(n: number, rand: () => number): { n: number; order: number[]; i: number } {
+  let o = memOrder;
+  try {
+    const raw = localStorage.getItem(ORDER_KEY);
+    if (raw) o = JSON.parse(raw);
+  } catch {
+    /* storage blocked: kept in memory */
+  }
+  if (!o || o.n !== n || !Array.isArray(o.order) || o.order.length !== n || o.i >= n) {
+    const last = o && o.n === n && o.order?.length === n ? o.order[n - 1] : -1;
+    const order = Array.from({ length: n }, (_, j) => j);
+    for (let j = n - 1; j > 0; j--) { const r = Math.floor(rand() * (j + 1)); [order[j], order[r]] = [order[r], order[j]]; }
+    if (n > 1 && order[0] === last) [order[0], order[1]] = [order[1], order[0]];
+    o = { n, order, i: 0 };
+  }
+  return o;
+}
+function writeOrder(o: { n: number; order: number[]; i: number }) {
+  memOrder = o;
+  try {
+    localStorage.setItem(ORDER_KEY, JSON.stringify(o));
+  } catch {
+    /* storage blocked: kept in memory */
+  }
+}
+const drawNext = (rand: () => number): number => {
+  const n = provenSeeds('1-1').length;
+  const o = readOrder(n, rand);
+  writeOrder(o);
+  return provenSeedFor('1-1', o.order[o.i]);
+};
+export const peekPlay11 = (rand: () => number = Math.random): number => (nextSeed ??= drawNext(rand));
 export const newPlay11 = (rand: () => number = Math.random): number => {
-  playSeed = nextSeed ?? provenSeedFor('1-1', Math.floor(rand() * 1e9));
+  playSeed = nextSeed ?? drawNext(rand);
   nextSeed = null;
+  // (this entry is played: the next Play takes the one after it)
+  const o = readOrder(provenSeeds('1-1').length, rand);
+  writeOrder({ ...o, i: o.i + 1 });
   return playSeed;
 };
 export const play11Seed = (variant: number): number => playSeed ?? provenSeedFor('1-1', variant - 1);
@@ -47,7 +88,7 @@ export function withPlaySeed<T>(seed: number, fn: () => T): T {
   }
 }
 /** forget the drawn seeds (tests) */
-export const clearPlay11 = (): void => { playSeed = null; nextSeed = null; };
+export const clearPlay11 = (): void => { playSeed = null; nextSeed = null; memOrder = null; try { localStorage.removeItem(ORDER_KEY); } catch { /* blocked */ } };
 
 /** Matt's picker (Old 1-1, Rolls A/B/C) shows only in a QA build with its flag: ?pick11 once (kept on the device), never for testers */
 export function pickerOn(): boolean {
