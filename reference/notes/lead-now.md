@@ -108,6 +108,8 @@ After 1-1 is proven, these run as their own lanes, one engine.ts holder at a tim
   look at the thing before saying it's done.
 
 ## For the roadmap (owed R-ids, law 21)
+- ROADMAPCHECK fails 7 on clean engine-core (tester-page 11-06): NEXT.md lacks an R-item; R-165.36/.43, A-39, A-40 cite commits on no branch. Must be green before any RELEASE (not the test link). The lead's R-id debt lives here too.
+- 12 RED TESTS on engine-core (11-06 1:28 PM split): planner #5 #6 #8 #9 #11 #12 #13; engine-core #1 #2-4 #7 #10 + w1.test exitDy. Both report by 3 PM. Part of the 1-1 polish bar ('suite green').
 - STAGE START 3-4 s (production, CPU x4, engine-core 11-06): readyToStart's sheet (900 ms) + backdrop (2500 ms cap) waits and readyBuiltStage's decode/bake; game-wide. Fixes: preload sheets/backdrop at idle on the map card; bake clips at idle. Decide from the weekend's 'launch' moment (real phones): >3 s typical = first next week.
 - TESTER DATA PROMISE (Matt OK 12:37 PM): the tester page says recordings are deleted when testing ends. So the sheet is cleared, not archived forever, once the player-data job has its profiles; derived bot numbers (no touches) may be kept.
 - Tester page v3 APPROVED by Matt 12:37 PM ET ('looks a lot better').
