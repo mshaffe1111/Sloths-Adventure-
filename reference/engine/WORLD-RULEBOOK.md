@@ -257,3 +257,7 @@ Evidence:
 
 "Something new every 808 px against ≤ 572" has the same root as the quiet line. FR9, FR9b and FR10 (Rounds 7(d) and 9) fix it once entered.
 - **(g), #53-#55 (the stair runs retagged as climb in Round 6):** keep the climb tag, since the climb × climb × sho cell outside the window needs them (Round 6). **Any step down before the summit in any of their versions becomes a level hop (`h`, ≥ 50 px)**, so each is a stair from first landing to summit (V18). The porter checks every version against V18 on 16 seeds. (12:04 PM)
+- **The supervisor: (e) and (g) PASS (12:06 PM). Conditions added to (e), so a view still reads as 1-1's ground-led forest edge (story-briefs/1-1.md:47-52):**
+  - outside the bough window, the commonest piece BY COUNT in each view is a ground kind (bank, mound, stone, stump or floor log);
+  - at most 2 of the ≤ 6 kinds in a view are bough or floating kinds;
+  - the same stills pass gets an eye check for dressing density, against Matt's "too much junk".
