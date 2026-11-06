@@ -46,3 +46,13 @@ test('a prop hung UNDER a floating log is caught (its foot at the log underside)
   assert.equal(b.length, 1, JSON.stringify(b));
   assert.equal(b[0].b, 624);
 });
+
+test('nothing dressed through a thin platform: a tall mushroom on the floor drawn up behind a floating log is caught, one beside it is not', async () => {
+  const { dressThroughPlatform } = await import('./propSupport.ts');
+  const floorP = { id: 1, x: 0, y: 900, width: 2000, height: 200, type: 'solid', style: 'moss_stone' };
+  const log = { id: 2, x: 1000, y: 860, width: 200, height: 24, type: 'solid', style: 'log' };
+  const st: any = { platforms: [floorP, log], proto: { mixDress: [{ n: 'w1Mushroom', x: 1100, b: 900 }, { n: 'w1Mushroom', x: 1500, b: 900 }, { n: 'w1Fern', x: 1100, b: 860 }] } };
+  const b = dressThroughPlatform(st);
+  assert.equal(b.length, 1, JSON.stringify(b));
+  assert.equal(b[0].x, 1100);
+});

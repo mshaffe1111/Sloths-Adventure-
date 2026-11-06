@@ -82,3 +82,23 @@ export function dressOverDoor(s: any): PropItem[] {
     return x1 > d0 && x0 < d1 && y1 > top && y0 < g - 2 && sz.h > 0;
   });
 }
+
+/**
+ * Nothing dressed THROUGH a thin platform (the lead, 11-05, on a still of the mixed 1-1: a tall mushroom standing on a pit's floor drawn
+ * up behind a small floating log reads as one hung under it): no dressing piece's drawn box crosses a thin platform (a log, a bough, a
+ * plank: 40 px or less) that it does not stand on. Flat decals (the clue) and flyers never count.
+ */
+export function dressThroughPlatform(s: any): PropBreach[] {
+  const thin = (s.platforms ?? []).filter((p: any) => !p.broken && (p.height ?? 24) <= 40);
+  const out: PropBreach[] = [];
+  for (const d of propItems(s)) {
+    if (d.n === CLUE_NAME || PROP_STRUCTURE[`${d.list}:${d.n}`]) continue;
+    const fam = propFamily(d.n);
+    if (!fam || fam.family === 'fly' || fam.family === 'hang') continue;
+    let sz = { w: d.w ?? 60, h: 60 }; if (d.w === undefined) try { sz = dressSize(d.n as never); } catch { /* no frame: 60 px */ }
+    const x0 = d.x - sz.w / 3, x1 = d.x + sz.w / 3, top = d.b - sz.h * 0.85;
+    const hit = thin.find((p: any) => p.x < x1 && p.x + p.width > x0 && p.y + (p.height ?? 24) > top && p.y + (p.height ?? 24) < d.b - 6);
+    if (hit) out.push({ ...d, x: Math.round(d.x), b: Math.round(d.b), family: fam.family, why: `drawn through a ${Math.round(hit.width)} px platform at y ${Math.round(hit.y)} it does not stand on` });
+  }
+  return out;
+}

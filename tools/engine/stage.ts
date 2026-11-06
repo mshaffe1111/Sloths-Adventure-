@@ -28,7 +28,7 @@ import { looksAlike } from '../inspect/lookalike.ts';
 import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
 import { landingKind } from '../../src/game/mixer/catalog.ts';
-import { dressOverDoor, propBreaches } from '../../src/game/mixer/propSupport.ts';
+import { dressOverDoor, dressThroughPlatform, propBreaches } from '../../src/game/mixer/propSupport.ts';
 import { stillSpots } from '../../src/game/mixer/stillSpots.ts';
 import { distinctTokens, overlapSummary } from '../../src/game/mixer/codeVariety.ts';
 import { nodePieceBreaches, v19Breaches, type RealisedNode } from '../../src/game/mixer/nodePieces.ts';
@@ -236,8 +236,13 @@ if (fs.existsSync(OLD_FILE)) {
 // 5c'-door. nothing dressed over the way out (the lead, 11-05): no dressing piece over the exit door (mixer/propSupport.ts dressOverDoor)
 {
   const bad: string[] = [];
-  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) for (const d of dressOverDoor(buildRoll(cfg, v, setting === 'easy')).slice(0, 2)) bad.push(`${setting} ${v}: ${d.n} (${d.list}) at x ${Math.round(d.x)} over the door`);
-  gate(`nothing dressed over the exit door (${N} layouts x 2)`, bad);
+  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) {
+    const st = buildRoll(cfg, v, setting === 'easy');
+    for (const d of dressOverDoor(st).slice(0, 2)) bad.push(`${setting} ${v}: ${d.n} (${d.list}) at x ${Math.round(d.x)} over the door`);
+    // (and nothing dressed through a thin platform it does not stand on: mixer/propSupport.ts dressThroughPlatform)
+    for (const d of dressThroughPlatform(st).slice(0, 2)) bad.push(`${setting} ${v}: ${d.n} (${d.list}) at x ${d.x}: ${d.why}`);
+  }
+  gate(`nothing dressed over the exit door or through a platform (${N} layouts x 2)`, bad);
 }
 
 // 5c''. V18 (NODES.md §8.3, §8.0 PIECES): each realised node's pieces match its content row in the key (mixer/nodePieces.ts), from
