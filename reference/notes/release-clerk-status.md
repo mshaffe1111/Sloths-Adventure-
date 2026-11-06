@@ -5,6 +5,12 @@ Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
 Last update: 4:00 PM ET (shards 2 and 3 in); before that 3:38 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
 
+## 4:00 PM: the new timetable (the lead, 3:58 PM)
+- engine-core's final commit is due 6:00 PM ET (it brings engine-chunks and the planner's bb55a0a7). I run the full gate on the candidate
+  6:00-6:45 while the lead builds the test link from the same commit; Matt plays at 7:00. Status here at 4:30 and 5:30.
+- build:store on the trial merge: already run, PASS (3:36 PM, below). Re-run on the candidate at 6:00 as gate 4.
+- The old-1-1 deletion patch is ready (below); I re-check at 5:30 that it still applies to engine-core's newest commit.
+
 ## 3:40 PM: engine-chunks
 - The lead (3:38 PM): engine-chunks 75472091 PASSES the Law 5 check (rolledFlags, forks11, catchStyles planted both ways; stageVariety
   ruler). It is NOT merged separately: engine-core merges it, re-generates provenSeeds.ts with seedlist.ts, and it arrives in engine-core's
