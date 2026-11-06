@@ -14,6 +14,9 @@ import type { Difficulty } from '../difficulty.ts';
 
 /** how many seeds a stage's list holds at least (the lead: a tester never notices a repeat) */
 export const SEED_LIST_MIN = 300;
+/** the quiet line a listed seed is held to (the lead 11-06: it binds in the list builder): its longest quiet stretch on Normal, the outro
+ *  excluded, at most this many seconds (STAGE-RULES' dead-time line, RULES.quietMax) */
+export const QUIET_MAX = 4;
 
 /** one stage's list as stored: section ids once (`dict`), then per seed its packed plan (packPlan) */
 export interface PackedList { dict: string[]; seeds: number[]; plans: string[]; quiet?: number[]; outro?: number[] }
