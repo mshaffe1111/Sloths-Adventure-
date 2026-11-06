@@ -1,7 +1,8 @@
 // The game plays only proven rolls (the red team, 11-05, RT-ENGINE #3): buildGen2Stage hands back a failed roll with gen2.errors for the
 // report, so the game's road (stageGenerator) goes through provenGen2Stage, which never returns one. The asked seed is played only when
 // BOTH settings lay it cleanly (Easy is Normal's stage); else the next seed on a fixed walk that does; none in the walk, it throws (a
-// failure is never played quietly). Planted: 1-1 seed 3 on Normal fails its build (pool short at the bounce teach).
+// failure is never played quietly). Planted: 1-1 seed 15 on Normal fails its build (pool short at the bounce test; seed 3, the first planted case, builds clean since
+// Round 7's teach lines, engine-core 11-06).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
@@ -11,17 +12,17 @@ import { generateAllLevels } from '../worldsData.ts';
 
 const c = generateAllLevels().find((l) => l.id === '1-1')!;
 
-test('seed 3 fails its build; the game\'s road never plays it: a clean seed, the same stage on both settings', () => {
-  const raw = buildGen2Stage({ config: c, kit: w1World(), seed: 3, difficulty: 'normal' });
-  assert.ok(raw.gen2.errors?.length, 'seed 3 Normal builds clean now: the planted case is gone, pick another');
-  const n = provenGen2Stage({ config: c, kit: w1World(), seed: 3, difficulty: 'normal' });
-  const e = provenGen2Stage({ config: c, kit: w1World(), seed: 3, difficulty: 'easy' });
+test('seed 15 fails its build; the game\'s road never plays it: a clean seed, the same stage on both settings', () => {
+  const raw = buildGen2Stage({ config: c, kit: w1World(), seed: 15, difficulty: 'normal' });
+  assert.ok(raw.gen2.errors?.length, 'seed 15 Normal builds clean now: the planted case is gone, pick another');
+  const n = provenGen2Stage({ config: c, kit: w1World(), seed: 15, difficulty: 'normal' });
+  const e = provenGen2Stage({ config: c, kit: w1World(), seed: 15, difficulty: 'easy' });
   assert.deepEqual(n.gen2.errors ?? [], []);
   assert.deepEqual(e.gen2.errors ?? [], []);
-  assert.ok(n.gen2.proven && n.gen2.proven.used !== 3, 'seed 3 was played');
+  assert.ok(n.gen2.proven && n.gen2.proven.used !== 15, 'seed 15 was played');
   assert.equal(e.gen2.proven?.used, n.gen2.proven?.used, 'Easy played another seed than Normal');
   assert.deepEqual(e.gen2.plan.map((p) => p.template), n.gen2.plan.map((p) => p.template), "Easy is not Normal's stage");
-  assert.equal(n.gen2.proven?.asked, 3);
+  assert.equal(n.gen2.proven?.asked, 15);
 });
 
 test('a clean seed is played as asked', () => {

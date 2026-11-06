@@ -1282,7 +1282,32 @@ const VERSION_JOBS: Record<string, Record<string, W1Job[]>> = { 'w1-fallen-trunk
 const R6_BASE: Record<string, string> = { 'w1-canopy-rungs-level': 'w1-canopy-rungs', 'w1-stair-test-back': 'w1-stair-test', 'w1-log-stair-test-back': 'w1-log-stair-test', 'w1-bank-stair-test-back': 'w1-bank-stair-test', 'w1-mushroom-chain-back': 'w1-mushroom-chain', 'w1-bounce-stair-level': 'w1-bounce-stair-combine', 'w1-two-lifts': 'w1-mushroom-bank-teach', 'w1-bounce-wall': 'w1-mushroom-bank-teach' };
 /** Round 6's new combines: their content (NODES §7.7) and terrain */
 const R6_KIND: Record<string, [W1Content, W1Terrain]> = { 'w1-bounce-over-dip': ['ground', 'mounds'], 'w1-mushroom-log': ['ground', 'raised-logs'], 'w1-mushroom-stair': ['bounce', 'mounds'] };
-export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id] ?? CONTENT[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[0], terrain: TERRAIN[q.id] ?? TERRAIN[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[1], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
+/**
+ * Round 7 (a), the teach lines (TT1-TT3, the designer 11-06 8:32 AM, the supervisor's PASS): a T section is never mirrored (mirroring
+ * reversed #8's order: "Nice!" before the gaps, the teach after), and its lines are said in walking order: the entry line on its ENTRY piece
+ * (t 0.1, before any block), the move's line on the take-off piece of its first gap of that kind. The bounce is the lesson card's
+ * (lesson.bounce), no Dot line. The old teach sockets are replaced, never doubled
+ */
+const TEACH_LINES: Partial<Record<string, { entry: string; take: string; gap: (pl: SectionPiece['place']) => boolean }>> = {
+  jump: { entry: 'coach.jump', take: 'hint.1-1.gaps', gap: (pl) => pl.kind === 'jump' || (pl.kind === 'pit' && pl.jump === 'jump') },
+  double: { entry: 'coach.nice', take: 'hint.1-1.double', gap: (pl) => pl.kind === 'double' || (pl.kind === 'pit' && pl.jump === 'double') },
+};
+const TEACH_IDS = new Set(['coach.jump', 'hint.1-1.gaps', 'coach.nice', 'hint.1-1.double']);
+function teachLines(q: W1Section): W1Section {
+  if (!q.teaches) return q;
+  const L = TEACH_LINES[q.teaches];
+  const sub = q.subBlocks![0];
+  const versions = sub.versions.map((v) => {
+    if (!L) return v;
+    const keep = (v.sockets ?? []).filter((k) => !(k.role === 'tip' && (k.allow ?? []).some((a) => TEACH_IDS.has(a))));
+    const first = v.pieces.find((pc) => L.gap(pc.place));
+    const take = first && 'after' in first.place ? first.place.after : undefined;
+    const lines: Socket[] = [{ id: 'teach-entry', role: 'tip', on: 'in', t: 0.1, allow: [L.entry] }, ...(take ? [{ id: 'teach-take', role: 'tip', on: take, t: 0.4, allow: [L.take] } as Socket] : [])];
+    return { ...v, sockets: [...lines, ...keep] };
+  });
+  return { ...q, mirrorable: false, subBlocks: [{ ...sub, versions }] };
+}
+export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map(teachLines).map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id] ?? CONTENT[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[0], terrain: TERRAIN[q.id] ?? TERRAIN[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[1], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
 
 /** the phases a stage's slots fill */
 export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten', 'ketsu', 'goal'];

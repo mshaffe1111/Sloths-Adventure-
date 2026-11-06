@@ -29,7 +29,8 @@ import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
 import { roll11Seed, setPick11 } from '../../src/game/testlink1_1.ts';
 import { cameraReachBreaches } from '../../src/game/cameraReach.ts';
-import { endAboveWindow, rawTextIds, seedPromise } from '../../src/game/storyChecks.ts';
+import { endAboveWindow, rawTextIds, seedPromise, teachOrder } from '../../src/game/storyChecks.ts';
+import { dotLine } from '../../src/game/dotLines.ts';
 import { stageVariety, varietyBreaches, VARIETY_BARS } from '../../src/game/stageVariety.ts';
 import { buildGen2Stage } from '../../src/game/gen2/pipeline.ts';
 import { w1World } from '../../src/game/gen2/worlds/w1.ts';
@@ -308,6 +309,13 @@ if (fs.existsSync(OLD_FILE)) {
   const bad: string[] = [];
   for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) for (const b of rawTextIds(buildRoll(cfg, v, setting === 'easy') as never).slice(0, 3)) bad.push(`${setting} ${v}: ${b}`);
   gate(`what the player sees: Dot's lines are words, no raw text id (${N} layouts x 2)`, bad);
+}
+
+// 5c'-teach. TT4 (Round 7): every teach node says its line before the first piece that needs its move (storyChecks.ts teachOrder)
+{
+  const bad: string[] = [];
+  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) { const st = buildRoll(cfg, v, setting === 'easy') as never; if (!gen2Of(st)) continue; for (const b of teachOrder(st, (i) => dotLine(i)?.old ?? undefined).slice(0, 3)) bad.push(`${setting} ${v}: ${b}`); }
+  gate(`TT4: each teach line before the first piece that needs its move (${N} layouts x 2)`, bad);
 }
 
 // 5c'-story. two of 1-1's story promises (storyChecks.ts; Round 6, the supervisor's PASS, the lead 11-05 9:40 PM): V19b, the end log higher
