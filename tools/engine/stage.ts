@@ -29,6 +29,7 @@ import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
 import { setPick11 } from '../../src/game/testlink1_1.ts';
 import { cameraReachBreaches } from '../../src/game/cameraReach.ts';
+import { endAboveWindow, seedPromise } from '../../src/game/storyChecks.ts';
 import { stageVariety, varietyBreaches, VARIETY_BARS } from '../../src/game/stageVariety.ts';
 import { buildGen2Stage } from '../../src/game/gen2/pipeline.ts';
 import { w1World } from '../../src/game/gen2/worlds/w1.ts';
@@ -277,6 +278,23 @@ if (fs.existsSync(OLD_FILE)) {
     one(rolls, `gen2 1-1, ${rolls.length} of 16 rolls built`);
     if (threw.length) linesShown.push(`variety, gen2 1-1: ${threw.length} rolls did not build: ${threw.join('; ')}`);
   }
+}
+
+// 5c'-story. two of 1-1's story promises (storyChecks.ts; Round 6, the supervisor's PASS, the lead 11-05 9:40 PM): V19b, the end log higher
+// than the route where the bough window begins (net-zero versions may not flatten the climb), and the seed's promise (over 200 px up past
+// a double, a mushroom within 260 below: stage11.test.ts), on every build
+if (id === '1-1') {
+  const badV: string[] = [], badS: string[] = [], shown: string[] = [];
+  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) {
+    const st = buildRoll(cfg, v, setting === 'easy') as any;
+    const w = endAboveWindow(st);
+    shown.push(`${setting} ${v}: window x ${w.windowX} y ${w.windowY}, end y ${w.endY}`);
+    if (!w.pass) badV.push(`${setting} ${v}: the end log (y ${w.endY}) is not higher than the route where the bough window begins (x ${w.windowX}, y ${w.windowY})`);
+    for (const b of seedPromise(st)) badS.push(`${setting} ${v}: ${b}`);
+  }
+  linesShown.push(`V19b: ${shown.join('; ')}`);
+  gate(`V19b: the end log higher than where the bough window begins (${N} layouts x 2)`, badV);
+  gate(`the seed's promise: over 200 px up, a mushroom within 260 below (${N} layouts x 2)`, badS);
 }
 
 // 5c'-reach. inside the camera's reach (the lead, 11-05, gen2 1-1 Roll B's end log and totem at y -237, off the top of the view): every
