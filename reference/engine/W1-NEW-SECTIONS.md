@@ -538,3 +538,34 @@ the note) come with 1-2's build, as the brief's art gaps allow (R-165.42).
 `hibiscus`, not `hibiscus-trail`; it's one near-miss flower (1-2.md:34).
 
 **1-2's pool after Round 8 and the designer's gap list are in the SEALED note `reference/engine/1-2-DESIGNER-NOTES.md`** (the lead, 9:24 AM: a cold helper builds 1-2 first, as the engine's test; the note is for comparing afterwards, never on its branch).
+
+## Round 9: the per-world FR9 pass, every W1 section (designer, 11-06 9:25 AM ET; scanned on engine-core 8cba3b067, every version's `on` pieces in W1_SECTIONS; scratch tool `_fr9.ts`)
+
+**Found:** 41 of W1's sections hold landing pieces under 50 px. The game makes a wall only at 50 px or more (the planner), so each
+of these is walked through, art and all.
+- 34-46 px rocks: the `…r` keys, in nearly every floor section;
+- 36-50 px stumps;
+- 30-34 px floor logs: #32 `w1-log-teach`, `w1-log-walk`;
+- 24-36 px roots: #46 `w1-morning-path`;
+- 25-42 px down-stair steps: `w1-dropdown-stair`, `w1-stump-descent`;
+- 30-36 px mid stumps: `w1-hollow-twoway`.
+
+**FR9b, the one rule for every W1 section in every stage:** a piece Pokey meets on the floor (a rock, stump, floor log or step) is
+**at least 50 px**, or it isn't a landing at all (dressing, drawn behind him). The ranges:
+
+| Piece | Now | FR9b |
+|---|---|---|
+| floor rock (`…r`) | 34-46 | **50-60** |
+| hop stump (`…s`, `gLowStumps`, `stumpL`) | 36-50 | **50-60** (the 76-80 tall one stays) |
+| floor log (#32 `…l`, log-walk `…L`) | 30-34 | **50-56** |
+| a stair step, up or down (dropdown-stair, stump-descent, twin-bounce's stairs) | 25-53 | **each step 50-80 over the one below** (FR3's ≤ 80 walk rise). A 2- or 3-step stair keeps its count, so its total drop grows; the version's `exitDy` follows |
+| #46's very low roots | 24-36 | **remove them as landings**; draw them as root dressing behind him. The arrive's beat is FR10's 50-56 stump |
+| hollow-twoway's mid stump (`…mid`) | 30-36 | **50-56** |
+
+**Exceptions (they stay as they are):**
+- **a post under a log** (`…lo`, `blo`, `clo`, `u1`; 30-43 px): the log on it is the landing, and post plus log tops out over 50;
+- **a perch stump under a mushroom** (`…st`, 46-56 px): the mushroom on it is the beat;
+- **the goal sections** (#15, #23, #30): the supervisor's FR10 amendment.
+
+**It applies to every stage's sections**, the 1-3- and 1-5-only ones included (`w1-stone-road`, `w1-low-boughs`, `w1-ledges`,
+`w1-ropes`): it's a world rule, not 1-1's. The porter's lay-test on 16 seeds checks it: no landing under 50 px except the three exceptions.
