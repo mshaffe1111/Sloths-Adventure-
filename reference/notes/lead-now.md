@@ -53,6 +53,15 @@ Matt backs off. He pops in with ideas, says when something is broken, plays at t
 - His history: the team got 100 stages fast; it broke down when polish was pushed into the system mid-build. So: engine proven, stages built and stamped "design approved" (Matt plays), THEN art and polish per stage, never re-engineering under a built stage.
 - TEAM (lead's call, from reference/research/STUDIO-PRACTICE.md): builders pitch blind (one core idea per stage, one page), the lead pools and cuts; builders own a world; everything after the pitch is shared (rules sheet, art style guide, side-by-side play review at check-ins); proof on the real page; grow from 1 builder toward 8 by measured cost; a boss builder and a specials builder when their turn comes; an art director and a player-data role as standing roles.
 
+## THE 1-1 POLISH BAR (Matt 10:35 AM ET: "get the real 1-1 perfected, then put that on the test link... rolls different seeds... I may even promote that for additional beta testers")
+The test link ships ONLY when ALL pass; then Matt plays it first, then testers:
+1. stage.ts fully green on 16 rolls x 2 (quiet with the outro exclusion, variety, V19b rise, seed promise, required double + bounce, player-sees, the bounce lesson card drawn).
+2. Play = gen2 1-1, a fresh PROVEN seed per play (200 seeds x 2 robust); the picker only behind a QA flag; the recorder logs seed + setting.
+3. No code-drawn flat pieces: the art swap done with SEVERAL painted stone/stump/log kinds (Matt's cuts with footing lines; the art director's manifest).
+4. Stage-start build time measured and fixed (red team: 160-1100 ms on the main thread).
+5. Supervisor story check; the lead looks at stills both ways.
+1-2 waits until after this (Matt's priority: the polished real 1-1 for beta testers).
+
 ## CHANGED 10:28 AM ET (Matt): "I want to use all my time... go beyond 1-1... get that test link updated with the new engine so we get real feedback". So: the test link TODAY with 1-1 Play = gen2 (a fresh proven seed per play; engine-core by 11:30 AM), then 1-2 by a cold helper today; spend up to ~88% (2% buffer under 90) before the reset WED 11-11 2:00 AM ET. The pause below applies only once the meter is spent.
 ## THE PAUSE (Matt 11-06 ~10:25 AM ET): after today's test link, the team goes QUIET until the weekly reset, WED 11-11 2:00 AM ET
 (rate_limit resetsAt). Matt plays (the new 1-1 link and the whole game, as he did for the 100 stages), gets testers (kids) on the
