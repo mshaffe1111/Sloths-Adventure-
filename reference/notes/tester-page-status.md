@@ -14,7 +14,14 @@
   - drawcheck: PASS with the fix in.
 - **End log: DONE.** It's the plank pieces end to end (`art/endlog-rollB-x35100-*`); see below.
 - **Boulders: DONE, passed** by the lead.
-- The Dot re-check after the planner's push (~5:15) comes next, results by 5:45.
+- **Dot check, BEFORE the planner's fix (baseline, 4:45 PM, tester-page = engine-core):**
+  - Setup: the real page on a fresh save, a real thumb slide, and a real flick up and forward at each step (the script is at
+    `scratchpad/dbl2.cjs`; I can share it).
+  - 6 runs, 3 sideways and 3 upright, seeds 664, 535, 637, 27, 8 and 564.
+  - With jumps, he gets past the first step and on into the teach in 5 of the 6 runs, and out past its end in 4.
+  - **"Flick up again in the air to jump twice" was shown in 0 of 6 runs. Dot showed no line at all** while he went through the teach.
+  - **Stuck 20 s at the first step: Dot said nothing in every run.**
+  - The same runs on engine-chunks follow once the planner's fix lands.
 
 ## ANSWER (4:16 PM ET): does Dot teach the double on the real page? NO, not in any run I tried
 
