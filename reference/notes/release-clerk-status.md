@@ -3,7 +3,7 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 6:45 PM ET, 2026-11-06 (times from `TZ=America/New_York date`)
+Last update: 6:47 PM ET, 2026-11-06 (times from `TZ=America/New_York date`)
 
 ## 5:45 PM: ready for the final (the lead's 5:31 order) + funcheck on the candidate shape
 - Order at the final: merge engine-core -> `old11-delete.py` -> vite build, `lazy-seeds.py` only if main JS > 4 MiB -> `release-prep.py`
@@ -127,6 +127,14 @@ Last update: 6:45 PM ET, 2026-11-06 (times from `TZ=America/New_York date`)
   Its commit makes `builtOnGen2(cfg)` and has levels.test, stageQuality.test and platformPlan.test judge only the old generator's stages
   (gen2 1-1's flags move to rolledFlags.test, on your 2:37 PM ruling). That narrows three tests' scope: for your Law 5 check when you
   pass engine-chunks (the replacement tests exist and are planted both ways, per its message; I have not verified that yet).
+
+## >>> 6:47 PM ET: the fix is PR #64 (fix-0.9.5-pockets 358e9cc6); standing by for the live publish <<<
+- PR #64 vs main e92bdcdb: one file, src/game/pitPocket.test.ts (3 insertions, 2 deletions). Run here: `✔ gen2 1-1 Roll B's dip pockets
+  are found, each narrow and closed in by higher banks`, `✔ no stage the old generator builds (Worlds 1 to 4) has a pocket`: 2/2 pass.
+- The shards CI cancelled hide no other red: my full local suite on bf3684ec (the same code as main e92bdcdb) had exactly one real red,
+  this test. So after #64 the publish's test shards should be green.
+- APK v0.9.5-32 is on Releases (the lead).
+- Standing by until "Publish game to the gh-pages branch" is green on #64's merge; then I stand down.
 
 ## >>> 6:45 PM ET: PR #63 merged (main e92bdcdb); the DEPLOY FAILED on pitPocket.test; the live site is still 0.9.4 <<<
 - "Publish game to the gh-pages branch" run 42312637467: test (4) FAILED on `not ok 262 - gen2 1-1 Roll B's dip pockets are found (x 3671,
