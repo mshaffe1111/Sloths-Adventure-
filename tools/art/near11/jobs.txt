@@ -1,0 +1,2 @@
+1-1 near strip redo (art director, 2026-11-06; lead's OK 9:35 AM ET, cap $1). rtx-pro-6000 at ~$2.75/h. Times UTC (ET = UTC-5).
+near11-N 6aede8020e0338d1bb817d84  img2img, starts A/B, s62/s68, seeds 7/23, 8 takes (img2imggpu.py)  started 14:45:22Z
