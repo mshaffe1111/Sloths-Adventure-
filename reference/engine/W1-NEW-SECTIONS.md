@@ -600,3 +600,36 @@ on it, and its walk-on is a 129 px stone (a step down onto the log). **Cap = 815
 - #30 hop: 100-130; walk-first: 50-65 + 50-65.
 
 Outro = 785-815 px.
+
+## Round 11: fewer boughs, more kinds (designer, 11-06 11:17 AM ET; the lead's polish item: platformPlan's variety test finds BRANCH at 42% of 57 platforms, cap 38%)
+
+**Measured** (16 seeds, Normal, engine-core tip, every thin landing; scratch tool `_br.ts`): branch is 38% overall but **22-53% per roll**, and 9 of 16 rolls are over 38%. Where the 300 boughs come from:
+
+| Source | Boughs |
+|---|---|
+| the JOINS between ledge sections (the pipeline's own pieces) | 59 |
+| #10 canopy-rungs, plus its level version | 42 + 30 |
+| #45 mushroom-chain, plus its back version | 13 + 36 |
+| #37 twin-mushroom-fork (its high road) | 20 |
+| seed-perch | 16 |
+| #44 log-chain (its catch boughs) | 16 |
+| high-walk, sunlit-log, quiet-arrival | 12, 11, 8 |
+| the descents #50-#52 | 22 |
+
+**The swaps.** Painted W1 art only, from the art director's footing.json (art-director 0135e316, reference/art/cut/INTEGRATE-1-1.md).
+`log` is the painted log frame (W1-ART-AUDIT §3.3), usable now; the earth ledges and plank ledges come in with engine-core's
+integration of those cuts.
+
+| Where | Now | Becomes |
+|---|---|---|
+| **the joins** (planner) | a bough each | **the next section's own entry kind** (a log, an earth ledge or a bough, as that section starts), so a join never adds a third kind; in the window, alternate bough and log |
+| #10 canopy-rungs (and level) | every rung a bough | **alternate bough and log** (`b l b l`). It's still the double chain up the canopy, and the eye reads a rhythm of kinds |
+| #45 mushroom-chain-back | up 2 boughs, down 2 boughs | the up legs stay boughs; **the down legs are logs** |
+| #37 twin-mushroom-fork, the high road | boughs | **logs on stumps** (the old 1-1 high road: logs on stump-posts, LABELS §1) |
+| seed-perch | boughs to the perch | the perch itself is **an earth ledge** (`ledge-overhang-big`, may float); the approach stays boughs |
+| #44 log-chain, its catches | catch boughs | **earth ledges** (`ledge-earth-a`, may float). The chain itself is logs, as its name says |
+| every B4 catch bough elsewhere (#10, #22, #29) | boughs | **earth ledges** |
+| high-walk and the goals (#11, #15, #23, #30) | a bough walk-on | stays a bough. It's 1-1's "up in the high branches" (1-1.md:23); this is the look the cap exists to protect |
+
+**Target:** branch ≤ 30% on EVERY roll of 16, not on the median, so the worst roll clears the 38% cap with room. The porter's lay-test
+reports the per-roll share. Diagonal branches stay dressing only (art director, R-09); the hollow stumps are perches only.
