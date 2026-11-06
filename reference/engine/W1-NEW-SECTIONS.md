@@ -450,3 +450,7 @@ I scanned all 16 laid seeds (buildGen2Stage, w1World, engine-core 4ec76da73; scr
 ### Flags for the art director (via the lead)
 - **RT F7:** red spiky bromeliads on `w1-ledges`' tops read as thorns. Rule: no spiky dressing on a landing's top; flowers and moss only.
 - **RT F6:** the near-backdrop fallen logs match the platform logs in colour, scale and moss, in the bough sections. They need value or contrast separation (darker, desaturated, softened) or a rim light on platform logs.
+
+**The lead's rulings on Round 7 (8:34 AM):**
+- `hint.1-1.bounce` with main's shipped words: YES.
+- **Hearts follow risk (rule H1, every stage): a heart is laid only after a real risk, a spot where a miss or a creature costs something.** This is Matt's own rule ("a heart only after real risk", 11-05 12:15 AM). **1-1 has no damage, so it gets 0 hearts.** Later stages get them where their risk is.
