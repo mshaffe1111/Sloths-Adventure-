@@ -372,3 +372,7 @@ road uses at least two beat kinds, with never three of the same kind in a row, a
 
 **On the planner's question (deal skips job × type cells the kit lacks):** no. A skip hides a hole (Law 22). The deal should fail
 loudly, and the kit fills the cell, as #63-#67 do. The one exception is a cell the brief rules out (a `not` type).
+
+**The supervisor's check of Round 6: PASS (9:34 PM). Its two keep-checks are now rules:**
+- **V19b:** the end log stands above the height where the bough window starts ("up in the high branches", 1-1.md:23). Stacked level or net-zero versions may not flatten the rise. stage.ts reports the end log's height against the window's start.
+- **The seed perch's low-route version keeps stage11's promise** (stage11.test.ts:17-24): the seed more than 200 px up, beyond a double, with a mushroom within 260 px.
