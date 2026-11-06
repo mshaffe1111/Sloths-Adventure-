@@ -686,3 +686,8 @@ Gate (planner): on 16 seeds, both settings, end ≥ window start + 150 and ≤ c
 - **A TEST's double gap is 205-230 px.**
 - These apply to #8, #33 and #34 and every `gDoubleGaps` on a T; tests (X) keep the wider band. The engine places them by pixels (the planner's block check reads pixels), whatever share that takes.
 - **The teach also gets a wide far bank** (≥ 3.5 body widths, G L1844's landing band), so a just-made double lands safely.
+
+**FR9b amended (12:35 PM; the lead, from engine-core's measure).** With the planner's route walls, a 34-46 px rock now counts as a hop and
+stands solid (Pokey no longer walks through it). Raising it to 50-60 made the quiet line WORSE: median 5.1 → 5.2 s, and seeds under
+4 s fell from 32 to 23. So **the `h` beat's rock stays 34-46 px (a quick hop)**, and FR9b's ≥ 50 px applies to the floor WALLS
+(blocks, stair steps, stumps meant as walls) only. The data wins over my rule.
