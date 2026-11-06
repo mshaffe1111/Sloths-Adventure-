@@ -13,8 +13,19 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   p.on('pageerror', (e) => console.log('ERR', e.message));
   await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
   await p.waitForTimeout(2500);
+  // (STAGE_ROLL / STAGE_SEED: the test link's picked roll, set in the page before the stage is built; the seed it built is asserted,
+  // and a page that cannot pick or built another seed writes no still: stage.ts reads the ROLL-SEED line and fails closed)
+  if (process.env.STAGE_ROLL) {
+    const ok = await p.evaluate((r) => { if (typeof window.__setPick11 !== 'function') return false; window.__setPick11(r); return true; }, process.env.STAGE_ROLL);
+    if (!ok) { console.log('ROLL-SEED none (no __setPick11 in this build)'); process.exit(3); }
+  }
   await p.evaluate(([id, v]) => window.__play(id, v), [id, +layout]);
   await p.waitForTimeout(4000);
+  if (process.env.STAGE_ROLL) {
+    const seed = await p.evaluate((E) => { const e = eval(E); const g = e?.currentStage?.gen2 ?? e?.currentStage?.proto?.gen2; return g?.seed ?? null; }, E);
+    console.log(`ROLL-SEED ${seed} ${tag}`);
+    if (String(seed) !== process.env.STAGE_SEED) { console.log(`ROLL-SEED mismatch: built ${seed}, asked ${process.env.STAGE_SEED}`); process.exit(4); }
+  }
   await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
   await p.waitForTimeout(5000);
   for (const spot of spots) {

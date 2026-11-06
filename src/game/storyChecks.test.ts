@@ -6,7 +6,7 @@ import { generateAllLevels } from './worldsData.ts';
 import { buildGen2Stage, layLocal, planBudget, rngFor } from './gen2/pipeline.ts';
 import { w1World, W1_SECTIONS } from './gen2/worlds/w1.ts';
 import { cfg as toyCfg, manifest } from './gen2/toyWorld.ts';
-import { endAboveWindow, seedPromise } from './storyChecks.ts';
+import { endAboveWindow, rawTextIds, seedPromise } from './storyChecks.ts';
 
 const config = generateAllLevels().find((l) => l.id === '1-1')!;
 
@@ -43,5 +43,18 @@ test("the seed perch's low version keeps the seed's promise (the seed over the p
     const on = L.pieces.find((p: any) => p.key === sock.on);
     const st = { platforms, collectibles: [{ type: 'seed', x: on.x + sock.t * on.w, y: on.y - 34 }], exitTotemX: 0, exitTotemY: 0 };
     assert.deepEqual(seedPromise(st as never), [], `seed ${seed}: ${JSON.stringify(sock)}`);
+  }
+});
+
+test('what the player sees: a stage line that is a raw text id FAILS (planted); words pass', () => {
+  assert.deepEqual(rawTextIds({ proto: { hints: [{ x: 100, text: 'Flick up again midair to jump twice.', pad: 'Flick up again midair to jump twice.', keys: 'Press jump again in the air' }] } }), []);
+  assert.match(rawTextIds({ proto: { hints: [{ x: 4100, text: 'hint.1-1.double', pad: 'hint.1-1.double', keys: 'hint.1-1.double' }] } }).join(';'), /raw id "hint\.1-1\.double"/);
+  assert.equal(rawTextIds({ proto: { hints: [{ x: 9, text: 'coach.nice', pad: 'Nice!', keys: 'Nice!' }] } }).length, 1);
+});
+
+test('what the player sees: gen2 1-1 Rolls A/B/C put words on screen, never a raw text id', async () => {
+  for (const seed of [79191, 110867, 118786]) {
+    const st: any = buildGen2Stage({ config, kit: w1World(), seed, difficulty: 'normal' });
+    assert.deepEqual(rawTextIds(st), [], `seed ${seed}`);
   }
 });

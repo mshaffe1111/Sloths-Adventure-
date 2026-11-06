@@ -106,3 +106,10 @@ test("every W1 section's every version lays its exit where its exitDy says (with
   // (the bounce lips lay on the planner's bounce place, their rise from the mushroom's cap: engine-chunks 3919248e)
   assert.deepEqual(off, []);
 });
+
+test("every Dot line a W1 section can say has words (W1_TIPS): no raw text id reaches the screen (the red team's RT-ENGINE #1)", async () => {
+  const { W1_TIPS } = await import('./w1.ts');
+  const missing = new Set<string>();
+  for (const s of W1_SECTIONS) for (const v of s.subBlocks![0].versions) for (const k of v.sockets ?? []) if (k.role === 'tip') for (const id of k.allow ?? []) if (!W1_TIPS[id]) missing.add(`${s.id}/${v.id}: ${id}`);
+  assert.deepEqual([...missing], []);
+});

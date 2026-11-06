@@ -10,6 +10,8 @@ const { generateStage, setLayoutVariant } = await import(root + '/src/game/stage
 const { easyStage } = await import(root + '/src/game/easyMode.ts');
 const { withGoals } = await import(root + '/src/game/goals.ts');
 const levels = generateAllLevels();
+// (STAGE_ROLL: the test link's picked roll, testlink1_1.ts applyRollEnv; each row says the gen2 seed it built, null for a non-gen2 build)
+const picked = await (await import(root + '/src/game/testlink1_1.ts')).applyRollEnv(process.env);
 const out: unknown[] = [];
 for (const id of idsArg.split(',')) {
   const c = levels.find((l: any) => l.id === id)!;
@@ -22,7 +24,7 @@ for (const id of idsArg.split(',')) {
     setLayoutVariant(null);
     const s = st;
     out.push({
-      tag, id, layout: v, setting, waterY: s.waterY ?? null, exitX: s.exitTotemX ?? null, exitY: s.exitTotemY ?? null,
+      tag, id, layout: v, setting, roll: picked?.roll ?? null, gen2Seed: (s.gen2 ?? s.proto?.gen2)?.seed ?? null, waterY: s.waterY ?? null, exitX: s.exitTotemX ?? null, exitY: s.exitTotemY ?? null,
       W: s.config.levelWidth, H: s.config.levelHeight, deepFall: s.deepFall ?? null,
       proto: !!s.proto, rhythm: !!s.proto?.rhythm,
       mix: s.meta?.mix?.explain ?? null,

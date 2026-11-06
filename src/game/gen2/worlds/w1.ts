@@ -12,6 +12,7 @@
  * enter and exit on 'ground' ports on the manifest's ground line; stones, stumps, logs and boughs are ordinary pieces over it. The
  * pipeline does not read this file until the planner's step 1 wires World 1 in.
  */
+import { DOT_LINES } from '../../dotLinesData.ts';
 import type { Move, NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { DOUBLE_RISE, reachJump } from '../../physics.ts';
 import { hollowLogSize } from '../../w1NewArt.ts';
@@ -1293,6 +1294,8 @@ export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean }> }>(
   for (const p of st.platforms) p.ownLook = true;
   return st;
 }
+/** every Dot line by id, its words (the old text, which the new look swaps where it is said; a cut line's new text if it has no old) */
+export const W1_TIPS: Record<string, string> = Object.fromEntries(DOT_LINES.map((r) => [r[0], r[4] ?? r[5]] as const).filter((e): e is [string, string] => !!e[1]));
 /**
  * World 1's gen2 kit (the planner, 11-05: one kit for the game, stage.ts and the CHECK 3b harness): W1_KIT's rows as a WorldManifest with
  * World 1's pool. 1-1 lays no creatures, props or rooms; its dressing comes after the build (protoStage.ts addDress), as on gen2's other
@@ -1304,6 +1307,9 @@ export function w1World(): WorldKit {
     ground: W1_KIT.ground, pit: W1_KIT.pit, pitDepth: W1_KIT.pitDepth, floorRoll: W1_KIT.floorRoll, rollRanges: W1_KIT.rollRanges,
     graphs: W1_KIT.graphs, corridor: W1_KIT.corridor, themeShare: W1_KIT.themeShare, required: W1_KIT.required,
     creatures: [], props: [], pairs: [], decor: [], flowers: ['orchid', 'hibiscus'], sections: [...W1_SECTIONS], handBuilt: [],
+    // (Dot's lines by their text id: the words a hint carries are the line's old text, which dotLines.ts swaps for the new look's words
+    // where it is said; without these the pipeline put the raw id on screen, the red team's RT-ENGINE #1: "hint.1-1.double")
+    tips: W1_TIPS,
   };
   return { manifest };
 }

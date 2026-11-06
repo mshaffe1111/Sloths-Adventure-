@@ -20,3 +20,18 @@ export const pick11 = (): Pick11 => (qaBuild() ? pick : 'mixer');
 export const roll11Seed = (p: 'A' | 'B' | 'C'): number => (ROLLS as Record<string, number>)[p];
 /** whether 1-1's mixer spec is skipped (the old builder) */
 export const skip11Spec = (id: string): boolean => id === '1-1' && pick11() === 'old';
+
+/**
+ * A child process measuring a picked roll (stage.ts --roll, the red team's RT-ENGINE #1: its children graded the mixer's 1-1): set the
+ * pick from STAGE_ROLL (A, B or C) and stand in for a QA build, so generateStage builds that roll. Returns the roll and the seed it must
+ * measure (the caller asserts it on what it built), or null when no roll is asked for. Throws on an unknown roll: never a silent fallback
+ */
+export async function applyRollEnv(env: Record<string, string | undefined>): Promise<{ roll: 'A' | 'B' | 'C'; seed: number } | null> {
+  const r = env.STAGE_ROLL;
+  if (!r) return null;
+  if (r !== 'A' && r !== 'B' && r !== 'C') throw new Error(`STAGE_ROLL=${r}: A, B or C`);
+  const { asQaBuildForTest } = await import('./playRecorder.ts');
+  asQaBuildForTest(true);
+  setPick11(r);
+  return { roll: r, seed: roll11Seed(r) };
+}
