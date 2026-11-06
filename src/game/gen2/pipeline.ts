@@ -679,6 +679,8 @@ interface LocalGap {
   /** a gap under a liana (a `land` perch past it), or a glide gap: its soft pit climbs back to the take-off ledge (`lips`: that ledge's top, the
    *  perch's), never forward to the perch */
   back?: { lips: [number, number] };
+  /** a level block gap: no pit and no stair under it; a fall sets him back on the take-off ledge, soft (Laid.heartFalls, `soft`) */
+  putBack?: boolean;
 }
 /** a section laid out in its own space: its entry anchor at (0, 0) */
 export interface LocalLayout {
@@ -822,8 +824,12 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
       // (and so does a block's (NODES §8.7, Roll B 11-05): stepped toward its landing, a stair inside the gap took off a single's reach
       // under the lip and the double was two hops; the take-off side's stair keeps the block a block)
-      const back = (glide || pc.block) && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
+      // (a LEVEL block gap, its far lip no higher than the take-off (W1's 'd'), has no stair at all, the lead's ruling A 11-06: any stair
+      // back up to a level take-off tops out within a hop of the far lip too, and on a ~200 px gap stood a single's reach from the landing;
+      // a fall there puts him back on the take-off ledge instead, soft, no life lost (a soft heart-fall zone), on both settings)
+      const putBack = !!pc.block && !pl.water && dy >= -20;
+      const back = (glide || pc.block) && !pl.water && !putBack ? { back: { lips: [a.y, y] as [number, number] } } : {};
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back, ...(putBack ? { putBack } : {}) });
     } else if (pl.kind === 'rope') {
       // a ledge past a gap no jump or glide clears, a shimmy rope across (rope.ts; the rope itself is hung once both are placed: layStage)
       // (its gap is a liana's, `back` (World 8, 2026-10-31): a soft pit climbing back to `after`, or World 8 Normal's heart fall)
@@ -968,7 +974,7 @@ export interface Laid {
   /** the zones the sections lay (a tide, darkness) */
   zones: Zone[];
   /** the gaps a fall into costs a heart, not a life (WorldManifest.heartFalls: World 8 Normal's swings and glides), no pit under them */
-  heartFalls: Array<{ x0: number; x1: number }>;
+  heartFalls: Array<{ x0: number; x1: number; soft?: boolean }>;
   spawn: { x: number; y: number; piece: Platform };
   exit: { x: number; y: number; piece: Platform };
   /** the lianas and climbing vines the sections hang */
@@ -1307,7 +1313,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (the flip is drawn whether or not a plan fixes it, so the geometry after it rolls from the same numbers on Easy and Normal)
       const flip = tpl.mirrorable ? srng() : 1;
       // (a section that swings is never flipped: its perch is sized for a swing toward it, the way the stage runs)
-      const mirrored = fixed ? fixed.mirrored : flip < 0.5 && !hangsNeed(tpl).includes('swing');
+      // (never a section with a block, 11-06: mirrored, a rise block is a drop and a gap block's landing is its take-off)
+      const mirrored = fixed ? fixed.mirrored : flip < 0.5 && !hangsNeed(tpl).includes('swing') && !hasBlock(tpl);
       // (the slot's floor depth: a hop roll shallow, a jump roll deep, a mixed roll by the slot's own draw against the family)
       if (FR) depthNow = fam >= FR.hopRoll ? FR.shallow : fam <= FR.jumpRoll ? FR.deep : rngFor(seed, 59, i)() < fam ? FR.shallow : FR.deep;
       const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: depthNow, ...(tempo ? { tempo } : {}) });
@@ -1403,7 +1410,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const g of L.gaps) {
         const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
-        if (g.pit && !g.water) {
+        if (g.putBack) {
+          // (a level block gap: nothing under it; a fall is set back on the take-off ledge, nothing lost: the engine's heart fall, soft)
+          heartFalls.push({ x0: R(g0.x0), x1: R(g0.x1), soft: true });
+        } else if (g.pit && !g.water) {
           const before = platforms.length;
           // (a world with `heartFalls` (World 8, Matt 2026-10-31): on Normal a missed swing or glide (a gap with `back`: under a liana or a
           // glide) costs a heart and sets him back on the ledge he left, no pit under it; Easy's stay soft pits, the dark's stay soft)
@@ -1617,6 +1627,11 @@ export function pitSteps(x0: number, x1: number, lipY: number, farY: number, dep
   const steps = [];
   for (let k = 1; k <= n; k++) steps.push({ x: x1 - tread * (n - k + 1), top: floor - rise * k, w: tread * (n - k + 1) });
   return { floor, steps };
+}
+
+/** does a section hold a block piece (NODES §8.7), in its own pieces or any sub-block version's */
+function hasBlock(t: SectionTemplate): boolean {
+  return [...t.pieces, ...(t.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))].some((p) => !!p.block);
 }
 
 /** the moves a section's hanging pieces ask for (its own pieces and every sub-block version's): a liana swings, a vine climbs */

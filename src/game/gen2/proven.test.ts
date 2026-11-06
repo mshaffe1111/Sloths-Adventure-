@@ -11,17 +11,19 @@ import { generateAllLevels } from '../worldsData.ts';
 
 const c = generateAllLevels().find((l) => l.id === '1-1')!;
 
-test('seed 3 fails its build; the game\'s road never plays it: a clean seed, the same stage on both settings', () => {
-  const raw = buildGen2Stage({ config: c, kit: w1World(), seed: 3, difficulty: 'normal' });
-  assert.ok(raw.gen2.errors?.length, 'seed 3 Normal builds clean now: the planted case is gone, pick another');
-  const n = provenGen2Stage({ config: c, kit: w1World(), seed: 3, difficulty: 'normal' });
-  const e = provenGen2Stage({ config: c, kit: w1World(), seed: 3, difficulty: 'easy' });
+test("a seed whose build fails is never played: the game's road plays a clean seed, the same stage on both settings", () => {
+  // (the planted case: the first seed whose raw Normal build fails; seed 3 was one until the deal moved, so it is found, never assumed)
+  let bad = -1;
+  for (let s = 1; s <= 400 && bad < 0; s += 2) if (buildGen2Stage({ config: c, kit: w1World(), seed: s, difficulty: 'normal' }).gen2.errors?.length) bad = s;
+  assert.ok(bad > 0, 'no seed of 200 fails its build: the planted case is gone');
+  const n = provenGen2Stage({ config: c, kit: w1World(), seed: bad, difficulty: 'normal' });
+  const e = provenGen2Stage({ config: c, kit: w1World(), seed: bad, difficulty: 'easy' });
   assert.deepEqual(n.gen2.errors ?? [], []);
   assert.deepEqual(e.gen2.errors ?? [], []);
-  assert.ok(n.gen2.proven && n.gen2.proven.used !== 3, 'seed 3 was played');
+  assert.ok(n.gen2.proven && n.gen2.proven.used !== bad, `seed ${bad} was played`);
   assert.equal(e.gen2.proven?.used, n.gen2.proven?.used, 'Easy played another seed than Normal');
   assert.deepEqual(e.gen2.plan.map((p) => p.template), n.gen2.plan.map((p) => p.template), "Easy is not Normal's stage");
-  assert.equal(n.gen2.proven?.asked, 3);
+  assert.equal(n.gen2.proven?.asked, bad);
 });
 
 test('a clean seed is played as asked', () => {

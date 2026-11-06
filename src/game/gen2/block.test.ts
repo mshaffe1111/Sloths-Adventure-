@@ -143,3 +143,68 @@ test('a double block across a soft pit holds: no pit step inside its gap stairs 
   }
   assert.ok(laidN >= 4, `the soft double teach laid on ${laidN} of 12: the test would not see the rule`);
 });
+
+// (a LEVEL gap block, W1's 'd' beat, 11-06: any stair that climbs back to a level take-off tops out within a hop of the far lip too, and
+// on a ~200 px gap it stood 100 px from the landing, a single's reach: the block was walked round on every seed. The lead's ruling A: a
+// level block gap has no pit and no stair; a fall puts him back on the take-off ledge, soft, no life lost (a soft heartFalls zone), on
+// both settings. Every other soft pit keeps its stair)
+test('a level double gap block holds: nothing in its gap, a soft put-back zone over it, the double needed and enough (12 seeds)', async () => {
+  await import('../headlessDom.ts');
+  const { buildGen2Stage } = await import('./pipeline.ts');
+  const { SPRINT_GRAPHS } = await import('./graphs.ts');
+  const { cfg, kit, manifest } = await import('./toyWorld.ts');
+  const { validateStage } = await import('../levelCheck.ts');
+  type T = import('./types.ts').SectionTemplate;
+  const level: T = {
+    id: 'toy-level-double', name: 'a level gap past a single', archetypes: 'any', phases: ['ki', 'sho'], difficulty: 3, teaches: 'step-up',
+    pieces: [
+      { key: 'low', shape: 'bank', w: [360, 360], place: { kind: 'start' } },
+      { key: 'top', shape: 'bank', w: [260, 260], place: { kind: 'pit', after: 'low', jump: 'double', share: [0.87, 0.87], soft: true }, block: 'double' },
+    ],
+    entry: { piece: 'low', kind: 'ground' }, exit: { piece: 'top', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+  };
+  const k = { ...kit, manifest: { ...manifest, sections: [...manifest.sections, level], graphs: { list: [...SPRINT_GRAPHS], briefs: { '5-7': { ends: 'quiet', trend: 'up', branching: 'none', teaches: ['step-up'] } } } } } as typeof kit;
+  let laidN = 0;
+  for (const seed of Array.from({ length: 12 }, (_, i) => 9 + i * 61)) for (const difficulty of ['normal', 'easy'] as const) {
+    const st = buildGen2Stage({ config: cfg('5-7', 'sprint'), kit: k, seed, difficulty });
+    assert.ok(!st.gen2.repairs.some((r) => /toy-level-double swapped out: the block is walked round/.test(r.note)), `seed ${seed} ${difficulty}: ${st.gen2.repairs.map((r) => r.note).filter((n) => /toy-level-double/.test(n)).join(' ; ')}`);
+    const sec = (st.gen2.sections as Array<{ template: string; x0: number; x1: number }>).find((q) => q.template === 'toy-level-double');
+    if (!sec) continue;
+    laidN++;
+    const solid = st.platforms.filter((p) => p.type === 'solid' && p.x >= sec.x0 - 1 && p.x < sec.x1).sort((a, b) => a.x - b.x);
+    const low = solid[0], top = solid.find((p) => p.x > low.x + low.width + 20)!;
+    const x0 = low.x + low.width, x1 = top.x;
+    assert.ok(!st.platforms.some((p) => p.x < x1 - 1 && p.x + p.width > x0 + 1 && p.y > Math.min(low.y, top.y) - 5), `seed ${seed} ${difficulty}: a piece stands in the block's gap ${x0}-${x1}`);
+    assert.ok((st.heartFalls ?? []).some((z) => z.soft && z.x0 <= x0 + 1 && z.x1 >= x1 - 1), `seed ${seed} ${difficulty}: no soft put-back zone over the gap ${x0}-${x1}`);
+    // (with the double: the stage as built, 5-7; without: the same stage judged as 1-2, where the check counts no double)
+    const to = (dbl: boolean) => !!(validateStage({ ...st, ...(dbl ? {} : { config: { ...st.config, worldIndex: 1, miniIndex: 2 } }) } as never)).reachableIds.includes(top.id);
+    assert.equal(to(false), false, `seed ${seed} ${difficulty}: the landing (x ${top.x}) is reached without a double`);
+    assert.equal(to(true), true, `seed ${seed} ${difficulty}: the landing (x ${top.x}) is not reached with the double`);
+  }
+  assert.ok(laidN >= 6, `the level teach laid ${laidN} times of 24: the test would not see the rule`);
+});
+
+// (11-06, the tagged counts: a block section laid MIRRORED flips its block. A rise block becomes a drop, and a gap block's landing becomes
+// the take-off, the old landing's neighbour abutting it. So a section with a block is never mirrored, whatever its mirrorable says)
+test('a section with a block is never laid mirrored (12 seeds, a mirrorable toy block section)', async () => {
+  await import('../headlessDom.ts');
+  const { buildGen2Stage } = await import('./pipeline.ts');
+  const { SPRINT_GRAPHS } = await import('./graphs.ts');
+  const { cfg, kit, manifest } = await import('./toyWorld.ts');
+  type T = import('./types.ts').SectionTemplate;
+  const rise: T = {
+    id: 'toy-rise-mirrorable', name: 'a bank a double up', archetypes: 'any', phases: ['ki', 'sho'], difficulty: 3, teaches: 'step-up',
+    pieces: [
+      { key: 'low', shape: 'bank', w: [360, 360], place: { kind: 'start' } },
+      { key: 'top', shape: 'bank', w: [400, 400], place: { kind: 'double', after: 'low', dy: [-140, -140], share: [0.3, 0.3] }, block: 'double' },
+    ],
+    entry: { piece: 'low', kind: 'ground' }, exit: { piece: 'top', kind: 'ground' }, exitDy: -140, sockets: [], mirrorable: true,
+  };
+  const k = { ...kit, manifest: { ...manifest, sections: [...manifest.sections, rise], graphs: { list: [...SPRINT_GRAPHS], briefs: { '5-7': { ends: 'quiet', trend: 'up', branching: 'none', teaches: ['step-up'] } } } } } as typeof kit;
+  let laidN = 0;
+  for (const seed of Array.from({ length: 12 }, (_, i) => 9 + i * 61)) {
+    const st = buildGen2Stage({ config: cfg('5-7', 'sprint'), kit: k, seed, difficulty: 'normal' });
+    for (const p of st.gen2.plan.filter((q) => q.template === 'toy-rise-mirrorable')) { laidN++; assert.equal(p.mirrored, false, `seed ${seed}: the block section was laid mirrored`); }
+  }
+  assert.ok(laidN >= 6, `laid ${laidN} of 12: the test would not see the rule`);
+});
