@@ -36,7 +36,8 @@ Last update: 5:02 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3
   - Open to the first frame of 1-1 at CPU x4 (tools/perf/firstframes.cjs, 448x998, 3 runs, warm cache): before 18.7 / 11.9 / 10.7 s,
     after 11.5 / 10.6 / 11.5 s (no slower; run-to-run noise ~1 s). Frames over 100 ms in the first 10 s: 42-48 before, 46-49 after (headless,
     no GPU: the same both ways).
-  - gen2 seed/game/seedList/buildAhead/stage11gen2 tests on it: running (result here at 5:30).
+  - tests on it (5:05 PM): seeds 2/2, game 12/12, seedList 4/4, buildAhead 2/2, stage11gen2 4 pass + 1 todo (the double-gap todo, the same as
+    without the patch): 0 fail. (My first combined run hit its 20-min timeout; re-run one file per process.)
   - Rule (the lead): applied at 6:00 only if the candidate's main JS is over 4 MiB; otherwise a roadmap item with these numbers.
 - Rolls A/B/C stay as QA seed pins (approved). Tests pinned to Roll B: rollEnv.test.ts (the pick's plumbing only) and
   gen2/stage11gen2.test.ts (every promise on A, B and C). On the trial (engine-core 5e221f9d) none fails on B but the double-gap todo.
