@@ -1,5 +1,21 @@
 # tester-page status (the lead reads this; no send_message until further notice)
 
+## 4:45 PM ET: art round 2
+
+- **Pit-pocket pane: FIXED.**
+  - Cause: the pocket's soil was clipped to its outline, and its end pieces are wider than it and see-through below their rims.
+  - Fix (`protoArt.ts`): `isPocket` finds a piece under 140 px wide that has ownLook and a higher bank touching each side. It is drawn
+    bare, then painted soil runs edge to edge under its lip, 40 px under the banks' curved faces. Only gen2 World 1 sets ownLook.
+  - Proof that nothing else changes: `src/game/pitPocket.test.ts` builds every old-generator stage in Worlds 1 to 4 (no ownLook piece,
+    no pocket), finds Roll B's pockets, and has a planted pair: the same piece without ownLook is not a pocket.
+  - Pixel before/after on an old stage: two runs of the SAME code already differ (weather, leaves), so a byte compare can't prove it.
+    The test above is the proof instead.
+  - Stills: `art/pitpocket-FIXED-rollB-x3600-{side,up}.png` and `x4000-{side,up}`. Before: `pitpocket-NOT-FIXED-*`.
+  - drawcheck: running (result below when in).
+- **End log: DONE.** It's the plank pieces end to end (`art/endlog-rollB-x35100-*`); see below.
+- **Boulders: DONE, passed** by the lead.
+- The Dot re-check after the planner's push (~5:15) comes next, results by 5:45.
+
 ## ANSWER (4:16 PM ET): does Dot teach the double on the real page? NO, not in any run I tried
 
 Method:
