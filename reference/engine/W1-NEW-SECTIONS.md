@@ -391,3 +391,62 @@ loudly, and the kit fills the cell, as #63-#67 do. The one exception is a cell t
 | 65 | **a** `w h B D n n w`; **b** `w B h D n n w` | a floor mushroom under a bank whose lip is [-220, -200] (the bounce block). Then a double across a level gap of at least 195 px to a second bank at the same height. Then a 2-step stump stair down to the floor (net zero) |
 
 The level and back versions entered as their own sections (#10-level, #40/#41/#49-back, #45-back, #61-level) are accepted, each tagged with its parent's job and type. #61-level ending 59 px over its start is accepted; ending under it would be a V19 loss.
+
+## Round 7: the red team's 1-1 content findings (designer, 11-06 8:32 AM ET; RT-PLAYER.md on ccr-23292c36-550qmt, engine-core 4ec76da73 / 8f0694eeb)
+
+### (a) The teach lines, in walking order on every roll (RT F3, F11)
+
+| # | Rule |
+|---|---|
+| TT1 | **Every T section carries its teach line on its ENTRY piece, before the first block** (t ≤ 0.2 of the entry piece). Never on a piece after the block |
+| TT2 | **T sections are `mirrorable: false`.** Mirroring reverses a section's pieces and flipped #8's order (RT F3: "Nice!" before the gaps, the teach after). The variety is lost on 9 sections only, and it's paid back by their versions |
+| TT3 | **The lines, all Matt-approved or shipped words** (dotLinesData.ts): <br>jump teaches (`w1-learn`, #31, #32): `coach.jump` at entry, `hint.1-1.gaps` before the first gap; <br>double teaches (#8, #33, #34): `coach.nice` at entry ("Nice jump! In the air, flick up again for a double jump"), then `hint.1-1.double` on the take-off bank before the first double gap. **#33 and #34 carry no line today; both get these two**; <br>bounce teaches (#5, #35, `w1-hop-bounce`): **a new row `hint.1-1.bounce` with main's SHIPPED words "Land on the mushroom to bounce up high"** (protoStage.ts:1251 on main, old 1-1), on the mushroom's approach. These aren't new words, but the row is new: the lead confirms |
+| TT4 | Gate (for engine-core): for each taught move, its line's x < the x of the first piece that needs it, on both settings and every roll |
+
+The raw-id bug (RT F1: Dot shows "hint.1-1.double") is the engine's: w1World has no `tips` map, so the pipeline must resolve ids
+through dotLinesData. No data change fixes it.
+
+### (b) Every drop warned before its edge (RT F2, F10)
+- **1-1 has NO drop that costs a life.** stage11.test.ts already promises "nothing can cost a life: under every x… a piece to land on above the death line". Roll A's x 32300 log chain breaks that, which makes it a defect, not a design choice.
+- **#44 `w1-log-chain` gets a catch under every gap:** a mid road (FR5) of low logs on stumps 110-300 px under, leading BACK to the chain's start (B2b), never forward.
+- **DW1: any section whose miss costs anything carries its warning on its ENTRY piece, at least 285 px (1 s) of walk before the first edge.**
+  - In #44, `hint.1-1.noMoss` moves from the first log's t 0.7 to the entry piece at t 0.1. The same goes for #50-#52 (the descents), where a miss drops to the mid road.
+  - "No soft moss up here!" stays true: the catch is a log, not moss.
+- **F10 (on Easy, put back on a catch log he walks off again):** the engine should put him back at the ledge he jumped FROM. That's the planner's or engine-core's.
+
+### (c) The brief's squirrels and the arrival on every roll (RT F9)
+- **W1_KIT `decor`: `['squirrel-sit', 'squirrel-wave', 'squirrel-tip']`** (w1-new.json frames; the mixer's 1-1 dresses its start with these: mixer/stages.ts:80). The `sq` socket on every arrive is filled by one of the three.
+- **`w1-meadow` loses the `start` phase.** It has `needs: ['jump']` and a dip, so it's no arrival. It stays a rest.
+- The arrive pool then holds 2 (`w1-forest-edge`, #46 `w1-morning-path`), so **new #68 `w1-home-banks` "The home banks"** (arrive, start) keeps 3:
+  - flat banks with no ground end in the first 1,300 px (STAGE-RULES:161);
+  - one 50-56 px stump at about 900 px (FR9: no plain floor over 4 s);
+  - the `sq` socket, and `coach.run` at its tip.
+  - **a** `w w h w`; **b** `w h w w`.
+- **Creatures: none in 1-1.** The brief's `not` list says no animals (1-1.md:38-43). RT F2's "give W1 its creatures" is for 1-3 on (the ladder), not 1-1.
+- **The hearts (6 on a stage with no damage):** this one is for the lead. "Hearts" was ruled by Matt (12:15 AM), and with nothing in 1-1 that hurts, a heart does nothing. I propose 0 hearts in 1-1, as in the mixer's 1-1, but it's Matt's call to change.
+
+### (d) FR9 on the older sections (real floor beats)
+
+| Where | Now | FR9 |
+|---|---|---|
+| `gLowStumps` (learn, stump-stones, stone-dips, meadow, low-boughs) | [40, 50], [76, 76], [46, 46], [36, 40] | **[50, 56], [76, 80], [54, 60], [50, 56]** |
+| `stumpL(… [40, 50])` (gZigzag :453, :457; :517) | 40-50 | **[50, 60]** |
+| `post(… [30, 40])` under a `logOn` | 30-40 | stays. The log on it is the beat (it tops out over 50) |
+| plain floors over 4 s | rests, arrives, joins | the planner's list of the exact spans is still owed; I'll fill it when it comes. Data rule meanwhile: no `gRest` over 1,000 px (3.5 s at 285 px/s) without a ≥ 50 px stump in it |
+
+### (e) The B7 audit and #20/#27
+I scanned all 16 laid seeds (buildGen2Stage, w1World, engine-core 4ec76da73; scratch tool `_b7b.ts`).
+- **The walk-round at every teach block is the soft pit's own climb-out step.** A moss_stone 60-140 px wide and 120 tall, its top 70-75 px under the lip, stands flush against the lip's face. From it, a single jump (108) reaches the lip.
+- Where it shows up:
+  - `w1-dip-double-teach`: on every lay;
+  - `w1-double-teach`;
+  - `w1-bank-double-teach`: its first rise;
+  - `w1-mushroom-bank-teach`: 4 of 4 lays. A double (185) reaches the step, so the bounce isn't needed.
+- That's why the required-move gate fails, and why the bounce teach gets swapped out (Round 6 cause 1).
+- **Fix (engine, the planner's queued back-only pit):** a soft pit in front of a block uses `backPit` (pipeline.ts:1628, already there for glides), with its steps on the NEAR side only. Data side: each block's pit piece carries `back: true` once the place option exists.
+- 2 of the hits are a piece OUTSIDE the section, the join (seeds 1 and 39596), which matches B7's join rule.
+- **#20/#27:** the planner's repro is in engine-core NEXT.md:18-20 (exit platform 168-192). It's with the porter.
+
+### Flags for the art director (via the lead)
+- **RT F7:** red spiky bromeliads on `w1-ledges`' tops read as thorns. Rule: no spiky dressing on a landing's top; flowers and moss only.
+- **RT F6:** the near-backdrop fallen logs match the platform logs in colour, scale and moss, in the bough sections. They need value or contrast separation (darker, desaturated, softened) or a rim light on platform logs.
