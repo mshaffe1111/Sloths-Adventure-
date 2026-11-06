@@ -46,11 +46,11 @@ PIECES = {
     'w1-branch-long-a': ('branch', 0.0, 0.0, 'DIAGONAL in the cut (drawn at an angle): not a flat platform; dressing, or rotate in code and re-check'),
     'w1-branch-knotted': ('branch', 0.0, 0.0, 'DIAGONAL: same as above'),
     'w1-branch-leafy': ('branch', 0.0, 0.0, 'slightly angled: dressing'),
-    # floating earth ledges (allowed to float)
-    'w1-ledge-earth-long': ('ledge', 0.8, 0.6, 'floating earth ledge, grass top'),
-    'w1-ledge-earth-a': ('ledge', 0.8, 0.6, 'floating earth ledge (small cut: upscale before use)'),
-    'w1-ledge-overhang-big': ('ledge', 1.2, 0.6, 'big overhang ledge with roots under'),
-    'w1-ground-chunk': ('ledge', 0.9, 0.6, 'ground chunk'),
+    # earth ledges: floating is pending Matt (lead 11-06 11:31 AM ET); until he answers, used from the floor up only
+    'w1-ledge-earth-long': ('ledge', 0.8, 0.6, 'earth ledge, grass top. may float: pending Matt; use from the floor up only'),
+    'w1-ledge-earth-a': ('ledge', 0.8, 0.6, 'earth ledge (small cut: upscale before use). may float: pending Matt; use from the floor up only'),
+    'w1-ledge-overhang-big': ('ledge', 1.2, 0.6, 'big overhang ledge with roots under. may float: pending Matt; use from the floor up only'),
+    'w1-ground-chunk': ('ledge', 0.9, 0.6, 'ground chunk. may float: pending Matt; use from the floor up only'),
 }
 # set by eye where the auto line takes a high grass tuft or half the top (checked on the footing sheet)
 OVERRIDE = {'w1-ground-chunk': (10, 8, 210)}

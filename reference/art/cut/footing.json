@@ -411,7 +411,7 @@
     273,
     58
    ],
-   "note": "floating earth ledge, grass top",
+   "note": "earth ledge, grass top. may float: pending Matt; use from the floor up only",
    "footing": [
     {
      "y": 4,
@@ -430,7 +430,7 @@
     170,
     58
    ],
-   "note": "floating earth ledge (small cut: upscale before use)",
+   "note": "earth ledge (small cut: upscale before use). may float: pending Matt; use from the floor up only",
    "footing": [
     {
      "y": 5,
@@ -449,7 +449,7 @@
     312,
     178
    ],
-   "note": "big overhang ledge with roots under",
+   "note": "big overhang ledge with roots under. may float: pending Matt; use from the floor up only",
    "footing": [
     {
      "y": 11,
@@ -468,7 +468,7 @@
     218,
     93
    ],
-   "note": "ground chunk",
+   "note": "ground chunk. may float: pending Matt; use from the floor up only",
    "footing": [
     {
      "y": 10,

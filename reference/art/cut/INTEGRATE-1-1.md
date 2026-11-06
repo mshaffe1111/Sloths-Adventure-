@@ -9,7 +9,7 @@ Lead 10:36 AM ET: so 1-1's art swap uses several painted kinds, not one boulder.
 - `pokey_h`: the piece's drawn height in Pokey heights (Pokey's collider = 48 game px, engine.ts player.height). `drawn_game_h/w`: that
   in game px. `footing_game_y`: the footing's y in game px from the drawn top, so platform.y = drawTop + footing_game_y.
   The scales are my picks from the show-first stills; change them per placement, and the footing scales with the drawing.
-- Draw each piece with its bottom at the ground line (sunk ~3 px, as the kit's `stand()` does), never floating (rocks never float).
+- Draw each piece with its bottom at the ground line (sunk ~3 px, as the kit's `stand()` does). Matt's floating rule (via the lead, 11-06 11:31 AM ET): walked-on platforms (boughs, logs, planks) may float with no support; rocks, stones, pads and props never float; earth ledges pending Matt, so until he answers they are used from the floor up only.
 
 ## What 1-1 can place (27 measured + 3 walls)
 | Kind | Pieces | Notes |
@@ -17,7 +17,7 @@ Lead 10:36 AM ET: so 1-1's art swap uses several painted kinds, not one boulder.
 | stone (10) | rock-boulder-moss, rock-boulder-moss-big, boulder-grey-moss, boulder-grey-moss-b, rock-block-big, rock-root-block, rock-slabs-stacked, rock-slabs-stacked-big, rock-slabs-low, rock-roots | 4 kinds: round boulders (stand span = flat middle only), flat blocks (best platforms), stacked slabs, grey boulders |
 | stump (4 heights) | stump-wide 1.6 P, hide-stump-hollow 2.4 P, hide-stump-hollow-tall 3.0 P, post-tall-vine 4.0 P | + the kit stump. The two hollow stumps are PERCHES ONLY (lead 11-06): narrow tops, never a floor |
 | log (5 for W1) | log-plank-a, log-plank-b, plank-ledge-a/b/c | thin logs. log-lashed-short is W2 ONLY (rope-lashed, a made thing; lead 11-06): not in 1-1 |
-| ledge (4, may float) | ledge-earth-long, ledge-earth-a, ledge-overhang-big, ground-chunk | ledge-earth-a is a small cut: upscale before a big draw |
+| ledge (4; may float: pending Matt; use from the floor up only) | ledge-earth-long, ledge-earth-a, ledge-overhang-big, ground-chunk | ledge-earth-a is a small cut: upscale before a big draw |
 | wall (3) | wall-earth-A (master), B, C | 7 / 7 / 9 standable tops each; C has two small middle ledges (y 250, 367); its right ledge tips were re-cut whole on 11-06 (now 467 px wide) |
 | branch | branch-long-a, branch-knotted, branch-leafy | NOT platforms: drawn DIAGONAL in Gemini's sheet (no footing). Dressing only (lead 11-06); flat re-roll is redo R-09 |
 
