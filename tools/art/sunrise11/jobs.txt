@@ -16,3 +16,5 @@ sun11-M3  6aecc18fc78863f9c6337ce1  middle strip img2img, taller starts H/I, 8 t
 sun11-hdM3 6aed0d090e0338d1bb80c43e native pass, mids H-s76-7 + H-s68-7  23:11:05Z-23:12:58Z (1.9 min measured, ~$0.09)
   TOTAL so far ~40.2 GPU min (F, M, M3, hdM3 measured; the rest estimated) = ~$1.84. (The ~$1.95 in STOPPED.md was my arithmetic slip.)
 sun11-M4  (pending)  middle strip img2img, second-cluster starts K2/H2, 8 takes
+sun11-M4  6aed1721c78863f9c633b70b  mid img2img, second-cluster starts K2 (kapok) / H2, 8 takes  23:54:09Z-23:59:50Z (5.7 min measured, ~$0.26)
+  K2 all out (the kapok is the layer's hero; s68-23 has a creature at its roots); H2-s68-7/s76-7 out (pink key halo). Kept H2-s76-23.
