@@ -2406,7 +2406,17 @@ export function tipWords(tips: Readonly<Record<string, string>> | undefined, id:
   return tips?.[id] ?? LINE_WORDS.get(id) ?? undefined;
 }
 
+/** a stage's pool: its world's sections whose `feel` names the stage (or is unset) and whose `not` names nothing the stage owns */
+export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] {
+  const owns = new Set(M.owns?.[stageId] ?? []);
+  return M.sections.filter((t) => (!t.feel || t.feel.includes(stageId)) && !(t.not ?? []).some((x) => owns.has(x)));
+}
+
 export function buildGen2Stage(req: BuildRequest): Gen2Stage {
+  // (the stage's own pool, cut to its tags before anything is chosen: the red team 11-05, 1-2 would have been dealt 1-1's sections)
+  const M0 = req.kit.manifest;
+  const pool = stagePool(M0, req.config.id);
+  if (pool.length !== M0.sections.length) req = { ...req, kit: { ...req.kit, manifest: { ...M0, sections: pool } } };
   const st = buildRolled(req);
   // (a tip whose id has no Dot line fails the roll: it was never shown)
   const unsaid = [...new Set(st.gen2.fills.filter((f) => f.role === 'tip' && f.unsaid).map((f) => f.what))];
@@ -2416,6 +2426,28 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   if (st.gen2.loosened?.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...st.gen2.loosened.map((l) => `pool short at ${l.replace(/, filled by its (job|phase)\)$/, ')')}`)];
   if (st.gen2.missing?.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...st.gen2.missing];
   return st;
+}
+
+/** how far the game's road walks from an asked seed, and its stride (a prime) */
+export const PROVEN = { walk: 24, stride: 7919 } as const;
+/**
+ * The game's road (the red team 11-05, RT-ENGINE #3: a failed roll was built and played without a word): a roll with gen2.errors is
+ * never returned. The asked seed first, then the next on a fixed walk (asked + k x PROVEN.stride), so the same asked seed always plays
+ * the same stage; none in the walk: it throws, naming the first failure (never played quietly). One build a seed: Normal's loop takes a
+ * plan only when Easy lays it cleanly, and Easy carries Normal's errors, so a seed is clean on both settings or on neither, and Easy is
+ * Normal's stage. buildGen2Stage stays the report's road (it hands back a failed roll with its errors).
+ */
+export function provenGen2Stage(req: BuildRequest, walk: number = PROVEN.walk): Gen2Stage {
+  let first: string[] | undefined;
+  for (let k = 0; k < walk; k++) {
+    const seed = req.seed + k * PROVEN.stride;
+    const st = buildGen2Stage({ ...req, seed });
+    if (st.gen2.errors?.length) { first ??= st.gen2.errors; continue; }
+    // (recorded only when the walk moved off the asked seed: a seed played as asked carries nothing new)
+    if (k > 0) st.gen2.proven = { asked: req.seed, used: seed, tried: k + 1 };
+    return st;
+  }
+  throw new Error(`gen2 ${req.config.id} (${req.difficulty}): no seed of ${walk} from ${req.seed} builds cleanly (the first: ${first?.join('; ')})`);
 }
 
 function buildRolled(req: BuildRequest): Gen2Stage {
@@ -2440,14 +2472,17 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     st.gen2.modelled = { typical: Math.round(gen2Model(st, MODEL_TYPICAL) * 10) / 10, fast: Math.round(fast * 10) / 10 };
     st.gen2.rerolls = n.gen2.rerolls;
     st.gen2.repairs = repairs;
-    if (v.ok && fast >= budget.seconds.fastFloor) return st;
-    best = st;
-    st.gen2.errors = checkStage(st, budget).errors;
-    repairs.push({ kind: 'reroll', note: "Easy could not lay Normal's plan: Easy plans its own (the curation report names the stage)" });
+    // (Easy never plans its own, the red team's #4: Normal's loop took this plan only if Easy laid it cleanly, so a failure here is
+    // Normal's own failure or the clock; it fails by name, with Normal's errors)
+    const errs = [...(n.gen2.errors ?? [])];
+    if (!v.ok) errs.push(`Easy could not lay Normal's plan${v.why ? `: ${v.why}` : ''}`, ...checkStage(st, budget).errors);
+    if (fast < budget.seconds.fastFloor) errs.push(`Easy's quick player under the floor (${fast.toFixed(1)} s, floor ${budget.seconds.fastFloor.toFixed(1)} s)`);
+    st.gen2.errors = [...new Set(errs)];
+    return st;
   }
   // (the stage is the same on both difficulties, so Normal's build also holds Easy's quick player to the floor: Easy lays its plan)
   const easyReq: BuildRequest = { ...req, difficulty: 'easy' };
-  const easyBudget = req.difficulty === 'easy' ? budget : planBudget(req.config, M, 'easy');
+  const easyBudget = planBudget(req.config, M, 'easy');
   const byId = new Map(M.sections.map((t) => [t.id, t]));
   const required = new Set((M.required?.[req.config.id] ?? []).map((r) => r.section));
   for (let rr = 0; rr <= maxRerolls; rr++) {
@@ -2466,8 +2501,14 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     let lastMeeting: Gen2Stage | null = null;
     for (let it = 0; it < 24; it++) {
       const b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open });
-      const v = checkAndRepair(b, budget, repairs, tried);
+      let v = checkAndRepair(b, budget, repairs, tried);
       const st = b.stage;
+      // (Easy is Normal's stage, the red team 11-05, RT-ENGINE #4: a plan is taken only when Easy lays it cleanly too. An Easy-only breach
+      // (its kinder pads widening a take-off into a block's reach, seed 124) bans that section at that slot for both settings)
+      if (v.ok) {
+        const ev = checkAndRepair(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st)), easyBudget, [], new Set());
+        if (!ev.ok) v = { ...ev, why: `on Easy: ${ev.why ?? 'its check fails'}` };
+      }
       st.gen2.rerolls = rr;
       st.gen2.repairs = [...repairs];
       const grow = (note: string) => {
@@ -2481,6 +2522,7 @@ function buildRolled(req: BuildRequest): Gen2Stage {
       };
       if (!v.ok) {
         st.gen2.errors = checkStage(st, budget).errors;
+        if (!st.gen2.errors.length && v.why) st.gen2.errors = [v.why];
         if (!best) best = st;
         // (a trim that broke it: the stage before the trim passed)
         if (lastMeeting) return lastMeeting;
