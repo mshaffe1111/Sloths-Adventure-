@@ -3,7 +3,26 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 5:35 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 5:45 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+
+## 5:45 PM: ready for the final (the lead's 5:31 order) + funcheck on the candidate shape
+- Order at the final: merge engine-core -> `old11-delete.py` -> vite build, `lazy-seeds.py` only if main JS > 4 MiB -> `release-prep.py`
+  -> tsc + seed-list tests -> PUSH, commit written here -> the full gate on that commit.
+- New: `reference/qa-reports/0.9.5/release-prep.py` (funknown.json from main's recorded list `funknown-main.json`; R-165.1 cites
+  engine-core/NEXT.md; package.json 0.9.5; the What's New entry, line 3 "Dot has new things to say as you climb."). Tried on 387c5484 +
+  the deletion: roadmapcheck **PASS**, whatsNew.test 4/4 pass.
+- **funcheck on that shape (main's list): FAIL (12 worse or new, 26 to lower or delete; 61 s).** For the lead:
+  - gen2 1-1 is judged WORSE than main's 1-1 by the fun gate (1-1 is on the truer rules, REBUILT): "dead walk" 16/16 layouts (main 14;
+    e.g. "3.1 s of walking with nothing to do at x 140"), "pacing" Normal 14 (8) and Easy 14 (2) ("no gentle intro: the first 15 s already
+    ask for more than 0.8 moves a second"), "nothing bites" Normal 11 (4), Easy 8 (4) ("90% of the beats after the first 30 s cost nothing
+    when missed"). Better: "padding" and "template repeat" gone (16 -> 0 both settings), "repeat" Easy 16 -> 8.
+  - 1-2 "nothing new" 10 -> 14 both settings (judged against the stage before it, now gen2 1-1); 1-2's "like/looks like the stage
+    before" gone.
+  - On lock-identical stages: 1-3 Normal "repeat" 11 -> 13, 1-9 Normal "repeat" 12 -> 15, 1-9 Easy "nothing new" 13 -> 16, 1-6 Easy
+    "repeat" new (1 layout); and lower counts on 1-6/1-7/1-9. tools/validate is unchanged, so this is the engine's play changing on
+    identical stages (the same pattern as requiredMove 1-6 and firstTimerBot 5-9): the planner's checker-only proof should cover it.
+  - The gate's rule: worse = FAIL. I will not lower or re-record the list to pass it (Law 5). Rulings needed: is funcheck in this
+    release's gate (it is not in gates.yml; the plan lists it as gate 10), and what about gen2 1-1's dead walk / pacing / nothing bites?
 
 ## 5:35 PM: engine-core moved to 387c5484 (4:35 PM ET); patches turned into scripts
 - engine-core 387c5484 ("0.9.5: the ctest survey's words for the Round 12 sections, and main's 1-5 golden-snake sheet back"). Not in it
