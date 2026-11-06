@@ -1,3 +1,5 @@
+// (the mixer's 1-1 promises that needed the game's own 1-1 (nothing costs a life, plain jumps before the double, the mushroom, the double
+// gap) retired with the mixer's 1-1 path when 1-1's Play became gen2 (11-06): gen2/stage11gen2.test.ts holds them on Rolls A/B/C)
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildProtoStage, EXPERT_SECONDS, plainOrder } from './protoStage.ts';
@@ -40,18 +42,6 @@ test('1-1: every roll keeps the plan (the spec\'s nodes in order), one exit, a s
   }
 });
 
-test('1-1: nothing can cost a life: under every x from the start to the exit there is a piece to land on above the stage\'s death line', () => {
-  for (const s of SEEDS) {
-    const st = buildProtoStage(cfg, s, '1-1');
-    const death = st.waterY ?? st.config.levelHeight;
-    assert.ok(st.platforms.every((p) => p.y < death), `seed ${s}`);
-    // (no drop a fall goes down to the death line; a marked drop over nothing is open air, a life)
-    for (let x = st.spawnX; x < st.exitTotemX; x += 20) {
-      assert.ok(st.platforms.some((p) => p.type !== 'bouncy' && p.x <= x && p.x + p.width >= x && p.y < death), `seed ${s}: nothing to land on at x ${x}`);
-    }
-  }
-});
-
 test('1-1: every gap is within a jump, the whole stage by the level check; before the double is taught, a plain jump', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-1');
@@ -85,33 +75,6 @@ function beforeTheTip(seed: number) {
   return rr;
 }
 
-test('1-1 in the real engine: before the second jump is taught, plain jumps get everywhere, every pit is a hop out, nothing strands him', () => {
-  const problems: string[] = [];
-  for (const seed of SEEDS.slice(0, 8)) {
-    const r = beforeTheTip(seed).search();
-    if (!r.exitReached) problems.push(`seed ${seed}: the double's teach is never reached with plain jumps`);
-    for (const c of r.missed) problems.push(`seed ${seed}: ${c.type} at (${Math.round(c.x)}, ${Math.round(c.y)}) needs the second jump`);
-    for (const a of r.traps) problems.push(`seed ${seed}: stranded at ${a.key}${a.kind === 'p' ? ` (x ${Math.round(a.a!)}..${Math.round(a.b!)}, y ${a.y})` : ''} without the second jump`);
-  }
-  assert.deepEqual(problems, []);
-});
-
-test('1-1 in the real engine: running into the mushroom bounces him up and on along the path', () => {
-  for (const seed of SEEDS.slice(0, 4)) {
-    const sim = new RealPlay('1-1', seed);
-    const m = sim.platforms.filter((p) => p.type === 'bouncy').sort((a, b) => a.x - b.x)[0];
-    // (the ground he runs in from: the solid piece whose end is nearest before the mushroom, at or under its top)
-    const ground = sim.platforms.filter((p) => p.type === 'solid' && p.x + p.width <= m.x + 4 && p.y >= m.y - 40).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
-    sim.stand(Math.max(ground.x + 20, ground.x + ground.width - 200), ground.y);
-    let top = Infinity;
-    for (let f = 0; f < 120 && !(sim.p.grounded && sim.p.x > m.x + m.width + 60); f++) {
-      sim.frame({ right: true });
-      top = Math.min(top, sim.p.y);
-    }
-    assert.ok(ground.y - top > 100 && sim.p.grounded && !sim.died && sim.p.x > m.x + m.width + 60, `seed ${seed}: at ${Math.round(sim.p.x)}, ${Math.round(sim.p.y)}`);
-  }
-});
-
 /**
  * The double teach's gap: walking the way's pieces from `tip` (a piece lying more than 80 px under the last kept one is below the way, such
  * as a safe floor in the gap, and is skipped: the planner's proposal, so the floor ruled into the gap never hides the gap), the first gap
@@ -132,15 +95,6 @@ function doubleGap(platforms: Platform[], tip: number, death: number): { a: Plat
   }
   return undefined;
 }
-
-test('1-1: right after the double is taught, a gap only the second jump crosses (a miss lands him on safe ground under it)', () => {
-  for (const seed of SEEDS.slice(0, 4)) {
-    const st = buildProtoStage(cfg, seed, '1-1');
-    const g = doubleGap(st.platforms, jobAt(st, 'teach double'), st.waterY ?? st.config.levelHeight);
-    assert.ok(g, `seed ${seed}: no gap only the second jump crosses within 1,500 px of the teach`);
-    assert.ok(g.safe, `seed ${seed}: nothing under the double gap at ${Math.round(g.a.x + g.a.width)}`);
-  }
-});
 
 test('the double-gap finder: sees a gap with a safe floor ruled into it, and finds none where a plain jump crosses every gap', () => {
   const P = (id: number, x: number, w: number, y: number): Platform => ({ id, x, y, width: w, height: 120, type: 'solid', style: 'moss_stone' });

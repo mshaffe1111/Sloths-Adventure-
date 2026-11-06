@@ -10,7 +10,9 @@ import { isGen2Stage } from './gen2/game.ts';
 
 const levels = generateAllLevels().filter((l) => !l.secret);
 /** a stage on Easy as the engine builds it: a gen2 stage (5-7, 5-9) is laid for Easy by its own pipeline, the rest made gentler here */
-const easyOf = (cfg: (typeof levels)[number]) => easyStage(isGen2Stage(cfg) ? generateStage(cfg, 'easy') : generateStage(cfg));
+// (a gen2 stage, 5-7 and the rest, and 1-1 whose Play is gen2 (stageGenerator.ts), is laid for Easy by the pipeline itself)
+const gen2Built = (cfg: (typeof levels)[number]) => isGen2Stage(cfg) || !!(generateStage(cfg) as { gen2?: unknown }).gen2;
+const easyOf = (cfg: (typeof levels)[number]) => easyStage(gen2Built(cfg) ? generateStage(cfg, 'easy') : generateStage(cfg));
 
 /** what the validator says about a stage, without the parts that name ids or positions that Easy shifts */
 const errs = (r: { ok: boolean; errors?: string[] }) => new Set((r.errors ?? []).map((e) => e.replace(/[\d.]+/g, '#')));
@@ -67,9 +69,11 @@ test('easy: fewer animals, a goal that still can be met, and a heart at every fl
     if (cfg.objectiveType === 'purge' || cfg.objectiveType === 'gauntlet') {
       assert.ok(e.config.targetCount <= e.enemies.length && e.config.targetCount <= cfg.targetCount, `${cfg.id}: goal ${e.config.targetCount} of ${e.enemies.length}`);
     }
-    for (const cp of e.checkpoints ?? []) {
-      assert.ok(e.collectibles.some((c) => (c.type === 'heart' || c.type === 'super_heart') && Math.abs(c.x - cp.x) < 260 && Math.abs(c.y - cp.y) < 260), `${cfg.id}: heart at the flag at ${cp.x}`);
-    }
+    const heartAt = (cp: { x: number; y: number }) => e.collectibles.some((c) => (c.type === 'heart' || c.type === 'super_heart') && Math.abs(c.x - cp.x) < 260 && Math.abs(c.y - cp.y) < 260);
+    // (H1, hearts follow risk (Matt 11-05, "a heart only after real risk"; the lead 11-06: gen2 only): gen2 1-1, where nothing costs
+    // anything, has no heart at its flags; every other stage keeps one at each)
+    const h1 = cfg.id === '1-1' && !!(e as { gen2?: unknown }).gen2 && !e.enemies.length && e.waterY === undefined;
+    for (const cp of e.checkpoints ?? []) assert.equal(heartAt(cp), !h1, `${cfg.id}: ${h1 ? 'no heart (H1)' : 'heart'} at the flag at ${cp.x}`);
   }
   assert.ok(after < before * 0.7, `animals ${before} -> ${after}`);
 });
@@ -78,7 +82,7 @@ test('easy: a far jump over a drop gets a stone each side of it can reach with a
   let stones = 0;
   for (const cfg of levels) {
     // (a gen2 stage lays no stones: its Easy jumps are sized from Easy's margin, with soft pits, by the pipeline: gen2/game.test.ts)
-    if (isGen2Stage(cfg)) continue;
+    if (gen2Built(cfg)) continue;
     const n = generateStage(cfg);
     const e = easyStage(generateStage(cfg));
     const ids = new Set(n.platforms.map((p) => p.id));
