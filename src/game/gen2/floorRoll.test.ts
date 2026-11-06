@@ -121,6 +121,45 @@ test('a ledge gap has a catch bough under it; the hollow log is the art\'s own h
   assert.ok(perched > 0, 'no mushroom perched on a stump');
 });
 
+// (Roll A's 10.8 s quiet stretch, 11-05: inside a section a catch bough hung 90 px under the gap's UPPER lip, so on a bough drop of 110 it
+// sat 20 px over the lower bough: a step down, and the descent's two jumps walked off without a beat. A catch is a net under the gap,
+// never a stair: it hangs catchDrop under the LOWER lip, inside a section and at a join alike)
+const boughDrop: SectionTemplate = {
+  id: 'toy-w1-bough-drop',
+  name: 'down a bough drop',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu', 'ki'],
+  difficulty: 3,
+  pieces: [
+    { key: 'a', shape: 'branch', w: [400, 400], place: { kind: 'start' } },
+    { key: 'b', shape: 'branch', w: [400, 400], place: { kind: 'jump', after: 'a', dy: [110, 110], share: [0.45, 0.45] }, landing: true },
+    { key: 'c', shape: 'branch', w: [400, 400], place: { kind: 'jump', after: 'b', dy: [110, 110], share: [0.45, 0.45] }, landing: true },
+  ],
+  entry: { piece: 'a', kind: 'ledge' },
+  exit: { piece: 'c', kind: 'ledge' },
+  exitDy: 220,
+  sockets: [],
+  mirrorable: false,
+};
+test('a catch bough hangs catchDrop under the gap\'s lower lip, never a step between the two (a 110 px bough drop, 16 seeds)', () => {
+  const k: WorldKit = { ...kit, manifest: { ...manifest, sections: [...manifest.sections, boughDrop], floorRoll: { hop: [{ range: [0.74, 0.8], weight: 1 }], ...FLOOR } } as WorldManifest };
+  let seen = 0;
+  for (const s of SEEDS) {
+    const ps = build(k, s).platforms;
+    // (a catch is laid 30 px before its gap and 50 px past it: pipeline catchUnder)
+    for (const c of ps.filter((p) => (p as { catch?: boolean }).catch)) {
+      const x0 = c.x + 30, x1 = c.x + c.width - 50;
+      const solid = ps.filter((p) => !(p as { catch?: boolean }).catch && p.type !== 'moving');
+      const a = solid.filter((p) => Math.abs(p.x + p.width - x0) < 3 && p.y < c.y + FLOOR.catchDrop), b = solid.filter((p) => Math.abs(p.x - x1) < 3 && p.y < c.y + FLOOR.catchDrop);
+      if (!a.length || !b.length) continue;
+      const lower = Math.max(Math.min(...a.map((p) => p.y)), Math.min(...b.map((p) => p.y)));
+      seen++;
+      assert.ok(c.y >= lower + FLOOR.catchDrop - 1, `seed ${s}: catch at y ${c.y} under the gap x ${x0}-${x1}, lower lip ${lower} (want >= ${lower + FLOOR.catchDrop})`);
+    }
+  }
+  assert.ok(seen > 0, 'no catch bough under any gap: the test would not see the rule');
+});
+
 test('a world without floorRoll builds exactly as before (the toy world, 16 seeds)', () => {
   for (const s of SEEDS) assert.deepEqual(build(kit, s).platforms, build({ ...kit, manifest: { ...manifest } }, s).platforms);
 });

@@ -668,6 +668,8 @@ interface LocalGap {
   x0: number;
   x1: number;
   y: number;
+  /** the gap's lower lip (its far or near ledge, whichever lies lower): a catch bough hangs under it, never under the upper one */
+  lo: number;
   pit: boolean;
   /** a section's water gap (the rule's `water`): nothing laid under it, whatever the world's falls */
   water?: boolean;
@@ -818,8 +820,10 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       x = a.x + a.w + gap;
       y = a.y + dy;
       // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
-      const back = glide && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
+      // (and so does a block's (NODES §8.7, Roll B 11-05): stepped toward its landing, a stair inside the gap took off a single's reach
+      // under the lip and the double was two hops; the take-off side's stair keeps the block a block)
+      const back = (glide || pc.block) && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
     } else if (pl.kind === 'rope') {
       // a ledge past a gap no jump or glide clears, a shimmy rope across (rope.ts; the rope itself is hung once both are placed: layStage)
       // (its gap is a liana's, `back` (World 8, 2026-10-31): a soft pit climbing back to `after`, or World 8 Normal's heart fall)
@@ -827,7 +831,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const gap = Math.max(ROPE_MIN_GAP + 90, roll(rng, pl.gap));
       x = a.x + a.w + gap;
       y = a.y;
-      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, pit: true, back: { lips: [a.y, y] }, ...(pl.soft ? { soft: true } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: Math.max(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.soft ? { soft: true } : {}) });
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -883,7 +887,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y + dy;
       lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, { x, y, w }, budget.difficulty);
       lv.hang.gap = [a.x + a.w, x];
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}) });
     } else if (pl.kind === 'climb') {
       const a = ref(pl.on);
       if (pc.shape !== 'vine') throw new Error(`gen2 section ${tpl.id}: ${pc.key} climbs, so its shape is 'vine'`);
@@ -1409,7 +1413,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           placed.seam.push(...platforms.slice(before));
         } else if (!g.water && FR?.catchDrop) {
           const before = platforms.length;
-          catchUnder(g0.x0, g0.x1, g0.y);
+          // (under the gap's LOWER lip, as a join's is: hung under the upper one it was a step down onto the lower bough, Roll A 11-05)
+          catchUnder(g0.x0, g0.x1, oy + g.lo);
           placed.seam.push(...platforms.slice(before));
         }
       }
@@ -1803,9 +1808,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const m = s.allow?.[0];
         if (m && !tipsSaid.has(m)) {
           tipsSaid.add(m);
-          const text = M.tips?.[m] ?? m;
-          hints.push({ x: k.x, text, pad: text, keys: text });
-          fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y });
+          // (a tip names a Dot line by its id, said in the kit's words for it (the line's own, so swapLine knows it and a move row arms
+          // the move watch). An id the kit has no words for is never shown: the roll fails by name, the red team 11-05, RT-PLAYER F1,
+          // where "hint.1-1.double" itself was on screen)
+          const text = tipWords(M.tips, m);
+          if (text) hints.push({ x: k.x, text, pad: text, keys: text });
+          fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y, ...(text ? {} : { unsaid: true }) });
         }
       } else if (s.role === 'receptor') {
         const src = sec.sockets.find((q) => q.socket.id === s.link);
@@ -2390,13 +2398,54 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
  * Build one stage: passes 1-6, the repair loop and the length loop. Easy first lays Normal's plan (the section sequence), so the
  * two difficulties are the same stage under different rules. Deterministic: the same request gives the same stage.
  */
+/** a Dot line's id to the words a tip says: the kit's own (manifest.tips, World 1's W1_TIPS built from dotLinesData), one source;
+ *  undefined when the kit has none, and the roll fails by name (the lead, 11-06: a kit that forgets a tip fails loudly) */
+export function tipWords(tips: Readonly<Record<string, string>> | undefined, id: string): string | undefined {
+  return tips?.[id];
+}
+
+/** a stage's pool: its world's sections whose `feel` names the stage (or is unset) and whose `not` names nothing the stage owns */
+export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] {
+  const owns = new Set(M.owns?.[stageId] ?? []);
+  return M.sections.filter((t) => (!t.feel || t.feel.includes(stageId)) && !(t.not ?? []).some((x) => owns.has(x)));
+}
+
 export function buildGen2Stage(req: BuildRequest): Gen2Stage {
+  // (the stage's own pool, cut to its tags before anything is chosen: the red team 11-05, 1-2 would have been dealt 1-1's sections)
+  const M0 = req.kit.manifest;
+  const pool = stagePool(M0, req.config.id);
+  if (pool.length !== M0.sections.length) req = { ...req, kit: { ...req.kit, manifest: { ...M0, sections: pool } } };
   const st = buildRolled(req);
+  // (a tip whose id has no Dot line fails the roll: it was never shown)
+  const unsaid = [...new Set(st.gen2.fills.filter((f) => f.role === 'tip' && f.unsaid).map((f) => f.what))];
+  if (unsaid.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...unsaid.map((m) => `tip "${m}" has no Dot line in the kit's tips`)];
   // (Law 22, R1 §4.1, the lead's 7:00 PM ruling: a slot its rules could not fill FAILS the roll, the missing piece named; never a looser
   // rule and never a re-roll. The stage is still returned, for the report; its errors say why it fails)
   if (st.gen2.loosened?.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...st.gen2.loosened.map((l) => `pool short at ${l.replace(/, filled by its (job|phase)\)$/, ')')}`)];
   if (st.gen2.missing?.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...st.gen2.missing];
   return st;
+}
+
+/** how far the game's road walks from an asked seed, and its stride (a prime) */
+export const PROVEN = { walk: 24, stride: 7919 } as const;
+/**
+ * The game's road (the red team 11-05, RT-ENGINE #3: a failed roll was built and played without a word): a roll with gen2.errors is
+ * never returned. The asked seed first, then the next on a fixed walk (asked + k x PROVEN.stride), so the same asked seed always plays
+ * the same stage; none in the walk: it throws, naming the first failure (never played quietly). One build a seed: Normal's loop takes a
+ * plan only when Easy lays it cleanly, and Easy carries Normal's errors, so a seed is clean on both settings or on neither, and Easy is
+ * Normal's stage. buildGen2Stage stays the report's road (it hands back a failed roll with its errors).
+ */
+export function provenGen2Stage(req: BuildRequest, walk: number = PROVEN.walk): Gen2Stage {
+  let first: string[] | undefined;
+  for (let k = 0; k < walk; k++) {
+    const seed = req.seed + k * PROVEN.stride;
+    const st = buildGen2Stage({ ...req, seed });
+    if (st.gen2.errors?.length) { first ??= st.gen2.errors; continue; }
+    // (recorded only when the walk moved off the asked seed: a seed played as asked carries nothing new)
+    if (k > 0) st.gen2.proven = { asked: req.seed, used: seed, tried: k + 1 };
+    return st;
+  }
+  throw new Error(`gen2 ${req.config.id} (${req.difficulty}): no seed of ${walk} from ${req.seed} builds cleanly (the first: ${first?.join('; ')})`);
 }
 
 function buildRolled(req: BuildRequest): Gen2Stage {
@@ -2421,14 +2470,17 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     st.gen2.modelled = { typical: Math.round(gen2Model(st, MODEL_TYPICAL) * 10) / 10, fast: Math.round(fast * 10) / 10 };
     st.gen2.rerolls = n.gen2.rerolls;
     st.gen2.repairs = repairs;
-    if (v.ok && fast >= budget.seconds.fastFloor) return st;
-    best = st;
-    st.gen2.errors = checkStage(st, budget).errors;
-    repairs.push({ kind: 'reroll', note: "Easy could not lay Normal's plan: Easy plans its own (the curation report names the stage)" });
+    // (Easy never plans its own, the red team's #4: Normal's loop took this plan only if Easy laid it cleanly, so a failure here is
+    // Normal's own failure or the clock; it fails by name, with Normal's errors)
+    const errs = [...(n.gen2.errors ?? [])];
+    if (!v.ok) errs.push(`Easy could not lay Normal's plan${v.why ? `: ${v.why}` : ''}`, ...checkStage(st, budget).errors);
+    if (fast < budget.seconds.fastFloor) errs.push(`Easy's quick player under the floor (${fast.toFixed(1)} s, floor ${budget.seconds.fastFloor.toFixed(1)} s)`);
+    st.gen2.errors = [...new Set(errs)];
+    return st;
   }
   // (the stage is the same on both difficulties, so Normal's build also holds Easy's quick player to the floor: Easy lays its plan)
   const easyReq: BuildRequest = { ...req, difficulty: 'easy' };
-  const easyBudget = req.difficulty === 'easy' ? budget : planBudget(req.config, M, 'easy');
+  const easyBudget = planBudget(req.config, M, 'easy');
   const byId = new Map(M.sections.map((t) => [t.id, t]));
   const required = new Set((M.required?.[req.config.id] ?? []).map((r) => r.section));
   for (let rr = 0; rr <= maxRerolls; rr++) {
@@ -2447,8 +2499,14 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     let lastMeeting: Gen2Stage | null = null;
     for (let it = 0; it < 24; it++) {
       const b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open });
-      const v = checkAndRepair(b, budget, repairs, tried);
+      let v = checkAndRepair(b, budget, repairs, tried);
       const st = b.stage;
+      // (Easy is Normal's stage, the red team 11-05, RT-ENGINE #4: a plan is taken only when Easy lays it cleanly too. An Easy-only breach
+      // (its kinder pads widening a take-off into a block's reach, seed 124) bans that section at that slot for both settings)
+      if (v.ok) {
+        const ev = checkAndRepair(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st)), easyBudget, [], new Set());
+        if (!ev.ok) v = { ...ev, why: `on Easy: ${ev.why ?? 'its check fails'}` };
+      }
       st.gen2.rerolls = rr;
       st.gen2.repairs = [...repairs];
       const grow = (note: string) => {
@@ -2462,6 +2520,7 @@ function buildRolled(req: BuildRequest): Gen2Stage {
       };
       if (!v.ok) {
         st.gen2.errors = checkStage(st, budget).errors;
+        if (!st.gen2.errors.length && v.why) st.gen2.errors = [v.why];
         if (!best) best = st;
         // (a trim that broke it: the stage before the trim passed)
         if (lastMeeting) return lastMeeting;

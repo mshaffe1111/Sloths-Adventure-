@@ -103,6 +103,8 @@ export type PitKind = 'soft' | 'water' | 'void';
 export interface WorldManifest {
   world: number;
   name: string;
+  /** what each stage owns, by stage id (its own beats: a section whose `not` names one is never laid there) */
+  owns?: Readonly<Record<string, readonly string[]>>;
   /** the moves a stage of this world may require (on top of walk and jump) */
   moves: Move[];
   /** the world's ground: its top (world y), the bank's depth, the look */
@@ -377,6 +379,11 @@ export interface SectionTemplate {
   /** what it is for, in a few words (the inspector's beat name) */
   name: string;
   archetypes: Archetype[] | 'any';
+  /** the stages it may be laid in (stage ids, e.g. '1-1'); unset: any stage of its world. The pool is cut to it before anything is
+   *  chosen (pipeline stagePool), so no slot, loosened or not, lays another stage's section (the red team, 11-05) */
+  feel?: readonly string[];
+  /** what it must never serve: never laid in a stage that owns any of these (manifest.owns) */
+  not?: readonly string[];
   phases: Phase[];
   /** 1 (gentle) .. 10 (hard): picked when the node's tension, scaled into the stage's band, is near it */
   difficulty: number;
@@ -584,6 +591,8 @@ export interface FilledSocket {
   what: string | null;
   x: number;
   y: number;
+  /** a tip whose id named no Dot line: nothing was said (the roll fails by name, pipeline buildGen2Stage) */
+  unsaid?: boolean;
 }
 
 /**
@@ -646,6 +655,9 @@ export const versionKey = (template: string, subBlock: string, version: string):
 export interface Gen2Meta {
   /** the seed the shipped layout was built from (the request's, or a re-roll's) */
   seed: number;
+  /** the game's road (provenGen2Stage): the seed it was asked for, the seed it played (the first on its walk that both settings lay
+   *  cleanly) and how many it tried; only when it walked off the asked seed */
+  proven?: { asked: number; used: number; tried: number };
   /** the section sequence: Easy lays Normal's; curation compares neighbouring stages' plans (C4) */
   plan: PlanSlot[];
   /** whole-stage re-rolls used (0: the first roll passed) */
