@@ -106,6 +106,7 @@ After 1-1 is proven, these run as their own lanes, one engine.ts holder at a tim
   look at the thing before saying it's done.
 
 ## For the roadmap (owed R-ids, law 21)
+- JOYSTICK / PAD REFINEMENT (Matt 11-06 ~12 PM: 'if we have it as an option, it must be as refined as the other options'): the gesture controls were tuned on 86 sessions (polish-controls); the pad never was. A lane next week: tune the pad from the weekend's pad recordings (the `controls` moment tells pad vs gestures), the same polish bar and replay tool, before any Play Store build. If it can't reach the bar, it isn't offered.
 - DISCOVERABILITY (Matt 11-06 ~11:52 AM, 'to ponder'): players don't find the options unless they dig: the thumb side (pad left/right), the joystick/pad control style, and other settings. Ideas to weigh later: a one-time 'did you know' card after a first stage (Dot can say it), a hint after N mis-touches on the wrong side (the touch log can tell), a settings peek on the first pause, a line on the tester page. NOT now; design it with the onboarding lane.
 - Tester page: Matt sees the game-look MOCK-UP before it rolls out (show-first; tester-page stills by 2 PM).
 - LIVE dips to judge (engine-core relative finder, 11-06; reference/qa-reports/engine-core/live-dips-to-judge.txt on engine-core): 1-2 s1 x12725 (80 px, never out); 1-6 s1 x21024; 1-6 s3 x16441-19651 (never out); 1-7 s3 x15479-19003 (never out); 2-2 s2 nine 200 px floors; 2-3 s1 seven 200 px floors (maybe room floors or river beds). Judge each, then fix or clear.
