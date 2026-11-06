@@ -26,7 +26,6 @@ import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
-import { DOT_LINES } from '../dotLinesData.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
@@ -1809,9 +1808,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const m = s.allow?.[0];
         if (m && !tipsSaid.has(m)) {
           tipsSaid.add(m);
-          // (a tip names a Dot line by its id: the kit's own words, else its row in dotLinesData, said in the row's words so the game
-          // knows the line (swapLine: a move row arms the move watch). An id with no row is never shown: the roll fails by name, the
-          // red team 11-05, RT-PLAYER F1, where "hint.1-1.double" itself was on screen)
+          // (a tip names a Dot line by its id, said in the kit's words for it (the line's own, so swapLine knows it and a move row arms
+          // the move watch). An id the kit has no words for is never shown: the roll fails by name, the red team 11-05, RT-PLAYER F1,
+          // where "hint.1-1.double" itself was on screen)
           const text = tipWords(M.tips, m);
           if (text) hints.push({ x: k.x, text, pad: text, keys: text });
           fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y, ...(text ? {} : { unsaid: true }) });
@@ -2399,11 +2398,10 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
  * Build one stage: passes 1-6, the repair loop and the length loop. Easy first lays Normal's plan (the section sequence), so the
  * two difficulties are the same stage under different rules. Deterministic: the same request gives the same stage.
  */
-/** a Dot line's id to the words a tip says: the kit's own (manifest.tips), else its dotLinesData row's (the old words, which the game's
- *  swapLine reads to find the line and say its new ones); undefined when neither has it */
-const LINE_WORDS = new Map(DOT_LINES.map((r) => [r[0], r[4] ?? r[5]]));
+/** a Dot line's id to the words a tip says: the kit's own (manifest.tips, World 1's W1_TIPS built from dotLinesData), one source;
+ *  undefined when the kit has none, and the roll fails by name (the lead, 11-06: a kit that forgets a tip fails loudly) */
 export function tipWords(tips: Readonly<Record<string, string>> | undefined, id: string): string | undefined {
-  return tips?.[id] ?? LINE_WORDS.get(id) ?? undefined;
+  return tips?.[id];
 }
 
 /** a stage's pool: its world's sections whose `feel` names the stage (or is unset) and whose `not` names nothing the stage owns */
@@ -2420,7 +2418,7 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const st = buildRolled(req);
   // (a tip whose id has no Dot line fails the roll: it was never shown)
   const unsaid = [...new Set(st.gen2.fills.filter((f) => f.role === 'tip' && f.unsaid).map((f) => f.what))];
-  if (unsaid.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...unsaid.map((m) => `tip "${m}" has no Dot line (dotLinesData.ts) and no kit words`)];
+  if (unsaid.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...unsaid.map((m) => `tip "${m}" has no Dot line in the kit's tips`)];
   // (Law 22, R1 §4.1, the lead's 7:00 PM ruling: a slot its rules could not fill FAILS the roll, the missing piece named; never a looser
   // rule and never a re-roll. The stage is still returned, for the report; its errors say why it fails)
   if (st.gen2.loosened?.length) st.gen2.errors = [...(st.gen2.errors ?? []), ...st.gen2.loosened.map((l) => `pool short at ${l.replace(/, filled by its (job|phase)\)$/, ')')}`)];
