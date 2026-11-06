@@ -29,7 +29,8 @@ import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
 import { roll11Seed, setPick11 } from '../../src/game/testlink1_1.ts';
 import { cameraReachBreaches } from '../../src/game/cameraReach.ts';
-import { endAboveWindow, rawTextIds, seedPromise } from '../../src/game/storyChecks.ts';
+import { endAboveWindow, rawTextIds, seedPromise, teachOrder } from '../../src/game/storyChecks.ts';
+import { dotLine } from '../../src/game/dotLines.ts';
 import { stageVariety, varietyBreaches, VARIETY_BARS } from '../../src/game/stageVariety.ts';
 import { buildGen2Stage } from '../../src/game/gen2/pipeline.ts';
 import { w1World } from '../../src/game/gen2/worlds/w1.ts';
@@ -310,6 +311,13 @@ if (fs.existsSync(OLD_FILE)) {
   gate(`what the player sees: Dot's lines are words, no raw text id (${N} layouts x 2)`, bad);
 }
 
+// 5c'-teach. TT4 (Round 7): every teach node says its line before the first piece that needs its move (storyChecks.ts teachOrder)
+{
+  const bad: string[] = [];
+  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) { const st = buildRoll(cfg, v, setting === 'easy') as never; if (!gen2Of(st)) continue; for (const b of teachOrder(st, (i) => dotLine(i)?.old ?? undefined).slice(0, 3)) bad.push(`${setting} ${v}: ${b}`); }
+  gate(`TT4: each teach line before the first piece that needs its move (${N} layouts x 2)`, bad);
+}
+
 // 5c'-story. two of 1-1's story promises (storyChecks.ts; Round 6, the supervisor's PASS, the lead 11-05 9:40 PM): V19b, the end log higher
 // than the route where the bough window begins (net-zero versions may not flatten the climb), and the seed's promise (over 200 px up past
 // a double, a mushroom within 260 below: stage11.test.ts), on every build
@@ -461,10 +469,13 @@ const codeRows: string[] = [];
 
 // 6. the stage's own tests
 const [w, m] = id.split('-');
-const testFile = `src/game/stage${w}${m}.test.ts`;
+// (1-1 builds on gen2 since 11-06 (Play): its own tests are gen2/stage11gen2.test.ts, which build Rolls A, B and C through the picker, the
+// roll asked for among them)
+const gen2Tests = id === '1-1';
+const testFile = gen2Tests ? 'src/game/gen2/stage11gen2.test.ts' : `src/game/stage${w}${m}.test.ts`;
 // (under --roll the stage's own tests cannot measure the roll: stage11.test.ts builds the mixer's 1-1 with buildProtoStage, whatever the
 // pick; run, they would pass or fail the mixer for the roll. Fail-closed: a FAIL that says so, never the mixer's result)
-if (ROLL) gate(`tests (${testFile})`, [`${testFile} builds the mixer's ${id} (buildProtoStage), not Roll ${ROLL} (seed ${ROLL_SEED}): not measured on the roll`], false);
+if (ROLL && !gen2Tests) gate(`tests (${testFile})`, [`${testFile} builds the mixer's ${id} (buildProtoStage), not Roll ${ROLL} (seed ${ROLL_SEED}): not measured on the roll`], false);
 else if (fs.existsSync(testFile)) {
   const t = spawnSync('npx', ['tsx', '--test', testFile], { encoding: 'utf8' });
   const fails = (t.stdout ?? '').split('\n').filter((l) => l.startsWith('not ok')).map((l) => l.replace(/^not ok \d+ - /, ''));

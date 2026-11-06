@@ -857,6 +857,10 @@ export class GameEngine {
     // moves the stage lends him (the control test's rope), and the test's mix, logged so the run can be built again
     for (const s of this.proto?.grant ?? []) this.skills.add(s);
     if (this.proto?.mix) recorder.event('mix', this.proto.mix);
+    // (a rolled stage's seed and setting, so a tester's play can be built again: gen2 1-1's Play draws a fresh one each time)
+    const g2 = (this.currentStage as { gen2?: { seed?: number }; proto?: { gen2?: { seed?: number } } });
+    const g2seed = (g2.gen2 ?? g2.proto?.gen2)?.seed;
+    if (g2seed !== undefined) recorder.event('gen2', `${this.currentStage.config.id} seed ${g2seed} ${isEasy() ? 'easy' : 'normal'}`);
     // Dot's help setting, so the QA team can compare first-timers by it
     recorder.event('look', `help ${dotHelp()}`);
     this.ring = { state: 'idle', wave: 0, ids: [] };
@@ -7246,6 +7250,15 @@ export class GameEngine {
     const from = this.softAt?.x ?? -Infinity;
     const z = this.softAt ? zs?.find((h) => (cx > h.x0 - 160 && cx < h.x1 + 160) || (from > h.x0 - 420 && from <= h.x0 + 20 && cx > h.x0 - 160)) : undefined;
     if (!z || !this.softAt) return false;
+    // (a soft zone, gen2's level double-gap blocks: the planner's spec, the lead's ruling A, 11-06): back to the take-off as Easy's soft
+    // falls do, the F10 back-off from the edge kept; no heart, no hurt, no blink
+    if (z.soft) {
+      const was = this.softOn;
+      this.softOn = true;
+      this.softFall();
+      this.softOn = was;
+      return true;
+    }
     const hp = p.hp - 1;
     this.statHeartsLost += 1;
     recorder.event('hurt', hp);

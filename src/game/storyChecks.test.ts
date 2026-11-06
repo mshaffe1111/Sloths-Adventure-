@@ -6,7 +6,8 @@ import { generateAllLevels } from './worldsData.ts';
 import { buildGen2Stage, layLocal, planBudget, rngFor } from './gen2/pipeline.ts';
 import { w1World, W1_SECTIONS } from './gen2/worlds/w1.ts';
 import { cfg as toyCfg, manifest } from './gen2/toyWorld.ts';
-import { endAboveWindow, rawTextIds, seedPromise } from './storyChecks.ts';
+import { endAboveWindow, rawTextIds, seedPromise, teachOrder } from './storyChecks.ts';
+import { dotLine } from './dotLines.ts';
 
 const config = generateAllLevels().find((l) => l.id === '1-1')!;
 
@@ -57,4 +58,19 @@ test('what the player sees: gen2 1-1 Rolls A/B/C put words on screen, never a ra
     const st: any = buildGen2Stage({ config, kit: w1World(), seed, difficulty: 'normal' });
     assert.deepEqual(rawTextIds(st), [], `seed ${seed}`);
   }
+});
+
+const oldWords = (id: string) => dotLine(id)?.old ?? undefined;
+test('TT4: every teach node says its line before the first piece that needs the move on Rolls A/B/C; a line moved after its block FAILS (planted)', () => {
+  for (const seed of [79191, 110867, 118786]) {
+    const st: any = buildGen2Stage({ config, kit: w1World(), seed, difficulty: 'normal' });
+    assert.deepEqual(teachOrder(st, oldWords), [], `seed ${seed}`);
+  }
+  // (planted on a toy double teach where the double is needed, a bank 140 px up: Roll B's own is walked round today, its pit step, so
+  // nothing there needs the double; the known failure the held tags are for)
+  const P = (x: number, y: number, width: number) => ({ id: x, x, y, width, height: 300, type: 'solid' as const, style: 'moss_stone' as const });
+  const toy: any = { platforms: [P(0, 900, 600), P(600, 760, 600)], gen2: { nodes: [{ token: 'Tg2>', x0: 0, x1: 1200 }] }, proto: { hints: [{ x: 120, text: oldWords('coach.nice') }, { x: 450, text: oldWords('hint.1-1.double') }] } };
+  assert.deepEqual(teachOrder(toy, oldWords), [], 'in order');
+  assert.match(teachOrder({ ...toy, proto: { hints: [{ x: 700, text: oldWords('coach.nice') }] } }, oldWords).join(';'), /comes after the first piece/);
+  assert.match(teachOrder({ ...toy, proto: { hints: [] } }, oldWords).join(';'), /no teach line/);
 });

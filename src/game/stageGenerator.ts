@@ -6,8 +6,8 @@ import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
-import { pick11, roll11Seed, skip11Spec } from './testlink1_1.ts';
-import { provenGen2Stage } from './gen2/pipeline.ts';
+import { pick11, play11Seed, roll11Seed, skip11Spec, withPlaySeed } from './testlink1_1.ts';
+import { buildPlayStage } from './gen2/seedList.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
 import { dipWayOut } from './dipWayOut.ts';
@@ -2829,7 +2829,32 @@ const flagsCapped = (st: GeneratedStage): GeneratedStage => {
   return st;
 };
 
+/**
+ * Build-ahead (the lead, 11-06, the 1-1 polish bar: the red team saw 160-1100 ms of stage build on the main thread at Play): 1-1's next
+ * play is built while the map is up (buildAhead.ts, at idle), kept here by (stage, seed, setting), one at a time, and taken once by the
+ * play it was built for. A restart builds afresh (the same seed, the same stage)
+ */
+const ahead = new Map<string, GeneratedStage>();
+const aheadKey = (id: string, seed: number, d: Difficulty) => `${id}|${seed}|${d}`;
+export function buildAhead(config: LevelConfig, seed: number, difficulty: Difficulty): void {
+  const k = aheadKey(config.id, seed, difficulty);
+  if (ahead.has(k)) return;
+  const st = withPlaySeed(seed, () => generateStage(config, difficulty));
+  ahead.clear();
+  ahead.set(k, st);
+}
+/** what is built ahead (tests) */
+export const aheadKeys = (): string[] => [...ahead.keys()];
+
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
+  if (config.id === '1-1' && !config.secret && pick11() === 'play' && ahead.size) {
+    const k = aheadKey('1-1', play11Seed(layoutVariant ?? 1), difficulty);
+    const got = ahead.get(k);
+    if (got) {
+      ahead.delete(k);
+      return got;
+    }
+  }
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
@@ -2841,7 +2866,8 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
   // (the test link's 1-1 picker: a gen2 roll skips the hand-built path, testlink1_1.ts)
-  const gen2Roll11 = config.id === '1-1' && !config.secret && ['A', 'B', 'C'].includes(pick11());
+  // (1-1's Play is gen2 from the proven list: only Matt's Old 1-1 pick takes the hand-built path)
+  const gen2Roll11 = config.id === '1-1' && !config.secret && pick11() !== 'old';
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled() && !gen2Roll11) {
     // (a stage the mixer builds from its spec, 1-1 and 1-5, lays Easy itself: mixer/w1mix.ts; the rest are made gentler on the built
     // stage alone, easyMode.ts)
@@ -2858,16 +2884,22 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   }
   // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below; and the test link's
   // 1-1 picker's gen2 rolls (testlink1_1.ts: QA builds only, World 1's kit gen2/worlds/w1.ts w1World, the roll's seed)
-  const roll11 = config.id === '1-1' && !config.secret ? pick11() : 'mixer';
-  if (isGen2Stage(config) || roll11 === 'A' || roll11 === 'B' || roll11 === 'C') {
-    const stage = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? w1Finish(provenGen2Stage({ config, kit: w1World(), seed: roll11Seed(roll11), difficulty })) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
+  const roll11 = gen2Roll11 ? pick11() : null;
+  if (isGen2Stage(config) || roll11) {
+    const seed11 = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? roll11Seed(roll11) : play11Seed(layoutVariant ?? 1);
+    // (Play: the listed seed's proven plan replayed, the planner's buildPlayStage, ~100 ms at CPU x4; a roll the same way)
+    const stage = roll11 ? w1Finish(buildPlayStage(config, w1World(), seed11, difficulty)) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
     // (Easy's own goal for the stage, as the first-timer kid bot measured it: easyStage sets it, withGoals leaves it)
     const easyGoal = GEN2_STAGES[config.id]?.easyGoal;
     if (difficulty === 'easy' && easyGoal !== undefined) stage.easyGoal = Math.min(easyGoal, stage.enemies.length);
     // (a heart by every second flag from the second on, as the hand-built stages have (protoStage.ts heartsAtFlags), set where it is
     // clear of the stumps and pickups around the flag (easyMode.ts heartBy): a rolled stage's flag can stand beside anything)
+    // (H1, hearts follow risk (Matt 11-05 12:15 AM, "a heart only after real risk"; the lead's Round 7 ruling): a stage where nothing costs
+    // anything, no creature, no water, no fall that costs a life, lays none (gen2 1-1: it had 6 hearts and no damage)
+    const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!stage.heartFalls?.some((z) => !z.soft) || !!(stage as { proto?: { water?: Array<{ kind?: string }> } }).proto?.water?.some((z) => z.kind === 'deadly') || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
     let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
-    [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
+    // (H1 is for the unshipped gen2 1-1 only, the lead 11-06: the live gen2 worlds keep their hearts as they are)
+    if (risky || GEN2_STAGES[config.id]) [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
     const done = finishStage(stage, validateStage(stage, { rooms: false }).reachableIds);
     // (World 5's dressing sets, once the pickups are all placed, so none is covered: artDress.ts dressSets)
     addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);

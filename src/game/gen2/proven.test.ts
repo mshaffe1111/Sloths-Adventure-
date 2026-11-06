@@ -73,5 +73,7 @@ test('a seed whose build throws is walked past, never thrown to the player', () 
   const flaky = { ...real, get manifest() { if (calls++ === 0) throw new Error('planted: the pool is spent'); return real.manifest; } } as typeof real;
   const st = provenGen2Stage({ config: c, kit: flaky, seed: 79191, difficulty: 'normal' });
   assert.deepEqual(st.gen2.errors ?? [], []);
-  assert.equal(st.gen2.proven?.tried, 2, 'the walk did not move past the seed that threw');
+  // (how far the walk goes after the throw is the data's: a next seed may itself fail a rule by name; what is planted is the throw)
+  assert.ok((st.gen2.proven?.tried ?? 1) >= 2, 'the walk did not move past the seed that threw');
+  assert.notEqual(st.gen2.seed, 79191, 'the stage is the seed that threw');
 });

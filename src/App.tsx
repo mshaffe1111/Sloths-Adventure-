@@ -1,4 +1,5 @@
-import { setPick11 } from './game/testlink1_1.ts';
+import { newPlay11, setPick11 } from './game/testlink1_1.ts';
+import { scheduleAhead } from './game/buildAhead.ts';
 import { handleBack } from './components/nav/backStack.ts';
 import { PerfReadout } from './components/PerfReadout.tsx';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
@@ -53,9 +54,8 @@ import { BadgeToast } from './components/BadgeToast.tsx';
 import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
 import { KIT_STAGE_ID, kitStageConfig, setKitStart } from './game/kitStage.ts';
-import { ctestEnabled, newMix, recorder } from './game/playRecorder.ts';
+import { ctestEnabled, recorder } from './game/playRecorder.ts';
 import { guardBack } from './game/backGuard.ts';
-import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
@@ -748,10 +748,12 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, activeLevel.id]);
 
-  // the control test's stage: 1-2, asking only to reach the shrine (1-2 itself is a petal hunt, and its shrine would stay sealed)
-  const ctestLevel = (): LevelConfig | null => {
-    const base = allLevels.find((l) => l.id === CTEST_STAGE_ID);
-    return base ? { ...base, name: 'Control Test', objectiveType: 'sprint' as const, targetCount: 1 } : null;
+  // the testers' stage (#ctest, the lead and tester-page, 11-06): gen2 1-1 as Play builds it, its own goal, a fresh proven seed each run
+  // on the tester's own setting (the control course it replaced: stageGenerator.ts CTEST_STAGE_ID)
+  const ctestLevel = (): LevelConfig | null => allLevels.find((l) => l.id === '1-1') ?? null;
+  const ctestDraw = () => {
+    setPick11('play');
+    newPlay11();
   };
   // and its sheets, loaded, decoded and drawn once while the tester reads the front page and types a name: started only at Start, a slow
   // connection had the eagle's and the snakes' sheets arrive mid-run and stall the frames they first drew in (QA 2026-10-29, Safari 18,
@@ -760,6 +762,10 @@ export default function App() {
     if (!ctestGate) return;
     const lvl = ctestLevel();
     if (lvl) void preloadStage(lvl, canvasRef.current, inPlay);
+    if (lvl) {
+      setPick11('play');
+      scheduleAhead(lvl);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctestGate]);
 
@@ -767,7 +773,9 @@ export default function App() {
   // last mix's creatures that this one does not draw are let go first: stagePreload.ts)
   useEffect(() => {
     if (!ctestDone) return;
-    newMix();
+    // (the next run's stage built at idle while the questions are up: buildAhead.ts; Play again draws its seed)
+    setPick11('play');
+    scheduleAhead(ctestDone);
     void preloadStage(ctestDone, canvasRef.current, inPlay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctestDone]);
@@ -905,7 +913,7 @@ export default function App() {
             // the control test is over at its shrine: thank the tester (nothing is saved, and the game does not go on to 1-3)
             // (and the stage stops: under the questions it kept drawing 30 times a second for as long as they took, minutes, and on Sally's
             // Android the frames there slowed and the picture dropped to its lightest before the replay, QA 2026-10-29)
-            if (ctestEnabled() && lvl.id === CTEST_STAGE_ID) {
+            if (ctestEnabled() && lvl.id === '1-1') {
               engine.stop();
               setCtestDone(lvl);
               return;
@@ -1126,6 +1134,7 @@ export default function App() {
             setRecording(true);
             const lvl = ctestLevel();
             if (lvl) {
+              ctestDraw();
               setActiveLevel(lvl);
               setSelectedWorldId(lvl.worldIndex);
               launchEngine(lvl);
@@ -1150,7 +1159,8 @@ export default function App() {
             const lvl = ctestDone;
             setCtestDone(null);
             recorder.event('playAgain');
-            // (the new mix was chosen, and its sheets loaded, while the questions were up: the effect below)
+            ctestDraw();
+            // (the next run's stage was built, and its sheets loaded, while the questions were up: the effect above)
             launchEngine(lvl);
           }}
         />

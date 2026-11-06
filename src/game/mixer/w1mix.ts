@@ -1191,6 +1191,29 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
     const y = Math.max(a.y, b.y) + 60;
     L.P.push({ id: L.pid++, x: a.x + a.width - 30, y, width: b.x + 50 - (a.x + a.width - 30), height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
   }
+  // (a creaking branch over safe ground (the old 1-5's promise, stage15.test.ts; the lead 11-06): where a creaky piece has nothing safe under
+  // its middle, a catch branch 120 px under it, 30 px wider each side, so a snap drops him onto it and a hop goes on. A creek's water is
+  // still the creek's, a splash (the pass below takes a catch off the water, Matt 11-05))
+  for (const p of [...L.P]) {
+    if (p.type !== 'fragile') continue;
+    const mid = p.x + p.width / 2;
+    if (L.P.some((q) => q !== p && q.type !== 'fragile' && q.y > p.y && q.x <= mid && q.x + q.width >= mid)) continue;
+    const clear = (c: { x: number; y: number; width: number }) => !L.P.some((q) => q.x < c.x + c.width && q.x + q.width > c.x && q.y < c.y + 24 + 40 && q.y + q.height > c.y - 40);
+    // (120 px under it and 30 px wider each side, or narrower or deeper where a neighbour stands close)
+    const tries = [[120, 30], [120, 10], [150, 10], [90, 10], [120, 0]].map(([dy, wx]) => ({ x: p.x - wx, y: p.y + dy, width: p.width + 2 * wx }));
+    let c: { x: number; y: number; width: number } | null = tries.find(clear) ?? null;
+    if (!c) {
+      // (over a gap in the ground under it: the floor gap's own catch, 60 px under its lower lip, from the near piece's edge to 50 px under
+      // the far one, as the safe nodes lay theirs)
+      const below = L.P.filter((q) => q !== p && q.type !== 'fragile' && q.type !== 'bouncy' && q.y > p.y + 40);
+      const a = below.filter((q) => q.x + q.width <= mid && q.x + q.width > mid - 260).sort((u, v) => v.x + v.width - (u.x + u.width))[0];
+      const b = below.filter((q) => q.x >= mid && q.x < mid + 260).sort((u, v) => u.x - v.x)[0];
+      c = a && b ? { x: a.x + a.width - 30, y: Math.max(a.y, b.y) + 60, width: b.x + 50 - (a.x + a.width - 30) } : null;
+      if (c && !(c.x <= mid && c.x + c.width >= mid)) c = null;
+    }
+    if (!c) continue;
+    L.P.push({ id: L.pid++, x: Math.round(c.x), y: Math.round(c.y), width: Math.round(c.width), height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
+  }
   // (no catch branch in a creek (Matt, 11-05: "a catch branch under a gap has no place in a creek"; w1NewArt.ts piecesUnderWater): a gap
   // over the water is the creek's, and a miss there is a splash)
   for (let k = L.P.length - 1; k >= 0; k--) {

@@ -130,7 +130,8 @@ test("World 1, 16 layouts: every painted drop has a bank of earth at both sides 
   // (engine-core: only the mixer's stages mark drops, so drawW1Pits, which paints marked drops only, leaves every other World 1 stage
   // to main's painting; the rebuild's 1-3 box, R-164.6, is not on main)
   for (const id of ['1-2', '1-3', '1-4', '1-6', '1-7', '1-8', '1-9']) for (const s of [1, 2]) assert.ok(!new RealPlay(id, s).platforms.some((q) => q.pit === 'drop'), `${id} layout ${s} marks a drop`);
-  for (const id of ['1-1', '1-5']) assert.ok(new RealPlay(id, 1).platforms.some((q) => q.pit === 'drop'), `${id} marks its drops`);
+  // (1-1's Play is gen2 since 11-06, its drops painted by its own look: only the mixer's 1-5 marks drops now)
+  for (const id of ['1-5']) assert.ok(new RealPlay(id, 1).platforms.some((q) => q.pit === 'drop'), `${id} marks its drops`);
 });
 
 test("a marked drop between two banks at any height is judged against its own two banks, not the stage's one ground line (the mixer's 1-5)", () => {
