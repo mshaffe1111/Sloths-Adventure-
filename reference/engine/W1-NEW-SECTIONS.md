@@ -315,3 +315,23 @@ the quickest line, so it would become the measured route and read as one long "w
 other's: no stretch of plain walk over about 1.5 s on either road**, and each road's beat string differs (FR4). Whichever road the
 quickest route takes, it reads moves. Versions must differ in the ORDER and SPACING of moves along the line; a change in height
 within one move reads the same.
+
+**FR8 (added 7:02 PM, from the porter's seed-1 strings at engine-core 474e86b33).** The low roads now read beats, but almost all of them
+read the SAME beat: `w h w h w h`, stumps every time. The 3-grams then repeat across sections, and diversity can't rise. **Each low
+road uses at least two beat kinds, with never three of the same kind in a row, and the kinds differ from section to section:**
+
+| Section | Low road's beats |
+|---|---|
+| `w1-log-road` | a dip and a bank step: `j`, `c n`, `h` |
+| #21 `w1-bounce-double` | stones, then a dip: `h h j h` |
+| #9 `w1-bough-stepup` | bank steps and a dip: `c n j h` |
+| `w1-high-leaps`, `w1-bounce-run` | a floor mushroom and stones: `h b h j` (ketsu: the bounce is taught by then) |
+| `w1-ledges` | a mound up and over: `c h n j` |
+| the forks #36-#39, #47-#48 | as written (each low road already mixes `b`, `c`, `h` and `j`); keep each low road's string distinct from the others' |
+
+- **Plain stretches:** ≤ 1.5 s inside a challenge section. Up to 2.0 s in a run-out after a fork, or in a harvest tail, since that's
+  the node's cool-down (§1).
+- **The porter's two changes are accepted.**
+  - The log road's logs float, so no post walls the lane (Matt: platforms may float).
+  - The first bough on the step-up sits at 180 px, reached by a stump then a double.
+- The towers, stilts and second-jump keep long plain stretches until the planner's back-only pit lands. That's expected.
