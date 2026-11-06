@@ -103,6 +103,8 @@ export type PitKind = 'soft' | 'water' | 'void';
 export interface WorldManifest {
   world: number;
   name: string;
+  /** what each stage owns, by stage id (its own beats: a section whose `not` names one is never laid there) */
+  owns?: Readonly<Record<string, readonly string[]>>;
   /** the moves a stage of this world may require (on top of walk and jump) */
   moves: Move[];
   /** the world's ground: its top (world y), the bank's depth, the look */
@@ -112,6 +114,49 @@ export interface WorldManifest {
   /** how deep a soft pit's floor lies under its lips at most (px): a pit too narrow for wide steps out is shallower, its floor one
    *  plain hop under the far lip (pipeline pitSteps: every dip has a one-jump way out, every step a tread a thumb can land on) */
   pitDepth: number;
+  /**
+   * World 1's floor families (the planner's floor road, engine-floorroad 4fd9e992; the designer's floor ruling, WORLD-RULEBOOK 9a22b846):
+   * each roll draws a hop family by weight. A hop roll (h >= `hopRoll`) keeps every soft pit's floor `shallow` under its lips and leans
+   * its ground joins to steps (the route reads hops); a jump roll (h <= `jumpRoll`) lays every soft pit's floor `deep` (past the route's
+   * 200 px, so it reads jumps) and leans its joins to pits; a roll between mixes them, slot by slot. The stairs out are pitSteps' own.
+   * Absent, the world's pits are `pitDepth` on every roll, as before.
+   */
+  floorRoll?: { hop: Array<{ range: [number, number]; weight: number }>; shallow: number; deep: number; hopRoll: number; jumpRoll: number;
+    /** a catch bough under every gap that is not a pit (a jump between ledges, the canopy's: the designer's ac7a233c, 60-120 px), this far
+     *  under the gap's lower lip, reaching from 30 px under the near ledge to 50 px under the far one; one jump back up */
+    catchDrop?: number;
+    /** the catches' looks, cycled in the order they are laid (['log', 'branch'] alternates); absent, every catch is a branch */
+    catchStyles?: ReadonlyArray<'branch' | 'log'> };
+  /**
+   * World 1's per-roll tempo (the mixer's per-roll draw, w1mix.ts:1072 / spec.ts RollRanges; the designer's measured ranges from old 1-1,
+   * 53c0b9960): each roll draws its median gap share (triangular min / mode / max) and its rise band (home, or the hilly break on
+   * `hillyShare` of rolls), from its own stream. A section's jump shares are scaled by the roll's median over `gap.centre` (never past
+   * `gap.p90`), its rises by the roll's band over `rise.centre`, inside the jump's own limits. The hop family is floorRoll's.
+   */
+  rollRanges?: { gap: { min: number; mode: number; max: number; p90: number; centre: number }; rise: { home: [number, number]; hilly: [number, number]; hillyShare: number; centre: number } };
+  /**
+   * The rolled stage graph (NODES.md §4, §6: World 1 first): in place of the one fixed SPINE, a stage of this world rolls one of its
+   * archetype's graphs from `list` under its brief (`briefs`, by stage id), then rolls each node's shape and dials. The brief constrains
+   * and the roll chooses: the stage's lessons (`lessons`) force its teach nodes, `ends` a finale or a quiet end, `trend` the shapes,
+   * `branching` the fork count. Absent, or for a stage with no brief, the stage takes the SPINE, as before.
+   */
+  graphs?: {
+    list: StageGraphDef[];
+    briefs: Record<string, GraphBrief>;
+    terrains?: string[];
+    /** length from the chunk count (CHUNK-POOL-BRIEF step 3), never clock-filling: the stage holds round(its target seconds / this)
+     *  sections; a quiet node (the arrival, a rest, a cooldown, the exit) one, the working nodes the rest by their shares. The length
+     *  repair still adds or takes a whole section where the modelled clock misses the band */
+    chunkSeconds?: number;
+    /** the hard no-repeat (STAGE-RULES §0c.2), a construction rule: a section's cap when it names none (World 1: 1) */
+    maxPerStage?: number;
+    /** the world's content mix (NODES.md §7.3), shares of its content nodes, when a brief names no deal of its own */
+    mix?: Readonly<Partial<Record<ContentType, number>>>;
+    /** where a content type may stand, as a share of the stage's nodes (V12; 1-1's floating: [0.67, 1]) */
+    windows?: Readonly<Partial<Record<ContentType, readonly [number, number]>>>;
+    /** the move a content type needs taught first (V3; W1: bounce needs the bounce): never dealt to a node before that move's teach */
+    typeNeeds?: Readonly<Partial<Record<ContentType, string>>>;
+  };
   /** the vertical corridor clamp (Part 3 §1): the route's ground stays between these world y's; inside `soft` px of an edge the
    *  selector leans toward sections that drift back */
   corridor: { top: number; bottom: number; soft: number };
@@ -151,7 +196,9 @@ export interface WorldManifest {
 // ───────────────────────────── a section ─────────────────────────────
 
 /** a platform, or one of the two hanging pieces: a `liana` (a swing, placed by `swing`) and a `vine` (a climb, placed by `climb`) */
-export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine';
+/** 'hollow': World 1's painted hollow log (w1NewArt.ts), its shell the landing and its inside clear to walk through: its height is the
+ *  art's own (hollowLogSize), whatever the section says */
+export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine' | 'hollow';
 
 /**
  * A liana's own swing (Matt, 2026-10-28): it swings by itself, `amp` radians either side of hanging straight down, one there-and-back
@@ -197,8 +244,10 @@ export interface LianaSwing {
 export type PlaceRule =
   | { kind: 'start' }
   | { kind: 'walk'; after: string; dy?: Range }
-  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
-  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; water?: boolean; soft?: boolean }
+  /** `gapPx` (the designer's pixel bands, 11-06: a double's TEACH 195-205, its TEST 205-230): the gap laid in this band exactly, in place of
+   *  `share`, never scaled by the roll's tempo or the jump's reach; a band past the reach fails the section by name */
+  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean }
+  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; gapPx?: [number, number]; water?: boolean; soft?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
@@ -209,6 +258,13 @@ export type PlaceRule =
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */
   key: string;
+  /** a BLOCK lands here (NODES.md §8.7 B1-B4): the way on needs the move. 'double': no single jump reaches this piece from anything
+   *  before it; 'bounce': no double does, so only the mushroom's bounce lands it. Checked on the laid stage in a teach or test node
+   *  (pipeline blockBreaches): a section whose block can be walked round there is swapped, never laid */
+  block?: 'double' | 'bounce';
+  /** a 'bounce' block's mushroom (the key of the bouncy piece it is reached from): its rise is clamped to the bounce's own reach from
+   *  that cap (physics bounceV's rise plus one air jump, x 0.95), never a walk's or a jump's, so a bounce lip can stand 200-225 px up */
+  from?: string;
   shape: PieceShape;
   /** width (px) */
   w: Range;
@@ -238,6 +294,7 @@ export type SocketRole =
   | 'source'     // the source half of a linked pair (A7): filled only together with its receptor
   | 'receptor'   // the receptor half (names its source in `link`)
   | 'objective'  // the stage's goal item (cage / relic / cocoon): filled from the mission graph's quota
+  | 'find'       // a hidden find off the main line (World 1's golden seed: rulebook §4 rule 12), filled once a stage, by the first one met
   | 'flag'       // a checkpoint (rests carry one)
   | 'tip'        // Dot's line about this section's mechanic (the first time it appears: the teaching rule)
   | 'decor';     // scenery only, from the world's decor set
@@ -269,7 +326,9 @@ export interface Socket {
 /** one sub-block: its versions (each its own pieces and sockets); every version must leave the same piece keys the rest refers to */
 export interface SubBlock {
   id: string;
-  versions: Array<{ id: string; pieces: SectionPiece[]; sockets?: Socket[]; weight?: number }>;
+  /** `easy`: the id of the version Easy lays in this one's place (the designer's §8.7 amendment, 11-06: on Easy every double gap block is
+   *  a rise, its "easy-" twin, same beats); `easyOnly`: never drawn, laid only as another version's twin */
+  versions: Array<{ id: string; pieces: SectionPiece[]; sockets?: Socket[]; weight?: number; easy?: string; easyOnly?: boolean }>;
 }
 
 /** a puzzle room inside a section: the puzzle kit's RoomSpec with its anchors on the section's own pieces (by key) */
@@ -326,6 +385,11 @@ export interface SectionTemplate {
   /** what it is for, in a few words (the inspector's beat name) */
   name: string;
   archetypes: Archetype[] | 'any';
+  /** the stages it may be laid in (stage ids, e.g. '1-1'); unset: any stage of its world. The pool is cut to it before anything is
+   *  chosen (pipeline stagePool), so no slot, loosened or not, lays another stage's section (the red team, 11-05) */
+  feel?: readonly string[];
+  /** what it must never serve: never laid in a stage that owns any of these (manifest.owns) */
+  not?: readonly string[];
   phases: Phase[];
   /** 1 (gentle) .. 10 (hard): picked when the node's tension, scaled into the stage's band, is near it */
   difficulty: number;
@@ -358,6 +422,26 @@ export interface SectionTemplate {
   mirrorable: boolean;
   /** how often the bag holds it (default 1) */
   weight?: number;
+  /**
+   * World 1's floor families (manifest floorRoll): a 'hop' section keeps to the floor road, its gaps hops with the floor near under
+   * them; a 'jump' section runs stones or logs over the floor road laid deep under them (more than 200 px, so the route reads jumps),
+   * entering and leaving on the ground. The roll's hop family weighs them: a hop roll draws hop sections, a jump roll jump sections. A
+   * pit's own floor stays as deep as its steps out allow (pitSteps): the deep floor of a jump run is the section's, not a pit's.
+   */
+  floor?: 'hop' | 'jump';
+  /** a stretch of the stage this section may stand in, as a share of the stage's chunks [from, to] (1-1's boughs, the late reward: the
+   *  designer's last third, [0.67, 1]); outside it the section is never drawn */
+  window?: [number, number];
+  /** the node jobs this section serves (NODES.md §1). Read only in a world with `graphs`: there a section that names its jobs fits only
+   *  nodes with one of them (a fork node only a two-road section); a section that names none fits by its phases, as everywhere else */
+  jobs?: NodeJob[];
+  /** the world's terrain family it belongs to (NODES.md §3: W1's floor and stones, raised logs, mounds, boughs): a node's terrain dial
+   *  weighs its own family up */
+  terrain?: string;
+  /** its content type (NODES.md §7.2; a fork takes its low road's), read by the deal and written into the node code's content letter */
+  content?: ContentType | 'structural';
+  /** a two-answer twist's answers (NODES.md §8.7 B5): copied into its node's gen2.nodes[].moves */
+  answers?: Array<'double' | 'bounce'>;
   /** extra seconds a typical first-timer spends here beyond walking its length (a room, a fight) */
   extraSeconds?: number;
 }
@@ -420,13 +504,57 @@ export interface MissionNode {
   branch?: MissionNode[];
   /** a rest ends with a flag */
   flag?: boolean;
+  /** a rolled graph's node (manifest `graphs`): its job, its shape and its dials; a teach node's move */
+  job?: NodeJob;
+  shape?: NodeShape;
+  dials?: NodeDials;
+  teaches?: string;
+  /** a rolled graph's node with `chunkSeconds`: how many sections it holds */
+  count?: number;
+  /** a content node's type, from the stage's deal (NODES.md §7.5): its sections are drawn from that type first */
+  content?: ContentType;
+  /** V19 (NODES.md §8.3): the node after a descent in a trend-up stage's last third must end higher, so it takes rising sections only */
+  mustRise?: boolean;
 }
+
+/** a node's job (NODES.md §1, §8.0's key): what it asks of the player. The graphs roll arrive to exit; the rest are LATER nodes (§6), or
+ *  tags a section may carry for a node's part (cooldown-in-node, choice-reward, reward), all named as the W1 kit names them */
+export type NodeJob =
+  | 'arrive' | 'teach' | 'practise' | 'fork' | 'rest' | 'flow' | 'combine' | 'climb' | 'descent' | 'twist' | 'test' | 'signature' | 'finale' | 'exit'
+  | 'reward' | 'pressure' | 'puzzle' | 'arena' | 'story' | 'preview' | 'change' | 'cooldown-in-node' | 'choice-reward';
+/** a node's shape (NODES.md §2) */
+export type NodeShape = 'flat' | 'rising' | 'falling' | 'two-road';
+/** a node's rolled dials (NODES.md §3): tempo (hurry or patience, even odds), density (climbing through the stage), height (up, level
+ *  or down inside the node, from its shape), terrain (a family from the world's list), rating (1-10, the cadence: ramps and cools) */
+export interface NodeDials { tempo: 'hurry' | 'patience'; density: 'low' | 'medium' | 'high'; height: 'up' | 'level' | 'down'; terrain?: string; rating: number }
+/** a stage graph (NODES.md §4), one of an archetype's several, stored as its node code (§8.4: jobs and shapes, `A T P F R X R S E`) */
+export interface StageGraphDef { id: string; archetype: Archetype; code: string }
+/** the parts of a stage's brief (WORLD-RULEBOOK §5) the graph reads */
+export interface GraphBrief {
+  ends: 'quiet' | 'finale';
+  trend: 'up' | 'down' | 'level';
+  branching: 'none' | 'some' | 'lots';
+  /** the moves this stage teaches, in order (a section's `teaches`); absent, the world's `lessons` for this stage */
+  teaches?: string[];
+  /** the stage's content deal (NODES.md §7.3, 1-1: ground 40, floating 25, climb 20, bounce 15), shares of its content nodes; absent,
+   *  the world's mix (`graphs.mix`) */
+  deal?: Readonly<Partial<Record<ContentType, number>>>;
+  /** the end stands higher than the route where the bough window begins (V19b, 1-1's story promise: "up in the high branches"): the
+   *  node that climbs late (after a late descent, or with none the signature) ends above the window's start too */
+  endHigh?: boolean;
+}
+/** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
+export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';
 
 export interface MissionGraph {
   archetype: Archetype;
   /** horizontal stages run right; an ascent runs up (phase 2) */
   flow: 'right' | 'up';
   nodes: MissionNode[];
+  /** the rolled graph's id (manifest `graphs`); absent on the SPINE */
+  id?: string;
+  /** the content deal it was dealt (NODES.md §7.5): content nodes per type */
+  deal?: Partial<Record<ContentType, number>>;
 }
 
 // ───────────────────────────── pass 3-4: what was placed ─────────────────────────────
@@ -472,6 +600,8 @@ export interface FilledSocket {
   what: string | null;
   x: number;
   y: number;
+  /** a tip whose id named no Dot line: nothing was said (the roll fails by name, pipeline buildGen2Stage) */
+  unsaid?: boolean;
 }
 
 /**
@@ -524,6 +654,8 @@ export interface PlanSlot {
   versions?: Record<string, string>;
   /** the slot's stream salt (a swap at this slot moved it): Easy rolls the slot's geometry from the same stream */
   salt?: number;
+  /** a rolled graph's slot filled past its rule (the pool ran out): why */
+  loose?: string;
 }
 
 /** a key for a sub-block version, as WorldOnce and BuildRequest.usedVersions hold it */
@@ -532,6 +664,11 @@ export const versionKey = (template: string, subBlock: string, version: string):
 export interface Gen2Meta {
   /** the seed the shipped layout was built from (the request's, or a re-roll's) */
   seed: number;
+  /** the game's road (provenGen2Stage): the seed it was asked for, the seed it played (the first on its walk that both settings lay
+   *  cleanly) and how many it tried; only when it walked off the asked seed */
+  proven?: { asked: number; used: number; tried: number };
+  /** V19's late rise as laid (an up stage): each node after a late descent, the height it had to end above (less 20 px), where it ended */
+  rise?: Array<{ node: string; to: number; exitY: number }>;
   /** the section sequence: Easy lays Normal's; curation compares neighbouring stages' plans (C4) */
   plan: PlanSlot[];
   /** whole-stage re-rolls used (0: the first roll passed) */
@@ -539,6 +676,24 @@ export interface Gen2Meta {
   repairs: Repair[];
   budget: StageBudget;
   graph: MissionGraph;
+  /** a rolled graph's realised node code (NODES.md §8.1-8.2): one token per node, and the stage string they make; the validity rules
+   *  it breaks (§8.3, "V5 at token 9: ..."), empty when it is valid. Absent on the SPINE */
+  code?: string[];
+  codeString?: string;
+  codeErrors?: string[];
+  /** V19b as stage.ts judges it (storyChecks endAboveWindow, the one window definition): the miss, by name; a stage with an endHigh brief only */
+  windowMiss?: string;
+  /** a rolled stage's flags against ROLLED_FLAGS (pipeline rolledFlagBreaches), each miss by name */
+  flagMiss?: string[];
+  /** the brief the rolled graph was rolled under (manifest graphs.briefs) */
+  brief?: GraphBrief;
+  /** each node as laid, for the gates that read the built stage (V18's nodePieces.ts, the stills spots): its token, the x-range its
+   *  sections cover, its first block's landing x (NODES.md §8.7) when it has one, and a twist's two answers (B5) */
+  nodes?: Array<{ token: string; x0: number; x1: number; block?: number; moves?: Array<'double' | 'bounce'> }>;
+  /** a rolled graph's slots filled past their rule because the pool ran out (pipeline layStage: the dealt type, then the job) */
+  loosened?: string[];
+  /** a rolled graph's required sections that found no node, and why (the roll fails: gen2.errors names them) */
+  missing?: string[];
   sections: Array<Pick<PlacedSection, 'uid' | 'template' | 'node' | 'phase' | 'tension' | 'mirrored' | 'x0' | 'x1' | 'seconds'>>;
   fills: FilledSocket[];
   /** the sections the roll's theme favoured (pipeline THEME; absent when it favoured them all) */
@@ -571,6 +726,10 @@ export interface BuildRequest {
   recent?: string[];
   /** the sub-block versions (versionKey) the world's earlier stages shipped: each waits until the others have had their turn (C4) */
   usedVersions?: string[];
+  /** build this stage's proven plan instead of searching for one (gen2/seedList.ts: the seed list holds each seed's final plan and the
+   *  seed it was laid from): one lay and one check, the search's own result; the seed list's --check holds it identical to the search */
+  replay?: { seed: number; plan: PlanSlot[]; rerolls: number; foes?: Array<[string, string]> };
+  // (`foes`: Normal's kept animals, section/socket -> creature (pipeline keptFoes); given, an Easy replay lays from it with no Normal build)
 }
 
 // ───────────────────────────── constants ─────────────────────────────

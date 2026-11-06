@@ -1,0 +1,87 @@
+{
+ "note": "1-1 bootprint remake (boot11), round 1, 2026-11-05",
+ "tag": "boot11-1",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.9
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/603b5cdd038c87c97569616c7f0a8c99a6dc5ae5/reference/prop-sheets/qa-notes/boot11/starts/",
+ "neg": "bare foot, toes, paw print, animal track, claw marks, hoof, shoe, a boot standing, a whole boot, leg, person, soldier, two prints, several footprints, flowers, stones, mushrooms, text, letters, watermark, frame, border, photo, 3d render, blurry",
+ "items": [
+  {
+   "name": "boota-s50-5",
+   "start": "start-boot-a.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, light from the upper left. One single deep footprint of a heavy soldier's army boot pressed hard into a bed of soft green forest moss, seen low from the side and a little above, the toe of the print pointing to the right, a big heavy square heel pressed in deepest at the left, the moss pushed up in a torn ridge all round the edge with a dark shadow inside the rim, the far inside wall of the print showing bare dark wet earth, thick chunky chevron tread lugs on the forefoot and heavy bars across the heel, the rest of the picture plain moss. Rich painted texture, World of a rainforest floor at dawn, no text",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "boota-s50-11",
+   "start": "start-boot-a.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, light from the upper left. One single deep footprint of a heavy soldier's army boot pressed hard into a bed of soft green forest moss, seen low from the side and a little above, the toe of the print pointing to the right, a big heavy square heel pressed in deepest at the left, the moss pushed up in a torn ridge all round the edge with a dark shadow inside the rim, the far inside wall of the print showing bare dark wet earth, thick chunky chevron tread lugs on the forefoot and heavy bars across the heel, the rest of the picture plain moss. Rich painted texture, World of a rainforest floor at dawn, no text",
+   "strength": 0.5,
+   "seed": 11,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "boota-s62-5",
+   "start": "start-boot-a.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, light from the upper left. One single deep footprint of a heavy soldier's army boot pressed hard into a bed of soft green forest moss, seen low from the side and a little above, the toe of the print pointing to the right, a big heavy square heel pressed in deepest at the left, the moss pushed up in a torn ridge all round the edge with a dark shadow inside the rim, the far inside wall of the print showing bare dark wet earth, thick chunky chevron tread lugs on the forefoot and heavy bars across the heel, the rest of the picture plain moss. Rich painted texture, World of a rainforest floor at dawn, no text",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "boota-s62-11",
+   "start": "start-boot-a.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, light from the upper left. One single deep footprint of a heavy soldier's army boot pressed hard into a bed of soft green forest moss, seen low from the side and a little above, the toe of the print pointing to the right, a big heavy square heel pressed in deepest at the left, the moss pushed up in a torn ridge all round the edge with a dark shadow inside the rim, the far inside wall of the print showing bare dark wet earth, thick chunky chevron tread lugs on the forefoot and heavy bars across the heel, the rest of the picture plain moss. Rich painted texture, World of a rainforest floor at dawn, no text",
+   "strength": 0.62,
+   "seed": 11,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "bootb-s50-5",
+   "start": "start-boot-b.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, light from the upper left. One single deep footprint of a heavy soldier's army boot pressed hard into a bed of soft green forest moss, seen low from the side and a little above, the toe of the print pointing to the right, a big heavy square heel pressed in deepest at the left, the moss pushed up in a torn ridge all round the edge with a dark shadow inside the rim, the far inside wall of the print showing bare dark wet earth, thick chunky chevron tread lugs on the forefoot and heavy bars across the heel, the rest of the picture plain moss. Rich painted texture, World of a rainforest floor at dawn, no text",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "bootb-s50-11",
+   "start": "start-boot-b.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, light from the upper left. One single deep footprint of a heavy soldier's army boot pressed hard into a bed of soft green forest moss, seen low from the side and a little above, the toe of the print pointing to the right, a big heavy square heel pressed in deepest at the left, the moss pushed up in a torn ridge all round the edge with a dark shadow inside the rim, the far inside wall of the print showing bare dark wet earth, thick chunky chevron tread lugs on the forefoot and heavy bars across the heel, the rest of the picture plain moss. Rich painted texture, World of a rainforest floor at dawn, no text",
+   "strength": 0.5,
+   "seed": 11,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "bootb-s62-5",
+   "start": "start-boot-b.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, light from the upper left. One single deep footprint of a heavy soldier's army boot pressed hard into a bed of soft green forest moss, seen low from the side and a little above, the toe of the print pointing to the right, a big heavy square heel pressed in deepest at the left, the moss pushed up in a torn ridge all round the edge with a dark shadow inside the rim, the far inside wall of the print showing bare dark wet earth, thick chunky chevron tread lugs on the forefoot and heavy bars across the heel, the rest of the picture plain moss. Rich painted texture, World of a rainforest floor at dawn, no text",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "bootb-s62-11",
+   "start": "start-boot-b.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, light from the upper left. One single deep footprint of a heavy soldier's army boot pressed hard into a bed of soft green forest moss, seen low from the side and a little above, the toe of the print pointing to the right, a big heavy square heel pressed in deepest at the left, the moss pushed up in a torn ridge all round the edge with a dark shadow inside the rim, the far inside wall of the print showing bare dark wet earth, thick chunky chevron tread lugs on the forefoot and heavy bars across the heel, the rest of the picture plain moss. Rich painted texture, World of a rainforest floor at dawn, no text",
+   "strength": 0.62,
+   "seed": 11,
+   "w": 1024,
+   "h": 384
+  }
+ ]
+}

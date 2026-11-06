@@ -1,10 +1,28 @@
 import React from 'react';
-import { recorder, savedTesterName } from '../game/playRecorder.ts';
+import { recorder, savedTesterName, testerId } from '../game/playRecorder.ts';
 import { refinedControls } from '../game/refinedControls.ts';
 import { difficulty, setDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { checkForUpdate, hardRefresh } from '../game/updates.ts';
 import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
-import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
+import { Plaque } from './KitParts.tsx';
+import { STD_ATLAS_SIZE, STD_FRAMES, STD_STAND_H } from '../game/heroStandardData.ts';
+import { stretchChoices } from './ctestStretches.ts';
+import { GIT_COMMIT, TEST_ROUND } from '../game/testRound.ts';
+
+/*
+ * The testers' link (#ctest): the front page, the end questions and the sent screen, in the game's own menu kit (the lead and Matt,
+ * 11-06: "make the page look like the game"): the painted parchment card with Pokey over its top edge, the carved plaque, the wooden
+ * boards, World 1's sunrise behind (index.css, the ct-* rules: w1sun2's far layer, the same file 1-1 draws, so no new download).
+ */
+
+/** the screen behind every tester page: the sunrise, dimmed for reading, scrolling as one page */
+const Scene: React.FC<{ children: React.ReactNode; label: string }> = ({ children, label }) => (
+  <div className="ct-scene fixed inset-0 z-[60] overflow-y-auto" role="dialog" aria-label={label}>
+    <div className="ct-wrap">
+      <div className="ct-card">{children}</div>
+    </div>
+  </div>
+);
 
 /**
  * The big Refresh at the top of the name screen, so every tester starts on the newest build: it checks by itself and says so when a newer
@@ -25,11 +43,9 @@ const FreshBuild: React.FC = () => {
   // just came back from a Refresh (the address carries its stamp), or the server says this is the newest: say so, so nobody loops
   const fresh = !isNew && (state === 'same' || /[?&]fresh=/.test(window.location.search));
   return (
-    <div className={`mb-4 rounded-2xl border-2 p-2.5 ${isNew ? 'border-[#f2c14e] bg-[#f2c14e]/15' : 'border-[#f4ecd8]/20 bg-black/20'}`}>
-      <p className="text-center text-sm font-black leading-tight">
-        {isNew ? 'A newer version is out. Tap Refresh first!' : fresh ? (
-          <span className="text-[#9be29b]">✓ You have the newest version. Good to go!</span>
-        ) : 'First, tap Refresh to get the newest version'}
+    <div className={`ct-ledger ct-fresh${isNew ? ' ct-fresh-new' : ''}`}>
+      <p className="ct-fresh-t">
+        {isNew ? 'A newer version is out. Tap Refresh first!' : fresh ? <span className="ct-ok">✓ You have the newest version. Good to go!</span> : 'First, tap Refresh to get the newest version'}
       </p>
       <button
         type="button"
@@ -38,12 +54,12 @@ const FreshBuild: React.FC = () => {
           setBusy(true);
           void hardRefresh();
         }}
-        className={`mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xl font-black text-[#2a1a08] ${isNew ? 'animate-pulse bg-[#f2c14e]' : 'bg-[#f2c14e]/90'}`}
+        className={`gx-plank gx-plank-gold ct-board${isNew ? ' animate-pulse' : ''}`}
       >
-        <span aria-hidden="true" className="text-2xl leading-none">↻</span>
+        <span aria-hidden="true" className="ct-refresh-ic">↻</span>
         {busy ? 'Refreshing…' : 'Refresh'}
       </button>
-      <p className="mt-1.5 text-center text-xs text-[#f4ecd8]/65">
+      <p className="ct-small ct-center">
         {stamp ? `This version: ${stamp}` : 'This version: (no date)'}
         {state === 'checking' ? ' · checking…' : ''}
       </p>
@@ -51,40 +67,61 @@ const FreshBuild: React.FC = () => {
   );
 };
 
-/** the four moves, as big tiles with their moving thumb (GestureGlyph): what to do, and what it does */
-const CONTROLS: ReadonlyArray<readonly [GlyphKind, string, string]> = [
-  ['run', 'Slide sideways', 'to run'],
-  ['jump', 'Flick up and forward', 'to jump'],
-  ['up', 'Flick up again in the air', 'to double jump'],
-  ['tap', 'Tap', 'to punch'],
-  ['flick', 'Flick toward an animal', 'to kick'],
-  ['down', 'Slide straight up or down', 'to climb a vine'],
+/** Pokey's painted sheet, the one the game draws him from (heroStandard.ts: the stage loads it anyway, so it costs nothing new) */
+const HERO_URL = new URL('../assets/hero/hero-standard.webp', import.meta.url).href;
+/** a still Pokey: one frame of the sheet, drawn at the scale that makes him `h` px tall standing (every pose the same size, as in play) */
+export const HeroPose: React.FC<{ frame: string; h: number; className?: string }> = ({ frame, h: standH, className }) => {
+  const f = STD_FRAMES[frame];
+  const k = standH / STD_STAND_H;
+  const h = Math.round(f.h * k);
+  return (
+    <span
+      aria-hidden="true"
+      className={`ct-pose${className ? ` ${className}` : ''}`}
+      style={{
+        width: Math.round(f.w * k),
+        height: h,
+        backgroundImage: `url(${HERO_URL})`,
+        backgroundSize: `${STD_ATLAS_SIZE.w * k}px ${STD_ATLAS_SIZE.h * k}px`,
+        backgroundPosition: `${-f.x * k}px ${-f.y * k}px`,
+      }}
+    />
+  );
+};
+
+/** the real level, still: gen2 1-1 as the game draws it (Pokey over the logs, a mushroom and petals), 28 KB */
+const STILL_URL = new URL('../assets/ui/ctest-1-1.webp', import.meta.url).href;
+
+/**
+ * 1-1's moves, each a painted Pokey pose on a little card with what to do (the tips folded in: the lead and Matt, 11-06). Only what 1-1
+ * has: no vines, kicks or animals.
+ */
+export const MOVES: ReadonlyArray<{ frame: string; name: string; how: string }> = [
+  { frame: 'run_3', name: 'Run', how: 'Slide your thumb sideways. Keep it down to keep running.' },
+  { frame: 'rise', name: 'Jump', how: 'A quick flick up and forward, close to the edge. Not a slow drag.' },
+  { frame: 'tumble', name: 'Double jump', how: 'Flick up again in the air, for tall steps and wide gaps.' },
+  { frame: 'spring_launch', name: 'Mushroom bounce', how: 'Land on a mushroom to spring up high. Steer to aim.' },
 ];
 
-/** what has tripped testers up so far (the control tests and QA, 2026-10): the fixes are habits, so they go on the front door */
-const TIPS: readonly string[] = [
-  'Keep your thumb on the screen to keep running. Lifting it stops Pokey.',
-  'Jump with a quick flick, not a slow drag. A slow slide up does not jump.',
-  'Tall steps need a double jump: flick up, then flick up again while he is in the air.',
-  'For a long jump, keep sliding forward as you flick up, and flick close to the edge.',
-  'A kick goes the way you flick. Tapping to punch works well too.',
-  'On a vine, slide straight up or down to climb. To let go, flick up and forward.',
-];
-
-/** a numbered step on the front door */
+/** a numbered step on the front door: a little gold token */
 const Step: React.FC<{ n: number }> = ({ n }) => (
-  <span aria-hidden="true" className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-[#f2c14e] text-sm font-black text-[#2a1a08]">
+  <span aria-hidden="true" className="ct-step">
     {n}
   </span>
 );
 
+/** a small heading on the parchment */
+const Head: React.FC<{ children: React.ReactNode }> = ({ children }) => <h2 className="ct-h">{children}</h2>;
+
 /**
- * The control test's front door (only with #ctest in the address): who is playing, what gets recorded, and Start.
- * Recording begins on Start, and the test stage opens straight away.
+ * The testers' front door (only with #ctest in the address): who is playing, what gets recorded, and Start. Recording begins on
+ * Start, and the level opens straight away (gen2 1-1, a fresh proven seed each run, on the setting picked here).
  */
 export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) => {
   const [name, setName] = React.useState(savedTesterName);
   const [level, setLevel] = React.useState<Difficulty>(difficulty);
+  // (the tester code, made once on this device: a tester can read it out to us)
+  const code = React.useMemo(() => testerId(), []);
   const go = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!name.trim()) return;
@@ -97,46 +134,41 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
     onStart();
   };
   return (
-    <div className="fixed inset-0 z-[60] overflow-y-auto bg-[#0e3b28]/95 p-3 text-[#f4ecd8]">
-      <form onSubmit={go} className="mx-auto my-2 w-full max-w-xl rounded-2xl border border-[#f4ecd8]/20 bg-[#123d2a] p-4 shadow-2xl sm:p-5">
+    <Scene label="Level test">
+      <form onSubmit={go}>
+        {/* the hero: the real level, Pokey big in front of it, the NEW tag on its corner */}
+        <div className="ct-hero">
+          <img className="ct-hero-still" src={STILL_URL} alt="Pokey jumping over mossy logs in the new level" draggable={false} />
+          <span className="ct-new-tag ct-hero-new">NEW</span>
+          <HeroPose frame="cheer_a" h={150} className="ct-hero-pokey" />
+        </div>
+        <p className="ct-kicker">Level test · Brand-new levels</p>
+        <Plaque as="h1" className="ct-title">Pokey's new level</Plaque>
+        <p className="ct-p ct-lead">One level, about 3 minutes. Every run is different.</p>
         <FreshBuild />
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f2c14e]">Control test</p>
-        <h1 className="mt-1 text-2xl font-black leading-tight">Help test Pokey's controls</h1>
-        <p className="mt-2 text-[15px] leading-snug text-[#f4ecd8]/90">
-          A short level, about two minutes. Play however feels natural: thumbs, one finger, upright or sideways. There's no wrong way.
-        </p>
-        <p className="mt-2 flex items-start gap-2 rounded-xl border border-[#9be29b]/40 bg-[#9be29b]/10 px-3 py-2 text-[15px] font-bold leading-snug text-[#c9f2c9]">
-          <span aria-hidden="true" className="text-lg leading-none">🎲</span>
-          <span>Every run is made at random, so playing a few times helps the most.</span>
-        </p>
 
-        <h2 className="mt-4 text-sm font-black uppercase tracking-[0.14em] text-[#f2c14e]">The controls</h2>
-        <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {CONTROLS.map(([kind, verb, what]) => (
-            <div key={what} className="ct-tile flex flex-col items-center rounded-xl bg-[#f4ecd8] px-2 py-2 text-center text-[#20321f] shadow">
-              <GestureGlyph kind={kind} size={52} />
-              <span className="mt-1 text-[15px] font-black leading-tight">{verb}</span>
-              <span className="text-[13px] font-bold leading-tight text-[#20321f]/75">{what}</span>
+        <Head>The moves</Head>
+        <div className="ct-moves">
+          {MOVES.map((m) => (
+            <div key={m.name} className="ct-move">
+              <span className="ct-move-pic">
+                <HeroPose frame={m.frame} h={80} />
+              </span>
+              <span className="ct-move-t">
+                <b>{m.name}</b>
+                <small>{m.how}</small>
+              </span>
             </div>
           ))}
         </div>
 
-        <div className="mt-3 rounded-xl border border-[#f2c14e]/35 bg-[#f2c14e]/10 px-3 py-2">
-          <p className="text-sm font-black text-[#f2c14e]">Tips (what trips people up)</p>
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-[14px] leading-snug text-[#f4ecd8]/90">
-            {TIPS.map((t) => (
-              <li key={t}>{t}</li>
-            ))}
-          </ul>
-        </div>
-
-        <h2 className="mt-5 text-sm font-black uppercase tracking-[0.14em] text-[#f2c14e]">Get started</h2>
-        <div className="mt-2 flex items-center gap-2">
+        <Head>Get started</Head>
+        <div className="ct-row">
           <Step n={1} />
-          <label className="text-base font-black" htmlFor="ctest-name">
+          <label className="ct-label" htmlFor="ctest-name">
             Your name or a nickname
           </label>
-          <span className="rounded-full bg-[#f2c14e]/20 px-2 py-0.5 text-xs font-black uppercase tracking-wider text-[#f2c14e]">Required</span>
+          <span className="ct-need">Required</span>
         </div>
         <input
           id="ctest-name"
@@ -145,128 +177,201 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
           maxLength={40}
           required
           autoComplete="nickname"
-          className="mt-1.5 w-full rounded-lg border-2 border-[#f4ecd8]/35 bg-[#0b2e20] px-3 py-2.5 text-base text-[#f4ecd8] outline-none focus:border-[#f2c14e]"
+          className="ct-input"
           placeholder="e.g. Matt"
         />
-        <div className="mt-4 flex items-center gap-2">
+        <div className="ct-row">
           <Step n={2} />
-          <p className="text-base font-black">How hard?</p>
+          <p className="ct-label">How hard?</p>
         </div>
-        <div className="mt-1.5 grid grid-cols-2 gap-2" role="radiogroup" aria-label="How hard">
+        <div className="ct-modes" role="radiogroup" aria-label="How hard">
           {(
             [
-              ['easy', 'Easy', 'Fewer animals, more forgiving jumps, slower vines'],
+              ['easy', 'Easy', 'Gentler jumps and more help'],
               ['normal', 'Normal', 'The game as it is meant to be played'],
             ] as const
           ).map(([id, label, blurb]) => (
-            <button
-              key={id}
-              type="button"
-              role="radio"
-              aria-checked={level === id}
-              onClick={() => setLevel(id)}
-              className={`rounded-xl border-2 px-3 py-2 text-left ${level === id ? 'border-[#f2c14e] bg-[#f2c14e]/15' : 'border-[#f4ecd8]/25 bg-black/20'}`}
-            >
-              <span className="block text-base font-black">{label}</span>
-              <span className="block text-xs leading-snug text-[#f4ecd8]/80">{blurb}</span>
+            <button key={id} type="button" role="radio" aria-checked={level === id} onClick={() => setLevel(id)} className={`ct-mode${level === id ? ' on' : ''}`}>
+              <b>{label}</b>
+              <small>{blurb}</small>
             </button>
           ))}
         </div>
-        <div className="mt-4 flex items-center gap-2">
+        <div className="ct-row">
           <Step n={3} />
-          <p className="text-base font-black">{name.trim() ? 'Tap Start' : 'Type your name, then tap Start'}</p>
+          <p className="ct-label">{name.trim() ? 'Tap Start' : 'Type your name, then tap Start'}</p>
         </div>
-        <button
-          type="submit"
-          disabled={!name.trim()}
-          className="mt-1.5 w-full rounded-xl bg-[#f2c14e] py-3.5 text-2xl font-black text-[#2a1a08] shadow-lg disabled:opacity-40"
-        >
+        <button type="submit" disabled={!name.trim()} className="pm-go ct-go">
           Start
         </button>
-        <p className="mt-2 text-xs leading-snug text-[#f4ecd8]/70">
+        <p className="ct-small">
           While you play, it records where your fingers touch and what Pokey does, to fine-tune how the game plays. No camera, microphone,
           location or personal info, and nothing is kept: the recordings are deleted when testing ends.
         </p>
-        <p className="mt-3 flex items-start gap-2 rounded-xl border border-[#f4ecd8]/25 bg-black/25 px-3 py-2 text-sm font-bold leading-snug">
-          <span aria-hidden="true" className="text-base leading-none">✕</span>
+        <p className="ct-ledger ct-close">
+          <span aria-hidden="true">✕</span>
           <span>When you're done, please close the browser tab. That stops the test.</span>
         </p>
+        {/* which test round this is (testRound.ts: bumped by hand), so Matt can tell testers which round they are on */}
+        <p className="ct-small ct-center ct-code">
+          Your tester code: <b>{code}</b>
+        </p>
+        <p className="ct-small ct-center ct-round">
+          Test round: {TEST_ROUND} · build {GIT_COMMIT}
+        </p>
       </form>
-    </div>
+    </Scene>
   );
 };
 
-/**
- * the quick questions at the end: what the recording cannot tell (which hand, how the phone was held, what felt hard). "Hardest" lists
- * the stretches this run had (every run is a different mix: protoStage.ts).
- */
-const questions = (stretches: string[]): Array<{ id: string; q: string; a: string[]; many?: boolean }> => {
-  const played = stretches.filter((n) => n !== 'Finish' && n !== 'Run and stop');
-  return [
-    { id: 'hand', q: 'What did you mostly play with?', a: ['One thumb', 'Two thumbs', 'One finger (like your pointer)', 'A mix'] },
-    { id: 'held', q: 'How did you hold the phone?', a: ['In one hand', 'In both hands', 'Lying on a table or lap'] },
-    { id: 'hard', q: 'What felt hardest? (tap any)', a: ['Running', ...(played.length ? played : ['Short hops', 'Long jumps', 'Climbing', 'Swinging on vines', 'Fighting']), 'Nothing'], many: true },
-  ];
-};
+/** one question on the end screen: one tap picks (or a few, for "many") */
+export type SurveyQ = { id: string; q: string; a: readonly string[]; many?: boolean; faces?: boolean; required?: boolean };
 
-/** the end of the test (at the shrine): a few one-tap questions, thanks, and a way to play it again */
+/** the five faces for "How fun was it?" (stored as 1 to 5) and what each one means, for a screen reader */
+export const FACES: ReadonlyArray<readonly [string, string]> = [
+  ['😞', 'Not fun'],
+  ['🙁', 'A little fun'],
+  ['😐', 'OK'],
+  ['🙂', 'Fun'],
+  ['😄', 'Loads of fun'],
+];
+
+/** the three answers Send waits for (Matt, 11-06: "anything that's a must, make it required"); the rest are optional */
+export const REQUIRED = ['fun', 'long', 'knew'] as const;
+
+/**
+ * The questions at the end: only what the recording cannot tell (Matt, 11-06: no redundant questions). The log already has the fingers
+ * (which hand: LOG_EVENTS.md), how the phone was held, where he fell, how long it took, and how skilled the player is, so none of that is
+ * asked, and no age either. The three required come first; "What felt hardest?" lists this run's own stretches in plain words
+ * (ctestStretches.ts), because how hard it FELT is not what the log measures.
+ */
+export const surveyQuestions = (stretches: readonly string[]): SurveyQ[] => [
+  { id: 'fun', q: 'How fun was it?', a: FACES.map((f) => f[1]), faces: true, required: true },
+  { id: 'long', q: 'How long did it feel?', a: ['Too short', 'About right', 'Too long'], required: true },
+  { id: 'knew', q: 'Did you know what to do?', a: ['Always', 'Mostly', 'I got lost'], required: true },
+  { id: 'hard', q: 'What felt hardest? (tap any)', a: ['Running', ...stretchChoices(stretches), 'Nothing'], many: true },
+  { id: 'tips', q: "Did Dot's tips help?", a: ['Yes', 'A bit', 'No', "Didn't notice them"] },
+  { id: 'looked', q: 'Did anything look wrong or out of place?', a: ['No', 'Yes'] },
+  { id: 'next', q: 'Would you play the next level?', a: ['Yes', 'Maybe', 'No'] },
+];
+
+/** all three required answers are in */
+export const readyToSend = (ans: Readonly<Record<string, readonly string[]>>): boolean => REQUIRED.every((id) => (ans[id]?.length ?? 0) > 0);
+
+/**
+ * The survey's row ('survey' moment, JSON). The keys the control test already sent keep their shape, so old rows still read: hard is a
+ * list of picks, note is text (hand and held, in old rows only, were lists too). The new ones are single values: fun 1 to 5, the rest
+ * the words picked; a skipped question is left out. `v: 2` marks the level test's rows, `run` is the run's own 'gen2' line.
+ */
+export function surveyRow(ans: Readonly<Record<string, readonly string[]>>, note: string, lookedNote: string, run: string): Record<string, unknown> {
+  const row: Record<string, unknown> = { v: 2 };
+  if (ans.hard?.length) row.hard = [...ans.hard];
+  for (const id of ['long', 'knew', 'tips', 'looked', 'next']) if (ans[id]?.length) row[id] = ans[id][0];
+  const fun = FACES.findIndex((f) => f[1] === ans.fun?.[0]);
+  if (fun >= 0) row.fun = fun + 1;
+  if (row.looked === 'Yes' && lookedNote.trim()) row.lookedNote = lookedNote.trim().slice(0, 120);
+  row.note = note.trim().slice(0, 300);
+  if (run) row.run = run;
+  return row;
+}
+
+/** one question, its chips (or faces) under it */
+const Question: React.FC<{ q: SurveyQ; picked: readonly string[]; onPick: (a: string) => void; children?: React.ReactNode }> = ({ q, picked, onPick, children }) => (
+  <div className="ct-q" role="group" aria-label={q.q}>
+    <p className="ct-q-t">
+      {q.q}
+      {q.required && <span className={`ct-need${picked.length ? ' done' : ''}`}>{picked.length ? '✓' : 'Required'}</span>}
+    </p>
+    {q.faces ? (
+      <>
+        <div className="ct-faces">
+          {FACES.map(([face, label]) => (
+            <button key={label} type="button" onClick={() => onPick(label)} aria-pressed={picked.includes(label)} aria-label={label} className={`ct-face${picked.includes(label) ? ' on' : ''}`}>
+              <span aria-hidden="true">{face}</span>
+            </button>
+          ))}
+        </div>
+        <div aria-hidden="true" className="ct-faces-ends">
+          <span>Not fun</span>
+          <span>Loads of fun</span>
+        </div>
+      </>
+    ) : (
+      <div className="ct-chips">
+        {q.a.map((a) => (
+          <button key={a} type="button" onClick={() => onPick(a)} aria-pressed={picked.includes(a)} className={`ct-chip${picked.includes(a) ? ' on' : ''}`}>
+            {a}
+          </button>
+        ))}
+      </div>
+    )}
+    {children}
+  </div>
+);
+
+/** the end of the test (at the shrine, or "I'm done"): three required taps, the optional ones, thanks, and a way to play again */
 export const ControlTestDone: React.FC<{ onAgain: () => void; stretches?: string[] }> = ({ onAgain, stretches = [] }) => {
-  const QUESTIONS = React.useMemo(() => questions(stretches), [stretches.join('|')]);
+  const QUESTIONS = React.useMemo(() => surveyQuestions(stretches), [stretches.join('|')]);
   const [ans, setAns] = React.useState<Record<string, string[]>>({});
   const [note, setNote] = React.useState('');
+  const [lookedNote, setLookedNote] = React.useState('');
   const [sent, setSent] = React.useState(false);
   const pick = (id: string, a: string, many?: boolean) =>
     setAns((o) => {
       const cur = o[id] ?? [];
-      const next = many ? (cur.includes(a) ? cur.filter((x) => x !== a) : [...cur, a]) : [a];
+      // (a second tap on a single pick takes it back)
+      const next = many ? (cur.includes(a) ? cur.filter((x) => x !== a) : [...cur, a]) : cur[0] === a ? [] : [a];
       return { ...o, [id]: next };
     });
+  const ready = readyToSend(ans);
+  const left = REQUIRED.filter((id) => !(ans[id]?.length)).length;
   const send = () => {
-    recorder.event('survey', JSON.stringify({ ...ans, note: note.trim().slice(0, 300) }));
+    if (!ready) return;
+    recorder.event('survey', JSON.stringify(surveyRow(ans, note, lookedNote, recorder.lastRun)));
     setSent(true);
   };
+  const ask = (q: SurveyQ) => (
+    <Question key={q.id} q={q} picked={ans[q.id] ?? []} onPick={(a) => pick(q.id, a, q.many)}>
+      {q.id === 'looked' && ans.looked?.[0] === 'Yes' && (
+        <input id="ctest-looked" value={lookedNote} onChange={(e) => setLookedNote(e.target.value)} maxLength={120} aria-label="What looked wrong? (optional)"
+          placeholder="e.g. the log jumped out of nowhere" className="ct-input" />
+      )}
+    </Question>
+  );
   return (
-    <div className="fixed inset-0 z-[60] overflow-y-auto bg-[#0e3b28]/95 p-3 text-[#f4ecd8]">
-      <div className="mx-auto my-2 w-full max-w-xl rounded-2xl border border-[#f4ecd8]/20 bg-[#123d2a] p-4 shadow-2xl sm:p-5">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f2c14e]">Control test</p>
-        <h1 className="mt-1 text-2xl font-black leading-tight">You're done. Thank you!</h1>
-        {!sent ? (
-          <>
-            <p className="mt-2 text-sm leading-snug text-[#f4ecd8]/85">Three quick taps help Matt a lot:</p>
-            {QUESTIONS.map((q) => (
-              <div key={q.id} className="mt-3">
-                <p className="text-sm font-bold">{q.q}</p>
-                <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  {q.a.map((a) => {
-                    const on = (ans[q.id] ?? []).includes(a);
-                    return (
-                      <button key={a} type="button" onClick={() => pick(q.id, a, q.many)} aria-pressed={on}
-                        className={`rounded-full border px-3 py-1.5 text-sm ${on ? 'border-[#f2c14e] bg-[#f2c14e] font-bold text-[#2a1a08]' : 'border-[#f4ecd8]/30 bg-black/15'}`}>
-                        {a}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-            <label className="mt-3 block text-sm font-bold" htmlFor="ctest-note">Anything feel wrong or annoying? (optional)</label>
-            <textarea id="ctest-note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={300} rows={2}
-              className="mt-1 w-full rounded-lg border border-[#f4ecd8]/30 bg-[#0b2e20] px-3 py-2 text-base text-[#f4ecd8] outline-none focus:border-[#f2c14e]" />
-            <button type="button" onClick={send} className="mt-3 w-full rounded-xl bg-[#f2c14e] py-2.5 text-lg font-black text-[#2a1a08]">
-              Send
-            </button>
-          </>
-        ) : (
-          <p className="mt-3 text-sm leading-snug text-[#f4ecd8]/85">
-            Sent. You can close this page now, or play the level again. Every run helps.
-          </p>
-        )}
-        <button type="button" onClick={onAgain}
-          className={`mt-3 w-full rounded-xl py-2.5 text-lg font-black ${sent ? 'bg-[#f2c14e] text-[#2a1a08]' : 'border border-[#f4ecd8]/30 text-[#f4ecd8]'}`}>
-          Play again (a new mix)
-        </button>
+    <Scene label="Level test: thank you">
+      <div className="ct-done-head">
+        <span className="ct-done-t">
+          <p className="ct-kicker">Level test</p>
+          <Plaque as="h1" className="ct-title">{sent ? 'Sent!' : 'Thank you!'}</Plaque>
+        </span>
+        <HeroPose frame={sent ? 'cheer_b' : 'cheer_a'} h={96} className="ct-done-pokey" />
       </div>
-    </div>
+      {!sent ? (
+        <>
+          <p className="ct-p">You're done! Three quick taps help Matt a lot. The rest are up to you.</p>
+          {QUESTIONS.filter((q) => q.required).map(ask)}
+          <Head>Optional</Head>
+          {QUESTIONS.filter((q) => !q.required).map(ask)}
+          <div className="ct-q">
+            <label className="ct-q-t" htmlFor="ctest-note">Anything else?</label>
+            <textarea id="ctest-note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={300} rows={2}
+              placeholder="e.g. I loved the mushroom bounce" className="ct-input" />
+          </div>
+          <p className={`ct-send-hint${ready ? ' ready' : ''}`} aria-live="polite">
+            {ready ? 'All set. Tap Send!' : left === 3 ? '3 quick taps to send' : `${left} more tap${left === 1 ? '' : 's'} to send`}
+          </p>
+          <button type="button" onClick={send} disabled={!ready} className="pm-go ct-go">
+            Send
+          </button>
+        </>
+      ) : (
+        <p className="ct-p">Thank you! You can close this page now, or play again. Every run is a new level, and every run helps.</p>
+      )}
+      <button type="button" onClick={onAgain} className={`gx-plank ct-board${sent ? ' gx-plank-gold' : ''}`}>
+        Play again (a new level)
+      </button>
+    </Scene>
   );
 };
 
@@ -299,12 +404,11 @@ export const RecordingBadge: React.FC<{ onDone?: () => void }> = ({ onDone }) =>
         REC{state === 'blocked' ? ' · not sending from this link' : ''}
       </div>
       {onDone && (
-        <button
-          type="button"
-          onClick={() => (sure ? onDone() : setSure(true))}
-          className={`rounded-full px-3 py-1 text-[12px] font-bold ${sure ? 'bg-[#f2c14e] text-[#2a1a08]' : 'bg-black/45 text-white'}`}
-        >
-          {sure ? 'Tap again to finish' : "I'm done"}
+        // (the pill stays small over the play, the button around it is a full 44 px tap target)
+        <button type="button" onClick={() => (sure ? onDone() : setSure(true))} className="flex min-h-[44px] min-w-[44px] items-center justify-center">
+          <span className={`rounded-full px-3 py-1 text-[12px] font-bold ${sure ? 'bg-[#f2c14e] text-[#2a1a08]' : 'bg-black/45 text-white'}`}>
+            {sure ? 'Tap again to finish' : "I'm done"}
+          </span>
         </button>
       )}
     </div>

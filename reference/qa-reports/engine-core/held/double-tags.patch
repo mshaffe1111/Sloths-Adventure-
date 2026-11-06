@@ -1,0 +1,59 @@
+diff --git a/src/game/gen2/worlds/w1.ts b/src/game/gen2/worlds/w1.ts
+index 8ba01ad0b..20fed9b07 100644
+--- a/src/game/gen2/worlds/w1.ts
++++ b/src/game/gen2/worlds/w1.ts
+@@ -116,7 +116,8 @@ const decor = (id: string, on: string, t: Socket['t']): Socket => ({ id, role: '
+ /** a stretch of the moss floor: a bank on the ground line (old 1-1's ground at G) */
+ const floor = (key: string, w: SectionPiece['w'], place: SectionPiece['place'] = { kind: 'start' }): W1Piece => ({ key, shape: 'bank', w, place, style: 'moss_stone', main: true, landing: true });
+ /** the floor after a soft gap a plain jump crosses (`share` of the widest gap the difficulty allows) */
+-const softGap = (key: string, after: string, w: SectionPiece['w'], share: [number, number], jump: 'jump' | 'double' = 'jump'): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump, share, soft: true }, style: 'moss_stone', main: true, landing: true });
++// (a double gap's landing is a double BLOCK (NODES §8.7 B1): the engine swaps a teach or test whose block a single jump reaches, blockBreaches)
++const softGap = (key: string, after: string, w: SectionPiece['w'], share: [number, number], jump: 'jump' | 'double' = 'jump'): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump, share, soft: true }, style: 'moss_stone', main: true, landing: true, ...(jump === 'double' ? { block: 'double' as const } : {}) });
+ /** a mossy stump or rock standing on `on` (one easy hop: lowStumps 36-76, logHop 34-46) */
+ const stump = (key: string, on: string, at: SectionPiece['w'], h: SectionPiece['w'], w: SectionPiece['w'] = [130, 170]): W1Piece => ({ key, shape: 'block', w, place: { kind: 'on', on, at, h }, style: 'moss_stone', landing: true });
+ /** a stepping stone: a jump from `after`, `dy` up (negative) or down; it stands on the floor (pillars: 110-160 wide) */
+@@ -586,7 +587,7 @@ const boughStepup = section({
+ /** canopy boughs: `n` rises each a double (share past a single) from a start bough; catch boughs under the gaps are the engine's (catchDrop) */
+ const gRungs = (n: number, rise: R2, kind: 'jump' | 'double', share: R2, w: R2 = [200, 260]): G => (k) => {
+   const pieces: W1Piece[] = [limb(`${k}r0`, { kind: 'start' }, [260, 320])];
+-  seq(n, (j) => pieces.push(limb(`${k}r${j + 1}`, { kind, after: `${k}r${j}`, dy: rise, share }, w)));
++  seq(n, (j) => pieces.push({ ...limb(`${k}r${j + 1}`, { kind, after: `${k}r${j}`, dy: rise, share }, w), ...(kind === 'double' ? { block: 'double' as const } : {}) }));
+   // (Round 4 FR6 for the set piece: a mid road of low logs under the approach and the run-out only, never past the chain)
+   pieces.push(lowLog(`${k}lo0`, `${k}r0`, [0.2, 0.3]), lowLog(`${k}lo1`, `${k}r${n}`, [0.4, 0.5]));
+   return { pieces, sockets: [dot(`${k}nomoss`, `${k}r0`, 0.7, 'hint.1-1.noMoss'), petals(`${k}p0`, `${k}lo0`, [0.3, 0.7], 2), petals(`${k}p1`, `${k}lo1`, [0.3, 0.7], 2)], last: `${k}r${n}` };
+@@ -701,7 +702,7 @@ const stumpTowers = section({
+   id: 'w1-stump-towers', floor: 'jump', name: 'stump towers', phases: ['ten'], difficulty: 5, needs: ['double'], uses: ['double'],
+   versions: [4, 5].map((n) => ({ id: `towers${n}`, groups: [gRest([200, 260]), (k: string, after: string | null) => {
+     const pieces: W1Piece[] = []; let prev = after!;
+-    seq(n, (j) => { const key = `${k}t${j}`; pieces.push(limb(key, { kind: 'double', after: prev, dy: [-140, -136], share: [0.2, 0.3], soft: true }, LAND, 'log')); prev = key; }); // (NODES §8.7 B2a as amended, 891908b5b: a block rise 130-145 px, past a single's 108 and under the 148 px clamp)
++    seq(n, (j) => { const key = `${k}t${j}`; pieces.push({ ...limb(key, { kind: 'double', after: prev, dy: [-140, -136], share: [0.2, 0.3], soft: true }, LAND, 'log'), block: 'double' }); prev = key; }); // (NODES §8.7 B2a as amended, 891908b5b: a block rise 130-145 px, past a single's 108 and under the 148 px clamp)
+     pieces.push({ ...floor(`${k}o`, [300, 360]), place: { kind: 'jump', after: prev, dy: [n * 138 - 4, n * 138 + 4], share: [0.25, 0.35], soft: true } });
+     return { pieces, sockets: pieces.slice(0, n).map((p) => petals(`p-${p.key}`, p.key, 0.5, 1)), last: `${k}o` };
+   }, gStile([40, 76, 40])] })),
+@@ -728,7 +729,7 @@ const canopyWeave = section({
+     const pieces: W1Piece[] = [limb(`${k}a`, { kind: 'start' }, [260, 320])];
+     let hi = `${k}a`, mid = `${k}a`;
+     seq(n, (j) => {
+-      pieces.push(limb(`${k}h${j}`, { kind: 'double', after: hi, dy: j ? [-3, 3] : [-140, -136], share: j ? [0.55, 0.65] : [0.3, 0.45] }, [200, 240]));
++      pieces.push({ ...limb(`${k}h${j}`, { kind: 'double', after: hi, dy: j ? [-3, 3] : [-140, -136], share: j ? [0.55, 0.65] : [0.3, 0.45] }, [200, 240]), ...(j ? {} : { block: 'double' as const }) }); // (the first, the rise, is the block)
+       pieces.push(limb(`${k}m${j}`, { kind: 'jump', after: mid, dy: j ? [-3, 3] : [25, 35], share: [0.45, 0.55] }, [200, 240], 'branch', false));
+       hi = `${k}h${j}`; mid = `${k}m${j}`;
+     });
+@@ -800,7 +801,7 @@ const stiltLogs = section({
+   id: 'w1-stilt-logs', floor: 'jump', name: 'high stump logs', phases: ['ten'], difficulty: 5, needs: ['double'], uses: ['double'],
+   versions: [4, 5].map((n) => ({ id: `logs${n}`, groups: [gRest([200, 260]), (k: string, after: string | null) => {
+     const pieces: W1Piece[] = []; let prev = after!;
+-    seq(n, (j) => { const key = `${k}l${j}`; pieces.push(limb(key, { kind: 'double', after: prev, dy: [-140, -136], share: [0.3, 0.4], soft: true }, [180, 240], 'log')); prev = key; }); // (NODES §8.7 B2a as amended, 891908b5b: a block rise 130-145 px, past a single's 108 and under the 148 px clamp)
++    seq(n, (j) => { const key = `${k}l${j}`; pieces.push({ ...limb(key, { kind: 'double', after: prev, dy: [-140, -136], share: [0.3, 0.4], soft: true }, [180, 240], 'log'), block: 'double' }); prev = key; }); // (NODES §8.7 B2a as amended, 891908b5b: a block rise 130-145 px, past a single's 108 and under the 148 px clamp)
+     pieces.push({ ...floor(`${k}o`, [300, 360]), place: { kind: 'jump', after: prev, dy: [n * 138 - 4, n * 138 + 4], share: [0.25, 0.35], soft: true } });
+     return { pieces, sockets: pieces.slice(0, n).map((p) => petals(`p-${p.key}`, p.key, 0.5, 1)), last: `${k}o` };
+   }, gStile([40, 76, 40])] })),
+@@ -826,7 +827,7 @@ const boughLog = section({
+   // (NODES §8.7 B2a as amended, 891908b5b: a block rise 130-145 px, past a single's 108 and under the 148 px clamp); 4-5 boughs, wide, inside the corridor
+   versions: [4].flatMap((n) => [true, false].map((span) => ({ id: `${n}-${span ? 'log' : 'bough'}`, groups: [(k: string) => {
+     const pieces: W1Piece[] = [limb(`${k}b0`, { kind: 'start' }, [240, 280])];
+-    seq(n - 1, (j) => pieces.push(limb(`${k}b${j + 1}`, { kind: 'double', after: `${k}b${j}`, dy: [-140, -136], share: [0.3, 0.45] }, [520, 600])));
++    seq(n - 1, (j) => pieces.push({ ...limb(`${k}b${j + 1}`, { kind: 'double', after: `${k}b${j}`, dy: [-140, -136], share: [0.3, 0.45] }, [520, 600]), block: 'double' }));
+     const top = `${k}b${n - 1}`;
+     pieces.push(span ? limb(`${k}S`, { kind: 'walk', after: top, dy: [0, 0] }, [380, 440], 'log') : limb(`${k}S`, { kind: 'double', after: top, dy: [-10, 0], share: [0.55, 0.65] }, [200, 240]));
+     pieces.push(limb(`${k}o`, { kind: 'walk', after: `${k}S`, dy: [0, 0] }, [200, 240]), lowLog(`${k}lo`, `${k}b0`, [0.2, 0.3]));

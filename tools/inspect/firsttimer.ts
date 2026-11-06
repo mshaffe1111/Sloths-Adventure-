@@ -489,6 +489,9 @@ export interface FTRun {
   stops: { n: number; firstJumpFailed: number; heights: number[] };
   puzzles: Array<{ id: string; x: number; t: number }>;
   rescues: number;
+  /** where each rescue picked him up and where each soft fall set him back (x): a gate that limits a move reads these inside a node */
+  rescueXs: number[];
+  softFallXs: number[];
   dot: DotReport;
   flags: Flag[];
   /** every jump he tried (left out of the report: the gates are worked out from them) */
@@ -737,6 +740,7 @@ export class FirstTimerRun {
   private puzzleWait: { until: number; room: number } | null = null;
   private stillSpot: { until: number } | null = null;
   rescues = 0;
+  readonly rescueXs: number[] = [];
   gameOvers = 0;
   frames = 0;
   private lastCause = 'other';
@@ -1440,6 +1444,7 @@ export class FirstTimerRun {
       const f = this.floorAt(q.x, q.y - 2, 8);
       if (!f || f.type === 'fragile') continue;
       this.rescues++;
+      this.rescueXs.push(Math.round(p.x));
       this.lastRescue = i;
       if (this.stuckOpen) this.stuckOpen.rescued = true;
       this.closeStuck(true);
@@ -1726,6 +1731,8 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     stops: run.stopsReport(),
     puzzles: run.puzzles,
     rescues: run.rescues,
+    rescueXs: run.rescueXs,
+    softFallXs: run.softFalls.map((f) => Math.round(f.x)),
     dot,
     flags: [],
     tries: run.tries,

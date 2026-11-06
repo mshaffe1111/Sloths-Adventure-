@@ -25,7 +25,7 @@ import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
 import './shelfArt.ts';
 import './worldLedges.ts';
 import { drawGroundBody, drawGroundCap } from './groundArt.ts';
-import { bankPainted, drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
+import { bankPainted, drawSwingLianaArt, hasKit, paintedKitEnabled, paintedPlatforms, rockPainted, setKitWorld } from './protoArt.ts';
 import { drawSilkStrand } from './w5Look.ts';
 import { drawStep, drawPillar } from './columnArt.ts';
 import { drawBadWater, setBadWaterWorld } from './badWaterArt.ts';
@@ -1357,39 +1357,43 @@ export function renderWorldObjects(
     if (p.x + p.width < left || p.x > right || p.broken) continue;
     const r = rng(Math.abs(p.id) * 97 + 13);
     ctx.save();
-    if (p.type === 'bouncy') {
+    // (what terrain draws this platform as: terrainLook, the one decision footingOf reads too, so the support check matches the screen)
+    const tl = terrainLook(p, plan, look, !!curRig);
+    if (tl === 'bounce') {
       const tp = thinPlanFor(plan, p);
       drawBounce(ctx, p, worldId, tp.variant, time, bounceBottom);
-    } else if (p.type === 'fragile') {
+    } else if (tl === 'fragile') {
       const tp = thinPlanFor(plan, p);
       const [dx, dy] = shakeOffset(p, time);
       // (World 7's crumbling tiles: Matt's painted crumble frames, crumbleArt.ts; the kit plank until the sheet loads)
       if (!drawCrumbleTile(ctx, p, time, dx, dy) && !drawThin(ctx, p, look, worldId, tp, dy, dx)) drawPlanks(ctx, p, look, r);
-    } else if (p.type === 'drift' && p.drift) {
+    } else if (tl === 'drift' && p.drift) {
       // a log rides between its banks, bobbing; clipped to the river so it slides out from under one bank and under the other
       ctx.beginPath();
       ctx.rect(p.drift.x0, p.y - 80, p.drift.x1 - p.drift.x0, 220);
       ctx.clip();
       const bob = Math.sin(time * 2.1 + p.id * 1.7) * 1.6;
       if (!drawThin(ctx, p, look, worldId, thinPlanFor(plan, p), bob)) drawLog(ctx, { ...p, y: p.y + bob }, look, r);
-    } else if (p.type === 'moving') {
+    } else if (tl === 'moving') {
       if (drawThin(ctx, p, look, worldId, thinPlanFor(plan, p))) drawRaftLive(ctx, p, look, worldId, time);
       else drawRaft(ctx, p, look, time, r);
-    } else if (p.style === 'canopy_bridge') {
+    } else if (tl === 'bridge') {
       if (!drawThin(ctx, p, look, worldId, thinPlanFor(plan, p))) drawBridge(ctx, p, look, time, r);
-    } else if ((p.height >= 50 || p.soil) && bankPainted(p)) {
+    } else if (tl === 'painted-rock') {
+      // (the painted boulder is the whole rock: protoArt.ts drawRockArt)
+    } else if (tl === 'painted-bank') {
       // the painted ground covers this bank (protoArt.ts drawBankArt, its face undercut where it drops away): only what grows on top
       // (and nothing on a pit's wall, which stands under a bank)
       if (p.height >= 50) topDecor(ctx, p, look, r, time);
-    } else if (p.height >= 50) {
+    } else if (tl === 'ground' || tl === 'step' || tl === 'pillar' || tl === 'earth') {
       const gp = curRig ? undefined : plan.ground.get(p);
-      if (gp && gp.role === 'ground') {
+      if (tl === 'ground' && gp) {
         drawGroundBody(ctx, p, gp, look, worldId, bottom, left, right);
         drawGroundCap(ctx, p, gp, look, worldId, left, right);
         topDecor(ctx, p, look, r, time);
-      } else if (gp && gp.role === 'step') {
+      } else if (tl === 'step' && gp) {
         drawStep(ctx, p, gp, look, worldId, bottom);
-      } else if (gp && gp.role === 'pillar') {
+      } else if (tl === 'pillar' && gp) {
         drawPillar(ctx, p, gp, look, worldId, bottom);
       } else {
         const depth = earthBody(ctx, p, look, time, bottom, r);
@@ -1405,11 +1409,12 @@ export function renderWorldObjects(
       }
     } else {
       const tp = thinPlanFor(plan, p);
-      if (tp.look === 'island' || !drawThin(ctx, p, look, worldId, tp)) {
+      // (a thin piece's art, or, where it has none or its sheet is not ready, the floating island: islandLook)
+      if (tl !== 'thin' || !drawThin(ctx, p, look, worldId, tp)) {
         // the floating island: the original live-drawn earth platform
-        const v = Math.abs(p.id * 7 + Math.floor(p.width / 40)) % 6;
-        if (v === 3) drawLog(ctx, p, look, r);
-        else if (v === 4 || (v === 5 && look.ground.kind === 'stone')) drawSlab(ctx, p, look, time, r);
+        const il = islandLook(p, look);
+        if (il === 'island-log') drawLog(ctx, p, look, r);
+        else if (il === 'island-slab') drawSlab(ctx, p, look, time, r);
         else {
           const depth = earthBody(ctx, p, look, time, bottom, r);
           if (curRig) lightBody(ctx, curRig, look, p, depth, () => islandPath(ctx, p.x, p.y, p.width, depth, Math.max(1, Math.min(4, Math.round(p.width / 140))), p.id), left, right, time);
@@ -1430,6 +1435,67 @@ export function renderWorldObjects(
   // (anything drawn outside this frame's world pass, a bake or a menu picture, culls nothing up or down)
   curT = -Infinity;
   curB = Infinity;
+}
+
+/** what terrain draws a platform as (the one decision renderWorldObjects and footingOf both read; a piece the painted layer draws is
+ *  footingOf's to sort before this) */
+export type TerrainLook = 'bounce' | 'fragile' | 'drift' | 'moving' | 'bridge' | 'painted-rock' | 'painted-bank' | 'ground' | 'step' | 'pillar' | 'earth' | 'thin' | 'island-log' | 'island-slab' | 'island-earth';
+export function terrainLook(p: Platform, plan: StagePlan, look: Look, rig: boolean): TerrainLook {
+  if (p.type === 'bouncy') return 'bounce';
+  if (p.type === 'fragile') return 'fragile';
+  if (p.type === 'drift' && p.drift) return 'drift';
+  if (p.type === 'moving') return 'moving';
+  if (p.style === 'canopy_bridge') return 'bridge';
+  if (rockPainted(p)) return 'painted-rock';
+  if ((p.height >= 50 || p.soil) && bankPainted(p)) return 'painted-bank';
+  if (p.height >= 50) {
+    const gp = rig ? undefined : plan.ground.get(p);
+    return gp?.role === 'ground' ? 'ground' : gp?.role === 'step' ? 'step' : gp?.role === 'pillar' ? 'pillar' : 'earth';
+  }
+  return thinPlanFor(plan, p).look === 'island' ? islandLook(p, look) : 'thin';
+}
+/** the floating island's three faces, by the platform's id and width */
+export function islandLook(p: Platform, look: Look): 'island-log' | 'island-slab' | 'island-earth' {
+  const v = Math.abs(p.id * 7 + Math.floor(p.width / 40)) % 6;
+  return v === 3 ? 'island-log' : v === 4 || (v === 5 && look.ground.kind === 'stone') ? 'island-slab' : 'island-earth';
+}
+
+/** what a platform is drawn as on screen and how far down its drawn body reaches (Infinity: earth or a stalk drawn on down out of sight).
+ *  It follows the engine's own order (engine.ts: the painted kit takes its pieces first, protoArt.ts paintedPlatforms; set pieces and
+ *  pieces with their own art keep their own drawer; the river art takes lily pads and drift logs; terrain draws the rest by terrainLook),
+ *  so a support check that reads it agrees with the screen. engine-render's four rules, 11-05 */
+export interface Footing { drawn: string; bodyBottom: number }
+export interface FootingInput { painted: Set<number>; plan: StagePlan; look: Look; rivers: boolean; rig?: boolean }
+export function footingOf(p: Platform, f: FootingInput): Footing {
+  const base = p.y + p.height;
+  if (p.chase || p.crown) return { drawn: 'set piece', bodyBottom: base };
+  if (p.art) return { drawn: `own art (${p.art})`, bodyBottom: base };
+  if (f.painted.has(p.id)) {
+    if (p.push) return { drawn: 'painted push', bodyBottom: base };
+    if (p.hollow) return { drawn: 'painted hollow log', bodyBottom: base };
+    // (a painted rock is its boulder, drawn to 3 px under its collider: protoArt.ts drawProtoScene)
+    if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') return { drawn: 'painted rock', bodyBottom: base + 3 };
+    return { drawn: 'painted thin piece', bodyBottom: base };
+  }
+  if (f.rivers && (p.lily || p.type === 'drift')) return { drawn: 'river art', bodyBottom: base };
+  const tl = terrainLook(p, f.plan, f.look, !!f.rig);
+  switch (tl) {
+    // (a mushroom's stalk, the painted ground, a ground or step or pillar body and the earth body of a bank all run down to the view's
+    // bottom: renderWorldObjects' `bottom`)
+    case 'bounce': case 'painted-bank': case 'ground': case 'step': case 'pillar': case 'earth': return { drawn: tl, bodyBottom: Infinity };
+    case 'painted-rock': return { drawn: tl, bodyBottom: base + 3 };
+    // (the floating island's earth: its depth as earthBody draws it, from the platform's own first random draw)
+    case 'island-earth': return { drawn: tl, bodyBottom: p.y + p.height + 24 + rng(Math.abs(p.id) * 97 + 13)() * 16 };
+    case 'island-slab': return { drawn: tl, bodyBottom: p.y + Math.max(26, p.height + 8) };
+    default: return { drawn: tl, bodyBottom: base };
+  }
+}
+/** every platform's footing on a built stage, with the inputs the engine gives terrain (engine.ts paint setup) */
+export function footingsFor(st: { platforms: Platform[]; proto?: unknown }, world: number, paintKit: boolean = !!st.proto || hasKit(world)): Map<number, Footing> {
+  setKitWorld(world);
+  const painted = paintKit ? paintedPlatforms(st.platforms) : new Set<number>();
+  const f: FootingInput = { painted, plan: stagePlan(st.platforms, world), look: lookFor(world), rivers: world === 2 || st.platforms.some((q) => q.lily) };
+  return new Map(st.platforms.map((p) => [p.id, footingOf(p, f)]));
 }
 
 const planCache = new WeakMap<object, { n: number; world: number; seed: number; plan: StagePlan }>();

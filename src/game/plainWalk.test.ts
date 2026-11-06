@@ -13,7 +13,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { canGrabSwing } from './physics.ts';
-import { G } from './protoStage.ts';
+import { G, HAND_STAGES } from './protoStage.ts';
+import { specFor } from './mixer/stages.ts';
 import { STEP_UP } from './engine.ts';
 import type { Platform } from './types.ts';
 
@@ -158,6 +159,55 @@ function leaveDip(sim: RealPlay, d: Platform): number {
   return -1;
 }
 
+/**
+ * Dips by the ground beside them (the lead's ruling (a), 11-06): on gen2 and the W1 mixer's stages the ground runs at many heights, so
+ * main's ground line G is the wrong ruler (1-5's level route under G read as 205 dips he "never" left). A dip there is a ground block
+ * 30-220 px under the ground blocks either side, left either way (a soft pit may climb back to the take-off). G stays for main's stages
+ */
+const relativeGround = (sim: RealPlay) => !!(sim.stage as { gen2?: unknown }).gen2 || !!specFor(HAND_STAGES[sim.stage.config.id] ?? '');
+function dipsRel(sim: RealPlay): Array<{ d: Platform; top: number }> {
+  const ground = sim.platforms.filter((q) => solidish(q) && q.height >= 60).sort((a, b) => a.x - b.x);
+  const wet = (x0: number, x1: number) => (sim.stage.rivers ?? []).some((r) => r.x1 > x0 && r.x0 < x1);
+  const out: Array<{ d: Platform; top: number }> = [];
+  for (const q of ground) {
+    if (q.width < 40 || wet(q.x, q.x + q.width)) continue;
+    if (sim.platforms.some((o) => o !== q && solidish(o) && o.y < q.y && o.y + o.height > q.y - 4 && o.x <= q.x + 20 && o.x + o.width >= q.x + 20)) continue;
+    // (the banks touch it: ground across a gap is a jump, not a dip's wall, 1-5's blocks between pits)
+    const left = ground.filter((o) => o.x + o.width <= q.x + 4 && o.x + o.width >= q.x - 4).sort((a, b) => a.y - b.y)[0];
+    const right = ground.filter((o) => o.x >= q.x + q.width - 4 && o.x <= q.x + q.width + 4).sort((a, b) => a.y - b.y)[0];
+    if (!left || !right) continue;
+    const top = Math.max(left.y, right.y);
+    if (q.y - top >= 30 && q.y - top <= 220) out.push({ d: q, top });
+  }
+  return out;
+}
+/** dropped into a dip, a one-thumb player heads one way, flicking straight up at each face: out with single flicks? (-1: never) */
+function leaveDipRel(sim: RealPlay, d: Platform, top: number, dir: 1 | -1): number {
+  sim.stand(dir > 0 ? d.x + 20 : d.x + d.width - 64, d.y);
+  sim.p.facing = dir;
+  let flicks = 0, hold = 0, rest = 0, lastX = sim.p.x, still = 0;
+  for (let i = 0; i < 30 * 12; i++) {
+    const p = sim.p;
+    if (p.climbing || p.isVineSwinging || p.hanging) return flicks;
+    const face = sim.platforms.some((q) => solidish(q) && q.height >= 20 && q.y < p.y - 6 && q.y + q.height > p.y - 4 && (dir > 0 ? q.x - (p.x + 19) >= -3 && q.x - (p.x + 19) < 8 : (p.x - 19) - (q.x + q.width) >= -3 && (p.x - 19) - (q.x + q.width) < 8));
+    still = Math.abs(p.x - lastX) < 0.5 && p.grounded ? still + 1 : 0;
+    lastX = p.x;
+    let press = false;
+    if (p.grounded && hold <= -3 && (face || still > 6) && rest-- <= 0) { press = true; hold = 7; rest = 3; flicks++; }
+    const go = p.grounded && !face && hold <= 0;
+    sim.frame({ right: dir > 0 && go, left: dir < 0 && go, press, jump: hold > 0 });
+    hold--;
+    if (sim.died) return -1;
+    if (sim.p.grounded && sim.p.y <= top + 2 && (dir > 0 ? sim.p.x > d.x + d.width + 30 : sim.p.x < d.x - 30)) return flicks;
+    if (flicks > 6) break;
+  }
+  return -1;
+}
+const relFlicks = (sim: RealPlay, d: Platform, top: number) => {
+  const ways = [leaveDipRel(sim, d, top, 1), leaveDipRel(sim, d, top, -1)].filter((f) => f >= 0);
+  return ways.length ? Math.min(...ways) : -1;
+};
+
 test('one-jump steps: a straight flick with the thumb lifted climbs every one or carries him past it onto safe ground, and every one climbs from its face (leaning either way), in Worlds 1 and 2, three rolls', () => {
   const bad: string[] = [];
   let n = 0;
@@ -185,13 +235,28 @@ test('dips: every one is left with single flicks (no double or perfect jump need
   for (const id of STAGES) {
     for (const seed of SEEDS) {
       const sim = touchPlay(id, seed);
-      for (const d of dipsOf(sim)) {
+      const rel = relativeGround(sim);
+      for (const { d, top } of rel ? dipsRel(sim) : dipsOf(sim).map((d) => ({ d, top: 0 }))) {
         n++;
-        const flicks = leaveDip(sim, d);
+        const flicks = rel ? relFlicks(sim, d, top) : leaveDip(sim, d);
         if (flicks < 0 || flicks > 3) bad.push(`${id} seed ${seed}: the dip at x ${Math.round(d.x)}..${Math.round(d.x + d.width)}, ${flicks < 0 ? 'never out' : `${flicks} flicks`}`);
       }
     }
   }
   assert.ok(n > 100, `${n} dips`);
   assert.deepEqual(bad, []);
+});
+
+test('the relative dip check: a dip a single flick climbs out of passes; one only a double climbs out of FAILS (planted)', () => {
+  const P = (id: number, x: number, y: number, width: number): Platform => ({ id, x, y, width, height: 300, type: 'solid', style: 'moss_stone' });
+  for (const [depth, out] of [[60, true], [210, false]] as const) {
+    const sim = touchPlay('1-1', 1);
+    const e = sim.e as unknown as { platforms: Platform[]; enemies: unknown[]; vines: unknown[] };
+    e.platforms.splice(0, e.platforms.length, P(1, 0, 600, 800), P(2, 800, 600 + depth, 300), P(3, 1100, 600, 800));
+    e.enemies.splice(0, e.enemies.length);
+    const dips = dipsRel(sim);
+    assert.equal(dips.length, 1, `${depth}: one dip`);
+    const f = relFlicks(sim, dips[0].d, dips[0].top);
+    assert.equal(f >= 0 && f <= 3, out, `${depth} px deep: ${f} flicks`);
+  }
 });

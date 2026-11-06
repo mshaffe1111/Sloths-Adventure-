@@ -1,0 +1,50 @@
+{
+ "note": "1-1 bootprint clue, round 2, 2026-11-05",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/art-bootprint/tools/art/hfbatch/starts/w1boot/",
+ "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, a shoe, a boot standing, foot, toes, leg, person, soldier, animal tracks, paw print, two prints, several footprints, flowers, stones",
+ "items": [
+  {
+   "name": "low-s62-5",
+   "start": "bootprint-low.png",
+   "prompt": "slothadv style, painted storybook illustration, one single deep bootprint of a heavy military boot pressed into a small flat bed of soft green forest moss lying on the ground, seen from slightly above and in front, the toe of the print pointing away from us, the print showing the dark wet earth under the moss, chunky chevron tread lugs on the ball of the sole and thick bars on the heel, the bed's front edge showing a thin band of dark earth with little roots, a rainforest floor. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 768,
+   "h": 512
+  },
+  {
+   "name": "low-s62-11",
+   "start": "bootprint-low.png",
+   "prompt": "slothadv style, painted storybook illustration, one single deep bootprint of a heavy military boot pressed into a small flat bed of soft green forest moss lying on the ground, seen from slightly above and in front, the toe of the print pointing away from us, the print showing the dark wet earth under the moss, chunky chevron tread lugs on the ball of the sole and thick bars on the heel, the bed's front edge showing a thin band of dark earth with little roots, a rainforest floor. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.62,
+   "seed": 11,
+   "w": 768,
+   "h": 512
+  },
+  {
+   "name": "low-s70-5",
+   "start": "bootprint-low.png",
+   "prompt": "slothadv style, painted storybook illustration, one single deep bootprint of a heavy military boot pressed into a small flat bed of soft green forest moss lying on the ground, seen from slightly above and in front, the toe of the print pointing away from us, the print showing the dark wet earth under the moss, chunky chevron tread lugs on the ball of the sole and thick bars on the heel, the bed's front edge showing a thin band of dark earth with little roots, a rainforest floor. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 768,
+   "h": 512
+  },
+  {
+   "name": "low-s70-11",
+   "start": "bootprint-low.png",
+   "prompt": "slothadv style, painted storybook illustration, one single deep bootprint of a heavy military boot pressed into a small flat bed of soft green forest moss lying on the ground, seen from slightly above and in front, the toe of the print pointing away from us, the print showing the dark wet earth under the moss, chunky chevron tread lugs on the ball of the sole and thick bars on the heel, the bed's front edge showing a thin band of dark earth with little roots, a rainforest floor. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.7,
+   "seed": 11,
+   "w": 768,
+   "h": 512
+  }
+ ]
+}

@@ -1,3 +1,5 @@
+import { newPlay11, setPick11 } from './game/testlink1_1.ts';
+import { scheduleAhead } from './game/buildAhead.ts';
 import { handleBack } from './components/nav/backStack.ts';
 import { PerfReadout } from './components/PerfReadout.tsx';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
@@ -52,9 +54,8 @@ import { BadgeToast } from './components/BadgeToast.tsx';
 import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
 import { KIT_STAGE_ID, kitStageConfig, setKitStart } from './game/kitStage.ts';
-import { ctestEnabled, newMix, recorder } from './game/playRecorder.ts';
+import { ctestEnabled, recorder } from './game/playRecorder.ts';
 import { guardBack } from './game/backGuard.ts';
-import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
@@ -680,6 +681,8 @@ export default function App() {
 
   // dev only: jump straight into any level (for testing and screenshots); `layout` picks a roll (the designed one when left out)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
+    // (and the test link's 1-1 pick, for a still of a picked roll: stage.ts --roll, tools/engine/runs/stills-at.mjs; TEST-LINK ONLY)
+    (window as unknown as { __setPick11?: typeof setPick11 }).__setPick11 = setPick11;
     (window as unknown as { __play?: (id: string, layout?: number) => void }).__play = (id: string, layout?: number) => {
       const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : allLevels.find((l) => l.id === id);
       if (lvl) {
@@ -745,10 +748,12 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, activeLevel.id]);
 
-  // the control test's stage: 1-2, asking only to reach the shrine (1-2 itself is a petal hunt, and its shrine would stay sealed)
-  const ctestLevel = (): LevelConfig | null => {
-    const base = allLevels.find((l) => l.id === CTEST_STAGE_ID);
-    return base ? { ...base, name: 'Control Test', objectiveType: 'sprint' as const, targetCount: 1 } : null;
+  // the testers' stage (#ctest, the lead and tester-page, 11-06): gen2 1-1 as Play builds it, its own goal, a fresh proven seed each run
+  // on the tester's own setting (the control course it replaced: stageGenerator.ts CTEST_STAGE_ID)
+  const ctestLevel = (): LevelConfig | null => allLevels.find((l) => l.id === '1-1') ?? null;
+  const ctestDraw = () => {
+    setPick11('play');
+    newPlay11();
   };
   // and its sheets, loaded, decoded and drawn once while the tester reads the front page and types a name: started only at Start, a slow
   // connection had the eagle's and the snakes' sheets arrive mid-run and stall the frames they first drew in (QA 2026-10-29, Safari 18,
@@ -757,6 +762,10 @@ export default function App() {
     if (!ctestGate) return;
     const lvl = ctestLevel();
     if (lvl) void preloadStage(lvl, canvasRef.current, inPlay);
+    if (lvl) {
+      setPick11('play');
+      scheduleAhead(lvl);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctestGate]);
 
@@ -764,7 +773,9 @@ export default function App() {
   // last mix's creatures that this one does not draw are let go first: stagePreload.ts)
   useEffect(() => {
     if (!ctestDone) return;
-    newMix();
+    // (the next run's stage built at idle while the questions are up: buildAhead.ts; Play again draws its seed)
+    setPick11('play');
+    scheduleAhead(ctestDone);
     void preloadStage(ctestDone, canvasRef.current, inPlay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctestDone]);
@@ -830,11 +841,15 @@ export default function App() {
     const launchAt = performance.now();
     // (the mode this run is played on: a change in the menu applies from the next stage, so this is the one its results are kept with)
     startRun(lvl.id);
+    // (the 'launch' moment, the lead 11-06: each phase from the tap to the first frame, so testers' real phones give the true split)
+    const at = { ready: 0, timer: 0, built: 0 };
     void readyToStart(lvl, canvasRef.current, inPlay).then(() => {
+      at.ready = performance.now();
       if (seq !== launchSeq.current) return;
       // Slight delay to allow canvas element mounting
       launchTimer.current = window.setTimeout(() => {
         if (!canvasRef.current || !inputEngineRef.current) return;
+        at.timer = performance.now();
         // The input engine outlives each stage, so drop any direction left over from the last one.
         inputEngineRef.current.clearAll();
 
@@ -902,7 +917,7 @@ export default function App() {
             // the control test is over at its shrine: thank the tester (nothing is saved, and the game does not go on to 1-3)
             // (and the stage stops: under the questions it kept drawing 30 times a second for as long as they took, minutes, and on Sally's
             // Android the frames there slowed and the picture dropped to its lightest before the replay, QA 2026-10-29)
-            if (ctestEnabled() && lvl.id === CTEST_STAGE_ID) {
+            if (ctestEnabled() && lvl.id === '1-1') {
               engine.stop();
               setCtestDone(lvl);
               return;
@@ -955,12 +970,15 @@ export default function App() {
           return;
         }
 
+        at.built = performance.now();
         engineRef.current?.stop();
         engineRef.current = engine;
         // the built stage's every sheet, loaded, decoded, drawn once and baked under the title card before the first frame of play
         // (stageReady.ts: QA's freezes after 'hud-atlas', 'crumble', 'props2' and the creatures' sheets arrived mid-run)
         const go = () => {
           if (seq !== launchSeq.current || engineRef.current !== engine) return;
+          const now = performance.now(), ms = (a: number, b: number) => Math.round(b - a);
+          recorder.event('launch', `${lvl.id} sheets ${ms(launchAt, at.ready)} timer ${ms(at.ready, at.timer)} build ${ms(at.timer, at.built)} ready ${ms(at.built, now)} total ${ms(launchAt, now)}`);
           engine.start();
           // (the screen's iris opens once the stage is drawing: ScreenVeil.tsx)
           window.dispatchEvent(new Event(STAGE_LIVE_EVENT));
@@ -1037,6 +1055,7 @@ export default function App() {
   const heroPoint = useCallback(() => engineRef.current?.heroScreenPoint() ?? null, []);
 
   const pauseGame = () => {
+    recorder.event('pause');
     engineRef.current?.pause();
     sound.playPause(true);
     setScreen('paused');
@@ -1123,6 +1142,7 @@ export default function App() {
             setRecording(true);
             const lvl = ctestLevel();
             if (lvl) {
+              ctestDraw();
               setActiveLevel(lvl);
               setSelectedWorldId(lvl.worldIndex);
               launchEngine(lvl);
@@ -1147,7 +1167,8 @@ export default function App() {
             const lvl = ctestDone;
             setCtestDone(null);
             recorder.event('playAgain');
-            // (the new mix was chosen, and its sheets loaded, while the questions were up: the effect below)
+            ctestDraw();
+            // (the next run's stage was built, and its sheets loaded, while the questions were up: the effect above)
             launchEngine(lvl);
           }}
         />
@@ -1520,7 +1541,10 @@ export default function App() {
           onAskHint={activeLevel.id === MEECA_STAGE_ID ? () => engineRef.current?.meecaHint() ?? null : undefined}
           onToggleMute={handleToggleMute}
           onResume={resumeGame}
-          onRestart={restartLevel}
+          onRestart={() => {
+            recorder.event('restart', 'menu');
+            restartLevel();
+          }}
           onContinue={continueRun}
           fails={failsRef.current[activeLevel.id] ?? 0}
           onTakeHelp={() => {

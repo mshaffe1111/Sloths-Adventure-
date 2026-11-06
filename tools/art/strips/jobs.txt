@@ -1,0 +1,6 @@
+er-sun1 6aecac6ac78863f9c6337069 (12 takes) 16:18:51Z-16:22:51Z 4.0 min ~$0.18
+er-sun2 6aecb01d0e0338d1bb8090f6 (8 takes) 16:34:38Z-16:36:37Z 2.0 min ~$0.09
+er-sun3 6aecb2c4c78863f9c633739e (4 takes) 16:45:56Z-16:47:29Z 1.6 min ~$0.07
+total ~7.6 GPU min, ~$0.35. All three were inpaint takes on the approach Matt rejected (rounds 2 and 3 after the lead's redirect); none is used: the backdrop went to a fresh helper.
+er-creek1 6aecb9d60e0338d1bb80949a (8 body + 4 splash takes) 17:16:07Z-17:19:15Z 3.1 min ~$0.14; picks body-s62-341, splash-s58-352 (tools/art/creek/make.py)
+day total ~$0.49

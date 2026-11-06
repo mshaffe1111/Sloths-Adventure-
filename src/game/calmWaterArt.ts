@@ -137,7 +137,43 @@ export function drawCalmWaterFront(ctx: CanvasRenderingContext2D, w: CalmPool, t
   ctx.clip();
   surface(ctx, w, time);
   ctx.restore();
-  if (who) {
+  if (who) drawSwimmerMarks(ctx, w, time, who);
+  return true;
+}
+
+/**
+ * Water a stage draws over him once he is under it (the drawn water zones, engine.ts): the same water as behind him, drawn again over
+ * him inside `box` from just under the top down, so below the waterline he is under the water, not in front of it. The same pixels as
+ * the water behind (its strips are laid from the world's origin), so the box shows no edge; then his ring and bubbles.
+ */
+export function drawCalmWaterOver(ctx: CanvasRenderingContext2D, w: CalmPool, time: number, box: { x0: number; x1: number }, who: Swimmer): boolean {
+  if (!calmWaterReady()) return false;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(box.x0, w.surfaceY + 2, box.x1 - box.x0, w.bottomY - w.surfaceY);
+  ctx.clip();
+  drawCalmWaterBack(ctx, w, time);
+  ctx.restore();
+  drawSwimmerMarks(ctx, w, time, who);
+  return true;
+}
+
+/** a ripple ring spreading slowly round something floating at (cx, y), about `w` wide (a lily pad on a stage's drawn water): painted
+ *  ring, one drawImage, false until the sheet loads */
+export function drawCalmRing(ctx: CanvasRenderingContext2D, cx: number, y: number, w: number, time: number): boolean {
+  if (!calmWaterReady()) return false;
+  const u = (time * 0.35 + cx * 0.0013) % 1;
+  const rw = w * (0.95 + 0.5 * u);
+  ctx.save();
+  ctx.globalAlpha = 0.55 * (1 - u);
+  blit(ctx, 'ring', cx - rw / 2, y - rw * 0.08, rw, (rw * FRAMES.ring.h) / FRAMES.ring.w);
+  ctx.restore();
+  return true;
+}
+
+/** the ring round him at the top and, under, his bubbles rising */
+function drawSwimmerMarks(ctx: CanvasRenderingContext2D, w: CalmPool, time: number, who: Swimmer) {
+  {
     ctx.save();
     // the ring, spreading and fading round him, once a second (wider when he swims)
     for (let i = 0; i < 2; i++) {
@@ -160,7 +196,6 @@ export function drawCalmWaterFront(ctx: CanvasRenderingContext2D, w: CalmPool, t
     }
     ctx.restore();
   }
-  return true;
 }
 
 /** the stand-in while the sheet loads: a flat clear teal, its top a lighter line */

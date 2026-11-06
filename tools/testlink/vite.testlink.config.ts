@@ -13,11 +13,21 @@ const t = (() => {
     return new Date().toISOString();
   }
 })();
+// the git short commit of the build (testRound.ts: the testers' runs say which build they came from); GAME_GIT_COMMIT overrides it
+function gitCommit(): string {
+  if (process.env.GAME_GIT_COMMIT) return process.env.GAME_GIT_COMMIT;
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+  } catch {
+    return '';
+  }
+}
+
 export default defineConfig({
   base: './',
   // the new HUD and Dot (beta) is on by default here, off on the real game (src/game/newLook.ts)
   // (a QA build: the control test, #ctest, opens here and not in the shipped game: src/game/playRecorder.ts qaBuild, UI-15)
-  define: { __BUILD_TIME__: JSON.stringify(t), 'import.meta.env.VITE_QA_BUILD': JSON.stringify('1') },
+  define: { __GIT_COMMIT__: JSON.stringify(gitCommit()), __BUILD_TIME__: JSON.stringify(t), 'import.meta.env.VITE_QA_BUILD': JSON.stringify('1') },
   plugins: [react(), tailwindcss()],
   // (small pictures, under 24 KB, packed into the bundle: an artifact version holds at most 511 files, and the recorded music
   // took the build to 527, 2026-10-30. The test link only; the GitHub Pages build keeps them as files.)

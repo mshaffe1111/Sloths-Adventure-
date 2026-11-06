@@ -7,7 +7,8 @@ import { isGen2Stage } from './gen2/game.ts';
 
 // (the recipes are the old generator's: the new generator's stages, gen2/game.ts, are built from sections on a mission graph instead,
 // proven by src/game/gen2's tests)
-const levels = generateAllLevels().filter((l) => l.objectiveType !== 'boss_lair' && l.objectiveType !== 'ascent' && !l.secret && !isGen2Stage(l));
+// (1-1's Play is gen2 too since 11-06, stageGenerator.ts: a stage gen2 builds carries gen2's meta, not a recipe)
+const levels = generateAllLevels().filter((l) => l.objectiveType !== 'boss_lair' && l.objectiveType !== 'ascent' && !l.secret && !isGen2Stage(l) && !(generateStage(l) as { gen2?: unknown }).gen2);
 
 test('every horizontal stage is built around a core idea', () => {
   for (const l of levels) {

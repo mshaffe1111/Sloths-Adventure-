@@ -1,0 +1,22 @@
+1-1 sunrise redo (art-1-1-sunrise, 2026-11-05). rtx-pro-6000 at ~$2.75/h. Times UTC (ET = UTC-5).
+sun11-F 6aecb69ac78863f9c6337597  far + sky text to image, 4 seeds (stillsgpu.py)          started 17:02Z
+sun11-M 6aecb69ec78863f9c633759d  middle strip img2img, 3 starts, 8 takes (img2imggpu.py)  started 17:02Z
+  F finished 17:06Z (~4 min, ~$0.19); M finished 17:08Z (~6 min, ~$0.27).
+  Far takes: 23 rain streaks (reject); 41 and 59 fail the seam check (hard cloud edge / floating smudge, also at join bands 240 and 420); 7 clean.
+  Mid takes: all 8 fail cut.py's join check (a tree in a join band; starts2.py lays its first piece at x=0). New starts: sunrise11/starts.py.
+sun11-M2  6aecb95b0e0338d1bb809451  middle strip img2img from starts.py starts E/F/G, 12 takes   started 17:14Z
+sun11-hdF 6aecb965c78863f9c63376e1  native pass, far + sky takes 7/41/59 (striphdgpu.py)        started 17:14Z
+sun11-F2  6aecb9a6c78863f9c6337720  far + sky text to image, 6 more seeds                    started 17:15Z, ~6 min
+sun11-hdF2 6aecbadc0e0338d1bb8094f6 native pass, fars 83/97/113                               started 17:20Z, ~3 min
+sun11-hdM 6aecbee80e0338d1bb80980c  native pass, mids E-s76-7, G-s68-23, F-s68-7             started 17:37Z, ~2.5 min
+sun11-M3  6aecc18fc78863f9c6337ce1  middle strip img2img, taller starts H/I, 8 takes          started 17:49Z (before the pause was read)
+  hdF ~3 min, M2 ~8 min. Total ~38.5 min of rtx-pro-6000: ~$1.95 (estimate). PAUSED 17:50Z by the lead.
+--- resumed 2026-11-05 ~5:55 PM ET on art-1-1-sunrise-2 (lead session_01FhBbYN2DDsktc7BGtNxPFK; handoff confirmed by the supervisor) ---
+  M3 finished 17:54:52Z: 5m49s measured (~$0.27). H takes pass the join check, crowns at row ~485 of 1302.
+sun11-hdM3 6aed0d090e0338d1bb80c43e native pass, mids H-s76-7 + H-s68-7  23:11:05Z-23:12:58Z (1.9 min measured, ~$0.09)
+  TOTAL so far ~40.2 GPU min (F, M, M3, hdM3 measured; the rest estimated) = ~$1.84. (The ~$1.95 in STOPPED.md was my arithmetic slip.)
+sun11-M4  (pending)  middle strip img2img, second-cluster starts K2/H2, 8 takes
+sun11-M4  6aed1721c78863f9c633b70b  mid img2img, second-cluster starts K2 (kapok) / H2, 8 takes  23:54:09Z-23:59:50Z (5.7 min measured, ~$0.26)
+  K2 all out (the kapok is the layer's hero; s68-23 has a creature at its roots); H2-s68-7/s76-7 out (pink key halo). Kept H2-s76-23.
+sun11-hdM4 6aed195bc78863f9c633b873 native pass, mid B H2-s76-23  00:03:39Z-~00:05:30Z (~1.9 min, ~$0.09)
+  Mid A|B joined (join.py): 3729 x 1302, 235 KB (q76), seams 0.000. TOTAL sunrise ~$2.55 of $5 (estimate; F, M, M3, M4, hdM3 measured).

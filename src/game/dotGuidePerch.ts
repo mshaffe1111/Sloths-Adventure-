@@ -36,6 +36,17 @@ export function setGuideSafeArea(fn: SafeFn | null): void {
   safeFn = fn;
 }
 
+/** the phone's own insets (the notch, the camera hole, the gesture bar), in css px */
+export interface GuideInsets { top: number; right: number; bottom: number; left: number }
+/**
+ * A guide rect kept clear of the phone's insets: 8 px inside them at the sides, 4 px over the gesture bar. Sideways on a notched phone the
+ * fallback's 16 px gutter put her bubble's Skip tips inside the right 48 px (clipcheck, 11-06); every bubble is placed and clamped in
+ * this rect (DotGuide.tsx), so nothing she shows can sit under the notch.
+ */
+export function clearOfInsets(r: Rect, ins: GuideInsets, w: number, h: number): Rect {
+  return { x0: Math.max(r.x0, ins.left + 8), y0: Math.max(r.y0, ins.top + 4), x1: Math.min(r.x1, w - ins.right - 8), y1: Math.min(r.y1, h - ins.bottom - 4) };
+}
+
 /** the fallback: a 16 px side gutter, the band under the top HUD, and the thumb zones left empty */
 export function fallbackSafeArea(w: number, h: number): SafeArea {
   const land = w > h;
