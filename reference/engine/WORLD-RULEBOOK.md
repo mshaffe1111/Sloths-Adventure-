@@ -256,3 +256,4 @@ Evidence:
    data item for 1-1. If the reachable 0.25 is the honest old figure, it goes into 1-2's own line, the cold helper's to set.
 
 "Something new every 808 px against ≤ 572" has the same root as the quiet line. FR9, FR9b and FR10 (Rounds 7(d) and 9) fix it once entered.
+- **(g), #53-#55 (the stair runs retagged as climb in Round 6):** keep the climb tag, since the climb × climb × sho cell outside the window needs them (Round 6). **Any step down before the summit in any of their versions becomes a level hop (`h`, ≥ 50 px)**, so each is a stair from first landing to summit (V18). The porter checks every version against V18 on 16 seeds. (12:04 PM)
