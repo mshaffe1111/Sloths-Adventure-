@@ -63,7 +63,8 @@ export function nodePieceBreaches(st: StageIn, world: number, nodes: readonly Re
     } else if (c === 'b') {
       need(has('bounce mushroom') && !airHere.some((b) => b.kind === 'bounce mushroom'), 'a mushroom seated on the floor, a bank, a stump or a log');
       never(airHere.some((b) => b.kind === 'bounce mushroom'), 'a mushroom in the air');
-      never(world === 1 && has('springy limb', 'breaking or bouncing stone'), 'a bouncy branch or stone in World 1');
+      // (what is drawn: a bouncy piece is World 1's mushroom whatever its style (terrain.ts drawBounce by world); a breaking stone is not)
+      never(world === 1 && (has('springy limb') || here.some((p) => p.type === 'fragile' && p.style === 'moss_stone')), 'a bouncy branch or stone in World 1');
     } else if (c === 'r') {
       never(o.stage === '1-1', 'a rope or vine node in 1-1 (not: ropes)');
       need(ropes.length > 0 || vines.length > 0, 'a rope with two anchors, a liana or a climb vine');

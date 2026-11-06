@@ -47,3 +47,16 @@ test('V19: a late descent made good before the exit passes; one that leaves him 
   assert.match(v19Breaches(st, straight, 'up').join(';'), /straight before the exit/);
   assert.deepEqual(v19Breaches(st, low, 'level'), [], 'only an up-trend stage');
 });
+
+test('V18 and the element reader read a bouncy piece by its TYPE: gen2\'s mushroom (style moss_stone) passes; no mushroom, a breaking stone, a springy limb in World 1 still FAIL (planted)', async () => {
+  const { landingKind } = await import('./catalog.ts');
+  const gen2Shroom = P({ x: 300, y: 1170, width: 70, height: 30, type: 'bouncy', style: 'moss_stone' });
+  assert.ok(landingKind(gen2Shroom).some((k) => k.name === 'bounce mushroom' && (k.worlds as readonly number[]).includes(1)), 'a World 1 kind');
+  assert.deepEqual(nodePieceBreaches(stage([floor, gen2Shroom]), 1, [{ token: 'Tb<', x0: 0, x1: 1000 }]), []);
+  assert.match(nodePieceBreaches(stage([floor]), 1, [{ token: 'Tb<', x0: 0, x1: 1000 }]).join(';'), /MUST a mushroom seated/);
+  const breaking = P({ x: 500, y: 1170, width: 120, height: 30, type: 'fragile', style: 'moss_stone' });
+  assert.match(nodePieceBreaches(stage([floor, gen2Shroom, breaking]), 1, [{ token: 'Tb<', x0: 0, x1: 1000 }]).join(';'), /NEVER a bouncy branch or stone in World 1/);
+  const limb = P({ x: 500, y: 1000, width: 160, type: 'bouncy', style: 'branch' });
+  assert.match(nodePieceBreaches(stage([floor, gen2Shroom, limb]), 1, [{ token: 'Tb<', x0: 0, x1: 1000 }]).join(';'), /NEVER a bouncy branch or stone in World 1/);
+  assert.ok(!landingKind(limb).some((k) => (k.worlds as readonly number[]).includes(1)), 'a springy limb is still no World 1 kind');
+});
