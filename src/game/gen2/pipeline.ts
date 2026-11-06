@@ -820,7 +820,9 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       x = a.x + a.w + gap;
       y = a.y + dy;
       // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
-      const back = glide && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
+      // (and so does a block's (NODES §8.7, Roll B 11-05): stepped toward its landing, a stair inside the gap took off a single's reach
+      // under the lip and the double was two hops; the take-off side's stair keeps the block a block)
+      const back = (glide || pc.block) && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
       gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
     } else if (pl.kind === 'rope') {
       // a ledge past a gap no jump or glide clears, a shimmy rope across (rope.ts; the rope itself is hung once both are placed: layStage)
