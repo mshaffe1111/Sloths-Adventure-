@@ -59,3 +59,14 @@ Lead's read:
   = a kapok hero (1-4). Not usable as-is: one flat image (our backdrops are 4 parallax layers: sky, far, mid, near), about 1024 px (ours
   are far larger), and 30-32's trees read as BAOBABS (Africa/Madagascar), not rainforest kapoks. Use them as the brief and reference for
   an HF backdrop job when 1-4 moves to the engine, layered.
+
+## Batch 5 (11-06 ~12:20 AM ET): sheets 36-40, the VERTICAL WALL KITS
+- This is the answer to "stacked pieces look tacky" (W1-23): a tall earth-and-root wall with its ledges painted IN, plus matching
+  corner caps, overhangs, floating ledges, hanging roots and grass tufts, all in one style. The best set Matt has made.
+- 36 (A) is the cleanest: KEEP as the master. 38 and 39 add a variant wall (more roots), triple plank ledges, a big overhang ledge
+  and a boulder: keep their extras. 40 is BROKEN (walls duplicated and overlapping): reject.
+- 37 the grey-blue stone version with green lanterns reads as a cave world (World 3, the Mossy Grotto): file for W3, not W1.
+- The lantern (36/38/39) doesn't belong in the home forest (no made things there): W2 village only.
+- Engineering note for the art director: a wall with painted ledges is a SET PIECE. Each ledge's top line must be measured and become
+  a platform at exactly that height, and the section is built around the wall (its gaps checked against the jump). Grey background:
+  cut by hand or with a matte (not magenta), so allow time.
