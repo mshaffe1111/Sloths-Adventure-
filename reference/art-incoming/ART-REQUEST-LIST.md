@@ -52,6 +52,10 @@ Fill in [N] and [LAYOUT] from the size column:
 | W1-20 | a red hibiscus bush with big flowers | S | 1-2's hibiscus |
 | W1-21 | lily pads seen from the side at water level: thin flat discs edge-on, a white flower standing up on some | L | lily pads (top view won't work) |
 | W1-22 | a hollow log lying flat, seen from the side, opening on the left | L | a tunnel / hide spot |
+| W1-23 | tall earth-and-root cliff walls with ledges built INTO them, one piece floor to top | T | climbing higher without stacking pieces |
+| W1-24 | a tall tree trunk with shelf fungi and stub branches you can stand on, one piece, full height | T | a vertical climb in one piece |
+| W1-25 | a big trunk with a wide bough coming off it at the top | H | a bough with its own support |
+| W1-26 | a tall stack of mossy rock ledges, each set back a little, one piece | T | a rock staircase in one piece |
 
 ## WORLD 2, the river and village (rapids, mist, evening; docks, nets, baskets, cages). Over the next few days
 
@@ -69,6 +73,10 @@ Fill in [N] and [LAYOUT] from the size column:
 | W2-10 | hanging baskets and pulley platforms on ropes | T | moving / lift pieces |
 | W2-11 | a river hazard that looks dangerous: snapping driftwood, a thorny snag in the water | S | W2 hazard |
 | W2-12 | mossy boughs over a river, horizontal | L | the high road |
+
+## Vertical sections: ask for ONE piece, never a stack
+Stacking (a root or trunk on top of a board) looks tacky, because the parts were never drawn to touch. Ask for walls, trunks and
+ledges drawn as ONE piece, floor to top (W1-23 to W1-26). The engine then places the whole piece; it doesn't build it from parts.
 
 ## Rules that save you a re-roll
 - **One kind of thing per request.** Mixed lists make Gemini wander.
