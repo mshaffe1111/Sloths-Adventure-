@@ -3,7 +3,7 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 5:58 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 6:05 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
 
 ## 5:45 PM: ready for the final (the lead's 5:31 order) + funcheck on the candidate shape
 - Order at the final: merge engine-core -> `old11-delete.py` -> vite build, `lazy-seeds.py` only if main JS > 4 MiB -> `release-prep.py`
@@ -135,7 +135,21 @@ Build the test link from bf3684ec. Commits after it on this branch are notes onl
   What's New, funcheck's list from main (release-prep.py; roadmap needed no edit: the final already cites engine-core/NEXT.md).
 - tsc PASS. seedList, whatsNew, buildAhead tests: 10/10 pass. vite build PASS: main JS 4,162,639 B (31.7 KB under 4 MiB), no file over
   4 MiB, so **lazy-seeds.py NOT applied** (the lead's rule).
-- The full gate on bf3684ec: starting now (results below as they come).
+- The full gate on bf3684ec (a detached worktree at that commit), so far (6:05 PM ET):
+
+| # | Gate | Result on bf3684ec |
+|---|---|---|
+| 1 | tsc | **PASS** (no output) |
+| 2 | tests, 3 shards | RUNNING (started 5:59 PM, ~30-40 min) |
+| 3 | vite build, no asset over 4 MiB | **PASS**: main JS 4,162,883 B (31.4 KB under 4 MiB); 0 files over 4 MiB |
+| 4 | npm run build:store | **PASS**: "Store build check passed: dist has no tracking, ads, collector, service worker or outside addresses." (main JS 4,161,697 B) |
+| 5 | artcheck | **PASS** |
+| 6 | knowncheck | **PASS** (vs 68b31e66: clipknown 44, playerText.known 4, limits 14, artUse.allow 210, 66 fewer than main). Note: funknown.json is not in knowncheck's LISTS |
+| 7 | clipcheck | NOT RUN yet (after the shards: CPU) |
+| 8 | drawcheck | NOT RUN yet (after the shards) |
+| 9 | roadmapcheck | **PASS** |
+| 10 | funcheck | **FAIL**: `FAIL (12 worse or new, 26 to lower or delete; 144 known, 1872 stage-layout flags; 60 s)`. The same 12 as the 5:45 entry: gen2 1-1 dead walk 16/16 both settings (main 14), pacing Normal 13 (8) / Easy 11 (2), nothing bites Normal 12 (4) / Easy 8 (4); 1-2 nothing new 14 (10) both; 1-9 repeat N 15 (12), nothing new E 16 (13); 1-3 repeat N 13 (11); 1-6 Easy repeat new (1). **Needs the lead's ruling; I do not lower the list (Law 5).** |
+| 11 | lockall --check | RUNNING (with the shards) |
 
 ## HEADLINE for the lead (3:30 PM)
 1. **engine-core 5e221f9d is NOT ready: 8+ red tests (shard 1 alone: 7 red + 2 todo-masked), listed below with causes.** Shards 2 and 3
