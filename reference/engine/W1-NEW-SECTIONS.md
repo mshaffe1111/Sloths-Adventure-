@@ -496,3 +496,40 @@ The lead ruled that the mixer gets no rope beat (it's being retired), so stage15
   - needs `shimmy` (taught at 1-3; dotLinesData skill.shimmy.note).
   - Versions: **a** `w h R w`; **b** `w R h R w` (R = a shimmy across).
 - 1-5's `taughtBefore` adds `shimmy`, plus `punch` if it's missing.
+
+## Round 8: each W1 stage's own words, so `not` binds (designer, 11-06 9:22 AM ET; a 1-2 prerequisite; BRIEF-1-2.md "What 1-2 must NOT repeat from 1-1", origin/ccr-0d59a91c-oy3imz:33-48)
+
+**How it works** (the planner's `stagePool`, engine-chunks pipeline.ts:2408): a section is in stage S's pool when its `feel` names S
+(or is unset) AND its `not` names nothing in `owns[S]`. Today W1 has no `owns` map, so every `not` binds nothing. Fix it with
+(1) an `owns` map, (2) new `W1Not` words, and (3) each section's `not` set from what it shows.
+
+**1. `W1_KIT.owns` (new): what each stage is about.**
+
+| Stage | Owns | Source |
+|---|---|---|
+| 1-1 | `teaching`, `double-chain`, `bootprint`, `golden-seed`, `first-petal`, `squirrels`, `morning-light`, `canopy-rise` | 1-1.md:19-22, :28, :32, :47-52; the brief's `must` |
+| 1-2 | `meeca-note`, `pink-bell`, `rain`, `roots`, `under-road`, `snake-jolt`, `choosing`, `hibiscus-trail` | BRIEF-1-2 :37-44; 1-2.md:11, :14, :17-22, :26, :47-53 |
+| 1-3 to 1-10 | their current `NOT_ELSEWHERE` items, each under the stage that owns it (`punch` and `combat` 1-3, `kapok-climb` 1-4, `chase` and `folded-petals` 1-5, `lianas` 1-6; `view-north` and `bush` under the stages their briefs name) | w1.ts:73; the ladder |
+
+**2. New `W1Not` words:** `teaching`, `double-chain`, `bootprint`, `golden-seed`, `first-petal`, `squirrels`, `morning-light`,
+`canopy-rise`, `pink-bell`, `rain`, `roots`, `under-road`, `snake-jolt`, `choosing` (beside the existing ten).
+
+**3. The sections' `not` (each names what in it would be wrong elsewhere):**
+
+| Sections | not (adds) | Why |
+|---|---|---|
+| every T section (learn, #5, #8, #31-#35, hop-bounce) | `choosing` | 1-2's load is choosing, not learning (BRIEF :40) |
+| the signatures #10, #44, #45 (and their level/back versions) | `choosing`, `roots`, `rain`. **Their `feel` also stays `['1-1']`** | the double chain is 1-1's moment, unique in the game (BRIEF :42; §1 signature) |
+| the arrives with the squirrels' socket (`w1-forest-edge`, #46 `w1-morning-path`, #68 `w1-home-banks`) | `snake-jolt`, `rain` | 1-2 opens on the snake's jolt and rain (BRIEF :44) |
+| sunlit sections (`w1-clearing`, #23 `w1-sunlit-log`, `w1-meadow`) | `rain` | morning light is 1-1's (BRIEF :37). **Meadow is shared with 1-2 today; this takes it out of 1-2** (it's the home meadow) |
+| the goal sections with the bootprint clue (#15, #23, #30) | `meeca-note` | 1-2 ends on her note, not the bootprint (BRIEF :43) |
+| `w1-seed-perch` (the golden seed, high) | `meeca-note` | 1-2's find is LOW, in plain sight (BRIEF :43) |
+| bough-window climbs (#9 `w1-bough-stepup`, #29 `w1-bough-log`, #50-#52 descents) | `roots` | in 1-1 the canopy is the reward at the top; in 1-2, boughs are the high road all along, never canopy-led (BRIEF :39) |
+| every 1-1 section | the existing `NOT_ELSEWHERE` list, unchanged | w1.ts:73 |
+
+**The shared floor sections stay shared** (stump-stile, stone-zigzag, log-road, hollow-twoway, dropdown-stair, knot-bank,
+floor-dash, bank-stair-fork). They're plain W1 floor and fit 1-2's look. 1-2's own sections (roots, the under road, the pink bell,
+the note) come with 1-2's build, as the brief's art gaps allow (R-165.42).
+
+**Gate (for the planner):** on 16 seeds of a 1-2 build, no section with `feel` limited to `['1-1']`, and none whose `not` hits
+`owns['1-2']`, is laid.
