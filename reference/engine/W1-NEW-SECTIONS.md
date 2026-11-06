@@ -376,3 +376,8 @@ loudly, and the kit fills the cell, as #63-#67 do. The one exception is a cell t
 **The supervisor's check of Round 6: PASS (9:34 PM). Its two keep-checks are now rules:**
 - **V19b:** the end log stands above the height where the bough window starts ("up in the high branches", 1-1.md:23). Stacked level or net-zero versions may not flatten the rise. stage.ts reports the end log's height against the window's start.
 - **The seed perch's low-route version keeps stage11's promise** (stage11.test.ts:17-24): the seed more than 200 px up, beyond a double, with a mushroom within 260 px.
+
+**FR9 (added 10:11 PM, from the lead's heads-up on the planner's quiet-line finding: all 16 rolls run 4.3-7.8 s quiet against 4 s; old 1-1 ran 2.1-3.1 s).** It applies to Round 6 now, and to every section in tomorrow's pass:
+- **Every floor beat is a real obstacle:** a wall of at least 50 px (a hop over it), a gap, or a mushroom. A 36-42 px stump is walked through, and its art with it (a polish defect), so it scores no beat. Every `h` in a rhythm string is ≥ 50 px.
+- **No plain floor over 4 s anywhere,** rests and arrives included. A rest stays easy, but it gets one soft beat (a single ≥ 50 px stump or a small dip) every ≤ 3 s, or a shorter version. The same goes for walk-on joins. A step down scores no beat, so it doesn't count.
+- In Round 6: #63's dip, #64's log and #65's stumps already beat. Every stump and hop in them is ≥ 50 px.
