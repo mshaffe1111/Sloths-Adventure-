@@ -691,3 +691,8 @@ Gate (planner): on 16 seeds, both settings, end ≥ window start + 150 and ≤ c
 stands solid (Pokey no longer walks through it). Raising it to 50-60 made the quiet line WORSE: median 5.1 → 5.2 s, and seeds under
 4 s fell from 32 to 23. So **the `h` beat's rock stays 34-46 px (a quick hop)**, and FR9b's ≥ 50 px applies to the floor WALLS
 (blocks, stair steps, stumps meant as walls) only. The data wins over my rule.
+
+**The double gaps per setting (1:54 PM; the planner's measured reach of a level double at each setting's margin: Normal 229.8 px, Easy 203.6 px; a single's PHYSICAL reach is 175 px, reachJump, which is what the no-double bot jumps).**
+- **Normal:** TEACH 195-205 px, TEST 205-228 px (under the 229.8 px reach).
+- **Easy: no double GAP blocks at all.** A single physically reaches 175 px, so any gap Easy can fairly lay (≤ 203.6, so ≤ 183 with a 20 px margin) is within a single's reach plus the 21 px landing forgiveness, and blocks nothing. That's the §8.7 amendment of 11-05: **on Easy every double block is a RISE (B2a, 130-145 px).** The planner's option (A) Easy bands of 165-180 px would be crossed by a single.
+- **The teach's far bank is ≥ 3.5 body widths on both settings.**
