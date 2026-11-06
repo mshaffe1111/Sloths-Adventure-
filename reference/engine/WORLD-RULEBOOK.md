@@ -61,7 +61,7 @@ lianas (1-6); the bush (1-7). A stage may use only moves taught at or before it.
 - LABELS.md's element and support table.
 A research row used by one of those lines counts as used by this rulebook.
 
-**Floors (never worse than what ships):** old 1-1's per-view caps, bough and float shares, splits and two-road. **Targets from
+**Floors (never worse than what ships):** old 1-1's per-view caps, bough and float shares. (Splits and two-road were dropped for 1-1 on 11-06, to REPORTED only: see the ruling at the end.) **Targets from
 research where they exist:** length 120-150 s for a first stage (TF 1-1).
 
 ## 3. Today's 1-1 rulings: world rule, engine roll, or brief
@@ -232,6 +232,11 @@ Evidence:
 
 **What 1-1 is held to instead:**
 - `branching: some` as F nodes (V17: at least one fork in every 1-1 graph; the rulebook's 1-2 forks);
-- the variety gates (era diversity ≥ 0.35 on the quickest route, lookalike < 0.78, no 20 s window alike);
+- the variety gate, the NEW measure (stageVariety.ts: distinct ≥ 0.237, inner ≥ 0.36, repeat ≤ 2, code). Era's old diversity ≥ 0.35 was retired by Matt on the morning of 11-06;
 - the floor road under raised pieces where the job allows (FR1-FR8). It keeps old 1-1's FEEL (Matt: old 1-1's look and flow as a feel) without a share line.
 - The splits and two-road numbers stay in the stage report as information. **1-2's brief sets its own two-road line**, the cold helper's to find.
+
+**CONFIRMED by the lead (11-06 11:44 AM ET).**
+- **This reverses the 11-05 floor in §2's floors line** ("old 1-1's... splits and two-road"). The reason: 1-1's brief is one rising climb on gentle ground, and roads are 1-2's identity (above).
+- For 1-1, splits and two-road are REPORTED, not pass/fail. They become 1-2's own lines, set from BRIEF-1-2.
+- V17 and FR1-FR8 stay.
