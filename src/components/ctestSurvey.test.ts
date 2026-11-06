@@ -58,7 +58,7 @@ test("ctest survey: real gen2 1-1 runs (proven seeds, both settings) list at lea
 
 test('ctest survey: the questions Matt asked for, each optional and one tap, the age as a band only', () => {
   const qs = surveyQuestions(['w1-learn:ki']);
-  assert.deepEqual(qs.map((q) => q.id), ['fun', 'long', 'knew', 'hard', 'tips', 'looked', 'next', 'hand', 'held', 'age']);
+  assert.deepEqual(qs.map((q) => q.id), ['fun', 'long', 'knew', 'hard', 'tips', 'looked', 'next', 'hand', 'age']);
   assert.equal(FACES.length, 5);
   assert.deepEqual(qs.find((q) => q.id === 'long')!.a, ['Too short', 'About right', 'Too long']);
   assert.deepEqual(qs.find((q) => q.id === 'knew')!.a, ['Always', 'Mostly', 'I got lost']);
@@ -69,9 +69,16 @@ test('ctest survey: the questions Matt asked for, each optional and one tap, the
   assert.ok(qs.filter((q) => q.many).map((q) => q.id).join() === 'hard', 'only "hardest" takes more than one tap');
 });
 
+test("ctest survey: the front page's tips are only what 1-1 has (no vines, kicks or animals)", async () => {
+  const { TIPS } = await import('./ControlTestGate.tsx');
+  assert.equal(TIPS.length, 5);
+  for (const t of TIPS) assert.ok(!/vine|kick|punch|animal|snake|swing/i.test(t), t);
+  assert.ok(TIPS.some((t) => /mushroom/i.test(t)));
+});
+
 test('ctest survey: the row keeps the old keys in their old shape, adds the new ones, and leaves a skipped one out', () => {
-  const row = surveyRow({ hand: ['Two thumbs'], held: ['In both hands'], hard: ['the rope', 'Running'], fun: ['Fun'], long: ['About right'], looked: ['Yes'], age: ['8-12'], tips: [] }, ' all good ', ' a floating rock ', '1-1 seed 115 easy');
-  assert.deepEqual(row, { v: 2, hand: ['Two thumbs'], held: ['In both hands'], hard: ['the rope', 'Running'], long: 'About right', looked: 'Yes', age: '8-12', fun: 4, lookedNote: 'a floating rock', note: 'all good', run: '1-1 seed 115 easy' });
+  const row = surveyRow({ hand: ['Two thumbs'], hard: ['the rope', 'Running'], fun: ['Fun'], long: ['About right'], looked: ['Yes'], age: ['8-12'], tips: [] }, ' all good ', ' a floating rock ', '1-1 seed 115 easy');
+  assert.deepEqual(row, { v: 2, hand: ['Two thumbs'], hard: ['the rope', 'Running'], long: 'About right', looked: 'Yes', age: '8-12', fun: 4, lookedNote: 'a floating rock', note: 'all good', run: '1-1 seed 115 easy' });
   // nothing answered: still a row, just the note (as the old one always had)
   assert.deepEqual(surveyRow({}, '', 'ignored', ''), { v: 2, note: '' });
   // the "what looked wrong" words go only with a Yes

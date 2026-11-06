@@ -62,14 +62,16 @@ const CONTROLS: ReadonlyArray<readonly [GlyphKind, string, string]> = [
   ['down', 'Slide straight up or down', 'to climb a vine'],
 ];
 
-/** what has tripped testers up so far (the control tests and QA, 2026-10): the fixes are habits, so they go on the front door */
-const TIPS: readonly string[] = [
+/**
+ * what has tripped testers up so far (the control tests and QA, 2026-10): the fixes are habits, so they go on the front door. Only what
+ * 1-1 has (run, jump, double jump, the mushroom: the lead, 11-06); no vines, kicks or animals, which the level does not have
+ */
+export const TIPS: readonly string[] = [
   'Keep your thumb on the screen to keep running. Lifting it stops Pokey.',
   'Jump with a quick flick, not a slow drag. A slow slide up does not jump.',
   'Tall steps need a double jump: flick up, then flick up again while he is in the air.',
   'For a long jump, keep sliding forward as you flick up, and flick close to the edge.',
-  'A kick goes the way you flick. Tapping to punch works well too.',
-  'On a vine, slide straight up or down to climb. To let go, flick up and forward.',
+  'Land on a mushroom to bounce up high. Steer in the air to aim where you land.',
 ];
 
 /** a numbered step on the front door */
@@ -214,7 +216,7 @@ export const AGE_BANDS = ['Under 8', '8-12', '13-17', 'Adult'] as const;
 
 /**
  * The questions at the end, about what the recording cannot tell (the recording already has where he fell, how long it took and what
- * was tapped): how it felt, which hand, how the phone was held. "What felt hardest?" lists this run's own stretches in plain words
+ * was tapped): how it felt, and which hand. (How the phone was held is cut: the October runs already answer it, the lead, 11-06.) "What felt hardest?" lists this run's own stretches in plain words
  * (ctestStretches.ts). About 30 seconds: every question optional, one tap each.
  */
 export const surveyQuestions = (stretches: readonly string[]): SurveyQ[] => [
@@ -226,18 +228,17 @@ export const surveyQuestions = (stretches: readonly string[]): SurveyQ[] => [
   { id: 'looked', q: 'Did anything look wrong or out of place?', a: ['No', 'Yes'] },
   { id: 'next', q: 'Would you play the next level?', a: ['Yes', 'Maybe', 'No'] },
   { id: 'hand', q: 'What did you mostly play with?', a: ['One thumb', 'Two thumbs', 'One finger (like your pointer)', 'A mix'] },
-  { id: 'held', q: 'How did you hold the phone?', a: ['In one hand', 'In both hands', 'Lying on a table or lap'] },
   { id: 'age', q: "Who's playing? (optional, just a rough age)", a: AGE_BANDS },
 ];
 
 /**
- * The survey's row ('survey' moment, JSON). The keys the control test already sent keep their shape, so old rows still read: hand, held
- * and hard are lists of picks, note is text. The new ones are single values: fun 1 to 5, the rest the words picked; a skipped question
+ * The survey's row ('survey' moment, JSON). The keys the control test already sent keep their shape, so old rows still read: hand and
+ * hard are lists of picks, note is text (held, in old rows only, was a list too). The new ones are single values: fun 1 to 5, the rest the words picked; a skipped question
  * is left out. `v: 2` marks the level test's rows, `run` is the run's own 'gen2' line (stage, seed, setting).
  */
 export function surveyRow(ans: Readonly<Record<string, readonly string[]>>, note: string, lookedNote: string, run: string): Record<string, unknown> {
   const row: Record<string, unknown> = { v: 2 };
-  for (const id of ['hand', 'held', 'hard']) if (ans[id]?.length) row[id] = [...ans[id]];
+  for (const id of ['hand', 'hard']) if (ans[id]?.length) row[id] = [...ans[id]];
   for (const id of ['long', 'knew', 'tips', 'looked', 'next', 'age']) if (ans[id]?.length) row[id] = ans[id][0];
   const fun = FACES.findIndex((f) => f[1] === ans.fun?.[0]);
   if (fun >= 0) row.fun = fun + 1;
