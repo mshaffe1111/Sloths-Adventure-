@@ -43,3 +43,19 @@ Lead's read:
 - 21 lily pads: drawn from ABOVE (top-down). In a side view a lily pad is a thin flat sliver at the water line, so these won't read.
   Re-roll: "lily pads seen from the side at water level: thin flat green discs edge-on, some with a flower standing up".
 - 18's cave (the right half) is a good hide/secret-door piece; its left log is angled.
+
+## Batch 4 (11-05 ~midnight ET): sheets 23-35
+- 23 lily pads v2: closer (the giant round pad, standing flowers) but still tilted; the side-on wording is in the lead's reply.
+- 24 bootprints: REJECT. They read as boot SOLES (objects), adult hiking tread, merged shapes. 1-1's painted bootprint already exists.
+- 25: the fern-and-monstera bush is good dressing; the plank and rope ladder are angled; the seed pod with air plant is dressing.
+- 26 SPRING-STEM MUSHROOMS: a design idea worth keeping. A coiled stem TELLS the player "this bounces" (a visual telegraph).
+  Colours too loud for W1; the bounce mushroom is already painted, and the bouncy-stone rule (a piece stays in its world unless it
+  adds something). For the designer and art director: a W1 bounce mushroom with a coiled stem in W1's palette.
+- 27 labelled trees (grey, with TEXT labels): the strangler-fig arch is 1-2's root arch idea; lava-scorched = World 9. Labels must be
+  cropped out.
+- 28/29 fungal log and stump: beautiful, but MORE detailed and realistic than the kit (a style clash); the log is angled. The stump is
+  side-on: a candidate big set piece or a near-backdrop element, not a platform.
+- 30-35 BACKGROUNDS: strong MOOD references. 30-32 the canopy sea at dusk/dawn = 1-4's "view north" beat; 33-35 the giant emergent tree
+  = a kapok hero (1-4). Not usable as-is: one flat image (our backdrops are 4 parallax layers: sky, far, mid, near), about 1024 px (ours
+  are far larger), and 30-32's trees read as BAOBABS (Africa/Madagascar), not rainforest kapoks. Use them as the brief and reference for
+  an HF backdrop job when 1-4 moves to the engine, layered.
