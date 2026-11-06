@@ -261,3 +261,4 @@ Evidence:
   - outside the bough window, the commonest piece BY COUNT in each view is a ground kind (bank, mound, stone, stump or floor log);
   - at most 2 of the ≤ 6 kinds in a view are bough or floating kinds;
   - the same stills pass gets an eye check for dressing density, against Matt's "too much junk".
+- **V18, Pc1< named (the planner, 12:28): `w1-knot-bank` ("stepped mound", version "3-step") (12:10 PM).** It's two mounds, up then down, then up then down, so its step down sits BEFORE the summit. That's what a stepped mound is, not a stair. **Ruling: retag `w1-knot-bank`'s content `climb` → `ground`** (mounds are a ground terrain family, NODES §3; TERRAIN already says `mounds`). Its shape stays; its job stays `practise`. The climb × climb cells are covered by #53-#55, #38, #39 and #48 (Rounds 5-6).
