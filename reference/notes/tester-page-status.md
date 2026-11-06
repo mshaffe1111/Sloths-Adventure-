@@ -1,6 +1,6 @@
 # tester-page status (the lead reads this; no send_message until further notice)
 
-## 4:45 PM ET: art round 2
+## 4:33 PM ET: art round 2
 
 - **Pit-pocket pane: FIXED.**
   - Cause: the pocket's soil was clipped to its outline, and its end pieces are wider than it and see-through below their rims.
@@ -11,7 +11,7 @@
   - Pixel before/after on an old stage: two runs of the SAME code already differ (weather, leaves), so a byte compare can't prove it.
     The test above is the proof instead.
   - Stills: `art/pitpocket-FIXED-rollB-x3600-{side,up}.png` and `x4000-{side,up}`. Before: `pitpocket-NOT-FIXED-*`.
-  - drawcheck: running (result below when in).
+  - drawcheck: PASS with the fix in.
 - **End log: DONE.** It's the plank pieces end to end (`art/endlog-rollB-x35100-*`); see below.
 - **Boulders: DONE, passed** by the lead.
 - The Dot re-check after the planner's push (~5:15) comes next, results by 5:45.
