@@ -8,7 +8,27 @@
   - "Jump the little gaps" shows;
   - **the double line SHOWS: "Flick up again midair to jump twice."** (the new words), at the teach's entry, x 4469 (teach 4440).
 - So the 4:16 answer and the 4:45 baseline (both teleported) are unreliable too. Their "nothing shown" is the same artefact.
-- The 3-seed, both-orientation run, walked from the start, is running now; the result goes here next.
+- **Result, walked from the start: PASS, 6 of 6.**
+  - Setup: engine-chunks 25d2d115, a fresh save each run, 3 sideways and 3 upright. A real thumb slide, a real flick at each step.
+  - Dot's bubble showed "Flick up again midair to jump twice." at the teach's entry in every run, and stayed up:
+
+    | run | seed | line shown at x | teach starts | first double gap (edge, 227 px wide) |
+    |---|---|---|---|---|
+    | side | 2827 | 4382 | 4344 | none: a bank teach, a tall step, no gap |
+    | side | 358 | 5580 | 5549 | 5858 |
+    | side | 1295 | 6451 | 6418 | 6693 |
+    | up | 1555 | 6618 | 6579 | 6930 |
+    | up | 2454 | 4535 | 4498 | 4847 |
+    | up | 2857 | 5400 | 5359 | 5701 |
+
+  - So the line comes 240 to 310 px before the first gap that needs the double.
+  - Stills: `reference/qa/tester-page-1106/dbl2/walked-{side,up}-run*-seed*.png`.
+- **Stuck 20 s at the step, walked runs: not measured this round.** My walking script jumps at the first stall, so it never stood
+  there. The earlier "Dot said nothing" came from the teleported runs, so it may be the same artefact. It needs a re-check.
+- **Lesson** (for CONTINUOUS-IMPROVEMENT): a real-page check must reach the spot the way a player does. A teleport left Dot's guide
+  dropping every bubble, and I reported that as the game's fault for an hour. Countermeasure: walk from the start, or at least
+  cross-check one teleported result with a walked run before reporting it.
+- **Full suite with the pocket fix in: 2,445 tests, 12 fail, the same list as before** (all of them also fail on clean engine-core).
 
 
 ## 5:35 PM ET (WITHDRAWN, see the correction above): Dot re-check AFTER the planner's fix (engine-chunks 25d2d115)
