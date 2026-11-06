@@ -142,6 +142,8 @@ class PlayRecorder {
   private lastP = '';
   private lastPT = -1e9;
   private section = '';
+  /** the last stage start's 'gen2' moment (`<stage> seed <n> <setting>`, engine.ts), so the end survey's row names the run it is about */
+  lastRun = '';
   /** glitch lines: each kind at most once a second and up to a cap a session (glitchWatch.ts) */
   private limiter = new RateLimiter();
   private errSeen = new ErrSeen(3);
@@ -359,6 +361,7 @@ class PlayRecorder {
 
   event(what: string, detail?: string | number) {
     if (!this.on) return;
+    if (what === 'gen2') this.lastRun = String(detail ?? '');
     this.push(detail === undefined ? ['e', this.now(), what] : ['e', this.now(), what, detail]);
     if (what === 'finish' || what === 'survey' || what === 'quit') void this.flush(false);
   }

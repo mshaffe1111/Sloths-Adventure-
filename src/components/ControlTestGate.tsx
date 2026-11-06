@@ -5,6 +5,7 @@ import { difficulty, setDifficulty, type Difficulty } from '../game/difficulty.t
 import { checkForUpdate, hardRefresh } from '../game/updates.ts';
 import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
 import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
+import { stretchChoices } from './ctestStretches.ts';
 
 /**
  * The big Refresh at the top of the name screen, so every tester starts on the newest build: it checks by itself and says so when a newer
@@ -79,8 +80,8 @@ const Step: React.FC<{ n: number }> = ({ n }) => (
 );
 
 /**
- * The control test's front door (only with #ctest in the address): who is playing, what gets recorded, and Start.
- * Recording begins on Start, and the test stage opens straight away.
+ * The testers' front door (only with #ctest in the address): who is playing, what gets recorded, and Start. Recording begins on
+ * Start, and the level opens straight away (gen2 1-1, a fresh proven seed each run, on the setting picked here).
  */
 export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) => {
   const [name, setName] = React.useState(savedTesterName);
@@ -100,10 +101,10 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-[#0e3b28]/95 p-3 text-[#f4ecd8]">
       <form onSubmit={go} className="mx-auto my-2 w-full max-w-xl rounded-2xl border border-[#f4ecd8]/20 bg-[#123d2a] p-4 shadow-2xl sm:p-5">
         <FreshBuild />
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f2c14e]">Control test</p>
-        <h1 className="mt-1 text-2xl font-black leading-tight">Help test Pokey's controls</h1>
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f2c14e]">Level test</p>
+        <h1 className="mt-1 text-2xl font-black leading-tight">Help test Pokey's new level</h1>
         <p className="mt-2 text-[15px] leading-snug text-[#f4ecd8]/90">
-          A short level, about two minutes. Play however feels natural: thumbs, one finger, upright or sideways. There's no wrong way.
+          One level, about three minutes. Play however feels natural: thumbs, one finger, upright or sideways. There's no wrong way.
         </p>
         <p className="mt-2 flex items-start gap-2 rounded-xl border border-[#9be29b]/40 bg-[#9be29b]/10 px-3 py-2 text-[15px] font-bold leading-snug text-[#c9f2c9]">
           <span aria-hidden="true" className="text-lg leading-none">🎲</span>
@@ -196,74 +197,141 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
   );
 };
 
-/**
- * the quick questions at the end: what the recording cannot tell (which hand, how the phone was held, what felt hard). "Hardest" lists
- * the stretches this run had (every run is a different mix: protoStage.ts).
- */
-const questions = (stretches: string[]): Array<{ id: string; q: string; a: string[]; many?: boolean }> => {
-  const played = stretches.filter((n) => n !== 'Finish' && n !== 'Run and stop');
-  return [
-    { id: 'hand', q: 'What did you mostly play with?', a: ['One thumb', 'Two thumbs', 'One finger (like your pointer)', 'A mix'] },
-    { id: 'held', q: 'How did you hold the phone?', a: ['In one hand', 'In both hands', 'Lying on a table or lap'] },
-    { id: 'hard', q: 'What felt hardest? (tap any)', a: ['Running', ...(played.length ? played : ['Short hops', 'Long jumps', 'Climbing', 'Swinging on vines', 'Fighting']), 'Nothing'], many: true },
-  ];
-};
+/** one question on the end screen: one tap picks (or a few, for "many"), every one optional */
+export type SurveyQ = { id: string; q: string; a: readonly string[]; many?: boolean; faces?: boolean };
 
-/** the end of the test (at the shrine): a few one-tap questions, thanks, and a way to play it again */
+/** the five faces for "How fun was it?" (stored as 1 to 5) and what each one means, for a screen reader */
+export const FACES: ReadonlyArray<readonly [string, string]> = [
+  ['😞', 'Not fun'],
+  ['🙁', 'A little fun'],
+  ['😐', 'OK'],
+  ['🙂', 'Fun'],
+  ['😄', 'Loads of fun'],
+];
+
+/** the age bands (an optional range only: no birthday, nothing that names a child; the testers' link only, never the shipped game) */
+export const AGE_BANDS = ['Under 8', '8-12', '13-17', 'Adult'] as const;
+
+/**
+ * The questions at the end, about what the recording cannot tell (the recording already has where he fell, how long it took and what
+ * was tapped): how it felt, which hand, how the phone was held. "What felt hardest?" lists this run's own stretches in plain words
+ * (ctestStretches.ts). About 30 seconds: every question optional, one tap each.
+ */
+export const surveyQuestions = (stretches: readonly string[]): SurveyQ[] => [
+  { id: 'fun', q: 'How fun was it?', a: FACES.map((f) => f[1]), faces: true },
+  { id: 'long', q: 'How long did it feel?', a: ['Too short', 'About right', 'Too long'] },
+  { id: 'knew', q: 'Did you know what to do?', a: ['Always', 'Mostly', 'I got lost'] },
+  { id: 'hard', q: 'What felt hardest? (tap any)', a: ['Running', ...stretchChoices(stretches), 'Nothing'], many: true },
+  { id: 'tips', q: "Did Dot's tips help?", a: ['Yes', 'A bit', 'No', "Didn't notice them"] },
+  { id: 'looked', q: 'Did anything look wrong or out of place?', a: ['No', 'Yes'] },
+  { id: 'next', q: 'Would you play the next level?', a: ['Yes', 'Maybe', 'No'] },
+  { id: 'hand', q: 'What did you mostly play with?', a: ['One thumb', 'Two thumbs', 'One finger (like your pointer)', 'A mix'] },
+  { id: 'held', q: 'How did you hold the phone?', a: ['In one hand', 'In both hands', 'Lying on a table or lap'] },
+  { id: 'age', q: "Who's playing? (optional, just a rough age)", a: AGE_BANDS },
+];
+
+/**
+ * The survey's row ('survey' moment, JSON). The keys the control test already sent keep their shape, so old rows still read: hand, held
+ * and hard are lists of picks, note is text. The new ones are single values: fun 1 to 5, the rest the words picked; a skipped question
+ * is left out. `v: 2` marks the level test's rows, `run` is the run's own 'gen2' line (stage, seed, setting).
+ */
+export function surveyRow(ans: Readonly<Record<string, readonly string[]>>, note: string, lookedNote: string, run: string): Record<string, unknown> {
+  const row: Record<string, unknown> = { v: 2 };
+  for (const id of ['hand', 'held', 'hard']) if (ans[id]?.length) row[id] = [...ans[id]];
+  for (const id of ['long', 'knew', 'tips', 'looked', 'next', 'age']) if (ans[id]?.length) row[id] = ans[id][0];
+  const fun = FACES.findIndex((f) => f[1] === ans.fun?.[0]);
+  if (fun >= 0) row.fun = fun + 1;
+  if (row.looked === 'Yes' && lookedNote.trim()) row.lookedNote = lookedNote.trim().slice(0, 120);
+  row.note = note.trim().slice(0, 300);
+  if (run) row.run = run;
+  return row;
+}
+
+/** a tap target on these screens: 44 px or more each way (PLAY-STORE-RULES, clipcheck) */
+const CHIP = 'inline-flex min-h-[44px] items-center rounded-full border px-3.5 py-1.5 text-[15px] leading-tight';
+
+/** the end of the test (at the shrine, or "I'm done"): the quick questions, thanks, and a way to play again */
 export const ControlTestDone: React.FC<{ onAgain: () => void; stretches?: string[] }> = ({ onAgain, stretches = [] }) => {
-  const QUESTIONS = React.useMemo(() => questions(stretches), [stretches.join('|')]);
+  const QUESTIONS = React.useMemo(() => surveyQuestions(stretches), [stretches.join('|')]);
   const [ans, setAns] = React.useState<Record<string, string[]>>({});
   const [note, setNote] = React.useState('');
+  const [lookedNote, setLookedNote] = React.useState('');
   const [sent, setSent] = React.useState(false);
   const pick = (id: string, a: string, many?: boolean) =>
     setAns((o) => {
       const cur = o[id] ?? [];
-      const next = many ? (cur.includes(a) ? cur.filter((x) => x !== a) : [...cur, a]) : [a];
+      // (a second tap on a single pick takes it back: every question stays optional)
+      const next = many ? (cur.includes(a) ? cur.filter((x) => x !== a) : [...cur, a]) : cur[0] === a ? [] : [a];
       return { ...o, [id]: next };
     });
   const send = () => {
-    recorder.event('survey', JSON.stringify({ ...ans, note: note.trim().slice(0, 300) }));
+    recorder.event('survey', JSON.stringify(surveyRow(ans, note, lookedNote, recorder.lastRun)));
     setSent(true);
   };
   return (
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-[#0e3b28]/95 p-3 text-[#f4ecd8]">
       <div className="mx-auto my-2 w-full max-w-xl rounded-2xl border border-[#f4ecd8]/20 bg-[#123d2a] p-4 shadow-2xl sm:p-5">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f2c14e]">Control test</p>
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f2c14e]">Level test</p>
         <h1 className="mt-1 text-2xl font-black leading-tight">You're done. Thank you!</h1>
         {!sent ? (
           <>
-            <p className="mt-2 text-sm leading-snug text-[#f4ecd8]/85">Three quick taps help Matt a lot:</p>
+            <p className="mt-2 text-sm leading-snug text-[#f4ecd8]/85">A few quick taps help Matt a lot. Skip any you like.</p>
             {QUESTIONS.map((q) => (
-              <div key={q.id} className="mt-3">
-                <p className="text-sm font-bold">{q.q}</p>
-                <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  {q.a.map((a) => {
-                    const on = (ans[q.id] ?? []).includes(a);
-                    return (
-                      <button key={a} type="button" onClick={() => pick(q.id, a, q.many)} aria-pressed={on}
-                        className={`rounded-full border px-3 py-1.5 text-sm ${on ? 'border-[#f2c14e] bg-[#f2c14e] font-bold text-[#2a1a08]' : 'border-[#f4ecd8]/30 bg-black/15'}`}>
-                        {a}
-                      </button>
-                    );
-                  })}
-                </div>
+              <div key={q.id} className="mt-3.5" role="group" aria-label={q.q}>
+                <p className="text-[15px] font-bold leading-snug">{q.q}</p>
+                {q.faces ? (
+                  <div className="mt-1.5 flex justify-between gap-1.5">
+                    {FACES.map(([face, label]) => {
+                      const on = (ans[q.id] ?? []).includes(label);
+                      return (
+                        <button key={label} type="button" onClick={() => pick(q.id, label)} aria-pressed={on} aria-label={label}
+                          className={`flex h-[52px] min-w-[44px] flex-1 items-center justify-center rounded-2xl border-2 text-[28px] leading-none ${on ? 'border-[#f2c14e] bg-[#f2c14e]' : 'border-[#f4ecd8]/25 bg-black/15'}`}>
+                          <span aria-hidden="true">{face}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                    {q.a.map((a) => {
+                      const on = (ans[q.id] ?? []).includes(a);
+                      return (
+                        <button key={a} type="button" onClick={() => pick(q.id, a, q.many)} aria-pressed={on}
+                          className={`${CHIP} ${on ? 'border-[#f2c14e] bg-[#f2c14e] font-bold text-[#2a1a08]' : 'border-[#f4ecd8]/30 bg-black/15'}`}>
+                          {a}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+                {q.faces && (
+                  <div aria-hidden="true" className="mt-1 flex justify-between text-xs text-[#f4ecd8]/65">
+                    <span>Not fun</span>
+                    <span>Loads of fun</span>
+                  </div>
+                )}
+                {q.id === 'looked' && ans.looked?.[0] === 'Yes' && (
+                  <input id="ctest-looked" value={lookedNote} onChange={(e) => setLookedNote(e.target.value)} maxLength={120}
+                    aria-label="What looked wrong?" placeholder="What looked wrong? (a few words)"
+                    className="mt-2 min-h-[44px] w-full rounded-lg border border-[#f4ecd8]/30 bg-[#0b2e20] px-3 py-2 text-base text-[#f4ecd8] outline-none focus:border-[#f2c14e]" />
+                )}
               </div>
             ))}
-            <label className="mt-3 block text-sm font-bold" htmlFor="ctest-note">Anything feel wrong or annoying? (optional)</label>
+            <label className="mt-4 block text-[15px] font-bold" htmlFor="ctest-note">Anything else? (optional)</label>
             <textarea id="ctest-note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={300} rows={2}
               className="mt-1 w-full rounded-lg border border-[#f4ecd8]/30 bg-[#0b2e20] px-3 py-2 text-base text-[#f4ecd8] outline-none focus:border-[#f2c14e]" />
-            <button type="button" onClick={send} className="mt-3 w-full rounded-xl bg-[#f2c14e] py-2.5 text-lg font-black text-[#2a1a08]">
+            <button type="button" onClick={send} className="mt-3 min-h-[48px] w-full rounded-xl bg-[#f2c14e] py-2.5 text-lg font-black text-[#2a1a08]">
               Send
             </button>
           </>
         ) : (
           <p className="mt-3 text-sm leading-snug text-[#f4ecd8]/85">
-            Sent. You can close this page now, or play the level again. Every run helps.
+            Sent. You can close this page now, or play again. Every run is a new level, and every run helps.
           </p>
         )}
         <button type="button" onClick={onAgain}
-          className={`mt-3 w-full rounded-xl py-2.5 text-lg font-black ${sent ? 'bg-[#f2c14e] text-[#2a1a08]' : 'border border-[#f4ecd8]/30 text-[#f4ecd8]'}`}>
-          Play again (a new mix)
+          className={`mt-3 min-h-[48px] w-full rounded-xl py-2.5 text-lg font-black ${sent ? 'bg-[#f2c14e] text-[#2a1a08]' : 'border border-[#f4ecd8]/30 text-[#f4ecd8]'}`}>
+          Play again (a new level)
         </button>
       </div>
     </div>
@@ -299,12 +367,11 @@ export const RecordingBadge: React.FC<{ onDone?: () => void }> = ({ onDone }) =>
         REC{state === 'blocked' ? ' · not sending from this link' : ''}
       </div>
       {onDone && (
-        <button
-          type="button"
-          onClick={() => (sure ? onDone() : setSure(true))}
-          className={`rounded-full px-3 py-1 text-[12px] font-bold ${sure ? 'bg-[#f2c14e] text-[#2a1a08]' : 'bg-black/45 text-white'}`}
-        >
-          {sure ? 'Tap again to finish' : "I'm done"}
+        // (the pill stays small over the play, the button around it is a full 44 px tap target)
+        <button type="button" onClick={() => (sure ? onDone() : setSure(true))} className="flex min-h-[44px] min-w-[44px] items-center justify-center">
+          <span className={`rounded-full px-3 py-1 text-[12px] font-bold ${sure ? 'bg-[#f2c14e] text-[#2a1a08]' : 'bg-black/45 text-white'}`}>
+            {sure ? 'Tap again to finish' : "I'm done"}
+          </span>
         </button>
       )}
     </div>

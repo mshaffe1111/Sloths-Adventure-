@@ -92,6 +92,7 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 | `rules` | `refined` or `old` touch rules |
 | `difficulty` | the difficulty picked |
 | `mix` | the test stage's layout seed (`?mix=<seed>` rebuilds it) |
+| `gen2` | at each start of a rolled (gen2) stage: `<stage> seed <seed> <easy|normal>`, so that run can be built again (from builds after 2026-11-06; the testers' link plays gen2 1-1, a fresh proven seed each run) |
 | `look` | at each stage start: `help teach`, `help reminders` or `help quiet` (Dot's help setting). Before 2026-10-26 it also said `newLook 1` or `newLook 0`; the new HUD and Dot is now the only look. |
 | `section` | the stretch of the test stage Pokey entered (from builds after 2026-10-26: only once he is 40 px into it and has stayed 0.5 s, and not while still swinging, so a swing over the line no longer flips it back and forth; `src/game/sectionTrack.ts`) |
 | `checkpoint` | checkpoint reached (its x) |
@@ -101,7 +102,7 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 | `stomp` | stomped a foe (its type, or `boss`) |
 | `stuckHelp` | the game helped him out of a stuck spot (x) |
 | `finish` | reached the end (game time) |
-| `survey` | the tester's answers (JSON) |
+| `survey` | the tester's answers (JSON). From builds after 2026-11-06 (the level test, `v: 2`): `hand`, `held`, `hard` and `note` as before, plus `fun` (1 to 5 faces), `long` (`Too short`, `About right`, `Too long`), `knew` (`Always`, `Mostly`, `I got lost`), `tips` (`Yes`, `A bit`, `No`, `Didn't notice them`), `looked` (`No` or `Yes`) with `lookedNote`, `next` (`Yes`, `Maybe`, `No`), `age` (an optional band only: `Under 8`, `8-12`, `13-17`, `Adult`; QA link only, never in the shipped game), and `run` (that run's `gen2` line). Every question is optional; a skipped one is absent. `hard` holds the plain words the tester saw (`src/components/ctestStretches.ts`) |
 | `playAgain` / `quit` | the tester's choice at the end |
 | `capped` | `<name>`: that glitch event reached its cap and logs nothing more this session |
 
