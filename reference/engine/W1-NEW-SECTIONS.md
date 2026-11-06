@@ -696,3 +696,17 @@ stands solid (Pokey no longer walks through it). Raising it to 50-60 made the qu
 - **Normal:** TEACH 195-205 px, TEST 205-228 px (under the 229.8 px reach).
 - **Easy: no double GAP blocks at all.** A single physically reaches 175 px, so any gap Easy can fairly lay (≤ 203.6, so ≤ 183 with a 20 px margin) is within a single's reach plus the 21 px landing forgiveness, and blocks nothing. That's the §8.7 amendment of 11-05: **on Easy every double block is a RISE (B2a, 130-145 px).** The planner's option (A) Easy bands of 165-180 px would be crossed by a single.
 - **The teach's far bank is ≥ 3.5 body widths on both settings.**
+
+**The Easy swap pairs (2:15 PM; the planner's per-version `easy` hook):** every Normal version holding a double-GAP block gets an Easy twin
+with the **same beats in the same order**. Each gap `D` becomes a **rise `D` of 130-145 px** (B2a) over a narrow soft dip (≤ 120 px
+wide: a single crosses the width, not the height), and the far bank stays ≥ 3.5 body widths. The pairs:
+
+| Section | Normal version | Easy twin |
+|---|---|---|
+| #8 `w1-double-teach` | gaps4, gaps5 | easy-gaps4, easy-gaps5 (each gap a rise) |
+| #33 `w1-dip-double-teach` | a `w j d w`, b `w d j j` | easy-a, easy-b (each `d` a rise) |
+| `w1-second-jump` (harvest) | old | easy-old |
+| `w1-leap-stones` (harvest) | two-gaps, one-gap | easy-two-gaps, easy-one-gap |
+| #28 `w1-two-answers` | double | easy-double (the gap a rise; the mushroom version unchanged) |
+
+#34 (bank-double-teach), #20, #27 and the stair tests are already rise blocks, so they get no twin.
