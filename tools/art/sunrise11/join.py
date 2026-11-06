@@ -35,8 +35,18 @@ for im in (A, B):
     # half the clearing on each side of the cluster, taken from the strip's own ground
     half = CLEAR // 2 + FADE // 2
     x0, x1 = max(0, c0 - half), min(im.shape[1], c1 + 1 + half)
-    parts.append(im[:, x0:x1])
-    print('cluster', c0, c1, 'kept', x0, x1)
+    part = im[:, x0:x1]
+    # a side whose own clearing is shorter than half (the repaint grew the crowns toward the end) is padded with this strip's own
+    # bare ground from its other clearing, so every crossfade falls on ground only (a crown tip in the fade ghosts)
+    left, right = c0 - x0, x1 - 1 - c1
+    ground = im[:, max(0, c0 - half):max(0, c0 - half) + half]  # (the left clearing: ground band only)
+    if right < half:
+        part = np.concatenate([part, ground[:, :half - right]], axis=1)
+    if left < half:
+        g2 = im[:, c1 + 1:c1 + 1 + half]
+        part = np.concatenate([g2[:, -(half - left):], part], axis=1)
+    parts.append(part)
+    print('cluster', c0, c1, 'kept', x0, x1, 'clearing left', left, 'right', right, '-> part', part.shape[1])
 
 
 def fuse(L, R):
@@ -61,5 +71,11 @@ seams = [0, parts[0].shape[1] - FADE]
 for s in seams:
     band = up[:, max(0, s - 8):s + FADE + 8]
     print('seam at', s, 'paint above the ground band:', round(float(band.mean()), 4))
-Image.fromarray(tile.clip(0, 255).astype(np.uint8), 'RGBA').save(out, 'WEBP', quality=88, method=6)
+im = Image.fromarray(tile.clip(0, 255).astype(np.uint8), 'RGBA')
+import os
+for q in (88, 84, 80, 76, 72, 68):  # (each strip under 250 KB: hf-backdrops.md step 1)
+    im.save(out, 'WEBP', quality=q, method=6)
+    if os.path.getsize(out) < 250_000:
+        break
+print('quality', q, os.path.getsize(out) // 1024, 'KB')
 print(out)

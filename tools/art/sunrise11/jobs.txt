@@ -18,3 +18,5 @@ sun11-hdM3 6aed0d090e0338d1bb80c43e native pass, mids H-s76-7 + H-s68-7  23:11:0
 sun11-M4  (pending)  middle strip img2img, second-cluster starts K2/H2, 8 takes
 sun11-M4  6aed1721c78863f9c633b70b  mid img2img, second-cluster starts K2 (kapok) / H2, 8 takes  23:54:09Z-23:59:50Z (5.7 min measured, ~$0.26)
   K2 all out (the kapok is the layer's hero; s68-23 has a creature at its roots); H2-s68-7/s76-7 out (pink key halo). Kept H2-s76-23.
+sun11-hdM4 6aed195bc78863f9c633b873 native pass, mid B H2-s76-23  00:03:39Z-~00:05:30Z (~1.9 min, ~$0.09)
+  Mid A|B joined (join.py): 3729 x 1302, 235 KB (q76), seams 0.000. TOTAL sunrise ~$2.55 of $5 (estimate; F, M, M3, M4, hdM3 measured).

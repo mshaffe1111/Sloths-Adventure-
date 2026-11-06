@@ -5,7 +5,11 @@ import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
 const [out, tag = 'x'] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
+// (SPOTS=name:x,name:x... adds spots on the floor under each x, e.g. to step along and find a clearing of the middle strip)
 const SPOTS = [['start', null], ['low', [8932 + 60, 1690]], ['high', [34471 + 100, 312]]];
+const EXTRA = (process.env.SPOTS ?? '').split(',').filter(Boolean).map((s) => { const [n, x] = s.split(':'); return [n, [+x, null]]; });
+if (process.env.ONLY_EXTRA) SPOTS.length = 0;
+SPOTS.push(...EXTRA);
 const b = await chromium.launch();
 for (const [w, h, o] of [[412, 915, 'up'], [915, 412, 'side']]) {
   const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
@@ -18,6 +22,7 @@ for (const [w, h, o] of [[412, 915, 'up'], [915, 412, 'side']]) {
     if (at) {
       await p.evaluate(([x, y]) => {
         const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;
+        if (y == null) y = e.platforms.filter((q) => x >= q.x && x <= q.x + q.width).sort((a, c) => a.y - c.y)[0]?.y ?? 1260;
         Object.assign(e.player, { x, y, vx: 0, vy: 0, grounded: true, climbing: false, facing: 1 });
         e.camCut = true;
       }, at);
