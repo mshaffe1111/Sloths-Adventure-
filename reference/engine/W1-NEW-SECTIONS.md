@@ -710,3 +710,11 @@ wide: a single crosses the width, not the height), and the far bank stays ≥ 3.
 | #28 `w1-two-answers` | double | easy-double (the gap a rise; the mushroom version unchanged) |
 
 #34 (bank-double-teach), #20, #27 and the stair tests are already rise blocks, so they get no twin.
+
+**The 1-6 neighbour fix (2:37 PM; the planner's 2:36 PM measure, 64 pairs).**
+- **The one alike pair:** 1-1 layout 4 (seed 7), t 132-152 s, seed-perch then log-chain, against 1-6 layout 1, at a distance of 0.275. Both end in a run of four second jumps across logs over a soft floor.
+- **Fix: give the chain the thing only 1-1 has, the bounce-and-double pair** (the brief's pair; LEDGER-11-02:33).
+  - **#44 `w1-log-chain` version a becomes `d d b d`:** a mushroom seated on the third log (LABELS: a mushroom sits on a log), whose bounce carries him into the last double. So the action reads `J J B J`, not four J in a row.
+  - Version b (`d j d d`) and Round 12's 'rise' (`d d d`, then `h` onto a level log: a hop, not a fourth double) already break the run of four.
+- The chain is still "double after double, rising" (story-briefs/1-1.md:21-22); the bounce is its 1-1 signature.
+- Re-measure: no 1-1 vs 1-6 pair under 0.30 on the 64.
