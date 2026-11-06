@@ -1,7 +1,8 @@
 /**
  * The build-time check (PERFORMANCE-RULES §1, the lead 11-06): a rolled stage is built on the main thread when Play starts, so its build
  * is judged as a phone feels it. Chromium with the CPU slowed 4x (CDP Emulation.setCPUThrottlingRate), 1-1 built on N of its proven seeds,
- * Normal and Easy (one build a play: Play draws a proven seed, gen2/seedList.ts); FAIL when the p95 of either is over the budget.
+ * Normal and Easy (one build a play: Play draws a proven seed and replays its plan, gen2/seedList.ts buildPlayStage); FAIL when the p95 of
+ * either is over the budget.
  *   node tools/perf/buildcheck.mjs              (about 2-4 minutes; exit 1 over budget)
  *   BUILDCHECK_BUDGET=<ms> BUILDCHECK_N=<n>      (the budget, 150 ms; the builds a setting, 30)
  */
