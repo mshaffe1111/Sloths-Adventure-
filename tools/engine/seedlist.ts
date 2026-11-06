@@ -12,6 +12,7 @@ import { buildGen2Stage, keptFoes } from '../../src/game/gen2/pipeline.ts';
 import { w1World } from '../../src/game/gen2/worlds/w1.ts';
 import { packPlan, provenSeeds, seedListBreaches, SEED_LIST_MIN } from '../../src/game/gen2/seedList.ts';
 import { PROVEN_SEEDS } from '../../src/game/gen2/provenSeeds.ts';
+import { floorlessGaps, promiseBreaches11 } from '../../src/game/gen2/promises11.ts';
 import { withGoals } from '../../src/game/goals.ts';
 import { pickRoute } from '../inspect/eraRoll.ts';
 import { deadTime, NORMAL_GAP } from '../inspect/analyze.ts';
@@ -52,11 +53,14 @@ const want = Number(arg('--count', String(SEED_LIST_MIN)));
 const seeds: number[] = [], quiet: number[] = [], outro: number[] = [], plans: string[] = [], dict: string[] = [];
 let tried = 0;
 const t0 = Date.now();
-for (let seed = 1; seeds.length < want && seed < want * 20; seed++) {
+for (let seed = 1; seeds.length < want && seed < want * 120; seed++) { // (1-1's promises keep about 1 roll in 80, the lead's 0.9.5 rulings)
   tried++;
   const n = buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'normal' });
   if (n.gen2.errors?.length) continue;
-  if (buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'easy' }).gen2.errors?.length) continue;
+  const e = buildGen2Stage({ config: cfg, kit: kit(), seed, difficulty: 'easy' });
+  if (e.gen2.errors?.length) continue;
+  // (1-1's player promises, the lead 11-06: no unmarked floorless gap on either setting, the double needed right after its teach on Normal)
+  if (id === '1-1' && (promiseBreaches11(n as never).length || floorlessGaps(e as never).length)) continue;
   const q = quietOf(n);
   seeds.push(seed); quiet.push(q.quiet); outro.push(q.outro);
   plans.push(packPlan({ seed: n.gen2.seed, rerolls: n.gen2.rerolls, plan: n.gen2.plan, foes: [...keptFoes(n)] }, dict));

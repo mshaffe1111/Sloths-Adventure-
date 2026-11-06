@@ -8,12 +8,15 @@
  */
 import { buildGen2Stage, provenGen2Stage } from './pipeline.ts';
 import { PROVEN_SEEDS } from './provenSeeds.ts';
+import { promiseBreaches11 } from './promises11.ts';
 import type { BuildRequest, Gen2Stage, PlanSlot, WorldKit } from './types.ts';
 import type { LevelConfig } from '../types.ts';
 import type { Difficulty } from '../difficulty.ts';
 
 /** how many seeds a stage's list holds at least (the lead: a tester never notices a repeat) */
-export const SEED_LIST_MIN = 300;
+// (100 for 0.9.5, the lead 11-06: "at least 100 proven seeds is enough" once a roll must keep 1-1's promises too, promises11.ts; each
+// phone shuffles its order, so none repeats within 100 plays)
+export const SEED_LIST_MIN = 100;
 
 /** one stage's list as stored: section ids once (`dict`), then per seed its packed plan (packPlan) */
 export interface PackedList { dict: string[]; seeds: number[]; plans: string[]; quiet?: number[]; outro?: number[] }
@@ -106,6 +109,8 @@ export function seedListBreaches(config: LevelConfig, kit: () => WorldKit, seeds
       const full = buildGen2Stage({ config, kit: kit(), seed, difficulty });
       const errs = full.gen2.errors ?? [];
       if (errs.length) { out.push(`${config.id} seed ${seed} ${difficulty}: ${errs[0]}`); continue; }
+      // (1-1's player promises: a roll that breaks one is never proven, promises11.ts)
+      if (config.id === '1-1') { const pb = promiseBreaches11(full as never).filter((b) => difficulty === 'normal' || !b.includes('double')); if (pb.length) { out.push(`${config.id} seed ${seed} ${difficulty}: ${pb[0]}`); continue; } }
       if (!plans) continue;
       const rep = buildGen2Stage({ config, kit: kit(), seed, difficulty, replay: unpackPlan(plans.plans[i], plans.dict) });
       const a = stageParts(full), b = stageParts(rep);
