@@ -39,6 +39,12 @@ Full suite on these changes: 2,440 tests, 12 fail, plus the known TODOs, 16 line
    - Tried, did not help (reverted): drawing narrow closed banks `bare`; turning the pit shade off.
    - The pocket's soil is not painted below its lip. The next look is drawW1Pits / paintTile for a sunk step (SOFT_BELOW < 70 < SOFT_FLOOR).
    - Still of the problem: `art/pitpocket-NOT-FIXED-rollB-x3600-{side,up}.png`.
+   - Later experiments (~3:45 PM): with the pocket platform removed, the dip is a clean open hole down, with no pane. So the pane is the
+     pocket's own drawing: its lip strip is painted, its soil is not.
+   - Making it deeper (300 px) changed nothing. Narrow-bank `bare` changed nothing. Shade off changed nothing.
+   - The pocket goes through drawGroundChunks, then paintTile, then drawGround, then drawBankArt (sides closed, so the soil rect should
+     be opaque). Why its soil doesn't show is still open: protoArt.ts belongs to the ground owner, and I ran out of time.
+   - Slips past 4:30.
 3. **End log (686 px): DONE.**
    - A plank longer than 360 px is laid as plank-ledge pieces end to end (a, b, c in turn, 4 px overlap, no seams). The flat code log is
      gone.
