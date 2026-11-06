@@ -647,3 +647,30 @@ reports the per-roll share. Diagonal branches stay dressing only (art director, 
 - Rocks, stones, pads, props and dressing never float.
 - A trunk, stump or post that IS drawn reaches the ground.
 - Earth chunks: no floating earth until Matt answers the lead's open A/B question.
+
+## Round 12: 1-1 ends higher than where the bough window begins (designer, 11-06 12:09 PM ET; V19/V19b fail: the end is 36-573 px UNDER the window's start, the planner's per-seed numbers)
+
+**The root (planner):** too few late sections climb, and a late descent's drop is never paid back. The level and net-zero versions
+(Round 6, made for the corridor) and the descents (#50-#52) both spend height in the window.
+
+**Two route rules (the planner's, in the roll):**
+- **V19c, the end clears the window by a margin:** the end log stands **at least 150 px above** the route height where the bough
+  window begins, and still under the corridor top ("up in the high branches", story-briefs/1-1.md:23; 150 px is about one double
+  rise, so the climb reads; JUDGMENT).
+- **V19d, a window descent only with headroom to pay it back:** a descent (#50-#52) is dealt in the window only when the corridor
+  top minus the current route height is at least its drop plus 150 px. Otherwise that slot takes a rising section.
+- When the running total is short, **the roll picks a section's RISING version first** (the versions-before-swap rule, Round 6,
+  with a preference for rise).
+
+**Late-rise versions (data), so a rising choice always exists:**
+
+| Section | Add |
+|---|---|
+| #22 `w1-canopy-weave` (two level bough roads) | **'rise'**: both roads climb 2 doubles (each 130-145), rejoining 260-290 px up |
+| #11 `w1-high-walk`, #19 `w1-bough-bench` (window rests) | **'up'**: the second limb 50-80 px up (a soft step, FR3), still no hard input |
+| #29 `w1-bough-log` | its rising versions stay. Its 4-5 rises (Round 6, about 560-700 px) are the big payback |
+| #45 `w1-mushroom-chain` | version a (rising) is preferred after a descent; its back version only when the route is near the corridor top |
+| #44 `w1-log-chain` | **'rise'**: `d d d` rising (each 130-145), then a level log |
+| the goals #15, #23, #30 | already step up (#23 -60, #30 -75, #15's step version -30). Unchanged, but the roll picks the stepping version when short |
+
+Gate (planner): on 16 seeds, both settings, end ≥ window start + 150 and ≤ corridor top, on every roll.
