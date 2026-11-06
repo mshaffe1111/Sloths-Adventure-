@@ -909,6 +909,13 @@ const BEATS: Record<string, G> = {
   z: (k, after) => { const q = limb(`${k}z`, { kind: 'over', on: after!, at: [0.95, 1], dy: [-252, -248] }, [340, 400]); return { pieces: [q], sockets: [], last: q.key }; },
   /** a bough a single away, level (the bough form of g) */
   G: (k, after) => { const q = limb(`${k}G`, { kind: 'jump', after: after!, dy: [-6, 6], share: [0.5, 0.6], soft: true }, [300, 360]); return { pieces: [q], sockets: [], last: q.key }; },
+  /** FR9 (engine-spec af831c63e): a floor hop that is a wall, 50 px (World 1's painted rock height), on a short floor (no plain run over 4 s) */
+  H: (k, after) => { const f = floor(`${k}f`, [300, 360], startOr(after)); const r = stump(`${k}r`, f.key, [0.45, 0.55], [50, 50], [120, 160]); return { pieces: [f, r], sockets: [petals(`${k}p`, r.key, 0.5, 1)], last: f.key }; },
+  /** Round 6 #63 (b D): a floor mushroom at the near lip of a soft dip 120-160 px wide, the far bank 240-260 px over the floor: the bounce,
+   *  then the air jump, lands it (a double from the floor, 185, can't): a bounce block, sheer (B7) */
+  U: (k, after) => { const f = floor(`${k}f`, [360, 420], startOr(after)); const b: W1Piece = { key: `${k}U`, shape: 'bank', w: [300, 360], place: { kind: 'double', after: f.key, dy: [-260, -240], share: [0.52, 0.7], soft: true }, style: 'moss_stone', main: true, landing: true, block: 'bounce', from: `${k}m` }; return { pieces: [f, mushroom(`${k}m`, f.key, [0.86, 0.9]), b], sockets: [petals(`${k}p`, b.key, [0.4, 0.7], 2)], last: b.key }; },
+  /** Round 6 #64 (b D): a floor mushroom 60-90 px before a fallen log 220-260 wide whose top is 240-260 over the floor: he lands on the log */
+  V: (k, after) => { const f = floor(`${k}f`, [380, 420], startOr(after)); const g: W1Piece = { key: `${k}V`, shape: 'bank', w: [220, 260], place: { kind: 'double', after: f.key, dy: [-260, -240], share: [0, 0.02] }, style: 'log', main: true, landing: true, block: 'bounce', from: `${k}m` }; return { pieces: [f, mushroom(`${k}m`, f.key, [0.72, 0.8]), g], sockets: [petals(`${k}p`, g.key, [0.4, 0.7], 2)], last: g.key }; },
   /** a bounce block: the mushroom on the floor before a bank lip 200-220 px up (B3 as amended), the route stays up */
   B: (k, after) => { const f = floor(`${k}f`, [360, 420], startOr(after)); const L = bankW(`${k}B`, f.key, [-220, -200], [300, 360]); return { pieces: [f, mushroom(`${k}m`, f.key, [0.7, 0.8]), lip(L, `${k}m`)], sockets: [petals(`${k}p`, L.key, [0.3, 0.6], 2)], last: L.key }; },
 };
@@ -1173,11 +1180,11 @@ const canopyRungsLevel = section({
 });
 /** #40, #41, #49 with a run-out stair back down after the summit (V18 judges the stair up to the summit) */
 const w40back = rhythmic({ id: 'w1-stair-test-back', floor: 'hop', name: 'the steep stair and back', phases: ['ketsu'], difficulty: 6, needs: ['double'], uses: ['double'], exitDy: 4, ...R5, rating: 6,
-  versions: { a: ['w h c D c D n n n n n n', 'c d c d, then down'] }, source: 'Round 6 #40 (fc34a6f44): #40 a, then a run-out stair back down (n x 6)' });
+  versions: { a: ['w H c D c D n n n n n n', 'c d c d, then down'] }, source: 'Round 6 #40 (fc34a6f44): #40 a, then a run-out stair back down (n x 6)' });
 const w41back = rhythmic({ id: 'w1-log-stair-test-back', floor: 'hop', name: 'logs up the bank and back', phases: ['ketsu'], difficulty: 6, needs: ['double'], uses: ['double'], exitDy: 4, ...R5, rating: 6,
-  versions: { a: ['w h h E e E n n n n n', 'd c d, then down'] }, source: 'Round 6 #41 (fc34a6f44): #41 a, then a run-out stair back down (n x 5)' });
+  versions: { a: ['w H H E e E n n n n n', 'd c d, then down'] }, source: 'Round 6 #41 (fc34a6f44): #41 a, then a run-out stair back down (n x 5)' });
 const w49back = rhythmic({ id: 'w1-bank-stair-test-back', floor: 'hop', name: 'the bank wall and back', phases: ['ketsu'], difficulty: 6, needs: ['double'], uses: ['double'], exitDy: 4, ...R5, rating: 6,
-  versions: { a: ['w h D w D c c n n n n n n', 'D w D c, then down'] }, source: 'Round 6 #49 (fc34a6f44): #49 b, then a run-out stair back down (n x 6)' });
+  versions: { a: ['w H D w D c c n n n n n n', 'D w D c, then down'] }, source: 'Round 6 #49 (fc34a6f44): #49 b, then a run-out stair back down (n x 6)' });
 /** #45 up two boughs, then down two */
 const mushroomChainBack = section({
   id: 'w1-mushroom-chain-back', name: 'bounce into the boughs and down', phases: ['ketsu'], difficulty: 7, needs: ['double'], uses: ['bounce', 'double'], exitDy: -200, ports: ['ground', 'ledge'], window: BOUGH_WINDOW, maxPerStage: 1,
@@ -1193,13 +1200,20 @@ const mushroomChainBack = section({
 });
 /** #61 ending on its own start height */
 const w61level = rhythmic({ id: 'w1-bounce-stair-level', floor: 'hop', name: 'bounce, double, up the stair and down', phases: ['ten'], difficulty: 6, needs: ['double'], uses: ['bounce', 'double'], exitDy: -59, ports: ['ground', 'ledge'], ...R5, rating: 6,
-  versions: { a: ['w h h m Z e e n n n n n', 'b d c c, then down'] }, source: 'Round 6 #61 (fc34a6f44): #61 a, then back down near its start height (n x 5: 59 px over it, never under: V19 on an up stage)' });
+  versions: { a: ['w H H m Z e e n n n n n', 'b d c c, then down'] }, source: 'Round 6 #61 (fc34a6f44): #61 a, then back down near its start height (n x 5: 59 px over it, never under: V19 on an up stage)' });
 /** #66, #67: bounce tests (B3/B7: the mushroom on the floor, the lip 200-220 px, the bank face sheer to the floor) */
 const w66 = rhythmic({ id: 'w1-two-lifts', floor: 'hop', name: 'two lifts', phases: ['ten', 'ketsu'], difficulty: 5, needs: ['double'], uses: ['bounce'], exitDy: -420, ports: ['ground', 'ledge'], ...R5, rating: 5,
-  versions: { a: ['w h B w B', 'B w B'], b: ['w h h B B', 'B B'] }, source: 'Round 6 #66 (fc34a6f44): two bounce blocks, each lip 200-220 px (B3, B7)' });
+  versions: { a: ['w H B w B', 'B w B'], b: ['w H H B B', 'B B'] }, source: 'Round 6 #66 (fc34a6f44): two bounce blocks, each lip 200-220 px (B3, B7)' });
 const w67 = rhythmic({ id: 'w1-bounce-wall', floor: 'hop', name: 'the bounce wall', phases: ['ten', 'ketsu'], difficulty: 6, needs: ['double'], uses: ['bounce', 'double'], exitDy: -348, ports: ['ground', 'ledge'], ...R5, rating: 6,
-  versions: { a: ['w h h h B D w', 'B D'], b: ['w h h B w D', 'B w D'] }, source: 'Round 6 #67 (fc34a6f44): a bounce block, then a double block (B3, B2a, B7)' });
-const ROUND6 = [canopyRungsLevel, w40back, w41back, w49back, mushroomChainBack, w61level, w66, w67];
+  versions: { a: ['w H H H B D w', 'B D'], b: ['w H H B w D', 'B w D'] }, source: 'Round 6 #67 (fc34a6f44): a bounce block, then a double block (B3, B2a, B7)' });
+/** #63-#65 (the designer's strings, 11-05 10:17 PM): every mushroom on the floor, every block face sheer (B7), every hop a 50 px wall (FR9: H) */
+const w63 = rhythmic({ id: 'w1-bounce-over-dip', floor: 'hop', name: 'bounce over the dip', phases: ['sho', 'ten'], difficulty: 5, needs: ['double'], uses: ['bounce', 'double'], exitDy: -250, ports: ['ground', 'ledge'], ...R5, rating: 5,
+  versions: { a: ['w H H U w H', 'b D'], b: ['w H H H U w', 'b D'] }, source: 'Round 6 #63 (designer 10:17 PM): a floor mushroom at a soft dip\'s near lip, the far bank 240-260 up (bounce + air jump)' });
+const w64 = rhythmic({ id: 'w1-mushroom-log', floor: 'hop', name: 'mushroom by the fallen log', phases: ['sho', 'ten'], difficulty: 5, needs: ['double'], uses: ['bounce', 'double'], exitDy: -180, ports: ['ground', 'ledge'], ...R5, rating: 5,
+  versions: { a: ['w H H V n w', 'b D n'], b: ['w V n w H H', 'b D n'] }, source: 'Round 6 #64 (designer 10:17 PM): a floor mushroom 60-90 px before a fallen log 240-260 tall, down a step after' });
+const w65 = rhythmic({ id: 'w1-mushroom-stair', floor: 'hop', name: 'mushroom stair', phases: ['sho', 'ten'], difficulty: 6, needs: ['double'], uses: ['bounce', 'double'], exitDy: -70, ports: ['ground', 'ledge'], ...R5, rating: 6,
+  versions: { a: ['w H B X n n w', 'B D n n'], b: ['w B H X n n w', 'B h D n n'] }, source: 'Round 6 #65 (designer 10:17 PM): a bounce block, a double across a level gap 195+ to a bank, a 2-step stair down' });
+const ROUND6 = [canopyRungsLevel, w40back, w41back, w49back, mushroomChainBack, w61level, w66, w67, w63, w64, w65];
 const ROUND5 = [w47, w48, w49, w50, w51, w52, w53, w54, w55, w56, w57, w58, w59, w60, w61, w62];
 const ROUND4 = [stepStonesTeach, logTeach, dipDoubleTeach, bankDoubleTeach, mushroomBankTeach, morningPath, mushroomFork, twinMushroomFork, stairFork, bankStairFork, stairTest, logStairTest, backstepTwist, dippingBoughsTwist, logChain, mushroomChain];
 
@@ -1227,7 +1241,7 @@ const JOBS: Record<string, W1Job[]> = {
   'w1-seed-perch': ['reward'],
   'w1-step-stones-teach': ['teach'], 'w1-log-teach': ['teach'], 'w1-dip-double-teach': ['teach'], 'w1-bank-double-teach': ['teach'], 'w1-mushroom-bank-teach': ['teach'], 'w1-morning-path': ['arrive'], 'w1-mushroom-fork': ['fork'], 'w1-twin-mushroom-fork': ['fork'], 'w1-stair-fork': ['fork'], 'w1-bank-stair-fork': ['fork'], 'w1-stair-test': ['test'], 'w1-log-stair-test': ['test'], 'w1-backstep-twist': ['twist'], 'w1-dipping-boughs-twist': ['twist'], 'w1-log-chain': ['signature'], 'w1-mushroom-chain': ['signature'],
   'w1-mushroom-fork-dip': ['fork'], 'w1-root-stair-fork': ['fork'], 'w1-bank-stair-test': ['test'], 'w1-bough-descent': ['descent'], 'w1-log-steps-descent': ['descent'], 'w1-canopy-drop': ['descent'], 'w1-stair-run': ['flow', 'climb'], 'w1-bank-run': ['flow', 'climb'], 'w1-zigzag-run': ['flow', 'climb'], // (Round 6: climb x climb x sho outside the window)
-  'w1-canopy-rungs-level': ['signature', 'test'], 'w1-stair-test-back': ['test'], 'w1-log-stair-test-back': ['test'], 'w1-bank-stair-test-back': ['test'], 'w1-mushroom-chain-back': ['signature'], 'w1-bounce-stair-level': ['combine'], 'w1-two-lifts': ['test'], 'w1-bounce-wall': ['test'], 'w1-high-step-twist': ['twist'], 'w1-stair-gap-twist': ['twist'], 'w1-drop-bounce-twist': ['twist'], 'w1-long-bounce-twist': ['twist'], 'w1-dip-bounce-twist': ['twist'], 'w1-bounce-stair-combine': ['combine'], 'w1-bounce-bough-combine': ['combine'],
+  'w1-canopy-rungs-level': ['signature', 'test'], 'w1-stair-test-back': ['test'], 'w1-log-stair-test-back': ['test'], 'w1-bank-stair-test-back': ['test'], 'w1-mushroom-chain-back': ['signature'], 'w1-bounce-stair-level': ['combine'], 'w1-two-lifts': ['test'], 'w1-bounce-wall': ['test'], 'w1-bounce-over-dip': ['combine'], 'w1-mushroom-log': ['combine'], 'w1-mushroom-stair': ['combine'], 'w1-high-step-twist': ['twist'], 'w1-stair-gap-twist': ['twist'], 'w1-drop-bounce-twist': ['twist'], 'w1-long-bounce-twist': ['twist'], 'w1-dip-bounce-twist': ['twist'], 'w1-bounce-stair-combine': ['combine'], 'w1-bounce-bough-combine': ['combine'],
 };
 /** the designer's content tags (NODES.md §7.7, engine-spec d4526ee5e; forks retagged by their low road). The seed perch is the porter's
  *  reading ('bounce': its find is reached by the perched mushroom), for the designer to rule */
@@ -1265,7 +1279,9 @@ const ANSWERS: Record<string, Array<'double' | 'bounce'>> = { 'w1-fallen-trunk':
 const VERSION_JOBS: Record<string, Record<string, W1Job[]>> = { 'w1-fallen-trunk': { double: ['test'], mushroom: ['twist'] } };
 /** Round 6's level and net-zero sections take the content and terrain of the section they are a version of */
 const R6_BASE: Record<string, string> = { 'w1-canopy-rungs-level': 'w1-canopy-rungs', 'w1-stair-test-back': 'w1-stair-test', 'w1-log-stair-test-back': 'w1-log-stair-test', 'w1-bank-stair-test-back': 'w1-bank-stair-test', 'w1-mushroom-chain-back': 'w1-mushroom-chain', 'w1-bounce-stair-level': 'w1-bounce-stair-combine', 'w1-two-lifts': 'w1-mushroom-bank-teach', 'w1-bounce-wall': 'w1-mushroom-bank-teach' };
-export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id] ?? CONTENT[R6_BASE[q.id]], terrain: TERRAIN[q.id] ?? TERRAIN[R6_BASE[q.id]], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
+/** Round 6's new combines: their content (NODES §7.7) and terrain */
+const R6_KIND: Record<string, [W1Content, W1Terrain]> = { 'w1-bounce-over-dip': ['ground', 'mounds'], 'w1-mushroom-log': ['ground', 'raised-logs'], 'w1-mushroom-stair': ['bounce', 'mounds'] };
+export const W1_SECTIONS: readonly W1Section[] = [...HARVEST, ...W1_NEW].map((q) => ({ ...q, jobs: JOBS[q.id], content: CONTENT[q.id] ?? CONTENT[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[0], terrain: TERRAIN[q.id] ?? TERRAIN[R6_BASE[q.id]] ?? R6_KIND[q.id]?.[1], ...(ANSWERS[q.id] ? { answers: ANSWERS[q.id] } : {}), ...(VERSION_JOBS[q.id] ? { versionJobs: VERSION_JOBS[q.id] } : {}) }));
 
 /** the phases a stage's slots fill */
 export const W1_PHASES: readonly Phase[] = ['start', 'ki', 'sho', 'rest', 'ten', 'ketsu', 'goal'];
