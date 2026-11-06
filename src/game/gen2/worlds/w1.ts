@@ -187,7 +187,9 @@ const gStones = (heights: number[], share: [number, number] = [0.55, 0.68], dbl 
     const key = `${k}s${j}`;
     // (a stone, 50 px thick (World 1's painted rock: mixer w1mix plat 'stone'), so the soft pit's banks reach it down to the pit floor (pipeline.ts pitUnder deepen: 40 px or more): a pillar
     // standing in the pit, as main's 1-1 pillars stood, never a 24 px slab over it (the lead, 11-05: no floating stones))
-    pieces.push({ key, shape: 'block', w: [110, 160], h: 50, place: { kind: dbl ? 'double' : 'jump', after: prev, dy: [prevH - h, prevH - h], share, soft: true }, style: 'moss_stone', landing: true, main: true });
+    // (the designer, 11-06: seated on the ground, a bank down to it (rocks never float): a 50 px block over a shallow hole was left in the air
+    //  when the pit's deepen skipped it, V18's "rock in the air")
+    pieces.push({ key, shape: 'bank', w: [110, 160], place: { kind: dbl ? 'double' : 'jump', after: prev, dy: [prevH - h, prevH - h], share, soft: true }, style: 'moss_stone', landing: true, main: true });
     prev = key; prevH = h;
   });
   const f: W1Piece = { ...floor(`${k}f`, [300, 380]), place: { kind: 'jump', after: prev, dy: [prevH, prevH], share: [0.5, 0.6], soft: true } };
@@ -925,6 +927,9 @@ const BEATS: Record<string, G> = {
   q: (k, after) => { const b: W1Piece = { key: `${k}q`, shape: 'bank', w: [300, 360], place: { kind: 'double', after: after!, dy: [-4, 4], share: [0.95, 1], soft: true }, style: 'moss_stone', main: true, landing: true }; return { pieces: [b], sockets: [], last: b.key }; },
   Z: (k, after) => { const q = limb(`${k}Z`, { kind: 'over', on: after!, at: [0.95, 1], dy: [-252, -248] }, [340, 400], 'log'); return { pieces: [q], sockets: [petals(`${k}p`, q.key, [0.4, 0.6], 1)], last: q.key }; },
   z: (k, after) => { const q = limb(`${k}z`, { kind: 'over', on: after!, at: [0.95, 1], dy: [-252, -248] }, [340, 400]); return { pieces: [q], sockets: [], last: q.key }; },
+  /** a level gap jump (the designer's (g), 11-06): a short soft gap, 0.4-0.5 of a single's reach, onto a bank at the same height (±6 px),
+   *  nothing to land on in the gap and no stump: the climb's step that is not a step down (V18) */
+  a: (k, after) => { const b: W1Piece = { key: `${k}a`, shape: 'bank', w: [300, 360], place: { kind: 'jump', after: after!, dy: [-6, 6], share: [0.4, 0.5], soft: true }, style: 'moss_stone', main: true, landing: true }; return { pieces: [b], sockets: [petals(`${k}p`, b.key, [0.4, 0.6], 1)], last: b.key }; },
   /** a bough a single away, level (the bough form of g) */
   G: (k, after) => { const q = limb(`${k}G`, { kind: 'jump', after: after!, dy: [-6, 6], share: [0.5, 0.6], soft: true }, [300, 360]); return { pieces: [q], sockets: [], last: q.key }; },
   /** FR9 (engine-spec af831c63e): a floor hop that is a wall, 50 px (World 1's painted rock height), on a short floor (no plain run over 4 s) */
@@ -1174,11 +1179,11 @@ const w51 = descent('w1-log-steps-descent', 'floating logs down', [['double', [-
 const w52 = descent('w1-canopy-drop', 'bough to bough, down', [['jump', [55, 59], [0.45, 0.55], BW], ['jump', [55, 59], [0.45, 0.55], BW], ['jump', [55, 59], [0.45, 0.55], BW]], [['jump', [38, 42], [0.4, 0.5], BW], ['jump', [128, 132], [0.4, 0.5], BW], ['double', [-4, 4], [0.86, 0.9], BW]], 171, 'j j j', 'h j d', 'branch', '#52 (the catch bough under the gaps is the engine\'s, catchDrop)');
 const flow = (id: string, name: string, a: [string, string], b: [string, string], exitDy: number, src: string, ports?: [PortKind, PortKind]) => rhythmic({ id, floor: 'hop', name, phases: ['sho'], difficulty: 3, needs: ['jump'], exitDy, ...(ports ? { ports } : {}), ...R5, rating: 3, versions: { a, b }, source: `Round 5 ${src} (0b9229628): §1 flow (no dead time over 2.5 s), WORLD-RULEBOOK §7.1, R2 L1; single steps <= 80 px` });
 const w53 = flow('w1-stair-run', 'up the stump stair at a run', ['w h h h c c c c', 'c c c c'], ['w c h c h c c', 'c h c h c'], -280, '#53 (b one more step so the versions meet)');
-const w54 = flow('w1-bank-run', 'bank steps at a run', ['w h h c c h c', 'h c c h c'], ['w h h h c c j c', 'c c j c'], -210, '#54');
-const w55 = flow('w1-zigzag-run', 'the quick zigzag up', ['w h h h c c e e', 'c c (stones) c c (logs)'], ['w h c j c j c c', 'c j c j'], -280, '#55 (b two more steps so the versions meet)', ['ground', 'ledge']);
+const w54 = flow('w1-bank-run', 'bank steps at a run', ['w h h c c h c', 'h c c h c'], ['w h h h c c a c', 'c c a c'], -210, '#54 (the designer\'s (g), 11-06: the dip before the summit a level gap jump, a)');
+const w55 = flow('w1-zigzag-run', 'the quick zigzag up', ['w h h h c c e e', 'c c (stones) c c (logs)'], ['w h c a c a c c', 'c a c a'], -280, '#55 (b two more steps so the versions meet; the designer\'s (g), 11-06: the dips before the summit level gap jumps, a)', ['ground', 'ledge']);
 const twist = (id: string, name: string, a: [string, string], b: [string, string], exitDy: number, uses: string[], src: string, needs: Move[] = ['double']) => rhythmic({ id, floor: 'hop', name, phases: ['ten'], difficulty: 5, needs, uses, exitDy, ...R5, rating: 5, versions: { a, b }, source: `Round 5 ${src} (0b9229628): §1 twist ("break the rhythm just learned"), LEDGER-11-02:72` });
 const w56 = twist('w1-high-step-twist', 'up, then the double back down', ['w h h h c c c Y', 'c c c, then d across to a lower stair'], ['w h h h h c X c', 'c d c, the double level'], -142, ['double'], '#56');
-const w57 = twist('w1-stair-gap-twist', 'the broken stair', ['w h h h c c j c', 'c c j c'], ['w h h c j c j c', 'c j c j'], -210, [], '#57 (b one more step so the versions meet)', ['jump']);
+const w57 = twist('w1-stair-gap-twist', 'the broken stair', ['w h h h c c a c', 'c c a c'], ['w h h c a c a c', 'c a c a'], -210, [], '#57 (b one more step so the versions meet; its j a level gap jump, the designer\'s (g), 11-06)', ['jump']);
 const w58 = twist('w1-drop-bounce-twist', 'drop onto the mushroom', ['w h h L m D', 'w off a log down onto a floor mushroom, b up across'], ['w h h c n m D j', 'h down, b, j'], -138, ['bounce'], '#58 (the mushrooms on the floor)', ['jump']);
 const w59 = twist('w1-long-bounce-twist', 'the long bounce', ['w h h h m Q w', 'b across a wide gap'], ['w m Q j m q', 'b j b'], -95, ['bounce'], '#59 (a gap at a double\'s full reach, past a single, the bounce steered across)', ['jump']);
 const w60 = twist('w1-dip-bounce-twist', 'out of the dip', ['w h h n m D w', 'h into a dip, b out'], ['w h h j n m D', 'j over, h down, b up'], -68, ['bounce'], '#60', ['jump']);
