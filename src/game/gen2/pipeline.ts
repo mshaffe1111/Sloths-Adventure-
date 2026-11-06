@@ -2580,7 +2580,10 @@ function buildRolled(req: BuildRequest): Gen2Stage {
       const easyFast = gen2Model(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st)).stage, MODEL_FAST);
       st.gen2.modelled = { typical: Math.round(typical * 10) / 10, fast: Math.round(fast * 10) / 10 };
       const short = typical < budget.seconds.target || fast < budget.seconds.fastFloor || easyFast < easyBudget.seconds.fastFloor;
-      const over = typical > budget.seconds.max;
+      // (a rolled graph's stage has no ceiling, the red team's RT-ENGINE #7; Matt: "at least 2:00, no cap": its length is its section
+      // count, held to the floors only. The ceiling, target x 1.1 (153 s for 1-1, under its own floor's typical), trimmed every roll
+      // toward the floor and shipped the rest "long". The curated stages keep their window)
+      const over = !graph.id && typical > budget.seconds.max;
       const clock = `typical ${typical.toFixed(0)} s, fast ${fast.toFixed(0)} s, Easy fast ${easyFast.toFixed(0)} s`;
       if (short) {
         if (grow(`one more section (${clock})`)) continue;
