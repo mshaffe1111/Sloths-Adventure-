@@ -84,3 +84,96 @@ ledges drawn as ONE piece, floor to top (W1-23 to W1-26). The engine then places
 - **Found a perfect piece?** Attach it and ask "4 more like this, different shapes."
 - **Rocks always sit on the ground.** Only platforms (logs, planks, earth chunks) may float.
 - **Backgrounds:** don't spend time on them. Ours are 4 separate layers; your mood pictures are enough of a brief.
+
+## WORLDS 3-10, and World 2's missing pieces (art director, 2026-11-06, from reference/art/KIT-AUDIT.md)
+Same master prompt as above. Swap the first line's colours for the world's look (given per world), and attach that world's kit sheet
+(`src/assets/kits/w<N>.webp` from the art pack) instead of World 1's. Each world gets the same four asks first (floor kinds, a hazard, a
+hiding spot, a one-piece vertical), then its own gaps. Today every world has ONE stump and ONE rock (often the same picture), so the
+floor asks come first everywhere. Rocks still always sit on the ground. No skulls, no crosses, no text.
+
+### WORLD 2, river and village (warm evening, mud banks, reeds). Adds to W2-01..12
+| # | Ask for | Size | Why |
+|---|---|---|---|
+| W2-13 | muddy riverbank boulders, wet and dark at the bottom, flat tops | S | floor kind (stone) |
+| W2-14 | short wide tree stumps with river moss, cut flat on top | S | floor kind (stump) |
+| W2-15 | a reed thicket a sloth could hide inside, and an overturned fishing boat to hide under | S | hiding spot |
+| W2-16 | a tall wooden pier post cluster with ladder rungs and a platform built in, one piece, floor to top | T | one-piece vertical (no post-on-plank stacks) |
+
+### WORLD 3, the Mossy Grotto (dark blue-teal cave, glowing moss, crystals; light from fungi)
+Colours: "cool deep teal and blue-grey stone, glowing green moss, dark outline". Matt's sheet 37 (grey stone wall kit) is filed here.
+| # | Ask for | Size | Why |
+|---|---|---|---|
+| W3-01 | flat-topped cave stones with glowing moss on top, different widths | S | floor kind (stone); the ground is too pale today |
+| W3-02 | mushroom-capped stumps and fallen stone columns, flat tops | S | floor kinds (stump, log kin) |
+| W3-03 | a crystal cluster with sharp points that looks dangerous, glowing red-purple | L | a painted hazard (today: one thorn vine) |
+| W3-04 | a low cave hollow to hide in, and a curtain of hanging glow-roots | S | hiding spot |
+| W3-05 | a tall cave wall with stone ledges built into it, glowing moss on the ledges, one piece | T | one-piece vertical |
+| W3-06 | smooth rounded stalagmites with NO sharp tips | T | dressing that doesn't read as spikes |
+
+### WORLD 4, cliffs and falls (rain, grey-blue rock, waterfalls)
+Colours: "cool grey-blue wet rock, green ferns, rain-dark".
+| # | Ask for | Size | Why |
+|---|---|---|---|
+| W4-01 | wet rock ledges sticking out of a cliff, flat tops, different widths | S | floor kind (stone) |
+| W4-02 | storm-broken tree stumps and fallen logs on rock, side view | S | floor kinds (stump, log) |
+| W4-03 | a rockfall hazard: loose jagged boulders and a falling-rock slope, looks dangerous | L | a painted hazard (today: pits only) |
+| W4-04 | a rock overhang behind a waterfall a sloth could hide under | H | hiding spot |
+| W4-05 | a tall cliff face with ledges and roots built into it, one piece | T | one-piece vertical |
+
+### WORLD 5, the orchid garden (soft pink-gold light, giant orchids, garden bits)
+Colours: "soft warm pinks, cream and moss green, gentle light". W5's kit has no branch, log, liana or perch; today it borrows World 1's.
+| # | Ask for | Size | Why |
+|---|---|---|---|
+| W5-01 | thin horizontal orchid-vine branches with a few flowers, standable top, NO red spiky plants | L | its own branch (replaces World 1's red-topped one) |
+| W5-02 | mossy garden stepping stones and an old flat garden stone slab | S | floor kind (stone) |
+| W5-03 | flower-topped stumps and a fallen garden log, flat tops | S | floor kinds (stump, log) |
+| W5-04 | a thorny rose tangle that looks sharp and dangerous | L | a painted hazard |
+| W5-05 | a hedge a sloth could hide inside, and a big leaf to hide under | S | hiding spot |
+| W5-06 | a hanging orchid vine to climb, full height | T | climb (W5 has none) |
+| W5-07 | its own garden soil bank, flowers on top (not the forest soil) | L | the ground (today World 1's) |
+
+### WORLD 6, the swamp (grey-green mist, mangroves, murky water)
+Colours: "muted grey-green and brown, wet moss, mist". The best floor outside World 1; gaps are the stacking and the ground stages.
+| # | Ask for | Size | Why |
+|---|---|---|---|
+| W6-01 | half-sunk swamp stones and mangrove root humps, flat tops | S | floor kinds on the ground stages |
+| W6-02 | three different mossy swamp logs, horizontal (not the same log) | L | stops the same log tiling three in a row |
+| W6-03 | a mangrove tree with standing platforms grown into it, roots to top, one piece | T | one-piece vertical (replaces posts under planks) |
+
+### WORLD 7, the temple (sunlit jungle ruins, carved grey stone)
+Colours: "warm grey carved stone, moss, sunlit jungle".
+| # | Ask for | Size | Why |
+|---|---|---|---|
+| W7-01 | broken temple blocks and fallen pillar pieces lying flat, standable tops, different sizes | S | floor kinds (today one carved slab) |
+| W7-02 | root-split stone slabs, roots grown through, horizontal | L | floor variety |
+| W7-03 | a carved spike-trap row and a crumbling ledge, looks dangerous | L | a painted hazard (today animals only) |
+| W7-04 | a collapsed doorway and a hollow under fallen stones to hide in | S | hiding spot |
+| W7-05 | a tall ruined temple wall with carved ledges and vines built in, one piece | T | one-piece vertical (no pillar on a slab) |
+
+### WORLD 8, the night canopy (purple dusk, dark cliffs, glowing fungi)
+Colours: "deep purple and blue-teal, glowing blue fungi, moonlit".
+| # | Ask for | Size | Why |
+|---|---|---|---|
+| W8-01 | moonlit mossy rocks and fungus-topped stumps, flat tops | S | floor kinds on 8-2 / 8-5 |
+| W8-02 | a glowing thorn vine or poison fungus cluster that looks dangerous | L | a painted hazard (today animals only) |
+| W8-03 | a hollow tree base and a fungus cave to hide in | S | hiding spot |
+
+### WORLD 9, the volcano (ash, basalt, lava glow)
+Colours: "charcoal basalt, warm orange lava glow, ash grey". NO red spiky flowers on the tops, no skulls.
+| # | Ask for | Size | Why |
+|---|---|---|---|
+| W9-01 | basalt column tops and cooled lava rocks, flat walkable tops, different widths | S | floor kinds (today one slab) |
+| W9-02 | charred stumps and burnt fallen logs, flat on top | S | floor kinds |
+| W9-03 | a walkable ash-grass floor strip with small grey-green plants only | L | replaces the red-spiked floor strip |
+| W9-04 | a basalt overhang and a cooled lava tube to hide in | S | hiding spot |
+| W9-05 | a tall basalt cliff with ledges built in, one piece | T | one-piece vertical (no ladder on a slab) |
+
+### WORLD 10, the storm fortress (night rain, dark rock, iron)
+Colours: "cold dark slate and iron, rain-wet, storm light".
+| # | Ask for | Size | Why |
+|---|---|---|---|
+| W10-01 | broken fortress stone ledges and rubble blocks, flat tops | S | floor kinds (today one iron grate everywhere) |
+| W10-02 | wooden scaffold planks and iron-banded beams, horizontal, different lengths | L | floor kinds |
+| W10-03 | iron poles and chains hanging from the top, full height | T | replaces the plain drawn poles |
+| W10-04 | a fortress wall alcove and a fallen shield or cart to hide under | S | hiding spot |
+| W10-05 | a tall fortress wall with ledges and chains built in, one piece | T | one-piece vertical |
