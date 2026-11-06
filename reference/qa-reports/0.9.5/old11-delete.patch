@@ -1,0 +1,217 @@
+From f032bc96c798340d70678d3db4447b6ecfa7281c Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Fri, 6 Nov 2026 20:36:03 +0000
+Subject: [PATCH] New replaces old: old 1-1's builder and Matt's Old 1-1 /
+ Rolls picker deleted; 1-1 is gen2 always (Rolls A/B/C stay as QA seed pins
+ for the tests and stage.ts --roll, never a button)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01FhBbYNbiMMD4wtzGED2iUK
+---
+ src/components/WorldMap.tsx     | 12 +-------
+ src/components/nav/worldMap.css |  5 ----
+ src/game/protoStage.ts          | 51 ++-------------------------------
+ src/game/stageGenerator.ts      |  8 +++---
+ src/game/testlink1_1.ts         | 28 +++++-------------
+ 5 files changed, 14 insertions(+), 90 deletions(-)
+
+diff --git a/src/components/WorldMap.tsx b/src/components/WorldMap.tsx
+index 49a740bfb..112b18d4e 100644
+--- a/src/components/WorldMap.tsx
++++ b/src/components/WorldMap.tsx
+@@ -1,5 +1,5 @@
+ import { TextGlyph } from './icons/TextGlyph.tsx';
+-import { newPlay11, pickerOn, setPick11 } from '../game/testlink1_1.ts';
++import { newPlay11, setPick11 } from '../game/testlink1_1.ts';
+ import { scheduleAhead } from '../game/buildAhead.ts';
+ import { starsPossible } from './mapStars.ts';
+ import { newLookSoon } from '../game/newLookSoon.ts';
+@@ -352,16 +352,6 @@ export const WorldMap: React.FC<WorldMapProps> = ({
+                 {picked.completed ? 'Replay' : 'Play'}
+               </button>
+             )}
+-            {pickedOpen && picked.id === '1-1' && pickerOn() && (
+-              // (Matt's 1-1 picker, a QA build with its flag only (testlink1_1.ts pickerOn): Old 1-1 as main builds it, or gen2 1-1's Rolls A, B, C)
+-              <div className="wm-pick11" role="group" aria-label="Test link: which 1-1">
+-                {(['old', 'A', 'B', 'C'] as const).map((p) => (
+-                  <button key={p} type="button" className="gx-plank wm-pick11-btn" onClick={() => { setPick11(p); onSelectLevel(picked); }}>
+-                    {p === 'old' ? 'Old 1-1' : `Roll ${p}`}
+-                  </button>
+-                ))}
+-              </div>
+-            )}
+           </div>
+         )}
+         <nav className="wm-leaves" aria-label="More">
+diff --git a/src/components/nav/worldMap.css b/src/components/nav/worldMap.css
+index 6a6b5f32a..9322c5afc 100644
+--- a/src/components/nav/worldMap.css
++++ b/src/components/nav/worldMap.css
+@@ -35,11 +35,6 @@
+ .wm-prog-w { display: none !important; }
+ .wm-card-lock { display: flex; align-items: center; gap: 6px; margin-top: 3px; font: 700 14px var(--font-ui); color: #8a3b10; }
+ .wm-play { flex: none; font-size: 21px; padding: 12px 20px; min-width: 0; gap: 8px; }
+-/* the test link's 1-1 picker (QA builds only, testlink1_1.ts): a row of four under the card's own line, each 44 px or more to tap */
+-.wm-card:has(.wm-pick11) { flex-wrap: wrap; padding-bottom: 4px; }
+-.wm-pick11 { flex-basis: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 6px 0 2px; }
+-@media (orientation: landscape) { .wm-pick11 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+-.wm-pick11 .wm-pick11-btn { width: 100%; min-width: 0; max-width: none; min-height: 48px; padding: 8px 6px; font-size: 17px; box-sizing: border-box; }
+ .wm-leaves { display: flex; justify-content: center; gap: 10px; }
+ .wm-leaves .ttl-leaf { width: 104px; }
+ .wm-toast { position: fixed; z-index: 60; left: 50%; top: 42%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; max-width: calc(100vw - 32px);
+diff --git a/src/game/protoStage.ts b/src/game/protoStage.ts
+index c3024f0fd..37a58fee9 100644
+--- a/src/game/protoStage.ts
++++ b/src/game/protoStage.ts
+@@ -55,9 +55,8 @@ import { W4Roll } from './w4Sections.ts';
+ import { buildFromSpec } from './mixer/w1mix.ts';
+ import { w1DressWidth } from './w1NewArt.ts';
+ import { specFor as specForAll } from './mixer/stages.ts';
+-import { skip11Spec } from './testlink1_1.ts';
+-/** a stage's mixer spec, except 1-1 on the test link's 'Old 1-1' pick (testlink1_1.ts: main's builder as it is) */
+-const specFor = (id: string) => (skip11Spec(id) ? undefined : specForAll(id as never));
++/** a stage's mixer spec (mixer/stages.ts) */
++const specFor = (id: string) => specForAll(id as never);
+ import { clearDress, ownPetals, placeSeed } from './mixer/post.ts';
+ import { dressSize } from './dressArt.ts';
+ import { inDoorBox } from './mixer/propSupport.ts';
+@@ -1484,52 +1483,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
+   /** this roll's version of one of the stage's sections (w1Sections.ts) */
+   const section = (slot: Slot) => w1Section(w1, w1Stage, slot, seed);
+ 
+-  // TEST-LINK ONLY, REMOVE BEFORE ANY RELEASE (new replaces old; the lead, 11-05). (main's 1-1 builder as it is, kept for the test
+-  // link's 'Old 1-1' pick only (testlink1_1.ts: QA builds, never the shipped game,
+-  // where 1-1 is the mixer's spec); copied unchanged from main (protoStage.ts on main, its '1-1' plan): the lead's compare, 11-05)
+-  if (plan === '1-1') {
+-    // 1-1 Into the Canopy: run and jump. Taught over soft moss, tested on stepping stones at three heights, and twisted at the end
+-    // into gaps only the second jump crosses. The touch coach teaches the gestures at the start (engine.ts), so the hints come later.
+-    // (Rebuilt 2026-10-28: the open ground between the pieces holds hops and dips, the stumps and stones stay one easy jump up, and
+-    // the finish keeps the double jump to gaps over level stones: no tall double jumps in World 1's first stages, Matt.)
+-    beat('Learn: run and jump', () => {
+-      rest(R.r(400, 440));
+-      lowStumps();
+-      busy(1, ['log'], R.r(240, 290));
+-      hint(x + 40, 'Jump the little gaps', 'Jump the little gaps', 'Jump the little gaps');
+-      const one = reachJump(0, false);
+-      for (const w of [one * 0.35, one * 0.45, one * 0.55]) {
+-        const edge = x;
+-        close();
+-        const far = Math.round(edge + w);
+-        softPit(edge, far);
+-        open(far);
+-        run(R.r(220, 300));
+-      }
+-      flag();
+-    });
+-    beat('Test: the stepping stones', () => {
+-      hint(x + 60, 'Hop from stone to stone', 'Hop from stone to stone', 'Hop from stone to stone');
+-      // (the stones climb 60 at most from one to the next, and the first stands 60 up: the kid bot missed 80 and more, 2026-10-28)
+-      section('develop');
+-      // (a dip before the twist's tip: the walk past its practice shelf follows)
+-      run(R.r(60, 90));
+-      dip();
+-      run(R.r(120, 160));
+-      flag();
+-    });
+-    beat('Twist: the second jump', () => {
+-      hint(x + 60, 'Flick up again in the air to jump twice', 'Press Jump again in the air', 'Press Space again in the air');
+-      section('twist');
+-      flag();
+-    });
+-    beat('Finish', () => {
+-      // more of the second jump and the stones, in this roll's rhythm, until even a quick player needs two minutes
+-      section('finish');
+-      homeRun();
+-    });
+-  }
+-
+   /**
+    * 1-2's way back up (fix-petals, 2026-11-01): a mushroom on the floor at the near end of a high branch, so a hop that falls short of it
+    * (or a walk off the stair top under it) is one bounce back up to the trail, never the rest of the run's petals lost. The first-timer
+diff --git a/src/game/stageGenerator.ts b/src/game/stageGenerator.ts
+index c105fb93d..5a5b6cb99 100644
+--- a/src/game/stageGenerator.ts
++++ b/src/game/stageGenerator.ts
+@@ -6,7 +6,7 @@ import { teachWater } from './waterTeach.ts';
+ import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
+ import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
+ import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
+-import { pick11, play11Seed, roll11Seed, skip11Spec, withPlaySeed } from './testlink1_1.ts';
++import { pick11, play11Seed, roll11Seed, withPlaySeed } from './testlink1_1.ts';
+ import { buildPlayStage } from './gen2/seedList.ts';
+ import { w1Finish, w1World } from './gen2/worlds/w1.ts';
+ import { capFlagSpans, heartBy } from './easyMode.ts';
+@@ -2866,12 +2866,12 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
+   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
+   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
+   // (the test link's 1-1 picker: a gen2 roll skips the hand-built path, testlink1_1.ts)
+-  // (1-1's Play is gen2 from the proven list: only Matt's Old 1-1 pick takes the hand-built path)
+-  const gen2Roll11 = config.id === '1-1' && !config.secret && pick11() !== 'old';
++  // (1-1 is gen2 from the proven list, always: old 1-1's builder is deleted, new replaces old, 0.9.5)
++  const gen2Roll11 = config.id === '1-1' && !config.secret;
+   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled() && !gen2Roll11) {
+     // (a stage the mixer builds from its spec, 1-1 and 1-5, lays Easy itself: mixer/w1mix.ts; the rest are made gentler on the built
+     // stage alone, easyMode.ts)
+-    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && !skip11Spec(config.id) && !!specFor(HAND_STAGES[config.id])));
++    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id], difficulty === 'easy' && !!specFor(HAND_STAGES[config.id])));
+     addMissingFind(st);
+     return difficulty === 'normal' ? w4Normal(st) : st;
+   }
+diff --git a/src/game/testlink1_1.ts b/src/game/testlink1_1.ts
+index f742aab79..1ab842379 100644
+--- a/src/game/testlink1_1.ts
++++ b/src/game/testlink1_1.ts
+@@ -1,25 +1,22 @@
+ /**
+- * How 1-1 is built. The card's own Play button is gen2 1-1 from the proven-seed list (below). The rest is TEST-LINK ONLY, REMOVE BEFORE
+- * ANY RELEASE with the restored old 1-1 block in protoStage.ts (new replaces old): Matt's picker (the lead, 11-05: he compares OLD 1-1 with
+- * gen2 1-1's Rolls A, B and C on his phone), in a QA build with its flag only (pickerOn); the pick holds until another is made.
+- *   - 'play': gen2 1-1, a fresh proven seed each press of Play;
+- *   - 'old': main's 1-1 builder as it is (protoStage.ts with 1-1's mixer spec skipped);
+- *   - 'A' | 'B' | 'C': gen2 1-1 from World 1's kit (gen2/worlds/w1.ts), the seed from testlink1_1.json, which the lead sets at publish.
++ * How 1-1 is built: gen2 1-1 from the proven-seed list, always (old 1-1's builder and Matt's Old 1-1 / Rolls picker are deleted: new
++ * replaces old, 0.9.5).
++ *   - 'play': the card's own Play button, a fresh proven seed each press (every build);
++ *   - 'A' | 'B' | 'C': QA measuring only (a QA build, set by the tests and stage.ts --roll, never a button): gen2 1-1 on the seed from
++ *     testlink1_1.json, so a check measures a named roll. Not a switch between builders: every pick is gen2.
+  */
+ import ROLLS from './testlink1_1.json';
+ import { qaBuild } from './playRecorder.ts';
+ import { provenSeedFor, provenSeeds } from './gen2/seedList.ts';
+ 
+-export type Pick11 = 'play' | 'old' | 'A' | 'B' | 'C';
++export type Pick11 = 'play' | 'A' | 'B' | 'C';
+ let pick: Pick11 = 'play';
+-/** set the pick ('play': the card's own Play button; the others only from Matt's picker in a QA build) */
++/** set the pick ('play': the card's own Play button; A/B/C only from the tests and tools, in a QA build) */
+ export const setPick11 = (p: Pick11): void => { pick = p; };
+ /** how 1-1 is built now: gen2 from the proven-seed list ('play') outside a QA build */
+ export const pick11 = (): Pick11 => (qaBuild() ? pick : 'play');
+ /** the seed of a gen2 roll */
+ export const roll11Seed = (p: 'A' | 'B' | 'C'): number => (ROLLS as Record<string, number>)[p];
+-/** whether 1-1's mixer spec is skipped (the old builder) */
+-export const skip11Spec = (id: string): boolean => id === '1-1' && pick11() === 'old';
+ 
+ /**
+  * 1-1's Play (the lead, 11-06, Matt: "1-1's Play = gen2, a fresh proven seed per play"): each press of Play draws a seed from the proven
+@@ -90,17 +87,6 @@ export function withPlaySeed<T>(seed: number, fn: () => T): T {
+ /** forget the drawn seeds (tests) */
+ export const clearPlay11 = (): void => { playSeed = null; nextSeed = null; memOrder = null; try { localStorage.removeItem(ORDER_KEY); } catch { /* blocked */ } };
+ 
+-/** Matt's picker (Old 1-1, Rolls A/B/C) shows only in a QA build with its flag: ?pick11 once (kept on the device), never for testers */
+-export function pickerOn(): boolean {
+-  if (!qaBuild()) return false;
+-  try {
+-    if (typeof location !== 'undefined' && new URLSearchParams(location.search).has('pick11')) localStorage.setItem('sloth_qa_pick11', '1');
+-    return localStorage.getItem('sloth_qa_pick11') === '1';
+-  } catch {
+-    return false;
+-  }
+-}
+-
+ /**
+  * A child process measuring a picked roll (stage.ts --roll, the red team's RT-ENGINE #1: its children graded the mixer's 1-1): set the
+  * pick from STAGE_ROLL (A, B or C) and stand in for a QA build, so generateStage builds that roll. Returns the roll and the seed it must
+-- 
+2.43.0
+

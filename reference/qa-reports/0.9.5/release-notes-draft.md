@@ -1,6 +1,6 @@
 # Release 0.9.5: drafts (release clerk, for the lead to approve)
 
-Status: DRAFT. package.json is NOT bumped yet (the brief: bump only once engine-core's final commit is in). Every line below is for the
+Status: DRAFT. What's New approved by the lead 3:31 PM ET with line 2 as below; line 3 is a placeholder the lead replaces after playing the final build. package.json is NOT bumped yet (the brief: bump only once engine-core's final commit is in). Every line below is for the
 lead to approve or rewrite; the What's New words then go to Matt with the test link.
 
 ## 1. Version
@@ -18,7 +18,7 @@ mushrooms) waits for the lead's look at the real stage on the test link, because
     title: 'A brand-new first stage',
     items: [
       'Into the Canopy, the very first stage, is built all over again.',
-      'It is laid out a little differently each time you play it.',
+      'It’s laid out a little differently every time you play.',
       'Dot has new things to say as you climb.',
     ],
   },

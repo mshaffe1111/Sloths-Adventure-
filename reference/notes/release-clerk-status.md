@@ -3,7 +3,29 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 3:35 PM ET, 2026-11-06.
+Last update: 3:38 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+
+## 3:38 PM: the lead's answers (3:31 PM message) and what I did
+- tester-page, engine-chunks: NOT passed; I wait for the lead's word on each.
+- 1-5 stays out (engine-core restores main's 1-5). 4-9 held (engine-core limits roofedDrop to builtOnGen2 stages). The lock must read
+  101/102, only 1-1. No new todo (engine-core drops breaking rolls from the proven list). funcheck REBUILT keeps 1-4.
+- What's New approved, line 2 now "It’s laid out a little differently every time you play." (draft updated); line 3 the lead's, later.
+- **build:store on the trial merge: PASS** ("Store build check passed: dist has no tracking, ads, collector, service worker or outside
+  addresses"), 25 s. No file over 4 MiB, BUT **the main JS bundle is 4,168,597 bytes: 25.7 KB under the 4 MiB (4,194,304) limit.** Main's
+  is 3,943,385, so engine-core adds about 225 KB. Not a fail today; the next release that adds anything to the bundle breaches it. For the
+  lead to route (likely the proven seed plans in gen2/provenSeeds.ts and the mixer, which could load as their own chunk).
+- **The old-1-1 deletion, ready:** `reference/qa-reports/0.9.5/old11-delete.patch` (made on the trial merge, engine-core 5e221f9d):
+  - deletes Matt's picker (WorldMap.tsx's Old 1-1 / Roll A-C row, worldMap.css's .wm-pick11), the 'old' pick and `skip11Spec`
+    (testlink1_1.ts), old 1-1's builder block in protoStage.ts (the "TEST-LINK ONLY, REMOVE BEFORE ANY RELEASE" 1-1 plan), and
+    stageGenerator's `pick11() !== 'old'`: 1-1 is gen2, always.
+  - keeps Rolls A/B/C as QA seed pins (set only by the tests and stage.ts --roll, in a QA build, never a button): every pick is gen2, so
+    it is not a builder switch. Say if you want them gone too (stage11gen2.test.ts and rollEnv.test.ts would move to named proven seeds).
+  - proof: tsc PASS; stage11, rollEnv, buildAhead, w1CutArt, gen2/stage11gen2, whatsNew tests: 19 pass, 0 fail, 1 todo (the double-gap
+    todo engine-core is removing); `vite build` then no "Old 1-1" or "wm-pick11" in any JS file.
+  - **Phase 2, engine-core's (not in the patch):** the mixer's own 1-1 (mixer/stages.ts SPEC_11, built through buildProtoStage(cfg, s,
+    '1-1')) is now reached by no player path, but stage11.test.ts, mixer/support.test.ts, propSupport.test.ts, nodePieces(.test).ts and
+    tools/engine/{stage,seedlist,snapshot,rulers,probe-order,cp4-jumps11}.ts read it; w1Sections.ts '1-1' is read only through it. New
+    replaces old says it goes; it is engine-core's code and tests. Lead: in 0.9.5 or the next?
 
 ## 3:35 PM addendum
 - The container restarted at about 3:24 PM and killed shards 2 and 3 on the trial merge (shard 1 had finished). Restarted 3:27 PM; I
