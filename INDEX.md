@@ -182,3 +182,13 @@ Piece kinds are read from the stage data the game builds (platform styles and fl
 | 10-8 | The Last Steps | ascent | 4100 x 10220 | ruin tiles; mossy stones; canopy bridges; logs; crumbling platforms; bounce pads; vines (18, 5 swinging); climbing trunks; creatures: snake x4, harpy x3, eagle x3, tayra x1, ocelot x1, boa x1 |
 | 10-9 | The Fortress Gate | gauntlet | 26403 x 900 | logs; canopy bridges; ruin tiles; mossy stones; branches; vines (3, 2 swinging); climbing trunks; creatures: snake x10, tayra x7, eagle x5, harpy x4, jaguar x4, boa x3, ocelot x1 |
 | 10-10 | General Iron-Claw's Lair | boss lair | 2600 x 900 | ruin tiles; logs; canopy bridges; mossy stones; moving platforms; vines (3); climbing trunks; boss arena |
+
+## Seen while shooting
+
+Noted, not fixed (the game's code was read-only for this job):
+
+- **A lighter rectangle in the World 1 backdrop.** In some 1-3 and 1-7 stills (`W01/1-3_a-start.jpg`, `W01/1-7_b-mid.jpg`) a hard-edged, lighter box shows in the backdrop around Pokey's spot, as if a layer is drawn into a box rather than blended. It looks like a drawing defect in the game itself, not the screenshot.
+- **1-8 has no ordinary still ledges.** Every ledge Pokey stands on is a piece of the collapsing long branch (the chase), so its middle and end stills stand him on chase pieces.
+- **4-D and 5-M are not in the usual platform data.** Dot's flight runs on its own flight code, so the pieces list for 4-D is written from what the stills show. 5-M's start and exit sit near the same point, so its stills were placed at set points along the stage.
+- **7-4 turns into a slide part way.** After the crumble the stage becomes a dark tunnel slide (`W07/7-4_c-end.jpg`); its strip shows only the side-on part before it.
+- **Strips repeat a few screen-fixed things per screen-width**: the backdrop's parallax seams, the foreground ferns, and in 5-M Meeca's thought cloud.
