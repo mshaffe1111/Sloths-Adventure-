@@ -74,3 +74,38 @@ test('on a rolled graph, a teach whose block is walked round is swapped out of i
   assert.ok(kept >= 6, `the holding teach laid on ${kept} of 12`);
   assert.ok(swapped > 0, 'the walkable teach was never drawn, so the test did not see the rule');
 });
+
+test('a bounce block\'s lip lays 200-220 px up, clamped to the bounce\'s reach from its mushroom, and no double reaches it; without `from` it is a walk\'s step', async () => {
+  await import('../headlessDom.ts');
+  const { layLocal, planBudget, rngFor, BOUNCE_REACH } = await import('./pipeline.ts');
+  const { cfg, manifest } = await import('./toyWorld.ts');
+  type T = import('./types.ts').SectionTemplate;
+  const lift: T = {
+    id: 'toy-lift', name: 'first lift', archetypes: 'any', phases: ['ki'], difficulty: 2, teaches: 'bounce',
+    pieces: [
+      { key: 'floor', shape: 'bank', w: [420, 420], place: { kind: 'start' } },
+      { key: 'mush', shape: 'bouncy', w: [70, 70], h: 30, place: { kind: 'on', on: 'floor', at: [0.7, 0.7], h: [30, 30] }, main: false },
+      { key: 'lip', shape: 'bank', w: [400, 400], place: { kind: 'walk', after: 'floor', dy: [-220, -200] }, block: 'bounce', from: 'mush' },
+    ],
+    entry: { piece: 'floor', kind: 'ground' }, exit: { piece: 'lip', kind: 'ground' }, exitDy: -210, sockets: [], mirrorable: false,
+  };
+  const budget = planBudget(cfg('5-7', 'sprint'), manifest, 'normal');
+  assert.ok(BOUNCE_REACH > 240 && BOUNCE_REACH < 270, `the bounce's reach ${BOUNCE_REACH}`);
+  for (let k = 0; k < 8; k++) {
+    const L = layLocal(lift, budget, rngFor(31, k));
+    const floor = L.pieces.find((p) => p.key === 'floor')!, lip = L.pieces.find((p) => p.key === 'lip')!, mush = L.pieces.find((p) => p.key === 'mush')!;
+    const rise = floor.y - lip.y;
+    assert.ok(rise >= 200 && rise <= 220, `stream ${k}: the lip ${rise} px over the floor`);
+    // (and the place rule holds it: from the floor no double reaches the lip; the mushroom is never a take-off)
+    const P = (q: typeof floor, type: 'solid' | 'bouncy' = 'solid') => ({ id: 1, x: q.x, y: q.y, width: q.w, height: q.h, type });
+    const b = blockBreaches(({ blocks: [{ uid: 's1', key: 'lip', kind: 'bounce', landing: P(lip) }] }) as unknown as Laid, [P(floor), P(mush, 'bouncy'), P(lip)]);
+    assert.deepEqual(b, [], `stream ${k}`);
+  }
+  // (without `from` the walk's clamp lays it about 80 px up: a single jump's step, which the place rule calls walked round)
+  const bare: T = { ...lift, pieces: lift.pieces.map((p) => (p.key === 'lip' ? { ...p, from: undefined } : p)) };
+  const L = layLocal(bare, budget, rngFor(31, 0));
+  const floor = L.pieces.find((p) => p.key === 'floor')!, lip = L.pieces.find((p) => p.key === 'lip')!;
+  assert.ok(floor.y - lip.y < 100, `the walk's clamp: ${floor.y - lip.y} px`);
+  const P = (q: typeof floor) => ({ id: 1, x: q.x, y: q.y, width: q.w, height: q.h, type: 'solid' as const });
+  assert.equal(blockBreaches(({ blocks: [{ uid: 's1', key: 'lip', kind: 'bounce', landing: P(lip) }] }) as unknown as Laid, [P(floor), P(lip)]).length, 1);
+});

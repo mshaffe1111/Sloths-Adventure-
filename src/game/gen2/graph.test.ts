@@ -246,7 +246,7 @@ test('the content deal: every content node typed, the counts the deal\'s give or
   assert.ok(clean >= 4, `${clean} of 16 rolls with no slot loosened`);
 });
 
-test('a required section stands in its own reward node (the key\'s H), after the last rest before the signature, in the last third', () => {
+test('a required section stands in its own reward node (the key\'s H), right before the signature, in the last third', () => {
   const perch: SectionTemplate = { ...twoRoad, id: 'toy-perch', jobs: ['reward'], phases: ['sho', 'ten'], window: [0.67, 1] };
   const k: WorldKit = { ...chunked({ ends: 'quiet', trend: 'up', branching: 'some' }) };
   k.manifest = { ...k.manifest, sections: [...k.manifest.sections, perch], required: { [ID]: [{ section: 'toy-perch' }] } } as WorldManifest;
@@ -292,5 +292,37 @@ test('a roll its rules cannot fill FAILS, the missing piece named (Law 22): a re
     const st = build(k, s);
     assert.ok(st.gen2.errors.some((e) => /the required section toy-perch-x fits no node: glide-x never taught/.test(e)), `seed ${s}: ${st.gen2.errors.join('; ')}`);
     assert.ok(st.gen2.errors.some((e) => e.startsWith('pool short at ') && / reward: /.test(e)), `seed ${s}: the empty H node is not named`);
+  }
+});
+
+test('V19: in a trend-up stage the node after a descent in the last third takes a rising section, by rule (graph C, 8 seeds)', () => {
+  const rise: SectionTemplate = { ...twoRoad, id: 'toy-rise', jobs: undefined, phases: ['sho', 'ten', 'ketsu'],
+    pieces: [{ key: 'a', shape: 'bank', w: [400, 400], place: { kind: 'start' } }, { key: 'b', shape: 'bank', w: [400, 400], place: { kind: 'double', after: 'a', dy: [-120, -120], share: [0.3, 0.3] } }],
+    entry: { piece: 'a', kind: 'ground' }, exit: { piece: 'b', kind: 'ground' }, exitDy: -120 };
+  const k: WorldKit = { ...kit, manifest: { ...manifest, sections: [...manifest.sections, twoRoad, rise], graphs: { list: SPRINT_GRAPHS.filter((g) => g.id === 'sprint-C'), briefs: { [ID]: { ends: 'quiet', trend: 'up', branching: 'some' } } } } as WorldManifest };
+  for (const s of SEEDS.slice(0, 8)) {
+    const st = build(k, s);
+    const ns = st.gen2.graph.nodes, d = ns.findIndex((n) => n.job === 'descent');
+    if ((d + 0.5) / ns.length < 2 / 3) continue;
+    const next = ns.slice(d + 1).find((n) => n.job !== 'rest' && n.job !== 'exit')!;
+    assert.ok(next.mustRise, `seed ${s}: ${next.job} after the descent is not held to rise`);
+    for (const p of st.gen2.plan.filter((q) => q.node === next.id)) assert.ok(p.loose || p.template === 'toy-rise', `seed ${s}: ${p.template} after the descent`);
+    assert.ok(!st.gen2.codeErrors!.some((e) => e.startsWith('V19 ')), `seed ${s}: ${st.gen2.codeString}`);
+  }
+});
+
+test('the clue (R-165.31): a bootprint decor socket on the end log is filled every roll, once, reported as dressing at the log\'s top', () => {
+  const end: SectionTemplate = { ...manifest.sections.find((t) => t.id === 'toy-meadow')!, id: 'toy-end-log', phases: ['goal'],
+    sockets: [{ id: 'clue', role: 'decor', on: 'bank', t: [0.47, 0.56], dn: 0, allow: ['bootprint'] }] };
+  const k = withGraphs({ ends: 'quiet', trend: 'up', branching: 'some' });
+  // (the end log is the only goal section: the meadow keeps its other phases)
+  k.manifest = { ...k.manifest, sections: [...k.manifest.sections.map((t) => (t.id === 'toy-meadow' ? { ...t, phases: t.phases.filter((p) => p !== 'goal') } : t)), end] } as WorldManifest;
+  for (const s of SEEDS.slice(0, 8)) {
+    const st = build(k, s);
+    const prints = (st.proto as { mixDress?: Array<{ n: string; x: number; b: number }> }).mixDress?.filter((d) => d.n === 'bootprint') ?? [];
+    assert.equal(prints.length, 1, `seed ${s}: ${prints.length} bootprints`);
+    const sec = st.gen2.sections.find((q) => q.template === 'toy-end-log');
+    assert.ok(sec && prints[0].x >= sec.x0 && prints[0].x <= sec.x1, `seed ${s}: the print is off its end log`);
+    assert.ok(st.platforms.some((p) => p.y === prints[0].b && p.x <= prints[0].x && p.x + p.width >= prints[0].x), `seed ${s}: the print is not on a log's top`);
   }
 });
