@@ -228,10 +228,10 @@
   {
    "file": "w1-bush-monstera.png",
    "sheet": "11-bushes.jpg",
-   "item": 1,
+   "item": 2,
    "size": [
-    307,
-    893
+    587,
+    861
    ],
    "job": "hide-in-bush",
    "worlds": [
@@ -245,10 +245,10 @@
   {
    "file": "w1-bush-hedge-tall.png",
    "sheet": "11-bushes.jpg",
-   "item": 2,
+   "item": 1,
    "size": [
-    587,
-    861
+    307,
+    893
    ],
    "job": "hide-in-bush (tall)",
    "worlds": [

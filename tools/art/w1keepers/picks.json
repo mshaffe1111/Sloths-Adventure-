@@ -151,7 +151,7 @@
   ],
   "11": [
    {
-    "item": 1,
+    "item": 2,
     "name": "w1-bush-monstera",
     "job": "hide-in-bush",
     "worlds": [
@@ -161,7 +161,7 @@
     ]
    },
    {
-    "item": 2,
+    "item": 1,
     "name": "w1-bush-hedge-tall",
     "job": "hide-in-bush (tall)",
     "worlds": [

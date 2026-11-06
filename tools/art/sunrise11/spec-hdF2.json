@@ -1,0 +1,58 @@
+{
+ "tag": "sun11-hdF2",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1sun2-tall-83-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/312e7dfd5915c0b7cdd4642cb8c535bf1e2fea72/reference/prop-sheets/qa-notes/art-1-1-sunrise/keyed/w1sun2-tall-83.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail. a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over the rainforest: dark silhouetted rainforest trees and tall emergent crowns standing in the middle distance, layered ridges of green canopy and soft blue-green hills fading behind them, a low warm sun just above the far hills, a gold and pink sunrise sky with bold soft-edged pink clouds, morning mist only in the far valleys, the bottom of the picture a dark band of distant treetops, rich saturated sunrise colour, strong contrast, deep green shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam, flowers, orchids, rain"
+  },
+  {
+   "name": "w1sun2-tall-97-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/312e7dfd5915c0b7cdd4642cb8c535bf1e2fea72/reference/prop-sheets/qa-notes/art-1-1-sunrise/keyed/w1sun2-tall-97.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail. a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over the rainforest: dark silhouetted rainforest trees and tall emergent crowns standing in the middle distance, layered ridges of green canopy and soft blue-green hills fading behind them, a low warm sun just above the far hills, a gold and pink sunrise sky with bold soft-edged pink clouds, morning mist only in the far valleys, the bottom of the picture a dark band of distant treetops, rich saturated sunrise colour, strong contrast, deep green shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam, flowers, orchids, rain"
+  },
+  {
+   "name": "w1sun2-tall-113-hd",
+   "pre": "esrgan",
+   "h": 1760,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/312e7dfd5915c0b7cdd4642cb8c535bf1e2fea72/reference/prop-sheets/qa-notes/art-1-1-sunrise/keyed/w1sun2-tall-113.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail. a very wide side-scrolling game background, the far distance seen straight from the side: sunrise over the rainforest: dark silhouetted rainforest trees and tall emergent crowns standing in the middle distance, layered ridges of green canopy and soft blue-green hills fading behind them, a low warm sun just above the far hills, a gold and pink sunrise sky with bold soft-edged pink clouds, morning mist only in the far valleys, the bottom of the picture a dark band of distant treetops, rich saturated sunrise colour, strong contrast, deep green shadows. The upper third of the picture is open sky, the lower two thirds the far scenery, rich painted texture like a storybook, soft atmospheric depth",
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam, flowers, orchids, rain"
+  }
+ ]
+}
