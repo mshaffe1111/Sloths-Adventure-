@@ -718,3 +718,7 @@ wide: a single crosses the width, not the height), and the far bank stays ≥ 3.
   - Version b (`d j d d`) and Round 12's 'rise' (`d d d`, then `h` onto a level log: a hop, not a fourth double) already break the run of four.
 - The chain is still "double after double, rising" (story-briefs/1-1.md:21-22); the bounce is its 1-1 signature.
 - Re-measure: no 1-1 vs 1-6 pair under 0.30 on the 64.
+
+**Easy's rise band (2:56 PM; the planner: Easy's margin clamps a double's rise at 113.9 px, and a single's physical rise is 107.8).** The
+planner's (B): **every Easy twin's rise D is 110-114 px**, inside the clamp, so the data says what's laid, with no silent clamping.
+The no-double bot must still fail it on 16 seeds (the required-move gate). If a single makes it, a version is refused, never loosened.
