@@ -38,3 +38,11 @@ test('nothing dressed over the exit door: a planted fern on the door is caught, 
   list.push({ n: 'w1Fern', x: st.exitTotemX + 60, b: st.exitTotemY }, { n: 'w1Fern', x: st.exitTotemX - 900, b: st.exitTotemY });
   assert.equal(dressOverDoor(st).length, before + 1);
 });
+
+test('a prop hung UNDER a floating log is caught (its foot at the log underside), one standing on its top is not', () => {
+  const log = { id: 9001, x: 5000, y: 600, width: 300, height: 24, type: 'solid', style: 'log' };
+  const st: any = { platforms: [log], proto: { mixDress: [{ n: 'w1Fern', x: 5150, b: 624 }, { n: 'w1Fern', x: 5100, b: 600 }] } };
+  const b = propBreaches(st);
+  assert.equal(b.length, 1, JSON.stringify(b));
+  assert.equal(b[0].b, 624);
+});

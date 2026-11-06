@@ -52,7 +52,9 @@ export function propBreaches(s: any, out: { onStructure?: Record<string, number>
     if (fam.family === 'fly') continue;
     let sz = { w: d.w ?? 60, h: 60 }; if (d.w === undefined) try { sz = dressSize(d.n as never); } catch { /* no frame: 60 px */ }
     const mid0 = d.x - sz.w / 4, mid1 = d.x + sz.w / 4;
-    const onTop = P.some((p) => p.x <= mid1 && p.x + p.width >= mid0 && d.b - p.y >= -12 && d.b - p.y <= 30);
+    // (on a piece's top, never hung under it: on a thin piece, a log or a bough 24 px thick, a foot lower than 60% of its thickness is at
+    // its underside, a prop hung under it (the lead, 11-05: a mushroom stalk under a floating log on the mixed 1-1); 30 px into a deep bank)
+    const onTop = P.some((p) => p.x <= mid1 && p.x + p.width >= mid0 && d.b - p.y >= -12 && d.b - p.y <= Math.min(30, (p.height ?? 24) * 0.6));
     let ok = onTop, why = 'nothing under its foot';
     if (fam.family === 'hang') { ok = P.some((p) => p.x <= d.x + 10 && p.x + p.width >= d.x - 10 && d.b >= p.y - 10 && d.b <= p.y + (p.height ?? 24) + 30) || trunks.some((t) => Math.abs((t.x ?? 0) + (t.width ?? 0) / 2 - d.x) < 120); why = 'nothing to hang from at its top'; }
     if (fam.family === 'water') { ok = onTop || water.some((z) => d.x >= z.x0 && d.x <= z.x1 && Math.abs(d.b - z.y) <= 24); why = 'no water surface or bank under it'; }
