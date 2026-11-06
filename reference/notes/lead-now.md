@@ -102,7 +102,7 @@ After 1-1 is proven, these run as their own lanes, one engine.ts holder at a tim
 - engine-core (porter) D39 x1 (11-06 ~9:40-10:18 AM: lesson.bounce ordered first 3 times, worked Round 7 instead; read only between long runs). Same countermeasure. Planner D39 x3 on 11-05 (orders read 20-60 min late during long runs). Countermeasure: read before every run over 2 min, and a
   one-line ack to every order within 10 min. A 4th means a fresh helper at the next push point. I chose not to replace it at the 3rd
   (critical path, accurate work) and told Matt.
-- Typed times: the planner (x2), the porter (x1), THE LEAD (11-06 ~9:20-9:30 AM: stamped messages up to 5 min ahead of `date`). Countermeasure: `date` in the same step, the lead included.
+- Typed times: the planner (x2), the porter (x1), THE LEAD x2 (11-06 ~9:20-9:30 AM up to 5 min ahead; ~12:25-12:35 PM up to 30 min ahead, caught by tester-page). Countermeasure: `date` in the same step, the lead included.
 - The lead (me): claimed the node key page showed a change I hadn't made, and misread a backdrop orchid as dressing. Countermeasure:
   look at the thing before saying it's done.
 
