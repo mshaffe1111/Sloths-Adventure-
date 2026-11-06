@@ -4,8 +4,8 @@ import { refinedControls } from '../game/refinedControls.ts';
 import { difficulty, setDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { checkForUpdate, hardRefresh } from '../game/updates.ts';
 import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
-import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
-import { PeekPokey, Plaque } from './KitParts.tsx';
+import { Plaque } from './KitParts.tsx';
+import { STD_ATLAS_SIZE, STD_FRAMES, STD_STAND_H } from '../game/heroStandardData.ts';
 import { stretchChoices } from './ctestStretches.ts';
 
 /*
@@ -18,7 +18,6 @@ import { stretchChoices } from './ctestStretches.ts';
 const Scene: React.FC<{ children: React.ReactNode; label: string }> = ({ children, label }) => (
   <div className="ct-scene fixed inset-0 z-[60] overflow-y-auto" role="dialog" aria-label={label}>
     <div className="ct-wrap">
-      <PeekPokey className="ct-peek" />
       <div className="ct-card">{children}</div>
     </div>
   </div>
@@ -67,26 +66,40 @@ const FreshBuild: React.FC = () => {
   );
 };
 
-/** the moves, as tiles with their moving thumb (GestureGlyph): what to do, and what it does */
-const CONTROLS: ReadonlyArray<readonly [GlyphKind, string, string]> = [
-  ['run', 'Slide sideways', 'to run'],
-  ['jump', 'Flick up and forward', 'to jump'],
-  ['up', 'Flick up again in the air', 'to double jump'],
-  ['tap', 'Tap', 'to punch'],
-  ['flick', 'Flick toward an animal', 'to kick'],
-  ['down', 'Slide straight up or down', 'to climb a vine'],
-];
+/** Pokey's painted sheet, the one the game draws him from (heroStandard.ts: the stage loads it anyway, so it costs nothing new) */
+const HERO_URL = new URL('../assets/hero/hero-standard.webp', import.meta.url).href;
+/** a still Pokey: one frame of the sheet, drawn at the scale that makes him `h` px tall standing (every pose the same size, as in play) */
+export const HeroPose: React.FC<{ frame: string; h: number; className?: string }> = ({ frame, h: standH, className }) => {
+  const f = STD_FRAMES[frame];
+  const k = standH / STD_STAND_H;
+  const h = Math.round(f.h * k);
+  return (
+    <span
+      aria-hidden="true"
+      className={`ct-pose${className ? ` ${className}` : ''}`}
+      style={{
+        width: Math.round(f.w * k),
+        height: h,
+        backgroundImage: `url(${HERO_URL})`,
+        backgroundSize: `${STD_ATLAS_SIZE.w * k}px ${STD_ATLAS_SIZE.h * k}px`,
+        backgroundPosition: `${-f.x * k}px ${-f.y * k}px`,
+      }}
+    />
+  );
+};
+
+/** the real level, still: gen2 1-1 as the game draws it (Pokey over the logs, a mushroom and petals), 28 KB */
+const STILL_URL = new URL('../assets/ui/ctest-1-1.webp', import.meta.url).href;
 
 /**
- * what has tripped testers up so far (the control tests and QA, 2026-10): the fixes are habits, so they go on the front door. Only what
- * 1-1 has (run, jump, double jump, the mushroom: the lead, 11-06); no vines, kicks or animals, which the level does not have
+ * 1-1's moves, each a painted Pokey pose on a little card with what to do (the tips folded in: the lead and Matt, 11-06). Only what 1-1
+ * has: no vines, kicks or animals.
  */
-export const TIPS: readonly string[] = [
-  'Keep your thumb on the screen to keep running. Lifting it stops Pokey.',
-  'Jump with a quick flick, not a slow drag. A slow slide up does not jump.',
-  'Tall steps need a double jump: flick up, then flick up again while he is in the air.',
-  'For a long jump, keep sliding forward as you flick up, and flick close to the edge.',
-  'Land on a mushroom to bounce up high. Steer in the air to aim where you land.',
+export const MOVES: ReadonlyArray<{ frame: string; name: string; how: string }> = [
+  { frame: 'run_3', name: 'Run', how: 'Slide your thumb sideways. Keep it down to keep running.' },
+  { frame: 'rise', name: 'Jump', how: 'A quick flick up and forward, close to the edge. Not a slow drag.' },
+  { frame: 'tumble', name: 'Double jump', how: 'Flick up again in the air, for tall steps and wide gaps.' },
+  { frame: 'spring_launch', name: 'Mushroom bounce', how: 'Land on a mushroom to spring up high. Steer to aim.' },
 ];
 
 /** a numbered step on the front door: a little gold token */
@@ -120,37 +133,30 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
   return (
     <Scene label="Level test">
       <form onSubmit={go}>
-        <FreshBuild />
-        <p className="ct-kicker">Level test</p>
-        <Plaque as="h1" className="ct-title">Pokey's new level</Plaque>
-        {/* the big step: a carved NEW badge */}
-        <div className="ct-new" role="note">
-          <span className="ct-new-tag">NEW</span>
-          <span className="ct-new-t">
-            <b>Brand-new levels</b>
-            <small>Every run is different, so playing a few times helps the most.</small>
-          </span>
+        {/* the hero: the real level, Pokey big in front of it, the NEW tag on its corner */}
+        <div className="ct-hero">
+          <img className="ct-hero-still" src={STILL_URL} alt="Pokey jumping over mossy logs in the new level" draggable={false} />
+          <span className="ct-new-tag ct-hero-new">NEW</span>
+          <HeroPose frame="cheer_a" h={150} className="ct-hero-pokey" />
         </div>
-        <p className="ct-p">Help test it! One level, about three minutes. Play however feels natural: thumbs, one finger, upright or sideways. There's no wrong way.</p>
+        <p className="ct-kicker">Level test · Brand-new levels</p>
+        <Plaque as="h1" className="ct-title">Pokey's new level</Plaque>
+        <p className="ct-p ct-lead">One level, about 3 minutes. Every run is different.</p>
+        <FreshBuild />
 
-        <Head>The controls</Head>
-        <div className="ct-tiles">
-          {CONTROLS.map(([kind, verb, what]) => (
-            <div key={what} className="ct-tile">
-              <GestureGlyph kind={kind} size={52} />
-              <b>{verb}</b>
-              <small>{what}</small>
+        <Head>The moves</Head>
+        <div className="ct-moves">
+          {MOVES.map((m) => (
+            <div key={m.name} className="ct-move">
+              <span className="ct-move-pic">
+                <HeroPose frame={m.frame} h={80} />
+              </span>
+              <span className="ct-move-t">
+                <b>{m.name}</b>
+                <small>{m.how}</small>
+              </span>
             </div>
           ))}
-        </div>
-
-        <div className="ct-ledger ct-tips">
-          <p className="ct-tips-h">Tips (what trips people up)</p>
-          <ul>
-            {TIPS.map((t) => (
-              <li key={t}>{t}</li>
-            ))}
-          </ul>
         </div>
 
         <Head>Get started</Head>
@@ -324,8 +330,13 @@ export const ControlTestDone: React.FC<{ onAgain: () => void; stretches?: string
   );
   return (
     <Scene label="Level test: thank you">
-      <p className="ct-kicker">Level test</p>
-      <Plaque as="h1" className="ct-title">{sent ? 'Sent. Thank you!' : 'Thank you!'}</Plaque>
+      <div className="ct-done-head">
+        <span className="ct-done-t">
+          <p className="ct-kicker">Level test</p>
+          <Plaque as="h1" className="ct-title">{sent ? 'Sent!' : 'Thank you!'}</Plaque>
+        </span>
+        <HeroPose frame={sent ? 'cheer_b' : 'cheer_a'} h={96} className="ct-done-pokey" />
+      </div>
       {!sent ? (
         <>
           <p className="ct-p">You're done! Three quick taps help Matt a lot. The rest are up to you.</p>
@@ -345,7 +356,7 @@ export const ControlTestDone: React.FC<{ onAgain: () => void; stretches?: string
           </button>
         </>
       ) : (
-        <p className="ct-p">You can close this page now, or play again. Every run is a new level, and every run helps.</p>
+        <p className="ct-p">Thank you! You can close this page now, or play again. Every run is a new level, and every run helps.</p>
       )}
       <button type="button" onClick={onAgain} className={`gx-plank ct-board${sent ? ' gx-plank-gold' : ''}`}>
         Play again (a new level)

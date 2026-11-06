@@ -79,11 +79,15 @@ test('ctest survey: Send waits for the three required answers, and only those', 
   assert.equal(readyToSend({ hard: ['Running'], tips: ['Yes'], next: ['Yes'] }), false);
 });
 
-test("ctest survey: the front page's tips are only what 1-1 has (no vines, kicks or animals)", async () => {
-  const { TIPS } = await import('./ControlTestGate.tsx');
-  assert.equal(TIPS.length, 5);
-  for (const t of TIPS) assert.ok(!/vine|kick|punch|animal|snake|swing/i.test(t), t);
-  assert.ok(TIPS.some((t) => /mushroom/i.test(t)));
+test("ctest survey: the front page's moves are only what 1-1 has (run, jump, double jump, the mushroom), each a real pose of Pokey's sheet", async () => {
+  const { MOVES } = await import('./ControlTestGate.tsx');
+  const { STD_FRAMES } = await import('../game/heroStandardData.ts');
+  assert.deepEqual(MOVES.map((m) => m.name), ['Run', 'Jump', 'Double jump', 'Mushroom bounce']);
+  for (const m of MOVES) {
+    assert.ok(STD_FRAMES[m.frame], `${m.frame} is on the sheet`);
+    assert.ok(!/vine|kick|punch|animal|snake|swing/i.test(m.how), m.how);
+    assert.ok(m.how.length <= 70, `${m.name}: one short line`);
+  }
 });
 
 test('ctest survey: the row keeps the old keys in their old shape, adds the new ones, and leaves a skipped one out', () => {
