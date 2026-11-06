@@ -326,7 +326,9 @@ export interface Socket {
 /** one sub-block: its versions (each its own pieces and sockets); every version must leave the same piece keys the rest refers to */
 export interface SubBlock {
   id: string;
-  versions: Array<{ id: string; pieces: SectionPiece[]; sockets?: Socket[]; weight?: number }>;
+  /** `easy`: the id of the version Easy lays in this one's place (the designer's §8.7 amendment, 11-06: on Easy every double gap block is
+   *  a rise, its "easy-" twin, same beats); `easyOnly`: never drawn, laid only as another version's twin */
+  versions: Array<{ id: string; pieces: SectionPiece[]; sockets?: Socket[]; weight?: number; easy?: string; easyOnly?: boolean }>;
 }
 
 /** a puzzle room inside a section: the puzzle kit's RoomSpec with its anchors on the section's own pieces (by key) */

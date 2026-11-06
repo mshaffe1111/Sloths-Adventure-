@@ -722,12 +722,20 @@ export interface LayLocalOptions {
  * weighted by `weight`, without putting back) and the first in it this world has not used yet (WorldOnce: the one used longest ago
  * when all have been). Draws nothing for a section with no sub-blocks, so such sections lay exactly as they did before.
  */
-export function chooseVersions(tpl: SectionTemplate, rng: Rng, once?: WorldOnce<string>, fixed?: Readonly<Record<string, string>>): Record<string, string> {
+/** every combination of a section's drawable sub-block versions (an Easy-only twin is not one), in the sub-blocks' own order */
+export function versionCombos(tpl: SectionTemplate): Array<Record<string, string>> {
+  let out: Array<Record<string, string>> = [{}];
+  for (const sb of tpl.subBlocks ?? []) out = out.flatMap((c) => sb.versions.filter((x) => !x.easyOnly).map((x) => ({ ...c, [sb.id]: x.id })));
+  return out.slice(0, 16);
+}
+export function chooseVersions(tpl: SectionTemplate, rng: Rng, once?: WorldOnce<string>, fixed?: Readonly<Record<string, string>>, easy = false): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const sb of tpl.subBlocks ?? []) {
+  for (const sb0 of tpl.subBlocks ?? []) {
+    // (an Easy-only twin is never drawn: it is laid only in its version's place, on Easy, below)
+    const sb = { ...sb0, versions: sb0.versions.filter((x) => !x.easyOnly) };
     if (!sb.versions.length) throw new Error(`gen2 section ${tpl.id}: sub-block ${sb.id} has no versions`);
     const want = fixed?.[sb.id];
-    let v = want === undefined ? undefined : sb.versions.find((x) => x.id === want);
+    let v = want === undefined ? undefined : sb0.versions.find((x) => x.id === want);
     if (want !== undefined && !v) throw new Error(`gen2 section ${tpl.id}: sub-block ${sb.id} has no version ${want}`);
     if (v) once?.use(versionKey(tpl.id, sb.id, v.id));
     else {
@@ -739,6 +747,12 @@ export function chooseVersions(tpl: SectionTemplate, rng: Rng, once?: WorldOnce<
         left.splice(left.indexOf(p), 1);
       }
       v = once ? once.pick(order, (x) => versionKey(tpl.id, sb.id, x.id))! : order[0];
+    }
+    // (Easy lays a version's named twin in its place: the plan keeps Normal's version, so Easy is still Normal's stage, its gap a rise)
+    if (easy && v.easy) {
+      if (!sb0.versions.some((x) => x.id === v!.easy)) throw new Error(`gen2 section ${tpl.id}: sub-block ${sb.id} version ${v.id}'s Easy twin ${v.easy} is not one of its versions`);
+      out[sb.id] = v.easy;
+      continue;
     }
     out[sb.id] = v.id;
   }
@@ -768,7 +782,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     const v = Math.min(1, s === undefined ? 0.5 + 0.3 * budget.heat + 0.1 * rng() : roll(rng, s));
     return T ? Math.min(T.gapMax, v * T.gap) : v;
   };
-  const versions = chooseVersions(tpl, lo.pickRng ?? rng, lo.once, lo.versions);
+  const versions = chooseVersions(tpl, lo.pickRng ?? rng, lo.once, lo.versions, budget.difficulty === 'easy');
   const chosen = (tpl.subBlocks ?? []).map((sb) => sb.versions.find((v) => v.id === versions[sb.id])!);
   const all: SectionPiece[] = [...tpl.pieces, ...chosen.flatMap((v) => v.pieces)];
   const sockets: Socket[] = [...tpl.sockets, ...chosen.flatMap((v) => v.sockets ?? [])];
@@ -2670,6 +2684,7 @@ function buildRolled(req: BuildRequest): Gen2Stage {
   let best: Gen2Stage | null = null;
   const maxRerolls = req.maxRerolls ?? 6;
   const failedAt = new Map<string, number>();
+  const versionTries = new Map<string, Set<string>>();
   if (req.difficulty === 'easy') {
     // Easy is Normal's stage under Easy's rules: Normal is built first (its repairs, swaps and length loop), and Easy lays exactly its
     // plan from its seed. Easy's own repairs are only the local ones (a stone, a stray pickup or animal); its clock is held to the
@@ -2761,6 +2776,24 @@ function buildRolled(req: BuildRequest): Gen2Stage {
         if (v.swap !== undefined && b.laid.plan[v.swap] && required.has(b.laid.plan[v.swap].template)) {
           repairs.push({ kind: 'reroll', note: `${b.laid.plan[v.swap].template} is required here and failed: rolled again` });
           break;
+        }
+        // (a section whose laid exit left the corridor is first re-laid at its slot with its other versions, one by one: the version
+        // took it out, not the section (1-1 seed 5 under Round 10: the level 'short' of quiet-arrival fit where its 'step' did not, and
+        // banning the template threw "no section fits the goal"). Only with every version tried is it swapped out as before)
+        if (v.swap !== undefined && b.laid.plan[v.swap] && /outside the corridor/.test(v.why ?? '')) {
+          const slot = b.laid.plan[v.swap];
+          const t = byId.get(slot.template);
+          const key = `${v.swap}:${slot.template}`;
+          const triedV = versionTries.get(key) ?? new Set([JSON.stringify(slot.versions ?? {})]);
+          const next = t ? versionCombos(t).find((c) => !triedV.has(JSON.stringify(c))) : undefined;
+          if (next) {
+            triedV.add(JSON.stringify(next));
+            versionTries.set(key, triedV);
+            repairs.push({ kind: 'swap', section: `s${v.swap + 1}`, note: `${slot.template} re-laid with versions ${Object.values(next).join(', ')}: ${v.why}` });
+            plan = b.laid.plan.map((p, k) => (k === v.swap ? { ...p, versions: next } : p));
+            open = new Set();
+            continue;
+          }
         }
         if (v.swap !== undefined && b.laid.plan[v.swap]) {
           const tpl = b.laid.plan[v.swap].template;
