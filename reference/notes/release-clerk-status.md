@@ -3,7 +3,7 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 6:05 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 5:59 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
 
 ## 5:45 PM: ready for the final (the lead's 5:31 order) + funcheck on the candidate shape
 - Order at the final: merge engine-core -> `old11-delete.py` -> vite build, `lazy-seeds.py` only if main JS > 4 MiB -> `release-prep.py`
@@ -135,12 +135,12 @@ Build the test link from bf3684ec. Commits after it on this branch are notes onl
   What's New, funcheck's list from main (release-prep.py; roadmap needed no edit: the final already cites engine-core/NEXT.md).
 - tsc PASS. seedList, whatsNew, buildAhead tests: 10/10 pass. vite build PASS: main JS 4,162,639 B (31.7 KB under 4 MiB), no file over
   4 MiB, so **lazy-seeds.py NOT applied** (the lead's rule).
-- The full gate on bf3684ec (a detached worktree at that commit), so far (6:05 PM ET):
+- The full gate on bf3684ec (a detached worktree at that commit), so far (5:59 PM ET, from date):
 
 | # | Gate | Result on bf3684ec |
 |---|---|---|
 | 1 | tsc | **PASS** (no output) |
-| 2 | tests, 3 shards | RUNNING (started 5:59 PM, ~30-40 min) |
+| 2 | tests, 3 shards | RUNNING (started 5:57 PM, ~30-40 min) |
 | 3 | vite build, no asset over 4 MiB | **PASS**: main JS 4,162,883 B (31.4 KB under 4 MiB); 0 files over 4 MiB |
 | 4 | npm run build:store | **PASS**: "Store build check passed: dist has no tracking, ads, collector, service worker or outside addresses." (main JS 4,161,697 B) |
 | 5 | artcheck | **PASS** |
