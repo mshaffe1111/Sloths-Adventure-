@@ -3,7 +3,15 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 4:00 PM ET (shards 2 and 3 in); before that 3:38 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 4:29 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+
+## 4:29 PM: check-in
+- engine-core still 5e221f9d (18:56 UTC), so the trial results below stand: nothing re-run. release-0.9.5 is at 45796509 (main + lockall.ts,
+  the main lock, the notes); nothing merged into it yet, by design (the final comes at 6:00).
+- The lead branch (4b1016c2, 46bc6804) matches my notes: 1-5 out, 4-9 held, no new todo; the planner proves the 1-6/5-9 bot moves are
+  checker-only by 4:30 (requiredMove 1-6 and firstTimerBot 5-9 in my red list); soft floors under the floorless spots by 5:30 (w1Pits
+  "1-1: 11 floorless gaps").
+- Ready for 6:00: the old-1-1 deletion patch, funknown.json from main, the roadmap NEXT.md fix, the What's New entry and the version bump.
 
 ## 4:00 PM: the new timetable (the lead, 3:58 PM)
 - engine-core's final commit is due 6:00 PM ET (it brings engine-chunks and the planner's bb55a0a7). I run the full gate on the candidate
