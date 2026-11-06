@@ -128,6 +128,21 @@ Last update: 6:22 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3
   (gen2 1-1's flags move to rolledFlags.test, on your 2:37 PM ruling). That narrows three tests' scope: for your Law 5 check when you
   pass engine-chunks (the replacement tests exist and are planted both ways, per its message; I have not verified that yet).
 
+## >>> 6:32 PM ET: GATE RED on bf3684ec (PR #63): pitPocket.test.ts:21 <<<
+(This note is on branch release-0.9.5-notes, the lead's 6:32 PM order: nothing more is pushed to release-0.9.5.)
+- **RED, a real failure (merge interaction):** `src/game/pitPocket.test.ts:21` "gen2 1-1 Roll B's dip pockets are found (x 3671, 4070, ...)"
+  -> `AssertionError: 2003 2387 5155 6289 10207 13051 14551 15805 16672 24583`. tester-page 4320a9b25 pinned the test to Roll B's pockets at
+  x 3671 and 4070 with Roll B = seed 110867 (its testlink1_1.json). engine-core's final changed the rolls to A 172, B 15458, C 26525, so Roll
+  B is another stage and those pockets don't exist. The pocket code may be fine: the test's pinned x values are stale. Fix (tester-page or
+  engine-core): re-pin the test to a seed on the final's proven list (the lead: "any test pinned to Roll B must move to a proven seed"),
+  with the pockets that seed really has, and show it still fails when the pocket rule is broken. Then the candidate needs a new commit:
+  bf3684ec cannot pass.
+- Shards on bf3684ec: shard 1 775 tests, 773 pass, **1 fail (pitPocket)**, 1 todo (w4Runtime, on main already); shard 2 863, 862 pass,
+  **1 fail (stageQuality:287 timing, p90 613 ms, run under full CPU load: re-running alone now)**; shard 3 828, 827 pass, 0 fail, 1 todo
+  (w4RealReach 4-3, on main already). No new todo: the gen2 1-1 double-gap todo is gone.
+- **Lock: `lock: 101/102 stages unchanged`, only 1-1** (exit 1 only because the run had no `--intended 1-1`; re-running with it).
+- clipcheck and drawcheck: starting now.
+
 ## >>> 6:22 PM ET: the release is ON again (the lead, 6:20 PM) <<<
 - Matt played bf3684ec 5 times, "felt great", wants it released and merged (relayed by the lead). funcheck ships as a NAMED, ACCEPTED
   FAIL on the lead's ruling (dead walk inside the 4 s quiet line; nothing bites = ruling A, a forgiving teaching stage; no gentle intro
