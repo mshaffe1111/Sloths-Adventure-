@@ -27,9 +27,9 @@ import { cosine } from '../inspect/analyze.ts';
 import { looksAlike } from '../inspect/lookalike.ts';
 import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
-import { setPick11 } from '../../src/game/testlink1_1.ts';
+import { roll11Seed, setPick11 } from '../../src/game/testlink1_1.ts';
 import { cameraReachBreaches } from '../../src/game/cameraReach.ts';
-import { endAboveWindow, seedPromise } from '../../src/game/storyChecks.ts';
+import { endAboveWindow, rawTextIds, seedPromise } from '../../src/game/storyChecks.ts';
 import { stageVariety, varietyBreaches, VARIETY_BARS } from '../../src/game/stageVariety.ts';
 import { buildGen2Stage } from '../../src/game/gen2/pipeline.ts';
 import { w1World } from '../../src/game/gen2/worlds/w1.ts';
@@ -57,12 +57,22 @@ const spec = id ? specFor(id) : undefined;
 if (!spec) { console.error(`stage.ts: no spec for "${id}" (mixer/stages.ts SPECS)`); process.exit(2); }
 const levels = generateAllLevels();
 const cfg = levels.find((l) => l.id === id)!;
+// (fail-closed, the red team's RT-ENGINE #1: every build this run measures is the picked roll, or the run stops here; every child process
+// below gets the pick and reports the seed it built, and one that cannot is a FAIL, never a pass on the mixer's 1-1)
+const gen2Of = <T,>(st: unknown): T | undefined => { const q = st as { gen2?: T; proto?: { gen2?: T } }; return q.gen2 ?? q.proto?.gen2; };
+const ROLL_SEED = ROLL ? roll11Seed(ROLL as 'A' | 'B' | 'C') : null;
+if (ROLL) {
+  for (const easy of [false, true]) {
+    const got = gen2Of<{ seed?: number }>(buildRoll(cfg, 1, easy))?.seed;
+    if (got !== ROLL_SEED) { console.error(`stage.ts --roll ${ROLL}: the ${easy ? 'Easy' : 'Normal'} build measured seed ${got ?? 'none (not gen2)'}, not ${ROLL_SEED}: stopped`); process.exit(1); }
+  }
+}
+const ROLL_ENV = ROLL ? { ...process.env, STAGE_ROLL: ROLL, STAGE_SEED: String(ROLL_SEED) } : process.env;
 type Gate = { name: string; pass: boolean; detail: string[] };
 const gates: Gate[] = [];
 const linesShown: string[] = [];
 const gate = (name: string, detail: string[], pass = detail.length === 0) => { gates.push({ name, pass, detail }); process.stderr.write(`${name}: ${pass ? 'PASS' : 'FAIL'}\n`); };
 /** gen2's own record on a built stage: st.gen2 (gen2's Gen2Stage), proto.gen2 (the game's stage); undefined on a mixer stage */
-const gen2Of = <T,>(st: unknown): T | undefined => { const q = st as { gen2?: T; proto?: { gen2?: T } }; return q.gen2 ?? q.proto?.gen2; };
 const range = (v: number[]) => (v.length ? `${Math.min(...v).toFixed(0)}-${Math.max(...v).toFixed(0)}` : '-');
 
 // 1. the spec
@@ -106,8 +116,20 @@ const notMeasured: string[] = [];
 if (ref?.view) {
   const tmp = fs.mkdtempSync('/tmp/stage-runs-');
   const dumpFile = path.join(tmp, 'dump.json');
-  const d = spawnSync('npx', ['tsx', 'tools/engine/runs/dump.ts', process.cwd(), 'mix', id, String(N)], { encoding: 'utf8', maxBuffer: 1 << 30 });
+  const TAG = ROLL ? `roll${ROLL}` : 'mix';
+  const d = spawnSync('npx', ['tsx', 'tools/engine/runs/dump.ts', process.cwd(), TAG, id, String(N)], { encoding: 'utf8', maxBuffer: 1 << 30, env: ROLL_ENV });
   fs.writeFileSync(dumpFile, d.stdout);
+  // (the dump's rows: one per layout and setting, each the stage asked for; under --roll each must have built the picked seed)
+  const dumpBad: string[] = [];
+  try {
+    const rows = JSON.parse(d.stdout || '[]') as Array<{ layout: number; setting: string; roll?: string | null; gen2Seed?: number | null; error?: string }>;
+    if (rows.length !== N * 2) dumpBad.push(`the dump has ${rows.length} rows, not ${N * 2}`);
+    for (const r of rows) {
+      if (r.error) dumpBad.push(`dump ${r.setting} ${r.layout}: ${r.error}`);
+      else if (ROLL && (r.roll !== ROLL || r.gen2Seed !== ROLL_SEED)) dumpBad.push(`dump ${r.setting} ${r.layout}: built ${r.gen2Seed ?? 'the mixer (no gen2 seed)'}, not Roll ${ROLL} (seed ${ROLL_SEED})`);
+    }
+  } catch { dumpBad.push(`the dump printed no rows (exit ${d.status}): ${(d.stderr ?? '').slice(0, 160)}`); }
+  if (dumpBad.length) gate(`stage lines: the dump measured the stage asked for (${TAG})`, dumpBad.slice(0, 6));
   const py = (script: string, extra: string[] = [], cwd = process.cwd()) => spawnSync('python3', ['-I', path.resolve(script), ...extra, dumpFile], { encoding: 'utf8', cwd }).stdout ?? '';
   const layout = py('tools/engine/runs/layout.py', [path.resolve('reference/engine/cp1')]);
   const support = py('tools/engine/runs/support.py');
@@ -119,7 +141,7 @@ if (ref?.view) {
   const line = (what: string, v: number, ok: (x: number) => boolean, want: string) => { if (Number.isNaN(v)) bad.push(`${what}: not measured (the tool printed no value)`); else if (!ok(v)) bad.push(`${what}: ${v}, line ${want}`); return `${what} ${v}`; };
   const shown: string[] = [];
   for (const set of ['normal', 'easy']) {
-    const row = layout.split('\n').find((l) => l.includes(`mix ${id} ${set}: upright pickups`)) ?? '';
+    const row = layout.split('\n').find((l) => l.includes(`${TAG} ${id} ${set}: upright pickups`)) ?? '';
     const V = ref.view;
     shown.push(line(`${set} upright pickups`, num(row, /upright pickups (\d+)/), (x) => x <= V.pickupsUpright, `<= ${V.pickupsUpright}`));
     shown.push(line(`${set} sideways pickups`, num(row, /sideways pickups (\d+)/), (x) => x <= V.pickupsSideways, `<= ${V.pickupsSideways}`));
@@ -128,11 +150,11 @@ if (ref?.view) {
     shown.push(line(`${set} upright standing kinds`, num(row, /upright standing kinds (\d+)/), (x) => x <= V.standingKinds, `<= ${V.standingKinds}`));
     shown.push(line(`${set} sideways standing kinds`, num(row, /sideways standing kinds (\d+)/), (x) => x <= V.standingKinds, `<= ${V.standingKinds}`));
     shown.push(line(`${set} upright views with play in the upper half`, num(row, /upper half ([\d.]+)/), (x) => x >= V.upperHalfMin, `>= ${V.upperHalfMin}`));
-    const sup = support.split('\n').find((l) => l.startsWith(`mix ${id} ${set}: float`)) ?? '';
+    const sup = support.split('\n').find((l) => l.startsWith(`${TAG} ${id} ${set}: float`)) ?? '';
     if (ref.floatMax !== undefined) shown.push(line(`${set} float share`, num(sup, /float ([\d.]+)/), (x) => x <= ref.floatMax!, `<= ${ref.floatMax}`));
-    const ide = ideas.split('\n').find((l) => l.startsWith(`mix ${id} ${set}: tagger ideas`)) ?? '';
+    const ide = ideas.split('\n').find((l) => l.startsWith(`${TAG} ${id} ${set}: tagger ideas`)) ?? '';
     if (ref.ideasMin !== undefined) shown.push(line(`${set} ideas`, num(ide, /tagger ideas median (\d+)/), (x) => x >= ref.ideasMin!, `>= ${ref.ideasMin}`));
-    const m2l = m2.split('\n'); const mi = m2l.findIndex((l) => l.startsWith(`== mix ${id} ${set}:`)); const mrow = mi >= 0 ? m2l[mi + 1] : '';
+    const m2l = m2.split('\n'); const mi = m2l.findIndex((l) => l.startsWith(`== ${TAG} ${id} ${set}:`)); const mrow = mi >= 0 ? m2l[mi + 1] : '';
     const up = num(mrow, /up=(\d+)/), flat = num(mrow, /flat=(\d+)/), down = num(mrow, /down=(\d+)/);
     if (ref.upDownMin !== undefined) shown.push(line(`${set} landings up or down`, Math.round(((up + down) / (up + flat + down)) * 1000) / 1000, (x) => x >= ref.upDownMin!, `>= ${ref.upDownMin}`));
     if (ref.newEveryPxMax !== undefined) shown.push(line(`${set} something new every (px, mean)`, num(mrow, /newMeanPx=(\d+)/), (x) => x <= ref.newEveryPxMax!, `<= ${ref.newEveryPxMax}`));
@@ -278,6 +300,14 @@ if (fs.existsSync(OLD_FILE)) {
     one(rolls, `gen2 1-1, ${rolls.length} of 16 rolls built`);
     if (threw.length) linesShown.push(`variety, gen2 1-1: ${threw.length} rolls did not build: ${threw.join('; ')}`);
   }
+}
+
+// 5c'-sees. what the player sees (the red team, RT-ENGINE #1: Dot said "hint.1-1.double" on gen2 rolls): every line the stage puts on screen
+// is words, never a raw text id (storyChecks.ts rawTextIds), every layout, both settings
+{
+  const bad: string[] = [];
+  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) for (const b of rawTextIds(buildRoll(cfg, v, setting === 'easy') as never).slice(0, 3)) bad.push(`${setting} ${v}: ${b}`);
+  gate(`what the player sees: Dot's lines are words, no raw text id (${N} layouts x 2)`, bad);
 }
 
 // 5c'-story. two of 1-1's story promises (storyChecks.ts; Round 6, the supervisor's PASS, the lead 11-05 9:40 PM): V19b, the end log higher
@@ -432,7 +462,10 @@ const codeRows: string[] = [];
 // 6. the stage's own tests
 const [w, m] = id.split('-');
 const testFile = `src/game/stage${w}${m}.test.ts`;
-if (fs.existsSync(testFile)) {
+// (under --roll the stage's own tests cannot measure the roll: stage11.test.ts builds the mixer's 1-1 with buildProtoStage, whatever the
+// pick; run, they would pass or fail the mixer for the roll. Fail-closed: a FAIL that says so, never the mixer's result)
+if (ROLL) gate(`tests (${testFile})`, [`${testFile} builds the mixer's ${id} (buildProtoStage), not Roll ${ROLL} (seed ${ROLL_SEED}): not measured on the roll`], false);
+else if (fs.existsSync(testFile)) {
   const t = spawnSync('npx', ['tsx', '--test', testFile], { encoding: 'utf8' });
   const fails = (t.stdout ?? '').split('\n').filter((l) => l.startsWith('not ok')).map((l) => l.replace(/^not ok \d+ - /, ''));
   gate(`tests (${testFile})`, fails, t.status === 0);
@@ -454,18 +487,23 @@ if (!process.argv.includes('--no-stills')) {
     await new Promise((r) => setTimeout(r, 1200));
     fs.rmSync(stillsDir, { recursive: true, force: true });
     const pw = process.env.PW ?? '/opt/node-tools/node_modules/playwright/index.mjs';
-    const shot = spawnSync('node', ['tools/engine/runs/stills-at.mjs', String(port), stillsDir, id, id, '1', ...spots.map(([, x, pick]) => `${Math.round(x)}:${pick}`)], { encoding: 'utf8', env: { ...process.env, PW: pw } });
+    const shot = spawnSync('node', ['tools/engine/runs/stills-at.mjs', String(port), stillsDir, id, id, '1', ...spots.map(([, x, pick]) => `${Math.round(x)}:${pick}`)], { encoding: 'utf8', env: { ...ROLL_ENV, PW: pw } });
     server.kill();
     const wrote = (shot.stdout ?? '').split('\n').filter((l) => l.startsWith('wrote')).length;
     const errs = (shot.stdout ?? '').split('\n').filter((l) => l.startsWith('ERR'));
     for (const [name, x] of spots) stillsDone.push(`${name}: x ${Math.round(x)}`);
-    gate(`stills (${wrote} of ${spots.length * 2}, layout 1 Normal, upright and sideways, in ${stillsDir})`, [...(wrote === spots.length * 2 ? [] : [`${wrote} of ${spots.length * 2} written`]), ...errs]);
+    // (under --roll: both views must say they built the picked seed, ROLL-SEED <seed> <view>; a missing or other seed is a FAIL)
+    const seeds = (shot.stdout ?? '').split('\n').filter((l) => l.startsWith('ROLL-SEED'));
+    const rollBad = ROLL ? (['upright', 'sideways'].every((v) => seeds.includes(`ROLL-SEED ${ROLL_SEED} ${v}`)) ? [] : [`the stills did not build Roll ${ROLL} (seed ${ROLL_SEED}) in both views: ${seeds.join('; ') || 'no ROLL-SEED line'}`]) : [];
+    gate(`stills (${wrote} of ${spots.length * 2}, layout 1 Normal, upright and sideways, in ${stillsDir})`, [...rollBad, ...(wrote === spots.length * 2 ? [] : [`${wrote} of ${spots.length * 2} written`]), ...errs]);
   }
   fs.rmSync(dist, { recursive: true, force: true });
 }
 
 // the report
 const notRun = [...(process.argv.includes('--no-stills') ? ['stills (--no-stills)'] : []), 'stage map (no tool exists)', ...notMeasured];
+// (fail-closed under --roll: whatever was not measured on the roll is a FAIL by name, never a gap in a pass)
+if (ROLL) for (const n of notRun) gate(`not measured on Roll ${ROLL}: ${n}`, [`NOT RUN on the roll (seed ${ROLL_SEED})`], false);
 const md = [`# ${id} ${spec.name}: stage report`, '', `\`npx tsx tools/engine/stage.ts ${id} --layouts ${N} --neighbours ${NB}\`, ${new Date().toISOString()}`, '',
   '| Gate | Result | Detail |', '|---|---|---|',
   ...gates.map((g) => `| ${g.name} | ${g.pass ? 'PASS' : '**FAIL**'} | ${g.detail.slice(0, 6).join('; ').replace(/\|/g, '/') || '-'}${g.detail.length > 6 ? `; and ${g.detail.length - 6} more` : ''} |`),

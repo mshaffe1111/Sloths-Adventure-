@@ -31,3 +31,19 @@ export function seedPromise(st: StageLike): string[] {
   if (!st.platforms.some((p) => p.type === 'bouncy' && Math.abs(p.x - s.x) < 260 && p.y > s.y)) out.push(`no mushroom within 260 px below the seed at x ${Math.round(s.x)}`);
   return out;
 }
+
+/** a text id (dot.separated, no spaces: "hint.1-1.double", "coach.nice"): never words a player should see */
+const RAW_ID = /^[a-z][\w-]*(\.[\w-]+)+$/i;
+/**
+ * What the player sees (the red team, RT-ENGINE.md #1, 11-05: Dot said "hint.1-1.double" on gen2 rolls): every line the stage will put on
+ * screen (its hints: Dot's stage lines, each with its pad and keys wording) is words, never a raw text id. Empty: all words
+ */
+export function rawTextIds(st: { proto?: { hints?: ReadonlyArray<{ x: number; text: string; pad?: string; keys?: string }> } }): string[] {
+  const out: string[] = [];
+  for (const h of st.proto?.hints ?? []) {
+    for (const [k, v] of [['text', h.text], ['pad', h.pad], ['keys', h.keys]] as const) {
+      if (typeof v === 'string' && RAW_ID.test(v.trim())) out.push(`Dot's line at x ${Math.round(h.x)} shows the raw id "${v}" (${k}), not words`);
+    }
+  }
+  return out;
+}

@@ -1,3 +1,4 @@
+import { setPick11 } from './game/testlink1_1.ts';
 import { handleBack } from './components/nav/backStack.ts';
 import { PerfReadout } from './components/PerfReadout.tsx';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
@@ -680,6 +681,8 @@ export default function App() {
 
   // dev only: jump straight into any level (for testing and screenshots); `layout` picks a roll (the designed one when left out)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
+    // (and the test link's 1-1 pick, for a still of a picked roll: stage.ts --roll, tools/engine/runs/stills-at.mjs; TEST-LINK ONLY)
+    (window as unknown as { __setPick11?: typeof setPick11 }).__setPick11 = setPick11;
     (window as unknown as { __play?: (id: string, layout?: number) => void }).__play = (id: string, layout?: number) => {
       const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : allLevels.find((l) => l.id === id);
       if (lvl) {
