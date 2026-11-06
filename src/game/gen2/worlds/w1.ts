@@ -1368,9 +1368,9 @@ const R6_KIND: Record<string, [W1Content, W1Terrain]> = { 'w1-home-banks': ['str
  * (t 0.1, before any block), the move's line on the take-off piece of its first gap of that kind. The bounce is the lesson card's
  * (lesson.bounce), no Dot line. The old teach sockets are replaced, never doubled
  */
-const TEACH_LINES: Partial<Record<string, { entry: string; take: string; gap: (pl: SectionPiece['place']) => boolean }>> = {
+const TEACH_LINES: Partial<Record<string, { entry: string; take?: string; gap: (pl: SectionPiece['place']) => boolean }>> = {
   jump: { entry: 'coach.jump', take: 'hint.1-1.gaps', gap: (pl) => pl.kind === 'jump' || (pl.kind === 'pit' && pl.jump === 'jump') },
-  double: { entry: 'coach.nice', take: 'hint.1-1.double', gap: (pl) => pl.kind === 'double' || (pl.kind === 'pit' && pl.jump === 'double') },
+  double: { entry: 'hint.1-1.double', gap: (pl) => pl.kind === 'double' || (pl.kind === 'pit' && pl.jump === 'double') },
 };
 const TEACH_IDS = new Set(['coach.jump', 'hint.1-1.gaps', 'coach.nice', 'hint.1-1.double']);
 function teachLines(q: W1Section): W1Section {
@@ -1382,7 +1382,7 @@ function teachLines(q: W1Section): W1Section {
     const keep = (v.sockets ?? []).filter((k) => !(k.role === 'tip' && (k.allow ?? []).some((a) => TEACH_IDS.has(a))));
     const first = v.pieces.find((pc) => L.gap(pc.place));
     const take = first && 'after' in first.place ? first.place.after : undefined;
-    const lines: Socket[] = [{ id: 'teach-entry', role: 'tip', on: 'in', t: 0.1, allow: [L.entry] }, ...(take ? [{ id: 'teach-take', role: 'tip', on: take, t: 0.4, allow: [L.take] } as Socket] : [])];
+    const lines: Socket[] = [{ id: 'teach-entry', role: 'tip', on: 'in', t: 0.1, allow: [L.entry] }, ...(take && L.take ? [{ id: 'teach-take', role: 'tip', on: take, t: 0.4, allow: [L.take] } as Socket] : [])];
     return { ...v, sockets: [...lines, ...keep] };
   });
   return { ...q, mirrorable: false, subBlocks: [{ ...sub, versions }] };

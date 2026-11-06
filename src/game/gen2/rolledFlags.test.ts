@@ -35,7 +35,7 @@ test('gen2 1-1: a flag before every hard node, 900-4000 px apart (no life to los
 test('the flag verdict both ways (planted): a hard node with no flag before it, and a long span with a lethal fall in it', () => {
   const st = { spawnX: 140, exitTotemX: 9000, checkpoints: [{ x: 1500 }, { x: 4500 }, { x: 7500 }] };
   assert.deepEqual(rolledFlagBreaches(st, [{ id: 'X', x0: 4600 }]), [], 'a flag 100 px before the test: kept');
-  assert.match(rolledFlagBreaches(st, [{ id: 'X', x0: 6400 }]).join(';'), /none before the hard node X at x 6400/);
+  assert.match(rolledFlagBreaches(st, [{ id: 'X', x0: 7000 }]).join(';'), /none before the hard node X at x 7000/);
   assert.deepEqual(rolledFlagBreaches(st, [], []), [], 'spans of 3000 px with no life to lose: kept');
   assert.match(rolledFlagBreaches(st, [], [[5000, 5200]]).join(';'), /3000 px apart at x 4500 .*a life can be lost/);
   assert.deepEqual({ max: ROLLED_FLAGS.max, lethal: ROLLED_FLAGS.lethal }, { max: 4000, lethal: 2300 });

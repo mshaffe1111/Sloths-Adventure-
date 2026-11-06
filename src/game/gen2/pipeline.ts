@@ -1042,10 +1042,11 @@ const SHRINE_BANK = 560;
  */
 export const FLAG_SPAN = { max: 4500, slack: 300, pad: 160 } as const;
 /** a rolled stage's flags (the lead's 2:37 PM ruling, 11-06, Matt's "a checkpoint before the hard part, not everywhere"): a flag before
- *  each hard node (its first section's start, within `before` px ahead of it), none closer than `min` to the one before (`first` to the
+ *  each hard node (within `before` px ahead of its first section, and laid `clear` px or more ahead of it, so the first flag's "A flag!"
+ *  lesson is done before the teach's own line: 1-1's double teach, the planner 11-06), none closer than `min` to the one before (`first` to the
  *  start), no span over `max` where nothing costs a life, `lethal` where something can (a water or void fall, a heart fall that is not
  *  soft), and the last within `last` of the exit. 1-1 costs no life anywhere, so it is about 9-12 a stage, as old 1-1 had */
-export const ROLLED_FLAGS = { first: 700, min: 900, max: 4000, lethal: 2300, last: 2000, before: 1500 } as const;
+export const ROLLED_FLAGS = { first: 700, min: 900, max: 4000, lethal: 2300, last: 2000, before: 2400, clear: 1500 } as const;
 /** the jobs a flag stands before (the lead: teach, test, twist, combine, signature; a finale with them) */
 export const HARD_JOBS: ReadonlySet<string> = new Set(['teach', 'test', 'twist', 'combine', 'signature', 'finale']);
 type FlagStage = { spawnX: number; exitTotemX: number; checkpoints?: Array<{ x: number }>; heartFalls?: Array<{ x0: number; x1: number; soft?: boolean }> };
@@ -1065,7 +1066,7 @@ export function rolledFlagBreaches(st: FlagStage, hard: ReadonlyArray<{ id: stri
     const g = xs[k] - xs[k - 1], c = cap(xs[k - 1], xs[k]);
     if (g < ROLLED_FLAGS.min || g > c) out.push(`flags: ${R(g)} px apart at x ${R(xs[k - 1])} (${ROLLED_FLAGS.min}-${c}${c === ROLLED_FLAGS.lethal ? ', a life can be lost in it' : ''})`);
   }
-  for (const h of hard) if (h.x0 - st.spawnX >= ROLLED_FLAGS.first + ROLLED_FLAGS.min && !xs.some((x) => x <= h.x0 + 150 && x >= h.x0 - ROLLED_FLAGS.before)) out.push(`flags: none before the hard node ${h.id} at x ${R(h.x0)} (within ${ROLLED_FLAGS.before} px)`);
+  for (const h of hard) if (h.x0 - st.spawnX >= ROLLED_FLAGS.first + ROLLED_FLAGS.clear && !xs.some((x) => x <= h.x0 + 150 && x >= h.x0 - ROLLED_FLAGS.before)) out.push(`flags: none before the hard node ${h.id} at x ${R(h.x0)} (within ${ROLLED_FLAGS.before} px)`);
   if (st.exitTotemX - xs[xs.length - 1] > ROLLED_FLAGS.last) out.push(`flags: the last ${R(st.exitTotemX - xs[xs.length - 1])} px from the exit (within ${ROLLED_FLAGS.last})`);
   return out;
 }
@@ -1917,10 +1918,11 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     for (const sec of laid.sections) {
       if (!hard?.has(sec.node) || seen.has(sec.node)) continue;
       seen.add(sec.node);
-      if (sec.x0 - laid.spawn.x < ROLLED_FLAGS.first + ROLLED_FLAGS.min) continue;
+      // (a hard node within first + clear of the start has the spawn for its restart: no flag fits before it)
+      if (sec.x0 - laid.spawn.x < ROLLED_FLAGS.first + ROLLED_FLAGS.clear) continue;
       let best: { x: number; y: number } | null = null;
       for (const sp of spots) {
-        const x = Math.min(sp.x1, sec.x0 + 150);
+        const x = Math.min(sp.x1, sec.x0 - ROLLED_FLAGS.clear);
         if (x < sp.x0 || x < sec.x0 - ROLLED_FLAGS.before || flagInZone(laid.zones, x, sp.y)) continue;
         if (!best || x > best.x) best = { x, y: sp.y };
       }
@@ -2628,12 +2630,9 @@ export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loos
   return st.gen2.errors;
 }
 
-export function buildGen2Stage(req: BuildRequest): Gen2Stage {
-  // (the stage's own pool, cut to its tags before anything is chosen: the red team 11-05, 1-2 would have been dealt 1-1's sections)
-  const M0 = req.kit.manifest;
-  const pool = stagePool(M0, req.config.id);
-  if (pool.length !== M0.sections.length) req = { ...req, kit: { ...req.kit, manifest: { ...M0, sections: pool } } };
-  const st = buildRolled(req);
+/** the verdicts judged on a built rolled stage by the gates' own definitions (V19b's window, a rolled stage's flags), set on its gen2 and
+ *  folded by rollErrors; Easy's Normal build gets them too, so a seed is clean on both settings or on neither (proven.test) */
+function applyVerdicts(st: Gen2Stage, req: BuildRequest): void {
   // (V19b judged on the built stage by the gate's own definition, storyChecks endAboveWindow: the slot estimate in layStage steers the lay,
   // this is the verdict, so the pipeline and stage.ts never disagree; the lead 12:57 PM, 11-06. A window start over a gap has no height:
   // a miss, as stage.ts reads it)
@@ -2647,6 +2646,15 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
     const f = rolledFlagBreaches(st, hardAt, lethalSpans(st, st.gen2.falls ?? []));
     if (f.length) st.gen2.flagMiss = f;
   }
+}
+
+export function buildGen2Stage(req: BuildRequest): Gen2Stage {
+  // (the stage's own pool, cut to its tags before anything is chosen: the red team 11-05, 1-2 would have been dealt 1-1's sections)
+  const M0 = req.kit.manifest;
+  const pool = stagePool(M0, req.config.id);
+  if (pool.length !== M0.sections.length) req = { ...req, kit: { ...req.kit, manifest: { ...M0, sections: pool } } };
+  const st = buildRolled(req);
+  applyVerdicts(st, req);
   st.gen2.errors = rollErrors(st.gen2);
   return st;
 }
@@ -2693,6 +2701,8 @@ function buildRolled(req: BuildRequest): Gen2Stage {
     // what Easy takes from Normal; the seed list's --check holds it identical to the search's Easy)
     const R = req.replay?.foes ? req.replay : undefined;
     const n = R ? undefined : buildRolled({ ...req, difficulty: 'normal' });
+    // (Normal's verdicts too, folded: Easy carries every error Normal has, the flags' and the window's with the rest)
+    if (n) { applyVerdicts(n, { ...req, difficulty: 'normal' }); n.gen2.errors = rollErrors(n.gen2); }
     const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)
     const b = R
