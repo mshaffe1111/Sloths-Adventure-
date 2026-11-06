@@ -626,10 +626,18 @@ integration of those cuts.
 | #10 canopy-rungs (and level) | every rung a bough | **alternate bough and log** (`b l b l`). It's still the double chain up the canopy, and the eye reads a rhythm of kinds |
 | #45 mushroom-chain-back | up 2 boughs, down 2 boughs | the up legs stay boughs; **the down legs are logs** |
 | #37 twin-mushroom-fork, the high road | boughs | **logs on stumps** (the old 1-1 high road: logs on stump-posts, LABELS §1) |
-| seed-perch | boughs to the perch | the perch itself is **an earth ledge** (`ledge-overhang-big`, may float); the approach stays boughs |
-| #44 log-chain, its catches | catch boughs | **earth ledges** (`ledge-earth-a`, may float). The chain itself is logs, as its name says |
-| every B4 catch bough elsewhere (#10, #22, #29) | boughs | **earth ledges** |
+| seed-perch | boughs to the perch | the perch itself is **a log** (the painted log frame); the approach stays boughs |
+| #44 log-chain, its catches | catch boughs | **logs** (platforms may float). The chain itself is logs, as its name says |
+| every B4 catch bough elsewhere (#10, #22, #29) | boughs | **logs, alternating with boughs** |
 | high-walk and the goals (#11, #15, #23, #30) | a bough walk-on | stays a bough. It's 1-1's "up in the high branches" (1-1.md:23); this is the look the cap exists to protect |
 
 **Target:** branch ≤ 30% on EVERY roll of 16, not on the median, so the worst roll clears the 38% cap with room. The porter's lay-test
 reports the per-roll share. Diagonal branches stay dressing only (art director, R-09); the hollow stumps are perches only.
+
+**The supervisor's check of Round 11 (11:18 AM): two FAILs, fixed above, and one YES.**
+- **Earth never floats.** Matt (10:39 AM 11-05): "Rocks can't float..." covers every earth piece, mound and bank too. So no earth ledge goes off the ground. The catches and the perch are now **logs**. An earth ledge is used only as a bank or mound top rising from the floor. The art director's "ledge (may float)" note is overruled by Matt's rule (LABELS rule 1).
+- **The 22-53% is today's measure, not the target.** The target is ≤ 30% on every roll. The 7 seeds over the 38% cap today are 1, 7920, 15839, 55434, 63353, 79191 and 102948 (45, 44, 43, 39, 47, 52 and 53%), plus 71272 at exactly 38%.
+  - Why: they're window-heavy rolls. Two canopy signatures' versions (#10 and its level version, #45-back) are each about 8-10 boughs, plus the joins between bough sections in the window, about 4-6 a roll.
+  - The swaps above (rungs alternating, chain-back logs, catches logs, joins taking the next entry kind) take about 10-14 boughs off such a roll. The porter's per-roll report proves it.
+  - 1-1.md:52 ("its commonest piece should be a ground piece") holds as a second check: ground pieces above branch on every roll.
+- **YES:** rungs alternating bough and log keep the double chain. The moment is the chain, not the material (1-1.md:21-22).
