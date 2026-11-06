@@ -256,6 +256,9 @@ export interface SectionPiece {
    *  before it; 'bounce': no double does, so only the mushroom's bounce lands it. Checked on the laid stage in a teach or test node
    *  (pipeline blockBreaches): a section whose block can be walked round there is swapped, never laid */
   block?: 'double' | 'bounce';
+  /** a 'bounce' block's mushroom (the key of the bouncy piece it is reached from): its rise is clamped to the bounce's own reach from
+   *  that cap (physics bounceV's rise plus one air jump, x 0.95), never a walk's or a jump's, so a bounce lip can stand 200-225 px up */
+  from?: string;
   shape: PieceShape;
   /** width (px) */
   w: Range;
@@ -424,6 +427,8 @@ export interface SectionTemplate {
   terrain?: string;
   /** its content type (NODES.md §7.2; a fork takes its low road's), read by the deal and written into the node code's content letter */
   content?: ContentType | 'structural';
+  /** a two-answer twist's answers (NODES.md §8.7 B5): copied into its node's gen2.nodes[].moves */
+  answers?: Array<'double' | 'bounce'>;
   /** extra seconds a typical first-timer spends here beyond walking its length (a room, a fight) */
   extraSeconds?: number;
 }
@@ -495,6 +500,8 @@ export interface MissionNode {
   count?: number;
   /** a content node's type, from the stage's deal (NODES.md §7.5): its sections are drawn from that type first */
   content?: ContentType;
+  /** V19 (NODES.md §8.3): the node after a descent in a trend-up stage's last third must end higher, so it takes rising sections only */
+  mustRise?: boolean;
 }
 
 /** a node's job (NODES.md §1, §8.0's key): what it asks of the player. The graphs roll arrive to exit; the rest are LATER nodes (§6), or
@@ -651,6 +658,8 @@ export interface Gen2Meta {
   code?: string[];
   codeString?: string;
   codeErrors?: string[];
+  /** the brief the rolled graph was rolled under (manifest graphs.briefs) */
+  brief?: GraphBrief;
   /** each node as laid, for the gates that read the built stage (V18's nodePieces.ts, the stills spots): its token, the x-range its
    *  sections cover, its first block's landing x (NODES.md §8.7) when it has one, and a twist's two answers (B5) */
   nodes?: Array<{ token: string; x0: number; x1: number; block?: number; moves?: Array<'double' | 'bounce'> }>;

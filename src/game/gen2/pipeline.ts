@@ -18,7 +18,7 @@ import { rollLook } from '../artRoll.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
 import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
-import { DOUBLE_RISE, JUMP_RISE, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED } from '../physics.ts';
+import { DOUBLE_RISE, JUMP_RISE, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
@@ -103,6 +103,9 @@ const CRUMBLE_H = 40;
  * two: `margin` of the physical reach (Gemini D2: 0.65 Easy, 0.82 Normal), and never more than what levelCheck accepts (its 0.97 and
  * the 70 px take-off slack), so a gap laid from it always validates. -1 when no jump of that kind gets that high.
  */
+/** how high a mushroom's bounce carries him over its cap (px): the bounce's own rise (bounceV), then the one air jump it leaves him
+ *  (engine.ts jumpsLeft = 1: the double's impulse) */
+export const BOUNCE_REACH = (PHYS.bounceV * PHYS.bounceV) / (2 * PHYS.gravUp) + (PHYS.doubleV * PHYS.doubleV) / (2 * PHYS.gravUp);
 export function maxGap(dyUp: number, dbl: boolean, margin: number): number {
   const phys = reachJump(dyUp, dbl);
   if (phys < 0) return -1;
@@ -422,8 +425,9 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   // last rest before the signature, so it stands in the last third with the boughs)
   for (const _ of M.required?.[budget.id] ?? []) {
     const s = jobs.lastIndexOf('signature');
-    const at = s > 0 ? s : Math.max(1, jobs.lastIndexOf('exit'));
-    jobs.splice(at, 0, 'reward');
+    // (right before the signature, inside its last third with the boughs: X R H S E; on graph C, R D_ H S E, where V19 passes over
+    // the find and holds the signature to rise)
+    jobs.splice(s > 0 ? s : Math.max(1, jobs.lastIndexOf('exit')), 0, 'reward');
   }
   // (the rests)
   for (let i = 0; i < jobs.length - 1; i++) if (NEEDS_REST.has(jobs[i]) && !QUIET_JOBS.has(jobs[i + 1]) && jobs[i + 1] !== 'exit') jobs.splice(i + 1, 0, 'rest');
@@ -458,6 +462,12 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
     };
     const want = WANT[budget.archetype];
     return { ...base, id: `n${i + 1}`, job, shape, dials, ...(want && base.role !== 'start' && base.role !== 'goal' ? { want } : {}), ...(job === 'teach' ? { teaches: teach[ti++] } : {}) };
+  });
+  // (V19: in a trend-up stage, the node after a descent in the last third ends higher than the descent began: it rises)
+  if (brief.trend === 'up') nodes.forEach((n, i) => {
+    if (n.job !== 'descent' || (i + 0.5) / nodes.length < 2 / 3) return;
+    const next = nodes.slice(i + 1).find((q) => q.job !== 'rest' && q.job !== 'exit' && q.job !== 'reward');
+    if (next) { next.mustRise = true; next.shape = 'rising'; if (next.dials) next.dials.height = 'up'; }
   });
   const total = nodes.reduce((s, n) => s + n.share, 0);
   for (const n of nodes) n.share /= total;
@@ -585,7 +595,7 @@ const CONTENT_LETTER: Readonly<Record<string, string>> = { ground: 'g', floating
  * bounce with no double, as `Tb`), the shape mark and the tempo mark; a fork as `F[high|low]`, its high road rising with the find, its
  * low road the section's own type. The string is checked against §8.3 (V18 reads the laid pieces, elsewhere).
  */
-function realisedCode(graph: MissionGraph, laid: Laid, M: WorldManifest, budget: StageBudget): Pick<Gen2Meta, 'code' | 'codeString' | 'codeErrors' | 'nodes'> {
+function realisedCode(graph: MissionGraph, laid: Laid, M: WorldManifest, budget: StageBudget): Pick<Gen2Meta, 'code' | 'codeString' | 'codeErrors' | 'nodes' | 'brief'> {
   const plan = laid.plan;
   const byId = new Map(M.sections.map((t) => [t.id, t]));
   const tokens: CodeToken[] = [];
@@ -611,6 +621,7 @@ function realisedCode(graph: MissionGraph, laid: Laid, M: WorldManifest, budget:
     teaches: graph.nodes.filter((n) => n.job === 'teach').length,
     needsFork: !!brief && brief.branching !== 'none',
     mini: budget.stage,
+    ...(brief ? { trend: brief.trend } : {}),
     ...(M.graphs?.windows ? { windows: Object.fromEntries(Object.entries(M.graphs.windows).map(([t, w]) => [CONTENT_LETTER[t], w!])) } : {}),
     ...(graph.deal ? { deal: Object.fromEntries(Object.entries(graph.deal).map(([t, k]) => [CONTENT_LETTER[t], k!])) } : {}),
   });
@@ -620,10 +631,11 @@ function realisedCode(graph: MissionGraph, laid: Laid, M: WorldManifest, budget:
     const blk = laid.blocks?.find((b) => secs.some((q) => q.uid === b.uid));
     // (a twist's two answers, for the gate's B5 run with each move taken away: the double and the bounce its sections ask for)
     const asks = (m: string) => secs.some((q) => { const t = byId.get(q.template); return !!t && (t.teaches === m || (t.uses ?? []).includes(m) || (t.needs ?? []).includes(m as Move)); });
-    const moves = n.job === 'twist' ? (['double', 'bounce'] as const).filter(asks) : [];
+    const answered = [...new Set(secs.flatMap((q) => byId.get(q.template)?.answers ?? []))];
+    const moves = answered.length ? answered : n.job === 'twist' ? (['double', 'bounce'] as const).filter(asks) : [];
     return { token: code[k], x0: secs.length ? Math.min(...secs.map((q) => q.x0)) : 0, x1: secs.length ? Math.max(...secs.map((q) => q.x1)) : 0, ...(blk ? { block: blk.landing.x } : {}), ...(moves.length ? { moves: [...moves] } : {}) };
   });
-  return { code, codeString: code.join(' '), codeErrors, nodes };
+  return { code, codeString: code.join(' '), codeErrors, nodes, ...(brief ? { brief } : {}) };
 }
 
 // ───────────────────────────── pass 3: sections, stitched ─────────────────────────────
@@ -759,7 +771,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
   while (pending.length) {
     const at = pending.findIndex((q) => {
       const k = refOf(q);
-      return k === null || by.has(k);
+      return (k === null || by.has(k)) && (!q.from || by.has(q.from));
     });
     if (at < 0) {
       const p0 = pending[0];
@@ -773,6 +785,11 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     let hang: LocalPiece['hang'];
     const pl = pc.place;
     const ref = (k: string) => by.get(k)!;
+    // (the highest a bounce block's lip may stand, local y: its mushroom's cap less the bounce's reach from it)
+    const bounceCap = (q: SectionPiece): number | undefined => {
+      const m = q.block === 'bounce' && q.from ? by.get(q.from) : undefined;
+      return m ? m.y - 0.95 * BOUNCE_REACH : undefined;
+    };
     if (pl.kind === 'start') {
       x = 0;
       y = 0;
@@ -780,14 +797,17 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const a = ref(pl.after);
       const dy = pl.dy === undefined ? 0 : roll(rng, pl.dy);
       x = a.x + a.w;
-      y = a.y + Math.max(-riseLimit(false, budget.riseShare) * 0.9, dy);
+      // (a bounce block's lip: clamped to the bounce's reach from its mushroom's cap, not a walk's; NODES.md §8.7 B3)
+      const cap = bounceCap(pc);
+      y = cap !== undefined ? Math.max(a.y + dy, cap) : a.y + Math.max(-riseLimit(false, budget.riseShare) * 0.9, dy);
     } else if (pl.kind === 'jump' || pl.kind === 'double' || pl.kind === 'pit') {
       const a = ref(pl.after);
       const glide = pl.kind === 'pit' && pl.jump === 'glide' && budget.moves.includes('glide') && dblOK;
       const dbl = (pl.kind === 'pit' ? pl.jump !== 'jump' : pl.kind === 'double') && dblOK;
       let dy = pl.kind === 'pit' || pl.dy === undefined ? 0 : roll(rng, pl.dy);
-      if (T) dy *= T.rise;
-      dy = Math.max(-riseLimit(dbl, budget.riseShare) * 0.95, dy);
+      if (T && !pc.block) dy *= T.rise;
+      const cap = bounceCap(pc);
+      dy = cap !== undefined ? Math.max(dy, cap - a.y) : Math.max(-riseLimit(dbl, budget.riseShare) * 0.95, dy);
       const g = glide ? glideGap(-dy, budget) : maxGap(-dy, dbl, budget.margin);
       const share = shareFor(pl.share);
       const gap = Math.max(60, R(share * (g > 0 ? g : 60)));
@@ -1165,6 +1185,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   };
   const fits = (t: SectionTemplate, n: MissionNode, i: number, loose: 0 | 1 | 2 = 0) =>
     jobFits(t, n, loose) &&
+    (!n.mustRise || loose === 2 || exitDyOf(t) < 0) &&
     (t.archetypes === 'any' || t.archetypes.includes(budget.archetype)) &&
     (t.needs ?? []).every((m) => budget.moves.includes(m)) &&
     hangsNeed(t).every((m) => budget.moves.includes(m)) &&
@@ -1200,7 +1221,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     }
     if (!cands.length && n.job) {
       cands = M.sections.filter((t) => fits(t, n, i, 2) && !must.some((r) => r.section === t.id));
-      if (cands.length) lastLoose = `${n.id} ${n.job}: no section for the job left, filled by its phase`;
+      if (cands.length) lastLoose = `${n.id} ${n.job}: no ${n.mustRise ? 'rising section (V19) ' : 'section for the job '}left, filled by its phase`;
     }
     if (!cands.length) {
       // (the hard no-repeat's own failure, named: every section that would fit here is already laid)
@@ -1811,6 +1832,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const type: Collectible['type'] = budget.archetype === 'rescue' ? 'cage' : 'relic';
         C.push({ id: sink.nextCollectibleId(), type, x: k.x, y: k.piece.y - (s.dn ?? 30), collected: false, bobPhase: 0, ...(type === 'cage' ? { cageHp: 2 } : {}) });
         fills.push({ section: sec.uid, socket: s.id, role: 'objective', what: type, x: k.x, y: k.y });
+      } else if (s.role === 'decor' && s.allow?.includes('bootprint')) {
+        // (1-1's clue, R-165.31: the bootprint on the end log's walking line, every roll, once; reported as dressing at its log's top,
+        // which w1NewArt drawW1Clue draws flush in the moss)
+        if (sink.proto.mixDress?.some((d) => d.n === 'bootprint')) continue;
+        (sink.proto.mixDress ??= []).push({ n: 'bootprint', x: R(k.x), b: k.piece.y });
+        fills.push({ section: sec.uid, socket: s.id, role: 'decor', what: 'bootprint', x: k.x, y: k.y });
       } else if (s.role === 'find') {
         // (a hidden find, the golden seed: once a stage, by construction where its section's socket stands (the section is placed by
         // manifest.required, so every roll holds one))

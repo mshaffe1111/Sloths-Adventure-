@@ -39,6 +39,7 @@ test('each rule, broken on its own, fails with its own number and the token', ()
     ['A Tg1 Pc1 F[Pc1+|Pg1] R Xc1 R Sf1 E', 'V14 at token 1', { deal: { g: 4 } }],
     ['A T P R X R S E', 'V17 at token 1', { needsFork: true }],
     ['A T P& F R X R S E', 'V16 at token 3'],
+    ['A P F X R W R D_ S E', 'V19 at token 8', { trend: 'up' }],
   ];
   for (const [s, want, rules] of cases) {
     const errs = checkCode(parseCode(s), rules ?? {});

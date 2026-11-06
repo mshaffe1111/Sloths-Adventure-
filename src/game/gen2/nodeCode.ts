@@ -119,6 +119,8 @@ export interface CodeRules {
   endingFork?: boolean;
   /** the jobs this stage may use beyond the 1-1 NOW set (V13 / §6: K, Z, B, Y, V, G are LATER) */
   later?: boolean;
+  /** the brief's trend (V19: in a trend-up stage a descent in the last third is followed, before the exit, by a rising node) */
+  trend?: 'up' | 'down' | 'level';
 }
 
 /**
@@ -182,6 +184,12 @@ export function checkCode(tokens: readonly CodeToken[], rules: CodeRules = {}): 
     }
     // (V15: the ending fork, LATER)
     if (t.roads && tokens[i + 1]?.job === 'E' && t.roads[0].some((r) => r.job === 'L') && !rules.endingFork) at(i, 'V15', 'the ending fork is LATER');
+  });
+  // (V19, NODES.md §8.3 at 0e8807dbd: in a trend-up stage, a D in the last third is followed before E by a node that rises)
+  if (rules.trend === 'up') tokens.forEach((t, i) => {
+    if (t.job !== 'D' || (i + 0.5) / n < 2 / 3) return;
+    const after = tokens.slice(i + 1).filter((q) => q.job !== 'E' && q.job !== 'R');
+    if (!after.some((q) => q.shape === '^' || q.shape === '^^')) at(i, 'V19', 'a descent in the last third with nothing rising after it before the exit');
   });
   // (V6: exactly one S, in the last third)
   const ss = tokens.map((t, i) => (t.job === 'S' ? i : -1)).filter((i) => i >= 0);
