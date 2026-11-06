@@ -1480,7 +1480,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   /** this roll's version of one of the stage's sections (w1Sections.ts) */
   const section = (slot: Slot) => w1Section(w1, w1Stage, slot, seed);
 
-  // (main's 1-1 builder as it is, kept for the test link's 'Old 1-1' pick only (testlink1_1.ts: QA builds, never the shipped game,
+  // TEST-LINK ONLY, REMOVE BEFORE ANY RELEASE (new replaces old; the lead, 11-05). (main's 1-1 builder as it is, kept for the test
+  // link's 'Old 1-1' pick only (testlink1_1.ts: QA builds, never the shipped game,
   // where 1-1 is the mixer's spec); copied unchanged from main (protoStage.ts on main, its '1-1' plan): the lead's compare, 11-05)
   if (plan === '1-1') {
     // 1-1 Into the Canopy: run and jump. Taught over soft moss, tested on stepping stones at three heights, and twisted at the end

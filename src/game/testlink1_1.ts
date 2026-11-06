@@ -1,4 +1,5 @@
 /**
+ * TEST-LINK ONLY, REMOVE BEFORE ANY RELEASE with the restored old 1-1 block in protoStage.ts (new replaces old).
  * The test link's 1-1 picker (the lead, 11-05: Matt compares OLD 1-1 with gen2 1-1's Rolls A, B and C on his phone). QA builds only
  * (playRecorder.ts qaBuild: the dev server and the test link, never the shipped game): the world map's 1-1 card shows four buttons, and
  * the pick decides how 1-1 is built until another is made.
