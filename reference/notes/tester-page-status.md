@@ -27,7 +27,14 @@
   - sideways, seed 3576: said at x 5443, teach 5407, first gap 5695;
   - upright, seed 3834: said at x 5326, teach 5293, first gap 5619.
   - In all, **8 of 8 walked runs pass.**
-- **Seed 158: NOT run.** I tried to force the page's seed draw to the list's index 7 (seed 158), but the page drew 3576 and 3834
+- **Seed 158 (the one that failed before): PASS, upright and sideways** (6:0x PM). Forced through the page's own play order
+  (`sloth_play11_order`, entry 7):
+  - sideways: the bubble said "Flick up again midair to jump twice." at x 6681;
+  - upright: at x 6684;
+  - teach 6650 to 9252, first wide gap at 7250, so the line comes about 570 px before it.
+  - Stills: `dbl2/walked-{side,up}-run0-seed158.png`.
+  - **All told: 10 of 10 walked runs pass.**
+- (Superseded:) **Seed 158: NOT run.** I tried to force the page's seed draw to the list's index 7 (seed 158), but the page drew 3576 and 3834
   instead. My override doesn't reach the real draw, and I ran out of time to find it. Seed 158 is still owed.
 - **Stuck 20 s at the step, walked (these two runs): Dot said NOTHING** in both, upright and sideways. He stood just before the teach's
   first step: x 5388 against an entry of 5407, and x 5274 against 5293. This is now a walked result, not the teleport artefact: a real
