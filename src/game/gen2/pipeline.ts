@@ -1219,8 +1219,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     for (const r of must) {
       const t = byId.get(r.section);
       if (!t) throw new Error(`gen2 ${budget.id}: the required section ${r.section} is not in the world`);
-      // (inside the corridor, like any pick: a later slot takes it otherwise)
-      const endY = cur.y + exitDyOf(t);
+      // (inside the corridor, like any pick: a later slot takes it otherwise; judged from the entry the join will give it, which is
+      // clamped into the corridor, never from the last exit, 11-06: on 1-1 seed 102948 a descent ended past the corridor's floor and the
+      // level seed perch was refused at the only slot it had)
+      const endY = Math.max(M.corridor.top, Math.min(M.corridor.bottom, cur.y)) + exitDyOf(t);
       // (on a rolled graph a required section stands in its own reward node, the key's H, by its phase, window and uses)
       const reqFits = n.job ? n.job === 'reward' && fits(t, n, i, 2) : fits(t, n, i);
       if (!placedReq.has(r.section) && (!r.phase || r.phase === n.phase) && reqFits && endY >= M.corridor.top && endY <= M.corridor.bottom) return t;
