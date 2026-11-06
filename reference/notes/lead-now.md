@@ -30,7 +30,7 @@ else is built. Nothing reaches main until Matt plays it and says "push".
 | Planner (session_01FhBbYJaUqNUPxNUvbHdHeN, engine-chunks) | DONE: floor, seed, tempo (7c1b0f2a8), graph + length + window + no-repeat + cadence (pushing). NOW: (1) node code + parser V1-V17 + meta tokens (~6:45); (2) content deal; (3) block, with block pieces EXEMPT from tempo (sent 5:57); (4) CHECK 3b on 1-1 | lock 102/102 each push | ~9:35 PM |
 | engine-core (session_01FhBbYNa68MoMsiQdv2EJXg, engine-core) | DONE: secondary-object gate (45867ab68), B6/B5, block data, W1_KIT.graphs, V18 (6a7d8b237), stills spots (c1768a5ce). NOW: bootprint DRAW at gen2's reported place; then the stage.ts gen2 path on the planner's push | gates PASS/FAIL 16x2 | after planner |
 | Designer (session_01FhBbYPKnBYCweHg8duJSu2, engine-spec) | DONE: NODES.md §1-8, key + pieces (d4526ee5e). Next: the 1-1 brief for gen2 fields; judge 1-1 stills | signed, cited | after engine-core's field list |
-| art-1-1-sunrise (session_01FhBbYLCL8LqBfmTZgPBHoG, new branch art-1-1-sunrise-2 from engine-core) | Matt said A, ~6:05 PM ET: 1-1 art tonight. The sunrise (candidates sheet first, then wired) plus the bootprint clue on the end log, toe north; HF caps $5 sunrise (about $3 left) and $3 bootprint | stills both ways, the lead picks, then gates.yml | sheet ~7 PM |
+| art-1-1-sunrise (session_01FhBbYLCL8LqBfmTZgPBHoG, new branch art-1-1-sunrise-2 from engine-core) | DONE 7:32 PM: sunrise w1sun2 wired for 1-1 (95ce83f2d), bootprint 110x28 deep take 1 handed to engine-core; spend ~$2.55 + ~$0.28. IDLE | accepted | done |
 | Lead | Node key page for Matt (https://claude.ai/artifact/K3c5jywonpSVroHJ2dyenL, done); 3 rolls + old 1-1 on the test link, checked object by object, supervisor arc check | Matt plays | ~10:30-11 PM |
 
 ## Open with Matt (one question at a time)
@@ -68,6 +68,8 @@ After 1-1 is proven, these run as their own lanes, one engine.ts holder at a tim
 ## For the roadmap (owed R-ids, law 21)
 - 1-3 Easy: 14 floor dressing pieces tuck behind Easy's low step branches (engine-core dressThroughPlatform, e7331c41e). A live-game
   defect: Easy step placement vs dressing spacing. Owner later.
+- Art follow-ups (art-1-1-sunrise-2 95ce83f2d README): R-165.25 still says paused (now done for 1-1); 1-3 moves off w1sunrise after its own
+  stills check, then w1sunrise is deleted; the bootprint's Stage Cleared card picture is still the old flat one.
 - 1-1's map card text: "Run the high branches of the kapok trees" (the kapok is 1-4's). Story wording, for the supervisor.
 
 ## My traps (read every time)
