@@ -326,3 +326,25 @@ test('the clue (R-165.31): a bootprint decor socket on the end log is filled eve
     assert.ok(st.platforms.some((p) => p.y === prints[0].b && p.x <= prints[0].x && p.x + p.width >= prints[0].x), `seed ${s}: the print is not on a log's top`);
   }
 });
+
+test('a rolled stage that climbs past the camera\'s reach is moved down whole: its highest platform, pickup and totem sit inside it', async () => {
+  const { CAMERA_TOP, checkStage } = await import('./pipeline.ts');
+  // (a corridor reaching 900 px up and a climb section the bag favours: the route rises well above y 0 before the move)
+  const climb: SectionTemplate = { ...twoRoad, id: 'toy-up', jobs: undefined, phases: ['sho', 'ten', 'ketsu'], weight: 30,
+    pieces: [{ key: 'a', shape: 'bank', w: [360, 360], place: { kind: 'start' } }, { key: 'b', shape: 'bank', w: [360, 360], place: { kind: 'double', after: 'a', dy: [-140, -140], share: [0.3, 0.3] } }],
+    entry: { piece: 'a', kind: 'ground' }, exit: { piece: 'b', kind: 'ground' }, exitDy: -140 };
+  const k = withGraphs({ ends: 'quiet', trend: 'up', branching: 'none' });
+  // (the toy's carry room comes too: a room is anchored to its platforms and moves with them)
+  k.manifest = { ...k.manifest, corridor: { top: 580 - 900, bottom: 640, soft: 80 }, sections: [...k.manifest.sections, climb] } as WorldManifest;
+  let moved = 0;
+  for (const s of SEEDS.slice(0, 8)) {
+    const st = build(k, s);
+    const top = Math.min(...st.platforms.map((p) => p.y));
+    // (the route's, a socket's and a room's top at CAMERA_TOP or under; a pickup arc rises a little over its platform)
+    assert.ok(top >= CAMERA_TOP - 40, `seed ${s}: the top platform at y ${top}`);
+    assert.ok(st.collectibles.every((c) => c.y >= 250), `seed ${s}: a pickup at y ${Math.min(...st.collectibles.map((c) => c.y))}`);
+    if (st.platforms.find((p) => p.y === top) && st.platforms.some((p) => p.y > 580 + 60)) moved++;
+    if (!st.gen2.errors.length) assert.deepEqual(checkStage(st, st.gen2.budget).errors, [], `seed ${s}`);
+  }
+  assert.ok(moved > 0, 'no roll climbed far enough to be moved: the test did not see the rule');
+});

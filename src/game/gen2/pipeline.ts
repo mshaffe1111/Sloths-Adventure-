@@ -105,6 +105,10 @@ const CRUMBLE_H = 40;
  */
 /** how high a mushroom's bounce carries him over its cap (px): the bounce's own rise (bounceV), then the one air jump it leaves him
  *  (engine.ts jumpsLeft = 1: the double's impulse) */
+/** the highest a rolled graph's stage may stand (world y): the camera never scrolls above 0; the shipped stages keep their top
+ *  platform at 290-400 px and their pickups at 255 or lower on screen (main's 1-1, 1-4, 1-5); a petal arc rises up to about 86 px over
+ *  its platform, so 360 keeps every pickup at 274 or lower */
+export const CAMERA_TOP = 360;
 export const BOUNCE_REACH = (PHYS.bounceV * PHYS.bounceV) / (2 * PHYS.gravUp) + (PHYS.doubleV * PHYS.doubleV) / (2 * PHYS.gravUp);
 export function maxGap(dyUp: number, dbl: boolean, margin: number): number {
   const phys = reachJump(dyUp, dbl);
@@ -1529,6 +1533,32 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       })
     : [];
   const strays = graph.id ? sections.filter((q) => q.exit.y < M.corridor.top - 20 || q.exit.y > M.corridor.bottom + 20).map((q) => ({ uid: q.uid, y: Math.round(q.exit.y) })) : [];
+  let shiftedDown = 0;
+  // (a rolled graph's stage that climbs above the camera's reach is moved down whole: the camera never scrolls above y 0, so its highest
+  // platform, vine, rope or socket is brought to CAMERA_TOP, where the shipped stages keep theirs (290-335 px), with room for a pickup
+  // above it. Everything laid moves together; what is placed later (pickups, creatures, dressing, the totem) reads the moved pieces)
+  if (graph.id) {
+    // (a puzzle room's own pieces, laid later from its anchors, reach `above` over its left anchor's platform: they count too)
+    const byPid = new Map(platforms.map((p) => [p.id, p]));
+    const roomTops = sections.flatMap((q) => (q.room && byPid.get(q.room.left.on) ? [byPid.get(q.room.left.on)!.y - q.room.above] : []));
+    const tops = [...platforms.map((p) => p.y), ...vines.map((v) => v.topY), ...ropes.map((r) => r.y), ...sections.flatMap((q) => q.sockets.map((k) => k.y)), ...roomTops];
+    const down = tops.length ? Math.max(0, R(CAMERA_TOP - Math.min(...tops))) : 0;
+    if (down > 0) {
+      // (a puzzle room is anchored to its platforms by id, puzzleKit Anchor: it moves with them)
+      for (const p of platforms) p.y += down;
+      for (const v of new Set([...vines, ...sections.flatMap((q) => q.vines.map((e) => e.vine))])) { v.topY += down; v.bottomY += down; }
+      for (const r of ropes) r.y += down;
+      for (const g of gaps) g.y += down;
+      for (const z of zones) { z.top += down; z.bottom += down; z.baseY += down; for (const l of z.lights ?? []) l.y += down; }
+      for (const q of sections) {
+        q.entry.y += down;
+        q.exit.y += down;
+        for (const k of q.sockets) k.y += down;
+      }
+      cur.y += down;
+      shiftedDown = down;
+    }
+  }
   return {
     sections,
     ...(missing.length ? { missing } : {}),
@@ -1545,7 +1575,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     zones,
     heartFalls,
     width: R(shrine.x + shrine.width + 40),
-    bottom: baseline,
+    bottom: baseline + shiftedDown,
     nextId: pid,
     ...(themeShare < 1 ? { theme: M.sections.filter((t) => near.get(t.id)! < themeShare).map((t) => t.id) } : {}),
   };
