@@ -123,7 +123,7 @@ const squirrels = (id: string, on: string, t: Socket['t']): Socket => ({ id, rol
 const floor = (key: string, w: SectionPiece['w'], place: SectionPiece['place'] = { kind: 'start' }): W1Piece => ({ key, shape: 'bank', w, place, style: 'moss_stone', main: true, landing: true });
 /** the floor after a soft gap a plain jump crosses (`share` of the widest gap the difficulty allows) */
 // (a double gap's landing is a double BLOCK (NODES §8.7 B1): the engine swaps a teach or test whose block a single jump reaches, blockBreaches)
-const softGap = (key: string, after: string, w: SectionPiece['w'], share: [number, number], jump: 'jump' | 'double' = 'jump'): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump, share, soft: true }, style: 'moss_stone', main: true, landing: true, ...(jump === 'double' ? { block: 'double' as const } : {}) });
+const softGap = (key: string, after: string, w: SectionPiece['w'], share: [number, number], jump: 'jump' | 'double' = 'jump', gapPx?: [number, number]): W1Piece => ({ key, shape: 'bank', w, place: { kind: 'pit', after, jump, share, soft: true, ...(gapPx ? { gapPx } : {}) }, style: 'moss_stone', main: true, landing: true, ...(jump === 'double' ? { block: 'double' as const } : {}) });
 /** a mossy stump or rock standing on `on` (one easy hop: lowStumps 36-76, logHop 34-46) */
 const stump = (key: string, on: string, at: SectionPiece['w'], h: SectionPiece['w'], w: SectionPiece['w'] = [130, 170]): W1Piece => ({ key, shape: 'block', w, place: { kind: 'on', on, at, h }, style: 'moss_stone', landing: true });
 /** a stepping stone: a jump from `after`, `dy` up (negative) or down; it stands on the floor (pillars: 110-160 wide) */
@@ -212,10 +212,10 @@ const gShelf = (): G => (k, after) => {
   return { pieces: [f, sh, r], sockets: [tip(f.key, 0.1), petals(`${k}psh`, sh.key, [0.25, 0.75], 2, 80), petals(`${k}pr`, r.key, 0.5, 1)], last: f.key };
 };
 /** gapRun(widths) of the second jump (twist 'gaps': reachTwo x 0.62 / 0.72 / 0.82, a run of 220-300 after each) */
-const gDoubleGaps = (shares: Array<[number, number]>): G => (k, after) => {
+const gDoubleGaps = (shares: Array<[number, number]>, gapPx?: [number, number]): G => (k, after) => {
   const pieces: W1Piece[] = []; const sockets: Socket[] = [];
   let prev = after!;
-  shares.forEach((sh, j) => { const p = softGap(`${k}g${j}`, prev, [220, 300], sh, 'double'); pieces.push(p); sockets.push({ id: `${k}arc${j}`, role: 'arc', on: p.key, t: 0 }); prev = p.key; });
+  shares.forEach((sh, j) => { const p = softGap(`${k}g${j}`, prev, [220, 300], sh, 'double', gapPx); pieces.push(p); sockets.push({ id: `${k}arc${j}`, role: 'arc', on: p.key, t: 0 }); prev = p.key; });
   return { pieces, sockets, last: prev };
 };
 /** highLeaps(n, dbl) (protoStage.ts:1300 on main): a mushroom, boughs 170-230 at G - 236..246, the floor on under them */
@@ -1315,9 +1315,9 @@ const R6_KIND: Record<string, [W1Content, W1Terrain]> = { 'w1-home-banks': ['str
  * (t 0.1, before any block), the move's line on the take-off piece of its first gap of that kind. The bounce is the lesson card's
  * (lesson.bounce), no Dot line. The old teach sockets are replaced, never doubled
  */
-const TEACH_LINES: Partial<Record<string, { entry: string; take: string; gap: (pl: SectionPiece['place']) => boolean }>> = {
+const TEACH_LINES: Partial<Record<string, { entry: string; take?: string; gap: (pl: SectionPiece['place']) => boolean }>> = {
   jump: { entry: 'coach.jump', take: 'hint.1-1.gaps', gap: (pl) => pl.kind === 'jump' || (pl.kind === 'pit' && pl.jump === 'jump') },
-  double: { entry: 'coach.nice', take: 'hint.1-1.double', gap: (pl) => pl.kind === 'double' || (pl.kind === 'pit' && pl.jump === 'double') },
+  double: { entry: 'hint.1-1.double', gap: (pl) => pl.kind === 'double' || (pl.kind === 'pit' && pl.jump === 'double') },
 };
 const TEACH_IDS = new Set(['coach.jump', 'hint.1-1.gaps', 'coach.nice', 'hint.1-1.double']);
 function teachLines(q: W1Section): W1Section {
@@ -1329,7 +1329,7 @@ function teachLines(q: W1Section): W1Section {
     const keep = (v.sockets ?? []).filter((k) => !(k.role === 'tip' && (k.allow ?? []).some((a) => TEACH_IDS.has(a))));
     const first = v.pieces.find((pc) => L.gap(pc.place));
     const take = first && 'after' in first.place ? first.place.after : undefined;
-    const lines: Socket[] = [{ id: 'teach-entry', role: 'tip', on: 'in', t: 0.1, allow: [L.entry] }, ...(take ? [{ id: 'teach-take', role: 'tip', on: take, t: 0.4, allow: [L.take] } as Socket] : [])];
+    const lines: Socket[] = [{ id: 'teach-entry', role: 'tip', on: 'in', t: 0.1, allow: [L.entry] }, ...(take && L.take ? [{ id: 'teach-take', role: 'tip', on: take, t: 0.4, allow: [L.take] } as Socket] : [])];
     return { ...v, sockets: [...lines, ...keep] };
   });
   return { ...q, mirrorable: false, subBlocks: [{ ...sub, versions }] };
