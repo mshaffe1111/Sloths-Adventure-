@@ -1,4 +1,5 @@
 import { newPlay11, setPick11 } from './game/testlink1_1.ts';
+import { scheduleAhead } from './game/buildAhead.ts';
 import { handleBack } from './components/nav/backStack.ts';
 import { PerfReadout } from './components/PerfReadout.tsx';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
@@ -761,6 +762,10 @@ export default function App() {
     if (!ctestGate) return;
     const lvl = ctestLevel();
     if (lvl) void preloadStage(lvl, canvasRef.current, inPlay);
+    if (lvl) {
+      setPick11('play');
+      scheduleAhead(lvl);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctestGate]);
 
@@ -768,7 +773,9 @@ export default function App() {
   // last mix's creatures that this one does not draw are let go first: stagePreload.ts)
   useEffect(() => {
     if (!ctestDone) return;
-    ctestDraw();
+    // (the next run's stage built at idle while the questions are up: buildAhead.ts; Play again draws its seed)
+    setPick11('play');
+    scheduleAhead(ctestDone);
     void preloadStage(ctestDone, canvasRef.current, inPlay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctestDone]);
@@ -1152,7 +1159,8 @@ export default function App() {
             const lvl = ctestDone;
             setCtestDone(null);
             recorder.event('playAgain');
-            // (the next run's seed was drawn, and its sheets loaded, while the questions were up: the effect above)
+            ctestDraw();
+            // (the next run's stage was built, and its sheets loaded, while the questions were up: the effect above)
             launchEngine(lvl);
           }}
         />

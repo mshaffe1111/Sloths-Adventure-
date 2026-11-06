@@ -6,7 +6,7 @@ import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
-import { pick11, play11Seed, roll11Seed, skip11Spec } from './testlink1_1.ts';
+import { pick11, play11Seed, roll11Seed, skip11Spec, withPlaySeed } from './testlink1_1.ts';
 import { buildPlayStage } from './gen2/seedList.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
@@ -2829,7 +2829,32 @@ const flagsCapped = (st: GeneratedStage): GeneratedStage => {
   return st;
 };
 
+/**
+ * Build-ahead (the lead, 11-06, the 1-1 polish bar: the red team saw 160-1100 ms of stage build on the main thread at Play): 1-1's next
+ * play is built while the map is up (buildAhead.ts, at idle), kept here by (stage, seed, setting), one at a time, and taken once by the
+ * play it was built for. A restart builds afresh (the same seed, the same stage)
+ */
+const ahead = new Map<string, GeneratedStage>();
+const aheadKey = (id: string, seed: number, d: Difficulty) => `${id}|${seed}|${d}`;
+export function buildAhead(config: LevelConfig, seed: number, difficulty: Difficulty): void {
+  const k = aheadKey(config.id, seed, difficulty);
+  if (ahead.has(k)) return;
+  const st = withPlaySeed(seed, () => generateStage(config, difficulty));
+  ahead.clear();
+  ahead.set(k, st);
+}
+/** what is built ahead (tests) */
+export const aheadKeys = (): string[] => [...ahead.keys()];
+
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
+  if (config.id === '1-1' && !config.secret && pick11() === 'play' && ahead.size) {
+    const k = aheadKey('1-1', play11Seed(layoutVariant ?? 1), difficulty);
+    const got = ahead.get(k);
+    if (got) {
+      ahead.delete(k);
+      return got;
+    }
+  }
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)

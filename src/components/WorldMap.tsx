@@ -1,5 +1,6 @@
 import { TextGlyph } from './icons/TextGlyph.tsx';
 import { newPlay11, pickerOn, setPick11 } from '../game/testlink1_1.ts';
+import { scheduleAhead } from '../game/buildAhead.ts';
 import { starsPossible } from './mapStars.ts';
 import { newLookSoon } from '../game/newLookSoon.ts';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -102,6 +103,11 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   const picked = worldLevels.find((l) => l.id === pickId) ?? worldLevels[0];
   // once the card has stayed on a playable stage for a moment (not while flicking through worlds), get that stage's sheets ready
   const pickedOpen = !!picked && (picked.unlocked || firstOf(picked));
+  // (1-1's next play built at idle while its card is up, so Play opens on a ready stage: buildAhead.ts)
+  useEffect(() => {
+    if (pickedOpen && picked?.id === '1-1') scheduleAhead(picked);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickedOpen, picked?.id]);
   useEffect(() => {
     if (!picked || !pickedOpen || !onPick) return;
     const t = window.setTimeout(() => onPick(picked), 450);
