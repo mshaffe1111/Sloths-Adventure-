@@ -32,3 +32,14 @@ Lead's read:
 - HOLD: 08/09 carved monkey totems with paw prints and animal carvings: they read as World 5 (carvings, Meeca's messages). Story call for
   the supervisor. 10's golden fruit bunch: a pickup idea, not dressing (design call later). 10's rope swing log: no swing mechanic today.
 - Sheet 10 is 1024x572 with 10 items (about 150-200 px each): too small; re-roll its keepers at 3 per image.
+
+## Batch 3 (11-05 ~11:45 PM ET): sheets 17-22
+- KEEP: 17 is the hide-under set (Matt's idea): the rock arch, the low slab overhang, the hollow stump with a gap at its base, the
+  ROOT ARCH (1-2's brief needs one), the boulder cave, the stacked slabs, the fallen log on a stump. 19 the big root block, mossy
+  boulder, stacked slabs (grounded). 20 the hollow stump (hide spot) and the twisted trunk with a rock.
+- PERSPECTIVE PROBLEM: the game is pure side view. Several pieces are drawn at an angle (three-quarter view): 17/18's hollow logs,
+  19's diagonal post, 20's roped log and X-frame, all of 22 (logs half in water, angled). They'll look tilted next to the kit. Re-roll
+  them "seen straight from the side, horizontal".
+- 21 lily pads: drawn from ABOVE (top-down). In a side view a lily pad is a thin flat sliver at the water line, so these won't read.
+  Re-roll: "lily pads seen from the side at water level: thin flat green discs edge-on, some with a flower standing up".
+- 18's cave (the right half) is a good hide/secret-door piece; its left log is angled.
