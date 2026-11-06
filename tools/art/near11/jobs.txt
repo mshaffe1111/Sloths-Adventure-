@@ -1,2 +1,5 @@
 1-1 near strip redo (art director, 2026-11-06; lead's OK 9:35 AM ET, cap $1). rtx-pro-6000 at ~$2.75/h. Times UTC (ET = UTC-5).
 near11-N 6aede8020e0338d1bb817d84  img2img, starts A/B, s62/s68, seeds 7/23, 8 takes (img2imggpu.py)  started 14:45:22Z
+  N finished ~14:50:38Z (last file), ~5.3 min, ~$0.24. Picks: A-s62-23 (first), A-s68-23 (backup). Out: A-s62-7 (iridescent key spots
+  on the monstera), B takes (rocks tinted pink by the key), A-s68-7 (not keyed: A-s62-23 / s68-23 cleaner).
+near11-hd 6aede9b60e0338d1bb81815b native pass to 1736 tall on grey, A-s62-23 + A-s68-23 (striphdgpu.py)  started 14:52:38Z
