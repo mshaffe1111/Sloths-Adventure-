@@ -329,3 +329,12 @@ So: a hand-written node plan per stage defeats the engine. It is also the measur
 shapes). Direction: the engine generates each stage's structure (sections, order, forks, ideas) per roll; the designer sets the
 rulebook once per world (kit, moves, must-haves, what makes stages differ); a helper gives a short feel brief plus a few knobs and
 judges the result; Matt plays. The 4:00 breakdown must say what it takes and how long. The choice of path goes to Matt at 4:00.
+
+## 11:26 AM ET, 11-06 (to the supervisor): walkable platforms may float, and it looks cleaner
+"I do believe that platforms can float. As long as you're walking on it and it's a part of the core gameplay, it cleans the screen up
+a little bit and it does make it look better. Rocks, things that shouldn't be floating, don't float. But if we have branches and other
+things that he walks on, I'm okay if they float. I actually think it looks cleaner."
+So: any piece Pokey WALKS ON as core play (branches/boughs, logs, planks) may float with no trunk or stump under it. Rocks, stones,
+boulders, earth, mounds, pads and props never float. A trunk or stump that IS drawn must still reach the ground (a trunk ending in
+mid-air is the floating thing, not the bough). This loosens nothing for rocks and earth; it lets the engine drop trunks and stumps that
+only add clutter.
