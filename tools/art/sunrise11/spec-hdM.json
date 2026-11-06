@@ -1,0 +1,58 @@
+{
+ "tag": "sun11-hdM",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1sun2-midE-s76-7-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/78a59c829a2a9f3886aea9431586fdb07aefd634/reference/prop-sheets/qa-notes/art-1-1-sunrise/keyed/w1sun2-midE-s76-7.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail. a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees at sunrise: big old rainforest trees with broad rounded leafy crowns, a strangler fig, lianas hanging from the branches, mossy buttress roots, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, low warm pink-gold sunrise light from the left, warm rim light on the left edges, rich painted texture like a storybook, evenly lit, on one flat plain grey background, no text",
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam, flowers, orchids, rain"
+  },
+  {
+   "name": "w1sun2-midG-s68-23-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/78a59c829a2a9f3886aea9431586fdb07aefd634/reference/prop-sheets/qa-notes/art-1-1-sunrise/keyed/w1sun2-midG-s68-23.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail. a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees at sunrise: big old rainforest trees with broad rounded leafy crowns, a strangler fig, lianas hanging from the branches, mossy buttress roots, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, low warm pink-gold sunrise light from the left, warm rim light on the left edges, rich painted texture like a storybook, evenly lit, on one flat plain grey background, no text",
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam, flowers, orchids, rain"
+  },
+  {
+   "name": "w1sun2-midF-s68-7-hd",
+   "pre": "esrgan",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/78a59c829a2a9f3886aea9431586fdb07aefd634/reference/prop-sheets/qa-notes/art-1-1-sunrise/keyed/w1sun2-midF-s68-7.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf, bark and stone detail. a very wide side-scrolling game background layer of the middle distance seen straight from the side, rainforest trees at sunrise: big old rainforest trees with broad rounded leafy crowns, a strangler fig, lianas hanging from the branches, mossy buttress roots, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, low warm pink-gold sunrise light from the left, warm rim light on the left edges, rich painted texture like a storybook, evenly lit, on one flat plain grey background, no text",
+   "bg": [
+    128,
+    128,
+    128
+   ],
+   "neg": "frame, border, panel, text, letters, watermark, people, animal, sloth, face, blurry, seam, flowers, orchids, rain"
+  }
+ ]
+}

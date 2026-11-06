@@ -53,7 +53,7 @@ test('a lily pad over a stage\'s drawn water sits on its surface, wherever its o
 });
 
 test("1-1 keeps one sky all stage: its sunrise set, and no climb turns the backdrop (R-164.2, Matt 11-04: 'I'd rather just have one sky')", () => {
-  assert.equal(stageBackdropStem('1-1'), 'w1sunrise');
+  assert.equal(stageBackdropStem('1-1'), 'w1sun2');
   for (const s of [1, 2, 3]) {
     const r = new RealPlay('1-1', s);
     const e = r.e as unknown as { proto?: { rise?: unknown; chase?: unknown }; currentStage: { config: { objectiveType: string } } };

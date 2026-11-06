@@ -1,0 +1,8 @@
+1-1 bootprint remake (boot11, art-1-1-sunrise-2, 2026-11-05; the lead's cap $3 plus the $0.13 spent on art-bootprint). rtx-pro-6000 ~$2.75/h. UTC.
+boot11-r1 6aed11d6c78863f9c633b434  img2img (hfbatch/fungusgpu.py), starts boot-a/boot-b x s50/s62 x seeds 5/11 = 8 takes  started 23:31:34Z
+  r1 finished 23:33:14Z (1.7 min measured, ~$0.08). All 8 takes kept the start's flat look (a dark sticker with stripes, no depth,
+  no rim): NOT shown to the lead. Countermeasure: start.py build_relief models the depth (a lit height map) before the repaint.
+boot11-r2 6aed17810e0338d1bb80c8ed  img2img from the relief starts c/d x s45/s56 x seeds 5/11 = 8 takes, 23:55:45Z-~23:57:16Z (~1.5 min, ~$0.07)
+  Kept for the lead: bootd-s56-5, bootc-s56-5, bootd-s56-11 (cut.py 84 x 22, hung from the walking line). Total boot11 ~$0.15 (+$0.13 earlier).
+  The lead picked bootd-s56-5 (11-05 7:02 PM ET) and asked for 110 x 28 game px: reference/prop-sheets/qa-notes/boot11/w1-bootprint-110x28.webp
+  (440 x 112 at 4x; cut.py 110 28), handed to engine-core for drawW1Clue (CLUE_W/CLUE_H 110/28). No further spend.
