@@ -30,9 +30,11 @@ test('ctest survey: the words are plain (no ids, no codes) and short enough for 
 });
 
 test("ctest survey: a run's stretches become its choices in order, each once; unknown gen2 ids never show; the old course passes through", () => {
-  assert.deepEqual(stretchChoices(['w1-forest-edge:start', 'w1-learn:ki', 'w1-stones:sho', 'w1-stone-road:ketsu', 'w1-ropes:ten']), ['the first jumps', 'the stepping stones', 'the rope']);
-  assert.deepEqual(stretchChoices(['w1-not-a-section:ki', 'w9-x:ki']), [...STRETCH_FALLBACK]);
-  assert.deepEqual(stretchChoices([]), [...STRETCH_FALLBACK]);
+  assert.deepEqual(stretchChoices(['w1-forest-edge:start', 'w1-learn:ki', 'w1-stones:sho', 'w1-stone-road:ketsu', 'w1-ropes:ten']), ['The first jumps', 'The stepping stones', 'The rope']);
+  const fallback = ['The first jumps', 'The double-jump gaps', 'The mushroom bounce', 'The high branches'];
+  assert.deepEqual(stretchChoices(['w1-not-a-section:ki', 'w9-x:ki']), fallback);
+  assert.deepEqual(stretchChoices([]), fallback);
+  assert.equal(STRETCH_FALLBACK.length, 4);
   assert.deepEqual(stretchChoices(['Run and stop', 'Long jumps', 'Finish']), ['Long jumps']);
 });
 

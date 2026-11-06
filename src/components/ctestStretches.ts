@@ -131,7 +131,9 @@ export function stretchChoices(labels: readonly string[]): string[] {
     if (id in STRETCH_WORDS) words = STRETCH_WORDS[id];
     else if (/^w\d-/.test(id)) words = null;
     else words = NOT_HARD.has(label) ? null : label;
-    if (words && !out.includes(words)) out.push(words);
+    // (a chip starts with a capital, as Running and Nothing beside it do)
+    const chip = words ? words[0].toUpperCase() + words.slice(1) : '';
+    if (chip && !out.includes(chip)) out.push(chip);
   }
-  return out.length ? out : [...STRETCH_FALLBACK];
+  return out.length ? out : STRETCH_FALLBACK.map((w) => w[0].toUpperCase() + w.slice(1));
 }
