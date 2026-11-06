@@ -508,7 +508,7 @@ The lead ruled that the mixer gets no rope beat (it's being retired), so stage15
 | Stage | Owns | Source |
 |---|---|---|
 | 1-1 | `teaching`, `double-chain`, `bootprint`, `golden-seed`, `first-petal`, `squirrels`, `morning-light`, `canopy-rise` | 1-1.md:19-22, :28, :32, :47-52; the brief's `must` |
-| 1-2 | `meeca-note`, `pink-bell`, `rain`, `roots`, `under-road`, `snake-jolt`, `choosing`, `hibiscus-trail` | BRIEF-1-2 :37-44; 1-2.md:11, :14, :17-22, :26, :47-53 |
+| 1-2 | `meeca-note`, `pink-bell`, `rain`, `roots`, `under-road`, `snake-jolt`, `choosing`, `hibiscus` | BRIEF-1-2 :37-44; 1-2.md:11, :14, :17-22, :26, :47-53 |
 | 1-3 to 1-10 | their current `NOT_ELSEWHERE` items, each under the stage that owns it (`punch` and `combat` 1-3, `kapok-climb` 1-4, `chase` and `folded-petals` 1-5, `lianas` 1-6; `view-north` and `bush` under the stages their briefs name) | w1.ts:73; the ladder |
 
 **2. New `W1Not` words:** `teaching`, `double-chain`, `bootprint`, `golden-seed`, `first-petal`, `squirrels`, `morning-light`,
