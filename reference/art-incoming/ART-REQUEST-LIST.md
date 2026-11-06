@@ -89,7 +89,7 @@ ledges drawn as ONE piece, floor to top (W1-23 to W1-26). The engine then places
 Same master prompt as above. Swap the first line's colours for the world's look (given per world), and attach that world's kit sheet
 (`src/assets/kits/w<N>.webp` from the art pack) instead of World 1's. Each world gets the same four asks first (floor kinds, a hazard, a
 hiding spot, a one-piece vertical), then its own gaps. Today every world has ONE stump and ONE rock (often the same picture), so the
-floor asks come first everywhere. Rocks still always sit on the ground. No skulls, no crosses, no text.
+floor asks come first everywhere. Rocks still always sit on the ground. No skulls or bones as remains (a skull warning sign is fine where asked), no crosses, no text.
 
 ### WORLD 2, river and village (warm evening, mud banks, reeds). Adds to W2-01..12
 | # | Ask for | Size | Why |
@@ -159,7 +159,7 @@ Colours: "deep purple and blue-teal, glowing blue fungi, moonlit".
 | W8-03 | a hollow tree base and a fungus cave to hide in | S | hiding spot |
 
 ### WORLD 9, the volcano (ash, basalt, lava glow)
-Colours: "charcoal basalt, warm orange lava glow, ash grey". NO red spiky flowers on the tops, no skulls.
+Colours: "charcoal basalt, warm orange lava glow, ash grey". NO red spiky flowers on the tops, no skulls or bones in the soil.
 | # | Ask for | Size | Why |
 |---|---|---|---|
 | W9-01 | basalt column tops and cooled lava rocks, flat walkable tops, different widths | S | floor kinds (today one slab) |

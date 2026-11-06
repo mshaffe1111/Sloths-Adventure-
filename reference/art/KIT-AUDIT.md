@@ -23,7 +23,7 @@ the ceiling.** This is the floor, measured the same way in every world.
 |---|---|
 | L1 | Standable floor: at least 3 painted kinds each of stone, stump, log (or the world's kin) |
 | L2 | A hazard that clearly reads as dangerous, painted |
-| L3 | Nothing harmless that reads as dangerous (spiky red plants on landing tops, skulls, barbs) |
+| L3 | Nothing harmless that reads as dangerous (spiky red plants on landing tops, skull/bone remains, barbs) |
 | L4 | Hiding spots |
 | L5 | Climbs |
 | L6 | Vertical pieces in one picture (a wall or trunk), no stacked unrelated supports (a trunk on a plank) |
@@ -55,7 +55,7 @@ the ceiling.** This is the floor, measured the same way in every world.
    - **a square-cut strip**: 1-8's long platform is an earth strip cut square at both ends with a pink line under it.
 4. **Red spiky plants on landing tops (L3):** the W1 branch piece carries a red bromeliad on its top, and W5 draws W1's branch, so
    1-1, 1-5, 5-2, 5-5, 5-8 all have red spikes where Pokey lands. W9's floor strip has red spiky flowers along every top (9-5, 9-8).
-   W9 also shows **skulls in the soil** (9-8), against the no-skulls rule.
+   W9 also shows **skulls in the soil** (9-8), against the lead's no-remains ruling (skulls and bones as soil dressing; a skull warning sign is allowed).
 5. **Stacked supports (L6):** a vine pillar standing on a carved slab (7-8), a trunk under a branch (5-8), birch posts under planks
    and logs on posts (6-8), ladders standing on slabs and a dead trunk hanging with no base (9-2, 9-8), the 1-5 pillar that is earth
    bank on the left and root wall on the right with a seam down the middle.

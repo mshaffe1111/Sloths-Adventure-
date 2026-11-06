@@ -7,7 +7,7 @@ Each line: what, where (stage), proof (still in `reference/art/kit-audit/`). Roa
 ## Now: World 1, built as game-wide gates
 | Gate | What it fails on | Proof |
 |---|---|---|
-| G-dress (dressing gate) | any spiky or red-topped dressing (red bromeliad, red spike flower) whose footprint touches a standable top or the walk line; any skull dressing anywhere | 1-1 / 1-5 branch tops (`1-5.jpg`, `zoom-w1-pitpocket-pillarseam-redplants.jpg`); also fails W5 (5-2, 5-5, 5-8) and W9 (9-5, 9-8) once they run it |
+| G-dress (dressing gate) | any spiky or red-topped dressing (red bromeliad, red spike flower) whose footprint touches a standable top or the walk line; skulls or bones used as soil or dressing REMAINS anywhere (the lead's ruling, 11-05 night, not Matt's words; a warning SIGN with a skull, like Matt's 7-4 flume "skull sign and TURN BACK", is a hazard signal and is allowed) | 1-1 / 1-5 branch tops (`1-5.jpg`, `zoom-w1-pitpocket-pillarseam-redplants.jpg`); also fails W5 (5-2, 5-5, 5-8) and W9 (9-5, 9-8) once they run it |
 | G-kin (kin rule) | a support piece of another kind than what it holds: a trunk or pillar on a plank or slab, a ladder standing on a slab, a trunk with no base | 7-8 (`7-8.jpg`, `zoom-w7-lines-stacked-overlap.jpg`), 5-8, 6-8, 9-2, 9-8; in W1: the 1-5 two-texture pillar (`1-5.jpg`) |
 
 World 1's own code fixes (same lane as its 1-1/1-2 work): the pit-pocket see-through rectangles (1-1, 1-2: `zoom-w1-pitpocket-...jpg`),
@@ -38,7 +38,7 @@ World 1's own code fixes (same lane as its 1-1/1-2 work): the pit-pocket see-thr
 | W8 | see-through rectangle over the backdrop | 8-5 | `zoom-w8-cutbox-pane.jpg` |
 | W8 | hard-cut blue box (minor) | 8-2 | `zoom-w8-cutbox-pane.jpg` |
 | W9 | full-height grey poles | 9-2, 9-5 | `9-2.jpg` |
-| W9 | red spiky flowers on every top; skulls in the soil (G-dress; skulls flagged to the supervisor) | 9-5, 9-8 | `9-8.jpg` |
+| W9 | red spiky flowers on every top; skulls and bones in the soil (G-dress remains line; supervisor: no story depends on them, remove) | 9-5, 9-8 | `9-8.jpg` |
 | W9 | backdrop lava ground at platform height: push back | 9-2 | `9-2.jpg` |
 | W10 | full-height grey poles on every stage (painted chains exist in the W10 kit) | 10-2, 10-5, 10-8 | `10-8.jpg` |
 | W10 | backdrop rock ground under the floating grates: push back | 10-2, 10-5, 10-8 | `10-5.jpg` |
