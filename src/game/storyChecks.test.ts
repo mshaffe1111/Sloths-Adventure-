@@ -19,6 +19,12 @@ test('V19b: an end higher than the route where the bough window begins passes; l
   assert.ok(v.pass, JSON.stringify(v));
   assert.equal(endAboveWindow({ ...st, exitTotemY: 800 }).pass, false, 'level');
   assert.equal(endAboveWindow({ ...st, exitTotemY: 840 }).pass, false, 'lower');
+  // (planted: the window start over a gap reads the route's height before it, the 800 bank, not "no top")
+  const gap: any = { ...st, platforms: [floor(0, 900, 5000), floor(5000, 800, 900), floor(6100, 600, 3400)] };
+  const g = endAboveWindow(gap);
+  assert.equal(g.windowY, 800, JSON.stringify(g));
+  assert.ok(g.pass);
+  assert.equal(endAboveWindow({ ...gap, exitTotemY: 820 }).pass, false, 'over a gap, lower than the route before it');
 });
 
 test('the seed promise: Roll B keeps it; a seed 150 px over its ground, or with no mushroom under it, FAILS (planted)', () => {

@@ -20,7 +20,10 @@ const ascents = levels.filter((l) => l.objectiveType === 'ascent');
  * the old generator's stages (its forks, corridors, flag spacing and platform styles): the new generator's (gen2/game.ts: 5-7, 5-9, World 6)
  * are built from sections instead, and held to STAGE-RULES by src/game/gen2's tests and the inspector
  */
-const oldGen = horizontal.filter((l) => !isGen2Stage(l));
+// (the old generator's stages: not gen2's, nor 1-1, whose Play gen2 builds since 11-06 (stageGenerator.ts). gen2's own gates hold those
+// promises: the quiet line and V-rules (corridors), rolledFlagBreaches (flags), platformPlan's variety and the elements gate (styles),
+// the node code's fork jobs (forks))
+const oldGen = horizontal.filter((l) => !isGen2Stage(l) && !(generateStage(l) as { gen2?: unknown }).gen2);
 
 /** a fixed spread of layout variants (null is the designed layout) */
 const VARIANTS = [null, 371001, 664213];

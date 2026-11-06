@@ -15,8 +15,12 @@ export const WINDOW_AT = 0.67;
 /** V19b: the route's height where the bough window begins (the highest standable piece there: the strictest reading) and the end log's */
 export function endAboveWindow(st: StageLike): { windowX: number; windowY: number; endY: number; pass: boolean } {
   const x0 = st.spawnX ?? 0, windowX = Math.round(x0 + WINDOW_AT * (st.exitTotemX - x0));
-  const at = st.platforms.filter((p) => !p.broken && p.type !== 'bouncy' && !(p as { catch?: boolean }).catch && windowX >= p.x && windowX <= p.x + p.width);
-  const windowY = at.length ? Math.min(...at.map((p) => p.y)) : NaN;
+  const route = st.platforms.filter((p) => !p.broken && p.type !== 'bouncy' && !(p as { catch?: boolean }).catch);
+  const at = route.filter((p) => windowX >= p.x && windowX <= p.x + p.width);
+  // (over a gap there: the route's height where it last stood before the window, the piece ending nearest before it (the lead 11-06: a
+  // window start over a gap read "no top" and failed the line by a ruler's edge, not by the stage))
+  const before = route.filter((p) => p.x + p.width < windowX).sort((a, b) => b.x + b.width - (a.x + a.width) || a.y - b.y)[0];
+  const windowY = at.length ? Math.min(...at.map((p) => p.y)) : before ? before.y : NaN;
   return { windowX, windowY, endY: Math.round(st.exitTotemY), pass: Number.isFinite(windowY) && st.exitTotemY < windowY };
 }
 
