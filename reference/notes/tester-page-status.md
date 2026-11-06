@@ -1,6 +1,17 @@
 # tester-page status (the lead reads this; no send_message until further notice)
 
-## 5:35 PM ET: Dot re-check AFTER the planner's fix (engine-chunks 25d2d115): FAIL. The line is SAID, but never SHOWN
+## CORRECTION (5:37 PM ET): my "FAIL" below is WRONG. It came from my test method, not the game
+
+- My runs put Pokey 450 px before the teach (a teleport). With that, Dot's bubbles never show; the guide gets the lines and drops them.
+- **Walked from the start instead, as a tester does** (engine-chunks 25d2d115, fresh save, sideways, seed 3917):
+  - the coach lines show;
+  - "Jump the little gaps" shows;
+  - **the double line SHOWS: "Flick up again midair to jump twice."** (the new words), at the teach's entry, x 4469 (teach 4440).
+- So the 4:16 answer and the 4:45 baseline (both teleported) are unreliable too. Their "nothing shown" is the same artefact.
+- The 3-seed, both-orientation run, walked from the start, is running now; the result goes here next.
+
+
+## 5:35 PM ET (WITHDRAWN, see the correction above): Dot re-check AFTER the planner's fix (engine-chunks 25d2d115)
 
 Method:
 - The real testers' page (#ctest) built from a worktree of engine-chunks 25d2d115, on a fresh save each run.
