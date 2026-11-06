@@ -720,7 +720,8 @@ export class GameEngine {
    * `softAt`: that ground (null until he has stood somewhere); `softOn`: whether this stage has them.
    */
   private softOn = false;
-  private softAt: { x: number; y: number } | null = null;
+  /** Easy's soft fall: where he is set back (feet), and the ledge's extent there (x0..x1), so he is set back clear of the edge he left by */
+  private softAt: { x: number; y: number; x0?: number; x1?: number } | null = null;
   private checkpoint = { x: 0, y: 0 };
   /** the dark circle opening on him at the flag after a respawn (s left): it replaced a white flash (AN-1) */
   private irisOpen = 0;
@@ -2455,7 +2456,11 @@ export class GameEngine {
       // (Easy's soft falls: the last still ground he stood on; World 8 Normal's heart falls set him back there too)
       if ((this.softOn || this.currentStage.heartFalls?.length) && p.grounded && !p.climbing) {
         const g = this.platforms.find((q) => q.id === this.standingOnId);
-        if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y };
+        // (a narrow piece he only reached by falling more than 100 px, a pit's catch log or a low log under the road, is never where he is set
+        // back: from there the way on can be out of reach, and he walked straight off it again, the red team's F10 on gen2 1-1 Roll A Easy)
+        const prev = this.softAt;
+        const fellOnto = !!prev && g && g.y > prev.y + 100 && g.width < 400 && !(prev.x >= g.x && prev.x <= g.x + g.width);
+        if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60 && !fellOnto) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y, x0: g.x, x1: g.x + g.width };
       }
       // (the water a stage draws, proto.water: a splash where he goes in, once, then the stage's own fall)
       const zone = this.proto?.water?.find((z) => p.x > z.x0 && p.x < z.x1);
@@ -4981,7 +4986,14 @@ export class GameEngine {
     const p = this.player;
     recorder.event('softFall', Math.round(p.x));
     sound.playWhoosh();
-    p.x = at.x;
+    // (set back clear of the edge he left by, 150 px or half the ledge: at the edge itself a held direction walked him straight off
+    // again, 9 set-backs in 12 s on gen2 1-1 Roll A Easy, the red team's F10)
+    let sx = at.x;
+    if (at.x0 !== undefined && at.x1 !== undefined) {
+      const back = Math.min(150, (at.x1 - at.x0) / 2);
+      sx = p.x >= at.x ? Math.min(at.x, at.x1 - back) : Math.max(at.x, at.x0 + back);
+    }
+    p.x = sx;
     p.y = at.y;
     p.vx = 0;
     p.vy = 0;
