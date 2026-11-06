@@ -28,6 +28,7 @@ import { looksAlike } from '../inspect/lookalike.ts';
 import { judgeLines, REFERENCE, splitsOf } from '../../src/game/passLines.ts';
 import { supportCheck } from '../../src/game/mixer/support.ts';
 import { setPick11 } from '../../src/game/testlink1_1.ts';
+import { cameraReachBreaches } from '../../src/game/cameraReach.ts';
 import { asQaBuildForTest } from '../../src/game/playRecorder.ts';
 import { landingKind } from '../../src/game/mixer/catalog.ts';
 import { dressOverDoor, dressThroughPlatform, propBreaches } from '../../src/game/mixer/propSupport.ts';
@@ -252,6 +253,17 @@ if (fs.existsSync(OLD_FILE)) {
     for (const d of dressThroughPlatform(st).slice(0, 2)) bad.push(`${setting} ${v}: ${d.n} (${d.list}) at x ${d.x}: ${d.why}`);
   }
   gate(`nothing dressed over the exit door or through a platform (${N} layouts x 2)`, bad);
+}
+// 5c'-reach. inside the camera's reach (the lead, 11-05, gen2 1-1 Roll B's end log and totem at y -237, off the top of the view): every
+// platform, pickup, dressing piece and the totem where the clamped camera shows it, upright and sideways (cameraReach.ts)
+{
+  const bad: string[] = [];
+  for (const setting of ['normal', 'easy'] as const) for (let v = 1; v <= N; v++) {
+    const b = cameraReachBreaches(buildRoll(cfg, v, setting === 'easy'));
+    for (const q of b.slice(0, 3)) bad.push(`${setting} ${v} ${q.view}: ${q.what} at x ${q.x}: ${q.why}`);
+    if (b.length > 3) bad.push(`${setting} ${v}: and ${b.length - 3} more`);
+  }
+  gate(`inside the camera's reach (platforms, pickups, dressing, the totem; upright and sideways; ${N} layouts x 2)`, bad);
 }
 
 // 5c''. V18 (NODES.md §8.3, §8.0 PIECES): each realised node's pieces match its content row in the key (mixer/nodePieces.ts), from
