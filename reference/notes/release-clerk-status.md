@@ -3,7 +3,7 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 5:59 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 6:04 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
 
 ## 5:45 PM: ready for the final (the lead's 5:31 order) + funcheck on the candidate shape
 - Order at the final: merge engine-core -> `old11-delete.py` -> vite build, `lazy-seeds.py` only if main JS > 4 MiB -> `release-prep.py`
@@ -127,6 +127,15 @@ Last update: 5:59 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3
   Its commit makes `builtOnGen2(cfg)` and has levels.test, stageQuality.test and platformPlan.test judge only the old generator's stages
   (gen2 1-1's flags move to rolledFlags.test, on your 2:37 PM ruling). That narrows three tests' scope: for your Law 5 check when you
   pass engine-chunks (the replacement tests exist and are planted both ways, per its message; I have not verified that yet).
+
+## >>> 6:04 PM ET: 0.9.5 does NOT go live tonight (the lead, 6:02 PM) <<<
+- funcheck IS in this release's gate, and it FAILS on bf3684ec (gen2 1-1 worse than live on pacing, dead walk and nothing bites). No
+  release unless the ruler is proven wrong with evidence. Nothing goes toward main; no PR.
+- The TEST LINK still goes out from bf3684ec (the testers' data answers pacing, dead walk and nothing bites).
+- The rest of the gate keeps running on bf3684ec (suite, lock, clipcheck, drawcheck); every result below.
+- Roadmap: R-165.48 (1-1 gentle intro), R-165.49 (dead walk), R-165.50 (nothing bites after 30 s), R-165.51 (the lock-identical stage
+  moves, the planner: prove checker-only or fix), Day 1, each with its numbers; BUILD-PLAN's "roadmapcheck prints" 607 -> 615.5 with the
+  line saying why. roadmapcheck PASS.
 
 ## >>> THE CANDIDATE: release-0.9.5 @ bf3684ec147b888714fc71be9ec25c6afcd361fc (pushed 5:56 PM ET) <<<
 Build the test link from bf3684ec. Commits after it on this branch are notes only (this file), no code.
