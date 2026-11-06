@@ -1,0 +1,399 @@
+{
+ "A": {
+  "code": "A Tg1< Tg2< Tb< Pc1< F[P1^+|Pg1]< Xc2_< R Wb> R Df1_< Hb2> Sf2^> E",
+  "seed": 79191,
+  "spots": [
+   [
+    "double-teach-block",
+    4871,
+    null
+   ],
+   [
+    "bounce-block",
+    9146,
+    null
+   ],
+   [
+    "fork-FP1Pg1-13899",
+    14019,
+    null
+   ],
+   [
+    "golden-seed",
+    15611,
+    640
+   ],
+   [
+    "end-log-bootprint",
+    35461,
+    587
+   ]
+  ],
+  "types": [
+   "flower",
+   "seed",
+   "exit_totem",
+   "heart"
+  ],
+  "nodes": [
+   [
+    "A",
+    640,
+    null
+   ],
+   [
+    "Tg1<",
+    2189,
+    null
+   ],
+   [
+    "Tg2<",
+    4731,
+    null
+   ],
+   [
+    "Tb<",
+    7714,
+    9406
+   ],
+   [
+    "Pc1<",
+    10494,
+    null
+   ],
+   [
+    "F[P1^+|Pg1]<",
+    13899,
+    null
+   ],
+   [
+    "Xc2_<",
+    16339,
+    null
+   ],
+   [
+    "R",
+    18916,
+    null
+   ],
+   [
+    "Wb>",
+    21753,
+    null
+   ],
+   [
+    "R",
+    24631,
+    null
+   ],
+   [
+    "Df1_<",
+    26060,
+    null
+   ],
+   [
+    "Hb2>",
+    29591,
+    null
+   ],
+   [
+    "Sf2^>",
+    32185,
+    null
+   ],
+   [
+    "E",
+    35019,
+    null
+   ]
+  ],
+  "at": {
+   "double-teach-block": [
+    4871,
+    1155
+   ],
+   "bounce-block": [
+    9146,
+    1155
+   ],
+   "fork-FP1Pg1-13899": [
+    14019,
+    785
+   ],
+   "golden-seed": [
+    15621,
+    674
+   ],
+   "end-log-bootprint": [
+    35461,
+    587
+   ]
+  }
+ },
+ "B": {
+  "code": "A Tg1< Tg2> Tb> Pc1> F[P^+|Pb]> F[P2^+|Pc2]< R Xg2^> R Hb2> Sb2> E",
+  "seed": 110867,
+  "spots": [
+   [
+    "double-teach-block",
+    6483,
+    null
+   ],
+   [
+    "bounce-block",
+    9570,
+    null
+   ],
+   [
+    "fork-FPPb-16037",
+    16157,
+    null
+   ],
+   [
+    "fork-FP2Pc2-19588",
+    19708,
+    null
+   ],
+   [
+    "golden-seed",
+    17596,
+    506
+   ],
+   [
+    "end-log-bootprint",
+    35846,
+    360
+   ]
+  ],
+  "types": [
+   "flower",
+   "seed",
+   "exit_totem",
+   "heart"
+  ],
+  "nodes": [
+   [
+    "A",
+    640,
+    null
+   ],
+   [
+    "Tg1<",
+    3475,
+    null
+   ],
+   [
+    "Tg2>",
+    6343,
+    null
+   ],
+   [
+    "Tb>",
+    9346,
+    9830
+   ],
+   [
+    "Pc1>",
+    12456,
+    null
+   ],
+   [
+    "F[P^+|Pb]>",
+    16037,
+    null
+   ],
+   [
+    "F[P2^+|Pc2]<",
+    19588,
+    null
+   ],
+   [
+    "R",
+    22666,
+    null
+   ],
+   [
+    "Xg2^>",
+    24003,
+    null
+   ],
+   [
+    "R",
+    28332,
+    null
+   ],
+   [
+    "Hb2>",
+    29444,
+    null
+   ],
+   [
+    "Sb2>",
+    32061,
+    null
+   ],
+   [
+    "E",
+    35311,
+    null
+   ]
+  ],
+  "at": {
+   "double-teach-block": [
+    6483,
+    1057
+   ],
+   "bounce-block": [
+    9570,
+    729
+   ],
+   "fork-FPPb-16037": [
+    16157,
+    734
+   ],
+   "fork-FP2Pc2-19588": [
+    19708,
+    788
+   ],
+   "golden-seed": [
+    17596,
+    734
+   ],
+   "end-log-bootprint": [
+    35846,
+    360
+   ]
+  }
+ },
+ "C": {
+  "code": "A Tg1< Tg2< Tb> Pc1> F[P1^+|Pg1]< Xc2^< R Wb^> R Df1_< Hb2< Sf2^< E",
+  "seed": 118786,
+  "spots": [
+   [
+    "double-teach-block",
+    7020,
+    null
+   ],
+   [
+    "bounce-block",
+    10112,
+    null
+   ],
+   [
+    "fork-FP1Pg1-17033",
+    17153,
+    null
+   ],
+   [
+    "golden-seed",
+    18751,
+    1170
+   ],
+   [
+    "end-log-bootprint",
+    36411,
+    1056
+   ]
+  ],
+  "types": [
+   "flower",
+   "seed",
+   "exit_totem",
+   "heart"
+  ],
+  "nodes": [
+   [
+    "A",
+    640,
+    null
+   ],
+   [
+    "Tg1<",
+    3481,
+    null
+   ],
+   [
+    "Tg2<",
+    6880,
+    null
+   ],
+   [
+    "Tb>",
+    9868,
+    10372
+   ],
+   [
+    "Pc1>",
+    13465,
+    null
+   ],
+   [
+    "F[P1^+|Pg1]<",
+    17033,
+    null
+   ],
+   [
+    "Xc2^<",
+    19487,
+    null
+   ],
+   [
+    "R",
+    21968,
+    null
+   ],
+   [
+    "Wb^>",
+    23016,
+    null
+   ],
+   [
+    "R",
+    25978,
+    null
+   ],
+   [
+    "Df1_<",
+    27402,
+    null
+   ],
+   [
+    "Hb2<",
+    30800,
+    null
+   ],
+   [
+    "Sf2^<",
+    33375,
+    null
+   ],
+   [
+    "E",
+    36218,
+    null
+   ]
+  ],
+  "at": {
+   "double-teach-block": [
+    7020,
+    1473
+   ],
+   "bounce-block": [
+    10112,
+    1473
+   ],
+   "fork-FP1Pg1-17033": [
+    17153,
+    1314
+   ],
+   "golden-seed": [
+    18761,
+    1204
+   ],
+   "end-log-bootprint": [
+    36411,
+    1056
+   ]
+  }
+ }
+}

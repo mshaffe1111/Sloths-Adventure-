@@ -58,7 +58,7 @@ const PLAIN = new Map<string, DotLine[]>();
 const TEMPLATED: { line: DotLine; re: RegExp; names: string[] }[] = [];
 const HOLE = /\$?\{(\w+)\}/g;
 // (only the surfaces whose words reach the guide as plain text: the cards, floats and flight read theirs by id or keep their own)
-const SAID = new Set(['stage hint', 'wayside', 'guide', 'boss', 'flight']);
+const SAID = new Set(['stage hint', 'wayside', 'guide', 'boss', 'flight', 'coach']);
 for (const l of ALL_DOT_LINES) {
   if (!l.old || !SAID.has(l.surface)) continue;
   if (/\$?\{\w+\}/.test(l.old)) {

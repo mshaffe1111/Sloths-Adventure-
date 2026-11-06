@@ -52,6 +52,16 @@ import type { Capuchin } from './capuchin.ts';
 import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
 import { w1Chase, w1Kapok, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { W4Roll } from './w4Sections.ts';
+import { buildFromSpec } from './mixer/w1mix.ts';
+import { w1DressWidth } from './w1NewArt.ts';
+import { specFor as specForAll } from './mixer/stages.ts';
+import { skip11Spec } from './testlink1_1.ts';
+/** a stage's mixer spec, except 1-1 on the test link's 'Old 1-1' pick (testlink1_1.ts: main's builder as it is) */
+// (1-5 stays main's in 0.9.5, the lead 11-06: the mixer's 1-5 waits for a later release (R-165.45), so its spec is not used)
+const specFor = (id: string) => (skip11Spec(id) || id === '1-5' ? undefined : specForAll(id as never));
+import { clearDress, ownPetals, placeSeed } from './mixer/post.ts';
+import { dressSize } from './dressArt.ts';
+import { inDoorBox } from './mixer/propSupport.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
@@ -106,6 +116,11 @@ export interface StageHint {
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }
 
+/** what a stage's drawn water is, which picks its art: deadly and teaching water is the world's murky pit water, calm is swim water */
+export type WaterKind = 'calm' | 'deadly' | 'teaching';
+/** the art a kind of water draws with: one rule, read by the draw (engine.ts) and the mixer's element gate */
+export const waterArt = (kind: WaterKind | undefined): 'pit' | 'calm' => (kind === 'calm' ? 'calm' : 'pit');
+
 export interface ProtoExtras {
   hints: StageHint[];
   covers: LeafCover[];
@@ -113,6 +128,22 @@ export interface ProtoExtras {
   beats: Array<[number, number, string]>;
   /** pickups the last pass had to move to where he can get them (flowerReach.ts): a hand-built stage should need none */
   movedPickups?: number;
+  /** the stage places every petal itself (the mixer's stages): the petal pass adds none; mixer/post.ts ownPetals keeps the pass's rules */
+  ownPetals?: boolean;
+  /** scenery trunks behind the boughs (not climbs: protoArt.ts setDecoTrunks), the mixer's stages */
+  trunks?: Array<{ x: number; topY: number; bottomY: number; w?: number; holdY?: number }>;
+  /** leafy clumps at the boughs' free ends, behind them (the mixer's stages; protoArt.ts setDecoTrunks) */
+  leaves?: Array<{ x: number; y: number; w: number; flip?: boolean }>;
+  /** far-off twinkles, dressing only (the mixer's 1-5 n9: "Something shiny, far away"), engine.ts drawGlint */
+  glints?: Array<{ x: number; y: number }>;
+  /** dressing from World 1's new painted pieces (w1NewArt.ts, the mixer's stage spec `dress`): a frame name, its centre x and the ground
+   *  it stands on (1-1: the squirrels who watch him leave); the bootprint clue is its own decal, flush on the piece top at b (w1NewArt.ts drawW1Clue) */
+  mixDress?: Array<{ n: string; x: number; b: number; flip?: boolean }>;
+  /** drawn water a stage declares (engine.ts drawWaterAndFlags): from x0 to x1, its surface at y, a body to below the ground. Its `kind`
+   *  picks its art (the designer, 11-05): 'deadly' (the default) and 'teaching' are the world's painted pit water (World 1's murky creek,
+   *  stageArt.ts drawPitWater), 'calm' is the clear swim water (calmWaterArt.ts), only where he swims, from 6-7 on. Lily pads over it draw
+   *  on its surface; falling in is a splash, then under it, then the stage's own fall */
+  water?: Array<{ x0: number; x1: number; y: number; kind?: WaterKind }>;
   /** 1-2's catch mushrooms (platform ids): one under each high branch's near end, a miss bounced back up to the trail (buildPlan catchUp) */
   catchUps?: number[];
   /** hollows in climb trunks (1-4): drawn on the trunk at this height, glowing once he is close */
@@ -158,6 +189,8 @@ export interface ProtoExtras {
   w3decor?: import('./w3Art.ts').W3Decor[];
   /** Matt's World 3 and 4 puzzle sheets set in as dressing once the stage is built (artDress.ts): pictures only */
   kitDecor?: import('./puzzleArt.ts').KitDecor[];
+  /** dressing pieces the start clearance could find no clear spot for within a screen (placeDress), by name and where they stood */
+  dressDropped?: Array<{ n: string; x: number; b: number }>;
   /** Worlds 1, 2 and 5: the bank, hanging and clutter sets (artDress.ts dressSets; pictures only) */
   dress?: import('./dressArt.ts').DressPiece[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */
@@ -352,7 +385,14 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  */
 export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto', easy = false): GeneratedStage & { proto: ProtoExtras } {
   // water taught before it costs a life (LV-8), the petal trail (petalPass.ts): the pickups are final before the dressing sees them
-  const st = petalPass(teachWater(buildPlan(config, seed, plan, easy)));
+  // (a stage that places its own petals, `proto.ownPetals` (the mixer's stages), gets none added by the petal pass: mixer/post.ts holds
+  // them to the pass's rules itself, and petals.test.ts checks every stage)
+  const made = teachWater(buildPlan(config, seed, plan, easy));
+  const st = made.proto.ownPetals ? made : petalPass(made);
+  if (made.proto.ownPetals) ownPetals(st);
+  // (a spec's secret golden seed over a mushroom, mixer/post.ts placeSeed)
+  const seedAt = specFor(plan)?.post?.seed;
+  if (seedAt) placeSeed(st, seedAt.job);
   // (5-3's quota is a share of the flowers it holds: of those the petal pass kept)
   if (plan === '5-3') st.config = { ...st.config, targetCount: Math.round(st.collectibles.filter((c) => c.type === 'flower').length * W5_HARVEST_SHARE) };
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
@@ -364,7 +404,58 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   // then the dressing, once the stage is final
   const out = st;
   addDress(out, seed);
+  // (a stage built from its spec says whether its dressing is kept off the play line and the shrine: mixer/stages.ts `post`)
+  if (specFor(plan)?.post?.clearDress) clearDress(out, (n) => dressSize(n as never));
   return out;
+}
+
+/** Pokey's body width (engine.ts: the hero is 44 px wide) */
+const HERO_W = 44;
+/** a dressing piece clear of the spawn (one body width either side of his body) and of the stage's own set dressing */
+export function dressClear(d: { n: string; x: number; b: number }, st: { spawnX: number; spawnY: number; exitTotemX?: number; exitTotemY?: number; proto?: ProtoExtras }): boolean {
+  // (nothing in front of the way out: the exit door's box, the door gate's own (the lead, 11-05: gen2 1-1's rolls dressed the door))
+  if (inDoorBox(d, st)) return false;
+  let w = 60, h = 60;
+  try { ({ w, h } = dressSize(d.n as never)); } catch { /* a piece with no frame: 60 px */ }
+  const x0 = d.x - w / 2, x1 = d.x + w / 2;
+  // (the spawn's clear zone: his body, x .. x + 44, and one body width either side; only pieces near his feet's height)
+  if (x1 > st.spawnX - HERO_W && x0 < st.spawnX + 2 * HERO_W && Math.abs(d.b - st.spawnY) < 120) return false;
+  for (const m of st.proto?.mixDress ?? []) {
+    const mw = w1DressWidth(m.n) || 60;
+    if (x1 > m.x - mw / 2 && x0 < m.x + mw / 2 && Math.abs(d.b - m.b) < 80) return false;
+  }
+  return true;
+}
+
+/** a screen's width (px, sideways): the farthest a dressing piece is moved to clear the start */
+const DRESS_MOVE_MAX = 1400;
+/**
+ * The start clearance (the designer's ruling, 11-05 1:02 PM, ENGINE-SPEC 3744e38a0): a dressing piece on Pokey at the start or on a set
+ * piece is MOVED, never deleted. Along its own surface (the landing whose top it stands on), away from the spawn so it keeps its side of
+ * him, to the first spot where it is clear (dressClear) and overlaps no other dressing piece there; its facing and its layer are its own
+ * still. Dropped only when no clear spot lies within a screen on that surface: each such piece is returned in `dropped`.
+ */
+export function placeDress<T extends { n: string; x: number; b: number }>(ds: T[], st: { spawnX: number; spawnY: number; exitTotemX?: number; exitTotemY?: number; platforms: readonly Platform[]; proto?: ProtoExtras }): { kept: T[]; dropped: T[] } {
+  const kept: T[] = [], dropped: T[] = [];
+  const width = (d: T) => { try { return dressSize(d.n as never).w; } catch { return 60; } };
+  const free = (d: T, x: number, others: T[]) => others.every((o) => o === d || Math.abs(o.b - d.b) >= 80 || Math.abs(o.x - x) >= (width(o) + width(d)) / 2);
+  for (const d of ds) {
+    if (dressClear(d, st)) { kept.push(d); continue; }
+    const w = width(d);
+    const on = st.platforms.find((q) => Math.abs(q.y - d.b) < 4 && d.x >= q.x && d.x <= q.x + q.width);
+    const lo = on ? on.x + w / 2 : -Infinity, hi = on ? on.x + on.width - w / 2 : Infinity;
+    // (away from the door when it stands in the door's box, else away from the spawn, keeping its side of him)
+    const dir = inDoorBox(d, st) ? (d.x >= st.exitTotemX! ? 1 : -1) : d.x >= st.spawnX + HERO_W / 2 ? 1 : -1;
+    let at: number | undefined;
+    for (let dx = 10; dx <= DRESS_MOVE_MAX && at === undefined; dx += 10) {
+      const x = Math.round(d.x + dir * dx);
+      if (x < lo || x > hi) break;
+      if (dressClear({ ...d, x }, st) && free(d, x, [...kept, ...ds])) at = x;
+    }
+    if (at === undefined) dropped.push(d);
+    else { d.x = at; kept.push(d); }
+  }
+  return { kept, dropped };
 }
 
 /**
@@ -376,7 +467,17 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
   if (!DRESS_WORLDS.includes(c.worldIndex as (typeof DRESS_WORLDS)[number]) || c.objectiveType === 'boss_lair') return;
   // (Worlds 1-7's old-generator stages, 5-6, 5-8, 7-2, 7-8: dressed too since hf-props, 2026-10-31; theirs go on the stage's own `dress`)
   if (!st.proto && c.worldIndex < 8 && c.secret) return;
-  const ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
+  let ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
+  // (nothing stands on Pokey at the start, and nothing on a stage's own set dressing: no piece within one body width (44 px) of his
+  // spawn, none overlapping a set piece such as 1-1's squirrels (the lead, 11-05: the frog sat on a squirrel). On every stage the engine
+  // builds from its spec; the shipped stages' 60 start pieces (hollows, logs, cages at some worlds' starts) wait on the designer's ruling,
+  // as some may be designed start scenes)
+  // (moved clear, never deleted: the designer's 1:02 ruling, placeDress; what finds no spot is listed on the stage, proto.dressDropped)
+  if (specFor(c.id)) {
+    const { kept, dropped } = placeDress(ds, st);
+    ds = kept;
+    if (dropped.length && st.proto) st.proto.dressDropped = dropped.map((d) => ({ n: d.n, x: d.x, b: d.b }));
+  }
   if (!ds.length) return;
   if (st.proto) st.proto.dress = ds;
   else st.dress = ds;
@@ -384,6 +485,9 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
 
 /** `easy`: built for Easy (only the control test's long jumps differ, gaps; the rest of Easy is easyMode.ts on the built stage) */
 function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = false): GeneratedStage & { proto: ProtoExtras } {
+  // (a stage with a spec (src/game/mixer/stages.ts: 1-1 and 1-5) is built from its data by the mixer; nothing here per stage)
+  const spec = specFor(plan);
+  if (spec) return buildFromSpec(config, seed, easy, spec);
   if (plan === '1-4') return buildKapok(config, seed);
   if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
@@ -1381,6 +1485,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   /** this roll's version of one of the stage's sections (w1Sections.ts) */
   const section = (slot: Slot) => w1Section(w1, w1Stage, slot, seed);
 
+  // TEST-LINK ONLY, REMOVE BEFORE ANY RELEASE (new replaces old; the lead, 11-05). (main's 1-1 builder as it is, kept for the test
+  // link's 'Old 1-1' pick only (testlink1_1.ts: QA builds, never the shipped game,
+  // where 1-1 is the mixer's spec); copied unchanged from main (protoStage.ts on main, its '1-1' plan): the lead's compare, 11-05)
   if (plan === '1-1') {
     // 1-1 Into the Canopy: run and jump. Taught over soft moss, tested on stepping stones at three heights, and twisted at the end
     // into gaps only the second jump crosses. The touch coach teaches the gestures at the start (engine.ts), so the hints come later.
@@ -1865,6 +1972,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     pieces.push({ k: 'snakes', x0, x1: x });
   }
 
+  // (main's 1-5, restored for 0.9.5: the mixer's 1-5 waits for a later release, R-165.45)
   if (plan === '1-5') {
     // 1-5 More Petals: everything so far, mixed. Every group of petals asks for a different move (a climb, a rope, a double jump, a
     // bounce, a punch), then the petals go onto creaking branches that give way: grab and keep moving. The keepsake hides in a fern

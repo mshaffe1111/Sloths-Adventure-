@@ -5,6 +5,9 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
+import { drawW1Pits, paintedBank, waterAcross } from './w1Pits.ts';
+import { drawHollowLog } from './w1NewArt.ts';
+import { drawCutArt } from './w1CutArt.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
 import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
 import { drawW7Face } from './w7FaceArt.ts';
@@ -40,6 +43,21 @@ let kitWorld = 1;
 /** which world's kit the painted layer draws (the engine sets it when a stage starts) */
 export function setKitWorld(w: number) {
   kitWorld = hasKit(w) ? w : 1;
+  stageWorld = w;
+}
+/** the world being played (World 1 paints its pits: w1Pits.ts) */
+let stageWorld = 1;
+/** trunks drawn behind a stage's boughs that are scenery, not climbs (1-1's canopy: no bough floats with nothing holding it) */
+/** `art: 'plain'`: the bare kapok (trunkPlain), so neighbouring trees never share one trunk picture and vine wrap (the mixer's 1-5, S-4) */
+import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
+export { fitTrunks };
+type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
+let decoTrunks: ReadonlyArray<DecoTrunk> = [];
+/** the leafy clumps the boughs' free ends tuck into (1-1's canopy), drawn behind the boughs */
+let decoLeaves: ReadonlyArray<DecoLeaves> = [];
+export function setDecoTrunks(t: ReadonlyArray<DecoTrunk> | undefined, leaves?: ReadonlyArray<DecoLeaves>, platforms?: readonly Platform[], water?: ReadonlyArray<{ x0: number; x1: number; y: number }>) {
+  decoTrunks = platforms ? fitTrunks(t ?? [], platforms, water ?? []) : t ?? [];
+  decoLeaves = leaves ?? [];
 }
 /** a step down to the next bank this short (px) is a plinth's: its painted end stops at the lower bank's top with no fade */
 const SHORT_STEP = 60;
@@ -51,6 +69,14 @@ export function setGroundPaint(on: boolean) {
 /** a bank the painted ground covers whole (drawProtoScene's banks, not a moss floor), once its sheets are in */
 export function bankPainted(p: Platform): boolean {
   return groundOn && (p.height >= 90 || !!p.soil) && !p.push && !p.broken && !p.art && protoArtReady() && warmGround(kitWorld);
+}
+/** a rock the painted layer draws (drawProtoScene: a 50-unit moss stone, or art 'rock'): the drawn ground leaves it alone (terrain.ts),
+ *  or it drew a code earth body under the painted boulder, three gradients a stone a frame (the mixer's 1-5 n4 fork, drawcheck) */
+export const isPaintedRock = (p: Platform) => (p.height === 50 && p.style === 'moss_stone') || p.art === 'rock';
+// (engine-core, 11-05: only on a piece a builder marks, pit: 'drop', which only the mixer's stages do; every live stage keeps terrain's
+// earth under its painted rocks until taking this to every stage is its own tested change, R-165.46)
+export function rockPainted(p: Platform): boolean {
+  return groundOn && isPaintedRock(p) && p.pit === 'drop' && !p.broken && protoArtReady();
 }
 /** whether a world has its own painted kit yet */
 export function hasKit(w: number): boolean {
@@ -468,7 +494,7 @@ export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state:
   if (!protoArtReady()) return false;
   const f = frameOf('branch').f;
   // the painted branch is thicker than the walkable strip: its top lines up with the platform top
-  const h = Math.max(30, Math.min(54, (p.width * f.h) / f.w));
+  const h = Math.max(30, Math.min(54, (p.width * f.h) / f.w)) * (p.thick ?? 1);
   // the bark's top on the walkable top (2 px down, so his feet sink into the moss a touch rather than hover)
   const name: Name = state === 'creak' ? 'branchCreak' : 'branch';
   const y = p.y + 2 - solidTop(name, 0.29) * h;
@@ -492,7 +518,18 @@ export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state:
   }
   const { img, f: fr } = frameOf(name);
   // (each slice 0.5 px wider, so no hairline of background shows between them)
+  // (bare: only the bark, from just above the walkable top down; the painted plant and moss above it left out)
+  // (bare: from just above the walkable top down; and a painted end cut where a neighbour's begins a hop away: drawX0/drawX1)
+  const cut = p.bare || p.drawX0 !== undefined || p.drawX1 !== undefined;
+  if (cut) {
+    const cx0 = p.drawX0 ?? p.x - 80, cx1 = p.drawX1 ?? p.x + p.width + 80;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(cx0, p.bare ? p.y + 1 : y - 40, cx1 - cx0, (p.bare ? h + 12 : h + 60));
+    ctx.clip();
+  }
   for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c.sx * fr.w, fr.y, c.sw * fr.w, fr.h, c.dx, y, c.dw + 0.5, h);
+  if (cut) ctx.restore();
   return true;
 }
 
@@ -782,6 +819,10 @@ export function paintedPlatforms(platforms: Platform[]): Set<number> {
     if (p.push) out.add(p.id);
     else if (p.height < 50 && (p.style === 'branch' || (ownKit() && thinKit(p)))) out.add(p.id);
     else if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') out.add(p.id);
+    // (a hollow log: Matt's painted hollow log, w1NewArt.ts)
+    else if (p.hollow) out.add(p.id);
+    // (a cut World 1 piece: the art director's, w1CutArt.ts)
+    else if (p.cut) out.add(p.id);
   }
   return out;
 }
@@ -966,7 +1007,9 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
   }
   const shaded = new Set<string>();
   const shadeUpTo = (y: number) => {
-    for (const [k, o] of pits) if (!shaded.has(k) && o.top >= y - 2) { shaded.add(k); pitShade(ctx, o); }
+    // (a pit the stage's drawn water fills is water, not a dark hollow: its shade stood over the creek as a see-through box with straight
+    // sides, Matt's still, 11-05)
+    for (const [k, o] of pits) if (!shaded.has(k) && o.top >= y - 2) { shaded.add(k); if (!waterAcross(o.x0, o.x1)) pitShade(ctx, o); }
   };
   // (the lowest first: a pit's floor and its step go under the banks either side, whose faces then cover their ends)
   for (const p of [...banks].sort((a, b) => b.y - a.y)) {
@@ -1154,8 +1197,12 @@ export function drawProtoScene(
   // 200 over for the art that hangs past a platform's box)
   const vy0 = view.y0 ?? -Infinity, vy1 = view.y1 ?? Infinity;
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80 && p.y + p.height > vy0 - 200 && p.y < vy1 + 200;
-  const banks = platforms.filter((p) => (p.height >= 90 || p.soil) && !p.push && !p.broken && !p.art);
+  // (the banks of earth: w1Pits.ts paintedBank, the same rule its pits' walls are found by)
+  const banks = platforms.filter(paintedBank);
+  // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
+  if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'under');
   if (!drawGroundChunks(ctx, platforms, banks, view)) drawGround(ctx, platforms, banks, view);
+  if (stageWorld === 1) drawW1Pits(ctx, platforms, view, 'over', drawChaseBroken);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;
   for (const v of vines) {
@@ -1185,6 +1232,44 @@ export function drawProtoScene(
     }
     ctx.restore();
   }
+  // the scenery trunks: the same painted kapok, set back in the shade (darker), so it reads as the tree behind and not a climb
+  for (const v of decoTrunks) {
+    if (v.x < view.x0 - 260 || v.x > view.x1 + 260 || v.bottomY < vy0 - 40 || v.topY > vy1 + 40) continue;
+    const plain = v.art === 'plain';
+    const pf = plain ? PROTO2_FRAMES.trunkPlain : tf;
+    const tw = 84 * (v.w ?? 1);
+    const th = (tw * pf.h) / pf.w;
+    const y0 = Math.max(v.topY, vy0 - 40), y1 = Math.min(v.bottomY, vy1 + 40);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(v.x - tw, y0, tw * 2, y1 - y0);
+    ctx.clip();
+    // (opaque: see-through, the pieces' overlaps showed as rings; at 1.6-2.6 times a climb trunk's width it reads as a kapok, not a climb)
+    // (the pieces overlap by their painted cap, scaled with the trunk: at 2x the plain 6 px left a cut ring showing between them)
+    const lap = Math.max(6, th * 0.12);
+    for (let y = v.bottomY - th; y > v.topY - th; y -= th - lap) {
+      if (y > vy1 + 20 || y + th < vy0 - 20) continue;
+      if (!plain || !blit2(ctx, 'trunkPlain', v.x - tw / 2, y, tw, th)) blit(ctx, 'trunk', v.x - tw / 2, y, tw, th);
+    }
+    ctx.restore();
+  }
+  // the leafy clumps the boughs' free ends tuck into (World 1's painted bush), behind the boughs
+  if (decoLeaves.length) {
+    load2();
+    if (ready2 && img2) {
+      for (const l of decoLeaves) {
+        if (l.x < view.x0 - 200 || l.x > view.x1 + 200 || l.y < vy0 - 200 || l.y > vy1 + 200) continue;
+        // (World 1's three foliage pieces, not one bush stamped at every end: the quality supervisor, 11-04)
+        const b = PROTO2_FRAMES[l.kind ?? 'bushWide'];
+        const bh = (l.w * b.h) / b.w;
+        ctx.save();
+        ctx.translate(l.x, l.y);
+        if (l.flip) ctx.scale(-1, 1);
+        ctx.drawImage(img2, b.x, b.y, b.w, b.h, -l.w / 2, -bh * 0.62, l.w, bh);
+        ctx.restore();
+      }
+    }
+  }
   // branches (a perch where a climb trunk ends under one)
   const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope);
   for (const p of platforms) {
@@ -1208,7 +1293,9 @@ export function drawProtoScene(
         drawBranchArt(ctx, p, 'snapped', t - st.brokeAt.get(p.id)!);
       } else {
         st.brokeAt.delete(p.id);
-        drawBranchArt(ctx, p, p.fragileTimer !== undefined ? 'creak' : 'whole', 0);
+        // (a creaking limb, World 1's: 1-2's rotten wood, 1-4's limbs, 1-5's snap twigs, shows its creaking crack before he steps on it:
+        // a kid has to see it will break, STAGE-RULES §5b item 3)
+        drawBranchArt(ctx, p, p.fragileTimer !== undefined || p.creak !== undefined ? 'creak' : 'whole', 0);
       }
       continue;
     }
@@ -1216,7 +1303,9 @@ export function drawProtoScene(
   }
   for (const p of platforms) {
     if (!vis(p)) continue;
-    if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') drawRockArt(ctx, p);
+    if (p.cut) drawCutArt(ctx, p);
+    else if (isPaintedRock(p)) drawRockArt(ctx, p);
+    else if (p.hollow) drawHollowLog(ctx, p);
   }
   for (const p of platforms) {
     if (!vis(p) || !p.push || p.art) continue; // (a pushed boulder is World 4's to paint: w4Play.ts)

@@ -282,6 +282,16 @@ export interface Platform {
   fragileTimer?: number;
   /** World 7 ruin tiles: seconds the tile holds once stepped on (instead of the usual 1.1) */
   crumbleAfter?: number;
+  /** a creaking limb (1-4 on, the mixer's creaky boughs; World 1's own branch art): seconds it holds once stepped on (instead of the usual
+   *  1.1); unlike crumbleAfter it keeps the branch's look (the notch and the shake), not World 7's tiles */
+  creak?: number;
+  /** drawn as bare bark: the branch picture without its bromeliad and moss (draw only) */
+  bare?: boolean;
+  /** the branch picture drawn this much thicker or thinner (0.8-1.3; draw only, the walkable top is unchanged) */
+  thick?: number;
+  /** draw only: the painted bough cut at these world x (a neighbour's end a hop away: their painted ends overlapped) */
+  drawX0?: number;
+  drawX1?: number;
   /** a boss ledge that starts cracking (becomes fragile) from this phase of the fight */
   crackFrom?: number;
   broken?: boolean;
@@ -305,6 +315,9 @@ export interface Platform {
   crown?: boolean;
   /** World 2: a cluster of lily pads floating on still water (painted from Matt's river sheet, riverArt.ts) */
   lily?: boolean;
+  /** a hollow log (World 1, Matt's painted hollowlog-moss / -plain, w1NewArt.ts): the platform is its shell's top (HOLLOW_SHELL tall), the
+   *  painted log hanging from it to the floor, its inside clear to walk through: w1NewArt.ts hollowLogSize gives its height and clearance */
+  hollow?: 'moss' | 'plain';
   /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
   lift?: import('./lift.ts').LiftInfo;
   /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts), and World 4's little mossy rocks to hop (`rock`, protoArt drawRockArt), the mailbox post at a porch's dead end in 2-6 (`post`, a knot: `lip`), and 6-8's ledges in World 6's pieces (`stilt`, w6StiltArt.ts) */
@@ -317,6 +330,16 @@ export interface Platform {
   /** a small piece of the ground under 90 tall (a soft pit's low step, or its walls under the banks): painted as the soil like a bank, or
    *  (a wall under a bank) left to that bank's soil, never drawn as a platform (protoArt.ts drawProtoScene, terrain.ts) */
   soil?: boolean;
+  /** World 1: a floorless gap beside this bank is a painted drop, a fall, not water (w1Pits.ts: a builder sets it on either bank; the mixer
+   *  marks every bank) */
+  pit?: 'drop';
+  /** a catch a builder lays under a gap (the mixer's 'catch' piece): a fall's floor, left with a hop */
+  catch?: boolean;
+  /** drawn as its own kind, never given another look for variety (platformPlan.ts planThin): a world whose painted kit draws its pieces,
+   *  where variety comes from the sections (W1-ART-AUDIT §3.1, Matt's approval 11-05: gen2 World 1) */
+  ownLook?: boolean;
+  /** the art director's cut World 1 piece it is drawn as (w1CutArt.ts W1_CUT; gen2 World 1's w1Finish picks it) */
+  cut?: string;
 }
 
 /**
@@ -423,6 +446,8 @@ export interface Collectible {
   isLocked?: boolean;
   /** the sanctuary door, sealed, with the new HUD (beta): how many of the goal are still missing (the door shows it) */
   missing?: number;
+  /** a relic drawn as one of Meeca's trail marks (the mixer's 1-5 marks goal): her M cut in a slab of bark, glowing */
+  mark?: 'meeca';
   /** a story find (note, book or keepsake): which one (see finds.ts) */
   findId?: string;
   /** World 3: one of Grandma's things hidden in a fern (a relic with `hidden`): what it is, for the words when it turns up */
