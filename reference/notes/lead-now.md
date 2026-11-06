@@ -25,6 +25,7 @@ tempo and branching, boughs late). Prove it on 1-1. Matt plays 3 rolls next to o
 else is built. Nothing reaches main until Matt plays it and says "push".
 
 ## The board: TOMORROW 11-06, the order (rewritten after the 1-1 red team, 11-05 ~10:55 PM ET)
+1-1 clean today: 12/16 on seeds 1-16 (both settings; 4 fail: seeds 3, 11, 13, 15, loosened + codeErrors), engine-core 6366863d2, Round 6 entered except (d) #20/27 exits and (e) the B7 audit. Designer's CHECK set (1 + k*7919): 10/16 before #63-65.
 Red team reports (3 blind + a cross-exam round): reference/engine/redteam-2026-11-05/ (RT-PLAYER, RT-ENGINE, RT-PLAN). The shared root,
 in their words: "done means a green report, not the shipped stage". Tonight's state: engine-core e33d65cf9 (art swap step 1; #63-65 in
 flight), engine-chunks 31b14a2f (pit-step fix), engine-spec af831c63e (FR9). Matt's link is still c2710323b (A/B/C as he played them).
