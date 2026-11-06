@@ -3,7 +3,7 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 6:22 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 6:45 PM ET, 2026-11-06 (times from `TZ=America/New_York date`)
 
 ## 5:45 PM: ready for the final (the lead's 5:31 order) + funcheck on the candidate shape
 - Order at the final: merge engine-core -> `old11-delete.py` -> vite build, `lazy-seeds.py` only if main JS > 4 MiB -> `release-prep.py`
@@ -127,6 +127,31 @@ Last update: 6:22 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3
   Its commit makes `builtOnGen2(cfg)` and has levels.test, stageQuality.test and platformPlan.test judge only the old generator's stages
   (gen2 1-1's flags move to rolledFlags.test, on your 2:37 PM ruling). That narrows three tests' scope: for your Law 5 check when you
   pass engine-chunks (the replacement tests exist and are planted both ways, per its message; I have not verified that yet).
+
+## >>> 6:45 PM ET: PR #63 merged (main e92bdcdb); the DEPLOY FAILED on pitPocket.test; the live site is still 0.9.4 <<<
+- "Publish game to the gh-pages branch" run 42312637467: test (4) FAILED on `not ok 262 - gen2 1-1 Roll B's dip pockets are found (x 3671,
+  4070, ...)` (pitPocket.test.ts:21:1, error '2003 2387 5155 6289 10207 13051 14551 15805 16672 24583'): the same red as my local shard 1.
+  The other test shards were cancelled; **publish SKIPPED** (the gate held the live site at 0.9.4). gates / gates (artcheck, knowncheck,
+  roadmapcheck, clipcheck), gates / drawcheck and gates / rolled (seedlist 1-1 --check, buildcheck) all PASSED in CI.
+- The APK build run 42312637346 was still running at the time of writing (it builds from main without the test shards: check whether it
+  publishes v0.9.5 to Releases before the site does, and whether that is wanted).
+- **Follow-up fix PR needed tonight:** re-pin pitPocket.test.ts:21 to a seed on the final's proven list (or the new Roll B 15458) with that
+  seed's real pocket x values, planted (it must fail when isPocket breaks), then re-run the whole suite. Owner: tester-page (its test) or the lead.
+
+## The full gate on bf3684ec (= the merged code), final
+| # | Gate | Result |
+|---|---|---|
+| 1 | tsc | PASS |
+| 2 | tests, 3 shards | **FAIL: 1 real red**, pitPocket.test.ts:21 (above). Shard 1 775 / 773 pass / 1 fail / 1 todo (main's); shard 2 863 / 862 / 1 (stageQuality:287 timing under load; PASS alone, a load artefact); shard 3 828 / 827 / 0 / 1 todo (main's). No new todo |
+| 3 | vite build, no asset over 4 MiB | PASS (main JS 4,162,883 B) |
+| 4 | npm run build:store | PASS |
+| 5 | artcheck | PASS |
+| 6 | knowncheck | PASS |
+| 7 | clipcheck | **PASS** (`PASS (83 known) (257 s)`) |
+| 8 | drawcheck | **PASS** (`PASS (366 s)`) |
+| 9 | roadmapcheck | PASS |
+| 10 | funcheck | FAIL, named and accepted (Matt; the lead 6:20 PM) |
+| 11 | lockall --check --intended 1-1 | **PASS** (`lock: 101/102 stages unchanged`, 1-1 intended, exit 0) |
 
 ## >>> 6:32 PM ET: GATE RED on bf3684ec (PR #63): pitPocket.test.ts:21 <<<
 (This note is on branch release-0.9.5-notes, the lead's 6:32 PM order: nothing more is pushed to release-0.9.5.)
