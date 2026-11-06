@@ -3,7 +3,7 @@
 Brief: the lead's plan `reference/notes/release-plan-1-1.md` on ccr-23292c36-550qmt. Branch: `release-0.9.5`, cut from origin/main 68b31e665 (0.9.4).
 Never from ccr-0d59a91c-oy3imz, the lead branch or engine-spec (D40).
 
-Last update: 6:03 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
+Last update: 6:25 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3:30/3:35 stamps were written early, at about 3:20 and 3:29).
 
 ## 5:45 PM: ready for the final (the lead's 5:31 order) + funcheck on the candidate shape
 - Order at the final: merge engine-core -> `old11-delete.py` -> vite build, `lazy-seeds.py` only if main JS > 4 MiB -> `release-prep.py`
@@ -127,6 +127,19 @@ Last update: 6:03 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3
   Its commit makes `builtOnGen2(cfg)` and has levels.test, stageQuality.test and platformPlan.test judge only the old generator's stages
   (gen2 1-1's flags move to rolledFlags.test, on your 2:37 PM ruling). That narrows three tests' scope: for your Law 5 check when you
   pass engine-chunks (the replacement tests exist and are planted both ways, per its message; I have not verified that yet).
+
+## >>> 6:25 PM ET: the release is ON again (the lead, 6:20 PM) <<<
+- Matt played bf3684ec 5 times, "felt great", wants it released and merged (relayed by the lead). funcheck ships as a NAMED, ACCEPTED
+  FAIL on the lead's ruling (dead walk inside the 4 s quiet line; nothing bites = ruling A, a forgiving teaching stage; no gentle intro
+  open, next week's first fix). The list is NOT lowered or re-recorded. Law 5 says never "expected-fail" a check: this is Matt's and the
+  lead's explicit decision, recorded here and in the PR body, not mine.
+- Roadmap rows R-165.48-.51 updated to say so (R-165.48 next week's first fix); roadmapcheck PASS.
+- **PR body draft: `reference/qa-reports/0.9.5/PR-BODY.md`** (what changed, merged branches, the gate table, funcheck's findings with
+  numbers and Matt's acceptance, the §6 table with proof or "not checked, and why", rough spots). Gate cells still GATE-2/7/8/11 until those
+  finish; I fill them and say so here.
+- Shard 2 has 1 red: `stageQuality.test.ts:287 generating a stage is quick: p90 under 500 ms, none over 1500 ms` -> `p90 613 ms`. It ran
+  with 4 other heavy jobs on 4 CPUs (2 shards, the lock, my vite/funcheck runs). I re-run it ALONE when the rest ends; it is red until
+  that run passes. Never loosened.
 
 ## >>> 6:03 PM ET: 0.9.5 does NOT go live tonight (the lead, 6:02 PM) <<<
 - funcheck IS in this release's gate, and it FAILS on bf3684ec (gen2 1-1 worse than live on pacing, dead walk and nothing bites). No
