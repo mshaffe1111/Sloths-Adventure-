@@ -668,6 +668,8 @@ interface LocalGap {
   x0: number;
   x1: number;
   y: number;
+  /** the gap's lower lip (its far or near ledge, whichever lies lower): a catch bough hangs under it, never under the upper one */
+  lo: number;
   pit: boolean;
   /** a section's water gap (the rule's `water`): nothing laid under it, whatever the world's falls */
   water?: boolean;
@@ -818,8 +820,10 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       x = a.x + a.w + gap;
       y = a.y + dy;
       // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
-      const back = glide && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
+      // (and so does a block's (NODES §8.7, Roll B 11-05): stepped toward its landing, a stair inside the gap took off a single's reach
+      // under the lip and the double was two hops; the take-off side's stair keeps the block a block)
+      const back = (glide || pc.block) && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
     } else if (pl.kind === 'rope') {
       // a ledge past a gap no jump or glide clears, a shimmy rope across (rope.ts; the rope itself is hung once both are placed: layStage)
       // (its gap is a liana's, `back` (World 8, 2026-10-31): a soft pit climbing back to `after`, or World 8 Normal's heart fall)
@@ -827,7 +831,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const gap = Math.max(ROPE_MIN_GAP + 90, roll(rng, pl.gap));
       x = a.x + a.w + gap;
       y = a.y;
-      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, pit: true, back: { lips: [a.y, y] }, ...(pl.soft ? { soft: true } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, lo: Math.max(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.soft ? { soft: true } : {}) });
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -883,7 +887,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y + dy;
       lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, { x, y, w }, budget.difficulty);
       lv.hang.gap = [a.x + a.w, x];
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), lo: Math.max(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}) });
     } else if (pl.kind === 'climb') {
       const a = ref(pl.on);
       if (pc.shape !== 'vine') throw new Error(`gen2 section ${tpl.id}: ${pc.key} climbs, so its shape is 'vine'`);
@@ -1409,7 +1413,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           placed.seam.push(...platforms.slice(before));
         } else if (!g.water && FR?.catchDrop) {
           const before = platforms.length;
-          catchUnder(g0.x0, g0.x1, g0.y);
+          // (under the gap's LOWER lip, as a join's is: hung under the upper one it was a step down onto the lower bough, Roll A 11-05)
+          catchUnder(g0.x0, g0.x1, oy + g.lo);
           placed.seam.push(...platforms.slice(before));
         }
       }

@@ -109,3 +109,37 @@ test('a bounce block\'s lip lays 200-220 px up, clamped to the bounce\'s reach f
   const P = (q: typeof floor) => ({ id: 1, x: q.x, y: q.y, width: q.w, height: q.h, type: 'solid' as const });
   assert.equal(blockBreaches(({ blocks: [{ uid: 's1', key: 'lip', kind: 'bounce', landing: P(lip) }] }) as unknown as Laid, [P(floor), P(lip)]).length, 1);
 });
+
+// (Roll B, 11-05, the porter: w1-bank-double-teach's D, a bank 136-140 px up across a soft gap, had its soft pit's step laid INSIDE the
+// gap with its top halfway up, so the double was two single hops (74 + 70) and a no-double bot took off from the step. A block's gap
+// keeps the block: its soft pit climbs back to the take-off, never up toward the block's landing; nothing in it stairs past the lip)
+test('a double block across a soft pit holds: no pit step inside its gap stairs a single jump up to the landing (12 seeds)', async () => {
+  await import('../headlessDom.ts');
+  const { buildGen2Stage } = await import('./pipeline.ts');
+  const { SPRINT_GRAPHS } = await import('./graphs.ts');
+  const { cfg, kit, manifest } = await import('./toyWorld.ts');
+  const { validateStage } = await import('../levelCheck.ts');
+  type T = import('./types.ts').SectionTemplate;
+  const softDouble: T = {
+    id: 'toy-soft-double', name: 'a bank a double up over a soft pit', archetypes: 'any', phases: ['ki', 'sho'], difficulty: 3, teaches: 'step-up',
+    pieces: [
+      { key: 'low', shape: 'bank', w: [360, 360], place: { kind: 'start' } },
+      { key: 'top', shape: 'bank', w: [400, 400], place: { kind: 'double', after: 'low', dy: [-138, -138], share: [0.2, 0.2], soft: true }, block: 'double' },
+    ],
+    entry: { piece: 'low', kind: 'ground' }, exit: { piece: 'top', kind: 'ground' }, exitDy: -138, sockets: [], mirrorable: false,
+  };
+  const k = { ...kit, manifest: { ...manifest, sections: [...manifest.sections, softDouble], graphs: { list: [...SPRINT_GRAPHS], briefs: { '5-7': { ends: 'quiet', trend: 'up', branching: 'none', teaches: ['step-up'] } } } } } as typeof kit;
+  let laidN = 0;
+  for (const seed of Array.from({ length: 12 }, (_, i) => 9 + i * 61)) {
+    const st = buildGen2Stage({ config: cfg('5-7', 'sprint'), kit: k, seed, difficulty: 'normal' });
+    assert.ok(!st.gen2.repairs.some((r) => /toy-soft-double swapped out: the block is walked round/.test(r.note)), `seed ${seed}: ${st.gen2.repairs.map((r) => r.note).filter((n) => /toy-soft-double/.test(n)).join(" ; ")}`);
+    const sec = (st.gen2.sections as Array<{ template: string; x0: number; x1: number }>).find((q) => q.template === 'toy-soft-double');
+    if (!sec) continue;
+    laidN++;
+    // the no-double bot: the same stage checked on a stage where the double is not yet counted (1-2), up to the teach's landing
+    const top = st.platforms.filter((p) => p.x >= sec.x0 - 1 && p.x < sec.x1 && p.type === 'solid').sort((a, b) => a.y - b.y)[0];
+    const cut = { ...st, config: { ...st.config, worldIndex: 1, miniIndex: 2 }, exitTotemX: top.x + 40 } as typeof st;
+    assert.equal(validateStage(cut as never).ok, false, `seed ${seed}: the teach's bank (x ${top.x}, y ${top.y}) is reached without a double`);
+  }
+  assert.ok(laidN >= 4, `the soft double teach laid on ${laidN} of 12: the test would not see the rule`);
+});
