@@ -70,6 +70,9 @@ After 1-1 is proven, these run as their own lanes, one engine.ts holder at a tim
   defect: Easy step placement vs dressing spacing. Owner later.
 - Art follow-ups (art-1-1-sunrise-2 95ce83f2d README): R-165.25 still says paused (now done for 1-1); 1-3 moves off w1sunrise after its own
   stills check, then w1sunrise is deleted; the bootprint's Stage Cleared card picture is still the old flat one.
+- The w1sun2-near (and w1sunrise-near) backdrop has two painted mushrooms on its log line. Through a pit gap they can line up
+  behind a catch branch and read as a mushroom in the air (parallax). Tonight: accepted as background. Tomorrow: REPLACE the near layer
+  on HF (Matt: bad art is replaced, not patched; no inpainting).
 - 1-1's map card text: "Run the high branches of the kapok trees" (the kapok is 1-4's). Story wording, for the supervisor.
 
 ## My traps (read every time)
