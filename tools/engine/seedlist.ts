@@ -66,12 +66,12 @@ const seeds: number[] = [], quiet: number[] = [], outro: number[] = [], plans: s
 let tried = 0;
 const t0 = Date.now();
 // (parallel builds, the lead 11-06: --worker i/n tries only seeds where seed % n === i, keeps --count / n of them and writes them to
-// --part FILE (no list file); --merge a.json,b.json,... re-lays every seed of the union (the same filters) and writes the list from them)
+// --part FILE (no list file), over --from..--to (default 1..count x 200); --merge a.json,b.json,... re-lays every seed of the union (the same filters) and writes the list from them)
 const worker = arg('--worker', ''), part = arg('--part', ''), merge = arg('--merge', '');
 const [wi, wn] = worker ? worker.split('/').map(Number) : [0, 1];
 const keep = worker ? Math.ceil(want / wn) : want;
 const only = merge ? merge.split(',').flatMap((f) => JSON.parse(fs.readFileSync(f, 'utf8')) as number[]).sort((a, b) => a - b) : null;
-const tries = only ?? function* () { for (let seed = 1; seed < want * 200; seed++) if (seed % wn === wi) yield seed; }();
+const tries = only ?? function* () { for (let seed = Number(arg('--from', '1')); seed < Number(arg('--to', String(want * 200))); seed++) if (seed % wn === wi) yield seed; }();
 for (const seed of tries) { // (1-1's promises and the quiet line keep few rolls, the lead's 0.9.5 rulings)
   if (seeds.length >= keep) break;
   tried++;
