@@ -27,7 +27,7 @@
   - sideways, seed 3576: said at x 5443, teach 5407, first gap 5695;
   - upright, seed 3834: said at x 5326, teach 5293, first gap 5619.
   - In all, **8 of 8 walked runs pass.**
-- **Seed 158 (the one that failed before): PASS, upright and sideways** (6:0x PM). Forced through the page's own play order
+- **Seed 158 (the one that failed before): PASS, upright and sideways** (5:57 PM). Forced through the page's own play order
   (`sloth_play11_order`, entry 7):
   - sideways: the bubble said "Flick up again midair to jump twice." at x 6681;
   - upright: at x 6684;
