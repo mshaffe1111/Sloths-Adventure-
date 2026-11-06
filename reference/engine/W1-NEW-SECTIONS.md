@@ -486,3 +486,13 @@ I scanned all 16 laid seeds (buildGen2Stage, w1World, engine-core 4ec76da73; scr
 **The supervisor's check of Round 7 (d): PASS (8:48 AM). Two amendments:**
 - **The goal section is exempt from FR10 and FR9:** #15, #23 and #30, the walk-on to the end log and the totem. Its calm walk is the brief's "resolve, not triumph" (1-1.md:23), so it gets no beat stumps. The quiet gate counts the stage only up to the goal section's entry.
 - **The canopy rests' soft beat (#11 `w1-high-walk`, #19 `w1-bough-bench`) is a short step between boughs:** a ≤ 80 px rise or a small gap, never a stump on a bough. Stumps stand on the ground.
+
+## On file for 1-5's move to gen2: the rope gap (designer, 11-06 9:14 AM ET)
+The lead ruled that the mixer gets no rope beat (it's being retired), so stage15's rope promise is a known failure until 1-5 moves to gen2. When it does, 1-5's test node takes this section:
+- **`w1-rope-gap` "The rope gap"** (test, rope, ketsu):
+  - two banks at the same height (rope anchors within ±40 px, LABELS §2 rope row) with a shimmy rope between them;
+  - the gap is wider than a double's reach (≥ 313 px), so the rope is required (B1);
+  - a soft floor under it, and a miss leads back (B2b);
+  - needs `shimmy` (taught at 1-3; dotLinesData skill.shimmy.note).
+  - Versions: **a** `w h R w`; **b** `w R h R w` (R = a shimmy across).
+- 1-5's `taughtBefore` adds `shimmy`, plus `punch` if it's missing.
