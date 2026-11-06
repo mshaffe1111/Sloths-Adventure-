@@ -15,7 +15,7 @@
 import { DOT_LINES } from '../../dotLinesData.ts';
 import type { Move, NodeJob, Phase, PortKind, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { DOUBLE_RISE, reachJump } from '../../physics.ts';
-import { hollowLogSize } from '../../w1NewArt.ts';
+import { hollowLogSize, w1DressFacing, w1DressWidth } from '../../w1NewArt.ts';
 import { pickCut, W1_CUT } from '../../w1CutArt.ts';
 import type { Platform } from '../../types.ts';
 import { SPRINT_GRAPHS } from '../graphs.ts';
@@ -1402,7 +1402,65 @@ export function w1Finish<T extends { platforms: Array<{ ownLook?: boolean; cut?:
   //  Roll 5's upright still; a plank may float)
   const onGround = (p: Pick<Platform, 'x' | 'y' | 'width' | 'height'>) => st.platforms.some((q) => q !== p && q.type === 'solid' && Math.abs(q.y - (p.y + p.height)) <= 6 && q.x <= p.x + p.width / 2 && q.x + q.width >= p.x + p.width / 2);
   for (const p of st.platforms) if (p.type === 'solid') { const c = pickCut(p); if (c && (W1_CUT[c].kind === 'log' || onGround(p))) p.cut = c; }
+  w1Squirrels(st as never);
   return st;
+}
+
+/** the squirrel poses (w1-new): a roll's order of them is shuffled by its seed, so the poses vary roll to roll */
+const SQUIRREL_POSES = ['squirrel-sit', 'squirrel-wave', 'squirrel-tip', 'squirrel-haul', 'squirrel-run'] as const;
+/** the least a stage is dressed with (live 1-1's brief: "the squirrels came to watch him leave"; w1NewArt.test holds it) */
+export const SQUIRREL_MIN = 3;
+type DressStage = {
+  platforms: Platform[]; spawnX: number; spawnY: number; exitTotemX?: number; exitTotemY?: number;
+  collectibles?: Array<{ x: number; y: number }>; checkpoints?: Array<{ x: number; y: number }>; hints?: Array<{ x: number; y?: number }>;
+  gen2?: { seed?: number; sections?: Array<{ phase: string; x0: number; x1: number }> };
+  proto?: { mixDress?: Array<{ n: string; x: number; b: number; flip?: boolean }> };
+};
+/**
+ * gen2 1-1's squirrels (the lead 11-06, 0.9.5: at least SQUIRREL_MIN from w1-new, on banks and the ground at rests, never in the play band or
+ * over a socket, the pose varied per roll). One on the spawn's ground ahead of him, facing him as he sets off; one on the widest bank of each
+ * rest; the rest of the minimum on the spawn's ground. A spot is taken only where the squirrel stands on the top of a bank 90 px deep or
+ * more (the ground, not a step or a log), nothing solid stands in its box (the play band: nothing he jumps on or through), no pickup, flag,
+ * hint or the exit totem lies within 70 px of it (a socket), and it is clear of the spawn (one body width each side) and of the other
+ * dressing. Thrown when fewer than SQUIRREL_MIN find a spot, so a roll that can't be dressed fails its build, never ships bare.
+ */
+export function w1Squirrels(st: DressStage): void {
+  const dress = (st.proto ??= {}).mixDress ??= [];
+  let r = ((st.gen2?.seed ?? 1) * 2654435761) >>> 0;
+  const rnd = () => { r = (Math.imul(r ^ (r >>> 15), 2246822507) + 0x9e3779b9) >>> 0; return r / 2 ** 32; };
+  const poses = [...SQUIRREL_POSES].map((n) => ({ n, k: rnd() })).sort((a, b) => a.k - b.k).map((q) => q.n);
+  const bank = (p: Platform) => p.type === 'solid' && p.style !== 'log' && p.style !== 'branch' && p.height >= 90;
+  const marks = [...(st.collectibles ?? []), ...(st.checkpoints ?? []), ...(st.hints ?? []).map((h) => ({ x: h.x, y: h.y ?? st.spawnY })), ...(st.exitTotemX !== undefined ? [{ x: st.exitTotemX, y: st.exitTotemY ?? st.spawnY }] : [])];
+  const clear = (n: string, x: number, p: Platform): boolean => {
+    const w = w1DressWidth(n) || 60, x0 = x - w / 2, x1 = x + w / 2, b = p.y;
+    if (x0 < p.x + 8 || x1 > p.x + p.width - 8) return false;
+    if (st.platforms.some((q) => q !== p && q.x < x1 && q.x + q.width > x0 && q.y < b && q.y + q.height > b - 70)) return false;
+    if (marks.some((m) => Math.abs(m.x - x) < w / 2 + 70 && m.y > b - 260 && m.y < b + 40)) return false;
+    if (x1 > st.spawnX - 44 && x0 < st.spawnX + 88 && Math.abs(b - st.spawnY) < 120) return false;
+    return !dress.some((d) => Math.abs(d.x - x) < (w1DressWidth(d.n) || 60) / 2 + w / 2 + 70 && Math.abs(d.b - b) < 80);
+  };
+  let k = 0;
+  const put = (p: Platform, from: number, to: number, faceLeft: boolean): boolean => {
+    const n = poses[k % poses.length];
+    // (a seeded spot along the bank, then outward from it in 20 px steps until one is clear)
+    const a = from + (to - from) * (0.3 + 0.4 * rnd());
+    for (let d = 0; d <= to - from; d += 20) for (const x of [a + d, a - d]) {
+      if (x < from || x > to || !clear(n, x, p)) continue;
+      dress.push({ n, x: Math.round(x), b: p.y, ...(faceLeft && w1DressFacing(n) === 'right' ? { flip: true } : {}) });
+      k++;
+      return true;
+    }
+    return false;
+  };
+  const ground = st.platforms.filter(bank).find((p) => p.x <= st.spawnX && p.x + p.width >= st.spawnX + 44 && Math.abs(p.y - st.spawnY) <= 6);
+  if (ground) put(ground, st.spawnX + 100, ground.x + ground.width, true);
+  for (const q of st.gen2?.sections ?? []) {
+    if (q.phase !== 'rest') continue;
+    const banks = st.platforms.filter((p) => bank(p) && p.x < q.x1 && p.x + p.width > q.x0).sort((a, b) => b.width - a.width);
+    for (const p of banks) if (put(p, Math.max(p.x, q.x0), Math.min(p.x + p.width, q.x1), rnd() < 0.5)) break;
+  }
+  if (ground) for (let t = 0; k < SQUIRREL_MIN && t < 3; t++) put(ground, ground.x, ground.x + ground.width, true);
+  if (k < SQUIRREL_MIN) throw new Error(`w1Squirrels: only ${k} of ${SQUIRREL_MIN} squirrels found a clear spot on a bank (seed ${st.gen2?.seed})`);
 }
 /** every Dot line by id, its words (the old text, which the new look swaps where it is said; a cut line's new text if it has no old) */
 export const W1_TIPS: Record<string, string> = Object.fromEntries(DOT_LINES.map((r) => [r[0], r[4] ?? r[5]] as const).filter((e): e is [string, string] => !!e[1]));
