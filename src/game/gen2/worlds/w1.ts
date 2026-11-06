@@ -219,7 +219,7 @@ const gHighLeaps = (n: number, dbl: boolean): G => (k, after) => {
     prev = key;
   }
   // (Round 4 FR4: the floor road's own beat, low stumps under the boughs, 177 px+ head room, with petals)
-  [0.35, 0.65].forEach((at, j) => { const q = stump(`${k}lo${j}`, f.key, [at, at + 0.02], [34, 40], [154, 220]); pieces.push(q); sockets.push(petals(`p-${q.key}`, q.key, 0.5, 1)); });
+  [0.22, 0.42, 0.62, 0.82].forEach((at, j) => { const q = stump(`${k}lo${j}`, f.key, [at, at + 0.02], [34, 40], [154, 220]); pieces.push(q); sockets.push(petals(`p-${q.key}`, q.key, 0.5, 1)); });
   return { pieces, sockets, last: f.key };
 };
 /** bounceWall (protoStage.ts:1248 on main): a mushroom, a cliff 225-240 tall and 330-400 long with a rock on it, a dip where he lands */
@@ -353,7 +353,7 @@ const finishHopBounce = section({
 });
 const finishBounceRun = section({
   id: 'w1-bounce-run', name: 'up and along', phases: ['ketsu'], difficulty: 6, needs: ['double'], uses: ['bounce', 'double'],
-  versions: [{ id: 'five', groups: [gRest([150, 210]), gHighLeaps(5, true), gBusy(['dip'])] }, { id: 'three-wall', groups: [gRest([150, 210]), gHighLeaps(3, false), gBounceWall()] }],
+  versions: [{ id: 'five', groups: [gRest([150, 210]), gHighLeaps(5, true), gBusy(['dip', 'log'])] }, { id: 'three-wall', groups: [gRest([150, 210]), gHighLeaps(3, false), gBounceWall()] }],
   feel: ['1-1'], not: NOT_11, rating: 6, window: [0.67, 1],
   source: "w1Sections '1-1' finish 'bounceRun' (on main 313-319): highLeaps(5, dbl), or highLeaps(3) + bounceWall",
 });
@@ -465,9 +465,9 @@ const gLogRoad = (n: number, ends: boolean, hops = false, withFind = false, post
   const f: W1Piece = ends ? bankW(`${k}f`, prev!, [35, 45], FW) : floor(`${k}f`, FW, startOr(prev));
   pieces.push(f);
   seq(n, (j) => {
-    const p = post(`${k}p${j}`, f.key, [(j + 0.5) / n - 0.02, (j + 0.5) / n], j === n - 1 && n > 3 && postH[0] < 100 ? [92, 96] : postH);
-    const l = logOn(`${k}l${j}`, p.key, postH[0] >= 100 ? [140, 160] : [180, 240], !hops);
-    pieces.push(p, l); sockets.push(petals(`p-${l.key}`, l.key, [0.3, 0.7], 2, 100));
+    // (Round 4 FR1/FR7: the tall road's logs float over the floor road, no posts walling off the low road; platforms may float, Matt 11-05)
+    if (tall) { const l = limb(`${k}l${j}`, { kind: 'over', on: f.key, at: [(j + 0.5) / n - 0.05, (j + 0.5) / n - 0.045], dy: [-(postH[0] + 24), -(postH[1] + 24)] }, [140, 160], 'log', !hops); pieces.push(l); sockets.push(petals(`p-${l.key}`, l.key, [0.3, 0.7], 2, 100)); }
+    else { const p = post(`${k}p${j}`, f.key, [(j + 0.5) / n - 0.02, (j + 0.5) / n], j === n - 1 && n > 3 ? [92, 96] : postH); const l = logOn(`${k}l${j}`, p.key, [180, 240], !hops); pieces.push(p, l); sockets.push(petals(`p-${l.key}`, l.key, [0.3, 0.7], 2, 100)); }
     if (hops && j < n - 1) { const fw = (FW[0] + FW[1]) / 2, mid = (((j + 1) / n) * (fw - 50) + 25 - (rockW[0] + rockW[1]) / 4) / (fw - (rockW[0] + rockW[1]) / 2); const s = stump(`${k}h${j}`, f.key, [mid - 0.005, mid + 0.005], [34, 46], rockW); pieces.push(s); sockets.push(petals(`p-${s.key}`, s.key, 0.5, 1)); }
   });
   if (withFind) sockets.push(find(`${k}find`, `${k}l${n - 1}`));
@@ -510,7 +510,8 @@ const hollowTwoway = section({
     const step = stumpL(`${k}s`, f.key, [0.08, 0.1], [50, 56]);
     const H: W1Piece = { key: `${k}H`, shape: 'hollow', w: [len, len], place: { kind: 'on', on: f.key, at: [0.3, 0.32], h: [hh, hh] }, landing: true };
     const a = after === 'stump' ? stumpL(`${k}a`, f.key, [0.92, 0.95], [40, 50]) : stump(`${k}a`, f.key, [0.92, 0.95], [30, 36], LAND);
-    return { pieces: [f, step, H, a], sockets: [petals(`${k}ph`, H.key, [0.3, 0.7], 2, 120), petals(`${k}pa`, a.key, 0.5, 1), find(`${k}find`, H.key)], last: f.key };
+    const mid = stump(`${k}mid`, f.key, [0.72, 0.74], [30, 36], [120, 140]);
+    return { pieces: [f, step, H, mid, a], sockets: [petals(`${k}ph`, H.key, [0.3, 0.7], 2, 120), petals(`${k}pa`, a.key, 0.5, 1), find(`${k}find`, H.key)], last: f.key };
   })] }))),
   feel: ['1-1', '1-2'], not: NOT_11, rating: 3,
   source: 'W1-NEW-SECTIONS #4: LABELS §2 hollow log (a two-road split, W1 art in the w1-new atlas); the stump step is the porter\'s (the top is past one jump at the art\'s own height)',
@@ -546,7 +547,8 @@ const fallenTrunk = section({
   versions: [false, true].map((m) => ({ id: m ? 'mushroom' : 'double', groups: [gRest([160, 200]), times(3, (k, after) => {
     const f = floor(`${k}f`, [820, 900], startOr(after));
     const T: W1Piece = { key: `${k}T`, shape: 'block', w: [220, 260], place: { kind: 'on', on: f.key, at: [0.5, 0.55], h: [150, 165] }, style: 'log', landing: true };
-    return { pieces: [f, ...(m ? [mushroom(`${k}m`, f.key, [0.28, 0.32])] : []), T], sockets: [petals(`${k}pt`, T.key, [0.3, 0.7], 2)], last: f.key };
+    const lo = [stump(`${k}l0`, f.key, [0.08, 0.1], [34, 40], [120, 140]), stump(`${k}l1`, f.key, [0.9, 0.92], [34, 40], [120, 140])];
+    return { pieces: [f, ...(m ? [mushroom(`${k}m`, f.key, [0.28, 0.32])] : []), T, ...lo], sockets: [petals(`${k}pt`, T.key, [0.3, 0.7], 2), ...lo.map((q) => petals(`p-${q.key}`, q.key, 0.5, 1))], last: f.key };
   }), gRest([200, 260])] })),
   feel: ['1-1', '1-3'], not: NOT_11, rating: 5,
   source: 'W1-NEW-SECTIONS #7: a fallen log too tall for one jump, a double over it or a mushroom beside it (LEDGER-ENGINE-GEMINI:479)',
@@ -560,10 +562,10 @@ const doubleTeach = section({
 });
 /** #9 */
 const boughStepup = section({
-  id: 'w1-bough-stepup', name: 'into the boughs', phases: ['sho'], difficulty: 4, needs: ['jump'], ports: ['ground', 'ledge'], exitDy: -449, window: BOUGH_WINDOW,
+  id: 'w1-bough-stepup', name: 'into the boughs', phases: ['sho'], difficulty: 4, needs: ['jump'], ports: ['ground', 'ledge'], exitDy: -491, window: BOUGH_WINDOW,
   versions: [5].flatMap((n) => [false, true].map((log) => ({ id: `${n}${log ? '-log' : ''}`, groups: [gRest([160, 200]), gStile([40, 76, 40]), (k: string, after: string | null) => {
     const f = floor(`${k}f`, [n * 260 + 500, n * 280 + 560], startOr(after));
-    const pieces: W1Piece[] = [f, bough(`${k}b0`, f.key, [0.25, 0.3], [-140, -136], [200, 240], true), stump(`${k}lo0`, f.key, [0.56, 0.58], [34, 40], LAND), stump(`${k}lo1`, f.key, [0.8, 0.82], [34, 40], LAND)];
+    const pieces: W1Piece[] = [f, bough(`${k}b0`, f.key, [0.25, 0.3], [-182, -178], [200, 240], true), stump(`${k}lo0`, f.key, [0.56, 0.58], [34, 40], LAND), stump(`${k}lo1`, f.key, [0.8, 0.82], [34, 40], LAND), ...[0.1, 0.3, 0.42, 0.68, 0.93].map((at, i) => stump(`${k}lf${i}`, f.key, [at, at + 0.01], [34, 40], [120, 140]))];
     let prev = `${k}b0`;
     seq(n - 1, (j) => {
       const key = `${k}b${j + 1}`;
@@ -708,7 +710,7 @@ const bounceDouble = section({
     // (Round 4 FR1-FR4: the floor road runs on under the high log, its own beat low stumps with the petals)
     const f = floor(`${k}f`, [1200, 1260], startOr(after));
     const L = limb(`${k}L`, { kind: 'over', on: f.key, at: [0.42, 0.44], dy }, [400, 480], 'log');
-    const lo = [stump(`${k}lo0`, f.key, [0.5, 0.52], [34, 40], LAND), stump(`${k}lo1`, f.key, [0.78, 0.8], [34, 40], LAND)];
+    const lo = [stump(`${k}lo0`, f.key, [0.5, 0.52], [34, 40], LAND), stump(`${k}lo2`, f.key, [0.64, 0.66], [34, 40], [120, 140]), stump(`${k}lo1`, f.key, [0.8, 0.82], [34, 40], LAND)];
     return { pieces: [f, ...perch(k, f.key, [0.12, 0.16]), L, ...lo], sockets: [...lo.map((q) => petals(`p-${q.key}`, q.key, 0.5, 1)), find(`${k}find`, L.key)], last: L.key };
   }] })),
   feel: ['1-1'], not: NOT_11, rating: 6,
@@ -806,7 +808,9 @@ const twoAnswers = section({
   versions: [true, false].map((m) => ({ id: m ? 'mushroom' : 'double', groups: [gRest([200, 240]), times(3, (k: string, after: string | null) => {
     const f = floor(`${k}f`, [500, 560], startOr(after));
     const o = softGap(`${k}o`, f.key, [300, 360], [0.85, 0.89], 'double') /* (a block: share 0.85+, the designer's 891908b5b) */;
-    return { pieces: [f, ...(m ? perch(k, f.key, [0.7, 0.75]) : []), o], sockets: [{ id: `${k}arc`, role: 'arc', on: o.key, t: 0 }], last: o.key };
+    const lo2 = stump(`${k}l2`, `${k}o`, [0.6, 0.7], [34, 40], [120, 140]);
+    const lo = stump(`${k}l0`, f.key, [0.25, 0.3], [34, 40], [120, 140]);
+    return { pieces: [f, lo, ...(m ? perch(k, f.key, [0.7, 0.75]) : []), o, lo2], sockets: [{ id: `${k}arc`, role: 'arc', on: o.key, t: 0 }, petals(`p-${lo.key}`, lo.key, 0.5, 1)], last: o.key };
   })] })),
   feel: ['1-1'], not: NOT_11, rating: 6,
   source: 'W1-NEW-SECTIONS #28: a gap past a single jump; a perched mushroom on the near bank as the other way across (LEDGER-11-02:33)',
@@ -967,6 +971,10 @@ const gFork = (fw: R2, low: LowBeat[], high: HighBeat[]): G => (k, after) => {
     pieces.push(limb(key, { kind: 'over', on: f.key, at: [q.at, q.at + 0.005], dy: [q.dy - 3, q.dy + 3] }, q.w ?? [200, 240], q.style ?? 'branch', false));
     if (q.mush) pieces.push(mushroom(`${key}m`, key, [0.1, 0.2]));
   });
+  // (Round 4 FR7: the low road keeps its beats dense: a low stump in any stretch of plain floor longer than about 0.24 of the floor, so
+  //  no walk runs past about 1.4 s; every high piece is 185 px+ up, so a 42 px stump under one keeps 118 px+ of head room)
+  const ats = [0, ...low.map(([, at]) => at), 1].sort((x, y) => x - y);
+  ats.slice(1).forEach((at, j) => { const g = at - ats[j]; if (g > 0.19) { const fill = Math.ceil(g / 0.18) - 1; for (let i = 1; i <= fill; i++) { const m = ats[j] + (g * i) / (fill + 1); pieces.push(stump(`${k}fl${j}_${i}`, f.key, [m, m + 0.005], [36, 42], [120, 140])); } } });
   sockets.push(find(`${k}find`, `${k}hi${high.length - 1}`), petals(`${k}pf`, f.key, [0.85, 0.95], 2));
   return { pieces, sockets, last: f.key };
 };
