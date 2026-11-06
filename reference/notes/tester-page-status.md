@@ -15,7 +15,11 @@
 
 ## 2026-11-06, the three gen2 1-1 art fixes (deadline 4:30 PM ET)
 
-Status as of the commit that carries this note. The full suite is RUNNING; this is a safe-keeping push, its result is added below.
+Full suite on these changes: 2,440 tests, 12 fail, plus the known TODOs, 16 lines in all.
+- Every one of those 16 lines also fails on clean engine-core 5e221f9d. I re-ran their 10 files in a separate worktree and the failure
+  lists were IDENTICAL.
+- artUse is among them: on engine-core 8 cut pieces were unused; now only `w1-post-tall-vine` is.
+- Also passing: tsc, components plus the recorder and cut tests (97 of 97), vite build, artcheck, knowncheck. drawcheck: see below.
 
 1. **Boulders by fit, at least 6 kinds a roll: DONE.** `src/game/w1CutArt.ts`
    - A stone's stand span is now the platform's width (it was drawn at the platform's height, so a 160 px stone showed as a rock about
