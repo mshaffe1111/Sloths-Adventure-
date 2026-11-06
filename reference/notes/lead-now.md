@@ -65,6 +65,7 @@ NOTE: EnK5 IS the testers' link (#ctest). The lead published picker builds v238/
 Matt 10:40 AM: 19% of the week left (100% cap); after the link, start 1-2 by a cold helper to measure a stage's real cost, so next week starts with that number.
 
 ## CHANGED 10:28 AM ET (Matt): "I want to use all my time... go beyond 1-1... get that test link updated with the new engine so we get real feedback". So: the test link TODAY with 1-1 Play = gen2 (a fresh proven seed per play; engine-core by 11:30 AM), then 1-2 by a cold helper today; spend up to ~88% (2% buffer under 90) before the reset WED 11-11 2:00 AM ET. The pause below applies only once the meter is spent.
+## MATT'S WEEKEND TEST LIST: the new 1-1 link (several rolls, Easy too); the JOYSTICK / on-screen pad (he has never tried it, 11-06 ~11:57 AM); the whole game for sameness; testers incl. Sally.
 ## THE PAUSE (Matt 11-06 ~10:25 AM ET): after today's test link, the team goes QUIET until the weekly reset, WED 11-11 2:00 AM ET
 (rate_limit resetsAt). Matt plays (the new 1-1 link and the whole game, as he did for the 100 stages), gets testers (kids) on the
 QA link, and retrospects. The lead: no helpers running; at most a light check if Matt asks. After the reset, first: Matt's notes, then
