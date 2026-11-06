@@ -381,3 +381,13 @@ loudly, and the kit fills the cell, as #63-#67 do. The one exception is a cell t
 - **Every floor beat is a real obstacle:** a wall of at least 50 px (a hop over it), a gap, or a mushroom. A 36-42 px stump is walked through, and its art with it (a polish defect), so it scores no beat. Every `h` in a rhythm string is ≥ 50 px.
 - **No plain floor over 4 s anywhere,** rests and arrives included. A rest stays easy, but it gets one soft beat (a single ≥ 50 px stump or a small dip) every ≤ 3 s, or a shorter version. The same goes for walk-on joins. A step down scores no beat, so it doesn't count.
 - In Round 6: #63's dip, #64's log and #65's stumps already beat. Every stump and hop in them is ≥ 50 px.
+
+**#63-#65 as beat strings (10:18 PM, for the porter's entry).** Every mushroom sits on the floor (cap about 30 px); every block face is sheer (B7); every `h` is ≥ 50 px (FR9).
+
+| # | Versions | Pieces |
+|---|---|---|
+| 63 | **a** `w h b D w`; **b** `w h h b D w` | a floor mushroom at the near lip of a soft dip 120-160 px wide. The far bank's top is [-260, -240] over the floor: the bounce (about 211) plus the air jump (about 288) reaches it, a double from the floor (185) doesn't. He lands on the far bank, and the floor road resumes on its top |
+| 64 | **a** `w h b D n w`; **b** `w b D n n w` | a floor mushroom 60-90 px before a fallen log (block, style log) 220-260 wide, its top [-260, -240] over the floor. He lands on the log, then steps down a stump stair on its far side (each step ≤ 80 px) |
+| 65 | **a** `w h B D n n w`; **b** `w B h D n n w` | a floor mushroom under a bank whose lip is [-220, -200] (the bounce block). Then a double across a level gap of at least 195 px to a second bank at the same height. Then a 2-step stump stair down to the floor (net zero) |
+
+The level and back versions entered as their own sections (#10-level, #40/#41/#49-back, #45-back, #61-level) are accepted, each tagged with its parent's job and type. #61-level ending 59 px over its start is accepted; ending under it would be a V19 loss.
