@@ -138,7 +138,7 @@ Last update: 6:22 PM ET, 2026-11-06 (times from `TZ=America/New_York date`; my 3
   with the pockets that seed really has, and show it still fails when the pocket rule is broken. Then the candidate needs a new commit:
   bf3684ec cannot pass.
 - Shards on bf3684ec: shard 1 775 tests, 773 pass, **1 fail (pitPocket)**, 1 todo (w4Runtime, on main already); shard 2 863, 862 pass,
-  **1 fail (stageQuality:287 timing, p90 613 ms, run under full CPU load: re-running alone now)**; shard 3 828, 827 pass, 0 fail, 1 todo
+  1 fail (stageQuality:287 timing, p90 613 ms under full CPU load). **Re-run ALONE at 6:33 PM on an idle machine: PASS** (`✔ generating a stage is quick: p90 under 500 ms, none over 1500 ms`, 7.1 s): a load artefact, not a defect; shard 3 828, 827 pass, 0 fail, 1 todo
   (w4RealReach 4-3, on main already). No new todo: the gen2 1-1 double-gap todo is gone.
 - **Lock: `lock: 101/102 stages unchanged`, only 1-1** (exit 1 only because the run had no `--intended 1-1`; re-running with it).
 - clipcheck and drawcheck: starting now.
