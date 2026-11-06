@@ -674,3 +674,8 @@ reports the per-roll share. Diagonal branches stay dressing only (art director, 
 | the goals #15, #23, #30 | already step up (#23 -60, #30 -75, #15's step version -30). Unchanged, but the roll picks the stepping version when short |
 
 Gate (planner): on 16 seeds, both settings, end ≥ window start + 150 and ≤ corridor top, on every roll.
+
+**The supervisor's check of Round 12: PASS as a floor (12:09 PM), plus V19e.**
+- **V19e: the end log is the stage's HIGHEST standing point, or within one single jump (108 px) of it.** No earlier landing sits higher than the end. So a roll can't peak mid-window and then end lower than where he has already been, which would read as coming down at the end (story-briefs/1-1.md:23, :47-52).
+- It stays a quiet height, not a vista: "the bigger views belong to later stages" (:23), so nothing opens a long view north.
+- The planner gates V19c, V19d and V19e together, on every roll.
