@@ -80,6 +80,8 @@ export interface NodeLay {
   one?: boolean;
   /** bursts the node lays, over the dial's */
   bursts?: number;
+  /** lay every idea of the deck once, in its order, as one run (1-5's test node: the designer 11-06) */
+  inOrder?: boolean;
   /** no canopy over its floor idea (a ground node) */
   ground?: boolean;
   /** the y band its way keeps to, top and bottom, in px (until `height` shares replace it) */

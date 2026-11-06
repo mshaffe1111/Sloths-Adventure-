@@ -25,7 +25,7 @@ export const SPEC_15: StageSpec = {
     // (the low road is the creek again, on the water the engine draws: the designer's 11:40 ruling)
     { job: 'the fork', deck: { high: ['creaky boughs', 'bough hops'], low: ['lily-pad hop', 'reed isles'] } },
     { job: 'rest', deck: ['bank walk'], line: { text: 'These petals are fresher. She came this way not long ago.' }, flagBefore: false },
-    { job: 'test creaky', deck: ['snap dash', 'bank hops'], flagBefore: true, heartAfter: true },
+    { job: 'test creaky', deck: ['snap dash', 'the climb', 'bounce up', 'double gap'], lay: { inOrder: true }, flagBefore: true, heartAfter: true },
     { job: 'twist', deck: ['rotten-branch drop', 'stump hop'] },
     // (the second rest, the designer's ruling on the fun gate, 11-05 ~2:26 AM: a short flat pad and a Dot spot after the drop; its flag
     // only if a hard node follows, which the flag rule decides; Dot's line is the designer's)
@@ -38,7 +38,7 @@ export const SPEC_15: StageSpec = {
     { job: 'master (fork)', deck: { high: ['creaky boughs', 'bridge span'], low: ['bough stair', 'stump hop'] }, flagBefore: true, heartAfter: true },
     { job: 'cool down', deck: ['bank hops', 'stump hop'] },
   ],
-  goal: { kind: 'marks', count: 13, normal: 10, easy: 8 },
+  goal: { kind: 'marks', count: 15, normal: 10, easy: 8 },
   taughtBefore: ['run', 'jump', 'double', 'bounce', 'climb'],
   lay: { startY: 460, end: { kind: 'bank', w: 640 } },
 };

@@ -60,6 +60,7 @@ export interface NodePlan { id?: string; easyOnly?: boolean;
   one?: boolean;
   /** bursts this node lays, over the dial's (1-1's ground teaches: 3, for its length without a canopy) */
   bursts?: number;
+  inOrder?: boolean;
   /** no canopy over its floor idea (1-1's n1-n7: the forest floor; boughs arrive with the climb) */
   ground?: boolean;
   /** Dot's line at the node's end, not its start (1-1's "Look how high we are!" at the chain's top) */
@@ -74,7 +75,7 @@ const nidOf = (plan: NodePlan[], i: number): string => plan[i].id ?? String(plan
 
 /** a stage the mixer builds, read from its spec: its plan, where it starts, how many of Meeca's marks it lays (0 for a sprint), its last
  *  piece, and its petals low on the pieces for a trail (1-1: Meeca's pressed petals, the lead's brief) */
-interface MixSpec { id: string; plan: NodePlan[]; startY: number; marks: number; end: { kind: string; w: number }; burstMin?: number; burstMax?: number; lowPetals?: boolean;
+interface MixSpec { id: string; plan: NodePlan[]; startY: number; marks: number; marksGoal?: { normal: number; easy: number }; end: { kind: string; w: number }; burstMin?: number; burstMax?: number; lowPetals?: boolean;
   dress?: { start?: string[]; clue?: string } }
 
 /** a stage spec in the mixer's own terms (nothing stage-specific lives in this file: every stage is its spec, stages.ts) */
@@ -85,11 +86,13 @@ export function mixOf(S: StageSpec): MixSpec {
     ...(n.flagBefore !== undefined ? { flagBefore: n.flagBefore } : {}), ...(n.heartAfter !== undefined ? { heartAfter: n.heartAfter } : {}),
     ...(n.safe ? { safe: true } : {}), ...(n.lay ?? {}),
   }));
-  return { id: S.id, plan, startY: S.lay.startY, marks: S.goal.kind === 'marks' ? S.goal.count : 0, end: S.lay.end, burstMin: S.lay.burstMin, burstMax: S.lay.burstMax,
+  return { id: S.id, plan, startY: S.lay.startY, marks: S.goal.kind === 'marks' ? S.goal.count : 0, marksGoal: S.goal.kind === 'marks' ? { normal: S.goal.normal, easy: S.goal.easy } : undefined, end: S.lay.end, burstMin: S.lay.burstMin, burstMax: S.lay.burstMax,
     lowPetals: S.profile.petals === 'trail' || undefined, dress: S.dress };
 }
 
 interface Lay {
+  /** the node lays a petal at the top of each double gap's arc (1-5's in-order test node) */
+  arcPetals?: boolean;
   /** the difficulty dial's gap, as a share of the gate's widest (ENGINE-SPEC "The difficulty dial") */
   gapShare: number;
   /** the dial's rise cap: its share of the highest rise the gate allows (px) */
@@ -458,6 +461,9 @@ function idea(L: Lay, name: Idea, c: Cursor, R: Rng): Cursor {
         const g = doubleGap(L, e.y, 0);
         const b = plat(L, k === 1 ? P.middle : 'bank', e.x + e.width + g, e.y, Math.round(r(P.landW) * L.wScale));
         L.P.push({ id: L.pid++, x: e.x + e.width - P.catchBack, y: e.y + P.catchDrop, width: g + P.catchExtra, height: 24, type: 'solid', style: 'branch', catch: true } as Platform);
+        // (a petal at the top of the double's arc over each gap, 130 px over the take-off: past a single's reach, so the gap asks for the
+        // double: 1-5's test node's three double pickups, the designer 11-06)
+        if (L.arcPetals) L.C.push({ id: L.cid++, type: 'flower', x: Math.round(e.x + e.width + g / 2), y: e.y - 130, collected: false, bobPhase: 0 } as Collectible);
         e = b;
       }
       return { x: e.x + e.width, y: e.y };
@@ -948,6 +954,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
   c = { x: start.width, y: c.y };
   L.flags.push({ x: 100, y: c.y });
   const forkMarks: Array<{ x: number; y: number }> = [];
+  const markNodes: Platform[][] = [];
   // (the designer's pacing ruling (3), 11-05: on Easy about 6 nodes keep their canopy and the rest lay one burst, their own idea, with
   // none: the canopy stays on the forks' neighbours and on the node right after a teach or a test. Rests don't count as neighbours)
   const easyKeep = new Set<number>();
@@ -987,7 +994,9 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
       // (the difficulty dial's bursts per node: 2 at d = 0, 3 at d = 1, ENGINE-SPEC "The difficulty dial")
       // (Easy lays one fewer, the designer's pacing ruling A, so its wider landings hold the length)
       const bare = easy && !easyKeep.has(i);
-      const bursts = one || bare ? 1 : n.bursts ?? Math.round(2 + L.dial);
+      const bursts = n.inOrder ? n.deck.length : one || bare ? 1 : n.bursts ?? Math.round(2 + L.dial);
+      // (the arc petals over a double gap: the in-order test node's only, laid with no canopy over them)
+      L.arcPetals = !!n.inOrder;
       const laid: Idea[] = [];
       // (the move a teach node teaches: its job's last word, "teach double" -> double)
       const taught = n.job.startsWith('teach ') ? n.job.slice(6) : undefined;
@@ -1001,7 +1010,8 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
         const ownIdeas = n.deck.filter((d) => !FLOOR.includes(d));
         let cand: Idea[];
         // (a teach's second burst: its deck's own floor idea, not the one just laid; bank hops where it has none (1-5's snap teach))
-        if (n.job.startsWith('teach')) { const fl = n.deck.filter((d) => FLOOR.includes(d) && d !== last && !laid.includes(d)); const own = n.deck.filter((d) => IDEAS[d]?.teaches === taught); cand = k === 0 ? (own.length ? own : n.deck.filter(ok)) : fl.length ? fl : k === 1 ? ['bank hops'] : []; }
+        if (n.inOrder) cand = [n.deck[k]];
+        else if (n.job.startsWith('teach')) { const fl = n.deck.filter((d) => FLOOR.includes(d) && d !== last && !laid.includes(d)); const own = n.deck.filter((d) => IDEAS[d]?.teaches === taught); cand = k === 0 ? (own.length ? own : n.deck.filter(ok)) : fl.length ? fl : k === 1 ? ['bank hops'] : []; }
         else if (k === 0) {
           const own = (ownIdeas.length ? ownIdeas : n.deck).filter(ok);
           cand = own.length ? own : (ownIdeas.length ? ownIdeas : n.deck).filter((d) => d !== last);
@@ -1113,7 +1123,7 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
     if (n.hint && n.hintAtEnd) L.hints.push({ x: c.x - 120, text: n.hint, pad: n.padHint ?? n.hint, keys: n.padHint ?? n.hint, ...(c.y >= 600 ? { belowY: c.y - 60 } : { aboveY: c.y + 60 }) } as StageHint);
     // one of Meeca's marks in each non-fork node, on the main route, on a piece the idea laid (its middle one)
     // (n7b, the second rest, lays no mark: the designer's 13 marks are the plan's nine nodes and the forks' four, and the goal is 10 of them)
-    if (S.marks && Array.isArray(n.deck) && !n.id) { const m = clearPiece(L, L.P.slice(from)); if (m) L.marks.push({ x: (m as Platform & { markX?: number }).markX ?? m.x + m.width / 2, y: m.y }); }
+    if (S.marks && Array.isArray(n.deck) && !n.id) { const m = clearPiece(L, L.P.slice(from)); if (m) L.marks.push({ x: (m as Platform & { markX?: number }).markX ?? m.x + m.width / 2, y: m.y }); markNodes.push(L.P.slice(from)); }
     // (n9's golden seed: the designer's ruling (b), CP3: no seed on 1-5; Dot's line plays here, the seed waits for the stage that teaches
     // the glide. The far-off glint is dressing only: a twinkle 420 px over the node's highest piece, out of every jump's reach)
     if (n.seed) {
@@ -1132,6 +1142,14 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
   });
   const end = step(L, c, rngFor(seed, `${S.id} end`), S.end.kind, S.end.w);
   const exit = { x: end.x + 420, y: end.y };
+  // (1-5's 15 marks, the designer 11-06, 1.5x the Normal goal of 10: the nodes' and the forks' 13, and a second mark in the longest
+  //  nodes, each well clear of the marks laid, until the plan's count is laid)
+  for (const ps of [...markNodes].sort((a, b) => b.length - a.length)) {
+    if (L.marks.length + forkMarks.length >= S.marks) break;
+    const all = [...L.marks, ...forkMarks];
+    const m = clearPiece(L, ps.filter((q) => !all.some((k) => Math.abs(k.x - (q.x + q.width / 2)) < 400)));
+    if (m) L.marks.push({ x: (m as Platform & { markX?: number }).markX ?? m.x + m.width / 2, y: m.y });
+  }
   L.marks.push(...forkMarks);
   for (const m of L.marks) L.C.push({ id: L.cid++, type: 'relic', mark: 'meeca', x: m.x, y: m.y - 34, collected: false, bobPhase: (m.x * 0.017) % 6.28 } as Collectible);
   const find = findForStage(config.worldIndex, config.miniIndex);
@@ -1194,6 +1212,12 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
   // (a creaking branch over safe ground (the old 1-5's promise, stage15.test.ts; the lead 11-06): where a creaky piece has nothing safe under
   // its middle, a catch branch 120 px under it, 30 px wider each side, so a snap drops him onto it and a hop goes on. A creek's water is
   // still the creek's, a splash (the pass below takes a catch off the water, Matt 11-05))
+  // (the designer's ruling (a), 11-06: over the creek the high road lays SOLID boughs, not creaky ones: a taught creaky may be required
+  //  over a pit, a "may", and with the water under it a snap is a splash, so none is laid there and the promise above holds)
+  for (const p of L.P) {
+    const mid = p.x + p.width / 2;
+    if (p.type === 'fragile' && L.water.some((z) => mid > z.x0 && mid < z.x1 && p.y < z.y)) { p.type = 'solid'; delete (p as { creak?: unknown }).creak; }
+  }
   for (const p of [...L.P]) {
     if (p.type !== 'fragile') continue;
     const mid = p.x + p.width / 2;
@@ -1227,7 +1251,8 @@ function buildMix(config: LevelConfig, seed: number, easy: boolean, S: MixSpec):
   const height = Math.max(...L.P.map((p) => p.y + p.height)) + 120;
   const nMarks = L.marks.length;
   // (the marks goal, the designer's ruling 2: 10 of 13 on Normal and 8 of 13 on Easy, one miss of slack on a single route of 11)
-  const goalN = Math.min(nMarks, Math.round(nMarks * 10 / 13)), goalE = Math.min(nMarks, Math.round(nMarks * 8 / 13));
+  // (the spec's own goals when it names them: 1-5's 10 and 8 of 15, the designer 11-06)
+  const goalN = Math.min(nMarks, S.marksGoal?.normal ?? Math.round(nMarks * 10 / 13)), goalE = Math.min(nMarks, S.marksGoal?.easy ?? Math.round(nMarks * 8 / 13));
   if (nMarks !== S.marks) throw new Error(`${S.id} laid ${nMarks} marks, not the plan's ${S.marks}`);
   const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: height, targetCount: S.marks ? Math.max(1, easy ? goalE : goalN) : config.targetCount };
   // (nothing floats unless it floats (the designer's P-2, P-7, P-11; D16): every bough, log, crumbling ledge and creaky limb in the air
