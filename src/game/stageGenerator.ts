@@ -7,7 +7,7 @@ import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { pick11, play11Seed, roll11Seed, skip11Spec } from './testlink1_1.ts';
-import { provenGen2Stage } from './gen2/pipeline.ts';
+import { buildPlayStage } from './gen2/seedList.ts';
 import { w1Finish, w1World } from './gen2/worlds/w1.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
 import { dipWayOut } from './dipWayOut.ts';
@@ -2862,7 +2862,8 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   const roll11 = gen2Roll11 ? pick11() : null;
   if (isGen2Stage(config) || roll11) {
     const seed11 = roll11 === 'A' || roll11 === 'B' || roll11 === 'C' ? roll11Seed(roll11) : play11Seed(layoutVariant ?? 1);
-    const stage = roll11 ? w1Finish(provenGen2Stage({ config, kit: w1World(), seed: seed11, difficulty })) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
+    // (Play: the listed seed's proven plan replayed, the planner's buildPlayStage, ~100 ms at CPU x4; a roll the same way)
+    const stage = roll11 ? w1Finish(buildPlayStage(config, w1World(), seed11, difficulty)) : buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
     // (Easy's own goal for the stage, as the first-timer kid bot measured it: easyStage sets it, withGoals leaves it)
     const easyGoal = GEN2_STAGES[config.id]?.easyGoal;
     if (difficulty === 'easy' && easyGoal !== undefined) stage.easyGoal = Math.min(easyGoal, stage.enemies.length);
@@ -2870,9 +2871,10 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     // clear of the stumps and pickups around the flag (easyMode.ts heartBy): a rolled stage's flag can stand beside anything)
     // (H1, hearts follow risk (Matt 11-05 12:15 AM, "a heart only after real risk"; the lead's Round 7 ruling): a stage where nothing costs
     // anything, no creature, no water, no fall that costs a life, lays none (gen2 1-1: it had 6 hearts and no damage)
-    const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!stage.heartFalls?.length || !!(stage as { proto?: { water?: Array<{ kind?: string }> } }).proto?.water?.some((z) => z.kind === 'deadly') || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
+    const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!stage.heartFalls?.some((z) => !z.soft) || !!(stage as { proto?: { water?: Array<{ kind?: string }> } }).proto?.water?.some((z) => z.kind === 'deadly') || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
     let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
-    if (risky) [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
+    // (H1 is for the unshipped gen2 1-1 only, the lead 11-06: the live gen2 worlds keep their hearts as they are)
+    if (risky || GEN2_STAGES[config.id]) [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
     const done = finishStage(stage, validateStage(stage, { rooms: false }).reachableIds);
     // (World 5's dressing sets, once the pickups are all placed, so none is covered: artDress.ts dressSets)
     addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);

@@ -517,8 +517,8 @@ export function easyStage(stage: Stage): Stage {
   // sat there, QA 2026-10-31 "not picked up")
   // (H1, hearts follow risk, every stage (Matt 11-05 12:15 AM; the lead's Round 7 ruling): nor where nothing costs anything, no creature,
   // no water, no fall that costs a life (gen2 1-1 had 23 on Easy and no damage); Meeca's stage was the first such case)
-  const px = stage as Stage & { proto?: { meeca?: unknown; water?: Array<{ kind?: string }> }; heartFalls?: unknown[] };
-  const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!px.heartFalls?.length || !!px.proto?.water?.some((z) => z.kind === 'deadly') || (stage.rivers ?? []).length > 0 || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
+  const px = stage as Stage & { proto?: { meeca?: unknown; water?: Array<{ kind?: string }> }; heartFalls?: Array<{ soft?: boolean }> };
+  const risky = stage.enemies.length > 0 || stage.waterY !== undefined || !!px.heartFalls?.some((z) => !z.soft) || !!px.proto?.water?.some((z) => z.kind === 'deadly') || (stage.rivers ?? []).length > 0 || ((stage as { gen2?: { budget?: { pit?: string } } }).gen2?.budget?.pit ?? 'soft') !== 'soft';
   // (scoped for now: on the live stages this reading of risk missed thorns and hazards and took 12 stages' hearts, so the every-stage pass
   // needs a full reading of risk first, the lead's to schedule)
   // (and, until the lead's ruling on live World 8 (8-1/8-2/8-6's Easy builds with no creature), only on a gen2 stage not yet shipped:

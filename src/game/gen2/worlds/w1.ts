@@ -487,8 +487,10 @@ const gLogRoad = (n: number, ends: boolean, hops = false, withFind = false, post
   if (ends) { const e = bankW(`${k}e`, f.key, [-45, -35], [170, 200]); const o = bankW(`${k}o`, e.key, [35, 45], [220, 260]); pieces.push(e, o); last = o.key; }
   return { pieces, sockets, last };
 };
-/** a perched mushroom: a stump on `on`, the mushroom on the stump (the perch rule, Q2) */
-const perch = (k: string, on: string, at: R2): W1Piece[] => [stumpL(`${k}st`, on, at, [46, 56]), mushroom(`${k}m`, `${k}st`, [0.4, 0.6])];
+/** a perched mushroom: a stump on `on`, the mushroom on the stump (the perch rule, Q2). Under 50 px (FR9b's perch exception, the
+ *  designer 11-06): no wall, the step help lifts him onto it and the mushroom; at 50-56 its face was a step he could only bounce off from
+ *  (plainWalk's one-jump steps, 1-1 seeds 1 and 3) */
+const perch = (k: string, on: string, at: R2): W1Piece[] => [stumpL(`${k}st`, on, at, [40, 46]), mushroom(`${k}m`, `${k}st`, [0.4, 0.6])];
 
 /** #1 */
 const stumpStile = section({

@@ -19,7 +19,9 @@ test('gen2 1-1: nothing can cost a life: under every x from the start to the exi
   const bad: string[] = [];
   for (const r of ROLLS) {
     const sim = roll(r), st = sim.stage, death = st.waterY ?? st.config.levelHeight;
-    for (let x = st.spawnX; x < st.exitTotemX; x += 20) if (!sim.platforms.some((p) => p.type !== 'bouncy' && p.x <= x && p.x + p.width >= x && p.y < death)) { bad.push(`Roll ${r}: nothing to land on at x ${x}`); break; }
+    // (a soft heartFalls zone, a level double-gap block, costs nothing: a fall there puts him back on the take-off, engine.ts heartFall)
+    const soft = (st.heartFalls ?? []).filter((z) => z.soft);
+    for (let x = st.spawnX; x < st.exitTotemX; x += 20) if (!soft.some((z) => x >= z.x0 && x <= z.x1) && !sim.platforms.some((p) => p.type !== 'bouncy' && p.x <= x && p.x + p.width >= x && p.y < death)) { bad.push(`Roll ${r}: nothing to land on at x ${x}`); break; }
   }
   assert.deepEqual(bad, []);
 });
