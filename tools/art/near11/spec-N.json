@@ -1,0 +1,86 @@
+{
+ "tag": "near11-N",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "mushrooms, toadstools, logs, fallen logs, log ends, tree stumps, planks, flat tops, ledges, platforms, sky, clouds, fog, haze, gradient background, scenery behind, horizon, perspective, flowers, text, letters, watermark, frame, border, photo, 3d render, blurry, people, animals, sloth, magenta objects, pink plants",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ac448cd25876eac710d657a4aa48bdab070313ea/reference/prop-sheets/qa-notes/near11/starts/",
+ "items": [
+  {
+   "name": "w1sun3-nearA-s62-7",
+   "start": "start-w1sun3-nearA.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the near ground seen straight from the side, the rainforest floor at sunrise: big round moss-covered boulders, a low arch of tangled tree roots, round leafy monstera and fern bushes, a pointed mossy rock, all standing on a continuous strip of earthy forest floor along the bottom edge, every top soft and rounded, no flat tops, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1sun3-nearA-s62-23",
+   "start": "start-w1sun3-nearA.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the near ground seen straight from the side, the rainforest floor at sunrise: big round moss-covered boulders, a low arch of tangled tree roots, round leafy monstera and fern bushes, a pointed mossy rock, all standing on a continuous strip of earthy forest floor along the bottom edge, every top soft and rounded, no flat tops, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1sun3-nearA-s68-7",
+   "start": "start-w1sun3-nearA.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the near ground seen straight from the side, the rainforest floor at sunrise: big round moss-covered boulders, a low arch of tangled tree roots, round leafy monstera and fern bushes, a pointed mossy rock, all standing on a continuous strip of earthy forest floor along the bottom edge, every top soft and rounded, no flat tops, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.68,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1sun3-nearA-s68-23",
+   "start": "start-w1sun3-nearA.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the near ground seen straight from the side, the rainforest floor at sunrise: big round moss-covered boulders, a low arch of tangled tree roots, round leafy monstera and fern bushes, a pointed mossy rock, all standing on a continuous strip of earthy forest floor along the bottom edge, every top soft and rounded, no flat tops, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1sun3-nearB-s62-7",
+   "start": "start-w1sun3-nearB.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the near ground seen straight from the side, the rainforest floor at sunrise: big round moss-covered boulders, a low arch of tangled tree roots, round leafy monstera and fern bushes, a pointed mossy rock, all standing on a continuous strip of earthy forest floor along the bottom edge, every top soft and rounded, no flat tops, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1sun3-nearB-s62-23",
+   "start": "start-w1sun3-nearB.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the near ground seen straight from the side, the rainforest floor at sunrise: big round moss-covered boulders, a low arch of tangled tree roots, round leafy monstera and fern bushes, a pointed mossy rock, all standing on a continuous strip of earthy forest floor along the bottom edge, every top soft and rounded, no flat tops, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1sun3-nearB-s68-7",
+   "start": "start-w1sun3-nearB.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the near ground seen straight from the side, the rainforest floor at sunrise: big round moss-covered boulders, a low arch of tangled tree roots, round leafy monstera and fern bushes, a pointed mossy rock, all standing on a continuous strip of earthy forest floor along the bottom edge, every top soft and rounded, no flat tops, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.68,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w1sun3-nearB-s68-23",
+   "start": "start-w1sun3-nearB.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the near ground seen straight from the side, the rainforest floor at sunrise: big round moss-covered boulders, a low arch of tangled tree roots, round leafy monstera and fern bushes, a pointed mossy rock, all standing on a continuous strip of earthy forest floor along the bottom edge, every top soft and rounded, no flat tops, low warm pink-gold sunrise light from the left, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  }
+ ]
+}
