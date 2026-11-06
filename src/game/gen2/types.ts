@@ -252,6 +252,10 @@ export type PlaceRule =
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */
   key: string;
+  /** a BLOCK lands here (NODES.md §8.7 B1-B4): the way on needs the move. 'double': no single jump reaches this piece from anything
+   *  before it; 'bounce': no double does, so only the mushroom's bounce lands it. Checked on the laid stage in a teach or test node
+   *  (pipeline blockBreaches): a section whose block can be walked round there is swapped, never laid */
+  block?: 'double' | 'bounce';
   shape: PieceShape;
   /** width (px) */
   w: Range;
@@ -647,6 +651,9 @@ export interface Gen2Meta {
   code?: string[];
   codeString?: string;
   codeErrors?: string[];
+  /** each node as laid, for the gates that read the built stage (V18's nodePieces.ts, the stills spots): its token, the x-range its
+   *  sections cover, and its first block's landing x (NODES.md §8.7) when it has one */
+  nodes?: Array<{ token: string; x0: number; x1: number; block?: number }>;
   /** a rolled graph's slots filled past their rule because the pool ran out (pipeline layStage: the dealt type, then the job) */
   loosened?: string[];
   sections: Array<Pick<PlacedSection, 'uid' | 'template' | 'node' | 'phase' | 'tension' | 'mirrored' | 'x0' | 'x1' | 'seconds'>>;
