@@ -27,3 +27,23 @@ test('the next play draws the seed built ahead and gets that very stage, once; a
   assert.equal((easy as { gen2?: { budget: { difficulty: string } } }).gen2?.budget.difficulty, 'easy');
   clearPlay11();
 });
+
+test("1-1's Play: no proven entry repeats until the whole list has been played on this device, and the order survives a restart of the game", async () => {
+  const { provenSeeds } = await import('./gen2/seedList.ts');
+  clearPlay11();
+  const n = provenSeeds('1-1').length;
+  const got: number[] = [];
+  for (let i = 0; i < n; i++) got.push(newPlay11());
+  assert.equal(new Set(got).size, n, 'every entry once');
+  // (the next round: no repeat at the seam, and the order is kept in storage, so a reload carries on, not restarts)
+  const first = newPlay11();
+  assert.notEqual(first, got[n - 1], 'a new round does not start with the entry that ended the last');
+  const saved = JSON.parse(localStorage.getItem('sloth_play11_order')!);
+  assert.equal(saved.i, 1);
+  // (planted: random draws each press repeat early, the bug this replaces)
+  const seen = new Set<number>();
+  let repeatAt = -1;
+  for (let i = 0; i < n && repeatAt < 0; i++) { const s = provenSeeds('1-1')[Math.floor(Math.random() * n)]; if (seen.has(s)) repeatAt = i; seen.add(s); }
+  assert.ok(repeatAt > 0 && repeatAt < n, `random draws repeat early (at play ${repeatAt})`);
+  clearPlay11();
+});

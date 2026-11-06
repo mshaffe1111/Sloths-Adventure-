@@ -64,3 +64,16 @@ test('every V-rule breach is a roll error (planted: never left to whether the da
   assert.deepEqual(rollErrors({ errors: [], fills: [] }), [], 'a roll with nothing wrong has no errors');
   assert.ok(rollErrors({ errors: [], fills: [], loosened: ['slot 4 (n4 teach: no section for the job left, filled by its phase)'] })[0].startsWith('pool short at slot 4'));
 });
+
+// (11-06: a build can THROW, not only fail by name: "no section fits node n8: the pool is spent". The guard let the throw through, so a
+// play on that seed would crash; a seed that throws is a failed seed, and the walk goes on)
+test('a seed whose build throws is walked past, never thrown to the player', () => {
+  const real = w1World();
+  let calls = 0;
+  const flaky = { ...real, get manifest() { if (calls++ === 0) throw new Error('planted: the pool is spent'); return real.manifest; } } as typeof real;
+  const st = provenGen2Stage({ config: c, kit: flaky, seed: 79191, difficulty: 'normal' });
+  assert.deepEqual(st.gen2.errors ?? [], []);
+  // (how far the walk goes after the throw is the data's: a next seed may itself fail a rule by name; what is planted is the throw)
+  assert.ok((st.gen2.proven?.tried ?? 1) >= 2, 'the walk did not move past the seed that threw');
+  assert.notEqual(st.gen2.seed, 79191, 'the stage is the seed that threw');
+});

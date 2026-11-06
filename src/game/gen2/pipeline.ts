@@ -20,6 +20,7 @@ import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } fr
 import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
+import { endAboveWindow, WINDOW_AT } from '../storyChecks.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
@@ -963,6 +964,8 @@ export interface Laid {
   missing?: string[];
   /** a rolled graph's sections whose laid exit left the corridor (a version that ends far from its declared exitDy): swapped */
   strays?: Array<{ uid: string; y: number }>;
+  /** V19's late rise as laid: each mustRise node, the height it had to end above (minus 20 px) and where it ended */
+  rise?: Array<{ node: string; to: number; exitY: number }>;
   /** a rolled graph's blocks (NODES.md §8.7): each teach or test section's block pieces, as laid */
   blocks?: Array<{ uid: string; key: string; kind: 'double' | 'bounce'; landing: Platform }>;
   /** a rolled graph's nodes filled past their rule (no section of the dealt type left: by job only; none for the job: by phase) */
@@ -1197,9 +1200,24 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     }
     return e;
   };
+  // (an up stage: its graph marks the node after a late descent mustRise, or its brief's trend is up; V19's heights, below)
+  const upStage = graph.nodes.some((q) => q.mustRise) || M.graphs?.briefs?.[budget.id]?.trend === 'up';
+  // (the window part, V19b, is a stage's own promise: its brief's endHigh; every up stage keeps V19, above where a late descent began)
+  const endHigh = upStage && !!M.graphs?.briefs?.[budget.id]?.endHigh;
+  let windowY: number | undefined, descentY: number | undefined, riseTo: number | undefined;
+  const rise: Array<{ node: string; to: number; exitY: number }> = [];
+  /** the node that must climb: the one after a late descent (mustRise), or with no late descent the signature (V19b: the end above the
+   *  bough window's start) */
+  const needsRise = (n: MissionNode) => upStage && (!!n.mustRise || (endHigh && n.job === 'signature' && descentY === undefined));
+  /** where the next section enters: the join clamps it into the corridor */
+  const entryY = () => Math.max(M.corridor.top, Math.min(M.corridor.bottom, cur.y));
   const fits = (t: SectionTemplate, n: MissionNode, i: number, loose: 0 | 1 | 2 = 0) =>
     jobFits(t, n, loose) &&
     (!n.mustRise || loose === 2 || exitDyOf(t) < 0) &&
+    // (V19 and V19b on an up stage, 11-06: the node after a late descent (or, with none, the signature) ends higher than both where the
+    // descent began and where the bough window begins, 20 px clear; rising at all was weaker than the line, and stage.ts's V19 / V19b failed on Roll A. Nothing that fits: the slot
+    // loosens and the roll fails by name)
+    (riseTo === undefined || loose === 2 || !needsRise(n) || entryY() + exitDyOf(t) <= riseTo - 20) &&
     (t.archetypes === 'any' || t.archetypes.includes(budget.archetype)) &&
     (t.needs ?? []).every((m) => budget.moves.includes(m)) &&
     hangsNeed(t).every((m) => budget.moves.includes(m)) &&
@@ -1296,6 +1314,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   };
 
   for (const n of graph.nodes) {
+    // (the heights V19 holds the late rise to: where the bough window begins (the route as the slots reach two thirds), and where a late
+    // descent began)
+    if (upStage && chunkTotal) {
+      if (windowY === undefined && (slot + 0.5) / stageLen >= WINDOW_AT) windowY = cur.y;
+      if (n.job === 'descent' && windowY !== undefined) descentY = Math.min(descentY ?? Infinity, cur.y);
+      if (windowY !== undefined) riseTo = endHigh ? Math.min(windowY, descentY ?? Infinity) : descentY;
+    }
+    const riseFor = needsRise(n) && riseTo !== undefined ? riseTo : undefined;
     let secs = 0;
     const want = n.share * budget.seconds.target * aim;
     let first = true;
@@ -1521,6 +1547,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (a fork is one two-road section and the H node its one find, in every mode, as the arrival and the exit are one each)
       if (n.phase === 'start' || n.phase === 'goal' || n.job === 'fork' || n.job === 'reward') break;
     }
+    if (riseFor !== undefined) {
+      rise.push({ node: n.id, to: R(riseFor), exitY: R(cur.y) });
+      // (as laid, not as estimated: a section's exit is chosen on its median lay, so a lay that ends short of the rise fails by name)
+      const last = plan[plan.length - 1];
+      if (cur.y > riseFor - 20 && last && last.node === n.id && !last.loose) last.loose = `${n.id} ${n.job}: the late rise ended at y ${R(cur.y)}, not 20 px above y ${R(riseFor)} (V19)`;
+    }
   }
   // (a rolled graph's required section that found no node FAILS the roll with why, never an exception: the missing piece named, Law 22)
   const missing: string[] = [];
@@ -1591,6 +1623,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     ropes,
     zones,
     heartFalls,
+    ...(rise.length ? { rise } : {}),
     width: R(shrine.x + shrine.width + 40),
     bottom: baseline + shiftedDown,
     nextId: pid,
@@ -2284,6 +2317,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(graph.id ? realisedCode(graph, laid, req.kit.manifest, budget) : {}),
     ...(laid.loosened ? { loosened: laid.loosened } : {}),
     ...(laid.missing ? { missing: laid.missing } : {}),
+    ...(laid.rise ? { rise: laid.rise } : {}),
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
     ...(laid.theme ? { theme: laid.theme } : {}),
@@ -2460,7 +2494,7 @@ export function stagePool(M: WorldManifest, stageId: string): SectionTemplate[] 
  * A built roll's errors, everything that fails it by name: its own (a check that failed), a tip with no words, a slot filled past its rule
  * (Law 22), a required section with no node, and every V-rule breach in its realised node code (the red team's RT-ENGINE #6)
  */
-export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loosened' | 'missing' | 'codeErrors'>): string[] {
+export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loosened' | 'missing' | 'codeErrors' | 'windowMiss'>): string[] {
   const st = { gen2: { ...g, errors: [...(g.errors ?? [])] } };
   // (a tip whose id has no Dot line fails the roll: it was never shown)
   const unsaid = [...new Set(st.gen2.fills.filter((f) => f.role === 'tip' && f.unsaid).map((f) => f.what))];
@@ -2472,6 +2506,7 @@ export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loos
   // (the red team, RT-ENGINE #6: a V-rule breach in the realised node code fails the roll too, by name; it was only written to
   // codeErrors, so a roll breaking V1-V20 with every slot filled would have reached the game as clean)
   if (st.gen2.codeErrors?.length) st.gen2.errors.push(...st.gen2.codeErrors.map((e) => `node code: ${e}`));
+  if (st.gen2.windowMiss) st.gen2.errors.push(st.gen2.windowMiss);
   return st.gen2.errors;
 }
 
@@ -2481,6 +2516,13 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const pool = stagePool(M0, req.config.id);
   if (pool.length !== M0.sections.length) req = { ...req, kit: { ...req.kit, manifest: { ...M0, sections: pool } } };
   const st = buildRolled(req);
+  // (V19b judged on the built stage by the gate's own definition, storyChecks endAboveWindow: the slot estimate in layStage steers the lay,
+  // this is the verdict, so the pipeline and stage.ts never disagree; the lead 12:57 PM, 11-06. A window start over a gap has no height:
+  // a miss, as stage.ts reads it)
+  if (req.kit.manifest.graphs?.briefs?.[req.config.id]?.endHigh) {
+    const w = endAboveWindow(st as never);
+    if (!w.pass) st.gen2.windowMiss = `V19b: the end log at y ${w.endY} is not above y ${w.windowY}, where the bough window begins (x ${w.windowX})`;
+  }
   st.gen2.errors = rollErrors(st.gen2);
   return st;
 }
@@ -2498,7 +2540,10 @@ export function provenGen2Stage(req: BuildRequest, walk: number = PROVEN.walk): 
   let first: string[] | undefined;
   for (let k = 0; k < walk; k++) {
     const seed = req.seed + k * PROVEN.stride;
-    const st = buildGen2Stage({ ...req, seed });
+    // (a build can throw, not only fail by name, e.g. "the pool is spent": that seed has failed too, and the walk goes on; a play is
+    // never handed the throw, 11-06)
+    let st: Gen2Stage;
+    try { st = buildGen2Stage({ ...req, seed }); } catch (e) { first ??= [`seed ${seed} threw: ${(e as Error).message}`]; continue; }
     if (st.gen2.errors?.length) { first ??= st.gen2.errors; continue; }
     // (recorded only when the walk moved off the asked seed: a seed played as asked carries nothing new)
     if (k > 0) st.gen2.proven = { asked: req.seed, used: seed, tried: k + 1 };
